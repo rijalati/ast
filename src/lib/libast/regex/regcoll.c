@@ -48,7 +48,7 @@ regcollate(register const char* s, char** e, char* buf, size_t size, wchar_t* wc
 	int				i;
 	int				r;
 	int				term;
-	wchar_t				w;
+	wchar_t				wc;
 	Mbstate_t			q;
 	char				xfm[256];
 	char				tmp[sizeof(xfm)];

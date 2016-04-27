@@ -80,7 +80,7 @@ b_mktemp(int argc, char** argv, Shbltin_t* context)
 	int		unsafe = 0;
 	int*		fdp = &fd;
 	char*		dir = "";
-	char*		pfx;
+	char*		pfx = "";
 	char*		t;
 	char		path[PATH_MAX];
 

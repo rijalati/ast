@@ -3865,7 +3865,7 @@ char *nv_name(register Namval_t *np)
 	register Namval_t *table;
 	register Namfun_t *fp;
 #if SHOPT_FIXEDARRAY
-	Namarr_t	*ap;
+	register Namarr_t	*ap;
 #endif /* SHOPT_FIXEDARRAY */
 	char *cp;
 	if(is_abuiltin(np) || is_afunction(np))

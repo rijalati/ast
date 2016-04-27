@@ -317,7 +317,7 @@ void	sh_sigtrap(Shell_t *shp,register int sig)
 	else if(!((flag=shp->sigflag[sig])&(SH_SIGFAULT|SH_SIGOFF)))
 	{
 		/* don't set signal if already set or off by parent */
-		if((fun=signal(sig,sh_fault))==SIG_IGN) 
+		if((fun=signal(sig,sh_fault))==SIG_IGN)
 		{
 			signal(sig,SIG_IGN);
 			flag |= SH_SIGOFF;
@@ -351,7 +351,7 @@ void	sh_sigdone(Shell_t *shp)
 /*
  * Restore to default signals
  * Free the trap strings if mode is non-zero
- * If mode>1 then ignored traps cause signal to be ignored 
+ * If mode>1 then ignored traps cause signal to be ignored
  */
 void	sh_sigreset(Shell_t *shp,register int mode)
 {
@@ -390,7 +390,7 @@ void	sh_sigreset(Shell_t *shp,register int mode)
 				free(trap);
 			shp->st.trap[sig] = 0;
 		}
-		
+
 	}
 	shp->st.trapcom[0] = 0;
 	if(mode)
@@ -601,7 +601,7 @@ void sh_exit_20120720(Shell_t *shp,register int xno)
 	shp->mktype = 0;
 	if(job.in_critical)
 		job_unlock();
-	if(pp->mode == SH_JMPSCRIPT && !pp->prev) 
+	if(pp->mode == SH_JMPSCRIPT && !pp->prev)
 		sh_done(shp,sig);
 	if(pp->mode)
 		siglongjmp(pp->buff,pp->mode);
@@ -663,7 +663,7 @@ void sh_done(void *ptr, register int sig)
 		tty_cooked(-1);
 #ifdef JOBS
 	if((sh_isoption(shp,SH_INTERACTIVE) && shp->login_sh) || (!sh_isoption(shp,SH_INTERACTIVE) && (sig==SIGHUP)))
-		job_walk(shp,sfstderr,job_terminate,SIGHUP,NIL(char**));
+		job_walk(shp,sfstderr,job_hup,SIGHUP,NIL(char**));
 #endif	/* JOBS */
 	job_close(shp);
 	if(shp->var_tree && nv_search("VMTRACE", shp->var_tree,0))
@@ -917,6 +917,6 @@ int sh_trap(const char *trap, int mode)
 	sigunblock(sig);
 	return((sh_sigfun_t)sigout.sa_sigaction);
     }
-    
+
 #endif
 

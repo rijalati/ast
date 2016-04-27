@@ -43,13 +43,13 @@ pathgetlink(const char* name, char* buf, int siz)
 {
 	int	n;
 
-	if ((n = readlink(name, buf, siz)) < 0) return(-1);
+	if ((n = readlink(name, buf, sizeof(siz)-1)) < 0) return(-1);
 	if (n >= siz)
 	{
 		errno = EINVAL;
 		return(-1);
 	}
-	buf[n] = 0;
+	buf[n] = '\0';
 #ifdef UNIV_MAX
 	if (isspace(*buf))
 	{
