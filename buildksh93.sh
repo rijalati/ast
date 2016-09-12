@@ -32,6 +32,8 @@
 # wget --http-user="I accept www.opensource.org/licenses/eclipse" --http-passwd="." 'http://www.research.att.com/sw/download/beta/ast-ksh.2012-02-14.tgz'
 # wget --http-user="I accept www.opensource.org/licenses/eclipse" --http-passwd="." 'http://www.research.att.com/sw/download/beta/ast-open.2012-02-14.tgz'
 
+# example buildmode: build.linux.opt.i386.64bit.gcc.c99 
+
 function fatal_error
 {
 	print -u2 "${progname}: $*"
@@ -497,7 +499,7 @@ function build_shell
 					;;
 				*.debug.*)
 					# we use -fno-builtin to prevent false reports from valgrind
-					bgcc_optdebug_flags='-g -ggdb -fno-builtin'
+					  bgcc_optdebug_flags='-g -ggdb -fno-builtin -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes -Wpointer-arith -Wwrite-strings -Wcast-qual -Wcast-align -Wbad-function-cast -Wformat-security -Wformat -Wformat-nonliteral -Wmissing-format-attribute -Winline'
 					;;
 				*)
 					fatal_error "build_shell: Illegal optimiser flag \"${buildmode}\"."
@@ -526,7 +528,7 @@ function build_shell
 			case "${buildmode}" in
 				*.clang.c99*)	bgcc_frontend='clang'  bgcc_stdlangmode='-std=gnu99 -D_GNU_SOURCE=1' bextra_warnings='-fstrict-aliasing -Wstrict-aliasing -fstrict-overflow -Wstrict-overflow -Wsequence-point -Wno-parentheses -Wno-unused -Wno-trigraphs -Wuninitialized -Waddress' ;;
 				*.clang.c1x*)	bgcc_frontend='clang'  bgcc_stdlangmode='-std=gnu1x -D_GNU_SOURCE=1' bextra_warnings='-fstrict-aliasing -Wstrict-aliasing -fstrict-overflow -Wstrict-overflow -Wsequence-point -Wno-parentheses -Wno-unused -Wno-trigraphs -Wuninitialized -Waddress' ;;
-				*.gcc.c99*)	bgcc_frontend='gcc-4.9'    bgcc_stdlangmode='-std=gnu99 -D_GNU_SOURCE=1' bextra_warnings='-fstrict-aliasing -Wstrict-aliasing -fstrict-overflow -Wstrict-overflow -Wsequence-point -Wno-parentheses -Wno-unused -Wno-trigraphs -Wuninitialized -Wclobbered -Waddress' ;;
+				*.gcc.c99*)	bgcc_frontend='gcc-4.9'    bgcc_stdlangmode='-std=gnu99 -D_GNU_SOURCE=1' bextra_warnings='-fstrict-aliasing -Wstrict-aliasing -fstrict-overflow -Wstrict-overflow -Wsequence-point -Wno-parentheses -Wno-unused -Wno-trigraphs -Wuninitialized -Wclobbered -Waddress ' ;;
 				*.gcc.c1x*)	bgcc_frontend='gcc-4.9'    bgcc_stdlangmode='-std=gnu1x -D_GNU_SOURCE=1' bextra_warnings='-fstrict-aliasing -Wstrict-aliasing -fstrict-overflow -Wstrict-overflow -Wsequence-point -Wno-parentheses -Wno-unused -Wno-trigraphs -Wuninitialized -Wclobbered -Waddress' ;;
 				*.pathcc.c99*)	bgcc_frontend='pathcc' bgcc_stdlangmode='-std=gnu99 -D_GNU_SOURCE=1' bextra_warnings='-fstrict-aliasing -Wstrict-aliasing -Wsequence-point -Wno-parentheses -Wno-unused -Wno-trigraphs -Wuninitialized -Waddress' ;;
 				*.pcc.c99*)	bgcc_frontend='pcc'    bgcc_stdlangmode='-std=gnu99 -D_GNU_SOURCE=1' bextra_warnings='-fstrict-aliasing -Wstrict-aliasing -fstrict-overflow -Wstrict-overflow -Wsequence-point -Wno-parentheses -Wno-unused -Wno-trigraphs -Wuninitialized -Wclobbered -Waddress' ;;
