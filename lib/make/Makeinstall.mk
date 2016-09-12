@@ -1,0 +1,22 @@
+/* : : generated from cc assertions : : */
+_addressing_ =
+_architecture_ = amd64 i386-64
+_dialect_ = ansi dynamic
+_hosttype_ = linux.i386-64
+_machine_ = amd64 i386-64
+_model_ =
+_preroot_ =
+_release_ = bsd linux
+_system_ = linux unix
+_universe_ = ucb
+_version_ = 4.2
+_feature_ = ln ln-s mkdir-p
+STDCAT = /bin/cat
+STDCHMOD = /bin/chmod
+STDCMP = /bin/cmp
+STDCP = /bin/cp
+STDED = ed
+STDEDFLAGS = -
+STDLN = /bin/ln
+STDMV = /bin/mv
+STDRM = /bin/rm
