@@ -23,18 +23,3 @@
 
 #include <ast.h>
 
-#if _tst_errno
-
-NoN(errno)
-
-#else
-
-/*
- * this avoids multiple definitions with some libc's
- * that define both an ast library supplied routine and
- * errno in the same .o
- */
-
-int     errno;
-
-#endif

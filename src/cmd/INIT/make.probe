@@ -945,9 +945,10 @@ case $cc_dll:$cc_pic:$so:$dynamic:$static in
 			done
 		fi
 		if	$cc -c require.$src
-		then	p='
-/usr/proberun/lib:/local/runprobe/lib
-'
+		then    p='/usr/proberun/lib:/local/runprobe/lib'
+                        eval set x $probe_ldrunpath
+                        while   :
+                        do      shift
 			eval set x $probe_ldrunpath
 			while	:
 			do	shift

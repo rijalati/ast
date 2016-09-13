@@ -447,6 +447,11 @@ main()
 	printf("#define memalign	_ast_memalign\n");
 	printf("extern void*		memalign(size_t, size_t);\n");
 #endif
+#if _lib_posix_memalign
+	printf("#undef  posix_memalign\n");
+	printf("#define posix_memalign  _ast_posix_memalign\n");
+	printf("extern int              posix_memalign(void **, size_t, size_t);\n");
+#endif
 #if _lib_mstats
 	printf("#undef	mstats\n");
 	printf("#define mstats		_ast_mstats\n");

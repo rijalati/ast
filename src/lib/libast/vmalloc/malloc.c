@@ -61,6 +61,10 @@ extern char*		getenv(const char*);
 #undef	mallinfo
 typedef struct ______mallinfo Mallinfo_t;
 #undef	mallopt
+#undef memalign
+#define memalign       _ast_memalign
+#undef posix_memalign
+#define posix_memalign _ast_posix_memalign
 #undef	mstats
 typedef struct ______mstats Mstats_t;
 #undef	realloc
@@ -1022,6 +1026,9 @@ extern Void_t*	F1(_malloc, size_t,n) { return malloc(n); }
 #if _lib_memalign
 extern Void_t*	F2(_memalign, size_t,a, size_t,n) { return memalign(a, n); }
 #endif
+#if _lib_posix_memalign
+extern Void_t* F2(_posix_memalign, size_t,a, size_t,n) { return posix_memalign(a, n); }
+#endif
 #if _lib_pvalloc
 extern Void_t*	F1(_pvalloc, size_t,n) { return pvalloc(n); }
 #endif
@@ -1039,6 +1046,9 @@ extern Void_t*	F1(__malloc, size_t,n) { return malloc(n); }
 #if _lib_memalign
 extern Void_t*	F2(__memalign, size_t,a, size_t,n) { return memalign(a, n); }
 #endif
+#if _lib_posix_memalign
+extern Void_t* F2(_posix_memalign, size_t,a, size_t,n) { return posix_memalign(a, n); }
+#endif
 #if _lib_pvalloc
 extern Void_t*	F1(__pvalloc, size_t,n) { return pvalloc(n); }
 #endif
@@ -1055,6 +1065,9 @@ extern Void_t	F1(__libc_free, Void_t*,p) { free(p); }
 extern Void_t*	F1(__libc_malloc, size_t,n) { return malloc(n); }
 #if _lib_memalign
 extern Void_t*	F2(__libc_memalign, size_t,a, size_t,n) { return memalign(a, n); }
+#endif
+#if _lib_posix_memalign
+extern Void_t* F2(_posix_memalign, size_t,a, size_t,n) { return posix_memalign(a, n); }
 #endif
 #if _lib_pvalloc
 extern Void_t*	F1(__libc_pvalloc, size_t,n) { return pvalloc(n); }
@@ -1193,6 +1206,11 @@ extern Void_t*	malloc _ARG_((size_t));
 extern Void_t*	memalign _ARG_((size_t, size_t));
 #endif
 
+#if _lib_posix_memalign
+#undef posix_memalign
+extern Void_t* posix_memalign _ARG_((size_t, size_t));
+#endif
+
 #if _lib_pvalloc
 #undef	pvalloc
 extern Void_t*	pvalloc _ARG_((size_t));
@@ -1216,6 +1234,9 @@ extern Void_t	F1(_ast_free, Void_t*,p) { free(p); }
 extern Void_t*	F1(_ast_malloc, size_t,n) { return malloc(n); }
 #if _lib_memalign
 extern Void_t*	F2(_ast_memalign, size_t,a, size_t,n) { return memalign(a, n); }
+#endif
+#if _lib_posix_memalign
+extern Void_t* F2(_ast_posix_memalign, size_t,a, size_t,n) { return memalign(a, n); }
 #endif
 #if _lib_pvalloc
 extern Void_t*	F1(_ast_pvalloc, size_t,n) { return pvalloc(n); }
