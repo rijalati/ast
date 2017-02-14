@@ -1017,7 +1017,9 @@ int sh_exec(register Shell_t *shp,register const Shnode_t *t, int flags)
 			shp->xargexit = 0;
 			while(np==SYSCOMMAND)
 			{
-				register int n = b_command(0,com,&shp->bltindata);
+				register int n;
+				shp->bltindata.pwdfd = shp->pwdfd;
+				n = b_command(0,com,&shp->bltindata);
 				if(n==0)
 					break;
 				command += n;
@@ -3424,6 +3426,7 @@ static void sh_funct(Shell_t *shp,Namval_t *np,int argn, char *argv[],struct arg
 		opt_info.index = opt_info.offset = 0;
 		error_info.errors = 0;
 		shp->st.loopcnt = 0;
+		shp->bltindata.pwdfd = shp->pwdfd;
 		b_dot_cmd(argn+1,argv-1,&shp->bltindata);
 		shp->st.loopcnt = loopcnt;
 		argv[-1] = save;
@@ -3493,6 +3496,7 @@ int sh_fun_20120720(Shell_t *shp,Namval_t *np, Namval_t *nq, char *argv[])
 		int jmpval;
 		struct checkpt *buffp = (struct checkpt*)stkalloc(shp->stk,sizeof(struct checkpt));
 		Shbltin_t *bp = &shp->bltindata;
+		shp->bltindata.pwdfd = shp->pwdfd;
 		sh_pushcontext(shp,buffp,SH_JMPCMD);
 		jmpval = sigsetjmp(buffp->buff,1);
 		if(jmpval == 0)
@@ -4249,6 +4253,7 @@ int sh_run_20120720(Shell_t *shp,int argn, char *argv[])
 	Opt_t			*op, *np = optctx(0, 0);
 	Shbltin_t		bltindata;
 	bltindata = shp->bltindata;
+	shp->bltindata.pwdfd = shp->pwdfd;
 	op = optctx(np, 0);
 	memset(t, 0, sizeof(struct comnod));
 	dp = (struct dolnod*)stkalloc(shp->stk,(unsigned)sizeof(struct dolnod) + ARG_SPARE*sizeof(char*) + argn*sizeof(char*));
