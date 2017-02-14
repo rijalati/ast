@@ -1,0 +1,30 @@
+From 679b2b1e3ef38b7cbd69b1d982b285350ea79536 Mon Sep 17 00:00:00 2001
+From: Siteshwar Vashisht <svashisht@redhat.com>
+Date: Mon, 13 Feb 2017 11:45:07 +0100
+Subject: [PATCH] Pass correct file descriptor to sh_iosave()
+
+---
+ src/cmd/ksh93/sh/io.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/src/cmd/ksh93/sh/io.c b/src/cmd/ksh93/sh/io.c
+index 675fbfa..4800a97 100644
+--- a/src/cmd/ksh93/sh/io.c
++++ b/src/cmd/ksh93/sh/io.c
+@@ -1485,8 +1485,12 @@ int	sh_redirect(Shell_t *shp,struct ionod *iop, int flag)
+ 							fd = r;
+ 							sh_close(fn);
+ 						}
++						sh_iosave(shp,fd,indx,tname?fname:(trunc?Empty:0));
++					}
++					else
++					{
++						sh_iosave(shp,fn,indx,tname?fname:(trunc?Empty:0));
+ 					}
+-					sh_iosave(shp,fn,indx,tname?fname:(trunc?Empty:0));
+ 				}
+ 				else if(sh_subsavefd(fn))
+ 					sh_iosave(shp,fn,indx|IOSUBSHELL,tname?fname:0);
+-- 
+2.9.3
+

@@ -1,0 +1,19 @@
+diff --git a/src/cmd/ksh93/sh/xec.c b/src/cmd/ksh93/sh/xec.c
+index 1ba7347..ab745d4 100644
+--- a/src/cmd/ksh93/sh/xec.c
++++ b/src/cmd/ksh93/sh/xec.c
+@@ -640,7 +640,11 @@ int sh_eval(register Sfio_t *iop, int mode)
+ 	if(lineno)
+ 		shp->inlineno = lineno;
+ 	if(io_save)
++	{
+ 		sfclose(io_save);
++		io_save = 0;
++	}
++
+ 	sh_freeup(shp);
+ 	shp->st.staklist = saveslp;
+ 	shp->fn_reset = 0;
+-- 
+2.9.3
+
