@@ -1,0 +1,2083 @@
+diff -N -r -u original/src/cmd/ksh93/bltins/cd_pwd.c build_at/src/cmd/ksh93/bltins/cd_pwd.c
+--- src/cmd/ksh93/bltins/cd_pwd.c	2012-08-09 15:24:15.000000000 +0200
++++ src/cmd/ksh93/bltins/cd_pwd.c	2012-09-03 15:07:17.431743484 +0200
+@@ -61,9 +61,6 @@
+ {
+ 	int fd,apfd,shfd;
+ 	int savederrno=errno;
+-#ifndef AT_FDCWD
+-	NOT_USED(dir);
+-#endif
+ #ifndef O_XATTR
+ 	NOT_USED(xattr);
+ #endif
+@@ -87,7 +84,6 @@
+ 	else
+ #endif
+ 	{
+-#ifdef AT_FDCWD
+ 		/*
+ 		 * Open directory. First we try without |O_SEARCH| and
+ 		 * if this fails with EACCESS we try with |O_SEARCH|
+@@ -112,23 +108,6 @@
+ 			EINTR_REPEAT((fd = openat(dir, path, O_SEARCH|O_cloexec)) < 0)
+ 		}
+ #   endif
+-#else
+-		/*
+-		 * Version of openat() call above for systems without
+-		 * openat API. This only works because we basically
+-		 * gurantee that |dir| is always the same place as
+-		 * |cwd| on such machines (but this won't be the case
+-		 * in the future).
+-		 */
+-		/*
+-		 * This |fchdir()| call is not needed (yet) since
+-		 * all consumers do not use |dir| when |AT_FDCWD|
+-		 * is not available.
+-		 *
+-		 * fchdir(dir);
+-		 */
+-		EINTR_REPEAT((fd = open(path, O_cloexec)) < 0);
+-#endif
+ 	}
+ 
+ 	if(fd < 0)
+@@ -294,7 +273,7 @@
+ #endif /* SHOPT_FS_3D */
+ 		}
+ 		rval = newdirfd = sh_diropenat(shp,
+-			((shp->pwdfd >= 0)?shp->pwdfd:AT_FDCWD),
++			((shp->pwdfd >= 0)?shp->pwdfd:AST_AT_FDCWD),
+ 			path_relative(shp,stakptr(PATH_OFFSET)), xattr);
+ 		if(newdirfd >=0)
+ 		{
+@@ -329,7 +308,7 @@
+ 	if(rval<0 && *dir=='/' && *(path_relative(shp,stakptr(PATH_OFFSET)))!='/')
+ 	{
+ 		rval = newdirfd = sh_diropenat(shp,
+-			((shp->pwdfd >= 0)?shp->pwdfd:AT_FDCWD), dir, xattr);
++			((shp->pwdfd >= 0)?shp->pwdfd:AST_AT_FDCWD), dir, xattr);
+ 		if(newdirfd >=0)
+ 		{
+ 			/* chdir for directories on HSM/tapeworms may take minutes */
+diff -N -r -u original/src/cmd/ksh93/bltins/test.c build_at/src/cmd/ksh93/bltins/test.c
+--- src/cmd/ksh93/bltins/test.c	2012-08-21 22:13:16.000000000 +0200
++++ src/cmd/ksh93/bltins/test.c	2012-09-03 15:07:17.432743533 +0200
+@@ -40,6 +40,9 @@
+ #include	"FEATURE/poll"
+ #include	<tmx.h>
+ 
++#undef AST_AT_GET_FDCWD
++#define AST_AT_GET_FDCWD (sh_getinterp()->pwdfd)
++
+ #if !_lib_setregid
+ #   undef _lib_setreuid
+ #endif /* _lib_setregid */
+@@ -552,6 +555,12 @@
+  * This version of access checks against effective uid/gid
+  * The static buffer statb is shared with test_mode.
+  */
++#undef access
++#ifdef AST_MAP_FS_TO_FSAT_EMULATION
++#define	access(path, amode)		ast_faccessat((shp->pwdfd), (path), (amode), 0)
++#else
++#define	access(path, amode)		faccessat((shp->pwdfd), (path), (amode), 0)
++#endif
+ 
+ int sh_access(register const char *name, register int mode)
+ {
+diff -N -r -u original/src/cmd/ksh93/edit/history.c build_at/src/cmd/ksh93/edit/history.c
+--- src/cmd/ksh93/edit/history.c	2012-08-03 20:48:37.000000000 +0200
++++ src/cmd/ksh93/edit/history.c	2012-09-03 20:21:01.403228536 +0200
+@@ -105,6 +105,9 @@
+ #   define O_BINARY	0
+ #endif /* O_BINARY */
+ 
++#undef AST_AT_GET_FDCWD
++#define AST_AT_GET_FDCWD (sh_getinterp()->pwdfd)
++
+ int	_Hist = 0;
+ static void	hist_marker(char*,long);
+ static History_t* hist_trim(History_t*, int);
+diff -N -r -u original/src/cmd/ksh93/include/defs.h build_at/src/cmd/ksh93/include/defs.h
+--- src/cmd/ksh93/include/defs.h	2012-08-20 16:03:07.000000000 +0200
++++ src/cmd/ksh93/include/defs.h	2012-09-03 15:07:17.433743582 +0200
+@@ -28,6 +28,9 @@
+ #ifndef defs_h_defined
+ #define defs_h_defined
+ 
++#undef AST_AT_GET_FDCWD
++#define AST_AT_GET_FDCWD (shp->pwdfd)
++
+ #include	<ast.h>
+ #include	<sfio.h>
+ #include	<error.h>
+diff -N -r -u original/src/cmd/ksh93/sh/init.c build_at/src/cmd/ksh93/sh/init.c
+--- src/cmd/ksh93/sh/init.c	2012-08-22 19:20:08.000000000 +0200
++++ src/cmd/ksh93/sh/init.c	2012-09-03 15:07:17.434743628 +0200
+@@ -1365,6 +1365,7 @@
+ 		shp = newof(0,Shell_t,1,0);
+ 	umask(shp->mask=umask(0));
+ 	shp->gd = shgd;
++	shp->pwdfd = AST_AT_FDCWD;
+ 	shp->mac_context = sh_macopen(shp);
+ 	shp->arg_context = sh_argopen(shp);
+ 	shp->lex_context = (void*)sh_lexopen(0,shp,1);
+@@ -1422,12 +1423,7 @@
+ 		}
+ 	}
+ 	sh_ioinit(shp);
+-#ifdef AT_FDCWD
+-       shp->pwdfd = sh_diropenat(shp, AT_FDCWD, e_dot, 0);
+-#else
+-       /* Systems without AT_FDCWD/openat() do not use the |dir| argument */
+-       shp->pwdfd = sh_diropenat(shp, -1, e_dot, 0);
+-#endif
++	shp->pwdfd = sh_diropenat(shp, AST_AT_FDCWD, e_dot, 0);
+ #ifdef O_SEARCH
+        /* This should _never_ happen, guranteed by design and goat sacrifice */
+        if(shp->pwdfd < 0)
+diff -N -r -u original/src/cmd/ksh93/sh/io.c build_at/src/cmd/ksh93/sh/io.c
+--- src/cmd/ksh93/sh/io.c	2012-08-21 21:24:46.000000000 +0200
++++ src/cmd/ksh93/sh/io.c	2012-09-03 15:07:17.436743708 +0200
+@@ -44,6 +44,9 @@
+ #include	"FEATURE/dynamic"
+ #include	"FEATURE/poll"
+ 
++#undef AST_AT_GET_FDCWD
++#define AST_AT_GET_FDCWD (sh_getinterp()->pwdfd)
++
+ #ifdef	FNDELAY
+ #   ifdef EAGAIN
+ #	if EAGAIN!=EWOULDBLOCK
+@@ -702,7 +705,11 @@
+ 		int err = errno;
+ 		if(fdnotify)
+ 			(*fdnotify)(fd,SH_FDCLOSE);
++#ifdef AST_MAP_FS_TO_FSAT_EMULATION
++		while((r=ast_close(fd)) < 0 && errno==EINTR)
++#else
+ 		while((r=close(fd)) < 0 && errno==EINTR)
++#endif
+ 			errno = err;
+ 	}
+ 	if(fd>2)
+@@ -2791,7 +2798,11 @@
+ int sh_fchdir(int fd)
+ {
+ 	int r,err=errno;
++#ifdef AST_MAP_FS_TO_FSAT_EMULATION
++	while((r=ast_fchdir(fd))<0 && errno==EINTR)
++#else
+ 	while((r=fchdir(fd))<0 && errno==EINTR)
++#endif
+ 		errno = err;
+ 	return(r);
+ }
+@@ -2800,7 +2811,11 @@
+ int sh_chdir(const char* dir)
+ {
+ 	int r,err=errno;
++#ifdef AST_MAP_FS_TO_FSAT_EMULATION
++	while((r=ast_chdir(dir))<0 && errno==EINTR)
++#else
+ 	while((r=chdir(dir))<0 && errno==EINTR)
++#endif
+ 		errno = err;
+ 	return(r);
+ }
+@@ -2813,7 +2828,20 @@
+ int sh_stat(const char* path,struct stat *statb)
+ {
+ 	int r,err=errno;
++#ifdef AST_MAP_FS_TO_FSAT_EMULATION
++	/*
++	 * This is not required for the emulation, but the emulation
++	 * can optimise |stat(".", ...)| to |fstat()| (which is a
++	 * nice, no-risk and cheap performance win)
++	 *
++	 * In the future, calls to |stat(".",...)| should be
++	 * replaced with calls to |fstat()| when |O_search| (this
++	 * gurantees that |shp->pwdfd| is always valid) is defined.
++	 */
++	while((r=ast_fstatat(sh_getinterp()->pwdfd,path,statb,0))<0 && errno==EINTR)
++#else
+ 	while((r=stat(path,statb))<0 && errno==EINTR)
++#endif
+ 		errno = err;
+ 	return(r);
+ }
+diff -N -r -u original/src/cmd/ksh93/sh/nvtype.c build_at/src/cmd/ksh93/sh/nvtype.c
+--- src/cmd/ksh93/sh/nvtype.c	2012-08-24 21:00:29.000000000 +0200
++++ src/cmd/ksh93/sh/nvtype.c	2012-09-03 15:07:17.438743779 +0200
+@@ -27,6 +27,9 @@
+ #include        "io.h"
+ #include        "variables.h"
+ 
++#undef AST_AT_GET_FDCWD
++#define AST_AT_GET_FDCWD (sh_getinterp()->pwdfd)
++
+ static const char sh_opttype[] =
+ "[-1c?\n@(#)$Id: type (AT&T Labs Research) 2008-07-01 $\n]"
+ USAGE_LICENSE
+diff -N -r -u original/src/lib/libast/comp/ast_map_fsat.h build_at/src/lib/libast/comp/ast_map_fsat.h
+--- src/lib/libast/comp/ast_map_fsat.h	1970-01-01 01:00:00.000000000 +0100
++++ src/lib/libast/comp/ast_map_fsat.h	2012-09-03 15:07:17.440743838 +0200
+@@ -0,0 +1,163 @@
++#ifndef AST_MAP_FSAT_H
++#define AST_MAP_FSAT_H 1
++/***********************************************************************
++*                                                                      *
++*               This software is part of the ast package               *
++*             Copyright (c) 2012 AT&T Intellectual Property            *
++*                      and is licensed under the                       *
++*                 Eclipse Public License, Version 1.0                  *
++*                    by AT&T Intellectual Property                     *
++*                                                                      *
++*                A copy of the License is available at                 *
++*          http://www.eclipse.org/org/documents/epl-v10.html           *
++*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
++*                                                                      *
++*              Information and Software Systems Research               *
++*                            AT&T Research                             *
++*                           Florham Park NJ                            *
++*                                                                      *
++*               Roland Mainz <roland.mainz@nrubsig.org>                *
++*                                                                      *
++***********************************************************************/
++
++/*
++ * This header defines provide an easy way for legacy applications
++ * to use the new POSIX |*at()|-APIs.
++ *
++ * This is mainly intended for operating systems which already map
++ * the old calls to the new |*at()| calls, therefore the macros
++ * below bypass a lot of wrapper code in libc.
++ * The other usage is _testing_ the code in libc and the |*at())
++ * emulation code in libast
++ */
++
++#ifdef AT_FDCWD
++/* note: |AT_CWD| must always be a negative number < -64 */
++#	define AST_AT_FDCWD		(AT_FDCWD)
++
++/* |open()|-flags */
++#ifdef O_DIRECTORY
++#	define AST_O_DIRECTORY		(O_DIRECTORY)
++#endif
++#if defined(O_SEARCH)
++#	define AST_O_SEARCH		(O_SEARCH)
++#elif defined(O_PATH)
++#	define AST_O_SEARCH		(O_PATH)
++#endif
++
++/* extra |*at()| flags */
++#	define AST_AT_REMOVEDIR		(AT_REMOVEDIR)
++#	define AST_AT_SYMLINK_NOFOLLOW	(AT_SYMLINK_NOFOLLOW)
++#	define AST_AT_EACCESS		(AT_EACCESS)
++
++#else /* AT_FDCWD */
++
++/* note: |AT_CWD| must always be a negative number < -64 */
++#	define AST_AT_FDCWD		(-129)
++
++/* |open()|-flags */
++#ifdef O_DIRECTORY
++#	define AST_O_DIRECTORY		(O_DIRECTORY)
++#endif
++#if defined(O_SEARCH)
++#	define AST_O_SEARCH		(O_SEARCH)
++#elif defined(O_PATH)
++#	define AST_O_SEARCH		(O_PATH)
++#endif
++
++/* extra |*at()| flags */
++#	define AST_AT_REMOVEDIR		(0x01)
++#	define AST_AT_SYMLINK_NOFOLLOW	(0x02)
++#	define AST_AT_EACCESS		(0x04)
++
++#endif /* AT_FDCWD */
++
++/*
++ * Consumers can define |AST_AT_GET_FDCWD| to define a function
++ * to obtain the current cwd fd
++ */
++#ifndef AST_AT_GET_FDCWD
++#define AST_AT_GET_FDCWD AST_AT_FDCWD
++#endif
++
++#ifdef AST_MAP_FS_TO_FSAT
++/*
++ * |open()| and |creat() require C99 __VA_ARGS__
++ *
++ * gcc supports this since gcc3.0
++ *
++ * See http://web.archive.org/web/20101030023231/http://blog.mellenthin.de/archives/2010/10/26/portable-__va_args__-macros-for-linux-hp-ux-solaris-and-aix/
++ * for possible workarounds for pre-C99 compilers.
++ */
++/* |open()| argument |flags| is part of |__VA_ARGS__| since |__VA_ARGS__| must never be empty */
++#define	open(path, ...)			openat(AST_AT_GET_FDCWD, (path), __VA_ARGS__)
++#define	creat(path, ...)		openat(AST_AT_GET_FDCWD, (path), O_WRONLY|O_CREAT|O_TRUNC, __VA_ARGS__)
++#define	unlink(path)			unlinkat(AST_AT_GET_FDCWD, (path), 0)
++#define	rmdir(path)			unlinkat(AST_AT_GET_FDCWD, (path), AST_AT_REMOVEDIR)
++#define	chown(path, uid, gid)		fchownat(AST_AT_GET_FDCWD, (path), (uid), (gid), 0)
++#define	lchown(path, uid, gid)		fchownat(AST_AT_GET_FDCWD, (path), (uid), (gid), AST_AT_SYMLINK_NOFOLLOW)
++#ifdef ONLY_SOLARIS
++#define	fchown(fd, uid, gid)		fchownat((fd), NULL, (uid), (gid), 0)
++#endif
++#define	stat(path, sb)			fstatat(AST_AT_GET_FDCWD, (path), (sb), 0)
++#define	lstat(path, sb)			fstatat(AST_AT_GET_FDCWD, (path), (sb), AST_AT_SYMLINK_NOFOLLOW)
++#ifdef ONLY_SOLARIS
++#define	fstat(fd, sb)			fstatat((fd), NULL, (sb), 0)
++#endif
++#define	rename(oldname, newname)	renameat(AST_AT_GET_FDCWD, (oldname), AST_AT_GET_FDCWD, (newname))
++#define	access(path, amode)		faccessat(AST_AT_GET_FDCWD, (path), (amode), 0)
++#define	eaccess(path, amode)		faccessat(AST_AT_GET_FDCWD, (path), (amode), AST_AT_EACCESS)
++#define	mkdir(path, amode)		mkdirat(AST_AT_GET_FDCWD, (path), (amode))
++#define	mkfifo(path, amode)		mkfifoat(AST_AT_GET_FDCWD, (path), (amode))
++#define	mknod(path, amode, adev)	mknodat(AST_AT_GET_FDCWD, (path), (amode), (adev))
++#define	readlink(path, buf, bufsize)	readlinkat(AST_AT_GET_FDCWD, (path), (buf), (bufsize))
++#define	symlink(oldpath, newpath)	symlinkat((oldpath), AST_AT_GET_FDCWD, (newpath))
++
++#else
++#ifdef AST_MAP_FS_TO_FSAT_EMULATION
++
++/* |open()| argument |flags| is part of |__VA_ARGS__| since |__VA_ARGS__| must never be empty */
++#define	open(path, ...)			ast_openat(AST_AT_GET_FDCWD, (path), __VA_ARGS__)
++#define	creat(path, ...)		ast_openat(AST_AT_GET_FDCWD, (path), O_WRONLY|O_CREAT|O_TRUNC, __VA_ARGS__)
++#define	unlink(path)			ast_unlinkat(AST_AT_GET_FDCWD, (path), 0)
++#define	rmdir(path)			ast_unlinkat(AST_AT_GET_FDCWD, (path), AST_AT_REMOVEDIR)
++#define	chown(path, uid, gid)		ast_fchownat(AST_AT_GET_FDCWD, (path), (uid), (gid), 0)
++#define	lchown(path, uid, gid)		ast_fchownat(AST_AT_GET_FDCWD, (path), (uid), (gid), AST_AT_SYMLINK_NOFOLLOW)
++#ifdef ONLY_SOLARIS
++#define	fchown(fd, uid, gid)		ast_fchownat((fd), NULL, (uid), (gid), 0)
++#endif
++#define	stat(path, sb)			ast_fstatat(AST_AT_GET_FDCWD, (path), (sb), 0)
++#define	lstat(path, sb)			ast_fstatat(AST_AT_GET_FDCWD, (path), (sb), AST_AT_SYMLINK_NOFOLLOW)
++#ifdef ONLY_SOLARIS
++#define	fstat(fd, sb)			ast_fstatat((fd), NULL, (sb), 0)
++#endif
++#define	rename(oldname, newname)	ast_renameat(AST_AT_GET_FDCWD, (oldname), AST_AT_GET_FDCWD, (newname))
++#define	access(path, amode)		ast_faccessat(AST_AT_GET_FDCWD, (path), (amode), 0)
++#define	eaccess(path, amode)		ast_faccessat(AST_AT_GET_FDCWD, (path), (amode), AST_AT_EACCESS)
++#define	mkdir(path, amode)		ast_mkdirat(AST_AT_GET_FDCWD, (path), (amode))
++#define	mkfifo(path, amode)		ast_mkfifoat(AST_AT_GET_FDCWD, (path), (amode))
++#define	mknod(path, amode, adev)	ast_mknodat(AST_AT_GET_FDCWD, (path), (amode), (adev))
++#define	readlink(path, buf, bufsize)	ast_readlinkat(AST_AT_GET_FDCWD, (path), (buf), (bufsize))
++#define	symlink(oldpath, newpath)	ast_symlinkat((oldpath), AST_AT_GET_FDCWD, (newpath))
++
++#endif /* AST_MAP_FS_TO_FSAT_EMULATION */
++#endif /* AST_MAP_FS_TO_FSAT */
++
++/* prototypes */
++extern int ast_openat (int dirfd, const char *pathname, int flags, ...);
++extern int ast_close (int fd);
++extern int ast_fchdir (int fd);
++extern int ast_chdir (const char *path);
++extern int ast_unlinkat (int dirfd, const char *pathname, int flags);
++extern int ast_fchownat (int dirfd, const char *pathname, uid_t owner, gid_t group, int flags);
++extern int ast_fstatat (int dirfd, const char *pathname, struct stat *buf, int flags);
++extern int ast_renameat (int olddirfd, const char *oldpath, int newdirfd, const char *newpath);
++extern int ast_faccessat (int dirfd, const char *pathname, int mode, int flags);
++extern int ast_mkdirat (int dirfd, const char *pathname, mode_t mode);
++extern int ast_mkfifoat (int dirfd, const char *pathname, mode_t mode);
++extern int ast_mknodat (int dirfd, const char *pathname, mode_t mode, dev_t dev);
++extern int ast_utimensat (int dirfd, const char *pathname, const struct timespec *timespec, int flags);
++extern int ast_symlinkat(const char *oldpath, int newdirfd, const char *newpath);
++extern int ast_readlinkat(int dirfd, const char *pathname, char *buf, size_t bufsiz);
++
++#endif /* !AST_MAP_FSAT_H */
+diff -N -r -u original/src/lib/libast/comp/eaccess.c build_at/src/lib/libast/comp/eaccess.c
+--- src/lib/libast/comp/eaccess.c	2012-08-22 11:40:02.000000000 +0200
++++ src/lib/libast/comp/eaccess.c	2012-09-03 15:07:17.440743838 +0200
+@@ -28,6 +28,19 @@
+ #include <errno.h>
+ #include <ls.h>
+ 
++/* 
++ * Problem: <ast_fcntl.h> maps |eaccess()| to |faccessat()| ... but
++ * some iffe probes stubbornly want |eaccess()|
++ */
++#undef eaccess
++#if _map_libc
++extern int
++_ast_eaccess(const char* path, register int flags)
++{
++	return eaccess(path, flags);
++}
++#endif
++
+ #include "FEATURE/eaccess"
+ 
+ #if _lib_eaccess
+@@ -44,6 +57,7 @@
+ eaccess(const char* path, register int flags)
+ {
+ #if defined(AT_FDCWD) && defined(AT_EACCESS)
++#undef faccessat
+ 	return faccessat(AT_FDCWD, path, flags, AT_EACCESS);
+ #else
+ #ifdef EFF_ONLY_OK
+diff -N -r -u original/src/lib/libast/comp/openat_emu.c build_at/src/lib/libast/comp/openat_emu.c
+--- src/lib/libast/comp/openat_emu.c	1970-01-01 01:00:00.000000000 +0100
++++ src/lib/libast/comp/openat_emu.c	2012-09-03 19:09:29.789870104 +0200
+@@ -0,0 +1,1411 @@
++/***********************************************************************
++*                                                                      *
++*               This software is part of the ast package               *
++*             Copyright (c) 2012 AT&T Intellectual Property            *
++*                      and is licensed under the                       *
++*                 Eclipse Public License, Version 1.0                  *
++*                    by AT&T Intellectual Property                     *
++*                                                                      *
++*                A copy of the License is available at                 *
++*          http://www.eclipse.org/org/documents/epl-v10.html           *
++*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
++*                                                                      *
++*              Information and Software Systems Research               *
++*                            AT&T Research                             *
++*                           Florham Park NJ                            *
++*                                                                      *
++*               Roland Mainz <roland.mainz@nrubsig.org>                *
++*                                                                      *
++***********************************************************************/
++
++/* We need this for |eaccess()| */
++#define _GNU_SOURCE 1
++
++/*
++ * Define a cpp symbol we can use later to prevent that we emulate
++ * ourselves recursively
++ */
++#define AST_NO_RECURSIVE_AT_EMULATION 1
++
++#ifdef BUILD_TESTCODE
++#include <stdlib.h>
++#include <stdio.h>
++#endif
++#include <stdbool.h>
++#include <stdarg.h>
++#include <string.h>
++#include <limits.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <sys/stat.h>
++#include <sys/time.h>
++#include <errno.h>
++#include <assert.h>
++
++#ifdef AST_FSAT_TEST_RECURSIVELY
++#define AST_MAP_FS_TO_FSAT 1
++#endif
++
++#include "ast_map_fsat.h"
++
++/*
++ * Mappings |*()| call vs. |*at()| call:
++ *
++ * open(path, flag, ...)	openat(AT_FDCWD, path, flag, ...)
++ * creat(path, ...)		openat(AT_FDCWD, path, O_WRONLY|O_CREAT|O_TRUNC, ...)
++ * unlink(path)			unlinkat(AT_FDCWD, path, 0)
++ * rmdir(path)			unlinkat(AT_FDCWD, path, AT_REMOVEDIR)
++ * chown(path, uid, gid)	fchownat(AT_FDCWD, path, uid, gid, 0)
++ * lchown(path, uid, gid)	fchownat(AT_FDCWD, path, uid, gid, AT_SYMLINK_NOFOLLOW)
++ * fchown(fd, uid, gid)		fchownat(fd, NULL, uid, gid, 0)
++ * stat(path, &sb)		fstatat(AT_FDCWD, path, &sb, 0)
++ * lstat(path, &sb)		fstatat(AT_FDCWD, path, &sb, AT_SYMLINK_NOFOLLOW)
++ * fstat(fd, &sb)		fstatat(fd, NULL, &sb, 0)
++ * rename(oldname, newname)	renameat(AT_FDCWD, oldname, AT_FDCWD, newname)
++ * access(path, amode)		faccessat(AT_FDCWD, path, amode, 0)
++ * eaccess(path, amode)		faccessat(AT_FDCWD, path, amode, AT_EACCESS)
++ * mkdir(path, amode)		mkdirat(AT_FDCWD, path, amode)
++ * mkfifo(path, amode)		mkfifoat(AT_FDCWD, path, amode)
++ * mknod(path, amode, adev)	mknodat(AT_FDCWD, path, amode, adev)
++ * readlink(path, buf, bufsize)	readlinkat(AT_FDCWD, path, buf, bufsize)
++ * symlink(oldpath, newpath)	symlinkat(oldpath, AT_FDCWD, newpath)
++ *
++ * Warning: If we cache the cwd fd globally we must observe |close()|
++ * and |dup2()| usage carefully!
++ */
++
++/*
++ * Note that /dev/fd/ on Solaris can NOT be used reliably to do
++ * something like /dev/fd/$fd/src/hello/world profile
++ *
++ * Use of /dev/fd/$fd/src/hello/world on Linux seems to be 100%
++ * safe, assuming /dev/fd/ is mounted - it may be missing from
++ * chroot'ed environments.
++ */
++#define ASTOPENATEMU_USE_DEVFD 1
++
++#define AST_AT_PATH_BUFF_MAX (PATH_MAX+256)
++
++#define ASTOPENEMU_GLOBALDIR_LOCK
++#define ASTOPENEMU_GLOBALDIR_UNLOCK
++#define ASTOPENEMU_MUTEX
++
++#ifdef _BLD_ast
++
++#include <ast_fs.h>
++#if _lib_fstat64
++#define fstat           fstat64
++#endif
++#if _lib_lstat64
++#define lstat           lstat64
++#endif
++#if _lib_stat64
++#define stat            stat64
++#endif
++#if _lib_open64
++#undef  open
++#define open            open64
++#endif
++
++#endif /* _BLD_ast */
++
++struct global_cwd
++{
++	/* mutex to protect these data */
++	ASTOPENEMU_MUTEX
++
++	int		fd;
++	const char	*name; /* use only as last resort if there is no fd */
++
++	/* storage for |global_cwd.name|. We made this extra large */
++	char		namebuff[(2*AST_AT_PATH_BUFF_MAX)+16];
++
++#ifdef ASTOPENATEMU_USE_DEVFD
++	bool		has_devfd;	/* Remember whether we have /dev/fd/ */
++	const char	*devfd_fs;	/* either "/dev/fd" or "/proc/self/fd" */
++#endif
++};
++
++static struct global_cwd global_cwd =
++{
++	-1,
++	NULL,
++	{ '\0', },
++#ifdef ASTOPENATEMU_USE_DEVFD
++	true,
++#ifdef __SunOS
++	"/proc/self/fd"
++#else
++	"/dev/fd"	/* either "/dev/fd" or "/proc/self/fd" */
++#endif /* __SunOS */
++#endif /* ASTOPENATEMU_USE_DEVFD */
++};
++
++/*
++ * Warning: This accesses |global_cwd| WITHOUT locking (for
++ * performace and therefore without being reliable in threaded
++ * applications. Hurray! ;-/ ()
++ */
++#define ASSERT_GLOBAL_CWD_VALID	assert((global_cwd.fd >= 0) || (global_cwd.name != NULL))
++
++/* Repeat syscall in expr each time it gets hit with EINTR */
++#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
++
++
++/* must be called inside |ASTOPENEMU_GLOBALDIR_LOCK|/ASTOPENEMU_GLOBALDIR_UNLOCK pair!! */
++static
++bool save_cwd_unlocked(void)
++{
++	if (global_cwd.fd<0)
++	{
++		EINTR_REPEAT((global_cwd.fd=open(".", O_RDONLY)) < 0);
++		if (global_cwd.fd < 0)
++		{
++			global_cwd.name=getcwd(global_cwd.namebuff, sizeof(global_cwd.namebuff));
++		}
++	}
++	return (((global_cwd.fd>=0) || (global_cwd.name!=NULL))?true:false);
++}
++
++/* must be called inside |ASTOPENEMU_GLOBALDIR_LOCK|/ASTOPENEMU_GLOBALDIR_UNLOCK pair!! */
++static
++void restore_cwd_unlocked(void)
++{
++	ASSERT_GLOBAL_CWD_VALID;
++
++	if (global_cwd.fd >= 0)
++	{
++		EINTR_REPEAT(fchdir(global_cwd.fd) < 0);
++	}
++	else if (global_cwd.name)
++	{
++		EINTR_REPEAT(chdir(global_cwd.name) < 0);
++	}
++	else
++	{
++		/*
++		 * this should never happen - |save_cwd_unlocked()|
++		 * will only return |true| (and therefore fill
++		 * either |global_cwd.fd| or |global_cwd.name|)
++		 * if it can save the cwd location somehow.
++		 */
++		assert(0);
++	}
++}
++
++/*
++ * intercept for |close()|
++ * we need this to make sure the cached |global_cwd| stays valid
++ */
++int ast_close(int fd)
++{
++	ASTOPENEMU_GLOBALDIR_LOCK
++	if (fd == global_cwd.fd)
++	{
++		global_cwd.fd=-1;
++		global_cwd.name=NULL;
++	}
++	ASTOPENEMU_GLOBALDIR_UNLOCK
++	return (close(fd));
++}
++
++/*
++ * intercept for |fchdir()|
++ * we need this to make sure the cached |global_cwd| does not
++ * become "stale"
++ */
++int ast_fchdir(int fd)
++{
++	int retval;
++	int saved_errno;
++
++	ASTOPENEMU_GLOBALDIR_LOCK;
++
++	/*
++	 * We do not check for |(dirfd != global_cwd.fd)| (to do
++	 * optimisations) here since the caller might be interested
++	 * in the return code (for example if the directory was
++	 * removed (or the "x" permission was removed) after the
++	 * |fd| was obtained).
++	 */
++	retval=fchdir(fd);
++	saved_errno=errno;
++
++	if (retval >= 0)
++	{
++		global_cwd.fd=fd;
++		global_cwd.name=NULL;
++	}
++
++	ASTOPENEMU_GLOBALDIR_UNLOCK;
++
++	errno=saved_errno;
++	return (retval);
++}
++
++/*
++ * intercept for |chdir()|
++ * we need this to make sure the cached |global_cwd| does not
++ * become "stale"
++ */
++int ast_chdir(const char *path)
++{
++	int retval;
++	int saved_errno;
++
++	ASTOPENEMU_GLOBALDIR_LOCK;
++
++	retval=chdir(path);
++	saved_errno=errno;
++
++	if (retval >= 0)
++	{
++		global_cwd.fd=-1;
++		global_cwd.name=NULL;
++	}
++
++	ASTOPENEMU_GLOBALDIR_UNLOCK;
++
++	errno=saved_errno;
++	return (retval);
++}
++
++
++int ast_openat(int dirfd, const char *pathname, int flags, ...)
++{
++	mode_t mode=0;
++
++	if (flags & O_CREAT)
++	{
++		va_list arg;
++		va_start(arg, flags);
++
++		mode=va_arg(arg, mode_t);
++
++		va_end(arg);
++	}
++
++	/*
++	 * use |open()| for pathname relative to the cwd or
++	 * if it is an absolute path name
++	 */
++	if ((dirfd == AST_AT_FDCWD) || (pathname[0] == '/'))
++	{
++		return open(pathname, flags, mode);
++	}
++
++#ifdef ASTOPENATEMU_USE_DEVFD
++	if (global_cwd.has_devfd)
++	{
++		char pathbuf[AST_AT_PATH_BUFF_MAX];
++
++#ifdef AST_O_DIRECTORY
++		if (flags & AST_O_DIRECTORY)
++		{
++			snprintf(pathbuf, sizeof(pathbuf), "%s/%d/%s/.", global_cwd.devfd_fs, dirfd, pathname);
++		}
++		else
++#endif /* AST_O_DIRECTORY */
++		{
++			snprintf(pathbuf, sizeof(pathbuf), "%s/%d/%s", global_cwd.devfd_fs, dirfd, pathname);
++		}
++		return open(pathbuf, flags, mode);
++	}
++	else
++#endif
++	{
++		int saved_errno;
++		int returned_dir;
++
++		ASTOPENEMU_GLOBALDIR_LOCK
++
++		if (!save_cwd_unlocked())
++		{
++			saved_errno=errno;
++			ASTOPENEMU_GLOBALDIR_UNLOCK
++			errno=saved_errno;
++			return (-1);
++		}
++
++		if (dirfd != global_cwd.fd)
++		{
++			if (fchdir(dirfd) < 0)
++			{
++				saved_errno=errno;
++				ASTOPENEMU_GLOBALDIR_UNLOCK
++				errno=saved_errno;
++				return (-1);
++			}
++		}
++
++		returned_dir=open(pathname, flags, mode);
++		saved_errno=errno;
++
++		restore_cwd_unlocked();
++
++		ASTOPENEMU_GLOBALDIR_UNLOCK
++
++		errno=saved_errno;
++
++		return (returned_dir);
++	}
++}
++
++int ast_unlinkat(int dirfd, const char *pathname, int flags)
++{
++	if ((dirfd == AST_AT_FDCWD) || (pathname[0] == '/'))
++	{
++		if (flags & AST_AT_REMOVEDIR)
++		{
++			flags&=~AST_AT_REMOVEDIR;
++			/* abort if there are more flags we do not support */
++			if (flags)
++			{
++				errno=ENOSYS;
++				return (-1);
++			}
++			else
++			{
++				return rmdir(pathname);
++			}
++		}
++		if (flags == 0)
++		{
++			return unlink(pathname);
++		}
++		else
++		{
++			/* this happes if there are flags we don't know about */
++			errno=ENOSYS;
++			return (-1);
++		}
++	}
++
++#ifdef ASTOPENATEMU_USE_DEVFD
++	if (global_cwd.has_devfd)
++	{
++		char pathbuf[AST_AT_PATH_BUFF_MAX];
++
++		snprintf(pathbuf, sizeof(pathbuf), "%s/%d/%s", global_cwd.devfd_fs, dirfd, pathname);
++
++		if (flags & AST_AT_REMOVEDIR)
++		{
++			flags&=~AST_AT_REMOVEDIR;
++			/* abort if there are more flags we do not support */
++			if (flags)
++			{
++				errno=ENOSYS;
++				return (-1);
++			}
++			else
++			{
++				return rmdir(pathbuf);
++			}
++		}
++		if (flags == 0)
++		{
++			return unlink(pathbuf);
++		}
++		else
++		{
++			/* this happes if there are flags we don't know about */
++			errno=ENOSYS;
++			return (-1);
++		}
++	}
++	else
++#endif
++	{
++		int saved_errno;
++		int retval;
++
++		ASTOPENEMU_GLOBALDIR_LOCK
++
++		if (!save_cwd_unlocked())
++		{
++			saved_errno=errno;
++			ASTOPENEMU_GLOBALDIR_UNLOCK
++			errno=saved_errno;
++			return (-1);
++		}
++
++		if (dirfd != global_cwd.fd)
++		{
++			if (fchdir(dirfd) < 0)
++			{
++				saved_errno=errno;
++				ASTOPENEMU_GLOBALDIR_UNLOCK
++				errno=saved_errno;
++				return (-1);
++			}
++		}
++
++		if (flags & AST_AT_REMOVEDIR)
++		{
++			flags&=~AST_AT_REMOVEDIR;
++			/* abort if there are more flags we do not support */
++			if (flags)
++			{
++				saved_errno=ENOSYS;
++				retval=-1;
++			}
++			else
++			{
++				retval=rmdir(pathname);
++				saved_errno=errno;
++			}
++		}
++		if (flags == 0)
++		{
++			retval=unlink(pathname);
++			saved_errno=errno;
++		}
++		else
++		{
++			/* this happes if there are flags we don't know about */
++			saved_errno=ENOSYS;
++			retval=-1;
++		}
++
++		restore_cwd_unlocked();
++
++		ASTOPENEMU_GLOBALDIR_UNLOCK
++
++		errno=saved_errno;
++
++		return (retval);
++	}
++}
++
++int ast_fchownat(int dirfd, const char *pathname, uid_t owner, gid_t group, int flags)
++{
++	if (pathname == NULL)
++	{
++		/* abort if there are any flags */
++		if (flags)
++		{
++			errno=ENOSYS;
++			return (-1);
++		}
++		else
++		{
++			return fchown(dirfd, owner, group);
++		}
++	}
++
++	if ((dirfd == AST_AT_FDCWD) || (pathname[0] == '/'))
++	{
++		if (flags & AST_AT_SYMLINK_NOFOLLOW)
++		{
++			flags&=~AST_AT_SYMLINK_NOFOLLOW;
++			/* abort if there are more flags we do not support */
++			if (flags)
++			{
++				errno=ENOSYS;
++				return (-1);
++			}
++			else
++			{
++				return lchown(pathname, owner, group);
++			}
++		}
++		else if (flags == 0)
++		{
++			return chown(pathname, owner, group);
++		}
++		else
++		{
++			/* unsupported flags */
++			errno=ENOSYS;
++			return (-1);
++		}
++	}
++
++#ifdef ASTOPENATEMU_USE_DEVFD
++	if (global_cwd.has_devfd)
++	{
++		char pathbuf[AST_AT_PATH_BUFF_MAX];
++
++		snprintf(pathbuf, sizeof(pathbuf), "%s/%d/%s", global_cwd.devfd_fs, dirfd, pathname);
++		if (flags & AST_AT_SYMLINK_NOFOLLOW)
++		{
++			flags&=~AST_AT_SYMLINK_NOFOLLOW;
++			/* abort if there are more flags we do not support */
++			if (flags)
++			{
++				errno=ENOSYS;
++				return (-1);
++			}
++			else
++			{
++				return lchown(pathbuf, owner, group);
++			}
++		}
++		else if (flags == 0)
++		{
++			return chown(pathbuf, owner, group);
++		}
++		else
++		{
++			/* unsupported flags */
++			errno=ENOSYS;
++			return (-1);
++		}
++	}
++	else
++#endif
++	{
++		int saved_errno;
++		int retval;
++
++		ASTOPENEMU_GLOBALDIR_LOCK
++
++		if (!save_cwd_unlocked())
++		{
++			saved_errno=errno;
++			ASTOPENEMU_GLOBALDIR_UNLOCK
++			errno=saved_errno;
++			return (-1);
++		}
++
++		if (dirfd != global_cwd.fd)
++		{
++			if (fchdir(dirfd) < 0)
++			{
++				saved_errno=errno;
++				ASTOPENEMU_GLOBALDIR_UNLOCK
++				errno=saved_errno;
++				return (-1);
++			}
++		}
++
++		if (flags & AST_AT_SYMLINK_NOFOLLOW)
++		{
++			flags&=~AST_AT_SYMLINK_NOFOLLOW;
++			/* abort if there are more flags we do not support */
++			if (flags)
++			{
++				saved_errno=ENOSYS;
++				retval=-1;
++			}
++			else
++			{
++				retval=lchown(pathname, owner, group);
++				saved_errno=errno;
++			}
++		}
++		else if (flags == 0)
++		{
++			retval=chown(pathname, owner, group);
++			saved_errno=errno;
++		}
++		else
++		{
++			/* unsupported flags */
++			saved_errno=ENOSYS;
++			retval=-1;
++		}
++
++		restore_cwd_unlocked();
++
++		ASTOPENEMU_GLOBALDIR_UNLOCK
++
++		errno=saved_errno;
++
++		return (retval);
++	}
++}
++
++int ast_fstatat(int dirfd, const char *pathname, struct stat *buf, int flags)
++{
++	if (pathname == NULL)
++	{
++		/* abort if there are any flags */
++		if (flags)
++		{
++			errno=ENOSYS;
++			return (-1);
++		}
++		else
++		{
++			return fstat(dirfd, buf);
++		}
++	}
++
++	if ((dirfd == AST_AT_FDCWD) || (pathname[0] == '/'))
++	{
++		if (flags & AST_AT_SYMLINK_NOFOLLOW)
++		{
++			flags&=~AST_AT_SYMLINK_NOFOLLOW;
++			/* abort if there are more flags we do not support */
++			if (flags)
++			{
++				errno=ENOSYS;
++				return (-1);
++			}
++			else
++			{
++				return lstat(pathname, buf);
++			}
++		}
++		else if (flags == 0)
++		{
++			return stat(pathname, buf);
++		}
++
++		/* unsupported flags */
++		errno=ENOSYS;
++		return (-1);
++	}
++
++	/* optimisation |stat(".", ...)| --> |fstat()| */
++	if ((dirfd != AST_AT_FDCWD) && (flags == 0) && 
++		(pathname[0] == '.') && (pathname[1] == '\0'))
++	{
++		return fstat(dirfd, buf);
++	}
++
++#ifdef ASTOPENATEMU_USE_DEVFD
++	if (global_cwd.has_devfd)
++	{
++		char pathbuf[AST_AT_PATH_BUFF_MAX];
++
++		snprintf(pathbuf, sizeof(pathbuf), "%s/%d/%s", global_cwd.devfd_fs, dirfd, pathname);
++		if (flags & AST_AT_SYMLINK_NOFOLLOW)
++		{
++			flags&=~AST_AT_SYMLINK_NOFOLLOW;
++			/* abort if there are more flags we do not support */
++			if (flags)
++			{
++				errno=ENOSYS;
++				return (-1);
++			}
++			else
++			{
++				return lstat(pathbuf, buf);
++			}
++		}
++		else if (flags == 0)
++		{
++			return stat(pathbuf, buf);
++		}
++		else
++		{
++			/* unsupported flags */
++			errno=ENOSYS;
++			return (-1);
++		}
++	}
++	else
++#endif
++	{
++		int saved_errno;
++		int retval;
++
++		ASTOPENEMU_GLOBALDIR_LOCK
++
++		if (!save_cwd_unlocked())
++		{
++			saved_errno=errno;
++			ASTOPENEMU_GLOBALDIR_UNLOCK
++			errno=saved_errno;
++			return (-1);
++		}
++
++		if (dirfd != global_cwd.fd)
++		{
++			if (fchdir(dirfd) < 0)
++			{
++				saved_errno=errno;
++				ASTOPENEMU_GLOBALDIR_UNLOCK
++				errno=saved_errno;
++				return (-1);
++			}
++		}
++
++		if (flags & AST_AT_SYMLINK_NOFOLLOW)
++		{
++			flags&=~AST_AT_SYMLINK_NOFOLLOW;
++			/* abort if there are more flags we do not support */
++			if (flags)
++			{
++				saved_errno=ENOSYS;
++				retval=-1;
++			}
++			else
++			{
++				retval=lstat(pathname, buf);
++				saved_errno=errno;
++			}
++		}
++		else if (flags == 0)
++		{
++			retval=stat(pathname, buf);
++			saved_errno=errno;
++		}
++		else
++		{
++			/* unsupported flags */
++			saved_errno=ENOSYS;
++			retval=-1;
++		}
++
++		restore_cwd_unlocked();
++
++		ASTOPENEMU_GLOBALDIR_UNLOCK
++
++		errno=saved_errno;
++
++		return (retval);
++	}
++}
++
++int ast_renameat(int olddirfd, const char *oldpath, int newdirfd, const char *newpath)
++{
++	if (oldpath[0] == '/')
++		olddirfd=AST_AT_FDCWD;
++	if (newpath[0] == '/')
++		newdirfd=AST_AT_FDCWD;
++
++	if ((olddirfd == AST_AT_FDCWD) && (newdirfd == AST_AT_FDCWD))
++	{
++		return rename(oldpath, newpath);
++	}
++
++#ifdef ASTOPENATEMU_USE_DEVFD
++	if (global_cwd.has_devfd)
++	{
++		char oldpathbuf[AST_AT_PATH_BUFF_MAX];
++		char newpathbuf[AST_AT_PATH_BUFF_MAX];
++
++		if (olddirfd != AST_AT_FDCWD)
++		{
++			snprintf(oldpathbuf, sizeof(oldpathbuf), "%s/%d/%s", global_cwd.devfd_fs, olddirfd, oldpath);
++			oldpath=oldpathbuf;
++		}
++		if (newdirfd != AST_AT_FDCWD)
++		{
++			snprintf(newpathbuf, sizeof(newpathbuf), "%s/%d/%s", global_cwd.devfd_fs, newdirfd, newpath);
++			newpath=newpathbuf;
++		}
++
++		return rename(oldpath, newpath);
++	}
++	else
++#endif /* ASTOPENATEMU_USE_DEVFD */
++	{
++		int saved_errno;
++		int retval;
++		char oldcwdpathbuf[AST_AT_PATH_BUFF_MAX];
++		char oldpathbuf[AST_AT_PATH_BUFF_MAX];
++		char newcwdpathbuf[AST_AT_PATH_BUFF_MAX];
++		char newpathbuf[AST_AT_PATH_BUFF_MAX];
++		char *oldcwdpath;
++		char *newcwdpath;
++
++		ASTOPENEMU_GLOBALDIR_LOCK
++
++		if (!save_cwd_unlocked())
++		{
++			retval=-1;
++			goto done;
++		}
++
++		/* get path name (string!) from |olddirfd| */
++		if (olddirfd == AST_AT_FDCWD)
++		{
++			/*
++			 * Make sure cwd==original cwd
++			 *
++			 * (since we just saved the cwd we can skip the
++			 * |restore_cwd_unlocked();| here).
++			 */
++		}
++		else
++		{
++			if (fchdir(olddirfd) < 0)
++			{
++				retval=-1;
++				goto done;
++			}
++		}
++		oldcwdpath=getcwd(oldcwdpathbuf, sizeof(oldcwdpathbuf));
++		if (!oldcwdpath)
++		{
++			retval=-1;
++			goto done;
++		}
++
++		/* get path name (string!) from |newdirfd| */
++		if (newdirfd == AST_AT_FDCWD)
++		{
++			/* make sure cwd==original cwd */
++			restore_cwd_unlocked();
++		}
++		else
++		{
++			if (fchdir(newdirfd) < 0)
++			{
++				retval=-1;
++				goto done;
++			}
++		}
++		newcwdpath=getcwd(newcwdpathbuf, sizeof(newcwdpathbuf));
++		if (!newcwdpath)
++		{
++			retval=-1;
++			goto done;
++		}
++
++		snprintf(oldpathbuf, sizeof(oldpathbuf), "%s/%s", oldcwdpath, oldpath);
++		snprintf(newpathbuf, sizeof(newpathbuf), "%s/%s", newcwdpath, newpath);
++		retval=rename(oldpathbuf, newpathbuf);
++
++done:
++		saved_errno=errno;
++		restore_cwd_unlocked();
++		ASTOPENEMU_GLOBALDIR_UNLOCK
++		errno=saved_errno;
++		return (retval);
++	}
++}
++
++
++/*
++ * fixme: POSIX |faccessat()| supports |AT_SYMLINK_NOFOLLOW| ... how can this be emulated ?
++ */
++int ast_faccessat(int dirfd, const char *pathname, int mode, int flags)
++{
++	if ((dirfd == AST_AT_FDCWD) || (pathname[0] == '/'))
++	{
++		if (flags & AST_AT_EACCESS)
++		{
++			flags&=~AST_AT_EACCESS;
++			/* abort if there are more flags we do not support */
++			if (flags)
++			{
++				errno=ENOSYS;
++				return (-1);
++			}
++			else
++			{
++				return eaccess(pathname, mode);
++			}
++		}
++		if (flags == 0)
++		{
++			return access(pathname, mode);
++		}
++		else
++		{
++			/* this happes if there are flags we don't know about */
++			errno=ENOSYS;
++			return (-1);
++		}
++	}
++
++#ifdef ASTOPENATEMU_USE_DEVFD
++	if (global_cwd.has_devfd)
++	{
++		char pathbuf[AST_AT_PATH_BUFF_MAX];
++
++		snprintf(pathbuf, sizeof(pathbuf), "%s/%d/%s", global_cwd.devfd_fs, dirfd, pathname);
++
++		if (flags & AST_AT_EACCESS)
++		{
++			flags&=~AST_AT_EACCESS;
++			/* abort if there are more flags we do not support */
++			if (flags)
++			{
++				errno=ENOSYS;
++				return (-1);
++			}
++			else
++			{
++				return eaccess(pathbuf, mode);
++			}
++		}
++		if (flags == 0)
++		{
++			return access(pathbuf, mode);
++		}
++		else
++		{
++			/* this happes if there are flags we don't know about */
++			errno=ENOSYS;
++			return (-1);
++		}
++	}
++	else
++#endif
++	{
++		int saved_errno;
++		int retval;
++
++		ASTOPENEMU_GLOBALDIR_LOCK
++
++		if (!save_cwd_unlocked())
++		{
++			saved_errno=errno;
++			ASTOPENEMU_GLOBALDIR_UNLOCK
++			errno=saved_errno;
++			return (-1);
++		}
++
++		if (dirfd != global_cwd.fd)
++		{
++			if (fchdir(dirfd) < 0)
++			{
++				saved_errno=errno;
++				ASTOPENEMU_GLOBALDIR_UNLOCK
++				errno=saved_errno;
++				return (-1);
++			}
++		}
++
++		if (flags & AST_AT_EACCESS)
++		{
++			flags&=~AST_AT_EACCESS;
++			/* abort if there are more flags we do not support */
++			if (flags)
++			{
++				saved_errno=ENOSYS;
++				retval=-1;
++			}
++			else
++			{
++				retval=eaccess(pathname, mode);
++				saved_errno=errno;
++			}
++		}
++		if (flags == 0)
++		{
++			retval=access(pathname, mode);
++			saved_errno=errno;
++		}
++		else
++		{
++			/* this happes if there are flags we don't know about */
++			saved_errno=ENOSYS;
++			retval=-1;
++		}
++
++		restore_cwd_unlocked();
++
++		ASTOPENEMU_GLOBALDIR_UNLOCK
++
++		errno=saved_errno;
++
++		return (retval);
++	}
++}
++
++int ast_mkdirat(int dirfd, const char *pathname, mode_t mode)
++{
++	if ((dirfd == AST_AT_FDCWD) || (pathname[0] == '/'))
++	{
++		return mkdir(pathname, mode);
++	}
++
++#ifdef ASTOPENATEMU_USE_DEVFD
++	if (global_cwd.has_devfd)
++	{
++		char pathbuf[AST_AT_PATH_BUFF_MAX];
++
++		snprintf(pathbuf, sizeof(pathbuf), "%s/%d/%s", global_cwd.devfd_fs, dirfd, pathname);
++
++		return mkdir(pathbuf, mode);
++	}
++	else
++#endif
++	{
++		int saved_errno;
++		int retval;
++
++		ASTOPENEMU_GLOBALDIR_LOCK
++
++		if (!save_cwd_unlocked())
++		{
++			saved_errno=errno;
++			ASTOPENEMU_GLOBALDIR_UNLOCK
++			errno=saved_errno;
++			return (-1);
++		}
++
++		if (dirfd != global_cwd.fd)
++		{
++			if (fchdir(dirfd) < 0)
++			{
++				saved_errno=errno;
++				ASTOPENEMU_GLOBALDIR_UNLOCK
++				errno=saved_errno;
++				return (-1);
++			}
++		}
++
++		retval=mkdir(pathname, mode);
++		saved_errno=errno;
++
++		restore_cwd_unlocked();
++
++		ASTOPENEMU_GLOBALDIR_UNLOCK
++
++		errno=saved_errno;
++
++		return (retval);
++	}
++}
++
++
++int ast_mkfifoat(int dirfd, const char *pathname, mode_t mode)
++{
++	if ((dirfd == AST_AT_FDCWD) || (pathname[0] == '/'))
++	{
++		return mkfifo(pathname, mode);
++	}
++
++#ifdef ASTOPENATEMU_USE_DEVFD
++	if (global_cwd.has_devfd)
++	{
++		char pathbuf[AST_AT_PATH_BUFF_MAX];
++
++		snprintf(pathbuf, sizeof(pathbuf), "%s/%d/%s", global_cwd.devfd_fs, dirfd, pathname);
++
++		return mkfifo(pathbuf, mode);
++	}
++	else
++#endif
++	{
++		int saved_errno;
++		int retval;
++
++		ASTOPENEMU_GLOBALDIR_LOCK
++
++		if (!save_cwd_unlocked())
++		{
++			saved_errno=errno;
++			ASTOPENEMU_GLOBALDIR_UNLOCK
++			errno=saved_errno;
++			return (-1);
++		}
++
++		if (dirfd != global_cwd.fd)
++		{
++			if (fchdir(dirfd) < 0)
++			{
++				saved_errno=errno;
++				ASTOPENEMU_GLOBALDIR_UNLOCK
++				errno=saved_errno;
++				return (-1);
++			}
++		}
++
++		retval=mkfifo(pathname, mode);
++		saved_errno=errno;
++
++		restore_cwd_unlocked();
++
++		ASTOPENEMU_GLOBALDIR_UNLOCK
++
++		errno=saved_errno;
++
++		return (retval);
++	}
++}
++
++
++int ast_mknodat(int dirfd, const char *pathname, mode_t mode, dev_t dev)
++{
++	if ((dirfd == AST_AT_FDCWD) || (pathname[0] == '/'))
++	{
++		return mknod(pathname, mode, dev);
++	}
++
++#ifdef ASTOPENATEMU_USE_DEVFD
++	if (global_cwd.has_devfd)
++	{
++		char pathbuf[AST_AT_PATH_BUFF_MAX];
++
++		snprintf(pathbuf, sizeof(pathbuf), "%s/%d/%s", global_cwd.devfd_fs, dirfd, pathname);
++
++		return mknod(pathbuf, mode, dev);
++	}
++	else
++#endif
++	{
++		int saved_errno;
++		int retval;
++
++		ASTOPENEMU_GLOBALDIR_LOCK
++
++		if (!save_cwd_unlocked())
++		{
++			saved_errno=errno;
++			ASTOPENEMU_GLOBALDIR_UNLOCK
++			errno=saved_errno;
++			return (-1);
++		}
++
++		if (dirfd != global_cwd.fd)
++		{
++			if (fchdir(dirfd) < 0)
++			{
++				saved_errno=errno;
++				ASTOPENEMU_GLOBALDIR_UNLOCK
++				errno=saved_errno;
++				return (-1);
++			}
++		}
++
++		retval=mknod(pathname, mode, dev);
++		saved_errno=errno;
++
++		restore_cwd_unlocked();
++
++		ASTOPENEMU_GLOBALDIR_UNLOCK
++
++		errno=saved_errno;
++
++		return (retval);
++	}
++}
++
++int ast_utimensat(int dirfd, const char *pathname, const struct timespec timespec[2], int flags)
++{
++#if 0
++	return utimensat (dirfd, pathname, timespec, 0);
++#else
++	struct timeval tv[2];
++
++	/* What about |UTIME_NOW| and |UTIME_OMIT| ? */
++	tv[0].tv_sec  = timespec[0].tv_sec;
++	tv[0].tv_usec = timespec[0].tv_nsec/1000;
++	tv[1].tv_sec  = timespec[1].tv_sec;
++	tv[1].tv_usec = timespec[1].tv_nsec/1000;
++
++	if ((dirfd == AST_AT_FDCWD) || (pathname[0] == '/'))
++	{
++		if (flags == 0)
++		{
++			return utimes(pathname, tv);
++		}
++		else
++		{
++			/* this happes if there are flags we don't know about */
++			errno=ENOSYS;
++			return (-1);
++		}
++	}
++
++#ifdef ASTOPENATEMU_USE_DEVFD
++	if (global_cwd.has_devfd)
++	{
++		char pathbuf[AST_AT_PATH_BUFF_MAX];
++
++		snprintf(pathbuf, sizeof(pathbuf), "%s/%d/%s", global_cwd.devfd_fs, dirfd, pathname);
++
++		if (flags == 0)
++		{
++			return utimes(pathname, tv);
++		}
++		else
++		{
++			/* this happes if there are flags we don't know about */
++			errno=ENOSYS;
++			return (-1);
++		}
++	}
++	else
++#endif
++	{
++		int saved_errno;
++		int retval;
++
++		ASTOPENEMU_GLOBALDIR_LOCK
++
++		if (!save_cwd_unlocked())
++		{
++			saved_errno=errno;
++			ASTOPENEMU_GLOBALDIR_UNLOCK
++			errno=saved_errno;
++			return (-1);
++		}
++
++		if (dirfd != global_cwd.fd)
++		{
++			if (fchdir(dirfd) < 0)
++			{
++				saved_errno=errno;
++				ASTOPENEMU_GLOBALDIR_UNLOCK
++				errno=saved_errno;
++				return (-1);
++			}
++		}
++
++		if (flags == 0)
++		{
++			retval=utimes(pathname, tv);
++			saved_errno=errno;
++		}
++		else
++		{
++			/* this happes if there are flags we don't know about */
++			saved_errno=ENOSYS;
++			retval=-1;
++		}
++
++		restore_cwd_unlocked();
++
++		ASTOPENEMU_GLOBALDIR_UNLOCK
++
++		errno=saved_errno;
++
++		return (retval);
++	}
++#endif
++}
++
++int ast_symlinkat(const char *oldpath, int newdirfd, const char *newpath)
++{
++	int saved_errno;
++	int retval;
++
++	if ((newdirfd == AST_AT_FDCWD) || (newpath[0] == '/'))
++	{
++		return symlink(oldpath, newpath);
++	}
++
++	ASTOPENEMU_GLOBALDIR_LOCK
++
++	if (!save_cwd_unlocked())
++	{
++		saved_errno=errno;
++		ASTOPENEMU_GLOBALDIR_UNLOCK
++		errno=saved_errno;
++		return (-1);
++	}
++
++	if (newdirfd != global_cwd.fd)
++	{
++		if (fchdir(newdirfd) < 0)
++		{
++			saved_errno=errno;
++			ASTOPENEMU_GLOBALDIR_UNLOCK
++			errno=saved_errno;
++			return (-1);
++		}
++	}
++
++	retval=symlink(oldpath, newpath);
++	saved_errno=errno;
++
++	restore_cwd_unlocked();
++
++	ASTOPENEMU_GLOBALDIR_UNLOCK
++
++	errno=saved_errno;
++
++	return (retval);
++}
++
++
++int ast_readlinkat(int dirfd, const char *pathname, char *buf, size_t bufsiz)
++{
++	int saved_errno;
++	int retval;
++
++	if ((dirfd == AST_AT_FDCWD) || (pathname[0] == '/'))
++	{
++		return readlink(pathname, buf, bufsiz);
++	}
++
++	ASTOPENEMU_GLOBALDIR_LOCK
++
++	if (!save_cwd_unlocked())
++	{
++		saved_errno=errno;
++		ASTOPENEMU_GLOBALDIR_UNLOCK
++		errno=saved_errno;
++		return (-1);
++	}
++
++	if (dirfd != global_cwd.fd)
++	{
++		if (fchdir(dirfd) < 0)
++		{
++			saved_errno=errno;
++			ASTOPENEMU_GLOBALDIR_UNLOCK
++			errno=saved_errno;
++			return (-1);
++		}
++	}
++
++	retval=readlink(pathname, buf, bufsiz);
++	saved_errno=errno;
++
++	restore_cwd_unlocked();
++
++	ASTOPENEMU_GLOBALDIR_UNLOCK
++
++	errno=saved_errno;
++
++	return (retval);
++}
++
++
++#ifdef BUILD_TESTCODE
++int main(int ac, char *av[])
++{
++	int dirfd1, dirfd2, dirfd3, fd1, fd2;
++	int res;
++	struct stat statbuf;
++
++#ifdef TEST1
++	dirfd1=ast_openat(AST_AT_FDCWD, "/etc", O_RDONLY|AST_O_DIRECTORY, 0);
++	dirfd2=ast_openat(AST_AT_FDCWD, "/etc", O_RDONLY|AST_O_DIRECTORY, 0);
++	fd1=ast_openat(dirfd1, "profile",   O_RDONLY, 0);
++	fd2=ast_openat(dirfd2, "ksh.kshrc", O_RDONLY, 0);
++
++	memset(&statbuf, 0, sizeof(statbuf));
++	res=ast_fstatat(dirfd1, ".", &statbuf, 0);
++	printf("ast_fstatat(dirfd1, \".\", &statbuf, 0)=%d, st_size=%ld\n", res, (long)statbuf.st_size);
++	memset(&statbuf, 0, sizeof(statbuf));
++	res=(fstatat)(dirfd1, ".", &statbuf, 0);
++	printf("    fstatat(dirfd1, \".\", &statbuf, 0)=%d, st_size=%ld\n", res, (long)statbuf.st_size);
++
++	/* On SuSE Linux 12.1 /etc/ksh.kshrc is a softlink to /etc/bash.bashrc */
++	memset(&statbuf, 0, sizeof(statbuf));
++	res=ast_fstatat(dirfd1, "ksh.kshrc", &statbuf, 0);
++	printf("ast_fstatat(dirfd1, \"ksh.kshrc\", &statbuf, 0)=%d, st_size=%ld\n", res, (long)statbuf.st_size);
++	memset(&statbuf, 0, sizeof(statbuf));
++	res=(fstatat)(dirfd1, "ksh.kshrc", &statbuf, 0);
++	printf("    fstatat(dirfd1, \"ksh.kshrc\", &statbuf, 0)=%d, st_size=%ld\n", res, (long)statbuf.st_size);
++	/* ... again, now with |AT_SYMLINK_NOFOLLOW| ... */
++	memset(&statbuf, 0, sizeof(statbuf));
++	res=ast_fstatat(dirfd1, "ksh.kshrc", &statbuf, AST_AT_SYMLINK_NOFOLLOW);
++	printf("ast_fstatat(dirfd1, \"ksh.kshrc\", &statbuf, AST_AT_SYMLINK_NOFOLLOW)=%d, st_size=%ld\n", res, (long)statbuf.st_size);
++	memset(&statbuf, 0, sizeof(statbuf));
++	res=(fstatat)(dirfd1, "ksh.kshrc", &statbuf, AT_SYMLINK_NOFOLLOW);
++	printf("    fstatat(dirfd1, \"ksh.kshrc\", &statbuf,     AT_SYMLINK_NOFOLLOW)=%d, st_size=%ld\n", res, (long)statbuf.st_size);
++
++	printf("# dirfd1=%d, dirfd2=%d, fd1=%d, fd2=%d\n", dirfd1, dirfd2, fd1, fd2);
++#endif
++
++#if 1
++	dirfd1=ast_openat(AST_AT_FDCWD, ".", O_RDONLY|AST_O_DIRECTORY, 0);
++	ast_mkdirat(dirfd1, "foo", (S_IRWXU|S_IRWXG|S_IROTH|S_IXOTH));
++	dirfd2=ast_openat(dirfd1, "foo", O_RDONLY|AST_O_DIRECTORY, 0);
++	dirfd3=ast_openat(dirfd1, "foo", O_RDONLY|AST_O_DIRECTORY, 0);
++
++	ast_mkfifoat(dirfd2, "myfifo1", (S_IRWXU|S_IRWXG|S_IROTH|S_IXOTH));
++	ast_renameat(dirfd2, "myfifo1", dirfd3, "myfifo1_renamed");
++
++	memset(&statbuf, 0, sizeof(statbuf));
++	res=ast_fstatat(dirfd2, "myfifo1_renamed", &statbuf, 0);
++	printf("ast_fstatat(dirfd1, \"myfifo1_renamed\", &statbuf, 0)=%d, st_size=%ld\n", res, (long)statbuf.st_size);
++
++	printf("# dirfd1=%d, dirfd2=%d, dirfd3=%d, res=%d\n", dirfd1, dirfd2, dirfd3, res);
++#endif
++	return (EXIT_SUCCESS);
++}
++#endif /* BUILD_TESTCODE */
+diff -N -r -u original/src/lib/libast/features/fcntl.c build_at/src/lib/libast/features/fcntl.c
+--- src/lib/libast/features/fcntl.c	2012-06-19 21:12:54.000000000 +0200
++++ src/lib/libast/features/fcntl.c	2012-09-04 14:55:54.380854471 +0200
+@@ -366,5 +366,178 @@
+ 	printf("#define open		open64\n");
+ 	printf("#endif\n");
+ 
++	puts("\n"); /* seperator */
++/* 
++ * Enable emulation code if we do not have |AT_FDCWD| or any
++ * manual emulation selection
++ * Defining |AST_MAP_NO_FS_MAP| will disable this code completely
++ */
++#if !(defined(AST_MAP_NO_FS_MAP) || defined(AST_MAP_FS_TO_FSAT) || defined(AST_MAP_FS_TO_FSAT_EMULATION))
++#	ifndef AT_FDCWD
++#		define AST_MAP_FS_TO_FSAT_EMULATION 1
++#	else
++#		define AST_MAP_FS_TO_FSAT 1
++#	endif
++#endif
++
++	/*
++	 * Pass the |AST_MAP_FS_TO_*|-flags through...
++	 */
++#ifdef AST_MAP_FS_TO_FSAT_EMULATION
++	puts("#define AST_MAP_FS_TO_FSAT_EMULATION 1");
++#endif
++#ifdef AST_MAP_FS_TO_FSAT
++	puts("#define AST_MAP_FS_TO_FSAT 1");
++#endif
++
++	puts("/*");
++	puts(" * This header defines provide an easy way for legacy applications");
++	puts(" * to use the new POSIX |*at()|-APIs.");
++	puts(" *");
++	puts(" * This is mainly intended for operating systems which already map");
++	puts(" * the old calls to the new |*at()| calls, therefore the macros");
++	puts(" * below bypass a lot of wrapper code in libc.");
++	puts(" * The other usage is _testing_ the code in libc and the |*at())");
++	puts(" * emulation code in libast");
++	puts(" */");
++	puts("");
++	puts("#ifdef AT_FDCWD");
++	puts("/* note: |AT_CWD| must always be a negative number < -64 */");
++	puts("#	define AST_AT_FDCWD		(AT_FDCWD)");
++	puts("");
++	puts("/* |open()|-flags */");
++	puts("#ifdef O_DIRECTORY");
++	puts("#	define AST_O_DIRECTORY		(O_DIRECTORY)");
++	puts("#endif");
++	puts("#if defined(O_SEARCH)");
++	puts("#	define AST_O_SEARCH		(O_SEARCH)");
++	puts("#elif defined(O_PATH)");
++	puts("#	define AST_O_SEARCH		(O_PATH)");
++	puts("#endif");
++	puts("");
++	puts("/* extra |*at()| flags */");
++	puts("#	define AST_AT_REMOVEDIR		(AT_REMOVEDIR)");
++	puts("#	define AST_AT_SYMLINK_NOFOLLOW	(AT_SYMLINK_NOFOLLOW)");
++	puts("#	define AST_AT_EACCESS		(AT_EACCESS)");
++	puts("");
++	puts("#else /* AT_FDCWD */");
++	puts("");
++	puts("/* note: |AT_CWD| must always be a negative number < -64 */");
++	puts("#	define AST_AT_FDCWD		(-129)");
++	puts("");
++	puts("/* |open()|-flags */");
++	puts("#ifdef O_DIRECTORY");
++	puts("#	define AST_O_DIRECTORY		(O_DIRECTORY)");
++	puts("#endif");
++	puts("#if defined(O_SEARCH)");
++	puts("#	define AST_O_SEARCH		(O_SEARCH)");
++	puts("#elif defined(O_PATH)");
++	puts("#	define AST_O_SEARCH		(O_PATH)");
++	puts("#endif");
++	puts("");
++	puts("/* extra |*at()| flags */");
++	puts("#	define AST_AT_REMOVEDIR		(0x01)");
++	puts("#	define AST_AT_SYMLINK_NOFOLLOW	(0x02)");
++	puts("#	define AST_AT_EACCESS		(0x04)");
++	puts("");
++	puts("#endif /* AT_FDCWD */");
++	puts("");
++	puts("/*");
++	puts(" * Consumers can define |AST_AT_GET_FDCWD| to define a function");
++	puts(" * to obtain the current cwd fd");
++	puts(" */");
++	puts("#ifndef AST_AT_GET_FDCWD");
++	puts("#define AST_AT_GET_FDCWD AST_AT_FDCWD");
++	puts("#endif");
++	puts("");
++	puts("#ifdef AST_MAP_FS_TO_FSAT");
++	puts("/*");
++	puts(" * |open()| and |creat() require C99 __VA_ARGS__");
++	puts(" *");
++	puts(" * gcc supports this since gcc3.0");
++	puts(" *");
++	puts(" * See http://web.archive.org/web/20101030023231/http://blog.mellenthin.de/archives/2010/10/26/portable-__va_args__-macros-for-linux-hp-ux-solaris-and-aix/");
++	puts(" * for possible workarounds for pre-C99 compilers.");
++	puts(" */");
++	puts("/* |open()| argument |flags| is part of |__VA_ARGS__| since |__VA_ARGS__| must never be empty */");
++#ifdef NOT_WORKING_CAUSES_INTERACTIVE_KSH_TO_FAIL_IN_HISTORY_SEEK
++	/* Only h*ll knows why enabling this causes ksh93 to fail to seek the history file */
++	puts("#define	open(path, ...)			openat(AST_AT_GET_FDCWD, (path), __VA_ARGS__)");
++	puts("#define	creat(path, ...)		openat(AST_AT_GET_FDCWD, (path), O_WRONLY|O_CREAT|O_TRUNC, __VA_ARGS__)");
++#endif
++	puts("#define	unlink(path)			unlinkat(AST_AT_GET_FDCWD, (path), 0)");
++	puts("#define	rmdir(path)			unlinkat(AST_AT_GET_FDCWD, (path), AST_AT_REMOVEDIR)");
++	puts("#define	chown(path, uid, gid)		fchownat(AST_AT_GET_FDCWD, (path), (uid), (gid), 0)");
++	puts("#define	lchown(path, uid, gid)		fchownat(AST_AT_GET_FDCWD, (path), (uid), (gid), AST_AT_SYMLINK_NOFOLLOW)");
++	puts("#define	stat(path, sb)			fstatat(AST_AT_GET_FDCWD, (path), (sb), 0)");
++	puts("#define	lstat(path, sb)			fstatat(AST_AT_GET_FDCWD, (path), (sb), AST_AT_SYMLINK_NOFOLLOW)");
++	puts("#define	rename(oldname, newname)	renameat(AST_AT_GET_FDCWD, (oldname), AST_AT_GET_FDCWD, (newname))");
++	puts("#define	access(path, amode)		faccessat(AST_AT_GET_FDCWD, (path), (amode), 0)");
++	puts("#define	eaccess(path, amode)		faccessat(AST_AT_GET_FDCWD, (path), (amode), AST_AT_EACCESS)");
++	puts("#define	mkdir(path, amode)		mkdirat(AST_AT_GET_FDCWD, (path), (amode))");
++	puts("#define	mkfifo(path, amode)		mkfifoat(AST_AT_GET_FDCWD, (path), (amode))");
++	puts("#define	mknod(path, amode, adev)	mknodat(AST_AT_GET_FDCWD, (path), (amode), (adev))");
++	puts("#define	readlink(path, buf, bufsize)	readlinkat(AST_AT_GET_FDCWD, (path), (buf), (bufsize))");
++	puts("#define	symlink(oldpath, newpath)	symlinkat((oldpath), AST_AT_GET_FDCWD, (newpath))");
++	puts("");
++	puts("#else");
++	puts("#ifdef AST_MAP_FS_TO_FSAT_EMULATION");
++	puts("");
++	puts("/* |open()| argument |flags| is part of |__VA_ARGS__| since |__VA_ARGS__| must never be empty */");
++#ifdef NOT_NEEDED
++	puts("#define	open(path, ...)			ast_openat(AST_AT_GET_FDCWD, (path), __VA_ARGS__)");
++	puts("#define	creat(path, ...)		ast_openat(AST_AT_GET_FDCWD, (path), O_WRONLY|O_CREAT|O_TRUNC, __VA_ARGS__)");
++#endif
++	puts("#define	unlink(path)			ast_unlinkat(AST_AT_GET_FDCWD, (path), 0)");
++	puts("#define	rmdir(path)			ast_unlinkat(AST_AT_GET_FDCWD, (path), AST_AT_REMOVEDIR)");
++	puts("#define	chown(path, uid, gid)		ast_fchownat(AST_AT_GET_FDCWD, (path), (uid), (gid), 0)");
++	puts("#define	lchown(path, uid, gid)		ast_fchownat(AST_AT_GET_FDCWD, (path), (uid), (gid), AST_AT_SYMLINK_NOFOLLOW)");
++	puts("#define	stat(path, sb)			ast_fstatat(AST_AT_GET_FDCWD, (path), (sb), 0)");
++	puts("#define	lstat(path, sb)			ast_fstatat(AST_AT_GET_FDCWD, (path), (sb), AST_AT_SYMLINK_NOFOLLOW)");
++	puts("#define	rename(oldname, newname)	ast_renameat(AST_AT_GET_FDCWD, (oldname), AST_AT_GET_FDCWD, (newname))");
++	puts("#define	access(path, amode)		ast_faccessat(AST_AT_GET_FDCWD, (path), (amode), 0)");
++	puts("#define	eaccess(path, amode)		ast_faccessat(AST_AT_GET_FDCWD, (path), (amode), AST_AT_EACCESS)");
++	puts("#define	mkdir(path, amode)		ast_mkdirat(AST_AT_GET_FDCWD, (path), (amode))");
++	puts("#define	mkfifo(path, amode)		ast_mkfifoat(AST_AT_GET_FDCWD, (path), (amode))");
++	puts("#define	mknod(path, amode, adev)	ast_mknodat(AST_AT_GET_FDCWD, (path), (amode), (adev))");
++	puts("#define	readlink(path, buf, bufsize)	ast_readlinkat(AST_AT_GET_FDCWD, (path), (buf), (bufsize))");
++	puts("#define	symlink(oldpath, newpath)	ast_symlinkat((oldpath), AST_AT_GET_FDCWD, (newpath))");
++	puts("/* These three are extra to keep track of cwd changes to optimise the emulation */");
++	puts("#define	fchdir(fd)			ast_fchdir((fd))");
++	puts("#define	chdir(path)			ast_chdir((path))");
++	puts("#define	close(fd)			ast_close((fd))");
++	puts("");
++	puts("/* General mappings |foo()| --> |fooat()| */");
++	puts("#define	openat(dirfd, path, ...)			ast_openat((dirfd), (path), __VA_ARGS__)");
++	puts("#define	unlinkat(dirfd, path, flags)			ast_unlinkat((dirfd), (path), (flags))");
++	puts("#define	fchownat(dirfd, path, uid, gid, flags)		ast_fchownat((dirfd), (path), (uid), (gid), (flags))");
++	puts("#define	fstatat(dirfd, path, sb, flags)			ast_fstatat((dirfd), (path), (sb), (flags))");
++	puts("#define	renameat(olddirfd, oldname, newdirfd, newname)	ast_renameat((olddirfd), (oldname), (newdirfd), (newname))");
++	puts("#define	faccessat(dirfd, path, amode, flags)		ast_faccessat((dirfd), (path), (amode), (flags))");
++	puts("#define	mkdirat(dirfd, path, amode)			ast_mkdirat((dirfd), (path), (amode))");
++	puts("#define	mkfifoat(dirfd, path, amode)			ast_mkfifoat((dirfd), (path), (amode))");
++	puts("#define	mknodat(dirfd, path), amode, adev)		ast_mknodat((dirfd), (path), (amode), (adev))");
++	puts("#define	readlinkat(dirfd, path, buf, bufsize)		ast_readlinkat((dirfd), (path), (buf), (bufsize))");
++	puts("#define	symlinkat(oldpath, dirfd, newpath)		ast_symlinkat((oldpath), (dirfd), (newpath))");
++	puts("#endif /* AST_MAP_FS_TO_FSAT_EMULATION */");
++	puts("#endif /* AST_MAP_FS_TO_FSAT */");
++	puts("");
++	puts("/* prototypes */");
++	puts("extern int ast_openat (int dirfd, const char *pathname, int flags, ...);");
++	puts("extern int ast_close (int fd);");
++	puts("extern int ast_fchdir (int fd);");
++	puts("extern int ast_chdir (const char *path);");
++	puts("extern int ast_unlinkat (int dirfd, const char *pathname, int flags);");
++	puts("extern int ast_fchownat (int dirfd, const char *pathname, uid_t owner, gid_t group, int flags);");
++	puts("extern int ast_fstatat (int dirfd, const char *pathname, struct stat *buf, int flags);");
++	puts("extern int ast_renameat (int olddirfd, const char *oldpath, int newdirfd, const char *newpath);");
++	puts("extern int ast_faccessat (int dirfd, const char *pathname, int mode, int flags);");
++	puts("extern int ast_mkdirat (int dirfd, const char *pathname, mode_t mode);");
++	puts("extern int ast_mkfifoat (int dirfd, const char *pathname, mode_t mode);");
++	puts("extern int ast_mknodat (int dirfd, const char *pathname, mode_t mode, dev_t dev);");
++	puts("extern int ast_utimensat (int dirfd, const char *pathname, const struct timespec *timespec, int flags);");
++	puts("extern int ast_symlinkat(const char *oldpath, int newdirfd, const char *newpath);");
++	puts("extern int ast_readlinkat(int dirfd, const char *pathname, char *buf, size_t bufsiz);");
++
+ 	return 0;
+ }
+diff -N -r -u original/src/lib/libast/include/ast.h build_at/src/lib/libast/include/ast.h
+--- src/lib/libast/include/ast.h	2012-08-09 09:24:49.000000000 +0200
++++ src/lib/libast/include/ast.h	2012-09-03 15:07:17.443743903 +0200
+@@ -261,7 +261,9 @@
+ extern int		chrexp(const char*, char**, int*, int);
+ extern int		chrtoi(const char*);
+ extern char*		conformance(const char*, size_t);
++#ifndef eaccess
+ extern int		eaccess(const char*, int);
++#endif
+ extern char*		fmtbase(intmax_t, int, int);
+ #define fmtbasell(a,b,c) fmtbase(a,b,c) /* until 2014-01-01 */
+ extern char*		fmtbuf(size_t);
+diff -N -r -u original/src/lib/libast/Makefile build_at/src/lib/libast/Makefile
+--- src/lib/libast/Makefile	2012-07-31 20:29:26.000000000 +0200
++++ src/lib/libast/Makefile	2012-09-03 15:07:17.444743921 +0200
+@@ -122,7 +122,7 @@
+ 	eaccess.c gross.c gross_sgi.h omitted.c \
+ 	fakelink.h readlink.c symlink.c \
+ 	getpgrp.c setpgid.c setsid.c waitpid.c \
+-	creat64.c fcntl.c open.c \
++	creat64.c fcntl.c openat_emu.c open.c \
+ 	atexit.c getdents.c getwd.c dup2.c errno.c \
+ 	getpreroot.c ispreroot.c realopen.c setpreroot.c \
+ 	getgroups.c mount.c system.c iblocks.c \
+diff -N -r -u original/src/lib/libast/Mamfile build_at/src/lib/libast/Mamfile
+--- src/lib/libast/Mamfile	2012-08-24 23:37:08.000000000 +0200
++++ src/lib/libast/Mamfile	2012-09-03 15:07:17.447743966 +0200
+@@ -3229,6 +3229,7 @@
+ prev comp/creat64.c
+ exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Icomp -Iinclude -Istd -D_PACKAGE_ast -c comp/creat64.c
+ done creat64.o generated
++
+ make fcntl.o
+ make comp/fcntl.c
+ prev include/error.h implicit
+@@ -3240,6 +3241,19 @@
+ prev comp/fcntl.c
+ exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Icomp -Iinclude -Istd -D_PACKAGE_ast -c comp/fcntl.c
+ done fcntl.o generated
++
++make openat_emu.o
++make comp/openat_emu.c
++prev include/error.h implicit
++prev ast_tty.h implicit
++prev include/ls.h implicit
++prev include/ast.h implicit
++done comp/openat_emu.c
++meta openat_emu.o %.c>%.o comp/openat_emu.c fcntl
++prev comp/openat_emu.c
++exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Icomp -Iinclude -Istd -D_PACKAGE_ast -c comp/openat_emu.c
++done openat_emu.o generated
++
+ make open.o
+ make comp/open.c
+ prev ast_tty.h implicit
+@@ -6116,7 +6130,7 @@
+ exec - ${AR} rc libast.a state.o transition.o opendir.o readdir.o rewinddir.o seekdir.o telldir.o getcwd.o fastfind.o hashalloc.o hashdump.o hashfree.o hashlast.o hashlook.o hashscan.o hashsize.o hashview.o hashwalk.o memhash.o memsum.o strhash.o strkey.o strsum.o stracmp.o strnacmp.o ccmap.o ccmapid.o ccnative.o chresc.o chrtoi.o
+ exec - ${AR} rc libast.a streval.o strexpr.o strmatch.o strcopy.o modei.o modex.o strmode.o strlcat.o strlcpy.o strlook.o strncopy.o strsearch.o strpsearch.o stresc.o stropt.o strtape.o strpcmp.o strnpcmp.o strvcmp.o strnvcmp.o tok.o tokline.o tokscan.o pathaccess.o pathcat.o pathcanon.o pathcheck.o pathpath.o pathexists.o pathfind.o pathkey.o pathprobe.o pathrepl.o pathnative.o pathposix.o pathtemp.o pathtmp.o pathstat.o pathgetlink.o pathsetlink.o pathbin.o pathshell.o pathcd.o pathprog.o fs3d.o ftwalk.o ftwflags.o fts.o astintercept.o conformance.o getenv.o setenviron.o optget.o optjoin.o optesc.o optctx.o strsort.o struniq.o magic.o mime.o mimetype.o signal.o sigflag.o systrace.o error.o errorf.o errormsg.o errorx.o localeconv.o setlocale.o translate.o catopen.o iconv.o lc.o lctab.o mc.o base64.o recfmt.o recstr.o reclen.o fmtrec.o fmtbase.o fmtbuf.o fmtclock.o fmtdev.o fmtelapsed.o fmterror.o fmtesc.o fmtfmt.o fmtfs.o fmtident.o fmtint.o fmtip4.o fmtip6.o fmtls.o fmtmatch.o fmtmode.o fmtnum.o fmtperm.o fmtre.o fmttime.o
+ exec - ${AR} rc libast.a fmtuid.o fmtgid.o fmtsignal.o fmtscale.o fmttmx.o fmttv.o fmtversion.o strelapsed.o strperm.o struid.o strgid.o strtoip4.o strtoip6.o stack.o stk.o swapget.o swapmem.o swapop.o swapput.o sigdata.o sigcrit.o sigunblock.o procopen.o procclose.o procrun.o procfree.o tmdate.o tmequiv.o tmfix.o tmfmt.o tmform.o tmgoff.o tminit.o tmleap.o tmlex.o tmlocale.o tmmake.o tmpoff.o tmscan.o tmsleep.o tmtime.o tmtype.o tmweek.o tmword.o tmzone.o tmxdate.o tmxduration.o tmxfmt.o tmxgettime.o tmxleap.o tmxmake.o tmxscan.o tmxsettime.o tmxsleep.o tmxtime.o tmxtouch.o tvcmp.o tvgettime.o tvsettime.o tvsleep.o tvtouch.o cmdarg.o vecargs.o vecfile.o vecfree.o vecload.o vecstring.o univdata.o touch.o mnt.o debug.o memccpy.o memchr.o memcmp.o memcpy.o memdup.o memmove.o memset.o mkdir.o mkfifo.o mknod.o rmdir.o remove.o rename.o link.o unlink.o strdup.o strchr.o strrchr.o strstr.o strtod.o strtold.o strtol.o strtoll.o strtoul.o strtoull.o strton.o strtonll.o strntod.o strntold.o strnton.o
+-exec - ${AR} rc libast.a strntonll.o strntol.o strntoll.o strntoul.o strntoull.o strcasecmp.o strncasecmp.o strerror.o mktemp.o tmpnam.o fsync.o execlp.o execve.o execvp.o execvpe.o spawnveg.o vfork.o killpg.o hsearch.o tsearch.o getlogin.o putenv.o setenv.o unsetenv.o lstat.o statvfs.o eaccess.o gross.o omitted.o readlink.o symlink.o getpgrp.o setpgid.o setsid.o waitpid.o creat64.o fcntl.o open.o atexit.o getdents.o getwd.o dup2.o errno.o getpreroot.o ispreroot.o realopen.o setpreroot.o getgroups.o mount.o system.o iblocks.o modedata.o tmdata.o memfatal.o sfkeyprintf.o sfdcdio.o sfdcdos.o sfdcfilter.o sfdcseekable.o sfdcslow.o sfdcsubstr.o sfdctee.o sfdcunion.o sfdcmore.o sfdcprefix.o wc.o wc2utf8.o basename.o closelog.o dirname.o fmtmsglib.o fnmatch.o ftw.o getdate.o getsubopt.o glob.o nftw.o openlog.o re_comp.o resolvepath.o realpath.o regcmp.o regexp.o setlogmask.o strftime.o strptime.o swab.o syslog.o tempnam.o wordexp.o mktime.o regalloc.o regclass.o regcoll.o regcomp.o regcache.o regdecomp.o regerror.o regexec.o regfatal.o reginit.o
++exec - ${AR} rc libast.a strntonll.o strntol.o strntoll.o strntoul.o strntoull.o strcasecmp.o strncasecmp.o strerror.o mktemp.o tmpnam.o fsync.o execlp.o execve.o execvp.o execvpe.o spawnveg.o vfork.o killpg.o hsearch.o tsearch.o getlogin.o putenv.o setenv.o unsetenv.o lstat.o statvfs.o eaccess.o gross.o omitted.o readlink.o symlink.o getpgrp.o setpgid.o setsid.o waitpid.o creat64.o openat_emu.o fcntl.o open.o atexit.o getdents.o getwd.o dup2.o errno.o getpreroot.o ispreroot.o realopen.o setpreroot.o getgroups.o mount.o system.o iblocks.o modedata.o tmdata.o memfatal.o sfkeyprintf.o sfdcdio.o sfdcdos.o sfdcfilter.o sfdcseekable.o sfdcslow.o sfdcsubstr.o sfdctee.o sfdcunion.o sfdcmore.o sfdcprefix.o wc.o wc2utf8.o basename.o closelog.o dirname.o fmtmsglib.o fnmatch.o ftw.o getdate.o getsubopt.o glob.o nftw.o openlog.o re_comp.o resolvepath.o realpath.o regcmp.o regexp.o setlogmask.o strftime.o strptime.o swab.o syslog.o tempnam.o wordexp.o mktime.o regalloc.o regclass.o regcoll.o regcomp.o regcache.o regdecomp.o regerror.o regexec.o regfatal.o reginit.o
+ exec - ${AR} rc libast.a regnexec.o regsubcomp.o regsubexec.o regsub.o regrecord.o regrexec.o regstat.o dtclose.o dtdisc.o dthash.o dtlist.o dtmethod.o dtopen.o dtstat.o dtstrhash.o dttree.o dtuser.o dtview.o dtwalk.o dtnew.o dtcomp.o sfclose.o sfclrlock.o sfdisc.o sfdlen.o sfexcept.o sfgetl.o sfgetu.o sfcvt.o sfecvt.o sffcvt.o sfextern.o sffilbuf.o sfflsbuf.o sfprints.o sfgetd.o sfgetr.o sfllen.o sfmode.o sfmove.o sfnew.o sfpkrd.o sfnotify.o sfnputc.o sfopen.o sfpeek.o sfpoll.o sfpool.o sfpopen.o sfprintf.o sfputd.o sfputl.o sfputr.o sfputu.o sfrd.o sfread.o sfreserve.o sfscanf.o sfseek.o sfset.o sfsetbuf.o sfsetfd.o sfsize.o sfsk.o sfstack.o sfstrtod.o sfsync.o sfswap.o sftable.o sftell.o sftmp.o sfungetc.o sfvprintf.o sfvscanf.o sfwr.o sfwrite.o sfpurge.o sfraise.o sfwalk.o sfgetm.o sfmutex.o sfputm.o sfresize.o _sfclrerr.o _sfeof.o _sferror.o _sffileno.o _sfopen.o _sfstacked.o _sfvalue.o _sfgetc.o _sfgetl.o _sfgetl2.o _sfgetu.o _sfgetu2.o _sfdlen.o _sfllen.o _sfslen.o _sfulen.o _sfputc.o _sfputd.o
+ exec - ${AR} rc libast.a _sfputl.o _sfputm.o _sfputu.o clearerr.o fclose.o fdopen.o feof.o ferror.o fflush.o fgetc.o fgetpos.o fgets.o fileno.o fopen.o fprintf.o fpurge.o fputc.o fputs.o fread.o freopen.o fscanf.o fseek.o fseeko.o fsetpos.o ftell.o ftello.o fwrite.o flockfile.o ftrylockfile.o funlockfile.o getc.o getchar.o getw.o pclose.o popen.o printf.o putc.o putchar.o puts.o putw.o rewind.o scanf.o setbuf.o setbuffer.o setlinebuf.o setvbuf.o snprintf.o sprintf.o sscanf.o asprintf.o vasprintf.o tmpfile.o ungetc.o vfprintf.o vfscanf.o vprintf.o vscanf.o vsnprintf.o vsprintf.o vsscanf.o _doprnt.o _doscan.o _filbuf.o _flsbuf.o _stdfun.o _stdopen.o _stdprintf.o _stdscanf.o _stdsprnt.o _stdvbuf.o _stdvsnprnt.o _stdvsprnt.o _stdvsscn.o fgetwc.o fwprintf.o putwchar.o vfwscanf.o wprintf.o fgetws.o fwscanf.o swprintf.o vswprintf.o wscanf.o fputwc.o getwc.o swscanf.o vswscanf.o fputws.o getwchar.o ungetwc.o vwprintf.o fwide.o putwc.o vfwprintf.o vwscanf.o stdio_c99.o fcloseall.o fmemopen.o getdelim.o getline.o frexp.o
+ exec - ${AR} rc libast.a frexpl.o astcopy.o astconf.o astdynamic.o astlicense.o astquery.o astwinsize.o conftab.o aststatic.o getopt.o getoptl.o aso.o asolock.o asometh.o asorelax.o aso-sem.o aso-fcntl.o vmbest.o vmclear.o vmclose.o vmdcheap.o vmdebug.o vmdisc.o vmexit.o vmlast.o vmopen.o vmpool.o vmprivate.o vmprofile.o vmregion.o vmsegment.o vmset.o vmstat.o vmstrdup.o vmtrace.o vmwalk.o vmmopen.o malloc.o vmgetmem.o a64l.o acosh.o asinh.o atanh.o cbrt.o crypt.o erf.o err.o exp.o exp__E.o expm1.o gamma.o getpass.o lgamma.o log.o log1p.o log__L.o rand48.o random.o rcmd.o rint.o support.o sfstrtmp.o spawn.o

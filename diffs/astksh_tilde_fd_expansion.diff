@@ -1,0 +1,89 @@
+diff -r -u original/src/cmd/ksh93/sh/macro.c build_fdsyntax/src/cmd/ksh93/sh/macro.c
+--- src/cmd/ksh93/sh/macro.c	2012-08-30 22:33:50.000000000 +0200
++++ src/cmd/ksh93/sh/macro.c	2012-09-06 19:45:51.234025701 +0200
+@@ -2679,6 +2679,69 @@
+ 			cp = nv_getval(sh_scoped(shp,OLDPWDNOD));
+ 		return(cp);
+ 	}
++	if(c=='{')
++	{
++#define PROCFDBUFSIZE (20+(28*2)+1) /* sized to fit /proc format string and two |long| */
++		Namval_t	*np;
++		const char	*s1;
++		char		*s2;
++		char		*fdvarnamebuf,
++				*procfdname;
++		size_t		len;
++		int		fd;
++
++		s1=&string[1];
++
++		s2=strchr(s1, '}');
++		if (!s2)
++			return(NIL(char*));
++
++		len=s2-s1;
++
++		fdvarnamebuf=stkalloc(shp->stk, (len+2)+(PROCFDBUFSIZE+1));
++		if (!fdvarnamebuf)
++			return(NIL(char*));
++		procfdname=fdvarnamebuf+len+2;
++
++		memcpy(fdvarnamebuf, s1, len);
++		fdvarnamebuf[len]='\0';
++
++		/* Get integer value from variable "varname" in ~{varname} */
++		np = nv_open(fdvarnamebuf, shp->var_tree, NV_VARNAME|NV_NOFAIL|NV_NOADD);
++		if (!np)
++			return(NIL(char*));
++		fd = (int)nv_getnum(np);
++		nv_close(np);
++
++		if (fd < 0)
++			return(NIL(char*));
++
++		/*
++		 * We use /proc/$$/fd/ because this path is valid
++		 * across process boundaries and can be passed to
++		 * other processes. If /proc is not mounted or does
++		 * not support /proc/self/fd then we fall back to
++		 * /dev/fd
++		 *
++		 * Notes:
++		 * - the format string does not end with a '/',
++		 * we did this to allow that ~{fd} can be used for
++		 * plain files, too.
++		 * - we can't cache the test whether /proc is mounted
++		 * since the currently running script may call
++		 * "umount" itself
++		 */
++		if (access("/proc/self/fd", X_OK) == 0)
++		{
++			snprintf(procfdname, PROCFDBUFSIZE, "/proc/%ld/fd/%d", (long)getpid(), fd);
++		}
++		else
++		{
++			snprintf(procfdname, PROCFDBUFSIZE, "/dev/fd/%d", fd);
++		}
++		return (procfdname);
++	}
++
+ #if _WINIX
+ 	if(fcgetc(c)=='/')
+ 	{
+diff -r -u original/src/cmd/ksh93/tests/io.sh build_fdsyntax/src/cmd/ksh93/tests/io.sh
+--- src/cmd/ksh93/tests/io.sh	2012-07-10 20:26:14.000000000 +0200
++++ src/cmd/ksh93/tests/io.sh	2012-09-06 20:01:25.855847844 +0200
+@@ -496,4 +496,12 @@
+ n=$( exec {n}< /dev/null; print -r -- $n)
+ [[ -r /dev/fd/$n ]] && err_exit "file descriptor n=$n left open after subshell"
+ 
++[[ "$( { redirect {fd}<'/etc' ; cd ~{fd} ; /bin/pwd ; true ; } 2>&1)" == '/etc' ]] || \
++	err_exit 'I/O ~{fd} tilde expansion not working for /etc.'
++
++mkdir -p 'foo/bar'
++[[ "$( { redirect {fd}<"$PWD/foo" ; cd ~{fd} ; redirect {fd2}<~{fd}/bar ; cd ~{fd2} ; /bin/pwd ; true ; } 2>&1)" == *'foo/bar' ]] || \
++	err_exit 'Nested I/O ~{fd} tilde expansion not working for foo/bar.'
++rm -Rf 'foo'
++
+ exit $((Errors<125?Errors:125))

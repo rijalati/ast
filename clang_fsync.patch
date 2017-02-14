@@ -1,0 +1,214 @@
+ld_i386_64bit_debug/src/lib/libcmd/features/fssync build_sync/src/lib/libcmd/features/fssync
+--- src/lib/libcmd/features/fssync	1970-01-01 01:00:00.000000000 +0100
++++ src/lib/libcmd/features/fssync	2013-07-27 10:42:32.274180762 +0200
+@@ -0,0 +1 @@
++lib	fsync,syncfs,sync
+diff -N -r -u build_i386_64bit_debug/src/lib/libcmd/Mamfile build_sync/src/lib/libcmd/Mamfile
+--- src/lib/libcmd/Mamfile	2013-07-20 03:17:30.000000000 +0200
++++ src/lib/libcmd/Mamfile	2013-07-27 10:42:32.276180810 +0200
+@@ -403,7 +403,13 @@
+ prev cmd.h implicit
+ done sum.c
+ make sync.c
+-prev ${PACKAGE_ast_INCLUDE}/ls.h implicit
++make FEATURE/fssync implicit
++meta FEATURE/fssync features/%>FEATURE/% features/fssync fssync
++make features/fssync
++done features/fssync
++exec - iffe -v -c '${CC} ${mam_cc_FLAGS} ${CCFLAGS}   ${LDFLAGS} ' ref ${mam_cc_L+-L${INSTALLROOT}/lib} -I${PACKAGE_ast_INCLUDE} -I${INSTALLROOT}/include ${mam_libutil} ${mam_libast} : run features/fssync
++done FEATURE/fssync generated
++prev ${PACKAGE_ast_INCLUDE}/proc.h implicit
+ prev cmd.h implicit
+ done sync.c
+ make tail.c
+diff -N -r -u build_i386_64bit_debug/src/lib/libcmd/sync.c build_sync/src/lib/libcmd/sync.c
+--- src/lib/libcmd/sync.c	2012-01-10 19:56:27.000000000 +0100
++++ src/lib/libcmd/sync.c	2013-07-27 11:32:56.532750698 +0200
+@@ -25,39 +25,93 @@
+  * AT&T Research
+  */
+ 
+-static const char usage[] =
+-"[-?\n@(#)$Id: sync (AT&T Research) 2006-10-04 $\n]"
+-USAGE_LICENSE
+-"[+NAME?sync - schedule file system updates]"
+-"[+DESCRIPTION?\bsync\b calls \bsync\b(2), which causes all information "
+-    "in memory that updates file systems to be scheduled for writing out to "
+-    "all file systems. The writing, although scheduled, is not necessarily "
+-    "complete upon return from \bsync\b.]"
+-"[+?Since \bsync\b(2) has no failure indication, \bsync\b only fails for "
+-    "option/operand syntax errors, or when \bsync\b(2) does not return, in "
+-    "which case \bsync\b also does not return.]"
+-"[+?At minimum \bsync\b should be called before halting the system. Most "
+-    "systems provide graceful shutdown procedures that include \bsync\b -- "
+-    "use them if possible.]"
++#include <cmd.h>
++#include <ls.h>
++#include "FEATURE/fssync"
++
++static const char optsync[] =
++"[-?\n@(#)$Id: sync (AT&T Research) 2013-07-26 $\n]"
++"[-author?Roland Mainz <roland.mainz at nrubsig.org>]"
++"[+NAME?sync - schedule file/file system updates]"
++"[+DESCRIPTION?\bsync\b(1) issues either the transfer of all data to "
++	"storage for an individual file descriptor, the associated "
++	"filesystem for a file descriptor or all file data in the "
++	"whole system.]"
++/* -f is reserved for |fflush()| - if we ever want to implement it */
++#ifdef _lib_fsync
++"[s:fsync]:[fd?All data for the open file descriptor is to be transferred "
++	"to the storage  device associated with the file described by "
++	"fildes via calling \bfsync\b(2). The utility will not return "
++	"until the system has completed that action or until an error "
++	"is detected.]"
++#endif
++#ifdef _lib_syncfs
++"[S:syncfs]:[fd?Synchronizes just the file system containing file referred to "
++	"by the open file descriptor fd by calling \bsyncfs\b(2).]"
++#endif
++#ifdef _lib_sync
++"[X:sync?Causes all information in memory that updates file systems to be "
++	"scheduled for writing out to all file systems by calling "
++	"\bsync\b(2). The writing, although scheduled, is not necessarily "
++	"complete upon return from \bsync\b. "
++	"Since \bsync\b(2) has no failure indication, \bsync\b only fails for "
++	"option/operand syntax errors, or when \bsync\b(2) does not return, in "
++	"which case \bsync\b(1) also does not return.]"
++#endif
++"[+?Option \b-X\b is implied if no other option is given.]"
++
++"[+?At minimum \bsync\b (without options) should be called before halting "
++	"the system. Most systems provide graceful shutdown procedures that "
++	"include \bsync\b -- use them if possible.]"
++
+ "[+EXIT STATUS?]"
+     "{"
+-        "[+0?\bsync\b(2) returned.]"
++        "[+0?Operation succeeded.]"
+         "[+>0?Option/operand syntax error.]"
+     "}"
+-"[+SEE ALSO?\bsync\b(2), \bshutdown\b(8)]"
++"[+SEE ALSO?\bsync\b(2), \bfsync\b(2), \bsyncfs\b(2), \bshutdown\b(8)]"
+ ;
+ 
+-#include <cmd.h>
+-#include <ls.h>
+ 
+ int
+ b_sync(int argc, char** argv, Shbltin_t* context)
+ {
+-	cmdinit(argc, argv, context, ERROR_CATALOG, 0);
++	NOT_USED(context);
++#ifdef _lib_fsync
++	int fsync_fd	= -1;
++#endif
++#ifdef _lib_syncfs
++	int syncfs_fd	= -1;
++#endif
++	bool do_sync	= false;
++	bool failure	= false;
++
+ 	for (;;)
+ 	{
+-		switch (optget(argv, usage))
++		switch (optget(argv, optsync))
+ 		{
++		/* -f is reserved for |fflush()| - if we ever want to implement it */
++#ifdef _lib_fsync
++		case 's':
++			errno = 0;
++			fsync_fd = strtol(opt_info.arg, (char **)NULL, 0);
++			if ((errno != 0) || (fsync_fd < 0))
++				error(ERROR_system(1), "%s: invalid file descriptor", opt_info.arg);
++			break;
++#endif
++#ifdef _lib_syncfs
++		case 'S':
++			errno = 0;
++			syncfs_fd = strtol(opt_info.arg, (char **)NULL, 0);
++			if ((errno != 0) || (syncfs_fd < 0))
++				error(ERROR_system(1), "%s: invalid file descriptor", opt_info.arg);
++			break;
++#endif
++#ifdef _lib_sync
++		case 'X':
++			do_sync=true;
++			break;
++#endif
+ 		case ':':
+ 			error(2, "%s", opt_info.arg);
+ 			break;
+@@ -70,10 +124,69 @@
+ 	argv += opt_info.index;
+ 	if (error_info.errors || *argv)
+ 		error(ERROR_usage(2), "%s", optusage(NiL));
++
++	if (
++#ifdef _lib_fsync
++		(fsync_fd == -1) &&
++#endif
++#ifdef _lib_syncfs
++		(syncfs_fd == -1) &&
++#endif
++		true)
++		do_sync = true;
++
++#ifdef _lib_fsync
++	if (fsync_fd >= 0)
++	{
++		if (fsync(fsync_fd) < 0)
++		{
++			error(ERROR_system(0), "fsync(%d) failed", fsync_fd);
++			failure = true;
++		}
++	}
++#endif
++
++	if (
++#ifdef _lib_syncfs
++		(syncfs_fd >= 0) ||
++#endif
++		do_sync)
++	{
++		/*
++		 * sync all streams. We do this for two reasons:
++		 * 1. All data we buffer internally are flushed first
++		 * to prevent that something important gets lost if
++		 * the machine looses power immediately after the
++		 * sync(1) call
++		 * 2. Sometimes sync(1) is used to reach a "stable
++		 * state on disk". We can't meet this expectation if
++		 * we keep data buffered internally, call the sync(1)
++		 * builtin and then ruin the stable state by
++		 * immediately afterwards flushing some bits of data
++		 * to the filesystem buffers to make the state on
++		 * disk "stale" again.
++		 */
++		sfsync(NiL);
++	}
++
++#ifdef _lib_syncfs
++	if (syncfs_fd >= 0)
++	{
++		if (syncfs(syncfs_fd) < 0)
++		{
++			error(ERROR_system(0), "syncfs(%d) failed", syncfs_fd);
++			failure = true;
++		}
++	}
++#endif
++	if (do_sync)
++	{
+ #if _lib_sync
+-	sync();
++		sync();
+ #else
+-	error(ERROR_usage(2), "failed -- the native system does not provide a sync(2) call");
++		error(ERROR_usage(2), "failed -- the native system does not provide a sync(2) call");
+ #endif
+-	return 0;
++	}
++
++	return failure?1:0;
+ }
+

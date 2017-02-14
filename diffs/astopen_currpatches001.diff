@@ -1,0 +1,401 @@
+Subject: Re: Re: {n}< file not closing {n}
+--------
+
+Here is the patch.
+=========================cut here============
+--- ./src/cmd/ksh93/include/io.h   2012-07-11 06:46:36.372122926 +0200
++++ ./src/cmd/ksh93/include/io.h        2012-07-11 06:46:53.579970789 +0200
+@@ -52,6 +52,7 @@
+ #define IOCLOSE		(IOSEEK|IONOSEEK)
+ 
+ #define IOSUBSHELL	0x8000	/* must be larger than any file descriptor */
++#define IOPICKFD       0x10000	/* file descriptor number was selected automatically */
+ 
+ /*
+  * The remainder of this file is only used when compiled with shell
+*** src/cmd/ksh93/sh/io.c	Fri Jun  8 14:15:34 2012
+--- src/cmd/ksh93/sh/io.c	Mon Jul  9 16:33:21 2012
+***************
+*** 672,680 ****
+  		sh_iovalidfd(shp,fd);
+  	if(!(sp=shp->sftable[fd]) || sfclose(sp) < 0)
+  	{
+  		if(fdnotify)
+  			(*fdnotify)(fd,SH_FDCLOSE);
+! 		r=close(fd);
+  	}
+  	if(fd>2)
+  		shp->sftable[fd] = 0;
+--- 672,682 ----
+  		sh_iovalidfd(shp,fd);
+  	if(!(sp=shp->sftable[fd]) || sfclose(sp) < 0)
+  	{
++ 		int err=errno;
+  		if(fdnotify)
+  			(*fdnotify)(fd,SH_FDCLOSE);
+! 		while((r=close(fd)) < 0 && errno==EINTR)
+! 			errno = err;
+  	}
+  	if(fd>2)
+  		shp->sftable[fd] = 0;
+***************
+*** 1467,1472 ****
+--- 1469,1476 ----
+  							goto fail;
+  						if(fn>=shp->gd->lim.open_max && !sh_iovalidfd(shp,fn))
+  							goto fail;
++ 						if(flag!=2 || shp->subshell)
++ 							sh_iosave(shp,fn,indx|0x10000,tname?fname:(trunc?Empty:0));
+  						shp->fdstatus[fn] = shp->fdstatus[fd];
+  						sh_close(fd);
+  						fd = fn;
+***************
+*** 1602,1609 ****
+  void sh_iosave(Shell_t *shp, register int origfd, int oldtop, char *name)
+  {
+  	register int	savefd;
+! 	int flag = (oldtop&IOSUBSHELL);
+! 	oldtop &= ~IOSUBSHELL;
+  	/* see if already saved, only save once */
+  	for(savefd=shp->topfd; --savefd>=oldtop; )
+  	{
+--- 1606,1613 ----
+  void sh_iosave(Shell_t *shp, register int origfd, int oldtop, char *name)
+  {
+  	register int	savefd;
+! 	int flag = (oldtop&(IOSUBSHELL|IOPICKFD));
+! 	oldtop &= ~(IOSUBSHELL|IOPICKFD);
+  	/* see if already saved, only save once */
+  	for(savefd=shp->topfd; --savefd>=oldtop; )
+  	{
+***************
+*** 1635,1640 ****
+--- 1639,1646 ----
+  		savefd = origfd;
+  		origfd = -origfd;
+  	}
++ 	else if(flag&IOPICKFD)
++ 		savefd = -1;
+  	else
+  #endif /* SHOPT_DEVFD */
+  	{
+***************
+*** 1646,1652 ****
+  		}
+  	}
+  	filemap[shp->topfd].tname = name;
+! 	filemap[shp->topfd].subshell = flag;
+  	filemap[shp->topfd].orig_fd = origfd;
+  	filemap[shp->topfd++].save_fd = savefd;
+  	if(savefd >=0)
+--- 1652,1658 ----
+  		}
+  	}
+  	filemap[shp->topfd].tname = name;
+! 	filemap[shp->topfd].subshell = (flag&IOSUBSHELL);
+  	filemap[shp->topfd].orig_fd = origfd;
+  	filemap[shp->topfd++].save_fd = savefd;
+  	if(savefd >=0)
+=========================cut here============
+
+Subject:  Re: Re: [ast-users] [ksh93] How to return $? from a function when $? > 256
+
+cc: olga.kryzhanovska@gmail.com
+Subject: Re: Re: [ast-users] [ksh93] How to return $? from a function when $? > 256
+--------
+
+I have a patch that should fix this problem.
+===============cut here===========================
+*** src/cmd/ksh93/bltins/cflow.c	Tue Jan 10 14:15:26 2012
+--- src/cmd/ksh93/bltins/cflow.c	Mon Jul  2 17:20:50 2012
+***************
+*** 45,51 ****
+  		errormsg(SH_DICT,ERROR_usage(2),"%s",optusage((char*)0));
+  	pp->mode = (**argv=='e'?SH_JMPEXIT:SH_JMPFUN);
+  	argv += opt_info.index;
+! 	n = (((arg= *argv)?(int)strtol(arg, (char**)0, 10)&SH_EXITMASK:shp->oldexit));
+  	/* return outside of function, dotscript and profile is exit */
+  	if(shp->fn_depth==0 && shp->dot_depth==0 && !sh_isstate(SH_PROFILE))
+  		pp->mode = SH_JMPEXIT;
+--- 45,53 ----
+  		errormsg(SH_DICT,ERROR_usage(2),"%s",optusage((char*)0));
+  	pp->mode = (**argv=='e'?SH_JMPEXIT:SH_JMPFUN);
+  	argv += opt_info.index;
+! 	n = (((arg= *argv)?(int)strtol(arg, (char**)0, 10):shp->oldexit));
+! 	if(n<0 || n > SH_EXITMASK+shp->gd->sigmax+1)
+! 			n &= ((unsigned int)n)&SH_EXITMASK;
+  	/* return outside of function, dotscript and profile is exit */
+  	if(shp->fn_depth==0 && shp->dot_depth==0 && !sh_isstate(SH_PROFILE))
+  		pp->mode = SH_JMPEXIT;
+***************
+*** 81,87 ****
+  	n=1;
+  	if(arg= *argv)
+  	{
+! 		n = strtol(arg,&arg,10);
+  		if(n<=0 || *arg)
+  			errormsg(SH_DICT,ERROR_exit(1),e_nolabels,*argv);
+  	}
+--- 83,89 ----
+  	n=1;
+  	if(arg= *argv)
+  	{
+! 		n = (int)strtol(arg,&arg,10);
+  		if(n<=0 || *arg)
+  			errormsg(SH_DICT,ERROR_exit(1),e_nolabels,*argv);
+  	}
+===============cut here===========================
+
+Subject: Re: Re: [ast-developers] Issue with <TAB><TAB>...<TAB> filename  completion in ast-ksh.2012-06-26 ...
+--------
+
+> On Fri, Jun 29, 2012 at 10:44 PM, David Korn <dgk@research.att.com> wrote:
+> > Subject: Re: [ast-developers] Issue with <TAB><TAB>...<TAB> filename completio
+> n \ufffdin ast-ksh.2012-06-26 ...
+> > --------
+> >
+> > I am trying to reproduce you <tab> problem in emacs mode
+> >
+> > I type:
+> > $ print si<TAB><TAB>
+> > I get
+> > 1) sigfiles
+> > 2) sigqueue.pax
+> > 3) site_config
+> > $ print si
+> >
+> > I type <ESC>2<TAB> and I get
+> > $ print sigqueue.pax
+> >
+> > Isn't this what you would expect? \ufffdWhat is not working?
+> 
+> Erm... see below...
+> -- snip --
+> $ cd ast_<TAB><TAB>
+> # getting a menu, OK...
+>  1) ast_ksh_20120229/
+>  2) ast_ksh_201205031/
+>  3) ast_ksh_20120504/
+>  4) ast_ksh_20120518/
+>  5) ast_ksh_20120606/
+>  6) ast_ksh_20120612/
+>  7) ast_ksh_20120620/
+>  8) ast_ksh_20120626/
+>  9) ast_ksh_20120628/
+> 10) ast_mailx_nail/
+> # selecting "9", OK... line now shows the completed path
+> ("ast_ksh_20120628/") ...
+> # ... but... hitting now <TAB> again generates a menu
+> # from which nothing can be selected... only <CTRL-C> fixes this...
+> $ cd ast_ksh_20120628/<TAB>
+> # stale menu... why ?
+> 1) ast-ksh.2012-06-28.tgz
+> 2) astopen20120628_command_substitution_fix001.diff
+> 3) ast-open.2012-06-28.tgz
+> 4) build_i386_64bit_debug/
+> 5) buildksh93.sh
+> 6) INIT.2012-06-28.tgz
+> 7) scripts/
+> -- snip --
+> 
+> ----
+> 
+> Bye,
+> Roland
+> 
+
+Here is a patch.  Let me know if this resolves the problem.
+===============cut here==============
+*** src/cmd/ksh93/edit/emacs.c	Tue Jun 19 16:01:43 2012
+--- src/cmd/ksh93/edit/emacs.c	Mon Jul  2 13:11:39 2012
+***************
+*** 985,991 ****
+  				}
+  				beep();
+  			}
+! 			else if(i=='=')
+  			{
+  				draw(ep,REFRESH);
+  				if(count>0)
+--- 985,991 ----
+  				}
+  				beep();
+  			}
+! 			else if(i=='=' || (i=='\\' && out[cur-1]=='/'))
+  			{
+  				draw(ep,REFRESH);
+  				if(count>0)
+===============cut here==============
+
+
+Subject: cd patch 
+--------
+
+
+> I've stumbled over this issue when testing ksh93 as system shell in
+> Illumos/Solaris 11:
+> -- snip --
+> $ ~/bin/ksh -c 'cd /etc ; cd .. ; /bin/pwd ; true'
+> /etc
+> -- snip --
+> AFAIK this should print '/' ...
+> 
+
+Here is a patch.  Let me know if this solves the problem and that
+cd now works correctly.  Thanks.
+
+==============cut here==========================
+*** src/cmd/ksh93/bltins/cd_pwd.c	Tue May 29 09:08:17 2012
+--- src/cmd/ksh93/bltins/cd_pwd.c	Mon Jul  9 11:18:11 2012
+***************
+*** 93,116 ****
+  	if(*dir=='.')
+  	{
+  		/* test for pathname . ./ .. or ../ */
+! 		if(*(dp=dir+1) == '.')
+! 			dp++;
+! 		if(*dp==0 || *dp=='/')
+  		{
+- 			if((dp-dir)==2)
+- 			{
+- 				char *sp;
+- 				sfputr(shp->strbuf,oldpwd,0);
+- 				if(*dp)
+- 					sfputr(shp->strbuf,dp+1,0);
+- 				sp = sfstruse(shp->strbuf);
+- 				*(dir=strrchr(sp,'/'))=0;
+- 				if(*dp)
+- 					strcpy(dir,dp);
+- 				dir = (char*)sp;
+- 			}
+  			cdpath = 0;
+  		}
+  	}
+  	rval = -1;
+  	do
+--- 93,124 ----
+  	if(*dir=='.')
+  	{
+  		/* test for pathname . ./ .. or ../ */
+! 		int	n=0;
+! 		char	*sp;
+! 		for(dp=dir; *dp=='.'; dp++)
+! 		{
+! 			if(*++dp=='.' && (*++dp=='/' || *dp==0))
+! 				n++;
+! 			else if(*dp && *dp!='/')
+! 				break;
+! 			if(*dp==0)
+! 				break;
+! 		}
+! 		if(n)	
+  		{
+  			cdpath = 0;
++ 			sp = oldpwd + strlen(oldpwd);
++ 		}
++ 		while(n--)
++ 		{
++ 			while(--sp > oldpwd && *sp!='/');
++ 			if(sp==oldpwd)
++ 				break;
++ 			
+  		}
++ 		sfwrite(shp->strbuf,oldpwd,sp+1-oldpwd);
++ 		sfputr(shp->strbuf,dp,0);
++ 		dir = sfstruse(shp->strbuf);
+  	}
+  	rval = -1;
+  	do
+==============cut here==========================
+
+
+
+Good catch.  Here is a one line fix.  It could go into ksh93u+.
+==================cut here==========================
+*** src/cmd/ksh93/sh/subshell.c	Wed May 30 16:52:44 2012
+--- src/cmd/ksh93/sh/subshell.c	Tue Jul 17 12:00:27 2012
+***************
+*** 318,324 ****
+  		}
+  		mp->nvflag = np->nvflag|(flags&NV_MINIMAL);
+  		if(nv_cover(mp))
+! 			nv_putval(mp, nv_getval(np),np->nvflag|NV_NOFREE);
+  		else
+  			mp->nvalue.cp = np->nvalue.cp;
+  		if(nofree && np->nvfun && !np->nvfun->nofree)
+--- 318,324 ----
+  		}
+  		mp->nvflag = np->nvflag|(flags&NV_MINIMAL);
+  		if(nv_cover(mp))
+! 			nv_putval(mp, nv_getval(np),np->nvflag|NV_NOFREE|NV_RDONLY);
+  		else
+  			mp->nvalue.cp = np->nvalue.cp;
+  		if(nofree && np->nvfun && !np->nvfun->nofree)
+==================cut here==========================
+
+
+cc: olga.kryzhanovska@gmail.com
+Subject: Re: Fwd: read -r -N1 c in a function does not work when reading from a  terminal's input...
+--------
+
+
+> Olga said she never got the email through the ast-developers list...
+> did you get the bug report ?
+> 
+> 
+
+I didn't get the report.  The bug was introduced on the 12-06-25 change.
+Here is a patch that should fix this.  Let me know.
+
+=====================cut here=====================
+*** src/cmd/ksh93/bltins/read.c	Mon Jun 25 15:00:55 2012
+--- src/cmd/ksh93/bltins/read.c	Thu Jul 19 09:49:39 2012
+***************
+*** 258,264 ****
+  			np = REPLYNOD;
+  	}
+  	keytrap =  ep?ep->e_keytrap:0;
+! 	if(flags>>D_FLAG)	/* delimiter not new-line or fixed size read */
+  	{
+  		if((shp->fdstatus[fd]&IOTTY) && !keytrap)
+  			tty_raw(fd,1);
+--- 258,264 ----
+  			np = REPLYNOD;
+  	}
+  	keytrap =  ep?ep->e_keytrap:0;
+! 	if(size || (flags>>D_FLAG))	/* delimiter not new-line or fixed size read */
+  	{
+  		if((shp->fdstatus[fd]&IOTTY) && !keytrap)
+  			tty_raw(fd,1);
+=====================cut here=====================
+
+> Does anyone know why the following statement fails (in ast-ksh.2012-06-28):
+> -- snip --
+> $ ksh -c 'function x { nameref lv=gg ; compound -A lv.c=( [4]=( x=1 )
+> ) ; } ; compound gg ; x'
+> /home/test001/bin/ksh: x: line 1: lv.c: no parent
+> -- snip --
+> 
+
+Here is a patch that should fix this:
+=================cut here===============
+*** src/cmd/ksh93/sh/name.c	Fri Jun 29 16:06:34 2012
+--- src/cmd/ksh93/sh/name.c	Mon Jul 23 12:21:57 2012
+***************
+*** 480,486 ****
+  				{
+  					if(tp->tre.tretyp!=TLST && !tp->com.comnamp && tp->com.comset && tp->com.comset->argval[0]==0 && tp->com.comset->argchn.ap)
+  					{
+! 						if(prefix)
+  							cp = stakcopy(nv_name(np));
+  						shp->prefix = cp;
+  						if(tp->com.comset->argval[1]=='[')
+--- 480,486 ----
+  				{
+  					if(tp->tre.tretyp!=TLST && !tp->com.comnamp && tp->com.comset && tp->com.comset->argval[0]==0 && tp->com.comset->argchn.ap)
+  					{
+! 						if(prefix || np)
+  							cp = stakcopy(nv_name(np));
+  						shp->prefix = cp;
+  						if(tp->com.comset->argval[1]=='[')
+=================cut here===============

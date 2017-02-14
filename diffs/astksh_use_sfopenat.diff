@@ -1,0 +1,271 @@
+diff -r -u build_i386_64bit_debug/src/cmd/ksh93/bltins/hist.c build_sfopenat/src/cmd/ksh93/bltins/hist.c
+--- src/cmd/ksh93/bltins/hist.c	2012-08-28 15:59:37.000000000 +0200
++++ src/cmd/ksh93/bltins/hist.c	2012-09-05 14:38:51.201884134 +0200
+@@ -285,6 +285,6 @@
+ 	if((sp=sh_substitute(shp,string,replace,newp))==0)
+ 		errormsg(SH_DICT,ERROR_exit(1),e_subst,command);
+ 	*(newp-1) =  '=';
+-	sh_eval(shp,sfopen(NIL(Sfio_t*),sp,"s"),1);
++	sh_eval(shp,sfopenat(shp->pwdfd,NIL(Sfio_t*),sp,"s"),1);
+ }
+ 
+diff -r -u build_i386_64bit_debug/src/cmd/ksh93/bltins/typeset.c build_sfopenat/src/cmd/ksh93/bltins/typeset.c
+--- src/cmd/ksh93/bltins/typeset.c	2012-08-20 16:57:05.000000000 +0200
++++ src/cmd/ksh93/bltins/typeset.c	2012-09-05 14:51:42.976886691 +0200
+@@ -1362,7 +1362,7 @@
+ 				iop = tp->sh->heredocs;
+ 			}
+ 			else if(fname)
+-				iop = sfopen(iop,fname,"r");
++				iop = sfopenat(tp->sh->pwdfd,iop,fname,"r");
+ 			else if(tp->sh->gd->hist_ptr)
+ 				iop = (tp->sh->gd->hist_ptr)->histfp;
+ 			if(iop && sfseek(iop,(Sfoff_t)np->nvalue.rp->hoffset,SEEK_SET)>=0)
+diff -r -u build_i386_64bit_debug/src/cmd/ksh93/edit/hexpand.c build_sfopenat/src/cmd/ksh93/edit/hexpand.c
+--- src/cmd/ksh93/edit/hexpand.c	2012-07-31 18:15:48.000000000 +0200
++++ src/cmd/ksh93/edit/hexpand.c	2012-09-05 14:42:26.592590255 +0200
+@@ -153,7 +153,7 @@
+ 	static Sfio_t	*wm=0;	/* word match from !?string? event designator */
+ 
+ 	if(!wm)
+-		wm = sfopen(NULL, NULL, "swr");
++		wm = sfopenat(shp->pwdfd,NULL, NULL, "swr");
+ 
+ 	hc[0] = '!';
+ 	hc[1] = '^';
+@@ -237,7 +237,7 @@
+ 			sfputc(shp->stk,'\0');
+ 			cc = strdup(stkptr(shp->stk,0));
+ 			stkseek(shp->stk,n); /* remove null byte again */
+-			ref = sfopen(ref, cc, "s"); /* open as file */
++			ref = sfopenat(shp->pwdfd,ref, cc, "s"); /* open as file */
+ 			n = 0; /* skip history file referencing */
+ 			break;
+ 		case '-': /* back reference by number */
+@@ -430,7 +430,7 @@
+ 
+ getsel:
+ 		/* open temp buffer, let sfio do the (re)allocation */
+-		tmp = sfopen(NULL, NULL, "swr");
++		tmp = sfopenat(shp->pwdfd,NULL, NULL, "swr");
+ 
+ 		/* push selected words into buffer, squash 
+ 		   whitespace into single blank or a newline */
+@@ -527,7 +527,7 @@
+ 				c = *++cp;
+ 
+ 			sfseek(tmp, 0, SEEK_SET);
+-			tmp2 = sfopen(tmp2, NULL, "swr");
++			tmp2 = sfopenat(shp->pwdfd,tmp2, NULL, "swr");
+ 
+ 			if(c == 'g') /* global substitution */
+ 			{
+diff -r -u build_i386_64bit_debug/src/cmd/ksh93/sh/args.c build_sfopenat/src/cmd/ksh93/sh/args.c
+--- src/cmd/ksh93/sh/args.c	2012-08-03 21:26:27.000000000 +0200
++++ src/cmd/ksh93/sh/args.c	2012-09-05 14:40:43.456728794 +0200
+@@ -355,7 +355,7 @@
+ 	{
+ 		if(!argv[0])
+ 			errormsg(SH_DICT,ERROR_usage(2),"-R requires scriptname");
+-		if(!(lp->kiafile=sfopen(NIL(Sfio_t*),ap->kiafile,"w+")))
++		if(!(lp->kiafile=sfopenat(shp->pwdfd,NIL(Sfio_t*),ap->kiafile,"w+")))
+ 			errormsg(SH_DICT,ERROR_system(3),e_create,ap->kiafile);
+ 		if(!(lp->kiatmp=sftmp(2*SF_BUFSIZE)))
+ 			errormsg(SH_DICT,ERROR_system(3),e_tmpcreate);
+diff -r -u build_i386_64bit_debug/src/cmd/ksh93/sh/bash.c build_sfopenat/src/cmd/ksh93/sh/bash.c
+--- src/cmd/ksh93/sh/bash.c	2012-08-03 21:58:53.000000000 +0200
++++ src/cmd/ksh93/sh/bash.c	2012-09-05 14:40:08.805777656 +0200
+@@ -414,7 +414,7 @@
+ 	sh_offoption(shp,SH_VERBOSE);
+ 	if(np = nv_open("SHELLOPTS", shp->var_tree, NV_NOADD))
+ 		nv_offattr(np,NV_RDONLY);
+-	iop = sfopen(NULL, bash_pre_rc, "s");
++	iop = sfopenat(shp->pwdfd,NULL, bash_pre_rc, "s");
+ 	sh_eval(shp,iop,0);
+ 	if(xtrace)
+ 		sh_offoption(shp,SH_XTRACE);
+diff -r -u build_i386_64bit_debug/src/cmd/ksh93/sh/fault.c build_sfopenat/src/cmd/ksh93/sh/fault.c
+--- src/cmd/ksh93/sh/fault.c	2012-08-08 18:49:58.000000000 +0200
++++ src/cmd/ksh93/sh/fault.c	2012-09-05 14:41:09.392693175 +0200
+@@ -783,7 +783,7 @@
+ 			if(mode)
+ 				sp = (Sfio_t*)trap;
+ 			else
+-				sp = sfopen(NIL(Sfio_t*),trap,"s");
++				sp = sfopenat(shp->pwdfd,NIL(Sfio_t*),trap,"s");
+ 			sh_eval(shp,sp,0);
+ 		}
+ 	}
+diff -r -u build_i386_64bit_debug/src/cmd/ksh93/sh/io.c build_sfopenat/src/cmd/ksh93/sh/io.c
+--- src/cmd/ksh93/sh/io.c	2012-08-31 22:31:20.000000000 +0200
++++ src/cmd/ksh93/sh/io.c	2012-09-05 14:53:25.318765366 +0200
+@@ -458,7 +458,7 @@
+ 	sh_iostream(shp,0);
+ 	sh_iostream(shp,1);
+ 	/* all write steams are in the same pool and share outbuff */
+-	shp->outpool = sfopen(NIL(Sfio_t*),NIL(char*),"sw");  /* pool identifier */
++	shp->outpool = sfopenat(shp->pwdfd,NIL(Sfio_t*),NIL(char*),"sw");  /* pool identifier */
+ 	shp->outbuff = (char*)malloc(IOBSIZE+4);
+ 	shp->errbuff = (char*)malloc(IOBSIZE/4);
+ 	sfsetbuf(sfstderr,shp->errbuff,IOBSIZE/4);
+@@ -821,13 +821,21 @@
+ 			struct stat st;
+ 			if (stat(path,&st) >=0)
+ 			{
++#ifdef AT_FDCWD
++				while((nfd = openat(shp->pwdfd, path,flags,st.st_mode))<0 && errno==EINTR)
++#else
+ 				while((nfd = open(path,flags,st.st_mode))<0 && errno==EINTR)
++#endif
+ 					errno = err;
+ 			}
+ 		}
+ 		else
+ 		{
++#ifdef AT_FDCWD
++			while((nfd = openat(shp->pwdfd,path,flags))<0 && errno==EINTR)
++#else
+ 			while((nfd = open(path,flags))<0 && errno==EINTR)
++#endif
+ 				errno = err;
+ 		}
+ 		if(nfd>=0)
+@@ -2381,11 +2389,12 @@
+ {
+ 	register Sfio_t *iop;
+ 	register char *cp;
++	Shell_t *shp = sh_getinterp();
+ 	if(argv[1])
+ 		cp = "";
+ 	else
+ 		cp = argv[0];
+-	iop = sfopen(NIL(Sfio_t*),(char*)cp,"s");
++	iop = sfopenat(shp->pwdfd,NIL(Sfio_t*),(char*)cp,"s");
+ 	if(argv[1])
+ 	{
+ 		register struct eval *ep;
+diff -r -u build_i386_64bit_debug/src/cmd/ksh93/sh/lex.c build_sfopenat/src/cmd/ksh93/sh/lex.c
+--- src/cmd/ksh93/sh/lex.c	2012-08-09 20:25:16.000000000 +0200
++++ src/cmd/ksh93/sh/lex.c	2012-09-05 14:54:05.289719287 +0200
+@@ -2488,6 +2488,7 @@
+ static void setupalias(Lex_t *lp, const char *string,Namval_t *np)
+ {
+ 	register Sfio_t *iop, *base;
++	Shell_t *shp = sh_getinterp();
+ 	struct alias *ap = (struct alias*)malloc(sizeof(struct alias));
+ 	ap->disc = alias_disc;
+ 	ap->lp = lp;
+@@ -2507,11 +2508,11 @@
+ 	}
+ 	else
+ 		ap->nextc = 0;
+-	iop = sfopen(NIL(Sfio_t*),(char*)string,"s");
++	iop = sfopenat(shp->pwdfd,NIL(Sfio_t*),(char*)string,"s");
+ 	sfdisc(iop, &ap->disc);
+ 	lp->lexd.nocopy++;
+ 	if(!(base=fcfile()))
+-		base = sfopen(NIL(Sfio_t*),fcseek(0),"s");
++		base = sfopenat(shp->pwdfd,NIL(Sfio_t*),fcseek(0),"s");
+ 	fcclose();
+ 	sfstack(base,iop);
+ 	fcfopen(base);
+diff -r -u build_i386_64bit_debug/src/cmd/ksh93/sh/macro.c build_sfopenat/src/cmd/ksh93/sh/macro.c
+--- src/cmd/ksh93/sh/macro.c	2012-08-30 22:33:50.000000000 +0200
++++ src/cmd/ksh93/sh/macro.c	2012-09-05 14:54:30.337689482 +0200
+@@ -2134,7 +2134,7 @@
+ 		fcrestore(&save);
+ 	}
+ 	else
+-		sp = sfopen(NIL(Sfio_t*),"","sr");
++		sp = sfopenat(mp->shp->pwdfd,NIL(Sfio_t*),"","sr");
+ 	sh_freeup(mp->shp);
+ 	mp->shp->st.staklist = saveslp;
+ 	if(was_history)
+diff -r -u build_i386_64bit_debug/src/cmd/ksh93/sh/name.c build_sfopenat/src/cmd/ksh93/sh/name.c
+--- src/cmd/ksh93/sh/name.c	2012-08-31 17:59:40.000000000 +0200
++++ src/cmd/ksh93/sh/name.c	2012-09-05 14:39:55.054793803 +0200
+@@ -3316,7 +3316,7 @@
+ 			Sfio_t *iop;
+ 			sfprintf(shp->strbuf,"%s=${ print -v .sh.match }%c",nv_name(np),0);
+ 			cp = sfstruse(shp->strbuf);
+-			iop = sfopen((Sfio_t*)0,cp,"s");
++			iop = sfopenat(shp->pwdfd,(Sfio_t*)0,cp,"s");
+ 			sh_eval(shp,iop,SH_READEVAL);
+ 			sh_setmatch(shp,0,0,0,0,0);
+ 		}
+diff -r -u build_i386_64bit_debug/src/cmd/ksh93/sh/nvtree.c build_sfopenat/src/cmd/ksh93/sh/nvtree.c
+--- src/cmd/ksh93/sh/nvtree.c	2012-08-29 22:20:03.000000000 +0200
++++ src/cmd/ksh93/sh/nvtree.c	2012-09-05 14:40:31.540744649 +0200
+@@ -62,7 +62,7 @@
+ 	sfungetc(iop,c);
+ 	sfprintf(shp->strbuf,"%s=%c",nv_name(np),0);
+ 	cp = sfstruse(shp->strbuf);
+-	sp = sfopen((Sfio_t*)0,cp,"s");
++	sp = sfopenat(shp->pwdfd,(Sfio_t*)0,cp,"s");
+ 	sfstack(iop,sp);
+ 	c=sh_eval(shp,iop,SH_READEVAL);
+ 	return(c);
+diff -r -u build_i386_64bit_debug/src/cmd/ksh93/sh/nvtype.c build_sfopenat/src/cmd/ksh93/sh/nvtype.c
+--- src/cmd/ksh93/sh/nvtype.c	2012-08-29 18:58:25.000000000 +0200
++++ src/cmd/ksh93/sh/nvtype.c	2012-09-05 14:41:21.237676778 +0200
+@@ -1708,7 +1708,7 @@
+ 				if(nv_isattr(mp,NV_FTMP))
+ 					iop = shp->heredocs;
+ 				else if(xp=mp->nvalue.rp->fname)
+-					iop = sfopen(iop,xp,"r");
++					iop = sfopenat(shp->pwdfd,iop,xp,"r");
+ 				else if(shp->gd->hist_ptr)
+ 					iop = (shp->gd->hist_ptr)->histfp;
+ 				if(iop && sfseek(iop,(Sfoff_t)mp->nvalue.rp->hoffset,SEEK_SET)>=0)
+diff -r -u build_i386_64bit_debug/src/cmd/ksh93/sh/parse.c build_sfopenat/src/cmd/ksh93/sh/parse.c
+--- src/cmd/ksh93/sh/parse.c	2012-08-10 15:51:17.000000000 +0200
++++ src/cmd/ksh93/sh/parse.c	2012-09-05 15:08:52.497506549 +0200
+@@ -767,7 +767,7 @@
+ 		sh_syntax(lexp);
+ 	if(!(iop=fcfile()))
+ 	{
+-		iop = sfopen(NIL(Sfio_t*),fcseek(0),"s");
++		iop = sfopenat(shp->pwdfd,NIL(Sfio_t*),fcseek(0),"s");
+ 		fcclose();
+ 		fcfopen(iop);
+ 	}
+@@ -1906,15 +1906,15 @@
+ /*
+  * convert =~ into == ~(E)
+  */
+-static void ere_match(void)
++static void ere_match(Shell_t *shp)
+ {
+-	Sfio_t *base, *iop = sfopen((Sfio_t*)0," ~(E)","s");
++	Sfio_t *base, *iop = sfopenat(shp->pwdfd,(Sfio_t*)0," ~(E)","s");
+ 	register int c;
+ 	while( fcgetc(c),(c==' ' || c=='\t'));
+ 	if(c)
+ 		fcseek(-1);
+ 	if(!(base=fcfile()))
+-		base = sfopen(NIL(Sfio_t*),fcseek(0),"s");
++		base = sfopenat(shp->pwdfd,NIL(Sfio_t*),fcseek(0),"s");
+ 	fcclose();
+         sfstack(base,iop);
+         fcfopen(base);
+@@ -1962,7 +1962,7 @@
+ 			num = lexp->digits;
+ 			if(num==TEST_REP)
+ 			{
+-				ere_match();
++				ere_match(lexp->sh);
+ 				num = TEST_PEQ;
+ 			}
+ 		}
+diff -r -u build_i386_64bit_debug/src/cmd/ksh93/sh/shcomp.c build_sfopenat/src/cmd/ksh93/sh/shcomp.c
+--- src/cmd/ksh93/sh/shcomp.c	2012-08-03 20:22:13.000000000 +0200
++++ src/cmd/ksh93/sh/shcomp.c	2012-09-05 14:40:21.285761112 +0200
+@@ -110,7 +110,7 @@
+ 	if(cp= *argv)
+ 	{
+ 		struct stat statb;
+-		if(!(out = sfopen((Sfio_t*)0,cp,"w")))
++		if(!(out = sfopenat(shp->pwdfd,(Sfio_t*)0,cp,"w")))
+ 			errormsg(SH_DICT,ERROR_system(1),"%s: cannot create",cp);
+ 		if(fstat(sffileno(out),&statb) >=0)
+ 			chmod(cp,(statb.st_mode&~S_IFMT)|S_IXUSR|S_IXGRP|S_IXOTH);

@@ -1,0 +1,124 @@
+diff -r -u src/cmd/ksh93/sh/fault.c src/cmd/ksh93/sh/fault.c
+--- src/cmd/ksh93/sh/fault.c	2013-03-11 22:12:27.000000000 +0100
++++ src/cmd/ksh93/sh/fault.c	2013-03-26 11:03:57.952498746 +0100
+@@ -72,6 +72,13 @@
+ 	return(action);
+ }
+ 
++typedef struct _siginfo_chain_t siginfo_chain_t;
++struct _siginfo_chain_t
++{
++	siginfo_chain_t	*next;
++	siginfo_t	si;
++};
++
+ /*
+  * Most signals caught or ignored by the shell come here
+ */
+@@ -121,12 +128,24 @@
+ 	{
+ 		if(trap && *trap)
+ 		{
++			siginfo_chain_t *si;
++
+ 			shp->trapnote |= SH_SIGTRAP;
+ 			shp->sigflag[sig] |= SH_SIGTRAP;
+ 			if(!shp->siginfo)
+ 				shp->siginfo = (void**)calloc(sizeof(void*),shp->gd->sigmax);
+-			shp->siginfo[sig] = malloc(sizeof(siginfo_t));
+-			memcpy(shp->siginfo[sig],info,sizeof(siginfo_t));
++			si = calloc(sizeof(siginfo_chain_t), 1);
++			si->next=NULL;
++			memcpy(&si->si,info,sizeof(siginfo_t));
++			if (shp->siginfo[sig])
++			{
++				siginfo_chain_t *chain = (siginfo_chain_t *)shp->siginfo[sig];
++				while (chain->next != NULL)
++					chain=chain->next;
++				chain->next = si;
++			}
++			else
++				shp->siginfo[sig] = si;
+ 		}
+ 		return;
+ 	}
+@@ -203,14 +222,26 @@
+ 		shp->lastsig = sig;
+ 	if(trap)
+ 	{
++		siginfo_chain_t *si;
++
+ 		/*
+ 		 * propogate signal to foreground group
+ 		 */
+ #ifdef _lib_sigaction
+ 		if(!shp->siginfo)
+ 			shp->siginfo = (void**)calloc(sizeof(void*),shp->gd->sigmax);
+-		shp->siginfo[sig] = malloc(sizeof(siginfo_t));
+-		memcpy(shp->siginfo[sig],info,sizeof(siginfo_t));
++		si = calloc(sizeof(siginfo_chain_t), 1);
++		si->next=NULL;
++		memcpy(&si->si,info,sizeof(siginfo_t));
++		if (shp->siginfo[sig])
++		{
++			siginfo_chain_t *chain = (siginfo_chain_t *)shp->siginfo[sig];
++			while (chain->next != NULL)
++				chain=chain->next;
++			chain->next = si;
++		}
++		else
++			shp->siginfo[sig] = si;
+ #endif
+ 		if(sig==SIGHUP && job.curpgid)
+ 			killpg(job.curpgid,SIGHUP);
+@@ -460,17 +491,41 @@
+ 			shp->sigflag[sig] &= ~SH_SIGTRAP;
+ 			if(trap=shp->st.trapcom[sig])
+ 			{
+-#ifdef _lib_sigaction
+ 				if(shp->siginfo && shp->siginfo[sig])
+-					sh_setsiginfo((siginfo_t*)shp->siginfo[sig]);
+-#endif
+-				cursig = sig;
+- 				sh_trap(shp,trap,0);
+-#ifdef _lib_sigaction
+-				if(shp->siginfo[sig])
+-					free(shp->siginfo[sig]);
+-				shp->siginfo[sig] = 0;
++				{
++					siginfo_chain_t *si, *chain;
++
++					si = (siginfo_chain_t*)shp->siginfo[sig];
++					shp->siginfo[sig]=NULL;
++
++#if 1
++					chain = si;
++					long chained=0L;
++					while (chain->next != NULL)
++					{
++						chain=chain->next;
++						chained++;
++					}
++					sfprintf(sfstderr, "## chained sig=%d, num=%ld\n", (int)sig, chained);
+ #endif
++
++					while (si != NULL)
++					{
++						sh_setsiginfo(&si->si);
++
++						cursig = sig;
++ 						sh_trap(shp,trap,0);
++						
++						chain=si->next;
++						free(si);
++						si=chain;
++					}
++				}
++				else
++				{
++					cursig = sig;
++ 					sh_trap(shp,trap,0);
++				}
+ 				cursig = -1;
+  			}
+ 		}

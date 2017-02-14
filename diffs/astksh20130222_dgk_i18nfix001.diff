@@ -1,0 +1,181 @@
+--- src/cmd/ksh93/sh/macro.c	2013-02-21 23:31:00.000000000 +0100
++++ src/cmd/ksh93/sh/macro.c	2013-03-07 00:53:22.915657923 +0100
+@@ -2026,11 +2026,6 @@
+ 	struct _mac_		savemac;
+ 	int			savtop = stktell(stkp);
+ 	char			lastc=0, *savptr = stkfreeze(stkp,0);
+-#if SHOPT_MULTIBYTE
+-	const Lc_t		*lc=lcinfo(LC_CTYPE)->lc;
+-	wchar_t			lastw=0;
+-#endif /* SHOPT_MULTIBYTE */
+-
+ 	int			was_history = sh_isstate(mp->shp,SH_HISTORY);
+ 	int			was_verbose = sh_isstate(mp->shp,SH_VERBOSE);
+ 	int			was_interactive = sh_isstate(mp->shp,SH_INTERACTIVE);
+@@ -2221,17 +2216,6 @@
+ 		}
+ 		else if(lastc)
+ 		{
+-#if SHOPT_MULTIBYTE
+-			if(lastw)
+-			{
+-				int	n;
+-				char	mb[8];
+-				n = mbconv(mb, lastw);
+-				mac_copy(mp,mb,n);
+-				lastw = 0;
+-			}
+-			else
+-#endif /* SHOPT_MULTIBYTE */
+ 			mac_copy(mp,&lastc,1);
+ 			lastc = 0;
+ 		}
+@@ -2243,17 +2227,6 @@
+ 			ssize_t len = 1;
+ 
+ 			/* can't write past buffer so save last character */
+-#if SHOPT_MULTIBYTE
+-			if ((len = mbsize(str))>1 && !(lc->flags & LC_utf8))
+-			{
+-				len = mb2wc(lastw,str,len);
+-				if (len < 0)
+-				{
+-					lastw = 0;
+-					len = 1;
+-				}
+-			}
+-#endif /* SHOPT_MULTIBYTE */
+ 			c -= len;
+ 			lastc = str[c];
+ 			str[c] = 0;
+@@ -2274,17 +2247,6 @@
+ 	}
+ 	if(lastc)
+ 	{
+-#if SHOPT_MULTIBYTE
+-		if(lastw)
+-		{
+-			int	n;
+-			char	mb[8];
+-			n = mbconv(mb, lastw);
+-			mac_copy(mp,mb,n);
+-			lastw = 0;
+-		}
+-		else
+-#endif /* SHOPT_MULTIBYTE */
+ 		mac_copy(mp,&lastc,1);
+ 		lastc = 0;
+ 	}
+
+cc: olga.kryzhanovska@gmail.com
+Subject: Re: Re: ${!var_*} and ${!var_@} expansion broken in ast-ksh.2013-02-14+  ... / was: Re: [ast-developers] AT&T Software Technology ast alpha software  download update
+--------
+
+Here is the patch:
+
+=============================cut here========
+--- src/cmd/ksh93/bltins/enum.c	Wed Mar  6 11:38:07 2013
++++ src/cmd/ksh93/bltins/enum.c	Tue Mar  5 20:15:26 2013
+@@ -293,6 +293,7 @@
+ 		nv_addtype(tp, enum_type, &optdisc.opt, sizeof(optdisc)); 
+ 		nv_onattr(np,NV_LTOU|NV_UTOL);
+ 	}
++	nv_open(0,shp->var_tree,0);
+ 	return error_info.errors != 0;
+ }
+ 
+--- src/cmd/ksh93/sh/name.c	Wed Mar  6 11:37:38 2013
++++ src/cmd/ksh93/sh/name.c	Tue Mar  5 20:09:59 2013
+@@ -1303,10 +1303,12 @@
+ 	struct Cache_entry	*xp;
+ #endif
+ 	
+-	sh_stats(STAT_NVOPEN);
+ 	memset(&fun,0,sizeof(fun));
+ 	shp->openmatch = 0;
+ 	shp->last_table = 0;
++	if(!name)
++		return(0);
++	sh_stats(STAT_NVOPEN);
+ 	if(!root)
+ 		root = shp->var_tree;
+ 	shp->last_root = root;
+=============================cut here========
+
+David Korn
+
+
+cc: mhlavink@redhat.com 
+Subject:  Re: memory leak
+--------
+
+Thanks for reporting this.  Here is a patch that should fix up
+the problem.
+
+=====================cut here==================
+*** src/cmd/ksh93/sh/name.c	Tue Mar  5 20:09:59 2013
+--- src/cmd/ksh93/sh/name.c	Wed Mar 13 16:43:05 2013
+***************
+*** 2424,2429 ****
+--- 2424,2431 ----
+  			}
+  		}
+  		npnext = (Namval_t*)dtnext(root,np);
++ 		if(nv_arrayptr(np))
++ 			nv_putsub(np,NIL(char*),0,ARRAY_SCAN);
+  		_nv_unset(np,flags);
+  		nv_delete(np,root,0);
+  	}
+=====================cut here==================
+
+
+
+Subject: [patch] Valgrind hits with complex regex usage...
+From: Roland Mainz <roland.mainz@nrubsig.org>
+To: ast-developers@research.att.com
+Cc: Glenn Fowler <gsf@research.att.com>, David Korn <dgk@research.att.com>
+Content-Type: multipart/mixed; boundary=f46d0447871d908e1e04d7ae8c70
+
+--f46d0447871d908e1e04d7ae8c70
+Content-Type: text/plain; charset=ISO-8859-1
+
+Hi!
+
+----
+
+While testing ast-ksh.2013-02-22 on SuSE 12.2/AMD64/64bit we've hit a
+valgrind hit in the "shweblinks.sh" (attached as "shweblinks.sh.gz")
+application (which parses Google search results (using regex) and puts
+the data into a stream of compound variables):
+-- snip --
+==25277== Conditional jump or move depends on uninitialised value(s)
+==25277==    at 0x42CEC2: sh_setmatch (init.c:955)
+==25277==    by 0x44CB7C: varsub (macro.c:1847)
+==25277==    by 0x4485D2: copyto (macro.c:632)
+==25277==    by 0x446D77: sh_macexpand (macro.c:243)
+==25277==    by 0x4A557C: arg_expand (args.c:867)
+==25277==    by 0x4A4FCF: sh_argbuild (args.c:724)
+==25277==    by 0x4772EE: sh_exec (xec.c:975)
+==25277==    by 0x47BAE9: sh_exec (xec.c:2204)
+==25277==    by 0x47BBAA: sh_exec (xec.c:2221)
+==25277==    by 0x47BAAE: sh_exec (xec.c:2200)
+==25277==    by 0x4817C1: sh_funscope_20120720 (xec.c:4038)
+==25277==    by 0x47F97F: sh_funct (xec.c:3348)
+==25277==  Uninitialised value was created by a stack allocation
+==25277==    at 0x449DC0: varsub (macro.c:1102)
+-- snip --
+
+I don't have a reduced testcase yet but already found a small and simple patch:
+-- snip --
+--- src/cmd/ksh93/sh/macro.c	2013-03-13 21:59:12.188962716 +0100
++++ src/cmd/ksh93/sh/macro.c	2013-03-12 00:16:51.759384400 +0100
+@@ -1789,7 +1789,7 @@
+ 		register int d = (mode=='@'?' ':mp->ifs);
+ 		int match[2*(MATCH_MAX+1)],index;
+ 		int nmatch, nmatch_prev, vsize_last, tsize;
+-		char *vlast,*oldv;
++		char *vlast=NULL,*oldv;
+ 		while(1)
+ 		{
+ 			if(!v)
+-- snip --

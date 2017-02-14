@@ -1,0 +1,13 @@
+*** old/ksh93/sh/name.c	Tue Mar  5 20:09:59 2013
+--- new/sh/name.c	Wed Mar 13 16:43:05 2013
+***************
+*** 2424,2429 ****
+--- 2424,2431 ----
+  			}
+  		}
+  		npnext = (Namval_t*)dtnext(root,np);
++ 		if(nv_arrayptr(np))
++ 			nv_putsub(np,NIL(char*),0,ARRAY_SCAN);
+  		_nv_unset(np,flags);
+  		nv_delete(np,root,0);
+  	}

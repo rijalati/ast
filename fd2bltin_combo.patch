@@ -1,0 +1,96 @@
+--- src/cmd/ksh93/bltins/typeset.c	2012-08-03 21:58:29.000000000 +0200
++++ src/cmd/ksh93/bltins/typeset.c	2012-08-15 19:23:51.687699342 +0200
+@@ -906,6 +906,7 @@
+ 	Shbltin_t	*sp = &shp->bltindata;
+ 
+ 	sp->nosfio = 0;
++	sp->pwdfd  = shp->pwdfd;
+ 	for (n = r = 0; n < nlib; n++)
+ 	{
+ 		if (r)
+diff -r -u original/src/cmd/ksh93/sh/init.c build_errormap/src/cmd/ksh93/sh/init.c
+--- src/cmd/ksh93/sh/init.c	2012-08-10 23:18:24.000000000 +0200
++++ src/cmd/ksh93/sh/init.c	2012-08-15 19:26:19.966884367 +0200
+@@ -1406,6 +1406,7 @@
+ 				break;
+ 			nopt = optctx(0, 0);
+ 			oopt = optctx(nopt, 0);
++			shp->bltindata.pwdfd=shp->pwdfd;
+ 			b___regress__(2, regress, &shp->bltindata);
+ 			optctx(oopt, nopt);
+ 		}
+@@ -1621,6 +1622,7 @@
+ 	shp->gd->login_files = login_files;
+ 	shp->bltindata.version = SH_VERSION;
+ 	shp->bltindata.shp = shp;
++	shp->bltindata.pwdfd = -1;
+ #if 1
+ #   undef sh_run
+ #   undef sh_trap
+diff -r -u original/src/cmd/ksh93/sh/macro.c build_errormap/src/cmd/ksh93/sh/macro.c
+--- src/cmd/ksh93/sh/macro.c	2012-08-10 20:07:28.000000000 +0200
++++ src/cmd/ksh93/sh/macro.c	2012-08-15 19:31:05.670724431 +0200
+@@ -2627,7 +2627,10 @@
+ 	if(np)
+ 		sh_fun(shp,np, (Namval_t*)0, av);
+ 	else
++	{
++		shp->bltindata.pwdfd = shp->pwdfd;
+ 		sh_btilde(2, av, &shp->bltindata);
++	}
+ 	sfstdout = save;
+ 	stkset(shp->stk,ptr, offset);
+ 	sfseek(iop,(Sfoff_t)0,SEEK_SET);
+diff -r -u original/src/cmd/ksh93/sh/xec.c build_errormap/src/cmd/ksh93/sh/xec.c
+--- src/cmd/ksh93/sh/xec.c	2012-08-07 22:13:08.000000000 +0200
++++ src/cmd/ksh93/sh/xec.c	2012-08-15 19:29:57.095402357 +0200
+@@ -994,7 +994,9 @@
+ 			shp->xargexit = 0;
+ 			while(np==SYSCOMMAND)
+ 			{
+-				register int n = b_command(0,com,&shp->bltindata);
++				register int n;
++				shp->bltindata.pwdfd = shp->pwdfd;
++				n = b_command(0,com,&shp->bltindata);
+ 				if(n==0)
+ 					break;
+ 				command += n;
+@@ -3270,6 +3272,7 @@
+ 		opt_info.index = opt_info.offset = 0;
+ 		error_info.errors = 0;
+ 		shp->st.loopcnt = 0;
++		shp->bltindata.pwdfd = shp->pwdfd;
+ 		b_dot_cmd(argn+1,argv-1,&shp->bltindata);
+ 		shp->st.loopcnt = loopcnt;
+ 		argv[-1] = save;
+@@ -3335,6 +3338,7 @@
+ 		int jmpval;
+ 		struct checkpt *buffp = (struct checkpt*)stkalloc(shp->stk,sizeof(struct checkpt));
+ 		Shbltin_t *bp = &shp->bltindata;
++		shp->bltindata.pwdfd = shp->pwdfd;
+ 		sh_pushcontext(shp,buffp,SH_JMPCMD);
+ 		jmpval = sigsetjmp(buffp->buff,1);
+ 		if(jmpval == 0)
+@@ -4087,6 +4091,7 @@
+ 	Opt_t			*op, *np = optctx(0, 0);
+ 	Shbltin_t		bltindata;
+ 	bltindata = shp->bltindata;
++	shp->bltindata.pwdfd = shp->pwdfd;
+ 	op = optctx(np, 0);
+ 	memset(t, 0, sizeof(struct comnod));
+ 	dp = (struct dolnod*)stkalloc(shp->stk,(unsigned)sizeof(struct dolnod) + ARG_SPARE*sizeof(char*) + argn*sizeof(char*));
+diff -r -u original/src/lib/libast/include/shcmd.h build_errormap/src/lib/libast/include/shcmd.h
+--- src/lib/libast/include/shcmd.h	2012-03-05 16:48:49.000000000 +0100
++++ src/lib/libast/include/shcmd.h	2012-08-15 19:23:26.627487076 +0200
+@@ -75,6 +75,11 @@
+ 	char*		(*shgetenv)(const char*);
+ 	char*		(*shsetenv)(const char*);
+ 	int		invariant;
++	/*
++	 * pwdfd - dir fd to cwd, guranteed if platform has
++	 * O_SEARCH/O_PATH, otherwise _may_ be -1
++	 */
++	int		pwdfd;
+ };
+ 
+ #if defined(SH_VERSION) ||  defined(_SH_PRIVATE)

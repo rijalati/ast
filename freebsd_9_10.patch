@@ -1,0 +1,291 @@
+== Standards and Functionality ==
+
+--- ast.patched/src/lib/libast/features/standards	2013-08-27 09:16:58.000000000 -0400
++++ ast.working/src/lib/libast/features/standards	2014-04-01 17:42:42.000000000 -0400
+@@ -1,5 +1,19 @@
+set stdio
+-if tst note{ _GNU_SOURCE works }end compile{
++# In FreeBSD, definitions like _POSIX_SOURCE and such are used to *limit*
++# functionality to known API; they don't enable anything. The general intent in
++# BSD is to enable everything by default (effectively, providing the
++# _KITCHEN_SINK_SOURCE mentioned below). So we look for that here, but stay
++# careful that we don't get fooled by presence of FreeBSD that underpins some
++# subsystems in Mac OS X; there are other Apple-specific portability hacks
++# elsewhere we should not interfere with.
++if tst note{ FreeBSD }end compile{
++	#include <sys/param.h>
++	#if !defined(__FreeBSD__) || defined(APPLE)
++	#error not a FreeBSD system
++	#endif
++	}end {
++	}
++elif tst note{ _GNU_SOURCE works }end compile{
+#define _GNU_SOURCE 1
+#include <sys/types.h>
+#include <sys/stat.h>
+
+
+
+== stdio and wchar ==
+
+Ugh. This was annoying to hunt down. Because of conflicting
+definitions of FILE in both AST and stdio, we fell into the trap of
+trying to define the sfio structure as something else. The #define
+below keeps it straight on FreeBSD, but it could be that
+_STDFILE_DECLARED causes trouble for some other OS. Please let me
+know if this hits someone.
+
+--- ast.patched/src/lib/libast/features/wchar	2013-09-17 11:56:58.000000000 -0400
++++ ast.working/src/lib/libast/features/wchar	2014-04-01 16:14:24.000000000 -0400
+@@ -6,6 +6,7 @@
+cat{
+#ifndef _AST_WCHAR_H
+#define _AST_WCHAR_H	1
++	#define _STDFILE_DECLARED
+}end
+
+lib	mbstowcs,wctomb,wcscmp,wcscoll,wcslen,wcstombs,wcsxfrm,wcwidth stdlib.h stdio.h wchar.h
+
+
+
+== procfs and kvm ==
+
+Support for /proc and kvm methods are a little deceiving, as there are
+implementations out there that don't have the PIOCPSINFO ioctl or
+other system structure members. The procfs code and the kvm code in
+ast-open, as written, assumes a lot of those structures, so this patch
+mostly just tightens up the criteria under which procfs or kvm will be
+selected for use.
+
+I know the responsible thing to do is to go back here and port the
+code so that it works with a wider range of implementations of procfs
+and/or kvm. For right now, though, this is enough to kill the "false
+positives" in features that prevent compilation.
+
+--- ast.patched/src/cmd/std/features/procfs	2011-12-13 16:12:59.000000000 -0500
++++ ast.working/src/cmd/std/features/procfs	2014-04-01 16:10:22.000000000 -0400
+@@ -1,6 +1,6 @@
+hdr	kvm,procinfo,pstat,asm/param
+
+-sys	procfs,sysctl
++sys	procfs,sysctl,user
+
+lib	getprocs
+lib	kvm_open,kvm_getprocs kvm.h sys/time.h sys/param.h sys/proc.h sys/sysctl.h -lkvm
+@@ -10,7 +10,11 @@
+mem	procsinfo64.pi_pri procinfo.h
+mem prpsinfo.pr_clname,prpsinfo.pr_cstime,prpsinfo.pr_cstime.tv_sec,prpsinfo.pr_ctime,prpsinfo.pr_cutime,prpsinfo.pr_gid,prpsinfo.pr_lttydev,prpsinfo.pr_ntpid,prpsinfo.pr_pgid,prpsinfo.pr_pgrp,prpsinfo.pr_psargs,prpsinfo.pr_refcount,prpsinfo.pr_rssize,prpsinfo.pr_sid,prpsinfo.pr_sonproc,prpsinfo.pr_start,prpsinfo.pr_start.tv_sec,prpsinfo.pr_starttime,prpsinfo.pr_starttime.tv_sec,prpsinfo.pr_state,prpsinfo.pr_stime,prpsinfo.pr_tgrp,prpsinfo.pr_time,prpsinfo.pr_time.tv_sec,prpsinfo.pr_utime,prpsinfo.pr_zomb,prpsinfo.pr_pctcpu,prpsinfo.pr_cpu,prpsinfo.pr_lwp.pr_pctcpu,prpsinfo.pr_lwp.pr_cpu -D_STRUCTURED_PROC -Dprpsinfo=psinfo sys/types.h sys/procfs.h
+
++num	PIOCPSINFO
++
+typ	struct.prpsinfo -D_STRUCTURED_PROC -Dprpsinfo=psinfo sys/types.h sys/procfs.h
++typ	struct.kinfo_proc sys/types.h sys/procfs.h sys/user.h
++typ	struct.kp_proc sys/types.h sys/procfs.h sys/user.h
+
+tst	lib_info note{ info(2) kernel table api }end link{
+#include <info.h>
+@@ -587,11 +591,11 @@
+#define PSS_METHOD	PSS_METHOD_getprocs
+#endif
+
+-#if !PSS_METHOD && defined(_PS_dir)
++#if !PSS_METHOD && defined(_PS_dir) && (_PS_scan_binary || _num_PIOCPSINFO)
+#define PSS_METHOD	PSS_METHOD_procfs
+#endif
+
+-#if !PSS_METHOD && _hdr_kvm && _sys_sysctl && _lib_kvm_open && _lib_kvm_getprocs
++#if !PSS_METHOD && _hdr_kvm && _sys_sysctl && _lib_kvm_open && _lib_kvm_getprocs && _typ_struct_kinfo_proc && _typ_struct_kp_proc
+#define PSS_METHOD	PSS_METHOD_kvm
+#endif
+
+--- ast.patched/src/cmd/std/pss-kvm.c	2008-09-10 23:47:15.000000000 -0400
++++ ast.working/src/cmd/std/pss-kvm.c	2014-04-01 16:11:02.000000000 -0400
+@@ -43,6 +43,9 @@
+#if _sys_proc
+#include <sys/proc.h>
+#endif
++#if _sys_user
++#include <sys/user.h>
++#endif
+#include <sys/sysctl.h>
+#include <sys/tty.h>
+
+
+
+== ksh93 poll ==
+
+Just a minor glitch in the comment for the _socketpair_devfd macro
+that triggers an early end of its comment.
+
+--- ast.patched/src/cmd/ksh93/features/poll	2013-06-26 11:20:14.000000000 -0400
++++ ast.working/src/cmd/ksh93/features/poll	2014-04-01 17:59:32.000000000 -0400
+@@ -66,7 +66,7 @@
+return(1);
+}
+}end
+-tst	socketpair_devfd -D_AST_INTERCEPT=0 note{ /proc/*/fd/N or /dev/fd/N handles socketpair() }end execute{
++tst	socketpair_devfd -D_AST_INTERCEPT=0 note{ /proc/.../fd/N or /dev/fd/N handles socketpair() }end execute{
+#include <ast.h>
+#include <fs3d.h>
+#include <sys/types.h>
+
+
+
+== ksh93 macro.c ==
+
+Looks like just a small typo? Or, perhaps, _fd_self_dir_fmt implies
+the definition of _fd_pid_dir_fmt on some systems and I missed it? But
+since I believe this is supposed to be a local process-centric view of
+the file descriptors, I think this is safe even if that were true.
+Otherwise, we could just fallback to using /dev/fd instead since that
+works just fine on BSD.
+
+--- ast.patched/src/cmd/ksh93/sh/macro.c	2013-09-30 14:18:13.000000000 -0400
++++ ast.working/src/cmd/ksh93/sh/macro.c	2014-04-01 16:09:43.000000000 -0400
+@@ -2741,7 +2741,7 @@
+sfprintf(shp->stk, _fd_pid_dir_fmt, (long)getpid(), fd,"","");
+#else
+# ifdef _fd_self_dir_fmt
+-	sfprintf(shp->stk,_fd_pid_dir_fmt,fd,"","");
++	sfprintf(shp->stk,_fd_self_dir_fmt,fd,"","");
+# else
+sfprintf(shp->stk,"/dev/fd/%d", fd);
+# endif
+
+
+
+== proto.c ==
+
+It's not clear which error() is implied here. I saw the earlier
+comment that proto is intended to be light on requiring other
+libraries, so I just dropped in an obvious standalone version.
+
+--- ast.patched/src/cmd/proto/proto.c	2012-02-21 00:54:40.000000000 -0500
++++ ast.working/src/cmd/proto/proto.c	2014-04-01 18:27:34.000000000 -0400
+@@ -396,6 +396,15 @@
+
+#if !PROTO_STANDALONE
+#undef	error
++void
++error( int xit, const char *msg, ... )
++{
++	va_list ap;
++	va_start( ap, msg );
++	vfprintf( stderr, msg, ap );
++	va_end( ap );
++	exit( xit );
++}
+#endif
+
+typedef struct Sufcom_s
+
+
+
+== setlocale.c ==
+
+Just a missing #include, no big deal.
+
+--- ast.patched/src/lib/libast/comp/setlocale.c	2013-11-21 02:13:21.000000000 -0500
++++ ast.working/src/lib/libast/comp/setlocale.c	2014-04-01 16:11:28.000000000 -0400
+@@ -38,6 +38,7 @@
+#include <namval.h>
+#include <iconv.h>
+#include <codeset.h>
++#include <errno.h>
+
+#if ( _lib_wcwidth || _lib_wctomb ) && _hdr_wctype
+#include <wctype.h>
+
+
+
+== strexpr.c error() ==
+
+Just cleaning up a local symbol conflict. error is already something
+else in this code.
+
+--- ast.patched/src/lib/libast/string/strexpr.c	1997-09-02 13:51:29.000000000 -0400
++++ ast.working/src/lib/libast/string/strexpr.c	2014-04-01 17:11:17.000000000 -0400
+@@ -44,7 +44,7 @@
+#define peekchr(ex)	(*(ex)->nextchr)
+#define ungetchr(ex)	((ex)->nextchr--)
+
+-#define error(ex,msg)	return(seterror(ex,msg))
++#define err(ex,msg)	return(seterror(ex,msg))
+
+typedef struct	/* expression handle	*/
+{
+@@ -87,7 +87,7 @@
+case 0:
+ungetchr(ex);
+if (!precedence) return(0);
+-	error(ex, "more tokens expected");
++	err(ex, "more tokens expected");
+case '-':
+n = -expr(ex, 13);
+break;
+@@ -113,17 +113,17 @@
+case 0:
+goto done;
+case ')':
+-	if (!precedence) error(ex, "too many )'s");
++	if (!precedence) err(ex, "too many )'s");
+goto done;
+case '(':
+n = expr(ex, 1);
+if (getchr(ex) != ')')
+{
+ungetchr(ex);
+-	error(ex, "closing ) expected");
++	err(ex, "closing ) expected");
+}
+gotoperand:
+-	if (operand) error(ex, "operator expected");
++	if (operand) err(ex, "operator expected");
+operand = 1;
+continue;
+case '?':
+@@ -140,7 +140,7 @@
+if (getchr(ex) != ':')
+{
+ungetchr(ex);
+-	error(ex, ": expected for ? operator");
++	err(ex, ": expected for ? operator");
+}
+if (n)
+{
+@@ -189,7 +189,7 @@
+break;
+case '=':
+case '!':
+-	if (peekchr(ex) != '=') error(ex, "operator syntax error");
++	if (peekchr(ex) != '=') err(ex, "operator syntax error");
+if (precedence > 7) goto done;
+getchr(ex);
+x = expr(ex, 8);
+@@ -237,7 +237,7 @@
+if (precedence > 11) goto done;
+x = expr(ex, 12);
+if (c == '*') n *= x;
+-	else if (x == 0) error(ex, "divide by zero");
++	else if (x == 0) err(ex, "divide by zero");
+else if (c == '/') n /= x;
+else n %= x;
+break;
+@@ -246,15 +246,15 @@
+pos = --ex->nextchr;
+if (isdigit(c)) n = strton(ex->nextchr, &ex->nextchr, NiL, 0);
+else if (ex->convert) n = (*ex->convert)(ex->nextchr, &ex->nextchr, ex->handle);
+-	if (ex->nextchr == pos) error(ex, "syntax error");
++	if (ex->nextchr == pos) err(ex, "syntax error");
+goto gotoperand;
+}
+if (ex->errmsg) return(0);
+-	if (!operand) error(ex, "operand expected");
++	if (!operand) err(ex, "operand expected");
+}
+done:
+ungetchr(ex);
+-	if (!operand) error(ex, "operand expected");
++	if (!operand) err(ex, "operand expected");
+return(n);
+}

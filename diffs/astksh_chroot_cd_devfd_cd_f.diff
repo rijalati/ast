@@ -1,0 +1,401 @@
+diff -N -r -u original/src/cmd/ksh93/bltins/cd_pwd.c build_i386_64bit_opt/src/cmd/ksh93/bltins/cd_pwd.c
+--- src/cmd/ksh93/bltins/cd_pwd.c	2012-09-24 22:24:38.000000000 +0200
++++ src/cmd/ksh93/bltins/cd_pwd.c	2012-09-28 19:52:26.606313307 +0200
+@@ -19,8 +19,8 @@
+ ***********************************************************************/
+ #pragma prototyped
+ /*
+- * cd [-LP@]  [dirname]
+- * cd [-LP@]  [old] [new]
++ * cd [-LP@f]  [dirname]
++ * cd [-LP@f]  [old] [new]
+  * pwd [-LP]
+  *
+  *   David Korn
+@@ -68,6 +68,12 @@
+ 	NOT_USED(xattr);
+ #endif
+ 
++#ifdef AT_FDCWD
++	path = pathdevfd2relpathfd(path, &dir);
++	if (!path)
++		path = e_dot;
++#endif
++
+ #ifdef O_XATTR
+ 	if(xattr)
+ 	{
+@@ -152,12 +158,23 @@
+ 	int rval;
+ 	bool flag=false,xattr=false;
+ 	char *oldpwd;
++	int dirfd = shp->pwdfd;
+ 	int newdirfd;
+ 	Namval_t *opwdnod, *pwdnod;
+ 	if(sh_isoption(shp,SH_RESTRICTED))
+ 		errormsg(SH_DICT,ERROR_exit(1),e_restricted+4);
+ 	while((rval = optget(argv,sh_optcd))) switch(rval)
+ 	{
++#ifdef AT_FDCWD
++		case 'f':
++		case 'd':
++			errno = 0;
++			dirfd = strtol(opt_info.arg, (char **)NULL, 10);	
++			if ((errno != 0) || (dirfd < 0))
++				errormsg(SH_DICT, ERROR_exit(1),
++					"%s: invalid dir fd", opt_info.arg);
++			break;
++#endif
+ 		case 'L':
+ 			flag = false;
+ 			break;
+@@ -192,6 +209,10 @@
+ 		dir = nv_getval(opwdnod);
+ 	if(!dir || *dir==0)
+ 		errormsg(SH_DICT,ERROR_exit(1),argc==2?e_subst+4:e_direct);
++	if ((shp->pwdfd != dirfd) && (*dir == '/'))
++		errormsg(SH_DICT,ERROR_exit(1),
++			"Relative directory fd and abolute paths can not be used together.");
++
+ #if _WINIX
+ 	if(*dir != '/' && (dir[1]!=':'))
+ #else
+@@ -239,14 +260,18 @@
+ 			dir = sfstruse(shp->strbuf);
+ 		}
+ 	}
+-#ifdef O_XATTR
+-	if (xattr)
+-#   ifdef PATH_BFPATH
++	if (
++#if defined(O_XATTR) || defined(AT_FDCWD)
++#	ifdef O_XATTR
++		xattr ||
++#	endif
++		(shp->pwdfd != dirfd))
++#	ifdef PATH_BFPATH
+ 		cdpath = NULL;
+-#   else
++#	else
+ 		cdpath = "";
+-#   endif
+-#endif
++#	endif
++#endif /* defined(O_XATTR) || defined(AT_FDCWD) */
+ 
+ 	rval = -1;
+ 	do
+@@ -288,7 +313,7 @@
+ 					continue;
+ #endif /* SHOPT_FS_3D */
+ 		}
+-		rval = newdirfd = sh_diropenat(shp, shp->pwdfd,
++		rval = newdirfd = sh_diropenat(shp, ((dirfd >= 0)?dirfd:AT_FDCWD),
+ 			path_relative(shp,stakptr(PATH_OFFSET)), xattr);
+ 		if(newdirfd >=0)
+ 		{
+diff -N -r -u original/src/cmd/ksh93/data/builtins.c build_i386_64bit_opt/src/cmd/ksh93/data/builtins.c
+--- src/cmd/ksh93/data/builtins.c	2012-09-05 23:59:37.000000000 +0200
++++ src/cmd/ksh93/data/builtins.c	2012-09-28 20:16:18.180028106 +0200
+@@ -442,7 +442,7 @@
+ ;
+ 
+ const char sh_optcd[] =
+-"[-1c?\n@(#)$Id: cd (AT&T Research) 2012-07-10 $\n]"
++"[-1c?\n@(#)$Id: cd (AT&T Research) 2012-09-27 $\n]"
+ USAGE_LICENSE
+ "[+NAME?cd - change working directory ]"
+ "[+DESCRIPTION?\bcd\b changes the current working directory of the "
+@@ -478,6 +478,11 @@
+ 	"\bPATH_RESOLVE\b.  If \bPATH_RESOLVE\b is \bphysical\b, "
+ 	"then the behavior will be as if \b-P\b were specified.  Otherwise, "
+ 	"the behavior will be as if  \b-L\b were specified.]"
++#ifdef AT_FDCWD
++"[f]#[dirfd?Path is relative to this directory fd. Doing a cd .. below the "
++	"directory defined by the directory fd may result in undefined "
++	"behaviour.]"
++#endif
+ "[L?Handle each pathname component \b..\b in a logical fashion by moving "
+ 	"up one level by name in the present working directory.]"
+ "[P?The present working directory is first converted to an absolute pathname "
+diff -N -r -u original/src/cmd/ksh93/sh/io.c build_i386_64bit_opt/src/cmd/ksh93/sh/io.c
+--- src/cmd/ksh93/sh/io.c	2012-09-25 23:32:57.000000000 +0200
++++ src/cmd/ksh93/sh/io.c	2012-09-28 20:11:05.529200694 +0200
+@@ -756,6 +756,10 @@
+ 	register int		fd = -1;
+ 	mode_t			mode;
+ 	char			*e;
++#ifdef AT_FDCWD
++	const char		*apath;
++	int			dirfd = shp->pwdfd;
++#endif
+ 	va_list			ap;
+ 	va_start(ap, flags);
+ 	mode = (flags & O_CREAT) ? va_arg(ap, int) : 0;
+@@ -771,10 +775,37 @@
+ 		errno = ENOENT;
+ 		return(-1);
+ 	}
++#ifdef AT_FDCWD
++	if (path[0]=='/')
++	{
++		apath = pathdevfd2relpathfd(path, &dirfd);
++		/*
++		 * |pathdevfd2relpathfd()| will return |NULL| if
++		 * /dev/fd/${num} is not followed by a path.
++		 * Question is whether we can use |dup()| in
++		 * such a case (warning: |dup()| will cause both
++		 * old and new fd to share attributes like the
++		 * seek position)
++		 */
++		if (apath)
++			path = apath;
++		else if (path[strlen(path)-1]=='/')
++		{
++			/*
++			 * If |pathdevfd2relpathfd()| returned |NULL|
++			 * and the input path ends with a '/' (e.g.
++			 * "/dev/fd/89/") we can happily assume it's
++			 * a directory...
++			 */
++			path = e_dot;
++		}
++	}
++#endif /* AT_FDCWD */
+ 	if (path[0]=='/' && path[1]=='d' && path[2]=='e' && path[3]=='v' && path[4]=='/')
+ 	{
+ 		switch (path[5])
+ 		{
++#ifndef AT_FDCWD
+ 		case 'f':
+ 			if (path[6]=='d' && path[7]=='/')
+ 			{
+@@ -785,6 +816,7 @@
+ 					fd = -1;
+ 			}
+ 			break;
++#endif
+ 		case 's':
+ 			if (path[6]=='t' && path[7]=='d')
+ 				switch (path[8])
+@@ -825,13 +857,21 @@
+ 			struct stat st;
+ 			if (stat(path,&st) >=0)
+ 			{
++#ifdef AT_FDCWD
++				while((nfd = openat(dirfd,path,flags,st.st_mode))<0 && errno==EINTR)
++#else
+ 				while((nfd = open(path,flags,st.st_mode))<0 && errno==EINTR)
++#endif
+ 					errno = err;
+ 			}
+ 		}
+ 		else
+ 		{
++#ifdef AT_FDCWD
++			while((nfd = openat(dirfd,path,flags))<0 && errno==EINTR)
++#else
+ 			while((nfd = open(path,flags))<0 && errno==EINTR)
++#endif
+ 				errno = err;
+ 		}
+ 		if(nfd>=0)
+@@ -859,7 +899,11 @@
+ 			path = buf;
+ 		}
+ #endif
++#ifdef AT_FDCWD
++		while((fd = openat(dirfd, path, flags, mode)) < 0)
++#else
+ 		while((fd = open(path, flags, mode)) < 0)
++#endif
+ 			if(errno!=EINTR || shp->trapnote)
+ 				return(-1);
+  	}
+diff -N -r -u original/src/lib/libast/include/ast.h build_i386_64bit_opt/src/lib/libast/include/ast.h
+--- src/lib/libast/include/ast.h	2012-09-26 09:00:27.000000000 +0200
++++ src/lib/libast/include/ast.h	2012-09-28 19:50:58.142713789 +0200
+@@ -300,6 +300,7 @@
+ extern char*		pathcat_20100601(const char*, int, const char*, const char*, char*, size_t);
+ extern int		pathcd(const char*, const char*);
+ extern int		pathcheck(const char*, const char*, Pathcheck_t*);
++extern const char *	pathdevfd2relpathfd(const char *, int *);
+ extern int		pathexists(char*, int);
+ extern char*		pathfind(const char*, const char*, const char*, char*, size_t);
+ extern int		pathgetlink(const char*, char*, int);
+diff -N -r -u original/src/lib/libast/Makefile build_i386_64bit_opt/src/lib/libast/Makefile
+--- src/lib/libast/Makefile	2012-09-26 08:59:41.000000000 +0200
++++ src/lib/libast/Makefile	2012-09-28 19:50:58.143356117 +0200
+@@ -79,7 +79,7 @@
+ 	pathexists.c pathfind.c pathkey.c pathprobe.c pathrepl.c \
+ 	pathnative.c pathposix.c pathtemp.c pathtmp.c pathstat.c \
+ 	pathgetlink.c pathsetlink.c pathbin.c pathshell.c pathcd.c \
+-	pathprog.c \
++	pathdevfd2relpathfd.c pathprog.c \
+ 	fs3d.c ftwalk.c ftwflags.c fts.c \
+ 	astintercept.c conformance.c getenv.c setenviron.c \
+ 	optget.c optjoin.c optesc.c optctx.c strsort.c struniq.c \
+diff -N -r -u original/src/lib/libast/Mamfile build_i386_64bit_opt/src/lib/libast/Mamfile
+--- src/lib/libast/Mamfile	2012-09-28 07:35:09.000000000 +0200
++++ src/lib/libast/Mamfile	2012-09-28 20:00:23.252014005 +0200
+@@ -1197,6 +1197,18 @@
+ prev path/pathcd.c
+ exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Icomp -Iinclude -Istd -D_PACKAGE_ast -c path/pathcd.c
+ done pathcd.o generated
++make pathdevfd2relpathfd.o
++make path/pathdevfd2relpathfd.c
++make include/stk.h implicit
++prev include/sfio.h implicit
++done include/stk.h
++prev include/error.h implicit
++prev include/ast.h implicit
++done path/pathdevfd2relpathfd.c
++meta pathdevfd2relpathfd.o %.c>%.o path/pathdevfd2relpathfd.c pathdevfd2relpathfd
++prev path/pathdevfd2relpathfd.c
++exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Icomp -Iinclude -Istd -D_PACKAGE_ast -c path/pathdevfd2relpathfd.c
++done pathdevfd2relpathfd.o generated
+ make pathprog.o
+ make path/pathprog.c
+ make FEATURE/prog implicit
+@@ -6132,7 +6144,7 @@
+ exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Icomp -Iinclude -Istd -D_PACKAGE_ast -c obsolete/spawn.c
+ done spawn.o generated
+ exec - ${AR} rc libast.a state.o transition.o opendir.o readdir.o rewinddir.o seekdir.o telldir.o getcwd.o fastfind.o hashalloc.o hashdump.o hashfree.o hashlast.o hashlook.o hashscan.o hashsize.o hashview.o hashwalk.o memhash.o memsum.o strhash.o strkey.o strsum.o stracmp.o strnacmp.o ccmap.o ccmapid.o ccnative.o chresc.o chrtoi.o
+-exec - ${AR} rc libast.a streval.o strexpr.o strmatch.o strcopy.o modei.o modex.o strmode.o strlcat.o strlcpy.o strlook.o strncopy.o strsearch.o strpsearch.o stresc.o stropt.o strtape.o strpcmp.o strnpcmp.o strvcmp.o strnvcmp.o tok.o tokline.o tokscan.o pathaccess.o pathcat.o pathcanon.o pathcheck.o pathpath.o pathexists.o pathfind.o pathkey.o pathprobe.o pathrepl.o pathnative.o pathposix.o pathtemp.o pathtmp.o pathstat.o pathgetlink.o pathsetlink.o pathbin.o pathshell.o pathcd.o pathprog.o fs3d.o ftwalk.o ftwflags.o fts.o astintercept.o conformance.o getenv.o setenviron.o optget.o optjoin.o optesc.o optctx.o strsort.o struniq.o magic.o mime.o mimetype.o signal.o sigflag.o systrace.o error.o errorf.o errormsg.o errorx.o localeconv.o setlocale.o translate.o catopen.o iconv.o lc.o lctab.o mc.o base64.o qp.o recfmt.o recstr.o reclen.o fmtrec.o fmtbase.o fmtbuf.o fmtclock.o fmtdev.o fmtelapsed.o fmterror.o fmtesc.o fmtfmt.o fmtfs.o fmtident.o fmtint.o fmtip4.o fmtip6.o fmtls.o fmtmatch.o fmtmode.o fmtnum.o fmtperm.o fmtre.o
++exec - ${AR} rc libast.a streval.o strexpr.o strmatch.o strcopy.o modei.o modex.o strmode.o strlcat.o strlcpy.o strlook.o strncopy.o strsearch.o strpsearch.o stresc.o stropt.o strtape.o strpcmp.o strnpcmp.o strvcmp.o strnvcmp.o tok.o tokline.o tokscan.o pathaccess.o pathcat.o pathcanon.o pathcheck.o pathpath.o pathexists.o pathfind.o pathkey.o pathprobe.o pathrepl.o pathnative.o pathposix.o pathtemp.o pathtmp.o pathstat.o pathgetlink.o pathsetlink.o pathbin.o pathshell.o pathcd.o pathdevfd2relpathfd.o pathprog.o fs3d.o ftwalk.o ftwflags.o fts.o astintercept.o conformance.o getenv.o setenviron.o optget.o optjoin.o optesc.o optctx.o strsort.o struniq.o magic.o mime.o mimetype.o signal.o sigflag.o systrace.o error.o errorf.o errormsg.o errorx.o localeconv.o setlocale.o translate.o catopen.o iconv.o lc.o lctab.o mc.o base64.o qp.o recfmt.o recstr.o reclen.o fmtrec.o fmtbase.o fmtbuf.o fmtclock.o fmtdev.o fmtelapsed.o fmterror.o fmtesc.o fmtfmt.o fmtfs.o fmtident.o fmtint.o fmtip4.o fmtip6.o fmtls.o fmtmatch.o fmtmode.o fmtnum.o fmtperm.o fmtre.o
+ exec - ${AR} rc libast.a fmttime.o fmtuid.o fmtgid.o fmtsignal.o fmtscale.o fmttmx.o fmttv.o fmtversion.o strelapsed.o strperm.o struid.o strgid.o strtoip4.o strtoip6.o stack.o stk.o swapget.o swapmem.o swapop.o swapput.o sigdata.o sigcrit.o sigunblock.o procopen.o procclose.o procrun.o procfree.o tmdate.o tmequiv.o tmfix.o tmfmt.o tmform.o tmgoff.o tminit.o tmleap.o tmlex.o tmlocale.o tmmake.o tmpoff.o tmscan.o tmsleep.o tmtime.o tmtype.o tmweek.o tmword.o tmzone.o tmxdate.o tmxduration.o tmxfmt.o tmxgettime.o tmxleap.o tmxmake.o tmxscan.o tmxsettime.o tmxsleep.o tmxtime.o tmxtouch.o tvcmp.o tvgettime.o tvsettime.o tvsleep.o tvtouch.o cmdarg.o vecargs.o vecfile.o vecfree.o vecload.o vecstring.o univdata.o touch.o mnt.o debug.o memccpy.o memchr.o memcmp.o memcpy.o memdup.o memmove.o memset.o mkdir.o mkfifo.o mknod.o rmdir.o remove.o rename.o link.o unlink.o strdup.o strchr.o strrchr.o strstr.o strtod.o strtold.o strtol.o strtoll.o strtoul.o strtoull.o strton.o strtonll.o strntod.o strntold.o
+ exec - ${AR} rc libast.a strnton.o strntonll.o strntol.o strntoll.o strntoul.o strntoull.o strcasecmp.o strncasecmp.o strerror.o mktemp.o tmpnam.o fsync.o execlp.o execve.o execvp.o execvpe.o spawnveg.o spawnvex.o vfork.o killpg.o hsearch.o tsearch.o getlogin.o putenv.o setenv.o unsetenv.o lstat.o statvfs.o eaccess.o gross.o omitted.o readlink.o symlink.o getpgrp.o setpgid.o setsid.o waitpid.o creat64.o fcntl.o open.o atexit.o getdents.o getwd.o dup2.o errno.o getpreroot.o ispreroot.o realopen.o setpreroot.o getgroups.o mount.o system.o iblocks.o modedata.o tmdata.o memfatal.o sfkeyprintf.o sfdcdio.o sfdcdos.o sfdcfilter.o sfdcseekable.o sfdcslow.o sfdcsubstr.o sfdctee.o sfdcunion.o sfdcmore.o sfdcprefix.o wc.o wc2utf8.o basename.o closelog.o dirname.o fmtmsglib.o fnmatch.o ftw.o getdate.o getsubopt.o glob.o nftw.o openlog.o re_comp.o resolvepath.o realpath.o regcmp.o regexp.o setlogmask.o strftime.o strptime.o swab.o syslog.o tempnam.o wordexp.o mktime.o regalloc.o regclass.o regcoll.o regcomp.o regcache.o regdecomp.o regerror.o regexec.o
+ exec - ${AR} rc libast.a regfatal.o reginit.o regnexec.o regsubcomp.o regsubexec.o regsub.o regrecord.o regrexec.o regstat.o dtclose.o dtdisc.o dthash.o dtlist.o dtmethod.o dtopen.o dtstat.o dtstrhash.o dttree.o dtuser.o dtview.o dtwalk.o dtnew.o dtcomp.o sfclose.o sfclrlock.o sfdisc.o sfdlen.o sfexcept.o sfgetl.o sfgetu.o sfcvt.o sfecvt.o sffcvt.o sfextern.o sffilbuf.o sfflsbuf.o sfprints.o sfgetd.o sfgetr.o sfllen.o sfmode.o sfmove.o sfnew.o sfpkrd.o sfnotify.o sfnputc.o sfopen.o sfpeek.o sfpoll.o sfpool.o sfpopen.o sfprintf.o sfputd.o sfputl.o sfputr.o sfputu.o sfrd.o sfread.o sfreserve.o sfscanf.o sfseek.o sfset.o sfsetbuf.o sfsetfd.o sfsize.o sfsk.o sfstack.o sfstrtod.o sfsync.o sfswap.o sftable.o sftell.o sftmp.o sfungetc.o sfvprintf.o sfvscanf.o sfwr.o sfwrite.o sfpurge.o sfraise.o sfwalk.o sfgetm.o sfmutex.o sfputm.o sfresize.o _sfclrerr.o _sfeof.o _sferror.o _sffileno.o _sfopen.o _sfstacked.o _sfvalue.o _sfgetc.o _sfgetl.o _sfgetl2.o _sfgetu.o _sfgetu2.o _sfdlen.o _sfllen.o _sfslen.o _sfulen.o
+diff -N -r -u original/src/lib/libast/path/pathdevfd2relpathfd.c build_i386_64bit_opt/src/lib/libast/path/pathdevfd2relpathfd.c
+--- src/lib/libast/path/pathdevfd2relpathfd.c	1970-01-01 01:00:00.000000000 +0100
++++ src/lib/libast/path/pathdevfd2relpathfd.c	2012-09-28 19:50:58.149443454 +0200
+@@ -0,0 +1,93 @@
++/***********************************************************************
++*                                                                      *
++*               This software is part of the ast package               *
++*          Copyright (c) 1985-2011 AT&T Intellectual Property          *
++*                      and is licensed under the                       *
++*                 Eclipse Public License, Version 1.0                  *
++*                    by AT&T Intellectual Property                     *
++*                                                                      *
++*                A copy of the License is available at                 *
++*          http://www.eclipse.org/org/documents/epl-v10.html           *
++*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
++*                                                                      *
++*              Information and Software Systems Research               *
++*                            AT&T Research                             *
++*                           Florham Park NJ                            *
++*                                                                      *
++*               Roland Mainz <roland.mainz@nrubsig.org>                *
++*                                                                      *
++***********************************************************************/
++#pragma prototyped
++
++/*
++ * Strip leading /dev/fd/<num>... from paths and return relative path
++ * to that file descriptor
++ */
++
++#include <ast.h>
++#include <stdlib.h>
++#include <ctype.h>
++#include <errno.h>
++
++/*
++ * Extract /dev/fd part and either return the original path
++ * if it does not begin with /dev/fd/<number> or extract
++ * the <number> from /dev/fd/<number>... and return the
++ * remaining path relative to fd <number>.
++ * If nothing is left in the remaining relative path return
++ * |NULL|.
++ *
++ * Examples: 
++ * path=|/dev/fd/| should return |/dev/fd/| and not touch fd_p
++ * path=|/dev/fd/45| should return NULL and *fd_p=45
++ * path=|/dev/fd/45/| should return NULL and *fd_p=45
++ * path=|/dev/fd/45/dev|| should return |dev|, *fd_p=45
++ * path=|//dev/fd/45/dev| should return |//dev/fd/45/dev| and
++ *      not touch fd_p
++ */
++const char *pathdevfd2relpathfd(const char *p, int *fd_p)
++{
++	char		buff[32];
++	char 		*b;
++	const char	*s;
++	int 		fd;
++
++	/*
++         * We do not use |memcpy()| here since this "manual"
++	 * version is faster and uses less code space
++	 */
++	if (!(p[0]=='/' && p[1]=='d' && p[2]=='e' && p[3]=='v' && p[4]=='/' &&
++	      p[5]=='f' && p[6]=='d' && p[7]=='/' &&
++	      isdigit(p[8])))
++		return (p);
++
++	s=p+8;
++	b=buff;
++	while (isdigit(*s) && *s!='\0' && (b < (buff+sizeof(buff)-1)))
++		*b++ = *s++;
++	*b='\0';
++
++	errno=0;
++	fd=strtol(buff, NULL, 10);
++	if ((errno != 0) || (fd < 0))
++		return (p);
++
++	/*
++	 * Eat all '/' to make sure the path we return
++	 * is really a relative one (relative to the
++	 * fd)
++	 */
++	while (*s=='/')
++		s++;
++
++	*fd_p=fd;
++
++	/*
++	 * Make sure we return a relative path to the fd we returned,
++	 * an absolute one would screw things up...
++	 */
++	if (*s=='\0')
++		s=NULL;
++	return (s);
++}
++
+diff -N -r -u original/src/lib/libast/sfio/_sfopen.c build_i386_64bit_opt/src/lib/libast/sfio/_sfopen.c
+--- src/lib/libast/sfio/_sfopen.c	2012-08-31 23:25:24.000000000 +0200
++++ src/lib/libast/sfio/_sfopen.c	2012-09-28 19:50:58.150069293 +0200
+@@ -57,9 +57,30 @@
+ {
+ 	int	fd, oldfd, oflags, fflags, sflags;
+ 	SFMTXDECL(f);
++#ifdef AT_FDCWD
++	if (file)
++	{
++		const char *afile;
+ 
+-	if (file && *file == '/')
+-		cwd = AT_FDCWD;
++		if (*file == '/')
++		{
++			cwd = AT_FDCWD;
++			afile = pathdevfd2relpathfd(file, &cwd);
++			/*
++			 * |pathdevfd2relpathfd| will return |NULL| if
++        	 	 *  /dev/fd/${num} is not followed by a path.
++		 	 * Question is whether we can use |dup()| in
++			 * such a case (warning: |dup()| will cause
++			 * both old and new fd to share attributes
++			 * like the seek position)
++		 	 */
++			if (afile)
++				file = afile;
++			else if (file[strlen(file)-1]=='/')
++				file = ".";
++		}
++	}
++#endif
+ #if !defined(sysopenatf)
+ 	if (cwd != AT_FDCWD)
+ 	{

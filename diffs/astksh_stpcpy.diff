@@ -1,0 +1,335 @@
+diff -N -r -u original/src/cmd/ksh93/edit/emacs.c build_i386_64bit_debug_stpcpy/src/cmd/ksh93/edit/emacs.c
+--- src/cmd/ksh93/edit/emacs.c	2013-07-11 16:30:21.000000000 +0200
++++ src/cmd/ksh93/edit/emacs.c	2013-07-22 16:20:49.990593187 +0200
+@@ -1178,25 +1178,26 @@
+ 		case cntl('H'):		/* ^X^H show history info */
+ 			{
+ 				char hbuf[MAXLINE];
++				char *hbn=hbuf; /* hbuf_next */
+ 
+-				strcpy(hbuf, "Current command ");
+-				strcat(hbuf, itos(hline));
++				hbn=stpcpy(hbn, "Current command ");
++				hbn=stpcpy(hbn, itos(hline));
+ 				if (hloff)
+ 				{
+-					strcat(hbuf, " (line ");
+-					strcat(hbuf, itos(hloff+1));
+-					strcat(hbuf, ")");
++					hbn=stpcpy(hbn, " (line ");
++					hbn=stpcpy(hbn, itos(hloff+1));
++					hbn=stpcpy(hbn, ")");
+ 				}
+ 				if ((hline != location.hist_command) ||
+ 				    (hloff != location.hist_line))
+ 				{
+-					strcat(hbuf, "; Previous command ");
+-					strcat(hbuf, itos(location.hist_command));
++					hbn=stpcpy(hbn, "; Previous command ");
++					hbn=stpcpy(hbn, itos(location.hist_command));
+ 					if (location.hist_line)
+ 					{
+-						strcat(hbuf, " (line ");
+-						strcat(hbuf, itos(location.hist_line+1));
+-						strcat(hbuf, ")");
++						hbn=stpcpy(hbn, " (line ");
++						hbn=stpcpy(hbn, itos(location.hist_line+1));
++						hbn=stpcpy(hbn, ")");
+ 					}
+ 				}
+ 				show_info(ep,hbuf);
+@@ -1206,19 +1207,20 @@
+ 		case cntl('D'):		/* ^X^D show debugging info */
+ 			{
+ 				char debugbuf[MAXLINE];
++				char *dbbn = debugbuf; /* debugbuf_next */
+ 
+-				strcpy(debugbuf, "count=");
+-				strcat(debugbuf, itos(count));
+-				strcat(debugbuf, " eol=");
+-				strcat(debugbuf, itos(eol));
+-				strcat(debugbuf, " cur=");
+-				strcat(debugbuf, itos(cur));
+-				strcat(debugbuf, " crallowed=");
+-				strcat(debugbuf, itos(crallowed));
+-				strcat(debugbuf, " plen=");
+-				strcat(debugbuf, itos(plen));
+-				strcat(debugbuf, " w_size=");
+-				strcat(debugbuf, itos(w_size));
++				dbbn=stpcpy(dbbn, "count=");
++				dbbn=stpcpy(dbbn, itos(count));
++				dbbn=stpcpy(dbbn, " eol=");
++				dbbn=stpcpy(dbbn, itos(eol));
++				dbbn=stpcpy(dbbn, " cur=");
++				dbbn=stpcpy(dbbn, itos(cur));
++				dbbn=stpcpy(dbbn, " crallowed=");
++				dbbn=stpcpy(dbbn, itos(crallowed));
++				dbbn=stpcpy(dbbn, " plen=");
++				dbbn=stpcpy(dbbn, itos(plen));
++				dbbn=stpcpy(dbbn, " w_size=");
++				dbbn=stpcpy(dbbn, itos(w_size));
+ 
+ 				show_info(ep,debugbuf);
+ 				return;
+diff -N -r -u original/src/lib/libast/features/lib build_i386_64bit_debug_stpcpy/src/lib/libast/features/lib
+--- src/lib/libast/features/lib	2013-07-20 00:03:19.000000000 +0200
++++ src/lib/libast/features/lib	2013-07-22 16:51:56.460982771 +0200
+@@ -45,7 +45,7 @@
+ lib	setpgid,setpgrp,setpgrp2,setreuid,setsid,setuid,sigaction
+ lib	sigprocmask,sigsetmask,sigunblock,sigvec
+ lib	strchr,strcoll,strdup,strerror,strcasecmp,strncasecmp,strrchr,strstr
+-lib	strmode,strxfrm,strftime,swab,symlink,sysconf,sysinfo,syslog
++lib	stpcpy,stpncpy,strmode,strxfrm,strftime,swab,symlink,sysconf,sysinfo,syslog
+ lib	telldir,tmpnam,tzset,universe,unlink,utime,wctype
+ lib	ftruncate,truncate
+ lib	creat64,ftruncate64,lseek64,open64,truncate64 -D_LARGEFILE64_SOURCE fcntl.h unistd.h
+diff -N -r -u original/src/lib/libast/features/map.c build_i386_64bit_debug_stpcpy/src/lib/libast/features/map.c
+--- src/lib/libast/features/map.c	2013-05-24 20:05:04.000000000 +0200
++++ src/lib/libast/features/map.c	2013-07-22 17:27:18.388947053 +0200
+@@ -296,6 +296,16 @@
+ 	printf("#define signal      	_ast_signal\n");
+ 	printf("#undef	sigunblock\n");
+ 	printf("#define sigunblock      _ast_sigunblock\n");
++#if !_lib_stpcpy
++	printf("#undef	stpcpy\n");
++	printf("#define stpcpy		_ast_stpcpy\n");
++	printf("extern char *		stpcpy(char *, const char *);\n");
++#endif
++#if !_lib_stpncpy
++	printf("#undef	stpncpy\n");
++	printf("#define stpncpy		_ast_stpncpy\n");
++	printf("extern char *		stpncpy(char *, const char *, size_t);\n");
++#endif
+ 	printf("#undef	stracmp\n");
+ 	printf("#define stracmp		_ast_stracmp\n");
+ 	printf("#undef	strcopy\n");
+diff -N -r -u original/src/lib/libast/features/sys build_i386_64bit_debug_stpcpy/src/lib/libast/features/sys
+--- src/lib/libast/features/sys	2013-07-19 23:54:10.000000000 +0200
++++ src/lib/libast/features/sys	2013-07-22 16:20:49.994593474 +0200
+@@ -313,6 +313,8 @@
+ extern	strchr		char*		(const char*, int)
+ extern	strcmp		int		(const char*, const char*)
+ extern	strcoll		int		(const char*, const char*)
++extern	stpcpy		char*		(char*, const char*)
++extern	stpncpy		char*		(char*, const char*, size_t)
+ extern	strcpy		char*		(char*, const char*)
+ extern	strcspn		size_t		(const char*, const char*)
+ extern	strdup		char*		(const char*)
+diff -N -r -u original/src/lib/libast/Makefile build_i386_64bit_debug_stpcpy/src/lib/libast/Makefile
+--- src/lib/libast/Makefile	2013-06-25 18:52:16.000000000 +0200
++++ src/lib/libast/Makefile	2013-07-22 16:20:49.995593550 +0200
+@@ -71,7 +71,7 @@
+ 	stracmp.c strnacmp.c \
+ 	ccmap.c ccmapid.c ccnative.c \
+ 	chresc.c chrtoi.c streval.c strexpr.c strmatch.c strcopy.c \
+-	modelib.h modei.c modex.c strmode.c \
++	modelib.h modei.c modex.c stpcpy.c stpncpy.c strmode.c \
+ 	strlcat.c strlcpy.c strlook.c strncopy.c strsearch.c strpsearch.c \
+ 	stresc.c stropt.c strtape.c strpcmp.c strnpcmp.c strvcmp.c strnvcmp.c \
+ 	tok.c tokline.c tokscan.c \
+diff -N -r -u original/src/lib/libast/Mamfile build_i386_64bit_debug_stpcpy/src/lib/libast/Mamfile
+--- src/lib/libast/Mamfile	2013-07-20 03:17:25.000000000 +0200
++++ src/lib/libast/Mamfile	2013-07-22 16:22:04.513923274 +0200
+@@ -762,6 +762,24 @@
+ prev string/chrtoi.c
+ exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Icomp -Iinclude -Istd -D_PACKAGE_ast -c string/chrtoi.c
+ done chrtoi.o generated
++make stpcpy.o
++make string/stpcpy.c
++prev ast_map.h implicit
++prev include/ast.h implicit
++done string/stpcpy.c
++meta stpcpy.o %.c>%.o string/stpcpy.c stpcpy
++prev string/stpcpy.c
++exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Icomp -Iinclude -Istd -D_PACKAGE_ast -c string/stpcpy.c
++done stpcpy.o generated
++make stpncpy.o
++make string/stpncpy.c
++prev ast_map.h implicit
++prev include/ast.h implicit
++done string/stpncpy.c
++meta stpncpy.o %.c>%.o string/stpncpy.c stpncpy
++prev string/stpncpy.c
++exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Icomp -Iinclude -Istd -D_PACKAGE_ast -c string/stpncpy.c
++done stpncpy.o generated
+ make streval.o
+ make string/streval.c
+ prev include/ast.h implicit
+@@ -835,6 +853,7 @@
+ prev string/strlcat.c
+ exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Icomp -Iinclude -Istd -D_PACKAGE_ast -c string/strlcat.c
+ done strlcat.o generated
++
+ make strlcpy.o
+ make string/strlcpy.c
+ prev ast_map.h implicit
+@@ -844,6 +863,7 @@
+ prev string/strlcpy.c
+ exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Icomp -Iinclude -Istd -D_PACKAGE_ast -c string/strlcpy.c
+ done strlcpy.o generated
++
+ make strlook.o
+ make string/strlook.c
+ prev include/ast.h implicit
+@@ -6185,7 +6205,7 @@
+ exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Icomp -Iinclude -Istd -D_PACKAGE_ast -c obsolete/spawn.c
+ done spawn.o generated
+ exec - ${AR} rc libast.a state.o intercept.o transition.o opendir.o readdir.o rewinddir.o seekdir.o telldir.o getcwd.o fastfind.o hashalloc.o hashdump.o hashfree.o hashlast.o hashlook.o hashscan.o hashsize.o hashview.o hashwalk.o memhash.o memsum.o strhash.o strkey.o strsum.o stracmp.o strnacmp.o ccmap.o ccmapid.o ccnative.o chresc.o
+-exec - ${AR} rc libast.a chrtoi.o streval.o strexpr.o strmatch.o strcopy.o modei.o modex.o strmode.o strlcat.o strlcpy.o strlook.o strncopy.o strsearch.o strpsearch.o stresc.o stropt.o strtape.o strpcmp.o strnpcmp.o strvcmp.o strnvcmp.o tok.o tokline.o tokscan.o pathaccess.o pathcat.o pathcanon.o pathcheck.o pathopen.o pathpath.o pathexists.o pathfind.o pathkey.o pathprobe.o pathrepl.o pathnative.o pathposix.o pathtemp.o pathtmp.o pathstat.o pathgetlink.o pathsetlink.o pathbin.o pathshell.o pathcd.o pathprog.o fs3d.o ftwalk.o ftwflags.o fts.o astintercept.o conformance.o getenv.o setenviron.o optget.o optjoin.o optesc.o optctx.o strsort.o struniq.o magic.o mime.o mimetype.o signal.o sigflag.o systrace.o error.o errorf.o errormsg.o errorx.o localeconv.o setlocale.o translate.o catopen.o iconv.o lc.o lctab.o mc.o base64.o qp.o recfmt.o recstr.o reclen.o fmtrec.o fmtbase.o fmtbuf.o fmtclock.o fmtdev.o fmtelapsed.o fmterror.o fmtesc.o fmtfmt.o fmtfs.o fmtident.o fmtint.o fmtip4.o fmtip6.o fmtls.o fmtmatch.o fmtmode.o fmtnum.o
++exec - ${AR} rc libast.a chrtoi.o streval.o strexpr.o strmatch.o strcopy.o modei.o modex.o stpcpy.o strmode.o strlcat.o strlcpy.o strlook.o strncopy.o strsearch.o strpsearch.o stresc.o stropt.o strtape.o strpcmp.o strnpcmp.o strvcmp.o strnvcmp.o tok.o tokline.o tokscan.o pathaccess.o pathcat.o pathcanon.o pathcheck.o pathopen.o pathpath.o pathexists.o pathfind.o pathkey.o pathprobe.o pathrepl.o pathnative.o pathposix.o pathtemp.o pathtmp.o pathstat.o pathgetlink.o pathsetlink.o pathbin.o pathshell.o pathcd.o pathprog.o fs3d.o ftwalk.o ftwflags.o fts.o astintercept.o conformance.o getenv.o setenviron.o optget.o optjoin.o optesc.o optctx.o strsort.o struniq.o magic.o mime.o mimetype.o signal.o sigflag.o systrace.o error.o errorf.o errormsg.o errorx.o localeconv.o setlocale.o translate.o catopen.o iconv.o lc.o lctab.o mc.o base64.o qp.o recfmt.o recstr.o reclen.o fmtrec.o fmtbase.o fmtbuf.o fmtclock.o fmtdev.o fmtelapsed.o fmterror.o fmtesc.o fmtfmt.o fmtfs.o fmtident.o fmtint.o fmtip4.o fmtip6.o fmtls.o fmtmatch.o fmtmode.o fmtnum.o
+ exec - ${AR} rc libast.a fmtperm.o fmtre.o fmttime.o fmtuid.o fmtgid.o fmtsignal.o fmtscale.o fmttmx.o fmttv.o fmtversion.o strelapsed.o strperm.o struid.o strgid.o strtoip4.o strtoip6.o stack.o stk.o swapget.o swapmem.o swapop.o swapput.o sigdata.o sigcrit.o sigunblock.o procopen.o procclose.o procrun.o procfree.o tmdate.o tmequiv.o tmfix.o tmfmt.o tmform.o tmgoff.o tminit.o tmleap.o tmlex.o tmlocale.o tmmake.o tmpoff.o tmscan.o tmsleep.o tmtime.o tmtype.o tmweek.o tmword.o tmzone.o tmxdate.o tmxduration.o tmxfmt.o tmxgettime.o tmxleap.o tmxmake.o tmxscan.o tmxsettime.o tmxsleep.o tmxtime.o tmxtouch.o tvcmp.o tvgettime.o tvsettime.o tvsleep.o tvtouch.o cmdarg.o vecargs.o vecfile.o vecfree.o vecload.o vecstring.o univdata.o touch.o mnt.o debug.o memccpy.o memchr.o memcmp.o memcpy.o memdup.o memmove.o memset.o mkdir.o mkfifo.o mknod.o rmdir.o remove.o rename.o link.o unlink.o strdup.o strchr.o strrchr.o strstr.o strtod.o strtold.o strtol.o strtoll.o strtoul.o strtoull.o strton.o strtonll.o
+ exec - ${AR} rc libast.a strntod.o strntold.o strnton.o strntonll.o strntol.o strntoll.o strntoul.o strntoull.o strcasecmp.o strncasecmp.o strerror.o mktemp.o tmpnam.o fsync.o execlp.o execve.o execvp.o execvpe.o spawnveg.o spawnvex.o vfork.o killpg.o hsearch.o tsearch.o getlogin.o putenv.o setenv.o unsetenv.o lstat.o statvfs.o eaccess.o gross.o omitted.o readlink.o symlink.o getpgrp.o setpgid.o setsid.o waitpid.o creat64.o at.o atexit.o getdents.o getwd.o dup2.o errno.o getpreroot.o ispreroot.o realopen.o setpreroot.o getgroups.o mount.o system.o iblocks.o modedata.o tmdata.o memfatal.o sfkeyprintf.o sfdcdio.o sfdcdos.o sfdcfilter.o sfdcseekable.o sfdcslow.o sfdcsubstr.o sfdctee.o sfdcunion.o sfdcmore.o sfdcprefix.o wc.o wc2utf8.o basename.o closelog.o dirname.o fmtmsglib.o fnmatch.o ftw.o getdate.o getsubopt.o glob.o nftw.o openlog.o re_comp.o resolvepath.o realpath.o regcmp.o regexp.o setlogmask.o strftime.o strptime.o swab.o syslog.o tempnam.o wordexp.o mktime.o regalloc.o regclass.o regcoll.o regcomp.o regcache.o regdecomp.o regerror.o
+ exec - ${AR} rc libast.a regexec.o regfatal.o reginit.o regnexec.o regsubcomp.o regsubexec.o regsub.o regrecord.o regrexec.o regstat.o dtclose.o dtdisc.o dthash.o dtlist.o dtmethod.o dtopen.o dtrehash.o dtstat.o dtstrhash.o dttree.o dtuser.o dtview.o dtwalk.o dtnew.o dtcomp.o sfclose.o sfclrlock.o sfdisc.o sfdlen.o sfexcept.o sfgetl.o sfgetu.o sfcvt.o sfecvt.o sffcvt.o sfextern.o sffilbuf.o sfflsbuf.o sfprints.o sfgetd.o sfgetr.o sfllen.o sfmode.o sfmove.o sfnew.o sfpkrd.o sfnotify.o sfnputc.o sfopen.o sfpeek.o sfpoll.o sfpool.o sfpopen.o sfprintf.o sfputd.o sfputl.o sfputr.o sfputu.o sfrd.o sfread.o sfreserve.o sfscanf.o sfseek.o sfset.o sfsetbuf.o sfsetfd.o sfsize.o sfsk.o sfstack.o sfstrtod.o sfsync.o sfswap.o sftable.o sftell.o sftmp.o sfungetc.o sfvprintf.o sfvscanf.o sfwr.o sfwrite.o sfpurge.o sfraise.o sfwalk.o sfgetm.o sfmutex.o sfputm.o sfresize.o sfgetwc.o sfputwc.o _sfclrerr.o _sfeof.o _sferror.o _sffileno.o _sfopen.o _sfstacked.o _sfvalue.o _sfgetc.o _sfgetl.o _sfgetl2.o _sfgetu.o _sfgetu2.o
+diff -N -r -u original/src/lib/libast/string/stpcpy.c build_i386_64bit_debug_stpcpy/src/lib/libast/string/stpcpy.c
+--- src/lib/libast/string/stpcpy.c	1970-01-01 01:00:00.000000000 +0100
++++ src/lib/libast/string/stpcpy.c	2013-07-22 17:28:25.469575369 +0200
+@@ -0,0 +1,59 @@
++/***********************************************************************
++*                                                                      *
++*               This software is part of the ast package               *
++*             Copyright (c) 2012 AT&T Intellectual Property            *
++*                      and is licensed under the                       *
++*                 Eclipse Public License, Version 1.0                  *
++*                    by AT&T Intellectual Property                     *
++*                                                                      *
++*                A copy of the License is available at                 *
++*          http://www.eclipse.org/org/documents/epl-v10.html           *
++*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
++*                                                                      *
++*              Information and Software Systems Research               *
++*                            AT&T Research                             *
++*                           Florham Park NJ                            *
++*                                                                      *
++*                                                                      *
++*                 Roland Mainz <roland.mainz@nrubsig.org>              *
++*                                                                      *
++***********************************************************************/
++#pragma prototyped
++/*
++ * |stpcpy()| implementation
++ */
++
++#define stpcpy		______stpcpy
++
++#include <ast.h>
++
++#undef	stpcpy
++
++#undef	_def_map_ast
++#include <ast_map.h>
++
++#if _lib_stpcpy
++
++NoN(stpcpy)
++
++#else
++
++#if defined(__EXPORT__)
++#define extern	__EXPORT__
++#endif
++
++/*
++ * |stpcpy| - like |strcpy()| but returns the end of the buffer
++ *
++ * Copy string s2 to s1.  s1 must be large enough.
++ * return s1-1 (position of string terminator ('\0') in
++ * destination buffer).
++ */
++char *stpcpy(char *s1, const char *s2)
++{
++	while (*s1++ = *s2++)
++		;
++	return (s1-1);
++}
++
++#endif
+diff -N -r -u original/src/lib/libast/string/stpncpy.c build_i386_64bit_debug_stpcpy/src/lib/libast/string/stpncpy.c
+--- src/lib/libast/string/stpncpy.c	1970-01-01 01:00:00.000000000 +0100
++++ src/lib/libast/string/stpncpy.c	2013-07-22 17:28:15.440734973 +0200
+@@ -0,0 +1,65 @@
++/***********************************************************************
++*                                                                      *
++*               This software is part of the ast package               *
++*             Copyright (c) 2012 AT&T Intellectual Property            *
++*                      and is licensed under the                       *
++*                 Eclipse Public License, Version 1.0                  *
++*                    by AT&T Intellectual Property                     *
++*                                                                      *
++*                A copy of the License is available at                 *
++*          http://www.eclipse.org/org/documents/epl-v10.html           *
++*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
++*                                                                      *
++*              Information and Software Systems Research               *
++*                            AT&T Research                             *
++*                           Florham Park NJ                            *
++*                                                                      *
++*                                                                      *
++*                 Roland Mainz <roland.mainz@nrubsig.org>              *
++*                                                                      *
++***********************************************************************/
++#pragma prototyped
++/*
++ * |stpncpy()| implementation
++ */
++
++#define stpncpy		______stpncpy
++
++#include <ast.h>
++
++#undef	stpncpy
++
++#undef	_def_map_ast
++#include <ast_map.h>
++
++#if _lib_stpncpy
++
++NoN(stpncpy)
++
++#else
++
++#if defined(__EXPORT__)
++#define extern	__EXPORT__
++#endif
++
++
++/*
++ * |stpncpy| - like |strncpy()| but returns the end of the buffer
++ *
++ * Copy s2 to s1, truncating or '\0'-padding to always copy n
++ * bytes, return position of string terminator ('\0') in
++ * destination buffer or if s1 is not '\0'-terminated, s1+n.
++ *
++ * See http://pubs.opengroup.org/onlinepubs/9699919799/functions/strncpy.html
++ */
++char *
++stpncpy(char *s1, const char *s2, size_t n)
++{
++	register size_t strn_len = strnlen(s2, n);
++
++	strncpy(s1, s2, n);
++
++	return ((strn_len < n)?(s1 + strn_len):(s1+n));
++}
++
++#endif
+diff -N -r -u original/src/lib/libast/string/strcopy.c build_i386_64bit_debug_stpcpy/src/lib/libast/string/strcopy.c
+--- src/lib/libast/string/strcopy.c	2012-08-09 09:37:53.000000000 +0200
++++ src/lib/libast/string/strcopy.c	2013-07-22 16:24:39.974125985 +0200
+@@ -25,6 +25,9 @@
+ 
+ /*
+  * copy t into s, return a pointer to the end of s ('\0')
++ *
++ * DEPRECIATED, use POSIX (or libast's emulation of)
++ * |stpcpy()| insead
+  */
+ 
+ char*
+@@ -32,6 +35,5 @@
+ {
+ 	if (!t)
+ 		return s;
+-	while (*s++ = *t++);
+-	return s - 1;
++	return (stpcpy(s, t));
+ }

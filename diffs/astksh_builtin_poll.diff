@@ -1,0 +1,1259 @@
+diff -r -u -N original/src/cmd/ksh93/bltins/poll.c build_poll/src/cmd/ksh93/bltins/poll.c
+--- src/cmd/ksh93/bltins/poll.c	1970-01-01 01:00:00.000000000 +0100
++++ src/cmd/ksh93/bltins/poll.c	2012-08-20 21:29:36.742831558 +0200
+@@ -0,0 +1,742 @@
++/***********************************************************************
++*                                                                      *
++*               This software is part of the ast package               *
++*          Copyright (c) 2007-2012 AT&T Intellectual Property          *
++*                      and is licensed under the                       *
++*                 Eclipse Public License, Version 1.0                  *
++*                    by AT&T Intellectual Property                     *
++*                                                                      *
++*                A copy of the License is available at                 *
++*          http://www.eclipse.org/org/documents/epl-v10.html           *
++*         (with md5 checksum b35adb5213ca9657e911e9befb180842)         *
++*                                                                      *
++*              Information and Software Systems Research               *
++*                            AT&T Research                             *
++*                           Florham Park NJ                            *
++*                                                                      *
++*               Roland Mainz <roland.mainz@nrubsig.org>                *
++*                                                                      *
++***********************************************************************/
++#pragma prototyped
++
++#include "defs.h"
++#include "variables.h"
++#include "lexstates.h"
++#include "io.h"
++#include "name.h"
++#include "builtins.h"
++#include "history.h"
++#include "terminal.h"
++#include <stdio.h>
++#include <stdbool.h>
++#include <poll.h>
++#include <tmx.h>
++#include <stk.h>
++
++#ifndef SH_DICT
++#   define SH_DICT "libshell"
++#endif
++
++#define sh_contexttoshell(context)	((context)?((context)->shp):(NULL))
++
++static
++const char sh_optpoll[] =
++"[-?\n@(#)$Id: poll (AT&T Labs Research) 2012-08-16 $\n]"
++"[-author?Roland Mainz <roland.mainz@nrubsig.org>]"
++"[-license?http://www.eclipse.org/org/documents/epl-v10.html]"
++"[+NAME? poll - input/output multiplexing]"
++"[+DESCRIPTION?The poll command provides applications with a "
++	"mechanism for multiplexing input/output over a set of "
++	"file descriptors. "
++	"For each member of the (optionally sparse) indexed or "
++	"associative compound or type (see \btypeset -T\b) array "
++	"variable \bvar\b, poll examines the given file descriptor "
++	"in the subscript \b.fd\b for the event(s) specified in "
++	"the subscript \b.events\b. "
++	"The poll command identifies those file descriptors on "
++	"which an application can read or write data, or on which "
++	"certain events have occurred.]"
++"[+?The \bvar\b argument specifies an array of file descriptors to "
++	"be examined and the events of interest for each file "
++	"descriptor. "
++	"It is a array of compound variables (or user-defined type) "
++	"with one member for each open file descriptor of interest. "
++	"The array's compound or type variable members contain the "
++	"following subscripts:]{"
++		"[+?\b.fd\b       # file descriptor]"
++		"[+?\b.events\b   # compound variable of requested event(s)]"
++		"[+?\b.revents\b  # compound variable of returned event(s)]"
++	"}"
++"[+?The \bfd\b variable specifies an open file descriptor and the "
++	"\bevents\b and \brevents\b members are compound variables "
++	"constructed from the following boolean member variables:]"
++	"{ "
++	"[+.pollin?('true'|'false') Data other than high priority "
++		"data may be read without blocking. For STREAMS, this "
++		"flag is set in \brevents\b even if the message "
++		"is of zero length.]"
++	"[+.pollrdnorm?('true'|'false') Normal data (priority band "
++		"equals 0) may be read without blocking. For STREAMS, "
++		"this flag is set in \brevents\b even if the message "
++		"is of zero length.]"
++	"[+.pollrdband?('true'|'false') Data from a non-zero "
++		"priority band may be read without blocking. For "
++		"STREAMS, this flag is set in \brevents\b even if the "
++		"message is of zero length.]"
++	"[+.pollpri?('true'|'false') High priority data may be "
++		"received without blocking. For STREAMS, this flag is "
++		"set in \brevents\b even if the message is of zero "
++		"length.]"
++	"[+.pollout?('true'|'false') Normal data (priority band "
++		"equals 0) may be written without blocking.]"
++	"[+.pollwrnorm?('true'|'false') The same as \bpollout\b.]"
++	"[+.pollwrband?('true'|'false') Priority data (priority band "
++		"> 0) may be written.  This event only examines bands "
++		"that have been written to at least once.]"
++	"[+.pollerr?('true'|'false') An error has occurred on the "
++		"device or stream.  This flag is only valid in the "
++		"\brevents\b compound variable; it is not used in the "
++		"\bevents\b compound variable.]"
++	"[+.pollhup?('true'|'false') A hangup has occurred on the "
++		"stream. This event and \bpollout\b are mutually "
++		"exclusive; a stream can never be writable if a "
++		"hangup has occurred. "
++		"However, this event and \bpollin\b, "
++		"\bpollrdband\b, or \bpollpri\b are not "
++		"mutually exclusive. This flag is only valid "
++		"in the \brevents\b compound variable; it is not "
++		"used in the \bevents\b compound variable.]"
++	"[+.pollnval?('true'|'false') The specified fd value does "
++		"not belong to an open file. "
++		"This flag is only valid in the \brevents\b compound "
++		"variable; it is not used in the \bevents\b "
++		"compound variable.]"
++   "}"
++"]"
++
++"[+?If the value fd is less than 0, events is ignored and "
++	"revents is set to 0 in that entry on return from poll.]"
++
++"[+?The results of the poll query are stored in the \brevents\b "
++	"compound variable members in the \bvar\b structure. "
++	"\bpoll*\b-variables are set in the \brevents\b compound "
++	"variable to indicate which of the requested events are true. "
++	"If none are true, the matching member in the \brevents\b "
++	"compound variable will have the value of 'false' when the "
++	"poll command returns. "
++	"The \brevents\b compound variable members \bpollhup\b, "
++	"\bpollerr\b, and \bpollnval\b are always set to 'true' in "
++	"\brevents\b if the conditions they indicate are true; this "
++	"occurs even though these flags were not present and/or set "
++	"to 'true' in the \bevents\b compound variable.]"
++
++"[+?If none of the defined events have occurred on any selected "
++	"file descriptor, poll waits at least timeout milliseconds "
++	"for an event to occur on any of the selected file "
++	"descriptors. "
++	"On a computer where millisecond timing accuracy is not "
++	"available, timeout is rounded up to the nearest legal value "
++	"available on that system. If the value timeout is 0, poll "
++	"returns immediately. If the value of timeout is -1, poll "
++	"blocks until a requested event occurs or until the call is "
++	"interrupted.]"
++
++"[+?The poll utility supports regular files, terminal and "
++	"pseudo-terminal devices, STREAMS-based files, FIFOs, and "
++	"pipes. The behavior of poll on elements of fds that refer "
++	"to other types of file is unspecified.]"
++
++"[+?The poll utility supports sockets.]"
++#ifdef __SunOS
++"[+?The poll utility may be used on Solaris on directory fds of "
++	"/proc/$pid/ to get a \bpollhup='true'\b when the process quits.]"
++#endif
++"[+?A file descriptor for a socket that is listening for connections "
++	"will indicate that it is ready for reading, once connections "
++	"are available. A file descriptor for a socket that "
++	"is connecting asynchronously will indicate that it is ready "
++	"for writing, once a connection has been established.]"
++ 
++"[+?Regular files always poll TRUE for reading and writing.]"
++
++"[e:eventarray]:[fdcount?Upon successful completion, an indexed array "
++	"of strings is returned which contains a list of array "
++	"subscripts in the poll array which received events.]"
++"[S!:pollsfio?Look into sfio streams for buffered information and set "
++	"pollin/pollout to reflect sfio stream state.]"
++"[R:pollttyraw?Put tty connections into raw mode when polling. The "
++	"fd is returned to tty cooked mode before poll(1) exits.]"
++"[t:timeout]:[seconds?Timeout in seconds. If the value timeout is 0, "
++	"poll returns immediately. If the value of timeout is -1, "
++	"poll blocks until a requested event occurs or until the "
++	"call is interrupted.]"
++"\n"
++"\nvar\n"
++"\n"
++"[+EXIT STATUS?]{"
++        "[+0?Success.]"
++        "[+>0?An error occurred.]"
++"}"
++"[+NOTES?]{"
++	"[+?poll*-variables defined in \bevents\b will always appear "
++	"in \brevents\b. This gives the script author control over "
++	"which poll*-variables he can expect in \brevents\b.]"
++
++	"[+?The \bpollinhup\b, \bpollnval\b and \bpollerr\b variables "
++	"may appear in the \brevents\b compound variable even if "
++	"they were not requested in \bevents\b.]"
++
++	"[+?Using the value of variables in \brevents\b which are "
++	"not set in \bevents\b can be done by putting a '-' suffix "
++	"after the variable name, e.g. use "
++	"\b${ar[x]].revents.pollhup-}\b to get the value of "
++	"\bar[x]].revents.pollhup\b or an empty string if the variable "
++	"was not set.]"
++
++	"[+?Like \bpoll\b(2) it is legal to poll on the same fd in "
++	"multiple entries, for exanple to listen for different events "
++	"or to allow multiple callers to pool their poll lists "
++	"together into one \bpoll\b(1) call.]"
++"}"
++
++/* quoting: ']' must be quoted as "]]" and '?' must be quoted as "//" */
++"[+EXAMPLES?]{"
++	"[+?The following example will wait for 10 seconds for input "
++	"on fd 0, variable \bp[fd0]].revents.pollin\b will be 'true' "
++	"or 'false' depening on whether the stream 0 is ready for "
++	"reading:]{"
++		"[+?compound -A p=( [fd0]]=( fd=0 events=( pollin='true' ) ) ) ; poll -t10 p ; print -v p]"
++	"}"
++
++	"[+?The following example will wait for 2 seconds for input "
++	"on fd 0, and variables \bp[0]].revents.pollin\b and "
++	"\bp[0]].revents.pollhup\b will be 'true' after polling ends "
++	"because there is both input data available and the end of "
++	"the stream was reached:]{"
++		"[+?printf '\\n' | ksh -c 'compound -a p=( ( fd=0 events=( pollin=\"true\" pollhup=\"true\" ) ) ) ; poll -t2 p ; print -v p']"
++	"}"
++"}"
++
++"[+SEE ALSO?\bopen\b(1),\btmpfile\b(1),\bdup\b(1),\bclose\b(1),\bpoll\b(2)]"
++;
++
++
++/* Like |nv_open()| but constructs variable name on the fly using |sprintf()| format */
++static
++Namval_t *nv_open_fmt(Dt_t *dict, int flags, const char *namefmt, ...)
++{
++	char 	varnamebuff[PATH_MAX];
++	va_list	ap;
++
++	va_start(ap, namefmt);
++	vsnprintf(varnamebuff, sizeof(varnamebuff), namefmt, ap);
++	va_end(ap);
++	
++	return nv_open(varnamebuff, dict, flags);
++}
++
++/* Name/value mapping table for POLL*-flags */
++struct pollflagnamemap
++{
++	const int flag;
++	const char *name;
++};
++
++const
++struct pollflagnamemap pfnm[]=
++{
++	{ POLLIN,	"pollin"	},
++#ifdef POLLPRI
++	{ POLLPRI,	"pollpri"	},
++#endif
++	{ POLLOUT,	"pollout"	},
++#ifdef POLLRDNORM
++	{ POLLRDNORM,	"pollrdnorm"	},
++#endif
++#ifdef POLLWRNORM
++	{ POLLWRNORM,	"pollwrnorm"	},
++#endif
++#ifdef POLLRDBAND
++	{ POLLRDBAND,	"pollrdband"	},
++#endif
++#ifdef POLLWRBAND
++	{ POLLWRBAND,	"pollwrband"	},
++#endif
++#ifdef POLLMSG
++	{ POLLMSG,	"pollmsg"	},
++#endif
++#ifdef POLLREMOVE
++	{ POLLREMOVE,	"pollremove"	},
++#endif
++#ifdef POLLRDHUP
++	{ POLLRDHUP,	"pollrdhup"	},
++#endif
++	{ POLLERR,	"pollerr"	},
++	{ POLLHUP,	"pollhup"	},
++	{ POLLNVAL,	"pollnval"	},
++	{ 0,		NULL		},
++};
++
++/* structure to keep track of per array entry data */
++struct pollstat
++{
++	/* name of array subscript */
++	const char *array_subscript;
++
++	/* |sfio| keeps track of sfio information */
++	struct
++	{
++		Sfio_t	*sfd;
++		ssize_t flags;
++	} sfio;
++
++	/*
++	 * Bits in |eventvar_found| are POLL*-bits, set if matching
++	 * ar[i].events.poll* var was found. We use this later to
++	 * set the same ar[i].revents.poll* variable, regardless
++	 * whether it was polled or not. This was done so the script
++	 * author can control which poll* variables in the "revents"
++	 * compound appear and which not.
++	 */
++	int eventvar_found;
++};
++
++/* poll on given |fds| data and retry after EINTR/EAGAIN while adjusting timeout */
++static
++int poll_loop(Shbltin_t* context, struct pollfd *fds, nfds_t nfds, int timeout)
++{
++/* nanoseconds to milliseconds */
++#define TIME_NS2MS(t) ((t)/(1000UL*1000UL))
++/* milliseconds to nanoseconds */
++#define TIME_MS2NS(t) (((Time_t)(t))*(1000UL*1000UL))
++
++	int n;
++
++	/* We need two codepaths here:
++	 * 1. timeout > 0:  we have to wait for |timeout| or events.
++	 * 2. timeout <= 0: we have to wait forever (-1), return
++	 *    immediately (0) or an event occurs.
++	 */
++	if (timeout > 0)
++	{
++		const Time_t starttime = tmxgettime();
++		Time_t timeout_ns = TIME_MS2NS(timeout);
++
++		do
++		{
++			while(((n = poll(fds, nfds, timeout)) < 0) &&
++				((errno == EINTR) || (errno == EAGAIN)) &&
++				(!context->sigset))
++				errno=0;
++
++			timeout_ns=timeout_ns-(tmxgettime()-starttime);
++			timeout=TIME_NS2MS(timeout_ns);
++		} while((timeout > 0) && (!context->sigset));
++	}
++	else
++	{
++		while(((n = poll(fds, nfds, timeout)) < 0) &&
++			((errno == EINTR) || (errno == EAGAIN)) &&
++			(!context->sigset))
++			errno=0;
++	}
++	return n;
++}
++
++
++/* get ".poll*"-variables in "ar[i].events" and store data in |currpollfd| and |currps| */
++static
++bool get_compound_revents(Shell_t *shp, const char *parrayname, struct pollstat *currps, struct pollfd *currpollfd)
++{
++	const char	*subname=currps->array_subscript;
++	Namval_t	*np;
++	int		fd;
++	int		pi;
++
++	np = nv_open_fmt(shp->var_tree, NV_VARNAME|NV_NOFAIL|NV_NOADD, "%s[%s].fd", parrayname, subname);
++	if (!np)
++	{
++		errormsg(SH_DICT, ERROR_ERROR, "missing pollfd %s[%s].fd", parrayname, subname);
++		return false;
++	}
++	fd = (int)nv_getnum(np);
++	nv_close(np);
++	if ((fd < -1) || (fd > OPEN_MAX))
++	{
++		errormsg(SH_DICT, ERROR_ERROR, "invalid pollfd %s[%s].fd %d", parrayname, subname, fd);
++		return false;
++	}
++	currpollfd->fd = fd;
++
++	np = nv_open_fmt(shp->var_tree, NV_VARNAME|NV_COMVAR|NV_NOFAIL|NV_NOADD, "%s[%s].events", parrayname, subname);
++	if (!np)
++	{
++		errormsg(SH_DICT, ERROR_ERROR, "missing pollfd %s[%s].events", parrayname, subname);
++		return false;
++	}
++	nv_close(np);
++
++	currpollfd->events=0;
++	currpollfd->revents=0;
++	currps->eventvar_found=0;
++	for (pi=0 ; pfnm[pi].name != NULL ; pi++)
++	{
++		const char *s;
++
++		np = nv_open_fmt(shp->var_tree, NV_VARNAME|NV_NOFAIL|NV_NOADD, "%s[%s].events.%s", parrayname, subname, pfnm[pi].name);
++		if (!np)
++			continue;
++
++		currps->eventvar_found |= pfnm[pi].flag;
++		s=nv_getval(np);
++		if (s != NULL)
++		{
++			if (!strcmp(s, "true"))
++				currpollfd->events |= pfnm[pi].flag;
++			else if (!strcmp(s, "false"))
++				;
++			else
++				errormsg(SH_DICT, ERROR_ERROR, "invalid boolean value % in variable %s[%s].events", s, parrayname, subname);
++		}
++		nv_close(np);
++	}
++
++	return true;
++}
++
++/* set ".poll*"-variables in "ar[i].revents" per data in |currpollfd| and |currps| */
++static
++void set_compound_revents(Shell_t *shp, const char *parrayname, struct pollstat *currps, struct pollfd *currpollfd)
++{
++	const char *subname=currps->array_subscript;
++	Namval_t *np;
++	int pi;
++
++	np = nv_open_fmt(shp->var_tree, NV_VARNAME|NV_NOFAIL|NV_COMVAR, "%s[%s].revents", parrayname, subname);
++	if (!np)
++	{
++		errormsg(SH_DICT, ERROR_ERROR, "could not create pollfd %s[%s].revents", parrayname, subname);
++		return;
++	}
++	nv_setvtree(np); /* make "revents" really a compound variable */
++	nv_close(np);
++
++	for (pi=0 ; pfnm[pi].name != NULL ; pi++)
++	{
++		/*
++		 * POLLHUP|POLLNVAL|POLLERR can always appear in |currpollfd->revents|
++		 * even if we did not request them in |currpollfd->events|
++		 */
++		if ((currps->eventvar_found & pfnm[pi].flag) ||
++			((currpollfd->revents & (POLLHUP|POLLNVAL|POLLERR)) & pfnm[pi].flag))
++		{
++			np = nv_open_fmt(shp->var_tree, NV_VARNAME|NV_NOFAIL, "%s[%s].revents.%s", parrayname, subname, pfnm[pi].name);
++			if (!np)
++				continue;
++
++			nv_putval(np, ((currpollfd->revents & pfnm[pi].flag)?"true":"false"), 0);
++			nv_close(np);
++		}
++	}
++}
++
++/* |main()| for poll(1) builtin */
++extern
++int b_poll(int argc, char *argv[], Shbltin_t* context)
++{
++	Shell_t		*shp = sh_contexttoshell(context);
++	Namval_t	*np,
++			*array_np,
++			*array_np_sub;
++	Sfio_t		*strstk		= NULL; /* stk object for memory allocations */
++	const char	*parrayname,		/* name of array with poll data */
++			*eventarrayname = NULL, /* name of array with indexes to results */
++			*subname,		/* current subscript */
++			*s;
++	int		n;
++	nfds_t		numpollfd = 0;		/* number of entries to poll */
++	int		i,
++			j;
++	double		timeout		= -1.;
++	char		buff[PATH_MAX*2+1];	/* fixme: theoretically enough to hold two variable names */
++	bool		ttyraw		= false;/* put ttys into raw more when polling */
++	bool		pollsfio	= true; /* should we ask sfio layer if it has data cached ? */
++	int		pi;			/* index for |pfnm| */
++	struct pollfd   *pollfd		= NULL,	/* data for poll(2) */
++			*currpollfd;		/* current |pollfd| we are working on */
++	struct pollstat *pollstat	= NULL,	/* context data from shell array */
++			*currps;		/* current |pollstat| we are working on */
++	int		retval		= 0;	/* return value of builtin */
++
++	while (n = optget(argv, sh_optpoll)) switch (n)
++	{
++		case 't':
++			errno = 0;
++			timeout = strtod(opt_info.arg, (char **)NULL);	
++			if (errno != 0)
++				errormsg(SH_DICT, ERROR_system(1), "%s: invalid timeout", opt_info.arg);
++
++			/* -t uses seconds */
++			if (timeout >=0)
++				timeout *= 1000.;
++			break;
++		case 'e':
++			eventarrayname = opt_info.arg;
++			break;
++		case 'S':
++			pollsfio=opt_info.num?true:false;
++			break;
++		case 'R':
++			ttyraw=opt_info.num?true:false;
++			break;
++		case ':':
++			errormsg(SH_DICT, ERROR_ERROR, "%s", opt_info.arg);
++			break;
++		case '?':
++			errormsg(SH_DICT, ERROR_usage(2), "%s", opt_info.arg);
++			break;
++	}
++	argc -= opt_info.index;
++	argv += opt_info.index;
++	if(argc!=1)
++		errormsg(SH_DICT, ERROR_usage(2), optusage((char*)0));
++
++	parrayname = argv[0];
++
++	strstk = stkopen(0);
++	if (!strstk)
++		errormsg(SH_DICT, ERROR_system(1), e_nospace);
++
++	array_np = nv_open(parrayname, shp->var_tree, NV_VARNAME|NV_NOFAIL|NV_NOADD);
++	if (!array_np)
++	{
++		stkclose(strstk);
++		errormsg(SH_DICT, ERROR_system(1), "cannot find array variable %s", parrayname);
++	}
++	if (!nv_isattr(array_np, NV_ARRAY))
++	{
++		nv_close(array_np);
++		stkclose(strstk);
++		errormsg(SH_DICT, ERROR_system(1), "variable %s is not an array", parrayname);
++	}
++
++	/*
++	 * Count number of array elememts. We need to do it "manually"
++	 * to handle sparse indexed and associative arrays
++	 */
++	nv_putsub(array_np, NULL, ARRAY_SCAN);
++	array_np_sub = array_np;
++	do
++	{
++		if (!(subname=nv_getsub(array_np_sub)))
++			break;
++		numpollfd++;
++	} while(array_np_sub && nv_nextsub(array_np_sub));
++
++	/*
++	 * Done with counting, now we need to allocate a work area big enough
++	 */
++	pollfd   = (struct pollfd   *)stkalloc(strstk, (sizeof(struct pollfd)   * numpollfd));
++	pollstat = (struct pollstat *)stkalloc(strstk, (sizeof(struct pollstat) * numpollfd));
++	if (!pollfd || !pollstat)
++	{
++		errormsg(SH_DICT, ERROR_ERROR, e_nospace);
++		goto done_error;
++	}
++
++	/*
++	 * Walk the array again and fetch the data we need...
++	 */
++	nv_putsub(array_np, NULL, ARRAY_SCAN);
++	array_np_sub = array_np;
++	i = 0;
++	do
++	{
++		if (!(subname=nv_getsub(array_np_sub)))
++			break;
++
++		pollstat[i].array_subscript=stkcopy(strstk, subname);
++		if (!pollstat[i].array_subscript)
++		{
++			errormsg(SH_DICT, ERROR_ERROR, e_nospace);
++			goto done_error;
++		}
++
++		if (!get_compound_revents(shp, parrayname, &pollstat[i], &pollfd[i]))
++			goto done_error;
++
++		i++;
++	} while(array_np_sub && nv_nextsub(array_np_sub));
++
++	nv_close(array_np);
++	array_np=NULL;
++
++	/*
++	 * If sfio handles fds we need to check whether there are
++	 * any data in the sfio buffers and remember this information
++	 * so we can set { POLLIN, POLLOUT } on demand to reflect
++	 * this information.
++	 */
++	if (pollsfio)
++	{
++		Sfio_t	**sfd;
++		int	fd;
++		int	num_sfd=0,
++			active_sfd=0;
++
++		sfd = (Sfio_t **)stkalloc(strstk, (sizeof(Sfio_t *) * (numpollfd+1)));
++		if (!sfd)
++		{
++			errormsg(SH_DICT, ERROR_ERROR, e_nospace);
++			goto done_error;
++		}
++
++		for (i=0 ; i < numpollfd ; i++)
++		{
++			currps=&pollstat[i];
++			fd=pollfd[i].fd;
++			
++			currps->sfio.sfd=(fd>=0)?sh_fd2sfio(shp, fd):NULL;
++			currps->sfio.flags=0;
++			if (currps->sfio.sfd!=NULL)
++			{
++				/* Only add |currps->sfio.sfd| to the
++				 * |sfd| array (list of |Sfio_t*|
++				 * passed to |sfpoll()|) if it is not
++				 * in that list yet. This prevents
++				 * that we call |sfpoll()| on the same
++				 * sfio stream multiple times (which
++				 * can happen if pollfd contains the
++				 * same fd multiple times (which is
++				 * valid usage, for example if multiple
++				 * consumers pool their pool lists in
++				 * one poll call or listen to different
++				 * sets of poll event flags)).
++				 */
++				for (j=0 ; j < num_sfd ; j++)
++				{
++					if (sfd[j]==currps->sfio.sfd)
++						break;
++				}
++				if (j == num_sfd)
++					sfd[num_sfd++]=currps->sfio.sfd;
++			}
++		}
++
++		active_sfd = sfpoll(&sfd[0], num_sfd, 0);
++		if (active_sfd > 0)
++		{
++			ssize_t sfpoll_flags;
++
++			for (i=0 ; i < active_sfd ; i++)
++			{
++				sfpoll_flags=sfvalue(sfd[i]);
++
++				/*
++				 * We have to loop over all entries
++				 * because single fd may be polled
++				 * multiple times in different pollfd
++				 * entries
++				 */
++				for (j=0 ; j < numpollfd ; j++)
++				{
++					if (pollstat[j].sfio.sfd == sfd[i])
++						pollstat[j].sfio.flags=sfpoll_flags;
++				}
++			}
++		}
++	}
++
++	/*
++	 * Create --eventarray array on demand
++	 */
++	if (eventarrayname)
++	{
++		np = nv_open_fmt(shp->var_tree, NV_VARNAME|NV_ARRAY|NV_NOFAIL, "%s", eventarrayname);
++		if (!np)
++		{
++			errormsg(SH_DICT, ERROR_ERROR, "could not create eventarray variable %s", eventarrayname);
++			goto done_error;
++		}
++
++		nv_close(np);
++	}
++
++	/*
++	 * Make sure we poll on "raw" tty to catch _every_ keystroke...
++	 */
++	if (ttyraw)
++	{
++		int fd;
++
++		for (i=0 ; i < numpollfd ; i++)
++		{
++			fd=pollfd[i].fd;
++			if ((fd >=0) && (shp->fdstatus[fd]&IOTTY))
++				tty_raw(fd, 1);
++		}
++	}
++
++	/*
++	 * ... then poll for events...
++	 */
++	n = poll_loop(context, pollfd, numpollfd, timeout);
++
++	/* 
++	 * ... and restore the tty's to "cooked" mode
++	 */
++	if (ttyraw)
++	{
++		int fd;
++
++		for (i=0 ; i < numpollfd ; i++)
++		{
++			fd=pollfd[i].fd;
++			if ((fd >=0) && (shp->fdstatus[fd]&IOTTY))
++				tty_cooked(fd);
++		}
++	}
++
++	if (n < 0)
++	{
++		/* |ERROR_system(0)| won't quit the builtin */
++		errormsg(SH_DICT, ERROR_system(0), "poll(2) failure");
++		retval=1;
++	}
++
++	/*
++	 * Write results back into the array
++	 */
++	for (i=0 ; i < numpollfd ; i++)
++	{
++		/* Adjust data in |pollfd[i]| to reflect sfio stream status (if requested) */
++		if (pollsfio)
++		{
++			if ((pollfd[i].events & POLLIN)  && (pollstat[i].sfio.flags & SF_READ))
++				pollfd[i].revents |= POLLIN;
++			if ((pollfd[i].events & POLLOUT) && (pollstat[i].sfio.flags & SF_WRITE))
++				pollfd[i].revents |= POLLOUT;
++		}
++
++		set_compound_revents(shp, parrayname, &pollstat[i], &pollfd[i]);
++
++		/* Add array index to eventarray if this pollfd entry had any events */
++		if (eventarrayname && pollfd[i].revents)
++		{
++			sprintf(buff, "%s+=( '%s' )", eventarrayname, pollstat[i].array_subscript);
++			sh_trap(shp, buff, 0);
++		}
++	}
++	
++	goto done;
++
++done_error:
++	retval=1;
++done:
++	if (array_np)
++		nv_close(array_np);
++	if (strstk)
++		stkclose(strstk);
++	
++	return(retval);
++}
+diff -r -u -N original/src/cmd/ksh93/data/builtins.c build_poll/src/cmd/ksh93/data/builtins.c
+--- src/cmd/ksh93/data/builtins.c	2012-08-09 00:05:39.000000000 +0200
++++ src/cmd/ksh93/data/builtins.c	2012-08-20 11:41:00.940424572 +0200
+@@ -109,6 +109,7 @@
+ 	"mkservice",	NV_BLTIN|BLT_ENV,		bltin(mkservice),
+ 	"eloop",	NV_BLTIN|BLT_ENV,		bltin(eloop),
+ #endif
++	"poll",		NV_BLTIN|BLT_ENV,		bltin(poll),
+ 	"print",	NV_BLTIN|BLT_ENV,		bltin(print),
+ 	"printf",	NV_BLTIN|BLT_ENV,		bltin(printf),
+ 	"pwd",		NV_BLTIN,			bltin(pwd),
+diff -r -u -N original/src/cmd/ksh93/include/builtins.h build_poll/src/cmd/ksh93/include/builtins.h
+--- src/cmd/ksh93/include/builtins.h	2012-08-09 00:05:21.000000000 +0200
++++ src/cmd/ksh93/include/builtins.h	2012-08-20 11:41:00.941151909 +0200
+@@ -100,6 +100,7 @@
+ extern int b_whence(int, char*[],Shbltin_t*);
+ 
+ extern int b_alarm(int, char*[],Shbltin_t*);
++extern int b_poll(int, char*[],Shbltin_t*);
+ extern int b_print(int, char*[],Shbltin_t*);
+ extern int b_printf(int, char*[],Shbltin_t*);
+ extern int b_pwd(int, char*[],Shbltin_t*);
+diff -r -u -N original/src/cmd/ksh93/Makefile build_poll/src/cmd/ksh93/Makefile
+--- src/cmd/ksh93/Makefile	2012-08-09 15:35:08.000000000 +0200
++++ src/cmd/ksh93/Makefile	2012-08-20 11:41:00.941613358 +0200
+@@ -151,6 +151,7 @@
+ 
+ shell$(RELEASE) $(VERSION) id=shell :LIBRARY: shell.3 nval.3 alarm.c cd_pwd.c cflow.c deparse.c \
+ 	enum.c getopts.c hist.c misc.c print.c read.c sleep.c trap.c test.c \
++	poll.c \
+ 	typeset.c ulimit.c umask.c whence.c main.c nvdisc.c nvtype.c \
+ 	arith.c args.c array.c completion.c defs.c edit.c expand.c regress.c \
+ 	fault.c fcin.c history.c init.c io.c jobs.c lex.c macro.c name.c \
+diff -r -u -N original/src/cmd/ksh93/Mamfile build_poll/src/cmd/ksh93/Mamfile
+--- src/cmd/ksh93/Mamfile	2012-08-13 15:20:21.000000000 +0200
++++ src/cmd/ksh93/Mamfile	2012-08-20 11:41:00.942994406 +0200
+@@ -557,6 +557,22 @@
+ prev bltins/test.c
+ exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Iinclude -I${PACKAGE_ast_INCLUDE} -D_API_ast=20120806 -D_PACKAGE_ast -D_BLD_shell -DSHOPT_DYNAMIC -DSHOPT_MULTIBYTE -DSHOPT_PFSH -DSHOPT_STATS -DSHOPT_NAMESPACE -DSHOPT_COSHELL -DERROR_CONTEXT_T=Error_context_t -DSHOPT_FIXEDARRAY -DKSHELL -c bltins/test.c
+ done test.o generated
++
++make poll.o
++make bltins/poll.c
++prev ${PACKAGE_ast_INCLUDE}/tmx.h implicit
++prev FEATURE/poll implicit
++prev FEATURE/externs implicit
++prev include/builtins.h implicit
++prev include/io.h implicit
++prev ${PACKAGE_ast_INCLUDE}/error.h implicit
++prev include/defs.h implicit
++done bltins/poll.c
++meta poll.o %.c>%.o bltins/poll.c test
++prev bltins/poll.c
++exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Iinclude -I${PACKAGE_ast_INCLUDE} -D_API_ast=20100309 -D_PACKAGE_ast -D_BLD_shell -DSHOPT_DYNAMIC -DSHOPT_MULTIBYTE -DSHOPT_PFSH -DSHOPT_STATS -DSHOPT_NAMESPACE -DSHOPT_COSHELL -DSHOPT_HISTEXPAND -DERROR_CONTEXT_T=Error_context_t -DSHOPT_FIXEDARRAY -DSHOPT_ESH -DKSHELL -c bltins/poll.c
++done poll.o generated
++
+ make typeset.o
+ make bltins/typeset.c
+ prev FEATURE/dynamic implicit
+@@ -1334,7 +1350,7 @@
+ prev edit/vi.c
+ exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Iinclude -I${PACKAGE_ast_INCLUDE} -DSHOPT_EDPREDICT -DSHOPT_RAWONLY -DSHOPT_MULTIBYTE -D_API_ast=20120806 -D_PACKAGE_ast -DKSHELL -DSHOPT_PFSH -D_BLD_shell -DSHOPT_STATS -DSHOPT_NAMESPACE -DSHOPT_COSHELL -DERROR_CONTEXT_T=Error_context_t -DSHOPT_FIXEDARRAY -c edit/vi.c
+ done vi.o generated
+-exec - ${AR} rc libshell.a alarm.o cd_pwd.o cflow.o deparse.o enum.o getopts.o hist.o misc.o print.o read.o sleep.o trap.o test.o typeset.o ulimit.o umask.o whence.o main.o nvdisc.o nvtype.o arith.o args.o array.o completion.o defs.o edit.o expand.o regress.o fault.o fcin.o
++exec - ${AR} rc libshell.a alarm.o cd_pwd.o cflow.o deparse.o enum.o getopts.o hist.o misc.o poll.o print.o read.o sleep.o trap.o test.o typeset.o ulimit.o umask.o whence.o main.o nvdisc.o nvtype.o arith.o args.o array.o completion.o defs.o edit.o expand.o regress.o fault.o fcin.o
+ exec - ${AR} rc libshell.a history.o init.o io.o jobs.o lex.o macro.o name.o nvtree.o parse.o path.o string.o streval.o subshell.o tdump.o timers.o trestore.o waitevent.o xec.o env.o hexpand.o limits.o msg.o strdata.o testops.o keywords.o options.o signals.o aliases.o builtins.o variables.o lexstates.o emacs.o vi.o
+ exec - (ranlib libshell.a) >/dev/null 2>&1 || true
+ done libshell.a generated
+diff -r -u -N original/src/cmd/ksh93/tests/builtin_poll.sh build_poll/src/cmd/ksh93/tests/builtin_poll.sh
+--- src/cmd/ksh93/tests/builtin_poll.sh	1970-01-01 01:00:00.000000000 +0100
++++ src/cmd/ksh93/tests/builtin_poll.sh	2012-08-20 21:29:20.695664960 +0200
+@@ -0,0 +1,441 @@
++########################################################################
++#                                                                      #
++#               This software is part of the ast package               #
++#                 Copyright (c) 2009-2012 Roland Mainz                 #
++#                      and is licensed under the                       #
++#                 Eclipse Public License, Version 1.0                  #
++#                    by AT&T Intellectual Property                     #
++#                                                                      #
++#                A copy of the License is available at                 #
++#          http://www.eclipse.org/org/documents/epl-v10.html           #
++#         (with md5 checksum b35adb5213ca9657e911e9befb180842)         #
++#                                                                      #
++#                                                                      #
++#                 Roland Mainz <roland.mainz@nrubsig.org>              #
++#                                                                      #
++########################################################################
++
++#
++# Copyright (c) 2009, 2012, Roland Mainz. All rights reserved.
++#
++
++#
++# Test module to check the ksh93 "poll" builtin
++#
++
++# test setup
++function err_exit
++{
++	print -u2 -n '\t'
++	print -u2 -r ${Command}[$1]: "${@:2}"
++	(( Errors++ ))
++}
++alias err_exit='err_exit $LINENO'
++
++set -o nounset
++Command=${0##*/}
++integer Errors=0
++
++typeset ocwd
++typeset tmpdir
++
++# create temporary test directory
++ocwd="${PWD}"
++tmpdir="${ mktemp -t -d 'test_builtin_poll.XXXXXXXX' ; }" || err_exit 'Cannot create temporary directory.'
++
++cd "${tmpdir}" || { err_exit "cd ${tmpdir} failed." ; exit $((Errors<125?Errors:125)) ; }
++
++
++# basic tests
++function test1
++{
++	compound d1=(
++		compound -A u=(
++			[y]=( integer fd=5 ; compound events=( pollin='true' ) revents=() )
++			[x]=( integer fd=5 ; compound events=( pollin='true' ) revents=() )
++		)
++	)
++
++	# test 1:
++	print -C d1 >'testdata.cpv'
++	cat '/dev/zero' | $SHELL -o errexit -c 'builtin poll ; read -C <"testdata.cpv" d1 ; redirect 5<&0 ; poll -e d1.res -t 5. d1.u ; print -C d1 >"testdata.cpv"' >'log.txt' 2>&1 || err_exit "poll returned non-zero exit code $?"
++	unset d1 ; read -C d1 <'testdata.cpv' || err_exit 'Cannot read test data.'
++	[[ "$(< 'log.txt')" == '' ]] || err_exit "Excepted empty stdout/stderr, got $(printf '%q\n' "$(< 'log.txt')")"
++	[[ "${d1.u[x].revents.pollin-}" == 'true' ]] || err_exit "d1.u[x].revents contains '${d1.u[x].revents-}', not 'POLLIN'"
++	[[ "${d1.u[y].revents.pollin-}" == 'true' ]] || err_exit "d1.u[y].revents contains '${d1.u[y].revents-}', not 'POLLIN'"
++	[[ "${d1.res[*]-}" == 'x y' ]] || err_exit "d1.res contains '${d1.res[*]-}', not 'x y'"
++
++	rm 'testdata.cpv' 'log.txt'
++
++	# test 2:
++	unset d1.res
++	d1.u[z]=( integer fd=5 ; compound events=( pollout='true' ) revents=() )
++
++	print -C d1 >'testdata.cpv'
++	$SHELL -o errexit -c 'builtin poll ; read -C <"testdata.cpv" d1 ; { poll -e d1.res -t 5. d1.u ; } 5<"/dev/null" 5>"/dev/null" ; print -C d1 >"testdata.cpv"' >'log.txt' 2>&1 || err_exit "poll returned non-zero exit code $?"
++	unset d1 ; read -C d1 <'testdata.cpv' || err_exit 'Cannot read test data.'
++
++	[[ "$(< 'log.txt')" == '' ]] || err_exit "Excepted empty stdout/stderr, got $(printf '%q\n' "$(< 'log.txt')")"
++	[[ "${d1.u[x].revents.pollin-}"  == 'true' ]] || err_exit "d1.u[x].revents contains '${d1.u[x].revents-}', not 'POLLIN'"
++	[[ "${d1.u[y].revents.pollin-}"  == 'true' ]] || err_exit "d1.u[y].revents contains '${d1.u[y].revents-}', not 'POLLIN'"
++	[[ "${d1.u[z].revents.pollout-}" == 'true' ]] || err_exit "d1.u[z].revents contains '${d1.u[z].revents-}', not 'POLLOUT,'"
++	[[ "${d1.res[*]-}" == 'x y z' ]] || err_exit "d1.res contains '${d1.res[*]-}', not 'x y z'"
++
++	rm 'testdata.cpv' 'log.txt'
++
++	return 0
++}
++
++function test_sparse_array1
++{
++	compound out=( typeset stdout stderr ; integer res )
++	integer i
++	typeset expected_output_pattern
++	typeset testname
++	compound -r -a tests=(
++		(
++			name='sparse_compound_array1'
++			typeset -r -a script=(
++				$'builtin poll\n'
++				$'compound -a pl\n'
++				$'integer i maxfd=$(getconf "OPEN_MAX")\n'
++				$'(( maxfd-=10 )) # space for stdin/stdout/stderr/dirfd\n'
++				$'for (( i=0 ; i < maxfd ; i++ )) ; do\n'
++				$'	pl[$((i*17))]=( fd=0 events=( pollin=true ) )\n'
++				$'done\n'
++				$'poll -R -t2 pl\n'
++				$'print -v pl\n'
++				$'print "OK"\n'
++			)
++			expected_output_pattern='~(E)([[:space:]]*?\([[:space:]]*?\[.+\]=\([[:space:]]*?events=\([[:space:]]*?pollin=true[[:space:]]*?\)[[:space:]]*?fd=0[[:space:]]*?revents=\([[:space:]]*?pollhup=true[[:space:]]*?pollin=true[[:space:]]*?\)[[:space:]]*?\)[[:space:]]*?\)[[:space:]]*?)+OK'
++		)
++		(
++			name='sparse_type_array1'
++			typeset -r -a script=(
++				$'builtin poll\n'
++				$'typeset -T p_t=( typeset -l -i fd ; \n'
++				# fixme: In theory we only have to list the events we want
++				# in the compound variable "events" ... and the same events
++				# plus pollerr, pollnval and pollup in "revents" (since
++				# they may appear at any time).
++				# Unfortunately ksh93v- has a bug in the type system
++				# which triggers fatal errors in case we try to read a
++				# non-existing type variable member - see
++				# http://marc.info/?l=ast-developers&m=134526131905059&w=2
++				$'	compound events=(  typeset pollin=false pollpri=false pollout=false pollrdnorm=false pollwrnorm=false pollrdband=false pollwrband=false pollmsg=false pollremove=false pollrdhup=false pollerr=false pollhup=false pollnval=false ; )\n'
++				$'	compound revents=( typeset pollin=false pollpri=false pollout=false pollrdnorm=false pollwrnorm=false pollrdband=false pollwrband=false pollmsg=false pollremove=false pollrdhup=false pollerr=false pollhup=false pollnval=false ; )\n'
++				$'	function pinit { _.fd=$1 ; _.events.pollin=true ; } ;\n'
++				$')\n'
++				$'compound c ; p_t -a c.pl\n'
++				$'integer i maxfd=$(getconf "OPEN_MAX")\n'
++				# fixme: fmin(maxfd, 16) is used to prevent ~(Xlr) below from
++				# consuming too much stack. Future versions of "shtests" will
++				# enfore ulimit -s 65536 and therefore avoid this mess
++				$'(( maxfd=fmin(maxfd, 16) , maxfd-=10 )) # space for stdin/stdout/stderr/dirfd\n'
++				$'for (( i=0 ; i < maxfd ; i++ )) ; do\n'
++				$'	c.pl[$((i*17))].pinit 0\n'
++				$'done\n'
++				$'poll -R -t2 c.pl\n'
++				$'print -v c\n'
++				$'print "OK"\n'
++			)
++			expected_output_pattern='~(Xlr)\([[:space:]]+?p_t[[:space:]]+?-a[[:space:]]+?pl=\([[:space:]]+?([[:space:]]+?\[[[:alnum:]]+\]=\([[:space:]]+?typeset[[:space:]]+?-l[[:space:]]+?-i[[:space:]]+?fd=0[[:space:]]+?events=\((([^\x28\x29]+?pollin=true[^\x28\x29]+?)&([^\x28\x29]+?pollhup=false[^\x28\x29]+?))[[:space:]]+?\)[[:space:]]+?revents=\((([^\x28\x29]+?pollin=true[^\x28\x29]+?)&([^\x28\x29]+?pollhup=true[^\x28\x29]+?))\)[[:space:]]+?\)[[:space:]]+?)+?[[:space:]]+?\)[[:space:]]+?\)[[:space:]]+?OK'
++		)
++		(
++			name='associative_type_array1'
++			typeset -r -a script=(
++				$'builtin poll\n'
++				$'typeset -T p_t=( typeset -l -i fd ; \n'
++				# fixme: In theory we only have to list the events we want
++				# in the compound variable "events" ... and the same events
++				# plus pollerr, pollnval and pollup in "revents" (since
++				# they may appear at any time).
++				# Unfortunately ksh93v- has a bug in the type system
++				# which triggers fatal errors in case we try to read a
++				# non-existing type variable member - see
++				# http://marc.info/?l=ast-developers&m=134526131905059&w=2
++				$'	compound events=(  typeset pollin=false pollpri=false pollout=false pollrdnorm=false pollwrnorm=false pollrdband=false pollwrband=false pollmsg=false pollremove=false pollrdhup=false pollerr=false pollhup=false pollnval=false ; )\n'
++				$'	compound revents=( typeset pollin=false pollpri=false pollout=false pollrdnorm=false pollwrnorm=false pollrdband=false pollwrband=false pollmsg=false pollremove=false pollrdhup=false pollerr=false pollhup=false pollnval=false ; )\n'
++				$'	function pinit { _.fd=$1 ; _.events.pollin=true ; } ;\n'
++				$')\n'
++				$'compound c ; p_t -A c.pl\n'
++				$'integer i maxfd=$(getconf "OPEN_MAX")\n'
++				# fixme: fmin(maxfd, 16) is used to prevent ~(Xlr) below from
++				# consuming too much stack. Future versions of "shtests" will
++				# enfore ulimit -s 65536 and therefore avoid this mess
++				$'(( maxfd=fmin(maxfd, 16) , maxfd-=10 )) # space for stdin/stdout/stderr/dirfd\n'
++				$'for (( i=0 ; i < maxfd ; i++ )) ; do\n'
++				$'	c.pl[$((i*17))].pinit 0\n'
++				$'done\n'
++				$'poll -R -t2 c.pl\n'
++				$'print -v c\n'
++				$'print "OK"\n'
++			)
++			expected_output_pattern='~(Xlr)\([[:space:]]+?p_t[[:space:]]+?-A[[:space:]]+?pl=\([[:space:]]+?([[:space:]]+?\[[[:alnum:]]+\]=\([[:space:]]+?typeset[[:space:]]+?-l[[:space:]]+?-i[[:space:]]+?fd=0[[:space:]]+?events=\((([^\x28\x29]+?pollin=true[^\x28\x29]+?)&([^\x28\x29]+?pollhup=false[^\x28\x29]+?))[[:space:]]+?\)[[:space:]]+?revents=\((([^\x28\x29]+?pollin=true[^\x28\x29]+?)&([^\x28\x29]+?pollhup=true[^\x28\x29]+?))\)[[:space:]]+?\)[[:space:]]+?)+?[[:space:]]+?\)[[:space:]]+?\)[[:space:]]+?OK'
++		)
++	)
++
++	for (( i=0 ; i < ${#tests[@]} ; i++ )) ; do
++		nameref tst=tests[i]
++		testname="${0}/${i}/${tst.name}"
++		expected_output_pattern="${tst.expected_output_pattern}"
++
++		out.stderr="${ { out.stdout="${ print 'IN' | ${SHELL} -o nounset -c "${tst.script[*]}" ; (( out.res=$? )) ; }" ; } 2>&1 ; }"
++
++		[[ "${out.stdout}" == ${expected_output_pattern}	]] || err_exit "${testname}: Expected stdout to match ${ printf '%q\n' "${expected_output_pattern}" ; }, got ${ printf '%q\n' "${out.stdout}" ; }"
++		[[ "${out.stderr}" == ''				]] || err_exit "${testname}: Expected empty stderr, got ${ printf '%q\n' "${out.stderr}" ; }"
++		(( out.res == 0 )) || err_exit "${testname}: Unexpected exit code ${out.res}"
++	done
++
++	return 0
++}
++
++# test whether poll(1) works with multiple fifos
++# the test sends a single-character (single-byte or multi-byte)
++# "token" around which loops between fifos for a given number
++# of cycles
++function test_fifo_circus1
++{
++	compound out=( typeset stdout stderr ; integer res )
++	integer i
++	typeset testname
++cat >'poll_circus.sh' <<EOF
++typeset -T circus_t=(
++	typeset fifo_name
++	integer in_fd
++	integer out_fd
++
++	function fifo_init
++	{
++		integer pid
++		# fixme: we can't assign fd directly because ast-ksh.2012-08-13 has a bug
++		# with "redirect"
++		integer fd
++
++		_.fifo_name="\$1"
++		rm -f "\${_.fifo_name}"
++		mkfifo "\${_.fifo_name}"
++
++		# little "trick" with fifos - "redirect" would block if
++		# there is no reader... so we create one in a
++		# sub-process and kill it below after we opened the fd
++		{ redirect {dummy}<"\${_.fifo_name}" ; for (( ;; )) ; do sleep 15 ; done ; } &
++		(( pid=\$! ))
++
++		redirect {fd}>"\${_.fifo_name}"
++		(( _.out_fd=fd ))
++		#printf '%s: outfd=%d\n' "\${_.fifo_name}" _.out_fd
++
++		kill \$pid ; wait \$pid 2>'/dev/null'
++
++		redirect {fd}<"\${_.fifo_name}"
++		(( _.in_fd=fd ))
++		#printf '%s: infd=%d\n' "\${_.fifo_name}" _.in_fd
++
++		return 0
++	}
++
++	function fifo_cleanup
++	{
++		rm -f "\${_.fifo_name}"
++
++		return 0
++	}
++)
++
++function main
++{
++	typeset name subname
++	typeset -M toupper up
++	integer i
++	integer -r num_cycles=18
++	
++	circus_t -A ar
++	
++	for name in 'a' 'b' 'c' 'd' ; do
++		ar[\${name}].fifo_init "fifo_\${name}"
++	done
++	
++	compound -A pollfd
++	for name in "\${!ar[@]}" ; do
++		subname="fifo_\${name}_in"
++		pollfd[\${subname}]=( fd=\${ar[\${name}].in_fd}  events=( pollin='true'  pollerr='false' pollhup='false' pollnval='false' ) revents=() )
++		subname="fifo_\${name}_out"
++		pollfd[\${subname}]=( fd=\${ar[\${name}].out_fd} events=( pollout='true' pollerr='false' pollhup='false' pollnval='false' ) revents=() )
++	done
++
++	# main event loop	
++	for (( i=0 ; i < num_cycles ; i++ )) ; do
++		poll -t2 pollfd || print -u2 -f "poll failed, retval=%d'n" "\$?"
++	
++		# print results table
++		printf '|'
++		for name in "\${!ar[@]}" ; do
++			up="\$name"
++	
++			subname="fifo_\${name}_in"
++			if \${pollfd[\${subname}].revents.pollin}    ; then printf '%sI+' "\${up}" ; else printf '...' ; fi
++			if \${pollfd[\${subname}].revents.pollhup}   ; then printf '%sIH' "\${up}" ; else printf '...' ; fi
++			if \${pollfd[\${subname}].revents.pollerr}   ; then printf '%sIE' "\${up}" ; else printf '...' ; fi
++			if \${pollfd[\${subname}].revents.pollnval}  ; then printf '%sIN' "\${up}" ; else printf '...' ; fi
++			subname="fifo_\${name}_out"
++			if \${pollfd[\${subname}].revents.pollout}   ; then printf '%sO+' "\${up}" ; else printf '...' ; fi
++			if \${pollfd[\${subname}].revents.pollhup}   ; then printf '%sOH' "\${up}" ; else printf '...' ; fi
++			if \${pollfd[\${subname}].revents.pollerr}   ; then printf '%sOE' "\${up}" ; else printf '...' ; fi
++			if \${pollfd[\${subname}].revents.pollnval}  ; then printf '%sON' "\${up}" ; else printf '...' ; fi
++			printf '|'
++		done
++		printf '\n'
++
++		# pass token around
++		if \${pollfd[fifo_a_in].revents.pollin} && \${pollfd[fifo_b_out].revents.pollout}; then
++			if read -u\${pollfd[fifo_a_in].fd} -N1 x ; then
++				print -u\${pollfd[fifo_b_out].fd} -f "%s" "\$x" 2>'/dev/null'
++			fi
++		fi
++		if \${pollfd[fifo_b_in].revents.pollin} && \${pollfd[fifo_c_out].revents.pollout}; then
++			if read -u\${pollfd[fifo_b_in].fd} -N1 x ; then
++				print -u\${pollfd[fifo_c_out].fd} -f "%s" "\$x" 2>'/dev/null'
++			fi
++		fi
++		if \${pollfd[fifo_c_in].revents.pollin} && \${pollfd[fifo_d_out].revents.pollout}; then
++			if read -u\${pollfd[fifo_c_in].fd} -N1 x ; then
++				print -u\${pollfd[fifo_d_out].fd} -f "%s" "\$x" 2>'/dev/null'
++			fi
++		fi
++		if \${pollfd[fifo_d_in].revents.pollin} && \${pollfd[fifo_a_out].revents.pollout}; then
++			if read -u\${pollfd[fifo_d_in].fd} -N1 x ; then
++				print -u\${pollfd[fifo_a_out].fd} -f "%s" "\$x" 2>'/dev/null'
++			fi
++		fi
++
++		# send HUP around
++		# we explicitly do NOT close the file descriptors here
++		# to force poll(1) to set revents.pollnval=true
++		if \${pollfd[fifo_a_in].revents.pollhup} ; then
++			redirect {pollfd[fifo_a_in].fd}<&-;
++			redirect {pollfd[fifo_b_out].fd}<&-;
++		fi
++		if \${pollfd[fifo_b_in].revents.pollhup} ; then
++			redirect {pollfd[fifo_b_in].fd}<&-;
++			redirect {pollfd[fifo_c_out].fd}<&-;
++		fi
++		if \${pollfd[fifo_c_in].revents.pollhup} ; then
++			redirect {pollfd[fifo_c_in].fd}<&-;
++			redirect {pollfd[fifo_d_out].fd}<&-;
++		fi
++		if \${pollfd[fifo_d_in].revents.pollhup} ; then
++			redirect {pollfd[fifo_d_in].fd}<&-;
++			redirect {pollfd[fifo_a_out].fd}<&-;
++		fi
++
++		# remove fds which have been reported as invalid via
++		# revents.pollnval=true
++		#
++		# Notes:
++		# - we do this to see whether poll(1) ignores such
++		#   entries
++		# - real applications may just use something like
++		# \$ unset pollfd[fifo_a_in] # to remove the whole
++		#   array node
++		\${pollfd[fifo_a_in].revents.pollnval}  && (( pollfd[fifo_a_in].fd=-1  ))
++		\${pollfd[fifo_a_out].revents.pollnval} && (( pollfd[fifo_a_out].fd=-1 ))
++		\${pollfd[fifo_b_in].revents.pollnval}  && (( pollfd[fifo_b_in].fd=-1  ))
++		\${pollfd[fifo_b_out].revents.pollnval} && (( pollfd[fifo_b_out].fd=-1 ))
++		\${pollfd[fifo_c_in].revents.pollnval}  && (( pollfd[fifo_c_in].fd=-1  ))
++		\${pollfd[fifo_c_out].revents.pollnval} && (( pollfd[fifo_c_out].fd=-1 ))
++		\${pollfd[fifo_d_in].revents.pollnval}  && (( pollfd[fifo_d_in].fd=-1  ))
++		\${pollfd[fifo_d_out].revents.pollnval} && (( pollfd[fifo_d_out].fd=-1 ))
++
++		# send start token	
++		if (( i==0 )) ; then
++			# Use the Euro symbol (\u[20ac]) if the locale
++			# uses a UTF-8 encoding
++			typeset -r utf8_euro_char1=\$'\u[20ac]'
++			typeset -r utf8_euro_char2=\$'\342\202\254'
++			if (( (\${#utf8_euro_char1} == 1) && (\${#utf8_euro_char2} == 1) )) ; then
++				print -u\${pollfd[fifo_a_out].fd} -f '\u[20ac]'
++			else
++				print -u\${pollfd[fifo_a_out].fd} -f 'X'
++			fi
++		fi
++
++		# start sending hup around
++		(( i==(num_cycles-7) )) && redirect {pollfd[fifo_a_out].fd}<&-;
++	done
++
++	for name in "\${!ar[@]}" ; do
++		ar[\${name}].fifo_cleanup
++	done
++
++	print 'DONE'
++
++	return 0
++}
++
++set -o nounset
++set -o errexit
++
++builtin mkfifo
++builtin poll
++builtin rm
++
++main
++exit $?
++EOF
++
++	typeset IFS=''
++	typeset -r -a expected_output_pattern=(
++		$'|............AO+.........|............BO+.........|............CO+.........|............DO+.........|\n'
++		$'|AI+.........AO+.........|............BO+.........|............CO+.........|............DO+.........|\n'
++		$'|............AO+.........|BI+.........BO+.........|............CO+.........|............DO+.........|\n'
++		$'|............AO+.........|............BO+.........|CI+.........CO+.........|............DO+.........|\n'
++		$'|............AO+.........|............BO+.........|............CO+.........|DI+.........DO+.........|\n'
++		$'|AI+.........AO+.........|............BO+.........|............CO+.........|............DO+.........|\n'
++		$'|............AO+.........|BI+.........BO+.........|............CO+.........|............DO+.........|\n'
++		$'|............AO+.........|............BO+.........|CI+.........CO+.........|............DO+.........|\n'
++		$'|............AO+.........|............BO+.........|............CO+.........|DI+.........DO+.........|\n'
++		$'|AI+.........AO+.........|............BO+.........|............CO+.........|............DO+.........|\n'
++		$'|............AO+.........|BI+.........BO+.........|............CO+.........|............DO+.........|\n'
++		$'|............AO+.........|............BO+.........|CI+.........CO+.........|............DO+.........|\n'
++		$'|AI+AIH...............AON|............BO+.........|............CO+.........|DI+.........DO+.........|\n'
++		$'|.........AIN............|BI+BIH...............BON|............CO+.........|DI+.........DO+.........|\n'
++		$'|........................|.........BIN............|CI+CIH...............CON|DI+.........DO+.........|\n'
++		$'|........................|........................|.........CIN............|DI+DIH...............DON|\n'
++		$'|........................|........................|........................|.........DIN............|\n'
++		$'|........................|........................|........................|........................|\n'
++		$'DONE'
++	)
++
++	testname="$0/plain"
++	out.stderr="${ { out.stdout="${ ${SHELL} 'poll_circus.sh' ; (( out.res=$? )) ; }" ; } 2>&1 ; }"
++	[[ "${out.stdout}" == "${expected_output_pattern[*]}"	]] || err_exit "${testname}: Expected stdout to match ${ printf '%q\n' "${expected_output_pattern[*]}" ; }, got ${ printf '%q\n' "${out.stdout}" ; }"
++	[[ "${out.stderr}" == ''				]] || err_exit "${testname}: Expected empty stderr, got ${ printf '%q\n' "${out.stderr}" ; }"
++	(( out.res == 0 )) || err_exit "${testname}: Unexpected exit code ${out.res}"
++
++	testname="$0/compiled"
++	out.stderr="${ { out.stdout="${ ${SHCOMP} -n 'poll_circus.sh' 'poll_circus.shbin' && ${SHELL} 'poll_circus.shbin' ; (( out.res=$? )) ; }" ; } 2>&1 ; }"
++	[[ "${out.stdout}" == "${expected_output_pattern[*]}"	]] || err_exit "${testname}: Expected stdout to match ${ printf '%q\n' "${expected_output_pattern[*]}" ; }, got ${ printf '%q\n' "${out.stdout}" ; }"
++	[[ "${out.stderr}" == ''				]] || err_exit "${testname}: Expected empty stderr, got ${ printf '%q\n' "${out.stderr}" ; }"
++	(( out.res == 0 )) || err_exit "${testname}: Unexpected exit code ${out.res}"
++
++	rm -f 'poll_circus.sh' 'poll_circus.shbin'
++
++	return 0
++}
++
++# run tests
++builtin poll	|| err_exit 'poll builtin not found.'
++builtin rmdir	|| err_exit 'rmdir builtin not found.'
++
++test1
++test_sparse_array1
++test_fifo_circus1
++
++# cleanup
++cd "${ocwd}"
++rmdir "${tmpdir}" || err_exit "Cannot remove temporary directory ${tmpdir}."
++
++
++# tests done
++exit $((Errors<125?Errors:125))

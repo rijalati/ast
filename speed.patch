@@ -1,0 +1,1623 @@
+diff -r -u original/src/cmd/ksh93/bltins/cd_pwd.c build_i386_64bit_debug/src/cmd/ksh93/bltins/cd_pwd.c
+--- src/cmd/ksh93/bltins/cd_pwd.c	Wed Jun 26 22:12:28 2013
++++ src/cmd/ksh93/bltins/cd_pwd.c	Sun Jun 30 00:55:15 2013
+@@ -55,9 +55,17 @@
+*/
+int sh_diropenat(Shell_t *shp, int dir, const char *path, bool xattr)
+{
++#ifdef O_DIRECTORY
++#define O_directory (O_DIRECTORY)
++#else
++#define O_directory (0)
++#endif
++
+int fd,shfd;
+int savederrno=errno;
++#ifndef O_DIRECTORY
+struct stat fs;
++#endif
+#ifndef O_XATTR
+NOT_USED(xattr);
+#endif
+@@ -70,15 +78,47 @@
+if((apfd = openat(dir, path, O_RDONLY|O_NONBLOCK|O_cloexec))>=0)
+{
+fd = openat(apfd, e_dot, O_XATTR|O_cloexec);
++	savederrno=errno;
+close(apfd);
+}
++	else
++	{
++	return -1;
++	}
+}
+else
+#endif
+-	fd = openat(dir, path, O_SEARCH|O_NONBLOCK|O_cloexec);
++	{
++	/*
++	* Open directory. First we try without |O_SEARCH| and
++	* if this fails with EACCESS we try with |O_SEARCH|
++	* again.
++	* This is required ...
++	* - ... because some platforms may require that it can
++	* only be used for directories while some filesystems
++	* (e.g. Reiser4 or HSM systems) allow a |fchdir()| into
++	* files, too)
++	* - ... to preserve the semantics of "cd", e.g.
++	* otherwise "cd" would return [No access] instead of
++	* [Not a directory] for files on filesystems which do
++	* not allow a "cd" into files.
++	* - ... to allow that a
++	* $ redirect {n}</etc ; cd /dev/fd/$n # works on most
++	* platforms.
++	*/
+
++	fd = openat(dir, path, O_directory|O_NONBLOCK|O_cloexec);
++	if ((fd < 0) && (errno == EACCES))
++	{
++	fd = openat(dir, path, O_SEARCH|O_directory|O_NONBLOCK|O_cloexec);
++	}
++	savederrno=errno;
++	}
++
+if(fd < 0)
+return fd;
++
++#ifndef O_DIRECTORY
+if (!fstat(fd, &fs) && !S_ISDIR(fs.st_mode))
+{
+close(fd);
+@@ -85,10 +125,10 @@
+errno = ENOTDIR;
+return -1;
+}
++#endif
+
+/* Move fd to a number > 10 and register the fd number with the shell */
+shfd = fcntl(fd, F_dupfd_cloexec, 10);
+-	savederrno=errno;
+close(fd);
+errno=savederrno;
+return(shfd);
+diff -r -u original/src/lib/libast/features/eaccess build_i386_64bit_debug/src/lib/libast/features/eaccess
+--- src/lib/libast/features/eaccess	Fri Jul 23 08:02:25 2004
++++ src/lib/libast/features/eaccess	Sun Jun 30 00:55:15 2013
+@@ -1,4 +1,4 @@
+-lib	eaccess,euidaccess
++lib	eaccess,euidaccess -lgen
+macro{
+#include <sys/types.h>
+#include <unistd.h>
+diff -r -u original/src/lib/libast/features/fcntl.c build_i386_64bit_debug/src/lib/libast/features/fcntl.c
+--- src/lib/libast/features/fcntl.c	Thu Jun 27 08:39:11 2013
++++ src/lib/libast/features/fcntl.c	Sun Jun 30 07:41:16 2013
+@@ -27,10 +27,30 @@
+* generate POSIX fcntl.h
+*/
+
++/*
++ * We use this to force Linux and some *BSD versions to tell us all
++ * their flags
++ */
++#define _GNU_SOURCE 1
++#define __USE_GNU 1 /* why is this neccesary on Linux ? */
++
+#include <sys/types.h>
+
+#include "FEATURE/lib"
+
++/*
++ * Make sure _GNU_SOURCE is active on Linux. Some versions
++ * give us serious trouble in this case so we have this
++ * assert to *abort* early instead of let us hunt for "ghost
++ * bugs"
++ */
++#ifdef __linux__
++#ifndef __USE_GNU
++#error "ASSERT: __USE_GNU should be defined by now"
++#endif
++#endif
++
++
+#define getdtablesize	______getdtablesize
+#define getpagesize	______getpagesize
+#define ioctl	______ioctl
+@@ -186,6 +206,15 @@
+#ifdef	F_SHLCK
+if (F_SHLCK > f_local) f_local = F_SHLCK;
+#endif
++#ifdef	F_SHARE
++	if (F_SHARE > f_local) f_local = F_SHARE;
++#endif
++#ifdef	F_UNSHARE
++	if (F_UNSHARE > f_local) f_local = F_UNSHARE;
++#endif
++#ifdef	F_BADFD /* Create Poison FD */
++	if (F_BADFD > f_local) f_local = F_BADFD;
++#endif
+
+#if	NEED_F
+#if	_lib_fcntl
+@@ -240,12 +269,12 @@
+#define NEED_O	1
+#endif
+
+-#ifdef O_DSYNC
+-	if (O_DSYNC > o_local) o_local = O_DSYNC;
+-#endif
+#ifdef O_LARGEFILE
+if (O_LARGEFILE > o_local) o_local = O_LARGEFILE;
+#endif
++#ifdef O_LARGEFILE128
++	if (O_LARGEFILE128 > o_local) o_local = O_LARGEFILE128;
++#endif
+#ifdef O_NOFOLLOW
+if (O_NOFOLLOW > o_local) o_local = O_NOFOLLOW;
+#endif
+@@ -258,6 +287,9 @@
+#ifdef O_RSYNC
+if (O_RSYNC > o_local) o_local = O_RSYNC;
+#endif
++#ifdef O_DSYNC
++	if (O_DSYNC > o_local) o_local = O_DSYNC;
++#endif
+#ifdef O_SYNC
+if (O_SYNC > o_local) o_local = O_SYNC;
+#endif
+@@ -264,6 +296,24 @@
+#ifdef O_XATTR
+if (O_XATTR > o_local) o_local = O_XATTR;
+#endif
++#ifdef O_DIRECTORY
++	if (O_DIRECTORY > o_local) o_local = O_DIRECTORY;
++#endif
++#ifdef O_SEARCH
++	if (O_SEARCH > o_local) o_local = O_SEARCH;
++#endif
++#ifdef O_PATH
++	if (O_PATH > o_local) o_local = O_PATH;
++#endif
++#ifdef O_EXEC
++	if (O_EXEC > o_local) o_local = O_EXEC;
++#endif
++#ifdef O_CLOEXEC
++	if (O_CLOEXEC > o_local) o_local = O_CLOEXEC;
++#endif
++#ifdef O_TTY_INIT
++	if (O_TTY_INIT > o_local) o_local = O_TTY_INIT;
++#endif
+
+printf("#define _ast_O_LOCAL	0%o\n", o_local<<1);
+#if	NEED_O
+@@ -316,7 +366,17 @@
+#endif
+#ifndef	O_SEARCH
+#ifdef O_PATH
+-	printf("#define O_SEARCH	O_PATH\n");
++	/*
++	* O_PATH is a Linux's variation of O_SEARCH. Since this is treated
++	* as extension it may not be available without _GNU_SOURCE.
++	* Even even with _GNU_SOURCE some Linux platforms have bugs in their
++	* headers which prevents the definition of O_PATH in some hideous
++	* cases. To prevent all this mess we just grab the octal value and
++	* define it as O_SEARCH.
++	* Do not change this. You'll end-up in hell, together with the Linux
++	* headers. Quickly.
++	*/
++	printf("#define O_SEARCH	0%o\n", (int)O_PATH);
+#else
+printf("#define O_SEARCH	0%o\n", o_local <<= 1);
+#endif
+Irek Szczesniak 2 years ago
+PermalinkRaw MessageReport
+...
+FYI Solaris 7 still doesn't build.
+
+Irek
+Roland Mainz 2 years ago
+PermalinkRaw MessageReport
+...
+[snip]
+...
+Erm... general issue: It would be nice to have a bit more details than
+just "... it doesn't work... " ... ;-)
+
+... but I'm aware of the problem... right now I'm tracking the issues
+on SuSE 9.3 (thanks go to SuSE for helping out :-) ) and Solaris 8.
+_Maybe_ I have a patch in a few hours...
+
+----
+
+Bye,
+Roland
+--
+__ . . __
+(o.\ \/ /.o) roland.mainz at nrubsig.org
+\__\/\/__/ MPEG specialist, C&&JAVA&&Sun&&Unix programmer
+/O /==\ O\ TEL +49 641 3992797
+(;O/ \/ \O;)
+Roland Mainz 2 years ago
+PermalinkRaw MessageReport
+...
+Attached (as "astksh20130628_solaris_fixes002.diff.txt") is the new
+patch. It fixes ast-ksh.2013-06-28 on Solaris 8 and SuSE 9.3 (old
+Linux which even predates any of the |*at()|/|openat()|-APIs).
+
+Notes (Glenn/David: Please *read* this and comment if you don't like it):
+- A lot of calls in libshell have been changed from using |open(...)|
+to |openat(shp->pwdfd, ...| ... mainly to make sure the code goes
+through the intercept and |*at()|-API emulation code so that all
+emulated |O_*| flags are processed correctly and are not passed to the
+native OS'es |open()| syscall and cause trouble there.
+The other reason is to make libshell independent from the global cwd
+so multiple libshell objects can work in a single process and don't
+stomp on each other (the only design issue is that |spawnvex()| needs
+to be enhanced to take a cwd fd as argument in the future to set the
+cwd for a child process (AFAIK this is compatible to |vfork()| since
+we only call |fchdir()| after |vfork()| in the child but do not write
+into global data)).
+
+- src/cmd/ksh93/bltins/cd_pwd.c ... I restored the original comments
+about |O_SEARCH| ... please leave the algorithm as-is to make sure
+cd(1) is standard-conformant
+
+- src/lib/libast/comp/at.c ... added |renameat()| emulation and added
+a missing flag for |unlinkat()| ... I still have to review the code
+completely and add safety checks for unsupported flags... they should
+return an error instead of doing something which may not be intended
+
+- src/lib/libast/features/fcntl.c ... added the __USE_GNU&&co. hacks
+from my original patch... please don't complain... AFAIK there is no
+way to get |O_PATH| working properly otherwise (and |O_DIRECTORY| on
+older Linux versions (like SuSE 9.3))
+
+- src/lib/libast/path/pathopen.c ... off-by-one error which caused $(
+< {fd}/filetoread.txt ) to fail on SuSE 9.3
+
+- src/lib/libast/port/intercept.c ... added some "filters" to remove
+emulation flags so they do not bleed-through to the native syscalls
+
+----
+
+Bye,
+Roland
+--
+__ . . __
+(o.\ \/ /.o) roland.mainz at nrubsig.org
+\__\/\/__/ MPEG specialist, C&&JAVA&&Sun&&Unix programmer
+/O /==\ O\ TEL +49 641 3992797
+(;O/ \/ \O;)
+-------------- next part --------------
+diff -r -u original/src/cmd/ksh93/bltins/cd_pwd.c build_i386_64bit_debug/src/cmd/ksh93/bltins/cd_pwd.c
+--- src/cmd/ksh93/bltins/cd_pwd.c	2013-06-26 22:12:28.000000000 +0200
++++ src/cmd/ksh93/bltins/cd_pwd.c	2013-07-03 00:42:33.000000000 +0200
+@@ -55,9 +55,17 @@
+*/
+int sh_diropenat(Shell_t *shp, int dir, const char *path, bool xattr)
+{
++#ifdef O_DIRECTORY
++#define O_directory (O_DIRECTORY)
++#else
++#define O_directory (0)
++#endif
++
+int fd,shfd;
+int savederrno=errno;
++#ifndef O_DIRECTORY
+struct stat fs;
++#endif
+#ifndef O_XATTR
+NOT_USED(xattr);
+#endif
+@@ -70,21 +78,57 @@
+if((apfd = openat(dir, path, O_RDONLY|O_NONBLOCK|O_cloexec))>=0)
+{
+fd = openat(apfd, e_dot, O_XATTR|O_cloexec);
++	savederrno=errno;
+close(apfd);
+}
++	else
++	{
++	return -1;
++	}
+}
+else
+#endif
+-	fd = openat(dir, path, O_SEARCH|O_NONBLOCK|O_cloexec);
++	{
++	/*
++	* Open directory. First we try without |O_SEARCH| and
++	* if this fails with EACCESS we try with |O_SEARCH|
++	* again.
++	* This is required ...
++	* - ... because some platforms may require that it can
++	* only be used for directories while some filesystems
++	* (e.g. Reiser4 or HSM systems) allow a |fchdir()| into
++	* files, too)
++	* - ... to preserve the semantics of "cd", e.g.
++	* otherwise "cd" would return [No access] instead of
++	* [Not a directory] for files on filesystems which do
++	* not allow a "cd" into files.
++	* - ... to allow that a
++	* $ redirect {n}</etc ; cd /dev/fd/$n # works on most
++	* platforms.
++	*/
++
++	fd = openat(dir, path, O_directory|O_NONBLOCK|O_cloexec);
++	if ((fd < 0) && (errno == EACCES))
++	{
++	fd = openat(dir, path, O_SEARCH|O_directory|O_NONBLOCK|O_cloexec);
++	}
++	savederrno=errno;
++	}
+
+if(fd < 0)
++	{
++	errno=savederrno;
+return fd;
++	}
++
++#ifndef O_DIRECTORY
+if (!fstat(fd, &fs) && !S_ISDIR(fs.st_mode))
+{
+close(fd);
+errno = ENOTDIR;
+return -1;
+}
++#endif
+
+/* Move fd to a number > 10 and register the fd number with the shell */
+shfd = fcntl(fd, F_dupfd_cloexec, 10);
+diff -r -u original/src/cmd/ksh93/sh/io.c build_i386_64bit_debug/src/cmd/ksh93/sh/io.c
+--- src/cmd/ksh93/sh/io.c	2013-06-27 16:24:09.000000000 +0200
++++ src/cmd/ksh93/sh/io.c	2013-07-02 08:22:55.000000000 +0200
+@@ -833,13 +833,13 @@
+struct stat st;
+if (stat(path,&st) >=0)
+{
+-	while((nfd = open(path,flags,st.st_mode))<0 && errno==EINTR)
++	while((nfd = openat(shp->pwdfd,path,flags,st.st_mode))<0 && errno==EINTR)
+errno = err;
+}
+}
+else
+{
+-	while((nfd = open(path,flags))<0 && errno==EINTR)
++	while((nfd = openat(shp->pwdfd,path,flags))<0 && errno==EINTR)
+errno = err;
+}
+if(nfd>=0)
+@@ -867,7 +867,7 @@
+path = buf;
+}
+#endif
+-	while((fd = open(path, flags, mode)) < 0)
++	while((fd = openat(shp->pwdfd, path, flags, mode)) < 0)
+if(errno!=EINTR || shp->trapnote)
+return(-1);
+}
+@@ -2063,7 +2063,7 @@
+if(savefd <0 && (sp=shp->sftable[origfd]) && (sfset(sp,0,0)&SF_STRING))
+{
+savestr = 1;
+-	if((fd = open("/dev/null",O_RDONLY|O_cloexec)) < 10)
++	if((fd = openat(shp->pwdfd, "/dev/null",O_RDONLY|O_cloexec)) < 10)
+{
+savefd = sh_fcntl(fd, F_dupfd_cloexec, 10);
+close(fd);
+diff -r -u original/src/cmd/ksh93/sh/path.c build_i386_64bit_debug/src/cmd/ksh93/sh/path.c
+--- src/cmd/ksh93/sh/path.c	2013-06-27 09:20:57.000000000 +0200
++++ src/cmd/ksh93/sh/path.c	2013-07-02 08:25:00.000000000 +0200
+@@ -393,7 +393,7 @@
+struct stat statb;
+int	fd = -1;
+#if SHOPT_ATFUN
+-	if((fd=open(name,O_search|O_cloexec))<0 || fstat(fd,&statb)<0 || !S_ISDIR(statb.st_mode))
++	if((fd=openat(shp->pwdfd, name,O_search|O_cloexec))<0 || fstat(fd,&statb)<0 || !S_ISDIR(statb.st_mode))
+
+#else
+if(stat(name,&statb)<0 || !S_ISDIR(statb.st_mode))
+@@ -951,7 +951,7 @@
+path = path_relative(shp,path);
+if(isfun)
+{
+-	if((fd=open(path,O_RDONLY|O_cloexec,0))<0 || fstat(fd,&statb)<0)
++	if((fd=openat(shp->pwdfd,path,O_RDONLY|O_cloexec,0))<0 || fstat(fd,&statb)<0)
+goto err;
+}
+else if(stat(path,&statb) < 0)
+@@ -1351,7 +1351,7 @@
+char *savet=0;
+struct stat statb;
+int err=0;
+-	if((n=open(path,O_RDONLY|O_cloexec,0)) >= 0)
++	if((n=openat(shp->pwdfd,path,O_RDONLY|O_cloexec,0)) >= 0)
+{
+/* move <n> if n=0,1,2 */
+n = sh_iomovefd(shp,n);
+@@ -1365,7 +1365,7 @@
+{
+strncpy(name+9,fmtbase((long)getpid(),10,0),sizeof(name)-10);
+/* create a suid open file with owner equal effective uid */
+-	if((n=open(name,O_CREAT|O_TRUNC|O_WRONLY|O_cloexec,S_ISUID|S_IXUSR)) < 0)
++	if((n=openat(shp->pwdfd,name,O_CREAT|O_TRUNC|O_WRONLY|O_cloexec,S_ISUID|S_IXUSR)) < 0)
+goto fail;
+unlink(name);
+/* make sure that file has right owner */
+@@ -1391,7 +1391,7 @@
+/*
+* The following code is just for compatibility
+*/
+-	if((n=open(path,O_RDONLY|O_cloexec,0)) < 0)
++	if((n=openat(shp->pwdfd,path,O_RDONLY|O_cloexec,0)) < 0)
+errormsg(SH_DICT,ERROR_system(ERROR_NOEXEC),e_exec,path);
+if(savet)
+*argv++ = savet;
+@@ -1480,7 +1480,7 @@
+sabuf.ac_utime = compress(buffer.tms_utime + buffer.tms_cutime);
+sabuf.ac_stime = compress(buffer.tms_stime + buffer.tms_cstime);
+sabuf.ac_etime = compress( (time_t)(after-before));
+-	fd = open( SHACCT , O_WRONLY | O_APPEND | O_CREAT|O_cloexec,RW_ALL);
++	fd = openat(sh.pwdfd, SHACCT , O_WRONLY | O_APPEND | O_CREAT|O_cloexec,RW_ALL);
+write(fd, (const char*)&sabuf, sizeof( sabuf ));
+sh_close( fd);
+}
+@@ -1598,7 +1598,7 @@
+if(pp->len==1 && *stkptr(shp->stk,offset)=='/')
+stkseek(shp->stk,offset);
+sfputr(shp->stk,"/.paths",-1);
+-	if((fd=open(stkptr(shp->stk,offset),O_RDONLY|O_cloexec))>=0)
++	if((fd=openat(shp->pwdfd,stkptr(shp->stk,offset),O_RDONLY|O_cloexec))>=0)
+{
+fstat(fd,&statb);
+n = statb.st_size;
+diff -r -u original/src/cmd/ksh93/sh/xec.c build_i386_64bit_debug/src/cmd/ksh93/sh/xec.c
+--- src/cmd/ksh93/sh/xec.c	2013-06-14 18:16:08.000000000 +0200
++++ src/cmd/ksh93/sh/xec.c	2013-07-02 08:23:20.000000000 +0200
+@@ -862,7 +862,7 @@
+sp = sfnew(NULL,NULL,SF_UNBOUND,fd,SF_READ);
+while(close(0)<0 && errno==EINTR)
+errno = err;
+-	open(e_devnull,O_RDONLY|O_cloexec);
++	openat(shp->pwdfd, e_devnull,O_RDONLY|O_cloexec);
+shp->offsets[0] = -1;
+shp->offsets[1] = 0;
+*save = savein;
+diff -r -u original/src/lib/libast/comp/at.c build_i386_64bit_debug/src/lib/libast/comp/at.c
+--- src/lib/libast/comp/at.c	2013-06-27 04:35:41.000000000 +0200
++++ src/lib/libast/comp/at.c	2013-07-02 08:45:41.000000000 +0200
+@@ -45,13 +45,13 @@
+#define ATBEG(cwd,path) \
+{ \
+char	_at_##path[PATH_MAX]; \
+-	if (cwd >= 0) \
++	if (cwd != AT_FDCWD && path[0]!='/') \
+sfsprintf(_at_##path, sizeof(_at_##path), _fd_self_dir_fmt, cwd, "/", path);
+
+#define ATBEGL(lwd,link) \
+{ \
+char	_at_##link[PATH_MAX]; \
+-	if (lwd >= 0) \
++	if (lwd != AT_FDCWD && link[0]!='/') \
+sfsprintf(_at_##link, sizeof(_at_##link), _fd_self_dir_fmt, lwd, "/", link);
+
+#else
+@@ -59,19 +59,19 @@
+#define ATBEG(cwd,path) \
+{ \
+char	_at_##path[PATH_MAX]; \
+-	if (cwd >= 0) \
++	if (cwd != AT_FDCWD && path[0]!='/') \
+sfsprintf(_at_##path, sizeof(_at_##path), _fd_pid_dir_fmt, getpid(), cwd, "/", path);
+
+#define ATBEGL(lwd,path) \
+{ \
+char	_at_##link[PATH_MAX]; \
+-	if (lwd >= 0) \
++	if (lwd != AT_FDCWD && link[0]!='/') \
+sfsprintf(_at_##link, sizeof(_at_##link), _fd_pid_dir_fmt, getpid(), lwd, "/", link);
+
+#endif
+
+#define ATPATH(cwd,path) \
+-	((cwd>=0)?(const char*)_at_##path:path)
++	((cwd != AT_FDCWD && path[0]!='/')?(const char*)_at_##path:path)
+
+#define ATEND() \
+}
+@@ -88,7 +88,7 @@
+int	_at_dot = -1; \
+int	_at_ret; \
+unsigned int	_at_tid; \
+-	if (cwd >= 0) \
++	if (cwd != AT_FDCWD && path[0]!='/') \
+{ \
+sigcrit(SIG_REG_ALL); \
+_at_tid = asothreadid(); \
+@@ -204,7 +204,7 @@
+int	r;
+
+ATBEG(cwd, path);
+-	r = (flags & AT_SYMLINK_NOFOLLOW) ? lstat(ATPATH(cwd, path), st, flags) : stat(ATPATH(cwd, path), st, flags);
++	r = (flags & AT_SYMLINK_NOFOLLOW) ? lstat(ATPATH(cwd, path), st) : stat(ATPATH(cwd, path), st);
+ATEND();
+return r;
+}
+@@ -220,9 +220,9 @@
+{
+int	r;
+
+-	if (pwd < 0 || *path == '/')
++	if (pwd == AT_FDCWD || *path == '/')
+{
+-	if (lwd < 0 || *linkpath == '/')
++	if (lwd == AT_FDCWD || *linkpath == '/')
+r = link(path, linkpath);
+else
+{
+@@ -231,7 +231,7 @@
+ATEND();
+}
+}
+-	else if (lwd < 0 || *linkpath == '/')
++	else if (lwd == AT_FDCWD || *linkpath == '/')
+{
+ATBEG(pwd, path);
+r = link(ATPATH(pwd, path), linkpath);
+@@ -333,7 +333,7 @@
+#undef	STUB
+
+ssize_t
+-readlinkat(int cwd, const char* path, void* buf, size_t size)
++readlinkat(int cwd, const char* path, char* buf, size_t size)
+{
+ssize_t	r;
+
+@@ -372,13 +372,42 @@
+int	r;
+
+ATBEG(cwd, path);
+-	r = unlink(ATPATH(cwd, path), flags);
++	if (flags & AT_REMOVEDIR)
++	r = rmdir(ATPATH(cwd, path));
++	else
++	r = unlink(ATPATH(cwd, path));
+ATEND();
+return r;
+}
+
+#endif
+
++#if !_lib_renameat
++
++#undef	STUB
++
++int
++renameat(int fromfd, const char *old, int tofd, const char *new)
++{
++	char oldpathbuf[PATH_MAX];
++	char newpathbuf[PATH_MAX];
++
++	if (fromfd != AT_FDCWD && old[0] != '/')
++	{
++	snprintf(oldpathbuf, sizeof(oldpathbuf), _fd_pid_dir_fmt, getpid(), fromfd, "/", old);
++	old = oldpathbuf;
++	}
++	if (tofd != AT_FDCWD && new[0] != '/')
++	{
++	snprintf(newpathbuf, sizeof(newpathbuf), _fd_pid_dir_fmt, getpid(), tofd, "/", new);
++	new = newpathbuf;
++	}
++
++	return rename(old, new);
++}
++
++#endif
++
+#if STUB
+
+void _STUB_at(){}
+diff -r -u original/src/lib/libast/features/eaccess build_i386_64bit_debug/src/lib/libast/features/eaccess
+--- src/lib/libast/features/eaccess	2004-07-23 08:02:25.000000000 +0200
++++ src/lib/libast/features/eaccess	2013-07-01 05:27:17.000000000 +0200
+@@ -1,4 +1,4 @@
+-lib	eaccess,euidaccess
++lib	eaccess,euidaccess -lgen
+macro{
+#include <sys/types.h>
+#include <unistd.h>
+diff -r -u original/src/lib/libast/features/fcntl.c build_i386_64bit_debug/src/lib/libast/features/fcntl.c
+--- src/lib/libast/features/fcntl.c	2013-06-27 08:39:11.000000000 +0200
++++ src/lib/libast/features/fcntl.c	2013-07-03 00:40:08.000000000 +0200
+@@ -27,10 +27,30 @@
+* generate POSIX fcntl.h
+*/
+
++/*
++ * We use this to force Linux and some *BSD versions to tell us all
++ * their flags
++ */
++#define _GNU_SOURCE 1
++#define __USE_GNU 1 /* why is this neccesary on Linux ? */
++
+#include <sys/types.h>
+
+#include "FEATURE/lib"
+
++/*
++ * Make sure _GNU_SOURCE is active on Linux. Some versions
++ * give us serious trouble in this case so we have this
++ * assert to *abort* early instead of let us hunt for "ghost
++ * bugs"
++ */
++#ifdef __linux__
++#ifndef __USE_GNU
++#error "ASSERT: __USE_GNU should be defined by now"
++#endif
++#endif
++
++
+#define getdtablesize	______getdtablesize
+#define getpagesize	______getpagesize
+#define ioctl	______ioctl
+@@ -186,6 +206,15 @@
+#ifdef	F_SHLCK
+if (F_SHLCK > f_local) f_local = F_SHLCK;
+#endif
++#ifdef	F_SHARE
++	if (F_SHARE > f_local) f_local = F_SHARE;
++#endif
++#ifdef	F_UNSHARE
++	if (F_UNSHARE > f_local) f_local = F_UNSHARE;
++#endif
++#ifdef	F_BADFD /* Create Poison FD */
++	if (F_BADFD > f_local) f_local = F_BADFD;
++#endif
+
+#if	NEED_F
+#if	_lib_fcntl
+@@ -240,12 +269,12 @@
+#define NEED_O	1
+#endif
+
+-#ifdef O_DSYNC
+-	if (O_DSYNC > o_local) o_local = O_DSYNC;
+-#endif
+#ifdef O_LARGEFILE
+if (O_LARGEFILE > o_local) o_local = O_LARGEFILE;
+#endif
++#ifdef O_LARGEFILE128
++	if (O_LARGEFILE128 > o_local) o_local = O_LARGEFILE128;
++#endif
+#ifdef O_NOFOLLOW
+if (O_NOFOLLOW > o_local) o_local = O_NOFOLLOW;
+#endif
+@@ -258,12 +287,36 @@
+#ifdef O_RSYNC
+if (O_RSYNC > o_local) o_local = O_RSYNC;
+#endif
++#ifdef O_DSYNC
++	if (O_DSYNC > o_local) o_local = O_DSYNC;
++#endif
+#ifdef O_SYNC
+if (O_SYNC > o_local) o_local = O_SYNC;
+#endif
+#ifdef O_XATTR
+if (O_XATTR > o_local) o_local = O_XATTR;
+#endif
++#ifdef O_DIRECT
++	if (O_DIRECT > o_local) o_local = O_DIRECT;
++#endif
++#ifdef O_DIRECTORY
++	if (O_DIRECTORY > o_local) o_local = O_DIRECTORY;
++#endif
++#ifdef O_SEARCH
++	if (O_SEARCH > o_local) o_local = O_SEARCH;
++#endif
++#ifdef O_PATH
++	if (O_PATH > o_local) o_local = O_PATH;
++#endif
++#ifdef O_EXEC
++	if (O_EXEC > o_local) o_local = O_EXEC;
++#endif
++#ifdef O_CLOEXEC
++	if (O_CLOEXEC > o_local) o_local = O_CLOEXEC;
++#endif
++#ifdef O_TTY_INIT
++	if (O_TTY_INIT > o_local) o_local = O_TTY_INIT;
++#endif
+
+printf("#define _ast_O_LOCAL	0%o\n", o_local<<1);
+#if	NEED_O
+@@ -316,11 +369,33 @@
+#endif
+#ifndef	O_SEARCH
+#ifdef O_PATH
+-	printf("#define O_SEARCH	O_PATH\n");
++	/*
++	* O_PATH is a Linux's variation of O_SEARCH. Since this is treated
++	* as extension it may not be available without _GNU_SOURCE.
++	* Even even with _GNU_SOURCE some Linux platforms have bugs in their
++	* headers which prevents the definition of O_PATH in some hideous
++	* cases. To prevent all this mess we just grab the octal value and
++	* define it as O_SEARCH.
++	* Do not change this. You'll end-up in hell, together with the Linux
++	* headers. Quickly.
++	*/
++	printf("#define O_SEARCH	0%o\n", (int)O_PATH);
+#else
+printf("#define O_SEARCH	0%o\n", o_local <<= 1);
+#endif
+#endif
++#ifdef O_DIRECTORY
++	/*
++	* O_DIRECTORY is only available as extension (hidden by
++	* obscure CPP flags) on older Linux versions. We make it
++	* available here (same as with O_PATH above) in general
++	* without requiring the whole build to use the obsure
++	* CPP flags to prevent any side-effects.
++	*/
++	printf("#ifndef O_DIRECTORY\n");
++	printf("#define O_DIRECTORY	0%o\n", (int)O_DIRECTORY);
++	printf("#endif\n");
++#endif
+#ifndef	O_INTERCEPT
+printf("#define O_INTERCEPT	0%o\n", o_local <<= 1);
+#endif
+@@ -346,7 +421,8 @@
+#if !defined(AT_FDCWD) || !defined(AT_SYMLINK_NOFOLLOW) || !defined(AT_REMOVEDIR) || !defined(AT_SYMLINK_FOLLOW) || !defined(AT_EACCESS)
+printf("\n");
+#ifndef AT_FDCWD
+-	printf("#define AT_FDCWD	-100\n");
++	/* AT_FDCWD must be below -256 for portability reasons */
++	printf("#define AT_FDCWD	-666\n");
+#endif
+#ifndef AT_SYMLINK_NOFOLLOW
+printf("#define AT_SYMLINK_NOFOLLOW	0x100\n");
+@@ -420,10 +496,10 @@
+printf("extern int	mknodat(int, const char*, mode_t, dev_t);\n");
+printf("#endif\n");
+printf("#if !_lib_openat\n");
+-	printf("extern int	openat(int, const char*, mode_t, int);\n");
++	printf("extern int	openat(int, const char*, int flags, ...);\n");
+printf("#endif\n");
+printf("#if !_lib_readlinkat\n");
+-	printf("extern int	readlinkat(int, const char*, void*, size_t);\n");
++	printf("extern ssize_t	readlinkat(int, const char*, char*, size_t);\n");
+printf("#endif\n");
+printf("#if !_lib_symlinkat\n");
+printf("extern int	symlinkat(const char*, int, const char*);\n");
+@@ -431,6 +507,9 @@
+printf("#if !_lib_unlinkat\n");
+printf("extern int	unlinkat(int, const char*, int);\n");
+printf("#endif\n");
++	printf("#if !_lib_renameat\n");
++	printf("extern int	renameat(int fromfd, const char *old, int tofd, const char *new);\n");
++	printf("#endif\n");
+printf("\n");
+printf("#undef	extern\n");
+
+diff -r -u original/src/lib/libast/features/lib build_i386_64bit_debug/src/lib/libast/features/lib
+--- src/lib/libast/features/lib	2013-06-27 04:34:19.000000000 +0200
++++ src/lib/libast/features/lib	2013-07-01 09:45:02.000000000 +0200
+@@ -48,7 +48,7 @@
+lib	openat -D_ATFILE_SOURCE fcntl.h unistd.h yes{
+#define _ATFILE_SOURCE	1
+}end
+-lib	faccessat,fchmodat,fchownat,fstatat,linkat,mkdirat,mkfifoat,mknodat,openat,readlinkat,symlinkat,unlinkat -D_ATFILE_SOURCE fcntl.h unistd.h
++lib	faccessat,fchmodat,fchownat,fstatat,linkat,mkdirat,mkfifoat,mknodat,openat,readlinkat,symlinkat,unlinkat,renameat -D_ATFILE_SOURCE fcntl.h unistd.h
+lib	fstatat64,openat64 -D_ATFILE_SOURCE -D_LARGEFILE64_SOURCE fcntl.h unistd.h sys/stat.h
+
+lib	lchmod note{ lchmod implemented }end execute{
+diff -r -u original/src/lib/libast/path/pathopen.c build_i386_64bit_debug/src/lib/libast/path/pathopen.c
+--- src/lib/libast/path/pathopen.c	2013-06-25 23:40:32.000000000 +0200
++++ src/lib/libast/path/pathopen.c	2013-07-02 20:07:30.000000000 +0200
+@@ -166,7 +166,7 @@
+return	dev.pid > 0 && dev.pid != getpid() ?
+openat(AT_FDCWD, b, oflags, mode) :
+b[dev.path.offset] ?
+-	openat(dev.fd, b + dev.path.offset + 1, oflags, mode) :
++	openat(dev.fd, b + dev.path.offset, oflags, mode) :
+fcntl(dev.fd, (oflags & O_CLOEXEC) ? F_DUPFD_CLOEXEC : F_DUPFD, 0);
+else if (dev.prot.offset)
+{
+diff -r -u original/src/lib/libast/port/intercept.c build_i386_64bit_debug/src/lib/libast/port/intercept.c
+--- src/lib/libast/port/intercept.c	2013-06-28 08:59:40.000000000 +0200
++++ src/lib/libast/port/intercept.c	2013-07-02 22:56:50.000000000 +0200
+@@ -176,7 +176,7 @@
+ast_openat(int cwd, const char* path, int flags, ...)
+{
+int	r;
+-#if _ast_O_LOCAL && O_CLOEXEC >= _ast_O_LOCAL
++#if defined(_ast_O_LOCAL) && (O_CLOEXEC >= _ast_O_LOCAL)
+int	c;
+#endif
+mode_t	mode;
+@@ -185,7 +185,7 @@
+va_start(ap, flags);
+mode = (flags & O_CREAT) ? va_arg(ap, mode_t) : (mode_t)0;
+va_end(ap);
+-#if _ast_O_LOCAL && O_CLOEXEC >= _ast_O_LOCAL
++#if defined(_ast_O_LOCAL) && (O_CLOEXEC >= _ast_O_LOCAL)
+if (flags & O_CLOEXEC)
+{
+flags &= ~O_CLOEXEC;
+@@ -198,7 +198,7 @@
+RESTART(r, openat(cwd, path, flags&~O_INTERCEPT, mode));
+else
+RESTART(r, pathopen(cwd, path, NiL, 0, 0, flags|O_INTERCEPT, mode));
+-#if _ast_O_LOCAL && O_CLOEXEC >= _ast_O_LOCAL
++#if defined(_ast_O_LOCAL) && (O_CLOEXEC >= _ast_O_LOCAL)
+if (c && r >= 0)
+RESTART(c, fcntl(r, F_SETFD, FD_CLOEXEC));
+#endif
+@@ -723,8 +723,18 @@
+ast_socket(int domain, int type, int protocol)
+{
+int	r;
++	int	ftype=type;
+
+-	RESTART(r, socket(domain, type, protocol));
++/* Filter flags we emulate */
++#if _ast_SOCK_CLOEXEC
++	if (ftype & SOCK_CLOEXEC)
++	ftype &= ~SOCK_CLOEXEC;
++#endif
++#if _ast_SOCK_NONBLOCK
++	if (ftype & SOCK_NONBLOCK)
++	ftype &= ~SOCK_NONBLOCK;
++#endif
++	RESTART(r, socket(domain, ftype, protocol));
+SOCKTYPE(r, type, r, -1);
+return r;
+}
+@@ -733,8 +743,19 @@
+ast_socketpair(int domain, int type, int protocol, int fds[2])
+{
+int	r;
++	int	ftype=type;
++
++/* Filter flags we emulate */
++#if _ast_SOCK_CLOEXEC
++	if (ftype & SOCK_CLOEXEC)
++	ftype &= ~SOCK_CLOEXEC;
++#endif
++#if _ast_SOCK_NONBLOCK
++	if (ftype & SOCK_NONBLOCK)
++	ftype &= ~SOCK_NONBLOCK;
++#endif
+
+-	RESTART(r, socketpair(domain, type, protocol, fds));
++	RESTART(r, socketpair(domain, ftype, protocol, fds));
+SOCKTYPE(r, type, fds[0], fds[1]);
+return r;
+}
+Roland Mainz 2 years ago
+PermalinkRaw MessageReport
+...
+Attached (as "astksh20130628_solaris_fixes003.diff.txt") is an updated
+version of the patch which fixes the issues which came up during code
+review:
+- Fixed error handling in cd(1) for NFSv4/CIFS/SMBFS XATTR directories
+- Opening the history files now goes through the
+|*at()|-emulation&&intercept code to make sure extra flags+signal
+restart is handled properly (tested)
+
+BTW: No, going through the |*at()| emulation is not slower unless the
+|fd| argument in |openat(fd,...)| differs between individual calls
+(well... at least the code in
+http://svn.nrubsig.org/svn/people/gisburn/code/openat_emu/openat_emu.c
+did maintain a cache (which is valid until |fchdir()|/|chdir()| is
+called) and AFAIK the |*at()|-emulation in libast should do the same).
+
+Comments/rants/etc. welcome...
+
+----
+
+Bye,
+Roland
+--
+__ . . __
+(o.\ \/ /.o) roland.mainz at nrubsig.org
+\__\/\/__/ MPEG specialist, C&&JAVA&&Sun&&Unix programmer
+/O /==\ O\ TEL +49 641 3992797
+(;O/ \/ \O;)
+-------------- next part --------------
+diff -r -u original/src/cmd/ksh93/bltins/cd_pwd.c build_i386_64bit_debug/src/cmd/ksh93/bltins/cd_pwd.c
+--- src/cmd/ksh93/bltins/cd_pwd.c	2013-06-26 22:12:28.000000000 +0200
++++ src/cmd/ksh93/bltins/cd_pwd.c	2013-07-04 07:34:14.000000000 +0200
+@@ -55,9 +55,17 @@
+*/
+int sh_diropenat(Shell_t *shp, int dir, const char *path, bool xattr)
+{
++#ifdef O_DIRECTORY
++#define O_directory (O_DIRECTORY)
++#else
++#define O_directory (0)
++#endif
++
+int fd,shfd;
+-	int savederrno=errno;
++	int savederrno;
++#ifndef O_DIRECTORY
+struct stat fs;
++#endif
+#ifndef O_XATTR
+NOT_USED(xattr);
+#endif
+@@ -70,21 +78,56 @@
+if((apfd = openat(dir, path, O_RDONLY|O_NONBLOCK|O_cloexec))>=0)
+{
+fd = openat(apfd, e_dot, O_XATTR|O_cloexec);
++	savederrno=errno;
+close(apfd);
++	errno=savederrno;
++	}
++	else
++	{
++	return -1;
+}
+}
+else
+#endif
+-	fd = openat(dir, path, O_SEARCH|O_NONBLOCK|O_cloexec);
++	{
++	/*
++	* Open directory. First we try without |O_SEARCH| and
++	* if this fails with EACCESS we try with |O_SEARCH|
++	* again.
++	* This is required ...
++	* - ... because some platforms may require that it can
++	* only be used for directories while some filesystems
++	* (e.g. Reiser4 or HSM systems) allow a |fchdir()| into
++	* files, too)
++	* - ... to preserve the semantics of "cd", e.g.
++	* otherwise "cd" would return [No access] instead of
++	* [Not a directory] for files on filesystems which do
++	* not allow a "cd" into files.
++	* - ... to allow that a
++	* $ redirect {n}</etc ; cd /dev/fd/$n # works on most
++	* platforms.
++	*/
++
++	fd = openat(dir, path, O_directory|O_NONBLOCK|O_cloexec);
++	if ((fd < 0) && (errno == EACCES))
++	{
++	fd = openat(dir, path, O_SEARCH|O_directory|O_NONBLOCK|O_cloexec);
++	}
++	}
+
+if(fd < 0)
++	{
+return fd;
++	}
++
++#ifndef O_DIRECTORY
+if (!fstat(fd, &fs) && !S_ISDIR(fs.st_mode))
+{
+close(fd);
+errno = ENOTDIR;
+return -1;
+}
++#endif
+
+/* Move fd to a number > 10 and register the fd number with the shell */
+shfd = fcntl(fd, F_dupfd_cloexec, 10);
+diff -r -u original/src/cmd/ksh93/bltins/hist.c build_i386_64bit_debug/src/cmd/ksh93/bltins/hist.c
+--- src/cmd/ksh93/bltins/hist.c	2012-08-28 15:59:37.000000000 +0200
++++ src/cmd/ksh93/bltins/hist.c	2013-07-04 06:50:39.000000000 +0200
+@@ -190,7 +190,7 @@
+{
+if(!(fname=pathtmp(NIL(char*),0,0,NIL(int*))))
+errormsg(SH_DICT,ERROR_exit(1),e_create,"");
+-	if((fdo=open(fname,O_CREAT|O_RDWR,S_IRUSR|S_IWUSR|O_cloexec)) < 0)
++	if((fdo=openat(shp->pwdfd,fname,O_CREAT|O_RDWR,S_IRUSR|S_IWUSR|O_cloexec)) < 0)
+errormsg(SH_DICT,ERROR_system(1),e_create,fname);
+outfile= sfnew(NIL(Sfio_t*),shp->outbuff,IOBSIZE,fdo,SF_WRITE);
+arg = "\n";
+diff -r -u original/src/cmd/ksh93/edit/history.c build_i386_64bit_debug/src/cmd/ksh93/edit/history.c
+--- src/cmd/ksh93/edit/history.c	2012-09-18 17:20:02.000000000 +0200
++++ src/cmd/ksh93/edit/history.c	2013-07-04 06:50:18.000000000 +0200
+@@ -179,7 +179,8 @@
+{
+char	*cp, *last;
+int	id1, id2, r=0, n, fd;
+-	if((fd=open(name, O_RDONLY,O_cloexec)) < 0)
++	Shell_t *shp = hp->histshell;
++	if((fd=openat(shp->pwdfd, name, O_RDONLY,O_cloexec)) < 0)
+return(0);
+if((n = read(fd, logbuf,len-1)) < 0)
+goto done;
+@@ -262,7 +263,7 @@
+cp = path_relative(shp,histname);
+if(!histinit)
+histmode = S_IRUSR|S_IWUSR;
+-	if((fd=open(cp,O_BINARY|O_APPEND|O_RDWR|O_CREAT|O_cloexec,histmode))>=0)
++	if((fd=openat(shp->pwdfd,cp,O_BINARY|O_APPEND|O_RDWR|O_CREAT|O_cloexec,histmode))>=0)
+{
+hsize=lseek(fd,(off_t)0,SEEK_END);
+}
+@@ -293,7 +294,7 @@
+{
+if(!(fname = pathtmp(NIL(char*),0,0,NIL(int*))))
+return(0);
+-	fd = open(fname,O_BINARY|O_APPEND|O_CREAT|O_RDWR,S_IRUSR|S_IWUSR|O_cloexec);
++	fd = openat(shp->pwdfd,fname,O_BINARY|O_APPEND|O_CREAT|O_RDWR,S_IRUSR|S_IWUSR|O_cloexec);
+}
+}
+if(fd<0)
+@@ -457,6 +458,7 @@
+
+static History_t* hist_trim(History_t *hp, int n)
+{
++	Shell_t *shp = hp->histshell;
+register char *cp;
+register int incmd=1, c=0;
+register History_t *hist_new, *hist_old = hp;
+@@ -484,7 +486,7 @@
+free(tmpname);
+tmpname = name;
+}
+-	fd = open(tmpname,O_RDONLY|O_cloexec);
++	fd = openat(shp->pwdfd,tmpname,O_RDONLY|O_cloexec);
+sfsetfd(hist_old->histfp,fd);
+if(tmpname==name)
+tmpname = 0;
+@@ -623,6 +625,7 @@
+
+void hist_eof(register History_t *hp)
+{
++	Shell_t *shp = hp->histshell;
+register char *cp,*first,*endbuff;
+register int incmd = 0;
+register off_t count = hp->histcnt;
+@@ -729,7 +732,7 @@
+if(last<0)
+{
+char	buff[HIST_MARKSZ];
+-	int	fd = open(hp->histname,O_RDWR|O_cloexec);
++	int	fd = openat(shp->pwdfd,hp->histname,O_RDWR|O_cloexec);
+if(fd>=0)
+{
+hist_marker(buff,hp->histind);
+@@ -1186,13 +1189,14 @@
+{
+register int newfd,oldfd;
+History_t *hp = (History_t*)handle;
++	Shell_t *shp = hp->histshell;
+if(type==SF_WRITE)
+{
+if(errno==ENOSPC || hp->histwfail++ >= 10)
+return(0);
+/* write failure could be NFS problem, try to re-open */
+sh_close(oldfd=sffileno(fp));
+-	if((newfd=open(hp->histname,O_BINARY|O_APPEND|O_CREAT|O_RDWR|O_cloexec,S_IRUSR|S_IWUSR)) >= 0)
++	if((newfd=openat(shp->pwdfd,hp->histname,O_BINARY|O_APPEND|O_CREAT|O_RDWR|O_cloexec,S_IRUSR|S_IWUSR)) >= 0)
+{
+if(sh_fcntl(newfd, F_dupfd_cloexec, oldfd) !=oldfd)
+return(-1);
+diff -r -u original/src/cmd/ksh93/sh/io.c build_i386_64bit_debug/src/cmd/ksh93/sh/io.c
+--- src/cmd/ksh93/sh/io.c	2013-06-27 16:24:09.000000000 +0200
++++ src/cmd/ksh93/sh/io.c	2013-07-02 08:22:55.000000000 +0200
+@@ -833,13 +833,13 @@
+struct stat st;
+if (stat(path,&st) >=0)
+{
+-	while((nfd = open(path,flags,st.st_mode))<0 && errno==EINTR)
++	while((nfd = openat(shp->pwdfd,path,flags,st.st_mode))<0 && errno==EINTR)
+errno = err;
+}
+}
+else
+{
+-	while((nfd = open(path,flags))<0 && errno==EINTR)
++	while((nfd = openat(shp->pwdfd,path,flags))<0 && errno==EINTR)
+errno = err;
+}
+if(nfd>=0)
+@@ -867,7 +867,7 @@
+path = buf;
+}
+#endif
+-	while((fd = open(path, flags, mode)) < 0)
++	while((fd = openat(shp->pwdfd, path, flags, mode)) < 0)
+if(errno!=EINTR || shp->trapnote)
+return(-1);
+}
+@@ -2063,7 +2063,7 @@
+if(savefd <0 && (sp=shp->sftable[origfd]) && (sfset(sp,0,0)&SF_STRING))
+{
+savestr = 1;
+-	if((fd = open("/dev/null",O_RDONLY|O_cloexec)) < 10)
++	if((fd = openat(shp->pwdfd, "/dev/null",O_RDONLY|O_cloexec)) < 10)
+{
+savefd = sh_fcntl(fd, F_dupfd_cloexec, 10);
+close(fd);
+diff -r -u original/src/cmd/ksh93/sh/path.c build_i386_64bit_debug/src/cmd/ksh93/sh/path.c
+--- src/cmd/ksh93/sh/path.c	2013-06-27 09:20:57.000000000 +0200
++++ src/cmd/ksh93/sh/path.c	2013-07-02 08:25:00.000000000 +0200
+@@ -393,7 +393,7 @@
+struct stat statb;
+int	fd = -1;
+#if SHOPT_ATFUN
+-	if((fd=open(name,O_search|O_cloexec))<0 || fstat(fd,&statb)<0 || !S_ISDIR(statb.st_mode))
++	if((fd=openat(shp->pwdfd, name,O_search|O_cloexec))<0 || fstat(fd,&statb)<0 || !S_ISDIR(statb.st_mode))
+
+#else
+if(stat(name,&statb)<0 || !S_ISDIR(statb.st_mode))
+@@ -951,7 +951,7 @@
+path = path_relative(shp,path);
+if(isfun)
+{
+-	if((fd=open(path,O_RDONLY|O_cloexec,0))<0 || fstat(fd,&statb)<0)
++	if((fd=openat(shp->pwdfd,path,O_RDONLY|O_cloexec,0))<0 || fstat(fd,&statb)<0)
+goto err;
+}
+else if(stat(path,&statb) < 0)
+@@ -1351,7 +1351,7 @@
+char *savet=0;
+struct stat statb;
+int err=0;
+-	if((n=open(path,O_RDONLY|O_cloexec,0)) >= 0)
++	if((n=openat(shp->pwdfd,path,O_RDONLY|O_cloexec,0)) >= 0)
+{
+/* move <n> if n=0,1,2 */
+n = sh_iomovefd(shp,n);
+@@ -1365,7 +1365,7 @@
+{
+strncpy(name+9,fmtbase((long)getpid(),10,0),sizeof(name)-10);
+/* create a suid open file with owner equal effective uid */
+-	if((n=open(name,O_CREAT|O_TRUNC|O_WRONLY|O_cloexec,S_ISUID|S_IXUSR)) < 0)
++	if((n=openat(shp->pwdfd,name,O_CREAT|O_TRUNC|O_WRONLY|O_cloexec,S_ISUID|S_IXUSR)) < 0)
+goto fail;
+unlink(name);
+/* make sure that file has right owner */
+@@ -1391,7 +1391,7 @@
+/*
+* The following code is just for compatibility
+*/
+-	if((n=open(path,O_RDONLY|O_cloexec,0)) < 0)
++	if((n=openat(shp->pwdfd,path,O_RDONLY|O_cloexec,0)) < 0)
+errormsg(SH_DICT,ERROR_system(ERROR_NOEXEC),e_exec,path);
+if(savet)
+*argv++ = savet;
+@@ -1480,7 +1480,7 @@
+sabuf.ac_utime = compress(buffer.tms_utime + buffer.tms_cutime);
+sabuf.ac_stime = compress(buffer.tms_stime + buffer.tms_cstime);
+sabuf.ac_etime = compress( (time_t)(after-before));
+-	fd = open( SHACCT , O_WRONLY | O_APPEND | O_CREAT|O_cloexec,RW_ALL);
++	fd = openat(sh.pwdfd, SHACCT , O_WRONLY | O_APPEND | O_CREAT|O_cloexec,RW_ALL);
+write(fd, (const char*)&sabuf, sizeof( sabuf ));
+sh_close( fd);
+}
+@@ -1598,7 +1598,7 @@
+if(pp->len==1 && *stkptr(shp->stk,offset)=='/')
+stkseek(shp->stk,offset);
+sfputr(shp->stk,"/.paths",-1);
+-	if((fd=open(stkptr(shp->stk,offset),O_RDONLY|O_cloexec))>=0)
++	if((fd=openat(shp->pwdfd,stkptr(shp->stk,offset),O_RDONLY|O_cloexec))>=0)
+{
+fstat(fd,&statb);
+n = statb.st_size;
+diff -r -u original/src/cmd/ksh93/sh/xec.c build_i386_64bit_debug/src/cmd/ksh93/sh/xec.c
+--- src/cmd/ksh93/sh/xec.c	2013-06-14 18:16:08.000000000 +0200
++++ src/cmd/ksh93/sh/xec.c	2013-07-02 08:23:20.000000000 +0200
+@@ -862,7 +862,7 @@
+sp = sfnew(NULL,NULL,SF_UNBOUND,fd,SF_READ);
+while(close(0)<0 && errno==EINTR)
+errno = err;
+-	open(e_devnull,O_RDONLY|O_cloexec);
++	openat(shp->pwdfd, e_devnull,O_RDONLY|O_cloexec);
+shp->offsets[0] = -1;
+shp->offsets[1] = 0;
+*save = savein;
+diff -r -u original/src/lib/libast/comp/at.c build_i386_64bit_debug/src/lib/libast/comp/at.c
+--- src/lib/libast/comp/at.c	2013-06-27 04:35:41.000000000 +0200
++++ src/lib/libast/comp/at.c	2013-07-02 08:45:41.000000000 +0200
+@@ -45,13 +45,13 @@
+#define ATBEG(cwd,path) \
+{ \
+char	_at_##path[PATH_MAX]; \
+-	if (cwd >= 0) \
++	if (cwd != AT_FDCWD && path[0]!='/') \
+sfsprintf(_at_##path, sizeof(_at_##path), _fd_self_dir_fmt, cwd, "/", path);
+
+#define ATBEGL(lwd,link) \
+{ \
+char	_at_##link[PATH_MAX]; \
+-	if (lwd >= 0) \
++	if (lwd != AT_FDCWD && link[0]!='/') \
+sfsprintf(_at_##link, sizeof(_at_##link), _fd_self_dir_fmt, lwd, "/", link);
+
+#else
+@@ -59,19 +59,19 @@
+#define ATBEG(cwd,path) \
+{ \
+char	_at_##path[PATH_MAX]; \
+-	if (cwd >= 0) \
++	if (cwd != AT_FDCWD && path[0]!='/') \
+sfsprintf(_at_##path, sizeof(_at_##path), _fd_pid_dir_fmt, getpid(), cwd, "/", path);
+
+#define ATBEGL(lwd,path) \
+{ \
+char	_at_##link[PATH_MAX]; \
+-	if (lwd >= 0) \
++	if (lwd != AT_FDCWD && link[0]!='/') \
+sfsprintf(_at_##link, sizeof(_at_##link), _fd_pid_dir_fmt, getpid(), lwd, "/", link);
+
+#endif
+
+#define ATPATH(cwd,path) \
+-	((cwd>=0)?(const char*)_at_##path:path)
++	((cwd != AT_FDCWD && path[0]!='/')?(const char*)_at_##path:path)
+
+#define ATEND() \
+}
+@@ -88,7 +88,7 @@
+int	_at_dot = -1; \
+int	_at_ret; \
+unsigned int	_at_tid; \
+-	if (cwd >= 0) \
++	if (cwd != AT_FDCWD && path[0]!='/') \
+{ \
+sigcrit(SIG_REG_ALL); \
+_at_tid = asothreadid(); \
+@@ -204,7 +204,7 @@
+int	r;
+
+ATBEG(cwd, path);
+-	r = (flags & AT_SYMLINK_NOFOLLOW) ? lstat(ATPATH(cwd, path), st, flags) : stat(ATPATH(cwd, path), st, flags);
++	r = (flags & AT_SYMLINK_NOFOLLOW) ? lstat(ATPATH(cwd, path), st) : stat(ATPATH(cwd, path), st);
+ATEND();
+return r;
+}
+@@ -220,9 +220,9 @@
+{
+int	r;
+
+-	if (pwd < 0 || *path == '/')
++	if (pwd == AT_FDCWD || *path == '/')
+{
+-	if (lwd < 0 || *linkpath == '/')
++	if (lwd == AT_FDCWD || *linkpath == '/')
+r = link(path, linkpath);
+else
+{
+@@ -231,7 +231,7 @@
+ATEND();
+}
+}
+-	else if (lwd < 0 || *linkpath == '/')
++	else if (lwd == AT_FDCWD || *linkpath == '/')
+{
+ATBEG(pwd, path);
+r = link(ATPATH(pwd, path), linkpath);
+@@ -333,7 +333,7 @@
+#undef	STUB
+
+ssize_t
+-readlinkat(int cwd, const char* path, void* buf, size_t size)
++readlinkat(int cwd, const char* path, char* buf, size_t size)
+{
+ssize_t	r;
+
+@@ -372,13 +372,42 @@
+int	r;
+
+ATBEG(cwd, path);
+-	r = unlink(ATPATH(cwd, path), flags);
++	if (flags & AT_REMOVEDIR)
++	r = rmdir(ATPATH(cwd, path));
++	else
++	r = unlink(ATPATH(cwd, path));
+ATEND();
+return r;
+}
+
+#endif
+
++#if !_lib_renameat
++
++#undef	STUB
++
++int
++renameat(int fromfd, const char *old, int tofd, const char *new)
++{
++	char oldpathbuf[PATH_MAX];
++	char newpathbuf[PATH_MAX];
++
++	if (fromfd != AT_FDCWD && old[0] != '/')
++	{
++	snprintf(oldpathbuf, sizeof(oldpathbuf), _fd_pid_dir_fmt, getpid(), fromfd, "/", old);
++	old = oldpathbuf;
++	}
++	if (tofd != AT_FDCWD && new[0] != '/')
++	{
++	snprintf(newpathbuf, sizeof(newpathbuf), _fd_pid_dir_fmt, getpid(), tofd, "/", new);
++	new = newpathbuf;
++	}
++
++	return rename(old, new);
++}
++
++#endif
++
+#if STUB
+
+void _STUB_at(){}
+diff -r -u original/src/lib/libast/features/eaccess build_i386_64bit_debug/src/lib/libast/features/eaccess
+--- src/lib/libast/features/eaccess	2004-07-23 08:02:25.000000000 +0200
++++ src/lib/libast/features/eaccess	2013-07-01 05:27:17.000000000 +0200
+@@ -1,4 +1,4 @@
+-lib	eaccess,euidaccess
++lib	eaccess,euidaccess -lgen
+macro{
+#include <sys/types.h>
+#include <unistd.h>
+diff -r -u original/src/lib/libast/features/fcntl.c build_i386_64bit_debug/src/lib/libast/features/fcntl.c
+--- src/lib/libast/features/fcntl.c	2013-06-27 08:39:11.000000000 +0200
++++ src/lib/libast/features/fcntl.c	2013-07-03 00:40:08.000000000 +0200
+@@ -27,10 +27,30 @@
+* generate POSIX fcntl.h
+*/
+
++/*
++ * We use this to force Linux and some *BSD versions to tell us all
++ * their flags
++ */
++#define _GNU_SOURCE 1
++#define __USE_GNU 1 /* why is this neccesary on Linux ? */
++
+#include <sys/types.h>
+
+#include "FEATURE/lib"
+
++/*
++ * Make sure _GNU_SOURCE is active on Linux. Some versions
++ * give us serious trouble in this case so we have this
++ * assert to *abort* early instead of let us hunt for "ghost
++ * bugs"
++ */
++#ifdef __linux__
++#ifndef __USE_GNU
++#error "ASSERT: __USE_GNU should be defined by now"
++#endif
++#endif
++
++
+#define getdtablesize	______getdtablesize
+#define getpagesize	______getpagesize
+#define ioctl	______ioctl
+@@ -186,6 +206,15 @@
+#ifdef	F_SHLCK
+if (F_SHLCK > f_local) f_local = F_SHLCK;
+#endif
++#ifdef	F_SHARE
++	if (F_SHARE > f_local) f_local = F_SHARE;
++#endif
++#ifdef	F_UNSHARE
++	if (F_UNSHARE > f_local) f_local = F_UNSHARE;
++#endif
++#ifdef	F_BADFD /* Create Poison FD */
++	if (F_BADFD > f_local) f_local = F_BADFD;
++#endif
+
+#if	NEED_F
+#if	_lib_fcntl
+@@ -240,12 +269,12 @@
+#define NEED_O	1
+#endif
+
+-#ifdef O_DSYNC
+-	if (O_DSYNC > o_local) o_local = O_DSYNC;
+-#endif
+#ifdef O_LARGEFILE
+if (O_LARGEFILE > o_local) o_local = O_LARGEFILE;
+#endif
++#ifdef O_LARGEFILE128
++	if (O_LARGEFILE128 > o_local) o_local = O_LARGEFILE128;
++#endif
+#ifdef O_NOFOLLOW
+if (O_NOFOLLOW > o_local) o_local = O_NOFOLLOW;
+#endif
+@@ -258,12 +287,36 @@
+#ifdef O_RSYNC
+if (O_RSYNC > o_local) o_local = O_RSYNC;
+#endif
++#ifdef O_DSYNC
++	if (O_DSYNC > o_local) o_local = O_DSYNC;
++#endif
+#ifdef O_SYNC
+if (O_SYNC > o_local) o_local = O_SYNC;
+#endif
+#ifdef O_XATTR
+if (O_XATTR > o_local) o_local = O_XATTR;
+#endif
++#ifdef O_DIRECT
++	if (O_DIRECT > o_local) o_local = O_DIRECT;
++#endif
++#ifdef O_DIRECTORY
++	if (O_DIRECTORY > o_local) o_local = O_DIRECTORY;
++#endif
++#ifdef O_SEARCH
++	if (O_SEARCH > o_local) o_local = O_SEARCH;
++#endif
++#ifdef O_PATH
++	if (O_PATH > o_local) o_local = O_PATH;
++#endif
++#ifdef O_EXEC
++	if (O_EXEC > o_local) o_local = O_EXEC;
++#endif
++#ifdef O_CLOEXEC
++	if (O_CLOEXEC > o_local) o_local = O_CLOEXEC;
++#endif
++#ifdef O_TTY_INIT
++	if (O_TTY_INIT > o_local) o_local = O_TTY_INIT;
++#endif
+
+printf("#define _ast_O_LOCAL	0%o\n", o_local<<1);
+#if	NEED_O
+@@ -316,11 +369,33 @@
+#endif
+#ifndef	O_SEARCH
+#ifdef O_PATH
+-	printf("#define O_SEARCH	O_PATH\n");
++	/*
++	* O_PATH is a Linux's variation of O_SEARCH. Since this is treated
++	* as extension it may not be available without _GNU_SOURCE.
++	* Even even with _GNU_SOURCE some Linux platforms have bugs in their
++	* headers which prevents the definition of O_PATH in some hideous
++	* cases. To prevent all this mess we just grab the octal value and
++	* define it as O_SEARCH.
++	* Do not change this. You'll end-up in hell, together with the Linux
++	* headers. Quickly.
++	*/
++	printf("#define O_SEARCH	0%o\n", (int)O_PATH);
+#else
+printf("#define O_SEARCH	0%o\n", o_local <<= 1);
+#endif
+#endif
++#ifdef O_DIRECTORY
++	/*
++	* O_DIRECTORY is only available as extension (hidden by
++	* obscure CPP flags) on older Linux versions. We make it
++	* available here (same as with O_PATH above) in general
++	* without requiring the whole build to use the obsure
++	* CPP flags to prevent any side-effects.
++	*/
++	printf("#ifndef O_DIRECTORY\n");
++	printf("#define O_DIRECTORY	0%o\n", (int)O_DIRECTORY);
++	printf("#endif\n");
++#endif
+#ifndef	O_INTERCEPT
+printf("#define O_INTERCEPT	0%o\n", o_local <<= 1);
+#endif
+@@ -346,7 +421,8 @@
+#if !defined(AT_FDCWD) || !defined(AT_SYMLINK_NOFOLLOW) || !defined(AT_REMOVEDIR) || !defined(AT_SYMLINK_FOLLOW) || !defined(AT_EACCESS)
+printf("\n");
+#ifndef AT_FDCWD
+-	printf("#define AT_FDCWD	-100\n");
++	/* AT_FDCWD must be below -256 for portability reasons */
++	printf("#define AT_FDCWD	-666\n");
+#endif
+#ifndef AT_SYMLINK_NOFOLLOW
+printf("#define AT_SYMLINK_NOFOLLOW	0x100\n");
+@@ -420,10 +496,10 @@
+printf("extern int	mknodat(int, const char*, mode_t, dev_t);\n");
+printf("#endif\n");
+printf("#if !_lib_openat\n");
+-	printf("extern int	openat(int, const char*, mode_t, int);\n");
++	printf("extern int	openat(int, const char*, int flags, ...);\n");
+printf("#endif\n");
+printf("#if !_lib_readlinkat\n");
+-	printf("extern int	readlinkat(int, const char*, void*, size_t);\n");
++	printf("extern ssize_t	readlinkat(int, const char*, char*, size_t);\n");
+printf("#endif\n");
+printf("#if !_lib_symlinkat\n");
+printf("extern int	symlinkat(const char*, int, const char*);\n");
+@@ -431,6 +507,9 @@
+printf("#if !_lib_unlinkat\n");
+printf("extern int	unlinkat(int, const char*, int);\n");
+printf("#endif\n");
++	printf("#if !_lib_renameat\n");
++	printf("extern int	renameat(int fromfd, const char *old, int tofd, const char *new);\n");
++	printf("#endif\n");
+printf("\n");
+printf("#undef	extern\n");
+
+diff -r -u original/src/lib/libast/features/lib build_i386_64bit_debug/src/lib/libast/features/lib
+--- src/lib/libast/features/lib	2013-06-27 04:34:19.000000000 +0200
++++ src/lib/libast/features/lib	2013-07-01 09:45:02.000000000 +0200
+@@ -48,7 +48,7 @@
+lib	openat -D_ATFILE_SOURCE fcntl.h unistd.h yes{
+#define _ATFILE_SOURCE	1
+}end
+-lib	faccessat,fchmodat,fchownat,fstatat,linkat,mkdirat,mkfifoat,mknodat,openat,readlinkat,symlinkat,unlinkat -D_ATFILE_SOURCE fcntl.h unistd.h
++lib	faccessat,fchmodat,fchownat,fstatat,linkat,mkdirat,mkfifoat,mknodat,openat,readlinkat,symlinkat,unlinkat,renameat -D_ATFILE_SOURCE fcntl.h unistd.h
+lib	fstatat64,openat64 -D_ATFILE_SOURCE -D_LARGEFILE64_SOURCE fcntl.h unistd.h sys/stat.h
+
+lib	lchmod note{ lchmod implemented }end execute{
+diff -r -u original/src/lib/libast/path/pathopen.c build_i386_64bit_debug/src/lib/libast/path/pathopen.c
+--- src/lib/libast/path/pathopen.c	2013-06-25 23:40:32.000000000 +0200
++++ src/lib/libast/path/pathopen.c	2013-07-02 20:07:30.000000000 +0200
+@@ -166,7 +166,7 @@
+return	dev.pid > 0 && dev.pid != getpid() ?
+openat(AT_FDCWD, b, oflags, mode) :
+b[dev.path.offset] ?
+-	openat(dev.fd, b + dev.path.offset + 1, oflags, mode) :
++	openat(dev.fd, b + dev.path.offset, oflags, mode) :
+fcntl(dev.fd, (oflags & O_CLOEXEC) ? F_DUPFD_CLOEXEC : F_DUPFD, 0);
+else if (dev.prot.offset)
+{
+diff -r -u original/src/lib/libast/port/intercept.c build_i386_64bit_debug/src/lib/libast/port/intercept.c
+--- src/lib/libast/port/intercept.c	2013-06-28 08:59:40.000000000 +0200
++++ src/lib/libast/port/intercept.c	2013-07-02 22:56:50.000000000 +0200
+@@ -176,7 +176,7 @@
+ast_openat(int cwd, const char* path, int flags, ...)
+{
+int	r;
+-#if _ast_O_LOCAL && O_CLOEXEC >= _ast_O_LOCAL
++#if defined(_ast_O_LOCAL) && (O_CLOEXEC >= _ast_O_LOCAL)
+int	c;
+#endif
+mode_t	mode;
+@@ -185,7 +185,7 @@
+va_start(ap, flags);
+mode = (flags & O_CREAT) ? va_arg(ap, mode_t) : (mode_t)0;
+va_end(ap);
+-#if _ast_O_LOCAL && O_CLOEXEC >= _ast_O_LOCAL
++#if defined(_ast_O_LOCAL) && (O_CLOEXEC >= _ast_O_LOCAL)
+if (flags & O_CLOEXEC)
+{
+flags &= ~O_CLOEXEC;
+@@ -198,7 +198,7 @@
+RESTART(r, openat(cwd, path, flags&~O_INTERCEPT, mode));
+else
+RESTART(r, pathopen(cwd, path, NiL, 0, 0, flags|O_INTERCEPT, mode));
+-#if _ast_O_LOCAL && O_CLOEXEC >= _ast_O_LOCAL
++#if defined(_ast_O_LOCAL) && (O_CLOEXEC >= _ast_O_LOCAL)
+if (c && r >= 0)
+RESTART(c, fcntl(r, F_SETFD, FD_CLOEXEC));
+#endif
+@@ -723,8 +723,18 @@
+ast_socket(int domain, int type, int protocol)
+{
+int	r;
++	int	ftype=type;
+
+-	RESTART(r, socket(domain, type, protocol));
++/* Filter flags we emulate */
++#if _ast_SOCK_CLOEXEC
++	if (ftype & SOCK_CLOEXEC)
++	ftype &= ~SOCK_CLOEXEC;
++#endif
++#if _ast_SOCK_NONBLOCK
++	if (ftype & SOCK_NONBLOCK)
++	ftype &= ~SOCK_NONBLOCK;
++#endif
++	RESTART(r, socket(domain, ftype, protocol));
+SOCKTYPE(r, type, r, -1);
+return r;
+}
+@@ -733,8 +743,19 @@
+ast_socketpair(int domain, int type, int protocol, int fds[2])
+{
+int	r;
++	int	ftype=type;
++
++/* Filter flags we emulate */
++#if _ast_SOCK_CLOEXEC
++	if (ftype & SOCK_CLOEXEC)
++	ftype &= ~SOCK_CLOEXEC;
++#endif
++#if _ast_SOCK_NONBLOCK
++	if (ftype & SOCK_NONBLOCK)
++	ftype &= ~SOCK_NONBLOCK;
++#endif
+
+-	RESTART(r, socketpair(domain, type, protocol, fds));
++	RESTART(r, socketpair(domain, ftype, protocol, fds));
+SOCKTYPE(r, type, fds[0], fds[1]);
+return r;
+}

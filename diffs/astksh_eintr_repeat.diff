@@ -1,0 +1,831 @@
+diff -r -u original/src/cmd/ksh93/bltins/cd_pwd.c build_eintr/src/cmd/ksh93/bltins/cd_pwd.c
+--- src/cmd/ksh93/bltins/cd_pwd.c	2012-05-29 15:08:17.000000000 +0200
++++ src/cmd/ksh93/bltins/cd_pwd.c	2012-07-09 02:11:08.628474629 +0200
+@@ -171,14 +171,15 @@
+ 					continue;
+ #endif /* SHOPT_FS_3D */
+ 		}
+-		if((rval=chdir(path_relative(shp,stakptr(PATH_OFFSET)))) >= 0)
++		EINTR_REPEAT((rval=chdir(path_relative(shp,stakptr(PATH_OFFSET)))) < 0);
++		if(rval >= 0)
+ 			goto success;
+ 		if(errno!=ENOENT && saverrno==0)
+ 			saverrno=errno;
+ 	}
+ 	while(cdpath);
+ 	if(rval<0 && *dir=='/' && *(path_relative(shp,stakptr(PATH_OFFSET)))!='/')
+-		rval = chdir(dir);
++		EINTR_REPEAT((rval = chdir(dir))<0);
+ 	/* use absolute chdir() if relative chdir() fails */
+ 	if(rval<0)
+ 	{
+diff -r -u original/src/cmd/ksh93/bltins/hist.c build_eintr/src/cmd/ksh93/bltins/hist.c
+--- src/cmd/ksh93/bltins/hist.c	2012-02-13 22:05:00.000000000 +0100
++++ src/cmd/ksh93/bltins/hist.c	2012-07-09 02:12:18.430033396 +0200
+@@ -190,7 +190,8 @@
+ 	{
+ 		if(!(fname=pathtmp(NIL(char*),0,0,NIL(int*))))
+ 			errormsg(SH_DICT,ERROR_exit(1),e_create,"");
+-		if((fdo=open(fname,O_CREAT|O_RDWR,S_IRUSR|S_IWUSR)) < 0)
++		EINTR_REPEAT((fdo=open(fname,O_CREAT|O_RDWR,S_IRUSR|S_IWUSR)) < 0);
++		if(fdo < 0)
+ 			errormsg(SH_DICT,ERROR_system(1),e_create,fname);
+ 		outfile= sfnew(NIL(Sfio_t*),shp->outbuff,IOBSIZE,fdo,SF_WRITE);
+ 		arg = "\n";
+diff -r -u original/src/cmd/ksh93/bltins/mkservice.c build_eintr/src/cmd/ksh93/bltins/mkservice.c
+--- src/cmd/ksh93/bltins/mkservice.c	2012-01-10 20:32:09.000000000 +0100
++++ src/cmd/ksh93/bltins/mkservice.c	2012-07-09 02:09:45.429410236 +0200
+@@ -204,7 +204,7 @@
+ 		r = (*sp->actionf)(sp, fd, 0);
+ 		service_list[fd] = sp;
+ 		if(r<0)
+-			close(fd);
++			EINTR_REPEAT(close(fd)<0);
+ 	}
+ }
+ 				
+@@ -287,7 +287,7 @@
+ 	fd = fcntl(accept_fd, F_DUPFD, 10);
+ 	if (fd >= 0)
+ 	{
+-		close(accept_fd);
++		EINTR_REPEAT(close(accept_fd)<0);
+ 		if (nq)
+ 		{
+ 			char*	av[3];
+@@ -298,7 +298,7 @@
+ 			sfsprintf(buff, sizeof(buff), "%d", fd);
+ 			if (sh_fun(nq, sp->node, av))
+ 			{
+-				close(fd);
++				EINTR_REPEAT(close(fd)<0);
+ 				return -1;
+ 			}
+ 		}
+@@ -385,7 +385,7 @@
+ 		{
+ 			if(service_list[i]==sp)
+ 			{
+-				close(i);
++				EINTR_REPEAT(close(i)<0);
+ 				if(--sp->refcount<=0)
+ 					break;
+ 			}
+@@ -447,7 +447,7 @@
+ 		error(ERROR_exit(1), "%s: cannot start service", path);
+ 	}
+ 	if((sp->fd = fcntl(fd, F_DUPFD, 10))>=10)
+-		close(fd);
++		EINTR_REPEAT(close(fd)<0);
+ 	else
+ 		sp->fd = fd;
+ 	np = nv_open(var,sh.var_tree,NV_ARRAY|NV_VARNAME|NV_NOASSIGN);
+diff -r -u original/src/cmd/ksh93/edit/history.c build_eintr/src/cmd/ksh93/edit/history.c
+--- src/cmd/ksh93/edit/history.c	2012-06-13 16:35:10.000000000 +0200
++++ src/cmd/ksh93/edit/history.c	2012-07-09 02:32:18.630678483 +0200
+@@ -153,7 +153,7 @@
+ 		int n;
+ 		if((n = fcntl(acctfd, F_DUPFD, 10)) >= 0)
+ 		{
+-			close(acctfd);
++			EINTR_REPEAT(close(acctfd)<0);
+ 			acctfd = n;
+ 		}
+ 	}
+@@ -179,7 +179,8 @@
+ {
+ 	char	*cp, *last;
+ 	int	id1, id2, r=0, n, fd;
+-	if((fd=open(name, O_RDONLY)) < 0)
++	EINTR_REPEAT((fd=open(name, O_RDONLY))<0);
++	if(fd < 0)
+ 		return(0);
+ 	if((n = read(fd, logbuf,len-1)) < 0)
+ 		goto done;
+@@ -203,7 +204,7 @@
+ 	}
+ 	while(*cp==';' ||  *cp==' ');
+ done:
+-	close(fd);
++	EINTR_REPEAT(close(fd)<0);
+ 	return(r);
+ 	
+ }
+@@ -263,7 +264,8 @@
+ 	cp = path_relative(shp,histname);
+ 	if(!histinit)
+ 		histmode = S_IRUSR|S_IWUSR;
+-	if((fd=open(cp,O_BINARY|O_APPEND|O_RDWR|O_CREAT,histmode))>=0)
++	EINTR_REPEAT((fd=open(cp,O_BINARY|O_APPEND|O_RDWR|O_CREAT,histmode))<0);
++	if(fd>=0)
+ 	{
+ 		hsize=lseek(fd,(off_t)0,SEEK_END);
+ 	}
+@@ -272,14 +274,14 @@
+ 		int n;
+ 		if((n=fcntl(fd,F_DUPFD,10))>=0)
+ 		{
+-			close(fd);
++			EINTR_REPEAT(close(fd)<0);
+ 			fd=n;
+ 		}
+ 	}
+ 	/* make sure that file has history file format */
+ 	if(hsize && hist_check(fd))
+ 	{
+-		close(fd);
++		EINTR_REPEAT(close(fd)<0);
+ 		hsize = 0;
+ 		if(unlink(cp)>=0)
+ 			goto retry;
+@@ -294,7 +296,7 @@
+ 		{
+ 			if(!(fname = pathtmp(NIL(char*),0,0,NIL(int*))))
+ 				return(0);
+-			fd = open(fname,O_BINARY|O_APPEND|O_CREAT|O_RDWR,S_IRUSR|S_IWUSR);
++			EINTR_REPEAT((fd = open(fname,O_BINARY|O_APPEND|O_CREAT|O_RDWR,S_IRUSR|S_IWUSR))<0);
+ 		}
+ 	}
+ 	if(fd<0)
+@@ -308,7 +310,7 @@
+ 	for(histmask=16;histmask <= maxlines; histmask <<=1 );
+ 	if(!(hp=new_of(History_t,(--histmask)*sizeof(off_t))))
+ 	{
+-		close(fd);
++		EINTR_REPEAT(close(fd)<0);
+ 		return(0);
+ 	}
+ 	shgd->hist_ptr = hist_ptr = hp;
+@@ -425,7 +427,7 @@
+ #if SHOPT_ACCTFILE
+ 	if(acctfd)
+ 	{
+-		close(acctfd);
++		EINTR_REPEAT(close(acctfd)<0);
+ 		acctfd = 0;
+ 	}
+ #endif /* SHOPT_ACCTFILE */
+@@ -470,7 +472,7 @@
+ 		/* The unlink can fail on windows 95 */
+ 		int fd;
+ 		char *last, *name=hist_old->histname;
+-		close(sffileno(hist_old->histfp));
++		EINTR_REPEAT(close(sffileno(hist_old->histfp))<0);
+ 		tmpname = (char*)malloc(strlen(name)+14);
+ 		if(last = strrchr(name,'/'))
+ 		{
+@@ -485,7 +487,7 @@
+ 			free(tmpname);
+ 			tmpname = name;
+ 		}
+-		fd = open(tmpname,O_RDONLY);
++		EINTR_REPEAT((fd = open(tmpname,O_RDONLY))<0);
+ 		sfsetfd(hist_old->histfp,fd);
+ 		if(tmpname==name)
+ 			tmpname = 0;
+@@ -730,13 +732,14 @@
+ 		if(last<0)
+ 		{
+ 			char	buff[HIST_MARKSZ];
+-			int	fd = open(hp->histname,O_RDWR);
++			int	fd;
++			EINTR_REPEAT((fd = open(hp->histname,O_RDWR))<0);
+ 			if(fd>=0)
+ 			{
+ 				hist_marker(buff,hp->histind);
+ 				write(fd,(char*)hist_stamp,2);
+ 				write(fd,buff,HIST_MARKSZ);
+-				close(fd);
++				EINTR_REPEAT(close(fd)<0);
+ 			}
+ 		}
+ 		last = 0;
+@@ -1195,13 +1198,15 @@
+ 		if(errno==ENOSPC || hp->histwfail++ >= 10)
+ 			return(0);
+ 		/* write failure could be NFS problem, try to re-open */
+-		close(oldfd=sffileno(fp));
+-		if((newfd=open(hp->histname,O_BINARY|O_APPEND|O_CREAT|O_RDWR,S_IRUSR|S_IWUSR)) >= 0)
++		oldfd=sffileno(fp);
++		EINTR_REPEAT(close(oldfd)<0);
++		EINTR_REPEAT((newfd=open(hp->histname,O_BINARY|O_APPEND|O_CREAT|O_RDWR,S_IRUSR|S_IWUSR))<0);
++		if(newfd >= 0)
+ 		{
+ 			if(fcntl(newfd, F_DUPFD, oldfd) !=oldfd)
+ 				return(-1);
+ 			fcntl(oldfd,F_SETFD,FD_CLOEXEC);
+-			close(newfd);
++			EINTR_REPEAT(close(newfd)<0);
+ 			if(lseek(oldfd,(off_t)0,SEEK_END) < hp->histcnt)
+ 			{
+ 				register int index = hp->histind;
+diff -r -u original/src/cmd/ksh93/include/defs.h build_eintr/src/cmd/ksh93/include/defs.h
+--- src/cmd/ksh93/include/defs.h	2012-06-25 20:47:47.000000000 +0200
++++ src/cmd/ksh93/include/defs.h	2012-07-09 01:17:32.444141070 +0200
+@@ -506,5 +506,7 @@
+ #   define sh_stats(x)
+ #endif /* SHOPT_STATS */
+ 
++/* Repeat syscall in expr each time it gets hit with EINTR */
++#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
+ 
+ #endif
+diff -r -u original/src/cmd/ksh93/sh/args.c build_eintr/src/cmd/ksh93/sh/args.c
+--- src/cmd/ksh93/sh/args.c	2011-06-22 18:07:55.000000000 +0200
++++ src/cmd/ksh93/sh/args.c	2012-07-09 01:43:14.848929241 +0200
+@@ -837,7 +837,7 @@
+ 	if(monitor)
+ 		sh_onstate(SH_MONITOR);
+ #if SHOPT_DEVFD
+-	close(pv[1-fd]);
++	EINTR_REPEAT(close(pv[1-fd])<0);
+ 	sh_iosave(shp,-pv[fd], shp->topfd, (char*)0);
+ #else
+ 	free(shp->fifo);
+diff -r -u original/src/cmd/ksh93/sh/io.c build_eintr/src/cmd/ksh93/sh/io.c
+--- src/cmd/ksh93/sh/io.c	2012-06-08 20:15:34.000000000 +0200
++++ src/cmd/ksh93/sh/io.c	2012-07-09 01:26:04.264458395 +0200
+@@ -299,7 +299,7 @@
+ 		{
+ 			if (server && !bind(fd, p->ai_addr, p->ai_addrlen) && !listen(fd, 5) || !server && !connect(fd, p->ai_addr, p->ai_addrlen))
+ 				goto done;
+-			close(fd);
++			EINTR_REPEAT(close(fd)<0);
+ 			fd = -1;
+ 			if (errno != EINTR || !onintr)
+ 				break;
+@@ -693,7 +693,7 @@
+ 	{
+ 		if(fdnotify)
+ 			(*fdnotify)(fd,SH_FDCLOSE);
+-		r=close(fd);
++		EINTR_REPEAT((r=close(fd)) < 0);
+ 	}
+ 	if(fd>2)
+ 		shp->sftable[fd] = 0;
+@@ -803,10 +803,10 @@
+ 		{
+ 			struct stat st;
+ 			if (stat(path,&st) >=0)
+-				nfd = open(path,flags,st.st_mode);
++				EINTR_REPEAT((nfd = open(path,flags,st.st_mode)) < 0);
+ 		}
+ 		else
+-			nfd = open(path,flags);
++			EINTR_REPEAT((nfd = open(path,flags)) < 0);
+ 		if(nfd>=0)
+ 		{
+ 			fd = nfd;
+@@ -875,7 +875,7 @@
+ 		return(fdold);
+ 	fdnew = sh_iomovefd(dup(fdold));
+ 	shp->fdstatus[fdnew] = (shp->fdstatus[fdold]&~IOCLEX);
+-	close(fdold);
++	EINTR_REPEAT(close(fdold) < 0);
+ 	shp->fdstatus[fdold] = IOCLOSE;
+ 	return(fdnew);
+ }
+@@ -938,7 +938,7 @@
+ 	while ((r=bind (pv[out], (struct sockaddr *) &sin, slen)) == -1 && errno==EADDRINUSE);
+ 	if(r<0 ||  listen(pv[out],5) <0)
+ 	{
+-		close(pv[out]);
++		EINTR_REPEAT(close(pv[out])<0);
+ 		errormsg(SH_DICT,ERROR_system(1),e_pipe);
+ 	}
+ 	fcntl(pv[out],F_SETFD,FD_CLOEXEC);
+@@ -1053,7 +1053,7 @@
+ 		if((fd = sh_open(name,O_RDONLY,0)) >= 0)
+ 		{
+ 			r = fstat(fd,&statb);
+-			close(fd);
++			EINTR_REPEAT(close(fd)<0);
+ 			if(r)
+ 				return(0);
+ 			if(!S_ISREG(statb.st_mode))
+diff -r -u original/src/cmd/ksh93/sh/jobs.c build_eintr/src/cmd/ksh93/sh/jobs.c
+--- src/cmd/ksh93/sh/jobs.c	2012-06-22 21:16:42.000000000 +0200
++++ src/cmd/ksh93/sh/jobs.c	2012-07-09 01:27:38.569634986 +0200
+@@ -643,8 +643,9 @@
+ #endif /*SIGTSTP */
+                 if(job.mypgid<0 || !(ttynam=ttyname(JOBTTY)))
+                         return;
+-                close(JOBTTY);
+-                if((fd = open(ttynam,O_RDWR)) <0)
++                EINTR_REPEAT(close(JOBTTY)<0);
++		EINTR_REPEAT((fd = open(ttynam,O_RDWR)) < 0);
++                if(fd <0)
+                         return;
+                 if(fd!=JOBTTY)
+                         sh_iorenumber(shp,fd,JOBTTY);
+diff -r -u original/src/cmd/ksh93/sh/main.c build_eintr/src/cmd/ksh93/sh/main.c
+--- src/cmd/ksh93/sh/main.c	2012-06-18 20:24:48.000000000 +0200
++++ src/cmd/ksh93/sh/main.c	2012-07-09 01:42:52.825177064 +0200
+@@ -292,7 +292,7 @@
+ 					int isdir = 0;
+ 					if((fdin=sh_open(name,O_RDONLY,0))>=0 &&(fstat(fdin,&statb)<0 || S_ISDIR(statb.st_mode)))
+ 					{
+-						close(fdin);
++						EINTR_REPEAT(close(fdin)<0);
+ 						isdir = 1;
+ 						fdin = -1;
+ 					}
+diff -r -u original/src/cmd/ksh93/sh/path.c build_eintr/src/cmd/ksh93/sh/path.c
+--- src/cmd/ksh93/sh/path.c	2012-06-22 16:54:17.000000000 +0200
++++ src/cmd/ksh93/sh/path.c	2012-07-09 01:31:54.615390976 +0200
+@@ -876,7 +876,7 @@
+ 		{
+ 			nv_onattr(nv_open(name,sh_subfuntree(1),NV_NOARRAY|NV_IDENT|NV_NOSCOPE),NV_LTOU|NV_FUNCTION);
+ 			funload(shp,f,name);
+-			close(f);
++			EINTR_REPEAT(close(f)<0);
+ 			f = -1;
+ 			return(0);
+ 		}
+@@ -931,7 +931,8 @@
+ 	path = path_relative(shp,path);
+ 	if(isfun)
+ 	{
+-		if((fd=open(path,O_RDONLY,0))<0 || fstat(fd,&statb)<0)
++		EINTR_REPEAT((fd=open(path,O_RDONLY,0)) < 0);
++		if(fd<0 || fstat(fd,&statb)<0)
+ 			goto err;
+ 	}
+ 	else if(stat(path,&statb) < 0)
+@@ -1296,7 +1297,8 @@
+ 		{
+ 			strncpy(name+9,fmtbase((long)getpid(),10,0),sizeof(name)-10);
+ 			/* create a suid open file with owner equal effective uid */
+-			if((n=open(name,O_CREAT|O_TRUNC|O_WRONLY,S_ISUID|S_IXUSR)) < 0)
++			EINTR_REPEAT((n=open(name,O_CREAT|O_TRUNC|O_WRONLY,S_ISUID|S_IXUSR)) < 0);
++			if(n < 0)
+ 				goto fail;
+ 			unlink(name);
+ 			/* make sure that file has right owner */
+@@ -1317,7 +1319,8 @@
+ 		/*
+ 		 *  The following code is just for compatibility
+ 		 */
+-		if((n=open(path,O_RDONLY,0)) < 0)
++		EINTR_REPEAT((n=open(path,O_RDONLY,0)) < 0);
++		if(n < 0)
+ 			errormsg(SH_DICT,ERROR_system(ERROR_NOEXEC),e_exec,path);
+ 		if(savet)
+ 			*argv++ = savet;
+@@ -1406,9 +1409,9 @@
+ 		sabuf.ac_utime = compress(buffer.tms_utime + buffer.tms_cutime);
+ 		sabuf.ac_stime = compress(buffer.tms_stime + buffer.tms_cstime);
+ 		sabuf.ac_etime = compress( (time_t)(after-before));
+-		fd = open( SHACCT , O_WRONLY | O_APPEND | O_CREAT,RW_ALL);
++		EINTR_REPEAT((fd = open( SHACCT , O_WRONLY | O_APPEND | O_CREAT,RW_ALL)) < 0);
+ 		write(fd, (const char*)&sabuf, sizeof( sabuf ));
+-		close( fd);
++		EINTR_REPEAT(close(fd)<0);
+ 	}
+     }
+  
+@@ -1507,7 +1510,8 @@
+ 	if(pp->len==1 && *stakptr(offset)=='/')
+ 		stakseek(offset);
+ 	stakputs("/.paths");
+-	if((fd=open(stakptr(offset),O_RDONLY))>=0)
++	EINTR_REPEAT((fd=open(stakptr(offset),O_RDONLY)) < 0);
++	if(fd>=0)
+ 	{
+ 		fstat(fd,&statb);
+ 		n = statb.st_size;
+@@ -1516,7 +1520,7 @@
+ 		*sp++ = '/';
+ 		n=read(fd,cp=sp,n);
+ 		sp[n] = 0;
+-		close(fd);
++		EINTR_REPEAT(close(fd)<0);
+ 		for(ep=0; n--; cp++)
+ 		{
+ 			if(*cp=='=')
+diff -r -u original/src/cmd/ksh93/sh/subshell.c build_eintr/src/cmd/ksh93/sh/subshell.c
+--- src/cmd/ksh93/sh/subshell.c	2012-05-30 22:52:44.000000000 +0200
++++ src/cmd/ksh93/sh/subshell.c	2012-07-09 01:45:12.203282043 +0200
+@@ -116,7 +116,7 @@
+ 		{
+ 			fcntl(fd,F_SETFD,FD_CLOEXEC);
+ 			shp->fdstatus[fd] = shp->fdstatus[1]|IOCLEX;
+-			close(1);
++			EINTR_REPEAT(close(1)<0);
+ 		}
+ 		else if(errno!=EBADF)
+ 			errormsg(SH_DICT,ERROR_system(1),e_toomany);
+@@ -650,7 +650,7 @@
+ 		/*  check if standard output was preserved */
+ 		if(sp->tmpfd>=0)
+ 		{
+-			close(1);
++			EINTR_REPEAT(close(1)<0);
+ 			if (fcntl(sp->tmpfd,F_DUPFD,1) != 1)
+ 				duped++;
+ 			sh_close(sp->tmpfd);
+@@ -699,7 +699,8 @@
+ 			Namval_t *pwdnod = sh_scoped(shp,PWDNOD);
+ 			if(shp->pwd)
+ 			{
+-				chdir(shp->pwd=sp->pwd);
++				shp->pwd=sp->pwd;
++				EINTR_REPEAT(chdir(shp->pwd)<0);
+ 				path_newdir(shp,shp->pathlist);
+ 			}
+ 			if(nv_isattr(pwdnod,NV_NOFREE))
+diff -r -u original/src/cmd/ksh93/sh/suid_exec.c build_eintr/src/cmd/ksh93/sh/suid_exec.c
+--- src/cmd/ksh93/sh/suid_exec.c	2006-10-04 18:35:22.000000000 +0200
++++ src/cmd/ksh93/sh/suid_exec.c	2012-07-09 03:19:26.992354035 +0200
+@@ -65,6 +65,9 @@
+ #define THISPROG	"/etc/suid_exec"
+ #define DEFSHELL	"/bin/sh"
+ 
++/* Repeat syscall in expr each time it gets hit with EINTR */
++#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
++
+ static void error_exit(const char*);
+ static int in_dir(const char*, const char*);
+ static int endsh(const char*);
+@@ -131,7 +134,7 @@
+ 		    (statb.st_mode & ~S_IFMT) != SPECIAL || close(FDVERIFY)<0)
+ 			error_exit(badexec);
+ 		/* This enables the grandchild to clean up /tmp file */
+-		close(FDSYNC);
++		EINTR_REPEAT(close(FDSYNC)<0);
+ 		/* Make sure that this is a valid invocation of the clone.
+ 		 * Perhaps unnecessary, given FDVERIFY, but what the heck...
+ 		 */
+@@ -153,11 +156,11 @@
+ 	/* Open the script for reading first and then validate it.  This
+ 	 * prevents someone from pulling a switcheroo while we are validating.
+ 	 */
+-	n = open(p,0);
++	EINTR_REPEAT((n = open(p,0))<0);
+ 	if(n == FDIN)
+ 	{
+ 		n = dup(n);
+-		close(FDIN);
++		EINTR_REPEAT(close(FDIN)<0);
+ 	}
+ 	if(n < 0)
+ 		error_exit(badopen);
+@@ -196,10 +199,10 @@
+ 	if(stat(THISPROG, &statx) < 0 ||
+ 	  (statb.st_ino == statx.st_ino && statb.st_dev == statx.st_dev))
+ 		error_exit(badexec);
+-	close(FDIN);
++	EINTR_REPEAT(close(FDIN)<0);
+ 	if(fcntl(n,F_DUPFD,FDIN) != FDIN)
+ 		error_exit(badexec);
+-	close(n);
++	EINTR_REPEAT(close(n)<0);
+ 
+ 	/* compute the desired new effective user and group id */
+ 	effuid = euserid;
+@@ -378,15 +381,15 @@
+ 	 */
+ 	unlink(tmpname);	/* should normally fail */
+ #ifdef O_EXCL
+-	if((n = open(tmpname, O_WRONLY | O_CREAT | O_EXCL, SPECIAL)) < 0 ||
+-		unlink(tmpname) < 0)
++	EINTR_REPEAT((n = open(tmpname, O_WRONLY | O_CREAT | O_EXCL, SPECIAL))<0);
+ #else
+-	if((n = open(tmpname, O_WRONLY | O_CREAT ,SPECIAL)) < 0 || unlink(tmpname) < 0)
++	EINTR_REPEAT((n = open(tmpname, O_WRONLY | O_CREAT, SPECIAL))<0);
+ #endif
++	if(n < 0 || unlink(tmpname) < 0)
+ 		error_exit(badexec);
+ 	if(n != FDVERIFY)
+ 	{
+-		close(FDVERIFY);
++		EINTR_REPEAT(close(FDVERIFY)<0);
+ 		if(fcntl(n,F_DUPFD,FDVERIFY) != FDVERIFY)
+ 			error_exit(badexec);
+ 	}
+@@ -396,8 +399,8 @@
+ 		error_exit(badexec);
+ 	if((n=fork()) == 0)
+ 	{	/* child */
+-		close(FDVERIFY);
+-		close(pv[1]);
++		EINTR_REPEAT(close(FDVERIFY)<0);
++		EINTR_REPEAT(close(pv[1])<0);
+ 		if((n=fork()) == 0)
+ 		{	/* grandchild -- cleans up clone file */
+ 			signal(SIGHUP, SIG_IGN);
+@@ -419,17 +422,20 @@
+ 			 * downsize of this that I can see is that it may
+ 			 * screw up some per- * user accounting.
+ 			 */
+-			if((m = open(THISPROG, O_RDONLY)) < 0)
++			EINTR_REPEAT((m = open(THISPROG, O_RDONLY))<0);
++			if(m < 0)
+ 				exit(1);
+ 			if((mode & S_ISGID) && setgid(group) < 0)
+ 				exit(1);
+ 			if((mode & S_ISUID) && owner && setuid(owner) < 0)
+ 				exit(1);
+ #ifdef O_EXCL
+-			if((n = open(tmpname,O_WRONLY|O_CREAT|O_TRUNC|O_EXCL, mode)) < 0)
++			EINTR_REPEAT((n = open(tmpname,O_WRONLY|O_CREAT|O_TRUNC|O_EXCL, mode)) < 0);
++			if(n < 0)
+ #else
+ 			unlink(tmpname);
+-			if((n = open(tmpname,O_WRONLY|O_CREAT|O_TRUNC, mode)) < 0)
++			EINTR_REPEAT((n = open(tmpname,O_WRONLY|O_CREAT|O_TRUNC, mode))<0);
++			if(n < 0)
+ #endif /* O_EXCL */
+ 				exit(1);
+ 			/* populate the clone */
+@@ -444,11 +450,11 @@
+ 	else
+ 	{
+ 		arglist[0] = (char*)tmpname;
+-		close(pv[0]);
++		EINTR_REPEAT(close(pv[0])<0);
+ 		/* move write end of pipe into FDSYNC */
+ 		if(pv[1] != FDSYNC)
+ 		{
+-			close(FDSYNC);
++			EINTR_REPEAT(close(FDSYNC)<0);
+ 			if(fcntl(pv[1],F_DUPFD,FDSYNC) != FDSYNC)
+ 				error_exit(badexec);
+ 		}
+@@ -499,8 +505,8 @@
+ 	while((n = read(fdi,buffer,BLKSIZE)) > 0)
+ 		if(write(fdo,buffer,n) != n)
+ 			break;
+-	close(fdi);
+-	close(fdo);
++	EINTR_REPEAT(close(fdi)<0);
++	EINTR_REPEAT(close(fdo)<0);
+ 	return n;
+ }
+ 
+diff -r -u original/src/cmd/ksh93/sh/xec.c build_eintr/src/cmd/ksh93/sh/xec.c
+--- src/cmd/ksh93/sh/xec.c	2012-06-26 18:03:05.000000000 +0200
++++ src/cmd/ksh93/sh/xec.c	2012-07-09 01:38:01.472455217 +0200
+@@ -119,7 +119,7 @@
+ 	subpipe[2] = fcntl(1,F_DUPFD,10);
+ 	fcntl(subpipe[2],F_SETFD,FD_CLOEXEC);
+ 	shp->fdstatus[subpipe[2]] = shp->fdstatus[1];
+-	close(1);
++	EINTR_REPEAT(close(1)<0);
+ 	fcntl(subpipe[1],F_DUPFD,1);
+ 	shp->fdstatus[1] = shp->fdstatus[subpipe[1]];
+ 	sh_close(subpipe[1]);
+@@ -138,7 +138,7 @@
+ {
+ 	int n;
+ 	char buff[SF_BUFSIZE];
+-	close(1);
++	EINTR_REPEAT(close(1)<0);
+ 	fcntl(subpipe[2], F_DUPFD, 1);
+ 	shp->fdstatus[1] = shp->fdstatus[subpipe[2]];
+ 	--usepipe;
+@@ -903,8 +903,8 @@
+ 	if(fd==0)
+ 		fd = savein;
+ 	sp = sfnew(NULL,NULL,SF_UNBOUND,fd,SF_READ);
+-	close(0);
+-	open(e_devnull,O_RDONLY);
++	EINTR_REPEAT(close(0)<0);
++	EINTR_REPEAT(open(e_devnull,O_RDONLY)<0);
+ 	shp->offsets[0] = -1;
+ 	shp->offsets[1] = 0;
+ 	*save = savein;
+@@ -1432,7 +1432,7 @@
+ 							stat(".",&stata);
+ 							/* restore directory changed */
+ 							if(statb.st_ino!=stata.st_ino || statb.st_dev!=stata.st_dev)
+-								chdir(shp->pwd);
++								EINTR_REPEAT(chdir(shp->pwd)<0);
+ 						}
+ 						sh_offstate(SH_STOPOK);
+ 						if(share&SF_SHARE)
+@@ -2465,7 +2465,7 @@
+ 			if(iop)
+ 			{
+ 				sfclose(iop);
+-				close(0);
++				EINTR_REPEAT(close(0)<0);
+ 				dup(savein);
+ 				shp->cur_line = 0;
+ 			}
+@@ -3624,7 +3624,7 @@
+ 			if(fd>=10)
+ 			{
+ 			        shp->fdstatus[fd] = (shp->fdstatus[outfd]&~IOCLEX);
+-				close(outfd);
++				EINTR_REPEAT(close(outfd)<0);
+ 			        shp->fdstatus[outfd] = IOCLOSE;
+ 				shp->cpipe[1] = fd;
+ 			}
+@@ -3713,7 +3713,7 @@
+ 	if(!shp->gd->shpath)
+ 		shp->gd->shpath = pathshell();
+ 	pid = spawnveg(shp->shpath,arglist,envlist,grp);
+-	close(fd);
++	EINTR_REPEAT(close(fd)<0);
+ 	for(i=3; i < 10; i++)
+ 	{
+ 		if(shp->fdstatus[i]&IOCLEX && i!=pin && i!=pout)
+@@ -3975,7 +3975,8 @@
+ 		if(spawnpid < 0 && errno==ENOEXEC)
+ 		{
+ 			char *devfd;
+-			int fd = open(path,O_RDONLY);
++			int fd;
++			EINTR_REPEAT((fd = open(path,O_RDONLY))<0);
+ 			argv[-1] = argv[0];
+ 			argv[0] = path;
+ 			if(fd>=0)
+@@ -3989,7 +3990,7 @@
+ 				shp->gd->shpath = pathshell();
+ 			spawnpid = path_spawn(shp,shp->gd->shpath,&argv[-1],arge,pp,(grp<<1)|1);
+ 			if(fd>=0)
+-				close(fd);
++				EINTR_REPEAT(close(fd)<0);
+ 			argv[0] = argv[-1];
+ 		}
+ 	fail:
+Only in original/src/cmd/ksh93/tests: arrays.sh
+Only in build_eintr/src/lib/libcmd: ~mktemp.c
+diff -r -u original/src/lib/libcmd/cp.c build_eintr/src/lib/libcmd/cp.c
+--- src/lib/libcmd/cp.c	2012-06-19 21:40:12.000000000 +0200
++++ src/lib/libcmd/cp.c	2012-07-09 03:18:21.470154344 +0200
+@@ -198,6 +198,19 @@
+ 
+ static const char	dot[2] = { '.' };
+ 
++/* Repeat syscall in expr each time it gets hit with EINTR */
++#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
++
++static int
++EINTR_REPEAT_open(const char *path, int oflag, mode_t mode)
++{
++	int rval;
++	
++	EINTR_REPEAT((rval = open(path, oflag, mode)) < 0);
++	
++	return rval;
++}
++
+ /*
+  * preserve support
+  */
+@@ -450,10 +463,10 @@
+ 		rm = state->remove || ent->fts_info == FTS_SL;
+ 		if (!rm || !state->force)
+ 		{
+-			if (S_ISLNK(st.st_mode) && (n = -1) || (n = open(state->path, O_RDWR|O_BINARY|O_cloexec)) >= 0)
++			if (S_ISLNK(st.st_mode) && (n = -1) || (n = EINTR_REPEAT_open(state->path, O_RDWR|O_BINARY|O_cloexec, 0)) >= 0)
+ 			{
+ 				if (n >= 0)
+-					close(n);
++					EINTR_REPEAT(close(n)<0);
+ 				if (state->force)
+ 					/* ok */;
+ 				else if (state->interactive)
+@@ -590,16 +603,16 @@
+ 		}
+ 		else if (state->op == CP || S_ISREG(ent->fts_statp->st_mode) || S_ISDIR(ent->fts_statp->st_mode))
+ 		{
+-			if (ent->fts_statp->st_size > 0 && (rfd = open(ent->fts_path, O_RDONLY|O_BINARY|O_cloexec)) < 0)
++			if (ent->fts_statp->st_size > 0 && (rfd = EINTR_REPEAT_open(ent->fts_path, O_RDONLY|O_BINARY|O_cloexec, 0)) < 0)
+ 			{
+ 				error(ERROR_SYSTEM|2, "%s: cannot read", ent->fts_path);
+ 				return 0;
+ 			}
+-			else if ((wfd = open(state->path, (st.st_mode ? (state->wflags & ~O_EXCL) : state->wflags)|O_cloexec, ent->fts_statp->st_mode & state->perm)) < 0)
++			else if ((wfd = EINTR_REPEAT_open(state->path, (st.st_mode ? (state->wflags & ~O_EXCL) : state->wflags)|O_cloexec, ent->fts_statp->st_mode & state->perm)) < 0)
+ 			{
+ 				error(ERROR_SYSTEM|2, "%s: cannot write", state->path);
+ 				if (ent->fts_statp->st_size > 0)
+-					close(rfd);
++					EINTR_REPEAT(close(rfd)<0);
+ 				return 0;
+ 			}
+ 			else if (ent->fts_statp->st_size > 0)
+@@ -607,14 +620,14 @@
+ 				if (!(ip = sfnew(NiL, NiL, SF_UNBOUND, rfd, SF_READ)))
+ 				{
+ 					error(ERROR_SYSTEM|2, "%s: %s read stream error", ent->fts_path, state->path);
+-					close(rfd);
+-					close(wfd);
++					EINTR_REPEAT(close(rfd)<0);
++					EINTR_REPEAT(close(wfd)<0);
+ 					return 0;
+ 				}
+ 				if (!(op = sfnew(NiL, NiL, SF_UNBOUND, wfd, SF_WRITE)))
+ 				{
+ 					error(ERROR_SYSTEM|2, "%s: %s write stream error", ent->fts_path, state->path);
+-					close(wfd);
++					EINTR_REPEAT(close(wfd)<0);
+ 					sfclose(ip);
+ 					return 0;
+ 				}
+@@ -634,11 +647,14 @@
+ 				}
+ 			}
+ 			else
+-				close(wfd);
++				EINTR_REPEAT(close(wfd)<0);
+ 		}
+ 		else if (S_ISBLK(ent->fts_statp->st_mode) || S_ISCHR(ent->fts_statp->st_mode) || S_ISFIFO(ent->fts_statp->st_mode))
+ 		{
+-			if (mknod(state->path, ent->fts_statp->st_mode, idevice(ent->fts_statp)))
++			int mknrval;
++			
++			EINTR_REPEAT((mknrval=mknod(state->path, ent->fts_statp->st_mode, idevice(ent->fts_statp)))<0);
++			if (mknrval)
+ 			{
+ 				error(ERROR_SYSTEM|2, "%s: cannot copy special file to %s", ent->fts_path, state->path);
+ 				return 0;
+diff -r -u original/src/lib/libcmd/mktemp.c build_eintr/src/lib/libcmd/mktemp.c
+--- src/lib/libcmd/mktemp.c	2012-01-10 19:55:07.000000000 +0100
++++ src/lib/libcmd/mktemp.c	2012-07-09 03:02:35.072350001 +0200
+@@ -63,6 +63,9 @@
+ #include <cmd.h>
+ #include <ls.h>
+ 
++/* Repeat syscall in expr each time it gets hit with EINTR */
++#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
++
+ int
+ b_mktemp(int argc, char** argv, Shbltin_t* context)
+ {
+@@ -154,7 +157,7 @@
+ 		if (fdp || unsafe || !mkdir(path, mode))
+ 		{
+ 			if (fdp)
+-				close(*fdp);
++				EINTR_REPEAT(close(*fdp)<0);
+ 			sfputr(sfstdout, path, '\n');
+ 			break;
+ 		}
+diff -r -u original/src/lib/libcmd/rm.c build_eintr/src/lib/libcmd/rm.c
+--- src/lib/libcmd/rm.c	2012-06-19 21:40:06.000000000 +0200
++++ src/lib/libcmd/rm.c	2012-07-09 02:51:37.041217289 +0200
+@@ -98,6 +98,9 @@
+ #endif
+ } State_t;
+ 
++/* Repeat syscall in expr each time it gets hit with EINTR */
++#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
++
+ /*
+  * remove a single file
+  */
+@@ -284,7 +287,8 @@
+ #if _lib_fsync
+ 		if (state->clobber && S_ISREG(ent->fts_statp->st_mode) && ent->fts_statp->st_size > 0)
+ 		{
+-			if ((n = open(path, O_WRONLY|O_cloexec)) < 0)
++			EINTR_REPEAT((n = open(path, O_WRONLY|O_cloexec))<0);
++			if (n < 0)
+ 				error(ERROR_SYSTEM|2, "%s: cannot clear data", ent->fts_path);
+ 			else
+ 			{
+@@ -302,7 +306,7 @@
+ 					c -= sizeof(state->buf);
+ 				}
+ 				fsync(n);
+-				close(n);
++				EINTR_REPEAT(close(n)<0);
+ 			}
+ 		}
+ #endif
+diff -r -u original/src/lib/libcmd/tee.c build_eintr/src/lib/libcmd/tee.c
+--- src/lib/libcmd/tee.c	2012-06-19 21:40:02.000000000 +0200
++++ src/lib/libcmd/tee.c	2012-07-09 03:01:29.241775502 +0200
+@@ -56,6 +56,9 @@
+ #include <ls.h>
+ #include <sig.h>
+ 
++/* Repeat syscall in expr each time it gets hit with EINTR */
++#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
++
+ typedef struct Tee_s
+ {
+ 	Sfdisc_t	disc;
+@@ -102,7 +105,7 @@
+ 		if (tp->line >= 0)
+ 			sfset(sfstdout, SF_LINE, tp->line);
+ 		for (hp = tp->fd; (n = *hp) >= 0; hp++)
+-			close(n);
++			EINTR_REPEAT(close(n)<0);
+ 	}
+ }
+ 
+@@ -177,8 +180,7 @@
+ 			hp = tp->fd;
+ 			while (cp = *argv++)
+ 			{
+-				while ((*hp = open(cp, oflag, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)) < 0 && errno == EINTR)
+-					errno = 0;
++				EINTR_REPEAT((*hp = open(cp, oflag, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)) < 0);
+ 				if (*hp < 0)
+ 					error(ERROR_system(0), "%s: cannot create", cp);
+ 				else

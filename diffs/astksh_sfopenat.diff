@@ -1,0 +1,181 @@
+diff -r -u -N original/src/lib/libast/include/sfio.h build_sfopenat/src/lib/libast/include/sfio.h
+--- src/lib/libast/include/sfio.h	2012-05-29 16:55:21.000000000 +0200
++++ src/lib/libast/include/sfio.h	2012-07-27 01:21:49.736056659 +0200
+@@ -229,6 +229,7 @@
+ 
+ extern Sfio_t*		sfnew _ARG_((Sfio_t*, Void_t*, size_t, int, int));
+ extern Sfio_t*		sfopen _ARG_((Sfio_t*, const char*, const char*));
++extern Sfio_t*		sfopenat _ARG_((int, Sfio_t*, const char*, const char*));
+ extern Sfio_t*		sfpopen _ARG_((Sfio_t*, const char*, const char*));
+ extern Sfio_t*		sfstack _ARG_((Sfio_t*, Sfio_t*));
+ extern Sfio_t*		sfswap _ARG_((Sfio_t*, Sfio_t*));
+diff -r -u -N original/src/lib/libast/sfio/_sfopen.c build_sfopenat/src/lib/libast/sfio/_sfopen.c
+--- src/lib/libast/sfio/_sfopen.c	2012-06-19 21:39:39.000000000 +0200
++++ src/lib/libast/sfio/_sfopen.c	2012-07-27 06:03:28.026617001 +0200
+@@ -34,10 +34,21 @@
+ extern
+ #undef  extern
+ 
++#ifndef AT_FDCWD
++/*
++ * If |AT_FDCWD| is not defined then the |openat()| API is not
++ * available. In that case we map |openat()| to |open()|
++ * and ignore the |dirfd| argument.
++ */
++#undef sysopenatf
++#define sysopenatf sysopenf
++#endif
++
+ #if __STD_C
+-Sfio_t* _sfopen(Sfio_t* f, const char* file, const char* mode)
++Sfio_t* _sfopenat(int dirfd, Sfio_t* f, const char* file, const char* mode)
+ #else
+-Sfio_t* _sfopen(f,file,mode)
++Sfio_t* _sfopenat(dirfd, f,file,mode)
++int		dirfd;		/* directory fd */
+ Sfio_t*		f;		/* old stream structure */
+ char*		file;		/* file/string to be opened */
+ char*		mode;		/* mode of the stream */
+@@ -100,10 +111,10 @@
+ 			return NIL(Sfio_t*);
+ 
+ #if _has_oflags /* open the file */
+-		while((fd = sysopenf((char*)file,oflags,SF_CREATMODE)) < 0 && errno == EINTR)
++		while((fd = sysopenatf(dirfd, (char*)file,oflags,SF_CREATMODE)) < 0 && errno == EINTR)
+ 			errno = 0;
+ #else
+-		while((fd = sysopenf(file,oflags&O_ACCMODE)) < 0 && errno == EINTR)
++		while((fd = sysopenatf(dirfd, file,oflags&O_ACCMODE)) < 0 && errno == EINTR)
+ 			errno = 0;
+ 		if(fd >= 0)
+ 		{	if((oflags&(O_CREAT|O_EXCL)) == (O_CREAT|O_EXCL) )
+@@ -112,19 +123,21 @@
+ 			}
+ 			if(oflags&O_TRUNC )	/* truncate file */
+ 			{	reg int	tf;
+-				while((tf = syscreatf(file,SF_CREATMODE)) < 0 &&
++				while((tf = syopenatf(dirfd, file, O_WRONLY|O_CREAT|O_TRUNC, SF_CREATMODE)) < 0 &&
+ 				      errno == EINTR)
+ 					errno = 0;
+ 				CLOSE(tf);
+ 			}
+ 		}
+ 		else if(oflags&O_CREAT)
+-		{	while((fd = syscreatf(file,SF_CREATMODE)) < 0 && errno == EINTR)
++		{
++			while((fd = syopenatf(dirfd, file, O_WRONLY|O_CREAT|O_TRUNC, SF_CREATMODE)) < 0 && errno == EINTR)
+ 				errno = 0;
++
+ 			if((oflags&O_ACCMODE) != O_WRONLY)
+ 			{	/* the file now exists, reopen it for read/write */
+ 				CLOSE(fd);
+-				while((fd = sysopenf(file,oflags&O_ACCMODE)) < 0 &&
++				while((fd = sysopenatf(dirfd, file,oflags&O_ACCMODE)) < 0 &&
+ 				      errno == EINTR)
+ 					errno = 0;
+ 			}
+@@ -230,3 +243,26 @@
+ 		return sflags;
+ 	}
+ }
++
++
++/* |_sfopen()| is needed that (legacy) consumers can override it */
++
++#if __STD_C
++Sfio_t* _sfopen(Sfio_t* f, const char* file, const char* mode)
++#else
++Sfio_t* _sfopen(f,file,mode)
++Sfio_t*		f;		/* old stream structure */
++char*		file;		/* file/string to be opened */
++char*		mode;		/* mode of the stream */
++#endif
++{
++#ifdef AT_FDCWD
++	return _sfopenat(AT_FDCWD, f, file, mode);
++#else
++/*
++ * If |AT_FDCWD| is not defined then the |openat()| API is not
++ * available. In that case |sfopenat()| will ignore the dirfd argument.
++ */
++	return _sfopenat(-1, f, file, mode);
++#endif
++}
+diff -r -u -N original/src/lib/libast/sfio/sfhdr.h build_sfopenat/src/lib/libast/sfio/sfhdr.h
+--- src/lib/libast/sfio/sfhdr.h	2012-06-18 20:57:43.000000000 +0200
++++ src/lib/libast/sfio/sfhdr.h	2012-07-27 00:28:03.253125114 +0200
+@@ -114,6 +114,7 @@
+ #define sysmmapf	mmap
+ #define sysmunmapf	munmap
+ #define sysopenf	open
++#define sysopenatf	openat
+ #define syspipef	pipe
+ #define sysreadf	read
+ #define sysremovef	remove
+@@ -198,6 +199,7 @@
+ #undef	_typ_struct_stat64
+ #undef	_lib_creat64
+ #undef	_lib_open64
++#undef	_lib_openat64
+ #undef	_lib_close64
+ #undef	_lib_stat64
+ #undef	_lib_fstat64
+@@ -260,8 +262,10 @@
+ #endif
+ #if _lib_open64
+ #define sysopenf	open64
++#define sysopenatf	openat64
+ #else
+ #define sysopenf	open
++#define sysopenatf	openat
+ #endif
+ #if _lib_creat64
+ #define syscreatf	creat64
+@@ -1249,6 +1253,7 @@
+ #if !_hdr_unistd
+ #if _proto_open && __cplusplus
+ extern int	sysopenf _ARG_((const char*, int, ...));
++extern int	sysopenatf _ARG_((const char*, int, ...));
+ #endif
+ extern int	sysclosef _ARG_((int));
+ extern ssize_t	sysreadf _ARG_((int, void*, size_t));
+diff -r -u -N original/src/lib/libast/sfio/sfopen.c build_sfopenat/src/lib/libast/sfio/sfopen.c
+--- src/lib/libast/sfio/sfopen.c	2003-10-20 16:30:05.000000000 +0200
++++ src/lib/libast/sfio/sfopen.c	2012-07-27 00:54:12.459967301 +0200
+@@ -25,7 +25,7 @@
+  * _sfopen() wrapper to allow user sfopen() intercept
+  */
+ 
+-extern Sfio_t*		_sfopen _ARG_((Sfio_t*, const char*, const char*));
++extern Sfio_t*		_sfopenat _ARG_((int, Sfio_t*, const char*, const char*));
+ 
+ #if __STD_C
+ Sfio_t* sfopen(Sfio_t* f, const char* file, const char* mode)
+@@ -36,5 +36,26 @@
+ reg char*	mode;		/* mode of the stream */
+ #endif
+ {
+-	return _sfopen(f, file, mode);
++#ifdef AT_FDCWD
++	return _sfopenat(AT_FDCWD, f, file, mode);
++#else
++/*
++ * If |AT_FDCWD| is not defined then the |openat()| API is not
++ * available. In that case |sfopenat()| will ignore the dirfd argument.
++ */
++	return _sfopenat(-1, f, file, mode);
++#endif
++}
++
++#if __STD_C
++Sfio_t* sfopenat(int dirfd, Sfio_t* f, const char* file, const char* mode)
++#else
++Sfio_t* sfopenat(dirfd, f,file,mode)
++int		dirfd;		/* directory fd */
++Sfio_t*		f;		/* old stream structure */
++char*		file;		/* file/string to be opened */
++reg char*	mode;		/* mode of the stream */
++#endif
++{
++	return _sfopenat(dirfd, f, file, mode);
+ }
