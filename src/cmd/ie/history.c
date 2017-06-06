@@ -185,6 +185,7 @@ retry:
 	{
 		write(fd,(char*)hist_stamp,2);
 		p_setout(fd);
+    his_start = 0;
 	}
 	/* initialize history list */
 	else

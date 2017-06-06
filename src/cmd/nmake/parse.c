@@ -2995,7 +2995,7 @@ nextarg(char* s, char** p, char** end, long* val)
 			**end = n;
 	}
 	*p = s;
-	return end ? arg : 0;
+	return end ? &arg : 0;
 }
 
 /*

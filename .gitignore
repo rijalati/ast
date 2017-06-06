@@ -1,3 +1,7 @@
 arch
 tmp_gnulinux_builtin_header.h
 *.orig
+cov-int
+*.old
+*.mo
+*.ms
