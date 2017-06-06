@@ -481,6 +481,10 @@ USAGE_LICENSE
 	"user if possible.  Otherwise \bcd\b will fail.]"
 "[+?When \bcd\b is successful, the \bPWD\b environment variable will be set "
 	"to the name of an absolute pathname that does not contain any "
+#ifdef O_XATTR
+"[@?Change into the hidden attribute directory of a file or directory.  The "
+       "\bCDPATH\b environment variable is being ignored.]"
+#endif
 	"\b..\b components corresponding to the new directory.  The "
 	"environment variable \bOLDPWD\b will be set to the previous "
 	"value of \bPWD\b.  If the new directory is found by searching "

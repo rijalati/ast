@@ -1365,6 +1365,17 @@ int sh_type(register const char *path)
 				s += 2;
 				t |= SH_TYPE_PROFILE;
 				continue;
+#ifdef AT_FDCWD
+	shp->pwdfd = sh_diropenat(shp, AT_FDCWD, e_dot, 0);
+#else
+	/* Systems without AT_FDCWD/openat() do not use the |dir| argument */
+	shp->pwdfd = sh_diropenat(shp, -1, e_dot, 0);
+#endif
+#ifdef O_SEARCH
+	/* This should _never_ happen, guranteed by design and goat sacrifice */
+	if(shp->pwdfd < 0)
+		errormsg(SH_DICT,ERROR_exit(1), "Can't obtain directory fd.");
+#endif
 			}
 #endif
 			if (*s == 'r')

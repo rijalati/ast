@@ -257,6 +257,7 @@ struct shared
 	Sfio_t		**sftable; \
 	unsigned int	*fdstatus; \
 	const char	*pwd; \
+	int		pwdfd; \
 	void		*jmpbuffer; \
 	void		*mktype; \
 	Sfio_t		*strbuf; \
@@ -459,6 +460,7 @@ extern bool		sh_trace(Shell_t*,char*[],int);
 extern void		sh_trim(char*);
 extern int		sh_type(const char*);
 extern void             sh_unscope(Shell_t*);
+extern int		sh_diropenat(Shell_t *shp, int dir, const char *path, int xattr);
 extern void		sh_utol(const char*, char*);
 extern int 		sh_whence(char**,int);
 #if SHOPT_COSHELL

@@ -174,7 +174,7 @@ typeset vmalloc_options= trace= valgrind=
 
 while	getopts -a $command "$USAGE" OPT
 do	case $OPT in
-	c)	if	(( $OPTARG ))
+	c)	if	(( OPTARG ))
 		then	compile=2
 		else	compile=0
 		fi
@@ -203,7 +203,12 @@ do	case $OPT in
 		;;
 	esac
 done
-shift $OPTIND-1
+shift $((OPTIND-1))
+
+# "fix" ulimit limits if the are too low for running the tests
+# (this has bitten us on Solaris more than once)
+(( $(ulimit -s) < 65536 )) && ulimit -s 65536
+(( $(ulimit -n) < 512   )) && ulimit -n 512
 
 if	(( debug )) || [[ $trace ]]
 then	export PS4=':$LINENO: '

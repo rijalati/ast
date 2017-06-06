@@ -75,6 +75,7 @@ static struct subshell
 	Sfio_t*	saveout;/*saved standard output */
 	char		*pwd;	/* present working directory */
 	const char	*shpwd;	/* saved pointer to sh.pwd */
+	int		shpwdfd;
 	void		*jobs;	/* save job info */
 	int		shpwdfd;/* fd for present working directory */
 	mode_t		mask;	/* saved umask */
@@ -559,9 +560,18 @@ Sfio_t *sh_subshell(Shell_t *shp,Shnode_t *t, volatile int flags, int comsub)
 			sh_onoption(shp,SH_PIPEFAIL);
 	}
 	sp->shpwdfd=-1;
+
+	sp->shpwdfd=-1;
 	if(!comsub || !shp->subshare)
 	{
 		sp->shpwd = shp->pwd;
+		sp->shpwdfd=((shp->pwdfd >= 0))?sh_fcntl(shp->pwdfd, F_DUPFD, 10):-1;
+		if(sp->shpwdfd>=0)
+			sh_fcntl(sp->shpwdfd, F_SETFD, FD_CLOEXEC);
+#ifdef O_SEARCH
+		else
+			errormsg(SH_DICT,ERROR_exit(1), "Can't obtain directory fd.");
+#endif
 		sp->shpwdfd=((shp->pwdfd >= 0))?sh_fcntl(shp->pwdfd, F_dupfd_cloexec, 10):-1;
 #ifdef O_SEARCH
 		if(sp->shpwdfd<0)
@@ -818,6 +828,15 @@ Sfio_t *sh_subshell(Shell_t *shp,Shnode_t *t, volatile int flags, int comsub)
 			sh_close(shp->pwdfd);
 		shp->pwdfd=sp->shpwdfd;
 		fchdir(shp->pwdfd);
+	}
+	if(sp->shpwdfd >=0)
+	{
+		if(shp->pwdfd >=0)
+			sh_close(shp->pwdfd);
+		shp->pwdfd=sp->shpwdfd;
+		/* chdir for directories on HSM/tapeworms may take minutes */
+		while((fchdir(shp->pwdfd) < 0) && (errno == EINTR))
+			errno=0;
 	}
 	shp->subshare = sp->subshare;
 	shp->subdup = sp->subdup;

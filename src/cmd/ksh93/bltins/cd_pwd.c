@@ -38,6 +38,11 @@
 #include	<pwd.h>
 #include	<ls.h>
 
+/* Repeat syscall in expr each time it gets hit with EINTR */
+#ifndef EINTR_REPEAT
+#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
+#endif
+
 /*
  * Invalidate path name bindings to relative paths
  */
@@ -66,6 +71,106 @@ int sh_diropenat(Shell_t *shp, int dir, const char *path)
 	shfd = sh_fcntl(fd, F_DUPFD_CLOEXEC, 10);
 	close(fd);
 	return(shfd);
+}
+
+/*
+ * Obtain a file handle to the directory "path" relative to directory
+ * "dir", or open a NFSv4 xattr directory handle for file dir/path.
+ */
+int sh_diropenat(Shell_t *shp, int dir, const char *path, int xattr)
+{
+	int fd;
+	int shfd;
+	int savederrno;
+#ifndef AT_FDCWD
+	NOT_USED(dir);
+#endif
+#ifndef O_XATTR
+	NOT_USED(xattr);
+#endif
+
+#ifdef O_XATTR
+	if(xattr)
+	{
+		int apfd; /* attribute parent fd */
+
+		/* open parent node... */
+		EINTR_REPEAT((apfd = openat(dir, path, O_RDONLY|O_NONBLOCK|O_cloexec)) < 0);
+		if(apfd < 0)
+			return -1;
+
+		/* ... and then open a fd to the attribute directory */
+		EINTR_REPEAT((fd = openat(apfd, e_dot, O_XATTR|O_cloexec)) < 0);
+
+		savederrno = errno;
+		EINTR_REPEAT(close(apfd) < 0);
+		errno = savederrno;
+	}
+	else
+#endif
+	{
+#ifdef AT_FDCWD
+		/*
+		 * Open directory. First we try without |O_SEARCH| and
+		 * if this fails with EACCESS we try with |O_SEARCH|
+		 * again.
+		 * This is required ...
+		 * - ... because some platforms may require that it can
+		 * only be used for directories while some filesystems
+		 * (e.g. Reiser4 or HSM systems) allow a |fchdir()| into
+		 * files, too)
+		 * - ... to preserve the semantics of "cd", e.g.
+		 * otherwise "cd" would return [No access] instead of
+		 * [Not a directory] for files on filesystems which do
+		 * not allow a "cd" into files.
+		 * - ... to allow that a
+		 * $ redirect {n}</etc ; cd /dev/fd/$n # works on most
+		 * platforms.
+		 */
+		EINTR_REPEAT((fd = openat(dir, path, O_cloexec)) < 0);
+#ifdef O_SEARCH
+		if((fd < 0) && (errno == EACCES))
+		{
+			EINTR_REPEAT((fd = openat(dir, path, O_SEARCH|O_cloexec)) < 0)
+		}
+#endif
+#else
+		/*
+		 * Version of openat() call above for systems without
+		 * openat API. This only works because we basically
+		 * gurantee that |dir| is always the same place as
+		 * |cwd| on such machines (but this won't be the case
+		 * in the future).
+		 */
+		/*
+		 * This |fchdir()| call is not needed (yet) since
+		 * all consumers do not use |dir| when |AT_FDCWD|
+		 * is not available.
+		 *
+		 * fchdir(dir);
+		 */
+		EINTR_REPEAT((fd = open(path, O_cloexec)) < 0);
+#endif
+	}
+
+	if(fd < 0)
+		return fd;
+
+	/* Move fd to a number > 10 and *register* the fd number with the shell */
+	shfd = sh_fcntl(fd, F_DUPFD, 10);
+	savederrno=errno;
+
+	EINTR_REPEAT(close(fd) < 0);
+
+	/*
+	 * FIXME: |sh_fcntl()| should implement F_DUPFD_CLOEXEC
+	 * and F_DUP2FD_CLOEXEC to reduce the number of system calls
+	 */
+	if(shfd >=0)
+		sh_fcntl(shfd, F_SETFD, FD_CLOEXEC);
+	errno=savederrno;
+	
+	return shfd;
 }
 
 int	b_cd(int argc, char *argv[],Shbltin_t *context)
@@ -98,6 +203,11 @@ int	b_cd(int argc, char *argv[],Shbltin_t *context)
 		case '@':
 			xattr = true;
 			break;
+#ifdef O_XATTR
+		case '@':
+			xattr = 1;
+			break;
+#endif
 		case ':':
 			errormsg(SH_DICT,2, "%s", opt_info.arg);
 			break;
@@ -173,6 +283,15 @@ int	b_cd(int argc, char *argv[],Shbltin_t *context)
 			pathcanon(dir, j + 1, 0);
 		}
 	}
+#ifdef O_XATTR
+	if (xattr)
+#ifdef PATH_BFPATH
+		cdpath = NULL
+#else
+		cdpath = ""
+#endif
+	;
+#endif
 	rval = -1;
 	do
 	{
