@@ -2469,7 +2469,7 @@ static void mac_copy(register Mac_t *mp,register const char *str, register size_
 			}
 			else if(n==S_PAT)
 				mp->patfound = mp->pattern;
-			else if(n && mp->ifs)
+			else if((n && n!=S_EOF) && mp->ifs)
 			{
 #if SHOPT_MULTIBYTE
 				if(n==S_MBYTE)
