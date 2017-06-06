@@ -2730,7 +2730,10 @@ static void tilde_expand2(Shell_t *shp, register int offset)
 	if(np)
 		sh_fun(shp,np, (Namval_t*)0, av);
 	else
+	{
+		shp->bltindata.pwdfd = shp->pwdfd;
 		sh_btilde(2, av, &shp->bltindata);
+	}
 	sfstdout = save;
 	stkset(shp->stk,ptr, offset);
 	sfseek(iop,(Sfoff_t)0,SEEK_SET);

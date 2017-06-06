@@ -944,6 +944,7 @@ int sh_addlib(Shell_t* shp, void* dll, char* name, Pathcomp_t* pp)
 	Shbltin_t	*sp = &shp->bltindata;
 
 	sp->nosfio = 0;
+	sp->pwdfd  = shp->pwdfd;
 	for (n = r = 0; n < nlib; n++)
 	{
 		if (r)

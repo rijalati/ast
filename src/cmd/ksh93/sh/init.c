@@ -1534,6 +1534,7 @@ Shell_t *sh_init(register int argc,register char *argv[], Shinit_f userinit)
 				break;
 			nopt = optctx(0, 0);
 			oopt = optctx(nopt, 0);
+			shp->bltindata.pwdfd=shp->pwdfd;
 			b___regress__(2, regress, &shp->bltindata);
 			optctx(oopt, nopt);
 		}
@@ -1748,6 +1749,7 @@ Shell_t *sh_init(register int argc,register char *argv[], Shinit_f userinit)
 	shp->gd->login_files = login_files;
 	shp->bltindata.version = SH_VERSION;
 	shp->bltindata.shp = shp;
+	shp->bltindata.pwdfd = -1;
 #if 1
 #   undef sh_run
 #   undef sh_trap
