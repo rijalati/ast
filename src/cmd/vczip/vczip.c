@@ -25,15 +25,184 @@
 
 #include <ast.h>
 #include <vcodex.h>
+#include <vccrypto.h>
 #include <codex.h>
 #include <ctype.h>
 #include <error.h>
 #include <tmx.h>
+#include <termios.h>
 
 #define BUFFERSIZE	8*1024*1024
 
 #define S(s)		# s
 #define X(s)		S(s)
+/* function to read a passkey for encryption */
+static char*    passParam = NULL;
+static char*	Prompt = "Enter passkey: ";
+static char*	Retype = "Retype passkey: ";
+static char*	Toolong = "Passkey was too long.\n";
+static char*	Nomatch = "Passkeys did not match.\n";
+static ssize_t passwordPrompt(char* key, ssize_t keyz, int type)
+{
+	Sfio_t		*ttyf;
+	char		*str;
+	ssize_t		n;
+	struct termios	oldtty, newtty;
+	int		error = -1;
+
+	if(!key || keyz <= 2)
+		return -1;
+
+	/* open terminal to read and write */
+	if(!(ttyf = sfopen((Sfio_t*)0, "/dev/tty", "r")))
+		return -1;
+
+	/* get and save current terminal attributes */
+	if(tcgetattr(sffileno(ttyf), &oldtty) < 0)
+		goto done;
+	memcpy(&newtty, &oldtty, sizeof(oldtty));
+
+	/* turn off echo mode */
+	newtty.c_lflag &= ~(ECHO|ECHOE|ECHOK|ECHONL);
+	if(tcsetattr(sffileno(ttyf), TCSANOW, &newtty) < 0)
+		goto done;
+
+	for(;;)
+	{
+		if(sfwrite(sfstderr, Prompt, strlen(Prompt)) != strlen(Prompt))
+			goto done;
+		str = sfgetr(ttyf, '\n', 1);
+		sfwrite(sfstderr, "\n", 1);
+		if(!str || (n = strlen(str)) > keyz-1 )
+		{	sfwrite(sfstderr, Toolong, strlen(Toolong));
+			continue;
+		}
+		memcpy(key, str, n+1);
+
+		if(type != VC_ENCODE)
+			break;
+
+		/* for encoding, need to confirm key */
+		if(sfwrite(sfstderr, Retype, strlen(Retype)) != strlen(Retype))
+			goto done;
+		str = sfgetr(ttyf, '\n', 1);
+		sfwrite(sfstderr, "\n", 1); 
+		if(str && strcmp(str, key) == 0)
+			break;
+		else	sfwrite(sfstderr, Nomatch, strlen(Nomatch));
+	}
+	error = 0;
+
+done:	if(ttyf) /* restore terminal mode */
+	{	tcsetattr(sffileno(ttyf), TCSANOW, &oldtty);
+		sfclose(ttyf);
+	}
+
+	return error ? -1 : strlen(key);
+}
+static ssize_t passwordCmdLine(char* key, ssize_t keyz, int type)
+{
+	if(passParam!=NULL)
+	{
+		strncpy(key,passParam,keyz);
+		return strlen(passParam);
+	}
+	else
+	{
+		error("password not provided on command prompt");
+		return -1;
+	}
+}
+static const char pem_base64_reverse[128] = 
+{
+	64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+	64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+	64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 62, 64, 64, 64, 63,
+	52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 64, 64, 64, 64, 64, 64,
+	64,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
+	15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 64, 64, 64, 64, 64,
+	64, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+	41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 64, 64, 64, 64, 64
+};
+static ssize_t passwordPemFile(char* key, ssize_t keyz, int type)
+{
+	char *line;
+	Sfio_t * in;
+	long a;
+	int i,j;
+	int keyOffset=0;
+	unsigned char keybuf[512];
+
+	if(!(in = sfopen((Sfio_t*)0, passParam, "r")))
+		return -1;
+
+	while((line=sfgetr(in,'\n',1))!=NULL)
+	{
+		if(strcmp("-----BEGIN RSA PRIVATE KEY-----",line)==0)
+		{
+			keyOffset=0;
+		}
+		if(strcmp("-----END RSA PRIVATE KEY-----",line)==0)
+		{
+			sfclose(in);
+			return keyOffset;
+		}
+		/* for now just assume there are no comments or other keys in the file */
+		for(i=0;i<64 && line[i]!='\n';i++) /* read 4 characters to get 3 output */
+		{
+			a=(a<<6)+pem_base64_reverse[line[i]];		
+			if(i%4==3) /* just read fourth char. flush 3 chars */
+			{
+				key[keyOffset++]=(a>>16)&0xFF;
+				key[keyOffset++]=(a>>8)&0xFF;
+				key[keyOffset++]=a&0xFF;
+			}
+		}
+		if(i%4!=0)
+		{ /* not a complete set of 4 read */
+			for(j=i%4;j<4;j++)a=a<<6;
+			switch(i%4)
+			{
+				case 1:
+					key[keyOffset++]=(a>>16)&0xFF;
+					break;
+				case 2:
+					key[keyOffset++]=(a>>16)&0xFF;
+					key[keyOffset++]=(a>>8)&0xFF;
+					break;
+				case 3:
+					key[keyOffset++]=(a>>16)&0xFF;
+					key[keyOffset++]=(a>>8)&0xFF;
+					key[keyOffset++]=a&0xFF;
+			}
+		}
+
+	}
+	return -1;
+}
+
+static ssize_t passwordFile(char* key, ssize_t keyz, int type)
+{
+	char *line;
+	Sfio_t * in;
+	long a;
+	int i,j;
+	int keyOffset=0;
+	unsigned char keybuf[512];
+
+	/* in case of short key */
+	memset(key,0,keyz);
+
+	if(!(in = sfopen((Sfio_t*)0, passParam, "r")))
+		return -1;
+	if(sfgetr(in,'\n',1)!=NULL){
+		strncpy(key,line,keyz);
+	}else{
+		return -1;
+	}
+	sfclose(in);
+	return strlen(key);
+}
 
 static const char usage[] =
 "[-?\n@(#)$Id: vczip (AT&T Research) 2013-08-11 $\n]"
@@ -130,7 +299,11 @@ USAGE_LICENSE
 "[D:debug?Set the debug trace level to \alevel\a. Higher levels produce "
     "more output.]:[level]"
 "[M:move?Use sfmove() for io.]"
-
+"[P:passIn?Specify how to get the password. Current options are as follows: "
+    "]:[passIn]"
+    "{[+Password=password?Specify that the Password is password]"
+    "[+PemFile=filename?Use the first key found in file filename]"
+    "[+File=filename?Use the first line in filename]}"
 "\n"
 "\nfile ... | < input > output\n"
 "\n"
@@ -474,11 +647,13 @@ main(int argc, char** argv)
 	char*		output = 0;
 	size_t		bufsize = BUFFERSIZE;
 	int		flags = 0;
+	char		*pass = NULL ; /* uses default of "Prompt" */
 
 	/* NOTE: disciplines may be accessed after main() returns */
 
 	static Codexdisc_t	codexdisc;	/* codex discipline	*/
 
+	Vcxpasskeyf = passwordPrompt;
 	error_info.id = (s = strrchr(argv[0], '/')) ? (s + 1) : argv[0];
 	s = error_info.id;
 	transform = command;
@@ -546,8 +721,26 @@ main(int argc, char** argv)
 		case '?':
 			error(ERROR_USAGE|4, "%s", opt_info.arg);
 			continue;
+		case 'P': /* specify where password is coming from */
+			pass = opt_info.arg;
+			continue;
 		}
 		break;
+	}
+	/* if a password parsing argument was supplied use it */
+	if(pass!=NULL){
+		if(strcmp(pass,"Prompt") == 0 ){
+			Vcxpasskeyf = passwordPrompt;
+		}else if(strncmp(pass,"PemFile=",8) == 0 ){
+			Vcxpasskeyf = passwordPemFile;
+			passParam = strdup(pass+8);
+		}else if(strncmp(pass,"File=",5) == 0 ){
+			Vcxpasskeyf = passwordFile;
+			passParam = strdup(pass+5);
+		}else if(strncmp(pass,"Password=",5) == 0 ){
+			Vcxpasskeyf = passwordFile;
+			passParam = strdup(pass+9);
+		}
 	}
 	argv += opt_info.index;
 	if (error_info.errors)
