@@ -79,9 +79,18 @@ int sh_diropenat(Shell_t *shp, int dir, const char *path)
  */
 int sh_diropenat(Shell_t *shp, int dir, const char *path, int xattr)
 {
+#ifdef O_DIRECTORY
+#define O_directory (O_DIRECTORY)
+#else
+#define O_directory (0)
+#endif
+
 	int fd;
 	int shfd;
 	int savederrno;
+#ifndef O_DIRECTORY
+  struct stat fs;
+#endif
 #ifndef AT_FDCWD
 	NOT_USED(dir);
 #endif

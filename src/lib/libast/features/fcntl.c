@@ -27,10 +27,30 @@
  * generate POSIX fcntl.h
  */
 
+/*
+ * We use this to force Linux and some *BSD versions to tell us all
+ * their flags
+ */
+#define _GNU_SOURCE 1
+#define __USE_GNU 1 /* why is this neccesary on Linux ? */
+
 #include "FEATURE/standards"	/* iffe --include-first */
 #include "FEATURE/lib"
 
 #include <sys/types.h>
+
+/*
+ * Make sure _GNU_SOURCE is active on Linux. Some versions
+ * give us serious trouble in this case so we have this
+ * assert to *abort* early instead of let us hunt for "ghost
+ * bugs"
+ */
+#ifdef __linux__
+#ifndef __USE_GNU
+#error "ASSERT: __USE_GNU should be defined by now"
+#endif
+#endif
+
 
 #define getdtablesize	______getdtablesize
 #define getpagesize	______getpagesize

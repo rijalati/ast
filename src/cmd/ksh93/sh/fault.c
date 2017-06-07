@@ -701,6 +701,8 @@ void sh_done(void *ptr, register int sig)
 	exit(savxit&SH_EXITMASK);
 }
 
+	if (shp->pwdfd >= 0)
+		sh_close(shp->pwdfd);
 /*
  * synthesize signal name for sig in buf
  * pfx!=0 prepends SIG to default signal number

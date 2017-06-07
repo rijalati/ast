@@ -155,7 +155,7 @@ struct Shell_s
 	char		shcomp;		/* set when runing shcomp */
 	short		subshell;	/* set for virtual subshell */
 	Stk_t		*stk;		/* stack poiter */
-	int		pwdfd;		/* file descriptor for pwd */
+	int		pwdfd;		/* file descriptor for pwd (must be from sh_diropenat()/sh_fcntl()!) */
 #ifdef _SH_PRIVATE
 	_SH_PRIVATE
 #endif /* _SH_PRIVATE */

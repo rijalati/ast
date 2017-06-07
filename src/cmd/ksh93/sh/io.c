@@ -849,7 +849,7 @@ static char *io_usename(Shell_t *shp,char *name, int *perm, int fno, int mode)
 		else if(fd < 0  && errno!=ENOENT)
 			return(0);
 	}
-	while((fd=readlink(name, path, PATH_MAX)) >0)
+	while((fd=readlinkat(shp->pwdfd, name, path, PATH_MAX)) >0)
 	{
 		name=path;
 		name[fd] = 0;
@@ -1332,7 +1332,7 @@ int	sh_redirect(Shell_t *shp,struct ionod *iop, int flag)
 					else if(sh_isoption(shp,SH_NOCLOBBER))
 					{
 						struct stat sb;
-						if(stat(fname,&sb)>=0)
+						if(fstatat(shp->pwdfd,fname,&sb,0)>=0)
 						{
 #ifdef AT_FDCWD
               while((fd = openat(shp->pwdfd, path,flags,sb.st_mode))<0 && errno==EINTR)
@@ -1796,7 +1796,7 @@ void sh_iosave(Shell_t *shp, register int origfd, int oldtop, char *name)
 		if(savefd <0 && (sp=shp->sftable[origfd]) && (sfset(sp,0,0)&SF_STRING)) 
 		{
 			savestr = 1;
-			if((fd = open("/dev/null",O_RDONLY|O_CLOEXEC)) < 10)
+			if((fd = openat(shp->pwdfd, "/dev/null",O_RDONLY|O_CLOEXEC)) < 10)
 			{
 				savefd = sh_fcntl(fd, F_DUPFD_CLOEXEC, 10);
 				close(fd);
@@ -2890,7 +2890,7 @@ int sh_chdir(const char* dir)
 int sh_stat(const char* path,struct stat *statb)
 {
 	int r,err=errno;
-	while((r=stat(path,statb))<0 && errno==EINTR)
+	while((r=fstatat(sh.pwdfd,path,statb,0))<0 && errno==EINTR)
 		errno = err;
 	return(r);
 }

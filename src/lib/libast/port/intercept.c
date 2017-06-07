@@ -366,7 +366,7 @@ int
 ast_openat(int cwd, const char* path, int flags, ...)
 {
 	int	r;
-#if _ast_O_LOCAL && O_CLOEXEC >= _ast_O_LOCAL
+#if defined(_ast_O_LOCAL) && (O_CLOEXEC >= _ast_O_LOCAL)
 	int	o_cloexec;
 #endif
 #if _ast_O_LOCAL && O_DIRECTORY >= _ast_O_LOCAL
@@ -378,7 +378,7 @@ ast_openat(int cwd, const char* path, int flags, ...)
 	va_start(ap, flags);
 	mode = (flags & O_CREAT) ? (mode_t)va_arg(ap, int) : (mode_t)0;
 	va_end(ap);
-#if _ast_O_LOCAL && O_CLOEXEC >= _ast_O_LOCAL
+#if defined(_ast_O_LOCAL) && (O_CLOEXEC >= _ast_O_LOCAL)
 	if (flags & O_CLOEXEC)
 	{
 		flags &= ~O_CLOEXEC;
@@ -422,7 +422,7 @@ ast_openat(int cwd, const char* path, int flags, ...)
 	}
 	else
 		RESTART(r, pathopen(cwd, path, NiL, 0, 0, flags|O_INTERCEPT, mode));
-#if _ast_O_LOCAL && O_CLOEXEC >= _ast_O_LOCAL
+#if defined(_ast_O_LOCAL) && (O_CLOEXEC >= _ast_O_LOCAL)
 	if (o_cloexec && r >= 0)
 		RESTART(o_cloexec, fcntl(r, F_SETFD, FD_CLOEXEC));
 #endif

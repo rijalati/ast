@@ -864,7 +864,7 @@ static int sh_coexec(Shell_t *shp,const Shnode_t *t, int filt)
 	sp = sfnew(NULL,NULL,SF_UNBOUND,fd,SF_READ);
 	while(close(0)<0 && errno==EINTR)
 		errno = err;
-	open(e_devnull,O_RDONLY|O_cloexec);
+	openat(shp->pwdfd, e_devnull,O_RDONLY|O_cloexec);
 	shp->offsets[0] = -1;
 	shp->offsets[1] = 0;
 	*save = savein;

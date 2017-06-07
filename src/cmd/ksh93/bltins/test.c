@@ -335,7 +335,7 @@ int test_unop(Shell_t *shp,register int op,register const char *arg)
 #if SHOPT_FS_3D
 	    {
 		register int offset = stktell(shp->stk);
-		if(stat(arg,&statb)<0 || !S_ISREG(statb.st_mode))
+		if(fstatat(shp->pwdfd,arg,&statb,0)<0 || !S_ISREG(statb.st_mode))
 			return(0);
 		/* add trailing / */
 		sfputr(shp->stk,arg,'/');
@@ -370,7 +370,7 @@ int test_unop(Shell_t *shp,register int op,register const char *arg)
 #endif
 	    case 'L':
 	    case 'h': /* undocumented, and hopefully will disappear */
-		if(*arg==0 || arg[strlen(arg)-1]=='/' || lstat(arg,&statb)<0)
+		if(*arg==0 || arg[strlen(arg)-1]=='/' || fstatat(shp->pwdfd,arg,&statb,AT_SYMLINK_NOFOLLOW)<0)
 			return(0);
 		return(S_ISLNK(statb.st_mode));
 
@@ -683,5 +683,5 @@ static int test_stat(const char *name,struct stat *buff)
 	if(sh_isdevfd(name))
 		return(fstat((int)strtol(name+8, (char**)0, 10),buff));
 	else
-		return(stat(name,buff));
+		return(fstatat(sh.pwdfd,name,buff,0));
 }

@@ -179,7 +179,8 @@ static int sh_checkaudit(History_t *hp, const char *name, char *logbuf, size_t l
 {
 	char	*cp, *last;
 	int	id1, id2, r=0, n, fd;
-	if((fd=open(name, O_RDONLY,O_cloexec)) < 0)
+	Shell_t *shp = hp->histshell;
+	if((fd=openat(shp->pwdfd, name, O_RDONLY,O_cloexec)) < 0)
 		return(0);
 	if((n = read(fd, logbuf,len-1)) < 0)
 		goto done;
@@ -262,7 +263,7 @@ retry:
 	cp = path_relative(shp,histname);
 	if(!histinit)
 		histmode = S_IRUSR|S_IWUSR;
-	if((fd=open(cp,O_BINARY|O_APPEND|O_RDWR|O_CREAT|O_cloexec,histmode))>=0)
+	if((fd=openat(shp->pwdfd,cp,O_BINARY|O_APPEND|O_RDWR|O_CREAT|O_cloexec,histmode))>=0)
 	{
 		hsize=lseek(fd,(off_t)0,SEEK_END);
 	}
@@ -293,7 +294,7 @@ retry:
 		{
 			if(!(fname = pathtmp(NIL(char*),0,0,NIL(int*))))
 				return(0);
-			fd = open(fname,O_BINARY|O_APPEND|O_CREAT|O_RDWR,S_IRUSR|S_IWUSR|O_cloexec);
+			fd = openat(shp->pwdfd,fname,O_BINARY|O_APPEND|O_CREAT|O_RDWR,S_IRUSR|S_IWUSR|O_cloexec);
 		}
 	}
 	if(fd<0)
@@ -457,6 +458,7 @@ static int hist_clean(int fd)
 
 static History_t* hist_trim(History_t *hp, int n)
 {
+	Shell_t *shp = hp->histshell;
 	register char *cp;
 	register int incmd=1, c=0;
 	register History_t *hist_new, *hist_old = hp;
@@ -484,7 +486,7 @@ static History_t* hist_trim(History_t *hp, int n)
 			free(tmpname);
 			tmpname = name;
 		}
-		fd = open(tmpname,O_RDONLY|O_cloexec);
+		fd = openat(shp->pwdfd,tmpname,O_RDONLY|O_cloexec);
 		sfsetfd(hist_old->histfp,fd);
 		if(tmpname==name)
 			tmpname = 0;
@@ -623,6 +625,7 @@ begin:
 
 void hist_eof(register History_t *hp)
 {
+	Shell_t *shp = hp->histshell;
 	register char *cp,*first,*endbuff;
 	register int incmd = 0;
 	register off_t count = hp->histcnt;
@@ -729,7 +732,7 @@ again:
 		if(last<0)
 		{
 			char	buff[HIST_MARKSZ];
-			int	fd = open(hp->histname,O_RDWR|O_cloexec);
+			int	fd = openat(shp->pwdfd,hp->histname,O_RDWR|O_cloexec);
 			if(fd>=0)
 			{
 				hist_marker(buff,hp->histind);
@@ -1186,13 +1189,14 @@ static int hist_exceptf(Sfio_t* fp, int type, Sfdisc_t *handle)
 {
 	register int newfd,oldfd;
 	History_t *hp = (History_t*)handle;
+	Shell_t *shp = hp->histshell;
 	if(type==SF_WRITE)
 	{
 		if(errno==ENOSPC || hp->histwfail++ >= 10)
 			return(0);
 		/* write failure could be NFS problem, try to re-open */
 		sh_close(oldfd=sffileno(fp));
-		if((newfd=open(hp->histname,O_BINARY|O_APPEND|O_CREAT|O_RDWR|O_cloexec,S_IRUSR|S_IWUSR)) >= 0)
+		if((newfd=openat(shp->pwdfd,hp->histname,O_BINARY|O_APPEND|O_CREAT|O_RDWR|O_cloexec,S_IRUSR|S_IWUSR)) >= 0)
 		{
 			if(sh_fcntl(newfd, F_dupfd_cloexec, oldfd) !=oldfd)
 				return(-1);
