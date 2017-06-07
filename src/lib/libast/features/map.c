@@ -313,6 +313,16 @@ main()
 	printf("#define signal      	_ast_signal\n");
 	printf("#undef	sigunblock\n");
 	printf("#define sigunblock      _ast_sigunblock\n");
+#if !_lib_stpcpy
+	printf("#undef	stpcpy\n");
+	printf("#define stpcpy		_ast_stpcpy\n");
+	printf("extern char *		stpcpy(char *, const char *);\n");
+#endif
+#if !_lib_stpncpy
+	printf("#undef	stpncpy\n");
+	printf("#define stpncpy		_ast_stpncpy\n");
+	printf("extern char *		stpncpy(char *, const char *, size_t);\n");
+#endif
 	printf("#undef	stracmp\n");
 	printf("#define stracmp		_ast_stracmp\n");
 	printf("#undef	strcopy\n");

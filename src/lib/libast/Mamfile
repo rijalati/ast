@@ -793,6 +793,24 @@ meta chrtoi.o %.c>%.o string/chrtoi.c chrtoi
 prev string/chrtoi.c
 exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Icomp -Iinclude -Istd -D_PACKAGE_ast -c string/chrtoi.c
 done chrtoi.o generated
+make stpcpy.o
+make string/stpcpy.c
+prev ast_map.h implicit
+prev include/ast.h implicit
+done string/stpcpy.c
+meta stpcpy.o %.c>%.o string/stpcpy.c stpcpy
+prev string/stpcpy.c
+exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Icomp -Iinclude -Istd -D_PACKAGE_ast -c string/stpcpy.c
+done stpcpy.o generated
+make stpncpy.o
+make string/stpncpy.c
+prev ast_map.h implicit
+prev include/ast.h implicit
+done string/stpncpy.c
+meta stpncpy.o %.c>%.o string/stpncpy.c stpncpy
+prev string/stpncpy.c
+exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Icomp -Iinclude -Istd -D_PACKAGE_ast -c string/stpncpy.c
+done stpncpy.o generated
 make streval.o
 make string/streval.c
 prev include/ast.h implicit
@@ -876,6 +894,7 @@ meta strlcat.o %.c>%.o string/strlcat.c strlcat
 prev string/strlcat.c
 exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Icomp -Iinclude -Istd -D_PACKAGE_ast -c string/strlcat.c
 done strlcat.o generated
+
 make strlcpy.o
 make string/strlcpy.c
 prev ast_map.h implicit
@@ -885,6 +904,7 @@ meta strlcpy.o %.c>%.o string/strlcpy.c strlcpy
 prev string/strlcpy.c
 exec - ${CC} ${mam_cc_FLAGS} ${CCFLAGS} -I. -Icomp -Iinclude -Istd -D_PACKAGE_ast -c string/strlcpy.c
 done strlcpy.o generated
+
 make strcopy.o
 make string/strcopy.c
 prev include/ast.h implicit

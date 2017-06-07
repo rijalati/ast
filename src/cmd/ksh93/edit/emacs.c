@@ -1180,25 +1180,26 @@ static void xcommands(register Emacs_t *ep,int count)
 		case cntl('H'):		/* ^X^H show history info */
 			{
 				char hbuf[MAXLINE];
+				char *hbn=hbuf; /* hbuf_next */
 
-				strcpy(hbuf, "Current command ");
-				strcat(hbuf, itos(hline));
+				hbn=stpcpy(hbn, "Current command ");
+				hbn=stpcpy(hbn, itos(hline));
 				if (hloff)
 				{
-					strcat(hbuf, " (line ");
-					strcat(hbuf, itos(hloff+1));
-					strcat(hbuf, ")");
+					hbn=stpcpy(hbn, " (line ");
+					hbn=stpcpy(hbn, itos(hloff+1));
+					hbn=stpcpy(hbn, ")");
 				}
 				if ((hline != location.hist_command) ||
 				    (hloff != location.hist_line))
 				{
-					strcat(hbuf, "; Previous command ");
-					strcat(hbuf, itos(location.hist_command));
+					hbn=stpcpy(hbn, "; Previous command ");
+					hbn=stpcpy(hbn, itos(location.hist_command));
 					if (location.hist_line)
 					{
-						strcat(hbuf, " (line ");
-						strcat(hbuf, itos(location.hist_line+1));
-						strcat(hbuf, ")");
+						hbn=stpcpy(hbn, " (line ");
+						hbn=stpcpy(hbn, itos(location.hist_line+1));
+						hbn=stpcpy(hbn, ")");
 					}
 				}
 				show_info(ep,hbuf);
@@ -1208,19 +1209,20 @@ static void xcommands(register Emacs_t *ep,int count)
 		case cntl('D'):		/* ^X^D show debugging info */
 			{
 				char debugbuf[MAXLINE];
+				char *dbbn = debugbuf; /* debugbuf_next */
 
-				strcpy(debugbuf, "count=");
-				strcat(debugbuf, itos(count));
-				strcat(debugbuf, " eol=");
-				strcat(debugbuf, itos(eol));
-				strcat(debugbuf, " cur=");
-				strcat(debugbuf, itos(cur));
-				strcat(debugbuf, " crallowed=");
-				strcat(debugbuf, itos(crallowed));
-				strcat(debugbuf, " plen=");
-				strcat(debugbuf, itos(plen));
-				strcat(debugbuf, " w_size=");
-				strcat(debugbuf, itos(w_size));
+				dbbn=stpcpy(dbbn, "count=");
+				dbbn=stpcpy(dbbn, itos(count));
+				dbbn=stpcpy(dbbn, " eol=");
+				dbbn=stpcpy(dbbn, itos(eol));
+				dbbn=stpcpy(dbbn, " cur=");
+				dbbn=stpcpy(dbbn, itos(cur));
+				dbbn=stpcpy(dbbn, " crallowed=");
+				dbbn=stpcpy(dbbn, itos(crallowed));
+				dbbn=stpcpy(dbbn, " plen=");
+				dbbn=stpcpy(dbbn, itos(plen));
+				dbbn=stpcpy(dbbn, " w_size=");
+				dbbn=stpcpy(dbbn, itos(w_size));
 
 				show_info(ep,debugbuf);
 				return;

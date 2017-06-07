@@ -25,6 +25,9 @@
 
 /*
  * copy t into s, return a pointer to the end of s ('\0')
+ *
+ * DEPRECIATED, use POSIX (or libast's emulation of)
+ * |stpcpy()| insead
  */
 
 char*
@@ -32,6 +35,5 @@ strcopy(register char* s, register const char* t)
 {
 	if (!t)
 		return s;
-	while (*s++ = *t++);
-	return s - 1;
+	return (stpcpy(s, t));
 }
