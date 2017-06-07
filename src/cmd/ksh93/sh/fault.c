@@ -860,7 +860,7 @@ int sh_trap_20120720(Shell_t *shp,const char *trap, int mode)
 			if(mode)
 				sp = (Sfio_t*)trap;
 			else
-				sp = sfopen(NIL(Sfio_t*),trap,"s");
+				sp = sfopenat(shp->pwdfd,NIL(Sfio_t*),trap,"s");
 			sh_eval(shp,sp,0);
 		}
 	}

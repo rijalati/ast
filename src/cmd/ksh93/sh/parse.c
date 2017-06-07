@@ -784,7 +784,7 @@ static Shnode_t *funct(Lex_t *lexp)
 	lexp->fundepth++;
 	if(!(iop=fcfile()))
 	{
-		iop = sfopen(NIL(Sfio_t*),fcseek(0),"s");
+		iop = sfopenat(shp->pwdfd,NIL(Sfio_t*),fcseek(0),"s");
 		fcclose();
 		fcfopen(iop);
 	}
@@ -1987,15 +1987,15 @@ static Shnode_t *test_and(Lex_t *lp)
 /*
  * convert =~ into == ~(E)
  */
-static void ere_match(void)
+static void ere_match(Shell_t *shp)
 {
-	Sfio_t *base, *iop = sfopen((Sfio_t*)0," ~(E)","s");
+	Sfio_t *base, *iop = sfopenat(shp->pwdfd,(Sfio_t*)0," ~(E)","s");
 	register int c;
 	while( fcgetc(c),(c==' ' || c=='\t'));
 	if(c)
 		fcseek(-1);
 	if(!(base=fcfile()))
-		base = sfopen(NIL(Sfio_t*),fcseek(0),"s");
+		base = sfopenat(shp->pwdfd,NIL(Sfio_t*),fcseek(0),"s");
 	fcclose();
         sfstack(base,iop);
         fcfopen(base);
@@ -2043,7 +2043,7 @@ static Shnode_t *test_primary(Lex_t *lexp)
 			num = lexp->digits;
 			if(num==TEST_REP)
 			{
-				ere_match();
+				ere_match(lexp->sh);
 				num = TEST_PEQ;
 			}
 		}

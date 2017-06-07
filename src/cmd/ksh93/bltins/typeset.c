@@ -1418,7 +1418,7 @@ static int print_namval(Sfio_t *file,register Namval_t *np,register int flag, st
 				iop = tp->sh->heredocs;
 			}
 			else if(fname)
-				iop = sfopen(iop,fname,"r");
+				iop = sfopenat(tp->sh->pwdfd,iop,fname,"r");
 			else if(tp->sh->gd->hist_ptr)
 				iop = (tp->sh->gd->hist_ptr)->histfp;
 			if(iop && sfseek(iop,(Sfoff_t)np->nvalue.rp->hoffset,SEEK_SET)>=0)

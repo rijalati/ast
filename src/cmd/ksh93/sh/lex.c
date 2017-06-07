@@ -2526,6 +2526,7 @@ done:
 static void setupalias(Lex_t *lp, const char *string,Namval_t *np)
 {
 	register Sfio_t *iop, *base;
+	Shell_t *shp = sh_getinterp();
 	struct alias *ap = (struct alias*)malloc(sizeof(struct alias));
 	ap->disc = alias_disc;
 	ap->lp = lp;
@@ -2545,11 +2546,11 @@ static void setupalias(Lex_t *lp, const char *string,Namval_t *np)
 	}
 	else
 		ap->nextc = 0;
-	iop = sfopen(NIL(Sfio_t*),(char*)string,"s");
+	iop = sfopenat(shp->pwdfd,NIL(Sfio_t*),(char*)string,"s");
 	sfdisc(iop, &ap->disc);
 	lp->lexd.nocopy++;
 	if(!(base=fcfile()))
-		base = sfopen(NIL(Sfio_t*),fcseek(0),"s");
+		base = sfopenat(shp->pwdfd,NIL(Sfio_t*),fcseek(0),"s");
 	fcclose();
 	sfstack(base,iop);
 	fcfopen(base);

@@ -425,7 +425,7 @@ reinit:
 	sh_offoption(shp,SH_VERBOSE);
 	if(np = nv_open("SHELLOPTS", shp->var_tree, NV_NOADD))
 		nv_offattr(np,NV_RDONLY);
-	iop = sfopen(NULL, bash_pre_rc, "s");
+	iop = sfopenat(shp->pwdfd,NULL, bash_pre_rc, "s");
 	sh_eval(shp,iop,0);
 	if(xtrace)
 		sh_offoption(shp,SH_XTRACE);

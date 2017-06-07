@@ -580,7 +580,7 @@ int sh_argopts(int argc,register char *argv[], void *context)
 	{
 		if(!argv[0])
 			errormsg(SH_DICT,ERROR_usage(2),"-R requires scriptname");
-		if(!(lp->kiafile=sfopen(NIL(Sfio_t*),ap->kiafile,"w+")))
+		if(!(lp->kiafile=sfopenat(shp->pwdfd,NIL(Sfio_t*),ap->kiafile,"w+")))
 			errormsg(SH_DICT,ERROR_system(3),e_create,ap->kiafile);
 		if(!(lp->kiatmp=sftmp(2*SF_BUFSIZE)))
 			errormsg(SH_DICT,ERROR_system(3),e_tmpcreate);

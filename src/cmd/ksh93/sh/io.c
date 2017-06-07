@@ -242,7 +242,7 @@ void sh_ioinit(Shell_t *shp)
 	sh_iostream(shp,1,1);
 	sh_iostream(shp,2,2);
 	/* all write steams are in the same pool and share outbuff */
-	shp->outpool = sfopen(NIL(Sfio_t*),NIL(char*),"sw");  /* pool identifier */
+	shp->outpool = sfopenat(shp->pwdfd,NIL(Sfio_t*),NIL(char*),"sw");  /* pool identifier */
 	shp->outbuff = (char*)malloc(IOBSIZE+4);
 	shp->errbuff = (char*)malloc(IOBSIZE/4);
 	sfsetbuf(sfstderr,shp->errbuff,IOBSIZE/4);
@@ -1331,6 +1331,12 @@ int	sh_redirect(Shell_t *shp,struct ionod *iop, int flag)
 						struct stat sb;
 						if(stat(fname,&sb)>=0)
 						{
+#ifdef AT_FDCWD
+              while((fd = openat(shp->pwdfd, path,flags,sb.st_mode))<0 && errno==EINTR)
+#else
+              while((fd = open(path,flags,sb.st_mode))<0 && errno==EINTR)
+#endif
+
 #if SHOPT_FS_3D
 							if(S_ISREG(sb.st_mode)&&
 						                (!shp->gd->lim.fs3d || iview(&sb)==0))
@@ -1343,6 +1349,15 @@ int	sh_redirect(Shell_t *shp,struct ionod *iop, int flag)
 							}
 						}
 						else
+            {
+#ifdef AT_FDCWD
+              while((fd = openat(shp->pwdfd,path,flags))<0 && errno==EINTR)
+#else
+              while((fd = open(path,flags))<0 && errno==EINTR)
+#endif
+                errno = err;
+
+            }
 							o_mode |= O_EXCL;
 					}
 				}
@@ -2440,11 +2455,12 @@ Sfio_t *sh_sfeval(register char *argv[])
 {
 	register Sfio_t *iop;
 	register char *cp;
+	Shell_t *shp = sh_getinterp();
 	if(argv[1])
 		cp = "";
 	else
 		cp = argv[0];
-	iop = sfopen(NIL(Sfio_t*),(char*)cp,"s");
+	iop = sfopenat(shp->pwdfd,NIL(Sfio_t*),(char*)cp,"s");
 	if(argv[1])
 	{
 		register struct eval *ep;

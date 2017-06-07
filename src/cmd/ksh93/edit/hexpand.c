@@ -153,7 +153,7 @@ int hist_expand(Shell_t *shp,const char *ln, char **xp)
 	static Sfio_t	*wm=0;	/* word match from !?string? event designator */
 
 	if(!wm)
-		wm = sfopen(NULL, NULL, "swr");
+		wm = sfopenat(shp->pwdfd,NULL, NULL, "swr");
 
 	hc[0] = '!';
 	hc[1] = '^';
@@ -237,7 +237,7 @@ int hist_expand(Shell_t *shp,const char *ln, char **xp)
 			sfputc(shp->stk,'\0');
 			cc = strdup(stkptr(shp->stk,0));
 			stkseek(shp->stk,n); /* remove null byte again */
-			ref = sfopen(ref, cc, "s"); /* open as file */
+			ref = sfopenat(shp->pwdfd,ref, cc, "s"); /* open as file */
 			n = 0; /* skip history file referencing */
 			break;
 		case '-': /* back reference by number */
@@ -430,7 +430,7 @@ getline:
 
 getsel:
 		/* open temp buffer, let sfio do the (re)allocation */
-		tmp = sfopen(NULL, NULL, "swr");
+		tmp = sfopenat(shp->pwdfd,NULL, NULL, "swr");
 
 		/* push selected words into buffer, squash 
 		   whitespace into single blank or a newline */
@@ -527,7 +527,7 @@ getsel:
 				c = *++cp;
 
 			sfseek(tmp, 0, SEEK_SET);
-			tmp2 = sfopen(tmp2, NULL, "swr");
+			tmp2 = sfopenat(shp->pwdfd,tmp2, NULL, "swr");
 
 			if(c == 'g') /* global substitution */
 			{

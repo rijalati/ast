@@ -1777,7 +1777,7 @@ int	sh_outtype(Shell_t *shp,Sfio_t *out)
 				if(nv_isattr(mp,NV_FTMP))
 					iop = shp->heredocs;
 				else if(xp=mp->nvalue.rp->fname)
-					iop = sfopen(iop,xp,"r");
+					iop = sfopenat(shp->pwdfd,iop,xp,"r");
 				else if(shp->gd->hist_ptr)
 					iop = (shp->gd->hist_ptr)->histfp;
 				if(iop && sfseek(iop,(Sfoff_t)mp->nvalue.rp->hoffset,SEEK_SET)>=0)

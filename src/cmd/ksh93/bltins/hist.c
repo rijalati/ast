@@ -285,6 +285,6 @@ static void hist_subst(Shell_t *shp,const char *command,int fd,char *replace)
 	if((sp=sh_substitute(shp,string,replace,newp))==0)
 		errormsg(SH_DICT,ERROR_exit(1),e_subst,command);
 	*(newp-1) =  '=';
-	sh_eval(shp,sfopen(NIL(Sfio_t*),sp,"s"),1);
+	sh_eval(shp,sfopenat(shp->pwdfd,NIL(Sfio_t*),sp,"s"),1);
 }
 

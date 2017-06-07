@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
 	if(cp= *argv)
 	{
 		struct stat statb;
-		if(!(out = sfopen((Sfio_t*)0,cp,"w")))
+		if(!(out = sfopenat(shp->pwdfd,(Sfio_t*)0,cp,"w")))
 			errormsg(SH_DICT,ERROR_system(1),"%s: cannot create",cp);
 		if(fstat(sffileno(out),&statb) >=0)
 			chmod(cp,(statb.st_mode&~S_IFMT)|S_IXUSR|S_IXGRP|S_IXOTH);

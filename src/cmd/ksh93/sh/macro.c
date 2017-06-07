@@ -2239,7 +2239,7 @@ static void comsubst(Mac_t *mp,register Shnode_t* t, volatile int type)
 		fcrestore(&save);
 	}
 	else
-		sp = sfopen(NIL(Sfio_t*),"","sr");
+		sp = sfopenat(mp->shp->pwdfd,NIL(Sfio_t*),"","sr");
 	sh_freeup(mp->shp);
 	mp->shp->st.staklist = saveslp;
 	if(was_history)

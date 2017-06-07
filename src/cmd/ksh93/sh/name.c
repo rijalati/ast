@@ -3516,7 +3516,7 @@ bool nv_rename(register Namval_t *np, int flags)
 			nv_outnode(nr,shp->strbuf,-1,0);
 			sfwrite(shp->strbuf,")\n",2);
 			cp = sfstruse(shp->strbuf);
-			iop = sfopen((Sfio_t*)0,cp,"s");
+			iop = sfopenat(shp->pwdfd,(Sfio_t*)0,cp,"s");
 			if(trace)
 				sh_offoption(shp,SH_XTRACE);
 			shp->var_tree = last_root;
