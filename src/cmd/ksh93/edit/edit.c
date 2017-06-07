@@ -55,6 +55,8 @@ static char CURSOR_UP[20] = { ESC, '[', 'A', 0 };
 static char KILL_LINE[20] = { ESC, '[', 'J', 0 };
 static char *savelex;
 
+/* Repeat syscall in expr each time it gets hit with EINTR */
+#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
 
 #if SHOPT_MULTIBYTE
 #   define is_cntrl(c)	((c<=STRIP) && iscntrl(c))
@@ -234,13 +236,13 @@ void tty_cooked(register int fd)
 #ifdef L_MASK
 	/* restore flags */
 	if(l_changed&L_MASK)
-		ioctl(fd,TIOCLSET,&l_mask);
+		EINTR_REPEAT(ioctl(fd,TIOCLSET,&l_mask)==-1);
 	if(l_changed&T_CHARS)
 		/* restore alternate break character */
-		ioctl(fd,TIOCSETC,&l_ttychars);
+		EINTR_REPEAT(ioctl(fd,TIOCSETC,&l_ttychars)==-1);
 	if(l_changed&L_CHARS)
 		/* restore alternate break character */
-		ioctl(fd,TIOCSLTC,&l_chars);
+		EINTR_REPEAT(ioctl(fd,TIOCSLTC,&l_chars)==-1);
 	l_changed = 0;
 #endif	/* L_MASK */
 	/*** don't do tty_set unless ttyparm has valid data ***/
@@ -258,6 +260,7 @@ void tty_cooked(register int fd)
 
 int tty_raw(register int fd, int echomode)
 {
+	int iores;
 	int echo = echomode;
 #ifdef L_MASK
 	struct ltchars lchars;
@@ -301,13 +304,15 @@ int tty_raw(register int fd, int echomode)
 	ep->e_ttyspeed = (ttyparm.sg_ospeed>=B1200?FAST:SLOW);
 #   ifdef TIOCGLTC
 	/* try to remove effect of ^V  and ^Y and ^O */
-	if(ioctl(fd,TIOCGLTC,&l_chars) != SYSERR)
+	EINTR_REPEAT((iores=ioctl(fd,TIOCGLTC,&l_chars)) == -1);
+	if(iores != SYSERR)
 	{
 		lchars = l_chars;
 		lchars.t_lnextc = -1;
 		lchars.t_flushc = -1;
 		lchars.t_dsuspc = -1;	/* no delayed stop process signal */
-		if(ioctl(fd,TIOCSLTC,&lchars) != SYSERR)
+		EINTR_REPEAT((iores=ioctl(fd,TIOCSLTC,&lchars)) == -1);
+		if(iores != SYSERR)
 			l_changed |= L_CHARS;
 	}
 #   endif	/* TIOCGLTC */
@@ -389,6 +394,7 @@ int tty_alt(register int fd)
 	register Edit_t *ep = (Edit_t*)(shgd->ed_context);
 	int mask;
 	struct tchars ttychars;
+	int iores;
 	switch(ep->e_raw)
 	{
 	    case ECHOMODE:
@@ -405,21 +411,25 @@ int tty_alt(register int fd)
 			ep->e_ttyspeed = (ttyparm.sg_ospeed>=B1200?FAST:SLOW);
 		ep->e_raw = ALTMODE;
 	}
-	if(ioctl(fd,TIOCGETC,&l_ttychars) == SYSERR)
+	EINTR_REPEAT((iores=ioctl(fd,TIOCGETC,&l_ttychars))==-1):
+	if(iores == SYSERR)
 		return(-1);
-	if(ioctl(fd,TIOCLGET,&l_mask)==SYSERR)
+	EINTR_REPEAT((iores=ioctl(fd,TIOCLGET,&l_mask))==-1);
+	if(iores==SYSERR)
 		return(-1);
 	ttychars = l_ttychars;
 	mask =  LCRTBS|LCRTERA|LCTLECH|LPENDIN|LCRTKIL;
 	if((l_mask|mask) != l_mask)
 		l_changed = L_MASK;
-	if(ioctl(fd,TIOCLBIS,&mask)==SYSERR)
+	EINTR_REPEAT((iores=ioctl(fd,TIOCLBIS,&mask))==-1);
+	if(iores==SYSERR)
 		return(-1);
 	if(ttychars.t_brkc!=ESC)
 	{
 		ttychars.t_brkc = ESC;
 		l_changed |= T_CHARS;
-		if(ioctl(fd,TIOCSETC,&ttychars) == SYSERR)
+		EINTR_REPEAT((iores=ioctl(fd,TIOCSETC,&ttychars))==-1);
+		if(iores == SYSERR)
 			return(-1);
 	}
 	return(0);
@@ -1515,6 +1525,7 @@ static int keytrap(Edit_t *ep,char *inbuff,register int insize, int bufsize, int
 		*ep->e_vi_insert = 0;
 	nv_putval(ED_CHRNOD,inbuff,NV_NOFREE);
 	nv_putval(ED_COLNOD,(char*)&ep->e_col,NV_NOFREE|NV_INTEGER);
+	int iores;
 	nv_putval(ED_TXTNOD,(char*)cp,NV_NOFREE);
 	nv_putval(ED_MODENOD,ep->e_vi_insert,NV_NOFREE);
 	savexit = shp->savexit;

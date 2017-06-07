@@ -27,7 +27,7 @@
  */
 
 static const char usage[] =
-"[-?\n@(#)$Id: tty (AT&T Research) 2008-03-13 $\n]"
+"[-?\n@(#)$Id: tty (AT&T Research) 2012-07-28 $\n]"
 USAGE_LICENSE
 "[+NAME?tty - write the name of the terminal to standard output]"
 "[+DESCRIPTION?\btty\b writes the name of the terminal that is connected "
@@ -52,6 +52,9 @@ USAGE_LICENSE
 #if _mac_STWLINE
 #include <sys/stermio.h>
 #endif
+
+/* Repeat syscall in expr each time it gets hit with EINTR */
+#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
 
 int
 b_tty(int argc, char** argv, Shbltin_t* context)
@@ -95,7 +98,8 @@ b_tty(int argc, char** argv, Shbltin_t* context)
 	if(lflag)
 	{
 #if _mac_STWLINE
-		if ((n = ioctl(0, STWLINE, 0)) >= 0)
+		EINTR_REPEAT((n = ioctl(0, STWLINE, 0)) == -1);
+		if (n >= 0)
 			error(ERROR_OUTPUT, 1, "synchronous line %d", n);
 		else
 #endif

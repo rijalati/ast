@@ -28,6 +28,10 @@
 
 #include <ast.h>
 #include <ast_tty.h>
+#include <errno.h>
+
+/* Repeat syscall in expr each time it gets hit with EINTR */
+#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
 
 #if defined(__STDPP__directive) && defined(__STDPP__hide)
 __STDPP__directive pragma pp:hide sleep
@@ -118,20 +122,28 @@ static int
 ttctl(register int fd, int op, void* tt)
 {
 	register int	v;
+  int iores;
 
 	if (fd < 0)
 	{
 		for (fd = 0; fd <= 2; fd++)
-			if (!ioctl(fd, op, tt)) return(0);
-		if ((fd = open("/dev/tty", O_RDONLY|O_CLOEXEC)) >= 0)
+      EINTR_REPEAT((iores=ioctl(fd, op, tt)) == -1);
+    			if (!iores)
+    				return(0);
+    		EINTR_REPEAT((fd = open("/dev/tty", O_RDONLY|O_cloexec)) < 0);
+    		if (fd >= 0)
 		{
-			v = ioctl(fd, op, tt);
-			close(fd);
+			EINTR_REPEAT((v = ioctl(fd, op, tt)) == -1);
+			EINTR_REPEAT(close(fd)<0);
 			return(v);
 		}
 	}
-	else if (!ioctl(fd, op, tt))
-		return(0);
+  else
+  {
+  		EINTR_REPEAT((iores=ioctl(fd, op, tt)) == -1);
+  		if (!iores)
+  			return(0);
+  }
 	return(-1);
 }
 

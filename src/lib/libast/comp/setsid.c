@@ -23,6 +23,9 @@
 
 #include <ast.h>
 
+/* Repeat syscall in expr each time it gets hit with EINTR */
+#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
+
 #if _lib_setsid
 
 NoN(setsid)
@@ -42,6 +45,7 @@ setsid(void)
 	int	pg;
 #ifdef TIOCNOTTY
 	int	fd;
+	int	iores;
 #endif
 
 	/*
@@ -59,11 +63,11 @@ setsid(void)
 	/*
 	 * drop the control tty
 	 */
-
-	if ((fd = open("/dev/tty", O_RDONLY|O_cloexec)) >= 0)
+	EINTR_REPEAT((fd = open("/dev/tty", O_RDONLY|O_cloexec)) < 0);
+	if (fd >= 0)
 	{
-		ioctl(fd, TIOCNOTTY, 0);
-		close(fd);
+		EINTR_REPEAT(ioctl(fd, TIOCNOTTY, 0) == -1);
+		EINTR_REPEAT(close(fd) < 0);
 	}
 #else
 

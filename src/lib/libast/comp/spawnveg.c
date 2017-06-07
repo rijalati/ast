@@ -26,6 +26,9 @@
 
 #include <ast.h>
 
+/* Repeat syscall in expr each time it gets hit with EINTR */
+#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
+
 pid_t
 spawnveg(const char* path, char* const argv[], char* const envv[], pid_t pgid)
 {

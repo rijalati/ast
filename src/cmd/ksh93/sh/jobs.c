@@ -35,6 +35,9 @@
 #include	"jobs.h"
 #include	"history.h"
 #include	"variables.h"
+/* Repeat syscall in expr each time it gets hit with EINTR */
+#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
+
 #include	"path.h"
 
 #if !defined(WCONTINUED) || !defined(WIFCONTINUED) || defined(__APPLE__)
@@ -172,13 +175,15 @@ static struct back_save	bck;
 #   ifndef _lib_tcgetpgrp
 #	ifdef TIOCGPGRP
 	   static int _i_;
-#	   define tcgetpgrp(a) (ioctl(a, TIOCGPGRP, &_i_)>=0?_i_:-1)	
+#	   define tcgetpgrp(a) EINTR_REPEAT((ioctl((a), TIOCGPGRP, &_i_)>=0?_i_:-1) == -1)	
 #	endif /* TIOCGPGRP */
 	int tcsetpgrp(int fd,pid_t pgrp)
 	{
 		int pgid = pgrp;
 #		ifdef TIOCGPGRP
-			return(ioctl(fd, TIOCSPGRP, &pgid));	
+			int iores;
+			EINTR_REPEAT((iores=ioctl(fd, TIOCSPGRP, &pgid)) == -1);
+			return(iores);	
 #		else
 			return(-1);
 #		endif /* TIOCGPGRP */
@@ -653,6 +658,7 @@ bool job_reap(register int sig)
 void job_init(Shell_t *shp, int lflag)
 {
 	register int ntry=0;
+	int iores;
 	job.fd = JOBTTY;
 	signal(SIGCHLD,job_waitsafe);
 #   if defined(SIGCLD) && (SIGCLD!=SIGCHLD)
@@ -665,9 +671,11 @@ void job_init(Shell_t *shp, int lflag)
 	/* use new line discipline when available */
 #ifdef NTTYDISC
 #   ifdef FIOLOOKLD
-	if((job.linedisc = ioctl(JOBTTY, FIOLOOKLD, 0)) <0)
+	EINTR_REPEAT((job.linedisc = ioctl(JOBTTY, FIOLOOKLD, 0)) == -1);
+	if(job.linedisc <0)
 #   else
-	if(ioctl(JOBTTY,TIOCGETD,&job.linedisc) !=0)
+	EINTR_REPEAT((iores=ioctl(JOBTTY,TIOCGETD,&job.linedisc)) == -1);
+	if(iores!=0)
 #   endif /* FIOLOOKLD */
 		return;
 	if(job.linedisc!=NTTYDISC && job.linedisc!=OTTYDISC)
@@ -734,16 +742,19 @@ void job_init(Shell_t *shp, int lflag)
 		int linedisc = NTTYDISC;
 #   ifdef FIOPUSHLD
 		tty_get(JOBTTY,&my_stty);
-		if (ioctl(JOBTTY, FIOPOPLD, 0) < 0)
+		EINTR_REPEAT((iores=ioctl(JOBTTY, FIOPOPLD, 0)) == -1);
+		if (iores < 0)
 			return;
-		if (ioctl(JOBTTY, FIOPUSHLD, &linedisc) < 0)
+		EINTR_REPEAT((iores=ioctl(JOBTTY, FIOPUSHLD, &linedisc)) == -1);
+		if (iores < 0)
 		{
-			ioctl(JOBTTY, FIOPUSHLD, &job.linedisc);
+			EINTR_REPEAT(ioctl(JOBTTY, FIOPUSHLD, &job.linedisc) == -1);
 			return;
 		}
 		tty_set(JOBTTY,TCSANOW,&my_stty);
 #   else
-		if(ioctl(JOBTTY,TIOCSETD,&linedisc) !=0)
+		EINTR_REPEAT((iores=ioctl(JOBTTY,TIOCSETD,&linedisc)) == -1);
+		if(iores!=0)
 			return;
 #   endif /* FIOPUSHLD */
 		if(lflag==0)
@@ -845,17 +856,20 @@ int job_close(Shell_t* shp)
 		/* restore old line discipline */
 #	ifdef FIOPUSHLD
 		tty_get(job.fd,&my_stty);
-		if (ioctl(job.fd, FIOPOPLD, 0) < 0)
+		EINTR_REPEAT((iores=ioctl(job.fd, FIOPOPLD, 0)) == -1);
+		if (iores < 0)
 			return(0);
-		if (ioctl(job.fd, FIOPUSHLD, &job.linedisc) < 0)
+		EINTR_REPEAT((iores=ioctl(job.fd, FIOPUSHLD, &job.linedisc)) == -1);
+		if (iores < 0)
 		{
 			job.linedisc = NTTYDISC;
-			ioctl(job.fd, FIOPUSHLD, &job.linedisc);
+			EINTR_REPEAT(ioctl(job.fd, FIOPUSHLD, &job.linedisc) == -1);
 			return(0);
 		}
 		tty_set(job.fd,TCSAFLUSH,&my_stty);
 #	else
-		if(ioctl(job.fd,TIOCSETD,&job.linedisc) !=0)
+		EINTR_REPEAT((iores=ioctl(job.fd,TIOCSETD,&job.linedisc)) == -1);
+		if(iores!=0)
 			return(0);
 #	endif /* FIOPUSHLD */
 		errormsg(SH_DICT,0,e_oldtty);

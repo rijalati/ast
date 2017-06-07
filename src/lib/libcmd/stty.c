@@ -26,7 +26,7 @@
  */
 
 static const char usage[] =
-"[-?@(#)$Id: stty (AT&T Research) 2010-04-01 $\n]"
+"[-?@(#)$Id: stty (AT&T Research) 2012-07-28 $\n]"
 USAGE_LICENSE
 "[+NAME?stty - set or get terminal modes]"
 "[+DESCRIPTION?\bstty\b sets certain terminal I/O modes for the device "
@@ -67,6 +67,9 @@ USAGE_LICENSE
 #if _sys_ioctl
 #include	<sys/ioctl.h>
 #endif
+
+/* Repeat syscall in expr each time it gets hit with EINTR */
+#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
 
 #define C(x)	ERROR_catalog(x)
 
@@ -573,7 +576,7 @@ static void output(struct termios *sp, int flags)
 #ifdef TIOCSWINSZ
 			{
 				struct winsize win;
-				off = ioctl(0,TIOCGWINSZ,&win);
+				EINTR_REPEAT((off = ioctl(0, TIOCGWINSZ, &win)) == -1);
 				if(off>=0)
 					sfprintf(sfstdout,"%sspeed %s baud; rows %d; columns %d;\n",schar,tp->name,win.ws_row,win.ws_col);
 			}
@@ -696,7 +699,9 @@ static void set(char *argv[], struct termios *sp)
 		    {
 			struct winsize win;
 			int n;
-			if(ioctl(0,TIOCGWINSZ,&win)<0)
+			int iores;
+			EINTR_REPEAT((iores=ioctl(0,TIOCGWINSZ,&win)) == -1);
+			if(iores<0)
 				error(ERROR_system(1),"cannot set %s",tp->name);
 			if(!(cp= *argv))
 			{
@@ -711,7 +716,8 @@ static void set(char *argv[], struct termios *sp)
 				win.ws_col = n;
 			else
 				win.ws_row = n;
-			if(ioctl(0,TIOCSWINSZ,&win)<0)
+			EINTR_REPEAT((iores=ioctl(0, TIOCSWINSZ, &win)) == -1);
+			if(iores<0)
 				error(ERROR_system(1),"cannot set %s",tp->name);
 			break;
 		    }
@@ -888,8 +894,15 @@ static int infof(Opt_t* op, Sfio_t* sp, const char* s, Optdisc_t* dp)
 
 #ifndef _lib_tcgetpgrp
 #  ifdef TIOCGPGRP
-	   static int _i_;
-#	   define tcgetpgrp(a) (ioctl(a, TIOCGPGRP, &_i_)>=0?_i_:-1)	
+#	   define tcgetpgrp(a) mytcgetpgrp((a))
+static
+int mytcgetpgrp(int a)
+{
+	int iores;
+	static int _i_; /* why is this |static| ? */
+	EINTR_REPEAT((iores=(ioctl(a, TIOCGPGRP, &_i_)>=0?_i_:-1)) == -1);
+	return iores;
+}
 #  else
 #	   define tcgetpgrp(a) (-1)
 #  endif /* TIOCGPGRP */

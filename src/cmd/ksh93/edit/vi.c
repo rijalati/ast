@@ -95,6 +95,9 @@
 #define iswascii(c)	(!((c)&(~0177)))
 #endif
 
+/* Repeat syscall in expr each time it gets hit with EINTR */
+#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
+
 typedef struct _vi_
 {
 	int direction;
@@ -255,7 +258,7 @@ int ed_viread(void *context, int fd, register char *shbuf, int nchar, int reedit
 			return(reexit?reedit:ed_read(context, fd, shbuf, nchar,0));
 
 #ifdef FIORDCHK
-		ioctl(fd,FIORDCHK,&vp->typeahead);
+		EINTR_REPEAT(ioctl(fd,FIORDCHK,&vp->typeahead)==-1);
 #else
 		/* time the current line to determine typeahead */
 		oldtime = times(&dummy);

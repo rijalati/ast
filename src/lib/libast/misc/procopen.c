@@ -36,6 +36,9 @@
 #include <ls.h>
 #include <ast_tty.h>
 
+/* Repeat syscall in expr each time it gets hit with EINTR */
+#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
+
 /*
  * not quite ready for _use_spawnveg 
  */
@@ -159,6 +162,7 @@ ignoresig(int sig)
 static int
 modify(Proc_t* proc, int forked, int op, long arg1, long arg2)
 {
+	int iores;
 #if _lib_fork
 	if (forked)
 	{
@@ -192,7 +196,8 @@ modify(Proc_t* proc, int forked, int op, long arg1, long arg2)
 					close(i);
 			arg2 = -1;
 #ifdef TIOCSCTTY
-			if (ioctl(arg1, TIOCSCTTY, NiL) < 0)
+			EINTR_REPEAT((iores=ioctl(arg1, TIOCSCTTY, NiL))==-1);
+			if (iores < 0)
 				return -1;
 #else
 			if (!(s = ttyname(arg1)))

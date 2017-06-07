@@ -29,6 +29,9 @@
  * This will use POSIX <termios.h> interface where available
  */
 
+/* Repeat syscall in expr each time it gets hit with EINTR */
+#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
+
 #ifdef _hdr_termios
 #   include	<termios.h>
 #   if __sgi__ || sgi	/* special hack to eliminate ^M problem */
@@ -70,9 +73,23 @@
 #   endif /* TCSADFLUSH */
 #   ifndef _lib_tcgetattr
 #	undef  tcgetattr
-#	define tcgetattr(fd,tty)	ioctl(fd, TCGETS, tty)
+#	define tcgetattr(fd,tty) sh_tcgetattr((fd), (tty))	
+static
+int sh_tcgetattr(int fd, int tty)
+{
+	int iores;
+	EINTR_REPEAT((iores=ioctl(fd, TCGETS, tty)) == -1);
+	return iores;
+}
 #	undef  tcsetattr
-#	define tcsetattr(fd,action,tty)	ioctl(fd, action, tty)
+#	define tcsetattr(fd,action,tty) sh_tcsetattr((fd), (action), (tty))
+static
+int sh_tcsetattr(int fd, int action, int tty)
+{
+	int iores;
+	EINTR_REPEAT((iores=ioctl(fd, action, tty)) == -1);
+	return iores;
+}
 #	undef  cfgetospeed
 #	define cfgetospeed(tp)		((tp)->c_cflag & CBAUD)
 #   endif /* _lib_tcgetattr */
@@ -103,9 +120,22 @@
 #   ifdef _hdr_termio
 #	define termios termio
 #	undef TIOCGETC
-#	define tcgetattr(fd,tty)		ioctl(fd, TCGETA, tty)
-#	define tcsetattr(fd,action,tty)	ioctl(fd, action, tty)
-
+#	define tcgetattr(fd, tty) sh_tcgetattr((fd), (tty))
+static
+int sh_tcgetattr(int fd, int tty)
+{
+	int iores;
+	EINTR_REPEAT((iores=ioctl(fd, TCGETA, tty)) == -1);
+	return iores;
+}
+#	define tcsetattr(fd, action, tty) sh_tcsetattr((fd), (action), (tty))	
+static
+int sh_tcsetattr(int fd, int action, int tty)
+{
+	int iores;
+	EINTR_REPEAT((iores=ioctl(fd, action, tty)) == -1);
+	return iores;
+}
 #	ifdef _sys_bsdtty
 #	   include	<sys/bsdtty.h>
 #	endif /* _sys_bsdtty */
@@ -122,8 +152,22 @@
 #	 	undef TCSETAW
 #	    endif /* TIOCSETN */
 #	    ifdef TIOCGETP
-#		define tcgetattr(fd,tty)		ioctl(fd, TIOCGETP, tty)
-#		define tcsetattr(fd,action,tty)	ioctl(fd, action, tty)
+#		define tcgetattr(fd,tty) sh_tcgetattr((fd), (tty))
+static
+int sh_tcgetattr(int fd, int tty)
+{
+	int iores;
+	EINTR_REPEAT((iores=ioctl(fd, TIOCGETP, tty)) == -1);
+	return iores;
+}
+#		define tcsetattr(fd,action,tty)	 sh_tcsetattr((fd), (action), (tty))
+static int
+sh_tcsetattr(int fd, int action, int tty)
+{
+	int iores;
+	EINTR_REPEAT((iores=ioctl(fd, action, tty)) == -1);
+	return iores;
+}
 #	    else
 #		define tcgetattr(fd,tty)	gtty(fd, tty)
 #		define tcsetattr(fd,action,tty)	stty(fd, tty)

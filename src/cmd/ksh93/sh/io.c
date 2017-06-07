@@ -46,6 +46,9 @@
 #include	"FEATURE/dynamic"
 #include	"FEATURE/poll"
 
+/* Repeat syscall in expr each time it gets hit with EINTR */
+#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
+
 #ifdef	FNDELAY
 #   ifdef EAGAIN
 #	if EAGAIN!=EWOULDBLOCK
@@ -2291,7 +2294,7 @@ static int	io_prompt(Shell_t *shp,Sfio_t *iop,register int flag)
 				 * disabled it.  Not needed with edit mode
 				 */
 				int mode = LFLUSHO;
-				ioctl(sffileno(sfstderr),TIOCLBIC,&mode);
+				EINTR_REPEAT(ioctl(sffileno(sfstderr),TIOCLBIC,&mode) == -1);
 			}
 #endif	/* TIOCLBIC */
 			cp = sh_mactry(shp,nv_getval(sh_scoped(shp,PS1NOD)));
