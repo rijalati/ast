@@ -516,4 +516,12 @@ redirect {fd}< $tmp
 ) & wait $!
 ((Errors += $?))
 
+[[ "$( { redirect {fd}<'/etc' ; cd ~{fd} ; /bin/pwd ; true ; } 2>&1)" == '/etc' ]] || \
+	err_exit 'I/O ~{fd} tilde expansion not working for /etc.'
+
+mkdir -p 'foo/bar'
+[[ "$( { redirect {fd}<"$PWD/foo" ; cd ~{fd} ; redirect {fd2}<~{fd}/bar ; cd ~{fd2} ; /bin/pwd ; true ; } 2>&1)" == *'foo/bar' ]] || \
+	err_exit 'Nested I/O ~{fd} tilde expansion not working for foo/bar.'
+rm -Rf 'foo'
+
 exit $((Errors<125?Errors:125))

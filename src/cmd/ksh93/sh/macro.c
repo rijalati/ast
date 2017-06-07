@@ -2829,6 +2829,69 @@ static char *sh_tilde(Shell_t *shp,register const char *string)
 			spawnvex_add(vc,fd,fd,0,0);
 		return(stkfreeze(shp->stk,1));
 	}
+	if(c=='{')
+	{
+#define PROCFDBUFSIZE (20+(28*2)+1) /* sized to fit /proc format string and two |long| */
+		Namval_t	*np;
+		const char	*s1;
+		char		*s2;
+		char		*fdvarnamebuf,
+				*procfdname;
+		size_t		len;
+		int		fd;
+
+		s1=&string[1];
+
+		s2=strchr(s1, '}');
+		if (!s2)
+			return(NIL(char*));
+
+		len=s2-s1;
+
+		fdvarnamebuf=stkalloc(shp->stk, (len+2)+(PROCFDBUFSIZE+1));
+		if (!fdvarnamebuf)
+			return(NIL(char*));
+		procfdname=fdvarnamebuf+len+2;
+
+		memcpy(fdvarnamebuf, s1, len);
+		fdvarnamebuf[len]='\0';
+
+		/* Get integer value from variable "varname" in ~{varname} */
+		np = nv_open(fdvarnamebuf, shp->var_tree, NV_VARNAME|NV_NOFAIL|NV_NOADD);
+		if (!np)
+			return(NIL(char*));
+		fd = (int)nv_getnum(np);
+		nv_close(np);
+
+		if (fd < 0)
+			return(NIL(char*));
+
+		/*
+		 * We use /proc/$$/fd/ because this path is valid
+		 * across process boundaries and can be passed to
+		 * other processes. If /proc is not mounted or does
+		 * not support /proc/self/fd then we fall back to
+		 * /dev/fd
+		 *
+		 * Notes:
+		 * - the format string does not end with a '/',
+		 * we did this to allow that ~{fd} can be used for
+		 * plain files, too.
+		 * - we can't cache the test whether /proc is mounted
+		 * since the currently running script may call
+		 * "umount" itself
+		 */
+		if (access("/proc/self/fd", X_OK) == 0)
+		{
+			snprintf(procfdname, PROCFDBUFSIZE, "/proc/%ld/fd/%d", (long)getpid(), fd);
+		}
+		else
+		{
+			snprintf(procfdname, PROCFDBUFSIZE, "/dev/fd/%d", fd);
+		}
+		return (procfdname);
+	}
+
 #if _WINIX
 	if(fcgetc(c)=='/')
 	{
