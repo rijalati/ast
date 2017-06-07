@@ -129,11 +129,11 @@ char*		mode;		/* mode of the stream */
 #ifdef sysopenatf
 		if (cwd == AT_FDCWD)
 #endif
-			while((fd = sysopenf((char*)file,oflags,SF_CREATMODE)) < 0 && errno == EINTR)
+      while((fd = sysopenatf(dirfd, (char*)file,oflags,SF_CREATMODE)) < 0 && errno == EINTR)
 				errno = 0;
 #ifdef sysopenatf
 		else
-			while((fd = sysopenatf(cwd,(char*)file,oflags,SF_CREATMODE)) < 0 && errno == EINTR)
+			while((fd = sysopenatf(dirfd, (char*)file,oflags,SF_CREATMODE)) < 0 && errno == EINTR)
 				errno = 0;
 #endif
 #else
@@ -154,14 +154,15 @@ char*		mode;		/* mode of the stream */
 			}
 			if(oflags&O_TRUNC )	/* truncate file */
 			{	reg int	tf;
-				while((tf = syscreatf(file,SF_CREATMODE)) < 0 &&
+        while((tf = syopenatf(dirfd, file, O_WRONLY|O_CREAT|O_TRUNC, SF_CREATMODE)) < 0 &&
 				      errno == EINTR)
 					errno = 0;
 				CLOSE(tf);
 			}
 		}
 		else if(oflags&O_CREAT)
-		{	while((fd = syscreatf(file,SF_CREATMODE)) < 0 && errno == EINTR)
+		{
+      while((fd = syopenatf(dirfd, file, O_WRONLY|O_CREAT|O_TRUNC, SF_CREATMODE)) < 0 && errno == EINTR)
 				errno = 0;
 			if((oflags&O_ACCMODE) != O_WRONLY)
 			{	/* the file now exists, reopen it for read/write */
@@ -173,7 +174,7 @@ char*		mode;		/* mode of the stream */
 						errno = 0;
 #ifdef sysopenatf
 				else
-					while((fd = sysopenatf(cwd,file,oflags&O_ACCMODE)) < 0 && errno == EINTR)
+					while((fd = sysopenatf(dirfd,file,oflags&O_ACCMODE)) < 0 && errno == EINTR)
 						errno = 0;
 #endif
 			}
@@ -191,10 +192,21 @@ char*		mode;		/* mode of the stream */
 	return f;
 }
 
+#ifndef AT_FDCWD
+/*
+ * If |AT_FDCWD| is not defined then the |openat()| API is not
+ * available. In that case we map |openat()| to |open()|
+ * and ignore the |dirfd| argument.
+ */
+#undef sysopenatf
+#define sysopenatf sysopenf
+#endif
+
 #if __STD_C
-Sfio_t* _sfopen(Sfio_t* f, const char* file, const char* mode)
+Sfio_t* _sfopenat(int dirfd, Sfio_t* f, const char* file, const char* mode)
 #else
-Sfio_t* _sfopen(f,file,mode)
+Sfio_t* _sfopenat(dirfd, f,file,mode)
+int		dirfd;		/* directory fd */
 Sfio_t*		f;		/* old stream structure */
 char*		file;		/* file/string to be opened */
 char*		mode;		/* mode of the stream */
@@ -295,4 +307,27 @@ int*		uflagp;
 			sflags |= SF_READ;
 		return sflags;
 	}
+}
+
+
+/* |_sfopen()| is needed that (legacy) consumers can override it */
+
+#if __STD_C
+Sfio_t* _sfopen(Sfio_t* f, const char* file, const char* mode)
+#else
+Sfio_t* _sfopen(f,file,mode)
+Sfio_t*		f;		/* old stream structure */
+char*		file;		/* file/string to be opened */
+char*		mode;		/* mode of the stream */
+#endif
+{
+#ifdef AT_FDCWD
+	return _sfopenat(AT_FDCWD, f, file, mode);
+#else
+/*
+ * If |AT_FDCWD| is not defined then the |openat()| API is not
+ * available. In that case |sfopenat()| will ignore the dirfd argument.
+ */
+	return _sfopenat(-1, f, file, mode);
+#endif
 }

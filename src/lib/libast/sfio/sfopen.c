@@ -25,7 +25,7 @@
  * _sfopen() wrapper to allow user sfopen() intercept
  */
 
-extern Sfio_t*		_sfopen _ARG_((Sfio_t*, const char*, const char*));
+extern Sfio_t*		_sfopenat _ARG_((int, Sfio_t*, const char*, const char*));
 extern Sfio_t*		_sfopenat _ARG_((int, Sfio_t*, const char*, const char*));
 
 #if __STD_C
@@ -37,7 +37,28 @@ char*		file;		/* file/string to be opened */
 reg char*	mode;		/* mode of the stream */
 #endif
 {
-	return _sfopen(f, file, mode);
+#ifdef AT_FDCWD
+	return _sfopenat(AT_FDCWD, f, file, mode);
+#else
+/*
+ * If |AT_FDCWD| is not defined then the |openat()| API is not
+ * available. In that case |sfopenat()| will ignore the dirfd argument.
+ */
+	return _sfopenat(-1, f, file, mode);
+#endif
+}
+
+#if __STD_C
+Sfio_t* sfopenat(int dirfd, Sfio_t* f, const char* file, const char* mode)
+#else
+Sfio_t* sfopenat(dirfd, f,file,mode)
+int		dirfd;		/* directory fd */
+Sfio_t*		f;		/* old stream structure */
+char*		file;		/* file/string to be opened */
+reg char*	mode;		/* mode of the stream */
+#endif
+{
+	return _sfopenat(dirfd, f, file, mode);
 }
 
 #if __STD_C

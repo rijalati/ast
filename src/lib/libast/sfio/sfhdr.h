@@ -114,6 +114,7 @@
 #define sysmmapf	mmap
 #define sysmunmapf	munmap
 #define sysopenf	open
+#define sysopenatf	openat
 #define syspipef	pipe
 #define sysreadf	read
 #define sysremovef	remove
@@ -198,6 +199,7 @@
 #undef	_typ_struct_stat64
 #undef	_lib_creat64
 #undef	_lib_open64
+#undef	_lib_openat64
 #undef	_lib_close64
 #undef	_lib_stat64
 #undef	_lib_fstat64
@@ -260,8 +262,10 @@
 #endif
 #if _lib_open64
 #define sysopenf	open64
+#define sysopenatf	openat64
 #else
 #define sysopenf	open
+#define sysopenatf	openat
 #endif
 #if _lib_creat64
 #define syscreatf	creat64
@@ -1265,6 +1269,7 @@ extern int	sysremovef _ARG_((const char*));
 #if !_hdr_unistd
 #if _proto_open && __cplusplus
 extern int	sysopenf _ARG_((const char*, int, ...));
+extern int	sysopenatf _ARG_((const char*, int, ...));
 #endif
 extern int	sysclosef _ARG_((int));
 extern ssize_t	sysreadf _ARG_((int, void*, size_t));
