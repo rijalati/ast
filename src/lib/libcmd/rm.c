@@ -96,6 +96,9 @@ typedef struct State_s			/* program state		*/
 #endif
 } State_t;
 
+/* Repeat syscall in expr each time it gets hit with EINTR */
+#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
+
 /*
  * remove a single file
  */
@@ -285,7 +288,8 @@ rm(State_t* state, register FTSENT* ent)
 #if _lib_fsync
 		if (state->clobber && S_ISREG(ent->fts_statp->st_mode) && ent->fts_statp->st_size > 0)
 		{
-			if ((n = open(path, O_WRONLY|O_cloexec)) < 0)
+			EINTR_REPEAT((n = open(path, O_WRONLY|O_cloexec))<0);
+			if (n < 0)
 				error(ERROR_SYSTEM|2, "%s: cannot clear data", ent->fts_path);
 			else
 			{
@@ -303,7 +307,7 @@ rm(State_t* state, register FTSENT* ent)
 					c -= sizeof(state->buf);
 				}
 				fsync(n);
-				close(n);
+				EINTR_REPEAT(close(n)<0);
 			}
 		}
 #endif

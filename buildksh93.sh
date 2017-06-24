@@ -348,7 +348,7 @@ extern "C" {
 /* GNU coreutils compatible commands.
  * Be careful, some are in /bin while others are in /usr/bin
  */
-#define	ASTCMDLIST(f)		{ "/usr/ast/bin/"	#f,	NV_BLTIN|NV_BLTINOPT|NV_NOFREE, bltin(f) },
+#define	ASTCMDLIST(f)		{ "/opt/ast/bin/"	#f,	NV_BLTIN|NV_BLTINOPT|NV_NOFREE, bltin(f) },
 #define	BINCMDLIST(f)		{ "/bin/"		#f,	NV_BLTIN|NV_BLTINOPT|NV_NOFREE, bltin(f) },
 #define	USRBINCMDLIST(f)	{ "/usr/bin/"		#f,	NV_BLTIN|NV_BLTINOPT|NV_NOFREE, bltin(f) },
 
@@ -505,7 +505,7 @@ function build_shell
 			esac
 
 			# ksh93+AST config flags
-			bast_flags="-DSHOPT_CMDLIB_BLTIN=0 -DSH_CMDLIB_DIR=\\\"/usr/ast/bin\\\" -DSHOPT_CMDLIB_HDR=\\\"${gnulinux_builtin_header}\\\" -DSHOPT_SYSRC -D_map_libc=1"
+			bast_flags="-DSHOPT_CMDLIB_BLTIN=1 -DSH_CMDLIB_DIR=\\\"/opt/ast/bin\\\" -DSHOPT_CMDLIB_HDR=\\\"${gnulinux_builtin_header}\\\" -DSHOPT_SYSRC -D_map_libc=1 -D_BLD_ast=1"
 			
 			# compiler flags
 			#

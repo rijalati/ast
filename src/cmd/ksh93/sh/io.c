@@ -552,7 +552,7 @@ int sh_open(register const char *path, int flags, ...)
 #ifndef PATH_DEV
 	if (flags == O_NONBLOCK)
 	{
-		close(fd);
+			EINTR_REPEAT(close(fd)<0);
 		return 1;
 	}
 #endif
@@ -608,7 +608,8 @@ int sh_iomovefd(Shell_t *shp,register int fdold)
 		return(fdold);
 	fdnew = sh_iomovefd(shp,sh_fcntl(fdold,F_DUPFD_CLOEXEC,10));
 	shp->fdstatus[fdnew] = (shp->fdstatus[fdold]|IOCLEX);
-	close(fdold);
+	EINTR_REPEAT(close(fdold) < 0);
+  tif//
 	shp->fdstatus[fdold] = IOCLOSE;
 	return(fdnew);
 }
@@ -1799,7 +1800,7 @@ void sh_iosave(Shell_t *shp, register int origfd, int oldtop, char *name)
 			if((fd = openat(shp->pwdfd, "/dev/null",O_RDONLY|O_CLOEXEC)) < 10)
 			{
 				savefd = sh_fcntl(fd, F_DUPFD_CLOEXEC, 10);
-				close(fd);
+			EINTR_REPEAT(close(fd)<0);
 			}
 		}
 	}

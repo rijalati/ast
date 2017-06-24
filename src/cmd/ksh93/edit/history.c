@@ -153,7 +153,7 @@ static History_t *hist_ptr;
 		int n;
 		if((n = sh_fcntl(acctfd, F_dupfd_cloexec, 10)) >= 0)
 		{
-			sh_close(acctfd);
+			EINTR_REPEAT(close(acctfd)<0);
 			acctfd = n;
 		}
 	}
@@ -180,7 +180,8 @@ static int sh_checkaudit(History_t *hp, const char *name, char *logbuf, size_t l
 	char	*cp, *last;
 	int	id1, id2, r=0, n, fd;
 	Shell_t *shp = hp->histshell;
-	if((fd=openat(shp->pwdfd, name, O_RDONLY,O_cloexec)) < 0)
+	EINTR_REPEAT((fd=openat(shp->pwdfd, name, O_RDONLY,O_cloexec)) < 0);
+  if(fd < 0)
 		return(0);
 	if((n = read(fd, logbuf,len-1)) < 0)
 		goto done;
@@ -204,7 +205,7 @@ static int sh_checkaudit(History_t *hp, const char *name, char *logbuf, size_t l
 	}
 	while(*cp==';' ||  *cp==' ');
 done:
-	sh_close(fd);
+	EINTR_REPEAT(close(fd)<0);
 	return(r);
 	
 }
@@ -263,7 +264,8 @@ retry:
 	cp = path_relative(shp,histname);
 	if(!histinit)
 		histmode = S_IRUSR|S_IWUSR;
-	if((fd=openat(shp->pwdfd,cp,O_BINARY|O_APPEND|O_RDWR|O_CREAT|O_cloexec,histmode))>=0)
+	EINTR_REPEAT((fd=openat(shp->pwdfd,cp,O_BINARY|O_APPEND|O_RDWR|O_CREAT|O_cloexec,histmode))>=0);
+  if(fd>=0)
 	{
 		hsize=lseek(fd,(off_t)0,SEEK_END);
 	}
@@ -272,14 +274,14 @@ retry:
 		int n;
 		if((n=sh_fcntl(fd,F_dupfd_cloexec,10))>=0)
 		{
-			sh_close(fd);
+			EINTR_REPEAT(close(fd)<0);
 			fd=n;
 		}
 	}
 	/* make sure that file has history file format */
 	if(hsize && hist_check(fd))
 	{
-		sh_close(fd);
+    EINTR_REPEAT(close(fd)<0);
 		hsize = 0;
 		if(unlink(cp)>=0)
 			goto retry;
@@ -294,7 +296,7 @@ retry:
 		{
 			if(!(fname = pathtmp(NIL(char*),0,0,NIL(int*))))
 				return(0);
-			fd = openat(shp->pwdfd,fname,O_BINARY|O_APPEND|O_CREAT|O_RDWR,S_IRUSR|S_IWUSR|O_cloexec);
+			EINTR_REPEAT((fd = openat(shp->pwdfd,fname,O_BINARY|O_APPEND|O_CREAT|O_RDWR,S_IRUSR|S_IWUSR|O_cloexec))<0);
 		}
 	}
 	if(fd<0)
@@ -308,7 +310,7 @@ retry:
 	for(histmask=16;histmask <= maxlines; histmask <<=1 );
 	if(!(hp=new_of(History_t,(--histmask)*sizeof(off_t))))
 	{
-		sh_close(fd);
+		close(fd);
 		return(0);
 	}
 	shgd->hist_ptr = hist_ptr = hp;
@@ -471,7 +473,7 @@ static History_t* hist_trim(History_t *hp, int n)
 		/* The unlink can fail on windows 95 */
 		int fd;
 		char *last, *name=hist_old->histname;
-		sh_close(sffileno(hist_old->histfp));
+		EINTR_REPEAT(close(sffileno(hist_old->histfp))<0);
 		tmpname = (char*)malloc(strlen(name)+14);
 		if(last = strrchr(name,'/'))
 		{
@@ -486,7 +488,7 @@ static History_t* hist_trim(History_t *hp, int n)
 			free(tmpname);
 			tmpname = name;
 		}
-		fd = openat(shp->pwdfd,tmpname,O_RDONLY|O_cloexec);
+		EINTR_REPEAT((fd = openat(shp->pwdfd,tmpname,O_RDONLY|O_cloexec))<0);
 		sfsetfd(hist_old->histfp,fd);
 		if(tmpname==name)
 			tmpname = 0;
@@ -732,13 +734,14 @@ again:
 		if(last<0)
 		{
 			char	buff[HIST_MARKSZ];
-			int	fd = openat(shp->pwdfd,hp->histname,O_RDWR|O_cloexec);
+			int	fd;
+      EINTR_REPEAT((fd = openat(shp->pwdfd,hp->histname,O_RDWR|O_cloexec))<0);
 			if(fd>=0)
 			{
 				hist_marker(buff,hp->histind);
 				write(fd,(char*)hist_stamp,2);
 				write(fd,buff,HIST_MARKSZ);
-				sh_close(fd);
+				EINTR_REPEAT(close(fd)<0);
 			}
 		}
 		last = 0;
@@ -1195,13 +1198,15 @@ static int hist_exceptf(Sfio_t* fp, int type, Sfdisc_t *handle)
 		if(errno==ENOSPC || hp->histwfail++ >= 10)
 			return(0);
 		/* write failure could be NFS problem, try to re-open */
-		sh_close(oldfd=sffileno(fp));
-		if((newfd=openat(shp->pwdfd,hp->histname,O_BINARY|O_APPEND|O_CREAT|O_RDWR|O_cloexec,S_IRUSR|S_IWUSR)) >= 0)
+		oldfd=sffileno(fp);
+    EINTR_REPEAT(close(oldfd)<0);
+		EINTR_REPEAT((newfd=openat(shp->pwdfd,hp->histname,O_BINARY|O_APPEND|O_CREAT|O_RDWR|O_cloexec,S_IRUSR|S_IWUSR)) < 0);
+    if(newfd >= 0)
 		{
 			if(sh_fcntl(newfd, F_dupfd_cloexec, oldfd) !=oldfd)
 				return(-1);
 			fcntl(oldfd,F_SETFD,FD_CLOEXEC);
-			close(newfd);
+			EINTR_REPEAT(close(newfd)<0);
 			if(lseek(oldfd,(off_t)0,SEEK_END) < hp->histcnt)
 			{
 				register int index = hp->histind;

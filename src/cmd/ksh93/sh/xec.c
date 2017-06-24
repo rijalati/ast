@@ -3909,7 +3909,8 @@ static pid_t sh_ntfork(Shell_t *shp,const Shnode_t *t,char *argv[],int *jobid,in
 		if(spawnpid < 0 && errno==ENOEXEC)
 		{
 			char *devfd;
-			int fd = open(path,O_RDONLY);
+			int fd;
+			EINTR_REPEAT((fd = open(path,O_RDONLY))<0);
 			argv[-1] = argv[0];
 			argv[0] = path;
 			if(fd>=0)

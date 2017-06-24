@@ -67,6 +67,9 @@ USAGE_LICENSE
 #include <cmd.h>
 #include <ls.h>
 
+/* Repeat syscall in expr each time it gets hit with EINTR */
+#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
+
 int
 b_mktemp(int argc, char** argv, Shbltin_t* context)
 {
@@ -173,7 +176,7 @@ b_mktemp(int argc, char** argv, Shbltin_t* context)
 	if (pathtemp(path, sizeof(path), dir, pfx, fdp))
 	{
 		if (fdp)
-			close(*fdp);
+				EINTR_REPEAT(close(*fdp)<0);
 		if (list)
 			sfputr(sfstdout, path, '\n');
 	}

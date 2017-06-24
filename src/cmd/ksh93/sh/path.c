@@ -1660,7 +1660,7 @@ static bool path_chkpaths(Shell_t *shp,Pathcomp_t *first, Pathcomp_t* old,Pathco
 		*sp++ = '/';
 		n=read(fd,cp=sp,n);
 		sp[n] = 0;
-		close(fd);
+		EINTR_REPEAT(close(fd)<0);
 		for(ep=0; n--; cp++)
 		{
 			if(*cp=='=')

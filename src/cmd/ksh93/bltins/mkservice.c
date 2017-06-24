@@ -205,7 +205,7 @@ static void process_stream(Sfio_t* iop)
 		r = (*sp->actionf)(sp, fd, 0);
 		service_list[fd] = sp;
 		if(r<0)
-			close(fd);
+			EINTR_REPEAT(close(fd)<0);
 	}
 }
 				
@@ -291,7 +291,7 @@ static int Accept(register Service_t *sp, int accept_fd)
 	fd = fcntl(accept_fd, F_DUPFD, 10);
 	if (fd >= 0)
 	{
-		close(accept_fd);
+		EINTR_REPEAT(close(accept_fd)<0);
 		if (nq)
 		{
 			char*	av[3];
@@ -302,7 +302,7 @@ static int Accept(register Service_t *sp, int accept_fd)
 			sfsprintf(buff, sizeof(buff), "%d", fd);
 			if (sh_fun(shp,nq, sp->node, av))
 			{
-				close(fd);
+				EINTR_REPEAT(close(fd)<0);
 				return -1;
 			}
 		}
@@ -390,7 +390,7 @@ static void putval(Namval_t* np, const char* val, int flag, Namfun_t* fp)
 		{
 			if(service_list[i]==sp)
 			{
-				close(i);
+				EINTR_REPEAT(close(i)<0);
 				if(--sp->refcount<=0)
 					break;
 			}
@@ -453,7 +453,7 @@ int	b_mkservice(int argc, char** argv, Shbltin_t *context)
 		error(ERROR_exit(1), "%s: cannot start service", path);
 	}
 	if((sp->fd = fcntl(fd, F_DUPFD, 10))>=10)
-		close(fd);
+		EINTR_REPEAT(close(fd)<0);
 	else
 		sp->fd = fd;
 	np = nv_open(var,shp->var_tree,NV_ARRAY|NV_VARNAME|NV_NOASSIGN);

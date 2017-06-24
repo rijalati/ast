@@ -65,6 +65,9 @@
 #define THISPROG	"/etc/suid_exec"
 #define DEFSHELL	"/bin/sh"
 
+/* Repeat syscall in expr each time it gets hit with EINTR */
+#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
+
 static void error_exit(const char*);
 static int in_dir(const char*, const char*);
 static int endsh(const char*);
@@ -131,7 +134,7 @@ int main(int argc,char *argv[])
 		    (statb.st_mode & ~S_IFMT) != SPECIAL || close(FDVERIFY)<0)
 			error_exit(badexec);
 		/* This enables the grandchild to clean up /tmp file */
-		close(FDSYNC);
+		EINTR_REPEAT(close(FDSYNC)<0);
 		/* Make sure that this is a valid invocation of the clone.
 		 * Perhaps unnecessary, given FDVERIFY, but what the heck...
 		 */
@@ -153,11 +156,11 @@ int main(int argc,char *argv[])
 	/* Open the script for reading first and then validate it.  This
 	 * prevents someone from pulling a switcheroo while we are validating.
 	 */
-	n = open(p,0);
+	EINTR_REPEAT((n = open(p,0))<0);
 	if(n == FDIN)
 	{
 		n = dup(n);
-		close(FDIN);
+		EINTR_REPEAT(close(FDIN)<0);
 	}
 	if(n < 0)
 		error_exit(badopen);
@@ -196,10 +199,10 @@ int main(int argc,char *argv[])
 	if(stat(THISPROG, &statx) < 0 ||
 	  (statb.st_ino == statx.st_ino && statb.st_dev == statx.st_dev))
 		error_exit(badexec);
-	close(FDIN);
+	EINTR_REPEAT(close(FDIN)<0);
 	if(fcntl(n,F_DUPFD,FDIN) != FDIN)
 		error_exit(badexec);
-	close(n);
+	EINTR_REPEAT(close(n)<0);
 
 	/* compute the desired new effective user and group id */
 	effuid = euserid;
@@ -382,15 +385,15 @@ static void setids(int mode,uid_t owner,gid_t group)
 	 */
 	unlink(tmpname);	/* should normally fail */
 #ifdef O_EXCL
-	if((n = open(tmpname, O_WRONLY | O_CREAT | O_EXCL, SPECIAL)) < 0 ||
-		unlink(tmpname) < 0)
+	EINTR_REPEAT((n = open(tmpname, O_WRONLY | O_CREAT | O_EXCL, SPECIAL))<0);
 #else
-	if((n = open(tmpname, O_WRONLY | O_CREAT ,SPECIAL)) < 0 || unlink(tmpname) < 0)
+	EINTR_REPEAT((n = open(tmpname, O_WRONLY | O_CREAT, SPECIAL))<0);
 #endif
+	if(n < 0 || unlink(tmpname) < 0)
 		error_exit(badexec);
 	if(n != FDVERIFY)
 	{
-		close(FDVERIFY);
+		EINTR_REPEAT(close(FDVERIFY)<0);
 		if(fcntl(n,F_DUPFD,FDVERIFY) != FDVERIFY)
 			error_exit(badexec);
 	}
@@ -400,8 +403,8 @@ static void setids(int mode,uid_t owner,gid_t group)
 		error_exit(badexec);
 	if((n=fork()) == 0)
 	{	/* child */
-		close(FDVERIFY);
-		close(pv[1]);
+		EINTR_REPEAT(close(FDVERIFY)<0);
+		EINTR_REPEAT(close(pv[1])<0);
 		if((n=fork()) == 0)
 		{	/* grandchild -- cleans up clone file */
 			signal(SIGHUP, SIG_IGN);
@@ -423,17 +426,20 @@ static void setids(int mode,uid_t owner,gid_t group)
 			 * downsize of this that I can see is that it may
 			 * screw up some per- * user accounting.
 			 */
-			if((m = open(THISPROG, O_RDONLY)) < 0)
+			EINTR_REPEAT((m = open(THISPROG, O_RDONLY))<0);
+			if(m < 0)
 				exit(1);
 			if((mode & S_ISGID) && setgid(group) < 0)
 				exit(1);
 			if((mode & S_ISUID) && owner && setuid(owner) < 0)
 				exit(1);
 #ifdef O_EXCL
-			if((n = open(tmpname,O_WRONLY|O_CREAT|O_TRUNC|O_EXCL, mode)) < 0)
+			EINTR_REPEAT((n = open(tmpname,O_WRONLY|O_CREAT|O_TRUNC|O_EXCL, mode)) < 0);
+			if(n < 0)
 #else
 			unlink(tmpname);
-			if((n = open(tmpname,O_WRONLY|O_CREAT|O_TRUNC, mode)) < 0)
+			EINTR_REPEAT((n = open(tmpname,O_WRONLY|O_CREAT|O_TRUNC, mode))<0);
+			if(n < 0)
 #endif /* O_EXCL */
 				exit(1);
 			/* populate the clone */
@@ -448,11 +454,11 @@ static void setids(int mode,uid_t owner,gid_t group)
 	else
 	{
 		arglist[0] = (char*)tmpname;
-		close(pv[0]);
+		EINTR_REPEAT(close(pv[0])<0);
 		/* move write end of pipe into FDSYNC */
 		if(pv[1] != FDSYNC)
 		{
-			close(FDSYNC);
+			EINTR_REPEAT(close(FDSYNC)<0);
 			if(fcntl(pv[1],F_DUPFD,FDSYNC) != FDSYNC)
 				error_exit(badexec);
 		}
@@ -503,8 +509,8 @@ static int mycopy(int fdi, int fdo)
 	while((n = read(fdi,buffer,BLKSIZE)) > 0)
 		if(write(fdo,buffer,n) != n)
 			break;
-	close(fdi);
-	close(fdo);
+	EINTR_REPEAT(close(fdi)<0);
+	EINTR_REPEAT(close(fdo)<0);
 	return n;
 }
 

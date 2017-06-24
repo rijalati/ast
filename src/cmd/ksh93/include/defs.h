@@ -492,6 +492,8 @@ extern int		sh_diropenat(Shell_t*, int, const char*);
 #define sh_onoption(shp,x)	on_option(&(shp)->options,(x))
 #define sh_offoption(shp,x)	off_option(&(shp)->options,(x))
 
+/* Repeat syscall in expr each time it gets hit with EINTR */
+#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
 
 #define sh_state(x)	( 1<<(x))
 #define	sh_isstate(shp,x)	((shp)->st.states&sh_state(x))

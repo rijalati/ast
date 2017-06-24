@@ -198,6 +198,19 @@ typedef struct State_s			/* program state		*/
 
 static const char	dot[2] = { '.' };
 
+/* Repeat syscall in expr each time it gets hit with EINTR */
+#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
+
+static int
+EINTR_REPEAT_open(const char *path, int oflag, mode_t mode)
+{
+	int rval;
+	
+	EINTR_REPEAT((rval = open(path, oflag, mode)) < 0);
+	
+	return rval;
+}
+
 /*
  * preserve support
  */
@@ -450,7 +463,7 @@ visit(State_t* state, register FTSENT* ent)
 		rm = state->remove || ent->fts_info == FTS_SL;
 		if (!rm || !state->force)
 		{
-			if (S_ISLNK(st.st_mode) && (n = -1) || (n = open(state->path, O_RDWR|O_BINARY|O_CLOEXEC)) >= 0)
+			if (S_ISLNK(st.st_mode) && (n = -1) || (n = EINTR_REPEAT_open(state->path, O_RDWR|O_BINARY|O_CLOEXEC, 0)) >= 0)
 			{
 				if (n >= 0)
 					close(n);
@@ -591,16 +604,16 @@ visit(State_t* state, register FTSENT* ent)
 		else if (state->op == CP || S_ISREG(ent->fts_statp->st_mode) || S_ISDIR(ent->fts_statp->st_mode))
 		{
 			rfd = -1;
-			if ((!S_ISREG(ent->fts_statp->st_mode) || ent->fts_statp->st_size > 0) && (rfd = open(ent->fts_path, O_RDONLY|O_BINARY|O_CLOEXEC)) < 0)
+			if ((!S_ISREG(ent->fts_statp->st_mode) || ent->fts_statp->st_size > 0) && (rfd = EINTR_REPEAT_open(ent->fts_path, O_RDONLY|O_BINARY|O_CLOEXEC, 0)) < 0)
 			{
 				error(ERROR_SYSTEM|2, "%s: cannot read", ent->fts_path);
 				return 0;
 			}
-			else if ((wfd = open(state->path, (st.st_mode ? (state->wflags & ~O_EXCL) : state->wflags)|O_CLOEXEC, ent->fts_statp->st_mode & state->perm)) < 0)
+			else if ((wfd = EINTR_REPEAT_open(state->path, (st.st_mode ? (state->wflags & ~O_EXCL) : state->wflags)|O_CLOEXEC, ent->fts_statp->st_mode & state->perm)) < 0)
 			{
 				error(ERROR_SYSTEM|2, "%s: cannot write", state->path);
 				if (rfd >= 0)
-					close(rfd);
+					EINTR_REPEAT(close(rfd)<0);
 				return 0;
 			}
 			else if (rfd >= 0)
@@ -608,14 +621,14 @@ visit(State_t* state, register FTSENT* ent)
 				if (!(ip = sfnew(NiL, NiL, SF_UNBOUND, rfd, SF_READ)))
 				{
 					error(ERROR_SYSTEM|2, "%s: %s read stream error", ent->fts_path, state->path);
-					close(rfd);
-					close(wfd);
+					EINTR_REPEAT(close(rfd)<0);
+					EINTR_REPEAT(close(wfd)<0);
 					return 0;
 				}
 				if (!(op = sfnew(NiL, NiL, SF_UNBOUND, wfd, SF_WRITE)))
 				{
 					error(ERROR_SYSTEM|2, "%s: %s write stream error", ent->fts_path, state->path);
-					close(wfd);
+					EINTR_REPEAT(close(wfd)<0);
 					sfclose(ip);
 					return 0;
 				}
@@ -635,11 +648,14 @@ visit(State_t* state, register FTSENT* ent)
 				}
 			}
 			else
-				close(wfd);
+				EINTR_REPEAT(close(wfd)<0);
 		}
 		else if (S_ISBLK(ent->fts_statp->st_mode) || S_ISCHR(ent->fts_statp->st_mode) || S_ISFIFO(ent->fts_statp->st_mode))
 		{
-			if (mknod(state->path, ent->fts_statp->st_mode, idevice(ent->fts_statp)))
+			int mknrval;
+			
+			EINTR_REPEAT((mknrval=mknod(state->path, ent->fts_statp->st_mode, idevice(ent->fts_statp)))<0);
+			if (mknrval)
 			{
 				error(ERROR_SYSTEM|2, "%s: cannot copy special file to %s", ent->fts_path, state->path);
 				return 0;

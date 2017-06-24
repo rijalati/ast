@@ -1068,7 +1068,7 @@ struct argnod *sh_argprocsub(Shell_t *shp,struct argnod *argp)
 	if(monitor)
 		sh_onstate(shp,SH_MONITOR);
 #if SHOPT_DEVFD
-	sh_close(pv[1-fd]);
+	EINTR_REPEAT(close(pv[1-fd])<0);
 	sh_iosave(shp,-pv[fd], shp->topfd, (char*)0);
 #else
 	free(shp->fifo);

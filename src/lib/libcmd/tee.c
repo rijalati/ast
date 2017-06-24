@@ -56,6 +56,9 @@ USAGE_LICENSE
 #include <ls.h>
 #include <sig.h>
 
+/* Repeat syscall in expr each time it gets hit with EINTR */
+#define EINTR_REPEAT(expr) while((expr) && (errno == EINTR)) errno=0;
+
 typedef struct Tee_s
 {
 	Sfdisc_t	disc;
@@ -102,7 +105,7 @@ tee_cleanup(register Tee_t* tp)
 		if (tp->line >= 0)
 			sfset(sfstdout, SF_LINE, tp->line);
 		for (hp = tp->fd; (n = *hp) >= 0; hp++)
-			close(n);
+			EINTR_REPEAT(close(n)<0);
 	}
 }
 
@@ -177,8 +180,7 @@ b_tee(int argc, register char** argv, Shbltin_t* context)
 			hp = tp->fd;
 			while (cp = *argv++)
 			{
-				while ((*hp = open(cp, oflag, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)) < 0 && errno == EINTR)
-					errno = 0;
+				EINTR_REPEAT((*hp = open(cp, oflag, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)) < 0);
 				if (*hp < 0)
 					error(ERROR_system(0), "%s: cannot create", cp);
 				else
