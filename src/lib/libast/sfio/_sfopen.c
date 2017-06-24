@@ -46,10 +46,10 @@
 extern
 
 #if __STD_C
-Sfio_t* _sfopenat(int cwd, Sfio_t* f, const char* file, const char* mode)
+Sfio_t* _sfopenat(int dirfd, Sfio_t* f, const char* file, const char* mode)
 #else
-Sfio_t* _sfopenat(cwd, f,file,mode)
-int		cwd;		/* cwd fd */
+Sfio_t* _sfopenat(dirfd, f,file,mode)
+int		dirfd;		/* cwd fd */
 Sfio_t*		f;		/* old stream structure */
 char*		file;		/* file/string to be opened */
 char*		mode;		/* mode of the stream */
@@ -59,9 +59,9 @@ char*		mode;		/* mode of the stream */
 	SFMTXDECL(f);
 
 	if (file && *file == '/')
-		cwd = AT_FDCWD;
+		dirfd = AT_FDCWD;
 #if !defined(sysopenatf)
-	if (cwd != AT_FDCWD)
+	if (dirfd != AT_FDCWD)
 	{
 #ifdef ENOTDIR
 		errno = ENOTDIR;
@@ -127,7 +127,7 @@ char*		mode;		/* mode of the stream */
 
 #if _has_oflags /* open the file */
 #ifdef sysopenatf
-		if (cwd == AT_FDCWD)
+		if (dirfd == AT_FDCWD)
 #endif
       while((fd = sysopenatf(dirfd, (char*)file,oflags,SF_CREATMODE)) < 0 && errno == EINTR)
 				errno = 0;
@@ -138,13 +138,13 @@ char*		mode;		/* mode of the stream */
 #endif
 #else
 #ifdef sysopenatf
-		if (cwd == AT_FDCWD)
+		if (dirfd == AT_FDCWD)
 #endif
 			while((fd = sysopenf(file,oflags&O_ACCMODE)) < 0 && errno == EINTR)
 				errno = 0;
 #ifdef sysopenatf
 		else
-			while((fd = sysopenatf(cwd,file,oflags&O_ACCMODE)) < 0 && errno == EINTR)
+			while((fd = sysopenatf(dirfd,file,oflags&O_ACCMODE)) < 0 && errno == EINTR)
 				errno = 0;
 #endif
 		if(fd >= 0)
@@ -168,7 +168,7 @@ char*		mode;		/* mode of the stream */
 			{	/* the file now exists, reopen it for read/write */
 				CLOSE(fd);
 #ifdef sysopenatf
-				if (cwd == AT_FDCWD)
+				if (dirfd == AT_FDCWD)
 #endif
 					while((fd = sysopenf(file,oflags&O_ACCMODE)) < 0 && errno == EINTR)
 						errno = 0;
@@ -202,19 +202,19 @@ char*		mode;		/* mode of the stream */
 #define sysopenatf sysopenf
 #endif
 
-#if __STD_C
-Sfio_t* _sfopenat(int dirfd, Sfio_t* f, const char* file, const char* mode)
-#else
-Sfio_t* _sfopenat(dirfd, f,file,mode)
-int		dirfd;		/* directory fd */
-Sfio_t*		f;		/* old stream structure */
-char*		file;		/* file/string to be opened */
-char*		mode;		/* mode of the stream */
-#endif
-{
-	return _sfopenat(AT_FDCWD, f, file, mode);
-}
-
+/*  #if __STD_C
+ * Sfio_t* _sfopenat(int dirfd, Sfio_t* f, const char* file, const char* mode)
+ * #else
+ * Sfio_t* _sfopenat(dirfd, f,file,mode)
+ * int		dirfd;		/* directory fd *\/
+ * Sfio_t*		f;		/* old stream structure *\/
+ * char*		file;		/* file/string to be opened *\/
+ * char*		mode;		/* mode of the stream *\/
+ * #endif
+ * {
+ * 	return _sfopenat(AT_FDCWD, f, file, mode);
+ * }
+ */
 #undef  extern
 
 #if __STD_C

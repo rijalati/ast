@@ -48,18 +48,19 @@ reg char*	mode;		/* mode of the stream */
 #endif
 }
 
-#if __STD_C
-Sfio_t* sfopenat(int dirfd, Sfio_t* f, const char* file, const char* mode)
-#else
-Sfio_t* sfopenat(dirfd, f,file,mode)
-int		dirfd;		/* directory fd */
-Sfio_t*		f;		/* old stream structure */
-char*		file;		/* file/string to be opened */
-reg char*	mode;		/* mode of the stream */
-#endif
-{
-	return _sfopenat(dirfd, f, file, mode);
-}
+/* #if __STD_C
+ * Sfio_t* sfopenat(int dirfd, Sfio_t* f, const char* file, const char* mode)
+ * #else
+ * Sfio_t* sfopenat(dirfd, f,file,mode)
+ * int		dirfd;		/* directory fd *\/
+ * Sfio_t*		f;		/* old stream structure *\/
+ * char*		file;		/* file/string to be opened *\/
+ * reg char*	mode;		/* mode of the stream *\/
+ * #endif
+ * {
+ * 	return _sfopenat(dirfd, f, file, mode);
+ * }
+ */
 
 #if __STD_C
 Sfio_t* sfopenat(int cwd, Sfio_t* f, const char* file, const char* mode)

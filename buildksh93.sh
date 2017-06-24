@@ -348,7 +348,7 @@ extern "C" {
 /* GNU coreutils compatible commands.
  * Be careful, some are in /bin while others are in /usr/bin
  */
-#define	ASTCMDLIST(f)		{ "/opt/ast/bin/"	#f,	NV_BLTIN|NV_BLTINOPT|NV_NOFREE, bltin(f) },
+#define	ASTCMDLIST(f)		{ "/usr/ast/bin/"	#f,	NV_BLTIN|NV_BLTINOPT|NV_NOFREE, bltin(f) },
 #define	BINCMDLIST(f)		{ "/bin/"		#f,	NV_BLTIN|NV_BLTINOPT|NV_NOFREE, bltin(f) },
 #define	USRBINCMDLIST(f)	{ "/usr/bin/"		#f,	NV_BLTIN|NV_BLTINOPT|NV_NOFREE, bltin(f) },
 
@@ -505,7 +505,7 @@ function build_shell
 			esac
 
 			# ksh93+AST config flags
-			bast_flags="-DSHOPT_CMDLIB_BLTIN=1 -DSH_CMDLIB_DIR=\\\"/opt/ast/bin\\\" -DSHOPT_CMDLIB_HDR=\\\"${gnulinux_builtin_header}\\\" -DSHOPT_SYSRC -D_map_libc=1 -D_BLD_ast=1"
+			bast_flags="-DSHOPT_CMDLIB_BLTIN=1 -DSH_CMDLIB_DIR=\\\"/usr/ast/bin\\\" -DSHOPT_CMDLIB_HDR=\\\"${gnulinux_builtin_header}\\\" -DSHOPT_SYSRC -D_map_libc=1 -D_BLD_ast=1"
 			
 			# compiler flags
 			#
@@ -526,7 +526,7 @@ function build_shell
 			case "${buildmode}" in
 				*.clang.c99*)	bgcc_frontend='clang'  bgcc_stdlangmode='-std=gnu99 -D_GNU_SOURCE=1' bextra_warnings='-fstrict-aliasing -Wstrict-aliasing -fstrict-overflow -Wstrict-overflow -Wsequence-point -Wno-parentheses -Wno-unused -Wno-trigraphs -Wuninitialized -Waddress' ;;
 				*.clang.c1x*)	bgcc_frontend='clang'  bgcc_stdlangmode='-std=gnu1x -D_GNU_SOURCE=1' bextra_warnings='-fstrict-aliasing -Wstrict-aliasing -fstrict-overflow -Wstrict-overflow -Wsequence-point -Wno-parentheses -Wno-unused -Wno-trigraphs -Wuninitialized -Waddress' ;;
-				*.gcc.c99*)	bgcc_frontend='gcc-4.9'    bgcc_stdlangmode='-std=gnu99 -D_GNU_SOURCE=1' bextra_warnings='-fstrict-aliasing -Wstrict-aliasing -fstrict-overflow -Wstrict-overflow -Wsequence-point -Wno-parentheses -Wno-unused -Wno-trigraphs -Wuninitialized -Wclobbered -Waddress' ;;
+				*.gcc.c99*)	bgcc_frontend='gcc-4.9'    bgcc_stdlangmode='-std=gnu99 -D_GNU_SOURCE=1 -D_USE_GNU=1' bextra_warnings='-fstrict-aliasing -Wstrict-aliasing -fstrict-overflow -Wstrict-overflow -Wsequence-point -Wno-parentheses -Wno-unused -Wno-trigraphs -Wuninitialized -Wclobbered -Waddress' ;;
 				*.gcc.c1x*)	bgcc_frontend='gcc-4.9'    bgcc_stdlangmode='-std=gnu1x -D_GNU_SOURCE=1' bextra_warnings='-fstrict-aliasing -Wstrict-aliasing -fstrict-overflow -Wstrict-overflow -Wsequence-point -Wno-parentheses -Wno-unused -Wno-trigraphs -Wuninitialized -Wclobbered -Waddress' ;;
 				*.pathcc.c99*)	bgcc_frontend='pathcc' bgcc_stdlangmode='-std=gnu99 -D_GNU_SOURCE=1' bextra_warnings='-fstrict-aliasing -Wstrict-aliasing -Wsequence-point -Wno-parentheses -Wno-unused -Wno-trigraphs -Wuninitialized -Waddress' ;;
 				*.pcc.c99*)	bgcc_frontend='pcc'    bgcc_stdlangmode='-std=gnu99 -D_GNU_SOURCE=1' bextra_warnings='-fstrict-aliasing -Wstrict-aliasing -fstrict-overflow -Wstrict-overflow -Wsequence-point -Wno-parentheses -Wno-unused -Wno-trigraphs -Wuninitialized -Wclobbered -Waddress' ;;
@@ -678,7 +678,7 @@ function build_shell
 	
 	# build ksh93
 	# (SHELL='/bin/ksh' is required to work around buggy /bin/sh implementations)
-	SHELL='/opt/ast/bin/ksh' /opt/ast/bin/ksh ./bin/package make ast-open PACKAGE_OPTIONS='map-libc' CCFLAGS="${CCFLAGS}" CC="${CC}" HOSTTYPE="${HOSTTYPE}" SHELL='/bin/sh'
+	SHELL='/opt/ast/bin/ksh' /opt/ast/bin/ksh ./bin/package verbose make ast-open PACKAGE_OPTIONS='map-libc' CCFLAGS="${CCFLAGS}" CC="${CC}" HOSTTYPE="${HOSTTYPE}" SHELL='/bin/sh'
 	
 	root="${PWD}/arch/${HOSTTYPE}"
 	[[ -d "${root}" ]] || fatal_error 'build_shell: directory ${root} not found.'
