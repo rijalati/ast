@@ -1,0 +1,105 @@
+cmd/nmake : lib/libast cmd/cpp lib/libcoshell lib/libardir
+lib/libast : libsocket libiconv libw libc libm
+cmd/cpp : lib/libast lib/libpp
+lib/libpp : lib/libast cmd/probe
+cmd/probe : lib/libast
+lib/libcoshell : lib/libast
+lib/libardir : lib/libast
+cmd/dsslib/ip_t : lib/libast lib/libdss libdssip_t cmd/dss
+lib/libdss : lib/libast lib/libpz lib/libdll
+lib/libpz : lib/libast lib/libbz lib/libz lib/libdll
+lib/libbz : lib/libast
+lib/libz : lib/libast
+lib/libdll : lib/libast libdl libdld
+cmd/dss : lib/libast lib/libdss lib/libdll
+cmd/coshell : lib/libast lib/libcoshell lib/libcs cmd/kshlib/dbm
+lib/libcs : lib/libast libin libipc libnetcompat libinet libnsl libdl
+cmd/kshlib/dbm : lib/libast cmd/ksh93 libshell cmd/ksh lib/libksh
+cmd/ksh93 : lib/libcmd cmd/coshell libjobs libi lib/libdll libsecdb libw lib/libast libm
+lib/libcmd : lib/libast libfsg libmd libutil lib/libsum
+lib/libsum : lib/libast libmd
+cmd/at : lib/libast lib/libcoshell lib/libcs
+cmd/builtin : lib/libcmd lib/libast lib/libdll libutil lib/libuu
+lib/libuu : lib/libast
+cmd/bzip : lib/libast lib/libbz
+cmd/codex : lib/libast lib/libcodex
+lib/libcodex : lib/libast lib/libvcodex lib/libdll
+lib/libvcodex : lib/libast lib/libvgraph lib/libdll lib/libz
+lib/libvgraph : lib/libast
+cmd/codexlib : lib/libcodex
+cmd/codexlib/bzip : lib/libast lib/libbz cmd/codex lib/libcodex
+cmd/codexlib/compress : lib/libast cmd/codex lib/libcodex
+cmd/codexlib/gzip : lib/libast lib/libz cmd/codex lib/libcodex
+cmd/codexlib/lzd : lib/libast cmd/codex lib/libcodex
+cmd/codexlib/lzh : lib/libast cmd/codex lib/libcodex
+cmd/codexlib/sum : lib/libast lib/libsum cmd/codex lib/libcodex
+cmd/codexlib/zip : lib/libast lib/libcodex cmd/codex
+cmd/cs : lib/libast lib/libcs cmd/kshlib/dbm lib/libodelta
+lib/libodelta : lib/libast
+cmd/dsslib : lib/libdss
+cmd/dsslib/bgp : lib/libast cmd/dsslib/ip_t lib/libdss cmd/dss
+cmd/dsslib/fix : lib/libast lib/libdss cmd/dss
+cmd/dsslib/flat : lib/libast lib/libdss cmd/dss
+cmd/dsslib/html : lib/libast cmd/dss lib/libdss
+cmd/dsslib/lookup : lib/libast lib/libdss cmd/dss
+cmd/dsslib/lsa : lib/libast lib/libdss cmd/dss
+cmd/dsslib/merge : lib/libast lib/libdss cmd/dss
+cmd/dsslib/netflow : lib/libast lib/libdss cmd/dss
+cmd/dsslib/num_t : lib/libast cmd/dss lib/libdss
+cmd/dsslib/opaque : lib/libast lib/libdss cmd/dss
+cmd/dsslib/sort : lib/libast lib/librecsort lib/libdss cmd/dss
+lib/librecsort : lib/libast lib/libdll
+cmd/dsslib/stats : lib/libast lib/libdss libm cmd/dss
+cmd/dsslib/tests : lib/libast lib/libdss cmd/dss
+cmd/dsslib/text : lib/libast lib/libdss cmd/dss
+cmd/dsslib/time_t : lib/libast lib/libdss cmd/dss
+cmd/dsslib/validate : lib/libast lib/libdss libm cmd/dss
+cmd/dsslib/xml : lib/libast lib/libdss cmd/dss
+cmd/fus3d : lib/libast libfuse libpthread
+cmd/html : lib/libast
+cmd/ie : lib/libast lib/libdll
+cmd/jcl : lib/libast lib/libjcl
+lib/libjcl : lib/libast lib/libcoshell
+cmd/kshlib/cmdtst : lib/libast lib/libcmd cmd/ksh lib/libksh
+cmd/kshlib/codex : lib/libast lib/libcodex libshell cmd/ksh lib/libksh
+cmd/kshlib/dbm_t : lib/libast cmd/kshlib/dbm libshell cmd/ksh lib/libksh
+cmd/kshlib/dss : lib/libast lib/libdss cmd/ksh lib/libksh
+cmd/kshlib/open : lib/libast libshell cmd/ksh lib/libksh
+cmd/kshlib/setid : lib/libast libshell cmd/ksh lib/libksh
+cmd/mailx : lib/libast lib/libcs
+cmd/mam : lib/libast lib/libmam
+lib/libmam : lib/libast lib/libdll
+cmd/msgcc : lib/libast lib/libpp
+cmd/msggen : lib/libast
+cmd/ncsl : lib/libast
+cmd/pack : lib/libast
+cmd/pax : lib/libast lib/libardir lib/libodelta lib/libvdelta lib/libcodex lib/libsum lib/libdll
+lib/libvdelta : lib/libast
+cmd/paxlib/arj : lib/libast lib/libcodex cmd/pax lib/libpax
+cmd/paxlib/calib : lib/libast lib/libcodex cmd/pax lib/libpax
+cmd/paxlib/ico : lib/libast cmd/pax lib/libpax
+cmd/paxlib/lha : lib/libast lib/libcodex cmd/pax lib/libpax
+cmd/paxlib/rar : lib/libast lib/libcodex cmd/pax lib/libpax
+cmd/paxlib/tp : lib/libast cmd/pax lib/libpax
+cmd/paxlib/zip : lib/libast lib/libcodex cmd/pax lib/libpax
+cmd/paxlib/zoo : lib/libast lib/libcodex cmd/pax lib/libpax
+cmd/proto : lib/libast lib/libpp
+cmd/pzip : lib/libpz lib/libast lib/libz lib/libbz libtsp libline
+cmd/re : lib/libast
+cmd/sort : lib/libast lib/librecsort lib/libdll lib/libz
+cmd/sortlib/glean : lib/libast lib/librecsort cmd/sort lib/libsort
+cmd/sortlib/sum : lib/libast lib/librecsort lib/libdss cmd/sort lib/libsort
+cmd/sortlib/sync : lib/libast lib/librecsort cmd/sort lib/libsort
+cmd/sortlib/vcodex : lib/libast lib/librecsort lib/libvcodex cmd/sort lib/libsort
+cmd/ss : lib/libast lib/libcs
+cmd/std : lib/libast libkvm
+cmd/tests : lib/libast libpthread lib/libdll
+cmd/tksh : lib/libtk
+lib/libtk : lib/libast lib/libtksh
+lib/libtksh : lib/libast
+cmd/tw : lib/libast lib/libexpr lib/libsum
+lib/libexpr : lib/libast
+cmd/vcodexlib : lib/libvcodex
+cmd/vczip : lib/libast lib/libvcodex lib/libcodex
+cmd/warp : lib/libast lib/libdll libdl
+all : cmd/INIT cmd/warp cmd/vczip cmd/tw cmd/tksh cmd/tests cmd/std cmd/ss cmd/sortlib/vcodex cmd/sortlib/sync cmd/sortlib/sum cmd/sortlib/glean cmd/re cmd/pzip cmd/proto cmd/paxlib/zoo cmd/paxlib/zip cmd/paxlib/tp cmd/paxlib/rar cmd/paxlib/lha cmd/paxlib/ico cmd/paxlib/calib cmd/paxlib/arj cmd/pack cmd/nmake cmd/ncsl cmd/msggen cmd/msgcc cmd/mam cmd/mailx cmd/kshlib/setid cmd/kshlib/open cmd/kshlib/dss cmd/kshlib/dbm_t cmd/kshlib/codex cmd/kshlib/cmdtst cmd/jcl cmd/ie cmd/html cmd/fus3d cmd/dsslib/xml cmd/dsslib/validate cmd/dsslib/time_t cmd/dsslib/text cmd/dsslib/tests cmd/dsslib/stats cmd/dsslib/sort cmd/dsslib/opaque cmd/dsslib/num_t cmd/dsslib/netflow cmd/dsslib/merge cmd/dsslib/lsa cmd/dsslib/lookup cmd/dsslib/html cmd/dsslib/flat cmd/dsslib/fix cmd/dsslib/bgp cmd/cs cmd/codexlib/zip cmd/codexlib/sum cmd/codexlib/lzh cmd/codexlib/lzd cmd/codexlib/gzip cmd/codexlib/compress cmd/codexlib/bzip cmd/bzip cmd/builtin cmd/at
