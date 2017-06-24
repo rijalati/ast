@@ -5,3 +5,5 @@ patchlist
 *.patch
 *.orig
 *.rej
+*.mo
+*.ms
