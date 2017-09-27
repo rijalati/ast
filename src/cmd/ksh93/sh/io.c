@@ -207,16 +207,25 @@ bool  sh_iovalidfd(Shell_t *shp, int fd)
 		n = max+1;
 	max = shp->gd->lim.open_max;
 	shp->sftable = (Sfio_t**)calloc((n+1)*(sizeof(int*)+sizeof(Sfio_t*)+sizeof(*fdstatus)),1);
-	if(max)
-		memcpy(shp->sftable,--sftable,++max*sizeof(Sfio_t*));
+
+	if(sftable)
+	{
+		--sftable;
+		if(max)
+			memcpy(shp->sftable,sftable,++max*sizeof(Sfio_t*));
+
+	}
+
 	shp->fdptrs = (int**)(&shp->sftable[n]);
 	if(max)
 		memcpy(shp->fdptrs,--fdptrs,max*sizeof(int*));
 	shp->fdstatus = (unsigned int*)(&shp->fdptrs[n]);
 	if(max)
 		memcpy(shp->fdstatus,--fdstatus,max);
+
 	if(sftable)
 		free((void*)sftable);
+
 	shp->sftable++;
 	shp->fdptrs++;
 	shp->fdstatus++;
@@ -1462,8 +1471,13 @@ int	sh_redirect(Shell_t *shp,struct ionod *iop, int flag)
 							fd = r;
 							sh_close(fn);
 						}
+						/* fd points to valid file descriptor */
+						sh_iosave(shp,fd,indx,tname?fname:(trunc?Empty:0));
 					}
-					sh_iosave(shp,fn,indx,tname?fname:(trunc?Empty:0));
+					else
+					{
+						sh_iosave(shp,fn,indx,tname?fname:(trunc?Empty:0));
+					}
 				}
 				else if(!vex && flag!=3 && sh_subsavefd(fn))
 					sh_iosave(shp,fn,indx|IOSUBSHELL,tname?fname:0);
