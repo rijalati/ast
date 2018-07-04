@@ -19,6 +19,7 @@
 *                     Phong Vo <phongvo@gmail.com>                     *
 *                                                                      *
 ***********************************************************************/
+
 #include	"vmhdr.h"
 #include	<sys/types.h>
 #include	<sys/shm.h>
@@ -96,7 +97,7 @@ ssize_t _vmpagesize(void)
 		if ((_Vmpagesize = getpagesize()) <= 0)
 #endif
 			_Vmpagesize = VM_PAGESIZE;
-		_Vmpagesize = (*_Vmlcm)(_Vmpagesize, ALIGN);
+		_Vmpagesize = (*_Vmlcm)(_Vmpagesize, MEM_ALIGN);
 	}
 #if VMCHKMEM
 	_Vmchkmem = _vmchkmem; /* _vmchkmem() can check memory availability */
