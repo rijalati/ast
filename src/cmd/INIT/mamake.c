@@ -31,6 +31,7 @@ static char id[] = "\n@(#)$Id: mamake (AT&T Research) 2013-07-24 $\0\n";
 
 #include <ast.h>
 #include <error.h>
+#include <usage.h>
 
 static const char usage[] =
 "[-?\n@(#)$Id: mamake (AT&T Research) 2013-04-29 $\n]"
