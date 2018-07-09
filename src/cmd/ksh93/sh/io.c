@@ -1198,6 +1198,10 @@ int	sh_redirect(Shell_t *shp,struct ionod *iop, int flag)
 						message = e_file;
 						goto fail;
 					}
+                    			if (!sh_iovalidfd(shp, dupfd)) {
+                        			message = e_file;
+                        			goto fail;
+					}
 					if(shp->subshell && dupfd==1)
 					{
 						if(sfset(sfstdout,0,0)&SF_STRING)
