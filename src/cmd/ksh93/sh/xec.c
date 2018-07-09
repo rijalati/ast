@@ -2211,7 +2211,8 @@ shp,SH_BASH) && !sh_isoption(shp,SH_LASTPIPE))
 			shp->outpipe = 0;
 			pipejob = 2;
 			waitall = job.waitall;
-			job.waitall = 0;
+			if(!sh_isoption(SH_PIPEFAIL))
+				job.waitall = 0;
 			if(type == 0)
 			{
 				/*
