@@ -575,8 +575,15 @@ Namval_t **sh_setlist(Shell_t *shp,register struct argnod *arg,register int flag
 					else if(((np->nvalue.cp && np->nvalue.cp!=Empty)||nv_isvtree(np)|| nv_arrayptr(np)) && !nv_type(np) && nv_isattr(np,NV_MINIMAL|NV_EXPORT)!=NV_MINIMAL)
 					{
 						_nv_unset(np,NV_EXPORT);
-						if(ap && ap->fun)
+						if(ap && ap->fun) {
 							 nv_setarray(np,nv_associative);
+						} else {
+							// nq is initialized to same value as np. When _nv_unset(np, NV_EXPORT);
+                            				// is called, it free's memory which is later causing crash at:
+                            				// if (nq && nv_type(nq)) nv_checkrequired(nq);
+                            				// Reset nq to 0 to avoid such crashes.
+                            				nq = 0;
+						}
 				
 					}
 				}
