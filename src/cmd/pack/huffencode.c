@@ -56,14 +56,14 @@ static int 	putbuff(Sfio_t*,unsigned char*);
  * encode until end-of-file of <size> < 0.
  */
 
-Sfoff_t huffencode(register Huff_t *hp,Sfio_t *infile,Sfio_t *outfile,int size)
+Sfoff_t huffencode(Huff_t *hp,Sfio_t *infile,Sfio_t *outfile,int size)
 {
-	register long buffer;
-	register int left, i, c;
-	register unsigned char *inbuff;
-	register int n;
-	register unsigned char *outp;
-	register Sfio_t *fp = outfile;
+	long buffer;
+	int left, i, c;
+	unsigned char *inbuff;
+	int n;
+	unsigned char *outp;
+	Sfio_t *fp = outfile;
 	if(hp->id != lastid)
 	{
 		/* compute the bit patterns for each character */
@@ -127,9 +127,9 @@ done:
 	return(hp->outsize);
 }
 
-static int putbuff(register Sfio_t *fp,register unsigned char *outp)
+static int putbuff(Sfio_t *fp,unsigned char *outp)
 {
-	register int n = outp - outbuff;
+	int n = outp - outbuff;
 	if(sfwrite(fp,outbuff,n)< 0)
 		return(-1);
 	if(!(outbuff=(unsigned char*)sfreserve(fp,SF_UNBOUND,SF_LOCKR)))

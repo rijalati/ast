@@ -364,7 +364,7 @@ void
 TkTextCreateDInfo(textPtr)
     TkText *textPtr;		/* Overall information for text widget. */
 {
-    register TextDInfo *dInfoPtr;
+    TextDInfo *dInfoPtr;
     XGCValues gcValues;
 
     dInfoPtr = (TextDInfo *) ckalloc(sizeof(TextDInfo));
@@ -412,7 +412,7 @@ void
 TkTextFreeDInfo(textPtr)
     TkText *textPtr;		/* Overall information for text widget. */
 {
-    register TextDInfo *dInfoPtr = textPtr->dInfoPtr;
+    TextDInfo *dInfoPtr = textPtr->dInfoPtr;
 
     /*
      * Be careful to free up styleTable *after* freeing up all the
@@ -458,7 +458,7 @@ GetStyle(textPtr, indexPtr)
 				 * display information is wanted. */
 {
     TkTextTag **tagPtrs;
-    register TkTextTag *tagPtr;
+    TkTextTag *tagPtr;
     StyleValues styleValues;
     TextStyle *stylePtr;
     Tcl_HashEntry *hPtr;
@@ -672,7 +672,7 @@ GetStyle(textPtr, indexPtr)
 static void
 FreeStyle(textPtr, stylePtr)
     TkText *textPtr;			/* Information about overall widget. */
-    register TextStyle *stylePtr;	/* Information about style to free. */
+    TextStyle *stylePtr;	/* Information about style to free. */
 
 {
     stylePtr->refCount--;
@@ -711,7 +711,7 @@ LayoutDLine(textPtr, indexPtr)
     TkTextIndex *indexPtr;	/* Beginning of display line.  May not
 				 * necessarily point to a character segment. */
 {
-    register DLine *dlPtr;		/* New display line. */
+    DLine *dlPtr;		/* New display line. */
     TkTextSegment *segPtr;		/* Current segment in text. */
     TkTextDispChunk *lastChunkPtr;	/* Last chunk allocated so far
 					 * for line. */
@@ -1092,8 +1092,8 @@ static void
 UpdateDisplayInfo(textPtr)
     TkText *textPtr;			/* Text widget to update. */
 {
-    register TextDInfo *dInfoPtr = textPtr->dInfoPtr;
-    register DLine *dlPtr, *prevPtr;
+    TextDInfo *dInfoPtr = textPtr->dInfoPtr;
+    DLine *dlPtr, *prevPtr;
     TkTextIndex index;
     TkTextLine *lastLinePtr;
     int y, maxY, pixelOffset, maxOffset;
@@ -1127,7 +1127,7 @@ UpdateDisplayInfo(textPtr)
     y = dInfoPtr->y;
     maxY = dInfoPtr->maxY;
     while (1) {
-	register DLine *newPtr;
+	DLine *newPtr;
 
 	if (index.linePtr == lastLinePtr) {
 	    break;
@@ -1240,7 +1240,7 @@ UpdateDisplayInfo(textPtr)
 	 */
 
 	if (index.linePtr != prevPtr->index.linePtr) {
-	    register DLine *nextPtr;
+	    DLine *nextPtr;
 
 	    nextPtr = dlPtr;
 	    while ((nextPtr != NULL)
@@ -1460,7 +1460,7 @@ static void
 FreeDLines(textPtr, firstPtr, lastPtr, unlink)
     TkText *textPtr;			/* Information about overall text
 					 * widget. */
-    register DLine *firstPtr;		/* Pointer to first DLine to free up. */
+    DLine *firstPtr;		/* Pointer to first DLine to free up. */
     DLine *lastPtr;			/* Pointer to DLine just after last
 					 * one to free (NULL means everything
 					 * starting with firstPtr). */
@@ -1470,14 +1470,14 @@ FreeDLines(textPtr, firstPtr, lastPtr, unlink)
 					 * they have to be unlinked.  0 means
 					 * just free without unlinking. */
 {
-    register TkTextDispChunk *chunkPtr, *nextChunkPtr;
-    register DLine *nextDLinePtr;
+    TkTextDispChunk *chunkPtr, *nextChunkPtr;
+    DLine *nextDLinePtr;
 
     if (unlink) {
 	if (textPtr->dInfoPtr->dLinePtr == firstPtr) {
 	    textPtr->dInfoPtr->dLinePtr = lastPtr;
 	} else {
-	    register DLine *prevPtr;
+	    DLine *prevPtr;
 	    for (prevPtr = textPtr->dInfoPtr->dLinePtr;
 		    prevPtr->nextPtr != firstPtr; prevPtr = prevPtr->nextPtr) {
 		/* Empty loop body. */
@@ -1524,14 +1524,14 @@ FreeDLines(textPtr, firstPtr, lastPtr, unlink)
 static void
 DisplayDLine(textPtr, dlPtr, prevPtr, pixmap)
     TkText *textPtr;		/* Text widget in which to draw line. */
-    register DLine *dlPtr;	/* Information about line to draw. */
+    DLine *dlPtr;	/* Information about line to draw. */
     DLine *prevPtr;		/* Line just before one to draw, or NULL
 				 * if dlPtr is the top line. */
     Pixmap pixmap;		/* Pixmap to use for double-buffering.
 				 * Caller must make sure it's large enough
 				 * to hold line. */
 {
-    register TkTextDispChunk *chunkPtr;
+    TkTextDispChunk *chunkPtr;
     TextDInfo *dInfoPtr = textPtr->dInfoPtr;
     Display *display;
     int height, x;
@@ -1661,7 +1661,7 @@ DisplayDLine(textPtr, dlPtr, prevPtr, pixmap)
 static void
 DisplayLineBackground(textPtr, dlPtr, prevPtr, pixmap)
     TkText *textPtr;		/* Text widget containing line. */
-    register DLine *dlPtr;	/* Information about line to draw. */
+    DLine *dlPtr;	/* Information about line to draw. */
     DLine *prevPtr;		/* Line just above dlPtr, or NULL if dlPtr
 				 * is the top-most line in the window. */
     Pixmap pixmap;		/* Pixmap to use for double-buffering.
@@ -1988,10 +1988,10 @@ static void
 DisplayText(clientData)
     ClientData clientData;	/* Information about widget. */
 {
-    register TkText *textPtr = (TkText *) clientData;
+    TkText *textPtr = (TkText *) clientData;
     TextDInfo *dInfoPtr = textPtr->dInfoPtr;
     Tk_Window tkwin;
-    register DLine *dlPtr;
+    DLine *dlPtr;
     DLine *prevPtr;
     Pixmap pixmap;
     int maxHeight, borders;
@@ -2078,7 +2078,7 @@ DisplayText(clientData)
      */
 
     for (dlPtr = dInfoPtr->dLinePtr; dlPtr != NULL; dlPtr = dlPtr->nextPtr) {
-	register DLine *dlPtr2;
+	DLine *dlPtr2;
 	int offset, height, y, oldY;
 	TkRegion damageRgn;
 
@@ -2452,7 +2452,7 @@ TextInvalidateRegion(textPtr, region)
     TkText *textPtr;		/* Widget record for text widget. */
     TkRegion region;		/* Region of area to redraw. */
 {
-    register DLine *dlPtr;
+    DLine *dlPtr;
     TextDInfo *dInfoPtr = textPtr->dInfoPtr;
     int maxY, inset;
     XRectangle rect;
@@ -2604,7 +2604,7 @@ TkTextRedrawTag(textPtr, index1Ptr, index2Ptr, tagPtr, withTag)
     int withTag;		/* 1 means redraw characters that have the
 				 * tag, 0 means redraw those without. */
 {
-    register DLine *dlPtr;
+    DLine *dlPtr;
     DLine *endPtr;
     int tagOn;
     TkTextSearch search;
@@ -2864,7 +2864,7 @@ TkTextSetYView(textPtr, indexPtr, pickPlace)
 				 * display line at center of screen. */
 {
     TextDInfo *dInfoPtr = textPtr->dInfoPtr;
-    register DLine *dlPtr;
+    DLine *dlPtr;
     int bottomY, close, lineIndex, lineHeight;
     TkTextIndex tmpIndex, rounded;
 
@@ -3574,7 +3574,7 @@ TkTextYviewCmd(textPtr, interp, argc, argv)
 
 int
 TkTextScanCmd(textPtr, interp, argc, argv)
-    register TkText *textPtr;	/* Information about text widget. */
+    TkText *textPtr;	/* Information about text widget. */
     Tcl_Interp *interp;		/* Current interpreter. */
     int argc;			/* Number of arguments. */
     char **argv;		/* Argument strings.  Someone else has already
@@ -3831,7 +3831,7 @@ GetYView(interp, textPtr, report)
 
 static DLine *
 FindDLine(dlPtr, indexPtr)
-    register DLine *dlPtr;	/* Pointer to first in list of DLines
+    DLine *dlPtr;	/* Pointer to first in list of DLines
 				 * to search. */
     TkTextIndex *indexPtr;	/* Index of desired character. */
 {
@@ -3909,8 +3909,8 @@ TkTextPixelIndex(textPtr, x, y, indexPtr)
 				 * index of the character nearest to (x,y). */
 {
     TextDInfo *dInfoPtr = textPtr->dInfoPtr;
-    register DLine *dlPtr;
-    register TkTextDispChunk *chunkPtr;
+    DLine *dlPtr;
+    TkTextDispChunk *chunkPtr;
 
     /*
      * Make sure that all of the layout information about what's
@@ -4015,7 +4015,7 @@ TkTextCharBbox(textPtr, indexPtr, xPtr, yPtr, widthPtr, heightPtr)
 {
     TextDInfo *dInfoPtr = textPtr->dInfoPtr;
     DLine *dlPtr;
-    register TkTextDispChunk *chunkPtr;
+    TkTextDispChunk *chunkPtr;
     int index;
 
     /*
@@ -4196,7 +4196,7 @@ TkTextCharLayoutProc(textPtr, indexPtr, segPtr, offset, maxX, maxChars,
 				 * assigned to this display line yet. */
     Tk_Uid wrapMode;		/* How to handle line wrapping: tkTextCharUid,
 				 * tkTextNoneUid, or tkTextWordUid. */
-    register TkTextDispChunk *chunkPtr;
+    TkTextDispChunk *chunkPtr;
 				/* Structure to fill in with information
 				 * about this chunk.  The x field has already
 				 * been set by the caller. */

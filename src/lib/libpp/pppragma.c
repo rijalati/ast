@@ -30,7 +30,7 @@
 void
 pppragma(char* directive, char* pass, char* name, char* value, int newline)
 {
-	register int	sep = 0;
+	int	sep = 0;
 
 	ppsync();
 	if (directive)

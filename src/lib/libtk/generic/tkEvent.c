@@ -181,8 +181,8 @@ Tk_CreateEventHandler(token, mask, proc, clientData)
 				 * selected event */
     ClientData clientData;	/* Arbitrary data to pass to proc. */
 {
-    register TkEventHandler *handlerPtr;
-    register TkWindow *winPtr = (TkWindow *) token;
+    TkEventHandler *handlerPtr;
+    TkWindow *winPtr = (TkWindow *) token;
     int found;
 
     /*
@@ -260,10 +260,10 @@ Tk_DeleteEventHandler(token, mask, proc, clientData)
     Tk_EventProc *proc;
     ClientData clientData;
 {
-    register TkEventHandler *handlerPtr;
-    register InProgress *ipPtr;
+    TkEventHandler *handlerPtr;
+    InProgress *ipPtr;
     TkEventHandler *prevPtr;
-    register TkWindow *winPtr = (TkWindow *) token;
+    TkWindow *winPtr = (TkWindow *) token;
 
     /*
      * Find the event handler to be deleted, or return
@@ -404,9 +404,9 @@ void
 Tk_HandleEvent(eventPtr)
     XEvent *eventPtr;		/* Event to dispatch. */
 {
-    register TkEventHandler *handlerPtr;
-    register GenericHandler *genericPtr;
-    register GenericHandler *genPrevPtr;
+    TkEventHandler *handlerPtr;
+    GenericHandler *genericPtr;
+    GenericHandler *genPrevPtr;
     TkWindow *winPtr;
     unsigned long mask;
     InProgress ip;
@@ -706,8 +706,8 @@ TkEventDeadWindow(winPtr)
     TkWindow *winPtr;		/* Information about the window
 				 * that is being deleted. */
 {
-    register TkEventHandler *handlerPtr;
-    register InProgress *ipPtr;
+    TkEventHandler *handlerPtr;
+    InProgress *ipPtr;
 
     /*
      * While deleting all the handlers, be careful to check for
@@ -756,7 +756,7 @@ Time
 TkCurrentTime(dispPtr)
     TkDisplay *dispPtr;		/* Display for which the time is desired. */
 {
-    register XEvent *eventPtr;
+    XEvent *eventPtr;
 
     if (pendingPtr == NULL) {
 	return dispPtr->lastEventTime;

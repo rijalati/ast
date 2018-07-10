@@ -210,10 +210,10 @@ done:
 /*
  * print time <t> in h:m:s format with precision <p>
  */
-static void     l_time(Sfio_t *outfile,register clock_t t,int p)
+static void     l_time(Sfio_t *outfile,clock_t t,int p)
 {
-	register int  min, sec, frac;
-	register int hr;
+	int  min, sec, frac;
+	int hr;
 	if(p)
 	{
 		frac = t%shgd->lim.clk_tck;
@@ -299,7 +299,7 @@ static int p_time(Shell_t *shp, Sfio_t *out, const char *format, clock_t *tm)
  */
 static int p_arg(Shell_t*,struct argnod*,int);
 static int p_switch(Shell_t*,struct regnod*);
-static int p_comarg(Shell_t *shp,register struct comnod *com)
+static int p_comarg(Shell_t *shp,struct comnod *com)
 {
 	Namval_t *np=com->comnamp;
 	int n = p_arg(shp,com->comset,ARG_ASSIGN);
@@ -328,7 +328,7 @@ static int p_comarg(Shell_t *shp,register struct comnod *com)
 
 extern void sh_optclear(Shell_t*, void*);
 
-static int sh_tclear(Shell_t *shp, register Shnode_t *t)
+static int sh_tclear(Shell_t *shp, Shnode_t *t)
 {
 	int n=0;
 	if(!t)
@@ -384,7 +384,7 @@ static int sh_tclear(Shell_t *shp, register Shnode_t *t)
 	return(n);
 }
 
-static int p_arg(Shell_t *shp,register struct argnod *arg,int flag)
+static int p_arg(Shell_t *shp,struct argnod *arg,int flag)
 {
 	while(arg)
 	{
@@ -399,7 +399,7 @@ static int p_arg(Shell_t *shp,register struct argnod *arg,int flag)
 	return(0);
 }
 
-static int p_switch(Shell_t *shp,register struct regnod *reg)
+static int p_switch(Shell_t *shp,struct regnod *reg)
 {
 	int n=0;
 	while(reg)
@@ -418,9 +418,9 @@ static int p_switch(Shell_t *shp,register struct regnod *reg)
 #   define sh_tclear(x,y)
 #endif /* SHOPT_OPTIMIZE */
 
-static void out_pattern(Sfio_t *iop, register const char *cp, int n)
+static void out_pattern(Sfio_t *iop, const char *cp, int n)
 {
-	register int c;
+	int c;
 	do
 	{
 		switch(c= *cp)
@@ -448,7 +448,7 @@ static void out_pattern(Sfio_t *iop, register const char *cp, int n)
 	while(*cp++);
 }
 
-static void out_string(Sfio_t *iop, register const char *cp, int c, int quoted)
+static void out_string(Sfio_t *iop, const char *cp, int c, int quoted)
 {
 	if(quoted)
 	{
@@ -687,9 +687,9 @@ static uintmax_t	coused;
 /*
  * print out function definition
  */
-static void print_fun(register Namval_t* np, void *data)
+static void print_fun(Namval_t* np, void *data)
 {
-	register char *format;
+	char *format;
 	NOT_USED(data);
 	if(!is_afunction(np) || !np->nvalue.ip)
 		return;
@@ -922,15 +922,15 @@ static Namval_t *enter_namespace(Shell_t *shp, Namval_t *nsp)
 }
 #endif /* SHOPT_NAMESPACE */
 
-int sh_exec(register Shell_t *shp,register const Shnode_t *t, int flags)
+int sh_exec(Shell_t *shp,const Shnode_t *t, int flags)
 {
 	Stk_t			*stkp = shp->stk;
 	int			unpipe=0;
 	sh_sigcheck(shp);
 	if(t && !shp->st.execbrk && !sh_isoption(shp,SH_NOEXEC))
 	{
-		register int 	type = flags;
-		register char	*com0 = 0;
+		int 	type = flags;
+		char	*com0 = 0;
 		int 		errorflg = (type&sh_state(SH_ERREXIT))|OPTIMIZE;
 		int 		execflg = (type&sh_state(SH_NOFORK));
 		int 		execflg2 = (type&sh_state(SH_FORKED));
@@ -979,7 +979,7 @@ int sh_exec(register Shell_t *shp,register const Shnode_t *t, int flags)
 		{
 		    case TCOM:
 		    {
-			register struct argnod	*argp;
+			struct argnod	*argp;
 			char		*trap;
 			Namval_t	*np, *nq, *last_table;
 			struct ionod	*io;
@@ -1017,7 +1017,7 @@ int sh_exec(register Shell_t *shp,register const Shnode_t *t, int flags)
 			shp->xargexit = 0;
 			while(np==SYSCOMMAND)
 			{
-				register int n = b_command(0,com,&shp->bltindata);
+				int n = b_command(0,com,&shp->bltindata);
 				if(n==0)
 					break;
 				command += n;
@@ -1515,7 +1515,7 @@ tryagain:
 #endif /* SHOPT_NAMESPACE */
 					struct Namref	nr;
 					long		mode;
-					register struct slnod *slp;
+					struct slnod *slp;
 					if(!np->nvalue.ip)
 					{
 						indx = path_search(shp,com0,NIL(Pathcomp_t**),0);
@@ -1623,7 +1623,7 @@ tryagain:
 		    }
 		    case TFORK:
 		    {
-			register pid_t parent;
+			pid_t parent;
 			int no_fork,jobid;
 			int pipes[3];
 #if SHOPT_COSHELL
@@ -2306,9 +2306,9 @@ shp,SH_BASH) && !sh_isoption(shp,SH_LASTPIPE))
 
 		    case TFOR: /* for and select */
 		    {
-			register char **args;
-			register int nargs;
-			register Namval_t *np;
+			char **args;
+			int nargs;
+			Namval_t *np;
 			int flag = errorflg|OPTIMIZE_FLAG;
 			struct dolnod	*argsav=0;
 			struct comnod	*tp;
@@ -2351,7 +2351,7 @@ shp,SH_BASH) && !sh_isoption(shp,SH_LASTPIPE))
 				{
 					char *val;
 					int save_prompt;
-					/* reuse register */
+					/* reuse */
 					if(refresh)
 					{
 						sh_menu(shp,sfstderr,nargs,args);
@@ -2558,7 +2558,7 @@ shp,SH_BASH) && !sh_isoption(shp,SH_LASTPIPE))
 		    }
 		    case TARITH: /* (( expression )) */
 		    {
-			register char *trap;
+			char *trap;
 			char *arg[4];
 			error_info.line = t->ar.arline-shp->st.firstline;
 			arg[0] = "((";
@@ -2617,7 +2617,7 @@ shp,SH_BASH) && !sh_isoption(shp,SH_LASTPIPE))
 			}
 			while(t)
 			{
-				register struct argnod	*rex=(struct argnod*)t->reg.regptr;
+				struct argnod	*rex=(struct argnod*)t->reg.regptr;
 #if SHOPT_COSHELL
 				if(shp->inpool)
 				{
@@ -2627,7 +2627,7 @@ shp,SH_BASH) && !sh_isoption(shp,SH_LASTPIPE))
 #endif /*SHOPT_COSHELL */
 				while(rex)
 				{
-					register char *s;
+					char *s;
 					if(rex->argflag&ARG_MAC)
 					{
 						s = sh_macpat(shp,rex,OPTIMIZE|ARG_EXP|ARG_CASE);
@@ -2740,10 +2740,10 @@ shp,SH_BASH) && !sh_isoption(shp,SH_LASTPIPE))
 		    }
 		    case TFUN:
 		    {
-			register Namval_t *np=0;
-			register struct slnod *slp;
-			register char *fname = ((struct functnod*)t)->functnam;
-			register Namval_t *npv=0,*mp;
+			Namval_t *np=0;
+			struct slnod *slp;
+			char *fname = ((struct functnod*)t)->functnam;
+			Namval_t *npv=0,*mp;
 			cp = strrchr(fname,'.');
 #if SHOPT_COSHELL
 			if(shp->inpool)
@@ -2914,8 +2914,8 @@ shp,SH_BASH) && !sh_isoption(shp,SH_LASTPIPE))
 		    /* new test compound command */
 		    case TTST:
 		    {
-			register int n;
-			register char *left;
+			int n;
+			char *left;
 			int negate = (type&TNEGATE)!=0;
 #if SHOPT_COSHELL
 			if(shp->inpool)
@@ -2932,9 +2932,9 @@ shp,SH_BASH) && !sh_isoption(shp,SH_LASTPIPE))
 			}
 			else
 			{
-				register bool traceon=0;
-				register char *right;
-				register char *trap;
+				bool traceon=0;
+				char *right;
+				char *trap;
 				char *argv[6];
 				int savexit = shp->savexit;
 				n = type>>TSHIFT;
@@ -3070,9 +3070,9 @@ shp,SH_BASH) && !sh_isoption(shp,SH_LASTPIPE))
  * returns 1 if r == trim(s) otherwise 0
  */
 
-static bool trim_eq(register const char *r,register const char *s)
+static bool trim_eq(const char *r,const char *s)
 {
-	register char c;
+	char c;
 	while(c = *s++)
 	{
 		if(c=='\\')
@@ -3087,10 +3087,10 @@ static bool trim_eq(register const char *r,register const char *s)
  * print out the command line if set -x is on
  */
 
-bool sh_trace(Shell_t *shp,register char *argv[], register int nl)
+bool sh_trace(Shell_t *shp,char *argv[], int nl)
 {
-	register char *cp;
-	register int bracket = 0;
+	char *cp;
+	int bracket = 0;
 	int decl = (nl&2);
 	nl &= ~2;
 	if(sh_isoption(shp,SH_XTRACE))
@@ -3162,7 +3162,7 @@ static void timed_out(void *handle)
 /*
  * called by parent and child after fork by sh_fork()
  */
-pid_t _sh_fork(Shell_t *shp,register pid_t parent,int flags,int *jobid)
+pid_t _sh_fork(Shell_t *shp,pid_t parent,int flags,int *jobid)
 {
 	static long forkcnt = 1000L;
 	pid_t	curpgid = job.curpgid;
@@ -3315,7 +3315,7 @@ pid_t _sh_fork(Shell_t *shp,register pid_t parent,int flags,int *jobid)
 
 pid_t sh_fork(Shell_t *shp,int flags, int *jobid)
 {
-	register pid_t parent;
+	pid_t parent;
 	sigset_t set,oset;
 	if(!shp->pathlist)
 		path_get(shp,"");
@@ -3348,11 +3348,11 @@ struct Tdata
 /*
  * add exports from previous scope to the new scope
  */
-static void  local_exports(register Namval_t *np, void *data)
+static void  local_exports(Namval_t *np, void *data)
 {
 	Shell_t			*shp = ((struct Tdata*)data)->sh;
-	register Namval_t	*mp;
-	register char		*cp;
+	Namval_t	*mp;
+	char		*cp;
 	if(nv_isarray(np))
 		nv_putsub(np,NIL(char*),0,0);
 	if((cp = nv_getval(np)) && (mp = nv_search(nv_name(np), shp->var_tree, NV_ADD|HASH_NOSCOPE)) && nv_isnull(mp))
@@ -3467,8 +3467,8 @@ static void sh_funct(Shell_t *shp,Namval_t *np,int argn, char *argv[],struct arg
  */
 int sh_fun_20120720(Shell_t *shp,Namval_t *np, Namval_t *nq, char *argv[])
 {
-	register int offset;
-	register char *base;
+	int offset;
+	char *base;
 	Namval_t node;
 	struct Namref	nr;
 	long		mode;
@@ -3586,7 +3586,7 @@ static void coproc_init(Shell_t *shp, int pipes[])
 static int run_subshell(Shell_t *shp,const Shnode_t *t,pid_t grp)
 {
 	static const char prolog[] = "(print $(typeset +A);set; typeset -p; print .sh.dollar=$$;set +o)";
-	register int i, fd, trace = sh_isoption(shp,SH_XTRACE);
+	int i, fd, trace = sh_isoption(shp,SH_XTRACE);
 	int pin,pout;
 	pid_t pid;
 	char *arglist[3], *envlist[2], devfd[12], *cp;
@@ -3658,8 +3658,8 @@ static int run_subshell(Shell_t *shp,const Shnode_t *t,pid_t grp)
 
 static void sigreset(Shell_t *shp,int mode)
 {
-	register char   *trap;
-	register int sig=shp->st.trapmax;
+	char   *trap;
+	int sig=shp->st.trapmax;
 	while(sig-- > 0)
 	{
 #ifdef SIGCLD
@@ -3699,7 +3699,7 @@ static pid_t sh_ntfork(Shell_t *shp,const Shnode_t *t,char *argv[],int *jobid,in
 #   if SHOPT_AMP || !defined(_lib_fork)
 	if(!argv)
 	{
-		register Shnode_t *tchild = t->fork.forktre;
+		Shnode_t *tchild = t->fork.forktre;
 		int optimize=0;
 		otype = t->tre.tretyp;
 		savetype = otype;
@@ -4000,8 +4000,8 @@ static pid_t sh_ntfork(Shell_t *shp,const Shnode_t *t,char *argv[],int *jobid,in
  */
 int sh_funscope_20120720(Shell_t *shp,int argn, char *argv[],int(*fun)(void*),void *arg,int execflg)
 {
-	register char		*trap;
-	register int		nsig;
+	char		*trap;
+	int		nsig;
 	struct dolnod		*argsav=0,*saveargfor;
 	struct sh_scoped	savst, *prevscope = shp->st.self;
 	struct argnod		*envlist=0;
@@ -4164,9 +4164,9 @@ int sh_funscope(int argn, char *argv[],int(*fun)(void*),void *arg,int execflg)
 /*
  * Given stream <iop> compile and execute
  */
-int sh_eval_20120720(Shell_t *shp,register Sfio_t *iop, int mode)
+int sh_eval_20120720(Shell_t *shp,Sfio_t *iop, int mode)
 {
-	register Shnode_t *t;
+	Shnode_t *t;
 	struct slnod *saveslp = shp->st.staklist;
 	int jmpval;
 	struct checkpt *pp = (struct checkpt*)shp->jmplist;
@@ -4237,15 +4237,15 @@ int sh_eval_20120720(Shell_t *shp,register Sfio_t *iop, int mode)
 }
 
 #undef sh_eval
-int sh_eval(register Sfio_t *iop, int mode)
+int sh_eval(Sfio_t *iop, int mode)
 {
 	return(sh_eval_20120720(sh_getinterp(),iop,mode));
 }
 
 int sh_run_20120720(Shell_t *shp,int argn, char *argv[])
 {
-	register struct dolnod	*dp;
-	register struct comnod	*t = (struct comnod*)stkalloc(shp->stk,sizeof(struct comnod));
+	struct dolnod	*dp;
+	struct comnod	*t = (struct comnod*)stkalloc(shp->stk,sizeof(struct comnod));
 	int			savtop = stktell(shp->stk);
 	char			*savptr = stakfreeze(0);
 	Opt_t			*op, *np = optctx(0, 0);

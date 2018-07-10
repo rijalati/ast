@@ -85,9 +85,9 @@ optwindow(Void_t* obj, char* name, char* desc, Void_t* handle)
 int
 codexoptinfo(Opt_t* op, Sfio_t* sp, const char* s, Optdisc_t* dp)
 {
-	register Codexmeth_t*	meth;
-	register const char*	p;
-	register int		c;
+	Codexmeth_t*	meth;
+	const char*	p;
+	int		c;
 
 	switch (*s)
 	{

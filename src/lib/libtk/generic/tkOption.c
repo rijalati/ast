@@ -239,10 +239,10 @@ Tk_AddOption(tkwin, name, value, priority)
 				 * 0 and TK_MAX_PRIO. */
 {
     TkWindow *winPtr = ((TkWindow *) tkwin)->mainPtr->winPtr;
-    register ElArray **arrayPtrPtr;
-    register Element *elPtr;
+    ElArray **arrayPtrPtr;
+    Element *elPtr;
     Element newEl;
-    register char *p;
+    char *p;
     char *field;
     int count, firstField, length;
 #define TMP_SIZE 100
@@ -393,8 +393,8 @@ Tk_GetOption(tkwin, name, className)
 				 * check for name. */
 {
     Tk_Uid nameId, classId;
-    register Element *elPtr, *bestPtr;
-    register int count;
+    Element *elPtr, *bestPtr;
+    int count;
 
     /*
      * Note:  no need to call OptionInit here:  it will be done by
@@ -578,7 +578,7 @@ Tk_OptionCmd(clientData, interp, argc, argv)
 
 void
 TkOptionDeadWindow(winPtr)
-    register TkWindow *winPtr;		/* Window to be cleaned up. */
+    TkWindow *winPtr;		/* Window to be cleaned up. */
 {
     /*
      * If this window is in the option stacks, then clear the stacks.
@@ -754,7 +754,7 @@ AddFromString(interp, tkwin, string, priority)
 				 * or TK_INTERACTIVE_PRIO.  Must be between
 				 * 0 and TK_MAX_PRIO. */
 {
-    register char *src, *dst;
+    char *src, *dst;
     char *name, *value;
     int lineNum;
 
@@ -967,7 +967,7 @@ static ElArray *
 NewArray(numEls)
     int numEls;			/* How many elements of space to allocate. */
 {
-    register ElArray *arrayPtr;
+    ElArray *arrayPtr;
 
     arrayPtr = (ElArray *) ckalloc(EL_ARRAY_SIZE(numEls));
     arrayPtr->arraySize = numEls;
@@ -996,15 +996,15 @@ NewArray(numEls)
 
 static ElArray *
 ExtendArray(arrayPtr, elPtr)
-    register ElArray *arrayPtr;		/* Array to be extended. */
-    register Element *elPtr;		/* Element to be copied into array. */
+    ElArray *arrayPtr;		/* Array to be extended. */
+    Element *elPtr;		/* Element to be copied into array. */
 {
     /*
      * If the current array has filled up, make it bigger.
      */
 
     if (arrayPtr->numUsed >= arrayPtr->arraySize) {
-	register ElArray *newPtr;
+	ElArray *newPtr;
 
 	newPtr = (ElArray *) ckalloc(EL_ARRAY_SIZE(2*arrayPtr->arraySize));
 	newPtr->arraySize = 2*arrayPtr->arraySize;
@@ -1049,8 +1049,8 @@ SetupStacks(winPtr, leaf)
 				 * is an ancestor of the desired leaf. */
 {
     int level, i, *iPtr;
-    register StackLevel *levelPtr;
-    register ElArray *arrayPtr;
+    StackLevel *levelPtr;
+    ElArray *arrayPtr;
 
     /*
      * The following array defines the order in which the current
@@ -1163,7 +1163,7 @@ SetupStacks(winPtr, leaf)
      */
 
     for (iPtr = searchOrder; *iPtr != -1; iPtr++) {
-	register Element *elPtr;
+	Element *elPtr;
 	int count;
 	Tk_Uid id;
 
@@ -1219,8 +1219,8 @@ ExtendStacks(arrayPtr, leaf)
     int leaf;			/* If zero, then don't copy exact leaf
 				 * elements. */
 {
-    register int count;
-    register Element *elPtr;
+    int count;
+    Element *elPtr;
 
     for (elPtr = arrayPtr->els, count = arrayPtr->numUsed;
 	    count > 0; elPtr++, count--) {
@@ -1249,7 +1249,7 @@ ExtendStacks(arrayPtr, leaf)
 
 static void
 OptionInit(mainPtr)
-    register TkMainInfo *mainPtr;	/* Top-level information about
+    TkMainInfo *mainPtr;	/* Top-level information about
 					 * window that isn't initialized
 					 * yet. */
 {
@@ -1310,7 +1310,7 @@ ClearOptionTree(arrayPtr)
     ElArray *arrayPtr;		/* Array of options;  delete everything
 				 * referred to recursively by this. */
 {
-    register Element *elPtr;
+    Element *elPtr;
     int count;
 
     for (count = arrayPtr->numUsed, elPtr = arrayPtr->els;  count > 0;

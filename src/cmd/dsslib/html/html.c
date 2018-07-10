@@ -30,13 +30,13 @@
 static int
 html_ref_F(Cx_t* cx, Cxvariable_t* var, Cxoperand_t* ret, Cxoperand_t* arg, int n, void* data, Cxdisc_t* disc)
 {
-	register char*		s;
-	register char*		t;
-	register char*		v;
-	register int		i;
-	register int		c;
-	register int		k;
-	register int		q;
+	char*		s;
+	char*		t;
+	char*		v;
+	int		i;
+	int		c;
+	int		k;
+	int		q;
 	char*			b;
 
 	if (!(t = vmnewof(cx->em, 0, char, arg->value.string.size, 1)))

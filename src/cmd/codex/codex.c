@@ -124,8 +124,8 @@ USAGE_LICENSE
 static void
 checkdata(Sfio_t* sp)
 {
-	register unsigned char*	u;
-	register unsigned char*	e;
+	unsigned char*	u;
+	unsigned char*	e;
 	Codexdata_t		data;
 
 	if (codexdata(sp, &data) > 0)
@@ -149,7 +149,7 @@ extern
 #endif
 
 int
-main(int argc, register char** argv)
+main(int argc, char** argv)
 {
 	void*			buf;
 	Sfio_t*			ip;

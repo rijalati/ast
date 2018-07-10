@@ -112,7 +112,7 @@ typedef struct State_s
 } State_t;
 
 static int
-save(Vmalloc_t* vm, register Data_t* p, void* data, size_t len)
+save(Vmalloc_t* vm, Data_t* p, void* data, size_t len)
 {
 	if (p->size < len)
 	{
@@ -160,9 +160,9 @@ static int
 glean(Rs_t* rs, int op, Void_t* data, Void_t* arg, Rsdisc_t* disc)
 {
 	State_t*		state = (State_t*)disc;
-	register Rsobj_t*	r;
-	register Category_t*	p;
-	register Field_t*	f;
+	Rsobj_t*	r;
+	Category_t*	p;
+	Field_t*	f;
 	Category_t		x;
 	ssize_t			k;
 	int			n;
@@ -273,8 +273,8 @@ glean(Rs_t* rs, int op, Void_t* data, Void_t* arg, Rsdisc_t* disc)
 Rsdisc_t*
 rs_disc(Rskey_t* key, const char* options)
 {
-	register State_t*	state;
-	register Field_t*	f;
+	State_t*	state;
+	Field_t*	f;
 	Vmalloc_t*		vm;
 	int			i;
 

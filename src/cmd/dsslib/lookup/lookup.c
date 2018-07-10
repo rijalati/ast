@@ -134,7 +134,7 @@ lookup_beg(Cx_t* cx, Cxexpr_t* expr, void* data, Cxdisc_t* disc)
 static int
 lookup_sel(Cx_t* cx, Cxexpr_t* expr, void* data, Cxdisc_t* disc)
 {
-	register State_t*	state = (State_t*)expr->data;
+	State_t*	state = (State_t*)expr->data;
 	Cxoperand_t		val;
 
 	if (cxcast(cx, &val, state->variable, cx->state->type_string, data, NiL))
@@ -145,7 +145,7 @@ lookup_sel(Cx_t* cx, Cxexpr_t* expr, void* data, Cxdisc_t* disc)
 static int
 lookup_end(Cx_t* cx, Cxexpr_t* expr, void* data, Cxdisc_t* disc)
 {
-	register State_t*	state = (State_t*)expr->data;
+	State_t*	state = (State_t*)expr->data;
 
 	vmclose(state->vm);
 	return 0;

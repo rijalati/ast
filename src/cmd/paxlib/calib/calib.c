@@ -258,7 +258,7 @@ _cagetbits(Ar_t* ar, int nbits)
 }
 
 static int
-calib_done(Pax_t* pax, register Paxarchive_t* ap)
+calib_done(Pax_t* pax, Paxarchive_t* ap)
 {
 	Ar_t*	ar;
 
@@ -275,12 +275,12 @@ calib_done(Pax_t* pax, register Paxarchive_t* ap)
 }
 
 static int
-calib_getprologue(Pax_t* pax, Paxformat_t* fp, register Paxarchive_t* ap, Paxfile_t* f, unsigned char* buf, size_t size)
+calib_getprologue(Pax_t* pax, Paxformat_t* fp, Paxarchive_t* ap, Paxfile_t* f, unsigned char* buf, size_t size)
 {
-	register Ar_t*		ar;
-	register Cadir_t*	dp;
-	register Cadir_t*	de;
-	register Cadir_t*	db;
+	Ar_t*		ar;
+	Cadir_t*	dp;
+	Cadir_t*	de;
+	Cadir_t*	db;
 	unsigned char		hdr[30];
 	unsigned char		dir[22];
 	unsigned char		blk[16];
@@ -356,9 +356,9 @@ calib_getprologue(Pax_t* pax, Paxformat_t* fp, register Paxarchive_t* ap, Paxfil
 }
 
 static int
-calib_getdata(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f, int wfd)
+calib_getdata(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f, int wfd)
 {
-	register Ar_t*		ar = (Ar_t*)ap->data;
+	Ar_t*		ar = (Ar_t*)ap->data;
 	const char*		s;
 	unsigned char*		out;
 	long			sequence;
@@ -733,11 +733,11 @@ calib_getdata(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f, int 
 }
 
 static int
-calib_getheader(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f)
+calib_getheader(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f)
 {
-	register Ar_t*		ar = (Ar_t*)ap->data;
-	register unsigned char*	h;
-	register off_t		n;
+	Ar_t*		ar = (Ar_t*)ap->data;
+	unsigned char*	h;
+	off_t		n;
 	char*			s;
 	char*			t;
 	char*			v;

@@ -84,7 +84,7 @@ static int mesg(int  mode)
 int
 main(int argc, char *argv[])
 {
-	register int n;
+	int n;
 
 	NoP(argc);
 	error_info.id = "mesg";

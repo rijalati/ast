@@ -86,8 +86,8 @@ typedef union
 static int
 getfmt(Sfio_t* sp, void* vp, Sffmt_t* dp)
 {
-	register Fmt_t*	fp = (Fmt_t*)dp;
-	register Arg_t*	ap = fp->ap++;
+	Fmt_t*	fp = (Fmt_t*)dp;
+	Arg_t*	ap = fp->ap++;
 	Value_t*	value = (Value_t*)vp;
 	Cxoperand_t	ret;
 
@@ -266,11 +266,11 @@ dssprintf(Dss_t* dss, Cx_t* cx, Sfio_t* sp, const char* format, Dssrecord_t* rec
 	for (fp = dss->print; fp && fp->oformat != (char*)format; fp = fp->next);
 	if (!fp)
 	{
-		register char*	s;
-		register char*	t;
-		register char*	d;
-		register char*	v;
-		register Arg_t*	ap;
+		char*	s;
+		char*	t;
+		char*	d;
+		char*	v;
+		Arg_t*	ap;
 		int		x;
 		char*		f;
 		char*		o;

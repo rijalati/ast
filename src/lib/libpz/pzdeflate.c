@@ -26,17 +26,17 @@
  */
 
 int
-pzdeflate(register Pz_t* pz, Sfio_t* op)
+pzdeflate(Pz_t* pz, Sfio_t* op)
 {
-	register Pzpart_t*	pp;
-	register int		i;
-	register int		j;
-	register size_t		n;
-	register size_t		m;
-	register unsigned char*	buf;
-	register unsigned char*	wrk;
-	register unsigned char*	pat;
-	register unsigned char*	low;
+	Pzpart_t*	pp;
+	int		i;
+	int		j;
+	size_t		n;
+	size_t		m;
+	unsigned char*	buf;
+	unsigned char*	wrk;
+	unsigned char*	pat;
+	unsigned char*	low;
 	unsigned char*		incomplete;
 	Pzelt_t*		elt;
 	Pzelt_t*		old;

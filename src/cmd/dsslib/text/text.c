@@ -105,10 +105,10 @@ textfclose(Dssfile_t* file, Dssdisc_t* disc)
  */
 
 static char*
-lextok(register char* s, register int c, Cxstring_t* p)
+lextok(char* s, int c, Cxstring_t* p)
 {
-	register char*	t;
-	register int	q;
+	char*	t;
+	int	q;
 	char*		b;
 	char*		u;
 
@@ -188,13 +188,13 @@ lextok(register char* s, register int c, Cxstring_t* p)
  */
 
 static int
-textread(register Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
+textread(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register Cxvalue_t*	data = (Cxvalue_t*)file->data;
-	register Text_t*	text = (Text_t*)file->dss->meth->data;
-	register char*		s;
-	register char*		f;
-	register int		c;
+	Cxvalue_t*	data = (Cxvalue_t*)file->data;
+	Text_t*	text = (Text_t*)file->dss->meth->data;
+	char*		s;
+	char*		f;
+	int		c;
 	char*			t;
 	int			num;
 	int			q;
@@ -330,10 +330,10 @@ textread(register Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 static int
 textwrite(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register Text_t*	text = (Text_t*)file->dss->meth->data;
+	Text_t*	text = (Text_t*)file->dss->meth->data;
 	Cxvalue_t*		data = (Cxvalue_t*)record->data;
-	register char*		f;
-	register int		c;
+	char*		f;
+	int		c;
 	int			num;
 
 	num = 0;
@@ -447,13 +447,13 @@ CXC(CX_GET, "void", "void", op_get, 0)
 static Dssmeth_t*
 textmeth(const char* name, const char* options, const char* schema, Dssdisc_t* disc, Dssmeth_t* ometh)
 {
-	register Text_t*	text;
-	register Dssmeth_t*	meth;
-	register Cxvariable_t*	var;
-	register char*		s;
-	register char*		t;
-	register char*		f;
-	register int		c;
+	Text_t*	text;
+	Dssmeth_t*	meth;
+	Cxvariable_t*	var;
+	char*		s;
+	char*		t;
+	char*		f;
+	int		c;
 	char*			d;
 	int			p;
 	int			index;

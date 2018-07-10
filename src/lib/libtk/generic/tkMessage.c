@@ -207,7 +207,7 @@ Tk_MessageCmd(clientData, interp, argc, argv)
     int argc;			/* Number of arguments. */
     char **argv;		/* Argument strings. */
 {
-    register Message *msgPtr;
+    Message *msgPtr;
     Tk_Window new;
     Tk_Window tkwin = (Tk_Window) clientData;
 
@@ -294,7 +294,7 @@ MessageWidgetCmd(clientData, interp, argc, argv)
     int argc;			/* Number of arguments. */
     char **argv;		/* Argument strings. */
 {
-    register Message *msgPtr = (Message *) clientData;
+    Message *msgPtr = (Message *) clientData;
     size_t length;
     int c;
 
@@ -356,7 +356,7 @@ static void
 DestroyMessage(memPtr)
     char *memPtr;		/* Info about message widget. */
 {
-    register Message *msgPtr = (Message *) memPtr;
+    Message *msgPtr = (Message *) memPtr;
 
     /*
      * Free up all the stuff that requires special handling, then
@@ -400,7 +400,7 @@ DestroyMessage(memPtr)
 static int
 ConfigureMessage(interp, msgPtr, argc, argv, flags)
     Tcl_Interp *interp;		/* Used for error reporting. */
-    register Message *msgPtr;	/* Information about widget;  may or may
+    Message *msgPtr;	/* Information about widget;  may or may
 				 * not already have values for some fields. */
     int argc;			/* Number of valid entries in argv. */
     char **argv;		/* Arguments. */
@@ -516,7 +516,7 @@ ConfigureMessage(interp, msgPtr, argc, argv, flags)
 
 static void
 ComputeMessageGeometry(msgPtr)
-    register Message *msgPtr;	/* Information about window. */
+    Message *msgPtr;	/* Information about window. */
 {
     char *p;
     int width, inc, height, numLines;
@@ -626,8 +626,8 @@ static void
 DisplayMessage(clientData)
     ClientData clientData;	/* Information about window. */
 {
-    register Message *msgPtr = (Message *) clientData;
-    register Tk_Window tkwin = msgPtr->tkwin;
+    Message *msgPtr = (Message *) clientData;
+    Tk_Window tkwin = msgPtr->tkwin;
     char *p;
     int x, y, lineLength, numChars, charsLeft;
 
@@ -858,7 +858,7 @@ MessageTextVarProc(clientData, interp, name1, name2, flags)
     char *name2;		/* Second part of variable name. */
     int flags;			/* Information about what happened. */
 {
-    register Message *msgPtr = (Message *) clientData;
+    Message *msgPtr = (Message *) clientData;
     char *value;
 
     /*

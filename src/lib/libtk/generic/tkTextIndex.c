@@ -61,7 +61,7 @@ TkTextMakeIndex(tree, lineIndex, charIndex, indexPtr)
     int charIndex;		/* Index of desired character. */
     TkTextIndex *indexPtr;	/* Structure to fill in. */
 {
-    register TkTextSegment *segPtr;
+    TkTextSegment *segPtr;
     int index;
 
     indexPtr->tree = tree;
@@ -126,7 +126,7 @@ TkTextIndexToSeg(indexPtr, offsetPtr)
 					 * segment, or NULL if offset isn't
 					 * wanted. */
 {
-    register TkTextSegment *segPtr;
+    TkTextSegment *segPtr;
     int offset;
 
     for (offset = indexPtr->charIndex, segPtr = indexPtr->linePtr->segPtr;
@@ -202,7 +202,7 @@ TkTextGetIndex(interp, textPtr, string, indexPtr)
     char *string;		/* Textual description of position. */
     TkTextIndex *indexPtr;	/* Index structure to fill in. */
 {
-    register char *p;
+    char *p;
     char *end, *endOfBase;
     Tcl_HashEntry *hPtr;
     TkTextTag *tagPtr;
@@ -508,7 +508,7 @@ ForwBack(string, indexPtr)
 				 * modifier. */
     TkTextIndex *indexPtr;	/* Index to update as specified in string. */
 {
-    register char *p;
+    char *p;
     char *end, *units;
     int count, lineIndex;
     size_t length;
@@ -737,7 +737,7 @@ StartEnd(string, indexPtr)
     char *p;
     int c, offset;
     size_t length;
-    register TkTextSegment *segPtr;
+    TkTextSegment *segPtr;
 
     /*
      * Find the end of the modifier word.

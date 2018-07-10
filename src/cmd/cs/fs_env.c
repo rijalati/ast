@@ -74,8 +74,8 @@ typedef struct
 static void*
 svc_init(void* handle, int maxfd)
 {
-	register State_t*	state;
-	register int		fd;
+	State_t*	state;
+	int		fd;
 
 	NoP(handle);
 	if (!(state = newof(0, State_t, 1, (maxfd - 1) * sizeof(Connection_t))))
@@ -93,7 +93,7 @@ svc_init(void* handle, int maxfd)
 static int
 svc_connect(void* handle, int fd, CSID* id, int clone, char** args)
 {
-	register State_t*	state = (State_t*)handle;
+	State_t*	state = (State_t*)handle;
 
 	NoP(fd);
 	NoP(clone);
@@ -112,9 +112,9 @@ svc_connect(void* handle, int fd, CSID* id, int clone, char** args)
 static int
 svc_read(void* handle, int fd)
 {
-	register State_t*	state = (State_t*)handle;
-	register Connection_t*	con;
-	register int		n;
+	State_t*	state = (State_t*)handle;
+	Connection_t*	con;
+	int		n;
 	int			xd;
 	int			err;
 	long			ret;

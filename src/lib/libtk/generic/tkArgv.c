@@ -72,12 +72,12 @@ Tk_ParseArgv(interp, tkwin, argcPtr, argv, argTable, flags)
     int flags;			/* Or'ed combination of various flag bits,
 				 * such as TK_ARGV_NO_DEFAULTS. */
 {
-    register Tk_ArgvInfo *infoPtr;
+    Tk_ArgvInfo *infoPtr;
 				/* Pointer to the current entry in the
 				 * table of argument descriptions. */
     Tk_ArgvInfo *matchPtr;	/* Descriptor that matches current argument. */
     char *curArg;		/* Current argument */
-    register char c;		/* Second character of current arg (used for
+    char c;		/* Second character of current arg (used for
 				 * quick check for matching;  use 2nd char.
 				 * because first char. will almost always
 				 * be '-'). */
@@ -347,7 +347,7 @@ PrintUsage(interp, argTable, flags)
 				 * in this word, then don't generate
 				 * information for default options. */
 {
-    register Tk_ArgvInfo *infoPtr;
+    Tk_ArgvInfo *infoPtr;
     int width, i, numSpaces;
 #define NUM_SPACES 20
     static char spaces[] = "                    ";

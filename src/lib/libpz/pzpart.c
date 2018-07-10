@@ -104,7 +104,7 @@ pzpartset(Pz_t* pz, Pzpart_t* pp)
  */
 
 static int
-range(Pz_t* pz, register Pzpart_t* pp, char* s, char** p, int* beg, int* end)
+range(Pz_t* pz, Pzpart_t* pp, char* s, char** p, int* beg, int* end)
 {
 	int	n;
 	int	m;
@@ -197,7 +197,7 @@ value(Pz_t* pz, char* s, char** p)
  */
 
 static int
-fixed(Pz_t* pz, register Pzpart_t* pp, int n, int m, int k)
+fixed(Pz_t* pz, Pzpart_t* pp, int n, int m, int k)
 {
 	int	i;
 	int	v;
@@ -226,7 +226,7 @@ fixed(Pz_t* pz, register Pzpart_t* pp, int n, int m, int k)
  */
 
 int
-pzpartmap(Pz_t* pz, register Pzpart_t* pp)
+pzpartmap(Pz_t* pz, Pzpart_t* pp)
 {
 	int	i;
 	int	j;
@@ -429,9 +429,9 @@ pzpartinit(Pz_t* pz, Pzpart_t* pp, const char* name)
  */
 
 int
-pzoptions(register Pz_t* pz, register Pzpart_t* pp, char* options, int must)
+pzoptions(Pz_t* pz, Pzpart_t* pp, char* options, int must)
 {
-	register char*		s = options;
+	char*		s = options;
 	char*			e;
 	char*			b;
 	int			i;
@@ -685,9 +685,9 @@ partline(Pz_t* pz, Sfio_t* sp)
  */
 
 int
-pzpartition(register Pz_t* pz, const char* partition)
+pzpartition(Pz_t* pz, const char* partition)
 {
-	register Pzpart_t*	pp;
+	Pzpart_t*	pp;
 	int			i;
 	int			k;
 	int			m;
@@ -1033,11 +1033,11 @@ pzpartition(register Pz_t* pz, const char* partition)
  */
 
 static int
-array(register Pz_t* pz, Pzpart_t* pp, size_t** pv, size_t* pn, size_t check)
+array(Pz_t* pz, Pzpart_t* pp, size_t** pv, size_t* pn, size_t check)
 {
-	register size_t		n;
-	register size_t		m;
-	register size_t*	v;
+	size_t		n;
+	size_t		m;
+	size_t*	v;
 
 	n = sfgetu(pz->io);
 	if (check && n > check)
@@ -1074,10 +1074,10 @@ array(register Pz_t* pz, Pzpart_t* pp, size_t** pv, size_t* pn, size_t check)
  */
 
 static int
-buffer(register Pz_t* pz, Pzpart_t* pp, char** pv, size_t* pn)
+buffer(Pz_t* pz, Pzpart_t* pp, char** pv, size_t* pn)
 {
-	register size_t		n;
-	register char*		v;
+	size_t		n;
+	char*		v;
 
 	if (!(n = sfgetu(pz->io)))
 	{
@@ -1104,10 +1104,10 @@ buffer(register Pz_t* pz, Pzpart_t* pp, char** pv, size_t* pn)
  */
 
 int
-pzpartread(register Pz_t* pz)
+pzpartread(Pz_t* pz)
 {
-	register Pzpart_t*	pp;
-	register int		i;
+	Pzpart_t*	pp;
+	int		i;
 	Pzpart_t*		po;
 
 	if (pz->major > 1)
@@ -1250,9 +1250,9 @@ pzpartread(register Pz_t* pz)
 int
 pzpartwrite(Pz_t* pz, Sfio_t* op)
 {
-	register Pzpart_t*	pp;
-	register int		i;
-	register size_t		m;
+	Pzpart_t*	pp;
+	int		i;
+	size_t		m;
 	int			all;
 
 	if (pz->flags & PZ_MAINONLY)
@@ -1320,12 +1320,12 @@ pzpartwrite(Pz_t* pz, Sfio_t* op)
  */
 
 int
-pzpartprint(Pz_t* pz, register Pzpart_t* pp, register Sfio_t* op)
+pzpartprint(Pz_t* pz, Pzpart_t* pp, Sfio_t* op)
 {
-	register int		i;
-	register int		j;
-	register int		g;
-	register char*		s;
+	int		i;
+	int		j;
+	int		g;
+	char*		s;
 	char			esc[2];
 
 	sfprintf(op, "\n\"%s\"\n", pp->name);

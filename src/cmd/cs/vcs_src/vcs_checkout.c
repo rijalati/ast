@@ -25,10 +25,10 @@
 #include "vcs_rscs.h"
 
 int checkout(rp, vp)
-	register rfile_t*	rp;
-	register version_t*	vp;
+	rfile_t*	rp;
+	version_t*	vp;
 {
-	register attr_t*	ap;
+	attr_t*	ap;
 	tag_t*			tp;
 	tag_t*			marker;
 	Sfio_t	*fsrc, *wtar, *rtar, *fdel;

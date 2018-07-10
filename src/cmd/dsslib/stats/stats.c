@@ -144,7 +144,7 @@ extern Dsslib_t	dss_lib_stats;
 static int
 getop(Cx_t* cx, Cxinstruction_t* pc, Cxoperand_t* r, Cxoperand_t* a, Cxoperand_t* b, void* data, Cxdisc_t* disc)
 {
-	register State_t*	state = (State_t*)((Dssrecord_t*)data)->data;
+	State_t*	state = (State_t*)((Dssrecord_t*)data)->data;
 	Cxvariable_t*		variable = pc->data.variable;
 	Group_t*		group;
 	char*			s;
@@ -191,7 +191,7 @@ getop(Cx_t* cx, Cxinstruction_t* pc, Cxoperand_t* r, Cxoperand_t* a, Cxoperand_t
 static int
 getvalue(Cx_t* cx, Cxinstruction_t* pc, Cxoperand_t* r, Cxoperand_t* a, Cxoperand_t* b, void* data, Cxdisc_t* disc)
 {
-	register Print_t*	print = (Print_t*)((Dssrecord_t*)data)->data;
+	Print_t*	print = (Print_t*)((Dssrecord_t*)data)->data;
 	Cxvariable_t*		variable = pc->data.variable;
 	char*			s;
 	Group_t*		group;
@@ -275,11 +275,11 @@ getvalue(Cx_t* cx, Cxinstruction_t* pc, Cxoperand_t* r, Cxoperand_t* a, Cxoperan
 static int
 bucketcmp(Dt_t* dt, void* a, void* b, Dtdisc_t* disc)
 {
-	register State_t*	state = (State_t*)disc;
-	register Cxoperand_t*	ka = (Cxoperand_t*)a;
-	register Cxoperand_t*	kb = (Cxoperand_t*)b;
-	register Group_t*	group;
-	register int		n;
+	State_t*	state = (State_t*)disc;
+	Cxoperand_t*	ka = (Cxoperand_t*)a;
+	Cxoperand_t*	kb = (Cxoperand_t*)b;
+	Group_t*	group;
+	int		n;
 
 	for (group = state->group; group; group = group->next, ka++, kb++)
 	{
@@ -521,11 +521,11 @@ stats_beg(Cx_t* cx, Cxexpr_t* expr, void* data, Cxdisc_t* disc)
 static int
 stats_act(Cx_t* cx, Cxexpr_t* expr, void* data, Cxdisc_t* disc)
 {
-	register State_t*	state = (State_t*)expr->data;
-	register Cxoperand_t*	key;
-	register Field_t*	field;
-	register Group_t*	group;
-	register Total_t*	total;
+	State_t*	state = (State_t*)expr->data;
+	Cxoperand_t*	key;
+	Field_t*	field;
+	Group_t*	group;
+	Total_t*	total;
 	Bucket_t*		bucket;
 	Cxoperand_t		val;
 	char*			s;
@@ -613,7 +613,7 @@ number(Sfio_t* op, Cxnumber_t n, int fw)
 }
 
 static int
-list(Cx_t* cx, register State_t* state, Sfio_t* op, const char* label, register Field_t* field, register Total_t* total, Cxoperand_t* key)
+list(Cx_t* cx, State_t* state, Sfio_t* op, const char* label, Field_t* field, Total_t* total, Cxoperand_t* key)
 {
 	Dssrecord_t	record;
 	Print_t		pr;
@@ -692,9 +692,9 @@ list(Cx_t* cx, register State_t* state, Sfio_t* op, const char* label, register 
 static int
 stats_end(Cx_t* cx, Cxexpr_t* expr, void* data, Cxdisc_t* disc)
 {
-	register State_t*	state = (State_t*)expr->data;
-	register Bucket_t*	bucket;
-	register Group_t*	group;
+	State_t*	state = (State_t*)expr->data;
+	Bucket_t*	bucket;
+	Group_t*	group;
 
 	if (state->label)
 		sfprintf(expr->op, "%s\n", state->label);

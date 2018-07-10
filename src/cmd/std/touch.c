@@ -104,15 +104,15 @@ USAGE_LICENSE
 #define MTIME		04
 
 int
-main(int argc, register char** argv)
+main(int argc, char** argv)
 {
-	register char*	reference = 0;
+	char*	reference = 0;
 	int		create = 1;
 	int		set = 0;
 	int		use = 0;
 	int		verbose = 0;
 
-	register char*	file;
+	char*	file;
 	char*		e;
 	int		n;
 	struct stat	st;

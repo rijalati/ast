@@ -28,9 +28,9 @@
 #include "cslib.h"
 
 char*
-csntoa(register Cs_t* state, unsigned long addr)
+csntoa(Cs_t* state, unsigned long addr)
 {
-	register unsigned char*	p;
+	unsigned char*	p;
 	int32_t			a;
 
 	a = addr;

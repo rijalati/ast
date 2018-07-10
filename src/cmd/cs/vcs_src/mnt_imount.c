@@ -89,9 +89,9 @@ main(argc, argv)
 	int	argc;
 	char**	argv;
 {
-	register char*	cmd;
-	register int	i;
-	register char*	s;
+	char*	cmd;
+	int	i;
+	char*	s;
 	int		ret;
 	char		buf[1024];
 	char*		elist[20 + 1];
@@ -177,11 +177,11 @@ main(argc, argv)
 }
 		
 int mkargv(s, w, n)
-	register char*	s;
+	char*	s;
 	char**		w;
 	int		n;
 {
-	register int	i;
+	int	i;
 	
 	for(i = 0; i < n && *s; )
 	{
@@ -213,8 +213,8 @@ int im_help(argc, argv)
 	int	argc;
 	char**	argv;
 {
-	register int	i;
-	register char*	s;
+	int	i;
+	char*	s;
 	int		len;
 
 	if (argc == 1)
@@ -263,12 +263,12 @@ int im_help(argc, argv)
  */
 
 int chop(s,w,n,c)
-	register char *s;
+	char *s;
 	char *w[];
 	int n;
 	char c;
 {
-	register int i;
+	int i;
 
 	for (i = 0; i < n && *s;)  
 	{
@@ -300,10 +300,10 @@ int im_bye(argc, argv)
 
 int skip(w, n)
 	char *w[];
-	register int n;
+	int n;
 {
-	register int i;
-	register int j;
+	int i;
+	int j;
 
 	for (i = 0, j = 0; i < n; i++)
 		if (w[i][0]) w[j++] = w[i];
@@ -312,9 +312,9 @@ int skip(w, n)
 
 int im_system(argc, argv)
 	int		argc;
-	register char**	argv;
+	char**	argv;
 {
-	register char*	s;
+	char*	s;
 	char		buf[2048];
 	int		len;
 
@@ -339,12 +339,12 @@ int im_system(argc, argv)
 	
 		
 int arr2str(s,arr, c)
-	register char 	*s;
+	char 	*s;
 	char 		*arr[];
 	char 		c;
 {
-        register int 	i;
-	register char* 	t;
+        int 	i;
+	char* 	t;
 
         for (i=0; arr[i]; i++)
         {

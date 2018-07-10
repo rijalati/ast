@@ -129,8 +129,8 @@ static const Code_t	codes[] =
 static int
 decode(Sfio_t* ip)
 {
-	register int	c;
-	register int	i;
+	int	c;
+	int	i;
 	char		name[32];
 
 	if ((c = sfgetc(ip)) == EOF)
@@ -187,7 +187,7 @@ decode(Sfio_t* ip)
 }
 
 static int
-sfpututf(Sfio_t* op, register int w)
+sfpututf(Sfio_t* op, int w)
 {
 	if (!(w & ~0x7F))
 		return sfputc(op, w);
@@ -206,17 +206,17 @@ sfpututf(Sfio_t* op, register int w)
 static int
 sfnext(Sfio_t* ip)
 {
-	register int	c;
+	int	c;
 
 	while (isspace(c = sfgetc(ip)));
 	return c;
 }
 
 static void
-html2msg(register Sfio_t* ip, register Sfio_t* op, int flags)
+html2msg(Sfio_t* ip, Sfio_t* op, int flags)
 {
-	register int	c;
-	register int	q;
+	int	c;
+	int	q;
 
  again:
 	while ((c = sfgetc(ip)) != EOF)
@@ -408,7 +408,7 @@ html2msg(register Sfio_t* ip, register Sfio_t* op, int flags)
 }
 
 static void
-encode(Sfio_t* op, register int c)
+encode(Sfio_t* op, int c)
 {
 	if (c == '<')
 		sfprintf(op, "&lt;");
@@ -427,12 +427,12 @@ encode(Sfio_t* op, register int c)
 }
 
 static void
-msg2html(register Sfio_t* ip, register Sfio_t* op, register int flags)
+msg2html(Sfio_t* ip, Sfio_t* op, int flags)
 {
-	register char*	s;
-	register int	c;
-	register int	q;
-	register int	p;
+	char*	s;
+	int	c;
+	int	q;
+	int	p;
 
 	sfprintf(op, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\"><HTML><HEAD><!-- text massaged for external translation --></HEAD><BODY>\n");
 	sfprintf(op, "<OL START=\"550717\">\n");

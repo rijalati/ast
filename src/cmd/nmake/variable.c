@@ -37,11 +37,11 @@
  */
 
 static int
-scanprereqs(register Sfio_t* sp, Rule_t* r, int dostate, int all, int top, int sep, int op)
+scanprereqs(Sfio_t* sp, Rule_t* r, int dostate, int all, int top, int sep, int op)
 {
-	register int		i;
-	register List_t*	p;
-	register Rule_t*	x;
+	int		i;
+	List_t*	p;
+	Rule_t*	x;
 	Rule_t*			y;
 	Rule_t*			z;
 	List_t*			prereqs[4];
@@ -127,10 +127,10 @@ genprereqs(Sfio_t* sp, Rule_t* r, int dostate, int all, int sep, int op)
  */
 
 char*
-getval(register char* s, int op)
+getval(char* s, int op)
 {
-	register List_t*	p;
-	register Rule_t*	r;
+	List_t*	p;
+	Rule_t*	r;
 	Rule_t*			x;
 	Rule_t*			z;
 	Var_t*			v;
@@ -558,9 +558,9 @@ getval(register char* s, int op)
  */
 
 static void
-resetvar(register Var_t* p, char* v, int append)
+resetvar(Var_t* p, char* v, int append)
 {
-	register int	n;
+	int	n;
 
 	n = strlen(v);
 	if (!p->value || (p->property & V_import) || n > p->length)
@@ -591,9 +591,9 @@ resetvar(register Var_t* p, char* v, int append)
 Var_t*
 setvar(char* s, char* v, int flags)
 {
-	register char*		t;
-	register Var_t*		p;
-	register int		n;
+	char*		t;
+	Var_t*		p;
+	int		n;
 	int			isid;
 	int			undefined;
 
@@ -763,9 +763,9 @@ setvar(char* s, char* v, int flags)
  */
 
 char*
-colonlist(register Sfio_t* sp, register char* s, int exp, register int del)
+colonlist(Sfio_t* sp, char* s, int exp, int del)
 {
-	register char*	p;
+	char*	p;
 	Var_t*		v;
 
 	if (exp)
@@ -795,10 +795,10 @@ colonlist(register Sfio_t* sp, register char* s, int exp, register int del)
  */
 
 void
-localvar(Sfio_t* sp, register Var_t* v, char* value, int property)
+localvar(Sfio_t* sp, Var_t* v, char* value, int property)
 {
-	register char*	s;
-	register int	c;
+	char*	s;
+	int	c;
 	char*		prefix;
 	char*		t;
 	Var_t*		x;
@@ -866,8 +866,8 @@ localvar(Sfio_t* sp, register Var_t* v, char* value, int property)
 void
 readenv(void)
 {
-	register char**	e;
-	register char*	t;
+	char**	e;
+	char*	t;
 
 	for (e = environ; t = *e; e++)
 		if (istype(*t, C_ID1))

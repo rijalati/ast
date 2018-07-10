@@ -29,10 +29,10 @@
  */
 
 unsigned long
-msgsetmask(register const char* s)
+msgsetmask(const char* s)
 {
-	register int		c;
-	register unsigned long m;
+	int		c;
+	unsigned long m;
 	int			invert;
 
 	m = 0;

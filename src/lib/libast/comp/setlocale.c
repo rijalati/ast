@@ -280,12 +280,12 @@ static unsigned char debug_order[] =
  */
 
 static size_t
-debug_mbrtowc(register wchar_t* p, register const char* s, size_t n, mbstate_t* ms)
+debug_mbrtowc(wchar_t* p, const char* s, size_t n, mbstate_t* ms)
 {
-	register const char*	q;
-	register const char*	r;
-	register int		w;
-	register int		dr;
+	const char*	q;
+	const char*	r;
+	int		w;
+	int		dr;
 	wchar_t			c;
 
 	if (n < 1)
@@ -420,14 +420,14 @@ debug_alpha(wchar_t c)
 }
 
 static size_t
-debug_strxfrm(register char* t, register const char* s, size_t n)
+debug_strxfrm(char* t, const char* s, size_t n)
 {
-	register const char*	q;
-	register const char*	r;
-	register char*		e;
+	const char*	q;
+	const char*	r;
+	char*		e;
 	char*			o;
-	register size_t		z;
-	register int		w;
+	size_t		z;
+	int		w;
 
 	o = t;
 	z = 0;
@@ -570,7 +570,7 @@ set_collate(Lc_category_t* cp)
 #define mb_state	((mbstate_t*)&ast.pad[sizeof(ast.pad)-sizeof(mbstate_t)])
 
 static size_t
-sjis_mbrtowc(register wchar_t* p, register const char* s, size_t n, mbstate_t* q)
+sjis_mbrtowc(wchar_t* p, const char* s, size_t n, mbstate_t* q)
 {
 	if (n && p && s && (*s == '\\' || *s == '~') && !memcmp(q, &ast._ast_mbstate_init, sizeof(ast._ast_mbstate_init)))
 	{
@@ -581,7 +581,7 @@ sjis_mbrtowc(register wchar_t* p, register const char* s, size_t n, mbstate_t* q
 }
 
 static int
-sjis_mbtowc(register wchar_t* p, register const char* s, size_t n)
+sjis_mbtowc(wchar_t* p, const char* s, size_t n)
 {
 	return (int)sjis_mbrtowc(p, s, n, mb_state);
 }
@@ -2390,7 +2390,7 @@ set_ctype(Lc_category_t* cp)
 static int
 set_numeric(Lc_category_t* cp)
 {
-	register int		category = cp->internal;
+	int		category = cp->internal;
 	struct lconv*		lp;
 	Lc_numeric_t*		dp;
 
@@ -2659,12 +2659,12 @@ single(int category, Lc_t* lc, unsigned int flags)
  */
 
 static int
-composite(register const char* s, int initialize)
+composite(const char* s, int initialize)
 {
-	register const char*	t;
-	register int		i;
-	register int		j;
-	register int		k;
+	const char*	t;
+	int		i;
+	int		j;
+	int		k;
 	int			n;
 	int			m;
 	const char*		w;
@@ -2775,9 +2775,9 @@ composite(register const char* s, int initialize)
 char*
 _ast_setlocale(int category, const char* locale)
 {
-	register char*		s;
-	register int		i;
-	register int		j;
+	char*		s;
+	int		i;
+	int		j;
 	int			k;
 	int			f;
 	Lc_t*			p;

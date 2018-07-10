@@ -61,10 +61,10 @@ typedef struct Slt_s
  */
 
 static long
-getlabnum(register char* p, int byte, int width, int base)
+getlabnum(char* p, int byte, int width, int base)
 {
-	register char*	e;
-	register int	c;
+	char*	e;
+	int	c;
 	long		n;
 
 	p += byte - 1;
@@ -80,10 +80,10 @@ getlabnum(register char* p, int byte, int width, int base)
  */
 
 static char*
-getlabstr(register char* p, int byte, int width, register char* s)
+getlabstr(char* p, int byte, int width, char* s)
 {
 
-	register char*	e;
+	char*	e;
 	char*		v;
 
 	v = s;
@@ -104,11 +104,11 @@ getlabstr(register char* p, int byte, int width, register char* s)
  */
 
 static int
-getlabel(Pax_t* pax, register Archive_t* ap, register File_t* f)
+getlabel(Pax_t* pax, Archive_t* ap, File_t* f)
 {
-	register Slt_t*	slt = (Slt_t*)ap->data;
-	register int	c;
-	register int	n;
+	Slt_t*	slt = (Slt_t*)ap->data;
+	int	c;
+	int	n;
 
 	if (c = slt->peek)
 	{
@@ -147,9 +147,9 @@ getlabel(Pax_t* pax, register Archive_t* ap, register File_t* f)
  */
 
 static void
-putlabels(Pax_t* pax, register Archive_t* ap, register File_t* f, char* type)
+putlabels(Pax_t* pax, Archive_t* ap, File_t* f, char* type)
 {
-	register Slt_t*	slt = (Slt_t*)ap->data;
+	Slt_t*	slt = (Slt_t*)ap->data;
 	struct tm*	tm;
 
 	switch (*type)
@@ -177,9 +177,9 @@ putlabels(Pax_t* pax, register Archive_t* ap, register File_t* f, char* type)
 }
 
 static int
-slt_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
+slt_getprologue(Pax_t* pax, Format_t* fp, Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
 {
-	register Slt_t*		slt;
+	Slt_t*		slt;
 	char*			s;
 	char*			t;
 	int			lab;
@@ -246,7 +246,7 @@ slt_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, uns
 }
 
 static int
-slt_done(Pax_t* pax, register Archive_t* ap)
+slt_done(Pax_t* pax, Archive_t* ap)
 {
 	if (ap->data)
 	{
@@ -257,12 +257,12 @@ slt_done(Pax_t* pax, register Archive_t* ap)
 }
 
 static int
-slt_getheader(Pax_t* pax, register Archive_t* ap, register File_t* f, int wfd)
+slt_getheader(Pax_t* pax, Archive_t* ap, File_t* f, int wfd)
 {
-	register Slt_t*	slt = (Slt_t*)ap->data;
-	register char*	s;
-	register int	i;
-	register off_t	n;
+	Slt_t*	slt = (Slt_t*)ap->data;
+	char*	s;
+	int	i;
+	off_t	n;
 	int		lab;
 	int		type;
 
@@ -361,11 +361,11 @@ slt_getheader(Pax_t* pax, register Archive_t* ap, register File_t* f, int wfd)
 }
 
 static int
-slt_getdata(Pax_t* pax, register Archive_t* ap, register File_t* f, int wfd)
+slt_getdata(Pax_t* pax, Archive_t* ap, File_t* f, int wfd)
 {
-	register Slt_t*	slt = (Slt_t*)ap->data;
-	register off_t	n;
-	register off_t	size;
+	Slt_t*	slt = (Slt_t*)ap->data;
+	off_t	n;
+	off_t	size;
 	int		c;
 	int		i;
 	int		j;
@@ -600,7 +600,7 @@ slt_backup(Pax_t* pax, Archive_t* ap)
 static int
 slt_putprologue(Pax_t* pax, Archive_t* ap, int append)
 {
-	register Slt_t*	slt = (Slt_t*)ap->data;
+	Slt_t*	slt = (Slt_t*)ap->data;
 
 	if (!ap->locked && slt->vol)
 	{
@@ -663,11 +663,11 @@ slt_putheader(Pax_t* pax, Archive_t* ap, File_t* f)
 static int
 recordout(Pax_t* pax, Archive_t* ap, File_t* f, Sfio_t* fp)
 {
-	register Slt_t*	slt = (Slt_t*)ap->data;
-	register int	c;
-	register char*	p;
-	register char*	recdat;
-	register char*	blkdat;
+	Slt_t*	slt = (Slt_t*)ap->data;
+	int	c;
+	char*	p;
+	char*	recdat;
+	char*	blkdat;
 	char*		rec;
 	char*		blk;
 	int		span;
@@ -851,9 +851,9 @@ recordout(Pax_t* pax, Archive_t* ap, File_t* f, Sfio_t* fp)
 static int
 slt_putdata(Pax_t* pax, Archive_t* ap, File_t* f, int rfd)
 {
-	register size_t		m;
-	register ssize_t	n;
-	register off_t		c;
+	size_t		m;
+	ssize_t	n;
+	off_t		c;
 	int			r;
 	Buffer_t*		bp;
 	Sfio_t*			rfp;
@@ -944,7 +944,7 @@ slt_puttrailer(Pax_t* pax, Archive_t* ap, File_t* f)
 static off_t
 slt_putepilogue(Pax_t* pax, Archive_t* ap)
 {
-	register Slt_t*	slt = (Slt_t*)ap->data;
+	Slt_t*	slt = (Slt_t*)ap->data;
 
 	if (!ap->locked)
 	{
@@ -959,10 +959,10 @@ slt_putepilogue(Pax_t* pax, Archive_t* ap)
 }
 
 static int
-slt_validate(Pax_t* pax, Archive_t* ap, register File_t* f)
+slt_validate(Pax_t* pax, Archive_t* ap, File_t* f)
 {
-	register Slt_t*	slt = (Slt_t*)ap->data;
-	register char*	s;
+	Slt_t*	slt = (Slt_t*)ap->data;
+	char*	s;
 
 	if (f->type != X_IFREG)
 	{
@@ -1015,9 +1015,9 @@ Format_t	pax_slt_format =
 };
 
 static int
-ibm_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
+ibm_getprologue(Pax_t* pax, Format_t* fp, Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
 {
-	register Slt_t*	slt;
+	Slt_t*	slt;
 	int		n;
 
 	if ((n = slt_getprologue(pax, fp, ap, f, buf, size)) > 0 && state.record.charset)

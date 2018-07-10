@@ -190,14 +190,14 @@ int error __PARAM__((int (*function)(int), char* format), (function, format)) __
 	EXEC -nh
 		INPUT - $'#pragma prototyped
 disp_form(pkt)
-register packet *pkt;
+packet *pkt;
 {
     char *rjust(), *ptr;
 
     return(0);
 }'
 		OUTPUT - $'                  \ndisp_form(pkt)
-register packet *pkt;
+packet *pkt;
 {
     char *rjust(__VARARG__), *ptr;
 
@@ -237,12 +237,12 @@ static void
 signature(char* key, int keysize, const char* package,
 \t\tconst char* data, const char* text)
 {
-\tregister int\t\t\tc;
-\tregister const char*\t\td;
-\tregister char*\t\t\tk;
-\tregister const char*\t\tp;
-\tregister const unsigned char*\tt;
-\tregister unsigned long\t\th;
+\tint\t\t\tc;
+\tconst char*\t\td;
+\tchar*\t\t\tk;
+\tconst char*\t\tp;
+\tconst unsigned char*\tt;
+\tunsigned long\t\th;
 
 \tstatic char\t\tsalt[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_.";
 
@@ -278,7 +278,7 @@ signature(char* key, int keysize, const char* package,
  */
 
 void
-pathcheck(const char* package, const char* tool, register PATHCHECK* pc)
+pathcheck(const char* package, const char* tool, PATHCHECK* pc)
 {
 \tint\tc;
 \tint\tn;
@@ -436,12 +436,12 @@ signature __PARAM__((char* key, int keysize, const char* package,
 \t\tconst char* data; const char* text;)
 #line 21
 {
-\tregister int\t\t\tc;
-\tregister const char*\t\td;
-\tregister char*\t\t\tk;
-\tregister const char*\t\tp;
-\tregister const unsigned char*\tt;
-\tregister unsigned long\t\th;
+\tint\t\t\tc;
+\tconst char*\t\td;
+\tchar*\t\t\tk;
+\tconst char*\t\tp;
+\tconst unsigned char*\tt;
+\tunsigned long\t\th;
 
 \tstatic char\t\tsalt[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_.";
 
@@ -477,7 +477,7 @@ signature __PARAM__((char* key, int keysize, const char* package,
  */
 
 void
-pathcheck __PARAM__((const char* package, const char* tool, register PATHCHECK* pc), (package, tool, pc)) __OTORP__(const char* package; const char* tool; register PATHCHECK* pc;)
+pathcheck __PARAM__((const char* package, const char* tool, PATHCHECK* pc), (package, tool, pc)) __OTORP__(const char* package; const char* tool; PATHCHECK* pc;)
 #line 64
 {
 \tint\tc;
@@ -997,7 +997,7 @@ print_trace __PARAM__((char* format, ...), (va_alist)) __OTORP__(va_dcl)
 	EXEC -nh
 		INPUT - $'#pragma prototyped
 disp_form(pkt)
-register packet *pkt;
+packet *pkt;
 {
         /* FUNCTION STUB */
 
@@ -1009,7 +1009,7 @@ register packet *pkt;
 }'
 		OUTPUT - $'                  
 disp_form(pkt)
-register packet *pkt;
+packet *pkt;
 {
         /* FUNCTION STUB */
 
@@ -1022,7 +1022,7 @@ register packet *pkt;
 	EXEC -nh
 		INPUT - $'#pragma prototyped
 disp_form(pkt)
-register packet *pkt;
+packet *pkt;
 {
         /* FUNCTION STUB */
 
@@ -1035,7 +1035,7 @@ register packet *pkt;
 }'
 		OUTPUT - $'                  
 disp_form(pkt)
-register packet *pkt;
+packet *pkt;
 {
         /* FUNCTION STUB */
 
@@ -1168,9 +1168,9 @@ static void scalarstr  __PARAM__((Tobj to), (to)) __OTORP__(Tobj to;)
 char*
 getshell(void)
 {
-\tregister char*\ts;
-\tregister char*\tsh;
-\tregister int\ti;
+\tchar*\ts;
+\tchar*\tsh;
+\tint\ti;
 
 \tif ((sh = getenv("SHELL")) && *sh == \'/\' && strmatch(sh, "*/(sh|*[!cC]sh)"))
 \t{
@@ -1221,9 +1221,9 @@ char*
 getshell __PARAM__((void), ())
 #line 28
 {
-\tregister char*\ts;
-\tregister char*\tsh;
-\tregister int\ti;
+\tchar*\ts;
+\tchar*\tsh;
+\tint\ti;
 
 \tif ((sh = getenv("SHELL")) && *sh == \'/\' && strmatch(sh, "*/(sh|*[!cC]sh)"))
 \t{
@@ -1258,9 +1258,9 @@ getshell __PARAM__((void), ())
 #include "colib.h"
 
 void
-coquote(register Sfio_t* sp, register const char* s, int type)
+coquote(Sfio_t* sp, const char* s, int type)
 {
-\tregister int\tc;
+\tint\tc;
 
 \tstatic char*\tmatch;
 
@@ -1280,8 +1280,8 @@ coquote(register Sfio_t* sp, register const char* s, int type)
 \t\t}
 \t\telse if (type && c == \'/\' && *s == *match)
 \t\t{
-\t\t\tregister const char*\tx = s;
-\t\t\tregister char*\t\tt = match;
+\t\t\tconst char*\tx = s;
+\t\t\tchar*\t\tt = match;
 
 \t\t\twhile (*t && *t++ == *x) x++;
 \t\t\tif (!*t && *x == \'/\')
@@ -1304,10 +1304,10 @@ coquote(register Sfio_t* sp, register const char* s, int type)
 #include "colib.h"
 
 void
-coquote __PARAM__((register Sfio_t* sp, register const char* s, int type), (sp, s, type)) __OTORP__(register Sfio_t* sp; register const char* s; int type;)
+coquote __PARAM__((Sfio_t* sp, const char* s, int type), (sp, s, type)) __OTORP__(Sfio_t* sp; const char* s; int type;)
 #line 14
 {
-\tregister int\tc;
+\tint\tc;
 
 \tstatic char*\tmatch;
 
@@ -1327,8 +1327,8 @@ coquote __PARAM__((register Sfio_t* sp, register const char* s, int type), (sp, 
 \t\t}
 \t\telse if (type && c == \'/\' && *s == *match)
 \t\t{
-\t\t\tregister const char*\tx = s;
-\t\t\tregister char*\t\tt = match;
+\t\t\tconst char*\tx = s;
+\t\t\tchar*\t\tt = match;
 
 \t\t\twhile (*t && *t++ == *x) x++;
 \t\t\tif (!*t && *x == \'/\')
@@ -2974,7 +2974,7 @@ int tty_set(int fd, int action, struct termios *tty)
  *
 }*/
 
-void tty_cooked(register int fd)
+void tty_cooked(int fd)
 {
 
 \tif(editb.e_raw==0)
@@ -3006,7 +3006,7 @@ void tty_cooked(register int fd)
  *
 }*/
 
-tty_raw(register int fd)
+tty_raw(int fd)
 {
 #ifdef L_MASK
 \tstruct ltchars lchars;
@@ -3091,7 +3091,7 @@ tty_raw(register int fd)
  */
 
 #   ifdef TIOCGETC
-tty_alt(register int fd)
+tty_alt(int fd)
 {
 \tint mask;
 \tstruct tchars ttychars;
@@ -3133,7 +3133,7 @@ tty_alt(register int fd)
 #\t    define IEXTEN\t0
 #\tendif /* IEXTEN */
 
-tty_alt(register int fd)
+tty_alt(int fd)
 {
 \tif(editb.e_raw==ALTMODE)
 \t\treturn(GOOD);
@@ -3187,7 +3187,7 @@ int ed_window(void)
 {
 \tint\trows;
 \tint\tcols = DFLTWINDOW-1;
-\tregister char *cp = nv_strval(COLUMNS);
+\tchar *cp = nv_strval(COLUMNS);
 \tif(cp)
 \t{
 \t\tcols = atoi(cp)-1;
@@ -3208,8 +3208,8 @@ int ed_window(void)
 
 void ed_flush(void)
 {
-\tregister int n = editb.e_outptr-editb.e_outbase;
-\tregister int fd = ERRIO;
+\tint n = editb.e_outptr-editb.e_outbase;
+\tint fd = ERRIO;
 \tif(n<=0)
 \t\treturn;
 \twrite(fd,editb.e_outbase,(unsigned)n);
@@ -3258,8 +3258,8 @@ void ed_crlf(void)
 
 void\ted_setup(int fd)
 {
-\tregister char *pp;
-\tregister char *last;
+\tchar *pp;
+\tchar *last;
 \tchar *ppmax;
 \tint myquote = 0;
 \tint qlen = 1;
@@ -3274,7 +3274,7 @@ void\ted_setup(int fd)
 #endif /* KSHELL */
 \tif(sh.hist_ptr)
 \t{
-\t\tregister History_t *hp = sh.hist_ptr;
+\t\tHistory_t *hp = sh.hist_ptr;
 \t\teditb.e_hismax = hist_max(hp);
 \t\teditb.e_hismin = hist_min(hp);
 \t\teditb.e_hloff = 0;
@@ -3290,7 +3290,7 @@ void\ted_setup(int fd)
 \tppmax = pp+PRSIZE-1;
 \t*pp++ = \'\\r\';
 \t{
-\t\tregister int c;
+\t\tint c;
 \t\twhile(c= *last++) switch(c)
 \t\t{
 \t\t\tcase \'\\r\':
@@ -3339,7 +3339,7 @@ void\ted_setup(int fd)
 \t*pp = 0;
 \tif((editb.e_wsize -= editb.e_plen) < 7)
 \t{
-\t\tregister int shift = 7-editb.e_wsize;
+\t\tint shift = 7-editb.e_wsize;
 \t\teditb.e_wsize = 7;
 \t\tpp = editb.e_prompt+1;
 \t\tstrcpy(pp,pp+shift);
@@ -3359,7 +3359,7 @@ void\ted_setup(int fd)
  * if found, puts the macro definition into lookahead buffer and returns 1
  */
 
-ed_macro(register int i)
+ed_macro(int i)
 {
 }
 #endif /*KSHELL*/'
@@ -3559,7 +3559,7 @@ int tty_set __PARAM__((int fd, int action, struct termios *tty), (fd, action, tt
  *
 }*/
 
-void tty_cooked __PARAM__((register int fd), (fd)) __OTORP__(register int fd;)
+void tty_cooked __PARAM__((int fd), (fd)) __OTORP__(int fd;)
 #line 195
 {
 
@@ -3592,7 +3592,7 @@ void tty_cooked __PARAM__((register int fd), (fd)) __OTORP__(register int fd;)
  *
 }*/
 
-tty_raw __PARAM__((register int fd), (fd)) __OTORP__(register int fd;)
+tty_raw __PARAM__((int fd), (fd)) __OTORP__(int fd;)
 #line 227
 {
 #ifdef L_MASK
@@ -3678,7 +3678,7 @@ tty_raw __PARAM__((register int fd), (fd)) __OTORP__(register int fd;)
  */
 
 #   ifdef TIOCGETC
-tty_alt __PARAM__((register int fd), (fd)) __OTORP__(register int fd;)
+tty_alt __PARAM__((int fd), (fd)) __OTORP__(int fd;)
 #line 312
 {
 \tint mask;
@@ -3721,7 +3721,7 @@ tty_alt __PARAM__((register int fd), (fd)) __OTORP__(register int fd;)
 #\t    define IEXTEN\t0
 #\tendif /* IEXTEN */
 
-tty_alt __PARAM__((register int fd), (fd)) __OTORP__(register int fd;)
+tty_alt __PARAM__((int fd), (fd)) __OTORP__(int fd;)
 #line 354
 {
 \tif(editb.e_raw==ALTMODE)
@@ -3777,7 +3777,7 @@ int ed_window __PARAM__((void), ())
 {
 \tint\trows;
 \tint\tcols = DFLTWINDOW-1;
-\tregister char *cp = nv_strval(COLUMNS);
+\tchar *cp = nv_strval(COLUMNS);
 \tif(cp)
 \t{
 \t\tcols = atoi(cp)-1;
@@ -3799,8 +3799,8 @@ int ed_window __PARAM__((void), ())
 void ed_flush __PARAM__((void), ())
 #line 427
 {
-\tregister int n = editb.e_outptr-editb.e_outbase;
-\tregister int fd = ERRIO;
+\tint n = editb.e_outptr-editb.e_outbase;
+\tint fd = ERRIO;
 \tif(n<=0)
 \t\treturn;
 \twrite(fd,editb.e_outbase,(unsigned)n);
@@ -3852,8 +3852,8 @@ void ed_crlf __PARAM__((void), ())
 void\ted_setup __PARAM__((int fd), (fd)) __OTORP__(int fd;)
 #line 477
 {
-\tregister char *pp;
-\tregister char *last;
+\tchar *pp;
+\tchar *last;
 \tchar *ppmax;
 \tint myquote = 0;
 \tint qlen = 1;
@@ -3868,7 +3868,7 @@ void\ted_setup __PARAM__((int fd), (fd)) __OTORP__(int fd;)
 #endif /* KSHELL */
 \tif(sh.hist_ptr)
 \t{
-\t\tregister History_t *hp = sh.hist_ptr;
+\t\tHistory_t *hp = sh.hist_ptr;
 \t\teditb.e_hismax = hist_max(hp);
 \t\teditb.e_hismin = hist_min(hp);
 \t\teditb.e_hloff = 0;
@@ -3884,7 +3884,7 @@ void\ted_setup __PARAM__((int fd), (fd)) __OTORP__(int fd;)
 \tppmax = pp+PRSIZE-1;
 \t*pp++ = \'\\r\';
 \t{
-\t\tregister int c;
+\t\tint c;
 \t\twhile(c= *last++) switch(c)
 \t\t{
 \t\t\tcase \'\\r\':
@@ -3933,7 +3933,7 @@ void\ted_setup __PARAM__((int fd), (fd)) __OTORP__(int fd;)
 \t*pp = 0;
 \tif((editb.e_wsize -= editb.e_plen) < 7)
 \t{
-\t\tregister int shift = 7-editb.e_wsize;
+\t\tint shift = 7-editb.e_wsize;
 \t\teditb.e_wsize = 7;
 \t\tpp = editb.e_prompt+1;
 \t\tstrcpy(pp,pp+shift);
@@ -3953,7 +3953,7 @@ void\ted_setup __PARAM__((int fd), (fd)) __OTORP__(int fd;)
  * if found, puts the macro definition into lookahead buffer and returns 1
  */
 
-ed_macro __PARAM__((register int i), (i)) __OTORP__(register int i;)
+ed_macro __PARAM__((int i), (i)) __OTORP__(int i;)
 #line 580
 {
 }
@@ -4127,7 +4127,7 @@ void sh_cfail(MSG message)
  *  A message is printed out and the shell tries to exit
  */
 
-void sh_fail(register const char *s1,MSG s2)
+void sh_fail(const char *s1,MSG s2)
 {
 \tmac_check();
 \tp_prp(s1);
@@ -4150,7 +4150,7 @@ void sh_fail(register const char *s1,MSG s2)
 
 void sh_exit(int xno)
 {
-\tregister unsigned state=(st.states&~(SH_ERREXIT|SH_MONITOR));
+\tunsigned state=(st.states&~(SH_ERREXIT|SH_MONITOR));
 \tsh.exitval=xno;
 \tif(xno==SIGFAIL)
 \t\tsh.exitval |= sh.lastsig;
@@ -4181,7 +4181,7 @@ void sh_exit(int xno)
 \t\t\tio_restore(0);
 \t\t\tif(sh.input.file && sfpeek(sh.input.file,(unsigned char**)0)>0)
 \t\t\t{
-\t\t\t\tregister int n;
+\t\t\t\tint n;
 \t\t\t\tunsigned char *bp;
 \t\t\t\t/* discard input buffer */
 \t\t\t\tif((n = sfpeek(sh.input.file,&bp)) > 0)
@@ -4206,7 +4206,7 @@ void sh_exit(int xno)
 
 #ifdef JOBS
     /* send signal to background process groups */
-static int job_terminate(register struct process *pw,register int sig)
+static int job_terminate(struct process *pw,int sig)
     {
 \tif(pw->p_pgrp)
 \t\tjob_kill(pw,sig);
@@ -4218,10 +4218,10 @@ static int job_terminate(register struct process *pw,register int sig)
  * This is the exit routine for the shell
  */
 
-void sh_done(register int sig)
+void sh_done(int sig)
 {
-\tregister char *t;
-\tregister int savxit = sh.exitval;
+\tchar *t;
+\tint savxit = sh.exitval;
 \tif(sh.trapnote&SIGBEGIN)
 \t\treturn;
 \tsh.trapnote = 0;
@@ -4310,7 +4310,7 @@ void sh_cfail __PARAM__((MSG message), (message)) __OTORP__(MSG message;)
  *  A message is printed out and the shell tries to exit
  */
 
-void sh_fail __PARAM__((register const char *s1,MSG s2), (s1, s2)) __OTORP__(register const char *s1;MSG s2;)
+void sh_fail __PARAM__((const char *s1,MSG s2), (s1, s2)) __OTORP__(const char *s1;MSG s2;)
 #line 43
 {
 \tmac_check();
@@ -4335,7 +4335,7 @@ void sh_fail __PARAM__((register const char *s1,MSG s2), (s1, s2)) __OTORP__(reg
 void sh_exit __PARAM__((int xno), (xno)) __OTORP__(int xno;)
 #line 64
 {
-\tregister unsigned state=(st.states&~(SH_ERREXIT|SH_MONITOR));
+\tunsigned state=(st.states&~(SH_ERREXIT|SH_MONITOR));
 \tsh.exitval=xno;
 \tif(xno==SIGFAIL)
 \t\tsh.exitval |= sh.lastsig;
@@ -4366,7 +4366,7 @@ void sh_exit __PARAM__((int xno), (xno)) __OTORP__(int xno;)
 \t\t\tio_restore(0);
 \t\t\tif(sh.input.file && sfpeek(sh.input.file,(unsigned char**)0)>0)
 \t\t\t{
-\t\t\t\tregister int n;
+\t\t\t\tint n;
 \t\t\t\tunsigned char *bp;
 \t\t\t\t/* discard input buffer */
 \t\t\t\tif((n = sfpeek(sh.input.file,&bp)) > 0)
@@ -4391,7 +4391,7 @@ void sh_exit __PARAM__((int xno), (xno)) __OTORP__(int xno;)
 
 #ifdef JOBS
     /* send signal to background process groups */
-static int job_terminate __PARAM__((register struct process *pw,register int sig), (pw, sig)) __OTORP__(register struct process *pw;register int sig;)
+static int job_terminate __PARAM__((struct process *pw,int sig), (pw, sig)) __OTORP__(struct process *pw;int sig;)
 #line 122
 {
 \tif(pw->p_pgrp)
@@ -4404,11 +4404,11 @@ static int job_terminate __PARAM__((register struct process *pw,register int sig
  * This is the exit routine for the shell
  */
 
-void sh_done __PARAM__((register int sig), (sig)) __OTORP__(register int sig;)
+void sh_done __PARAM__((int sig), (sig)) __OTORP__(int sig;)
 #line 134
 {
-\tregister char *t;
-\tregister int savxit = sh.exitval;
+\tchar *t;
+\tint savxit = sh.exitval;
 \tif(sh.trapnote&SIGBEGIN)
 \t\treturn;
 \tsh.trapnote = 0;
@@ -8140,7 +8140,7 @@ errmsg(char* sb)
 char
 input(void)\t\t\t\t\t\t/* a la awk/gpr */
 {
-    register c;
+    c;
     extern char *lexprog;
 
     if (yysptr > yysbuf)
@@ -10807,7 +10807,7 @@ char
 input __PARAM__((void), ())
 #line 434
 {
-    register c;
+    c;
     extern __MANGLE__ char *lexprog;
 
     if (yysptr > yysbuf)
@@ -13240,11 +13240,11 @@ static int\ttextmod(int,int);
  *
 -*/
 
-vi_read(int fd, register char *shbuf, unsigned nchar)
+vi_read(int fd, char *shbuf, unsigned nchar)
 {
-\tregister int i;\t\t\t/* general variable */
-\tregister int c;\t\t\t/* general variable */
-\tregister int term_char;\t/* read() termination character */
+\tint i;\t\t\t/* general variable */
+\tint c;\t\t\t/* general variable */
+\tint term_char;\t/* read() termination character */
 \tchar prompt[PRSIZE+2];\t\t/* prompt */
 \tgenchar Physical[2*MAXLINE];\t/* physical image */
 \tgenchar Ubuf[MAXLINE];\t/* used for U command */
@@ -13655,7 +13655,7 @@ vi_read(int fd, register char *shbuf, unsigned nchar)
 
 static void append(int c, int mode)
 {
-\tregister int i;
+\tint i;
 
 \tif( last_virt<max_col && last_phys<max_col )
 \t{
@@ -13679,9 +13679,9 @@ static void append(int c, int mode)
  *
 }*/
 
-static void backword(int nwords, register int cmd)
+static void backword(int nwords, int cmd)
 {
-\tregister int tcur_virt = cur_virt;
+\tint tcur_virt = cur_virt;
 \twhile( nwords-- && tcur_virt > first_virt )
 \t{
 \t\tif( !isblank(tcur_virt) && isblank(tcur_virt-1)
@@ -13689,7 +13689,7 @@ static void backword(int nwords, register int cmd)
 \t\t\t--tcur_virt;
 \t\telse if(cmd != \'B\')
 \t\t{
-\t\t\tregister int last = isalph(tcur_virt-1);
+\t\t\tint last = isalph(tcur_virt-1);
 \t\t\tif((!isalph(tcur_virt) && last)
 \t\t\t|| (isalph(tcur_virt) && !last))
 \t\t\t\t--tcur_virt;
@@ -13725,8 +13725,8 @@ static void backword(int nwords, register int cmd)
 
 static int cntlmode(void)
 {
-\tregister int c;
-\tregister int i;
+\tint c;
+\tint i;
 \tgenchar tmp_u_space[MAXLINE];\t/* temporary u_space */
 \tgenchar *real_u_space;\t\t/* points to real u_space */
 \tint tmp_u_column = INVALID;\t/* temporary u_column */
@@ -13835,7 +13835,7 @@ static int cntlmode(void)
 
 \t\tcase cntl(\'V\'):
 \t\t{
-\t\t\tregister const char *p = &e_version[5];
+\t\t\tconst char *p = &e_version[5];
 \t\t\tsave_v();
 \t\t\tdel_line(BAD);
 \t\t\twhile(c = *p++)
@@ -13966,7 +13966,7 @@ static int cntlmode(void)
 \t\tcase \'#\':\t/** insert(delete) # to (no)comment command **/
 \t\t\tif( cur_virt != INVALID )
 \t\t\t{
-\t\t\t\tregister genchar *p = &virtual[last_virt+1];
+\t\t\t\tgenchar *p = &virtual[last_virt+1];
 \t\t\t\t*p = 0;
 \t\t\t\t/*** see whether first char is comment char ***/
 \t\t\t\tc = (virtual[0]==\'#\');
@@ -14020,9 +14020,9 @@ static int cntlmode(void)
  *
 }*/
 
-static void cursor(register int x)
+static void cursor(int x)
 {
-\tregister int delta;
+\tint delta;
 
 #ifdef MULTIBYTE
 \twhile(physical[x]==MARKER)
@@ -14072,10 +14072,10 @@ static void cursor(register int x)
  *
 }*/
 
-static void cdelete(register int nchars, int mode)
+static void cdelete(int nchars, int mode)
 {
-\tregister int i;
-\tregister genchar *vp;
+\tint i;
+\tgenchar *vp;
 
 \tif( cur_virt < first_virt )
 \t{
@@ -14161,9 +14161,9 @@ static void del_line(int mode)
 
 static int delmotion(int motion, int mode)
 {
-\tregister int begin;
-\tregister int end;
-\t/* the following saves a register */
+\tint begin;
+\tint end;
+\t/* the following saves a */
 #       define delta end
 
 \tif( cur_virt == INVALID )
@@ -14217,9 +14217,9 @@ static int delmotion(int motion, int mode)
  *
 }*/
 
-static void endword(int nwords, register int cmd)
+static void endword(int nwords, int cmd)
 {
-\tregister int tcur_virt = cur_virt;
+\tint tcur_virt = cur_virt;
 \twhile( nwords-- )
 \t{
 \t\tif( !isblank(tcur_virt) && tcur_virt<=last_virt )
@@ -14254,9 +14254,9 @@ static void endword(int nwords, register int cmd)
  *
 }*/
 
-static void forward(register int nwords, int cmd)
+static void forward(int nwords, int cmd)
 {
-\tregister int tcur_virt = cur_virt;
+\tint tcur_virt = cur_virt;
 \twhile( nwords-- )
 \t{
 \t\tif( cmd == \'W\' )
@@ -14294,9 +14294,9 @@ static void forward(register int nwords, int cmd)
  *
 }*/
 
-static int getcount(register int c)
+static int getcount(int c)
 {
-\tregister int i;
+\tint i;
 
 \t/*** get any repeat count ***/
 
@@ -14335,10 +14335,10 @@ static int getcount(register int c)
  *
 }*/
 
-static void getline(register int mode)
+static void getline(int mode)
 {
-\tregister int c;
-\tregister int tmp;
+\tint c;
+\tint tmp;
 
 \taddnl = TRUE;
 
@@ -14494,12 +14494,12 @@ static void getline(register int mode)
  *
 }*/
 
-static int mvcursor(register int motion)
+static int mvcursor(int motion)
 {
-\tregister int count;
-\tregister int tcur_virt;
-\tregister int incr = -1;
-\tregister int bound = 0;
+\tint count;
+\tint tcur_virt;
+\tint incr = -1;
+\tint bound = 0;
 \tstatic int last_find = 0;\t/* last find command */
 
 \tswitch(motion)
@@ -14685,10 +14685,10 @@ static void pr_prompt(void)
  * print a string
  */
 
-static void pr_string(register const char *sp)
+static void pr_string(const char *sp)
 {
 \t/*** copy string sp ***/
-\tregister char *ptr = editb.e_outptr;
+\tchar *ptr = editb.e_outptr;
 \twhile(*sp)
 \t\t*ptr++ = *sp++;
 \teditb.e_outptr = ptr;
@@ -14702,7 +14702,7 @@ static void pr_string(register const char *sp)
  *
 }*/
 
-static void putstring(register int col, register int nchars)
+static void putstring(int col, int nchars)
 {
 \twhile( nchars-- )
 \t\tputchar(physical[col++]);
@@ -14740,9 +14740,9 @@ static void putstring(register int col, register int nchars)
 
 static void refresh(int mode)
 {
-\tregister int p;
-\tregister int regb;
-\tregister int first_w = first_wind;
+\tint p;
+\tint regb;
+\tint first_w = first_wind;
 \tint p_differ;
 \tint new_lw;
 \tint ncur_phys;
@@ -14909,9 +14909,9 @@ static void refresh(int mode)
  *
 }*/
 
-static void replace(register int c, register int increment)
+static void replace(int c, int increment)
 {
-\tregister int cur_window;
+\tint cur_window;
 
 \tif( cur_virt == INVALID )
 \t{
@@ -14970,7 +14970,7 @@ static void replace(register int c, register int increment)
 
 static void restore_v(void)
 {
-\tregister int tmpcol;
+\tint tmpcol;
 \tgenchar tmpspace[MAXLINE];
 
 \tif( u_column == INVALID-1 )
@@ -14997,7 +14997,7 @@ static void restore_v(void)
 
 static void save_last(void)
 {
-\tregister int i;
+\tint i;
 
 \tif( (i = cur_virt - first_virt + 1) > 0 )
 \t{
@@ -15036,10 +15036,10 @@ static void save_v(void)
  *
 }*/
 
-static int search(register int mode)
+static int search(int mode)
 {
-\tregister int new_direction;
-\tregister int oldcurhline;
+\tint new_direction;
+\tint oldcurhline;
 \tstatic int direction = -1;
 \thistloc_t  location;
 
@@ -15109,9 +15109,9 @@ static int search(register int mode)
 
 static void sync_cursor(void)
 {
-\tregister int p;
-\tregister int v;
-\tregister int c;
+\tint p;
+\tint v;
+\tint c;
 \tint new_phys;
 
 \tif( cur_virt == INVALID )
@@ -15194,11 +15194,11 @@ static void sync_cursor(void)
  *
 }*/
 
-static int textmod(register int c, int mode)
+static int textmod(int c, int mode)
 {
-\tregister int i;
-\tregister genchar *p = lastline;
-\tregister int trepeat = repeat;
+\tint i;
+\tgenchar *p = lastline;
+\tint trepeat = repeat;
 \tstatic int lastmacro;
 \tgenchar *savep;
 
@@ -15519,21 +15519,21 @@ yankeol:
 
 /* making these functions reduces the size of the text region */
 
-static int isalph(register int c)
+static int isalph(int c)
 {
-\tregister int v = virtual[c];
+\tint v = virtual[c];
 \treturn(isalnum(v));
 }
 
-static int isblank(register int c)
+static int isblank(int c)
 {
-\tregister int v = virtual[c];
+\tint v = virtual[c];
 \treturn(isspace(v));
 }
 
-static int ismetach(register int c)
+static int ismetach(int c)
 {
-\tregister int v = virtual[c];
+\tint v = virtual[c];
 \treturn(ismeta(v));
 }
 
@@ -15542,24 +15542,24 @@ static int ismetach(register int c)
 
 #ifdef MULTIBYTE
 int isalph(c)
-register int c;
+int c;
 {
-\tregister int v = virtual[c];
+\tint v = virtual[c];
 \treturn((v&~STRIP) || isalnum(v));
 }
 
 
 int isblank(c)
-register int c;
+int c;
 {
-\tregister int v = virtual[c];
+\tint v = virtual[c];
 \treturn((v&~STRIP)==0 && isspace(v));
 }
 
 int ismetach(c)
-register int c;
+int c;
 {
-\tregister int v = virtual[c];
+\tint v = virtual[c];
 \treturn((v&~STRIP)==0 && ismeta(v));
 }
 
@@ -15570,7 +15570,7 @@ register int c;
  */
 static int getrchar()
 {
-\tregister int c;
+\tint c;
 \tif((c=getchar())== cntl(\'V\'))
 \t{
 \t\tin_raw++;
@@ -15782,12 +15782,12 @@ static int\ttextmod __PROTO__((int,int));
  *
 -*/
 
-vi_read __PARAM__((int fd, register char *shbuf, unsigned nchar), (fd, shbuf, nchar)) __OTORP__(int fd; register char *shbuf; unsigned nchar;)
+vi_read __PARAM__((int fd, char *shbuf, unsigned nchar), (fd, shbuf, nchar)) __OTORP__(int fd; char *shbuf; unsigned nchar;)
 #line 205
 {
-\tregister int i;\t\t\t/* general variable */
-\tregister int c;\t\t\t/* general variable */
-\tregister int term_char;\t/* read() termination character */
+\tint i;\t\t\t/* general variable */
+\tint c;\t\t\t/* general variable */
+\tint term_char;\t/* read() termination character */
 \tchar prompt[PRSIZE+2];\t\t/* prompt */
 \tgenchar Physical[2*MAXLINE];\t/* physical image */
 \tgenchar Ubuf[MAXLINE];\t/* used for U command */
@@ -16199,7 +16199,7 @@ vi_read __PARAM__((int fd, register char *shbuf, unsigned nchar), (fd, shbuf, nc
 static void append __PARAM__((int c, int mode), (c, mode)) __OTORP__(int c; int mode;)
 #line 618
 {
-\tregister int i;
+\tint i;
 
 \tif( last_virt<max_col && last_phys<max_col )
 \t{
@@ -16223,10 +16223,10 @@ static void append __PARAM__((int c, int mode), (c, mode)) __OTORP__(int c; int 
  *
 }*/
 
-static void backword __PARAM__((int nwords, register int cmd), (nwords, cmd)) __OTORP__(int nwords; register int cmd;)
+static void backword __PARAM__((int nwords, int cmd), (nwords, cmd)) __OTORP__(int nwords; int cmd;)
 #line 644
 {
-\tregister int tcur_virt = cur_virt;
+\tint tcur_virt = cur_virt;
 \twhile( nwords-- && tcur_virt > first_virt )
 \t{
 \t\tif( !isblank(tcur_virt) && isblank(tcur_virt-1)
@@ -16234,7 +16234,7 @@ static void backword __PARAM__((int nwords, register int cmd), (nwords, cmd)) __
 \t\t\t--tcur_virt;
 \t\telse if(cmd != \'B\')
 \t\t{
-\t\t\tregister int last = isalph(tcur_virt-1);
+\t\t\tint last = isalph(tcur_virt-1);
 \t\t\tif((!isalph(tcur_virt) && last)
 \t\t\t|| (isalph(tcur_virt) && !last))
 \t\t\t\t--tcur_virt;
@@ -16271,8 +16271,8 @@ static void backword __PARAM__((int nwords, register int cmd), (nwords, cmd)) __
 static int cntlmode __PARAM__((void), ())
 #line 688
 {
-\tregister int c;
-\tregister int i;
+\tint c;
+\tint i;
 \tgenchar tmp_u_space[MAXLINE];\t/* temporary u_space */
 \tgenchar *real_u_space;\t\t/* points to real u_space */
 \tint tmp_u_column = INVALID;\t/* temporary u_column */
@@ -16381,7 +16381,7 @@ static int cntlmode __PARAM__((void), ())
 
 \t\tcase cntl(\'V\'):
 \t\t{
-\t\t\tregister const char *p = &e_version[5];
+\t\t\tconst char *p = &e_version[5];
 \t\t\tsave_v();
 \t\t\tdel_line(BAD);
 \t\t\twhile(c = *p++)
@@ -16512,7 +16512,7 @@ static int cntlmode __PARAM__((void), ())
 \t\tcase \'#\':\t/** insert(delete) # to (no)comment command **/
 \t\t\tif( cur_virt != INVALID )
 \t\t\t{
-\t\t\t\tregister genchar *p = &virtual[last_virt+1];
+\t\t\t\tgenchar *p = &virtual[last_virt+1];
 \t\t\t\t*p = 0;
 \t\t\t\t/*** see whether first char is comment char ***/
 \t\t\t\tc = (virtual[0]==\'#\');
@@ -16566,10 +16566,10 @@ static int cntlmode __PARAM__((void), ())
  *
 }*/
 
-static void cursor __PARAM__((register int x), (x)) __OTORP__(register int x;)
+static void cursor __PARAM__((int x), (x)) __OTORP__(int x;)
 #line 985
 {
-\tregister int delta;
+\tint delta;
 
 #ifdef MULTIBYTE
 \twhile(physical[x]==MARKER)
@@ -16619,11 +16619,11 @@ static void cursor __PARAM__((register int x), (x)) __OTORP__(register int x;)
  *
 }*/
 
-static void cdelete __PARAM__((register int nchars, int mode), (nchars, mode)) __OTORP__(register int nchars; int mode;)
+static void cdelete __PARAM__((int nchars, int mode), (nchars, mode)) __OTORP__(int nchars; int mode;)
 #line 1037
 {
-\tregister int i;
-\tregister genchar *vp;
+\tint i;
+\tgenchar *vp;
 
 \tif( cur_virt < first_virt )
 \t{
@@ -16711,9 +16711,9 @@ static void del_line __PARAM__((int mode), (mode)) __OTORP__(int mode;)
 static int delmotion __PARAM__((int motion, int mode), (motion, mode)) __OTORP__(int motion; int mode;)
 #line 1124
 {
-\tregister int begin;
-\tregister int end;
-\t/* the following saves a register */
+\tint begin;
+\tint end;
+\t/* the following saves a */
 #       define delta end
 
 \tif( cur_virt == INVALID )
@@ -16767,10 +16767,10 @@ static int delmotion __PARAM__((int motion, int mode), (motion, mode)) __OTORP__
  *
 }*/
 
-static void endword __PARAM__((int nwords, register int cmd), (nwords, cmd)) __OTORP__(int nwords; register int cmd;)
+static void endword __PARAM__((int nwords, int cmd), (nwords, cmd)) __OTORP__(int nwords; int cmd;)
 #line 1182
 {
-\tregister int tcur_virt = cur_virt;
+\tint tcur_virt = cur_virt;
 \twhile( nwords-- )
 \t{
 \t\tif( !isblank(tcur_virt) && tcur_virt<=last_virt )
@@ -16805,10 +16805,10 @@ static void endword __PARAM__((int nwords, register int cmd), (nwords, cmd)) __O
  *
 }*/
 
-static void forward __PARAM__((register int nwords, int cmd), (nwords, cmd)) __OTORP__(register int nwords; int cmd;)
+static void forward __PARAM__((int nwords, int cmd), (nwords, cmd)) __OTORP__(int nwords; int cmd;)
 #line 1219
 {
-\tregister int tcur_virt = cur_virt;
+\tint tcur_virt = cur_virt;
 \twhile( nwords-- )
 \t{
 \t\tif( cmd == \'W\' )
@@ -16846,10 +16846,10 @@ static void forward __PARAM__((register int nwords, int cmd), (nwords, cmd)) __O
  *
 }*/
 
-static int getcount __PARAM__((register int c), (c)) __OTORP__(register int c;)
+static int getcount __PARAM__((int c), (c)) __OTORP__(int c;)
 #line 1259
 {
-\tregister int i;
+\tint i;
 
 \t/*** get any repeat count ***/
 
@@ -16888,11 +16888,11 @@ static int getcount __PARAM__((register int c), (c)) __OTORP__(register int c;)
  *
 }*/
 
-static void getline __PARAM__((register int mode), (mode)) __OTORP__(register int mode;)
+static void getline __PARAM__((int mode), (mode)) __OTORP__(int mode;)
 #line 1300
 {
-\tregister int c;
-\tregister int tmp;
+\tint c;
+\tint tmp;
 
 \taddnl = TRUE;
 
@@ -17048,13 +17048,13 @@ static void getline __PARAM__((register int mode), (mode)) __OTORP__(register in
  *
 }*/
 
-static int mvcursor __PARAM__((register int motion), (motion)) __OTORP__(register int motion;)
+static int mvcursor __PARAM__((int motion), (motion)) __OTORP__(int motion;)
 #line 1459
 {
-\tregister int count;
-\tregister int tcur_virt;
-\tregister int incr = -1;
-\tregister int bound = 0;
+\tint count;
+\tint tcur_virt;
+\tint incr = -1;
+\tint bound = 0;
 \tstatic int last_find = 0;\t/* last find command */
 
 \tswitch(motion)
@@ -17241,11 +17241,11 @@ static void pr_prompt __PARAM__((void), ())
  * print a string
  */
 
-static void pr_string __PARAM__((register const char *sp), (sp)) __OTORP__(register const char *sp;)
+static void pr_string __PARAM__((const char *sp), (sp)) __OTORP__(const char *sp;)
 #line 1650
 {
 \t/*** copy string sp ***/
-\tregister char *ptr = editb.e_outptr;
+\tchar *ptr = editb.e_outptr;
 \twhile(*sp)
 \t\t*ptr++ = *sp++;
 \teditb.e_outptr = ptr;
@@ -17259,7 +17259,7 @@ static void pr_string __PARAM__((register const char *sp), (sp)) __OTORP__(regis
  *
 }*/
 
-static void putstring __PARAM__((register int col, register int nchars), (col, nchars)) __OTORP__(register int col; register int nchars;)
+static void putstring __PARAM__((int col, int nchars), (col, nchars)) __OTORP__(int col; int nchars;)
 #line 1667
 {
 \twhile( nchars-- )
@@ -17299,9 +17299,9 @@ static void putstring __PARAM__((register int col, register int nchars), (col, n
 static void refresh __PARAM__((int mode), (mode)) __OTORP__(int mode;)
 #line 1703
 {
-\tregister int p;
-\tregister int regb;
-\tregister int first_w = first_wind;
+\tint p;
+\tint regb;
+\tint first_w = first_wind;
 \tint p_differ;
 \tint new_lw;
 \tint ncur_phys;
@@ -17468,10 +17468,10 @@ static void refresh __PARAM__((int mode), (mode)) __OTORP__(int mode;)
  *
 }*/
 
-static void replace __PARAM__((register int c, register int increment), (c, increment)) __OTORP__(register int c; register int increment;)
+static void replace __PARAM__((int c, int increment), (c, increment)) __OTORP__(int c; int increment;)
 #line 1874
 {
-\tregister int cur_window;
+\tint cur_window;
 
 \tif( cur_virt == INVALID )
 \t{
@@ -17531,7 +17531,7 @@ static void replace __PARAM__((register int c, register int increment), (c, incr
 static void restore_v __PARAM__((void), ())
 #line 1933
 {
-\tregister int tmpcol;
+\tint tmpcol;
 \tgenchar tmpspace[MAXLINE];
 
 \tif( u_column == INVALID-1 )
@@ -17559,7 +17559,7 @@ static void restore_v __PARAM__((void), ())
 static void save_last __PARAM__((void), ())
 #line 1960
 {
-\tregister int i;
+\tint i;
 
 \tif( (i = cur_virt - first_virt + 1) > 0 )
 \t{
@@ -17599,11 +17599,11 @@ static void save_v __PARAM__((void), ())
  *
 }*/
 
-static int search __PARAM__((register int mode), (mode)) __OTORP__(register int mode;)
+static int search __PARAM__((int mode), (mode)) __OTORP__(int mode;)
 #line 2001
 {
-\tregister int new_direction;
-\tregister int oldcurhline;
+\tint new_direction;
+\tint oldcurhline;
 \tstatic int direction = -1;
 \thistloc_t  location;
 
@@ -17674,9 +17674,9 @@ static int search __PARAM__((register int mode), (mode)) __OTORP__(register int 
 static void sync_cursor __PARAM__((void), ())
 #line 2072
 {
-\tregister int p;
-\tregister int v;
-\tregister int c;
+\tint p;
+\tint v;
+\tint c;
 \tint new_phys;
 
 \tif( cur_virt == INVALID )
@@ -17759,12 +17759,12 @@ static void sync_cursor __PARAM__((void), ())
  *
 }*/
 
-static int textmod __PARAM__((register int c, int mode), (c, mode)) __OTORP__(register int c; int mode;)
+static int textmod __PARAM__((int c, int mode), (c, mode)) __OTORP__(int c; int mode;)
 #line 2159
 {
-\tregister int i;
-\tregister genchar *p = lastline;
-\tregister int trepeat = repeat;
+\tint i;
+\tgenchar *p = lastline;
+\tint trepeat = repeat;
 \tstatic int lastmacro;
 \tgenchar *savep;
 
@@ -18085,24 +18085,24 @@ yankeol:
 
 /* making these functions reduces the size of the text region */
 
-static int isalph __PARAM__((register int c), (c)) __OTORP__(register int c;)
+static int isalph __PARAM__((int c), (c)) __OTORP__(int c;)
 #line 2484
 {
-\tregister int v = virtual[c];
+\tint v = virtual[c];
 \treturn(isalnum(v));
 }
 
-static int isblank __PARAM__((register int c), (c)) __OTORP__(register int c;)
+static int isblank __PARAM__((int c), (c)) __OTORP__(int c;)
 #line 2490
 {
-\tregister int v = virtual[c];
+\tint v = virtual[c];
 \treturn(isspace(v));
 }
 
-static int ismetach __PARAM__((register int c), (c)) __OTORP__(register int c;)
+static int ismetach __PARAM__((int c), (c)) __OTORP__(int c;)
 #line 2496
 {
-\tregister int v = virtual[c];
+\tint v = virtual[c];
 \treturn(ismeta(v));
 }
 
@@ -18111,24 +18111,24 @@ static int ismetach __PARAM__((register int c), (c)) __OTORP__(register int c;)
 
 #ifdef MULTIBYTE
 int isalph(c)
-register int c;
+int c;
 {
-\tregister int v = virtual[c];
+\tint v = virtual[c];
 \treturn((v&~STRIP) || isalnum(v));
 }
 
 
 int isblank(c)
-register int c;
+int c;
 {
-\tregister int v = virtual[c];
+\tint v = virtual[c];
 \treturn((v&~STRIP)==0 && isspace(v));
 }
 
 int ismetach(c)
-register int c;
+int c;
 {
-\tregister int v = virtual[c];
+\tint v = virtual[c];
 \treturn((v&~STRIP)==0 && ismeta(v));
 }
 
@@ -18139,7 +18139,7 @@ register int c;
  */
 static int getrchar()
 {
-\tregister int c;
+\tint c;
 \tif((c=getchar())== cntl(\'V\'))
 \t{
 \t\tin_raw++;
@@ -18635,7 +18635,7 @@ parsetrie(Env_t* env, Trie_node_t* x, Rex_t* rex, Rex_t* cont, unsigned char* s)
 static int
 collmatch(Rex_t* rex, unsigned char* s, unsigned char* e, unsigned char** p)
 {
-	register Celt_t*	ce;
+	Celt_t*	ce;
 	unsigned char*		t;
 	wchar_t			c;
 	int			w;
@@ -19391,7 +19391,7 @@ static int
 collmatch __PARAM__((Rex_t* rex, unsigned char* s, unsigned char* e, unsigned char** p), (rex, s, e, p)) __OTORP__(Rex_t* rex; unsigned char* s; unsigned char* e; unsigned char** p;)
 #line 486
 {
-	register Celt_t*	ce;
+	Celt_t*	ce;
 	unsigned char*		t;
 	wchar_t			c;
 	int			w;

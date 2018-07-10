@@ -53,9 +53,9 @@ typedef struct Tar_s
 void
 putkey(Archive_t* ap, Sfio_t* sp, Option_t* op, const char* value, Sfulong_t number)
 {
-	register size_t		n;
-	register size_t		m;
-	register size_t		o;
+	size_t		n;
+	size_t		m;
+	size_t		o;
 
 	if (value)
 		n = strlen(value);
@@ -95,14 +95,14 @@ putkey(Archive_t* ap, Sfio_t* sp, Option_t* op, const char* value, Sfulong_t num
 static unsigned long
 tar_checksum(Archive_t* ap, int check, unsigned long sum)
 {
-	register Tar_t*			tar = (Tar_t*)ap->data;
-	register unsigned char*		p;
-	register unsigned char*		e;
-	register unsigned char*		t;
-	register unsigned long		u;
-	register unsigned long		s;
-	register long			c;
-	register const unsigned char*	map;
+	Tar_t*			tar = (Tar_t*)ap->data;
+	unsigned char*		p;
+	unsigned char*		e;
+	unsigned char*		t;
+	unsigned long		u;
+	unsigned long		s;
+	long			c;
+	const unsigned char*	map;
 	unsigned char			tmp[TARSIZEOF(chksum)];
 
 	p = (unsigned char*)tar->header.chksum;
@@ -187,9 +187,9 @@ tar_checksum(Archive_t* ap, int check, unsigned long sum)
 static int
 tar_longname(Archive_t* ap, File_t* f)
 {
-	register char*	s;
-	register char*	b;
-	register int	n;
+	char*	s;
+	char*	b;
+	int	n;
 
 	if (!(n = f->namesize) || --n <= TARSIZEOF(name))
 		return 0;
@@ -497,9 +497,9 @@ extend(Archive_t* ap, File_t* f, int type)
 static int
 tar_getoctal(const char* f, const char* p, size_t n, int z, void* r)
 {
-	register unsigned char*	s = (unsigned char*)p;
-	register unsigned char*	e = s + n;
-	register uintmax_t	v = 0;
+	unsigned char*	s = (unsigned char*)p;
+	unsigned char*	e = s + n;
+	uintmax_t	v = 0;
 
 	while (s < e && *s == ' ')
 		s++;
@@ -538,9 +538,9 @@ tar_getoctal(const char* f, const char* p, size_t n, int z, void* r)
 }
 
 static int
-tar_getheader(Pax_t* pax, Archive_t* ap, register File_t* f)
+tar_getheader(Pax_t* pax, Archive_t* ap, File_t* f)
 {
-	register Tar_t*	tar = (Tar_t*)ap->data;
+	Tar_t*	tar = (Tar_t*)ap->data;
 	char*		s;
 	char*		t;
 	Format_t*	tp;
@@ -728,7 +728,7 @@ tar_getheader(Pax_t* pax, Archive_t* ap, register File_t* f)
 }
 
 static int
-tar_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
+tar_getprologue(Pax_t* pax, Format_t* fp, Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
 {
 	int	n;
 
@@ -747,7 +747,7 @@ tar_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, uns
 }
 
 static int
-tar_done(Pax_t* pax, register Archive_t* ap)
+tar_done(Pax_t* pax, Archive_t* ap)
 {
 	if (ap->data)
 	{
@@ -758,7 +758,7 @@ tar_done(Pax_t* pax, register Archive_t* ap)
 }
 
 static int
-tar_putprologue(Pax_t* pax, register Archive_t* ap, int append)
+tar_putprologue(Pax_t* pax, Archive_t* ap, int append)
 {
 	if (!(ap->data = newof(0, Tar_t, 1, 0)))
 		nospace();
@@ -766,10 +766,10 @@ tar_putprologue(Pax_t* pax, register Archive_t* ap, int append)
 }
 
 static int
-tar_putheader(Pax_t* pax, Archive_t* ap, register File_t* f)
+tar_putheader(Pax_t* pax, Archive_t* ap, File_t* f)
 {
-	register Tar_t*	tar = (Tar_t*)ap->data;
-	register char*	s;
+	Tar_t*	tar = (Tar_t*)ap->data;
+	char*	s;
 	off_t		n;
 	int		i;
 
@@ -909,7 +909,7 @@ tar_putheader(Pax_t* pax, Archive_t* ap, register File_t* f)
 static off_t
 tar_putepilogue(Pax_t* pax, Archive_t* ap)
 {
-	register Tar_t*	tar = (Tar_t*)ap->data;
+	Tar_t*	tar = (Tar_t*)ap->data;
 
 	memzero(&tar->header, TAR_HEADER);
 	paxwrite(pax, ap, &tar->header, TAR_HEADER);
@@ -920,7 +920,7 @@ tar_putepilogue(Pax_t* pax, Archive_t* ap)
 static int
 tar_lookup(Pax_t* pax, Archive_t* ap, File_t* f, int index, char** s, Sflong_t* n)
 {
-	register Tar_t*	tar = (Tar_t*)ap->data;
+	Tar_t*	tar = (Tar_t*)ap->data;
 
 	switch (index)
 	{
@@ -945,7 +945,7 @@ tar_lookup(Pax_t* pax, Archive_t* ap, File_t* f, int index, char** s, Sflong_t* 
 static int
 tar_event(Pax_t* pax, Archive_t* ap, File_t* f, void* data, unsigned long event)
 {
-	register Tarheader_t*	hdr;
+	Tarheader_t*	hdr;
 	unsigned long		sum;
 
 	switch (event)
@@ -964,7 +964,7 @@ tar_event(Pax_t* pax, Archive_t* ap, File_t* f, void* data, unsigned long event)
 }
 
 static int
-pax_putprologue(Pax_t* pax, register Archive_t* ap, int append)
+pax_putprologue(Pax_t* pax, Archive_t* ap, int append)
 {
 	Format_t*		fp;
 	Hash_position_t*	hp;

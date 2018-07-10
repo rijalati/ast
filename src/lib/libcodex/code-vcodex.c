@@ -767,7 +767,7 @@ vcodex_option(Codex_t* p, const char* s, Vcwmethod_t** wmeth, size_t* wsize, uns
 static int
 vcodex_open(Codex_t* p, char* const args[], Codexnum_t flags)
 {
-	register State_t*	state;
+	State_t*	state;
 	const char*		s;
 	int			i;
 	unsigned int		vflags;

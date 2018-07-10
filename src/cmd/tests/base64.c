@@ -26,7 +26,7 @@
 
 main()
 {
-	register int	i;
+	int	i;
 	int		testno;
 	int		errors;
 	ssize_t		l;

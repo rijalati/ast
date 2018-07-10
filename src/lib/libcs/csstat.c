@@ -30,7 +30,7 @@
 #include <proc.h>
 
 static int
-initiate(register Cs_t* state, const char* name, char* buf)
+initiate(Cs_t* state, const char* name, char* buf)
 {
 	char*	av[3];
 
@@ -47,10 +47,10 @@ initiate(register Cs_t* state, const char* name, char* buf)
 }
 
 int
-csstat(register Cs_t* state, const char* name, register Csstat_t* sp)
+csstat(Cs_t* state, const char* name, Csstat_t* sp)
 {
-	register int		n;
-	register int		i;
+	int		n;
+	int		i;
 	char*			s;
 	unsigned long		a;
 	unsigned long		m;

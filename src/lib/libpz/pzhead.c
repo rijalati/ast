@@ -30,11 +30,11 @@
  */
 
 int
-pzheadread(register Pz_t* pz)
+pzheadread(Pz_t* pz)
 {
-	register int		i;
-	register int		n;
-	register unsigned char*	s;
+	int		i;
+	int		n;
+	unsigned char*	s;
 	size_t			m;
 	Pzpart_t*		pp;
 
@@ -147,10 +147,10 @@ pzheadread(register Pz_t* pz)
 int
 pzheadwrite(Pz_t* pz, Sfio_t* op)
 {
-	register size_t	i;
-	register size_t	m;
-	register size_t	n;
-	register char*	s;
+	size_t	i;
+	size_t	m;
+	size_t	n;
+	char*	s;
 
 	if (pz->flags & PZ_HEAD)
 		return 0;
@@ -227,9 +227,9 @@ pzheadwrite(Pz_t* pz, Sfio_t* op)
  */
 
 int
-pzheadprint(register Pz_t* pz, register Sfio_t* op, int parts)
+pzheadprint(Pz_t* pz, Sfio_t* op, int parts)
 {
-	register Pzpart_t*	pp;
+	Pzpart_t*	pp;
 	char			t;
 
 	if (pz->flags & PZ_FORCE)

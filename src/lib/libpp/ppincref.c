@@ -31,7 +31,7 @@
 void
 ppincref(char* parent, char* file, int line, int type)
 {
-	register struct ppinstk*	sp;
+	struct ppinstk*	sp;
 	int				level;
 
 	NoP(parent);

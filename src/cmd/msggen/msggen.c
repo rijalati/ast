@@ -130,10 +130,10 @@ typedef struct Xl_s
  */
 
 static Xl_t*
-translation(Xl_t* xp, register char* s)
+translation(Xl_t* xp, char* s)
 {
-	register Xl_t*	px;
-	register char*	t;
+	Xl_t*	px;
+	char*	t;
 	char*		d;
 	char*		e;
 
@@ -207,12 +207,12 @@ ccsfprintf(int from, int to, Sfio_t* sp, const char* format, ...)
 int
 main(int argc, char** argv)
 {
-	register Mc_t*	mc;
-	register char*	s;
-	register char*	t;
-	register int	c;
-	register int	q;
-	register int	i;
+	Mc_t*	mc;
+	char*	s;
+	char*	t;
+	int	c;
+	int	q;
+	int	i;
 	int		num;
 	char*		b;
 	char*		e;

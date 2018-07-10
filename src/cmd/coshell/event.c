@@ -292,8 +292,8 @@ log(State_t* state, Connection_t* con, int type, const char* format, ...)
 static int
 acceptf(Css_t* css, Cssfd_t* fp, Csid_t* ip, char** av, Cssdisc_t* disc)
 {
-	register State_t*	state = (State_t*)disc;
-	register Connection_t*	con;
+	State_t*	state = (State_t*)disc;
+	Connection_t*	con;
 
 	if (!(con = newof(0, Connection_t, 1, 0)))
 		return -1;
@@ -644,10 +644,10 @@ date(State_t* state, Connection_t* con, const char* s)
  */
 
 static int
-actionf(register Css_t* css, register Cssfd_t* fp, Cssdisc_t* disc)
+actionf(Css_t* css, Cssfd_t* fp, Cssdisc_t* disc)
 {
-	register State_t*	state = (State_t*)disc;
-	register Connection_t*	con;
+	State_t*	state = (State_t*)disc;
+	Connection_t*	con;
 	char*			s;
 	char*			t;
 	char**			a;
@@ -927,7 +927,7 @@ actionf(register Css_t* css, register Cssfd_t* fp, Cssdisc_t* disc)
 static int
 exceptf(Css_t* css, unsigned long op, unsigned long arg, Cssdisc_t* disc)
 {
-	register State_t*	state = (State_t*)disc;
+	State_t*	state = (State_t*)disc;
 
 	switch (op)
 	{
@@ -1001,7 +1001,7 @@ waitfree(Dt_t* dt, void* obj, Dtdisc_t* disc)
  */
 
 static void
-db(register State_t* state)
+db(State_t* state)
 {
 	datum		key;
 	datum		val;

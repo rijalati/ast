@@ -119,7 +119,7 @@ typedef struct State_s
 static int
 kvm_init(Pss_t* pss)
 {
-	register State_t*	state;
+	State_t*	state;
 
 	if (!(state = vmnewof(pss->vm, 0, State_t, 1, 0)))
 	{
@@ -141,7 +141,7 @@ kvm_init(Pss_t* pss)
 static int
 kvm_done(Pss_t* pss)
 {
-	register State_t*	state = (State_t*)pss->data;
+	State_t*	state = (State_t*)pss->data;
 
 	kvm_close(state->kd);
 	return 1;
@@ -150,7 +150,7 @@ kvm_done(Pss_t* pss)
 static int
 kvm_readf(Pss_t* pss, Pss_id_t pid)
 {
-	register State_t*	state = (State_t*)pss->data;
+	State_t*	state = (State_t*)pss->data;
 	int			count;
 
 	if (pid)
@@ -175,9 +175,9 @@ kvm_readf(Pss_t* pss, Pss_id_t pid)
 }
 
 static int
-kvm_part(register Pss_t* pss, register Pssent_t* pe)
+kvm_part(Pss_t* pss, Pssent_t* pe)
 {
-	register State_t*	state = (State_t*)pss->data;
+	State_t*	state = (State_t*)pss->data;
 
 	pe->pid = state->pr->p_pid;
 	pe->pgrp = state->px->e_pgid;
@@ -199,9 +199,9 @@ kvm_part(register Pss_t* pss, register Pssent_t* pe)
 }
 
 static int
-kvm_full(register Pss_t* pss, register Pssent_t* pe)
+kvm_full(Pss_t* pss, Pssent_t* pe)
 {
-	register State_t*		state = (State_t*)pss->data;
+	State_t*		state = (State_t*)pss->data;
 	unsigned long			fields = pss->disc->fields & pss->meth->fields;
 	char*				s;
 	int				i;

@@ -219,12 +219,12 @@ static int	textmod();
 
 int vi_read(fd, shbuf, nchar)
 int fd;					/* input file descriptor */
-register char *shbuf;			/* shell line buffer */
+char *shbuf;			/* shell line buffer */
 unsigned nchar;				/* number of chars to read */
 {
-	register int c;			/* general variable */
-	register int i;			/* general variable */
-	register int term_char;	/* read() termination character */
+	int c;			/* general variable */
+	int i;			/* general variable */
+	int term_char;	/* read() termination character */
 	char prompt[PRSIZE+2];		/* prompt */
 	genchar Physical[2*MAXLINE];	/* physical image */
 	genchar Ubuf[MAXLINE];	/* used for U command */
@@ -653,7 +653,7 @@ append(c, mode)
 int c;
 int mode;
 {
-	register int i;
+	int i;
 
 	if( last_virt<max_col && last_phys<max_col )
 	{
@@ -680,9 +680,9 @@ int mode;
 static void
 backword(nwords, cmd)
 int nwords;
-register int  cmd;
+int  cmd;
 {
-	register int tcur_virt = cur_virt;
+	int tcur_virt = cur_virt;
 	while( nwords-- && tcur_virt > first_virt )
 	{
 		if( !isblank(tcur_virt) && isblank(tcur_virt-1)
@@ -690,7 +690,7 @@ register int  cmd;
 			--tcur_virt;
 		else if(cmd != 'B')
 		{
-			register int last = isalph(tcur_virt-1);
+			int last = isalph(tcur_virt-1);
 			if((!isalph(tcur_virt) && last)
 			|| (isalph(tcur_virt) && !last))
 				--tcur_virt;
@@ -727,8 +727,8 @@ register int  cmd;
 static int
 cntlmode()
 {
-	register int c;
-	register int i;
+	int c;
+	int i;
 	genchar tmp_u_space[MAXLINE];	/* temporary u_space */
 	genchar *real_u_space;		/* points to real u_space */
 	int tmp_u_column = INVALID;	/* temporary u_column */
@@ -837,7 +837,7 @@ cntlmode()
 
 		case cntl('V'):
 		{
-			register const char *p = &e_version[5];
+			const char *p = &e_version[5];
 			save_v();
 			del_line(BAD);
 			while(c = *p++)
@@ -968,7 +968,7 @@ cntlmode()
 		case '#':	/** insert(delete) # to (no)comment command **/
 			if( cur_virt != INVALID )
 			{
-				register genchar *p = &virtual[last_virt+1];
+				genchar *p = &virtual[last_virt+1];
 				*p = 0;
 				/*** see whether first char is comment char ***/
 				c = (virtual[0]=='#');
@@ -1024,9 +1024,9 @@ cntlmode()
 
 static void
 cursor(x)
-register int x;
+int x;
 {
-	register int delta;
+	int delta;
 
 #ifdef MULTIBYTE
 	while(physical[x]==MARKER)
@@ -1078,11 +1078,11 @@ register int x;
 
 static void
 delete(nchars, mode)
-register int nchars;
+int nchars;
 char mode;
 {
-	register int i;
-	register genchar *vp;
+	int i;
+	genchar *vp;
 
 	if( cur_virt < first_virt )
 	{
@@ -1175,9 +1175,9 @@ delmotion(motion, mode)
 int motion;
 char mode;
 {
-	register int begin;
-	register int end;
-	/* the following saves a register */
+	int begin;
+	int end;
+	/* the following saves a */
 #       define delta end
 
 	if( cur_virt == INVALID )
@@ -1234,9 +1234,9 @@ char mode;
 static void
 endword(nwords, cmd)
 int nwords;
-register int cmd;
+int cmd;
 {
-	register int tcur_virt = cur_virt;
+	int tcur_virt = cur_virt;
 	while( nwords-- )
 	{
 		if( !isblank(tcur_virt) && tcur_virt<=last_virt )
@@ -1273,10 +1273,10 @@ register int cmd;
 
 static void
 forward(nwords, cmd)
-register int nwords;
+int nwords;
 char cmd;
 {
-	register int tcur_virt = cur_virt;
+	int tcur_virt = cur_virt;
 	while( nwords-- )
 	{
 		if( cmd == 'W' )
@@ -1317,9 +1317,9 @@ char cmd;
 
 static int
 getcount(c)
-register int c;
+int c;
 {
-	register int i;
+	int i;
 
 	/*** get any repeat count ***/
 
@@ -1360,10 +1360,10 @@ register int c;
 
 static void
 getline(mode)
-register int mode;
+int mode;
 {
-	register int c;
-	register int tmp;
+	int c;
+	int tmp;
 
 	addnl = 1;
 
@@ -1521,12 +1521,12 @@ register int mode;
 
 static int
 mvcursor(motion)
-register int motion;
+int motion;
 {
-	register int count;
-	register int tcur_virt;
-	register int incr = -1;
-	register int bound = 0;
+	int count;
+	int tcur_virt;
+	int incr = -1;
+	int bound = 0;
 	static int last_find = 0;	/* last find command */
 
 	switch(motion)
@@ -1702,10 +1702,10 @@ find_b:
 
 static void
 pr_string(s)
-register char *s;
+char *s;
 {
 	/*** copy string s ***/
-	register char *ptr = editb.e_outptr;
+	char *ptr = editb.e_outptr;
 	while(*s)
 		*ptr++ = *s++;
 	editb.e_outptr = ptr;
@@ -1721,8 +1721,8 @@ register char *s;
 
 static void
 putstring(col, nchars)
-register int col;
-register int nchars;
+int col;
+int nchars;
 {
 	while( nchars-- )
 		putchar(physical[col++]);
@@ -1762,9 +1762,9 @@ static void
 refresh(mode)
 int mode;
 {
-	register int p;
-	register int regb;
-	register int first_w = first_wind;
+	int p;
+	int regb;
+	int first_w = first_wind;
 	int p_differ;
 	int new_lw;
 	int ncur_phys;
@@ -1933,10 +1933,10 @@ int mode;
 
 static void
 replace(c, increment)
-register int c;
-register int increment;
+int c;
+int increment;
 {
-	register int cur_window;
+	int cur_window;
 
 	if( cur_virt == INVALID )
 	{
@@ -1992,7 +1992,7 @@ register int increment;
 static void
 restore_v()
 {
-	register int tmpcol;
+	int tmpcol;
 	genchar tmpspace[MAXLINE];
 
 	if( u_column == INVALID-1 )
@@ -2020,7 +2020,7 @@ restore_v()
 static void
 save_last()
 {
-	register int i;
+	int i;
 
 	if( (i = cur_virt - first_virt + 1) > 0 )
 	{
@@ -2062,10 +2062,10 @@ save_v()
 
 static int
 search(mode)
-register char mode;
+char mode;
 {
-	register int new_direction;
-	register int oldcurhline;
+	int new_direction;
+	int oldcurhline;
 	static int direction = -1;
 	histloc  location;
 
@@ -2136,9 +2136,9 @@ register char mode;
 static void
 sync_cursor()
 {
-	register int p;
-	register int v;
-	register int c;
+	int p;
+	int v;
+	int c;
 	int new_phys;
 
 	if( cur_virt == INVALID )
@@ -2223,12 +2223,12 @@ sync_cursor()
 
 static int
 textmod(c, mode)
-register int c;
+int c;
 int mode;
 {
-	register int i;
-	register genchar *p = lastline;
-	register int trepeat = repeat;
+	int i;
+	genchar *p = lastline;
+	int trepeat = repeat;
 	genchar *savep;
 #ifdef KSHELL
 	static int lastmacro;
@@ -2552,24 +2552,24 @@ yankeol:
 /* making these functions reduces the size of the text region */
 
 int isalph(c)
-register int c;
+int c;
 {
-	register int v = virtual[c];
+	int v = virtual[c];
 	return(isalnum(v));
 }
 
 
 int isblank(c)
-register int c;
+int c;
 {
-	register int v = virtual[c];
+	int v = virtual[c];
 	return(isspace(v));
 }
 
 int ismetach(c)
-register int c;
+int c;
 {
-	register int v = virtual[c];
+	int v = virtual[c];
 	return(ismeta(v));
 }
 
@@ -2578,24 +2578,24 @@ register int c;
 
 #ifdef MULTIBYTE
 int isalph(c)
-register int c;
+int c;
 {
-	register int v = virtual[c];
+	int v = virtual[c];
 	return((v&~STRIP) || isalnum(v));
 }
 
 
 int isblank(c)
-register int c;
+int c;
 {
-	register int v = virtual[c];
+	int v = virtual[c];
 	return((v&~STRIP)==0 && isspace(v));
 }
 
 int ismetach(c)
-register int c;
+int c;
 {
-	register int v = virtual[c];
+	int v = virtual[c];
 	return((v&~STRIP)==0 && ismeta(v));
 }
 
@@ -2606,7 +2606,7 @@ register int c;
  */
 static int getrchar()
 {
-	register int c;
+	int c;
 	if((c=getchar())== cntl('V'))
 	{
 		in_raw++;

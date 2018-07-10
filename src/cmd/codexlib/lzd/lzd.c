@@ -111,7 +111,7 @@ clrcode(State_t* state)
 }
 
 static void
-addcode(register State_t* state, int suf_code, int old_code)
+addcode(State_t* state, int suf_code, int old_code)
 {
 	state->table[state->free_code].z_ch = suf_code;
 	state->table[state->free_code].next = old_code;
@@ -127,7 +127,7 @@ addcode(register State_t* state, int suf_code, int old_code)
 static int
 lzd_open(Codex_t* p, char* const args[], Codexnum_t flags)
 {
-	register State_t*		state;
+	State_t*		state;
 
 	if (!(state = newof(0, State_t, 1, 0)))
 	{
@@ -143,7 +143,7 @@ lzd_open(Codex_t* p, char* const args[], Codexnum_t flags)
 static int
 lzd_init(Codex_t* p)
 {
-	register State_t*	state = (State_t*)p->data;
+	State_t*	state = (State_t*)p->data;
 
 	state->bitcount = 0;
 	state->bad = state->cpy = state->eof = 0;
@@ -156,10 +156,10 @@ lzd_init(Codex_t* p)
 static ssize_t
 lzd_read(Sfio_t* sp, void* buf, size_t n, Sfdisc_t* disc)
 {
-	register State_t*	state = (State_t*)CODEX(disc)->data;
-	register char*		s = (char*)buf;
-	register char*		e = s + n;
-	register int		c;
+	State_t*	state = (State_t*)CODEX(disc)->data;
+	char*		s = (char*)buf;
+	char*		e = s + n;
+	int		c;
 
 	if (state->eof)
 		return state->bad;

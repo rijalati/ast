@@ -210,9 +210,9 @@ static const Key_t	notices[] =
  */
 
 static char*
-number(register char* p, register long n)
+number(char* p, long n)
 {
-	register long	d;
+	long	d;
 
 	for (d = 1000000; d > 1; d /= 10)
 		if (n >= d) *p++ = '0' + (n / d) % 10;
@@ -244,9 +244,9 @@ static int		errors;
  */
 
 static int
-sstrlen(register const char* s)
+sstrlen(const char* s)
 {
-	register const char*	b;
+	const char*	b;
 
 	for (b = s; *s; s++);
 	return s - b;
@@ -257,9 +257,9 @@ sstrlen(register const char* s)
  */
 
 static int
-sstrncmp(register const char* s, register const char* t, register int n)
+sstrncmp(const char* s, const char* t, int n)
 {
-	register const char*	e = s + n;
+	const char*	e = s + n;
 
 	while (s < e)
 	{
@@ -276,7 +276,7 @@ sstrncmp(register const char* s, register const char* t, register int n)
  */
 
 static char*
-strcopy(register char* s, register const char* t)
+strcopy(char* s, const char* t)
 {
 	while (*s++ = *t++);
 	return s - 1;
@@ -290,13 +290,13 @@ strcopy(register char* s, register const char* t)
 static void
 proto_error(char* iob, int level, char* msg, char* arg)
 {
-	register char*	p;
+	char*	p;
 	char		buf[1024];
 
 	p = stpcpy(buf, "proto: ");
 	if (iob)
 	{
-		register Proto_t*	proto = (Proto_t*)(iob - sizeof(Proto_t));
+		Proto_t*	proto = (Proto_t*)(iob - sizeof(Proto_t));
 
 		if (proto->line)
 		{
@@ -346,9 +346,9 @@ proto_error(char* iob, int level, char* msg, char* arg)
  */
 
 static char*
-memcopy(register char* s, register char* t, int n)
+memcopy(char* s, char* t, int n)
 {
-	register char*	e = t + n;
+	char*	e = t + n;
 
 	while (t < e) *s++ = *t++;
 	return s;
@@ -368,7 +368,7 @@ memcopy(register char* s, register char* t, int n)
  */
 
 static char*
-linesync(register Proto_t* proto, register char* p, register long n)
+linesync(Proto_t* proto, char* p, long n)
 {
 #if PROTOMAIN
 	if (proto->flags & LINESYNC)
@@ -393,7 +393,7 @@ linesync(register Proto_t* proto, register char* p, register long n)
 static char*
 init(Proto_t* proto, char* op, int flags)
 {
-	register char*	s;
+	char*	s;
 
 	if (flags & INIT_DEFINE)
 	{
@@ -527,7 +527,7 @@ init(Proto_t* proto, char* op, int flags)
  */
 
 static char*
-nns(register char* s)
+nns(char* s)
 {
 	while (*s == ' ' || *s == '\t' || *s == '\n')
 		s++;
@@ -544,7 +544,7 @@ nns(register char* s)
  */
 
 static int
-directive(register char* s, int dir)
+directive(char* s, int dir)
 {
 	switch (*(s = nns(s)))
 	{
@@ -575,13 +575,13 @@ directive(register char* s, int dir)
  */
 
 static int
-lex(register Proto_t* proto, register long flags)
+lex(Proto_t* proto, long flags)
 {
-	register char*		ip;
-	register char*		op;
-	register int		c;
-	register int		state;
-	register short*		rp;
+	char*		ip;
+	char*		op;
+	int		c;
+	int		state;
+	short*		rp;
 	char*			m;
 	char*			e;
 	char*			t;
@@ -2149,7 +2149,7 @@ if !defined(va_start)\n\
 void
 pppclose(char* iob)
 {
-	register Proto_t*	proto = (Proto_t*)(iob - sizeof(Proto_t));
+	Proto_t*	proto = (Proto_t*)(iob - sizeof(Proto_t));
 
 	if (proto->flags & MORE) close(proto->fd);
 	free((char*)proto); /* some ANSI cc's botch the free() prototype */
@@ -2170,10 +2170,10 @@ pppclose(char* iob)
 char*
 pppopen(char* file, int fd, char* notice, char* options, char* package, char* comment, int flags)
 {
-	register Proto_t*	proto;
-	register char*		iob;
-	register long		n;
-	register char*		s;
+	Proto_t*	proto;
+	char*		iob;
+	long		n;
+	char*		s;
 	char*			t;
 	int			pragma;
 	int			clr;
@@ -2508,8 +2508,8 @@ pppopen(char* file, int fd, char* notice, char* options, char* package, char* co
 int
 pppread(char* iob)
 {
-	register Proto_t*	proto = (Proto_t*)(iob - sizeof(Proto_t));
-	register int		n;
+	Proto_t*	proto = (Proto_t*)(iob - sizeof(Proto_t));
+	int		n;
 
 	if (proto->flags & PASS)
 	{
@@ -2533,9 +2533,9 @@ pppread(char* iob)
 #if PROTOMAIN
 			if (proto->flags & YACC)
 			{
-				register char*	ip = proto->ip;
-				register char*	op = proto->ob;
-				register char*	ep = proto->ob + proto->oz - 2;
+				char*	ip = proto->ip;
+				char*	op = proto->ob;
+				char*	ep = proto->ob + proto->oz - 2;
 
 				if (!*ip)
 				{
@@ -2607,7 +2607,7 @@ pppread(char* iob)
 int
 pppdrop(char* iob)
 {
-	register Proto_t*	proto = (Proto_t*)(iob - sizeof(Proto_t));
+	Proto_t*	proto = (Proto_t*)(iob - sizeof(Proto_t));
 
 	if (proto->flags & MORE)
 	{

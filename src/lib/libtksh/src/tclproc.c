@@ -35,12 +35,12 @@ Tcl_ProcCmd(dummy, interp, argc, argv)
     int argc;				/* Number of arguments. */
     char **argv;			/* Argument strings. */
 {
-    register Interp *iPtr = (Interp *) interp;
-    register Proc *procPtr;
+    Interp *iPtr = (Interp *) interp;
+    Proc *procPtr;
     int result, argCount, i;
     char **argArray = NULL;
     Arg *lastArgPtr;
-    register Arg *argPtr = NULL;	/* Initialization not needed, but
+    Arg *argPtr = NULL;	/* Initialization not needed, but
 					 * prevents compiler warning. */
 
     if (argc != 4) {
@@ -219,7 +219,7 @@ InterpProc(clientData, interp, argc, argv)
 				 * procedure. */
     char **argv;		/* Argument values. */
 {
-	register Proc *procPtr = (Proc *) clientData;
+	Proc *procPtr = (Proc *) clientData;
 	struct InterpProcArgs iargs;
 	int result;
 	char **copiedArgv = NULL;
@@ -279,12 +279,12 @@ static int InterpProcBody(void *data)
     struct InterpProcArgs *iargs = (struct InterpProcArgs *) data;
     int argc = iargs->argc;
     char **argv = iargs->argv;
-    register Proc *procPtr = iargs->procPtr;
+    Proc *procPtr = iargs->procPtr;
     Tcl_Interp *interp = iargs->interp;
-    register Interp *iPtr = procPtr->iPtr;
+    Interp *iPtr = procPtr->iPtr;
 
     char **args, *value;
-    register Arg *argPtr;
+    Arg *argPtr;
     int result;
 
     iPtr->returnCode = TCL_OK;
@@ -460,9 +460,9 @@ ProcDeleteProc(clientData)
 
 static void
 CleanupProc(procPtr)
-    register Proc *procPtr;		/* Procedure to be deleted. */
+    Proc *procPtr;		/* Procedure to be deleted. */
 {
-    register Arg *argPtr;
+    Arg *argPtr;
 
     ckfree((char *) procPtr->command);
     for (argPtr = procPtr->argPtr; argPtr != NULL; ) {

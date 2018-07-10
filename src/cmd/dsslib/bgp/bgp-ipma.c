@@ -44,10 +44,10 @@ static const char	magic2[] = "AS Path";
 static int
 ipmaident(Dssfile_t* file, void* buf, size_t n, Dssdisc_t* disc)
 {
-	register char*	s;
-	register char*	e;
-	register char*	e1;
-	register char*	e2;
+	char*	s;
+	char*	e;
+	char*	e1;
+	char*	e2;
 
 	s = (char*)buf;
 	e = s + n;
@@ -70,12 +70,12 @@ ipmaident(Dssfile_t* file, void* buf, size_t n, Dssdisc_t* disc)
 static int
 ipmaopen(Dssfile_t* file, Dssdisc_t* disc)
 {
-	register char*	s;
-	register char*	e;
-	register char*	e1;
-	register char*	e2;
-	register int	c;
-	register int	q;
+	char*	s;
+	char*	e;
+	char*	e1;
+	char*	e2;
+	int	c;
+	int	q;
 
 	if (!(file->data = (void*)vmnewof(file->dss->vm, 0, Ipmastate_t, 1, 0)))
 	{
@@ -161,10 +161,10 @@ ipmaopen(Dssfile_t* file, Dssdisc_t* disc)
  */
 
 static char*
-skip(register char* s, register char* e, int number)
+skip(char* s, char* e, int number)
 {
-	register char*	b;
-	register char*	t;
+	char*	b;
+	char*	t;
 
 	do
 	{
@@ -212,12 +212,12 @@ skip(register char* s, register char* e, int number)
  */
 
 static int
-ipmaread(register Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
+ipmaread(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register Ipmastate_t*	state = (Ipmastate_t*)file->data;
-	register Bgproute_t*	rp;
-	register char*		s;
-	register int		i;
+	Ipmastate_t*	state = (Ipmastate_t*)file->data;
+	Bgproute_t*	rp;
+	char*		s;
+	int		i;
 	int			c;
 	int			n;
 	int			o;
@@ -338,12 +338,12 @@ ipmaread(register Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 static int
 ipmawrite(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register Ipmastate_t*	state = (Ipmastate_t*)file->data;
-	register Bgproute_t*	rp = (Bgproute_t*)record->data;
-	register Sfio_t*	io = file->io;
-	register int		i;
-	register int		j;
-	register int		k;
+	Ipmastate_t*	state = (Ipmastate_t*)file->data;
+	Bgproute_t*	rp = (Bgproute_t*)record->data;
+	Sfio_t*	io = file->io;
+	int		i;
+	int		j;
+	int		k;
 	Bgpasn_t*		ap;
 
 	if (rp->addr.v4 != state->paddr || rp->bits != state->pbits)

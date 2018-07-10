@@ -38,7 +38,7 @@ NoN(seekdir)
 #else
 
 void
-seekdir(register DIR* dirp, long loc)
+seekdir(DIR* dirp, long loc)
 {
 	off_t	base;		/* file location of block */
 	off_t	offset; 	/* offset within block */

@@ -61,13 +61,13 @@ static unsigned	char *getbuff(void);
  * The number of bytes written is returned or -1 on error
  */
 
-Sfoff_t huffdecode(register Huff_t *hp,Sfio_t *input,Sfio_t *output,int size)
+Sfoff_t huffdecode(Huff_t *hp,Sfio_t *input,Sfio_t *output,int size)
 {
-	register long buffer;
-	register int left, i, n;
-	register int lev = 0;
-	register unsigned char *outp;
-	register unsigned char *inp;
+	long buffer;
+	int left, i, n;
+	int lev = 0;
+	unsigned char *outp;
+	unsigned char *inp;
 	unsigned char *outend;
 	unsigned char *outbuff;
 	Sfoff_t insize = hp->outsize;
@@ -122,7 +122,7 @@ Sfoff_t huffdecode(register Huff_t *hp,Sfio_t *input,Sfio_t *output,int size)
 		if ((n = i - intnodes[lev+1]) >= 0)
 		{
 			{
-				register char *p = &tree[lev+1][n];
+				char *p = &tree[lev+1][n];
 				if (p == eof)
 				{
 					size = 0;
@@ -164,9 +164,9 @@ Sfoff_t huffdecode(register Huff_t *hp,Sfio_t *input,Sfio_t *output,int size)
 	}
 }
 
-static void decode_header(register Huff_t *hp)
+static void decode_header(Huff_t *hp)
 {
-	register int c, i, n, k;
+	int c, i, n, k;
 	eof = &characters[0];
 	for (i=1; i<=hp->maxlev; i++)
 	{
@@ -213,8 +213,8 @@ static void decode_header(register Huff_t *hp)
 
 static unsigned char *getbuff(void)
 {
-	register int n;
-	register unsigned char *cp;
+	int n;
+	unsigned char *cp;
 	if(cp=(unsigned char*)sfreserve(infile,SF_UNBOUND,0))
 		inbuff = cp;
 	n = sfvalue(infile);

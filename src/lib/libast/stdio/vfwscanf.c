@@ -64,7 +64,7 @@ wideexcept(Sfio_t* f, int op, void* val, Sfdisc_t* dp)
 static ssize_t
 wideread(Sfio_t* f, Void_t* buf, size_t size, Sfdisc_t* dp)
 {
-	register Wide_t*	w = (Wide_t*)dp;
+	Wide_t*	w = (Wide_t*)dp;
 	wchar_t			wuf[2];
 
 #if 0

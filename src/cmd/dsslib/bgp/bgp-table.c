@@ -41,10 +41,10 @@ typedef struct Tablestate_s
 static int
 tableident(Dssfile_t* file, void* buf, size_t n, Dssdisc_t* disc)
 {
-	register char*	s;
-	register char*	e;
-	register char*	f;
-	register int	c;
+	char*	s;
+	char*	e;
+	char*	f;
+	int	c;
 	unsigned char	prefix[IP6PREFIX];
 	Bgpnum_t	addr;
 	unsigned char	bits;
@@ -108,9 +108,9 @@ tableopen(Dssfile_t* file, Dssdisc_t* disc)
 static int
 tableread(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register Tablestate_t*	state = (Tablestate_t*)file->data;
-	register Bgproute_t*	rp;
-	register char*		s;
+	Tablestate_t*	state = (Tablestate_t*)file->data;
+	Bgproute_t*	rp;
+	char*		s;
 	char*			p;
 	char*			e;
 	Bgproute_t*		op;
@@ -200,7 +200,7 @@ tableread(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 static int
 tablewrite(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register Bgproute_t* rp	= (Bgproute_t*)record->data;
+	Bgproute_t* rp	= (Bgproute_t*)record->data;
 
 	switch (rp->attr & (BGP_best|BGP_damped|BGP_internal|BGP_suppressed|BGP_valid))
 	{

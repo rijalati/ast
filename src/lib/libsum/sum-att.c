@@ -37,11 +37,11 @@
 #define att_flags	0
 
 static int
-att_block(register Sum_t* p, const void* s, size_t n)
+att_block(Sum_t* p, const void* s, size_t n)
 {
-	register uint32_t	c = ((Integral_t*)p)->sum;
-	register unsigned char*	b = (unsigned char*)s;
-	register unsigned char*	e = b + n;
+	uint32_t	c = ((Integral_t*)p)->sum;
+	unsigned char*	b = (unsigned char*)s;
+	unsigned char*	e = b + n;
 
 	while (b < e)
 		c += *b++;
@@ -52,7 +52,7 @@ att_block(register Sum_t* p, const void* s, size_t n)
 static int
 att_done(Sum_t* p)
 {
-	register uint32_t	c = ((Integral_t*)p)->sum;
+	uint32_t	c = ((Integral_t*)p)->sum;
 
 	c = (c & 0xffff) + ((c >> 16) & 0xffff);
 	c = (c & 0xffff) + (c >> 16);

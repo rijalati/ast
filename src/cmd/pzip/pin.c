@@ -228,7 +228,7 @@ static struct
 static size_t*
 vector(int i)
 {
-	register size_t*	p;
+	size_t*	p;
 
 	if (!(p = newof(0, size_t, i, 0)))
 		error(ERROR_SYSTEM|3, "out of space [%d vector]", i);
@@ -242,9 +242,9 @@ vector(int i)
 static size_t**
 matrix(int i)
 {
-	register size_t**	p;
-	register size_t*	v;
-	register int		k;
+	size_t**	p;
+	size_t*	v;
+	int		k;
 	size_t			n;
 
 	n = i * i;
@@ -266,9 +266,9 @@ matrix(int i)
 static Part_t*
 partition(int i)
 {
-	register Part_t*	p;
-	register size_t*	v;
-	register int		k;
+	Part_t*	p;
+	size_t*	v;
+	int		k;
 	size_t			n;
 
 	n = i * i;
@@ -290,8 +290,8 @@ partition(int i)
 static int
 byfrequency(const void* va, const void* vb)
 {
-	register Stats_t*	a = (Stats_t*)va;
-	register Stats_t*	b = (Stats_t*)vb;
+	Stats_t*	a = (Stats_t*)va;
+	Stats_t*	b = (Stats_t*)vb;
 
 	if (a->frequency < b->frequency)
 		return 1;
@@ -311,8 +311,8 @@ byfrequency(const void* va, const void* vb)
 static int
 bycolumn(const void* va, const void* vb)
 {
-	register Stats_t*	a = (Stats_t*)va;
-	register Stats_t*	b = (Stats_t*)vb;
+	Stats_t*	a = (Stats_t*)va;
+	Stats_t*	b = (Stats_t*)vb;
 
 	if (a->column < b->column)
 		return -1;
@@ -328,8 +328,8 @@ bycolumn(const void* va, const void* vb)
 static int
 byrate(const void* va, const void* vb)
 {
-	register Part_t*	a = (Part_t*)va;
-	register Part_t*	b = (Part_t*)vb;
+	Part_t*	a = (Part_t*)va;
+	Part_t*	b = (Part_t*)vb;
 
 	if (a->rate < b->rate)
 		return -1;
@@ -357,9 +357,9 @@ byrow(const void* va, const void* vb)
  */
 
 static void
-dumppart(Sfio_t* sp, const char* label, register Part_t* pp)
+dumppart(Sfio_t* sp, const char* label, Part_t* pp)
 {
-	register int	i;
+	int	i;
 
 	sfprintf(sp, "reorder %s %5u %5u :", label, pp->rate, pp->size);
 	for (i = 0; i < pp->elements; i++)
@@ -410,11 +410,11 @@ zip(unsigned char* b, size_t size)
  */
 
 static size_t
-field(unsigned char* t, register unsigned char* s, int i, int j, register int row, size_t tot)
+field(unsigned char* t, unsigned char* s, int i, int j, int row, size_t tot)
 {
-	register unsigned char*	b;
-	register unsigned char*	e;
-	register int		n;
+	unsigned char*	b;
+	unsigned char*	e;
+	int		n;
 
 	b = t;
 	e = s + tot;
@@ -433,10 +433,10 @@ field(unsigned char* t, register unsigned char* s, int i, int j, register int ro
  */
 
 static size_t
-pair(unsigned char* t, register unsigned char* s, int i, register int j, size_t row, size_t tot)
+pair(unsigned char* t, unsigned char* s, int i, int j, size_t row, size_t tot)
 {
-	register unsigned char*	b;
-	register unsigned char*	e;
+	unsigned char*	b;
+	unsigned char*	e;
 
 	b = t;
 	e = s + tot;
@@ -454,11 +454,11 @@ pair(unsigned char* t, register unsigned char* s, int i, register int j, size_t 
  */
 
 static size_t
-part(unsigned char* t, register unsigned char* s, register Part_t* pp, size_t row, size_t tot)
+part(unsigned char* t, unsigned char* s, Part_t* pp, size_t row, size_t tot)
 {
-	register unsigned char*	b;
-	register unsigned char*	e;
-	register int		i;
+	unsigned char*	b;
+	unsigned char*	e;
+	int		i;
 
 	b = t;
 	e = s + tot;
@@ -475,11 +475,11 @@ part(unsigned char* t, register unsigned char* s, register Part_t* pp, size_t ro
  */
 
 static int
-merge(unsigned char* t, unsigned char* s, int i, Part_t* pp, register Part_t* np, size_t** siz, size_t row, size_t tot)
+merge(unsigned char* t, unsigned char* s, int i, Part_t* pp, Part_t* np, size_t** siz, size_t row, size_t tot)
 {
-	register int		j;
-	register int		k;
-	register Part_t*	bp;
+	int		j;
+	int		k;
+	Part_t*	bp;
 	size_t			x;
 	size_t			z;
 
@@ -526,8 +526,8 @@ merge(unsigned char* t, unsigned char* s, int i, Part_t* pp, register Part_t* np
 static size_t
 filter(Sfio_t* ip, unsigned char** bufp, unsigned char** datp, Pz_t* pz, int high, int maxhigh, size_t row, size_t tot)
 {
-	register int	i;
-	register int	j;
+	int	i;
+	int	j;
 	char*		q;
 	unsigned char*	s;
 	unsigned char*	t;
@@ -728,7 +728,7 @@ filter(Sfio_t* ip, unsigned char** bufp, unsigned char** datp, Pz_t* pz, int hig
 static void
 permute(unsigned char* buf, unsigned char* dat, size_t* ord, size_t row, size_t tot)
 {
-	register int	i;
+	int	i;
 	size_t*		tmap;
 	unsigned char*	end;
 
@@ -770,9 +770,9 @@ solution(int* lab, int label, size_t* sol, int beg, int end)
 static void
 list(Sfio_t* sp, int* lab, size_t row)
 {
-	register int	i;
-	register int	j;
-	register int	g;
+	int	i;
+	int	j;
+	int	g;
 
 	g = -1;
 	for (i = 0; i < row; i++)
@@ -802,13 +802,13 @@ list(Sfio_t* sp, int* lab, size_t row)
 static void
 reorder_heuristic(Reorder_method_t* method, unsigned char* buf, unsigned char* dat, int* lab, size_t row, size_t tot)
 {
-	register int		i;
-	register int		j;
-	register int		k;
-	register Part_t*	cp;
-	register Part_t*	np;
-	register Part_t*	tp;
-	register Part_t*	bp;
+	int		i;
+	int		j;
+	int		k;
+	Part_t*	cp;
+	Part_t*	np;
+	Part_t*	tp;
+	Part_t*	bp;
 	Part_t*			fp;
 	size_t*			hit;
 	size_t*			ord;
@@ -1419,8 +1419,8 @@ static Reorder_method_t		reorder_methods[] =
 static int
 optinfo(Opt_t* op, Sfio_t* sp, const char* s, Optdisc_t* dp)
 {
-	register int	i;
-	register int	n;
+	int	i;
+	int	n;
 
 	n = 0;
 	if (streq(s, "optimize_default"))

@@ -30,11 +30,11 @@
  */
 
 ssize_t
-msgblast(register Msg_call_t* msg)
+msgblast(Msg_call_t* msg)
 {
-	register long		n;
-	register unsigned long	at;
-	register Msg_arg_t*	ap;
+	long		n;
+	unsigned long	at;
+	Msg_arg_t*	ap;
 	long			r;
 	char*			b;
 	char*			e;

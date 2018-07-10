@@ -130,9 +130,9 @@ static const struct content	contents[] = {
 static int
 content(Mime_t* mp, void* entry, char* data, size_t size, Mimedisc_t* disc)
 {
-	register struct content*	cp = (struct content*)entry;
-	register struct part*		ap;
-	register struct bound*		bp;
+	struct content*	cp = (struct content*)entry;
+	struct part*		ap;
+	struct bound*		bp;
 	char*				s;
 	char*				e;
 
@@ -236,7 +236,7 @@ mime(int op)
  * Set up a message for header parsing.
  */
 int
-headset(register struct parse* pp, struct msg* mp, FILE* fp, struct header* hp, Dt_t** ignore, unsigned long flags)
+headset(struct parse* pp, struct msg* mp, FILE* fp, struct header* hp, Dt_t** ignore, unsigned long flags)
 {
 	int		r;
 	struct bound*	bp;
@@ -261,8 +261,8 @@ headset(register struct parse* pp, struct msg* mp, FILE* fp, struct header* hp, 
 	if (hp || (flags & GFROM))
 		r = 1;
 	else if ((r = headget(pp)) && (pp->flags & GDISPLAY) && pp->length > 6) {
-		register char*	s;
-		register char*	t;
+		char*	s;
+		char*	t;
 		struct name*	np;
 		int		c;
 
@@ -298,7 +298,7 @@ headset(register struct parse* pp, struct msg* mp, FILE* fp, struct header* hp, 
 static void
 status(struct parse* pp)
 {
-	register char*	s;
+	char*	s;
 
 	pp->flags &= ~GSTATUS;
 	s = strcopy(pp->buf, "Status");
@@ -324,12 +324,12 @@ status(struct parse* pp)
  * Attach part ap to the current message.
  */
 static void
-attach(register struct part* ap)
+attach(struct part* ap)
 {
-	register int	c;
-	register int	p;
-	register char*	s;
-	register char*	t;
+	int	c;
+	int	p;
+	char*	s;
+	char*	t;
 
 	if (!(ap->flags & (PART_application|PART_message|PART_text)))
 		ap->flags |= PART_text;
@@ -369,13 +369,13 @@ attach(register struct part* ap)
  * Read the next header line.
  */
 static char*
-headline(register struct parse* pp)
+headline(struct parse* pp)
 {
-	register char*	s;
-	register char*	e;
-	register char*	t;
-	register int	c;
-	register int	n;
+	char*	s;
+	char*	e;
+	char*	t;
+	int	c;
+	int	n;
 
 	if (pp->mp && pp->count <= 0 || (pp->flags & GDONE) || !fgets(pp->buf, sizeof(pp->buf), pp->fp)) {
 		pp->flags |= GDONE;
@@ -418,9 +418,9 @@ headline(register struct parse* pp)
  * Get mime multipart content.
  */
 static void
-multipart(register struct parse* pp)
+multipart(struct parse* pp)
 {
-	register char*	s;
+	char*	s;
 	unsigned long	count;
 	off_t		offset;
 	int		n;
@@ -493,21 +493,21 @@ multipart(register struct parse* pp)
  * Get the next message header.
  */
 int
-headget(register struct parse* pp)
+headget(struct parse* pp)
 {
-	register char*			s;
-	register char*			t;
+	char*			s;
+	char*			t;
 #if _PACKAGE_ast
-	register char*			u;
-	register char*			v;
+	char*			u;
+	char*			v;
 	char*				e;
 	char*				h;
 	char*				d;
 	ssize_t				(*decode)(const void*, size_t, void**, void*, size_t, void**);
 	ssize_t				z;
 #endif
-	register int			n;
-	register const struct lab*	lp;
+	int			n;
+	const struct lab*	lp;
 	off_t				body;
 	off_t				text;
 	int				i;
@@ -755,10 +755,10 @@ headget(register struct parse* pp)
 static char*
 grabname(struct parse* pp, struct msg* mp, char* name, unsigned long type)
 {
-	register char*	r = 0;
-	register int	n = 0;
-	register int	i;
-	register int	u;
+	char*	r = 0;
+	int	n = 0;
+	int	i;
+	int	u;
 
 	if (headset(pp, mp, NiL, NiL, NiL, 0)) {
 		u = (type & GUSER) ? strlen(state.var.user) : 0;
@@ -790,12 +790,12 @@ grabname(struct parse* pp, struct msg* mp, char* name, unsigned long type)
  * Fetch the field info by type from the passed message.
  */
 static char*
-grabtype(struct parse* pp, register struct msg* mp, unsigned long type)
+grabtype(struct parse* pp, struct msg* mp, unsigned long type)
 {
-	register char*	s;
-	register char*	e;
-	register char*	t;
-	register FILE*	fp;
+	char*	s;
+	char*	e;
+	char*	t;
+	FILE*	fp;
 	struct sender*	sp;
 	struct sendor*	op;
 	struct sendand*	ap;
@@ -900,9 +900,9 @@ grabtype(struct parse* pp, register struct msg* mp, unsigned long type)
  * otherwise grab by type.
  */
 char*
-grab(register struct msg* mp, unsigned long type, char* name)
+grab(struct msg* mp, unsigned long type, char* name)
 {
-	register char*	s;
+	char*	s;
 	struct parse	pp;
 
 	if (!name)
@@ -919,9 +919,9 @@ grab(register struct msg* mp, unsigned long type, char* name)
 char*
 wordnext(char** p, char* b)
 {
-	register char*	s;
-	register char*	t;
-	register int	c;
+	char*	s;
+	char*	t;
+	int	c;
 
 	if (!(s = *p) || !*s)
 		return 0;
@@ -956,11 +956,11 @@ wordnext(char** p, char* b)
  * structure.  Actually, it scans.
  */
 void
-parse(struct msg* mp, char* line, register struct headline* hl, char* pbuf, size_t psize)
+parse(struct msg* mp, char* line, struct headline* hl, char* pbuf, size_t psize)
 {
-	register char*	s;
-	register char*	t;
-	register char*	e;
+	char*	s;
+	char*	t;
+	char*	e;
 	struct parse	pp;
 
 	hl->l_from = 0;
@@ -1002,7 +1002,7 @@ parse(struct msg* mp, char* line, register struct headline* hl, char* pbuf, size
 int
 ishead(char* linebuf, int inhead)
 {
-	register char*	cp;
+	char*	cp;
 	struct headline	hl;
 	char		parbuf[LINESIZE];
 

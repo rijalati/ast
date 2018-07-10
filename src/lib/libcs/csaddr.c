@@ -40,17 +40,17 @@ static unsigned long	local;
  */
 
 static unsigned long
-realaddr(register Cs_t* state, const char* name)
+realaddr(Cs_t* state, const char* name)
 {
-	register int		n;
-	register const char*	s;
+	int		n;
+	const char*	s;
 	int			r;
 	const char*		t;
 	union nl		addr;
 
 #if CS_LIB_SOCKET
 
-	register struct hostent*	hp;
+	struct hostent*	hp;
 
 #endif
 	messagef((state->id, NiL, -8, "realaddr(%s) call", name));
@@ -140,12 +140,12 @@ realaddr(register Cs_t* state, const char* name)
  */
 
 unsigned long
-csaddr(register Cs_t* state, const char* aname)
+csaddr(Cs_t* state, const char* aname)
 {
-	register char*		name = (char*)aname;
-	register char*		s;
-	register unsigned long	addr;
-	register Sfio_t*	sp = 0;
+	char*		name = (char*)aname;
+	char*		s;
+	unsigned long	addr;
+	Sfio_t*	sp = 0;
 	int			userlen = 0;
 	int			dot = 0;
 	long			flags = 0;

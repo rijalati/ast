@@ -36,8 +36,8 @@
 ssize_t
 msgread(int fd, char* buf, size_t siz)
 {
-	register ssize_t	n;
-	register int		o;
+	ssize_t	n;
+	int		o;
 
 	if ((n = cspeek(&cs, fd, buf, MSG_SIZE_SIZE)) >= 0) o = 0;
 	else

@@ -31,10 +31,10 @@
 #define N	(sizeof(M)-1)
 
 int
-csping(register Cs_t* state, const char* name)
+csping(Cs_t* state, const char* name)
 {
-	register int	fd;
-	register int	n;
+	int	fd;
+	int	n;
 
 	sfsprintf(state->temp, sizeof(state->path), "/dev/tcp/%s/inet.echo", name);
 	if ((fd = csopen(state, state->temp, 0)) < 0) return -1;

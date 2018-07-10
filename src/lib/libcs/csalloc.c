@@ -30,7 +30,7 @@
 Cs_t*
 csalloc(Csdisc_t* disc)
 {
-	register Cs_t*	state;
+	Cs_t*	state;
 
 	if (state = newof(0, Cs_t, 1, 0))
 	{

@@ -28,12 +28,12 @@
 #include "cslib.h"
 
 int
-cssend(register Cs_t* state, int fd, int* fds, int n)
+cssend(Cs_t* state, int fd, int* fds, int n)
 {
 
 #if CS_LIB_STREAM || CS_LIB_V10
 
-	register int	i;
+	int	i;
 	struct csfdhdr	hdr;
 
 	if (n > 0)
@@ -68,8 +68,8 @@ cssend(register Cs_t* state, int fd, int* fds, int n)
 
 #if CS_LIB_SOCKET_RIGHTS
 
-	register char*	s;
-	register int	i;
+	char*	s;
+	int	i;
 	struct iovec	iov;
 	Csid_t		id;
 	struct msghdr	msg;
@@ -155,9 +155,9 @@ cssend(register Cs_t* state, int fd, int* fds, int n)
 	messagef((state->id, NiL, -8, "send(%d,%d) call", fd, n));
 	if (!access(CS_PROC_FD_TST, F_OK))
 	{
-		register int	i;
-		register int	j;
-		register char*	s;
+		int	i;
+		int	j;
+		char*	s;
 
 		static struct
 		{

@@ -33,7 +33,7 @@
  */
 
 int	
-cxbeg(Cx_t* cx, register Cxexpr_t* expr, const char* method)
+cxbeg(Cx_t* cx, Cxexpr_t* expr, const char* method)
 {
 	Opt_t		opt;
 	int		r;
@@ -93,7 +93,7 @@ cxbeg(Cx_t* cx, register Cxexpr_t* expr, const char* method)
  */
 
 int	
-cxend(Cx_t* cx, register Cxexpr_t* expr)
+cxend(Cx_t* cx, Cxexpr_t* expr)
 {
 	if (!expr->begun)
 		return 0;
@@ -124,11 +124,11 @@ cxend(Cx_t* cx, register Cxexpr_t* expr)
  */
 
 static int
-execute(Cx_t* cx, Cxexpr_t* expr, register Cxinstruction_t* pc, void* data, Cxoperand_t* rv, Cxdisc_t* disc)
+execute(Cx_t* cx, Cxexpr_t* expr, Cxinstruction_t* pc, void* data, Cxoperand_t* rv, Cxdisc_t* disc)
 {
-	register Cxoperand_t*	sp;
-	register Cxcallout_f	f;
-	register Cxoperand_t*	so;
+	Cxoperand_t*	sp;
+	Cxcallout_f	f;
+	Cxoperand_t*	so;
 	Cxinstruction_t*	pe = pc;
 	Cxoperand_t		r;
 	int			i;
@@ -177,7 +177,7 @@ execute(Cx_t* cx, Cxexpr_t* expr, register Cxinstruction_t* pc, void* data, Cxop
  */
 
 static int
-eval(Cx_t* cx, register Cxexpr_t* expr, void* data, Cxoperand_t* rv)
+eval(Cx_t* cx, Cxexpr_t* expr, void* data, Cxoperand_t* rv)
 {
 	int	r;
 	int	t;
@@ -211,7 +211,7 @@ eval(Cx_t* cx, register Cxexpr_t* expr, void* data, Cxoperand_t* rv)
  */
 
 int
-cxeval(Cx_t* cx, register Cxexpr_t* expr, void* data, Cxoperand_t* rv)
+cxeval(Cx_t* cx, Cxexpr_t* expr, void* data, Cxoperand_t* rv)
 {
 	int	r;
 

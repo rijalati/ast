@@ -58,11 +58,11 @@ USAGE_LICENSE
  */
 
 static int
-ncsl(register Sfio_t* sp)
+ncsl(Sfio_t* sp)
 {
-	register int		c;
-	register int		data;
-	register unsigned long	line;
+	int		c;
+	int		data;
+	unsigned long	line;
 	int			quote;
 
 	line = 0;
@@ -191,8 +191,8 @@ ncsl(register Sfio_t* sp)
 int
 main(int argc, char** argv)
 {
-	register char*		s;
-	register Sfio_t*	sp;
+	char*		s;
+	Sfio_t*	sp;
 
 	unsigned long		n;
 	int			summary = 0;

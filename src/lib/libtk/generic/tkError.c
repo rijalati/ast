@@ -94,8 +94,8 @@ Tk_CreateErrorHandler(display, error, request, minorCode, errorProc, clientData)
     ClientData clientData;	/* Arbitrary value to pass to
 				 * errorProc. */
 {
-    register TkErrorHandler *errorPtr;
-    register TkDisplay *dispPtr;
+    TkErrorHandler *errorPtr;
+    TkDisplay *dispPtr;
 
     /*
      * Find the display.  If Tk doesn't know about this display then
@@ -162,8 +162,8 @@ Tk_DeleteErrorHandler(handler)
 				 * was previous return value from
 				 * Tk_CreateErrorHandler. */
 {
-    register TkErrorHandler *errorPtr = (TkErrorHandler *) handler;
-    register TkDisplay *dispPtr = errorPtr->dispPtr;
+    TkErrorHandler *errorPtr = (TkErrorHandler *) handler;
+    TkDisplay *dispPtr = errorPtr->dispPtr;
 
     errorPtr->lastRequest = NextRequest(dispPtr->display) - 1;
 
@@ -183,7 +183,7 @@ Tk_DeleteErrorHandler(handler)
 
     dispPtr->deleteCount += 1;
     if (dispPtr->deleteCount >= 10) {
-	register TkErrorHandler *prevPtr;
+	TkErrorHandler *prevPtr;
 	TkErrorHandler *nextPtr;
 	int lastSerial;
 
@@ -234,10 +234,10 @@ static int
 ErrorProc(display, errEventPtr)
     Display *display;			/* Display for which error
 					 * occurred. */
-    register XErrorEvent *errEventPtr;	/* Information about error. */
+    XErrorEvent *errEventPtr;	/* Information about error. */
 {
-    register TkDisplay *dispPtr;
-    register TkErrorHandler *errorPtr;
+    TkDisplay *dispPtr;
+    TkErrorHandler *errorPtr;
 
     /*
      * See if we know anything about the display.  If not, then

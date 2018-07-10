@@ -34,7 +34,7 @@
 struct ppsymbol*
 pprefmac(char* name, int ref)
 {
-	register struct ppsymbol*	sym;
+	struct ppsymbol*	sym;
 
 	if (!(sym = ppsymget(pp.symtab, name)) && (ref <= REF_NORMAL && pp.macref || ref == REF_CREATE || ref == REF_DELETE && (pp.mode & (INIT|READONLY))))
 	{
@@ -70,10 +70,10 @@ pprefmac(char* name, int ref)
 void
 ppassert(int op, char* pred, char* args)
 {
-	register struct pplist*		a;
-	register struct ppsymbol*	sym;
-	register struct pplist*		p;
-	register struct pplist*		q;
+	struct pplist*		a;
+	struct ppsymbol*	sym;
+	struct pplist*		p;
+	struct pplist*		q;
 
 	if (!args) switch (op)
 	{
@@ -140,9 +140,9 @@ ppassert(int op, char* pred, char* args)
 int
 pppredargs(void)
 {
-	register int	c;
-	register int	n;
-	register int	type;
+	int	c;
+	int	n;
+	int	type;
 	char*		pptoken;
 
 	pptoken = pp.token;

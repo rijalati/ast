@@ -222,8 +222,8 @@ static char_type rmask[9] =
 static int
 output(State_t* zs, Sfio_t* f, code_int ocode, Sfdisc_t* dp)
 {
-	register int bits, r_off;
-	register char_type *bp;
+	int bits, r_off;
+	char_type *bp;
 
 	r_off = offset;
 	bits = n_bits;
@@ -310,9 +310,9 @@ output(State_t* zs, Sfio_t* f, code_int ocode, Sfdisc_t* dp)
 static code_int
 getcode(State_t* zs, Sfio_t* f, Sfdisc_t* dp)
 {
-	register code_int gcode;
-	register int r_off, bits;
-	register char_type *bp;
+	code_int gcode;
+	int r_off, bits;
+	char_type *bp;
 
 	bp = gbuf;
 	if (clear_flg > 0 || roffset >= size || free_ent > maxcode) {
@@ -366,10 +366,10 @@ getcode(State_t* zs, Sfio_t* f, Sfdisc_t* dp)
 }
 
 static void
-cl_hash(State_t* zs, register count_int cl_hsize)		/* Reset code table. */
+cl_hash(State_t* zs, count_int cl_hsize)		/* Reset code table. */
 {
-	register count_int *htab_p;
-	register long i, m1;
+	count_int *htab_p;
+	long i, m1;
 
 	m1 = -1;
 	htab_p = htab + cl_hsize;
@@ -400,7 +400,7 @@ cl_hash(State_t* zs, register count_int cl_hsize)		/* Reset code table. */
 static int
 cl_block(State_t* zs, Sfio_t* f, Sfdisc_t* dp)/* Table clear for block compress. */
 {
-	register long rat;
+	long rat;
 
 	checkpoint = in_count + CHECK_GAP;
 
@@ -444,7 +444,7 @@ lzw_ident(Codexmeth_t* meth, const void* head, size_t headsize, char* name, size
 static int
 lzw_open(Codex_t* p, char* const args[], Codexnum_t flags)
 {
-	register State_t*	zs;
+	State_t*	zs;
 	const char*		s;
 	char*			e;
 
@@ -470,7 +470,7 @@ lzw_open(Codex_t* p, char* const args[], Codexnum_t flags)
 static int
 lzw_init(Codex_t* p)
 {
-	register State_t*	zs = (State_t*)p->data;
+	State_t*	zs = (State_t*)p->data;
 	u_char			header[HEADER];
 
 	hsize = HSIZE;			/* For dynamic table sizing. */
@@ -530,7 +530,7 @@ lzw_init(Codex_t* p)
 int
 lzw_sync(Codex_t* p)
 {
-	register State_t*	zs = (State_t*)p->data;
+	State_t*	zs = (State_t*)p->data;
 
 	if ((zs->codex->flags & CODEX_ENCODE) && cl_block(zs, p->sp, &p->sfdisc))
 		return -1;
@@ -544,7 +544,7 @@ lzw_sync(Codex_t* p)
 int
 lzw_done(Codex_t* p)
 {
-	register State_t*	zs = (State_t*)p->data;
+	State_t*	zs = (State_t*)p->data;
 
 	if (zs->codex->flags & CODEX_ENCODE)
 	{
@@ -567,7 +567,7 @@ static ssize_t
 lzw_read(Sfio_t* f, Void_t* rbp, size_t num, Sfdisc_t* dp)
 {
 	State_t *zs = (State_t*)CODEX(dp)->data;
-	register u_int count;
+	u_int count;
 	u_char *bp;
 
 	if (num == 0)
@@ -661,8 +661,8 @@ static ssize_t
 lzw_write(Sfio_t* f, const Void_t* wbp, size_t num, Sfdisc_t* dp)
 {
 	State_t *zs = (State_t*)CODEX(dp)->data;
-	register code_int i;
-	register int c, disp;
+	code_int i;
+	int c, disp;
 	const u_char *bp;
 	int count;
 

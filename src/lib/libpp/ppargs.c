@@ -190,9 +190,9 @@ pplint(char* head, char* comment, char* tail, int line)
 int
 ppargs(char** argv, int last)
 {
-	register char*	s;
-	register int	c;
-	register int	n;
+	char*	s;
+	int	c;
+	int	n;
 	char*		p;
 
 	/*

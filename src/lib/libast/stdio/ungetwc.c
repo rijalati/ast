@@ -26,8 +26,8 @@
 wint_t
 ungetwc(wint_t c, Sfio_t* f)
 {
-	register unsigned char*	s = (unsigned char*)&c;
-	register unsigned char*	e = s + sizeof(c);
+	unsigned char*	s = (unsigned char*)&c;
+	unsigned char*	e = s + sizeof(c);
 
 	STDIO_INT(f, "ungetwc", wint_t, (wint_t, Sfio_t*), (c, f))
 

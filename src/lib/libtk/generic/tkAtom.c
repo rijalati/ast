@@ -81,8 +81,8 @@ Tk_InternAtom(tkwin, name)
 				 * for this window's display. */
     char *name;			/* Name to turn into atom. */
 {
-    register TkDisplay *dispPtr;
-    register Tcl_HashEntry *hPtr;
+    TkDisplay *dispPtr;
+    Tcl_HashEntry *hPtr;
     int new;
 
     dispPtr = ((TkWindow *) tkwin)->dispPtr;
@@ -133,8 +133,8 @@ Tk_GetAtomName(tkwin, atom)
 				 * display. */
     Atom atom;			/* Atom whose name is wanted. */
 {
-    register TkDisplay *dispPtr;
-    register Tcl_HashEntry *hPtr;
+    TkDisplay *dispPtr;
+    Tcl_HashEntry *hPtr;
 
     dispPtr = ((TkWindow *) tkwin)->dispPtr;
     if (!dispPtr->atomInit) {
@@ -188,7 +188,7 @@ Tk_GetAtomName(tkwin, atom)
 
 static void
 AtomInit(dispPtr)
-    register TkDisplay *dispPtr;	/* Display to initialize. */
+    TkDisplay *dispPtr;	/* Display to initialize. */
 {
     Tcl_HashEntry *hPtr;
     Atom atom;

@@ -68,11 +68,11 @@ USAGE_LICENSE
 #define EXTRACT(f,p,b,n)	(((b)&&((f)&D_FLAG))?extract(p,b,n):(p))
 
 static char*
-extract(register const char* cp, char* buff, int len)
+extract(const char* cp, char* buff, int len)
 {
-	register char*	bp = buff;
-	register char*	ep = bp + len;
-	register int	n;
+	char*	bp = buff;
+	char*	ep = bp + len;
+	int	n;
 
 	while (n = *cp++)
 	{
@@ -100,9 +100,9 @@ look(Sfio_t* fp, char* prefix, char* maxprefix, int flags)
 	int		n;
 	int		len;
 	int		found;
-	register char*	cp;
-	register char*	dp;
-	register char*	buff = 0;
+	char*	cp;
+	char*	dp;
+	char*	buff = 0;
 	int		(*compare)(const char*, const char*, size_t);
 
 	compare = (flags & F_FLAG) ? strncasecmp : strncmp;
@@ -227,9 +227,9 @@ look(Sfio_t* fp, char* prefix, char* maxprefix, int flags)
 int
 b_look(int argc, char** argv, Shbltin_t* context)
 {
-	register Sfio_t*	fp;
-	register int		n;
-	register int		flags = 0;
+	Sfio_t*	fp;
+	int		n;
+	int		flags = 0;
 	char*			ep = 0;
 	char*			bp;
 	char*			file;

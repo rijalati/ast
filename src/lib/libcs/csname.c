@@ -58,10 +58,10 @@ extern int		gethostname(char*, size_t);
  */
 
 void
-cssetdb(register Cs_t* state)
+cssetdb(Cs_t* state)
 {
-	register int	fd;
-	register int	i;
+	int	fd;
+	int	i;
 
 	if (state->db <= 0 && ++state->db)
 	{
@@ -81,9 +81,9 @@ cssetdb(register Cs_t* state)
  */
 
 char*
-csname(register Cs_t* state, unsigned long addr)
+csname(Cs_t* state, unsigned long addr)
 {
-	register char*	s;
+	char*	s;
 
 	messagef((state->id, NiL, -8, "name(%s) call", csntoa(state, addr)));
 #if CS_LIB_LOCAL
@@ -109,7 +109,7 @@ csname(register Cs_t* state, unsigned long addr)
 			{
 				if (!((state->flags | state->disc->flags) & CS_ADDR_FULL))
 				{
-					register char*	t;
+					char*	t;
 
 					if ((t = strrchr(s, '.')) && !*(t + 1)) *t = 0;
 					if (t = strchr(s, '.'))

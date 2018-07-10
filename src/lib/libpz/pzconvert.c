@@ -99,10 +99,10 @@ typedef struct
  */
 
 static uint32_t
-memsum_4(register uint32_t sum, const void* buf, size_t size)
+memsum_4(uint32_t sum, const void* buf, size_t size)
 {
-	register unsigned char*	s = (unsigned char*)buf;
-	register unsigned char*	e = s + size;
+	unsigned char*	s = (unsigned char*)buf;
+	unsigned char*	e = s + size;
 
 	while (s < e)
 		sum = (sum << 4) + sum + *s++ + 97531;
@@ -117,10 +117,10 @@ memsum_4(register uint32_t sum, const void* buf, size_t size)
 static ssize_t
 cvtread(Pz_t* pz, Sfio_t* sp, void* data, Pzdisc_t* disc)
 {
-	register State_t*	state = (State_t*)pz->discdata;
-	register Pzpart_t*	pp = pz->part;
-	register Cvt_t*		cvt = (Cvt_t*)pp->discdata;
-	register Chain_t*	cp;
+	State_t*	state = (State_t*)pz->discdata;
+	Pzpart_t*	pp = pz->part;
+	Cvt_t*		cvt = (Cvt_t*)pp->discdata;
+	Chain_t*	cp;
 	ssize_t			n;
 	unsigned char*		s;
 	unsigned char*		t;
@@ -166,10 +166,10 @@ cvtread(Pz_t* pz, Sfio_t* sp, void* data, Pzdisc_t* disc)
 static ssize_t
 cvtwrite(Pz_t* pz, Sfio_t* sp, const void* data, Pzdisc_t* disc)
 {
-	register State_t*	state = (State_t*)pz->discdata;
-	register Pzpart_t*	pp = pz->part;
-	register Cvt_t*		cvt = (Cvt_t*)pp->discdata;
-	register Chain_t*	cp;
+	State_t*	state = (State_t*)pz->discdata;
+	Pzpart_t*	pp = pz->part;
+	Cvt_t*		cvt = (Cvt_t*)pp->discdata;
+	Chain_t*	cp;
 	ssize_t			n;
 	unsigned char*		b;
 	unsigned char*		s;
@@ -256,7 +256,7 @@ closure(Pz_t* pz, Chain_t* cp, int n, Pzconvert_t* tab, unsigned char* hit, Pzco
 static Chain_t*
 chain(Pz_t* pz, Pzconvert_t* tab, int n, const char* f, const char* t)
 {
-	register State_t*	state = (State_t*)pz->discdata;
+	State_t*	state = (State_t*)pz->discdata;
 	int			i;
 	int			j;
 	size_t			m;
@@ -344,10 +344,10 @@ chain(Pz_t* pz, Pzconvert_t* tab, int n, const char* f, const char* t)
 static int
 cvtevent(Pz_t* pz, int op, void* data, size_t size, Pzdisc_t* disc)
 {
-	register State_t*	state = (State_t*)pz->discdata;
-	register Pzpart_t*	pp = pz->part;
-	register Cvt_t*		cvt;
-	register Pzconvert_t*	xp;
+	State_t*	state = (State_t*)pz->discdata;
+	Pzpart_t*	pp = pz->part;
+	Cvt_t*		cvt;
+	Pzconvert_t*	xp;
 	Chain_t*		cp;
 	Pzconvert_t*		zp;
 	Pzconvert_t*		rp;
@@ -676,7 +676,7 @@ cvtevent(Pz_t* pz, int op, void* data, size_t size, Pzdisc_t* disc)
 int
 pzdcconvert(Pz_t* pz, const Pzconvert_t* conversions)
 {
-	register State_t*	state;
+	State_t*	state;
 
 	if (pz->disc->eventf != cvtevent && !(pz->flags & PZ_PUSHED))
 	{

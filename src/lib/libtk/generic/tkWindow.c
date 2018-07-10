@@ -240,8 +240,8 @@ CreateTopLevelWindow(interp, parent, name, screenName)
 				 * use parent's screen, or DISPLAY if no
 				 * parent. */
 {
-    register TkWindow *winPtr;
-    register TkDisplay *dispPtr;
+    TkWindow *winPtr;
+    TkDisplay *dispPtr;
     int screenId;
 
     if (!initialized) {
@@ -351,7 +351,7 @@ GetScreen(interp, screenName, screenPtr)
 				 * use DISPLAY envariable. */
     int *screenPtr;		/* Where to store screen number. */
 {
-    register TkDisplay *dispPtr;
+    TkDisplay *dispPtr;
     char *p;
     int screenId;
     size_t length;
@@ -510,7 +510,7 @@ AllocWindow(dispPtr, screenNum, parentPtr)
 				 * use screen defaults instead of
 				 * inheriting. */
 {
-    register TkWindow *winPtr;
+    TkWindow *winPtr;
 
     winPtr = (TkWindow *) ckalloc(sizeof(TkWindow));
     winPtr->display = dispPtr->display;
@@ -583,7 +583,7 @@ AllocWindow(dispPtr, screenNum, parentPtr)
 static int
 NameWindow(interp, winPtr, parentPtr, name)
     Tcl_Interp *interp;		/* Interpreter to use for error reporting. */
-    register TkWindow *winPtr;	/* Window that is to be named and inserted. */
+    TkWindow *winPtr;	/* Window that is to be named and inserted. */
     TkWindow *parentPtr;	/* Pointer to logical parent for winPtr
 				 * (used for naming, options, etc.). */
     char *name;			/* Name for winPtr;   must be unique among
@@ -699,9 +699,9 @@ TkCreateMainWindow(interp, screenName, baseName)
     Tk_Window tkwin;
     int dummy;
     Tcl_HashEntry *hPtr;
-    register TkMainInfo *mainPtr;
-    register TkWindow *winPtr;
-    register TkCmd *cmdPtr;
+    TkMainInfo *mainPtr;
+    TkWindow *winPtr;
+    TkCmd *cmdPtr;
 
     /*
      * Panic if someone updated the TkWindow structure without
@@ -1137,13 +1137,13 @@ Tk_DestroyWindow(tkwin)
 	}
 	winPtr->mainPtr->refCount--;
 	if (winPtr->mainPtr->refCount == 0) {
-	    register TkCmd *cmdPtr;
+	    TkCmd *cmdPtr;
 
 	    /*
 	     * We just deleted the last window in the application.  Delete
 	     * the TkMainInfo structure too and replace all of Tk's commands
 	     * with dummy commands that return errors.  Also delete the
-	     * "send" command to unregister the interpreter.
+	     * "send" command to unthe interpreter.
              *
              * NOTE: Only replace the commands it if the interpreter is
              * not being deleted. If it *is*, the interpreter cleanup will
@@ -1193,7 +1193,7 @@ void
 Tk_MapWindow(tkwin)
     Tk_Window tkwin;		/* Token for window to map. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
     XEvent event;
 
     if (winPtr->flags & TK_MAPPED) {
@@ -1248,7 +1248,7 @@ void
 Tk_MakeWindowExist(tkwin)
     Tk_Window tkwin;		/* Token for window. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
     TkWindow *winPtr2;
     Window parent;
     Tcl_HashEntry *hPtr;
@@ -1352,7 +1352,7 @@ void
 Tk_UnmapWindow(tkwin)
     Tk_Window tkwin;		/* Token for window to unmap. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
     if (!(winPtr->flags & TK_MAPPED) || (winPtr->flags & TK_ALREADY_DEAD)) {
 	return;
@@ -1389,7 +1389,7 @@ Tk_ConfigureWindow(tkwin, valueMask, valuePtr)
 				 * *valuePtr are to be used. */
     XWindowChanges *valuePtr;	/* New values. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
     if (valueMask & CWX) {
 	winPtr->changes.x = valuePtr->x;
@@ -1428,7 +1428,7 @@ Tk_MoveWindow(tkwin, x, y)
     int x, y;			/* New location for window (within
 				 * parent). */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
     winPtr->changes.x = x;
     winPtr->changes.y = y;
@@ -1448,7 +1448,7 @@ Tk_ResizeWindow(tkwin, width, height)
     Tk_Window tkwin;		/* Window to resize. */
     int width, height;		/* New dimensions for window. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
     winPtr->changes.width = (unsigned) width;
     winPtr->changes.height = (unsigned) height;
@@ -1471,7 +1471,7 @@ Tk_MoveResizeWindow(tkwin, x, y, width, height)
 				 * parent). */
     int width, height;		/* New dimensions for window. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
     winPtr->changes.x = x;
     winPtr->changes.y = y;
@@ -1494,7 +1494,7 @@ Tk_SetWindowBorderWidth(tkwin, width)
     Tk_Window tkwin;		/* Window to modify. */
     int width;			/* New border width for window. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
     winPtr->changes.border_width = width;
     if (winPtr->window != None) {
@@ -1515,10 +1515,10 @@ Tk_ChangeWindowAttributes(tkwin, valueMask, attsPtr)
     unsigned long valueMask;	/* OR'ed combination of bits,
 				 * indicating which fields of
 				 * *attsPtr are to be used. */
-    register XSetWindowAttributes *attsPtr;
+    XSetWindowAttributes *attsPtr;
 				/* New values for some attributes. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
     if (valueMask & CWBackPixmap) {
 	winPtr->atts.background_pixmap = attsPtr->background_pixmap;
@@ -1581,7 +1581,7 @@ Tk_SetWindowBackground(tkwin, pixel)
     unsigned long pixel;	/* Pixel value to use for
 				 * window's background. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
     winPtr->atts.background_pixel = pixel;
 
@@ -1599,7 +1599,7 @@ Tk_SetWindowBackgroundPixmap(tkwin, pixmap)
     Pixmap pixmap;		/* Pixmap to use for window's
 				 * background. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
     winPtr->atts.background_pixmap = pixmap;
 
@@ -1618,7 +1618,7 @@ Tk_SetWindowBorder(tkwin, pixel)
     unsigned long pixel;	/* Pixel value to use for
 				 * window's border. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
     winPtr->atts.border_pixel = pixel;
 
@@ -1636,7 +1636,7 @@ Tk_SetWindowBorderPixmap(tkwin, pixmap)
     Pixmap pixmap;		/* Pixmap to use for window's
 				 * border. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
     winPtr->atts.border_pixmap = pixmap;
 
@@ -1654,7 +1654,7 @@ Tk_DefineCursor(tkwin, cursor)
     Tk_Window tkwin;		/* Window to manipulate. */
     Tk_Cursor cursor;		/* Cursor to use for window (may be None). */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
 #ifdef MAC_TCL
     winPtr->atts.cursor = (XCursor) cursor;
@@ -1681,7 +1681,7 @@ Tk_SetWindowColormap(tkwin, colormap)
     Tk_Window tkwin;		/* Window to manipulate. */
     Colormap colormap;		/* Colormap to use for window. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
     winPtr->atts.colormap = colormap;
 
@@ -1723,7 +1723,7 @@ Tk_SetWindowVisual(tkwin, visual, depth, colormap)
     int depth;			/* New depth for window. */
     Colormap colormap;		/* An appropriate colormap for the visual. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
     if( winPtr->window != None ){
 	/* Too late! */
@@ -1765,7 +1765,7 @@ Tk_SetWindowVisual(tkwin, visual, depth, colormap)
 
 static void
 DoConfigureNotify(winPtr)
-    register TkWindow *winPtr;		/* Window whose configuration
+    TkWindow *winPtr;		/* Window whose configuration
 					 * was just changed. */
 {
     XEvent event;
@@ -1812,7 +1812,7 @@ Tk_SetClass(tkwin, className)
     Tk_Window tkwin;		/* Token for window to assign class. */
     char *className;		/* New class for tkwin. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
     winPtr->classUid = Tk_GetUid(className);
     if (winPtr->flags & TK_TOP_LEVEL) {

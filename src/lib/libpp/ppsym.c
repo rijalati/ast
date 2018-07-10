@@ -34,9 +34,9 @@
 int
 main(int argc, char** argv)
 {
-	register int	state;
-	register int	c;
-	register char*	s;
+	int	state;
+	int	c;
+	char*	s;
 	Sfio_t*		out;
 
 	NoP(argc);

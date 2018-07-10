@@ -301,7 +301,7 @@ setfname(const char* prefix, char* format, int suflen, int low, int high)
 static char*
 getfname(struct fname* fp)
 {
-	register char*	cp = fp->last;
+	char*	cp = fp->last;
 
 	if (fp->format)
 		return sfprints(fp->format, fp->count++);
@@ -325,7 +325,7 @@ getfname(struct fname* fp)
 static void
 removeall(struct fname* fp)
 {
-	register char*	cp = fp->suffix;
+	char*	cp = fp->suffix;
 
 	while (*cp)
 		*cp++ = fp->low;
@@ -342,11 +342,11 @@ static int
 msize(Sfio_t* in, long len)
 {
 	Sfoff_t		off = sftell(in);
-	register char*	cp;
-	register char*	dp;
-	register long	m;
-	register long	n = len;
-	register long	nlen = 0;
+	char*	cp;
+	char*	dp;
+	long	m;
+	long	n = len;
+	long	nlen = 0;
 
 	if (sfsize(in) - off <= len)
 		return len;
@@ -373,17 +373,17 @@ msize(Sfio_t* in, long len)
 static int
 split(Sfio_t* in, struct fname* fp, struct op* op, int flags)
 {
-	register char*		cp;
-	register char*		s;
+	char*		cp;
+	char*		s;
 	Sfoff_t			len;
 	Sfoff_t			z;
 	Sfoff_t			size;
 	size_t			repeat;
 	int			c;
 
-	register Sfio_t*	out = 0;
-	register char*		peek = 0;
-	register long		n = 0;
+	Sfio_t*	out = 0;
+	char*		peek = 0;
+	long		n = 0;
 	int			delim = (flags & B_FLAG) ? -1 : '\n';
 	size_t			lineno = 1;
 

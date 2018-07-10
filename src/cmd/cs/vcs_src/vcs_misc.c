@@ -24,9 +24,9 @@ char* stamp2version(list, t)
 	time_t		t;
 {
 	char			buf[15];
-	register char*		s;
-	register int		len;
-	register rdirent_t*	et;
+	char*		s;
+	int		len;
+	rdirent_t*	et;
 	int			seq = -1;
 	int			num;
 
@@ -97,12 +97,12 @@ int rollback(sf)
  */
 
 int chop(s,w,n,c)
-	register char *s;
+	char *s;
 	char *w[];
 	int n;
 	char c;
 {
-	register int i;
+	int i;
 
 	for (i = 0; i < n && *s;)  
 	{
@@ -127,10 +127,10 @@ int chop(s,w,n,c)
 
 int skip(w, n)
 	char *w[];
-	register int n;
+	int n;
 {
-	register int i;
-	register int j;
+	int i;
+	int j;
 
 	for (i = 0, j = 0; i < n; i++)
 		if (w[i][0]) w[j++] = w[i];
@@ -151,8 +151,8 @@ static int	MyDomainID = 0;
 
 static void domaininit()
 {
-	register char*		s;
-	register int		i;
+	char*		s;
+	int		i;
 
 	s = (char *)malloc(strlen(DOMAINS) + 1);
 	strcpy(s, DOMAINS);
@@ -168,8 +168,8 @@ static void domaininit()
 #else
 	if ((s = csfull(0)) && (s = strchr(s, '.')))
 	{
-		register char*	t = MyDomain;
-		register char*	e = MyDomain + sizeof(MyDomain) - 1;
+		char*	t = MyDomain;
+		char*	e = MyDomain + sizeof(MyDomain) - 1;
 
 		while (t < e && (*t = *++s) && *t != '.')
 			t++;
@@ -200,9 +200,9 @@ int getmydomain()
 
 
 int getdomainbyname(s)
-	register char*	s;
+	char*	s;
 {
-	register int	i;
+	int	i;
 
 	if (!NumDomain)
 		domaininit();
@@ -216,7 +216,7 @@ int getdomainbyname(s)
 
 
 char* getdomainbyid(i)
-	register int i;
+	int i;
 {
 	if (!NumDomain)
 		domaininit();
@@ -235,9 +235,9 @@ char* getdomainbyid(i)
  */
 
 int permission(st, uid, gid)
-	register struct stat* 	st;
-	register uid_t		uid;
-	register uid_t		gid;
+	struct stat* 	st;
+	uid_t		uid;
+	uid_t		gid;
 {
 	if (uid == st->st_uid)
 		return (st->st_mode & S_IWUSR ? 0 :

@@ -27,13 +27,13 @@
  */
 
 ssize_t
-pzread(register Pz_t* pz, void* buf, size_t z)
+pzread(Pz_t* pz, void* buf, size_t z)
 {
-	register Pzpart_t*	pp;
-	register int		i;
-	register int		j;
-	register int		k;
-	register size_t		m;
+	Pzpart_t*	pp;
+	int		i;
+	int		j;
+	int		k;
+	size_t		m;
 	ssize_t			n;
 	ssize_t			w;
 	size_t			r;

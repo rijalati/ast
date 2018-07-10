@@ -68,11 +68,11 @@ static char *outname(char*);
 static const char suffix[] = ".z";
 
 int
-main(int argc, register char *argv[])
+main(int argc, char *argv[])
 {
 	static char command[] = "pack";
-	register Huff_t	*hp;
-	register char	*infile,*outfile;
+	Huff_t	*hp;
+	char	*infile,*outfile;
 	Sfio_t		*fpin,*fpout;
 	int		nfile=0, npack=0, force=0, verbose=0;
 	int		out, deleted, dsize, n;
@@ -184,9 +184,9 @@ main(int argc, register char *argv[])
 
 static char *outname(char *infile)
 {
-	register int n = strlen(infile);
-	register int sufflen = strlen(suffix);
-	register char *cp;
+	int n = strlen(infile);
+	int sufflen = strlen(suffix);
+	char *cp;
 	if(streq(suffix,infile+n-sufflen))
 	{
 		error(ERROR_exit(1), "%s: already packed", infile);

@@ -41,10 +41,10 @@ typedef struct Ciscostate_s
 static int
 ciscoident(Dssfile_t* file, void* buf, size_t n, Dssdisc_t* disc)
 {
-	register char*	s;
-	register char*	e;
-	register char*	f;
-	register int	c;
+	char*	s;
+	char*	e;
+	char*	f;
+	int	c;
 	char*		t;
 	Bgpnum_t	addr;
 	unsigned char	bits;
@@ -109,12 +109,12 @@ ciscoopen(Dssfile_t* file, Dssdisc_t* disc)
  */
 
 static int
-ciscoread(register Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
+ciscoread(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register Ciscostate_t*	state = (Ciscostate_t*)file->data;
-	register Bgproute_t*	rp;
-	register char*		s;
-	register int		i;
+	Ciscostate_t*	state = (Ciscostate_t*)file->data;
+	Bgproute_t*	rp;
+	char*		s;
+	int		i;
 	int			n;
 	int			o;
 	char*			e;
@@ -295,12 +295,12 @@ ciscoread(register Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 static int
 ciscowrite(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register Ciscostate_t*	state = (Ciscostate_t*)file->data;
-	register Bgproute_t*	rp = (Bgproute_t*)record->data;
-	register Sfio_t*	io = file->io;
-	register int		i;
-	register int		j;
-	register int		k;
+	Ciscostate_t*	state = (Ciscostate_t*)file->data;
+	Bgproute_t*	rp = (Bgproute_t*)record->data;
+	Sfio_t*	io = file->io;
+	int		i;
+	int		j;
+	int		k;
 	Bgpasn_t*		ap;
 	Bgpnum_t*		np;
 

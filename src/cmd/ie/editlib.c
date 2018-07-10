@@ -84,7 +84,7 @@ static char	beenhere;
 
 int edit_Init()
 {
-	register char *sp;
+	char *sp;
 	if(!beenhere)
 	{
 		beenhere = 1;
@@ -169,7 +169,7 @@ int fd;
 void *buf;
 size_t n;
 {
-	register int r, flag;
+	int r, flag;
 	char *buff = (char*)buf;
 	if(fd==editfd && !beenhere)
 		edit_Init();
@@ -269,9 +269,9 @@ int mode;
  */
 
 void	p_setout(fd)
-register int fd;
+int fd;
 {
-	register struct fileblk *fp;
+	struct fileblk *fp;
 	if(!io_ftable[fd])
 		io_ftable[fd] = &outfile;
 	fp = io_ftable[fd];
@@ -290,8 +290,8 @@ register int fd;
 
 void p_flush()
 {
-	register struct fileblk *fp = io_ftable[output];
-	register int count;
+	struct fileblk *fp = io_ftable[output];
+	int count;
 	if(fp && (count=fp->ptr-fp->base))
 	{
 		if(write(output,fp->base,count) < 0)
@@ -307,9 +307,9 @@ void p_flush()
  */
 
 void	p_char(c)
-register int c;
+int c;
 {
-	register struct fileblk *fp = io_ftable[output];
+	struct fileblk *fp = io_ftable[output];
 	if(fp->ptr >= fp->last)
 		p_flush();
 	*fp->ptr++ = c;
@@ -320,11 +320,11 @@ register int c;
  */
 
 void	p_str(string,c)
-register char *string;
+char *string;
 int c;
 {
-	register struct fileblk *fp = io_ftable[output];
-	register int cc;
+	struct fileblk *fp = io_ftable[output];
+	int cc;
 	while(1)
 	{
 		if((cc= *string)==0)
@@ -344,8 +344,8 @@ int c;
  */
 
 char *ed_movstr(a,b)
-register const char *a;
-register char *b;
+const char *a;
+char *b;
 {
 	while(*b++ = *a++);
 	return(--b);
@@ -370,10 +370,10 @@ char *name,*message;
  * print a prompt
  */
 void pr_prompt(string)
-register char *string;
+char *string;
 {
-	register int c;
-	register char *dp = editb.e_prbuff;
+	int c;
+	char *dp = editb.e_prbuff;
 #ifdef TIOCLBIC
 	int mode;
 	mode = LFLUSHO;

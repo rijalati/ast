@@ -30,9 +30,9 @@
 
 tag_t*	get_tag(f, tp)
 	Sfio_t*	f;
-	register tag_t*	tp;
+	tag_t*	tp;
 {
-	register char *s;
+	char *s;
 	int	len;
 
 	s = (char *)tp + sizeof(int);
@@ -52,7 +52,7 @@ tag_t*	get_tag(f, tp)
 
 
 int new_tag(tp, sp, v, dsize, domain, type)
-	register tag_t*	tp;
+	tag_t*	tp;
 	struct stat*	sp;
 	char*		v;
 	int		dsize;
@@ -71,8 +71,8 @@ int new_tag(tp, sp, v, dsize, domain, type)
 }
 
 int keycmp(tp1, tp2)
-	register tag_t*	tp1;
-	register tag_t*	tp2;
+	tag_t*	tp1;
+	tag_t*	tp2;
 {
 	int	n;
 

@@ -195,7 +195,7 @@ typedef int (*Method_f)(Sfio_t*, int);
 int
 main(int argc, char** argv)
 {
-	register Pz_t*	pz;
+	Pz_t*	pz;
 	Pzdisc_t	disc;
 	Sfio_t*		dp;
 	char*		s;

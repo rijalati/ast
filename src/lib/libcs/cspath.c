@@ -43,10 +43,10 @@
  */
 
 static char*
-devpath(char* path, int size, int blk, register struct stat* st)
+devpath(char* path, int size, int blk, struct stat* st)
 {
-	register DIR*		dirp;
-	register struct dirent*	entry;
+	DIR*		dirp;
+	struct dirent*	entry;
 	DIR*			subp = 0;
 	char*			base;
 	int			n;
@@ -115,9 +115,9 @@ devpath(char* path, int size, int blk, register struct stat* st)
  */
 
 char*
-cspath(register Cs_t* state, register int fd, int flags)
+cspath(Cs_t* state, int fd, int flags)
 {
-	register char*		s;
+	char*		s;
 	char			num[16];
 	struct stat		st;
 	int			typ;

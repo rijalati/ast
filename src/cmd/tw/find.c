@@ -519,10 +519,10 @@ static const Args_t	commands[] =
  */
 
 static Args_t*
-lookup(register char* word)
+lookup(char* word)
 {
-	register Args_t*	argp;
-	register int		second;
+	Args_t*	argp;
+	int		second;
 
 	while (*word == '-')
 		word++;
@@ -541,9 +541,9 @@ lookup(register char* word)
  */
 
 static void
-quotex(register Sfio_t* sp, register const char* s, int term)
+quotex(Sfio_t* sp, const char* s, int term)
 {
-	register int	c;
+	int	c;
 
 	while (c = *s++)
 	{
@@ -562,9 +562,9 @@ quotex(register Sfio_t* sp, register const char* s, int term)
 static int
 print(Sfio_t* sp, void* vp, Sffmt_t* dp)
 {
-	register Fmt_t*		fp = (Fmt_t*)dp;
-	register FTSENT*	ent = fp->ent;
-	register State_t*	state = fp->state;
+	Fmt_t*		fp = (Fmt_t*)dp;
+	FTSENT*	ent = fp->ent;
+	State_t*	state = fp->state;
 	Value_t*		value = (Value_t*)vp;
 
 	char*			s;
@@ -744,10 +744,10 @@ print(Sfio_t* sp, void* vp, Sffmt_t* dp)
  */
 
 static char*
-format(State_t* state, register char* s)
+format(State_t* state, char* s)
 {
-	register char*	t;
-	register int	c;
+	char*	t;
+	int	c;
 	char*		b;
 
 	stresc(s);
@@ -845,11 +845,11 @@ format(State_t* state, register char* s)
  */
 
 static int
-compile(State_t* state, char** argv, register Node_t* np, int nested)
+compile(State_t* state, char** argv, Node_t* np, int nested)
 {
-	register char*		b;
-	register Node_t*	oldnp = 0;
-	register const Args_t*	argp;
+	char*		b;
+	Node_t*	oldnp = 0;
+	const Args_t*	argp;
 	Node_t*			tp;
 	char*			e;
 	char**			com;
@@ -1351,9 +1351,9 @@ compile(State_t* state, char** argv, register Node_t* np, int nested)
 static int
 execute(State_t* state, FTSENT* ent)
 {
-	register Node_t*	np = state->topnode;
-	register int		val = 0;
-	register unsigned long	u;
+	Node_t*	np = state->topnode;
+	int		val = 0;
+	unsigned long	u;
 	unsigned long		m;
 	int			not = 0;
 	char*			bp;
@@ -1692,11 +1692,11 @@ execute(State_t* state, FTSENT* ent)
 static int
 order(FTSENT* const* p1, FTSENT* const* p2)
 {
-	register const FTSENT*	f1 = *p1;
-	register const FTSENT*	f2 = *p2;
-	register State_t*	state = f1->fts->fts_handle;
-	register long		n1;
-	register long		n2;
+	const FTSENT*	f1 = *p1;
+	const FTSENT*	f2 = *p2;
+	State_t*	state = f1->fts->fts_handle;
+	long		n1;
+	long		n2;
 	int			n;
 
 	switch (state->sortkey)
@@ -1762,10 +1762,10 @@ find(State_t* state, char** paths, int flags, Sort_f sort)
 int
 main(int argc, char** argv)
 {
-	register char*			cp;
-	register char**			op;
-	register Find_t*		fp;
-	register const Args_t*		ap;
+	char*			cp;
+	char**			op;
+	Find_t*		fp;
+	const Args_t*		ap;
 	Node_t*				np;
 	int				r;
 	Sort_f				sort;

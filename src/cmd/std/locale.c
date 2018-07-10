@@ -576,7 +576,7 @@ static struct State_s
 static void
 list_locale(Sfio_t* sp, Keyword_t* key, Lc_t* lc, unsigned int flags)
 {
-	register int	i;
+	int	i;
 	int		n;
 	char*		fmt;
 	char*		sep;
@@ -626,7 +626,7 @@ list_locale(Sfio_t* sp, Keyword_t* key, Lc_t* lc, unsigned int flags)
  */
 
 static void
-number(Sfio_t* sp, register Keyword_t* key, int i, unsigned int flags)
+number(Sfio_t* sp, Keyword_t* key, int i, unsigned int flags)
 {
 	state.output = 1;
 	if (flags & LC_indent)
@@ -642,10 +642,10 @@ number(Sfio_t* sp, register Keyword_t* key, int i, unsigned int flags)
  */
 
 static void
-value(Sfio_t* sp, register const char* s, register unsigned int flags)
+value(Sfio_t* sp, const char* s, unsigned int flags)
 {
-	register int	c;
-	register int	u;
+	int	c;
+	int	u;
 
 	state.output = 1;
 	if ((flags & (LC_quote|LC_proper|LC_upper)) == LC_quote)
@@ -689,10 +689,10 @@ value(Sfio_t* sp, register const char* s, register unsigned int flags)
  */
 
 static void
-string(Sfio_t* sp, register Keyword_t* key, char** v, int n, unsigned int flags)
+string(Sfio_t* sp, Keyword_t* key, char** v, int n, unsigned int flags)
 {
 	char**					e;
-	register const Lc_attribute_list_t*	a;
+	const Lc_attribute_list_t*	a;
 
 	if (flags & LC_indent)
 		sfputc(sp, '\t');
@@ -728,9 +728,9 @@ string(Sfio_t* sp, register Keyword_t* key, char** v, int n, unsigned int flags)
  */
 
 static void
-extract(Sfio_t* sp, register Keyword_t* key, void* data, unsigned int flags)
+extract(Sfio_t* sp, Keyword_t* key, void* data, unsigned int flags)
 {
-	register int	i;
+	int	i;
 	char*		s;
 	char**		v;
 	Lc_t*		lc;
@@ -826,7 +826,7 @@ extract(Sfio_t* sp, register Keyword_t* key, void* data, unsigned int flags)
  */
 
 static void
-list_all(Sfio_t* sp, register Lc_t* lc, unsigned long flags)
+list_all(Sfio_t* sp, Lc_t* lc, unsigned long flags)
 {
 	if (!lc)
 		lc = (Lc_t*)lcinfo(LC_CTYPE)->lc;
@@ -854,12 +854,12 @@ static int	scan(Sfio_t*, Keyword_t*, unsigned long);
  */
 
 static void
-list_keyword(Sfio_t* sp, register Keyword_t* key, char* value, unsigned int flags)
+list_keyword(Sfio_t* sp, Keyword_t* key, char* value, unsigned int flags)
 {
-	register int		i;
-	register int		j;
-	register int		n;
-	register unsigned int	f;
+	int		i;
+	int		j;
+	int		n;
+	unsigned int	f;
 	char*			s;
 
 	if ((flags & LC_category) && key->index != AST_LC_ALL)
@@ -960,7 +960,7 @@ list_keyword(Sfio_t* sp, register Keyword_t* key, char* value, unsigned int flag
 static int
 scan(Sfio_t* sp, Keyword_t* key, unsigned long flags)
 {
-	register Lc_t*	lc = 0;
+	Lc_t*	lc = 0;
 	
 	while (lc = lcscan(lc))
 	{
@@ -986,10 +986,10 @@ scan(Sfio_t* sp, Keyword_t* key, unsigned long flags)
 int
 main(int argc, char** argv)
 {
-	register char*		name;
-	register char*		s;
-	register int		i;
-	register unsigned int	flags;
+	char*		name;
+	char*		s;
+	int		i;
+	unsigned int	flags;
 	int			collate;
 	int			composite;
 	int			transform;

@@ -49,7 +49,7 @@
  */
 
 int
-sfdczip(Sfio_t* sp, const char* path, register const char* meth, Error_f errorf)
+sfdczip(Sfio_t* sp, const char* path, const char* meth, Error_f errorf)
 {
 	const char*	part;
 	const char*	mesg;

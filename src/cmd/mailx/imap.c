@@ -440,9 +440,9 @@ static int	imapconnect(Imap_t*);
  */
 
 static char*
-imapname(register const Imaplex_t* tab, int n, int code)
+imapname(const Imaplex_t* tab, int n, int code)
 {
-	register const Imaplex_t*	end;
+	const Imaplex_t*	end;
 
 	for (end = tab + n; tab < end; tab++)
 		if (code == tab->code)
@@ -455,10 +455,10 @@ imapname(register const Imaplex_t* tab, int n, int code)
  */
 
 static char*
-imapflagnames(register Sfio_t* sp, register const Imaplex_t* tab, int n, register int flags)
+imapflagnames(Sfio_t* sp, const Imaplex_t* tab, int n, int flags)
 {
-	register const Imaplex_t*	end;
-	register int			sep;
+	const Imaplex_t*	end;
+	int			sep;
 
 	sep = 0;
 	for (end = tab + n; tab < end; tab++)
@@ -518,10 +518,10 @@ imapdumparg(Imap_t* imap, Imaparg_t* ap, int level)
  */
 
 static void
-imapset(Imap_t* imap, register Imaparg_t* ap, int code)
+imapset(Imap_t* imap, Imaparg_t* ap, int code)
 {
-	register int		i;
-	register Imapflag_t*	fp;
+	int		i;
+	Imapflag_t*	fp;
 
 	for (i = 0; i < elementsof(imapflags); i++)
 		imapflags[i].code &= ~code;
@@ -541,12 +541,12 @@ imapset(Imap_t* imap, register Imaparg_t* ap, int code)
  */
 
 static char*
-imapgetarg(Imap_t* imap, register Imapop_t* op, register Imaplist_t* lp, int* ep, register char* s)
+imapgetarg(Imap_t* imap, Imapop_t* op, Imaplist_t* lp, int* ep, char* s)
 {
-	register int		c;
-	register char*		b;
-	register Imaparg_t*	ap;
-	register int		eol;
+	int		c;
+	char*		b;
+	Imaparg_t*	ap;
+	int		eol;
 	int			m;
 	char*			e;
 
@@ -659,12 +659,12 @@ imapgetarg(Imap_t* imap, register Imapop_t* op, register Imaplist_t* lp, int* ep
  */
 
 static void
-imapputarg(register Imap_t* imap, register Imaparg_t* ap)
+imapputarg(Imap_t* imap, Imaparg_t* ap)
 {
-	register char*	e;
-	register char*	s;
-	register char*	t;
-	register int	n;
+	char*	e;
+	char*	s;
+	char*	t;
+	int	n;
 
 	switch (ap->type)
 	{
@@ -703,14 +703,14 @@ imapputarg(register Imap_t* imap, register Imaparg_t* ap)
  */
 
 static Imapop_t*
-imapop(register Imap_t* imap)
+imapop(Imap_t* imap)
 {
-	register char*		s;
-	register char*		z;
-	register size_t		n;
-	register Imapop_t*	op;
-	register Imapblock_t*	bp;
-	register Imapblock_t*	bt;
+	char*		s;
+	char*		z;
+	size_t		n;
+	Imapop_t*	op;
+	Imapblock_t*	bp;
+	Imapblock_t*	bt;
 	char*			b;
 	char*			e;
 	Imapblock_t*		bh;
@@ -835,7 +835,7 @@ imapop(register Imap_t* imap)
  */
 
 static void
-imap_EXPUNGE(Imap_t* imap, register Imapop_t* op)
+imap_EXPUNGE(Imap_t* imap, Imapop_t* op)
 {
 }
 
@@ -844,10 +844,10 @@ imap_EXPUNGE(Imap_t* imap, register Imapop_t* op)
  */
 
 static void
-imap_ENVELOPE(register Imap_t* imap, register Imaparg_t* vp, Msg_t* mp)
+imap_ENVELOPE(Imap_t* imap, Imaparg_t* vp, Msg_t* mp)
 {
-	register Imapmsg_t*	ip;
-	register char*		s;
+	Imapmsg_t*	ip;
+	char*		s;
 
 	ip = (Imapmsg_t*)mp->m_info;
 	if (!vp)
@@ -888,11 +888,11 @@ imap_ENVELOPE(register Imap_t* imap, register Imaparg_t* vp, Msg_t* mp)
  */
 
 static void
-imap_BODYSTRUCTURE(register Imap_t* imap, register Imaparg_t* ap, register Msg_t* mp, register Imapbody_t* bp)
+imap_BODYSTRUCTURE(Imap_t* imap, Imaparg_t* ap, Msg_t* mp, Imapbody_t* bp)
 {
-	register char*		s;
-	register Imappart_t*	pp;
-	register Imaparg_t*	vp;
+	char*		s;
+	Imappart_t*	pp;
+	Imaparg_t*	vp;
 	int*			id;
 
 	if (!ap)
@@ -1026,12 +1026,12 @@ imap_BODYSTRUCTURE(register Imap_t* imap, register Imaparg_t* ap, register Msg_t
  */
 
 static void
-imap_FETCH(Imap_t* imap, register Imapop_t* op)
+imap_FETCH(Imap_t* imap, Imapop_t* op)
 {
-	register Msg_t*		mp;
-	register Imaparg_t*	ap;
-	register Imaparg_t*	vp;
-	register Imapmsg_t*	ip;
+	Msg_t*		mp;
+	Imaparg_t*	ap;
+	Imaparg_t*	vp;
+	Imapmsg_t*	ip;
 	Imaplex_t*		xp;
 	Imapflag_t*		fp;
 	char*			s;
@@ -1102,9 +1102,9 @@ imap_FETCH(Imap_t* imap, register Imapop_t* op)
  */
 
 static void
-imapsync(register Imap_t* imap)
+imapsync(Imap_t* imap)
 {
-	register Msg_t*	mp;
+	Msg_t*	mp;
 	int		dot;
 
 	dot = state.msg.dot ? (state.msg.dot - state.msg.list) : 0;
@@ -1127,12 +1127,12 @@ imapsync(register Imap_t* imap)
  */
 
 static Imapop_t*
-imaprecv(register Imap_t* imap, register Imapop_t* wp)
+imaprecv(Imap_t* imap, Imapop_t* wp)
 {
-	register int		n;
-	register Imapop_t*	op;
-	register Imaparg_t*	ap;
-	register Imaparg_t*	sp;
+	int		n;
+	Imapop_t*	op;
+	Imaparg_t*	ap;
+	Imaparg_t*	sp;
 	Imaplex_t*		xp;
 	int			to;
 	int			i;
@@ -1334,12 +1334,12 @@ imaprecv(register Imap_t* imap, register Imapop_t* wp)
  */
 
 static Imapop_t*
-imapvsend(register Imap_t* imap, int retain, const char* fmt, va_list ap)
+imapvsend(Imap_t* imap, int retain, const char* fmt, va_list ap)
 {
-	register int	i;
-	register int	c;
-	register int	q;
-	register char*	s;
+	int	i;
+	int	c;
+	int	q;
+	char*	s;
 	va_list		oap;
 
 	va_copy(oap, ap);
@@ -1461,7 +1461,7 @@ imapsend(Imap_t* imap, int retain, const char* fmt, ...)
 static int
 imapexec(Imap_t* imap, const char* fmt, ...)
 {
-	register Imapop_t*	op;
+	Imapop_t*	op;
 	va_list			ap;
 
 	va_start(ap, fmt);
@@ -1478,9 +1478,9 @@ imapexec(Imap_t* imap, const char* fmt, ...)
  */
 
 static int
-imapconnect(register Imap_t* imap)
+imapconnect(Imap_t* imap)
 {
-	register char*	svc;
+	char*	svc;
 	int		fd;
 
 	/*
@@ -1510,9 +1510,9 @@ imapconnect(register Imap_t* imap)
 	}
 	if (!imap->host || !imap->user || !imap->meth)
 	{
-		register char*	host;
-		register char*	user;
-		register char*	meth;
+		char*	host;
+		char*	user;
+		char*	meth;
 		Sfio_t*		fp;
 
 		/*
@@ -1658,7 +1658,7 @@ imapconnect(register Imap_t* imap)
 static Imap_t*
 imapinit(void)
 {
-	register Imap_t*	imap;
+	Imap_t*	imap;
 
 	if (!(imap = newof(0, Imap_t, 1, 0)))
 	{
@@ -1691,10 +1691,10 @@ imapinit(void)
  */
 
 static int
-imapclose(register Imap_t* imap)
+imapclose(Imap_t* imap)
 {
-	register Msg_t*	mp;
-	register int	n;
+	Msg_t*	mp;
+	int	n;
 
 	while (imaprecv(imap, imap->op));
 	imap->selected = 0;
@@ -1719,9 +1719,9 @@ imapclose(register Imap_t* imap)
 int
 imap_setptr(char* name, int isedit)
 {
-	register Imap_t*	imap;
-	register char*		s;
-	register char*		t;
+	Imap_t*	imap;
+	char*		s;
+	char*		t;
 
 	if (!(imap = IMAP) && (!name || !(imap = imapinit())))
 		return -1;
@@ -1795,8 +1795,8 @@ imap_setptr(char* name, int isedit)
 static Msg_t*
 imap_msg(int m)
 {
-	register Imap_t*	imap;
-	register Msg_t*		mp;
+	Imap_t*	imap;
+	Msg_t*		mp;
 
 	mp = state.msg.list + m - 1;
 	if (!mp->m_info)
@@ -1810,8 +1810,8 @@ imap_msg(int m)
 			setinput(mp);
 		if (TRACING('b'))
 		{
-			register Imapmsg_t*	ip;
-			register Imappart_t*	pp;
+			Imapmsg_t*	ip;
+			Imappart_t*	pp;
 
 			ip = (Imapmsg_t*)mp->m_info;
 			for (pp = ip->parts; pp; pp = pp->next)
@@ -1826,9 +1826,9 @@ imap_msg(int m)
  */
 
 Sfio_t*
-imap_setinput(register Msg_t* mp)
+imap_setinput(Msg_t* mp)
 {
-	register Imap_t*	imap = IMAP;
+	Imap_t*	imap = IMAP;
 	int			m = mp - state.msg.list + 1;
 
 	imap->copy.fp = imap->mp;
@@ -1849,8 +1849,8 @@ imap_setinput(register Msg_t* mp)
 int
 imap_command(char* s)
 {
-	register Imap_t*	imap = IMAP;
-	register int		n;
+	Imap_t*	imap = IMAP;
+	int		n;
 	int			items;
 	char*			e;
 	Imaplex_t*		xp;
@@ -1911,10 +1911,10 @@ imap_command(char* s)
 				break;
 			case IMAP_DUMP_MESSAGE:
 			{
-				register Msg_t*		mp;
-				register Msg_t*		ep;
-				register Imapmsg_t*	ip;
-				register Imappart_t*	pp;
+				Msg_t*		mp;
+				Msg_t*		ep;
+				Imapmsg_t*	ip;
+				Imappart_t*	pp;
 
 				if (n > state.msg.count)
 				{
@@ -1947,7 +1947,7 @@ imap_command(char* s)
 			}
 			case IMAP_DUMP_QUEUE:
 			{
-				register Imapop_t*	op;
+				Imapop_t*	op;
 
 				for (op = imap->op + 1; op < &imap->op[elementsof(imap->op)]; op++)
 					sfprintf(sfstdout, "        [%d] %s %s %d %s%s\n", op - imap->op, imapname(imapstate, elementsof(imapstate), op->state), imapname(imapresponse, elementsof(imapresponse), op->code), op->count, op->msg, op->retain ? " retain" : "");
@@ -1983,13 +1983,13 @@ imap_command(char* s)
  */
 
 int
-imap_copy(register struct msg* mp, Sfio_t* op, Dt_t** ignore, char* prefix, unsigned long flags)
+imap_copy(struct msg* mp, Sfio_t* op, Dt_t** ignore, char* prefix, unsigned long flags)
 {
-	register Imap_t*	imap = IMAP;
-	register Imapmsg_t*	ip;
-	register Imappart_t*	pp;
-	register char*		s;
-	register int		i;
+	Imap_t*	imap = IMAP;
+	Imapmsg_t*	ip;
+	Imappart_t*	pp;
+	char*		s;
+	int		i;
 	struct name*		np;
 
 	/*
@@ -2101,8 +2101,8 @@ imap_rmdir(char* s)
 void
 imap_exit(int code)
 {
-	register Imap_t*	imap = IMAP;
-	register Msg_t*		mp;
+	Imap_t*	imap = IMAP;
+	Msg_t*		mp;
 
 	if (state.folder == FIMAP)
 		for (mp = state.msg.list; mp < state.msg.list + state.msg.count; mp++)
@@ -2129,11 +2129,11 @@ imap_folders(void)
  */
 
 static int
-imap_getatt(Msg_t* mp, register Imappart_t* pp, register char* name, unsigned long flags, off_t* lines, off_t* chars)
+imap_getatt(Msg_t* mp, Imappart_t* pp, char* name, unsigned long flags, off_t* lines, off_t* chars)
 {
-	register Imap_t*	imap = IMAP;
-	register char*		s;
-	register int		n;
+	Imap_t*	imap = IMAP;
+	char*		s;
+	int		n;
 	char*			cmd;
 
 	if (!(cmd = iscmd(name)))
@@ -2219,9 +2219,9 @@ imap_getatt(Msg_t* mp, register Imappart_t* pp, register char* name, unsigned lo
 int
 imap_get1(char** argv, unsigned long flags)
 {
-	register Imappart_t*	pp;
-	register int		i;
-	register char*		s;
+	Imappart_t*	pp;
+	int		i;
+	char*		s;
 	Msg_t*			mp;
 	Imapmsg_t*		ip;
 	char*			name;
@@ -2341,8 +2341,8 @@ imap_get1(char** argv, unsigned long flags)
 void
 imap_printhead(int m, int who)
 {
-	register Msg_t*		mp;
-	register Imapmsg_t*	ip;
+	Msg_t*		mp;
+	Imapmsg_t*	ip;
 	char*			sizes;
 	int			subjlen;
 	int			current;
@@ -2393,10 +2393,10 @@ imap_printhead(int m, int who)
  */
 
 static void
-imap_flags(register Imap_t* imap, Msg_t* mp, register int flags, char* op)
+imap_flags(Imap_t* imap, Msg_t* mp, int flags, char* op)
 {
-	register int	i;
-	register int	c;
+	int	i;
+	int	c;
 
 	if (TRACING('z'))
 		note(ERROR, "IMAP: smap_flags msg=%d flags=0x%04x op=%s", mp - state.msg.list + 1, flags, op);
@@ -2423,10 +2423,10 @@ imap_flags(register Imap_t* imap, Msg_t* mp, register int flags, char* op)
  */
 
 void
-imap_msgflags(register Msg_t* mp, int set, int clr)
+imap_msgflags(Msg_t* mp, int set, int clr)
 {
-	register Imap_t*	imap = IMAP;
-	register int		flags;
+	Imap_t*	imap = IMAP;
+	int		flags;
 
 	if (mp->m_flag & ~clr & MDELETE)
 		return;
@@ -2450,10 +2450,10 @@ imap_msgflags(register Msg_t* mp, int set, int clr)
  */
 
 int
-imap_msglist(register char* s)
+imap_msglist(char* s)
 {
-	register Imap_t*	imap = IMAP;
-	register char*		t;
+	Imap_t*	imap = IMAP;
+	char*		t;
 
 	for (; isspace(*s); s++);
 	if (*s != '(')
@@ -2478,8 +2478,8 @@ imap_msglist(register char* s)
 void
 imap_quit(void)
 {
-	register Imap_t*	imap = IMAP;
-	register int		i;
+	Imap_t*	imap = IMAP;
+	int		i;
 
 	state.msg.imap.state = 0;
 	if (imap->selected)
@@ -2510,7 +2510,7 @@ imap_quit(void)
  */
 
 int
-imap_save(register Msg_t* mp, char* folder)
+imap_save(Msg_t* mp, char* folder)
 {
 	return imapexec(IMAP, "COPY %d %s", mp - state.msg.list + 1, folder + 1);
 }

@@ -449,10 +449,10 @@ static const Sufcom_t	sufcom[] =
  */
 
 static char*
-type(register char* file, char* comment)
+type(char* file, char* comment)
 {
-	register char*	suffix;
-	register int	i;
+	char*	suffix;
+	int	i;
 
 	if (file && (!comment || !*comment))
 	{

@@ -536,9 +536,9 @@ static int
 LookupWord(buff)
     char                *buff;
 {
-    register char *p;
-    register char *q;
-    register TABLE *tp;
+    char *p;
+    char *q;
+    TABLE *tp;
     int i;
     int abbrev;
 
@@ -657,8 +657,8 @@ LookupWord(buff)
 static int
 TclDatelex()
 {
-    register char       c;
-    register char       *p;
+    char       c;
+    char       *p;
     char                buff[20];
     int                 Count;
     int                 sign;
@@ -1061,7 +1061,7 @@ int TclDateparse(void)
 int TclDateparse()
 #endif
 {
-	register YYSTYPE *TclDatepvt;	/* top of value stack for $vars */
+	YYSTYPE *TclDatepvt;	/* top of value stack for $vars */
 
 #if defined(__cplusplus) || defined(lint)
 /*
@@ -1100,10 +1100,10 @@ int TclDateparse()
 #endif
 
 	{
-		register YYSTYPE *TclDate_pv;	/* top of value stack */
-		register int *TclDate_ps;		/* top of state stack */
-		register int TclDate_state;		/* current state */
-		register int  TclDate_n;		/* internal state number info */
+		YYSTYPE *TclDate_pv;	/* top of value stack */
+		int *TclDate_ps;		/* top of state stack */
+		int TclDate_state;		/* current state */
+		int  TclDate_n;		/* internal state number info */
 	goto TclDatestack;	/* moved from 6 lines above to here to please C++ */
 
 		/*
@@ -1140,7 +1140,7 @@ int TclDateparse()
 		*/
 		if ( TclDatedebug )
 		{
-			register int TclDate_i;
+			int TclDate_i;
 
 			printf( "State %d, token ", TclDate_state );
 			if ( TclDatechar == 0 )
@@ -1224,7 +1224,7 @@ int TclDateparse()
 #if YYDEBUG
 		if ( TclDatedebug && TclDatetmp )
 		{
-			register int TclDate_i;
+			int TclDate_i;
 
 			printf( "Received token " );
 			if ( TclDatechar == 0 )
@@ -1266,7 +1266,7 @@ int TclDateparse()
 #if YYDEBUG
 			if ( TclDatedebug && TclDatetmp )
 			{
-				register int TclDate_i;
+				int TclDate_i;
 
 				printf( "Received token " );
 				if ( TclDatechar == 0 )
@@ -1293,7 +1293,7 @@ int TclDateparse()
 			** look through exception table
 			*/
 			{
-				register int *TclDatexi = TclDateexca;
+				int *TclDatexi = TclDateexca;
 
 				while ( ( *TclDatexi != -1 ) ||
 					( TclDatexi[1] != TclDate_state ) )
@@ -1378,7 +1378,7 @@ int TclDateparse()
 				*/
 				if ( TclDatedebug )
 				{
-					register int TclDate_i;
+					int TclDate_i;
 
 					printf( "Error recovery discards " );
 					if ( TclDatechar == 0 )
@@ -1427,7 +1427,7 @@ int TclDateparse()
 		/*
 		** Look in goto table for next state
 		** Sorry about using TclDate_state here as temporary
-		** register variable, but why not, if it works...
+		** variable, but why not, if it works...
 		** If TclDater2[ TclDate_n ] doesn't have the low order bit
 		** set, then there is no action to be done for
 		** this reduction.  So, no saving & unsaving of
@@ -1438,7 +1438,7 @@ int TclDateparse()
 		*/
 		{
 			/* length of production doubled with extra bit */
-			register int TclDate_len = TclDater2[ TclDate_n ];
+			int TclDate_len = TclDater2[ TclDate_n ];
 
 			if ( !( TclDate_len & 01 ) )
 			{

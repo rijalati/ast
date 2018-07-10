@@ -145,7 +145,7 @@ Tk_GetBitmap(interp, tkwin, string)
     NameKey nameKey;
     IdKey idKey;
     Tcl_HashEntry *nameHashPtr, *idHashPtr, *predefHashPtr;
-    register TkBitmap *bitmapPtr;
+    TkBitmap *bitmapPtr;
     PredefBitmap *predefPtr;
     int new;
     Pixmap bitmap;
@@ -408,7 +408,7 @@ Tk_FreeBitmap(display, bitmap)
     Pixmap bitmap;			/* Bitmap to be released. */
 {
     Tcl_HashEntry *idHashPtr;
-    register TkBitmap *bitmapPtr;
+    TkBitmap *bitmapPtr;
     IdKey idKey;
 
     if (!initialized) {

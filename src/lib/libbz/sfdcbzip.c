@@ -73,7 +73,7 @@ typedef struct
 static int
 sfbzexcept(Sfio_t* sp, int op, void* val, Sfdisc_t* dp)
 {
-	register Sfbzip_t*	bz = (Sfbzip_t*)dp;
+	Sfbzip_t*	bz = (Sfbzip_t*)dp;
 	int			r;
 
 	NoP(sp);
@@ -133,7 +133,7 @@ sfbzexcept(Sfio_t* sp, int op, void* val, Sfdisc_t* dp)
 static ssize_t
 sfbzread(Sfio_t* fp, Void_t* buf, size_t size, Sfdisc_t* dp)
 {
-	register Sfbzip_t*	bz = (Sfbzip_t*)dp;
+	Sfbzip_t*	bz = (Sfbzip_t*)dp;
 
 	return bzread(bz->bz, buf, size);
 }
@@ -145,7 +145,7 @@ sfbzread(Sfio_t* fp, Void_t* buf, size_t size, Sfdisc_t* dp)
 static ssize_t
 sfbzwrite(Sfio_t* fp, const Void_t* buf, size_t size, Sfdisc_t* dp)
 {
-	register Sfbzip_t*	bz = (Sfbzip_t*)dp;
+	Sfbzip_t*	bz = (Sfbzip_t*)dp;
 
 	return (bzwrite(bz->bz, (void*)buf, size) < 0) ? -1 : size;
 }
@@ -172,8 +172,8 @@ sfdcbzip(Sfio_t* sp, int flags)
 
 	if (sfset(sp, 0, 0) & SF_READ)
 	{
-		register unsigned char*	s;
-		register int		n;
+		unsigned char*	s;
+		int		n;
 
 		/*
 		 * peek the first 4 bytes to verify the magic

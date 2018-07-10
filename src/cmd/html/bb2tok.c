@@ -152,16 +152,16 @@ token(State_t* state, Sfio_t* op, const char* text, const Header_t* head, int pu
 static void
 parse(const char* path, Sfio_t* ip, Sfio_t* op)
 {
-	register int		c;
-	register int		i;
-	register int		k;
-	register int		q;
-	register int		n;
-	register int		x;
-	register int		level;
-	register char*		e;
-	register char*		s;
-	register char*		t;
+	int		c;
+	int		i;
+	int		k;
+	int		q;
+	int		n;
+	int		x;
+	int		level;
+	char*		e;
+	char*		s;
+	char*		t;
 	const Header_t*		h;
 
 	char			tag[256];
@@ -330,8 +330,8 @@ parse(const char* path, Sfio_t* ip, Sfio_t* op)
 int
 main(int argc, char** argv)
 {
-	register char*		s;
-	register Sfio_t*	ip;
+	char*		s;
+	Sfio_t*	ip;
 
 	NoP(argc);
 	error_info.id = "bb2tok";

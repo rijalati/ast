@@ -39,10 +39,10 @@ static const char lib[] = "libmam:mam";
  */
 
 static int
-freerule(register struct rule* r)
+freerule(struct rule* r)
 {
-	register struct list*	p;
-	register struct list*	x;
+	struct list*	p;
+	struct list*	x;
 
 	x = r->prereqs;
 	while (p = x)
@@ -61,7 +61,7 @@ freerule(register struct rule* r)
 static struct proc*
 getproc(struct mam* mp, long pid)
 {
-	register struct proc*	pp;
+	struct proc*	pp;
 
 	for (pp = mp->procs; pp; pp = pp->next)
 		if (pp->pid == pid) return(pp);
@@ -87,7 +87,7 @@ getproc(struct mam* mp, long pid)
 struct mam*
 mamalloc(void)
 {
-	register struct mam*	mp;
+	struct mam*	mp;
 
 	if (!(mp = newof(0, struct mam, 1, 0))) return(0);
 	mp->id = lib;
@@ -104,11 +104,11 @@ mamalloc(void)
  */
 
 void
-mamfree(register struct mam* mp)
+mamfree(struct mam* mp)
 {
 	if (mp)
 	{
-		register struct proc*	pp;
+		struct proc*	pp;
 
 		while (pp = mp->procs)
 		{
@@ -174,9 +174,9 @@ attributes(struct proc* pp, struct rule* r, char* s)
  */
 
 int
-mamscan(register struct mam* mp, const char* file)
+mamscan(struct mam* mp, const char* file)
 {
-	register struct proc*	pp;
+	struct proc*	pp;
 	struct rule*		r;
 	struct block*		a;
 	char*			s;
@@ -320,7 +320,7 @@ mamscan(register struct mam* mp, const char* file)
 				if (!pp->pid) pp->pid = n;
 				else if (pp->parent = getproc(mp, n)) 
 				{
-					register struct proc*	ppp = pp->parent;
+					struct proc*	ppp = pp->parent;
 
 					if (!ppp->child) ppp->child = pp;
 					else if (!ppp->child->sibling) ppp->child->sibling = ppp->child->stail = pp;
@@ -329,7 +329,7 @@ mamscan(register struct mam* mp, const char* file)
 			}
 			else if (streq(arg, "finish"))
 			{
-				register struct frame*	fp;
+				struct frame*	fp;
 
 				tokscan(s, NiL, " %lu %d ", &pp->finish, &pp->status);
 				if (pp->fp != pp->bp)
@@ -369,7 +369,7 @@ mamscan(register struct mam* mp, const char* file)
  */
 
 struct rule*
-mamrule(register struct proc* pp, const char* name)
+mamrule(struct proc* pp, const char* name)
 {
 	struct rule*		r;
 
@@ -385,7 +385,7 @@ mamrule(register struct proc* pp, const char* name)
  */
 
 struct var*
-mamvar(register struct proc* pp, const char* name, const char* value)
+mamvar(struct proc* pp, const char* name, const char* value)
 {
 	struct var*	v;
 

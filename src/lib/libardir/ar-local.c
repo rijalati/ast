@@ -91,8 +91,8 @@ static Ardirent_t*
 localnext(Ardir_t* ar)
 {
 	State_t*	state = (State_t*)ar->data;
-	register char*	s;
-	register char*	t;
+	char*	s;
+	char*	t;
 	char*		e;
 	int		n;
 

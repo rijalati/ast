@@ -194,7 +194,7 @@ static char		empty[] = "\n";
 Cpy_t*
 cpyopen(const char* path, Sfio_t* ip, Cpydisc_t* disc)
 {
-	register Cpy_t*	cpy;
+	Cpy_t*	cpy;
 	Vmalloc_t*	vm;
 
 	static Dtdisc_t	dictdisc;
@@ -232,10 +232,10 @@ cpyclose(Cpy_t* cpy)
 }
 
 char*
-cpylex(register Cpy_t* cpy)
+cpylex(Cpy_t* cpy)
 {
-	register char*	s;
-	register int	q;
+	char*	s;
+	int	q;
 
 	if (cpy->item)
 	{
@@ -323,10 +323,10 @@ cpylex(register Cpy_t* cpy)
 }
 
 Cpyfield_t*
-cpyfield(register Cpy_t* cpy)
+cpyfield(Cpy_t* cpy)
 {
-	register char*		s;
-	register Cpyfield_t*	f;
+	char*		s;
+	Cpyfield_t*	f;
 	Cpyfield_t*		p;
 	size_t			n;
 	char*			e;

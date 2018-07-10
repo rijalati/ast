@@ -208,7 +208,7 @@ xmlident(Dssfile_t* file, void* buf, size_t n, Dssdisc_t* disc)
  */
 
 static int
-refill(Dssfile_t* file, register File_t* f, int c, Dssdisc_t* disc)
+refill(Dssfile_t* file, File_t* f, int c, Dssdisc_t* disc)
 {
 	size_t	n;
 
@@ -269,12 +269,12 @@ refill(Dssfile_t* file, register File_t* f, int c, Dssdisc_t* disc)
 static int
 xmlread(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register File_t*	f = file->data;
-	register char*		np;
-	register char*		ne;
-	register char*		vp;
-	register char*		ve;
-	register int		c;
+	File_t*	f = file->data;
+	char*		np;
+	char*		ne;
+	char*		vp;
+	char*		ve;
+	int		c;
 	char*			vb;
 	Cxvariable_t*		v;
 	ssize_t			o;
@@ -454,7 +454,7 @@ xmlread(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 static int
 xmlwrite(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register File_t*	r = (File_t*)record->data;
+	File_t*	r = (File_t*)record->data;
 	size_t			n;
 
 	sfprintf(file->io, "<%s", r->root);
@@ -481,10 +481,10 @@ xmlwrite(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 static int
 xmlfopen(Dssfile_t* file, Dssdisc_t* disc)
 {
-	register Xml_t*		xml = (Xml_t*)file->dss->meth->data;
-	register unsigned char*	s;
-	register unsigned char*	t;
-	register int		n;
+	Xml_t*		xml = (Xml_t*)file->dss->meth->data;
+	unsigned char*	s;
+	unsigned char*	t;
+	int		n;
 	File_t*			f;
 	int			c;
 	int			m;
@@ -622,9 +622,9 @@ static Dssformat_t xml_format =
 static int
 jsonident(Dssfile_t* file, void* buf, size_t n, Dssdisc_t* disc)
 {
-	register char*		s;
-	register char*		e;
-	register const char*	m;
+	char*		s;
+	char*		e;
+	const char*	m;
 
 	static const char	magic[] = "{\"";
 
@@ -645,14 +645,14 @@ jsonident(Dssfile_t* file, void* buf, size_t n, Dssdisc_t* disc)
  */
 
 static int
-jsonread(register Dssfile_t* file, register Dssrecord_t* record, Dssdisc_t* disc)
+jsonread(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register File_t*	f = file->data;
-	register char*		np;
-	register char*		ne;
-	register char*		vp;
-	register char*		ve;
-	register int		c;
+	File_t*	f = file->data;
+	char*		np;
+	char*		ne;
+	char*		vp;
+	char*		ve;
+	int		c;
 	char*			vb;
 	Cxvariable_t*		v;
 	size_t			o;
@@ -933,7 +933,7 @@ jsonread(register Dssfile_t* file, register Dssrecord_t* record, Dssdisc_t* disc
 static int
 jsonwrite(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register File_t*	r = (File_t*)record->data;
+	File_t*	r = (File_t*)record->data;
 	size_t			n;
 
 	if (r->prvlen && sfwrite(file->io, r->prv, r->prvlen) != r->prvlen)
@@ -1010,7 +1010,7 @@ CXC(CX_REF, "string", "void", op_ref, 0)
 static int
 xml_field_name_dat(Tag_t* tag, Tagframe_t* fp, const char* data, Tagdisc_t* disc)
 {
-	register Xml_t*		xml = (Xml_t*)disc;
+	Xml_t*		xml = (Xml_t*)disc;
 
 	if (!(xml->lastfield->name = strdup(data)))
 	{
@@ -1024,7 +1024,7 @@ xml_field_name_dat(Tag_t* tag, Tagframe_t* fp, const char* data, Tagdisc_t* disc
 static int
 xml_field_type_dat(Tag_t* tag, Tagframe_t* fp, const char* data, Tagdisc_t* disc)
 {
-	register Xml_t*		xml = (Xml_t*)disc;
+	Xml_t*		xml = (Xml_t*)disc;
 	char*			s;
 
 	memset(&xml->lastfield->format, 0, sizeof(xml->lastfield->format));
@@ -1068,7 +1068,7 @@ static Tags_t	tags_xml_field[] =
 static int
 xml_name_dat(Tag_t* tag, Tagframe_t* fp, const char* data, Tagdisc_t* disc)
 {
-	register Xml_t*	xml = (Xml_t*)disc;
+	Xml_t*	xml = (Xml_t*)disc;
 
 	if (!(xml->meth.name = strdup(data)))
 	{
@@ -1082,7 +1082,7 @@ xml_name_dat(Tag_t* tag, Tagframe_t* fp, const char* data, Tagdisc_t* disc)
 static int
 xml_description_dat(Tag_t* tag, Tagframe_t* fp, const char* data, Tagdisc_t* disc)
 {
-	register Xml_t*	xml = (Xml_t*)disc;
+	Xml_t*	xml = (Xml_t*)disc;
 
 	if (!(xml->meth.description = strdup(data)))
 	{
@@ -1096,8 +1096,8 @@ xml_description_dat(Tag_t* tag, Tagframe_t* fp, const char* data, Tagdisc_t* dis
 static int
 xml_library_dat(Tag_t* tag, Tagframe_t* fp, const char* data, Tagdisc_t* disc)
 {
-	register Xml_t*		xml = (Xml_t*)disc;
-	register Library_t*	p;
+	Xml_t*		xml = (Xml_t*)disc;
+	Library_t*	p;
 
 	if (!(p = newof(0, Library_t, 1, strlen(data))))
 	{
@@ -1116,7 +1116,7 @@ xml_library_dat(Tag_t* tag, Tagframe_t* fp, const char* data, Tagdisc_t* disc)
 static Tags_t*
 xml_field_beg(Tag_t* tag, Tagframe_t* fp, const char* name, Tagdisc_t* disc)
 {
-	register Xml_t*		xml = (Xml_t*)disc;
+	Xml_t*		xml = (Xml_t*)disc;
 	Field_t*		f;
 
 	if (name)
@@ -1139,7 +1139,7 @@ xml_field_beg(Tag_t* tag, Tagframe_t* fp, const char* name, Tagdisc_t* disc)
 static int
 xml_field_end(Tag_t* tag, Tagframe_t* fp, Tagdisc_t* disc)
 {
-	register Xml_t*		xml = (Xml_t*)disc;
+	Xml_t*		xml = (Xml_t*)disc;
 
 	if (xml->lastfield && (!xml->lastfield->name || !xml->lastfield->type))
 	{
@@ -1186,7 +1186,7 @@ static Tags_t	tags[] =
 static Dssmeth_t*
 xmlmeth(const char* name, const char* options, const char* schema, Dssdisc_t* disc, Dssmeth_t* meth)
 {
-	register Xml_t*		xml;
+	Xml_t*		xml;
 	Tag_t*			tag;
 	Sfio_t*			sp;
 	Library_t*		p;

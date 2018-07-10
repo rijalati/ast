@@ -30,9 +30,9 @@
  */
 
 ssize_t
-msgrecv(int fd, register Msg_call_t* msg)
+msgrecv(int fd, Msg_call_t* msg)
 {
-	register ssize_t	n;
+	ssize_t	n;
 
 	if ((n = msgread(fd, msg->data, sizeof(msg->data))) <= 0)
 		return n;

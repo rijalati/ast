@@ -419,7 +419,7 @@ FrameWidgetCmd(clientData, interp, argc, argv)
     int argc;			/* Number of arguments. */
     char **argv;		/* Argument strings. */
 {
-    register Frame *framePtr = (Frame *) clientData;
+    Frame *framePtr = (Frame *) clientData;
     int result = TCL_OK;
     size_t length;
     int c, i;
@@ -513,7 +513,7 @@ static void
 DestroyFrame(memPtr)
     char *memPtr;		/* Info about frame widget. */
 {
-    register Frame *framePtr = (Frame *) memPtr;
+    Frame *framePtr = (Frame *) memPtr;
 
     Tk_FreeOptions(configSpecs, (char *) framePtr, framePtr->display,
 	    framePtr->mask);
@@ -547,7 +547,7 @@ DestroyFrame(memPtr)
 static int
 ConfigureFrame(interp, framePtr, argc, argv, flags)
     Tcl_Interp *interp;		/* Used for error reporting. */
-    register Frame *framePtr;	/* Information about widget;  may or may
+    Frame *framePtr;	/* Information about widget;  may or may
 				 * not already have values for some fields. */
     int argc;			/* Number of valid entries in argv. */
     char **argv;		/* Arguments. */
@@ -601,8 +601,8 @@ static void
 DisplayFrame(clientData)
     ClientData clientData;	/* Information about widget. */
 {
-    register Frame *framePtr = (Frame *) clientData;
-    register Tk_Window tkwin = framePtr->tkwin;
+    Frame *framePtr = (Frame *) clientData;
+    Tk_Window tkwin = framePtr->tkwin;
     GC gc;
 
     framePtr->flags &= ~REDRAW_PENDING;
@@ -653,9 +653,9 @@ DisplayFrame(clientData)
 static void
 FrameEventProc(clientData, eventPtr)
     ClientData clientData;	/* Information about window. */
-    register XEvent *eventPtr;	/* Information about event. */
+    XEvent *eventPtr;	/* Information about event. */
 {
-    register Frame *framePtr = (Frame *) clientData;
+    Frame *framePtr = (Frame *) clientData;
 
     if (((eventPtr->type == Expose) && (eventPtr->xexpose.count == 0))
 	    || (eventPtr->type == ConfigureNotify)) {

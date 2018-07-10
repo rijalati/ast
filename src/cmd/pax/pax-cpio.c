@@ -98,11 +98,11 @@ typedef struct Cpio_s
  */
 
 static void
-getxops(register Archive_t* ap, register File_t* f)
+getxops(Archive_t* ap, File_t* f)
 {
-	register char*	p;
-	register char*	s;
-	register int	c;
+	char*	p;
+	char*	s;
+	int	c;
 
 	if (f->namesize > (c = strlen(f->name) + 1))
 		for (p = f->name + c; c = *p++;)
@@ -143,10 +143,10 @@ getxops(register Archive_t* ap, register File_t* f)
  */
 
 static void
-setxops(Archive_t* ap, register File_t* f)
+setxops(Archive_t* ap, File_t* f)
 {
-	register Cpio_t*	cpio = (Cpio_t*)ap->data;
-	register int		n;
+	Cpio_t*	cpio = (Cpio_t*)ap->data;
+	int		n;
 
 	if (n = cpio->ops - cpio->opsbuf)
 	{
@@ -162,10 +162,10 @@ setxops(Archive_t* ap, register File_t* f)
  */
 
 static void
-putxops(Pax_t* pax, Archive_t* ap, register File_t* f)
+putxops(Pax_t* pax, Archive_t* ap, File_t* f)
 {
-	register Cpio_t*	cpio = (Cpio_t*)ap->data;
-	register int		n;
+	Cpio_t*	cpio = (Cpio_t*)ap->data;
+	int		n;
 
 	n = cpio->ops - cpio->opsbuf;
 	paxwrite(pax, ap, f->name, f->namesize -= n);
@@ -179,11 +179,11 @@ putxops(Pax_t* pax, Archive_t* ap, register File_t* f)
  */
 
 static void
-addxopstr(Archive_t* ap, int op, register char* s)
+addxopstr(Archive_t* ap, int op, char* s)
 {
-	register Cpio_t*	cpio = (Cpio_t*)ap->data;
-	register char*		p = cpio->ops;
-	register char*		e = cpio->opsbuf + sizeof(cpio->opsbuf) - 3;
+	Cpio_t*	cpio = (Cpio_t*)ap->data;
+	char*		p = cpio->ops;
+	char*		e = cpio->opsbuf + sizeof(cpio->opsbuf) - 3;
 
 	if (p < e)
 	{
@@ -217,7 +217,7 @@ addxopnum(Archive_t* ap, int op, Sflong_t n)
 static int
 init(Archive_t* ap)
 {
-	register Cpio_t*	cpio;
+	Cpio_t*	cpio;
 
 	if (ap->data)
 	{
@@ -237,7 +237,7 @@ init(Archive_t* ap)
 }
 
 static int
-cpio_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
+cpio_getprologue(Pax_t* pax, Format_t* fp, Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
 {
 	int		magic;
 
@@ -247,7 +247,7 @@ cpio_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, un
 }
 
 static int
-cpio_common(Pax_t* pax, register Archive_t* ap, register File_t* f, int align, int header)
+cpio_common(Pax_t* pax, Archive_t* ap, File_t* f, int align, int header)
 {
 	char*		s;
 
@@ -339,7 +339,7 @@ cpio_common(Pax_t* pax, register Archive_t* ap, register File_t* f, int align, i
 }
 
 static int
-cpio_done(Pax_t* pax, register Archive_t* ap)
+cpio_done(Pax_t* pax, Archive_t* ap)
 {
 	if (ap->data)
 	{
@@ -350,7 +350,7 @@ cpio_done(Pax_t* pax, register Archive_t* ap)
 }
 
 static int
-cpio_getheader(Pax_t* pax, Archive_t* ap, register File_t* f)
+cpio_getheader(Pax_t* pax, Archive_t* ap, File_t* f)
 {
 	Localstat_t	lst;
 
@@ -386,9 +386,9 @@ cpio_getheader(Pax_t* pax, Archive_t* ap, register File_t* f)
 }
 
 static int
-cpio_getepilogue(Pax_t* pax, register Archive_t* ap)
+cpio_getepilogue(Pax_t* pax, Archive_t* ap)
 {
-	register Cpio_t*	cpio = (Cpio_t*)ap->data;
+	Cpio_t*	cpio = (Cpio_t*)ap->data;
 
 	if (!cpio->trailer)
 	{
@@ -405,7 +405,7 @@ cpio_putprologue(Pax_t* pax, Archive_t* ap, int append)
 }
 
 static int
-cpio_putheader(Pax_t* pax, Archive_t* ap, register File_t* f)
+cpio_putheader(Pax_t* pax, Archive_t* ap, File_t* f)
 {
 	if (state.complete)
 		complete(ap, f, CPIO_HEADER + f->namesize);
@@ -510,7 +510,7 @@ cpio_event(Pax_t* pax, Archive_t* ap, File_t* f, void* data, unsigned long event
 }
 
 static int
-asc_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
+asc_getprologue(Pax_t* pax, Format_t* fp, Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
 {
 	unsigned int		magic;
 
@@ -520,7 +520,7 @@ asc_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, uns
 }
 
 static int
-asc_getheader(Pax_t* pax, Archive_t* ap, register File_t* f)
+asc_getheader(Pax_t* pax, Archive_t* ap, File_t* f)
 {
 	Localstat_t	lst;
 
@@ -560,7 +560,7 @@ asc_getheader(Pax_t* pax, Archive_t* ap, register File_t* f)
 }
 
 static int
-asc_putheader(Pax_t* pax, Archive_t* ap, register File_t* f)
+asc_putheader(Pax_t* pax, Archive_t* ap, File_t* f)
 {
 	int	n;
 
@@ -592,7 +592,7 @@ asc_putheader(Pax_t* pax, Archive_t* ap, register File_t* f)
 }
 
 static int
-aschk_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
+aschk_getprologue(Pax_t* pax, Format_t* fp, Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
 {
 	unsigned int		magic;
 
@@ -602,7 +602,7 @@ aschk_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, u
 }
 
 static int
-aschk_getheader(Pax_t* pax, Archive_t* ap, register File_t* f)
+aschk_getheader(Pax_t* pax, Archive_t* ap, File_t* f)
 {
 	Localstat_t	lst;
 
@@ -642,10 +642,10 @@ aschk_getheader(Pax_t* pax, Archive_t* ap, register File_t* f)
 }
 
 static unsigned long
-aschk_checksum(Pax_t* pax, Archive_t* ap, File_t* f, void* ab, size_t n, register unsigned long sum)
+aschk_checksum(Pax_t* pax, Archive_t* ap, File_t* f, void* ab, size_t n, unsigned long sum)
 {
-	register unsigned char* b = (unsigned char*)ab;
-	register unsigned char*	e;
+	unsigned char* b = (unsigned char*)ab;
+	unsigned char*	e;
 
 	e = b + n;
 	while (b < e)
@@ -658,7 +658,7 @@ aschk_checksum(Pax_t* pax, Archive_t* ap, File_t* f, void* ab, size_t n, registe
  */
 
 static long
-binary_long(register unsigned short* s)
+binary_long(unsigned short* s)
 {
 	Integral_t	u;
 
@@ -681,7 +681,7 @@ binary_long(register unsigned short* s)
  */
 
 static void
-binary_short(register unsigned short* s, long n)
+binary_short(unsigned short* s, long n)
 {
 	Integral_t	u;
 
@@ -701,7 +701,7 @@ binary_short(register unsigned short* s, long n)
 }
 
 static int
-binary_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
+binary_getprologue(Pax_t* pax, Format_t* fp, Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
 {
 	short		magic = CPIO_MAGIC;
 	int		swap;
@@ -715,7 +715,7 @@ binary_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, 
 }
 
 static int
-binary_getheader(Pax_t* pax, Archive_t* ap, register File_t* f)
+binary_getheader(Pax_t* pax, Archive_t* ap, File_t* f)
 {
 	Binary_header_t	hdr;
 
@@ -746,7 +746,7 @@ binary_getheader(Pax_t* pax, Archive_t* ap, register File_t* f)
 }
 
 static int
-binary_putheader(Pax_t* pax, Archive_t* ap, register File_t* f)
+binary_putheader(Pax_t* pax, Archive_t* ap, File_t* f)
 {
 	Binary_header_t	hdr;
 	int		n;

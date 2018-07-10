@@ -115,7 +115,7 @@ typedef struct State_s
 static char			buf[8 * 1024];
 
 static ssize_t
-data(register State_t* state, register Connection_t* to, char* s, size_t n, int force)
+data(State_t* state, Connection_t* to, char* s, size_t n, int force)
 {
 	if (!force && n > 1 && state->backlog && ++state->count >= state->backlog)
 	{
@@ -127,9 +127,9 @@ data(register State_t* state, register Connection_t* to, char* s, size_t n, int 
 }
 
 static int
-note(Css_t* css, register Connection_t* to, int log, char* s, size_t n, int force, Cssdisc_t* disc)
+note(Css_t* css, Connection_t* to, int log, char* s, size_t n, int force, Cssdisc_t* disc)
 {
-	register State_t*	state = (State_t*)disc;
+	State_t*	state = (State_t*)disc;
 	ssize_t			z;
 
 	if ((force || to->blocked[log] < 0) && (z = data(state, to, s, n, force)) != n)
@@ -178,9 +178,9 @@ note(Css_t* css, register Connection_t* to, int log, char* s, size_t n, int forc
 }
 
 static int
-dump(Css_t* css, register Connection_t* con, int log, Cssdisc_t* disc)
+dump(Css_t* css, Connection_t* con, int log, Cssdisc_t* disc)
 {
-	register State_t*	state = (State_t*)disc;
+	State_t*	state = (State_t*)disc;
 	char*			s;
 	size_t			n;
 	int			r;
@@ -200,7 +200,7 @@ dump(Css_t* css, register Connection_t* con, int log, Cssdisc_t* disc)
 }
 
 static int
-post(Css_t* css, Cssdisc_t* disc, Connection_t* from, register Connection_t* to, int channel, const char* format, ...)
+post(Css_t* css, Cssdisc_t* disc, Connection_t* from, Connection_t* to, int channel, const char* format, ...)
 {
 	State_t*		state = (State_t*)disc;
 	char*			s;
@@ -235,9 +235,9 @@ post(Css_t* css, Cssdisc_t* disc, Connection_t* from, register Connection_t* to,
 static void
 drop(Css_t* css, Connection_t* con, Cssdisc_t* disc)
 {
-	register State_t*	state = (State_t*)disc;
-	register Connection_t*	cp;
-	register Connection_t*	pp;
+	State_t*	state = (State_t*)disc;
+	Connection_t*	cp;
+	Connection_t*	pp;
 
 	pp = 0;
 	for (cp = state->all; cp; pp = cp, cp = cp->next)
@@ -257,8 +257,8 @@ drop(Css_t* css, Connection_t* con, Cssdisc_t* disc)
 static int
 acceptf(Css_t* css, Cssfd_t* fp, Csid_t* ip, char** av, Cssdisc_t* disc)
 {
-	register State_t*	state = (State_t*)disc;
-	register Connection_t*	con;
+	State_t*	state = (State_t*)disc;
+	Connection_t*	con;
 	int			i;
 
 	NoP(ip);
@@ -277,11 +277,11 @@ acceptf(Css_t* css, Cssfd_t* fp, Csid_t* ip, char** av, Cssdisc_t* disc)
 }
 
 static int
-actionf(register Css_t* css, register Cssfd_t* fp, Cssdisc_t* disc)
+actionf(Css_t* css, Cssfd_t* fp, Cssdisc_t* disc)
 {
-	register State_t*	state = (State_t*)disc;
-	register Connection_t*	con;
-	register char*		s;
+	State_t*	state = (State_t*)disc;
+	Connection_t*	con;
+	char*		s;
 	char*			e;
 	int			n;
 	int			c;

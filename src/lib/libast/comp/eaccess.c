@@ -47,7 +47,7 @@ NoN(eaccess)
 #endif
 
 extern int
-eaccess(const char* path, register int flags)
+eaccess(const char* path, int flags)
 {
 #if _lib_faccessat && defined(AT_FDCWD) && defined(AT_EACCESS)
 	return faccessat(AT_FDCWD, path, flags, AT_EACCESS);
@@ -56,7 +56,7 @@ eaccess(const char* path, register int flags)
 #elif _lib_euidaccess
 	return euidaccess(path, flags);
 #else
-	register int	mode;
+	int	mode;
 	struct stat	st;
 
 	static int	init = 0;
@@ -108,7 +108,7 @@ eaccess(const char* path, register int flags)
 	else
 	{
 #if _lib_getgroups
-		register int	n;
+		int	n;
 
 		static int	ngroups = -2;
 		static gid_t*	groups; 

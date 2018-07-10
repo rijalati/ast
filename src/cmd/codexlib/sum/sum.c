@@ -23,9 +23,9 @@ sum_options(Codexmeth_t* meth, Sfio_t* sp)
 static int
 sum_open(Codex_t* p, char* const args[], Codexnum_t flags)
 {
-	register State_t*	state;
-	register Sum_t*		sum;
-	register const char*	s;
+	State_t*	state;
+	Sum_t*		sum;
+	const char*	s;
 
 	s = args[0];
 	if (args[2])

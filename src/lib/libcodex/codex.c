@@ -68,7 +68,7 @@ Codexstate_t	codexstate =
 static int
 codex_except(Sfio_t* sp, int op, void* data, Sfdisc_t* disc)
 {
-	register Codex_t*	code = CODEX(disc);
+	Codex_t*	code = CODEX(disc);
 	int			f;
 	int			r;
 
@@ -381,7 +381,7 @@ static const Namval_t		options[] =
  */
 
 static int
-setopt(void* a, const void* p, register int n, register const char* v)
+setopt(void* a, const void* p, int n, const char* v)
 {
 	NoP(a);
 	if (p)
@@ -421,12 +421,12 @@ save(Codexcache_t* cache, Codex_t* code, const char* name, int namelen, Codexnum
 static int
 push(Sfio_t* sp, const char* name, Codexnum_t flags, Codexdisc_t* disc, Codexmeth_t* meth)
 {
-	register char**		a;
-	register char*		s;
-	register char*		b;
-	register char*		d;
-	register int		c;
-	register int		q;
+	char**		a;
+	char*		s;
+	char*		b;
+	char*		d;
+	int		c;
+	int		q;
 	char*			g;
 	char*			v;
 	int			f;
@@ -720,7 +720,7 @@ push(Sfio_t* sp, const char* name, Codexnum_t flags, Codexdisc_t* disc, Codexmet
 static int
 decodex(Sfio_t* ip, Codexnum_t flags, Codexdisc_t* disc)
 {
-	register Codexmeth_t*	meth;
+	Codexmeth_t*	meth;
 	void*			hdr;
 	size_t			siz;
 	char*			s;
@@ -791,10 +791,10 @@ typedef struct Part_s
 int
 codex(Sfio_t* sp, const char* name, Codexnum_t flags, Codexdisc_t* disc, Codexmeth_t* meth)
 {
-	register char*		s;
-	register Part_t*	p;
-	register int		c;
-	register int		q;
+	char*		s;
+	Part_t*	p;
+	int		c;
+	int		q;
 	int			n;
 	int			x;
 	int			y;
@@ -1028,7 +1028,7 @@ codex(Sfio_t* sp, const char* name, Codexnum_t flags, Codexdisc_t* disc, Codexme
  */
 
 int
-codexpop(register Sfio_t* sp, int serial)
+codexpop(Sfio_t* sp, int serial)
 {
 	int	pop;
 

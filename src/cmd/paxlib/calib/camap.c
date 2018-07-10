@@ -40,11 +40,11 @@ camap_init(void* ptr)
 }
 
 int
-camap_write(void* ptr,void *buff, register size_t size)
+camap_write(void* ptr,void *buff, size_t size)
 {
-	register char*		hit = (char*)ptr;
-	register unsigned char*	cp = (unsigned char *)buff;
-	register unsigned char*	ep = cp + size;
+	char*		hit = (char*)ptr;
+	unsigned char*	cp = (unsigned char *)buff;
+	unsigned char*	ep = cp + size;
 
 	while(cp < ep)
 		hit[*cp++] = 1;
@@ -55,7 +55,7 @@ static int
 tr(int in, int out, const char *header, const unsigned char *table)
 {
 	unsigned char buff0[32*1024], buff1[32*1024], *buff[2];
-	register unsigned char *cp,*cpmax;
+	unsigned char *cp,*cpmax;
 	size_t z;
 	int  n[2],odd=1;
 
@@ -86,7 +86,7 @@ camap_done(void* ptr, const char* file, int out)
 {
 	unsigned char table[256];
 	char header[80];
-	register char* hit = (char*)ptr;
+	char* hit = (char*)ptr;
 	int i,j,k,m,n,in= -1,r=0, sep='(';
 	for(i=0; i < sizeof(special)/sizeof(*special); i++)
 	{

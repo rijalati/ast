@@ -458,7 +458,7 @@ record(void* handle, const char* s, size_t len)
 static int
 execute(State_t* state, Sfio_t* input, char* name, Shbltin_t* context)
 {
-	register char*	s;
+	char*	s;
 	char*		file;
 	Item_t*		x;
 	size_t		len;
@@ -512,8 +512,8 @@ execute(State_t* state, Sfio_t* input, char* name, Shbltin_t* context)
 	}
 	else
 	{
-		register char*	e;
-		register char*	t;
+		char*	e;
+		char*	t;
 		char*		r;
 
 		s = e = 0;

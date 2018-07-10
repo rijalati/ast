@@ -50,9 +50,9 @@ typedef struct Ar_s
 } Ar_t;
 
 static int
-zoo_done(Pax_t* pax, register Paxarchive_t* ap)
+zoo_done(Pax_t* pax, Paxarchive_t* ap)
 {
-	register Ar_t*	ar = (Ar_t*)ap->data;
+	Ar_t*	ar = (Ar_t*)ap->data;
 
 	if (!ar)
 		return -1;
@@ -62,9 +62,9 @@ zoo_done(Pax_t* pax, register Paxarchive_t* ap)
 }
 
 static int
-zoo_getprologue(Pax_t* pax, Paxformat_t* fp, register Paxarchive_t* ap, Paxfile_t* f, unsigned char* buf, size_t size)
+zoo_getprologue(Pax_t* pax, Paxformat_t* fp, Paxarchive_t* ap, Paxfile_t* f, unsigned char* buf, size_t size)
 {
-	register Ar_t*		ar;
+	Ar_t*		ar;
 
 	if (size < 34 || swapget(3, buf + 20, 4) != MAGIC)
 		return 0;
@@ -90,11 +90,11 @@ zoo_getprologue(Pax_t* pax, Paxformat_t* fp, register Paxarchive_t* ap, Paxfile_
 }
 
 static int
-zoo_getheader(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f)
+zoo_getheader(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f)
 {
-	register Ar_t*		ar = (Ar_t*)ap->data;
-	register unsigned char*	buf;
-	register char*		s;
+	Ar_t*		ar = (Ar_t*)ap->data;
+	unsigned char*	buf;
+	char*		s;
 	Tm_t			tm;
 	long			n;
 	int			i;
@@ -253,9 +253,9 @@ zoo_getheader(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f)
 }
 
 static int
-zoo_getdata(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f, int fd)
+zoo_getdata(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f, int fd)
 {
-	register Ar_t*	ar = (Ar_t*)ap->data;
+	Ar_t*	ar = (Ar_t*)ap->data;
 	Sfio_t*		sp;
 	ssize_t		n;
 	int		r;

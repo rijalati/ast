@@ -60,8 +60,8 @@ extern int _checkhost(const char *rhost, const char *lhost, int len);
 #if 0
 extern void putlong(u_long l, u_char *msgp);
 extern void putshort(u_short l, u_char *msgp);
-extern u_int32_t _getlong(register const u_char *msgp);
-extern u_int16_t _getshort(register const u_char *msgp);
+extern u_int32_t _getlong(const u_char *msgp);
+extern u_int16_t _getshort(const u_char *msgp);
 extern void p_query(char *msg);
 extern void fp_query(char *msg, FILE *file);
 extern char *p_cdname(char *cp, char *msg, FILE *file);

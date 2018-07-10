@@ -89,12 +89,12 @@ initiate(Cs_t* state, const char* svc, char* cmd)
 }
 
 int
-cslocal(register Cs_t* state, const char* path)
+cslocal(Cs_t* state, const char* path)
 {
-	register char*	s;
-	register char*	p;
-	register char*	t;
-	register char*	v;
+	char*	s;
+	char*	p;
+	char*	t;
+	char*	v;
 	struct stat	st;
 	char		cmd[PATH_MAX / 8];
 	char		exe[PATH_MAX + 1];

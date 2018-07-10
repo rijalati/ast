@@ -171,7 +171,7 @@ hdrstop(int sig)
  * op list for resetopt() after the rc's.
  */
 static struct list*
-setopt(register struct list* op, char* s, char* v)
+setopt(struct list* op, char* s, char* v)
 {
 	int		n;
 	struct argvec	vec;
@@ -204,9 +204,9 @@ setopt(register struct list* op, char* s, char* v)
  * Reset the setopt() options after the rc's.
  */
 static void
-resetopt(register struct list* op)
+resetopt(struct list* op)
 {
-	register struct list*	np;
+	struct list*	np;
 	struct argvec		vec;
 
 	np = op->next;
@@ -227,7 +227,7 @@ resetopt(register struct list* op)
 int
 main(int argc, char** argv)
 {
-	register int	i;
+	int	i;
 	int		sig;
 	char*		ef;
 	int		flags = SIGN;

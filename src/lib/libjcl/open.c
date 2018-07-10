@@ -38,7 +38,7 @@ Redirect_t	redirect[] =
 Jcl_t*
 jclopen(Jcl_t* scope, const char* file, unsigned long flags, Jcldisc_t* disc)
 {
-	register Jcl_t*	jcl;
+	Jcl_t*	jcl;
 	Dt_t*		dt;
 	Sfio_t*		sp;
 	Vmalloc_t*	vm;
@@ -169,9 +169,9 @@ jclclose(Jcl_t* jcl)
  */
 
 int
-jclpush(register Jcl_t* jcl, Sfio_t* sp, const char* file, long line)
+jclpush(Jcl_t* jcl, Sfio_t* sp, const char* file, long line)
 {
-	register Include_t*	ip;
+	Include_t*	ip;
 
 	if (!(ip = vmnewof(jcl->vm, 0, Include_t, 1, file ? strlen(file) : 0)))
 	{

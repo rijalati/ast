@@ -136,14 +136,14 @@ typedef struct
  */
 
 static ssize_t
-gather(register Pz_t* pz, register Pzpart_t* pp, Sfio_t* sp, register Info_t* ip, size_t* map, size_t m)
+gather(Pz_t* pz, Pzpart_t* pp, Sfio_t* sp, Info_t* ip, size_t* map, size_t m)
 {
-	register int		i;
-	register int		j;
-	register unsigned char*	buf;
-	register size_t		n;
-	register ssize_t	r;
-	register size_t		rows;
+	int		i;
+	int		j;
+	unsigned char*	buf;
+	size_t		n;
+	ssize_t	r;
+	size_t		rows;
 
 	for (i = 0; i < m; i++)
 		ip[i].prev = -1;
@@ -182,14 +182,14 @@ gather(register Pz_t* pz, register Pzpart_t* pp, Sfio_t* sp, register Info_t* ip
  */
 
 static int
-cut(register Pz_t* pz, register Pzpart_t* pp, int op, register size_t* map, size_t m)
+cut(Pz_t* pz, Pzpart_t* pp, int op, size_t* map, size_t m)
 {
-	register int		i;
-	register int		j;
-	register size_t		n;
-	register ssize_t	r;
-	register unsigned char*	ib;
-	register unsigned char*	ob;
+	int		i;
+	int		j;
+	size_t		n;
+	ssize_t	r;
+	unsigned char*	ib;
+	unsigned char*	ob;
 
 	if (op & OP_VERBOSE)
 		for (n = 0; n < m; n++)
@@ -232,11 +232,11 @@ cut(register Pz_t* pz, register Pzpart_t* pp, int op, register size_t* map, size
  */
 
 static int
-label(register Pz_t* pz, Pzpart_t* pp, int op, register size_t* map, size_t m, char* format)
+label(Pz_t* pz, Pzpart_t* pp, int op, size_t* map, size_t m, char* format)
 {
-	register char*	s;
-	register int	i;
-	register int	g;
+	char*	s;
+	int	i;
+	int	g;
 	ssize_t		rows;
 	Sfio_t*		sp;
 	Label_t*	lv;
@@ -357,10 +357,10 @@ label(register Pz_t* pz, Pzpart_t* pp, int op, register size_t* map, size_t m, c
  */
 
 static int
-info(register Pz_t* pz, register Pzpart_t* pp, int op, register size_t* map, size_t m)
+info(Pz_t* pz, Pzpart_t* pp, int op, size_t* map, size_t m)
 {
-	register int	i;
-	register int	g;
+	int	i;
+	int	g;
 	ssize_t		rows;
 	Info_t*		ip;
 
@@ -399,9 +399,9 @@ info(register Pz_t* pz, register Pzpart_t* pp, int op, register size_t* map, siz
 static int
 diff(int op, const char* path, size_t row)
 {
-	register int	i;
-	register int	j;
-	register int	k;
+	int	i;
+	int	j;
+	int	k;
 	ssize_t		r;
 	unsigned char*	buf[2];
 	unsigned char*	dif;
@@ -458,9 +458,9 @@ diff(int op, const char* path, size_t row)
 int
 main(int argc, char** argv)
 {
-	register Pz_t*		pz;
-	register Pzpart_t*	pp;
-	register int		i;
+	Pz_t*		pz;
+	Pzpart_t*	pp;
+	int		i;
 	int			m;
 	size_t*			map;
 	Pzdisc_t		disc;

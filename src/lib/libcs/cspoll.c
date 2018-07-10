@@ -43,19 +43,19 @@
 int
 cspoll(Cs_t* state, Cspoll_t* fds, int num, int ms)
 {
-	register Cspoll_t*	pp;
-	register Cspoll_t*	mp;
+	Cspoll_t*	pp;
+	Cspoll_t*	mp;
 
 #if CS_LIB_SOCKET || CS_LIB_V10
-	register int		events;
-	register int		width;
+	int		events;
+	int		width;
 	fd_set			rd;
-	register fd_set*	rp = &rd;
+	fd_set*	rp = &rd;
 	fd_set			wr;
-	register fd_set*	wp = &wr;
+	fd_set*	wp = &wr;
 #if CS_LIB_SOCKET
 	fd_set			ex;
-	register fd_set*	ep = &ex;
+	fd_set*	ep = &ex;
 	struct timeval*		tp;
 	struct timeval		tv;
 

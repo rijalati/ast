@@ -34,7 +34,7 @@ typedef struct Ar_s
 } Ar_t;
 
 static int
-ar_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, register File_t* f, unsigned char* buf, size_t size)
+ar_getprologue(Pax_t* pax, Format_t* fp, Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
 {
 	Ar_t*		ar;
 	Ardir_t*	dir;
@@ -54,9 +54,9 @@ ar_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, register File_t
 }
 
 static int
-ar_done(Pax_t* pax, register Archive_t* ap)
+ar_done(Pax_t* pax, Archive_t* ap)
 {
-	register Ar_t*	ar = (Ar_t*)ap->data;
+	Ar_t*	ar = (Ar_t*)ap->data;
 
 	if (ar)
 	{
@@ -69,9 +69,9 @@ ar_done(Pax_t* pax, register Archive_t* ap)
 }
 
 static int
-ar_getheader(Pax_t* pax, register Archive_t* ap, register File_t* f)
+ar_getheader(Pax_t* pax, Archive_t* ap, File_t* f)
 {
-	register Ar_t*	ar = (Ar_t*)ap->data;
+	Ar_t*	ar = (Ar_t*)ap->data;
 	off_t		pos;
 
 	if (!(ar->ent = ardirnext(ar->dir)))
@@ -97,9 +97,9 @@ ar_getheader(Pax_t* pax, register Archive_t* ap, register File_t* f)
 }
 
 static int
-ar_getdata(Pax_t* pax, register Archive_t* ap, register File_t* f, int wfd)
+ar_getdata(Pax_t* pax, Archive_t* ap, File_t* f, int wfd)
 {
-	register Ar_t*	ar = (Ar_t*)ap->data;
+	Ar_t*	ar = (Ar_t*)ap->data;
 
 	if (ar->ent->offset < 0)
 	{

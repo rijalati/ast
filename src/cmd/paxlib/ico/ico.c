@@ -69,9 +69,9 @@ typedef struct Ico_s
 } Ico_t;
 
 static int
-ico_done(Pax_t* pax, register Paxarchive_t* ap)
+ico_done(Pax_t* pax, Paxarchive_t* ap)
 {
-	register Ico_t*	ico = (Ico_t*)ap->data;
+	Ico_t*	ico = (Ico_t*)ap->data;
 
 	if (!ico)
 		return -1;
@@ -85,9 +85,9 @@ ico_done(Pax_t* pax, register Paxarchive_t* ap)
 }
 
 static int
-ico_getprologue(Pax_t* pax, Paxformat_t* fp, register Paxarchive_t* ap, Paxfile_t* f, register unsigned char* p, size_t size)
+ico_getprologue(Pax_t* pax, Paxformat_t* fp, Paxarchive_t* ap, Paxfile_t* f, unsigned char* p, size_t size)
 {
-	register Ico_t*	ico;
+	Ico_t*	ico;
 	size_t		m;
 	size_t		n;
 
@@ -115,10 +115,10 @@ ico_getprologue(Pax_t* pax, Paxformat_t* fp, register Paxarchive_t* ap, Paxfile_
 }
 
 static int
-ico_getheader(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f)
+ico_getheader(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f)
 {
-	register Ico_t*			ico = (Ico_t*)ap->data;
-	register unsigned char*		p;
+	Ico_t*			ico = (Ico_t*)ap->data;
+	unsigned char*		p;
 	int				width;
 	int				height;
 	size_t				offset;
@@ -151,9 +151,9 @@ ico_getheader(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f)
 }
 
 static int
-ico_getdata(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f, int fd)
+ico_getdata(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f, int fd)
 {
-	register Ico_t*	ico = (Ico_t*)ap->data;
+	Ico_t*	ico = (Ico_t*)ap->data;
 	Sfio_t*		sp;
 	ssize_t		n;
 	size_t		z;
@@ -183,9 +183,9 @@ ico_getdata(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f, int fd
 }
 
 static int
-ico_putprologue(Pax_t* pax, register Paxarchive_t* ap, int append)
+ico_putprologue(Pax_t* pax, Paxarchive_t* ap, int append)
 {
-	register Ico_t*	ico = (Ico_t*)ap->data;
+	Ico_t*	ico = (Ico_t*)ap->data;
 	unsigned char	hdr[ICO_HEADER];
 
 	if (!ico)
@@ -210,7 +210,7 @@ ico_putheader(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f)
 static int
 ico_putdata(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f, int fd)
 {
-	register Ico_t*	ico = (Ico_t*)ap->data;
+	Ico_t*	ico = (Ico_t*)ap->data;
 	Sfio_t*		sp;
 	unsigned char*	p;
 	int		d;
@@ -283,8 +283,8 @@ ico_putdata(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f, int fd)
 static off_t
 ico_putepilogue(Pax_t* pax, Paxarchive_t* ap)
 {
-	register Ico_t*		ico = (Ico_t*)ap->data;
-	register unsigned char*	p;
+	Ico_t*		ico = (Ico_t*)ap->data;
+	unsigned char*	p;
 	unsigned char*		b;
 	int			i;
 	uint32_t		size;

@@ -46,7 +46,7 @@ static char	dat[1024];
 static int
 acceptf(Css_t* css, Cssfd_t* fp, Csid_t* ip, char** av, Cssdisc_t* disc)
 {
-	register Connection_t*	con;
+	Connection_t*	con;
 	char*			s;
 	Sfio_t*			sp;
 	char**			ap;
@@ -71,9 +71,9 @@ acceptf(Css_t* css, Cssfd_t* fp, Csid_t* ip, char** av, Cssdisc_t* disc)
 }
 
 static int
-actionf(register Css_t* css, register Cssfd_t* fp, Cssdisc_t* disc)
+actionf(Css_t* css, Cssfd_t* fp, Cssdisc_t* disc)
 {
-	register Connection_t*	con;
+	Connection_t*	con;
 	int			n;
 
 	switch (fp->status)

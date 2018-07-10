@@ -38,9 +38,9 @@
  */
 
 ssize_t
-cspeek(register Cs_t* state, int fd, void* buf, size_t siz)
+cspeek(Cs_t* state, int fd, void* buf, size_t siz)
 {
-	register int	n;
+	int	n;
 #if _stream_peek
 	struct strpeek	pk;
 #endif

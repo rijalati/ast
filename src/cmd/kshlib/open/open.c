@@ -186,8 +186,8 @@ typedef struct _field_
 static Shfield_t *sh_findfield(Shfield_t *ftable, int nelem, const char *name)
 {
 	Shfield_t *fp = ftable;
-	register int i,n;
-	register const char *cp;
+	int i,n;
+	const char *cp;
 	for(cp=name; *cp; cp++)
 	{
 		if(*cp=='.')
@@ -219,11 +219,11 @@ struct dcclass
 	Shclass_t	sclass;
 };
 
-static Namval_t *sh_newnode(register Shfield_t *fp, Namval_t *np)
+static Namval_t *sh_newnode(Shfield_t *fp, Namval_t *np)
 {
 	char *val = np->nvalue + fp->offset;
 	char *name = nv_name(np);
-	register Namval_t *nq;
+	Namval_t *nq;
 	int offset = stktell(stkstd);
 	sfprintf(stkstd,"%s.%s\0",name,fp->name);
 	sfputc(stkstd,0);
@@ -258,7 +258,7 @@ static void genvalue(Sfio_t *out, Shclass_t *sp, int indent, Namval_t *npar)
 {
 	Shfield_t *fp = sp->fields;
 	Namval_t *np, **nodes= (Namval_t**)(sp+1);
-	register int i,isarray;
+	int i,isarray;
 	if(out)
 	{
 		sfwrite(out,"(\n",2);
@@ -321,7 +321,7 @@ static void genvalue(Sfio_t *out, Shclass_t *sp, int indent, Namval_t *npar)
 	}
 }
 
-static char *walk_class(register Namval_t *np, int dlete, struct dcclass *dcp)
+static char *walk_class(Namval_t *np, int dlete, struct dcclass *dcp)
 {
 	static Sfio_t *out;
 	Sfio_t *outfile;
@@ -452,8 +452,8 @@ static const char sh_optopen[] =
 
 extern int b_open(int argc, char *argv[], Shbltin_t *context)
 {
-	register Namval_t *np;
-	register int n,oflag=0;
+	Namval_t *np;
+	int n,oflag=0;
 	Shell_t *shp = context->shp;
 	struct filedata *fdp;
 	struct stat statb;

@@ -100,8 +100,8 @@ USAGE_LICENSE
 
 static int *gettabs(const char *arg, int *ntab)
 {
-	register const char *cp=arg;
-	register int c,n=1,old= -1;
+	const char *cp=arg;
+	int c,n=1,old= -1;
 	int *tablist;
 	while(c= *cp++)
 	{
@@ -131,10 +131,10 @@ static int *gettabs(const char *arg, int *ntab)
 static int expand(Sfio_t *in, Sfio_t *out, int tablist[], int tabmax, int type,int initial)
 {
 	static char state[256];
-	register int n=0;
-	register char *cp, *first, *buff;
-	register int savec;
-	register char *cpend;
+	int n=0;
+	char *cp, *first, *buff;
+	int savec;
+	char *cpend;
 	state[0] = S_EOF;
 	state['\b'] = S_BS;
 	state['\n'] = S_NL;
@@ -158,7 +158,7 @@ static int expand(Sfio_t *in, Sfio_t *out, int tablist[], int tabmax, int type,i
 			    case S_SPACE:
 				if(tabmax==0 || cp==first+1)
 				{
-					register int i,tabspace = tablist[0];
+					int i,tabspace = tablist[0];
 					n = 1;
 					cp -= 1;
 					if(tabmax==0)
@@ -170,7 +170,7 @@ static int expand(Sfio_t *in, Sfio_t *out, int tablist[], int tabmax, int type,i
 					if(cp[n]==0 && cp+n+1==cpend && savec==' ')
 					{
 						/* keep grabbing spaces */
-						register int c;
+						int c;
 						if(i)
 							sfwrite(out,buff, i);
 						i=0;
@@ -216,7 +216,7 @@ static int expand(Sfio_t *in, Sfio_t *out, int tablist[], int tabmax, int type,i
 					n = tablist[0]*((n+tablist[0])/tablist[0])-n;
 				else
 				{
-					register int i=0;
+					int i=0;
 					while(1)
 					{
 						if(i>=tabmax)
@@ -273,9 +273,9 @@ static int expand(Sfio_t *in, Sfio_t *out, int tablist[], int tabmax, int type,i
 int
 main(int argc, char** argv)
 {
-	register int n,type;
-	register char *cp;
-	register Sfio_t *fp;
+	int n,type;
+	char *cp;
+	Sfio_t *fp;
 	int ntabs= -1;
 	int tabstop=8;
 	int initial=0;

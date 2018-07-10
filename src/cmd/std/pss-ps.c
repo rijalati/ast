@@ -60,9 +60,9 @@ static Pso_t	pso[] =
 static int
 ps_init(Pss_t* pss)
 {
-	register State_t*	state;
-	register Pso_t*		po;
-	register unsigned long	fields;
+	State_t*	state;
+	Pso_t*		po;
+	unsigned long	fields;
 	char*			s;
 
 	if (!(state = vmnewof(pss->vm, 0, State_t, 1, 0)))
@@ -85,7 +85,7 @@ ps_init(Pss_t* pss)
 static int
 ps_done(Pss_t* pss)
 {
-	register State_t*	state = (State_t*)pss->data;
+	State_t*	state = (State_t*)pss->data;
 
 	if (state->ps)
 		sfclose(state->ps);
@@ -95,11 +95,11 @@ ps_done(Pss_t* pss)
 static int
 ps_read(Pss_t* pss, Pss_id_t pid)
 {
-	register State_t*	state = (State_t*)pss->data;
-	register Pso_t*		po;
-	register char*		s;
-	register char*		e;
-	register unsigned long	fields;
+	State_t*	state = (State_t*)pss->data;
+	Pso_t*		po;
+	char*		s;
+	char*		e;
+	unsigned long	fields;
 	int			sep;
 
 	if (pid || !state->scan)
@@ -194,12 +194,12 @@ number(char* s, char** p, int base)
 }
 
 static int
-ps_part(register Pss_t* pss, register Pssent_t* pe)
+ps_part(Pss_t* pss, Pssent_t* pe)
 {
 	State_t*		state = (State_t*)pss->data;
-	register Pso_t*		po;
-	register unsigned long	fields;
-	register char*		s;
+	Pso_t*		po;
+	unsigned long	fields;
+	char*		s;
 	char*			e;
 	char*			t;
 	int			c;

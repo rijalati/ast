@@ -28,7 +28,7 @@
 #include "cslib.h"
 
 int
-csfree(register Cs_t* state)
+csfree(Cs_t* state)
 {
 	if (!state || state == &cs)
 		return -1;

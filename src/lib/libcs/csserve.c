@@ -44,7 +44,7 @@ struct Server_s
 static int
 acceptf(Css_t* css, Cssfd_t* fp, Csid_t* ip, char** av, Cssdisc_t* disc)
 {
-	register Server_t*	server = (Server_t*)disc;
+	Server_t*	server = (Server_t*)disc;
 
 	return (*server->con)(server->handle, fp->fd, ip, 0, av) ? -1 : fp->fd;
 }
@@ -52,7 +52,7 @@ acceptf(Css_t* css, Cssfd_t* fp, Csid_t* ip, char** av, Cssdisc_t* disc)
 static int
 actionf(Css_t* css, Cssfd_t* fp, Cssdisc_t* disc)
 {
-	register Server_t*	server = (Server_t*)disc;
+	Server_t*	server = (Server_t*)disc;
 
 	switch (fp->status)
 	{
@@ -71,7 +71,7 @@ actionf(Css_t* css, Cssfd_t* fp, Cssdisc_t* disc)
 static int
 exceptf(Css_t* css, unsigned long op, unsigned long arg, Cssdisc_t* disc)
 {
-	register Server_t*	server = (Server_t*)disc;
+	Server_t*	server = (Server_t*)disc;
 
 	switch (op)
 	{
@@ -104,7 +104,7 @@ csfd(Cs_t* state, int fd, int op)
  */
 
 unsigned long
-cstimeout(register Cs_t* state, unsigned long ms)
+cstimeout(Cs_t* state, unsigned long ms)
 {
 	unsigned long	rv;
 
@@ -140,7 +140,7 @@ cswakeup(Cs_t* state, unsigned long ms)
 void
 csserve(Cs_t* state, void* handle, const char* path, void* (*init)(void*, int), int (*done)(void*, int), int (*con)(void*, int, Csid_t*, int, char**), int (*rd)(void*, int), int (*wr)(void*, int), int (*to)(void*))
 {
-	register Server_t*	server;
+	Server_t*	server;
 
 	if (!con && !rd)
 		error(ERROR_PANIC, "a connect or read handler must be supplied");

@@ -285,12 +285,12 @@ sortcmpf(int flags)
 static Edit_map_t*
 getedit(char** p, int del)
 {
-	register int		v;
-	register unsigned char*	s;
-	register unsigned char*	t;
-	register Edit_map_t*	mid = (Edit_map_t*)editmap;
-	register Edit_map_t*	lo = mid;
-	register Edit_map_t*	hi = mid + elementsof(editmap) - 1;
+	int		v;
+	unsigned char*	s;
+	unsigned char*	t;
+	Edit_map_t*	mid = (Edit_map_t*)editmap;
+	Edit_map_t*	lo = mid;
+	Edit_map_t*	hi = mid + elementsof(editmap) - 1;
 
 	while (lo <= hi)
 	{
@@ -328,7 +328,7 @@ getedit(char** p, int del)
 static void
 uniq(Sfio_t* xp, char* v, char* w, int sep)
 {
-	register char*	s;
+	char*	s;
 	char*		tok;
 	Hash_table_t*	tab;
 	Fileid_t	id;
@@ -398,7 +398,7 @@ uniq(Sfio_t* xp, char* v, char* w, int sep)
 static int
 mark(Sfio_t* xp, Rule_t* r, int m, int c)
 {
-	register List_t*	p;
+	List_t*	p;
 
 	if (xp)
 	{
@@ -438,7 +438,7 @@ mark(Sfio_t* xp, Rule_t* r, int m, int c)
 static void
 closure(Sfio_t* xp, char* v, char* w)
 {
-	register char*		s;
+	char*		s;
 	char*			tok;
 	long			pos;
 	int			cycle;
@@ -486,8 +486,8 @@ closure(Sfio_t* xp, char* v, char* w)
 static void
 cross(Sfio_t* xp, char* v, char* w)
 {
-	register char*	s;
-	register char*	t;
+	char*	s;
+	char*	t;
 	char*		x;
 	int		dot;
 	int		sep;
@@ -549,10 +549,10 @@ cross(Sfio_t* xp, char* v, char* w)
 static void
 intersect(Sfio_t* xp, char* v, char* w, int sep)
 {
-	register List_t*	p;
-	register Rule_t*	r;
-	register char*		s;
-	register int		n;
+	List_t*	p;
+	Rule_t*	r;
+	char*		s;
+	int		n;
 	List_t*			q;
 	List_t*			x;
 	char*			tok;
@@ -643,10 +643,10 @@ intersect(Sfio_t* xp, char* v, char* w, int sep)
 static void
 hasprereq(Sfio_t* xp, char* v, char* w)
 {
-	register List_t*	p;
-	register List_t*	q;
-	register Rule_t*	r;
-	register char*		s;
+	List_t*	p;
+	List_t*	q;
+	Rule_t*	r;
+	char*		s;
 	int			sep;
 	List_t*			x;
 	char*			tok;
@@ -681,9 +681,9 @@ hasprereq(Sfio_t* xp, char* v, char* w)
  */
 
 static void
-linebreak(Sfio_t* xp, register char* s, char* pfx)
+linebreak(Sfio_t* xp, char* s, char* pfx)
 {
-	register int	a;
+	int	a;
 	char*		tok;
 	long		rew;
 	long		pre;
@@ -717,7 +717,7 @@ linebreak(Sfio_t* xp, register char* s, char* pfx)
 static void
 listtab(Sfio_t* xp, Hash_table_t* tab, char* pat, int flags)
 {
-	register char**		v;
+	char**		v;
 	Hash_position_t*	pos;
 	int			n;
 	Sfio_t*			hit;
@@ -772,10 +772,10 @@ listtab(Sfio_t* xp, Hash_table_t* tab, char* pat, int flags)
  */
 
 static void
-list(Sfio_t* xp, register char* s, char* pat, int flags)
+list(Sfio_t* xp, char* s, char* pat, int flags)
 {
-	register Rule_t*	r;
-	register char**		v;
+	Rule_t*	r;
+	char**		v;
 	char**			w;
 	File_t*			f;
 	Hash_position_t*	pos;
@@ -943,10 +943,10 @@ list(Sfio_t* xp, register char* s, char* pat, int flags)
  */
 
 static void
-sort(Sfio_t* xp, register char* s, int flags)
+sort(Sfio_t* xp, char* s, int flags)
 {
-	register char**	p;
-	register char**	r;
+	char**	p;
+	char**	r;
 	char*		tok;
 	long		n;
 	Sfio_t*		vec;
@@ -990,10 +990,10 @@ sort(Sfio_t* xp, register char* s, int flags)
  */
 
 static void
-relative(Sfio_t* xp, register char* s, register char* t)
+relative(Sfio_t* xp, char* s, char* t)
 {
-	register char*	u;
-	register char*	v;
+	char*	u;
+	char*	v;
 	long		pos;
 	Sfio_t*		tmp;
 
@@ -1135,8 +1135,8 @@ native(Sfio_t* xp, const char* s)
 static unsigned long
 order_descend(Sfio_t* xp, Hash_table_t* tab, Rule_t* r, unsigned long mark, unsigned int flags)
 {
-	register List_t*	p;
-	register Rule_t*	a;
+	List_t*	p;
+	Rule_t*	a;
 	unsigned long		here;
 	unsigned long		need;
 
@@ -1208,8 +1208,8 @@ static void	order_find(Sfio_t*, Sfio_t*, Sfio_t*, Hash_table_t*, char*, char*, c
 static void
 order_all(Sfio_t* xp, Sfio_t* tmp, Sfio_t* vec, Hash_table_t* tab, Rule_t* d, char* makefiles, char* skip, unsigned int flags)
 {
-	register char*	t;
-	register char**	v;
+	char*	t;
+	char**	v;
 	int		n;
 	glob_t		gl;
 
@@ -1233,7 +1233,7 @@ order_all(Sfio_t* xp, Sfio_t* tmp, Sfio_t* vec, Hash_table_t* tab, Rule_t* d, ch
 static void
 order_scan(Sfio_t* xp, Sfio_t* tmp, Sfio_t* vec, Hash_table_t* tab, Rule_t* d, Rule_t* r, char* makefiles, char* skip, unsigned int flags)
 {
-	register char*	s;
+	char*	s;
 	Sfio_t*		sp;
 
 	if (d == internal.dot)
@@ -1682,12 +1682,12 @@ order_recurse(Sfio_t* xp, char* directories, char* makefiles, char* skip, char* 
  */
 
 static void
-pathop(Sfio_t* xp, register char* s, char* op, int sep)
+pathop(Sfio_t* xp, char* s, char* op, int sep)
 {
-	register char*		t;
-	register int		n;
-	register Rule_t*	r;
-	register char**		p;
+	char*		t;
+	int		n;
+	Rule_t*	r;
+	char**		p;
 	char*			e;
 	Rule_t*			x;
 	int			c;
@@ -2195,10 +2195,10 @@ pathop(Sfio_t* xp, register char* s, char* op, int sep)
  */
 
 void
-edit(Sfio_t* xp, register char* s, char* dir, char* bas, char* suf)
+edit(Sfio_t* xp, char* s, char* dir, char* bas, char* suf)
 {
-	register char*	p;
-	register char*	q;
+	char*	p;
+	char*	q;
 	long		pos;
 
 	if (!*s)
@@ -2272,7 +2272,7 @@ edit(Sfio_t* xp, register char* s, char* dir, char* bas, char* suf)
  */
 
 static void
-substitute(Sfio_t* xp, regex_t* re, register char* s)
+substitute(Sfio_t* xp, regex_t* re, char* s)
 {
 	int		n;
 	regmatch_t	match[10];
@@ -2326,12 +2326,12 @@ mimetype(Sfio_t* xp, char* file)
  */
 
 static void
-token(Sfio_t* xp, char* s, register char* p, int sep)
+token(Sfio_t* xp, char* s, char* p, int sep)
 {
-	register Rule_t*	r;
-	register Rule_t*	x;
-	register Var_t*		v;
-	register int		op;
+	Rule_t*	r;
+	Rule_t*	x;
+	Var_t*		v;
+	int		op;
 	char*			ops;
 	int			dobind;
 	int			dounbind;
@@ -2877,10 +2877,10 @@ token(Sfio_t* xp, char* s, register char* p, int sep)
  */
 
 static int
-active(Rule_t* r, register Frame_t* fp)
+active(Rule_t* r, Frame_t* fp)
 {
-	register Frame_t*	ap;
-	register Frame_t*	pp;
+	Frame_t*	ap;
+	Frame_t*	pp;
 
 	for (pp = 0, ap = state.frame; ap && ap != pp; pp = ap, ap = ap->parent)
 		if (fp == ap)
@@ -2896,7 +2896,7 @@ active(Rule_t* r, register Frame_t* fp)
  */
 
 void
-parentage(Sfio_t* xp, register Rule_t* r, char* sep)
+parentage(Sfio_t* xp, Rule_t* r, char* sep)
 {
 	if (r->active && active(r, r->active) && r->active->parent && !(r->active->parent->target->mark & M_mark) && r->active->parent->parent != r->active->parent)
 	{
@@ -2915,12 +2915,12 @@ parentage(Sfio_t* xp, register Rule_t* r, char* sep)
  */
 
 static void
-attribute(Sfio_t* xp, char* s, register char* att, int sep)
+attribute(Sfio_t* xp, char* s, char* att, int sep)
 {
-	register char*		t;
-	register Rule_t*	r;
-	register Rule_t*	a;
-	register List_t*	p;
+	char*		t;
+	Rule_t*	r;
+	Rule_t*	a;
+	List_t*	p;
 	long			n;
 	int			c;
 	int			i;
@@ -3037,9 +3037,9 @@ attribute(Sfio_t* xp, char* s, register char* att, int sep)
 static void
 generate(Sfio_t* xp, char* name, char* pat, int sep)
 {
-	register Rule_t*	x;
-	register List_t*	p;
-	register List_t*	q;
+	Rule_t*	x;
+	List_t*	p;
+	List_t*	q;
 	char*			b;
 	char			stem[MAXNAME];
 
@@ -3191,12 +3191,12 @@ generate(Sfio_t* xp, char* name, char* pat, int sep)
  */
 
 void
-shquote(register Sfio_t* xp, char* s)
+shquote(Sfio_t* xp, char* s)
 {
-	register char*	t;
-	register char*	b;
-	register int	c;
-	register int	q;
+	char*	t;
+	char*	b;
+	int	c;
+	int	q;
 
 	if (*s == '"' && *(s + strlen(s) - 1) == '"')
 	{
@@ -3313,9 +3313,9 @@ shquote(register Sfio_t* xp, char* s)
  */
 
 static char*
-editcontext(register char* beg, register char* cur)
+editcontext(char* beg, char* cur)
 {
-	register int	n;
+	int	n;
 
 	sfstrseek(internal.tmp, 0, SEEK_SET);
 	if ((n = cur - beg) > (EDITCONTEXT / 2)) beg = cur - (n = (EDITCONTEXT / 2));
@@ -3335,10 +3335,10 @@ editcontext(register char* beg, register char* cur)
  */
 
 static void
-expandall(register Sfio_t* xp, register unsigned long all)
+expandall(Sfio_t* xp, unsigned long all)
 {
-	register int		sep;
-	register Rule_t*	r;
+	int		sep;
+	Rule_t*	r;
 	Hash_position_t*	pos;
 
 	sep = 0;
@@ -3373,8 +3373,8 @@ expandall(register Sfio_t* xp, register unsigned long all)
 static void
 expandops(Sfio_t* xp, char* v, char* ed, int del, int exp)
 {
-	register char*		s;
-	register int		op;
+	char*		s;
+	int		op;
 	char*			dir;
 	char*			bas;
 	char*			suf;
@@ -4470,9 +4470,9 @@ expandops(Sfio_t* xp, char* v, char* ed, int del, int exp)
  */
 
 static void
-expandvars(register Sfio_t* xp, register char* s, char* ed, int del, int nvars)
+expandvars(Sfio_t* xp, char* s, char* ed, int del, int nvars)
 {
-	register char*	v;
+	char*	v;
 	char*		t;
 	int		exp;
 	int		op;
@@ -4700,10 +4700,10 @@ expandvars(register Sfio_t* xp, register char* s, char* ed, int del, int nvars)
  */
 
 void
-expand(register Sfio_t* xp, register char* a)
+expand(Sfio_t* xp, char* a)
 {
-	register int	c;
-	register char*	s;
+	int	c;
+	char*	s;
 	int		alt;
 	int		del;
 	int		p;

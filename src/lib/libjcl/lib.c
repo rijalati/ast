@@ -28,10 +28,10 @@
 #include <tm.h>
 
 static char*
-internal(register Jcl_t* jcl, const char* name)
+internal(Jcl_t* jcl, const char* name)
 {
-	register char*	s;
-	register char*	t;
+	char*	s;
+	char*	t;
 
 	if (streq(name, "CYCLE"))
 		return tmmake(NiL)->tm_mday <= 10 ? "10" : "31";
@@ -58,10 +58,10 @@ internal(register Jcl_t* jcl, const char* name)
  */
 
 char*
-lookup(register Jcl_t* jcl, const char* name, const char* value, int flags, int set)
+lookup(Jcl_t* jcl, const char* name, const char* value, int flags, int set)
 {
-	register Jclsym_t*	v;
-	register Jcl_t*		scope;
+	Jclsym_t*	v;
+	Jcl_t*		scope;
 	char*			s;
 	char*			b;
 	time_t			t;
@@ -197,7 +197,7 @@ lookup(register Jcl_t* jcl, const char* name, const char* value, int flags, int 
  found:
 	if (jcl->flags & (JCL_PARAMETERIZE|JCL_LISTVARIABLES))
 	{
-		register char*	s;
+		char*	s;
 
 		for (s = v->name; isalnum(*s) || *s == '_'; s++);
 		if (!*s)

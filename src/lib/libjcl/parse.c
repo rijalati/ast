@@ -93,7 +93,7 @@ push(Jcl_t* jcl, char* s)
  */
 
 static void
-xel(register Jcl_t* jcl, register char* tok)
+xel(Jcl_t* jcl, char* tok)
 {
 	if (tok)
 	{
@@ -113,9 +113,9 @@ xel(register Jcl_t* jcl, register char* tok)
  */
 
 static char*
-card(register Jcl_t* jcl)
+card(Jcl_t* jcl)
 {
-	register char*	s;
+	char*	s;
 	size_t		n;
 
 	for (;;)
@@ -152,11 +152,11 @@ card(register Jcl_t* jcl)
  */
 
 static char*
-autoexpand(register Jcl_t* jcl, register char* s, Sfio_t* sp)
+autoexpand(Jcl_t* jcl, char* s, Sfio_t* sp)
 {
-	register char*	t;
-	register char*	v;
-	register int	c;
+	char*	t;
+	char*	v;
+	int	c;
 	int		o;
 	Sfio_t*		tp;
 
@@ -224,7 +224,7 @@ autoexpand(register Jcl_t* jcl, register char* s, Sfio_t* sp)
  */
 
 static char*
-autotoken(register Jcl_t* jcl, register char* s, char** r, int set)
+autotoken(Jcl_t* jcl, char* s, char** r, int set)
 {
 	char*	t;
 	int	o;
@@ -270,7 +270,7 @@ autotoken(register Jcl_t* jcl, register char* s, char** r, int set)
  */
 
 static char*
-autonumber(register Jcl_t* jcl, char* s, long* r)
+autonumber(Jcl_t* jcl, char* s, long* r)
 {
 	char*	t;
 	char*	b;
@@ -313,7 +313,7 @@ autonumber(register Jcl_t* jcl, char* s, long* r)
  */
 
 static char*
-autoeval(register Jcl_t* jcl, register char* s, char** r)
+autoeval(Jcl_t* jcl, char* s, char** r)
 {
 	char*	b;
 	char*	e;
@@ -499,17 +499,17 @@ autoeval(register Jcl_t* jcl, register char* s, char** r)
  */
 
 static char*
-lex(register Jcl_t* jcl)
+lex(Jcl_t* jcl)
 {
-	register char*	s;
-	register char*	t;
-	register char*	p;
-	register int	n;
-	register int	a;
-	register int	q;
-	register int	x;
-	register int	c;
-	register int	m;
+	char*	s;
+	char*	t;
+	char*	p;
+	int	n;
+	int	a;
+	int	q;
+	int	x;
+	int	c;
+	int	m;
 	char*		v;
 	char*		w;
 	int		j;
@@ -919,7 +919,7 @@ lex(register Jcl_t* jcl)
 static void
 eat(Jcl_t* jcl)
 {
-	register char*	tok;
+	char*	tok;
 
 	if (jcl->last != END)
 		while ((tok = lex(jcl)) && tok != END);
@@ -930,12 +930,12 @@ eat(Jcl_t* jcl)
  */
 
 static Jclcond_t*
-cond(register Jcl_t* jcl, char* b, char** p)
+cond(Jcl_t* jcl, char* b, char** p)
 {
-	register char*		s;
-	register char*		t;
-	register Jclcond_t*	x;
-	register Jclcond_t*	y;
+	char*		s;
+	char*		t;
+	Jclcond_t*	x;
+	Jclcond_t*	y;
 	char*			e;
 
 	s = b;
@@ -1092,11 +1092,11 @@ arg(Jcl_t* jcl, char** p)
 char*
 jclparm(char** p)
 {
-	register char*	s;
-	register char*	t;
-	register int	q;
-	register int	n;
-	register int	x;
+	char*	s;
+	char*	t;
+	int	q;
+	int	n;
+	int	x;
 	int		empty;
 	char*		b;
 
@@ -1152,12 +1152,12 @@ jclparm(char** p)
  */
 
 static int
-DD(register Jcl_t* jcl, register Jclstep_t* step, char* name)
+DD(Jcl_t* jcl, Jclstep_t* step, char* name)
 {
-	register char*		tok;
-	register char*		op;
-	register Jcldd_t*	dd;
-	register Jclcat_t*	cat;
+	char*		tok;
+	char*		op;
+	Jcldd_t*	dd;
+	Jclcat_t*	cat;
 	char*			val;
 	char*			s;
 	Jcldd_t*		pd;
@@ -1565,7 +1565,7 @@ DD(register Jcl_t* jcl, register Jclstep_t* step, char* name)
  */
 
 static int
-OUTPUT(register Jcl_t* jcl, register Jclstep_t* step, char* name)
+OUTPUT(Jcl_t* jcl, Jclstep_t* step, char* name)
 {
 	Jcloutput_t*	output;
 	char*		s;
@@ -1617,11 +1617,11 @@ static int	eval(Jcl_t*, char*, char**, int);
  */
 
 static int
-operand(Jcl_t* jcl, register char* s, char** e)
+operand(Jcl_t* jcl, char* s, char** e)
 {
-	register char*		t;
-	register char*		u;
-	register char*		v;
+	char*		t;
+	char*		u;
+	char*		v;
 	Rc_t*			p;
 	int			c;
 	int			d;
@@ -1752,9 +1752,9 @@ operand(Jcl_t* jcl, register char* s, char** e)
  */
 
 static int
-eval(register Jcl_t* jcl, register char* s, char** e, int prec)
+eval(Jcl_t* jcl, char* s, char** e, int prec)
 {
-	register char*	t;
+	char*	t;
 	int		a;
 	int		op;
 	int		b;
@@ -1908,9 +1908,9 @@ eval(register Jcl_t* jcl, register char* s, char** e, int prec)
  */
 
 static int
-IF(register Jcl_t* jcl)
+IF(Jcl_t* jcl)
 {
-	register char*	s;
+	char*	s;
 	char*		e;
 	int		r;
 
@@ -1945,11 +1945,11 @@ IF(register Jcl_t* jcl)
  */
 
 static int
-parse(register Jcl_t* jcl, register Jclstep_t* step)
+parse(Jcl_t* jcl, Jclstep_t* step)
 {
-	register char*		tok;
-	register char*		name;
-	register char*		op;
+	char*		tok;
+	char*		name;
+	char*		op;
 	char*			val;
 	Ie_t*			ie;
 	Sfio_t*			sp;
@@ -2167,11 +2167,11 @@ parse(register Jcl_t* jcl, register Jclstep_t* step)
  */
 
 Jclstep_t*
-jclstep(register Jcl_t* jcl)
+jclstep(Jcl_t* jcl)
 {
-	register Jclstep_t*	step;
-	register Jcldd_t*	dd;
-	register Jclcat_t*	cat;
+	Jclstep_t*	step;
+	Jcldd_t*	dd;
+	Jclcat_t*	cat;
 	Jcl_t*			scope;
 	Sfio_t*			sp;
 	char*			ofile;
@@ -2251,7 +2251,7 @@ jclstep(register Jcl_t* jcl)
  */
 
 int
-jcleval(Jcl_t* jcl, register Jclcond_t* cond, int code)
+jcleval(Jcl_t* jcl, Jclcond_t* cond, int code)
 {
 	if (!cond)
 		return !code;
@@ -2299,9 +2299,9 @@ jcleval(Jcl_t* jcl, register Jclcond_t* cond, int code)
  */
 
 int
-jclrc(register Jcl_t* jcl, register Jclstep_t* step, int rc)
+jclrc(Jcl_t* jcl, Jclstep_t* step, int rc)
 {
-	register Rc_t*		rp;
+	Rc_t*		rp;
 
 	/*
 	 * map unix signal codes to abend

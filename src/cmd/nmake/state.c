@@ -42,7 +42,7 @@
  */
 
 Rule_t*
-catrule(register char* s1, register char* s2, register char* s3, int force)
+catrule(char* s1, char* s2, char* s3, int force)
 {
 	Rule_t*		r;
 
@@ -98,10 +98,10 @@ statefile(void)
  */
 
 static Rule_t*
-stateview(int op, char* name, register Rule_t* s, register Rule_t* r, int view, int accept, Rule_t** pv)
+stateview(int op, char* name, Rule_t* s, Rule_t* r, int view, int accept, Rule_t** pv)
 {
-	register Rule_t*	v;
-	register List_t*	p;
+	Rule_t*	v;
+	List_t*	p;
 	Sfio_t*			fp;
 
 	if (pv)
@@ -246,10 +246,10 @@ stateview(int op, char* name, register Rule_t* s, register Rule_t* r, int view, 
  */
 
 Rule_t*
-staterule(int op, register Rule_t* r, char* var, int force)
+staterule(int op, Rule_t* r, char* var, int force)
 {
-	register Rule_t*	s;
-	register int		i;
+	Rule_t*	s;
+	int		i;
 	char*			rul;
 	char*			nam;
 	Rule_t*			v;
@@ -423,9 +423,9 @@ staterule(int op, register Rule_t* r, char* var, int force)
  */
 
 Rule_t*
-rulestate(register Rule_t* r, int force)
+rulestate(Rule_t* r, int force)
 {
-	register char*		s;
+	char*		s;
 
 	if (r->property & P_staterule)
 	{
@@ -443,11 +443,11 @@ rulestate(register Rule_t* r, int force)
  */
 
 Var_t*
-varstate(register Rule_t* r, int force)
+varstate(Rule_t* r, int force)
 {
-	register char*		s;
-	register char*		t;
-	register Var_t*		v;
+	char*		s;
+	char*		t;
+	Var_t*		v;
 
 	s = r->name;
 	if (r->property & P_state)
@@ -492,8 +492,8 @@ auxiliary(char* s, int force)
 int
 forcescan(const char* s, char* v, void* h)
 {
-	register Rule_t*	r = (Rule_t*)v;
-	register int		n = h ? *((unsigned char*)h) : r->scan;
+	Rule_t*	r = (Rule_t*)v;
+	int		n = h ? *((unsigned char*)h) : r->scan;
 
 	NoP(s);
 	if ((r->property & P_staterule) && r->scan == n && !(r->dynamic & D_scanned))
@@ -548,8 +548,8 @@ badlock(char* file, int view, Time_t date)
 void
 lockstate(int set)
 {
-	register int		fd;
-	register char*		file;
+	int		fd;
+	char*		file;
 	Time_t			t;
 	Stat_t			st;
 
@@ -627,7 +627,7 @@ lockstate(int set)
 void
 readstate(void)
 {
-	register Sfio_t*	fp;
+	Sfio_t*	fp;
 	char*			file;
 
 	if (state.makefile)
@@ -656,7 +656,7 @@ readstate(void)
  */
 
 static void
-code(register const char* s)
+code(const char* s)
 {
 	debug((-6, "enter candidate state variable %s", s));
 	settype(*s++, C_VARPOS1);
@@ -696,9 +696,9 @@ code(register const char* s)
 static int
 checkparam(const char* s, char* v, void* h)
 {
-	register Rule_t*	r = (Rule_t*)v;
-	register List_t*	p;
-	register char*		t;
+	Rule_t*	r = (Rule_t*)v;
+	List_t*	p;
+	char*		t;
 	Time_t			tm;
 
 	NoP(s);
@@ -727,10 +727,10 @@ checkparam(const char* s, char* v, void* h)
  */
 
 static int
-checkvar1(register const char* s, char* u, void* h)
+checkvar1(const char* s, char* u, void* h)
 {
-	register Var_t*		v = (Var_t*)u;
-	register Rule_t*	r;
+	Var_t*		v = (Var_t*)u;
+	Rule_t*	r;
 
 	NoP(h);
 	if (v->property & V_scan)
@@ -755,7 +755,7 @@ checkvar1(register const char* s, char* u, void* h)
 static int
 checkvar2(const char* s, char* u, void* h)
 {
-	register Rule_t*	r = (Rule_t*)u;
+	Rule_t*	r = (Rule_t*)u;
 	Var_t*			v;
 
 	NoP(s);
@@ -828,7 +828,7 @@ savestate(void)
  */
 
 Rule_t*
-bindstate(register Rule_t* r, register char* val)
+bindstate(Rule_t* r, char* val)
 {
 	Rule_t*		s;
 	Time_t		t;
@@ -843,7 +843,7 @@ bindstate(register Rule_t* r, register char* val)
 		return r;
 	if (r->property & P_statevar)
 	{
-		register Var_t*		v;
+		Var_t*		v;
 		char*			e;
 		Sfio_t*			tmp = 0;
 
@@ -927,10 +927,10 @@ bindstate(register Rule_t* r, register char* val)
  */
 
 static int
-checkcurrent(register Rule_t* r, Stat_t* st)
+checkcurrent(Rule_t* r, Stat_t* st)
 {
-	register int	n;
-	register char*	s;
+	int	n;
+	char*	s;
 	long		pos;
 
 	if (r->uname && !(n = rstat(r->uname, st, 1)))
@@ -973,9 +973,9 @@ checkcurrent(register Rule_t* r, Stat_t* st)
  */
 
 Time_t
-statetime(register Rule_t* r, int sync)
+statetime(Rule_t* r, int sync)
 {
-	register Rule_t*	s;
+	Rule_t*	s;
 	int			a;
 	int			n;
 	int			skip = 0;

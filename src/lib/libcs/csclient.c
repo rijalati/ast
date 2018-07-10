@@ -60,7 +60,7 @@ restore(void)
 int
 csclient(Cs_t* cs, int fd, const char* service, const char* prompt, char** argv, unsigned int flags)
 {
-	register int	i;
+	int	i;
 	char*		s;
 	Sfio_t*		tmp;
 	int		done;
@@ -163,8 +163,8 @@ csclient(Cs_t* cs, int fd, const char* service, const char* prompt, char** argv,
 				if (!i)
 				{
 #if _hdr_termios
-					register char*	u;
-					register int	m;
+					char*	u;
+					int	m;
 
 					s[n] = 0;
 					if ((u = strchr(s, 035)))

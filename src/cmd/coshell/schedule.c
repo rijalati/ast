@@ -76,10 +76,10 @@ dupstring(char* s, const char* v)
  */
 
 Coshell_t*
-search(int op, char* name, register Coattr_t* a, Coattr_t* d)
+search(int op, char* name, Coattr_t* a, Coattr_t* d)
 {
-	register Coshell_t*	sp;
-	register Coshell_t*	ap;
+	Coshell_t*	sp;
+	Coshell_t*	ap;
 	Coshell_t*		cp;
 	Coshell_t*		mp;
 	Coshell_t*		xp;
@@ -464,9 +464,9 @@ search(int op, char* name, register Coattr_t* a, Coattr_t* d)
  */
 
 void
-update(register Coshell_t* sp)
+update(Coshell_t* sp)
 {
-	register long		n;
+	long		n;
 
 	sp->mode &= ~SHELL_DISABLE;
 	if (csstat(sp->name, &sp->stat))
@@ -533,8 +533,8 @@ update(register Coshell_t* sp)
 Coshell_t*
 info(int op, char* file)
 {
-	register Sfio_t*	fp;
-	register char*		s;
+	Sfio_t*	fp;
+	char*		s;
 	struct stat		st;
 
 	static char*		apath;

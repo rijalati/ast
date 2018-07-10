@@ -80,7 +80,7 @@ Tk_ConfigureWidget(interp, tkwin, specs, argc, argv, widgRec, flags)
 				 * for them to be considered.  Also,
 				 * may have TK_CONFIG_ARGV_ONLY set. */
 {
-    register Tk_ConfigSpec *specPtr;
+    Tk_ConfigSpec *specPtr;
     Tk_Uid value;		/* Value of option from database. */
     int needFlags;		/* Specs must contain this set of flags
 				 * or else they are not considered. */
@@ -234,8 +234,8 @@ FindConfigSpec(interp, specs, argvName, needFlags, hateFlags)
     int hateFlags;		/* Flags that must NOT be present in
 				 * matching entry. */
 {
-    register Tk_ConfigSpec *specPtr;
-    register char c;		/* First character of current argument. */
+    Tk_ConfigSpec *specPtr;
+    char c;		/* First character of current argument. */
     Tk_ConfigSpec *matchPtr;	/* Matching spec, or NULL. */
     size_t length;
 
@@ -598,7 +598,7 @@ Tk_ConfigureInfo(interp, tkwin, specs, widgRec, argvName, flags)
 				 * that must be present in config specs
 				 * for them to be considered. */
 {
-    register Tk_ConfigSpec *specPtr;
+    Tk_ConfigSpec *specPtr;
     int needFlags, hateFlags;
     char *list;
     char *leader = "{";
@@ -674,7 +674,7 @@ FormatConfigInfo(interp, tkwin, specPtr, widgRec)
     Tcl_Interp *interp;			/* Interpreter to use for things
 					 * like floating-point precision. */
     Tk_Window tkwin;			/* Window corresponding to widget. */
-    register Tk_ConfigSpec *specPtr;	/* Pointer to information describing
+    Tk_ConfigSpec *specPtr;	/* Pointer to information describing
 					 * option. */
     char *widgRec;			/* Pointer to record holding current
 					 * values of info for widget. */
@@ -945,7 +945,7 @@ Tk_FreeOptions(specs, widgRec, display, needFlags)
 				 * that must be present in config specs
 				 * for them to be considered. */
 {
-    register Tk_ConfigSpec *specPtr;
+    Tk_ConfigSpec *specPtr;
     char *ptr;
 
     for (specPtr = specs; specPtr->type != TK_CONFIG_END; specPtr++) {

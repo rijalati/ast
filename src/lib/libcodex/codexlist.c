@@ -31,7 +31,7 @@
 Codexmeth_t*
 codexlist(Codexmeth_t* meth)
 {
-	register Codexmeth_t*	lp;
+	Codexmeth_t*	lp;
 	Codexmeth_t*		np;
 	Dllscan_t*		dls;
 	Dllent_t*		dle;

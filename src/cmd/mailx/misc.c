@@ -85,9 +85,9 @@
  * Note message.
  */
 void
-note(register int flags, const char* fmt, ...)
+note(int flags, const char* fmt, ...)
 {
-	register FILE*	fp;
+	FILE*	fp;
 	va_list		ap;
 
 	va_start(ap, fmt);
@@ -142,7 +142,7 @@ savestr(char* str)
  * back to the system mailbox on exit.
  */
 void
-touchmsg(register struct msg* mp)
+touchmsg(struct msg* mp)
 {
 	if (mp->m_flag & MREAD)
 		msgflags(mp, MTOUCH, 0);
@@ -251,7 +251,7 @@ alter(char* name)
 int
 blankline(char* linebuf)
 {
-	register char*	cp;
+	char*	cp;
 
 	for (cp = linebuf; *cp; cp++)
 		if (*cp != ' ' && *cp != '\t')
@@ -264,9 +264,9 @@ blankline(char* linebuf)
  * Ignore it.
  */
 static char*
-skip_comment(register char* cp)
+skip_comment(char* cp)
 {
-	register int	nesting = 1;
+	int	nesting = 1;
 
 	for (; nesting > 0 && *cp; cp++) {
 		switch (*cp) {
@@ -292,9 +292,9 @@ skip_comment(register char* cp)
 char*
 localize(char* host)
 {
-	register char*	lp;
-	register char*	le;
-	register char*	hx;
+	char*	lp;
+	char*	le;
+	char*	hx;
 
 	hx = strchr(host, '.');
 	lp = state.var.local;
@@ -326,9 +326,9 @@ localize(char* host)
 char*
 normalize(char* addr, unsigned long type, char* buf, size_t size)
 {
-	register char*	p;
-	register char*	e;
-	register int	n;
+	char*	p;
+	char*	e;
+	int	n;
 	char*		uucp;
 	char*		arpa;
 	char*		user;
@@ -426,9 +426,9 @@ normalize(char* addr, unsigned long type, char* buf, size_t size)
 char*
 skin(char* name, unsigned long type)
 {
-	register int	c;
-	register char*	cp;
-	register char*	cp2;
+	int	c;
+	char*	cp;
+	char*	cp2;
 	char*		bufend;
 	int		gotlt;
 	int		lastsp;
@@ -528,7 +528,7 @@ skin(char* name, unsigned long type)
  * Are any of the characters in the two strings the same?
  */
 int
-anyof(register char* s1, register char* s2)
+anyof(char* s1, char* s2)
 {
 
 	while (*s1)
@@ -541,7 +541,7 @@ anyof(register char* s1, register char* s2)
  * Convert c to lower case
  */
 int
-lower(register int c)
+lower(int c)
 {
 	return isupper(c) ? tolower(c) : c;
 }
@@ -550,7 +550,7 @@ lower(register int c)
  * Convert c to upper case
  */
 int
-upper(register int c)
+upper(int c)
 {
 	return islower(c) ? toupper(c) : c;
 }
@@ -559,10 +559,10 @@ upper(register int c)
  * Convert s to lower case
  */
 char*
-strlower(register char* s)
+strlower(char* s)
 {
-	register char*	b = s;
-	register int	c;
+	char*	b = s;
+	int	c;
 
 	while (c = *s)
 		*s++ = isupper(c) ? tolower(c) : c;
@@ -610,10 +610,10 @@ ignored(Dt_t** ignore, const char* field)
  */
 
 char*
-salloc(register int size)
+salloc(int size)
 {
-	register char*			t;
-	register struct strings*	sp;
+	char*			t;
+	struct strings*	sp;
 	int				index;
 
 	if (state.onstack <= 0) {
@@ -655,8 +655,8 @@ salloc(register int size)
 void
 sreset(void)
 {
-	register struct strings*	sp;
-	register int			index;
+	struct strings*	sp;
+	int			index;
 
 	if (state.noreset)
 		return;
@@ -685,7 +685,7 @@ counts(int wide, off_t lines, off_t chars)
  * Check if s matches `all'.
  */
 int
-isall(register const char* s)
+isall(const char* s)
 {
 	return s && (streq(s, "all") || streq(s, "*"));
 }
@@ -694,7 +694,7 @@ isall(register const char* s)
  * Check if name is a pipe command.
  */
 char*
-iscmd(register char* s)
+iscmd(char* s)
 {
 	if (!s)
 		return 0;
@@ -714,7 +714,7 @@ iscmd(register char* s)
  */
 
 void
-msgflags(register struct msg* mp, int set, int clr)
+msgflags(struct msg* mp, int set, int clr)
 {
 	if (state.folder == FIMAP)
 		imap_msgflags(mp, set, clr);
@@ -732,9 +732,9 @@ msgflags(register struct msg* mp, int set, int clr)
  */
 
 char*
-strncopy(register char* t, register const char* f, size_t n)
+strncopy(char* t, const char* f, size_t n)
 {
-	register char*	e = t + n - 1;
+	char*	e = t + n - 1;
 
 	do
 	{
@@ -752,12 +752,12 @@ strncopy(register char* t, register const char* f, size_t n)
  */
 
 void
-shquote(register Sfio_t* sp, char* s)
+shquote(Sfio_t* sp, char* s)
 {
-	register char*	t;
-	register char*	b;
-	register int	c;
-	register int	q;
+	char*	t;
+	char*	b;
+	int	c;
+	int	q;
 
 	if (*s == '"' && *(s + strlen(s) - 1) == '"')
 	{

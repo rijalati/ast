@@ -28,7 +28,7 @@
 #include "cslib.h"
 
 ssize_t
-csfrom(register Cs_t* state, int fd, void* buf, size_t siz, Csaddr_t* addr)
+csfrom(Cs_t* state, int fd, void* buf, size_t siz, Csaddr_t* addr)
 {
 
 #if CS_LIB_V10

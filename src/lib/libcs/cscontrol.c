@@ -28,7 +28,7 @@
 #include "cslib.h"
 
 int
-cscontrol(register Cs_t* state, int fd)
+cscontrol(Cs_t* state, int fd)
 {
 #if CS_LIB_SOCKET
 	return send(fd, "", 1, MSG_OOB) == 1 ? 0 : -1;

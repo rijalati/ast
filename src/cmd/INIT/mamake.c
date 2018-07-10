@@ -362,9 +362,9 @@ dont(Rule_t* r, int code, int keepgoing)
  */
 
 static char*
-last(register char* s, register int c)
+last(char* s, int c)
 {
-	register char*	r = 0;
+	char*	r = 0;
 
 	for (r = 0; *s; s++)
 		if (*s == c)
@@ -379,7 +379,7 @@ last(register char* s, register int c)
 static Buf_t*
 buffer(void)
 {
-	register Buf_t*	buf;
+	Buf_t*	buf;
 
 	if (buf = state.old)
 		state.old = state.old->old;
@@ -477,15 +477,15 @@ dictionary(void)
  */
 
 static void*
-search(register Dict_t* dict, char* name, void* value)
+search(Dict_t* dict, char* name, void* value)
 {
-	register int		cmp;
-	register Dict_item_t*	root;
-	register Dict_item_t*	t;
-	register Dict_item_t*	left;
-	register Dict_item_t*	right;
-	register Dict_item_t*	lroot;
-	register Dict_item_t*	rroot;
+	int		cmp;
+	Dict_item_t*	root;
+	Dict_item_t*	t;
+	Dict_item_t*	left;
+	Dict_item_t*	right;
+	Dict_item_t*	lroot;
+	Dict_item_t*	rroot;
 
 	root = dict->root;
 	left = right = lroot = rroot = 0;
@@ -572,7 +572,7 @@ search(register Dict_t* dict, char* name, void* value)
 static int
 apply(Dict_t* dict, Dict_item_t* item, int (*func)(Dict_item_t*, void*), void* handle)
 {
-	register Dict_item_t*	right;
+	Dict_item_t*	right;
 
 	do
 	{
@@ -620,7 +620,7 @@ rule(char* name)
 static void
 cons(Rule_t* r, Rule_t* p)
 {
-	register List_t*	x;
+	List_t*	x;
 
 	for (x = r->prereqs; x && x->rule != p; x = x->next);
 	if (!x)
@@ -640,10 +640,10 @@ cons(Rule_t* r, Rule_t* p)
 static void
 view(void)
 {
-	register char*		s;
-	register char*		t;
-	register char*		p;
-	register View_t*	vp;
+	char*		s;
+	char*		t;
+	char*		p;
+	View_t*	vp;
 
 	View_t*			zp;
 	int			c;
@@ -733,9 +733,9 @@ view(void)
  */
 
 static char*
-cond(register char* s)
+cond(char* s)
 {
-	register int	n;
+	int	n;
 
 	if (*s == '?')
 		s++;
@@ -770,14 +770,14 @@ cond(register char* s)
  */
 
 static void
-substitute(Buf_t* buf, register char* s)
+substitute(Buf_t* buf, char* s)
 {
-	register char*	t;
-	register char*	v;
-	register char*	q;
-	register char*	b;
-	register int	c;
-	register int	n;
+	char*	t;
+	char*	v;
+	char*	q;
+	char*	b;
+	int	c;
+	int	n;
 	int		a = 0;
 	int		i;
 
@@ -1138,9 +1138,9 @@ input(void)
  */
 
 static int
-execute(register char* s)
+execute(char* s)
 {
-	register int	c;
+	int	c;
 	Buf_t*		buf;
 
 	if (!state.shell && (!(state.shell = (char*)search(state.vars, "SHELL", NiL)) || !strcmp(state.shell, sh)))
@@ -1175,12 +1175,12 @@ execute(register char* s)
  */
 
 static unsigned long
-run(Rule_t* r, register char* s)
+run(Rule_t* r, char* s)
 {
-	register Rule_t*	q;
-	register char*		t;
-	register int		c;
-	register View_t*	v;
+	Rule_t*	q;
+	char*		t;
+	int		c;
+	View_t*	v;
 	int			i;
 	int			j;
 	int			x;
@@ -1288,11 +1288,11 @@ run(Rule_t* r, register char* s)
 static char*
 path(Buf_t* buf, char* s, int must)
 {
-	register char*	p;
-	register char*	d;
-	register char*	x;
+	char*	p;
+	char*	d;
+	char*	x;
 	char*		e;
-	register int	c;
+	int	c;
 	int		t;
 	int		o;
 	Stat_t		st;
@@ -1337,8 +1337,8 @@ path(Buf_t* buf, char* s, int must)
 static void
 probe(void)
 {
-	register char*	cc;
-	register char*	s;
+	char*	cc;
+	char*	s;
 	unsigned long	h;
 	unsigned long	q;
 	Buf_t*		buf;
@@ -1391,10 +1391,10 @@ probe(void)
  */
 
 static void
-attributes(register Rule_t* r, register char* s)
+attributes(Rule_t* r, char* s)
 {
-	register char*	t;
-	register int	n;
+	char*	t;
+	int	n;
 
 	for (;;)
 	{
@@ -1433,7 +1433,7 @@ attributes(register Rule_t* r, register char* s)
 static char*
 require(char* lib, int dontcare)
 {
-	register int	c;
+	int	c;
 	char*		s;
 	char*		r;
 	FILE*		f;
@@ -1548,11 +1548,11 @@ require(char* lib, int dontcare)
 static unsigned long
 make(Rule_t* r)
 {
-	register char*		s;
-	register char*		t;
-	register char*		u;
-	register char*		v;
-	register Rule_t*	q;
+	char*		s;
+	char*		t;
+	char*		u;
+	char*		v;
+	Rule_t*	q;
 	unsigned long		z;
 	unsigned long		x;
 	Buf_t*			buf;
@@ -1738,7 +1738,7 @@ verify(Dict_item_t* item, void* handle)
 static int
 initializer(char* name)
 {
-	register char*	s;
+	char*	s;
 
 	if (s = last(name, '/'))
 		s++;
@@ -1752,9 +1752,9 @@ initializer(char* name)
  */
 
 static int
-update(register Rule_t* r)
+update(Rule_t* r)
 {
-	register List_t*	x;
+	List_t*	x;
 	Buf_t*			buf;
 
 	static char		cmd[] = "${MAMAKE} -C ";
@@ -1782,11 +1782,11 @@ update(register Rule_t* r)
 static int
 scan(Dict_item_t* item, void* handle)
 {
-	register Rule_t*	r = (Rule_t*)item->value;
-	register char*		s;
-	register char*		t;
-	register char*		u;
-	register char*		w;
+	Rule_t*	r = (Rule_t*)item->value;
+	char*		s;
+	char*		t;
+	char*		u;
+	char*		w;
 	Rule_t*			q;
 	int			i;
 	int			j;
@@ -2003,8 +2003,8 @@ active(Dict_item_t* item, void* handle)
 static int
 recurse(char* pattern)
 {
-	register char*	s;
-	register char*	t;
+	char*	s;
+	char*	t;
 	Rule_t*		r;
 	Buf_t*		buf;
 	Buf_t*		tmp;
@@ -2066,10 +2066,10 @@ recurse(char* pattern)
 int
 main(int argc, char** argv)
 {
-	register char**		e;
-	register char*		s;
-	register char*		t;
-	register char*		v;
+	char**		e;
+	char*		s;
+	char*		t;
+	char*		v;
 	Buf_t*			tmp;
 	int			c;
 

@@ -346,7 +346,7 @@ void sendMTFValues ( EState* s )
          for (t = 0; t < nGroups; t++) cost[t] = 0;
 
          if (nGroups == 6) {
-            register UInt16 cost0, cost1, cost2, cost3, cost4, cost5;
+            UInt16 cost0, cost1, cost2, cost3, cost4, cost5;
             cost0 = cost1 = cost2 = cost3 = cost4 = cost5 = 0;
             for (i = gs; i <= ge; i++) { 
                UInt16 icv = s->szptr[i];

@@ -69,8 +69,8 @@ DoGlob(interp, dir, rem)
 
     Tcl_DString newName;		/* Holds new name consisting of
 					 * dir plus the first part of rem. */
-    register char *p;
-    register char c;
+    char *p;
+    char c;
     char *openBrace, *closeBrace, *name, *dirName;
     int gotSpecial, baseLength;
     int result = TCL_OK;
@@ -290,7 +290,7 @@ Tcl_TildeSubst(interp, name, bufferPtr)
 				 * not even be initialized. */
 {
     char *dir;
-    register char *p;
+    char *p;
 
     Tcl_DStringInit(bufferPtr);
     if (name[0] != '~') {

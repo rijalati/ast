@@ -33,7 +33,7 @@ rscs_out(int argc, char** argv, char* ret, int* n)
 	attr_t			attr;
 	tag_t			tag;
 	rdirent_t*		list;
-	register struct stat*	st;
+	struct stat*	st;
 
 	if (argc < 2)
 	{
@@ -94,13 +94,13 @@ rscs_out(int argc, char** argv, char* ret, int* n)
 int
 rscs_instances(int argc, char** argv, char* ret, int* n)
 {
-	register Sfio_t*	fd;
+	Sfio_t*	fd;
 	attr_t			attr;
-	register rdirent_t*	list;
-	register char*		s;
-	register int		len;
-	register int		rsize;
-	register char*		path;
+	rdirent_t*	list;
+	char*		s;
+	int		len;
+	int		rsize;
+	char*		path;
 
 	path = argv[1];
 

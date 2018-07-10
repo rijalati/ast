@@ -36,11 +36,11 @@
 #define PUT(c)	(r++,sfputc(sp,(c)))
 
 static int
-buffer(register Sfio_t* sp, register char* s, int n)
+buffer(Sfio_t* sp, char* s, int n)
 {
-	register char*	se;
-	register int	c;
-	register int	r = 0;
+	char*	se;
+	int	c;
+	int	r = 0;
 
 	if (n < 0) return sfprintf(sp, " %p", s);
 	se = s + n;
@@ -98,13 +98,13 @@ buffer(register Sfio_t* sp, register char* s, int n)
  */
 
 int
-msglist(Sfio_t* sp, register Msg_call_t* msg, int flags, unsigned long terse)
+msglist(Sfio_t* sp, Msg_call_t* msg, int flags, unsigned long terse)
 {
-	register unsigned long	at;
-	register Msg_arg_t*	ap;
-	register char*		p;
-	register long		n;
-	register int		r;
+	unsigned long	at;
+	Msg_arg_t*	ap;
+	char*		p;
+	long		n;
+	int		r;
 	int			i;
 	long*			np;
 	long*			ne;

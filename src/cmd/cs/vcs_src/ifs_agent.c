@@ -688,7 +688,7 @@ int		uid;
 int		argc;
 char*		argv[];
 {
-	register int		n;
+	int		n;
 	char*			physical;
 	char*			proxy;
 	unsigned long		expire;

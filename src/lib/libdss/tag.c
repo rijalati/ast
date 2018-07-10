@@ -165,7 +165,7 @@ except(Sfio_t* sp, int op, void* val, Sfdisc_t* dp)
  */
 
 static int
-push(Tag_t* tag, register char* s, Tagdisc_t* disc)
+push(Tag_t* tag, char* s, Tagdisc_t* disc)
 {
 	char*		file;
 	char*		path;
@@ -231,7 +231,7 @@ push(Tag_t* tag, register char* s, Tagdisc_t* disc)
 static int
 include(Tag_t* tag, Tagframe_t* fp, Tags_t* cp, Tags_t* tags, Tagdisc_t* disc)
 {
-	register char*		s;
+	char*		s;
 
 	if (!(s = sfgetr(tag->ip, '\n', 1)))
 	{
@@ -250,7 +250,7 @@ include(Tag_t* tag, Tagframe_t* fp, Tags_t* cp, Tags_t* tags, Tagdisc_t* disc)
 static char*
 incline(Tag_t* tag, Tagframe_t* fp, int* inc, Tagdisc_t* disc)
 {
-	register char*	s;
+	char*	s;
 
 	*inc = 0;
 	for (;;)
@@ -285,8 +285,8 @@ incline(Tag_t* tag, Tagframe_t* fp, int* inc, Tagdisc_t* disc)
 static int
 table(Tag_t* tag, Tagframe_t* fp, Tags_t* cp, Tags_t* tags, Tagdisc_t* disc)
 {
-	register char*	s;
-	register char*	b;
+	char*	s;
+	char*	b;
 	Column_t*	col;
 	Column_t*	end;
 	Column_t*	p;
@@ -426,15 +426,15 @@ static Tags_t builtin[] =
 static int
 tagparse(Tag_t* tag, Tagframe_t* fp, Tags_t* tags, Tagdisc_t* disc)
 {
-	register int		c;
-	register int		item;
-	register int		quote;
-	register long		back;
-	register Tags_t*	tp;
-	register Tags_t*	vp;
-	register char*		s;
-	register char*		t;
-	register char*		u;
+	int		c;
+	int		item;
+	int		quote;
+	long		back;
+	Tags_t*	tp;
+	Tags_t*	vp;
+	char*		s;
+	char*		t;
+	char*		u;
 	long			keep_first;
 	long			keep_last;
 	char*			v;
@@ -745,7 +745,7 @@ tagparse(Tag_t* tag, Tagframe_t* fp, Tags_t* tags, Tagdisc_t* disc)
 Tag_t*
 tagopen(Sfio_t* ip, const char* file, int line, Tags_t* tags, Tagdisc_t* disc)
 {
-	register Tag_t*	tag;
+	Tag_t*	tag;
 	char*		ofile;
 	int		oline;
 	int		r;
@@ -808,10 +808,10 @@ tagclose(Tag_t* tag)
  */
 
 static int
-scan(Tag_t* tag, Tagframe_t* fp, Tagscan_f visit, void* handle, register Tags_t* tags, Tagdisc_t* disc)
+scan(Tag_t* tag, Tagframe_t* fp, Tagscan_f visit, void* handle, Tags_t* tags, Tagdisc_t* disc)
 {
-	register Hit_t*	hp;
-	register int	r;
+	Hit_t*	hp;
+	int	r;
 	unsigned int	f;
 	Tags_t*		nest;
 	Tagframe_t*	tp;
@@ -902,9 +902,9 @@ tagscan(Tags_t* tags, Tagscan_f visit, void* handle, Tagdisc_t* disc)
  */
 
 static int
-usage(Tag_t* tag, register Tagframe_t* fp, void* handle, unsigned int flags, Tagdisc_t* disc)
+usage(Tag_t* tag, Tagframe_t* fp, void* handle, unsigned int flags, Tagdisc_t* disc)
 {
-	register Sfio_t*	op = (Sfio_t*)handle;
+	Sfio_t*	op = (Sfio_t*)handle;
 
 	if (flags & TAG_SCAN_end)
 	{

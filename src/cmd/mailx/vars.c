@@ -81,11 +81,11 @@
 void
 varinit(void)
 {
-	register const struct var*	vp;
-	register int			c;
-	register char*			s;
-	register char*			t;
-	register FILE*			fp;
+	const struct var*	vp;
+	int			c;
+	char*			s;
+	char*			t;
+	FILE*			fp;
 	int				i;
 	char				buf[LINESIZE];
 
@@ -191,7 +191,7 @@ varkeep(const char* val)
 int
 varlist(int all)
 {
-	register const struct var*	vp;
+	const struct var*	vp;
 
 	for (vp = state.vartab; vp->name; vp++)
 		if (*vp->variable) {
@@ -217,9 +217,9 @@ varlist(int all)
  */
 
 int
-varset(register const char* name, register const char* value)
+varset(const char* name, const char* value)
 {
-	register struct var*	vp;
+	struct var*	vp;
 	char*			s;
 	int			n;
 	int			m;
@@ -297,9 +297,9 @@ varset(register const char* name, register const char* value)
  */
 
 char*
-varget(register const char* name)
+varget(const char* name)
 {
-	register struct var*	vp;
+	struct var*	vp;
 	char*			s;
 
 	for (;;) {
@@ -367,11 +367,11 @@ set_askcc(struct var* vp, const char* value)
 static unsigned long
 setheaders(struct var* vp, const char* value)
 {
-	register char*			s;
-	register const char*		t;
-	register char*			b;
+	char*			s;
+	const char*		t;
+	char*			b;
 	char*				p;
-	register const struct lab*	lp;
+	const struct lab*	lp;
 	unsigned long			flags;
 
 	flags = GTO;
@@ -476,7 +476,7 @@ set_justfrom(struct var* vp, const char* value)
 void
 set_list(struct var* vp, const char* value)
 {
-	register char*	s;
+	char*	s;
 
 	*vp->variable = s = varkeep(value);
 	while (s = strchr(s, ' '))
@@ -643,11 +643,11 @@ set_shell(struct var* vp, const char* value)
 void
 set_spambody(struct var* vp, const char* value)
 {
-	register char*			s;
-	register char*			t;
-	register int			n;
-	register struct linematch*	mp;
-	register struct match*		xp;
+	char*			s;
+	char*			t;
+	int			n;
+	struct linematch*	mp;
+	struct match*		xp;
 
 	if (!(mp = state.bodymatch)) {
 		if (!(mp = newof(0, struct linematch, 1, 0)))
@@ -699,8 +699,8 @@ set_toplines(struct var* vp, const char* value)
 void
 set_trace(struct var* vp, const char* value)
 {
-	register int		c;
-	register const char*	s;
+	int		c;
+	const char*	s;
 
 	state.trace = 0;
 	if (s = value)
@@ -738,9 +738,9 @@ ignorecase(Dt_t* dt, void* a, void* b, Dtdisc_t* disc)
 static void
 drop(Dt_t* dt, void* obj, Dtdisc_t* disc)
 {
-	register struct name*	np = (struct name*)obj;
-	register struct list*	ap;
-	register struct list*	bp;
+	struct name*	np = (struct name*)obj;
+	struct list*	ap;
+	struct list*	bp;
 
 	if (np->value) {
 		if (!(np->flags & (GALIAS|GALTERNATE)))
@@ -770,12 +770,12 @@ drop(Dt_t* dt, void* obj, Dtdisc_t* disc)
  */
 
 struct name*
-dictsearch(Dt_t** dp, const char* name, register int op)
+dictsearch(Dt_t** dp, const char* name, int op)
 {
-	register Dt_t*		dt;
-	register struct dict*	dict;
-	register struct name*	np;
-	register struct name*	xp;
+	Dt_t*		dt;
+	struct dict*	dict;
+	struct name*	np;
+	struct name*	xp;
 	struct name*		object;
 
 	if (!(dt = *dp)) {
@@ -842,7 +842,7 @@ dictwalk(Dt_t** dp, int (*walkf)(Dt_t*, void*, void*), void* context)
 void
 dictreset(void)
 {
-	register Dt_t*	dt;
+	Dt_t*	dt;
 
 	while (dt = state.stacked) {
 		state.stacked = ((struct dict*)dt->disc)->next;

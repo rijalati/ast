@@ -31,11 +31,11 @@
 #include "modelib.h"
 
 int
-strmode(register const char* s)
+strmode(const char* s)
 {
-	register int		c;
-	register char*		t;
-	register struct modeop*	p;
+	int		c;
+	char*		t;
+	struct modeop*	p;
 	int			mode;
 
 	mode = 0;

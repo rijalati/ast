@@ -72,7 +72,7 @@ void TclPlatformInit(Tcl_Interp *interp)
 
 void TkshCreateInterp(Tcl_Interp *interp, void *data)
 {
-	register CmdInfo *cmdInfoPtr;
+	CmdInfo *cmdInfoPtr;
 	CmdInfo *builtInCmds = (CmdInfo *) data;
 	char *name, *libDir, buf[100];
 	CmdMap *map;

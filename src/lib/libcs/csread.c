@@ -39,9 +39,9 @@
 ssize_t
 csread(Cs_t* state, int fd, void* buf, size_t size, int op)
 {
-	register ssize_t	n;
-	register char*		p;
-	register char*		e;
+	ssize_t	n;
+	char*		p;
+	char*		e;
 	int			restart;
 
 	if (restart = !!(op & CS_RESTART))

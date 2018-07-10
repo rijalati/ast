@@ -34,9 +34,9 @@
 static void
 readrules(void)
 {
-	register char*		s;
-	register Sfio_t*	tmp;
-	register List_t*	p;
+	char*		s;
+	Sfio_t*	tmp;
+	List_t*	p;
 
 	state.global = 1;
 
@@ -79,10 +79,10 @@ readrules(void)
  */
 
 static void
-readfp(Sfio_t* sp, register Rule_t* r, int type)
+readfp(Sfio_t* sp, Rule_t* r, int type)
 {
-	register char*	s;
-	register char*	t;
+	char*	s;
+	char*	t;
 	int		n;
 	int		needrules;
 	int		preprocess;
@@ -418,9 +418,9 @@ readfp(Sfio_t* sp, register Rule_t* r, int type)
  */
 
 int
-readfile(register char* file, int type, char* filter)
+readfile(char* file, int type, char* filter)
 {
-	register Rule_t*	r;
+	Rule_t*	r;
 	Sfio_t*			rfp;
 	Stat_t			st;
 

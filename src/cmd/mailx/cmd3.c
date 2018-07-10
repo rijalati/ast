@@ -81,9 +81,9 @@
 static int
 bangexp(char* str, size_t size)
 {
-	register char*	s;
-	register char*	t;
-	register char*	e;
+	char*	s;
+	char*	t;
+	char*	e;
 	int		changed = 0;
 	char		buf[LINESIZE];
 
@@ -147,12 +147,12 @@ shell(char* str)
  * Stay within the lines.
  */
 static void
-margin(FILE* fp, const char* name, register const char* s, int indent, int sep, int tab, const struct var* vp)
+margin(FILE* fp, const char* name, const char* s, int indent, int sep, int tab, const struct var* vp)
 {
-	register const char**	ap;
-	register int		c;
-	register int		n;
-	register int		q;
+	const char**	ap;
+	int		c;
+	int		n;
+	int		q;
 	const char*		av[8];
 
 	if (sep) {
@@ -222,7 +222,7 @@ margin(FILE* fp, const char* name, register const char* s, int indent, int sep, 
  * List command help.
  */
 static void
-helpcmd(FILE* fp, register const struct cmd* cp)
+helpcmd(FILE* fp, const struct cmd* cp)
 {
 	margin(fp, cp->c_name, cp->c_help, 4, 0, 0, NiL);
 }
@@ -231,7 +231,7 @@ helpcmd(FILE* fp, register const struct cmd* cp)
  * List escape command help.
  */
 static void
-helpesc(FILE* fp, register const struct esc* ep)
+helpesc(FILE* fp, const struct esc* ep)
 {
 	char	buf[3];
 
@@ -245,7 +245,7 @@ helpesc(FILE* fp, register const struct esc* ep)
  * List variable help.
  */
 static void
-helpvar(FILE* fp, register const struct var* vp)
+helpvar(FILE* fp, const struct var* vp)
 {
 	char*	help;
 
@@ -265,13 +265,13 @@ helpvar(FILE* fp, register const struct var* vp)
 int
 help(char** argv)
 {
-	register const struct cmd*	cp;
-	register const struct esc*	ep;
-	register const struct var*	vp;
-	register char*			s;
-	register char*			a;
-	register char*			t;
-	register char*			l;
+	const struct cmd*	cp;
+	const struct esc*	ep;
+	const struct var*	vp;
+	char*			s;
+	char*			a;
+	char*			t;
+	char*			l;
 	char*				r;
 	int				all;
 	int				cat;
@@ -463,7 +463,7 @@ cmdrmdir(char** arglist)
  * it does not already.
  */
 static char*
-reedit(register char* subj)
+reedit(char* subj)
 {
 	char*	newsubj;
 
@@ -589,8 +589,8 @@ replysender(struct msg* msgvec)
 int
 size(struct msg* msgvec)
 {
-	register struct msg*	mp;
-	register struct msg*	ip;
+	struct msg*	mp;
+	struct msg*	ip;
 
 	for (ip = msgvec; ip->m_index; ip++) {
 		mp = state.msg.list + ip->m_index - 1;
@@ -619,11 +619,11 @@ cmdexit(int e)
  * of csh.
  */
 int
-set(register char** argv)
+set(char** argv)
 {
-	register char*	cp;
-	register char*	np;
-	register char*	ep;
+	char*	cp;
+	char*	np;
+	char*	ep;
 	int		all = 0;
 	int		errs = 0;
 
@@ -659,11 +659,11 @@ set(register char** argv)
  * Unset a bunch of variable values.
  */
 int
-unset(register char** argv)
+unset(char** argv)
 {
-	register char*	s;
-	register int	all = -1;
-	register int	errs = 0;
+	char*	s;
+	int	all = -1;
+	int	errs = 0;
 
 	if (!*argv || (all = isall(*argv) && !*(argv + 1)))
 		errs += varlist(all);
@@ -678,7 +678,7 @@ unset(register char** argv)
 static int
 listalias(Dt_t* dt, void* object, void* context)
 {
-	register struct list*	mp;
+	struct list*	mp;
 
 	printf("%-16s", ((struct name*)object)->name);
 	for (mp = (struct list*)((struct name*)object)->value; mp; mp = mp->next)
@@ -691,13 +691,13 @@ listalias(Dt_t* dt, void* object, void* context)
  * Low level for alias/alternates.
  */
 static int
-alias1(register char** argv, unsigned long flags)
+alias1(char** argv, unsigned long flags)
 {
-	register struct name*	ap;
-	register struct list*	mp;
-	register char*		s;
-	register char*		t;
-	register char*		v;
+	struct name*	ap;
+	struct list*	mp;
+	char*		s;
+	char*		t;
+	char*		v;
 	char*			name;
 	FILE*			fp;
 	char			buf[LINESIZE];
@@ -767,7 +767,7 @@ alias1(register char** argv, unsigned long flags)
  * Case sensitive alias.
  */
 int
-alias(register char** argv)
+alias(char** argv)
 {
 	return alias1(argv, GALIAS);
 }
@@ -776,9 +776,9 @@ alias(register char** argv)
  * Unset a bunch of aliases.
  */
 int
-unalias(register char** argv)
+unalias(char** argv)
 {
-	register char*	s;
+	char*	s;
 
 	while (s = *argv++)
 		if (!(dictsearch(&state.aliases, s, DELETE)))
@@ -801,9 +801,9 @@ listalternate(Dt_t* dt, void* object, void* context)
  * Set the list of alternate names.
  */
 int
-alternates(register char** argv)
+alternates(char** argv)
 {
-	register char*	s;
+	char*	s;
 	char*		av[3];
 
 	if (!*argv)
@@ -835,7 +835,7 @@ null(int e)
  * the current folder.
  */
 int
-folder(register char** argv)
+folder(char** argv)
 {
 	if (!argv[0]) {
 		folderinfo(0);
@@ -851,10 +851,10 @@ folder(register char** argv)
  * Expand file names like echo
  */
 int
-echo(register char** argv)
+echo(char** argv)
 {
-	register char*	s;
-	register int	sep;
+	char*	s;
+	int	sep;
 
 	sep = 0;
 	while (s = *argv++) {
@@ -875,9 +875,9 @@ echo(register char** argv)
 int
 cmdif(char** argv)
 {
-	register char*	s;
-	register char*	t;
-	register char*	x;
+	char*	s;
+	char*	t;
+	char*	x;
 	int		n;
 
 	if (state.cond) {

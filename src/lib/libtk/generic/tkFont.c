@@ -157,7 +157,7 @@ Tk_GetFontStruct(interp, tkwin, name)
     NameKey nameKey;
     Tcl_HashEntry *nameHashPtr, *fontHashPtr;
     int new;
-    register TkFont *fontPtr;
+    TkFont *fontPtr;
     XFontStruct *fontStructPtr;
 
     if (!initialized) {
@@ -274,7 +274,7 @@ Tk_FreeFontStruct(fontStructPtr)
     XFontStruct *fontStructPtr;	/* Font to be released. */
 {
     Tcl_HashEntry *fontHashPtr;
-    register TkFont *fontPtr;
+    TkFont *fontPtr;
 
     if (!initialized) {
 	panic("Tk_FreeFontStruct called before Tk_GetFontStruct");
@@ -355,11 +355,11 @@ FontInit()
 
 static void
 SetFontMetrics(fontPtr)
-    register TkFont *fontPtr;		/* Font structure in which to
+    TkFont *fontPtr;		/* Font structure in which to
 					 * set metrics. */
 {
     int i, replaceOK;
-    register XFontStruct *fontStructPtr = fontPtr->fontStructPtr;
+    XFontStruct *fontStructPtr = fontPtr->fontStructPtr;
     char *p;
 
     /*
@@ -502,9 +502,9 @@ TkMeasureChars(fontStructPtr, source, maxChars, startX, maxX,
     int *nextXPtr;		/* Return x-position of terminating
 				 * character here. */
 {
-    register TkFont *fontPtr;
-    register char *p;		/* Current character. */
-    register int c;
+    TkFont *fontPtr;
+    char *p;		/* Current character. */
+    int c;
     char *term;			/* Pointer to most recent character that
 				 * may legally be a terminating character. */
     int termX;			/* X-position just after term. */
@@ -655,9 +655,9 @@ TkDisplayChars(display, drawable, gc, fontStructPtr, string, numChars,
 				 * are supported right now.  See
 				 * TkMeasureChars for information about it. */
 {
-    register TkFont *fontPtr;
-    register char *p;		/* Current character being scanned. */
-    register int c;
+    TkFont *fontPtr;
+    char *p;		/* Current character being scanned. */
+    int c;
     int type;
     char *start;		/* First character waiting to be displayed. */
     int startX;			/* X-coordinate corresponding to start. */

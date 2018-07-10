@@ -72,9 +72,9 @@ mbrtowc(wchar_t* t, const char* s, size_t n, mbstate_t* q)
 size_t
 mbstowcs(wchar_t* t, const char* s, size_t n)
 {
-	register wchar_t*	p = t;
-	register wchar_t*	e = t + n;
-	register unsigned char*	u = (unsigned char*)s;
+	wchar_t*	p = t;
+	wchar_t*	e = t + n;
+	unsigned char*	u = (unsigned char*)s;
 
 	if (t)
 		while (p < e && (*p++ = *u++));
@@ -117,7 +117,7 @@ wcrtomb(char* s, wchar_t c, mbstate_t* q)
 size_t
 wcslen(const wchar_t* s)
 {
-	register const wchar_t*	p = s;
+	const wchar_t*	p = s;
 
 	while (*p)
 		p++;
@@ -128,10 +128,10 @@ wcslen(const wchar_t* s)
 #if !_lib_wcstombs
 #undef	STUB
 size_t
-wcstombs(char* t, register const wchar_t* s, size_t n)
+wcstombs(char* t, const wchar_t* s, size_t n)
 {
-	register char*		p = t;
-	register char*		e = t + n;
+	char*		p = t;
+	char*		e = t + n;
 
 	if (t)
 		while (p < e && (*p++ = *s++));
@@ -144,10 +144,10 @@ wcstombs(char* t, register const wchar_t* s, size_t n)
 #if !_lib_wcsrtombs
 #undef	STUB
 size_t
-wcsrtombs(char* t, register const wchar_t* s, size_t n, mbstate_t* q)
+wcsrtombs(char* t, const wchar_t* s, size_t n, mbstate_t* q)
 {
-	register char*		p = t;
-	register char*		e = t + n;
+	char*		p = t;
+	char*		e = t + n;
 
 	if (t)
 		while (p < e && (*p++ = *s++));

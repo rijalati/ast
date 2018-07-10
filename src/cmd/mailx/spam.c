@@ -126,10 +126,10 @@ static const struct lab	spamtest[] =
 void
 set_spamtest(struct var* vp, const char* value)
 {
-	register char*			s;
-	register char*			t;
-	register int			n;
-	register const struct lab*	p;
+	char*			s;
+	char*			t;
+	int			n;
+	const struct lab*	p;
 	long				test;
 
 	s = (char*)value;
@@ -166,13 +166,13 @@ set_spamtest(struct var* vp, const char* value)
 static int
 addrmatch(const char* a, const char* b)
 {
-	register char*	ap;
-	register char*	ae;
-	register char*	bp;
-	register char*	be;
-	register char*	tp;
-	register int	many = 0;
-	register int	host;
+	char*	ap;
+	char*	ae;
+	char*	bp;
+	char*	be;
+	char*	tp;
+	int	many = 0;
+	int	host;
 
 	ap = (char*)a;
 	for (;;)
@@ -233,11 +233,11 @@ addrmatch(const char* a, const char* b)
 static int
 hostmatch(const char* a, const char* b)
 {
-	register char*	ap;
-	register char*	ae;
-	register char*	ad;
-	register char*	bp;
-	register char*	be;
+	char*	ap;
+	char*	ae;
+	char*	ad;
+	char*	bp;
+	char*	be;
 	int		local = 1;
 
 	ap = (char*)a;
@@ -302,14 +302,14 @@ hostmatch(const char* a, const char* b)
 static int
 wordmatch(const char* a, const char* b)
 {
-	register char*	ab;
-	register char*	ap;
-	register char*	am;
-	register char*	bb;
-	register char*	be;
-	register char*	bm;
-	register int	u;
-	register int	l;
+	char*	ab;
+	char*	ap;
+	char*	am;
+	char*	bb;
+	char*	be;
+	char*	bm;
+	int	u;
+	int	l;
 
 	bb = (char*)b;
 	for (;;)
@@ -363,12 +363,12 @@ wordmatch(const char* a, const char* b)
 static int
 usermatch(const char* a, const char* b, int to)
 {
-	register char*	ap;
-	register char*	ae;
-	register char*	ad;
-	register char*	bp;
-	register char*	be;
-	register char*	td;
+	char*	ap;
+	char*	ae;
+	char*	ad;
+	char*	bp;
+	char*	be;
+	char*	td;
 
 	if (!*a || !*b)
 		return 0;
@@ -450,9 +450,9 @@ usermatch(const char* a, const char* b, int to)
  */
 
 static int
-insider(register char* s, register char* e, int f, char* d1, int n1, char* d2, int n2)
+insider(char* s, char* e, int f, char* d1, int n1, char* d2, int n2)
 {
-	register int	n;
+	int	n;
 
 	if (!e)
 		e = s + strlen(s);
@@ -469,7 +469,7 @@ insider(register char* s, register char* e, int f, char* d1, int n1, char* d2, i
  * Return 1 if it looks like we've been spammed.
  */
 int
-spammed(register struct msg* mp)
+spammed(struct msg* mp)
 {
 	char*		s;
 	char*		t;

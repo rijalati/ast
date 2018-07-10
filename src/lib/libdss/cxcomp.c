@@ -194,7 +194,7 @@ cxcontext(Cx_t* cx)
 char*
 cxcodename(int code)
 {
-	register char*	s;
+	char*	s;
 	char*		b;
 	int		n;
 	int		i;
@@ -471,7 +471,7 @@ cxpop(Cx_t* cx, void* pop)
 int
 cxatfree(Cx_t* cx, Cxexpr_t* expr, Cxdone_f donef, void* data)
 {
-	register Cxdone_t*	dp;
+	Cxdone_t*	dp;
 
 	if (donef)
 	{
@@ -502,7 +502,7 @@ cxatfree(Cx_t* cx, Cxexpr_t* expr, Cxdone_f donef, void* data)
  */
 
 static int
-identifier(Cx_t* cx, Cxcompile_t* cc, register int c, Cxoperand_t* r)
+identifier(Cx_t* cx, Cxcompile_t* cc, int c, Cxoperand_t* r)
 {
 	r->refs = 0;
 	if (!c)
@@ -949,8 +949,8 @@ prototype(Cx_t* cx, Cxcompile_t* cc, Cxvariable_t* v, Cxtype_t** tp, char** sp, 
 static Cxtype_t*
 parse(Cx_t* cx, Cxcompile_t* cc, Cxexpr_t* expr, int precedence, Cxvariable_t** ref)
 {
-	register int	c;
-	register int	p;
+	int	c;
+	int	p;
 	char*		s;
 	char*		e;
 	Cxtype_t*	g;
@@ -1975,7 +1975,7 @@ compose(Cx_t* cx, Cxcompile_t* cc, int prec)
  */
 
 static void
-defaults(register Cxcompile_t* cc, register Cxexpr_t* expr, Cxexpr_t* parent, Sfio_t* op)
+defaults(Cxcompile_t* cc, Cxexpr_t* expr, Cxexpr_t* parent, Sfio_t* op)
 {
 	static Cxquery_t	null;
 
@@ -2007,7 +2007,7 @@ defaults(register Cxcompile_t* cc, register Cxexpr_t* expr, Cxexpr_t* parent, Sf
 static void
 list(Sfio_t* sp, Cxexpr_t* expr)
 {
-	register Cxinstruction_t*	pc;
+	Cxinstruction_t*	pc;
 	char**				v;
 
 	for (;;)

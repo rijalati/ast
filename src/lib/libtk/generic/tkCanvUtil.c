@@ -291,7 +291,7 @@ Tk_CanvasTagsParseProc(clientData, interp, tkwin, value, widgRec, offset)
     char *widgRec;			/* Pointer to record for item. */
     int offset;				/* Offset into item (ignored). */
 {
-    register Tk_Item *itemPtr = (Tk_Item *) widgRec;
+    Tk_Item *itemPtr = (Tk_Item *) widgRec;
     int argc, i;
     char **argv;
     Tk_Uid *newPtr;
@@ -360,7 +360,7 @@ Tk_CanvasTagsPrintProc(clientData, tkwin, widgRec, offset, freeProcPtr)
 					 * information about how to reclaim
 					 * storage for return string. */
 {
-    register Tk_Item *itemPtr = (Tk_Item *) widgRec;
+    Tk_Item *itemPtr = (Tk_Item *) widgRec;
 
     if (itemPtr->numTags == 0) {
 	*freeProcPtr = (Tcl_FreeProc *) NULL;

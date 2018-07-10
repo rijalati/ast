@@ -96,8 +96,8 @@
 int
 sendsmtp(Sfio_t* fp, char* host, char** argv, off_t original)
 {
-	register char*	s;
-	register char*	t;
+	char*	s;
+	char*	t;
 	char*		e;
 	int		n;
 	int		fd;

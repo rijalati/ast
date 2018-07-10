@@ -128,8 +128,8 @@ loadtags(const char* name, const char* suffix, Dssdisc_t* disc, Dssmeth_t* meth)
 static int
 dssidentf(Dssfile_t* file, void* buf, size_t size, Dssdisc_t* disc)
 {
-	register char*	s;
-	register char*	e;
+	char*	s;
+	char*	e;
 
 	s = (char*)buf;
 	e = s + size;
@@ -358,7 +358,7 @@ init(void* dll, Dsslib_t* lib, const char* path, Dssflags_t flags, Dssdisc_t* di
 Dsslib_t*
 dsslib(const char* name, Dssflags_t flags, Dssdisc_t* disc)
 {
-	register Dsslib_t*	lib;
+	Dsslib_t*	lib;
 	Dllscan_t*		dls;
 	Dllent_t*		dle;
 	void*			dll;
@@ -395,9 +395,9 @@ dsslib(const char* name, Dssflags_t flags, Dssdisc_t* disc)
  */
 
 int
-dssadd(register Dsslib_t* lib, Dssdisc_t* disc)
+dssadd(Dsslib_t* lib, Dssdisc_t* disc)
 {
-	register int	i;
+	int	i;
 	int		schema;
 
 	if (lib->header.flags & CX_INITIALIZED)
@@ -475,7 +475,7 @@ dssload(const char* name, Dssdisc_t* disc)
 static char*
 location(Cx_t* cx, void* data, Cxdisc_t* disc)
 {
-	register Dssfile_t*	file = DSSRECORD(data)->file;
+	Dssfile_t*	file = DSSRECORD(data)->file;
 	char*			path;
 	char*			sep;
 	char*			loc;
@@ -567,8 +567,8 @@ static Cxvariable_t	dss_var[] =
 Dss_t*
 dssopen(Dssflags_t flags, Dssflags_t test, Dssdisc_t* disc, Dssmeth_t* meth)
 {
-	register Dss_t*		dss;
-	register Vmalloc_t*	vm;
+	Dss_t*		dss;
+	Vmalloc_t*	vm;
 	Cxvariable_t*		var;
 	Dsslib_t*		lib;
 	int			i;
@@ -650,7 +650,7 @@ dssopen(Dssflags_t flags, Dssflags_t test, Dssdisc_t* disc, Dssmeth_t* meth)
  */
 
 int
-dssclose(register Dss_t* dss)
+dssclose(Dss_t* dss)
 {
 	int	r;
 
@@ -730,7 +730,7 @@ dssmethinit(const char* name, const char* options, const char* schema, Dssdisc_t
 Dssmeth_t*
 dssmeth(const char* name, Dssdisc_t* disc)
 {
-	register char*	s;
+	char*	s;
 	const char*	options;
 	const char*	schema;
 	Dsslib_t*	lib;
@@ -795,7 +795,7 @@ dssstate(Dssdisc_t* disc)
  */
 
 static int
-hasquery(register Dssexpr_t* expr)
+hasquery(Dssexpr_t* expr)
 {
 	do
 	{
@@ -818,7 +818,7 @@ hasquery(register Dssexpr_t* expr)
 int
 dssrun(Dss_t* dss, const char* expression, const char* head, const char* tail, char** argv)
 {
-	register Dssexpr_t*	x;
+	Dssexpr_t*	x;
 	Dssexpr_t*		expr;
 	Dssexpr_t*		xh;
 	Dssexpr_t*		xt;

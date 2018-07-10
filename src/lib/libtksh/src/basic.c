@@ -174,7 +174,7 @@ static CmdInfo builtInCmds[] = {
 Tcl_Interp *
 Tcl_CreateInterp()
 {
-    register Interp *iPtr;
+    Interp *iPtr;
     int i;
 
     iPtr = (Interp *) ckalloc(sizeof(Interp));
@@ -739,8 +739,8 @@ Tcl_CreateTrace(interp, level, proc, clientData)
 				 * command. */
     ClientData clientData;	/* Arbitrary one-word value to pass to proc. */
 {
-    register Trace *tracePtr;
-    register Interp *iPtr = (Interp *) interp;
+    Trace *tracePtr;
+    Interp *iPtr = (Interp *) interp;
 
     tracePtr = (Trace *) ckalloc(sizeof(Trace));
     tracePtr->level = level;
@@ -775,9 +775,9 @@ Tcl_DeleteTrace(interp, trace)
     Tcl_Trace trace;		/* Token for trace (returned previously by
 				 * Tcl_CreateTrace). */
 {
-    register Interp *iPtr = (Interp *) interp;
-    register Trace *tracePtr = (Trace *) trace;
-    register Trace *tracePtr2;
+    Interp *iPtr = (Interp *) interp;
+    Trace *tracePtr = (Trace *) trace;
+    Trace *tracePtr2;
 
     if (iPtr->tracePtr == tracePtr) {
 	iPtr->tracePtr = tracePtr->nextPtr;
@@ -819,7 +819,7 @@ Tcl_AddErrorInfo(interp, message)
 				 * pertains. */
     char *message;		/* Message to record. */
 {
-    register Interp *iPtr = (Interp *) interp;
+    Interp *iPtr = (Interp *) interp;
 
     /*
      * If an error is already being logged, then the new errorInfo

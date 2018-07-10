@@ -563,8 +563,8 @@ main()
 
 #if defined(_API_ast_MAP) && _map_libc
 	{
-		register const char*	s;
-		register const char*	t;
+		const char*	s;
+		const char*	t;
 
 		static const char	map[] = _API_ast_MAP;
 

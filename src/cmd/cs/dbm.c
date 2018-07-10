@@ -123,8 +123,8 @@ svc_init(void* handle, int fdmax)
 static int
 svc_connect(void* handle, int fd, Cs_id_t* id, int clone, char** args)
 {
-	register State_t*	state = (State_t*)handle;
-	register Con_t*		cp;
+	State_t*	state = (State_t*)handle;
+	Con_t*		cp;
 
 	NoP(id);
 	NoP(clone);
@@ -144,9 +144,9 @@ svc_connect(void* handle, int fd, Cs_id_t* id, int clone, char** args)
 static int
 svc_read(void* handle, int fd)
 {
-	register State_t*	state = (State_t*)handle;
-	register Con_t*		cp;
-	register Db_t*		dp;
+	State_t*	state = (State_t*)handle;
+	Con_t*		cp;
+	Db_t*		dp;
 	int			n;
 	char*			cmd;
 	char*			s;
@@ -351,8 +351,8 @@ svc_timeout(void* handle)
 static int
 svc_done(void* handle, int sig)
 {
-	register State_t*	state = (State_t*)handle;
-	register Db_t*		dp;
+	State_t*	state = (State_t*)handle;
+	Db_t*		dp;
 
 	NoP(sig);
 	for (dp = state->dbs; dp < state->dbs + state->conmax; dp++)

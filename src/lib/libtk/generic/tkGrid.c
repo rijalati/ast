@@ -448,7 +448,7 @@ Tk_GridCmd(clientData, interp, argc, argv)
 	    }
 	}
     } else if ((c == 'i') && (strncmp(argv[1], "info", length) == 0)) {
-	register Gridder *slavePtr;
+	Gridder *slavePtr;
 	Tk_Window slave;
 	char buffer[70];
     
@@ -481,7 +481,7 @@ Tk_GridCmd(clientData, interp, argc, argv)
 	Tcl_AppendResult(interp, " -sticky ", buffer, (char *) NULL);
     } else if((c == 'l') && (strncmp(argv[1], "location", length) == 0)) {
 	Tk_Window master;
-	register SlotInfo *slotPtr;
+	SlotInfo *slotPtr;
 	int x, y;		/* Offset in pixels, from edge of parent. */
 	int i, j;		/* Corresponding column and row indeces. */
 	int endX, endY;		/* end of grid */
@@ -865,7 +865,7 @@ GridReqProc(clientData, tkwin)
     Tk_Window tkwin;		/* Other Tk-related information
 				 * about the window. */
 {
-    register Gridder *gridPtr = (Gridder *) clientData;
+    Gridder *gridPtr = (Gridder *) clientData;
 
     gridPtr = gridPtr->masterPtr;
     if (!(gridPtr->flags & REQUESTED_RELAYOUT)) {
@@ -897,7 +897,7 @@ GridLostSlaveProc(clientData, tkwin)
 				 * was stolen away. */
     Tk_Window tkwin;		/* Tk's handle for the slave window. */
 {
-    register Gridder *slavePtr = (Gridder *) clientData;
+    Gridder *slavePtr = (Gridder *) clientData;
 
     if (slavePtr->masterPtr->tkwin != Tk_Parent(slavePtr->tkwin)) {
 	Tk_UnmaintainGeometry(slavePtr->tkwin, slavePtr->masterPtr->tkwin);
@@ -931,9 +931,9 @@ static int
 AdjustOffsets(size, slots, slotPtr)
     int size;			/* The total layout size (in pixels). */
     int slots;			/* Number of slots. */
-    register SlotInfo *slotPtr;	/* Pointer to slot array. */
+    SlotInfo *slotPtr;	/* Pointer to slot array. */
 {
-    register int slot;		/* Current slot. */
+    int slot;		/* Current slot. */
     int diff = 0;		/* Extra pixels needed to add to the layout. */
     int totalWeight = 0;	/* Sum of the weights for all the slots. */
     int weight = 0;		/* Sum of the weights so far. */
@@ -1157,8 +1157,8 @@ ArrangeGrid(clientData)
     ClientData clientData;	/* Structure describing parent whose slaves
 				 * are to be re-layed out. */
 {
-    register Gridder *masterPtr = (Gridder *) clientData;
-    register Gridder *slavePtr;	
+    Gridder *masterPtr = (Gridder *) clientData;
+    Gridder *slavePtr;	
     GridMaster *slotPtr = masterPtr->masterDataPtr;
     int abort;
     int width, height;		/* requested size of layout, in pixels */
@@ -1331,8 +1331,8 @@ ResolveConstraints(masterPtr, slotType, maxOffset)
     int maxOffset;		/* The actual maximum size of this layout
     				 * in pixels,  or 0 (not currently used). */
 {
-    register SlotInfo *slotPtr;	/* Pointer to row/col constraints. */
-    register Gridder *slavePtr;	/* List of slave windows in this grid. */
+    SlotInfo *slotPtr;	/* Pointer to row/col constraints. */
+    Gridder *slavePtr;	/* List of slave windows in this grid. */
     int constraintCount;	/* Count of rows or columns that have
     				 * constraints. */
     int slotCount;		/* Last occupied row or column. */
@@ -1675,7 +1675,7 @@ GetGrid(tkwin)
     Tk_Window tkwin;		/* Token for window for which
 				 * grid structure is desired. */
 {
-    register Gridder *gridPtr;
+    Gridder *gridPtr;
     Tcl_HashEntry *hPtr;
     int new;
 
@@ -1742,7 +1742,7 @@ static void
 SetGridSize(masterPtr)
     Gridder *masterPtr;			/* The geometry master for this grid. */
 {
-    register Gridder *slavePtr;		/* Current slave window. */
+    Gridder *slavePtr;		/* Current slave window. */
     int maxX = 0, maxY = 0;
 
     for (slavePtr = masterPtr->slavePtr; slavePtr != NULL;
@@ -1905,9 +1905,9 @@ InitMasterData(masterPtr)
 
 static void
 Unlink(slavePtr)
-    register Gridder *slavePtr;		/* Window to unlink. */
+    Gridder *slavePtr;		/* Window to unlink. */
 {
-    register Gridder *masterPtr, *slavePtr2;
+    Gridder *masterPtr, *slavePtr2;
     GridMaster *gridPtr;	/* pointer to grid data */
 
     masterPtr = slavePtr->masterPtr;
@@ -1968,7 +1968,7 @@ static void
 DestroyGrid(memPtr)
     char *memPtr;		/* Info about window that is now dead. */
 {
-    register Gridder *gridPtr = (Gridder *) memPtr;
+    Gridder *gridPtr = (Gridder *) memPtr;
 
     if (gridPtr->masterDataPtr != NULL) {
 	if (gridPtr->masterDataPtr->rowPtr != NULL) {
@@ -2007,7 +2007,7 @@ GridStructureProc(clientData, eventPtr)
 					 * referred to by eventPtr. */
     XEvent *eventPtr;			/* Describes what just happened. */
 {
-    register Gridder *gridPtr = (Gridder *) clientData;
+    Gridder *gridPtr = (Gridder *) clientData;
 
     if (eventPtr->type == ConfigureNotify) {
 	if (!(gridPtr->flags & REQUESTED_RELAYOUT)) {
@@ -2023,7 +2023,7 @@ GridStructureProc(clientData, eventPtr)
 	    }
 	}
     } else if (eventPtr->type == DestroyNotify) {
-	register Gridder *gridPtr2, *nextPtr;
+	Gridder *gridPtr2, *nextPtr;
 
 	if (gridPtr->masterPtr != NULL) {
 	    Unlink(gridPtr);
@@ -2048,7 +2048,7 @@ GridStructureProc(clientData, eventPtr)
 	    Tcl_DoWhenIdle(ArrangeGrid, (ClientData) gridPtr);
 	}
     } else if (eventPtr->type == UnmapNotify) {
-	register Gridder *gridPtr2;
+	Gridder *gridPtr2;
 
 	for (gridPtr2 = gridPtr->slavePtr; gridPtr2 != NULL;
 					   gridPtr2 = gridPtr2->nextPtr) {

@@ -50,8 +50,8 @@ ignorecase(Dt_t* dt, void* a, void* b, Dtdisc_t* disc)
 static int
 initmap(Frame_t* frame, Cxmap_t* map, Cxdisc_t* disc)
 {
-	register Cxpart_t*	part;
-	register Cxitem_t*	item;
+	Cxpart_t*	part;
+	Cxitem_t*	item;
 	Frame_t			top;
 	Frame_t*		fp;
 	int			easy;
@@ -166,9 +166,9 @@ cxinitmap(Cxmap_t* map, Cxdisc_t* disc)
 static int
 num2str(Cx_t* cx, Cxmap_t* map, Sfio_t* sp, Cxunsigned_t num, int del)
 {
-	register Cxpart_t*	part;
-	register Cxitem_t*	item;
-	register Cxedit_t*	edit;
+	Cxpart_t*	part;
+	Cxitem_t*	item;
+	Cxedit_t*	edit;
 	Cxunsigned_t		n;
 	char*			s;
 	int			v;
@@ -270,8 +270,8 @@ cxnum2str(Cx_t* cx, Cxformat_t* format, Cxunsigned_t num, char** p)
 static int
 str2num(Cx_t* cx, Cxmap_t* map, const char* str, Cxunsigned_t* num)
 {
-	register Cxpart_t*	part;
-	register Cxedit_t*	edit;
+	Cxpart_t*	part;
+	Cxedit_t*	edit;
 	regmatch_t		match[10];
 
 	for (part = map->part; part; part = part->next)
@@ -296,8 +296,8 @@ str2num(Cx_t* cx, Cxmap_t* map, const char* str, Cxunsigned_t* num)
 int
 cxstr2num(Cx_t* cx, Cxformat_t* format, const char* str, size_t siz, Cxunsigned_t* p)
 {
-	register char*	s;
-	register char*	b;
+	char*	s;
+	char*	b;
 	int		del;
 	Dt_t*		dt;
 	Cxitem_t*	item;

@@ -37,9 +37,9 @@ NoN(readdir)
 #else
 
 struct dirent*
-readdir(register DIR* dirp)
+readdir(DIR* dirp)
 {
-	register struct dirent*	dp;
+	struct dirent*	dp;
 
 	for (;;)
 	{

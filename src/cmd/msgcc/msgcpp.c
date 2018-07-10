@@ -146,9 +146,9 @@ msgppargs(char** argv, int last)
 int
 main(int argc, char** argv)
 {
-	register char*	s;
-	register int	x;
-	register int	c;
+	char*	s;
+	int	x;
+	int	c;
 	Sfio_t*		tmp;
 
 	NoP(argc);

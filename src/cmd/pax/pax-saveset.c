@@ -72,10 +72,10 @@ typedef struct Saveset_s
  */
 
 static int
-getsaveset(Pax_t* pax, register Archive_t* ap, register File_t* f, register Saveset_t* ss, int header)
+getsaveset(Pax_t* pax, Archive_t* ap, File_t* f, Saveset_t* ss, int header)
 {
-	register char*	p;
-	register char*	s;
+	char*	p;
+	char*	s;
 	char*		t;
 	int		i;
 	long		n;
@@ -180,7 +180,7 @@ getsaveset(Pax_t* pax, register Archive_t* ap, register File_t* f, register Save
 }
 
 static int
-vmsbackup_done(Pax_t* pax, register Archive_t* ap)
+vmsbackup_done(Pax_t* pax, Archive_t* ap)
 {
 	if (ap->data)
 	{
@@ -191,10 +191,10 @@ vmsbackup_done(Pax_t* pax, register Archive_t* ap)
 }
 
 static int
-vmsbackup_getdata(Pax_t* pax, register Archive_t* ap, register File_t* f, int wfd)
+vmsbackup_getdata(Pax_t* pax, Archive_t* ap, File_t* f, int wfd)
 {
-	register Saveset_t*	ss = (Saveset_t*)ap->data;
-	register off_t		c;
+	Saveset_t*	ss = (Saveset_t*)ap->data;
+	off_t		c;
 	int			i;
 	int			j;
 	int			k;
@@ -289,10 +289,10 @@ vmsbackup_getepilogue(Pax_t* pax, Archive_t* ap)
 }
 
 static int
-vmsbackup_validate(Pax_t* pax, Archive_t* ap, register File_t* f)
+vmsbackup_validate(Pax_t* pax, Archive_t* ap, File_t* f)
 {
-	register Saveset_t*	ss = (Saveset_t*)ap->data;
-	register char*		s;
+	Saveset_t*	ss = (Saveset_t*)ap->data;
+	char*		s;
 
 	if (f->type != X_IFREG)
 	{

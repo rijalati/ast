@@ -81,7 +81,7 @@
 static void
 printhead(int mesg, int who)
 {
-	register struct msg*	mp;
+	struct msg*	mp;
 	char*			name;
 	char*			sizes;
 	char*			subjline;
@@ -108,10 +108,10 @@ printhead(int mesg, int who)
 		dispc = 'X';
 		if (subjline && state.var.spamsubhead)
 		{
-			register int	c;
-			register char*	s;
-			register char*	t;
-			register char*	u;
+			int	c;
+			char*	s;
+			char*	t;
+			char*	u;
 
 			s = t = subjline;
 			while (c = *s++)
@@ -173,10 +173,10 @@ printhead(int mesg, int who)
 int
 headers(struct msg* msgvec)
 {
-	register int		n;
-	register int		mesg;
-	register int		flag;
-	register struct msg*	mp;
+	int		n;
+	int		mesg;
+	int		flag;
+	struct msg*	mp;
 	int			m;
 
 	if (state.var.justfrom) {
@@ -224,7 +224,7 @@ headers(struct msg* msgvec)
 int
 scroll(char* arg)
 {
-	register int	s;
+	int	s;
 
 	s = state.scroll;
 	switch (*arg) {
@@ -260,7 +260,7 @@ scroll(char* arg)
 static int
 from2(struct msg* msgvec, int who)
 {
-	register struct msg*	ip;
+	struct msg*	ip;
 
 	for (ip = msgvec; ip->m_index; ip++)
 		CALL(printhead)(ip->m_index, who);
@@ -305,11 +305,11 @@ dot(void)
 int
 list(void)
 {
-	register int			i;
-	register int			j;
-	register int			cmds;
-	register int			cols;
-	register int			rows;
+	int			i;
+	int			j;
+	int			cmds;
+	int			cols;
+	int			rows;
 
 	cmds = state.cmdnum;
 	cols = 5;
@@ -328,8 +328,8 @@ list(void)
 static int
 type1(struct msg* msgvec, Dt_t** ignore, int page, unsigned long flags)
 {
-	register struct msg*	ip;
-	register struct msg*	mp;
+	struct msg*	ip;
+	struct msg*	mp;
 	int			nlines;
 	int			sig;
 	FILE*			obuf;
@@ -409,8 +409,8 @@ Type(struct msg* msgvec)
 int
 top(struct msg* msgvec)
 {
-	register struct msg*	ip;
-	register struct msg*	mp;
+	struct msg*	ip;
+	struct msg*	mp;
 	int			c;
 	int			lines;
 	int			lineb;
@@ -465,8 +465,8 @@ folders(void)
 int
 cmdpipe(char* str)
 {
-	register struct msg*	mp;
-	register struct msg*	ip;
+	struct msg*	mp;
+	struct msg*	ip;
 	int			f;
 	char*			cmd;
 	char*			s;
@@ -534,9 +534,9 @@ cmdpipe(char* str)
  * Single quote s to fp.
  */
 static void
-quote(FILE* fp, register char* s)
+quote(FILE* fp, char* s)
 {
-	register int	c;
+	int	c;
 
 	for (;;) {
 		switch (c = *s++) {
@@ -559,7 +559,7 @@ quote(FILE* fp, register char* s)
 static int
 blastdump(Dt_t* dt, void* object, void* context)
 {
-	register struct name*	hp = (struct name*)object;
+	struct name*	hp = (struct name*)object;
 
 	printf("header[%s]='", hp->name);
 	quote(stdout, (char*)hp->value);
@@ -575,9 +575,9 @@ blastdump(Dt_t* dt, void* object, void* context)
 static int
 blast1(struct msg* msgvec, Dt_t** ignore)
 {
-	register int		n;
-	register struct msg*	ip;
-	register struct msg*	mp;
+	int		n;
+	struct msg*	ip;
+	struct msg*	mp;
 	int			first;
 	struct name*		hp;
 	char*			next;
@@ -672,10 +672,10 @@ Blast(struct msg* msgvec)
  * Add/delete/list content capabilities.
  */
 int
-capability(register char** argv)
+capability(char** argv)
 {
-	register char*		s;
-	register char*		t;
+	char*		s;
+	char*		t;
 
 	if (!mime(1))
 		return 0;
@@ -738,11 +738,11 @@ static const struct mark marks[] = {
 static int
 mark1(char* str, int set, int clr)
 {
-	register struct msg*		ip;
-	register struct msg*		mp;
-	register const struct mark*	kp;
-	register char*			mark;
-	register char*			next;
+	struct msg*		ip;
+	struct msg*		mp;
+	const struct mark*	kp;
+	char*			mark;
+	char*			next;
 	int				f;
 	int				no;
 
@@ -884,8 +884,8 @@ notyet(char* str)
 int
 duplicate(char* str)
 {
-	register struct msg*	ip;
-	register struct msg*	mp;
+	struct msg*	ip;
+	struct msg*	mp;
 	int			f;
 	char*			addr[2];
 

@@ -104,7 +104,7 @@ static Jobstate_t	jobs;
  */
 
 static void
-acceptrule(register Rule_t* r)
+acceptrule(Rule_t* r)
 {
 	if (r->property & P_state)
 	{
@@ -166,9 +166,9 @@ acceptrule(register Rule_t* r)
  */
 
 int
-apply(register Rule_t* r, char* lhs, char* rhs, char* act, Flags_t flags)
+apply(Rule_t* r, char* lhs, char* rhs, char* act, Flags_t flags)
 {
-	register Rule_t*	x;
+	Rule_t*	x;
 	int			oop;
 	int			errors;
 	Rule_t			lhs_rule;
@@ -257,9 +257,9 @@ fapply(Rule_t* r, char* lhs, char* rhs, char* act, Flags_t flags)
  */
 
 char*
-call(register Rule_t* r, char* args)
+call(Rule_t* r, char* args)
 {
-	register Var_t*		v;
+	Var_t*		v;
 
 	if (r->property & P_functional)
 	{
@@ -275,11 +275,11 @@ call(register Rule_t* r, char* args)
  */
 
 static void
-commit(Joblist_t* job, register char* s)
+commit(Joblist_t* job, char* s)
 {
-	register char*		t;
-	register char*		v;
-	register Rule_t*	r;
+	char*		t;
+	char*		v;
+	Rule_t*	r;
 	Stat_t			st;
 
 	if (t = strrchr(s, '/'))
@@ -336,9 +336,9 @@ commit(Joblist_t* job, register char* s)
 static void
 push(Joblist_t* job)
 {
-	register Context_t*	z;
-	register Frame_t*	p;
-	register Rule_t*	r;
+	Context_t*	z;
+	Frame_t*	p;
+	Rule_t*	r;
 	int			n;
 	Time_t			tm;
 
@@ -376,9 +376,9 @@ push(Joblist_t* job)
 static void
 pop(Joblist_t* job)
 {
-	register Context_t*	z;
-	register Frame_t*	p;
-	register Rule_t*	r;
+	Context_t*	z;
+	Frame_t*	p;
+	Rule_t*	r;
 	int			n;
 	Time_t			tm;
 
@@ -411,10 +411,10 @@ pop(Joblist_t* job)
  */
 
 static void
-discard(register Joblist_t* job)
+discard(Joblist_t* job)
 {
-	register Context_t*	z;
-	register List_t*	p;
+	Context_t*	z;
+	List_t*	p;
 
 	if (job->flags & CO_SEMAPHORES)
 		for (p = job->prereqs; p; p = p->next)
@@ -455,9 +455,9 @@ discard(register Joblist_t* job)
 static void
 save(Joblist_t* job)
 {
-	register Frame_t*	o;
-	register Frame_t*	p;
-	register Frame_t*	x;
+	Frame_t*	o;
+	Frame_t*	p;
+	Frame_t*	x;
 	Context_t*		z;
 
 	if (job->action && !job->context)
@@ -500,10 +500,10 @@ save(Joblist_t* job)
  */
 
 static void
-restore(register Joblist_t* job, Sfio_t* buf, Sfio_t* att)
+restore(Joblist_t* job, Sfio_t* buf, Sfio_t* att)
 {
-	register char*	s;
-	register char*	b;
+	char*	s;
+	char*	b;
 	char*		u;
 	char*		down;
 	char*		back;
@@ -521,8 +521,8 @@ restore(register Joblist_t* job, Sfio_t* buf, Sfio_t* att)
 	state.localview = state.mam.statix && !state.expandview && state.user && !(job->flags & CO_ALWAYS);
 	if ((job->flags & CO_LOCALSTACK) || (job->target->dynamic & D_hasscope))
 	{
-		register Rule_t*	r;
-		register List_t*	p;
+		Rule_t*	r;
+		List_t*	p;
 
 		job->flags |= CO_LOCALSTACK;
 		pos = pushlocal();
@@ -628,9 +628,9 @@ static int	done(Joblist_t* job, int, Cojob_t*);
  */
 
 static void
-execute(register Joblist_t* job)
+execute(Joblist_t* job)
 {
-	register List_t*	p;
+	List_t*	p;
 	char*			s;
 	char*			t;
 	int			flags;
@@ -805,11 +805,11 @@ execute(register Joblist_t* job)
  */
 
 static int
-cancel(register Rule_t* r, register List_t* p)
+cancel(Rule_t* r, List_t* p)
 {
-	register Rule_t*	a;
-	register Rule_t*	s;
-	register Rule_t*	t;
+	Rule_t*	a;
+	Rule_t*	s;
+	Rule_t*	t;
 
 	if (r->must)
 	{
@@ -844,10 +844,10 @@ cancel(register Rule_t* r, register List_t* p)
  */
 
 static int
-done(register Joblist_t* job, int clear, Cojob_t* cojob)
+done(Joblist_t* job, int clear, Cojob_t* cojob)
 {
-	register List_t*	p;
-	register Rule_t*	a;
+	List_t*	p;
+	Rule_t*	a;
 	Time_t			tm;
 	int			n;
 	int			semaphore;
@@ -1093,8 +1093,8 @@ done(register Joblist_t* job, int clear, Cojob_t* cojob)
 int
 block(int check)
 {
-	register Cojob_t*	cojob;
-	register Joblist_t*	job;
+	Cojob_t*	cojob;
+	Joblist_t*	job;
 	Rule_t*			r;
 	int			n;
 	int			clear = 0;
@@ -1221,9 +1221,9 @@ block(int check)
  */
 
 int
-complete(register Rule_t* r, register List_t* p, Time_t* tm, Flags_t flags)
+complete(Rule_t* r, List_t* p, Time_t* tm, Flags_t flags)
 {
-	register int	errors = 0;
+	int	errors = 0;
 	int		check = 0;
 	int		recent;
 	List_t		tmp;
@@ -1275,8 +1275,8 @@ complete(register Rule_t* r, register List_t* p, Time_t* tm, Flags_t flags)
 			r->status = EXISTS;
 		if (recent && (r->property & (P_joint|P_target)) == (P_joint|P_target))
 		{
-			register Rule_t*	x;
-			register Rule_t*	s;
+			Rule_t*	x;
+			Rule_t*	s;
 
 			s = staterule(RULE, r, NiL, 1);
 			for (q = r->prereqs->rule->prereqs; q; q = q->next)
@@ -1337,7 +1337,7 @@ drop(void)
  */
 
 static void
-serial(Rule_t* r, register List_t* p)
+serial(Rule_t* r, List_t* p)
 {
 	while (p && p->rule != internal.serialize && copending(state.coshell) > cojobs(state.coshell))
 	{
@@ -1358,10 +1358,10 @@ serial(Rule_t* r, register List_t* p)
  */
 
 void
-trigger(register Rule_t* r, Rule_t* a, char* action, Flags_t flags)
+trigger(Rule_t* r, Rule_t* a, char* action, Flags_t flags)
 {
-	register Joblist_t*	job;
-	register List_t*	p;
+	Joblist_t*	job;
+	List_t*	p;
 	List_t*			prereqs;
 	int			n;
 
@@ -1662,9 +1662,9 @@ resolve(char* file, int fd, int mode)
 void
 dumpjobs(int level, int op)
 {
-	register Joblist_t*	job;
-	register List_t*	p;
-	register Rule_t*	a;
+	Joblist_t*	job;
+	List_t*	p;
+	Rule_t*	a;
 	int			indent;
 	int			line;
 

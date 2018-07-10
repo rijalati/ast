@@ -29,7 +29,7 @@
 #include "cslib.h"
 
 Sfio_t*
-csinfo(register Cs_t* state, const char* file, int* line)
+csinfo(Cs_t* state, const char* file, int* line)
 {
 	int		n;
 	Sfio_t*		sp = 0;

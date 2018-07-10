@@ -89,7 +89,7 @@ static struct Trap_s
  */
 
 static void
-interrupt(register int sig)
+interrupt(int sig)
 {
 	signal(sig, sig == SIGPIPE ? SIG_IGN : interrupt);
 	trap.caught[sig] = 1;
@@ -103,7 +103,7 @@ interrupt(register int sig)
 void
 initwakeup(int repeat)
 {
-	register Alarms_t*	a;
+	Alarms_t*	a;
 
 	NoP(repeat);
 	for (a = trap.alarms; a; a = a->next)
@@ -117,8 +117,8 @@ initwakeup(int repeat)
 static void
 setwakeup(void)
 {
-	register Seconds_t	t;
-	register Seconds_t	now;
+	Seconds_t	t;
+	Seconds_t	now;
 	int			level;
 
 	now = CURSECS;
@@ -133,7 +133,7 @@ setwakeup(void)
 	setvar(internal.alarm->name, fmtelapsed(t, 1), 0);
 	if (error_info.trace <= (level = (state.test & 0x00010000) ? 2 : CMDTRACE))
 	{
-		register Alarms_t*	a;
+		Alarms_t*	a;
 
 		if (a = trap.alarms)
 		{
@@ -154,11 +154,11 @@ setwakeup(void)
  */
 
 void
-wakeup(Seconds_t t, register List_t* p)
+wakeup(Seconds_t t, List_t* p)
 {
-	register Alarms_t*	a;
-	register Alarms_t*	z;
-	register Alarms_t*	x;
+	Alarms_t*	a;
+	Alarms_t*	z;
+	Alarms_t*	x;
 	Alarms_t*		alarms;
 	Seconds_t		now;
 
@@ -229,7 +229,7 @@ wakeup(Seconds_t t, register List_t* p)
 void
 inittrap(void)
 {
-	register int	i;
+	int	i;
 
 	memfatal(NiL);
 	trap.caught = newof(0, int, sig_info.sigmax + 1, 0);
@@ -247,9 +247,9 @@ inittrap(void)
 int
 handle(void)
 {
-	register int		sig;
-	register Rule_t*	r;
-	register Alarms_t*	a;
+	int		sig;
+	Rule_t*	r;
+	Alarms_t*	a;
 	char*			s;
 	char*			w;
 	Var_t*			v;

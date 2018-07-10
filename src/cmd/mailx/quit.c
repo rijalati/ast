@@ -81,7 +81,7 @@
 void
 tempinit(void)
 {
-	register char*	cp;
+	char*	cp;
 
 	if (!(state.tmp.dir = tempnam(NiL, NiL)) || !*state.tmp.dir || !(cp = strrchr(state.tmp.dir, '/')) && !(cp = strrchr(state.tmp.dir, '\\')))
 		state.tmp.dir = _PATH_TMP;
@@ -119,9 +119,9 @@ cmdquit(void)
 static void
 edstop(void)
 {
-	register int		gotcha;
-	register int		c;
-	register struct msg*	mp;
+	int		gotcha;
+	int		c;
+	struct msg*	mp;
 	int			update;
 	char*			s;
 	char*			temp;
@@ -263,10 +263,10 @@ edstop(void)
  * Incorporate the any new mail that we found.
  */
 static int
-writeback(register FILE* res)
+writeback(FILE* res)
 {
-	register struct msg*	mp;
-	register int		p;
+	struct msg*	mp;
+	int		p;
 	FILE*			obuf;
 
 	p = 0;
@@ -312,8 +312,8 @@ writeback(register FILE* res)
 void
 quit(void)
 {
-	register struct msg*	mp;
-	register int		c;
+	struct msg*	mp;
+	int		c;
 	off_t			size;
 	char*			mbox;
 	char*			s;

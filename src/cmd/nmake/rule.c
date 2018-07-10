@@ -43,9 +43,9 @@
 int
 nametype(const char* name, char** e)
 {
-	register const char*	s;
-	register int		t;
-	register int		q;
+	const char*	s;
+	int		t;
+	int		q;
 
 	t = 0;
 	s = name;
@@ -179,7 +179,7 @@ nametype(const char* name, char** e)
 char*
 maprule(char* s, Rule_t* r)
 {
-	register List_t*	p;
+	List_t*	p;
 	Rule_t*			q;
 	Rule_t*			o;
 	Hash_position_t*	pos;
@@ -217,9 +217,9 @@ maprule(char* s, Rule_t* r)
  */
 
 Rule_t*
-makerule(register char* name)
+makerule(char* name)
 {
-	register Rule_t*	r;
+	Rule_t*	r;
 	int			n;
 
 	if (name)
@@ -267,9 +267,9 @@ makerule(register char* name)
  */
 
 int
-special(register Rule_t* r)
+special(Rule_t* r)
 {
-	register char*	s;
+	char*	s;
 
 	if (r->property & (P_functional|P_metarule|P_operator|P_repeat|P_state))
 		return 1;
@@ -292,7 +292,7 @@ special(register Rule_t* r)
  */
 
 List_t*
-joint(register Rule_t* r)
+joint(Rule_t* r)
 {
 	static List_t		tmp;
 
@@ -308,10 +308,10 @@ joint(register Rule_t* r)
  */
 
 void
-addprereq(register Rule_t* r, register Rule_t* x, int op)
+addprereq(Rule_t* r, Rule_t* x, int op)
 {
-	register List_t*	p;
-	register List_t*	q;
+	List_t*	p;
+	List_t*	q;
 
 	if (x != r)
 	{
@@ -342,7 +342,7 @@ addprereq(register Rule_t* r, register Rule_t* x, int op)
 							r->dynamic &= ~D_compiled;
 						if (op == PREREQ_LENGTH)
 						{
-							register int	n;
+							int	n;
 
 							n = strlen(x->name);
 							p = r->prereqs;
@@ -391,11 +391,11 @@ addprereq(register Rule_t* r, register Rule_t* x, int op)
  */
 
 Rule_t*
-associate(register Rule_t* a, register Rule_t* r, register char* s, List_t** pos)
+associate(Rule_t* a, Rule_t* r, char* s, List_t** pos)
 {
-	register List_t*	p;
-	register Rule_t*	x;
-	register Rule_t*	z;
+	List_t*	p;
+	Rule_t*	x;
+	Rule_t*	z;
 	List_t*			u;
 
 	if (r)
@@ -441,9 +441,9 @@ associate(register Rule_t* a, register Rule_t* r, register char* s, List_t** pos
 #define IGNORECHANGE(r,q)	(((q)->property & (P_joint|P_ignore)) || ((q)->dynamic & D_alias) && getrule((q)->name) == r)
 
 int
-prereqchange(register Rule_t* r, register List_t* newprereqs, Rule_t* o, register List_t* oldprereqs)
+prereqchange(Rule_t* r, List_t* newprereqs, Rule_t* o, List_t* oldprereqs)
 {
-	register List_t*	p;
+	List_t*	p;
 
 	if ((r->property & P_accept) || state.accept)
 		return 0;
@@ -510,7 +510,7 @@ prereqchange(register Rule_t* r, register List_t* newprereqs, Rule_t* o, registe
  */
 
 static void
-getimmediate(register Rule_t* r, List_t** prereqs, char** action)
+getimmediate(Rule_t* r, List_t** prereqs, char** action)
 {
 	if (r->dynamic & D_dynamic)
 		dynamic(r);
@@ -527,7 +527,7 @@ getimmediate(register Rule_t* r, List_t** prereqs, char** action)
 static int
 reset(const char* s, char* v, void* h)
 {
-	register Rule_t*	r = (Rule_t*)v;
+	Rule_t*	r = (Rule_t*)v;
 	Stat_t			st;
 
 	if (!(r->property & P_state))
@@ -551,10 +551,10 @@ reset(const char* s, char* v, void* h)
  */
 
 void
-immediate(register Rule_t* r)
+immediate(Rule_t* r)
 {
-	register List_t*	p;
-	register Rule_t*	x;
+	List_t*	p;
+	Rule_t*	x;
 	List_t*			prereqs;
 	char*			action;
 	char*			e;
@@ -746,10 +746,10 @@ immediate(register Rule_t* r)
  */
 
 void
-remdup(register List_t* p)
+remdup(List_t* p)
 {
-	register List_t*	q;
-	register List_t*	x;
+	List_t*	q;
+	List_t*	x;
 
 	for (x = p, q = 0; p; p = p->next)
 	{
@@ -785,12 +785,12 @@ remdup(register List_t* p)
  */
 
 void
-dynamic(register Rule_t* r)
+dynamic(Rule_t* r)
 {
-	register char*		s;
-	register List_t*	p;
-	register List_t*	q;
-	register List_t*	t;
+	char*		s;
+	List_t*	p;
+	List_t*	q;
+	List_t*	t;
 	char**			v;
 	char*			buf;
 	int			added;
@@ -873,10 +873,10 @@ dynamic(register Rule_t* r)
  */
 
 int
-hasattribute(register Rule_t* r, register Rule_t* a, register Rule_t* x)
+hasattribute(Rule_t* r, Rule_t* a, Rule_t* x)
 {
-	register Flags_t	n;
-	register int		attrname;
+	Flags_t	n;
+	int		attrname;
 	List_t*			p;
 
 	attrname = *a->name == ATTRNAME;
@@ -1012,9 +1012,9 @@ hasattribute(register Rule_t* r, register Rule_t* a, register Rule_t* x)
  */
 
 int
-hasafter(register Rule_t* r, register Flags_t property)
+hasafter(Rule_t* r, Flags_t property)
 {
-	register List_t*	p;
+	List_t*	p;
 
 	if (r->dynamic & D_hasafter)
 		for (p = r->prereqs; p; p = p->next)
@@ -1028,9 +1028,9 @@ hasafter(register Rule_t* r, register Flags_t property)
  */
 
 void
-merge(register Rule_t* from, register Rule_t* to, int op)
+merge(Rule_t* from, Rule_t* to, int op)
 {
-	register List_t*	p;
+	List_t*	p;
 
 	if (from->name)
 	{
@@ -1120,9 +1120,9 @@ merge(register Rule_t* from, register Rule_t* to, int op)
 void
 mergestate(Rule_t* from, Rule_t* to)
 {
-	register int		i;
-	register Rule_t*	fromstate;
-	register Rule_t*	tostate;
+	int		i;
+	Rule_t*	fromstate;
+	Rule_t*	tostate;
 	Rule_t*			t;
 	char*			s;
 
@@ -1192,7 +1192,7 @@ mergestate(Rule_t* from, Rule_t* to)
  */
 
 void
-negate(register Rule_t* from, register Rule_t* to)
+negate(Rule_t* from, Rule_t* to)
 {
 	to->attribute &= ~from->attribute;
 	to->property &= ~(from->property & (P_accept|P_after|P_always|P_archive|P_before|P_command|P_dontcare|P_force|P_functional|P_ignore|P_immediate|P_implicit|P_local|P_make|P_multiple|P_parameter|P_repeat|P_target|P_terminal|P_use|P_virtual));
@@ -1208,9 +1208,9 @@ negate(register Rule_t* from, register Rule_t* to)
  */
 
 static Rule_t*
-rinternal(char* s, register int flags)
+rinternal(char* s, int flags)
 {
-	register Rule_t*	r;
+	Rule_t*	r;
 
 	r = makerule(s);
 	r->property |= flags;
@@ -1225,11 +1225,11 @@ rinternal(char* s, register int flags)
  */
 
 static Rule_t*
-rassociate(char* s, register int flags)
+rassociate(char* s, int flags)
 {
-	register Rule_t*	r;
-	register Rule_t*	a;
-	register List_t*	p;
+	Rule_t*	r;
+	Rule_t*	a;
+	List_t*	p;
 
 	r = rinternal(s, flags);
 	for (p = r->prereqs; p; p = p->next)
@@ -1645,10 +1645,10 @@ initrule(void)
  */
 
 static List_t*
-view(register char* s, register char* d, List_t* p)
+view(char* s, char* d, List_t* p)
 {
-	register int		i;
-	register Rule_t*	r;
+	int		i;
+	Rule_t*	r;
 
 	if (!d)
 		d = s;
@@ -1698,9 +1698,9 @@ view(register char* s, register char* d, List_t* p)
 void
 initview(void)
 {
-	register char*	s;
-	register char*	t;
-	register int	n;
+	char*	s;
+	char*	t;
+	int	n;
 	int		c;
 	int		pwdlen;
 	char*		pwd;

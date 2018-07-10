@@ -71,7 +71,7 @@ typedef struct
 } Rpm_entry_t;
 
 static int
-rpm_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
+rpm_getprologue(Pax_t* pax, Format_t* fp, Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
 {
 	Rpm_magic_t	magic;
 	Rpm_magic_t	verify;

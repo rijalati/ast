@@ -85,8 +85,8 @@ static const char suffix[] = ".z";
 int
 main(int argc, char *argv[])
 {
-	register Huff_t	*hp;
-	register char	*infile,*outfile;
+	Huff_t	*hp;
+	char	*infile,*outfile;
 	char		*command;
 	char		*usage;
 	int		out;
@@ -210,11 +210,11 @@ main(int argc, char *argv[])
 }
 
 
-static char *inname(register char *outfile)
+static char *inname(char *outfile)
 {
-	register char *cp;
-	register int n = strlen(outfile);
-	register int sufflen = strlen(suffix);
+	char *cp;
+	int n = strlen(outfile);
+	int sufflen = strlen(suffix);
 	if(cp = (char*)malloc(n+sufflen+1))
 	{
 		strcpy(cp,outfile);

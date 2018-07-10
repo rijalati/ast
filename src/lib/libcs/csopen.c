@@ -48,7 +48,7 @@
  */
 
 static int
-mkmount(register Cs_t* state, int mode, int uid, int gid, char* endserv, char* endhost, char* endtype)
+mkmount(Cs_t* state, int mode, int uid, int gid, char* endserv, char* endhost, char* endtype)
 {
 	*(state->control - 1) = 0;
 	if (eaccess(state->mount, R_OK|W_OK|X_OK))
@@ -106,9 +106,9 @@ mkmount(register Cs_t* state, int mode, int uid, int gid, char* endserv, char* e
  */
 
 static void
-remote(register Cs_t* state, const char* host, const char* user, const char* path, int agent, register char** av, register char* fv)
+remote(Cs_t* state, const char* host, const char* user, const char* path, int agent, char** av, char* fv)
 {
-	register char*	t;
+	char*	t;
 
 	*av++ = CS_REMOTE_SHELL;
 	*av++ = (char*)host;
@@ -152,9 +152,9 @@ remote(register Cs_t* state, const char* host, const char* user, const char* pat
  */
 
 static int
-initiate(register Cs_t* state, char* user, char* path, char* service, char* name)
+initiate(Cs_t* state, char* user, char* path, char* service, char* name)
 {
-	register char*	s;
+	char*	s;
 	char*		on;
 	char*		local;
 	Sfio_t*		sp;
@@ -271,7 +271,7 @@ initiate(register Cs_t* state, char* user, char* path, char* service, char* name
  */
 
 static int
-reopen(register Cs_t* state, char* path)
+reopen(Cs_t* state, char* path)
 {
 	int		ret;
 	Cs_t		tmp;
@@ -294,11 +294,11 @@ reopen(register Cs_t* state, char* path)
  */
 
 static int
-agent(register Cs_t* state, const char* host, const char* user, const char* path)
+agent(Cs_t* state, const char* host, const char* user, const char* path)
 {
-	register int	n;
-	register int	m;
-	register char*	s;
+	int	n;
+	int	m;
+	char*	s;
 	Proc_t*		proc;
 	int		fd = -1;
 	char*		av[REMOTE_ARGC];
@@ -360,9 +360,9 @@ agent(register Cs_t* state, const char* host, const char* user, const char* path
  */
 
 static int
-doattach(register Cs_t* state, const char* path, int op, int mode, char* user, char* opath, char* tmp, char* serv, char*b)
+doattach(Cs_t* state, const char* path, int op, int mode, char* user, char* opath, char* tmp, char* serv, char*b)
 {
-	register int	n;
+	int	n;
 	int		fd;
 	char*		s;
 
@@ -580,7 +580,7 @@ doattach(register Cs_t* state, const char* path, int op, int mode, char* user, c
  */
 
 int
-csattach(register Cs_t* state, const char* path, int op, int mode)
+csattach(Cs_t* state, const char* path, int op, int mode)
 {
 	return doattach(state, path, op, 0, 0, 0, 0, 0, 0);
 }
@@ -596,12 +596,12 @@ _cs_attach(const char* path, int op, int mode)
  */
 
 int
-csopen(register Cs_t* state, const char* apath, int op)
+csopen(Cs_t* state, const char* apath, int op)
 {
-	register char*	path = (char*)apath;
-	register char*	b;
-	register char*	s;
-	register int	n;
+	char*	path = (char*)apath;
+	char*	b;
+	char*	s;
+	int	n;
 	int		fd;
 	char*		t;
 	char*		u;

@@ -208,7 +208,7 @@ Tk_TextCmd(clientData, interp, argc, argv)
 {
     Tk_Window tkwin = (Tk_Window) clientData;
     Tk_Window new;
-    register TkText *textPtr;
+    TkText *textPtr;
     TkTextIndex startIndex;
 
     if (argc < 2) {
@@ -357,7 +357,7 @@ TextWidgetCmd(clientData, interp, argc, argv)
     int argc;			/* Number of arguments. */
     char **argv;		/* Argument strings. */
 {
-    register TkText *textPtr = (TkText *) clientData;
+    TkText *textPtr = (TkText *) clientData;
     int result = TCL_OK;
     size_t length;
     int c;
@@ -667,7 +667,7 @@ static void
 DestroyText(memPtr)
     char *memPtr;		/* Info about text widget. */
 {
-    register TkText *textPtr = (TkText *) memPtr;
+    TkText *textPtr = (TkText *) memPtr;
     Tcl_HashSearch search;
     Tcl_HashEntry *hPtr;
     TkTextTag *tagPtr;
@@ -740,7 +740,7 @@ DestroyText(memPtr)
 static int
 ConfigureText(interp, textPtr, argc, argv, flags)
     Tcl_Interp *interp;		/* Used for error reporting. */
-    register TkText *textPtr;	/* Information about widget;  may or may
+    TkText *textPtr;	/* Information about widget;  may or may
 				 * not already have values for some fields. */
     int argc;			/* Number of valid entries in argv. */
     char **argv;		/* Arguments. */
@@ -933,9 +933,9 @@ ConfigureText(interp, textPtr, argc, argv, flags)
 static void
 TextEventProc(clientData, eventPtr)
     ClientData clientData;	/* Information about window. */
-    register XEvent *eventPtr;	/* Information about event. */
+    XEvent *eventPtr;	/* Information about event. */
 {
-    register TkText *textPtr = (TkText *) clientData;
+    TkText *textPtr = (TkText *) clientData;
     TkTextIndex index, index2;
 
     if (eventPtr->type == Expose) {
@@ -1281,7 +1281,7 @@ TextFetchSelection(clientData, offset, buffer, maxBytes)
 					 * at buffer, not including terminating
 					 * NULL character. */
 {
-    register TkText *textPtr = (TkText *) clientData;
+    TkText *textPtr = (TkText *) clientData;
     TkTextIndex eof;
     int count, chunkSize, offsetInSeg;
     TkTextSearch search;
@@ -1408,7 +1408,7 @@ void
 TkTextLostSelection(clientData)
     ClientData clientData;		/* Information about text widget. */
 {
-    register TkText *textPtr = (TkText *) clientData;
+    TkText *textPtr = (TkText *) clientData;
     TkTextIndex start, end;
 
     if (!textPtr->exportSelection) {
@@ -1448,7 +1448,7 @@ static void
 TextBlinkProc(clientData)
     ClientData clientData;	/* Pointer to record describing text. */
 {
-    register TkText *textPtr = (TkText *) clientData;
+    TkText *textPtr = (TkText *) clientData;
     TkTextIndex index, index2;
 
     if (!(textPtr->flags & GOT_FOCUS) || (textPtr->insertOffTime == 0)) {
@@ -1963,7 +1963,7 @@ TkTextGetTabs(interp, tkwin, string)
 
 static int
 TextDumpCmd(textPtr, interp, argc, argv)
-    register TkText *textPtr;	/* Information about text widget. */
+    TkText *textPtr;	/* Information about text widget. */
     Tcl_Interp *interp;		/* Current interpreter. */
     int argc;			/* Number of arguments. */
     char **argv;		/* Argument strings.  Someone else has already

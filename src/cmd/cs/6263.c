@@ -33,11 +33,11 @@ static const char id[] = "@(#)$Id: cs.6263 (AT&T Research) 2000-05-11 $\0\n";
 #include <error.h>
 
 static int
-actionf(register Css_t* css, register Cssfd_t* fp, Cssdisc_t* disc)
+actionf(Css_t* css, Cssfd_t* fp, Cssdisc_t* disc)
 {
-	register ssize_t	n;
-	register char*		s;
-	register char*		t;
+	ssize_t	n;
+	char*		s;
+	char*		t;
 	int			ud;
 
 	static char		path[PATH_MAX];

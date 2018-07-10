@@ -81,15 +81,15 @@
 char*
 yankword(char* ap, char* wbuf)
 {
-	register char*	cp;
-	register char*	cp2;
+	char*	cp;
+	char*	cp2;
 
 	cp = ap;
 	for (;;) {
 		if (*cp == 0)
 			return 0;
 		if (*cp == '(') {
-			register int	nesting = 0;
+			int	nesting = 0;
 
 			while (*cp != 0) {
 				switch (*cp++) {
@@ -157,11 +157,11 @@ headclear(struct header* hp, unsigned long flags)
  * and make a list of names from it.
  */
 void
-extract(struct header* hp, unsigned long flags, register char* s)
+extract(struct header* hp, unsigned long flags, char* s)
 {
-	register struct name*	np;
-	register int		n;
-	register struct list*	x;
+	struct name*	np;
+	int		n;
+	struct list*	x;
 	char			buf[LINESIZE];
 
 	if (s) {
@@ -233,10 +233,10 @@ typedef struct
 static int
 stringize(Dt_t* dt, void* object, void* context)
 {
-	register struct name*	np = (struct name*)object;
-	register Walk_str_t*	ws = (Walk_str_t*)context;
-	register char*		s;
-	register char*		t;
+	struct name*	np = (struct name*)object;
+	Walk_str_t*	ws = (Walk_str_t*)context;
+	char*		s;
+	char*		t;
 
 	if (!ws->flags || ws->flags == (np->flags & GMASK)) {
 		if (s = ws->next) {
@@ -297,7 +297,7 @@ typedef struct {
  * Add name,flags to the next map level.
  */
 static void
-mapadd(register Walk_map_t* wm, register struct name* np, char* name, unsigned long flags)
+mapadd(Walk_map_t* wm, struct name* np, char* name, unsigned long flags)
 {
 	if (wm->show)
 		note(0, "\"%s\" -> \"%s\"", np->name, name);
@@ -325,8 +325,8 @@ mapadd(register Walk_map_t* wm, register struct name* np, char* name, unsigned l
 static int
 mapuser(Dt_t* dt, void* object, void* context)
 {
-	register struct name*	np = (struct name*)object;
-	register Walk_map_t*	wm = (Walk_map_t*)context;
+	struct name*	np = (struct name*)object;
+	Walk_map_t*	wm = (Walk_map_t*)context;
 	struct name*		ap;
 	struct list*		mp;
 	char*			s;
@@ -390,11 +390,11 @@ usermap(struct header* hp, int show)
 char*
 record(char* author, unsigned long flags)
 {
-	register int	c;
-	register char*	ap;
-	register char*	rp;
-	register char*	ep;
-	register char*	tp;
+	int	c;
+	char*	ap;
+	char*	rp;
+	char*	ep;
+	char*	tp;
 
 	rp = state.path.path;
 	ep = rp + sizeof(state.path.path) - 1;

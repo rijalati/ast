@@ -109,7 +109,7 @@ typedef struct State_s
 static int
 procfs_init(Pss_t* pss)
 {
-	register State_t*	state;
+	State_t*	state;
 	int			fd;
 
 	sfsprintf(pss->buf, sizeof(pss->buf), _PS_path_num, (unsigned long)1, _PS_status);
@@ -135,7 +135,7 @@ procfs_init(Pss_t* pss)
 static int
 procfs_done(Pss_t* pss)
 {
-	register State_t*	state = (State_t*)pss->data;
+	State_t*	state = (State_t*)pss->data;
 
 	closedir(state->dir);
 	return 1;
@@ -144,7 +144,7 @@ procfs_done(Pss_t* pss)
 static int
 procfs_read(Pss_t* pss, Pss_id_t pid)
 {
-	register State_t*	state = (State_t*)pss->data;
+	State_t*	state = (State_t*)pss->data;
 	struct dirent*		ent;
 	char*			e;
 
@@ -161,11 +161,11 @@ procfs_read(Pss_t* pss, Pss_id_t pid)
 }
 
 static int
-procfs_part(register Pss_t* pss, register Pssent_t* pe)
+procfs_part(Pss_t* pss, Pssent_t* pe)
 {
-	register State_t*		state = (State_t*)pss->data;
-	register struct prpsinfo*	pr = &state->pr;
-	register int			fd;
+	State_t*		state = (State_t*)pss->data;
+	struct prpsinfo*	pr = &state->pr;
+	int			fd;
 	int				n;
 #if defined(_PS_scan_binary) || defined(_PS_scan_format)
 	struct stat			st;
@@ -190,7 +190,7 @@ procfs_part(register Pss_t* pss, register Pssent_t* pe)
 		n = sfsscanf(pss->buf, _PS_scan_format, _PS_scan_args(pr));
 		if (n < _PS_scan_count)
 		{
-			register char*	s;
+			char*	s;
 
 			for (s = pss->buf; *s; s++)
 				if (*s == '(')
@@ -221,7 +221,7 @@ procfs_part(register Pss_t* pss, register Pssent_t* pe)
 #ifdef _PS_scan_boot
 		if (!pss->boot)
 		{
-			register char*	s;
+			char*	s;
 			Sfio_t*		fp;
 
 			pss->boot = 1;
@@ -282,10 +282,10 @@ procfs_part(register Pss_t* pss, register Pssent_t* pe)
 }
 
 static int
-procfs_full(register Pss_t* pss, register Pssent_t* pe)
+procfs_full(Pss_t* pss, Pssent_t* pe)
 {
-	register State_t*		state = (State_t*)pss->data;
-	register struct prpsinfo*	pr = &state->pr;
+	State_t*		state = (State_t*)pss->data;
+	struct prpsinfo*	pr = &state->pr;
 	unsigned long			fields = pss->disc->fields & pss->meth->fields;
 	char*				s;
 	int				i;

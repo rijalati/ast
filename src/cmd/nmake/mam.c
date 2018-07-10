@@ -34,7 +34,7 @@
 char*
 mamcanon(char* path)
 {
-	register char*	s;
+	char*	s;
 
 	s = path + strlen(path);
 	while (s > path + 1 && *(s - 1) == '.' && *(s - 2) == '/')
@@ -52,8 +52,8 @@ mamcanon(char* path)
 ssize_t
 mamerror(int fd, const void* b, size_t n)
 {
-	register char*	s = (char*)b;
-	register char*	e;
+	char*	s = (char*)b;
+	char*	e;
 	char*		t;
 
 	if (state.mam.level > 0)
@@ -89,7 +89,7 @@ mamerror(int fd, const void* b, size_t n)
  */
 
 char*
-mamname(register Rule_t* r)
+mamname(Rule_t* r)
 {
 	char*		a;
 	char*		s;
@@ -128,7 +128,7 @@ mamname(register Rule_t* r)
  */
 
 int
-mampush(Sfio_t* sp, register Rule_t* r, Flags_t flags)
+mampush(Sfio_t* sp, Rule_t* r, Flags_t flags)
 {
 	int	pop;
 
@@ -162,7 +162,7 @@ mampush(Sfio_t* sp, register Rule_t* r, Flags_t flags)
  */
 
 void
-mampop(Sfio_t* sp, register Rule_t* r, Flags_t flags)
+mampop(Sfio_t* sp, Rule_t* r, Flags_t flags)
 {
 	Rule_t*		s;
 	List_t*		p;
@@ -194,10 +194,10 @@ mampop(Sfio_t* sp, register Rule_t* r, Flags_t flags)
  */
 
 Sfio_t*
-mamout(register Rule_t* r)
+mamout(Rule_t* r)
 {
-	register Rule_t*	r0;
-	register char*		s;
+	Rule_t*	r0;
+	char*		s;
 
 	if (!state.mam.out || !state.user || r == internal.empty)
 		return 0;

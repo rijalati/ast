@@ -230,7 +230,7 @@
 int
 ttyquery(int rfd, int wfd, const char* label)
 {
-	register int	r;
+	int	r;
 	int		n;
 	unsigned char	c;
 	struct termios	old;
@@ -276,8 +276,8 @@ ttyquery(int rfd, int wfd, const char* label)
 int
 ttyedit(int rfd, int wfd, const char* label, char* buf, size_t size)
 {
-	register int	r;
-	register int	last = strlen(buf);
+	int	r;
+	int	last = strlen(buf);
 	unsigned char	c;
 	struct termios	old;
 	struct termios	tty;
@@ -354,8 +354,8 @@ ttyedit(int rfd, int wfd, const char* label, char* buf, size_t size)
 void
 grabedit(struct header* hp, unsigned long type)
 {
-	register char*			s;
-	register const struct lab*	lp;
+	char*			s;
+	const struct lab*	lp;
 	int				r;
 	sig_t				saveint;
 	sig_t				savequit;

@@ -41,14 +41,14 @@ static Rsmethod_t**	methods[] =
 
 Rsmethod_t*
 #if __STD_C
-rskeymeth(register Rskey_t* kp, const char* name)
+rskeymeth(Rskey_t* kp, const char* name)
 #else
 rskeymeth(kp, name)
-register Rskey_t*	kp;
+Rskey_t*	kp;
 char*			name;
 #endif
 {
-	register int	n;
+	int	n;
 
 	if (!name || !*name || streq(name, "-") || streq(name, "default"))
 		return Rsrasp;
@@ -64,16 +64,16 @@ char*			name;
 
 int
 #if __STD_C
-rskeylist(register Rskey_t* kp, Sfio_t* fp, int usage)
+rskeylist(Rskey_t* kp, Sfio_t* fp, int usage)
 #else
 rskeylist(kp, fp, usage)
-register Rskey_t*	kp;
+Rskey_t*	kp;
 Sfio_t*			fp;
 int			usage;
 #endif
 {
-	register int	i;
-	register int	n;
+	int	i;
+	int	n;
 
 	n = 0;
 	for (i = 0; i < elementsof(methods); i++)

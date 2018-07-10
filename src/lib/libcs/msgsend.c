@@ -33,12 +33,12 @@
  */
 
 ssize_t
-msgsend(int fd, register Msg_call_t* msg, unsigned long call, long ret, int err, void* data)
+msgsend(int fd, Msg_call_t* msg, unsigned long call, long ret, int err, void* data)
 {
-	register struct stat*		sp;
-	register struct dirent*		dp;
-	register struct dirent*		de;
-	register struct statvfs*	vp;
+	struct stat*		sp;
+	struct dirent*		dp;
+	struct dirent*		de;
+	struct statvfs*	vp;
 	int				i;
 	char*				b;
 	char*				e;

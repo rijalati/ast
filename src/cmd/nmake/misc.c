@@ -109,15 +109,15 @@ rstat(char* name, Stat_t* st, int res)
  */
 
 void*
-newchunk(char** head, register size_t unit)
+newchunk(char** head, size_t unit)
 {
 #if __hppa || __hppa__ || hppa /* cc botches e arithmetic -- off by 8! */
 	NoP(head);
 	return newof(0, char, unit, 0);
 #else
-	register char*	p;
-	register char*	e;
-	register char**	x;
+	char*	p;
+	char*	e;
+	char**	x;
 	int		n;
 	void*		v;
 
@@ -138,7 +138,7 @@ newchunk(char** head, register size_t unit)
 List_t*
 append(List_t* p, List_t* q)
 {
-	register List_t*	t;
+	List_t*	t;
 
 	if (t = p)
 	{
@@ -161,7 +161,7 @@ append(List_t* p, List_t* q)
 List_t*
 cons(Rule_t* r, List_t* p)
 {
-	register List_t*	q;
+	List_t*	q;
 
 	newlist(q);
 	q->next = p;
@@ -175,11 +175,11 @@ cons(Rule_t* r, List_t* p)
  */
 
 List_t*
-listcopy(register List_t* p)
+listcopy(List_t* p)
 {
-	register List_t*	q;
-	register List_t*	r;
-	register List_t*	t;
+	List_t*	q;
+	List_t*	r;
+	List_t*	t;
 
 	if (!p)
 		return 0;
@@ -313,9 +313,9 @@ typedef struct Fmt_s
 static int
 printext(Sfio_t* sp, void* vp, Sffmt_t* dp)
 {
-	register Fmt_t*	fp = (Fmt_t*)dp;
+	Fmt_t*	fp = (Fmt_t*)dp;
 	Value_t*	value = (Value_t*)vp;
-	register char*	s;
+	char*	s;
 	char*		txt;
 	char*		e;
 	Time_t		tm;
@@ -495,11 +495,11 @@ strprintf(Sfio_t* sp, const char* format, char* argp, int all, int term)
  */
 
 char*
-getarg(char** buf, register int* flags)
+getarg(char** buf, int* flags)
 {
-	register char*	s;
-	register char*	t;
-	register int	c;
+	char*	s;
+	char*	t;
+	int	c;
 	char*		a;
 	char*		q;
 	int		paren;

@@ -323,9 +323,9 @@ update(char* data, unsigned long now, int delay, CSSTAT* ss)
 int
 main(int argc, char** argv)
 {
-	register int	n;
-	register int	i;
-	register long	v;
+	int	n;
+	int	i;
+	long	v;
 	char*		s;
 	char*		e;
 	char*		data;

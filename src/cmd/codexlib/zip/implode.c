@@ -243,7 +243,7 @@ static ssize_t explode_lit8(State_t* state, char *buff, size_t size)
    window. */
 {
     size_t s;			/* bytes to decompress */
-    register ulg e;	/* table entry flag/number of extra bits */
+    ulg e;	/* table entry flag/number of extra bits */
     ulg n, d;		/* length and index for copy */
     ulg w;			/* current window position */
     Huff_t *t;		/* pointer to table entry */
@@ -384,7 +384,7 @@ static ssize_t explode_lit4(State_t* state, char *buff, size_t size)
    window. */
 {
     size_t s;               /* bytes to decompress */
-    register ulg e;  /* table entry flag/number of extra bits */
+    ulg e;  /* table entry flag/number of extra bits */
     ulg n, d;        /* length and index for copy */
     ulg w;           /* current window position */
     Huff_t *t;       /* pointer to table entry */
@@ -524,7 +524,7 @@ static ssize_t explode_nolit8(State_t* state, char *buff, size_t size)
    window. */
 {
     size_t s;               /* bytes to decompress */
-    register ulg e;  /* table entry flag/number of extra bits */
+    ulg e;  /* table entry flag/number of extra bits */
     ulg n, d;        /* length and index for copy */
     ulg w;           /* current window position */
     Huff_t *t;       /* pointer to table entry */
@@ -652,7 +652,7 @@ static ssize_t explode_nolit4(State_t* state, char *buff, size_t size)
    window. */
 {
     size_t s;               /* bytes to decompress */
-    register ulg e;  /* table entry flag/number of extra bits */
+    ulg e;  /* table entry flag/number of extra bits */
     ulg n, d;        /* length and index for copy */
     ulg w;           /* current window position */
     Huff_t *t;       /* pointer to table entry */
@@ -832,7 +832,7 @@ implode_close(Codex_t* p)
 static int
 implode_init(Codex_t* p)
 {
-    register State_t*	state = (State_t*)p->data;
+    State_t*	state = (State_t*)p->data;
 
     vmclear(state->vm);
     state->ip = state->ie = 0;
@@ -922,7 +922,7 @@ implode_init(Codex_t* p)
 static ssize_t
 implode_read(Sfio_t* sp, void* buff, size_t size, Sfdisc_t* disc)
 {
-    register State_t* state = (State_t*)CODEX(disc)->data;
+    State_t* state = (State_t*)CODEX(disc)->data;
     size_t j, i;
 
     if(size <= 0)

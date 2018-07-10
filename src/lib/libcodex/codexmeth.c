@@ -29,9 +29,9 @@
 Codexmeth_t*
 codexmeth(const char* name)
 {
-	register Codexmeth_t*	meth;
-	register const char*	s;
-	register const char*	t;
+	Codexmeth_t*	meth;
+	const char*	s;
+	const char*	t;
 	Codexmeth_t*		last;
 	void*			dll;
 	int			plugin;

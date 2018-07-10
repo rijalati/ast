@@ -133,7 +133,7 @@ validate_beg(Cx_t* cx, Cxexpr_t* expr, void* data, Cxdisc_t* disc)
 	char*			s;
 	State_t*		state;
 	Cxvariable_t*		variable;
-	register Field_t*	field;
+	Field_t*	field;
 	Field_t*		lastfield;
 	Cxconstraint_t*		constraint;
 	int			all;
@@ -281,9 +281,9 @@ validate_beg(Cx_t* cx, Cxexpr_t* expr, void* data, Cxdisc_t* disc)
 static int
 validate_sel(Cx_t* cx, Cxexpr_t* expr, void* data, Cxdisc_t* disc)
 {
-	register State_t*	state = (State_t*)expr->data;
-	register Field_t*	field;
-	register Cxconstraint_t*constraint;
+	State_t*	state = (State_t*)expr->data;
+	Field_t*	field;
+	Cxconstraint_t*constraint;
 	Cxoperand_t		o;
 	Cxinstruction_t		x;
 	Invalid_t		key;
@@ -389,8 +389,8 @@ validate_sel(Cx_t* cx, Cxexpr_t* expr, void* data, Cxdisc_t* disc)
 static int
 validate_end(Cx_t* cx, Cxexpr_t* expr, void* data, Cxdisc_t* disc)
 {
-	register State_t*	state = (State_t*)expr->data;
-	register Field_t*	field;
+	State_t*	state = (State_t*)expr->data;
+	Field_t*	field;
 	Invalid_t*		ip;
 	Cxoperand_t		val;
 	int			heading;

@@ -44,9 +44,9 @@ static struct				/* directory list state		*/
 static int
 regular(Jcl_t* jcl, char* path, struct stat* st)
 {
-	register char*		s;
-	register char*		t;
-	register Include_t*	ip;
+	char*		s;
+	char*		t;
+	Include_t*	ip;
 
 	if (REGULAR(path, st))
 		goto found;
@@ -93,9 +93,9 @@ regular(Jcl_t* jcl, char* path, struct stat* st)
 char*
 expand(Jcl_t* jcl, const char* name, int flags)
 {
-	register char*	s;
-	register char*	t;
-	register int	c;
+	char*	s;
+	char*	t;
+	int	c;
 	char*		b;
 	char*		v;
 	int		i;
@@ -218,8 +218,8 @@ expand(Jcl_t* jcl, const char* name, int flags)
 int
 jclinclude(Jcl_t* jcl, const char* dir, unsigned long flags, Jcldisc_t* disc)
 {
-	register Dirlist_t*	lp;
-	register Dir_t*		dp;
+	Dirlist_t*	lp;
+	Dir_t*		dp;
 	struct stat		st;
 
 	if (dir && *(dir = (const char*)expand(jcl, dir, 0)) && !streq(dir, ".") && directory(dir, &st))
@@ -251,8 +251,8 @@ jclinclude(Jcl_t* jcl, const char* dir, unsigned long flags, Jcldisc_t* disc)
 static char*
 search(Jcl_t* jcl, const char* dir, const char* name, unsigned long flags, struct stat* st)
 {
-	register char*		s;
-	register Dir_t*		dp;
+	char*		s;
+	Dir_t*		dp;
 	Jcl_t*			top;
 
 	if (!dir || !(flags & JCL_STANDARD) || strchr(name, '/'))
@@ -301,7 +301,7 @@ search(Jcl_t* jcl, const char* dir, const char* name, unsigned long flags, struc
 char*
 jclfind(Jcl_t* jcl, const char* name, unsigned long flags, int level, Sfio_t** spp)
 {
-	register char*		s;
+	char*		s;
 	struct stat		st;
 
 	if (flags & JCL_PROC)

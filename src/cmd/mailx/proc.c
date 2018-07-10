@@ -222,9 +222,9 @@ filefd(int fd, char* mode)
 FILE*
 filetemp(char* buf, int size, int type, int fd)
 {
-	register char*	s;
-	register char*	b;
-	register char*	e;
+	char*	s;
+	char*	b;
+	char*	e;
 	FILE*		fp = 0;
 
 	if (!(b = buf)) {
@@ -321,10 +321,10 @@ fileclear(void)
  */
 
 int
-filecopy(const char* in, FILE* ip, const char* on, FILE* op, FILE* ap, register off_t n, register off_t* lines, off_t* chars, unsigned long flags)
+filecopy(const char* in, FILE* ip, const char* on, FILE* op, FILE* ap, off_t n, off_t* lines, off_t* chars, unsigned long flags)
 {
-	register off_t	c;
-	register char*	s;
+	off_t	c;
+	char*	s;
 	int		r = 0;
 	off_t		lc = 0;
 	off_t		cc = 0;
@@ -574,7 +574,7 @@ start_command(char* cmd, int critical, int infd, int outfd, char* a0, char* a1, 
 static struct child*
 findchild(int pid)
 {
-	register struct child**	cpp;
+	struct child**	cpp;
 
 	for (cpp = &state.children; *cpp && (*cpp)->pid != pid;
 	     cpp = &(*cpp)->link)
@@ -588,9 +588,9 @@ findchild(int pid)
 }
 
 static void
-delchild(register struct child* cp)
+delchild(struct child* cp)
 {
-	register struct child**	cpp;
+	struct child**	cpp;
 
 	for (cpp = &state.children; *cpp != cp; cpp = &(*cpp)->link) ;
 	*cpp = cp->link;
@@ -603,7 +603,7 @@ delchild(register struct child* cp)
 int
 wait_command(int pid)
 {
-	register struct child*	cp = findchild(pid);
+	struct child*	cp = findchild(pid);
 	int			status = -1;
 
 	holdsigs();
@@ -619,7 +619,7 @@ wait_command(int pid)
 void
 free_command(int pid)
 {
-	register struct child*	cp = findchild(pid);
+	struct child*	cp = findchild(pid);
 
 	if (cp->done)
 		delchild(cp);

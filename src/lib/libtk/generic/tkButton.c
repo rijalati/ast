@@ -502,7 +502,7 @@ ButtonCreate(clientData, interp, argc, argv, type)
 				 * TYPE_BUTTON, TYPE_CHECK_BUTTON, or
 				 * TYPE_RADIO_BUTTON. */
 {
-    register Button *butPtr;
+    Button *butPtr;
     Tk_Window tkwin = (Tk_Window) clientData;
     Tk_Window new;
 
@@ -619,7 +619,7 @@ ButtonWidgetCmd(clientData, interp, argc, argv)
     int argc;			/* Number of arguments. */
     char **argv;		/* Argument strings. */
 {
-    register Button *butPtr = (Button *) clientData;
+    Button *butPtr = (Button *) clientData;
     int result = TCL_OK;
     size_t length;
     int c;
@@ -849,7 +849,7 @@ DestroyButton(butPtr)
 static int
 ConfigureButton(interp, butPtr, argc, argv, flags)
     Tcl_Interp *interp;		/* Used for error reporting. */
-    register Button *butPtr;	/* Information about widget;  may or may
+    Button *butPtr;	/* Information about widget;  may or may
 				 * not already have values for some fields. */
     int argc;			/* Number of valid entries in argv. */
     char **argv;		/* Arguments. */
@@ -1126,14 +1126,14 @@ static void
 DisplayButton(clientData)
     ClientData clientData;	/* Information about widget. */
 {
-    register Button *butPtr = (Button *) clientData;
+    Button *butPtr = (Button *) clientData;
     GC gc;
     Tk_3DBorder border;
     Pixmap pixmap;
     int x = 0;			/* Initialization only needed to stop
 				 * compiler warning. */
     int y, relief;
-    register Tk_Window tkwin = butPtr->tkwin;
+    Tk_Window tkwin = butPtr->tkwin;
     int width, height;
     int offset;			/* 0 means this is a label widget.  1 means
 				 * it is a flavor of button, so we offset
@@ -1528,7 +1528,7 @@ ButtonCmdDeletedProc(clientData)
 
 static void
 ComputeButtonGeometry(butPtr)
-    register Button *butPtr;	/* Button whose geometry may have changed. */
+    Button *butPtr;	/* Button whose geometry may have changed. */
 {
     int width, height;
 
@@ -1624,7 +1624,7 @@ ComputeButtonGeometry(butPtr)
 
 static int
 InvokeButton(butPtr)
-    register Button *butPtr;		/* Information about button. */
+    Button *butPtr;		/* Information about button. */
 {
     if (butPtr->type == TYPE_CHECK_BUTTON) {
 	if (butPtr->flags & SELECTED) {
@@ -1678,7 +1678,7 @@ ButtonVarProc(clientData, interp, name1, name2, flags)
     char *name2;		/* Second part of variable name. */
     int flags;			/* Information about what happened. */
 {
-    register Button *butPtr = (Button *) clientData;
+    Button *butPtr = (Button *) clientData;
     char *value;
 
     /*
@@ -1752,7 +1752,7 @@ ButtonTextVarProc(clientData, interp, name1, name2, flags)
     char *name2;		/* Not used. */
     int flags;			/* Information about what happened. */
 {
-    register Button *butPtr = (Button *) clientData;
+    Button *butPtr = (Button *) clientData;
     char *value;
 
     /*
@@ -1817,7 +1817,7 @@ ButtonImageProc(clientData, x, y, width, height, imgWidth, imgHeight)
 					 * (may be <= 0). */
     int imgWidth, imgHeight;		/* New dimensions of image. */
 {
-    register Button *butPtr = (Button *) clientData;
+    Button *butPtr = (Button *) clientData;
 
     if (butPtr->tkwin != NULL) {
 	ComputeButtonGeometry(butPtr);
@@ -1855,7 +1855,7 @@ ButtonSelectImageProc(clientData, x, y, width, height, imgWidth, imgHeight)
 					 * (may be <= 0). */
     int imgWidth, imgHeight;		/* New dimensions of image. */
 {
-    register Button *butPtr = (Button *) clientData;
+    Button *butPtr = (Button *) clientData;
 
     /*
      * Don't recompute geometry:  it's controlled by the primary image.

@@ -228,7 +228,7 @@ static char *fileToString(Sfio_t *f)
 int Tksh_Eval(Tcl_Interp *interp, char *command, int flag)
 {
 	Sfio_t *f;
-	register Interp *iPtr = (Interp *) interp;
+	Interp *iPtr = (Interp *) interp;
 	int result, oldInterpType = iPtr->interpType;
 
 	Tcl_FreeResult(interp);
@@ -266,7 +266,7 @@ int Tksh_Eval(Tcl_Interp *interp, char *command, int flag)
 
 int Tcl_Eval(Tcl_Interp *interp, char *cmd)
 {
-	register Interp *iPtr = (Interp *) interp;
+	Interp *iPtr = (Interp *) interp;
 	int result;
 	inEval ++;
 
@@ -347,7 +347,7 @@ int Tcl_TclEvalFile(Tcl_Interp *interp, char *fileName)
 
 int Tcl_EvalFile(Tcl_Interp *interp, char *fileName)
 {
-	register Interp *iPtr = (Interp *) interp;
+	Interp *iPtr = (Interp *) interp;
 	char *oldScriptFile;
 	int result;
 

@@ -41,13 +41,13 @@ typedef struct
  */
 
 static Hash_table_t*
-load(register Cs_t* state)
+load(Cs_t* state)
 {
-	register char*		s;
+	char*		s;
 	char*			h;
-	register Info_t*	ip;
-	register Sfio_t*	sp;
-	register Hash_table_t*	tp;
+	Info_t*	ip;
+	Sfio_t*	sp;
+	Hash_table_t*	tp;
 	int			c;
 
 	if (!(sp = csinfo(state, NiL, NiL))) return 0;
@@ -83,13 +83,13 @@ load(register Cs_t* state)
  */
 
 char*
-csattr(register Cs_t* state, const char* name, const char* attr)
+csattr(Cs_t* state, const char* name, const char* attr)
 {
-	register char*		s;
-	register char*		b;
-	register char*		x;
-	register char*		v;
-	register Info_t*	ip;
+	char*		s;
+	char*		b;
+	char*		x;
+	char*		v;
+	Info_t*	ip;
 	int			n;
 	unsigned long		addr;
 

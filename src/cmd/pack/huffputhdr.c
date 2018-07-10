@@ -32,10 +32,10 @@
  * the number of bytes in the header
  */
 
-int huffputhdr(register Huff_t *hp,Sfio_t *outfile)
+int huffputhdr(Huff_t *hp,Sfio_t *outfile)
 {
-	register int		i, c;
-	register Sfio_t	*fp = outfile;
+	int		i, c;
+	Sfio_t	*fp = outfile;
 	/* output magic number */
 	sfputc(fp,HUFFMAG1);
 	sfputc(fp,HUFFMAG2);

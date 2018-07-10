@@ -155,10 +155,10 @@ USAGE_LICENSE
 int
 main(int argc, char** argv)
 {
-	register int		c;
-	register char*		s;
-	register Sfio_t*	sp;
-	register Sfio_t*	tp;
+	int		c;
+	char*		s;
+	Sfio_t*	sp;
+	Sfio_t*	tp;
 	char*			e;
 	char*			t;
 	int			n;

@@ -128,8 +128,8 @@ static struct
 static int
 bycount(const void* va, const void* vb)
 {
-	register Item_t*	a = (Item_t*)va;
-	register Item_t*	b = (Item_t*)vb;
+	Item_t*	a = (Item_t*)va;
+	Item_t*	b = (Item_t*)vb;
 
 	if (a->count < b->count)
 		return 1;
@@ -147,13 +147,13 @@ bycount(const void* va, const void* vb)
  */
 
 static void
-rectify(register Sfio_t* fp, char* file, int verbose)
+rectify(Sfio_t* fp, char* file, int verbose)
 {
-	register unsigned char*	s;
-	register Item_t*	p;
-	register unsigned long*	q;
-	register unsigned long	offset;
-	register unsigned long	i;
+	unsigned char*	s;
+	Item_t*	p;
+	unsigned long*	q;
+	unsigned long	offset;
+	unsigned long	i;
 	unsigned long		n;
 	unsigned long		cur;
 	unsigned long		dif;
@@ -211,10 +211,10 @@ rectify(register Sfio_t* fp, char* file, int verbose)
  */
 
 static void
-dump(Sfio_t* op, register unsigned char* b, size_t n)
+dump(Sfio_t* op, unsigned char* b, size_t n)
 {
-	register unsigned char*	e = b + n / 4 * 4;
-	register unsigned char*	x;
+	unsigned char*	e = b + n / 4 * 4;
+	unsigned char*	x;
 
 	x = state.group ? (b + n) : b;
 	while (b < e)
@@ -235,7 +235,7 @@ dump(Sfio_t* op, register unsigned char* b, size_t n)
 static unsigned long
 number(char** b)
 {
-	register char*	s;
+	char*	s;
 	unsigned long	r;
 
 	for (s = *b; *s == ' ' || *s == '\t'; s++);
@@ -252,9 +252,9 @@ number(char** b)
  */
 
 static void
-describe(register Sfio_t* dp, char* desc, register Sfio_t* fp, char* file, int verbose)
+describe(Sfio_t* dp, char* desc, Sfio_t* fp, char* file, int verbose)
 {
-	register unsigned char*	p;
+	unsigned char*	p;
 	unsigned char*		e;
 	long			size;
 	long			count;
@@ -487,7 +487,7 @@ describe(register Sfio_t* dp, char* desc, register Sfio_t* fp, char* file, int v
 int
 main(int argc, char** argv)
 {
-	register char*	file;
+	char*	file;
 	int		n;
 	Sfio_t*		fp;
 	Sfio_t*		dp;

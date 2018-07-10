@@ -76,8 +76,8 @@ getdents(int fd, void* buf, size_t siz)
 #else
 #if _lib_dirread
 	{
-		register char*		sp;	/* system */
-		register struct dirent*	up;	/* user */
+		char*		sp;	/* system */
+		struct dirent*	up;	/* user */
 		char*			u;
 		int			n;
 		int			m;
@@ -119,10 +119,10 @@ getdents(int fd, void* buf, size_t siz)
 
 #define MAXREC	roundof(sizeof(*up)-sizeof(up->d_name)+sizeof(sp->d_name)+1,8)
 
-		register struct direct*	sp;	/* system */
-		register struct dirent*	up;	/* user */
-		register char*		s;
-		register char*		u;
+		struct direct*	sp;	/* system */
+		struct dirent*	up;	/* user */
+		char*		s;
+		char*		u;
 		int			n;
 		int			m;
 		char			tmp[sizeof(sp->d_name) + 1];

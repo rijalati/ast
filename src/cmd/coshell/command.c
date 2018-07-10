@@ -41,7 +41,7 @@ static struct
  */
 
 static int
-cmdsend(int fd, int c, register char* s, register int n, int* code)
+cmdsend(int fd, int c, char* s, int n, int* code)
 {
 	int	i;
 	int	m;
@@ -160,8 +160,8 @@ cmdstop(int sig)
 int
 command(int fd, char** ap)
 {
-	register char*	s;
-	register int	n;
+	char*	s;
+	int	n;
 	int		c;
 	int		m;
 	int		helped = 0;
@@ -363,9 +363,9 @@ ffmtmode(int fd, int must)
 void
 server(int fd, int op, int sub, int arg, char* dat)
 {
-	register char*		s;
-	register int		n;
-	register Connection_t*	con;
+	char*		s;
+	int		n;
+	Connection_t*	con;
 	int			u;
 	int			hdr;
 	char*			t;

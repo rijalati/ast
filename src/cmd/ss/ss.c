@@ -104,8 +104,8 @@ static struct
 static void
 enter(char* name, int alloc)
 {
-	register int	n;
-	register Sys_t*	sp;
+	int	n;
+	Sys_t*	sp;
 
 	if (state.next >= state.end)
 	{
@@ -133,10 +133,10 @@ enter(char* name, int alloc)
 static int
 sort(const char* pa, const char* pb)
 {
-	register Sys_t*	a = (Sys_t*)pa;
-	register Sys_t*	b = (Sys_t*)pb;
-	register int	k;
-	register long	n;
+	Sys_t*	a = (Sys_t*)pa;
+	Sys_t*	b = (Sys_t*)pb;
+	int	k;
+	long	n;
 
 	for (k = state.keys; k; k >>= SHIFT)
 		switch (k & SORT)
@@ -174,9 +174,9 @@ sort(const char* pa, const char* pb)
 int
 main(int argc, char** argv)
 {
-	register Sys_t*		sp;
-	register Sys_t**	sv;
-	register struct dirent*	entry;
+	Sys_t*		sp;
+	Sys_t**	sv;
+	struct dirent*	entry;
 	int			n;
 	DIR*			dirp;
 	char			buf[PATH_MAX];

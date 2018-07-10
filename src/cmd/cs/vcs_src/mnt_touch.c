@@ -30,10 +30,10 @@ int im_touch_help(s)
 
 int im_touch(argc, argv)
 	int		argc;
-	register char**	argv;
+	char**	argv;
 {	
-	register int	n;
-	register char*	s;
+	int	n;
+	char*	s;
 	int		fd;
 	
 	error_info.id = argv[0];

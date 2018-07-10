@@ -30,7 +30,7 @@
 int
 fvcmp(int n, const unsigned char* a, const unsigned char* b)
 {
-	register int	i;
+	int	i;
 
 	for (i = 0; i < n; i++)
 		if (a[i] < b[i])
@@ -43,7 +43,7 @@ fvcmp(int n, const unsigned char* a, const unsigned char* b)
 int
 fvset(int n, unsigned char* r, long v)
 {
-	register int	i;
+	int	i;
 
 	i = n;
 	while (i--)
@@ -57,7 +57,7 @@ fvset(int n, unsigned char* r, long v)
 int
 fvior(int n, unsigned char* r, const unsigned char* a, const unsigned char* b)
 {
-	register int	i;
+	int	i;
 
 	for (i = 0; i < n; i++)
 		r[i] = a[i] | b[i];
@@ -67,7 +67,7 @@ fvior(int n, unsigned char* r, const unsigned char* a, const unsigned char* b)
 int
 fvxor(int n, unsigned char* r, const unsigned char* a, const unsigned char* b)
 {
-	register int	i;
+	int	i;
 
 	for (i = 0; i < n; i++)
 		r[i] = a[i] ^ b[i];
@@ -77,7 +77,7 @@ fvxor(int n, unsigned char* r, const unsigned char* a, const unsigned char* b)
 int
 fvand(int n, unsigned char* r, const unsigned char* a, const unsigned char* b)
 {
-	register int	i;
+	int	i;
 
 	for (i = 0; i < n; i++)
 		r[i] = a[i] & b[i];
@@ -93,9 +93,9 @@ fvodd(int n, const unsigned char* a)
 int
 fvlsh(int n, unsigned char* r, const unsigned char* a, int v)
 {
-	register int	i;
-	register int	b;
-	register int	g;
+	int	i;
+	int	b;
+	int	g;
 
 	if (g = v / 8)
 	{
@@ -116,9 +116,9 @@ fvlsh(int n, unsigned char* r, const unsigned char* a, int v)
 int
 fvrsh(int n, unsigned char* r, const unsigned char* a, int v)
 {
-	register int	i;
-	register int	b;
-	register int	g;
+	int	i;
+	int	b;
+	int	g;
 
 	if (g = v / 8)
 	{
@@ -139,7 +139,7 @@ fvrsh(int n, unsigned char* r, const unsigned char* a, int v)
 int
 fvnot(int n, unsigned char* r, const unsigned char* a)
 {
-	register int	i;
+	int	i;
 
 	for (i = 0; i < n; i++)
 		r[i]  = ~a[i];
@@ -149,9 +149,9 @@ fvnot(int n, unsigned char* r, const unsigned char* a)
 int
 fvadd(int n, unsigned char* r, const unsigned char* a, const unsigned char* b)
 {
-	register int	i;
-	register int	c;
-	register int	t;
+	int	i;
+	int	c;
+	int	t;
 
 	c = 0;
 	i = n;
@@ -166,9 +166,9 @@ fvadd(int n, unsigned char* r, const unsigned char* a, const unsigned char* b)
 int
 fvsub(int n, unsigned char* r, const unsigned char* a, const unsigned char* b)
 {
-	register int	i;
-	register int	c;
-	register int	t;
+	int	i;
+	int	c;
+	int	t;
 
 	c = 0;
 	i = n;
@@ -190,11 +190,11 @@ fvsub(int n, unsigned char* r, const unsigned char* a, const unsigned char* b)
 int
 fvmpy(int n, unsigned char* r, const unsigned char* a, const unsigned char* b)
 {
-	register int	i;
-	register int	j;
-	register int	m;
-	register int	c;
-	register int	t;
+	int	i;
+	int	j;
+	int	m;
+	int	c;
+	int	t;
 
 	fvset(n, r, 0);
 	for (i = 0; i < n - 1 && !a[i]; i++);
@@ -217,12 +217,12 @@ fvmpy(int n, unsigned char* r, const unsigned char* a, const unsigned char* b)
 int
 fvdiv(int n, unsigned char* r, unsigned char* m, const unsigned char* a, const unsigned char* b)
 {
-	register int	i;
-	register int	j;
-	register int	k;
-	register int	s;
-	register int	x;
-	register int	y;
+	int	i;
+	int	j;
+	int	k;
+	int	s;
+	int	x;
+	int	y;
 	unsigned char*	d;
 	unsigned char*	t;
 	unsigned char*	u;
@@ -316,8 +316,8 @@ fvdiv(int n, unsigned char* r, unsigned char* m, const unsigned char* a, const u
 char*
 fmtfv(int n, const unsigned char* a, int x, int c, int g)
 {
-	register int	i;
-	register int	p;
+	int	i;
+	int	p;
 	char*		s;
 	char*		o;
 	unsigned char*	b;
@@ -374,10 +374,10 @@ fmtfv(int n, const unsigned char* a, int x, int c, int g)
 int
 strfv(int n, unsigned char* r, const char* s, char** e, int b, int d)
 {
-	register int	c;
-	register int	i;
-	register int	t;
-	register int	x;
+	int	c;
+	int	i;
+	int	t;
+	int	x;
 
 	static unsigned char	dig[256];
 

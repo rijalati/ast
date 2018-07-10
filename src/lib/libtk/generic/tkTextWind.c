@@ -151,7 +151,7 @@ static Tk_ConfigSpec configSpecs[] = {
 
 int
 TkTextWindowCmd(textPtr, interp, argc, argv)
-    register TkText *textPtr;	/* Information about text widget. */
+    TkText *textPtr;	/* Information about text widget. */
     Tcl_Interp *interp;		/* Current interpreter. */
     int argc;			/* Number of arguments. */
     char **argv;		/* Argument strings.  Someone else has already
@@ -159,7 +159,7 @@ TkTextWindowCmd(textPtr, interp, argc, argv)
 				 * argv[1] is "window". */
 {
     size_t length;
-    register TkTextSegment *ewPtr;
+    TkTextSegment *ewPtr;
 
     if (argc < 3) {
 	Tcl_AppendResult(interp, "wrong # args: should be \"",
@@ -439,7 +439,7 @@ AlignParseProc(clientData, interp, tkwin, value, widgRec, offset)
 					 * structure. */
     int offset;				/* Offset into item (ignored). */
 {
-    register TkTextEmbWindow *embPtr = (TkTextEmbWindow *) widgRec;
+    TkTextEmbWindow *embPtr = (TkTextEmbWindow *) widgRec;
 
     if (strcmp(value, "baseline") == 0) {
 	embPtr->align = ALIGN_BASELINE;
@@ -528,7 +528,7 @@ EmbWinStructureProc(clientData, eventPtr)
     ClientData clientData;	/* Pointer to record describing window item. */
     XEvent *eventPtr;		/* Describes what just happened. */
 {
-    register TkTextSegment *ewPtr = (TkTextSegment *) clientData;
+    TkTextSegment *ewPtr = (TkTextSegment *) clientData;
     TkTextIndex index;
 
     if (eventPtr->type != DestroyNotify) {
@@ -603,7 +603,7 @@ EmbWinLostSlaveProc(clientData, tkwin)
     Tk_Window tkwin;		/* Window that was claimed away by another
 				 * geometry manager. */
 {
-    register TkTextSegment *ewPtr = (TkTextSegment *) clientData;
+    TkTextSegment *ewPtr = (TkTextSegment *) clientData;
     TkTextIndex index;
 
     Tk_DeleteEventHandler(ewPtr->body.ew.tkwin, StructureNotifyMask,
@@ -745,7 +745,7 @@ EmbWinLayoutProc(textPtr, indexPtr, ewPtr, offset, maxX, maxChars,
 				 * assigned to this line yet. */
     Tk_Uid wrapMode;		/* Wrap mode to use for line: tkTextCharUid,
 				 * tkTextNoneUid, or tkTextWordUid. */
-    register TkTextDispChunk *chunkPtr;
+    TkTextDispChunk *chunkPtr;
 				/* Structure to fill in with information
 				 * about this chunk.  The x field has already
 				 * been set by the caller. */
@@ -766,7 +766,7 @@ EmbWinLayoutProc(textPtr, indexPtr, ewPtr, offset, maxX, maxChars,
 	 * The window doesn't currently exist.  Create it by evaluating
 	 * the creation script.  The script must return the window's
 	 * path name:  look up that name to get back to the window
-	 * token.  Then register ourselves as the geometry manager for
+	 * token.  Then ourselves as the geometry manager for
 	 * the window.
 	 */
 

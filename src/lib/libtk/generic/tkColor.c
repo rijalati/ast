@@ -352,7 +352,7 @@ char *
 Tk_NameOfColor(colorPtr)
     XColor *colorPtr;		/* Color whose name is desired. */
 {
-    register TkColor *tkColPtr = (TkColor *) colorPtr;
+    TkColor *tkColPtr = (TkColor *) colorPtr;
     static char string[20];
 
     if ((tkColPtr->magic == COLOR_MAGIC)
@@ -441,7 +441,7 @@ Tk_FreeColor(colorPtr)
 				 * allocated by Tk_GetColor or
 				 * Tk_GetColorByValue. */
 {
-    register TkColor *tkColPtr = (TkColor *) colorPtr;
+    TkColor *tkColPtr = (TkColor *) colorPtr;
     Visual *visual;
     Screen *screen = tkColPtr->screen;
 

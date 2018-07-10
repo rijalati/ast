@@ -38,12 +38,12 @@
  */
 
 int
-ppcall(register struct ppsymbol* sym, int tok)
+ppcall(struct ppsymbol* sym, int tok)
 {
-	register int			c;
-	register char*			p;
-	register char*			q;
-	register struct ppmacro*	mac;
+	int			c;
+	char*			p;
+	char*			q;
+	struct ppmacro*	mac;
 	int				n;
 	int				m;
 	int				ret;

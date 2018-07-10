@@ -61,9 +61,9 @@ typedef struct Ar_s
 } Ar_t;
 
 static int
-tp_done(Pax_t* pax, register Paxarchive_t* ap)
+tp_done(Pax_t* pax, Paxarchive_t* ap)
 {
-	register Ar_t*	ar = (Ar_t*)ap->data;
+	Ar_t*	ar = (Ar_t*)ap->data;
 
 	if (!ar)
 		return -1;
@@ -74,11 +74,11 @@ tp_done(Pax_t* pax, register Paxarchive_t* ap)
 }
 
 static int
-tp_getprologue(Pax_t* pax, Paxformat_t* fp, register Paxarchive_t* ap, Paxfile_t* f, unsigned char* buf, size_t size)
+tp_getprologue(Pax_t* pax, Paxformat_t* fp, Paxarchive_t* ap, Paxfile_t* f, unsigned char* buf, size_t size)
 {
-	register Ar_t*		ar;
-	register ui1*		s;
-	register ui1*		e;
+	Ar_t*		ar;
+	ui1*		s;
+	ui1*		e;
 	int16_t			w;
 	size_t			n;
 
@@ -110,12 +110,12 @@ tp_getprologue(Pax_t* pax, Paxformat_t* fp, register Paxarchive_t* ap, Paxfile_t
 }
 
 static int
-tp_getheader(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f)
+tp_getheader(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f)
 {
-	register Ar_t*		ar = (Ar_t*)ap->data;
-	register Dir_t*		dp;
-	register ui1*		s;
-	register ui1*		e;
+	Ar_t*		ar = (Ar_t*)ap->data;
+	Dir_t*		dp;
+	ui1*		s;
+	ui1*		e;
 	int16_t			w;
 
 	do
@@ -148,7 +148,7 @@ tp_getheader(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f)
 }
 
 static int
-tp_getdata(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f, int fd)
+tp_getdata(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f, int fd)
 {
 	Sfio_t*		sp;
 	off_t		skip;

@@ -34,7 +34,7 @@ NoN(pss_null)
 #else
 
 static int
-null_init(register Pss_t* pss)
+null_init(Pss_t* pss)
 {
 	return 0;
 }

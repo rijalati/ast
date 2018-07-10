@@ -39,9 +39,9 @@ typedef struct State_s
 static int
 flatident(Dssfile_t* file, void* buf, size_t n, Dssdisc_t* disc)
 {
-	register char*	s = buf;
-	register char*	e = s + n;
-	register int	d = 0;
+	char*	s = buf;
+	char*	e = s + n;
+	int	d = 0;
 
 	while (s < e)
 		switch (*s++)
@@ -84,7 +84,7 @@ flatopen(Dssfile_t* file, Dssdisc_t* disc)
 static int
 flatread(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register Netflow_t*	rp = &((State_t*)file->data)->record;
+	Netflow_t*	rp = &((State_t*)file->data)->record;
 	char*			a;
 	char*			b;
 	char*			s;
@@ -180,7 +180,7 @@ flatread(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 static int
 flatwrite(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register Netflow_t*	rp = (Netflow_t*)record->data;
+	Netflow_t*	rp = (Netflow_t*)record->data;
 
 	if (sfprintf(file->io, "%d.%d.%d.%d|%d.%d.%d.%d|%d.%d.%d.%d|%u|%u|%u|%u|%u|%u|%u|%u|%u|%u|%u|%u|%u|%u|%u|%u|%u\n"
 		, IPQ(rp->src_addrv4)

@@ -34,7 +34,7 @@
 static Format_t*
 scan(void)
 {
-	register Format_t*	fp;
+	Format_t*	fp;
 	Format_t*		lp;
 	Format_t*		rp;
 	Dllscan_t*		dls;
@@ -87,9 +87,9 @@ nextformat(Format_t* fp)
  */
 
 Format_t*
-getformat(register char* name, int must)
+getformat(char* name, int must)
 {
-	register Format_t*	fp;
+	Format_t*	fp;
 
 	if (!name || !*name || streq(name, "-"))
 		name = FMT_DEFAULT;
@@ -107,10 +107,10 @@ getformat(register char* name, int must)
  */
 
 static int
-pathcmp(register const char* s, register const char* t)
+pathcmp(const char* s, const char* t)
 {
-	register int	sc;
-	register int	tc;
+	int	sc;
+	int	tc;
 
 	for (;;)
 	{
@@ -144,10 +144,10 @@ ordered(Archive_t* ap, const char* prv, const char* cur)
  */
 
 int
-selectfile(register Archive_t* ap, register File_t* f)
+selectfile(Archive_t* ap, File_t* f)
 {
-	register Archive_t*	bp;
-	register Member_t*	d;
+	Archive_t*	bp;
+	Member_t*	d;
 	int			linked = 0;
 	int			c;
 	Tv_t			t;
@@ -235,8 +235,8 @@ selectfile(register Archive_t* ap, register File_t* f)
 	}
 	if (state.ordered && ap->delta && !(ap->delta->format->flags & COMPRESS) && (bp = ap->delta->base))
 	{
-		register int	n;
-		register int	m;
+		int	n;
+		int	m;
 
 		for (;;)
 		{
@@ -309,9 +309,9 @@ selectfile(register Archive_t* ap, register File_t* f)
  */
 
 int
-verify(Archive_t* ap, register File_t* f, register char* prompt)
+verify(Archive_t* ap, File_t* f, char* prompt)
 {
-	register char*	name;
+	char*	name;
 
 	NoP(ap);
 	if (!prompt)
@@ -371,7 +371,7 @@ verify(Archive_t* ap, register File_t* f, register char* prompt)
 void
 undos(File_t* f)
 {
-	register char*	s;
+	char*	s;
 
 	if (strchr(f->name, '\\'))
 	{
@@ -395,9 +395,9 @@ undos(File_t* f)
  */
 
 char*
-map(Archive_t* ap, register char* name)
+map(Archive_t* ap, char* name)
 {
-	register Map_t*	mp;
+	Map_t*	mp;
 	char*		to;
 	char*		from;
 	File_t		f;
@@ -457,11 +457,11 @@ typedef struct
  */
 
 static int
-listlookup(void* handle, register Sffmt_t* fmt, const char* arg, char** ps, Sflong_t* pn)
+listlookup(void* handle, Sffmt_t* fmt, const char* arg, char** ps, Sflong_t* pn)
 {
 	List_handle_t*		gp = (List_handle_t*)handle;
-	register File_t*	f = gp->file;
-	register struct stat*	st = f->st;
+	File_t*	f = gp->file;
+	struct stat*	st = f->st;
 	char*			s = 0;
 	Sflong_t		n = 0;
 	Time_t			t = TMX_NOTIME;
@@ -834,7 +834,7 @@ listprintf(Sfio_t* sp, Archive_t* ap, File_t* f, const char* format)
  */
 
 void
-listentry(register File_t* f)
+listentry(File_t* f)
 {
 	int	n;
 	int	p;
@@ -926,8 +926,8 @@ listentry(register File_t* f)
 void
 initmatch(char** v)
 {
-	register char*	s;
-	register char**	a;
+	char*	s;
+	char**	a;
 	Pattern_t*	p;
 	size_t		n;
 	size_t		m;
@@ -953,9 +953,9 @@ initmatch(char** v)
  */
 
 int
-match(register char* s)
+match(char* s)
 {
-	register Pattern_t*	p;
+	Pattern_t*	p;
 	int			n;
 
 	if (!(p = state.pattern))
@@ -997,7 +997,7 @@ match(register char* s)
  */
 
 int
-dirprefix(register char* p, register char* s, int proper)
+dirprefix(char* p, char* s, int proper)
 {
 	if (*p == '.' && !*(p + 1) && *s != '/' && (*s != '.' || *(s + 1) != '.' || *(s + 2) && *(s + 2) != '/'))
 		return !proper;
@@ -1016,7 +1016,7 @@ dirprefix(register char* p, register char* s, int proper)
  */
 
 char*
-stash(register Value_t* v, const char* s, size_t z)
+stash(Value_t* v, const char* s, size_t z)
 {
 	if (!z)
 	{
@@ -1055,7 +1055,7 @@ nospace(void)
  */
 
 void
-complete(Archive_t* ap, register File_t* f, size_t header)
+complete(Archive_t* ap, File_t* f, size_t header)
 {
 	off_t	n;
 
@@ -1083,7 +1083,7 @@ complete(Archive_t* ap, register File_t* f, size_t header)
 void
 undoable(Archive_t* ap, Format_t* fp)
 {
-	register Compress_format_t*	cp = (Compress_format_t*)fp->data;
+	Compress_format_t*	cp = (Compress_format_t*)fp->data;
 	char				buf[PATH_MAX];
 
 	if (!pathpath(cp->undo[0], NiL, PATH_EXECUTE, buf, sizeof(buf)))

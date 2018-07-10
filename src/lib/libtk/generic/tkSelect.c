@@ -67,7 +67,7 @@ static int		SelGetProc _ANSI_ARGS_((ClientData clientData,
  *
  * Tk_CreateSelHandler --
  *
- *	This procedure is called to register a procedure
+ *	This procedure is called to a procedure
  *	as the handler for selection requests of a particular
  *	target type on a particular window for a particular
  *	selection.
@@ -125,7 +125,7 @@ Tk_CreateSelHandler(tkwin, selection, target, proc, clientData, format)
 				 * far, but anything listed in the ICCCM
 				 * will be tolerated (blech). */
 {
-    register TkSelHandler *selPtr;
+    TkSelHandler *selPtr;
     TkWindow *winPtr = (TkWindow *) tkwin;
 
     if (winPtr->dispPtr->multipleAtom == None) {
@@ -197,8 +197,8 @@ Tk_DeleteSelHandler(tkwin, selection, target)
 					 * handler is to be removed. */
 {
     TkWindow *winPtr = (TkWindow *) tkwin;
-    register TkSelHandler *selPtr, *prevPtr;
-    register TkSelInProgress *ipPtr;
+    TkSelHandler *selPtr, *prevPtr;
+    TkSelInProgress *ipPtr;
 
     /*
      * Find the selection handler to be deleted, or return if it doesn't
@@ -274,7 +274,7 @@ Tk_OwnSelection(tkwin, selection, proc, clientData)
     ClientData clientData;	/* Arbitrary one-word argument to
 				 * pass to proc. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
     TkDisplay *dispPtr = winPtr->dispPtr;
     TkSelectionInfo *infoPtr;
     Tk_LostSelProc *clearProc = NULL;
@@ -381,7 +381,7 @@ Tk_ClearSelection(tkwin, selection)
     Tk_Window tkwin;		/* Window that selects a display. */
     Atom selection;		/* Selection to be cancelled. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
     TkDisplay *dispPtr = winPtr->dispPtr;
     TkSelectionInfo *infoPtr;
     TkSelectionInfo *prevPtr;
@@ -499,7 +499,7 @@ Tk_GetSelection(interp, tkwin, selection, target, proc, clientData)
 	    break;
     }
     if (infoPtr != NULL) {
-	register TkSelHandler *selPtr;
+	TkSelHandler *selPtr;
 	int offset, result, count;
 	char buffer[TK_SEL_BYTES_AT_ONCE+1];
 	TkSelInProgress ip;
@@ -720,7 +720,7 @@ Tk_SelectionCmd(clientData, interp, argc, argv)
 	Atom target, format;
 	char *targetName = NULL;
 	char *formatName = NULL;
-	register CommandInfo *cmdInfoPtr;
+	CommandInfo *cmdInfoPtr;
 	int cmdLength;
 	
 	for (count = argc-2, args = argv+2; count > 0; count -= 2, args += 2) {
@@ -792,7 +792,7 @@ Tk_SelectionCmd(clientData, interp, argc, argv)
 	}
 	return TCL_OK;
     } else if ((c == 'o') && (strncmp(argv[1], "own", length) == 0)) {
-	register LostCommand *lostPtr;
+	LostCommand *lostPtr;
 	char *script = NULL;
 	int cmdLength;
 
@@ -904,10 +904,10 @@ Tk_SelectionCmd(clientData, interp, argc, argv)
 
 void
 TkSelDeadWindow(winPtr)
-    register TkWindow *winPtr;	/* Window that's being deleted. */
+    TkWindow *winPtr;	/* Window that's being deleted. */
 {
-    register TkSelHandler *selPtr;
-    register TkSelInProgress *ipPtr;
+    TkSelHandler *selPtr;
+    TkSelInProgress *ipPtr;
     TkSelectionInfo *infoPtr, *prevPtr, *nextPtr;
 
     /*
@@ -974,7 +974,7 @@ TkSelInit(tkwin)
     Tk_Window tkwin;		/* Window token (used to find
 				 * display to initialize). */
 {
-    register TkDisplay *dispPtr = ((TkWindow *) tkwin)->dispPtr;
+    TkDisplay *dispPtr = ((TkWindow *) tkwin)->dispPtr;
 
     /*
      * Fetch commonly-used atoms.
@@ -1011,9 +1011,9 @@ TkSelInit(tkwin)
 void
 TkSelClearSelection(tkwin, eventPtr)
     Tk_Window tkwin;		/* Window for which event was targeted. */
-    register XEvent *eventPtr;	/* X SelectionClear event. */
+    XEvent *eventPtr;	/* X SelectionClear event. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
     TkDisplay *dispPtr = winPtr->dispPtr;
     TkSelectionInfo *infoPtr;
     TkSelectionInfo *prevPtr;
@@ -1209,7 +1209,7 @@ TkSelDefaultSelection(infoPtr, target, buffer, maxBytes, typePtr)
     Atom *typePtr;		/* Store here the type of the selection,
 				 * for use in converting to proper X format. */
 {
-    register TkWindow *winPtr = (TkWindow *) infoPtr->owner;
+    TkWindow *winPtr = (TkWindow *) infoPtr->owner;
     TkDisplay *dispPtr = winPtr->dispPtr;
 
     if (target == dispPtr->timestampAtom) {
@@ -1222,7 +1222,7 @@ TkSelDefaultSelection(infoPtr, target, buffer, maxBytes, typePtr)
     }
 
     if (target == dispPtr->targetsAtom) {
-	register TkSelHandler *selPtr;
+	TkSelHandler *selPtr;
 	char *atomString;
 	int length, atomLength;
 

@@ -114,9 +114,9 @@ static Exid_t	symbols[] =
  */
 
 static Ftw_t*
-deref(register Ftw_t* ftw, Exid_t* sym, register Exref_t* ref)
+deref(Ftw_t* ftw, Exid_t* sym, Exref_t* ref)
 {
-	register char*	path;
+	char*	path;
 
 	path = ftw->path;
 	while (ref)
@@ -163,12 +163,12 @@ sum(Exsum_t* sum, const char* path)
  */
 
 static char*
-fmturl(register const char* path)
+fmturl(const char* path)
 {
-	register unsigned char*	p;
-	register char*		s;
-	register int		n;
-	register int		c;
+	unsigned char*	p;
+	char*		s;
+	int		n;
+	int		c;
 	char*			r;
 
 	static const char	hex[] = "0123456789ABCDEF";
@@ -200,8 +200,8 @@ fmturl(register const char* path)
 static Extype_t
 getval(Expr_t* pgm, Exnode_t* node, Exid_t* sym, Exref_t* ref, void* env, int elt, Exdisc_t* disc)
 {
-	register struct stat*	st;
-	register Ftw_t*		ftw;
+	struct stat*	st;
+	Ftw_t*		ftw;
 	Extype_t		v;
 	Local_t*		lp;
 	Sfio_t*			fp;
@@ -593,7 +593,7 @@ refval(Expr_t* pgm, Exnode_t* node, Exid_t* sym, Exref_t* ref, char* str, int el
 static int
 setval(Expr_t* pgm, Exnode_t* node, Exid_t* sym, Exref_t* ref, void* env, int elt, Extype_t val, Exdisc_t* disc)
 {
-	register Ftw_t*	ftw;
+	Ftw_t*	ftw;
 	Fileid_t	id;
 	Visit_t*	vp;
 	Local_t*	lp;
@@ -680,9 +680,9 @@ matchval(Expr_t* pgm, Exnode_t* xstr, const char* str, Exnode_t* xpat, const cha
  */
 
 static int
-convert(Expr_t* prog, register Exnode_t* x, int type, register Exid_t* xref, int arg, Exdisc_t* disc)
+convert(Expr_t* prog, Exnode_t* x, int type, Exid_t* xref, int arg, Exdisc_t* disc)
 {
-	register Sflong_t	n;
+	Sflong_t	n;
 	time_t			t;
 	char*			s;
 
@@ -850,7 +850,7 @@ getnum(Exid_t* sym, Ftw_t* ftw)
  */
 
 static int
-key(void* handle, register Sffmt_t* fp, const char* arg, char** ps, Sflong_t* pn)
+key(void* handle, Sffmt_t* fp, const char* arg, char** ps, Sflong_t* pn)
 {
 	Ftw_t*		ftw = (Ftw_t*)handle;
 	Exid_t*		sym;

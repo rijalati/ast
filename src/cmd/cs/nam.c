@@ -51,7 +51,7 @@ typedef struct
 static int
 svc_connect(void* handle, int fd, CSID* id, int clone, char** args)
 {
-	register State_t*	state = (State_t*)handle;
+	State_t*	state = (State_t*)handle;
 
 	NoP(fd);
 	NoP(id);
@@ -70,8 +70,8 @@ static int
 svc_read(void* handle, int fd)
 {
 	State_t*	state = (State_t*)handle;
-	register char*	b;
-	register int	n;
+	char*	b;
+	int	n;
 	int		getfd;
 	int		ud;
 	char*		msg;

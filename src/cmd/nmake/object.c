@@ -318,10 +318,10 @@ getstring(Sfio_t* sp)
  */
 
 static void
-putstring(register Sfio_t* sp, register const char* s, int sep)
+putstring(Sfio_t* sp, const char* s, int sep)
 {
-	register int		c;
-	register unsigned char*	map;
+	int		c;
+	unsigned char*	map;
 
 	if (map = object.n2a)
 	{
@@ -339,9 +339,9 @@ putstring(register Sfio_t* sp, register const char* s, int sep)
  */
 
 static void
-markcompile(register Rule_t* r)
+markcompile(Rule_t* r)
 {
-	register List_t*	p;
+	List_t*	p;
 
 	r->dynamic &= ~D_compiled;
 	r->mark |= M_compile;
@@ -355,10 +355,10 @@ markcompile(register Rule_t* r)
  */
 
 static void
-markgarbage(register Rule_t* r, int garbage)
+markgarbage(Rule_t* r, int garbage)
 {
-	register List_t*	p;
-	register int		i;
+	List_t*	p;
+	int		i;
 	Rule_t*			x;
 
 	r->mark |= M_compile;
@@ -379,10 +379,10 @@ markgarbage(register Rule_t* r, int garbage)
  */
 
 static void
-compstring(register Compstate_t* cs, register char* s)
+compstring(Compstate_t* cs, char* s)
 {
-	register int		c;
-	register unsigned char*	map;
+	int		c;
+	unsigned char*	map;
 
 	if (s)
 	{
@@ -407,7 +407,7 @@ compstring(register Compstate_t* cs, register char* s)
 static int
 compinit(const char* s, char* v, void* h)
 {
-	register Rule_t*	r = (Rule_t*)v;
+	Rule_t*	r = (Rule_t*)v;
 
 	NoP(s);
 	r->complink = 0;
@@ -433,8 +433,8 @@ compinit(const char* s, char* v, void* h)
 static int
 compselect(const char* s, char* v, void* h)
 {
-	register Rule_t*	r = (Rule_t*)v;
-	register char*		select = (char*)h;
+	Rule_t*	r = (Rule_t*)v;
+	char*		select = (char*)h;
 
 	NoP(s);
 	if (!(r->mark & M_compile) && (r->dynamic & D_compiled))
@@ -459,7 +459,7 @@ compselect(const char* s, char* v, void* h)
 static int
 compstate(const char* s, char* v, void* h)
 {
-	register Rule_t*		r = (Rule_t*)v;
+	Rule_t*		r = (Rule_t*)v;
 
 	NoP(s);
 	NoP(h);
@@ -483,8 +483,8 @@ compstate(const char* s, char* v, void* h)
 static int
 compmark(const char* s, char* v, void* h)
 {
-	register Rule_t*	r = (Rule_t*)v;
-	register List_t*	p;
+	Rule_t*	r = (Rule_t*)v;
+	List_t*	p;
 
 	NoP(s);
 	NoP(h);
@@ -510,7 +510,7 @@ compmark(const char* s, char* v, void* h)
 static int
 compkeep(const char* s, char* v, void* h)
 {
-	register Rule_t*	r = (Rule_t*)v;
+	Rule_t*	r = (Rule_t*)v;
 
 	NoP(s);
 	NoP(h);
@@ -526,9 +526,9 @@ compkeep(const char* s, char* v, void* h)
 static int
 comprule(const char* s, char* v, void* h)
 {
-	register Rule_t*	r = (Rule_t*)v;
-	register List_t*	p;
-	register Compstate_t*	cs = (Compstate_t*)h;
+	Rule_t*	r = (Rule_t*)v;
+	List_t*	p;
+	Compstate_t*	cs = (Compstate_t*)h;
 	Rule_t			x;
 
 	NoP(s);
@@ -621,9 +621,9 @@ comprule(const char* s, char* v, void* h)
 static int
 compcheck(const char* s, char* v, void* h)
 {
-	register Rule_t*		r = (Rule_t*)v;
-	register List_t*		p;
-	register Rule_t*		a;
+	Rule_t*		r = (Rule_t*)v;
+	List_t*		p;
+	Rule_t*		a;
 
 	/*
 	 * ignore aliases and rules not set up by comprule()
@@ -658,9 +658,9 @@ compcheck(const char* s, char* v, void* h)
 static int
 complist(const char* s, char* v, void* h)
 {
-	register Rule_t*	r = (Rule_t*)v;
-	register List_t*	p;
-	register Compstate_t*	cs = (Compstate_t*)h;
+	Rule_t*	r = (Rule_t*)v;
+	List_t*	p;
+	Compstate_t*	cs = (Compstate_t*)h;
 
 	/*
 	 * ignore aliases and rules not set up by comprule()
@@ -684,8 +684,8 @@ complist(const char* s, char* v, void* h)
 static int
 compvar(const char* s, char* u, void* h)
 {
-	register Var_t*		v = (Var_t*)u;
-	register Compstate_t*	cs = (Compstate_t*)h;
+	Var_t*		v = (Var_t*)u;
+	Compstate_t*	cs = (Compstate_t*)h;
 	char*			t;
 	unsigned long		property;
 	char*			value;
@@ -753,7 +753,7 @@ compvar(const char* s, char* u, void* h)
 static int
 clearmarks(const char* s, char* v, void* h)
 {
-	register Rule_t*	r = (Rule_t*)v;
+	Rule_t*	r = (Rule_t*)v;
 
 	NoP(s);
 	NoP(h);
@@ -769,7 +769,7 @@ clearmarks(const char* s, char* v, void* h)
 void
 compile(char* objfile, char* select)
 {
-	register Sfio_t*	sp;
+	Sfio_t*	sp;
 	List_t*			p;
 	List_t*			q;
 	Rule_t*			r;
@@ -1036,7 +1036,7 @@ compile(char* objfile, char* select)
 }
 
 /*
- * register input file prerequisite
+ * input file prerequisite
  */
 
 void
@@ -1076,8 +1076,8 @@ compref(Rule_t* r, int type)
 static int
 promote(const char* s, char* v, void* h)
 {
-	register Rule_t*	r = (Rule_t*)v;
-	register List_t*	p;
+	Rule_t*	r = (Rule_t*)v;
+	List_t*	p;
 
 	NoP(s);
 	NoP(h);
@@ -1105,8 +1105,8 @@ promote(const char* s, char* v, void* h)
 static int
 atomize(const char* s, char* v, void* h)
 {
-	register Rule_t*	r = (Rule_t*)v;
-	register List_t*	p;
+	Rule_t*	r = (Rule_t*)v;
+	List_t*	p;
 
 	NoP(s);
 	NoP(h);
@@ -1130,9 +1130,9 @@ atomize(const char* s, char* v, void* h)
 static int
 repair(const char* s, char* v, void* h)
 {
-	register Rule_t*	r = (Rule_t*)v;
-	register List_t*	p;
-	register List_t*	q;
+	Rule_t*	r = (Rule_t*)v;
+	List_t*	p;
+	List_t*	q;
 
 	NoP(s);
 	NoP(h);
@@ -1204,8 +1204,8 @@ remtmp(int fatal)
 static char*
 loadstring(Loadstate_t* ls, Sfio_t* sp)
 {
-	register int	n;
-	register char*	s;
+	int	n;
+	char*	s;
 
 	if (!(n = sfgetu(sp)) || sfeof(sp))
 		return 0;
@@ -1232,9 +1232,9 @@ loadinit(void)
  */
 
 int
-loadable(register Sfio_t* sp, register Rule_t* r, int source)
+loadable(Sfio_t* sp, Rule_t* r, int source)
 {
-	register List_t*	p;
+	List_t*	p;
 	char*			s;
 	char*			sn;
 	long			n;
@@ -1420,13 +1420,13 @@ loadable(register Sfio_t* sp, register Rule_t* r, int source)
  */
 
 int
-load(register Sfio_t* sp, const char* objfile, int source, int ucheck)
+load(Sfio_t* sp, const char* objfile, int source, int ucheck)
 {
-	register int		n;
-	register Rule_t*	r;
-	register Var_t*		v;
-	register List_t*	d;
-	register char*		s;
+	int		n;
+	Rule_t*	r;
+	Var_t*		v;
+	List_t*	d;
+	char*		s;
 	char*			p = 0;
 	int			promoted = 0;
 	int			recompile = 0;
@@ -1774,7 +1774,7 @@ load(register Sfio_t* sp, const char* objfile, int source, int ucheck)
 	hashclear(table.rule, HASH_ALLOCATE);
 	for (xr = r + rules; r < xr; r++)
 	{
-		register Rule_t*	o;
+		Rule_t*	o;
 
 		if (old)
 		{

@@ -39,7 +39,7 @@ USAGE_LICENSE
 "	is done, many features are ignored in the mapping to \bhtml\b.]"
 "[+?The \atroff\a \bt\b condition test evaluates \btrue\b, the \bn\b"
 "	condition tests evaluates \bfalse\b, and the \agroff\a compatibility"
-"	register \b\\\\n[.C]]\b evaluates to 0 (enable \agroff\a parsing)"
+"	\b\\\\n[.C]]\b evaluates to 0 (enable \agroff\a parsing)"
 "	if it is referenced before the first \agroff\a \b.cp\b (compatibility"
 "	mode) request.]"
 "[+?The generated \bhtml\b has properly nested begin/end tags, even though most"
@@ -244,7 +244,7 @@ use(Sfio_t* sp)
 static void
 pushin(char* name, int line, Sfio_t* ip, char* data, Arg_t* arg)
 {
-	register Pushin_t*	pp;
+	Pushin_t*	pp;
 	int			n;
 
 	if (state.in_top >= &state.in_stack[elementsof(state.in_stack)])
@@ -318,11 +318,11 @@ static long	expression(char*, char**, int);
  */
 
 static long
-operand(register char* s, char** e, int scale)
+operand(char* s, char** e, int scale)
 {
-	register int	c;
-	register long	n;
-	register long	f;
+	int	c;
+	long	n;
+	long	f;
 	int		abs;
 	int		neg;
 	long		d;
@@ -593,13 +593,13 @@ expression(char* s, char** e, int scale)
  */
 
 static long
-cond(register char* s, char** e)
+cond(char* s, char** e)
 {
-	register int	c;
-	register int	i;
-	register int	q;
-	register long	v;
-	register char*	t;
+	int	c;
+	int	i;
+	int	q;
+	long	v;
+	char*	t;
 	char*		u;
 
 	while (isspace(*s))
@@ -694,7 +694,7 @@ static void	expand(Sfio_t*, char*);
 static int
 popin(void)
 {
-	register Pushin_t*	pp;
+	Pushin_t*	pp;
 	int			n;
 
 	if (state.in_top <= state.in_stack)
@@ -752,10 +752,10 @@ popin(void)
  */
 
 static char*
-nam(int type, register char* name, char* buf, size_t n)
+nam(int type, char* name, char* buf, size_t n)
 {
-	register char*	t = buf;
-	register char*	e = t + n - 1;
+	char*	t = buf;
+	char*	e = t + n - 1;
 
 	*t++ = type;
 	if ((*t++ = *name++) && (*t++ = *name))
@@ -769,14 +769,14 @@ nam(int type, register char* name, char* buf, size_t n)
 }
 
 /*
- * return number register pointer given name
+ * return number pointer given name
  * pointer created if not found
  */
 
 static Num_t*
-num(register char* s)
+num(char* s)
 {
-	register Num_t*	np;
+	Num_t*	np;
 	char		buf[MAXNAME];
 
 	if (!(np = (Num_t*)hashget(state.symbols, nam('n', s, buf, sizeof(buf)))))
@@ -797,7 +797,7 @@ num(register char* s)
 static Stream_t*
 iop(char* s, int force)
 {
-	register Stream_t*	sp;
+	Stream_t*	sp;
 	char			buf[MAXNAME];
 
 	if (!(sp = (Stream_t*)hashget(state.symbols, nam('s', s, buf, sizeof(buf)))))
@@ -981,7 +981,7 @@ set(Tag_t* mp, char* value, int append)
 static Tag_t*
 mac(char* name)
 {
-	register Tag_t*	mp;
+	Tag_t*	mp;
 	char		buf[MAXNAME];
 
 	if (!(mp = (Tag_t*)hashget(state.symbols, nam('.', name, buf, sizeof(buf)))))
@@ -996,7 +996,7 @@ mac(char* name)
 static Env_t*
 env(char* s)
 {
-	register Env_t*	v;
+	Env_t*	v;
 	char*		e;
 	long		n;
 	char		buf[MAXNAME];
@@ -1035,8 +1035,8 @@ env(char* s)
 static Sfio_t*
 find(char* name, char** found, int verbose)
 {
-	register char*		s;
-	register Sfio_t*	sp;
+	char*		s;
+	Sfio_t*	sp;
 	char*			path;
 	char*			t;
 	char*			x;
@@ -1224,9 +1224,9 @@ join(Arg_t* ap, int n)
  */
 
 static void
-notify(register char* s)
+notify(char* s)
 {
-	register int	c;
+	int	c;
 	Sfoff_t		p;
 
 	p = sftell(sfstderr);
@@ -1305,18 +1305,18 @@ trigger(Trap_t** xp)
 }
 
 /*
- * return value for register name with type
+ * return value for name with type
  * and increment/decrement i={0,'+','-'}
  */
 
 static char*
 value(char* name, int type, int i)
 {
-	register Num_t*	np;
-	register char*	b;
-	register char*	x;
-	register long	n;
-	register long	m;
+	Num_t*	np;
+	char*	b;
+	char*	x;
+	long	n;
+	long	m;
 	Tag_t*		tp;
 	char		buf[8];
 
@@ -1358,7 +1358,7 @@ value(char* name, int type, int i)
 	}
 	np = (Num_t*)b;
 	if (np->flags & TAG_TRACE_GET)
-		error(2, "get register %s %d %d", np->name + 1, np->number, np->increment);
+		error(2, "get %s %d %d", np->name + 1, np->number, np->increment);
 	if (np->internal)
 	{
 		switch (INDEX(name[1], name[2]))
@@ -1500,7 +1500,7 @@ value(char* name, int type, int i)
 			break;
 		}
 		if (np->flags & TAG_TRACE_SET)
-			error(2, "set register %s %d %d", np->name + 1, np->number, np->increment);
+			error(2, "set %s %d %d", np->name + 1, np->number, np->increment);
 	}
 	n = np->number;
 	b = np->value;
@@ -1610,10 +1610,10 @@ value(char* name, int type, int i)
 static char*
 interpolate(int type)
 {
-	register int	c;
-	register char*	b;
-	register char*	x;
-	register char*	t;
+	int	c;
+	char*	b;
+	char*	x;
+	char*	t;
 	int		i;
 	int		k;
 	char		buf[MAXNAME];
@@ -1775,7 +1775,7 @@ li(int force)
 static void
 it(void)
 {
-	register List_t*	p;
+	List_t*	p;
 
 	if (state.env->nf)
 	{
@@ -1819,7 +1819,7 @@ it(void)
 static void
 nr(char* s, int v, int format, int internal)
 {
-	register Num_t*	np;
+	Num_t*	np;
 
 	np = num(s);
 	np->number = v;
@@ -1851,7 +1851,7 @@ tm(time_t t)
  */
 
 static void
-expand(register Sfio_t* op, register char* s)
+expand(Sfio_t* op, char* s)
 {
 	int	c;
 	int	d;
@@ -2063,13 +2063,13 @@ expand(register Sfio_t* op, register char* s)
 }
 
 /*
- * remove macro/register s
+ * remove macro/s
  */
 
 static void
 rm(char* s)
 {
-	register Tag_t*	mp;
+	Tag_t*	mp;
 	char		buf[MAXNAME];
 
 	if (mp = (Tag_t*)hashget(state.symbols, nam('.', s, buf, sizeof(buf))))
@@ -2085,7 +2085,7 @@ rm(char* s)
 	if (mp = (Tag_t*)hashget(state.symbols, nam('n', s, buf, sizeof(buf))))
 	{
 		if (mp->flags & TAG_TRACE_SET)
-			error(2, "remove register %s", mp->name + 1);
+			error(2, "remove %s", mp->name + 1);
 		if (mp->size)
 			free(mp->body);
 		if (!(mp->flags & TAG_STATIC))
@@ -2100,10 +2100,10 @@ rm(char* s)
  */
 
 static void
-skip(char* s, int f, register Sfio_t* op)
+skip(char* s, int f, Sfio_t* op)
 {
-	register int	c;
-	register int	n;
+	int	c;
+	int	n;
 
 	n = (f & COND_BLOCK) != 0;
 	if (s)
@@ -2241,7 +2241,7 @@ groff_asciify(Tag_t* tp, Arg_t* ap)
 static void
 groff_break(Tag_t* tp, Arg_t* ap)
 {
-	register Pushin_t*	pp;
+	Pushin_t*	pp;
 
 	for (pp = state.in_top; pp >= state.in_stack; pp--)
 		if (pp->loop)
@@ -2256,8 +2256,8 @@ groff_break(Tag_t* tp, Arg_t* ap)
 static void
 groff_chop(Tag_t* tp, Arg_t* ap)
 {
-	register char*	s;
-	register Tag_t*	mp;
+	char*	s;
+	Tag_t*	mp;
 
 	if (ap->argc >= 1)
 	{
@@ -2289,7 +2289,7 @@ groff_close(Tag_t* tp, Arg_t* ap)
 static void
 groff_continue(Tag_t* tp, Arg_t* ap)
 {
-	register Pushin_t*	pp;
+	Pushin_t*	pp;
 
 	for (pp = state.in_top; pp >= state.in_stack; pp--)
 		if (pp->loop)
@@ -2377,9 +2377,9 @@ groff_rnn(Tag_t* tp, Arg_t* ap)
 static void
 groff_shift(Tag_t* tp, Arg_t* ap)
 {
-	register int	n;
-	register int	i;
-	register Arg_t*	pp;
+	int	n;
+	int	i;
+	Arg_t*	pp;
 
 	if (pp = state.mac)
 	{
@@ -2402,8 +2402,8 @@ groff_sy(Tag_t* tp, Arg_t* ap)
 static void
 groff_while(Tag_t* tp, Arg_t* ap)
 {
-	register char*	s;
-	register char*	t;
+	char*	s;
+	char*	t;
 	Sfio_t*		op;
 
 	if (s = join(ap, 1))
@@ -2619,7 +2619,7 @@ troff_ch(Tag_t* tp, Arg_t* ap)
 static void
 troff_de(Tag_t* tp, Arg_t* ap)
 {
-	register Tag_t*	mp;
+	Tag_t*	mp;
 
 	if (ap->argc >= 1)
 	{
@@ -2713,8 +2713,8 @@ troff_eo(Tag_t* tp, Arg_t* ap)
 static void
 troff_ev(Tag_t* tp, Arg_t* ap)
 {
-	register Env_t*	oe;
-	register Env_t*	ne;
+	Env_t*	oe;
+	Env_t*	ne;
 
 	if (ap->argc < 1)
 	{
@@ -3077,7 +3077,7 @@ troff_nr(Tag_t* tp, Arg_t* ap)
 		if (ap->argc >= 3)
 			np->increment = expression(ap->argv[3], NiL, 0);
 		if (np->flags & TAG_TRACE_SET)
-			error(2, "set register %s %d %d", np->name + 1, np->number, np->increment);
+			error(2, "set %s %d %d", np->name + 1, np->number, np->increment);
 	}
 }
 
@@ -3146,7 +3146,7 @@ troff_rn(Tag_t* tp, Arg_t* ap)
 static void
 rr(char* name)
 {
-	register Num_t*	np;
+	Num_t*	np;
 	char		buf[MAXNAME];
 
 	if (np = (Num_t*)hashget(state.symbols, nam('.', name, buf, sizeof(buf))))
@@ -3154,7 +3154,7 @@ rr(char* name)
 		if (np->internal)
 			return;
 		if (np->flags & TAG_TRACE_SET)
-			error(2, "remove register %s", np->name + 1);
+			error(2, "remove %s", np->name + 1);
 		free(np);
 		hashput(state.symbols, NiL, NiL);
 	}
@@ -3245,10 +3245,10 @@ troff_ti(Tag_t* tp, Arg_t* ap)
 static void
 troff_tl(Tag_t* tp, Arg_t* ap)
 {
-	register int	c;
-	register int	q;
-	register char*	s;
-	register char*	t;
+	int	c;
+	int	q;
+	char*	s;
+	char*	t;
 	int		n;
 
 	NoP(tp);
@@ -3339,8 +3339,8 @@ troff_vs(Tag_t* tp, Arg_t* ap)
 static int
 text(void)
 {
-	register char*	s;
-	register char*	e;
+	char*	s;
+	char*	e;
 
 	if (state.it.text)
 		return 1;
@@ -3391,10 +3391,10 @@ troff_wh(Tag_t* tp, Arg_t* ap)
 }
 
 static void
-hot(register char* s, int add)
+hot(char* s, int add)
 {
-	register Dir_t*	x;
-	register Dir_t*	p;
+	Dir_t*	x;
+	Dir_t*	p;
 
 	for (p = 0, x = state.hot; x; p = x, x = x->next)
 		if (streq(s, x->name))
@@ -3471,12 +3471,12 @@ static Option_t	options[] =
  */
 
 static int
-setopt(void* a, const void* x, register int n, const char* v)
+setopt(void* a, const void* x, int n, const char* v)
 {
-	register char*		s;
-	register char*		t;
-	register Option_t*	p = (Option_t*)x;
-	register int		f;
+	char*		s;
+	char*		t;
+	Option_t*	p = (Option_t*)x;
+	int		f;
 
 	if (p)
 		switch (p->index)
@@ -3507,7 +3507,7 @@ setopt(void* a, const void* x, register int n, const char* v)
 
 				if (n)
 				{
-					register char*	b;
+					char*	b;
 					long		m;
 
 					m = sfstrtell(state.out);
@@ -3663,10 +3663,10 @@ troff_xx(Tag_t* tp, Arg_t* ap)
 static void
 process(char* file, Sfio_t* ip, Sfio_t* op)
 {
-	register int	c;
-	register int	cc;
-	register int	lastc;
-	register char*	s;
+	int	c;
+	int	cc;
+	int	lastc;
+	char*	s;
 	int		argc;
 	int		quote;
 	int		n;
@@ -4651,7 +4651,7 @@ static Dir_t dot =
 static void
 init(void)
 {
-	register int	i;
+	int	i;
 
 	state.groff |= 2;
 	state.tag = &state.top;
@@ -4799,11 +4799,11 @@ static const char*	tag_name[] =
  */
 
 static void
-tag(Sfio_t* op, int index, register int flags, int att, char* att_str, int att_num)
+tag(Sfio_t* op, int index, int flags, int att, char* att_str, int att_num)
 {
-	register int		n;
-	register int		m;
-	register unsigned char*	sp;
+	int		n;
+	int		m;
+	unsigned char*	sp;
 
 	if (index & OP_END)
 	{
@@ -4911,7 +4911,7 @@ tag(Sfio_t* op, int index, register int flags, int att, char* att_str, int att_n
  */
 
 static void
-peeklist(Sfio_t* op, register char* s)
+peeklist(Sfio_t* op, char* s)
 {
 	for (;;)
 	{
@@ -4977,15 +4977,15 @@ peeklist(Sfio_t* op, register char* s)
 	} while (0)
 
 static void
-html(register unsigned char* s, Sfio_t* op)
+html(unsigned char* s, Sfio_t* op)
 {
-	register int		c;
-	register int		br = 0;
-	register int		col = 0;
-	register int		li = 0;
-	register int		p = 0;
-	register int		nf = 0;
-	register unsigned char*	v;
+	int		c;
+	int		br = 0;
+	int		col = 0;
+	int		li = 0;
+	int		p = 0;
+	int		nf = 0;
+	unsigned char*	v;
 	unsigned char*		t;
 	unsigned char*		u;
 	int			n;
@@ -5903,8 +5903,8 @@ html(register unsigned char* s, Sfio_t* op)
 int
 main(int argc, char** argv)
 {
-	register int		n;
-	register char*		s;
+	int		n;
+	char*		s;
 	char*			v;
 	Dir_t*			x;
 	Dir_t*			lastdir;

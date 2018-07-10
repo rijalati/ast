@@ -185,9 +185,9 @@ ITLEXTERNAL(Cx_t* cx, Cxtype_t* type, int dots, int tuple, int group, const char
 ssize_t
 ITLINTERNAL(Cx_t* cx, Cxvalue_t* value, int dots, int tuple, int group, const char* buf, size_t size, Vmalloc_t* vm, Cxdisc_t* disc)
 {
-	register char*	s;
-	register char*	e;
-	register int	t;
+	char*	s;
+	char*	e;
+	int	t;
 	char*		p;
 	Sfio_t*		sp;
 	ITLINT*		vp;

@@ -363,8 +363,8 @@ helpwrite(int fd, const void* buf, size_t len)
 static void
 init(void)
 {
-	register Sfio_t**	ss;
-	register int		c;
+	Sfio_t**	ss;
+	int		c;
 
 	ed.interactive = -1;
 	ed.msg = sfstdout;
@@ -392,10 +392,10 @@ init(void)
 }
 
 static char*
-getrec(register Sfio_t* sp, register int delimiter, register int flags)
+getrec(Sfio_t* sp, int delimiter, int flags)
 {
-	register int	c;
-	register char*	glob;
+	int	c;
+	char*	glob;
 
 	sfstrseek(sp, 0, SEEK_SET);
 	glob = ed.global;
@@ -428,10 +428,10 @@ getrec(register Sfio_t* sp, register int delimiter, register int flags)
 }
 
 static void
-putrec(register char* s)
+putrec(char* s)
 {
-	register int	n;
-	register char*	t;
+	int	n;
+	char*	t;
 
 	if ((ed.print & REG_SUB_LIST) && (t = fmtesc(s))) {
 		s = t;
@@ -456,7 +456,7 @@ modify(void)
 		ed.undo.dot = ed.dot - ed.zero;
 		ed.undo.dol = ed.dol - ed.zero;
 		if (ed.marked) {
-			register int	c;
+			int	c;
 
 			for (c = 0; c < elementsof(ed.marks); c++)
 				ed.undo.marks[c] = ed.marks[c];
@@ -467,9 +467,9 @@ modify(void)
 static void
 undo(void)
 {
-	register Line_t*	a1;
-	register Line_t*	a3;
-	register unsigned long	event;
+	Line_t*	a1;
+	Line_t*	a3;
+	unsigned long	event;
 	int			c;
 	off_t			t;
 	unsigned long		n;
@@ -531,13 +531,13 @@ lineput(char* s)
 }
 
 static void
-replace(register Line_t* a1, char* s)
+replace(Line_t* a1, char* s)
 {
-	register off_t	off;
+	off_t	off;
 
 	off = lineput(s);
 	if (a1->offset & LINE_MARKED) {
-		register off_t*	mp;
+		off_t*	mp;
 
 		a1->offset &= ~LINE_GLOBAL;
 		off |= LINE_MARKED;
@@ -570,9 +570,9 @@ nonzero(void)
 static char*
 getfile(void)
 {
-	register char*	s;
-	register int	n;
-	register int	m;
+	char*	s;
+	int	n;
+	int	m;
 
 	if (!(s = sfgetr(ed.iop, '\n', 1))) {
 		if (!(s = sfgetr(ed.iop, '\n', -1)))
@@ -582,9 +582,9 @@ getfile(void)
 	if ((n = sfvalue(ed.iop)) > 0 && s[n - 1] == '\r')
 		s[--n] = 0;
 	if ((m = strlen(s)) < n) {
-		register char*	t;
-		register char*	u;
-		register char*	x;
+		char*	t;
+		char*	u;
+		char*	x;
 
 		t = u = s + m;
 		x = s + n;
@@ -603,7 +603,7 @@ getfile(void)
 static char*
 getline(void)
 {
-	register char*	s;
+	char*	s;
 
 	if ((s = getrec(ed.buffer.line, '\n', REC_TEXT)) && s[0] == '.' && !s[1])
 		s = 0;
@@ -631,7 +631,7 @@ getcopy(void)
 static void
 print(void)
 {
-	register Line_t* a1;
+	Line_t* a1;
 
 	nonzero();
 	a1 = ed.addr1;
@@ -647,8 +647,8 @@ print(void)
 static int
 getnum(void)
 {
-	register int c;
-	register int r;
+	int c;
+	int r;
 
 	r = 0;
 	while ((c = getchr()) >= '0' && c <= '9')
@@ -660,7 +660,7 @@ getnum(void)
 static void
 compile(void)
 {
-	register char*	s;
+	char*	s;
 	int		c;
 
 	s = input(0);
@@ -693,8 +693,8 @@ compile(void)
 static int
 execute(Line_t* addr, regflags_t flags)
 {
-	register char*	s;
-	register int	c;
+	char*	s;
+	int	c;
 
 	trap();
 	if (!addr)
@@ -716,10 +716,10 @@ execute(Line_t* addr, regflags_t flags)
 static Line_t*
 address(void)
 {
-	register int		c;
-	register int		sign;
-	register Line_t*	a;
-	register Line_t*	b;
+	int		c;
+	int		sign;
+	Line_t*	a;
+	Line_t*	b;
 	int			opcnt;
 	int			nextopand;
 
@@ -820,7 +820,7 @@ setnoaddr(void)
 static void
 newline(void)
 {
-	register int	warned = 0;
+	int	warned = 0;
 
 	for (;;)
 		switch (getchr()) {
@@ -901,8 +901,8 @@ exfile(void)
 static void
 putfile(void)
 {
-	register Line_t*	a1;
-	register int		n;
+	Line_t*	a1;
+	int		n;
 
 	ed.bytes = 0;
 	ed.lines = 0;
@@ -938,7 +938,7 @@ quit(int code)
 static void
 handle(void)
 {
-	register int	c;
+	int	c;
 	char*		s;
 	char*		b;
 	mode_t		mask;
@@ -978,10 +978,10 @@ handle(void)
 static Line_t*
 append(char* (*f)(void), Line_t* a, Line_t** r)
 {
-	register char*		s;
-	register Line_t*	a1;
-	register Line_t*	a2;
-	register Line_t*	a3;
+	char*		s;
+	Line_t*	a1;
+	Line_t*	a2;
+	Line_t*	a3;
 	off_t			t;
 	long			added;
 
@@ -1039,8 +1039,8 @@ add(int i)
 static void
 page(void)
 {
-	register int	direction;
-	register int	n;
+	int	direction;
+	int	n;
 
 	switch (direction = getchr()) {
 
@@ -1087,9 +1087,9 @@ page(void)
 }
 
 static void
-rdelete(register Line_t* a1, register Line_t* a2)
+rdelete(Line_t* a1, Line_t* a2)
 {
-	register Line_t*	a3;
+	Line_t*	a3;
 
 	modify();
 	a3 = ed.dol;
@@ -1109,9 +1109,9 @@ rdelete(register Line_t* a1, register Line_t* a2)
 static void
 gdelete(void)
 {
-	register Line_t*	a1;
-	register Line_t*	a2;
-	register Line_t*	a3;
+	Line_t*	a1;
+	Line_t*	a2;
+	Line_t*	a3;
 
 	a3 = ed.dol;
 	for (a1 = ed.zero; !(a1->offset & LINE_GLOBAL); a1++)
@@ -1140,9 +1140,9 @@ gdelete(void)
 static void
 shell(void)
 {
-	register char*	s;
-	register char*	f = 0;
-	register int	c;
+	char*	s;
+	char*	f = 0;
+	int	c;
 
 	if (ed.given)
 		squeeze(ed.dol > ed.zero);
@@ -1212,7 +1212,7 @@ shell(void)
 static void
 edit(void)
 {
-	register off_t*	mp;
+	off_t*	mp;
 
 	if (ed.tmp) {
 		sfclose(ed.tmp);
@@ -1236,8 +1236,8 @@ edit(void)
 static void
 filename(int c)
 {
-	register char*	p;
-	register int	sh = 0;
+	char*	p;
+	int	sh = 0;
 
 	ed.bytes = 0;
 	ed.lines = 0;
@@ -1258,7 +1258,7 @@ filename(int c)
 				p++;
 		}
 		if (ed.restricted) {
-			register char*	s = p;
+			char*	s = p;
 
 			if (sh)
 				p--;
@@ -1314,9 +1314,9 @@ filename(int c)
 static void
 global(int sense, int query)
 {
-	register char*		s;
-	register int		c;
-	register Line_t*	a1;
+	char*		s;
+	int		c;
+	Line_t*	a1;
 
 	if (ed.global)
 		error(2, "recursive global not allowed");
@@ -1373,7 +1373,7 @@ global(int sense, int query)
 static void
 join(void)
 {
-	register Line_t*	a1;
+	Line_t*	a1;
 	char*			s;
 
 	nonzero();
@@ -1391,7 +1391,7 @@ join(void)
 static void
 substitute(int inglob)
 {
-	register Line_t*	a1;
+	Line_t*	a1;
 	char*			s;
 	char*			e;
 	int			n;
@@ -1431,7 +1431,7 @@ substitute(int inglob)
 }
 
 static void
-reverse(register Line_t* a1, register Line_t* a2)
+reverse(Line_t* a1, Line_t* a2)
 {
 	modify();
 	while (--a2 > a1) {
@@ -1445,8 +1445,8 @@ reverse(register Line_t* a1, register Line_t* a2)
 static void
 move(int cflag)
 {
-	register Line_t*	ad1;
-	register Line_t*	ad2;
+	Line_t*	ad1;
+	Line_t*	ad2;
 	Line_t*			adt;
 	unsigned long		ad1_off;
 	unsigned long		adt_off;
@@ -1491,9 +1491,9 @@ move(int cflag)
 static void
 commands(void)
 {
-	register Line_t*	a1;
-	register int		c;
-	register int		n;
+	Line_t*	a1;
+	int		c;
+	int		n;
 	char*			s;
 	int			lastsep;
 

@@ -29,9 +29,9 @@ static rdirent_t* add_entry(head, tp)
 	rdirent_t*	head;
 	tag_t*		tp;
 {
-	register rdirent_t*	ndp;
-	register rdirent_t*	dp;
-	register rdirent_t**	prev_posn;
+	rdirent_t*	ndp;
+	rdirent_t*	dp;
+	rdirent_t**	prev_posn;
 	int			result;
 	tag_t*			ntp;
 	char*			link = NULL;
@@ -106,14 +106,14 @@ static rdirent_t* add_entry(head, tp)
 
 rdirent_t* rs_dir(rf, ap)
 	Sfio_t*		rf;
-	register attr_t*	ap;
+	attr_t*	ap;
 {
 	tag_t			tag;
-	register tag_t*		tp;
+	tag_t*		tp;
 	rdirent_t*		head;
-	register rdirent_t*	dp;
-	register rdirent_t*	ndp;
-	register rdirent_t**	prev_posn;
+	rdirent_t*	dp;
+	rdirent_t*	ndp;
+	rdirent_t**	prev_posn;
 
 	now = cs.time;
 	

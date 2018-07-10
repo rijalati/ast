@@ -152,10 +152,10 @@ USAGE_LICENSE
 ;
 
 static void
-showplugin(register Dsslib_t* lib, const char* style, Sfio_t* sp, int* sep, Dssdisc_t* disc)
+showplugin(Dsslib_t* lib, const char* style, Sfio_t* sp, int* sep, Dssdisc_t* disc)
 {
-	register int		i;
-	register const char*	s;
+	int		i;
+	const char*	s;
 
 	if (*sep < 0)
 	{

@@ -37,9 +37,9 @@
 void
 ppbuiltin(void)
 {
-	register int		c;
-	register char*		p;
-	register char*		a;
+	int		c;
+	char*		p;
+	char*		a;
 
 	int			n;
 	int			op;

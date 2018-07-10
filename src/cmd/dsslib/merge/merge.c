@@ -104,10 +104,10 @@ ordercmp(Dt_t* dict, void* a, void* b, Dtdisc_t* disc)
 }
 
 static void
-enter(Dss_t* dss, register State_t* state, register File_t* file)
+enter(Dss_t* dss, State_t* state, File_t* file)
 {
-	register int	k;
-	register Key_t*	kp;
+	int	k;
+	Key_t*	kp;
 	Cxinstruction_t	x;
 
 	if (file->record)
@@ -127,8 +127,8 @@ enter(Dss_t* dss, register State_t* state, register File_t* file)
 static int
 merge_beg(Cx_t* cx, Cxexpr_t* expr, void* data, Cxdisc_t* disc)
 {
-	register State_t*	state;
-	register File_t*	file;
+	State_t*	state;
+	File_t*	file;
 	char**			argv = (char**)data;
 	char**			files = expr->files;
 	Dss_t*			dss = DSS(cx);

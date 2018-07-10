@@ -128,7 +128,7 @@ fill(State_t* state)
 #define SKIPBITS(p,n)	((p)->bitcount-=(n))
 
 static int
-getbits(register State_t* state, int n, int peek)
+getbits(State_t* state, int n, int peek)
 {
 	while (state->bitcount < n)
 	{
@@ -1010,8 +1010,8 @@ static Decode_f	decoders[] =
 static int
 lzh_decoder(char* s, int p, Codexdisc_t* disc)
 {
-	register int	i;
-	register int	n;
+	int	i;
+	int	n;
 
 	if (!(n = *s++))
 	{
@@ -1061,8 +1061,8 @@ static char* const	arc[][4] =
 static int
 lzh_options(Codexmeth_t* meth, Sfio_t* sp)
 {
-	register int		i;
-	register int		j;
+	int		i;
+	int		j;
 
 	for (i = 0; i < elementsof(arc); i++)
 	{
@@ -1083,7 +1083,7 @@ lzh_options(Codexmeth_t* meth, Sfio_t* sp)
 static int
 lzh_open(Codex_t* p, char* const args[], Codexnum_t flags)
 {
-	register State_t*	state;
+	State_t*	state;
 	const char*		name;
 	char*			s;
 	int			i;
@@ -1153,7 +1153,7 @@ lzh_open(Codex_t* p, char* const args[], Codexnum_t flags)
 static int
 lzh_init(Codex_t* p)
 {
-	register State_t*	state = (State_t*)p->data;
+	State_t*	state = (State_t*)p->data;
 
 	memset(&state->count, 0, sizeof(*state) - offsetof(State_t, count));
 	state->ip = state->ie = 0;
@@ -1167,9 +1167,9 @@ lzh_init(Codex_t* p)
 static ssize_t
 lzh_read(Sfio_t* sp, void* buf, size_t n, Sfdisc_t* disc)
 {
-	register State_t*	state = (State_t*)CODEX(disc)->data;
-	register char*		s = (char*)buf;
-	register char*		e = s + n;
+	State_t*	state = (State_t*)CODEX(disc)->data;
+	char*		s = (char*)buf;
+	char*		e = s + n;
 	int			c;
 	int			i;
 	ui4			j;

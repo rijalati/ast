@@ -83,7 +83,7 @@ TclFindElement(interp, list, elementPtr, nextPtr, sizePtr, bracePtr)
     Tcl_Interp *interp;		/* Interpreter to use for error reporting. 
 				 * If NULL, then no error message is left
 				 * after errors. */
-    register char *list;	/* String containing Tcl list with zero
+    char *list;	/* String containing Tcl list with zero
 				 * or more elements (possibly in braces). */
     char **elementPtr;		/* Fill in with location of first significant
 				 * character in first element of list. */
@@ -97,7 +97,7 @@ TclFindElement(interp, list, elementPtr, nextPtr, sizePtr, bracePtr)
 				 * to indicate that arg was/wasn't
 				 * in braces. */
 {
-    register char *p;
+    char *p;
     int openBraces = 0;
     int inQuotes = 0;
     int size;
@@ -292,10 +292,10 @@ void
 TclCopyAndCollapse(count, src, dst)
     int count;			/* Total number of characters to copy
 				 * from src. */
-    register char *src;		/* Copy from here... */
-    register char *dst;		/* ... to here. */
+    char *src;		/* Copy from here... */
+    char *dst;		/* ... to here. */
 {
-    register char c;
+    char c;
     int numRead;
 
     for (c = *src; count > 0; src++, c = *src, count--) {
@@ -353,7 +353,7 @@ Tcl_TclSplitList(interp, list, argcPtr, argvPtr)
 				 * of pointers to list elements. */
 {
     char **argv;
-    register char *p;
+    char *p;
     int size, i, result, elSize, brace;
     char *element;
 
@@ -438,7 +438,7 @@ Tcl_TclScanElement(string, flagPtr)
 				 * Tcl_ConvertElement. */
 {
     int flags, nestingLevel;
-    register char *p;
+    char *p;
 
     /*
      * This procedure and Tcl_ConvertElement together do two things:
@@ -555,11 +555,11 @@ Tcl_TclScanElement(string, flagPtr)
 
 int
 Tcl_TclConvertElement(src, dst, flags)
-    register char *src;		/* Source information for list element. */
+    char *src;		/* Source information for list element. */
     char *dst;			/* Place to put list-ified element. */
     int flags;			/* Flags produced by Tcl_ScanElement. */
 {
-    register char *p = dst;
+    char *p = dst;
 
     /*
      * See the comment block at the beginning of the Tcl_ScanElement
@@ -692,7 +692,7 @@ Tcl_TclMerge(argc, argv)
     int localFlags[LOCAL_SIZE], *flagPtr;
     int numChars;
     char *result;
-    register char *dst;
+    char *dst;
     int i;
 
     /*
@@ -758,7 +758,7 @@ Tcl_Concat(argc, argv)
     char **argv;		/* Array of strings to concatenate. */
 {
     int totalSize, i;
-    register char *p;
+    char *p;
     char *result;
 
     for (totalSize = 1, i = 0; i < argc; i++) {
@@ -825,8 +825,8 @@ Tcl_Concat(argc, argv)
 
 int
 Tcl_StringMatch(string, pattern)
-    register char *string;	/* String. */
-    register char *pattern;	/* Pattern, which may contain
+    char *string;	/* String. */
+    char *pattern;	/* Pattern, which may contain
 				 * special characters. */
 {
     char c2;
@@ -968,7 +968,7 @@ Tcl_SetResult(interp, string, freeProc)
 				 * TCL_STATIC, TCL_VOLATILE, or the address
 				 * of a Tcl_FreeProc such as free. */
 {
-    register Interp *iPtr = (Interp *) interp;
+    Interp *iPtr = (Interp *) interp;
     int length;
     Tcl_FreeProc *oldFreeProc = iPtr->freeProc;
     char *oldResult = iPtr->result;
@@ -1032,7 +1032,7 @@ void
 Tcl_AppendResult TCL_VARARGS_DEF(Tcl_Interp *,arg1)
 {
     va_list argList;
-    register Interp *iPtr;
+    Interp *iPtr;
     char *string;
     int newSpace;
 
@@ -1108,7 +1108,7 @@ Tcl_AppendElement(interp, string)
     char *string;		/* String to convert to list element and
 				 * add to result. */
 {
-    register Interp *iPtr = (Interp *) interp;
+    Interp *iPtr = (Interp *) interp;
     int size, flags;
     char *dst;
 
@@ -1158,7 +1158,7 @@ Tcl_AppendElement(interp, string)
 
 static void
 SetupAppendBuffer(iPtr, newSpace)
-    register Interp *iPtr;	/* Interpreter whose result is being set up. */
+    Interp *iPtr;	/* Interpreter whose result is being set up. */
     int newSpace;		/* Make sure that at least this many bytes
 				 * of new information may be added. */
 {
@@ -1238,7 +1238,7 @@ void
 Tcl_ResetResult(interp)
     Tcl_Interp *interp;		/* Interpreter for which to clear result. */
 {
-    register Interp *iPtr = (Interp *) interp;
+    Interp *iPtr = (Interp *) interp;
 
     Tcl_FreeResult(iPtr);
     iPtr->result = iPtr->resultSpace;
@@ -1374,7 +1374,7 @@ Tcl_RegExpCompile(interp, string)
     char *string;			/* String for which to produce
 					 * compiled regular expression. */
 {
-    register Interp *iPtr = (Interp *) interp;
+    Interp *iPtr = (Interp *) interp;
     int i, length;
     regexp *result;
 
@@ -1578,7 +1578,7 @@ Tcl_RegExpMatch(interp, string, pattern)
 
 void
 Tcl_DStringInit(dsPtr)
-    register Tcl_DString *dsPtr;	/* Pointer to structure for
+    Tcl_DString *dsPtr;	/* Pointer to structure for
 					 * dynamic string. */
 {
     dsPtr->string = dsPtr->staticSpace;
@@ -1607,7 +1607,7 @@ Tcl_DStringInit(dsPtr)
 
 char *
 Tcl_DStringAppend(dsPtr, string, length)
-    register Tcl_DString *dsPtr;	/* Structure describing dynamic
+    Tcl_DString *dsPtr;	/* Structure describing dynamic
 					 * string. */
     char *string;			/* String to append.  If length is
 					 * -1 then this must be
@@ -1675,7 +1675,7 @@ Tcl_DStringAppend(dsPtr, string, length)
 
 char *
 Tcl_DStringAppendElement(dsPtr, string)
-    register Tcl_DString *dsPtr;	/* Structure describing dynamic
+    Tcl_DString *dsPtr;	/* Structure describing dynamic
 					 * string. */
     char *string;			/* String to append.  Must be
 					 * null-terminated. */
@@ -1742,7 +1742,7 @@ Tcl_DStringAppendElement(dsPtr, string)
 
 void
 Tcl_DStringSetLength(dsPtr, length)
-    register Tcl_DString *dsPtr;	/* Structure describing dynamic
+    Tcl_DString *dsPtr;	/* Structure describing dynamic
 					 * string. */
     int length;				/* New length for dynamic string. */
 {
@@ -1792,7 +1792,7 @@ Tcl_DStringSetLength(dsPtr, length)
 
 void
 Tcl_DStringFree(dsPtr)
-    register Tcl_DString *dsPtr;	/* Structure describing dynamic
+    Tcl_DString *dsPtr;	/* Structure describing dynamic
 					 * string. */
 {
     if (dsPtr->string != dsPtr->staticSpace) {
@@ -1987,7 +1987,7 @@ Tcl_PrintDouble(interp, value, dst)
 					 * must have at least TCL_DOUBLE_SPACE
 					 * characters. */
 {
-    register char *p;
+    char *p;
     sprintf(dst, ((Interp *) interp)->pdFormat, value);
 
     /*
@@ -2035,7 +2035,7 @@ TclPrecTraceProc(clientData, interp, name1, name2, flags)
     char *name2;		/* Second part of variable name. */
     int flags;			/* Information about what happened. */
 {
-    register Interp *iPtr = (Interp *) interp;
+    Interp *iPtr = (Interp *) interp;
     char *value, *end;
     int prec;
 

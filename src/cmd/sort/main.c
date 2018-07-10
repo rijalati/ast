@@ -320,8 +320,8 @@ typedef struct Sort_s
 static int
 optinfo(Opt_t* op, Sfio_t* sp, const char* s, Optdisc_t* dp)
 {
-	register iconv_list_t*	ic;
-	register int		n;
+	iconv_list_t*	ic;
+	int		n;
 
 	if (streq(s, "codesets"))
 	{
@@ -361,7 +361,7 @@ verify_silent(Rs_t* rs, int op, Void_t* data, Void_t* arg, Rsdisc_t* disc)
  */
 
 static Sfio_t*
-fileopen(register Sort_t* sp, const char* path)
+fileopen(Sort_t* sp, const char* path)
 {
 	Sfio_t*		fp;
 
@@ -464,11 +464,11 @@ struct Lib_s
  */
 
 static int
-parse(register Sort_t* sp, char** argv)
+parse(Sort_t* sp, char** argv)
 {
-	register Rskey_t*	key = sp->key;
-	register int		n;
-	register char*		s;
+	Rskey_t*	key = sp->key;
+	int		n;
+	char*		s;
 	char*			e;
 	char*			p;
 	char**			a;
@@ -844,11 +844,11 @@ dumpkey(Rs_t* rs, unsigned char* dat, size_t datlen, unsigned char* key, size_t 
  */
 
 static int
-init(register Sort_t* sp, Rskeydisc_t* dp, char** argv)
+init(Sort_t* sp, Rskeydisc_t* dp, char** argv)
 {
-	register Rskey_t*	key;
-	register char*		s;
-	register char**		p;
+	Rskey_t*	key;
+	char*		s;
+	char**		p;
 	char*			t;
 	int			n;
 	unsigned long		x;
@@ -1011,9 +1011,9 @@ init(register Sort_t* sp, Rskeydisc_t* dp, char** argv)
 			}
 			else
 			{
-				register char*	s;
-				register char*	t;
-				register char*	b;
+				char*	s;
+				char*	t;
+				char*	b;
 				off_t		ideal;
 				off_t		scan;
 				char*		file;
@@ -1185,9 +1185,9 @@ init(register Sort_t* sp, Rskeydisc_t* dp, char** argv)
  */
 
 static void
-clear(register Sort_t* sp, Sfio_t* fp)
+clear(Sort_t* sp, Sfio_t* fp)
 {
-	register int	i;
+	int	i;
 
 	for (i = fp ? sp->mfiles : 0; i < sp->nfiles; i++)
 	{
@@ -1212,12 +1212,12 @@ clear(register Sort_t* sp, Sfio_t* fp)
  */
 
 static ssize_t
-flush(register Sort_t* sp, register size_t r)
+flush(Sort_t* sp, size_t r)
 {
-	register Sfio_t*	fp;
-	register size_t		n;
-	register size_t		m;
-	register size_t		b;
+	Sfio_t*	fp;
+	size_t		n;
+	size_t		m;
+	size_t		b;
 
 	if (sp->chunk)
 	{
@@ -1317,12 +1317,12 @@ flush(register Sort_t* sp, register size_t r)
  */
 
 static int
-input(register Sort_t* sp, Sfio_t* ip, const char* name, int last)
+input(Sort_t* sp, Sfio_t* ip, const char* name, int last)
 {
-	register ssize_t	n;
-	register ssize_t	p;
-	register ssize_t	m;
-	register ssize_t	r;
+	ssize_t	n;
+	ssize_t	p;
+	ssize_t	m;
+	ssize_t	r;
 	size_t			z;
 	Sfoff_t			w;
 	char*			b;
@@ -1496,7 +1496,7 @@ input(register Sort_t* sp, Sfio_t* ip, const char* name, int last)
 static ssize_t
 partread(Sfio_t* fp, Void_t* buf, size_t size, Sfdisc_t* dp)
 {
-	register Part_t*	pp = (Part_t*)dp;
+	Part_t*	pp = (Part_t*)dp;
 
 	if (pp->remain <= 0)
 		return 0;
@@ -1513,7 +1513,7 @@ partread(Sfio_t* fp, Void_t* buf, size_t size, Sfdisc_t* dp)
 static Sfoff_t
 partseek(Sfio_t* fp, Sfoff_t lloffset, int op, Sfdisc_t* dp)
 {
-	register Part_t*	pp = (Part_t*)dp;
+	Part_t*	pp = (Part_t*)dp;
 	off_t			offset = lloffset;
 
 	switch (op)
@@ -1544,13 +1544,13 @@ partseek(Sfio_t* fp, Sfoff_t lloffset, int op, Sfdisc_t* dp)
  */
 
 static void
-jobs(register Sort_t* sp)
+jobs(Sort_t* sp)
 {
-	register Job_t*	jp;
-	register Job_t*	xp;
-	register int	i;
-	register int	j;
-	register int	f;
+	Job_t*	jp;
+	Job_t*	xp;
+	int	i;
+	int	j;
+	int	f;
 	int		status;
 	char*		file;
 	Sfio_t*		ip;
@@ -1633,7 +1633,7 @@ jobs(register Sort_t* sp)
  */
 
 static void
-done(register Sort_t* sp)
+done(Sort_t* sp)
 {
 	while (rsdisc(sp->rec, NiL, RS_POP));
 	if ((sfsync(sp->op) || sp->op != sfstdout && rsfileclose(sp->rec, sp->op)) && !error_info.errors)
@@ -1686,8 +1686,8 @@ done(register Sort_t* sp)
 int
 main(int argc, char** argv)
 {
-	register char*		s;
-	register Sfio_t*	fp;
+	char*		s;
+	Sfio_t*	fp;
 	char*			last;
 	char**			merge;
 	int			i;

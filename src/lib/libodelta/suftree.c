@@ -51,7 +51,7 @@ void delsuftree(Suftree* root)
 	root -= 1;
 	while(root)
 	{
-		register Suftree *next;
+		Suftree *next;
 		next = NEXT(root);
 		free(root);
 		root = next;
@@ -61,7 +61,7 @@ void delsuftree(Suftree* root)
 /* Find a child whose label string starts with a given character */
 static Suftree	*child_find(Suftree* node, Element c)
 {
-	register Suftree	*np, *last;
+	Suftree	*np, *last;
 
 	last = 0;
 	for(np = CHILD(node); np; np = SIBLING(np))
@@ -118,10 +118,10 @@ static Suftree *getmem(Suftree* root, int n)
 */
 Suftree	*bldsuftree(Element* src, long len)
 {
-	register Element	*sp, *mp, *rescan, *endmatch, *endsrc;
-	register Suftree	*match, *clocus, *locus, *link;
-	register long		mtlen, relen;
-	register int		n;
+	Element	*sp, *mp, *rescan, *endmatch, *endsrc;
+	Suftree	*match, *clocus, *locus, *link;
+	long		mtlen, relen;
+	int		n;
 	Suftree			*root, *list, *endlist;
 
 	if(len == 0)
@@ -316,9 +316,9 @@ Suftree	*bldsuftree(Element* src, long len)
 */
 long	mtchsuftree(Suftree* tree, Element* str, long len, Element** mtchp)
 {
-	register Suftree	*match;
-	register Element	*sp, *mp, *endmp, *endstr;
-	register long		mlen;
+	Suftree	*match;
+	Element	*sp, *mp, *endmp, *endstr;
+	long		mlen;
 
 	mlen = 0;
 	endstr = str + len;

@@ -1039,9 +1039,9 @@ nextline(FILE* fp)
 {
 	static char	buf[32 * 1024];
 
-	register char*	s = buf;
-	register char*	e = &buf[sizeof(buf)];
-	register char*	b;
+	char*	s = buf;
+	char*	e = &buf[sizeof(buf)];
+	char*	b;
 
 	for (;;)
 	{

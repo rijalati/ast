@@ -69,7 +69,7 @@ fill(State_t* state)
 }
 
 static int
-flush(register State_t* state, int c)
+flush(State_t* state, int c)
 {
 	size_t	n;
 
@@ -90,8 +90,8 @@ flush(register State_t* state, int c)
 static int
 qp_open(Codex_t* p, char* const args[], Codexnum_t flags)
 {
-	register State_t*	state;
-	register int		i;
+	State_t*	state;
+	int		i;
 
 	if (!(state = newof(0, State_t, 1, 0)))
 	{
@@ -114,12 +114,12 @@ qp_open(Codex_t* p, char* const args[], Codexnum_t flags)
 static ssize_t
 qp_read(Sfio_t* sp, void* buf, size_t n, Sfdisc_t* disc)
 {
-	register State_t*	state = (State_t*)CODEX(disc)->data;
-	register char*		s = (char*)buf;
-	register char*		e = s + n;
-	register char*		x;
-	register int		c;
-	register int		d;
+	State_t*	state = (State_t*)CODEX(disc)->data;
+	char*		s = (char*)buf;
+	char*		e = s + n;
+	char*		x;
+	int		c;
+	int		d;
 
 	x = 0;
 	while (s < e)
@@ -166,11 +166,11 @@ qp_read(Sfio_t* sp, void* buf, size_t n, Sfdisc_t* disc)
 static ssize_t
 qp_write(Sfio_t* sp, const void* buf, size_t n, Sfdisc_t* disc)
 {
-	register State_t*	state = (State_t*)CODEX(disc)->data;
-	register unsigned char*	s;
-	register unsigned char*	e;
-	register int		c;
-	register int		col;
+	State_t*	state = (State_t*)CODEX(disc)->data;
+	unsigned char*	s;
+	unsigned char*	e;
+	int		c;
+	int		col;
 
  again:
 	if (state->pp)

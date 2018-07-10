@@ -34,9 +34,9 @@
  */
 
 static void
-quote(register Sfio_t* sp, register char* s)
+quote(Sfio_t* sp, char* s)
 {
-	register int	c;
+	int	c;
 
 	while (c = *s++)
 	{
@@ -51,7 +51,7 @@ quote(register Sfio_t* sp, register char* s)
  */
 
 int
-shellopen(register Coshell_t* sp, int fd)
+shellopen(Coshell_t* sp, int fd)
 {
 	char*		sh;
 	Proc_t*		proc;
@@ -144,9 +144,9 @@ shellopen(register Coshell_t* sp, int fd)
  */
 
 void
-shellclose(register Coshell_t* sp, int fd)
+shellclose(Coshell_t* sp, int fd)
 {
-	register Cojob_t*	jp;
+	Cojob_t*	jp;
 
 	if (sp->fd != -1) message((-1, "%s: close shell", sp->name));
 	if (sp->fd < 0)
@@ -202,7 +202,7 @@ shellclose(register Coshell_t* sp, int fd)
 void
 shellexec(Cojob_t* jp, char* msg, int fd)
 {
-	register Coshell_t*	sp;
+	Coshell_t*	sp;
 	Connection_t*		con;
 	int			n;
 	int			id;
@@ -388,7 +388,7 @@ shellexec(Cojob_t* jp, char* msg, int fd)
 void
 shellcheck(void)
 {
-	register Coshell_t*	sp;
+	Coshell_t*	sp;
 
 	sp = state.shell;
 	do

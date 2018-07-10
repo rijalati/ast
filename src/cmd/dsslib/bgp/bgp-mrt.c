@@ -597,7 +597,7 @@ prefix(Dssfile_t* file, Mrtstate_t* state, Bgproute_t* rp, int bits, char* end, 
  */
 
 static int
-nlri(register Dssfile_t* file, register Mrtstate_t* state, register Bgproute_t* rp, char* end, Dssdisc_t* disc)
+nlri(Dssfile_t* file, Mrtstate_t* state, Bgproute_t* rp, char* end, Dssdisc_t* disc)
 {
 	int		n;
 	int		m;
@@ -845,9 +845,9 @@ nlri(register Dssfile_t* file, register Mrtstate_t* state, register Bgproute_t* 
  */
 
 static int
-attr(register Dssfile_t* file, register Mrtstate_t* state, register Bgproute_t* rp, char* end, Dssdisc_t* disc)
+attr(Dssfile_t* file, Mrtstate_t* state, Bgproute_t* rp, char* end, Dssdisc_t* disc)
 {
-	register int		i;
+	int		i;
 	int			j;
 	int			k;
 	int			m;
@@ -1238,7 +1238,7 @@ attr(register Dssfile_t* file, register Mrtstate_t* state, register Bgproute_t* 
  */
 
 static int
-pathattr(register Dssfile_t* file, register Mrtstate_t* state, register Bgproute_t* rp, Dssdisc_t* disc)
+pathattr(Dssfile_t* file, Mrtstate_t* state, Bgproute_t* rp, Dssdisc_t* disc)
 {
 	char*			end;
 	size_t			n;
@@ -1317,11 +1317,11 @@ done(Mrtstate_t* state, Bgproute_t* rp, Dssrecord_t* record, Dssdisc_t* disc)
  */
 
 static int
-mrtread(register Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
+mrtread(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register Mrtstate_t*	state = (Mrtstate_t*)file->data;
-	register Bgproute_t*	rp;
-	register int		i;
+	Mrtstate_t*	state = (Mrtstate_t*)file->data;
+	Bgproute_t*	rp;
+	int		i;
 	int			j;
 	int			afi;
 	int			safi;

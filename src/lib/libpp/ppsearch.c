@@ -66,9 +66,9 @@
  */
 
 int
-ppmultiple(register struct ppfile* fp, register struct ppsymbol* test)
+ppmultiple(struct ppfile* fp, struct ppsymbol* test)
 {
-	register struct ppsymbol*	status;
+	struct ppsymbol*	status;
 
 	status = fp->guard;
 	message((-3, "search: %s: status=%s%s test=%s", fp->name, status == INC_CLEAR ? "[CLEAR]" : status == INC_TEST ? "[ONCE]" : status == INC_IGNORE ? "[IGNORE]" : status->name, (pp.mode & HOSTED) ? "[HOSTED]" : "", test == INC_CLEAR ? "[CLEAR]" : test == INC_TEST ? "[TEST]" : test->name));
@@ -107,11 +107,11 @@ ppmultiple(register struct ppfile* fp, register struct ppsymbol* test)
  */
 
 static int
-search(register struct ppfile* fp, register struct ppdirs* dp, int type, int flags)
+search(struct ppfile* fp, struct ppdirs* dp, int type, int flags)
 {
-	register char*		prefix;
-	register struct ppdirs*	up;
-	register struct ppfile*	xp;
+	char*		prefix;
+	struct ppdirs*	up;
+	struct ppfile*	xp;
 	struct ppfile*		mp;
 	int			fd;
 	int			index;
@@ -174,7 +174,7 @@ search(register struct ppfile* fp, register struct ppdirs* dp, int type, int fla
 			}
 			if (S_ISREG(st.st_mode))
 			{
-				register char*		s;
+				char*		s;
 				char*			e;
 				int			delimiter;
 				int			variant;
@@ -593,9 +593,9 @@ if (pp.test & 0x0010) error(1, "SEARCH#%d file=%s path=%s index=%d data=<%lu,%lu
 int
 ppsearch(char* file, int type, int flags)
 {
-	register struct ppfile*	fp;
-	register char*		s;
-	register struct ppdirs*	dp;
+	struct ppfile*	fp;
+	char*		s;
+	struct ppdirs*	dp;
 	char*			t;
 	struct oplist*		cp;
 	struct ppfile*		xp;

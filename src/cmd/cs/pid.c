@@ -76,7 +76,7 @@ typedef struct				/* server state			*/
 static void*
 svc_init(void* handle, int fdmax)
 {
-	register State_t*	state = (State_t*)handle;
+	State_t*	state = (State_t*)handle;
 
 	NoP(fdmax);
 	if (!(state->pids = hashalloc(NiL, HASH_set, HASH_ALLOCATE, HASH_namesize, sizeof(pid_t), HASH_name, "pids", 0)))
@@ -95,10 +95,10 @@ svc_init(void* handle, int fdmax)
 static int
 svc_read(void* handle, int fd)
 {
-	register Pid_t*		pp;
-	register Notify_t*	np;
-	register Notify_t*	pn;
-	register State_t*	state = (State_t*)handle;
+	Pid_t*		pp;
+	Notify_t*	np;
+	Notify_t*	pn;
+	State_t*	state = (State_t*)handle;
 	char*			m;
 	char*			s;
 	char*			e;
@@ -216,11 +216,11 @@ svc_read(void* handle, int fd)
 static int
 svc_timeout(void* handle)
 {
-	register State_t*		state = (State_t*)handle;
-	register Pid_t*			pp;
-	register Hash_position_t*	pos;
-	register Notify_t*		np;
-	register Notify_t*		pn;
+	State_t*		state = (State_t*)handle;
+	Pid_t*			pp;
+	Hash_position_t*	pos;
+	Notify_t*		np;
+	Notify_t*		pn;
 	int				n;
 	unsigned long			wakeup;
 

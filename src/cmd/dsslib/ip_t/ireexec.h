@@ -39,11 +39,11 @@
  */
 
 static int
-IRENEXT(Ire_t* ire, register Re_t* re, int must, IREINT* lp, IREINT* rp)
+IRENEXT(Ire_t* ire, Re_t* re, int must, IREINT* lp, IREINT* rp)
 {
-	register int	i;
-	register int	j;
-	register int	n;
+	int	i;
+	int	j;
+	int	n;
 	IREINT*		bp;
 	IREINT*		cp;
 	IREINT*		ep;
@@ -114,7 +114,7 @@ IRENEXT(Ire_t* ire, register Re_t* re, int must, IREINT* lp, IREINT* rp)
 static int
 IREEXEC(Ire_t* ire, void* data, size_t size)
 {
-	register Re_t*	re = ire->re;
+	Re_t*	re = ire->re;
 	IREINT*		lp = (IREINT*)data;
 	IREINT*		rp = lp + size / sizeof(IREINT);
 	int		left = ire->left;

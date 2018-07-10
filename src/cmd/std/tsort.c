@@ -62,9 +62,9 @@ typedef struct List_s
 } List_t;
 
 static int
-visit(register Node_t* x)
+visit(Node_t* x)
 {
-	register List_t*	p;
+	List_t*	p;
 	int			cycle = 0;
 
 	switch (x->state)
@@ -92,9 +92,9 @@ visit(register Node_t* x)
 static void
 tsort(Sfio_t* ip)
 {
-	register int		c;
-	register char*		s;
-	register char*		b;
+	int		c;
+	char*		s;
+	char*		b;
 	Node_t*			head = 0;
 	Node_t*			x;
 	List_t*			p;

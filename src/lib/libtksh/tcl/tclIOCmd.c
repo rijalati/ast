@@ -1196,7 +1196,7 @@ RegisterTcpServerInterpCleanup(interp, acceptCallbackPtr)
  *
  * UnregisterTcpServerInterpCleanupProc --
  *
- *	Unregister a previously registered accept callback record. The
+ *	Una previously registered accept callback record. The
  *	interp field of this record will no longer be set to NULL in
  *	the future when the interpreter is deleted.
  *

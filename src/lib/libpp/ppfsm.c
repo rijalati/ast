@@ -569,13 +569,13 @@ static char*	oct = &hex[14];
  */
 
 void
-ppfsm(int op, register char* s)
+ppfsm(int op, char* s)
 {
-	register int			c;
-	register int			n;
-	register int			i;
-	register short*			rp;
-	register struct fsminit*	fp;
+	int			c;
+	int			n;
+	int			i;
+	short*			rp;
+	struct fsminit*	fp;
 #if !PROTOMAIN
 	char*				t;
 	int				x;
@@ -887,7 +887,7 @@ ppfsm(int op, register char* s)
  */
 
 void
-refill(register int c)
+refill(int c)
 {
 	if (pp.in->flags & IN_eof)
 	{

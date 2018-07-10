@@ -85,8 +85,8 @@ static char		lib[] = "lib";
 Dllinfo_t*
 dllinfo(void)
 {
-	register char*		s;
-	register char*		h;
+	char*		s;
+	char*		h;
 	char*			d;
 	char*			v;
 	char*			p;
@@ -177,10 +177,10 @@ dllinfo(void)
 static int
 vercmp(FTSENT* const* ap, FTSENT* const* bp)
 {
-	register unsigned char*	a = (unsigned char*)(*ap)->fts_name;
-	register unsigned char*	b = (unsigned char*)(*bp)->fts_name;
-	register int		n;
-	register int		m;
+	unsigned char*	a = (unsigned char*)(*ap)->fts_name;
+	unsigned char*	b = (unsigned char*)(*bp)->fts_name;
+	int		n;
+	int		m;
 	char*			e;
 
 	for (;;)
@@ -211,8 +211,8 @@ vercmp(FTSENT* const* ap, FTSENT* const* bp)
 Dllscan_t*
 dllsopen(const char* lib, const char* name, const char* version)
 {
-	register char*	s;
-	register char*	t;
+	char*	s;
+	char*	t;
 	Dllscan_t*	scan;
 	Dllinfo_t*	info;
 	Vmalloc_t*	vm;
@@ -376,14 +376,14 @@ dllsclose(Dllscan_t* scan)
  */
 
 Dllent_t*
-dllsread(register Dllscan_t* scan)
+dllsread(Dllscan_t* scan)
 {
-	register char*		p;
-	register char*		b;
-	register char*		t;
-	register Uniq_t*	u;
-	register int		n;
-	register int		m;
+	char*		p;
+	char*		b;
+	char*		t;
+	Uniq_t*	u;
+	int		n;
+	int		m;
 
 	if (scan->flags & DLL_MATCH_DONE)
 		return 0;

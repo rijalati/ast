@@ -85,11 +85,11 @@ struct letter {
  * Ouput message part to op.
  */
 static int
-part(register struct parse* pp, FILE* op, struct part* ap, off_t size, char* prefix, int prefixlen, int emptylen, unsigned long flags)
+part(struct parse* pp, FILE* op, struct part* ap, off_t size, char* prefix, int prefixlen, int emptylen, unsigned long flags)
 {
-	register int	n = 0;
-	register int	i;
-	register FILE*	ip;
+	int	n = 0;
+	int	i;
+	FILE*	ip;
 	int		r = -1;
 	char*		s;
 	FILE*		tp;
@@ -182,10 +182,10 @@ part(register struct parse* pp, FILE* op, struct part* ap, off_t size, char* pre
  * prefix is a string to prepend to each output line.
  */
 int
-copy(register struct msg* mp, FILE* op, Dt_t** ignore, char* prefix, unsigned long flags)
+copy(struct msg* mp, FILE* op, Dt_t** ignore, char* prefix, unsigned long flags)
 {
-	register char*	s;
-	register int	i;
+	char*	s;
+	int	i;
 	char*		date;
 	char*		head;
 	char*		from;
@@ -294,8 +294,8 @@ copy(register struct msg* mp, FILE* op, Dt_t** ignore, char* prefix, unsigned lo
 static int
 prepend(struct letter* lp)
 {
-	register FILE*	nfi;
-	register FILE*	nfo;
+	FILE*	nfi;
+	FILE*	nfo;
 	time_t		now;
 
 	lp->head = lp->body = 0;
@@ -331,7 +331,7 @@ prepend(struct letter* lp)
 static void
 savemail(struct letter* lp, char* name)
 {
-	register FILE*	fp;
+	FILE*	fp;
 
 	if (fp = fileopen(name, "Ea")) {
 		filecopy(NiL, lp->fp, name, fp, NiL, (off_t)0, NiL, NiL, GNL);
@@ -360,8 +360,8 @@ packargs(Dt_t* dt, void* object, void* context)
 static int
 isfileaddr(char* name)
 {
-	register char*	cp;
-	register char*	sp;
+	char*	cp;
+	char*	sp;
 	int		r;
 
 	if (*name == '+' || *name == '~')
@@ -392,9 +392,9 @@ isfileaddr(char* name)
 static int
 special(Dt_t* dt, void* object, void* context)
 {
-	register struct name*	np = (struct name*)object;
-	register struct letter*	lp = (struct letter*)context;
-	register char*		name;
+	struct name*	np = (struct name*)object;
+	struct letter*	lp = (struct letter*)context;
+	char*		name;
 	FILE*			fp;
 	char*			cmd;
 	int			n;
@@ -450,7 +450,7 @@ special(Dt_t* dt, void* object, void* context)
 void
 sendmail(struct header* hp, unsigned long flags)
 {
-	register char*	s;
+	char*	s;
 	char**		p;
 	int		type;
 	int		pid;
@@ -558,9 +558,9 @@ typedef struct
 static int
 format(Dt_t* dt, void* object, void* context)
 {
-	register struct name*	np = (struct name*)object;
-	register Format_t*	fs = (Format_t*)context;
-	register int		n;
+	struct name*	np = (struct name*)object;
+	Format_t*	fs = (Format_t*)context;
+	int		n;
 
 	if (fs->flags & np->flags) {
 		n = strlen(np->name);
@@ -611,10 +611,10 @@ fmt(FILE* fp, struct header* hp, const char* label, unsigned long flags, int com
  * Dump the to, subject, cc header to fp.
  */
 int
-headout(FILE* fp, struct header* hp, register unsigned long flags)
+headout(FILE* fp, struct header* hp, unsigned long flags)
 {
-	register const struct lab*	lp;
-	register struct list*		x;
+	const struct lab*	lp;
+	struct list*		x;
 	int				comma;
 	int				force;
 	int				gotcha;

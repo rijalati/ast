@@ -30,10 +30,10 @@
  */
 
 static int
-optout(register Sfio_t* sp, const char* name, const char* type, const char* map, const char* ret, const char* s, const char* x)
+optout(Sfio_t* sp, const char* name, const char* type, const char* map, const char* ret, const char* s, const char* x)
 {
-	register const char*	t;
-	register int		c;
+	const char*	t;
+	int		c;
 
 	sfputc(sp, '[');
 	sfputc(sp, '+');
@@ -83,9 +83,9 @@ optout(register Sfio_t* sp, const char* name, const char* type, const char* map,
  */
 
 static int
-optmem(register Sfio_t* sp, Cxtype_t* type)
+optmem(Sfio_t* sp, Cxtype_t* type)
 {
-	register Cxvariable_t*	mp;
+	Cxvariable_t*	mp;
 
 	sfprintf(sp, "{\n");
 	for (mp = (Cxvariable_t*)dtfirst(type->member->members); mp; mp = (Cxvariable_t*)dtnext(type->member->members, mp))
@@ -100,12 +100,12 @@ optmem(register Sfio_t* sp, Cxtype_t* type)
  */
 
 static int
-opttype(Sfio_t* sp, register Cxtype_t* tp, int members)
+opttype(Sfio_t* sp, Cxtype_t* tp, int members)
 {
-	register const char*	x;
-	register const char*	b;
-	register const char*	d;
-	register int		i;
+	const char*	x;
+	const char*	b;
+	const char*	d;
+	int		i;
 	Sfio_t*			tmp = 0;
 
 	if (tp->header.flags & CX_SCHEMA)
@@ -155,7 +155,7 @@ opttype(Sfio_t* sp, register Cxtype_t* tp, int members)
  */
 
 static int
-optmap(register Sfio_t* sp, Cxmap_t* map)
+optmap(Sfio_t* sp, Cxmap_t* map)
 {
 	size_t		n;
 	Cxpart_t*	part;
@@ -397,8 +397,8 @@ dssoptinfo(Opt_t* op, Sfio_t* sp, const char* s, Optdisc_t* dp)
 int
 dssoptlib(Sfio_t* sp, Dsslib_t* lib, const char* usage, Dssdisc_t* disc)
 {
-	register int	i;
-	register char*	s;
+	int	i;
+	char*	s;
 	Dssstate_t*	state = dssstate(disc);
 
 	if (lib->libraries)

@@ -87,7 +87,7 @@ sockrecv(int fd, Csid_t* id, int* fds, int n)
 #endif
 
 int
-csrecv(register Cs_t* state, int fd, Csid_t* id, int* fds, int n)
+csrecv(Cs_t* state, int fd, Csid_t* id, int* fds, int n)
 {
 	int			oerrno;
 	Csid_t			ignore;
@@ -124,7 +124,7 @@ csrecv(register Cs_t* state, int fd, Csid_t* id, int* fds, int n)
 
 #if CS_LIB_STREAM || CS_LIB_V10 || CS_LIB_SOCKET_RIGHTS
 
-	register int		i;
+	int		i;
 
 #endif
 
@@ -322,8 +322,8 @@ csrecv(register Cs_t* state, int fd, Csid_t* id, int* fds, int n)
 
 	if (!access(CS_PROC_FD_TST, F_OK))
 	{
-		register int	i;
-		register int	j;
+		int	i;
+		int	j;
 		char*		s;
 		unsigned long	pid;
 		struct stat	st;

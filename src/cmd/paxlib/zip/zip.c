@@ -106,9 +106,9 @@ typedef struct Mem_s
 } Mem_t;
 
 static int
-zip_done(Pax_t* pax, register Paxarchive_t* ap)
+zip_done(Pax_t* pax, Paxarchive_t* ap)
 {
-	register Ar_t*	ar = (Ar_t*)ap->data;
+	Ar_t*	ar = (Ar_t*)ap->data;
 
 	if (!ar || !ar->vm)
 		return -1;
@@ -118,9 +118,9 @@ zip_done(Pax_t* pax, register Paxarchive_t* ap)
 }
 
 static int
-zip_getprologue(Pax_t* pax, Paxformat_t* fp, register Paxarchive_t* ap, Paxfile_t* f, unsigned char* buf, size_t size)
+zip_getprologue(Pax_t* pax, Paxformat_t* fp, Paxarchive_t* ap, Paxfile_t* f, unsigned char* buf, size_t size)
 {
-	register Ar_t*		ar;
+	Ar_t*		ar;
 	unsigned long		magic;
 	unsigned char*		hdr;
 	int			n;
@@ -209,9 +209,9 @@ zip_getprologue(Pax_t* pax, Paxformat_t* fp, register Paxarchive_t* ap, Paxfile_
 }
 
 static int
-zip_getheader(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f)
+zip_getheader(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f)
 {
-	register Ar_t*	ar = (Ar_t*)ap->data;
+	Ar_t*	ar = (Ar_t*)ap->data;
 	unsigned char*	hdr;
 	Mem_t*		mem;
 	long		n;
@@ -302,9 +302,9 @@ zip_getheader(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f)
 }
 
 static int
-zip_getdata(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f, int fd)
+zip_getdata(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f, int fd)
 {
-	register Ar_t*	ar = (Ar_t*)ap->data;
+	Ar_t*	ar = (Ar_t*)ap->data;
 	Sfio_t*		sp;
 	off_t		pos;
 	ssize_t		n;

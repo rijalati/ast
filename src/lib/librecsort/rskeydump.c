@@ -28,12 +28,12 @@
 
 static void
 #if __STD_C
-dump(register Rskey_t* kp, Sfio_t* sp, register Rskeyfield_t* fp, const char* type)
+dump(Rskey_t* kp, Sfio_t* sp, Rskeyfield_t* fp, const char* type)
 #else
 dump(kp, sp, fp, type)
-register Rskey_t*	kp;
+Rskey_t*	kp;
 Sfio_t*			sp;
-register Rskeyfield_t*	fp;
+Rskeyfield_t*	fp;
 char*			type;
 #endif
 {
@@ -58,14 +58,14 @@ char*			type;
 
 void
 #if __STD_C
-rskeydump(register Rskey_t* kp, register Sfio_t* sp)
+rskeydump(Rskey_t* kp, Sfio_t* sp)
 #else
 rskeydump(kp, sp)
-register Rskey_t*	kp;
-register Sfio_t*	sp;
+Rskey_t*	kp;
+Sfio_t*	sp;
 #endif
 {
-	register Rskeyfield_t*	fp;
+	Rskeyfield_t*	fp;
 
 	sfprintf(sp, "state\n");
 	sfprintf(sp, "\tmethod=%s\n", kp->meth->name);

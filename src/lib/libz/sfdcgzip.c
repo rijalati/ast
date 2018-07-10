@@ -83,7 +83,7 @@ typedef struct
 static int
 sfgzexcept(Sfio_t* sp, int op, void* val, Sfdisc_t* dp)
 {
-	register Sfgzip_t*	gz = (Sfgzip_t*)dp;
+	Sfgzip_t*	gz = (Sfgzip_t*)dp;
 	int			f;
 	int			r;
 
@@ -161,7 +161,7 @@ sfgzseek(Sfio_t* fp, Sfoff_t off, int op, Sfdisc_t* dp)
 static ssize_t
 sfgzread(Sfio_t* fp, Void_t* buf, size_t size, Sfdisc_t* dp)
 {
-	register Sfgzip_t*	gz = (Sfgzip_t*)dp;
+	Sfgzip_t*	gz = (Sfgzip_t*)dp;
 
 	return gzread(gz->gz, buf, size);
 }
@@ -173,7 +173,7 @@ sfgzread(Sfio_t* fp, Void_t* buf, size_t size, Sfdisc_t* dp)
 static ssize_t
 sfgzwrite(Sfio_t* fp, const Void_t* buf, size_t size, Sfdisc_t* dp)
 {
-	register Sfgzip_t*	gz = (Sfgzip_t*)dp;
+	Sfgzip_t*	gz = (Sfgzip_t*)dp;
 
 	return gzwrite(gz->gz, (void*)buf, size);
 }
@@ -207,9 +207,9 @@ sfdcgzip(Sfio_t* sp, int flags)
 	rd = sfset(sp, 0, 0) & SF_READ;
 	if (rd)
 	{
-		register unsigned char*	s;
-		register int		n;
-		register int		r;
+		unsigned char*	s;
+		int		n;
+		int		r;
 
 		/*
 		 * peek the first 4 bytes to verify the magic

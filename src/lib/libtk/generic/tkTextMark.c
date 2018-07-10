@@ -95,7 +95,7 @@ Tk_SegType tkTextLeftMarkType = {
 
 int
 TkTextMarkCmd(textPtr, interp, argc, argv)
-    register TkText *textPtr;	/* Information about text widget. */
+    TkText *textPtr;	/* Information about text widget. */
     Tcl_Interp *interp;		/* Current interpreter. */
     int argc;			/* Number of arguments. */
     char **argv;		/* Argument strings.  Someone else has already
@@ -454,7 +454,7 @@ MarkLayoutProc(textPtr, indexPtr, segPtr, offset, maxX, maxChars,
     int noCharsYet;		/* Non-zero means no characters have been
 				 * assigned to this line yet. */
     Tk_Uid wrapMode;		/* Not used. */
-    register TkTextDispChunk *chunkPtr;
+    TkTextDispChunk *chunkPtr;
 				/* Structure to fill in with information
 				 * about this chunk.  The x field has already
 				 * been set by the caller. */
@@ -646,7 +646,7 @@ MarkFindNext(interp, textPtr, string)
 {
     TkTextIndex index;
     Tcl_HashEntry *hPtr;
-    register TkTextSegment *segPtr;
+    TkTextSegment *segPtr;
     int offset;
 
 
@@ -720,7 +720,7 @@ MarkFindPrev(interp, textPtr, string)
 {
     TkTextIndex index;
     Tcl_HashEntry *hPtr;
-    register TkTextSegment *segPtr, *seg2Ptr, *prevPtr;
+    TkTextSegment *segPtr, *seg2Ptr, *prevPtr;
     int offset;
 
 

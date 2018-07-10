@@ -65,11 +65,11 @@ static const Option_t	options[] =
  */
 
 static unsigned char*
-uu_map(register Uudata_t* dp, char* map)
+uu_map(Uudata_t* dp, char* map)
 {
-	register int		c;
-	register char*		p;
-	register unsigned char*	m;
+	int		c;
+	char*		p;
+	unsigned char*	m;
 	int			x;
 
 	x = (dp->flags & UU_LENGTH) ? 0 : UU_IGN;
@@ -91,10 +91,10 @@ uu_map(register Uudata_t* dp, char* map)
  */
 
 static int
-uu_header(register Uu_t* uu)
+uu_header(Uu_t* uu)
 {
-	register char*	s;
-	register int	c;
+	char*	s;
+	int	c;
 	int		n;
 	int		k;
 	Uumeth_t*	meth;
@@ -152,16 +152,16 @@ uu_header(register Uu_t* uu)
  */
 
 static int
-uu_encode(register Uu_t* uu)
+uu_encode(Uu_t* uu)
 {
-	register char*		e;
-	register char*		p;
-	register unsigned char*	m;
-	register int		c;
-	register int		c1;
-	register int		c2;
-	register int		c3;
-	register unsigned long	b;
+	char*		e;
+	char*		p;
+	unsigned char*	m;
+	int		c;
+	int		c1;
+	int		c2;
+	int		c3;
+	unsigned long	b;
 	int			length;
 	int			nl;
 	int			pad;
@@ -274,15 +274,15 @@ uu_encode(register Uu_t* uu)
  */
 
 static int
-uu_decode(register Uu_t* uu)
+uu_decode(Uu_t* uu)
 {
-	register Uudata_t*	dp;
-	register char*		s;
-	register char*		e;
-	register char*		p;
-	register unsigned char*	m;
-	register int		c;
-	register unsigned long	n;
+	Uudata_t*	dp;
+	char*		s;
+	char*		e;
+	char*		p;
+	unsigned char*	m;
+	int		c;
+	unsigned long	n;
 	int			text;
 	int			tl;
 	int			x;
@@ -423,13 +423,13 @@ static const char	hex[] = "0123456789ABCDEFabcdef";
  */
 
 static int
-qp_encode(register Uu_t* uu)
+qp_encode(Uu_t* uu)
 {
-	register unsigned char*	s;
-	register unsigned char*	e;
-	register char*		b;
-	register char*		x;
-	register int		c;
+	unsigned char*	s;
+	unsigned char*	e;
+	char*		b;
+	char*		x;
+	int		c;
 	char			buf[UULINE + 1];
 
 	b = buf;
@@ -503,13 +503,13 @@ qp_encode(register Uu_t* uu)
  */
 
 static int
-qp_decode(register Uu_t* uu)
+qp_decode(Uu_t* uu)
 {
-	register unsigned char*	s;
-	register unsigned char*	b;
-	register unsigned char*	x;
-	register int		c;
-	register int		d;
+	unsigned char*	s;
+	unsigned char*	b;
+	unsigned char*	x;
+	int		c;
+	int		d;
 
 	short			xeh[UCHAR_MAX + 1];
 
@@ -579,11 +579,11 @@ typedef struct
  */
 
 static int
-bx_q_crc(register Bx_t* bx, int c)
+bx_q_crc(Bx_t* bx, int c)
 {
-	register int		i = 8;
-	register unsigned int	k = c;
-	register unsigned long	crc = bx->crc;
+	int		i = 8;
+	unsigned int	k = c;
+	unsigned long	crc = bx->crc;
 
 	while (i--)
 	{
@@ -602,12 +602,12 @@ bx_q_crc(register Bx_t* bx, int c)
  */
 
 static int
-bx_q_getc(register Uu_t* uu, register Bx_t* bx)
+bx_q_getc(Uu_t* uu, Bx_t* bx)
 {
-	register int		c;
-	register unsigned char*	ip;
-	register unsigned char*	ie;
-	register unsigned char*	m;
+	int		c;
+	unsigned char*	ip;
+	unsigned char*	ie;
+	unsigned char*	m;
 	int			x;
 	unsigned long		crc;
 	unsigned char		ibuf[4];
@@ -675,9 +675,9 @@ bx_q_getc(register Uu_t* uu, register Bx_t* bx)
  */
 
 static long
-bx_q_getn(register Uu_t* uu, register Bx_t* bx, register int n)
+bx_q_getn(Uu_t* uu, Bx_t* bx, int n)
 {
-	register long	v = 0;
+	long	v = 0;
 
 	while (n--)
 		v = (v << 8) | bx_q_getc(uu, bx);
@@ -689,10 +689,10 @@ bx_q_getn(register Uu_t* uu, register Bx_t* bx, register int n)
  */
 
 static ssize_t
-bx_q_gets(register Uu_t* uu, register Bx_t* bx, register char* s, size_t n)
+bx_q_gets(Uu_t* uu, Bx_t* bx, char* s, size_t n)
 {
-	register int	c;
-	register char*	e;
+	int	c;
+	char*	e;
 
 	e = s + n;
 	while (s < e)
@@ -709,10 +709,10 @@ bx_q_gets(register Uu_t* uu, register Bx_t* bx, register char* s, size_t n)
  */
 
 static int
-bx_q_put(register Uu_t* uu, register Bx_t* bx, register int c)
+bx_q_put(Uu_t* uu, Bx_t* bx, int c)
 {
-	register unsigned char*	p;
-	register unsigned char*	m;
+	unsigned char*	p;
+	unsigned char*	m;
 
 	*bx->qp++ = c;
 	if (bx->qp >= bx->qe)
@@ -738,7 +738,7 @@ bx_q_put(register Uu_t* uu, register Bx_t* bx, register int c)
  */
 
 static int
-bx_q_putc(register Uu_t* uu, register Bx_t* bx, register int c)
+bx_q_putc(Uu_t* uu, Bx_t* bx, int c)
 {
 	if (c == bx->last)
 	{
@@ -791,7 +791,7 @@ bx_q_putc(register Uu_t* uu, register Bx_t* bx, register int c)
  */
 
 static int
-bx_q_putn(register Uu_t* uu, register Bx_t* bx, register unsigned long v, int n)
+bx_q_putn(Uu_t* uu, Bx_t* bx, unsigned long v, int n)
 {
 	switch (n)
 	{
@@ -808,14 +808,14 @@ bx_q_putn(register Uu_t* uu, register Bx_t* bx, register unsigned long v, int n)
  */
 
 static int
-bx_header(register Uu_t* uu)
+bx_header(Uu_t* uu)
 {
-	register Bx_t*	bx = (Bx_t*)(uu + 1);
+	Bx_t*	bx = (Bx_t*)(uu + 1);
 	Uudata_t*	dp = (Uudata_t*)uu->meth.data;
-	register int	c;
-	register int	bol;
-	register char*	s;
-	register char*	m;
+	int	c;
+	int	bol;
+	char*	s;
+	char*	m;
 	unsigned long	crc;
 	unsigned long	crx;
 	char		buf[UCHAR_MAX + 2];
@@ -923,14 +923,14 @@ bx_header(register Uu_t* uu)
  */
 
 static int
-bx_o_decode(register Uu_t* uu, Bx_t* bx, char* buf, register size_t n)
+bx_o_decode(Uu_t* uu, Bx_t* bx, char* buf, size_t n)
 {
-	register int		c;
-	register int		d;
-	register unsigned long	crc = bx->crc;
-	register unsigned char*	m = (unsigned char*)bx->map;
-	register char*		t = (char*)hex;
-	register unsigned char*	s = (unsigned char*)buf;
+	int		c;
+	int		d;
+	unsigned long	crc = bx->crc;
+	unsigned char*	m = (unsigned char*)bx->map;
+	char*		t = (char*)hex;
+	unsigned char*	s = (unsigned char*)buf;
 
 	memset(m, UU_END, sizeof(bx->map));
 	for (c = 0; c < elementsof(hex); c++)
@@ -955,11 +955,11 @@ bx_o_decode(register Uu_t* uu, Bx_t* bx, char* buf, register size_t n)
 #define BX_O_CRC(s,c)	((s=(s+c)&0xFF),(s=((s<<3)&0xFF)|(s>>13)))
 
 static int
-bx_c_decode(register Uu_t* uu, Bx_t* bx, register char* s, size_t n)
+bx_c_decode(Uu_t* uu, Bx_t* bx, char* s, size_t n)
 {
-	register int		c;
-	register int		oc;
-	register unsigned long	crc;
+	int		c;
+	int		oc;
+	unsigned long	crc;
 	char*			e;
 	int			ic;
 	char			buf[SF_BUFSIZE];
@@ -999,12 +999,12 @@ bx_c_decode(register Uu_t* uu, Bx_t* bx, register char* s, size_t n)
  */
 
 static int
-bx_decode(register Uu_t* uu)
+bx_decode(Uu_t* uu)
 {
-	register Bx_t*	bx = (Bx_t*)(uu + 1);
-	register off_t	n;
-	register int	c;
-	register char*	s;
+	Bx_t*	bx = (Bx_t*)(uu + 1);
+	off_t	n;
+	int	c;
+	char*	s;
 	unsigned long	crc;
 	int		(*decode)(Uu_t*, Bx_t*, char*, size_t);
 
@@ -1103,12 +1103,12 @@ bx_decode(register Uu_t* uu)
  */
 
 static int
-bx_encode(register Uu_t* uu)
+bx_encode(Uu_t* uu)
 {
-	register Bx_t*		bx = (Bx_t*)(uu + 1);
-	register unsigned char*	m;
-	register int		c;
-	register int		i;
+	Bx_t*		bx = (Bx_t*)(uu + 1);
+	unsigned char*	m;
+	int		c;
+	int		i;
 	struct stat		st;
 
 	bx->last = -1;
@@ -1155,7 +1155,7 @@ bx_encode(register Uu_t* uu)
  */
 
 static int
-cat(register Uu_t* uu)
+cat(Uu_t* uu)
 {
 	return sfmove(uu->ip, uu->op, SF_UNBOUND, -1) >= 0 && sfeof(uu->ip) ? 0 : -1;
 }
@@ -1239,7 +1239,7 @@ static const Uumeth_t	methods[] =
 int
 uulist(Sfio_t* fp)
 {
-	register const Uumeth_t*	mp;
+	const Uumeth_t*	mp;
 
 	sfprintf(fp, "ENCODING          ALIAS\n");
 	for (mp = methods; mp->name; mp++)
@@ -1254,10 +1254,10 @@ uulist(Sfio_t* fp)
 Uumeth_t*
 uumeth(const char* name)
 {
-	register const Uumeth_t*	mp;
-	register int			c;
-	register const char*		v;
-	register int			vl;
+	const Uumeth_t*	mp;
+	int			c;
+	const char*		v;
+	int			vl;
 	const char*			np;
 
 	/*
@@ -1328,8 +1328,8 @@ uumeth(const char* name)
 Uu_t*
 uuopen(Uudisc_t* disc, Uumeth_t* meth)
 {
-	register Uu_t*		uu;
-	register Uudata_t*	data;
+	Uu_t*		uu;
+	Uudata_t*	data;
 	int			extra;
 
 	if (data = (Uudata_t*)meth->data)
@@ -1364,7 +1364,7 @@ uuclose(Uu_t* uu)
  */
 
 static ssize_t
-uuop(register Uu_t* uu, Uu_f fun)
+uuop(Uu_t* uu, Uu_f fun)
 {
 	int		n;
 	ssize_t		r;
@@ -1413,7 +1413,7 @@ uuop(register Uu_t* uu, Uu_f fun)
  */
 
 ssize_t
-uuencode(register Uu_t* uu, Sfio_t* ip, Sfio_t* op, size_t n, const char* path)
+uuencode(Uu_t* uu, Sfio_t* ip, Sfio_t* op, size_t n, const char* path)
 {
 	if (!uu->meth.encodef)
 	{
@@ -1436,9 +1436,9 @@ uuencode(register Uu_t* uu, Sfio_t* ip, Sfio_t* op, size_t n, const char* path)
  */
 
 ssize_t
-uudecode(register Uu_t* uu, Sfio_t* ip, Sfio_t* op, size_t n, const char* path)
+uudecode(Uu_t* uu, Sfio_t* ip, Sfio_t* op, size_t n, const char* path)
 {
-	register char*	s;
+	char*	s;
 	unsigned char*	m;
 	int		c;
 	int		headerpath;

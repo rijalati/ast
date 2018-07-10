@@ -26,7 +26,7 @@
 #include "pzlib.h"
 
 const char*
-pzinit(register Pz_t* pz, register const char* name, Pzinit_f initf)
+pzinit(Pz_t* pz, const char* name, Pzinit_f initf)
 {
 	const char*		options;
 	const char*		usage;

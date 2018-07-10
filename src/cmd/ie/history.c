@@ -101,14 +101,14 @@ static const unsigned char hist_stamp[2] = { H_UNDO, H_VERSION };
 
 int  hist_open()
 {
-	register int fd;
-	register struct history *fp;
-	register char *histname;
+	int fd;
+	struct history *fp;
+	char *histname;
 	char fname[TMPSIZ];
 	char hname[256];
 	int maxlines;
-	register char *cp;
-	register off_t hsize = 0;
+	char *cp;
+	off_t hsize = 0;
 	int his_start;
 
 	if(hist_ptr)
@@ -226,7 +226,7 @@ retry:
 
 static void hist_free()
 {
-	register struct history *fp = hist_ptr;
+	struct history *fp = hist_ptr;
 	io_fclose(fp->fixfd);
 	free((char*)fp);
 	hist_ptr = 0;
@@ -237,7 +237,7 @@ static void hist_free()
  */
 
 static int hist_check(fd)
-register int fd;
+int fd;
 {
 	unsigned char magic[2];
 	io_seek(fd,(off_t)0,SEEK_SET);
@@ -268,9 +268,9 @@ register int fd;
    static struct flock hislock = { F_WRLCK, 0, (off_t)0, (off_t)2, (pid_t)0 };
 #endif
 static int hist_clean(fd)
-register int fd;
+int fd;
 {
-	register int r = 0;
+	int r = 0;
 	struct stat statb;
 	if(noclean)
 		return(0);
@@ -304,9 +304,9 @@ register int fd;
 static void hist_trim(n)
 	int n;
 {
-	register int c;
-	register struct fileblk *fp;
-	register struct history *hist_new;
+	int c;
+	struct fileblk *fp;
+	struct history *hist_new;
 	struct history *hist_old = hist_ptr;
 	off_t old,new=0;
 	int fdo;
@@ -358,12 +358,12 @@ static void hist_trim(n)
  */
 
 static int hist_nearend(fd,size)
-register int fd;
+int fd;
 off_t size;
 {
-	register int n = 0;
-	register int state = 0;
-	register int c;
+	int n = 0;
+	int state = 0;
+	int c;
 	if(size <=0)
 		goto begin;
 	io_seek(fd,size,SEEK_SET);
@@ -436,11 +436,11 @@ void hist_close()
 
 void hist_eof()
 {
-	register struct history *fp = hist_ptr;
-	register int c;
-	register int incr = 0;
-	register int oldc = 0;
-	register off_t count = fp->fixcnt;
+	struct history *fp = hist_ptr;
+	int c;
+	int incr = 0;
+	int oldc = 0;
+	off_t count = fp->fixcnt;
 	int skip = 0;
 	io_seek(fp->fixfd,count,SEEK_SET);
 #ifdef INT16
@@ -501,8 +501,8 @@ void hist_eof()
 
 void hist_cancel()
 {
-	register struct history *fp = hist_ptr;
-	register int c;
+	struct history *fp = hist_ptr;
+	int c;
 	if(!fp)
 		return;
 	p_setout(fp->fixfd);
@@ -520,9 +520,9 @@ void hist_cancel()
 
 void hist_flush()
 {
-	register struct history *fp = hist_ptr;
-	register struct fileblk *fd;
-	register int c;
+	struct history *fp = hist_ptr;
+	struct fileblk *fd;
+	int c;
 	int flush = 0;
 	int savcount;
 	if(!fp)
@@ -625,7 +625,7 @@ set_count:
 off_t hist_position(n)
 int n;
 {
-	register struct history *fp = hist_ptr;
+	struct history *fp = hist_ptr;
 	return(fp->fixcmds[n&fixmask]);
 }
 
@@ -640,9 +640,9 @@ off_t offset;
 int last;
 char *nl;
 {
-	register int oldc=0;
-	register int c;
-	register struct history *fp = hist_ptr;
+	int oldc=0;
+	int c;
+	struct history *fp = hist_ptr;
 	if(offset<0 || !fp)
 	{
 		p_str(e_unknown,'\n');
@@ -674,12 +674,12 @@ char *nl;
 
 histloc hist_find(string,index1,flag,direction)
 char *string;
-register int index1;
+int index1;
 int flag;
 int direction;
 {
-	register struct history *fp = hist_ptr;
-	register int index2;
+	struct history *fp = hist_ptr;
+	int index2;
 	off_t offset;
 	histloc location;
 	location.his_command = -1;
@@ -737,10 +737,10 @@ off_t offset;
 char *string;
 int flag;
 {
-	register char *cp;
-	register int c;
-	register struct history *fp = hist_ptr;
-	register off_t count;
+	char *cp;
+	int c;
+	struct history *fp = hist_ptr;
+	off_t count;
 	int line = 0;
 #ifdef MULTIBYTE
 	int nbytes = 0;
@@ -801,13 +801,13 @@ int flag;
  */
 
 int hist_copy(s1,command,line)
-register char *s1;
+char *s1;
 int command, line;
 {
-	register int c;
-	register struct history *fp = hist_ptr;
-	register int count = 0;
-	register char *s1max = s1+MAXLINE;
+	int c;
+	struct history *fp = hist_ptr;
+	int count = 0;
+	char *s1max = s1+MAXLINE;
 	off_t offset;
 	if(!fp)
 		return(-1);
@@ -850,9 +850,9 @@ char *hist_word(s1,word)
 char *s1;
 int word;
 {
-	register int c;
-	register char *cp = s1;
-	register int flag = 0;
+	int c;
+	char *cp = s1;
+	int flag = 0;
 	if(hist_ptr==0)
 #ifdef KSHELL
 		return(sh.lastarg);
@@ -890,8 +890,8 @@ int word;
  */
 
 histloc hist_locate(command,line,lines)
-register int command;
-register int line;
+int command;
+int line;
 int lines;
 {
 	histloc next;
@@ -903,7 +903,7 @@ int lines;
 	}
 	if(lines > 0)
 	{
-		register int count;
+		int count;
 		while(command <= hist_ptr->fixind)
 		{
 			count = hist_copy(NIL,command,-1);
@@ -915,7 +915,7 @@ int lines;
 	}
 	else
 	{
-		register int least = hist_ptr->fixind-hist_ptr->fixmax;
+		int least = hist_ptr->fixind-hist_ptr->fixmax;
 		while(1)
 		{
 			if(line >=0)
@@ -946,9 +946,9 @@ const char *command;
 int fd;
 char *replace;
 {
-	register char *new=replace;
-	register char *sp;
-	register int c;
+	char *new=replace;
+	char *sp;
+	int c;
 	struct fileblk fb;
 	char inbuff[IOBSIZE+1];
 	char *string;
@@ -979,7 +979,7 @@ char *replace;
 
 static void io_init(fd,fp,buf)
 int fd;
-register struct fileblk *fp;
+struct fileblk *fp;
 char *buf;
 {
 	if(!fp)
@@ -1005,8 +1005,8 @@ char *buf;
 static int io_getc(fd)
 int fd;
 {
-	register struct fileblk *fp = io_ftable[fd];
-	register int c;
+	struct fileblk *fp = io_ftable[fd];
+	int c;
 	if(!fp)
 		return(EOF);
 	if(c= *fp->ptr++)
@@ -1026,10 +1026,10 @@ static off_t hoffset;
 static off_t io_seek(fd, offset, ptrname)
 int fd;
 off_t	offset;
-register int	ptrname;
+int	ptrname;
 {
-	register struct fileblk *fp;
-	register int c;
+	struct fileblk *fp;
+	int c;
 	off_t	p;
 
 	if(!(fp=io_ftable[fd]))
@@ -1082,9 +1082,9 @@ register int	ptrname;
  */
 
 static int io_readbuff(fp)
-register struct fileblk *fp;
+struct fileblk *fp;
 {
-	register int n;
+	int n;
 
 	if (fp->flag & IORW)
 		fp->flag |= IOREAD;
@@ -1126,9 +1126,9 @@ register struct fileblk *fp;
  */
 
 static void io_fclose(fd)
-register int fd;
+int fd;
 {
-	register struct fileblk *fp = io_ftable[fd];
+	struct fileblk *fp = io_ftable[fd];
 	/* reposition seek pointer if necessary */
 	if(fp && !(fp->flag&IOREAD))
 		p_flush();
@@ -1143,8 +1143,8 @@ register int fd;
  */
 
 static int io_renumber(fa, fb)
-register int	fa;
-register int 	fb;
+int	fa;
+int 	fb;
 {
 	if(fa >= 0)
 	{
@@ -1171,7 +1171,7 @@ register int 	fb;
  */
 
 static int io_mktmp(fname, len)
-register char *fname;
+char *fname;
 int len;
 {
 	int fd;

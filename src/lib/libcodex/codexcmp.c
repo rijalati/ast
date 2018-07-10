@@ -27,7 +27,7 @@
 #include <codex.h>
 
 int
-codexcmp(register const char* s, register const char* t)
+codexcmp(const char* s, const char* t)
 {
 	for (;;)
 	{

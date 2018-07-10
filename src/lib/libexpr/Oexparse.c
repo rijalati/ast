@@ -1906,7 +1906,7 @@ yyreduce:
 /* Line 1806 of yacc.c  */
 /* #line 161 "/home/gsf/src/lib/libexpr/exparse.y" */
     {
-				register Dtdisc_t*	disc;
+				Dtdisc_t*	disc;
 
 				if (expr.procedure)
 					exerror("no nested function definitions");
@@ -2104,7 +2104,7 @@ yyreduce:
 /* Line 1806 of yacc.c  */
 /* #line 286 "/home/gsf/src/lib/libexpr/exparse.y" */
     {
-			register Switch_t*	sw = expr.swstate;
+			Switch_t*	sw = expr.swstate;
 
 			(yyval.expr) = exnewnode(expr.program, (yyvsp[(1) - (8)].id)->index, 1, INTEGER, (yyvsp[(3) - (8)].expr), exnewnode(expr.program, DEFAULT, 1, 0, sw->defcase, sw->firstcase));
 			expr.swstate = expr.swstate->prev;
@@ -2162,7 +2162,7 @@ yyreduce:
 /* Line 1806 of yacc.c  */
 /* #line 326 "/home/gsf/src/lib/libexpr/exparse.y" */
     {
-			register Switch_t*		sw;
+			Switch_t*		sw;
 			int				n;
 
 			if (expr.swstate)
@@ -2198,7 +2198,7 @@ yyreduce:
 /* Line 1806 of yacc.c  */
 /* #line 360 "/home/gsf/src/lib/libexpr/exparse.y" */
     {
-			register Switch_t*	sw = expr.swstate;
+			Switch_t*	sw = expr.swstate;
 			int			n;
 
 			(yyval.expr) = exnewnode(expr.program, CASE, 1, 0, (yyvsp[(2) - (2)].expr), NiL);
@@ -2809,7 +2809,7 @@ yyreduce:
 /* Line 1806 of yacc.c  */
 /* #line 769 "/home/gsf/src/lib/libexpr/exparse.y" */
     {
-			register Exnode_t*	x;
+			Exnode_t*	x;
 
 			(yyval.expr) = exnewnode(expr.program, (yyvsp[(1) - (4)].id)->index, 0, (yyvsp[(1) - (4)].id)->type, NiL, NiL);
 			if ((yyvsp[(3) - (4)].expr) && (yyvsp[(3) - (4)].expr)->data.operand.left->type == INTEGER)
@@ -3142,8 +3142,8 @@ yyreduce:
 /* Line 1806 of yacc.c  */
 /* #line 999 "/home/gsf/src/lib/libexpr/exparse.y" */
     {
-			register Exnode_t*	x;
-			register Exnode_t*	y;
+			Exnode_t*	x;
+			Exnode_t*	y;
 
 			(yyval.expr) = (yyvsp[(1) - (3)].expr);
 			for (x = (yyvsp[(1) - (3)].expr); y = x->data.operand.right; x = y);
@@ -3230,7 +3230,7 @@ yyreduce:
 /* Line 1806 of yacc.c  */
 /* #line 1058 "/home/gsf/src/lib/libexpr/exparse.y" */
     {
-				register Dtdisc_t*	disc;
+				Dtdisc_t*	disc;
 
 				if (expr.procedure)
 					exerror("%s: nested function definitions not supported", expr.id->name);

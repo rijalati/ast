@@ -112,8 +112,8 @@ opname(int op)
 static void
 print(Excc_t* cc, Exnode_t* expr)
 {
-	register Print_t*	x;
-	register int		i;
+	Print_t*	x;
+	int		i;
 
 	if (x = expr->data.print.args)
 	{
@@ -147,8 +147,8 @@ print(Excc_t* cc, Exnode_t* expr)
 static void
 scan(Excc_t* cc, Exnode_t* expr)
 {
-	register Print_t*	x;
-	register int		i;
+	Print_t*	x;
+	int		i;
 
 	if (x = expr->data.print.args)
 	{
@@ -180,13 +180,13 @@ scan(Excc_t* cc, Exnode_t* expr)
  */
 
 static void
-gen(Excc_t* cc, register Exnode_t* expr)
+gen(Excc_t* cc, Exnode_t* expr)
 {
-	register Exnode_t*	x;
-	register Exnode_t*	y;
-	register int		n;
-	register int		m;
-	register int		t;
+	Exnode_t*	x;
+	Exnode_t*	y;
+	int		n;
+	int		m;
+	int		t;
 	char*			s;
 	Extype_t*		v;
 	Extype_t**		p;
@@ -540,8 +540,8 @@ gen(Excc_t* cc, register Exnode_t* expr)
 static int
 global(Dt_t* table, void* object, void* handle)
 {
-	register Excc_t*	cc = (Excc_t*)handle;
-	register Exid_t*	sym = (Exid_t*)object;
+	Excc_t*	cc = (Excc_t*)handle;
+	Exid_t*	sym = (Exid_t*)object;
 
 	if (sym->lex == DYNAMIC)
 		sfprintf(cc->ccdisc->text, "static %s	%s;\n", extype(sym->type), sym->name);
@@ -555,7 +555,7 @@ global(Dt_t* table, void* object, void* handle)
 Excc_t*
 exccopen(Expr_t* expr, Exccdisc_t* disc)
 {
-	register Excc_t*	cc;
+	Excc_t*	cc;
 	char*			id;
 
 	if (!(id = disc->id))
@@ -610,7 +610,7 @@ exccclose(Excc_t* cc)
 int
 excc(Excc_t* cc, const char* name, Exid_t* sym, int type)
 {
-	register char*	t;
+	char*	t;
 
 	if (!cc)
 		return -1;

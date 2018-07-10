@@ -40,7 +40,7 @@ static const char lib[] = "std:pss";
 Pss_t*
 pssopen(Pssdisc_t* disc)
 {
-	register Pss_t*	pss;
+	Pss_t*	pss;
 	Vmalloc_t*	vm;
 
 	if (!disc)
@@ -99,11 +99,11 @@ pssclose(Pss_t* pss)
  */
 
 Pssent_t*
-pssread(register Pss_t* pss, Pss_id_t pid)
+pssread(Pss_t* pss, Pss_id_t pid)
 {
-	register unsigned long	fields = pss->meth->fields;
-	register unsigned long	flags = pss->disc->flags;
-	register Pssent_t*	pe;
+	unsigned long	fields = pss->meth->fields;
+	unsigned long	flags = pss->disc->flags;
+	Pssent_t*	pe;
 	Pssmatch_t*		mp;
 	Pssdata_t*		dp;
 	unsigned long		x;
@@ -235,9 +235,9 @@ pssread(register Pss_t* pss, Pss_id_t pid)
  */
 
 Pssent_t*
-psssave(register Pss_t* pss, register Pssent_t* pe)
+psssave(Pss_t* pss, Pssent_t* pe)
 {
-	register unsigned long		fields = pss->disc->fields & pss->meth->fields;
+	unsigned long		fields = pss->disc->fields & pss->meth->fields;
 
 	if ((fields & PSS_args) && pe->args)
 		pe->args = vmstrdup(pss->vm, pe->args);
@@ -256,9 +256,9 @@ psssave(register Pss_t* pss, register Pssent_t* pe)
  */
 
 int
-pssttyadd(register Pss_t* pss, const char* name, Pss_dev_t dev)
+pssttyadd(Pss_t* pss, const char* name, Pss_dev_t dev)
 {
-	register Tty_t*	tty;
+	Tty_t*	tty;
 
 	if (!dtmatch(pss->ttybyname, name))
 	{
@@ -282,10 +282,10 @@ pssttyadd(register Pss_t* pss, const char* name, Pss_dev_t dev)
  */
 
 static void
-ttyscan(register Pss_t* pss)
+ttyscan(Pss_t* pss)
 {
-	register DIR*		dir;
-	register struct dirent*	ent;
+	DIR*		dir;
+	struct dirent*	ent;
 	DIR*			sub = 0;
 	char*			base;
 	char*			name;
@@ -351,10 +351,10 @@ ttyscan(register Pss_t* pss)
  */
 
 Pss_dev_t
-pssttydev(register Pss_t* pss, const char* name)
+pssttydev(Pss_t* pss, const char* name)
 {
-	register const char*	s;
-	register Tty_t*		tty;
+	const char*	s;
+	Tty_t*		tty;
 	struct stat		st;
 
 	s = name;
@@ -387,9 +387,9 @@ pssttydev(register Pss_t* pss, const char* name)
  */
 
 char*
-pssttyname(register Pss_t* pss, Pssent_t* pe)
+pssttyname(Pss_t* pss, Pssent_t* pe)
 {
-	register Tty_t*	tty;
+	Tty_t*	tty;
 	Pss_dev_t	dev;
 	char*		s;
 

@@ -328,8 +328,8 @@ static Optstate_t	opt;
 static Option_t*
 getoption(const char* name)
 {
-	register Option_t*	op;
-	register int		c;
+	Option_t*	op;
+	int		c;
 
 	if (!(op = (Option_t*)hashget(opt.table, name)) && (strchr(name, '-') || strchr(name, '_')))
 	{
@@ -342,10 +342,10 @@ getoption(const char* name)
 }
 
 static void
-putoption(register Option_t* op, int index)
+putoption(Option_t* op, int index)
 {
-	register char*	s;
-	register int	c;
+	char*	s;
+	int	c;
 	char		buf[16];
 
 	hashput(opt.table, op->name, (char*)op);
@@ -380,7 +380,7 @@ putoption(register Option_t* op, int index)
 void
 optinit(void)
 {
-	register int	i;
+	int	i;
 
 	opt.table = hashalloc(NiL, HASH_name, "options", 0);
 	for (i = 0; i < elementsof(options); i++)
@@ -407,9 +407,9 @@ optinit(void)
  */
 
 Option_t*
-optflag(register int flag)
+optflag(int flag)
 {
-	register Option_t*	op;
+	Option_t*	op;
 	char			buf[8];
 
 	if (flag & Of)
@@ -430,7 +430,7 @@ optflag(register int flag)
  */
 
 static void
-setcall(register Option_t* op, int readonly)
+setcall(Option_t* op, int readonly)
 {
 	Rule_t*		r;
 	char*		oset;
@@ -466,9 +466,9 @@ setcall(register Option_t* op, int readonly)
  */
 
 static void
-declarestr(register Sfio_t* sp, register const char* s)
+declarestr(Sfio_t* sp, const char* s)
 {
-	register int	c;
+	int	c;
 
 	if (s && *s)
 		while (c = *s++)
@@ -487,7 +487,7 @@ declarestr(register Sfio_t* sp, register const char* s)
  */
 
 static void
-declare(Sfio_t* sp, register Option_t* op)
+declare(Sfio_t* sp, Option_t* op)
 {
 	if (!(op->flags & Of))
 		sfputc(internal.tmp, OPT(op->flags));
@@ -521,7 +521,7 @@ declare(Sfio_t* sp, register Option_t* op)
  */
 
 static void
-genusage(register Option_t* op, int index, int last)
+genusage(Option_t* op, int index, int last)
 {
 	long	pos;
 
@@ -641,7 +641,7 @@ regressinit(const char* type)
  */
 
 static char*
-showop(register Option_t* op)
+showop(Option_t* op)
 {
 	sfprintf(internal.tmp, "%s,", op->name);
 	sfprintf(internal.tmp, (op->flags & Of) ? "%03o," : "'%c',", op->flags & ((1<<8) - 1));
@@ -688,10 +688,10 @@ showop(register Option_t* op)
 static char*
 field(char** p, int sep, int app, int lenient)
 {
-	register char*	s;
-	register char*	t;
+	char*	s;
+	char*	t;
 	char*		v;
-	register int	c;
+	int	c;
 
 	if (!(c = *(s = *p)) || c == app)
 		return 0;
@@ -747,7 +747,7 @@ field(char** p, int sep, int app, int lenient)
  */
 
 static void
-setop(register Option_t* op, register int n, char* s, int type)
+setop(Option_t* op, int n, char* s, int type)
 {
 	char*		t;
 	Rule_t*		r;
@@ -1441,9 +1441,9 @@ setop(register Option_t* op, register int n, char* s, int type)
  */
 
 static void
-genop(register Sfio_t* sp, register Option_t* op, int setting, int flag)
+genop(Sfio_t* sp, Option_t* op, int setting, int flag)
 {
-	register long		n;
+	long		n;
 	char*			v;
 	List_t*			p;
 
@@ -1653,10 +1653,10 @@ optcheck(int must)
  */
 
 void
-listops(register Sfio_t* sp, int setting)
+listops(Sfio_t* sp, int setting)
 {
-	register Option_t*	op;
-	register Oplist_t*	x;
+	Option_t*	op;
+	Oplist_t*	x;
 	int			sc;
 	int			sep;
 	long			mask;
@@ -1742,9 +1742,9 @@ listops(register Sfio_t* sp, int setting)
  */
 
 void
-getop(register Sfio_t* sp, char* name, int setting)
+getop(Sfio_t* sp, char* name, int setting)
 {
-	register Option_t*	op;
+	Option_t*	op;
 	int			flag;
 
 	if ((op = getoption(name)) && !(flag = 0) || name[0] == 'n' && name[1] == 'o' && (op = getoption(&name[2])) && (flag = Oi) || name[0] && !name[1] && (op = optflag(name[0])) && (flag = Of))
@@ -1758,7 +1758,7 @@ getop(register Sfio_t* sp, char* name, int setting)
 static void
 optset(int i, char* v, Sfio_t* scope)
 {
-	register char*	s;
+	char*	s;
 	int		n;
 	Option_t*	op;
 	Oplist_t*	x;
@@ -1822,7 +1822,7 @@ optset(int i, char* v, Sfio_t* scope)
 int
 set(char* s, int must, Sfio_t* scope)
 {
-	register int	i;
+	int	i;
 	int		r;
 	int		oreadonly;
 	Opt_t		info;
@@ -1861,9 +1861,9 @@ set(char* s, int must, Sfio_t* scope)
 int
 scanargs(int argc, char** argv, int* argf)
 {
-	register int	i;
-	register char*	s;
-	register int	c;
+	int	i;
+	char*	s;
+	int	c;
 	int		args;
 	int		done;
 	char*		e;
@@ -1945,8 +1945,8 @@ scanargs(int argc, char** argv, int* argf)
 void
 punt(int old)
 {
-	register char*		s;
-	register char**		av;
+	char*		s;
+	char**		av;
 	int			i;
 	List_t*			p;
 	Oplist_t*		x;

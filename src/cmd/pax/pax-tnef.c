@@ -36,7 +36,7 @@ typedef struct Tnef_s
 } Tnef_t;
 
 static int
-tnef_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
+tnef_getprologue(Pax_t* pax, Format_t* fp, Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
 {
 	Tnef_t*		tnef;
 	uint32_t	magic;
@@ -54,7 +54,7 @@ tnef_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, un
 }
 
 static int
-tnef_getheader(Pax_t* pax, Archive_t* ap, register File_t* f)
+tnef_getheader(Pax_t* pax, Archive_t* ap, File_t* f)
 {
 	Tnef_t*			tnef = (Tnef_t*)ap->data;
 	char*			s;
@@ -216,7 +216,7 @@ tnef_getheader(Pax_t* pax, Archive_t* ap, register File_t* f)
 }
 
 static int
-tnef_done(Pax_t* pax, register Archive_t* ap)
+tnef_done(Pax_t* pax, Archive_t* ap)
 {
 	if (ap->data)
 	{
@@ -229,7 +229,7 @@ tnef_done(Pax_t* pax, register Archive_t* ap)
 static int
 tnef_gettrailer(Pax_t* pax, Archive_t* ap, File_t* f)
 {
-	register Tnef_t*	tnef = (Tnef_t*)ap->data;
+	Tnef_t*	tnef = (Tnef_t*)ap->data;
 
 	if (paxseek(pax, ap, tnef->offset, SEEK_SET, 1) != tnef->offset)
 		error(3, "%s: %s format seek error", ap->name, ap->format->name);

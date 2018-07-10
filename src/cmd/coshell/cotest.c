@@ -42,8 +42,8 @@ jobcheck(Coshell_t* a)
 static void
 init(void)
 {
-	register int	n;
-	register char*	s;
+	int	n;
+	char*	s;
 
 	message((-1, "init"));
 	state.toss = state.start = cs.time;
@@ -88,9 +88,9 @@ init(void)
 int
 main(int argc, char** argv)
 {
-	register Coshell_t*	sp;
-	register char*		s;
-	register int		op;
+	Coshell_t*	sp;
+	char*		s;
+	int		op;
 	Coattr_t		attr;
 
 	NoP(argc);

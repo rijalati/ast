@@ -189,11 +189,11 @@ static int	schedule(State_t*);
  */
 
 static User_t*
-user(register State_t* state, char* name, unsigned long uid)
+user(State_t* state, char* name, unsigned long uid)
 {
-	register User_t*	usr;
-	register struct passwd*	pwd;
-	register int		n;
+	User_t*	usr;
+	struct passwd*	pwd;
+	int		n;
 	char*			home;
 	char			buf[16];
 
@@ -240,9 +240,9 @@ user(register State_t* state, char* name, unsigned long uid)
  */
 
 static Owner_t*
-permit(register Queue_t* que, User_t* usr)
+permit(Queue_t* que, User_t* usr)
 {
-	register Owner_t*	own;
+	Owner_t*	own;
 
 	if (!(own = (Owner_t*)dtmatch(que->owner, &usr)))
 	{
@@ -277,10 +277,10 @@ allow(Dt_t* dt, void* object, void* handle)
  */
 
 static void
-queue(register State_t* state, register char* s)
+queue(State_t* state, char* s)
 {
-	register Queue_t*	que;
-	register Owner_t*	own;
+	Queue_t*	que;
+	Owner_t*	own;
 	User_t*			usr;
 	char*			t;
 	long			n;
@@ -378,11 +378,11 @@ queue(register State_t* state, register char* s)
  */
 
 static void
-update(register State_t* state)
+update(State_t* state)
 {
-	register char*		s;
-	register Sfio_t*	sp;
-	register Queue_t*	que;
+	char*		s;
+	Sfio_t*	sp;
+	Queue_t*	que;
 	User_t*			usr;
 	Owner_t*		own;
 	int			permit;
@@ -480,8 +480,8 @@ update(register State_t* state)
 static int
 client(Css_t* css, Cssfd_t* fp, Csid_t* id, char** args, Cssdisc_t* disc)
 {
-	register State_t*	state = (State_t*)disc;
-	register Connection_t*	con = state->con + fp->fd;
+	State_t*	state = (State_t*)disc;
+	Connection_t*	con = state->con + fp->fd;
 
 	NoP(args);
 	con->id = *id;
@@ -493,7 +493,7 @@ client(Css_t* css, Cssfd_t* fp, Csid_t* id, char** args, Cssdisc_t* disc)
  */
 
 static void
-submit(State_t* state, register Job_t* job)
+submit(State_t* state, Job_t* job)
 {
 	dtinsert(state->table.job.handle, job);
 	job->owner->pending++;
@@ -508,7 +508,7 @@ submit(State_t* state, register Job_t* job)
  */
 
 static void
-complete(State_t* state, register Job_t* job)
+complete(State_t* state, Job_t* job)
 {
 	dtdelete(state->table.job.handle, job);
 	if (job->pid)
@@ -544,7 +544,7 @@ complete(State_t* state, register Job_t* job)
  */
 
 static void
-drop(register State_t* state, register Job_t* job)
+drop(State_t* state, Job_t* job)
 {
 	complete(state, job);
 	error(0, "%s %s que %s drop \"%s\"", job->name, fmtuid(job->owner->user->uid), job->queue->name, job->label);
@@ -557,7 +557,7 @@ drop(register State_t* state, register Job_t* job)
  */
 
 static unsigned long
-execute(register State_t* state, register Job_t* job)
+execute(State_t* state, Job_t* job)
 {
 	Proc_t*		proc;
 	unsigned long	pid;
@@ -583,7 +583,7 @@ execute(register State_t* state, register Job_t* job)
  */
 
 static void
-reap(register State_t* state, register Job_t* job, int status)
+reap(State_t* state, Job_t* job, int status)
 {
 	char*		e;
 	time_t		t;
@@ -605,10 +605,10 @@ reap(register State_t* state, register Job_t* job, int status)
  */
 
 static int
-schedule(register State_t* state)
+schedule(State_t* state)
 {
-	register Job_t*		job;
-	register Queue_t*	que;
+	Job_t*		job;
+	Queue_t*	que;
 	Csstat_t		st;
 
 	unsigned long		x = SMAX;
@@ -672,7 +672,7 @@ schedule(register State_t* state)
 static int
 exception(Css_t* css, unsigned long op, unsigned long arg, Cssdisc_t* disc)
 {
-	register State_t*	state = (State_t*)disc;
+	State_t*	state = (State_t*)disc;
 	int			status;
 	pid_t			pid;
 	Job_t*			job;
@@ -719,8 +719,8 @@ exception(Css_t* css, unsigned long op, unsigned long arg, Cssdisc_t* disc)
 static int
 listowner(Dt_t* dt, void* object, void* handle)
 {
-	register Owner_t*	own = (Owner_t*)object;
-	register Visit_t*	vis = (Visit_t*)handle;
+	Owner_t*	own = (Owner_t*)object;
+	Visit_t*	vis = (Visit_t*)handle;
 
 	NoP(dt);
 	if (own->allow == vis->queue->allow)
@@ -735,7 +735,7 @@ listowner(Dt_t* dt, void* object, void* handle)
 static int
 listqueue(Dt_t* dt, void* object, void* handle)
 {
-	register Queue_t*	que = (Queue_t*)object;
+	Queue_t*	que = (Queue_t*)object;
 	Connection_t*		con = ((Visit_t*)handle)->con;
 	State_t*		state = ((Visit_t*)handle)->state;
 	char*			s;
@@ -759,9 +759,9 @@ listqueue(Dt_t* dt, void* object, void* handle)
  */
 
 static void
-neqv(register Sfio_t* sp, const char* name, register char* v)
+neqv(Sfio_t* sp, const char* name, char* v)
 {
-	register int	c;
+	int	c;
 
 	sfprintf(sp, " \\\n %s='", name);
 	while (c = *v++)
@@ -778,10 +778,10 @@ neqv(register Sfio_t* sp, const char* name, register char* v)
  */
 
 static int
-command(register State_t* state, Connection_t* con, register char* s, int n, char* data)
+command(State_t* state, Connection_t* con, char* s, int n, char* data)
 {
-	register Queue_t*	que;
-	register Job_t*		job;
+	Queue_t*	que;
+	Job_t*		job;
 	Owner_t*		own;
 	User_t*			usr;
 	char*			t;
@@ -1148,8 +1148,8 @@ command(register State_t* state, Connection_t* con, register char* s, int n, cha
 static int
 order(Dt_t* dt, void* a, void* b, Dtdisc_t* disc)
 {
-	register long	r1;
-	register int	r2;
+	long	r1;
+	int	r2;
 
 	NoP(dt);
 	NoP(disc);
@@ -1227,10 +1227,10 @@ commit(void)
 static ssize_t
 stampwrite(int fd, const void* buf, size_t n)
 {
-	register char*		s;
-	register int		i;
-	register ssize_t	r;
-	register ssize_t	z;
+	char*		s;
+	int		i;
+	ssize_t	r;
+	ssize_t	z;
 	unsigned long		now;
 
 	r = 0;
@@ -1273,9 +1273,9 @@ stampwrite(int fd, const void* buf, size_t n)
 static int
 request(Css_t* css, Cssfd_t* fp, Cssdisc_t* disc)
 {
-	register State_t*	state = (State_t*)disc;
-	register Connection_t*	con = state->con + fp->fd;
-	register char*		s;
+	State_t*	state = (State_t*)disc;
+	Connection_t*	con = state->con + fp->fd;
+	char*		s;
 	char*			t;
 	unsigned long		n;
 	int			c;
@@ -1321,9 +1321,9 @@ request(Css_t* css, Cssfd_t* fp, Cssdisc_t* disc)
 static int
 init(const char* path)
 {
-	register State_t*	state;
-	register DIR*		dir;
-	register struct dirent*	ent;
+	State_t*	state;
+	DIR*		dir;
+	struct dirent*	ent;
 	char*			s;
 	char*			b;
 	Sfio_t*			sp;

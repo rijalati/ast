@@ -40,9 +40,9 @@ static char	msg_buf[MSG_SIZE_BUF];
 ssize_t
 msgvcall(int fd, unsigned long channel, unsigned long call, Msg_return_t* ret, void** xp, va_list ap)
 {
-	register long		at;
-	register long		n;
-	register char*		p;
+	long		at;
+	long		n;
+	char*		p;
 	unsigned long		rtime;
 	int			i;
 	int			nv;
@@ -392,8 +392,8 @@ msgcall(int fd, unsigned long channel, unsigned long call, Msg_return_t* ret, ..
 long
 msgvreturn(int fd, unsigned long call, void** xp, va_list ap)
 {
-	register long		n;
-	register unsigned long	at;
+	long		n;
+	unsigned long	at;
 	int			i;
 	long			r;
 	char*			b;

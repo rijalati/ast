@@ -210,9 +210,9 @@ static ush cpdext[] = {		/* Extra bits for distance codes */
    Return an error code or zero if it all goes ok. */
 
 static uch*
-inflate_codes(State_t* state, register uch* p, register uch* e)
+inflate_codes(State_t* state, uch* p, uch* e)
 {
-	register ulg	x;	/* table entry flag/number of extra bits */
+	ulg	x;	/* table entry flag/number of extra bits */
 	Huff_t*		t;	/* pointer to table entry */
 	Huff_t*		tl;	/* literal length state table */
 	Huff_t*		td;	/* literal distance state table */
@@ -320,7 +320,7 @@ inflate_codes(State_t* state, register uch* p, register uch* e)
 /* "decompress" an inflated type 0 (stored) block. */
 
 static uch*
-inflate_stored(State_t* state, register uch* p, register uch* e)
+inflate_stored(State_t* state, uch* p, uch* e)
 {
 	ulg		l;
 	ulg		w;
@@ -629,7 +629,7 @@ deflate_close(Codex_t* p)
 static int
 deflate_init(Codex_t* p)
 {
-	register State_t*	state = (State_t*)p->data;
+	State_t*	state = (State_t*)p->data;
 
 	vmclear(state->vm);
 	state->tl = state->fixed_tl = 0;
@@ -641,10 +641,10 @@ deflate_init(Codex_t* p)
 static ssize_t
 deflate_read(Sfio_t* sp, void* buf, size_t size, Sfdisc_t* disc)
 {
-	register State_t*	state = (State_t*)CODEX(disc)->data;
-	register uch*		p = (uch*)buf;
-	register uch*		e = p + size;
-	register uch*		q;
+	State_t*	state = (State_t*)CODEX(disc)->data;
+	uch*		p = (uch*)buf;
+	uch*		e = p + size;
+	uch*		q;
 	ulg			l;
 	ulg			w;
 	ulg			d;

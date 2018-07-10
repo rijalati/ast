@@ -222,9 +222,9 @@ extoken(Expr_t* ex)
  */
 
 static int
-lex(register Expr_t* ex)
+lex(Expr_t* ex)
 {
-	register int	c;
+	int	c;
 
 	for (;;)
 	{
@@ -280,11 +280,11 @@ lex(register Expr_t* ex)
  */
 
 int
-extoken(register Expr_t* ex)
+extoken(Expr_t* ex)
 {
-	register int	c;
-	register char*	s;
-	register int	q;
+	int	c;
+	char*	s;
+	int	q;
 	int		b;
 	char*		e;
 	Dt_t*		v;

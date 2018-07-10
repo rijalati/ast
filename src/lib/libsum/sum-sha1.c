@@ -206,7 +206,7 @@ sha1_transform(uint32_t state[5], const unsigned char buffer[64]) {
 }
 
 static int
-sha1_block(register Sum_t* p, const void* s, size_t len)
+sha1_block(Sum_t* p, const void* s, size_t len)
 {
 	Sha1_t*		sha = (Sha1_t*)p;
 	uint8_t*	data = (uint8_t*)s;
@@ -235,7 +235,7 @@ sha1_block(register Sum_t* p, const void* s, size_t len)
 static int
 sha1_init(Sum_t* p)
 {
-	register Sha1_t*	sha = (Sha1_t*)p;
+	Sha1_t*	sha = (Sha1_t*)p;
 
 	sha->count[0] = sha->count[1] = 0;
 	sha->state[0] = 0x67452301;
@@ -300,11 +300,11 @@ sha1_done(Sum_t* p)
 }
 
 static int
-sha1_print(Sum_t* p, Sfio_t* sp, register int flags, size_t scale)
+sha1_print(Sum_t* p, Sfio_t* sp, int flags, size_t scale)
 {
-	register Sha1_t*	sha = (Sha1_t*)p;
-	register unsigned char*	d;
-	register int		n;
+	Sha1_t*	sha = (Sha1_t*)p;
+	unsigned char*	d;
+	int		n;
 
 	d = (flags & SUM_TOTAL) ? sha->digest_sum : sha->digest;
 	for (n = 0; n < elementsof(sha->digest); n++)
@@ -315,7 +315,7 @@ sha1_print(Sum_t* p, Sfio_t* sp, register int flags, size_t scale)
 static int
 sha1_data(Sum_t* p, Sumdata_t* data)
 {
-	register Sha1_t*	sha = (Sha1_t*)p;
+	Sha1_t*	sha = (Sha1_t*)p;
 
 	data->size = elementsof(sha->digest);
 	data->num = 0;

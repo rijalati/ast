@@ -76,10 +76,10 @@ static int line_sfputr(int line, Sfio_t* sp, const char* buf, int op)
  */
 
 static char*
-token(register Sfio_t* ip)
+token(Sfio_t* ip)
 {
-	register int	c;
-	register char*	s;
+	int	c;
+	char*	s;
 
 	static char	buf[1024];
 
@@ -121,11 +121,11 @@ token(register Sfio_t* ip)
  */
 
 off_t
-nocomment(register Sfio_t* ip, Sfio_t* op)
+nocomment(Sfio_t* ip, Sfio_t* op)
 {
-	register int	c = 0;
-	register int	p;
-	register int	data = 0;
+	int	c = 0;
+	int	p;
+	int	data = 0;
 	int		sync = 0;
 	int		formals = 0;
 	unsigned long	line = 0;

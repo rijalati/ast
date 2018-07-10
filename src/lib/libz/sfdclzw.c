@@ -215,8 +215,8 @@ static char_type rmask[9] =
 static int
 output(LZW_t* zs, Sfio_t* f, code_int ocode, Sfdisc_t* dp)
 {
-	register int bits, r_off;
-	register char_type *bp;
+	int bits, r_off;
+	char_type *bp;
 
 	r_off = offset;
 	bits = n_bits;
@@ -303,9 +303,9 @@ output(LZW_t* zs, Sfio_t* f, code_int ocode, Sfdisc_t* dp)
 static code_int
 getcode(LZW_t* zs, Sfio_t* f, Sfdisc_t* dp)
 {
-	register code_int gcode;
-	register int r_off, bits;
-	register char_type *bp;
+	code_int gcode;
+	int r_off, bits;
+	char_type *bp;
 
 	bp = gbuf;
 	if (clear_flg > 0 || roffset >= size || free_ent > maxcode) {
@@ -359,10 +359,10 @@ getcode(LZW_t* zs, Sfio_t* f, Sfdisc_t* dp)
 }
 
 static void
-cl_hash(LZW_t* zs, register count_int cl_hsize)		/* Reset code table. */
+cl_hash(LZW_t* zs, count_int cl_hsize)		/* Reset code table. */
 {
-	register count_int *htab_p;
-	register long i, m1;
+	count_int *htab_p;
+	long i, m1;
 
 	m1 = -1;
 	htab_p = htab + cl_hsize;
@@ -393,7 +393,7 @@ cl_hash(LZW_t* zs, register count_int cl_hsize)		/* Reset code table. */
 static int
 cl_block(LZW_t* zs, Sfio_t* f, Sfdisc_t* dp)/* Table clear for block compress. */
 {
-	register long rat;
+	long rat;
 
 	checkpoint = in_count + CHECK_GAP;
 
@@ -453,7 +453,7 @@ lzw_sync(LZW_t* zs, Sfio_t* f, Sfoff_t off, Sfdisc_t* dp)
 static int
 lzw_except(Sfio_t* f, int op, void* val, Sfdisc_t* dp)
 {
-	register LZW_t*	zs = (LZW_t*)dp;
+	LZW_t*	zs = (LZW_t*)dp;
 	int		flags;
 	int		r;
 
@@ -519,8 +519,8 @@ lzw_except(Sfio_t* f, int op, void* val, Sfdisc_t* dp)
 static ssize_t
 lzw_write(Sfio_t* f, const Void_t* wbp, size_t num, Sfdisc_t* dp)
 {
-	register code_int i;
-	register int c, disp;
+	code_int i;
+	int c, disp;
 	LZW_t *zs;
 	const u_char *bp;
 	u_char tmp;
@@ -612,7 +612,7 @@ nomatch:	if (output(zs, f, (code_int) ent, dp) == -1)
 static ssize_t
 lzw_read(Sfio_t* f, Void_t* rbp, size_t num, Sfdisc_t* dp)
 {
-	register u_int count;
+	u_int count;
 	LZW_t *zs;
 	u_char *bp, header[3];
 
@@ -726,8 +726,8 @@ sfdclzw(Sfio_t* f, int flags)
 
 	if (sfset(f, 0, 0) & SF_READ)
 	{
-		register unsigned char*	s;
-		register int		n;
+		unsigned char*	s;
+		int		n;
 
 		/*
 		 * peek the first 2 bytes to verify the magic

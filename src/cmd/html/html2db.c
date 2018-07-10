@@ -47,11 +47,11 @@ USAGE_LICENSE
 static void
 flatten(const char* path, Sfio_t* ip, Sfio_t* op)
 {
-	register int	c;
-	register int	q;
-	register int	p;
-	register int	b;
-	register char*	s;
+	int	c;
+	int	q;
+	int	p;
+	int	b;
+	char*	s;
 
 	char		tag[256];
 
@@ -144,8 +144,8 @@ flatten(const char* path, Sfio_t* ip, Sfio_t* op)
 int
 main(int argc, char** argv)
 {
-	register char*		s;
-	register Sfio_t*	ip;
+	char*		s;
+	Sfio_t*	ip;
 
 	NoP(argc);
 	error_info.id = "html2db";

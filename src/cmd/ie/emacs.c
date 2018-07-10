@@ -180,10 +180,10 @@ char *buff;
 int fd;
 unsigned scend;
 {
-	register int c;
-	register int i;
-	register genchar *out;
-	register int count;
+	int c;
+	int i;
+	genchar *out;
+	int count;
 	int adjust,oadjust;
 	char backslash;
 	genchar *kptr;
@@ -682,8 +682,8 @@ process:
 static void show_info(str)
 char *str;
 {
-	register char *out = (char *)drawbuff;
-	register int c;
+	char *out = (char *)drawbuff;
+	int c;
 	genchar string[LBUF];
 	int sav_cur = cur;
 	/* save current line */
@@ -707,9 +707,9 @@ char *str;
 
 static void 
 putstring(s)
-register char *s;
+char *s;
 {
-	register int c;
+	int c;
 	while (c= *s++)
 		 putchar(c);
 }
@@ -717,10 +717,10 @@ register char *s;
 
 static int 
 escape(out,count)
-register genchar *out;
+genchar *out;
 int count;
 {
-	register int i,value;
+	int i,value;
 	int digit,ch;
 	digit = 0;
 	value = 0;
@@ -992,7 +992,7 @@ static void
 xcommands(count)
 int count;
 {
-        register int i = ed_getchar();
+        int i = ed_getchar();
 	(&count,1);	/* make sure count gets referenced to avoid warning */
         switch(i)
         {
@@ -1083,9 +1083,9 @@ int direction;
 #ifndef ESH_NFIRST
 	histloc location;
 #endif
-	register int i,sl;
+	int i,sl;
 	genchar str_buff[LBUF];
-	register genchar *string = drawbuff;
+	genchar *string = drawbuff;
 	/* save current line */
 	char sav_cur = cur;
 	genncpy(str_buff,string,sizeof(str_buff)/CHARSIZE-1);
@@ -1196,18 +1196,18 @@ DRAWTYPE option;
 #define UNDEF	0
 
 	static char overflow;		/* Screen overflow flag set */
-	register genchar *sptr;		/* Pointer within screen */
+	genchar *sptr;		/* Pointer within screen */
 	
 	static int offset;		/* Screen offset */
 	static char scvalid;		/* Screen is up to date */
 	
 	genchar nscreen[2*MAXLINE];	/* New entire screen */
 	genchar *ncursor;		/* New cursor */
-	register genchar *nptr;		/* Pointer to New screen */
+	genchar *nptr;		/* Pointer to New screen */
 	char  longline;			/* Line overflow */
 	genchar *logcursor;
 	genchar *nscend;		/* end of logical screen */
-	register int i;
+	int i;
 	
 	nptr = nscreen;
 	sptr = drawbuff;
@@ -1365,9 +1365,9 @@ DRAWTYPE option;
 
 static void
 setcursor(new,c)
-register int new,c;
+int new,c;
 {
-	register int old = cursor - screen;
+	int old = cursor - screen;
 	if (old > new)
 	{
 		if ((cr_ok == NO) || (2*(new+plen)>(old+plen)))
@@ -1396,15 +1396,15 @@ skip:
 
 #ifdef MULTIBYTE
 static int print(c)
-register int c;
+int c;
 {
 	return((c&~STRIP)==0 && isprint(c));
 }
 
 static int isword(i)
-register int i;
+int i;
 {
-	register int c = drawbuff[i];
+	int c = drawbuff[i];
 	return((c&~STRIP) || isalnum(c));
 }
 #endif /* MULTIBYTE */

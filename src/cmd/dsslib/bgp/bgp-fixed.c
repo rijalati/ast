@@ -113,8 +113,8 @@ fixedopen(Dssfile_t* file, Dssdisc_t* disc)
 static int
 fixedread(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register Fixedstate_t*	state = (Fixedstate_t*)file->data;
-	register Bgproute_t*	rp;
+	Fixedstate_t*	state = (Fixedstate_t*)file->data;
+	Bgproute_t*	rp;
 
 	if (!(rp = (Bgproute_t*)sfreserve(file->io, sizeof(*rp), 0)))
 	{

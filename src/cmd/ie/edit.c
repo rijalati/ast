@@ -222,7 +222,7 @@ struct termios *tty;
 }*/
 
 void tty_cooked(fd)
-register int fd;
+int fd;
 {
 
 	if(editb.e_raw==0)
@@ -255,7 +255,7 @@ register int fd;
 }*/
 
 int tty_raw(fd)
-register int fd;
+int fd;
 {
 #ifdef L_MASK
 	struct ltchars lchars;
@@ -350,7 +350,7 @@ register int fd;
 
 #   ifdef TIOCGETC
 int tty_alt(fd)
-register int fd;
+int fd;
 {
 	int mask;
 	struct tchars ttychars;
@@ -392,7 +392,7 @@ register int fd;
 #	    define IEXTEN	0
 #	endif /* IEXTEN */
 int tty_alt(fd)
-register int fd;
+int fd;
 {
 	if(editb.e_raw==ALTMODE)
 		return(GOOD);
@@ -460,8 +460,8 @@ register int fd;
 
 int ed_window()
 {
-	register int n = DFLTWINDOW-1;
-	register char *cp = nam_strval(COLUMNS);
+	int n = DFLTWINDOW-1;
+	char *cp = nam_strval(COLUMNS);
 	if(cp)
 	{
 		n = (int)strtol(cp, (char**)0, 10)-1;
@@ -491,8 +491,8 @@ int ed_window()
 
 void ed_flush()
 {
-	register int n = editb.e_outptr-editb.e_outbase;
-	register int fd = ERRIO;
+	int n = editb.e_outptr-editb.e_outbase;
+	int fd = ERRIO;
 	if(n<=0)
 		return;
 	write(fd,editb.e_outbase,(unsigned)n);
@@ -558,8 +558,8 @@ void ed_crlf()
 void	ed_setup(fd)
 int fd;
 {
-	register char *pp;
-	register char *last;
+	char *pp;
+	char *last;
 	char *ppmax;
 	int myquote = 0;
 	int qlen = 1;
@@ -573,7 +573,7 @@ int fd;
 #endif /* KSHELL */
 	if(hist_ptr)
 	{
-		register struct history *fp = hist_ptr;
+		struct history *fp = hist_ptr;
 		editb.e_hismax = fp->fixind;
 		editb.e_hloff = 0;
 		editb.e_hismin = fp->fixind-fp->fixmax;
@@ -591,7 +591,7 @@ int fd;
 	ppmax = pp+PRSIZE-1;
 	*pp++ = '\r';
 	{
-		register int c;
+		int c;
 		while(c= *last++) switch(c)
 		{
 			case '\r':
@@ -640,7 +640,7 @@ int fd;
 	*pp = 0;
 	if((editb.e_wsize -= editb.e_plen) < 7)
 	{
-		register int shift = 7-editb.e_wsize;
+		int shift = 7-editb.e_wsize;
 		editb.e_wsize = 7;
 		pp = editb.e_prompt+1;
 		strcpy(pp,pp+shift);
@@ -660,9 +660,9 @@ int fd;
  */
 
 ed_macro(i)
-register int i;
+int i;
 {
-	register char *out;
+	char *out;
 	struct namnod *np;
 	genchar buff[LOOKAHEAD+1];
 	if(i != '@')
@@ -709,7 +709,7 @@ int mode;
 	char	*staksav = stakptr(0);
 	struct comnod  *comptr = (struct comnod*)stakalloc(sizeof(struct comnod));
 	struct argnod *ap = (struct argnod*)stakseek(ARGVAL);
-	register char *out;
+	char *out;
 	char *begin;
 	int addstar;
 	int istilde = 0;
@@ -718,8 +718,8 @@ int mode;
 	optflag savflags = opt_flags;
 #ifdef MULTIBYTE
 	{
-		register int c = *cur;
-		register genchar *cp;
+		int c = *cur;
+		genchar *cp;
 		/* adjust cur */
 		cp = (genchar *)outbuff + *cur;
 		c = *cp;
@@ -735,7 +735,7 @@ int mode;
 	ap->argflag = (A_MAC|A_EXP);
 	ap->argnxt.ap = 0;
 	{
-		register int c;
+		int c;
 		int chktilde;
 		char *cp;
 		if(out>outbuff)
@@ -799,9 +799,9 @@ int mode;
 	if(mode!='*')
 		on_option(MARKDIR);
 	{
-		register char **com;
+		char **com;
 		int	 narg;
-		register int size;
+		int size;
 		VOID (*savfn)();
 		savfn = st.intfn;
 		com = arg_build(&narg,comptr);
@@ -816,7 +816,7 @@ int mode;
 		{
 			if (strip)
 			{
-				register char **ptrcom;
+				char **ptrcom;
 				for(ptrcom=com;*ptrcom;ptrcom++)
 					/* trim directory prefix */
 					*ptrcom = path_basename(*ptrcom);
@@ -882,7 +882,7 @@ int mode;
 	opt_flags = savflags;
 #ifdef MULTIBYTE
 	{
-		register int c;
+		int c;
 		/* first re-adjust cur */
 		out = outbuff + *cur;
 		c = *out;
@@ -898,7 +898,7 @@ int mode;
 
 #   ifdef tenex
 static char *overlay(str,newstr)
-register char *str,*newstr;
+char *str,*newstr;
 {
 	while(*str && *str == *newstr++)
 		str++;
@@ -912,7 +912,7 @@ register char *str,*newstr;
  */
 ed_fulledit()
 {
-	register char *cp;
+	char *cp;
 	if(!hist_ptr || (st.states&BUILTIN))
 		return(BAD);
 	/* use EDITOR on current command */
@@ -942,9 +942,9 @@ ed_fulledit()
 int 
 ed_getchar()
 {
-	register int i;
-	register int c;
-	register int maxtry = MAXTRY;
+	int i;
+	int c;
+	int maxtry = MAXTRY;
 	unsigned nchar = READAHEAD; /* number of characters to read at a time */
 #ifdef MULTIBYTE
 	static int curchar;
@@ -1052,7 +1052,7 @@ retry:
 }
 
 void ed_ungetchar(c)
-register int c;
+int c;
 {
 	if (lookahead < LOOKAHEAD)
 		previous[lookahead++] = c;
@@ -1064,11 +1064,11 @@ register int c;
  */
 
 void	ed_putchar(c)
-register int c;
+int c;
 {
-	register char *dp = editb.e_outptr;
+	char *dp = editb.e_outptr;
 #ifdef MULTIBYTE
-	register int d;
+	int d;
 	/* check for place holder */
 	if(c == MARKER)
 		return;
@@ -1105,9 +1105,9 @@ genchar *virt;
 genchar *phys;
 int cur, voff, poff;
 {
-	register genchar *sp = virt;
-	register genchar *dp = phys;
-	register int c;
+	genchar *sp = virt;
+	genchar *dp = phys;
+	int c;
 	genchar *curp = sp + cur;
 	genchar *dpmax = phys+MAXLINE;
 	int r;
@@ -1172,13 +1172,13 @@ int cur, voff, poff;
  */
 
 int	ed_internal(src,dest)
-register unsigned char *src;
+unsigned char *src;
 genchar *dest;
 {
-	register int c;
-	register genchar *dp = dest;
-	register int d;
-	register int size;
+	int c;
+	genchar *dp = dest;
+	int d;
+	int size;
 	if((unsigned char*)dest == src)
 	{
 		genchar buffer[MAXLINE];
@@ -1218,9 +1218,9 @@ int	ed_external(src,dest)
 genchar *src;
 char *dest;
 {
-	register int c;
-	register char *dp = dest;
-	register int d;
+	int c;
+	char *dp = dest;
+	int d;
 	char *dpmax = dp+sizeof(genchar)*MAXLINE-2;
 	if((char*)src == dp)
 	{
@@ -1253,8 +1253,8 @@ char *dest;
  */
 
 int	ed_gencpy(dp,sp)
-register genchar *dp;
-register genchar *sp;
+genchar *dp;
+genchar *sp;
 {
 	while(*dp++ = *sp++);
 }
@@ -1264,9 +1264,9 @@ register genchar *sp;
  */
 
 int	ed_genncpy(dp,sp, n)
-register genchar *dp;
-register genchar *sp;
-register int n;
+genchar *dp;
+genchar *sp;
+int n;
 {
 	while(n-->0 && (*dp++ = *sp++));
 }
@@ -1276,9 +1276,9 @@ register int n;
  */
 
 int	ed_genlen(str)
-register genchar *str;
+genchar *str;
 {
-	register genchar *sp = str;
+	genchar *sp = str;
 	while(*sp++);
 	return(sp-str-1);
 }
@@ -1296,10 +1296,10 @@ extern char int_charsize[];
 ed_setwidth(string)
 char *string;
 {
-	register int indx = 0;
-	register int state = 0;
-	register int c;
-	register int n = 0;
+	int indx = 0;
+	int state = 0;
+	int c;
+	int n = 0;
 	static char widths[6] = {1,1};
 	while(1) switch(c = *string++)
 	{
@@ -1349,9 +1349,9 @@ char *string;
  * returns 1 when <n> bytes starting at <a> and <b> are equal
  */
 static int compare(a,b,n)
-register char *a;
-register char *b;
-register int n;
+char *a;
+char *b;
+int n;
 {
 	while(n-->0)
 	{
@@ -1382,8 +1382,8 @@ static struct termio ott;
 tcgetattr(fd,tt)
 struct termios *tt;
 {
-	register int r;
-	register int i;
+	int r;
+	int i;
 	tcgeta = 0;
 	echoctl = (ECHOCTL!=0);
 	if((r=ioctl(fd,TCGETS,tt))>=0 ||  errno!=EINVAL)
@@ -1403,13 +1403,13 @@ struct termios *tt;
 }
 
 tcsetattr(fd,mode,tt)
-register int mode;
+int mode;
 struct termios *tt;
 {
-	register int r;
+	int r;
 	if(tcgeta)
 	{
-		register int i;
+		int i;
 		ott.c_lflag = tt->c_lflag;
 		ott.c_oflag = tt->c_oflag;
 		ott.c_iflag = tt->c_iflag;

@@ -289,12 +289,12 @@ mix(unsigned long s)
  */
 
 static void
-intercept(register Call_t* p)
+intercept(Call_t* p)
 {
-	register int		c;
-	register char*		s;
-	register long		n;
-	register int		v;
+	int		c;
+	char*		s;
+	long		n;
+	int		v;
 	char*			o;
 
 	static const char	msg[] = "warp: panic: dllnext() failed\n";
@@ -306,9 +306,9 @@ intercept(register Call_t* p)
 #ifdef __EXPORT__
 		o = getenv("WARP");
 #else
-		register char**	e;
-		register char**	p;
-		register char**	x;
+		char**	e;
+		char**	p;
+		char**	x;
 		char*		t;
 
 		e = environ;
@@ -439,7 +439,7 @@ if (!e) { s = "warp: AHA: no env\n"; write(2, s, strlen(s)); }
 }
 
 static unsigned int
-warp_alarm(register Call_t* p, unsigned int s)
+warp_alarm(Call_t* p, unsigned int s)
 {
 	unsigned int	r;
 
@@ -500,7 +500,7 @@ __libc_alarm(unsigned int sec)
 #endif
 
 static int
-warp_gettimeofday(register Call_t* p, struct timeval* tv, void* tz)
+warp_gettimeofday(Call_t* p, struct timeval* tv, void* tz)
 {
 	int	r;
 
@@ -560,7 +560,7 @@ __libc_gettimeofday(struct timeval* tv, void* tz)
 #endif
 
 static int
-warp_poll(register Call_t* p, void* f, int n, int to)
+warp_poll(Call_t* p, void* f, int n, int to)
 {
 	int	r;
 
@@ -620,7 +620,7 @@ __libc_poll(void* f, int n, int to)
 #endif
 
 static int
-warp_select(register Call_t* p, int n, void* rp, void* wp, void* ep, register const struct timeval* tv)
+warp_select(Call_t* p, int n, void* rp, void* wp, void* ep, const struct timeval* tv)
 {
 	int		r;
 	struct timeval	x;
@@ -687,7 +687,7 @@ __libc_select(int n, void* rp, void* wp, void* ep, const struct timeval* tv)
 #endif
 
 static time_t
-warp_time(register Call_t* p, time_t* clock)
+warp_time(Call_t* p, time_t* clock)
 {
 	time_t	t;
 
@@ -751,7 +751,7 @@ __libc_time(time_t* clock)
 #endif
 
 static clock_t
-warp_times(register Call_t* p, struct tms* tv)
+warp_times(Call_t* p, struct tms* tv)
 {
 	clock_t	t;
 
@@ -811,7 +811,7 @@ __libc_times(struct tms* tv)
 #endif
 
 static int
-warp_utime(register Call_t* p, const char* path, const struct utimbuf* tv)
+warp_utime(Call_t* p, const char* path, const struct utimbuf* tv)
 {
 	int		r;
 	struct utimbuf	tb;
@@ -876,10 +876,10 @@ __libc_utime(const char* path, const struct utimbuf* tv)
 #endif
 
 static int
-warp_utimensat(int dirfd, register Call_t* p, const char* path, const struct timespec* tv, int flags)
+warp_utimensat(int dirfd, Call_t* p, const char* path, const struct timespec* tv, int flags)
 {
 	int		r;
-	register int	i;
+	int	i;
 	struct timespec	tb[2];
 
 	intercept(p);
@@ -944,10 +944,10 @@ __libc_utimensat(int dirfd, const char* path, const struct timespec* tv, int fla
 #endif
 
 static int
-warp_utimes(register Call_t* p, const char* path, const struct timeval* tv)
+warp_utimes(Call_t* p, const char* path, const struct timeval* tv)
 {
 	int		r;
-	register int	i;
+	int	i;
 	struct timeval	tb[2];
 
 	intercept(p);
@@ -1012,10 +1012,10 @@ __libc_utimes(const char* path, const struct timeval* tv)
 #endif
 
 static int
-warp_utimets(register Call_t* p, const char* path, const struct timespec* tv)
+warp_utimets(Call_t* p, const char* path, const struct timespec* tv)
 {
 	int		r;
-	register int	i;
+	int	i;
 	struct timespec	tb[2];
 
 	intercept(p);
@@ -1082,7 +1082,7 @@ __libc_utimets(const char* path, const struct timespec* tv)
 #if defined(_STAT_VER)
 
 static void
-warp_xst(register Call_t* p, const int ver, register struct stat* st)
+warp_xst(Call_t* p, const int ver, struct stat* st)
 {
 	static const char	msg[] = "warp: _STAT_VER\n";
 
@@ -1093,7 +1093,7 @@ warp_xst(register Call_t* p, const int ver, register struct stat* st)
 #if defined(_STAT64_VER)
 		else if (ver >= _STAT64_VER)
 		{
-			register struct stat64*	st64 = (struct stat64*)st;
+			struct stat64*	st64 = (struct stat64*)st;
 			static const char	msg64[] = "warp: _STAT64_VER\n";
 
 			if (state.trace)
@@ -1202,7 +1202,7 @@ __xstat(const int ver, const char* path, struct stat* st)
 #if defined(_lib__xstat64) || defined(_lib___xstat64)
 
 static void
-warp_xst64(register Call_t* p, const int ver, register struct stat64* st)
+warp_xst64(Call_t* p, const int ver, struct stat64* st)
 {
 	static const char	msg[] = "warp: _STAT_VER\n";
 
@@ -1213,7 +1213,7 @@ warp_xst64(register Call_t* p, const int ver, register struct stat64* st)
 #if defined(_STAT64_VER)
 		else if (ver >= _STAT64_VER)
 		{
-			register struct stat64*	st64 = (struct stat64*)st;
+			struct stat64*	st64 = (struct stat64*)st;
 			static const char	msg64[] = "warp: _STAT64_VER\n";
 
 			if (state.trace)
@@ -1323,7 +1323,7 @@ __xstat64(const int ver, const char* path, struct stat64* st)
 #else
 
 static void
-warp_st(register Call_t* p, register struct stat* st)
+warp_st(Call_t* p, struct stat* st)
 {
 	if (!p->warped)
 	{
@@ -1339,7 +1339,7 @@ warp_st(register Call_t* p, register struct stat* st)
 }
 
 static int
-warp_fstat(register Call_t* p, int fd, struct stat* st)
+warp_fstat(Call_t* p, int fd, struct stat* st)
 {
 	int	r;
 
@@ -1406,7 +1406,7 @@ __fstat32(int fd, struct stat* st)
 #endif
 
 static int
-warp_lstat(register Call_t* p, const char* path, struct stat* st)
+warp_lstat(Call_t* p, const char* path, struct stat* st)
 {
 	int	r;
 
@@ -1481,7 +1481,7 @@ __statlstat32(const char* path, struct stat* st)
 #endif
 
 static int
-warp_stat(register Call_t* p, const char* path, struct stat* st)
+warp_stat(Call_t* p, const char* path, struct stat* st)
 {
 	int	r;
 
@@ -1552,7 +1552,7 @@ __stat32(const char* path, struct stat* st)
 #if defined(_lib_stat64)
 
 static void
-warp_st64(register Call_t* p, register struct stat64* st)
+warp_st64(Call_t* p, struct stat64* st)
 {
 	if (!p->warped)
 	{
@@ -1568,7 +1568,7 @@ warp_st64(register Call_t* p, register struct stat64* st)
 }
 
 static int
-warp_fstat64(register Call_t* p, int fd, struct stat64* st)
+warp_fstat64(Call_t* p, int fd, struct stat64* st)
 {
 	int	r;
 
@@ -1623,7 +1623,7 @@ __libc_fstat64(int fd, struct stat64* st)
 #endif
 
 static int
-warp_lstat64(register Call_t* p, const char* path, struct stat64* st)
+warp_lstat64(Call_t* p, const char* path, struct stat64* st)
 {
 	int	r;
 
@@ -1678,7 +1678,7 @@ __libc_lstat64(const char* path, struct stat64* st)
 #endif
 
 static int
-warp_stat64(register Call_t* p, const char* path, struct stat64* st)
+warp_stat64(Call_t* p, const char* path, struct stat64* st)
 {
 	int	r;
 
@@ -1737,7 +1737,7 @@ __libc_stat64(const char* path, struct stat64* st)
 #if _lib_clock_gettime && defined(CLOCK_REALTIME)
 
 static int
-warp_clock_gettime(register Call_t* p, int clock, struct timespec* tv)
+warp_clock_gettime(Call_t* p, int clock, struct timespec* tv)
 {
 	int	r;
 
@@ -1801,7 +1801,7 @@ __libc_clock_gettime(int i, struct timespec* v)
 #if _lib_getitimer
 
 static int
-warp_getitimer(register Call_t* p, int i, struct itimerval* v)
+warp_getitimer(Call_t* p, int i, struct itimerval* v)
 {
 	int	r;
 
@@ -1868,7 +1868,7 @@ __libc_getitimer(int i, struct itimerval* v)
 #if _lib_setitimer
 
 static int
-warp_setitimer(register Call_t* p, int i, const struct itimerval* v, struct itimerval* o)
+warp_setitimer(Call_t* p, int i, const struct itimerval* v, struct itimerval* o)
 {
 	int			r;
 	struct itimerval	x;
@@ -1957,11 +1957,11 @@ __libc_setitimer(int i, const struct itimerval* v, struct itimerval* o)
 static char**
 warp_env(char* const arge[])
 {
-	register char**	e;
-	register char**	x;
-	register char*	s;
-	register char*	t;
-	register char*	u;
+	char**	e;
+	char**	x;
+	char*	s;
+	char*	t;
+	char*	u;
 	char**		z;
 	char**		env;
 	int		n;
@@ -2046,7 +2046,7 @@ warp_env(char* const arge[])
 }
 
 static int
-warp_execve(register Call_t* p, const char* path, char* const argv[], char* const arge[])
+warp_execve(Call_t* p, const char* path, char* const argv[], char* const arge[])
 {
 	int		n;
 	char**		env;
@@ -2064,7 +2064,7 @@ warp_execve(register Call_t* p, const char* path, char* const argv[], char* cons
 }
 
 static int
-warp_execvpe(register Call_t* p, const char* path, char* const argv[], char* const arge[])
+warp_execvpe(Call_t* p, const char* path, char* const argv[], char* const arge[])
 {
 	int		n;
 	char**		env;

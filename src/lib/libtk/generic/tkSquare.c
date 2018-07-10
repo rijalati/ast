@@ -563,7 +563,7 @@ SquareDestroy(memPtr)
 
 static void
 KeepInWindow(squarePtr)
-    register Square *squarePtr;		/* Pointer to widget record. */
+    Square *squarePtr;		/* Pointer to widget record. */
 {
     int i, bd;
     bd = 0;

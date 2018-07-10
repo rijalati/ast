@@ -39,9 +39,9 @@ static const char id[] = "\n@(#)$Id: testglob (AT&T Research) 2012-06-23 $\0\n";
 static int
 quniq(char** argv, int n)
 {
-	register char**	ao;
-	register char**	an;
-	register char**	ae;
+	char**	ao;
+	char**	an;
+	char**	ae;
 
 	ao = an = argv;
 	ae = ao + n;
@@ -465,9 +465,9 @@ getline(void)
 {
 	static char	buf[32 * 1024];
 
-	register char*	s = buf;
-	register char*	e = &buf[sizeof(buf)];
-	register char*	b;
+	char*	s = buf;
+	char*	e = &buf[sizeof(buf)];
+	char*	b;
 
 	for (;;) {
 		if (!(b = fgets(s, e - s, stdin)))

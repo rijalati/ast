@@ -71,7 +71,7 @@ int vcs_read(buf, bufsize)
 }
 
 int im_vcs_help(s)
-	register char*	s;
+	char*	s;
 {
 	if (strcmp(s, "cs") == 0)
 		printf("\tcs commands\n");
@@ -90,8 +90,8 @@ int im_vcs_main(argc, argv)
 	int	argc;
 	char**	argv;
 {
-	register char*	s;
-	register char*	cmd;
+	char*	s;
+	char*	cmd;
 	char		reply[1024];
 	int		fd;
 	char		buf[2048];
@@ -171,8 +171,8 @@ int im_vcs_main(argc, argv)
 void printmtmsg(buf)
 	char*	buf;
 {
-	register char*	url;
-	register char*	mnt;
+	char*	url;
+	char*	mnt;
 
 	if( !strncmp( buf, "I 0 ok 0 ", 9 ) &&
 	    (url = strtok( buf+9, " \t\r\n" )) &&

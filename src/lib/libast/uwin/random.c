@@ -83,7 +83,7 @@ extern long int	random();
    allow a degree seven polynomial.  (Note: The zeroeth word of state
    information also has some other information stored in it; see setstate
    for details).  The random number generation technique is a linear feedback
-   shift register approach, employing trinomials (since there are fewer terms
+   shift approach, employing trinomials (since there are fewer terms
    to sum up that way).  In this approach, the least significant bit of all
    the numbers in the state table will act as a linear feedback shift register,
    and will have period 2^deg - 1 (where deg is the degree of the polynomial
@@ -93,7 +93,7 @@ extern long int	random();
    total period of the generator is approximately deg*(2**deg - 1); thus
    doubling the amount of state information has a vast influence on the
    period of the generator.  Note: The deg*(2**deg - 1) is an approximation
-   only good for large deg, when the period of the shift register is the
+   only good for large deg, when the period of the shift is the
    dominant factor.  With deg equal to seven, the period is actually much
    longer than the 7*(2**7 - 1) predicted by this formula.  */
 
@@ -212,7 +212,7 @@ extern void srandom(unsigned int x)
   state[0] = x;
   if (rand_type != TYPE_0)
     {
-      register long int i;
+      long int i;
       for (i = 1; i < rand_deg; ++i)
 	state[i] = (1103515145 * state[i - 1]) + 12345;
       fptr = &state[rand_sep];
@@ -299,9 +299,9 @@ extern char* initstate(unsigned int seed, char* arg_state, size_t n)
    Returns a pointer to the old state information.  */
 extern char *setstate(const char *arg_state)
 {
-  register long int *new_state = (long int *) arg_state;
-  register int type = new_state[0] % MAX_TYPES;
-  register int rear = new_state[0] / MAX_TYPES;
+  long int *new_state = (long int *) arg_state;
+  int type = new_state[0] % MAX_TYPES;
+  int rear = new_state[0] / MAX_TYPES;
   PTR ostate = (PTR) &state[-1];
 
   if (rand_type == TYPE_0)

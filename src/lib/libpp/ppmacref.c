@@ -30,7 +30,7 @@
 void
 ppmacref(struct ppsymbol* sym, char* file, int line, int type, unsigned long sum)
 {
-	register char*	p;
+	char*	p;
 
 	NoP(file);
 	NoP(line);

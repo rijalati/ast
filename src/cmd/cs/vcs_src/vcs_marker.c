@@ -23,10 +23,10 @@
 tag_t*	getmarker();
 
 int rs_marker(rp, from, to, st, expire, force)
-	register rfile_t*	rp;
-	register char*		from;
-	register char*		to;
-	register struct stat*	st;
+	rfile_t*	rp;
+	char*		from;
+	char*		to;
+	struct stat*	st;
 	time_t			expire;
 	int			force;
 {
@@ -76,9 +76,9 @@ int rs_marker(rp, from, to, st, expire, force)
 
 tag_t* getmarker(dir, s)
 	rdirent_t*	dir;
-	register char*	s;
+	char*	s;
 {
-	register rdirent_t*	ep;
+	rdirent_t*	ep;
 
 	for (ep=dir; ep ; ep = ep->next)
 	{
@@ -90,11 +90,11 @@ tag_t* getmarker(dir, s)
 
 tag_t* getmarkerbyfrom(dir, s)
 	rdirent_t*	dir;
-	register char*	s;
+	char*	s;
 {
-	register rdirent_t*	ep;
-	register char*		t;
-	register rdirent_t*	r;
+	rdirent_t*	ep;
+	char*		t;
+	rdirent_t*	r;
 
 	r = NULL;
 	for (ep = dir; ep; ep = ep->next)
@@ -126,10 +126,10 @@ tag_t* getmarkerbyfrom(dir, s)
 
 tag_t* getmarkerbyto(dir, s)
 	rdirent_t*	dir;
-	register char*	s;
+	char*	s;
 {
-	register rdirent_t*	ep;
-	register rdirent_t*	r;
+	rdirent_t*	ep;
+	rdirent_t*	r;
 
 	r = NULL;
 
@@ -158,7 +158,7 @@ int markermatch(marker, s)
 	char*	marker;
 	char*	s;
 {
-	register char*	t;
+	char*	t;
 	int		i;
 
 	for (i = 1, t = marker; *t && *t != CHRMARKER; t++, i++);

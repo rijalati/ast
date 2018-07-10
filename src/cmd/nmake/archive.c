@@ -62,10 +62,10 @@ arupdate(char* name)
  */
 
 static int
-walkar(register Ardir_t* ar, Dir_t* d, char* name)
+walkar(Ardir_t* ar, Dir_t* d, char* name)
 {
-	register Ardirent_t*	ent;
-	register Rule_t*	r;
+	Ardirent_t*	ent;
+	Rule_t*	r;
 
 	if (d)
 	{
@@ -119,9 +119,9 @@ chktouch(const char* s, char* v, void* h)
  */
 
 void
-artouch(char* name, register char* member)
+artouch(char* name, char* member)
 {
-	register Rule_t*	r;
+	Rule_t*	r;
 	Ardir_t*		ar;
 
 	if (member)

@@ -65,7 +65,7 @@ int search_tag(rf, ap, versions, domain, tpp, mode, dir)
 	int		mode;
 	rdirent_t**	dir;
 {
-	register rdirent_t*	list;
+	rdirent_t*	list;
 	int			r;
 	tag_t*			tp;
 
@@ -93,17 +93,17 @@ int search_tag(rf, ap, versions, domain, tpp, mode, dir)
 
 
 int gettagbyspec(list, versions, domain, tpp)
-	register rdirent_t*	list;
+	rdirent_t*	list;
 	char*			versions;
 	int			domain;
 	tag_t**			tpp;
 {
 	char			buf[2048];
-	register char*		s;
+	char*		s;
 	char*			elist[MAXDEPTH+1];
 	rdirent_t*		tbl[MAXDEPTH+1];
-	register int		i;
-	register rdirent_t*	entry;
+	int		i;
+	rdirent_t*	entry;
 	int			sort = 0;
 	int			total;
 	int			num;
@@ -167,13 +167,13 @@ int gettagbyspec(list, versions, domain, tpp)
 }
 
 int lookup_tag_time(tbl, total, to, domain, first)
-	register rdirent_t**	tbl;
+	rdirent_t**	tbl;
 	int			total;
 	time_t			to;
 	int			domain;
 	int			first;
 {
-	register int		i;
+	int		i;
 	int			r;
 
 	r = -1;
@@ -207,9 +207,9 @@ int lookup_tag(entries, rf, ap, version, domain, tpp, mode)
 	tag_t**			tpp;
 	int			mode;
 {
-	register rdirent_t*	list;
-	register rdirent_t*	p;
-	register char*		v;
+	rdirent_t*	list;
+	rdirent_t*	p;
+	char*		v;
 	rdirent_t*		sp;
 	rdirent_t*		ep;
 	time_t			mtime;
@@ -308,14 +308,14 @@ int lookup_tag(entries, rf, ap, version, domain, tpp, mode)
  */
 
 int lookup_tag_t(tbl, total, version, domain, mode)
-	register rdirent_t**	tbl;
+	rdirent_t**	tbl;
 	int			total;
 	char*			version;
 	int			domain;
 	int			mode;
 {
-	register char*		v;
-	register int		i;
+	char*		v;
+	int		i;
 	int			cnt = 0;
 	int			r;
 
@@ -380,7 +380,7 @@ int pattern2time(pattern, to)
 	time_t*		to;
 {
 	char		buf[1024];
-	register char*	s;
+	char*	s;
 	int		dd, yy, hh, mm, ss;
 	char		month[10];
 	char		tbuf[128];
@@ -451,9 +451,9 @@ int pattern2time(pattern, to)
 
 tag_t* gettagbytime(list, mtime)
 	rdirent_t*		list;
-	register time_t		mtime;
+	time_t		mtime;
 {
-	register rdirent_t*	ep;
+	rdirent_t*	ep;
 
 	for(ep =list; ep; ep =ep->next)
 	{
@@ -469,7 +469,7 @@ tag_t* gettagbyname(list, name, mode, level)
 	int		mode;
 	int		level;
 {
-	register rdirent_t*	ep;
+	rdirent_t*	ep;
 
 	if (level > MAXLINKS)
 		return (NULL);
@@ -493,7 +493,7 @@ tag_t* gettagbyname(list, name, mode, level)
 char* rs_readlink(s)
 	char*	s;
 {
-	register char*	t;
+	char*	t;
 
 	if ((t = strrchr(s, CHRLINK)) == NULL)
 		return (NULL);

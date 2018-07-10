@@ -49,8 +49,8 @@ USAGE_LICENSE
 int
 main(int argc, char** argv)
 {
-	register Mc_t*	mc;
-	register char*	s;
+	Mc_t*	mc;
+	char*	s;
 	char*		loc;
 	char*		cmd;
 	char*		cat;

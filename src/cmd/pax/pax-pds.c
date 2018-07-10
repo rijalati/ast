@@ -45,14 +45,14 @@ typedef struct Pds_s
 } Pds_t;
 
 static int
-pds_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
+pds_getprologue(Pax_t* pax, Format_t* fp, Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
 {
-	register Pds_t*		pds;
-	register unsigned char*	b;
-	register unsigned char*	e;
-	register size_t		n;
-	register size_t		i;
-	register size_t		m;
+	Pds_t*		pds;
+	unsigned char*	b;
+	unsigned char*	e;
+	size_t		n;
+	size_t		i;
+	size_t		m;
 	size_t			links;
 
 	if (size < 256 || buf[0] != 0)
@@ -139,7 +139,7 @@ pds_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, uns
 }
 
 static int
-pds_done(Pax_t* pax, register Archive_t* ap)
+pds_done(Pax_t* pax, Archive_t* ap)
 {
 	if (ap->data)
 	{
@@ -150,10 +150,10 @@ pds_done(Pax_t* pax, register Archive_t* ap)
 }
 
 static int
-pds_getheader(Pax_t* pax, register Archive_t* ap, register File_t* f)
+pds_getheader(Pax_t* pax, Archive_t* ap, File_t* f)
 {
-	register Pds_t*		pds = (Pds_t*)ap->data;
-	register Pdsdir_t*	dp;
+	Pds_t*		pds = (Pds_t*)ap->data;
+	Pdsdir_t*	dp;
 
 	if (pds->index >= pds->size)
 		return 0;
@@ -173,7 +173,7 @@ pds_getheader(Pax_t* pax, register Archive_t* ap, register File_t* f)
 }
 
 static int
-pds_getdata(Pax_t* pax, register Archive_t* ap, register File_t* f, int wfd)
+pds_getdata(Pax_t* pax, Archive_t* ap, File_t* f, int wfd)
 {
 	return 1;
 }

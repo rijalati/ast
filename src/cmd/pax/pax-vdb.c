@@ -41,9 +41,9 @@ typedef struct Vdb_s
 } Vdb_t;
 
 static int
-vdb_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
+vdb_getprologue(Pax_t* pax, Format_t* fp, Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
 {
-	register Vdb_t*		vdb = (Vdb_t*)ap->data;
+	Vdb_t*		vdb = (Vdb_t*)ap->data;
 	char*			s;
 	char*			t;
 	struct stat		st;
@@ -104,9 +104,9 @@ vdb_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, uns
 }
 
 static int
-vdb_done(Pax_t* pax, register Archive_t* ap)
+vdb_done(Pax_t* pax, Archive_t* ap)
 {
-	register Vdb_t*	vdb = (Vdb_t*)ap->data;
+	Vdb_t*	vdb = (Vdb_t*)ap->data;
 
 	if (vdb)
 	{
@@ -119,9 +119,9 @@ vdb_done(Pax_t* pax, register Archive_t* ap)
 }
 
 static int
-vdb_getheader(Pax_t* pax, Archive_t* ap, register File_t* f)
+vdb_getheader(Pax_t* pax, Archive_t* ap, File_t* f)
 {
-	register Vdb_t*	vdb = (Vdb_t*)ap->data;
+	Vdb_t*	vdb = (Vdb_t*)ap->data;
 	char*		s;
 	char*		t;
 	off_t		n;
@@ -172,9 +172,9 @@ vdb_getheader(Pax_t* pax, Archive_t* ap, register File_t* f)
 }
 
 static int
-vdb_putprologue(Pax_t* pax, register Archive_t* ap, int append)
+vdb_putprologue(Pax_t* pax, Archive_t* ap, int append)
 {
-	register Vdb_t*	vdb = (Vdb_t*)ap->data;
+	Vdb_t*	vdb = (Vdb_t*)ap->data;
 
 	if (!vdb)
 	{
@@ -194,9 +194,9 @@ vdb_putprologue(Pax_t* pax, register Archive_t* ap, int append)
 static int
 vdb_putheader(Pax_t* pax, Archive_t* ap, File_t* f)
 {
-	register Vdb_t*		vdb = (Vdb_t*)ap->data;
-	register unsigned char*	s;
-	register int		c;
+	Vdb_t*		vdb = (Vdb_t*)ap->data;
+	unsigned char*	s;
+	int		c;
 	int			n;
 
 	if (state.complete)
@@ -272,7 +272,7 @@ vdb_puttrailer(Pax_t* pax, Archive_t* ap, File_t* f)
 static off_t
 vdb_putepilogue(Pax_t* pax, Archive_t* ap)
 {
-	register Vdb_t*	vdb = (Vdb_t*)ap->data;
+	Vdb_t*	vdb = (Vdb_t*)ap->data;
 
 	if (state.record.header)
 		paxwrite(pax, ap, state.record.header, state.record.headerlen);

@@ -41,7 +41,7 @@
  */
 
 int
-ppset(register long* p, register long op, int val)
+ppset(long* p, long op, int val)
 {
 	long*	r;
 
@@ -69,9 +69,9 @@ ppset(register long* p, register long op, int val)
  */
 
 static void
-inithash(register Hash_table_t* tab, register struct ppkeyword* key)
+inithash(Hash_table_t* tab, struct ppkeyword* key)
 {
-	register char*	s;
+	char*	s;
 
 	for (; s = key->name; key++)
 	{
@@ -86,10 +86,10 @@ inithash(register Hash_table_t* tab, register struct ppkeyword* key)
  */
 
 char*
-ppkeyname(register int value, int dir)
+ppkeyname(int value, int dir)
 {
-	register char*			s;
-	register struct ppkeyword*	p;
+	char*			s;
+	struct ppkeyword*	p;
 
 	if (dir && ppiskey(directives, value, p) || !dir && (ppiskey(options, value, p) || ppiskey(predicates, value, p) || ppiskey(variables, value, p)))
 	{
@@ -107,10 +107,10 @@ ppkeyname(register int value, int dir)
  */
 
 void
-ppmapinclude(char* file, register char* s)
+ppmapinclude(char* file, char* s)
 {
-	register int		c;
-	register struct ppdirs*	dp;
+	int		c;
+	struct ppdirs*	dp;
 	int			fd;
 	int			flags;
 	int			index;
@@ -253,7 +253,7 @@ identical(char* file, int fd)
  */
 
 static int
-trunccomp(register char* a, register char* b)
+trunccomp(char* a, char* b)
 {
 	return !strchr(b, ' ') && !strneq(b, "__STD", 5) ? strncmp(a, b, pp.truncate) : strcmp(a, b);
 }
@@ -299,7 +299,7 @@ context(Sfio_t* sp, int level, int flags)
 static int
 unguard(const char* name, char* v, void* handle)
 {
-	register struct ppfile*		fp = (struct ppfile*)v;
+	struct ppfile*		fp = (struct ppfile*)v;
 
 	fp->guard = 0;
 	return 0;
@@ -362,9 +362,9 @@ void
 ppop(int op, ...)
 {
 	va_list				ap;
-	register char*			p;
-	register struct ppkeyword*	kp;
-	register char*			s;
+	char*			p;
+	struct ppkeyword*	kp;
+	char*			s;
 	int				c;
 	long				n;
 	long*				r;

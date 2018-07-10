@@ -278,9 +278,9 @@ interrupt(int sig)
 int
 main(int argc, char** argv)
 {
-	register int	n;
-	register char*	base;
-	register char*	path;
+	int	n;
+	char*	base;
+	char*	path;
 	char*		script;
 	char*		probe;
 	char*		language;

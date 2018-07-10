@@ -35,10 +35,10 @@
 #include "../../lib/libast/path/pathnative.c" /* drop in 2002 */
 
 static char*
-native(register const char* s)
+native(const char* s)
 {
-	register int		c;
-	register struct ppfile* xp;
+	int		c;
+	struct ppfile* xp;
 	int			m;
 	int			n;
 
@@ -84,9 +84,9 @@ native(register const char* s)
  */
 
 void
-pppush(register int t, register char* s, register char* p, int n)
+pppush(int t, char* s, char* p, int n)
 {
-	register struct ppinstk*	cur;
+	struct ppinstk*	cur;
 
 	PUSH(t, cur);
 	cur->line = error_info.line;
@@ -274,11 +274,11 @@ ppinput(char* b, char* f, int n)
  */
 
 char*
-ppexpand(register char* p)
+ppexpand(char* p)
 {
-	register char*		m;
-	register int		n;
-	register int		c;
+	char*		m;
+	int		n;
+	int		c;
 	long			restore;
 	char*			pptoken;
 	char*			ppmactop;
@@ -348,9 +348,9 @@ ppexpand(register char* p)
 static int
 dump(const char* name, char* v, void* handle)
 {
-	register struct ppmacro*	mac;
-	register struct ppsymbol*	sym = (struct ppsymbol*)v;
-	register int			flags;
+	struct ppmacro*	mac;
+	struct ppsymbol*	sym = (struct ppsymbol*)v;
+	int			flags;
 
 	NoP(name);
 	NoP(handle);
@@ -389,7 +389,7 @@ dump(const char* name, char* v, void* handle)
 void
 ppdump(void)
 {
-	register struct ppindex*	ip;
+	struct ppindex*	ip;
 	unsigned long			macro_offset;
 	unsigned long			index_offset;
 
@@ -451,10 +451,10 @@ ppdump(void)
  */
 
 void
-ppload(register char* s)
+ppload(char* s)
 {
-	register char*		b;
-	register Sfio_t*	sp;
+	char*		b;
+	Sfio_t*	sp;
 	int			m;
 	char*			g;
 	char*			t;

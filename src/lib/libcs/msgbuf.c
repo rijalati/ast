@@ -32,10 +32,10 @@
 unsigned long
 msggetu(char** buf, char* end)
 {
-	register int		c;
-	register unsigned char*	s;
-	register unsigned char*	e;
-	register unsigned long	v;
+	int		c;
+	unsigned char*	s;
+	unsigned char*	e;
+	unsigned long	v;
 
 	v = 0;
 	s = (unsigned char*)*buf;
@@ -55,11 +55,11 @@ msggetu(char** buf, char* end)
  */
 
 int
-msgputu(char** buf, char* end, register unsigned long v)
+msgputu(char** buf, char* end, unsigned long v)
 {
-	register char*	s;
-	register char*	t;
-	register int	n;
+	char*	s;
+	char*	t;
+	int	n;
 	char		tmp[2 * sizeof(unsigned long)];
 
 	s = t = &tmp[elementsof(tmp) - 1];
@@ -91,8 +91,8 @@ msgputu(char** buf, char* end, register unsigned long v)
 size_t
 msggetz(char** buf, char* end, void* data, size_t size)
 {
-	register size_t	n;
-	register size_t	i;
+	size_t	n;
+	size_t	i;
 
 	i = end - *buf;
 	n = msggetu(buf, end);
@@ -110,8 +110,8 @@ msggetz(char** buf, char* end, void* data, size_t size)
 int
 msgputz(char** buf, char* end, void* data, size_t size)
 {
-	register char*	s;
-	register size_t	n;
+	char*	s;
+	size_t	n;
 
 	s = *buf;
 	n = end - s;

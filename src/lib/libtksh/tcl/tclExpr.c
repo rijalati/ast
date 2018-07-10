@@ -440,13 +440,13 @@ static int
 ExprLex(interp, infoPtr, valuePtr)
     Tcl_Interp *interp;			/* Interpreter to use for error
 					 * reporting. */
-    register ExprInfo *infoPtr;		/* Describes the state of the parse. */
-    register Value *valuePtr;		/* Where to store value, if that is
+    ExprInfo *infoPtr;		/* Describes the state of the parse. */
+    Value *valuePtr;		/* Where to store value, if that is
 					 * what's parsed from string.  Caller
 					 * must have initialized pv field
 					 * correctly. */
 {
-    register char *p;
+    char *p;
     char *var, *term;
     int result;
 
@@ -713,7 +713,7 @@ static int
 ExprGetValue(interp, infoPtr, prec, valuePtr)
     Tcl_Interp *interp;			/* Interpreter to use for error
 					 * reporting. */
-    register ExprInfo *infoPtr;		/* Describes the state of the parse
+    ExprInfo *infoPtr;		/* Describes the state of the parse
 					 * just before the value (i.e. ExprLex
 					 * will be called to get first token
 					 * of value). */
@@ -1327,7 +1327,7 @@ static void
 ExprMakeString(interp, valuePtr)
     Tcl_Interp *interp;			/* Interpreter to use for precision
 					 * information. */
-    register Value *valuePtr;		/* Value to be converted. */
+    Value *valuePtr;		/* Value to be converted. */
 {
     int shortfall;
 
@@ -1653,11 +1653,11 @@ static int
 ExprMathFunc(interp, infoPtr, valuePtr)
     Tcl_Interp *interp;			/* Interpreter to use for error
 					 * reporting. */
-    register ExprInfo *infoPtr;		/* Describes the state of the parse.
+    ExprInfo *infoPtr;		/* Describes the state of the parse.
 					 * infoPtr->expr must point to the
 					 * first character of the function's
 					 * name. */
-    register Value *valuePtr;		/* Where to store value, if that is
+    Value *valuePtr;		/* Where to store value, if that is
 					 * what's parsed from string.  Caller
 					 * must have initialized pv field
 					 * correctly. */

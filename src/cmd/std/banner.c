@@ -179,10 +179,10 @@ const unsigned char bandata[128][CHAR_HEIGHT] =
 
 static void banner(const char *string,const char *delim,int width)
 {
-	register unsigned mask;
-	register int c,i,n,j = strlen(string);
-	register const char *cp,*dp;
-	register unsigned char* map;
+	unsigned mask;
+	int c,i,n,j = strlen(string);
+	const char *cp,*dp;
+	unsigned char* map;
 	
 	map = ccmap(CC_NATIVE, CC_ASCII);
 	if(j > width/8)
@@ -221,8 +221,8 @@ static void banner(const char *string,const char *delim,int width)
 int
 main(int argc, char *argv[])
 {
-	register int n;
-	register char *cp;
+	int n;
+	char *cp;
 	char *delim  = "#";
 	int width = 80;
 

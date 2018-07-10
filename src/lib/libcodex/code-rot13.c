@@ -39,8 +39,8 @@ static const char	ROT[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 static int
 rot13_open(Codex_t* p, char* const args[], Codexnum_t flags)
 {
-	register State_t*	state;
-	register int		i;
+	State_t*	state;
+	int		i;
 
 	if (!(state = newof(0, State_t, 1, 0)))
 	{
@@ -74,9 +74,9 @@ rot13_close(Codex_t* p)
 static ssize_t
 rot13_read(Sfio_t* sp, void* buf, size_t n, Sfdisc_t* disc)
 {
-	register State_t*	state = (State_t*)CODEX(disc)->data;
-	register unsigned char*	s;
-	register unsigned char*	e;
+	State_t*	state = (State_t*)CODEX(disc)->data;
+	unsigned char*	s;
+	unsigned char*	e;
 	ssize_t			r;
 
 	if ((r = sfrd(sp, buf, n, disc)) > 0)
@@ -88,10 +88,10 @@ rot13_read(Sfio_t* sp, void* buf, size_t n, Sfdisc_t* disc)
 static ssize_t
 rot13_write(Sfio_t* sp, const void* buf, size_t n, Sfdisc_t* disc)
 {
-	register State_t*	state = (State_t*)CODEX(disc)->data;
-	register unsigned char*	s;
-	register unsigned char*	e;
-	register unsigned char*	b;
+	State_t*	state = (State_t*)CODEX(disc)->data;
+	unsigned char*	s;
+	unsigned char*	e;
+	unsigned char*	b;
 
 	if (n > state->bufsiz)
 	{

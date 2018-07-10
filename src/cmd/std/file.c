@@ -145,7 +145,7 @@ USAGE_LICENSE
 #define MAGIC_SILENT	(MAGIC_USER<<4)
 
 static int
-type(Magic_t* mp, char* file, const char* pattern, register Magicdisc_t* disc)
+type(Magic_t* mp, char* file, const char* pattern, Magicdisc_t* disc)
 {
 	char*		s;
 	char*		e;
@@ -176,10 +176,10 @@ type(Magic_t* mp, char* file, const char* pattern, register Magicdisc_t* disc)
 }
 
 int
-main(int argc, register char** argv)
+main(int argc, char** argv)
 {
-	register Magic_t*	mp;
-	register char*		p;
+	Magic_t*	mp;
+	char*		p;
 	char*			pattern = 0;
 	Sfio_t*			list = 0;
 	int			hit;

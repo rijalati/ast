@@ -174,11 +174,11 @@ static void	pool(void);
 PPCPP_T
 ppcpp(void)
 {
-	register short*		rp;
-	register char*		ip;
-	register int		state;
-	register int		c;
-	register char*		op;
+	short*		rp;
+	char*		ip;
+	int		state;
+	int		c;
+	char*		op;
 	char*			bp;
 	int			n;
 	int			m;
@@ -190,7 +190,7 @@ ppcpp(void)
 	char*			s;
 	struct ppsymbol*	sym;
 #if CPP
-	register long		st;
+	long		st;
 	char*			tp;
 	char*			xp;
 	char*			sp = 0;
@@ -454,8 +454,8 @@ ppcpp(void)
 #endif
 		}
 		{
-			register struct ppinstk*	cur = pp.in;
-			register struct ppinstk*	prv = pp.in->prev;
+			struct ppinstk*	cur = pp.in;
+			struct ppinstk*	prv = pp.in->prev;
 
 #if CPP
 			if (sp) op = sp;

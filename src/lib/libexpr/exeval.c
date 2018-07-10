@@ -39,7 +39,7 @@ static Extype_t	eval(Expr_t*, Exnode_t*, void*);
 static char*
 lexname(int op, int subop)
 {
-	register char*	b;
+	char*	b;
 
 	static int	n;
 	static char	buf[TOTNAME][MAXNAME];
@@ -73,7 +73,7 @@ lexname(int op, int subop)
  */
 
 static Extype_t
-getdyn(Expr_t* ex, register Exnode_t* expr, void* env, Exassoc_t** assoc)
+getdyn(Expr_t* ex, Exnode_t* expr, void* env, Exassoc_t** assoc)
 {
 	Exassoc_t*	b;
 	Extype_t	v;
@@ -127,10 +127,10 @@ typedef struct
 static int
 prformat(Sfio_t* sp, void* vp, Sffmt_t* dp)
 {
-	register Fmt_t*		fmt = (Fmt_t*)dp;
-	register Exnode_t*	node;
-	register char*		s;
-	register char*		txt;
+	Fmt_t*		fmt = (Fmt_t*)dp;
+	Exnode_t*	node;
+	char*		s;
+	char*		txt;
 	int			n;
 	int			from;
 	int			to;
@@ -295,7 +295,7 @@ prformat(Sfio_t* sp, void* vp, Sffmt_t* dp)
 static int
 print(Expr_t* ex, Exnode_t* expr, void* env, Sfio_t* sp)
 {
-	register Print_t*	x;
+	Print_t*	x;
 	Extype_t		v;
 	Fmt_t			fmt;
 
@@ -347,8 +347,8 @@ print(Expr_t* ex, Exnode_t* expr, void* env, Sfio_t* sp)
 static int
 scformat(Sfio_t* sp, void* vp, Sffmt_t* dp)
 {
-	register Fmt_t*		fmt = (Fmt_t*)dp;
-	register Exnode_t*	node;
+	Fmt_t*		fmt = (Fmt_t*)dp;
+	Exnode_t*	node;
 
 	if (!fmt->actuals)
 	{
@@ -443,7 +443,7 @@ scan(Expr_t* ex, Exnode_t* expr, void* env, Sfio_t* sp)
  */
 
 static char*
-str_add(Expr_t* ex, register char* l, register char* r)
+str_add(Expr_t* ex, char* l, char* r)
 {
 	sfprintf(ex->tmp, "%s%s", l, r);
 	return exstash(ex->tmp, ex->ve);
@@ -454,10 +454,10 @@ str_add(Expr_t* ex, register char* l, register char* r)
  */
 
 static char*
-str_ior(Expr_t* ex, register char* l, register char* r)
+str_ior(Expr_t* ex, char* l, char* r)
 {
-	register int	c;
-	register char*	s = l;
+	int	c;
+	char*	s = l;
 
 	while (c = *s++)
 		if (!strchr(s, c))
@@ -473,9 +473,9 @@ str_ior(Expr_t* ex, register char* l, register char* r)
  */
 
 static char*
-str_and(Expr_t* ex, register char* l, register char* r)
+str_and(Expr_t* ex, char* l, char* r)
 {
-	register int	c;
+	int	c;
 
 	while (c = *l++)
 		if (strchr(r, c) && !strchr(l, c))
@@ -488,10 +488,10 @@ str_and(Expr_t* ex, register char* l, register char* r)
  */
 
 static char*
-str_xor(Expr_t* ex, register char* l, register char* r)
+str_xor(Expr_t* ex, char* l, char* r)
 {
-	register int	c;
-	register char*	s = l;
+	int	c;
+	char*	s = l;
 
 	while (c = *s++)
 		if (!strchr(r, c) && !strchr(s, c))
@@ -507,9 +507,9 @@ str_xor(Expr_t* ex, register char* l, register char* r)
  */
 
 static char*
-str_mod(Expr_t* ex, register char* l, register char* r)
+str_mod(Expr_t* ex, char* l, char* r)
 {
-	register int	c;
+	int	c;
 
 	while (c = *l++)
 		if (!strchr(r, c) && !strchr(l, c))
@@ -522,10 +522,10 @@ str_mod(Expr_t* ex, register char* l, register char* r)
  */
 
 static char*
-str_mpy(Expr_t* ex, register char* l, register char* r)
+str_mpy(Expr_t* ex, char* l, char* r)
 {
-	register int	lc;
-	register int	rc;
+	int	lc;
+	int	rc;
 
 	while ((lc = *l++) && (rc = *r++))
 		sfputc(ex->tmp, lc == rc ? lc : ' ');
@@ -537,12 +537,12 @@ str_mpy(Expr_t* ex, register char* l, register char* r)
  */
 
 static Extype_t
-eval(Expr_t* ex, register Exnode_t* expr, void* env)
+eval(Expr_t* ex, Exnode_t* expr, void* env)
 {
-	register Exnode_t*	x;
-	register Exnode_t*	a;
-	register Extype_t**	t;
-	register int		n;
+	Exnode_t*	x;
+	Exnode_t*	a;
+	Extype_t**	t;
+	int		n;
 	Extype_t		v;
 	Extype_t		r;
 	Extype_t		i;

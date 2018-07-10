@@ -38,7 +38,7 @@ const char*	lib;
 int		flags;
 #endif
 {
-	register char*		s;
+	char*		s;
 	void*			dll;
 	Rsdisc_t*		disc;
 	Rslib_f			fun;

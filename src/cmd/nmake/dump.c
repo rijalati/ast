@@ -34,11 +34,11 @@ static int		dumpall;	/* don't be selective		*/
  */
 
 static void
-dumpname(register Sfio_t* sp, register Rule_t* r, char* sep)
+dumpname(Sfio_t* sp, Rule_t* r, char* sep)
 {
-	register char*	s;
-	register char*	t;
-	register int	paren;
+	char*	s;
+	char*	t;
+	int	paren;
 	int		quote;
 
 	if (!dumpall && state.list)
@@ -95,10 +95,10 @@ dumpname(register Sfio_t* sp, register Rule_t* r, char* sep)
 static int
 listrule(const char* s, char* v, void* h)
 {
-	register Rule_t*	r = (Rule_t*)v;
-	register List_t*	p;
-	register int		n;
-	register Sfio_t*	sp = (Sfio_t*)h;
+	Rule_t*	r = (Rule_t*)v;
+	List_t*	p;
+	int		n;
+	Sfio_t*	sp = (Sfio_t*)h;
 
 	if (!dumpall && state.list && (r->name != s ||
 		!(r->property & (P_accept|P_after|P_always|P_archive|P_before|P_command|P_force|P_foreground|P_functional|P_ignore|P_immediate|P_implicit|P_joint|P_local|P_make|P_multiple|P_operator|P_parameter|P_read|P_repeat|P_target|P_terminal|P_use|P_virtual)) && !((r->property & P_attribute) && r->attribute) && !r->semaphore))
@@ -427,10 +427,10 @@ listrule(const char* s, char* v, void* h)
 static int
 listvar(const char* s, char* u, void* h)
 {
-	register Var_t*		v = (Var_t*)u;
-	register char*		t;
-	register char*		q;
-	register Sfio_t*	sp = (Sfio_t*)h;
+	Var_t*		v = (Var_t*)u;
+	char*		t;
+	char*		q;
+	Sfio_t*	sp = (Sfio_t*)h;
 
 	if (dumpall || !(v->property & V_import) && (!state.list || !isintvar(v->name)))
 	{
@@ -538,10 +538,10 @@ dump(Sfio_t* sp, int verbose)
  */
 
 void
-dumpregress(register Sfio_t* sp, const char* prefix, const char* name, register char* value)
+dumpregress(Sfio_t* sp, const char* prefix, const char* name, char* value)
 {
-	register int	c;
-	register int	n;
+	int	c;
+	int	n;
 	int*		rp;
 	char*		bp;
 	char*		np;
@@ -646,9 +646,9 @@ dumpregress(register Sfio_t* sp, const char* prefix, const char* name, register 
  */
 
 void
-dumpaction(Sfio_t* sp, const char* name, register char* action, register const char* prefix)
+dumpaction(Sfio_t* sp, const char* name, char* action, const char* prefix)
 {
-	register char*	s;
+	char*	s;
 	char*		mamlabel;
 	char*		sep;
 
@@ -703,7 +703,7 @@ dumpaction(Sfio_t* sp, const char* name, register char* action, register const c
  */
 
 void
-dumpvar(Sfio_t* sp, register Var_t* v)
+dumpvar(Sfio_t* sp, Var_t* v)
 {
 	dumpall++;
 	listvar(v->name, (char*)v, sp);
@@ -716,10 +716,10 @@ dumpvar(Sfio_t* sp, register Var_t* v)
  */
 
 void
-dumprule(Sfio_t* sp, register Rule_t* r)
+dumprule(Sfio_t* sp, Rule_t* r)
 {
-	register int		i;
-	register Rule_t*	z;
+	int		i;
+	Rule_t*	z;
 
 	dumpall++;
 	z = 0;

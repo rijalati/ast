@@ -105,7 +105,7 @@ irealloc(Ire_t* ire, void* p, size_t n)
 Ireint_t
 irenum(const char* s, char** e)
 {
-	register Ireint_t	n;
+	Ireint_t	n;
 	char*			p;
 
 	n = strton(s, &p, NiL, 0);
@@ -128,7 +128,7 @@ irenum(const char* s, char** e)
 Ire_t*
 irecomp(const char* pattern, int element, int dots, int tuple, int group, Iredisc_t* disc)
 {
-	register char*	s;
+	char*	s;
 	char*		e;
 	int		m;
 	int		mem;

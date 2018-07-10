@@ -270,7 +270,7 @@ bool_internal(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format,
  */
 
 static ssize_t
-string_external(Cx_t* cx, Cxtype_t* type, const char* details, register Cxformat_t* format, register Cxvalue_t* value, char* buf, size_t size, Cxdisc_t* disc)
+string_external(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, Cxvalue_t* value, char* buf, size_t size, Cxdisc_t* disc)
 {
 	if (format && format->width)
 	{
@@ -316,10 +316,10 @@ string_internal(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* forma
 static ssize_t
 buffer_external(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, Cxvalue_t* value, char* buf, size_t size, Cxdisc_t* disc)
 {
-	register unsigned char*	t;
-	register unsigned char*	f;
-	register unsigned char*	e;
-	register int		v;
+	unsigned char*	t;
+	unsigned char*	f;
+	unsigned char*	e;
+	int		v;
 	int			z;
 
 	static const char	hex[] = "0123456789abcdefg";
@@ -387,7 +387,7 @@ buffer_internal(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* forma
  */
 
 static ssize_t
-type_external(Cx_t* cx, Cxtype_t* type, const char* details, register Cxformat_t* format, register Cxvalue_t* value, char* buf, size_t size, Cxdisc_t* disc)
+type_external(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, Cxvalue_t* value, char* buf, size_t size, Cxdisc_t* disc)
 {
 	size_t	n;
 
@@ -1043,10 +1043,10 @@ CXF("typeof",		"type_t",	cx_typeof_B,	"*",
 Cx_t*
 cxopen(Cxflags_t flags, Cxflags_t test, Cxdisc_t* disc)
 {
-	register Cx_t*		cx;
-	register Vmalloc_t*	vm;
-	register Vmalloc_t*	em;
-	register Vmalloc_t*	rm;
+	Cx_t*		cx;
+	Vmalloc_t*	vm;
+	Vmalloc_t*	em;
+	Vmalloc_t*	rm;
 
 	if (!(vm = vmopen(Vmdcheap, Vmbest, 0)) || !(em = vmopen(Vmdcheap, Vmlast, 0)) || !(rm = vmopen(Vmdcheap, Vmlast, 0)))
 	{
@@ -1218,7 +1218,7 @@ cxscope(Cx_t* top, Cx_t* bot, Cxflags_t flags, Cxflags_t test, Cxdisc_t* disc)
  */
 
 int
-cxclose(register Cx_t* cx)
+cxclose(Cx_t* cx)
 {
 	if (!cx)
 		return -1;
@@ -1265,7 +1265,7 @@ cxclose(register Cx_t* cx)
  */
 
 int
-cxaddtype(Cx_t* cx, register Cxtype_t* type, Cxdisc_t* disc)
+cxaddtype(Cx_t* cx, Cxtype_t* type, Cxdisc_t* disc)
 {
 	char*		base;
 	Cxvariable_t*	v;
@@ -1419,8 +1419,8 @@ cxaddtype(Cx_t* cx, register Cxtype_t* type, Cxdisc_t* disc)
 Cxtype_t*
 cxtype(Cx_t* cx, const char* name, Cxdisc_t* disc)
 {
-	register char*	s;
-	register char*	lib;
+	char*	s;
+	char*	lib;
 	Cxtype_t*	t;
 	size_t		n;
 
@@ -1444,7 +1444,7 @@ cxtype(Cx_t* cx, const char* name, Cxdisc_t* disc)
  */
 
 int
-cxaddcallout(Cx_t* cx, register Cxcallout_t* callout, Cxdisc_t* disc)
+cxaddcallout(Cx_t* cx, Cxcallout_t* callout, Cxdisc_t* disc)
 {
 	char*		name;
 	Dt_t*		dict;
@@ -1596,8 +1596,8 @@ cxaddquery(Cx_t* cx, Cxquery_t* query, Cxdisc_t* disc)
 Cxquery_t*
 cxquery(Cx_t* cx, const char* name, Cxdisc_t* disc)
 {
-	register char*	s;
-	register char*	lib;
+	char*	s;
+	char*	lib;
 	Cxquery_t*	q;
 	size_t		n;
 
@@ -1623,8 +1623,8 @@ cxquery(Cx_t* cx, const char* name, Cxdisc_t* disc)
 Cxvariable_t*
 cxfunction(Cx_t* cx, const char* name, Cxdisc_t* disc)
 {
-	register char*	s;
-	register char*	p;
+	char*	s;
+	char*	p;
 	Cxvariable_t*	f;
 	Cxlib_t*	lib;
 	int		i;
@@ -1740,7 +1740,7 @@ cxmap(Cx_t* cx, const char* name, Cxdisc_t* disc)
  */
 
 int
-cxaddrecode(Cx_t* cx, register Cxrecode_t* recode, Cxdisc_t* disc)
+cxaddrecode(Cx_t* cx, Cxrecode_t* recode, Cxdisc_t* disc)
 {
 	Cxrecode_t*	o;
 	char*		name;
@@ -1835,7 +1835,7 @@ cxrecode(Cx_t* cx, int code, Cxtype_t* type1, Cxtype_t* type2, Cxdisc_t* disc)
  */
 
 int
-cxaddedit(Cx_t* cx, register Cxedit_t* edit, Cxdisc_t* disc)
+cxaddedit(Cx_t* cx, Cxedit_t* edit, Cxdisc_t* disc)
 {
 	Dt_t*		dict;
 	Cxedit_t*	copy;
@@ -1959,7 +1959,7 @@ cxedit(Cx_t* cx, const char* data, Cxdisc_t* disc)
  */
 
 int
-cxaddconstraint(Cx_t* cx, register Cxconstraint_t* constraint, Cxdisc_t* disc)
+cxaddconstraint(Cx_t* cx, Cxconstraint_t* constraint, Cxdisc_t* disc)
 {
 	Dt_t*		dict;
 	Cxconstraint_t*	copy;
@@ -2023,9 +2023,9 @@ cxconstraint(Cx_t* cx, const char* name, Cxdisc_t* disc)
  */
 
 static void
-referenced(register Cxtype_t* type)
+referenced(Cxtype_t* type)
 {
-	register Cxvariable_t*	mp;
+	Cxvariable_t*	mp;
 
 	if (!(type->header.flags & CX_REFERENCED))
 	{
@@ -2043,7 +2043,7 @@ referenced(register Cxtype_t* type)
  */
 
 int
-cxaddvariable(register Cx_t* cx, register Cxvariable_t* variable, Cxdisc_t* disc)
+cxaddvariable(Cx_t* cx, Cxvariable_t* variable, Cxdisc_t* disc)
 {
 	Dt_t*	dict;
 	Cx_t*	sx;
@@ -2113,10 +2113,10 @@ cxaddvariable(register Cx_t* cx, register Cxvariable_t* variable, Cxdisc_t* disc
  */
 
 Cxvariable_t*
-cxvariable(Cx_t* cx, const char* name, register Cxtype_t* m, Cxdisc_t* disc)
+cxvariable(Cx_t* cx, const char* name, Cxtype_t* m, Cxdisc_t* disc)
 {
-	register char*	s;
-	register char*	t;
+	char*	s;
+	char*	t;
 	Cxvariable_t*	v;
 	Dt_t*		dict;
 	Cxreference_t*	ref;
@@ -2471,7 +2471,7 @@ cxmembers(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, Cxv
 static void
 initialize(Cxdisc_t* disc)
 {
-	register int		i;
+	int		i;
 
 	static const char	cx_alpha[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_$";
 	static const char	cx_digit[] = "0123456789";
@@ -2626,7 +2626,7 @@ cxlocation(Cx_t* cx, void* data)
  */
 
 char*
-cxcvt(register Cx_t* cx, const char* s, size_t n)
+cxcvt(Cx_t* cx, const char* s, size_t n)
 {
 	if (cx->cvtsiz <= n || !cx->cvtbuf)
 	{

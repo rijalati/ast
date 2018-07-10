@@ -32,9 +32,9 @@
  */
 
 void
-copyin(register Archive_t* ap)
+copyin(Archive_t* ap)
 {
-	register File_t*	f = &ap->file;
+	File_t*	f = &ap->file;
 
 	deltabase(ap);
 	while (getprologue(ap))
@@ -61,10 +61,10 @@ copyin(register Archive_t* ap)
  */
 
 int
-copyout(register Ftw_t* ftw)
+copyout(Ftw_t* ftw)
 {
-	register Archive_t*	ap = state.out;
-	register File_t*	f = &ap->file;
+	Archive_t*	ap = state.out;
+	File_t*	f = &ap->file;
 
 	if (getfile(ap, f, ftw))
 	{
@@ -85,11 +85,11 @@ copyout(register Ftw_t* ftw)
  */
 
 void
-fileout(register Archive_t* ap, register File_t* f)
+fileout(Archive_t* ap, File_t* f)
 {
-	register size_t		m;
-	register ssize_t	n;
-	register off_t		c;
+	size_t		m;
+	ssize_t	n;
+	off_t		c;
 	int			err;
 	Buffer_t*		bp;
 
@@ -161,11 +161,11 @@ fileout(register Archive_t* ap, register File_t* f)
  */
 
 void
-filein(register Archive_t* ap, register File_t* f)
+filein(Archive_t* ap, File_t* f)
 {
-	register off_t	c;
-	register int	n;
-	register char*	s;
+	off_t	c;
+	int	n;
+	char*	s;
 	int		dfd;
 	int		wfd;
 	long		checksum;
@@ -330,7 +330,7 @@ filein(register Archive_t* ap, register File_t* f)
  */
 
 void
-fileskip(register Archive_t* ap, register File_t* f)
+fileskip(Archive_t* ap, File_t* f)
 {
 	Member_t*	d;
 	off_t		n;
@@ -349,12 +349,12 @@ fileskip(register Archive_t* ap, register File_t* f)
 int
 copyinout(Ftw_t* ftw)
 {
-	register File_t*	f = &state.out->file;
-	register char*		s;
-	register off_t		c;
-	register ssize_t	n;
-	register int		rfd;
-	register int		wfd;
+	File_t*	f = &state.out->file;
+	char*		s;
+	off_t		c;
+	ssize_t	n;
+	int		rfd;
+	int		wfd;
 
 	if (getfile(state.out, f, ftw) && selectfile(state.out, f))
 	{
@@ -455,10 +455,10 @@ cmpftw(Ftw_t* ft1, Ftw_t* ft2)
  */
 
 static char*
-skip(register char* s, register int d)
+skip(char* s, int d)
 {
-	register int	c;
-	register int	q;
+	int	c;
+	int	q;
 
 	q = 0;
 	while (c = *s++)
@@ -486,12 +486,12 @@ skip(register char* s, register int d)
 typedef int (*Ftw_cmp_t)(Ftw_t*, Ftw_t*);
 
 void
-copy(register Archive_t* ap, register int (*copyfile)(Ftw_t*))
+copy(Archive_t* ap, int (*copyfile)(Ftw_t*))
 {
-	register char*	s;
-	register char*	t;
-	register char*	v;
-	register int	c;
+	char*	s;
+	char*	t;
+	char*	v;
+	int	c;
 	unsigned long	flags;
 	char*		mode;
 	char*		mtime;

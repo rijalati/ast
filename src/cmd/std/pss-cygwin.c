@@ -103,9 +103,9 @@ cygwin_read(Pss_t* pss, Pss_id_t pid)
 }
 
 static int
-cygwin_part(register Pss_t* pss, register Pssent_t* pe)
+cygwin_part(Pss_t* pss, Pssent_t* pe)
 {
-	register struct external_pinfo*	pr;
+	struct external_pinfo*	pr;
 
 	if (!(pr = (struct external_pinfo*)cygwin_internal(CW_GETPINFO, pss->pid)) || !pr->pid)
 		return 0;
@@ -129,9 +129,9 @@ cygwin_part(register Pss_t* pss, register Pssent_t* pe)
 }
 
 static int
-cygwin_full(register Pss_t* pss, register Pssent_t* pe)
+cygwin_full(Pss_t* pss, Pssent_t* pe)
 {
-	register struct external_pinfo*	pr = (struct external_pinfo*)pss->data;
+	struct external_pinfo*	pr = (struct external_pinfo*)pss->data;
 	unsigned long			fields = pss->disc->fields & pss->meth->fields;
 	char*				s;
 	int				i;
@@ -170,7 +170,7 @@ cygwin_full(register Pss_t* pss, register Pssent_t* pe)
 }
 
 static char*
-cygwin_ttyname(Pss_t* pss, register Pssent_t* pe)
+cygwin_ttyname(Pss_t* pss, Pssent_t* pe)
 {
 	if (pe->tty < 0)
 		return "?";

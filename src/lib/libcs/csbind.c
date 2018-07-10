@@ -32,7 +32,7 @@
  */
 
 static int
-portbind(register Cs_t* state, const char* type, unsigned long addr, unsigned int port)
+portbind(Cs_t* state, const char* type, unsigned long addr, unsigned int port)
 {
 
 #if CS_LIB_V10
@@ -204,7 +204,7 @@ portbind(register Cs_t* state, const char* type, unsigned long addr, unsigned in
  */
 
 int
-csbind(register Cs_t* state, const char* type, unsigned long addr, unsigned long port, unsigned long clone)
+csbind(Cs_t* state, const char* type, unsigned long addr, unsigned long port, unsigned long clone)
 {
 	int	fd;
 

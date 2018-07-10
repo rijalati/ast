@@ -64,7 +64,7 @@ pzfind(Pz_t* pz, const char* file, const char* suffix, const char* mode)
 Pz_t*
 pzopen(Pzdisc_t* disc, const char* path, unsigned long flags)
 {
-	register Pz_t*	pz;
+	Pz_t*	pz;
 	Vmalloc_t*	vm;
 	struct stat	st;
 
@@ -200,7 +200,7 @@ pzopen(Pzdisc_t* disc, const char* path, unsigned long flags)
  */
 
 int
-pzclose(register Pz_t* pz)
+pzclose(Pz_t* pz)
 {
 	int		r;
 	unsigned long	e;

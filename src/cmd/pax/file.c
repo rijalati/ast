@@ -41,9 +41,9 @@
  */
 
 int
-apply(register Archive_t* ap, register File_t* f, Filter_t* fp)
+apply(Archive_t* ap, File_t* f, Filter_t* fp)
 {
-	register int	n;
+	int	n;
 	char*		arg;
 	int		rfd;
 	int		wfd;
@@ -142,9 +142,9 @@ apply(register Archive_t* ap, register File_t* f, Filter_t* fp)
  */
 
 int
-openin(register Archive_t* ap, register File_t* f)
+openin(Archive_t* ap, File_t* f)
 {
-	register int	n;
+	int	n;
 	Filter_t*	fp;
 	int		rfd;
 
@@ -179,10 +179,10 @@ openin(register Archive_t* ap, register File_t* f)
  */
 
 static int
-missdir(register Archive_t* ap, register File_t* f)
+missdir(Archive_t* ap, File_t* f)
 {
-	register char*	s;
-	register char*	t;
+	char*	s;
+	char*	t;
 	long		pp;
 	struct stat*	st;
 	struct stat*	sp;
@@ -250,9 +250,9 @@ missdir(register Archive_t* ap, register File_t* f)
  */
 
 int
-openout(register Archive_t* ap, register File_t* f)
+openout(Archive_t* ap, File_t* f)
 {
-	register int	fd;
+	int	fd;
 	int		exists;
 	int		perm;
 	int		c;
@@ -686,7 +686,7 @@ openout(register Archive_t* ap, register File_t* f)
  */
 
 int
-closein(register Archive_t* ap, register File_t* f, int fd)
+closein(Archive_t* ap, File_t* f, int fd)
 {
 	int		r;
 
@@ -710,9 +710,9 @@ closein(register Archive_t* ap, register File_t* f, int fd)
  */
 
 int
-closeout(register Archive_t* ap, register File_t* f, int fd)
+closeout(Archive_t* ap, File_t* f, int fd)
 {
-	register char*	s;
+	char*	s;
 	int		r;
 
 	r = 0;
@@ -748,10 +748,10 @@ closeout(register Archive_t* ap, register File_t* f, int fd)
  */
 
 int
-getfile(register Archive_t* ap, register File_t* f, register Ftw_t* ftw)
+getfile(Archive_t* ap, File_t* f, Ftw_t* ftw)
 {
-	register char*		name;
-	register int		n;
+	char*		name;
+	int		n;
 	char*			e;
 
 	name = ftw->path;
@@ -877,7 +877,7 @@ getfile(register Archive_t* ap, register File_t* f, register Ftw_t* ftw)
  */
 
 int
-validout(register Archive_t* ap, register File_t* f)
+validout(Archive_t* ap, File_t* f)
 {
 	if (f->ro)
 		return 0;
@@ -906,10 +906,10 @@ validout(register Archive_t* ap, register File_t* f)
  */
 
 int
-addlink(register Archive_t* ap, register File_t* f)
+addlink(Archive_t* ap, File_t* f)
 {
-	register Link_t*	p;
-	register char*		s;
+	Link_t*	p;
+	char*		s;
 	int			n;
 	Fileid_t		id;
 	unsigned short		us;
@@ -1043,7 +1043,7 @@ addlink(register Archive_t* ap, register File_t* f)
  */
 
 void
-getidnames(register File_t* f)
+getidnames(File_t* f)
 {
 	if (!f->uidname)
 		f->uidname = fmtuid(f->st->st_uid);
@@ -1056,9 +1056,9 @@ getidnames(register File_t* f)
  */
 
 void
-setidnames(register File_t* f)
+setidnames(File_t* f)
 {
-	register int	id;
+	int	id;
 
 	if (f->uidname)
 	{
@@ -1125,7 +1125,7 @@ getarchive(int op)
  */
 
 void
-initfile(register Archive_t* ap, register File_t* f, struct stat* st, register char* name, int mode)
+initfile(Archive_t* ap, File_t* f, struct stat* st, char* name, int mode)
 {
 	memzero(f, sizeof(*f));
 	f->st = st;
@@ -1144,9 +1144,9 @@ initfile(register Archive_t* ap, register File_t* f, struct stat* st, register c
  */
 
 void
-setfile(register Archive_t* ap, register File_t* f)
+setfile(Archive_t* ap, File_t* f)
 {
-	register Post_t*	p;
+	Post_t*	p;
 	int			updated;
 	Post_t			post;
 
@@ -1249,9 +1249,9 @@ settime(const char* name, Tv_t* ap, Tv_t* mp, Tv_t* cp)
  */
 
 int
-restore(register const char* name, char* ap, void* handle)
+restore(const char* name, char* ap, void* handle)
 {
-	register Post_t*	p = (Post_t*)ap;
+	Post_t*	p = (Post_t*)ap;
 	int			m;
 	struct stat		st;
 
@@ -1290,7 +1290,7 @@ restore(register const char* name, char* ap, void* handle)
  */
 
 int
-prune(register Archive_t* ap, register File_t* f, register struct stat* st)
+prune(Archive_t* ap, File_t* f, struct stat* st)
 {
 	Tv_t		t1;
 	Tv_t		t2;
@@ -1325,10 +1325,10 @@ prune(register Archive_t* ap, register File_t* f, register struct stat* st)
 ssize_t
 holewrite(int fd, void* buf, size_t siz)
 {
-	register char*	t = (char*)buf;
-	register char*	e = t + siz;
-	register char*	b = 0;
-	register char*	s;
+	char*	t = (char*)buf;
+	char*	e = t + siz;
+	char*	b = 0;
+	char*	s;
 	ssize_t		i;
 	ssize_t		n = 0;
 

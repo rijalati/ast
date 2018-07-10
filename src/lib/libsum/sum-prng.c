@@ -54,11 +54,11 @@ typedef struct Prng_s
 static Sum_t*
 prng_open(const Method_t* method, const char* name)
 {
-	register Prng_t*	sum;
-	register const char*	s;
-	register const char*	t;
-	register const char*	v;
-	register int		i;
+	Prng_t*	sum;
+	const char*	s;
+	const char*	t;
+	const char*	v;
+	int		i;
 
 	if (sum = newof(0, Prng_t, 1, 0))
 	{
@@ -103,9 +103,9 @@ static int
 prng_block(Sum_t* p, const void* s, size_t n)
 {
 	Prng_t*			sum = (Prng_t*)p;
-	register Prngnum_t	c = sum->sum;
-	register unsigned char*	b = (unsigned char*)s;
-	register unsigned char*	e = b + n;
+	Prngnum_t	c = sum->sum;
+	unsigned char*	b = (unsigned char*)s;
+	unsigned char*	e = b + n;
 
 	while (b < e)
 		c = c * sum->mpy + sum->add + *b++;

@@ -75,12 +75,12 @@ static struct State_s
 static Match_t*
 initialize(void)
 {
-	register char*	s;
-	register char*	t;
-	register char*	v;
-	register char*	x;
-	register int	n;
-	register int	d;
+	char*	s;
+	char*	t;
+	char*	v;
+	char*	x;
+	int	n;
+	int	d;
 	Match_t*	mp;
 	Match_t*	me;
 	Match_t*	mv;
@@ -153,13 +153,13 @@ initialize(void)
 Sfio_t*
 sfopen(Sfio_t* f, const char* path, const char* mode)
 {
-	register Match_t*	mp;
-	register Io_t*		io;
-	register const char*	s;
-	register ssize_t	r;
-	register int		c;
-	register int		n;
-	register int		m;
+	Match_t*	mp;
+	Io_t*		io;
+	const char*	s;
+	ssize_t	r;
+	int		c;
+	int		n;
+	int		m;
 
 	ssize_t			sub[20];
 

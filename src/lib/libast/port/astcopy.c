@@ -50,7 +50,7 @@
 off_t
 astcopy(int rfd, int wfd, off_t n)
 {
-	register off_t	c;
+	off_t	c;
 #ifdef MAPSIZE
 	off_t		pos;
 	off_t		mapsize;

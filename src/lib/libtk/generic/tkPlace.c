@@ -345,7 +345,7 @@ FindSlave(tkwin)
     Tk_Window tkwin;		/* Token for desired slave. */
 {
     Tcl_HashEntry *hPtr;
-    register Slave *slavePtr;
+    Slave *slavePtr;
     int new;
 
     hPtr = Tcl_CreateHashEntry(&slaveTable, (char *) tkwin, &new);
@@ -392,8 +392,8 @@ static void
 UnlinkSlave(slavePtr)
     Slave *slavePtr;		/* Slave structure to be unlinked. */
 {
-    register Master *masterPtr;
-    register Slave *prevPtr;
+    Master *masterPtr;
+    Slave *prevPtr;
 
     masterPtr = slavePtr->masterPtr;
     if (masterPtr == NULL) {
@@ -438,7 +438,7 @@ FindMaster(tkwin)
     Tk_Window tkwin;		/* Token for desired master. */
 {
     Tcl_HashEntry *hPtr;
-    register Master *masterPtr;
+    Master *masterPtr;
     int new;
 
     hPtr = Tcl_CreateHashEntry(&masterTable, (char *) tkwin, &new);
@@ -483,7 +483,7 @@ ConfigureSlave(interp, slavePtr, argc, argv)
     int argc;			/* Number of config arguments. */
     char **argv;		/* String values for arguments. */
 {
-    register Master *masterPtr;
+    Master *masterPtr;
     int c, result;
     size_t length;
     double d;
@@ -704,8 +704,8 @@ static void
 RecomputePlacement(clientData)
     ClientData clientData;	/* Pointer to Master record. */
 {
-    register Master *masterPtr = (Master *) clientData;
-    register Slave *slavePtr;
+    Master *masterPtr = (Master *) clientData;
+    Slave *slavePtr;
     int x, y, width, height, tmp;
     int masterWidth, masterHeight, masterBW;
     double x1, y1, x2, y2;
@@ -899,8 +899,8 @@ MasterStructureProc(clientData, eventPtr)
 				 * referred to by eventPtr. */
     XEvent *eventPtr;		/* Describes what just happened. */
 {
-    register Master *masterPtr = (Master *) clientData;
-    register Slave *slavePtr, *nextPtr;
+    Master *masterPtr = (Master *) clientData;
+    Slave *slavePtr, *nextPtr;
 
     if (eventPtr->type == ConfigureNotify) {
 	if ((masterPtr->slavePtr != NULL)
@@ -969,7 +969,7 @@ SlaveStructureProc(clientData, eventPtr)
 				 * referred to by eventPtr. */
     XEvent *eventPtr;		/* Describes what just happened. */
 {
-    register Slave *slavePtr = (Slave *) clientData;
+    Slave *slavePtr = (Slave *) clientData;
 
     if (eventPtr->type == DestroyNotify) {
 	UnlinkSlave(slavePtr);
@@ -1045,7 +1045,7 @@ PlaceLostSlaveProc(clientData, tkwin)
 				 * was stolen away. */
     Tk_Window tkwin;		/* Tk's handle for the slave window. */
 {
-    register Slave *slavePtr = (Slave *) clientData;
+    Slave *slavePtr = (Slave *) clientData;
 
     if (slavePtr->masterPtr->tkwin != Tk_Parent(slavePtr->tkwin)) {
 	Tk_UnmaintainGeometry(slavePtr->tkwin, slavePtr->masterPtr->tkwin);

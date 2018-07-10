@@ -62,9 +62,9 @@ typedef ssize_t (*Write_f)(int, const void*, size_t);
 void*
 _dll_next(int flags, _DLL_RLD_SYM_TYPE* here)
 {
-	register char*	vp;
-	register void*	lp;
-	register int	found = 0;
+	char*	vp;
+	void*	lp;
+	int	found = 0;
 	char*		s;
 	char*		b;
 	char*		e;
@@ -174,14 +174,14 @@ extern struct link_dynamic	_DYNAMIC;
 void*
 dllnext(int flags)
 {
-	register void*			dll;
+	void*			dll;
 #ifndef RTLD_NEXT
 #if _dll_DYNAMIC
-	register struct link_map*	map;
-	register char*			s;
-	register char*			b;
+	struct link_map*	map;
+	char*			s;
+	char*			b;
 #endif
-	register char*			ver;
+	char*			ver;
 	char*				path;
 
 	static char			next[] = { _DLL_NEXT_PATH };

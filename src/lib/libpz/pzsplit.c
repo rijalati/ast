@@ -131,8 +131,8 @@ freeid(Dt_t* dt, Void_t* ip, Dtdisc_t* disc)
 static int
 flush(Deflate_t* dp, size_t w, Sfio_t* op)
 {
-	register Id_t*	ip;
-	register size_t	n;
+	Id_t*	ip;
+	size_t	n;
 	Sfio_t*		io;
 	char*		file;
 	int		i;
@@ -481,12 +481,12 @@ deflate(Pz_t* pz, Sfio_t* op)
 static int
 inflate(Pz_t* pz, Sfio_t* op)
 {
-	register char*		s;
-	register Id_t*		ip;
-	register size_t		m;
-	register size_t		n;
-	register size_t		u;
-	register unsigned char*	p;
+	char*		s;
+	Id_t*		ip;
+	size_t		m;
+	size_t		n;
+	size_t		u;
+	unsigned char*	p;
 	size_t			w;
 	size_t			i;
 	size_t			parts;
@@ -496,7 +496,7 @@ inflate(Pz_t* pz, Sfio_t* op)
 	Dt_t*			ids;
 	Dtdisc_t		iddisc;
 
-	register Id_t**		tab = 0;
+	Id_t**		tab = 0;
 	size_t			tabsiz = 0;
 	char*			win = 0;
 

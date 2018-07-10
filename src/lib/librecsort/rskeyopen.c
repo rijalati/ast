@@ -43,7 +43,7 @@ initialize(void)
 initialize()
 #endif
 {
-	register int	i;
+	int	i;
 
 	setlocale(LC_ALL, "");
 	for (i = 0; i <= UCHAR_MAX; i++)
@@ -75,7 +75,7 @@ rskeyopen(keydisc)
 Rskeydisc_t*	keydisc;
 #endif
 {
-	register Rskey_t*	kp;
+	Rskey_t*	kp;
 
 	if (!state.dict[' '])
 		initialize();
@@ -120,8 +120,8 @@ rskeyclose(kp)
 Rskey_t*	kp;
 #endif
 {
-	register Rskeyfield_t*	fp;
-	register Rskeyfield_t*	np;
+	Rskeyfield_t*	fp;
+	Rskeyfield_t*	np;
 
 	if (!kp)
 		return -1;

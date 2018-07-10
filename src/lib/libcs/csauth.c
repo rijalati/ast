@@ -40,10 +40,10 @@
 #define AUTH_BASE	1000
 
 int
-csauth(register Cs_t* state, int fd, const char* path, const char* arg)
+csauth(Cs_t* state, int fd, const char* path, const char* arg)
 {
-	register char*	s;
-	register char*	t;
+	char*	s;
+	char*	t;
 	char*		b;
 	char*		key = 0;
 	int		n;

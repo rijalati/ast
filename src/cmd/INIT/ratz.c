@@ -4440,7 +4440,7 @@ unsigned long	n;
 
 static unsigned long
 number(s)
-register char*	s;
+char*	s;
 {
 	unsigned long	n = 0;
 
@@ -4686,10 +4686,10 @@ main(argc, argv)
 int	argc;
 char**	argv;
 {
-	register int		c;
-	register char*		s;
-	register char*		t;
-	register char*		e;
+	int		c;
+	char*		s;
+	char*		t;
+	char*		e;
 	unsigned long		n;
 	unsigned long		m;
 	const unsigned char*	a2x;

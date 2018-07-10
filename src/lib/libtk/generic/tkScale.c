@@ -369,7 +369,7 @@ Tk_ScaleCmd(clientData, interp, argc, argv)
     char **argv;		/* Argument strings. */
 {
     Tk_Window tkwin = (Tk_Window) clientData;
-    register Scale *scalePtr;
+    Scale *scalePtr;
     Tk_Window new;
 
     if (argc < 2) {
@@ -484,7 +484,7 @@ ScaleWidgetCmd(clientData, interp, argc, argv)
     int argc;				/* Number of arguments. */
     char **argv;			/* Argument strings. */
 {
-    register Scale *scalePtr = (Scale *) clientData;
+    Scale *scalePtr = (Scale *) clientData;
     int result = TCL_OK;
     size_t length;
     int c;
@@ -633,7 +633,7 @@ static void
 DestroyScale(memPtr)
     char *memPtr;	/* Info about scale widget. */
 {
-    register Scale *scalePtr = (Scale *) memPtr;
+    Scale *scalePtr = (Scale *) memPtr;
 
     /*
      * Free up all the stuff that requires special handling, then
@@ -683,7 +683,7 @@ DestroyScale(memPtr)
 static int
 ConfigureScale(interp, scalePtr, argc, argv, flags)
     Tcl_Interp *interp;		/* Used for error reporting. */
-    register Scale *scalePtr;	/* Information about widget;  may or may
+    Scale *scalePtr;	/* Information about widget;  may or may
 				 * not already have values for some fields. */
     int argc;			/* Number of valid entries in argv. */
     char **argv;		/* Arguments. */
@@ -953,7 +953,7 @@ ComputeFormat(scalePtr)
 
 static void
 ComputeScaleGeometry(scalePtr)
-    register Scale *scalePtr;		/* Information about widget. */
+    Scale *scalePtr;		/* Information about widget. */
 {
     XCharStruct bbox;
     char valueString[PRINT_CHARS];
@@ -1210,7 +1210,7 @@ DisplayVerticalScale(scalePtr, drawable, drawnAreaPtr)
 
 static void
 DisplayVerticalValue(scalePtr, drawable, value, rightEdge)
-    register Scale *scalePtr;	/* Information about widget in which to
+    Scale *scalePtr;	/* Information about widget in which to
 				 * display value. */
     Drawable drawable;		/* Pixmap or window in which to draw
 				 * the value. */
@@ -1220,7 +1220,7 @@ DisplayVerticalValue(scalePtr, drawable, value, rightEdge)
     int rightEdge;		/* X-coordinate of right edge of text,
 				 * specified in pixels. */
 {
-    register Tk_Window tkwin = scalePtr->tkwin;
+    Tk_Window tkwin = scalePtr->tkwin;
     int y, dummy, length;
     char valueString[PRINT_CHARS];
     XCharStruct bbox;
@@ -1277,7 +1277,7 @@ DisplayHorizontalScale(scalePtr, drawable, drawnAreaPtr)
 					 * the part of the window that was
 					 * redrawn. */
 {
-    register Tk_Window tkwin = scalePtr->tkwin;
+    Tk_Window tkwin = scalePtr->tkwin;
     int x, y, width, height, shadowWidth;
     double tickValue;
     Tk_3DBorder sliderBorder;
@@ -1407,7 +1407,7 @@ DisplayHorizontalScale(scalePtr, drawable, drawnAreaPtr)
 
 static void
 DisplayHorizontalValue(scalePtr, drawable, value, top)
-    register Scale *scalePtr;	/* Information about widget in which to
+    Scale *scalePtr;	/* Information about widget in which to
 				 * display value. */
     Drawable drawable;		/* Pixmap or window in which to draw
 				 * the value. */
@@ -1417,7 +1417,7 @@ DisplayHorizontalValue(scalePtr, drawable, value, top)
     int top;			/* Y-coordinate of top edge of text,
 				 * specified in pixels. */
 {
-    register Tk_Window tkwin = scalePtr->tkwin;
+    Tk_Window tkwin = scalePtr->tkwin;
     int x, y, dummy, length;
     char valueString[PRINT_CHARS];
     XCharStruct bbox;
@@ -1655,7 +1655,7 @@ ScaleElement(scalePtr, x, y)
 
 static double
 PixelToValue(scalePtr, x, y)
-    register Scale *scalePtr;		/* Information about widget. */
+    Scale *scalePtr;		/* Information about widget. */
     int x, y;				/* Coordinates of point within
 					 * window. */
 {
@@ -1715,7 +1715,7 @@ PixelToValue(scalePtr, x, y)
 
 static int
 ValueToPixel(scalePtr, value)
-    register Scale *scalePtr;		/* Information about widget. */
+    Scale *scalePtr;		/* Information about widget. */
     double value;			/* Reading of the widget. */
 {
     int y, pixelRange;
@@ -1855,7 +1855,7 @@ ScaleCmdDeletedProc(clientData)
 
 static void
 SetScaleValue(scalePtr, value, setVar, invokeCommand)
-    register Scale *scalePtr;	/* Info about widget. */
+    Scale *scalePtr;	/* Info about widget. */
     double value;		/* New value for scale.  Gets adjusted
 				 * if it's off the scale. */
     int setVar;			/* Non-zero means reflect new value through
@@ -1915,7 +1915,7 @@ SetScaleValue(scalePtr, value, setVar, invokeCommand)
 
 static void
 EventuallyRedrawScale(scalePtr, what)
-    register Scale *scalePtr;	/* Information about widget. */
+    Scale *scalePtr;	/* Information about widget. */
     int what;			/* What to redraw:  REDRAW_SLIDER
 				 * or REDRAW_ALL. */
 {
@@ -1998,7 +1998,7 @@ ScaleVarProc(clientData, interp, name1, name2, flags)
     char *name2;		/* Second part of variable name. */
     int flags;			/* Information about what happened. */
 {
-    register Scale *scalePtr = (Scale *) clientData;
+    Scale *scalePtr = (Scale *) clientData;
     char *stringValue, *end, *result;
     double value;
 

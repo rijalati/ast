@@ -40,9 +40,9 @@ typedef struct Prefixdisc_s
  */
 
 static int
-byprefix(Dt_t* dt, register Ptvprefix_t* a, register Ptvprefix_t* b, Dtdisc_t* disc)
+byprefix(Dt_t* dt, Ptvprefix_t* a, Ptvprefix_t* b, Dtdisc_t* disc)
 {
-	register Prefixdisc_t*	p = (Prefixdisc_t*)disc;
+	Prefixdisc_t*	p = (Prefixdisc_t*)disc;
 
 	NoP(dt);
 	NoP(disc);
@@ -55,10 +55,10 @@ byprefix(Dt_t* dt, register Ptvprefix_t* a, register Ptvprefix_t* b, Dtdisc_t* d
 }
 
 static void*
-makef(Dt_t* dt, register Ptvprefix_t* a, Dtdisc_t* disc)
+makef(Dt_t* dt, Ptvprefix_t* a, Dtdisc_t* disc)
 {
-	register Prefixdisc_t*	p = (Prefixdisc_t*)disc;
-	register Ptvprefix_t*	b;
+	Prefixdisc_t*	p = (Prefixdisc_t*)disc;
+	Ptvprefix_t*	b;
 
 	if (b = oldof(0, Ptvprefix_t, 1, 2 * p->size))
 	{
@@ -134,8 +134,8 @@ ptvclose(Ptv_t* a)
 Ptvprefix_t*
 ptvinsert(Ptv_t* tab, Ptvaddr_t min, Ptvaddr_t max)
 {
-	register Ptvprefix_t*	xp;
-	register Ptvprefix_t*	pp;
+	Ptvprefix_t*	xp;
+	Ptvprefix_t*	pp;
 	Ptvprefix_t		key;
 
 	tab->entries++;
@@ -189,7 +189,7 @@ ptvinsert(Ptv_t* tab, Ptvaddr_t min, Ptvaddr_t max)
 int
 ptvdelete(Ptv_t* tab, Ptvaddr_t min, Ptvaddr_t max)
 {
-	register Ptvprefix_t*	xp;
+	Ptvprefix_t*	xp;
 	Ptvprefix_t		key;
 	Ptvprefix_t		cur;
 

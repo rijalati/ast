@@ -82,7 +82,7 @@
 struct msg*
 newmsg(off_t offset)
 {
-	register struct msg*	mp;
+	struct msg*	mp;
 	unsigned long		dot;
 
 	if (state.msg.count >= state.msg.size) {
@@ -107,14 +107,14 @@ newmsg(off_t offset)
  * Set up the input pointers while copying the mail file into /tmp.
  */
 void
-setptr(register FILE* ibuf, off_t offset)
+setptr(FILE* ibuf, off_t offset)
 {
-	register struct msg*	mp;
-	register int		c;
-	register int		count;
-	register int		prevcount;
-	register char*		cp;
-	register char*		cp2;
+	struct msg*	mp;
+	int		c;
+	int		count;
+	int		prevcount;
+	char*		cp;
+	char*		cp2;
 	struct match*		xp;
 	int			maybe;
 	int			inhead;
@@ -250,13 +250,13 @@ static const char* mh_context[] = {
  * Return the mh message context for folder name.
  */
 void
-mhgetcontext(register struct mhcontext* xp, const char* name, int next)
+mhgetcontext(struct mhcontext* xp, const char* name, int next)
 {
-	register char*		s;
-	register int		n;
-	register int		i;
-	register FTS*		fts;
-	register FTSENT*	ent;
+	char*		s;
+	int		n;
+	int		i;
+	FTS*		fts;
+	FTSENT*	ent;
 	char*			e;
 	FILE*			fp;
 	struct stat		ds;
@@ -316,7 +316,7 @@ mhgetcontext(register struct mhcontext* xp, const char* name, int next)
  * Update the mh message context for folder name.
  */
 void
-mhputcontext(register struct mhcontext* xp, const char* name)
+mhputcontext(struct mhcontext* xp, const char* name)
 {
 	FILE*		fp;
 
@@ -351,11 +351,11 @@ dircmp(FTSENT* const* a, FTSENT* const* b)
 int
 mh_setptr(char* name, int isedit)
 {
-	register struct msg*	mp;
-	register FTS*		fts;
-	register FTSENT*	ent;
-	register char*		s;
-	register int		n;
+	struct msg*	mp;
+	FTS*		fts;
+	FTSENT*	ent;
+	char*		s;
+	int		n;
 	unsigned long		index;
 	unsigned long		next;
 	int			status;
@@ -451,8 +451,8 @@ mh_setptr(char* name, int isedit)
 int
 putline(FILE* obuf, char* buf)
 {
-	register int	c;
-	register int	x;
+	int	c;
+	int	x;
 
 	x = 1;
 	if (strneq(buf, "From ", 5)) {
@@ -474,7 +474,7 @@ putline(FILE* obuf, char* buf)
 int
 readline(FILE* ibuf, char* buf, int size)
 {
-	register int	n;
+	int	n;
 
 	clearerr(ibuf);
 	if (!fgets(buf, size, ibuf))
@@ -493,7 +493,7 @@ readline(FILE* ibuf, char* buf, int size)
  * passed message pointer.
  */
 FILE*
-setinput(register struct msg* mp)
+setinput(struct msg* mp)
 {
 	FILE*	fp;
 	off_t	offset;
@@ -593,9 +593,9 @@ filetrunc(FILE* fp)
  * Return the file name as a dynamic string.
  */
 char*
-expand(register char* name, int verify)
+expand(char* name, int verify)
 {
-	register int	n;
+	int	n;
 	FILE*		fp;
 	char		buf[LINESIZE];
 	char		cmd[LINESIZE];
@@ -712,12 +712,12 @@ morein(Sfio_t* fp, void* buf, size_t n, Sfdisc_t* dp)
 static ssize_t
 moreout(Sfio_t* fp, const void* buf, size_t n, Sfdisc_t* dp)
 {
-	register char*		b;
-	register char*		s;
-	register char*		e;
-	register ssize_t	w;
-	register size_t		m;
-	register int		r;
+	char*		b;
+	char*		s;
+	char*		e;
+	ssize_t	w;
+	size_t		m;
+	int		r;
 
 	if (!state.more.row)
 		return n;

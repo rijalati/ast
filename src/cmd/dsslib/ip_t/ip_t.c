@@ -298,8 +298,8 @@ aspath_external(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* forma
 static ssize_t
 aspath_internal(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, Cxoperand_t* ret, const char* buf, size_t size, Vmalloc_t* vm, Cxdisc_t* disc)
 {
-	register const char*	b = buf;
-	register const char*	e = b + size;
+	const char*	b = buf;
+	const char*	e = b + size;
 
 	while (b < e && !isdigit(*b))
 		b++;

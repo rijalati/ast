@@ -23,11 +23,11 @@
 #include <tm.h>
 
 char* getrdir(rp, buf, bufsize)
-	register char*	rp;
+	char*	rp;
 	char*		buf;
 	int		bufsize;
 {
-	register char*	s;
+	char*	s;
 
 	strcpy(buf, rp);
 	if (!(s = pathcanon(buf, bufsize, PATH_PHYSICAL|PATH_EXISTS)))
@@ -41,13 +41,13 @@ int replica_creat(path, sf)
 	char*		path;
 	Sfio_t*		sf;
 {
-	register char*		rf;
-	register char*		rd;
+	char*		rf;
+	char*		rd;
 	char			dirbuf[1024];
-	register DIR*		dir;
-	register struct dirent*	rca;
-	register char*		s;
-	register char*		e;
+	DIR*		dir;
+	struct dirent*	rca;
+	char*		s;
+	char*		e;
 	Sfio_t*			fd;
 	int			cnt = 0;
 	struct stat		st;
@@ -105,13 +105,13 @@ int replica(path, df, tp)
 	Sfio_t*		df;
 	tag_t*		tp;
 {
-	register char*		rf;
-	register char*		rd;
+	char*		rf;
+	char*		rd;
 	char			dirbuf[1024];
-	register DIR*		dir;
-	register struct dirent*	rca;
-	register char*		s;
-	register char*		e;
+	DIR*		dir;
+	struct dirent*	rca;
+	char*		s;
+	char*		e;
 	Sfio_t*			fd;
 	int			cnt = 0;
 	struct stat		st;

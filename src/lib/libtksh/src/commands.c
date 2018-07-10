@@ -297,7 +297,7 @@ Tksh_InfoCmd(dummy, interp, argc, argv)
     int argc;				/* Number of arguments. */
     char **argv;			/* Argument strings. */
 {
-    register Interp *iPtr = (Interp *) interp;
+    Interp *iPtr = (Interp *) interp;
     size_t length;
     int c;
     Arg *argPtr;

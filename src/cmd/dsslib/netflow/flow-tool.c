@@ -325,11 +325,11 @@ ftfopen(Dssfile_t* file, Dssdisc_t* disc)
  */
 
 static int
-ftfread(register Dssfile_t* file, register Dssrecord_t* record, Dssdisc_t* disc)
+ftfread(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register State_t*	state = (State_t*)file->data;
-	register Netflow_t*	rp = &state->record;
-	register char*		fp;
+	State_t*	state = (State_t*)file->data;
+	Netflow_t*	rp = &state->record;
+	char*		fp;
 	size_t			n;
 	Nftime_t		boot;
 
@@ -525,7 +525,7 @@ ftfwrite(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 static int
 ftfclose(Dssfile_t* file, Dssdisc_t* disc)
 {
-	register State_t*	state = (State_t*)file->data;
+	State_t*	state = (State_t*)file->data;
 
 	if (!state)
 		return -1;

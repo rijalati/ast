@@ -226,7 +226,7 @@ short			ctypes[UCHAR_MAX+1];/* istype() character types	*/
 static int
 intercept(Sfio_t* sp, int level, int flags)
 {
-	register Rule_t*	r;
+	Rule_t*	r;
 	char*			m;
 	char*			s;
 	char*			t;
@@ -289,9 +289,9 @@ intercept(Sfio_t* sp, int level, int flags)
 int
 main(int argc, char** argv)
 {
-	register char*		s;
-	register Rule_t*	r;
-	register List_t*	p;
+	char*		s;
+	Rule_t*	r;
+	List_t*	p;
 	int			i;
 	int			args;
 	int			trace;

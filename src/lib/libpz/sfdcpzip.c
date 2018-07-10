@@ -51,7 +51,7 @@ typedef struct
 static int
 sfpzexcept(Sfio_t* sp, int op, void* val, Sfdisc_t* dp)
 {
-	register Sfpzip_t*	pz = (Sfpzip_t*)dp;
+	Sfpzip_t*	pz = (Sfpzip_t*)dp;
 	int			r;
 
 	NoP(sp);
@@ -91,7 +91,7 @@ sfpzexcept(Sfio_t* sp, int op, void* val, Sfdisc_t* dp)
 static ssize_t
 sfpzread(Sfio_t* fp, Void_t* buf, size_t size, Sfdisc_t* dp)
 {
-	register Sfpzip_t*	pz = (Sfpzip_t*)dp;
+	Sfpzip_t*	pz = (Sfpzip_t*)dp;
 
 	return pzread(pz->pz, buf, size);
 }
@@ -103,7 +103,7 @@ sfpzread(Sfio_t* fp, Void_t* buf, size_t size, Sfdisc_t* dp)
 static ssize_t
 sfpzwrite(Sfio_t* fp, const Void_t* buf, size_t size, Sfdisc_t* dp)
 {
-	register Sfpzip_t*	pz = (Sfpzip_t*)dp;
+	Sfpzip_t*	pz = (Sfpzip_t*)dp;
 
 	return pzwrite(pz->pz, pz->io, buf, size);
 }

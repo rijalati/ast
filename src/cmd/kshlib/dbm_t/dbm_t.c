@@ -175,10 +175,10 @@ static void dbm_put(struct dbm_array *ap)
 	ap->modified = 0;
 }
 
-static void *dbm_associative(register Namval_t *np,const char *sp,int mode)
+static void *dbm_associative(Namval_t *np,const char *sp,int mode)
 {
-	register struct dbm_array *ap = (struct dbm_array*)nv_arrayptr(np);
-	register int keylen;
+	struct dbm_array *ap = (struct dbm_array*)nv_arrayptr(np);
+	int keylen;
 	switch(mode)
 	{
 	    case NV_AINIT:

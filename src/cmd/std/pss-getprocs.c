@@ -66,7 +66,7 @@ typedef struct State_s
 static int
 getprocs_init(Pss_t* pss)
 {
-	register State_t*	state;
+	State_t*	state;
 
 	if (!(state = vmnewof(pss->vm, 0, State_t, 1, 0)))
 	{
@@ -81,7 +81,7 @@ getprocs_init(Pss_t* pss)
 static int
 getprocs_read(Pss_t* pss, Pss_id_t pid)
 {
-	register State_t*	state = (State_t*)pss->data;
+	State_t*	state = (State_t*)pss->data;
 
 	if (pid)
 	{
@@ -114,10 +114,10 @@ getprocs_read(Pss_t* pss, Pss_id_t pid)
 }
 
 static int
-getprocs_part(register Pss_t* pss, register Pssent_t* pe)
+getprocs_part(Pss_t* pss, Pssent_t* pe)
 {
-	register State_t*		state = (State_t*)pss->data;
-	register struct procsinfo*	pr;
+	State_t*		state = (State_t*)pss->data;
+	struct procsinfo*	pr;
 
 	pr = state->pr;
 	pe->pid = state->pr->pi_pid;
@@ -150,10 +150,10 @@ getprocs_part(register Pss_t* pss, register Pssent_t* pe)
 }
 
 static int
-getprocs_full(register Pss_t* pss, register Pssent_t* pe)
+getprocs_full(Pss_t* pss, Pssent_t* pe)
 {
-	register State_t*		state = (State_t*)pss->data;
-	register struct procsinfo*	pr = state->pr;
+	State_t*		state = (State_t*)pss->data;
+	struct procsinfo*	pr = state->pr;
 	unsigned long			fields = pss->disc->fields & pss->meth->fields;
 	char*				s;
 	int				i;

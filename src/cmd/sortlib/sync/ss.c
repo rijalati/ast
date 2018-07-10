@@ -199,11 +199,11 @@ static void		listexpr(Ss_t*, Sfio_t*, Ssexpr_t*);
  */
 
 static char*
-lex(register Ss_t* ss)
+lex(Ss_t* ss)
 {
-	register char*	s;
-	register char*	t;
-	register int	q;
+	char*	s;
+	char*	t;
+	int	q;
 
 	if (s = ss->peek)
 	{
@@ -365,7 +365,7 @@ sfprintf(sfstderr, "lex: %s part=%d item=%d\n", s, ss->part, ss->item);
 static char*
 value(Ss_t* ss, int flags)
 {
-	register char*	s;
+	char*	s;
 
 	if (!(s = lex(ss)) || (flags & LEX_COND) && streq(s, "COND") && !(s = lex(ss)))
 	{
@@ -470,10 +470,10 @@ type(Ss_t* ss, char* s, int silent)
  */
 
 static void
-codeset(register Ss_t* ss, register int n)
+codeset(Ss_t* ss, int n)
 {
-	register char*	s;
-	register int	c;
+	char*	s;
+	int	c;
 
 	if (!n)
 		n = CC_EBCDIC_O;
@@ -516,7 +516,7 @@ codeset(register Ss_t* ss, register int n)
 static int
 eat(Ss_t* ss)
 {
-	register char*	s;
+	char*	s;
 
 	while (s = lex(ss))
 	{
@@ -541,13 +541,13 @@ eat(Ss_t* ss)
 static Ssfield_t*
 fields(Ss_t* ss, int tuple, int flags, size_t* zp)
 {
-	register char*		s;
-	register char*		v;
+	char*		s;
+	char*		v;
 	char*			e;
 	unsigned char*		map;
-	register Ssfield_t*	dp;
-	register Ssfield_t*	bp;
-	register Ssfield_t*	ep;
+	Ssfield_t*	dp;
+	Ssfield_t*	bp;
+	Ssfield_t*	ep;
 	size_t			n;
 	size_t			z;
 	int			a;
@@ -774,8 +774,8 @@ fields(Ss_t* ss, int tuple, int flags, size_t* zp)
 static int
 options(Ss_t* ss, int flags, Ssfile_t* fp, Ssfield_t** dp, int tuple, size_t* zp)
 {
-	register char*		s;
-	register Ssfield_t*	ip;
+	char*		s;
+	Ssfield_t*	ip;
 	char*			e;
 	int			n;
 
@@ -927,10 +927,10 @@ static Ssexpr_t*	compile(Ss_t*, int);
 static Ssexpr_t*
 operand(Ss_t* ss, Ssexpr_t* lp)
 {
-	register Ssexpr_t*	xp;
-	register Ssfield_t*	dp;
-	register char*		s;
-	register char*		v;
+	Ssexpr_t*	xp;
+	Ssfield_t*	dp;
+	char*		s;
+	char*		v;
 	char*			e;
 	unsigned char*		map;
 	int			c;
@@ -1102,10 +1102,10 @@ operand(Ss_t* ss, Ssexpr_t* lp)
 static Ssexpr_t*
 compile(Ss_t* ss, int precedence)
 {
-	register Ssexpr_t*	xp;
-	register Ssexpr_t*	lp;
-	register Ssexpr_t*	rp;
-	register char*		s;
+	Ssexpr_t*	xp;
+	Ssexpr_t*	lp;
+	Ssexpr_t*	rp;
+	char*		s;
 	int			op;
 	int			pr;
 
@@ -1227,13 +1227,13 @@ sfprintf(sfstderr, "compile(%d) ", precedence); listexpr(ss, sfstderr, xp); sfpr
  */
 
 static int
-finalize(Ss_t* ss, register Ssexpr_t* xp, int type)
+finalize(Ss_t* ss, Ssexpr_t* xp, int type)
 {
-	register Ssexpr_t*	tp;
-	register Ssfield_t*	dp;
-	register char*		s;
-	register char*		v;
-	register long		n;
+	Ssexpr_t*	tp;
+	Ssfield_t*	dp;
+	char*		s;
+	char*		v;
+	long		n;
 
 	switch (xp->op)
 	{
@@ -1338,8 +1338,8 @@ finalize(Ss_t* ss, register Ssexpr_t* xp, int type)
 static Ssexpr_t*
 cond(Ss_t* ss)
 {
-	register Ssexpr_t*	xp;
-	register char*		s;
+	Ssexpr_t*	xp;
+	char*		s;
 	int			n;
 
 	if (!(s = value(ss, LEX_COND)))
@@ -1517,8 +1517,8 @@ load(Ss_t* ss, const char* usr, const char* fun, const char* lib, Ssdisc_t* disc
 Ss_t*
 ssopen(const char* file, Ssdisc_t* disc)
 {
-	register Ss_t*	ss;
-	register char*	s;
+	Ss_t*	ss;
+	char*	s;
 	Vmalloc_t*	vm;
 	Ssfile_t*	fp;
 	Ssfile_t*	ep;
@@ -1847,8 +1847,8 @@ static const char*	opname[] =
 static void
 listexpr(Ss_t* ss, Sfio_t* io, Ssexpr_t* xp)
 {
-	register unsigned char*	s;
-	register unsigned char*	e;
+	unsigned char*	s;
+	unsigned char*	e;
 
 	if (xp)
 		switch (xp->op)
@@ -1885,8 +1885,8 @@ listexpr(Ss_t* ss, Sfio_t* io, Ssexpr_t* xp)
 static void
 listfields(Ss_t* ss, Sfio_t* io, Ssfield_t* dp, const char* label)
 {
-	register unsigned char*	v;
-	register unsigned char*	e;
+	unsigned char*	v;
+	unsigned char*	e;
 
 	if (dp)
 	{
@@ -2004,9 +2004,9 @@ sslist(Ss_t* ss, Sfio_t* io)
 ssize_t
 sscopy(Ss_t* ss, Ssfile_t* fp, const char* buf, size_t bsize, char* out, size_t osize)
 {
-	register unsigned char*	s;
-	register unsigned char*	t;
-	register Ssfield_t*	dp;
+	unsigned char*	s;
+	unsigned char*	t;
+	Ssfield_t*	dp;
 	size_t			rsize;
 	int			v;
 
@@ -2062,10 +2062,10 @@ sscopy(Ss_t* ss, Ssfile_t* fp, const char* buf, size_t bsize, char* out, size_t 
 ssize_t
 sswrite(Ss_t* ss, Ssfile_t* fp, const char* buf, size_t size)
 {
-	register unsigned char*	s;
-	register unsigned char*	t;
-	register Ssgroup_t*	gp;
-	register Ssfield_t*	dp;
+	unsigned char*	s;
+	unsigned char*	t;
+	Ssgroup_t*	gp;
+	Ssfield_t*	dp;
 	size_t			v;
 	size_t			r;
 	ssize_t			z;
@@ -2146,15 +2146,15 @@ sswrite(Ss_t* ss, Ssfile_t* fp, const char* buf, size_t size)
  */
 
 int
-sssum(Ss_t* ss, register Ssfield_t* dp, const char* buf, size_t size, char* out)
+sssum(Ss_t* ss, Ssfield_t* dp, const char* buf, size_t size, char* out)
 {
-	register unsigned char*	s;
-	register unsigned char*	se;
-	register unsigned char*	t;
-	register unsigned char*	te;
-	register intmax_t	n;
-	register int		i;
-	register int		j;
+	unsigned char*	s;
+	unsigned char*	se;
+	unsigned char*	t;
+	unsigned char*	te;
+	intmax_t	n;
+	int		i;
+	int		j;
 
 	do
 	{
@@ -2412,12 +2412,12 @@ sssum(Ss_t* ss, register Ssfield_t* dp, const char* buf, size_t size, char* out)
  */
 
 int
-sseval(Ss_t* ss, register Ssexpr_t* xp, const char* buf, size_t size)
+sseval(Ss_t* ss, Ssexpr_t* xp, const char* buf, size_t size)
 {
-	register unsigned char*	a;
-	register unsigned char*	b;
-	register unsigned char*	e;
-	register int		r;
+	unsigned char*	a;
+	unsigned char*	b;
+	unsigned char*	e;
+	int		r;
 
 	switch (xp->op)
 	{
@@ -2485,14 +2485,14 @@ ssdd(const char* id, const char* name, Ssdisc_t* disc)
 int
 ssio(Ss_t* ss, int list)
 {
-	register Ssfile_t*	fp;
-	register Ssgroup_t*	ep;
-	register Ssgroup_t*	gp;
-	register Ssgroup_t*	pg;
-	register Dd_t*		dd;
-	register Dd_t*		pd;
-	register char*		s;
-	register int		n;
+	Ssfile_t*	fp;
+	Ssgroup_t*	ep;
+	Ssgroup_t*	gp;
+	Ssgroup_t*	pg;
+	Dd_t*		dd;
+	Dd_t*		pd;
+	char*		s;
+	int		n;
 	char*			e;
 	struct stat		ns;
 	struct stat		ws;
@@ -2615,10 +2615,10 @@ ssio(Ss_t* ss, int list)
 int
 ssannounce(Ss_t* ss, Rs_t* rs)
 {
-	register Ssfile_t*	fp;
-	register Ssgroup_t*	ep;
-	register Ssgroup_t*	gp;
-	register Ssgroup_t*	pg;
+	Ssfile_t*	fp;
+	Ssgroup_t*	ep;
+	Ssgroup_t*	gp;
+	Ssgroup_t*	pg;
 
 	for (fp = ss->file; fp; fp = fp->next)
 		if (gp = ep = fp->group)
@@ -2652,8 +2652,8 @@ ssannounce(Ss_t* ss, Rs_t* rs)
 int
 ssclose(Ss_t* ss)
 {
-	register Ssfile_t*	fp;
-	register Ssgroup_t*	gp;
+	Ssfile_t*	fp;
+	Ssgroup_t*	gp;
 	ssize_t			z;
 	int			r;
 

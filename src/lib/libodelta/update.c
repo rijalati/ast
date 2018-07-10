@@ -41,7 +41,7 @@ static int delgetc(void)
 {
 	if(Dnext >= Dend)
 	{
-		register int n;
+		int n;
 		if((n = read(Dfd,(char*)Ddata,BUFSIZE)) <= 0)
 			return -1;
 		Dnext = Ddata, Dend = Ddata+n;
@@ -50,14 +50,14 @@ static int delgetc(void)
 }
 
 /* read a long value from delta file */
-static long delgetl(register int n)
+static long delgetl(int n)
 {
-	register long	lv;
+	long	lv;
 
 	lv = 0;
 	for(; n > 0; --n)
 	{
-		register int v;
+		int v;
 		if((v = delgetc()) < 0)
 			return -1;
 		lv = lv*256 + v;
@@ -70,7 +70,7 @@ static int filetransfer(int fd, long n)
 {
 	while(n > 0)
 	{
-		register int r;
+		int r;
 
 		if(Tnext >= Tend)
 			if(tarflush() < 0)
@@ -85,11 +85,11 @@ static int filetransfer(int fd, long n)
 }
 
 /* transfer a number of bytes from a memory area to the target file */
-static int memtransfer(unsigned char* addr, register long n)
+static int memtransfer(unsigned char* addr, long n)
 {
 	while(n > 0)
 	{
-		register int r;
+		int r;
 
 		if(Tnext >= Tend)
 			if(tarflush() < 0)
@@ -106,12 +106,12 @@ static int memtransfer(unsigned char* addr, register long n)
 /* transfer a number of bytes from delta to target */
 static int deltransfer(long n)
 {
-	register int d;
+	int d;
 
 	/* transfer what's already in core */
 	if((d = Dend-Dnext) > 0)
 	{
-		register int w = n <= d ? n : d;
+		int w = n <= d ? n : d;
 
 		if(w > (Tend-Tnext))
 			if(tarflush() < 0)
@@ -130,8 +130,8 @@ static int deltransfer(long n)
 int
 update(int srcfd, long offset, int delfd, int tarfd)
 {
-	register int	i;
-	register long	n_src, n_tar;
+	int	i;
+	long	n_src, n_tar;
 	unsigned char	delbuf[BUFSIZE], tarbuf[BUFSIZE];
 	unsigned char	*src, *tar;
 
@@ -159,7 +159,7 @@ update(int srcfd, long offset, int delfd, int tarfd)
 
 	while((i = delgetc()) >= 0)
 	{
-		register long	size, addr;
+		long	size, addr;
 
 		if((size = delgetl((i>>3)&07)) < 0)
 			return -1;

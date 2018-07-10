@@ -136,7 +136,7 @@ typedef struct
  */
 
 static int
-lower(register int c)
+lower(int c)
 {
 	return isupper(c) ? tolower(c) : c;
 }
@@ -156,9 +156,9 @@ order(Dt_t* dt, void* a, void* b, Dtdisc_t* disc)
  */
 
 static void
-dropcap(register Cap_t* cap)
+dropcap(Cap_t* cap)
 {
-	register Att_t*	att;
+	Att_t*	att;
 
 	while (att = cap->att.next)
 	{
@@ -175,8 +175,8 @@ dropcap(register Cap_t* cap)
 static void
 drop(Dt_t* dt, void* object, Dtdisc_t* disc)
 {
-	register Ent_t*	ent = (Ent_t*)object;
-	register Cap_t*	cap;
+	Ent_t*	ent = (Ent_t*)object;
+	Cap_t*	cap;
 
 	while (cap = ent->cap)
 	{
@@ -191,14 +191,14 @@ drop(Dt_t* dt, void* object, Dtdisc_t* disc)
  */
 
 int
-mimeset(Mime_t* mp, register char* s, unsigned long flags)
+mimeset(Mime_t* mp, char* s, unsigned long flags)
 {
-	register Ent_t*	ent;
-	register Cap_t*	cap;
-	register Att_t*	att;
-	register char*	t;
-	register char*	v;
-	register char*	k;
+	Ent_t*	ent;
+	Cap_t*	cap;
+	Att_t*	att;
+	char*	t;
+	char*	v;
+	char*	k;
 	char*		x;
 	Att_t*		tta;
 	int		q;
@@ -294,8 +294,8 @@ mimeset(Mime_t* mp, register char* s, unsigned long flags)
 		{
 			if (ent)
 			{
-				register Cap_t*	dup;
-				register Cap_t*	pud;
+				Cap_t*	dup;
+				Cap_t*	pud;
 
 				for (pud = 0, dup = ent->cap; dup; pud = dup, dup = dup->next)
 					if (!cap->test && !dup->test || cap->test && dup->test && streq(cap->test, dup->test))
@@ -337,10 +337,10 @@ mimeset(Mime_t* mp, register char* s, unsigned long flags)
 int
 mimeload(Mime_t* mp, const char* file, unsigned long flags)
 {
-	register char*	s;
-	register char*	t;
-	register char*	e;
-	register int	n;
+	char*	s;
+	char*	t;
+	char*	e;
+	int	n;
 	Sfio_t*		fp;
 
 	if (!(s = (char*)file))
@@ -391,10 +391,10 @@ mimeload(Mime_t* mp, const char* file, unsigned long flags)
 static int
 list(Dt_t* dt, void* object, void* context)
 {
-	register Walk_t*	wp = (Walk_t*)context;
-	register Ent_t*		ent = (Ent_t*)object;
-	register Cap_t*		cap;
-	register Att_t*		att;
+	Walk_t*	wp = (Walk_t*)context;
+	Ent_t*		ent = (Ent_t*)object;
+	Cap_t*		cap;
+	Att_t*		att;
 
 	if (!wp->pattern || !strncasecmp(ent->name, wp->pattern, wp->prefix) && (!ent->name[wp->prefix] || ent->name[wp->prefix] == '/'))
 	{
@@ -426,7 +426,7 @@ list(Dt_t* dt, void* object, void* context)
 int
 mimelist(Mime_t* mp, Sfio_t* fp, const char* pattern)
 {
-	register const char*	s;
+	const char*	s;
 	Ent_t*			ent;
 	Walk_t			ws;
 
@@ -454,11 +454,11 @@ mimelist(Mime_t* mp, Sfio_t* fp, const char* pattern)
  */
 
 static int
-arg(register Parse_t* pp, int first)
+arg(Parse_t* pp, int first)
 {
-	register char*	s;
-	register int	c;
-	register int	q;
+	char*	s;
+	int	c;
+	int	q;
 
 	for (s = pp->next; isspace(*s) && *s != '\n'; s++);
 	if (!*s || *s == '\n')
@@ -516,10 +516,10 @@ arg(register Parse_t* pp, int first)
  */
 
 static char*
-expand(Mime_t* mp, register char* s, const char* name, const char* type, const char* opts)
+expand(Mime_t* mp, char* s, const char* name, const char* type, const char* opts)
 {
-	register char*	t;
-	register int	c;
+	char*	t;
+	int	c;
 	Parse_t		pp;
 
 	mp->disc->flags |= MIME_PIPE;
@@ -570,10 +570,10 @@ expand(Mime_t* mp, register char* s, const char* name, const char* type, const c
 char*
 mimeview(Mime_t* mp, const char* view, const char* name, const char* type, const char* opts)
 {
-	register Ent_t*	ent;
-	register Cap_t*	cap;
-	register Att_t*	att;
-	register char*	s;
+	Ent_t*	ent;
+	Cap_t*	cap;
+	Att_t*	att;
+	char*	s;
 	int		c;
 	char		word[64];
 
@@ -682,9 +682,9 @@ mimeview(Mime_t* mp, const char* view, const char* name, const char* type, const
  */
 
 int
-mimecmp(register const char* s, register const char* v, char** e)
+mimecmp(const char* s, const char* v, char** e)
 {
-	register int	n;
+	int	n;
 
 	while (isalnum(*v) || *v == *s && (*v == '_' || *v == '-' || *v == '/'))
 		if (n = lower(*s++) - lower(*v++))
@@ -704,9 +704,9 @@ mimecmp(register const char* s, register const char* v, char** e)
  */
 
 int
-mimehead(Mime_t* mp, void* tab, size_t num, size_t siz, register char* s, int (*set)(Mime_t*, void*, char*, size_t, Mimedisc_t*))
+mimehead(Mime_t* mp, void* tab, size_t num, size_t siz, char* s, int (*set)(Mime_t*, void*, char*, size_t, Mimedisc_t*))
 {
-	register void*	p;
+	void*	p;
 	char*		e;
 	Parse_t		pp;
 
@@ -744,7 +744,7 @@ mimehead(Mime_t* mp, void* tab, size_t num, size_t siz, register char* s, int (*
 Mime_t*
 mimeopen(Mimedisc_t* disc)
 {
-	register Mime_t*	mp;
+	Mime_t*	mp;
 
 	if (!(mp = newof(0, Mime_t, 1, 0)))
 		return 0;

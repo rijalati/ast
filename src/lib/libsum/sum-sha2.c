@@ -629,7 +629,7 @@ static void SHA256_Transform(SHA256_CTX* sha, const sha2_word32* data) {
 #endif /* SHA2_UNROLL_TRANSFORM */
 
 static int
-sha256_block(register Sum_t* p, const void* s, size_t len)
+sha256_block(Sum_t* p, const void* s, size_t len)
 {
 	Sha256_t*	sha = (Sha256_t*)p;
 	sha2_byte*	data = (sha2_byte*)s;
@@ -679,7 +679,7 @@ sha256_block(register Sum_t* p, const void* s, size_t len)
 static int
 sha256_init(Sum_t* p)
 {
-	register Sha256_t*	sha = (Sha256_t*)p;
+	Sha256_t*	sha = (Sha256_t*)p;
 
 	MEMCPY_BCOPY(sha->state, sha256_initial_hash_value, SHA256_DIGEST_LENGTH);
 	MEMSET_BZERO(sha->buffer, SHA256_BLOCK_LENGTH);
@@ -707,7 +707,7 @@ sha256_done(Sum_t* p)
 {
 	Sha256_t*	sha = (Sha256_t*)p;
 	unsigned int	usedspace;
-	register int	i;
+	int	i;
 
 	/* Sanity check: */
 	assert(sha != (SHA256_CTX*)0);
@@ -773,11 +773,11 @@ sha256_done(Sum_t* p)
 }
 
 static int
-sha256_print(Sum_t* p, Sfio_t* sp, register int flags, size_t scale)
+sha256_print(Sum_t* p, Sfio_t* sp, int flags, size_t scale)
 {
-	register Sha256_t*	sha = (Sha256_t*)p;
-	register sha2_byte*	d;
-	register sha2_byte*	e;
+	Sha256_t*	sha = (Sha256_t*)p;
+	sha2_byte*	d;
+	sha2_byte*	e;
 
 	d = (flags & SUM_TOTAL) ? sha->digest_sum : sha->digest;
 	e = d + SHA256_DIGEST_LENGTH;
@@ -789,7 +789,7 @@ sha256_print(Sum_t* p, Sfio_t* sp, register int flags, size_t scale)
 static int
 sha256_data(Sum_t* p, Sumdata_t* data)
 {
-	register Sha256_t*	sha = (Sha256_t*)p;
+	Sha256_t*	sha = (Sha256_t*)p;
 
 	data->size = SHA256_DIGEST_LENGTH;
 	data->num = 0;
@@ -993,7 +993,7 @@ static void SHA512_Transform(SHA512_CTX* sha, const sha2_word64* data) {
 #endif /* SHA2_UNROLL_TRANSFORM */
 
 static int
-sha512_block(register Sum_t* p, const void* s, size_t len)
+sha512_block(Sum_t* p, const void* s, size_t len)
 {
 	Sha512_t*	sha = (Sha512_t*)p;
 	sha2_byte*	data = (sha2_byte*)s;
@@ -1043,7 +1043,7 @@ sha512_block(register Sum_t* p, const void* s, size_t len)
 static int
 sha512_init(Sum_t* p)
 {
-	register Sha512_t*	sha = (Sha512_t*)p;
+	Sha512_t*	sha = (Sha512_t*)p;
 
 	MEMCPY_BCOPY(sha->state, sha512_initial_hash_value, SHA512_DIGEST_LENGTH);
 	MEMSET_BZERO(sha->buffer, SHA512_BLOCK_LENGTH);
@@ -1071,7 +1071,7 @@ sha512_done(Sum_t* p)
 {
 	Sha512_t*	sha = (Sha512_t*)p;
 	unsigned int	usedspace;
-	register int	i;
+	int	i;
 
 	usedspace = (sha->bitcount[1] >> 3) % SHA512_BLOCK_LENGTH;
 #if BYTE_ORDER == LITTLE_ENDIAN
@@ -1135,11 +1135,11 @@ sha512_done(Sum_t* p)
 }
 
 static int
-sha512_print(Sum_t* p, Sfio_t* sp, register int flags, size_t scale)
+sha512_print(Sum_t* p, Sfio_t* sp, int flags, size_t scale)
 {
-	register Sha512_t*	sha = (Sha512_t*)p;
-	register sha2_byte*	d;
-	register sha2_byte*	e;
+	Sha512_t*	sha = (Sha512_t*)p;
+	sha2_byte*	d;
+	sha2_byte*	e;
 
 	d = (flags & SUM_TOTAL) ? sha->digest_sum : sha->digest;
 	e = d + SHA512_DIGEST_LENGTH;
@@ -1151,7 +1151,7 @@ sha512_print(Sum_t* p, Sfio_t* sp, register int flags, size_t scale)
 static int
 sha512_data(Sum_t* p, Sumdata_t* data)
 {
-	register Sha512_t*	sha = (Sha512_t*)p;
+	Sha512_t*	sha = (Sha512_t*)p;
 
 	data->size = SHA512_DIGEST_LENGTH;
 	data->num = 0;
@@ -1181,7 +1181,7 @@ sha512_data(Sum_t* p, Sumdata_t* data)
 static int
 sha384_init(Sum_t* p)
 {
-	register Sha384_t*	sha = (Sha384_t*)p;
+	Sha384_t*	sha = (Sha384_t*)p;
 
 	MEMCPY_BCOPY(sha->state, sha384_initial_hash_value, SHA512_DIGEST_LENGTH);
 	MEMSET_BZERO(sha->buffer, SHA384_BLOCK_LENGTH);
@@ -1205,11 +1205,11 @@ sha384_open(const Method_t* method, const char* name)
 }
 
 static int
-sha384_print(Sum_t* p, Sfio_t* sp, register int flags, size_t scale)
+sha384_print(Sum_t* p, Sfio_t* sp, int flags, size_t scale)
 {
-	register Sha384_t*	sha = (Sha384_t*)p;
-	register sha2_byte*	d;
-	register sha2_byte*	e;
+	Sha384_t*	sha = (Sha384_t*)p;
+	sha2_byte*	d;
+	sha2_byte*	e;
 
 	d = (flags & SUM_TOTAL) ? sha->digest_sum : sha->digest;
 	e = d + SHA384_DIGEST_LENGTH;
@@ -1221,7 +1221,7 @@ sha384_print(Sum_t* p, Sfio_t* sp, register int flags, size_t scale)
 static int
 sha384_data(Sum_t* p, Sumdata_t* data)
 {
-	register Sha384_t*	sha = (Sha384_t*)p;
+	Sha384_t*	sha = (Sha384_t*)p;
 
 	data->size = SHA384_DIGEST_LENGTH;
 	data->num = 0;

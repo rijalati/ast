@@ -30,13 +30,13 @@
  */
 
 int
-msggetmask(char* buf, register int n, register unsigned long mask)
+msggetmask(char* buf, int n, unsigned long mask)
 {
-	register char*		b;
-	register const char*	s;
-	register int		m;
-	register int		n0;
-	register int		n1;
+	char*		b;
+	const char*	s;
+	int		m;
+	int		n0;
+	int		n1;
 	char*			e;
 
 	if (n <= 1) return 0;

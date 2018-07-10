@@ -185,7 +185,7 @@ Tcl_Merge(argc, argv)
     int localFlags[LOCAL_SIZE], *flagPtr;
     int numChars;
     char *result;
-    register char *dst;
+    char *dst;
     int i;
 
 #ifndef NO_TCL_EVAL

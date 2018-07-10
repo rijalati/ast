@@ -85,9 +85,9 @@ svc_init(void* handle, int fdmax)
 static int
 svc_connect(void* handle, int fd, Cs_id_t* id, int clone, char** argv)
 {
-	register State_t*	state = (State_t*)handle;
-	register File_t*	fp;
-	register char*		s;
+	State_t*	state = (State_t*)handle;
+	File_t*	fp;
+	char*		s;
 	int			ad;
 	int			flags = 0;
 	Fid_t			fid;
@@ -134,11 +134,11 @@ svc_connect(void* handle, int fd, Cs_id_t* id, int clone, char** argv)
 static int
 svc_read(void* handle, int fd)
 {
-	register State_t*	state = (State_t*)handle;
-	register ssize_t	n;
-	register ssize_t	m;
-	register ssize_t	i;
-	register File_t*	fp = state->cat[fd];
+	State_t*	state = (State_t*)handle;
+	ssize_t	n;
+	ssize_t	m;
+	ssize_t	i;
+	File_t*	fp = state->cat[fd];
 	int			ok;
 
 	if (fp->flags & CAT_MSG)

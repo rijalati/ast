@@ -37,8 +37,8 @@
 Rule_t*
 metarule(char* in, char* out, int force)
 {
-	register Rule_t*	r;
-	register char*		s;
+	Rule_t*	r;
+	char*		s;
 
 	sfprintf(internal.met, "%s>%s", in, out ? out : "%");
 	s = sfstruse(internal.met);
@@ -89,7 +89,7 @@ metarule(char* in, char* out, int force)
 Rule_t*
 metainfo(int type, char* s1, char* s2, int force)
 {
-	register Rule_t*	r;
+	Rule_t*	r;
 
 	sfprintf(internal.met, "%s.%c.%s%s%s", internal.metarule->name, type, s1 ? s1 : null, s2 ? ">" : null, s2 ? s2 : null);
 	s1 = sfstruse(internal.met);
@@ -110,7 +110,7 @@ metainfo(int type, char* s1, char* s2, int force)
  */
 
 static int
-metaccmp(register char* p, register int a, register int b)
+metaccmp(char* p, int a, int b)
 {
 	return a == b || *p != '-' && *p != '+' && (isupper(a) ? tolower(a) : a) == (isupper(b) ? tolower(b) : b);
 }
@@ -129,14 +129,14 @@ metaccmp(register char* p, register int a, register int b)
  */
 
 int
-metamatch(char* stem, register char* s, char* pattern)
+metamatch(char* stem, char* s, char* pattern)
 {
-	register char*	p;
-	register char*	t;
-	register char*	x;
-	register char*	y;
+	char*	p;
+	char*	t;
+	char*	x;
+	char*	y;
 	char*		b;
-	register int	targetprefix;
+	int	targetprefix;
 	
 	b = s;
 	p = pattern;
@@ -223,7 +223,7 @@ metamatch(char* stem, register char* s, char* pattern)
 void
 metaexpand(Sfio_t* sp, char* stem, char* p)
 {
-	register int	c;
+	int	c;
 
 	while ((c = *p++) != '%')
 	{
@@ -351,9 +351,9 @@ metaclose(Rule_t* in, Rule_t* out, int c)
 Rule_t*
 metaget(Rule_t* r, Frame_t* active, char* stem, Rule_t** meta)
 {
-	register List_t*	p;
-	register List_t*	q;
-	register List_t*	v;
+	List_t*	p;
+	List_t*	q;
+	List_t*	v;
 	Rule_t*			m;
 	Rule_t*			s;
 	Rule_t*			x;

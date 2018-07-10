@@ -321,8 +321,8 @@ extern int ruserok(const char *rhost, int superuser, const char *ruser, const ch
 	FILE *hostf;
 	char fhost[MAXHOSTNAMELEN];
 	int first = 1;
-	register const char *sp;
-	register char *p;
+	const char *sp;
+	char *p;
 	int baselen = -1;
 	uid_t saveuid;
 
@@ -382,7 +382,7 @@ const char *ruser, int baselen)
 {
 	char *user;
 	char ahost[MAXHOSTNAMELEN];
-	register char *p;
+	char *p;
 	int hostvalid = 0;
 	int uservalid = 0;
 
@@ -473,7 +473,7 @@ _checkhost(const char *rhost, const char *lhost, int len)
 	static char ldomain[MAXHOSTNAMELEN + 1];
 	static char *domainp = NULL;
 	static int nodomain = 0;
-	register char *cp;
+	char *cp;
 
 	if (len == -1)
 		return(!strcmp(rhost, lhost));

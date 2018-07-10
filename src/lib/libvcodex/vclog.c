@@ -102,7 +102,7 @@ size_t vclogi(v)
 size_t	v;
 #endif
 {
-	register size_t	lg, b;
+	size_t	lg, b;
 
 	switch(sizeof(v) ) /* find the left most non-zero byte */
 	{ default: /* in case sizeof(unsigned int) > 4 */
@@ -129,7 +129,7 @@ double vclog(v)
 size_t	v;
 #endif
 {
-	register int	lg, b;
+	int	lg, b;
 
 	switch(sizeof(v) ) /* find the left most non-zero byte */
 	{ default: /* in case sizeof(unsigned int) > 4 */

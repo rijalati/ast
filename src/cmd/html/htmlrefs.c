@@ -245,11 +245,11 @@ keep(State_t* state, const char* name, int mode)
  */
 
 static void
-check(register State_t* state, const char* dir, const char* name, unsigned int flags)
+check(State_t* state, const char* dir, const char* name, unsigned int flags)
 {
-	register File_t*	dp;
-	register char*		s;
-	register char**		p;
+	File_t*	dp;
+	char*		s;
+	char**		p;
 	glob_t			gl;
 
 	memset(&gl, 0, sizeof(gl));
@@ -271,12 +271,12 @@ check(register State_t* state, const char* dir, const char* name, unsigned int f
  */
 
 static File_t*
-add(register State_t* state, register char* s, unsigned int flags, const char* path, int prefix, File_t* ref)
+add(State_t* state, char* s, unsigned int flags, const char* path, int prefix, File_t* ref)
 {
-	register char*		t;
-	register File_t*	fp;
-	register File_t*	dp;
-	register List_t*	lp;
+	char*		t;
+	File_t*	fp;
+	File_t*	dp;
+	List_t*	lp;
 	char*			u;
 	struct stat		st;
 
@@ -430,10 +430,10 @@ order(FTSENT* const* a, FTSENT* const* b)
  */
 
 static void
-rootdir(State_t* state, register String_t* r, register char* s, char* buf, size_t z)
+rootdir(State_t* state, String_t* r, char* s, char* buf, size_t z)
 {
-	register char*	t;
-	register int	n;
+	char*	t;
+	int	n;
 
 	if (t = strrchr(s, '/'))
 		*t = 0;
@@ -500,13 +500,13 @@ scan(State_t* state, FTS* fts)
  */
 
 static void
-refs(register State_t* state, const char* path, register Sfio_t* ip, File_t* ref)
+refs(State_t* state, const char* path, Sfio_t* ip, File_t* ref)
 {
-	register int	c;
-	register int	q;
-	register int	r;
-	register int	a;
-	register char*	s;
+	int	c;
+	int	q;
+	int	r;
+	int	a;
+	char*	s;
 	char*		p;
 	char*		t;
 	File_t*		f;
@@ -853,12 +853,12 @@ refs(register State_t* state, const char* path, register Sfio_t* ip, File_t* ref
  */
 
 static int
-filter(register State_t* state, register Sfio_t* ip, Sfio_t* op)
+filter(State_t* state, Sfio_t* ip, Sfio_t* op)
 {
-	register char*	s;
-	register size_t	n;
-	register size_t	lines = 0;
-	register int	head = 1;
+	char*	s;
+	size_t	n;
+	size_t	lines = 0;
+	int	head = 1;
 
 	for (;;)
 	{
@@ -893,12 +893,12 @@ filter(register State_t* state, register Sfio_t* ip, Sfio_t* op)
 int
 main(int argc, char** argv)
 {
-	register char*		s;
-	register char*		p;
-	register Sfio_t*	ip;
-	register State_t*	state;
-	register File_t*	fp;
-	register List_t*	lp;
+	char*		s;
+	char*		p;
+	Sfio_t*	ip;
+	State_t*	state;
+	File_t*	fp;
+	List_t*	lp;
 	FTS*			fts;
 	FTSENT*			ent;
 	struct passwd*		pwd;

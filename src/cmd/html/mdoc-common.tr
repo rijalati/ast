@@ -285,7 +285,7 @@
 ..
 .de Rd
 .tm MDOC REGISTER DUMP
-.tm Db==\\n(Db register DEBUG MODE
+.tm Db==\\n(Db DEBUG MODE
 .tm L[0-9] registers - stack of list types
 .tm L0==\\n(L0
 .tm L1==\\n(L1
@@ -308,17 +308,17 @@
 .tm O7==\\n(O7
 .tm O8==\\n(O8
 .tm O9==\\n(O9
-.tm aC==\\n(aC register argument counter (aV/fV)
-.tm aJ==\\n(aJ register (for vR)
+.tm aC==\\n(aC argument counter (aV/fV)
+.tm aJ==\\n(aJ (for vR)
 .tm aN==\\n(aN register
-.tm aP==\\n(aP register argument pointer (aV)
-.tm aT==\\n(aT register argument type
+.tm aP==\\n(aP argument pointer (aV)
+.tm aT==\\n(aT argument type
 .tm aa==\\n(aa local register
-.tm bK==\\n(bK register - Book Name flag
-.tm cF==\\n(cF register save current font
-.tm cI==\\n(cI register - column indent width
-.tm cZ==\\n(cZ register save current font size
-.tm dK==\\n(dK register - Date flag
+.tm bK==\\n(bK - Book Name flag
+.tm cF==\\n(cF save current font
+.tm cI==\\n(cI - column indent width
+.tm cZ==\\n(cZ save current font size
+.tm dK==\\n(dK - Date flag
 .tm d[0-9] registers - display-type stack
 .tm d0==\\n(d0
 .tm d1==\\n(d1
@@ -330,12 +330,12 @@
 .tm d7==\\n(d7
 .tm d8==\\n(d8
 .tm d9==\\n(d9
-.tm dZ==\\n(dZ register diversion count
-.tm fD==\\n(fD register subroutine test (in synopsis only)
-.tm fV==\\n(fV register argument counter (must set to \\n(.$ prior to
-.tm fY==\\n(fY register - dick with old style function declarations (fortran)
-.tm fZ==\\n(fZ register also subroutine count (in synopsis only)
-.tm h[0-9] register horizontal tag stack (continuous if 1, break if
+.tm dZ==\\n(dZ diversion count
+.tm fD==\\n(fD subroutine test (in synopsis only)
+.tm fV==\\n(fV argument counter (must set to \\n(.$ prior to
+.tm fY==\\n(fY - dick with old style function declarations (fortran)
+.tm fZ==\\n(fZ also subroutine count (in synopsis only)
+.tm h[0-9] horizontal tag stack (continuous if 1, break if
 .tm h0==\\n(h0
 .tm h1==\\n(h1
 .tm h2==\\n(h2
@@ -347,19 +347,19 @@
 .tm h8==\\n(h8
 .tm h9==\\n(h9
 .tm iD==\\n(iD local register
-.tm iI==\\n(iI local register (indent for inline debug mode)
-.tm iN==\\n(iN register DEBUG MODE (inline if 1, to stderr if
-.tm iS==\\n(iS register - indent second command line in a synopsis
-.tm jK==\\n(jK register - [reference] Journal Name flag
+.tm iI==\\n(iI local (indent for inline debug mode)
+.tm iN==\\n(iN DEBUG MODE (inline if 1, to stderr if
+.tm iS==\\n(iS - indent second command line in a synopsis
+.tm jK==\\n(jK - [reference] Journal Name flag
 .tm jM==\\n(jM local register
 .tm jN==\\n(jN local register
-.tm lC==\\n(lC register - list type stack counter
-.tm lK==\\n(lK register count of lines read from input file
-.tm nK==\\n(nK register - [reference] issue number flag
-.tm nU==\\n(nU register count
-.tm oK==\\n(oK register - [reference] optional information flag
-.tm oM==\\n(oM register (extension possible)
-.tm o[0-9] register offset stack (nested tags)
+.tm lC==\\n(lC - list type stack counter
+.tm lK==\\n(lK count of lines read from input file
+.tm nK==\\n(nK - [reference] issue number flag
+.tm nU==\\n(nU count
+.tm oK==\\n(oK - [reference] optional information flag
+.tm oM==\\n(oM (extension possible)
+.tm o[0-9] offset stack (nested tags)
 .tm o0==\\n(o0
 .tm o1==\\n(o1
 .tm o2==\\n(o2
@@ -370,17 +370,17 @@
 .tm o7==\\n(o7
 .tm o8==\\n(o8
 .tm o9==\\n(o9
-.tm oM==\\n(oM register open ended line flag
-.tm pK==\\n(pK register - [reference] page number flag
-.tm qK==\\n(qK register - Corporate or Foreign Author flag
-.tm rK==\\n(rK register - [reference] report flag
-.tm rS==\\n(rS register - Reference Start flag
-.tm sM==\\n(sM register - default is one (space mode on)
-.tm tK==\\n(tK register - reference title flag
-.tm tP==\\n(tP register tag flag (for diversions)
-.tm tX==\\n(tX register (initial class)
-.tm tY==\\n(tY register (next possible lC value)
-.tm t[0-9] register tag string stack (nested tags)
+.tm oM==\\n(oM open ended line flag
+.tm pK==\\n(pK - [reference] page number flag
+.tm qK==\\n(qK - Corporate or Foreign Author flag
+.tm rK==\\n(rK - [reference] report flag
+.tm rS==\\n(rS - Reference Start flag
+.tm sM==\\n(sM - default is one (space mode on)
+.tm tK==\\n(tK - reference title flag
+.tm tP==\\n(tP tag flag (for diversions)
+.tm tX==\\n(tX (initial class)
+.tm tY==\\n(tY (next possible lC value)
+.tm t[0-9] tag string stack (nested tags)
 .tm t0==\\n(t0
 .tm t1==\\n(t1
 .tm t2==\\n(t2
@@ -391,9 +391,9 @@
 .tm t7==\\n(t7
 .tm t8==\\n(t8
 .tm t9==\\n(t9
-.tm uK==\\n(uK register - reference author(s) counter
-.tm vK==\\n(vK register - reference volume flag
-.tm v[0-9] register vertical tag break stack
+.tm uK==\\n(uK - reference author(s) counter
+.tm vK==\\n(vK - reference volume flag
+.tm v[0-9] vertical tag break stack
 .tm v0==\\n(v0
 .tm v1==\\n(v1
 .tm v2==\\n(v2
@@ -404,7 +404,7 @@
 .tm v7==\\n(v7
 .tm v8==\\n(v8
 .tm v9==\\n(v9
-.tm w[0-9] register tag stack (nested tags)
+.tm w[0-9] tag stack (nested tags)
 .tm w0==\\n(w0
 .tm w1==\\n(w1
 .tm w2==\\n(w2

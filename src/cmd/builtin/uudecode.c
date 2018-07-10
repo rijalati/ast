@@ -63,7 +63,7 @@ USAGE_LICENSE
 static int
 optinfo(Opt_t* op, Sfio_t* sp, const char* s, Optdisc_t* dp)
 {
-	register Uumeth_t*	mp;
+	Uumeth_t*	mp;
 
 	switch (*s)
 	{
@@ -76,7 +76,7 @@ optinfo(Opt_t* op, Sfio_t* sp, const char* s, Optdisc_t* dp)
 }
 
 int
-main(int argc, register char** argv)
+main(int argc, char** argv)
 {
 	Uu_t*		uu;
 	Uumeth_t*	meth;

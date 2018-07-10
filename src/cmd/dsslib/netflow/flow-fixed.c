@@ -114,8 +114,8 @@ fixedopen(Dssfile_t* file, Dssdisc_t* disc)
 static int
 fixedread(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register State_t*	state = (State_t*)file->data;
-	register Netflow_t*	rp;
+	State_t*	state = (State_t*)file->data;
+	Netflow_t*	rp;
 
 	if (!(rp = (Netflow_t*)sfreserve(file->io, sizeof(*rp), 0)))
 	{

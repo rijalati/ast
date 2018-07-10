@@ -3198,7 +3198,7 @@ void
 Tk_PhotoPutBlock(handle, blockPtr, x, y, width, height)
     Tk_PhotoHandle handle;	/* Opaque handle for the photo image
 				 * to be updated. */
-    register Tk_PhotoImageBlock *blockPtr;
+    Tk_PhotoImageBlock *blockPtr;
 				/* Pointer to a structure describing the
 				 * pixel data to be copied into the image. */
     int x, y;			/* Coordinates of the top-left pixel to
@@ -3206,7 +3206,7 @@ Tk_PhotoPutBlock(handle, blockPtr, x, y, width, height)
     int width, height;		/* Dimensions of the area of the image
 				 * to be updated. */
 {
-    register PhotoMaster *masterPtr;
+    PhotoMaster *masterPtr;
     int xEnd, yEnd;
     int greenOffset, blueOffset;
     int wLeft, hLeft;
@@ -3342,7 +3342,7 @@ Tk_PhotoPutZoomedBlock(handle, blockPtr, x, y, width, height, zoomX, zoomY,
 	subsampleX, subsampleY)
     Tk_PhotoHandle handle;	/* Opaque handle for the photo image
 				 * to be updated. */
-    register Tk_PhotoImageBlock *blockPtr;
+    Tk_PhotoImageBlock *blockPtr;
 				/* Pointer to a structure describing the
 				 * pixel data to be copied into the image. */
     int x, y;			/* Coordinates of the top-left pixel to
@@ -3352,7 +3352,7 @@ Tk_PhotoPutZoomedBlock(handle, blockPtr, x, y, width, height, zoomX, zoomY,
     int zoomX, zoomY;		/* Zoom factors for the X and Y axes. */
     int subsampleX, subsampleY;	/* Subsampling factors for the X and Y axes. */
 {
-    register PhotoMaster *masterPtr;
+    PhotoMaster *masterPtr;
     int xEnd, yEnd;
     int greenOffset, blueOffset;
     int wLeft, hLeft;

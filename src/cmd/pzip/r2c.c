@@ -64,8 +64,8 @@ static struct State_s
 static int
 flush(Sfio_t* op)
 {
-	register Col_t*	col;
-	register size_t	n;
+	Col_t*	col;
+	size_t	n;
 
 	if ((col = state.cols) && sfstrtell(col->sp))
 	{
@@ -90,15 +90,15 @@ flush(Sfio_t* op)
 static int
 r2c(const char* file, Sfio_t* ip, Sfio_t* op)
 {
-	register char*		s;
-	register char*		e;
-	register int		d;
-	register int		q;
-	register int		t;
-	register Col_t*		col;
-	register size_t		w;
-	register size_t		n;
-	register size_t		m;
+	char*		s;
+	char*		e;
+	int		d;
+	int		q;
+	int		t;
+	Col_t*		col;
+	size_t		w;
+	size_t		n;
+	size_t		m;
 	char*			b;
 
 	w = state.cache;

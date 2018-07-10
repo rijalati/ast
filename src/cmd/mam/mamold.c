@@ -80,9 +80,9 @@ static struct state	state;
  */
 
 static void
-clrprereqs(register struct rule* r)
+clrprereqs(struct rule* r)
 {
-	register struct list*	p;
+	struct list*	p;
 
 	r->attributes &= ~A_listprereq;
 	for (p = r->prereqs; p; p = p->next)
@@ -98,10 +98,10 @@ clrprereqs(register struct rule* r)
  */
 
 static int
-dumpvalue(register int col, register char* s, int sep)
+dumpvalue(int col, char* s, int sep)
 {
-	register int	c;
-	register char*	v;
+	int	c;
+	char*	v;
 	int		dollar;
 	int		escape = 0;
 	int		quote = 0;
@@ -228,7 +228,7 @@ dumpvalue(register int col, register char* s, int sep)
 static int
 dumpname(int col, char* s)
 {
-	register int	n;
+	int	n;
 
 	if (!state.graph)
 	{
@@ -258,7 +258,7 @@ dumpname(int col, char* s)
  */
 
 static void
-dumpaction(register struct block* p)
+dumpaction(struct block* p)
 {
 	if (p)
 	{
@@ -281,10 +281,10 @@ dumpaction(register struct block* p)
  */
 
 static int
-dumpprereqs(register int col, register struct rule* r)
+dumpprereqs(int col, struct rule* r)
 {
-	register struct block*	d;
-	register struct list*	p;
+	struct block*	d;
+	struct list*	p;
 
 	if (!(r->attributes & A_listprereq))
 	{
@@ -304,10 +304,10 @@ dumpprereqs(register int col, register struct rule* r)
  */
 
 static void
-dump(register struct rule* r)
+dump(struct rule* r)
 {
-	register int		col;
-	register struct list*	p;
+	int		col;
+	struct list*	p;
 
 	if (!(r->attributes & (A_listtarg|A_metarule)))
 	{
@@ -347,9 +347,9 @@ dumpvar(const char* an, char* av, void* handle)
 {
 	char*		name = (char*)an;
 	struct var*	v = (struct var*)av;
-	register char*	s;
-	register char*	t;
-	register int	c;
+	char*	s;
+	char*	t;
+	int	c;
 
 	NoP(handle);
 	if (*v->value)
@@ -391,7 +391,7 @@ omit(char* prefix)
 int
 main(int argc, char** argv)
 {
-	register struct list*	p;
+	struct list*	p;
 
 	NoP(argc);
 	error_info.id = "mamold";

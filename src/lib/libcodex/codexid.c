@@ -29,7 +29,7 @@
 Codexmeth_t*
 codexid(const void* head, size_t headsize, char* name, size_t namesize)
 {
-	register Codexmeth_t*	meth;
+	Codexmeth_t*	meth;
 
 	for (meth = codexlist(NiL); meth; meth = codexlist(meth))
 		if (meth->identf && (*meth->identf)(meth, head, headsize, name, namesize))

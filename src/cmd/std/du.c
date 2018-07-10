@@ -114,10 +114,10 @@ mark(Dt_t* dict, Hit_t* key, FTSENT* ent)
 }
 
 int
-main(int argc, register char** argv)
+main(int argc, char** argv)
 {
-	register FTS*		fts;
-	register FTSENT*	ent;
+	FTS*		fts;
+	FTSENT*	ent;
 	char*			s;
 	char*			d;
 	Dt_t*			dict;

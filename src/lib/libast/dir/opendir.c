@@ -46,10 +46,10 @@ static const char id_dir[] = "\n@(#)$Id: directory (AT&T Research) 1993-04-01 $\
 static DIR*	freedirp;		/* always keep one dirp */
 
 DIR*
-opendir(register const char* path)
+opendir(const char* path)
 {
-	register DIR*	dirp = 0;
-	register int	fd;
+	DIR*	dirp = 0;
+	int	fd;
 	struct stat	st;
 
 	if ((fd = open(path, O_RDONLY|O_cloexec)) < 0) return(0);
@@ -84,7 +84,7 @@ opendir(register const char* path)
 }
 
 void
-closedir(register DIR* dirp)
+closedir(DIR* dirp)
 {
 	if (dirp)
 	{

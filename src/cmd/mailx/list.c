@@ -126,10 +126,10 @@ sender(char* name, int mesg)
 static int
 matchto(char* name, int mesg)
 {
-	register struct msg*	mp;
-	register char*			s;
-	register char*			t;
-	register char*			b;
+	struct msg*	mp;
+	char*			s;
+	char*			t;
+	char*			b;
 	int				i;
 
 	static const int		fields[] = { GTO, GCC, GBCC };
@@ -165,10 +165,10 @@ matchto(char* name, int mesg)
 static int
 matchfield(char* str, int mesg)
 {
-	register struct msg*	mp;
-	register char*			s;
-	register char*			t;
-	register char*			b;
+	struct msg*	mp;
+	char*			s;
+	char*			t;
+	char*			b;
 
 	if (!*str)
 		str = state.last.scan;
@@ -209,9 +209,9 @@ matchfield(char* str, int mesg)
  * See if the passed name sent the passed message number.
  */
 static int
-matchsender(register char* s, int mesg)
+matchsender(char* s, int mesg)
 {
-	register char*	t;
+	char*	t;
 
 	if (*s && (t = grab(state.msg.list + mesg - 1, GREPLY|GCOMPARE, NiL)))
 		do {
@@ -227,9 +227,9 @@ matchsender(register char* s, int mesg)
 static int
 metamess(int meta, int f)
 {
-	register int		c;
-	register int		m;
-	register struct msg*	mp;
+	int		c;
+	int		m;
+	struct msg*	mp;
 
 	c = meta;
 	switch (c) {
@@ -299,7 +299,7 @@ scaninit(void)
 static void
 unmark(int mesg)
 {
-	register int	i;
+	int	i;
 
 	i = mesg;
 	if (i < 1 || i > state.msg.count)
@@ -313,9 +313,9 @@ unmark(int mesg)
 static int
 evalcol(char* s)
 {
-	register int		c;
-	register int		neg;
-	register struct coltab*	colp;
+	int		c;
+	int		neg;
+	struct coltab*	colp;
 
 	if (neg = *s == '!')
 		s++;
@@ -332,7 +332,7 @@ evalcol(char* s)
  * Mark the named message by setting its mark bit.
  */
 static void
-markone(register int i)
+markone(int i)
 {
 	if (i < 1 || i > state.msg.count)
 		note(PANIC, "Bad message number to mark");
@@ -348,9 +348,9 @@ markone(register int i)
 static int
 markall(char* buf, int f)
 {
-	register char**		np;
-	register int		i;
-	register struct msg*	mp;
+	char**		np;
+	int		i;
+	struct msg*	mp;
 	char*			bufp;
 	int			beg;
 	int			colmod;
@@ -560,7 +560,7 @@ markall(char* buf, int f)
 
 	if (colmod) {
 		for (i = 1; i <= state.msg.count; i++) {
-			register struct coltab*	colp;
+			struct coltab*	colp;
 
 			mp = state.msg.list + i - 1;
 			for (colp = &coltab[0]; colp->co_char; colp++)
@@ -572,7 +572,7 @@ markall(char* buf, int f)
 			if (mp->m_flag & MMARK)
 				break;
 		if (mp >= state.msg.list + state.msg.count) {
-			register struct coltab*	colp;
+			struct coltab*	colp;
 
 			printf("No messages satisfy");
 			for (colp = &coltab[0]; colp->co_char; colp++)
@@ -594,10 +594,10 @@ markall(char* buf, int f)
  * Returns the count of messages picked up or -1 on error.
  */
 int
-getmsglist(register char* buf, unsigned long flags)
+getmsglist(char* buf, unsigned long flags)
 {
-	register struct msg*	ip;
-	register struct msg*	mp;
+	struct msg*	ip;
+	struct msg*	mp;
 
 	if (!(ip = state.msg.list) || !state.msg.count) {
 		if (ip) {
@@ -631,7 +631,7 @@ getmsglist(register char* buf, unsigned long flags)
 int
 check(int mesg, int f)
 {
-	register struct msg*	mp;
+	struct msg*	mp;
 
 	if (mesg < 1 || mesg > state.msg.count) {
 		note(0, "%d: invalid message number", mesg);
@@ -650,7 +650,7 @@ check(int mesg, int f)
  * 0 returned on success
  */
 int
-addarg(register struct argvec* vp, const char* s)
+addarg(struct argvec* vp, const char* s)
 {
 	if (vp->argp >= &vp->argv[elementsof(vp->argv) - 1]) {
 		note(0, "Too many arguments; excess discarded");
@@ -665,12 +665,12 @@ addarg(register struct argvec* vp, const char* s)
  * and append to the vector.
  */
 void
-getargs(register struct argvec* vp, register char* s)
+getargs(struct argvec* vp, char* s)
 {
-	register char*	t;
+	char*	t;
 	char*		e;
-	register int	c;
-	register int	quote;
+	int	c;
+	int	quote;
 	int		n;
 	char*		pop;
 	FILE*		fp;
@@ -792,10 +792,10 @@ struct lex {
 int
 scan(char** sp)
 {
-	register char*		cp;
-	register char*		cp2;
-	register int		c;
-	register struct lex*	lp;
+	char*		cp;
+	char*		cp2;
+	int		c;
+	struct lex*	lp;
 	int			quotec;
 
 	if (state.regretp >= 0) {
@@ -895,7 +895,7 @@ scan(char** sp)
 int
 first(int f, int m)
 {
-	register struct msg*	mp;
+	struct msg*	mp;
 
 	if (!state.msg.count)
 		return 0;

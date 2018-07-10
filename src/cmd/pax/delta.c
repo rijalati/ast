@@ -36,9 +36,9 @@
 static void
 getdeltaops(Archive_t* ap, File_t* f)
 {
-	register char*	s;
-	register char*	e;
-	register int	n;
+	char*	s;
+	char*	e;
+	int	n;
 	char		c;
 
 	if (state.delta2delta || (ap->format->flags & DELTAINFO))
@@ -91,9 +91,9 @@ getdeltaops(Archive_t* ap, File_t* f)
  */
 
 void
-getdeltaheader(register Archive_t* ap, register File_t* f)
+getdeltaheader(Archive_t* ap, File_t* f)
 {
-	register char*	s;
+	char*	s;
 	int		n;
 	unsigned long	sum;
 	Sfio_t*		sp;
@@ -156,7 +156,7 @@ getdeltaheader(register Archive_t* ap, register File_t* f)
  */
 
 void
-getdeltatrailer(register Archive_t* ap, register File_t* f)
+getdeltatrailer(Archive_t* ap, File_t* f)
 {
 	long		n;
 	unsigned long	x;
@@ -196,10 +196,10 @@ getdeltatrailer(register Archive_t* ap, register File_t* f)
  */
 
 void
-setdeltaheader(register Archive_t* ap, register File_t* f)
+setdeltaheader(Archive_t* ap, File_t* f)
 {
-	register char*	s;
-	register int	n;
+	char*	s;
+	int	n;
 
 	if (f->delta.op && ap->delta)
 	{
@@ -248,7 +248,7 @@ setdeltaheader(register Archive_t* ap, register File_t* f)
  */
 
 void
-putdeltaheader(register Archive_t* ap, register File_t* f)
+putdeltaheader(Archive_t* ap, File_t* f)
 {
 	int	n;
 
@@ -266,10 +266,10 @@ putdeltaheader(register Archive_t* ap, register File_t* f)
  */
 
 void
-putdeltatrailer(register Archive_t* ap, register File_t* f)
+putdeltatrailer(Archive_t* ap, File_t* f)
 {
-	register char*	s;
-	register int	n;
+	char*	s;
+	int	n;
 
 	if (f->delta.op && ap->delta)
 	{
@@ -304,9 +304,9 @@ initdelta(Archive_t* ap, Format_t* dp)
  */
 
 void
-deltabase(register Archive_t* ap)
+deltabase(Archive_t* ap)
 {
-	register Archive_t*	bp;
+	Archive_t*	bp;
 	Format_t*		fp;
 	struct stat		st;
 
@@ -365,10 +365,10 @@ deltabase(register Archive_t* ap)
 void
 deltaverify(Archive_t* ap)
 {
-	register int		wfd;
-	register Member_t*	d;
-	register off_t		c;
-	register off_t		n;
+	int		wfd;
+	Member_t*	d;
+	off_t		c;
+	off_t		n;
 	Hash_position_t*	pos;
 
 	if (!state.delta.update && !state.list && ap->delta && ap->delta->base != ap && (pos = hashscan(ap->delta->tab, 0)))
@@ -420,10 +420,10 @@ deltaverify(Archive_t* ap)
  */
 
 static void
-deltaprefix(Archive_t* ip, Archive_t* op, register Member_t* d)
+deltaprefix(Archive_t* ip, Archive_t* op, Member_t* d)
 {
-	register char*		s;
-	register Member_t*	m;
+	char*		s;
+	Member_t*	m;
 
 	d->mark = 1;
 	if (s = strrchr(d->info->path, '/'))
@@ -449,9 +449,9 @@ deltaprefix(Archive_t* ip, Archive_t* op, register Member_t* d)
  */
 
 void
-deltaout(Archive_t* ip, Archive_t* op, register File_t* f)
+deltaout(Archive_t* ip, Archive_t* op, File_t* f)
 {
-	register Member_t*	d;
+	Member_t*	d;
 	int			dfd;
 	int			skip;
 
@@ -511,7 +511,7 @@ deltaout(Archive_t* ip, Archive_t* op, register File_t* f)
 	}
 	if (!d || !f->delta.same && d->mtime.tv_sec != f->st->st_mtime)
 	{
-		register char*	s;
+		char*	s;
 
 		if (ip && ip->delta && ip->delta->tab && f->name && (s = strrchr(f->name, '/')))
 		{
@@ -533,7 +533,7 @@ deltaout(Archive_t* ip, Archive_t* op, register File_t* f)
  */
 
 static void
-deltacopy(Archive_t* ip, Archive_t* op, register File_t* f)
+deltacopy(Archive_t* ip, Archive_t* op, File_t* f)
 {
 	if (f->delta.base)
 	{
@@ -562,10 +562,10 @@ deltacopy(Archive_t* ip, Archive_t* op, register File_t* f)
  */
 
 void
-deltadelete(register Archive_t* ap)
+deltadelete(Archive_t* ap)
 {
-	register File_t*	f;
-	register Member_t*	d;
+	File_t*	f;
+	Member_t*	d;
 	Hash_position_t*	pos;
 
 	if (!state.ordered && ap->delta && ap->delta->tab)
@@ -611,9 +611,9 @@ deltadelete(register Archive_t* ap)
 void
 deltapass(Archive_t* ip, Archive_t* op)
 {
-	register File_t*	f;
-	register off_t		c;
-	register ssize_t	n;
+	File_t*	f;
+	off_t		c;
+	ssize_t	n;
 	Member_t*		d;
 	Member_t*		h;
 	char*			p;
@@ -821,7 +821,7 @@ deltapass(Archive_t* ip, Archive_t* op)
  */
 
 void
-deltaset(register Archive_t* ap, char* s)
+deltaset(Archive_t* ap, char* s)
 {
 	Format_t*	dp;
 	char*		t;
@@ -869,11 +869,11 @@ deltaset(register Archive_t* ap, char* s)
  */
 
 int
-deltacheck(register Archive_t* ap, register File_t* f)
+deltacheck(Archive_t* ap, File_t* f)
 {
-	register char*		s;
-	register Archive_t*	bp;
-	register char*		t;
+	char*		s;
+	Archive_t*	bp;
+	char*		t;
 	off_t			size;
 	unsigned long		checksum;
 
@@ -977,8 +977,8 @@ typedef struct
 static int
 delread(void* buf, int n, Vdoff_t off, Vddisc_t* vd)
 {
-	register Vdio_t*	dp = (Vdio_t*)vd;
-	register Vdoff_t	diff;
+	Vdio_t*	dp = (Vdio_t*)vd;
+	Vdoff_t	diff;
 
 	message((-6, "delread: op=%o buf=%p n=%d off=%I*d nxt=%I*d", dp->op, buf, n, sizeof(off), off, sizeof(dp->offset), dp->offset));
 	if (diff = off - dp->offset)
@@ -1019,7 +1019,7 @@ delread(void* buf, int n, Vdoff_t off, Vddisc_t* vd)
 static int
 delwrite(void* buf, int n, Vdoff_t off, Vddisc_t* vd)
 {
-	register Vdio_t*	dp = (Vdio_t*)vd;
+	Vdio_t*	dp = (Vdio_t*)vd;
 	Buffer_t*		bp;
 	ssize_t			k;
 
@@ -1055,7 +1055,7 @@ delwrite(void* buf, int n, Vdoff_t off, Vddisc_t* vd)
 int
 paxdelta(Archive_t* ip, Archive_t* ap, File_t* f, int op, ...)
 {
-	register Vdio_t*	dp;
+	Vdio_t*	dp;
 	va_list			vp;
 	ssize_t			n;
 	int			bufferclash = 0;

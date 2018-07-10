@@ -47,9 +47,9 @@ typedef struct Ar_s
 } Ar_t;
 
 static int
-arj_done(Pax_t* pax, register Paxarchive_t* ap)
+arj_done(Pax_t* pax, Paxarchive_t* ap)
 {
-	register Ar_t*	ar = (Ar_t*)ap->data;
+	Ar_t*	ar = (Ar_t*)ap->data;
 
 	if (!ar)
 		return -1;
@@ -61,10 +61,10 @@ arj_done(Pax_t* pax, register Paxarchive_t* ap)
 }
 
 static int
-arj_getprologue(Pax_t* pax, Paxformat_t* fp, register Paxarchive_t* ap, Paxfile_t* f, unsigned char* buf, size_t size)
+arj_getprologue(Pax_t* pax, Paxformat_t* fp, Paxarchive_t* ap, Paxfile_t* f, unsigned char* buf, size_t size)
 {
-	register Ar_t*	ar;
-	register char*	s;
+	Ar_t*	ar;
+	char*	s;
 	int		n;
 	int		r;
 	uint32_t	checksum;
@@ -104,10 +104,10 @@ arj_getprologue(Pax_t* pax, Paxformat_t* fp, register Paxarchive_t* ap, Paxfile_
 }
 
 static int
-arj_getheader(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f)
+arj_getheader(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f)
 {
-	register Ar_t*		ar = (Ar_t*)ap->data;
-	register unsigned char*	buf;
+	Ar_t*		ar = (Ar_t*)ap->data;
+	unsigned char*	buf;
 	char*			s;
 	Tm_t			tm;
 	unsigned long		dostime;
@@ -191,9 +191,9 @@ arj_getheader(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f)
 }
 
 static int
-arj_getdata(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f, int fd)
+arj_getdata(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f, int fd)
 {
-	register Ar_t*	ar = (Ar_t*)ap->data;
+	Ar_t*	ar = (Ar_t*)ap->data;
 	Sfio_t*		sp;
 	off_t		pos;
 	ssize_t		n;

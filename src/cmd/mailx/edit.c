@@ -80,8 +80,8 @@
 static int
 edit1(struct msg* msgvec, int type)
 {
-	register struct msg*	ip;
-	register struct msg*	mp;
+	struct msg*	ip;
+	struct msg*	mp;
 	FILE*			fp;
 	off_t			size;
 	sig_t			sigint;
@@ -148,7 +148,7 @@ visual(struct msg* msgvec)
  * "Type" is 'e' for state.var.editor, 'v' for state.var.visual.
  */
 FILE*
-run_editor(register FILE* fp, off_t size, struct header* hp, int type, int readonly)
+run_editor(FILE* fp, off_t size, struct header* hp, int type, int readonly)
 {
 	FILE*		ep;
 	time_t		modtime;

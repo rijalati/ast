@@ -88,18 +88,18 @@ static void		GCInit _ANSI_ARGS_((void));
 GC
 Tk_GetGC(tkwin, valueMask, valuePtr)
     Tk_Window tkwin;		/* Window in which GC will be used. */
-    register unsigned long valueMask;
+    unsigned long valueMask;
 				/* 1 bits correspond to values specified
 				 * in *valuesPtr;  other values are set
 				 * from defaults. */
-    register XGCValues *valuePtr;
+    XGCValues *valuePtr;
 				/* Values are specified here for bits set
 				 * in valueMask. */
 {
     ValueKey valueKey;
     IdKey idKey;
     Tcl_HashEntry *valueHashPtr, *idHashPtr;
-    register TkGC *gcPtr;
+    TkGC *gcPtr;
     int new;
     Drawable d, freeDrawable;
 
@@ -314,7 +314,7 @@ Tk_FreeGC(display, gc)
 {
     IdKey idKey;
     Tcl_HashEntry *idHashPtr;
-    register TkGC *gcPtr;
+    TkGC *gcPtr;
 
     if (!initialized) {
 	panic("Tk_FreeGC called before Tk_GetGC");

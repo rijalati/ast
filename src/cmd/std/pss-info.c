@@ -49,7 +49,7 @@ typedef struct State_s
 static int
 info_init(Pss_t* pss)
 {
-	register State_t*	state;
+	State_t*	state;
 	char*			mem;
 	int			fd;
 	unsigned long		n;
@@ -96,7 +96,7 @@ info_init(Pss_t* pss)
 static int
 info_read(Pss_t* pss, Pss_id_t pid)
 {
-	register State_t*	state = (State_t*)pss->data;
+	State_t*	state = (State_t*)pss->data;
 	int			count;
 
 	if (pid)
@@ -116,10 +116,10 @@ info_read(Pss_t* pss, Pss_id_t pid)
 }
 
 static int
-info_part(register Pss_t* pss, register Pssent_t* pe)
+info_part(Pss_t* pss, Pssent_t* pe)
 {
 	State_t*		state = (State_t*)pss->data;
-	register struct pentry*	pr = state->pr;
+	struct pentry*	pr = state->pr;
 
 	pe->pid = pr->pid;
 	pe->pgrp = pr->pgroup;
@@ -139,10 +139,10 @@ info_part(register Pss_t* pss, register Pssent_t* pe)
 }
 
 static int
-info_full(register Pss_t* pss, register Pssent_t* pe)
+info_full(Pss_t* pss, Pssent_t* pe)
 {
-	register State_t*	state = (State_t*)pss->data;
-	register struct pentry*	pr = state->pr;
+	State_t*	state = (State_t*)pss->data;
+	struct pentry*	pr = state->pr;
 	unsigned long		fields = pss->disc->fields & pss->meth->fields;
 	char*			s;
 	int			i;
@@ -177,9 +177,9 @@ info_full(register Pss_t* pss, register Pssent_t* pe)
 }
 
 static int
-info_done(register Pss_t* pss)
+info_done(Pss_t* pss)
 {
-	register State_t*	state = (State_t*)pss->data;
+	State_t*	state = (State_t*)pss->data;
 
 	close(state->mem);
 	free(state);

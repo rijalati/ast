@@ -316,7 +316,7 @@ Tk_ClipboardClear(interp, tkwin)
  * 	The specified buffer will be copied onto the end of the clipboard.
  *	The clipboard maintains a list of buffers which will be used to
  *	supply the data for a selection get request.  The first time a given
- *	type is appended, Tk_ClipboardAppend will register a selection
+ *	type is appended, Tk_ClipboardAppend will a selection
  * 	handler of the appropriate type.
  *
  *----------------------------------------------------------------------
@@ -558,7 +558,7 @@ int
 TkClipInit(interp, dispPtr)
     Tcl_Interp *interp;		/* Interpreter to use for error
 				 * reporting. */
-    register TkDisplay *dispPtr;/* Display to initialize. */
+    TkDisplay *dispPtr;/* Display to initialize. */
 {
     XSetWindowAttributes atts;
 

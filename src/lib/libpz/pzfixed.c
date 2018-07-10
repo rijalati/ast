@@ -42,12 +42,12 @@ typedef struct
  */
 
 ssize_t
-pzfixed(Pz_t* pz, register Sfio_t* io, void* buf, size_t z)
+pzfixed(Pz_t* pz, Sfio_t* io, void* buf, size_t z)
 {
-	register unsigned char*		s;
-	register Fixed_t*		xp;
-	register unsigned int*		cp;
-	register unsigned int		i;
+	unsigned char*		s;
+	Fixed_t*		xp;
+	unsigned int*		cp;
+	unsigned int		i;
 	unsigned char*			t;
 	unsigned int			j;
 	unsigned int			k;

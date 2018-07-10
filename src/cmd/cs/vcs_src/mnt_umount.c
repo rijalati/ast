@@ -30,10 +30,10 @@ int im_umount_help(s)
 
 int im_umount(argc, argv)
 	int		argc;
-	register char**	argv;
+	char**	argv;
 {
 	int		n;
-	register char*	s;
+	char*	s;
 	int		fd;
 	char		buf[1024];
 	char		reply[1024];

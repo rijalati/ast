@@ -26,11 +26,11 @@
  */
 
 int
-pzsync(register Pz_t* pz)
+pzsync(Pz_t* pz)
 {
-	register unsigned char*	buf;
-	register size_t		i;
-	register size_t		j;
+	unsigned char*	buf;
+	size_t		i;
+	size_t		j;
 	size_t			n;
 	size_t			m;
 	Pzpart_t*		pp;

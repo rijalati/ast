@@ -29,14 +29,14 @@
  */
 
 ssize_t
-pzwrite(register Pz_t* pz, Sfio_t* op, const void* buf, size_t n)
+pzwrite(Pz_t* pz, Sfio_t* op, const void* buf, size_t n)
 {
-	register int		i;
-	register int		j;
-	register unsigned char*	bp;
-	register Pzpart_t*	pp;
-	register unsigned char*	pat;
-	register unsigned char*	low;
+	int		i;
+	int		j;
+	unsigned char*	bp;
+	Pzpart_t*	pp;
+	unsigned char*	pat;
+	unsigned char*	low;
 	Pzelt_t*		elt;
 	unsigned char*		be;
 	size_t			k;

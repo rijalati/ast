@@ -186,10 +186,10 @@ static Local_t*		freelocals;
 void
 unparse(int level)
 {
-	register Local_t*	lcl;
-	register Local_t*	olcl;
-	register Control_t*	cp;
-	register Rule_t*	r;
+	Local_t*	lcl;
+	Local_t*	olcl;
+	Control_t*	cp;
+	Rule_t*	r;
 
 	if (pp >= &parsestack[elementsof(parsestack)])
 		pp = &parsestack[elementsof(parsestack) - 1];
@@ -246,10 +246,10 @@ unparse(int level)
 static void
 declare(char* t, int line, long flags)
 {
-	register Var_t*		v;
-	register Local_t*	p;
-	register char*		s;
-	register char*		d;
+	Var_t*		v;
+	Local_t*	p;
+	char*		s;
+	char*		d;
 
 	if (d = strchr(t, '='))
 		*d = 0;
@@ -319,8 +319,8 @@ declare(char* t, int line, long flags)
 static void
 local(Sfio_t* xp, char* v)
 {
-	register char*	t;
-	register char*	a;
+	char*	t;
+	char*	a;
 	long		top;
 	int		argn;
 	Control_t*	cp;
@@ -437,8 +437,8 @@ argcount(void)
 static int
 iterate(void)
 {
-	register char*		p;
-	register Var_t*		v = pp->cp->loop.f.var;
+	char*		p;
+	Var_t*		v = pp->cp->loop.f.var;
 
 	if (!(p = *pp->cp->loop.f.args++))
 		return 0;
@@ -468,10 +468,10 @@ iterate(void)
  */
 
 static void
-directive(register char* s)
+directive(char* s)
 {
-	register char*	t;
-	register int	n;
+	char*	t;
+	int	n;
 	Rule_t*		r;
 	Stat_t		st;
 
@@ -544,12 +544,12 @@ directive(register char* s)
 static char*
 readline(int lead)
 {
-	register char*	s;
-	register char*	t;
-	register char*	f;
-	register int	c;
-	register int	n;
-	register int	q;
+	char*	s;
+	char*	t;
+	char*	f;
+	int	c;
+	int	n;
+	int	q;
 	Rule_t*		r;
 	int		start;
 	int		here;
@@ -903,10 +903,10 @@ readline(int lead)
 static int
 getline(Sfio_t* sp, int lead, int term)
 {
-	register int	c;
-	register char*	s;
-	register char*	t;
-	register int	indent;
+	int	c;
+	char*	s;
+	char*	t;
+	int	indent;
 	Time_t		tm;
 	long		n;
 	int		i;
@@ -1539,9 +1539,9 @@ getline(Sfio_t* sp, int lead, int term)
 static int
 statement(Sfio_t* sp, char** lhs, Rule_t** opr, char** rhs, char** act)
 {
-	register int	c;
-	register char*	s;
-	register char*	t;
+	int	c;
+	char*	s;
+	char*	t;
 	char*		b;
 	char*		p;
 	char*		brace = 0;
@@ -2064,10 +2064,10 @@ fds(int details)
 static void
 assertion(char* lhs, Rule_t* opr, char* rhs, char* act, int op)
 {
-	register char*		s;
-	register Rule_t*	r;
-	register List_t*	p;
-	register List_t*	q;
+	char*		s;
+	Rule_t*	r;
+	List_t*	p;
+	List_t*	q;
 	int			c;
 	int			i;
 	int			n;
@@ -2771,9 +2771,9 @@ assertion(char* lhs, Rule_t* opr, char* rhs, char* act, int op)
 static void
 assignment(char* lhs, int op, char* rhs)
 {
-	register Rule_t*	r;
-	register char*		s;
-	register int		n;
+	Rule_t*	r;
+	char*		s;
+	int		n;
 	Var_t*			v;
 
 	if (internal.assign_p->prereqs && (r = associate(internal.assign_p, NiL, lhs, NiL)) && r->prereqs && (r = r->prereqs->rule) && (r->property & P_operator) && !r->uname)
@@ -2825,8 +2825,8 @@ assignment(char* lhs, int op, char* rhs)
 void
 rules(char* s)
 {
-	register char*	t;
-	register char*	e;
+	char*	t;
+	char*	e;
 
 	if (e = strchr(s, '\n'))
 		*e = 0;
@@ -2859,7 +2859,7 @@ rules(char* s)
 void*
 pushlocal(void)
 {
-	register Local_t*	p;
+	Local_t*	p;
 
 	PUSHLOCAL(p);
 	return (void*)pp->local;
@@ -2873,8 +2873,8 @@ pushlocal(void)
 void
 poplocal(void* pos)
 {
-	register Local_t*	p;
-	register Local_t*	t;
+	Local_t*	p;
+	Local_t*	t;
 
 	p = (Local_t*)pos;
 	while (pp->local != p)
@@ -2898,8 +2898,8 @@ static long	makeexpr(const char*, char**, void*);
 static char*
 nextarg(char* s, char** p, char** end, long* val)
 {
-	register char*	arg;
-	register int	c;
+	char*	arg;
+	int	c;
 	char*		var;
 	char*		varend;
 	char		buf[10];
@@ -3126,11 +3126,11 @@ makeexpr(const char* cs, char** p, void* handle)
  */
 
 long
-expr(Sfio_t* xp, register char* s)
+expr(Sfio_t* xp, char* s)
 {
-	register char*	t;
-	register int	p;
-	register char**	v;
+	char*	t;
+	int	p;
+	char**	v;
 	int		c;
 	long		top;
 	char*		restore[PARSEDEPTH];
@@ -3242,8 +3242,8 @@ interpreter(char* msg)
 int
 parse(Sfio_t* fp, char* bp, char* name, Sfio_t* scoped)
 {
-	register int		op;
-	register Local_t*	lcl;
+	int		op;
+	Local_t*	lcl;
 	char*			lhs;
 	char*			rhs;
 	char*			act;
@@ -3463,7 +3463,7 @@ parse(Sfio_t* fp, char* bp, char* name, Sfio_t* scoped)
 char*
 parsefile(void)
 {
-	register Parseinfo_t*	pi;
+	Parseinfo_t*	pi;
 
 	if (state.loading)
 		return state.loading;

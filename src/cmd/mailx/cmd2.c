@@ -82,10 +82,10 @@
 int
 next(struct msg* msgvec)
 {
-	register struct msg*	mp;
-	register struct msg*	ip;
-	register struct msg*	ip2;
-	register int		skip;
+	struct msg*	mp;
+	struct msg*	ip;
+	struct msg*	ip2;
+	int		skip;
 	int			mdot;
 
 	skip = MDELETE|MNONE;
@@ -172,8 +172,8 @@ next(struct msg* msgvec)
 char*
 snarf(char* line, int* flag)
 {
-	register char*	s;
-	register int	quote;
+	char*	s;
+	int	quote;
 
 	if (!*line) {
 		*flag = 0;
@@ -234,8 +234,8 @@ snarf(char* line, int* flag)
 static int
 save1(char* str, Dt_t** ignore, unsigned long flags)
 {
-	register struct msg*	ip;
-	register struct msg*	mp;
+	struct msg*	ip;
+	struct msg*	mp;
 	char*			file;
 	char*			disp;
 	char*			temp;
@@ -400,8 +400,8 @@ cmdwrite(char* str)
 static int
 delm(struct msg* msgvec)
 {
-	register struct msg*	mp;
-	register struct msg*	ip;
+	struct msg*	mp;
+	struct msg*	ip;
 	int			last;
 
 	last = 0;
@@ -469,8 +469,8 @@ deltype(struct msg* msgvec)
 int
 undelete(struct msg* msgvec)
 {
-	register struct msg*	mp;
-	register struct msg*	ip;
+	struct msg*	mp;
+	struct msg*	ip;
 
 	for (ip = msgvec; ip->m_index; ip++) {
 		mp = state.msg.list + ip->m_index - 1;
@@ -501,8 +501,8 @@ ignoreshow(Dt_t* dt, void* object, void* context)
 static int
 ignore1(Dt_t** ignore, char** list, unsigned long flags)
 {
-	register char**		ap;
-	register struct name*	tp;
+	char**		ap;
+	struct name*	tp;
 
 	if (*list) {
 		for (ap = list; *ap; ap++)
@@ -597,10 +597,10 @@ map(char* str)
  * Get an attachment from ap in the current message.
  */
 static int
-getatt(register struct part* ap, register char* name, unsigned long flags, off_t* lines, off_t* chars)
+getatt(struct part* ap, char* name, unsigned long flags, off_t* lines, off_t* chars)
 {
-	register char*	s;
-	register int	n;
+	char*	s;
+	int	n;
 	char*		cmd;
 	off_t		lc;
 	off_t		cc;
@@ -691,9 +691,9 @@ getatt(register struct part* ap, register char* name, unsigned long flags, off_t
 static int
 get1(char** argv, unsigned long flags)
 {
-	register struct part*	ap;
-	register int		i;
-	register char*		s;
+	struct part*	ap;
+	int		i;
+	char*		s;
 	char*			name;
 	char*			a;
 	char*			e;
@@ -812,9 +812,9 @@ Get(char** argv)
 static int
 split1(char* str, Dt_t** ignore, long num, char* dir, int verbose, int flag)
 {
-	register struct msg*	mp;
-	register struct msg*	ip;
-	register struct part*	ap;
+	struct msg*	mp;
+	struct msg*	ip;
+	struct part*	ap;
 	off_t			lc;
 	off_t			cc;
 	FILE*			fp;

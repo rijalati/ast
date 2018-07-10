@@ -70,10 +70,10 @@ static Attribute_t	attributes[] =
  */
 
 Cxtype_t*
-cxattr(Cx_t* cx, register const char* s, char** p, Cxformat_t* f, Cxdisc_t* disc)
+cxattr(Cx_t* cx, const char* s, char** p, Cxformat_t* f, Cxdisc_t* disc)
 {
-	register Attribute_t*	a;
-	register const char*	t;
+	Attribute_t*	a;
+	const char*	t;
 	char*			e;
 	const char*		b;
 	Cxtype_t*		type;

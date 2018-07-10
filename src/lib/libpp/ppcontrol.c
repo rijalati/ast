@@ -56,10 +56,10 @@ struct map
 static void
 assert(int op, char* pred, char* args)
 {
-	register struct pplist*		a;
-	register struct ppsymbol*	sym;
-	register struct pplist*		p;
-	register struct pplist*		q;
+	struct pplist*		a;
+	struct ppsymbol*	sym;
+	struct pplist*		p;
+	struct pplist*		q;
 
 	if (!args) switch (op)
 	{
@@ -121,10 +121,10 @@ assert(int op, char* pred, char* args)
  */
 
 static void
-tokop(int op, char* name, register char* s, register int n, int flags)
+tokop(int op, char* name, char* s, int n, int flags)
 {
-	register int	c;
-	register char*	t;
+	int	c;
+	char*	t;
 
 	if (!(flags & TOKOP_UNSET) && !n) error(2, "%s: option cannot be unset", name);
 	else if (!s) ppop(op, s, n);
@@ -159,7 +159,7 @@ tokop(int op, char* name, register char* s, register int n, int flags)
 static struct ppsymbol*
 macsym(int tok)
 {
-	register struct ppsymbol*	sym;
+	struct ppsymbol*	sym;
 
 	if (tok != T_ID)
 	{
@@ -186,10 +186,10 @@ macsym(int tok)
  */
 
 static char*
-getline(register char* p, char* x, int disable)
+getline(char* p, char* x, int disable)
 {
-	register int	c;
-	register char*	s;
+	int	c;
+	char*	s;
 	char*		b;
 	long		restore;
 
@@ -253,12 +253,12 @@ regfatal(regex_t* p, int level, int code)
 int
 ppcontrol(void)
 {
-	register char*			p;
-	register int			c;
-	register int			n;
-	register char*			s;
-	register struct ppmacro*	mac;
-	register struct ppsymbol*	sym;
+	char*			p;
+	int			c;
+	int			n;
+	char*			s;
+	struct ppmacro*	mac;
+	struct ppsymbol*	sym;
 	struct edit*			edit;
 	struct map*			map;
 	struct ppfile*			fp;
@@ -2291,7 +2291,7 @@ ppcontrol(void)
 void
 ppnest(void)
 {
-	register struct ppinstk*	ip;
+	struct ppinstk*	ip;
 	int				oz;
 	int				nz;
 	long				adjust;

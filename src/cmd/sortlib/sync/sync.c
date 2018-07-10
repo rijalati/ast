@@ -111,14 +111,14 @@ typedef struct State_s
 static void
 junk(State_t* state, Rsobj_t* r)
 {
-	register size_t		i;
-	register size_t		k;
-	register size_t		n;
-	register unsigned char*	b;
-	register unsigned char*	s;
-	register unsigned char*	t;
-	register Ssfield_t*	f;
-	register Sfulong_t*	z;
+	size_t		i;
+	size_t		k;
+	size_t		n;
+	unsigned char*	b;
+	unsigned char*	s;
+	unsigned char*	t;
+	Ssfield_t*	f;
+	Sfulong_t*	z;
 
 	n = state->junksize;
 	z = state->junkcount;

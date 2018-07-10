@@ -47,10 +47,10 @@ convert(Archive_t* ap, int section, int from, int to)
  */
 
 char*
-strlower(register char* s)
+strlower(char* s)
 {
-	register int	c;
-	register char*	t;
+	int	c;
+	char*	t;
 
 	for (t = s; c = *t; t++)
 		if (isupper(c))
@@ -63,10 +63,10 @@ strlower(register char* s)
  */
 
 char*
-strupper(register char* s)
+strupper(char* s)
 {
-	register int	c;
-	register char*	t;
+	int	c;
+	char*	t;
 
 	for (t = s; c = *t; t++)
 		if (islower(c))
@@ -81,9 +81,9 @@ strupper(register char* s)
 int
 portable(Archive_t* ap, const char* s)
 {
-	register unsigned char*	u = (unsigned char*)s;
-	register unsigned char*	m;
-	register int		c;
+	unsigned char*	u = (unsigned char*)s;
+	unsigned char*	m;
+	int		c;
 
 	if (!ap->convert[SECTION_CONTROL].on)
 	{
@@ -112,10 +112,10 @@ portable(Archive_t* ap, const char* s)
 #define OHASHLPART(h,c)		OHASHPART(31, h, c, 3, 2)
 
 unsigned long
-omemsum(const void* b, int n, register unsigned long c)
+omemsum(const void* b, int n, unsigned long c)
 {
-	register unsigned char*	p;
-	register unsigned char*	e;
+	unsigned char*	p;
+	unsigned char*	e;
 
 	p = (unsigned char*)b;
 	e = p + n;

@@ -122,8 +122,8 @@ static Scan_t*		strategy[SCAN_MAX+1];
 void
 initscan(int repeat)
 {
-	register int		i;
-	register Rule_t*	r;
+	int		i;
+	Rule_t*	r;
 
 	if (!repeat)
 		for (i = 0; i < elementsof(scantab); i++)
@@ -140,9 +140,9 @@ initscan(int repeat)
  */
 
 static int
-scansort(register const char* a, register const char* b)
+scansort(const char* a, const char* b)
 {
-	register const char*	s;
+	const char*	s;
 
 	while (*++a == *++b)
 		if (!*a)
@@ -161,9 +161,9 @@ scansort(register const char* a, register const char* b)
  */
 
 static Scanstate_t*
-scanbranch(Scanstate_t* u, Action_t* action, Action_t* first, Action_t* last, register int i)
+scanbranch(Scanstate_t* u, Action_t* action, Action_t* first, Action_t* last, int i)
 {
-	register Action_t*	a;
+	Action_t*	a;
 	Action_t*		b;
 	Action_t*		m;
 	Scanstate_t*		v;
@@ -237,12 +237,12 @@ scanbranch(Scanstate_t* u, Action_t* action, Action_t* first, Action_t* last, re
  */
 
 static void
-scanaction(Action_t* a, register char* s)
+scanaction(Action_t* a, char* s)
 {
-	register int	c;
-	register int	t;
-	register char*	v;
-	register char*	n;
+	int	c;
+	int	t;
+	char*	v;
+	char*	n;
 	Rule_t*		u;
 	unsigned long	m;
 
@@ -350,10 +350,10 @@ scanaction(Action_t* a, register char* s)
 static Scan_t*
 scancompile(Rule_t* r, int flags)
 {
-	register char*		s;
-	register Scan_t*	ss;
-	register Quote_t*	q;
-	register int		c;
+	char*		s;
+	Scan_t*	ss;
+	Quote_t*	q;
+	int		c;
 	int			i;
 	int			t;
 	int			z;
@@ -617,10 +617,10 @@ scancompile(Rule_t* r, int flags)
  */
 
 static unsigned char*
-scanquote(int fd, unsigned char* buf, unsigned char** p, register unsigned char* g, Quote_t* q, int flags)
+scanquote(int fd, unsigned char* buf, unsigned char** p, unsigned char* g, Quote_t* q, int flags)
 {
-	register int		c;
-	register unsigned char*	t;
+	int		c;
+	unsigned char*	t;
 	unsigned char*		x;
 	unsigned char*		y;
 	unsigned char*		z;
@@ -742,9 +742,9 @@ scanquote(int fd, unsigned char* buf, unsigned char** p, register unsigned char*
  */
 
 static List_t*
-scandefine(register char* s, List_t* p)
+scandefine(char* s, List_t* p)
 {
-	register char*	t;
+	char*	t;
 	char*		b;
 	char*		z;
 	int		c;
@@ -815,11 +815,11 @@ scandefine(register char* s, List_t* p)
 
 /*ARGSUSED*/
 static List_t*
-scanmacro(int fd, Rule_t* r, Scan_t* ss, register List_t* p)
+scanmacro(int fd, Rule_t* r, Scan_t* ss, List_t* p)
 {
-	register int		c;
-	register int		inquote;
-	register char*		w;
+	int		c;
+	int		inquote;
+	char*		w;
 	int			n;
 	int			dontcare;
 	int			ifparen;
@@ -1040,7 +1040,7 @@ scanmacro(int fd, Rule_t* r, Scan_t* ss, register List_t* p)
  */
 
 static List_t*
-scanmatch(List_t* p, register Action_t* a, Rule_t* r, char* b, char* s, int iflev, int split)
+scanmatch(List_t* p, Action_t* a, Rule_t* r, char* b, char* s, int iflev, int split)
 {
 	int		n;
 	char*		t;
@@ -1249,9 +1249,9 @@ opname(Scanstate_t* s)
 static List_t*
 scanexec(int fd, Rule_t* r, Scan_t* ss, List_t* p)
 {
-	register int		c;
-	register unsigned char*	g;
-	register Scanstate_t*	s;
+	int		c;
+	unsigned char*	g;
+	Scanstate_t*	s;
 	Scanstate_t*		m;
 	unsigned char*		pb;
 	unsigned char*		x;
@@ -1758,10 +1758,10 @@ scanexec(int fd, Rule_t* r, Scan_t* ss, List_t* p)
  */
 
 List_t*
-scan(register Rule_t* r, Time_t* tm)
+scan(Rule_t* r, Time_t* tm)
 {
-	register Rule_t*	s;
-	register List_t*	oprereqs;
+	Rule_t*	s;
+	List_t*	oprereqs;
 	Rule_t*			alt;
 	List_t*			p;
 	Scan_t*			ss;

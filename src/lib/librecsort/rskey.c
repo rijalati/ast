@@ -562,7 +562,7 @@ unsigned char*	cp;
 unsigned char*	zp;
 #endif
 {
-	register int	c;
+	int	c;
 	int		j = -1;
 	int		i;
 	unsigned char*	mp;
@@ -813,12 +813,12 @@ unsigned char*	np;
 
 static int
 #if __STD_C
-addopt(Rskey_t* kp, register Rskeyfield_t* fp, register char* s, int end)
+addopt(Rskey_t* kp, Rskeyfield_t* fp, char* s, int end)
 #else
 addopt(kp, fp, s, end)
 Rskey_t*		kp;
-register Rskeyfield_t*	fp;
-register char*		s;
+Rskeyfield_t*	fp;
+char*		s;
 int			end;
 #endif
 {
@@ -972,8 +972,8 @@ char*		key;
 int		all;
 #endif
 {
-	register Rskeyfield_t*	fp;
-	register int		i;
+	Rskeyfield_t*	fp;
+	int		i;
 	char*			s;
 
 	fp = all ? kp->head : kp->tail;
@@ -1007,7 +1007,7 @@ char*		key;
 int		obsolete;
 #endif
 {
-	register Rskeyfield_t*	fp;
+	Rskeyfield_t*	fp;
 	int			o;
 	int			n;
 	int			standard;
@@ -1119,17 +1119,17 @@ int		obsolete;
 
 static int
 #if __STD_C
-transform(Rskey_t* kp, register Rskeyfield_t* fp)
+transform(Rskey_t* kp, Rskeyfield_t* fp)
 #else
 transform(kp, fp)
 Rskey_t*		kp;
-register Rskeyfield_t*	fp;
+Rskeyfield_t*	fp;
 #endif
 {
-	register unsigned char*	m;
-	register unsigned char*	t;
-	register unsigned char*	x;
-	register int		c;
+	unsigned char*	m;
+	unsigned char*	t;
+	unsigned char*	x;
+	int		c;
 
 	if (fp->code)
 	{
@@ -1170,14 +1170,14 @@ register Rskeyfield_t*	fp;
 
 int
 #if __STD_C
-rskeyinit(register Rskey_t* kp)
+rskeyinit(Rskey_t* kp)
 #else
 rskeyinit(kp)
-register Rskey_t*	kp;
+Rskey_t*	kp;
 #endif
 {
-	register long		n;
-	register Rskeyfield_t*	fp;
+	long		n;
+	Rskeyfield_t*	fp;
 	long			m;
 	size_t			z;
 

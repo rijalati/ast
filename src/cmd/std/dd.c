@@ -421,8 +421,8 @@ interrupt(int sig)
 static ssize_t
 output(Sfio_t* sp, const Void_t* buf, size_t n, Sfdisc_t* disc)
 {
-	register ssize_t	r;
-	register size_t		x;
+	ssize_t	r;
+	size_t		x;
 
 	if ((r = sfwr(sp, buf, n, disc)) > 0)
 	{
@@ -445,12 +445,12 @@ output(Sfio_t* sp, const Void_t* buf, size_t n, Sfdisc_t* disc)
 int
 main(int argc, char** argv)
 {
-	register char*		s;
-	register char*		v;
-	register char*		b;
-	register Operand_t*	op;
-	register Operand_t*	vp;
-	register int		f;
+	char*		s;
+	char*		v;
+	char*		b;
+	Operand_t*	op;
+	Operand_t*	vp;
+	int		f;
 	char*			usage;
 	char*			e;
 	int			i;
@@ -496,7 +496,7 @@ main(int argc, char** argv)
 				}
 				else if (op->type == CODE)
 				{
-					register iconv_list_t*	ic;
+					iconv_list_t*	ic;
 
 					sfputc(sp, ']');
 					sfputc(sp, '{');

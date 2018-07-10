@@ -61,8 +61,8 @@ struct State_s
 static int
 fieldcmp(Dt_t* dt, void* a, void* b, Dtdisc_t* disc)
 {
-	register Field_t*	fa = (Field_t*)a;
-	register Field_t*	fb = (Field_t*)b;
+	Field_t*	fa = (Field_t*)a;
+	Field_t*	fb = (Field_t*)b;
 
 	if (fa->representation < fb->representation)
 		return -1;
@@ -184,8 +184,8 @@ fix_beg(Cx_t* cx, Cxexpr_t* expr, void* data, Cxdisc_t* disc)
 static int
 fix_act(Cx_t* cx, Cxexpr_t* expr, void* data, Cxdisc_t* disc)
 {
-	register State_t*	state = (State_t*)expr->data;
-	register Field_t*	field;
+	State_t*	state = (State_t*)expr->data;
+	Field_t*	field;
 	Cxoperand_t		arg;
 
 	for (field = state->train; field; field = field->train)
@@ -214,12 +214,12 @@ fix_act(Cx_t* cx, Cxexpr_t* expr, void* data, Cxdisc_t* disc)
 static int
 fix_end(Cx_t* cx, Cxexpr_t* expr, void* data, Cxdisc_t* disc)
 {
-	register State_t*	state = (State_t*)expr->data;
-	register Field_t*	field;
-	register size_t		w;
-	register size_t		x;
-	register size_t		r;
-	register size_t		b;
+	State_t*	state = (State_t*)expr->data;
+	Field_t*	field;
+	size_t		w;
+	size_t		x;
+	size_t		r;
+	size_t		b;
 	Dsslib_t*		lib;
 	char*			s;
 

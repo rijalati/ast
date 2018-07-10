@@ -39,10 +39,10 @@
 static char*
 fmtexport(const char* name)
 {
-	register int		c;
-	register const char*	s;
-	register char*		t;
-	register int		n;
+	int		c;
+	const char*	s;
+	char*		t;
+	int		n;
 	char*			b;
 
 	s = name;
@@ -97,7 +97,7 @@ dsn(Jcl_t* jcl, Jcldd_t* dd, const char* path, int mark)
 static void
 checkdir(Jcl_t* jcl, Jcldd_t* dd)
 {
-	register char*	s;
+	char*	s;
 	Jcldir_t*	dir;
 
 	if (!dtmatch(jcl->outdir, dd->path))
@@ -119,12 +119,12 @@ checkdir(Jcl_t* jcl, Jcldd_t* dd)
 int
 jclrun(Jcl_t* scope)
 {
-	register Jcl_t*		jcl;
-	register Jclstep_t*	step;
-	register Jcldd_t*	dd;
-	register Jclcat_t*	cat;
-	register Jclsym_t*	sym;
-	register char*		s;
+	Jcl_t*		jcl;
+	Jclstep_t*	step;
+	Jcldd_t*	dd;
+	Jclcat_t*	cat;
+	Jclsym_t*	sym;
+	char*		s;
 	char*			arg;
 	char*			t;
 	Coshell_t*		co;

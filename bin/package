@@ -1834,9 +1834,9 @@ extern time_t	time();
 #endif
 int main()
 {
-	register unsigned long	i;
-	register unsigned long	j;
-	register unsigned long	k;
+	unsigned long	i;
+	unsigned long	j;
+	unsigned long	k;
 	unsigned long		l;
 	unsigned long		m;
 	unsigned long		t;

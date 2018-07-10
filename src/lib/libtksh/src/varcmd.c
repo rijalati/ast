@@ -38,7 +38,7 @@ static ArraySearch *MakeSearchId _ANSI_ARGS_((Tcl_Interp *interp,Namval_t *nv,ch
 int
 Tcl_SetCmd(dummy, interp, argc, argv)
     ClientData dummy;			/* Not used. */
-    register Tcl_Interp *interp;	/* Current interpreter. */
+    Tcl_Interp *interp;	/* Current interpreter. */
     int argc;				/* Number of arguments. */
     char **argv;			/* Argument strings. */
 {
@@ -110,7 +110,7 @@ Tcl_GlobalCmd(dummy, interp, argc, argv)
 int
 Tcl_UnsetCmd(dummy, interp, argc, argv)
     ClientData dummy;			/* Not used. */
-    register Tcl_Interp *interp;	/* Current interpreter. */
+    Tcl_Interp *interp;	/* Current interpreter. */
     int argc;				/* Number of arguments. */
     char **argv;			/* Argument strings. */
 {
@@ -150,7 +150,7 @@ Tcl_UnsetCmd(dummy, interp, argc, argv)
 int
 Tcl_AppendCmd(dummy, interp, argc, argv)
     ClientData dummy;			/* Not used. */
-    register Tcl_Interp *interp;	/* Current interpreter. */
+    Tcl_Interp *interp;	/* Current interpreter. */
     int argc;				/* Number of arguments. */
     char **argv;			/* Argument strings. */
 {
@@ -212,7 +212,7 @@ Tcl_AppendCmd(dummy, interp, argc, argv)
 int
 Tcl_LappendCmd(dummy, interp, argc, argv)
     ClientData dummy;			/* Not used. */
-    register Tcl_Interp *interp;	/* Current interpreter. */
+    Tcl_Interp *interp;	/* Current interpreter. */
     int argc;				/* Number of arguments. */
     char **argv;			/* Argument strings. */
 {
@@ -316,10 +316,10 @@ Tcl_UpvarCmd(dummy, interp, argc, argv)
     int argc;				/* Number of arguments. */
     char **argv;			/* Argument strings. */
 {
-    register Interp *iPtr = (Interp *) interp;
+    Interp *iPtr = (Interp *) interp;
     int result;
     CallFrame *framePtr;
-    register char *p;
+    char *p;
 
     if (argc < 3) {
 	upvarSyntax:
@@ -516,7 +516,7 @@ Tcl_UpVar(interp, frameName, varName, localName, flags)
 {
     int result;
     CallFrame *framePtr;
-    register char *p;
+    char *p;
 
     result = TclGetFrame(interp, frameName, &framePtr);
     if (result == -1) {
@@ -618,7 +618,7 @@ Tcl_UpVar2(interp, frameName, part1, part2, localName, flags)
 int
 Tcl_ArrayCmd(dummy, interp, argc, argv)
     ClientData dummy;			/* Not used. */
-    register Tcl_Interp *interp;	/* Current interpreter. */
+    Tcl_Interp *interp;	/* Current interpreter. */
     int argc;				/* Number of arguments. */
     char **argv;			/* Argument strings. */
 {

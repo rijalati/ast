@@ -316,7 +316,7 @@ Tk_MenubuttonCmd(clientData, interp, argc, argv)
     int argc;			/* Number of arguments. */
     char **argv;		/* Argument strings. */
 {
-    register MenuButton *mbPtr;
+    MenuButton *mbPtr;
     Tk_Window tkwin = (Tk_Window) clientData;
     Tk_Window new;
 
@@ -426,7 +426,7 @@ MenuButtonWidgetCmd(clientData, interp, argc, argv)
     int argc;			/* Number of arguments. */
     char **argv;		/* Argument strings. */
 {
-    register MenuButton *mbPtr = (MenuButton *) clientData;
+    MenuButton *mbPtr = (MenuButton *) clientData;
     int result = TCL_OK;
     size_t length;
     int c;
@@ -498,7 +498,7 @@ static void
 DestroyMenuButton(memPtr)
     char *memPtr;		/* Info about button widget. */
 {
-    register MenuButton *mbPtr = (MenuButton *) memPtr;
+    MenuButton *mbPtr = (MenuButton *) memPtr;
 
     /*
      * Free up all the stuff that requires special handling, then
@@ -554,7 +554,7 @@ DestroyMenuButton(memPtr)
 static int
 ConfigureMenuButton(interp, mbPtr, argc, argv, flags)
     Tcl_Interp *interp;		/* Used for error reporting. */
-    register MenuButton *mbPtr;	/* Information about widget;  may or may
+    MenuButton *mbPtr;	/* Information about widget;  may or may
 				 * not already have values for some fields. */
     int argc;			/* Number of valid entries in argv. */
     char **argv;		/* Arguments. */
@@ -771,14 +771,14 @@ static void
 DisplayMenuButton(clientData)
     ClientData clientData;	/* Information about widget. */
 {
-    register MenuButton *mbPtr = (MenuButton *) clientData;
+    MenuButton *mbPtr = (MenuButton *) clientData;
     GC gc;
     Tk_3DBorder border;
     Pixmap pixmap;
     int x = 0;			/* Initialization needed only to stop
 				 * compiler warning. */
     int y;
-    register Tk_Window tkwin = mbPtr->tkwin;
+    Tk_Window tkwin = mbPtr->tkwin;
     int width, height;
 
     mbPtr->flags &= ~REDRAW_PENDING;
@@ -1076,7 +1076,7 @@ MenuButtonCmdDeletedProc(clientData)
 
 static void
 ComputeMenuButtonGeometry(mbPtr)
-    register MenuButton *mbPtr;		/* Widget record for menu button. */
+    MenuButton *mbPtr;		/* Widget record for menu button. */
 {
     int width, height, mm, pixels;
 
@@ -1159,7 +1159,7 @@ MenuButtonTextVarProc(clientData, interp, name1, name2, flags)
     char *name2;		/* Second part of variable name. */
     int flags;			/* Information about what happened. */
 {
-    register MenuButton *mbPtr = (MenuButton *) clientData;
+    MenuButton *mbPtr = (MenuButton *) clientData;
     char *value;
 
     /*
@@ -1224,7 +1224,7 @@ MenuButtonImageProc(clientData, x, y, width, height, imgWidth, imgHeight)
 					 * (may be <= 0). */
     int imgWidth, imgHeight;		/* New dimensions of image. */
 {
-    register MenuButton *mbPtr = (MenuButton *) clientData;
+    MenuButton *mbPtr = (MenuButton *) clientData;
 
     if (mbPtr->tkwin != NULL) {
 	ComputeMenuButtonGeometry(mbPtr);

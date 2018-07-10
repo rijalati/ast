@@ -102,8 +102,8 @@ State_t		state;			/* program state		*/
 static void*
 init(void* handle, int fdmax)
 {
-	register int	n;
-	register char*	s;
+	int	n;
+	char*	s;
 
 	NoP(handle);
 	message((-1, "init pid=%d", getpid()));
@@ -273,10 +273,10 @@ nonblocking(int fd)
  */
 
 static int
-service(void* handle, register int fd)
+service(void* handle, int fd)
 {
-	register int		n;
-	register int		i;
+	int		n;
+	int		i;
 	char*			s;
 	char*			t;
 	char*			x;
@@ -753,12 +753,12 @@ indirect(void* handle, int fdmax)
  */
 
 static int
-pump(void* handle, register int fd)
+pump(void* handle, int fd)
 {
-	register int	n;
-	register int	pd;
-	register int*	pass = (int*)handle + fd;
-	register char*	s = state.buf;
+	int	n;
+	int	pd;
+	int*	pass = (int*)handle + fd;
+	char*	s = state.buf;
 
 	if ((n = read(fd, s, state.buflen)) <= 0) goto drop;
 	if (!(pd = *pass))
@@ -786,9 +786,9 @@ pump(void* handle, register int fd)
 int
 main(int argc, char** argv)
 {
-	register int		n;
-	register int		fd;
-	register int		i;
+	int		n;
+	int		fd;
+	int		i;
 	int			pfd;
 	int			d;
 	char*			s;

@@ -30,7 +30,7 @@
 int
 exrewind(Expr_t* ex)
 {
-	register int	n;
+	int	n;
 
 	if (ex->linewrap)
 	{

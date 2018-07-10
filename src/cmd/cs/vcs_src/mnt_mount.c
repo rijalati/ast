@@ -35,8 +35,8 @@ char* checkfs(data, buf, size)
 	char*	buf;
 	int	size;
 {
-	register char*	s;
-	register char*	t;
+	char*	s;
+	char*	t;
 	char	psbuf[1024];
 	char*	pass;
 
@@ -65,10 +65,10 @@ int im_mount_help(s)
 
 int im_mount(argc, argv)
 	int		argc;
-	register char**	argv;
+	char**	argv;
 {
-	register char*	s;
-	register int	n;
+	char*	s;
+	int	n;
 	char		buf[1024 * 2];
 	char		reply[1024 * 2];
 	char		mfsbuf[1024 * 2];

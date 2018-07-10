@@ -1818,7 +1818,7 @@ non-ANSI compilers.  Tk is now clean under gcc -Wconversion.
 1/4/95 (bug fix) Used "screenX" without ever setting it in DisplayText
 in tkCanvText.c:  caused tabs in canvas text items to get messed up.
 
-1/4/95 (bug fix) Canvases forgot to register the built-in types if
+1/4/95 (bug fix) Canvases forgot to the built-in types if
 Tk_CreateItemType was called before a canvas widget was created.
 
 1/4/95 (bug fixes) Fixed glitches in various text bindings:

@@ -60,12 +60,12 @@ typedef struct Crc_s
 static Sum_t*
 crc_open(const Method_t* method, const char* name)
 {
-	register Crc_t*		sum;
-	register const char*	s;
-	register const char*	t;
-	register const char*	v;
-	register int		i;
-	register int		j;
+	Crc_t*		sum;
+	const char*	s;
+	const char*	t;
+	const char*	v;
+	int		i;
+	int		j;
 	Crcnum_t		polynomial;
 	Crcnum_t		x;
 
@@ -146,9 +146,9 @@ static int
 crc_block(Sum_t* p, const void* s, size_t n)
 {
 	Crc_t*			sum = (Crc_t*)p;
-	register Crcnum_t	c = sum->sum;
-	register unsigned char*	b = (unsigned char*)s;
-	register unsigned char*	e = b + n;
+	Crcnum_t	c = sum->sum;
+	unsigned char*	b = (unsigned char*)s;
+	unsigned char*	e = b + n;
 
 	if (sum->rotate)
 		while (b < e)
@@ -163,9 +163,9 @@ crc_block(Sum_t* p, const void* s, size_t n)
 static int
 crc_done(Sum_t* p)
 {
-	register Crc_t*		sum = (Crc_t*)p;
-	register Crcnum_t	c;
-	register uintmax_t	n;
+	Crc_t*		sum = (Crc_t*)p;
+	Crcnum_t	c;
+	uintmax_t	n;
 	int			i;
 	int			j;
 

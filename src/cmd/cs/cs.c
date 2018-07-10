@@ -168,7 +168,7 @@ address(const char* name)
  */
 
 static int
-order(register Ftw_t* f1, register Ftw_t* f2)
+order(Ftw_t* f1, Ftw_t* f2)
 {
 	return f1->level == 3 ? strcoll(f1->name, f2->name) : 0;
 }
@@ -181,12 +181,12 @@ order(register Ftw_t* f1, register Ftw_t* f2)
 #define SERVICE_COLS	37
 
 static int
-list(register Ftw_t* ftw)
+list(Ftw_t* ftw)
 {
-	register char*	s;
-	register char*	t;
-	register char*	u;
-	register char*	p;
+	char*	s;
+	char*	t;
+	char*	u;
+	char*	p;
 	char*		port;
 	char*		proc;
 	int		mode;
@@ -358,9 +358,9 @@ list(register Ftw_t* ftw)
  */
 
 static int
-msgcat(register Sfio_t* sp, register int flags, unsigned long call, unsigned long terse)
+msgcat(Sfio_t* sp, int flags, unsigned long call, unsigned long terse)
 {
-	register long	n;
+	long	n;
 	Msg_call_t	msg;
 
 	if (flags & MSG_LIST_CONTINUOUS)
@@ -544,9 +544,9 @@ main(int argc, char** argv)
 			return 1;
 		if (initiate & CS_OPEN_AGENT)
 		{
-			register char*	s = path;
-			register char*	t = tmp;
-			register int	n = 0;
+			char*	s = path;
+			char*	t = tmp;
+			int	n = 0;
 
 			/*
 			 * get the unqualified-host connect stream path

@@ -44,9 +44,9 @@ typedef struct Ar_s
 } Ar_t;
 
 static int
-rar_done(Pax_t* pax, register Paxarchive_t* ap)
+rar_done(Pax_t* pax, Paxarchive_t* ap)
 {
-	register Ar_t*	ar = (Ar_t*)ap->data;
+	Ar_t*	ar = (Ar_t*)ap->data;
 
 	if (!ar)
 		return -1;
@@ -58,9 +58,9 @@ rar_done(Pax_t* pax, register Paxarchive_t* ap)
 }
 
 static int
-rar_getprologue(Pax_t* pax, Paxformat_t* fp, register Paxarchive_t* ap, Paxfile_t* f, unsigned char* buf, size_t size)
+rar_getprologue(Pax_t* pax, Paxformat_t* fp, Paxarchive_t* ap, Paxfile_t* f, unsigned char* buf, size_t size)
 {
-	register Ar_t*		ar;
+	Ar_t*		ar;
 
 	if (size < 7 || buf[0] != 0x52 || buf[1] != 0x61 || buf[2] != 0x72 || buf[3] != 0x21 || buf[4] != 0x1a || buf[5] != 0x07 || buf[6] != 0x00)
 		return 0;
@@ -85,10 +85,10 @@ rar_getprologue(Pax_t* pax, Paxformat_t* fp, register Paxarchive_t* ap, Paxfile_
 }
 
 static int
-rar_getheader(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f)
+rar_getheader(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f)
 {
-	register Ar_t*		ar = (Ar_t*)ap->data;
-	register unsigned char*	buf;
+	Ar_t*		ar = (Ar_t*)ap->data;
+	unsigned char*	buf;
 	char*			s;
 	Tm_t			tm;
 	unsigned short		checksum;
@@ -204,9 +204,9 @@ rar_getheader(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f)
 }
 
 static int
-rar_getdata(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f, int fd)
+rar_getdata(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f, int fd)
 {
-	register Ar_t*	ar = (Ar_t*)ap->data;
+	Ar_t*	ar = (Ar_t*)ap->data;
 	Sfio_t*		sp;
 	off_t		pos;
 	ssize_t		n;

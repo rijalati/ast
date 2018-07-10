@@ -120,9 +120,9 @@ static const unsigned char	bcd_pack[] =
 static ssize_t
 bcd_external(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, Cxvalue_t* value, char* buf, size_t size, Cxdisc_t* disc)
 {
-	register unsigned char*	s = (unsigned char*)buf;
-	register unsigned char*	e;
-	register Cxunsigned_t	v;
+	unsigned char*	s = (unsigned char*)buf;
+	unsigned char*	e;
+	Cxunsigned_t	v;
 	Cxnumber_t		f;
 
 	if (format->width > size)
@@ -202,10 +202,10 @@ static const unsigned char	bcd_negative[] =
 static ssize_t
 bcd_internal(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, Cxoperand_t* ret, const char* buf, size_t size, Vmalloc_t* vm, Cxdisc_t* disc)
 {
-	register unsigned char*		s = (unsigned char*)buf;
-	register unsigned char*		e;
-	register Cxinteger_t		w;
-	register unsigned const char*	p;
+	unsigned char*		s = (unsigned char*)buf;
+	unsigned char*		e;
+	Cxinteger_t		w;
+	unsigned const char*	p;
 	Cxnumber_t			f;
 
 	if (format->width > size)
@@ -248,10 +248,10 @@ bcd_internal(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, 
 static ssize_t
 be_external(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, Cxvalue_t* value, char* buf, size_t size, Cxdisc_t* disc)
 {
-	register unsigned char*	s = (unsigned char*)buf;
-	register unsigned char*	e;
-	register unsigned char*	u;
-	register Cxunsigned_t	v;
+	unsigned char*	s = (unsigned char*)buf;
+	unsigned char*	e;
+	unsigned char*	u;
+	Cxunsigned_t	v;
 	_ast_flt4_t		f4;
 	_ast_flt8_t		f8;
 	Cxnumber_t		f;
@@ -295,10 +295,10 @@ be_external(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, C
 static ssize_t
 be_internal(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, Cxoperand_t* ret, const char* buf, size_t size, Vmalloc_t* vm, Cxdisc_t* disc)
 {
-	register unsigned char*	s = (unsigned char*)buf;
-	register unsigned char*	e;
-	register unsigned char*	u;
-	register Cxunsigned_t	v;
+	unsigned char*	s = (unsigned char*)buf;
+	unsigned char*	e;
+	unsigned char*	u;
+	Cxunsigned_t	v;
 	_ast_flt4_t		f4;
 	_ast_flt8_t		f8;
 	Cxnumber_t		f;
@@ -365,11 +365,11 @@ extern time_t		time(time_t*);
 static void*
 hash_init(void* data, Cxdisc_t* disc)
 {
-	register Cxtype_t*	type = (Cxtype_t*)data;
-	register const char*	s;
-	register int		n;
-	register Cxunsigned_t	h;
-	register Hash_t*	hp;
+	Cxtype_t*	type = (Cxtype_t*)data;
+	const char*	s;
+	int		n;
+	Cxunsigned_t	h;
+	Hash_t*	hp;
 
 	if (!(hp = newof(0, Hash_t, 1, 0)))
 		return 0;
@@ -389,11 +389,11 @@ static ssize_t
 hash_external(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, Cxvalue_t* value, char* buf, size_t size, Cxdisc_t* disc)
 {
 	Hash_t*			hp = (Hash_t*)type->data;
-	register unsigned char*	s;
-	register unsigned char*	e;
-	register unsigned char*	t;
-	register int		c;
-	register Cxunsigned_t	h;
+	unsigned char*	s;
+	unsigned char*	e;
+	unsigned char*	t;
+	int		c;
+	Cxunsigned_t	h;
 
 	if (!hp->seed)
 	{
@@ -428,11 +428,11 @@ static ssize_t
 hash_internal(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, Cxoperand_t* ret, const char* buf, size_t size, Vmalloc_t* vm, Cxdisc_t* disc)
 {
 	Hash_t*			hp = (Hash_t*)type->data;
-	register unsigned char*	s;
-	register unsigned char*	e;
-	register unsigned char*	t;
-	register int		c;
-	register Cxunsigned_t	h;
+	unsigned char*	s;
+	unsigned char*	e;
+	unsigned char*	t;
+	int		c;
+	Cxunsigned_t	h;
 
 	if (format->width > size)
 		return format->width;
@@ -503,9 +503,9 @@ static const unsigned char heka_unpack[UCHAR_MAX+1] =
 static ssize_t
 heka_internal(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, Cxoperand_t* ret, const char* buf, size_t size, Vmalloc_t* vm, Cxdisc_t* disc)
 {
-	register unsigned char*	s = (unsigned char*)buf;
-	register unsigned char*	e = s + format->width;
-	register Cxunsigned_t	u;
+	unsigned char*	s = (unsigned char*)buf;
+	unsigned char*	e = s + format->width;
+	Cxunsigned_t	u;
 	Cxnumber_t		f;
 	int			neg;
 
@@ -549,11 +549,11 @@ static const unsigned char heka_pack[100] =
 static ssize_t
 heka_external(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, Cxvalue_t* value, char* buf, size_t size, Cxdisc_t* disc)
 {
-	register unsigned char*	s;
-	register unsigned char*	t;
-	register unsigned char*	e;
-	register ssize_t	c;
-	register Cxunsigned_t	u;
+	unsigned char*	s;
+	unsigned char*	t;
+	unsigned char*	e;
+	ssize_t	c;
+	Cxunsigned_t	u;
 	Cxnumber_t		f;
 	int			neg;
 	unsigned char		tmp[128];
@@ -765,11 +765,11 @@ static const double	ibm_exp[] =
 static ssize_t
 ibm_external(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, Cxvalue_t* value, char* buf, size_t size, Cxdisc_t* disc)
 {
-	register unsigned char*	s = (unsigned char*)buf;
-	register unsigned int	lo;
-	register unsigned int	hi;
-	register unsigned int	ex;
-	register double		f;
+	unsigned char*	s = (unsigned char*)buf;
+	unsigned int	lo;
+	unsigned int	hi;
+	unsigned int	ex;
+	double		f;
 	int			negative;
 	Cxinteger_t		hi3;
 	Cxinteger_t		md2;
@@ -952,9 +952,9 @@ ibm_external(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, 
 static ssize_t
 ibm_internal(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, Cxoperand_t* ret, const char* buf, size_t size, Vmalloc_t* vm, Cxdisc_t* disc)
 {
-	register unsigned char*	s = (unsigned char*)buf;
-	register Cxinteger_t	i;
-	register double		f;
+	unsigned char*	s = (unsigned char*)buf;
+	Cxinteger_t	i;
+	double		f;
 
 	if (format->width > size)
 		return format->width;
@@ -988,10 +988,10 @@ ibm_internal(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, 
 static ssize_t
 le_external(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, Cxvalue_t* value, char* buf, size_t size, Cxdisc_t* disc)
 {
-	register unsigned char*	s = (unsigned char*)buf;
-	register unsigned char*	e;
-	register unsigned char*	u;
-	register Cxunsigned_t	v;
+	unsigned char*	s = (unsigned char*)buf;
+	unsigned char*	e;
+	unsigned char*	u;
+	Cxunsigned_t	v;
 	_ast_flt4_t		f4;
 	_ast_flt8_t		f8;
 	Cxnumber_t		f;
@@ -1035,10 +1035,10 @@ le_external(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, C
 static ssize_t
 le_internal(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, Cxoperand_t* ret, const char* buf, size_t size, Vmalloc_t* vm, Cxdisc_t* disc)
 {
-	register unsigned char*	s = (unsigned char*)buf;
-	register unsigned char*	e;
-	register unsigned char*	u;
-	register Cxunsigned_t	v;
+	unsigned char*	s = (unsigned char*)buf;
+	unsigned char*	e;
+	unsigned char*	u;
+	Cxunsigned_t	v;
 	_ast_flt4_t		f4;
 	_ast_flt8_t		f8;
 	Cxnumber_t		f;
@@ -1088,9 +1088,9 @@ le_internal(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, C
 static ssize_t
 sf_external(Cx_t* cx, Cxtype_t* type, const char* details, Cxformat_t* format, Cxvalue_t* value, char* buf, size_t size, Cxdisc_t* disc)
 {
-	register int		r;
-	register Cxinteger_t	v;
-	register Cxunsigned_t	u;
+	int		r;
+	Cxinteger_t	v;
+	Cxunsigned_t	u;
 	Cxnumber_t		f;
 
 	FIXED_EXTERNAL(f, format, value);

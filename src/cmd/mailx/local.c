@@ -87,8 +87,8 @@
 char*
 mailbox(const char* user, const char* mail)
 {
-	register char*		s;
-	register int		i;
+	char*		s;
+	int		i;
 	int			n = 0;
 	struct stat		st;
 
@@ -145,8 +145,8 @@ demail(void)
 char*
 username(void)
 {
-	register char*	s;
-	register char*	t;
+	char*	s;
+	char*	t;
 	struct passwd*	pw;
 
 	if ((!(s = getenv("USER")) || !*s) &&
@@ -171,8 +171,8 @@ username(void)
 int
 userid(char* name)
 {
-	register struct name*	up;
-	register struct passwd*	pw;
+	struct name*	up;
+	struct passwd*	pw;
 
 	up = dictsearch(&state.userid, name, INSERT);
 	if (!up->value)
@@ -270,9 +270,9 @@ isdate(char* s)
 char*
 fmtesc(const char* as)
 {
-	register unsigned char*	s = (unsigned char*)as;
-	register char*		b;
-	register int		c;
+	unsigned char*	s = (unsigned char*)as;
+	char*		b;
+	int		c;
 
 	static char*		buf;
 	static int		bufsiz;
@@ -339,8 +339,8 @@ fmtesc(const char* as)
 char*
 fmtident(const char* a)
 {
-	register char*	s = (char*)a;
-	register char*	t;
+	char*	s = (char*)a;
+	char*	t;
 	char*		buf;
 	int		i;
 
@@ -483,7 +483,7 @@ signals[] =		/* held inside critical region	*/
 int
 sigcritical(int op)
 {
-	register int		i;
+	int		i;
 	sigset_t		nmask;
 
 	static int		region;
@@ -585,10 +585,10 @@ spawnvp(const char* cmd, char* const* argv)
  */
 
 int
-chresc(register const char* s, char** p)
+chresc(const char* s, char** p)
 {
-	register const char*	q;
-	register int		c;
+	const char*	q;
+	int		c;
 
 	switch (c = *s++)
 	{
@@ -675,7 +675,7 @@ chresc(register const char* s, char** p)
  */
 
 char*
-strcopy(register char* s, register const char* t)
+strcopy(char* s, const char* t)
 {
 	if (!t)
 		return s;
@@ -689,10 +689,10 @@ strcopy(register char* s, register const char* t)
  */
 
 int
-stresc(register char* s)
+stresc(char* s)
 {
-	register char*	t;
-	register int	c;
+	char*	t;
+	int	c;
 	char*		b;
 	char*		p;
 
@@ -729,13 +729,13 @@ stresc(register char* s)
 void*
 strpsearch(const void* tab, size_t num, size_t siz, const char* name, char** next)
 {
-	register char*		lo = (char*)tab;
-	register char*		hi = lo + (num - 1) * siz;
-	register char*		mid;
-	register unsigned char*	s;
-	register unsigned char*	t;
-	register int		c;
-	register int		v;
+	char*		lo = (char*)tab;
+	char*		hi = lo + (num - 1) * siz;
+	char*		mid;
+	unsigned char*	s;
+	unsigned char*	t;
+	int		c;
+	int		v;
 	int			sequential = 0;
 
 	c = *((unsigned char*)name);
@@ -800,10 +800,10 @@ typedef int (*Compare_context_f)(const char*, const char*, void*);
 void*
 strsearch(const void* tab, size_t num, size_t siz, Compare_f comparf, const char* name, void* context)
 {
-	register char*		lo = (char*)tab;
-	register char*		hi = lo + (num - 1) * siz;
-	register char*		mid;
-	register int		v;
+	char*		lo = (char*)tab;
+	char*		hi = lo + (num - 1) * siz;
+	char*		mid;
+	int		v;
 
 	while (lo <= hi)
 	{

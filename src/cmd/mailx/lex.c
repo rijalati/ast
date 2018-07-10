@@ -288,7 +288,7 @@ hangup(int sig)
 void
 commands(void)
 {
-	register int	n;
+	int	n;
 	int		eofloop = 0;
 	char		linebuf[LINESIZE];
 
@@ -377,9 +377,9 @@ int
 execute(char* linebuf, int contxt)
 {
 	struct cmd*	com;
-	register char*	s;
-	register int	c;
-	register char*	a;
+	char*	s;
+	int	c;
+	char*	a;
 	char*		next;
 	struct argvec	vec;
 	int		e = 1;
@@ -582,12 +582,12 @@ execute(char* linebuf, int contxt)
 struct msg*
 folderinfo(int msgcount)
 {
-	register struct msg*	mp;
-	register int		d;
-	register int		m;
-	register int		n;
-	register int		s;
-	register int		u;
+	struct msg*	mp;
+	int		d;
+	int		m;
+	int		n;
+	int		s;
+	int		u;
 	int			i;
 	struct msg*		dot;
 	char*			name;
@@ -713,8 +713,8 @@ license(void* a)
 void
 load(char* name)
 {
-	register FILE*	fp;
-	register FILE*	input;
+	FILE*	fp;
+	FILE*	input;
 
 	if (!(fp = fileopen(name, "r")))
 		return;

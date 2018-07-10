@@ -35,9 +35,9 @@
  */
 
 static unsigned short
-encode(register unsigned long n)
+encode(unsigned long n)
 {
-	register int	e;
+	int	e;
 
 	e = 0;
 	while (n > 03777)
@@ -49,7 +49,7 @@ encode(register unsigned long n)
 }
 
 int
-csnote(register Cs_t* state, const char* name, register Csstat_t* sp)
+csnote(Cs_t* state, const char* name, Csstat_t* sp)
 {
 	unsigned long	idle;
 	long		up;

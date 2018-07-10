@@ -40,10 +40,10 @@ static char*		errmsg;		/* subexpr() error message	*/
  */
 
 static int
-exists(int op, char* pred, register char* args)
+exists(int op, char* pred, char* args)
 {
-	register int	c;
-	register int	type;
+	int	c;
+	int	type;
 	char*		pptoken;
 	long		state;
 	char		file[MAXTOKEN + 1];
@@ -95,7 +95,7 @@ exists(int op, char* pred, register char* args)
 		c = ppsearch(file, type, SEARCH_EXISTS|SEARCH_NEXT) >= 0;
 	else
 	{
-		register struct ppfile*	fp;
+		struct ppfile*	fp;
 
 		fp = ppsetfile(file);
 		c = fp->flags || fp->guard == INC_IGNORE;
@@ -113,7 +113,7 @@ exists(int op, char* pred, register char* args)
 static int
 compare(char* pred, char* args, int match)
 {
-	register int	c;
+	int	c;
 	char*		pptoken;
 	long		state;
 	regex_t		re;
@@ -157,10 +157,10 @@ compare(char* pred, char* args, int match)
 static int
 predicate(int warn)
 {
-	register char*			args;
-	register struct pplist*		p;
-	register struct ppsymbol*	sym;
-	register int			type;
+	char*			args;
+	struct pplist*		p;
+	struct ppsymbol*	sym;
+	int			type;
 	int				index;
 
 	static char			pred[MAXID + 1];
@@ -278,12 +278,12 @@ predicate(int warn)
  */
 
 static long
-subexpr(register int precedence, int* pun)
+subexpr(int precedence, int* pun)
 {
-	register int		c;
-	register long		n;
-	register long		x;
-	register int		operand = 1;
+	int		c;
+	long		n;
+	long		x;
+	int		operand = 1;
 	int			un = 0;
 	int			xn;
 

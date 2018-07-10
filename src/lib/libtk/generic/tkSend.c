@@ -28,7 +28,7 @@ typedef struct RegisteredInterp {
 				 * or deleted while a send was in progress
 				 * to it. */
     TkDisplay *dispPtr;		/* Display for the application.  Needed
-				 * because we may need to unregister the
+				 * because we may need to unthe
 				 * interpreter after its main window has
 				 * been deleted. */
     struct RegisteredInterp *nextPtr;
@@ -753,7 +753,7 @@ Tk_SetAppName(tkwin, name)
 	if (riPtr == NULL) {
 	    /*
 	     * This interpreter isn't currently registered;  create
-	     * the data structure that will be used to register it locally,
+	     * the data structure that will be used to it locally,
 	     * plus add the "send" command to the interpreter.
 	     */
 
@@ -874,7 +874,7 @@ Tk_SendCmd(clientData, interp, argc, argv)
     TkWindow *winPtr;
     Window commWindow;
     PendingCommand pending;
-    register RegisteredInterp *riPtr;
+    RegisteredInterp *riPtr;
     char *destName, buffer[30];
     int result, c, async, i, firstArg;
     size_t length;
@@ -1084,7 +1084,7 @@ Tk_SendCmd(clientData, interp, argc, argv)
     (void) Tk_RestrictEvents(prevRestrictProc, prevArg, &prevArg);
 
     /*
-     * Unregister the information about the pending command
+     * Unthe information about the pending command
      * and return the result.
      */
 
@@ -1288,7 +1288,7 @@ SendEventProc(clientData, eventPtr)
 {
     TkDisplay *dispPtr = (TkDisplay *) clientData;
     char *propInfo;
-    register char *p;
+    char *p;
     int result, actualFormat;
     unsigned long numItems, bytesAfter;
     Atom actualType;
@@ -1655,7 +1655,7 @@ AppendErrorProc(clientData, errorPtr)
     XErrorEvent *errorPtr;	/* Information about error. */
 {
     PendingCommand *pendingPtr = (PendingCommand *) clientData;
-    register PendingCommand *pcPtr;
+    PendingCommand *pcPtr;
 
     if (pendingPtr == NULL) {
 	return 0;
@@ -1707,7 +1707,7 @@ TimeoutProc(clientData)
 				 * responded to. */
 {
     PendingCommand *pcPtr = (PendingCommand *) clientData;
-    register PendingCommand *pcPtr2;
+    PendingCommand *pcPtr2;
 
     /*
      * Make sure that the command is still in the pending list
@@ -1764,7 +1764,7 @@ DeleteProc(clientData)
 				 * as ClientData. */
 {
     RegisteredInterp *riPtr = (RegisteredInterp *) clientData;
-    register RegisteredInterp *riPtr2;
+    RegisteredInterp *riPtr2;
     NameRegistry *regPtr;
 
     regPtr = RegOpen(riPtr->interp, riPtr->dispPtr, 1);
@@ -1811,7 +1811,7 @@ DeleteProc(clientData)
 static Tk_RestrictAction
 SendRestrictProc(clientData, eventPtr)
     ClientData clientData;		/* Not used. */
-    register XEvent *eventPtr;		/* Event that just arrived. */
+    XEvent *eventPtr;		/* Event that just arrived. */
 {
     TkDisplay *dispPtr;
 

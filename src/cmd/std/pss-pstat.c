@@ -54,7 +54,7 @@ typedef struct State_s
 static int
 pstat_init(Pss_t* pss)
 {
-	register State_t*	state;
+	State_t*	state;
 
 	if (!(state = vmnewof(pss->vm, 0, State_t, 1, 0)))
 	{
@@ -69,7 +69,7 @@ pstat_init(Pss_t* pss)
 static int
 pstat_read(Pss_t* pss, Pss_id_t pid)
 {
-	register State_t*	state = (State_t*)pss->data;
+	State_t*	state = (State_t*)pss->data;
 	int			count;
 
 	if (pid)
@@ -97,10 +97,10 @@ pstat_read(Pss_t* pss, Pss_id_t pid)
 }
 
 static int
-pstat_part(register Pss_t* pss, register Pssent_t* pe)
+pstat_part(Pss_t* pss, Pssent_t* pe)
 {
 	State_t*			state = (State_t*)pss->data;
-	register struct pst_status*	pr = state->pr;
+	struct pst_status*	pr = state->pr;
 
 	pe->pid = pr->pst_pid;
 	pe->pgrp = pr->pst_pgrp;
@@ -120,10 +120,10 @@ pstat_part(register Pss_t* pss, register Pssent_t* pe)
 }
 
 static int
-pstat_full(register Pss_t* pss, register Pssent_t* pe)
+pstat_full(Pss_t* pss, Pssent_t* pe)
 {
-	register State_t*		state = (State_t*)pss->data;
-	register struct pst_status*	pr = state->pr;
+	State_t*		state = (State_t*)pss->data;
+	struct pst_status*	pr = state->pr;
 	unsigned long			fields = pss->disc->fields & pss->meth->fields;
 	char*				s;
 	int				i;

@@ -26,10 +26,10 @@
  */
 
 static int
-restore(register Pz_t* pz, Pzpart_t* pp, register Sfio_t* ip, Sfio_t* op, register unsigned char* pat, register unsigned char* buf, size_t row, size_t m, register size_t* map, register unsigned char** mix, register size_t* inc)
+restore(Pz_t* pz, Pzpart_t* pp, Sfio_t* ip, Sfio_t* op, unsigned char* pat, unsigned char* buf, size_t row, size_t m, size_t* map, unsigned char** mix, size_t* inc)
 {
-	register size_t	z;
-	register int	i;
+	size_t	z;
+	int	i;
 	Pzwrite_f	writef;
 
 	writef = pz->disc->writef;
@@ -71,15 +71,15 @@ restore(register Pz_t* pz, Pzpart_t* pp, register Sfio_t* ip, Sfio_t* op, regist
  */
 
 int
-pzinflate(register Pz_t* pz, Sfio_t* op)
+pzinflate(Pz_t* pz, Sfio_t* op)
 {
-	register Pzpart_t*	pp;
-	register int		i;
-	register int		j;
-	register int		k;
-	register size_t		n;
-	register size_t		m;
-	register unsigned char*	pat;
+	Pzpart_t*	pp;
+	int		i;
+	int		j;
+	int		k;
+	size_t		n;
+	size_t		m;
+	unsigned char*	pat;
 	ssize_t			r;
 	Pzwrite_f		writef;
 

@@ -51,8 +51,8 @@ static Var_t	var[] =
 char*
 csvar(Cs_t* state, int index, int trust)
 {
-	register char*	s;
-	register Var_t*	p;
+	char*	s;
+	Var_t*	p;
 
 	if (index < 0 || index >= elementsof(var))
 		return 0;

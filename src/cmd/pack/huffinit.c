@@ -43,11 +43,11 @@ static void	heapify(Heap_t*, int, int);
 
 Huff_t *huffinit(Sfio_t *infile, Sfoff_t insize)
 {
-	register int		n;
-	register unsigned char *inbuff;
-	register int		i, c;
-	register Huff_t		*hp;
-	register Sfoff_t	size = insize;
+	int		n;
+	unsigned char *inbuff;
+	int		i, c;
+	Huff_t		*hp;
+	Sfoff_t	size = insize;
 	int			parent[2*END+1];
 	Heap_t 			heap[END+2];
 	if(!(hp=newof(0, Huff_t, 1, 0)))
@@ -126,10 +126,10 @@ Huff_t *huffinit(Sfio_t *infile, Sfoff_t insize)
 }
 
 /* makes a heap out of heap[i],...,heap[n] */
-static void heapify (register Heap_t *heap,register int i,register int n)
+static void heapify (Heap_t *heap,int i,int n)
 {
-	register int k;
-	register int lastparent = n/2;
+	int k;
+	int lastparent = n/2;
 	Heap_t heapsubi;
 	heapsubi = heap[i];
 	while (i <= lastparent)

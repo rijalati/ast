@@ -28,10 +28,10 @@
 #include "cslib.h"
 
 ssize_t
-cswrite(register Cs_t* state, int fd, const void* buf, register size_t n)
+cswrite(Cs_t* state, int fd, const void* buf, size_t n)
 {
-	register char*		p = (char*)buf;
-	register ssize_t	i;
+	char*		p = (char*)buf;
+	ssize_t	i;
 
 	while (n > 0)
 	{

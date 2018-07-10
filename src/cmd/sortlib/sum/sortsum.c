@@ -153,16 +153,16 @@ assure(State_t* state, Buffer_t* b, size_t z)
 }
 
 static int
-record(register State_t* state, register Rsobj_t* r, int op)
+record(State_t* state, Rsobj_t* r, int op)
 {
 	Cx_t*				cx = state->dss->cx;
-	register Summary_t*		sum;
-	register unsigned char*		s;
-	register unsigned char*		e;
-	register unsigned char*		a;
-	register unsigned char*		z;
-	register unsigned char*		del;
-	register const unsigned char*	map;
+	Summary_t*		sum;
+	unsigned char*		s;
+	unsigned char*		e;
+	unsigned char*		a;
+	unsigned char*		z;
+	unsigned char*		del;
+	const unsigned char*	map;
 	unsigned char*			x;
 	unsigned char*			tab;
 	Buffer_t*			ext;
@@ -393,8 +393,8 @@ static int
 summary(Rs_t* rs, int op, Void_t* data, Void_t* arg, Rsdisc_t* disc)
 {
 	State_t*		state = (State_t*)disc;
-	register Rsobj_t*	r;
-	register Rsobj_t*	q;
+	Rsobj_t*	r;
+	Rsobj_t*	q;
 
 	switch (op)
 	{
@@ -418,7 +418,7 @@ summary(Rs_t* rs, int op, Void_t* data, Void_t* arg, Rsdisc_t* disc)
 Rsdisc_t*
 rs_disc(Rskey_t* key, const char* options)
 {
-	register Summary_t*	sum;
+	Summary_t*	sum;
 	char*			s;
 	char*			t;
 	char*			b;

@@ -568,7 +568,7 @@ struct pathid				/* physical file name and id	*/
 #define PUSH_COPY(p,n)		\
 	do \
 	{ \
-		register struct ppinstk*	cur; \
+		struct ppinstk*	cur; \
 		PUSH(IN_COPY, cur); \
 		cur->line = error_info.line; \
 		error_info.line = n; \
@@ -580,7 +580,7 @@ struct pathid				/* physical file name and id	*/
 #define PUSH_EXPAND(p,n)	\
 	do \
 	{ \
-		register struct ppinstk*	cur; \
+		struct ppinstk*	cur; \
 		PUSH(IN_EXPAND, cur); \
 		cur->line = error_info.line; \
 		error_info.line = n; \
@@ -600,7 +600,7 @@ struct pathid				/* physical file name and id	*/
 #define PUSH_MACRO(p)		\
 	do \
 	{ \
-		register struct ppinstk*	cur; \
+		struct ppinstk*	cur; \
 		PUSH(IN_MACRO, cur); \
 		cur->symbol = p; \
 		cur->nextchr = p->macro->value; \
@@ -613,7 +613,7 @@ struct pathid				/* physical file name and id	*/
 #define PUSH_TUPLE(p,v)		\
 	do \
 	{ \
-		register struct ppinstk*	cur; \
+		struct ppinstk*	cur; \
 		PUSH(IN_MACRO, cur); \
 		cur->symbol = p; \
 		cur->nextchr = v; \
@@ -625,8 +625,8 @@ struct pathid				/* physical file name and id	*/
 #define PUSH_MULTILINE(p)		\
 	do \
 	{ \
-		register struct ppinstk*	cur; \
-		register int			n; \
+		struct ppinstk*	cur; \
+		int			n; \
 		PUSH(IN_MULTILINE, cur); \
 		cur->symbol = p; \
 		cur->flags |= IN_defguard|IN_endguard|IN_noguard; \
@@ -648,7 +648,7 @@ struct pathid				/* physical file name and id	*/
 #define PUSH_QUOTE(p,n)		\
 	do \
 	{ \
-		register struct ppinstk*	cur; \
+		struct ppinstk*	cur; \
 		PUSH(IN_QUOTE, cur); \
 		cur->nextchr = p; \
 		pp.state |= QUOTE; \
@@ -663,7 +663,7 @@ struct pathid				/* physical file name and id	*/
 #define PUSH_SQUOTE(p,n)	\
 	do \
 	{ \
-		register struct ppinstk*	cur; \
+		struct ppinstk*	cur; \
 		PUSH(IN_SQUOTE, cur); \
 		cur->nextchr = p; \
 		pp.state |= SQUOTE; \
@@ -675,7 +675,7 @@ struct pathid				/* physical file name and id	*/
 #define PUSH_STRING(p)		\
 	do \
 	{ \
-		register struct ppinstk*	cur; \
+		struct ppinstk*	cur; \
 		PUSH(IN_STRING, cur); \
 		cur->nextchr = p; \
 		if (pp.state & DISABLE) cur->flags |= IN_disable; \
@@ -685,7 +685,7 @@ struct pathid				/* physical file name and id	*/
 #define PUSH_LINE(p)		\
 	do \
 	{ \
-		register struct ppinstk*	cur; \
+		struct ppinstk*	cur; \
 		PUSH(IN_STRING, cur); \
 		cur->nextchr = p; \
 		pp.state |= DISABLE|NOSPACE|PASSEOF|STRIP; \

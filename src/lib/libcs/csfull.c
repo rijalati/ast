@@ -28,7 +28,7 @@
 #include "cslib.h"
 
 char*
-csfull(register Cs_t* state, unsigned long addr)
+csfull(Cs_t* state, unsigned long addr)
 {
 	char*	s;
 

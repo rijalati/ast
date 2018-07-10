@@ -568,7 +568,7 @@ TkGetFocus(winPtr)
 
 void
 TkFocusDeadWindow(winPtr)
-    register TkWindow *winPtr;		/* Information about the window
+    TkWindow *winPtr;		/* Information about the window
 					 * that is being deleted. */
 {
     FocusInfo *focusPtr, *prevPtr;

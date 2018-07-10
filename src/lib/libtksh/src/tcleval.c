@@ -119,7 +119,7 @@ Tcl_TclEval(interp, cmd)
     int argc;
     int argSize = NUM_ARGS;
 
-    register char *src;			/* Points to current character
+    char *src;			/* Points to current character
 					 * in cmd. */
     char termChar;			/* Return when this character is found
 					 * (either ']' or '\0').  Zero means
@@ -127,7 +127,7 @@ Tcl_TclEval(interp, cmd)
     int flags;				/* Interp->evalFlags value when the
 					 * procedure was called. */
     int result;				/* Return value. */
-    register Interp *iPtr = (Interp *) interp;
+    Interp *iPtr = (Interp *) interp;
     char *termPtr;			/* Contains character just after the
 					 * last one in the command. */
     char *cmdStart;			/* Points to first non-blank char. in
@@ -140,7 +140,7 @@ Tcl_TclEval(interp, cmd)
 					 * command is all there. */
 #ifdef TKSH_NOT_USED
     Tcl_HashEntry *hPtr;
-    register Trace *tracePtr;
+    Trace *tracePtr;
 #else
 	Namval_t *nv;
 	int oldInterpType;
@@ -210,7 +210,7 @@ Tcl_TclEval(interp, cmd)
 	 */
 
 	while (1) {
-	    register char c = *src;
+	    char c = *src;
 
 	    if ((CHAR_TYPE(c) != TCL_SPACE) && (c != ';') && (c != '\n')) {
 		break;
@@ -518,7 +518,7 @@ Tcl_TclEval(interp, cmd)
 
     if ((result == TCL_ERROR) && !(iPtr->flags & ERR_ALREADY_LOGGED)) {
 	int numChars;
-	register char *p;
+	char *p;
 
 	/*
 	 * Compute the line number where the error occurred.

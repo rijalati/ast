@@ -329,7 +329,7 @@ static struct
 static int
 optinfo(Opt_t* op, Sfio_t* sp, const char* s, Optdisc_t* dp)
 {
-	register int	i;
+	int	i;
 
 	if (streq(s, "formats"))
 		for (i = 1; i < elementsof(keys); i++)
@@ -388,12 +388,12 @@ scale(int m, unsigned long w, unsigned long p)
  */
 
 static int
-key(void* handle, register Sffmt_t* fp, const char* arg, char** ps, Sflong_t* pn)
+key(void* handle, Sffmt_t* fp, const char* arg, char** ps, Sflong_t* pn)
 {
-	register Df_t*		df = (Df_t*)handle;
-	register char*		s = 0;
-	register Sflong_t	n = 0;
-	register Key_t*		kp;
+	Df_t*		df = (Df_t*)handle;
+	char*		s = 0;
+	Sflong_t	n = 0;
+	Key_t*		kp;
 	char*			t;
 
 	if (!fp->t_str)
@@ -652,9 +652,9 @@ entry(Df_t* df, const char* format)
 }
 
 int
-main(int argc, register char** argv)
+main(int argc, char** argv)
 {
-	register int	n;
+	int	n;
 	int		rem;
 	int		head;
 	int		i;

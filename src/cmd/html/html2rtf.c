@@ -81,7 +81,7 @@ State_t			state;
  */
 
 static Attribute_t*
-attribute(register Attribute_t* ap, const char* name)
+attribute(Attribute_t* ap, const char* name)
 {
 	if (ap)
 		for (; ap->name; ap++)
@@ -109,9 +109,9 @@ par(int hanging, const char* tail)
 }
 
 static void
-anchor(int ref, register char* s)
+anchor(int ref, char* s)
 {
-	register int	c;
+	int	c;
 
 	if (s)
 	{
@@ -451,11 +451,11 @@ start_img(Tag_t* tp, Attribute_t* ap)
  */
 
 static void
-roman(register int n, int format)
+roman(int n, int format)
 {
-	register char*	dig;
-	register int	i;
-	register int	m;
+	char*	dig;
+	int	i;
+	int	m;
 
 	dig = islower(format) ? "zwmdclxvi" : "ZWMDCLXVI";
 	if (n <= -40000 || n >= 40000)
@@ -593,7 +593,7 @@ start_ol(Tag_t* tp, Attribute_t* ap)
 static int
 start_p(Tag_t* tp, Attribute_t* ap)
 {
-	register char*	s;
+	char*	s;
 	Attribute_t*	op;
 
 	NoP(tp);
@@ -630,10 +630,10 @@ end_pre(Tag_t* tp, Attribute_t* ap)
 }
 
 static int
-start_rendering(register Tag_t* tp, Attribute_t* ap)
+start_rendering(Tag_t* tp, Attribute_t* ap)
 {
-	register Render_t*	rp;
-	register int		i;
+	Render_t*	rp;
+	int		i;
 
 	if (rp = (Render_t*)tp->data)
 		for (i = 0; i < rp->tags; i++)
@@ -643,10 +643,10 @@ start_rendering(register Tag_t* tp, Attribute_t* ap)
 }
 
 static int
-end_rendering(register Tag_t* tp, Attribute_t* ap)
+end_rendering(Tag_t* tp, Attribute_t* ap)
 {
-	register Render_t*	rp;
-	register int		i;
+	Render_t*	rp;
+	int		i;
 
 	if (rp = (Render_t*)tp->data)
 		for (i = rp->tags - 1; i > 0; i--)
@@ -656,12 +656,12 @@ end_rendering(register Tag_t* tp, Attribute_t* ap)
 }
 
 static int
-start_render(register Tag_t* tp, Attribute_t* ap)
+start_render(Tag_t* tp, Attribute_t* ap)
 {
-	register Render_t*	rp;
-	register char*		s;
-	register char*		e;
-	register int		n;
+	Render_t*	rp;
+	char*		s;
+	char*		e;
+	int		n;
 	Attribute_t*		op;
 
 	if ((op = attribute(ap, "TAG")) && (s = op->value))
@@ -774,7 +774,7 @@ end_td(Tag_t* tp, Attribute_t* ap)
 static int
 start_th(Tag_t* tp, Attribute_t* ap)
 {
-	register Attribute_t*	op;
+	Attribute_t*	op;
 
 	NoP(tp);
 	if (!(op = attribute(ap, "ALIGN")) || !op->value || *op->value != 'l' && *op->value != 'L')
@@ -886,14 +886,14 @@ end(Tag_t* tp, Attribute_t* ap)
 #define STRING	2
 
 static void
-process(char* file, register Sfio_t* ip, register Sfio_t* op)
+process(char* file, Sfio_t* ip, Sfio_t* op)
 {
-	register int	c;
-	register int	lastc;
-	register int	item;
-	register int	cc;
-	register int	tc;
-	register char*	s;
+	int	c;
+	int	lastc;
+	int	item;
+	int	cc;
+	int	tc;
+	char*	s;
 	int		lastlastc;
 	int		quote;
 	int		n;
@@ -1250,7 +1250,7 @@ project_list(const char* s, char* v, void* h)
 static void
 project(char* file)
 {
-	register char*	s;
+	char*	s;
 	Sfio_t*		fp;
 
 	if (state.files)
@@ -1475,9 +1475,9 @@ static const Tag_t tags[] =
 static unsigned int
 strcasehash(const char* s)
 {
-	register const unsigned char*	p = (const unsigned char*)s;
-	register unsigned int		h = 0;
-	register unsigned int		c;
+	const unsigned char*	p = (const unsigned char*)s;
+	unsigned int		h = 0;
+	unsigned int		c;
 
 	while (c = *p++)
 	{
@@ -1495,7 +1495,7 @@ strcasehash(const char* s)
 static void
 init(void)
 {
-	register int	i;
+	int	i;
 
 	if (!state.nul && !(state.nul = sfstropen()))
 		error(ERROR_SYSTEM|3, "out of space [nul buffer]");
@@ -1523,12 +1523,12 @@ init(void)
 int
 main(int argc, char** argv)
 {
-	register int		c;
-	register char*		s;
-	register char*		t;
-	register char*		u;
-	register Sfio_t*	ip;
-	register Sfio_t*	op;
+	int		c;
+	char*		s;
+	char*		t;
+	char*		u;
+	Sfio_t*	ip;
+	Sfio_t*	op;
 
 	NoP(argc);
 	error_info.id = "html2rtf";

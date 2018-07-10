@@ -29,7 +29,7 @@
 #define FLASH_DATA	"section_begin=archive"
 
 static int
-flash_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
+flash_getprologue(Pax_t* pax, Format_t* fp, Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
 {
 	unsigned char*	s;
 	unsigned char*	e;

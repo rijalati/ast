@@ -34,8 +34,8 @@
 Jclsym_t*
 jclsym(Jcl_t* jcl, const char* name, const char* value, int flags)
 {
-	register Jclsym_t*	v;
-	register int		n;
+	Jclsym_t*	v;
+	int		n;
 	int			imported;
 	const char*		set;
 	char*			e;

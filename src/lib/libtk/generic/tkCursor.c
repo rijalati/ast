@@ -106,7 +106,7 @@ Tk_GetCursor(interp, tkwin, string)
     NameKey nameKey;
     IdKey idKey;
     Tcl_HashEntry *nameHashPtr, *idHashPtr;
-    register TkCursor *cursorPtr;
+    TkCursor *cursorPtr;
     int new;
 
     if (!initialized) {
@@ -188,7 +188,7 @@ Tk_GetCursorFromData(interp, tkwin, source, mask, width, height,
     DataKey dataKey;
     IdKey idKey;
     Tcl_HashEntry *dataHashPtr, *idHashPtr;
-    register TkCursor *cursorPtr;
+    TkCursor *cursorPtr;
     int new;
     XColor fgColor, bgColor;
 
@@ -330,7 +330,7 @@ Tk_FreeCursor(display, cursor)
 {
     IdKey idKey;
     Tcl_HashEntry *idHashPtr;
-    register TkCursor *cursorPtr;
+    TkCursor *cursorPtr;
 
     if (!initialized) {
 	panic("Tk_FreeCursor called before Tk_GetCursor");

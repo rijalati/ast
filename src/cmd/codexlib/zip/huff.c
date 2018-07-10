@@ -62,17 +62,17 @@ int huff(
     ulg f;			/* i repeats in table every f entries */
     int g;			/* maximum code length */
     int h;			/* table level */
-    register ulg i;		/* counter, current code */
-    register ulg j;		/* counter */
-    register int k;		/* number of bits in current code */
+    ulg i;		/* counter, current code */
+    ulg j;		/* counter */
+    int k;		/* number of bits in current code */
     int lx[BMAX+1];		/* memory for l[-1..BMAX-1] */
     int *l = lx+1;		/* stack of bits per table */
-    register ulg *p;		/* pointer into c[], b[], or v[] */
-    register Huff_t *q;		/* points to current table */
+    ulg *p;		/* pointer into c[], b[], or v[] */
+    Huff_t *q;		/* points to current table */
     Huff_t r;			/* table entry for structure assignment */
     Huff_t *u[BMAX];		/* table stack */
     ulg v[N_MAX];		/* values in order of bit length */
-    register int w;		/* bits before this table == (l * h) */
+    int w;		/* bits before this table == (l * h) */
     ulg x[BMAX+1];		/* bit offsets, then code stack */
     ulg *xp;			/* pointer into x */
     int y;			/* number of dummy codes added */

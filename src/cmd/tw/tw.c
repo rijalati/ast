@@ -353,7 +353,7 @@ State_t			state;
 static void		intermediate(Ftw_t*, char*);
 
 static int
-urlcmp(register const char* p, register const char* s, int d)
+urlcmp(const char* p, const char* s, int d)
 {
 	int	pc;
 	int	sc;
@@ -395,7 +395,7 @@ urlcmp(register const char* p, register const char* s, int d)
  */
 
 static void
-act(register Ftw_t* ftw, int op)
+act(Ftw_t* ftw, int op)
 {
 	char*	s;
 	Sfio_t*	fp;
@@ -500,11 +500,11 @@ act(register Ftw_t* ftw, int op)
  */
 
 static void
-intermediate(register Ftw_t* ftw, register char* path)
+intermediate(Ftw_t* ftw, char* path)
 {
-	register char*	s;
-	register char*	t;
-	register int	c;
+	char*	s;
+	char*	t;
+	int	c;
 
 	if (!(ftw->info & FTW_D) || ftw->statb.st_nlink)
 	{
@@ -527,7 +527,7 @@ intermediate(register Ftw_t* ftw, register char* path)
  */
 
 static int
-tw(register Ftw_t* ftw)
+tw(Ftw_t* ftw)
 {
 	Local_t*	lp;
 
@@ -598,11 +598,11 @@ tw(register Ftw_t* ftw)
  */
 
 static int
-order(register Ftw_t* f1, register Ftw_t* f2)
+order(Ftw_t* f1, Ftw_t* f2)
 {
-	register Exnode_t*	x;
-	register Exnode_t*	y;
-	register int		v;
+	Exnode_t*	x;
+	Exnode_t*	y;
+	int		v;
 	long			n1;
 	long			n2;
 	int			icase;
@@ -668,10 +668,10 @@ order(register Ftw_t* f1, register Ftw_t* f2)
 }
 
 int
-main(int argc, register char** argv)
+main(int argc, char** argv)
 {
-	register int	n;
-	register char*	s;
+	int	n;
+	char*	s;
 	char*		args;
 	char*		codes;
 	char**		av;

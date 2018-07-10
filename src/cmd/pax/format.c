@@ -35,10 +35,10 @@ Format_t*		formats = pax_first_format;
  */
 
 int
-getprologue(register Archive_t* ap)
+getprologue(Archive_t* ap)
 {
-	register Format_t*	fp;
-	register File_t*	f = &ap->file;
+	Format_t*	fp;
+	File_t*	f = &ap->file;
 	off_t			skipped;
 	int			n;
 	unsigned char		buf[MAXUNREAD];
@@ -261,7 +261,7 @@ getprologue(register Archive_t* ap)
  */
 
 void
-setinfo(register Archive_t* ap, register File_t* f)
+setinfo(Archive_t* ap, File_t* f)
 {
 	long	n;
 
@@ -283,9 +283,9 @@ setinfo(register Archive_t* ap, register File_t* f)
  */
 
 void
-putinfo(register Archive_t* ap, char* file, unsigned long mtime, unsigned long checksum)
+putinfo(Archive_t* ap, char* file, unsigned long mtime, unsigned long checksum)
 {
-	register File_t*	f = &ap->file;
+	File_t*	f = &ap->file;
 	Sfio_t*			np = 0;
 	Delta_format_t*		dp;
 
@@ -321,7 +321,7 @@ putinfo(register Archive_t* ap, char* file, unsigned long mtime, unsigned long c
  */
 
 void
-putprologue(register Archive_t* ap, int append)
+putprologue(Archive_t* ap, int append)
 {
 	message((-6, "putprologue()"));
 	ap->section = SECTION_CONTROL;
@@ -347,11 +347,11 @@ putprologue(register Archive_t* ap, int append)
  */
 
 int
-getepilogue(register Archive_t* ap)
+getepilogue(Archive_t* ap)
 {
-	register char*	s;
-	register off_t	n;
-	register int	i;
+	char*	s;
+	off_t	n;
+	int	i;
 	unsigned int	z;
 	int		x;
 	char		buf[BLOCKSIZE];
@@ -428,10 +428,10 @@ getepilogue(register Archive_t* ap)
  */
 
 void
-putepilogue(register Archive_t* ap)
+putepilogue(Archive_t* ap)
 {
-	register ssize_t	n;
-	register off_t		boundary;
+	ssize_t	n;
+	off_t		boundary;
 
 	message((-6, "putepilogue()"));
 	if (state.install.path)
@@ -493,7 +493,7 @@ putepilogue(register Archive_t* ap)
 static void
 getkeyid(Archive_t* ap, File_t* f, int index, uid_t* ip, int d)
 {
-	register Option_t*	op;
+	Option_t*	op;
 
 	op = &options[index];
 	if (op->level < 7)
@@ -514,7 +514,7 @@ getkeyid(Archive_t* ap, File_t* f, int index, uid_t* ip, int d)
 static void
 getkeyname(Archive_t* ap, File_t* f, int index, char** sp, uid_t* ip, int d)
 {
-	register Option_t*	op;
+	Option_t*	op;
 
 	op = &options[index];
 	if (op->level < 7)
@@ -538,7 +538,7 @@ getkeyname(Archive_t* ap, File_t* f, int index, char** sp, uid_t* ip, int d)
 static void
 getkeysize(Archive_t* ap, File_t* f, int index, off_t* zp)
 {
-	register Option_t*	op;
+	Option_t*	op;
 
 	NoP(f);
 	op = &options[index];
@@ -564,8 +564,8 @@ getkeysize(Archive_t* ap, File_t* f, int index, off_t* zp)
 static void
 getkeytime(Archive_t* ap, File_t* f, int index)
 {
-	register Option_t*	op;
-	register Value_t*	vp;
+	Option_t*	op;
+	Value_t*	vp;
 	Tv_t			tv;
 
 	NoP(f);
@@ -610,9 +610,9 @@ getkeytime(Archive_t* ap, File_t* f, int index)
  */
 
 int
-getheader(register Archive_t* ap, register File_t* f)
+getheader(Archive_t* ap, File_t* f)
 {
-	register char*	s;
+	char*	s;
 	long		i;
 
 	message((-6, "getheader()"));
@@ -723,9 +723,9 @@ getheader(register Archive_t* ap, register File_t* f)
  */
 
 int
-putheader(register Archive_t* ap, register File_t* f)
+putheader(Archive_t* ap, File_t* f)
 {
-	register int	n;
+	int	n;
 
 	message((-6, "putheader()"));
 	if (!f->extended)
@@ -784,9 +784,9 @@ putheader(register Archive_t* ap, register File_t* f)
  */
 
 void
-gettrailer(register Archive_t* ap, File_t* f)
+gettrailer(Archive_t* ap, File_t* f)
 {
-	register off_t	n;
+	off_t	n;
 
 	message((-6, "gettrailer()"));
 	NoP(f);
@@ -813,9 +813,9 @@ gettrailer(register Archive_t* ap, File_t* f)
  */
 
 void
-puttrailer(register Archive_t* ap, register File_t* f)
+puttrailer(Archive_t* ap, File_t* f)
 {
-	register int	n;
+	int	n;
 	char*		s;
 
 	message((-6, "puttrailer()"));

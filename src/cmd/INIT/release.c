@@ -97,7 +97,7 @@ usage()
 #endif
 
 static unsigned long
-number(register char* s, char** e)
+number(char* s, char** e)
 {
 	unsigned long	q = 0;
 
@@ -111,10 +111,10 @@ number(register char* s, char** e)
 }
 
 unsigned long
-string(register char* s, char* tab, int num, int siz, char** e)
+string(char* s, char* tab, int num, int siz, char** e)
 {
-	register int	i;
-	register int	j;
+	int	i;
+	int	j;
 	char		buf[16];
 
 	while (isspace(*s))
@@ -193,9 +193,9 @@ date(char* s, char** e)
 int
 main(int argc, char** argv)
 {
-	register char*		s;
-	register char*		u;
-	register char*		v;
+	char*		s;
+	char*		u;
+	char*		v;
 	char*			p;
 	char*			e;
 	int			i;

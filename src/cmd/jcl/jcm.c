@@ -185,7 +185,7 @@ stash(const char* s)
 }
 
 static void
-lower(register char* s)
+lower(char* s)
 {
 	for (; *s; s++)
 		if (isupper(*s))
@@ -193,7 +193,7 @@ lower(register char* s)
 }
 
 static void
-upper(register char* s)
+upper(char* s)
 {
 	for (; *s; s++)
 		if (islower(*s))
@@ -201,9 +201,9 @@ upper(register char* s)
 }
 
 static char*
-copy(register char* t, register const char* s, size_t n)
+copy(char* t, const char* s, size_t n)
 {
-	register const char*	e = s + n;
+	const char*	e = s + n;
 
 	while (s < e && *s && *s != ' ')
 		*t++ = *s++;
@@ -212,12 +212,12 @@ copy(register char* t, register const char* s, size_t n)
 }
 
 static char*
-card(Sfio_t* sp, register unsigned char* map)
+card(Sfio_t* sp, unsigned char* map)
 {
-	register char*	s;
-	register char*	t;
-	register int 	c;
-	register int 	o;
+	char*	s;
+	char*	t;
+	int 	c;
+	int 	o;
 	size_t		z;
 	size_t		n;
 	size_t		m;
@@ -277,8 +277,8 @@ card(Sfio_t* sp, register unsigned char* map)
 static const char*
 prefix(const char* s, const char* e, int d)
 {
-	register Jcmvar_t*	v;
-	register int		n;
+	Jcmvar_t*	v;
+	int		n;
 	Jcmvar_t		var;
 
 	n = (e ? (e - s) : strlen(s)) + 1;
@@ -301,11 +301,11 @@ prefix(const char* s, const char* e, int d)
 }
 
 static char*
-parameterize(register Sfio_t* sp, register const char* s, register const char* e, int append, int index)
+parameterize(Sfio_t* sp, const char* s, const char* e, int append, int index)
 {
-	register int		c;
-	register int		d;
-	register const char*	t;
+	int		c;
+	int		d;
+	const char*	t;
 
 	if (e)
 		d = ' ';
@@ -373,7 +373,7 @@ parameterize(register Sfio_t* sp, register const char* s, register const char* e
 static Jcmevent_t*
 getevent(const char* s, const char* d, int uniq, int string, int index)
 {
-	register Jcmevent_t*	event;
+	Jcmevent_t*	event;
 
 	if (s)
 	{
@@ -402,7 +402,7 @@ getevent(const char* s, const char* d, int uniq, int string, int index)
 static Jcmjob_t*
 getjob(const char* s)
 {
-	register Jcmjob_t*	job;
+	Jcmjob_t*	job;
 
 	s = (const char*)parameterize(state.tmp, s, s + 8, 0, 0);
 	if (!(job = newof(0, Jcmjob_t, 1, strlen(s))))
@@ -419,7 +419,7 @@ getjob(const char* s)
 static Jcmvar_t*
 setvar(const char* s, const char* v, int init)
 {
-	register Jcmvar_t*	var;
+	Jcmvar_t*	var;
 
 	if (var = (Jcmvar_t*)dtmatch(state.vars, s))
 	{
@@ -443,9 +443,9 @@ setvar(const char* s, const char* v, int init)
 static Jcmlib_t*
 getlib(const char* s)
 {
-	register Jcmlib_t*	lib;
-	register Jcmvar_t*	var;
-	register char*		t;
+	Jcmlib_t*	lib;
+	Jcmvar_t*	var;
+	char*		t;
 	char			name[64];
 
 	copy(name, s, 44);
@@ -482,8 +482,8 @@ getlib(const char* s)
 static Jcmlist_t*
 append(Jcmlist_t* list, Jcmevent_t* event)
 {
-	register Jcmlist_t*	p;
-	register Jcmlist_t*	q;
+	Jcmlist_t*	p;
+	Jcmlist_t*	q;
 
 	for (p = list; p; p = p->next)
 	{
@@ -504,9 +504,9 @@ append(Jcmlist_t* list, Jcmevent_t* event)
 }
 
 static void
-assert(register Jcmjob_t* job, register Jcmlist_t* reqs, register Jcmlist_t* raise, register Jcmlist_t* clear, Jcmevent_t* group)
+assert(Jcmjob_t* job, Jcmlist_t* reqs, Jcmlist_t* raise, Jcmlist_t* clear, Jcmevent_t* group)
 {
-	register Jcmevent_t*	event;
+	Jcmevent_t*	event;
 
 	event = getevent(job ? sfprints("JOB-%s", job->name) : NiL, NiL, 1, 1, 0);
 	event->job = job;
@@ -520,10 +520,10 @@ assert(register Jcmjob_t* job, register Jcmlist_t* reqs, register Jcmlist_t* rai
 static int
 init(const char* path)
 {
-	register char*	s;
-	register char*	t;
-	register char*	e;
-	register int	i;
+	char*	s;
+	char*	t;
+	char*	e;
+	int	i;
 	Sfio_t*		sp;
 	char*		file;
 	size_t		line;
@@ -580,10 +580,10 @@ init(const char* path)
 }
 
 static void
-dump(Sfio_t* sp, register Jcmevent_t* event)
+dump(Sfio_t* sp, Jcmevent_t* event)
 {
-	register Jcmlist_t*	p;
-	register Jcmset_t*	v;
+	Jcmlist_t*	p;
+	Jcmset_t*	v;
 
 	event->mark = 1;
 	sfprintf(sp, "%s : .VIRTUAL", event->name);
@@ -640,16 +640,16 @@ dump(Sfio_t* sp, register Jcmevent_t* event)
 int
 main(int argc, char** argv)
 {
-	register char*		file;
-	register char*		s;
-	register char*		t;
-	register Jcmcard_t*	cp;
-	register Jcmevent_t*	ep;
-	register Jcmevent_t*	group;
-	register Jcmjob_t*	job;
-	register Jcmlist_t*	clear;
-	register Jcmlist_t*	raise;
-	register Jcmlist_t*	reqs;
+	char*		file;
+	char*		s;
+	char*		t;
+	Jcmcard_t*	cp;
+	Jcmevent_t*	ep;
+	Jcmevent_t*	group;
+	Jcmjob_t*	job;
+	Jcmlist_t*	clear;
+	Jcmlist_t*	raise;
+	Jcmlist_t*	reqs;
 	Jcmcard_t*		firstcard;
 	Jcmcard_t*		lastcard;
 	Jcmset_t*		set;

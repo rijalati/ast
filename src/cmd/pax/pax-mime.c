@@ -35,9 +35,9 @@ typedef struct Mime_s
 } Mime_t;
 
 static int
-mime_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
+mime_getprologue(Pax_t* pax, Format_t* fp, Archive_t* ap, File_t* f, unsigned char* buf, size_t size)
 {
-	register Mime_t*	mime;
+	Mime_t*	mime;
 	char*			s;
 	char*			t;
 	size_t			n;
@@ -66,7 +66,7 @@ mime_getprologue(Pax_t* pax, Format_t* fp, register Archive_t* ap, File_t* f, un
 }
 
 static int
-mime_done(Pax_t* pax, register Archive_t* ap)
+mime_done(Pax_t* pax, Archive_t* ap)
 {
 	if (ap->data)
 	{
@@ -77,12 +77,12 @@ mime_done(Pax_t* pax, register Archive_t* ap)
 }
 
 static int
-mime_getheader(Pax_t* pax, Archive_t* ap, register File_t* f)
+mime_getheader(Pax_t* pax, Archive_t* ap, File_t* f)
 {
-	register Mime_t*	mime = (Mime_t*)ap->data;
-	register char*		s;
-	register char*		t;
-	register char*		v;
+	Mime_t*	mime = (Mime_t*)ap->data;
+	char*		s;
+	char*		t;
+	char*		v;
 	off_t			m;
 	off_t			b;
 	size_t			n;

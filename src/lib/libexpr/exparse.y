@@ -178,7 +178,7 @@ action_list	:	/* empty */
 		;
 
 action		:	LABEL ':' {
-				register Dtdisc_t*	disc;
+				Dtdisc_t*	disc;
 
 				if (expr.procedure)
 					exerror("no nested function definitions");
@@ -303,7 +303,7 @@ statement	:	'{' statement_list '}'
 		}
 		|	SWITCH '(' expr {expr.declare=$3->type;} ')' '{' switch_list '}'
 		{
-			register Switch_t*	sw = expr.swstate;
+			Switch_t*	sw = expr.swstate;
 
 			$$ = exnewnode(expr.program, $1->index, 1, INTEGER, $3, exnewnode(expr.program, DEFAULT, 1, 0, sw->defcase, sw->firstcase));
 			expr.swstate = expr.swstate->prev;
@@ -343,7 +343,7 @@ statement	:	'{' statement_list '}'
 
 switch_list	:	/* empty */
 		{
-			register Switch_t*		sw;
+			Switch_t*		sw;
 			int				n;
 
 			if (expr.swstate)
@@ -377,7 +377,7 @@ switch_list	:	/* empty */
 
 switch_item	:	case_list statement_list
 		{
-			register Switch_t*	sw = expr.swstate;
+			Switch_t*	sw = expr.swstate;
 			int			n;
 
 			$$ = exnewnode(expr.program, CASE, 1, 0, $2, NiL);
@@ -786,7 +786,7 @@ expr		:	'(' expr ')'
 		}
 		|	scan '(' args ')'
 		{
-			register Exnode_t*	x;
+			Exnode_t*	x;
 
 			$$ = exnewnode(expr.program, $1->index, 0, $1->type, NiL, NiL);
 			if ($3 && $3->data.operand.left->type == INTEGER)
@@ -1016,8 +1016,8 @@ formal_list	:	formal_item
 		}
 		|	formal_list ',' formal_item
 		{
-			register Exnode_t*	x;
-			register Exnode_t*	y;
+			Exnode_t*	x;
+			Exnode_t*	y;
 
 			$$ = $1;
 			for (x = $1; y = x->data.operand.right; x = y);
@@ -1075,7 +1075,7 @@ assign		:	/* empty */
 
 initialize	:	assign
 		|	'(' {
-				register Dtdisc_t*	disc;
+				Dtdisc_t*	disc;
 
 				if (expr.procedure)
 					exerror("%s: nested function definitions not supported", expr.id->name);

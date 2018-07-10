@@ -102,7 +102,7 @@ static int		TagSortProc _ANSI_ARGS_((CONST VOID *first,
 
 int
 TkTextTagCmd(textPtr, interp, argc, argv)
-    register TkText *textPtr;	/* Information about text widget. */
+    TkText *textPtr;	/* Information about text widget. */
     Tcl_Interp *interp;		/* Current interpreter. */
     int argc;			/* Number of arguments. */
     char **argv;		/* Argument strings.  Someone else has already
@@ -112,7 +112,7 @@ TkTextTagCmd(textPtr, interp, argc, argv)
     int c, i, addTag;
     size_t length;
     char *fullOption;
-    register TkTextTag *tagPtr;
+    TkTextTag *tagPtr;
     TkTextIndex first, last, index1, index2;
 
     if (argc < 3) {
@@ -760,7 +760,7 @@ TkTextCreateTag(textPtr, tagName)
     TkText *textPtr;		/* Widget in which tag is being used. */
     char *tagName;		/* Name of desired tag. */
 {
-    register TkTextTag *tagPtr;
+    TkTextTag *tagPtr;
     Tcl_HashEntry *hPtr;
     int new;
 
@@ -877,7 +877,7 @@ FindTag(interp, textPtr, tagName)
 void
 TkTextFreeTag(textPtr, tagPtr)
     TkText *textPtr;			/* Info about overall widget. */
-    register TkTextTag *tagPtr;		/* Tag being deleted. */
+    TkTextTag *tagPtr;		/* Tag being deleted. */
 {
     if (tagPtr->border != None) {
 	Tk_Free3DBorder(tagPtr->border);
@@ -963,7 +963,7 @@ SortTags(numTags, tagArrayPtr)
     TkTextTag **tagArrayPtr;	/* Pointer to array of pointers. */
 {
     int i, j, prio;
-    register TkTextTag **tagPtrPtr;
+    TkTextTag **tagPtrPtr;
     TkTextTag **maxPtrPtr, *tmp;
 
     if (numTags < 2) {
@@ -1049,7 +1049,7 @@ ChangeTagPriority(textPtr, tagPtr, prio)
     int prio;				/* New priority for tag. */
 {
     int low, high, delta;
-    register TkTextTag *tagPtr2;
+    TkTextTag *tagPtr2;
     Tcl_HashEntry *hPtr;
     Tcl_HashSearch search;
 
@@ -1209,7 +1209,7 @@ TkTextBindProc(clientData, eventPtr)
 
 void
 TkTextPickCurrent(textPtr, eventPtr)
-    register TkText *textPtr;		/* Text widget in which to select
+    TkText *textPtr;		/* Text widget in which to select
 					 * current character. */
     XEvent *eventPtr;			/* Event describing location of
 					 * mouse cursor.  Must be EnterWindow,

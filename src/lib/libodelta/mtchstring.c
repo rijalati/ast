@@ -29,7 +29,7 @@
 
 static void freemem(long* n_index, char*** index)
 {
-	register int i;
+	int i;
 	if(n_index && index)
 	{
 		for(i = 0; i < ALPHA; ++i)
@@ -43,7 +43,7 @@ static void freemem(long* n_index, char*** index)
 /* initial assumptions: src[0] == tar[0] && src+n_match <= endsrc */
 static long domatch(char* src, char* endsrc, char* tar, char* endtar, long n_match)
 {
-	register char	*sp, *tp;
+	char	*sp, *tp;
 
 	/* see if this really improves on the current match */
 	for(sp = src+n_match, tp = tar+n_match; sp > src; --sp, --tp)
@@ -67,9 +67,9 @@ long	mtchstring(char* src, long n_src, char* tar, long n_tar, char** match)
 {
 	char		*endsrc, *endtar;
 	long		n_match;
-	register int	i;
-	register long	n_ind;
-	register char	**ind;
+	int	i;
+	long	n_ind;
+	char	**ind;
 	static long	*N_index = 0;
 	static char	*Cursrc = 0, ***Index = 0;
 	static int	Alloced = 0;
@@ -97,7 +97,7 @@ long	mtchstring(char* src, long n_src, char* tar, long n_tar, char** match)
 		Alloced = 1;
 		if(N_index = (long*) malloc(ALPHA*sizeof(long)))
 		{
-			register char	*sp;
+			char	*sp;
 
 			memzero(N_index,ALPHA*sizeof(long));
 			if(!(Index = (char ***) malloc(ALPHA*sizeof(char**))))
@@ -144,7 +144,7 @@ long	mtchstring(char* src, long n_src, char* tar, long n_tar, char** match)
 	n_match = 0;
 	while(1)
 	{
-		register long m;
+		long m;
 
 		if(ind)
 		{

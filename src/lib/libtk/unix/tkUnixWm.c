@@ -350,7 +350,7 @@ void
 TkWmNewWindow(winPtr)
     TkWindow *winPtr;		/* Newly-created top-level window. */
 {
-    register WmInfo *wmPtr;
+    WmInfo *wmPtr;
 
     wmPtr = (WmInfo *) ckalloc(sizeof(WmInfo));
     wmPtr->winPtr = winPtr;
@@ -453,7 +453,7 @@ TkWmMapWindow(winPtr)
     TkWindow *winPtr;		/* Top-level window that's about to
 				 * be mapped. */
 {
-    register WmInfo *wmPtr = winPtr->wmInfoPtr;
+    WmInfo *wmPtr = winPtr->wmInfoPtr;
 #if !Ancient
     XTextProperty textProp;
 
@@ -595,7 +595,7 @@ void
 TkWmDeadWindow(winPtr)
     TkWindow *winPtr;		/* Top-level window that's being deleted. */
 {
-    register WmInfo *wmPtr = winPtr->wmInfoPtr;
+    WmInfo *wmPtr = winPtr->wmInfoPtr;
     WmInfo *wmPtr2;
 
     if (wmPtr == NULL) {
@@ -604,7 +604,7 @@ TkWmDeadWindow(winPtr)
     if (firstWmPtr == wmPtr) {
 	firstWmPtr = wmPtr->nextPtr;
     } else {
-	register WmInfo *prevPtr;
+	WmInfo *prevPtr;
 
 	for (prevPtr = firstWmPtr; ; prevPtr = prevPtr->nextPtr) {
 	    if (prevPtr == NULL) {
@@ -720,7 +720,7 @@ Tk_WmCmd(clientData, interp, argc, argv)
 {
     Tk_Window tkwin = (Tk_Window) clientData;
     TkWindow *winPtr;
-    register WmInfo *wmPtr;
+    WmInfo *wmPtr;
     int c;
     size_t length;
 
@@ -1479,7 +1479,7 @@ Tk_WmCmd(clientData, interp, argc, argv)
 	goto updateGeom;
     } else if ((c == 'p') && (strncmp(argv[1], "protocol", length) == 0)
 	    && (length >= 2)) {
-	register ProtocolHandler *protPtr, *prevPtr;
+	ProtocolHandler *protPtr, *prevPtr;
 	Atom protocol;
 	int cmdLength;
 
@@ -1766,7 +1766,7 @@ Tk_SetGrid(tkwin, reqWidth, reqHeight, widthInc, heightInc)
 				 * change of one grid unit. */
 {
     TkWindow *winPtr = (TkWindow *) tkwin;
-    register WmInfo *wmPtr;
+    WmInfo *wmPtr;
 
     /*
      * Find the top-level window for tkwin, plus the window manager
@@ -1858,7 +1858,7 @@ Tk_UnsetGrid(tkwin)
 				 * controlling gridding. */
 {
     TkWindow *winPtr = (TkWindow *) tkwin;
-    register WmInfo *wmPtr;
+    WmInfo *wmPtr;
 
     /*
      * Find the top-level window for tkwin, plus the window manager
@@ -1921,7 +1921,7 @@ ConfigureEvent(winPtr, configEventPtr)
     XConfigureEvent *configEventPtr;	/* Event that just occurred for
 					 * winPtr. */
 {
-    register WmInfo *wmPtr = winPtr->wmInfoPtr;
+    WmInfo *wmPtr = winPtr->wmInfoPtr;
 
     /* 
      * Update size information from the event.  There are a couple of
@@ -2052,7 +2052,7 @@ ReparentEvent(winPtr, reparentEventPtr)
     XReparentEvent *reparentEventPtr;	/* Event that just occurred for
 					 * winPtr. */
 {
-    register WmInfo *wmPtr = winPtr->wmInfoPtr;
+    WmInfo *wmPtr = winPtr->wmInfoPtr;
     Window vRoot, ancestor, *children, dummy2, *virtualRootPtr;
     Atom actualType;
     int actualFormat;
@@ -2183,7 +2183,7 @@ ComputeReparentGeometry(winPtr)
     TkWindow *winPtr;		/* Top-level window whose reparent info
 				 * is to be recomputed. */
 {
-    register WmInfo *wmPtr = winPtr->wmInfoPtr;
+    WmInfo *wmPtr = winPtr->wmInfoPtr;
     int width, height, bd;
     unsigned int dummy;
     int xOffset, yOffset, x, y;
@@ -2283,7 +2283,7 @@ TopLevelEventProc(clientData, eventPtr)
     ClientData clientData;		/* Window for which event occurred. */
     XEvent *eventPtr;			/* Event that just happened. */
 {
-    register TkWindow *winPtr = (TkWindow *) clientData;
+    TkWindow *winPtr = (TkWindow *) clientData;
 
     winPtr->wmInfoPtr->flags |= WM_VROOT_OFFSET_STALE;
     if (eventPtr->type == DestroyNotify) {
@@ -2405,8 +2405,8 @@ static void
 UpdateGeometryInfo(clientData)
     ClientData clientData;		/* Pointer to the window's record. */
 {
-    register TkWindow *winPtr = (TkWindow *) clientData;
-    register WmInfo *wmPtr = winPtr->wmInfoPtr;
+    TkWindow *winPtr = (TkWindow *) clientData;
+    WmInfo *wmPtr = winPtr->wmInfoPtr;
     int x, y, width, height;
     unsigned long serial;
 
@@ -2556,7 +2556,7 @@ static void
 UpdateSizeHints(winPtr)
     TkWindow *winPtr;
 {
-    register WmInfo *wmPtr = winPtr->wmInfoPtr;
+    WmInfo *wmPtr = winPtr->wmInfoPtr;
     XSizeHints *hintsPtr;
     int maxWidth, maxHeight;
 
@@ -3010,10 +3010,10 @@ ParseGeometry(interp, string, winPtr)
     TkWindow *winPtr;		/* Pointer to top-level window whose
 				 * geometry is to be changed. */
 {
-    register WmInfo *wmPtr = winPtr->wmInfoPtr;
+    WmInfo *wmPtr = winPtr->wmInfoPtr;
     int x, y, width, height, flags;
     char *end;
-    register char *p = string;
+    char *p = string;
 
     /*
      * The leading "=" is optional.
@@ -3137,7 +3137,7 @@ Tk_GetRootCoords(tkwin, xPtr, yPtr)
     int *yPtr;			/* Where to store y-displacement of (0,0). */
 {
     int x, y;
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
     /*
      * Search back through this window's parents all the way to a
@@ -3189,8 +3189,8 @@ Tk_CoordsToWindow(rootX, rootY, tkwin)
 {
     Window rootChild, root, vRoot;
     int dummy1, dummy2;
-    register WmInfo *wmPtr;
-    register TkWindow *winPtr, *childPtr;
+    WmInfo *wmPtr;
+    TkWindow *winPtr, *childPtr;
     TkWindow *nextPtr;		/* Coordinates of highest child found so
 				 * far that contains point. */
     int x, y;			/* Coordinates in winPtr. */
@@ -3440,7 +3440,7 @@ Tk_MoveToplevelWindow(tkwin, x, y)
 				 * parent). */
 {
     TkWindow *winPtr = (TkWindow *) tkwin;
-    register WmInfo *wmPtr = winPtr->wmInfoPtr;
+    WmInfo *wmPtr = winPtr->wmInfoPtr;
 
     if (!(winPtr->flags & TK_TOP_LEVEL)) {
 	panic("Tk_MoveToplevelWindow called with non-toplevel window");
@@ -3489,9 +3489,9 @@ Tk_MoveToplevelWindow(tkwin, x, y)
 
 static void
 UpdateWmProtocols(wmPtr)
-    register WmInfo *wmPtr;	/* Information about top-level window. */
+    WmInfo *wmPtr;	/* Information about top-level window. */
 {
-    register ProtocolHandler *protPtr;
+    ProtocolHandler *protPtr;
     Atom deleteWindowAtom;
     int count;
     Atom *arrayPtr, *atomPtr;
@@ -3551,7 +3551,7 @@ TkWmProtocolEventProc(winPtr, eventPtr)
     XEvent *eventPtr;		/* X event. */
 {
     WmInfo *wmPtr;
-    register ProtocolHandler *protPtr;
+    ProtocolHandler *protPtr;
     Atom protocol;
     int result;
     char *protocolName;

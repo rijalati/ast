@@ -53,8 +53,8 @@ USAGE_LICENSE
 int
 main(int argc, char** argv)
 {
-	register char*		s;
-	register Sfio_t*	sp;
+	char*		s;
+	Sfio_t*	sp;
 
 	NoP(argc);
 	error_info.id = "nocom";

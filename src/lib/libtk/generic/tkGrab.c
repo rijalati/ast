@@ -412,7 +412,7 @@ Tk_Grab(interp, tkwin, grabGlobal)
 	 * managers that can cause grabs to fail because the window
 	 * manager hasn't released its grab quickly enough.  To work
 	 * around this problem, retry a few times after AlreadyGrabbed
-	 * errors to give the grab release enough time to register with
+	 * errors to give the grab release enough time to with
 	 * the server.
 	 */
 
@@ -589,7 +589,7 @@ Tk_Ungrab(tkwin)
 
 static void
 ReleaseButtonGrab(dispPtr)
-    register TkDisplay *dispPtr;	/* Display whose button grab is to be
+    TkDisplay *dispPtr;	/* Display whose button grab is to be
 					 * released. */
 {
     unsigned int serial;
@@ -635,11 +635,11 @@ ReleaseButtonGrab(dispPtr)
 
 int
 TkPointerEvent(eventPtr, winPtr)
-    register XEvent *eventPtr;		/* Pointer to the event. */
+    XEvent *eventPtr;		/* Pointer to the event. */
     TkWindow *winPtr;			/* Tk's information for window
 					 * where event was reported. */
 {
-    register TkWindow *winPtr2;
+    TkWindow *winPtr2;
     TkDisplay *dispPtr = winPtr->dispPtr;
     unsigned int serial;
     int outsideGrabTree = 0;
@@ -858,14 +858,14 @@ TkPointerEvent(eventPtr, winPtr)
 
 void
 TkChangeEventWindow(eventPtr, winPtr)
-    register XEvent *eventPtr;	/* Event to retarget.  Must have
+    XEvent *eventPtr;	/* Event to retarget.  Must have
 				 * type ButtonPress, ButtonRelease, KeyPress,
 				 * KeyRelease, MotionNotify, EnterNotify,
 				 * or LeaveNotify. */
     TkWindow *winPtr;		/* New target window for event. */
 {
     int x, y, sameScreen, bd;
-    register TkWindow *childPtr;
+    TkWindow *childPtr;
 
     eventPtr->xmotion.window = Tk_WindowId(winPtr);
     if (eventPtr->xmotion.root ==
@@ -946,7 +946,7 @@ TkInOutEvents(eventPtr, sourcePtr, destPtr, leaveType, enterType, position)
     Tcl_QueuePosition position;	/* Position at which events are added to
 				 * the system event queue. */
 {
-    register TkWindow *winPtr;
+    TkWindow *winPtr;
     int upLevels, downLevels, i, j, focus;
 
     /*
@@ -1146,7 +1146,7 @@ MovePointer2(sourcePtr, destPtr, mode, leaveEvents, enterEvents)
 
 void
 TkGrabDeadWindow(winPtr)
-    register TkWindow *winPtr;		/* Window that is in the process
+    TkWindow *winPtr;		/* Window that is in the process
 					 * of being deleted. */
 {
     TkDisplay *dispPtr = winPtr->dispPtr;
@@ -1375,7 +1375,7 @@ FindCommonAncestor(winPtr1, winPtr2, countPtr1, countPtr2)
     int *countPtr2;		/* Store nesting level of winPtr2 within
 				 * common ancestor here. */
 {
-    register TkWindow *winPtr;
+    TkWindow *winPtr;
     TkWindow *ancestorPtr;
     int count1, count2, i;
 

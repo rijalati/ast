@@ -44,10 +44,10 @@ typedef struct
  */
 
 char*
-stream(int type, register char* name)
+stream(int type, char* name)
 {
-	register int	fd;
-	register char*	path;
+	int	fd;
+	char*	path;
 
 	if ((fd = csopen("/dev/tcp/local/normal", CS_OPEN_CREATE)) < 0)
 		error(ERROR_SYSTEM|3, "%s: cannot create connect stream", name);
@@ -186,10 +186,10 @@ misccmp(char* vp, int op, char* sb, char* se)
 static long
 miscget(Coshell_t* sp, const char* as, int set, char** e, char* rep)
 {
-	register char*	s = (char*)as;
-	register char*	cp;
-	register char*	np;
-	register int	c;
+	char*	s = (char*)as;
+	char*	cp;
+	char*	np;
+	int	c;
 	unsigned long	x;
 	int		no;
 	int		op;
@@ -493,10 +493,10 @@ miscget(Coshell_t* sp, const char* as, int set, char** e, char* rep)
  */
 
 void
-attributes(register char* s, register Coattr_t* p, Coattr_t* d)
+attributes(char* s, Coattr_t* p, Coattr_t* d)
 {
-	register char*	b;
-	register char*	v;
+	char*	b;
+	char*	v;
 	char*		e;
 	char*		r;
 	char*		u;
@@ -905,7 +905,7 @@ attributes(register char* s, register Coattr_t* p, Coattr_t* d)
  */
 
 void
-miscadd(Coshell_t* sp, register char* s)
+miscadd(Coshell_t* sp, char* s)
 {
 	char*	tp;
 

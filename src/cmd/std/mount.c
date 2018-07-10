@@ -205,11 +205,11 @@ matchcmp(Dt_t* dt, void* k1, void* k2, Dtdisc_t* disc)
 }
 
 static void
-matchset(register char* s, int flags)
+matchset(char* s, int flags)
 {
-	register int		c;
-	register char*		b;
-	register Match_t*	p;
+	int		c;
+	char*		b;
+	Match_t*	p;
 
 	if (!state.match)
 	{
@@ -290,7 +290,7 @@ matchtype(char* s)
 }
 
 static void
-mountop(register Mnt_t* mnt, char* options)
+mountop(Mnt_t* mnt, char* options)
 {
 	char*	s;
 	int	n;
@@ -313,10 +313,10 @@ mountop(register Mnt_t* mnt, char* options)
 }
 
 int
-main(int argc, register char** argv)
+main(int argc, char** argv)
 {
-	register char*	s;
-	register Mnt_t*	mnt;
+	char*	s;
+	Mnt_t*	mnt;
 	const char*	usage;
 	void*		mp;
 	char*		p;
@@ -504,9 +504,9 @@ main(int argc, register char** argv)
 #else
 
 int
-main(int argc, register char** argv)
+main(int argc, char** argv)
 {
-	register char*	s;
+	char*	s;
 
 	if (s = strrchr(*argv, '/'))
 		s++;

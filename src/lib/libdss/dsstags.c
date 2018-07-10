@@ -127,7 +127,7 @@ dss_field_end(Tag_t* tag, Tagframe_t* fp, Tagdisc_t* disc)
 static int
 dss_compress_dat(Tag_t* tag, Tagframe_t* fp, const char* data, Tagdisc_t* disc)
 {
-	register Dsstagdisc_t*	state = (Dsstagdisc_t*)disc;
+	Dsstagdisc_t*	state = (Dsstagdisc_t*)disc;
 
 	if (!(state->meth->compress = strdup(data)))
 	{
@@ -141,7 +141,7 @@ dss_compress_dat(Tag_t* tag, Tagframe_t* fp, const char* data, Tagdisc_t* disc)
 static int
 dss_print_dat(Tag_t* tag, Tagframe_t* fp, const char* data, Tagdisc_t* disc)
 {
-	register Dsstagdisc_t*	state = (Dsstagdisc_t*)disc;
+	Dsstagdisc_t*	state = (Dsstagdisc_t*)disc;
 
 	if (!(state->meth->print = strdup(data)))
 	{
@@ -213,7 +213,7 @@ map_part_item_mask_dat(Tag_t* tag, Tagframe_t* fp, const char* data, Tagdisc_t* 
 static int
 map_part_item_value_dat(Tag_t* tag, Tagframe_t* fp, const char* data, Tagdisc_t* disc)
 {
-	register Dsstagdisc_t*	state = (Dsstagdisc_t*)disc;
+	Dsstagdisc_t*	state = (Dsstagdisc_t*)disc;
 	char*			e;
 	Cxoperand_t		r;
 
@@ -428,7 +428,7 @@ map_part_beg(Tag_t* tag, Tagframe_t* fp, const char* name, Tagdisc_t* disc)
 static int
 map_name_dat(Tag_t* tag, Tagframe_t* fp, const char* data, Tagdisc_t* disc)
 {
-	register Dsstagdisc_t*	state = (Dsstagdisc_t*)disc;
+	Dsstagdisc_t*	state = (Dsstagdisc_t*)disc;
 	Cxmap_t*		map;
 	Cxmap_t*		ref;
 
@@ -556,7 +556,7 @@ dss_map_beg(Tag_t* tag, Tagframe_t* fp, const char* name, Tagdisc_t* disc)
 int
 dss_map_dat(Tag_t* tag, Tagframe_t* fp, const char* data, Tagdisc_t* disc)
 {
-	register Dsstagdisc_t*	state = (Dsstagdisc_t*)disc;
+	Dsstagdisc_t*	state = (Dsstagdisc_t*)disc;
 	Cxmap_t*		map;
 
 	if (!(map = cxmap(NiL, data, state->disc)))
@@ -609,7 +609,7 @@ constraint_def(Tag_t* tag, Tagframe_t* fp, Tagdisc_t* disc)
 static int
 constraint_name_dat(Tag_t* tag, Tagframe_t* fp, const char* data, Tagdisc_t* disc)
 {
-	register Dsstagdisc_t*	state = (Dsstagdisc_t*)disc;
+	Dsstagdisc_t*	state = (Dsstagdisc_t*)disc;
 	Cxconstraint_t*		con;
 
 	if (!(con = constraint_def(tag, fp, disc)))
@@ -816,7 +816,7 @@ dss_con_beg(Tag_t* tag, Tagframe_t* fp, const char* name, Tagdisc_t* disc)
 int
 dss_con_dat(Tag_t* tag, Tagframe_t* fp, const char* data, Tagdisc_t* disc)
 {
-	register Dsstagdisc_t*	state = (Dsstagdisc_t*)disc;
+	Dsstagdisc_t*	state = (Dsstagdisc_t*)disc;
 
 	if (fp->data)
 	{

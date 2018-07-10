@@ -35,7 +35,7 @@
  */
 
 unsigned long
-csport(register Cs_t* state, const char* type, const char* serv)
+csport(Cs_t* state, const char* type, const char* serv)
 {
 	unsigned long	n;
 	char*		t;

@@ -67,8 +67,8 @@ lmd_block(Sum_t* p, const void* s, size_t n)
 static int
 lmd_done(Sum_t* p)
 {
-	register Lmd_t*	lmd = (Lmd_t*)p;
-	register int	i;
+	Lmd_t*	lmd = (Lmd_t*)p;
+	int	i;
 
 	(*lmd->finalf)(lmd->data, &lmd->context);
 	for (i = 0; i < lmd->datasize; i++)
@@ -77,11 +77,11 @@ lmd_done(Sum_t* p)
 }
 
 static int
-lmd_print(Sum_t* p, Sfio_t* sp, register int flags, size_t scale)
+lmd_print(Sum_t* p, Sfio_t* sp, int flags, size_t scale)
 {
-	register Lmd_t*		lmd = (Lmd_t*)p;
-	register unsigned char*	d;
-	register int		i;
+	Lmd_t*		lmd = (Lmd_t*)p;
+	unsigned char*	d;
+	int		i;
 
 	d = (flags & SUM_TOTAL) ? lmd->total : lmd->data;
 	for (i = 0; i < lmd->datasize; i++)

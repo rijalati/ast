@@ -33,16 +33,16 @@ static const char id[] = "\n@(#)$Id: mamtst (gsf@research.att.com) 1992-08-11 $\
 #include <error.h>
 
 static void
-dumprule(register struct rule* r)
+dumprule(struct rule* r)
 {
 	sfprintf(sfstdout, "\t%s\n", r->name);
 }
 
 static void
-dumpproc(register struct proc* pp)
+dumpproc(struct proc* pp)
 {
-	register struct list*	p;
-	register struct proc*	cp;
+	struct list*	p;
+	struct proc*	cp;
 
 	if (pp->parent) sfputc(sfstdout, '\n');
 	sfprintf(sfstdout, "process %s pid %d ppid %d start %lu finish %lu status %d\n", pp->pwd, pp->pid, pp->parent ? pp->parent->pid : 0, pp->start, pp->finish, pp->status);
@@ -54,7 +54,7 @@ dumpproc(register struct proc* pp)
 
 main(int argc, char** argv)
 {
-	register int	c;
+	int	c;
 	struct mam*	mp;
 
 	NoP(argc);

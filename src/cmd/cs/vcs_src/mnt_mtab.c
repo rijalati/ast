@@ -38,7 +38,7 @@ int add_entry(mpoint, cmd)
 	char*	mpoint;
 	char*	cmd;
 {
-	register entry_t*	entry;
+	entry_t*	entry;
 
 	if (mpoint == NULL || cmd == NULL)
 			return (-1);	
@@ -53,9 +53,9 @@ int add_entry(mpoint, cmd)
 
 #define hashrm(tbl, name)	hashlook(tbl, name, HASH_DELETE, (char *) 0)
 int rm_entry(mpoint)
-	register char*	mpoint;
+	char*	mpoint;
 {
-	register entry_t* entry;
+	entry_t* entry;
 	
 	if (istate.mtab == NULL)
 		return (1);
@@ -73,8 +73,8 @@ int im_restart(argc, argv)
 	int	argc;
 	char**  argv;
 {
-	register char*	s;
-	register int	n;
+	char*	s;
+	int	n;
 	int		fd;
 	int 		do_call();
 
@@ -107,7 +107,7 @@ int do_call(mpoint, value, dump)
 	caddr_t value;
 	caddr_t dump;
 {
-	register char*	vcscmd;
+	char*	vcscmd;
 	char		reply[1024 *2];
 
 	if (istate.mtab == NULL)

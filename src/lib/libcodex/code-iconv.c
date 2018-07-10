@@ -38,9 +38,9 @@ typedef struct State_s
 static int
 cc_options(Codexmeth_t* meth, Sfio_t* sp)
 {
-	register iconv_list_t*	ic;
-	register const char*	p;
-	register int		c;
+	iconv_list_t*	ic;
+	const char*	p;
+	int		c;
 
 	for (ic = iconv_list(NiL); ic; ic = iconv_list(ic))
 	{
@@ -155,7 +155,7 @@ cc_close(Codex_t* p)
 static ssize_t
 cc_read(Sfio_t* sp, void* buf, size_t n, Sfdisc_t* disc)
 {
-	register State_t*	state = (State_t*)((Codex_t*)disc)->data;
+	State_t*	state = (State_t*)((Codex_t*)disc)->data;
 	char*			fb;
 	char*			tb;
 	size_t			fn;
@@ -195,7 +195,7 @@ cc_read(Sfio_t* sp, void* buf, size_t n, Sfdisc_t* disc)
 static ssize_t
 cc_write(Sfio_t* sp, const void* buf, size_t n, Sfdisc_t* disc)
 {
-	register State_t*	state = (State_t*)((Codex_t*)disc)->data;
+	State_t*	state = (State_t*)((Codex_t*)disc)->data;
 	char*			fb;
 	char*			tb;
 	size_t			fn;

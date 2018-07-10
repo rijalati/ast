@@ -101,10 +101,10 @@ static const unsigned char	ascii_text[] =
 };
 
 static int
-text(unsigned char* map, register unsigned char* b, ssize_t n)
+text(unsigned char* map, unsigned char* b, ssize_t n)
 {
-	register unsigned char*	e;
-	register int		c;
+	unsigned char*	e;
+	int		c;
 
 	if (n > 256)
 		n = 256;
@@ -127,10 +127,10 @@ text(unsigned char* map, register unsigned char* b, ssize_t n)
  */
 
 static int
-blokread(register Archive_t* ap, char* buf, int n)
+blokread(Archive_t* ap, char* buf, int n)
 {
-	register int		i;
-	register int		j;
+	int		i;
+	int		j;
 	char			c;
 
 	if (!ap->io->blokflag)
@@ -182,11 +182,11 @@ blokread(register Archive_t* ap, char* buf, int n)
 }
 
 static int
-blokwrite(register Archive_t* ap, char* buf, int n)
+blokwrite(Archive_t* ap, char* buf, int n)
 {
-	register char*	s;
-	register int	i;
-	register int	j;
+	char*	s;
+	int	i;
+	int	j;
 	char		blk[9];
 
 	if (ap->io->blok)
@@ -271,7 +271,7 @@ bstatus(Bio_t* io)
  */
 
 void
-binit(register Archive_t* ap)
+binit(Archive_t* ap)
 {
 	unsigned long	n;
 	unsigned long	u;
@@ -300,7 +300,7 @@ binit(register Archive_t* ap)
  */
 
 int
-bskip(register Archive_t* ap)
+bskip(Archive_t* ap)
 {
 	long		c;
 	int		skip = ap->io->skip;
@@ -374,9 +374,9 @@ bskip(register Archive_t* ap)
  */
 
 static int
-bfill(register Archive_t* ap, int must)
+bfill(Archive_t* ap, int must)
 {
-	register int	c;
+	int	c;
 
 	if (ap->io->eof)
 		return -1;
@@ -405,7 +405,7 @@ bfill(register Archive_t* ap, int must)
  */
 
 static void
-chunk(register Archive_t* ap, char* t, char* f, register size_t n, char* o)
+chunk(Archive_t* ap, char* t, char* f, size_t n, char* o)
 {
 	if (ap->sum > 0)
 	{
@@ -433,13 +433,13 @@ chunk(register Archive_t* ap, char* t, char* f, register size_t n, char* o)
  */
 
 off_t
-bread(register Archive_t* ap, void* ob, off_t n, off_t m, int must)
+bread(Archive_t* ap, void* ob, off_t n, off_t m, int must)
 {
-	register char*		s = (char*)ob;
-	register ssize_t	c;
+	char*		s = (char*)ob;
+	ssize_t	c;
 	char*			b;
-	register off_t		r;
-	register off_t		z;
+	off_t		r;
+	off_t		z;
 
 	if (ap->io->eof)
 		return -1;
@@ -531,7 +531,7 @@ bread(register Archive_t* ap, void* ob, off_t n, off_t m, int must)
  */
 
 void
-bunread(register Archive_t* ap, void* b, register int n)
+bunread(Archive_t* ap, void* b, int n)
 {
 	ap->io->eof = 0;
 	ap->io->count -= n;
@@ -554,9 +554,9 @@ bunread(register Archive_t* ap, void* b, register int n)
  */
 
 char*
-bget(register Archive_t* ap, register off_t n, off_t* p)
+bget(Archive_t* ap, off_t n, off_t* p)
 {
-	register char*	b;
+	char*	b;
 	char*		t;
 	size_t		i;
 	size_t		j;
@@ -651,7 +651,7 @@ bget(register Archive_t* ap, register off_t n, off_t* p)
  */
 
 void
-bsave(register Archive_t* ap)
+bsave(Archive_t* ap)
 {
 	state.backup = *ap->io;
 	message((-7, "bsave(%s,@%I*d)", ap->name, sizeof(ap->io->count), ap->io->count));
@@ -664,10 +664,10 @@ bsave(register Archive_t* ap)
  */
 
 void
-backup(register Archive_t* ap)
+backup(Archive_t* ap)
 {
-	register off_t	n;
-	register off_t	m;
+	off_t	n;
+	off_t	m;
 #ifdef MTIOCTOP
 	struct mtop	mt;
 #endif
@@ -714,7 +714,7 @@ backup(register Archive_t* ap)
  */
 
 void
-bflushin(register Archive_t* ap, int hard)
+bflushin(Archive_t* ap, int hard)
 {
 	ap->io->count += ap->io->last - ap->io->next;
 	ap->io->next = ap->io->last = ap->io->buffer + ap->io->unread;
@@ -730,7 +730,7 @@ bflushin(register Archive_t* ap, int hard)
  */
 
 off_t
-bseek(register Archive_t* ap, off_t pos, int op, int hard)
+bseek(Archive_t* ap, off_t pos, int op, int hard)
 {
 	off_t	l;
 	off_t	u;
@@ -779,10 +779,10 @@ bseek(register Archive_t* ap, off_t pos, int op, int hard)
  */
 
 void
-bflushout(register Archive_t* ap)
+bflushout(Archive_t* ap)
 {
-	register int	n;
-	register int	c;
+	int	n;
+	int	c;
 
 	if (n = ap->io->next - (ap->io->buffer + ap->io->unread))
 	{
@@ -809,10 +809,10 @@ bflushout(register Archive_t* ap)
  */
 
 void
-bwrite(register Archive_t* ap, void* ab, register off_t n)
+bwrite(Archive_t* ap, void* ab, off_t n)
 {
-	register char*	b = (char*)ab;
-	register long	c;
+	char*	b = (char*)ab;
+	long	c;
 	long		an;
 
 	if (!ap->raw)
@@ -915,7 +915,7 @@ bwrite(register Archive_t* ap, void* ab, register off_t n)
  */
 
 void
-bput(register Archive_t* ap, register off_t n)
+bput(Archive_t* ap, off_t n)
 {
 	ap->io->count += n;
 	message((-7, "bput(%s,%I*d@%I*d): %s", ap->name, sizeof(n), n, sizeof(ap->io->count), ap->io->count, show(ap->io->next, n)));
@@ -968,7 +968,7 @@ static struct
  */
 
 static int
-devpath(register Ftw_t* ftw)
+devpath(Ftw_t* ftw)
 {
 	if (ftw->info == FTW_F && ftw->statb.st_rdev == dev.st->st_rdev && S_ISCHR(ftw->statb.st_mode) == S_ISCHR(dev.st->st_mode))
 	{
@@ -1007,10 +1007,10 @@ interactive(void)
  */
 
 void
-newio(register Archive_t* ap, int c, int n)
+newio(Archive_t* ap, int c, int n)
 {
-	register char*	s;
-	register char*	rw;
+	char*	s;
+	char*	rw;
 	char*		file;
 	char*		io;
 	char*		t;

@@ -100,7 +100,7 @@ long_init(Sum_t* p)
 static int
 long_done(Sum_t* p)
 {
-	register Integral_t*	x = (Integral_t*)p;
+	Integral_t*	x = (Integral_t*)p;
 
 	x->total_sum ^= (x->sum &= 0xffffffff);
 	return 0;
@@ -109,19 +109,19 @@ long_done(Sum_t* p)
 static int
 short_done(Sum_t* p)
 {
-	register Integral_t*	x = (Integral_t*)p;
+	Integral_t*	x = (Integral_t*)p;
 
 	x->total_sum ^= (x->sum &= 0xffff);
 	return 0;
 }
 
 static int
-long_print(Sum_t* p, Sfio_t* sp, register int flags, size_t scale)
+long_print(Sum_t* p, Sfio_t* sp, int flags, size_t scale)
 {
-	register Integral_t*	x = (Integral_t*)p;
-	register uint32_t	c;
-	register uintmax_t	z;
-	register size_t		n;
+	Integral_t*	x = (Integral_t*)p;
+	uint32_t	c;
+	uintmax_t	z;
+	size_t		n;
 
 	c = (flags & SUM_TOTAL) ? x->total_sum : x->sum;
 	sfprintf(sp, "%.*I*u", (flags & SUM_LEGACY) ? 5 : 1, sizeof(c), c);
@@ -140,7 +140,7 @@ long_print(Sum_t* p, Sfio_t* sp, register int flags, size_t scale)
 static int
 long_data(Sum_t* p, Sumdata_t* data)
 {
-	register Integral_t*	x = (Integral_t*)p;
+	Integral_t*	x = (Integral_t*)p;
 
 	data->size = sizeof(data->num);
 	data->num = x->sum;
@@ -238,9 +238,9 @@ static const Map_t	maps[] =
  */
 
 static int
-match(register const char* s, register const char* p)
+match(const char* s, const char* p)
 {
-	register const char*	b = s;
+	const char*	b = s;
 
 	for (;;)
 	{
@@ -272,7 +272,7 @@ match(register const char* s, register const char* p)
  */
 
 Sum_t*
-sumopen(register const char* name)
+sumopen(const char* name)
 {
 	Sum_t*	sum;
 	int	n;
@@ -367,8 +367,8 @@ sumclose(Sum_t* p)
 int
 sumusage(Sfio_t* sp)
 {
-	register int	i;
-	register int	n;
+	int	i;
+	int	n;
 
 	for (i = n = 0; i < elementsof(methods); i++)
 	{

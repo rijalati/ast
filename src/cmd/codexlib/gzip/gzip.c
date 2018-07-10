@@ -39,7 +39,7 @@ gzip_ident(Codexmeth_t* meth, const void* head, size_t headsize, char* name, siz
 static int
 gzip_open(Codex_t* p, char* const args[], Codexnum_t flags)
 {
-	register State_t*	state;
+	State_t*	state;
 	const char*		s;
 	char*			e;
 	int			i;

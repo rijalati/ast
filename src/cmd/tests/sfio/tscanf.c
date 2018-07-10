@@ -58,7 +58,7 @@ Void_t*		vp;
 Sffmt_t*	dp;
 #endif
 {
-	register Fmt_t*		fmt = (Fmt_t*)dp;
+	Fmt_t*		fmt = (Fmt_t*)dp;
 
 	dp->flags |= SFFMT_VALUE;
 	*((Void_t**)vp) = fmt->args[fmt->arg++];

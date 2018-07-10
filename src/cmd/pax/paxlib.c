@@ -149,7 +149,7 @@ paxnospace(Pax_t* pax)
 static ssize_t
 part_read(Sfio_t* sp, void* buf, size_t n, Sfdisc_t* disc)
 {
-	register Part_t*	part = (Part_t*)disc;
+	Part_t*	part = (Part_t*)disc;
 	ssize_t			r;
 
 	if (part->n <= 0)
@@ -164,7 +164,7 @@ part_read(Sfio_t* sp, void* buf, size_t n, Sfdisc_t* disc)
 static ssize_t
 part_write(Sfio_t* sp, const void* buf, size_t n, Sfdisc_t* disc)
 {
-	register Part_t*	part = (Part_t*)disc;
+	Part_t*	part = (Part_t*)disc;
 	ssize_t			r;
 
 	if ((r = paxwrite(part->pax, part->ap, buf, n)) > 0)
@@ -175,7 +175,7 @@ part_write(Sfio_t* sp, const void* buf, size_t n, Sfdisc_t* disc)
 static Sfio_t*
 paxpart(Pax_t* pax, Paxarchive_t* ap, off_t n)
 {
-	register Part_t*	part;
+	Part_t*	part;
 
 	static int		fd = -1;
 
@@ -215,7 +215,7 @@ paxpart(Pax_t* pax, Paxarchive_t* ap, off_t n)
  */
 
 void
-paxinit(register Pax_t* pax, const char* id)
+paxinit(Pax_t* pax, const char* id)
 {
 	pax->id = id;
 	pax->errorf = errorf;

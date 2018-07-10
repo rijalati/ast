@@ -86,7 +86,7 @@ typedef struct Dir_s
 
 typedef struct Num_s
 {
-	char*		name;		/* register name		*/
+	char*		name;		/* name		*/
 	char		value[64];	/* representation value		*/
 	long		number;		/* numeric value		*/
 	int		flags;		/* TAG_* flags (yes)		*/

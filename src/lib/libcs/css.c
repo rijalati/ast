@@ -81,11 +81,11 @@ done(void)
  */
 
 static void
-drop(Css_t* css, register Cspoll_t* pp)
+drop(Css_t* css, Cspoll_t* pp)
 {
-	register Cssfd_t*	ip;
-	register int		fd;
-	register int		user;
+	Cssfd_t*	ip;
+	int		fd;
+	int		user;
 
 	if (!css)
 		css = state.main;
@@ -125,7 +125,7 @@ drop(Css_t* css, register Cspoll_t* pp)
 Css_t*
 cssopen(const char* path, Cssdisc_t* disc)
 {
-	register Css_t*		css;
+	Css_t*		css;
 	int			type;
 	int			n;
 	char*			s;
@@ -339,13 +339,13 @@ cssopen(const char* path, Cssdisc_t* disc)
  */
 
 int
-cssclose(register Css_t* css)
+cssclose(Css_t* css)
 {
-	register Css_t*		pss;
-	register Css_t*		xss;
-	register Css_t*		oss;
-	register int		i;
-	register int		k;
+	Css_t*		pss;
+	Css_t*		xss;
+	Css_t*		oss;
+	int		i;
+	int		k;
 
 	static char		mnt[] =
 	{
@@ -423,13 +423,13 @@ cssclose(register Css_t* css)
  */
 
 Cssfd_t*
-cssfd(register Css_t* css, register int fd, unsigned long op)
+cssfd(Css_t* css, int fd, unsigned long op)
 {
-	register Cssfd_t*	ip;
-	register Cspoll_t*	pp;
-	register int		n;
-	register int		nfd;
-	register int		cmd;
+	Cssfd_t*	ip;
+	Cspoll_t*	pp;
+	int		n;
+	int		nfd;
+	int		cmd;
 	int			flags;
 #if DEBUG
 	int			ofd = fd;
@@ -598,11 +598,11 @@ cssfd(register Css_t* css, register int fd, unsigned long op)
 Cssfd_t*
 csspoll(unsigned long ms, unsigned long flags)
 {
-	register Css_t*		css;
-	register Cspoll_t*	pp;
-	register Cssfd_t*	ip;
-	register Auth_t*	ap;
-	register int		fd;
+	Css_t*		css;
+	Cspoll_t*	pp;
+	Cssfd_t*	ip;
+	Auth_t*	ap;
+	int		fd;
 	char*			s;
 	char*			t;
 	int			n;

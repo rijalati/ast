@@ -52,9 +52,9 @@ static struct Convstate_s
 static char*	expand(char*, char*);
 
 static char*
-editcontext(register char* beg, register char* cur)
+editcontext(char* beg, char* cur)
 {
-	register char*	s;
+	char*	s;
 
 	static char	buf[EXBUF];
 
@@ -68,13 +68,13 @@ editcontext(register char* beg, register char* cur)
 #define DEL	(del==':'?state.delimiter:del)
 
 static char*
-expandops(register char* xp, register char* ed, int del)
+expandops(char* xp, char* ed, int del)
 {
-	register int			c;
-	register char*			s;
-	register int			op;
-	register const Edit_map_t*	mp;
-	register const Edit_opt_t*	fp;
+	int			c;
+	char*			s;
+	int			op;
+	const Edit_map_t*	mp;
+	const Edit_opt_t*	fp;
 	const Edit_map_t*		zp;
 	Edit_map_t* const*		mpp;
 	char*				dir;
@@ -691,10 +691,10 @@ expandops(register char* xp, register char* ed, int del)
  */
 
 static char*
-expandvar(register char* xp, register char* v)
+expandvar(char* xp, char* v)
 {
-	register int	c;
-	register char*	s;
+	int	c;
+	char*	s;
 
 	switch (c = *v++)
 	{
@@ -800,10 +800,10 @@ expandvar(register char* xp, register char* v)
  */
 
 static char*
-expand(register char* xp, register char* a)
+expand(char* xp, char* a)
 {
-	register int	c;
-	register char*	s;
+	int	c;
+	char*	s;
 	int		del;
 	int		p;
 	int		q;
@@ -959,8 +959,8 @@ expand(register char* xp, register char* a)
 static int
 byop(const char* a, const char* b)
 {
-	register Edit_map_t*	ap = (Edit_map_t*)a;
-	register Edit_map_t*	bp = (Edit_map_t*)b;
+	Edit_map_t*	ap = (Edit_map_t*)a;
+	Edit_map_t*	bp = (Edit_map_t*)b;
 
 	if (ap->cmd.type == ED_QUAL) return(-1);
 	if (bp->cmd.type == ED_QUAL) return(1);
@@ -979,8 +979,8 @@ byop(const char* a, const char* b)
 
 main(int argc, char** argv)
 {
-	register char*	s;
-	register int	c;
+	char*	s;
+	int	c;
 	Edit_map_t*	mp;
 	Edit_map_t**	mpp;
 	Sfio_t*		ip;

@@ -36,9 +36,9 @@ static const char id[] = "\n@(#)$Id: mamstate (AT&T Bell Laboratories) 1989-06-2
 #include <sys/stat.h>
 
 int
-main(int argc, register char** argv)
+main(int argc, char** argv)
 {
-	register char*	s;
+	char*	s;
 	char*		id;
 	unsigned long	ref;
 	struct stat	st;

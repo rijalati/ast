@@ -28,10 +28,10 @@
 #include <dlldefs.h>
 
 int
-pzlib(register Pz_t* pz, register const char* name, int ignore)
+pzlib(Pz_t* pz, const char* name, int ignore)
 {
-	register Pzdll_t*	dll;
-	register Pzdllpz_t*	pzs;
+	Pzdll_t*	dll;
+	Pzdllpz_t*	pzs;
 	char*			id;
 	char			buf[64];
 	char			path[PATH_MAX];

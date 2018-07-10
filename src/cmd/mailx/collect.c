@@ -146,7 +146,7 @@ collstop(int sig)
 static int
 exwrite(char* name, FILE* fp, int f)
 {
-	register FILE*	of;
+	FILE*	of;
 	off_t		cc;
 	off_t		lc;
 
@@ -232,7 +232,7 @@ pipemessage(FILE* fp, char* cmd)
 static char*
 deadletter(void)
 {
-	register char*	s;
+	char*	s;
 
 	if ((s = expand(state.var.dead, 1)) && *s != '/') {
 		sfprintf(state.path.temp, "~/%s", s);
@@ -252,8 +252,8 @@ deadletter(void)
 static int
 interpolate(char* ms, FILE* fp, int f, int followup)
 {
-	register struct msg*	mp;
-	register struct msg*	ip;
+	struct msg*	mp;
+	struct msg*	ip;
 	Dt_t**			ignore;
 	char*			prefix;
 	unsigned long		flags;
@@ -338,8 +338,8 @@ part(FILE* fp, char* name, char* type, int code)
 FILE*
 collect(struct header* hp, unsigned long flags)
 {
-	register char*	s;
-	register int	n;
+	char*	s;
+	int	n;
 	int		ask;
 	int		c;
 	int		eofcount;

@@ -68,7 +68,7 @@ static unsigned short c = C;
 
 static void multadd(unsigned short x[3], unsigned short a[3], unsigned short c)
 {
-	register unsigned long r = c;
+	unsigned long r = c;
 	unsigned short x2 = x[2];
 	unsigned short x1 = x[1];
 	r += a[2]*x2;

@@ -59,7 +59,7 @@ static struct
 } state;
 
 static int
-gen(register int m)
+gen(int m)
 {
 	int	c;
 
@@ -75,10 +75,10 @@ gen(register int m)
 
 main(int argc, char** argv)
 {
-	register unsigned int	c;
-	register unsigned int	i;
-	register unsigned int	k;
-	register unsigned long	n;
+	unsigned int	c;
+	unsigned int	i;
+	unsigned int	k;
+	unsigned long	n;
 	int			newline = 0;
 	char*			e;
 

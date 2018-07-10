@@ -41,10 +41,10 @@ typedef struct Ciscov6state_s
 static int
 ciscov6ident(Dssfile_t* file, void* buf, size_t n, Dssdisc_t* disc)
 {
-	register char*		s;
-	register char*		e;
-	register char*		f;
-	register int		c;
+	char*		s;
+	char*		e;
+	char*		f;
+	int		c;
 	char*			v;
 	int			m;
 
@@ -91,8 +91,8 @@ ciscov6ident(Dssfile_t* file, void* buf, size_t n, Dssdisc_t* disc)
 static int
 ciscov6open(Dssfile_t* file, Dssdisc_t* disc)
 {
-	register char*			v = file->caller;
-	register Ciscov6state_t*	state;
+	char*			v = file->caller;
+	Ciscov6state_t*	state;
 
 	if (!(state = vmnewof(file->dss->vm, 0, Ciscov6state_t, 1, 0)))
 	{
@@ -118,11 +118,11 @@ ciscov6open(Dssfile_t* file, Dssdisc_t* disc)
  */
 
 static int
-ciscov6read(register Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
+ciscov6read(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register Ciscov6state_t*	state = (Ciscov6state_t*)file->data;
-	register Bgproute_t*		rp;
-	register char*			s;
+	Ciscov6state_t*	state = (Ciscov6state_t*)file->data;
+	Bgproute_t*		rp;
+	char*			s;
 	int				o;
 	int				p;
 	char*				t;
@@ -196,12 +196,12 @@ static int
 ciscov6write(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
 #if 0
-	register Ciscov6state_t*	state = (Ciscov6state_t*)file->data;
-	register Bgproute_t*	rp = (Bgproute_t*)record->data;
-	register Sfio_t*	io = file->io;
-	register int		i;
-	register int		j;
-	register int		k;
+	Ciscov6state_t*	state = (Ciscov6state_t*)file->data;
+	Bgproute_t*	rp = (Bgproute_t*)record->data;
+	Sfio_t*	io = file->io;
+	int		i;
+	int		j;
+	int		k;
 	Bgpasn_t*		ap;
 	Bgpnum_t*		np;
 

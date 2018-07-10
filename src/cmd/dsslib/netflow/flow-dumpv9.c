@@ -41,7 +41,7 @@
 static int
 dumpv9ident(Dssfile_t* file, void* buf, size_t n, Dssdisc_t* disc)
 {
-	register unsigned char*		b = buf;
+	unsigned char*		b = buf;
 
 	return n >= 20 && BE2(b) == 9 && (n = BE2(b)) >= 1 && n <= 255;
 }
@@ -72,14 +72,14 @@ dumpv9fopen(Dssfile_t* file, Dssdisc_t* disc)
  */
 
 static int
-dumpv9fread(register Dssfile_t* file, register Dssrecord_t* record, Dssdisc_t* disc)
+dumpv9fread(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register Netflow_file_t*	pp = (Netflow_file_t*)file->data;
-	register Netflow_method_t*	mp = (Netflow_method_t*)file->dss->data;
-	register Netflow_t*		rp = &pp->record;
-	register Netflow_template_t*	tp;
-	register Netflow_template_t*	bp;
-	register Netflow_field_t*	fp;
+	Netflow_file_t*	pp = (Netflow_file_t*)file->data;
+	Netflow_method_t*	mp = (Netflow_method_t*)file->dss->data;
+	Netflow_t*		rp = &pp->record;
+	Netflow_template_t*	tp;
+	Netflow_template_t*	bp;
+	Netflow_field_t*	fp;
 	int				n;
 	int				m;
 	int				k;

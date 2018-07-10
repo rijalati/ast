@@ -34,7 +34,7 @@
  */
 
 static int
-byprefix(Dt_t* dt, register Ptprefix_t* a, register Ptprefix_t* b, Dtdisc_t* disc)
+byprefix(Dt_t* dt, Ptprefix_t* a, Ptprefix_t* b, Dtdisc_t* disc)
 {
 	NoP(dt);
 	NoP(disc);
@@ -47,9 +47,9 @@ byprefix(Dt_t* dt, register Ptprefix_t* a, register Ptprefix_t* b, Dtdisc_t* dis
 }
 
 static void*
-makef(Dt_t* dt, register Ptprefix_t* a, Dtdisc_t* disc)
+makef(Dt_t* dt, Ptprefix_t* a, Dtdisc_t* disc)
 {
-	register Ptprefix_t*	b;
+	Ptprefix_t*	b;
 
 	if (b = oldof(0, Ptprefix_t, 1, 0))
 	{
@@ -115,8 +115,8 @@ ptclose(Pt_t* a)
 Ptprefix_t*
 ptinsert(Pt_t* tab, Ptaddr_t min, Ptaddr_t max)
 {
-	register Ptprefix_t*	xp;
-	register Ptprefix_t*	pp;
+	Ptprefix_t*	xp;
+	Ptprefix_t*	pp;
 	Ptprefix_t		key;
 
 	tab->entries++;
@@ -156,7 +156,7 @@ ptinsert(Pt_t* tab, Ptaddr_t min, Ptaddr_t max)
 int
 ptdelete(Pt_t* tab, Ptaddr_t min, Ptaddr_t max)
 {
-	register Ptprefix_t*	xp;
+	Ptprefix_t*	xp;
 	Ptprefix_t		key;
 	Ptprefix_t		cur;
 

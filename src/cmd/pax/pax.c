@@ -185,9 +185,9 @@ interrupt(int sig)
  */
 
 static void
-substitute(Map_t** lastmap, register char* s)
+substitute(Map_t** lastmap, char* s)
 {
-	register Map_t*	mp;
+	Map_t*	mp;
 	int		c;
 
 	for (;;)
@@ -248,12 +248,12 @@ meterror(int fd, const void* buf, size_t n)
 static Filter_t*
 action(const char* command, int pattern)
 {
-	register Filter_t*	fp;
-	register char*		s;
-	register char*		t;
-	register int		c;
-	register int		q;
-	register int		n;
+	Filter_t*	fp;
+	char*		s;
+	char*		t;
+	int		c;
+	int		q;
+	int		n;
 	regex_t*		re;
 
 	s = (char*)command;
@@ -344,7 +344,7 @@ action(const char* command, int pattern)
 Filter_t*
 filter(Archive_t* ap, File_t* f)
 {
-	register Filter_t*	fp;
+	Filter_t*	fp;
 
 	if (f->st->st_size && (fp = state.filter.list))
 		do
@@ -1324,7 +1324,7 @@ matchopt(const char* name, const char* pattern, Option_t* op)
 static void
 ignore(void)
 {
-	register Option_t*	op;
+	Option_t*	op;
 	Hash_position_t*	pos;
 	char*			all;
 	char*			ext;
@@ -1357,10 +1357,10 @@ ignore(void)
  */
 
 static void
-listformat(register Sfio_t* sp, register Format_t* fp)
+listformat(Sfio_t* sp, Format_t* fp)
 {
-	register const char*	p;
-	register int		c;
+	const char*	p;
+	int		c;
 
 	sfprintf(sp, "[+%s", fp->name);
 	if (p = fp->match)
@@ -1407,11 +1407,11 @@ listformat(register Sfio_t* sp, register Format_t* fp)
 static int
 optinfo(Opt_t* op, Sfio_t* sp, const char* s, Optdisc_t* dp)
 {
-	register Format_t*	fp;
-	register iconv_list_t*	ic;
-	register const char*	p;
-	register int		i;
-	register int		c;
+	Format_t*	fp;
+	iconv_list_t*	ic;
+	const char*	p;
+	int		i;
+	int		c;
 	Ardirmeth_t*		ar;
 
 	switch (*s)
@@ -1513,9 +1513,9 @@ optinfo(Opt_t* op, Sfio_t* sp, const char* s, Optdisc_t* dp)
 int
 main(int argc, char** argv)
 {
-	register int		i;
-	register char*		s;
-	register Archive_t*	ap;
+	int		i;
+	char*		s;
+	Archive_t*	ap;
 	char*			p;
 	Hash_position_t*	pos;
 	Option_t*		op;
@@ -1959,13 +1959,13 @@ main(int argc, char** argv)
 void
 finish(int code)
 {
-	register Archive_t*	ap;
+	Archive_t*	ap;
 	size_t			x = state.buffersize / 4;
-	register char*		x1 = &state.tmp.buffer[0];
-	register char*		x2 = x1 + x;
-	register char*		x3 = x2 + x;
-	register char*		x4 = x3 + x;
-	register off_t		n;
+	char*		x1 = &state.tmp.buffer[0];
+	char*		x2 = x1 + x;
+	char*		x3 = x2 + x;
+	char*		x4 = x3 + x;
+	off_t		n;
 
 	while (state.proc)
 	{
@@ -2036,9 +2036,9 @@ finish(int code)
 char*
 release(void)
 {
-	register char*	b;
-	register char*	s;
-	register char*	t;
+	char*	b;
+	char*	s;
+	char*	t;
 
 	if ((s = strchr(usage, '@')) && (t = strchr(s, '\n')) && (b = fmtbuf(t - s + 1)))
 	{

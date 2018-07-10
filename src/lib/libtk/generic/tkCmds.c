@@ -841,7 +841,7 @@ Tk_WinfoCmd(clientData, interp, argc, argv)
     size_t length;
     char c, *argName;
     Tk_Window window;
-    register TkWindow *winPtr;
+    TkWindow *winPtr;
 
 #define SETUP(name) \
     if (argc != 3) {\

@@ -32,12 +32,12 @@
 int
 msgindex(const char* name)
 {
-	register const char**	lo;
-	register const char**	hi;
-	register const char**	mid;
-	register unsigned char*	n;
-	register unsigned char*	m;
-	register int		v;
+	const char**	lo;
+	const char**	hi;
+	const char**	mid;
+	unsigned char*	n;
+	unsigned char*	m;
+	int		v;
 
  again:
 	lo = msg_info.name;

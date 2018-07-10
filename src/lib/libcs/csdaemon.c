@@ -37,10 +37,10 @@
 #include <sig.h>
 
 int
-csdaemon(register Cs_t* state, int fds)
+csdaemon(Cs_t* state, int fds)
 {
-	register int	fd;
-	register int	i;
+	int	fd;
+	int	i;
 	int		oerrno;
 
 	messagef((state->id, NiL, -8, "daemon(%o) call", fds));

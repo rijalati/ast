@@ -37,7 +37,7 @@ typedef struct State_s
 static int
 E00(int index, Rsobj_t* rp, Rsobj_t* dp, void** data)
 {
-	register State_t*	state;
+	State_t*	state;
 	char*			s;
 	int			x;
 	char			env[32];

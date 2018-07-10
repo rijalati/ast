@@ -527,7 +527,7 @@ static State_t		state;
 static int
 optinfo(Opt_t* op, Sfio_t* sp, const char* s, Optdisc_t* dp)
 {
-	register int	i;
+	int	i;
 
 	if (streq(s, "formats"))
 		for (i = 1; i < elementsof(keys); i++)
@@ -557,13 +557,13 @@ ttyid(const char* name)
  */
 
 static int
-key(void* handle, register Sffmt_t* fp, const char* arg, char** ps, Sflong_t* pn)
+key(void* handle, Sffmt_t* fp, const char* arg, char** ps, Sflong_t* pn)
 {
-	register Ps_t*		pp = (Ps_t*)handle;
-	register char*		s = 0;
-	register Sflong_t	n = 0;
-	register Key_t*		kp;
-	register int		i;
+	Ps_t*		pp = (Ps_t*)handle;
+	char*		s = 0;
+	Sflong_t	n = 0;
+	Key_t*		kp;
+	int		i;
 	int			j;
 	unsigned long		u;
 
@@ -825,11 +825,11 @@ key(void* handle, register Sffmt_t* fp, const char* arg, char** ps, Sflong_t* pn
 static void
 ps(Ps_t* pp)
 {
-	register Key_t*		kp;
-	register Pssent_t*	pr;
-	register char*		s;
-	register int		i;
-	register long		n;
+	Key_t*		kp;
+	Pssent_t*	pr;
+	char*		s;
+	int		i;
+	long		n;
 	unsigned long		u;
 	int			j;
 	char			sbuf[2];
@@ -1012,7 +1012,7 @@ ps(Ps_t* pp)
  */
 
 static void
-kids(register Ps_t* pp, int level)
+kids(Ps_t* pp, int level)
 {
 	if (state.tree)
 	{
@@ -1036,9 +1036,9 @@ kids(register Ps_t* pp, int level)
 static void
 list(void)
 {
-	register Ps_t*	pp;
-	register Ps_t*	xp;
-	register Ps_t*	zp;
+	Ps_t*	pp;
+	Ps_t*	xp;
+	Ps_t*	zp;
 	Ps_t*		rp;
 
 	if (state.children || state.parents)
@@ -1120,8 +1120,8 @@ list(void)
 static void
 head(void)
 {
-	register int	n;
-	register Key_t*	kp;
+	int	n;
+	Key_t*	kp;
 
 	if (state.fields)
 	{
@@ -1172,9 +1172,9 @@ head(void)
 static int
 byorder(Dt_t* dt, void* a, void* b, Dtdisc_t* disc)
 {
-	register Ps_t*	pa = (Ps_t*)a;
-	register Ps_t*	pb = (Ps_t*)b;
-	register int	i;
+	Ps_t*	pa = (Ps_t*)a;
+	Ps_t*	pb = (Ps_t*)b;
+	int	i;
 
 	NoP(dt);
 	NoP(disc);
@@ -1202,11 +1202,11 @@ byorder(Dt_t* dt, void* a, void* b, Dtdisc_t* disc)
  */
 
 static void
-addpid(Pssent_t* pe, register char* s)
+addpid(Pssent_t* pe, char* s)
 {
-	register char*		t;
-	register Ps_t*		pp;
-	register int		c;
+	char*		t;
+	Ps_t*		pp;
+	int		c;
 	char*			e;
 	Pss_id_t		pid;
 	long			n;
@@ -1255,10 +1255,10 @@ addpid(Pssent_t* pe, register char* s)
  */
 
 static void
-addid(register char* s, int index, int (*getid)(const char*))
+addid(char* s, int index, int (*getid)(const char*))
 {
-	register char*	t;
-	register int	c;
+	char*	t;
+	int	c;
 	char*		e;
 	long		n;
 	unsigned long	field;
@@ -1315,11 +1315,11 @@ addid(register char* s, int index, int (*getid)(const char*))
 static void
 addkey(const char* k, int ignore)
 {
-	register char*	s = (char*)k;
-	register char*	t;
-	register int	c;
-	register Key_t*	kp;
-	register Key_t*	ap;
+	char*	s = (char*)k;
+	char*	t;
+	int	c;
+	Key_t*	kp;
+	Key_t*	ap;
 	char*		e;
 	int		w;
 
@@ -1420,7 +1420,7 @@ addkey(const char* k, int ignore)
 static void
 pushpids(void* argv, int argc)
 {
-	register List_t*	p;
+	List_t*	p;
 
 	if (!(p = newof(0, List_t, 1, 0)))
 		error(ERROR_SYSTEM|3, "out of space");
@@ -1437,8 +1437,8 @@ pushpids(void* argv, int argc)
 static void
 poppids(void)
 {
-	register List_t*	p;
-	register int		i;
+	List_t*	p;
+	int		i;
 	unsigned long		flags;
 
 	flags = state.pssdisc.flags;
@@ -1457,10 +1457,10 @@ poppids(void)
 }
 
 int
-main(int argc, register char** argv)
+main(int argc, char** argv)
 {
-	register int	n;
-	register char*	s;
+	int	n;
+	char*	s;
 	Sfio_t*		fmt;
 	Key_t*		kp;
 	Ps_t*		pp;

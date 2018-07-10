@@ -105,9 +105,9 @@ static struct				/* program state		*/
 static int
 omitted(char* name)
 {
-	register char*		s;
-	register char*		t;
-	register struct block*	d;
+	char*		s;
+	char*		t;
+	struct block*	d;
 
 	for (d = state.omit; d; d = d->next)
 	{
@@ -128,10 +128,10 @@ omitted(char* name)
  */
 
 static struct rule*
-initdir(register char* s, char* suf)
+initdir(char* s, char* suf)
 {
-	register struct rule*	d;
-	register int		n;
+	struct rule*	d;
+	int		n;
 	struct rule*		z;
 	char			buf[MAXNAME];
 
@@ -164,10 +164,10 @@ initdir(register char* s, char* suf)
  */
 
 static int
-dumpvalue(register int col, register char* s, int sep)
+dumpvalue(int col, char* s, int sep)
 {
-	register int	c;
-	register char*	v;
+	int	c;
+	char*	v;
 
 	if (sep && sep != '\\')
 	{
@@ -235,7 +235,7 @@ static int
 dumpname(int col, char* s)
 {
 
-	register int	n;
+	int	n;
 
 	n = strlen(s);
 	if (col + n >= LONGLINE)
@@ -261,9 +261,9 @@ dumpname(int col, char* s)
  */
 
 static void
-ccflags(register char* s, struct var* v)
+ccflags(char* s, struct var* v)
 {
-	register char*		t;
+	char*		t;
 	char*			b;
 	char*			u;
 	int			n;
@@ -335,10 +335,10 @@ ccflags(register char* s, struct var* v)
 static int
 initrule(const char* as, char* ar, void* handle)
 {
-	register char*		s = (char*)as;
-	register struct rule*	r = (struct rule*)ar;
-	register struct local*	x;
-	register struct block*	p;
+	char*		s = (char*)as;
+	struct rule*	r = (struct rule*)ar;
+	struct local*	x;
+	struct block*	p;
 	char*			t;
 
 	NoP(handle);
@@ -391,9 +391,9 @@ initrule(const char* as, char* ar, void* handle)
  */
 
 static void
-clrprereqs(register struct rule* r)
+clrprereqs(struct rule* r)
 {
-	register struct list*	p;
+	struct list*	p;
 
 	r->attributes &= ~A_listprereq;
 	for (p = r->prereqs; p; p = p->next)
@@ -406,9 +406,9 @@ clrprereqs(register struct rule* r)
  */
 
 static int
-dumpprereqs(register int col, register struct rule* r)
+dumpprereqs(int col, struct rule* r)
 {
-	register struct list*	p;
+	struct list*	p;
 
 	if (!(r->attributes & (A_listprereq|A_omit)))
 	{
@@ -427,7 +427,7 @@ dumpprereqs(register int col, register struct rule* r)
  */
 
 static void
-dumpaction(register struct block* p)
+dumpaction(struct block* p)
 {
 	if (p) do
 	{
@@ -441,10 +441,10 @@ dumpaction(register struct block* p)
  */
 
 static void
-dump(register struct rule* r)
+dump(struct rule* r)
 {
-	register int		col;
-	register struct list*	p;
+	int		col;
+	struct list*	p;
 
 	if (!(r->attributes & (A_listtarg|A_metarule)))
 	{
@@ -481,8 +481,8 @@ dumpstate(const char* an, char* av, void* handle)
 {
 	char*		name = (char*)an;
 	struct var*	v = (struct var*)av;
-	register char*	s = v->value;
-	register int	col;
+	char*	s = v->value;
+	int	col;
 
 	static int	init;
 
@@ -545,7 +545,7 @@ dumpstate(const char* an, char* av, void* handle)
 static void
 dumpvar(void)
 {
-	register struct var*	v;
+	struct var*	v;
 
 	if (v = getvar(state.mam->main, "CCFLAGS"))
 		ccflags(v->value, v);
@@ -570,7 +570,7 @@ omit(char* prefix)
 int
 main(int argc, char** argv)
 {
-	register struct list*	p;
+	struct list*	p;
 
 	NoP(argc);
 	error_info.id = "mamnew";

@@ -106,7 +106,7 @@ Tk_ManageGeometry(tkwin, mgrPtr, clientData)
     ClientData clientData;	/* Arbitrary one-word argument to
 				 * pass to geometry manager procedures. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
     if ((winPtr->geomMgrPtr != NULL) && (mgrPtr != NULL)
 	    && ((winPtr->geomMgrPtr != mgrPtr)
@@ -150,7 +150,7 @@ Tk_GeometryRequest(tkwin, reqWidth, reqHeight)
     int reqWidth, reqHeight;	/* Minimum desired dimensions for
 				 * window, in pixels. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
     /*
      * X gets very upset if a window requests a width or height of
@@ -199,7 +199,7 @@ Tk_SetInternalBorder(tkwin, width)
     Tk_Window tkwin;		/* Window that will have internal border. */
     int width;			/* Width of internal border, in pixels. */
 {
-    register TkWindow *winPtr = (TkWindow *) tkwin;
+    TkWindow *winPtr = (TkWindow *) tkwin;
 
     if (width == winPtr->internalBorderWidth) {
 	return;
@@ -257,7 +257,7 @@ Tk_MaintainGeometry(slave, master, x, y, width, height)
 {
     Tcl_HashEntry *hPtr;
     MaintainMaster *masterPtr;
-    register MaintainSlave *slavePtr;
+    MaintainSlave *slavePtr;
     int new, map;
     Tk_Window ancestor, parent;
 
@@ -380,7 +380,7 @@ Tk_UnmaintainGeometry(slave, master)
 {
     Tcl_HashEntry *hPtr;
     MaintainMaster *masterPtr;
-    register MaintainSlave *slavePtr, *prevPtr;
+    MaintainSlave *slavePtr, *prevPtr;
     Tk_Window ancestor;
 
     if (!initialized) {

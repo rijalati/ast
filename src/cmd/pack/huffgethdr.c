@@ -30,10 +30,10 @@
 
 #define END	(1<<CHAR_BIT)
 
-Huff_t *huffgethdr(register Sfio_t *infile)
+Huff_t *huffgethdr(Sfio_t *infile)
 {
-	register Huff_t*	hp;
-	register int		i, j, c;
+	Huff_t*	hp;
+	int		i, j, c;
 	/* allocate space for huffman tree */
 	if(!(hp=newof(0, Huff_t, 1, 0)))
 	{

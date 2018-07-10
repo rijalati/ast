@@ -168,7 +168,7 @@ static const char id[] = "\n@(#)$Id: dll library (AT&T Research) 2010-10-20 $\0\
 	static struct ld_info* getinfo(void* module)
 	{
 		struct ld_info*	info = ld_info;
-		register int	n = 1;
+		int	n = 1;
 
 		if (!ld_info || module != last_module)
 		{

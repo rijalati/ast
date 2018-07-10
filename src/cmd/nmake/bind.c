@@ -62,7 +62,7 @@
  */
 
 static int
-file_compare(register const char* s, register const char* t)
+file_compare(const char* s, const char* t)
 {
 	return ((File_t*)hashgetbucket(s)->value)->dir->ignorecase ? strcasecmp(s, t) : strcmp(s, t);
 }
@@ -70,9 +70,9 @@ file_compare(register const char* s, register const char* t)
 static unsigned int
 file_hash(const char* s)
 {
-	register const unsigned char*	p = (const unsigned char*)s;
-	register unsigned int		h = 0;
-	register unsigned int		c;
+	const unsigned char*	p = (const unsigned char*)s;
+	unsigned int		h = 0;
+	unsigned int		c;
 
 	while (c = *p++)
 	{
@@ -84,11 +84,11 @@ file_hash(const char* s)
 }
 
 static int
-rule_compare(register const char* s, register const char* t)
+rule_compare(const char* s, const char* t)
 {
-	register int	c;
-	register int	d;
-	register int	x;
+	int	c;
+	int	d;
+	int	x;
 
 	x = (*s == '.') ? 0 : -1;
 	while (c = *s++)
@@ -120,10 +120,10 @@ rule_compare(register const char* s, register const char* t)
 static unsigned int
 rule_hash(const char* s)
 {
-	register const unsigned char*	p = (const unsigned char*)s;
-	register unsigned int		h = 0;
-	register unsigned int		c;
-	register int			x;
+	const unsigned char*	p = (const unsigned char*)s;
+	unsigned int		h = 0;
+	unsigned int		c;
+	int			x;
 
 	x = (*s == '.') ? 0 : -1;
 	while (c = *p++)
@@ -172,9 +172,9 @@ inithash(void)
  */
 
 Dir_t*
-unique(register Rule_t* r)
+unique(Rule_t* r)
 {
-	register Dir_t*	d;
+	Dir_t*	d;
 	Rule_t*		x;
 	Fileid_t	id;
 	Stat_t		st;
@@ -236,9 +236,9 @@ unique(register Rule_t* r)
 File_t*
 addfile(Dir_t* d, char* name, Time_t date)
 {
-	register File_t*	f;
-	register File_t*	n;
-	register char*		s;
+	File_t*	f;
+	File_t*	n;
+	char*		s;
 
 	HACKSPACE(name, s);
 
@@ -294,10 +294,10 @@ addfile(Dir_t* d, char* name, Time_t date)
  */
 
 void
-newfile(register Rule_t* r, char* dir, Time_t date)
+newfile(Rule_t* r, char* dir, Time_t date)
 {
-	register char*		s;
-	register char*		t;
+	char*		s;
+	char*		t;
 	char*			nam;
 	Rule_t*			z;
 	Dir_t*			d;
@@ -349,9 +349,9 @@ newfile(register Rule_t* r, char* dir, Time_t date)
 void
 dirscan(Rule_t* r)
 {
-	register DIR*		dirp;
-	register Dir_t*		d;
-	register Dirent_t*	entry;
+	DIR*		dirp;
+	Dir_t*		d;
+	Dirent_t*	entry;
 	char*			s;
 	int			n;
 	Stat_t			st;
@@ -431,8 +431,8 @@ glob_diropen(glob_t* gp, const char* path)
 {
 	Globstate_t*	gs = (Globstate_t*)gp->gl_handle;
 	const char*	dir;
-	register int	i;
-	register int	n;
+	int	i;
+	int	n;
 
 	if (!(gs->overlay = hashalloc(NiL, HASH_set, HASH_ALLOCATE, 0)))
 		return 0;
@@ -543,8 +543,8 @@ glob_dirclose(glob_t* gp, void* handle)
 static int
 glob_type(glob_t* gp, const char* path, int flags)
 {
-	register int		i;
-	register int		n;
+	int		i;
+	int		n;
 	int			root;
 	Stat_t			st;
 
@@ -596,11 +596,11 @@ glob_type(glob_t* gp, const char* path, int flags)
  */
 
 char**
-globv(register glob_t* gp, char* s)
+globv(glob_t* gp, char* s)
 {
-	register char**		q;
-	register char**		p;
-	register char**		x;
+	char**		q;
+	char**		p;
+	char**		x;
 	int			i;
 	int			f;
 	glob_t			gl;
@@ -652,7 +652,7 @@ globv(register glob_t* gp, char* s)
  */
 
 static Rule_t*
-bindalias(register Rule_t* r, register Rule_t* x, char* path, Rule_t* d, int force)
+bindalias(Rule_t* r, Rule_t* x, char* path, Rule_t* d, int force)
 {
 	char*		s;
 	int		i;
@@ -779,10 +779,10 @@ bindalias(register Rule_t* r, register Rule_t* x, char* path, Rule_t* d, int for
  */
 
 static Rule_t*
-localrule(register Rule_t* r, int force)
+localrule(Rule_t* r, int force)
 {
-	register char*		s;
-	register Rule_t*	x;
+	char*		s;
+	Rule_t*	x;
 	char*			p;
 	char*			v;
 	Sfio_t*			tmp;
@@ -859,11 +859,11 @@ localrule(register Rule_t* r, int force)
  */
 
 Rule_t*
-bindfile(register Rule_t* r, char* name, int flags)
+bindfile(Rule_t* r, char* name, int flags)
 {
-	register Rule_t*	d;
-	register File_t*	f;
-	register char*		s;
+	Rule_t*	d;
+	File_t*	f;
+	char*		s;
 	List_t*			p;
 	File_t*			files;
 	File_t*			ofiles;
@@ -1558,10 +1558,10 @@ bindfile(register Rule_t* r, char* name, int flags)
  */
 
 void
-bindattribute(register Rule_t* r)
+bindattribute(Rule_t* r)
 {
-	register Rule_t*	x;
-	register Rule_t*	z;
+	Rule_t*	x;
+	Rule_t*	z;
 
 	r->dynamic |= D_bound;
 	if (x = associate(internal.attribute_p, r, NiL, NiL))
@@ -1579,9 +1579,9 @@ bindattribute(register Rule_t* r)
  */
 
 Rule_t*
-bind(register Rule_t* r)
+bind(Rule_t* r)
 {
-	register Rule_t*	b;
+	Rule_t*	b;
 
 	if (!r)
 		return 0;
@@ -1618,7 +1618,7 @@ bind(register Rule_t* r)
  */
 
 void
-rebind(register Rule_t* r, register int op)
+rebind(Rule_t* r, int op)
 {
 	char*		t;
 	Rule_t*		x;
@@ -1672,7 +1672,7 @@ rebind(register Rule_t* r, register int op)
 int
 unbind(const char* s, char* v, void* h)
 {
-	register Rule_t*	r = (Rule_t*)v;
+	Rule_t*	r = (Rule_t*)v;
 
 	if (!s || !h && (r->mark & M_mark) || h && (r->dynamic & D_alias) && (makerule(r->name)->mark & M_mark))
 	{
@@ -1757,9 +1757,9 @@ absolute(List_t* z, char* s, Sfio_t* tmp)
  */
 
 Rule_t*
-source(register Rule_t* r)
+source(Rule_t* r)
 {
-	register Rule_t*	x;
+	Rule_t*	x;
 
 	if (state.compile > COMPILED)
 		return r;
@@ -1779,9 +1779,9 @@ source(register Rule_t* r)
 		dynamic(r);
 	if (state.maxview && !state.fsview)
 	{
-		register char*		s;
-		register char*		t;
-		register List_t*	p;
+		char*		s;
+		char*		t;
+		List_t*	p;
 		int			dot;
 		unsigned int		view;
 		List_t*			z;
@@ -1979,7 +1979,7 @@ source(register Rule_t* r)
  */
 
 char*
-pathname(register char* s, register Rule_t* r)
+pathname(char* s, Rule_t* r)
 {
 	if ((r->dynamic & D_bound) && !(r->property & (P_state|P_virtual)) && *r->name != '/')
 	{
@@ -2003,16 +2003,16 @@ pathname(register char* s, register Rule_t* r)
  */
 
 char*
-localview(register Rule_t* r)
+localview(Rule_t* r)
 {
-	register Rule_t*	x;
+	Rule_t*	x;
 	int			i;
 
 	if (r->dynamic & D_alias)
 		r = makerule(unbound(r));
 	if (state.context && !(r->property & (P_state|P_virtual)))
 	{
-		register char*	s = r->name;
+		char*	s = r->name;
 
 		if (*s == '/' || iscontext(s))
 			return s;

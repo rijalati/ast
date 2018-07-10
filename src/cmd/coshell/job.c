@@ -32,10 +32,10 @@
  */
 
 void
-drop(register int fd)
+drop(int fd)
 {
-	register int	i;
-	register int	n;
+	int	i;
+	int	n;
 	Coshell_t*	sp;
 	Cojob_t*	jp;
 	Sfio_t*		tp;
@@ -103,8 +103,8 @@ drop(register int fd)
 void
 jobcheck(Coshell_t* only)
 {
-	register Cojob_t*	jp;
-	register Coshell_t*	sp;
+	Cojob_t*	jp;
+	Coshell_t*	sp;
 	char*			s;
 
 	for (jp = state.job; jp <= state.jobmax; jp++)
@@ -213,9 +213,9 @@ jobkill(Cojob_t* jp, int sig)
  */
 
 void
-jobdone(register Cojob_t* jp)
+jobdone(Cojob_t* jp)
 {
-	register int	n;
+	int	n;
 	char		buf[64];
 
 	jp->pid = 0;

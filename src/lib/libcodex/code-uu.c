@@ -110,7 +110,7 @@ fill(State_t* state)
 }
 
 static int
-flush(register State_t* state)
+flush(State_t* state)
 {
 	uint32_t	b;
 	int		c3;
@@ -159,9 +159,9 @@ flush(register State_t* state)
 static int
 uu_open(Codex_t* p, char* const args[], Codexnum_t flags)
 {
-	register State_t*	state;
-	register char*		s;
-	register char**		a;
+	State_t*	state;
+	char*		s;
+	char**		a;
 	unsigned char*		m;
 	unsigned char*		q;
 	const Data_t*		data;
@@ -227,7 +227,7 @@ uu_open(Codex_t* p, char* const args[], Codexnum_t flags)
 static int
 uu_init(Codex_t* p)
 {
-	register State_t*	state = (State_t*)p->data;
+	State_t*	state = (State_t*)p->data;
 	int			n;
 
 	state->bp = state->buf;
@@ -257,12 +257,12 @@ uu_init(Codex_t* p)
 static ssize_t
 uu_read(Sfio_t* sp, void* buf, size_t n, Sfdisc_t* disc)
 {
-	register State_t*	state = (State_t*)CODEX(disc)->data;
-	register char*		s = (char*)buf;
-	register char*		e = s + n;
-	register uint32_t	b;
-	register int		c;
-	register int		x;
+	State_t*	state = (State_t*)CODEX(disc)->data;
+	char*		s = (char*)buf;
+	char*		e = s + n;
+	uint32_t	b;
+	int		c;
+	int		x;
 
 	if (state->pb < state->pp)
 	{
@@ -391,13 +391,13 @@ uu_read(Sfio_t* sp, void* buf, size_t n, Sfdisc_t* disc)
 static ssize_t
 uu_write(Sfio_t* sp, const void* buf, size_t n, Sfdisc_t* disc)
 {
-	register State_t*	state = (State_t*)CODEX(disc)->data;
-	register unsigned char*	s;
-	register unsigned char*	e;
-	register uint32_t	b;
-	register int		c1;
-	register int		c2;
-	register int		c3;
+	State_t*	state = (State_t*)CODEX(disc)->data;
+	unsigned char*	s;
+	unsigned char*	e;
+	uint32_t	b;
+	int		c1;
+	int		c2;
+	int		c3;
 
 	s = (unsigned char*)buf;
 	e = s + n;

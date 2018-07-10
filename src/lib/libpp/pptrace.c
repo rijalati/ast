@@ -35,9 +35,9 @@
  */
 
 char*
-pptokstr(register char* s, register int c)
+pptokstr(char* s, int c)
 {
-	register char*	t;
+	char*	t;
 
 	static char	buf[8];
 
@@ -80,9 +80,9 @@ pptokstr(register char* s, register int c)
  */
 
 char*
-ppinstr(register struct ppinstk* p)
+ppinstr(struct ppinstk* p)
 {
-	register int	i;
+	int	i;
 
 	static char	buf[128];
 
@@ -113,9 +113,9 @@ ppinstr(register struct ppinstk* p)
  */
 
 char*
-pplexstr(register int lex)
+pplexstr(int lex)
 {
-	register int	i;
+	int	i;
 	int		splice;
 	static char	buf[64];
 
@@ -142,11 +142,11 @@ pplexstr(register int lex)
  */
 
 static char*
-ppflagstr(register struct map* p, int n, register long flags)
+ppflagstr(struct map* p, int n, long flags)
 {
-	register int	i;
-	register int	k;
-	register char*	s;
+	int	i;
+	int	k;
+	char*	s;
 
 	static char	buf[128];
 
@@ -171,7 +171,7 @@ ppflagstr(register struct map* p, int n, register long flags)
  */
 
 char*
-ppmodestr(register long mode)
+ppmodestr(long mode)
 {
 	return(ppflagstr(ppmodemap, elementsof(ppmodemap), mode));
 }
@@ -181,7 +181,7 @@ ppmodestr(register long mode)
  */
 
 char*
-ppoptionstr(register long option)
+ppoptionstr(long option)
 {
 	return(ppflagstr(ppoptionmap, elementsof(ppoptionmap), option));
 }
@@ -191,7 +191,7 @@ ppoptionstr(register long option)
  */
 
 char*
-ppstatestr(register long state)
+ppstatestr(long state)
 {
 	return(ppflagstr(ppstatemap, elementsof(ppstatemap), state));
 }
@@ -206,9 +206,9 @@ ppstatestr(register long state)
 void
 pptrace(int sig)
 {
-	register char*			s;
-	register char*			x;
-	register struct ppinstk*	p;
+	char*			s;
+	char*			x;
+	struct ppinstk*	p;
 	static int			handling;
 
 	if (!sig)

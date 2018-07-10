@@ -30,10 +30,10 @@ int im_list_help(s)
 
 int im_list(argc, argv)
 	int 		argc;
-	register char**	argv;
+	char**	argv;
 {
-	register int	n;
-	register char*	s;
+	int	n;
+	char*	s;
 	int		seq;
 	int		fd;
 	int		len;

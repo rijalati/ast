@@ -40,10 +40,10 @@ static const char id[] = "\n@(#)$Id: atx (AT&T Research) 2012-02-29 $\0\n";
 static ssize_t
 stampwrite(int fd, const void* buf, size_t n)
 {
-	register char*		s;
-	register int		i;
-	register ssize_t	r;
-	register ssize_t	z;
+	char*		s;
+	int		i;
+	ssize_t	r;
+	ssize_t	z;
 
 	r = 0;
 	if (fd == 2 && (s = fmttime(AT_TIME_FORMAT, time(0))))
@@ -73,7 +73,7 @@ stampwrite(int fd, const void* buf, size_t n)
 int
 main(int argc, char** argv)
 {
-	register int	n = 0;
+	int	n = 0;
 	unsigned long	uid;
 	unsigned long	gid;
 	unsigned long	tid;

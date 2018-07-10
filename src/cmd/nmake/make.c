@@ -34,11 +34,11 @@
  */
 
 static int
-makescan(register Rule_t* r, Time_t* tm)
+makescan(Rule_t* r, Time_t* tm)
 {
-	register Rule_t*	s;
-	register Rule_t*	u;
-	register List_t*	p;
+	Rule_t*	s;
+	Rule_t*	u;
+	List_t*	p;
 	List_t*			q;
 	int			errors = 0;
 	Time_t			tevent;
@@ -65,12 +65,12 @@ makescan(register Rule_t* r, Time_t* tm)
  */
 
 static void
-globalprereqs(register Rule_t* r, Rule_t* g)
+globalprereqs(Rule_t* r, Rule_t* g)
 {
-	register List_t*	p;
-	register List_t*	q;
-	register List_t*	t;
-	register List_t*	u;
+	List_t*	p;
+	List_t*	q;
+	List_t*	t;
+	List_t*	u;
 	Rule_t*			x;
 	List_t*			pos = 0;
 
@@ -104,7 +104,7 @@ globalprereqs(register Rule_t* r, Rule_t* g)
  */
 
 static Rule_t*
-unalias(register Rule_t* r, register Rule_t* a, char* name)
+unalias(Rule_t* r, Rule_t* a, char* name)
 {
 	Frame_t*	oframe;
 
@@ -140,10 +140,10 @@ unalias(register Rule_t* r, register Rule_t* a, char* name)
  */
 
 static int
-update(register Rule_t* r, register Rule_t* a, char* arg)
+update(Rule_t* r, Rule_t* a, char* arg)
 {
-	register List_t*	p;
-	register Rule_t*	u;
+	List_t*	p;
+	Rule_t*	u;
 	int			errors;
 	char*			s;
 
@@ -275,7 +275,7 @@ update(register Rule_t* r, register Rule_t* a, char* arg)
  */
 
 void
-maketop(register Rule_t* r, int p, char* arg)
+maketop(Rule_t* r, int p, char* arg)
 {
 	Time_t		t;
 	Flags_t		o;
@@ -283,7 +283,7 @@ maketop(register Rule_t* r, int p, char* arg)
 #if _HUH_2004_06_20
 	if ((p & (P_force|P_repeat)) == (P_force|P_repeat) && (r->property & (P_functional|P_make)) == P_make)
 	{
-		register Rule_t*	a;
+		Rule_t*	a;
 
 		a = catrule(internal.internal->name, ".%%", r->name, 1);
 		a->property |= P_internal|P_virtual;
@@ -309,10 +309,10 @@ maketop(register Rule_t* r, int p, char* arg)
  */
 
 int
-make(register Rule_t* r, Time_t* ttarget, char* arg, Flags_t flags)
+make(Rule_t* r, Time_t* ttarget, char* arg, Flags_t flags)
 {
-	register List_t*	p;
-	register Rule_t*	r1;
+	List_t*	p;
+	Rule_t*	r1;
 	Time_t			t;
 	Time_t			tevent;
 	Time_t			otime;
@@ -1306,10 +1306,10 @@ make(register Rule_t* r, Time_t* ttarget, char* arg, Flags_t flags)
  */
 
 int
-makebefore(register Rule_t* r)
+makebefore(Rule_t* r)
 {
-	register List_t*	p;
-	register int		errors;
+	List_t*	p;
+	int		errors;
 	Time_t			t;
 
 	errors = 0;
@@ -1329,10 +1329,10 @@ makebefore(register Rule_t* r)
  */
 
 int
-makeafter(register Rule_t* r, Flags_t property)
+makeafter(Rule_t* r, Flags_t property)
 {
-	register List_t*	p;
-	register int		errors;
+	List_t*	p;
+	int		errors;
 	Time_t			t;
 
 	errors = 0;

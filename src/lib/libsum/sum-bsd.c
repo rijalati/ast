@@ -36,11 +36,11 @@
 #define bsd_flags	0
 
 static int
-bsd_block(register Sum_t* p, const void* s, size_t n)
+bsd_block(Sum_t* p, const void* s, size_t n)
 {
-	register uint32_t	c = ((Integral_t*)p)->sum;
-	register unsigned char*	b = (unsigned char*)s;
-	register unsigned char*	e = b + n;
+	uint32_t	c = ((Integral_t*)p)->sum;
+	unsigned char*	b = (unsigned char*)s;
+	unsigned char*	e = b + n;
 
 	while (b < e)
 		c = ((c >> 1) + *b++ + ((c & 01) ? 0x8000 : 0)) & 0xffff;

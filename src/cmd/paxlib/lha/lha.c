@@ -45,15 +45,15 @@ typedef struct Ar_s
 } Ar_t;
 
 static int
-lha_method(register unsigned char* s)
+lha_method(unsigned char* s)
 {
 	return (s[0] == '-' && isalnum(s[1]) && isalnum(s[2]) && isalnum(s[3]) && s[4] == '-') ? 0 : -1;
 }
 
 static int
-lha_done(Pax_t* pax, register Paxarchive_t* ap)
+lha_done(Pax_t* pax, Paxarchive_t* ap)
 {
-	register Ar_t*	ar = (Ar_t*)ap->data;
+	Ar_t*	ar = (Ar_t*)ap->data;
 
 	if (!ar)
 		return -1;
@@ -63,9 +63,9 @@ lha_done(Pax_t* pax, register Paxarchive_t* ap)
 }
 
 static int
-lha_getprologue(Pax_t* pax, Paxformat_t* fp, register Paxarchive_t* ap, Paxfile_t* f, unsigned char* buf, size_t size)
+lha_getprologue(Pax_t* pax, Paxformat_t* fp, Paxarchive_t* ap, Paxfile_t* f, unsigned char* buf, size_t size)
 {
-	register Ar_t*	ar;
+	Ar_t*	ar;
 	int		n;
 	int		h;
 	int		i;
@@ -94,10 +94,10 @@ lha_getprologue(Pax_t* pax, Paxformat_t* fp, register Paxarchive_t* ap, Paxfile_
 }
 
 static int
-lha_getheader(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f)
+lha_getheader(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f)
 {
-	register Ar_t*	ar = (Ar_t*)ap->data;
-	register unsigned char*	hdr;
+	Ar_t*	ar = (Ar_t*)ap->data;
+	unsigned char*	hdr;
 	char*			s;
 	Tm_t			tm;
 	unsigned long		dostime;
@@ -193,9 +193,9 @@ lha_getheader(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f)
 }
 
 static int
-lha_getdata(Pax_t* pax, register Paxarchive_t* ap, register Paxfile_t* f, int fd)
+lha_getdata(Pax_t* pax, Paxarchive_t* ap, Paxfile_t* f, int fd)
 {
-	register Ar_t*	ar = (Ar_t*)ap->data;
+	Ar_t*	ar = (Ar_t*)ap->data;
 	Sfio_t*		sp;
 	off_t		pos;
 	ssize_t		n;

@@ -138,9 +138,9 @@ marked(const char* path, Jcldd_t* dd, Jcldisc_t* disc)
 char*
 mark(const char* name, int recfm, size_t size, Jcldisc_t* disc)
 {
-	register Uniq_t*	u;
-	register char*		s;
-	register size_t		n;
+	Uniq_t*	u;
+	char*		s;
+	size_t		n;
 	int			m;
 
 	if (marked(name, NiL, disc))
@@ -188,7 +188,7 @@ mark(const char* name, int recfm, size_t size, Jcldisc_t* disc)
 }
 
 static int
-uniqcmp(Dt_t* dt, register void* a, register void* b, Dtdisc_t* disc)
+uniqcmp(Dt_t* dt, void* a, void* b, Dtdisc_t* disc)
 {
 	int	n;
 
@@ -214,9 +214,9 @@ uniqcmp(Dt_t* dt, register void* a, register void* b, Dtdisc_t* disc)
 void
 uniq(const char* name, const char* value, unsigned long flags, Jcldisc_t* disc)
 {
-	register Uniq_t*	u;
-	register char*		s;
-	register size_t		n;
+	Uniq_t*	u;
+	char*		s;
+	size_t		n;
 	Uniq_t			k;
 
 	if (!state.uniq)
@@ -260,8 +260,8 @@ uniq(const char* name, const char* value, unsigned long flags, Jcldisc_t* disc)
 int
 diff(const char* name, const char* value, Jcldisc_t* disc)
 {
-	register Uniq_t*	u;
-	register size_t		n;
+	Uniq_t*	u;
+	size_t		n;
 
 	if (!state.diff)
 	{
@@ -326,7 +326,7 @@ static const Label_t	label[] =
 static void
 stats(Sfio_t* sp, Uniq_t* u, int c, int h)
 {
-	register int		i;
+	int		i;
 
 	if (h)
 	{
@@ -350,10 +350,10 @@ stats(Sfio_t* sp, Uniq_t* u, int c, int h)
 int
 jclstats(Sfio_t* sp, unsigned long flags, Jcldisc_t* disc)
 {
-	register Uniq_t*	u;
-	register int		c;
-	register int		h;
-	register unsigned long	m;
+	Uniq_t*	u;
+	int		c;
+	int		h;
+	unsigned long	m;
 
 	if (state.uniq)
 	{

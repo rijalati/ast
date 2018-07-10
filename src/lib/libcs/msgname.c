@@ -26,9 +26,9 @@
  */
 
 const char*
-msgname(register unsigned long call)
+msgname(unsigned long call)
 {
-	register int		n;
+	int		n;
 
 	static char		buf[12];
 

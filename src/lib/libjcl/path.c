@@ -128,9 +128,9 @@ optset(Jcl_t* jcl, int c, Jcldisc_t* disc)
  */
 
 static const char*
-nextdelim(register const char* s)
+nextdelim(const char* s)
 {
-	register int	c;
+	int	c;
 
 	while (c = *s++)
 		if (delimiter(c))
@@ -144,10 +144,10 @@ nextdelim(register const char* s)
  */
 
 static const char*
-lastdelim(register const char* s)
+lastdelim(const char* s)
 {
-	register int		c;
-	register const char*	r;
+	int		c;
+	const char*	r;
 
 	r = 0;
 	while (c = *s++)
@@ -180,9 +180,9 @@ matched(int n, size_t* z, Jcldisc_t* disc)
  */
 
 static int
-tail(register const char* t, register const char* s, int set)
+tail(const char* t, const char* s, int set)
 {
-	register const char*	u;
+	const char*	u;
 	const char*		b;
 
 	b = s;
@@ -229,11 +229,11 @@ tail(register const char* t, register const char* s, int set)
 static Map_t*
 match(const char* name)
 {
-	register Map_t*		mp;
-	register Map_t*		lp;
-	register int		i;
-	register int		j;
-	register int		n;
+	Map_t*		mp;
+	Map_t*		lp;
+	int		i;
+	int		j;
+	int		n;
 	int			all;
 	const char*		s;
 	Map_t			map;
@@ -367,11 +367,11 @@ suffix(Sfio_t* sp, const char* s, Jcldisc_t* disc)
 int
 jclmap(Jcl_t* jcl, const char* file, Jcldisc_t* disc)
 {
-	register Sfio_t*	sp;
-	register Map_t*		mp;
-	register Map_t*		pp;
-	register char*		s;
-	register char*		t;
+	Sfio_t*	sp;
+	Map_t*		mp;
+	Map_t*		pp;
+	char*		s;
+	char*		t;
 	char*			op;
 	char*			arg[32];
 	char*			nv[32];
@@ -634,9 +634,9 @@ suflen(const char* path)
 char*
 jclpath(Jcl_t* jcl, const char* name)
 {
-	register char*	s;
-	register char*	t;
-	register Map_t*	m;
+	char*	s;
+	char*	t;
+	Map_t*	m;
 	char*		e;
 	const char*	oname = name;
 	int		n;

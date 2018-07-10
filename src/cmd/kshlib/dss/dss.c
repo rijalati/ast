@@ -268,7 +268,7 @@ Cxvalue_t *get_child_common(Namval_t *np, Namfun_t *fp, Cxoperand_t *op)
 	return(0);
 }
 
-static char* get_child(register Namval_t* np, Namfun_t *fp)
+static char* get_child(Namval_t* np, Namfun_t *fp)
 {
 	Cxvariable_t	*vp = vnode(np);
 	Cxoperand_t	op;
@@ -287,7 +287,7 @@ static char* get_child(register Namval_t* np, Namfun_t *fp)
 	return(0);
 }
 
-static char* get_mchild(register Namval_t* np, Namfun_t *fp)
+static char* get_mchild(Namval_t* np, Namfun_t *fp)
 {
 	Cxoperand_t	ret;
 	Namchld_t	*pp = (Namchld_t*)fp;
@@ -328,7 +328,7 @@ static char* get_mchild(register Namval_t* np, Namfun_t *fp)
 	return(value);
 }
 
-static Sfdouble_t nget_child(register Namval_t* np, Namfun_t *fp)
+static Sfdouble_t nget_child(Namval_t* np, Namfun_t *fp)
 {
 	Cxvariable_t	*vp = vnode(np);
 	Cxoperand_t	op;
@@ -348,7 +348,7 @@ static Sfdouble_t nget_child(register Namval_t* np, Namfun_t *fp)
 	return(0);
 }
 
-static Sfdouble_t nget_mchild(register Namval_t* np, Namfun_t *fp)
+static Sfdouble_t nget_mchild(Namval_t* np, Namfun_t *fp)
 {
 	Cxoperand_t ret;
 	Namchld_t *pp = (Namchld_t*)fp;
@@ -409,7 +409,7 @@ static char *name_child(Namval_t *np, Namfun_t *fp)
 	return(dp->name);
 }
  
-static Namval_t *type_child(register Namval_t* np, Namfun_t *fp)
+static Namval_t *type_child(Namval_t* np, Namfun_t *fp)
 {
 	struct parent	*pp =  (struct parent*)((Namchld_t*)fp)->ptype;
 	Cxstate_t	*sp = pp->state;
@@ -665,7 +665,7 @@ static int	dss_except(Sfio_t* iop, int event, void *data, Sfdisc_t *fp)
 	return(1);
 }
 
-static int read_parent(register Namval_t* np, Sfio_t *iop, int delim, Namfun_t *fp)
+static int read_parent(Namval_t* np, Sfio_t *iop, int delim, Namfun_t *fp)
 {
 	Namval_t	*mp;
 	struct parent	*dp = (struct parent*)fp;
@@ -722,7 +722,7 @@ static int read_parent(register Namval_t* np, Sfio_t *iop, int delim, Namfun_t *
 	return(0);
 }
 
-static int write_parent(register Namval_t* np, Sfio_t *iop, int delim, Namfun_t *fp)
+static int write_parent(Namval_t* np, Sfio_t *iop, int delim, Namfun_t *fp)
 {
 	struct parent	*dp = (struct parent*)fp;
 	struct dssfile	*sp;
@@ -745,7 +745,7 @@ static int write_parent(register Namval_t* np, Sfio_t *iop, int delim, Namfun_t 
 	return dssfwrite(sp->fp,sp->rp) < 0 ? -1 : 0;
 }
 
-static Namval_t *next_parent(register Namval_t* np, Dt_t *root,Namfun_t *fp)
+static Namval_t *next_parent(Namval_t* np, Dt_t *root,Namfun_t *fp)
 {
 	struct parent	*dp = (struct parent*)fp;
 	Cxvariable_t	*vp=0;
@@ -814,7 +814,7 @@ static const Namdisc_t parent_disc =
  * should only get here when requesting raw binary data
  * This must come after the nv_tree discipline
  */
-static char* get_parent(register Namval_t* np, Namfun_t *fp)
+static char* get_parent(Namval_t* np, Namfun_t *fp)
 {
 #if 1
 	char	*data = np->nvalue;
@@ -922,7 +922,7 @@ static void put_type(Namval_t* np, const char* val, int flag, Namfun_t* fp)
 	}
 }
 
-static char* get_type(register Namval_t* np, Namfun_t *fp)
+static char* get_type(Namval_t* np, Namfun_t *fp)
 {
 	struct type	*tp = (struct type*)fp;
 	struct parent	*dp;
@@ -980,7 +980,7 @@ static Namfun_t *clone_type(Namval_t* np, Namval_t *mp, int flags, Namfun_t *fp)
 	return(fp);
 }
 
-static Namval_t *next_type(register Namval_t* np, Dt_t *root,Namfun_t *fp)
+static Namval_t *next_type(Namval_t* np, Dt_t *root,Namfun_t *fp)
 {
 	struct type	*tp = (struct type*)fp;
 	Namfun_t	*fpn = fp->next;

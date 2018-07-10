@@ -55,8 +55,8 @@ extern Dsslib_t		dss_lib_opaque;
 static int
 opaqueident(Dssfile_t* file, void* buf, size_t size, Dssdisc_t* disc)
 {
-	register Opaque_t*	opaque = (Opaque_t*)file->dss->meth->data;
-	register Magicid_t*	magic = (Magicid_t*)buf;
+	Opaque_t*	opaque = (Opaque_t*)file->dss->meth->data;
+	Magicid_t*	magic = (Magicid_t*)buf;
 
 	if (size < opaque->magic.size)
 		return 0;
@@ -111,7 +111,7 @@ opaquefclose(Dssfile_t* file, Dssdisc_t* disc)
  */
 
 static int
-opaqueread(register Dssfile_t* file, register Dssrecord_t* record, Dssdisc_t* disc)
+opaqueread(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
 	record->data = sfreserve(file->io, *((size_t*)file->data), 0);
 	record->size = sfvalue(file->io);
@@ -155,7 +155,7 @@ static Dssformat_t opaque_format =
 static Dssmeth_t*
 opaquemeth(const char* name, const char* options, const char* schema, Dssdisc_t* disc, Dssmeth_t* meth)
 {
-	register Opaque_t*	opaque;
+	Opaque_t*	opaque;
 	char*			s;
 
 	if (!(opaque = newof(0, Opaque_t, 1, 0)))

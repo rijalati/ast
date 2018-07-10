@@ -335,7 +335,7 @@ Tk_EntryCmd(clientData, interp, argc, argv)
     char **argv;		/* Argument strings. */
 {
     Tk_Window tkwin = (Tk_Window) clientData;
-    register Entry *entryPtr;
+    Entry *entryPtr;
     Tk_Window new;
 
     if (argc < 2) {
@@ -450,7 +450,7 @@ EntryWidgetCmd(clientData, interp, argc, argv)
     int argc;				/* Number of arguments. */
     char **argv;			/* Argument strings. */
 {
-    register Entry *entryPtr = (Entry *) clientData;
+    Entry *entryPtr = (Entry *) clientData;
     int result = TCL_OK;
     size_t length;
     int c, height;
@@ -806,7 +806,7 @@ static void
 DestroyEntry(memPtr)
     char *memPtr;		/* Info about entry widget. */
 {
-    register Entry *entryPtr = (Entry *) memPtr;
+    Entry *entryPtr = (Entry *) memPtr;
 
     /*
      * Free up all the stuff that requires special handling, then
@@ -858,7 +858,7 @@ DestroyEntry(memPtr)
 static int
 ConfigureEntry(interp, entryPtr, argc, argv, flags)
     Tcl_Interp *interp;		/* Used for error reporting. */
-    register Entry *entryPtr;	/* Information about widget;  may or may
+    Entry *entryPtr;	/* Information about widget;  may or may
 				 * not already have values for some fields. */
     int argc;			/* Number of valid entries in argv. */
     char **argv;		/* Arguments. */
@@ -1001,8 +1001,8 @@ static void
 DisplayEntry(clientData)
     ClientData clientData;	/* Information about window. */
 {
-    register Entry *entryPtr = (Entry *) clientData;
-    register Tk_Window tkwin = entryPtr->tkwin;
+    Entry *entryPtr = (Entry *) clientData;
+    Tk_Window tkwin = entryPtr->tkwin;
     int baseY, selStartX, selEndX, index, cursorX;
     int xBound, count;
     Pixmap pixmap;
@@ -1208,7 +1208,7 @@ DisplayEntry(clientData)
  * Side effects:
  *	The leftX and tabOrigin fields are recomputed for entryPtr,
  *	and leftIndex may be adjusted.  Tk_GeometryRequest is called
- *	to register the desired dimensions for the window.
+ *	to the desired dimensions for the window.
  *
  *----------------------------------------------------------------------
  */
@@ -1321,7 +1321,7 @@ EntryComputeGeometry(entryPtr)
 
 static void
 InsertChars(entryPtr, index, string)
-    register Entry *entryPtr;	/* Entry that is to get the new
+    Entry *entryPtr;	/* Entry that is to get the new
 				 * elements. */
     int index;			/* Add the new elements before this
 				 * element. */
@@ -1388,7 +1388,7 @@ InsertChars(entryPtr, index, string)
 
 static void
 DeleteChars(entryPtr, index, count)
-    register Entry *entryPtr;	/* Entry widget to modify. */
+    Entry *entryPtr;	/* Entry widget to modify. */
     int index;			/* Index of first character to delete. */
     int count;			/* How many characters to delete. */
 {
@@ -1532,7 +1532,7 @@ EntryValueChanged(entryPtr)
 
 static void
 EntrySetValue(entryPtr, value)
-    register Entry *entryPtr;		/* Entry whose value is to be
+    Entry *entryPtr;		/* Entry whose value is to be
 					 * changed. */
     char *value;			/* New text to display in entry. */
 {
@@ -1793,7 +1793,7 @@ GetEntryIndex(interp, entryPtr, string, indexPtr)
 
 static void
 EntryScanTo(entryPtr, x)
-    register Entry *entryPtr;		/* Information about widget. */
+    Entry *entryPtr;		/* Information about widget. */
     int x;				/* X-coordinate to use for scan
 					 * operation. */
 {
@@ -1847,7 +1847,7 @@ EntryScanTo(entryPtr, x)
 
 static void
 EntrySelectTo(entryPtr, index)
-    register Entry *entryPtr;		/* Information about widget. */
+    Entry *entryPtr;		/* Information about widget. */
     int index;				/* Index of element that is to
 					 * become the "other" end of the
 					 * selection. */
@@ -1998,7 +1998,7 @@ EntryLostSelection(clientData)
 
 static void
 EventuallyRedraw(entryPtr)
-    register Entry *entryPtr;		/* Information about widget. */
+    Entry *entryPtr;		/* Information about widget. */
 {
     if ((entryPtr->tkwin == NULL) || !Tk_IsMapped(entryPtr->tkwin)) {
 	return;
@@ -2135,7 +2135,7 @@ static void
 EntryBlinkProc(clientData)
     ClientData clientData;	/* Pointer to record describing entry. */
 {
-    register Entry *entryPtr = (Entry *) clientData;
+    Entry *entryPtr = (Entry *) clientData;
 
     if (!(entryPtr->flags & GOT_FOCUS) || (entryPtr->insertOffTime == 0)) {
 	return;
@@ -2172,7 +2172,7 @@ EntryBlinkProc(clientData)
 
 static void
 EntryFocusProc(entryPtr, gotFocus)
-    register Entry *entryPtr;	/* Entry that got or lost focus. */
+    Entry *entryPtr;	/* Entry that got or lost focus. */
     int gotFocus;		/* 1 means window is getting focus, 0 means
 				 * it's losing it. */
 {
@@ -2218,7 +2218,7 @@ EntryTextVarProc(clientData, interp, name1, name2, flags)
     char *name2;		/* Not used. */
     int flags;			/* Information about what happened. */
 {
-    register Entry *entryPtr = (Entry *) clientData;
+    Entry *entryPtr = (Entry *) clientData;
     char *value;
 
     /*

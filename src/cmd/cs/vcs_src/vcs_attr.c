@@ -26,7 +26,7 @@
 
 int get_attr(f, ap)
 	Sfio_t*		f;
-	register attr_t*	ap;
+	attr_t*	ap;
 {
 	if (sfread(f, (char *)ap, sizeof(attr_t)) != sizeof(attr_t) || !ISRSCS(ap))
 	{

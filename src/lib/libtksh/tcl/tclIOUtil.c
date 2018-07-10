@@ -467,7 +467,7 @@ Tcl_DetachPids(numPids, pidPtr)
 				 * of array pointed to by pidPtr. */
     int *pidPtr;		/* Array of pids to detach. */
 {
-    register Detached *detPtr;
+    Detached *detPtr;
     int i;
 
     for (i = 0; i < numPids; i++) {
@@ -501,7 +501,7 @@ Tcl_DetachPids(numPids, pidPtr)
 void
 Tcl_ReapDetachedProcs()
 {
-    register Detached *detPtr;
+    Detached *detPtr;
     Detached *nextPtr, *prevPtr;
     int status;
     int pid;

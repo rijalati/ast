@@ -44,10 +44,10 @@ static char letter[65] = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnop
 
 extern long a64l(const char *str)
 {
-	register unsigned long ul = 0;
-	register int n = 6;
-	register int c;
-	register char *cp;
+	unsigned long ul = 0;
+	int n = 6;
+	int c;
+	char *cp;
 	for(n=0; n <6; n++)
 	{
 		if((c= *str++)==0)
@@ -63,7 +63,7 @@ extern char *l64a(long l)
 {
 	static char buff[7];
 	unsigned ul = ((unsigned long)l & 0xffffffff);
-	register char *cp = buff;
+	char *cp = buff;
 	while(ul>0)
 	{
 		*cp++ = letter[ul&077];

@@ -209,10 +209,10 @@ dumpfopen(Dssfile_t* file, Dssdisc_t* disc)
  */
 
 static int
-dumpfread(register Dssfile_t* file, register Dssrecord_t* record, Dssdisc_t* disc)
+dumpfread(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register State_t*	state = (State_t*)file->data;
-	register Netflow_t*	rp = &state->record;
+	State_t*	state = (State_t*)file->data;
+	Netflow_t*	rp = &state->record;
 	Rec_1_t*		r1;
 	int			n;
 
@@ -349,9 +349,9 @@ dumpfread(register Dssfile_t* file, register Dssrecord_t* record, Dssdisc_t* dis
 static int
 dumpfwrite(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 {
-	register State_t*	state = (State_t*)file->data;
-	register Netflow_t*	rp = (Netflow_t*)record->data;
-	register size_t		n;
+	State_t*	state = (State_t*)file->data;
+	Netflow_t*	rp = (Netflow_t*)record->data;
+	size_t		n;
 
 	if (!state->count++)
 	{
@@ -485,7 +485,7 @@ dumpfwrite(Dssfile_t* file, Dssrecord_t* record, Dssdisc_t* disc)
 static int
 dumpfclose(Dssfile_t* file, Dssdisc_t* disc)
 {
-	register State_t*	state = (State_t*)file->data;
+	State_t*	state = (State_t*)file->data;
 
 	if (!state)
 		return -1;
