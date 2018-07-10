@@ -36,7 +36,7 @@
 #include	"test.h"
 #include	"FEATURE/dynamic"
 #include	"FEATURE/externs"
-#if SHOPT_PFSH 
+#if SHOPT_PFSH
 #   ifdef _hdr_exec_attr
 #	include	<exec_attr.h>
 #   endif
@@ -73,7 +73,7 @@ static bool onstdpath(const char *name)
 	return(false);
 }
 
-#if SHOPT_PFSH 
+#if SHOPT_PFSH
 int path_xattr(Shell_t *shp, const char *path, char *rpath)
 {
 	char  resolvedpath[PATH_MAX + 1];
@@ -102,7 +102,7 @@ int path_xattr(Shell_t *shp, const char *path, char *rpath)
 
 static pid_t path_pfexecve(Shell_t *shp,const char *path, char *argv[],char *const envp[],int spawn)
 {
-#if SHOPT_PFSH 
+#if SHOPT_PFSH
 	char  resolvedpath[PATH_MAX + 1];
 	pid_t	pid;
 #endif /*SHOPT_PFSH */
@@ -111,7 +111,7 @@ static pid_t path_pfexecve(Shell_t *shp,const char *path, char *argv[],char *con
 		spawnvex_apply(shp->vex,0,0);
 		spawnvex_apply(shp->vexp,0,SPAWN_RESET);
 	}
-#if SHOPT_PFSH 
+#if SHOPT_PFSH
 	if(spawn)
 	{
 		while((pid = vfork()) < 0)
@@ -195,9 +195,9 @@ static pid_t path_xargs(Shell_t *shp,const char *path, char *argv[],char *const 
 	size = shp->gd->lim.arg_max-1024;
 	for(ev=envp; cp= *ev; ev++)
 		size -= strlen(cp)-1;
-	for(av=argv; (cp= *av) && av< &argv[shp->xargmin]; av++)  
+	for(av=argv; (cp= *av) && av< &argv[shp->xargmin]; av++)
 		size -= strlen(cp)-1;
-	for(av=avlast; cp= *av; av++,nlast++)  
+	for(av=avlast; cp= *av; av++,nlast++)
 		size -= strlen(cp)-1;
 	av =  &argv[shp->xargmin];
 	if(!spawn)
@@ -271,7 +271,7 @@ char *path_pwd(Shell_t *shp,int flag)
 	int count = 0;
 	if(shp->pwd)
 		return((char*)shp->pwd);
-	while(1) 
+	while(1)
 	{
 		/* try from lowest to highest */
 		switch(count++)
@@ -288,7 +288,7 @@ char *path_pwd(Shell_t *shp,int flag)
 			case 3:
 			{
 				if(cp=getcwd(NIL(char*),0))
-				{  
+				{
 					nv_offattr(PWDNOD,NV_NOFREE);
 					_nv_unset(PWDNOD,0);
 					PWDNOD->nvalue.cp = cp;
@@ -334,7 +334,7 @@ void  path_delete(Pathcomp_t *first)
 		}
 		else
 			old = pp;
-		pp = ppnext; 
+		pp = ppnext;
 	}
 }
 
@@ -401,7 +401,7 @@ static void path_checkdup(Shell_t *shp,Pathcomp_t *pp)
 	int			fd = -1;
 #if SHOPT_ATFUN
 	if((fd=open(name,O_search|O_cloexec))<0 || fstat(fd,&statb)<0 ||  !S_ISDIR(statb.st_mode))
-	
+
 #else
 	if(stat(name,&statb)<0 || !S_ISDIR(statb.st_mode))
 #endif /* SHOPT_ATFUN */
@@ -567,6 +567,11 @@ static int	path_opentype(Shell_t *shp,const char *name, Pathcomp_t *pp, int fun)
 		}
 	}
 	while( fd<0 && pp);
+
+  if (fd >= 0) {
+    if (!sh_iovalidfd(shp, fd)) abort();
+  }
+
 	if(fd>=0 && (fd = sh_iomovefd(shp,fd)) > 0)
 	{
 		fcntl(fd,F_SETFD,FD_CLOEXEC);
@@ -820,7 +825,7 @@ Pathcomp_t *path_absolute(Shell_t *shp,const char *name, Pathcomp_t *pp)
 			Shbltin_f addr;
 			int n;
 #endif
-			if(*stkptr(shp->stk,PATH_OFFSET)=='/' && (np=nv_search(stkptr(shp->stk,PATH_OFFSET),shp->bltin_tree,0)) && !nv_isattr(np,BLT_DISABLE)) 
+			if(*stkptr(shp->stk,PATH_OFFSET)=='/' && (np=nv_search(stkptr(shp->stk,PATH_OFFSET),shp->bltin_tree,0)) && !nv_isattr(np,BLT_DISABLE))
 				return(oldpp);
 			if((oldpp->flags&PATH_BIN) && (bp = strrchr(oldpp->name,'/')))
 			{
@@ -1158,7 +1163,7 @@ static int vexexec(void *ptr, uintmax_t fd1, uintmax_t fd2)
 pid_t path_spawn(Shell_t *shp,const char *opath,char **argv, char **envp, Pathcomp_t *libpath, int spawn)
 {
 	char *path;
-	char **xp=0, *xval, *libenv = (libpath?libpath->lib:0); 
+	char **xp=0, *xval, *libenv = (libpath?libpath->lib:0);
 	Namval_t*	np;
 	char		*s, *v;
 	int		n, pidsize;
@@ -1169,7 +1174,7 @@ pid_t path_spawn(Shell_t *shp,const char *opath,char **argv, char **envp, Pathco
 	{
 		spawnvex_add(shp->vex, SPAWN_pgrp, spawn>>1,0,0);
 	}
-	spawnvex_add(shp->vex,SPAWN_noexec,0,vexexec,(void*)shp);	
+	spawnvex_add(shp->vex,SPAWN_noexec,0,vexexec,(void*)shp);
 #endif /* SPAWN_cwd */
 	/* leave room for inserting _= pathname in environment */
 	envp--;
@@ -1538,7 +1543,7 @@ static void exscript(Shell_t *shp,char *path,char *argv[],char *const*envp)
 		sh_close( fd);
 	}
     }
- 
+
     /*
      * Produce a pseudo-floating point representation
      * with 3 bits base-8 exponent, 13 bits fraction.
@@ -1640,7 +1645,7 @@ bool path_cmdlib(Shell_t *shp, const char *dir, bool on)
 
 /*
  * This function checks for the .paths file in directory in <pp>
- * it assumes that the directory is on the stack at <offset> 
+ * it assumes that the directory is on the stack at <offset>
  */
 static bool path_chkpaths(Shell_t *shp,Pathcomp_t *first, Pathcomp_t* old,Pathcomp_t *pp, int offset)
 {
@@ -1726,7 +1731,7 @@ Pathcomp_t *path_addpath(Shell_t *shp,Pathcomp_t *first, const char *path,int ty
 	Pathcomp_t *old=0;
 	int offset = stktell(shp->stk);
 	char *savptr;
-	
+
 	if(!path && type!=PATH_PATH)
 		return(first);
 	if(type!=PATH_FPATH)
@@ -1885,7 +1890,7 @@ Pathcomp_t *path_unsetfpath(Shell_t *shp)
 				}
 				continue;
 			}
-			
+
 		}
 		old = pp;
 		pp = pp->next;
@@ -1898,7 +1903,7 @@ Pathcomp_t *path_dirfind(Pathcomp_t *first,const char *name,int c)
 	Pathcomp_t *pp=first;
 	while(pp)
 	{
-		if(memcmp(name,pp->name,pp->len)==0 && name[pp->len]==c) 
+		if(memcmp(name,pp->name,pp->len)==0 && name[pp->len]==c)
 			return(pp);
 		pp = pp->next;
 	}
@@ -1960,4 +1965,3 @@ void path_alias(Namval_t *np,Pathcomp_t *pp)
 	else
 		_nv_unset(np,0);
 }
-
