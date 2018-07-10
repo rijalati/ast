@@ -18,9 +18,10 @@
 *                                                                      *
 ***********************************************************************/
 #pragma prototyped
+#include <string.h>
 
-#include	<ast.h>
-#include	<cdt.h>
+#include	"ast.h"
+#include	"cdt.h"
 
 #define	env_change()		(++ast.env_serial)
 

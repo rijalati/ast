@@ -235,10 +235,6 @@ if(sig==SIGBUS)
 	if(action>0)
 		goto done;
 	shp->trapnote |= flag;
-#ifdef AST_SERIAL_RESTART
-	if(flag&(SH_SIGSET|SH_SIGTRAP))
-		astserial(AST_SERIAL_RESTART, AST_SERIAL_except);
-#endif
 	if(sig < shp->gd->sigmax)
 		shp->sigflag[sig] |= flag;
 	if(pp->mode==SH_JMPCMD && sh_isstate(shp,SH_STOPOK))

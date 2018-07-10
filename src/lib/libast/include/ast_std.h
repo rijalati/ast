@@ -403,7 +403,6 @@ extern int		_ast_getpgrp(void);
  * _AST_STD_I delays headers that require <ast_map.h>
  */
 
-#include <ast_intercept.h>
 #include <ast_map.h>
 
 #undef	_AST_STD_I

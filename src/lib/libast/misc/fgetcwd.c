@@ -27,17 +27,13 @@
  * pwd library support
  */
 
-#include <ast.h>
+#include <sys/stat.h>
 
-#if _UWIN
+#include "ast.h"
 
-NoN(fgetcwd)
-
-#else
-
-#include <ast_dir.h>
+#include "ast_dir.h"
 #include <error.h>
-#include <fs3d.h>
+#include "fs3d.h"
 
 #ifndef ERANGE
 #define ERANGE			E2BIG
@@ -47,7 +43,7 @@ NoN(fgetcwd)
 
 /*
  * return a pointer to the absolute path name of fd
- * fd must be an fd to a directory open for read 
+ * fd must be an fd to a directory open for read
  * the resulting path may be longer than PATH_MAX
  *
  * a few environment variables are checked before the search algorithm

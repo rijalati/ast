@@ -26,6 +26,8 @@
  * return terminal rows and cols
  */
 
+#include <sys/ioctl.h>
+
 #include <ast.h>
 #include <ast_tty.h>
 

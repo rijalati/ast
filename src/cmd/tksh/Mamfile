@@ -91,9 +91,6 @@ done ${INSTALLROOT}/include/ast/ast_getopt.h dontcare
 prev ${INSTALLROOT}/include/ast/prototyped.h implicit
 done ${INSTALLROOT}/include/ast/getopt.h dontcare
 prev ${INSTALLROOT}/include/ast/ast_map.h implicit
-make ${INSTALLROOT}/include/ast/ast_intercept.h implicit
-prev ${INSTALLROOT}/include/ast/prototyped.h implicit
-done ${INSTALLROOT}/include/ast/ast_intercept.h dontcare
 prev ${INSTALLROOT}/include/ast/ast_wchar.h implicit
 make ${INSTALLROOT}/include/ast/sfio.h implicit
 prev ${INSTALLROOT}/include/ast/sfio_s.h implicit

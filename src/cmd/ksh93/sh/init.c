@@ -27,29 +27,36 @@
  *
  */
 
-#include        "defs.h"
-#include        <stak.h>
-#include        <ccode.h>
-#include        <pwd.h>
-#include        <tmx.h>
-#include        <regex.h>
-#include        "variables.h"
-#include        "path.h"
-#include        "fault.h"
-#include        "name.h"
-#include	"edit.h"
-#include	"jobs.h"
-#include	"io.h"
-#include	"shlex.h"
-#include	"builtins.h"
-#include	"FEATURE/time"
-#include	"FEATURE/dynamic"
-#include	"FEATURE/externs"
-#include	"lexstates.h"
-#include	"version.h"
+#include "argnod.h"
+#include "ast.h"
+#include "ast_api.h"
+#include "ast_assert.h"
+#include "ast_ccode.h"
+#include "ast_fcntl.h"
+#include "builtins.h"
+#include "cdt.h"
+#include "edit.h"
+#include "error.h"
+#include "fault.h"
+#include "history.h"
+#include "io.h"
+#include "jobs.h"
+#include "lexstates.h"
+#include "name.h"
+#include "nvapi.h"
+#include "option.h"
+#include "path.h"
+#include "sfio.h"
+#include "shellapi.h"
+#include "shlex.h"
+#include "shtable.h"
+#include "stak.h"
+#include "stk.h"
+#include "variables.h"
+#include "version.h"
 
 #if _hdr_wctype
-#include	<ast_wchar.h>
+#include	"ast_wchar.h"
 #include	<wctype.h>
 #endif
 #if !_typ_wctrans_t
@@ -90,10 +97,6 @@ char e_version[]	= "\n@(#)$Id: Version "
 #if SHOPT_BASH
 #define ATTRS		1
 			"B"
-#endif
-#if _AST_INTERCEPT
-#define ATTRS		1
-			"I"
 #endif
 #if SHOPT_COSHELL
 #define ATTRS		1

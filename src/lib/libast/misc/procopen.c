@@ -31,13 +31,16 @@
  * placed at the top of the environment
  */
 
+
+#include <sys/ioctl.h>
+
 #include "proclib.h"
 
 #include <ls.h>
-#include <ast_tty.h>
+#include "ast_tty.h"
 
 /*
- * not quite ready for _use_spawnveg 
+ * not quite ready for _use_spawnveg
  */
 
 #if _use_spawnveg

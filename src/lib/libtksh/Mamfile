@@ -120,9 +120,6 @@ done ${INSTALLROOT}/include/ast/ast_getopt.h dontcare
 prev ${INSTALLROOT}/include/ast/prototyped.h implicit
 done ${INSTALLROOT}/include/ast/getopt.h dontcare
 prev ${INSTALLROOT}/include/ast/ast_map.h implicit
-make ${INSTALLROOT}/include/ast/ast_intercept.h implicit
-prev ${INSTALLROOT}/include/ast/prototyped.h implicit
-done ${INSTALLROOT}/include/ast/ast_intercept.h dontcare
 prev ${INSTALLROOT}/include/ast/ast_wchar.h implicit
 make ${INSTALLROOT}/include/ast/sfio.h implicit
 prev ${INSTALLROOT}/include/ast/sfio_s.h implicit
@@ -131,9 +128,6 @@ prev ${INSTALLROOT}/include/ast/ast_std.h implicit
 done ${INSTALLROOT}/include/ast/sfio.h dontcare
 make ${INSTALLROOT}/include/ast/ast_botch.h implicit
 done ${INSTALLROOT}/include/ast/ast_botch.h dontcare
-make ${INSTALLROOT}/include/ast/ast_limits.h implicit
-done ${INSTALLROOT}/include/ast/ast_limits.h dontcare
-make ${INSTALLROOT}/include/ast/ast_fcntl.h implicit
 make ${INSTALLROOT}/include/ast/ast_fs.h implicit
 done ${INSTALLROOT}/include/ast/ast_fs.h dontcare
 done ${INSTALLROOT}/include/ast/ast_fcntl.h dontcare

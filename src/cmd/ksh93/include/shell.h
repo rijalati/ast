@@ -18,7 +18,6 @@
 *                                                                      *
 ***********************************************************************/
 #pragma prototyped
-#ifndef SH_INTERACTIVE
 /*
  * David Korn
  * AT&T Labs
@@ -27,22 +26,49 @@
  *
  */
 
+#ifndef _SHELL_H
+#define _SHELL_H 1
+
+#include <stdint.h>
+#include <sys/stat.h>
+
 #define SH_VERSION	20120720
 
-#include	<ast.h>
-#include	<cdt.h>
-#include	<stk.h>
+// Bit of a chicken and egg problem here. If we've already included fault.h then this typedef
+// already exists and depending on the compiler defining it here may cause a warning or an error.
+#ifndef _FAULT_H
+typedef struct Shell_s Shell_t;
+#endif
+
+#include "ast.h"
+#include "cdt.h"
+#include "cmd.h"
+#include "fault.h"
+#include "shcmd.h"
+#include "stk.h"
+
 #ifdef _SH_PRIVATE
-#   include	"name.h"
+#include "name.h"
 #else
-#   include	<nval.h>
-#endif /* _SH_PRIVATE */
+#include "nval.h"
+#endif  // _SH_PRIVATE
+
+
+
 #if __STDC_VERSION__ >= 199901L
 #    include	<stdint.h>
 #endif
 
-#undef NOT_USED
-#define NOT_USED(x)	(&(x),1)
+
+/// This is a macro that can be used to silence "unused parameter" warnings from the compiler for
+/// functions which need to accept parameters they do not use because they need to be compatible
+/// with an interface. It's similar to the Python idiom of doing `_ = param` at the top of a
+/// function in the same situation.
+#define UNUSED(expr)  \
+    do {              \
+        (void)(expr); \
+    } while (0)
+
 
 /* options */
 #if __STDC_VERSION__ >= 199901L
@@ -57,8 +83,6 @@ typedef struct
 Shopt_t;
 
 typedef struct Shell_s Shell_t;
-
-#include	<shcmd.h>
 
 typedef void	(*Shinit_f)(Shell_t*, int);
 #ifndef SH_wait_f_defined
@@ -156,9 +180,145 @@ struct Shell_s
 	short		subshell;	/* set for virtual subshell */
 	Stk_t		*stk;		/* stack poiter */
 	int		pwdfd;		/* file descriptor for pwd */
-#ifdef _SH_PRIVATE
-	_SH_PRIVATE
-#endif /* _SH_PRIVATE */
+    struct shared *gd;    // global data
+    struct sh_scoped st;  // scoped information
+    Sfio_t *heredocs;     // current here-doc temp file
+    Sfio_t *funlog;       // for logging function definitions
+    int **fdptrs;         // pointer to file numbers
+    int savexit;
+    char *lastarg;
+    char *lastpath;    // last alsolute path found
+    int path_err;      // last error on path search
+    Dt_t *track_tree;  // for tracked aliases*/
+    Dt_t *var_base;    // global level variables
+    Dt_t *openmatch;
+    Dt_t *namref_root;
+    Namval_t *namespace;   // current active namespace*/
+    Namval_t *last_table;  // last table used in last nv_open
+    Namval_t *prev_table;  // previous table used in nv_open
+    Namval_t *oldnp;       // last valid parent node
+    Namval_t **nodelist;   // for decl commands
+    Sfio_t *outpool;       // ouput stream pool
+    long timeout;          // read timeout
+    long curenv;           // current subshell number
+    long jobenv;           // subshell number for jobs
+    int infd;              // input file descriptor
+    short nextprompt;      // next prompt is PS<nextprompt>
+    short poolfiles;
+    Namval_t *posix_fun;  // points to last name() function
+    char *outbuff;        // pointer to output buffer
+    char *errbuff;        // pointer to stderr buffer
+    char *prompt;         // pointer to prompt string
+    char *shname;         // shell name
+    char *comdiv;         // points to sh -c argument
+    char *prefix;         // prefix for compound assignment
+    sigjmp_buf *jmplist;  // longjmp return stack
+    char *fifo;           // fifo name for process sub
+    int oldexit;
+    pid_t bckpid;  // background process id
+    pid_t cpid;
+    pid_t spid;  // subshell process id
+    pid_t pipepid;
+    pid_t outpipepid;
+    pid_t *procsub;  // pids for >() argument
+    int nprocsub;    // number of pids in procsub
+    int topfd;
+    int errorfd;
+    int savesig;
+    unsigned char *sigflag;  // pointer to signal states
+    char intrap;
+    char login_sh;
+    char lastbase;
+    char forked;
+    char binscript;
+    char deftype;
+    char funload;
+    char used_pos;  // used postional parameter
+    char universe;
+    char winch;
+    char inarith;           // set when in ((...))
+    char indebug;           // set when in debug trap
+    unsigned char ignsig;   // ignored signal in subshell
+    unsigned char lastsig;  // last signal received
+    char pathinit;          // pathinit called from subshell
+    char comsub;            // set when in $() comsub
+    char subshare;          // set when in ${..} comsub
+    char toomany;           // set when out of fd's
+    char instance;          // in set_instance
+    char decomma;           // decimal_point=','
+    char redir0;            // redirect of 0
+    char intrace;           // set when trace expands PS4
+    char *readscript;       // set before reading a script
+    int subdup;             // bitmask for dups of 1
+    int *inpipe;            // input pipe pointer
+    int *outpipe;           // output pipe pointer
+    int cpipe[3];
+    int coutpipe;
+    int inuse_bits;
+    struct argnod *envlist;
+    struct dolnod *arglist;
+    int fn_depth;
+    int fn_reset;
+    int dot_depth;
+    int hist_depth;
+    int xargmin;
+    int xargmax;
+    int xargexit;
+    int nenv;
+    int lexsize;
+    Sflong_t sigval;
+    mode_t mask;
+    Env_t *env;
+    void *init_context;
+    void *mac_context;
+    void *lex_context;
+    void *arg_context;
+    void *job_context;
+    void *pathlist;
+    void *defpathlist;
+    void *cdpathlist;
+    char **argaddr;
+    void *optlist;
+    siginfo_ll_t **siginfo;
+#if !_AST_no_spawnveg
+    Spawnvex_t *vex;
+    Spawnvex_t *vexp;
+#endif
+    struct sh_scoped global;
+    struct checkpt checkbase;
+    Shinit_f userinit;
+    Shbltin_f bltinfun;
+    Shbltin_t bltindata;
+    char *cur_line;
+    int offsets[10];
+    Sfio_t **sftable;
+    unsigned int *fdstatus;
+    const char *pwd;
+    void *jmpbuffer;
+    void *mktype;
+    Sfio_t *strbuf;
+    Sfio_t *strbuf2;
+    Dt_t *first_root;
+    Dt_t *prefix_root;
+    Dt_t *last_root;
+    Dt_t *prev_root;
+    Dt_t *fpathdict;
+    Dt_t *typedict;
+    Dt_t *inpool;
+    Dt_t *transdict;
+    char ifstable[256];
+    unsigned long test;
+    Shopt_t offoptions;
+    Shopt_t glob_options;
+    Namval_t *typeinit;
+    Namfun_t nvfun;
+    char *mathnodes;
+    void *coshell;
+    char *bltin_dir;
+    char exittrap;
+    char errtrap;
+    char end_fn;
+#endif  // _SH_PRIVATE
 };
 
 /* flags for sh_parse */
@@ -169,7 +329,6 @@ struct Shell_s
 #define SH_IOCOPROCESS	(-2)
 #define SH_IOHISTFILE	(-3)
 
-#include	<cmd.h>
 
 /* symbolic value for sh_fdnotify */
 #define SH_FDCLOSE	(-1)
@@ -260,21 +419,19 @@ extern void		*sh_waitnotify_20120720(Shwait_f,void*);
 	extern Shell_t sh;
 #endif
 
-#include	<shellapi.h>
+#include	"shellapi.h"
 
 #ifdef _DLL
 #   undef extern
 #endif /* _DLL */
 
-#ifndef _AST_INTERCEPT
-#   if _lib_lseek64
+#if _lib_lseek64
 #       undef  stat64
 #	define stat64(a,b)	sh_stat(a,b)	
-#   else
+#else
 #       undef  stat
 #	define stat(a,b)	sh_stat(a,b)	
-#   endif
-#endif /* !_AST_INTERCEPT */
+#endif
 #ifndef _shtest_c
 #   ifndef _SH_PRIVATE
 #       undef  access
@@ -282,50 +439,48 @@ extern void		*sh_waitnotify_20120720(Shwait_f,void*);
 #   endif
 #endif /* !_shtest_c */
 #ifndef _shio_h
-#ifndef _AST_INTERCEPT
-#   undef  chdir
-#   define chdir(a)		sh_chdir(a)	
-#   undef  fchdir
-#   define fchdir(a)		sh_fchdir(a)
+#undef  chdir
+#define chdir(a)		sh_chdir(a)	
+#undef  fchdir
+#define fchdir(a)		sh_fchdir(a)
+#ifndef HIST_MAX
+#if _lib_lseek64
+#    undef  open64
+#    define open64	sh_open
+#    undef  lseek64
+#    define lseek64(a,b,c)	sh_seek(a,b,c)
+#else
+#    undef  open
+#    define open		sh_open
+#    undef  lseek
+#    define lseek(a,b,c)	sh_seek(a,b,c)
 #endif
-#   ifndef HIST_MAX
-#       if _lib_lseek64
-#           undef  open64
-#           define open64	sh_open
-#           undef  lseek64
-#           define lseek64(a,b,c)	sh_seek(a,b,c)
-#       else
-#           undef  open
-#           define open		sh_open
-#           undef  lseek
-#           define lseek(a,b,c)	sh_seek(a,b,c)
-#       endif
-#   endif
-#   ifndef _SH_PRIVATE
-#       undef  access
-#       define access(a,b)	sh_access(a,b)
-#       undef  close
-#       define close(a)		sh_close(a)
-#       if SHELLAPI(20120720)
-#           undef  exit
-#           define exit(a)	sh_exit(sh_getinterp(),a)
-#       else
-#           undef  exit
-#           define exit(a)	sh_exit(a)
-#       endif
-#       undef  fcntl
-#       define fcntl(a,b,c)	sh_fcntl(a,b,c)
-#       undef  pipe
-#       define pipe(a)		sh_pipe(a)
-#       undef  read
-#       define read(a,b,c)	sh_read(a,b,c)
-#       undef  write
-#       define write(a,b,c)	sh_write(a,b,c)
-#       undef  umask
-#       define umask(a)		sh_umask(a)
-#       undef  dup
-#       define dup		sh_dup
-#   endif /* !_SH_PRIVATE */
+#endif
+#ifndef _SH_PRIVATE
+#undef  access
+#define access(a,b)	sh_access(a,b)
+#undef  close
+#define close(a)		sh_close(a)
+#if SHELLAPI(20120720)
+#    undef  exit
+#    define exit(a)	sh_exit(sh_getinterp(),a)
+#else
+#    undef  exit
+#    define exit(a)	sh_exit(a)
+#endif
+#undef  fcntl
+#define fcntl(a,b,c)	sh_fcntl(a,b,c)
+#undef  pipe
+#define pipe(a)		sh_pipe(a)
+#undef  read
+#define read(a,b,c)	sh_read(a,b,c)
+#undef  write
+#define write(a,b,c)	sh_write(a,b,c)
+#undef  umask
+#define umask(a)		sh_umask(a)
+#undef  dup
+#define dup		sh_dup
+#endif /* !_SH_PRIVATE */
 #endif /* !_shio_h */
 
 #define SH_SIGSET	4

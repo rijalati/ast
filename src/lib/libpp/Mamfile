@@ -96,9 +96,6 @@ done ${PACKAGE_ast_INCLUDE}/ast_getopt.h dontcare
 prev ${PACKAGE_ast_INCLUDE}/prototyped.h implicit
 done ${PACKAGE_ast_INCLUDE}/getopt.h dontcare
 prev ${PACKAGE_ast_INCLUDE}/ast_map.h implicit
-make ${PACKAGE_ast_INCLUDE}/ast_intercept.h implicit
-prev ${PACKAGE_ast_INCLUDE}/prototyped.h implicit
-done ${PACKAGE_ast_INCLUDE}/ast_intercept.h dontcare
 prev ${PACKAGE_ast_INCLUDE}/ast_wchar.h implicit
 make ${PACKAGE_ast_INCLUDE}/sfio.h implicit
 prev ${PACKAGE_ast_INCLUDE}/sfio_s.h implicit
@@ -131,9 +128,6 @@ make ${PACKAGE_ast_INCLUDE}/ast_errorf.h implicit
 prev ${PACKAGE_ast_INCLUDE}/prototyped.h implicit
 done ${PACKAGE_ast_INCLUDE}/ast_errorf.h dontcare
 prev ${PACKAGE_ast_INCLUDE}/sfio.h implicit
-prev ${PACKAGE_ast_INCLUDE}/ast_std.h implicit
-prev ${PACKAGE_ast_INCLUDE}/prototyped.h implicit
-done ${PACKAGE_ast_INCLUDE}/ast.h dontcare
 done ppsym.c
 meta ppsym.o %.c>%.o ppsym.c ppsym
 prev ppsym.c
