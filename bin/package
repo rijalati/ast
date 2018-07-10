@@ -1,4 +1,4 @@
-USAGE_LICENSE="[-author?Glenn Fowler <glenn.s.fowler@gmail.com>][-copyright?Copyright (c) 1994-2015 AT&T Intellectual Property][-license?http://www.eclipse.org/org/documents/epl-v10.html]"
+USAGE_LICENSE="[-author?Glenn Fowler <glenn.s.fowler@gmail.com>][-copyright?Copyright (c) 1994-2018 AT&T Intellectual Property][-license?http://www.eclipse.org/org/documents/epl-v10.html]"
 ########################################################################
 #                                                                      #
 #               This software is part of the ast package               #
@@ -4996,11 +4996,6 @@ admin)	while	test ! -f $admin_db
 	;;
 
 clean|clobber)
-	case $INSTALLROOT in
-	$PACKAGEROOT)
-		INSTALLROOT=$INSTALLROOT/arch/$HOSTTYPE
-		;;
-	esac
 	cd $PACKAGEROOT
 	$exec rm -rf $INSTALLROOT
 	exit
