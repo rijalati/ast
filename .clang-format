@@ -28,6 +28,15 @@ IndentWidth: 4
 Language: Cpp
 MaxEmptyLinesToKeep: 2
 PointerBindsToType: false
+PenaltyBreakComment: '78'
+PenaltyBreakFirstLessLess: '78'
+PenaltyBreakString: '78'
+PenaltyExcessCharacter: '78'
+PenaltyReturnTypeOnItsOwnLine: '60'
+PointerAlignment: Right
+ReflowComments: 'true'
+SortIncludes: 'false'
+SpaceAfterCStyleCast: 'false'
 SpaceBeforeAssignmentOperators: false
 SpaceBeforeParens: ControlStatements
 SpaceInEmptyParentheses: false
