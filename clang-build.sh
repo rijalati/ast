@@ -172,7 +172,7 @@ ENDOFTEXT
 print_gnulinux_builtin_header > tmp_gnulinux_builtin_header.h
 export USE_CLANG=yes
 export CC="clang-6.0"
-export CCFLAGS=' -m64 -fPIC -std=gnu99 -D_GNU_SOURCE=1 -D__USE_GNU=1 -D_BLD_DLL -D_BLD_ast=1 -D_PACKAGE_ast=1 -D_astimport=1 -D_lib_unlink=1 -D_hdr_mmap=1 -D_hdr_fnctl=1 -D_BLD_cmd -Dvt_threaded=1 -DSHOPT_FS_3D=1 -DSHOPT_KIA=1 -DSHOPT_SYSRC -DSHOPT_CMDLIB_BLTIN=1 -DSHOPT_CMDLIB_DIR=/usr/ast/bin -DSHOPT_CMDLIB_HDR=/home/rlatimore/src/git/ast-open/tmp_gnulinux_builtin_header.h -D_map_libc=1 -DSHOPT_OPTIMIZE=1 -DSHOPT_BASH=1 -fno-omit-frame-pointer -fstrict-aliasing -Wstrict-aliasing -fstrict-overflow -Wstrict-overflow -Wsequence-point -Wno-parentheses -Wno-unused -Wno-trigraphs -Wuninitialized -Waddress -Wmissing-variable-declarations -fdiagnostics-fixit-info -fdiagnostics-print-source-range-info -fdiagnostics-show-category=name -fcolor-diagnostics -fdiagnostics-absolute-paths -fdiagnostics-show-option -fcaret-diagnostics -fms-extensions'
+export CCFLAGS=' -m64 -fPIC -std=gnu99 -D_map_libc=1 -DLIBBSD_OVERLAY -Iarch/linux.i386-64/include/ast -Isrc/lib/libast/include -I/usr/include/bsd -I/usr/include/bsd/sys -I/usr/include/bsd/netinet -I/usr/include -D_GNU_SOURCE=1 -D__USE_GNU=1 -DSHOPT_SYSRC -DSHOPT_CMDLIB_BLTIN=1 -DSHOPT_CMDLIB_DIR=/usr/ast/bin -DSHOPT_CMDLIB_HDR=/home/rlatimore/src/git/ast-open/tmp_gnulinux_builtin_header.h -fno-omit-frame-pointer -fstrict-aliasing -Wstrict-aliasing -fstrict-overflow -Wstrict-overflow -Wsequence-point -Wno-parentheses -Wno-unused -Wno-trigraphs -Wuninitialized -Waddress -Wmissing-variable-declarations -fdiagnostics-fixit-info -fdiagnostics-print-source-range-info -fdiagnostics-show-category=name -fcolor-diagnostics -fdiagnostics-absolute-paths -fdiagnostics-show-option -fcaret-diagnostics -fdeclspec'
 export CXX=clang++
 export HOSTTYPE=linux.i386-64
 export SHELL=/opt/ast/bin/ksh
@@ -185,7 +185,8 @@ print "Building debug version..."
 #bin/libast_prereq.sh
 
 #time /opt/ast/bin/ksh "${PACKAGEROOT}/bin/package" make ast-ast PACKAGE_OPTIONS=map-libc CCFLAGS=" -v -glldb -g -fno-builtin -O0 ${CCFLAGS}" CC=${CC} HOSTTYPE=${HOSTTYPE} INSTALLROOT="${PACKAGEROOT}/arch/${HOSTTYPE}" SHELL=/opt/ast/bin/ksh
-/bin/sh "${PACKAGEROOT}/bin/package" make ast-make PACKAGE_OPTIONS=map-libc CCFLAGS="-v -glldb -g -fno-builtin -O0 ${CCFLAGS}" CC=${CC} CC.HOSTTYPE="${HOSTTYPE}" HOSTTYPE=${HOSTTYPE} INSTALLROOT="${PACKAGEROOT}/arch/${HOSTTYPE}" SHELL=/opt/ast/bin/ksh
+#/opt/ast/bin/ksh "${PACKAGEROOT}/bin/package" make ast-ast PACKAGE_OPTIONS='map-libc' CCFLAGS="-v -glldb -g -fno-builtin -O0 ${CCFLAGS}" HOSTTYPE='linux.i386-64' SHELL='/opt/ast/bin/ksh'
+/opt/ast/bin/ksh "${PACKAGEROOT}/bin/package" make ast-ast PACKAGE_OPTIONS='map-libc' CCFLAGS="-O2 ${CCFLAGS}" HOSTTYPE='linux.i386-64' SHELL='/opt/ast/bin/ksh'
 #print "Building optimized version..."
 #time /opt/ast/bin/ksh "${HOME}/src/git/ast-open/bin/package" make ast-open PACKAGE_OPTIONS='map-libc' CCFLAGS="${CCFLAGS}" CC="${CC} -O2" HOSTTYPE="${HOSTTYPE}" SHELL='/opt/ast/bin/ksh'
 
