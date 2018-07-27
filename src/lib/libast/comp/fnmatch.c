@@ -57,18 +57,14 @@ fnmatch(const char *pattern, const char *subject, int flags)
     for (mp = map; mp < &map[elementsof(map)]; mp++)
         if (flags & mp->fnm)
             reflags |= mp->reg;
-    if (flags & FNM_LEADING_DIR)
-    {
-        if (!(reflags = regcomp(&re, pattern, reflags)))
-        {
+    if (flags & FNM_LEADING_DIR) {
+        if (!(reflags = regcomp(&re, pattern, reflags))) {
             reflags = regexec(&re, subject, 1, &match, 0);
             regfree(&re);
             if (!reflags && (reflags = subject[match.rm_eo]))
                 reflags = reflags == '/' ? 0 : FNM_NOMATCH;
         }
-    }
-    else if (!(reflags = regcomp(&re, pattern, reflags | REG_RIGHT)))
-    {
+    } else if (!(reflags = regcomp(&re, pattern, reflags | REG_RIGHT))) {
         reflags = regexec(&re, subject, 0, NiL, 0);
         regfree(&re);
     }

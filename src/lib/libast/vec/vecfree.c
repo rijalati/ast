@@ -40,8 +40,7 @@
 void
 vecfree(char **vec, int retain)
 {
-    if (vec)
-    {
+    if (vec) {
         if (*(vec -= 2) && !retain)
             free(*vec);
         free(vec);

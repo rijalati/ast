@@ -111,16 +111,14 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
     TkCursor *cursorPtr;
     int new;
 
-    if (!initialized)
-    {
+    if (!initialized) {
         CursorInit();
     }
 
     nameKey.name = string;
     nameKey.display = Tk_Display(tkwin);
     nameHashPtr = Tcl_CreateHashEntry(&nameTable, ( char * )&nameKey, &new);
-    if (!new)
-    {
+    if (!new) {
         cursorPtr = ( TkCursor * )Tcl_GetHashValue(nameHashPtr);
         cursorPtr->refCount++;
         return cursorPtr->cursor;
@@ -128,8 +126,7 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
 
     cursorPtr = TkGetCursorByName(interp, tkwin, string);
 
-    if (cursorPtr == NULL)
-    {
+    if (cursorPtr == NULL) {
         Tcl_DeleteHashEntry(nameHashPtr);
         return None;
     }
@@ -144,8 +141,7 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
     idKey.display = nameKey.display;
     idKey.cursor = cursorPtr->cursor;
     idHashPtr = Tcl_CreateHashEntry(&idTable, ( char * )&idKey, &new);
-    if (!new)
-    {
+    if (!new) {
         panic("cursor already registered in Tk_GetCursor");
     }
     Tcl_SetHashValue(nameHashPtr, cursorPtr);
@@ -205,8 +201,7 @@ Tk_Uid bg;          /* Background color for cursor. */
     int new;
     XColor fgColor, bgColor;
 
-    if (!initialized)
-    {
+    if (!initialized) {
         CursorInit();
     }
 
@@ -220,8 +215,7 @@ Tk_Uid bg;          /* Background color for cursor. */
     dataKey.bg = bg;
     dataKey.display = Tk_Display(tkwin);
     dataHashPtr = Tcl_CreateHashEntry(&dataTable, ( char * )&dataKey, &new);
-    if (!new)
-    {
+    if (!new) {
         cursorPtr = ( TkCursor * )Tcl_GetHashValue(dataHashPtr);
         cursorPtr->refCount++;
         return cursorPtr->cursor;
@@ -232,14 +226,12 @@ Tk_Uid bg;          /* Background color for cursor. */
      * available and add it to the database.
      */
 
-    if (XParseColor(dataKey.display, Tk_Colormap(tkwin), fg, &fgColor) == 0)
-    {
+    if (XParseColor(dataKey.display, Tk_Colormap(tkwin), fg, &fgColor) == 0) {
         Tcl_AppendResult(
         interp, "invalid color name \"", fg, "\"", ( char * )NULL);
         goto error;
     }
-    if (XParseColor(dataKey.display, Tk_Colormap(tkwin), bg, &bgColor) == 0)
-    {
+    if (XParseColor(dataKey.display, Tk_Colormap(tkwin), bg, &bgColor) == 0) {
         Tcl_AppendResult(
         interp, "invalid color name \"", bg, "\"", ( char * )NULL);
         goto error;
@@ -248,8 +240,7 @@ Tk_Uid bg;          /* Background color for cursor. */
     cursorPtr = TkCreateCursorFromData(
     tkwin, source, mask, width, height, xHot, yHot, fgColor, bgColor);
 
-    if (cursorPtr == NULL)
-    {
+    if (cursorPtr == NULL) {
         goto error;
     }
 
@@ -259,8 +250,7 @@ Tk_Uid bg;          /* Background color for cursor. */
     idKey.display = dataKey.display;
     idKey.cursor = cursorPtr->cursor;
     idHashPtr = Tcl_CreateHashEntry(&idTable, ( char * )&idKey, &new);
-    if (!new)
-    {
+    if (!new) {
         panic("cursor already registered in Tk_GetCursorFromData");
     }
     Tcl_SetHashValue(dataHashPtr, cursorPtr);
@@ -305,8 +295,7 @@ Tk_Cursor cursor; /* Identifier for cursor whose name is
     void *ptr;
     static char string[20];
 
-    if (!initialized)
-    {
+    if (!initialized) {
     printid:
         sprintf(string, "cursor id %p", cursor);
         return string;
@@ -314,13 +303,11 @@ Tk_Cursor cursor; /* Identifier for cursor whose name is
     idKey.display = display;
     idKey.cursor = cursor;
     idHashPtr = Tcl_FindHashEntry(&idTable, ( char * )&idKey);
-    if (idHashPtr == NULL)
-    {
+    if (idHashPtr == NULL) {
         goto printid;
     }
     cursorPtr = ( TkCursor * )Tcl_GetHashValue(idHashPtr);
-    if (cursorPtr->otherTable != &nameTable)
-    {
+    if (cursorPtr->otherTable != &nameTable) {
         goto printid;
     }
     ptr = cursorPtr->hashPtr->key.words;
@@ -354,22 +341,19 @@ Tk_Cursor cursor; /* Identifier for cursor to be released. */
     Tcl_HashEntry *idHashPtr;
     TkCursor *cursorPtr;
 
-    if (!initialized)
-    {
+    if (!initialized) {
         panic("Tk_FreeCursor called before Tk_GetCursor");
     }
 
     idKey.display = display;
     idKey.cursor = cursor;
     idHashPtr = Tcl_FindHashEntry(&idTable, ( char * )&idKey);
-    if (idHashPtr == NULL)
-    {
+    if (idHashPtr == NULL) {
         panic("Tk_FreeCursor received unknown cursor argument");
     }
     cursorPtr = ( TkCursor * )Tcl_GetHashValue(idHashPtr);
     cursorPtr->refCount--;
-    if (cursorPtr->refCount == 0)
-    {
+    if (cursorPtr->refCount == 0) {
         Tcl_DeleteHashEntry(cursorPtr->hashPtr);
         Tcl_DeleteHashEntry(idHashPtr);
         TkFreeCursor(cursorPtr);

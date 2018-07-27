@@ -134,36 +134,30 @@ master_name(char *name)
 {
     static char sname[MAXNAME];
     int n;
-    if (!name)
-    {
+    if (!name) {
         strcpy(sname, _pty_first);
         return (sname);
     }
     n = strlen(_pty_first);
     if (name[n - 1] == '9')
         name[n - 1] = 'a';
-    else if (name[n - 1] == 'f')
-    {
-        if (_pty_first[n - 2] == '0' && name[n - 2] == '9')
-        {
+    else if (name[n - 1] == 'f') {
+        if (_pty_first[n - 2] == '0' && name[n - 2] == '9') {
             name[n - 2] = '0';
             if (name[n - 3] == '9' || name[n - 3] == 'z')
                 return (NULL);
             name[n - 3]++;
         }
         if (_pty_first[n - 2] == 'p'
-            && (name[n - 2] == 'z' || name[n - 2] == 'Z'))
-        {
+            && (name[n - 2] == 'z' || name[n - 2] == 'Z')) {
             if (name[n - 2] == 'z')
                 name[n - 2] == 'P';
             else
                 return (0);
-        }
-        else
+        } else
             name[n - 2]++;
         name[n - 1] = '0';
-    }
-    else
+    } else
         name[n - 1]++;
     return (name);
 }
@@ -184,11 +178,9 @@ ptymopen(int *master)
 #            else
     int fdm;
     char *name = 0;
-    while (name = master_name(name))
-    {
+    while (name = master_name(name)) {
         fdm = open(name, O_RDWR | O_CREAT, MODE_666);
-        if (fdm >= 0)
-        {
+        if (fdm >= 0) {
             *master = fdm;
 #                if _lib_ptsname
             slave = ptsname(fdm);
@@ -226,16 +218,14 @@ mkpty(int *master, int *slave)
     alarm(4);
     if (tcgetattr(sffileno(sfstderr), &tty) >= 0)
         ttyp = &tty;
-    else
-    {
+    else {
         ttyp = 0;
         error(-1, "unable to get standard error terminal attributes");
     }
 #ifdef TIOCGWINSZ
     if (ioctl(sffileno(sfstderr), TIOCGWINSZ, &win) >= 0)
         winp = &win;
-    else
-    {
+    else {
         winp = 0;
         error(-1, "unable to get standard error window size");
     }
@@ -254,8 +244,7 @@ mkpty(int *master, int *slave)
     if ((*master = posix_openpt(O_RDWR)) < 0)
         return -1;
     if (grantpt(*master) || unlockpt(*master) || !(sname = ptsname(*master))
-        || (*slave = open(sname, O_RDWR | O_cloexec)) < 0)
-    {
+        || (*slave = open(sname, O_RDWR | O_cloexec)) < 0) {
         close(*master);
         return -1;
     }
@@ -267,8 +256,7 @@ mkpty(int *master, int *slave)
 #    ifdef I_PUSH
     if (tcgetattr(*slave, &tst) < 0
         && (ioctl(*slave, I_PUSH, "ptem") < 0
-            || ioctl(*slave, I_PUSH, "ldterm") < 0))
-    {
+            || ioctl(*slave, I_PUSH, "ldterm") < 0)) {
         close(*slave);
         close(*master);
         return -1;
@@ -294,13 +282,10 @@ runcmd(char **argv, int slave, int session)
 {
     long ops[4];
 
-    if (session)
-    {
+    if (session) {
         ops[0] = PROC_FD_CTTY(slave);
         ops[1] = 0;
-    }
-    else
-    {
+    } else {
         ops[0] = PROC_FD_DUP(slave, 0, PROC_FD_CHILD);
         ops[1] = PROC_FD_DUP(slave, 1, PROC_FD_CHILD);
         ops[2] = PROC_FD_DUP(slave, 2, PROC_FD_CHILD);
@@ -330,51 +315,41 @@ process(Sfio_t *mp, Sfio_t *lp, int delay, int timeout)
     if (!fstat(sffileno(ip), &dst) && !stat("/dev/null", &fst)
         && dst.st_dev == fst.st_dev && dst.st_ino == fst.st_ino)
         ip = 0;
-    do
-    {
+    do {
         i = 0;
         t = timeout;
         if (mp)
             sps[i++] = mp;
-        if (ip)
-        {
+        if (ip) {
             sps[i++] = ip;
             t = -1;
         }
         if (!i)
             break;
-        if ((n = sfpoll(sps, i, t)) <= 0)
-        {
+        if ((n = sfpoll(sps, i, t)) <= 0) {
             if (n < 0)
                 error(ERROR_SYSTEM | 2, "poll failed");
             break;
         }
-        for (i = t = 0; i < n; i++)
-        {
+        for (i = t = 0; i < n; i++) {
             if (!(sfvalue(sps[i]) & SF_READ))
                 /*skip*/;
-            else if (sps[i] == mp)
-            {
+            else if (sps[i] == mp) {
                 t++;
-                if (!(s = ( char * )sfreserve(mp, SF_UNBOUND, -1)))
-                {
+                if (!(s = ( char * )sfreserve(mp, SF_UNBOUND, -1))) {
                     sfclose(mp);
                     mp = 0;
-                }
-                else if ((r = sfvalue(mp)) > 0
-                         && (sfwrite(sfstdout, s, r) != r || sfsync(sfstdout)))
-                {
+                } else if ((r = sfvalue(mp)) > 0
+                           && (sfwrite(sfstdout, s, r) != r
+                               || sfsync(sfstdout))) {
                     error(ERROR_SYSTEM | 2, "output write failed");
                     goto done;
                 }
-            }
-            else
-            {
+            } else {
                 t++;
                 if (!(s = sfgetr(ip, '\n', 1)))
                     ip = 0;
-                else if (sfputr(mp, s, '\r') < 0 || sfsync(mp))
-                {
+                else if (sfputr(mp, s, '\r') < 0 || sfsync(mp)) {
                     error(ERROR_SYSTEM | 2, "write failed");
                     goto done;
                 }
@@ -400,10 +375,8 @@ match(char *pattern, char *text, int must)
 
     if (!pattern[0])
         return 1;
-    if (pattern[0] == '?' && pattern[1] && !pattern[2])
-    {
-        switch (pattern[1])
-        {
+    if (pattern[0] == '?' && pattern[1] && !pattern[2]) {
+        switch (pattern[1]) {
         case '0':
         case '1':
             if (text)
@@ -419,20 +392,17 @@ match(char *pattern, char *text, int must)
             return 0;
         }
     }
-    if (!text)
-    {
+    if (!text) {
         if (must)
             error(2, "expected \"%s\", got EOF", pattern);
         return 0;
     }
-    if (!(re = regcache(pattern, REG_EXTENDED, &code)))
-    {
+    if (!(re = regcache(pattern, REG_EXTENDED, &code))) {
         regerror(code, re, buf, sizeof(buf));
         error(2, "%s: %s", pattern, buf);
         return 0;
     }
-    if (regexec(re, text, 0, NiL, 0))
-    {
+    if (regexec(re, text, 0, NiL, 0)) {
         if (must)
             error(
             2, "expected \"%s\", got \"%s\"", pattern, fmtesq(text, "\""));
@@ -485,8 +455,7 @@ masterline(Sfio_t *mp,
         promptlen
         = sfsprintf(promptbuf, sizeof(promptbuf), prompt, ++bp->line);
 again:
-    if (prompt)
-    {
+    if (prompt) {
         if (bp->cur < bp->end && bp->restore >= 0)
             *bp->cur = bp->restore;
         if (strneq(bp->cur, promptbuf, promptlen))
@@ -495,22 +464,17 @@ again:
             r = 0;
         if (bp->cur < bp->end && bp->restore >= 0)
             *bp->cur = 0;
-        if (r)
-        {
+        if (r) {
             error(-1, "p \"%s\"", fmtnesq(promptbuf, "\"", promptlen));
             return r;
         }
-        if (r = bp->nxt)
-        {
-            if (strneq(r, promptbuf, promptlen))
-            {
+        if (r = bp->nxt) {
+            if (strneq(r, promptbuf, promptlen)) {
                 error(-1, "p \"%s\"", fmtnesq(promptbuf, "\"", promptlen));
                 return r;
             }
-            while (r = memchr(r, '\n', bp->end - r))
-            {
-                if (strneq(r, promptbuf, promptlen))
-                {
+            while (r = memchr(r, '\n', bp->end - r)) {
+                if (strneq(r, promptbuf, promptlen)) {
                     error(
                     -1, "p \"%s\"", fmtnesq(promptbuf, "\"", promptlen));
                     return r;
@@ -519,71 +483,55 @@ again:
             }
         }
         *bp->cur = 0;
-    }
-    else if (bp->nxt)
-    {
+    } else if (bp->nxt) {
         if (bp->restore >= 0)
             *bp->cur = bp->restore;
         r = bp->cur;
         bp->restore = *bp->nxt;
         *bp->nxt = 0;
-        if (bp->nxt >= bp->end)
-        {
+        if (bp->nxt >= bp->end) {
             bp->cur = bp->end = bp->buf;
             bp->nxt = 0;
-        }
-        else
-        {
+        } else {
             bp->cur = bp->nxt;
             if (bp->nxt = memchr(bp->nxt + 1, '\n', bp->end - bp->nxt - 1))
                 bp->nxt++;
         }
         goto done;
     }
-    if ((n = sfpoll(&mp, 1, timeout)) <= 0 || !(( int )sfvalue(mp) & SF_READ))
-    {
-        if (n < 0)
-        {
+    if ((n = sfpoll(&mp, 1, timeout)) <= 0
+        || !(( int )sfvalue(mp) & SF_READ)) {
+        if (n < 0) {
             if (must)
                 error(ERROR_SYSTEM | 2, "poll failed");
             else
                 error(-1, "r poll failed");
-        }
-        else if (bp->cur < bp->end)
-        {
-            if (bp->restore >= 0)
-            {
+        } else if (bp->cur < bp->end) {
+            if (bp->restore >= 0) {
                 *bp->cur = bp->restore;
                 bp->restore = -1;
             }
             r = bp->cur;
             *bp->end = 0;
             bp->nxt = 0;
-            if (prompt && strneq(r, promptbuf, promptlen))
-            {
+            if (prompt && strneq(r, promptbuf, promptlen)) {
                 error(-1, "p \"%s\"", fmtnesq(promptbuf, "\"", promptlen));
                 return r;
             }
             bp->cur = bp->end = bp->buf;
             goto done;
-        }
-        else if (must >= 0)
+        } else if (must >= 0)
             error(2, "read timeout");
-        else
-        {
+        else {
             errno = 0;
             error(-1, "r EOF");
         }
         return 0;
     }
-    if (!(s = sfreserve(mp, SF_UNBOUND, -1)))
-    {
-        if (!prompt)
-        {
-            if (bp->cur < bp->end)
-            {
-                if (bp->restore >= 0)
-                {
+    if (!(s = sfreserve(mp, SF_UNBOUND, -1))) {
+        if (!prompt) {
+            if (bp->cur < bp->end) {
+                if (bp->restore >= 0) {
                     *bp->cur = bp->restore;
                     bp->restore = -1;
                 }
@@ -592,9 +540,7 @@ again:
                 bp->cur = bp->end = bp->buf;
                 bp->nxt = 0;
                 goto done;
-            }
-            else
-            {
+            } else {
                 errno = 0;
                 error(-1, "r EOF");
             }
@@ -603,18 +549,15 @@ again:
     }
     n = sfvalue(mp);
     error(-2, "b \"%s\"", fmtnesq(s, "\"", n));
-    if ((bp->max - bp->end) < n)
-    {
+    if ((bp->max - bp->end) < n) {
         a = roundof(bp->max - bp->buf + n, SF_BUFSIZE);
         r = bp->buf;
-        if (!(bp->buf = vmnewof(bp->vm, bp->buf, char, a, 0)))
-        {
+        if (!(bp->buf = vmnewof(bp->vm, bp->buf, char, a, 0))) {
             error(ERROR_SYSTEM | 2, "out of space");
             return 0;
         }
         bp->max = bp->buf + a;
-        if (bp->buf != r)
-        {
+        if (bp->buf != r) {
             d = bp->buf - r;
             bp->cur += d;
             bp->end += d;
@@ -624,22 +567,17 @@ again:
     bp->end += n;
     if ((r = bp->cur) > bp->buf && bp->restore >= 0)
         *r = bp->restore;
-    if (bp->cur = memchr(bp->cur, '\n', bp->end - bp->cur))
-    {
+    if (bp->cur = memchr(bp->cur, '\n', bp->end - bp->cur)) {
         bp->restore = *++bp->cur;
         *bp->cur = 0;
-        if (bp->cur >= bp->end)
-        {
+        if (bp->cur >= bp->end) {
             bp->cur = bp->end = bp->buf;
             bp->nxt = 0;
-        }
-        else if (bp->nxt = memchr(bp->cur + 1, '\n', bp->end - bp->cur - 1))
+        } else if (bp->nxt = memchr(bp->cur + 1, '\n', bp->end - bp->cur - 1))
             bp->nxt++;
         if (prompt)
             goto again;
-    }
-    else
-    {
+    } else {
         bp->restore = -1;
         bp->cur = r;
         bp->nxt = 0;
@@ -649,47 +587,37 @@ again:
 done:
     error(-3, "Q \"%s\"", fmtesq(r, "\""));
     s = r;
-    if (bp->cursor)
-    {
+    if (bp->cursor) {
         r -= bp->cursor;
         bp->cursor = 0;
     }
     for (t = 0, n = 0; *s; s++)
-        if (*s == '\n')
-        {
-            if (t)
-            {
+        if (*s == '\n') {
+            if (t) {
                 *t++ = '\n';
                 *t = 0;
                 t = 0;
                 n = 0;
             }
-        }
-        else if (*s == '\r' && *(s + 1) != '\n')
-        {
+        } else if (*s == '\r' && *(s + 1) != '\n') {
             if (t = strchr(s + 1, '\r'))
                 n += t - s;
             else
                 n += strlen(s);
             t = r;
-        }
-        else if (*s == '\a')
-        {
+        } else if (*s == '\a') {
             if (!t)
                 t = s;
             *t = ' ';
             n++;
-        }
-        else if (*s == '\b')
-        {
+        } else if (*s == '\b') {
             if (!t)
                 t = s;
             if (t > r)
                 t--;
             else
                 n++;
-        }
-        else if (t)
+        } else if (t)
             *t++ = *s;
     if (t)
         error(-3, "R \"%s\"", fmtesq(r, "\""));
@@ -746,8 +674,7 @@ dialogue(Sfio_t *mp, Sfio_t *lp, int delay, int timeout)
     if (!(vm = vmopen(Vmdcheap, Vmbest, 0))
         || !(cond = vmnewof(vm, 0, Cond_t, 1, 0))
         || !(master = vmnewof(vm, 0, Master_t, 1, 0))
-        || !(master->buf = vmnewof(vm, 0, char, 2 * SF_BUFSIZE, 0)))
-    {
+        || !(master->buf = vmnewof(vm, 0, char, 2 * SF_BUFSIZE, 0))) {
         error(ERROR_SYSTEM | 2, "out of space");
         goto done;
     }
@@ -760,15 +687,13 @@ dialogue(Sfio_t *mp, Sfio_t *lp, int delay, int timeout)
     error_info.id = 0;
     line = error_info.line;
     error_info.line = 0;
-    while (s = sfgetr(sfstdin, '\n', 1))
-    {
+    while (s = sfgetr(sfstdin, '\n', 1)) {
         error_info.line++;
         while (isspace(*s))
             s++;
         if ((op = *s++) && isspace(*s))
             s++;
-        switch (op)
-        {
+        switch (op) {
         case 0:
         case '#':
             break;
@@ -787,8 +712,7 @@ dialogue(Sfio_t *mp, Sfio_t *lp, int delay, int timeout)
                 error(-1, "w \"%s\"", s);
             if ((n = stresc(s)) >= 0)
                 s[n] = 0;
-            if (sfputr(mp, s, op == 'w' ? '\n' : -1) < 0 || sfsync(mp))
-            {
+            if (sfputr(mp, s, op == 'w' ? '\n' : -1) < 0 || sfsync(mp)) {
                 error(ERROR_SYSTEM | 2, "write failed");
                 goto done;
             }
@@ -801,8 +725,7 @@ dialogue(Sfio_t *mp, Sfio_t *lp, int delay, int timeout)
                 error(2, "%s: invalid delay -- milliseconds expected", s);
             break;
         case 'i':
-            if (!cond->next && !(cond->next = vmnewof(vm, 0, Cond_t, 1, 0)))
-            {
+            if (!cond->next && !(cond->next = vmnewof(vm, 0, Cond_t, 1, 0))) {
                 error(ERROR_SYSTEM | 2, "out of space");
                 goto done;
             }
@@ -817,35 +740,29 @@ dialogue(Sfio_t *mp, Sfio_t *lp, int delay, int timeout)
                 cond->flags |= SKIP;
             break;
         case 'e':
-            if (!(cond->flags & IF))
-            {
+            if (!(cond->flags & IF)) {
                 error(2, "no matching i for e");
                 goto done;
             }
-            if (!*s)
-            {
-                if (cond->flags & ELSE)
-                {
+            if (!*s) {
+                if (cond->flags & ELSE) {
                     error(2, "i block already has a default e");
                     goto done;
                 }
                 cond->flags |= ELSE;
                 if (cond->flags & KEPT)
                     cond->flags |= SKIP;
-                else
-                {
+                else {
                     cond->flags |= KEPT;
                     cond->flags &= ~SKIP;
                 }
-            }
-            else if ((cond->flags & KEPT) || !match(s, cond->text, 0))
+            } else if ((cond->flags & KEPT) || !match(s, cond->text, 0))
                 cond->flags |= SKIP;
             else
                 cond->flags |= KEPT;
             break;
         case 'f':
-            if (!(cond->flags & IF))
-            {
+            if (!(cond->flags & IF)) {
                 error(2, "no matching i for f");
                 goto done;
             }
@@ -854,8 +771,7 @@ dialogue(Sfio_t *mp, Sfio_t *lp, int delay, int timeout)
         case 'm':
             if (cond->flags & SKIP)
                 continue;
-            if (sfputr(sfstderr, s, '\n') < 0 || sfsync(sfstderr))
-            {
+            if (sfputr(sfstderr, s, '\n') < 0 || sfsync(sfstderr)) {
                 error(ERROR_SYSTEM | 2, "standard error write failed");
                 goto done;
             }
@@ -893,10 +809,8 @@ dialogue(Sfio_t *mp, Sfio_t *lp, int delay, int timeout)
         case 'u':
             if (cond->flags & SKIP)
                 continue;
-            do
-            {
-                if (!(m = masterline(mp, lp, 0, -1, timeout, master)))
-                {
+            do {
+                if (!(m = masterline(mp, lp, 0, -1, timeout, master))) {
                     match(s, m, 1);
                     goto done;
                 }
@@ -913,37 +827,31 @@ dialogue(Sfio_t *mp, Sfio_t *lp, int delay, int timeout)
                 error(2, "%s: invalid exit code", s);
             break;
         case 'I':
-            if (master->ignore)
-            {
+            if (master->ignore) {
                 vmfree(vm, master->ignore);
                 master->ignore = 0;
             }
-            if (*s && !(master->ignore = vmstrdup(vm, s)))
-            {
+            if (*s && !(master->ignore = vmstrdup(vm, s))) {
                 error(ERROR_SYSTEM | 2, "out of space");
                 goto done;
             }
             break;
         case 'L':
-            if (error_info.id)
-            {
+            if (error_info.id) {
                 vmfree(vm, error_info.id);
                 error_info.id = 0;
             }
-            if (*s && !(error_info.id = vmstrdup(vm, s)))
-            {
+            if (*s && !(error_info.id = vmstrdup(vm, s))) {
                 error(ERROR_SYSTEM | 2, "out of space");
                 goto done;
             }
             break;
         case 'P':
-            if (master->prompt)
-            {
+            if (master->prompt) {
                 vmfree(vm, master->prompt);
                 master->prompt = 0;
             }
-            if (*s && !(master->prompt = vmstrdup(vm, s)))
-            {
+            if (*s && !(master->prompt = vmstrdup(vm, s))) {
                 error(ERROR_SYSTEM | 2, "out of space");
                 goto done;
             }
@@ -998,10 +906,8 @@ b_pty(int argc, char **argv, Shbltin_t *context)
     int (*fun)(Sfio_t *, Sfio_t *, int, int) = process;
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'd':
             if (opt_info.num)
                 fun = dialogue;
@@ -1041,8 +947,7 @@ b_pty(int argc, char **argv, Shbltin_t *context)
         error(ERROR_system(1), "unable to create pty");
     if (!(mp = sfnew(NiL, 0, SF_UNBOUND, master, SF_READ | SF_WRITE)))
         error(ERROR_system(1), "cannot open master stream");
-    if (stty)
-    {
+    if (stty) {
         n = 2;
         for (s = stty; *s; s++)
             if (isspace(*s))
@@ -1058,8 +963,7 @@ b_pty(int argc, char **argv, Shbltin_t *context)
         sfsprintf(ap->argv[1] = buf, sizeof(buf), "--fd=%d", slave);
         ap->argv[2] = s = ap->args;
         for (n = 2; *s; s++)
-            if (isspace(*s))
-            {
+            if (isspace(*s)) {
                 *s = 0;
                 ap->argv[++n] = s + 1;
             }
@@ -1073,8 +977,7 @@ b_pty(int argc, char **argv, Shbltin_t *context)
     if (!(proc = runcmd(argv, slave, session)))
         error(ERROR_system(1), "unable run %s", argv[0]);
     close(slave);
-    if (messages)
-    {
+    if (messages) {
         drop = 1;
         if (strneq(messages, "/dev/fd/", 8))
             fd = atoi(messages + 8);

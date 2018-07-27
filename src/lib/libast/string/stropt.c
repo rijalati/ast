@@ -76,104 +76,78 @@ stropt(const char *as,
         n = 0;
     else if (!(x = s = strdup(as)))
         n = -1;
-    else
-    {
-        for (;;)
-        {
+    else {
+        for (;;) {
             while (isspace(*s) || *s == ',')
                 s++;
-            if (*s == 'n' && *(s + 1) == 'o')
-            {
+            if (*s == 'n' && *(s + 1) == 'o') {
                 s += 2;
                 n = 0;
-            }
-            else
+            } else
                 n = 1;
-            if (!*s)
-            {
+            if (!*s) {
                 n = 0;
                 break;
             }
-            if (tab)
-            {
+            if (tab) {
                 for (p = ( char ** )tab; t = *p;
-                     p = ( char ** )(( char * )p + siz))
-                {
+                     p = ( char ** )(( char * )p + siz)) {
                     for (v = s; *t && *t == *v; t++, v++)
                         ;
                     if (!*t || isspace(*v) || *v == ',' || *v == '=')
                         break;
-                    if (*v == ':' && *(v + 1) == '=')
-                    {
+                    if (*v == ':' && *(v + 1) == '=') {
                         v++;
                         n = -1;
                         break;
                     }
                 }
-                if (!t)
-                {
+                if (!t) {
                     u = v = s;
                     p = 0;
                 }
-            }
-            else
-            {
+            } else {
                 p = ( char ** )(v = s);
                 t = 0;
             }
             while (*v && !isspace(*v) && *v != '=' && *v != ',')
-                if (*v++ == ':' && *v == '=')
-                {
+                if (*v++ == ':' && *v == '=') {
                     if (!t)
                         *(v - 1) = 0;
                     n = -n;
                     break;
                 }
-            if (*v == '=')
-            {
+            if (*v == '=') {
                 if (!t)
                     *v = 0;
                 t = s = ++v;
                 ql = qr = 0;
-                while (c = *s++)
-                {
-                    if (c == '\\')
-                    {
+                while (c = *s++) {
+                    if (c == '\\') {
                         *t++ = chresc(s - 1, &e);
                         s = e;
-                    }
-                    else if (c == qr)
-                    {
+                    } else if (c == qr) {
                         if (qr != ql)
                             *t++ = c;
                         if (--qc <= 0)
                             qr = ql = 0;
-                    }
-                    else if (c == ql)
-                    {
+                    } else if (c == ql) {
                         *t++ = c;
                         qc++;
-                    }
-                    else if (qr)
+                    } else if (qr)
                         *t++ = c;
                     else if (c == ',' || isspace(c))
                         break;
-                    else if (c == '"' || c == '\'')
-                    {
+                    else if (c == '"' || c == '\'') {
                         ql = qr = c;
                         qc = 1;
-                    }
-                    else
-                    {
+                    } else {
                         *t++ = c;
-                        if (c == '{')
-                        {
+                        if (c == '{') {
                             ql = c;
                             qr = '}';
                             qc = 1;
-                        }
-                        else if (c == '(')
-                        {
+                        } else if (c == '(') {
                             ql = c;
                             qr = ')';
                             qc = 1;
@@ -181,9 +155,7 @@ stropt(const char *as,
                     }
                 }
                 *t = 0;
-            }
-            else
-            {
+            } else {
                 s = v;
                 c = *s;
                 *s++ = 0;

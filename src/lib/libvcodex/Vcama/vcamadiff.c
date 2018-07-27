@@ -34,10 +34,8 @@
 #define ALIGN(ptr, type)                                                     \
     ((( unsigned char * )ptr - ( unsigned char * )0) & (sizeof(type) - 1))
 #define XOR(sx, s1, s2, sk, sn, algn, type)                                  \
-    do                                                                       \
-    {                                                                        \
-        if ((sk + algn + sizeof(type)) <= sn)                                \
-        {                                                                    \
+    do {                                                                     \
+        if ((sk + algn + sizeof(type)) <= sn) {                              \
             reg unsigned type *tx, *t1, *t2;                                 \
             if (algn > 0)                                                    \
                 for (algn = sk + sizeof(type) - algn; sk < algn; ++sk)       \
@@ -89,14 +87,12 @@ Void_t **out;
     enddt = (dt = ( Vcchar_t * )data) + size;
     if (ncols > 0) /* fixed-length rows */
     {
-        if ((sz = (size / ncols) * ncols) > 0)
-        {
+        if ((sz = (size / ncols) * ncols) > 0) {
             memcpy(df, dt, ncols);
             pd = dt;
             df += ncols;
             dt += ncols;
-            if ((sz -= ncols) > 0)
-            {
+            if ((sz -= ncols) > 0) {
                 k = 0;
                 if ((a = ALIGN(df, int)) == ALIGN(dt, int)
                     && a == ALIGN(pd, int))
@@ -109,13 +105,11 @@ Void_t **out;
                         *df++ = *dt++ ^ *pd++;
             }
         }
-    }
-    else /* ama data */
+    } else /* ama data */
     {
         for (k = 0; k < MAXSIZE; ++k)
             rcdt[k] = NIL(Vcchar_t *);
-        for (;;)
-        {
+        for (;;) {
             if ((dt + SIZE) > enddt)
                 break;
             ncols = GETSIZE(dt);
@@ -124,13 +118,10 @@ Void_t **out;
 
             pd = rcdt[ncols];
             rcdt[ncols] = dt + SIZE;
-            if (!pd)
-            {
+            if (!pd) {
                 for (k = 0; k < ncols; ++k) /* first record is kept clear */
                     *df++ = *dt++;
-            }
-            else
-            {
+            } else {
                 for (k = 0; k < SIZE; ++k) /* record size is kept clear */
                     *df++ = *dt++;
 
@@ -203,20 +194,16 @@ Void_t **out;
 
     /* undo the transform */
     enddt = (dt = output) + sz;
-    if (ncols > 0)
-    {
+    if (ncols > 0) {
         if (sz % ncols != 0)
             return -1;
         memcpy(dt, df, ncols);
         for (pd = dt, df += ncols, dt += ncols; dt < enddt;)
             *dt++ = *df++ ^ *pd++;
-    }
-    else
-    {
+    } else {
         for (k = 0; k < MAXSIZE; ++k)
             rcdt[k] = NIL(Vcchar_t *);
-        for (;;)
-        {
+        for (;;) {
             if ((dt + SIZE) > enddt)
                 break;
             ncols = GETSIZE(df);
@@ -225,13 +212,10 @@ Void_t **out;
 
             pd = rcdt[ncols];
             rcdt[ncols] = dt + SIZE;
-            if (!pd)
-            {
+            if (!pd) {
                 for (k = 0; k < ncols; ++k)
                     *dt++ = *df++;
-            }
-            else
-            {
+            } else {
                 for (k = 0; k < SIZE; ++k)
                     *dt++ = *df++;
 

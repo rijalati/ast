@@ -68,31 +68,25 @@ fmtgid(int gid)
     static Dt_t *dict;
     static Dtdisc_t disc;
 
-    if (!dict)
-    {
+    if (!dict) {
         disc.key = offsetof(Id_t, id);
         disc.size = sizeof(int);
         dict = dtopen(&disc, Dtset);
-    }
-    else if (ip = ( Id_t * )dtmatch(dict, &gid))
+    } else if (ip = ( Id_t * )dtmatch(dict, &gid))
         return ip->name;
-    if (gr = getgrgid(gid))
-    {
+    if (gr = getgrgid(gid)) {
         name = gr->gr_name;
 #if _WINIX
         if (streq(name, "Administrators"))
             name = "sys";
 #endif
-    }
-    else if (gid == 0)
+    } else if (gid == 0)
         name = "sys";
-    else
-    {
+    else {
         name = fmtbuf(z = sizeof(gid) * 3 + 1);
         sfsprintf(name, z, "%I*d", sizeof(gid), gid);
     }
-    if (dict && (ip = newof(0, Id_t, 1, strlen(name))))
-    {
+    if (dict && (ip = newof(0, Id_t, 1, strlen(name)))) {
         ip->id = gid;
         strcpy(ip->name, name);
         dtinsert(dict, ip);

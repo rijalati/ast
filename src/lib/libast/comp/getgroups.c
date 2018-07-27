@@ -61,8 +61,7 @@ ast_getgroups(int len, gid_t *set)
 #    endif
     if (!len)
         return (NGROUPS_MAX);
-    if (len < 0 || !set)
-    {
+    if (len < 0 || !set) {
         errno = EINVAL;
         return (-1);
     }

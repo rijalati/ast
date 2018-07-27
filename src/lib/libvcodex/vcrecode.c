@@ -53,8 +53,7 @@ int type;                                            /* = 0: undone is bad	*/
     {
         if (vcundone(vc->coder) > 0)
             return -1;
-    }
-    else /* undone data ok and reflected upward */
+    } else /* undone data ok and reflected upward */
     {
         vc->undone = vc->coder->undone;
     }

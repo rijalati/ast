@@ -68,8 +68,7 @@ getprocs_init(Pss_t *pss)
 {
     State_t *state;
 
-    if (!(state = vmnewof(pss->vm, 0, State_t, 1, 0)))
-    {
+    if (!(state = vmnewof(pss->vm, 0, State_t, 1, 0))) {
         if (pss->disc->errorf)
             (*pss->disc->errorf)(
             pss, pss->disc, ERROR_SYSTEM | 2, "out of space");
@@ -84,8 +83,7 @@ getprocs_read(Pss_t *pss, Pss_id_t pid)
 {
     State_t *state = ( State_t * )pss->data;
 
-    if (pid)
-    {
+    if (pid) {
         pss->pid = pid;
         state->index = 0;
         if ((state->count = getprocs(
@@ -93,10 +91,8 @@ getprocs_read(Pss_t *pss, Pss_id_t pid)
             != 1)
             return -1;
         state->last = 0;
-    }
-    else
-        while (state->index >= state->count)
-        {
+    } else
+        while (state->index >= state->count) {
             if (state->last)
                 return 0;
             state->index = 0;
@@ -106,8 +102,7 @@ getprocs_read(Pss_t *pss, Pss_id_t pid)
                                     0,
                                     &pss->pid,
                                     elementsof(state->entry));
-            if (state->count < elementsof(state->entry))
-            {
+            if (state->count < elementsof(state->entry)) {
                 state->last = 1;
                 if (state->count < 0)
                     return -1;
@@ -133,8 +128,7 @@ getprocs_part(Pss_t *pss, Pssent_t *pe)
     pe->sid = pr->pi_sid;
     pe->tty = pr->pi_ttyp ? pr->pi_ttyd : PSS_NODEV;
     pe->uid = pr->pi_uid;
-    switch (pr->pi_state)
-    {
+    switch (pr->pi_state) {
     case SACTIVE:
         pe->state = 'R';
         break;
@@ -166,23 +160,18 @@ getprocs_full(Pss_t *pss, Pssent_t *pe)
     char *s;
     int i;
 
-    if (pe->state != PSS_ZOMBIE)
-    {
-        if (fields & PSS_args)
-        {
+    if (pe->state != PSS_ZOMBIE) {
+        if (fields & PSS_args) {
             s = pr->pi_comm;
-            if (s[0] == '(' && s[i = strlen(s) - 1] == ')')
-            {
+            if (s[0] == '(' && s[i = strlen(s) - 1] == ')') {
                 s[i] = 0;
                 s++;
             }
             pe->args = s;
         }
-        if (fields & PSS_command)
-        {
+        if (fields & PSS_command) {
             s = pr->pi_comm;
-            if (s[0] == '(' && s[i = strlen(s) - 1] == ')')
-            {
+            if (s[0] == '(' && s[i = strlen(s) - 1] == ')') {
                 s[i] = 0;
                 s++;
             }

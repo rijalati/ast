@@ -89,10 +89,8 @@ main(int argc, char **argv)
     ivinit(&ivdisc);
     ivdisc.errorf = errorf;
     ivdisc.freef = freef;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'd':
             dump = 1;
             continue;
@@ -100,8 +98,7 @@ main(int argc, char **argv)
             ivdisc.freef = 0;
             continue;
         case 'i':
-            switch (opt_info.num)
-            {
+            switch (opt_info.num) {
             case '4':
                 size = 4;
                 break;
@@ -129,14 +126,12 @@ main(int argc, char **argv)
     while (s = sfgetr(sp, '\n', 1))
         if (ivstr(iv, s, &v, prefix, prefix + iv->size))
             error(1, "%s: invalid prefix", s);
-        else
-        {
+        else {
             while (isspace(*v))
                 v++;
             if (!*v)
                 v = "(unknown)";
-            if (!(hop = newof(0, Hop_t, 1, strlen(v))))
-            {
+            if (!(hop = newof(0, Hop_t, 1, strlen(v)))) {
                 error(2, "out of space");
                 break;
             }
@@ -151,16 +146,14 @@ main(int argc, char **argv)
                          ivfmt(iv, lo, -1),
                          ivfmt(iv, hi, -1),
                          v);
-            if (ivset(iv, lo, hi, hop))
-            {
+            if (ivset(iv, lo, hi, hop)) {
                 error(2, "%s: iv insertion error", s);
                 break;
             }
         }
     sfclose(sp);
     file = *argv++;
-    do
-    {
+    do {
         if (!file || streq(file, "-"))
             sp = sfstdin;
         else if (!(sp = sfopen(0, file, "r")))
@@ -168,8 +161,7 @@ main(int argc, char **argv)
         while (s = sfgetr(sp, '\n', 1))
             if (ivstr(iv, s, 0, addr, 0))
                 error(1, "%s: invalid address", s);
-            else if (pp = ivseg(iv, addr))
-            {
+            else if (pp = ivseg(iv, addr)) {
                 hop = ( Hop_t * )pp->data;
                 sfprintf(sfstdout,
                          "%s%-42s  %-42s  %s\n",
@@ -177,8 +169,7 @@ main(int argc, char **argv)
                          ivfmt(iv, addr, -1),
                          ivfmt(iv, hop->prefix, hop->prefix[iv->size]),
                          hop->name);
-            }
-            else
+            } else
                 sfprintf(sfstdout,
                          "%s%-42s  -\n",
                          dump ? "get  " : "",

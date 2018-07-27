@@ -35,11 +35,9 @@ optmethod(Void_t *obj, char *name, char *desc, Void_t *handle)
 
     sfprintf(sp, "[+%s (vcodex,ident)?", name);
     optesc(sp, desc, 0);
-    if (mt->args)
-    {
+    if (mt->args) {
         sfprintf(sp, " The arguments are:]{");
-        for (i = 0; mt->args[i].desc; i++)
-        {
+        for (i = 0; mt->args[i].desc; i++) {
             sfprintf(sp, "[+%s?", mt->args[i].name ? mt->args[i].name : "-");
             if (mt->args[i].desc)
                 optesc(sp, mt->args[i].desc, 0);
@@ -47,16 +45,13 @@ optmethod(Void_t *obj, char *name, char *desc, Void_t *handle)
             if (!mt->args[i].name)
                 break;
         }
-    }
-    else
+    } else
         sfputc(sp, ']');
-    if (mt->about)
-    {
+    if (mt->about) {
         if (!mt->args)
             sfputc(sp, '{');
         sfprintf(sp, "%s}", mt->about);
-    }
-    else if (mt->args)
+    } else if (mt->args)
         sfputc(sp, '}');
     return 0;
 }
@@ -92,12 +87,10 @@ codexoptinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
     const char *p;
     int c;
 
-    switch (*s)
-    {
+    switch (*s) {
     case 'c':
         /* codex methods */
-        for (meth = codexlist(NiL); meth; meth = codexlist(meth))
-        {
+        for (meth = codexlist(NiL); meth; meth = codexlist(meth)) {
             sfprintf(sp, "[+%s\b (codex", meth->name);
             if (meth->identf)
                 sfprintf(sp, ",ident");
@@ -106,15 +99,13 @@ codexoptinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
             sfputc(sp, ')');
             sfputc(sp, '?');
             p = meth->description;
-            while (c = *p++)
-            {
+            while (c = *p++) {
                 if (c == ']')
                     sfputc(sp, c);
                 sfputc(sp, c);
             }
             sfputc(sp, ']');
-            if ((p = meth->options) || meth->optionsf)
-            {
+            if ((p = meth->options) || meth->optionsf) {
                 sfprintf(sp, "{\n");
                 if (meth->optionsf)
                     (*meth->optionsf)(meth, sp);

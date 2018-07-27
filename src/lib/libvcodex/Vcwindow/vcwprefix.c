@@ -146,21 +146,18 @@ int srcfile;
 
     if ((sfsz = sfsize(sf)) < 0)
         return NIL(Pffile_t *);
-    if (sz > 0 && (n = (ssize_t)(sfsz / sz)) > 0)
-    {
+    if (sz > 0 && (n = (ssize_t)(sfsz / sz)) > 0) {
         for (k = 1024; k * 2 < n; k *= 2)
             ;
         blsz = srcfile ? 2 * k : 0; /* Bloom filter size */
-    }
-    else
+    } else
         n = k = blsz = 0;
 
     sz = sizeof(Pffile_t) + n * sizeof(Pfobj_t) + k * sizeof(Pftab_t) + blsz;
     if (!(pf = ( Pffile_t * )calloc(1, sz)))
         return NIL(Pffile_t *);
 
-    if (n > 0)
-    {
+    if (n > 0) {
         pf->obj = ( Pfobj_t * )(pf + 1);
         pf->tab = ( Pftab_t * )(pf->obj + n);
         pf->mask = k - 1;
@@ -197,8 +194,7 @@ ssize_t blksz;
     if (sfseek(pf->sf, ( Sfoff_t )0, 0) != 0)
         return -1;
     for (endo = (obj = pf->obj) + (size_t)(pf->sfsz / blksz); obj < endo;
-         ++obj)
-    {
+         ++obj) {
         if (!(dt = sfreserve(pf->sf, blksz, 0)) || sfvalue(pf->sf) < blksz)
             return -1;
         if ((k = pfhash(dt, blksz)) == PF_HUGE)
@@ -237,8 +233,7 @@ ssize_t blksz;
     /* merge with last segment if overlapping */
     if ((seg = pf->nseg > 0 ? pf->seg + pf->nseg - 1 : 0)
         && lmt <= (seg->rmt + PFMERGE(blksz))
-        && rmt >= (seg->lmt - PFMERGE(blksz)))
-    {
+        && rmt >= (seg->lmt - PFMERGE(blksz))) {
         if (seg->lmt > lmt)
             seg->lmt = lmt;
         if (seg->rmt < rmt)
@@ -252,8 +247,7 @@ ssize_t blksz;
         return 0;
 
     /* creating a new segment */
-    if (pf->nseg >= pf->sseg)
-    {
+    if (pf->nseg >= pf->sseg) {
         pf->seg
         = ( Pfseg_t * )realloc(pf->seg, (pf->nseg + 8) * sizeof(Pfseg_t));
         if (!pf->seg)
@@ -290,19 +284,16 @@ ssize_t blksz;
     pf->dtsz = n;
 
     total = 0;
-    for (d = 0, n -= (blksz - 1); d < n; d = dd + mn)
-    {
-        for (mn = 0, mm = -1, dd = d; dd < n; ++dd)
-        {
+    for (d = 0, n -= (blksz - 1); d < n; d = dd + mn) {
+        for (mn = 0, mm = -1, dd = d; dd < n; ++dd) {
             if (!BLOOMTEST(pf, dt[dd], i, k))
                 continue;
-            for (o = pf->tab[pfindex(pf, dt[dd])].list; o; o = o->next)
-            { /* find a stretch of approximate matches */
+            for (o = pf->tab[pfindex(pf, dt[dd])].list; o;
+                 o = o->next) { /* find a stretch of approximate matches */
                 k = dd;
                 i = o - pf->obj;
                 ucnt = 0;
-                for (; k < n && i < pf->maxo; k += blksz, i += 1)
-                {
+                for (; k < n && i < pf->maxo; k += blksz, i += 1) {
                     if (dt[k] == pf->obj[i].key)
                         ucnt = 0;
                     else if (k == dd || ucnt >= 2)
@@ -310,8 +301,7 @@ ssize_t blksz;
                     else
                         ucnt += 1;
                 }
-                if ((k = (k - dd) - ucnt * blksz) > mn)
-                {
+                if ((k = (k - dd) - ucnt * blksz) > mn) {
                     mn = k; /* current best match length */
                     mm = o - pf->obj;
                 }
@@ -348,8 +338,7 @@ ssize_t blksz;
 
     /* absorb left unmatched data if any */
     sz = seg ? (ssize_t)(seg->ldt - pf->dtpos) : pf->dtsz;
-    if (seg && sz > 0 && sz < (seg->rdt - seg->ldt))
-    {
+    if (seg && sz > 0 && sz < (seg->rdt - seg->ldt)) {
         seg->ldt -= sz;
         if ((seg->lmt -= sz) < 0)
             seg->lmt = 0;
@@ -375,8 +364,7 @@ ssize_t blksz;
         sz = (ssize_t)((seg + 1)->ldt - seg->rdt);
     else
         sz = (ssize_t)((pf->dtpos + pf->dtsz) - seg->rdt);
-    if (sz > 0)
-    {
+    if (sz > 0) {
         seg->rdt += sz;
         if ((seg->rmt += sz) > pf->maxo * blksz)
             seg->rmt = (( Sfoff_t )pf->maxo) * blksz;
@@ -387,8 +375,7 @@ ssize_t blksz;
     wm->wsize = (ssize_t)(seg->rmt - seg->lmt);
     if (sfseek(pf->sf, seg->lmt, 0) != seg->lmt
         || !(wm->wdata = sfreserve(pf->sf, wm->wsize, 0))
-        || sfvalue(pf->sf) < wm->wsize)
-    {
+        || sfvalue(pf->sf) < wm->wsize) {
         pf->cseg = pf->nseg = 0;
         pf->dtsz = 0;
         return -1;
@@ -423,16 +410,14 @@ Sfoff_t here; /* current target position	*/
         return NIL(Vcwmatch_t *);
 
     if ((pf = pfx->srcf)
-        && (( Sfoff_t )dtsz >= pf->sfsz / 2 || dtsz < pfx->blksz))
-    {
+        && (( Sfoff_t )dtsz >= pf->sfsz / 2 || dtsz < pfx->blksz)) {
         wm->type = VCD_SOURCEFILE;
         if (dtsz < pfx->blksz) /* small data, use matching window */
         {
             wm->wpos = here;
             wm->wsize
             = here + dtsz > pf->sfsz ? (ssize_t)(pf->sfsz - here) : dtsz;
-        }
-        else /* too large, use all source file */
+        } else /* too large, use all source file */
         {
             wm->wpos = 0;
             wm->wsize = ( ssize_t )pf->sfsz;
@@ -446,10 +431,8 @@ Sfoff_t here; /* current target position	*/
     }
 
 target_file: /* returning computed windows in target file */
-    if ((pf = pfx->tarf))
-    {
-        if (pf->dtpos == here && dtsz <= pf->dtsz)
-        {
+    if ((pf = pfx->tarf)) {
+        if (pf->dtpos == here && dtsz <= pf->dtsz) {
             if ((rv = pfwindow(pf, wm, pfx->blksz)) < 0)
                 return NIL(Vcwmatch_t *);
             wm->type = rv == 0 ? 0 : VCD_TARGETFILE;
@@ -467,13 +450,12 @@ target_file: /* returning computed windows in target file */
         if ((pfx->nkey = pfx->key ? dtsz : 0) <= 0)
             return NIL(Vcwmatch_t *);
     }
-    if (here != pfx->here || !pf || pf->dtsz <= 0)
-    { /* compute all keys for this set of data */
+    if (here != pfx->here || !pf
+        || pf->dtsz <= 0) { /* compute all keys for this set of data */
         endd = (dt = ( Vcchar_t * )data) + dtsz - (pfx->blksz - 1);
         k = pfhash(dt, pfx->blksz);
         *(key = pfx->key) = k == PF_HUGE ? (k >> 1) : k;
-        for (dt += 1; dt < endd; ++dt)
-        {
+        for (dt += 1; dt < endd; ++dt) {
             k = pfnext(dt, pfx->blksz, k, pfx->coef);
             *++key = k == PF_HUGE ? (k >> 1) : k;
             /**/ DEBUG_ASSERT(k == pfhash(dt, pfx->blksz));
@@ -481,8 +463,8 @@ target_file: /* returning computed windows in target file */
         pfx->keyb = pfx->here = here; /* set base of calculated keys */
 
         /* match with source data to parse into segments */
-        if ((pf ? pfparse(pf, pfx->key, dtsz, here, pfx->blksz) : 0) <= 0)
-        { /* fail source, try target */
+        if ((pf ? pfparse(pf, pfx->key, dtsz, here, pfx->blksz) : 0)
+            <= 0) { /* fail source, try target */
             if ((pf = pfx->tarf)
                 && pfparse(pf, pfx->key, dtsz, here, pfx->blksz) > 0)
                 goto target_file;
@@ -495,32 +477,26 @@ target_file: /* returning computed windows in target file */
     /**/ DEBUG_ASSERT(pfx->here == here);
     if ((rv = pfwindow(pf, wm, pfx->blksz)) < 0)
         return NIL(Vcwmatch_t *);
-    else
-    {
+    else {
         pfx->here = here + wm->msize;
         /**/ DEBUG_PRINT(2, "here=%8d ", ( ssize_t )here);
         /**/ DEBUG_PRINT(2, "dtsz=%8d ", ( ssize_t )dtsz);
         /**/ DEBUG_PRINT(2, "mtch=%8d ", ( ssize_t )wm->msize);
         /**/ DEBUG_PRINT(2, "wpos=%8d ", ( ssize_t )wm->wpos);
         /**/ DEBUG_PRINT(2, "wsiz=%8d \n", ( ssize_t )wm->wsize);
-        if (rv > 0)
-        {
+        if (rv > 0) {
             wm->type = VCD_SOURCEFILE;
             return wm;
-        }
-        else if (!pfx->tarf || wm->msize <= 2 * pfx->blksz)
-        {
+        } else if (!pfx->tarf || wm->msize <= 2 * pfx->blksz) {
             wm->type = 0;
             return wm;
-        }
-        else /* try matching this segment with target data */
+        } else /* try matching this segment with target data */
         {
             key = pfx->key + (size_t)(here - pfx->keyb);
             dtsz = wm->msize; /* set this for possible tail recursion */
             if (pfparse(pfx->tarf, key, dtsz, here, pfx->blksz) > 0)
                 goto target_file;
-            else
-            {
+            else {
                 wm->type = 0;
                 return wm;
             }
@@ -542,8 +518,7 @@ int type;
     Prefix_t *pfx;
     int rv = -1;
 
-    if (type == VCW_OPENING)
-    {
+    if (type == VCW_OPENING) {
         if (!vcw->disc || (!vcw->disc->srcf && !vcw->disc->tarf))
             return -1;
 
@@ -556,8 +531,7 @@ int type;
         maxsz = srcsz > tarsz ? srcsz : tarsz;
         if (maxsz < PF_MINSIZE)
             sz = 0;
-        else
-        {
+        else {
             sz = PF_DFLTSIZE;
 #define PF_MINBLKCNT (8 * 1024)         /* aim for at least this many	*/
 #define PF_MAXBLKCNT (16 * 1024 * 1024) /* likewise for upper bound	*/
@@ -573,20 +547,17 @@ int type;
         for (; sz > 1; --sz)
             pfx->coef *= PF_COEF;
 
-        if (srcsz > 0)
-        {
+        if (srcsz > 0) {
             if (!(pfx->srcf = pfopen(vcw->disc->srcf, pfx->blksz, 1)))
                 goto do_closing;
-            if (pfx->blksz > 0)
-            {
+            if (pfx->blksz > 0) {
                 if (pfbuild(pfx->srcf, pfx->blksz) < 0)
                     goto do_closing;
                 pfx->srcf->maxo = pfx->srcf->sfsz / pfx->blksz;
             }
         }
 
-        if (tarsz > 0 && pfx->blksz > 0)
-        {
+        if (tarsz > 0 && pfx->blksz > 0) {
             if (!(pfx->tarf = pfopen(vcw->disc->tarf, pfx->blksz, 0)))
                 goto do_closing;
             if (pfbuild(pfx->tarf, pfx->blksz) < 0)
@@ -596,21 +567,16 @@ int type;
 
         vcw->mtdata = ( Void_t * )pfx;
         return 0;
-    }
-    else if (type == VCW_CLOSING)
-    {
+    } else if (type == VCW_CLOSING) {
         rv = 0;
     do_closing:
-        if ((pfx = ( Prefix_t * )vcw->mtdata))
-        {
-            if (pfx->srcf)
-            {
+        if ((pfx = ( Prefix_t * )vcw->mtdata)) {
+            if (pfx->srcf) {
                 if (pfx->srcf->seg && pfx->srcf->sseg > 0)
                     free(pfx->srcf->seg);
                 free(pfx->srcf);
             }
-            if (pfx->tarf)
-            {
+            if (pfx->tarf) {
                 if (pfx->tarf->seg && pfx->tarf->sseg > 0)
                     free(pfx->tarf->seg);
                 free(pfx->tarf);
@@ -621,8 +587,7 @@ int type;
         }
         vcw->mtdata = NIL(Void_t *);
         return rv;
-    }
-    else
+    } else
         return 0;
 }
 

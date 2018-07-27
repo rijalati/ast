@@ -28,17 +28,14 @@
 #include "reglib.h"
 
 #define NEED(p, b, n, r)                                                     \
-    do                                                                       \
-    {                                                                        \
-        if (((b)->re_end - (b)->re_cur) < (n))                               \
-        {                                                                    \
+    do {                                                                     \
+        if (((b)->re_end - (b)->re_cur) < (n)) {                             \
             size_t o = (b)->re_cur - (b)->re_buf;                            \
             size_t a = ((b)->re_end - (b)->re_buf);                          \
             if (a < n)                                                       \
                 a = roundof(n, 128);                                         \
             a *= 2;                                                          \
-            if (!((b)->re_buf = alloc(p->env->disc, (b)->re_buf, a)))        \
-            {                                                                \
+            if (!((b)->re_buf = alloc(p->env->disc, (b)->re_buf, a))) {      \
                 (b)->re_buf = (b)->re_cur = (b)->re_end = 0;                 \
                 c = REG_ESPACE;                                              \
                 r;                                                           \
@@ -49,16 +46,14 @@
     } while (0)
 
 #define PUTC(p, b, x, r)                                                     \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         NEED(p, b, 1, r);                                                    \
         *(b)->re_cur++ = (x);                                                \
     } while (0)
 
 #define PUTS(p, b, x, z, r)                                                  \
     do                                                                       \
-        if (z)                                                               \
-        {                                                                    \
+        if (z) {                                                             \
             NEED(p, b, z, r);                                                \
             memcpy((b)->re_cur, x, z);                                       \
             (b)->re_cur += (z);                                              \
@@ -81,10 +76,8 @@ sub(const regex_t *p,
     char *e;
     int c;
 
-    for (;; op++)
-    {
-        switch (op->len)
-        {
+    for (;; op++) {
+        switch (op->len) {
         case -1:
             break;
         case 0:
@@ -97,11 +90,9 @@ sub(const regex_t *p,
                 continue;
             e = ( char * )ss + c;
             NEED(p, b, e - s, return c);
-            switch (op->op)
-            {
+            switch (op->op) {
             case REG_SUB_UPPER:
-                while (s < e)
-                {
+                while (s < e) {
                     c = *s++;
                     if (islower(c))
                         c = toupper(c);
@@ -109,8 +100,7 @@ sub(const regex_t *p,
                 }
                 break;
             case REG_SUB_LOWER:
-                while (s < e)
-                {
+                while (s < e) {
                     c = *s++;
                     if (isupper(c))
                         c = tolower(c);
@@ -118,8 +108,7 @@ sub(const regex_t *p,
                 }
                 break;
             case REG_SUB_UPPER | REG_SUB_LOWER:
-                while (s < e)
-                {
+                while (s < e) {
                     c = *s++;
                     if (isupper(c))
                         c = tolower(c);
@@ -166,12 +155,10 @@ regsubexec(const regex_t *p, const char *s, size_t nmatch, regmatch_t *match)
     b->re_cur = b->re_buf;
     e = ( const char * )p->env->end;
     c = 0;
-    for (;;)
-    {
+    for (;;) {
         if (--m > 0)
             PUTS(p, b, s, match->rm_eo, return fatal(p->env->disc, c, NiL));
-        else
-        {
+        else {
             PUTS(p, b, s, match->rm_so, return fatal(p->env->disc, c, NiL));
             if (!c && (c = sub(p, b, s, b->re_ops, nmatch, match)))
                 return fatal(p->env->disc, c, NiL);
@@ -179,26 +166,24 @@ regsubexec(const regex_t *p, const char *s, size_t nmatch, regmatch_t *match)
         s += match->rm_eo;
         if (m <= 0 && !(b->re_flags & REG_SUB_ALL) || !*s)
             break;
-        if (c = regnexec(p,
-                         s,
-                         e - s,
-                         nmatch,
-                         match,
-                         p->env->flags
-                         | (match->rm_so == match->rm_eo ? REG_ADVANCE : 0)))
-        {
+        if (c
+            = regnexec(p,
+                       s,
+                       e - s,
+                       nmatch,
+                       match,
+                       p->env->flags
+                       | (match->rm_so == match->rm_eo ? REG_ADVANCE : 0))) {
             if (c != REG_NOMATCH)
                 return fatal(p->env->disc, c, NiL);
             break;
         }
-        if (!match->rm_so && !match->rm_eo && *s && m <= 1)
-        {
+        if (!match->rm_so && !match->rm_eo && *s && m <= 1) {
             match->rm_so = match->rm_eo = 1;
             c = 1;
         }
     }
-    while (s < e)
-    {
+    while (s < e) {
         c = *s++;
         PUTC(p, b, c, return fatal(p->env->disc, c, NiL));
     }
@@ -227,22 +212,19 @@ regsubexec(const regex_t *p,
            size_t nmatch,
            oldregmatch_t *oldmatch)
 {
-    if (oldmatch)
-    {
+    if (oldmatch) {
         regmatch_t *match;
         ssize_t i;
         int r;
 
         if (!(match = oldof(0, regmatch_t, nmatch, 0)))
             return -1;
-        for (i = 0; i < nmatch; i++)
-        {
+        for (i = 0; i < nmatch; i++) {
             match[i].rm_so = oldmatch[i].rm_so;
             match[i].rm_eo = oldmatch[i].rm_eo;
         }
         if (!(r = regsubexec_20120528(p, s, nmatch, match)))
-            for (i = 0; i < nmatch; i++)
-            {
+            for (i = 0; i < nmatch; i++) {
                 oldmatch[i].rm_so = match[i].rm_so;
                 oldmatch[i].rm_eo = match[i].rm_eo;
             }

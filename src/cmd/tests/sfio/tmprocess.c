@@ -48,8 +48,7 @@ Sfdisc_t *disc;
         terror("Not writing a whole record");
 
     sf = sfnew(NIL(Sfio_t *), ( Void_t * )buf, n, -1, SF_STRING | SF_READ);
-    while ((s = sfgetr(sf, '\n', 0)))
-    {
+    while ((s = sfgetr(sf, '\n', 0))) {
         w = sfvalue(sf) - 1;
         if (s[0] != s[w - 1] - 1)
             terror("Bad record");
@@ -81,8 +80,7 @@ tmain()
     /* create pseudo-random record sizes */
     u = 1;
     for (i = 0; i < N_PROC; ++i)
-        for (r = 0; r < N_REC; ++r)
-        {
+        for (r = 0; r < N_REC; ++r) {
             u = u * 0x63c63cd9L + 0x9c39c33dL;
             size[i][r] = (ssize_t)(u % 63) + 16;
         }
@@ -103,8 +101,7 @@ tmain()
             terror("Open %s to append", file);
 
     /* fork processes */
-    for (i = 0; i < N_PROC; ++i)
-    {
+    for (i = 0; i < N_PROC; ++i) {
 #ifdef DEBUG
 #    define FORK() 0
 #    define RETURN(v)
@@ -114,15 +111,13 @@ tmain()
 #endif
         if ((pid = ( int )FORK()) < 0)
             terror("Creating process %d", i);
-        else if (pid == 0)
-        { /* write to file */
+        else if (pid == 0) { /* write to file */
             sfsetbuf(fa[i], ( Void_t * )buf[i], sizeof(buf[i]));
             sfset(fa[i], SF_WHOLE, 1);
             Disc[i].writef = inspect;
             sfdisc(fa[i], &Disc[i]);
 
-            for (r = 0; r < N_REC; ++r)
-            {
+            for (r = 0; r < N_REC; ++r) {
                 n = size[i][r];
                 s = b[i];
                 memcpy(s, record[i], n - 1);
@@ -141,15 +136,13 @@ tmain()
         }
     }
 
-    for (i = 0; i < N_PROC; ++i)
-    {
+    for (i = 0; i < N_PROC; ++i) {
         wait(&r);
         count[i] = 0;
     }
 
     n = 0;
-    while ((s = sfgetr(f, '\n', 0)))
-    {
+    while ((s = sfgetr(f, '\n', 0))) {
         n += 1;
         if ((i = s[0] - '0') < 0 || (i % 2) != 0 || (i /= 2) >= N_PROC)
             terror("%d: Wrong record type", n);

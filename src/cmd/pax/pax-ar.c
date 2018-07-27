@@ -46,8 +46,7 @@ ar_getprologue(Pax_t *pax,
 
     if (!(dir = ardiropen(ap->name, NiL, 0)))
         return 0;
-    if (!(ar = newof(0, Ar_t, 1, 0)))
-    {
+    if (!(ar = newof(0, Ar_t, 1, 0))) {
         ardirclose(dir);
         nospace();
         return -1;
@@ -63,8 +62,7 @@ ar_done(Pax_t *pax, Archive_t *ap)
 {
     Ar_t *ar = ( Ar_t * )ap->data;
 
-    if (ar)
-    {
+    if (ar) {
         if (ar->dir)
             ardirclose(ar->dir);
         free(ar);
@@ -79,8 +77,7 @@ ar_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
     Ar_t *ar = ( Ar_t * )ap->data;
     off_t pos;
 
-    if (!(ar->ent = ardirnext(ar->dir)))
-    {
+    if (!(ar->ent = ardirnext(ar->dir))) {
         pos = lseek(ap->io->fd, ( off_t )0, SEEK_END);
         return (pos < 0 || paxseek(pax, ap, pos, SEEK_SET, 0) != pos) ? -1
                                                                       : 0;
@@ -107,16 +104,13 @@ ar_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
 {
     Ar_t *ar = ( Ar_t * )ap->data;
 
-    if (ar->ent->offset < 0)
-    {
+    if (ar->ent->offset < 0) {
         error(
         3, "%s: read not supported for %s format", f->name, ap->format->name);
         return -1;
     }
-    if (wfd >= 0)
-    {
-        if (ardircopy(ar->dir, ar->ent, wfd) < 0)
-        {
+    if (wfd >= 0) {
+        if (ardircopy(ar->dir, ar->ent, wfd) < 0) {
             error(ERROR_SYSTEM | 2, "%s: copy error", f->name);
             return -1;
         }

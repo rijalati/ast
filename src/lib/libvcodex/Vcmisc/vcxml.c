@@ -104,8 +104,7 @@ tagcmp(Dt_t *dt, void *obj1, void *obj2, Dtdisc_t *disc)
     unsigned char *a = ( unsigned char * )obj1;
     unsigned char *b = ( unsigned char * )obj2;
 
-    while (*a == *b)
-    {
+    while (*a == *b) {
         if (sep[*a])
             return 0;
         a++;
@@ -142,40 +141,30 @@ vcxml(Vcodex_t *vc, const void *data, size_t size, void **out)
     vcioinit(&io, buf, size);
     s = ( Vcchar_t * )data;
     e = s + size;
-    while (s < e)
-    {
-        if ((c = *s++) == '<')
-        {
+    while (s < e) {
+        if ((c = *s++) == '<') {
             b = s;
             a = 0;
             q = 0;
-            for (;;)
-            {
-                if (s >= e)
-                {
+            for (;;) {
+                if (s >= e) {
                     vc->undone = e - b + 1;
                     goto done;
                 }
                 c = *s++;
-                if (q)
-                {
-                    if (c == q)
-                    {
+                if (q) {
+                    if (c == q) {
                         q = 0;
                         if (c == '>' && (s - b) >= 9 && s[-2] == ']'
-                            && s[-3] == ']')
-                        {
+                            && s[-3] == ']') {
                             l = 0;
                             break;
                         }
                     }
-                }
-                else if (c == ' ' || c == '\t')
-                {
+                } else if (c == ' ' || c == '\t') {
                     if (!a)
                         a = s - 1;
-                }
-                else if (c == '>')
+                } else if (c == '>')
                     break;
                 else if (c == '[' && (s - b) == 8 && b[0] == '!'
                          && b[2] == 'C' && b[3] == 'D' && b[4] == 'A'
@@ -187,23 +176,17 @@ vcxml(Vcodex_t *vc, const void *data, size_t size, void **out)
                     encode->n++;
                 l = c;
             }
-            if (l == 0)
-            {
+            if (l == 0) {
                 vcioputc(&io, TAG_DAT);
                 vcioputs(&io, b + 8, s - b - 11);
                 vcioputc(&io, 0);
-            }
-            else if ((c = *b) == '?' || c == '!')
-            {
+            } else if ((c = *b) == '?' || c == '!') {
                 vcioputc(&io, TAG_RAW);
                 vcioputs(&io, b - 1, s - b + 1);
                 vcioputc(&io, 0);
-            }
-            else if (c == '/')
-            {
+            } else if (c == '/') {
                 b++;
-                if (encode->k <= encode->b)
-                {
+                if (encode->k <= encode->b) {
                     if (vc->errorf)
                         (*vc->errorf)(NiL,
                                       vc->disc,
@@ -216,8 +199,7 @@ vcxml(Vcodex_t *vc, const void *data, size_t size, void **out)
                     RETURN(-1);
                 }
                 encode->k--;
-                if (!(t = ( Tag_t * )dtmatch((*(encode->k))->sub, b)))
-                {
+                if (!(t = ( Tag_t * )dtmatch((*(encode->k))->sub, b))) {
                     if (vc->errorf)
                         (*vc->errorf)(NiL,
                                       vc->disc,
@@ -233,24 +215,18 @@ vcxml(Vcodex_t *vc, const void *data, size_t size, void **out)
                     RETURN(-1);
                 }
                 vcioputc(&io, TAG_POP);
-            }
-            else
-            {
+            } else {
                 if (a)
                     vcioputc(&io, TAG_ATT);
-                else if (l == '/')
-                {
+                else if (l == '/') {
                     a = s - 2;
                     vcioputc(&io, TAG_EMT);
-                }
-                else
+                } else
                     a = s - 1;
-                if (!(t = ( Tag_t * )dtmatch((*encode->k)->sub, b)))
-                {
+                if (!(t = ( Tag_t * )dtmatch((*encode->k)->sub, b))) {
                     q = a - b;
                     if (!(t = vmoldof(encode->v, 0, Tag_t, 1, q + 1))
-                        || !(t->sub = dtnew(encode->v, &encode->d, Dtoset)))
-                    {
+                        || !(t->sub = dtnew(encode->v, &encode->d, Dtoset))) {
                         if (vc->errorf)
                             (*vc->errorf)(NiL, vc->disc, 2, "out of space");
                         RETURN(-1);
@@ -263,22 +239,17 @@ vcxml(Vcodex_t *vc, const void *data, size_t size, void **out)
                     vcioputc(&io, TAG_NEW);
                     vcioputs(&io, b, q);
                     vcioputc(&io, 0);
-                }
-                else
+                } else
                     vcioputu(&io, t->index);
-                if (a < s - 2)
-                {
+                if (a < s - 2) {
                     vcioputs(&io, a + 1, s - a - 2);
                     vcioputc(&io, 0);
                 }
-                if (l != '/')
-                {
-                    if (encode->k >= encode->m)
-                    {
+                if (l != '/') {
+                    if (encode->k >= encode->m) {
                         z = encode->m - encode->b + STK_CHUNK;
                         o = encode->k - encode->b;
-                        if (!(encode->b = oldof(encode->b, Tag_t *, z, 0)))
-                        {
+                        if (!(encode->b = oldof(encode->b, Tag_t *, z, 0))) {
                             if (vc->errorf)
                                 (*vc->errorf)(
                                 NiL, vc->disc, 2, "out of space");
@@ -290,36 +261,29 @@ vcxml(Vcodex_t *vc, const void *data, size_t size, void **out)
                     *++encode->k = t;
                 }
             }
-        }
-        else if (c == '\n')
-        {
+        } else if (c == '\n') {
             encode->n++;
             vcioputc(&io, TAG_nl);
-        }
-        else if (c == '\r')
+        } else if (c == '\r')
             vcioputc(&io, TAG_cr);
         else if (c == '\t')
             vcioputc(&io, TAG_ht);
         else if (c == ' ')
             vcioputc(&io, TAG_sp);
-        else
-        {
+        else {
             b = s;
             a = io.next;
             vcioputc(&io, TAG_RAW);
             vcioputc(&io, c);
-            for (;;)
-            {
-                if (s >= e)
-                {
+            for (;;) {
+                if (s >= e) {
                     vc->undone = e - b + 1;
                     io.next = a;
                     goto done;
                 }
                 if ((c = *s++) == '\n')
                     encode->n++;
-                else if (c == '<')
-                {
+                else if (c == '<') {
                     s--;
                     break;
                 }
@@ -377,14 +341,12 @@ vcunxml(Vcodex_t *vc, const void *orig, size_t size, void **out)
     vcioinit(&io, buf, size);
     s = ( Vcchar_t * )data;
     e = s + size;
-    while (s < e)
-    {
+    while (s < e) {
         b = s;
         c = *s++;
         a = io.next;
     again:
-        switch (c)
-        {
+        switch (c) {
         case TAG_ATT:
         case TAG_EMT:
             if (s >= e)
@@ -435,8 +397,7 @@ vcunxml(Vcodex_t *vc, const void *orig, size_t size, void **out)
                 goto undone;
             c = s - y;
             s++;
-            if (!(t = vmoldof(decode->v, 0, Gat_t, 1, c)))
-            {
+            if (!(t = vmoldof(decode->v, 0, Gat_t, 1, c))) {
                 if (vc->errorf)
                     (*vc->errorf)(NiL, vc->disc, 2, "out of space");
                 RETURN(-1);
@@ -446,15 +407,12 @@ vcunxml(Vcodex_t *vc, const void *orig, size_t size, void **out)
             t->len = c;
             t->sub = t->cur = t->end = 0;
             p = *decode->k;
-            if (p->cur >= p->end)
-            {
+            if (p->cur >= p->end) {
                 o = p->cur - p->sub;
                 z = p->end - p->sub + SUB_CHUNK;
-                if (!(p->cur = vmoldof(decode->v, p->sub, Gat_t *, z, 0)))
-                {
+                if (!(p->cur = vmoldof(decode->v, p->sub, Gat_t *, z, 0))) {
                     /* this needed for Vmlast */
-                    if (!(p->cur = vmoldof(decode->v, 0, Gat_t *, z, 0)))
-                    {
+                    if (!(p->cur = vmoldof(decode->v, 0, Gat_t *, z, 0))) {
                         if (vc->errorf)
                             (*vc->errorf)(NiL, vc->disc, 2, "out of space");
                         RETURN(-1);
@@ -468,8 +426,7 @@ vcunxml(Vcodex_t *vc, const void *orig, size_t size, void **out)
             *p->cur++ = t;
             goto tagged;
         default:
-            if (c < TAG_OFF)
-            {
+            if (c < TAG_OFF) {
                 if (vc->errorf)
                     (*vc->errorf)(NiL,
                                   vc->disc,
@@ -479,11 +436,9 @@ vcunxml(Vcodex_t *vc, const void *orig, size_t size, void **out)
                                   c);
                 RETURN(-1);
             }
-            if (c & 0x80)
-            {
+            if (c & 0x80) {
                 c &= 0x7f;
-                do
-                {
+                do {
                     if (s >= e)
                         goto undone;
                     c = (c << 7) | ((n = *s++) & 0x7f);
@@ -491,8 +446,7 @@ vcunxml(Vcodex_t *vc, const void *orig, size_t size, void **out)
             }
             c -= TAG_OFF;
             p = *decode->k;
-            if (c >= (p->cur - p->sub))
-            {
+            if (c >= (p->cur - p->sub)) {
                 if (vc->errorf)
                     (*vc->errorf)(NiL,
                                   vc->disc,
@@ -506,16 +460,12 @@ vcunxml(Vcodex_t *vc, const void *orig, size_t size, void **out)
         tagged:
             vcioputc(&io, '<');
             vcioputs(&io, t->name, t->len);
-            if (x == TAG_EMT)
-            {
+            if (x == TAG_EMT) {
                 x = 0;
                 vcioputc(&io, '/');
                 vcioputc(&io, '>');
-            }
-            else
-            {
-                if (x == TAG_ATT)
-                {
+            } else {
+                if (x == TAG_ATT) {
                     x = 0;
                     y = s;
                     if (!(s = memchr(s, 0, e - s)))
@@ -525,14 +475,12 @@ vcunxml(Vcodex_t *vc, const void *orig, size_t size, void **out)
                     s++;
                 }
                 vcioputc(&io, '>');
-                if (decode->k >= decode->m)
-                {
+                if (decode->k >= decode->m) {
                     if (!(decode->k
                           = oldof(decode->k,
                                   Gat_t *,
                                   (decode->m - decode->b) + STK_CHUNK,
-                                  0)))
-                    {
+                                  0))) {
                         if (vc->errorf)
                             (*vc->errorf)(NiL, vc->disc, 2, "out of space");
                         RETURN(-1);
@@ -570,15 +518,12 @@ xmlevent(Vcodex_t *vc, int type, void *params)
     Vmalloc_t *vm;
     ssize_t n;
 
-    switch (type)
-    {
+    switch (type) {
     case VC_OPENING:
         if (!(vm = vmopen(Vmdcheap, Vmlast, 0)))
             return -1;
-        if (vc->flags & VC_ENCODE)
-        {
-            if (!(encode = vmnewof(vm, 0, Encode_t, 1, 0)))
-            {
+        if (vc->flags & VC_ENCODE) {
+            if (!(encode = vmnewof(vm, 0, Encode_t, 1, 0))) {
                 vmclose(vm);
                 return -1;
             }
@@ -588,8 +533,7 @@ xmlevent(Vcodex_t *vc, int type, void *params)
             if (!(encode->b = oldof(0, Tag_t *, STK_CHUNK, 0))
                 || !(*encode->b = vmnewof(encode->v, 0, Tag_t, 1, 0))
                 || !((*encode->b)->sub
-                     = dtnew(encode->v, &encode->d, Dtoset)))
-            {
+                     = dtnew(encode->v, &encode->d, Dtoset))) {
                 if (encode->b)
                     free(encode->b);
                 vmclose(encode->v);
@@ -602,15 +546,12 @@ xmlevent(Vcodex_t *vc, int type, void *params)
                 sep[0] = sep['>'] = sep['/'] = sep[' '] = sep['\t']
                 = sep['\n'] = sep['\r'] = 1;
             vcsetmtdata(vc, encode);
-        }
-        else
-        {
+        } else {
             if (!(decode = vmnewof(vm, 0, Decode_t, 1, 0)))
                 return -1;
             decode->v = vm;
             if (!(decode->b = oldof(0, Gat_t *, STK_CHUNK, 0))
-                || !(*decode->b = vmnewof(decode->v, 0, Gat_t, 1, 0)))
-            {
+                || !(*decode->b = vmnewof(decode->v, 0, Gat_t, 1, 0))) {
                 if (decode->b)
                     free(decode->b);
                 vmclose(decode->v);
@@ -622,18 +563,13 @@ xmlevent(Vcodex_t *vc, int type, void *params)
         }
         break;
     case VC_CLOSING:
-        if (vc->flags & VC_ENCODE)
-        {
-            if (encode = vcgetmtdata(vc, Encode_t *))
-            {
+        if (vc->flags & VC_ENCODE) {
+            if (encode = vcgetmtdata(vc, Encode_t *)) {
                 free(encode->b);
                 vmclose(encode->v);
             }
-        }
-        else
-        {
-            if (decode = vcgetmtdata(vc, Decode_t *))
-            {
+        } else {
+            if (decode = vcgetmtdata(vc, Decode_t *)) {
                 vmclose(decode->v);
                 free(decode);
             }

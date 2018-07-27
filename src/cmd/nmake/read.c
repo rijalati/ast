@@ -46,8 +46,7 @@ readrules(void)
 
     if (!(s = state.rules))
         state.rules = null;
-    else if (*s)
-    {
+    else if (*s) {
         tmp = sfstropen();
         edit(tmp, s, KEEP, KEEP, external.object);
         readfile(sfstruse(tmp),
@@ -66,8 +65,7 @@ readrules(void)
      *	 of load() on internal list pointers
      */
 
-    if (p = internal.globalfiles->prereqs)
-    {
+    if (p = internal.globalfiles->prereqs) {
         for (p = internal.tmplist->prereqs = listcopy(p); p; p = p->next)
             readfile(p->rule->name, COMP_GLOBAL, NiL);
         freelist(internal.tmplist->prereqs);
@@ -98,8 +96,7 @@ readfp(Sfio_t *sp, Rule_t *r, int type)
 
     objfile = 0;
     name = r->name;
-    if (!state.makefile)
-    {
+    if (!state.makefile) {
         /*
          * set up the related file names
          */
@@ -117,8 +114,7 @@ readfp(Sfio_t *sp, Rule_t *r, int type)
      * load if object file
      */
 
-    if (loadable(sp, r, 0))
-    {
+    if (loadable(sp, r, 0)) {
         if (!state.base && !state.global && !state.list)
             error(
             3, "%s: explicit make object files must be global", r->name);
@@ -128,8 +124,7 @@ readfp(Sfio_t *sp, Rule_t *r, int type)
                  "loading %sobject file %s",
                  state.global ? "global " : null,
                  r->name));
-        if (load(sp, r->name, 0, 0) > 0)
-        {
+        if (load(sp, r->name, 0, 0) > 0) {
             sfclose(sp);
             return;
         }
@@ -141,11 +136,9 @@ readfp(Sfio_t *sp, Rule_t *r, int type)
      */
 
     if (state.global
-        || !state.forceread && (!(type & COMP_FILE) || needrules))
-    {
+        || !state.forceread && (!(type & COMP_FILE) || needrules)) {
         fp = sfstropen();
-        if (!objfile)
-        {
+        if (!objfile) {
             edit(fp, r->name, DELETE, KEEP, external.object);
             objfile = sfstruse(fp);
         }
@@ -157,16 +150,12 @@ readfp(Sfio_t *sp, Rule_t *r, int type)
             /* ignore */;
         else if (x == r)
             error(3, "%s must be recompiled", r->name);
-        else if (fp = sfopen(NiL, s = x->name, "br"))
-        {
+        else if (fp = sfopen(NiL, s = x->name, "br")) {
             if (needrules)
                 x->dynamic |= D_built;
-            if (loadable(fp, x, 1))
-            {
-                if (needrules)
-                {
-                    if (state.rules && !state.explicitrules)
-                    {
+            if (loadable(fp, x, 1)) {
+                if (needrules) {
+                    if (state.rules && !state.explicitrules) {
                         edit(internal.tmp, state.rules, DELETE, KEEP, DELETE);
                         edit(internal.wrk,
                              b = getval(external.rules, VAL_PRIMARY),
@@ -174,8 +163,7 @@ readfp(Sfio_t *sp, Rule_t *r, int type)
                              KEEP,
                              DELETE);
                         if (strcmp(sfstruse(internal.tmp),
-                                   sfstruse(internal.wrk)))
-                        {
+                                   sfstruse(internal.wrk))) {
                             error(state.exec || state.mam.out ? -1 : 1,
                                   "%s: base rules changed to %s",
                                   sfstrbase(internal.tmp),
@@ -185,21 +173,18 @@ readfp(Sfio_t *sp, Rule_t *r, int type)
                             needrules = 1;
                         }
                     }
-                    if (!state.forceread)
-                    {
+                    if (!state.forceread) {
                         needrules = 0;
                         readrules();
                     }
                 }
-                if (!state.forceread)
-                {
+                if (!state.forceread) {
                     message((-2,
                              "loading %s file %s",
                              state.global ? "global" : "object",
                              s));
                     n = load(fp, s, 1, 0);
-                    if (n > 0)
-                    {
+                    if (n > 0) {
                         sfclose(fp);
                         sfclose(sp);
                         return;
@@ -229,15 +214,13 @@ readfp(Sfio_t *sp, Rule_t *r, int type)
      */
 
     preprocess = state.preprocess;
-    if (!state.global)
-    {
+    if (!state.global) {
         /*
          * first check for and apply makefile converter
          */
 
         s = 0;
-        if (*(t = getval(external.convert, VAL_PRIMARY)))
-        {
+        if (*(t = getval(external.convert, VAL_PRIMARY))) {
             char *u;
             char *v;
             Sfio_t *exp;
@@ -248,20 +231,17 @@ readfp(Sfio_t *sp, Rule_t *r, int type)
             else
                 e = r->name;
             b = tokopen(t, 1);
-            while ((t = tokread(b)) && (t = colonlist(exp, t, 0, ' ')))
-            {
+            while ((t = tokread(b)) && (t = colonlist(exp, t, 0, ' '))) {
                 u = tokopen(t, 0);
                 while ((v = tokread(u)) && !streq(e, v))
                     ;
                 tokclose(u);
-                if (!(s = tokread(b)))
-                {
+                if (!(s = tokread(b))) {
                     error(
                     2, "%s: %s: no action for file", external.convert, t);
                     break;
                 }
-                if (v)
-                {
+                if (v) {
                     s = getarg((e = t = strdup(s), &e), NiL);
                     break;
                 }
@@ -270,8 +250,7 @@ readfp(Sfio_t *sp, Rule_t *r, int type)
             tokclose(b);
             sfstrclose(exp);
         }
-        if (s)
-        {
+        if (s) {
             message((-2, "converting %s using \"%s\"", r->name, s));
             sfclose(sp);
             if (!(sp = fapply(internal.internal,
@@ -284,16 +263,13 @@ readfp(Sfio_t *sp, Rule_t *r, int type)
             free(t);
             preprocess = -1;
         }
-        if (needrules)
-        {
-            if ((s = sfreserve(sp, 0, 0)) && (n = sfvalue(sp)) >= 0)
-            {
+        if (needrules) {
+            if ((s = sfreserve(sp, 0, 0)) && (n = sfvalue(sp)) >= 0) {
                 int c;
                 int d;
                 int old;
 
-                if (n > 0)
-                {
+                if (n > 0) {
                     if (n > MAXNAME)
                         n = MAXNAME;
                     else
@@ -310,80 +286,65 @@ readfp(Sfio_t *sp, Rule_t *r, int type)
                 b = s;
                 c = *(s + n);
                 *(s + n) = 0;
-                for (;;)
-                {
+                for (;;) {
                     if (e = strchr(s, '\n'))
                         *e = 0;
                     else if (c != '\n')
                         break;
                     if (splice)
                         /* skip */;
-                    else if (*s == SALT)
-                    {
+                    else if (*s == SALT) {
                         while (isspace(*++s))
                             ;
                         for (t = s; isalnum(*t); t++)
                             ;
                         d = *t;
                         *t = 0;
-                        if (strneq(s, "rules", 5))
-                        {
+                        if (strneq(s, "rules", 5)) {
                             if (*t = d)
                                 t++;
                             while (*t == ' ' || *t == '\t')
                                 t++;
                             rules(*t == '/' && *(t + 1) == '*' ? null : t);
                             break;
-                        }
-                        else if (!strmatch(s,
-                                           "assert|comment|define|elif|else|"
-                                           "endif|endmac|error|ident|if|"
-                                           "ifdef|ifndef|include|line|macdef|"
-                                           "pragma|unassert|undef|warning"))
+                        } else if (!strmatch(
+                                   s,
+                                   "assert|comment|define|elif|else|"
+                                   "endif|endmac|error|ident|if|"
+                                   "ifdef|ifndef|include|line|macdef|"
+                                   "pragma|unassert|undef|warning"))
                             old = 1;
                         else if (!preprocess)
                             preprocess = 1;
                         *t = d;
-                    }
-                    else if (*s == '<' && *(s + 1) == '<')
-                    {
+                    } else if (*s == '<' && *(s + 1) == '<') {
                         old = preprocess = 0;
                         break;
-                    }
-                    else
-                    {
+                    } else {
                         while (isspace(*s))
                             s++;
-                        if (strneq(s, "rules", 5))
-                        {
+                        if (strneq(s, "rules", 5)) {
                             for (s += 5; *s == ' ' || *s == '\t'; s++)
                                 ;
                             rules(*s == '/' && *(s + 1) == '*' ? null : s);
                             old = 0;
                             break;
-                        }
-                        else if (strneq(s, ".SOURCE", 7)
-                                 && (*(s + 7) == '.' || *(s + 7) == ':'
-                                     || isspace(*(s + 7))))
-                        {
+                        } else if (strneq(s, ".SOURCE", 7)
+                                   && (*(s + 7) == '.' || *(s + 7) == ':'
+                                       || isspace(*(s + 7)))) {
                             old = 0;
                             break;
-                        }
-                        else
-                        {
+                        } else {
                             d = ':';
-                            while (*s)
-                            {
+                            while (*s) {
                                 if (*s == '/' && *(s + 1) == '*'
                                     && (*(s + 2) == '*' || isspace(*(s + 2))
                                         || !*(s + 2)))
                                     break;
-                                else if (*s == d)
-                                {
+                                else if (*s == d) {
                                     if (*++s == d)
                                         s++;
-                                    else if (isalnum(*s))
-                                    {
+                                    else if (isalnum(*s)) {
                                         while (isalnum(*s))
                                             s++;
                                         if (*s == d)
@@ -396,8 +357,7 @@ readfp(Sfio_t *sp, Rule_t *r, int type)
                                 while (isspace(*s))
                                     s++;
                             }
-                            if (*s)
-                            {
+                            if (*s) {
                                 old = 0;
                                 break;
                             }
@@ -425,8 +385,7 @@ readfp(Sfio_t *sp, Rule_t *r, int type)
      * check for obsolete makefile preprocessor
      */
 
-    if (preprocess > 0)
-    {
+    if (preprocess > 0) {
         s = "$(MAKEPP) $(MAKEPPFLAGS) $(>)";
         message((-2, "preprocessing %s using \"%s\"", r->name, s));
         sfclose(sp);
@@ -442,8 +401,7 @@ readfp(Sfio_t *sp, Rule_t *r, int type)
      * parse the file
      */
 
-    if (state.base)
-    {
+    if (state.base) {
         if (!state.compile)
             state.compile = RECOMPILE;
         state.global = 1;
@@ -470,8 +428,7 @@ readfile(char *file, int type, char *filter)
     Sfio_t *rfp;
     Stat_t st;
 
-    if (streq(file, "-") && (file = "/dev/null") || isdynamic(file))
-    {
+    if (streq(file, "-") && (file = "/dev/null") || isdynamic(file)) {
         rfp = sfstropen();
         expand(rfp, file);
         state.init++;
@@ -483,8 +440,8 @@ readfile(char *file, int type, char *filter)
     r = bindfile(NiL, file, BIND_MAKEFILE | BIND_RULE);
     state.init--;
     if (r
-        && (r->time || strneq(r->name, "/dev/", 5) && !rstat(r->name, &st, 0)))
-    {
+        && (r->time
+            || strneq(r->name, "/dev/", 5) && !rstat(r->name, &st, 0))) {
         compref(r, type);
         r->dynamic |= D_scanned;
         file = r->name;
@@ -493,35 +450,29 @@ readfile(char *file, int type, char *filter)
                                   file,
                                   filter,
                                   CO_ALWAYS | CO_LOCAL | CO_URGENT)
-                         : rsfopen(file))
-        {
+                         : rsfopen(file)) {
             if (state.mam.dynamic || state.mam.regress)
                 mampush(state.mam.out, r, P_force);
-            if (state.user)
-            {
+            if (state.user) {
                 r->status = EXISTS;
                 parse(rfp, NiL, file, NiL);
                 sfclose(rfp);
-            }
-            else
+            } else
                 readfp(rfp, r, type);
             if (state.mam.dynamic || state.mam.regress)
                 mampop(state.mam.out, r, 0);
-            if ((type & COMP_BASE) && r->uname)
-            {
+            if ((type & COMP_BASE) && r->uname) {
                 oldname(r);
                 r->dynamic &= ~D_bound;
             }
-            if (state.pushed)
-            {
+            if (state.pushed) {
                 state.pushed = 0;
                 state.global = state.push_global;
                 state.user = state.push_user;
             }
             return (1);
         }
-        if ((type & COMP_DONTCARE) || (r->property & P_dontcare))
-        {
+        if ((type & COMP_DONTCARE) || (r->property & P_dontcare)) {
             r->property |= P_dontcare;
             return (0);
         }

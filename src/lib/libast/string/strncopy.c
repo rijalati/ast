@@ -34,10 +34,8 @@ strncopy(char *t, const char *f, size_t n)
 {
     char *e = t + n - 1;
 
-    do
-    {
-        if (t >= e)
-        {
+    do {
+        if (t >= e) {
             *t = 0;
             return t;
         }

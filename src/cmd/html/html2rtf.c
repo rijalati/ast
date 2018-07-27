@@ -116,26 +116,21 @@ anchor(int ref, char *s)
 {
     int c;
 
-    if (s)
-    {
-        if (ref)
-        {
-            if (*s != '#')
-            {
+    if (s) {
+        if (ref) {
+            if (*s != '#') {
                 error(1, "%s: unknown link", s);
                 return;
             }
             s++;
             sfprintf(state.out, "{\\uldb %s}{\\v", s);
-        }
-        else
+        } else
             sfputr(state.out, "#{\\footnote", -1);
         sfprintf(state.out, " %s.", state.prefix);
         while (c = *s++)
             sfputc(state.out, isalnum(c) ? c : '.');
         sfputc(state.out, '}');
-        if (ref)
-        {
+        if (ref) {
             sfputr(state.out, "{\\*\\comment", -1);
             state.sep = 1;
             state.sp->a_close = 1;
@@ -162,8 +157,7 @@ end_a(Tag_t *tp, Attribute_t *ap)
 {
     NoP(tp);
     NoP(ap);
-    if (state.sp->a_close)
-    {
+    if (state.sp->a_close) {
         sfputc(state.out, '}');
         state.sep = 0;
     }
@@ -329,8 +323,7 @@ start_font(Tag_t *tp, Attribute_t *ap)
 
     NoP(tp);
     if ((op = attribute(ap, "SIZE")) && (s = op->value)
-        && (n = strtol(s, &e, 10)) && !*e)
-    {
+        && (n = strtol(s, &e, 10)) && !*e) {
         if (*s == '+' || *s == '-')
             n += state.fontsize;
         state.sp->font_size = state.fontsize;
@@ -465,32 +458,26 @@ roman(int n, int format)
     int m;
 
     dig = islower(format) ? "zwmdclxvi" : "ZWMDCLXVI";
-    if (n <= -40000 || n >= 40000)
-    {
+    if (n <= -40000 || n >= 40000) {
         sfprintf(state.out, "<%d>", n);
         return;
     }
-    if (n == 0)
-    {
+    if (n == 0) {
         sfputc(state.out, '0');
         return;
     }
-    if (n < 0)
-    {
+    if (n < 0) {
         n = -n;
         sfputc(state.out, '-');
     }
-    while (n >= 10000)
-    {
+    while (n >= 10000) {
         n -= 10000;
         sfputc(state.out, dig[0]);
     }
-    for (i = 1000; i > 0; i /= 10, dig += 2)
-    {
+    for (i = 1000; i > 0; i /= 10, dig += 2) {
         m = n / i;
         n -= m * i;
-        switch (m)
-        {
+        switch (m) {
         case 9:
             sfputc(state.out, dig[2]);
             sfputc(state.out, dig[0]);
@@ -536,8 +523,7 @@ start_li(Tag_t *tp, Attribute_t *ap)
     NoP(tp);
     NoP(ap);
     par(1, "{\\b ");
-    switch (state.sp->list_type)
-    {
+    switch (state.sp->list_type) {
     case '1':
         sfprintf(state.out, "%d.", state.sp->list_counter);
         break;
@@ -571,8 +557,7 @@ start_meta(Tag_t *tp, Attribute_t *ap)
     Attribute_t *op;
 
     NoP(tp);
-    if ((op = attribute(ap, "NAME")) && op->value)
-    {
+    if ((op = attribute(ap, "NAME")) && op->value) {
         sfprintf(state.out, "{\\*\\comment %s", op->value);
         if ((op = attribute(ap, "CONTENT")) && op->value)
             sfprintf(state.out, ": %s", op->value);
@@ -610,8 +595,7 @@ start_p(Tag_t *tp, Attribute_t *ap)
 
     NoP(tp);
     par(0, NiL);
-    if ((op = attribute(ap, "ALIGN")) && (s = op->value))
-    {
+    if ((op = attribute(ap, "ALIGN")) && (s = op->value)) {
         if (!strcasecmp(s, "CENTER"))
             sfputr(state.out, "\\qc", -1);
         else if (!strcasecmp(s, "LEFT"))
@@ -676,28 +660,23 @@ start_render(Tag_t *tp, Attribute_t *ap)
     int n;
     Attribute_t *op;
 
-    if ((op = attribute(ap, "TAG")) && (s = op->value))
-    {
-        if (tp = ( Tag_t * )hashget(state.tags, s))
-        {
+    if ((op = attribute(ap, "TAG")) && (s = op->value)) {
+        if (tp = ( Tag_t * )hashget(state.tags, s)) {
             if (tp->data)
                 free(tp->data);
             tp->start = 0;
             tp->end = 0;
             tp->data = 0;
-        }
-        else if (!(tp = newof(NiL, Tag_t, 1, 0))
-                 || !(tp->name = hashput(state.tags, 0, tp)))
+        } else if (!(tp = newof(NiL, Tag_t, 1, 0))
+                   || !(tp->name = hashput(state.tags, 0, tp)))
             error(ERROR_SYSTEM | 3, "out of space [tag]");
-        if ((op = attribute(ap, "STYLE")) && (s = op->value))
-        {
+        if ((op = attribute(ap, "STYLE")) && (s = op->value)) {
             for (n = 0, e = s; e && (e = strchr(e, ',')); n++, e++)
                 ;
             if (!(rp = newof(NiL, Render_t, 1, n * sizeof(Tag_t *))))
                 error(ERROR_SYSTEM | 3, "out of space [render]");
             n = 0;
-            do
-            {
+            do {
                 if (e = strchr(s, ','))
                     *e++ = 0;
                 if (rp->tag[n] = ( Tag_t * )hashget(state.tags, s))
@@ -705,8 +684,7 @@ start_render(Tag_t *tp, Attribute_t *ap)
             } while (s = e);
             if (!(rp->tags = n))
                 free(rp);
-            else
-            {
+            else {
                 tp->start = start_rendering;
                 tp->end = end_rendering;
                 tp->data = ( void * )rp;
@@ -851,8 +829,7 @@ start_ul(Tag_t *tp, Attribute_t *ap)
     if (attribute(ap, "COMPACT"))
         state.sp->flags |= STK_LIST_COMPACT;
     state.sp->list_type = 0;
-    switch ((op = attribute(ap, "TYPE")) && op->value ? *op->value : 0)
-    {
+    switch ((op = attribute(ap, "TYPE")) && op->value ? *op->value : 0) {
     case 'c':
         state.sp->list_label = "\\'b0";
         break;
@@ -929,15 +906,12 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
     item = 0;
     lastc = 0;
     cc = tc = 0;
-    for (;;)
-    {
-        switch (c = sfgetc(ip))
-        {
+    for (;;) {
+        switch (c = sfgetc(ip)) {
         case EOF:
             goto done;
         case '<':
-            if (!item)
-            {
+            if (!item) {
                 item = c;
                 lastlastc = lastc;
                 quote = 0;
@@ -945,8 +919,7 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                 ap->name = 0;
                 ap->value = 0;
                 op = state.tmp;
-                if ((c = sfgetc(ip)) != EOF)
-                {
+                if ((c = sfgetc(ip)) != EOF) {
                     sfungetc(ip, c);
                     if (c == '!')
                         quote |= COMMENT;
@@ -955,19 +928,15 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
             }
             break;
         case '>':
-            if (item == '<' && !(quote & STRING))
-            {
+            if (item == '<' && !(quote & STRING)) {
                 item = 0;
                 if (!(s = sfstruse(op)))
                     error(ERROR_SYSTEM | 3, "out of space");
                 op = state.out;
-                if (*s == '!')
-                {
-                    if ((cc -= strlen(s)) <= 0)
-                    {
+                if (*s == '!') {
+                    if ((cc -= strlen(s)) <= 0) {
                         cc = 0;
-                        if ((c = sfgetc(ip)) != EOF)
-                        {
+                        if ((c = sfgetc(ip)) != EOF) {
                             if (c == '\n')
                                 error_info.line++;
                             else
@@ -977,13 +946,11 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                     continue;
                 }
                 (ap + 1)->name = 0;
-                for (;;)
-                {
+                for (;;) {
                     ap->name = s + ((( unsigned int )ap->name) >> PUN);
                     if (!*ap->name)
                         ap->name = 0;
-                    else if (ap->value)
-                    {
+                    else if (ap->value) {
                         ap->value = s + ((( unsigned int )ap->value) >> PUN);
                         if (!*ap->value)
                             ap->value = 0;
@@ -996,12 +963,9 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                     s++;
                 if (!(tp = ( Tag_t * )hashget(state.tags, s)))
                     error(1, "<%s>: unknown tag", s);
-                else if (!c)
-                {
-                    if (tp->end)
-                    {
-                        if (state.sp >= state.sp_max)
-                        {
+                else if (!c) {
+                    if (tp->end) {
+                        if (state.sp >= state.sp_max) {
                             c = state.sp - state.sp_min;
                             n = (state.sp_max - state.sp_min + 1) * 2;
                             if (!(state.sp_min
@@ -1015,8 +979,7 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                         state.sp->tag = tp;
                         state.sp->line = error_info.line;
                         state.sp->flags = 0;
-                        if (tp->flags & TAG_IGNORE)
-                        {
+                        if (tp->flags & TAG_IGNORE) {
                             state.sp->title_cc = cc;
                             state.sp->title_lastlastc = lastlastc;
                             state.sp->title_op = op;
@@ -1027,16 +990,11 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                     }
                     if (tp->start && !(*tp->start)(tp, ap) && tp->end)
                         state.sp->flags |= STK_NOEND;
-                }
-                else
-                {
+                } else {
                     sp = state.sp;
-                    if (state.sp->tag != tp)
-                    {
-                        for (;;)
-                        {
-                            if (sp == state.sp_min)
-                            {
+                    if (state.sp->tag != tp) {
+                        for (;;) {
+                            if (sp == state.sp_min) {
                                 if (!(tp->flags & TAG_UNBALANCED))
                                     error(1,
                                           "</%s> has no matching <%s>",
@@ -1049,13 +1007,10 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                                 break;
                             sp--;
                         }
-                        if (sp)
-                        {
-                            while (state.sp > sp)
-                            {
+                        if (sp) {
+                            while (state.sp > sp) {
                                 if (state.sp->tag->end
-                                    && !(state.sp->flags & STK_NOEND))
-                                {
+                                    && !(state.sp->flags & STK_NOEND)) {
                                     if (!(state.sp->tag->flags
                                           & TAG_UNBALANCED))
                                         error(1,
@@ -1070,12 +1025,10 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                             }
                         }
                     }
-                    if (sp)
-                    {
+                    if (sp) {
                         if (tp->end && !(state.sp->flags & STK_NOEND))
                             (*tp->end)(tp, ap);
-                        if (tp->flags & TAG_IGNORE)
-                        {
+                        if (tp->flags & TAG_IGNORE) {
                             cc = state.sp->title_cc;
                             lastlastc = state.sp->title_lastlastc;
                             op = state.sp->title_op;
@@ -1090,53 +1043,44 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
             }
             break;
         case '=':
-            if (ap && !ap->value)
-            {
+            if (ap && !ap->value) {
                 sfputc(op, 0);
                 ap->value = ( char * )(sfstrtell(op) << PUN);
                 continue;
             }
             break;
         case '"':
-            if (ap)
-            {
+            if (ap) {
                 quote ^= STRING;
                 if (!(quote & COMMENT))
                     continue;
             }
             break;
         case '&':
-            if (!item)
-            {
+            if (!item) {
                 item = c;
                 op = state.tmp;
                 continue;
             }
             break;
         case ';':
-            if (item == '&')
-            {
+            if (item == '&') {
                 item = 0;
                 if (!(s = sfstruse(op)))
                     error(ERROR_SYSTEM | 3, "out of space");
                 op = state.out;
-                if (*s == '#')
-                {
+                if (*s == '#') {
                     n = ( int )strtol(s + 1, NiL, 10) & 0377;
                     cc += sfprintf(op, "\\'%02x", n);
                     tc++;
                     if (isspace(n))
                         lastc = ' ';
-                }
-                else if (ep = ( Entity_t * )hashget(state.entities, s))
-                {
+                } else if (ep = ( Entity_t * )hashget(state.entities, s)) {
                     cc += sfputr(op, ep->value, -1);
                     tc++;
                     if (ep->flags & ENT_SPACE)
                         lastc = ' ';
-                }
-                else
-                {
+                } else {
                     error(1, "&%s;: unknown entity reference", s);
                     cc += sfprintf(op, "&%s;", s);
                     tc++;
@@ -1153,8 +1097,7 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
             break;
         case '\n':
             error_info.line++;
-            if (state.pre && !item)
-            {
+            if (state.pre && !item) {
                 state.sep = 0;
                 sfputr(op, "\\line", -1);
                 cc += 5;
@@ -1165,13 +1108,10 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
         case ' ':
         case '\t':
         case '\v':
-            if (ap)
-            {
-                if (!quote)
-                {
+            if (ap) {
+                if (!quote) {
                     if (lastc != ' '
-                        && ap < &attributes[elementsof(attributes) - 1])
-                    {
+                        && ap < &attributes[elementsof(attributes) - 1]) {
                         sfputc(op, 0);
                         ap++;
                         ap->name = ( char * )(sfstrtell(op) << PUN);
@@ -1180,30 +1120,22 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                     }
                     continue;
                 }
-            }
-            else if (!state.pre)
-            {
+            } else if (!state.pre) {
                 if (lastc == ' ')
                     continue;
                 c = ' ';
-                if (cc >= 72)
-                {
+                if (cc >= 72) {
                     cc = 0;
                     sfputc(op, '\n');
                 }
-            }
-            else if (c == ' ')
-            {
+            } else if (c == ' ') {
                 sfputr(op, "\\~", -1);
                 cc += 2;
                 tc++;
                 state.sep = 0;
                 continue;
-            }
-            else if (c == '\t')
-            {
-                do
-                {
+            } else if (c == '\t') {
+                do {
                     sfputr(op, "\\~", -1);
                     cc += 2;
                     tc++;
@@ -1215,19 +1147,16 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
         default:
             if (iscntrl(c))
                 continue;
-            if (c > 0177)
-            {
+            if (c > 0177) {
                 cc += sfprintf(op, "\\'%02x", c & 0377);
                 tc++;
                 continue;
             }
             break;
         }
-        if (state.sep && op == state.out)
-        {
+        if (state.sep && op == state.out) {
             state.sep = 0;
-            if (c != ' ')
-            {
+            if (c != ' ') {
                 sfputc(op, ' ');
                 cc++;
                 tc++;
@@ -1239,8 +1168,7 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
         tc++;
     }
 done:
-    while (state.sp > state.sp_min)
-    {
+    while (state.sp > state.sp_min) {
         error(1,
               "<%s> on line %d has no matching </%s>",
               state.sp->tag->name,
@@ -1285,14 +1213,10 @@ project(char *file)
     char *s;
     Sfio_t *fp;
 
-    if (state.files)
-    {
-        if (fp = sfopen(NiL, file, "r"))
-        {
-            while (s = sfgetr(fp, '\n', 1))
-            {
-                if (*s == '[' && !strncasecmp(s, "[FILES]", 7))
-                {
+    if (state.files) {
+        if (fp = sfopen(NiL, file, "r")) {
+            while (s = sfgetr(fp, '\n', 1)) {
+                if (*s == '[' && !strncasecmp(s, "[FILES]", 7)) {
                     while ((s = sfgetr(fp, '\n', 1)) && *s != '[')
                         hashput(state.files, s, &state);
                     if (!s)
@@ -1303,20 +1227,17 @@ project(char *file)
             sfclose(fp);
             if (!(s = sfstruse(state.tmp)))
                 error(ERROR_SYSTEM | 3, "out of space");
-        }
-        else
+        } else
             s = "\
 [OPTIONS]\n\
 COMPRESS=TRUE\n\
 REPORT=ON\n\
 TITLE=Manual\n\
 ";
-        if (hashwalk(state.files, 0, project_update, state.files))
-        {
+        if (hashwalk(state.files, 0, project_update, state.files)) {
             if (!(fp = sfopen(NiL, file, "w")))
                 error(ERROR_SYSTEM | 2, "%s: cannot write", file);
-            else
-            {
+            else {
                 sfputr(fp, s, -1);
                 sfputr(fp, "[FILES]", '\n');
                 hashwalk(state.files, 0, project_list, fp);
@@ -1661,8 +1582,7 @@ strcasehash(const char *s)
     unsigned int h = 0;
     unsigned int c;
 
-    while (c = *p++)
-    {
+    while (c = *p++) {
         if (isupper(c))
             c = tolower(c);
         HASHPART(h, c);
@@ -1724,10 +1644,8 @@ main(int argc, char **argv)
     NoP(argc);
     error_info.id = "html2rtf";
     state.fontsize = FONTSIZE;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'd':
             error_info.trace = -opt_info.num;
             continue;
@@ -1753,21 +1671,16 @@ main(int argc, char **argv)
     if (error_info.errors)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
     init();
-    if (!*argv)
-    {
+    if (!*argv) {
         if (state.project)
             error(ERROR_SYSTEM | 3,
                   "%s: input files required when project file specified",
                   state.project);
         process(NiL, sfstdin, sfstdout);
-    }
-    else
-        while (s = *argv++)
-        {
-            if (ip = sfopen(NiL, s, "r"))
-            {
-                if (state.project)
-                {
+    } else
+        while (s = *argv++) {
+            if (ip = sfopen(NiL, s, "r")) {
+                if (state.project) {
                     if (!(t = strrchr(s, '/')))
                         t = s;
                     if (u = strrchr(t, '.'))
@@ -1777,8 +1690,7 @@ main(int argc, char **argv)
                     sfprintf(state.tmp, "%-.*s.rtf", c, t);
                     if (!(u = sfstruse(state.tmp)))
                         error(ERROR_SYSTEM | 3, "out of space");
-                    if (!(op = sfopen(NiL, u, "w")))
-                    {
+                    if (!(op = sfopen(NiL, u, "w"))) {
                         error(ERROR_SYSTEM | 2, "%s: cannot write", u);
                         sfclose(ip);
                         continue;
@@ -1788,21 +1700,17 @@ main(int argc, char **argv)
                         sfputc(state.tmp, isalnum(c) ? c : '.');
                     if (!(state.prefix = strdup(sfstruse(state.tmp))))
                         error(ERROR_SYSTEM | 3, "out of space");
-                }
-                else
-                {
+                } else {
                     state.prefix = "HTML2RTF";
                     op = sfstdout;
                 }
                 process(s, ip, op);
                 sfclose(ip);
-                if (state.project)
-                {
+                if (state.project) {
                     sfclose(op);
                     free(state.prefix);
                 }
-            }
-            else
+            } else
                 error(ERROR_SYSTEM | 2, "%s: cannot read", s);
         }
     if (state.project)

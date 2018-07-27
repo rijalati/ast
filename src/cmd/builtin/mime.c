@@ -61,10 +61,8 @@ b_mime(int argc, char **argv, Shbltin_t *context)
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
     silent = 0;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 0:
             break;
         case 's':
@@ -88,8 +86,7 @@ b_mime(int argc, char **argv, Shbltin_t *context)
     disc.errorf = errorf;
     if (!(mp = mimeopen(&disc)))
         error(ERROR_exit(1), "mime library error");
-    if (mimeload(mp, NiL, 0))
-    {
+    if (mimeload(mp, NiL, 0)) {
         mimeclose(mp);
         error(ERROR_exit(1), "mime load error");
     }
@@ -97,20 +94,17 @@ b_mime(int argc, char **argv, Shbltin_t *context)
         mimelist(mp, sfstdout, argv[0]);
     else if (!(sp = sfstropen()))
         error(ERROR_exit(1), "out of space");
-    else
-    {
+    else {
         for (argc = 3; s = argv[argc]; argc++)
             sfputr(sp, s, ';');
         if (!(s = sfstruse(sp)))
             error(ERROR_exit(1), "out of space");
-        if (!(s = mimeview(mp, argv[0], argv[1], argv[2], s)))
-        {
+        if (!(s = mimeview(mp, argv[0], argv[1], argv[2], s))) {
             if (silent)
                 exit(1);
             error(
             ERROR_exit(1), "no %s view for mime type %s", argv[0], argv[2]);
-        }
-        else
+        } else
             sfputr(sfstdout, s, '\n');
         sfclose(sp);
     }

@@ -113,8 +113,7 @@ ClientData clientData; /* Arbitrary one-word argument to
 
     if ((winPtr->geomMgrPtr != NULL) && (mgrPtr != NULL)
         && ((winPtr->geomMgrPtr != mgrPtr) || (winPtr->geomData != clientData))
-        && (winPtr->geomMgrPtr->lostSlaveProc != NULL))
-    {
+        && (winPtr->geomMgrPtr->lostSlaveProc != NULL)) {
         (*winPtr->geomMgrPtr->lostSlaveProc)(winPtr->geomData, tkwin);
     }
 
@@ -161,23 +160,19 @@ int reqWidth, reqHeight; /* Minimum desired dimensions for
      * zero, so rounds requested sizes up to at least 1.
      */
 
-    if (reqWidth <= 0)
-    {
+    if (reqWidth <= 0) {
         reqWidth = 1;
     }
-    if (reqHeight <= 0)
-    {
+    if (reqHeight <= 0) {
         reqHeight = 1;
     }
-    if ((reqWidth == winPtr->reqWidth) && (reqHeight == winPtr->reqHeight))
-    {
+    if ((reqWidth == winPtr->reqWidth) && (reqHeight == winPtr->reqHeight)) {
         return;
     }
     winPtr->reqWidth = reqWidth;
     winPtr->reqHeight = reqHeight;
     if ((winPtr->geomMgrPtr != NULL)
-        && (winPtr->geomMgrPtr->requestProc != NULL))
-    {
+        && (winPtr->geomMgrPtr->requestProc != NULL)) {
         (*winPtr->geomMgrPtr->requestProc)(winPtr->geomData, tkwin);
     }
 }
@@ -209,12 +204,10 @@ int width; /* Width of internal border, in pixels. */
 {
     TkWindow *winPtr = ( TkWindow * )tkwin;
 
-    if (width == winPtr->internalBorderWidth)
-    {
+    if (width == winPtr->internalBorderWidth) {
         return;
     }
-    if (width < 0)
-    {
+    if (width < 0) {
         width = 0;
     }
     winPtr->internalBorderWidth = width;
@@ -270,8 +263,7 @@ int width, height; /* Desired dimensions for slave. */
     int new, map;
     Tk_Window ancestor, parent;
 
-    if (!initialized)
-    {
+    if (!initialized) {
         initialized = 1;
         Tcl_InitHashTable(&maintainHashTable, TCL_ONE_WORD_KEYS);
     }
@@ -283,12 +275,9 @@ int width, height; /* Desired dimensions for slave. */
 
     parent = Tk_Parent(slave);
     hPtr = Tcl_CreateHashEntry(&maintainHashTable, ( char * )master, &new);
-    if (!new)
-    {
+    if (!new) {
         masterPtr = ( MaintainMaster * )Tcl_GetHashValue(hPtr);
-    }
-    else
-    {
+    } else {
         masterPtr = ( MaintainMaster * )ckalloc(sizeof(MaintainMaster));
         masterPtr->ancestor = master;
         masterPtr->checkScheduled = 0;
@@ -302,10 +291,8 @@ int width, height; /* Desired dimensions for slave. */
      */
 
     for (slavePtr = masterPtr->slavePtr; slavePtr != NULL;
-         slavePtr = slavePtr->nextPtr)
-    {
-        if (slavePtr->slave == slave)
-        {
+         slavePtr = slavePtr->nextPtr) {
+        if (slavePtr->slave == slave) {
             goto gotSlave;
         }
     }
@@ -325,10 +312,8 @@ int width, height; /* Desired dimensions for slave. */
      */
 
     for (ancestor = master; ancestor != parent;
-         ancestor = Tk_Parent(ancestor))
-    {
-        if (ancestor == masterPtr->ancestor)
-        {
+         ancestor = Tk_Parent(ancestor)) {
+        if (ancestor == masterPtr->ancestor) {
             Tk_CreateEventHandler(ancestor,
                                   StructureNotifyMask,
                                   MaintainMasterProc,
@@ -348,26 +333,19 @@ gotSlave:
     slavePtr->width = width;
     slavePtr->height = height;
     map = 1;
-    for (ancestor = slavePtr->master;; ancestor = Tk_Parent(ancestor))
-    {
-        if (!Tk_IsMapped(ancestor) && (ancestor != parent))
-        {
+    for (ancestor = slavePtr->master;; ancestor = Tk_Parent(ancestor)) {
+        if (!Tk_IsMapped(ancestor) && (ancestor != parent)) {
             map = 0;
         }
-        if (ancestor == parent)
-        {
+        if (ancestor == parent) {
             if ((x != Tk_X(slavePtr->slave)) || (y != Tk_Y(slavePtr->slave))
                 || (width != Tk_Width(slavePtr->slave))
-                || (height != Tk_Height(slavePtr->slave)))
-            {
+                || (height != Tk_Height(slavePtr->slave))) {
                 Tk_MoveResizeWindow(slavePtr->slave, x, y, width, height);
             }
-            if (map)
-            {
+            if (map) {
                 Tk_MapWindow(slavePtr->slave);
-            }
-            else
-            {
+            } else {
                 Tk_UnmapWindow(slavePtr->slave);
             }
             break;
@@ -408,38 +386,29 @@ Tk_Window master; /* Master for slave; must be a descendant
     MaintainSlave *slavePtr, *prevPtr;
     Tk_Window ancestor;
 
-    if (!initialized)
-    {
+    if (!initialized) {
         initialized = 1;
         Tcl_InitHashTable(&maintainHashTable, TCL_ONE_WORD_KEYS);
     }
 
-    if (!((( TkWindow * )slave)->flags & TK_ALREADY_DEAD))
-    {
+    if (!((( TkWindow * )slave)->flags & TK_ALREADY_DEAD)) {
         Tk_UnmapWindow(slave);
     }
     hPtr = Tcl_FindHashEntry(&maintainHashTable, ( char * )master);
-    if (hPtr == NULL)
-    {
+    if (hPtr == NULL) {
         return;
     }
     masterPtr = ( MaintainMaster * )Tcl_GetHashValue(hPtr);
     slavePtr = masterPtr->slavePtr;
-    if (slavePtr->slave == slave)
-    {
+    if (slavePtr->slave == slave) {
         masterPtr->slavePtr = slavePtr->nextPtr;
-    }
-    else
-    {
+    } else {
         for (prevPtr = slavePtr, slavePtr = slavePtr->nextPtr;;
-             prevPtr = slavePtr, slavePtr = slavePtr->nextPtr)
-        {
-            if (slavePtr == NULL)
-            {
+             prevPtr = slavePtr, slavePtr = slavePtr->nextPtr) {
+            if (slavePtr == NULL) {
                 return;
             }
-            if (slavePtr->slave == slave)
-            {
+            if (slavePtr->slave == slave) {
                 prevPtr->nextPtr = slavePtr->nextPtr;
                 break;
             }
@@ -450,24 +419,19 @@ Tk_Window master; /* Master for slave; must be a descendant
                           MaintainSlaveProc,
                           ( ClientData )slavePtr);
     ckfree(( char * )slavePtr);
-    if (masterPtr->slavePtr == NULL)
-    {
-        if (masterPtr->ancestor != NULL)
-        {
-            for (ancestor = master;; ancestor = Tk_Parent(ancestor))
-            {
+    if (masterPtr->slavePtr == NULL) {
+        if (masterPtr->ancestor != NULL) {
+            for (ancestor = master;; ancestor = Tk_Parent(ancestor)) {
                 Tk_DeleteEventHandler(ancestor,
                                       StructureNotifyMask,
                                       MaintainMasterProc,
                                       ( ClientData )masterPtr);
-                if (ancestor == masterPtr->ancestor)
-                {
+                if (ancestor == masterPtr->ancestor) {
                     break;
                 }
             }
         }
-        if (masterPtr->checkScheduled)
-        {
+        if (masterPtr->checkScheduled) {
             Tcl_CancelIdleCall(MaintainCheckProc, ( ClientData )masterPtr);
         }
         Tcl_DeleteHashEntry(hPtr);
@@ -506,16 +470,12 @@ XEvent *eventPtr;      /* Describes what just happened. */
     int done;
 
     if ((eventPtr->type == ConfigureNotify) || (eventPtr->type == MapNotify)
-        || (eventPtr->type == UnmapNotify))
-    {
-        if (!masterPtr->checkScheduled)
-        {
+        || (eventPtr->type == UnmapNotify)) {
+        if (!masterPtr->checkScheduled) {
             masterPtr->checkScheduled = 1;
             Tcl_DoWhenIdle(MaintainCheckProc, ( ClientData )masterPtr);
         }
-    }
-    else if (eventPtr->type == DestroyNotify)
-    {
+    } else if (eventPtr->type == DestroyNotify) {
         /*
          * Delete all of the state associated with this master, but
          * be careful not to use masterPtr after the last slave is
@@ -523,11 +483,9 @@ XEvent *eventPtr;      /* Describes what just happened. */
          */
 
         done = 0;
-        do
-        {
+        do {
             slavePtr = masterPtr->slavePtr;
-            if (slavePtr->nextPtr == NULL)
-            {
+            if (slavePtr->nextPtr == NULL) {
                 done = 1;
             }
             Tk_UnmaintainGeometry(slavePtr->slave, slavePtr->master);
@@ -561,8 +519,7 @@ XEvent *eventPtr;      /* Describes what just happened. */
 {
     MaintainSlave *slavePtr = ( MaintainSlave * )clientData;
 
-    if (eventPtr->type == DestroyNotify)
-    {
+    if (eventPtr->type == DestroyNotify) {
         Tk_UnmaintainGeometry(slavePtr->slave, slavePtr->master);
     }
 }
@@ -599,31 +556,23 @@ ClientData clientData; /* Pointer to MaintainMaster structure
 
     masterPtr->checkScheduled = 0;
     for (slavePtr = masterPtr->slavePtr; slavePtr != NULL;
-         slavePtr = slavePtr->nextPtr)
-    {
+         slavePtr = slavePtr->nextPtr) {
         parent = Tk_Parent(slavePtr->slave);
         x = slavePtr->x;
         y = slavePtr->y;
         map = 1;
-        for (ancestor = slavePtr->master;; ancestor = Tk_Parent(ancestor))
-        {
-            if (!Tk_IsMapped(ancestor) && (ancestor != parent))
-            {
+        for (ancestor = slavePtr->master;; ancestor = Tk_Parent(ancestor)) {
+            if (!Tk_IsMapped(ancestor) && (ancestor != parent)) {
                 map = 0;
             }
-            if (ancestor == parent)
-            {
+            if (ancestor == parent) {
                 if ((x != Tk_X(slavePtr->slave))
-                    || (y != Tk_Y(slavePtr->slave)))
-                {
+                    || (y != Tk_Y(slavePtr->slave))) {
                     Tk_MoveWindow(slavePtr->slave, x, y);
                 }
-                if (map)
-                {
+                if (map) {
                     Tk_MapWindow(slavePtr->slave);
-                }
-                else
-                {
+                } else {
                     Tk_UnmapWindow(slavePtr->slave);
                 }
                 break;

@@ -82,8 +82,7 @@ long_open(const Method_t *method, const char *name)
 {
     Integral_t *p;
 
-    if (p = newof(0, Integral_t, 1, 0))
-    {
+    if (p = newof(0, Integral_t, 1, 0)) {
         p->method = ( Method_t * )method;
         p->name = name;
     }
@@ -125,8 +124,7 @@ long_print(Sum_t *p, Sfio_t *sp, int flags, size_t scale)
 
     c = (flags & SUM_TOTAL) ? x->total_sum : x->sum;
     sfprintf(sp, "%.*I*u", (flags & SUM_LEGACY) ? 5 : 1, sizeof(c), c);
-    if (flags & SUM_SIZE)
-    {
+    if (flags & SUM_SIZE) {
         z = (flags & SUM_TOTAL) ? x->total_size : x->size;
         if ((flags & SUM_SCALE) && ((n = scale) || (n = x->method->scale)))
             z = SCALE(z, n);
@@ -228,17 +226,13 @@ match(const char *s, const char *p)
 {
     const char *b = s;
 
-    for (;;)
-    {
-        do
-        {
+    for (;;) {
+        do {
             if (*p == '|' || *p == 0)
                 return 1;
         } while (*s++ == *p++);
-        for (;;)
-        {
-            switch (*p++)
-            {
+        for (;;) {
+            switch (*p++) {
             case 0:
                 return 0;
             case '|':
@@ -266,14 +260,12 @@ sumopen(const char *name)
     if (!name || !name[0] || name[0] == '-' && !name[1])
         name = "default";
     for (n = 0; n < elementsof(maps); n++)
-        if (match(name, maps[n].match))
-        {
+        if (match(name, maps[n].match)) {
             name = maps[n].map;
             break;
         }
     for (n = 0; n < elementsof(methods); n++)
-        if (match(name, methods[n].match))
-        {
+        if (match(name, methods[n].match)) {
             if (sum = (*methods[n].open)(&methods[n], name))
                 sum->flags = methods[n].flags;
             return sum;
@@ -356,8 +348,7 @@ sumusage(Sfio_t *sp)
     int i;
     int n;
 
-    for (i = n = 0; i < elementsof(methods); i++)
-    {
+    for (i = n = 0; i < elementsof(methods); i++) {
         n
         += sfprintf(sp, "[+%s?%s]", methods[i].match, methods[i].description);
         if (methods[i].options)

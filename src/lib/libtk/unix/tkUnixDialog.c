@@ -43,16 +43,14 @@ char **argv;        /* Argument strings. */
 {
     Tcl_CmdInfo cmdInfo;
 
-    if (!Tcl_GetCommandInfo(interp, cmdName, &cmdInfo))
-    {
+    if (!Tcl_GetCommandInfo(interp, cmdName, &cmdInfo)) {
         char *cmdArgv[2];
 
         /*
          * This comand is not in the interpreter yet -- looks like we
          * have to auto-load it
          */
-        if (!Tcl_GetCommandInfo(interp, "auto_load", &cmdInfo))
-        {
+        if (!Tcl_GetCommandInfo(interp, "auto_load", &cmdInfo)) {
             Tcl_ResetResult(interp);
             Tcl_AppendResult(
             interp, "cannot execute command \"auto_load\"", NULL);
@@ -62,13 +60,12 @@ char **argv;        /* Argument strings. */
         cmdArgv[0] = "auto_load";
         cmdArgv[1] = cmdName;
 
-        if ((*cmdInfo.proc)(cmdInfo.clientData, interp, 2, cmdArgv) != TCL_OK)
-        {
+        if ((*cmdInfo.proc)(cmdInfo.clientData, interp, 2, cmdArgv)
+            != TCL_OK) {
             return TCL_ERROR;
         }
 
-        if (!Tcl_GetCommandInfo(interp, cmdName, &cmdInfo))
-        {
+        if (!Tcl_GetCommandInfo(interp, cmdName, &cmdInfo)) {
             Tcl_ResetResult(interp);
             Tcl_AppendResult(
             interp, "cannot auto-load command \"", cmdName, "\"", NULL);
@@ -137,12 +134,9 @@ char **argv;           /* Argument strings. */
 {
     Tk_Window tkwin = ( Tk_Window )clientData;
 
-    if (Tk_StrictMotif(tkwin))
-    {
+    if (Tk_StrictMotif(tkwin)) {
         return EvalArgv(interp, "tkMotifFDialog", argc, argv);
-    }
-    else
-    {
+    } else {
         return EvalArgv(interp, "tkFDialog", argc, argv);
     }
 }
@@ -172,12 +166,9 @@ char **argv;           /* Argument strings. */
 {
     Tk_Window tkwin = ( Tk_Window )clientData;
 
-    if (Tk_StrictMotif(tkwin))
-    {
+    if (Tk_StrictMotif(tkwin)) {
         return EvalArgv(interp, "tkMotifFDialog", argc, argv);
-    }
-    else
-    {
+    } else {
         return EvalArgv(interp, "tkFDialog", argc, argv);
     }
 }

@@ -85,18 +85,14 @@ yankword(char *ap, char *wbuf)
     char *cp2;
 
     cp = ap;
-    for (;;)
-    {
+    for (;;) {
         if (*cp == 0)
             return 0;
-        if (*cp == '(')
-        {
+        if (*cp == '(') {
             int nesting = 0;
 
-            while (*cp != 0)
-            {
-                switch (*cp++)
-                {
+            while (*cp != 0) {
+                switch (*cp++) {
                 case '(':
                     nesting++;
                     break;
@@ -107,8 +103,7 @@ yankword(char *ap, char *wbuf)
                 if (nesting <= 0)
                     break;
             }
-        }
-        else if (*cp == ' ' || *cp == '\t' || *cp == ',')
+        } else if (*cp == ' ' || *cp == '\t' || *cp == ',')
             cp++;
         else
             break;
@@ -141,18 +136,15 @@ void
 headclear(struct header *hp, unsigned long flags)
 {
     hp->h_clear &= ~flags;
-    if (flags & GSUB)
-    {
+    if (flags & GSUB) {
         hp->h_flags &= ~GSUB;
         hp->h_subject = 0;
     }
-    if (flags & GMISC)
-    {
+    if (flags & GMISC) {
         hp->h_clear &= ~GMISC;
         hp->h_misc.head = hp->h_misc.tail = 0;
     }
-    if (flags &= (GNAME | GMETOO))
-    {
+    if (flags &= (GNAME | GMETOO)) {
         hp->h_clear &= ~(flags | GFIRST);
         hp->h_first = 0;
         dictwalk(&hp->h_names, clear, &flags);
@@ -171,56 +163,42 @@ extract(struct header *hp, unsigned long flags, char *s)
     struct list *x;
     char buf[LINESIZE];
 
-    if (s)
-    {
+    if (s) {
         note(DEBUG,
              "extract type=0x%08x data=\"%s\"%s",
              flags,
              s,
              (hp->h_clear & flags) ? " [clear]" : "");
-        if (flags & GNAME)
-        {
-            if (hp->h_clear & flags)
-            {
+        if (flags & GNAME) {
+            if (hp->h_clear & flags) {
                 hp->h_clear &= ~flags;
                 dictwalk(&hp->h_names, clear, &flags);
             }
             while (s = yankword(s, buf))
                 if (np = dictsearch(
-                    &hp->h_names, buf, INSERT | IGNORECASE | STACK))
-                {
+                    &hp->h_names, buf, INSERT | IGNORECASE | STACK)) {
                     np->flags = flags;
                     hp->h_flags |= flags;
-                    if (!hp->h_first && (flags & GTO) || (flags & GFIRST))
-                    {
+                    if (!hp->h_first && (flags & GTO) || (flags & GFIRST)) {
                         flags &= ~GFIRST;
                         hp->h_first = np->name;
                     }
                 }
-        }
-        else if (flags & GSUB)
-        {
+        } else if (flags & GSUB) {
             hp->h_clear &= ~flags;
-            if (!*s)
-            {
+            if (!*s) {
                 hp->h_flags &= ~flags;
                 hp->h_subject = 0;
-            }
-            else if (!hp->h_subject || !streq(hp->h_subject, s))
-            {
+            } else if (!hp->h_subject || !streq(hp->h_subject, s)) {
                 hp->h_flags |= flags;
                 hp->h_subject = savestr(s);
             }
-        }
-        else if (flags & GMISC)
-        {
-            if (hp->h_clear & flags)
-            {
+        } else if (flags & GMISC) {
+            if (hp->h_clear & flags) {
                 hp->h_clear &= ~flags;
                 hp->h_misc.head = hp->h_misc.tail = 0;
             }
-            if (*s)
-            {
+            if (*s) {
                 if ((n = strlen(s)) > 0 && s[n - 1] == '\n')
                     s[--n] = 0;
                 for (x = hp->h_misc.head; x; x = x->next)
@@ -261,12 +239,9 @@ stringize(Dt_t *dt, void *object, void *context)
     char *s;
     char *t;
 
-    if (!ws->flags || ws->flags == (np->flags & GMASK))
-    {
-        if (s = ws->next)
-        {
-            if (s > ws->base)
-            {
+    if (!ws->flags || ws->flags == (np->flags & GMASK)) {
+        if (s = ws->next) {
+            if (s > ws->base) {
                 if (ws->sep)
                     *s++ = ',';
                 *s++ = ' ';
@@ -275,8 +250,7 @@ stringize(Dt_t *dt, void *object, void *context)
                 ;
             ws->next = s;
             np->flags |= GDONE;
-        }
-        else
+        } else
             ws->count += strlen(np->name) + ws->sep;
     }
     return 0;
@@ -290,10 +264,8 @@ detract(struct header *hp, unsigned long flags)
 {
     Walk_str_t ws;
 
-    if (flags & GNAME)
-    {
-        if (hp->h_names)
-        {
+    if (flags & GNAME) {
+        if (hp->h_names) {
             if (flags & GCOMMA)
                 note(DEBUG, "detract asked to insert commas");
             ws.sep = (flags & GCOMMA) ? 2 : 1;
@@ -301,16 +273,14 @@ detract(struct header *hp, unsigned long flags)
             ws.count = 0;
             ws.base = ws.next = 0;
             dictwalk(&hp->h_names, stringize, &ws);
-            if (ws.count)
-            {
+            if (ws.count) {
                 ws.base = ws.next = salloc(ws.count + 2);
                 ws.sep--;
                 dictwalk(&hp->h_names, stringize, &ws);
                 return ws.base;
             }
         }
-    }
-    else if (flags & GSUB)
+    } else if (flags & GSUB)
         return hp->h_subject;
     return 0;
 }
@@ -332,16 +302,12 @@ mapadd(Walk_map_t *wm, struct name *np, char *name, unsigned long flags)
 {
     if (wm->show)
         note(0, "\"%s\" -> \"%s\"", np->name, name);
-    if (!dictsearch(&wm->prev, name, LOOKUP))
-    {
+    if (!dictsearch(&wm->prev, name, LOOKUP)) {
         np = dictsearch(&wm->next, name, INSERT | IGNORECASE | STACK);
         np->flags = flags;
-        if (dictsearch(&wm->seen, name, CREATE | IGNORECASE | STACK))
-        {
+        if (dictsearch(&wm->seen, name, CREATE | IGNORECASE | STACK)) {
             wm->more = 1;
-        }
-        else
-        {
+        } else {
             np->flags |= GMAP;
             note(0, "\"%s\": alias loop", name);
         }
@@ -367,26 +333,23 @@ mapuser(Dt_t *dt, void *object, void *context)
 
     if (np->flags & GDONE)
         return 0;
-    if (!(np->flags & GMAP))
-    {
+    if (!(np->flags & GMAP)) {
         np->flags |= GMAP;
         dictsearch(&wm->seen, np->name, INSERT | IGNORECASE | STACK);
         if (*np->name != '\\'
-            && (ap = dictsearch(&state.aliases, np->name, LOOKUP)))
-        {
+            && (ap = dictsearch(&state.aliases, np->name, LOOKUP))) {
             for (mp = ( struct list * )ap->value; mp; mp = mp->next)
                 mapadd(wm, np, mp->name, np->flags & ~(GMAP | GMETOO));
             return 0;
         }
         if (s = normalize(
-            np->name, GCOMPARE, state.path.path, sizeof(state.path.path)))
-        {
+            np->name, GCOMPARE, state.path.path, sizeof(state.path.path))) {
             mapadd(wm, np, s, np->flags & ~GMAP);
             return 0;
         }
         if (!(np->flags & GMETOO) && !state.var.metoo
-            && streq(np->name, state.var.user) && (np->flags & (GCC | GBCC)))
-        {
+            && streq(np->name, state.var.user)
+            && (np->flags & (GCC | GBCC))) {
             if (wm->show)
                 note(0, "\"%s\" -> DELETE", np->name);
             return 0;
@@ -406,8 +369,7 @@ usermap(struct header *hp, int show)
 
     wm.seen = 0;
     wm.prev = 0;
-    do
-    {
+    do {
         wm.more = 0;
         wm.next = wm.prev;
         wm.prev = hp->h_names;
@@ -418,8 +380,7 @@ usermap(struct header *hp, int show)
     } while (wm.more);
     if (!hp->h_names && hp->h_first
         && (np = dictsearch(&wm.prev, hp->h_first, LOOKUP))
-        && ((np->flags & GMETOO) || streq(np->name, state.var.user)))
-    {
+        && ((np->flags & GMETOO) || streq(np->name, state.var.user))) {
         if (wm.show)
             note(0, "\"%s\" -> ADD", np->name);
         dictsearch(&hp->h_names, ( char * )np, INSERT | IGNORECASE | OBJECT);
@@ -441,25 +402,20 @@ record(char *author, unsigned long flags)
 
     rp = state.path.path;
     ep = rp + sizeof(state.path.path) - 1;
-    if ((flags & FOLLOWUP) && (ap = author))
-    {
-        if (tp = state.var.followup)
-        {
+    if ((flags & FOLLOWUP) && (ap = author)) {
+        if (tp = state.var.followup) {
             if (state.var.outfolder && !strchr(METAFILE, *tp) && rp < ep)
                 *rp++ = '+';
             while ((*rp = *tp++) && rp < ep)
                 rp++;
             if (*(rp - 1) != '/' && rp < ep)
                 *rp++ = '/';
-        }
-        else if (state.var.outfolder && rp < ep)
+        } else if (state.var.outfolder && rp < ep)
             *rp++ = '+';
         tp = rp;
         ap = author;
-        for (;;)
-        {
-            switch (c = *ap++)
-            {
+        for (;;) {
+            switch (c = *ap++) {
             case 0:
                 break;
             case '@':
@@ -476,11 +432,9 @@ record(char *author, unsigned long flags)
         }
         tp = state.path.path;
         *rp = 0;
-    }
-    else if (!(tp = state.var.log))
+    } else if (!(tp = state.var.log))
         *rp = 0;
-    else if (state.var.outfolder && !strchr(METAFILE, *tp))
-    {
+    else if (state.var.outfolder && !strchr(METAFILE, *tp)) {
         if (rp < ep)
             *rp++ = '+';
         strncopy(rp, tp, ep - rp);

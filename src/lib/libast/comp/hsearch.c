@@ -133,8 +133,7 @@ ACTION action;
         return NIL(ENTRY *);
 
     if (!(o = ( Hash_t * )dtmatch(Hashtab, item.key)) && action == ENTER
-        && (o = ( Hash_t * )malloc(sizeof(Hash_t))))
-    {
+        && (o = ( Hash_t * )malloc(sizeof(Hash_t)))) {
         o->item = item;
         o = ( Hash_t * )dtinsert(Hashtab, o);
     }

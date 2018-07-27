@@ -296,8 +296,7 @@ static OLD_header_t old_stamp = /* old object header is fixed	*/
 void
 initcode(void)
 {
-    if (!object.initialized)
-    {
+    if (!object.initialized) {
         object.initialized = 1;
         object.a2n = ccmap(CC_ASCII, CC_NATIVE);
         object.n2a = ccmap(CC_NATIVE, CC_ASCII);
@@ -328,14 +327,12 @@ putstring(Sfio_t *sp, const char *s, int sep)
     int c;
     unsigned char *map;
 
-    if (map = object.n2a)
-    {
+    if (map = object.n2a) {
         while (c = *( unsigned char * )s++)
             sfputc(sp, map[c]);
         if (sep >= 0)
             sfputc(sp, map[sep]);
-    }
-    else
+    } else
         sfputr(sp, s, sep);
 }
 
@@ -389,8 +386,7 @@ compstring(Compstate_t *cs, char *s)
     int c;
     unsigned char *map;
 
-    if (s)
-    {
+    if (s) {
         c = strlen(s) + 1;
         cs->strings += c;
         sfputu(cs->fp, c);
@@ -399,8 +395,7 @@ compstring(Compstate_t *cs, char *s)
                 sfputc(cs->fp, map[c]);
         else
             sfwrite(cs->fp, s, c - 1);
-    }
-    else
+    } else
         sfputu(cs->fp, 0);
 }
 
@@ -417,8 +412,7 @@ compinit(const char *s, char *v, void *h)
     NoP(s);
     r->complink = 0;
     r->mark &= ~M_compile;
-    if (r->dynamic & D_alias)
-    {
+    if (r->dynamic & D_alias) {
         state.compnew = compinit;
         state.comparg = h;
         mergestate(makerule(r->name), r);
@@ -442,12 +436,10 @@ compselect(const char *s, char *v, void *h)
     char *select = ( char * )h;
 
     NoP(s);
-    if (!(r->mark & M_compile) && (r->dynamic & D_compiled))
-    {
+    if (!(r->mark & M_compile) && (r->dynamic & D_compiled)) {
         state.frame->target = r;
         expand(internal.met, select);
-        if (sfstrtell(internal.met))
-        {
+        if (sfstrtell(internal.met)) {
             sfstrseek(internal.met, 0, SEEK_SET);
             markcompile(r);
         }
@@ -469,8 +461,7 @@ compstate(const char *s, char *v, void *h)
     NoP(s);
     NoP(h);
     r->dynamic |= D_compiled;
-    if (r->dynamic & D_garbage)
-    {
+    if (r->dynamic & D_garbage) {
         if (!object.garbage)
             r->dynamic &= ~D_garbage;
         else if (!(r->mark & M_compile))
@@ -494,17 +485,14 @@ compmark(const char *s, char *v, void *h)
     NoP(s);
     NoP(h);
     r->complink = 0;
-    if (state.stateview == 0)
-    {
+    if (state.stateview == 0) {
         if ((r->property & P_state) && !r->view
-            && !(r->dynamic & (D_garbage | D_lower)))
-        {
+            && !(r->dynamic & (D_garbage | D_lower))) {
             r->dynamic &= ~D_compiled;
             for (p = r->prereqs; p; p = p->next)
                 p->rule->dynamic &= ~D_compiled;
         }
-    }
-    else if (!(r->dynamic & D_compiled) && !(r->mark & M_compile))
+    } else if (!(r->dynamic & D_compiled) && !(r->mark & M_compile))
         markcompile(r);
     return 0;
 }
@@ -564,16 +552,13 @@ comprule(const char *s, char *v, void *h)
      * make sure the unbound rule name is compiled
      */
 
-    if (!(r->property & P_state))
-    {
-        if (state.stateview == 0)
-        {
+    if (!(r->property & P_state)) {
+        if (state.stateview == 0) {
             r->prereqs = 0;
             r->action = 0;
             r->dynamic &= ~D_compiled;
         }
-        if (r->uname && !(r->property & P_metarule))
-        {
+        if (r->uname && !(r->property & P_metarule)) {
             r->name = r->uname;
             r->uname = 0;
         }
@@ -594,14 +579,12 @@ comprule(const char *s, char *v, void *h)
     sfputu(cs->fp, r->dynamic & ~D_CLEAROBJECT);
     sfputu(cs->fp, r->attribute);
     sfputu(cs->fp, (r->semaphore << 16) | (r->view << 8) | (r->scan));
-    if (p = r->prereqs)
-    {
+    if (p = r->prereqs) {
         sfputu(cs->fp, cs->lists);
         do
             cs->lists++;
         while (p = p->next);
-    }
-    else
+    } else
         sfputu(cs->fp, 0);
     sfputu(cs->fp, tmxsec(r->time));
 
@@ -641,16 +624,13 @@ compcheck(const char *s, char *v, void *h)
         || s != r->name && !(r->dynamic & D_alias)
         || state.stateview == 0 && !(r->property & P_state))
         return 0;
-    if (p = r->prereqs)
-    {
-        do
-        {
+    if (p = r->prereqs) {
+        do {
             for (r = p->rule; !r->complink || !(r->dynamic & D_compiled);
                  r = a)
                 if ((!(a = getrule(r->name)) || a == r)
                     && ((r->property & P_state) || !r->uname
-                        || !(a = getrule(r->uname)) || a == r))
-                {
+                        || !(a = getrule(r->uname)) || a == r)) {
                     if (state.warn)
                         error(1,
                               "forcing %s %s prerequisite %s",
@@ -688,8 +668,7 @@ complist(const char *s, char *v, void *h)
         || state.stateview == 0 && !(r->property & P_state))
         return 0;
     r->mark &= ~M_compile;
-    if (p = r->prereqs)
-    {
+    if (p = r->prereqs) {
         do
             sfputu(cs->fp,
                    p->rule->complink ? p->rule->complink : r->complink);
@@ -737,28 +716,22 @@ compvar(const char *s, char *u, void *h)
 
     if (state.stateview == 0)
         property &= ~V_CLEAROBJECT;
-    else
-    {
+    else {
         property &= ~V_CLEARSTATE;
-        if (property & V_oldvalue)
-        {
-            if (t = getold(v->name))
-            {
-                if (!(property & V_frozen))
-                {
+        if (property & V_oldvalue) {
+            if (t = getold(v->name)) {
+                if (!(property & V_frozen)) {
                     value = t;
                     property &= ~V_oldvalue;
-                }
-                else if (streq(value, t))
+                } else if (streq(value, t))
                     property &= ~V_oldvalue;
             }
 #if DEBUG
             else
                 error(PANIC, "%s->oldvalue set but not in table.oldvalue", s);
 #endif
-        }
-        else if ((property & (V_frozen | V_readonly))
-                 == (V_frozen | V_readonly))
+        } else if ((property & (V_frozen | V_readonly))
+                   == (V_frozen | V_readonly))
             property |= V_oldvalue;
     }
 
@@ -818,8 +791,7 @@ compile(char *objfile, char *select)
     edit(sp, objfile, KEEP, KEEP, external.tmp);
     state.tmpfile = strdup(sfstruse(sp));
     sfstrclose(sp);
-    if (!(cs.fp = sfopen(NiL, state.tmpfile, "brw")))
-    {
+    if (!(cs.fp = sfopen(NiL, state.tmpfile, "brw"))) {
         error(ERROR_SYSTEM | 1,
               "%s: cannot create temporary object file",
               state.tmpfile);
@@ -839,11 +811,9 @@ compile(char *objfile, char *select)
      * write the optional headers
      */
 
-    if (sp = object.pp)
-    {
+    if (sp = object.pp) {
         object.pp = 0;
-        if (!state.base)
-        {
+        if (!state.base) {
             sfputu(sp, COMP_OPTIONS);
             sfputu(sp, 0);
             for (p = internal.preprocess->prereqs; p; p = p->next)
@@ -869,8 +839,7 @@ compile(char *objfile, char *select)
      * mark the rules and prerequisites for compilation
      */
 
-    if (select)
-    {
+    if (select) {
         Sfio_t *tmp;
 
         hashwalk(table.rule, 0, compinit, null);
@@ -880,9 +849,7 @@ compile(char *objfile, char *select)
         hashwalk(table.rule, 0, compselect, sfstruse(tmp));
         state.frame->target = r;
         sfstrclose(tmp);
-    }
-    else
-    {
+    } else {
         /*
          * compile and write the variables
          */
@@ -893,8 +860,7 @@ compile(char *objfile, char *select)
                   "%s: object file variable write error",
                   state.tmpfile);
         hashwalk(table.rule, 0, compinit, NiL);
-        if (state.stateview == 0)
-        {
+        if (state.stateview == 0) {
             /*
              * check state file garbage collection
              *
@@ -908,8 +874,7 @@ compile(char *objfile, char *select)
                  && !(state.test & 0x00008000)))
                 object.garbage = 0;
             hashwalk(table.rule, 0, compstate, &cs);
-            if (object.garbage)
-            {
+            if (object.garbage) {
                 hashwalk(table.rule, 0, clearmarks, &cs);
                 hashwalk(table.rule, 0, compkeep, &cs);
             }
@@ -933,15 +898,12 @@ compile(char *objfile, char *select)
         for (q = p->rule->prereqs; q; q = q->next)
             comprule(q->rule->name, ( char * )q->rule, &cs);
 #if BINDINDEX
-    if (state.stateview == 0)
-    {
-        for (n = 1; n <= state.maxsource; n++)
-        {
+    if (state.stateview == 0) {
+        for (n = 1; n <= state.maxsource; n++) {
             x = state.source[n].path;
             comprule(x->name, x);
         }
-        for (n = 1; n <= state.maxview; n++)
-        {
+        for (n = 1; n <= state.maxview; n++) {
             x = state.view[n].path;
             comprule(x->name, x);
         }
@@ -984,20 +946,16 @@ compile(char *objfile, char *select)
      * write the trailer
      */
 
-    if (state.stateview < 0)
-    {
+    if (state.stateview < 0) {
         /*
          * pre 2004-09-09 will just do "--"
          */
 
         putstring(sp, "--", 0);
-        if (object.n2a)
-        {
+        if (object.n2a) {
             listops(internal.wrk, '@');
             putstring(sp, sfstruse(internal.wrk), 0);
-        }
-        else
-        {
+        } else {
             listops(sp, '@');
             sfputc(sp, 0);
         }
@@ -1043,8 +1001,7 @@ compile(char *objfile, char *select)
     if (rename(state.tmpfile, objfile))
         error(1, "%s: object file not recompiled", objfile);
     remtmp(0);
-    if (state.stateview == 0)
-    {
+    if (state.stateview == 0) {
         Stat_t st;
         Time_t t;
         Time_t x;
@@ -1057,8 +1014,7 @@ compile(char *objfile, char *select)
 
         t = CURTIME;
         x = tmxsns(tmxsec(t), 999999999);
-        if (!tmxtouch(objfile, x, x, TMX_NOTIME, 0) && !stat(objfile, &st))
-        {
+        if (!tmxtouch(objfile, x, x, TMX_NOTIME, 0) && !stat(objfile, &st)) {
             t += tmxsns(1, 0) - tmxnsec(tmxgetmtime(&st));
             tmxtouch(objfile, t, t, TMX_NOTIME, 0);
         }
@@ -1066,8 +1022,7 @@ compile(char *objfile, char *select)
     r = bindfile(NiL, objfile, BIND_FORCE | BIND_DOT | BIND_RULE);
     r->dynamic |= D_built | D_regular;
     r->view = 0;
-    if (state.mam.dynamic || state.mam.regress)
-    {
+    if (state.mam.dynamic || state.mam.regress) {
         mampush(state.mam.out, r, P_force);
         sfprintf(state.mam.out,
                  "%sexec %s : compile into %s object\n",
@@ -1091,10 +1046,8 @@ compile(char *objfile, char *select)
 void
 compref(Rule_t *r, int type)
 {
-    if (object.pp)
-    {
-        if (r)
-        {
+    if (object.pp) {
+        if (r) {
             /*
              * COMP_NSEC for subsecond granularity
              * and bind checks
@@ -1107,14 +1060,11 @@ compref(Rule_t *r, int type)
             sfputu(object.pp, type);
             sfputu(object.pp, tmxsec(r->time));
             putstring(object.pp, unbound(r), 0);
-        }
-        else
-        {
+        } else {
             sfstrclose(object.pp);
             object.pp = 0;
         }
-    }
-    else if (!r && !state.makefile)
+    } else if (!r && !state.makefile)
         object.pp = sfstropen();
 }
 
@@ -1130,14 +1080,11 @@ promote(const char *s, char *v, void *h)
 
     NoP(s);
     NoP(h);
-    if (r->mark & M_compile)
-    {
+    if (r->mark & M_compile) {
         r->mark &= ~M_compile;
-        for (p = r->prereqs; p; p = p->next)
-        {
+        for (p = r->prereqs; p; p = p->next) {
             r = p->rule;
-            if (r->dynamic & D_lower)
-            {
+            if (r->dynamic & D_lower) {
                 unviewname(r->name);
                 p->rule = makerule(r->name);
                 viewname(r->name, r->view);
@@ -1159,8 +1106,7 @@ atomize(const char *s, char *v, void *h)
 
     NoP(s);
     NoP(h);
-    if (isoldrule(r))
-    {
+    if (isoldrule(r)) {
 #if DEBUG
         error(PANIC,
               "old rule %s still in table.rule%s",
@@ -1191,12 +1137,10 @@ repair(const char *s, char *v, void *h)
     p = 0;
     q = r->prereqs;
     while (q)
-        if (q->rule)
-        {
+        if (q->rule) {
             p = q;
             q = q->next;
-        }
-        else if (p)
+        } else if (p)
             p->next = q = q->next;
         else
             r->prereqs = q = q->next;
@@ -1215,8 +1159,7 @@ objectfile(void)
     Sfio_t *sp;
     Stat_t st;
 
-    if (!state.objectfile && state.makefile && state.writeobject)
-    {
+    if (!state.objectfile && state.makefile && state.writeobject) {
         sp = sfstropen();
         dir = DELETE;
         if (streq(state.writeobject, "-")
@@ -1240,8 +1183,7 @@ remtmp(int fatal)
 {
     if (fatal && state.stateview == 0 && state.tmpfile)
         error(2, "%s: state file not updated", statefile());
-    if (state.tmpfile)
-    {
+    if (state.tmpfile) {
         if (remove(state.tmpfile) && errno != ENOENT)
             error(ERROR_SYSTEM | 1,
                   "%s: temporary file not removed",
@@ -1305,14 +1247,12 @@ loadable(Sfio_t *sp, Rule_t *r, int source)
     Stat_t st;
 
     loadinit();
-    if ((s = sfreserve(sp, 0, 0)) && (n = sfvalue(sp)) >= 0)
-    {
+    if ((s = sfreserve(sp, 0, 0)) && (n = sfvalue(sp)) >= 0) {
         if (n >= MAGICSIZE && !memcmp(s, MAGIC, MAGICSIZE)
             || n >= sizeof(old)
                && ((old = OLD_MAGIC, swapop(s, &old, sizeof(old)) >= 0)
                    || (old = OLD_OLD_MAGIC,
-                       swapop(s, &old, sizeof(old)) >= 0)))
-        {
+                       swapop(s, &old, sizeof(old)) >= 0))) {
             if (!source)
                 return state.base || !state.forceread || state.global
                        || state.list;
@@ -1322,33 +1262,27 @@ loadable(Sfio_t *sp, Rule_t *r, int source)
              */
 
             if (!old && !sfseek(sp, ( Sfoff_t )0, SEEK_SET)
-                && sfseek(sp, ( Sfoff_t )MAGICSIZE, SEEK_SET) == MAGICSIZE)
-            {
+                && sfseek(sp, ( Sfoff_t )MAGICSIZE, SEEK_SET) == MAGICSIZE) {
                 if (getstring(sp) && (off = sfgetu(sp)) && sfgetu(sp))
                     while (!sfeof(sp) && sfseek(sp, off, SEEK_SET) == off
-                           && (off = sfgetu(sp)))
-                    {
+                           && (off = sfgetu(sp))) {
                         off += sfseek(sp, ( Sfoff_t )0, SEEK_CUR);
-                        if (sfgetu(sp) == HEADER_PREREQS)
-                        {
+                        if (sfgetu(sp) == HEADER_PREREQS) {
                             /*UNDENT...*/
 
                             state.init++;
                             lowres = 1;
                             sn = 0;
                             tn = 0;
-                            while (n = sfgetu(sp))
-                            {
+                            while (n = sfgetu(sp)) {
                                 tm = sfgetu(sp);
                                 if (!(s = getstring(sp)))
                                     break;
                                 if (n
                                     & (COMP_BASE | COMP_FILE | COMP_GLOBAL
-                                       | COMP_INCLUDE))
-                                {
+                                       | COMP_INCLUDE)) {
                                     if (x = bindfile(
-                                        NiL, s, BIND_MAKEFILE | BIND_RULE))
-                                    {
+                                        NiL, s, BIND_MAKEFILE | BIND_RULE)) {
                                         s = x->name;
                                         t = x->time;
 
@@ -1363,13 +1297,11 @@ loadable(Sfio_t *sp, Rule_t *r, int source)
                                             = t;
                                         if (!(x->dynamic & D_regular))
                                             x->dynamic &= ~D_bound;
-                                    }
-                                    else
+                                    } else
                                         t = 0;
                                     if (!t && sn && !stat(sn, &st))
                                         t = tmxgetmtime(&st);
-                                    if (!t)
-                                    {
+                                    if (!t) {
                                         if ((n & COMP_DONTCARE) && !tm)
                                             continue;
                                         error(state.exec || state.mam.out ? -1
@@ -1402,8 +1334,7 @@ loadable(Sfio_t *sp, Rule_t *r, int source)
                                      s,
                                      timestr(t),
                                      timestr(tm)));
-                                    if (t != tm)
-                                    {
+                                    if (t != tm) {
                                         if (sn && !streq(sn, x->name))
                                             error(state.exec || state.mam.out
                                                   ? -1
@@ -1430,24 +1361,21 @@ loadable(Sfio_t *sp, Rule_t *r, int source)
                                      * specified
                                      */
 
-                                    if (n & (COMP_FILE | COMP_GLOBAL))
-                                    {
+                                    if (n & (COMP_FILE | COMP_GLOBAL)) {
                                         for (p = ((n & COMP_FILE)
                                                   ? internal.makefiles
                                                   : internal.globalfiles)
                                                  ->prereqs;
                                              p;
                                              p = p->next)
-                                            if (!(p->rule->mark & M_compile))
-                                            {
+                                            if (!(p->rule->mark & M_compile)) {
                                                 if (streq(p->rule->name, s)
                                                     || p->rule->uname
                                                        && streq(
                                                           p->rule->uname, s))
                                                     p->rule->mark
                                                     |= M_compile;
-                                                else
-                                                {
+                                                else {
                                                     error(
                                                     state.exec
                                                     || state.mam.out
@@ -1464,8 +1392,7 @@ loadable(Sfio_t *sp, Rule_t *r, int source)
                                                 }
                                                 break;
                                             }
-                                        if (!p)
-                                        {
+                                        if (!p) {
                                             error(
                                             state.exec || state.mam.out ? -1
                                                                         : 1,
@@ -1477,25 +1404,20 @@ loadable(Sfio_t *sp, Rule_t *r, int source)
                                             s);
                                             break;
                                         }
-                                    }
-                                    else if ((n & COMP_BASE) && !state.rules)
-                                    {
+                                    } else if ((n & COMP_BASE)
+                                               && !state.rules) {
                                         if (n & COMP_RULES)
                                             state.explicitrules = 1;
                                         state.rules = makerule(s)->name;
                                     }
-                                }
-                                else if (n & COMP_NSEC)
-                                {
-                                    if (*s)
-                                    {
+                                } else if (n & COMP_NSEC) {
+                                    if (*s) {
                                         sfputr(internal.met, s, -1);
                                         sn = sfstruse(internal.met);
                                     }
                                     tn = tm;
                                     lowres = 0;
-                                }
-                                else if (n & COMP_OPTIONS)
+                                } else if (n & COMP_OPTIONS)
                                     object.options = strdup(s);
                             }
                         nope:
@@ -1512,8 +1434,7 @@ loadable(Sfio_t *sp, Rule_t *r, int source)
                                  p = p->next)
                                 if (p->rule->mark & M_compile)
                                     p->rule->mark &= ~M_compile;
-                                else if (ok)
-                                {
+                                else if (ok) {
                                     ok = 0;
                                     if (state.writeobject)
                                         error(state.exec || state.mam.out ? -1
@@ -1527,8 +1448,7 @@ loadable(Sfio_t *sp, Rule_t *r, int source)
                                  p = p->next)
                                 if (p->rule->mark & M_compile)
                                     p->rule->mark &= ~M_compile;
-                                else if (ok)
-                                {
+                                else if (ok) {
                                     ok = 0;
                                     if (state.writeobject)
                                         error(
@@ -1616,8 +1536,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
     OLD_header_t old_header;
     OLD_trailer_t old_trailer;
 
-    if (source)
-    {
+    if (source) {
         /*
          * compare with current preprocess options
          */
@@ -1627,8 +1546,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
         s = sfstruse(internal.nam);
         if (!object.options)
             object.options = ( char * )null;
-        if (!streq(object.options, s))
-        {
+        if (!streq(object.options, s)) {
             error(state.exec || state.mam.out ? -1 : 1,
                   "%s: options changed from \"%s\" to \"%s\"",
                   objfile,
@@ -1644,15 +1562,12 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
      * empty object files are ok
      */
 
-    if (fstat(sffileno(sp), &st))
-    {
+    if (fstat(sffileno(sp), &st)) {
         error(1, "%s: cannot stat object file", objfile);
         return 0;
     }
-    if (!st.st_size)
-    {
-        if (state.stateview >= 0)
-        {
+    if (!st.st_size) {
+        if (state.stateview >= 0) {
             error(1, "%s: empty state file", objfile);
             return 0;
         }
@@ -1678,8 +1593,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
         goto badmagic;
     errno = 0;
     if (memcmp(s, MAGIC, MAGICSIZE) || !(s = getstring(sp))
-        || streq(s, OLD_VERSION))
-    {
+        || streq(s, OLD_VERSION)) {
         old = 1;
         if (sfseek(sp, ( Sfoff_t )0, SEEK_SET)
             || sfread(sp, ( char * )&old_header, sizeof(old_header))
@@ -1699,8 +1613,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
             goto badmagic;
         sequence = old_header.sequence;
         old_header.sequence = old_stamp.sequence;
-        if (old_swap)
-        {
+        if (old_swap) {
             swapmem(old_swap, &old_header, &old_header, sizeof(old_header));
             swapmem(
             old_swap, &old_trailer, &old_trailer, sizeof(old_trailer));
@@ -1710,8 +1623,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
         strcpy(old_stamp.version, OLD_VERSION);
         if (memcmp((( char * )&old_header) + sizeof(old_header.magic),
                    (( char * )&old_stamp) + sizeof(old_stamp.magic),
-                   sizeof(old_header) - sizeof(old_header.magic)))
-        {
+                   sizeof(old_header) - sizeof(old_header.magic))) {
             strcpy(old_stamp.version, OLD_VERSION_2);
             if (memcmp((( char * )&old_header) + sizeof(old_header.magic),
                        (( char * )&old_stamp) + sizeof(old_stamp.magic),
@@ -1738,9 +1650,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
         if (sfeof(sp) || sfseek(sp, off, SEEK_SET) != off)
             goto badio;
         lowres = state.stateview >= 0;
-    }
-    else
-    {
+    } else {
         old = 0;
         if (s = strrchr(s, ' '))
             s++;
@@ -1766,8 +1676,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
          * read the optional headers
          */
 
-        for (;;)
-        {
+        for (;;) {
             if (sfeof(sp) || sfseek(sp, off, SEEK_SET) != off)
                 goto badio;
             if (!sequence || !(off = sfgetu(sp)))
@@ -1783,8 +1692,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
              rules,
              variables,
              strings));
-    if (lowres && !object.lowres)
-    {
+    if (lowres && !object.lowres) {
         object.lowres = 1;
         if (!state.silent)
             error(1,
@@ -1802,8 +1710,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                     char,
                     lists * sizeof(List_t) + rules * sizeof(Rule_t)
                     + variables * sizeof(Var_t) + strings,
-                    0)))
-    {
+                    0))) {
         error(3, "out of space");
         goto bad;
     }
@@ -1826,8 +1733,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
      * variables that may have changed
      */
 
-    if (old)
-    {
+    if (old) {
         off = sizeof(old_header) + rules * sizeof(old_rule)
               + lists * sizeof(old_list);
         if (sfseek(sp, off, SEEK_SET) != off)
@@ -1836,10 +1742,8 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
     oattribute = internal.attribute->attribute;
     oscan = internal.scan->scan;
     attrclash = scanclash = 0;
-    for (xv = v + variables; v < xv; v++)
-    {
-        if (old)
-        {
+    for (xv = v + variables; v < xv; v++) {
+        if (old) {
             if (sfread(sp, ( char * )&old_var, sizeof(old_var))
                 != sizeof(old_var))
                 goto badio;
@@ -1850,15 +1754,12 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                 v->name = s + ( unsigned long )old_var.name - 1;
             if (old_var.value)
                 v->value = s + ( unsigned long )old_var.value - 1;
-            switch (sequence)
-            {
+            switch (sequence) {
             case 2: /* 01/24/89 */
                 v->property = (v->property & 0x000003ffL);
                 break;
             }
-        }
-        else
-        {
+        } else {
             v->property = sfgetu(sp);
 #if !_HUH_1993_10_01 /* drop this eventually */
             v->property &= ~V_free;
@@ -1891,8 +1792,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                        || ((v->property | x->property)
                            & (V_import | V_readonly))
                           && !streq(v->value, x->value))
-                || (v->property & V_functional)))
-        {
+                || (v->property & V_functional))) {
             error((state.exec || state.mam.out) && !state.explain ? -1 : 1,
                   "%s: frozen %svariable %s changed",
                   objfile,
@@ -1903,14 +1803,12 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                   v->name);
             recompile = 1;
             v->property &= ~V_readonly;
-        }
-        else
+        } else
             v->property &= ~(V_oldvalue | V_readonly);
     }
     if (sfeof(sp))
         goto badio;
-    if (recompile)
-    {
+    if (recompile) {
         recompile = 0;
         goto bad;
     }
@@ -1923,21 +1821,16 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
      */
 
     hashclear(table.var, HASH_ALLOCATE);
-    for (xv = v + variables; v < xv; v++)
-    {
+    for (xv = v + variables; v < xv; v++) {
         if (!(x = getvar(v->name))
             || !(x->property & (V_readonly | V_restored))
-               && (!(x->property & V_import) || !state.global))
-        {
+               && (!(x->property & V_import) || !state.global)) {
             putvar(v->name, v);
             if (x)
                 freevar(x);
-        }
-        else
-        {
+        } else {
             if ((x->property & (V_append | V_readonly))
-                == (V_append | V_readonly))
-            {
+                == (V_append | V_readonly)) {
                 n = state.reading;
                 state.reading = 1;
                 setvar(x->name, v->value, 0);
@@ -1966,20 +1859,17 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
      * load and enter the rules
      */
 
-    if (old)
-    {
+    if (old) {
         off = sizeof(old_header);
         if (sfseek(sp, off, SEEK_SET) != off)
             goto badio;
     }
     garbage = 0;
     hashclear(table.rule, HASH_ALLOCATE);
-    for (xr = r + rules; r < xr; r++)
-    {
+    for (xr = r + rules; r < xr; r++) {
         Rule_t *o;
 
-        if (old)
-        {
+        if (old) {
             if (sfread(sp, ( char * )&old_rule, sizeof(old_rule))
                 != sizeof(old_rule))
                 goto badio;
@@ -1991,8 +1881,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
             r->property = old_rule.property;
             r->dynamic = old_rule.dynamic;
             r->attribute = old_rule.attribute;
-            switch (sequence)
-            {
+            switch (sequence) {
             case 2: /* 01/24/89 */
                 r->property = ((r->property & 0x0000ffffL))
                               | ((r->property & 0x3ffb0000L) << 1);
@@ -2004,12 +1893,10 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
             }
             if (old_rule.name)
                 r->name = s + ( unsigned long )old_rule.name - 1;
-            if (r->property & P_staterule)
-            {
+            if (r->property & P_staterule) {
                 r->dynamic |= D_lowres;
                 r->event = old_rule.old_event;
-            }
-            else if (old_rule.old_data)
+            } else if (old_rule.old_data)
                 r->statedata = s + ( unsigned long )old_rule.old_data - 1;
             if (old_rule.prereqs)
                 r->prereqs
@@ -2021,8 +1908,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
             r->semaphore = old_rule.semaphore;
             r->view = old_rule.view;
             r->time = tmxsns(old_rule.time, 0);
-            switch (sequence)
-            {
+            switch (sequence) {
             case 0: /* 1989-09-11 */
                 if ((r->property & P_attribute)
                     && (r->attribute && !(r->property & P_use)
@@ -2031,10 +1917,8 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                     r->dynamic |= D_index;
                 /*FALLTHROUGH*/
             case 1: /* 1991-07-17 */
-                if (r->property & P_staterule)
-                {
-                    if (isaltstate(r->name))
-                    {
+                if (r->property & P_staterule) {
+                    if (isaltstate(r->name)) {
                         r->property |= P_implicit;
                         r->time = 0;
                     }
@@ -2042,14 +1926,11 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                 }
                 /*FALLTHROUGH*/
             }
-        }
-        else
-        {
+        } else {
             r->property = sfgetu(sp);
             r->dynamic = sfgetu(sp);
             r->attribute = sfgetu(sp);
-            if (n = sfgetu(sp))
-            {
+            if (n = sfgetu(sp)) {
                 r->semaphore = (n >> 16) & ((1 << 8) - 1);
                 r->view = (n >> 8) & ((1 << 8) - 1);
                 r->scan = (n) & ((1 << 8) - 1);
@@ -2062,12 +1943,10 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
              * 2004-12-01
              */
 
-            if (n = rulenum)
-            {
+            if (n = rulenum) {
                 n--;
                 tn = sfgetu(sp);
-            }
-            else
+            } else
                 tn = 0;
             r->time = tmxsns(ts, tn);
 
@@ -2075,12 +1954,10 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
              * 2004-12-01
              */
 
-            if ((r->property & P_staterule) && n)
-            {
+            if ((r->property & P_staterule) && n) {
                 n--;
                 tn = sfgetu(sp);
-            }
-            else
+            } else
                 tn = 0;
 
             /*
@@ -2091,14 +1968,12 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                 sfgetu(sp);
             r->name = loadstring(&ls, sp);
             r->action = loadstring(&ls, sp);
-            if (r->property & P_staterule)
-            {
+            if (r->property & P_staterule) {
                 ts = sfgetu(sp);
                 r->event = tmxsns(ts, tn);
                 if (lowres)
                     r->dynamic |= D_lowres;
-            }
-            else
+            } else
                 r->statedata = loadstring(&ls, sp);
 
             /*
@@ -2112,20 +1987,16 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
             goto badio;
         r->preview = state.maxview + 1;
         o = getrule(r->name);
-        if (r->dynamic & D_index)
-        {
+        if (r->dynamic & D_index) {
             /*
              * check for index atom consistency
              * remap inconsistent state file atoms
              */
 
-            if (r->scan)
-            {
+            if (r->scan) {
                 attr = ~0;
-                if (o && (o->property & P_attribute) && o->scan)
-                {
-                    if (r->scan != o->scan)
-                    {
+                if (o && (o->property & P_attribute) && o->scan) {
+                    if (r->scan != o->scan) {
                         error((state.exec || state.mam.out) && !state.explain
                               ? -1
                               : 1,
@@ -2137,12 +2008,9 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                             return -1;
                         attr = o->scan;
                     }
-                }
-                else
-                {
+                } else {
                     for (a = internal.scan->prereqs; a; a = a->next)
-                        if (r->scan == a->rule->scan)
-                        {
+                        if (r->scan == a->rule->scan) {
                             error((state.exec || state.mam.out)
                                   && !state.explain
                                   ? -1
@@ -2160,10 +2028,8 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                     if (state.stateview >= 0)
                         attr = 0;
                 }
-                if (attr != ~0)
-                {
-                    if (!scanclash)
-                    {
+                if (attr != ~0) {
+                    if (!scanclash) {
                         scanclash = 1;
                         for (n = 0; n < elementsof(scanmap); n++)
                             scanmap[n] = n;
@@ -2173,14 +2039,10 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                     if (o)
                         continue;
                 }
-            }
-            else if (r->attribute)
-            {
+            } else if (r->attribute) {
                 attr = ~0;
-                if (o && (o->property & P_attribute) && o->attribute)
-                {
-                    if (r->attribute != o->attribute)
-                    {
+                if (o && (o->property & P_attribute) && o->attribute) {
+                    if (r->attribute != o->attribute) {
                         error((state.exec || state.mam.out) && !state.explain
                               ? -1
                               : 1,
@@ -2192,11 +2054,9 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                             return -1;
                         attr = o->attribute;
                     }
-                }
-                else
+                } else
                     for (a = internal.attribute->prereqs; a; a = a->next)
-                        if (r->attribute == a->rule->attribute)
-                        {
+                        if (r->attribute == a->rule->attribute) {
                             error((state.exec || state.mam.out)
                                   && !state.explain
                                   ? -1
@@ -2210,10 +2070,8 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                                 return -1;
                             attr = 0;
                         }
-                if (attr != ~0)
-                {
-                    if (!attrclash)
-                    {
+                if (attr != ~0) {
+                    if (!attrclash) {
                         attrclash = 1;
                         attrclear = 0;
                         for (n = 0; n < CHAR_BIT * sizeof(unsigned long); n++)
@@ -2221,19 +2079,15 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                     }
                     attrclear |= r->attribute;
                     for (n = 0; n < CHAR_BIT * sizeof(unsigned long); n++)
-                        if (r->attribute == (1 << n))
-                        {
+                        if (r->attribute == (1 << n)) {
                             attrmap[n] = attr;
                             break;
                         }
                     continue;
                 }
             }
-        }
-        else
-        {
-            if (attrclash)
-            {
+        } else {
+            if (attrclash) {
                 attr = r->attribute & ~attrclear;
                 for (n = 0; n < CHAR_BIT * sizeof(unsigned long); n++)
                     if (r->attribute & (1 << n))
@@ -2243,37 +2097,28 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
             if (scanclash)
                 r->scan = scanmap[r->scan];
         }
-        if (r->dynamic & D_compiled)
-        {
+        if (r->dynamic & D_compiled) {
             n = state.stateview > 0 && viewable(r);
-            if (n && (o || (state.questionable & 0x00000020)))
-            {
+            if (n && (o || (state.questionable & 0x00000020))) {
                 r->dynamic |= D_compiled | D_lower;
                 viewname(r->name, state.stateview);
                 r->view = state.stateview;
                 maprule(r->name, r);
                 if (o && (r->property & P_statevar) && !o->time)
                     o->time = r->time;
-            }
-            else
-            {
-                if (n)
-                {
+            } else {
+                if (n) {
                     r->mark |= M_compile;
                     promoted = 1;
                 }
-                if (!o)
-                {
+                if (!o) {
                     if (state.stateview >= 0
-                        && (r->property & (P_joint | P_target)) == P_target)
-                    {
+                        && (r->property & (P_joint | P_target)) == P_target) {
                         r->dynamic |= D_garbage;
                         garbage++;
                     }
-                }
-                else if (state.stateview >= 0 && (r->property & P_statevar)
-                         && (r->prereqs || r->action))
-                {
+                } else if (state.stateview >= 0 && (r->property & P_statevar)
+                           && (r->prereqs || r->action)) {
                     /*
                      * ignore state file prereqs and action
                      */
@@ -2285,21 +2130,16 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                     o->statedata = r->statedata;
                     setoldrule(r, o);
                     continue;
-                }
-                else if (state.stateview >= 0 && (r->property & P_staterule)
-                         && o->event > r->event)
-                {
+                } else if (state.stateview >= 0 && (r->property & P_staterule)
+                           && o->event > r->event) {
                     /*
                      * o was updated after r was saved
                      */
 
                     setoldrule(r, o);
                     continue;
-                }
-                else if (!isoldrule(o))
-                {
-                    if (o->dynamic & (D_bound | D_scanned))
-                    {
+                } else if (!isoldrule(o)) {
+                    if (o->dynamic & (D_bound | D_scanned)) {
                         r->statedata = o->statedata;
                         r->time = o->time;
                         r->status = o->status;
@@ -2314,24 +2154,20 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                         r->dynamic |= o->dynamic
                                       & (D_bound | D_entries | D_global
                                          | D_regular | D_scanned);
-                        if (!(o->property & P_state) && o->uname)
-                        {
+                        if (!(o->property & P_state) && o->uname) {
                             r->uname = maprule(o->uname, r);
                             getrule(o->name);
                         }
-                    }
-                    else if ((r->property & (P_parameter | P_statevar))
-                             == P_statevar
-                             && (o->property & (P_parameter | P_statevar))
-                                == (P_parameter | P_statevar))
+                    } else if ((r->property & (P_parameter | P_statevar))
+                               == P_statevar
+                               && (o->property & (P_parameter | P_statevar))
+                                  == (P_parameter | P_statevar))
                         r->property |= P_parameter;
                     setoldrule(o, r);
                 }
                 r->name = putrule(0, r);
             }
-        }
-        else if (o)
-        {
+        } else if (o) {
             /*
              * r is just a reference -- keep the old rule
              * but retain some attributes
@@ -2340,16 +2176,12 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
             o->attribute |= r->attribute & internal.retain->attribute;
             o->property |= r->property & (P_dontcare | P_ignore | P_terminal);
             setoldrule(r, o);
-        }
-        else
-        {
+        } else {
             r->name = putrule(0, r);
             if (!(r->property & P_state))
                 r->time = 0;
-            if (state.stateview >= 0)
-            {
-                if ((r->property & (P_joint | P_target)) == P_target)
-                {
+            if (state.stateview >= 0) {
+                if ((r->property & (P_joint | P_target)) == P_target) {
                     r->dynamic |= D_garbage;
                     garbage++;
                 }
@@ -2366,27 +2198,19 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
             }
         }
 #if BINDINDEX
-        if (r->dynamic & D_bindindex)
-        {
-            if (o)
-            {
-                if (o->dynamic & D_bindindex)
-                {
-                    if (r->source)
-                    {
+        if (r->dynamic & D_bindindex) {
+            if (o) {
+                if (o->dynamic & D_bindindex) {
+                    if (r->source) {
                         state.source[r->source].map = o->source;
                         if (isoldrule(o))
                             state.source[o->source].path = r;
-                    }
-                    else if (r->view)
-                    {
+                    } else if (r->view) {
                         state.view[r->view].map = o->view;
                         if (isoldrule(o))
                             state.view[o->view].path = r;
                     }
-                }
-                else if (r->source)
-                {
+                } else if (r->source) {
                     if (++state.maxsource >= elementsof(state.source))
                         error(3,
                               "%s: too many %s directories -- %d max",
@@ -2396,16 +2220,13 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                     state.source[r->source].map = state.maxsource;
                     if (isoldrule(o))
                         state.source[state.maxsource].path = r;
-                    else
-                    {
+                    else {
                         o->dynamic |= D_bindindex;
                         o->source = state.maxsource;
                         state.source[o->source].path = o;
                     }
                 }
-            }
-            else if (r->source)
-            {
+            } else if (r->source) {
                 if (++state.maxsource >= elementsof(state.source))
                     error(3,
                           "%s: too many %s directories -- %d max",
@@ -2427,18 +2248,14 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
      * load the prerequisite lists
      */
 
-    if (old)
-    {
+    if (old) {
         off = sizeof(old_header) + rules * sizeof(old_rule);
         if (sfseek(sp, off, SEEK_SET) != off)
             goto badio;
     }
-    if (lists)
-    {
-        for (xd = d + lists; d < xd;)
-        {
-            if (old)
-            {
+    if (lists) {
+        for (xd = d + lists; d < xd;) {
+            if (old) {
                 if (sfread(sp, ( char * )&old_list, sizeof(old_list))
                     != sizeof(old_list))
                     goto badio;
@@ -2451,16 +2268,12 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                 if (old_list.next)
                     d->next = d + 1;
                 d++;
-            }
-            else if (!(n = sfgetu(sp)))
+            } else if (!(n = sfgetu(sp)))
                 (d - 1)->next = 0;
-            else if (n < 0)
-            {
+            else if (n < 0) {
                 if (strcmp(ident, corrupt) < 0
-                    && (((lists - (xd - d)) * 100) / lists) >= 90)
-                {
-                    while (d < xd)
-                    {
+                    && (((lists - (xd - d)) * 100) / lists) >= 90) {
+                    while (d < xd) {
                         (d - 1)->next = 0;
                         d++;
                     }
@@ -2472,16 +2285,13 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                     corrupt = 0;
                 }
                 break;
-            }
-            else
-            {
+            } else {
                 d->rule = r + n - 1;
                 d->next = d + 1;
                 d++;
             }
         }
-        if (!old)
-        {
+        if (!old) {
             sfgetu(sp);
             (d - 1)->next = 0;
         }
@@ -2493,8 +2303,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
      * collect state file garbage collection stats
      */
 
-    if (state.stateview >= 0)
-    {
+    if (state.stateview >= 0) {
         Time_t t;
         Time_t q;
 
@@ -2517,8 +2326,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
             t = 0;
         else if ((t -= q) > tmxsns(5, 0))
             t = tmxsns(5, 0);
-        if (t)
-        {
+        if (t) {
             error(state.tolerance ? 1 : -1,
                   "%s: state time sync delay %lu.%09lu",
                   objfile,
@@ -2545,14 +2353,11 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
      * associate one rule with each name
      */
 
-    if (oldrules)
-    {
+    if (oldrules) {
         hashwalk(table.rule, 0, atomize, NiL);
         fp = state.frame;
-        for (;;)
-        {
-            if (isoldrule(fp->target))
-            {
+        for (;;) {
+            if (isoldrule(fp->target)) {
                 fp->target = getoldrule(fp->target);
                 fp->target->active = fp;
             }
@@ -2560,8 +2365,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
                 break;
             fp = fp->parent;
         }
-        do
-        {
+        do {
             xr = ( Rule_t * )oldrules->prereqs;
             freerule(oldrules);
         } while (oldrules = xr);
@@ -2580,19 +2384,15 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
      * reset compiled options
      */
 
-    if (!state.list)
-    {
+    if (!state.list) {
         state.loading = ( char * )objfile;
-        if (old)
-        {
+        if (old) {
             if (old_trailer.options)
                 set(s + ( unsigned long )old_trailer.options - 1, 1, NiL);
-        }
-        else if ((s = getstring(sp)) && *s
-                 && (!streq(s, "--") || (s = getstring(sp)) && *s))
+        } else if ((s = getstring(sp)) && *s
+                   && (!streq(s, "--") || (s = getstring(sp)) && *s))
             set(s, 1, NiL);
-        if (state.stateview < 0)
-        {
+        if (state.stateview < 0) {
             /*
              * check for load time actions
              *
@@ -2613,8 +2413,7 @@ load(Sfio_t *sp, const char *objfile, int source, int ucheck)
     return 1;
 badversion:
     if (strncmp(
-        old_header.version, old_stamp.version, sizeof(old_header.version)))
-    {
+        old_header.version, old_stamp.version, sizeof(old_header.version))) {
         /*
          * old old versions were only numbers
          */
@@ -2629,8 +2428,7 @@ badversion:
               objfile,
               old_header.version,
               old_stamp.version);
-    }
-    else
+    } else
         error(1,
               "%s: old format (%s) generated on an incompatible architecture",
               objfile,

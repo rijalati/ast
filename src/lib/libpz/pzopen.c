@@ -39,14 +39,12 @@ pzfind(Pz_t *pz, const char *file, const char *suffix, const char *mode)
     Sfio_t *sp;
     char buf[PATH_MAX];
 
-    if (!(sp = sfopen(NiL, file, mode)))
-    {
+    if (!(sp = sfopen(NiL, file, mode))) {
         if (!pathfind(file,
                       pz->disc->lib ? pz->disc->lib : pz->id,
                       suffix,
                       buf,
-                      sizeof(buf)))
-        {
+                      sizeof(buf))) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(pz,
                                     pz->disc,
@@ -56,8 +54,7 @@ pzfind(Pz_t *pz, const char *file, const char *suffix, const char *mode)
                                     suffix ? suffix : "data");
             return 0;
         }
-        if (!(sp = sfopen(NiL, buf, mode)))
-        {
+        if (!(sp = sfopen(NiL, buf, mode))) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(
                 pz, pz->disc, ERROR_SYSTEM | 2, "%s: cannot read", buf);
@@ -78,14 +75,11 @@ pzopen(Pzdisc_t *disc, const char *path, unsigned long flags)
     Vmalloc_t *vm;
     struct stat st;
 
-    if (flags & PZ_AGAIN)
-    {
+    if (flags & PZ_AGAIN) {
         pz = ( Pz_t * )path;
         pz->mainpart = 0;
         pz->flags &= ~PZ_HEAD;
-    }
-    else
-    {
+    } else {
         if (!(vm = vmopen(Vmdcheap, Vmlast, 0)))
             return 0;
         if (!(pz = vmnewof(vm, 0, Pz_t, 1, 0)) || !(pz->tmp = sfstropen())
@@ -101,43 +95,32 @@ pzopen(Pzdisc_t *disc, const char *path, unsigned long flags)
         pz->flags = flags | PZ_MAINONLY;
         pz->vm = vm;
         pz->win = disc->window ? disc->window : PZ_WINDOW;
-        if (!path)
-        {
-            if (!isatty(sffileno(sfstdin)))
-            {
+        if (!path) {
+            if (!isatty(sffileno(sfstdin))) {
                 pz->path = "/dev/stdin";
                 if (!(pz->io = sfnew(
-                      NiL, NiL, SF_UNBOUND, sffileno(sfstdin), SF_READ)))
-                {
+                      NiL, NiL, SF_UNBOUND, sffileno(sfstdin), SF_READ))) {
                     if (disc->errorf)
                         (*disc->errorf)(
                         pz, disc, 2, "%s: cannot read", pz->path);
                     goto bad;
                 }
-            }
-            else if (!(pz->io = sfopen(NiL, pz->path = "/dev/null", "r")))
-            {
+            } else if (!(pz->io = sfopen(NiL, pz->path = "/dev/null", "r"))) {
                 if (disc->errorf)
                     (*disc->errorf)(pz, disc, 2, "%s: cannot read", path);
                 goto bad;
-            }
-            else
+            } else
                 pz->flags |= PZ_STREAM;
-        }
-        else if (pz->flags & PZ_STREAM)
-        {
+        } else if (pz->flags & PZ_STREAM) {
             pz->path = "stream";
             pz->io = ( Sfio_t * )path;
-        }
-        else if (!(pz->io = strneq(path, "pipe://", 7)
-                            ? sfpopen(NiL, path + 7, "r")
-                            : sfopen(NiL, path, "r")))
-        {
+        } else if (!(pz->io = strneq(path, "pipe://", 7)
+                              ? sfpopen(NiL, path + 7, "r")
+                              : sfopen(NiL, path, "r"))) {
             if (disc->errorf)
                 (*disc->errorf)(pz, disc, 2, "%s: cannot read", path);
             goto bad;
-        }
-        else if (!(pz->path = vmstrdup(vm, path)))
+        } else if (!(pz->path = vmstrdup(vm, path)))
             goto bad;
 
         /*
@@ -179,8 +162,7 @@ pzopen(Pzdisc_t *disc, const char *path, unsigned long flags)
                 || pzoptions(pz, NiL, pz->options, 0) < 0))
             goto bad;
     }
-    if ((pz->flags & (PZ_READ | PZ_SPLIT | PZ_STAT)) || !disc->partition)
-    {
+    if ((pz->flags & (PZ_READ | PZ_SPLIT | PZ_STAT)) || !disc->partition) {
         if (pzheadread(pz))
             goto bad;
         if ((pz->flags & PZ_SPLIT) && disc->partition
@@ -188,13 +170,10 @@ pzopen(Pzdisc_t *disc, const char *path, unsigned long flags)
             goto bad;
         if (pz->options && pzoptions(pz, pz->part, pz->options, 1) < 0)
             goto bad;
-    }
-    else
-    {
+    } else {
         if (disc->partition && pzpartition(pz, disc->partition))
             goto bad;
-        if (pz->disc->version >= PZ_VERSION_SPLIT && pz->disc->splitf)
-        {
+        if (pz->disc->version >= PZ_VERSION_SPLIT && pz->disc->splitf) {
             pz->split.flags |= PZ_SPLIT_DEFLATE;
             pz->flags |= PZ_ACCEPT | PZ_SECTION;
             pz->flags &= ~PZ_SORT;
@@ -202,8 +181,7 @@ pzopen(Pzdisc_t *disc, const char *path, unsigned long flags)
         if (pz->options && pzoptions(pz, pz->part, pz->options, 1) < 0)
             goto bad;
         if ((pz->flags & (PZ_NOPZIP | PZ_UNKNOWN)) == PZ_UNKNOWN
-            && !pz->disc->readf && !pz->disc->splitf)
-        {
+            && !pz->disc->readf && !pz->disc->splitf) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(
                 pz, pz->disc, 2, "%s: unknown input format", pz->path);
@@ -260,15 +238,13 @@ pzclose(Pz_t *pz)
 
     if (!pz)
         return -1;
-    if (!(r = pzsync(pz)) && (op = pz->ws.io))
-    {
+    if (!(r = pzsync(pz)) && (op = pz->ws.io)) {
         /*
          * finish up the pzwrite() stream
          */
 
         sfputu(op, 0);
-        if (pz->ws.pc)
-        {
+        if (pz->ws.pc) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(pz,
                                     pz->disc,
@@ -280,16 +256,14 @@ pzclose(Pz_t *pz)
             sfputu(op, pz->ws.pc);
             sfwrite(op, pz->ws.pb, pz->ws.pc);
         }
-        if (!(pz->flags & PZ_SECTION))
-        {
+        if (!(pz->flags & PZ_SECTION)) {
             sfputc(op, PZ_MARK_TAIL);
             if (pz->disc->eventf
                 && (*pz->disc->eventf)(pz, PZ_TAILWRITE, op, 0, pz->disc) < 0)
                 return -1;
             sfputc(op, 0);
         }
-        if (sfsync(op))
-        {
+        if (sfsync(op)) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(
                 pz, pz->disc, ERROR_SYSTEM | 2, "write error");
@@ -298,15 +272,12 @@ pzclose(Pz_t *pz)
     }
     if ((pz->flags & PZ_WRITE)
         && (pz->flags & (PZ_DUMP | PZ_VERBOSE | PZ_SUMMARY))
-        && pz->disc->errorf && pz->count.records)
-    {
+        && pz->disc->errorf && pz->count.records) {
         if (!pz->count.uncompressed)
             pz->count.uncompressed = pz->part->row * pz->count.records;
-        if (!pz->count.compressed)
-        {
+        if (!pz->count.compressed) {
             pz->count.compressed = pz->count.uncompressed;
-            if (pz->oop)
-            {
+            if (pz->oop) {
                 if (!(pz->flags & PZ_NOGZIP))
                     while (sfdisc(pz->oop, SF_POPDISC))
                         ;
@@ -316,8 +287,7 @@ pzclose(Pz_t *pz)
         }
         if (pz->flags & PZ_REGRESS)
             e = 100;
-        else
-        {
+        else {
             tvgettime(&now);
             if (!(e = (( unsigned long )now.tv_sec
                        - ( unsigned long )pz->start.tv_sec)
@@ -378,16 +348,12 @@ pzclose(Pz_t *pz)
                      pz->count.dropped);
         (*pz->disc->errorf)(pz, pz->disc, 0, "%s", sfstruse(pz->tmp));
     }
-    if (pz->io)
-    {
-        if (pz->oip)
-        {
+    if (pz->io) {
+        if (pz->oip) {
             if (pz->disc->eventf)
                 r = (*pz->disc->eventf)(pz, PZ_CLOSE, NiL, 0, pz->disc);
-            if (!(pz->flags & PZ_STREAM))
-            {
-                if (sfclose(pz->oip) < 0)
-                {
+            if (!(pz->flags & PZ_STREAM)) {
+                if (sfclose(pz->oip) < 0) {
                     if (pz->disc->errorf)
                         (*pz->disc->errorf)(
                         pz,
@@ -397,16 +363,12 @@ pzclose(Pz_t *pz)
                         pz->path);
                     r = -1;
                 }
-            }
-            else if (pz->flags & PZ_POP)
+            } else if (pz->flags & PZ_POP)
                 sfdisc(pz->oip, SF_POPDISC);
             pz->oip = 0;
-        }
-        else if (pz->flags & PZ_POP)
-        {
+        } else if (pz->flags & PZ_POP) {
             sfdisc(pz->io, SF_POPDISC);
-            if (sferror(pz->io))
-            {
+            if (sferror(pz->io)) {
                 pz->flags |= PZ_ERROR;
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(

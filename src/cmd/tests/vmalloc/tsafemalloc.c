@@ -98,8 +98,7 @@ emphemeral(void *arg) /* an empheral thread, allocate a few times, free then
     = 1001; /* use a local RNG so that threads work uniformly */
 #define RANDOM() (Rand = Rand * ((1 << 24) + (1 << 8) + 0x93) + 0xbadbeef)
 
-    for (k = 0; k < Empcount; ++k)
-    {
+    for (k = 0; k < Empcount; ++k) {
         sz = (RANDOM() % (Smallhi - Smalllo + 1)) + Smalllo;
         sz = sz > sizeof(size_t) ? sz : sizeof(size_t);
 
@@ -111,15 +110,13 @@ emphemeral(void *arg) /* an empheral thread, allocate a few times, free then
         asomaxsize(&Maxbusy, Curbusy);
 
         emp = Emp[k]; /* make an attempt to put blk in array */
-        if (asocasptr(&Emp[k], emp, blk) == emp)
-        {
+        if (asocasptr(&Emp[k], emp, blk) == emp) {
             if (emp) /* free previous block if any */
             {
                 sz = *(( size_t * )emp);
                 free(emp);
             }
-        }
-        else
+        } else
             free(blk); /* couldn't place it so free it */
 
         asosubsize(&Curbusy, sz);
@@ -145,28 +142,23 @@ simulate(void *arg)
 
     list = tdata->list;
     nalloc = tdata->nalloc;
-    for (k = 0; k < nalloc; ++k)
-    {
+    for (k = 0; k < nalloc; ++k) {
         if (Empperiod > 0 && k > 0 && k % Empperiod == 0)
             if (pthread_create(&ethread, NULL, emphemeral, ( void * )0) != 0)
                 terror("Can't create emphemeral thread");
 
         /* update all that needs updating */
-        for (up = list[k].free; up; up = next)
-        {
+        for (up = list[k].free; up; up = next) {
             next = up->next;
 
-            if ((rand = RANDOM() % 100) < 95)
-            {
+            if ((rand = RANDOM() % 100) < 95) {
                 memset(up->data, CH_FREE, up->size);
                 free(up->data);
 
                 asosubsize(&Curbusy, up->size);
                 up->data = NIL(void *);
                 up->size = 0;
-            }
-            else
-            {
+            } else {
                 sz = RANDOM() % (2 * up->size) + 1;
                 if (!(up->data = realloc(up->data, sz)))
                     terror("Thread %d: failed to realloc(org=%d sz=%d)",
@@ -186,8 +178,7 @@ simulate(void *arg)
                 memset(up->data, CH_RESIZE, up->size);
 
                 /* get a random point in the future to update */
-                if ((p = k + 1 + RANDOM() % Life) < nalloc)
-                {
+                if ((p = k + 1 + RANDOM() % Life) < nalloc) {
                     up->next = list[p].free;
                     list[p].free = up;
                 }
@@ -195,21 +186,17 @@ simulate(void *arg)
         }
 
         /* get a random size in given range */
-        if (RANDOM() % 100 < 95)
-        {
+        if (RANDOM() % 100 < 95) {
             sz = RANDOM() % (Smallhi - Smalllo + 1) + Smalllo;
             lf = Smalllf;
-        }
-        else
-        {
+        } else {
             sz = RANDOM() % (Largehi - Largelo + 1) + Largelo;
             lf = Largelf;
         }
 
         if (!(list[k].data = malloc(sz)))
             terror("Thread %d: failed to malloc(%d)", thread, sz);
-        if ((a = ( unsigned long )(list[k].data) % ALIGNMENT) != 0)
-        {
+        if ((a = ( unsigned long )(list[k].data) % ALIGNMENT) != 0) {
             if (warn_align)
                 tinfo("Thread %d: block=%#0x mod %d == %d",
                       thread,
@@ -225,8 +212,7 @@ simulate(void *arg)
         memset(list[k].data, CH_MALLOC, list[k].size);
 
         /* set time to update */
-        if ((p = k + 1 + lf - RANDOM() % (lf / 5)) < nalloc)
-        {
+        if ((p = k + 1 + lf - RANDOM() % (lf / 5)) < nalloc) {
             list[k].next = list[p].free;
             list[p].free = &list[k];
         }
@@ -246,30 +232,24 @@ tmain()
     void *status;
     pthread_t th[N_THREAD];
 
-    for (; argc > 1; --argc, ++argv)
-    {
+    for (; argc > 1; --argc, ++argv) {
         if (argv[1][0] != '-')
             continue;
         else if (argv[1][1] == 'a')
             Nalloc = atoi(argv[1] + 2);
         else if (argv[1][1] == 'l')
             Life = atoi(argv[1] + 2);
-        else if (argv[1][1] == 'z')
-        {
+        else if (argv[1][1] == 'z') {
             sscanf(argv[1] + 2, "%d,%d,%d", &arg1, &arg2, &arg3);
             Smalllo = arg1;
             Smallhi = arg2;
             Smalllf = arg3;
-        }
-        else if (argv[1][1] == 'Z')
-        {
+        } else if (argv[1][1] == 'Z') {
             sscanf(argv[1] + 2, "%d,%d,%d", &arg1, &arg2, &arg3);
             Largelo = arg1;
             Largehi = arg2;
             Largelf = arg3;
-        }
-        else if (argv[1][1] == 'e')
-        {
+        } else if (argv[1][1] == 'e') {
             sscanf(argv[1] + 2, "%d,%d", &arg1, &arg2);
             Empperiod = arg1;
             Empcount = arg2;
@@ -282,8 +262,7 @@ tmain()
     Nalloc = nalloc * N_THREAD;
 
     /* space for emphemeral threads */
-    if (Empperiod > 0)
-    {
+    if (Empperiod > 0) {
         sz = Empcount * sizeof(Void_t *);
         if (!(Emp = malloc(sz)))
             terror(
@@ -293,8 +272,7 @@ tmain()
         Curbusy += sz;
     }
 
-    for (i = 0; i < N_THREAD; ++i)
-    {
+    for (i = 0; i < N_THREAD; ++i) {
         Tdata[i].nalloc = nalloc;
         sz = Tdata[i].nalloc * sizeof(Piece_t);
         if (!(Tdata[i].list = ( Piece_t * )malloc(sz)))
@@ -319,16 +297,14 @@ tmain()
     Empperiod,
     Empcount);
 
-    for (i = 0; i < N_THREAD; ++i)
-    {
+    for (i = 0; i < N_THREAD; ++i) {
         if ((rv
              = pthread_create(&th[i], NULL, simulate, ( void * )(( long )i)))
             != 0)
             terror("Failed to create simulation thread %d", i);
     }
 
-    for (i = 0; i < N_THREAD; ++i)
-    {
+    for (i = 0; i < N_THREAD; ++i) {
         if ((rv = pthread_join(th[i], &status)) != 0)
             terror("Failed waiting for simulation thread %d", i);
     }

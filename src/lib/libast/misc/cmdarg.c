@@ -48,8 +48,7 @@ cmdopen(char **argv, int argmax, int size, const char *argpat, int flags)
 
     memset(&disc, 0, sizeof(disc));
     disc.version = CMD_VERSION;
-    if (!(flags & CMD_SILENT))
-    {
+    if (!(flags & CMD_SILENT)) {
         flags |= CMD_EXIT;
         disc.errorf = errorf;
     }
@@ -117,22 +116,17 @@ cmdopen_20120411(char **argv,
     char **post = 0;
 
     n = sizeof(char **);
-    if (*argv)
-    {
-        for (p = argv + 1; *p; p++)
-        {
-            if ((disc->flags & CMD_POST) && argpat && streq(*p, argpat))
-            {
+    if (*argv) {
+        for (p = argv + 1; *p; p++) {
+            if ((disc->flags & CMD_POST) && argpat && streq(*p, argpat)) {
                 *p = 0;
                 post = p + 1;
                 argpat = 0;
-            }
-            else
+            } else
                 n += strlen(*p) + 1;
         }
         argc = p - argv;
-    }
-    else
+    } else
         argc = 0;
     for (p = environ; *p; p++)
         n += sizeof(char **) + strlen(*p) + 1;
@@ -143,8 +137,7 @@ cmdopen_20120411(char **argv,
     sh = pathshell();
     m = n + (argc + 4) * sizeof(char **) + strlen(sh) + 1;
     m = roundof(m, sizeof(char **));
-    if (size < m)
-    {
+    if (size < m) {
         if (disc->errorf)
             (*disc->errorf)(NiL, sh, 2, "size must be at least %d", m);
         return 0;
@@ -155,8 +148,7 @@ cmdopen_20120411(char **argv,
         size = x - m;
     n = size - n;
     m = ((disc->flags & CMD_INSERT) && argpat) ? (strlen(argpat) + 1) : 0;
-    if (!(cmd = newof(0, Cmdarg_t, 1, n + m)))
-    {
+    if (!(cmd = newof(0, Cmdarg_t, 1, n + m))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, sh, ERROR_SYSTEM | 2, "out of space");
         return 0;
@@ -170,20 +162,14 @@ cmdopen_20120411(char **argv,
     if (argmax <= 0 || argmax > c)
         argmax = c;
     s = cmd->buf;
-    if (!(exe = argv[0]))
-    {
+    if (!(exe = argv[0])) {
         exe = *(argv = ( char ** )echo);
         cmd->echo = 1;
-    }
-    else if (streq(exe, echo[0]))
-    {
+    } else if (streq(exe, echo[0])) {
         cmd->echo = 1;
         disc->flags &= ~CMD_NEWLINE;
-    }
-    else if (!(disc->flags & CMD_CHECKED))
-    {
-        if (!pathpath(exe, NiL, PATH_REGULAR | PATH_EXECUTE, s, n + m))
-        {
+    } else if (!(disc->flags & CMD_CHECKED)) {
+        if (!pathpath(exe, NiL, PATH_REGULAR | PATH_EXECUTE, s, n + m)) {
             n = EXIT_NOTFOUND;
             if (cmd->errorf)
                 (*cmd->errorf)(
@@ -196,8 +182,7 @@ cmdopen_20120411(char **argv,
         exe = s;
     }
     s += strlen(s) + 1;
-    if (m)
-    {
+    if (m) {
         cmd->insert = strcpy(s, argpat);
         cmd->insertlen = m - 1;
         s += m;
@@ -209,15 +194,13 @@ cmdopen_20120411(char **argv,
     *p++ = exe;
     while (*p = *++argv)
         p++;
-    if (m)
-    {
+    if (m) {
         argmax = 1;
         *p++ = 0;
         cmd->insertarg = p;
         argv = cmd->argv;
         c = *cmd->insert;
-        while (s = *argv)
-        {
+        while (s = *argv) {
             while ((s = strchr(s, c))
                    && strncmp(cmd->insert, s, cmd->insertlen))
                 s++;
@@ -249,8 +232,7 @@ cmdflush(Cmdarg_t *cmd)
         cmd->flags &= ~CMD_EMPTY;
     else if (cmd->nextarg <= cmd->firstarg)
         return 0;
-    if ((cmd->flags & CMD_MINIMUM) && cmd->argcount < cmd->argmax)
-    {
+    if ((cmd->flags & CMD_MINIMUM) && cmd->argcount < cmd->argmax) {
         if (cmd->errorf)
             (*cmd->errorf)(
             NiL, cmd, 2, "%d arg command would be too long", cmd->argcount);
@@ -264,8 +246,7 @@ cmdflush(Cmdarg_t *cmd)
             ;
     else
         *cmd->nextarg = 0;
-    if (s = cmd->insert)
-    {
+    if (s = cmd->insert) {
         char *a;
         char *b;
         char *e;
@@ -280,25 +261,19 @@ cmdflush(Cmdarg_t *cmd)
         c = *s;
         m = cmd->insertlen;
         for (n = 1; cmd->argv[n]; n++)
-            if (t = cmd->insertarg[n])
-            {
+            if (t = cmd->insertarg[n]) {
                 cmd->argv[n] = b;
-                for (;;)
-                {
-                    if (!(u = strchr(t, c)))
-                    {
+                for (;;) {
+                    if (!(u = strchr(t, c))) {
                         b += sfsprintf(b, e - b, "%s", t);
                         break;
                     }
-                    if (!strncmp(s, u, m))
-                    {
+                    if (!strncmp(s, u, m)) {
                         b += sfsprintf(b, e - b, "%-.*s%s", u - t, t, a);
                         t = u + m;
-                    }
-                    else if (b >= e)
+                    } else if (b >= e)
                         break;
-                    else
-                    {
+                    else {
                         *b++ = *u++;
                         t = u;
                     }
@@ -306,8 +281,7 @@ cmdflush(Cmdarg_t *cmd)
                 if (b < e)
                     *b++ = 0;
             }
-        if (b >= e)
-        {
+        if (b >= e) {
             if (cmd->errorf)
                 (*cmd->errorf)(
                 NiL, cmd, 2, "%s: command too large after insert", a);
@@ -317,42 +291,33 @@ cmdflush(Cmdarg_t *cmd)
     n = ( int )(cmd->nextarg - cmd->argv);
     cmd->nextarg = cmd->firstarg;
     cmd->nextstr = cmd->laststr;
-    if (cmd->flags & (CMD_QUERY | CMD_TRACE))
-    {
+    if (cmd->flags & (CMD_QUERY | CMD_TRACE)) {
         p = cmd->argv;
         sfprintf(sfstderr, "+ %s", *p);
         while (s = *++p)
             sfprintf(sfstderr, " %s", s);
         if (!(cmd->flags & CMD_QUERY))
             sfprintf(sfstderr, "\n");
-        else if (astquery(1, "? "))
-        {
+        else if (astquery(1, "? ")) {
             return 0;
         }
     }
-    if (cmd->echo)
-    {
+    if (cmd->echo) {
         n = (cmd->flags & CMD_NEWLINE) ? '\n' : ' ';
         for (p = cmd->argv + 1; s = *p++;)
             sfputr(sfstdout, s, *p ? n : '\n');
         n = 0;
-    }
-    else if ((n = (*cmd->runf)(n, cmd->argv, cmd->disc)) == -1)
-    {
+    } else if ((n = (*cmd->runf)(n, cmd->argv, cmd->disc)) == -1) {
         n = EXIT_NOTFOUND - 1;
         if (cmd->errorf)
             (*cmd->errorf)(
             NiL, cmd, ERROR_SYSTEM | 2, "%s: command exec error", *cmd->argv);
         if (cmd->flags & CMD_EXIT)
             (*error_info.exit)(n);
-    }
-    else if (n >= EXIT_NOTFOUND - 1)
-    {
+    } else if (n >= EXIT_NOTFOUND - 1) {
         if (cmd->flags & CMD_EXIT)
             (*error_info.exit)(n);
-    }
-    else if (!(cmd->flags & CMD_IGNORE))
-    {
+    } else if (!(cmd->flags & CMD_IGNORE)) {
         if (n == EXIT_QUIT && (cmd->flags & CMD_EXIT))
             (*error_info.exit)(2);
         if (n)
@@ -372,20 +337,16 @@ cmdarg(Cmdarg_t *cmd, const char *file, int len)
     int r;
 
     r = 0;
-    if (len > 0)
-    {
+    if (len > 0) {
         while ((cmd->nextstr -= len + 1)
-               < ( char * )(cmd->nextarg + cmd->offset))
-        {
-            if (cmd->nextarg == cmd->firstarg)
-            {
+               < ( char * )(cmd->nextarg + cmd->offset)) {
+            if (cmd->nextarg == cmd->firstarg) {
                 if (cmd->errorf)
                     (*cmd->errorf)(
                     NiL, cmd, 2, "%s: path too long for exec args", file);
                 return -1;
             }
-            if (i = cmdflush(cmd))
-            {
+            if (i = cmdflush(cmd)) {
                 if (r < i)
                     r = i;
                 if (!(cmd->flags & CMD_IGNORE))
@@ -398,8 +359,7 @@ cmdarg(Cmdarg_t *cmd, const char *file, int len)
         cmd->argcount++;
         if (cmd->argcount >= cmd->argmax && (i = cmdflush(cmd)) > r)
             r = i;
-    }
-    else
+    } else
         cmd->argcount += len;
     return r;
 }
@@ -413,15 +373,12 @@ cmdclose(Cmdarg_t *cmd)
 {
     int n;
 
-    if ((cmd->flags & CMD_EXACT) && cmd->argcount < cmd->argmax)
-    {
+    if ((cmd->flags & CMD_EXACT) && cmd->argcount < cmd->argmax) {
         if (cmd->errorf)
             (*cmd->errorf)(
             NiL, cmd, 2, "only %d arguments for last command", cmd->argcount);
         n = -1;
-    }
-    else
-    {
+    } else {
         cmd->flags &= ~CMD_MINIMUM;
         n = cmdflush(cmd);
     }

@@ -362,22 +362,18 @@ sha1_block(Sum_t *p, const void *s, size_t len)
     uint8_t *data = ( uint8_t * )s;
     unsigned int i, j;
 
-    if (len)
-    {
+    if (len) {
         j = sha->count[0];
         if ((sha->count[0] += len << 3) < j)
             sha->count[1] += (len >> 29) + 1;
         j = (j >> 3) & 63;
-        if ((j + len) > 63)
-        {
+        if ((j + len) > 63) {
             ( void )memcpy(&sha->buffer[j], data, (i = 64 - j));
             sha1_transform(sha->state, sha->buffer);
             for (; i + 63 < len; i += 64)
                 sha1_transform(sha->state, &data[i]);
             j = 0;
-        }
-        else
-        {
+        } else {
             i = 0;
         }
 
@@ -406,8 +402,7 @@ sha1_open(const Method_t *method, const char *name)
 {
     Sha1_t *sha;
 
-    if (sha = newof(0, Sha1_t, 1, 0))
-    {
+    if (sha = newof(0, Sha1_t, 1, 0)) {
         sha->method = ( Method_t * )method;
         sha->name = name;
         sha1_init(( Sum_t * )sha);
@@ -429,8 +424,7 @@ sha1_done(Sum_t *p)
     unsigned int i;
     unsigned char finalcount[8];
 
-    for (i = 0; i < 8; i++)
-    {
+    for (i = 0; i < 8; i++) {
         /* Endian independent */
         finalcount[i] = ( unsigned char )((sha->count[(i >= 4 ? 0 : 1)]
                                            >> ((3 - (i & 3)) * 8))
@@ -443,8 +437,7 @@ sha1_done(Sum_t *p)
     /* The next Update should cause a sha1_transform() */
     sha1_block(p, finalcount, 8);
 
-    for (i = 0; i < elementsof(sha->digest); i++)
-    {
+    for (i = 0; i < elementsof(sha->digest); i++) {
         sha->digest[i]
         = ( unsigned char )((sha->state[i >> 2] >> ((3 - (i & 3)) * 8))
                             & 255);

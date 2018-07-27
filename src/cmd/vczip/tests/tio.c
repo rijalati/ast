@@ -81,12 +81,10 @@ MAIN()
     list[2] = 9;
     list[3] = 7;
     list[4] = 2;
-    for (v = 5; v < N_LIST;)
-    {
+    for (v = 5; v < N_LIST;) {
         int k, inc;
         inc = random() % 2;
-        for (k = random() % 7 + 1; k > 0 && v < N_LIST; --k, ++v)
-        {
+        for (k = random() % 7 + 1; k > 0 && v < N_LIST; --k, ++v) {
             if (inc)
                 list[v] = list[v - 1] + (random() % 17);
             else

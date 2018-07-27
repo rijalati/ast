@@ -226,8 +226,7 @@ keep(State_t *state, const char *name, int mode)
 {
     char *s;
 
-    if (state->skip.size)
-    {
+    if (state->skip.size) {
         if (s = strrchr(name, '/'))
             s++;
         else
@@ -256,8 +255,7 @@ check(State_t *state, const char *dir, const char *name, unsigned int flags)
     sfsprintf(state->dir, sizeof(state->dir) - 1, "%s/(%s)", dir, name);
     if (!glob(state->dir, GLOB_AUGMENTED | GLOB_DISC | GLOB_STACK, 0, &gl))
         for (p = gl.gl_pathv; s = *p++;)
-            if (!dtmatch(state->files, s) && keep(state, s, F_OK))
-            {
+            if (!dtmatch(state->files, s) && keep(state, s, F_OK)) {
                 if (!(dp = newof(0, File_t, 1, strlen(s))))
                     error(ERROR_SYSTEM | 3, "out of space [file]");
                 strcpy(dp->name, s);
@@ -285,25 +283,18 @@ add(State_t *state,
     char *u;
     struct stat st;
 
-    if (!(flags & COPIED))
-    {
+    if (!(flags & COPIED)) {
         if (ref && (ref->flags & SECURE))
             flags |= SECURE;
-        if (state->hosts.size)
-        {
-            if (t = strchr(s, ':'))
-            {
-                if (strneq(s, "http://", t - s + 3))
-                {
+        if (state->hosts.size) {
+            if (t = strchr(s, ':')) {
+                if (strneq(s, "http://", t - s + 3)) {
                     s = t + 3;
                     flags &= ~SECURE;
-                }
-                else if (strneq(s, "https://", t - s + 4))
-                {
+                } else if (strneq(s, "https://", t - s + 4)) {
                     s = t + 4;
                     flags |= SECURE;
-                }
-                else
+                } else
                     return 0;
                 if (t = strchr(s, '/'))
                     *t = 0;
@@ -314,10 +305,8 @@ add(State_t *state,
                 else
                     s = "/";
             }
-            if (*s == '/')
-            {
-                if (ref && !streq(s, ref->name))
-                {
+            if (*s == '/') {
+                if (ref && !streq(s, ref->name)) {
                     if (*(s + 1) != '~')
                         return 0;
                     if (*(s + 2) == '/')
@@ -329,8 +318,7 @@ add(State_t *state,
                         return 0;
                     else
                         s += 2 + state->user.size;
-                    if (state->documentroot.size)
-                    {
+                    if (state->documentroot.size) {
                         sfsprintf(state->buf,
                                   sizeof(state->buf) - 1,
                                   "%s%s%s",
@@ -338,9 +326,7 @@ add(State_t *state,
                                   (flags & SECURE) ? "/secure" : "",
                                   s);
                         pathcanon(s = state->buf, sizeof(state->buf), 0);
-                    }
-                    else if (state->root.size)
-                    {
+                    } else if (state->root.size) {
                         sfsprintf(state->buf,
                                   sizeof(state->buf) - 1,
                                   "%s%s",
@@ -350,9 +336,7 @@ add(State_t *state,
                         pathcanon(s = state->buf, sizeof(state->buf), 0);
                     }
                 }
-            }
-            else if (prefix)
-            {
+            } else if (prefix) {
                 sfsprintf(state->buf,
                           sizeof(state->buf) - 1,
                           "%-.*s%s",
@@ -360,9 +344,7 @@ add(State_t *state,
                           path,
                           s);
                 pathcanon(s = state->buf, sizeof(state->buf), 0);
-            }
-            else if (flags & SECURE)
-            {
+            } else if (flags & SECURE) {
                 sfsprintf(state->tmp, sizeof(state->tmp), "secure/%s", s);
                 s = state->tmp;
             }
@@ -374,19 +356,15 @@ add(State_t *state,
             s = "/";
         for (t = s + strlen(s); t > s && *(t - 1) == '/'; t--)
             ;
-        if (*t == '/' || !stat(s, &st) && S_ISDIR(st.st_mode))
-        {
-            if (s >= state->buf && s < state->buf + sizeof(state->buf))
-            {
+        if (*t == '/' || !stat(s, &st) && S_ISDIR(st.st_mode)) {
+            if (s >= state->buf && s < state->buf + sizeof(state->buf)) {
                 if (!*t)
                     *t = '/';
                 sfsprintf(t + 1,
                           sizeof(state->buf) - (t - s + 2),
                           "%s",
                           state->index.data);
-            }
-            else
-            {
+            } else {
                 sfsprintf(state->buf,
                           sizeof(state->buf) - 1,
                           "%-.*s/%s",
@@ -397,8 +375,7 @@ add(State_t *state,
             }
         }
     }
-    if (!(fp = ( File_t * )dtmatch(state->files, s)))
-    {
+    if (!(fp = ( File_t * )dtmatch(state->files, s))) {
         if (!keep(state, s, -1))
             return 0;
         if (!(fp = newof(0, File_t, 1, strlen(s))))
@@ -407,11 +384,9 @@ add(State_t *state,
         dtinsert(state->files, fp);
         state->more = 1;
         if (t = strrchr(s, '/'))
-            do
-            {
+            do {
                 *t = 0;
-                if (dp = ( File_t * )dtmatch(state->files, s))
-                {
+                if (dp = ( File_t * )dtmatch(state->files, s)) {
                     *t = '/';
                     break;
                 }
@@ -420,8 +395,7 @@ add(State_t *state,
                 strcpy(dp->name, s);
                 dtinsert(state->files, dp);
                 dp->flags |= DIRECTORY | flags;
-                if (!(flags & COPIED))
-                {
+                if (!(flags & COPIED)) {
                     if (!state->strict)
                         check(state, s, state->index.data, flags);
                     if (state->keep.size)
@@ -432,12 +406,10 @@ add(State_t *state,
             } while ((t = u) && (t - s) > state->root.size);
     }
     fp->flags |= flags;
-    if (ref && state->dependents)
-    {
+    if (ref && state->dependents) {
         for (lp = fp->refs; lp && lp->file != ref; lp = lp->next)
             ;
-        if (!lp)
-        {
+        if (!lp) {
             if (!(lp = newof(0, List_t, 1, 0)))
                 error(ERROR_SYSTEM | 3, "out of space [file]");
             lp->file = ref;
@@ -473,8 +445,7 @@ rootdir(State_t *state, String_t *r, char *s, char *buf, size_t z)
         *t = 0;
     if (*s == '/')
         n = strlen(s);
-    else
-    {
+    else {
         n = sfsprintf(buf, z, "%s/%s", state->root.data, s);
         s = buf;
     }
@@ -497,31 +468,24 @@ scan(State_t *state, FTS *fts)
     char *s;
     int skip;
 
-    while (ent = fts_read(fts))
-    {
-        if (state->external && ent->fts_info == FTS_D)
-        {
+    while (ent = fts_read(fts)) {
+        if (state->external && ent->fts_info == FTS_D) {
             sfsprintf(state->buf,
                       sizeof(state->buf) - 1,
                       "%s/%s",
                       ent->fts_path,
                       state->index.data);
-            if (sp = sfopen(NiL, state->buf, "r"))
-            {
+            if (sp = sfopen(NiL, state->buf, "r")) {
                 skip = 0;
-                while (s = sfgetr(sp, '\n', 1))
-                {
-                    if (strgrpmatch(s, internal, NiL, 0, 0))
-                    {
+                while (s = sfgetr(sp, '\n', 1)) {
+                    if (strgrpmatch(s, internal, NiL, 0, 0)) {
                         skip = 1;
                         break;
-                    }
-                    else if (strgrpmatch(s, "</HEAD>", NiL, 0, STR_ICASE))
+                    } else if (strgrpmatch(s, "</HEAD>", NiL, 0, STR_ICASE))
                         break;
                 }
                 sfclose(sp);
-                if (skip)
-                {
+                if (skip) {
                     if (fts_set(NiL, ent, FTS_SKIP))
                         error(1, "%s: cannot skip", ent->fts_path);
                     continue;
@@ -560,19 +524,15 @@ refs(State_t *state, const char *path, Sfio_t *ip, File_t *ref)
     perlwarn = state->perlwarn && strmatch(path, "*.(html|htm|HTML|HTM)");
     prefix = (s = strrchr(path, '/')) ? s - ( char * )path + 1 : 0;
     flags = EXTERNAL;
-    for (;;)
-    {
-        switch (c = sfgetc(ip))
-        {
+    for (;;) {
+        switch (c = sfgetc(ip)) {
         case EOF:
             break;
         case '<':
             q = 0;
             s = buf;
-            for (;;)
-            {
-                switch (c = sfgetc(ip))
-                {
+            for (;;) {
+                switch (c = sfgetc(ip)) {
                 case EOF:
                     return;
                 case '>':
@@ -592,15 +552,12 @@ refs(State_t *state, const char *path, Sfio_t *ip, File_t *ref)
                     || s == (buf + 4) && (buf[0] == 'L' || buf[0] == 'l')
                        && (buf[1] == 'I' || buf[1] == 'i')
                        && (buf[2] == 'N' || buf[2] == 'n')
-                       && (buf[3] == 'K' || buf[3] == 'k')))
-            {
+                       && (buf[3] == 'K' || buf[3] == 'k'))) {
                 s = buf;
                 r = a = 0;
                 f = 0;
-                for (;;)
-                {
-                    switch (c = sfgetc(ip))
-                    {
+                for (;;) {
+                    switch (c = sfgetc(ip)) {
                     case EOF:
                         return;
                     case '\'':
@@ -616,10 +573,8 @@ refs(State_t *state, const char *path, Sfio_t *ip, File_t *ref)
                     case ' ':
                     case '\t':
                     case '\n':
-                        if (!q)
-                        {
-                            if (r == HIT)
-                            {
+                        if (!q) {
+                            if (r == HIT) {
                                 /*UNDENT...*/
 
                                 *s = 0;
@@ -627,8 +582,7 @@ refs(State_t *state, const char *path, Sfio_t *ip, File_t *ref)
                                 if (!a)
                                     f
                                     = add(state, s, flags, path, prefix, ref);
-                                else if (f)
-                                {
+                                else if (f) {
                                     p = f->name;
                                     if (!strcasecmp(s, "data-root"))
                                         rootdir(state,
@@ -643,16 +597,14 @@ refs(State_t *state, const char *path, Sfio_t *ip, File_t *ref)
                                                 buf,
                                                 sizeof(buf));
                                     else if (!strcasecmp(s, "host")
-                                             || !strcasecmp(s, "hosts"))
-                                    {
+                                             || !strcasecmp(s, "hosts")) {
                                         if (!state->hosts.size
                                             && (state->hosts.size = strlen(p))
                                             && !(state->hosts.data
                                                  = strdup(p)))
                                             error(ERROR_SYSTEM | 3,
                                                   "out of space [hosts]");
-                                    }
-                                    else if (!strcasecmp(s, "program-root"))
+                                    } else if (!strcasecmp(s, "program-root"))
                                         rootdir(state,
                                                 &state->programroot,
                                                 p,
@@ -661,8 +613,7 @@ refs(State_t *state, const char *path, Sfio_t *ip, File_t *ref)
                                     else if ((secure = strcasecmp(s, "secure")
                                                        ? 0
                                                        : SECURE)
-                                             || !strcasecmp(s, "dynamic"))
-                                    {
+                                             || !strcasecmp(s, "dynamic")) {
                                         FTS *fts;
                                         FTSENT *ent;
 
@@ -675,8 +626,7 @@ refs(State_t *state, const char *path, Sfio_t *ip, File_t *ref)
                                                        order);
                                         if (t)
                                             *t = '/';
-                                        if (fts)
-                                        {
+                                        if (fts) {
                                             while (ent = scan(state, fts))
                                                 add(state,
                                                     ent->fts_path + prefix,
@@ -690,19 +640,16 @@ refs(State_t *state, const char *path, Sfio_t *ip, File_t *ref)
                                                 "%s: directory read error",
                                                 p);
                                         }
-                                    }
-                                    else if (!strcasecmp(s, "ignore")
-                                             && (v = &state->ignore)
-                                             || state->external
-                                                && !strcasecmp(s, "internal")
-                                                && (v = &state->internal))
-                                    {
-                                        if (state->copy.size)
-                                        {
+                                    } else if (!strcasecmp(s, "ignore")
+                                               && (v = &state->ignore)
+                                               || state->external
+                                                  && !strcasecmp(s,
+                                                                 "internal")
+                                                  && (v = &state->internal)) {
+                                        if (state->copy.size) {
                                             s = state->copy.data;
                                             p += state->root.size;
-                                        }
-                                        else
+                                        } else
                                             s = "";
                                         if (t = strrchr(p, '/'))
                                             *t = 0;
@@ -730,8 +677,7 @@ refs(State_t *state, const char *path, Sfio_t *ip, File_t *ref)
                             if (c == '>')
                                 break;
                             r = a = 0;
-                        }
-                        else if (r == HIT)
+                        } else if (r == HIT)
                             STUFF(s, buf, c);
                         continue;
                     case '#':
@@ -750,10 +696,8 @@ refs(State_t *state, const char *path, Sfio_t *ip, File_t *ref)
                     case 'r':
                         if (r == HIT)
                             STUFF(s, buf, c);
-                        else if (!q)
-                        {
-                            if (r == 0)
-                            {
+                        else if (!q) {
+                            if (r == 0) {
                                 a = 10;
                                 r = a + 1;
                             }
@@ -794,29 +738,27 @@ refs(State_t *state, const char *path, Sfio_t *ip, File_t *ref)
                     }
                     break;
                 }
-            }
-            else if (flags != INTERNAL
-                     && (s == (buf + 5) && (buf[0] == 'F' || buf[0] == 'f')
-                         && (buf[1] == 'R' || buf[1] == 'r')
-                         && (buf[2] == 'A' || buf[2] == 'a')
-                         && (buf[3] == 'M' || buf[3] == 'm')
-                         && (buf[4] == 'E' || buf[4] == 'e')
-                         || s == (buf + 3) && (buf[0] == 'I' || buf[0] == 'i')
-                            && (buf[1] == 'M' || buf[1] == 'm')
-                            && (buf[2] == 'G' || buf[2] == 'g')
-                         || s == (buf + 6) && (buf[0] == 'S' || buf[0] == 's')
-                            && (buf[1] == 'C' || buf[1] == 'c')
-                            && (buf[2] == 'R' || buf[2] == 'r')
-                            && (buf[3] == 'I' || buf[3] == 'i')
-                            && (buf[4] == 'P' || buf[4] == 'p')
-                            && (buf[5] == 'T' || buf[5] == 't')))
-            {
+            } else if (flags != INTERNAL
+                       && (s == (buf + 5) && (buf[0] == 'F' || buf[0] == 'f')
+                           && (buf[1] == 'R' || buf[1] == 'r')
+                           && (buf[2] == 'A' || buf[2] == 'a')
+                           && (buf[3] == 'M' || buf[3] == 'm')
+                           && (buf[4] == 'E' || buf[4] == 'e')
+                           || s == (buf + 3)
+                              && (buf[0] == 'I' || buf[0] == 'i')
+                              && (buf[1] == 'M' || buf[1] == 'm')
+                              && (buf[2] == 'G' || buf[2] == 'g')
+                           || s == (buf + 6)
+                              && (buf[0] == 'S' || buf[0] == 's')
+                              && (buf[1] == 'C' || buf[1] == 'c')
+                              && (buf[2] == 'R' || buf[2] == 'r')
+                              && (buf[3] == 'I' || buf[3] == 'i')
+                              && (buf[4] == 'P' || buf[4] == 'p')
+                              && (buf[5] == 'T' || buf[5] == 't'))) {
                 s = buf;
                 r = 0;
-                for (;;)
-                {
-                    switch (c = sfgetc(ip))
-                    {
+                for (;;) {
+                    switch (c = sfgetc(ip)) {
                     case EOF:
                         return;
                     case '\'':
@@ -832,10 +774,8 @@ refs(State_t *state, const char *path, Sfio_t *ip, File_t *ref)
                     case ' ':
                     case '\t':
                     case '\n':
-                        if (!q)
-                        {
-                            if (r == HIT)
-                            {
+                        if (!q) {
+                            if (r == HIT) {
                                 *s = 0;
                                 s = buf;
                                 add(state, s, flags, path, prefix, ref);
@@ -843,8 +783,7 @@ refs(State_t *state, const char *path, Sfio_t *ip, File_t *ref)
                             if (c == '>')
                                 break;
                             r = 0;
-                        }
-                        else if (r == HIT)
+                        } else if (r == HIT)
                             STUFF(s, buf, c);
                         continue;
                     case 'S':
@@ -881,31 +820,23 @@ refs(State_t *state, const char *path, Sfio_t *ip, File_t *ref)
                     }
                     break;
                 }
-            }
-            else
-            {
-                if (state->external)
-                {
-                    if (flags == EXTERNAL)
-                    {
+            } else {
+                if (state->external) {
+                    if (flags == EXTERNAL) {
                         if (s == (buf + sizeof(internal) - 3)
-                            && strneq(buf, internal + 1, sizeof(internal) - 3))
-                        {
+                            && strneq(
+                               buf, internal + 1, sizeof(internal) - 3)) {
                             flags = INTERNAL;
                             ref->flags |= FILTER;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         if (s == (buf + sizeof(external) - 3)
                             && strneq(buf, external + 1, sizeof(external) - 3))
                             flags = EXTERNAL;
                     }
                 }
-                for (;;)
-                {
-                    switch (c = sfgetc(ip))
-                    {
+                for (;;) {
+                    switch (c = sfgetc(ip)) {
                     case EOF:
                         return;
                     case '\'':
@@ -927,11 +858,9 @@ refs(State_t *state, const char *path, Sfio_t *ip, File_t *ref)
             }
             continue;
         case '[':
-            if (perlwarn && (c = sfgetc(ip)) != EOF)
-            {
+            if (perlwarn && (c = sfgetc(ip)) != EOF) {
                 sfungetc(ip, c);
-                switch (c)
-                {
+                switch (c) {
                 case '-':
                 case '+':
                 case '!':
@@ -967,13 +896,11 @@ filter(State_t *state, Sfio_t *ip, Sfio_t *op)
     size_t lines = 0;
     int head = 1;
 
-    for (;;)
-    {
+    for (;;) {
         if (!(s = sfgetr(ip, '\n', head)))
             break;
         if ((n = sfvalue(ip)) != sizeof(internal)
-            || !strneq(s, internal, sizeof(internal) - 1))
-        {
+            || !strneq(s, internal, sizeof(internal) - 1)) {
             if (head)
                 sfputr(op, s, '\n');
             else
@@ -981,15 +908,12 @@ filter(State_t *state, Sfio_t *ip, Sfio_t *op)
             lines++;
             if (head && strgrpmatch(s, "</HEAD>", NiL, 0, STR_ICASE))
                 head = 0;
-        }
-        else
-        {
+        } else {
             while ((s = sfgetr(ip, '\n', 0))
                    && (sfvalue(ip) != sizeof(external)
                        || !strneq(s, external, sizeof(external) - 1)))
                 ;
-            if (!s)
-            {
+            if (!s) {
                 if (head)
                     return 0;
                 break;
@@ -1032,10 +956,8 @@ main(int argc, char **argv)
         error(ERROR_SYSTEM | 3, "out of space [dict]");
     state->exec = 1;
     state->perlwarn = 1;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             state->all = opt_info.num;
             continue;
@@ -1118,8 +1040,7 @@ main(int argc, char **argv)
         state->skip.size = strlen(state->skip.data = SKIP);
     if (!state->user.size)
         state->user.size = strlen(state->user.data = fmtuid(geteuid()));
-    if (!state->root.size || *state->root.data != '/')
-    {
+    if (!state->root.size || *state->root.data != '/') {
         www[0] = ( const char * )state->index.data;
         if (state->root.size)
             www[1] = ( const char * )state->root.data;
@@ -1127,12 +1048,10 @@ main(int argc, char **argv)
             error(3, "%s: unknown user", state->user.data);
         s = pwd->pw_dir;
         for (i = 0; i < elementsof(www); i++)
-            if (www[i])
-            {
+            if (www[i]) {
                 n = sfsprintf(
                 state->buf, sizeof(state->buf) - 1, "%s/%s", s, www[i]);
-                if (!access(state->buf, F_OK))
-                {
+                if (!access(state->buf, F_OK)) {
                     if (i == 0)
                         n = strlen(s);
                     else
@@ -1146,8 +1065,7 @@ main(int argc, char **argv)
     }
     while (s = *argv++)
         add(state, s, EXTERNAL | VERBOSE, NiL, 0, NiL);
-    if (!state->more)
-    {
+    if (!state->more) {
         sfsprintf(state->buf,
                   sizeof(state->buf) - 1,
                   "%s/%s",
@@ -1155,20 +1073,16 @@ main(int argc, char **argv)
                   state->index.data);
         add(state, state->buf, EXTERNAL | VERBOSE, NiL, 0, NiL);
     }
-    while (state->more)
-    {
+    while (state->more) {
         state->more = 0;
         for (fp = ( File_t * )dtfirst(state->files); fp;
-             fp = ( File_t * )dtnext(state->files, fp))
-        {
-            if (!(fp->flags & SCANNED))
-            {
+             fp = ( File_t * )dtnext(state->files, fp)) {
+            if (!(fp->flags & SCANNED)) {
                 fp->flags |= SCANNED;
                 if (streq(fp->name, "-") || streq(fp->name, "/dev/stdin")
                     || streq(fp->name, "/dev/fd/0"))
                     ip = sfstdin;
-                else if (!(ip = sfopen(NiL, fp->name, "r")))
-                {
+                else if (!(ip = sfopen(NiL, fp->name, "r"))) {
                     fp->flags |= MISSING;
                     if (state->warn || (fp->flags & VERBOSE))
                         error(ERROR_SYSTEM | 2, "%s: cannot read", fp->name);
@@ -1180,13 +1094,11 @@ main(int argc, char **argv)
             }
         }
     }
-    if (state->copy.size)
-    {
+    if (state->copy.size) {
         p = state->buf;
         for (fp = ( File_t * )dtfirst(state->files); fp;
              fp = ( File_t * )dtnext(state->files, fp))
-            if (!(fp->flags & (CHECKED | COPIED | MISSING)))
-            {
+            if (!(fp->flags & (CHECKED | COPIED | MISSING))) {
                 fp->flags |= CHECKED;
                 sfsprintf(p,
                           sizeof(state->buf) - 1,
@@ -1200,22 +1112,17 @@ main(int argc, char **argv)
                     error(ERROR_SYSTEM | 3, "%s: cannot stat", fp->name);
                 if (state->limit.size && !strmatch(p, state->limit.data))
                     continue;
-                if (stat(p, &ts))
-                {
+                if (stat(p, &ts)) {
                     ts.st_mtime = 0;
                     ts.st_mode = 0;
                 }
                 if (strmatch(p, "*/cgi-bin/*|*.cgi|*.html"))
                     fp->flags |= COPY;
-                if (!state->exec)
-                {
-                    if (fp->flags & DIRECTORY)
-                    {
+                if (!state->exec) {
+                    if (fp->flags & DIRECTORY) {
                         if (!ts.st_mtime)
                             sfprintf(sfstdout, " mkdir %s\n", p);
-                    }
-                    else if (state->force || st.st_mtime != ts.st_mtime)
-                    {
+                    } else if (state->force || st.st_mtime != ts.st_mtime) {
                         if (fp->flags & FILTER)
                             sfprintf(sfstdout, "filter %s\n", p);
                         else if (state->symlink && !(fp->flags & COPY))
@@ -1223,11 +1130,8 @@ main(int argc, char **argv)
                         else
                             sfprintf(sfstdout, "  copy %s\n", p);
                     }
-                }
-                else if (fp->flags & DIRECTORY)
-                {
-                    if (!ts.st_mtime)
-                    {
+                } else if (fp->flags & DIRECTORY) {
+                    if (!ts.st_mtime) {
                         if (state->verbose)
                             sfprintf(sfstdout, " mkdir %s\n", p);
                         if (mkdir(p,
@@ -1237,11 +1141,8 @@ main(int argc, char **argv)
                                   "%s: cannot create directory",
                                   p);
                     }
-                }
-                else if (state->symlink && !(fp->flags & (COPY | FILTER)))
-                {
-                    if (st.st_mtime != ts.st_mtime)
-                    {
+                } else if (state->symlink && !(fp->flags & (COPY | FILTER))) {
+                    if (st.st_mtime != ts.st_mtime) {
                         if (state->verbose)
                             sfprintf(sfstdout, " ln -s %s %s\n", fp->name, p);
                         if (ts.st_mtime)
@@ -1252,26 +1153,18 @@ main(int argc, char **argv)
                                   fp->name,
                                   p);
                     }
-                }
-                else if (state->force || st.st_mtime != ts.st_mtime)
-                {
+                } else if (state->force || st.st_mtime != ts.st_mtime) {
                     if (!(ip = sfopen(NiL, fp->name, "r")))
                         error(ERROR_SYSTEM | 2, "%s: cannot read", fp->name);
-                    else if (!(op = sfopen(NiL, p, "w")))
-                    {
+                    else if (!(op = sfopen(NiL, p, "w"))) {
                         error(ERROR_SYSTEM | 2, "%s: cannot write", p);
                         sfclose(ip);
-                    }
-                    else
-                    {
-                        if (fp->flags & FILTER)
-                        {
+                    } else {
+                        if (fp->flags & FILTER) {
                             if (state->verbose)
                                 sfprintf(sfstdout, "filter %s\n", p);
                             n = filter(state, ip, op);
-                        }
-                        else
-                        {
+                        } else {
                             if (state->verbose)
                                 sfprintf(sfstdout, "  copy %s\n", p);
                             if (sfmove(ip, op, SF_UNBOUND, -1) >= 0
@@ -1286,8 +1179,7 @@ main(int argc, char **argv)
                         if (sfclose(op))
                             error(ERROR_SYSTEM | 2, "%s: write error", p);
                         sfclose(ip);
-                        if (n > 0)
-                        {
+                        if (n > 0) {
                             if ((st.st_mode &= S_IPERM)
                                 != (ts.st_mode &= S_IPERM)
                                 && chmod(p, st.st_mode))
@@ -1296,9 +1188,7 @@ main(int argc, char **argv)
                             if (touch(p, st.st_mtime, st.st_mtime, 0))
                                 error(
                                 ERROR_SYSTEM | 2, "%s: cannot set times", p);
-                        }
-                        else if (!n)
-                        {
+                        } else if (!n) {
                             if (state->verbose)
                                 sfprintf(sfstdout,
                                          " %s %s\n",
@@ -1312,8 +1202,7 @@ main(int argc, char **argv)
                     }
                 }
             }
-        if (state->unreferenced)
-        {
+        if (state->unreferenced) {
             if (!(fts = fts_open(( char ** )state->copy.data,
                                  FTS_ONEPATH | FTS_META | FTS_PHYSICAL
                                  | FTS_NOPREORDER,
@@ -1327,8 +1216,7 @@ main(int argc, char **argv)
                     && (!state->ignore.size
                         || !strmatch(ent->fts_path, state->ignore.data))
                     && (!state->limit.size
-                        || strmatch(ent->fts_path, state->limit.data)))
-                {
+                        || strmatch(ent->fts_path, state->limit.data))) {
                     if (state->verbose || !state->exec)
                         sfprintf(sfstdout,
                                  " %s %s\n",
@@ -1345,14 +1233,11 @@ main(int argc, char **argv)
                       "%s: directory read error",
                       state->copy.data);
         }
-    }
-    else if (state->unreferenced)
-    {
+    } else if (state->unreferenced) {
         i = 0;
         if (state->documentroot.data)
             dirs[i++] = state->documentroot.data;
-        else
-        {
+        else {
             if (!state->root.data)
                 state->root.size = strlen(state->root.data = ".");
             dirs[i++] = state->root.data;
@@ -1373,10 +1258,9 @@ main(int argc, char **argv)
                     || state->skip.size
                        && strmatch(ent->fts_name, state->skip.data)
                     || state->ignore.size
-                       && strmatch(ent->fts_path, state->ignore.data)))
-            {
-                if (state->strict || !streq(ent->fts_name, state->index.data))
-                {
+                       && strmatch(ent->fts_path, state->ignore.data))) {
+                if (state->strict
+                    || !streq(ent->fts_name, state->index.data)) {
                     if (!state->remove)
                         sfprintf(
                         sfstdout,
@@ -1384,8 +1268,7 @@ main(int argc, char **argv)
                         fmtquote(
                         ent->fts_path, "\"", "\"", ent->fts_pathlen, 0));
                     else if (!state->limit.size
-                             || strmatch(ent->fts_path, state->limit.data))
-                    {
+                             || strmatch(ent->fts_path, state->limit.data)) {
                         if (state->verbose || !state->exec)
                             sfprintf(sfstdout,
                                      " %s %s\n",
@@ -1399,9 +1282,7 @@ main(int argc, char **argv)
                                   "%s: cannot remove",
                                   ent->fts_path);
                     }
-                }
-                else if (s = strrchr(ent->fts_path, '/'))
-                {
+                } else if (s = strrchr(ent->fts_path, '/')) {
                     *s = 0;
                     add(state, ent->fts_path, COPIED, NiL, 0, NiL);
                     *s = '/';
@@ -1410,18 +1291,14 @@ main(int argc, char **argv)
         if (fts_close(fts))
             error(
             ERROR_SYSTEM | 3, "%s: directory read error", state->root.data);
-    }
-    else
-    {
+    } else {
         for (fp = ( File_t * )dtfirst(state->files); fp;
              fp = ( File_t * )dtnext(state->files, fp))
-            if (state->all || (fp->flags & MISSING) == state->missing)
-            {
+            if (state->all || (fp->flags & MISSING) == state->missing) {
                 sfprintf(sfstdout,
                          "%s",
                          fmtquote(fp->name, "\"", "\"", strlen(fp->name), 0));
-                if (state->dependents && fp->refs)
-                {
+                if (state->dependents && fp->refs) {
                     sfputc(sfstdout, ' ');
                     sfputc(sfstdout, ':');
                     for (lp = fp->refs; lp; lp = lp->next)

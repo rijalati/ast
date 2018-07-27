@@ -45,14 +45,11 @@ getsubopt(char **op, char *const *tp, char **vp)
     char *s;
     char *v;
 
-    if (*(b = *op))
-    {
+    if (*(b = *op)) {
         v = 0;
         s = b;
-        for (;;)
-        {
-            switch (*s++)
-            {
+        for (;;) {
+            switch (*s++) {
             case 0:
                 s--;
                 break;
@@ -60,8 +57,7 @@ getsubopt(char **op, char *const *tp, char **vp)
                 *(s - 1) = 0;
                 break;
             case '=':
-                if (!v)
-                {
+                if (!v) {
                     *(s - 1) = 0;
                     v = s;
                 }

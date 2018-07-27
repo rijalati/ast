@@ -47,8 +47,7 @@ ssize_t size;      /* size of requested memory	*/
             break;
 
     if (!u && size > 0 && /* try making a new entry */
-        (u = KPVALLOC(vm, sizeof(Vmuser_t) + size, vm->meth.allocf)))
-    {
+        (u = KPVALLOC(vm, sizeof(Vmuser_t) + size, vm->meth.allocf))) {
         memset(( Void_t * )(u + 1), 0, size);
         u->dtid = dtid;
         u->size = size;

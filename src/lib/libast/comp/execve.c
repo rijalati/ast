@@ -58,13 +58,11 @@ execve(const char *path, char *const argv[], char *const arge[])
     while (waitpid(childpid, &status, 0) == -1)
         if (errno != EINTR)
             return (-1);
-    if (WIFSIGNALED(status))
-    {
+    if (WIFSIGNALED(status)) {
         signal(WTERMSIG(status), SIG_DFL);
         kill(getpid(), WTERMSIG(status));
         pause();
-    }
-    else
+    } else
         status = WEXITSTATUS(status);
     exit(status);
 }

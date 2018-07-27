@@ -68,8 +68,7 @@ md5_encode(unsigned char *output, UINT4 *input, unsigned int len)
     unsigned int i;
     unsigned int j;
 
-    for (i = j = 0; j < len; i++, j += 4)
-    {
+    for (i = j = 0; j < len; i++, j += 4) {
         output[j] = ( unsigned char )(input[i] & 0xff);
         output[j + 1] = ( unsigned char )((input[i] >> 8) & 0xff);
         output[j + 2] = ( unsigned char )((input[i] >> 16) & 0xff);
@@ -112,8 +111,7 @@ md5_open(const Method_t *method, const char *name)
 {
     Md5_t *p;
 
-    if (p = newof(0, Md5_t, 1, 0))
-    {
+    if (p = newof(0, Md5_t, 1, 0)) {
         p->method = ( Method_t * )method;
         p->name = name;
         md5_init(( Sum_t * )p);
@@ -287,15 +285,13 @@ md5_block(Sum_t *p, const void *s, size_t inputLen)
     partLen = 64 - index;
 
     /* transform as many times as possible */
-    if (inputLen >= partLen)
-    {
+    if (inputLen >= partLen) {
         memcpy(&context->buffer[index], input, partLen);
         md5_transform(context->state, context->buffer);
         for (i = partLen; i + 63 < inputLen; i += 64)
             md5_transform(context->state, &input[i]);
         index = 0;
-    }
-    else
+    } else
         i = 0;
 
     /* buffer remaining input */

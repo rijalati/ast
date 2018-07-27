@@ -137,18 +137,15 @@ b_xargs(int argc, char **argv, Shbltin_t *context)
     CMDDISC(&xargs.disc, CMD_CHECKED | CMD_EMPTY, errorf);
     xargs.disc.runf = run;
     xargs.context = context;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'e':
             /*
              * backwards compatibility requires no space between
              * option and value
              */
 
-            if (opt_info.arg == argv[opt_info.index - 1])
-            {
+            if (opt_info.arg == argv[opt_info.index - 1]) {
                 opt_info.arg = 0;
                 opt_info.index--;
             }
@@ -162,8 +159,7 @@ b_xargs(int argc, char **argv, Shbltin_t *context)
              * option and value
              */
 
-            if (opt_info.arg == argv[opt_info.index - 1])
-            {
+            if (opt_info.arg == argv[opt_info.index - 1]) {
                 opt_info.arg = 0;
                 opt_info.index--;
             }
@@ -179,8 +175,7 @@ b_xargs(int argc, char **argv, Shbltin_t *context)
              * option and value
              */
 
-            if (opt_info.arg == argv[opt_info.index - 1])
-            {
+            if (opt_info.arg == argv[opt_info.index - 1]) {
                 opt_info.arg = 0;
                 opt_info.index--;
             }
@@ -228,10 +223,8 @@ b_xargs(int argc, char **argv, Shbltin_t *context)
     argv += opt_info.index;
     if (error_info.errors)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
-    if (argv[0])
-    {
-        if (context)
-        {
+    if (argv[0]) {
+        if (context) {
             char *av[4];
 
             av[0] = "whence";
@@ -240,9 +233,7 @@ b_xargs(int argc, char **argv, Shbltin_t *context)
             av[3] = 0;
             if (run(3, av, &xargs.disc))
                 error(3, "%s: command not found", argv[0]);
-        }
-        else
-        {
+        } else {
             char buf[PATH_MAX];
 
             if (!pathpath(
@@ -250,15 +241,12 @@ b_xargs(int argc, char **argv, Shbltin_t *context)
                 error(3, "%s: command not found", argv[0]);
         }
     }
-    if (xargs.cmd = cmdopen(argv, argmax, size, insert, &xargs.disc))
-    {
+    if (xargs.cmd = cmdopen(argv, argmax, size, insert, &xargs.disc)) {
         sfopen(sfstdin, NiL, "rt");
         error_info.line = 1;
         if (term >= 0)
-            while (!sh_checksig(context))
-            {
-                if (!(s = sfgetr(sfstdin, term, 0)))
-                {
+            while (!sh_checksig(context)) {
+                if (!(s = sfgetr(sfstdin, term, 0))) {
                     if (sfvalue(sfstdin) > 0)
                         error(2, "last argument incomplete");
                     break;
@@ -269,21 +257,16 @@ b_xargs(int argc, char **argv, Shbltin_t *context)
             }
         else if (!(sp = sfstropen()))
             error(ERROR_SYSTEM | 2, "out of space [arg]");
-        else
-        {
-            while (!sh_checksig(context))
-            {
-                switch (c = sfgetc(sfstdin))
-                {
+        else {
+            while (!sh_checksig(context)) {
+                switch (c = sfgetc(sfstdin)) {
                 case '"':
                 case '\'':
                     q = c;
-                    while ((c = sfgetc(sfstdin)) != q)
-                    {
+                    while ((c = sfgetc(sfstdin)) != q) {
                         if (c == EOF)
                             goto arg;
-                        if (c == '\n')
-                        {
+                        if (c == '\n') {
                             error(1, "missing %c quote", q);
                             error_info.line++;
                             goto arg;
@@ -292,8 +275,7 @@ b_xargs(int argc, char **argv, Shbltin_t *context)
                     }
                     continue;
                 case '\\':
-                    if ((c = sfgetc(sfstdin)) == EOF)
-                    {
+                    if ((c = sfgetc(sfstdin)) == EOF) {
                         if (sfstrtell(sp))
                             goto arg;
                         break;
@@ -314,8 +296,7 @@ b_xargs(int argc, char **argv, Shbltin_t *context)
                         error(ERROR_SYSTEM | 3, "out of space");
                     if (eof && streq(s, eof))
                         break;
-                    if (c || insert)
-                    {
+                    if (c || insert) {
                         if (lines && c > 1 && isspace(s[c - 2]))
                             cmdarg(xargs.cmd, 0, -1);
                         cmdarg(xargs.cmd, s, c);
@@ -334,8 +315,7 @@ b_xargs(int argc, char **argv, Shbltin_t *context)
         if (sferror(sfstdin))
             error(ERROR_SYSTEM | 2, "input read error");
         cmdclose(xargs.cmd);
-    }
-    else if (!error_info.errors)
+    } else if (!error_info.errors)
         error(ERROR_SYSTEM | 2, "out of space");
     return error_info.errors != 0;
 }

@@ -67,35 +67,29 @@ pathcat_20100601(const char *dirs,
 
     s = path;
     e = path + size;
-    while (*dirs && *dirs != sep)
-    {
+    while (*dirs && *dirs != sep) {
         if (s >= e)
             return 0;
         *s++ = *dirs++;
     }
-    if (s != path)
-    {
+    if (s != path) {
         if (s >= e)
             return 0;
         *s++ = '/';
     }
-    if (a)
-    {
+    if (a) {
         while (*s = *a++)
             if (++s >= e)
                 return 0;
-        if (b)
-        {
+        if (b) {
             if (s >= e)
                 return 0;
             *s++ = '/';
         }
-    }
-    else if (!b)
+    } else if (!b)
         b = ".";
     if (b)
-        do
-        {
+        do {
             if (s >= e)
                 return 0;
         } while (*s++ = *b++);

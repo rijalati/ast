@@ -106,8 +106,7 @@ svc_connect(void *handle, int fd, Cs_id_t *id, int clone, char **argv)
     if (!argv)
         return (-1);
     while ((s = *argv++) && *s != '/')
-        switch (*s)
-        {
+        switch (*s) {
         case 'm':
             flags |= CAT_MSG;
             break;
@@ -120,8 +119,7 @@ svc_connect(void *handle, int fd, Cs_id_t *id, int clone, char **argv)
                          | S_IWOTH))
               < 0)
         return (-1);
-    if (fstat(ad, &st))
-    {
+    if (fstat(ad, &st)) {
         close(ad);
         return (-1);
     }
@@ -130,8 +128,7 @@ svc_connect(void *handle, int fd, Cs_id_t *id, int clone, char **argv)
     if (!(fp = ( File_t * )hashlook(state->files,
                                     ( char * )&fid,
                                     HASH_CREATE | HASH_SIZE(sizeof(File_t)),
-                                    NiL)))
-    {
+                                    NiL))) {
         close(ad);
         return (-1);
     }
@@ -160,22 +157,17 @@ svc_read(void *handle, int fd)
     File_t *fp = state->cat[fd];
     int ok;
 
-    if (fp->flags & CAT_MSG)
-    {
-        if (cspeek(fd, state->buf, MSG_SIZE_SIZE) == MSG_SIZE_SIZE)
-        {
+    if (fp->flags & CAT_MSG) {
+        if (cspeek(fd, state->buf, MSG_SIZE_SIZE) == MSG_SIZE_SIZE) {
             ok = 1;
             if ((m = msggetsize(state->buf)) > MSG_SIZE_SIZE)
-                do
-                {
+                do {
                     i = (m > sizeof(state->buf)) ? sizeof(state->buf) : m;
-                    if ((n = csread(fd, state->buf, i, CS_EXACT)) <= 0)
-                    {
+                    if ((n = csread(fd, state->buf, i, CS_EXACT)) <= 0) {
                         ok = 0;
                         memzero(state->buf, n = i);
                     }
-                    if (cswrite(fp->fd, state->buf, n) != n)
-                    {
+                    if (cswrite(fp->fd, state->buf, n) != n) {
                         ok = 0;
                         break;
                     }
@@ -183,12 +175,10 @@ svc_read(void *handle, int fd)
             if (ok)
                 return (0);
         }
-    }
-    else if ((n = csread(fd, state->buf, sizeof(state->buf), CS_LIMIT)) > 0
-             && cswrite(fp->fd, state->buf, n) == n)
+    } else if ((n = csread(fd, state->buf, sizeof(state->buf), CS_LIMIT)) > 0
+               && cswrite(fp->fd, state->buf, n) == n)
         return (0);
-    if (!--fp->reference)
-    {
+    if (!--fp->reference) {
         close(fp->fd);
         hashlook(state->files, fp->name, HASH_DELETE, NiL);
     }
@@ -205,8 +195,7 @@ svc_timeout(void *handle)
 {
     State_t *state = ( State_t * )handle;
 
-    if (!state->active)
-    {
+    if (!state->active) {
         if (state->dormant)
             exit(0);
         state->dormant = 1;

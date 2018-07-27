@@ -62,8 +62,7 @@ ptstats(Pt_t *a, Sfio_t *sp)
 
     );
     for (i = n = 0; i < elementsof(prefixes); i++)
-        if (prefixes[i])
-        {
+        if (prefixes[i]) {
             n++;
             total_prefixes += prefixes[i];
             tc = ( int )(( double )(sizeof(tot) - (sizeof(S) - 10))

@@ -79,20 +79,15 @@ lextok(char *s, int c, char **p, int *n)
     char *b;
     char *u;
 
-    if (*s == '(' && (!c || c == ' ' || c == '\n'))
-    {
+    if (*s == '(' && (!c || c == ' ' || c == '\n')) {
         q = strtol(s + 1, &b, 10);
-        if (*b == ':')
-        {
-            if (*(t = ++b + q) == ')' || *t == '\t')
-            {
+        if (*b == ':') {
+            if (*(t = ++b + q) == ')' || *t == '\t') {
                 s = t;
                 *s++ = 0;
                 goto end;
             }
-        }
-        else if (strneq(b, "null)", 5))
-        {
+        } else if (strneq(b, "null)", 5)) {
             s = b + 5;
             b = 0;
             goto end;
@@ -101,16 +96,12 @@ lextok(char *s, int c, char **p, int *n)
     b = s;
     q = 0;
     t = 0;
-    for (;;)
-    {
-        if (!*s || !q && *s == '\n')
-        {
-            if (!q)
-            {
+    for (;;) {
+        if (!*s || !q && *s == '\n') {
+            if (!q) {
                 if (!c || c == ' ' || c == '\n')
                     (*n)++;
-                else
-                {
+                else {
                     s = b;
                     b = empty;
                     break;
@@ -119,56 +110,41 @@ lextok(char *s, int c, char **p, int *n)
             if (t)
                 *t = 0;
             break;
-        }
-        else if (*s == '\\')
-        {
-            if (!q && !isdigit(*(s + 1)) || *(s + 1) == q)
-            {
+        } else if (*s == '\\') {
+            if (!q && !isdigit(*(s + 1)) || *(s + 1) == q) {
                 u = s;
                 if (!*++s || *s == '\n' && (!*++s || *s == '\n'))
                     continue;
-                if (p)
-                {
+                if (p) {
                     if (b == u)
                         b = s;
                     else if (!t)
                         t = u;
                 }
-            }
-            else
-            {
+            } else {
                 if (t)
                     *t++ = *s;
                 s++;
             }
-        }
-        else if (q)
-        {
-            if (*s == q)
-            {
+        } else if (q) {
+            if (*s == q) {
                 q = 0;
                 if (!t)
                     t = s;
                 s++;
                 continue;
-            }
-            else if (*s == '\r')
+            } else if (*s == '\r')
                 *s = '\n';
-        }
-        else if (*s == '"' || *s == '\'')
-        {
+        } else if (*s == '"' || *s == '\'') {
             q = *s++;
-            if (p)
-            {
+            if (p) {
                 if (b == (s - 1))
                     b = s;
                 else if (!t)
                     t = s - 1;
             }
             continue;
-        }
-        else if (*s == c || c == ' ' && *s == '\t')
-        {
+        } else if (*s == c || c == ' ' && *s == '\t') {
             *s++ = 0;
             if (t)
                 *t = 0;
@@ -214,18 +190,15 @@ tokscan(char *s, char **nxt, const char *fmt, ...)
     va_list prv_ap;
 
     va_start(ap, fmt);
-    if (!*s || *s == '\n')
-    {
+    if (!*s || *s == '\n') {
         skip = s;
         s = empty;
     }
     f = ( char * )fmt;
     for (;;)
-        switch (c = *f++)
-        {
+        switch (c = *f++) {
         case 0:
-            if (f = prv_f)
-            {
+            if (f = prv_f) {
                 prv_f = 0;
                 /* prv_ap value is guarded by prv_f */
                 va_copy(ap, prv_ap);
@@ -238,8 +211,7 @@ tokscan(char *s, char **nxt, const char *fmt, ...)
             break;
         case '%':
             onum = num;
-            switch (c = *f++)
-            {
+            switch (c = *f++) {
             case 'h':
             case 'l':
                 q = c;
@@ -249,8 +221,7 @@ tokscan(char *s, char **nxt, const char *fmt, ...)
                 q = 0;
                 break;
             }
-            switch (c)
-            {
+            switch (c) {
             case 0:
             case '%':
                 f--;
@@ -272,13 +243,10 @@ tokscan(char *s, char **nxt, const char *fmt, ...)
                 continue;
             case 'c':
                 p_char = va_arg(ap, char *);
-                if (!(c = *s) || c == '\n')
-                {
+                if (!(c = *s) || c == '\n') {
                     if (p_char)
                         *p_char = 0;
-                }
-                else
-                {
+                } else {
                     if (p_char)
                         *p_char = c;
                     s++;
@@ -290,8 +258,7 @@ tokscan(char *s, char **nxt, const char *fmt, ...)
             case 'o':
             case 'u':
             case 'x':
-                switch (c)
-                {
+                switch (c) {
                 case 'd':
                     c = 10;
                     break;
@@ -306,15 +273,12 @@ tokscan(char *s, char **nxt, const char *fmt, ...)
                     c = 16;
                     break;
                 }
-                if (!*s || *s == '\n')
-                {
+                if (!*s || *s == '\n') {
                     val = 0;
                     p_char = s;
-                }
-                else
+                } else
                     val = strtol(s, &p_char, c);
-                switch (q)
-                {
+                switch (q) {
                 case 'h':
                     if (p_short = va_arg(ap, short *))
                         *p_short = ( short )val;
@@ -328,25 +292,21 @@ tokscan(char *s, char **nxt, const char *fmt, ...)
                         *p_int = ( int )val;
                     break;
                 }
-                if (s != p_char)
-                {
+                if (s != p_char) {
                     s = p_char;
                     num++;
                 }
                 break;
             case 'f':
             case 'g':
-                if (!*s || *s == '\n')
-                {
+                if (!*s || *s == '\n') {
                     dval = 0;
                     p_char = s;
-                }
-                else
+                } else
                     dval = strtod(s, &p_char);
                 if (p_double = va_arg(ap, double *))
                     *p_double = dval;
-                if (s != p_char)
-                {
+                if (s != p_char) {
                     s = p_char;
                     num++;
                 }
@@ -355,12 +315,10 @@ tokscan(char *s, char **nxt, const char *fmt, ...)
                 p_string = va_arg(ap, char **);
                 if (q = *f)
                     f++;
-                if (!*s || *s == '\n')
-                {
+                if (!*s || *s == '\n') {
                     if (p_string)
                         *p_string = s;
-                }
-                else
+                } else
                     s = lextok(s, q, p_string, &num);
                 break;
             case 'v':
@@ -368,13 +326,11 @@ tokscan(char *s, char **nxt, const char *fmt, ...)
                 c = va_arg(ap, int);
                 if (q = *f)
                     f++;
-                if ((!*s || *s == '\n') && p_string)
-                {
+                if ((!*s || *s == '\n') && p_string) {
                     *p_string = 0;
                     p_string = 0;
                 }
-                while (*s && *s != '\n' && --c > 0)
-                {
+                while (*s && *s != '\n' && --c > 0) {
                     s = lextok(s, q, p_string, &num);
                     if (p_string)
                         p_string++;
@@ -385,8 +341,7 @@ tokscan(char *s, char **nxt, const char *fmt, ...)
             }
             if (skip)
                 num = onum;
-            else if (num == onum)
-            {
+            else if (num == onum) {
                 if (!num)
                     num = -1;
                 skip = s;
@@ -396,8 +351,7 @@ tokscan(char *s, char **nxt, const char *fmt, ...)
         case '\n':
             goto done;
         default:
-            if ((*s++ != c) && !skip)
-            {
+            if ((*s++ != c) && !skip) {
                 skip = s - 1;
                 s = empty;
             }

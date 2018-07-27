@@ -48,8 +48,7 @@ ppset(long *p, long op, int val)
 
     r = p == &pp.state ? &pp.ro_state
                        : p == &pp.mode ? &pp.ro_mode : &pp.ro_option;
-    if ((pp.mode & INIT) && pp.in->type == IN_FILE && (*r & op))
-    {
+    if ((pp.mode & INIT) && pp.in->type == IN_FILE && (*r & op)) {
         debug((-7,
                "set %s %s skipped -- readonly",
                p == &pp.state ? "state" : p == &pp.mode ? "mode" : "option",
@@ -60,8 +59,7 @@ ppset(long *p, long op, int val)
     }
     if (!pp.initialized && (!(pp.mode & INIT) || !(pp.mode & BUILTIN))
         && (p != &pp.mode || !(op & BUILTIN))
-        && (p != &pp.option || !(op & PREDEFINED)))
-    {
+        && (p != &pp.option || !(op & PREDEFINED))) {
         *r |= op;
         debug((-7,
                "set %s %s readonly",
@@ -91,8 +89,7 @@ inithash(Hash_table_t *tab, struct ppkeyword *key)
 {
     char *s;
 
-    for (; s = key->name; key++)
-    {
+    for (; s = key->name; key++) {
         if (!ppisid(*s))
             s++;
         hashput(tab, s, key->value);
@@ -112,8 +109,7 @@ ppkeyname(int value, int dir)
     if (dir && ppiskey(directives, value, p)
         || !dir
            && (ppiskey(options, value, p) || ppiskey(predicates, value, p)
-               || ppiskey(variables, value, p)))
-    {
+               || ppiskey(variables, value, p))) {
         s = (p + (value - p->value))->name;
         return s + !ppisid(*s);
     }
@@ -146,12 +142,9 @@ ppmapinclude(char *file, char *s)
     old_state = pp.state;
     if (s)
         PUSH_BUFFER("mapinclude", s, 1);
-    else if (file)
-    {
-        if (*file == '-')
-        {
-            if (!error_info.file)
-            {
+    else if (file) {
+        if (*file == '-') {
+            if (!error_info.file) {
                 error(1,
                       "%s: input file name required for %s ignore",
                       file,
@@ -160,14 +153,11 @@ ppmapinclude(char *file, char *s)
             }
             s = t = stpcpy(pp.tmpbuf, error_info.file);
             c = *++file;
-            for (;;)
-            {
-                if (s <= pp.tmpbuf || *s == '/')
-                {
+            for (;;) {
+                if (s <= pp.tmpbuf || *s == '/') {
                     s = t;
                     break;
-                }
-                else if (*s == c)
+                } else if (*s == c)
                     break;
                 s--;
             }
@@ -177,8 +167,7 @@ ppmapinclude(char *file, char *s)
         if ((fd = ppsearch(file, INC_LOCAL, SEARCH_INCLUDE)) < 0)
             return;
         PUSH_FILE(file, fd);
-    }
-    else
+    } else
         return;
 #if CATSTRINGS
     pp.state
@@ -189,21 +178,17 @@ ppmapinclude(char *file, char *s)
     pp.level++;
     flags = INC_MAPALL;
     fp = mp = 0;
-    for (;;)
-    {
-        switch (token = pplex())
-        {
+    for (;;) {
+        switch (token = pplex()) {
         case 0:
         case T_STRING:
         case T_HEADER:
-            if (fp)
-            {
+            if (fp) {
                 fp->guard = INC_IGNORE;
                 for (dp = pp.firstdir->next; dp; dp = dp->next)
                     if (dp->name && (c = strlen(dp->name))
                         && !strncmp(dp->name, fp->name, c)
-                        && fp->name[c] == '/')
-                    {
+                        && fp->name[c] == '/') {
                         ppsetfile(fp->name + c + 1)->guard = INC_IGNORE;
                         break;
                     }
@@ -212,8 +197,7 @@ ppmapinclude(char *file, char *s)
                 break;
             pathcanon(pp.token, 0, 0);
             fp = ppsetfile(pp.token);
-            if (mp)
-            {
+            if (mp) {
                 mp->flags |= flags;
                 if (streq(fp->name, "."))
                     mp->flags |= INC_MAPNOLOCAL;
@@ -221,8 +205,7 @@ ppmapinclude(char *file, char *s)
                     mp->bound[index] = fp;
 
                 fp = mp = 0;
-            }
-            else
+            } else
                 index = token == T_HEADER ? INC_STANDARD : INC_LOCAL;
             continue;
         case '=':
@@ -233,18 +216,13 @@ ppmapinclude(char *file, char *s)
         case '\n':
             continue;
         case T_ID:
-            if (streq(pp.token, "all"))
-            {
+            if (streq(pp.token, "all")) {
                 flags = INC_MAPALL;
                 continue;
-            }
-            else if (streq(pp.token, "hosted"))
-            {
+            } else if (streq(pp.token, "hosted")) {
                 flags = INC_MAPHOSTED;
                 continue;
-            }
-            else if (streq(pp.token, "nohosted"))
-            {
+            } else if (streq(pp.token, "nohosted")) {
                 flags = INC_MAPNOHOSTED;
                 continue;
             }
@@ -320,8 +298,7 @@ context(Sfio_t *sp, int level, int flags)
     static int state;
 
     NoP(flags);
-    if (error_info.trace <= -10 && pp.state != state)
-    {
+    if (error_info.trace <= -10 && pp.state != state) {
         state = pp.state;
         sfprintf(sp, " %s", ppstatestr(pp.state));
     }
@@ -351,8 +328,7 @@ undefine(void *p)
 {
     struct ppmacro *mac = (( struct ppsymbol * )p)->macro;
 
-    if (mac)
-    {
+    if (mac) {
         if (mac->formals)
             free(mac->formals);
         free(mac->value);
@@ -372,17 +348,14 @@ ppok(int op)
 
     r = &pp.ro_op[op >> 5];
     n = 1L << op;
-    if ((pp.mode & INIT) && pp.in->type == IN_FILE && (*r & n))
-    {
+    if ((pp.mode & INIT) && pp.in->type == IN_FILE && (*r & n)) {
         debug((-7, "set op %d index %d skipped -- readonly", op, op >> 5));
         return 0;
-    }
-    else if (!pp.initialized && (!(pp.mode & INIT) || !(pp.mode & BUILTIN)))
-    {
+    } else if (!pp.initialized
+               && (!(pp.mode & INIT) || !(pp.mode & BUILTIN))) {
         *r |= n;
         debug((-7, "set op %d index %d readonly", op, op >> 5));
-    }
-    else
+    } else
         debug((-7, "set op %d index %d", op, op >> 5));
     return 1;
 }
@@ -418,8 +391,7 @@ ppop(int op, ...)
     static int initialized;
 
     va_start(ap, op);
-    switch (op)
-    {
+    switch (op) {
     case PP_ASSERT:
     case PP_DEFINE:
     case PP_DIRECTIVE:
@@ -428,8 +400,7 @@ ppop(int op, ...)
     case PP_UNDEF:
         if (pp.initialized)
             goto before;
-        if ((p = va_arg(ap, char *)) && *p)
-        {
+        if ((p = va_arg(ap, char *)) && *p) {
             if (pp.lastop)
                 pp.lastop = (pp.lastop->next = newof(0, struct oplist, 1, 0));
             else
@@ -447,26 +418,20 @@ ppop(int op, ...)
         pp.cdir.path = 0;
         if (!p)
             pp.c = c;
-        else if (streq(p, "-"))
-        {
+        else if (streq(p, "-")) {
             pp.c = c;
             for (dp = pp.firstdir; dp; dp = dp->next)
                 dp->c = c;
-        }
-        else if (!pp.c)
-        {
+        } else if (!pp.c) {
             if (!*p || stat((pathcanon(p, 0, 0), p), &st))
                 pp.c = c;
-            else
-            {
-                for (dp = pp.firstdir; dp; dp = dp->next)
-                {
+            else {
+                for (dp = pp.firstdir; dp; dp = dp->next) {
                     if (!pp.c && (dp->c || dp->name && SAMEID(&dp->id, &st)))
                         pp.c = 1;
                     dp->c = pp.c == 1;
                 }
-                if (!pp.c)
-                {
+                if (!pp.c) {
                     pp.cdir.path = p;
                     SAVEID(&pp.cdir.id, &st);
                 }
@@ -474,8 +439,7 @@ ppop(int op, ...)
         }
         break;
     case PP_CHOP:
-        if (p = va_arg(ap, char *))
-        {
+        if (p = va_arg(ap, char *)) {
             c = strlen(p);
             xp = newof(0, struct oplist, 1, c + 1);
             xp->value = (( char * )xp) + sizeof(struct oplist);
@@ -486,8 +450,7 @@ ppop(int op, ...)
             *s++ = '/';
             xp->op = s - xp->value;
             *s++ = 0;
-            if (*p && *++p && *p != c)
-            {
+            if (*p && *++p && *p != c) {
                 while (*p && *p != c)
                     *s++ = *p++;
                 *s++ = '/';
@@ -504,8 +467,7 @@ ppop(int op, ...)
             pp.flags &= ~PP_comment;
         break;
     case PP_COMPATIBILITY:
-        if (ppset(&pp.state, COMPATIBILITY, va_arg(ap, int)))
-        {
+        if (ppset(&pp.state, COMPATIBILITY, va_arg(ap, int))) {
 #if COMPATIBLE
             if (pp.initialized)
                 ppfsm(FSM_COMPATIBILITY, NiL);
@@ -528,11 +490,9 @@ ppop(int op, ...)
         if (!pp.symtab)
             pp.symtab = hashalloc(NiL, HASH_name, "symbols", 0);
         if (kp = va_arg(ap, struct ppkeyword *))
-            for (; s = kp->name; kp++)
-            {
+            for (; s = kp->name; kp++) {
                 n = SYM_LEX;
-                switch (*s)
-                {
+                switch (*s) {
                 case '-':
                     s++;
                     break;
@@ -545,8 +505,7 @@ ppop(int op, ...)
                     n |= SYM_KEYWORD;
                     break;
                 }
-                if (key = ppkeyset(pp.symtab, s))
-                {
+                if (key = ppkeyset(pp.symtab, s)) {
                     key->sym.flags = n;
                     key->lex = kp->value;
                 }
@@ -567,16 +526,14 @@ ppop(int op, ...)
         if (pp.mode & DUMP)
             ppdump();
 #endif
-        if (pp.mode & FILEDEPS)
-        {
+        if (pp.mode & FILEDEPS) {
             sfputc(pp.filedeps.sp, '\n');
             if (pp.filedeps.sp == sfstdout)
                 sfsync(pp.filedeps.sp);
             else
                 sfclose(pp.filedeps.sp);
         }
-        if (pp.state & STANDALONE)
-        {
+        if (pp.state & STANDALONE) {
             if ((pp.state & (NOTEXT | HIDDEN)) == HIDDEN
                 && pplastout() != '\n')
                 ppputchar('\n');
@@ -613,12 +570,10 @@ ppop(int op, ...)
         pp.hostdir.path = 0;
         if (!p)
             pp.hosted = c;
-        else if (streq(p, "-"))
-        {
+        else if (streq(p, "-")) {
             if (pp.initialized)
                 ppset(&pp.mode, HOSTED, c);
-            else
-            {
+            else {
                 pp.hosted = c ? 1 : 2;
                 for (dp = pp.firstdir; dp; dp = dp->next)
                     if (pp.hosted == 1)
@@ -626,15 +581,11 @@ ppop(int op, ...)
                     else
                         dp->type &= ~TYPE_HOSTED;
             }
-        }
-        else if (!pp.hosted)
-        {
+        } else if (!pp.hosted) {
             if (!*p || stat((pathcanon(p, 0, 0), p), &st))
                 pp.hosted = 1;
-            else
-            {
-                for (dp = pp.firstdir; dp; dp = dp->next)
-                {
+            else {
+                for (dp = pp.firstdir; dp; dp = dp->next) {
                     if (!pp.hosted
                         && ((dp->type & TYPE_HOSTED)
                             || dp->name && SAMEID(&dp->id, &st)))
@@ -644,8 +595,7 @@ ppop(int op, ...)
                     else
                         dp->type &= ~TYPE_HOSTED;
                 }
-                if (!pp.hosted)
-                {
+                if (!pp.hosted) {
                     pp.hostdir.path = p;
                     SAVEID(&pp.hostdir.id, &st);
                 }
@@ -659,8 +609,7 @@ ppop(int op, ...)
             ppfsm(c ? FSM_IDADD : FSM_IDDEL, p);
         break;
     case PP_IGNORE:
-        if (p = va_arg(ap, char *))
-        {
+        if (p = va_arg(ap, char *)) {
             pathcanon(p, 0, 0);
             ppsetfile(p)->guard = INC_IGNORE;
             message((-3, "%s: ignore", p));
@@ -672,21 +621,18 @@ ppop(int op, ...)
         pp.ignore = va_arg(ap, char *);
         break;
     case PP_INCLUDE:
-        if ((p = va_arg(ap, char *)) && *p)
-        {
+        if ((p = va_arg(ap, char *)) && *p) {
             pathcanon(p, 0, 0);
             if (stat(p, &st))
                 break;
             for (dp = pp.stddirs; dp = dp->next;)
                 if (dp->name && SAMEID(&dp->id, &st))
                     break;
-            if (pp.cdir.path && SAMEID(&pp.cdir.id, &st))
-            {
+            if (pp.cdir.path && SAMEID(&pp.cdir.id, &st)) {
                 pp.cdir.path = 0;
                 pp.c = 1;
             }
-            if (pp.hostdir.path && SAMEID(&pp.hostdir.id, &st))
-            {
+            if (pp.hostdir.path && SAMEID(&pp.hostdir.id, &st)) {
                 pp.hostdir.path = 0;
                 pp.hosted = 1;
             }
@@ -694,10 +640,8 @@ ppop(int op, ...)
                 pp.hosted = 1;
             c = dp && dp->c || pp.c == 1;
             n = dp && (dp->type & TYPE_HOSTED) || pp.hosted == 1;
-            if (!dp || dp == pp.lastdir->next)
-            {
-                if (dp)
-                {
+            if (!dp || dp == pp.lastdir->next) {
+                if (dp) {
                     c = dp->c;
                     n = dp->type & TYPE_HOSTED;
                 }
@@ -723,19 +667,15 @@ ppop(int op, ...)
         pp.reset.on = 1;
         break;
     case PP_INIT:
-        if (pp.initialized)
-        {
+        if (pp.initialized) {
             error_info.errors = 0;
             error_info.warnings = 0;
-        }
-        else
-        {
+        } else {
             /*
              * context initialization
              */
 
-            if (!initialized)
-            {
+            if (!initialized) {
                 /*
                  * out of malloc is fatal
                  */
@@ -779,8 +719,7 @@ ppop(int op, ...)
              * validate modes
              */
 
-            switch (pp.arg_mode)
-            {
+            switch (pp.arg_mode) {
             case 'a':
             case 'C':
                 ppop(PP_COMPATIBILITY, 0);
@@ -817,15 +756,11 @@ ppop(int op, ...)
             }
             if (!(pp.state & WARN) && !(pp.arg_style & STYLE_gnu))
                 ppop(PP_PEDANTIC, 1);
-            if (pp.state & PASSTHROUGH)
-            {
-                if (pp.state & COMPILE)
-                {
+            if (pp.state & PASSTHROUGH) {
+                if (pp.state & COMPILE) {
                     pp.state &= ~PASSTHROUGH;
                     error(1, "passthrough ignored for compile");
-                }
-                else
-                {
+                } else {
                     ppop(PP_COMPATIBILITY, 1);
                     ppop(PP_HOSTDIR, "-", 1);
                     ppop(PP_SPACEOUT, 1);
@@ -839,8 +774,7 @@ ppop(int op, ...)
 
             if (!pp.symtab)
                 pp.symtab = hashalloc(NiL, HASH_name, "symbols", 0);
-            if (!pp.dirtab)
-            {
+            if (!pp.dirtab) {
                 pp.dirtab = hashalloc(REFONE, HASH_name, "directives", 0);
                 inithash(pp.dirtab, directives);
             }
@@ -848,8 +782,7 @@ ppop(int op, ...)
                 pp.filtab = hashalloc(REFALL, HASH_name, "files", 0);
             if (!pp.prdtab)
                 pp.prdtab = hashalloc(REFALL, HASH_name, "predicates", 0);
-            if (!pp.strtab)
-            {
+            if (!pp.strtab) {
                 pp.strtab = hashalloc(REFALL, HASH_name, "strings", 0);
                 inithash(pp.strtab, options);
                 inithash(pp.strtab, predicates);
@@ -862,8 +795,7 @@ ppop(int op, ...)
              * mark macros that are builtin predicates
              */
 
-            for (kp = predicates; s = kp->name; kp++)
-            {
+            for (kp = predicates; s = kp->name; kp++) {
                 if (!ppisid(*s))
                     s++;
                 ppassert(DEFINE, s, 0);
@@ -878,14 +810,12 @@ ppop(int op, ...)
             hashset(pp.prdtab, HASH_ALLOCATE);
             hashset(pp.strtab, HASH_ALLOCATE);
             hashset(pp.symtab, HASH_ALLOCATE);
-            if (pp.test & TEST_nonoise)
-            {
+            if (pp.test & TEST_nonoise) {
                 c = error_info.trace;
                 error_info.trace = 0;
             }
 #if DEBUG
-            if (!(pp.test & TEST_noinit))
-            {
+            if (!(pp.test & TEST_noinit)) {
 #endif
 
                 /*
@@ -907,15 +837,12 @@ ppop(int op, ...)
                          pp.pass,
                          keyname(X_MAP),
                          dirname(UNDEF));
-                if (pp.ppdefault && *pp.ppdefault)
-                {
-                    if (pp.probe)
-                    {
+                if (pp.ppdefault && *pp.ppdefault) {
+                    if (pp.probe) {
                         c = pp.lastdir->next->type;
                         pp.lastdir->next->type = 0;
                     }
-                    if (ppsearch(pp.ppdefault, T_STRING, SEARCH_EXISTS) < 0)
-                    {
+                    if (ppsearch(pp.ppdefault, T_STRING, SEARCH_EXISTS) < 0) {
                         free(pp.ppdefault);
                         if (!(pp.ppdefault
                               = pathprobe("C",
@@ -934,10 +861,8 @@ ppop(int op, ...)
                     if (pp.probe)
                         pp.lastdir->next->type = c;
                 }
-                while (pp.firstop)
-                {
-                    switch (pp.firstop->op)
-                    {
+                while (pp.firstop) {
+                    switch (pp.firstop->op) {
                     case PP_ASSERT:
                         sfprintf(
                         sp, "#%s #%s\n", dirname(DEFINE), pp.firstop->value);
@@ -948,8 +873,7 @@ ppop(int op, ...)
                                      "#%s %s\n",
                                      dirname(DEFINE),
                                      pp.firstop->value);
-                        else
-                        {
+                        else {
                             if (s = strchr(pp.firstop->value, '='))
                                 sfprintf(sp,
                                          "#%s %-.*s %s\n",
@@ -1040,8 +964,7 @@ ppop(int op, ...)
                          dirname(DEFINE),
                          dirname(ENDIF),
                          dirname(ENDIF));
-                for (kp = readonlys; s = kp->name; kp++)
-                {
+                for (kp = readonlys; s = kp->name; kp++) {
                     if (!ppisid(*s))
                         s++;
                     sfprintf(sp, "#%s %s\n", dirname(UNDEF), s);
@@ -1065,8 +988,7 @@ ppop(int op, ...)
                              dirname(DEFINE),
                              keyname(V_DIRECTIVE));
                 for (kp = variables; s = kp->name; kp++)
-                    if (ppisid(*s) || *s++ == '+')
-                    {
+                    if (ppisid(*s) || *s++ == '+') {
                         t = *s == '_' ? "" : "__";
                         sfprintf(
                         sp, "#%s %s%s%s #(%s)\n", dirname(DEFINE), t, s, t, s);
@@ -1148,8 +1070,7 @@ ppop(int op, ...)
                     setpreroot(NiL, preroot->value);
 #endif
             }
-            if (pp.ignoresrc)
-            {
+            if (pp.ignoresrc) {
                 if (pp.ignoresrc > 1 && pp.stddirs != pp.firstdir)
                     error(1,
                           "directories up to and including %s are for "
@@ -1157,8 +1078,7 @@ ppop(int op, ...)
                           pp.stddirs->name);
                 pp.lcldirs = pp.lcldirs->next;
             }
-            if (pp.ignore)
-            {
+            if (pp.ignore) {
                 if (*pp.ignore)
                     ppmapinclude(pp.ignore, NiL);
                 else
@@ -1171,8 +1091,7 @@ ppop(int op, ...)
 #endif
             ppfsm(FSM_PLUSPLUS, NiL);
             pp.initialized = 1;
-            if (pp.reset.on)
-            {
+            if (pp.reset.on) {
                 pp.reset.symtab = pp.symtab;
                 pp.symtab = 0;
                 pp.reset.ro_state = pp.ro_state;
@@ -1180,10 +1099,8 @@ ppop(int op, ...)
                 pp.reset.ro_option = pp.ro_option;
             }
         }
-        if (pp.reset.on)
-        {
-            if (pp.symtab)
-            {
+        if (pp.reset.on) {
+            if (pp.symtab) {
                 hashwalk(pp.filtab, 0, unguard, NiL);
                 hashfree(pp.symtab);
             }
@@ -1201,8 +1118,7 @@ ppop(int op, ...)
             pp.ro_option = pp.reset.ro_option;
         }
 #if CHECKPOINT
-        if (pp.mode & DUMP)
-        {
+        if (pp.mode & DUMP) {
             if (!pp.pragma)
                 error(
                 3, "#%s must be enabled for checkpoints", dirname(PRAGMA));
@@ -1210,10 +1126,8 @@ ppop(int op, ...)
             dirname(PRAGMA), pp.pass, keyname(X_CHECKPOINT), pp.checkpoint, 1);
         }
 #endif
-        if (n = pp.filedeps.flags)
-        {
-            if (!(n & PP_deps_file))
-            {
+        if (n = pp.filedeps.flags) {
+            if (!(n & PP_deps_file)) {
                 pp.state |= NOTEXT;
                 pp.option |= KEEPNOTEXT;
                 pp.linesync = 0;
@@ -1241,19 +1155,16 @@ ppop(int op, ...)
         {
             if (!(p = error_info.file))
                 p = "";
-            else
-            {
+            else {
                 error_info.file = 0;
-                if (*p)
-                {
+                if (*p) {
                     pathcanon(p, 0, 0);
                     p = ppsetfile(p)->name;
                 }
             }
             PUSH_FILE(p, 0);
         }
-        if (pp.mode & FILEDEPS)
-        {
+        if (pp.mode & FILEDEPS) {
             if (s = strrchr(error_info.file, '/'))
                 s++;
             else
@@ -1261,8 +1172,7 @@ ppop(int op, ...)
             if (!*s)
                 s = "-";
             s = strcpy(pp.tmpbuf, s);
-            if ((t = p = strrchr(s, '.')) && (*++p == 'c' || *p == 'C'))
-            {
+            if ((t = p = strrchr(s, '.')) && (*++p == 'c' || *p == 'C')) {
                 if (c = *++p)
                     while (*++p == c)
                         ;
@@ -1271,16 +1181,14 @@ ppop(int op, ...)
                 else
                     t++;
             }
-            if (!t)
-            {
+            if (!t) {
                 t = s + strlen(s);
                 *t++ = '.';
             }
             *(t + 1) = 0;
             if (pp.state & NOTEXT)
                 pp.filedeps.sp = sfstdout;
-            else
-            {
+            else {
                 *t = 'd';
                 if (!(pp.filedeps.sp = sfopen(NiL, s, "w")))
                     error(ERROR_SYSTEM | 3, "%s: cannot create", s);
@@ -1290,12 +1198,10 @@ ppop(int op, ...)
             if (*error_info.file)
                 pp.column += sfprintf(pp.filedeps.sp, " %s", error_info.file);
         }
-        if (xp = pp.firsttx)
-        {
+        if (xp = pp.firsttx) {
             if (!(sp = sfstropen()))
                 error(3, "temporary buffer allocation error");
-            while (xp)
-            {
+            while (xp) {
                 sfprintf(sp, "#%s \"%s\"\n", dirname(INCLUDE), xp->value);
                 xp = xp->next;
             }
@@ -1323,8 +1229,7 @@ ppop(int op, ...)
             close(0);
             if (open(p, O_RDONLY) != 0)
                 error(ERROR_SYSTEM | 3, "%s: cannot read", p);
-            if (strmatch(p, "*.(s|S|as|AS|asm|ASM)"))
-            {
+            if (strmatch(p, "*.(s|S|as|AS|asm|ASM)")) {
                 ppset(&pp.mode, CATLITERAL, 0);
                 ppop(PP_SPACEOUT, 1);
             }
@@ -1334,8 +1239,7 @@ ppop(int op, ...)
     case PP_TEXT:
         if (pp.initialized)
             goto before;
-        if ((p = va_arg(ap, char *)) && *p)
-        {
+        if ((p = va_arg(ap, char *)) && *p) {
             if (pp.lasttx)
                 pp.lasttx = pp.lasttx->next = newof(0, struct oplist, 1, 0);
             else
@@ -1362,8 +1266,7 @@ ppop(int op, ...)
             pp.linesync = va_arg(ap, PPLINESYNC);
         break;
     case PP_LINEBASE:
-        if (ppok(op))
-        {
+        if (ppok(op)) {
             if (va_arg(ap, int))
                 pp.flags |= PP_linebase;
             else
@@ -1371,8 +1274,7 @@ ppop(int op, ...)
         }
         break;
     case PP_LINEFILE:
-        if (ppok(op))
-        {
+        if (ppok(op)) {
             if (va_arg(ap, int))
                 pp.flags |= PP_linefile;
             else
@@ -1380,8 +1282,7 @@ ppop(int op, ...)
         }
         break;
     case PP_LINEID:
-        if (ppok(op))
-        {
+        if (ppok(op)) {
             if (!(p = va_arg(ap, char *)))
                 pp.lineid = "";
             else if (*p != '-')
@@ -1391,8 +1292,7 @@ ppop(int op, ...)
         }
         break;
     case PP_LINETYPE:
-        if (ppok(op))
-        {
+        if (ppok(op)) {
             if ((n = va_arg(ap, int)) >= 1)
                 pp.flags |= PP_linetype;
             else
@@ -1459,14 +1359,12 @@ ppop(int op, ...)
     case PP_POOL:
         if (pp.initialized)
             goto before;
-        if (va_arg(ap, int))
-        {
+        if (va_arg(ap, int)) {
 #if POOL
             pp.pool.input = dup(0);
             pp.pool.output = dup(1);
             p = "/dev/null";
-            if (!identical(p, 0))
-            {
+            if (!identical(p, 0)) {
                 if (!identical(p, 1))
                     ppop(PP_OUTPUT, p);
                 ppop(PP_INPUT, p);
@@ -1481,8 +1379,7 @@ ppop(int op, ...)
         pp.pragma = va_arg(ap, PPPRAGMA);
         break;
     case PP_PRAGMAFLAGS:
-        if (p = va_arg(ap, char *))
-        {
+        if (p = va_arg(ap, char *)) {
             n = OPT_GLOBAL;
             if (*p == '-')
                 p++;
@@ -1505,8 +1402,7 @@ ppop(int op, ...)
         ppset(&pp.option, REGUARD, va_arg(ap, int));
         break;
     case PP_RESERVED:
-        if ((pp.state & COMPILE) && (p = va_arg(ap, char *)))
-        {
+        if ((pp.state & COMPILE) && (p = va_arg(ap, char *))) {
             if (!(sp = sfstropen()))
                 error(3, "temporary buffer allocation error");
             sfputr(sp, p, -1);
@@ -1533,8 +1429,7 @@ ppop(int op, ...)
                 *t = '_';
             if (!(key = ppkeyget(pp.symtab, p)))
                 key = ppkeyset(pp.symtab, NiL);
-            else if (!(key->sym.flags & SYM_LEX))
-            {
+            else if (!(key->sym.flags & SYM_LEX)) {
                 struct ppsymbol tmp;
 
                 tmp = key->sym;
@@ -1545,8 +1440,7 @@ ppop(int op, ...)
                 key->sym.value = tmp.value;
                 key->sym.hidden = tmp.hidden;
             }
-            if (!(key->sym.flags & SYM_KEYWORD))
-            {
+            if (!(key->sym.flags & SYM_KEYWORD)) {
                 key->sym.flags |= SYM_KEYWORD | SYM_LEX;
                 key->lex = op;
                 if (pp.test & 0x0400)
@@ -1571,8 +1465,7 @@ ppop(int op, ...)
         for (dp = pp.firstdir; dp; dp = dp->next)
             if (dp->name)
                 for (hp = pp.firstdir; hp != dp; hp = hp->next)
-                    if (hp->name && SAMEID(&hp->id, &dp->id))
-                    {
+                    if (hp->name && SAMEID(&hp->id, &dp->id)) {
                         hp->c = dp->c;
                         if (dp->type & TYPE_HOSTED)
                             hp->type |= TYPE_HOSTED;
@@ -1581,8 +1474,7 @@ ppop(int op, ...)
                     }
         break;
     case PP_STRICT:
-        if (ppset(&pp.state, STRICT, va_arg(ap, int)))
-        {
+        if (ppset(&pp.state, STRICT, va_arg(ap, int))) {
             if (ppset(&pp.state, TRANSITION, 0))
                 pp.flags &= ~PP_transition;
             if (pp.state & STRICT)
@@ -1593,25 +1485,21 @@ ppop(int op, ...)
         break;
     case PP_TEST:
         if (p = va_arg(ap, char *))
-            for (;;)
-            {
+            for (;;) {
                 while (*p == ' ' || *p == '\t')
                     p++;
                 for (s = p; n = *s; s++)
-                    if (n == ',' || n == ' ' || n == '\t')
-                    {
+                    if (n == ',' || n == ' ' || n == '\t') {
                         *s++ = 0;
                         break;
                     }
                 if (!*p)
                     break;
                 n = 0;
-                if (*p == 'n' && *(p + 1) == 'o')
-                {
+                if (*p == 'n' && *(p + 1) == 'o') {
                     p += 2;
                     op = 0;
-                }
-                else
+                } else
                     op = 1;
                 if (streq(p, "count"))
                     n = TEST_count;
@@ -1629,13 +1517,11 @@ ppop(int op, ...)
                     n = TEST_noproto | TEST_INVERT;
                 else if (*p >= '0' && *p <= '9')
                     n = strtoul(p, NiL, 0);
-                else
-                {
+                else {
                     error(1, "%s: unknown test", p);
                     break;
                 }
-                if (n & TEST_INVERT)
-                {
+                if (n & TEST_INVERT) {
                     n &= ~TEST_INVERT;
                     op = !op;
                 }
@@ -1648,8 +1534,7 @@ ppop(int op, ...)
             }
         break;
     case PP_TRANSITION:
-        if (ppset(&pp.state, TRANSITION, va_arg(ap, int)))
-        {
+        if (ppset(&pp.state, TRANSITION, va_arg(ap, int))) {
             if (ppset(&pp.state, STRICT, 0))
                 pp.flags &= ~PP_strict;
             if (pp.state & TRANSITION)
@@ -1664,8 +1549,7 @@ ppop(int op, ...)
         if ((op = va_arg(ap, int)) < 0)
             op = 0;
         ppset(&pp.option, TRUNCATE, op);
-        if (pp.option & TRUNCATE)
-        {
+        if (pp.option & TRUNCATE) {
             Hash_bucket_t *b;
             Hash_bucket_t *p;
             Hash_position_t *pos;
@@ -1683,11 +1567,9 @@ ppop(int op, ...)
                                   HASH_name,
                                   "truncate",
                                   0);
-            if (tab && (pos = hashscan(tab, 0)))
-            {
+            if (tab && (pos = hashscan(tab, 0))) {
                 if (p = hashnext(pos))
-                    do
-                    {
+                    do {
                         b = hashnext(pos);
                         hashlook(pp.symtab,
                                  ( char * )p,
@@ -1696,8 +1578,7 @@ ppop(int op, ...)
                     } while (p = b);
                 hashdone(pos);
             }
-        }
-        else
+        } else
             pp.truncate = 0;
         break;
     case PP_VENDOR:
@@ -1706,19 +1587,15 @@ ppop(int op, ...)
         if (!p || !*p)
             for (dp = pp.firstdir; dp; dp = dp->next)
                 dp->type &= ~TYPE_VENDOR;
-        else if (streq(p, "-"))
-        {
+        else if (streq(p, "-")) {
             for (dp = pp.firstdir; dp; dp = dp->next)
                 if (c)
                     dp->type |= TYPE_VENDOR;
                 else
                     dp->type &= ~TYPE_VENDOR;
-        }
-        else if (!stat((pathcanon(p, 0, 0), p), &st))
-        {
+        } else if (!stat((pathcanon(p, 0, 0), p), &st)) {
             c = 0;
-            for (dp = pp.firstdir; dp; dp = dp->next)
-            {
+            for (dp = pp.firstdir; dp; dp = dp->next) {
                 if (!c
                     && ((dp->type & TYPE_VENDOR)
                         || dp->name && SAMEID(&dp->id, &st)))

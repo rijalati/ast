@@ -103,8 +103,7 @@ main(int argc, char *argv[])
     NOT_USED(argc);
     error_info.id = command;
     while (n = optget(argv, usage))
-        switch (n)
-        {
+        switch (n) {
         case 'f':
             force++;
             break;
@@ -122,13 +121,10 @@ main(int argc, char *argv[])
     if (error_info.errors || !*argv)
         error(ERROR_usage(2), "%s", optusage(( char * )0));
 
-    while (infile = *argv++)
-    {
-        if (*infile == '-')
-        {
+    while (infile = *argv++) {
+        if (*infile == '-') {
             /* awful way to handle options, but preserves SVID */
-            switch (infile[1])
-            {
+            switch (infile[1]) {
             case 'f':
                 force++;
                 continue;
@@ -167,8 +163,7 @@ main(int argc, char *argv[])
                   "%s: cannot change mode to %o",
                   outfile,
                   statb.st_mode);
-        else
-        {
+        else {
             chown(outfile, statb.st_uid, statb.st_gid);
             if (!(hp = huffinit(fpin, ( Sfoff_t )-1)))
                 error(2, "%s: read error", infile);
@@ -181,8 +176,7 @@ main(int argc, char *argv[])
                 error(2, "%s:no savings - file unchanged", infile);
             else if (huffencode(hp, fpin, fpout, SF_UNBOUND) < 0)
                 error(2, "%s: read error", infile);
-            else
-            {
+            else {
                 double diff;
                 if (remove(infile) < 0)
                     error(ERROR_system(0), "%s: cannot remove", infile);
@@ -222,13 +216,11 @@ outname(char *infile)
     int n = strlen(infile);
     int sufflen = strlen(suffix);
     char *cp;
-    if (streq(suffix, infile + n - sufflen))
-    {
+    if (streq(suffix, infile + n - sufflen)) {
         error(ERROR_exit(1), "%s: already packed", infile);
         return (( char * )0);
     }
-    if (cp = ( char * )malloc(n + sufflen + 1))
-    {
+    if (cp = ( char * )malloc(n + sufflen + 1)) {
         strcpy(cp, infile);
         strcat(cp + n, suffix);
     }

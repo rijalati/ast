@@ -151,8 +151,7 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
     Tk_PhotoImageBlock block;
 
     type = ReadPPMFileHeader(f, &fileWidth, &fileHeight, &maxIntensity);
-    if (type == 0)
-    {
+    if (type == 0) {
         Tcl_AppendResult(interp,
                          "couldn't read raw PPM header from file \"",
                          fileName,
@@ -160,8 +159,7 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
                          NULL);
         return TCL_ERROR;
     }
-    if ((fileWidth <= 0) || (fileHeight <= 0))
-    {
+    if ((fileWidth <= 0) || (fileHeight <= 0)) {
         Tcl_AppendResult(interp,
                          "PPM image file \"",
                          fileName,
@@ -169,8 +167,7 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
                          ( char * )NULL);
         return TCL_ERROR;
     }
-    if ((maxIntensity <= 0) || (maxIntensity >= 256))
-    {
+    if ((maxIntensity <= 0) || (maxIntensity >= 256)) {
         char buffer[30];
 
         sprintf(buffer, "%d", maxIntensity);
@@ -183,29 +180,23 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
         return TCL_ERROR;
     }
 
-    if ((srcX + width) > fileWidth)
-    {
+    if ((srcX + width) > fileWidth) {
         width = fileWidth - srcX;
     }
-    if ((srcY + height) > fileHeight)
-    {
+    if ((srcY + height) > fileHeight) {
         height = fileHeight - srcY;
     }
     if ((width <= 0) || (height <= 0) || (srcX >= fileWidth)
-        || (srcY >= fileHeight))
-    {
+        || (srcY >= fileHeight)) {
         return TCL_OK;
     }
 
-    if (type == PGM)
-    {
+    if (type == PGM) {
         block.pixelSize = 1;
         block.offset[0] = 0;
         block.offset[1] = 0;
         block.offset[2] = 0;
-    }
-    else
-    {
+    } else {
         block.pixelSize = 3;
         block.offset[0] = 0;
         block.offset[1] = 1;
@@ -216,34 +207,28 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
 
     Tk_PhotoExpand(imageHandle, destX + width, destY + height);
 
-    if (srcY > 0)
-    {
+    if (srcY > 0) {
         fseek(f, ( long )(srcY * block.pitch), SEEK_CUR);
     }
 
     nLines = (MAX_MEMORY + block.pitch - 1) / block.pitch;
-    if (nLines > height)
-    {
+    if (nLines > height) {
         nLines = height;
     }
-    if (nLines <= 0)
-    {
+    if (nLines <= 0) {
         nLines = 1;
     }
     nBytes = nLines * block.pitch;
     pixelPtr = ( unsigned char * )ckalloc(( unsigned )nBytes);
     block.pixelPtr = pixelPtr + srcX * block.pixelSize;
 
-    for (h = height; h > 0; h -= nLines)
-    {
-        if (nLines > h)
-        {
+    for (h = height; h > 0; h -= nLines) {
+        if (nLines > h) {
             nLines = h;
             nBytes = nLines * block.pitch;
         }
         count = fread(pixelPtr, 1, ( unsigned )nBytes, f);
-        if (count != nBytes)
-        {
+        if (count != nBytes) {
             Tcl_AppendResult(interp,
                              "error reading PPM image file \"",
                              fileName,
@@ -254,12 +239,10 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
             ckfree(( char * )pixelPtr);
             return TCL_ERROR;
         }
-        if (maxIntensity != 255)
-        {
+        if (maxIntensity != 255) {
             unsigned char *p;
 
-            for (p = pixelPtr; count > 0; count--, p++)
-            {
+            for (p = pixelPtr; count > 0; count--, p++) {
                 *p = ((( int )*p) * 255) / maxIntensity;
             }
         }
@@ -301,8 +284,7 @@ Tk_PhotoImageBlock *blockPtr;
     int greenOffset, blueOffset, nBytes;
     unsigned char *pixelPtr, *pixLinePtr;
 
-    if ((f = fopen(fileName, "wb")) == NULL)
-    {
+    if ((f = fopen(fileName, "wb")) == NULL) {
         Tcl_AppendResult(
         interp, fileName, ": ", Tcl_PosixError(interp), ( char * )NULL);
         return TCL_ERROR;
@@ -315,25 +297,18 @@ Tk_PhotoImageBlock *blockPtr;
     blueOffset = blockPtr->offset[2] - blockPtr->offset[0];
 
     if ((greenOffset == 1) && (blueOffset == 2) && (blockPtr->pixelSize == 3)
-        && (blockPtr->pitch == (blockPtr->width * 3)))
-    {
+        && (blockPtr->pitch == (blockPtr->width * 3))) {
         nBytes = blockPtr->height * blockPtr->pitch;
-        if (fwrite(pixLinePtr, 1, ( unsigned )nBytes, f) != nBytes)
-        {
+        if (fwrite(pixLinePtr, 1, ( unsigned )nBytes, f) != nBytes) {
             goto writeerror;
         }
-    }
-    else
-    {
-        for (h = blockPtr->height; h > 0; h--)
-        {
+    } else {
+        for (h = blockPtr->height; h > 0; h--) {
             pixelPtr = pixLinePtr;
-            for (w = blockPtr->width; w > 0; w--)
-            {
+            for (w = blockPtr->width; w > 0; w--) {
                 if ((putc(pixelPtr[0], f) == EOF)
                     || (putc(pixelPtr[greenOffset], f) == EOF)
-                    || (putc(pixelPtr[blueOffset], f) == EOF))
-                {
+                    || (putc(pixelPtr[blueOffset], f) == EOF)) {
                     goto writeerror;
                 }
                 pixelPtr += blockPtr->pixelSize;
@@ -342,8 +317,7 @@ Tk_PhotoImageBlock *blockPtr;
         }
     }
 
-    if (fclose(f) == 0)
-    {
+    if (fclose(f) == 0) {
         return TCL_OK;
     }
     f = NULL;
@@ -355,8 +329,7 @@ writeerror:
                      "\": ",
                      Tcl_PosixError(interp),
                      ( char * )NULL);
-    if (f != NULL)
-    {
+    if (f != NULL) {
         fclose(f);
     }
     return TCL_ERROR;
@@ -403,24 +376,19 @@ int *maxIntensityPtr;      /* The maximum intensity value for
 
     c = getc(f);
     i = 0;
-    for (numFields = 0; numFields < 4; numFields++)
-    {
+    for (numFields = 0; numFields < 4; numFields++) {
         /*
          * Skip comments and white space.
          */
 
-        while (1)
-        {
-            while (isspace(UCHAR(c)))
-            {
+        while (1) {
+            while (isspace(UCHAR(c))) {
                 c = getc(f);
             }
-            if (c != '#')
-            {
+            if (c != '#') {
                 break;
             }
-            do
-            {
+            do {
                 c = getc(f);
             } while ((c != EOF) && (c != '\n'));
         }
@@ -429,17 +397,14 @@ int *maxIntensityPtr;      /* The maximum intensity value for
          * Read a field (everything up to the next white space).
          */
 
-        while ((c != EOF) && !isspace(UCHAR(c)))
-        {
-            if (i < (BUFFER_SIZE - 2))
-            {
+        while ((c != EOF) && !isspace(UCHAR(c))) {
+            if (i < (BUFFER_SIZE - 2)) {
                 buffer[i] = c;
                 i++;
             }
             c = getc(f);
         }
-        if (i < (BUFFER_SIZE - 1))
-        {
+        if (i < (BUFFER_SIZE - 1)) {
             buffer[i] = ' ';
             i++;
         }
@@ -450,21 +415,15 @@ int *maxIntensityPtr;      /* The maximum intensity value for
      * Parse the fields, which are: id, width, height, maxIntensity.
      */
 
-    if (strncmp(buffer, "P6 ", 3) == 0)
-    {
+    if (strncmp(buffer, "P6 ", 3) == 0) {
         type = PPM;
-    }
-    else if (strncmp(buffer, "P5 ", 3) == 0)
-    {
+    } else if (strncmp(buffer, "P5 ", 3) == 0) {
         type = PGM;
-    }
-    else
-    {
+    } else {
         return 0;
     }
     if (sscanf(buffer + 3, "%d %d %d", widthPtr, heightPtr, maxIntensityPtr)
-        != 3)
-    {
+        != 3) {
         return 0;
     }
     return type;

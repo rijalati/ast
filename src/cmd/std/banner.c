@@ -146,30 +146,23 @@ banner(const char *string, const char *delim, int width)
               "up to %d char%s per arg",
               width / 8,
               (width / 8) == 1 ? "" : "s");
-    for (i = 0; i < CHAR_HEIGHT; i++)
-    {
+    for (i = 0; i < CHAR_HEIGHT; i++) {
         dp = delim;
-        for (n = 0, cp = string; c = ccmapchr(map, *cp++) & 0x07f; dp++)
-        {
+        for (n = 0, cp = string; c = ccmapchr(map, *cp++) & 0x07f; dp++) {
             if (*dp == 0)
                 dp = delim;
-            if ((mask = bandata[c][i]) == 0)
-            {
+            if ((mask = bandata[c][i]) == 0) {
                 n += 8;
                 continue;
             }
-            for (j = 0x80; j > 0; j >>= 1)
-            {
-                if (mask & j)
-                {
-                    if (n)
-                    {
+            for (j = 0x80; j > 0; j >>= 1) {
+                if (mask & j) {
+                    if (n) {
                         sfnputc(sfstdout, ' ', n);
                         n = 0;
                     }
                     sfputc(sfstdout, *dp);
-                }
-                else
+                } else
                     n++;
             }
         }
@@ -188,8 +181,7 @@ main(int argc, char *argv[])
     NoP(argc);
     error_info.id = "banner";
     while (n = optget(argv, usage))
-        switch (n)
-        {
+        switch (n) {
         case 'd':
             delim = opt_info.arg;
             break;

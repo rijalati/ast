@@ -4219,18 +4219,13 @@ _ccmap(int i, int o)
 
     if (!i && !o)
         return ( unsigned char * )tab;
-    if (CCCONVERT(i))
-    {
+    if (CCCONVERT(i)) {
         o = CCOUT(i);
         i = CCIN(i);
-    }
-    else if (CCCONVERT(o))
-    {
+    } else if (CCCONVERT(o)) {
         i = CCIN(o);
         o = CCOUT(o);
-    }
-    else
-    {
+    } else {
         if (i == 0)
             i = CC_NATIVE;
         if (o == 0)
@@ -4268,15 +4263,13 @@ _ccmapcpy(unsigned char *m, void *b, const void *a, size_t n)
     unsigned char *ue;
     unsigned char *ua;
 
-    if (m)
-    {
+    if (m) {
         ub = ( unsigned char * )b;
         ue = ub + n;
         ua = ( unsigned char * )a;
         while (ub < ue)
             *ub++ = m[*ua++];
-    }
-    else
+    } else
         memcpy(b, a, n);
     return b;
 }
@@ -4305,11 +4298,9 @@ dump(int from, int to)
     m = ccmap(from, to);
     sfprintf(
     sfstdout, "\n /* %s => %s */\n\n", ccmapname(from), ccmapname(to));
-    for (c = i = 0; c <= UCHAR_MAX; c++)
-    {
+    for (c = i = 0; c <= UCHAR_MAX; c++) {
         sfprintf(sfstdout, " 0x%02x,", m ? m[c] : c);
-        if (!(++i & 0x7))
-        {
+        if (!(++i & 0x7)) {
             i = 0;
             sfprintf(sfstdout, "\n");
         }
@@ -4320,8 +4311,7 @@ main(int argc, char **argv)
 {
     int i;
 
-    for (i = 1; i <= CC_MAPS; i++)
-    {
+    for (i = 1; i <= CC_MAPS; i++) {
         dump(CC_ASCII, i);
         dump(i, CC_ASCII);
     }

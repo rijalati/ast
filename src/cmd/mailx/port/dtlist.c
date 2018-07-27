@@ -87,17 +87,13 @@ reg int type;
     reg Dtdisc_t *disc = dt->disc;
     reg Dtlink_t *r, *t, *prev, *renew;
 
-    if (!obj)
-    {
+    if (!obj) {
         if (!(r = dt->data->head)
             || !(type & (DT_CLEAR | DT_FIRST | DT_LAST)))
             return NIL(Void_t *);
-        if (type & DT_CLEAR)
-        {
-            if (disc->freef || disc->link < 0)
-            {
-                do
-                {
+        if (type & DT_CLEAR) {
+            if (disc->freef || disc->link < 0) {
+                do {
                     t = r->right;
                     if (disc->freef)
                         (*disc->freef)(dt, OBJ(r, disc), disc);
@@ -108,8 +104,7 @@ reg int type;
             dt->data->head = dt->data->here = NIL(Dtlink_t *);
             dt->data->size = 0;
             return NIL(Void_t *);
-        }
-        else /* either first or last elt */
+        } else /* either first or last elt */
         {
             if (type & DT_LAST)
                 while (r->right)
@@ -121,10 +116,8 @@ reg int type;
 
     if (type & DT_MATCH)
         key = ( char * )obj;
-    else
-    {
-        if (type & DT_RENEW)
-        {
+    else {
+        if (type & DT_RENEW) {
             renew = ( Dtlink_t * )obj;
             obj = OBJ(renew, disc);
         }
@@ -133,10 +126,8 @@ reg int type;
 
     /* see if it exists */
     prev = NIL(Dtlink_t *);
-    if (!(t = dt->data->here) || OBJ(t, disc) != obj)
-    {
-        for (t = dt->data->head; t; prev = t->left, t = prev->right)
-        {
+    if (!(t = dt->data->here) || OBJ(t, disc) != obj) {
+        for (t = dt->data->head; t; prev = t->left, t = prev->right) {
             k = ( char * )OBJ(t, disc);
             k = KEY(( Void_t * )k, disc);
             if (CMP(dt, key, k, disc) == 0)
@@ -144,10 +135,8 @@ reg int type;
         }
     }
 
-    if (t)
-    {
-        if (type & DT_NEXT)
-        {
+    if (t) {
+        if (type & DT_NEXT) {
             dt->data->here = t = t->right;
             return t ? OBJ(t, disc) : NIL(Void_t *);
         }
@@ -158,24 +147,22 @@ reg int type;
                 if ((r = prev->right->left) == t->left)
                     break;
 
-        if (type & (DT_MATCH | DT_SEARCH | DT_DELETE | DT_INSERT | DT_RENEW))
-        {
+        if (type
+            & (DT_MATCH | DT_SEARCH | DT_DELETE | DT_INSERT | DT_RENEW)) {
             if (prev) /* move the whole class to the front */
             {
                 t = prev->right;
                 prev->right = t->left->right;
                 t->left->right = dt->data->head;
                 dt->data->head = t;
-            }
-            else
+            } else
                 t = dt->data->head;
 
             if (type & (DT_SEARCH | DT_MATCH))
                 return OBJ(t, disc);
             else if (type & DT_INSERT)
                 goto do_insert;
-            else if (type & DT_DELETE)
-            {
+            else if (type & DT_DELETE) {
                 dt->data->head = t->right;
                 obj = OBJ(t, disc);
                 if (disc->freef)
@@ -185,14 +172,12 @@ reg int type;
                 if ((dt->data->size -= 1) < 0)
                     dt->data->size = -1;
                 return obj;
-            }
-            else /*if(type&DT_RENEW)*/
+            } else /*if(type&DT_RENEW)*/
             {
                 r = renew;
                 goto do_renew;
             }
-        }
-        else /*if(type&DT_PREV)*/
+        } else /*if(type&DT_PREV)*/
         {
             if (!prev && t != dt->data->head)
                 prev = dt->data->head;
@@ -202,32 +187,24 @@ reg int type;
             dt->data->here = prev;
             return prev ? OBJ(prev, disc) : NIL(Void_t *);
         }
-    }
-    else
-    {
-        if (type & DT_RENEW)
-        {
+    } else {
+        if (type & DT_RENEW) {
             r = renew;
             goto do_renew;
-        }
-        else if (type & DT_INSERT)
-        {
+        } else if (type & DT_INSERT) {
         do_insert:
             if (disc->makef && !(obj = (*disc->makef)(dt, obj, disc)))
                 return NIL(Void_t *);
-            if (disc->link < 0)
-            {
+            if (disc->link < 0) {
                 r = ( Dtlink_t * )(*dt->memoryf)(
                 dt, NIL(Void_t *), sizeof(Dthold_t), disc);
-                if (!r)
-                {
+                if (!r) {
                     if (disc->freef && disc->makef)
                         (*disc->freef)(dt, obj, disc);
                     return NIL(Void_t *);
                 }
                 (( Dthold_t * )r)->obj = obj;
-            }
-            else
+            } else
                 r = ELT(obj, disc);
 
         do_renew: /* point to last element of equivalence class */
@@ -238,8 +215,7 @@ reg int type;
                 dt->data->size = -1;
 
             return obj;
-        }
-        else
+        } else
             return NIL(Void_t *);
     }
 }

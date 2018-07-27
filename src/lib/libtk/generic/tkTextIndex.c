@@ -62,18 +62,15 @@ TkTextIndex *indexPtr; /* Structure to fill in. */
     int index;
 
     indexPtr->tree = tree;
-    if (lineIndex < 0)
-    {
+    if (lineIndex < 0) {
         lineIndex = 0;
         charIndex = 0;
     }
-    if (charIndex < 0)
-    {
+    if (charIndex < 0) {
         charIndex = 0;
     }
     indexPtr->linePtr = TkBTreeFindLine(tree, lineIndex);
-    if (indexPtr->linePtr == NULL)
-    {
+    if (indexPtr->linePtr == NULL) {
         indexPtr->linePtr = TkBTreeFindLine(tree, TkBTreeNumLines(tree));
         charIndex = 0;
     }
@@ -84,16 +81,13 @@ TkTextIndex *indexPtr; /* Structure to fill in. */
      */
 
     for (index = 0, segPtr = indexPtr->linePtr->segPtr;;
-         segPtr = segPtr->nextPtr)
-    {
-        if (segPtr == NULL)
-        {
+         segPtr = segPtr->nextPtr) {
+        if (segPtr == NULL) {
             indexPtr->charIndex = index - 1;
             break;
         }
         index += segPtr->size;
-        if (index > charIndex)
-        {
+        if (index > charIndex) {
             indexPtr->charIndex = charIndex;
             break;
         }
@@ -133,12 +127,10 @@ int *offsetPtr; /* Where to store offset within
 
     for (offset = indexPtr->charIndex, segPtr = indexPtr->linePtr->segPtr;
          offset >= segPtr->size;
-         offset -= segPtr->size, segPtr = segPtr->nextPtr)
-    {
+         offset -= segPtr->size, segPtr = segPtr->nextPtr) {
         /* Empty loop body. */
     }
-    if (offsetPtr != NULL)
-    {
+    if (offsetPtr != NULL) {
         *offsetPtr = offset;
     }
     return segPtr;
@@ -173,8 +165,7 @@ TkTextLine *linePtr; /* Line containing segPtr. */
 
     offset = 0;
     for (segPtr2 = linePtr->segPtr; segPtr2 != segPtr;
-         segPtr2 = segPtr2->nextPtr)
-    {
+         segPtr2 = segPtr2->nextPtr) {
         offset += segPtr2->size;
     }
     return offset;
@@ -224,8 +215,7 @@ TkTextIndex *indexPtr; /* Index structure to fill in. */
      *---------------------------------------------------------------------
      */
 
-    if (TkTextMarkNameToIndex(textPtr, string, indexPtr) == TCL_OK)
-    {
+    if (TkTextMarkNameToIndex(textPtr, string, indexPtr) == TCL_OK) {
         return TCL_OK;
     }
 
@@ -246,27 +236,20 @@ TkTextIndex *indexPtr; /* Index structure to fill in. */
      */
 
     p = strrchr(string, '.');
-    if (p != NULL)
-    {
-        if ((p[1] == 'f') && (strncmp(p + 1, "first", 5) == 0))
-        {
+    if (p != NULL) {
+        if ((p[1] == 'f') && (strncmp(p + 1, "first", 5) == 0)) {
             wantLast = 0;
             endOfBase = p + 6;
-        }
-        else if ((p[1] == 'l') && (strncmp(p + 1, "last", 4) == 0))
-        {
+        } else if ((p[1] == 'l') && (strncmp(p + 1, "last", 4) == 0)) {
             wantLast = 1;
             endOfBase = p + 5;
-        }
-        else
-        {
+        } else {
             goto tryxy;
         }
         *p = 0;
         hPtr = Tcl_FindHashEntry(&textPtr->tagTable, string);
         *p = '.';
-        if (hPtr == NULL)
-        {
+        if (hPtr == NULL) {
             goto tryxy;
         }
         tagPtr = ( TkTextTag * )Tcl_GetHashValue(hPtr);
@@ -274,8 +257,7 @@ TkTextIndex *indexPtr; /* Index structure to fill in. */
         TkTextMakeIndex(
         textPtr->tree, TkBTreeNumLines(textPtr->tree), 0, &last);
         TkBTreeStartSearch(&first, &last, tagPtr, &search);
-        if (!TkBTreeCharTagged(&first, tagPtr) && !TkBTreeNextTag(&search))
-        {
+        if (!TkBTreeCharTagged(&first, tagPtr) && !TkBTreeNextTag(&search)) {
             Tcl_AppendResult(
             interp,
             "text doesn't contain any characters tagged with \"",
@@ -285,10 +267,8 @@ TkTextIndex *indexPtr; /* Index structure to fill in. */
             return TCL_ERROR;
         }
         *indexPtr = search.curIndex;
-        if (wantLast)
-        {
-            while (TkBTreeNextTag(&search))
-            {
+        if (wantLast) {
+            while (TkBTreeNextTag(&search)) {
                 *indexPtr = search.curIndex;
             }
         }
@@ -296,8 +276,7 @@ TkTextIndex *indexPtr; /* Index structure to fill in. */
     }
 
 tryxy:
-    if (string[0] == '@')
-    {
+    if (string[0] == '@') {
         /*
          * Find character at a given x,y location in the window.
          */
@@ -306,14 +285,12 @@ tryxy:
 
         p = string + 1;
         x = strtol(p, &end, 0);
-        if ((end == p) || (*end != ','))
-        {
+        if ((end == p) || (*end != ',')) {
             goto error;
         }
         p = end + 1;
         y = strtol(p, &end, 0);
-        if (end == p)
-        {
+        if (end == p) {
             goto error;
         }
         TkTextPixelIndex(textPtr, x, y, indexPtr);
@@ -321,8 +298,7 @@ tryxy:
         goto gotBase;
     }
 
-    if (isdigit(UCHAR(string[0])) || (string[0] == '-'))
-    {
+    if (isdigit(UCHAR(string[0])) || (string[0] == '-')) {
         int lineIndex, charIndex;
 
         /*
@@ -330,21 +306,16 @@ tryxy:
          */
 
         lineIndex = strtol(string, &end, 0) - 1;
-        if ((end == string) || (*end != '.'))
-        {
+        if ((end == string) || (*end != '.')) {
             goto error;
         }
         p = end + 1;
-        if ((*p == 'e') && (strncmp(p, "end", 3) == 0))
-        {
+        if ((*p == 'e') && (strncmp(p, "end", 3) == 0)) {
             charIndex = LAST_CHAR;
             endOfBase = p + 3;
-        }
-        else
-        {
+        } else {
             charIndex = strtol(p, &end, 0);
-            if (end == p)
-            {
+            if (end == p) {
                 goto error;
             }
             endOfBase = end;
@@ -353,16 +324,13 @@ tryxy:
         goto gotBase;
     }
 
-    for (p = string; *p != 0; p++)
-    {
-        if (isspace(UCHAR(*p)) || (*p == '+') || (*p == '-'))
-        {
+    for (p = string; *p != 0; p++) {
+        if (isspace(UCHAR(*p)) || (*p == '+') || (*p == '-')) {
             break;
         }
     }
     endOfBase = p;
-    if (string[0] == '.')
-    {
+    if (string[0] == '.') {
         /*
          * See if the base position is the name of an embedded window.
          */
@@ -371,14 +339,12 @@ tryxy:
         *endOfBase = 0;
         result = TkTextWindowIndex(textPtr, string, indexPtr);
         *endOfBase = c;
-        if (result != 0)
-        {
+        if (result != 0) {
             goto gotBase;
         }
     }
     if ((string[0] == 'e')
-        && (strncmp(string, "end", (size_t)(endOfBase - string)) == 0))
-    {
+        && (strncmp(string, "end", (size_t)(endOfBase - string)) == 0)) {
         /*
          * Base position is end of text.
          */
@@ -386,9 +352,7 @@ tryxy:
         TkTextMakeIndex(
         textPtr->tree, TkBTreeNumLines(textPtr->tree), 0, indexPtr);
         goto gotBase;
-    }
-    else
-    {
+    } else {
         /*
          * See if the base position is the name of a mark.
          */
@@ -397,8 +361,7 @@ tryxy:
         *endOfBase = 0;
         result = TkTextMarkNameToIndex(textPtr, string, indexPtr);
         *endOfBase = c;
-        if (result == TCL_OK)
-        {
+        if (result == TCL_OK) {
             goto gotBase;
         }
     }
@@ -415,27 +378,20 @@ tryxy:
 
 gotBase:
     p = endOfBase;
-    while (1)
-    {
-        while (isspace(UCHAR(*p)))
-        {
+    while (1) {
+        while (isspace(UCHAR(*p))) {
             p++;
         }
-        if (*p == 0)
-        {
+        if (*p == 0) {
             break;
         }
 
-        if ((*p == '+') || (*p == '-'))
-        {
+        if ((*p == '+') || (*p == '-')) {
             p = ForwBack(p, indexPtr);
-        }
-        else
-        {
+        } else {
             p = StartEnd(p, indexPtr);
         }
-        if (p == NULL)
-        {
+        if (p == NULL) {
             goto error;
         }
     }
@@ -501,29 +457,21 @@ TkTextIndex *index2Ptr;                               /* Second index. */
 {
     int line1, line2;
 
-    if (index1Ptr->linePtr == index2Ptr->linePtr)
-    {
-        if (index1Ptr->charIndex < index2Ptr->charIndex)
-        {
+    if (index1Ptr->linePtr == index2Ptr->linePtr) {
+        if (index1Ptr->charIndex < index2Ptr->charIndex) {
             return -1;
-        }
-        else if (index1Ptr->charIndex > index2Ptr->charIndex)
-        {
+        } else if (index1Ptr->charIndex > index2Ptr->charIndex) {
             return 1;
-        }
-        else
-        {
+        } else {
             return 0;
         }
     }
     line1 = TkBTreeLineIndex(index1Ptr->linePtr);
     line2 = TkBTreeLineIndex(index2Ptr->linePtr);
-    if (line1 < line2)
-    {
+    if (line1 < line2) {
         return -1;
     }
-    if (line1 > line2)
-    {
+    if (line1 > line2) {
         return 1;
     }
     return 0;
@@ -566,18 +514,15 @@ TkTextIndex *indexPtr; /* Index to update as specified in string. */
      */
 
     p = string + 1;
-    while (isspace(UCHAR(*p)))
-    {
+    while (isspace(UCHAR(*p))) {
         p++;
     }
     count = strtol(p, &end, 0);
-    if (end == p)
-    {
+    if (end == p) {
         return NULL;
     }
     p = end;
-    while (isspace(UCHAR(*p)))
-    {
+    while (isspace(UCHAR(*p))) {
         p++;
     }
 
@@ -588,31 +533,21 @@ TkTextIndex *indexPtr; /* Index to update as specified in string. */
      */
 
     units = p;
-    while ((*p != 0) && !isspace(UCHAR(*p)) && (*p != '+') && (*p != '-'))
-    {
+    while ((*p != 0) && !isspace(UCHAR(*p)) && (*p != '+') && (*p != '-')) {
         p++;
     }
     length = p - units;
-    if ((*units == 'c') && (strncmp(units, "chars", length) == 0))
-    {
-        if (*string == '+')
-        {
+    if ((*units == 'c') && (strncmp(units, "chars", length) == 0)) {
+        if (*string == '+') {
             TkTextIndexForwChars(indexPtr, count, indexPtr);
-        }
-        else
-        {
+        } else {
             TkTextIndexBackChars(indexPtr, count, indexPtr);
         }
-    }
-    else if ((*units == 'l') && (strncmp(units, "lines", length) == 0))
-    {
+    } else if ((*units == 'l') && (strncmp(units, "lines", length) == 0)) {
         lineIndex = TkBTreeLineIndex(indexPtr->linePtr);
-        if (*string == '+')
-        {
+        if (*string == '+') {
             lineIndex += count;
-        }
-        else
-        {
+        } else {
             lineIndex -= count;
 
             /*
@@ -622,16 +557,13 @@ TkTextIndex *indexPtr; /* Index to update as specified in string. */
              * TkTextMakeIndex.
              */
 
-            if (lineIndex < 0)
-            {
+            if (lineIndex < 0) {
                 lineIndex = 0;
             }
         }
         TkTextMakeIndex(
         indexPtr->tree, lineIndex, indexPtr->charIndex, indexPtr);
-    }
-    else
-    {
+    } else {
         return NULL;
     }
     return p;
@@ -669,24 +601,21 @@ TkTextIndex *dstPtr; /* Destination index: gets modified. */
     TkTextSegment *segPtr;
     int lineLength;
 
-    if (count < 0)
-    {
+    if (count < 0) {
         TkTextIndexBackChars(srcPtr, -count, dstPtr);
         return;
     }
 
     *dstPtr = *srcPtr;
     dstPtr->charIndex += count;
-    while (1)
-    {
+    while (1) {
         /*
          * Compute the length of the current line.
          */
 
         lineLength = 0;
         for (segPtr = dstPtr->linePtr->segPtr; segPtr != NULL;
-             segPtr = segPtr->nextPtr)
-        {
+             segPtr = segPtr->nextPtr) {
             lineLength += segPtr->size;
         }
 
@@ -695,14 +624,12 @@ TkTextIndex *dstPtr; /* Destination index: gets modified. */
          * Otherwise go on to the next line.
          */
 
-        if (dstPtr->charIndex < lineLength)
-        {
+        if (dstPtr->charIndex < lineLength) {
             return;
         }
         dstPtr->charIndex -= lineLength;
         linePtr = TkBTreeNextLine(dstPtr->linePtr);
-        if (linePtr == NULL)
-        {
+        if (linePtr == NULL) {
             dstPtr->charIndex = lineLength - 1;
             return;
         }
@@ -740,8 +667,7 @@ TkTextIndex *dstPtr; /* Destination index: gets modified. */
     TkTextSegment *segPtr;
     int lineIndex;
 
-    if (count < 0)
-    {
+    if (count < 0) {
         TkTextIndexForwChars(srcPtr, -count, dstPtr);
         return;
     }
@@ -749,19 +675,16 @@ TkTextIndex *dstPtr; /* Destination index: gets modified. */
     *dstPtr = *srcPtr;
     dstPtr->charIndex -= count;
     lineIndex = -1;
-    while (dstPtr->charIndex < 0)
-    {
+    while (dstPtr->charIndex < 0) {
         /*
          * Move back one line in the text.  If we run off the beginning
          * of the file then just return the first character in the text.
          */
 
-        if (lineIndex < 0)
-        {
+        if (lineIndex < 0) {
             lineIndex = TkBTreeLineIndex(dstPtr->linePtr);
         }
-        if (lineIndex == 0)
-        {
+        if (lineIndex == 0) {
             dstPtr->charIndex = 0;
             return;
         }
@@ -773,8 +696,7 @@ TkTextIndex *dstPtr; /* Destination index: gets modified. */
          */
 
         for (segPtr = dstPtr->linePtr->segPtr; segPtr != NULL;
-             segPtr = segPtr->nextPtr)
-        {
+             segPtr = segPtr->nextPtr) {
             dstPtr->charIndex += segPtr->size;
         }
     }
@@ -816,30 +738,23 @@ TkTextIndex *indexPtr; /* Index to mdoify based on string. */
      * Find the end of the modifier word.
      */
 
-    for (p = string; isalnum(UCHAR(*p)); p++)
-    {
+    for (p = string; isalnum(UCHAR(*p)); p++) {
         /* Empty loop body. */
     }
     length = p - string;
     if ((*string == 'l') && (strncmp(string, "lineend", length) == 0)
-        && (length >= 5))
-    {
+        && (length >= 5)) {
         indexPtr->charIndex = 0;
         for (segPtr = indexPtr->linePtr->segPtr; segPtr != NULL;
-             segPtr = segPtr->nextPtr)
-        {
+             segPtr = segPtr->nextPtr) {
             indexPtr->charIndex += segPtr->size;
         }
         indexPtr->charIndex -= 1;
-    }
-    else if ((*string == 'l') && (strncmp(string, "linestart", length) == 0)
-             && (length >= 5))
-    {
+    } else if ((*string == 'l') && (strncmp(string, "linestart", length) == 0)
+               && (length >= 5)) {
         indexPtr->charIndex = 0;
-    }
-    else if ((*string == 'w') && (strncmp(string, "wordend", length) == 0)
-             && (length >= 5))
-    {
+    } else if ((*string == 'w') && (strncmp(string, "wordend", length) == 0)
+               && (length >= 5)) {
         int firstChar = 1;
 
         /*
@@ -849,32 +764,25 @@ TkTextIndex *indexPtr; /* Index to mdoify based on string. */
          */
 
         segPtr = TkTextIndexToSeg(indexPtr, &offset);
-        while (1)
-        {
-            if (segPtr->typePtr == &tkTextCharType)
-            {
+        while (1) {
+            if (segPtr->typePtr == &tkTextCharType) {
                 c = segPtr->body.chars[offset];
-                if (!isalnum(UCHAR(c)) && (c != '_'))
-                {
+                if (!isalnum(UCHAR(c)) && (c != '_')) {
                     break;
                 }
                 firstChar = 0;
             }
             offset += 1;
             indexPtr->charIndex += 1;
-            if (offset >= segPtr->size)
-            {
+            if (offset >= segPtr->size) {
                 segPtr = TkTextIndexToSeg(indexPtr, &offset);
             }
         }
-        if (firstChar)
-        {
+        if (firstChar) {
             TkTextIndexForwChars(indexPtr, 1, indexPtr);
         }
-    }
-    else if ((*string == 'w') && (strncmp(string, "wordstart", length) == 0)
-             && (length >= 5))
-    {
+    } else if ((*string == 'w') && (strncmp(string, "wordstart", length) == 0)
+               && (length >= 5)) {
         int firstChar = 1;
 
         /*
@@ -885,36 +793,28 @@ TkTextIndex *indexPtr; /* Index to mdoify based on string. */
          */
 
         segPtr = TkTextIndexToSeg(indexPtr, &offset);
-        while (1)
-        {
-            if (segPtr->typePtr == &tkTextCharType)
-            {
+        while (1) {
+            if (segPtr->typePtr == &tkTextCharType) {
                 c = segPtr->body.chars[offset];
-                if (!isalnum(UCHAR(c)) && (c != '_'))
-                {
+                if (!isalnum(UCHAR(c)) && (c != '_')) {
                     break;
                 }
                 firstChar = 0;
             }
             offset -= 1;
             indexPtr->charIndex -= 1;
-            if (offset < 0)
-            {
-                if (indexPtr->charIndex < 0)
-                {
+            if (offset < 0) {
+                if (indexPtr->charIndex < 0) {
                     indexPtr->charIndex = 0;
                     goto done;
                 }
                 segPtr = TkTextIndexToSeg(indexPtr, &offset);
             }
         }
-        if (!firstChar)
-        {
+        if (!firstChar) {
             TkTextIndexForwChars(indexPtr, 1, indexPtr);
         }
-    }
-    else
-    {
+    } else {
         return NULL;
     }
 done:

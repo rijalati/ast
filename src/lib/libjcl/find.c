@@ -57,14 +57,12 @@ regular(Jcl_t *jcl, char *path, struct stat *st)
         s = path;
     while (*s && !isupper(*s))
         s++;
-    if (*s)
-    {
+    if (*s) {
         t = sfprints("%s", path);
         for (s = t + (s - path); *s; s++)
             if (isupper(*s))
                 *s = tolower(*s);
-        if (REGULAR(t, st))
-        {
+        if (REGULAR(t, st)) {
             strcpy(path, t);
             goto found;
         }
@@ -76,8 +74,7 @@ found:
      * catch recursive includes
      */
 
-    do
-    {
+    do {
         for (ip = jcl->include; ip; ip = ip->prev)
             if (streq(path, ip->path))
                 return 0;
@@ -108,19 +105,16 @@ expand(Jcl_t *jcl, const char *name, int flags)
 
     if (jcl)
         for (s = ( char * )name; *s; s++)
-            if (*s == '$' && *(s + 1) == '{')
-            {
+            if (*s == '$' && *(s + 1) == '{') {
                 p = sfstrtell(jcl->tp);
                 if (n = s - ( char * )name)
                     sfwrite(jcl->tp, name, n);
                 while (c = *s++)
-                    if (c == '$' && *s == '{')
-                    {
+                    if (c == '$' && *s == '{') {
                         b = s;
                         o = sfstrtell(jcl->tp);
                         s++;
-                        if (*s == '%' && *(s + 1) == '%')
-                        {
+                        if (*s == '%' && *(s + 1) == '%') {
                             s += 2;
                             sfputr(jcl->tp, JCL_AUTO, -1);
                         }
@@ -128,85 +122,69 @@ expand(Jcl_t *jcl, const char *name, int flags)
                             sfputc(jcl->tp, c);
                         sfputc(jcl->tp, 0);
                         v = sfstrseek(jcl->tp, o, SEEK_SET);
-                        if (isdigit(*v) && !*(v + 1))
-                        {
+                        if (isdigit(*v) && !*(v + 1)) {
                             if (t = matched(*v - '0', &n, jcl->disc))
                                 sfwrite(jcl->tp, t, n);
-                        }
-                        else if (t = lookup(jcl, v, NiL, flags, DEFAULT))
-                        {
-                            if ((flags & JCL_SYM_SET) && jcl->vp != jcl->xp)
-                            {
+                        } else if (t = lookup(jcl, v, NiL, flags, DEFAULT)) {
+                            if ((flags & JCL_SYM_SET) && jcl->vp != jcl->xp) {
                                 vp = jcl->vp;
                                 jcl->vp = jcl->xp;
                                 t = expand(jcl, t, flags);
                                 sfputr(jcl->tp, t, -1);
                                 jcl->vp = vp;
-                            }
-                            else
+                            } else
                                 sfputr(jcl->tp, t, -1);
-                        }
-                        else if (((flags & JCL_SYM_EXPORT)
-                                  || !(flags & JCL_SYM_SET))
-                                 && (t = getenv(v)))
+                        } else if (((flags & JCL_SYM_EXPORT)
+                                    || !(flags & JCL_SYM_SET))
+                                   && (t = getenv(v)))
                             sfputr(jcl->tp, t, -1);
-                        else if (flags & JCL_SYM_SET)
-                        {
+                        else if (flags & JCL_SYM_SET) {
                             sfputc(jcl->tp, '$');
                             s = b;
                             continue;
                         }
-                        while (c == ':')
-                        {
+                        while (c == ':') {
                             regex_t re;
                             regmatch_t match[10];
 
                             c = *s;
-                            if (c == 's' && s++ || c != '/')
-                            {
+                            if (c == 's' && s++ || c != '/') {
                                 if (!(i
                                       = regcomp(&re,
                                                 s,
                                                 REG_AUGMENTED | REG_DELIMITED
-                                                | REG_LENIENT | REG_NULL)))
-                                {
+                                                | REG_LENIENT | REG_NULL))) {
                                     s += re.re_npat;
                                     if (!(i = regsubcomp(&re, s, NiL, 0, 0)))
                                         s += re.re_npat;
                                 }
-                                if (!i && (*s == ':' || *s == '}'))
-                                {
+                                if (!i && (*s == ':' || *s == '}')) {
                                     s++;
                                     r = sfstrtell(jcl->tp);
                                     sfputc(jcl->tp, 0);
                                     v = sfstrseek(jcl->tp, o, SEEK_SET);
                                     if (!(i = regexec(
                                           &re, v, elementsof(match), match, 0))
-                                        && !(
-                                           i = regsubexec(
-                                           &re, v, elementsof(match), match)))
-                                    {
+                                        && !(i = regsubexec(&re,
+                                                            v,
+                                                            elementsof(match),
+                                                            match))) {
                                         sfputr(
                                         jcl->tp, re.re_sub->re_buf, -1);
                                         regfree(&re);
-                                    }
-                                    else if (i != REG_NOMATCH)
+                                    } else if (i != REG_NOMATCH)
                                         regfatal(&re, 2, i);
-                                    else
-                                    {
+                                    else {
                                         sfstrseek(jcl->tp, r, SEEK_SET);
                                         regfree(&re);
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     if (i)
                                         regfatalpat(&re, 2, i, s);
                                     while (*s && *s++ != '}')
                                         ;
                                 }
-                            }
-                            else if (jcl->disc->errorf)
+                            } else if (jcl->disc->errorf)
                                 (*jcl->disc->errorf)(NiL,
                                                      jcl->disc,
                                                      2,
@@ -215,8 +193,7 @@ expand(Jcl_t *jcl, const char *name, int flags)
                                                      t);
                             c = *(s - 1);
                         }
-                    }
-                    else
+                    } else
                         sfputc(jcl->tp, c);
                 sfputc(jcl->tp, 0);
                 s = sfstrseek(jcl->tp, p, SEEK_SET);
@@ -241,14 +218,12 @@ jclinclude(Jcl_t *jcl, const char *dir, unsigned long flags, Jcldisc_t *disc)
     struct stat st;
 
     if (dir && *(dir = ( const char * )expand(jcl, dir, 0))
-        && !streq(dir, ".") && directory(dir, &st))
-    {
+        && !streq(dir, ".") && directory(dir, &st)) {
         lp = jcl ? &jcl->dirs : &state.dirs;
         for (dp = lp->head; dp; dp = dp->next)
             if (streq(dir, dp->dir))
                 return 0;
-        if (!(dp = oldof(0, Dir_t, 1, strlen(dir))))
-        {
+        if (!(dp = oldof(0, Dir_t, 1, strlen(dir)))) {
             nospace(jcl, disc);
             return -1;
         }
@@ -278,8 +253,7 @@ search(Jcl_t *jcl,
     Dir_t *dp;
     Jcl_t *top;
 
-    if (!dir || !(flags & JCL_STANDARD) || strchr(name, '/'))
-    {
+    if (!dir || !(flags & JCL_STANDARD) || strchr(name, '/')) {
         if (dir && *name != '/')
             sfprintf(jcl->tp, "%s/", dir);
         sfprintf(jcl->vp, "%s", name);
@@ -288,15 +262,12 @@ search(Jcl_t *jcl,
         if (regular(jcl, s, st))
             return s;
     }
-    if (*name != '/')
-    {
+    if (*name != '/') {
         top = jcl;
         dp = jcl->dirs.head;
-        for (;;)
-        {
+        for (;;) {
             for (; dp; dp = dp->next)
-                if (flags & dp->flags)
-                {
+                if (flags & dp->flags) {
                     if (dir && *dp->dir != '/')
                         sfprintf(top->tp, "%s/", dir);
                     sfprintf(top->tp, "%s/%s", dp->dir, name);
@@ -331,16 +302,13 @@ jclfind(Jcl_t *jcl,
     char *s;
     struct stat st;
 
-    if (flags & JCL_PROC)
-    {
+    if (flags & JCL_PROC) {
         sfprintf(jcl->vp, "(PROC)%s", name);
         if (!(s = sfstruse(jcl->vp)))
             nospace(jcl, NiL);
-        if (s = lookup(jcl, s, NiL, 0, 0))
-        {
+        if (s = lookup(jcl, s, NiL, 0, 0)) {
             if (spp && !(*spp = sfstropen())
-                || sfstrbuf(*spp, s, strlen(s), 0))
-            {
+                || sfstrbuf(*spp, s, strlen(s), 0)) {
                 if (*spp)
                     sfclose(*spp);
                 nospace(jcl, NiL);
@@ -359,16 +327,14 @@ jclfind(Jcl_t *jcl,
 
     if (s = search(jcl, NiL, name, flags, &st))
         goto found;
-    if (*name != '/')
-    {
+    if (*name != '/') {
         /*
          * check the directory of the including file
          * on the assumption that error_info.file is properly stacked
          */
 
         if (!(flags & JCL_STANDARD) && error_info.file
-            && (s = strrchr(error_info.file, '/')))
-        {
+            && (s = strrchr(error_info.file, '/'))) {
             sfprintf(jcl->tp,
                      "%-.*s%s",
                      s - error_info.file + 1,
@@ -380,8 +346,7 @@ jclfind(Jcl_t *jcl,
                 goto found;
         }
     }
-    if (flags & JCL_CREATE)
-    {
+    if (flags & JCL_CREATE) {
         if (spp)
             *spp = 0;
         s = ( char * )name;

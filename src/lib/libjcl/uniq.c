@@ -62,13 +62,10 @@ marked(const char *path, Jcldd_t *dd, Jcldisc_t *disc)
     int f;
 
     if (path && (s = strrchr(path, '%')) && s > ( char * )path
-        && *(s - 1) != '%')
-    {
+        && *(s - 1) != '%') {
         f = 0;
-        for (;;)
-        {
-            switch (*++s)
-            {
+        for (;;) {
+            switch (*++s) {
             case 0:
                 break;
             case '0':
@@ -82,10 +79,8 @@ marked(const char *path, Jcldd_t *dd, Jcldisc_t *disc)
             case '8':
             case '9':
                 if ((n = strtoul(s, &e, 10))
-                    && (!*e || *e == '.' && !strchr(e, '/')))
-                {
-                    if (dd)
-                    {
+                    && (!*e || *e == '.' && !strchr(e, '/'))) {
+                    if (dd) {
                         dd->recfm = f;
                         dd->lrecl = n;
                     }
@@ -156,23 +151,19 @@ mark(const char *name, int recfm, size_t size, Jcldisc_t *disc)
 
     if (marked(name, NiL, disc))
         return ( char * )name;
-    if (!state.mark)
-    {
+    if (!state.mark) {
         if (!size)
             return 0;
         state.markdisc.link = offsetof(Uniq_t, link);
         state.markdisc.key = offsetof(Uniq_t, name);
         state.markdisc.size = -1;
-        if (!(state.mark = dtopen(&state.markdisc, Dtoset)))
-        {
+        if (!(state.mark = dtopen(&state.markdisc, Dtoset))) {
             nospace(NiL, disc);
             return 0;
         }
     }
-    if (u = ( Uniq_t * )dtmatch(state.mark, name))
-    {
-        if (disc->errorf)
-        {
+    if (u = ( Uniq_t * )dtmatch(state.mark, name)) {
+        if (disc->errorf) {
             if (size != u->size && size && u->size)
                 (*disc->errorf)(NiL,
                                 disc,
@@ -195,8 +186,7 @@ mark(const char *name, int recfm, size_t size, Jcldisc_t *disc)
         return 0;
     m = strlen(name);
     n = 2 * (m + 1) + 8;
-    if (!(u = newof(NiL, Uniq_t, 1, n)))
-    {
+    if (!(u = newof(NiL, Uniq_t, 1, n))) {
         nospace(NiL, disc);
         return 0;
     }
@@ -222,16 +212,13 @@ uniqcmp(Dt_t *dt, void *a, void *b, Dtdisc_t *disc)
 {
     int n;
 
-    if (!(n = strcmp((( Uniq_t * )a)->name, (( Uniq_t * )b)->name)))
-    {
-        if ((( Uniq_t * )a)->value)
-        {
+    if (!(n = strcmp((( Uniq_t * )a)->name, (( Uniq_t * )b)->name))) {
+        if ((( Uniq_t * )a)->value) {
             if ((( Uniq_t * )b)->value)
                 n = strcmp((( Uniq_t * )a)->value, (( Uniq_t * )b)->value);
             else
                 n = 1;
-        }
-        else if ((( Uniq_t * )b)->value)
+        } else if ((( Uniq_t * )b)->value)
             n = -1;
     }
     return n;
@@ -249,12 +236,10 @@ uniq(const char *name, const char *value, unsigned long flags, Jcldisc_t *disc)
     size_t n;
     Uniq_t k;
 
-    if (!state.uniq)
-    {
+    if (!state.uniq) {
         state.uniqdisc.link = offsetof(Uniq_t, link);
         state.uniqdisc.comparf = uniqcmp;
-        if (!(state.uniq = dtopen(&state.uniqdisc, Dtoset)))
-        {
+        if (!(state.uniq = dtopen(&state.uniqdisc, Dtoset))) {
             nospace(NiL, disc);
             return;
         }
@@ -263,13 +248,11 @@ uniq(const char *name, const char *value, unsigned long flags, Jcldisc_t *disc)
     k.value = ( char * )value;
     if (u = ( Uniq_t * )dtsearch(state.uniq, &k))
         u->count++;
-    else
-    {
+    else {
         n = strlen(name) + 1;
         if (value)
             n += strlen(value) + 1;
-        if (!(u = newof(NiL, Uniq_t, 1, n)))
-        {
+        if (!(u = newof(NiL, Uniq_t, 1, n))) {
             nospace(NiL, disc);
             return;
         }
@@ -293,27 +276,21 @@ diff(const char *name, const char *value, Jcldisc_t *disc)
     Uniq_t *u;
     size_t n;
 
-    if (!state.diff)
-    {
+    if (!state.diff) {
         state.diffdisc.link = offsetof(Uniq_t, link);
         state.diffdisc.key = offsetof(Uniq_t, name);
         state.diffdisc.size = -1;
-        if (!(state.diff = dtopen(&state.diffdisc, Dtoset)))
-        {
+        if (!(state.diff = dtopen(&state.diffdisc, Dtoset))) {
             nospace(NiL, disc);
             return -1;
         }
     }
-    if (u = ( Uniq_t * )dtmatch(state.diff, name))
-    {
+    if (u = ( Uniq_t * )dtmatch(state.diff, name)) {
         u->count++;
         if (streq(value, u->value))
             return 0;
-    }
-    else
-    {
-        if (!(u = newof(NiL, Uniq_t, 1, strlen(name) + 1)))
-        {
+    } else {
+        if (!(u = newof(NiL, Uniq_t, 1, strlen(name) + 1))) {
             nospace(NiL, disc);
             return -1;
         }
@@ -322,11 +299,9 @@ diff(const char *name, const char *value, Jcldisc_t *disc)
         dtinsert(state.diff, u);
     }
     n = strlen(value);
-    if (n >= u->size)
-    {
+    if (n >= u->size) {
         u->size = roundof(n + 1, 16);
-        if (!(u->value = newof(u->value, char, u->size, 0)))
-        {
+        if (!(u->value = newof(u->value, char, u->size, 0))) {
             nospace(NiL, disc);
             return -1;
         }
@@ -353,8 +328,7 @@ stats(Sfio_t *sp, Uniq_t *u, int c, int h)
 {
     int i;
 
-    if (h)
-    {
+    if (h) {
         for (i = 0; i < elementsof(label); i++)
             if (u->flags & label[i].flag)
                 sfputc(sp, label[i].label);
@@ -380,17 +354,14 @@ jclstats(Sfio_t *sp, unsigned long flags, Jcldisc_t *disc)
     int h;
     unsigned long m;
 
-    if (state.uniq)
-    {
+    if (state.uniq) {
         c = (flags & JCL_LISTCOUNTS) != 0;
         m = (flags & JCL_LIST);
         h = m & (m - 1);
-        if (h && (m & (JCL_LISTJOBS | JCL_LISTSCRIPTS)))
-        {
+        if (h && (m & (JCL_LISTJOBS | JCL_LISTSCRIPTS))) {
             for (u = ( Uniq_t * )dtfirst(state.uniq); u;
                  u = ( Uniq_t * )dtnext(state.uniq, u))
-                if (u->flags & JCL_LISTJOBS)
-                {
+                if (u->flags & JCL_LISTJOBS) {
                     u->flags &= ~JCL_LISTSCRIPTS;
                     stats(sp, u, c, h);
                 }
@@ -401,8 +372,7 @@ jclstats(Sfio_t *sp, unsigned long flags, Jcldisc_t *disc)
             if (!m || (u->flags & m))
                 stats(sp, u, c, h);
     }
-    if (sfsync(sp))
-    {
+    if (sfsync(sp)) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "write error");
         return -1;

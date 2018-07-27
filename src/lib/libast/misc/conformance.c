@@ -47,29 +47,23 @@ initconformance(void)
     static const char *conf[] = { "CONFORMANCE", "HOSTTYPE", "UNIVERSE" };
 
     p = 0;
-    if (sp = sfstropen())
-    {
+    if (sp = sfstropen()) {
         for (i = h = 0, j = 1; i < elementsof(conf); i++)
             if (*(m = astconf(conf[i], NiL, NiL)) && (h |= (1 << i))
-                || !i && (m = "ast"))
-            {
+                || !i && (m = "ast")) {
                 t = m;
-                while ((c = *m++) && c != '.')
-                {
+                while ((c = *m++) && c != '.') {
                     if (isupper(c))
                         c = tolower(c);
                     sfputc(sp, c);
                 }
                 sfputc(sp, 0);
                 j++;
-                if ((c = (m - t)) == 6 && strneq(t, "linux", 5))
-                {
+                if ((c = (m - t)) == 6 && strneq(t, "linux", 5)) {
                     sfputr(sp, "gnu", 0);
                     j++;
-                }
-                else if (c > 3 && strneq(t, "bsd", 3)
-                         || c == 7 && strneq(t, "debian", 7))
-                {
+                } else if (c > 3 && strneq(t, "bsd", 3)
+                           || c == 7 && strneq(t, "debian", 7)) {
                     sfputr(sp, "bsd", 0);
                     j++;
                 }
@@ -78,14 +72,12 @@ initconformance(void)
             }
         i = sfstrtell(sp);
         sfstrseek(sp, 0, SEEK_SET);
-        if (p = newof(0, char *, j, i))
-        {
+        if (p = newof(0, char *, j, i)) {
             m = ( char * )(p + j--);
             memcpy(m, sfstrbase(sp), i);
             i = 0;
             p[i++] = m;
-            while (i < j)
-            {
+            while (i < j) {
                 while (*m++)
                     ;
                 p[i++] = m;
@@ -116,11 +108,9 @@ conformance(const char *s, size_t n)
 
     static uint32_t serial = ~( uint32_t )0;
 
-    if (!(p = ids) || serial != ast.env_serial)
-    {
+    if (!(p = ids) || serial != ast.env_serial) {
         serial = ast.env_serial;
-        if (ids)
-        {
+        if (ids) {
             if (ids != ( char ** )dflt)
                 free(ids);
             ids = 0;
@@ -134,8 +124,7 @@ conformance(const char *s, size_t n)
     e = s + n;
     if (*s == '(')
         s++;
-    do
-    {
+    do {
         while (s < e && (isspace(*s) || *s == ',' || *s == '|'))
             s++;
         if (*s == ')')

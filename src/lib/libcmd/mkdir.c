@@ -75,10 +75,8 @@ b_mkdir(int argc, char **argv, Shbltin_t *context)
     struct stat st;
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'm':
             mflag = 1;
             mode = strperm(opt_info.arg, &part, mode);
@@ -104,37 +102,29 @@ b_mkdir(int argc, char **argv, Shbltin_t *context)
     if (error_info.errors || !*argv)
         error(ERROR_usage(2), "%s", optusage(NiL));
     mask = umask(0);
-    if (mflag || pflag)
-    {
+    if (mflag || pflag) {
         dmode = DIRMODE & ~mask;
         if (!mflag)
             mode = dmode;
         dmode |= S_IWUSR | S_IXUSR;
-    }
-    else
-    {
+    } else {
         mode &= ~mask;
         umask(mask);
         mask = 0;
     }
-    while (path = *argv++)
-    {
-        if (!mkdir(path, mode))
-        {
+    while (path = *argv++) {
+        if (!mkdir(path, mode)) {
             if (vflag)
                 error(0, "%s: directory created", path);
             made = 1;
-        }
-        else if (!pflag
-                 || !(errno == ENOENT || errno == EEXIST || errno == ENOTDIR))
-        {
+        } else if (!pflag
+                   || !(errno == ENOENT || errno == EEXIST
+                        || errno == ENOTDIR)) {
             error(ERROR_system(0), "%s:", path);
             continue;
-        }
-        else if (errno == EEXIST)
+        } else if (errno == EEXIST)
             continue;
-        else
-        {
+        else {
             /*
              * -p option, preserve intermediates
              * first eliminate trailing /'s
@@ -145,8 +135,7 @@ b_mkdir(int argc, char **argv, Shbltin_t *context)
             while (n > 0 && path[--n] == '/')
                 ;
             path[n + 1] = 0;
-            for (part = path, n = *part; n;)
-            {
+            for (part = path, n = *part; n;) {
                 /* skip over slashes */
                 while (*part == '/')
                     part++;
@@ -155,8 +144,7 @@ b_mkdir(int argc, char **argv, Shbltin_t *context)
                     part++;
                 *part = 0;
                 if (mkdir(path, n ? dmode : mode) < 0 && errno != EEXIST
-                    && access(path, F_OK) < 0)
-                {
+                    && access(path, F_OK) < 0) {
                     error(ERROR_system(0),
                           "%s: cannot create intermediate directory",
                           path);
@@ -165,24 +153,20 @@ b_mkdir(int argc, char **argv, Shbltin_t *context)
                 }
                 if (vflag)
                     error(0, "%s: directory created", path);
-                if (!(*part = n))
-                {
+                if (!(*part = n)) {
                     made = 1;
                     break;
                 }
             }
         }
-        if (made && (mode & (S_ISVTX | S_ISUID | S_ISGID)))
-        {
-            if (stat(path, &st))
-            {
+        if (made && (mode & (S_ISVTX | S_ISUID | S_ISGID))) {
+            if (stat(path, &st)) {
                 error(ERROR_system(0), "%s: cannot stat", path);
                 break;
             }
             if ((st.st_mode & (S_ISVTX | S_ISUID | S_ISGID))
                 != (mode & (S_ISVTX | S_ISUID | S_ISGID))
-                && chmod(path, mode))
-            {
+                && chmod(path, mode)) {
                 error(ERROR_system(0),
                       "%s: cannot change mode from %s to %s",
                       path,

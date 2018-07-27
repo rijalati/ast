@@ -47,8 +47,7 @@ size_t newsize;
 Vmdisc_t *disc;
 #endif
 {
-    if (!Avail)
-    {
+    if (!Avail) {
         Avail = Buf = ( Vmuchar_t * )(&Algn[0]);
         Endbuf = Buf + sizeof(Algn);
     }

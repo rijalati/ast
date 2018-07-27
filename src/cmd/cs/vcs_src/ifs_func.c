@@ -65,8 +65,7 @@ int len;
     static int FileNum = 0;
     char fname[STRLEN];
 
-    if (FileNum == 0)
-    { /* create a security file */
+    if (FileNum == 0) { /* create a security file */
         sfsprintf(fname, sizeof(fname), "/tmp/ifsdata.%d", getpid());
         if ((FileNum = open(fname, O_RDWR | O_CREAT | O_TRUNC, 0600)) < 0)
             return -1;
@@ -75,14 +74,11 @@ int len;
 #endif
         write(FileNum, "ifs_data\n", 9);
     }
-    if (pos <= 0)
-    { /* write security data */
+    if (pos <= 0) { /* write security data */
         pos = lseek(FileNum, 0, SEEK_END);
         if (write(FileNum, data, len) != len)
             return -1;
-    }
-    else
-    {
+    } else {
         if (lseek(FileNum, pos, SEEK_SET) == -1)
             return -1;
         if (read(FileNum, data, len) != len)
@@ -101,17 +97,14 @@ int len;
 {
     struct DataEntry *ent = DataSpool;
 
-    while (ent != NULL)
-    {
-        if (strcmp(ent->fpath, fpath) == 0 && strcmp(ent->key, key) == 0)
-        {
+    while (ent != NULL) {
+        if (strcmp(ent->fpath, fpath) == 0 && strcmp(ent->key, key) == 0) {
             free(ent->data);
             break;
         }
         ent = ent->next;
     }
-    if (ent == NULL)
-    {
+    if (ent == NULL) {
         ent = ( struct DataEntry * )MallocZero(sizeof(*ent));
         ent->next = DataSpool;
         DataSpool = ent;
@@ -132,16 +125,11 @@ char *key;
     struct DataEntry *ent = DataSpool;
     struct DataEntry *last = NULL;
 
-    while (ent != NULL)
-    {
-        if (strcmp(ent->fpath, fpath) == 0 && strcmp(ent->key, key) == 0)
-        {
-            if (last == NULL)
-            {
+    while (ent != NULL) {
+        if (strcmp(ent->fpath, fpath) == 0 && strcmp(ent->key, key) == 0) {
+            if (last == NULL) {
                 DataSpool = ent->next;
-            }
-            else
-            {
+            } else {
                 last->next = ent->next;
             }
             free(ent->fpath);
@@ -166,11 +154,9 @@ int bsize;
 {
     struct DataEntry *ent = DataSpool;
 
-    while (ent != NULL)
-    {
+    while (ent != NULL) {
         if (strncmp(fpath, ent->fpath, strlen(ent->fpath)) == 0
-            && strcmp(ent->key, key) == 0)
-        {
+            && strcmp(ent->key, key) == 0) {
             if (ent->len > bsize)
                 return -1;
             SecurityDataAccess(integralof(ent->data), buffer, ent->len);
@@ -217,8 +203,7 @@ int CopyFile(pSrc, pDst) char *pSrc, *pDst;
 
     if ((fs = open(pSrc, O_RDONLY, 0)) < 0)
         return -1;
-    if ((fd = open(pDst, O_WRONLY | O_CREAT, 0644)) > 0)
-    {
+    if ((fd = open(pDst, O_WRONLY | O_CREAT, 0644)) > 0) {
         while ((len = read(fs, buf, sizeof(buf))) > 0)
             write(fd, buf, len);
         close(fd);
@@ -235,11 +220,9 @@ void MakePath(fpath) char *fpath;
 {
     char *ptr;
 
-    if ((ptr = strrchr(fpath, '/')) != NULL)
-    {
+    if ((ptr = strrchr(fpath, '/')) != NULL) {
         *ptr = '\0';
-        if (!DashD(fpath))
-        {
+        if (!DashD(fpath)) {
             MakePath(fpath);
             mkdir(fpath, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         }
@@ -257,15 +240,11 @@ int bsize;
 {
     char *ptr;
 
-    if ((ptr = strrchr(fpath, '/')) != NULL)
-    {
+    if ((ptr = strrchr(fpath, '/')) != NULL) {
         *ptr = '\0';
-        if (DashD(fpath))
-        {
+        if (DashD(fpath)) {
             sfsprintf(buf, bsize, "%s/._tmp.%d", fpath, getpid());
-        }
-        else
-        {
+        } else {
             MakeTmpFile(fpath, buf, bsize);
         }
         *ptr = '/';
@@ -294,15 +273,13 @@ void logit(msg) char *msg;
 {
     static int flog;
 
-    if (flog == 0)
-    {
+    if (flog == 0) {
         char logfile[256];
 
         GetUserFile("vcs.log", logfile, sizeof(logfile));
         flog = open(logfile, O_WRONLY | O_APPEND, 0600);
     }
-    if (flog > 0)
-    {
+    if (flog > 0) {
         write(flog, msg, strlen(msg));
     }
 }
@@ -321,11 +298,9 @@ char tok;
     int n, fields;
 
     fields = 0;
-    for (n = 0; n < asize; n++)
-    {
+    for (n = 0; n < asize; n++) {
         arg[n] = str;
-        if (str != NULL)
-        {
+        if (str != NULL) {
             fields++;
             ptr = strchr(str, tok);
             if (ptr != NULL)
@@ -347,16 +322,13 @@ int size;
     static time_t modtime;
     int fd;
 
-    if (actime == 0)
-    {
+    if (actime == 0) {
         actime = modtime = cs.time - 86400 * (365 * 4 + 1);
     }
     fd = open(fname, O_WRONLY | O_CREAT | O_EXCL, 0600);
-    if (fd > 0)
-    {
+    if (fd > 0) {
         write(fd, "-invalid-\n", 10);
-        if (size > 10)
-        {
+        if (size > 10) {
             lseek(fd, size - 1, 0);
             write(fd, "\n", 1);
         }

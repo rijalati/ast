@@ -93,8 +93,7 @@ p_tree(const Shnode_t *t, int tflags)
         end_line = ' ';
     else
         end_line = '\n';
-    switch (t->tre.tretyp & COMMSK)
-    {
+    switch (t->tre.tretyp & COMMSK) {
     case TTIME:
         if (t->tre.tretyp & COMSCAN)
             p_keyword("!", BEGIN);
@@ -124,23 +123,18 @@ p_tree(const Shnode_t *t, int tflags)
     case TFORK:
         if (needbrace)
             tflags |= NEED_BRACE;
-        if (t->tre.tretyp & (FAMP | FCOOP))
-        {
+        if (t->tre.tretyp & (FAMP | FCOOP)) {
             tflags = NEED_BRACE | NO_NEWLINE;
             end_line = ' ';
-        }
-        else if (t->fork.forkio)
+        } else if (t->fork.forkio)
             tflags = NO_NEWLINE;
         p_tree(t->fork.forktre, tflags);
         if (t->fork.forkio)
             p_redirect(t->fork.forkio);
-        if (t->tre.tretyp & FCOOP)
-        {
+        if (t->tre.tretyp & FCOOP) {
             sfputr(outfile, "|&", '\n');
             begin_line = 1;
-        }
-        else if (t->tre.tretyp & FAMP)
-        {
+        } else if (t->tre.tretyp & FAMP) {
             sfputr(outfile, "&", '\n');
             begin_line = 1;
         }
@@ -151,8 +145,7 @@ p_tree(const Shnode_t *t, int tflags)
         p_tree(t->if_.iftre, 0);
         p_keyword("then", MIDDLE);
         p_tree(t->if_.thtre, 0);
-        if (t->if_.eltre)
-        {
+        if (t->if_.eltre) {
             p_keyword("else", MIDDLE);
             p_tree(t->if_.eltre, 0);
         }
@@ -167,26 +160,22 @@ p_tree(const Shnode_t *t, int tflags)
         else
             cp = "while";
         p_keyword(cp, BEGIN);
-        if (t->wh.whinc)
-        {
+        if (t->wh.whinc) {
             struct argnod *arg = (t->wh.whtre)->ar.arexpr;
             sfprintf(outfile, "(( %s; ", forinit);
             forinit = "";
             sfputr(outfile, arg->argval, ';');
             arg = (t->wh.whinc)->arexpr;
             sfprintf(outfile, " %s))\n", arg->argval);
-        }
-        else
+        } else
             p_tree(t->wh.whtre, 0);
         t = t->wh.dotre;
         goto dolist;
 
-    case TLST:
-    {
+    case TLST: {
         Shnode_t *tr = t->lst.lstrit;
         if (tr->tre.tretyp == TWH && tr->wh.whinc
-            && t->lst.lstlef->tre.tretyp == TARITH)
-        {
+            && t->lst.lstlef->tre.tretyp == TARITH) {
             /* arithmetic for statement */
             struct argnod *init = (t->lst.lstlef)->ar.arexpr;
             forinit = init->argval;
@@ -212,14 +201,11 @@ p_tree(const Shnode_t *t, int tflags)
         goto andor;
     case TFIL:
         cp = "|";
-    andor:
-    {
+    andor : {
         int bracket = 0;
-        if (t->tre.tretyp & TTEST)
-        {
+        if (t->tre.tretyp & TTEST) {
             tflags |= NO_NEWLINE;
-            if (!(tflags & NO_BRACKET))
-            {
+            if (!(tflags & NO_BRACKET)) {
                 p_keyword("[[", BEGIN);
                 tflags |= NO_BRACKET;
                 bracket = 1;
@@ -227,19 +213,16 @@ p_tree(const Shnode_t *t, int tflags)
         }
         p_tree(t->lst.lstlef,
                NEED_BRACE | NO_NEWLINE | (tflags & NO_BRACKET));
-        if (tflags & FALTPIPE)
-        {
+        if (tflags & FALTPIPE) {
             Shnode_t *tt = t->lst.lstrit;
             if (tt->tre.tretyp != TFIL
-                || !(tt->lst.lstlef->tre.tretyp & FALTPIPE))
-            {
+                || !(tt->lst.lstlef->tre.tretyp & FALTPIPE)) {
                 sfputc(outfile, '\n');
                 return;
             }
         }
         sfputr(outfile, cp, here_doc ? '\n' : ' ');
-        if (here_doc)
-        {
+        if (here_doc) {
             here_body(here_doc);
             here_doc = 0;
         }
@@ -257,8 +240,7 @@ p_tree(const Shnode_t *t, int tflags)
         p_keyword(")", END);
         break;
 
-    case TARITH:
-    {
+    case TARITH: {
         struct argnod *ap = t->ar.arexpr;
         if (begin_line && level)
             sfnputc(outfile, '\t', level);
@@ -272,15 +254,13 @@ p_tree(const Shnode_t *t, int tflags)
         cp = ((t->tre.tretyp & COMSCAN) ? "select" : "for");
         p_keyword(cp, BEGIN);
         sfputr(outfile, t->for_.fornam, ' ');
-        if (t->for_.forlst)
-        {
+        if (t->for_.forlst) {
             sfputr(outfile, "in", ' ');
             tflags = end_line;
             end_line = '\n';
             p_comarg(t->for_.forlst);
             end_line = tflags;
-        }
-        else
+        } else
             sfputc(outfile, '\n');
         begin_line = 1;
         t = t->for_.fortre;
@@ -293,8 +273,7 @@ p_tree(const Shnode_t *t, int tflags)
     case TSW:
         p_keyword("case", BEGIN);
         p_arg(t->sw.swarg, ' ', 0);
-        if (t->sw.swlst)
-        {
+        if (t->sw.swlst) {
             begin_line = 1;
             sfputr(outfile, "in", '\n');
             tflags = end_line;
@@ -306,18 +285,14 @@ p_tree(const Shnode_t *t, int tflags)
         break;
 
     case TFUN:
-        if (t->tre.tretyp & FPOSIX)
-        {
+        if (t->tre.tretyp & FPOSIX) {
             sfprintf(outfile, "%s", t->funct.functnam);
             p_keyword("()\n", BEGIN);
-        }
-        else
-        {
+        } else {
             p_keyword("function", BEGIN);
             tflags = (t->funct.functargs ? ' ' : '\n');
             sfputr(outfile, t->funct.functnam, tflags);
-            if (t->funct.functargs)
-            {
+            if (t->funct.functargs) {
                 tflags = end_line;
                 end_line = '\n';
                 p_comarg(t->funct.functargs);
@@ -334,27 +309,21 @@ p_tree(const Shnode_t *t, int tflags)
     case TTST:
         if (!(tflags & NO_BRACKET))
             p_keyword("[[", BEGIN);
-        if ((t->tre.tretyp & TPAREN) == TPAREN)
-        {
+        if ((t->tre.tretyp & TPAREN) == TPAREN) {
             p_keyword("(", BEGIN);
             p_tree(t->lst.lstlef, NO_BRACKET | NO_NEWLINE);
             p_keyword(")", END);
-        }
-        else
-        {
+        } else {
             int flags = (t->tre.tretyp) >> TSHIFT;
             if (t->tre.tretyp & TNEGATE)
                 sfputr(outfile, "!", ' ');
-            if (t->tre.tretyp & TUNARY)
-            {
+            if (t->tre.tretyp & TUNARY) {
                 un_op[1] = flags;
                 sfputr(outfile, un_op, ' ');
-            }
-            else
+            } else
                 cp = (( char * )(shtab_testops + (flags & 037) - 1)->sh_name);
             p_arg(&(t->lst.lstlef->arg), ' ', 0);
-            if (t->tre.tretyp & TBINARY)
-            {
+            if (t->tre.tretyp & TBINARY) {
                 sfputr(outfile, cp, ' ');
                 p_arg(&(t->lst.lstrit->arg), ' ', 0);
             }
@@ -362,8 +331,7 @@ p_tree(const Shnode_t *t, int tflags)
         if (!(tflags & NO_BRACKET))
             p_keyword("]]", END);
     }
-    while (begin_line && here_doc)
-    {
+    while (begin_line && here_doc) {
         here_body(here_doc);
         here_doc = 0;
     }
@@ -404,29 +372,23 @@ p_arg(const struct argnod *arg, int endchar, int opts)
 {
     const char *cp;
     int flag;
-    do
-    {
+    do {
         if (!arg->argnxt.ap)
             flag = endchar;
-        else if (opts & PRE)
-        {
+        else if (opts & PRE) {
             /* case alternation lists in reverse order */
             p_arg(arg->argnxt.ap, '|', opts);
             flag = endchar;
-        }
-        else if (opts)
+        } else if (opts)
             flag = ' ';
         cp = arg->argval;
-        if (*cp == 0 && (arg->argflag & ARG_EXP) && arg->argchn.ap)
-        {
+        if (*cp == 0 && (arg->argflag & ARG_EXP) && arg->argchn.ap) {
             int c = (arg->argflag & ARG_RAW) ? '>' : '<';
             sfputc(outfile, c);
             sfputc(outfile, '(');
             p_tree(( Shnode_t * )arg->argchn.ap, 0);
             sfputc(outfile, ')');
-        }
-        else if (*cp == 0 && opts == POST && arg->argchn.ap)
-        {
+        } else if (*cp == 0 && opts == POST && arg->argchn.ap) {
             /* compound assignment */
             struct fornod *fp = ( struct fornod * )arg->argchn.ap;
             sfprintf(outfile, "%s=(\n", fp->fornam);
@@ -435,9 +397,8 @@ p_arg(const struct argnod *arg, int endchar, int opts)
             if (--level)
                 sfnputc(outfile, '\t', level);
             sfputc(outfile, ')');
-        }
-        else if ((arg->argflag & ARG_RAW)
-                 && (cp[1] || (*cp != '[' && *cp != ']')))
+        } else if ((arg->argflag & ARG_RAW)
+                   && (cp[1] || (*cp != '[' && *cp != ']')))
             cp = sh_fmtq(cp);
         sfputr(outfile, cp, flag);
         if (flag == '\n')
@@ -452,46 +413,37 @@ p_redirect(const struct ionod *iop)
 {
     char *cp;
     int iof, iof2;
-    for (; iop; iop = iop->ionxt)
-    {
+    for (; iop; iop = iop->ionxt) {
         iof = iop->iofile;
         cp = io_op;
-        if (iop->iovname)
-        {
+        if (iop->iovname) {
             sfwrite(outfile, "(;", 2);
             sfputr(outfile, iop->iovname, ')');
             cp++;
-        }
-        else
+        } else
             *cp = '0' + (iof & IOUFD);
-        if (iof & IOPUT)
-        {
+        if (iof & IOPUT) {
             if (*cp == '1' && !iop->iovname)
                 cp++;
             io_op[1] = '>';
-        }
-        else
-        {
+        } else {
             if (*cp == '0' && !iop->iovname)
                 cp++;
             io_op[1] = '<';
         }
         io_op[2] = 0;
         io_op[3] = 0;
-        if (iof & IOLSEEK)
-        {
+        if (iof & IOLSEEK) {
             io_op[1] = '#';
             if (iof & IOARITH)
                 strcpy(&io_op[3], " ((");
-        }
-        else if (iof & IOMOV)
+        } else if (iof & IOMOV)
             io_op[2] = '&';
         else if (iof & (IORDW | IOAPP))
             io_op[2] = '>';
         else if (iof & IOCLOB)
             io_op[2] = '|';
-        if (iop->iodelim)
-        {
+        if (iop->iodelim) {
             /* here document */
 #ifdef xxx
             iop->iolink = ( char * )here_doc;
@@ -506,20 +458,17 @@ p_redirect(const struct ionod *iop)
         sfputr(outfile, cp, ' ');
         if (iop->ionxt)
             iof = ' ';
-        else
-        {
+        else {
             if ((iof = end_line) == '\n')
                 begin_line = 1;
         }
         if ((iof & IOLSEEK) && (iof & IOARITH))
             iof2 = iof, iof = ' ';
-        if (iop->iodelim)
-        {
+        if (iop->iodelim) {
             if (!(iop->iofile & IODOC))
                 sfwrite(outfile, "''", 2);
             sfputr(outfile, sh_fmtq(iop->iodelim), iof);
-        }
-        else if (iop->iofile & IORAW)
+        } else if (iop->iofile & IORAW)
             sfputr(outfile, sh_fmtq(iop->ioname), iof);
         else
             sfputr(outfile, iop->ioname, iof);
@@ -539,8 +488,7 @@ p_comarg(const struct comnod *com)
         flag = ' ';
     if (com->comset)
         p_arg(com->comset, flag, POST);
-    if (com->comarg)
-    {
+    if (com->comarg) {
         if (!com->comio)
             flag = end_line;
         if (com->comtyp & COMSCAN)
@@ -561,14 +509,12 @@ p_comlist(const struct dolnod *dol, int endchar)
     argv = dol->dolval + ARG_SPARE;
     cp = *argv;
     special = (*cp == '[' && cp[1] == 0);
-    do
-    {
+    do {
         if (cp)
             argv++;
         else
             cp = "";
-        if (*argv == 0)
-        {
+        if (*argv == 0) {
             if ((flag = endchar) == '\n')
                 begin_line = 1;
             special = (*cp == ']' && cp[1] == 0);

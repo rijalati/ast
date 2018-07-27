@@ -48,15 +48,13 @@ Vmstat_t *st;
     int rv;
 
     memset(st, 0, sizeof(Vmstat_t));
-    for (seg = vm->data->seg; seg; seg = seg->next)
-    {
+    for (seg = vm->data->seg; seg; seg = seg->next) {
         st->n_seg += 1;
         st->extent += seg->size;
     }
     if (!vm->meth.meth)
         rv = -1;
-    else if ((rv = (*vm->meth.statf)(vm, st, extra != 0)) >= 0)
-    {
+    else if ((rv = (*vm->meth.statf)(vm, st, extra != 0)) >= 0) {
         st->extent += extra;
         debug_sprintf(
         st->mesg,

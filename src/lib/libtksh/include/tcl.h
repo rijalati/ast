@@ -475,15 +475,11 @@ EXTERN void Tcl_ValidateAllMemory _ANSI_ARGS_((char *file, int line));
  */
 
 #        define Tcl_FreeResult(interp)                                       \
-            if ((interp)->freeProc != 0)                                     \
-            {                                                                \
+            if ((interp)->freeProc != 0) {                                   \
                 if (((interp)->freeProc == TCL_DYNAMIC)                      \
-                    || ((interp)->freeProc == ( Tcl_FreeProc * )free))       \
-                {                                                            \
+                    || ((interp)->freeProc == ( Tcl_FreeProc * )free)) {     \
                     ckfree((interp)->result);                                \
-                }                                                            \
-                else                                                         \
-                {                                                            \
+                } else {                                                     \
                     (*(interp)->freeProc)((interp)->result);                 \
                 }                                                            \
                 (interp)->freeProc = 0;                                      \

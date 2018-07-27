@@ -50,8 +50,7 @@ swapget(int op, const void *b, int n)
         d = ( unsigned char * )b;
     p = d + n;
     v = 0;
-    while (d < p)
-    {
+    while (d < p) {
         v <<= CHAR_BIT;
         v |= *d++;
     }

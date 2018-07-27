@@ -105,21 +105,17 @@ int *inst;    /* instruction type		*/
     {
         *inst = VCS_HERE;
         ad = here - addr;
-        if (addr < ad)
-        {
+        if (addr < ad) {
             *inst = VCS_SELF;
             ad = addr;
         }
         for (k = 0; k < VCS_KSIZE; ++k)
-            if ((a = vcintcode(addr, cache[k], 0, here, VC_ENCODE)) < ad)
-            {
+            if ((a = vcintcode(addr, cache[k], 0, here, VC_ENCODE)) < ad) {
                 *inst = k + VCS_KBEGIN;
                 ad = a;
             }
         a = addr;
-    }
-    else
-    {
+    } else {
         if ((k = VCSIGET(*inst)) == VCS_HERE)
             ad = here - addr;
         else if (k == VCS_SELF)
@@ -179,8 +175,7 @@ ssize_t n;         /* number of fragments		*/
         mtch += 1;
     }
 
-    while (n > 0)
-    {
+    while (n > 0) {
         if ((si->type & VCS_DIFF) && n > 1)
             z = (mtch[n - 1].tpos + mtch[n - 1].size)
                 - mtch->tpos; /* absorb all */
@@ -231,8 +226,7 @@ ssize_t n;         /* number of fragments		*/
             vcioskip(si->diff, z);
 
             n = 0;
-        }
-        else if (n > 1) /* output the unmatched data in the gap */
+        } else if (n > 1) /* output the unmatched data in the gap */
         {
             if ((z = mtch[1].tpos - (mtch[0].tpos + mtch[0].size)) <= 0)
                 RETURN(-1);
@@ -341,8 +335,7 @@ Void_t **del;
 
     /* secondary encoding of the resulting data */
     if (vc->coder && nuntr > 0
-        && (sz = vcapply(vc->coder, untrdt, nuntr, &dt)) < nuntr)
-    {
+        && (sz = vcapply(vc->coder, untrdt, nuntr, &dt)) < nuntr) {
         if (sz < 0)
             RETURN(-1);
         ctrl |= VCS_UNTRCMP;
@@ -352,8 +345,7 @@ Void_t **del;
     DEBUG_PRINT(2, "untr=%d, ", nuntr);
 
     if (vc->coder && ndiff > 0
-        && (sz = vcapply(vc->coder, diffdt, ndiff, &dt)) < ndiff)
-    {
+        && (sz = vcapply(vc->coder, diffdt, ndiff, &dt)) < ndiff) {
         if (sz < 0)
             RETURN(-1);
         ctrl |= VCS_DIFFCMP;
@@ -362,8 +354,7 @@ Void_t **del;
     } /**/
     DEBUG_PRINT(2, "diff=%d, ", ndiff);
 
-    if (ninst > 0 && (sz = vcapply(si->vch, instdt, ninst, &dt)) < ninst)
-    {
+    if (ninst > 0 && (sz = vcapply(si->vch, instdt, ninst, &dt)) < ninst) {
         if (sz < 0)
             RETURN(-1);
         ctrl |= VCS_INSTCMP;
@@ -372,8 +363,7 @@ Void_t **del;
     } /**/
     DEBUG_PRINT(2, "inst=%d, ", ninst);
 
-    if (nunsz > 0 && (sz = vcapply(si->vch, unszdt, nunsz, &dt)) < nunsz)
-    {
+    if (nunsz > 0 && (sz = vcapply(si->vch, unszdt, nunsz, &dt)) < nunsz) {
         if (sz < 0)
             RETURN(-1);
         ctrl |= VCS_UNSZCMP;
@@ -382,8 +372,7 @@ Void_t **del;
     } /**/
     DEBUG_PRINT(2, "unsz=%d, ", nunsz);
 
-    if (ndfsz > 0 && (sz = vcapply(si->vch, dfszdt, ndfsz, &dt)) < ndfsz)
-    {
+    if (ndfsz > 0 && (sz = vcapply(si->vch, dfszdt, ndfsz, &dt)) < ndfsz) {
         if (sz < 0)
             RETURN(-1);
         ctrl |= VCS_DFSZCMP;
@@ -392,8 +381,7 @@ Void_t **del;
     } /**/
     DEBUG_PRINT(2, "dfsz=%d, ", ndfsz);
 
-    if (naddr > 0 && (sz = vcapply(si->vch, addrdt, naddr, &dt)) < naddr)
-    {
+    if (naddr > 0 && (sz = vcapply(si->vch, addrdt, naddr, &dt)) < naddr) {
         if (sz < 0)
             RETURN(-1);
         ctrl |= VCS_ADDRCMP;
@@ -497,8 +485,7 @@ Void_t **out;
         RETURN(-1);
     dt = vcionext(&io);
     vcioskip(&io, un);
-    if (ctrl & VCS_UNTRCMP)
-    {
+    if (ctrl & VCS_UNTRCMP) {
         if (!vc->coder || (un = vcapply(vc->coder, dt, un, &dt)) < 0)
             RETURN(-1);
     }
@@ -508,8 +495,7 @@ Void_t **out;
         RETURN(-1);
     dt = vcionext(&io);
     vcioskip(&io, df);
-    if (ctrl & VCS_DIFFCMP)
-    {
+    if (ctrl & VCS_DIFFCMP) {
         if (!vc->coder || (df = vcapply(vc->coder, dt, df, &dt)) < 0)
             RETURN(-1);
     }
@@ -519,8 +505,7 @@ Void_t **out;
         RETURN(-1);
     dt = vcionext(&io);
     vcioskip(&io, in);
-    if (ctrl & VCS_INSTCMP)
-    {
+    if (ctrl & VCS_INSTCMP) {
         if ((in = vcapply(si->vch, dt, in, &dt)) < 0)
             RETURN(-1);
     }
@@ -530,8 +515,7 @@ Void_t **out;
         RETURN(-1);
     dt = vcionext(&io);
     vcioskip(&io, uz);
-    if (ctrl & VCS_UNSZCMP)
-    {
+    if (ctrl & VCS_UNSZCMP) {
         if ((uz = vcapply(si->vch, dt, uz, &dt)) < 0)
             RETURN(-1);
     }
@@ -541,8 +525,7 @@ Void_t **out;
         RETURN(-1);
     dt = vcionext(&io);
     vcioskip(&io, dz);
-    if (ctrl & VCS_DFSZCMP)
-    {
+    if (ctrl & VCS_DFSZCMP) {
         if ((dz = vcapply(si->vch, dt, dz, &dt)) < 0)
             RETURN(-1);
     }
@@ -552,8 +535,7 @@ Void_t **out;
         RETURN(-1);
     dt = vcionext(&io);
     vcioskip(&io, ad);
-    if (ctrl & VCS_ADDRCMP)
-    {
+    if (ctrl & VCS_ADDRCMP) {
         if ((ad = vcapply(si->vch, dt, ad, &dt)) < 0)
             RETURN(-1);
     }
@@ -563,14 +545,13 @@ Void_t **out;
         RETURN(-1);
 
     VCSKINIT(si);
-    for (k = 0, here = si->vcpa.nsrc, endts = (ts = tar) + ntar; ts < endts;)
-    { /* get the control byte for this instruction */
+    for (k = 0, here = si->vcpa.nsrc, endts = (ts = tar) + ntar;
+         ts < endts;) { /* get the control byte for this instruction */
         if (k >= in)
             RETURN(-1);
         ctrl = inst[k++];
 
-        if (ctrl == VCS_UNTR)
-        {
+        if (ctrl == VCS_UNTR) {
             if (vciomore(&unsz) <= 0)
                 RETURN(-1);
             if ((uz = vciogetu(&unsz)) < 0)
@@ -592,9 +573,7 @@ Void_t **out;
             /**/ DEBUG_PRINT(8, "tpos %6d\n", here - si->vcpa.nsrc);
 
             here += uz;
-        }
-        else
-        {
+        } else {
             if (vciomore(&dfsz) <= 0)
                 RETURN(-1);
             if ((dz = vciogetu(&dfsz)) < 0)
@@ -629,27 +608,23 @@ Void_t **out;
                 ms = si->vcpa.src + ad;
 
             endd = (dt = vcionext(&diff)) + dz;
-            if (ctrl & VCS_DIFF)
-            {
+            if (ctrl & VCS_DIFF) {
                 if (vciomore(&diff) < dz)
                     RETURN(-1);
                 vcioskip(&diff, dz);
             }
 
             d = (ctrl & VCS_REVERSE) ? -1 : 1;
-            if (!(ctrl & VCS_MAP))
-            {
+            if (!(ctrl & VCS_MAP)) {
                 if (ctrl & VCS_DIFF)
                     for (; dt < endd; ++dt, ++ts, ms += d)
                         *ts = (Vcchar_t)(*ms - *dt);
                 else
                     for (; dt < endd; ++dt, ++ts, ms += d)
                         *ts = (Vcchar_t)(*ms);
-            }
-            else if (!cmap)
+            } else if (!cmap)
                 RETURN(-1);
-            else
-            {
+            else {
                 if (ctrl & VCS_DIFF)
                     for (; dt < endd; ++dt, ++ts, ms += d)
                         *ts = cmap[(Vcchar_t)(*ms - *dt)];
@@ -690,8 +665,7 @@ Vcchar_t **datap; /* basis string for persistence	*/
     sz = 0; /* construct the pair mapping if any */
     if (si->cmap)
         for (k = 0; k < 256; ++k)
-            if (si->cmap[k] > k)
-            {
+            if (si->cmap[k] > k) {
                 cm[sz] = k;
                 cm[sz + 1] = si->cmap[k];
                 sz += 2;
@@ -732,8 +706,7 @@ static int sieverestore(mtcd) Vcmtcode_t *mtcd;
     /* reconstruct the argument string */
     if (sz == 0)
         args = NIL(char *);
-    else
-    {
+    else {
         if (!(args = ( char * )malloc(32 + sz)))
             return -1;
 
@@ -770,16 +743,13 @@ Void_t *init;
     Vcmtarg_t *arg;
     Vcmtcode_t *mtcd;
 
-    if (type == VC_OPENING)
-    {
+    if (type == VC_OPENING) {
         if (!(si = ( Sieve_t * )calloc(1, sizeof(Sieve_t) + 256)))
             RETURN(-1);
 
-        for (data = ( char * )init; data && *data;)
-        {
+        for (data = ( char * )init; data && *data;) {
             data = vcgetmtarg(data, val, sizeof(val), _Siargs, &arg);
-            switch (TYPECAST(int, arg->data))
-            {
+            switch (TYPECAST(int, arg->data)) {
             case VCS_REVERSE:
                 si->type |= VCS_REVERSE;
                 break;
@@ -791,8 +761,7 @@ Void_t *init;
                 si->cmap = ( Vcchar_t * )(si + 1);
                 for (z = 0; z < 256; ++z)
                     si->cmap[z] = z;
-                for (z = 0; val[z] && val[z + 1]; z += 2)
-                {
+                for (z = 0; val[z] && val[z + 1]; z += 2) {
                     si->cmap[val[z]] = val[z + 1];
                     si->cmap[val[z + 1]] = val[z];
                 }
@@ -806,8 +775,7 @@ Void_t *init;
 
         /* Sizes and addresses are Huffman coded */
         if (!(si->vch = vcopen(
-              0, Vchuffman, 0, 0, vc->flags & (VC_ENCODE | VC_DECODE))))
-        {
+              0, Vchuffman, 0, 0, vc->flags & (VC_ENCODE | VC_DECODE)))) {
             free(si);
             RETURN(-1);
         }
@@ -816,11 +784,8 @@ Void_t *init;
 
         vcsetmtdata(vc, si);
         return 0;
-    }
-    else if (type == VC_CLOSING)
-    {
-        if ((si = vcgetmtdata(vc, Sieve_t *)))
-        {
+    } else if (type == VC_CLOSING) {
+        if ((si = vcgetmtdata(vc, Sieve_t *))) {
             if (si->vch)
                 vcclose(si->vch);
             free(si);
@@ -828,22 +793,17 @@ Void_t *init;
 
         vcsetmtdata(vc, NIL(Sieve_t *));
         return 0;
-    }
-    else if (type == VC_EXTRACT)
-    {
+    } else if (type == VC_EXTRACT) {
         if (!(mtcd = ( Vcmtcode_t * )init))
             return -1;
         if ((mtcd->size = sieveextract(vc, &mtcd->data)) < 0)
             return -1;
         return 1;
-    }
-    else if (type == VC_RESTORE)
-    {
+    } else if (type == VC_RESTORE) {
         if (!(mtcd = ( Vcmtcode_t * )init))
             return -1;
         return sieverestore(mtcd) < 0 ? -1 : 1;
-    }
-    else
+    } else
         return 0;
 }
 

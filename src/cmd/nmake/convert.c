@@ -111,13 +111,11 @@ expandops(char *xp, char *ed, int del)
     eb = ed;
     debug((-5, "expandops(`%s')", ed));
     op = 0;
-    for (;;)
-    {
+    for (;;) {
         if (op != 'T')
             bound = 0;
         for (bp = editxxx; bp->old; bp++)
-            if (strneq(bp->old, ed, bp->len))
-            {
+            if (strneq(bp->old, ed, bp->len)) {
                 strncpy(ed, bp->xxx, bp->len);
                 break;
             }
@@ -125,21 +123,18 @@ expandops(char *xp, char *ed, int del)
             break;
         if (op == del)
             continue;
-        switch (op)
-        {
+        switch (op) {
         case '@':
         case 'V':
             sep = 1;
-            switch (op)
-            {
+            switch (op) {
             case '@':
                 sep = 0;
                 val = "join";
                 break;
             case 'V':
                 val = "literal";
-                switch (*ed)
-                {
+                switch (*ed) {
                 case 'A':
                     ed++;
                     val = "auxilliary";
@@ -152,8 +147,7 @@ expandops(char *xp, char *ed, int del)
                 break;
             }
             *xp++ = ' ';
-            if (!delimited)
-            {
+            if (!delimited) {
                 delimited = 1;
                 if (del != ':')
                     *xp++ = '`';
@@ -171,8 +165,7 @@ expandops(char *xp, char *ed, int del)
          * collect the operands
          */
 
-        if (op == 'C' || op == '/' || op == 'Y' || op == '?')
-        {
+        if (op == 'C' || op == '/' || op == 'Y' || op == '?') {
             /*
              * substitute: <delim><old><delim><new><delim>[g]
              * conditional: <delim><non-null><delim><null><delim>
@@ -180,8 +173,7 @@ expandops(char *xp, char *ed, int del)
 
             val = ed;
             n = op;
-            switch (op)
-            {
+            switch (op) {
             case 'C':
             case 'Y':
                 if (n = *ed)
@@ -197,16 +189,13 @@ expandops(char *xp, char *ed, int del)
                 break;
             }
             oldp = ed;
-            for (cnt = 0; c = *ed; ed++)
-            {
+            for (cnt = 0; c = *ed; ed++) {
                 if (c == '(')
                     cnt++;
                 else if (c == ')' && !--n)
                     cnt = 0;
-                else if (cnt <= 0)
-                {
-                    if (c == n)
-                    {
+                else if (cnt <= 0) {
+                    if (c == n) {
                         ed++;
                         break;
                     }
@@ -218,16 +207,13 @@ expandops(char *xp, char *ed, int del)
                 }
             }
             newp = ed;
-            for (cnt = 0; c = *ed; ed++)
-            {
+            for (cnt = 0; c = *ed; ed++) {
                 if (c == '(')
                     cnt++;
                 else if (c == ')' && !--n)
                     cnt = 0;
-                else if (cnt <= 0)
-                {
-                    if (c == n)
-                    {
+                else if (cnt <= 0) {
+                    if (c == n) {
                         ed++;
                         break;
                     }
@@ -240,8 +226,7 @@ expandops(char *xp, char *ed, int del)
             }
             glob = 0;
             while (*ed && *ed != del)
-                switch (*ed++)
-                {
+                switch (*ed++) {
                 case 'G':
                     *(ed - 1) = 'g';
                     /*FALLTHROUGH*/
@@ -277,28 +262,21 @@ expandops(char *xp, char *ed, int del)
             if (*ed)
                 ed++;
             *s = 0;
-        }
-        else if (*ed == del)
-        {
+        } else if (*ed == del) {
             ed++;
             val = KEEP;
-        }
-        else if (*ed)
-        {
+        } else if (*ed) {
             /*
              * value: [!<>=][=][<val>]
              */
 
             if (op != '$')
-                switch (*ed++)
-                {
+                switch (*ed++) {
                 case '!':
-                    if (*ed == '=')
-                    {
+                    if (*ed == '=') {
                         ed++;
                         sep = NE;
-                    }
-                    else
+                    } else
                         sep = NOT;
                     break;
                 case '=':
@@ -307,26 +285,20 @@ expandops(char *xp, char *ed, int del)
                     sep = EQ;
                     break;
                 case '<':
-                    if (*ed == '=')
-                    {
+                    if (*ed == '=') {
                         ed++;
                         sep = LE;
-                    }
-                    else if (*ed == '>')
-                    {
+                    } else if (*ed == '>') {
                         ed++;
                         sep = NE;
-                    }
-                    else
+                    } else
                         sep = LT;
                     break;
                 case '>':
-                    if (*ed == '=')
-                    {
+                    if (*ed == '=') {
                         ed++;
                         sep = GE;
-                    }
-                    else
+                    } else
                         sep = GT;
                     break;
                 default:
@@ -336,50 +308,39 @@ expandops(char *xp, char *ed, int del)
                     break;
                 }
             val = ed;
-            for (cnt = n = 0; c = *ed; ed++)
-            {
-                if (cnt)
-                {
+            for (cnt = n = 0; c = *ed; ed++) {
+                if (cnt) {
                     if (c == cnt)
                         n++;
                     else if (c == cntlim && !--n)
                         cnt = 0;
-                }
-                else if (c == '(')
-                {
+                } else if (c == '(') {
                     cnt = '(';
                     cntlim = ')';
                     n++;
-                }
-                else if (c == '[')
-                {
+                } else if (c == '[') {
                     cnt = '[';
                     cntlim = ']';
                     n++;
-                }
-                else if (c == del && n <= 0)
-                {
+                } else if (c == del && n <= 0) {
                     *ed++ = 0;
                     break;
                 }
             }
             if (!*val)
                 val = DELETE;
-        }
-        else
+        } else
             val = KEEP;
         dp = xp;
         *xp++ = ' ';
-        if (!delimited)
-        {
+        if (!delimited) {
             delimited = 1;
             if (del != ':')
                 *xp++ = '`';
         }
         if (delimited < 0)
             delimited = 1;
-        else
-        {
+        else {
             *xp++ = DEL;
             *xp++ = ' ';
         }
@@ -388,8 +349,7 @@ expandops(char *xp, char *ed, int del)
          * B, D and S are grouped before application
          */
 
-        switch (op)
-        {
+        switch (op) {
         case '$':
             val--;
             xp = stpcpy(xp, val);
@@ -398,8 +358,7 @@ expandops(char *xp, char *ed, int del)
         case 'B':
         case 'D':
         case 'S':
-            switch (op)
-            {
+            switch (op) {
             case 'B':
                 bas = val;
                 break;
@@ -410,96 +369,72 @@ expandops(char *xp, char *ed, int del)
                 suf = val;
                 break;
             }
-            switch (*ed)
-            {
+            switch (*ed) {
             case 'B':
-                if (bas == DELETE)
-                {
+                if (bas == DELETE) {
                     xp = dp;
                     continue;
                 }
                 break;
             case 'D':
-                if (dir == DELETE)
-                {
+                if (dir == DELETE) {
                     xp = dp;
                     continue;
                 }
                 break;
             case 'S':
-                if (suf == DELETE)
-                {
+                if (suf == DELETE) {
                     xp = dp;
                     continue;
                 }
                 break;
             }
             sep = 0;
-            if (dir == DELETE)
-            {
+            if (dir == DELETE) {
                 xp = stpcpy(xp, "nodirectory");
                 sep = 1;
-            }
-            else
-            {
-                if (dir != KEEP)
-                {
+            } else {
+                if (dir != KEEP) {
                     xp += sfsprintf(xp, EXBUF, "directory %s", dir);
                     sep = 1;
                 }
                 dir = DELETE;
             }
-            if (bas == DELETE)
-            {
-                if (sep)
-                {
+            if (bas == DELETE) {
+                if (sep) {
                     *xp++ = ' ';
                     *xp++ = DEL;
                     *xp++ = ' ';
-                }
-                else
+                } else
                     sep = 1;
                 xp = stpcpy(xp, "nobase");
-            }
-            else
-            {
-                if (bas != KEEP)
-                {
-                    if (sep)
-                    {
+            } else {
+                if (bas != KEEP) {
+                    if (sep) {
                         *xp++ = ' ';
                         *xp++ = DEL;
                         *xp++ = ' ';
-                    }
-                    else
+                    } else
                         sep = 1;
                     xp += sfsprintf(xp, EXBUF, "base %s", bas);
                 }
                 bas = DELETE;
             }
-            if (suf == DELETE)
-            {
-                if (sep)
-                {
+            if (suf == DELETE) {
+                if (sep) {
                     *xp++ = ' ';
                     *xp++ = DEL;
                     *xp++ = ' ';
-                }
-                else
+                } else
                     sep = 1;
                 xp = stpcpy(xp, "nosuffix");
-            }
-            else
-            {
-                if (suf != KEEP)
-                {
-                    if (sep)
-                    {
+            } else {
+                if (suf != KEEP) {
+                    if (sep) {
                         *xp++ = ' ';
                         *xp++ = DEL;
                         *xp++ = ' ';
-                    }
-                    else
+                    } else
                         sep = 1;
                     xp += sfsprintf(xp, EXBUF, "suffix %s", suf);
                 }
@@ -508,12 +443,9 @@ expandops(char *xp, char *ed, int del)
             break;
         default:
             qual = 0;
-            if (op == 'T')
-            {
-                for (;; val++)
-                {
-                    switch (*val)
-                    {
+            if (op == 'T') {
+                for (;; val++) {
+                    switch (*val) {
                     case 'R':
                         xp += sfsprintf(
                         xp, EXBUF, "time %srule", state.longflag);
@@ -528,8 +460,7 @@ expandops(char *xp, char *ed, int del)
                     }
                     break;
                 }
-                if (*val == 'S' && *(val + 1) == 'F')
-                {
+                if (*val == 'S' && *(val + 1) == 'F') {
                     qual |= ED_FORCE;
                     sfsprintf(tmp, sizeof(tmp), "S%s", val + 2);
                     val = tmp;
@@ -539,27 +470,21 @@ expandops(char *xp, char *ed, int del)
                 xp = stpcpy(xp, "! ");
             if (!op)
                 break;
-            if (val == DELETE || val == KEEP)
-            {
+            if (val == DELETE || val == KEEP) {
                 val = "";
                 arg = 0;
                 aux = 0;
-            }
-            else
-            {
+            } else {
                 arg = val[0];
                 aux = val[1];
             }
             vp = val;
             zp = 0;
             for (mpp = state.map; mpp < &state.map[elementsof(editmap)];
-                 mpp++)
-            {
+                 mpp++) {
                 mp = *mpp;
-                if (mp->cmd.type != ED_QUAL)
-                {
-                    if (mp->cmd.op != op)
-                    {
+                if (mp->cmd.type != ED_QUAL) {
+                    if (mp->cmd.op != op) {
                         if (!(fp = mp->options))
                             continue;
                         for (; fp->name; fp++)
@@ -570,8 +495,7 @@ expandops(char *xp, char *ed, int del)
                             continue;
                     }
                     m = 0;
-                    switch (mp->cmd.arg)
-                    {
+                    switch (mp->cmd.arg) {
                     case 0:
                         if (!zp || zp->options && !mp->options)
                             zp = mp;
@@ -587,8 +511,7 @@ expandops(char *xp, char *ed, int del)
                             continue;
                         break;
                     case '*':
-                        if (arg)
-                        {
+                        if (arg) {
                             if (arg != 'F' && arg != '*')
                                 continue;
                             val++;
@@ -597,20 +520,16 @@ expandops(char *xp, char *ed, int del)
                     default:
                         if (arg != mp->cmd.arg)
                             continue;
-                        if (mp->cmd.aux)
-                        {
+                        if (mp->cmd.aux) {
                             if (aux != mp->cmd.aux)
                                 continue;
-                            if (!mp->options)
-                            {
+                            if (!mp->options) {
                                 if (arg && *val)
                                     val++;
                                 if (*val)
                                     val++;
                             }
-                        }
-                        else if (arg)
-                        {
+                        } else if (arg) {
                             m = 1;
                             if (*val)
                                 val++;
@@ -618,12 +537,10 @@ expandops(char *xp, char *ed, int del)
                         break;
                     }
                     dp = xp;
-                    if (op == 'T')
-                    {
+                    if (op == 'T') {
                         if (bound)
                             bound = 0;
-                        else if (!(qual & ED_NOBIND))
-                        {
+                        else if (!(qual & ED_NOBIND)) {
                             bound = 1;
                             xp = stpcpy(xp, "bind");
                             if (qual & ED_NOWAIT)
@@ -638,11 +555,9 @@ expandops(char *xp, char *ed, int del)
                     if (qual & ED_FORCE)
                         xp
                         += sfsprintf(xp, EXBUF, " %sforce", state.longflag);
-                    if (fp = mp->options)
-                    {
+                    if (fp = mp->options) {
                         n = sep;
-                        for (e = 0; fp->name; fp++)
-                        {
+                        for (e = 0; fp->name; fp++) {
                             if (!*fp->name && fp->cmd.type == ED_QUAL)
                                 sep ^= fp->cmd.op;
                             else if (fp->cmd.type == ED_QUAL
@@ -652,16 +567,13 @@ expandops(char *xp, char *ed, int del)
                                             || !fp->cmd.op
                                                && arg == fp->cmd.arg
                                                && (!fp->cmd.aux
-                                                   || aux == fp->cmd.aux)))
-                            {
+                                                   || aux == fp->cmd.aux))) {
                                 if (!*fp->name)
                                     e = 1;
-                                else
-                                {
+                                else {
                                     if (!m)
                                         m = 1;
-                                    if (m > 0 && fp->cmd.type == ED_OP)
-                                    {
+                                    if (m > 0 && fp->cmd.type == ED_OP) {
                                         m = -1;
                                         val++;
                                         if (fp->cmd.aux)
@@ -673,15 +585,11 @@ expandops(char *xp, char *ed, int del)
                                 }
                             }
                         }
-                        if (!m)
-                        {
-                            if (e)
-                            {
+                        if (!m) {
+                            if (e) {
                                 if (*val)
                                     val++;
-                            }
-                            else if (!aux || isupper(aux))
-                            {
+                            } else if (!aux || isupper(aux)) {
                                 if (!zp)
                                     zp = mp;
                                 sep = n;
@@ -693,19 +601,16 @@ expandops(char *xp, char *ed, int del)
                     }
                     if (aux == '=' && *val == '=')
                         val++;
-                    if (*val)
-                    {
+                    if (*val) {
                         *xp++ = ' ';
-                        if (*val == '-')
-                        {
+                        if (*val == '-') {
                             *xp++ = '-';
                             *xp++ = '-';
                             *xp++ = ' ';
                         }
                         if (op != 'P' || arg != 'P')
                             xp = stpcpy(xp, val);
-                        else
-                        {
+                        else {
                             while (c = *val++)
                                 *xp++ = c == ',' ? ' ' : c;
                             *xp = 0;
@@ -714,19 +619,14 @@ expandops(char *xp, char *ed, int del)
                     break;
                 }
             }
-            if (mpp >= &state.map[elementsof(editmap)])
-            {
-                if (zp)
-                {
+            if (mpp >= &state.map[elementsof(editmap)]) {
+                if (zp) {
                     xp = stpcpy(xp, zp->name);
-                    if (*val)
-                    {
+                    if (*val) {
                         *xp++ = ' ';
                         xp = stpcpy(xp, val);
                     }
-                }
-                else
-                {
+                } else {
                     error(2, "%c: operator not matched", op);
                     xp = stpcpy(xp, ">>>HUH<<<");
                 }
@@ -748,8 +648,7 @@ expandvar(char *xp, char *v)
     int c;
     char *s;
 
-    switch (c = *v++)
-    {
+    switch (c = *v++) {
     case 0:
         break;
     case '$':
@@ -802,15 +701,12 @@ expandvar(char *xp, char *v)
         s = "target original";
         goto internal;
     internal:
-        while (*v == c)
-        {
+        while (*v == c) {
             v++;
             xp = stpcpy(xp, "parent ");
         }
-        for (;;)
-        {
-            switch (*xp++ = *s++)
-            {
+        for (;;) {
+            switch (*xp++ = *s++) {
             case 0:
                 xp--;
                 break;
@@ -822,8 +718,7 @@ expandvar(char *xp, char *v)
             }
             break;
         }
-        if (*v)
-        {
+        if (*v) {
             *xp++ = ' ';
             xp = expand(xp, v);
         }
@@ -871,41 +766,33 @@ expand(char *xp, char *a)
     strncpy(xp, a, s - a);
     xp += s - a;
     a = s;
-    while (*a)
-    {
+    while (*a) {
         if (*a != '$')
             *xp++ = *a++;
-        else if (*++a == '(')
-        {
+        else if (*++a == '(') {
             *xp++ = '$';
             *xp++ = '(';
             if (isspace(*++a))
                 *xp++ = *a++;
-            else
-            {
+            else {
                 var = a;
                 ed = 0;
                 vp = 0;
                 del = ':';
                 q = 0;
                 p = 1;
-                while (c = *a++)
-                {
+                while (c = *a++) {
                     if (c == '"')
                         q = !q;
                     else if (q) /* quoted */
                         ;
                     else if (c == '(')
                         p++;
-                    else if (c == ')')
-                    {
+                    else if (c == ')') {
                         if (!--p)
                             break;
-                    }
-                    else if (!ed && p == 1)
-                    {
-                        if (c == '|')
-                        {
+                    } else if (!ed && p == 1) {
+                        if (c == '|') {
                             *(a - 1) = 0;
                             if (!vp)
                                 vp = varbuf;
@@ -915,37 +802,29 @@ expand(char *xp, char *a)
                             var = a;
                             *(a - 1) = c;
                             c = 0;
-                        }
-                        else if (c == del)
-                        {
+                        } else if (c == del) {
                             c = 0;
                             ed = a - 1;
-                        }
-                        else if (c == '`')
-                        {
+                        } else if (c == '`') {
                             c = 0;
                             ed = a - 1;
-                            if (!(del = *a++))
-                            {
+                            if (!(del = *a++)) {
                                 ed--;
                                 break;
                             }
                         }
                     }
                 }
-                if (q || !c)
-                {
+                if (q || !c) {
                     a--;
                     error(1,
                           "missing %c in %s variable expansion",
                           q ? '"' : ')',
                           s);
                 }
-                if (vp)
-                {
+                if (vp) {
                     xp += sfsprintf(xp, EXBUF, "value ");
-                    if (*var == '"')
-                    {
+                    if (*var == '"') {
                         c = *(a - 1);
                         *(a - 1) = 0;
                         xp += sfsprintf(
@@ -954,14 +833,12 @@ expand(char *xp, char *a)
                         var = 0;
                     }
                 }
-                if (ed && *(ed + 1) == 'V')
-                {
+                if (ed && *(ed + 1) == 'V') {
                     *ed = 0;
                     if (!vp)
                         xp += sfsprintf(xp, EXBUF, "value ");
                     xp = stpcpy(xp, state.longflag);
-                    switch (*(ed + 2))
-                    {
+                    switch (*(ed + 2)) {
                     case 'A':
                         ed += 3;
                         xp = stpcpy(xp, "auxiliary ");
@@ -978,17 +855,14 @@ expand(char *xp, char *a)
                     if (ed == (a - 1))
                         ed = 0;
                 }
-                if (ed)
-                {
+                if (ed) {
                     if (var && strneq(var, "\"\":T=R", 6))
                         xp += sfsprintf(
                         xp, EXBUF, "time %swall", state.longflag);
-                    else
-                    {
+                    else {
                         c = *ed;
                         *ed = 0;
-                        if (vp)
-                        {
+                        if (vp) {
                             xp = stpcpy(xp, varbuf);
                             if (var)
                                 *xp++ = ' ';
@@ -1001,13 +875,10 @@ expand(char *xp, char *a)
                         xp = expandops(xp, ed + 1, del);
                         *(a - 1) = c;
                     }
-                }
-                else
-                {
+                } else {
                     c = *(a - 1);
                     *(a - 1) = 0;
-                    if (vp)
-                    {
+                    if (vp) {
                         xp = stpcpy(xp, varbuf);
                         if (var)
                             *xp++ = ' ';
@@ -1018,8 +889,7 @@ expand(char *xp, char *a)
                 }
             }
             *xp++ = ')';
-        }
-        else
+        } else
             *xp++ = '$';
     }
     *xp = 0;
@@ -1079,8 +949,7 @@ main(int argc, char **argv)
         *mpp++ = mp++;
     strsort(( char ** )state.map, elementsof(editmap), byop);
     while (c = optget(argv, "d:[delimiter]o:[longflag]D#[debug-level]"))
-        switch (c)
-        {
+        switch (c) {
         case 'd':
             state.delimiter = *opt_info.arg;
             break;
@@ -1100,21 +969,18 @@ main(int argc, char **argv)
     if (error_info.errors)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
     argv += opt_info.index;
-    for (;;)
-    {
+    for (;;) {
         s = *argv++;
         if (!s || streq(s, "-") || streq(s, "/dev/stdin")
             || streq(s, "/dev/fd/0"))
             ip = sfstdin;
-        else if (!(ip = sfopen(NiL, s, "r")))
-        {
+        else if (!(ip = sfopen(NiL, s, "r"))) {
             error(2, "%s: cannot read", s);
             continue;
         }
         error_info.file = s;
         error_info.line = 0;
-        while (s = sfgetr(ip, '\n', 1))
-        {
+        while (s = sfgetr(ip, '\n', 1)) {
             error_info.line++;
             if (*s && !isspace(*s))
                 state.function = strmatch(s, "*FUNCTION*");

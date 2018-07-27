@@ -55,10 +55,8 @@ Union_t *un;
     obj = un->obj;
     r = (l = list) + n;
 
-    if (n > 4)
-    {
-        while (l != r)
-        {
+    if (n > 4) {
+        while (l != r) {
             m = l + (r - l) / 2;
             o = (*m)->obj;
             OBJCMP(o, obj, cmp);
@@ -69,28 +67,21 @@ Union_t *un;
             else
                 r = m;
         }
-    }
-    else
-    {
-        for (r -= 1, cmp = 1; r >= l; --r)
-        {
+    } else {
+        for (r -= 1, cmp = 1; r >= l; --r) {
             o = (*r)->obj;
             OBJCMP(o, obj, cmp);
-            if (cmp > 0)
-            {
+            if (cmp > 0) {
                 l = r + 1;
                 break;
-            }
-            else if (cmp == 0)
-            {
+            } else if (cmp == 0) {
                 l = r;
                 break;
             }
         }
     }
 
-    if (cmp == 0)
-    {
+    if (cmp == 0) {
         for (p = NIL(Union_t *), h = *l;;)
             if (un->pos < h->pos || !(p = h, h = h->equi))
                 break;
@@ -99,9 +90,7 @@ Union_t *un;
             p->equi = un;
         else
             *l = un;
-    }
-    else
-    {
+    } else {
         for (r = list + n; r > l; --r)
             *r = *(r - 1);
         *l = un;
@@ -128,14 +117,13 @@ int n;
 
     if (!(ulist = ( Union_t ** )vmalloc(Vmheap, n * sizeof(Union_t *))))
         return NIL(Rsobj_t *);
-    if (!(uarray = ( Union_t * )vmalloc(Vmheap, n * sizeof(Union_t))))
-    {
+    if (!(uarray = ( Union_t * )vmalloc(Vmheap, n * sizeof(Union_t)))) {
         vmfree(Vmheap, ulist);
         return NIL(Rsobj_t *);
     }
 
-    for (p = 0, n_list = 0; p < n; ++p)
-    { /* set up header data for quick comparisons */
+    for (p = 0, n_list = 0; p < n;
+         ++p) { /* set up header data for quick comparisons */
         for (obj = objlist[p]; obj; obj = obj->right)
             OBJHEAD(obj);
 
@@ -145,20 +133,17 @@ int n;
     }
 
     list = tail = NIL(Rsobj_t *);
-    while (n_list > 0)
-    {
+    while (n_list > 0) {
         un = ulist[n_list -= 1];
         if (n_list == 0 && !un->equi) /* last unmerged list */
         {
             obj = un->obj;
             ADDOBJ(list, tail, obj);
-        }
-        else if (un->equi) /* a set of equivalence classes */
+        } else if (un->equi) /* a set of equivalence classes */
         {
             obj = un->obj;
             un->obj = obj->right;
-            for (;;)
-            {
+            for (;;) {
                 u = un->equi;
                 if (un->obj)
                     n_list = uninsert(ulist, n_list, un);
@@ -184,8 +169,7 @@ int n;
 
             if (n_list == 0)
                 tail->right = NIL(Rsobj_t *);
-        }
-        else /* at least 2 distinct lists are left */
+        } else /* at least 2 distinct lists are left */
         {
             o = ulist[p = n_list - 1]->obj;
             for (obj = un->obj;;) /* keep peeling off least objects */
@@ -195,29 +179,24 @@ int n;
 
                 if (!(obj = un->obj))
                     break;
-                else
-                {
+                else {
                     OBJCMP(obj, o, cmp);
                     if (cmp >= 0)
                         break;
                 }
             }
-            if (obj)
-            {
+            if (obj) {
                 if (cmp > 0) /* new min element */
                 {
                     ulist[n_list] = ulist[p];
-                    if (p == 0)
-                    {
+                    if (p == 0) {
                         n_list = 2;
                         ulist[0] = un;
-                    }
-                    else if (uninsert(ulist, p, un) == p)
+                    } else if (uninsert(ulist, p, un) == p)
                         ulist[p] = ulist[n_list];
                     else
                         n_list += 1;
-                }
-                else /*if(cmp == 0) -- new equivalence class */
+                } else /*if(cmp == 0) -- new equivalence class */
                 {
                     for (pu = NIL(Union_t *), u = ulist[p];;)
                         if (un->pos < u->pos || !(pu = u, u = u->equi))
@@ -252,8 +231,7 @@ Rsobj_t *rslist(rs) Rs_t *rs;
     if ((type = rs->type) & RS_SORTED)
         return rs->sorted;
 
-    if ((list = (*rs->meth->listf)(rs)) && rs->n_list > 0)
-    {
+    if ((list = (*rs->meth->listf)(rs)) && rs->n_list > 0) {
         rs->list
         = ( Rsobj_t ** )vmresize(rs->vm,
                                  rs->list,
@@ -265,8 +243,7 @@ Rsobj_t *rslist(rs) Rs_t *rs;
         rs->n_list += 1;
     }
 
-    if (rs->n_list > 0)
-    {
+    if (rs->n_list > 0) {
         list = rs->n_list > 1 ? unionize(rs->list, rs->n_list) : rs->list[0];
 
         vmfree(rs->vm, rs->list);
@@ -274,22 +251,17 @@ Rsobj_t *rslist(rs) Rs_t *rs;
         rs->n_list = 0;
     }
 
-    if ((type & RS_UNIQ) || !(type & RS_DATA))
-    {
+    if ((type & RS_UNIQ) || !(type & RS_DATA)) {
         for (r = list; r; r = r->right)
             if ((e = r->equal))
                 e->left->right = NIL(Rsobj_t *);
-    }
-    else
-    {
+    } else {
         int(*insertf) _ARG_(( Rs_t *, Rsobj_t * )) = rs->meth->insertf;
         Rsobj_t *( *listf )_ARG_(( Rs_t * )) = rs->meth->listf;
 
-        for (p = NIL(Rsobj_t *), r = list; r; r = t)
-        {
+        for (p = NIL(Rsobj_t *), r = list; r; r = t) {
             t = r->right;
-            if (!(e = r->equal))
-            {
+            if (!(e = r->equal)) {
                 p = r;
                 continue;
             }
@@ -302,8 +274,7 @@ Rsobj_t *rslist(rs) Rs_t *rs;
             if (type & RS_DSAMELEN)
                 rs->type |= RS_KSAMELEN;
 
-            for (; r; r = next)
-            {
+            for (; r; r = next) {
                 next = r->right;
 
                 k = r->key;
@@ -325,8 +296,7 @@ Rsobj_t *rslist(rs) Rs_t *rs;
             p = r->left;
             p->right = t;
 
-            for (; r != t; r = r->right)
-            {
+            for (; r != t; r = r->right) {
                 k = r->key;
                 r->key = r->data;
                 r->data = k;
@@ -334,11 +304,9 @@ Rsobj_t *rslist(rs) Rs_t *rs;
                 r->keylen = r->datalen;
                 r->datalen = n;
 
-                if ((e = r->equal))
-                {
+                if ((e = r->equal)) {
                     e->left->right = NIL(Rsobj_t *);
-                    for (; e; e = e->right)
-                    {
+                    for (; e; e = e->right) {
                         k = e->key;
                         e->key = e->data;
                         e->data = k;
@@ -353,17 +321,14 @@ Rsobj_t *rslist(rs) Rs_t *rs;
         }
     }
 
-    if ((type & RS_REVERSE))
-    {
-        for (p = NIL(Rsobj_t *), r = list; r; r = t)
-        {
+    if ((type & RS_REVERSE)) {
+        for (p = NIL(Rsobj_t *), r = list; r; r = t) {
             t = r->right;
 
             if ((e = r->equal)) /* invert equal list */
             {
                 reg Rsobj_t *ende;
-                for (list = r, ende = e->left; e != ende; e = next)
-                {
+                for (list = r, ende = e->left; e != ende; e = next) {
                     next = e->right;
                     e->right = list;
                     list = e;

@@ -58,19 +58,16 @@ getcwd(char *buf, size_t len)
         return SYSGETCWD(buf, len) < 0 ? 0 : buf;
     oerrno = errno;
     n = PATH_MAX;
-    for (;;)
-    {
+    for (;;) {
         if (!(buf = newof(buf, char, n, 0)))
             ERROR(ENOMEM);
-        if (SYSGETCWD(buf, n) >= 0)
-        {
+        if (SYSGETCWD(buf, n) >= 0) {
             if ((r = strlen(buf) + len + 1) != n
                 && !(buf = newof(buf, char, r, 0)))
                 ERROR(ENOMEM);
             break;
         }
-        if (errno != ERANGE)
-        {
+        if (errno != ERANGE) {
             free(buf);
             return 0;
         }

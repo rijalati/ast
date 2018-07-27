@@ -47,8 +47,7 @@ Void_t **out;
     /* count processable blocks */
     vc->undone = 0;
     for (nblk = 0, enddt = (dt = ( Vcchar_t * )data) + size;;
-         dt += sz, nblk += 1)
-    {
+         dt += sz, nblk += 1) {
         if (dt + SIZE > enddt) /* partial block */
             sz = -1;
         else if ((sz = GETSIZE(dt)) < SIZE) /* corrupted data */
@@ -83,8 +82,7 @@ Void_t **out;
     vcioskip(&io, blksz);
 
     /* do partitioning */
-    for (enddt = (dt = ( Vcchar_t * )data) + size; dt < enddt; dt += sz)
-    {
+    for (enddt = (dt = ( Vcchar_t * )data) + size; dt < enddt; dt += sz) {
         sz = GETSIZE(dt);
         PUTSIZE(blkdt, 4); /* make this look like ama data */
         blkdt += 2;
@@ -97,8 +95,7 @@ Void_t **out;
     } /**/
     DEBUG_ASSERT(dt == enddt);
 
-    if (vc->coder)
-    {
+    if (vc->coder) {
         dt = blkdt;
         sz = size - blksz;
         blkdt -= blksz;
@@ -110,14 +107,12 @@ Void_t **out;
             RETURN(-1);
 
         zipsz = blksz + sz + vcsizeu(size) + vcsizeu(nblk) + vcsizeu(blksz);
-        if (vcioextent(&io) < zipsz)
-        {
+        if (vcioextent(&io) < zipsz) {
             vcbuffer(vc, NIL(Vcchar_t *), -1, -1);
             if (!(zipdt = vcbuffer(vc, NIL(Vcchar_t *), zipsz, 0)))
                 RETURN(-1);
             vcioinit(&io, zipdt, zipsz);
-        }
-        else
+        } else
             vcioinit(&io, zipdt, zipsz);
 
         vcioputu(&io, size);
@@ -165,8 +160,7 @@ Void_t **out;
         RETURN(-1);
     dt = vcionext(&io);
 
-    if (vc->coder)
-    {
+    if (vc->coder) {
         if (vcrecode(vc, &blkdt, &blksz, 0, 0) < 0)
             RETURN(-1);
 
@@ -178,8 +172,7 @@ Void_t **out;
         RETURN(-1);
     rawdt = ( Vcchar_t * )data;
     rawsz = dtsz;
-    for (; nblk > 0; --nblk)
-    {
+    for (; nblk > 0; --nblk) {
         if (GETSIZE(blkdt) != 4)
             RETURN(-1);
         blkdt += 2;

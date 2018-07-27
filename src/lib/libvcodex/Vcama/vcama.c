@@ -138,8 +138,7 @@ Void_t **out;
 
     /* ready the dictionary of sizes */
     szdt = var->szdt;
-    for (tbl = dtfirst(szdt); tbl; tbl = dtnext(szdt, tbl))
-    {
+    for (tbl = dtfirst(szdt); tbl; tbl = dtnext(szdt, tbl)) {
         tbl->count = 0;
         tbl->dtsz = 0;
         tbl->data = NIL(Vcchar_t *);
@@ -147,8 +146,7 @@ Void_t **out;
 
     /* make the entry to keep table of sizes */
     z = -1;
-    if (!(sztbl = dtmatch(szdt, &z)))
-    {
+    if (!(sztbl = dtmatch(szdt, &z))) {
         if (!(sztbl = ( Tbl_t * )malloc(sizeof(Tbl_t))))
             RETURN(-1);
         sztbl->size = -1;
@@ -160,29 +158,24 @@ Void_t **out;
     }
 
     /* tally records of the same size */
-    for (enddt = (dt = ( Vcchar_t * )data) + size;;)
-    {
+    for (enddt = (dt = ( Vcchar_t * )data) + size;;) {
         if (var->type == AMA_DFLT) /* 2-byte record size header */
         {
             if (dt + AMA_SIZE > enddt) /* partial record */
                 z = -1;
-            else if ((z = GETSIZE(dt)) < AMA_SIZE || z >= MAXSIZE)
-            {
+            else if ((z = GETSIZE(dt)) < AMA_SIZE || z >= MAXSIZE) {
                 vc->undone = size; /* corrupted data */
                 RETURN(-1);
-            }
-            else if (z > (enddt - dt)) /* partial record */
+            } else if (z > (enddt - dt)) /* partial record */
                 z = -1;
-        }
-        else /* new-line delineated records */
+        } else /* new-line delineated records */
         {
             for (rc = dt; rc < enddt; ++rc)
                 if (*rc == EOL)
                     break;
             if (rc == enddt)
                 z = -1;
-            else if ((z = (rc - dt) + 1) >= MAXSIZE)
-            {
+            else if ((z = (rc - dt) + 1) >= MAXSIZE) {
                 vc->undone = size; /* cannot handle this data */
                 RETURN(-1);
             }
@@ -193,8 +186,7 @@ Void_t **out;
             vc->undone = enddt - dt;
             size -= vc->undone;
             break;
-        }
-        else
+        } else
             dt += z; /* skip to next record */
 
         if (var->type == AMA_DFLT)
@@ -205,8 +197,7 @@ Void_t **out;
 
         if ((tbl = dtmatch(szdt, &z)))
             tbl->count++;
-        else
-        { /* create handles for new record lengths */
+        else { /* create handles for new record lengths */
             if (!(tbl = ( Tbl_t * )calloc(1, sizeof(Tbl_t))))
                 RETURN(-1);
 
@@ -231,8 +222,7 @@ Void_t **out;
     /* count records and groups and get sizes of rearranged data */
     sz = 0;
     ntbl = 1; /* 1 for sztbl */
-    for (sz = 0, tbl = dtfirst(szdt); tbl; tbl = dtnext(szdt, tbl))
-    {
+    for (sz = 0, tbl = dtfirst(szdt); tbl; tbl = dtnext(szdt, tbl)) {
         if (tbl->count <= 0 || tbl == sztbl)
             continue;
         ntbl += 1;
@@ -246,8 +236,7 @@ Void_t **out;
     /* allocate memory to each record group to rearrange data */
     if (!(tbldt = vcbuffer(vc, NIL(Vcchar_t *), sz, 0)))
         RETURN(-1);
-    for (dt = tbldt, tbl = dtfirst(szdt); tbl; tbl = dtnext(szdt, tbl))
-    {
+    for (dt = tbldt, tbl = dtfirst(szdt); tbl; tbl = dtnext(szdt, tbl)) {
         if (tbl->count <= 0)
             continue;
         tbl->data = dt;
@@ -256,12 +245,10 @@ Void_t **out;
     DEBUG_ASSERT((dt - tbldt) == sz);
 
     /* now partition records into groups of same size */
-    for (enddt = (dt = ( Vcchar_t * )data) + size; dt < enddt;)
-    {
+    for (enddt = (dt = ( Vcchar_t * )data) + size; dt < enddt;) {
         if (var->type == AMA_DFLT)
             z = GETSIZE(dt);
-        else
-        {
+        else {
             for (rc = dt; rc < enddt; ++rc)
                 if (*rc == EOL)
                     break;
@@ -275,8 +262,7 @@ Void_t **out;
         {
             dt += AMA_SIZE;
             z -= AMA_SIZE;
-        }
-        else if (var->type == AMA_TEXTLINE) /* omit new-line */
+        } else if (var->type == AMA_TEXTLINE) /* omit new-line */
             z -= 1;
         /* else if(var->type == AMA_FULLLINE); keep new-line */
 
@@ -291,21 +277,18 @@ Void_t **out;
 
     /* continuation data processing and computing output size */
     zipsz = vcsizeu(ntbl) + 1; /* #tables + type */
-    for (tbl = dtfirst(szdt); tbl; tbl = dtnext(szdt, tbl))
-    {
+    for (tbl = dtfirst(szdt); tbl; tbl = dtnext(szdt, tbl)) {
         if (tbl->count <= 0)
             continue;
 
         tbl->data -= tbl->dtsz; /* reset data pointer */
-        if (vc->coder && tbl->dtsz > 0)
-        {
+        if (vc->coder && tbl->dtsz > 0) {
             tbl->ctxt = vcinitcontext(vc->coder, tbl->ctxt);
 
             /* pass data characteristics down to secondary coder */
             if (tbl != sztbl)
                 z = tbl->size; /* common #columns for all records */
-            else
-            {
+            else {
                 z = 2; /* #columns in the size table is always 2 */
 
                 if (var->type
@@ -347,8 +330,7 @@ Void_t **out;
     ntbl -= 1;
 
     /* output the rest of the tables */
-    for (tbl = dtfirst(szdt); tbl; tbl = dtnext(szdt, tbl))
-    {
+    for (tbl = dtfirst(szdt); tbl; tbl = dtnext(szdt, tbl)) {
         if (tbl->count <= 0 || tbl == sztbl)
             continue;
 
@@ -396,8 +378,7 @@ Void_t **out;
 
     /* ready the dictionary of sizes */
     szdt = var->szdt;
-    for (tbl = dtfirst(szdt); tbl; tbl = dtnext(szdt, tbl))
-    {
+    for (tbl = dtfirst(szdt); tbl; tbl = dtnext(szdt, tbl)) {
         tbl->count = 0;
         tbl->dtsz = 0;
         tbl->data = NIL(Vcchar_t *);
@@ -409,8 +390,7 @@ Void_t **out;
         RETURN(-1);
 
     var->type = vciogetc(&io);
-    if (var->type == AMA_TEXTLINE || var->type == AMA_FULLLINE)
-    {
+    if (var->type == AMA_TEXTLINE || var->type == AMA_FULLLINE) {
         if (var->map) /* var->type should be AMA_DFLT for record translation
                        */
             RETURN(-1);
@@ -419,8 +399,7 @@ Void_t **out;
 
     /* reconstruct the table of record sizes */
     sz = -1;
-    if (!(sztbl = dtmatch(szdt, &sz)))
-    {
+    if (!(sztbl = dtmatch(szdt, &sz))) {
         if (!(sztbl = ( Tbl_t * )calloc(1, sizeof(Tbl_t))))
             RETURN(-1);
         sztbl->count = 0;
@@ -436,8 +415,7 @@ Void_t **out;
         RETURN(-1);
     sztbl->data = vcionext(&io);
     vcioskip(&io, sztbl->dtsz);
-    if (vc->coder)
-    {
+    if (vc->coder) {
         sztbl->ctxt = vcinitcontext(vc->coder, sztbl->ctxt);
         if (vcrecode(vc, &sztbl->data, &sztbl->dtsz, 0, 0) < 0)
             RETURN(-1);
@@ -446,13 +424,11 @@ Void_t **out;
         RETURN(-1);
     sztbl->count = sztbl->dtsz / 2;
 
-    for (size = 0, ntbl -= 1; ntbl > 0; --ntbl)
-    {
+    for (size = 0, ntbl -= 1; ntbl > 0; --ntbl) {
         if (vciomore(&io) <= 0 || (sz = vciogetu(&io)) < 0)
             RETURN(-1);
 
-        if (!(tbl = dtmatch(szdt, &sz)))
-        {
+        if (!(tbl = dtmatch(szdt, &sz))) {
             if (!(tbl = ( Tbl_t * )calloc(1, sizeof(Tbl_t))))
                 RETURN(-1);
             tbl->count = 0;
@@ -470,8 +446,7 @@ Void_t **out;
         tbl->data = vcionext(&io);
         vcioskip(&io, tbl->dtsz);
 
-        if (vc->coder && tbl->size > 0)
-        {
+        if (vc->coder && tbl->size > 0) {
             if (!(tbl->ctxt = vcinitcontext(vc->coder, tbl->ctxt)))
                 RETURN(-1);
             if (vcrecode(vc, &tbl->data, &tbl->dtsz, 0, 0) < 0)
@@ -499,14 +474,12 @@ Void_t **out;
             RETURN(-1);
 
         size += tbl->dtsz;
-        if (var->type == AMA_DFLT)
-        {
+        if (var->type == AMA_DFLT) {
             if (!var->map)
                 size += tbl->count * AMA_SIZE;
             else
                 size -= tbl->count; /* losing two 0's, adding \n */
-        }
-        else if (var->type == AMA_TEXTLINE)
+        } else if (var->type == AMA_TEXTLINE)
             size += tbl->count;
         /* else if(var->type == AMA_FULLINE); */
     }
@@ -515,8 +488,8 @@ Void_t **out;
         RETURN(-1);
     data = ( Void_t * )rawdt;
 
-    for (enddt = (dt = sztbl->data) + sztbl->dtsz; dt < enddt; dt += 2)
-    { /* get record size */
+    for (enddt = (dt = sztbl->data) + sztbl->dtsz; dt < enddt;
+         dt += 2) { /* get record size */
         sz = GETSIZE(dt);
         if (var->type == AMA_DFLT)
             sz -= AMA_SIZE;
@@ -534,27 +507,22 @@ Void_t **out;
         if ((sztbl->count -= 1) < 0)
             RETURN(-1);
 
-        if (var->type == AMA_TEXTLINE)
-        {
+        if (var->type == AMA_TEXTLINE) {
             memcpy(rawdt, tbl->data, tbl->size);
             rawdt += tbl->size;
             *rawdt = eol;
             rawdt += 1;
-        }
-        else if (var->type == AMA_FULLLINE)
-        {
+        } else if (var->type == AMA_FULLLINE) {
             memcpy(rawdt, tbl->data, tbl->size);
             rawdt += tbl->size;
-        }
-        else if (!var->map) /* normal AMA records */
+        } else if (!var->map) /* normal AMA records */
         {
             sz += AMA_SIZE; /* 2-byte-header record in original format */
             PUTSIZE(rawdt, sz);
             rawdt += AMA_SIZE;
             memcpy(rawdt, tbl->data, tbl->size);
             rawdt += tbl->size;
-        }
-        else /* mapping 4-byte header EBCDIC records to text lines */
+        } else /* mapping 4-byte header EBCDIC records to text lines */
         {
             memcpy(rawdt, tbl->data + 2, tbl->size - 2);
             if (vcapply(var->map, rawdt, tbl->size - 2, &mdt)
@@ -594,8 +562,7 @@ Void_t *params;
     char *data, val[64];
     ssize_t n;
 
-    if (type == VC_OPENING)
-    {
+    if (type == VC_OPENING) {
         if (!(var = calloc(1, sizeof(Vartbl_t))))
             return -1;
 
@@ -609,14 +576,11 @@ Void_t *params;
 
         vcsetmtdata(vc, var);
         goto vc_setarg;
-    }
-    else if (type == VC_SETMTARG)
-    {
+    } else if (type == VC_SETMTARG) {
         if (!(var = vcgetmtdata(vc, Vartbl_t *)))
             return -1;
     vc_setarg:
-        for (data = ( char * )params; data;)
-        {
+        for (data = ( char * )params; data;) {
             arg = NIL(Vcmtarg_t *);
             val[0] = 0;
             data = vcgetmtarg(data, val, sizeof(val), _Amaargs, &arg);
@@ -629,8 +593,7 @@ Void_t *params;
             {
                 if (!val[0])
                     n = 0; /* default is "o2a", IBM OpenEdition */
-                else
-                {
+                else {
                     for (n = 0; val[0] && E2A[n]; ++n)
                         if (strcmp(val, E2A[n]) == 0)
                             break;
@@ -647,11 +610,8 @@ Void_t *params;
                 vcsetmtarg(var->map, "inplace", 0, 0);
             }
         }
-    }
-    else if (type == VC_CLOSING)
-    {
-        if ((var = vcgetmtdata(vc, Vartbl_t *)))
-        {
+    } else if (type == VC_CLOSING) {
+        if ((var = vcgetmtdata(vc, Vartbl_t *))) {
             if (var->map)
                 vcclose(var->map);
             if (var->szdt)

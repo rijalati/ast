@@ -43,22 +43,17 @@ re_comp(const char *pattern)
 {
     int r;
 
-    if (!pattern || !*pattern)
-    {
+    if (!pattern || !*pattern) {
         if (state.valid)
             return 0;
         r = REG_BADPAT;
-    }
-    else
-    {
-        if (state.valid)
-        {
+    } else {
+        if (state.valid) {
             state.valid = 0;
             regfree(&state.re);
         }
         if (!(r = regcomp(
-              &state.re, pattern, REG_LENIENT | REG_NOSUB | REG_NULL)))
-        {
+              &state.re, pattern, REG_LENIENT | REG_NOSUB | REG_NULL))) {
             state.valid = 1;
             return 0;
         }
@@ -71,8 +66,7 @@ int
 re_exec(const char *subject)
 {
     if (state.valid && subject)
-        switch (regexec(&state.re, subject, 0, NiL, 0))
-        {
+        switch (regexec(&state.re, subject, 0, NiL, 0)) {
         case 0:
             return 1;
         case REG_NOMATCH:

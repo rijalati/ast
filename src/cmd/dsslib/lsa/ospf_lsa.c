@@ -152,33 +152,25 @@ ospf_lsa_meth(const char *name,
     char *s;
     int i;
 
-    for (fp = ospf_lsa_formats; fp; fp = fp->next)
-    {
+    for (fp = ospf_lsa_formats; fp; fp = fp->next) {
         dtinsert(meth->formats, fp);
     }
-    for (i = 0; i < elementsof(local_callouts); i++)
-    {
-        if (cxaddcallout(meth->cx, &local_callouts[i], disc))
-        {
+    for (i = 0; i < elementsof(local_callouts); i++) {
+        if (cxaddcallout(meth->cx, &local_callouts[i], disc)) {
             return NULL;
         }
     }
-    for (i = 0; fields[i].name; i++)
-    {
-        if (cxaddvariable(meth->cx, &fields[i], disc))
-        {
+    for (i = 0; fields[i].name; i++) {
+        if (cxaddvariable(meth->cx, &fields[i], disc)) {
             return NULL;
         }
     }
-    if (options)
-    {
+    if (options) {
         if (dssoptlib(meth->cx->buf, &dss_lib_lsa, NiL, disc))
             return 0;
         s = sfstruse(meth->cx->buf);
-        for (;;)
-        {
-            switch (optstr(options, s))
-            {
+        for (;;) {
+            switch (optstr(options, s)) {
             case '?':
                 if (disc->errorf)
                     (*disc->errorf)(
@@ -204,10 +196,8 @@ ospf_lsa_open(Dss_t *dss, Dssdisc_t *disc)
     MD_CALLOC(ospf_qh, ospf_qh_t *, 1, sizeof(ospf_qh_t));
     if ((ospf_qh == NULL)
         || (!(ospf_qh->type_ipv4addr = cxtype(dss->cx, "ipv4addr_t", disc)))
-        || (!(ospf_qh->tmp = sfstropen())))
-    {
-        if (ospf_qh)
-        {
+        || (!(ospf_qh->tmp = sfstropen()))) {
+        if (ospf_qh) {
             MD_FREE(ospf_qh);
         }
         ASSERT(0);
@@ -224,8 +214,7 @@ ospf_lsa_close(Dss_t *dss, Dssdisc_t *disc)
 {
     ospf_qh_t *ospf_qh;
 
-    if (!(ospf_qh = ( ospf_qh_t * )dss->data) || !ospf_qh->tmp)
-    {
+    if (!(ospf_qh = ( ospf_qh_t * )dss->data) || !ospf_qh->tmp) {
         return -1;
     }
     sfstrclose(ospf_qh->tmp);
@@ -245,8 +234,7 @@ op_get(Cx_t *cx,
     ospf_lsa_can_t *rp = ( ospf_lsa_can_t * )DSSDATA(data);
     Cxvariable_t *vp = ( Cxvariable_t * )pc->data.variable;
 
-    switch (vp->index)
-    {
+    switch (vp->index) {
     case LSA_VARI_TIME: /* ns_t */
         error(-1, "AHA LSA_VARI_TIME %u.%09u", rp->sec, rp->micro_sec * 1000);
 #if _typ_int64_t

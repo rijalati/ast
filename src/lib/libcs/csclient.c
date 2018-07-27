@@ -76,8 +76,7 @@ csclient(Cs_t *cs,
     Cspoll_t fds[2];
     char buf[8 * 1024];
 
-    if (fd < 0 && (fd = csopen(cs, service, CS_OPEN_TEST)) < 0)
-    {
+    if (fd < 0 && (fd = csopen(cs, service, CS_OPEN_TEST)) < 0) {
         if (errno == ENOENT)
             error(3, "%s: server not running", service);
         else
@@ -85,8 +84,7 @@ csclient(Cs_t *cs,
             ERROR_SYSTEM | 3, "%s: cannot open connect stream", service);
     }
 #if _hdr_termios
-    if (flags & CS_CLIENT_RAW)
-    {
+    if (flags & CS_CLIENT_RAW) {
         tcgetattr(0, &state.old_term);
         atexit(restore);
         state.new_term = state.old_term;
@@ -100,13 +98,10 @@ csclient(Cs_t *cs,
 #endif
     sdf[0] = fd;
     sdf[1] = 1;
-    if (argv && *argv)
-    {
+    if (argv && *argv) {
         fds[0].fd = 1;
         fds[0].events = CS_POLL_WRITE;
-    }
-    else
-    {
+    } else {
         argv = 0;
         fds[0].fd = 0;
         fds[0].events = CS_POLL_READ;
@@ -122,20 +117,14 @@ csclient(Cs_t *cs,
     tmp = 0;
     while (cspoll(cs, fds, elementsof(fds), timeout) > 0)
         for (i = 0; i < elementsof(fds); i++)
-            if (fds[i].status & (CS_POLL_READ | CS_POLL_WRITE))
-            {
-                if (!i && argv)
-                {
-                    if (!*argv)
-                    {
-                        if (flags & CS_CLIENT_ARGV)
-                        {
+            if (fds[i].status & (CS_POLL_READ | CS_POLL_WRITE)) {
+                if (!i && argv) {
+                    if (!*argv) {
+                        if (flags & CS_CLIENT_ARGV) {
                             if (done++)
                                 return 0;
                             timeout = 500;
-                        }
-                        else
-                        {
+                        } else {
                             argv = 0;
                             fds[0].fd = 0;
                             fds[0].events = CS_POLL_READ;
@@ -144,8 +133,7 @@ csclient(Cs_t *cs,
                     }
                     if (!tmp && !(tmp = sfstropen()))
                         error(ERROR_SYSTEM | 3, "out of space");
-                    for (;;)
-                    {
+                    for (;;) {
                         s = *argv++;
                         if ((flags & CS_CLIENT_SEP) && *s == ':' && !*(s + 1))
                             break;
@@ -158,27 +146,24 @@ csclient(Cs_t *cs,
                     sfputc(tmp, '\n');
                     n = sfstrtell(tmp);
                     s = sfstruse(tmp);
-                }
-                else if ((n = read(fds[i].fd, s = buf, sizeof(buf) - 1)) < 0)
+                } else if ((n = read(fds[i].fd, s = buf, sizeof(buf) - 1))
+                           < 0)
                     error(
                     ERROR_SYSTEM | 3, "/dev/fd/%d: read error", fds[i].fd);
-                if (!n)
-                {
+                if (!n) {
                     if (done++)
                         return 0;
                     if (!i)
                         write(sdf[i], "quit\n", 5);
                     continue;
                 }
-                if (!i)
-                {
+                if (!i) {
 #if _hdr_termios
                     char *u;
                     int m;
 
                     s[n] = 0;
-                    if ((u = strchr(s, 035)))
-                    {
+                    if ((u = strchr(s, 035))) {
                         if ((m = u - s) > 0 && write(sdf[i], s, m) != m)
                             error(ERROR_SYSTEM | 3,
                                   "/dev/fd/%d: write error",
@@ -187,8 +172,7 @@ csclient(Cs_t *cs,
                         if (promptlen)
                             write(1, prompt, promptlen);
                         if ((n = read(fds[i].fd, s = buf, sizeof(buf) - 1))
-                            <= 0)
-                        {
+                            <= 0) {
                             write(1, "\n", 1);
                             return 0;
                         }

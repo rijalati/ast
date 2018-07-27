@@ -265,8 +265,7 @@ matrix(int i)
     if (!(p = newof(0, size_t *, i, n * sizeof(size_t))))
         error(ERROR_SYSTEM | 3, "out of space [%d X %d matrix]", i, i);
     v = ( size_t * )(p + i);
-    for (k = 0; k < i; k++)
-    {
+    for (k = 0; k < i; k++) {
         p[k] = v;
         v += i;
     }
@@ -289,8 +288,7 @@ partition(int i)
     if (!(p = newof(0, Part_t, n, n * i * sizeof(size_t))))
         error(ERROR_SYSTEM | 3, "out of space [%d partition]", i);
     v = ( size_t * )(p + n);
-    for (k = 0; k < n; k++)
-    {
+    for (k = 0; k < n; k++) {
         p[k].member = v;
         v += i;
     }
@@ -396,23 +394,19 @@ zip(unsigned char *b, size_t size)
     static int bufsize;
 
     safe = 4 * roundof(size, 8 * 1024);
-    if (bufsize < safe)
-    {
+    if (bufsize < safe) {
         bufsize = safe;
         if (!(buf = newof(buf, unsigned char, bufsize, 0)))
             error(ERROR_SYSTEM | 3, "out of space [buf]");
     }
-    if (state.bzip)
-    {
+    if (state.bzip) {
         dest = bufsize;
         if (bzBuffToBuffCompress(
             ( char * )buf, &dest, ( char * )b, size, state.level, 0, 30)
             != BZ_OK)
             error(3, "bzip compress failed");
         used = dest;
-    }
-    else
-    {
+    } else {
         used = bufsize;
         if (compress2(buf, &used, b, size, state.level) != Z_OK)
             error(3, "gzip compress failed");
@@ -435,8 +429,7 @@ field(unsigned char *t, unsigned char *s, int i, int j, int row, size_t tot)
     b = t;
     e = s + tot;
     n = j - i + 1;
-    for (s += i; s < e; s += row)
-    {
+    for (s += i; s < e; s += row) {
         memcpy(b, s, n);
         b += n;
     }
@@ -457,8 +450,7 @@ pair(unsigned char *t, unsigned char *s, int i, int j, size_t row, size_t tot)
     b = t;
     e = s + tot;
     j -= i;
-    for (s += i; s < e; s += row)
-    {
+    for (s += i; s < e; s += row) {
         *b++ = *s;
         *b++ = *(s + j);
     }
@@ -513,11 +505,9 @@ merge(unsigned char *t,
     np->elements = k;
     bp = 0;
     x = siz[i][i] + pp->size;
-    for (i = 0;;)
-    {
+    for (i = 0;;) {
         z = part(t, s, np, row, tot);
-        if (z < x)
-        {
+        if (z < x) {
             bp = np + 1;
             bp->size = x = z;
             for (j = 0; j < k; j++)
@@ -529,8 +519,7 @@ merge(unsigned char *t,
         np->member[i] = np->member[i - 1];
         np->member[i - 1] = j;
     }
-    if (bp)
-    {
+    if (bp) {
         np->size = bp->size;
         np->rate = np->size / k;
         for (j = 0; j < k; j++)
@@ -571,29 +560,24 @@ filter(Sfio_t *ip,
     Pzpart_t *pp;
     Sfio_t *sp;
 
-    if (pz || high)
-    {
+    if (pz || high) {
         buf = *bufp;
         dat = *datp;
         rows = tot / row;
-        if (pz)
-        {
+        if (pz) {
             pp = pz->part;
             high = pp->nmap;
             if (!(state.map = newof(state.map, size_t, high, 0)))
                 error(ERROR_SYSTEM | 3, "out of space [map]");
             memcpy(state.map, pp->map, high * sizeof(state.map[0]));
             pzclose(pz);
-        }
-        else
-        {
+        } else {
             if (!(state.map = oldof(state.map, size_t, row, 0)))
                 error(ERROR_SYSTEM | 3, "out of space [map]");
             if (!(state.stats = oldof(state.stats, Stats_t, row, 0)))
                 error(ERROR_SYSTEM | 3, "out of space [stats]");
             memset(state.stats, 0, row * sizeof(state.stats[0]));
-            if (state.cache && (sp = sfopen(NiL, state.cachefile, "r")))
-            {
+            if (state.cache && (sp = sfopen(NiL, state.cachefile, "r"))) {
                 int column;
                 unsigned long frequency;
 
@@ -603,11 +587,9 @@ filter(Sfio_t *ip,
                              state.cachefile);
                 error_info.file = state.cachefile;
                 error_info.line = 0;
-                while (q = sfgetr(sp, '\n', 1))
-                {
+                while (q = sfgetr(sp, '\n', 1)) {
                     error_info.line++;
-                    if (*q == 'f')
-                    {
+                    if (*q == 'f') {
                         if (sfsscanf(
                             q + 1, "%d %d %lu", &c, &column, &frequency)
                             != 3
@@ -626,11 +608,8 @@ filter(Sfio_t *ip,
                 sfclose(sp);
                 error_info.file = 0;
                 error_info.line = 0;
-            }
-            else
-            {
-                if (state.verbose)
-                {
+            } else {
+                if (state.verbose) {
                     if (high < 0)
                         sfprintf(sfstderr,
                                  "filter top %d%% high frequency columns\n",
@@ -643,26 +622,22 @@ filter(Sfio_t *ip,
                 s = dat;
                 for (i = 0; i < rows; i++)
                     for (j = 0; j < row; j++)
-                        if (state.stats[j].prev != (c = *s++))
-                        {
+                        if (state.stats[j].prev != (c = *s++)) {
                             state.stats[j].prev = c;
                             state.stats[j].frequency++;
                         }
                 n = rows;
-                while ((r = sfread(ip, s = buf, state.window)) > 0)
-                {
+                while ((r = sfread(ip, s = buf, state.window)) > 0) {
                     r /= row;
                     if (state.sort)
                         qsort(s, r, row, byrow);
                     for (i = 0; i < r; i++)
                         for (j = 0; j < row; j++)
-                            if (state.stats[j].prev != (c = *s++))
-                            {
+                            if (state.stats[j].prev != (c = *s++)) {
                                 state.stats[j].prev = c;
                                 state.stats[j].frequency++;
                             }
-                    if ((n += r) > 10000000L)
-                    {
+                    if ((n += r) > 10000000L) {
                         /*
                          * that'll do pig
                          */
@@ -678,20 +653,17 @@ filter(Sfio_t *ip,
                 for (j = 0; j < row; j++)
                     state.stats[j].column = j;
                 qsort(state.stats, row, sizeof(Stats_t), byfrequency);
-                if (state.cache)
-                {
+                if (state.cache) {
                     error_info.file = state.cachefile;
                     error_info.line = 0;
                     if (!(sp = sfopen(NiL, state.cachefile, "w")))
                         error(ERROR_SYSTEM | 1, "cannot write cache");
-                    else
-                    {
+                    else {
                         sfprintf(sp,
                                  "# %s cache for %s\n",
                                  error_info.id,
                                  state.input);
-                        for (j = 0; j < row; j++)
-                        {
+                        for (j = 0; j < row; j++) {
                             sfprintf(sp,
                                      "f %d %d %lu\n",
                                      j,
@@ -708,8 +680,7 @@ filter(Sfio_t *ip,
                 if (state.verbose)
                     sfprintf(sfstderr, "filter done -- %u rows\n", n);
             }
-            if (high < 0)
-            {
+            if (high < 0) {
                 high = -high;
                 freq = state.stats[0].frequency * high / 100;
                 for (j = 0; j < row; j++)
@@ -723,8 +694,7 @@ filter(Sfio_t *ip,
                              high == 1 ? "" : "s",
                              row);
             }
-            if (maxhigh < 0)
-            {
+            if (maxhigh < 0) {
                 maxhigh = -maxhigh;
                 if (high > (row * maxhigh / 100))
                     error(6,
@@ -732,9 +702,7 @@ filter(Sfio_t *ip,
                           high,
                           maxhigh,
                           row);
-            }
-            else if (maxhigh > 0)
-            {
+            } else if (maxhigh > 0) {
                 if (high > maxhigh)
                     error(
                     6, "high frequency count %d exceeds %d", high, maxhigh);
@@ -758,8 +726,7 @@ filter(Sfio_t *ip,
         }
         s = dat;
         t = buf;
-        for (i = 0; i < rows; i++)
-        {
+        for (i = 0; i < rows; i++) {
             for (j = 0; j < high; j++)
                 *t++ = s[state.map[j]];
             s += row;
@@ -767,9 +734,7 @@ filter(Sfio_t *ip,
         row = high;
         *bufp = dat;
         *datp = buf;
-    }
-    else
-    {
+    } else {
         if (!(state.map = newof(0, size_t, row, 0)))
             error(ERROR_SYSTEM | 3, "out of space [map]");
         for (i = 0; i < row; i++)
@@ -798,8 +763,7 @@ permute(unsigned char *buf,
         tmap[i] = state.map[i];
     for (i = 0; i < row; i++)
         state.map[i] = tmap[ord[i]];
-    for (end = dat + tot; dat < end; dat += row)
-    {
+    for (end = dat + tot; dat < end; dat += row) {
         memcpy(buf, dat, row);
         for (i = 0; i < row; i++)
             dat[i] = buf[ord[i]];
@@ -836,22 +800,18 @@ list(Sfio_t *sp, int *lab, size_t row)
     int g;
 
     g = -1;
-    for (i = 0; i < row; i++)
-    {
-        if (g != lab[i])
-        {
+    for (i = 0; i < row; i++) {
+        if (g != lab[i]) {
             g = lab[i];
             sfprintf(sp, "\n");
-        }
-        else
+        } else
             sfprintf(sp, " ");
         for (j = i + 1;
              j < row && lab[j] == g && state.map[j] == (state.map[j - 1] + 1);
              j++)
             ;
         sfprintf(sp, "%d", state.map[i]);
-        if (j > (i + 2))
-        {
+        if (j > (i + 2)) {
             i = j - 1;
             sfprintf(sp, "-%d", state.map[i]);
         }
@@ -914,27 +874,23 @@ reorder_heuristic(Reorder_method_t *method,
      * check the cache
      */
 
-    if (state.cache && (sp = sfopen(NiL, state.cachefile, "r")))
-    {
+    if (state.cache && (sp = sfopen(NiL, state.cachefile, "r"))) {
         if (state.verbose)
             sfprintf(sfstderr,
                      "reorder using %s for pair compress sizes\n",
                      state.cachefile);
         error_info.file = state.cachefile;
         error_info.line = 0;
-        while (s = sfgetr(sp, '\n', 1))
-        {
+        while (s = sfgetr(sp, '\n', 1)) {
             error_info.line++;
-            if (*s == 'p')
-            {
+            if (*s == 'p') {
                 if (sfsscanf(s + 1, "%d %d %I*u", &ii, &jj, sizeof(z), &z)
                     != 3
                     || ii < 0 || jj < 0
                     || state.pairs
                        && (ii >= state.pairs || jj >= state.pairs))
                     error(3, "%s: `%s' is invalid", buf, s);
-                if (state.pairs)
-                {
+                if (state.pairs) {
                     ii = state.pam[ii];
                     jj = state.pam[jj];
                 }
@@ -943,8 +899,7 @@ reorder_heuristic(Reorder_method_t *method,
                 siz[ii][jj] = z;
                 if (ii == jj)
                     hit[ii] = 1;
-                else
-                {
+                else {
                     hit[ii] = hit[jj] = k;
                     cp->size = siz[ii][jj];
                     cp->rate = cp->size / 2;
@@ -961,25 +916,21 @@ reorder_heuristic(Reorder_method_t *method,
     }
     sp = 0;
     for (i = 0; i < row; i++)
-        if (!hit[i])
-        {
+        if (!hit[i]) {
             hit[i] = 1;
-            if (state.cache && !error_info.file)
-            {
+            if (state.cache && !error_info.file) {
                 error_info.file = state.cachefile;
                 error_info.line = 0;
                 if (!(sp = sfopen(NiL, error_info.file, "a")))
                     error(ERROR_SYSTEM | 1, "cannot update cache");
-                else if (!sfseek(sp, ( Sfoff_t )0, SEEK_END))
-                {
+                else if (!sfseek(sp, ( Sfoff_t )0, SEEK_END)) {
                     sfprintf(
                     sp, "# %s cache for %s\n", error_info.id, state.input);
                     error_info.line++;
                 }
             }
             siz[i][i] = field(buf, dat, i, i, row, tot);
-            if (sp)
-            {
+            if (sp) {
                 sfprintf(sp,
                          "p %d %d %I*u\n",
                          state.map[i],
@@ -991,23 +942,18 @@ reorder_heuristic(Reorder_method_t *method,
             if (state.verbose)
                 sfprintf(
                 sfstderr, "reorder pairs for %d [%d]\n", i, state.map[i]);
-            for (j = 0; j < i; j++)
-            {
+            for (j = 0; j < i; j++) {
                 z = pair(buf, dat, i, j, row, tot);
                 y = pair(buf, dat, j, i, row, tot);
-                if (z <= y)
-                {
+                if (z <= y) {
                     ii = i;
                     jj = j;
-                }
-                else
-                {
+                } else {
                     z = y;
                     ii = j;
                     jj = i;
                 }
-                if (z < (siz[i][i] + siz[j][j]))
-                {
+                if (z < (siz[i][i] + siz[j][j])) {
                     hit[i] = hit[j] = k;
                     cp->size = siz[ii][jj] = z;
                     cp->rate = cp->size / 2;
@@ -1015,8 +961,7 @@ reorder_heuristic(Reorder_method_t *method,
                     cp->member[0] = ii;
                     cp->member[1] = jj;
                     cp++;
-                    if (sp)
-                    {
+                    if (sp) {
                         sfprintf(sp,
                                  "p %d %d %I*u\n",
                                  state.map[ii],
@@ -1038,24 +983,20 @@ reorder_heuristic(Reorder_method_t *method,
      */
 
     fp = fin;
-    for (;;)
-    {
+    for (;;) {
         if (state.verbose)
             sfprintf(sfstderr, "reorder part %d\n", k + 1);
         qsort(cur, cp - cur, sizeof(Part_t), byrate);
         np = nxt;
-        if (k == 2)
-        {
+        if (k == 2) {
             for (i = 0; i < row; i++)
                 cst[i] = state.window;
-            for (tp = cur; tp < cp; tp++)
-            {
+            for (tp = cur; tp < cp; tp++) {
                 i = tp->member[0];
                 j = tp->member[1];
                 if (!(z = siz[i][j]))
                     z = siz[j][i];
-                if (z)
-                {
+                if (z) {
                     cy = z - siz[i][i];
                     if (cy < cst[j])
                         cst[j] = cy;
@@ -1064,11 +1005,9 @@ reorder_heuristic(Reorder_method_t *method,
                         cst[i] = cy;
                 }
             }
-        }
-        else
+        } else
             for (tp = cur; tp < cp; tp++)
-                for (j = 0; j < tp->elements; j++)
-                {
+                for (j = 0; j < tp->elements; j++) {
                     ii = 0;
                     for (i = 0; i < tp->elements; i++)
                         if (i != j)
@@ -1082,11 +1021,9 @@ reorder_heuristic(Reorder_method_t *method,
                                  state.map[tp->member[j]],
                                  cst[tp->member[j]]);
                 }
-        for (tp = cur; tp < cp; tp++)
-        {
+        for (tp = cur; tp < cp; tp++) {
             bp = 0;
-            for (i = 0; i < row; i++)
-            {
+            for (i = 0; i < row; i++) {
                 if (hit[i] > k)
                     continue;
                 z = 0;
@@ -1094,8 +1031,7 @@ reorder_heuristic(Reorder_method_t *method,
                 for (j = 0; j < tp->elements; j++)
                     if (hit[tp->member[j]] > k)
                         z = 2;
-                    else
-                    {
+                    else {
                         tp->member[jj++] = tp->member[j];
                         if (i == tp->member[j])
                             z = 2;
@@ -1107,16 +1043,13 @@ reorder_heuristic(Reorder_method_t *method,
                 tp->elements = jj;
                 if (z != 1)
                     continue;
-                if (!merge(buf, dat, i, tp, np, siz, row, tot))
-                {
+                if (!merge(buf, dat, i, tp, np, siz, row, tot)) {
                     if (!(state.test & 0x0100)
                         && (k > 2 || (state.test & 0x0080)))
                         for (j = 0; j < tp->elements; j++)
                             siz[i][tp->member[j]] = siz[tp->member[j]][i] = 0;
-                }
-                else if ((ssize_t)(np->size - tp->size) < cst[i]
-                         && (!bp || np->size < bp->size))
-                {
+                } else if ((ssize_t)(np->size - tp->size) < cst[i]
+                           && (!bp || np->size < bp->size)) {
                     bp = np + 2;
                     bp->size = np->size;
                     bp->elements = np->elements;
@@ -1124,8 +1057,7 @@ reorder_heuristic(Reorder_method_t *method,
                         bp->member[j] = np->member[j];
                 }
             }
-            if (bp)
-            {
+            if (bp) {
                 np->size = bp->size;
                 np->elements = bp->elements;
                 for (j = 0; j < bp->elements; j++)
@@ -1133,18 +1065,15 @@ reorder_heuristic(Reorder_method_t *method,
                 if (state.test & 0x0010)
                     dumppart(sfstderr, "keep", np);
                 np++;
-            }
-            else
+            } else
                 tp->skip = 1;
         }
         for (tp = cur; tp < cp; tp++)
-            if (tp->skip)
-            {
+            if (tp->skip) {
                 if (state.test & 0x0020)
                     dumppart(sfstderr, "skip", tp);
                 tp->skip = 0;
-                if (k > 2 && tp->elements > 1)
-                {
+                if (k > 2 && tp->elements > 1) {
                     fp->hit = k;
                     fp->size = tp->size;
                     fp->elements = tp->elements;
@@ -1173,10 +1102,8 @@ reorder_heuristic(Reorder_method_t *method,
     k = 0;
     while (fp-- > fin)
         for (i = 0; i < fp->elements; i++)
-            if (hit[fp->member[i]] == fp->hit)
-            {
-                if (!jj)
-                {
+            if (hit[fp->member[i]] == fp->hit) {
+                if (!jj) {
                     jj = 1;
                     j++;
                 }
@@ -1185,8 +1112,7 @@ reorder_heuristic(Reorder_method_t *method,
                 lab[fp->member[i]] = j;
             }
     for (i = 0; i < row; i++)
-        if (hit[i])
-        {
+        if (hit[i]) {
             ord[k++] = i;
             lab[i] = ++j;
         }
@@ -1242,8 +1168,7 @@ reorder_tsp(Reorder_method_t *method,
         error(
         ERROR_SYSTEM | 3, "out of space [%d X %d cost matrix]", row, row);
     v = ( Tsp_cost_t * )(cost + row);
-    for (i = 0; i < row; i++)
-    {
+    for (i = 0; i < row; i++) {
         cost[i] = v;
         v += row;
     }
@@ -1261,8 +1186,7 @@ reorder_tsp(Reorder_method_t *method,
         self[i] = field(buf, dat, i, i, row, tot);
     for (i = 0; i < row; i++)
         for (j = 0; j < row; j++)
-            if (i != j)
-            {
+            if (i != j) {
                 together[i][j] = pair(buf, dat, i, j, row, tot);
                 apart[i][j] = self[i] + self[j];
                 cost[i][j] = minof(together[i][j], apart[i][j]);
@@ -1290,8 +1214,7 @@ reorder_tsp(Reorder_method_t *method,
     breakat = end = row - 1;
     breakval = cost[tour[end]][tour[0]];
     for (i = 0; i < end; i++)
-        if (cost[tour[i]][tour[i + 1]] > breakval)
-        {
+        if (cost[tour[i]][tour[i + 1]] > breakval) {
             breakat = i;
             breakval = cost[tour[i]][tour[i + 1]];
         }
@@ -1311,8 +1234,7 @@ reorder_tsp(Reorder_method_t *method,
      * partition
      */
 
-    if (state.test & 0x0200)
-    {
+    if (state.test & 0x0200) {
         /*
          * partition according to the initial tsp cycles
          */
@@ -1321,15 +1243,12 @@ reorder_tsp(Reorder_method_t *method,
             error(3, "tspcycle error");
         for (i = 0; i < row; i++)
             lab[i] = cycle[self[i]];
-    }
-    else
-    {
+    } else {
         /*
          * partition according to dependence along tour
          */
 
-        for (i = j = 0; i < end; i++)
-        {
+        for (i = j = 0; i < end; i++) {
             lab[i] = j;
             if (together[self[i]][self[i + 1]] > apart[self[i]][self[i + 1]])
                 j++;
@@ -1375,8 +1294,7 @@ optimize_dynamic(Optimize_method_t *method,
      * fill in the field compress value matrix
      */
 
-    for (i = 0; i < row; i++)
-    {
+    for (i = 0; i < row; i++) {
         if (grp <= 0)
             k = row;
         else if ((k = i + grp) > row)
@@ -1393,15 +1311,12 @@ optimize_dynamic(Optimize_method_t *method,
      * now run the dynamic program
      */
 
-    for (i = 0; i < row; i++)
-    {
+    for (i = 0; i < row; i++) {
         cst[i] = val[0][i];
         sol[i] = -1;
-        for (j = 0; j < i; j++)
-        {
+        for (j = 0; j < i; j++) {
             new = cst[j] + val[j + 1][i];
-            if (new < cst[i])
-            {
+            if (new < cst[i]) {
                 cst[i] = new;
                 sol[i] = j;
             }
@@ -1430,19 +1345,15 @@ optimize_greedy(Optimize_method_t *method,
 
     cst[0] = val[0][0] = field(buf, dat, 0, 0, row, tot);
     sol[0] = -1;
-    for (i = 1; i < row; i++)
-    {
+    for (i = 1; i < row; i++) {
         val[sol[i - 1] + 1][i] = field(buf, dat, sol[i - 1] + 1, i, row, tot);
         val[i][i] = field(buf, dat, i, i, row, tot);
         expand = val[sol[i - 1] + 1][i];
         new = cst[i - 1] + val[i][i];
-        if (new < expand)
-        {
+        if (new < expand) {
             cst[i] = val[i][i];
             sol[i] = i - 1;
-        }
-        else
-        {
+        } else {
             cst[i] = expand;
             sol[i] = sol[i - 1];
         }
@@ -1470,17 +1381,13 @@ optimize_transitive(Optimize_method_t *method,
 
     cst[0] = val[0][0] = field(buf, dat, 0, 0, row, tot);
     sol[0] = -1;
-    for (i = 1; i < row; i++)
-    {
+    for (i = 1; i < row; i++) {
         val[i][i] = field(buf, dat, i, i, row, tot);
         expand = field(buf, dat, i - 1, i, row, tot);
-        if (expand <= val[i - 1][i - 1] + val[i][i])
-        {
+        if (expand <= val[i - 1][i - 1] + val[i][i]) {
             cst[i] = expand;
             sol[i] = sol[i - 1];
-        }
-        else
-        {
+        } else {
             cst[i] = val[i][i];
             sol[i] = i - 1;
         }
@@ -1580,10 +1487,8 @@ main(int argc, char **argv)
     state.window = PZ_WINDOW;
     if (!(dp = sfstropen()))
         error(ERROR_SYSTEM | 3, "out of space");
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'b':
             state.bzip = 1;
             continue;
@@ -1595,8 +1500,7 @@ main(int argc, char **argv)
             continue;
         case 'h':
             high = strtol(opt_info.arg, &s, 0);
-            if (*s == '%')
-            {
+            if (*s == '%') {
                 s++;
                 high = -high;
             }
@@ -1609,8 +1513,7 @@ main(int argc, char **argv)
             continue;
         case 'm':
             maxhigh = strtol(opt_info.arg, &s, 0);
-            if (*s == '%')
-            {
+            if (*s == '%') {
                 s++;
                 maxhigh = -maxhigh;
             }
@@ -1635,15 +1538,12 @@ main(int argc, char **argv)
             continue;
         case 'O':
             n = strlen(opt_info.arg);
-            for (i = 0;; i++)
-            {
-                if (i >= elementsof(optimize_methods))
-                {
+            for (i = 0;; i++) {
+                if (i >= elementsof(optimize_methods)) {
                     error(2, "%s: unknown partition method", opt_info.arg);
                     break;
                 }
-                if (strneq(opt_info.arg, optimize_methods[i].name, n))
-                {
+                if (strneq(opt_info.arg, optimize_methods[i].name, n)) {
                     optimize_method = &optimize_methods[i];
                     break;
                 }
@@ -1654,15 +1554,12 @@ main(int argc, char **argv)
             continue;
         case 'R':
             n = strlen(opt_info.arg);
-            for (i = 0;; i++)
-            {
-                if (i >= elementsof(reorder_methods))
-                {
+            for (i = 0;; i++) {
+                if (i >= elementsof(reorder_methods)) {
                     error(2, "%s: unknown reorder method", opt_info.arg);
                     break;
                 }
-                if (strneq(opt_info.arg, reorder_methods[i].name, n))
-                {
+                if (strneq(opt_info.arg, reorder_methods[i].name, n)) {
                     reorder_method = &reorder_methods[i];
                     break;
                 }
@@ -1713,40 +1610,30 @@ main(int argc, char **argv)
     if (sftell(dp) && !(disc.options = strdup(sfstruse(dp))))
         error(ERROR_SYSTEM | 3, "out of space");
     sfclose(dp);
-    if (op & OP_size)
-    {
+    if (op & OP_size) {
         row = 0;
         dat = 0;
         buf = 0;
     }
-    for (;;)
-    {
+    for (;;) {
         ip = 0;
-        if (pz = pzopen(&disc, state.input, 0))
-        {
+        if (pz = pzopen(&disc, state.input, 0)) {
             state.test = pz->test;
             ip = pz->io;
-            if (partition)
-            {
+            if (partition) {
                 row = pz->part->row;
                 high = pz->part->nmap;
-            }
-            else
-            {
+            } else {
                 m = pz->part->row;
-                if (!row)
-                {
-                    if (m > 0)
-                    {
+                if (!row) {
+                    if (m > 0) {
                         row = m;
                         if (state.verbose && !(op & OP_size))
                             sfprintf(
                             sfstderr, "row size %I*u\n", sizeof(row), row);
-                    }
-                    else if (!(op & OP_size))
+                    } else if (!(op & OP_size))
                         error(1, "could not determine row size");
-                }
-                else if (m > 0 && (row < m || row > m && (row % m)))
+                } else if (m > 0 && (row < m || row > m && (row % m)))
                     error(
                     1,
                     "row size %I*d may be invalid -- try %I*u next time",
@@ -1758,13 +1645,11 @@ main(int argc, char **argv)
                 pzclose(pz);
                 pz = 0;
             }
-        }
-        else if (!(op & OP_size))
+        } else if (!(op & OP_size))
             return 1;
         if (!(op & OP_size))
             break;
-        if (row && (op & OP_verify))
-        {
+        if (row && (op & OP_verify)) {
             win = (state.window / row) * row;
             if (!(dat = newof(dat, unsigned char, win, 0)))
                 error(ERROR_SYSTEM | 3, "out of space [dat]");
@@ -1777,8 +1662,7 @@ main(int argc, char **argv)
                 == row)
                 row = 0;
         }
-        if (!n)
-        {
+        if (!n) {
             sfprintf(sfstdout, "%I*u\n", sizeof(row), row);
             return 0;
         }
@@ -1804,8 +1688,7 @@ main(int argc, char **argv)
         error(3, "input empty");
     rows = n / row;
     state.window = rows * row;
-    if (state.sort)
-    {
+    if (state.sort) {
         state.sort = row;
         qsort(dat, rows, row, byrow);
     }
@@ -1820,8 +1703,7 @@ main(int argc, char **argv)
         s++;
     else
         s = state.input;
-    if (state.cache)
-    {
+    if (state.cache) {
         if (!(state.cachefile = strdup(sfprints("%s-%s", error_info.id, s))))
             error(ERROR_SYSTEM | 3, "out of space");
         if (!stat(state.cachefile, &cs) && cs.st_mtime < is.st_mtime
@@ -1835,16 +1717,14 @@ main(int argc, char **argv)
      * filter out the high frequency columns
      */
 
-    if (row = filter(ip, &buf, &dat, pz, high, maxhigh, row, row * rows))
-    {
+    if (row = filter(ip, &buf, &dat, pz, high, maxhigh, row, row * rows)) {
         tot = row * rows;
         if (!(lab = newof(0, int, row, 0)))
             error(ERROR_SYSTEM | 3, "out of space [lab]");
         if (pz && !(op & (OP_reorder | OP_optimize)))
             for (n = 0; n < pz->part->nmap; n++)
                 lab[n] = pz->part->lab[n];
-    }
-    else
+    } else
         op &= ~(OP_optimize | OP_reorder);
 
     /*
@@ -1858,8 +1738,7 @@ main(int argc, char **argv)
      * generate a partition based on the ordering
      */
 
-    if (op & OP_optimize)
-    {
+    if (op & OP_optimize) {
         size_t *cst;
         size_t *sol;
         size_t **val;

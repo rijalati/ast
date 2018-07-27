@@ -84,27 +84,23 @@ sfbzexcept(Sfio_t *sp, int op, void *val, Sfdisc_t *dp)
 
         if (!init)
             init = getenv("SFBZ_DEBUG") ? 1 : -1;
-        if (init > 0)
-        {
+        if (init > 0) {
             aha[sizeof(aha) - 3] = '0' + op;
             write(2, aha, sizeof(aha) - 1);
         }
     }
 #endif
-    switch (op)
-    {
+    switch (op) {
     case SF_ATEXIT:
         sfdisc(sp, SF_POPDISC);
         return 0;
     case SF_CLOSING:
     case SF_DPOP:
     case SF_FINAL:
-        if (bz->bz)
-        {
+        if (bz->bz) {
             r = bzclose(bz->bz) ? -1 : 0;
             bz->bz = 0;
-        }
-        else
+        } else
             r = 0;
         if (op != SF_CLOSING)
             free(dp);
@@ -172,8 +168,7 @@ sfdcbzip(Sfio_t *sp, int flags)
     Sfbzip_t *bz;
     char mode[10];
 
-    if (sfset(sp, 0, 0) & SF_READ)
-    {
+    if (sfset(sp, 0, 0) & SF_READ) {
         unsigned char *s;
         int n;
 
@@ -195,8 +190,7 @@ sfdcbzip(Sfio_t *sp, int flags)
         sfread(sp, s, 0);
         if (!n || (flags & SFBZ_VERIFY))
             return n;
-    }
-    else if (flags & SFBZ_VERIFY)
+    } else if (flags & SFBZ_VERIFY)
         return -1;
     if (!(bz = newof(0, Sfbzip_t, 1, 0)))
         return -1;
@@ -212,8 +206,7 @@ sfdcbzip(Sfio_t *sp, int flags)
         *m++ = '0' + flags;
     *m = 0;
     if (sfdisc(sp, &bz->disc) != &bz->disc
-        || !(bz->bz = bzdopen(sffileno(sp), mode)))
-    {
+        || !(bz->bz = bzdopen(sffileno(sp), mode))) {
         free(bz);
         return -1;
     }

@@ -39,19 +39,16 @@ fmtrec(Recfmt_t f, int fs)
 
     b = s = fmtbuf(n = 32);
     e = b + n;
-    switch (RECTYPE(f))
-    {
+    switch (RECTYPE(f)) {
     case REC_delimited:
         *s++ = 'd';
-        if ((del[0] = REC_D_DELIMITER(f)) != '\n')
-        {
+        if ((del[0] = REC_D_DELIMITER(f)) != '\n') {
             del[1] = 0;
             if (fs)
                 sfsprintf(s, e - s, "0x%02x", *( unsigned char * )del);
             else
                 sfsprintf(s, e - s, "%s", fmtquote(del, NiL, NiL, 1, 0));
-        }
-        else
+        } else
             *s = 0;
         break;
     case REC_fixed:
@@ -77,8 +74,7 @@ fmtrec(Recfmt_t f, int fs)
         break;
     case REC_method:
         *s++ = 'm';
-        switch (n = REC_M_INDEX(f))
-        {
+        switch (n = REC_M_INDEX(f)) {
         case REC_M_data:
             sfsprintf(s, e - s, "data");
             break;

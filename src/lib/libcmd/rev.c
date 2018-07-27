@@ -67,20 +67,16 @@ rev_char(Sfio_t *in, Sfio_t *out)
     Mbstate_t oq;
     wchar_t w;
 
-    if (mbwide())
-    {
+    if (mbwide()) {
         mbinit(&iq);
         mbinit(&oq);
         wp = 0;
         wz = 0;
-        while (cp = bp = sfgetr(in, '\n', 0))
-        {
+        while (cp = bp = sfgetr(in, '\n', 0)) {
             ep = bp + (n = sfvalue(in)) - 1;
-            if (n > wz)
-            {
+            if (n > wz) {
                 wz = roundof(n + 1, 1024);
-                if (!(wp = newof(wp, wchar_t, wz, 0)))
-                {
+                if (!(wp = newof(wp, wchar_t, wz, 0))) {
                     error(ERROR_SYSTEM | 2, "out of space");
                     return 0;
                 }
@@ -92,8 +88,7 @@ rev_char(Sfio_t *in, Sfio_t *out)
             while (xp > wp)
                 cp += mbconv(cp, *--xp, &oq);
             *cp++ = '\n';
-            if (sfwrite(out, bp, cp - bp) < 0)
-            {
+            if (sfwrite(out, bp, cp - bp) < 0) {
                 if (wp)
                     free(wp);
                 return -1;
@@ -101,13 +96,10 @@ rev_char(Sfio_t *in, Sfio_t *out)
         }
         if (wp)
             free(wp);
-    }
-    else
-        while (cp = bp = sfgetr(in, '\n', 0))
-        {
+    } else
+        while (cp = bp = sfgetr(in, '\n', 0)) {
             ep = bp + (n = sfvalue(in)) - 1;
-            while (ep > bp)
-            {
+            while (ep > bp) {
                 c = *--ep;
                 *ep = *bp;
                 *bp++ = c;
@@ -127,10 +119,8 @@ b_rev(int argc, char **argv, Shbltin_t *context)
     NOT_USED(argc);
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'l':
             line = 1;
             continue;
@@ -149,12 +139,10 @@ b_rev(int argc, char **argv, Shbltin_t *context)
     n = 0;
     if (cp = *argv)
         argv++;
-    do
-    {
+    do {
         if (!cp || streq(cp, "-"))
             fp = sfstdin;
-        else if (!(fp = sfopen(( Sfio_t * )0, cp, "r")))
-        {
+        else if (!(fp = sfopen(( Sfio_t * )0, cp, "r"))) {
             error(ERROR_system(0), "%s: cannot open", cp);
             n = 1;
             continue;

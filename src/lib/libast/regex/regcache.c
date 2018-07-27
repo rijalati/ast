@@ -64,8 +64,7 @@ flushcache(void)
     int i;
 
     for (i = matchstate.size; i--;)
-        if (matchstate.cache[i] && matchstate.cache[i]->keep)
-        {
+        if (matchstate.cache[i] && matchstate.cache[i]->keep) {
             matchstate.cache[i]->keep = 0;
             regfree(&matchstate.cache[i]->re);
         }
@@ -90,17 +89,14 @@ regcache(const char *pattern, regflags_t reflags, int *status)
      * 0 pattern flushes the cache and reflags>0 extends cache
      */
 
-    if (!pattern)
-    {
+    if (!pattern) {
         flushcache();
         i = 0;
-        if (reflags > matchstate.size)
-        {
+        if (reflags > matchstate.size) {
             if (matchstate.cache
                 = newof(matchstate.cache, Cache_t *, reflags, 0))
                 matchstate.size = reflags;
-            else
-            {
+            else {
                 matchstate.size = 0;
                 i = 1;
             }
@@ -109,8 +105,7 @@ regcache(const char *pattern, regflags_t reflags, int *status)
             *status = i;
         return 0;
     }
-    if (!matchstate.cache)
-    {
+    if (!matchstate.cache) {
         if (!(matchstate.cache = newof(0, Cache_t *, CACHE, 0)))
             return 0;
         matchstate.size = CACHE;
@@ -122,8 +117,7 @@ regcache(const char *pattern, regflags_t reflags, int *status)
      * persistent setlocale() return values
      */
 
-    if ((s = setlocale(LC_CTYPE, NiL)) != matchstate.locale)
-    {
+    if ((s = setlocale(LC_CTYPE, NiL)) != matchstate.locale) {
         matchstate.locale = s;
         flushcache();
     }
@@ -151,32 +145,26 @@ regcache(const char *pattern, regflags_t reflags, int *status)
                  || matchstate.cache[old]->serial
                     > matchstate.cache[i]->serial)
             old = i;
-    if (i < 0)
-    {
-        if (unused < 0)
-        {
+    if (i < 0) {
+        if (unused < 0) {
             if (empty < 0)
                 unused = old;
             else
                 unused = empty;
         }
         if (!(cp = matchstate.cache[unused])
-            && !(cp = matchstate.cache[unused] = newof(0, Cache_t, 1, 0)))
-        {
+            && !(cp = matchstate.cache[unused] = newof(0, Cache_t, 1, 0))) {
             if (status)
                 *status = REG_ESPACE;
             return 0;
         }
-        if (cp->keep)
-        {
+        if (cp->keep) {
             cp->keep = 0;
             regfree(&cp->re);
         }
-        if ((i = strlen(pattern) + 1) > cp->size)
-        {
+        if ((i = strlen(pattern) + 1) > cp->size) {
             cp->size = roundof(i, ROUND);
-            if (!(cp->pattern = newof(cp->pattern, char, cp->size, 0)))
-            {
+            if (!(cp->pattern = newof(cp->pattern, char, cp->size, 0))) {
                 if (status)
                     *status = REG_ESPACE;
                 return 0;
@@ -186,16 +174,14 @@ regcache(const char *pattern, regflags_t reflags, int *status)
         while (++i < sizeof(Key_t))
             cp->pattern[i] = 0;
         pattern = ( const char * )cp->pattern;
-        if (i = regcomp(&cp->re, pattern, reflags))
-        {
+        if (i = regcomp(&cp->re, pattern, reflags)) {
             if (status)
                 *status = i;
             return 0;
         }
         cp->keep = 1;
         cp->reflags = reflags;
-    }
-    else
+    } else
         cp = matchstate.cache[i];
     cp->serial = ++matchstate.serial;
     if (status)

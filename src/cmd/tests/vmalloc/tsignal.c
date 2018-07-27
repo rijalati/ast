@@ -54,8 +54,7 @@ static sigjmp_buf Jmpbuf;
 static void
 sighup(int sig)
 {
-    if (Allocing)
-    {
+    if (Allocing) {
         Allocing = 0; /* reset state now to reduce unnecessary longjmps */
 #if VMALLOC
         vmclrlock(0); /* unnecessary when vmalloc wraps siglongjmp() */
@@ -65,8 +64,7 @@ sighup(int sig)
         signal(sig, sighup); /* restore signal handler */
 
         siglongjmp(Jmpbuf, SIGHUP);
-    }
-    else
+    } else
         signal(sig, sighup);
 }
 
@@ -102,20 +100,17 @@ simulate(Piece_t *list, size_t nalloc)
     if (Nlongjmp >= 1000) /* enough signal/longjmp */
         return 0;
 
-    for (; Step < nalloc; ++Step)
-    {
+    for (; Step < nalloc; ++Step) {
         k = Step;
 
         /* update all that needs updating */
-        for (up = list[k].free; up; up = next)
-        {
+        for (up = list[k].free; up; up = next) {
             next = up->next;
 
             if (!up->data || up->size <= 0)
                 continue;
 
-            if ((rand = RANDOM() % 100) < 75)
-            {
+            if ((rand = RANDOM() % 100) < 75) {
                 Allocing = 1;
                 free(up->data);
                 Allocing = 0;
@@ -123,9 +118,7 @@ simulate(Piece_t *list, size_t nalloc)
                 nfree += 1;
                 up->data = NIL(void *);
                 up->size = 0;
-            }
-            else
-            {
+            } else {
                 sz = RANDOM() % (2 * up->size) + 1;
 
                 Allocing = 1;
@@ -147,8 +140,7 @@ simulate(Piece_t *list, size_t nalloc)
         list[k].data = malloc(sz);
         Allocing = 0;
 
-        if (!list[k].data)
-        {
+        if (!list[k].data) {
 #if VMALLOC
             {
                 Vmstat_t vmst;
@@ -162,8 +154,7 @@ simulate(Piece_t *list, size_t nalloc)
         list[k].size = sz;
 
         /* get a random point in the future to update */
-        if ((p = k + 1 + RANDOM() % Life) < nalloc)
-        {
+        if ((p = k + 1 + RANDOM() % Life) < nalloc) {
             list[k].next = list[p].free;
             list[p].free = &list[k];
         }
@@ -194,8 +185,7 @@ tmain()
     signal(SIGALRM, sigalarm);
 
 #if 1
-    switch ((cpid = fork()))
-    {
+    switch ((cpid = fork())) {
     case 0:      /* child process */
         for (;;) /* keep sending sighup to parent */
         {

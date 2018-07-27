@@ -79,15 +79,12 @@ portclose(Ardir_t *ar)
 
     if (!ar || !(state = ( State_t * )ar->data))
         r = -1;
-    else
-    {
+    else {
         r = 0;
-        if (state->touch && state->patch >= 0)
-        {
+        if (state->touch && state->patch >= 0) {
             if (lseek(ar->fd, state->patch, SEEK_SET) != state->patch)
                 r = -1;
-            else
-            {
+            else {
                 sfsprintf(buf,
                           sizeof(buf),
                           "%-*lu",
@@ -142,8 +139,7 @@ portopen(Ardir_t *ar, char *buf, size_t n)
     state->offset = MAGIC_SIZE;
     ar->truncate = 14;
     name = hdr->ar_name;
-    if (name[0] == '#' && name[1] == '1' && name[2] == TERM_port)
-    {
+    if (name[0] == '#' && name[1] == '1' && name[2] == TERM_port) {
         i = strtol(name + 3, NiL, 10);
         if (n < (MAGIC_SIZE + sizeof(Header_t) + i))
             return -1;
@@ -151,8 +147,7 @@ portopen(Ardir_t *ar, char *buf, size_t n)
         ar->truncate = 0;
     }
     if (strmatch(name, SYMDIR_port)
-        || strmatch(name, SYMDIR_rand) && (ar->flags |= ARDIR_RANLIB))
-    {
+        || strmatch(name, SYMDIR_rand) && (ar->flags |= ARDIR_RANLIB)) {
         if (sfsscanf(hdr->ar_size, "%ld", &size) != 1)
             goto nope;
         state->patch = MAGIC_SIZE + offsetof(Header_t, ar_date);
@@ -166,9 +161,7 @@ portopen(Ardir_t *ar, char *buf, size_t n)
         if (!(ar->flags & ARDIR_RANLIB) && hdr->ar_uid[0] == ' '
             && hdr->ar_gid[0] == ' ')
             state->separator = '\\';
-    }
-    else
-    {
+    } else {
         /*
          * there is no symbol directory
          */
@@ -185,15 +178,13 @@ portopen(Ardir_t *ar, char *buf, size_t n)
     hdr = &state->header;
     while (read(ar->fd, ( char * )hdr, sizeof(state->header))
            == sizeof(state->header)
-           && hdr->ar_name[0] == TERM_port)
-    {
+           && hdr->ar_name[0] == TERM_port) {
         if (sfsscanf(hdr->ar_size, "%ld", &size) != 1)
             goto nope;
         size += (size & 01);
         if (!state->names && hdr->ar_name[1] == TERM_port
             && (hdr->ar_name[2] == ' '
-                || hdr->ar_name[2] == TERM_port && hdr->ar_name[3] == ' '))
-        {
+                || hdr->ar_name[2] == TERM_port && hdr->ar_name[3] == ' ')) {
             /*
              * long name string table
              */
@@ -206,8 +197,7 @@ portopen(Ardir_t *ar, char *buf, size_t n)
                 for (e = (name = state->names) + size; name < e; name++)
                     if (*name == TERM_port && *(name + 1) == '\n')
                         *name = 0;
-        }
-        else if (isdigit(hdr->ar_name[1]))
+        } else if (isdigit(hdr->ar_name[1]))
             break;
         else if (lseek(ar->fd, ( off_t )size, SEEK_CUR) < 0)
             goto nope;
@@ -230,11 +220,9 @@ ar_uid_gid(Ardir_t *ar, char *b, long *p)
     int i;
     long n;
 
-    if (b[5] != ' ')
-    {
+    if (b[5] != ' ') {
         n = 0;
-        for (i = 0; i < 5; i++)
-        {
+        for (i = 0; i < 5; i++) {
             n <<= 6;
             n |= b[i] - ' ';
         }
@@ -242,9 +230,7 @@ ar_uid_gid(Ardir_t *ar, char *b, long *p)
         n |= b[i] - '@';
         *p = n;
         error(-1, "AHA ar_uid_gid '%s'  =>  %lu\n", b, n);
-    }
-    else if (sfsscanf(b, "%ld", p) != 1)
-    {
+    } else if (sfsscanf(b, "%ld", p) != 1) {
         ar->error = EINVAL;
         return -1;
     }
@@ -264,14 +250,12 @@ portnext(Ardir_t *ar)
     char *s;
 
     state->current = state->offset;
-    if (lseek(ar->fd, state->offset, SEEK_SET) != state->offset)
-    {
+    if (lseek(ar->fd, state->offset, SEEK_SET) != state->offset) {
         ar->error = errno;
         return 0;
     }
     if (read(ar->fd, ( char * )&state->header, sizeof(state->header))
-        != sizeof(state->header))
-    {
+        != sizeof(state->header)) {
         if ((z = read(ar->fd, ( char * )&state->header, 1)) < 0)
             ar->error = errno;
         else if (z > 0)
@@ -279,13 +263,11 @@ portnext(Ardir_t *ar)
         return 0;
     }
     if (state->header.ar_fmag[0] != FMAG_port_0
-        || state->header.ar_fmag[1] != FMAG_port_1)
-    {
+        || state->header.ar_fmag[1] != FMAG_port_1) {
         ar->error = EINVAL;
         return 0;
     }
-    if (sfsscanf(state->header.ar_date, "%ld", &n) != 1)
-    {
+    if (sfsscanf(state->header.ar_date, "%ld", &n) != 1) {
         ar->error = EINVAL;
         return 0;
     }
@@ -301,14 +283,12 @@ portnext(Ardir_t *ar)
     if (ar_uid_gid(ar, state->header.ar_gid, &n))
         return 0;
     ar->dirent.gid = n;
-    if (sfsscanf(state->header.ar_mode, "%lo", &n) != 1)
-    {
+    if (sfsscanf(state->header.ar_mode, "%lo", &n) != 1) {
         ar->error = EINVAL;
         return 0;
     }
     ar->dirent.mode = n;
-    if (sfsscanf(state->header.ar_size, "%ld", &n) != 1)
-    {
+    if (sfsscanf(state->header.ar_size, "%ld", &n) != 1) {
         ar->error = EINVAL;
         return 0;
     }
@@ -316,34 +296,26 @@ portnext(Ardir_t *ar)
     ar->dirent.size = n;
     state->offset += n + (n & 01);
     if (ar->dirent.name[0] == '#' && ar->dirent.name[1] == '1'
-        && ar->dirent.name[2] == TERM_port)
-    {
+        && ar->dirent.name[2] == TERM_port) {
         n = strtol(ar->dirent.name + 3, NiL, 10);
         ar->dirent.size -= n;
-        if ((n + 1) >= state->size)
-        {
+        if ((n + 1) >= state->size) {
             state->size = roundof(n + 1, 128);
-            if (!(state->name = newof(state->name, char, state->size, 0)))
-            {
+            if (!(state->name = newof(state->name, char, state->size, 0))) {
                 ar->error = ENOMEM;
                 return 0;
             }
         }
-        if ((z = read(ar->fd, state->name, n)) < 0)
-        {
+        if ((z = read(ar->fd, state->name, n)) < 0) {
             ar->error = errno;
             return 0;
-        }
-        else if (z != n)
-        {
+        } else if (z != n) {
             ar->error = EINVAL;
             return 0;
         }
         state->name[n] = 0;
         ar->dirent.name = state->name;
-    }
-    else
-    {
+    } else {
         for (s = ar->dirent.name + strlen(ar->dirent.name);
              s > ar->dirent.name
              && (*(s - 1) == TERM_port || *(s - 1) == TERM_rand);
@@ -369,15 +341,13 @@ portchange(Ardir_t *ar, Ardirent_t *ent)
     char buf[sizeof(state->header.ar_date) + 1];
 
     o = state->current + offsetof(Header_t, ar_date);
-    if (lseek(ar->fd, o, SEEK_SET) != o)
-    {
+    if (lseek(ar->fd, o, SEEK_SET) != o) {
         ar->error = errno;
         return -1;
     }
     sfsprintf(
     buf, sizeof(buf), "%-*lu", sizeof(buf) - 1, ( unsigned long )ent->mtime);
-    if (write(ar->fd, buf, sizeof(buf) - 1) != (sizeof(buf) - 1))
-    {
+    if (write(ar->fd, buf, sizeof(buf) - 1) != (sizeof(buf) - 1)) {
         ar->error = errno;
         return -1;
     }

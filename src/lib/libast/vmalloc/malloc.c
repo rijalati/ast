@@ -175,10 +175,8 @@ static Vmulong_t atou(sp) char **sp;
     Vmulong_t v = 0;
     int b;
 
-    if (s[0] == '0' && (s[1] == 'x' || s[1] == 'X'))
-    {
-        for (s += 2; *s; ++s)
-        {
+    if (s[0] == '0' && (s[1] == 'x' || s[1] == 'X')) {
+        for (s += 2; *s; ++s) {
             if (*s >= '0' && *s <= '9')
                 v = (v << 4) + (*s - '0');
             else if (*s >= 'a' && *s <= 'f')
@@ -188,19 +186,15 @@ static Vmulong_t atou(sp) char **sp;
             else
                 break;
         }
-    }
-    else
-    {
-        for (; *s; ++s)
-        {
+    } else {
+        for (; *s; ++s) {
             if (*s >= '0' && *s <= '9')
                 v = v * 10 + (*s - '0');
             else
                 break;
         }
     }
-    switch (*s)
-    {
+    switch (*s) {
     case 'k':
     case 'K':
         b = 10;
@@ -229,15 +223,12 @@ static Vmulong_t atou(sp) char **sp;
         b = 0;
         break;
     }
-    if (b)
-    {
-        if (*++s == 'i' || *s == 'I')
-        {
+    if (b) {
+        if (*++s == 'i' || *s == 'I') {
             if (*++s == 'b' || *s == 'B')
                 s++;
             v <<= b;
-        }
-        else
+        } else
             for (b /= 10; b; b--)
                 v *= 1000;
     }
@@ -260,8 +251,7 @@ char *ends;
         return NIL(char *);
 
     s = ends;
-    do
-    {
+    do {
         if (s == begs)
             return NIL(char *);
         *--s = '0' + pid % 10;
@@ -285,12 +275,9 @@ static int createfile(file) char *file;
 
     next = buf;
     endb = buf + sizeof(buf);
-    while (*file)
-    {
-        if (*file == '%')
-        {
-            switch (file[1])
-            {
+    while (*file) {
+        if (*file == '%') {
+            switch (file[1]) {
             case 'p':
                 if (!(next = insertpid(next, endb)))
                     return -1;
@@ -299,9 +286,7 @@ static int createfile(file) char *file;
             default:
                 goto copy;
             }
-        }
-        else
-        {
+        } else {
         copy:
             *next++ = *file++;
         }
@@ -313,23 +298,19 @@ static int createfile(file) char *file;
     *next = '\0';
     file = buf;
     if (*file == '&' && *(file += 1)
-        || strncmp(file, "/dev/fd/", 8) == 0 && *(file += 8))
-    {
+        || strncmp(file, "/dev/fd/", 8) == 0 && *(file += 8)) {
         fd = fcntl(( int )atou(&file), F_DUPFD_CLOEXEC, 0);
 #    if F_DUPFD_CLOEXEC == F_DUPFD
         if (fd >= 0)
             SETCLOEXEC(fd);
 #    endif
-    }
-    else if (*file)
-    {
+    } else if (*file) {
         fd = open(file, O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, CREAT_MODE);
 #    if O_CLOEXEC == 0
         if (fd >= 0)
             SETCLOEXEC(fd);
 #    endif
-    }
-    else
+    } else
         return -1;
     return fd;
 }
@@ -354,23 +335,19 @@ _vmoptions(int boot)
 
     static char *options;
 
-    if (boot & 1)
-    {
+    if (boot & 1) {
         if (_Vmassert & VM_GETMEMORY)
             return;
         options = getenv("VMALLOC_OPTIONS");
-    }
-    else if (!(_Vmassert & VM_GETMEMORY))
+    } else if (!(_Vmassert & VM_GETMEMORY))
         return;
-    if (options && options[0])
-    { /* copy option string to a writable buffer */
+    if (options && options[0]) { /* copy option string to a writable buffer */
         for (s = &buf[0], t = options, v = &buf[sizeof(buf) - 1]; s < v; ++s)
             if ((*s = *t++) == 0)
                 break;
         *s = 0;
 
-        for (s = buf;;)
-        { /* skip blanks to option name */
+        for (s = buf;;) { /* skip blanks to option name */
             while (*s == ' ' || *s == '\t' || *s == '\r' || *s == '\n'
                    || *s == ',')
                 s++;
@@ -378,30 +355,23 @@ _vmoptions(int boot)
                 break;
 
             v = NIL(char *);
-            while (*s)
-            {
+            while (*s) {
                 if (*s == ' ' || *s == '\t' || *s == '\r' || *s == '\n'
-                    || *s == ',')
-                {
+                    || *s == ',') {
                     *s++ = 0; /* end of name */
                     break;
-                }
-                else if (!v && *s == '=')
-                {
+                } else if (!v && *s == '=') {
                     *s++ = 0; /* end of name */
                     if (*(v = s) == 0)
                         v = NIL(char *);
-                }
-                else
+                } else
                     s++;
             }
             if (t[0] == 'n' && t[1] == 'o')
                 continue;
-            switch (t[0])
-            {
+            switch (t[0]) {
             case 'a': /* abort */
-                if (boot & 2)
-                {
+                if (boot & 2) {
                     if (!vm)
                         vm = vmopen(Vmdcsystem, Vmdebug, 0);
                     if (vm && vm->meth.meth == VM_MTDEBUG)
@@ -412,19 +382,15 @@ _vmoptions(int boot)
                 break;
             case 'c': /* address/integrity checks */
                 if ((boot & 2) && v)
-                    do
-                    {
-                        if (v[0] == 'n' && v[1] == 'o')
-                        {
+                    do {
+                        if (v[0] == 'n' && v[1] == 'o') {
                             v += 2;
                             if (v[0] == '-')
                                 v++;
                             c = 0;
-                        }
-                        else
+                        } else
                             c = 1;
-                        switch (v[0])
-                        {
+                        switch (v[0]) {
                         case 'r':
                             b = VM_check_reg;
                             break;
@@ -447,23 +413,19 @@ _vmoptions(int boot)
                 break;
             case 'g': /* getmemory() preference */
                 if ((boot & 1) && v)
-                    do
-                    {
-                        if (v[0] == 'n' && v[1] == 'o')
-                        {
+                    do {
+                        if (v[0] == 'n' && v[1] == 'o') {
                             v += 2;
                             if (v[0] == '-')
                                 v++;
                             c = 0;
-                        }
-                        else
+                        } else
                             c = 1;
                         if (v[0] == 'm' && v[1] == 'm')
                             v++;
                         if (v[0] == 'm' && v[1] == 'a' && v[2] == 'p')
                             v += 3;
-                        switch (v[0])
-                        {
+                        switch (v[0]) {
                         case 'a':
                             b = VM_anon;
                             break;
@@ -475,8 +437,7 @@ _vmoptions(int boot)
                             b = VM_native;
                             break;
                         case 's':
-                            switch (v[1])
-                            {
+                            switch (v[1]) {
                             case 'b':
                                 b = VM_break;
                                 break;
@@ -503,13 +464,11 @@ _vmoptions(int boot)
                     _Vmassert |= VM_keep;
                 break;
             case 'm': /* method=<method> */
-                if ((boot & 2) && v && !vm)
-                {
+                if ((boot & 2) && v && !vm) {
                     if ((v[0] == 'V' || v[0] == 'v')
                         && (v[1] == 'M' || v[1] == 'm'))
                         v += 2;
-                    switch (v[0])
-                    {
+                    switch (v[0]) {
                     case 'b':
                         vm = Vmheap;
                         break;
@@ -526,15 +485,13 @@ _vmoptions(int boot)
                 }
                 break;
             case 'p': /* pagesize=<size> period=<count> */
-                switch (t[1])
-                {
+                switch (t[1]) {
                 case 'a':
                     if (boot & 1)
                         _Vmpagesize = atou(&v);
                     break;
                 case 'e':
-                    if (boot & 2)
-                    {
+                    if (boot & 2) {
                         if (!vm)
                             vm = vmopen(Vmdcsystem, Vmdebug, 0);
                         if (v && vm && vm->meth.meth == VM_MTDEBUG)
@@ -544,15 +501,13 @@ _vmoptions(int boot)
                 }
                 break;
             case 's': /* segsize=<size> start=<count> */
-                switch (t[1])
-                {
+                switch (t[1]) {
                 case 'e':
                     if (boot & 1)
                         _Vmsegsize = atou(&v);
                     break;
                 case 't':
-                    if (boot & 2)
-                    {
+                    if (boot & 2) {
                         if (!vm)
                             vm = vmopen(Vmdcsystem, Vmdebug, 0);
                         if (v && vm && vm->meth.meth == VM_MTDEBUG)
@@ -562,8 +517,7 @@ _vmoptions(int boot)
                 }
                 break;
             case 't': /* test || trace=<path> */
-                if (v)
-                {
+                if (v) {
                     if ((boot & 1) && t[1] == 'e') /* test */
                         _Vmassert |= atou(&v) & VM_test;
                     if ((boot & 2) && t[1] == 'r') /* trace=<path> */
@@ -579,10 +533,8 @@ _vmoptions(int boot)
                     _Vmassert |= VM_verbose;
                 break;
             case 'w':
-                if ((boot & 2) && t[1] == 'a')
-                {
-                    switch (t[2])
-                    {
+                if ((boot & 2) && t[1] == 'a') {
+                    switch (t[2]) {
                     case 'r': /* warn=<path> */
                         if (!vm)
                             vm = vmopen(Vmdcsystem, Vmdebug, 0);
@@ -731,8 +683,7 @@ static unsigned int _Vmstart = 0; /* calling _vmstart() just once		*/
             {                                                                \
                 if (_Vmstart != VM_STARTED)                                  \
                     _vmstart(f);                                             \
-                if (_Vmdbcheck && Vmregion->meth.meth == VM_MTDEBUG)         \
-                {                                                            \
+                if (_Vmdbcheck && Vmregion->meth.meth == VM_MTDEBUG) {       \
                     _Vmdbtime += 1;                                          \
                     if (_Vmdbtime >= _Vmdbstart                              \
                         && (_Vmdbtime % _Vmdbcheck) == 0)                    \
@@ -777,8 +728,7 @@ _vmstart(int freeing)
          * not so for *alloc()
          */
 
-        for (asospininit();; asospinnext())
-        {
+        for (asospininit();; asospinnext()) {
             if ((start = asogetint(&_Vmstart)) == VM_STARTED)
                 return 0;
             if (freeing && ++i >= 10)
@@ -787,8 +737,7 @@ _vmstart(int freeing)
     }
 
     /* initialize the heap if not done yet */
-    if (_vmheapinit(NIL(Vmalloc_t *)) != Vmheap)
-    {
+    if (_vmheapinit(NIL(Vmalloc_t *)) != Vmheap) {
         write(9, "vmalloc: panic: heap initialization error\n", 42);
         return -1;
     }
@@ -873,8 +822,7 @@ free(Void_t *data)
 
     VMPROLOGUE(1);
 
-    if (data && !(_Vmassert & VM_keep))
-    {
+    if (data && !(_Vmassert & VM_keep)) {
         if ((vm = vmregion(data)))
             ( void )(*vm->meth.freef)(vm, data, 0);
 #        if USE_NATIVE
@@ -968,8 +916,7 @@ strdup(const char *s)
 
     if (!s)
         return NIL(char *);
-    else
-    {
+    else {
         n = strlen(s);
         if ((ns = malloc(n + 1)))
             memcpy(ns, s, n + 1);
@@ -1016,15 +963,13 @@ alloca(size_t size)
     while (Frame) /* free unused frames */
     {
         if ((_stk_down && &array[0] > Frame->head.head.addr)
-            || (!_stk_down && &array[0] < Frame->head.head.addr))
-        {
+            || (!_stk_down && &array[0] < Frame->head.head.addr)) {
             f = Frame;
             Frame = f->head.head.next;
             if ((vm = vmregion(f)))
                 ( void )(*vm->meth.freef)(vm, f, 0);
             /* else: something bad happened. just keep going */
-        }
-        else
+        } else
             break;
     }
 
@@ -1312,8 +1257,7 @@ mallinfo()
     VMEPILOGUE(0);
 
     memset(&mi, 0, sizeof(mi));
-    if (vmstat(Vmregion, &sb) >= 0)
-    {
+    if (vmstat(Vmregion, &sb) >= 0) {
         mi.arena = sb.extent;
         mi.ordblks = sb.n_busy + sb.n_free;
         mi.uordblks = sb.s_busy;
@@ -1339,8 +1283,7 @@ mstats()
     VMEPILOGUE(0);
 
     memset(&ms, 0, sizeof(ms));
-    if (vmstat(Vmregion, &sb) >= 0)
-    {
+    if (vmstat(Vmregion, &sb) >= 0) {
         ms.bytes_total = sb.extent;
         ms.chunks_used = sb.n_busy;
         ms.bytes_used = sb.s_busy;

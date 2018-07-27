@@ -409,8 +409,7 @@ static int YYID(yyi) int yyi;
 #    ifdef YYSTACK_ALLOC
 /* Pacify GCC's `empty if-body' warning.  */
 #        define YYSTACK_FREE(Ptr)                                            \
-            do                                                               \
-            { /* empty */                                                    \
+            do { /* empty */                                                 \
                 ;                                                            \
             } while (YYID(0))
 #        ifndef YYSTACK_ALLOC_MAXIMUM
@@ -482,8 +481,7 @@ union yyalloc
    stack.  Advance YYPTR to a properly aligned location for the next
    stack.  */
 #    define YYSTACK_RELOCATE(Stack_alloc, Stack)                             \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             YYSIZE_T yynewbytes;                                             \
             YYCOPY(&yyptr->Stack_alloc, Stack, yysize);                      \
             Stack = &yyptr->Stack_alloc;                                     \
@@ -502,8 +500,7 @@ union yyalloc
                 __builtin_memcpy(To, From, (Count) * sizeof(*(From)))
 #        else
 #            define YYCOPY(To, From, Count)                                  \
-                do                                                           \
-                {                                                            \
+                do {                                                         \
                     YYSIZE_T yyi;                                            \
                     for (yyi = 0; yyi < (Count); yyi++)                      \
                         (To)[yyi] = (From)[yyi];                             \
@@ -944,15 +941,12 @@ static const yytype_uint8 yystos[]
 
 #define YYBACKUP(Token, Value)                                               \
     do                                                                       \
-        if (yychar == YYEMPTY && yylen == 1)                                 \
-        {                                                                    \
+        if (yychar == YYEMPTY && yylen == 1) {                               \
             yychar = (Token);                                                \
             yylval = (Value);                                                \
             YYPOPSTACK(1);                                                   \
             goto yybackup;                                                   \
-        }                                                                    \
-        else                                                                 \
-        {                                                                    \
+        } else {                                                             \
             yyerror(YY_("syntax error: cannot back up"));                    \
             YYERROR;                                                         \
         }                                                                    \
@@ -971,15 +965,12 @@ static const yytype_uint8 yystos[]
 #ifndef YYLLOC_DEFAULT
 #    define YYLLOC_DEFAULT(Current, Rhs, N)                                  \
         do                                                                   \
-            if (YYID(N))                                                     \
-            {                                                                \
+            if (YYID(N)) {                                                   \
                 (Current).first_line = YYRHSLOC(Rhs, 1).first_line;          \
                 (Current).first_column = YYRHSLOC(Rhs, 1).first_column;      \
                 (Current).last_line = YYRHSLOC(Rhs, N).last_line;            \
                 (Current).last_column = YYRHSLOC(Rhs, N).last_column;        \
-            }                                                                \
-            else                                                             \
-            {                                                                \
+            } else {                                                         \
                 (Current).first_line = (Current).last_line                   \
                 = YYRHSLOC(Rhs, 0).last_line;                                \
                 (Current).first_column = (Current).last_column               \
@@ -1013,17 +1004,14 @@ static const yytype_uint8 yystos[]
 #    endif
 
 #    define YYDPRINTF(Args)                                                  \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             if (yydebug)                                                     \
                 YYFPRINTF Args;                                              \
         } while (YYID(0))
 
 #    define YY_SYMBOL_PRINT(Title, Type, Value, Location)                    \
-        do                                                                   \
-        {                                                                    \
-            if (yydebug)                                                     \
-            {                                                                \
+        do {                                                                 \
+            if (yydebug) {                                                   \
                 YYFPRINTF(stderr, "%s ", Title);                             \
                 yy_symbol_print(stderr, Type, Value);                        \
                 YYFPRINTF(stderr, "\n");                                     \
@@ -1056,8 +1044,7 @@ YYSTYPE const *const yyvaluep;
 #    else
     YYUSE(yyoutput);
 #    endif
-    switch (yytype)
-    {
+    switch (yytype) {
     default:
         break;
     }
@@ -1102,8 +1089,7 @@ yytype_int16 *yytop;
 #    endif
 {
     YYFPRINTF(stderr, "Stack now");
-    for (; yybottom <= yytop; yybottom++)
-    {
+    for (; yybottom <= yytop; yybottom++) {
         int yybot = *yybottom;
         YYFPRINTF(stderr, " %d", yybot);
     }
@@ -1111,8 +1097,7 @@ yytype_int16 *yytop;
 }
 
 #    define YY_STACK_PRINT(Bottom, Top)                                      \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             if (yydebug)                                                     \
                 yy_stack_print((Bottom), (Top));                             \
         } while (YYID(0))
@@ -1137,8 +1122,7 @@ int yyrule;
     YYFPRINTF(
     stderr, "Reducing stack by rule %d (line %lu):\n", yyrule - 1, yylno);
     /* The symbols being reduced.  */
-    for (yyi = 0; yyi < yynrhs; yyi++)
-    {
+    for (yyi = 0; yyi < yynrhs; yyi++) {
         YYFPRINTF(stderr, "   $%d = ", yyi + 1);
         yy_symbol_print(
         stderr, yyrhs[yyprhs[yyrule] + yyi], &(yyvsp[(yyi + 1) - (yynrhs)]));
@@ -1147,8 +1131,7 @@ int yyrule;
 }
 
 #    define YY_REDUCE_PRINT(Rule)                                            \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             if (yydebug)                                                     \
                 yy_reduce_print(yyvsp, Rule);                                \
         } while (YYID(0))
@@ -1241,14 +1224,12 @@ const char *yysrc;
 static YYSIZE_T
 yytnamerr(char *yyres, const char *yystr)
 {
-    if (*yystr == '"')
-    {
+    if (*yystr == '"') {
         YYSIZE_T yyn = 0;
         char const *yyp = yystr;
 
         for (;;)
-            switch (*++yyp)
-            {
+            switch (*++yyp) {
             case '\'':
             case ',':
                 goto do_not_strip_quotes;
@@ -1334,12 +1315,10 @@ yysyntax_error(YYSIZE_T *yymsg_alloc,
          one exception: it will still contain any token that will not be
          accepted due to an error action in a later state.
     */
-    if (yytoken != YYEMPTY)
-    {
+    if (yytoken != YYEMPTY) {
         int yyn = yypact[*yyssp];
         yyarg[yycount++] = yytname[yytoken];
-        if (!yypact_value_is_default(yyn))
-        {
+        if (!yypact_value_is_default(yyn)) {
             /* Start YYX at -YYN if negative to avoid negative indexes in
                YYCHECK.  In other words, skip the first -YYN actions for
                this state because they are default actions.  */
@@ -1351,10 +1330,8 @@ yysyntax_error(YYSIZE_T *yymsg_alloc,
 
             for (yyx = yyxbegin; yyx < yyxend; ++yyx)
                 if (yycheck[yyx + yyn] == yyx && yyx != YYTERROR
-                    && !yytable_value_is_error(yytable[yyx + yyn]))
-                {
-                    if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM)
-                    {
+                    && !yytable_value_is_error(yytable[yyx + yyn])) {
+                    if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM) {
                         yycount = 1;
                         yysize = yysize0;
                         break;
@@ -1369,8 +1346,7 @@ yysyntax_error(YYSIZE_T *yymsg_alloc,
         }
     }
 
-    switch (yycount)
-    {
+    switch (yycount) {
 #    define YYCASE_(N, S)                                                    \
     case N:                                                                  \
         yyformat = S;                                                        \
@@ -1392,8 +1368,7 @@ yysyntax_error(YYSIZE_T *yymsg_alloc,
         return 2;
     yysize = yysize1;
 
-    if (*yymsg_alloc < yysize)
-    {
+    if (*yymsg_alloc < yysize) {
         *yymsg_alloc = 2 * yysize;
         if (!(yysize <= *yymsg_alloc && *yymsg_alloc <= YYSTACK_ALLOC_MAXIMUM))
             *yymsg_alloc = YYSTACK_ALLOC_MAXIMUM;
@@ -1407,13 +1382,10 @@ yysyntax_error(YYSIZE_T *yymsg_alloc,
         char *yyp = *yymsg;
         int yyi = 0;
         while ((*yyp = *yyformat) != '\0')
-            if (*yyp == '%' && yyformat[1] == 's' && yyi < yycount)
-            {
+            if (*yyp == '%' && yyformat[1] == 's' && yyi < yycount) {
                 yyp += yytnamerr(yyp, yyarg[yyi++]);
                 yyformat += 2;
-            }
-            else
-            {
+            } else {
                 yyp++;
                 yyformat++;
             }
@@ -1443,8 +1415,7 @@ YYSTYPE *yyvaluep;
         yymsg = "Deleting";
     YY_SYMBOL_PRINT(yymsg, yytype, yyvaluep, yylocationp);
 
-    switch (yytype)
-    {
+    switch (yytype) {
 
     default:
         break;
@@ -1582,8 +1553,7 @@ yynewstate:
 yysetstate:
     *yyssp = yystate;
 
-    if (yyss + yystacksize - 1 <= yyssp)
-    {
+    if (yyss + yystacksize - 1 <= yyssp) {
         /* Get the current used size of the three stacks, in elements.  */
         YYSIZE_T yysize = yyssp - yyss + 1;
 
@@ -1669,19 +1639,15 @@ yybackup:
     /* Not known => get a lookahead token if don't already have one.  */
 
     /* YYCHAR is either YYEMPTY or YYEOF or a valid lookahead symbol.  */
-    if (yychar == YYEMPTY)
-    {
+    if (yychar == YYEMPTY) {
         YYDPRINTF((stderr, "Reading a token: "));
         yychar = YYLEX;
     }
 
-    if (yychar <= YYEOF)
-    {
+    if (yychar <= YYEOF) {
         yychar = yytoken = YYEOF;
         YYDPRINTF((stderr, "Now at end of input.\n"));
-    }
-    else
-    {
+    } else {
         yytoken = YYTRANSLATE(yychar);
         YY_SYMBOL_PRINT("Next token is", yytoken, &yylval, &yylloc);
     }
@@ -1692,8 +1658,7 @@ yybackup:
     if (yyn < 0 || YYLAST < yyn || yycheck[yyn] != yytoken)
         goto yydefault;
     yyn = yytable[yyn];
-    if (yyn <= 0)
-    {
+    if (yyn <= 0) {
         if (yytable_value_is_error(yyn))
             goto yyerrlab;
         yyn = -yyn;
@@ -1746,21 +1711,18 @@ yyreduce:
 
 
     YY_REDUCE_PRINT(yyn);
-    switch (yyn)
-    {
+    switch (yyn) {
     case 2:
 
         /* Line 1806 of yacc.c  */
         /* #line 137 "/home/gsf/src/lib/libexpr/exparse.y" */
         {
             if ((yyvsp[(1) - (2)].expr)
-                && !(expr.program->disc->flags & EX_STRICT))
-            {
+                && !(expr.program->disc->flags & EX_STRICT)) {
                 if (expr.program->main.value
                     && !(expr.program->disc->flags & EX_RETAIN))
                     exfreenode(expr.program, expr.program->main.value);
-                if ((yyvsp[(1) - (2)].expr)->op == S2B)
-                {
+                if ((yyvsp[(1) - (2)].expr)->op == S2B) {
                     Exnode_t *x;
 
                     x = (yyvsp[(1) - (2)].expr);
@@ -1796,8 +1758,8 @@ yyreduce:
             if (!(disc = newof(0, Dtdisc_t, 1, 0)))
                 exnospace();
             disc->key = offsetof(Exid_t, name);
-            if (expr.assigned && !streq((yyvsp[(1) - (2)].id)->name, "begin"))
-            {
+            if (expr.assigned
+                && !streq((yyvsp[(1) - (2)].id)->name, "begin")) {
                 if (!(expr.procedure->data.procedure.frame
                       = dtopen(disc, Dtset))
                     || !dtview(expr.procedure->data.procedure.frame,
@@ -1815,14 +1777,13 @@ yyreduce:
         /* #line 179 "/home/gsf/src/lib/libexpr/exparse.y" */
         {
             expr.procedure = 0;
-            if (expr.program->frame)
-            {
+            if (expr.program->frame) {
                 expr.program->symbols = expr.program->frame->view;
                 dtview(expr.program->frame, NiL);
                 expr.program->frame = 0;
             }
-            if ((yyvsp[(4) - (4)].expr) && (yyvsp[(4) - (4)].expr)->op == S2B)
-            {
+            if ((yyvsp[(4) - (4)].expr)
+                && (yyvsp[(4) - (4)].expr)->op == S2B) {
                 Exnode_t *x;
 
                 x = (yyvsp[(4) - (4)].expr);
@@ -1857,13 +1818,10 @@ yyreduce:
                 (yyval.expr) = (yyvsp[(2) - (2)].expr);
             else if (!(yyvsp[(2) - (2)].expr))
                 (yyval.expr) = (yyvsp[(1) - (2)].expr);
-            else if ((yyvsp[(1) - (2)].expr)->op == CONSTANT)
-            {
+            else if ((yyvsp[(1) - (2)].expr)->op == CONSTANT) {
                 exfreenode(expr.program, (yyvsp[(1) - (2)].expr));
                 (yyval.expr) = (yyvsp[(2) - (2)].expr);
-            }
-            else if ((yyvsp[(1) - (2)].expr)->op == ';')
-            {
+            } else if ((yyvsp[(1) - (2)].expr)->op == ';') {
                 (yyval.expr) = (yyvsp[(1) - (2)].expr);
                 (yyvsp[(1) - (2)].expr)->data.operand.last
                 = (yyvsp[(1) - (2)].expr)->data.operand.last->data.operand.right
@@ -1873,9 +1831,7 @@ yyreduce:
                             (yyvsp[(2) - (2)].expr)->type,
                             (yyvsp[(2) - (2)].expr),
                             NiL);
-            }
-            else
-            {
+            } else {
                 (yyval.expr) = exnewnode(expr.program,
                                          ';',
                                          1,
@@ -2002,13 +1958,11 @@ yyreduce:
         /* Line 1806 of yacc.c  */
         /* #line 263 "/home/gsf/src/lib/libexpr/exparse.y" */
         {
-            if (!(yyvsp[(5) - (9)].expr))
-            {
+            if (!(yyvsp[(5) - (9)].expr)) {
                 (yyvsp[(5) - (9)].expr)
                 = exnewnode(expr.program, CONSTANT, 0, INTEGER, NiL, NiL);
                 (yyvsp[(5) - (9)].expr)->data.constant.value.integer = 1;
-            }
-            else if ((yyvsp[(5) - (9)].expr)->type == STRING)
+            } else if ((yyvsp[(5) - (9)].expr)->type == STRING)
                 (yyvsp[(5) - (9)].expr) = exnewnode(
                 expr.program, S2B, 1, INTEGER, (yyvsp[(5) - (9)].expr), NiL);
             else if (!INTEGRAL((yyvsp[(5) - (9)].expr)->type))
@@ -2095,13 +2049,11 @@ yyreduce:
         /* #line 298 "/home/gsf/src/lib/libexpr/exparse.y" */
         {
         loopop:
-            if (!(yyvsp[(2) - (3)].expr))
-            {
+            if (!(yyvsp[(2) - (3)].expr)) {
                 (yyvsp[(2) - (3)].expr)
                 = exnewnode(expr.program, CONSTANT, 0, INTEGER, NiL, NiL);
                 (yyvsp[(2) - (3)].expr)->data.constant.value.integer = 1;
-            }
-            else if (!INTEGRAL((yyvsp[(2) - (3)].expr)->type))
+            } else if (!INTEGRAL((yyvsp[(2) - (3)].expr)->type))
                 (yyvsp[(2) - (3)].expr) = excast(
                 expr.program, (yyvsp[(2) - (3)].expr), INTEGER, NiL, 0);
             (yyval.expr) = exnewnode(expr.program,
@@ -2127,8 +2079,7 @@ yyreduce:
         /* Line 1806 of yacc.c  */
         /* #line 314 "/home/gsf/src/lib/libexpr/exparse.y" */
         {
-            if ((yyvsp[(2) - (3)].expr))
-            {
+            if ((yyvsp[(2) - (3)].expr)) {
                 if (expr.procedure && !expr.procedure->type)
                     exerror("return in void function");
                 (yyvsp[(2) - (3)].expr)
@@ -2156,16 +2107,13 @@ yyreduce:
             Switch_t *sw;
             int n;
 
-            if (expr.swstate)
-            {
-                if (!(sw = newof(0, Switch_t, 1, 0)))
-                {
+            if (expr.swstate) {
+                if (!(sw = newof(0, Switch_t, 1, 0))) {
                     exnospace();
                     sw = &swstate;
                 }
                 sw->prev = expr.swstate;
-            }
-            else
+            } else
                 sw = &swstate;
             expr.swstate = sw;
             sw->type = expr.declare;
@@ -2174,8 +2122,7 @@ yyreduce:
             sw->defcase = 0;
             sw->def = 0;
             n = 8;
-            if (!(sw->base = newof(0, Extype_t *, n, 0)))
-            {
+            if (!(sw->base = newof(0, Extype_t *, n, 0))) {
                 exnospace();
                 n = 0;
             }
@@ -2194,8 +2141,7 @@ yyreduce:
 
             (yyval.expr) = exnewnode(
             expr.program, CASE, 1, 0, (yyvsp[(2) - (2)].expr), NiL);
-            if (sw->cur > sw->base)
-            {
+            if (sw->cur > sw->base) {
                 if (sw->lastcase)
                     sw->lastcase->data.select.next = (yyval.expr);
                 else
@@ -2209,11 +2155,9 @@ yyreduce:
                        sw->base,
                        n * sizeof(Extype_t *));
                 (yyval.expr)->data.select.constant[n] = 0;
-            }
-            else
+            } else
                 (yyval.expr)->data.select.constant = 0;
-            if (sw->def)
-            {
+            if (sw->def) {
                 sw->def = 0;
                 if (sw->defcase)
                     exerror("duplicate default in switch");
@@ -2230,20 +2174,17 @@ yyreduce:
         {
             int n;
 
-            if (expr.swstate->cur >= expr.swstate->last)
-            {
+            if (expr.swstate->cur >= expr.swstate->last) {
                 n = expr.swstate->cur - expr.swstate->base;
                 if (!(expr.swstate->base
-                      = newof(expr.swstate->base, Extype_t *, 2 * n, 0)))
-                {
+                      = newof(expr.swstate->base, Extype_t *, 2 * n, 0))) {
                     exerror("too many case labels for switch");
                     n = 0;
                 }
                 expr.swstate->cur = expr.swstate->base + n;
                 expr.swstate->last = expr.swstate->base + 2 * n;
             }
-            if (expr.swstate->cur)
-            {
+            if (expr.swstate->cur) {
                 (yyvsp[(2) - (3)].expr) = excast(expr.program,
                                                  (yyvsp[(2) - (3)].expr),
                                                  expr.swstate->type,
@@ -2316,8 +2257,7 @@ yyreduce:
             (yyval.expr) = 0;
             if (!(yyvsp[(2) - (5)].id)->type || expr.declare)
                 (yyvsp[(2) - (5)].id)->type = expr.declare;
-            if ((yyvsp[(1) - (5)].reference))
-            {
+            if ((yyvsp[(1) - (5)].reference)) {
                 (yyvsp[(2) - (5)].id)->index = MEMBER;
                 if (!expr.program->disc->getf || !expr.program->symbols)
                     exerror("%s: member references not supported",
@@ -2333,21 +2273,16 @@ yyreduce:
                                                 NiL,
                                                 EX_SCALAR,
                                                 expr.program->disc);
-            }
-            else if ((yyvsp[(5) - (5)].expr)
-                     && (yyvsp[(5) - (5)].expr)->op == PROCEDURE)
-            {
+            } else if ((yyvsp[(5) - (5)].expr)
+                       && (yyvsp[(5) - (5)].expr)->op == PROCEDURE) {
                 (yyvsp[(2) - (5)].id)->lex = PROCEDURE;
                 (yyvsp[(2) - (5)].id)->value = (yyvsp[(5) - (5)].expr);
-            }
-            else
-            {
+            } else {
                 (yyvsp[(2) - (5)].id)->lex = DYNAMIC;
                 (yyvsp[(2) - (5)].id)->value
                 = exnewnode(expr.program, 0, 0, 0, NiL, NiL);
                 if ((yyvsp[(4) - (5)].integer)
-                    && !(yyvsp[(2) - (5)].id)->local.pointer)
-                {
+                    && !(yyvsp[(2) - (5)].id)->local.pointer) {
                     Dtdisc_t *disc;
 
                     if (!(disc = newof(0, Dtdisc_t, 1, 0)))
@@ -2358,11 +2293,9 @@ yyreduce:
                         exerror("%s: cannot initialize associative array",
                                 (yyvsp[(2) - (5)].id)->name);
                 }
-                if ((yyvsp[(5) - (5)].expr))
-                {
+                if ((yyvsp[(5) - (5)].expr)) {
                     if ((yyvsp[(5) - (5)].expr)->type
-                        != (yyvsp[(2) - (5)].id)->type)
-                    {
+                        != (yyvsp[(2) - (5)].id)->type) {
                         (yyvsp[(5) - (5)].expr)->type
                         = (yyvsp[(2) - (5)].id)->type;
                         (yyvsp[(5) - (5)].expr)->data.operand.right
@@ -2383,13 +2316,11 @@ yyreduce:
                     ->data.operand.left->data.variable.symbol
                     = (yyvsp[(2) - (5)].id);
                     (yyval.expr) = (yyvsp[(5) - (5)].expr);
-                    if (!expr.program->frame && !expr.program->errors)
-                    {
+                    if (!expr.program->frame && !expr.program->errors) {
                         expr.assigned++;
                         exeval(expr.program, (yyval.expr), NiL);
                     }
-                }
-                else if (!(yyvsp[(4) - (5)].integer))
+                } else if (!(yyvsp[(4) - (5)].integer))
                     (yyvsp[(2) - (5)].id)->value->data.value
                     = exzero((yyvsp[(2) - (5)].id)->type);
             }
@@ -2461,20 +2392,17 @@ yyreduce:
         binary:
             rel = 0;
         coerce:
-            if (!(yyvsp[(1) - (3)].expr)->type)
-            {
+            if (!(yyvsp[(1) - (3)].expr)->type) {
                 if (!(yyvsp[(3) - (3)].expr)->type)
                     (yyvsp[(1) - (3)].expr)->type
                     = (yyvsp[(3) - (3)].expr)->type = rel ? STRING : INTEGER;
                 else
                     (yyvsp[(1) - (3)].expr)->type
                     = (yyvsp[(3) - (3)].expr)->type;
-            }
-            else if (!(yyvsp[(3) - (3)].expr)->type)
+            } else if (!(yyvsp[(3) - (3)].expr)->type)
                 (yyvsp[(3) - (3)].expr)->type = (yyvsp[(1) - (3)].expr)->type;
             if ((yyvsp[(1) - (3)].expr)->type
-                != (yyvsp[(3) - (3)].expr)->type)
-            {
+                != (yyvsp[(3) - (3)].expr)->type) {
                 if ((yyvsp[(1) - (3)].expr)->type == STRING)
                     (yyvsp[(1) - (3)].expr)
                     = excast(expr.program,
@@ -2516,8 +2444,7 @@ yyreduce:
                                      (yyvsp[(3) - (3)].expr));
             if (!expr.program->errors
                 && (yyvsp[(1) - (3)].expr)->op == CONSTANT
-                && (yyvsp[(3) - (3)].expr)->op == CONSTANT)
-            {
+                && (yyvsp[(3) - (3)].expr)->op == CONSTANT) {
                 (yyval.expr)->data.constant.value
                 = exeval(expr.program, (yyval.expr), NiL);
                 (yyval.expr)->binary = 0;
@@ -2693,12 +2620,10 @@ yyreduce:
         /* Line 1806 of yacc.c  */
         /* #line 641 "/home/gsf/src/lib/libexpr/exparse.y" */
         {
-            if ((yyvsp[(1) - (3)].expr)->op == CONSTANT)
-            {
+            if ((yyvsp[(1) - (3)].expr)->op == CONSTANT) {
                 exfreenode(expr.program, (yyvsp[(1) - (3)].expr));
                 (yyval.expr) = (yyvsp[(3) - (3)].expr);
-            }
-            else
+            } else
                 (yyval.expr) = exnewnode(expr.program,
                                          ',',
                                          1,
@@ -2731,16 +2656,14 @@ yyreduce:
         /* Line 1806 of yacc.c  */
         /* #line 651 "/home/gsf/src/lib/libexpr/exparse.y" */
         {
-            if (!(yyvsp[(4) - (7)].expr)->type)
-            {
+            if (!(yyvsp[(4) - (7)].expr)->type) {
                 if (!(yyvsp[(7) - (7)].expr)->type)
                     (yyvsp[(4) - (7)].expr)->type
                     = (yyvsp[(7) - (7)].expr)->type = INTEGER;
                 else
                     (yyvsp[(4) - (7)].expr)->type
                     = (yyvsp[(7) - (7)].expr)->type;
-            }
-            else if (!(yyvsp[(7) - (7)].expr)->type)
+            } else if (!(yyvsp[(7) - (7)].expr)->type)
                 (yyvsp[(7) - (7)].expr)->type = (yyvsp[(4) - (7)].expr)->type;
             if ((yyvsp[(1) - (7)].expr)->type == STRING)
                 (yyvsp[(1) - (7)].expr) = exnewnode(
@@ -2749,8 +2672,7 @@ yyreduce:
                 (yyvsp[(1) - (7)].expr) = excast(
                 expr.program, (yyvsp[(1) - (7)].expr), INTEGER, NiL, 0);
             if ((yyvsp[(4) - (7)].expr)->type
-                != (yyvsp[(7) - (7)].expr)->type)
-            {
+                != (yyvsp[(7) - (7)].expr)->type) {
                 if ((yyvsp[(4) - (7)].expr)->type == STRING
                     || (yyvsp[(7) - (7)].expr)->type == STRING)
                     exerror("if statement string type mismatch");
@@ -2761,21 +2683,16 @@ yyreduce:
                     (yyvsp[(4) - (7)].expr) = excast(
                     expr.program, (yyvsp[(4) - (7)].expr), FLOATING, NiL, 0);
             }
-            if ((yyvsp[(1) - (7)].expr)->op == CONSTANT)
-            {
-                if ((yyvsp[(1) - (7)].expr)->data.constant.value.integer)
-                {
+            if ((yyvsp[(1) - (7)].expr)->op == CONSTANT) {
+                if ((yyvsp[(1) - (7)].expr)->data.constant.value.integer) {
                     (yyval.expr) = (yyvsp[(4) - (7)].expr);
                     exfreenode(expr.program, (yyvsp[(7) - (7)].expr));
-                }
-                else
-                {
+                } else {
                     (yyval.expr) = (yyvsp[(7) - (7)].expr);
                     exfreenode(expr.program, (yyvsp[(4) - (7)].expr));
                 }
                 exfreenode(expr.program, (yyvsp[(1) - (7)].expr));
-            }
-            else
+            } else
                 (yyval.expr)
                 = exnewnode(expr.program,
                             '?',
@@ -2812,8 +2729,7 @@ yyreduce:
                                      : (yyvsp[(2) - (2)].expr)->type,
                                      (yyvsp[(2) - (2)].expr),
                                      NiL);
-            if ((yyvsp[(2) - (2)].expr)->op == CONSTANT)
-            {
+            if ((yyvsp[(2) - (2)].expr)->op == CONSTANT) {
                 (yyval.expr)->data.constant.value
                 = exeval(expr.program, (yyval.expr), NiL);
                 (yyval.expr)->binary = 0;
@@ -2934,16 +2850,13 @@ yyreduce:
                                      NiL);
             if ((yyvsp[(3) - (4)].expr)
                 && (yyvsp[(3) - (4)].expr)->data.operand.left->type
-                   == INTEGER)
-            {
+                   == INTEGER) {
                 (yyval.expr)->data.print.descriptor
                 = (yyvsp[(3) - (4)].expr)->data.operand.left;
                 (yyvsp[(3) - (4)].expr)
                 = (yyvsp[(3) - (4)].expr)->data.operand.right;
-            }
-            else
-                switch ((yyvsp[(1) - (4)].id)->index)
-                {
+            } else
+                switch ((yyvsp[(1) - (4)].id)->index) {
                 case QUERY:
                     (yyval.expr)->data.print.descriptor
                     = exnewnode(expr.program, CONSTANT, 0, INTEGER, NiL, NiL);
@@ -2981,30 +2894,25 @@ yyreduce:
                                      NiL);
             if ((yyvsp[(3) - (4)].expr)
                 && (yyvsp[(3) - (4)].expr)->data.operand.left->type
-                   == INTEGER)
-            {
+                   == INTEGER) {
                 (yyval.expr)->data.scan.descriptor
                 = (yyvsp[(3) - (4)].expr)->data.operand.left;
                 (yyvsp[(3) - (4)].expr)
                 = (yyvsp[(3) - (4)].expr)->data.operand.right;
-            }
-            else
-                switch ((yyvsp[(1) - (4)].id)->index)
-                {
+            } else
+                switch ((yyvsp[(1) - (4)].id)->index) {
                 case SCANF:
                     (yyval.expr)->data.scan.descriptor = 0;
                     break;
                 case SSCANF:
                     if ((yyvsp[(3) - (4)].expr)
                         && (yyvsp[(3) - (4)].expr)->data.operand.left->type
-                           == STRING)
-                    {
+                           == STRING) {
                         (yyval.expr)->data.scan.descriptor
                         = (yyvsp[(3) - (4)].expr)->data.operand.left;
                         (yyvsp[(3) - (4)].expr)
                         = (yyvsp[(3) - (4)].expr)->data.operand.right;
-                    }
-                    else
+                    } else
                         exerror("%s: string argument expected",
                                 (yyvsp[(1) - (4)].id)->name);
                     break;
@@ -3019,8 +2927,7 @@ yyreduce:
             for (x = (yyval.expr)->data.scan.args
                  = (yyvsp[(3) - (4)].expr)->data.operand.right;
                  x;
-                 x = x->data.operand.right)
-            {
+                 x = x->data.operand.right) {
                 if (x->data.operand.left->op != ADDRESS)
                     exerror("%s: address argument expected",
                             (yyvsp[(1) - (4)].id)->name);
@@ -3040,8 +2947,7 @@ yyreduce:
             if (!expr.program->disc->reff)
                 exerror("%s: qualified identifier references not supported",
                         (yyvsp[(3) - (3)].id)->name);
-            else
-            {
+            else {
                 (yyval.expr)->data.constant.value
                 = (*expr.program->disc->reff)(expr.program,
                                               (yyval.expr),
@@ -3060,15 +2966,13 @@ yyreduce:
         /* Line 1806 of yacc.c  */
         /* #line 816 "/home/gsf/src/lib/libexpr/exparse.y" */
         {
-            if ((yyvsp[(2) - (2)].expr))
-            {
+            if ((yyvsp[(2) - (2)].expr)) {
                 if ((yyvsp[(1) - (2)].expr)->op == ID
                     && !expr.program->disc->setf)
                     exerror(
                     "%s: variable assignment not supported",
                     (yyvsp[(1) - (2)].expr)->data.variable.symbol->name);
-                else
-                {
+                else {
                     if (!(yyvsp[(1) - (2)].expr)->type)
                         (yyvsp[(1) - (2)].expr)->type
                         = (yyvsp[(2) - (2)].expr)->type;
@@ -3475,13 +3379,10 @@ yyreduce:
             Exref_t *r;
 
             r = ALLOCATE(expr.program, Exref_t);
-            if (expr.lastref)
-            {
+            if (expr.lastref) {
                 r->symbol = QUALIFY(expr.lastref, (yyvsp[(2) - (4)].id));
                 expr.lastref->next = r;
-            }
-            else
-            {
+            } else {
                 r->symbol = (yyvsp[(2) - (4)].id);
                 expr.refs = r;
             }
@@ -3531,8 +3432,7 @@ yyreduce:
             if (!(disc = newof(0, Dtdisc_t, 1, 0)))
                 exnospace();
             disc->key = offsetof(Exid_t, name);
-            if (!streq(expr.id->name, "begin"))
-            {
+            if (!streq(expr.id->name, "begin")) {
                 if (!(expr.procedure->data.procedure.frame
                       = dtopen(disc, Dtset))
                     || !dtview(expr.procedure->data.procedure.frame,
@@ -3565,8 +3465,7 @@ yyreduce:
         {
             (yyval.expr) = expr.procedure;
             expr.procedure = 0;
-            if (expr.program->frame)
-            {
+            if (expr.program->frame) {
                 expr.program->symbols = expr.program->frame->view;
                 dtview(expr.program->frame, NiL);
                 expr.program->frame = 0;
@@ -3634,8 +3533,7 @@ yyerrlab:
     yytoken = yychar == YYEMPTY ? YYEMPTY : YYTRANSLATE(yychar);
 
     /* If not already recovering from an error, report this error.  */
-    if (!yyerrstatus)
-    {
+    if (!yyerrstatus) {
         ++yynerrs;
 #if !YYERROR_VERBOSE
         yyerror(YY_("syntax error"));
@@ -3648,19 +3546,15 @@ yyerrlab:
             yysyntax_error_status = YYSYNTAX_ERROR;
             if (yysyntax_error_status == 0)
                 yymsgp = yymsg;
-            else if (yysyntax_error_status == 1)
-            {
+            else if (yysyntax_error_status == 1) {
                 if (yymsg != yymsgbuf)
                     YYSTACK_FREE(yymsg);
                 yymsg = ( char * )YYSTACK_ALLOC(yymsg_alloc);
-                if (!yymsg)
-                {
+                if (!yymsg) {
                     yymsg = yymsgbuf;
                     yymsg_alloc = sizeof yymsgbuf;
                     yysyntax_error_status = 2;
-                }
-                else
-                {
+                } else {
                     yysyntax_error_status = YYSYNTAX_ERROR;
                     yymsgp = yymsg;
                 }
@@ -3674,19 +3568,15 @@ yyerrlab:
     }
 
 
-    if (yyerrstatus == 3)
-    {
+    if (yyerrstatus == 3) {
         /* If just tried and failed to reuse lookahead token after an
        error, discard it.  */
 
-        if (yychar <= YYEOF)
-        {
+        if (yychar <= YYEOF) {
             /* Return failure if at end of input.  */
             if (yychar == YYEOF)
                 YYABORT;
-        }
-        else
-        {
+        } else {
             yydestruct("Error: discarding", yytoken, &yylval);
             yychar = YYEMPTY;
         }
@@ -3723,14 +3613,11 @@ yyerrorlab:
 yyerrlab1:
     yyerrstatus = 3; /* Each real token shifted decrements this.  */
 
-    for (;;)
-    {
+    for (;;) {
         yyn = yypact[yystate];
-        if (!yypact_value_is_default(yyn))
-        {
+        if (!yypact_value_is_default(yyn)) {
             yyn += YYTERROR;
-            if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYTERROR)
-            {
+            if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYTERROR) {
                 yyn = yytable[yyn];
                 if (0 < yyn)
                     break;
@@ -3783,8 +3670,7 @@ yyexhaustedlab:
 #endif
 
 yyreturn:
-    if (yychar != YYEMPTY)
-    {
+    if (yychar != YYEMPTY) {
         /* Make sure we have latest lookahead translation.  See comments at
            user semantic actions for why this is necessary.  */
         yytoken = YYTRANSLATE(yychar);
@@ -3794,8 +3680,7 @@ yyreturn:
        this YYABORT or YYACCEPT.  */
     YYPOPSTACK(yylen);
     YY_STACK_PRINT(yyss, yyssp);
-    while (yyssp != yyss)
-    {
+    while (yyssp != yyss) {
         yydestruct("Cleanup: popping", yystos[*yyssp], yyvsp);
         YYPOPSTACK(1);
     }

@@ -56,22 +56,19 @@ match_string_comp(Cx_t *cx,
 {
     regex_t *re;
 
-    if (!cxisstring(pt))
-    {
+    if (!cxisstring(pt)) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: match requires %s pattern", st->name, st->name);
         return 0;
     }
-    if (!(re = newof(0, regex_t, 1, 0)))
-    {
+    if (!(re = newof(0, regex_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
     }
     re->re_disc = &cx->redisc;
-    if (regcomp(re, pv->string.data, REG_AUGMENTED | REG_DISCIPLINE))
-    {
+    if (regcomp(re, pv->string.data, REG_AUGMENTED | REG_DISCIPLINE)) {
         free(re);
         return 0;
     }
@@ -97,8 +94,7 @@ match_string_exec(Cx_t *cx,
 static int
 match_string_free(Cx_t *cx, void *data, Cxdisc_t *disc)
 {
-    if (data)
-    {
+    if (data) {
         regfree(( regex_t * )data);
         free(data);
     }
@@ -178,14 +174,11 @@ number_external(Cx_t *cx,
     if (CXDETAILS(details, format, type, 0))
         n = sfsprintf(buf, size, details, ( intmax_t )value->number);
     else if (value->number == ( intmax_t )value->number
-             || (format->flags & CX_INTEGER))
-    {
+             || (format->flags & CX_INTEGER)) {
         f = fmt;
         *f++ = '%';
-        if (format)
-        {
-            if (format->width)
-            {
+        if (format) {
+            if (format->width) {
                 if (format->fill > 0)
                     *f++ = format->fill;
                 f
@@ -194,31 +187,25 @@ number_external(Cx_t *cx,
             *f++ = 'l';
             *f++ = 'l';
             *f++ = (format->flags & CX_UNSIGNED) ? 'u' : 'd';
-        }
-        else
-        {
+        } else {
             *f++ = 'l';
             *f++ = 'l';
             *f++ = 'd';
         }
         *f = 0;
         n = sfsprintf(buf, size, fmt, ( intmax_t )value->number);
-    }
-    else if (format->width)
-    {
+    } else if (format->width) {
         int w;
 
         w = format->width - ((value->number < 0) ? 2 : 1);
         n = sfsprintf(
         buf, size, "%#.*I*g", w, sizeof(value->number), value->number);
-        if (n != w)
-        {
+        if (n != w) {
             w += w - n;
             n = sfsprintf(
             buf, size, "%#.*I*g", w, sizeof(value->number), value->number);
         }
-    }
-    else
+    } else
         n = sfsprintf(
         buf, size, "%1.15I*g", sizeof(value->number), value->number);
     if (n < 0)
@@ -246,8 +233,7 @@ number_internal(Cx_t *cx,
     Cxunsigned_t m;
     char *e;
 
-    if (size == 0)
-    {
+    if (size == 0) {
         ret->value.number = 0;
         return 0;
     }
@@ -258,10 +244,8 @@ number_internal(Cx_t *cx,
         ret->value.number = strntoll(buf, size, &e, format->base);
     else
         ret->value.number = strntod(buf, size, &e);
-    if (e != (( char * )buf + size) && *buf)
-    {
-        if (format && format->map && !cxstr2num(cx, format, buf, size, &m))
-        {
+    if (e != (( char * )buf + size) && *buf) {
+        if (format && format->map && !cxstr2num(cx, format, buf, size, &m)) {
             ret->value.number = ( Cxinteger_t )m;
             return size;
         }
@@ -316,16 +300,13 @@ bool_internal(Cx_t *cx,
     Cxunsigned_t m;
     char *e;
 
-    if (size == 0)
-    {
+    if (size == 0) {
         ret->value.number = 0;
         return 0;
     }
     ret->value.number = ( Cxinteger_t )strntoull(buf, size, &e, format->base);
-    if (e != (( char * )buf + size) && *buf)
-    {
-        if (format && format->map && !cxstr2num(cx, format, buf, size, &m))
-        {
+    if (e != (( char * )buf + size) && *buf) {
+        if (format && format->map && !cxstr2num(cx, format, buf, size, &m)) {
             ret->value.number = ( Cxinteger_t )m;
             return size;
         }
@@ -359,23 +340,19 @@ string_external(Cx_t *cx,
                 size_t size,
                 Cxdisc_t *disc)
 {
-    if (format && format->width)
-    {
+    if (format && format->width) {
         if (format->width > size)
             return format->width;
         if (format->width <= value->string.size)
             memcpy(buf, value->string.data, format->width);
-        else
-        {
+        else {
             memcpy(buf, value->string.data, value->string.size);
             memset(buf + value->string.size,
                    format->fill >= 0 ? format->fill : 0,
                    format->width - value->string.size);
         }
         return format->width;
-    }
-    else
-    {
+    } else {
         if (value->string.size > size)
             return value->string.size;
         memcpy(buf, value->string.data, value->string.size);
@@ -429,8 +406,7 @@ buffer_external(Cx_t *cx,
 
     static const char hex[] = "0123456789abcdefg";
 
-    switch (details ? *details : 0)
-    {
+    switch (details ? *details : 0) {
     case 0:
     case 'b':
     case 'm':
@@ -445,8 +421,7 @@ buffer_external(Cx_t *cx,
         if (size < z)
             return z;
         t = ( unsigned char * )buf;
-        while (f < e)
-        {
+        while (f < e) {
             v = *f++;
             *t++ = hex[v >> 4];
             *t++ = hex[v & 0xf];
@@ -484,16 +459,14 @@ buffer_internal(Cx_t *cx,
     n = (size * 3) / 4 + 1;
     if (!vm)
         vm = Vmregion;
-    if (!(t = vmnewof(vm, 0, unsigned char, n, 0)))
-    {
+    if (!(t = vmnewof(vm, 0, unsigned char, n, 0))) {
         if (disc->errorf)
             (*disc->errorf)(cx, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
     }
     if ((r = base64decode(buf, size, NiL, t, n, NiL)) > n)
         vmfree(vm, t);
-    else
-    {
+    else {
         ret->value.buffer.data = t;
         ret->value.buffer.size = r;
     }
@@ -688,8 +661,7 @@ op_sc_V(Cx_t *cx,
         void *data,
         Cxdisc_t *disc)
 {
-    if ((pc->op == CX_SC0) == (b->value.number == 0))
-    {
+    if ((pc->op == CX_SC0) == (b->value.number == 0)) {
         cx->jump = ( int )pc->data.number;
         return 1;
     }
@@ -771,8 +743,7 @@ op_div_N(Cx_t *cx,
          void *data,
          Cxdisc_t *disc)
 {
-    if (b->value.number == 0.0)
-    {
+    if (b->value.number == 0.0) {
         if (cx->disc->errorf)
             (*cx->disc->errorf)(cx, cx->disc, 2, "divide by 0");
         return -1;
@@ -790,8 +761,7 @@ op_mod_N(Cx_t *cx,
          void *data,
          Cxdisc_t *disc)
 {
-    if (b->value.number < 1.0)
-    {
+    if (b->value.number < 1.0) {
         if (cx->disc->errorf)
             (*cx->disc->errorf)(cx, cx->disc, 2, "modulus by number < 1.0");
         return -1;
@@ -1471,8 +1441,7 @@ re_match(Cx_t *cx,
           = (*a->type->match->compf)(cx, a->type, b->type, &b->data, disc)))
         return -1;
     if (a->type->match->freef
-        && cxatfree(cx, expr, a->type->match->freef, x->data.pointer))
-    {
+        && cxatfree(cx, expr, a->type->match->freef, x->data.pointer)) {
         (*a->type->match->freef)(cx, x->data.pointer, disc);
         return -1;
     }
@@ -1564,15 +1533,12 @@ cxsizeof(Cx_t *cx, Cxvariable_t *var, Cxtype_t *type, Cxvalue_t *value)
     if (var->array)
         size = var->array->size;
     else
-        do
-        {
+        do {
             if (size = type->size)
                 break;
-            switch (type->representation)
-            {
+            switch (type->representation) {
             case CX_buffer:
-                if (size = value->buffer.size)
-                {
+                if (size = value->buffer.size) {
                     if (value->buffer.elements)
                         size = value->buffer.elements;
                     else if (type->element)
@@ -1672,10 +1638,8 @@ cxopen(Cxflags_t flags, Cxflags_t test, Cxdisc_t *disc)
 
     if (!(vm = vmopen(Vmdcheap, Vmbest, 0))
         || !(em = vmopen(Vmdcheap, Vmlast, 0))
-        || !(rm = vmopen(Vmdcheap, Vmlast, 0)))
-    {
-        if (vm)
-        {
+        || !(rm = vmopen(Vmdcheap, Vmlast, 0))) {
+        if (vm) {
             vmclose(vm);
             if (em)
                 vmclose(em);
@@ -1685,8 +1649,7 @@ cxopen(Cxflags_t flags, Cxflags_t test, Cxdisc_t *disc)
         return 0;
     }
     if (!(cx = vmnewof(vm, 0, Cx_t, 1, 0))
-        || !(cx->cvtbuf = vmnewof(vm, 0, char, cx->cvtsiz = CX_CVT, 0)))
-    {
+        || !(cx->cvtbuf = vmnewof(vm, 0, char, cx->cvtsiz = CX_CVT, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         goto bad;
@@ -1703,18 +1666,15 @@ cxopen(Cxflags_t flags, Cxflags_t test, Cxdisc_t *disc)
     cx->redisc.re_version = REG_VERSION;
     cx->redisc.re_flags = REG_NOFREE;
     cx->redisc.re_errorf = ( regerror_t )disc->errorf;
-    if (!(cx->buf = sfstropen()) || !(cx->tp = sfstropen()))
-    {
+    if (!(cx->buf = sfstropen()) || !(cx->tp = sfstropen())) {
         cxclose(cx);
         return 0;
     }
     cx->scoped = 1;
-    if (!(flags & CX_SCOPE))
-    {
+    if (!(flags & CX_SCOPE)) {
         cx->op = sfstdout;
         if (!(cx->fields = dtnew(cx->vm, &state.listdisc, Dtqueue))
-            || !(cx->buf = sfstropen()) || !(cx->tp = sfstropen()))
-        {
+            || !(cx->buf = sfstropen()) || !(cx->tp = sfstropen())) {
             cxclose(cx);
             return 0;
         }
@@ -1743,27 +1703,23 @@ bad:
 Cx_t *
 cxscope(Cx_t *top, Cx_t *bot, Cxflags_t flags, Cxflags_t test, Cxdisc_t *disc)
 {
-    if (!top)
-    {
+    if (!top) {
         if (!(top = cxopen(CX_SCOPE | flags, test, disc)))
             return 0;
         top->op = sfstdout;
     }
-    if (top->scoped != 1)
-    {
+    if (top->scoped != 1) {
         if (top->disc->errorf)
             (*top->disc->errorf)(
             NiL, top->disc, 2, "cannot change active scope");
         return 0;
     }
-    if (bot)
-    {
+    if (bot) {
         /*
          * scope top on bot
          */
 
-        if (top->scope)
-        {
+        if (top->scope) {
             if (top->disc->errorf)
                 (*top->disc->errorf)(NiL, top->disc, 2, "already scoped");
             return 0;
@@ -1807,9 +1763,7 @@ cxscope(Cx_t *top, Cx_t *bot, Cxflags_t flags, Cxflags_t test, Cxdisc_t *disc)
         bot->scoped++;
         top->scope = bot;
         bot = top;
-    }
-    else if (bot = top->scope)
-    {
+    } else if (bot = top->scope) {
         /*
          * pop the scope
          */
@@ -1834,8 +1788,7 @@ cxscope(Cx_t *top, Cx_t *bot, Cxflags_t flags, Cxflags_t test, Cxdisc_t *disc)
             dtview(top->variables, NiL);
         top->scope = 0;
         bot->scoped--;
-    }
-    else
+    } else
         bot = top;
     return bot;
 }
@@ -1851,8 +1804,7 @@ cxclose(Cx_t *cx)
         return -1;
     if (cx->scope)
         cxscope(cx, NiL, 0, 0, cx->disc);
-    if (--cx->scoped <= 0)
-    {
+    if (--cx->scoped <= 0) {
         if (cx->view & CX_VIEW_callouts)
             dtclose(cx->callouts);
         if (cx->view & CX_VIEW_constraints)
@@ -1902,71 +1854,58 @@ cxaddtype(Cx_t *cx, Cxtype_t *type, Cxdisc_t *disc)
     Cxrecode_t *re;
     int i;
 
-    if (cx)
-    {
+    if (cx) {
         disc = cx->disc;
         if (cx->view & CX_VIEW_types)
             dict = cx->types;
-        else if (!(dict = dtnew(cx->vm, &state.namedisc, Dtoset)))
-        {
+        else if (!(dict = dtnew(cx->vm, &state.namedisc, Dtoset))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
-        }
-        else
-        {
+        } else {
             dtview(dict, cx->types);
             cx->types = dict;
             cx->view |= CX_VIEW_types;
         }
-        if (!(copy = vmnewof(cx->vm, 0, Cxtype_t, 1, 0)))
-        {
+        if (!(copy = vmnewof(cx->vm, 0, Cxtype_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
         }
         *copy = *type;
         type = copy;
-    }
-    else
+    } else
         dict = state.types;
-    if (dtsearch(dict, type))
-    {
+    if (dtsearch(dict, type)) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: type already defined", type->name);
         return -1;
     }
     dtinsert(dict, type);
-    if (!(type->header.flags & CX_NORMALIZED))
-    {
+    if (!(type->header.flags & CX_NORMALIZED)) {
         type->header.flags |= CX_NORMALIZED;
         if ((base = ( char * )type->base)
-            && !(type->base = cxtype(cx, base, disc)))
-        {
+            && !(type->base = cxtype(cx, base, disc))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, 2, "%s: unknown base type", base);
             return -1;
         }
         if ((base = ( char * )type->fundamental)
-            && !(type->fundamental = cxtype(cx, base, disc)))
-        {
+            && !(type->fundamental = cxtype(cx, base, disc))) {
             if (disc->errorf)
                 (*disc->errorf)(
                 NiL, disc, 2, "%s: unknown fundamental type", base);
             return -1;
         }
-        if (type->member)
-        {
-            if (!type->member->getf)
-            {
+        if (type->member) {
+            if (!type->member->getf) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL, disc, 2, "%s: no member get function", type->name);
                 return -1;
             }
-            if (!(member = ( Cxvariable_t * )type->member->members))
-            {
+            if (!(member = ( Cxvariable_t * )type->member->members)) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL, disc, 2, "%s: no member table", type->name);
@@ -1976,23 +1915,18 @@ cxaddtype(Cx_t *cx, Cxtype_t *type, Cxdisc_t *disc)
                 type->header.flags |= CX_REFERENCED;
             else if (!(type->member->members
                        = cx ? dtnew(cx->vm, &state.namedisc, Dtoset)
-                            : dtopen(&state.namedisc, Dtoset)))
-            {
+                            : dtopen(&state.namedisc, Dtoset))) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL, disc, ERROR_SYSTEM | 2, "out of space");
                 return -1;
-            }
-            else
-                for (i = 0; member->name; member++)
-                {
+            } else
+                for (i = 0; member->name; member++) {
                     v = member;
-                    if (!(v->header.flags & CX_NORMALIZED))
-                    {
+                    if (!(v->header.flags & CX_NORMALIZED)) {
                         v->header.flags |= CX_NORMALIZED;
                         if ((base = ( char * )v->type)
-                            && !(v->type = cxtype(cx, base, disc)))
-                        {
+                            && !(v->type = cxtype(cx, base, disc))) {
                             if (disc->errorf)
                                 (*disc->errorf)(
                                 NiL, disc, 2, "%s: unknown type", base);
@@ -2006,33 +1940,26 @@ cxaddtype(Cx_t *cx, Cxtype_t *type, Cxdisc_t *disc)
         }
         if (type->generic)
             for (i = 0; base = ( char * )type->generic[i]; i++)
-                if (!(type->generic[i] = cxtype(cx, base, disc)))
-                {
+                if (!(type->generic[i] = cxtype(cx, base, disc))) {
                     if (disc->errorf)
                         (*disc->errorf)(
                         NiL, disc, 2, "%s: unknown type", base);
                     return -1;
                 }
     }
-    if (!(type->header.flags & CX_INITIALIZED))
-    {
+    if (!(type->header.flags & CX_INITIALIZED)) {
         type->header.flags |= CX_INITIALIZED;
-        if (type->fundamental)
-        {
+        if (type->fundamental) {
             if (type->base)
                 type->representation = type->base->representation;
-        }
-        else if (!type->base)
+        } else if (!type->base)
             type->fundamental = type;
-        else
-        {
+        else {
             type->fundamental = type->base->fundamental;
             type->representation = type->base->representation;
         }
-        if (type->match)
-        {
-            if (!(re = newof(0, Cxrecode_t, 1, 0)))
-            {
+        if (type->match) {
+            if (!(re = newof(0, Cxrecode_t, 1, 0))) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -2064,15 +1991,13 @@ cxtype(Cx_t *cx, const char *name, Cxdisc_t *disc)
     Cxtype_t *t;
     size_t n;
 
-    if ((s = strchr(name, ':')) && *++s == ':')
-    {
+    if ((s = strchr(name, ':')) && *++s == ':') {
         n = s - ( char * )name;
         lib = fmtbuf(n);
         memcpy(lib, name, --n);
         lib[n] = 0;
         name = ( const char * )s + 1;
-    }
-    else
+    } else
         lib = ( char * )name;
     if (!(t = ( Cxtype_t * )dtmatch(cx ? cx->types : state.types, name))
         && disc->loadf && (*disc->loadf)(lib, disc))
@@ -2091,35 +2016,28 @@ cxaddcallout(Cx_t *cx, Cxcallout_t *callout, Cxdisc_t *disc)
     Dt_t *dict;
     Cxcallout_t *copy;
 
-    if (cx)
-    {
+    if (cx) {
         disc = cx->disc;
         if (cx->view & CX_VIEW_callouts)
             dict = cx->callouts;
-        else if (!(dict = dtnew(cx->vm, &state.codedisc, Dtoset)))
-        {
+        else if (!(dict = dtnew(cx->vm, &state.codedisc, Dtoset))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
-        }
-        else
-        {
+        } else {
             dtview(dict, cx->callouts);
             cx->callouts = dict;
             cx->view |= CX_VIEW_callouts;
         }
-        if (!(copy = vmnewof(cx->vm, 0, Cxcallout_t, 1, 0)))
-        {
+        if (!(copy = vmnewof(cx->vm, 0, Cxcallout_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
         }
         *copy = *callout;
         callout = copy;
-    }
-    else if (callout->op.code == CX_GET || callout->op.code == CX_SET
-             || callout->op.code == CX_DEL || callout->op.code == CX_RET)
-    {
+    } else if (callout->op.code == CX_GET || callout->op.code == CX_SET
+               || callout->op.code == CX_DEL || callout->op.code == CX_RET) {
         if (disc->errorf)
             (*disc->errorf)(NiL,
                             disc,
@@ -2127,32 +2045,27 @@ cxaddcallout(Cx_t *cx, Cxcallout_t *callout, Cxdisc_t *disc)
                             "%s: callout must be local",
                             cxcodename(callout->op.code));
         return -1;
-    }
-    else
+    } else
         dict = state.callouts;
-    if (!(callout->header.flags & CX_NORMALIZED))
-    {
+    if (!(callout->header.flags & CX_NORMALIZED)) {
         callout->header.flags |= CX_NORMALIZED;
         if (!(name = ( char * )callout->op.type1))
             callout->op.type1 = state.type_void;
-        else if (!(callout->op.type1 = cxtype(cx, name, disc)))
-        {
+        else if (!(callout->op.type1 = cxtype(cx, name, disc))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, 2, "%s: unknown type", name);
             return -1;
         }
         if (!(name = ( char * )callout->op.type2))
             callout->op.type2 = state.type_void;
-        else if (!(callout->op.type2 = cxtype(cx, name, disc)))
-        {
+        else if (!(callout->op.type2 = cxtype(cx, name, disc))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, 2, "%s: unknown type", name);
             return -1;
         }
     }
     if (!(copy = ( Cxcallout_t * )dtinsert(dict, callout))
-        || copy->callout != callout->callout)
-    {
+        || copy->callout != callout->callout) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "callout initialization error");
         return -1;
@@ -2177,8 +2090,7 @@ cxcallout(Cx_t *cx, int code, Cxtype_t *type1, Cxtype_t *type2, Cxdisc_t *disc)
     if (!(op.type2 = type2))
         op.type2 = state.type_void;
     while (!(callout = ( Cxcallout_t * )dtmatch(
-             cx ? cx->callouts : state.callouts, &op)))
-    {
+             cx ? cx->callouts : state.callouts, &op))) {
         if (op.code == CX_NOMATCH)
             op.code = CX_MATCH;
         else if (op.type2 == state.type_void)
@@ -2199,36 +2111,29 @@ cxaddquery(Cx_t *cx, Cxquery_t *query, Cxdisc_t *disc)
     Dt_t *dict;
     Cxquery_t *copy;
 
-    if (cx)
-    {
+    if (cx) {
         disc = cx->disc;
         if (cx->view & CX_VIEW_queries)
             dict = cx->queries;
-        else if (!(dict = dtnew(cx->vm, &state.namedisc, Dtoset)))
-        {
+        else if (!(dict = dtnew(cx->vm, &state.namedisc, Dtoset))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
-        }
-        else
-        {
+        } else {
             dtview(dict, cx->queries);
             cx->queries = dict;
             cx->view |= CX_VIEW_queries;
         }
-        if (!(copy = vmnewof(cx->vm, 0, Cxquery_t, 1, 0)))
-        {
+        if (!(copy = vmnewof(cx->vm, 0, Cxquery_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
         }
         *copy = *query;
         query = copy;
-    }
-    else
+    } else
         dict = state.queries;
-    if (dtsearch(dict, query))
-    {
+    if (dtsearch(dict, query)) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: query already defined", query->name);
@@ -2250,15 +2155,13 @@ cxquery(Cx_t *cx, const char *name, Cxdisc_t *disc)
     Cxquery_t *q;
     size_t n;
 
-    if ((s = strchr(name, ':')) && *++s == ':')
-    {
+    if ((s = strchr(name, ':')) && *++s == ':') {
         n = s - ( char * )name;
         lib = fmtbuf(n);
         memcpy(lib, name, --n);
         lib[n] = 0;
         name = ( const char * )s + 1;
-    }
-    else
+    } else
         lib = ( char * )name;
     if (!(q = ( Cxquery_t * )dtmatch(cx ? cx->queries : state.queries, name))
         && disc->loadf && (*disc->loadf)(lib, disc))
@@ -2279,22 +2182,19 @@ cxfunction(Cx_t *cx, const char *name, Cxdisc_t *disc)
     Cxlib_t *lib;
     int i;
 
-    if (!cx)
-    {
+    if (!cx) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: function must be local", name);
         return 0;
     }
-    if (f = ( Cxvariable_t * )dtmatch(cx->variables, name))
-    {
+    if (f = ( Cxvariable_t * )dtmatch(cx->variables, name)) {
         if (f->function)
             return f;
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: not a function", name);
         return 0;
     }
-    if (!(s = strchr(name, ':')) || *++s != ':')
-    {
+    if (!(s = strchr(name, ':')) || *++s != ':') {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: function must be local", name);
         return 0;
@@ -2309,15 +2209,12 @@ cxfunction(Cx_t *cx, const char *name, Cxdisc_t *disc)
         for (i = 0; lib->functions[i].name; i++)
             if (cxaddvariable(cx, &lib->functions[i], disc))
                 return 0;
-    if (f = ( Cxvariable_t * )dtmatch(cx->variables, name))
-    {
+    if (f = ( Cxvariable_t * )dtmatch(cx->variables, name)) {
         if (f->function)
             return f;
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: not a function", name);
-    }
-    else
-    {
+    } else {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: undefined function", name);
         return 0;
@@ -2335,36 +2232,29 @@ cxaddmap(Cx_t *cx, Cxmap_t *map, Cxdisc_t *disc)
     Dt_t *dict;
     Cxmap_t *copy;
 
-    if (cx)
-    {
+    if (cx) {
         disc = cx->disc;
         if (cx->view & CX_VIEW_maps)
             dict = cx->maps;
-        if (!(dict = dtnew(cx->vm, &state.namedisc, Dtoset)))
-        {
+        if (!(dict = dtnew(cx->vm, &state.namedisc, Dtoset))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
-        }
-        else
-        {
+        } else {
             dtview(dict, cx->maps);
             cx->maps = dict;
             cx->view |= CX_VIEW_maps;
         }
-        if (!(copy = vmnewof(cx->vm, 0, Cxmap_t, 1, 0)))
-        {
+        if (!(copy = vmnewof(cx->vm, 0, Cxmap_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
         }
         *copy = *map;
         map = copy;
-    }
-    else
+    } else
         dict = state.maps;
-    if (dtsearch(dict, map))
-    {
+    if (dtsearch(dict, map)) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: map already defined", map->name);
@@ -2398,35 +2288,28 @@ cxaddrecode(Cx_t *cx, Cxrecode_t *recode, Cxdisc_t *disc)
     Dt_t *dict;
     Cxrecode_t *copy;
 
-    if (cx)
-    {
+    if (cx) {
         disc = cx->disc;
         if (cx->view & CX_VIEW_recodes)
             dict = cx->recodes;
-        else if (!(dict = dtnew(cx->vm, &state.codedisc, Dtoset)))
-        {
+        else if (!(dict = dtnew(cx->vm, &state.codedisc, Dtoset))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
-        }
-        else
-        {
+        } else {
             dtview(dict, cx->recodes);
             cx->recodes = dict;
             cx->view |= CX_VIEW_recodes;
         }
-        if (!(copy = vmnewof(cx->vm, 0, Cxrecode_t, 1, 0)))
-        {
+        if (!(copy = vmnewof(cx->vm, 0, Cxrecode_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
         }
         *copy = *recode;
         recode = copy;
-    }
-    else if (recode->op.code == CX_GET || recode->op.code == CX_SET
-             || recode->op.code == CX_DEL || recode->op.code == CX_RET)
-    {
+    } else if (recode->op.code == CX_GET || recode->op.code == CX_SET
+               || recode->op.code == CX_DEL || recode->op.code == CX_RET) {
         if (disc->errorf)
             (*disc->errorf)(NiL,
                             disc,
@@ -2434,22 +2317,18 @@ cxaddrecode(Cx_t *cx, Cxrecode_t *recode, Cxdisc_t *disc)
                             "%s: recode must be local",
                             cxcodename(recode->op.code));
         return -1;
-    }
-    else
+    } else
         dict = state.recodes;
-    if (!(recode->header.flags & CX_NORMALIZED))
-    {
+    if (!(recode->header.flags & CX_NORMALIZED)) {
         recode->header.flags |= CX_NORMALIZED;
         if ((name = ( char * )recode->op.type1)
-            && !(recode->op.type1 = cxtype(cx, name, disc)))
-        {
+            && !(recode->op.type1 = cxtype(cx, name, disc))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, 2, "%s: unknown type", name);
             return -1;
         }
         if ((name = ( char * )recode->op.type2)
-            && !(recode->op.type2 = cxtype(cx, name, disc)))
-        {
+            && !(recode->op.type2 = cxtype(cx, name, disc))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, 2, "%s: unknown type", name);
             return -1;
@@ -2471,8 +2350,7 @@ cxrecode(Cx_t *cx, int code, Cxtype_t *type1, Cxtype_t *type2, Cxdisc_t *disc)
     Cxrecode_t *recode;
     Cxop_t op;
 
-    switch (code)
-    {
+    switch (code) {
     case CX_NOMATCH:
         code = CX_MATCH;
         /*FALLTHROUGH*/
@@ -2502,44 +2380,36 @@ cxaddedit(Cx_t *cx, Cxedit_t *edit, Cxdisc_t *disc)
     Dt_t *dict;
     Cxedit_t *copy;
 
-    if (cx)
-    {
+    if (cx) {
         disc = cx->disc;
         if (cx->view & CX_VIEW_edits)
             dict = cx->edits;
-        else if (!(dict = dtnew(cx->vm, &state.namedisc, Dtoset)))
-        {
+        else if (!(dict = dtnew(cx->vm, &state.namedisc, Dtoset))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
-        }
-        else
-        {
+        } else {
             dtview(dict, cx->edits);
             cx->edits = dict;
             cx->view |= CX_VIEW_edits;
         }
-        if (!(copy = vmnewof(cx->vm, 0, Cxedit_t, 1, 0)))
-        {
+        if (!(copy = vmnewof(cx->vm, 0, Cxedit_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
         }
         *copy = *edit;
         edit = copy;
-    }
-    else
+    } else
         dict = state.edits;
-    if (dtsearch(dict, edit))
-    {
+    if (dtsearch(dict, edit)) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: edit already defined", edit->name);
         return -1;
     }
     dtinsert(dict, edit);
-    if (!(edit->header.flags & CX_INITIALIZED))
-    {
+    if (!(edit->header.flags & CX_INITIALIZED)) {
         edit->header.flags |= CX_INITIALIZED;
         if (edit->initf && !(edit->data = (*edit->initf)(edit, disc)))
             return -1;
@@ -2560,18 +2430,15 @@ cxedit(Cx_t *cx, const char *data, Cxdisc_t *disc)
     char *s;
 
     e = ( Cxedit_t * )dtmatch(cx ? cx->edits : state.edits, data);
-    if (isalpha(*data))
-    {
-        if (!e)
-        {
+    if (isalpha(*data)) {
+        if (!e) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, 2, "%s: edit not defined", data);
             return 0;
         }
         o = e;
         if (!(e = cx ? vmnewof(cx->vm, 0, Cxedit_t, 1, 0)
-                     : newof(0, Cxedit_t, 1, 0)))
-        {
+                     : newof(0, Cxedit_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return 0;
@@ -2581,22 +2448,18 @@ cxedit(Cx_t *cx, const char *data, Cxdisc_t *disc)
         e->initf = o->initf;
         e->num2strf = o->num2strf;
         e->str2numf = o->str2numf;
-    }
-    else if (e)
+    } else if (e)
         return e;
-    else
-    {
+    else {
         if (!(e = cx ? vmnewof(cx->vm, 0, Cxedit_t, 1, strlen(data) + 1)
-                     : newof(0, Cxedit_t, 1, strlen(data) + 1)))
-        {
+                     : newof(0, Cxedit_t, 1, strlen(data) + 1))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return 0;
         }
         e->redisc.re_version = REG_VERSION;
         e->redisc.re_errorf = ( regerror_t )disc->errorf;
-        if (cx)
-        {
+        if (cx) {
             e->redisc.re_flags = REG_NOFREE;
             e->redisc.re_resizef = ( regresize_t )vmgetmem;
             e->redisc.re_resizehandle = cx->vm;
@@ -2630,43 +2493,35 @@ cxaddconstraint(Cx_t *cx, Cxconstraint_t *constraint, Cxdisc_t *disc)
     Dt_t *dict;
     Cxconstraint_t *copy;
 
-    if (cx)
-    {
+    if (cx) {
         disc = cx->disc;
         if (cx->view & CX_VIEW_constraints)
             dict = cx->constraints;
-        else if (!(dict = dtnew(cx->vm, &state.namedisc, Dtoset)))
-        {
+        else if (!(dict = dtnew(cx->vm, &state.namedisc, Dtoset))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
-        }
-        else
-        {
+        } else {
             dtview(dict, cx->constraints);
             cx->constraints = dict;
             cx->view |= CX_VIEW_constraints;
         }
-        if (!(copy = vmnewof(cx->vm, 0, Cxconstraint_t, 1, 0)))
-        {
+        if (!(copy = vmnewof(cx->vm, 0, Cxconstraint_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
         }
         *copy = *constraint;
         constraint = copy;
-    }
-    else
+    } else
         dict = state.constraints;
-    if (dtsearch(dict, constraint))
-    {
+    if (dtsearch(dict, constraint)) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: constraint already defined", constraint->name);
         return -1;
     }
-    if (!(constraint->header.flags & CX_INITIALIZED))
-    {
+    if (!(constraint->header.flags & CX_INITIALIZED)) {
         constraint->header.flags |= CX_INITIALIZED;
         if (constraint->initf
             && !(constraint->data = (*constraint->initf)(constraint, disc)))
@@ -2696,8 +2551,7 @@ referenced(Cxtype_t *type)
 {
     Cxvariable_t *mp;
 
-    if (!(type->header.flags & CX_REFERENCED))
-    {
+    if (!(type->header.flags & CX_REFERENCED)) {
         type->header.flags |= CX_REFERENCED;
         if (type->base)
             referenced(type->base);
@@ -2719,41 +2573,33 @@ cxaddvariable(Cx_t *cx, Cxvariable_t *variable, Cxdisc_t *disc)
     Cx_t *sx;
     char *name;
 
-    if (cx)
-    {
+    if (cx) {
         disc = cx->disc;
         if (cx->view & CX_VIEW_variables)
             dict = cx->variables;
-        else if (!(dict = dtnew(cx->vm, &state.namedisc, Dtoset)))
-        {
+        else if (!(dict = dtnew(cx->vm, &state.namedisc, Dtoset))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
-        }
-        else
-        {
+        } else {
             dtview(dict, cx->variables);
             cx->variables = dict;
             cx->view |= CX_VIEW_variables;
         }
-    }
-    else
+    } else
         dict = state.variables;
     if (!variable)
         return 0;
-    if (dtsearch(dict, variable))
-    {
+    if (dtsearch(dict, variable)) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: variable already defined", variable->name);
         return -1;
     }
-    if (!(variable->header.flags & CX_NORMALIZED))
-    {
+    if (!(variable->header.flags & CX_NORMALIZED)) {
         variable->header.flags |= CX_NORMALIZED;
         if ((name = ( char * )variable->type)
-            && !(variable->type = cxtype(cx, name, disc)))
-        {
+            && !(variable->type = cxtype(cx, name, disc))) {
             if (disc->errorf)
                 (*disc->errorf)(
                 NiL, disc, 2, "%s: %s: unknown type", variable->name, name);
@@ -2761,18 +2607,14 @@ cxaddvariable(Cx_t *cx, Cxvariable_t *variable, Cxdisc_t *disc)
         }
     }
     dtinsert(dict, variable);
-    if (cx)
-    {
-        if (sx = cx->scope)
-        {
+    if (cx) {
+        if (sx = cx->scope) {
             variable->header.index = sx->index++;
             cx->index = sx->index;
-        }
-        else
+        } else
             variable->header.index = cx->index++;
     }
-    if (!(variable->header.flags & CX_INITIALIZED))
-    {
+    if (!(variable->header.flags & CX_INITIALIZED)) {
         variable->header.flags |= CX_INITIALIZED;
         referenced(variable->type);
         if (cx)
@@ -2796,19 +2638,15 @@ cxvariable(Cx_t *cx, const char *name, Cxtype_t *m, Cxdisc_t *disc)
     Cxreference_t *head;
     Cxreference_t *tail;
 
-    if (!cx)
-    {
+    if (!cx) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: variable must be local", name);
         return 0;
     }
     disc = cx->disc;
-    if (!m || !m->member)
-    {
-        if (!(v = ( Cxvariable_t * )dtmatch(cx->variables, name)))
-        {
-            if (!(t = strchr(name, '.')))
-            {
+    if (!m || !m->member) {
+        if (!(v = ( Cxvariable_t * )dtmatch(cx->variables, name))) {
+            if (!(t = strchr(name, '.'))) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL, disc, 2, "%s: undefined variable", name);
@@ -2824,15 +2662,12 @@ cxvariable(Cx_t *cx, const char *name, Cxtype_t *m, Cxdisc_t *disc)
             m = 0;
             dict = cx->variables;
             head = 0;
-            for (;;)
-            {
+            for (;;) {
                 if (t)
                     *t++ = 0;
                 v = ( Cxvariable_t * )dtmatch(dict, *s ? s : ".");
-                if (!v)
-                {
-                    if (disc->errorf)
-                    {
+                if (!v) {
+                    if (disc->errorf) {
                         if (m)
                             (*disc->errorf)(NiL,
                                             disc,
@@ -2847,8 +2682,7 @@ cxvariable(Cx_t *cx, const char *name, Cxtype_t *m, Cxdisc_t *disc)
                     }
                     return 0;
                 }
-                if (!(ref = newof(0, Cxreference_t, 1, 0)))
-                {
+                if (!(ref = newof(0, Cxreference_t, 1, 0))) {
                     if (disc->errorf)
                         (*disc->errorf)(
                         NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -2867,8 +2701,7 @@ cxvariable(Cx_t *cx, const char *name, Cxtype_t *m, Cxdisc_t *disc)
                 if ((!(m = v->type) || !m->member
                      || !(dict = m->member->members))
                     && (!(m = v->type->base) || !m->member
-                        || !(dict = m->member->members)))
-                {
+                        || !(dict = m->member->members))) {
                     if (disc->errorf)
                         (*disc->errorf)(
                         NiL,
@@ -2880,8 +2713,7 @@ cxvariable(Cx_t *cx, const char *name, Cxtype_t *m, Cxdisc_t *disc)
                 }
                 t = strchr(t, '.');
             }
-            if (!(v = newof(0, Cxvariable_t, 1, strlen(name) + 1)))
-            {
+            if (!(v = newof(0, Cxvariable_t, 1, strlen(name) + 1))) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -2892,9 +2724,7 @@ cxvariable(Cx_t *cx, const char *name, Cxtype_t *m, Cxdisc_t *disc)
             v->type = tail->variable->type;
             dtinsert(cx->variables, v);
         }
-    }
-    else if (!(v = ( Cxvariable_t * )dtmatch(m->member->members, name)))
-    {
+    } else if (!(v = ( Cxvariable_t * )dtmatch(m->member->members, name))) {
         if (disc->errorf)
             (*disc->errorf)(
             cx, disc, 2, "%s: not a member of %s", name, m->name);
@@ -2932,16 +2762,13 @@ cxcast(Cx_t *cx,
     Cxexternal_f e;
 
     x.callout = 0;
-    if (x.data.variable = var)
-    {
+    if (x.data.variable = var) {
         from = var->type;
         if (!type)
             type = from;
-        if (data)
-        {
+        if (data) {
             if (!cx->getf
-                && !(cx->getf = cxcallout(cx, CX_GET, 0, 0, cx->disc)))
-            {
+                && !(cx->getf = cxcallout(cx, CX_GET, 0, 0, cx->disc))) {
                 if (cx->disc->errorf)
                     (*cx->disc->errorf)(
                     NiL,
@@ -2957,8 +2784,7 @@ cxcast(Cx_t *cx,
             = (a.value.string.data = ( char * )format) ? strlen(format) : 0;
             ret->type = var->type;
             ret->value.number = 0;
-            if (ref = var->reference)
-            {
+            if (ref = var->reference) {
                 b.type = var->type;
                 b.refs = 0;
                 b.value.number = 0;
@@ -2967,8 +2793,7 @@ cxcast(Cx_t *cx,
                 if (var->name != var->type->name
                     && (*cx->getf)(cx, &x, ret, &a, &b, data, cx->disc))
                     return -1;
-                while (ref = ref->next)
-                {
+                while (ref = ref->next) {
                     b.type = x.data.variable->type;
                     x.data.variable = ref->variable;
                     ret->type = x.data.variable->type;
@@ -2983,15 +2808,13 @@ cxcast(Cx_t *cx,
                                              cx->disc))
                         return -1;
                 }
-            }
-            else if ((*cx->getf)(cx, &x, ret, &a, NiL, data, cx->disc))
+            } else if ((*cx->getf)(cx, &x, ret, &a, NiL, data, cx->disc))
                 return -1;
             if (type == state.type_void)
                 return 0;
             from = ret->type;
         }
-    }
-    else
+    } else
         from = 0;
     if (var && var->format.map && var->format.map->part
         && var->format.map->part->edit)
@@ -3000,13 +2823,10 @@ cxcast(Cx_t *cx,
         && c != CC_NATIVE
         && (CCCONVERT(c)
             || !(type->format.flags & CX_BINARY) && (c = CCOP(c, CC_NATIVE)))
-        && (map = ccmap(CCIN(c), CCOUT(c))))
-    {
-        if (ret->value.string.size > cx->ccsiz)
-        {
+        && (map = ccmap(CCIN(c), CCOUT(c)))) {
+        if (ret->value.string.size > cx->ccsiz) {
             n = roundof(ret->value.string.size + 1, CX_CVT);
-            if (!(cx->ccbuf = vmoldof(cx->vm, cx->ccbuf, char, n, 0)))
-            {
+            if (!(cx->ccbuf = vmoldof(cx->vm, cx->ccbuf, char, n, 0))) {
                 if (cx->disc->errorf)
                     (*cx->disc->errorf)(
                     NiL, cx->disc, ERROR_SYSTEM | 2, "out of space");
@@ -3017,27 +2837,20 @@ cxcast(Cx_t *cx,
         ret->value.string.data = ( char * )ccmapcpy(
         map, cx->ccbuf, ret->value.string.data, ret->value.string.size);
     }
-    if (ret->type->representation != type->representation)
-    {
+    if (ret->type->representation != type->representation) {
         val = *ret;
-        if (cxisstring(type))
-        {
+        if (cxisstring(type)) {
             if (!var || !cxisnumber(from) || !var->format.map || format
                 || cxnum2str(
-                   cx, &var->format, ( Cxinteger_t )ret->value.number, &s))
-            {
+                   cx, &var->format, ( Cxinteger_t )ret->value.number, &s)) {
                 if (!(e = ret->type->externalf) && var && var->type->member)
                     e = cxmembers;
-                if (e)
-                {
-                    if (!(cvt = cx->cvt))
-                    {
-                        if (!cx->top)
-                        {
+                if (e) {
+                    if (!(cvt = cx->cvt)) {
+                        if (!cx->top) {
                             if (!(cx->top = vmnewof(cx->vm, 0, Cxbuf_t, 1, 0))
                                 || !(cx->top->data
-                                     = vmoldof(cx->vm, 0, char, CX_CVT, 0)))
-                            {
+                                     = vmoldof(cx->vm, 0, char, CX_CVT, 0))) {
                                 if (cx->disc->errorf)
                                     (*cx->disc->errorf)(NiL,
                                                         cx->disc,
@@ -3048,16 +2861,12 @@ cxcast(Cx_t *cx,
                             cx->top->size = CX_CVT;
                         }
                         cx->cvt = cx->top;
-                    }
-                    else
-                    {
-                        if (!cx->cvt->next)
-                        {
+                    } else {
+                        if (!cx->cvt->next) {
                             if (!(cx->cvt->next
                                   = vmnewof(cx->vm, 0, Cxbuf_t, 1, 0))
                                 || !(cx->cvt->next->data
-                                     = vmoldof(cx->vm, 0, char, CX_CVT, 0)))
-                            {
+                                     = vmoldof(cx->vm, 0, char, CX_CVT, 0))) {
                                 if (cx->disc->errorf)
                                     (*cx->disc->errorf)(NiL,
                                                         cx->disc,
@@ -3077,12 +2886,10 @@ cxcast(Cx_t *cx,
                                      cx->cvt->data,
                                      cx->cvt->size,
                                      cx->disc))
-                           > cx->cvt->size)
-                    {
+                           > cx->cvt->size) {
                         n = roundof(n + 1, CX_CVT);
                         if (!(cx->cvt->data
-                              = vmoldof(cx->vm, cx->cvt->data, char, n, 0)))
-                        {
+                              = vmoldof(cx->vm, cx->cvt->data, char, n, 0))) {
                             if (cx->disc->errorf)
                                 (*cx->disc->errorf)(NiL,
                                                     cx->disc,
@@ -3093,26 +2900,22 @@ cxcast(Cx_t *cx,
                         }
                         cx->cvt->size = n;
                     }
-                    if (n < 0)
-                    {
+                    if (n < 0) {
                         cx->cvt = cvt;
                         return -1;
                     }
                     ret->value.string.data = cx->cvt->data;
                     ret->value.string.size = n;
                     cx->cvt = cvt;
-                }
-                else if (!cxisnumber(ret->type))
+                } else if (!cxisnumber(ret->type))
                     goto bad;
                 else
                     ret->value.string.size
                     = strlen(ret->value.string.data
                              = sfprints("%Lg", val.value.number));
-            }
-            else
+            } else
                 ret->value.string.size = strlen(ret->value.string.data = s);
-        }
-        else if (var && data)
+        } else if (var && data)
             goto bad;
         else if (cxisnumber(type) && var && cxisstring(from)
                  && var->format.map
@@ -3186,17 +2989,13 @@ cxmembers(Cx_t *cx,
     m = b + size;
     b += sfsprintf(b, m - b, "( ");
     for (v = ( Cxvariable_t * )dtfirst(type->member->members); v;
-         v = ( Cxvariable_t * )dtnext(type->member->members, v))
-    {
-        if (!v->type->generic)
-        {
+         v = ( Cxvariable_t * )dtnext(type->member->members, v)) {
+        if (!v->type->generic) {
             x.data.variable = v;
             o.type = v->type;
             o.value.buffer.data = value->buffer.data;
-            if (!type->member->getf(cx, &x, &o, NiL, NiL, NiL, disc))
-            {
-                switch (cxrepresentation(v->type))
-                {
+            if (!type->member->getf(cx, &x, &o, NiL, NiL, NiL, disc)) {
+                switch (cxrepresentation(v->type)) {
                 case CX_buffer:
                     if (!o.value.buffer.size)
                         continue;
@@ -3229,8 +3028,7 @@ cxmembers(Cx_t *cx,
     }
     if ((n = b - buf) <= 2)
         n = 0;
-    else
-    {
+    else {
         b += sfsprintf(b, m > b ? m - b : 0, ")");
         n++;
         if (n >= size)
@@ -3255,8 +3053,7 @@ initialize(Cxdisc_t *disc)
     static const char cx_float[] = "_.#";
     static const char cx_space[] = " \f\n\t\r\v";
 
-    if (!state.initialized++)
-    {
+    if (!state.initialized++) {
         table.opcode['+'] = CX_ADD;
         table.opcode['&'] = CX_AND;
         table.opcode['/'] = CX_DIV;
@@ -3320,15 +3117,13 @@ initialize(Cxdisc_t *disc)
             || !(state.queries = dtopen(&state.namedisc, Dtoset))
             || !(state.constraints = dtopen(&state.namedisc, Dtoset))
             || !(state.edits = dtopen(&state.namedisc, Dtoset))
-            || !(state.variables = dtopen(&state.namedisc, Dtoset)))
-        {
+            || !(state.variables = dtopen(&state.namedisc, Dtoset))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             goto panic;
         }
 
-        for (i = 0; i < elementsof(types); i++)
-        {
+        for (i = 0; i < elementsof(types); i++) {
             if (cxaddtype(NiL, &types[i].type, disc))
                 goto panic;
             if (types[i].state)
@@ -3392,11 +3187,10 @@ cxlocation(Cx_t *cx, void *data)
 char *
 cxcvt(Cx_t *cx, const char *s, size_t n)
 {
-    if (cx->cvtsiz <= n || !cx->cvtbuf)
-    {
+    if (cx->cvtsiz <= n || !cx->cvtbuf) {
         cx->cvtsiz = roundof(n + 1, CX_CVT);
-        if (!(cx->cvtbuf = vmoldof(cx->vm, cx->cvtbuf, char, cx->cvtsiz, 0)))
-        {
+        if (!(cx->cvtbuf
+              = vmoldof(cx->vm, cx->cvtbuf, char, cx->cvtsiz, 0))) {
             if (cx->disc->errorf)
                 (*cx->disc->errorf)(
                 NiL, cx->disc, ERROR_SYSTEM | 2, "out of space");

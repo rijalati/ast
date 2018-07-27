@@ -65,45 +65,36 @@ optjoin(char **argv, ...)
     state = optstate(&opt_info);
     err = rep = 0;
     r = -1;
-    while (r < 0)
-    {
+    while (r < 0) {
         va_start(ap, argv);
         state->join = 0;
-        while (fun = va_arg(ap, Optpass_f))
-        {
+        while (fun = va_arg(ap, Optpass_f)) {
             last_index = opt_info.index;
             last_offset = opt_info.offset;
             state->join++;
             user = (*fun)(argv, 0);
             more = argv[opt_info.index] != 0;
-            if (!opt_info.again)
-            {
-                if (!more)
-                {
+            if (!opt_info.again) {
+                if (!more) {
                     state->join = 0;
                     r = 0;
                     break;
                 }
-                if (!user)
-                {
-                    if (*argv[opt_info.index] != '+')
-                    {
+                if (!user) {
+                    if (*argv[opt_info.index] != '+') {
                         state->join = 0;
                         r = 1;
                         break;
                     }
                     opt_info.again = -1;
-                }
-                else
+                } else
                     err = 0;
             }
-            if (opt_info.again)
-            {
+            if (opt_info.again) {
                 if (opt_info.again > 0
                     && (!err || err_index < opt_info.index
                         || err_index == opt_info.index
-                           && err_offset < opt_info.offset))
-                {
+                           && err_offset < opt_info.offset)) {
                     err = fun;
                     err_index = opt_info.index;
                     err_offset = opt_info.offset;
@@ -115,10 +106,8 @@ optjoin(char **argv, ...)
             if (!rep || opt_info.index != last_index
                 || opt_info.offset != last_offset)
                 rep = fun;
-            else if (fun == rep)
-            {
-                if (!err)
-                {
+            else if (fun == rep) {
+                if (!err) {
                     state->join = 0;
                     r = 1;
                     break;

@@ -68,11 +68,9 @@ tmain()
     if (!(huge = vmalloc(Vmregion, hugesz)))
         terror("Can't allocate block");
 
-    for (k = 0; k < N_OBJ; ++k)
-    {
+    for (k = 0; k < N_OBJ; ++k) {
         /* free/resize all on this list */
-        for (o = List[k]; o; o = next)
-        {
+        for (o = List[k]; o; o = next) {
             next = o->next;
 
             if ((RAND() % 2) == 0) /* flip a coin to see if freeing */
@@ -89,8 +87,7 @@ tmain()
             }
         }
 
-        if (STAT(k))
-        {
+        if (STAT(k)) {
             if (vmstat(Vmregion, &sb) < 0)
                 terror("Vmstat failed");
             tinfo("Arena: busy=(%u,%u) free=(%u,%u) extent=%u #segs=%d",

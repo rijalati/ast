@@ -57,11 +57,9 @@ int sfpurge(f) Sfio_t *f;
 
     /* if memory map must be a read stream, pretend data is gone */
 #if _mmap_worthy
-    if (f->bits & SF_MMAP)
-    {
+    if (f->bits & SF_MMAP) {
         f->here -= f->endb - f->next;
-        if (f->data)
-        {
+        if (f->data) {
             SFMUNMAP(f, f->data, f->endb - f->data);
             ( void )SFSK(f, f->here, SEEK_SET, f->disc);
         }
@@ -70,8 +68,7 @@ int sfpurge(f) Sfio_t *f;
     }
 #endif
 
-    switch (f->mode & ~SF_LOCK)
-    {
+    switch (f->mode & ~SF_LOCK) {
     default:
         SFOPEN(f, 0);
         SFMTXRETURN(f, -1);
@@ -84,8 +81,7 @@ int sfpurge(f) Sfio_t *f;
         ( void )_sfmode(f, SF_READ, 1);
         /* fall through */
     case SF_READ:
-        if (f->extent >= 0 && f->endb > f->next)
-        {
+        if (f->extent >= 0 && f->endb > f->next) {
             f->here -= f->endb - f->next;
             ( void )SFSK(f, f->here, SEEK_SET, f->disc);
         }

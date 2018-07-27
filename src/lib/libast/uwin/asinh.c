@@ -105,12 +105,10 @@ extern double asinh(x) double x;
         return (x); /* x is NaN */
 #    endif /* !defined(vax)&&!defined(tahoe) */
     if ((t = copysign(x, one)) > small)
-        if (t < big)
-        {
+        if (t < big) {
             s = one / t;
             return (copysign(log1p(t + t / (s + sqrt(one + s * s))), x));
-        }
-        else /* if |x| > big */
+        } else /* if |x| > big */
         {
             s = log1p(t) + ln2lo;
             return (copysign(s + ln2hi, x));

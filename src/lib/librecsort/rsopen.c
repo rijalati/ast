@@ -62,8 +62,7 @@ Rskey_t *key;  /* key coder state			*/
     if ((round = c_max) > 0)
         round /= 4;
     if (!(vmdisc = vmdcderive(Vmheap, round, 0))
-        || !(rs->vm = vmopen(vmdisc, Vmbest, 0)))
-    {
+        || !(rs->vm = vmopen(vmdisc, Vmbest, 0))) {
         vmfree(Vmheap, ( void * )rs);
         return -1;
     }
@@ -106,8 +105,7 @@ int type;      /* sort controls			*/
 {
     reg Rs_t *rs;
 
-    if ((rs = rsnew(disc)) && rsinit(rs, meth, c_max, type, NiL))
-    {
+    if ((rs = rsnew(disc)) && rsinit(rs, meth, c_max, type, NiL)) {
         vmclose(rs->vm);
         vmfree(Vmheap, rs);
         rs = 0;

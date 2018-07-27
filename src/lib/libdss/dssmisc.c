@@ -36,12 +36,10 @@ dsscomp(Dss_t *dss, const char *s, Sfio_t *sp)
     char *file;
     void *pop;
 
-    if (!sp && s && *s == '<')
-    {
+    if (!sp && s && *s == '<') {
         while (isspace(*++s))
             ;
-        if (!(sp = sfopen(NiL, s, "r")))
-        {
+        if (!(sp = sfopen(NiL, s, "r"))) {
             if (dss->disc->errorf)
                 (*dss->disc->errorf)(
                 dss, dss->disc, 2, "%s: cannot read expression file", s);
@@ -49,8 +47,7 @@ dsscomp(Dss_t *dss, const char *s, Sfio_t *sp)
         }
         file = ( char * )s;
         s = 0;
-    }
-    else
+    } else
         file = 0;
     if (!(pop = cxpush(dss->cx, file, sp, s, -1, CX_INCLUDE)))
         return 0;

@@ -44,8 +44,7 @@ static double _Kpvtime;
 #    define DECLARE(t, v) t v
 #    define SET(n, v) ((n) = (v))
 #    define PRINT(fd, s, v)                                                  \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             char _b[1024];                                                   \
             sprintf(_b, s, v);                                               \
             write((fd), _b, strlen(_b));                                     \
@@ -55,8 +54,7 @@ static double _Kpvtime;
 #    define RETURN(x) (_oops(__FILE__, __LINE__), (x))
 #    define BREAK (_oops(__FILE__, __LINE__))
 #    define GOTO(label)                                                      \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             _oops(__FILE__, __LINE__);                                       \
             goto label;                                                      \
         } while (0)

@@ -49,22 +49,18 @@ Sfdouble_t sfgetd(f) Sfio_t *f;
     SFLOCK(f, 0);
 
     v = 0.;
-    for (;;)
-    { /* fast read for data */
-        if (SFRPEEK(f, s, p) <= 0)
-        {
+    for (;;) { /* fast read for data */
+        if (SFRPEEK(f, s, p) <= 0) {
             f->flags |= SF_ERROR;
             v = -1.;
             goto done;
         }
 
-        for (ends = s + p; s < ends;)
-        {
+        for (ends = s + p; s < ends;) {
             c = *s++;
             v += SFUVALUE(c);
             v = ldexpl(v, -SF_PRECIS);
-            if (!(c & SF_MORE))
-            {
+            if (!(c & SF_MORE)) {
                 f->next = s;
                 goto done;
             }

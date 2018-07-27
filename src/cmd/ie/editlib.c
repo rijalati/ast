@@ -87,14 +87,12 @@ int
 edit_Init()
 {
     char *sp;
-    if (!beenhere)
-    {
+    if (!beenhere) {
         beenhere = 1;
         hist_open();
         if (!(sp = getenv("VISUAL")))
             sp = getenv("EDITOR");
-        if (sp)
-        {
+        if (sp) {
             if (strrchr(sp, '/'))
                 sp = strrchr(sp, '/') + 1;
             if (strcmp(sp, "vi") == 0)
@@ -141,16 +139,14 @@ size_t n;
      * the system library
      */
 
-    if (here++)
-    {
+    if (here++) {
         if (loop++)
             return -1;
         if (!(dll = (dllnext)(RTLD_LAZY)))
             goto bad;
         readfn = 0;
     }
-    if (!readfn)
-    {
+    if (!readfn) {
         if (!dll && !(dll = dllnext(RTLD_LAZY)))
             goto bad;
         if (!(readfn = ( Read_f )dlsym(dll, "_read"))
@@ -175,8 +171,7 @@ size_t n;
     if (fd == editfd && !beenhere)
         edit_Init();
     flag = (fd == editfd ? opt_flag & EDITMASK : 0);
-    switch (flag)
-    {
+    switch (flag) {
     case EMACS:
     case GMACS:
         tty_set(-1);
@@ -188,8 +183,7 @@ size_t n;
         tty_set(-1);
         r = vi_read(fd, buff, n);
         break;
-    default:
-    {
+    default: {
 #ifdef SYSCALL
         r = syscall(3, fd, buff, n);
 #else
@@ -197,8 +191,7 @@ size_t n;
 #endif /* SYSCALL */
     }
     }
-    if (fd == editfd && hist_ptr && (opt_flag & NOHIST) == 0 && r > 0)
-    {
+    if (fd == editfd && hist_ptr && (opt_flag & NOHIST) == 0 && r > 0) {
         /* write and flush history */
         int c = buff[r];
         buff[r] = 0;
@@ -288,8 +281,7 @@ p_flush()
 {
     struct fileblk *fp = io_ftable[output];
     int count;
-    if (fp && (count = fp->ptr - fp->base))
-    {
+    if (fp && (count = fp->ptr - fp->base)) {
         if (write(output, fp->base, count) < 0)
             fp->flag |= IOERR;
         /* leave previous buffer as a null terminated string */
@@ -319,8 +311,7 @@ int c;
 {
     struct fileblk *fp = io_ftable[output];
     int cc;
-    while (1)
-    {
+    while (1) {
         if ((cc = *string) == 0)
             cc = c, c = 0;
         else
@@ -372,8 +363,7 @@ void pr_prompt(string) char *string;
     ioctl(ERRIO, TIOCLBIC, &mode);
 #endif /* TIOCLBIC */
     p_setout(ERRIO);
-    while (c = *string++)
-    {
+    while (c = *string++) {
         if (dp < editb.e_prbuff + PRSIZE)
             *dp++ = c;
         p_char(c);

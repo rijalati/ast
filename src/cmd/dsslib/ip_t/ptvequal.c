@@ -36,8 +36,7 @@ ptvequal(Ptv_t *a, Ptv_t *b)
         return 1;
     ap = ( Ptvprefix_t * )dtfirst(a->dict);
     bp = ( Ptvprefix_t * )dtfirst(b->dict);
-    while (ap && bp)
-    {
+    while (ap && bp) {
         if (fvcmp(a->size, ap->min, bp->min))
             return 0;
         if (fvcmp(a->size, ap->max, bp->max))

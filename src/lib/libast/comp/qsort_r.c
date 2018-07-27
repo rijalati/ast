@@ -54,14 +54,11 @@ typedef long WORD;
 static void
 swapfunc(char *a, char *b, size_t n, int swaptype)
 {
-    if (swaptype <= 1)
-    {
+    if (swaptype <= 1) {
         WORD t;
         for (; n > 0; a += W, b += W, n -= W)
             exch(*( WORD * )a, *( WORD * )b, t);
-    }
-    else
-    {
+    } else {
         char t;
         for (; n > 0; a += 1, b += 1, n -= 1)
             exch(*a, *b, t);
@@ -69,13 +66,10 @@ swapfunc(char *a, char *b, size_t n, int swaptype)
 }
 
 #    define PVINIT(pv, pm)                                                   \
-        if (swaptype != 0)                                                   \
-        {                                                                    \
+        if (swaptype != 0) {                                                 \
             pv = a;                                                          \
             swap(pv, pm);                                                    \
-        }                                                                    \
-        else                                                                 \
-        {                                                                    \
+        } else {                                                             \
             pv = ( char * )&v;                                               \
             v = *( WORD * )pm;                                               \
         }
@@ -100,20 +94,17 @@ qsort_r(void *va, size_t n, size_t es, Qsortcmp_r_f cmp, void *h)
 
     a = va;
     SWAPINIT(a, es);
-    if (n < 7)
-    { /* Insertion sort on smallest arrays */
+    if (n < 7) { /* Insertion sort on smallest arrays */
         for (pm = a + es; pm < a + n * es; pm += es)
             for (pl = pm; pl > a && cmp(pl - es, pl, h) > 0; pl -= es)
                 swap(pl, pl - es);
         return;
     }
     pm = a + (n / 2) * es; /* Small arrays, middle element */
-    if (n > 7)
-    {
+    if (n > 7) {
         pl = a;
         pn = a + (n - 1) * es;
-        if (n > 40)
-        { /* Big arrays, pseudomedian of 9 */
+        if (n > 40) { /* Big arrays, pseudomedian of 9 */
             s = (n / 8) * es;
             pl = med3(pl, pl + s, pl + 2 * s, cmp, h);
             pm = med3(pm - s, pm, pm + s, cmp, h);
@@ -124,21 +115,16 @@ qsort_r(void *va, size_t n, size_t es, Qsortcmp_r_f cmp, void *h)
     PVINIT(pv, pm); /* pv points to partition value */
     pa = pb = a;
     pc = pd = a + (n - 1) * es;
-    for (;;)
-    {
-        while (pb <= pc && (r = cmp(pb, pv, h)) <= 0)
-        {
-            if (r == 0)
-            {
+    for (;;) {
+        while (pb <= pc && (r = cmp(pb, pv, h)) <= 0) {
+            if (r == 0) {
                 swap(pa, pb);
                 pa += es;
             }
             pb += es;
         }
-        while (pc >= pb && (r = cmp(pc, pv, h)) >= 0)
-        {
-            if (r == 0)
-            {
+        while (pc >= pb && (r = cmp(pc, pv, h)) >= 0) {
+            if (r == 0) {
                 swap(pc, pd);
                 pd -= es;
             }

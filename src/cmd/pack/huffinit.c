@@ -52,18 +52,15 @@ huffinit(Sfio_t *infile, Sfoff_t insize)
     Sfoff_t size = insize;
     int parent[2 * END + 1];
     Heap_t heap[END + 2];
-    if (!(hp = newof(0, Huff_t, 1, 0)))
-    {
+    if (!(hp = newof(0, Huff_t, 1, 0))) {
         errno = ENOMEM;
         return (( Huff_t * )0);
     }
     for (i = 0; i < END; i++)
         count[i] = 0;
-    while (inbuff = ( unsigned char * )sfreserve(infile, SF_UNBOUND, 0))
-    {
+    while (inbuff = ( unsigned char * )sfreserve(infile, SF_UNBOUND, 0)) {
         n = sfvalue(infile);
-        if (size >= 0)
-        {
+        if (size >= 0) {
             if (n > size)
                 n = size;
             size -= n;
@@ -72,8 +69,7 @@ huffinit(Sfio_t *infile, Sfoff_t insize)
         while (n > 0)
             count[inbuff[--n]]++;
     }
-    if (n < 0)
-    {
+    if (n < 0) {
         huffend(hp);
         return (( Huff_t * )0);
     }
@@ -81,11 +77,9 @@ huffinit(Sfio_t *infile, Sfoff_t insize)
         count[i] += count[i];
     count[END] = 1;
     /* put occurring chars in heap with their counts */
-    for (i = END; i >= 0; i--)
-    {
+    for (i = END; i >= 0; i--) {
         parent[i] = 0;
-        if (count[i] > 0)
-        {
+        if (count[i] > 0) {
             heap[++n].count = count[i];
             heap[n].node = i;
         }
@@ -95,8 +89,7 @@ huffinit(Sfio_t *infile, Sfoff_t insize)
         heapify(heap, i, n);
     /* build Huffman tree */
     lastnode = END;
-    while (n > 1)
-    {
+    while (n > 1) {
         parent[heap[1].node] = ++lastnode;
         size = heap[1].count;
         heap[1] = heap[n];
@@ -112,8 +105,7 @@ huffinit(Sfio_t *infile, Sfoff_t insize)
     size = hp->maxlev = 0;
     for (i = 1; i <= HUFFLEV; i++)
         hp->levcount[i] = 0;
-    for (i = 0; i <= END; i++)
-    {
+    for (i = 0; i <= END; i++) {
         c = 0;
         for (n = parent[i]; n != 0; n = parent[n])
             c++;
@@ -135,8 +127,7 @@ heapify(Heap_t *heap, int i, int n)
     int lastparent = n / 2;
     Heap_t heapsubi;
     heapsubi = heap[i];
-    while (i <= lastparent)
-    {
+    while (i <= lastparent) {
         k = 2 * i;
         if (heap[k].count > heap[k + 1].count && k < n)
             k++;

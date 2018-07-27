@@ -78,8 +78,7 @@ b_getopts(int argc, char *argv[], Shbltin_t *context)
     value[1] = 0;
     key[1] = 0;
     while ((flag = optget(argv, sh_optgetopts)))
-        switch (flag)
-        {
+        switch (flag) {
         case 'a':
             options = opt_info.arg;
             break;
@@ -98,13 +97,10 @@ b_getopts(int argc, char *argv[], Shbltin_t *context)
     error_info.id = options;
     options = argv[0];
     np = nv_open(argv[1], shp->var_tree, NV_NOASSIGN | NV_VARNAME);
-    if (argc > 2)
-    {
+    if (argc > 2) {
         argv += 1;
         argc -= 1;
-    }
-    else
-    {
+    } else {
         argv = shp->st.dolv;
         argc = shp->st.dolc;
     }
@@ -116,8 +112,7 @@ b_getopts(int argc, char *argv[], Shbltin_t *context)
                || *options == '[' && *(options + 1) == '-';
     sh_pushcontext(shp, &buff, 1);
     jmpval = sigsetjmp(buff.buff, 0);
-    if (jmpval)
-    {
+    if (jmpval) {
         sh_popcontext(shp, &buff);
         shp->st.opterror = 1;
         if (r == 0)
@@ -129,8 +124,7 @@ b_getopts(int argc, char *argv[], Shbltin_t *context)
     opt_info.disc = &disc.hdr;
     switch (opt_info.index >= 0 && opt_info.index <= argc
             ? (opt_info.num = LONG_MIN, flag = optget(argv, options))
-            : 0)
-    {
+            : 0) {
     case '?':
         if (mode == 0)
             errormsg(SH_DICT, ERROR_usage(2), "%s", opt_info.arg);
@@ -142,23 +136,20 @@ b_getopts(int argc, char *argv[], Shbltin_t *context)
             flag = '?';
         if (mode)
             opt_info.arg = key;
-        else
-        {
+        else {
             errormsg(SH_DICT, 2, "%s", opt_info.arg);
             opt_info.arg = 0;
             flag = '?';
         }
         *(options = value) = flag;
         shp->st.opterror = 1;
-        if (opt_info.offset != 0 && !argv[opt_info.index][opt_info.offset])
-        {
+        if (opt_info.offset != 0 && !argv[opt_info.index][opt_info.offset]) {
             opt_info.offset = 0;
             opt_info.index++;
         }
         break;
     case 0:
-        if (shp->st.opterror)
-        {
+        if (shp->st.opterror) {
             char *com[2];
             com[0] = "-?";
             com[1] = 0;
@@ -191,19 +182,15 @@ b_getopts(int argc, char *argv[], Shbltin_t *context)
         nv_putval(np, opt_info.arg, NV_RDONLY);
     else if (opt_info.arg && opt_info.num > 0 && isalpha(( char )opt_info.num)
              && !isdigit(opt_info.arg[0]) && opt_info.arg[0] != '-'
-             && opt_info.arg[0] != '+')
-    {
+             && opt_info.arg[0] != '+') {
         key[0] = ( char )opt_info.num;
         key[1] = 0;
         nv_putval(np, key, NV_RDONLY);
-    }
-    else if (extended)
-    {
+    } else if (extended) {
         Sfdouble_t d;
         d = opt_info.number;
         nv_putval(np, ( char * )&d, NV_LDOUBLE | NV_RDONLY);
-    }
-    else
+    } else
         nv_putval(np, opt_info.arg, NV_RDONLY);
     nv_close(np);
     sh_popcontext(shp, &buff);

@@ -259,13 +259,11 @@ unsigned nchar;                       /* number of chars to read */
     ed_setup(fd);
 
 #ifndef RAWONLY
-    if (!is_option(VIRAW))
-    {
+    if (!is_option(VIRAW)) {
         /*** Change the eol characters to '\r' and eof  ***/
         /* in addition to '\n' and make eof an ESC	*/
 
-        if (tty_alt(ERRIO) == BAD)
-        {
+        if (tty_alt(ERRIO) == BAD) {
             return (read(fd, shbuf, nchar));
         }
 
@@ -287,10 +285,8 @@ unsigned nchar;                       /* number of chars to read */
         newtime = times(&dummy);
         typeahead = ((newtime - oldtime) < NTICKS);
 #    endif /* FIORDCHK */
-        if (echoctl)
-        {
-            if (i <= 0)
-            {
+        if (echoctl) {
+            if (i <= 0) {
                 /*** read error or eof typed ***/
                 tty_cooked(ERRIO);
                 return (i);
@@ -302,70 +298,56 @@ unsigned nchar;                       /* number of chars to read */
                 shbuf[i--] = '\0';
             else
                 shbuf[i + 1] = '\0';
-        }
-        else
-        {
+        } else {
             c = shbuf[0];
 
             /*** Save and remove the last character if its an eol, ***/
             /* changing '\r' to '\n' */
 
-            if (i == 0)
-            {
+            if (i == 0) {
                 /*** ESC was typed as first char of line ***/
                 esc_or_hang = 1;
                 term_char = ESC;
                 shbuf[i--] = '\0'; /* null terminate line */
-            }
-            else if (i < 0 || c == usreof)
-            {
+            } else if (i < 0 || c == usreof) {
                 /*** read error or eof typed ***/
                 tty_cooked(ERRIO);
                 if (c == usreof)
                     i = 0;
                 return (i);
-            }
-            else
-            {
+            } else {
                 term_char = shbuf[--i];
                 if (term_char == '\r')
                     term_char = '\n';
 #    if !defined(VEOL2) && !defined(ECHOCTL)
-                if (term_char == '\n')
-                {
+                if (term_char == '\n') {
                     tty_cooked(ERRIO);
                     return (i + 1);
                 }
 #    endif
-                if (term_char == '\n' || term_char == usreof)
-                {
+                if (term_char == '\n' || term_char == usreof) {
                     /*** remove terminator & null terminate ***/
                     shbuf[i--] = '\0';
-                }
-                else
-                {
+                } else {
                     /** terminator was ESC, which is not xmitted **/
                     term_char = ESC;
                     shbuf[i + 1] = '\0';
                 }
             }
         }
-    }
-    else
+    } else
 #endif /* RAWONLY */
     {
         /*** Set raw mode ***/
 
 #ifndef RAWONLY
-        if (ttyspeed == 0)
-        {
+        if (ttyspeed == 0) {
             /*** never did TCGETA, so do it ***/
             /* avoids problem if user does 'sh -o viraw' */
             tty_alt(ERRIO);
         }
 #endif /* RAWONLY */
-        if (tty_raw(ERRIO) == BAD)
-        {
+        if (tty_raw(ERRIO) == BAD) {
             return (read(fd, shbuf, nchar));
         }
         i = INVALID;
@@ -415,8 +397,7 @@ unsigned nchar;                       /* number of chars to read */
     if (lastline == 0)
         lastline = ( genchar * )malloc(sizeof(genchar) * (MAXLINE));
 #endif
-    if (last_cmd == '\0')
-    {
+    if (last_cmd == '\0') {
         /*** first time for this shell ***/
 
         last_cmd = 'i';
@@ -433,42 +414,34 @@ unsigned nchar;                       /* number of chars to read */
     max_col = nchar - 2;
 
 #ifndef RAWONLY
-    if (!is_option(VIRAW))
-    {
+    if (!is_option(VIRAW)) {
         int kill_erase = 0;
 #    ifndef ECHOCTL
         int cntl_char = 0;
 #    endif /* !ECHOCTL */
-        for (i = (echoctl ? last_virt : 0); i <= last_virt; ++i)
-        {
+        for (i = (echoctl ? last_virt : 0); i <= last_virt; ++i) {
             /*** change \r to \n, check for control characters, ***/
             /* delete appropriate ^Vs,			*/
             /* and estimate last physical column */
 
             if (virtual[i] == '\r')
                 virtual[i] = '\n';
-            if (!echoctl)
-            {
+            if (!echoctl) {
                 c = virtual[i];
-                if (c == usrerase || c == usrkill)
-                {
+                if (c == usrerase || c == usrkill) {
                     /*** user typed escaped erase or kill char ***/
 #    ifndef ECHOCTL
                     cntl_char = 1;
 #    endif /* !ECHOCTL */
                     if (is_print(c))
                         kill_erase++;
-                }
-                else if (!is_print(c))
-                {
+                } else if (!is_print(c)) {
 #    ifndef ECHOCTL
                     cntl_char = 1;
 #    endif /* !ECHOCTL */
 
-                    if (c == cntl('V'))
-                    {
-                        if (i == last_virt)
-                        {
+                    if (c == cntl('V')) {
+                        if (i == last_virt) {
                             /*** eol/eof was escaped ***/
                             /* so replace ^V with it */
                             virtual[i] = term_char;
@@ -487,18 +460,15 @@ unsigned nchar;                       /* number of chars to read */
         /*** copy virtual image to window ***/
         if (last_virt > 0)
             last_phys = ed_virt_to_phys(virtual, physical, last_virt, 0, 0);
-        if (last_phys >= w_size)
-        {
+        if (last_phys >= w_size) {
             /*** line longer than window ***/
             last_wind = w_size - 1;
-        }
-        else
+        } else
             last_wind = last_phys;
         genncpy(window, virtual, last_wind + 1);
 
         if (term_char != ESC
-            && (last_virt == INVALID || virtual[last_virt] != term_char))
-        {
+            && (last_virt == INVALID || virtual[last_virt] != term_char)) {
             /*** Line not terminated with ESC or escaped (^V) ***/
             /* eol, so return after doing a total update */
             /* if( (speed is greater or equal to 1200 */
@@ -524,8 +494,7 @@ unsigned nchar;                       /* number of chars to read */
                         putchar(' ');
             }
 
-            if (term_char == '\n')
-            {
+            if (term_char == '\n') {
                 if (!echoctl)
                     crlf;
                 virtual[++last_virt] = '\n';
@@ -544,8 +513,7 @@ unsigned nchar;                       /* number of chars to read */
         /*** Line terminated with escape, or escaped eol/eof, ***/
         /*  so set raw mode */
 
-        if (tty_raw(ERRIO) == BAD)
-        {
+        if (tty_raw(ERRIO) == BAD) {
             tty_cooked(ERRIO);
             /*
              * The following prevents drivers that return 0 on
@@ -568,8 +536,7 @@ unsigned nchar;                       /* number of chars to read */
             pr_string("\b\b  \b\b");
 
 
-        if (crallowed == YES)
-        {
+        if (crallowed == YES) {
             /*** start over since there may be ***/
             /*** a control char, or cursor might not ***/
             /*** be at left margin (this lets us know ***/
@@ -581,27 +548,22 @@ unsigned nchar;                       /* number of chars to read */
                 refresh(CONTROL);
             else
                 refresh(INPUT);
-        }
-        else
-        {
+        } else {
             /*** just update everything internally ***/
             refresh(TRANSLATE);
         }
-    }
-    else
+    } else
 #endif /* RAWONLY */
         virtual[0] = '\0';
 
     /*** Handle usrintr, usrquit, or EOF ***/
 
     i = SETJMP(env);
-    if (i != 0)
-    {
+    if (i != 0) {
         virtual[0] = '\0';
         tty_cooked(ERRIO);
 
-        switch (i)
-        {
+        switch (i) {
         case UEOF:
             /*** EOF ***/
             return (0);
@@ -630,28 +592,22 @@ unsigned nchar;                       /* number of chars to read */
     /*** add a new line if user typed unescaped \n ***/
     /* to cause the shell to process the line */
     tty_cooked(ERRIO);
-    if (addnl)
-    {
+    if (addnl) {
         virtual[++last_virt] = '\n';
         crlf;
     }
-    if (++last_virt >= 0)
-    {
+    if (++last_virt >= 0) {
 #ifdef MULTIBYTE
-        if (bigvi)
-        {
+        if (bigvi) {
             bigvi = 0;
             shbuf[last_virt - 1] = '\n';
-        }
-        else
-        {
+        } else {
             virtual[last_virt] = 0;
             last_virt = ed_external(virtual, shbuf);
         }
 #endif /* MULTIBYTE */
         return (last_virt);
-    }
-    else
+    } else
         return (SYSERR);
 }
 #undef virtual
@@ -670,18 +626,14 @@ int mode;
 {
     int i;
 
-    if (last_virt < max_col && last_phys < max_col)
-    {
-        if (mode == APPEND || cur_virt == last_virt)
-        {
-            for (i = ++last_virt; i > cur_virt; --i)
-            {
+    if (last_virt < max_col && last_phys < max_col) {
+        if (mode == APPEND || cur_virt == last_virt) {
+            for (i = ++last_virt; i > cur_virt; --i) {
                 virtual[i] = virtual[i - 1];
             }
         }
         virtual[++cur_virt] = c;
-    }
-    else
+    } else
         bell;
     return;
 }
@@ -696,26 +648,21 @@ static void backword(nwords, cmd) int nwords;
 int cmd;
 {
     int tcur_virt = cur_virt;
-    while (nwords-- && tcur_virt > first_virt)
-    {
+    while (nwords-- && tcur_virt > first_virt) {
         if (!isblank(tcur_virt) && isblank(tcur_virt - 1)
             && tcur_virt > first_virt)
             --tcur_virt;
-        else if (cmd != 'B')
-        {
+        else if (cmd != 'B') {
             int last = isalph(tcur_virt - 1);
             if ((!isalph(tcur_virt) && last) || (isalph(tcur_virt) && !last))
                 --tcur_virt;
         }
         while (isblank(tcur_virt) && tcur_virt >= first_virt)
             --tcur_virt;
-        if (cmd == 'B')
-        {
+        if (cmd == 'B') {
             while (!isblank(tcur_virt) && tcur_virt >= first_virt)
                 --tcur_virt;
-        }
-        else
-        {
+        } else {
             if (isalph(tcur_virt))
                 while (isalph(tcur_virt) && tcur_virt >= first_virt)
                     --tcur_virt;
@@ -746,8 +693,7 @@ cntlmode()
     int tmp_u_column = INVALID;   /* temporary u_column */
     int was_inmacro;
 
-    if (!U_saved)
-    {
+    if (!U_saved) {
         /*** save virtual image if never done before ***/
         virtual[last_virt + 1] = '\0';
         gencpy(U_space, virtual);
@@ -760,8 +706,7 @@ cntlmode()
     curhline = histmax;
     first_virt = 0;
     repeat = 1;
-    if (cur_virt > INVALID)
-    {
+    if (cur_virt > INVALID) {
         /*** make sure cursor is at the last char ***/
         sync_cursor();
     }
@@ -769,20 +714,17 @@ cntlmode()
     /*** Read control char until something happens to cause a ***/
     /* return to APPEND/REPLACE mode	*/
 
-    while (c = getchar())
-    {
+    while (c = getchar()) {
         repeat_set = 0;
         was_inmacro = inmacro;
-        if (c == '0')
-        {
+        if (c == '0') {
             /*** move to leftmost column ***/
             cur_virt = 0;
             sync_cursor();
             continue;
         }
 
-        if (digit(c))
-        {
+        if (digit(c)) {
             lastrepeat = repeat;
             c = getcount(c);
             if (c == '.')
@@ -791,8 +733,7 @@ cntlmode()
 
         /*** see if it's a move cursor command ***/
 
-        if (mvcursor(c) == GOOD)
-        {
+        if (mvcursor(c) == GOOD) {
             sync_cursor();
             repeat = 1;
             continue;
@@ -800,27 +741,22 @@ cntlmode()
 
         /*** see if it's a repeat of the last command ***/
 
-        if (c == '.')
-        {
+        if (c == '.') {
             c = last_cmd;
             repeat = lastrepeat;
             i = textmod(c, c);
-        }
-        else
-        {
+        } else {
             i = textmod(c, 0);
         }
 
         /*** see if it's a text modification command ***/
 
-        switch (i)
-        {
+        switch (i) {
         case BAD:
             break;
 
         default: /** input mode **/
-            if (!was_inmacro)
-            {
+            if (!was_inmacro) {
                 last_cmd = c;
                 lastrepeat = repeat;
             }
@@ -830,8 +766,7 @@ cntlmode()
             return (i);
         }
 
-        switch (c)
-        {
+        switch (c) {
             /***** Other stuff *****/
 
         case cntl('L'): /** Redraw line **/
@@ -847,8 +782,7 @@ cntlmode()
             long_line = ' ';
             break;
 
-        case cntl('V'):
-        {
+        case cntl('V'): {
             const char *p = &e_version[5];
             save_v();
             del_line(BAD);
@@ -865,8 +799,7 @@ cntlmode()
         case 'N':
         case 'n':
             save_v();
-            switch (search(c))
-            {
+            switch (search(c)) {
             case GOOD:
                 /*** force a total refresh ***/
                 window[0] = '\0';
@@ -888,13 +821,10 @@ cntlmode()
         case 'j': /** get next command **/
         case '+': /** get next command **/
             curhline += repeat;
-            if (curhline > histmax)
-            {
+            if (curhline > histmax) {
                 curhline = histmax;
                 goto ringbell;
-            }
-            else if (curhline == histmax && tmp_u_column != INVALID)
-            {
+            } else if (curhline == histmax && tmp_u_column != INVALID) {
                 u_space = tmp_u_space;
                 u_column = tmp_u_column;
                 restore_v();
@@ -906,8 +836,7 @@ cntlmode()
 
         case 'k': /** get previous command **/
         case '-': /** get previous command **/
-            if (curhline == histmax)
-            {
+            if (curhline == histmax) {
                 u_space = tmp_u_space;
                 i = u_column;
                 save_v();
@@ -917,8 +846,7 @@ cntlmode()
             }
 
             curhline -= repeat;
-            if (curhline <= histmin)
-            {
+            if (curhline <= histmin) {
                 curhline = histmin + 1;
                 goto ringbell;
             }
@@ -943,8 +871,7 @@ cntlmode()
             save_v();
             if (virtual[0] == '\0')
                 goto ringbell;
-            else
-            {
+            else {
                 gencpy(virtual, U_space);
                 last_virt = genlen(U_space) - 1;
                 cur_virt = 0;
@@ -960,8 +887,7 @@ cntlmode()
         case 'G': /** goto command repeat **/
             if (repeat_set == 0)
                 repeat = histmin + 1;
-            if (repeat <= histmin || repeat > histmax)
-            {
+            if (repeat <= histmin || repeat > histmax) {
                 goto ringbell;
             }
             curhline = repeat;
@@ -978,33 +904,26 @@ cntlmode()
 #endif /* KSHELL */
 
         case '#': /** insert(delete) # to (no)comment command **/
-            if (cur_virt != INVALID)
-            {
+            if (cur_virt != INVALID) {
                 genchar *p = &virtual[last_virt + 1];
                 *p = 0;
                 /*** see whether first char is comment char ***/
                 c = (virtual[0] == '#');
-                while (p-- >= virtual)
-                {
-                    if (*p == '\n' || p < virtual)
-                    {
+                while (p-- >= virtual) {
+                    if (*p == '\n' || p < virtual) {
                         if (c) /* delete '#' */
                         {
-                            if (p[1] == '#')
-                            {
+                            if (p[1] == '#') {
                                 last_virt--;
                                 gencpy(p + 1, p + 2);
                             }
-                        }
-                        else
-                        {
+                        } else {
                             cur_virt = p - virtual;
                             append('#', APPEND);
                         }
                     }
                 }
-                if (c)
-                {
+                if (c) {
                     cur_virt = 0;
                     break;
                 }
@@ -1047,26 +966,20 @@ static void cursor(x) int x;
     if (delta == 0)
         return;
 
-    if (delta > 0)
-    {
+    if (delta > 0) {
         /*** move to right ***/
         putstring(cur_phys, delta);
-    }
-    else
-    {
+    } else {
         /*** move to left ***/
 
         delta = -delta;
 
         /*** attempt to optimize cursor movement ***/
         if (crallowed == NO
-            || (delta <= ((cur_phys - first_wind) + plen) >> 1))
-        {
+            || (delta <= ((cur_phys - first_wind) + plen) >> 1)) {
             while (delta--)
                 putchar('\b');
-        }
-        else
-        {
+        } else {
             pr_string(Prompt);
             putstring(first_wind, x - first_wind);
         }
@@ -1092,25 +1005,21 @@ char mode;
     int i;
     genchar *vp;
 
-    if (cur_virt < first_virt)
-    {
+    if (cur_virt < first_virt) {
         bell;
         return;
     }
-    if (nchars > 0)
-    {
+    if (nchars > 0) {
         vp = virtual + cur_virt;
         o_v_char = vp[0];
-        if ((cur_virt-- + nchars) > last_virt)
-        {
+        if ((cur_virt-- + nchars) > last_virt) {
             /*** set nchars to number actually deleted ***/
             nchars = last_virt - cur_virt;
         }
 
         /*** save characters to be deleted ***/
 
-        if (mode != 'c')
-        {
+        if (mode != 'c') {
             i = vp[nchars];
             vp[nchars] = 0;
             gencpy(yankbuf, vp);
@@ -1119,8 +1028,7 @@ char mode;
 
         /*** now delete these characters ***/
 
-        if (mode != 'y')
-        {
+        if (mode != 'y') {
             gencpy(vp, vp + nchars);
             last_virt -= nchars;
         }
@@ -1199,8 +1107,7 @@ char mode;
         return (BAD);
 
     end = cur_virt;
-    if (mode == 'c' && end > begin && strchr("wW", motion))
-    {
+    if (mode == 'c' && end > begin && strchr("wW", motion)) {
         /*** called by change operation, user really expects ***/
         /* the effect of the eE commands, so back up to end of word */
         while (end > begin && isblank(end - 1))
@@ -1210,14 +1117,11 @@ char mode;
     }
 
     delta = end - begin;
-    if (delta >= 0)
-    {
+    if (delta >= 0) {
         cur_virt = begin;
         if (strchr("eE;,TtFf%", motion))
             ++delta;
-    }
-    else
-    {
+    } else {
         delta = -delta;
     }
 
@@ -1239,19 +1143,15 @@ static void endword(nwords, cmd) int nwords;
 int cmd;
 {
     int tcur_virt = cur_virt;
-    while (nwords--)
-    {
+    while (nwords--) {
         if (!isblank(tcur_virt) && tcur_virt <= last_virt)
             ++tcur_virt;
         while (isblank(tcur_virt) && tcur_virt <= last_virt)
             ++tcur_virt;
-        if (cmd == 'E')
-        {
+        if (cmd == 'E') {
             while (!isblank(tcur_virt) && tcur_virt <= last_virt)
                 ++tcur_virt;
-        }
-        else
-        {
+        } else {
             if (isalph(tcur_virt))
                 while (isalph(tcur_virt) && tcur_virt <= last_virt)
                     ++tcur_virt;
@@ -1277,22 +1177,15 @@ static void forward(nwords, cmd) int nwords;
 char cmd;
 {
     int tcur_virt = cur_virt;
-    while (nwords--)
-    {
-        if (cmd == 'W')
-        {
+    while (nwords--) {
+        if (cmd == 'W') {
             while (!isblank(tcur_virt) && tcur_virt < last_virt)
                 ++tcur_virt;
-        }
-        else
-        {
-            if (isalph(tcur_virt))
-            {
+        } else {
+            if (isalph(tcur_virt)) {
                 while (isalph(tcur_virt) && tcur_virt < last_virt)
                     ++tcur_virt;
-            }
-            else
-            {
+            } else {
                 while (!isalph(tcur_virt) && !isblank(tcur_virt)
                        && tcur_virt < last_virt)
                     ++tcur_virt;
@@ -1325,8 +1218,7 @@ static int getcount(c) int c;
 
     repeat_set++;
     i = 0;
-    while (digit(c))
-    {
+    while (digit(c)) {
         i = i * 10 + c - '0';
         c = getchar();
     }
@@ -1362,16 +1254,13 @@ static void getline(mode) int mode;
 
     addnl = 1;
 
-    if (mode == ESC)
-    {
+    if (mode == ESC) {
         /*** go directly to control mode ***/
         goto escape;
     }
 
-    for (;;)
-    {
-        if ((c = getchar()) == cntl('V'))
-        {
+    for (;;) {
+        if ((c = getchar()) == cntl('V')) {
             /*** implement ^V to escape next char ***/
             in_raw++;
             c = getchar();
@@ -1388,29 +1277,23 @@ static void getline(mode) int mode;
         else if (c == usrkill)
             c = UKILL;
 
-        switch (c)
-        {
+        switch (c) {
         case ESC: /** enter control mode **/
-            if (mode == SEARCH)
-            {
+            if (mode == SEARCH) {
                 bell;
                 continue;
-            }
-            else
-            {
+            } else {
             escape:
                 if (mode == REPLACE)
                     --cur_virt;
                 tmp = cntlmode();
-                if (tmp == ENTER || tmp == BIGVI)
-                {
+                if (tmp == ENTER || tmp == BIGVI) {
 #ifdef MULTIBYTE
                     bigvi = (tmp == BIGVI);
 #endif /* MULTIBYTE */
                     return;
                 }
-                if (tmp == INSERT)
-                {
+                if (tmp == INSERT) {
                     mode = APPEND;
                     continue;
                 }
@@ -1422,15 +1305,11 @@ static void getline(mode) int mode;
             /*** treat as backspace ***/
 
         case '\b': /** backspace **/
-            if (virtual[cur_virt] == '\\')
-            {
+            if (virtual[cur_virt] == '\\') {
                 delete (1, BAD);
                 append(usrerase, mode);
-            }
-            else
-            {
-                if (mode == SEARCH && cur_virt == 0)
-                {
+            } else {
+                if (mode == SEARCH && cur_virt == 0) {
                     first_virt = 0;
                     delete (1, BAD);
                     return;
@@ -1440,12 +1319,9 @@ static void getline(mode) int mode;
             break;
 
         case cntl('W'): /** delete back word **/
-            if (cur_virt > first_virt && isblank(cur_virt - 1))
-            {
+            if (cur_virt > first_virt && isblank(cur_virt - 1)) {
                 delete (1, BAD);
-            }
-            else
-            {
+            } else {
                 tmp = cur_virt;
                 backword(1, 'b');
                 delete (tmp - cur_virt + 1, BAD);
@@ -1453,25 +1329,18 @@ static void getline(mode) int mode;
             break;
 
         case UKILL: /** user kill line char **/
-            if (virtual[cur_virt] == '\\')
-            {
+            if (virtual[cur_virt] == '\\') {
                 delete (1, BAD);
                 append(usrkill, mode);
-            }
-            else
-            {
-                if (mode == SEARCH)
-                {
+            } else {
+                if (mode == SEARCH) {
                     cur_virt = 1;
                     delmotion('$', BAD);
-                }
-                else if (first_virt)
-                {
+                } else if (first_virt) {
                     tmp = cur_virt;
                     cur_virt = first_virt;
                     delete (tmp - cur_virt + 1, BAD);
-                }
-                else
+                } else
                     del_line(GOOD);
             }
             break;
@@ -1487,10 +1356,8 @@ static void getline(mode) int mode;
             return;
 
         default:
-            if (mode == REPLACE)
-            {
-                if (cur_virt < last_virt)
-                {
+            if (mode == REPLACE) {
+                if (cur_virt < last_virt) {
                     replace(c, 1);
                     continue;
                 }
@@ -1521,8 +1388,7 @@ static int mvcursor(motion) int motion;
     int bound = 0;
     static int last_find = 0; /* last find command */
 
-    switch (motion)
-    {
+    switch (motion) {
         /***** Cursor move commands *****/
 
     case '0': /** First column **/
@@ -1556,14 +1422,11 @@ static int mvcursor(motion) int motion;
         incr = 1;
     walk:
         tcur_virt = cur_virt;
-        if (incr * tcur_virt < motion)
-        {
+        if (incr * tcur_virt < motion) {
             tcur_virt += repeat * incr;
             if (incr * tcur_virt > motion)
                 tcur_virt = motion;
-        }
-        else
-        {
+        } else {
             return (BAD);
         }
         break;
@@ -1587,12 +1450,10 @@ static int mvcursor(motion) int motion;
 
     case ',': /** reverse find old char **/
     case ';': /** find old char **/
-        switch (last_find)
-        {
+        switch (last_find) {
         case 't':
         case 'f':
-            if (motion == ';')
-            {
+            if (motion == ';') {
                 bound = last_virt;
                 incr = 1;
             }
@@ -1600,8 +1461,7 @@ static int mvcursor(motion) int motion;
 
         case 'T':
         case 'F':
-            if (motion == ',')
-            {
+            if (motion == ',') {
                 bound = last_virt;
                 incr = 1;
             }
@@ -1625,13 +1485,11 @@ static int mvcursor(motion) int motion;
     find_b:
         tcur_virt = cur_virt;
         count = repeat;
-        while (count--)
-        {
+        while (count--) {
             while (incr * (tcur_virt += incr) <= bound
                    && virtual[tcur_virt] != findchar)
                 ;
-            if (incr * tcur_virt > bound)
-            {
+            if (incr * tcur_virt > bound) {
                 return (BAD);
             }
         }
@@ -1640,8 +1498,7 @@ static int mvcursor(motion) int motion;
         break;
 
         /* new, undocumented feature */
-    case '%':
-    {
+    case '%': {
         int nextmotion;
         int nextc;
         tcur_virt = cur_virt;
@@ -1652,17 +1509,14 @@ static int mvcursor(motion) int motion;
             return (BAD);
         nextc = virtual[tcur_virt];
         count = strchr(paren_chars, nextc) - paren_chars;
-        if (count < 3)
-        {
+        if (count < 3) {
             incr = 1;
             bound = last_virt;
             nextmotion = paren_chars[count + 3];
-        }
-        else
+        } else
             nextmotion = paren_chars[count - 3];
         count = 1;
-        while (count > 0 && incr * (tcur_virt += incr) <= bound)
-        {
+        while (count > 0 && incr * (tcur_virt += incr) <= bound) {
             if (virtual[tcur_virt] == nextmotion)
                 count--;
             else if (virtual[tcur_virt] == nextc)
@@ -1762,27 +1616,23 @@ static void refresh(mode) int mode;
 
     /*** find out if it's necessary to start translating at beginning ***/
 
-    if (lookahead > 0)
-    {
+    if (lookahead > 0) {
         p = previous[lookahead - 1];
         if (p != ESC && p != '\n' && p != '\r')
             mode = TRANSLATE;
     }
     v = cur_virt;
     if (v < ocur_virt || ocur_virt == INVALID
-        || (v == ocur_virt && (!is_print(virtual[v]) || !is_print(o_v_char))))
-    {
+        || (v == ocur_virt
+            && (!is_print(virtual[v]) || !is_print(o_v_char)))) {
         opflag = 0;
         p = 0;
         v = 0;
-    }
-    else
-    {
+    } else {
         opflag = 1;
         p = ocur_phys;
         v = ocur_virt;
-        if (!is_print(virtual[v]))
-        {
+        if (!is_print(virtual[v])) {
             /*** avoid double ^'s ***/
             ++p;
             ++v;
@@ -1803,8 +1653,7 @@ static void refresh(mode) int mode;
 
     /*** adjust left margin if necessary ***/
 
-    if (ncur_phys < first_w || ncur_phys >= (first_w + w_size))
-    {
+    if (ncur_phys < first_w || ncur_phys >= (first_w + w_size)) {
         cursor(first_w);
         first_w = ncur_phys - (w_size >> 1);
         if (first_w < 0)
@@ -1815,35 +1664,29 @@ static void refresh(mode) int mode;
     /*** attempt to optimize search somewhat to find ***/
     /*** out where physical and window images differ ***/
 
-    if (first_w == ofirst_wind && ncur_phys >= ocur_phys && opflag)
-    {
+    if (first_w == ofirst_wind && ncur_phys >= ocur_phys && opflag) {
         p = ocur_phys;
         w = p - first_w;
-    }
-    else
-    {
+    } else {
         p = first_w;
         w = 0;
     }
 
-    for (; (p <= last_phys && w <= last_wind); ++p, ++w)
-    {
+    for (; (p <= last_phys && w <= last_wind); ++p, ++w) {
         if (window[w] != physical[p])
             break;
     }
     p_differ = p;
 
     if ((p > last_phys || p >= first_w + w_size) && w > last_wind
-        && cur_virt == ocur_virt)
-    {
+        && cur_virt == ocur_virt) {
         /*** images are identical ***/
         return;
     }
 
     /*** copy the physical image to the window image ***/
 
-    if (last_virt != INVALID)
-    {
+    if (last_virt != INVALID) {
         while (p <= last_phys && w < w_size)
             window[w++] = physical[p++];
     }
@@ -1870,23 +1713,19 @@ static void refresh(mode) int mode;
     cur_phys = w + first_w;
     last_wind = --new_lw;
 
-    if (last_phys >= w_size)
-    {
+    if (last_phys >= w_size) {
         if (first_w == 0)
             long_char = '>';
         else if (last_phys < (first_w + w_size))
             long_char = '<';
         else
             long_char = '*';
-    }
-    else
+    } else
         long_char = ' ';
 
-    if (long_line != long_char)
-    {
+    if (long_line != long_char) {
         /*** indicate lines longer than window ***/
-        while (w++ < w_size)
-        {
+        while (w++ < w_size) {
             putchar(' ');
             ++cur_phys;
         }
@@ -1922,8 +1761,7 @@ int increment;
 {
     int cur_window;
 
-    if (cur_virt == INVALID)
-    {
+    if (cur_virt == INVALID) {
         /*** can't replace invalid cursor ***/
         bell;
         return;
@@ -1935,8 +1773,7 @@ int increment;
         || icharset(c) || out_csize(icharset(o_v_char)) > 1
 #endif /* MULTIBYTE */
         || (increment && (cur_window == w_size - 1)
-            || !is_print(virtual[cur_virt + 1])))
-    {
+            || !is_print(virtual[cur_virt + 1]))) {
         /*** must use standard refresh routine ***/
 
         delete (1, BAD);
@@ -1944,20 +1781,15 @@ int increment;
         if (increment && cur_virt < last_virt)
             ++cur_virt;
         refresh(CONTROL);
-    }
-    else
-    {
+    } else {
         virtual[cur_virt] = c;
         physical[cur_phys] = c;
         window[cur_window] = c;
         putchar(c);
-        if (increment)
-        {
+        if (increment) {
             c = virtual[++cur_virt];
             ++cur_phys;
-        }
-        else
-        {
+        } else {
             putchar('\b');
         }
         o_v_char = c;
@@ -1978,8 +1810,7 @@ restore_v()
     int tmpcol;
     genchar tmpspace[MAXLINE];
 
-    if (u_column == INVALID - 1)
-    {
+    if (u_column == INVALID - 1) {
         /*** never saved anything ***/
         bell;
         return;
@@ -2005,8 +1836,7 @@ save_last()
 {
     int i;
 
-    if ((i = cur_virt - first_virt + 1) > 0)
-    {
+    if ((i = cur_virt - first_virt + 1) > 0) {
         /*** save last thing user typed ***/
         genncpy(lastline, (&virtual[first_virt]), i);
         lastline[i] = '\0';
@@ -2023,8 +1853,7 @@ save_last()
 static void
 save_v()
 {
-    if (!inmacro)
-    {
+    if (!inmacro) {
         virtual[last_virt + 1] = '\0';
         gencpy(u_space, virtual);
         u_column = cur_virt;
@@ -2050,8 +1879,7 @@ static int search(mode) char mode;
     static int direction = -1;
     histloc location;
 
-    if (mode == '/' || mode == '?')
-    {
+    if (mode == '/' || mode == '?') {
         /*** new search expression ***/
         del_line(BAD);
         append(mode, APPEND);
@@ -2063,14 +1891,12 @@ static int search(mode) char mode;
         direction = mode == '/' ? -1 : 1;
     }
 
-    if (cur_virt == INVALID)
-    {
+    if (cur_virt == INVALID) {
         /*** no operation ***/
         return (ABORT);
     }
 
-    if (cur_virt == 0 || fold(mode) == 'N')
-    {
+    if (cur_virt == 0 || fold(mode) == 'N') {
         /*** user wants repeat of last search ***/
         del_line(BAD);
         strcpy((( char * )virtual) + 1, lsearch);
@@ -2096,8 +1922,7 @@ static int search(mode) char mode;
 #endif /* MULTIBYTE */
     location = hist_find((( char * )virtual) + 1, curhline, 1, new_direction);
     strncpy(lsearch, (( char * )virtual) + 1, SEARCHSIZE);
-    if ((curhline = location.his_command) >= 0)
-    {
+    if ((curhline = location.his_command) >= 0) {
         return (GOOD);
     }
 
@@ -2129,8 +1954,7 @@ sync_cursor()
 
     new_phys = 0;
     if (first_wind == ofirst_wind && cur_virt > ocur_virt
-        && ocur_virt != INVALID)
-    {
+        && ocur_virt != INVALID) {
         /*** try to optimize search a little ***/
         p = ocur_phys + 1;
 #ifdef MULTIBYTE
@@ -2138,47 +1962,36 @@ sync_cursor()
             p++;
 #endif /* MULTIBYTE */
         v = ocur_virt + 1;
-    }
-    else
-    {
+    } else {
         p = 0;
         v = 0;
     }
-    for (; v <= last_virt; ++p, ++v)
-    {
+    for (; v <= last_virt; ++p, ++v) {
 #ifdef MULTIBYTE
         int d;
         c = virtual[v];
-        if (d = icharset(c))
-        {
+        if (d = icharset(c)) {
             if (v != cur_virt)
                 p += (out_csize(d) - 1);
-        }
-        else
+        } else
 #else
         c = virtual[v];
 #endif /* MULTIBYTE */
-        if (!isprint(c))
-        {
-            if (c == '\t')
-            {
+        if (!isprint(c)) {
+            if (c == '\t') {
                 p -= ((p + editb.e_plen) % TABSIZE);
                 p += (TABSIZE - 1);
-            }
-            else
-            {
+            } else {
                 ++p;
             }
         }
-        if (v == cur_virt)
-        {
+        if (v == cur_virt) {
             new_phys = p;
             break;
         }
     }
 
-    if (new_phys < first_wind || new_phys >= first_wind + w_size)
-    {
+    if (new_phys < first_wind || new_phys >= first_wind + w_size) {
         /*** asked to move outside of window ***/
 
         window[0] = '\0';
@@ -2217,15 +2030,13 @@ int mode;
     if (mode && (fold(lastmotion) == 'F' || fold(lastmotion) == 'T'))
         lastmotion = ';';
 
-    if (fold(c) == 'P')
-    {
+    if (fold(c) == 'P') {
         /*** change p from lastline to yankbuf ***/
         p = yankbuf;
     }
 
 addin:
-    switch (c)
-    {
+    switch (c) {
         /***** Input commands *****/
 
 #ifdef KSHELL
@@ -2238,20 +2049,15 @@ addin:
         i = last_virt;
         ++last_virt;
         virtual[last_virt] = 0;
-        if (ed_expand(( char * )virtual, &cur_virt, &last_virt, c))
-        {
+        if (ed_expand(( char * )virtual, &cur_virt, &last_virt, c)) {
             last_virt = i;
             bell;
-        }
-        else if (c == '=')
-        {
+        } else if (c == '=') {
             last_virt = i;
             nonewline++;
             ed_ungetchar(cntl('L'));
             return (GOOD);
-        }
-        else
-        {
+        } else {
             --cur_virt;
             --last_virt;
             ocur_virt = MAXCHAR;
@@ -2266,8 +2072,7 @@ addin:
             return (GOOD);
         if (!inmacro)
             lastmacro = c;
-        if (ed_macro(c))
-        {
+        if (ed_macro(c)) {
             save_v();
             inmacro++;
             return (GOOD);
@@ -2284,8 +2089,7 @@ addin:
                 repeat = -1;
             p = ( genchar * )hist_word(tmpbuf, repeat);
 #ifndef KSHELL
-            if (p == 0)
-            {
+            if (p == 0) {
                 bell;
                 break;
             }
@@ -2295,8 +2099,7 @@ addin:
             p = tmpbuf;
 #endif /* MULTIBYTE */
             i = ' ';
-            do
-            {
+            do {
                 append(i, APPEND);
             } while (i = *p++);
             return (APPEND);
@@ -2307,14 +2110,12 @@ addin:
         sync_cursor();
 
     case 'a': /** append **/
-        if (fold(mode) == 'A')
-        {
+        if (fold(mode) == 'A') {
             c = 'p';
             goto addin;
         }
         save_v();
-        if (cur_virt != INVALID)
-        {
+        if (cur_virt != INVALID) {
             first_virt = cur_virt + 1;
             cursor(cur_phys + 1);
             ed_flush();
@@ -2326,14 +2127,12 @@ addin:
         sync_cursor();
 
     case 'i': /** insert **/
-        if (fold(mode) == 'I')
-        {
+        if (fold(mode) == 'I') {
             c = 'P';
             goto addin;
         }
         save_v();
-        if (cur_virt != INVALID)
-        {
+        if (cur_virt != INVALID) {
             o_v_char = virtual[cur_virt];
             first_virt = cur_virt--;
         }
@@ -2350,8 +2149,7 @@ addin:
             c = getcount(getchar());
     chgeol:
         lastmotion = c;
-        if (c == 'c')
-        {
+        if (c == 'c') {
             del_line(GOOD);
             return (APPEND);
         }
@@ -2359,8 +2157,7 @@ addin:
         if (delmotion(c, 'c') == BAD)
             return (BAD);
 
-        if (mode == 'c')
-        {
+        if (mode == 'c') {
             c = 'p';
             trepeat = 1;
             goto addin;
@@ -2379,8 +2176,7 @@ addin:
             c = getcount(getchar());
     deleol:
         lastmotion = c;
-        if (c == 'd')
-        {
+        if (c == 'd') {
             del_line(GOOD);
             break;
         }
@@ -2393,8 +2189,7 @@ addin:
     case 'P':
         if (p[0] == '\0')
             return (BAD);
-        if (cur_virt != INVALID)
-        {
+        if (cur_virt != INVALID) {
             i = virtual[cur_virt];
             if (!is_print(i))
                 ocur_virt = INVALID;
@@ -2405,11 +2200,9 @@ addin:
         if (p[0] == '\0')
             return (BAD);
 
-        if (mode != 's' && mode != 'c')
-        {
+        if (mode != 's' && mode != 'c') {
             save_v();
-            if (c == 'P')
-            {
+            if (c == 'P') {
                 /*** fix stored cur_virt ***/
                 ++u_column;
             }
@@ -2419,8 +2212,7 @@ addin:
         else
             mode = APPEND;
         savep = p;
-        for (i = 0; i < trepeat; ++i)
-        {
+        for (i = 0; i < trepeat; ++i) {
             while (c = *p++)
                 append(c, mode);
             p = savep;
@@ -2428,8 +2220,7 @@ addin:
         break;
 
     case 'R': /* Replace many chars **/
-        if (mode == 'R')
-        {
+        if (mode == 'R') {
             c = 'P';
             goto addin;
         }
@@ -2456,8 +2247,7 @@ addin:
     case 's': /** substitute **/
         save_v();
         delete (repeat, BAD);
-        if (mode)
-        {
+        if (mode) {
             c = 'p';
             trepeat = 1;
             goto addin;
@@ -2476,12 +2266,9 @@ addin:
             c = getcount(getchar());
     yankeol:
         lastmotion = c;
-        if (c == 'y')
-        {
+        if (c == 'y') {
             gencpy(yankbuf, virtual);
-        }
-        else if (delmotion(c, 'y') == BAD)
-        {
+        } else if (delmotion(c, 'y') == BAD) {
             return (BAD);
         }
         break;
@@ -2495,12 +2282,10 @@ addin:
         goto deleol;
 
     case '~': /** invert case and advance **/
-        if (cur_virt != INVALID)
-        {
+        if (cur_virt != INVALID) {
             save_v();
             i = INVALID;
-            while (trepeat-- > 0 && i != cur_virt)
-            {
+            while (trepeat-- > 0 && i != cur_virt) {
                 i = cur_virt;
                 c = virtual[cur_virt];
 #ifdef MULTIBYTE
@@ -2513,8 +2298,7 @@ addin:
                 replace(c, 1);
             }
             return (GOOD);
-        }
-        else
+        } else
             return (BAD);
 
     default:
@@ -2579,8 +2363,7 @@ static int
 getrchar()
 {
     int c;
-    if ((c = getchar()) == cntl('V'))
-    {
+    if ((c = getchar()) == cntl('V')) {
         in_raw++;
         c = getchar();
         in_raw = 0;

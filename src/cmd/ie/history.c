@@ -127,8 +127,7 @@ hist_open()
     if (hist_ptr)
         return (1);
     histname = nam_strval(HISTFILE);
-    if (!histname)
-    {
+    if (!histname) {
 
         if (cp = nam_strval(HOME))
             cp = sh_copy(cp, hname);
@@ -138,8 +137,7 @@ hist_open()
         histname = hname;
     }
     *fname = 0;
-    if (fp = wasopen)
-    {
+    if (fp = wasopen) {
         /* reuse history file if same name */
         wasopen = 0;
         hist_ptr = fp;
@@ -152,21 +150,18 @@ retry:
     histname = path_relative(histname);
     if ((fd = open(
          histname, O_APPEND | O_RDWR | O_CREAT | O_BINARY, S_IRUSR | S_IWUSR))
-        >= 0)
-    {
+        >= 0) {
         hsize = io_seek(fd, ( off_t )0, SEEK_END);
     }
     /* make sure that file has history file format */
-    if (hsize && hist_check(fd))
-    {
+    if (hsize && hist_check(fd)) {
         io_fclose(fd);
         hsize = 0;
         if (unlink(histname) >= 0)
             goto retry;
         fd = -1;
     }
-    if (fd < 0)
-    {
+    if (fd < 0) {
 #ifdef KSHELL
         /* don't allow root a history_file in /tmp */
         if (sh.userid)
@@ -182,8 +177,7 @@ retry:
         maxlines = HIS_DFLT;
     for (fixmask = 16; fixmask <= maxlines; fixmask <<= 1)
         ;
-    if (!(fp = new_of(struct history, (--fixmask) * sizeof(off_t))))
-    {
+    if (!(fp = new_of(struct history, (--fixmask) * sizeof(off_t)))) {
         io_fclose(fd);
         return (0);
     }
@@ -203,8 +197,7 @@ retry:
         p_setout(fd);
     }
     /* initialize history list */
-    else
-    {
+    else {
         int first;
         off_t size = (HISMAX / 4) + maxlines * HISLINE;
         first = fp->fixind = hist_nearend(fd, hsize - size);
@@ -212,8 +205,7 @@ retry:
         his_start = fp->fixind - maxlines;
         if (his_start <= 0)
             his_start = 1;
-        while (first > his_start)
-        {
+        while (first > his_start) {
             size += size;
             first = hist_nearend(fd, hsize - size);
             fp->fixind = first;
@@ -222,8 +214,7 @@ retry:
     }
     if (*fname)
         unlink(fname);
-    if (hist_clean(fp->fixfd) && his_start > 1 && hsize > HISMAX)
-    {
+    if (hist_clean(fp->fixfd) && his_start > 1 && hsize > HISMAX) {
 #ifdef DEBUG
         p_setout(ERRIO);
         p_num(getpid(), ':');
@@ -301,11 +292,9 @@ static int hist_clean(fd) int fd;
 #        endif /* KSHELL */
 #    endif
 #endif
-    if (fstat(fd, &statb) >= 0)
-    {
+    if (fstat(fd, &statb) >= 0) {
         /* see if history file was recently accessed */
-        if (r)
-        {
+        if (r) {
             if ((time(( time_t * )0) - statb.st_mtime) < HIST_RECENT)
                 r = 0;
         }
@@ -331,8 +320,7 @@ static void hist_trim(n) int n;
     hist_ptr->fixfd = fdo;
     unlink(hist_ptr->fixname);
     hist_ptr = 0;
-    if (!hist_open())
-    {
+    if (!hist_open()) {
         /* use the old history file */
         hist_ptr = hist_old;
         hist_ptr->fixfd = io_renumber(fdo, FCIO);
@@ -344,14 +332,12 @@ static void hist_trim(n) int n;
     if (n < 0)
         n = 0;
     htrim++;
-    do
-    {
+    do {
         hist_ptr = hist_old;
         old = new;
         new = io_seek(fdo, hist_position(++n), SEEK_SET);
         hist_ptr = hist_new;
-        while ((c = io_getc(fdo)) != EOF && c)
-        {
+        while ((c = io_getc(fdo)) != EOF && c) {
             if (fp->ptr >= fp->last)
                 p_flush();
             *fp->ptr++ = c;
@@ -384,11 +370,9 @@ off_t size;
     /* skip to numbered command and return the number */
     /* numbering commands occur after a null and begin with H_CMDNO */
     while ((c = io_getc(fd)) != EOF)
-        switch (state)
-        {
+        switch (state) {
         case 1:
-            if (c == H_CMDNO)
-            {
+            if (c == H_CMDNO) {
                 hist_ptr->fixcnt = size + n + 6;
                 state = 2;
             }
@@ -396,8 +380,7 @@ off_t size;
 
         case 2:
             /* see if H_CMDNO is followed by 0 */
-            if (hist_version && c)
-            {
+            if (hist_version && c) {
                 n += 2;
                 state = 0;
                 break;
@@ -461,15 +444,12 @@ hist_eof()
     int skip = 0;
     io_seek(fp->fixfd, count, SEEK_SET);
 #ifdef INT16
-    while ((c = io_getc(fp->fixfd)) != EOF)
-    {
+    while ((c = io_getc(fp->fixfd)) != EOF) {
 #else
     /* could use io_getc() but this is faster */
-    while (1)
-    {
+    while (1) {
         c = *(fp->fixfp->ptr)++;
-        if (c == 0 && (fp->fixfp->ptr > fp->fixfp->last))
-        {
+        if (c == 0 && (fp->fixfp->ptr > fp->fixfp->last)) {
             c = io_readbuff(fp->fixfp);
             if (c == EOF)
                 break;
@@ -477,34 +457,27 @@ hist_eof()
         c &= STRIP;
 #endif /* INT16 */
         count++;
-        if (skip-- > 0)
-        {
+        if (skip-- > 0) {
             if (skip == 2)
                 hist_marker = count;
             oldc = 0;
             continue;
         }
-        if (c == 0)
-        {
+        if (c == 0) {
             if (oldc == H_CMDNO && incr == 0)
                 skip = 3;
             fp->fixind += incr;
             fp->fixcmds[fp->fixind & fixmask] = count;
             incr = 0;
-        }
-        else if (oldc == 0)
-        {
-            if (c == H_CMDNO)
-            {
+        } else if (oldc == 0) {
+            if (c == H_CMDNO) {
                 /* old format history file */
                 if (hist_version == 0)
                     skip = 4;
                 incr = 0;
-            }
-            else if (c == H_UNDO)
+            } else if (c == H_UNDO)
                 incr = -1;
-        }
-        else
+        } else
             incr = 1;
         oldc = c;
     }
@@ -552,14 +525,12 @@ hist_flush()
     st.states &= ~FIXFLG;
 #endif /* KSHELL */
     fd = fp->fixfp;
-    if (htrim)
-    {
+    if (htrim) {
         p_char(0);
         fp->fixcnt++;
         goto set_count;
     }
-    if ((fp->fixcnt = lseek(fp->fixfd, ( off_t )0, SEEK_END)) < 0)
-    {
+    if ((fp->fixcnt = lseek(fp->fixfd, ( off_t )0, SEEK_END)) < 0) {
 #ifdef DEBUG
         p_setout(ERRIO);
         p_num(getpid(), ':');
@@ -576,19 +547,16 @@ hist_flush()
     }
     p_setout(fp->fixfd);
     /* remove whitespace from end of commands */
-    while (--fd->ptr >= fd->base)
-    {
+    while (--fd->ptr >= fd->base) {
         c = *fd->ptr;
-        if (!isspace(c))
-        {
+        if (!isspace(c)) {
             if (c == '\\' && *(fd->ptr + 1) != '\n')
                 fd->ptr++;
             break;
         }
     }
     /* don't count empty lines */
-    if (++fd->ptr <= fd->base && !fp->fixflush)
-    {
+    if (++fd->ptr <= fd->base && !fp->fixflush) {
         fp->fixind--;
         goto set_count;
     }
@@ -598,8 +566,7 @@ hist_flush()
     fp->fixcnt += (fd->ptr - fd->base);
 set_count:
     /* start each command on an even byte boundary */
-    if (fp->fixcnt & 01)
-    {
+    if (fp->fixcnt & 01) {
         fp->fixcnt++;
         p_char(0);
         flush++;
@@ -607,8 +574,7 @@ set_count:
     c = (++fp->fixind) & fixmask;
     savcount = fp->fixcmds[c];
     fp->fixcmds[c] = fp->fixcnt;
-    if (fp->fixcnt > hist_marker + IOBSIZE / 2)
-    {
+    if (fp->fixcnt > hist_marker + IOBSIZE / 2) {
         /* put line number in file */
         fp->fixcnt += 6;
         p_char(H_CMDNO);
@@ -624,12 +590,10 @@ set_count:
         fp->fixcmds[c & fixmask] = fp->fixcnt;
         hist_marker = fp->fixcnt;
     }
-    if (flush && !htrim)
-    {
+    if (flush && !htrim) {
         p_flush();
         /* check for write errors, like ulimit */
-        if (fd->flag & IOERR)
-        {
+        if (fd->flag & IOERR) {
             c = (fp->fixind--) & fixmask;
             fp->fixcmds[c] = savcount;
         }
@@ -660,14 +624,12 @@ char *nl;
     int oldc = 0;
     int c;
     struct history *fp = hist_ptr;
-    if (offset < 0 || !fp)
-    {
+    if (offset < 0 || !fp) {
         p_str(e_unknown, '\n');
         return;
     }
     io_seek(fp->fixfd, offset, SEEK_SET);
-    while ((c = io_getc(fp->fixfd)) != EOF)
-    {
+    while ((c = io_getc(fp->fixfd)) != EOF) {
         if (c && oldc == '\n')
             p_str(nl, 0);
         else if (oldc == last && c == '\n')
@@ -702,34 +664,28 @@ int direction;
     if (!fp)
         return (location);
     /* leading ^ means beginning of line unless escaped */
-    if (flag)
-    {
+    if (flag) {
         index2 = *string;
         if (index2 == '\\')
             string++;
-        else if (index2 == '^')
-        {
+        else if (index2 == '^') {
             flag = 0;
             string++;
         }
     }
     index2 = fp->fixind;
-    if (direction < 0)
-    {
+    if (direction < 0) {
         index2 -= fp->fixmax;
         if (index2 < 1)
             index2 = 1;
         if (index1 <= index2)
             return (location);
-    }
-    else if (index1 >= index2)
+    } else if (index1 >= index2)
         return (location);
-    while (index1 != index2)
-    {
+    while (index1 != index2) {
         direction > 0 ? ++index1 : --index1;
         offset = hist_position(index1);
-        if ((location.his_line = hist_match(offset, string, flag)) >= 0)
-        {
+        if ((location.his_line = hist_match(offset, string, flag)) >= 0) {
             location.his_command = index1;
             return (location);
         }
@@ -760,31 +716,24 @@ int flag;
 #ifdef MULTIBYTE
     int nbytes = 0;
 #endif /* MULTIBYTE */
-    do
-    {
-        if (offset >= 0)
-        {
+    do {
+        if (offset >= 0) {
             io_seek(fp->fixfd, offset, SEEK_SET);
             count = offset;
         }
         offset = -1;
-        for (cp = string; *cp; cp++)
-        {
+        for (cp = string; *cp; cp++) {
             if ((c = io_getc(fp->fixfd)) == EOF || c == 0)
                 break;
             count++;
 #ifdef MULTIBYTE
             /* always position at character boundary */
-            if (--nbytes > 0)
-            {
-                if (cp == string)
-                {
+            if (--nbytes > 0) {
+                if (cp == string) {
                     cp--;
                     continue;
                 }
-            }
-            else
-            {
+            } else {
                 nbytes = echarset(c);
                 nbytes = in_csize(nbytes) + (nbytes >= 2);
             }
@@ -826,19 +775,15 @@ int command, line;
         return (-1);
     offset = hist_position(command);
     io_seek(fp->fixfd, offset, SEEK_SET);
-    while ((c = io_getc(fp->fixfd)) && c != EOF)
-    {
-        if (c == '\n')
-        {
+    while ((c = io_getc(fp->fixfd)) && c != EOF) {
+        if (c == '\n') {
             if (count++ == line)
                 break;
             else if (line >= 0)
                 continue;
         }
-        if (s1 && (line < 0 || line == count))
-        {
-            if (s1 >= s1max)
-            {
+        if (s1 && (line < 0 || line == count)) {
+            if (s1 >= s1max) {
                 *--s1 = 0;
                 break;
             }
@@ -871,18 +816,14 @@ int word;
         return (( char * )0);
 #    endif /* KSHELL */
     hist_copy(s1, hist_ptr->fixind - 1, -1);
-    for (; c = *cp; cp++)
-    {
+    for (; c = *cp; cp++) {
         c = isspace(c);
-        if (c && flag)
-        {
+        if (c && flag) {
             *cp = 0;
             if (--word == 0)
                 break;
             flag = 0;
-        }
-        else if (c == 0 && flag == 0)
-        {
+        } else if (c == 0 && flag == 0) {
             s1 = cp;
             flag++;
         }
@@ -906,28 +847,22 @@ int lines;
 {
     histloc next;
     line += lines;
-    if (!hist_ptr)
-    {
+    if (!hist_ptr) {
         command = -1;
         goto done;
     }
-    if (lines > 0)
-    {
+    if (lines > 0) {
         int count;
-        while (command <= hist_ptr->fixind)
-        {
+        while (command <= hist_ptr->fixind) {
             count = hist_copy(NIL, command, -1);
             if (count > line)
                 goto done;
             line -= count;
             command++;
         }
-    }
-    else
-    {
+    } else {
         int least = hist_ptr->fixind - hist_ptr->fixmax;
-        while (1)
-        {
+        while (1) {
             if (line >= 0)
                 goto done;
             if (--command < least)
@@ -991,13 +926,11 @@ static void io_init(fd, fp, buf) int fd;
 struct fileblk *fp;
 char *buf;
 {
-    if (!fp)
-    {
+    if (!fp) {
         fp = new_of(struct fileblk, IOBSIZE + 1);
         buf = ( char * )(fp + 1);
         fp->flag = IOFREE;
-    }
-    else
+    } else
         fp->flag = 0;
     fp->fdes = fd;
     fp->fseek = 0;
@@ -1042,41 +975,34 @@ int ptrname;
     if (!(fp = io_ftable[fd]))
         return (lseek(fd, offset, ptrname));
     fp->flag &= ~IOEOF;
-    if (!(fp->flag & IOREAD))
-    {
+    if (!(fp->flag & IOREAD)) {
         p_flush();
     }
     c = 0;
     /* check history file to see if already in the buffer */
-    if (fd == FCIO && ptrname == 0 && (fp->flag & IOREAD) && offset < hoffset)
-    {
+    if (fd == FCIO && ptrname == 0 && (fp->flag & IOREAD)
+        && offset < hoffset) {
         p = hoffset - (fp->last - fp->base);
-        if (offset >= p)
-        {
+        if (offset >= p) {
             fp->ptr = fp->base + ( int )(offset - p);
             return (offset);
-        }
-        else
-        {
+        } else {
             c = offset & (IOBSIZE - 1);
             offset -= c;
         }
     }
-    if (fp->flag & IORW)
-    {
+    if (fp->flag & IORW) {
         fp->flag &= ~(IOWRT | IOREAD);
         fp->last = fp->ptr = fp->base;
         *fp->last = 0;
     }
     p = lseek(fd, offset, ptrname);
-    if (fd == FCIO)
-    {
+    if (fd == FCIO) {
         if (ptrname == 0)
             hoffset = p;
         else
             hoffset = -1;
-        if (c)
-        {
+        if (c) {
             io_readbuff(fp);
             fp->ptr += (c - 1);
         }
@@ -1109,15 +1035,12 @@ static int io_readbuff(fp) struct fileblk *fp;
     else
         fp->last = fp->ptr;
     *fp->last = 0;
-    if (n <= 0)
-    {
-        if (n == 0)
-        {
+    if (n <= 0) {
+        if (n == 0) {
             fp->flag |= IOEOF;
             if (fp->flag & IORW)
                 fp->flag &= ~IOREAD;
-        }
-        else
+        } else
             fp->flag |= IOERR;
         return (-1);
     }
@@ -1150,8 +1073,7 @@ static void io_fclose(fd) int fd;
 static int io_renumber(fa, fb) int fa;
 int fb;
 {
-    if (fa >= 0)
-    {
+    if (fa >= 0) {
         close(fb);
         fcntl(fa, 0, fb); /* normal dup */
         if (io_ftable[fb] = io_ftable[fa])
@@ -1178,8 +1100,7 @@ static int io_mktmp(fname, len) char *fname;
 int len;
 {
     int fd;
-    if (!pathtemp(fname, len, NiL, "hist", &fd))
-    {
+    if (!pathtemp(fname, len, NiL, "hist", &fd)) {
         sh_fail("tmp-file", e_create);
         fd = -1;
     }

@@ -69,8 +69,7 @@ Tcl_PackageInitProc **proc1Ptr, **proc2Ptr;
     VOID *handle;
 
     handle = dlopen(fileName, RTLD_NOW | RTLD_GLOBAL);
-    if (handle == NULL)
-    {
+    if (handle == NULL) {
         Tcl_AppendResult(interp,
                          "couldn't load file \"",
                          fileName,

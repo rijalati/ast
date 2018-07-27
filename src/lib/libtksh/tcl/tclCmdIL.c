@@ -86,8 +86,7 @@ char **argv;        /* Argument strings. */
     int i, result, value;
 
     i = 1;
-    while (1)
-    {
+    while (1) {
         /*
          * At this point in the loop, argv and argc refer to an expression
          * to test, either for the main expression or an expression
@@ -96,8 +95,7 @@ char **argv;        /* Argument strings. */
          * true.
          */
 
-        if (i >= argc)
-        {
+        if (i >= argc) {
             Tcl_AppendResult(interp,
                              "wrong # args: no expression after \"",
                              argv[i - 1],
@@ -106,17 +104,14 @@ char **argv;        /* Argument strings. */
             return TCL_ERROR;
         }
         result = Tcl_ExprBoolean(interp, argv[i], &value);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             return result;
         }
         i++;
-        if ((i < argc) && (strcmp(argv[i], "then") == 0))
-        {
+        if ((i < argc) && (strcmp(argv[i], "then") == 0)) {
             i++;
         }
-        if (i >= argc)
-        {
+        if (i >= argc) {
             Tcl_AppendResult(interp,
                              "wrong # args: no script following \"",
                              argv[i - 1],
@@ -124,8 +119,7 @@ char **argv;        /* Argument strings. */
                              ( char * )NULL);
             return TCL_ERROR;
         }
-        if (value)
-        {
+        if (value) {
             return Tcl_Eval(interp, argv[i]);
         }
 
@@ -135,12 +129,10 @@ char **argv;        /* Argument strings. */
          */
 
         i++;
-        if (i >= argc)
-        {
+        if (i >= argc) {
             return TCL_OK;
         }
-        if ((argv[i][0] == 'e') && (strcmp(argv[i], "elseif") == 0))
-        {
+        if ((argv[i][0] == 'e') && (strcmp(argv[i], "elseif") == 0)) {
             i++;
             continue;
         }
@@ -153,11 +145,9 @@ char **argv;        /* Argument strings. */
      * argument when we get here.
      */
 
-    if (strcmp(argv[i], "else") == 0)
-    {
+    if (strcmp(argv[i], "else") == 0) {
         i++;
-        if (i >= argc)
-        {
+        if (i >= argc) {
             Tcl_AppendResult(
             interp,
             "wrong # args: no script following \"else\" argument",
@@ -195,8 +185,7 @@ char **argv;        /* Argument strings. */
     char *oldString, *result;
     char newString[30];
 
-    if ((argc != 2) && (argc != 3))
-    {
+    if ((argc != 2) && (argc != 3)) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -206,26 +195,20 @@ char **argv;        /* Argument strings. */
     }
 
     oldString = Tcl_GetVar(interp, argv[1], TCL_LEAVE_ERR_MSG);
-    if (oldString == NULL)
-    {
+    if (oldString == NULL) {
         return TCL_ERROR;
     }
-    if (Tcl_GetInt(interp, oldString, &value) != TCL_OK)
-    {
+    if (Tcl_GetInt(interp, oldString, &value) != TCL_OK) {
         Tcl_AddErrorInfo(interp,
                          "\n    (reading value of variable to increment)");
         return TCL_ERROR;
     }
-    if (argc == 2)
-    {
+    if (argc == 2) {
         value += 1;
-    }
-    else
-    {
+    } else {
         int increment;
 
-        if (Tcl_GetInt(interp, argv[2], &increment) != TCL_OK)
-        {
+        if (Tcl_GetInt(interp, argv[2], &increment) != TCL_OK) {
             Tcl_AddErrorInfo(interp, "\n    (reading increment)");
             return TCL_ERROR;
         }
@@ -233,8 +216,7 @@ char **argv;        /* Argument strings. */
     }
     sprintf(newString, "%d", value);
     result = Tcl_SetVar(interp, argv[1], newString, TCL_LEAVE_ERR_MSG);
-    if (result == NULL)
-    {
+    if (result == NULL) {
         return TCL_ERROR;
     }
     interp->result = result;
@@ -268,16 +250,11 @@ char **argv;        /* Argument strings. */
     char **listArgv;
     int listArgc, i;
 
-    if (argc == 2)
-    {
+    if (argc == 2) {
         joinString = " ";
-    }
-    else if (argc == 3)
-    {
+    } else if (argc == 3) {
         joinString = argv[2];
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -286,18 +263,13 @@ char **argv;        /* Argument strings. */
         return TCL_ERROR;
     }
 
-    if (Tcl_SplitList(interp, argv[1], &listArgc, &listArgv) != TCL_OK)
-    {
+    if (Tcl_SplitList(interp, argv[1], &listArgc, &listArgv) != TCL_OK) {
         return TCL_ERROR;
     }
-    for (i = 0; i < listArgc; i++)
-    {
-        if (i == 0)
-        {
+    for (i = 0; i < listArgc; i++) {
+        if (i == 0) {
             Tcl_AppendResult(interp, listArgv[0], ( char * )NULL);
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp, joinString, listArgv[i], ( char * )NULL);
         }
     }
@@ -331,8 +303,7 @@ char **argv;        /* Argument strings. */
     char *p, *element, *next;
     int index, size, parenthesized, result, returnLast;
 
-    if (argc != 3)
-    {
+    if (argc != 3) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -340,53 +311,41 @@ char **argv;        /* Argument strings. */
                          ( char * )NULL);
         return TCL_ERROR;
     }
-    if ((*argv[2] == 'e') && (strncmp(argv[2], "end", strlen(argv[2])) == 0))
-    {
+    if ((*argv[2] == 'e')
+        && (strncmp(argv[2], "end", strlen(argv[2])) == 0)) {
         returnLast = 1;
         index = INT_MAX;
-    }
-    else
-    {
+    } else {
         returnLast = 0;
-        if (Tcl_GetInt(interp, argv[2], &index) != TCL_OK)
-        {
+        if (Tcl_GetInt(interp, argv[2], &index) != TCL_OK) {
             return TCL_ERROR;
         }
     }
-    if (index < 0)
-    {
+    if (index < 0) {
         return TCL_OK;
     }
-    for (p = argv[1]; index >= 0; index--)
-    {
+    for (p = argv[1]; index >= 0; index--) {
         result
         = TclFindElement(interp, p, &element, &next, &size, &parenthesized);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             return result;
         }
-        if ((*next == 0) && returnLast)
-        {
+        if ((*next == 0) && returnLast) {
             break;
         }
         p = next;
     }
-    if (size == 0)
-    {
+    if (size == 0) {
         return TCL_OK;
     }
-    if (size >= TCL_RESULT_SIZE)
-    {
+    if (size >= TCL_RESULT_SIZE) {
         interp->result = ( char * )ckalloc(( unsigned )size + 1);
         interp->freeProc = TCL_DYNAMIC;
     }
-    if (parenthesized)
-    {
+    if (parenthesized) {
         memcpy(( VOID * )interp->result, ( VOID * )element, ( size_t )size);
         interp->result[size] = 0;
-    }
-    else
-    {
+    } else {
         TclCopyAndCollapse(size, element, interp->result);
     }
     return TCL_OK;
@@ -419,8 +378,7 @@ char **argv;        /* Argument strings. */
     char *p, *element, savedChar;
     int i, index, count, result, size;
 
-    if (argc < 4)
-    {
+    if (argc < 4) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -428,12 +386,10 @@ char **argv;        /* Argument strings. */
                          ( char * )NULL);
         return TCL_ERROR;
     }
-    if ((*argv[2] == 'e') && (strncmp(argv[2], "end", strlen(argv[2])) == 0))
-    {
+    if ((*argv[2] == 'e')
+        && (strncmp(argv[2], "end", strlen(argv[2])) == 0)) {
         index = INT_MAX;
-    }
-    else if (Tcl_GetInt(interp, argv[2], &index) != TCL_OK)
-    {
+    } else if (Tcl_GetInt(interp, argv[2], &index) != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -444,28 +400,21 @@ char **argv;        /* Argument strings. */
 
     size = 0;
     element = argv[1];
-    for (count = 0, p = argv[1]; (count < index) && (*p != 0); count++)
-    {
+    for (count = 0, p = argv[1]; (count < index) && (*p != 0); count++) {
         result
         = TclFindElement(interp, p, &element, &p, &size, ( int * )NULL);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             return result;
         }
     }
-    if (*p == 0)
-    {
+    if (*p == 0) {
         Tcl_AppendResult(interp, argv[1], ( char * )NULL);
-    }
-    else
-    {
+    } else {
         char *end;
 
         end = element + size;
-        if (element != argv[1])
-        {
-            while ((*end != 0) && !isspace(UCHAR(*end)))
-            {
+        if (element != argv[1]) {
+            while ((*end != 0) && !isspace(UCHAR(*end))) {
                 end++;
             }
         }
@@ -479,8 +428,7 @@ char **argv;        /* Argument strings. */
      * Add the new list elements.
      */
 
-    for (i = 3; i < argc; i++)
-    {
+    for (i = 3; i < argc; i++) {
         Tcl_AppendElement(interp, argv[i]);
     }
 
@@ -488,8 +436,7 @@ char **argv;        /* Argument strings. */
      * Append the remainder of the original list.
      */
 
-    if (*p != 0)
-    {
+    if (*p != 0) {
         Tcl_AppendResult(interp, " ", p, ( char * )NULL);
     }
     return TCL_OK;
@@ -518,8 +465,7 @@ Tcl_Interp *interp; /* Current interpreter. */
 int argc;           /* Number of arguments. */
 char **argv;        /* Argument strings. */
 {
-    if (argc >= 2)
-    {
+    if (argc >= 2) {
         interp->result = Tcl_Merge(argc - 1, argv + 1);
         interp->freeProc = TCL_DYNAMIC;
     }
@@ -553,8 +499,7 @@ char **argv;        /* Argument strings. */
     int count, result;
     char *element, *p;
 
-    if (argc != 2)
-    {
+    if (argc != 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -562,16 +507,13 @@ char **argv;        /* Argument strings. */
                          ( char * )NULL);
         return TCL_ERROR;
     }
-    for (count = 0, p = argv[1]; *p != 0; count++)
-    {
+    for (count = 0, p = argv[1]; *p != 0; count++) {
         result = TclFindElement(
         interp, p, &element, &p, ( int * )NULL, ( int * )NULL);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             return result;
         }
-        if (*element == 0)
-        {
+        if (*element == 0) {
             break;
         }
     }
@@ -607,8 +549,7 @@ char **argv;        /* Argument strings. */
     char *begin, *end, c, *dummy, *next;
     int count, firstIsEnd;
 
-    if (argc != 4)
-    {
+    if (argc != 4) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -616,31 +557,24 @@ char **argv;        /* Argument strings. */
                          ( char * )NULL);
         return TCL_ERROR;
     }
-    if ((*argv[2] == 'e') && (strncmp(argv[2], "end", strlen(argv[2])) == 0))
-    {
+    if ((*argv[2] == 'e')
+        && (strncmp(argv[2], "end", strlen(argv[2])) == 0)) {
         firstIsEnd = 1;
         first = INT_MAX;
-    }
-    else
-    {
+    } else {
         firstIsEnd = 0;
-        if (Tcl_GetInt(interp, argv[2], &first) != TCL_OK)
-        {
+        if (Tcl_GetInt(interp, argv[2], &first) != TCL_OK) {
             return TCL_ERROR;
         }
     }
-    if (first < 0)
-    {
+    if (first < 0) {
         first = 0;
     }
-    if ((*argv[3] == 'e') && (strncmp(argv[3], "end", strlen(argv[3])) == 0))
-    {
+    if ((*argv[3] == 'e')
+        && (strncmp(argv[3], "end", strlen(argv[3])) == 0)) {
         last = INT_MAX;
-    }
-    else
-    {
-        if (Tcl_GetInt(interp, argv[3], &last) != TCL_OK)
-        {
+    } else {
+        if (Tcl_GetInt(interp, argv[3], &last) != TCL_OK) {
             Tcl_ResetResult(interp);
             Tcl_AppendResult(interp,
                              "expected integer or \"end\" but got \"",
@@ -650,8 +584,7 @@ char **argv;        /* Argument strings. */
             return TCL_ERROR;
         }
     }
-    if ((first > last) && !firstIsEnd)
-    {
+    if ((first > last) && !firstIsEnd) {
         return TCL_OK;
     }
 
@@ -659,38 +592,30 @@ char **argv;        /* Argument strings. */
      * Extract a range of fields.
      */
 
-    for (count = 0, begin = argv[1]; count < first; begin = next, count++)
-    {
+    for (count = 0, begin = argv[1]; count < first; begin = next, count++) {
         result = TclFindElement(
         interp, begin, &dummy, &next, ( int * )NULL, ( int * )NULL);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             return result;
         }
-        if (*next == 0)
-        {
-            if (firstIsEnd)
-            {
+        if (*next == 0) {
+            if (firstIsEnd) {
                 first = count;
-            }
-            else
-            {
+            } else {
                 begin = next;
             }
             break;
         }
     }
-    for (count = first, end = begin; (count <= last) && (*end != 0); count++)
-    {
+    for (count = first, end = begin; (count <= last) && (*end != 0);
+         count++) {
         result = TclFindElement(
         interp, end, &dummy, &end, ( int * )NULL, ( int * )NULL);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             return result;
         }
     }
-    if (end == begin)
-    {
+    if (end == begin) {
         return TCL_OK;
     }
 
@@ -699,8 +624,7 @@ char **argv;        /* Argument strings. */
      */
 
     while ((end != begin) && (isspace(UCHAR(end[-1])))
-           && (((end - 1) == begin) || (end[-2] != '\\')))
-    {
+           && (((end - 1) == begin) || (end[-2] != '\\'))) {
         end--;
     }
     c = *end;
@@ -737,8 +661,7 @@ char **argv;        /* Argument strings. */
     char *p1, *p2, *element, savedChar, *dummy, *next;
     int i, first, last, count, result, size, firstIsEnd;
 
-    if (argc < 4)
-    {
+    if (argc < 4) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -746,16 +669,13 @@ char **argv;        /* Argument strings. */
                          ( char * )NULL);
         return TCL_ERROR;
     }
-    if ((*argv[2] == 'e') && (strncmp(argv[2], "end", strlen(argv[2])) == 0))
-    {
+    if ((*argv[2] == 'e')
+        && (strncmp(argv[2], "end", strlen(argv[2])) == 0)) {
         firstIsEnd = 1;
         first = INT_MAX;
-    }
-    else
-    {
+    } else {
         firstIsEnd = 0;
-        if (Tcl_GetInt(interp, argv[2], &first) != TCL_OK)
-        {
+        if (Tcl_GetInt(interp, argv[2], &first) != TCL_OK) {
             Tcl_ResetResult(interp);
             Tcl_AppendResult(interp,
                              "bad index \"",
@@ -765,14 +685,11 @@ char **argv;        /* Argument strings. */
             return TCL_ERROR;
         }
     }
-    if ((*argv[3] == 'e') && (strncmp(argv[3], "end", strlen(argv[3])) == 0))
-    {
+    if ((*argv[3] == 'e')
+        && (strncmp(argv[3], "end", strlen(argv[3])) == 0)) {
         last = INT_MAX;
-    }
-    else
-    {
-        if (Tcl_GetInt(interp, argv[3], &last) != TCL_OK)
-        {
+    } else {
+        if (Tcl_GetInt(interp, argv[3], &last) != TCL_OK) {
             Tcl_ResetResult(interp);
             Tcl_AppendResult(interp,
                              "bad index \"",
@@ -782,8 +699,7 @@ char **argv;        /* Argument strings. */
             return TCL_ERROR;
         }
     }
-    if (first < 0)
-    {
+    if (first < 0) {
         first = 0;
     }
 
@@ -793,22 +709,18 @@ char **argv;        /* Argument strings. */
 
     size = 0;
     element = argv[1];
-    for (count = 0, p1 = argv[1]; (count < first) && (*p1 != 0); count++)
-    {
+    for (count = 0, p1 = argv[1]; (count < first) && (*p1 != 0); count++) {
         result
         = TclFindElement(interp, p1, &element, &next, &size, ( int * )NULL);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             return result;
         }
-        if ((*next == 0) && firstIsEnd)
-        {
+        if ((*next == 0) && firstIsEnd) {
             break;
         }
         p1 = next;
     }
-    if (*p1 == 0)
-    {
+    if (*p1 == 0) {
         Tcl_AppendResult(
         interp, "list doesn't contain element ", argv[2], ( char * )NULL);
         return TCL_ERROR;
@@ -818,12 +730,10 @@ char **argv;        /* Argument strings. */
      * Skip over the elements of the list up through "last".
      */
 
-    for (p2 = p1; (count <= last) && (*p2 != 0); count++)
-    {
+    for (p2 = p1; (count <= last) && (*p2 != 0); count++) {
         result = TclFindElement(
         interp, p2, &dummy, &p2, ( int * )NULL, ( int * )NULL);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             return result;
         }
     }
@@ -836,8 +746,7 @@ char **argv;        /* Argument strings. */
      */
 
     while ((p1 != argv[1]) && (isspace(UCHAR(p1[-1])))
-           && (((p1 - 1) == argv[1]) || (p1[-2] != '\\')))
-    {
+           && (((p1 - 1) == argv[1]) || (p1[-2] != '\\'))) {
         p1--;
     }
     savedChar = *p1;
@@ -849,8 +758,7 @@ char **argv;        /* Argument strings. */
      * Add the new list elements.
      */
 
-    for (i = 4; i < argc; i++)
-    {
+    for (i = 4; i < argc; i++) {
         Tcl_AppendElement(interp, argv[i]);
     }
 
@@ -858,14 +766,10 @@ char **argv;        /* Argument strings. */
      * Append the remainder of the original list.
      */
 
-    if (*p2 != 0)
-    {
-        if (*interp->result == 0)
-        {
+    if (*p2 != 0) {
+        if (*interp->result == 0) {
             Tcl_SetResult(interp, p2, TCL_VOLATILE);
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp, " ", p2, ( char * )NULL);
         }
     }
@@ -904,22 +808,14 @@ char **argv;        /* Argument strings. */
     int i, match, mode, index;
 
     mode = GLOB;
-    if (argc == 4)
-    {
-        if (strcmp(argv[1], "-exact") == 0)
-        {
+    if (argc == 4) {
+        if (strcmp(argv[1], "-exact") == 0) {
             mode = EXACT;
-        }
-        else if (strcmp(argv[1], "-glob") == 0)
-        {
+        } else if (strcmp(argv[1], "-glob") == 0) {
             mode = GLOB;
-        }
-        else if (strcmp(argv[1], "-regexp") == 0)
-        {
+        } else if (strcmp(argv[1], "-regexp") == 0) {
             mode = REGEXP;
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp,
                              "bad search mode \"",
                              argv[1],
@@ -927,9 +823,7 @@ char **argv;        /* Argument strings. */
                              ( char * )NULL);
             return TCL_ERROR;
         }
-    }
-    else if (argc != 3)
-    {
+    } else if (argc != 3) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -937,16 +831,14 @@ char **argv;        /* Argument strings. */
                          ( char * )NULL);
         return TCL_ERROR;
     }
-    if (Tcl_SplitList(interp, argv[argc - 2], &listArgc, &listArgv) != TCL_OK)
-    {
+    if (Tcl_SplitList(interp, argv[argc - 2], &listArgc, &listArgv)
+        != TCL_OK) {
         return TCL_ERROR;
     }
     index = -1;
-    for (i = 0; i < listArgc; i++)
-    {
+    for (i = 0; i < listArgc; i++) {
         match = 0;
-        switch (mode)
-        {
+        switch (mode) {
         case EXACT:
             match = (strcmp(listArgv[i], argv[argc - 1]) == 0);
             break;
@@ -955,15 +847,13 @@ char **argv;        /* Argument strings. */
             break;
         case REGEXP:
             match = Tcl_RegExpMatch(interp, listArgv[i], argv[argc - 1]);
-            if (match < 0)
-            {
+            if (match < 0) {
                 ckfree(( char * )listArgv);
                 return TCL_ERROR;
             }
             break;
         }
-        if (match)
-        {
+        if (match) {
             index = i;
             break;
         }
@@ -1003,8 +893,7 @@ char **argv;        /* Argument strings. */
     char *command = NULL; /* Initialization needed only to
                            * prevent compiler warning. */
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(
         interp,
         "wrong # args: should be \"",
@@ -1015,8 +904,7 @@ char **argv;        /* Argument strings. */
         return TCL_ERROR;
     }
 
-    if (sortInterp != NULL)
-    {
+    if (sortInterp != NULL) {
         interp->result = "can't invoke \"lsort\" recursively";
         return TCL_ERROR;
     }
@@ -1029,11 +917,9 @@ char **argv;        /* Argument strings. */
     sortMode = ASCII;
     sortIncreasing = 1;
     sortCode = TCL_OK;
-    for (i = 1; i < argc - 1; i++)
-    {
+    for (i = 1; i < argc - 1; i++) {
         length = strlen(argv[i]);
-        if (length < 2)
-        {
+        if (length < 2) {
         badSwitch:
             Tcl_AppendResult(
             interp,
@@ -1046,14 +932,11 @@ char **argv;        /* Argument strings. */
             goto done;
         }
         c = argv[i][1];
-        if ((c == 'a') && (strncmp(argv[i], "-ascii", length) == 0))
-        {
+        if ((c == 'a') && (strncmp(argv[i], "-ascii", length) == 0)) {
             sortMode = ASCII;
-        }
-        else if ((c == 'c') && (strncmp(argv[i], "-command", length) == 0))
-        {
-            if (i == argc - 2)
-            {
+        } else if ((c == 'c')
+                   && (strncmp(argv[i], "-command", length) == 0)) {
+            if (i == argc - 2) {
                 Tcl_AppendResult(interp,
                                  "\"-command\" must be",
                                  " followed by comparison command",
@@ -1064,51 +947,39 @@ char **argv;        /* Argument strings. */
             sortMode = COMMAND;
             command = argv[i + 1];
             i++;
-        }
-        else if ((c == 'd') && (strncmp(argv[i], "-decreasing", length) == 0))
-        {
+        } else if ((c == 'd')
+                   && (strncmp(argv[i], "-decreasing", length) == 0)) {
             sortIncreasing = 0;
-        }
-        else if ((c == 'i') && (length >= 4)
-                 && (strncmp(argv[i], "-increasing", length) == 0))
-        {
+        } else if ((c == 'i') && (length >= 4)
+                   && (strncmp(argv[i], "-increasing", length) == 0)) {
             sortIncreasing = 1;
-        }
-        else if ((c == 'i') && (length >= 4)
-                 && (strncmp(argv[i], "-integer", length) == 0))
-        {
+        } else if ((c == 'i') && (length >= 4)
+                   && (strncmp(argv[i], "-integer", length) == 0)) {
             sortMode = INTEGER;
-        }
-        else if ((c == 'r') && (strncmp(argv[i], "-real", length) == 0))
-        {
+        } else if ((c == 'r') && (strncmp(argv[i], "-real", length) == 0)) {
             sortMode = REAL;
-        }
-        else
-        {
+        } else {
             goto badSwitch;
         }
     }
-    if (sortMode == COMMAND)
-    {
+    if (sortMode == COMMAND) {
         Tcl_DStringInit(&sortCmd);
         Tcl_DStringAppend(&sortCmd, command, -1);
     }
 
-    if (Tcl_SplitList(interp, argv[argc - 1], &listArgc, &listArgv) != TCL_OK)
-    {
+    if (Tcl_SplitList(interp, argv[argc - 1], &listArgc, &listArgv)
+        != TCL_OK) {
         sortCode = TCL_ERROR;
         goto done;
     }
     qsort(
     ( VOID * )listArgv, ( size_t )listArgc, sizeof(char *), SortCompareProc);
-    if (sortCode == TCL_OK)
-    {
+    if (sortCode == TCL_OK) {
         Tcl_ResetResult(interp);
         interp->result = Tcl_Merge(listArgc, listArgv);
         interp->freeProc = TCL_DYNAMIC;
     }
-    if (sortMode == COMMAND)
-    {
+    if (sortMode == COMMAND) {
         Tcl_DStringFree(&sortCmd);
     }
     ckfree(( char * )listArgv);
@@ -1146,8 +1017,7 @@ static int SortCompareProc(first, second) CONST VOID *first,
     char *secondString = *(( char ** )second);
 
     order = 0;
-    if (sortCode != TCL_OK)
-    {
+    if (sortCode != TCL_OK) {
         /*
          * Once an error has occurred, skip any future comparisons
          * so as to preserve the error message in sortInterp->result.
@@ -1155,56 +1025,41 @@ static int SortCompareProc(first, second) CONST VOID *first,
 
         return order;
     }
-    if (sortMode == ASCII)
-    {
+    if (sortMode == ASCII) {
         order = strcmp(firstString, secondString);
-    }
-    else if (sortMode == INTEGER)
-    {
+    } else if (sortMode == INTEGER) {
         int a, b;
 
         if ((Tcl_GetInt(sortInterp, firstString, &a) != TCL_OK)
-            || (Tcl_GetInt(sortInterp, secondString, &b) != TCL_OK))
-        {
+            || (Tcl_GetInt(sortInterp, secondString, &b) != TCL_OK)) {
             Tcl_AddErrorInfo(
             sortInterp,
             "\n    (converting list element from string to integer)");
             sortCode = TCL_ERROR;
             return order;
         }
-        if (a > b)
-        {
+        if (a > b) {
             order = 1;
-        }
-        else if (b > a)
-        {
+        } else if (b > a) {
             order = -1;
         }
-    }
-    else if (sortMode == REAL)
-    {
+    } else if (sortMode == REAL) {
         double a, b;
 
         if ((Tcl_GetDouble(sortInterp, firstString, &a) != TCL_OK)
-            || (Tcl_GetDouble(sortInterp, secondString, &b) != TCL_OK))
-        {
+            || (Tcl_GetDouble(sortInterp, secondString, &b) != TCL_OK)) {
             Tcl_AddErrorInfo(
             sortInterp,
             "\n    (converting list element from string to real)");
             sortCode = TCL_ERROR;
             return order;
         }
-        if (a > b)
-        {
+        if (a > b) {
             order = 1;
-        }
-        else if (b > a)
-        {
+        } else if (b > a) {
             order = -1;
         }
-    }
-    else
-    {
+    } else {
         int oldLength;
         char *end;
 
@@ -1218,8 +1073,7 @@ static int SortCompareProc(first, second) CONST VOID *first,
         Tcl_DStringAppendElement(&sortCmd, secondString);
         sortCode = Tcl_Eval(sortInterp, Tcl_DStringValue(&sortCmd));
         Tcl_DStringTrunc(&sortCmd, oldLength);
-        if (sortCode != TCL_OK)
-        {
+        if (sortCode != TCL_OK) {
             Tcl_AddErrorInfo(sortInterp,
                              "\n    (user-defined comparison command)");
             return order;
@@ -1230,8 +1084,7 @@ static int SortCompareProc(first, second) CONST VOID *first,
          */
 
         order = strtol(sortInterp->result, &end, 0);
-        if ((end == sortInterp->result) || (*end != 0))
-        {
+        if ((end == sortInterp->result) || (*end != 0)) {
             Tcl_ResetResult(sortInterp);
             Tcl_AppendResult(sortInterp,
                              "comparison command returned non-numeric result",
@@ -1240,8 +1093,7 @@ static int SortCompareProc(first, second) CONST VOID *first,
             return order;
         }
     }
-    if (!sortIncreasing)
-    {
+    if (!sortIncreasing) {
         order = -order;
     }
     return order;

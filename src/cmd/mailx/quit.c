@@ -87,8 +87,7 @@ tempinit(void)
         || !(cp = strrchr(state.tmp.dir, '/'))
            && !(cp = strrchr(state.tmp.dir, '\\')))
         state.tmp.dir = _PATH_TMP;
-    else
-    {
+    else {
         *++cp = 0;
         if (!(cp = ( char * )malloc(cp - state.tmp.dir + 1)))
             note(ERROR | FATAL, "Out of space");
@@ -145,10 +144,8 @@ edstop(void)
         update |= MSAVE;
     for (mp = state.msg.list, gotcha = 0;
          mp < state.msg.list + state.msg.count;
-         mp++)
-    {
-        if (!(mp->m_flag & MNONE))
-        {
+         mp++) {
+        if (!(mp->m_flag & MNONE)) {
             if (mp->m_flag & MNEW)
                 msgflags(mp, MSTATUS, MNEW);
             if (mp->m_flag & update)
@@ -158,23 +155,20 @@ edstop(void)
                 fprintf(news, "%s\n", s);
         }
     }
-    if (news)
-    {
+    if (news) {
         fileclose(news);
         goto done;
     }
     if (!gotcha)
         goto done;
-    if (state.folder == FMH)
-    {
+    if (state.folder == FMH) {
         if (!state.incorporating)
             note(PROMPT, "\"%s\" ", state.path.mail);
         mhgetcontext(&mh, state.path.mail, 1);
         mh.dot = state.msg.dot - state.msg.list + 1;
-        for (mp = state.msg.list; mp < state.msg.list + state.msg.count; mp++)
-        {
-            if ((mp->m_flag & update) && !(mp->m_flag & MNONE))
-            {
+        for (mp = state.msg.list; mp < state.msg.list + state.msg.count;
+             mp++) {
+            if ((mp->m_flag & update) && !(mp->m_flag & MNONE)) {
                 sfprintf(state.path.temp,
                          "%s/%d",
                          state.path.mail,
@@ -182,17 +176,14 @@ edstop(void)
                 temp = struse(state.path.temp);
                 if (mp->m_flag & (MDELETE | MSAVE))
                     rm(temp);
-                else
-                {
+                else {
                     sfprintf(state.path.move,
                              "%s/%d~",
                              state.path.mail,
                              mp - state.msg.list + 1);
                     move = struse(state.path.move);
-                    if (obuf = fileopen(move, "Ew"))
-                    {
-                        if (copy(mp, obuf, NiL, NiL, 0) < 0)
-                        {
+                    if (obuf = fileopen(move, "Ew")) {
+                        if (copy(mp, obuf, NiL, NiL, 0) < 0) {
                             note(SYSTEM, "%s", temp);
                             rm(move);
                             relsesigs();
@@ -209,21 +200,16 @@ edstop(void)
         mhputcontext(&mh, state.path.mail);
         if (!state.incorporating)
             note(0, "complete");
-    }
-    else
-    {
+    } else {
         ibuf = 0;
-        if (stat(state.path.mail, &st) >= 0 && st.st_size > state.mailsize)
-        {
+        if (stat(state.path.mail, &st) >= 0 && st.st_size > state.mailsize) {
             temp = state.path.path;
             filetemp(temp, sizeof(state.path.path), 'B', 0);
-            if (!(obuf = fileopen(temp, "Ew")))
-            {
+            if (!(obuf = fileopen(temp, "Ew"))) {
                 relsesigs();
                 reset(0);
             }
-            if (!(ibuf = fileopen(state.path.mail, "Er")))
-            {
+            if (!(ibuf = fileopen(state.path.mail, "Er"))) {
                 fileclose(obuf);
                 rm(temp);
                 relsesigs();
@@ -233,8 +219,7 @@ edstop(void)
             filecopy(NiL, ibuf, NiL, obuf, NiL, ( off_t )0, NiL, NiL, 0);
             fileclose(ibuf);
             fileclose(obuf);
-            if (!(ibuf = fileopen(temp, "Er")))
-            {
+            if (!(ibuf = fileopen(temp, "Er"))) {
                 rm(temp);
                 relsesigs();
                 reset(0);
@@ -243,8 +228,7 @@ edstop(void)
         }
         if (!state.incorporating)
             note(PROMPT, "\"%s\" ", state.path.mail);
-        if (!(obuf = fileopen(state.path.mail, "Er+")))
-        {
+        if (!(obuf = fileopen(state.path.mail, "Er+"))) {
             relsesigs();
             reset(0);
         }
@@ -253,36 +237,29 @@ edstop(void)
         update |= MNONE;
         c = 0;
         for (mp = state.msg.list; mp < state.msg.list + state.msg.count; mp++)
-            if (!(mp->m_flag & update))
-            {
+            if (!(mp->m_flag & update)) {
                 c = 1;
-                if (copy(mp, obuf, NiL, NiL, 0) < 0)
-                {
+                if (copy(mp, obuf, NiL, NiL, 0) < 0) {
                     note(SYSTEM, "%s", state.path.mail);
                     relsesigs();
                     reset(0);
                 }
             }
         gotcha = !c && !ibuf;
-        if (ibuf)
-        {
+        if (ibuf) {
             filecopy(NiL, ibuf, NiL, obuf, NiL, ( off_t )0, NiL, NiL, 0);
             fileclose(ibuf);
         }
-        if (fileclose(obuf))
-        {
+        if (fileclose(obuf)) {
             note(SYSTEM, "%s", state.path.mail);
             relsesigs();
             reset(0);
         }
-        if (!state.incorporating)
-        {
-            if (gotcha)
-            {
+        if (!state.incorporating) {
+            if (gotcha) {
                 rm(state.path.mail);
                 note(0, "removed");
-            }
-            else
+            } else
                 note(0, "complete");
         }
     }
@@ -311,11 +288,9 @@ writeback(FILE *res)
         filecopy(NiL, res, NiL, obuf, NiL, ( off_t )0, NiL, NiL, 0);
 #endif
     for (mp = state.msg.list; mp < state.msg.list + state.msg.count; mp++)
-        if ((mp->m_flag & MPRESERVE) || !(mp->m_flag & MTOUCH))
-        {
+        if ((mp->m_flag & MPRESERVE) || !(mp->m_flag & MTOUCH)) {
             p++;
-            if (copy(mp, obuf, NiL, NiL, 0) < 0)
-            {
+            if (copy(mp, obuf, NiL, NiL, 0) < 0) {
                 note(SYSTEM, "%s", state.path.mail);
                 fileclose(obuf);
                 return -1;
@@ -324,14 +299,12 @@ writeback(FILE *res)
 #if APPEND_MAILBOX
     if (res
         && filecopy(
-           NiL, res, state.path.mail, obuf, NiL, ( off_t )0, NiL, NiL, 0))
-    {
+           NiL, res, state.path.mail, obuf, NiL, ( off_t )0, NiL, NiL, 0)) {
         fileclose(obuf);
         return -1;
     }
 #endif
-    if (filetrunc(obuf))
-    {
+    if (filetrunc(obuf)) {
         note(SYSTEM, "%s", state.path.mail);
         fileclose(obuf);
         return -1;
@@ -385,13 +358,11 @@ quit(void)
      * If editing (not reading system mail box), then do the work
      * in edstop()
      */
-    if (state.edit)
-    {
+    if (state.edit) {
         edstop();
         return;
     }
-    if (state.folder != FIMAP)
-    {
+    if (state.folder != FIMAP) {
 
         /*
          * See if there any messages to save in mbox.  If no, we
@@ -410,8 +381,7 @@ quit(void)
         size = state.openstat.st_size;
         filelock(state.path.mail, fbuf, 1);
         rbuf = 0;
-        if (size > state.mailsize)
-        {
+        if (size > state.mailsize) {
             note(0, "New mail has arrived");
             if (!(rbuf = fileopen(state.tmp.more, "w")) || !fbuf)
                 goto newmail;
@@ -435,8 +405,7 @@ quit(void)
                 goto newmail;
             rm(state.tmp.more);
         }
-    }
-    else
+    } else
         fbuf = 0;
 
     /*
@@ -448,13 +417,11 @@ quit(void)
     nohold = MBOX | MSAVE | MDELETE | MPRESERVE;
     if (state.var.keepsave)
         nohold &= ~MSAVE;
-    for (mp = state.msg.list; mp < state.msg.list + state.msg.count; mp++)
-    {
+    for (mp = state.msg.list; mp < state.msg.list + state.msg.count; mp++) {
         set = clr = 0;
         if (mp->m_flag & (MBOX | MDELETE | MPRESERVE | MSAVE))
             clr |= MSPAM;
-        if (mp->m_flag & MNEW)
-        {
+        if (mp->m_flag & MNEW) {
             set |= MSTATUS;
             clr |= MNEW;
         }
@@ -472,10 +439,8 @@ quit(void)
                                              : ( FILE * )0;
     for (c = p = x = 0, mp = state.msg.list;
          mp < state.msg.list + state.msg.count;
-         mp++)
-    {
-        if (mp->m_flag & MSPAM)
-        {
+         mp++) {
+        if (mp->m_flag & MSPAM) {
             msgflags(mp, MDELETE | MTOUCH, MBOX | MPRESERVE | MODIFY);
             x++;
         }
@@ -491,8 +456,7 @@ quit(void)
     }
     if (news)
         fileclose(news);
-    if (p == state.msg.count && !modify && !anystat)
-    {
+    if (p == state.msg.count && !modify && !anystat) {
         note(
         0, "Held %d message%s in %s", p, p == 1 ? "" : "s", state.path.mail);
         if (fbuf)
@@ -504,39 +468,33 @@ quit(void)
         && (!state.var.spamlog || !*state.var.spamlog
             || !(xbuf = fileopen(xbox = expand(state.var.spamlog, 1), "a"))))
         x = 0;
-    if (state.folder == FIMAP)
-    {
-        for (mp = state.msg.list; mp < state.msg.list + state.msg.count; mp++)
-        {
+    if (state.folder == FIMAP) {
+        for (mp = state.msg.list; mp < state.msg.list + state.msg.count;
+             mp++) {
             if (mp->m_flag & MSAVE)
                 msgflags(mp, MDELETE, 0);
-            if (xbuf && (mp->m_flag & (MSPAM | MDELETE)) == (MSPAM | MDELETE))
-            {
-                if (copy(mp, xbuf, &state.saveignore, NiL, 0) < 0)
-                {
+            if (xbuf
+                && (mp->m_flag & (MSPAM | MDELETE)) == (MSPAM | MDELETE)) {
+                if (copy(mp, xbuf, &state.saveignore, NiL, 0) < 0) {
                     msgflags(mp, MPRESERVE, MSPAM | MDELETE | MTOUCH);
                     x--;
                 }
             }
         }
-        if (xbuf)
-        {
+        if (xbuf) {
             fileclose(xbuf);
             if (x)
                 note(
                 0, "Saved %d message%s in %s", x, x == 1 ? "" : "s", xbox);
         }
     }
-    if (state.msg.imap.state)
-    {
+    if (state.msg.imap.state) {
         imap_quit();
         if (state.folder == FIMAP)
             return;
     }
-    if (!c && !x)
-    {
-        if (p)
-        {
+    if (!c && !x) {
+        if (p) {
             writeback(rbuf);
             fileclose(fbuf);
             fileclose(xbuf);
@@ -554,26 +512,20 @@ quit(void)
 
     mbox = expand("&", 1);
     mcount = c;
-    if (state.var.append)
-    {
-        if (!(obuf = fileopen(mbox, "Ea")))
-        {
+    if (state.var.append) {
+        if (!(obuf = fileopen(mbox, "Ea"))) {
             fileclose(fbuf);
             fileclose(xbuf);
             return;
         }
         chmod(mbox, MAILMODE);
-    }
-    else
-    {
-        if (!(obuf = fileopen(state.tmp.quit, "Ew")))
-        {
+    } else {
+        if (!(obuf = fileopen(state.tmp.quit, "Ew"))) {
             fileclose(fbuf);
             fileclose(xbuf);
             return;
         }
-        if (!(ibuf = fileopen(state.tmp.quit, "Er")))
-        {
+        if (!(ibuf = fileopen(state.tmp.quit, "Er"))) {
             rm(state.tmp.quit);
             fileclose(obuf);
             fileclose(fbuf);
@@ -581,11 +533,16 @@ quit(void)
             return;
         }
         rm(state.tmp.quit);
-        if (abuf = fileopen(mbox, "r"))
-        {
-            if (filecopy(
-                mbox, abuf, state.tmp.quit, obuf, NiL, ( off_t )0, NiL, NiL, 0))
-            {
+        if (abuf = fileopen(mbox, "r")) {
+            if (filecopy(mbox,
+                         abuf,
+                         state.tmp.quit,
+                         obuf,
+                         NiL,
+                         ( off_t )0,
+                         NiL,
+                         NiL,
+                         0)) {
                 fileclose(abuf);
                 fileclose(ibuf);
                 fileclose(obuf);
@@ -595,8 +552,7 @@ quit(void)
             }
             fileclose(abuf);
         }
-        if (fileclose(obuf))
-        {
+        if (fileclose(obuf)) {
             note(SYSTEM, "%s", state.tmp.quit);
             fileclose(ibuf);
             fileclose(obuf);
@@ -606,20 +562,16 @@ quit(void)
         }
         close(open(
         mbox, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY | O_cloexec, MAILMODE));
-        if (!(obuf = fileopen(mbox, "Er+")))
-        {
+        if (!(obuf = fileopen(mbox, "Er+"))) {
             fileclose(ibuf);
             fileclose(fbuf);
             fileclose(xbuf);
             return;
         }
     }
-    for (mp = state.msg.list; mp < state.msg.list + state.msg.count; mp++)
-    {
-        if (mp->m_flag & MBOX)
-        {
-            if (copy(mp, obuf, &state.saveignore, NiL, 0) < 0)
-            {
+    for (mp = state.msg.list; mp < state.msg.list + state.msg.count; mp++) {
+        if (mp->m_flag & MBOX) {
+            if (copy(mp, obuf, &state.saveignore, NiL, 0) < 0) {
                 note(SYSTEM, "%s", mbox);
                 fileclose(ibuf);
                 fileclose(obuf);
@@ -627,19 +579,15 @@ quit(void)
                 fileclose(xbuf);
                 return;
             }
-        }
-        else if (xbuf
-                 && (mp->m_flag & (MSPAM | MDELETE)) == (MSPAM | MDELETE))
-        {
-            if (copy(mp, xbuf, &state.saveignore, NiL, 0) < 0)
-            {
+        } else if (xbuf
+                   && (mp->m_flag & (MSPAM | MDELETE)) == (MSPAM | MDELETE)) {
+            if (copy(mp, xbuf, &state.saveignore, NiL, 0) < 0) {
                 msgflags(mp, MPRESERVE, MSPAM | MDELETE | MTOUCH);
                 x--;
             }
         }
     }
-    if (xbuf)
-    {
+    if (xbuf) {
         fileclose(xbuf);
         if (x)
             note(0, "Saved %d message%s in %s", x, x == 1 ? "" : "s", xbox);
@@ -651,14 +599,12 @@ quit(void)
      * If we are appending, this is unnecessary.
      */
 
-    if (!state.var.append)
-    {
+    if (!state.var.append) {
         rewind(ibuf);
         filecopy(NiL, ibuf, NiL, obuf, NiL, ( off_t )0, NiL, NiL, 0);
         fileclose(ibuf);
     }
-    if (filetrunc(obuf))
-    {
+    if (filetrunc(obuf)) {
         note(SYSTEM, "%s", mbox);
         fileclose(obuf);
         fileclose(fbuf);
@@ -674,8 +620,7 @@ quit(void)
      * the system mailbox, if any were requested.
      */
 
-    if (p)
-    {
+    if (p) {
         writeback(rbuf);
         fileclose(fbuf);
         return;
@@ -687,8 +632,7 @@ quit(void)
      */
 
 cream:
-    if (rbuf)
-    {
+    if (rbuf) {
         if (!(abuf = fileopen(state.path.mail, "r+")))
             goto newmail;
         filecopy(NiL, rbuf, NiL, abuf, NiL, ( off_t )0, NiL, NiL, 0);

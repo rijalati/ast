@@ -101,23 +101,18 @@ simulate(void *arg)
 
     list = tdata->list;
     nalloc = tdata->nalloc;
-    for (k = 0; k < nalloc; ++k)
-    {
+    for (k = 0; k < nalloc; ++k) {
         /* update all that needs updating */
-        for (up = list[k].free; up; up = next)
-        {
+        for (up = list[k].free; up; up = next) {
             next = up->next;
 
-            if ((rand = RANDOM() % 100) < 95)
-            {
+            if ((rand = RANDOM() % 100) < 95) {
                 memset(up->data, CH_FREE, up->size);
                 free(up->data);
                 asosubsize(&Curbusy, up->size);
                 up->data = NIL(void *);
                 up->size = 0;
-            }
-            else
-            {
+            } else {
                 sz = RANDOM() % (2 * up->size) + 1;
                 if (!(up->data = realloc(up->data, sz)))
                     terror("Thread %d: failed to realloc(org=%d sz=%d)",
@@ -137,8 +132,7 @@ simulate(void *arg)
                 memset(up->data, CH_REALLOC, sz);
 
                 /* get a random point in the future to update */
-                if ((p = k + 1 + RANDOM() % Life) < nalloc)
-                {
+                if ((p = k + 1 + RANDOM() % Life) < nalloc) {
                     up->next = list[p].free;
                     list[p].free = up;
                 }
@@ -146,21 +140,17 @@ simulate(void *arg)
         }
 
         /* get a random size in given range */
-        if (RANDOM() % 100 < 95)
-        {
+        if (RANDOM() % 100 < 95) {
             sz = RANDOM() % (Smallhi - Smalllo + 1) + Smalllo;
             lf = Smalllf;
-        }
-        else
-        {
+        } else {
             sz = RANDOM() % (Largehi - Largelo + 1) + Largelo;
             lf = Largelf;
         }
 
         if (!(list[k].data = malloc(sz)))
             terror("Thread %d: failed to malloc(%d)", thread, sz);
-        if ((a = ( unsigned long )(list[k].data) % ALIGNMENT) != 0)
-        {
+        if ((a = ( unsigned long )(list[k].data) % ALIGNMENT) != 0) {
             if (warn_align)
                 tinfo("Thread %d: block=%#0x mod %d == %d",
                       thread,
@@ -176,8 +166,7 @@ simulate(void *arg)
         memset(list[k].data, CH_MALLOC, sz);
 
         /* set time to update */
-        if ((p = k + 1 + lf - RANDOM() % (lf / 5)) < nalloc)
-        {
+        if ((p = k + 1 + lf - RANDOM() % (lf / 5)) < nalloc) {
             list[k].next = list[p].free;
             list[p].free = &list[k];
         }
@@ -193,8 +182,7 @@ tmain()
     void *status;
     pthread_t th[N_THREAD];
 
-    for (; argc > 1; --argc, ++argv)
-    {
+    for (; argc > 1; --argc, ++argv) {
         if (argv[1][0] != '-')
             continue;
         else if (argv[1][1] == 'a')
@@ -203,15 +191,12 @@ tmain()
             Life = atoi(argv[1] + 2);
         else if (argv[1][1] == 't')
             Nthread = atoi(argv[1] + 2);
-        else if (argv[1][1] == 'z')
-        {
+        else if (argv[1][1] == 'z') {
             sscanf(argv[1] + 2, "%d,%d,%d", &arg1, &arg2, &arg3);
             Smalllo = arg1;
             Smallhi = arg2;
             Smalllf = arg3;
-        }
-        else if (argv[1][1] == 'Z')
-        {
+        } else if (argv[1][1] == 'Z') {
             sscanf(argv[1] + 2, "%d,%d,%d", &arg1, &arg2, &arg3);
             Largelo = arg1;
             Largehi = arg2;
@@ -227,8 +212,7 @@ tmain()
     nalloc = Nalloc / Nthread; /* #of allocations per thread */
     Nalloc = nalloc * Nthread;
 
-    for (i = 0; i < Nthread; ++i)
-    {
+    for (i = 0; i < Nthread; ++i) {
         Tdata[i].nalloc = nalloc;
         sz = Tdata[i].nalloc * sizeof(Piece_t);
         if (!(Tdata[i].list = ( Piece_t * )malloc(sz)))
@@ -251,34 +235,28 @@ tmain()
     Largehi,
     Largelf);
 
-    for (i = 0; i < Nthread; ++i)
-    {
+    for (i = 0; i < Nthread; ++i) {
         if ((rv
              = pthread_create(&th[i], NULL, simulate, ( void * )(( long )i)))
             != 0)
             terror("Failed to create simulation thread %d", i);
     }
 
-    for (i = 0; i < Nthread; ++i)
-    {
+    for (i = 0; i < Nthread; ++i) {
         if ((rv = pthread_join(th[i], &status)) != 0)
             terror("Failed waiting for simulation thread %d", i);
     }
 
-    for (i = 0; i < Nthread; ++i)
-    {
-        for (k = 0; k < Tdata[i].nalloc; ++k)
-        {
+    for (i = 0; i < Nthread; ++i) {
+        for (k = 0; k < Tdata[i].nalloc; ++k) {
             if (Tdata[i].list[k].size == 0)
                 continue;
             if ((ch = Tdata[i].list[k].data[0]) == CH_MALLOC
-                || ch == CH_REALLOC)
-            {
+                || ch == CH_REALLOC) {
                 for (t = 1; t < Tdata[i].list[k].size; ++t)
                     if (Tdata[i].list[k].data[t] != ch)
                         terror("Corrupted allocated data");
-            }
-            else
+            } else
                 terror("Unknown allocated data");
         }
     }

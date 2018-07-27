@@ -92,11 +92,9 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
     int n;
     int i;
 
-    switch (fp->status)
-    {
+    switch (fp->status) {
     case CS_POLL_CLOSE:
-        if (con = ( Connection_t * )fp->data)
-        {
+        if (con = ( Connection_t * )fp->data) {
             if (con->service)
                 error(ERROR_SYSTEM | 3, "service termination exit");
             free(con);
@@ -105,8 +103,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
     case CS_POLL_READ:
         con = ( Connection_t * )fp->data;
         if ((n = csread(css->state, fp->fd, buf, sizeof(buf) - 1, CS_LINE))
-            <= 0)
-        {
+            <= 0) {
             if (con->service)
                 error(ERROR_SYSTEM | 3, "service termination exit");
             return -1;
@@ -114,38 +111,29 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
         buf[n] = 0;
         for (s = buf; isspace(*s); s++)
             ;
-        if (con->service)
-        {
+        if (con->service) {
             for (i = 0; isdigit(*s); i = i * 10 + *s++ - '0')
                 ;
             for (; isspace(*s); s++)
                 ;
-            if (*s && cssfd(css, i, 0))
-            {
+            if (*s && cssfd(css, i, 0)) {
                 n -= s - buf;
                 if (cswrite(css->state, i, s, n) != n)
                     cssfd(css, i, CS_POLL_CLOSE);
             }
-        }
-        else if (*s == '!')
-        {
+        } else if (*s == '!') {
             if ((n -= ++s - buf) > 0
                 && cswrite(css->state, state->proc->wfd, s, n) != n)
                 return -1;
-        }
-        else
-        {
+        } else {
             for (t = s; *t && !isspace(*t); t++)
                 ;
             for (; isspace(*t); t++)
                 ;
-            if (*s == 'Q' && !*t)
-            {
+            if (*s == 'Q' && !*t) {
                 if (con->id.uid == geteuid())
                     error(3, "service quit exit");
-            }
-            else
-            {
+            } else {
                 n = sfprintf(state->tmp, "%-.*s%d %s", t - s, s, fp->fd, t);
                 if (!(s = sfstruse(state->tmp)))
                     return -1;
@@ -161,8 +149,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
 static int
 exceptf(Css_t *css, unsigned long op, unsigned long arg, Cssdisc_t *disc)
 {
-    switch (op)
-    {
+    switch (op) {
     case CSS_INTERRUPT:
         error(ERROR_SYSTEM | 3, "%s: interrupt exit", fmtsignal(arg));
         return 0;
@@ -193,10 +180,8 @@ main(int argc, char **argv)
     state.disc.actionf = actionf;
     state.disc.errorf = errorf;
     state.disc.exceptf = exceptf;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 't':
             state.disc.timeout = strelapsed(opt_info.arg, &e, 1);
             if (*e)

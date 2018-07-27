@@ -83,12 +83,10 @@ int tm;                            /* time in millisecs for select/poll	*/
             continue;
 
         /* has discipline, ask its opinion */
-        if (f->disc && f->disc->exceptf)
-        {
+        if (f->disc && f->disc->exceptf) {
             if ((m = (*f->disc->exceptf)(f, SF_DPOLL, &tm, f->disc)) < 0)
                 continue;
-            else if (m > 0)
-            {
+            else if (m > 0) {
                 status[r] = m & SF_RDWR;
                 continue;
             }
@@ -109,13 +107,11 @@ int tm;                            /* time in millisecs for select/poll	*/
 
     np = -1;
 #if _lib_poll
-    if (c > 0)
-    {
+    if (c > 0) {
         struct pollfd *fds;
 
         /* construct the poll array */
-        for (m = 0, r = 0; r < c; ++r, ++m)
-        {
+        for (m = 0, r = 0; r < c; ++r, ++m) {
             f = fa[check[r]];
             if (HASAUXFD(f))
                 m += 1;
@@ -123,8 +119,7 @@ int tm;                            /* time in millisecs for select/poll	*/
         if (!(fds = ( struct pollfd * )malloc(m * sizeof(struct pollfd))))
             return -1;
 
-        for (m = 0, r = 0; r < c; ++r, ++m)
-        {
+        for (m = 0, r = 0; r < c; ++r, ++m) {
             f = fa[check[r]];
 
             fds[m].fd = f->file;
@@ -133,10 +128,10 @@ int tm;                            /* time in millisecs for select/poll	*/
             if ((f->flags & SF_WRITE) && !WRREADY(f))
                 fds[m].events |= POLLOUT;
 
-            if ((f->flags & SF_READ) && !RDREADY(f))
-            { /* a sfpopen situation with two file descriptors */
-                if ((f->mode & SF_WRITE) && HASAUXFD(f))
-                {
+            if ((f->flags & SF_READ)
+                && !RDREADY(f)) { /* a sfpopen situation with two file
+                                     descriptors */
+                if ((f->mode & SF_WRITE) && HASAUXFD(f)) {
                     m += 1;
                     fds[m].fd = f->proc->file;
                     fds[m].revents = 0;
@@ -146,8 +141,7 @@ int tm;                            /* time in millisecs for select/poll	*/
             }
         }
 
-        while ((np = SFPOLL(fds, m, tm)) < 0)
-        {
+        while ((np = SFPOLL(fds, m, tm)) < 0) {
             if (errno == eintr || errno == EAGAIN)
                 errno = 0;
             else
@@ -156,18 +150,15 @@ int tm;                            /* time in millisecs for select/poll	*/
         if (np > 0) /* poll succeeded */
             np = c;
 
-        for (m = 0, r = 0; r < np; ++r, ++m)
-        {
+        for (m = 0, r = 0; r < np; ++r, ++m) {
             f = fa[check[r]];
 
-            if ((f->flags & SF_WRITE) && !WRREADY(f))
-            {
+            if ((f->flags & SF_WRITE) && !WRREADY(f)) {
                 if (fds[m].revents & (POLLOUT | POLLHUP | POLLERR))
                     status[check[r]] |= SF_WRITE;
             }
 
-            if ((f->flags & SF_READ) && !RDREADY(f))
-            {
+            if ((f->flags & SF_READ) && !RDREADY(f)) {
                 if ((f->mode & SF_WRITE) && HASAUXFD(f))
                     m += 1;
                 if (fds[m].revents & (POLLIN | POLLHUP | POLLERR))
@@ -180,16 +171,14 @@ int tm;                            /* time in millisecs for select/poll	*/
 #endif /*_lib_poll*/
 
 #if _lib_select
-    if (np < 0 && c > 0)
-    {
+    if (np < 0 && c > 0) {
         fd_set rd, wr;
         struct timeval tmb, *tmp;
 
         FD_ZERO(&rd);
         FD_ZERO(&wr);
         m = 0;
-        for (r = 0; r < c; ++r)
-        {
+        for (r = 0; r < c; ++r) {
             f = fa[check[r]];
 
             if (f->file > m)
@@ -198,29 +187,24 @@ int tm;                            /* time in millisecs for select/poll	*/
             if ((f->flags & SF_WRITE) && !WRREADY(f))
                 FD_SET(f->file, &wr);
 
-            if ((f->flags & SF_READ) && !RDREADY(f))
-            {
-                if ((f->mode & SF_WRITE) && HASAUXFD(f))
-                {
+            if ((f->flags & SF_READ) && !RDREADY(f)) {
+                if ((f->mode & SF_WRITE) && HASAUXFD(f)) {
                     if (f->proc->file > m)
                         m = f->proc->file;
                     FD_SET(f->proc->file, &rd);
-                }
-                else
+                } else
                     FD_SET(f->file, &rd);
             }
         }
         if (tm < 0)
             tmp = NIL(struct timeval *);
-        else
-        {
+        else {
             tmp = &tmb;
             tmb.tv_sec = tm / SECOND;
             tmb.tv_usec = (tm % SECOND) * SECOND;
         }
 
-        while ((np = select(m + 1, &rd, &wr, NIL(fd_set *), tmp)) < 0)
-        {
+        while ((np = select(m + 1, &rd, &wr, NIL(fd_set *), tmp)) < 0) {
             if (errno == eintr)
                 errno = 0;
             else
@@ -229,25 +213,19 @@ int tm;                            /* time in millisecs for select/poll	*/
         if (np > 0)
             np = c;
 
-        for (r = 0; r < np; ++r)
-        {
+        for (r = 0; r < np; ++r) {
             f = fa[check[r]];
 
-            if ((f->flags & SF_WRITE) && !WRREADY(f))
-            {
+            if ((f->flags & SF_WRITE) && !WRREADY(f)) {
                 if (FD_ISSET(f->file, &wr))
                     status[check[r]] |= SF_WRITE;
             }
 
-            if ((f->flags & SF_READ) && !RDREADY(f))
-            {
-                if ((f->mode & SF_WRITE) && HASAUXFD(f))
-                {
+            if ((f->flags & SF_READ) && !RDREADY(f)) {
+                if ((f->mode & SF_WRITE) && HASAUXFD(f)) {
                     if (FD_ISSET(f->proc->file, &rd))
                         status[check[r]] |= SF_READ;
-                }
-                else
-                {
+                } else {
                     if (FD_ISSET(f->file, &rd))
                         status[check[r]] |= SF_READ;
                 }
@@ -257,8 +235,7 @@ int tm;                            /* time in millisecs for select/poll	*/
 #endif /*_lib_select*/
 
 report:
-    for (r = c = 0; c < n; ++c)
-    {
+    for (r = c = 0; c < n; ++c) {
         if (status[c] == 0)
             continue;
 

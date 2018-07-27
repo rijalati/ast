@@ -108,8 +108,7 @@ Sfdisc_t *dp;
     tty.c_cc[VMIN] = 1;
     tty.c_lflag &= ~(ICANON | ECHO | ECHOK | ISIG);
     tcsetattr(rfd, TCSADRAIN, &tty);
-    if ((r = read(rfd, &c, 1)) == 1)
-    {
+    if ((r = read(rfd, &c, 1)) == 1) {
         if (c == old.c_cc[VEOF])
             r = -1;
         else if (c == old.c_cc[VINTR])
@@ -122,8 +121,7 @@ Sfdisc_t *dp;
             r = c;
     }
     tcsetattr(rfd, TCSADRAIN, &old);
-    if (n)
-    {
+    if (n) {
         write(wfd, "\r", 1);
         while (n-- > 0)
             write(wfd, " ", 1);
@@ -168,11 +166,9 @@ Sfdisc_t *dp;
     b = ( char * )buf;
     s = b;
     e = s + n;
-    if (more->match)
-    {
+    if (more->match) {
     match:
-        for (r = more->pattern[0];; s++)
-        {
+        for (r = more->pattern[0];; s++) {
             if (s >= e)
                 return n;
             if (*s == '\n')
@@ -185,10 +181,8 @@ Sfdisc_t *dp;
         w += b - ( char * )buf;
         more->match = 0;
     }
-    while (s < e)
-    {
-        switch (*s++)
-        {
+    while (s < e) {
+        switch (*s++) {
         case '\t':
             more->col = ((more->col + 8) & ~7) - 1;
             /*FALLTHROUGH*/
@@ -212,29 +206,24 @@ Sfdisc_t *dp;
         w += sfwr(f, b, s - b, dp);
         b = s;
         r = ttyquery(sfstdin, f, more->prompt, dp);
-        if (r == '/' || r == 'n')
-        {
-            if (r == '/')
-            {
+        if (r == '/' || r == 'n') {
+            if (r == '/') {
                 sfwr(f, "/", 1, dp);
                 if ((s = sfgetr(sfstdin, '\n', 1))
-                    && (n = sfvalue(sfstdin) - 1) > 0)
-                {
+                    && (n = sfvalue(sfstdin) - 1) > 0) {
                     if (n >= sizeof(more->pattern))
                         n = sizeof(more->pattern) - 1;
                     memcpy(more->pattern, s, n);
                     more->pattern[n] = 0;
                 }
             }
-            if (more->match = strlen(more->pattern))
-            {
+            if (more->match = strlen(more->pattern)) {
                 more->row = 1;
                 more->col = 1;
                 goto match;
             }
         }
-        switch (r)
-        {
+        switch (r) {
         case '\n':
         case '\r':
             more->row--;
@@ -270,23 +259,16 @@ Sfdisc_t *dp;
 {
     More_t *more = ( More_t * )dp;
 
-    if (type == SF_FINAL || type == SF_DPOP)
-    {
-        if (f = more->input)
-        {
+    if (type == SF_FINAL || type == SF_DPOP) {
+        if (f = more->input) {
             more->input = 0;
             sfdisc(f, SF_POPDISC);
-        }
-        else if (f = more->error)
-        {
+        } else if (f = more->error) {
             more->error = 0;
             sfdisc(f, SF_POPDISC);
-        }
-        else
+        } else
             free(dp);
-    }
-    else if (type == SF_SYNC)
-    {
+    } else if (type == SF_SYNC) {
         more->match = 0;
         more->row = 1;
         more->col = 1;
@@ -332,8 +314,7 @@ int cols;
     more->disc.writef = morewrite;
     more->disc.exceptf = moreexcept;
     memcpy(more->prompt, prompt, n);
-    if (!rows || !cols)
-    {
+    if (!rows || !cols) {
 #if _PACKAGE_ast
         astwinsize(sffileno(sfstdin), &rows, &cols);
 #endif
@@ -347,21 +328,17 @@ int cols;
     more->row = 1;
     more->col = 1;
 
-    if (sfdisc(f, &more->disc) != &more->disc)
-    {
+    if (sfdisc(f, &more->disc) != &more->disc) {
         free(more);
         return -1;
     }
-    if (f == sfstdout)
-    {
-        if (sfdisc(sfstdin, &more->disc) != &more->disc)
-        {
+    if (f == sfstdout) {
+        if (sfdisc(sfstdin, &more->disc) != &more->disc) {
             sfdisc(f, SF_POPDISC);
             return -1;
         }
         more->input = sfstdin;
-        if (sfdisc(sfstderr, &more->disc) != &more->disc)
-        {
+        if (sfdisc(sfstderr, &more->disc) != &more->disc) {
             sfdisc(f, SF_POPDISC);
             return -1;
         }

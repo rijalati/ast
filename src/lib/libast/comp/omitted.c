@@ -246,8 +246,7 @@ magic(const char *path, int *ux)
 #    endif
 
     oerrno = errno;
-    if ((fd = sysopen(path, O_RDONLY, 0)) >= 0)
-    {
+    if ((fd = sysopen(path, O_RDONLY, 0)) >= 0) {
 #    if CONVERT
         if (ux)
             n = sizeof(buf);
@@ -261,8 +260,7 @@ magic(const char *path, int *ux)
             ? 0
             : -1;
         sysclose(fd);
-        if (ux)
-        {
+        if (ux) {
             if (r)
                 oerrno = ENOEXEC;
             else if (m > 61 && (n = buf[60] | (buf[61] << 8) + 92) < (m - 1))
@@ -270,16 +268,12 @@ magic(const char *path, int *ux)
             else
                 *ux = 0;
         }
-    }
-    else if (!ux)
+    } else if (!ux)
         r = -1;
-    else if (errno == ENOENT)
-    {
+    else if (errno == ENOENT) {
         oerrno = errno;
         r = -1;
-    }
-    else
-    {
+    } else {
         r = 0;
         *ux = 0;
     }
@@ -298,8 +292,7 @@ access(const char *path, int op)
 
     oerrno = errno;
     if ((r = sysaccess(path, op)) && errno == ENOENT
-        && execrate(path, buf, sizeof(buf), 0))
-    {
+        && execrate(path, buf, sizeof(buf), 0)) {
         errno = oerrno;
         r = sysaccess(buf, op);
     }
@@ -340,17 +333,14 @@ chmod(const char *path, mode_t mode)
     char buf[PATH_MAX];
 
     if ((r = syschmod(path, mode)) && errno == ENOENT
-        && execrate(path, buf, sizeof(buf), 0))
-    {
+        && execrate(path, buf, sizeof(buf), 0)) {
         errno = oerrno;
         return syschmod(buf, mode);
     }
     if (!(r = syschmod(path, mode)) && (mode & (S_IXUSR | S_IXGRP | S_IXOTH))
-        && !suffix(path) && (strlen(path) + 4) < sizeof(buf))
-    {
+        && !suffix(path) && (strlen(path) + 4) < sizeof(buf)) {
         oerrno = errno;
-        if (!magic(path, NiL))
-        {
+        if (!magic(path, NiL)) {
             snprintf(buf, sizeof(buf), "%s.exe", path);
             sysrename(path, buf);
         }
@@ -406,15 +396,13 @@ convert(const char *d, const char *s)
     const char *v;
     int i;
 
-    for (i = 0; i < elementsof(convertvars); i++)
-    {
+    for (i = 0; i < elementsof(convertvars); i++) {
         for (v = convertvars[i], t = s; *t && *t == *v; t++, v++)
             ;
         if (*t == '=' && *v == 0)
             return 0;
     }
-    for (;;)
-    {
+    for (;;) {
         while (*d == ' ' || *d == '\t')
             d++;
         if (!*d)
@@ -442,8 +430,8 @@ getuid(void)
     if (!convertinit++ && (d = getenv(convertvars[0])))
         for (e = environ; s = *e; e++)
             if ((n = convert(d, s))
-                && (m = cygwin_win32_to_posix_path_list_buf_size(s + n)) > 0)
-            {
+                && (m = cygwin_win32_to_posix_path_list_buf_size(s + n))
+                   > 0) {
                 if (!(t = malloc(n + m + 1)))
                     break;
                 *e = t;
@@ -491,8 +479,7 @@ runve(int mode, const char *path, char *const *argv, char *const *envv)
 #        endif
 
 #        if defined(_P_DETACH) && defined(_P_NOWAIT)
-    if (mode == _P_DETACH)
-    {
+    if (mode == _P_DETACH) {
         /*
          * 2004-02-29 cygwin _P_DETACH is useless:
          *	spawn*() returns 0 instead of the spawned pid
@@ -501,8 +488,7 @@ runve(int mode, const char *path, char *const *argv, char *const *envv)
 
         mode = _P_NOWAIT;
         pgrp = 1;
-    }
-    else
+    } else
         pgrp = 0;
 #        endif
     if (!envv)
@@ -513,8 +499,7 @@ runve(int mode, const char *path, char *const *argv, char *const *envv)
     if (!trace)
         trace = (s = getenv("_AST_exec_trace")) ? *s : 'n';
 #        endif
-    if (execrate(path, buf, sizeof(buf), 0))
-    {
+    if (execrate(path, buf, sizeof(buf), 0)) {
         if (!sysstat(buf, &st))
             path = ( const char * )buf;
         else
@@ -522,13 +507,12 @@ runve(int mode, const char *path, char *const *argv, char *const *envv)
     }
     if (path != ( const char * )buf && sysstat(path, &st))
         return -1;
-    if (!S_ISREG(st.st_mode) || !(st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)))
-    {
+    if (!S_ISREG(st.st_mode)
+        || !(st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))) {
         errno = EACCES;
         return -1;
     }
-    if (magic(path, &ux))
-    {
+    if (magic(path, &ux)) {
 #        if _CYGWIN_fork_works
         errno = ENOEXEC;
         return -1;
@@ -538,8 +522,7 @@ runve(int mode, const char *path, char *const *argv, char *const *envv)
         while (*p++)
             ;
         if (!(v = ( char ** )malloc((p - ( char ** )argv + 2)
-                                    * sizeof(char *))))
-        {
+                                    * sizeof(char *)))) {
             errno = EAGAIN;
             return -1;
         }
@@ -571,36 +554,29 @@ runve(int mode, const char *path, char *const *argv, char *const *envv)
      * by all cygwin executables, will be found
      */
 
-    if (p = ( char ** )envv)
-    {
+    if (p = ( char ** )envv) {
         n = 1;
         while (s = *p++)
-            if (strneq(s, "PATH=", 5))
-            {
+            if (strneq(s, "PATH=", 5)) {
                 s += 5;
-                do
-                {
+                do {
                     s = pathcat(s, ':', NiL, "", tmp, sizeof(tmp));
-                    if (streq(tmp, "/usr/bin/") || streq(tmp, "/bin/"))
-                    {
+                    if (streq(tmp, "/usr/bin/") || streq(tmp, "/bin/")) {
                         n = 0;
                         break;
                     }
                 } while (s);
-                if (n)
-                {
+                if (n) {
                     n = 0;
                     snprintf(tmp, sizeof(tmp), "%s:/bin", *(p - 1));
                     *(p - 1) = tmp;
                 }
                 break;
             }
-        if (n)
-        {
+        if (n) {
             n = p - ( char ** )envv + 1;
             p = ( char ** )envv;
-            if (v = ( char ** )malloc(n * sizeof(char *)))
-            {
+            if (v = ( char ** )malloc(n * sizeof(char *))) {
                 m2 = v;
                 envv = ( char *const * )v;
                 *v++ = strcpy(tmp, "PATH=/bin");
@@ -613,8 +589,7 @@ runve(int mode, const char *path, char *const *argv, char *const *envv)
             for (p = ( char ** )envv; s = *p; p++)
                 if ((n = convert(d, s))
                     && (m = cygwin_posix_to_win32_path_list_buf_size(s + n))
-                       > 0)
-                {
+                       > 0) {
                     if (!(t = malloc(n + m + 1)))
                         break;
                     *p = t;
@@ -625,16 +600,14 @@ runve(int mode, const char *path, char *const *argv, char *const *envv)
     }
 
 #        if DEBUG
-    if (trace == 'a' || trace == 'e')
-    {
+    if (trace == 'a' || trace == 'e') {
         sfprintf(sfstderr,
                  "%s %s [",
                  mode == _P_OVERLAY ? "_execve" : "_spawnve",
                  path);
         for (n = 0; argv[n]; n++)
             sfprintf(sfstderr, " '%s'", argv[n]);
-        if (trace == 'e')
-        {
+        if (trace == 'e') {
             sfprintf(sfstderr, " ] [");
             for (n = 0; envv[n]; n++)
                 sfprintf(sfstderr, " '%s'", envv[n]);
@@ -644,15 +617,13 @@ runve(int mode, const char *path, char *const *argv, char *const *envv)
     }
 #        endif
 #        if _lib_spawn_mode
-    if (mode != _P_OVERLAY)
-    {
+    if (mode != _P_OVERLAY) {
         pid = sysspawnve(mode, path, argv, envv);
 #            if defined(_P_DETACH) && defined(_P_NOWAIT)
         if (pid > 0 && pgrp)
             setpgid(pid, 0);
 #            endif
-    }
-    else
+    } else
 #        endif
     {
 #        if defined(_P_DETACH) && defined(_P_NOWAIT)
@@ -712,8 +683,7 @@ link(const char *fp, const char *tp)
 
     oerrno = errno;
     if ((r = syslink(fp, tp)) && errno == ENOENT
-        && execrate(fp, fb, sizeof(fb), 1))
-    {
+        && execrate(fp, fb, sizeof(fb), 1)) {
         if (execrate(tp, tb, sizeof(tb), 1))
             tp = tb;
         errno = oerrno;
@@ -750,17 +720,14 @@ close(int fd)
     struct stat st;
     char buf[PATH_MAX];
 
-    if (fd >= 0 && fd < elementsof(exe) && exe[fd])
-    {
+    if (fd >= 0 && fd < elementsof(exe) && exe[fd]) {
         r = exe[fd]->test;
         exe[fd]->test = 0;
-        if (r > 0 && !fstat(fd, &st) && st.st_ino == exe[fd]->ino)
-        {
+        if (r > 0 && !fstat(fd, &st) && st.st_ino == exe[fd]->ino) {
             if (r = sysclose(fd))
                 return r;
             oerrno = errno;
-            if (!stat(exe[fd]->path, &st) && st.st_ino == exe[fd]->ino)
-            {
+            if (!stat(exe[fd]->path, &st) && st.st_ino == exe[fd]->ino) {
                 snprintf(buf, sizeof(buf), "%s.exe", exe[fd]->path);
                 sysrename(exe[fd]->path, buf);
             }
@@ -801,8 +768,7 @@ open(const char *path, int flags, ...)
     oerrno = errno;
     fd = sysopen(path, flags, mode);
 #        if _win32_botch_open
-    if (fd < 0 && errno == ENOENT && execrate(path, buf, sizeof(buf), 0))
-    {
+    if (fd < 0 && errno == ENOENT && execrate(path, buf, sizeof(buf), 0)) {
         errno = oerrno;
         fd = sysopen(buf, flags, mode);
     }
@@ -810,12 +776,10 @@ open(const char *path, int flags, ...)
 #        if _win32_botch_copy
     if (fd >= 0 && fd < elementsof(exe) && strlen(path) < PATH_MAX
         && (flags & (O_CREAT | O_TRUNC)) == (O_CREAT | O_TRUNC)
-        && (mode & 0111))
-    {
+        && (mode & 0111)) {
         if (!suffix(path) && !fstat(fd, &st)
             && (exe[fd]
-                || (exe[fd] = ( Exe_test_t * )malloc(sizeof(Exe_test_t)))))
-        {
+                || (exe[fd] = ( Exe_test_t * )malloc(sizeof(Exe_test_t))))) {
             exe[fd]->test = -1;
             exe[fd]->ino = st.st_ino;
             strcpy(exe[fd]->path, path);
@@ -853,8 +817,7 @@ rename(const char *fp, const char *tp)
 
     oerrno = errno;
     if ((r = sysrename(fp, tp)) && errno == ENOENT
-        && execrate(fp, fb, sizeof(fb), 1))
-    {
+        && execrate(fp, fb, sizeof(fb), 1)) {
         if (execrate(tp, tb, sizeof(tb), 1))
             tp = tb;
         errno = oerrno;
@@ -876,8 +839,7 @@ stat(const char *path, struct stat *st)
 
     oerrno = errno;
     if ((r = sysstat(path, st)) && errno == ENOENT
-        && execrate(path, buf, sizeof(buf), 0))
-    {
+        && execrate(path, buf, sizeof(buf), 0)) {
         errno = oerrno;
         r = sysstat(buf, st);
     }
@@ -897,8 +859,7 @@ truncate(const char *path, off_t offset)
 
     oerrno = errno;
     if ((r = systruncate(path, offset)) && errno == ENOENT
-        && execrate(path, buf, sizeof(buf), 0))
-    {
+        && execrate(path, buf, sizeof(buf), 0)) {
         errno = oerrno;
         r = systruncate(buf, offset);
     }
@@ -945,8 +906,7 @@ unlink(const char *path)
         goto try_unlink;
     drive = nat[0];
     path = ( const char * )nat;
-    for (;;)
-    {
+    for (;;) {
         hp = CreateFile(path,
                         GENERIC_READ,
                         0,
@@ -954,8 +914,7 @@ unlink(const char *path)
                         OPEN_EXISTING,
                         FILE_ATTRIBUTE_NORMAL | FILE_FLAG_DELETE_ON_CLOSE,
                         NULL);
-        if (hp != INVALID_HANDLE_VALUE)
-        {
+        if (hp != INVALID_HANDLE_VALUE) {
             CloseHandle(hp);
             errno = oerrno;
             return 0;
@@ -963,8 +922,7 @@ unlink(const char *path)
         if (GetLastError() != ERROR_FILE_NOT_FOUND)
             break;
         if (path == ( const char * )buf
-            || !execrate(path, buf, sizeof(buf), 1))
-        {
+            || !execrate(path, buf, sizeof(buf), 1)) {
             errno = ENOENT;
             return -1;
         }
@@ -993,20 +951,17 @@ unlink(const char *path)
     base = ((getuid() & 0xffff) << 16) | (time(NiL) & 0xffff);
     suffix = (getpid() & 0xfff) + count++;
     snprintf(tmp, sizeof(tmp), deleted, drive, base, suffix);
-    if (!sysrename(path, tmp))
-    {
+    if (!sysrename(path, tmp)) {
         path = ( const char * )tmp;
         goto try_delete;
     }
     if (errno != ENOTDIR && errno != ENOENT)
         goto try_unlink;
     tmp[DELETED_DIR_2] = 0;
-    if (sysaccess(tmp, 0))
-    {
+    if (sysaccess(tmp, 0)) {
         mask = umask(0);
         tmp[DELETED_DIR_1] = 0;
-        if (sysaccess(tmp, 0) && mkdir(tmp, S_IRWXU | S_IRWXG | S_IRWXO))
-        {
+        if (sysaccess(tmp, 0) && mkdir(tmp, S_IRWXU | S_IRWXG | S_IRWXO)) {
             umask(mask);
             goto try_unlink;
         }
@@ -1018,14 +973,12 @@ unlink(const char *path)
         errno = 0;
     }
     tmp[DELETED_DIR_2] = '\\';
-    if (!errno && !sysrename(path, tmp))
-    {
+    if (!errno && !sysrename(path, tmp)) {
         path = ( const char * )tmp;
         goto try_delete;
     }
 #        if !__CYGWIN__
-    if (errno == ENOENT)
-    {
+    if (errno == ENOENT) {
 #            if !_win32_botch_access
         if (execrate(path, buf, sizeof(buf), 1) && !sysrename(buf, tmp))
             path = ( const char * )tmp;
@@ -1034,11 +987,9 @@ unlink(const char *path)
     }
 #        endif
     stop = suffix;
-    do
-    {
+    do {
         snprintf(tmp, sizeof(tmp), deleted, drive, base, suffix);
-        if (!sysrename(path, tmp))
-        {
+        if (!sysrename(path, tmp)) {
             path = ( const char * )tmp;
             goto try_delete;
         }
@@ -1054,8 +1005,7 @@ try_delete:
                     OPEN_EXISTING,
                     FILE_ATTRIBUTE_NORMAL | FILE_FLAG_DELETE_ON_CLOSE,
                     NULL);
-    if (hp != INVALID_HANDLE_VALUE)
-    {
+    if (hp != INVALID_HANDLE_VALUE) {
         CloseHandle(hp);
         errno = oerrno;
         return 0;
@@ -1099,8 +1049,7 @@ ctime_now(const char *path)
                     OPEN_EXISTING,
                     FILE_ATTRIBUTE_NORMAL,
                     NULL);
-    if (hp && hp != INVALID_HANDLE_VALUE)
-    {
+    if (hp && hp != INVALID_HANDLE_VALUE) {
         GetSystemTime(&st);
         SystemTimeToFileTime(&st, &ct);
         SetFileTime(hp, &ct, 0, 0);
@@ -1126,8 +1075,7 @@ utimes(const char *path, const struct timeval *ut)
 
     oerrno = errno;
     if ((r = sysutimes(path, ut)) && errno == ENOENT
-        && execrate(path, buf, sizeof(buf), 0))
-    {
+        && execrate(path, buf, sizeof(buf), 0)) {
         errno = oerrno;
         r = sysutimes(path = buf, ut);
     }
@@ -1145,8 +1093,7 @@ utime(const char *path, const struct utimbuf *ut)
 
     oerrno = errno;
     if ((r = sysutime(path, ut)) && errno == ENOENT
-        && execrate(path, buf, sizeof(buf), 0))
-    {
+        && execrate(path, buf, sizeof(buf), 0)) {
         errno = oerrno;
         r = sysutime(path = buf, ut);
     }

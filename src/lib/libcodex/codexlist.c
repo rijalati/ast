@@ -40,15 +40,12 @@ codexlist(Codexmeth_t *meth)
 
     if (!meth)
         return codexstate.first;
-    if (!meth->next && !codexstate.scanned)
-    {
+    if (!meth->next && !codexstate.scanned) {
         codexstate.scanned = 1;
         lp = meth;
-        if (dls = dllsopen(codexstate.id, NiL, NiL))
-        {
+        if (dls = dllsopen(codexstate.id, NiL, NiL)) {
             while (dle = dllsread(dls))
-                if (dll = dlopen(dle->path, RTLD_LAZY))
-                {
+                if (dll = dlopen(dle->path, RTLD_LAZY)) {
                     /* vcodex check works around obsolete vcodex<=>codex
                      * plugin */
                     if ((lib = ( Codexlib_f )dlllook(dll, "codex_lib"))
@@ -58,8 +55,7 @@ codexlist(Codexmeth_t *meth)
                             ;
                     else
                         dlclose(dll);
-                }
-                else
+                } else
                     message((-1, "%s: %s", dle->path, dlerror()));
             dllsclose(dls);
         }

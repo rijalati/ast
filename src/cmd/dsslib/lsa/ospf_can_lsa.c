@@ -171,8 +171,7 @@ calloc_lsa_can_data(ospf_lsa_can_t *lsa_can_p, uint32_t lsa_data_len)
 {
     ASSERT(lsa_can_p);
     free_lsa_can_data(lsa_can_p);
-    if (lsa_data_len > 0)
-    {
+    if (lsa_data_len > 0) {
         MD_CALLOC(
         lsa_can_p->lsa_data_p, uint8_t *, lsa_data_len, sizeof(uint8_t));
         ASSERT(lsa_can_p->lsa_data_p);
@@ -185,8 +184,7 @@ void
 free_lsa_can_data(ospf_lsa_can_t *lsa_can_p)
 {
     ASSERT(lsa_can_p);
-    if (lsa_can_p->lsa_data_p)
-    {
+    if (lsa_can_p->lsa_data_p) {
         MD_FREE(lsa_can_p->lsa_data_p);
         lsa_can_p->lsa_data_p = NULL;
     }
@@ -209,20 +207,16 @@ identf_can_lsa_file(Dssfile_t *fp, void *data, size_t size, Dssdisc_t *disc)
      * Check the first record.
      * Make sure that the record contains appropriate magic record.
      */
-    if (size < sizeof(*mp))
-    {
-        if (disc->errorf && (fp->dss->flags & DSS_DEBUG))
-        {
+    if (size < sizeof(*mp)) {
+        if (disc->errorf && (fp->dss->flags & DSS_DEBUG)) {
             (*disc->errorf)(
             NULL, disc, 2, "%s: not enough bytes for magic hdr", FORMAT_NAME);
         }
         return 0;
     }
     magic = MAGICID;
-    if ((swap = swapop(&magic, &mp->magic, sizeof(magic))) < 0)
-    {
-        if (disc->errorf && (fp->dss->flags & DSS_DEBUG))
-        {
+    if ((swap = swapop(&magic, &mp->magic, sizeof(magic))) < 0) {
+        if (disc->errorf && (fp->dss->flags & DSS_DEBUG)) {
             (*disc->errorf)(NULL,
                             disc,
                             2,
@@ -232,10 +226,8 @@ identf_can_lsa_file(Dssfile_t *fp, void *data, size_t size, Dssdisc_t *disc)
         return 0;
     }
     /* sfprintf(sfstderr, "swap: %d\n", swap); */
-    if (!streq(mp->name, MAGIC_NAME))
-    {
-        if (disc->errorf && (fp->dss->flags & DSS_DEBUG))
-        {
+    if (!streq(mp->name, MAGIC_NAME)) {
+        if (disc->errorf && (fp->dss->flags & DSS_DEBUG)) {
             (*disc->errorf)(
             NULL,
             disc,
@@ -248,10 +240,8 @@ identf_can_lsa_file(Dssfile_t *fp, void *data, size_t size, Dssdisc_t *disc)
         }
         return 0;
     }
-    if (!streq(mp->type, MAGIC_TYPE))
-    {
-        if (disc->errorf && (fp->dss->flags & DSS_DEBUG))
-        {
+    if (!streq(mp->type, MAGIC_TYPE)) {
+        if (disc->errorf && (fp->dss->flags & DSS_DEBUG)) {
             (*disc->errorf)(
             NULL,
             disc,
@@ -312,11 +302,9 @@ open_can_lsa_file(Dssfile_t *fp, Dssdisc_t *disc)
 	print_struct_align(m_struct_align_p);
 #endif
 
-    if (BIT_TEST(fp->flags, DSS_FILE_WRITE))
-    {
+    if (BIT_TEST(fp->flags, DSS_FILE_WRITE)) {
         /* sfprintf(sfstderr, "file opened for writing\n"); */
-        if (!BIT_TEST(fp->flags, DSS_FILE_APPEND))
-        {
+        if (!BIT_TEST(fp->flags, DSS_FILE_APPEND)) {
             /* sfprintf(sfstderr, "header allowed\n"); */
             memset(&magic_hdr, 0, sizeof(magic_hdr));
             magic_hdr.magic = MAGICID;
@@ -335,13 +323,9 @@ open_can_lsa_file(Dssfile_t *fp, Dssdisc_t *disc)
             sfwrite(fp->io, &magic_hdr, sizeof(magic_hdr));
             sfwrite(fp->io, m_struct_align_p, sizeof(uint32_t) * NO_S_I);
         } /* End of if not appending */
-    }
-    else
-    {
-        if (!(mp = ( Magicid_t * )sfreserve(fp->io, sizeof(Magicid_t), 0)))
-        {
-            if (disc->errorf)
-            {
+    } else {
+        if (!(mp = ( Magicid_t * )sfreserve(fp->io, sizeof(Magicid_t), 0))) {
+            if (disc->errorf) {
                 (*disc->errorf)(NULL,
                                 disc,
                                 ERROR_SYSTEM | 2,
@@ -358,10 +342,8 @@ open_can_lsa_file(Dssfile_t *fp, Dssdisc_t *disc)
         /* Determine structure alignment in the file. */
         f_struct_align_p = can_state_p->f_struct_align;
         if (!(buff_p = ( uint32_t * )sfreserve(
-              fp->io, (sizeof(uint32_t) * NO_S_I), 0)))
-        {
-            if (disc->errorf)
-            {
+              fp->io, (sizeof(uint32_t) * NO_S_I), 0))) {
+            if (disc->errorf) {
                 (*disc->errorf)(NULL,
                                 disc,
                                 ERROR_SYSTEM | 2,
@@ -370,13 +352,10 @@ open_can_lsa_file(Dssfile_t *fp, Dssdisc_t *disc)
             }
             return -1;
         }
-        if (swap)
-        {
+        if (swap) {
             swapmem(
             swap & 3, buff_p, f_struct_align_p, (sizeof(uint32_t) * NO_S_I));
-        }
-        else
-        {
+        } else {
             memcpy(f_struct_align_p, buff_p, sizeof(uint32_t) * NO_S_I);
 #if 0
 			sfprintf(sfstderr, "printing f_struct_align\n");
@@ -395,8 +374,7 @@ close_can_lsa_file(Dssfile_t *fp, Dssdisc_t *disc)
     ASSERT(fp);
     ASSERT(disc);
     can_state_p = fp->data;
-    if (!can_state_p)
-    {
+    if (!can_state_p) {
         return -1;
     }
     free_lsa_can_data(&(can_state_p->lsa_can));
@@ -435,8 +413,7 @@ read_can_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
                              CAN_U32_S_I,
                              sizeof(uint32_t),
                              disc);
-    if (ret <= 0)
-    {
+    if (ret <= 0) {
         return ret;
     }
 
@@ -449,8 +426,7 @@ read_can_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
                              CAN_U16_S_I,
                              sizeof(uint16_t),
                              disc);
-    if (ret <= 0)
-    {
+    if (ret <= 0) {
         return ret;
     }
 
@@ -463,19 +439,15 @@ read_can_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
                              CAN_U8_S_I,
                              sizeof(uint8_t),
                              disc);
-    if (ret <= 0)
-    {
+    if (ret <= 0) {
         return ret;
     }
 
     /* Read authentication part as is */
     buff_p = ( uint8_t * )sfreserve(fp->io, f_struct_align_p[AUTH_S_I], 0);
-    if (buff_p == NULL)
-    {
-        if (sfvalue(fp->io))
-        {
-            if (disc->errorf)
-            {
+    if (buff_p == NULL) {
+        if (sfvalue(fp->io)) {
+            if (disc->errorf) {
                 (*disc->errorf)(NULL,
                                 disc,
                                 2,
@@ -492,12 +464,9 @@ read_can_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
 
     /* Read LSA data as is */
     buff_p = ( uint8_t * )sfreserve(fp->io, crp->lsa_data_size, 0);
-    if (buff_p == NULL)
-    {
-        if (sfvalue(fp->io))
-        {
-            if (disc->errorf)
-            {
+    if (buff_p == NULL) {
+        if (sfvalue(fp->io)) {
+            if (disc->errorf) {
                 (*disc->errorf)(NULL,
                                 disc,
                                 2,
@@ -537,8 +506,7 @@ write_can_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
 
     /* Write region of 4-byte values of '*lsa_can_p'. */
     size = m_struct_align_p[CAN_U32_S_I];
-    if (sfwrite(fp->io, lsa_can_p, size) != size)
-    {
+    if (sfwrite(fp->io, lsa_can_p, size) != size) {
         if (disc->errorf)
             (*disc->errorf)(
             NULL, disc, 2, "%s: write error", fp->format->name);
@@ -547,8 +515,7 @@ write_can_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
 
     /* Write region of 2-byte values of '*lsa_can_p'. */
     size = m_struct_align_p[CAN_U16_S_I];
-    if (sfwrite(fp->io, &(lsa_can_p->lsu_len), size) != size)
-    {
+    if (sfwrite(fp->io, &(lsa_can_p->lsu_len), size) != size) {
         if (disc->errorf)
             (*disc->errorf)(
             NULL, disc, 2, "%s: write error", fp->format->name);
@@ -557,8 +524,7 @@ write_can_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
 
     /* Write region of 1-byte values of '*lsa_can_p'. */
     size = m_struct_align_p[CAN_U8_S_I];
-    if (sfwrite(fp->io, &(lsa_can_p->lsu_version), size) != size)
-    {
+    if (sfwrite(fp->io, &(lsa_can_p->lsu_version), size) != size) {
         if (disc->errorf)
             (*disc->errorf)(
             NULL, disc, 2, "%s: write error", fp->format->name);
@@ -567,8 +533,7 @@ write_can_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
 
     /* Write authentication region of '*lsa_can'. */
     size = m_struct_align_p[AUTH_S_I];
-    if (sfwrite(fp->io, &(lsa_can_p->lsu_auth), size) != size)
-    {
+    if (sfwrite(fp->io, &(lsa_can_p->lsu_auth), size) != size) {
         if (disc->errorf)
             (*disc->errorf)(
             NULL, disc, 2, "%s: write error", fp->format->name);
@@ -577,10 +542,8 @@ write_can_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
 
     /* Write parameter region of '*lsa_can'. */
     size = lsa_can_p->lsa_data_size;
-    if (size > 0)
-    {
-        if (sfwrite(fp->io, lsa_can_p->lsa_data_p, size) != size)
-        {
+    if (size > 0) {
+        if (sfwrite(fp->io, lsa_can_p->lsa_data_p, size) != size) {
             if (disc->errorf)
                 (*disc->errorf)(
                 NULL, disc, 2, "%s: write error", fp->format->name);
@@ -638,12 +601,9 @@ read_aligned_words(Dssfile_t *fp,
     ASSERT(disc);
     ASSERT(align_i < NO_S_I);
     buff_p = ( uint8_t * )sfreserve(fp->io, f_struct_align_p[align_i], 0);
-    if (buff_p == NULL)
-    {
-        if (sfvalue(fp->io))
-        {
-            if (disc->errorf)
-            {
+    if (buff_p == NULL) {
+        if (sfvalue(fp->io)) {
+            if (disc->errorf) {
                 (*disc->errorf)(NULL,
                                 disc,
                                 2,
@@ -661,34 +621,21 @@ read_aligned_words(Dssfile_t *fp,
 			 size, align_i);
 	fflush(sfstderr);
 #endif
-    if (data_size == sizeof(uint32_t))
-    {
-        if (swap)
-        {
+    if (data_size == sizeof(uint32_t)) {
+        if (swap) {
             swapmem(swap & 3, buff_p, dest_p, size);
-        }
-        else
-        {
+        } else {
             memcpy(dest_p, buff_p, size);
         }
-    }
-    else if (data_size == sizeof(uint16_t))
-    {
-        if (BIT_TEST(swap, 1))
-        {
+    } else if (data_size == sizeof(uint16_t)) {
+        if (BIT_TEST(swap, 1)) {
             swapmem(swap & 1, buff_p, dest_p, size);
-        }
-        else
-        {
+        } else {
             memcpy(dest_p, buff_p, size);
         }
-    }
-    else if (data_size == sizeof(uint8_t))
-    {
+    } else if (data_size == sizeof(uint8_t)) {
         memcpy(dest_p, buff_p, size);
-    }
-    else
-    {
+    } else {
 #if 0
 		sfprintf(sfstderr, "read_aligned_words data_size %d\n",
 				 data_size);

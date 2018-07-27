@@ -121,8 +121,7 @@ main(int argc, char *argv[])
     p = argv[0];
 #ifndef _lib_setreuid
     maketemp(tmpname);
-    if (strcmp(p, tmpname) == 0)
-    {
+    if (strcmp(p, tmpname) == 0) {
         /* At this point, the presumption is that we are the
          * version of THISPROG copied into /tmp, with the owner,
          * group, and setuid/gid bits correctly set.  This copy of
@@ -162,8 +161,7 @@ main(int argc, char *argv[])
      * prevents someone from pulling a switcheroo while we are validating.
      */
     n = open(p, 0);
-    if (n == FDIN)
-    {
+    if (n == FDIN) {
         n = dup(n);
         close(FDIN);
     }
@@ -175,18 +173,13 @@ main(int argc, char *argv[])
     else
         euserid = statb.st_uid;
     /* do it the easy way if you can */
-    if (euserid == ruserid && egroupid == rgroupid)
-    {
+    if (euserid == ruserid && egroupid == rgroupid) {
         if (access(p, X_OK) < 0)
             error_exit(badexec);
-    }
-    else
-    {
+    } else {
         /* have to check access on each component */
-        while (*p++)
-        {
-            if (*p == '/' || *p == 0)
-            {
+        while (*p++) {
+            if (*p == '/' || *p == 0) {
                 m = *p;
                 *p = 0;
                 if (eaccess(argv[0], X_OK) < 0)
@@ -224,13 +217,10 @@ main(int argc, char *argv[])
             mode = S_ISGID;
 
     /* now see if the uid needs setting */
-    if (mode)
-    {
+    if (mode) {
         if (effuid != ruserid)
             mode |= S_ISUID;
-    }
-    else if (effuid)
-    {
+    } else if (effuid) {
         if (effuid != ruserid || setuid(ruserid) < 0)
             mode = S_ISUID;
     }
@@ -279,8 +269,7 @@ endsh(const char *shell)
 static int
 in_dir(const char *dir, const char *shell)
 {
-    while (*dir)
-    {
+    while (*dir) {
         if (*dir++ != *shell++)
             return (0);
     }
@@ -306,41 +295,33 @@ int
 eaccess(const char *name, int mode)
 {
     struct stat statb;
-    if (stat(name, &statb) == 0)
-    {
-        if (euserid == 0)
-        {
+    if (stat(name, &statb) == 0) {
+        if (euserid == 0) {
             if (!S_ISREG(statb.st_mode) || mode != 1)
                 return (0);
             /* root needs execute permission for someone */
             mode = (S_IXUSR | S_IXGRP | S_IXOTH);
-        }
-        else if (euserid == statb.st_uid)
+        } else if (euserid == statb.st_uid)
             mode <<= 6;
         else if (egroupid == statb.st_gid)
             mode <<= 3;
 #    ifdef _lib_getgroups
         /* on some systems you can be in several groups */
-        else
-        {
+        else {
             static int maxgroups;
             gid_t *groups = 0;
             int n;
-            if (maxgroups == 0)
-            {
+            if (maxgroups == 0) {
                 /* first time */
-                if ((maxgroups = getgroups(0, groups)) < 0)
-                {
+                if ((maxgroups = getgroups(0, groups)) < 0) {
                     /* pre-POSIX system */
                     maxgroups = getconf("NGROUPS_MAX");
                 }
             }
             groups = ( gid_t * )malloc((maxgroups + 1) * sizeof(gid_t));
             n = getgroups(maxgroups, groups);
-            while (--n >= 0)
-            {
-                if (groups[n] == statb.st_gid)
-                {
+            while (--n >= 0) {
+                if (groups[n] == statb.st_gid) {
                     mode <<= 3;
                     break;
                 }
@@ -402,8 +383,7 @@ setids(int mode, uid_t owner, gid_t group)
         || unlink(tmpname) < 0)
 #    endif
         error_exit(badexec);
-    if (n != FDVERIFY)
-    {
+    if (n != FDVERIFY) {
         close(FDVERIFY);
         if (fcntl(n, F_DUPFD, FDVERIFY) != FDVERIFY)
             error_exit(badexec);
@@ -412,12 +392,10 @@ setids(int mode, uid_t owner, gid_t group)
     /* create a pipe for synchronization */
     if (pipe(pv) < 0)
         error_exit(badexec);
-    if ((n = fork()) == 0)
-    { /* child */
+    if ((n = fork()) == 0) { /* child */
         close(FDVERIFY);
         close(pv[1]);
-        if ((n = fork()) == 0)
-        { /* grandchild -- cleans up clone file */
+        if ((n = fork()) == 0) { /* grandchild -- cleans up clone file */
             signal(SIGHUP, SIG_IGN);
             signal(SIGINT, SIG_IGN);
             signal(SIGQUIT, SIG_IGN);
@@ -426,11 +404,9 @@ setids(int mode, uid_t owner, gid_t group)
             while (unlink(tmpname) < 0 && errno == ETXTBSY)
                 sleep(1);
             exit(0);
-        }
-        else if (n == -1)
+        } else if (n == -1)
             exit(1);
-        else
-        {
+        else {
             /* Create a set[ug]id file that will become the clone.
              * To make this atomic, without need for chown(), the
              * child takes on desired user and group.  The only
@@ -458,16 +434,13 @@ setids(int mode, uid_t owner, gid_t group)
                 exit(1);
             exit(m);
         }
-    }
-    else if (n == -1)
+    } else if (n == -1)
         error_exit(badexec);
-    else
-    {
+    else {
         arglist[0] = ( char * )tmpname;
         close(pv[0]);
         /* move write end of pipe into FDSYNC */
-        if (pv[1] != FDSYNC)
-        {
+        if (pv[1] != FDSYNC) {
             close(FDSYNC);
             if (fcntl(pv[1], F_DUPFD, FDSYNC) != FDSYNC)
                 error_exit(badexec);
@@ -501,8 +474,7 @@ maketemp(char *template)
     while (*++cp)
         ;
     /* convert process id to string */
-    while (n > 0)
-    {
+    while (n > 0) {
         *--cp = (n % 10) + '0';
         n /= 10;
     }

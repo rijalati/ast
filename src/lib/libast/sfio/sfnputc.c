@@ -50,8 +50,7 @@ size_t n;                           /* number of time to repeat */
     SFLOCK(f, local);
 
     /* write into a suitable buffer */
-    if ((size_t)(p = (f->endb - (ps = f->next))) < n)
-    {
+    if ((size_t)(p = (f->endb - (ps = f->next))) < n) {
         ps = buf;
         p = sizeof(buf);
     }
@@ -61,18 +60,15 @@ size_t n;                           /* number of time to repeat */
     ps -= p;
 
     w = n;
-    if (ps == f->next)
-    { /* simple sfwrite */
+    if (ps == f->next) { /* simple sfwrite */
         f->next += p;
         if (c == '\n')
             ( void )SFFLSBUF(f, -1);
         goto done;
     }
 
-    for (;;)
-    { /* hard write of data */
-        if ((p = SFWRITE(f, ( Void_t * )ps, p)) <= 0 || (n -= p) <= 0)
-        {
+    for (;;) { /* hard write of data */
+        if ((p = SFWRITE(f, ( Void_t * )ps, p)) <= 0 || (n -= p) <= 0) {
             w -= n;
             goto done;
         }

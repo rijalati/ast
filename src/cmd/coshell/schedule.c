@@ -62,14 +62,11 @@
 static char *
 dupstring(char *s, const char *v)
 {
-    if (v)
-    {
+    if (v) {
         if (!(s = newof(s, char, strlen(v) + 1, 0)))
             error(3, "out of space [dupstring]");
         strcpy(s, v);
-    }
-    else if (s)
-    {
+    } else if (s) {
         free(s);
         s = 0;
     }
@@ -116,10 +113,8 @@ search(int op, char *name, Coattr_t *a, Coattr_t *d)
     if (!a)
         a = &attr;
     attributes(name, a, d);
-    if (!(op & JOB))
-    {
-        if (a->global.set)
-        {
+    if (!(op & JOB)) {
+        if (a->global.set) {
             if (op & DEF)
                 a->global.set &= ~state.set;
             if (op & (NEW | SET))
@@ -151,19 +146,16 @@ search(int op, char *name, Coattr_t *a, Coattr_t *d)
                 state.pool = a->global.pool;
             if (a->global.set & SETPROFILE)
                 state.profile = dupstring(state.profile, a->global.profile);
-            if (a->global.set & SETREMOTE)
-            {
+            if (a->global.set & SETREMOTE) {
                 pathrepl(a->global.remote, 0, state.home->type, "%s");
                 state.remote = dupstring(state.remote, a->global.remote);
             }
-            if (a->global.set & SETSCHEDULE)
-            {
+            if (a->global.set & SETSCHEDULE) {
                 name = a->global.schedule;
                 if (state.scheduler.fd > 0)
                     close(state.scheduler.fd);
                 if ((state.scheduler.fd = csopen(name, 0)) < 0
-                    && *name != '/')
-                {
+                    && *name != '/') {
                     sfprintf(state.string, "/dev/tcp/share/%s/trust", name);
                     if (!(name = sfstruse(state.string)))
                         error(3, "out of space");
@@ -175,8 +167,7 @@ search(int op, char *name, Coattr_t *a, Coattr_t *d)
                 else
                     error(2, "%s: cannot open scheduler", name);
             }
-            if (a->global.set & SETSHELL)
-            {
+            if (a->global.set & SETSHELL) {
                 pathrepl(a->global.shell, 0, state.home->type, "%s");
                 state.sh = dupstring(state.sh, a->global.shell);
             }
@@ -195,26 +186,21 @@ search(int op, char *name, Coattr_t *a, Coattr_t *d)
      * check previous entries
      */
 
-    if (streq(CS_HOST_LOCAL, a->name) || (op & (DEF | JOB)) == (DEF | JOB))
-    {
+    if (streq(CS_HOST_LOCAL, a->name) || (op & (DEF | JOB)) == (DEF | JOB)) {
         if (!sp)
             goto empty;
         strcpy(a->name, state.home->name);
         a->set |= SETNAME;
-    }
-    else if (streq("server", a->name))
-    {
+    } else if (streq("server", a->name)) {
         if (!sp)
             goto empty;
         strcpy(a->name, sp->name);
         a->set |= SETNAME;
     }
-    if (op & JOB)
-    {
+    if (op & JOB) {
         if (!(a->set & SETBIAS))
             a->bias = BIAS;
-        if (state.scheduler.fd > 0)
-        {
+        if (state.scheduler.fd > 0) {
             return (&state.wait);
         }
         cp = mp = sp = xp = 0;
@@ -223,8 +209,7 @@ search(int op, char *name, Coattr_t *a, Coattr_t *d)
         nopen = noverride = 0;
         ap = state.shellnext;
         scan++;
-        if (cs.time - ( unsigned long )tt > LOST)
-        {
+        if (cs.time - ( unsigned long )tt > LOST) {
             tt = cs.time;
             state.tm = tmmake(&tt);
             if (!state.tm->tm_wday)
@@ -243,15 +228,12 @@ search(int op, char *name, Coattr_t *a, Coattr_t *d)
          * non-busy shells failing idle criteria are marked for close
          */
 
-        do
-        {
+        do {
             if ((matched = match(ap, a, op)) && ap->access && !ap->home
-                && !miscmatch(ap, ap->access))
-            {
+                && !miscmatch(ap, ap->access)) {
                 matched = 0;
                 ap->mode |= SHELL_DENIED;
-            }
-            else
+            } else
                 ap->mode &= ~SHELL_DENIED;
             message((-6,
                      "search: %s name=%s misc=%s matched=%d",
@@ -263,25 +245,20 @@ search(int op, char *name, Coattr_t *a, Coattr_t *d)
                      matched));
             if (!(scan & ((1 << W_TEMP) - 1)))
                 ap->temp >>= W_TEMP;
-            if (ap->fd)
-            {
+            if (ap->fd) {
                 if (matched)
                     nopen += ap->cpu;
-                if (ap->fd > 0)
-                {
+                if (ap->fd > 0) {
                     if (!ap->home
                         && (!xp || ap->temp < PCT(xp->temp, H_TEMP)
                             || (ap->mode & SHELL_DENIED)
                             || matched && xm
                                && PCT(ap->temp, H_TEMP) < xp->temp
-                               && ap->rank > xp->rank))
-                    {
+                               && ap->rank > xp->rank)) {
                         xp = ap;
                         xm = matched;
                     }
-                }
-                else if (cs.time > ap->start + LOST)
-                {
+                } else if (cs.time > ap->start + LOST) {
                     shellclose(ap, -1);
                     ap->stat.up = -LOST;
                     ap->update = cs.time + 2 * LOST;
@@ -293,20 +270,15 @@ search(int op, char *name, Coattr_t *a, Coattr_t *d)
                     && (ap->override
                         || !IDLE(ap->stat.idle, ap->idle)
                            && (!ap->bypass
-                               || !(bypass = miscmatch(ap, ap->bypass)))))
-                {
+                               || !(bypass = miscmatch(ap, ap->bypass))))) {
                     if (matched)
                         noverride++;
-                    if (cs.time > ap->override)
-                    {
-                        if (!ap->running && !ap->home)
-                        {
+                    if (cs.time > ap->override) {
+                        if (!ap->running && !ap->home) {
                             ap->mode |= SHELL_CLOSE;
                             if (!cp)
                                 cp = ap;
-                        }
-                        else if (!ap->override)
-                        {
+                        } else if (!ap->override) {
                             ap->override = cs.time - 1;
                             state.override++;
                         }
@@ -317,14 +289,12 @@ search(int op, char *name, Coattr_t *a, Coattr_t *d)
                         continue;
                 }
             }
-            if (matched)
-            {
+            if (matched) {
                 if (ap->update <= cs.time && ap->errors < ERRORS)
                     update(ap);
                 ap->temp += ((( unsigned long )1)
                              << (CHAR_BIT * sizeof(ap->temp) - W_TEMP));
-                if (ap->fd > 0)
-                {
+                if (ap->fd > 0) {
                     v = RNK(ap, a);
                     if (v < sv
                         && ap->running < (state.perhost
@@ -333,17 +303,15 @@ search(int op, char *name, Coattr_t *a, Coattr_t *d)
                         && (!state.maxload
                             || (ap->stat.load / ap->scale) < state.maxload)
                         && (!sp || bypass || IDLE(ap->stat.idle, ap->idle)
-                            || !IDLE(sp->stat.idle, sp->idle)))
-                    {
+                            || !IDLE(sp->stat.idle, sp->idle))) {
                         sv = v;
                         sp = ap;
                     }
-                }
-                else if (!ap->fd && (!mp || ap->rank < mp->rank)
-                         && (IDLE(ap->stat.idle, ap->idle) || ap->home
-                             || ap->bypass && miscmatch(ap, ap->bypass)
-                             || ((a->set | op) & (SETMISC | DEF | NEW | SET))
-                                == SETMISC))
+                } else if (!ap->fd && (!mp || ap->rank < mp->rank)
+                           && (IDLE(ap->stat.idle, ap->idle) || ap->home
+                               || ap->bypass && miscmatch(ap, ap->bypass)
+                               || ((a->set | op) & (SETMISC | DEF | NEW | SET))
+                                  == SETMISC))
                     mp = ap;
             }
         } while ((ap = ap->next) != state.shellnext);
@@ -363,35 +331,29 @@ search(int op, char *name, Coattr_t *a, Coattr_t *d)
                  xp ? xp->name : "*",
                  dp ? dp->name : "*",
                  dp && dt > cs.time ? fmtelapsed(dt - cs.time, 1) : "*"));
-        if (xp && xp != sp)
-        {
+        if (xp && xp != sp) {
             if (!xp->running
                 && (nopen - xp->cpu >= state.pool + noverride
                     || state.open - xp->cpu >= state.fdtotal / 2
                     || xp == dp && cs.time > dt
-                       && (!xm || !mp || mp->rank < PCT(xp->rank, H_RANK))))
-            {
+                       && (!xm || !mp || mp->rank < PCT(xp->rank, H_RANK)))) {
                 dp = 0;
                 xp->mode &= ~SHELL_CLOSE;
                 shellclose(xp, -1);
-            }
-            else if (xp != dp)
-            {
+            } else if (xp != dp) {
                 dp = xp;
                 dt = cs.time + 2 * UPDATE;
             }
         }
         if (cp)
             do
-                if (cp->mode & SHELL_CLOSE)
-                {
+                if (cp->mode & SHELL_CLOSE) {
                     cp->mode &= ~SHELL_CLOSE;
                     if (cp != sp)
                         shellclose(cp, -1);
                 }
             while ((cp = cp->next) != state.shellnext);
-        if (sp)
-        {
+        if (sp) {
             if (dp == sp)
                 dp = 0;
             if (sp->override || !IDLE(sp->stat.idle, sp->idle))
@@ -403,10 +365,8 @@ search(int op, char *name, Coattr_t *a, Coattr_t *d)
         }
         if (nopen)
             return (&state.wait);
-    }
-    else if (sp)
-        do
-        {
+    } else if (sp)
+        do {
             if (match(sp, a, op))
                 goto found;
         } while ((sp = sp->next) != state.shell);
@@ -418,8 +378,7 @@ search(int op, char *name, Coattr_t *a, Coattr_t *d)
     if (!(a->set & SETNAME) || !(addr = csaddr(a->name)))
         return (0);
     if (sp = state.shell)
-        do
-        {
+        do {
             if (sp->addr == addr)
                 goto found;
         } while ((sp = sp->next) != state.shell);
@@ -434,8 +393,7 @@ empty:
      * add a new entry
      */
 
-    if (++state.shelln > state.shellc)
-    {
+    if (++state.shelln > state.shellc) {
         if (state.shellv)
             free(state.shellv);
         state.shellc = roundof(state.shelln + 1, 32);
@@ -445,12 +403,10 @@ empty:
     if (!(sp = newof(0, Coshell_t, 1, 0)))
         error(3, "out of space [%s]", a->name);
     strcpy(sp->name, a->name);
-    if (state.shell)
-    {
+    if (state.shell) {
         n = 0;
         ap = state.shell;
-        for (;;)
-        {
+        for (;;) {
             n++;
             sp->rating += ap->rating;
             if (ap->next == state.shell)
@@ -460,9 +416,7 @@ empty:
         sp->rating /= n;
         ap->next = sp;
         sp->next = state.shell;
-    }
-    else
-    {
+    } else {
         sp->next = sp;
         sp->rating = RATING;
         sp->home++;
@@ -473,16 +427,14 @@ empty:
     sp->scale = sp->cpu = 1;
     sp->addr = addr;
 found:
-    switch (op & (DEF | JOB | NEW | SET))
-    {
+    switch (op & (DEF | JOB | NEW | SET)) {
     case DEF:
         a->set &= ~sp->flags;
         break;
     case DEF | JOB:
     case JOB:
         if (sp != state.shell
-            && (sp->override || !IDLE(sp->stat.idle, sp->idle)))
-        {
+            && (sp->override || !IDLE(sp->stat.idle, sp->idle))) {
             if (!sp->override)
                 state.override++;
             sp->override = cs.time + (sp->home ? HOME : OVERRIDE);
@@ -491,8 +443,7 @@ found:
     default:
         return (sp);
     case NEW:
-        if (!(a->set & SETIDLE))
-        {
+        if (!(a->set & SETIDLE)) {
             a->set |= SETIDLE;
             a->idle = 0;
             sp->idle_override = sp->idle;
@@ -501,8 +452,7 @@ found:
         /*FALLTHROUGH*/
     case SET:
         sp->flags |= a->set;
-        if (a->global.set & (SETIDLE | SETLOAD | SETUPDATE | SETUSERS))
-        {
+        if (a->global.set & (SETIDLE | SETLOAD | SETUPDATE | SETUSERS)) {
             if (a->global.set & SETIDLE)
                 sp->stat.idle = a->stat.idle;
             if (a->global.set & SETLOAD)
@@ -524,15 +474,13 @@ found:
         sp->bypass = dupstring(sp->bypass, a->bypass);
     if (a->set & SETBIAS)
         sp->bias = a->bias;
-    if (a->set & SETIGNORE)
-    {
+    if (a->set & SETIGNORE) {
         if (a->ignore)
             sp->flags |= IGN;
         else
             sp->flags &= ~IGN;
     }
-    if (a->set & SETMISC)
-    {
+    if (a->set & SETMISC) {
         sp->flags &= ~SETMISC;
         miscadd(sp, a->misc);
     }
@@ -546,25 +494,20 @@ found:
         strcpy(sp->shell, a->shell);
     if (a->set & SETTYPE)
         strcpy(sp->type, a->type);
-    if (a->set & SETCPU)
-    {
+    if (a->set & SETCPU) {
         if (sp->fd)
             state.open += a->cpu - sp->cpu;
         sp->cpu = a->cpu;
         if (!(sp->flags & SETSCALE))
             sp->scale = sp->cpu;
     }
-    if (a->set & SETIDLE)
-    {
-        if (!(sp->idle = a->idle))
-        {
-            if (sp->override)
-            {
+    if (a->set & SETIDLE) {
+        if (!(sp->idle = a->idle)) {
+            if (sp->override) {
                 sp->override = 0;
                 state.override--;
                 sp->update = 0;
-            }
-            else if (sp->update > cs.time + UPDATE)
+            } else if (sp->update > cs.time + UPDATE)
                 sp->update = 0;
         }
         if (sp->running)
@@ -588,29 +531,21 @@ update(Coshell_t *sp)
     long n;
 
     sp->mode &= ~SHELL_DISABLE;
-    if (csstat(sp->name, &sp->stat))
-    {
+    if (csstat(sp->name, &sp->stat)) {
         sp->stat.up = 0;
         sp->stat.idle = -1;
         sp->stat.load = LOAD;
         sp->stat.users = 0;
         sp->errors++;
-    }
-    else
-    {
-        if (sp->stat.up < 0)
-        {
+    } else {
+        if (sp->stat.up < 0) {
             n = X_RANK;
-            if (sp == state.shell)
-            {
+            if (sp == state.shell) {
                 sp->stat.up = 0;
                 n -= W_USER;
-            }
-            else if (sp->fd)
+            } else if (sp->fd)
                 shellclose(sp, -1);
-        }
-        else
-        {
+        } else {
             n = 0;
             if (!sp->scale)
                 sp->scale = 1;
@@ -620,21 +555,17 @@ update(Coshell_t *sp)
                  * (((sp->stat.load / sp->scale) + CPU(sp->cpu, W_JOB * LOAD))
                     / T_LOAD)
                  * sp->bias / sp->rating;
-            if (state.maxidle)
-            {
-                if (sp->idle)
-                {
+            if (state.maxidle) {
+                if (sp->idle) {
                     if (sp->stat.idle < sp->idle)
                         n += W_IDLE;
                     else if (sp->stat.idle < R_IDLE * sp->idle)
                         n += W_IDLE * (R_IDLE * sp->idle - sp->stat.idle)
                              / ((R_IDLE - 1) * sp->idle);
-                }
-                else if (sp->stat.users && sp->stat.idle < R_USER)
+                } else if (sp->stat.users && sp->stat.idle < R_USER)
                     n += W_USER * (R_USER - sp->stat.idle) / R_USER;
             }
-            if (n > PCT(X_RANK, C_RANK))
-            {
+            if (n > PCT(X_RANK, C_RANK)) {
                 if (n >= 2 * X_RANK)
                     n = X_RANK - 1;
                 else
@@ -648,8 +579,7 @@ update(Coshell_t *sp)
         sp->errors = 0;
         if (sp->stat.up < 0)
             sp->update = cs.time + CS_STAT_DOWN;
-        else
-        {
+        else {
             sp->update = cs.time + UPDATE;
             if (sp->fd > 0 && (2 * sp->stat.up) < (cs.time - sp->start))
                 shellclose(sp, -1);
@@ -682,10 +612,8 @@ info(int op, char *file)
     static char *apath;
     static time_t atime;
 
-    if (!file && op == SET)
-    {
-        if (!(file = apath))
-        {
+    if (!file && op == SET) {
+        if (!(file = apath)) {
             if (!(file = sfstrrsrv(state.string, PATH_MAX))
                 || !pathaccess(csvar(CS_VAR_TRUST, 1),
                                csvar(CS_VAR_SHARE, 0),
@@ -693,32 +621,27 @@ info(int op, char *file)
                                PATH_REGULAR,
                                file,
                                PATH_MAX)
-                || !(file = strdup(file)))
-            {
+                || !(file = strdup(file))) {
                 state.access = cs.time + ACCESS_SEARCH;
                 return (0);
             }
             apath = file;
         }
-        if (!(fp = sfopen(NiL, file, "r")))
-        {
+        if (!(fp = sfopen(NiL, file, "r"))) {
             free(apath);
             apath = 0;
             state.access = cs.time + ACCESS_SEARCH;
             return (0);
         }
         state.access = cs.time + ACCESS_UPDATE;
-        if (fstat(sffileno(fp), &st) || atime == st.st_mtime)
-        {
+        if (fstat(sffileno(fp), &st) || atime == st.st_mtime) {
             sfclose(fp);
             return (0);
         }
         message(
         (-2, "%sscanning access info file %s", atime ? "re" : "", file));
         atime = st.st_mtime;
-    }
-    else if (!(fp = csinfo(file, NiL)))
-    {
+    } else if (!(fp = csinfo(file, NiL))) {
         error(
         ERROR_SYSTEM | 2, "%s: not found", file ? file : "<local host info>");
         return (0);

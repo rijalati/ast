@@ -55,8 +55,7 @@ int vmclear(vm) Vmalloc_t *vm;
     vmdt->seg = 0;
 
     /* memory obtained from discipline can be deallocated */
-    for (; seg; seg = next)
-    {
+    for (; seg; seg = next) {
         next = seg->next;
         ( void )(*disc->memoryf)(vm, seg->base, seg->size, 0, disc);
     }

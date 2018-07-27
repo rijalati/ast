@@ -41,8 +41,7 @@ char **argv;        /* Argument strings. */
     Arg *argPtr = NULL; /* Initialization not needed, but
                          * prevents compiler warning. */
 
-    if (argc != 4)
-    {
+    if (argc != 4) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -64,13 +63,11 @@ char **argv;        /* Argument strings. */
      */
 
     result = Tcl_SplitList(interp, argv[2], &argCount, &argArray);
-    if (result != TCL_OK)
-    {
+    if (result != TCL_OK) {
         goto procError;
     }
     lastArgPtr = NULL;
-    for (i = 0; i < argCount; i++)
-    {
+    for (i = 0; i < argCount; i++) {
         int fieldCount, nameLength, valueLength;
         char **fieldValues;
 
@@ -80,12 +77,10 @@ char **argv;        /* Argument strings. */
 
         result
         = Tcl_SplitList(interp, argArray[i], &fieldCount, &fieldValues);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             goto procError;
         }
-        if (fieldCount > 2)
-        {
+        if (fieldCount > 2) {
             ckfree(( char * )fieldValues);
             Tcl_AppendResult(interp,
                              "too many fields in argument specifier \"",
@@ -95,8 +90,7 @@ char **argv;        /* Argument strings. */
             result = TCL_ERROR;
             goto procError;
         }
-        if ((fieldCount == 0) || (*fieldValues[0] == 0))
-        {
+        if ((fieldCount == 0) || (*fieldValues[0] == 0)) {
             ckfree(( char * )fieldValues);
             Tcl_AppendResult(interp,
                              "procedure \"",
@@ -107,35 +101,26 @@ char **argv;        /* Argument strings. */
             goto procError;
         }
         nameLength = strlen(fieldValues[0]) + 1;
-        if (fieldCount == 2)
-        {
+        if (fieldCount == 2) {
             valueLength = strlen(fieldValues[1]) + 1;
-        }
-        else
-        {
+        } else {
             valueLength = 0;
         }
         argPtr
         = ( Arg * )ckalloc(( unsigned )(sizeof(Arg) - sizeof(argPtr->name)
                                         + nameLength + valueLength));
-        if (lastArgPtr == NULL)
-        {
+        if (lastArgPtr == NULL) {
             procPtr->argPtr = argPtr;
-        }
-        else
-        {
+        } else {
             lastArgPtr->nextPtr = argPtr;
         }
         lastArgPtr = argPtr;
         argPtr->nextPtr = NULL;
         strcpy(argPtr->name, fieldValues[0]);
-        if (fieldCount == 2)
-        {
+        if (fieldCount == 2) {
             argPtr->defValue = argPtr->name + nameLength;
             strcpy(argPtr->defValue, fieldValues[1]);
-        }
-        else
-        {
+        } else {
             argPtr->defValue = NULL;
         }
         ckfree(( char * )fieldValues);
@@ -151,15 +136,13 @@ char **argv;        /* Argument strings. */
 
 procError:
     ckfree(procPtr->command);
-    while (procPtr->argPtr != NULL)
-    {
+    while (procPtr->argPtr != NULL) {
         argPtr = procPtr->argPtr;
         procPtr->argPtr = argPtr->nextPtr;
         ckfree(( char * )argPtr);
     }
     ckfree(( char * )procPtr);
-    if (argArray != NULL)
-    {
+    if (argArray != NULL) {
         ckfree(( char * )argArray);
     }
     return result;
@@ -185,8 +168,7 @@ procError:
 
 Proc *TclIsProc(cmdPtr) Tcl_CmdInfo *cmdPtr; /* Command to test. */
 {
-    if (cmdPtr->proc == InterpProc)
-    {
+    if (cmdPtr->proc == InterpProc) {
         return ( Proc * )cmdPtr->clientData;
     }
     return ( Proc * )0;
@@ -196,8 +178,7 @@ Proc *
 TclFindProc(Interp *iPtr, char *procName)
 {
     Tcl_CmdInfo procInfo;
-    if (Tcl_GetCommandInfo(( Tcl_Interp * )iPtr, procName, &procInfo))
-    {
+    if (Tcl_GetCommandInfo(( Tcl_Interp * )iPtr, procName, &procInfo)) {
         if (procInfo.proc == InterpProc)
             return ( Proc * )procInfo.clientData;
     }
@@ -253,8 +234,7 @@ char **argv;           /* Argument values. */
     iargs.argc = argc;
     iargs.argv = argv;
 
-    if (argv[argc])
-    {
+    if (argv[argc]) {
         /* Somehow, this function was called without a null terminated
          * argument list (eg. by tk4.2 directly).  We must create a
          * proper list
@@ -272,14 +252,11 @@ char **argv;           /* Argument values. */
     if (copiedArgv)
         free(( void * )copiedArgv);
 
-    if (savnv.nvfun)
-    {
-        if (procPtr->iPtr->flags & ERR_IN_PROGRESS)
-        {
+    if (savnv.nvfun) {
+        if (procPtr->iPtr->flags & ERR_IN_PROGRESS) {
             nv_unset(&savnv);
             procPtr->iPtr->flags |= ERR_IN_PROGRESS;
-        }
-        else
+        } else
             nv_unset(&savnv);
     }
     return result;
@@ -291,8 +268,7 @@ clearlocals(Namval_t *nv, void *data)
 {
     if (nv_isattr(nv, NV_REF))
         return;
-    if (nv->nvfun)
-    {
+    if (nv->nvfun) {
         dprintf(("LOCAL DELETE: %s\n", nv_name(nv)));
         savnv = *nv;
         nv->nvfun = NULL;
@@ -321,8 +297,7 @@ InterpProcBody(void *data)
      */
 
     for (argPtr = procPtr->argPtr, args = argv + 1, argc -= 1; argPtr != NULL;
-         argPtr = argPtr->nextPtr, args++, argc--)
-    {
+         argPtr = argPtr->nextPtr, args++, argc--) {
 
         /*
          * Handle the special case of the last formal being "args".  When
@@ -330,10 +305,9 @@ InterpProcBody(void *data)
          * actual arguments.
          */
 
-        if ((argPtr->nextPtr == NULL) && (strcmp(argPtr->name, "args") == 0))
-        {
-            if (argc < 0)
-            {
+        if ((argPtr->nextPtr == NULL)
+            && (strcmp(argPtr->name, "args") == 0)) {
+            if (argc < 0) {
                 argc = 0;
             }
             value = Tcl_Merge(argc, args);
@@ -341,17 +315,11 @@ InterpProcBody(void *data)
             ckfree(value);
             argc = 0;
             break;
-        }
-        else if (argc > 0)
-        {
+        } else if (argc > 0) {
             value = *args;
-        }
-        else if (argPtr->defValue != NULL)
-        {
+        } else if (argPtr->defValue != NULL) {
             value = argPtr->defValue;
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp,
                              "no value given for parameter \"",
                              argPtr->name,
@@ -364,8 +332,7 @@ InterpProcBody(void *data)
         }
         Tcl_SetVar(interp, argPtr->name, value, 0);
     }
-    if (argc > 0)
-    {
+    if (argc > 0) {
         Tcl_AppendResult(interp,
                          "called \"",
                          argv[0],
@@ -385,24 +352,20 @@ InterpProcBody(void *data)
     if (iPtr->freeProc == NULL)
         Tcl_SetResult(interp, iPtr->result, TCL_VOLATILE);
     procPtr->refCount--;
-    if (procPtr->refCount <= 0)
-    {
+    if (procPtr->refCount <= 0) {
         CleanupProc(procPtr);
     }
-    if (result == TCL_RETURN)
-    {
+    if (result == TCL_RETURN) {
         result = iPtr->returnCode;
         iPtr->returnCode = TCL_OK;
-        if (result == TCL_ERROR)
-        {
+        if (result == TCL_ERROR) {
             Tcl_SetVar2(interp,
                         "errorCode",
                         ( char * )NULL,
                         (iPtr->errorCode != NULL) ? iPtr->errorCode : "NONE",
                         TCL_GLOBAL_ONLY);
             iPtr->flags |= ERROR_CODE_SET;
-            if (iPtr->errorInfo != NULL)
-            {
+            if (iPtr->errorInfo != NULL) {
                 Tcl_SetVar2(interp,
                             "errorInfo",
                             ( char * )NULL,
@@ -411,9 +374,7 @@ InterpProcBody(void *data)
                 iPtr->flags |= ERR_IN_PROGRESS;
             }
         }
-    }
-    else if (result == TCL_ERROR)
-    {
+    } else if (result == TCL_ERROR) {
         char msg[100];
 
         /*
@@ -423,14 +384,10 @@ InterpProcBody(void *data)
         sprintf(
         msg, "\n    (procedure \"%.50s\" line %d)", argv[0], iPtr->errorLine);
         Tcl_AddErrorInfo(interp, msg);
-    }
-    else if (result == TCL_BREAK)
-    {
+    } else if (result == TCL_BREAK) {
         iPtr->result = "invoked \"break\" outside of a loop";
         result = TCL_ERROR;
-    }
-    else if (result == TCL_CONTINUE)
-    {
+    } else if (result == TCL_CONTINUE) {
         iPtr->result = "invoked \"continue\" outside of a loop";
         result = TCL_ERROR;
     }
@@ -451,8 +408,7 @@ InterpProcBody(void *data)
 procDone:
 
     savnv.nvfun = NULL;
-    if (hashscope(sh.var_tree))
-    {
+    if (hashscope(sh.var_tree)) {
         Hashtab_t *ht = hashscope(sh.var_tree);
         hashscope(sh.var_tree) = NULL;
         nv_scan(sh.var_tree, clearlocals, NIL(void *), 0, 0);
@@ -489,8 +445,7 @@ ClientData clientData; /* Procedure to be deleted. */
     Proc *procPtr = ( Proc * )clientData;
 
     procPtr->refCount--;
-    if (procPtr->refCount <= 0)
-    {
+    if (procPtr->refCount <= 0) {
         CleanupProc(procPtr);
     }
 }
@@ -518,8 +473,7 @@ static void CleanupProc(procPtr) Proc *procPtr; /* Procedure to be deleted. */
     Arg *argPtr;
 
     ckfree(( char * )procPtr->command);
-    for (argPtr = procPtr->argPtr; argPtr != NULL;)
-    {
+    for (argPtr = procPtr->argPtr; argPtr != NULL;) {
         Arg *nextPtr = argPtr->nextPtr;
 
         ckfree(( char * )argPtr);

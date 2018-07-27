@@ -108,8 +108,7 @@ extern double acosh(x) double x;
 #    endif /* !defined(vax)&&!defined(tahoe) */
 
     /* return log1p(x) + log(2) if x is large */
-    if (x > big)
-    {
+    if (x > big) {
         t = log1p(x) + ln2lo;
         return (t + ln2hi);
     }

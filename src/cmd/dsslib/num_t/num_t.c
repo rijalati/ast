@@ -35,10 +35,8 @@
         int i;                                                               \
         f = (value)->number;                                                 \
         if (i = (format)->fixedpoint)                                        \
-            for (;;)                                                         \
-            {                                                                \
-                if (i < elementsof(pow_10))                                  \
-                {                                                            \
+            for (;;) {                                                       \
+                if (i < elementsof(pow_10)) {                                \
                     f *= pow_10[i];                                          \
                     break;                                                   \
                 }                                                            \
@@ -52,10 +50,8 @@
         int i;                                                               \
         f = ( intmax_t )w; /* signed cast is msvc workaround */              \
         if (i = (format)->fixedpoint)                                        \
-            for (;;)                                                         \
-            {                                                                \
-                if (i < elementsof(pow_10))                                  \
-                {                                                            \
+            for (;;) {                                                       \
+                if (i < elementsof(pow_10)) {                                \
                     f /= pow_10[i];                                          \
                     break;                                                   \
                 }                                                            \
@@ -107,20 +103,16 @@ bcd_external(Cx_t *cx,
     if ((e = s + format->width - 1) < s)
         return -1;
     FIXED_EXTERNAL(f, format, value);
-    if (f < 0)
-    {
+    if (f < 0) {
         v = (Cxinteger_t)(-f);
         *e = 0xD;
-    }
-    else
-    {
+    } else {
         v = ( Cxinteger_t )f;
         *e = 0xC;
     }
     *e |= bcd_pack[(v % 10) * 10];
     v /= 10;
-    while (e-- > s)
-    {
+    while (e-- > s) {
         *e = bcd_pack[v % 100];
         v /= 100;
     }
@@ -192,8 +184,7 @@ bcd_internal(Cx_t *cx,
     e = s + format->width - 1;
     while (s < e && !*s)
         s++;
-    switch (e - s)
-    {
+    switch (e - s) {
     case 21:
         w *= 100;
         w += p[*s++];
@@ -290,10 +281,8 @@ be_external(Cx_t *cx,
         return format->width;
     e = s + format->width;
     FIXED_EXTERNAL(f, format, value);
-    if (format->flags & CX_FLOAT)
-    {
-        switch (format->width)
-        {
+    if (format->flags & CX_FLOAT) {
+        switch (format->width) {
         case 4:
             f4 = f;
             u = ( unsigned char * )&f4;
@@ -309,12 +298,9 @@ be_external(Cx_t *cx,
         while (s < e)
             *s++ = *u++;
 #endif
-    }
-    else
-    {
+    } else {
         v = ( Cxinteger_t )f;
-        while (e > s)
-        {
+        while (e > s) {
             *--e = v & 0xff;
             v >>= 8;
         }
@@ -344,10 +330,8 @@ be_internal(Cx_t *cx,
     if (format->width > size)
         return format->width;
     e = s + format->width;
-    if (format->flags & CX_FLOAT)
-    {
-        switch (format->width)
-        {
+    if (format->flags & CX_FLOAT) {
+        switch (format->width) {
         case 4:
             u = ( unsigned char * )&f4;
 #if _ast_intswap
@@ -369,12 +353,9 @@ be_internal(Cx_t *cx,
             ret->value.number = f8;
             break;
         }
-    }
-    else
-    {
+    } else {
         v = 0;
-        while (s < e)
-        {
+        while (s < e) {
             v <<= 8;
             v |= *s++;
         }
@@ -442,8 +423,7 @@ hash_external(Cx_t *cx,
     int c;
     Cxunsigned_t h;
 
-    if (!hp->seed)
-    {
+    if (!hp->seed) {
         hp->seed = 1;
         if (CXDETAILS(details, format, type, 0))
             hp->hash = strtoul(details, NiL, 0);
@@ -454,8 +434,7 @@ hash_external(Cx_t *cx,
     e = s + value->string.size;
     t = ( unsigned char * )buf;
     h = hp->hash;
-    while (s < e)
-    {
+    while (s < e) {
         c = *s++;
         HASHPART(h, c);
         if (islower(c))
@@ -491,8 +470,7 @@ hash_internal(Cx_t *cx,
 
     if (format->width > size)
         return format->width;
-    if (!hp->seed)
-    {
+    if (!hp->seed) {
         hp->seed = 1;
         if (CXDETAILS(details, format, type, 0))
             hp->hash = strtoul(details, NiL, 0);
@@ -504,8 +482,7 @@ hash_internal(Cx_t *cx,
     s = ( unsigned char * )buf;
     e = s + size;
     h = hp->hash;
-    while (s < e)
-    {
+    while (s < e) {
         c = *s++;
         HASHPART(h, c);
         if (islower(c))
@@ -561,13 +538,10 @@ heka_internal(Cx_t *cx,
     if (format->width > size)
         return format->width;
     e = s + format->width;
-    if (*s == '-')
-    {
+    if (*s == '-') {
         s++;
         neg = 1;
-    }
-    else
-    {
+    } else {
         if (*s == '+')
             s++;
         neg = 0;
@@ -611,13 +585,10 @@ heka_external(Cx_t *cx,
     unsigned char tmp[128];
 
     FIXED_EXTERNAL(f, format, value);
-    if (f >= 0 || (format->flags & CX_UNSIGNED))
-    {
+    if (f >= 0 || (format->flags & CX_UNSIGNED)) {
         u = ( Cxinteger_t )f;
         neg = 0;
-    }
-    else
-    {
+    } else {
         u = (Cxinteger_t)(-f);
         neg = 1;
     }
@@ -625,13 +596,11 @@ heka_external(Cx_t *cx,
     if (u == 0)
         *--t = heka_pack[0];
     else
-        while (u > 0)
-        {
+        while (u > 0) {
             *--t = heka_pack[u % 100];
             u /= 100;
         }
-    if ((c = format->width) > 0 && c < (elementsof(tmp) - 1))
-    {
+    if ((c = format->width) > 0 && c < (elementsof(tmp) - 1)) {
         e = s - c + 1;
         c = heka_pack[0];
         while (t > e)
@@ -642,8 +611,7 @@ heka_external(Cx_t *cx,
     if ((c = s - t) > size)
         return c;
     s = ( unsigned char * )buf;
-    switch (c)
-    {
+    switch (c) {
     default:
         memcpy(s, t, c);
         break;
@@ -888,13 +856,11 @@ ibm_external(Cx_t *cx,
         return format->width;
     if (negative = (f = value->number) < 0.0)
         f = -f;
-    switch (format->width)
-    {
+    switch (format->width) {
     case 4:
         if (f < IBM_FP_LO)
             s[0] = s[1] = s[2] = s[3] = 0x00;
-        else
-        {
+        else {
             if (f > IBM_FP_HI)
                 f = IBM_FP_HI;
 
@@ -904,8 +870,7 @@ ibm_external(Cx_t *cx,
 
             lo = 0;
             hi = elementsof(ibm_exp) - 1;
-            while (lo != hi + 1)
-            {
+            while (lo != hi + 1) {
                 ex = lo + ((hi - lo) >> 1);
                 if (ibm_exp[ex] < f)
                     lo = ex + 1;
@@ -933,13 +898,11 @@ ibm_external(Cx_t *cx,
              * correct for overflow
              */
 
-            if (hi3 > 0xFFFFFF)
-            {
+            if (hi3 > 0xFFFFFF) {
                 hi3 = 0x100000;
                 ex++;
             }
-            if (ex > 0x7F)
-            {
+            if (ex > 0x7F) {
                 ex = 0x7F;
                 hi3 = 0xFFFFFF;
             }
@@ -964,8 +927,7 @@ ibm_external(Cx_t *cx,
     case 8:
         if (f < IBM_FP_LO)
             s[0] = s[1] = s[2] = s[3] = s[4] = s[5] = s[6] = s[7] = 0x00;
-        else
-        {
+        else {
             if (f > IBM_FP_HI)
                 f = IBM_FP_HI;
 
@@ -975,8 +937,7 @@ ibm_external(Cx_t *cx,
 
             lo = 0;
             hi = elementsof(ibm_exp) - 1;
-            while (lo != hi + 1)
-            {
+            while (lo != hi + 1) {
                 ex = lo + ((hi - lo) >> 1);
                 if (ibm_exp[ex] < f)
                     lo = ex + 1;
@@ -1010,23 +971,19 @@ ibm_external(Cx_t *cx,
              * correct for overflow
              */
 
-            if (lo2 > 0xFFFF)
-            {
+            if (lo2 > 0xFFFF) {
                 lo2 -= 0x10000;
                 md2++;
             }
-            if (md2 > 0xFFFF)
-            {
+            if (md2 > 0xFFFF) {
                 md2 -= 0x10000;
                 hi3++;
             }
-            if (hi3 > 0xFFFFFF)
-            {
+            if (hi3 > 0xFFFFFF) {
                 hi3 = 0x100000;
                 ex++;
             }
-            if (ex > 0x7F)
-            {
+            if (ex > 0x7F) {
                 ex = 0x7F;
                 hi3 = 0xFFFFFF;
                 md2 = 0xFFFF;
@@ -1075,8 +1032,7 @@ ibm_internal(Cx_t *cx,
 
     if (format->width > size)
         return format->width;
-    switch (format->width)
-    {
+    switch (format->width) {
     case 4:
         i = (s[1] << 16) | (s[2] << 8) | s[3];
         f = i * (1.0 / 0x1000000)
@@ -1120,10 +1076,8 @@ le_external(Cx_t *cx,
         return format->width;
     e = s + format->width;
     FIXED_EXTERNAL(f, format, value);
-    if (format->flags & CX_FLOAT)
-    {
-        switch (format->width)
-        {
+    if (format->flags & CX_FLOAT) {
+        switch (format->width) {
         case 4:
             f4 = f;
             u = ( unsigned char * )&f4;
@@ -1139,12 +1093,9 @@ le_external(Cx_t *cx,
         while (s < e)
             *s++ = *u++;
 #endif
-    }
-    else
-    {
+    } else {
         v = ( Cxinteger_t )value->number;
-        while (s < e)
-        {
+        while (s < e) {
             *s++ = v & 0xff;
             v >>= 8;
         }
@@ -1174,10 +1125,8 @@ le_internal(Cx_t *cx,
     if (format->width > size)
         return format->width;
     e = s + format->width;
-    if (format->flags & CX_FLOAT)
-    {
-        switch (format->width)
-        {
+    if (format->flags & CX_FLOAT) {
+        switch (format->width) {
         case 4:
             u = ( unsigned char * )&f4;
 #if _ast_intswap ^ 7
@@ -1199,12 +1148,9 @@ le_internal(Cx_t *cx,
             ret->value.number = f8;
             break;
         }
-    }
-    else
-    {
+    } else {
         v = 0;
-        while (e > s)
-        {
+        while (e > s) {
             v <<= 8;
             v |= *--e;
         }
@@ -1232,14 +1178,11 @@ sf_external(Cx_t *cx,
     sfstrbuf(cx->buf, buf, size, 0);
     if (format->flags & CX_FLOAT)
         r = sfputd(cx->buf, f);
-    else if (format->flags & CX_UNSIGNED)
-    {
+    else if (format->flags & CX_UNSIGNED) {
         v = f;
         u = v;
         r = sfputu(cx->buf, u);
-    }
-    else
-    {
+    } else {
         v = f;
         r = sfputl(cx->buf, v);
     }

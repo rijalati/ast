@@ -91,12 +91,9 @@ ClientData clientData; /* Argument to pass to handler. */
     asyncPtr->nextPtr = NULL;
     asyncPtr->proc = proc;
     asyncPtr->clientData = clientData;
-    if (firstHandler == NULL)
-    {
+    if (firstHandler == NULL) {
         firstHandler = asyncPtr;
-    }
-    else
-    {
+    } else {
         lastHandler->nextPtr = asyncPtr;
     }
     lastHandler = asyncPtr;
@@ -125,8 +122,7 @@ ClientData clientData; /* Argument to pass to handler. */
 void Tcl_AsyncMark(async) Tcl_AsyncHandler async; /* Token for handler. */
 {
     (( AsyncHandler * )async)->ready = 1;
-    if (!asyncActive)
-    {
+    if (!asyncActive) {
         asyncReady = 1;
     }
 }
@@ -161,14 +157,12 @@ int code; /* If interp is non-NULL, this gives
 {
     AsyncHandler *asyncPtr;
 
-    if (asyncReady == 0)
-    {
+    if (asyncReady == 0) {
         return code;
     }
     asyncReady = 0;
     asyncActive = 1;
-    if (interp == NULL)
-    {
+    if (interp == NULL) {
         code = 0;
     }
 
@@ -183,18 +177,14 @@ int code; /* If interp is non-NULL, this gives
      * safe to continue down the list anyway.
      */
 
-    while (1)
-    {
+    while (1) {
         for (asyncPtr = firstHandler; asyncPtr != NULL;
-             asyncPtr = asyncPtr->nextPtr)
-        {
-            if (asyncPtr->ready)
-            {
+             asyncPtr = asyncPtr->nextPtr) {
+            if (asyncPtr->ready) {
                 break;
             }
         }
-        if (asyncPtr == NULL)
-        {
+        if (asyncPtr == NULL) {
             break;
         }
         asyncPtr->ready = 0;
@@ -227,24 +217,18 @@ void Tcl_AsyncDelete(async) Tcl_AsyncHandler async; /* Token for handler to
     AsyncHandler *asyncPtr = ( AsyncHandler * )async;
     AsyncHandler *prevPtr;
 
-    if (firstHandler == asyncPtr)
-    {
+    if (firstHandler == asyncPtr) {
         firstHandler = asyncPtr->nextPtr;
-        if (firstHandler == NULL)
-        {
+        if (firstHandler == NULL) {
             lastHandler = NULL;
         }
-    }
-    else
-    {
+    } else {
         prevPtr = firstHandler;
-        while (prevPtr->nextPtr != asyncPtr)
-        {
+        while (prevPtr->nextPtr != asyncPtr) {
             prevPtr = prevPtr->nextPtr;
         }
         prevPtr->nextPtr = asyncPtr->nextPtr;
-        if (lastHandler == asyncPtr)
-        {
+        if (lastHandler == asyncPtr) {
             lastHandler = prevPtr;
         }
     }

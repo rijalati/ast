@@ -60,8 +60,7 @@ tmain()
         terror("Opening string");
 
     endos = os + strlen(os);
-    while ((s = sfgetr(f, '\n', 0)))
-    {
+    while ((s = sfgetr(f, '\n', 0))) {
         if (s != os)
             terror("Did not get string");
         os += sfvalue(f);
@@ -111,10 +110,8 @@ tmain()
     if (!(f = sfopen(( Sfio_t * )0, ( char * )0, "s+")))
         terror("Opening string for r/w");
     sfset(f, SF_READ, 0);
-    for (n = 0; n < 16 * 1024; ++n)
-    {
-        if ((n % 1024) == 0)
-        {
+    for (n = 0; n < 16 * 1024; ++n) {
+        if ((n % 1024) == 0) {
             Sfoff_t a = sfseek(f, ( Sfoff_t )1024, 1);
             sfputc(f, 'a');
             sfseek(f, (Sfoff_t)(-1025), 1);

@@ -45,8 +45,7 @@ fmtdev(struct stat *st)
     ma = major(mm);
     mi = minor(mm);
     buf = fmtbuf(z = 17);
-    if (ma == '#' && isalnum(mi))
-    {
+    if (ma == '#' && isalnum(mi)) {
         /*
          * Plan? Nein!
          */
@@ -54,8 +53,7 @@ fmtdev(struct stat *st)
         buf[0] = ma;
         buf[1] = mi;
         buf[2] = 0;
-    }
-    else
+    } else
         sfsprintf(buf, z, "%03d,%03d", ma, mi);
     return buf;
 }

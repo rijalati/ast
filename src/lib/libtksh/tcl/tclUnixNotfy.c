@@ -62,8 +62,7 @@ TclWinFlushEvents()
 {
     ignoreEvents = 1;
     while (
-    Tcl_DoOneEvent(TCL_DONT_WAIT | TCL_WINDOW_EVENTS | TCL_IDLE_EVENTS))
-    {
+    Tcl_DoOneEvent(TCL_DONT_WAIT | TCL_WINDOW_EVENTS | TCL_IDLE_EVENTS)) {
     }
     ignoreEvents = 0;
 }
@@ -105,32 +104,26 @@ int mask; /* OR'ed combination of TCL_READABLE,
 
     fd = ( int )Tcl_GetFileInfo(file, &type);
 
-    if (type != TCL_UNIX_FD)
-    {
+    if (type != TCL_UNIX_FD) {
         panic("Tcl_WatchFile: unexpected file type");
     }
 
-    if (fd >= FD_SETSIZE)
-    {
+    if (fd >= FD_SETSIZE) {
         panic("Tcl_WatchFile can't handle file id %d", fd);
     }
 
     index = fd / (NBBY * sizeof(fd_mask));
     bit = 1 << (fd % (NBBY * sizeof(fd_mask)));
-    if (mask & TCL_READABLE)
-    {
+    if (mask & TCL_READABLE) {
         checkMasks[index] |= bit;
     }
-    if (mask & TCL_WRITABLE)
-    {
+    if (mask & TCL_WRITABLE) {
         (checkMasks + MASK_SIZE)[index] |= bit;
     }
-    if (mask & TCL_EXCEPTION)
-    {
+    if (mask & TCL_EXCEPTION) {
         (checkMasks + 2 * (MASK_SIZE))[index] |= bit;
     }
-    if (numFdBits <= fd)
-    {
+    if (numFdBits <= fd) {
         numFdBits = fd + 1;
     }
 }
@@ -175,25 +168,21 @@ int mask;                              /* OR'ed combination of TCL_READABLE,
     fd_mask bit;
 
     fd = ( int )Tcl_GetFileInfo(file, &type);
-    if (type != TCL_UNIX_FD)
-    {
+    if (type != TCL_UNIX_FD) {
         panic("Tcl_FileReady: unexpected file type");
     }
 
     index = fd / (NBBY * sizeof(fd_mask));
     bit = 1 << (fd % (NBBY * sizeof(fd_mask)));
     result = 0;
-    if ((mask & TCL_READABLE) && (readyMasks[index] & bit))
-    {
+    if ((mask & TCL_READABLE) && (readyMasks[index] & bit)) {
         result |= TCL_READABLE;
     }
-    if ((mask & TCL_WRITABLE) && ((readyMasks + MASK_SIZE)[index] & bit))
-    {
+    if ((mask & TCL_WRITABLE) && ((readyMasks + MASK_SIZE)[index] & bit)) {
         result |= TCL_WRITABLE;
     }
     if ((mask & TCL_EXCEPTION)
-        && ((readyMasks + (2 * MASK_SIZE))[index] & bit))
-    {
+        && ((readyMasks + (2 * MASK_SIZE))[index] & bit)) {
         result |= TCL_EXCEPTION;
     }
     return result;
@@ -223,10 +212,8 @@ static int MaskEmpty(maskPtr) long *maskPtr;
     sz = 3 * ((MASK_SIZE) / sizeof(long)) * sizeof(fd_mask);
     for (runPtr = maskPtr, tailPtr = maskPtr + sz, found = 0;
          runPtr < tailPtr;
-         runPtr++)
-    {
-        if (*runPtr != 0)
-        {
+         runPtr++) {
+        if (*runPtr != 0) {
             found = 1;
             break;
         }
@@ -279,16 +266,12 @@ timePtr) Tcl_Time *timePtr; /* Specifies the maximum amount of time
     memcpy(( VOID * )readyMasks,
            ( VOID * )checkMasks,
            3 * MASK_SIZE * sizeof(fd_mask));
-    if (timePtr == NULL)
-    {
-        if ((numFdBits == 0) || (MaskEmpty(( long * )readyMasks)))
-        {
+    if (timePtr == NULL) {
+        if ((numFdBits == 0) || (MaskEmpty(( long * )readyMasks))) {
             return TCL_ERROR;
         }
         timeoutPtr = NULL;
-    }
-    else
-    {
+    } else {
         timeoutPtr = &timeout;
         timeout.tv_sec = timePtr->sec;
         timeout.tv_usec = timePtr->usec;
@@ -300,8 +283,7 @@ timePtr) Tcl_Time *timePtr; /* Specifies the maximum amount of time
                       timeoutPtr);
 
 #ifdef WIN32
-    if (FD_ISSET(winFd, (( SELECT_MASK * )&readyMasks[0])))
-    {
+    if (FD_ISSET(winFd, (( SELECT_MASK * )&readyMasks[0]))) {
         MSG msg;
         GetMessage(&msg, NULL, 0, 0);
         TranslateMessage(&msg);
@@ -315,8 +297,7 @@ timePtr) Tcl_Time *timePtr; /* Specifies the maximum amount of time
      */
 
     eventsFound = numFound;
-    if (numFound == -1)
-    {
+    if (numFound == -1) {
         memset(( VOID * )readyMasks, 0, 3 * MASK_SIZE * sizeof(fd_mask));
     }
 
@@ -362,17 +343,14 @@ void Tcl_Sleep(ms) int ms; /* Number of milliseconds to sleep. */
     after = before;
     after.sec += ms / 1000;
     after.usec += (ms % 1000) * 1000;
-    if (after.usec > 1000000)
-    {
+    if (after.usec > 1000000) {
         after.usec -= 1000000;
         after.sec += 1;
     }
-    while (1)
-    {
+    while (1) {
         delay.tv_sec = after.sec - before.sec;
         delay.tv_usec = after.usec - before.usec;
-        if (delay.tv_usec < 0)
-        {
+        if (delay.tv_usec < 0) {
             delay.tv_usec += 1000000;
             delay.tv_sec -= 1;
         }
@@ -383,8 +361,7 @@ void Tcl_Sleep(ms) int ms; /* Number of milliseconds to sleep. */
          */
 
         if (((( int )delay.tv_sec) < 0)
-            || ((delay.tv_usec == 0) && (delay.tv_sec == 0)))
-        {
+            || ((delay.tv_usec == 0) && (delay.tv_sec == 0))) {
             break;
         }
         ( void )select(

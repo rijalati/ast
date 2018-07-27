@@ -184,8 +184,7 @@ char **argv;        /* Arguments describing rectangle. */
 {
     ImageItem *imgPtr = ( ImageItem * )itemPtr;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          Tk_PathName(Tk_CanvasTkwin(canvas)),
@@ -210,14 +209,13 @@ char **argv;        /* Arguments describing rectangle. */
      */
 
     if ((Tk_CanvasGetCoord(interp, canvas, argv[0], &imgPtr->x) != TCL_OK)
-        || (Tk_CanvasGetCoord(interp, canvas, argv[1], &imgPtr->y) != TCL_OK))
-    {
+        || (Tk_CanvasGetCoord(interp, canvas, argv[1], &imgPtr->y)
+            != TCL_OK)) {
         return TCL_ERROR;
     }
 
     if (ConfigureImage(interp, canvas, itemPtr, argc - 2, argv + 2, 0)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         DeleteImage(canvas, itemPtr, Tk_Display(Tk_CanvasTkwin(canvas)));
         return TCL_ERROR;
     }
@@ -255,24 +253,18 @@ char **argv;        /* Array of coordinates: x1, y1,
     ImageItem *imgPtr = ( ImageItem * )itemPtr;
     char x[TCL_DOUBLE_SPACE], y[TCL_DOUBLE_SPACE];
 
-    if (argc == 0)
-    {
+    if (argc == 0) {
         Tcl_PrintDouble(interp, imgPtr->x, x);
         Tcl_PrintDouble(interp, imgPtr->y, y);
         Tcl_AppendResult(interp, x, " ", y, ( char * )NULL);
-    }
-    else if (argc == 2)
-    {
+    } else if (argc == 2) {
         if ((Tk_CanvasGetCoord(interp, canvas, argv[0], &imgPtr->x) != TCL_OK)
             || (Tk_CanvasGetCoord(interp, canvas, argv[1], &imgPtr->y)
-                != TCL_OK))
-        {
+                != TCL_OK)) {
             return TCL_ERROR;
         }
         ComputeImageBbox(canvas, imgPtr);
-    }
-    else
-    {
+    } else {
         sprintf(
         interp->result, "wrong # coordinates: expected 0 or 2, got %d", argc);
         return TCL_ERROR;
@@ -313,8 +305,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
     tkwin = Tk_CanvasTkwin(canvas);
     if (Tk_ConfigureWidget(
         interp, tkwin, configSpecs, argc, argv, ( char * )imgPtr, flags)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -325,24 +316,19 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * if it hasn't changed.
      */
 
-    if (imgPtr->imageString != NULL)
-    {
+    if (imgPtr->imageString != NULL) {
         image = Tk_GetImage(interp,
                             tkwin,
                             imgPtr->imageString,
                             ImageChangedProc,
                             ( ClientData )imgPtr);
-        if (image == NULL)
-        {
+        if (image == NULL) {
             return TCL_ERROR;
         }
-    }
-    else
-    {
+    } else {
         image = NULL;
     }
-    if (imgPtr->image != NULL)
-    {
+    if (imgPtr->image != NULL) {
         Tk_FreeImage(imgPtr->image);
     }
     imgPtr->image = image;
@@ -376,12 +362,10 @@ Display *display; /* Display containing window for
 {
     ImageItem *imgPtr = ( ImageItem * )itemPtr;
 
-    if (imgPtr->imageString != NULL)
-    {
+    if (imgPtr->imageString != NULL) {
         ckfree(imgPtr->imageString);
     }
-    if (imgPtr->image != NULL)
-    {
+    if (imgPtr->image != NULL) {
         Tk_FreeImage(imgPtr->image);
     }
 }
@@ -419,8 +403,7 @@ ImageItem *imgPtr; /* Item whose bbox is to be
     x = imgPtr->x + ((imgPtr->x >= 0) ? 0.5 : -0.5);
     y = imgPtr->y + ((imgPtr->y >= 0) ? 0.5 : -0.5);
 
-    if (imgPtr->image == None)
-    {
+    if (imgPtr->image == None) {
         imgPtr->header.x1 = imgPtr->header.x2 = x;
         imgPtr->header.y1 = imgPtr->header.y2 = y;
         return;
@@ -431,8 +414,7 @@ ImageItem *imgPtr; /* Item whose bbox is to be
      */
 
     Tk_SizeOfImage(imgPtr->image, &width, &height);
-    switch (imgPtr->anchor)
-    {
+    switch (imgPtr->anchor) {
     case TK_ANCHOR_N:
         x -= width / 2;
         break;
@@ -506,8 +488,7 @@ int x, y, width, height; /* Describes region of canvas that
     ImageItem *imgPtr = ( ImageItem * )itemPtr;
     short drawableX, drawableY;
 
-    if (imgPtr->image == NULL)
-    {
+    if (imgPtr->image == NULL) {
         return;
     }
 
@@ -565,29 +546,19 @@ double *coordPtr; /* Pointer to x and y coordinates. */
      * Point is outside rectangle.
      */
 
-    if (coordPtr[0] < x1)
-    {
+    if (coordPtr[0] < x1) {
         xDiff = x1 - coordPtr[0];
-    }
-    else if (coordPtr[0] > x2)
-    {
+    } else if (coordPtr[0] > x2) {
         xDiff = coordPtr[0] - x2;
-    }
-    else
-    {
+    } else {
         xDiff = 0;
     }
 
-    if (coordPtr[1] < y1)
-    {
+    if (coordPtr[1] < y1) {
         yDiff = y1 - coordPtr[1];
-    }
-    else if (coordPtr[1] > y2)
-    {
+    } else if (coordPtr[1] > y2) {
         yDiff = coordPtr[1] - y2;
-    }
-    else
-    {
+    } else {
         yDiff = 0;
     }
 
@@ -627,14 +598,12 @@ double *rectPtr;  /* Pointer to array of four coordinates
 
     if ((rectPtr[2] <= imgPtr->header.x1) || (rectPtr[0] >= imgPtr->header.x2)
         || (rectPtr[3] <= imgPtr->header.y1)
-        || (rectPtr[1] >= imgPtr->header.y2))
-    {
+        || (rectPtr[1] >= imgPtr->header.y2)) {
         return -1;
     }
     if ((rectPtr[0] <= imgPtr->header.x1) && (rectPtr[1] <= imgPtr->header.y1)
         && (rectPtr[2] >= imgPtr->header.x2)
-        && (rectPtr[3] >= imgPtr->header.y2))
-    {
+        && (rectPtr[3] >= imgPtr->header.y2)) {
         return 1;
     }
     return 0;
@@ -741,8 +710,7 @@ int imgWidth, imgHeight; /* New dimensions of image. */
      */
 
     if (((imgPtr->header.x2 - imgPtr->header.x1) != imgWidth)
-        || ((imgPtr->header.y2 - imgPtr->header.y1) != imgHeight))
-    {
+        || ((imgPtr->header.y2 - imgPtr->header.y1) != imgHeight)) {
         x = y = 0;
         width = imgWidth;
         height = imgHeight;

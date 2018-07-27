@@ -73,40 +73,34 @@ astwinsize(int fd, int *rows, int *cols)
 #    define NEED_ttctl
     struct winsize ws;
 
-    if (!ttctl(fd, TIOCGWINSZ, &ws) && ws.ws_col > 0 && ws.ws_row > 0)
-    {
+    if (!ttctl(fd, TIOCGWINSZ, &ws) && ws.ws_col > 0 && ws.ws_row > 0) {
         if (rows)
             *rows = ws.ws_row;
         if (cols)
             *cols = ws.ws_col;
-    }
-    else
+    } else
 #else
 #    ifdef TIOCGSIZE
 #        define NEED_ttctl
     struct ttysize ts;
 
-    if (!ttctl(fd, TIOCGSIZE, &ts) && ts.ts_lines > 0 && ts.ts_cols > 0)
-    {
+    if (!ttctl(fd, TIOCGSIZE, &ts) && ts.ts_lines > 0 && ts.ts_cols > 0) {
         if (rows)
             *rows = ts.ts_lines;
         if (cols)
             *cols = ts.ts_cols;
-    }
-    else
+    } else
 #    else
 #        ifdef JWINSIZE
 #            define NEED_ttctl
     struct winsize ws;
 
-    if (!ttctl(fd, JWINSIZE, &ws) && ws.bytesx > 0 && ws.bytesy > 0)
-    {
+    if (!ttctl(fd, JWINSIZE, &ws) && ws.bytesx > 0 && ws.bytesy > 0) {
         if (rows)
             *rows = ws.bytesy;
         if (cols)
             *cols = ws.bytesx;
-    }
-    else
+    } else
 #        endif
 #    endif
 #endif
@@ -131,19 +125,16 @@ ttctl(int fd, int op, void *tt)
 {
     int v;
 
-    if (fd < 0)
-    {
+    if (fd < 0) {
         for (fd = 0; fd <= 2; fd++)
             if (!ioctl(fd, op, tt))
                 return (0);
-        if ((fd = open("/dev/tty", O_RDONLY | O_CLOEXEC)) >= 0)
-        {
+        if ((fd = open("/dev/tty", O_RDONLY | O_CLOEXEC)) >= 0) {
             v = ioctl(fd, op, tt);
             close(fd);
             return (v);
         }
-    }
-    else if (!ioctl(fd, op, tt))
+    } else if (!ioctl(fd, op, tt))
         return (0);
     return (-1);
 }

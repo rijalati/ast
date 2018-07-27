@@ -59,8 +59,7 @@ stpncpy(char *t, const char *f, size_t n)
     const char *e = f + n;
 
     while (f < e)
-        if (!(*t++ = *f++))
-        {
+        if (!(*t++ = *f++)) {
             if (n = e - f)
                 memset(t, 0, n);
             return t - 1;

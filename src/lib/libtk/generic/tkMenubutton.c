@@ -484,8 +484,7 @@ char **argv;           /* Argument strings. */
     Tk_Window tkwin = ( Tk_Window )clientData;
     Tk_Window new;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -499,8 +498,7 @@ char **argv;           /* Argument strings. */
      */
 
     new = Tk_CreateWindowFromPath(interp, tkwin, argv[1], ( char * )NULL);
-    if (new == NULL)
-    {
+    if (new == NULL) {
         return TCL_ERROR;
     }
 
@@ -566,8 +564,7 @@ char **argv;           /* Argument strings. */
                           | FocusChangeMask,
                           MenuButtonEventProc,
                           ( ClientData )mbPtr);
-    if (ConfigureMenuButton(interp, mbPtr, argc - 2, argv + 2, 0) != TCL_OK)
-    {
+    if (ConfigureMenuButton(interp, mbPtr, argc - 2, argv + 2, 0) != TCL_OK) {
         Tk_DestroyWindow(mbPtr->tkwin);
         return TCL_ERROR;
     }
@@ -605,8 +602,7 @@ char **argv;           /* Argument strings. */
     size_t length;
     int c;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -618,10 +614,8 @@ char **argv;           /* Argument strings. */
     c = argv[1][0];
     length = strlen(argv[1]);
     if ((c == 'c') && (strncmp(argv[1], "cget", length) == 0)
-        && (length >= 2))
-    {
-        if (argc != 3)
-        {
+        && (length >= 2)) {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -631,32 +625,23 @@ char **argv;           /* Argument strings. */
         }
         result = Tk_ConfigureValue(
         interp, mbPtr->tkwin, configSpecs, ( char * )mbPtr, argv[2], 0);
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
-             && (length >= 2))
-    {
-        if (argc == 2)
-        {
+    } else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
+               && (length >= 2)) {
+        if (argc == 2) {
             result = Tk_ConfigureInfo(interp,
                                       mbPtr->tkwin,
                                       configSpecs,
                                       ( char * )mbPtr,
                                       ( char * )NULL,
                                       0);
-        }
-        else if (argc == 3)
-        {
+        } else if (argc == 3) {
             result = Tk_ConfigureInfo(
             interp, mbPtr->tkwin, configSpecs, ( char * )mbPtr, argv[2], 0);
-        }
-        else
-        {
+        } else {
             result = ConfigureMenuButton(
             interp, mbPtr, argc - 2, argv + 2, TK_CONFIG_ARGV_ONLY);
         }
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "bad option \"",
                          argv[1],
@@ -702,32 +687,26 @@ static void DestroyMenuButton(memPtr) char *memPtr; /* Info about button
      * stuff.
      */
 
-    if (mbPtr->textVarName != NULL)
-    {
+    if (mbPtr->textVarName != NULL) {
         Tcl_UntraceVar(mbPtr->interp,
                        mbPtr->textVarName,
                        TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
                        MenuButtonTextVarProc,
                        ( ClientData )mbPtr);
     }
-    if (mbPtr->image != NULL)
-    {
+    if (mbPtr->image != NULL) {
         Tk_FreeImage(mbPtr->image);
     }
-    if (mbPtr->normalTextGC != None)
-    {
+    if (mbPtr->normalTextGC != None) {
         Tk_FreeGC(mbPtr->display, mbPtr->normalTextGC);
     }
-    if (mbPtr->activeTextGC != None)
-    {
+    if (mbPtr->activeTextGC != None) {
         Tk_FreeGC(mbPtr->display, mbPtr->activeTextGC);
     }
-    if (mbPtr->gray != None)
-    {
+    if (mbPtr->gray != None) {
         Tk_FreeBitmap(mbPtr->display, mbPtr->gray);
     }
-    if (mbPtr->disabledGC != None)
-    {
+    if (mbPtr->disabledGC != None) {
         Tk_FreeGC(mbPtr->display, mbPtr->disabledGC);
     }
     Tk_FreeOptions(configSpecs, ( char * )mbPtr, mbPtr->display, 0);
@@ -773,8 +752,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * Eliminate any existing trace on variables monitored by the menubutton.
      */
 
-    if (mbPtr->textVarName != NULL)
-    {
+    if (mbPtr->textVarName != NULL) {
         Tcl_UntraceVar(interp,
                        mbPtr->textVarName,
                        TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
@@ -784,8 +762,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 
     result = Tk_ConfigureWidget(
     interp, mbPtr->tkwin, configSpecs, argc, argv, ( char * )mbPtr, flags);
-    if (result != TCL_OK)
-    {
+    if (result != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -795,16 +772,12 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * defaults that couldn't be specified to Tk_ConfigureWidget.
      */
 
-    if ((mbPtr->state == tkActiveUid) && !Tk_StrictMotif(mbPtr->tkwin))
-    {
+    if ((mbPtr->state == tkActiveUid) && !Tk_StrictMotif(mbPtr->tkwin)) {
         Tk_SetBackgroundFromBorder(mbPtr->tkwin, mbPtr->activeBorder);
-    }
-    else
-    {
+    } else {
         Tk_SetBackgroundFromBorder(mbPtr->tkwin, mbPtr->normalBorder);
         if ((mbPtr->state != tkNormalUid) && (mbPtr->state != tkActiveUid)
-            && (mbPtr->state != tkDisabledUid))
-        {
+            && (mbPtr->state != tkDisabledUid)) {
             Tcl_AppendResult(interp,
                              "bad state value \"",
                              mbPtr->state,
@@ -815,8 +788,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
         }
     }
 
-    if (mbPtr->highlightWidth < 0)
-    {
+    if (mbPtr->highlightWidth < 0) {
         mbPtr->highlightWidth = 0;
     }
 
@@ -835,8 +807,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
     = Tk_GetGC(mbPtr->tkwin,
                GCForeground | GCBackground | GCFont | GCGraphicsExposures,
                &gcValues);
-    if (mbPtr->normalTextGC != None)
-    {
+    if (mbPtr->normalTextGC != None) {
         Tk_FreeGC(mbPtr->display, mbPtr->normalTextGC);
     }
     mbPtr->normalTextGC = newGC;
@@ -846,28 +817,22 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
     gcValues.background = Tk_3DBorderColor(mbPtr->activeBorder)->pixel;
     newGC
     = Tk_GetGC(mbPtr->tkwin, GCForeground | GCBackground | GCFont, &gcValues);
-    if (mbPtr->activeTextGC != None)
-    {
+    if (mbPtr->activeTextGC != None) {
         Tk_FreeGC(mbPtr->display, mbPtr->activeTextGC);
     }
     mbPtr->activeTextGC = newGC;
 
     gcValues.font = mbPtr->fontPtr->fid;
     gcValues.background = Tk_3DBorderColor(mbPtr->normalBorder)->pixel;
-    if ((mbPtr->disabledFg != NULL) && (mbPtr->imageString == NULL))
-    {
+    if ((mbPtr->disabledFg != NULL) && (mbPtr->imageString == NULL)) {
         gcValues.foreground = mbPtr->disabledFg->pixel;
         mask = GCForeground | GCBackground | GCFont;
-    }
-    else
-    {
+    } else {
         gcValues.foreground = gcValues.background;
-        if (mbPtr->gray == None)
-        {
+        if (mbPtr->gray == None) {
             mbPtr->gray
             = Tk_GetBitmap(interp, mbPtr->tkwin, Tk_GetUid("gray50"));
-            if (mbPtr->gray == None)
-            {
+            if (mbPtr->gray == None) {
                 return TCL_ERROR;
             }
         }
@@ -876,18 +841,15 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
         mask = GCForeground | GCFillStyle | GCStipple;
     }
     newGC = Tk_GetGC(mbPtr->tkwin, mask, &gcValues);
-    if (mbPtr->disabledGC != None)
-    {
+    if (mbPtr->disabledGC != None) {
         Tk_FreeGC(mbPtr->display, mbPtr->disabledGC);
     }
     mbPtr->disabledGC = newGC;
 
-    if (mbPtr->padX < 0)
-    {
+    if (mbPtr->padX < 0) {
         mbPtr->padX = 0;
     }
-    if (mbPtr->padY < 0)
-    {
+    if (mbPtr->padY < 0) {
         mbPtr->padY = 0;
     }
 
@@ -897,31 +859,25 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * count doesn't go to zero and cause image data to be discarded.
      */
 
-    if (mbPtr->imageString != NULL)
-    {
+    if (mbPtr->imageString != NULL) {
         image = Tk_GetImage(mbPtr->interp,
                             mbPtr->tkwin,
                             mbPtr->imageString,
                             MenuButtonImageProc,
                             ( ClientData )mbPtr);
-        if (image == NULL)
-        {
+        if (image == NULL) {
             return TCL_ERROR;
         }
-    }
-    else
-    {
+    } else {
         image = NULL;
     }
-    if (mbPtr->image != NULL)
-    {
+    if (mbPtr->image != NULL) {
         Tk_FreeImage(mbPtr->image);
     }
     mbPtr->image = image;
 
     if ((mbPtr->image == NULL) && (mbPtr->bitmap == None)
-        && (mbPtr->textVarName != NULL))
-    {
+        && (mbPtr->textVarName != NULL)) {
         /*
          * The menubutton displays a variable.  Set up a trace to watch
          * for any changes in it.
@@ -930,15 +886,11 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
         char *value;
 
         value = Tcl_GetVar(interp, mbPtr->textVarName, TCL_GLOBAL_ONLY);
-        if (value == NULL)
-        {
+        if (value == NULL) {
             Tcl_SetVar(
             interp, mbPtr->textVarName, mbPtr->text, TCL_GLOBAL_ONLY);
-        }
-        else
-        {
-            if (mbPtr->text != NULL)
-            {
+        } else {
+            if (mbPtr->text != NULL) {
                 ckfree(mbPtr->text);
             }
             mbPtr->text = ( char * )ckalloc(( unsigned )(strlen(value) + 1));
@@ -955,33 +907,27 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * Recompute the geometry for the button.
      */
 
-    if ((mbPtr->bitmap != None) || (mbPtr->image != NULL))
-    {
+    if ((mbPtr->bitmap != None) || (mbPtr->image != NULL)) {
         if (Tk_GetPixels(
             interp, mbPtr->tkwin, mbPtr->widthString, &mbPtr->width)
-            != TCL_OK)
-        {
+            != TCL_OK) {
         widthError:
             Tcl_AddErrorInfo(interp, "\n    (processing -width option)");
             return TCL_ERROR;
         }
         if (Tk_GetPixels(
             interp, mbPtr->tkwin, mbPtr->heightString, &mbPtr->height)
-            != TCL_OK)
-        {
+            != TCL_OK) {
         heightError:
             Tcl_AddErrorInfo(interp, "\n    (processing -height option)");
             return TCL_ERROR;
         }
-    }
-    else
-    {
-        if (Tcl_GetInt(interp, mbPtr->widthString, &mbPtr->width) != TCL_OK)
-        {
+    } else {
+        if (Tcl_GetInt(interp, mbPtr->widthString, &mbPtr->width) != TCL_OK) {
             goto widthError;
         }
-        if (Tcl_GetInt(interp, mbPtr->heightString, &mbPtr->height) != TCL_OK)
-        {
+        if (Tcl_GetInt(interp, mbPtr->heightString, &mbPtr->height)
+            != TCL_OK) {
             goto heightError;
         }
     }
@@ -991,8 +937,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * Lastly, arrange for the button to be redisplayed.
      */
 
-    if (Tk_IsMapped(mbPtr->tkwin) && !(mbPtr->flags & REDRAW_PENDING))
-    {
+    if (Tk_IsMapped(mbPtr->tkwin) && !(mbPtr->flags & REDRAW_PENDING)) {
         Tcl_DoWhenIdle(DisplayMenuButton, ( ClientData )mbPtr);
         mbPtr->flags |= REDRAW_PENDING;
     }
@@ -1031,23 +976,18 @@ ClientData clientData; /* Information about widget. */
     int width, height;
 
     mbPtr->flags &= ~REDRAW_PENDING;
-    if ((mbPtr->tkwin == NULL) || !Tk_IsMapped(tkwin))
-    {
+    if ((mbPtr->tkwin == NULL) || !Tk_IsMapped(tkwin)) {
         return;
     }
 
-    if ((mbPtr->state == tkDisabledUid) && (mbPtr->disabledFg != NULL))
-    {
+    if ((mbPtr->state == tkDisabledUid) && (mbPtr->disabledFg != NULL)) {
         gc = mbPtr->disabledGC;
         border = mbPtr->normalBorder;
-    }
-    else if ((mbPtr->state == tkActiveUid) && !Tk_StrictMotif(mbPtr->tkwin))
-    {
+    } else if ((mbPtr->state == tkActiveUid)
+               && !Tk_StrictMotif(mbPtr->tkwin)) {
         gc = mbPtr->activeTextGC;
         border = mbPtr->activeBorder;
-    }
-    else
-    {
+    } else {
         gc = mbPtr->normalTextGC;
         border = mbPtr->normalBorder;
     }
@@ -1078,13 +1018,11 @@ ClientData clientData; /* Information about widget. */
      * Display image or bitmap or text for button.
      */
 
-    if (mbPtr->image != None)
-    {
+    if (mbPtr->image != None) {
         Tk_SizeOfImage(mbPtr->image, &width, &height);
 
     imageOrBitmap:
-        switch (mbPtr->anchor)
-        {
+        switch (mbPtr->anchor) {
         case TK_ANCHOR_NW:
         case TK_ANCHOR_W:
         case TK_ANCHOR_SW:
@@ -1101,8 +1039,7 @@ ClientData clientData; /* Information about widget. */
             += Tk_Width(tkwin) - mbPtr->inset - width - mbPtr->indicatorWidth;
             break;
         }
-        switch (mbPtr->anchor)
-        {
+        switch (mbPtr->anchor) {
         case TK_ANCHOR_NW:
         case TK_ANCHOR_N:
         case TK_ANCHOR_NE:
@@ -1117,12 +1054,9 @@ ClientData clientData; /* Information about widget. */
             y = Tk_Height(tkwin) - mbPtr->inset - height;
             break;
         }
-        if (mbPtr->image != NULL)
-        {
+        if (mbPtr->image != NULL) {
             Tk_RedrawImage(mbPtr->image, 0, 0, width, height, pixmap, x, y);
-        }
-        else
-        {
+        } else {
             XCopyPlane(mbPtr->display,
                        mbPtr->bitmap,
                        pixmap,
@@ -1135,18 +1069,13 @@ ClientData clientData; /* Information about widget. */
                        y,
                        1);
         }
-    }
-    else if (mbPtr->bitmap != None)
-    {
+    } else if (mbPtr->bitmap != None) {
         Tk_SizeOfBitmap(mbPtr->display, mbPtr->bitmap, &width, &height);
         goto imageOrBitmap;
-    }
-    else
-    {
+    } else {
         width = mbPtr->textWidth;
         height = mbPtr->textHeight;
-        switch (mbPtr->anchor)
-        {
+        switch (mbPtr->anchor) {
         case TK_ANCHOR_NW:
         case TK_ANCHOR_W:
         case TK_ANCHOR_SW:
@@ -1163,8 +1092,7 @@ ClientData clientData; /* Information about widget. */
                 - mbPtr->indicatorWidth;
             break;
         }
-        switch (mbPtr->anchor)
-        {
+        switch (mbPtr->anchor) {
         case TK_ANCHOR_NW:
         case TK_ANCHOR_N:
         case TK_ANCHOR_NE:
@@ -1198,8 +1126,7 @@ ClientData clientData; /* Information about widget. */
      */
 
     if ((mbPtr->state == tkDisabledUid)
-        && ((mbPtr->disabledFg == NULL) || (mbPtr->image != NULL)))
-    {
+        && ((mbPtr->disabledFg == NULL) || (mbPtr->image != NULL))) {
         XFillRectangle(mbPtr->display,
                        pixmap,
                        mbPtr->disabledGC,
@@ -1214,13 +1141,11 @@ ClientData clientData; /* Information about widget. */
      * right side of the window, if desired.
      */
 
-    if (mbPtr->indicatorOn)
-    {
+    if (mbPtr->indicatorOn) {
         int borderWidth;
 
         borderWidth = (mbPtr->indicatorHeight + 1) / 3;
-        if (borderWidth < 1)
-        {
+        if (borderWidth < 1) {
             borderWidth = 1;
         }
         Tk_Fill3DRectangle(tkwin,
@@ -1241,8 +1166,7 @@ ClientData clientData; /* Information about widget. */
      * up by the border.
      */
 
-    if (mbPtr->relief != TK_RELIEF_FLAT)
-    {
+    if (mbPtr->relief != TK_RELIEF_FLAT) {
         Tk_Draw3DRectangle(tkwin,
                            pixmap,
                            border,
@@ -1253,16 +1177,12 @@ ClientData clientData; /* Information about widget. */
                            mbPtr->borderWidth,
                            mbPtr->relief);
     }
-    if (mbPtr->highlightWidth != 0)
-    {
+    if (mbPtr->highlightWidth != 0) {
         GC gc;
 
-        if (mbPtr->flags & GOT_FOCUS)
-        {
+        if (mbPtr->flags & GOT_FOCUS) {
             gc = Tk_GCForColor(mbPtr->highlightColorPtr, pixmap);
-        }
-        else
-        {
+        } else {
             gc = Tk_GCForColor(mbPtr->highlightBgColorPtr, pixmap);
         }
         Tk_DrawFocusHighlight(tkwin, gc, mbPtr->highlightWidth, pixmap);
@@ -1309,52 +1229,37 @@ ClientData clientData; /* Information about window. */
 XEvent *eventPtr;      /* Information about event. */
 {
     MenuButton *mbPtr = ( MenuButton * )clientData;
-    if ((eventPtr->type == Expose) && (eventPtr->xexpose.count == 0))
-    {
+    if ((eventPtr->type == Expose) && (eventPtr->xexpose.count == 0)) {
         goto redraw;
-    }
-    else if (eventPtr->type == ConfigureNotify)
-    {
+    } else if (eventPtr->type == ConfigureNotify) {
         /*
          * Must redraw after size changes, since layout could have changed
          * and borders will need to be redrawn.
          */
 
         goto redraw;
-    }
-    else if (eventPtr->type == DestroyNotify)
-    {
-        if (mbPtr->tkwin != NULL)
-        {
+    } else if (eventPtr->type == DestroyNotify) {
+        if (mbPtr->tkwin != NULL) {
             mbPtr->tkwin = NULL;
             Tcl_DeleteCommand(
             mbPtr->interp,
             Tcl_GetCommandName(mbPtr->interp, mbPtr->widgetCmd));
         }
-        if (mbPtr->flags & REDRAW_PENDING)
-        {
+        if (mbPtr->flags & REDRAW_PENDING) {
             Tcl_CancelIdleCall(DisplayMenuButton, ( ClientData )mbPtr);
         }
         Tcl_EventuallyFree(( ClientData )mbPtr, DestroyMenuButton);
-    }
-    else if (eventPtr->type == FocusIn)
-    {
-        if (eventPtr->xfocus.detail != NotifyInferior)
-        {
+    } else if (eventPtr->type == FocusIn) {
+        if (eventPtr->xfocus.detail != NotifyInferior) {
             mbPtr->flags |= GOT_FOCUS;
-            if (mbPtr->highlightWidth > 0)
-            {
+            if (mbPtr->highlightWidth > 0) {
                 goto redraw;
             }
         }
-    }
-    else if (eventPtr->type == FocusOut)
-    {
-        if (eventPtr->xfocus.detail != NotifyInferior)
-        {
+    } else if (eventPtr->type == FocusOut) {
+        if (eventPtr->xfocus.detail != NotifyInferior) {
             mbPtr->flags &= ~GOT_FOCUS;
-            if (mbPtr->highlightWidth > 0)
-            {
+            if (mbPtr->highlightWidth > 0) {
                 goto redraw;
             }
         }
@@ -1362,8 +1267,7 @@ XEvent *eventPtr;      /* Information about event. */
     return;
 
 redraw:
-    if ((mbPtr->tkwin != NULL) && !(mbPtr->flags & REDRAW_PENDING))
-    {
+    if ((mbPtr->tkwin != NULL) && !(mbPtr->flags & REDRAW_PENDING)) {
         Tcl_DoWhenIdle(DisplayMenuButton, ( ClientData )mbPtr);
         mbPtr->flags |= REDRAW_PENDING;
     }
@@ -1400,8 +1304,7 @@ ClientData clientData; /* Pointer to widget record for widget. */
      * destroys the widget.
      */
 
-    if (tkwin != NULL)
-    {
+    if (tkwin != NULL) {
         mbPtr->tkwin = NULL;
         Tk_DestroyWindow(tkwin);
     }
@@ -1431,32 +1334,23 @@ MenuButton *mbPtr; /* Widget record for menu button. */
     int width, height, mm, pixels;
 
     mbPtr->inset = mbPtr->highlightWidth + mbPtr->borderWidth;
-    if (mbPtr->image != None)
-    {
+    if (mbPtr->image != None) {
         Tk_SizeOfImage(mbPtr->image, &width, &height);
-        if (mbPtr->width > 0)
-        {
+        if (mbPtr->width > 0) {
             width = mbPtr->width;
         }
-        if (mbPtr->height > 0)
-        {
+        if (mbPtr->height > 0) {
             height = mbPtr->height;
         }
-    }
-    else if (mbPtr->bitmap != None)
-    {
+    } else if (mbPtr->bitmap != None) {
         Tk_SizeOfBitmap(mbPtr->display, mbPtr->bitmap, &width, &height);
-        if (mbPtr->width > 0)
-        {
+        if (mbPtr->width > 0) {
             width = mbPtr->width;
         }
-        if (mbPtr->height > 0)
-        {
+        if (mbPtr->height > 0) {
             height = mbPtr->height;
         }
-    }
-    else
-    {
+    } else {
         mbPtr->numChars = strlen(mbPtr->text);
         TkComputeTextGeometry(mbPtr->fontPtr,
                               mbPtr->text,
@@ -1466,12 +1360,10 @@ MenuButton *mbPtr; /* Widget record for menu button. */
                               &mbPtr->textHeight);
         width = mbPtr->textWidth;
         height = mbPtr->textHeight;
-        if (mbPtr->width > 0)
-        {
+        if (mbPtr->width > 0) {
             width = mbPtr->width * XTextWidth(mbPtr->fontPtr, "0", 1);
         }
-        if (mbPtr->height > 0)
-        {
+        if (mbPtr->height > 0) {
             height = mbPtr->height
                      * (mbPtr->fontPtr->ascent + mbPtr->fontPtr->descent);
         }
@@ -1479,17 +1371,14 @@ MenuButton *mbPtr; /* Widget record for menu button. */
         height += 2 * mbPtr->padY;
     }
 
-    if (mbPtr->indicatorOn)
-    {
+    if (mbPtr->indicatorOn) {
         mm = WidthMMOfScreen(Tk_Screen(mbPtr->tkwin));
         pixels = WidthOfScreen(Tk_Screen(mbPtr->tkwin));
         mbPtr->indicatorHeight = (INDICATOR_HEIGHT * pixels) / (10 * mm);
         mbPtr->indicatorWidth
         = (INDICATOR_WIDTH * pixels) / (10 * mm) + 2 * mbPtr->indicatorHeight;
         width += mbPtr->indicatorWidth;
-    }
-    else
-    {
+    } else {
         mbPtr->indicatorHeight = 0;
         mbPtr->indicatorWidth = 0;
     }
@@ -1534,10 +1423,9 @@ int flags;             /* Information about what happened. */
      * the whole interpreter is going away.
      */
 
-    if (flags & TCL_TRACE_UNSETS)
-    {
-        if ((flags & TCL_TRACE_DESTROYED) && !(flags & TCL_INTERP_DESTROYED))
-        {
+    if (flags & TCL_TRACE_UNSETS) {
+        if ((flags & TCL_TRACE_DESTROYED)
+            && !(flags & TCL_INTERP_DESTROYED)) {
             Tcl_SetVar(
             interp, mbPtr->textVarName, mbPtr->text, TCL_GLOBAL_ONLY);
             Tcl_TraceVar(interp,
@@ -1551,12 +1439,10 @@ int flags;             /* Information about what happened. */
     }
 
     value = Tcl_GetVar(interp, mbPtr->textVarName, TCL_GLOBAL_ONLY);
-    if (value == NULL)
-    {
+    if (value == NULL) {
         value = "";
     }
-    if (mbPtr->text != NULL)
-    {
+    if (mbPtr->text != NULL) {
         ckfree(mbPtr->text);
     }
     mbPtr->text = ( char * )ckalloc(( unsigned )(strlen(value) + 1));
@@ -1564,8 +1450,7 @@ int flags;             /* Information about what happened. */
     ComputeMenuButtonGeometry(mbPtr);
 
     if ((mbPtr->tkwin != NULL) && Tk_IsMapped(mbPtr->tkwin)
-        && !(mbPtr->flags & REDRAW_PENDING))
-    {
+        && !(mbPtr->flags & REDRAW_PENDING)) {
         Tcl_DoWhenIdle(DisplayMenuButton, ( ClientData )mbPtr);
         mbPtr->flags |= REDRAW_PENDING;
     }
@@ -1601,11 +1486,9 @@ int imgWidth, imgHeight; /* New dimensions of image. */
 {
     MenuButton *mbPtr = ( MenuButton * )clientData;
 
-    if (mbPtr->tkwin != NULL)
-    {
+    if (mbPtr->tkwin != NULL) {
         ComputeMenuButtonGeometry(mbPtr);
-        if (Tk_IsMapped(mbPtr->tkwin) && !(mbPtr->flags & REDRAW_PENDING))
-        {
+        if (Tk_IsMapped(mbPtr->tkwin) && !(mbPtr->flags & REDRAW_PENDING)) {
             Tcl_DoWhenIdle(DisplayMenuButton, ( ClientData )mbPtr);
             mbPtr->flags |= REDRAW_PENDING;
         }

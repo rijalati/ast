@@ -37,12 +37,10 @@ char **argv;
     error_info.id = argv[0];
     opt_info.index = 1;
     while (n = optget(argv, "s:[server] "))
-        switch (n)
-        {
+        switch (n) {
         case 's':
             s = opt_info.arg;
-            if ((fd = csopen(s, CS_OPEN_READ)) < 0)
-            {
+            if ((fd = csopen(s, CS_OPEN_READ)) < 0) {
                 printf("cannot connect cs server %s\n", s);
                 return (-1);
             }
@@ -58,8 +56,7 @@ char **argv;
     argc -= opt_info.index;
     argv += opt_info.index;
 
-    while (argc > 0)
-    {
+    while (argc > 0) {
         s = *argv;
         unlink(s);
         argc--;

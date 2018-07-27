@@ -106,8 +106,7 @@ enter(char *name, int alloc)
     int n;
     Sys_t *sp;
 
-    if (state.next >= state.end)
-    {
+    if (state.next >= state.end) {
         n = state.end - state.base;
         if (!(state.base = newof(state.base, Sys_t *, n * 2, 0)))
             error(3, "out of space [vec %s]", n * 2);
@@ -139,8 +138,7 @@ sort(const char *pa, const char *pb)
     long n;
 
     for (k = state.keys; k; k >>= SHIFT)
-        switch (k & SORT)
-        {
+        switch (k & SORT) {
         case CPU:
             if (n = (a->stat.pctusr + a->stat.pctsys)
                     - (b->stat.pctusr + b->stat.pctsys))
@@ -186,10 +184,8 @@ main(int argc, char **argv)
     setlocale(LC_ALL, "");
     error_info.id = "ss";
     state.rev = 1;
-    while (n = optget(argv, usage))
-    {
-        switch (n)
-        {
+    while (n = optget(argv, usage)) {
+        switch (n) {
         case 'c':
             n = CPU;
             break;
@@ -232,15 +228,13 @@ main(int argc, char **argv)
             enter(*argv++, 0);
     else if (!(dirp = opendir(buf)))
         error(ERROR_SYSTEM | 3, "%s: cannot open", buf);
-    else
-    {
+    else {
         while (entry = readdir(dirp))
             if (entry->d_name[0] != '.' && !streq(entry->d_name, "core"))
                 enter(entry->d_name, 1);
         closedir(dirp);
     }
-    if (n = state.next - state.base)
-    {
+    if (n = state.next - state.base) {
         strsort(( char ** )state.base, n, sort);
         for (sv = state.base; sv < state.next; sv++)
             if ((sp = *sv)->fail)

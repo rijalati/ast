@@ -64,27 +64,22 @@ flash_getprologue(Pax_t *pax,
      */
 
     s = e;
-    for (;;)
-    {
-        if (s >= e)
-        {
+    for (;;) {
+        if (s >= e) {
             if (!(buf = ( unsigned char * )paxget(
                   pax, ap, -PAX_DEFBUFFER * PAX_BLOCK, &n)))
                 return -1;
             s = buf;
             e = buf + n;
         }
-        if (t = ( unsigned char * )memchr(s, '\n', e - s))
-        {
+        if (t = ( unsigned char * )memchr(s, '\n', e - s)) {
             if ((t - s) == (sizeof(FLASH_DATA) - 1)
-                && !memcmp(s, FLASH_DATA, sizeof(FLASH_DATA) - 1))
-            {
+                && !memcmp(s, FLASH_DATA, sizeof(FLASH_DATA) - 1)) {
                 if (paxseek(pax, ap, -(e - t - 1), SEEK_CUR, 0) < 0)
                     return -1;
                 break;
             }
-            if (t < e)
-            {
+            if (t < e) {
                 s = t + 1;
                 continue;
             }
@@ -98,8 +93,7 @@ flash_getprologue(Pax_t *pax,
     ap->swapio = 0;
     ap->volume--;
     i = state.volume[0];
-    if (getprologue(ap) <= 0)
-    {
+    if (getprologue(ap) <= 0) {
         error(
         2, "%s: %s format embedded archive expected", ap->name, fp->name);
         return -1;

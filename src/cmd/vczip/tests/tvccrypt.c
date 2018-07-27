@@ -108,8 +108,7 @@ MAIN()
         terror("Can't open encryption handle");
     if (!(dvc = vcopen(&vcdc, Vccrypt, "aes128", 0, VC_DECODE)))
         terror("Can't open decryption handle");
-    for (k = 0; k < 4; ++k)
-    {
+    for (k = 0; k < 4; ++k) {
         if ((esz = vcapply(evc, Plain2dt, sizeof(Plain2dt), &edt)) <= 0)
             terror("Encryption error");
         if ((dsz = vcapply(dvc, edt, esz, &ddt)) <= 0)
@@ -130,8 +129,7 @@ MAIN()
         terror("Can't open encryption handle");
     if (!(dvc = vcopen(&vcdc, Vccrypt, "aes128.chain", 0, VC_DECODE)))
         terror("Can't open decryption handle");
-    for (k = 0; k < 4; ++k)
-    {
+    for (k = 0; k < 4; ++k) {
         if ((esz = vcapply(evc, Plain2dt, sizeof(Plain2dt), &edt)) <= 0)
             terror("Encryption error");
         if ((dsz = vcapply(dvc, edt, esz, &ddt)) <= 0)
@@ -154,8 +152,7 @@ MAIN()
         terror("Can't open decryption handle");
     plaindt = "NguyenV, we love you!";
     plainsz = strlen(( char * )plaindt);
-    for (k = 0; k < 4; ++k)
-    {
+    for (k = 0; k < 4; ++k) {
         if ((esz = vcapply(evc, plaindt, plainsz, &edt)) <= 0)
             terror("Encryption error");
         if ((dsz = vcapply(dvc, edt, esz, &ddt)) <= 0)
@@ -178,8 +175,7 @@ MAIN()
         terror("Can't open decryption handle");
     plaindt = "NguyenV, we love you!";
     plainsz = strlen(( char * )plaindt);
-    for (k = 0; k < 4; ++k)
-    {
+    for (k = 0; k < 4; ++k) {
         if ((esz = vcapply(evc, plaindt, plainsz, &edt)) <= 0)
             terror("Encryption error");
         if ((dsz = vcapply(dvc, edt, esz, &ddt)) <= 0)
@@ -202,8 +198,7 @@ MAIN()
         terror("Can't open decryption handle");
     plaindt = "NguyenV, we love you!";
     plainsz = strlen(( char * )plaindt);
-    for (k = 0; k < 4; ++k)
-    {
+    for (k = 0; k < 4; ++k) {
         if ((esz = vcapply(evc, plaindt, plainsz, &edt)) <= 0)
             terror("Encryption error");
         if ((dsz = vcapply(dvc, edt, esz, &ddt)) <= 0)

@@ -84,19 +84,16 @@ rresvport(int *alport)
     s = socket(AF_INET, SOCK_STREAM, 0);
     if (s < 0)
         return (-1);
-    for (;;)
-    {
+    for (;;) {
         sin.sin_port = htons(( u_short )*alport);
         if (bind(s, ( struct sockaddr * )&sin, sizeof(sin)) >= 0)
             return (s);
-        if (errno != EADDRINUSE)
-        {
+        if (errno != EADDRINUSE) {
             ( void )close(s);
             return (-1);
         }
         (*alport)--;
-        if (*alport == IPPORT_RESERVED / 2)
-        {
+        if (*alport == IPPORT_RESERVED / 2) {
             ( void )close(s);
             errno = EAGAIN; /* close */
             return (-1);
@@ -134,8 +131,7 @@ rcmd(char **ahost,
     pid = getpid();
 #    endif
     hp = gethostbyname(*ahost);
-    if (hp == 0)
-    {
+    if (hp == 0) {
 #    if NLS
         fprintf(stderr,
                 "%s: %s\n",
@@ -156,11 +152,9 @@ rcmd(char **ahost,
     oldmask = sigblock(sigmask(SIGURG));
 #        endif
 #    endif
-    for (;;)
-    {
+    for (;;) {
         s = rresvport(&lport);
-        if (s < 0)
-        {
+        if (s < 0) {
             if (errno == EAGAIN)
 #    if NLS
                 fprintf(stderr,
@@ -197,19 +191,16 @@ rcmd(char **ahost,
         if (connect(s, ( struct sockaddr * )&sin, sizeof(sin)) >= 0)
             break;
         ( void )close(s);
-        if (errno == EADDRINUSE)
-        {
+        if (errno == EADDRINUSE) {
             lport--;
             continue;
         }
-        if (errno == ECONNREFUSED && timo <= 16)
-        {
+        if (errno == ECONNREFUSED && timo <= 16) {
             sleep(timo);
             timo *= 2;
             continue;
         }
-        if (hp->h_addr_list[1] != NULL)
-        {
+        if (hp->h_addr_list[1] != NULL) {
             int oerrno = errno;
 
             fprintf(stderr,
@@ -253,13 +244,10 @@ rcmd(char **ahost,
         return (-1);
     }
     lport--;
-    if (fd2p == 0)
-    {
+    if (fd2p == 0) {
         write(s, "", 1);
         lport = 0;
-    }
-    else
-    {
+    } else {
         char num[8];
         int s2 = rresvport(&lport), s3;
         int len = sizeof(from);
@@ -268,8 +256,7 @@ rcmd(char **ahost,
             goto bad;
         listen(s2, 1);
         ( void )snprintf(num, sizeof(num), "%d", lport);
-        if (write(s, num, strlen(num) + 1) != strlen(num) + 1)
-        {
+        if (write(s, num, strlen(num) + 1) != strlen(num) + 1) {
 #    if NLS
             perror(catgets(_libc_cat,
                            NetMiscSet,
@@ -283,8 +270,7 @@ rcmd(char **ahost,
         }
         s3 = accept(s2, ( struct sockaddr * )&from, &len);
         ( void )close(s2);
-        if (s3 < 0)
-        {
+        if (s3 < 0) {
 #    if NLS
             perror(catgets(_libc_cat, NetMiscSet, NetMiscAccept, "accept"));
 #    else
@@ -295,8 +281,7 @@ rcmd(char **ahost,
         }
         *fd2p = s3;
         from.sin_port = ntohs(( u_short )from.sin_port);
-        if (from.sin_family != AF_INET || from.sin_port >= IPPORT_RESERVED)
-        {
+        if (from.sin_family != AF_INET || from.sin_port >= IPPORT_RESERVED) {
             fprintf(stderr,
 #    if NLS
                     "%s\n",
@@ -313,15 +298,12 @@ rcmd(char **ahost,
     ( void )write(s, locuser, strlen(locuser) + 1);
     ( void )write(s, remuser, strlen(remuser) + 1);
     ( void )write(s, cmd, strlen(cmd) + 1);
-    if (read(s, &c, 1) != 1)
-    {
+    if (read(s, &c, 1) != 1) {
         perror(*ahost);
         goto bad2;
     }
-    if (c != 0)
-    {
-        while (read(s, &c, 1) == 1)
-        {
+    if (c != 0) {
+        while (read(s, &c, 1) == 1) {
             ( void )write(2, &c, 1);
             if (c == '\n')
                 break;
@@ -365,34 +347,27 @@ ruserok(const char *rhost, int superuser, const char *ruser, const char *luser)
     saveuid = geteuid();
     sp = rhost;
     p = fhost;
-    while (*sp)
-    {
-        if (*sp == '.')
-        {
+    while (*sp) {
+        if (*sp == '.') {
             if (baselen == -1)
                 baselen = sp - rhost;
             *p++ = *sp++;
-        }
-        else
-        {
+        } else {
             *p++ = isupper(*sp) ? tolower(*sp++) : *sp++;
         }
     }
     *p = '\0';
     hostf = superuser ? ( FILE * )0 : fopen(_PATH_HEQUIV, "r");
 again:
-    if (hostf)
-    {
-        if (!_validuser(hostf, fhost, luser, ruser, baselen))
-        {
+    if (hostf) {
+        if (!_validuser(hostf, fhost, luser, ruser, baselen)) {
             ( void )fclose(hostf);
             seteuid(saveuid);
             return (0);
         }
         ( void )fclose(hostf);
     }
-    if (first == 1)
-    {
+    if (first == 1) {
         struct stat sbuf;
         struct passwd *pwd;
         char pbuf[MAXPATHLEN];
@@ -403,14 +378,12 @@ again:
         ( void )strcpy(pbuf, pwd->pw_dir);
         ( void )strcat(pbuf, "/.rhosts");
         ( void )seteuid(pwd->pw_uid);
-        if ((hostf = fopen(pbuf, "r")) == NULL)
-        {
+        if ((hostf = fopen(pbuf, "r")) == NULL) {
             seteuid(saveuid);
             return (-1);
         }
         ( void )fstat(fileno(hostf), &sbuf);
-        if (sbuf.st_uid && sbuf.st_uid != pwd->pw_uid)
-        {
+        if (sbuf.st_uid && sbuf.st_uid != pwd->pw_uid) {
             fclose(hostf);
             seteuid(saveuid);
             return (-1);
@@ -434,28 +407,24 @@ _validuser(FILE *hostf,
     int hostvalid = 0;
     int uservalid = 0;
 
-    while (fgets(ahost, sizeof(ahost), hostf))
-    {
+    while (fgets(ahost, sizeof(ahost), hostf)) {
         /* We need to get rid of all comments. */
         p = strchr(ahost, '#');
         if (p)
             *p = '\0';
         p = ahost;
-        while (*p != '\n' && *p != ' ' && *p != '\t' && *p != '\0')
-        {
+        while (*p != '\n' && *p != ' ' && *p != '\t' && *p != '\0') {
             *p = isupper(*p) ? tolower(*p) : *p;
             p++;
         }
-        if (*p == ' ' || *p == '\t')
-        {
+        if (*p == ' ' || *p == '\t') {
             *p++ = '\0';
             while (*p == ' ' || *p == '\t')
                 p++;
             user = p;
             while (*p != '\n' && *p != ' ' && *p != '\t' && *p != '\0')
                 p++;
-        }
-        else
+        } else
             user = p;
         *p = '\0';
         /* Adding new authentication -Nilendu */
@@ -538,16 +507,13 @@ _checkhost(const char *rhost, const char *lhost, int len)
         return (0);
     if (nodomain)
         return (0);
-    if (!domainp)
-    {
-        if (gethostname(ldomain, sizeof(ldomain)) == -1)
-        {
+    if (!domainp) {
+        if (gethostname(ldomain, sizeof(ldomain)) == -1) {
             nodomain = 1;
             return (0);
         }
         ldomain[MAXHOSTNAMELEN] = ( char )0;
-        if ((domainp = index(ldomain, '.')) == ( char * )NULL)
-        {
+        if ((domainp = index(ldomain, '.')) == ( char * )NULL) {
             nodomain = 1;
             return (0);
         }
@@ -569,21 +535,18 @@ _checknetgrouphost(const char *rhost, const char *netgr, int baselen)
         yp_get_default_domain(&nisdomain);
 
     setnetgrent(netgr);
-    while (1)
-    {
+    while (1) {
         while (1 == (status = getnetgrent(&host, &user, &domain))
                && NULL == host && NULL != domain
                && 0 != strcmp(domain, nisdomain))
             ; /* find valid host entry */
 
-        if (0 == status || NULL == host)
-        {
+        if (0 == status || NULL == host) {
             endnetgrent();
             return 0;
         }
 
-        if (1 == _checkhost(rhost, host, baselen))
-        {
+        if (1 == _checkhost(rhost, host, baselen)) {
             endnetgrent();
             return 1;
         }
@@ -600,21 +563,18 @@ _checknetgroupuser(const char *ruser, const char *netgr)
         yp_get_default_domain(&nisdomain);
 
     setnetgrent(netgr);
-    while (1)
-    {
+    while (1) {
         while (1 == (status = getnetgrent(&host, &user, &domain))
                && NULL == user && NULL != domain
                && 0 != strcmp(domain, nisdomain))
             ; /* find valid user entry */
 
-        if (0 == status || NULL == user)
-        {
+        if (0 == status || NULL == user) {
             endnetgrent();
             return 0;
         }
 
-        if (0 == strcmp(ruser, user))
-        {
+        if (0 == strcmp(ruser, user)) {
             endnetgrent();
             return 1;
         }

@@ -53,8 +53,8 @@ typedef struct Cojob_s Cojob_t;
 
 #    define CO_ID "coshell" /* library/command id		*/
 
-#    define CO_ENV_ATTRIBUTES                                                \
-        "COATTRIBUTES"                       /* coshell attributes env var	*/
+#    define CO_ENV_ATTRIBUTES "COATTRIBUTES" /* coshell attributes env var   \
+                                              */
 #    define CO_ENV_EXPORT "COEXPORT"         /* coshell env var export list	*/
 #    define CO_ENV_HOST "HOSTNAME"           /* coshell host name env var	*/
 #    define CO_ENV_MSGFD "_COSHELL_msgfd"    /* msg fd			*/

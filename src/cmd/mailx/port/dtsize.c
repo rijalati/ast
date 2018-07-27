@@ -98,8 +98,7 @@ int dtsize(dt) Dt_t *dt;
     {
         if (dt->data->type & DT_TREE)
             dt->data->size = dtcount(dt->data->here);
-        else if (dt->data->type & (DT_LIST | DT_STACK | DT_QUEUE))
-        {
+        else if (dt->data->type & (DT_LIST | DT_STACK | DT_QUEUE)) {
             t = (dt->data->type & DT_LIST) ? dt->data->head : dt->data->here;
             for (size = 0; t; t = t->right)
                 size += 1;

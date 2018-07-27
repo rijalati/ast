@@ -52,12 +52,10 @@ hashfree(Hash_table_t *tab)
 
     if (!tab)
         return (0);
-    if (tab->table)
-    {
+    if (tab->table) {
         freebucket = 0;
         freevalue = 0;
-        if (tab->root->local->free)
-        {
+        if (tab->root->local->free) {
             if (tab->root->flags & HASH_BUCKET)
                 freebucket = tab->root->local->free;
             else
@@ -67,83 +65,65 @@ hashfree(Hash_table_t *tab)
             handle = tab->root->local->handle;
         sx = &tab->table[tab->size];
         sp = &tab->table[0];
-        while (sp < sx)
-        {
+        while (sp < sx) {
             b = *sp++;
-            while (b)
-            {
+            while (b) {
                 p = b;
                 b = b->next;
                 if (freebucket)
                     (*freebucket)(( char * )p);
                 else if (freevalue && p->value)
                     (*freevalue)(p->value);
-                if (p->hash & HASH_FREENAME)
-                {
+                if (p->hash & HASH_FREENAME) {
                     p->hash &= ~HASH_FREENAME;
                     if (region)
                         (*region)(handle, p->name, 0, 0);
                     else
                         free(p->name);
                 }
-                if (!(p->hash & HASH_KEEP))
-                {
+                if (!(p->hash & HASH_KEEP)) {
                     if (region)
                         (*region)(handle, p, 0, 0);
                     else
                         free(p);
-                }
-                else if (p->hash & HASH_HIDES)
-                {
+                } else if (p->hash & HASH_HIDES) {
                     p->hash &= ~HASH_HIDES;
                     p->name = (( Hash_bucket_t * )p->name)->name;
                 }
             }
         }
-        if ((tab->flags & (HASH_RESIZE | HASH_STATIC)) != HASH_STATIC)
-        {
+        if ((tab->flags & (HASH_RESIZE | HASH_STATIC)) != HASH_STATIC) {
             if (region)
                 (*region)(handle, tab->table, 0, 0);
             else
                 free(tab->table);
         }
-    }
-    else
+    } else
         region = 0;
-    if (tab->root)
-    {
-        if (!region)
-        {
+    if (tab->root) {
+        if (!region) {
             /*
              * remove from the table lists
              */
 
-            if ((tp = tab->root->references) != tab)
-            {
+            if ((tp = tab->root->references) != tab) {
                 for (; tp; tp = tp->next)
-                    if (tp->next == tab)
-                    {
+                    if (tp->next == tab) {
                         tp->next = tab->next;
                         break;
                     }
-            }
-            else if (!(tab->root->references = tp->next))
-            {
-                if ((rp = hash_info.list) != tab->root)
-                {
+            } else if (!(tab->root->references = tp->next)) {
+                if ((rp = hash_info.list) != tab->root) {
                     for (; rp; rp = rp->next)
-                        if (rp->next == tab->root)
-                        {
+                        if (rp->next == tab->root) {
                             rp->next = tab->root->next;
                             break;
                         }
-                }
-                else
+                } else
                     hash_info.list = rp->next;
             }
         }
-        if (!(tab->root->references))
-        {
+        if (!(tab->root->references)) {
             if (tab->root->local)
                 free(tab->root->local);
             if (region)

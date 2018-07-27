@@ -142,8 +142,7 @@ va_list args;
 
     s = buf;
     n = 0;
-    if (line >= 0)
-    {
+    if (line >= 0) {
 #if _SFIO_H
         sfsprintf(s, sizeof(buf), "\tLine=%d: ", line);
 #else
@@ -157,10 +156,8 @@ va_list args;
     vsprintf(s, form, args);
 #endif
 
-    if ((n = strlen(buf)) > 0)
-    {
-        if (buf[n - 1] != '\n')
-        {
+    if ((n = strlen(buf)) > 0) {
+        if (buf[n - 1] != '\n') {
             buf[n] = '\n';
             n += 1;
         }
@@ -260,8 +257,7 @@ static char *tstfile(n) int n;
 {
     static int Setatexit = 0;
 
-    if (!Setatexit)
-    {
+    if (!Setatexit) {
         Setatexit = 1;
         atexit(tstcleanup);
     }
@@ -269,8 +265,7 @@ static char *tstfile(n) int n;
     if (n >= sizeof(Tstfile) / sizeof(Tstfile[0]))
         terror("Bad temporary file request:%d\n", n);
 
-    if (!Tstfile[n][0])
-    {
+    if (!Tstfile[n][0]) {
 #ifdef DEBUG
 #    if _SFIO_H
         sfsprintf(Tstfile[n],
@@ -285,8 +280,7 @@ static char *tstfile(n) int n;
 #else
         static int pid;
         static char *tmp;
-        if (!tmp)
-        {
+        if (!tmp) {
             if (!(tmp = ( char * )getenv("TMPDIR")) || access(tmp, 0) != 0)
                 tmp = "/tmp";
             pid = ( int )getpid() % 10000;

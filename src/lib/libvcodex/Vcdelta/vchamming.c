@@ -63,8 +63,7 @@ Void_t **out;
         memcpy(output, tardt, tarsz);
     else /* transform data */
     {
-        for (dt = output, t = 0; t < tarsz;)
-        {
+        for (dt = output, t = 0; t < tarsz;) {
             if ((maxs = tarsz - t) > srcsz)
                 maxs = srcsz;
             for (s = 0; s < maxs; ++s, ++t)
@@ -123,10 +122,8 @@ Void_t **out;
 
     if (srcsz <= 0)
         memcpy(output, tardt, tarsz);
-    else
-    {
-        for (dt = output, t = 0; t < tarsz;)
-        {
+    else {
+        for (dt = output, t = 0; t < tarsz;) {
             if ((maxs = tarsz - t) > srcsz)
                 maxs = srcsz;
             for (s = 0; s < maxs; ++s, ++t)

@@ -93,10 +93,8 @@ collint(int sig)
     /*
      * the control flow is subtle, because we can be called from ~q.
      */
-    if (!state.collect.hadintr)
-    {
-        if (state.var.ignore)
-        {
+    if (!state.collect.hadintr) {
+        if (state.var.ignore) {
             puts("@");
             fflush(stdout);
             clearerr(stdin);
@@ -135,8 +133,7 @@ collstop(int sig)
 
     kill(getpid(), sig);
     signal(sig, old_action);
-    if (state.collect.working)
-    {
+    if (state.collect.working) {
         state.collect.working = 0;
         state.collect.hadintr = 0;
         longjmp(state.collect.work, sig);
@@ -155,8 +152,7 @@ exwrite(char *name, FILE *fp, int f)
 
     if (f)
         note(PROMPT, "\"%s\" ", name);
-    if (isreg(name))
-    {
+    if (isreg(name)) {
         if (!f)
             note(PROMPT, "\"%s\" ", name);
         note(0, "[File exists]");
@@ -164,8 +160,7 @@ exwrite(char *name, FILE *fp, int f)
     }
     if (!(of = fileopen(name, "Ew")))
         return -1;
-    if (filecopy(NiL, fp, name, of, NiL, ( off_t )0, &lc, &cc, 0))
-    {
+    if (filecopy(NiL, fp, name, of, NiL, ( off_t )0, &lc, &cc, 0)) {
         fileclose(of);
         return -1;
     }
@@ -185,8 +180,7 @@ editmessage(struct header *hp, int c)
     FILE *fp;
 
     sigint = signal(SIGINT, SIG_IGN);
-    if (fp = run_editor(state.collect.fp, ( off_t )-1, hp, c, 0))
-    {
+    if (fp = run_editor(state.collect.fp, ( off_t )-1, hp, c, 0)) {
         fseek(fp, ( off_t )0, SEEK_END);
         fileclose(state.collect.fp);
         state.collect.fp = fp;
@@ -214,13 +208,11 @@ pipemessage(FILE *fp, char *cmd)
      * stdout = new message.
      */
     if (run_command(state.var.shell, 0, fileno(fp), fileno(nf), "-c", cmd, NiL)
-        < 0)
-    {
+        < 0) {
         fileclose(nf);
         goto out;
     }
-    if (!filesize(nf))
-    {
+    if (!filesize(nf)) {
         note(0, "No bytes from \"%s\" !?", cmd);
         fileclose(nf);
         goto out;
@@ -243,8 +235,7 @@ deadletter(void)
 {
     char *s;
 
-    if ((s = expand(state.var.dead, 1)) && *s != '/')
-    {
+    if ((s = expand(state.var.dead, 1)) && *s != '/') {
         sfprintf(state.path.temp, "~/%s", s);
         s = expand(struse(state.path.temp), 1);
     }
@@ -270,37 +261,31 @@ interpolate(char *ms, FILE *fp, int f, int followup)
 
     if (getmsglist(ms, 0) < 0)
         return 0;
-    if (!state.msg.list->m_index)
-    {
-        if (!(state.msg.list->m_index = first(0, MMNORM)))
-        {
+    if (!state.msg.list->m_index) {
+        if (!(state.msg.list->m_index = first(0, MMNORM))) {
             note(0, "No appropriate messages");
             return 0;
         }
         (state.msg.list + 1)->m_index = 0;
     }
     flags = 0;
-    if (f == 'f' || f == 'F')
-    {
+    if (f == 'f' || f == 'F') {
         if (f == 'f')
             flags |= GINTERPOLATE | GMIME;
         prefix = 0;
-    }
-    else if (!(prefix = state.var.indentprefix))
+    } else if (!(prefix = state.var.indentprefix))
         prefix = "\t";
     ignore = isupper(f) ? ( Dt_t ** )0 : &state.ignore;
     if (!followup)
         printf("Interpolating:");
-    for (ip = state.msg.list; ip->m_index; ip++)
-    {
+    for (ip = state.msg.list; ip->m_index; ip++) {
         mp = state.msg.list + ip->m_index - 1;
         touchmsg(mp);
         if (followup)
             flags |= GREFERENCES;
         else
             printf(" %d", ip->m_index);
-        if (copy(mp, fp, ignore, prefix, flags) < 0)
-        {
+        if (copy(mp, fp, ignore, prefix, flags) < 0) {
             note(SYSTEM, "%s", state.tmp.mail);
             return -1;
         }
@@ -316,8 +301,7 @@ interpolate(char *ms, FILE *fp, int f, int followup)
 void
 boundary(void)
 {
-    if (!state.part.out.multi)
-    {
+    if (!state.part.out.multi) {
         state.part.out.multi = 1;
         state.part.out.boundlen = sfsprintf(state.part.out.boundary,
                                             sizeof(state.part.out.boundary),
@@ -401,8 +385,7 @@ collect(struct header *hp, unsigned long flags)
     state.collect.sigttin = signal(SIGTTIN, collstop);
 #endif
     if ((sig = setjmp(state.collect.abort))
-        || (sig = setjmp(state.collect.work)))
-    {
+        || (sig = setjmp(state.collect.work))) {
         resume(sig);
         rm(state.tmp.mail);
         goto err;
@@ -420,29 +403,22 @@ collect(struct header *hp, unsigned long flags)
     if ((flags & INTERPOLATE)
         && interpolate("", state.collect.fp, 'm', 1) < 0)
         goto err;
-    if ((flags & INTERPOLATE) && state.var.interactive)
-    {
+    if ((flags & INTERPOLATE) && state.var.interactive) {
         rewind(state.collect.fp);
         editmessage(hp, 'v');
         note(0, "(continue)");
-    }
-    else
-    {
+    } else {
         g = GEDIT | GNL;
-        if (state.var.sendheaders)
-        {
+        if (state.var.sendheaders) {
             headers = 1;
             flags |= HEADERS;
             g &= ~GNL;
-        }
-        else if (state.var.interactive && !hp->h_subject
-                 && (state.askheaders & GSUB))
-        {
+        } else if (state.var.interactive && !hp->h_subject
+                   && (state.askheaders & GSUB)) {
             ask |= GSUB;
             g &= ~GNL;
         }
-        if (flags & HEADERS)
-        {
+        if (flags & HEADERS) {
             if (flags & (FOLLOWUP | INTERPOLATE))
                 g |= GREFERENCES;
             headout(stdout, hp, g);
@@ -454,8 +430,7 @@ collect(struct header *hp, unsigned long flags)
     escape = state.var.escape ? *state.var.escape : 0;
     eofcount = 0;
     state.collect.hadintr = 0;
-    if (sig = setjmp(state.collect.work))
-    {
+    if (sig = setjmp(state.collect.work)) {
         /*
          * Come here for printing the after-signal message.
          * Duplicate messages won't be printed because
@@ -467,31 +442,25 @@ collect(struct header *hp, unsigned long flags)
             note(0, "\n(Interrupt -- one more to kill letter)");
         else
             note(0, "(continue)");
-    }
-    else if (ask)
+    } else if (ask)
         grabedit(hp, ask);
-    for (;;)
-    {
+    for (;;) {
         state.collect.working = 1;
-        if (headers)
-        {
+        if (headers) {
             if (headget(&pp))
                 continue;
             headers = 0;
         }
         c = readline(pp.fp, pp.buf, sizeof(pp.buf));
         state.collect.working = 0;
-        if (c < 0)
-        {
-            if (flags & SIGN)
-            {
+        if (c < 0) {
+            if (flags & SIGN) {
                 flags &= ~SIGN;
                 c = '.';
                 goto sign;
             }
             if (state.var.interactive && state.var.ignoreeof
-                && ++eofcount < 32)
-            {
+                && ++eofcount < 32) {
                 note(0, "Use \".\" to terminate letter");
                 continue;
             }
@@ -500,25 +469,21 @@ collect(struct header *hp, unsigned long flags)
         eofcount = 0;
         state.collect.hadintr = 0;
         if (pp.buf[0] == '.' && pp.buf[1] == 0 && state.var.interactive
-            && (state.var.dot || state.var.ignoreeof))
-        {
-            if (flags & SIGN)
-            {
+            && (state.var.dot || state.var.ignoreeof)) {
+            if (flags & SIGN) {
                 flags &= ~SIGN;
                 c = '.';
                 goto sign;
             }
             break;
         }
-        if (pp.buf[0] != escape || !state.var.interactive)
-        {
+        if (pp.buf[0] != escape || !state.var.interactive) {
             if (putline(state.collect.fp, pp.buf) < 0)
                 goto err;
             continue;
         }
         c = pp.buf[1];
-        switch (c)
-        {
+        switch (c) {
         case '!':
             /*
              * Shell escape, send the balance of the
@@ -530,8 +495,7 @@ collect(struct header *hp, unsigned long flags)
             /*
              * Simulate end of file on input.
              */
-            if (flags & SIGN)
-            {
+            if (flags & SIGN) {
                 flags &= ~SIGN;
                 c = '.';
                 goto sign;
@@ -560,8 +524,7 @@ collect(struct header *hp, unsigned long flags)
             if (s)
                 goto outstr;
             if (state.var.signature
-                && (fp = fileopen(state.var.signature, "EXr")))
-            {
+                && (fp = fileopen(state.var.signature, "EXr"))) {
                 filecopy(state.var.signature,
                          fp,
                          state.var.signature,
@@ -602,27 +565,22 @@ collect(struct header *hp, unsigned long flags)
              */
             for (s = &pp.buf[2]; isspace(*s); s++)
                 ;
-            if (!*s || !(s = expand(s, 1)))
-            {
+            if (!*s || !(s = expand(s, 1))) {
                 note(0, "Read what file !?");
                 break;
             }
-            if (c == 'g')
-            {
+            if (c == 'g') {
                 if (!(fp = fileopen(s, "ERr")))
                     break;
                 code = 0;
-                if (mime(1))
-                {
+                if (mime(1)) {
                     t = mimetype(state.part.mime, fp, s, &state.openstat);
                     if (!mimecmp("text", t, NiL))
                         code |= CODE_TEXT;
-                }
-                else
+                } else
                     t = 0;
                 cc = tc = 0;
-                while ((lc = getc(fp)) != EOF)
-                {
+                while ((lc = getc(fp)) != EOF) {
                     tc++;
                     if ((iscntrl(lc) || !isprint(lc)) && !isspace(lc))
                         cc++;
@@ -631,33 +589,25 @@ collect(struct header *hp, unsigned long flags)
                 part(state.collect.fp, s, t, code);
                 if (!(code & (CODE_64 | CODE_QP)))
                     rewind(fp);
-                else
-                {
+                else {
                     fileclose(fp);
-                    if (t)
-                    {
+                    if (t) {
                         if (e = mimeview(state.part.mime,
                                          "compose",
                                          state.tmp.mail,
                                          t,
-                                         NiL))
-                        {
+                                         NiL)) {
                             sfprintf(state.path.temp, "%s<%s", e, s);
-                            if (state.part.disc.flags & MIME_PIPE)
-                            {
+                            if (state.part.disc.flags & MIME_PIPE) {
                                 sfprintf(state.path.temp, "|");
                                 t = 0;
-                            }
-                            else
-                            {
+                            } else {
                                 sfprintf(state.path.temp, ";");
                                 t = state.tmp.mail;
                             }
-                        }
-                        else
+                        } else
                             t = s;
-                    }
-                    else
+                    } else
                         t = s;
                     sfprintf(state.path.temp,
                              "uuencode -h -x %s",
@@ -667,26 +617,22 @@ collect(struct header *hp, unsigned long flags)
                         shquote(state.path.temp, t);
                     sfputc(state.path.temp, ' ');
                     shquote(state.path.temp, s);
-                    if (t == state.tmp.mail)
-                    {
+                    if (t == state.tmp.mail) {
                         sfprintf(state.path.temp, "; rm -f ");
                         shquote(state.path.temp, t);
                     }
                     if (!(fp = pipeopen(struse(state.path.temp), "r")))
                         break;
                 }
-            }
-            else if (!(fp = iscmd(s) ? pipeopen(s + 1, "r")
-                                     : fileopen(s, "ERr")))
+            } else if (!(fp = iscmd(s) ? pipeopen(s + 1, "r")
+                                       : fileopen(s, "ERr")))
                 break;
             note(PROMPT, "\"%s\" ", s);
             lc = 0;
             cc = 0;
-            while (readline(fp, pp.buf, LINESIZE) >= 0)
-            {
+            while (readline(fp, pp.buf, LINESIZE) >= 0) {
                 lc++;
-                if ((n = putline(state.collect.fp, pp.buf)) < 0)
-                {
+                if ((n = putline(state.collect.fp, pp.buf)) < 0) {
                     fileclose(fp);
                     goto err;
                 }
@@ -734,8 +680,7 @@ collect(struct header *hp, unsigned long flags)
             for (s = pp.buf + 2; isspace(*s); s++)
                 ;
             s = varget(s);
-            if (s)
-            {
+            if (s) {
             outstr:
                 putline(state.collect.fp, s);
                 if (state.var.interactive)
@@ -753,15 +698,12 @@ collect(struct header *hp, unsigned long flags)
             fp = stdout;
             if (sig = setjmp(state.jump.sigpipe))
                 resume(sig);
-            else
-            {
+            else {
                 if (!state.more.discipline && state.var.interactive
-                    && (lc = state.var.crt))
-                {
+                    && (lc = state.var.crt)) {
                     lc -= 5;
                     while ((c = getc(state.collect.fp)) != EOF)
-                        if (c == '\n' && --lc <= 0)
-                        {
+                        if (c == '\n' && --lc <= 0) {
                             if (!(fp = pipeopen(state.var.pager, "Jw")))
                                 fp = stdout;
                             break;
@@ -798,8 +740,7 @@ collect(struct header *hp, unsigned long flags)
             s = &pp.buf[2];
             while (*s == ' ' || *s == '\t')
                 s++;
-            if (*s == 0)
-            {
+            if (*s == 0) {
                 note(0, "Write what file !?");
                 break;
             }
@@ -832,8 +773,7 @@ collect(struct header *hp, unsigned long flags)
              * On double escape, just send the single one.
              * Otherwise, it's an error.
              */
-            if (c == escape)
-            {
+            if (c == escape) {
                 if (putline(state.collect.fp, &pp.buf[1]) < 0)
                     goto err;
                 else
@@ -848,33 +788,27 @@ collect(struct header *hp, unsigned long flags)
     }
     goto out;
 err:
-    if (state.collect.fp)
-    {
+    if (state.collect.fp) {
         fileclose(state.collect.fp);
         state.collect.fp = 0;
     }
 out:
-    if (state.collect.fp)
-    {
+    if (state.collect.fp) {
         rewind(state.collect.fp);
-        if (state.part.out.multi)
-        {
+        if (state.part.out.multi) {
             /*
              * Copy to a temp file adding the mime boundaries.
              */
-            if (fp = fileopen(state.tmp.edit, "EMw+"))
-            {
+            if (fp = fileopen(state.tmp.edit, "EMw+")) {
                 fprintf(fp, "This is a multipart message in MIME format.\n");
                 n = PART_INIT;
                 while (s = fgets(state.path.path,
                                  sizeof(state.path.path),
-                                 state.collect.fp))
-                {
+                                 state.collect.fp)) {
                     if (s[0] == '-' && s[1] == '-'
                         && !strncmp(s + 2,
                                     state.part.out.boundary,
-                                    state.part.out.boundlen))
-                    {
+                                    state.part.out.boundlen)) {
                         if (n == PART_INIT)
                             putc('\n', fp);
                         t = s + state.part.out.boundlen + 2;
@@ -882,14 +816,11 @@ out:
                             n = PART_DATA;
                         else if (*t++ == '-' && *t++ == '-'
                                  && (*t == '\n'
-                                     || *t == '\r' && *(t + 1) == '\n'))
-                        {
+                                     || *t == '\r' && *(t + 1) == '\n')) {
                             n = PART_INIT;
                             continue;
                         }
-                    }
-                    else if (n == PART_INIT)
-                    {
+                    } else if (n == PART_INIT) {
                         if (*s == '\n' || *s == '\r' && *(s + 1) == '\n')
                             continue;
                         n = PART_MAIN;
@@ -929,8 +860,7 @@ savedeadletter(FILE *fp)
     FILE *dp;
     char *s;
 
-    if (filesize(fp) && (s = deadletter()) && (dp = fileopen(s, "Ma")))
-    {
+    if (filesize(fp) && (s = deadletter()) && (dp = fileopen(s, "Ma"))) {
         filecopy(NiL, fp, s, dp, NiL, ( off_t )0, NiL, NiL, 0);
         fileclose(dp);
         rewind(fp);

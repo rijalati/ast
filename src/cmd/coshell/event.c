@@ -258,8 +258,7 @@ log(State_t *state, Connection_t *con, int type, const char *format, ...)
     if (format)
         sfvprintf(state->tmp, format, ap);
     va_end(ap);
-    if (type)
-    {
+    if (type) {
         if (!(s = sfstruse(state->tmp)))
             error(ERROR_SYSTEM | 3, "out of space");
         if (type != 'I' && state->log && state->logf)
@@ -269,8 +268,7 @@ log(State_t *state, Connection_t *con, int type, const char *format, ...)
                      con ? con->fd : 0,
                      toupper(type),
                      s);
-        if (con && type != 'R' && type != 'S')
-        {
+        if (con && type != 'R' && type != 'S') {
             if (type != 'L' || !con->quiet)
                 debug_printf(con->fd, "%c %s\n", toupper(type), s);
             if (type == 'W')
@@ -317,17 +315,14 @@ notify(State_t *state, Event_t *ep)
 
     for (cp = ( Connection_t * )dtfirst(state->connections); cp;
          cp = ( Connection_t * )dtnext(state->connections, cp))
-        if (cp->waiting && (wp = ( Waiting_t * )dtmatch(cp->waiting, &ep)))
-        {
-            if (wp->id >= 0)
-            {
+        if (cp->waiting && (wp = ( Waiting_t * )dtmatch(cp->waiting, &ep))) {
+            if (wp->id >= 0) {
                 log(state, cp, 'x', "%d 0", wp->id);
                 n = sfstrtell(state->usrf);
                 if (!(s = sfstruse(state->usrf)))
                     error(ERROR_SYSTEM | 3, "out of space");
                 write(cp->fd, s, n);
-            }
-            else if (!cp->quiet)
+            } else if (!cp->quiet)
                 log(state, cp, 'i', "%s raised", ep->name);
             n = ep->waiting == 1;
             dtdelete(cp->waiting, wp);
@@ -347,28 +342,21 @@ post(State_t *state, Connection_t *con, const char *name, int id)
     Event_t *ep;
     Waiting_t *wp;
 
-    if (!con->waiting && !(con->waiting = dtopen(&state->waitdisc, Dtset)))
-    {
+    if (!con->waiting && !(con->waiting = dtopen(&state->waitdisc, Dtset))) {
         error(ERROR_SYSTEM | 3, "out of space [waiting]");
         return -1;
     }
-    if (ep = dtmatch(state->events, name))
-    {
+    if (ep = dtmatch(state->events, name)) {
         if (dtmatch(con->waiting, &ep))
             return 0;
-    }
-    else if (!(ep = newof(0, Event_t, 1, 0)))
-    {
+    } else if (!(ep = newof(0, Event_t, 1, 0))) {
         error(ERROR_SYSTEM | 3, "out of space [event]");
         return -1;
-    }
-    else
-    {
+    } else {
         strcpy(ep->name, name);
         dtinsert(state->events, ep);
     }
-    if (!(wp = newof(0, Waiting_t, 1, 0)))
-    {
+    if (!(wp = newof(0, Waiting_t, 1, 0))) {
         error(ERROR_SYSTEM | 3, "out of space [waiting]");
         return -1;
     }
@@ -404,8 +392,7 @@ info(State_t *state, Connection_t *con, Css_t *css)
     log(state, con, 'I', "info active=%d", state->active);
     for (cp = ( Connection_t * )dtfirst(state->connections); cp;
          cp = ( Connection_t * )dtnext(state->connections, cp))
-        if (cp->waiting && (n = dtsize(cp->waiting)) > 0)
-        {
+        if (cp->waiting && (n = dtsize(cp->waiting)) > 0) {
             log(state, con, 0, "waiting connection=%d count=%d", cp->fd, n);
             for (wp = ( Waiting_t * )dtfirst(cp->waiting); wp;
                  wp = ( Waiting_t * )dtnext(cp->waiting, wp))
@@ -441,8 +428,7 @@ apply(State_t *state,
     Event_t *e;
     int n;
 
-    switch (index)
-    {
+    switch (index) {
     case REQ_clear:
         dat->flags |= DATA_clear;
         dat->time = time(NiL);
@@ -453,22 +439,18 @@ apply(State_t *state,
             log(state, con, 'L', "%s cleared", key.dptr);
         else if (!dbm_error(state->dbm))
             log(state, con, 'W', "%s unchanged", key.dptr);
-        else
-        {
+        else {
             dbm_clearerr(state->dbm);
             log(state, con, 'E', "%s io error", key.dptr);
         }
         break;
     case REQ_delete:
-        if (!dbm_delete(state->dbm, key))
-        {
+        if (!dbm_delete(state->dbm, key)) {
             log(state, con, 'L', "%s deleted", key.dptr);
             return 1;
-        }
-        else if (!dbm_error(state->dbm))
+        } else if (!dbm_error(state->dbm))
             log(state, con, 'W', "%s not in db", key.dptr);
-        else
-        {
+        else {
             dbm_clearerr(state->dbm);
             log(state, con, 'E', "%s io error", key.dptr);
         }
@@ -483,8 +465,7 @@ apply(State_t *state,
             log(state, con, 'L', "%s held", key.dptr);
         else if (!dbm_error(state->dbm))
             log(state, con, 'W', "%s unchanged", key.dptr);
-        else
-        {
+        else {
             dbm_clearerr(state->dbm);
             log(state, con, 'E', "%s io error", key.dptr);
         }
@@ -496,27 +477,22 @@ apply(State_t *state,
         val.dptr = ( void * )dat;
         val.dsize = sizeof(*dat);
         if (!(n = dbm_store(state->dbm, key, val, DBM_INSERT))
-            || n > 0 && !dbm_store(state->dbm, key, val, DBM_REPLACE))
-        {
+            || n > 0 && !dbm_store(state->dbm, key, val, DBM_REPLACE)) {
             if (!state->hold
                 && (e = ( Event_t * )dtmatch(state->events, key.dptr)))
                 notify(state, e);
             log(state, con, 'I', "%s raised", key.dptr);
-        }
-        else if (!dbm_error(state->dbm))
+        } else if (!dbm_error(state->dbm))
             log(state, con, 'W', "%s unchanged", key.dptr);
-        else
-        {
+        else {
             dbm_clearerr(state->dbm);
             log(state, con, 'E', "%s io error", key.dptr);
         }
         break;
     case REQ_release:
-        if (dat->flags & DATA_hold)
-        {
+        if (dat->flags & DATA_hold) {
             dat->flags &= ~DATA_hold;
-            if (dat->raise)
-            {
+            if (dat->raise) {
                 val.dptr = ( void * )dat;
                 val.dsize = sizeof(*dat);
                 if (!(n = dbm_store(state->dbm, key, val, DBM_INSERT))
@@ -524,36 +500,31 @@ apply(State_t *state,
                     log(state, con, 'L', "%s released", key.dptr);
                 else if (!dbm_error(state->dbm))
                     log(state, con, 'W', "%s unchanged", key.dptr);
-                else
-                {
+                else {
                     dbm_clearerr(state->dbm);
                     log(state, con, 'E', "%s io error", key.dptr);
                 }
                 if (e = ( Event_t * )dtmatch(state->events, key.dptr))
                     notify(state, e);
-            }
-            else if (!dbm_delete(state->dbm, key))
+            } else if (!dbm_delete(state->dbm, key))
                 log(state, con, 'L', "%s deleted", key.dptr);
             else if (!dbm_error(state->dbm))
                 log(state, con, 'W', "%s not in db", key.dptr);
-            else
-            {
+            else {
                 dbm_clearerr(state->dbm);
                 log(state, con, 'E', "%s io error", key.dptr);
             }
         }
         break;
     case REQ_test:
-        if (val.dptr && !(dat->flags & DATA_clear))
-        {
+        if (val.dptr && !(dat->flags & DATA_clear)) {
             if (state->hold)
                 log(state, con, 'W', "%s global hold", key.dptr);
             else if (dat->flags & DATA_hold)
                 log(state, con, 'W', "%s explicit hold", key.dptr);
             else
                 log(state, con, 'I', "%s raised", key.dptr);
-        }
-        else
+        } else
             log(state, con, 'I', "%s not-raised", key.dptr);
         break;
     case REQ_wait:
@@ -591,15 +562,11 @@ request(State_t *state,
 
     while (s = *a++)
         if (i = regcomp(
-            &re, s, REG_SHELL | REG_AUGMENTED | REG_LEFT | REG_RIGHT))
-        {
+            &re, s, REG_SHELL | REG_AUGMENTED | REG_LEFT | REG_RIGHT)) {
             regerror(i, &re, buf, sizeof(buf));
             log(state, con, 'E', "%s: %s", s, buf);
-        }
-        else if (regstat(&re)->re_info & REG_LITERAL)
-        {
-            if (!EVENT(s))
-            {
+        } else if (regstat(&re)->re_info & REG_LITERAL) {
+            if (!EVENT(s)) {
                 log(state, con, 'E', "%s invalid event name", s);
                 return -1;
             }
@@ -608,31 +575,25 @@ request(State_t *state,
             if (key.dsize >= sizeof(e->name))
                 s[(key.dsize = sizeof(e->name)) - 1] = 0;
             val = dbm_fetch(state->dbm, key);
-            if (val.dptr)
-            {
+            if (val.dptr) {
                 if (val.dsize > sizeof(dat))
                     val.dsize = sizeof(dat);
                 swapmem(state->swap, val.dptr, &dat, sizeof(dat));
-            }
-            else
+            } else
                 memset(&dat, 0, sizeof(dat));
             if (apply(state, con, id, index, key, val, &dat))
                 return -1;
-        }
-        else
-        {
+        } else {
         rescan:
             for (key = dbm_firstkey(state->dbm); key.dptr;
                  key = dbm_nextkey(state->dbm))
-                if (EVENT(key.dptr) && !regexec(&re, key.dptr, 0, NiL, 0))
-                {
+                if (EVENT(key.dptr) && !regexec(&re, key.dptr, 0, NiL, 0)) {
                     val = dbm_fetch(state->dbm, key);
                     if (val.dsize > sizeof(dat))
                         val.dsize = sizeof(dat);
                     swapmem(state->swap, val.dptr, &dat, val.dsize);
                     if ((!older || dat.time < older)
-                        && (!newer || dat.time > newer))
-                    {
+                        && (!newer || dat.time > newer)) {
                         if ((i = apply(state, con, id, index, key, val, &dat))
                             < 0)
                             return -1;
@@ -660,16 +621,12 @@ date(State_t *state, Connection_t *con, const char *s)
     key.dptr = ( void * )s;
     key.dsize = strlen(s) + 1;
     val = dbm_fetch(state->dbm, key);
-    if (val.dptr)
-    {
+    if (val.dptr) {
         swapmem(state->swap, val.dptr, &dat, val.dsize);
         t = dat.time;
-    }
-    else
-    {
+    } else {
         t = tmdate(s, &e, NiL);
-        if (*e)
-        {
+        if (*e) {
             log(state, con, 'E', "%s: invalid date/time", s);
             t = 0;
         }
@@ -705,8 +662,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
     Data_t data;
     char buf[64];
 
-    switch (fp->status)
-    {
+    switch (fp->status) {
     case CS_POLL_CLOSE:
         if (con = ( Connection_t * )fp->data)
             dtdelete(state->connections, con);
@@ -722,11 +678,10 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
         con->code = 0;
         if (tokscan(
             state->req, NiL, " %v ", state->cmd, elementsof(state->cmd) - 1)
-            > 0)
-        {
+            > 0) {
             id = -1;
-            for (q = state->cmd; (s = *q) && (isalpha(*s) || *s == '_'); q++)
-            {
+            for (q = state->cmd; (s = *q) && (isalpha(*s) || *s == '_');
+                 q++) {
                 while (isalnum(*++s))
                     ;
                 if (*s != '=')
@@ -739,22 +694,17 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                 r = ( Request_t * )strpsearch(
                 requests, elementsof(requests), sizeof(requests[0]), s, NiL)))
                 log(state, con, 'E', "%s: unknown request", s);
-            else
-            {
+            else {
                 opt_info.index = 0;
                 newer = older = 0;
                 err = 0;
                 sfstrseek(state->usrf, 0, SEEK_SET);
-                for (;;)
-                {
-                    switch (optget(a, usage))
-                    {
+                for (;;) {
+                    switch (optget(a, usage)) {
                     case 'e':
-                        if (r->index == REQ_set)
-                        {
+                        if (r->index == REQ_set) {
                             state->expire = strelapsed(opt_info.arg, &t, 1);
-                            if (*t)
-                            {
+                            if (*t) {
                                 log(state,
                                     con,
                                     'E',
@@ -786,20 +736,15 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                     }
                     break;
                 }
-                if (!err)
-                {
-                    if (!*(a += opt_info.index))
-                    {
-                        if (newer || older)
-                        {
+                if (!err) {
+                    if (!*(a += opt_info.index)) {
+                        if (newer || older) {
                             a[0] = "*";
                             a[1] = 0;
                             n = 1;
-                        }
-                        else
+                        } else
                             n = 0;
-                    }
-                    else
+                    } else
                         n = a[1] ? 2 : 1;
                     if (r->min && n < r->min)
                         sfprintf(state->usrf,
@@ -824,22 +769,18 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                             r->max,
                             r->max == 1 ? "" : "s");
                     else
-                        switch (r->index)
-                        {
+                        switch (r->index) {
                         case REQ_all:
                             n = ( int )strtol(a[0], &t, 0);
-                            if (*t)
-                            {
+                            if (*t) {
                                 log(state,
                                     con,
                                     'E',
                                     "%s: invalid numeric value",
                                     a[0]);
                                 break;
-                            }
-                            else if (!(f = cssfd(css, n, 0))
-                                     || !(x = ( Connection_t * )f->data))
-                            {
+                            } else if (!(f = cssfd(css, n, 0))
+                                       || !(x = ( Connection_t * )f->data)) {
                                 log(state,
                                     con,
                                     'E',
@@ -847,19 +788,17 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                                     n);
                                 break;
                             }
-                            if (x->waiting)
-                            {
+                            if (x->waiting) {
                                 n = x->quiet;
                                 x->quiet = 1;
                                 a = state->cmd;
                                 for (w = ( Waiting_t * )dtfirst(x->waiting);
                                      w;
-                                     w = ( Waiting_t * )dtnext(x->waiting, w))
-                                {
+                                     w
+                                     = ( Waiting_t * )dtnext(x->waiting, w)) {
                                     if (a
-                                        >= &state
-                                            ->cmd[elementsof(state->cmd) - 1])
-                                    {
+                                        >= &state->cmd[elementsof(state->cmd)
+                                                       - 1]) {
                                         *a = 0;
                                         if (request(state,
                                                     x,
@@ -878,8 +817,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                                         s,
                                         w->event->name);
                                 }
-                                if (a > state->cmd)
-                                {
+                                if (a > state->cmd) {
                                     *a = 0;
                                     request(state,
                                             x,
@@ -909,24 +847,25 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                             info(state, con, css);
                             break;
                         case REQ_hold:
-                            if (!*a)
-                            {
+                            if (!*a) {
                                 state->hold = 1;
                                 sfprintf(state->usrf, "I holding\n");
-                            }
-                            else if (request(
-                                     state, con, id, r->index, a, older, newer))
+                            } else if (request(state,
+                                               con,
+                                               id,
+                                               r->index,
+                                               a,
+                                               older,
+                                               newer))
                                 return -1;
                             break;
                         case REQ_list:
                             con->all = 1;
-                            if (s = *a)
-                            {
+                            if (s = *a) {
                                 if (n = regcomp(&con->re,
                                                 s,
                                                 REG_SHELL | REG_AUGMENTED
-                                                | REG_LEFT | REG_RIGHT))
-                                {
+                                                | REG_LEFT | REG_RIGHT)) {
                                     regerror(n, &con->re, buf, sizeof(buf));
                                     log(state, con, 'E', "%s: %s", s, buf);
                                     break;
@@ -934,8 +873,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                                 con->all = 0;
                             }
                             con->list = dbm_firstkey(state->dbm);
-                            if (!con->list.dptr)
-                            {
+                            if (!con->list.dptr) {
                                 log(state, con, 'I', "empty");
                                 break;
                             }
@@ -943,19 +881,16 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                             con->older = older;
                             goto list;
                         case REQ_next:
-                            if (!con->list.dptr)
-                            {
+                            if (!con->list.dptr) {
                                 log(state,
                                     con,
                                     'W',
                                     "next: must execute list first");
                                 break;
                             }
-                            for (;;)
-                            {
+                            for (;;) {
                                 con->list = dbm_nextkey(state->dbm);
-                                if (!con->list.dptr)
-                                {
+                                if (!con->list.dptr) {
                                     log(state, con, 'I', "done");
                                     break;
                                 }
@@ -966,8 +901,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                                                     con->list.dptr,
                                                     0,
                                                     NiL,
-                                                    0)))
-                                {
+                                                    0))) {
                                     val = dbm_fetch(state->dbm, con->list);
                                     if (val.dsize > sizeof(data))
                                         val.dsize = sizeof(data);
@@ -975,8 +909,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                                     state->swap, val.dptr, &data, val.dsize);
                                     if ((!con->older || data.time < con->older)
                                         && (!con->newer
-                                            || data.time > con->newer))
-                                    {
+                                            || data.time > con->newer)) {
                                         log(state,
                                             con,
                                             'I',
@@ -995,13 +928,11 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                             }
                             break;
                         case REQ_release:
-                            if (!*a)
-                            {
+                            if (!*a) {
                                 state->hold = 0;
                                 sfprintf(state->usrf, "I released\n");
                                 key = dbm_firstkey(state->dbm);
-                                while (key.dptr)
-                                {
+                                while (key.dptr) {
                                     val = dbm_fetch(state->dbm, key);
                                     if (val.dsize > sizeof(data))
                                         val.dsize = sizeof(data);
@@ -1014,9 +945,13 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                                         notify(state, e);
                                     key = dbm_nextkey(state->dbm);
                                 }
-                            }
-                            else if (request(
-                                     state, con, id, r->index, a, older, newer))
+                            } else if (request(state,
+                                               con,
+                                               id,
+                                               r->index,
+                                               a,
+                                               older,
+                                               newer))
                                 return -1;
                             break;
                         case REQ_set:
@@ -1027,10 +962,8 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                         }
                 }
             }
-            if (sfstrtell(state->usrf))
-            {
-                if (id >= 0)
-                {
+            if (sfstrtell(state->usrf)) {
+                if (id >= 0) {
                     sfstrseek(state->usrf, 0, SEEK_SET);
                     log(state, con, 'x', "%d %d", id, con->code);
                 }
@@ -1055,11 +988,9 @@ exceptf(Css_t *css, unsigned long op, unsigned long arg, Cssdisc_t *disc)
 {
     State_t *state = ( State_t * )disc;
 
-    switch (op)
-    {
+    switch (op) {
     case CSS_CLOSE:
-        if (state->dbm)
-        {
+        if (state->dbm) {
             dbm_close(state->dbm);
             state->dbm = 0;
         }
@@ -1146,8 +1077,7 @@ db(State_t *state)
     key.dptr = ( void * )ident_key;
     key.dsize = sizeof(ident_key);
     val = dbm_fetch(state->dbm, key);
-    if (val.dptr)
-    {
+    if (val.dptr) {
         if (val.dsize != sizeof(data))
             error(3,
                   "%s: invalid db -- data size %d, expected %d",
@@ -1164,9 +1094,7 @@ db(State_t *state)
         u4 = IDENT_SWAP;
         if (state->swap = swapop(&u4, &data.time, 4))
             swapmem(state->swap, &data, &data, sizeof(data));
-    }
-    else
-    {
+    } else {
         val = dbm_firstkey(state->dbm);
         if (val.dptr)
             error(3,
@@ -1179,8 +1107,7 @@ db(State_t *state)
         data.raise = IDENT_VERSION;
         val.dptr = ( void * )&data;
         val.dsize = sizeof(data);
-        if (dbm_store(state->dbm, key, val, DBM_INSERT))
-        {
+        if (dbm_store(state->dbm, key, val, DBM_INSERT)) {
             dbm_clearerr(state->dbm);
             error(3,
                   "%s: %s: db initial ident entry store failed",
@@ -1219,10 +1146,8 @@ main(int argc, char **argv)
      * check the options
      */
 
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'c':
             p = opt_info.arg;
             continue;
@@ -1268,8 +1193,7 @@ main(int argc, char **argv)
      * either server or client at this point
      */
 
-    if (server)
-    {
+    if (server) {
         umask(S_IWOTH);
         db(&state);
         state.condisc.link = offsetof(Event_t, link);
@@ -1297,8 +1221,7 @@ main(int argc, char **argv)
             return 1;
         umask(S_IWOTH);
         error_info.id = css->id;
-        if (state.log)
-        {
+        if (state.log) {
             sfprintf(state.tmp, "%s.log", state.path);
             if (!(s = sfstruse(state.tmp)))
                 error(ERROR_SYSTEM | 3, "out of space");

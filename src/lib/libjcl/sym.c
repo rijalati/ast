@@ -49,39 +49,31 @@ jclsym(Jcl_t *jcl, const char *name, const char *value, int flags)
         n = value++ - name;
     else
         return 0;
-    if (name[0] == '%' && name[1] == '%')
-    {
+    if (name[0] == '%' && name[1] == '%') {
         name = ( const char * )sfprints("%s%-.*s", JCL_AUTO, n - 2, name + 2);
         n = strlen(name);
         imported = (flags & JCL_SYM_SET) && (jcl->flags & JCL_IMPORT);
-    }
-    else
+    } else
         imported = 0;
-    if (!(v = vmnewof(jcl->vs, 0, Jclsym_t, 1, n + strlen(value) + 2)))
-    {
+    if (!(v = vmnewof(jcl->vs, 0, Jclsym_t, 1, n + strlen(value) + 2))) {
         nospace(jcl, NiL);
         return 0;
     }
     memcpy(v->name, name, n);
     strcpy(v->value = ( char * )(v + 1) + n + 1, value);
     v->flags = flags;
-    if (o = ( Jclsym_t * )dtsearch(jcl->step->syms, v))
-    {
+    if (o = ( Jclsym_t * )dtsearch(jcl->step->syms, v)) {
         if (imported && (o->flags & JCL_SYM_IMPORT)
-            || (flags & JCL_SYM_SET) && (o->flags & JCL_SYM_READONLY))
-        {
+            || (flags & JCL_SYM_SET) && (o->flags & JCL_SYM_READONLY)) {
             vmfree(jcl->vs, v);
             v = o;
             goto export;
         }
         dtdelete(jcl->step->syms, o);
         vmfree(jcl->vs, o);
-    }
-    else if (imported && (e = getenv(name)))
-    {
+    } else if (imported && (e = getenv(name))) {
         vmfree(jcl->vs, v);
-        if (!(v = vmnewof(jcl->vs, 0, Jclsym_t, 1, strlen(e) + 1)))
-        {
+        if (!(v = vmnewof(jcl->vs, 0, Jclsym_t, 1, strlen(e) + 1))) {
             nospace(jcl, NiL);
             return 0;
         }
@@ -91,12 +83,10 @@ jclsym(Jcl_t *jcl, const char *name, const char *value, int flags)
         v->flags |= JCL_SYM_IMPORT;
     }
     dtinsert(jcl->step->syms, v);
-    if (flags & (JCL_SYM_EXPORT | JCL_SYM_READONLY))
-    {
+    if (flags & (JCL_SYM_EXPORT | JCL_SYM_READONLY)) {
         export : if (jcl->flags & JCL_EXEC)
         {
-            if (!(set = vmstrdup(jcl->vs, set)) || !setenviron(set))
-            {
+            if (!(set = vmstrdup(jcl->vs, set)) || !setenviron(set)) {
                 nospace(jcl, NiL);
                 return 0;
             }

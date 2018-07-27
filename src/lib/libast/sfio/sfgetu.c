@@ -45,20 +45,16 @@ Sfulong_t sfgetu(f) Sfio_t *f;
 
     SFLOCK(f, 0);
 
-    for (v = 0;;)
-    {
-        if (SFRPEEK(f, s, p) <= 0)
-        {
+    for (v = 0;;) {
+        if (SFRPEEK(f, s, p) <= 0) {
             f->flags |= SF_ERROR;
             v = (Sfulong_t)(-1);
             goto done;
         }
-        for (ends = s + p; s < ends;)
-        {
+        for (ends = s + p; s < ends;) {
             c = *s++;
             v = (v << SF_UBITS) | SFUVALUE(c);
-            if (!(c & SF_MORE))
-            {
+            if (!(c & SF_MORE)) {
                 f->next = s;
                 goto done;
             }

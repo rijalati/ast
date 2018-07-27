@@ -171,8 +171,7 @@ emphemeral(void *arg) /* an empheral thread, allocate a few times, free then
     unsigned int Rand
     = 1001; /* use a local RNG so that threads work uniformly */
 
-    for (k = 0; k < Empcount; ++k)
-    {
+    for (k = 0; k < Empcount; ++k) {
         sz = (RANDOM() % (Smallhi - Smalllo + 1)) + Smalllo;
         sz = sz > sizeof(size_t) ? sz : sizeof(size_t);
 
@@ -184,15 +183,13 @@ emphemeral(void *arg) /* an empheral thread, allocate a few times, free then
         asomaxsize(&Maxbusy, Curbusy);
 
         emp = Emp[k]; /* make an attempt to put blk in array */
-        if (asocasptr(&Emp[k], emp, blk) == emp)
-        {
+        if (asocasptr(&Emp[k], emp, blk) == emp) {
             if (emp) /* free previous block if any */
             {
                 sz = *(( size_t * )emp);
                 free(emp);
             }
-        }
-        else
+        } else
             free(blk); /* couldn't place it so free it */
 
         asosubsize(&Curbusy, sz);
@@ -217,28 +214,24 @@ simulate(void *arg)
 
     list = tdata->list;
     nalloc = tdata->nalloc;
-    for (k = 0; k < nalloc; ++k)
-    {
+    for (k = 0; k < nalloc; ++k) {
         if (Empperiod > 0 && k > 0 && k % Empperiod == 0)
             if (pthread_create(&ethread, NULL, emphemeral, ( void * )0) != 0)
                 terror("Can't create emphemeral thread");
 
         /* update all that needs updating */
-        for (up = list[k].free; up; up = next)
-        {
+        for (up = list[k].free; up; up = next) {
             next = up->next;
 
             if (k == nalloc - 1
                 || (up->type == 0 && (RANDOM() % 100) >= Smallre)
-                || (up->type == 1 && (RANDOM() % 100) >= Largere))
-            {
+                || (up->type == 1 && (RANDOM() % 100) >= Largere)) {
                 free(up->data);
 
                 asosubsize(&Curbusy, up->size);
                 up->data = NIL(void *);
                 up->size = 0;
-            }
-            else /* realloc: new size's range is [up->size/2, 2*up->size] */
+            } else /* realloc: new size's range is [up->size/2, 2*up->size] */
             {
                 if (up->type == 0)
                     sz = RANDOM() % (2 * up->size) + 1;
@@ -273,14 +266,11 @@ simulate(void *arg)
         }
 
         /* get a random size in given range */
-        if (RANDOM() % 100 < Small)
-        {
+        if (RANDOM() % 100 < Small) {
             sz = RANDOM() % (Smallhi - Smalllo + 1) + Smalllo;
             lf = Smalllf / 2 + RANDOM() % (Smalllf / 2);
             ty = 0; /* small block */
-        }
-        else
-        {
+        } else {
             sz = RANDOM() % (Largehi - Largelo + 1) + Largelo;
             lf = Largelf / 2 + RANDOM() % (Largelf / 2);
             ty = 1; /* large block */
@@ -288,8 +278,7 @@ simulate(void *arg)
 
         if (!(list[k].data = malloc(sz)))
             terror("Thread %d: failed to malloc(%d)", thread, sz);
-        if ((a = ( unsigned long )(list[k].data) % ALIGNMENT) != 0)
-        {
+        if ((a = ( unsigned long )(list[k].data) % ALIGNMENT) != 0) {
             if (warn_align)
                 tinfo("Thread %d: block=%#0x mod %d == %d",
                       thread,
@@ -325,8 +314,7 @@ tmain()
     void *status;
     pthread_t th[N_THREAD];
 
-    for (; argc > 1; --argc, ++argv)
-    {
+    for (; argc > 1; --argc, ++argv) {
         if (argv[1][0] != '-')
             continue;
         else if (argv[1][1] == 'a') /* number of allocation steps */
@@ -335,24 +323,19 @@ tmain()
             Nthread = atoi(argv[1] + 2);
         else if (argv[1][1] == 's') /* probability of being Small vs Large */
             Small = atoi(argv[1] + 2);
-        else if (argv[1][1] == 'z')
-        {
+        else if (argv[1][1] == 'z') {
             sscanf(argv[1] + 2, "%d,%d,%d,%d", &arg1, &arg2, &arg3, &arg4);
             Smalllo = arg1; /* lo of size range */
             Smallhi = arg2; /* hi of size range */
             Smalllf = arg3; /* life before free or realloc */
             Smallre = arg4; /* probability of being realloced */
-        }
-        else if (argv[1][1] == 'Z')
-        {
+        } else if (argv[1][1] == 'Z') {
             sscanf(argv[1] + 2, "%d,%d,%d,%d", &arg1, &arg2, &arg3, &arg4);
             Largelo = arg1;
             Largehi = arg2;
             Largelf = arg3;
             Largere = arg4;
-        }
-        else if (argv[1][1] == 'e')
-        {
+        } else if (argv[1][1] == 'e') {
             sscanf(argv[1] + 2, "%d,%d", &arg1, &arg2);
             Empperiod
             = arg1; /* number of alloc steps between an emphemeral thread */
@@ -369,8 +352,7 @@ tmain()
     Nalloc = nalloc * Nthread;
 
     /* space for emphemeral threads */
-    if (Empperiod > 0)
-    {
+    if (Empperiod > 0) {
         sz = Empcount * sizeof(Void_t *);
         if (!(Emp = malloc(sz)))
             terror(
@@ -380,8 +362,7 @@ tmain()
         Curbusy += sz;
     }
 
-    for (i = 0; i < Nthread; ++i)
-    {
+    for (i = 0; i < Nthread; ++i) {
         Tdata[i].nalloc = nalloc;
         sz = Tdata[i].nalloc * sizeof(Piece_t);
         if (!(Tdata[i].list = ( Piece_t * )malloc(sz)))
@@ -410,16 +391,14 @@ tmain()
     Largelf,
     Largere);
 
-    for (i = 0; i < Nthread; ++i)
-    {
+    for (i = 0; i < Nthread; ++i) {
         if ((rv
              = pthread_create(&th[i], NULL, simulate, ( void * )(( long )i)))
             != 0)
             terror("Failed to create simulation thread %d", i);
     }
 
-    for (i = 0; i < Nthread; ++i)
-    {
+    for (i = 0; i < Nthread; ++i) {
         if ((rv = pthread_join(th[i], &status)) != 0)
             terror("Failed waiting for simulation thread %d", i);
     }

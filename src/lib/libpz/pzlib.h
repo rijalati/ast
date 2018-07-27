@@ -188,13 +188,10 @@ typedef struct
 #    define PZ_HDR_split 0x53   /* split { major minor }	*/
 
 #    define PZGETZ(pz, ip, z, i)                                             \
-        if ((z = sfgetc(ip)) & SF_MORE)                                      \
-        {                                                                    \
+        if ((z = sfgetc(ip)) & SF_MORE) {                                    \
             z &= (SF_MORE - 1);                                              \
-            while ((i = sfgetc(ip)) & SF_MORE)                               \
-            {                                                                \
-                if (i < 0)                                                   \
-                {                                                            \
+            while ((i = sfgetc(ip)) & SF_MORE) {                             \
+                if (i < 0) {                                                 \
                     if (pz->disc->errorf)                                    \
                         (*pz->disc->errorf)(                                 \
                         pz, pz->disc, 2, "%s: input truncated", pz->path);   \
@@ -208,13 +205,10 @@ typedef struct
 #    define PZGETP(pz, ip, z, i, a)                                          \
         if (!(z = sfgetc(ip)))                                               \
             a;                                                               \
-        if (z & SF_MORE)                                                     \
-        {                                                                    \
+        if (z & SF_MORE) {                                                   \
             z &= (SF_MORE - 1);                                              \
-            while ((i = sfgetc(ip)) & SF_MORE)                               \
-            {                                                                \
-                if (i < 0)                                                   \
-                {                                                            \
+            while ((i = sfgetc(ip)) & SF_MORE) {                             \
+                if (i < 0) {                                                 \
                     if (pz->disc->errorf)                                    \
                         (*pz->disc->errorf)(                                 \
                         pz, pz->disc, 2, "%s: input truncated", pz->path);   \

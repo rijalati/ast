@@ -126,35 +126,29 @@ cvtread(Pz_t *pz, Sfio_t *sp, void *data, Pzdisc_t *disc)
     unsigned char *s;
     unsigned char *t;
 
-    if (cvt->flags & CONVERT)
-    {
+    if (cvt->flags & CONVERT) {
         cvt->last->buf = ( unsigned char * )data;
     again:
         cp = cvt->chain;
-        if (state->readf)
-        {
+        if (state->readf) {
             s = state->buf;
             if ((n = (*state->readf)(pz, sp, s, disc)) <= 0)
                 return n;
-        }
-        else if (!(s = ( unsigned char * )sfreserve(
-                   sp, cp->convert->from->row, 0)))
+        } else if (!(s = ( unsigned char * )sfreserve(
+                     sp, cp->convert->from->row, 0)))
             return sfvalue(sp) ? -1 : 0;
-        for (; cp; cp = cp->next)
-        {
+        for (; cp; cp = cp->next) {
             pz->count.converted++;
             t = cp->buf;
             if ((n = (*cp->convert->convertf)(pz, cp->convert, s, t, disc))
-                <= 0)
-            {
+                <= 0) {
                 if (n < 0)
                     return -1;
                 goto again;
             }
             s = t;
         }
-    }
-    else
+    } else
         n = state->readf ? (*state->readf)(pz, sp, data, disc)
                          : sfread(sp, data, pp->row);
     if (n > 0 && (cvt->flags & CHECKSUM))
@@ -179,8 +173,7 @@ cvtwrite(Pz_t *pz, Sfio_t *sp, const void *data, Pzdisc_t *disc)
     unsigned char *s;
     unsigned char *t;
 
-    if (cvt->flags & CONVERT)
-    {
+    if (cvt->flags & CONVERT) {
         if (state->writef)
             b = state->buf;
         else if (!(b = ( unsigned char * )sfreserve(
@@ -188,22 +181,18 @@ cvtwrite(Pz_t *pz, Sfio_t *sp, const void *data, Pzdisc_t *disc)
             return -1;
         cvt->last->buf = b;
         s = ( unsigned char * )data;
-        for (cp = cvt->chain; cp; cp = cp->next)
-        {
+        for (cp = cvt->chain; cp; cp = cp->next) {
             pz->count.converted++;
             t = cp->buf;
             if ((n = (*cp->convert->convertf)(pz, cp->convert, s, t, disc))
-                <= 0)
-            {
+                <= 0) {
                 if (!state->writef)
                     sfwrite(sp, b, 0);
                 return n;
             }
             s = t;
         }
-    }
-    else
-    {
+    } else {
         if (cvt->flags & CHECKSUM)
             cvt->checksum = memsum_4(cvt->checksum, data, pp->row);
         b = ( unsigned char * )data;
@@ -236,10 +225,8 @@ closure(Pz_t *pz,
 
     for (k = j; i < j; i++)
         for (m = 0; m < n; m++)
-            if (!hit[m] && streq(tab[m].from->name, stk[i]->to->name))
-            {
-                if (streq(tab[m].to->name, to))
-                {
+            if (!hit[m] && streq(tab[m].from->name, stk[i]->to->name)) {
+                if (streq(tab[m].to->name, to)) {
                     stk[k] = &tab[m];
                     m = k;
                     goto found;
@@ -252,8 +239,7 @@ closure(Pz_t *pz,
     to = cp->convert->from->name;
     for (m = j; m < k && !streq(stk[m]->to->name, to); m++)
         ;
-    if (m >= k)
-    {
+    if (m >= k) {
         if (pz->disc->errorf)
             (*pz->disc->errorf)(
             pz,
@@ -291,23 +277,19 @@ chain(Pz_t *pz, Pzconvert_t *tab, int n, const char *f, const char *t)
 
     if (!(hit = newof(0, unsigned char, n, 0)))
         return 0;
-    if (!(stk = newof(0, Pzconvert_t *, n, 0)))
-    {
+    if (!(stk = newof(0, Pzconvert_t *, n, 0))) {
         free(hit);
         return 0;
     }
     for (i = j = 0; i < n; i++)
-        if (streq(tab[i].from->name, f))
-        {
+        if (streq(tab[i].from->name, f)) {
             stk[j++] = &tab[i];
             hit[i] = 1;
         }
-    if (!j || !(cp = closure(pz, NiL, n, tab, hit, stk, 0, j, t)))
-    {
+    if (!j || !(cp = closure(pz, NiL, n, tab, hit, stk, 0, j, t))) {
         free(hit);
         free(stk);
-        if (pz->disc->errorf)
-        {
+        if (pz->disc->errorf) {
             if (!j)
                 (*pz->disc->errorf)(
                 pz, pz->disc, 2, "conversion to %s not implemented", t);
@@ -326,8 +308,7 @@ chain(Pz_t *pz, Pzconvert_t *tab, int n, const char *f, const char *t)
     t = cp->convert->from->name;
     for (i = 0; i < j && !streq(stk[i]->to->name, t); i++)
         ;
-    if (i >= j)
-    {
+    if (i >= j) {
         free(stk);
         if (pz->disc->errorf)
             (*pz->disc->errorf)(
@@ -353,11 +334,9 @@ chain(Pz_t *pz, Pzconvert_t *tab, int n, const char *f, const char *t)
     for (tp = cp; tp && tp->next; tp = tp->next)
         if (tp->convert->to->row > m)
             m = tp->convert->to->row;
-    if (m)
-    {
+    if (m) {
         a = b = 0;
-        for (tp = cp; tp && tp->next; tp = tp->next)
-        {
+        for (tp = cp; tp && tp->next; tp = tp->next) {
             if (!a && !(a = vmnewof(pz->vm, 0, unsigned char, m, 0)))
                 return 0;
             tp->buf = a;
@@ -399,17 +378,13 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
 
     if (state->eventf && (r = (*state->eventf)(pz, op, data, size, disc)))
         return r;
-    if (!pp)
-    {
-        if (op == PZ_OPTION)
-        {
-            switch (optstr(NiL, usage))
-            {
+    if (!pp) {
+        if (op == PZ_OPTION) {
+            switch (optstr(NiL, usage)) {
             case 'f':
                 if (!pz->row)
                     for (xp = state->conversions;; xp++)
-                        if (!xp->from)
-                        {
+                        if (!xp->from) {
                             if (disc->errorf)
                                 (*disc->errorf)(pz,
                                                 disc,
@@ -417,21 +392,16 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
                                                 "%s: unknown format",
                                                 opt_info.arg);
                             return -1;
-                        }
-                        else if (streq(opt_info.arg, xp->from->name))
-                        {
+                        } else if (streq(opt_info.arg, xp->from->name)) {
                             pz->row = xp->from->row;
                             break;
-                        }
-                        else if (streq(opt_info.arg, xp->to->name))
-                        {
+                        } else if (streq(opt_info.arg, xp->to->name)) {
                             pz->row = xp->to->row;
                             break;
                         }
                 break;
             case 's':
-                if (opt_info.arg)
-                {
+                if (opt_info.arg) {
                     for (xp = state->conversions; xp->from; xp++)
                         ;
                     i = (xp - state->conversions) * 2 + 1;
@@ -442,13 +412,11 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
                              "NAME",
                              "ROW",
                              "DESCRIPTION");
-                    for (xp = state->conversions; xp->from; xp++)
-                    {
+                    for (xp = state->conversions; xp->from; xp++) {
                         for (i = 0; vp[i] && !streq(xp->from->name, vp[i]);
                              i++)
                             ;
-                        if (!vp[i])
-                        {
+                        if (!vp[i]) {
                             vp[i++] = ( char * )xp->from->name;
                             sfprintf(sfstdout,
                                      "%-16s  %5u  %s\n",
@@ -458,8 +426,7 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
                         }
                         for (i = 0; vp[i] && !streq(xp->to->name, vp[i]); i++)
                             ;
-                        if (!vp[i])
-                        {
+                        if (!vp[i]) {
                             vp[i++] = ( char * )xp->to->name;
                             sfprintf(sfstdout,
                                      "%-16s  %5u  %s\n",
@@ -475,19 +442,16 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
         }
         return 0;
     }
-    if (!(cvt = ( Cvt_t * )pp->discdata))
-    {
+    if (!(cvt = ( Cvt_t * )pp->discdata)) {
         if (!(cvt = vmnewof(pz->vm, 0, Cvt_t, 1, 0)))
             return -1;
         pp->discdata = ( void * )cvt;
     }
-    switch (op)
-    {
+    switch (op) {
     case PZ_CLOSE:
         if ((pz->flags & PZ_READ)
             && (cvt->flags & (CHECKSUM | CHECKSUM_WARN | CHECKSUM_TAIL))
-               == (CHECKSUM | CHECKSUM_WARN))
-        {
+               == (CHECKSUM | CHECKSUM_WARN)) {
             r = -1;
             if (disc->errorf)
                 (*disc->errorf)(pz,
@@ -507,8 +471,7 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
         sfstrclose(state->tmp);
         break;
     case PZ_OPTION:
-        switch (optstr(NiL, usage))
-        {
+        switch (optstr(NiL, usage)) {
         case 'x':
             r = 1;
             state->flags |= CHECKSUM;
@@ -523,12 +486,9 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
         case 'f':
         case 't':
             r = 1;
-            if (opt_info.arg && *opt_info.arg)
-            {
-                for (xp = state->conversions;; xp++)
-                {
-                    if (!xp->from)
-                    {
+            if (opt_info.arg && *opt_info.arg) {
+                for (xp = state->conversions;; xp++) {
+                    if (!xp->from) {
                         if (disc->errorf)
                             (*disc->errorf)(
                             pz, disc, 2, "%s: unknown format", opt_info.arg);
@@ -538,8 +498,7 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
                         || streq(opt_info.arg, xp->to->name))
                         break;
                 }
-                switch (opt_info.option[1])
-                {
+                switch (opt_info.option[1]) {
                 case 'c':
                     vp = (pz->flags & PZ_WRITE) ? &state->from : &state->to;
                     break;
@@ -554,8 +513,7 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
                     && !(*vp = vmstrdup(pz->vm, opt_info.arg)))
                     return -1;
                 state->flags |= CONVERT;
-            }
-            else if (pz->flags & PZ_WRITE)
+            } else if (pz->flags & PZ_WRITE)
                 state->flags |= CONVERT;
             break;
         case 's':
@@ -573,12 +531,9 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
         }
         break;
     case PZ_PARTITION:
-        if (state->flags & CONVERT)
-        {
-            if (pz->flags & PZ_WRITE)
-            {
-                if (sfraise(pz->io, SFPZ_HANDLE, &iz) <= 0)
-                {
+        if (state->flags & CONVERT) {
+            if (pz->flags & PZ_WRITE) {
+                if (sfraise(pz->io, SFPZ_HANDLE, &iz) <= 0) {
                     if (disc->errorf)
                         (*disc->errorf)(pz,
                                         disc,
@@ -587,51 +542,37 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
                                         pz->path);
                     return -1;
                 }
-                if (state->from && !*iz->part->name)
-                {
+                if (state->from && !*iz->part->name) {
                     n = 0;
                     f = state->from;
-                }
-                else
-                {
+                } else {
                     n = iz->part->row;
                     f = iz->part->name;
                 }
                 t = pp->name;
-            }
-            else
-            {
-                if (!state->to)
-                {
+            } else {
+                if (!state->to) {
                     if (disc->errorf)
                         (*disc->errorf)(
                         pz, disc, 2, "ouput convert format omitted");
                     return -1;
                 }
-                if (state->from && !*pp->name)
-                {
+                if (state->from && !*pp->name) {
                     n = 0;
                     f = state->from;
-                }
-                else
-                {
+                } else {
                     n = *pp->name ? 0 : pp->row;
                     f = pp->name;
                 }
                 t = state->to;
             }
-            if (!streq(f, t))
-            {
+            if (!streq(f, t)) {
                 cp = 0;
-                for (xp = state->conversions, rp = 0, zp = 0;; xp++)
-                {
-                    if (!xp->from)
-                    {
+                for (xp = state->conversions, rp = 0, zp = 0;; xp++) {
+                    if (!xp->from) {
                         i = xp - state->conversions;
-                        if (xp = zp)
-                        {
-                            if (n != xp->to->row)
-                            {
+                        if (xp = zp) {
+                            if (n != xp->to->row) {
                                 if (!(cp = vmnewof(pz->vm, 0, Chain_t, 1, 0)))
                                     return -1;
                                 cp->convert = xp;
@@ -644,10 +585,8 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
                             break;
                         return -1;
                     }
-                    if (streq(t, xp->to->name))
-                    {
-                        if (streq(f, xp->from->name))
-                        {
+                    if (streq(t, xp->to->name)) {
+                        if (streq(f, xp->from->name)) {
                             if (!(cp = vmnewof(pz->vm, 0, Chain_t, 1, 0)))
                                 return -1;
                             cp->convert = xp;
@@ -659,11 +598,9 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
                             rp = xp;
                     }
                 }
-                if (cvt->chain = cp)
-                {
+                if (cvt->chain = cp) {
                     cvt->flags |= CONVERT;
-                    do
-                    {
+                    do {
                         if (cp->convert->eventf
                             && (*cp->convert->eventf)(
                                pz, op, cp->convert, cp->next == 0, disc)
@@ -674,12 +611,11 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
                 }
             }
         }
-        if ((cvt->flags |= (state->flags & CHECKSUM)) & (CHECKSUM | CONVERT))
-        {
+        if ((cvt->flags |= (state->flags & CHECKSUM))
+            & (CHECKSUM | CONVERT)) {
             disc->readf = cvtread;
             disc->writef = cvtwrite;
-            if (disc->errorf && (pz->flags & PZ_VERBOSE))
-            {
+            if (disc->errorf && (pz->flags & PZ_VERBOSE)) {
                 if (cvt->flags & CHECKSUM)
                     (*disc->errorf)(pz,
                                     disc,
@@ -688,8 +624,7 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
                                     pz->path,
                                     (pz->flags & PZ_WRITE) ? "generating"
                                                            : "verifying");
-                if (cvt->flags & CONVERT)
-                {
+                if (cvt->flags & CONVERT) {
                     sfprintf(pz->tmp, "%s", cvt->chain->convert->from->name);
                     for (cp = cvt->chain; cp; cp = cp->next)
                         sfprintf(pz->tmp, " => %s", cp->convert->to->name);
@@ -702,16 +637,13 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
                 }
             }
         }
-        if (state->flags & SHOW)
-        {
-            if (cvt->flags & CHECKSUM)
-            {
+        if (state->flags & SHOW) {
+            if (cvt->flags & CHECKSUM) {
                 sfprintf(sfstdout, "checksum");
                 if (cvt->flags & CONVERT)
                     sfprintf(sfstdout, " + ");
             }
-            if (cvt->flags & CONVERT)
-            {
+            if (cvt->flags & CONVERT) {
                 sfprintf(sfstdout, "%s", cvt->chain->convert->from->name);
                 for (cp = cvt->chain; cp; cp = cp->next)
                     sfprintf(sfstdout, " => %s", cp->convert->to->name);
@@ -726,14 +658,11 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
         cvt->flags &= ~CHECKSUM_TAIL;
         break;
     case PZ_TAILREAD:
-        if (cvt->flags & CHECKSUM)
-        {
+        if (cvt->flags & CHECKSUM) {
             sfstrbuf(state->tmp, data, size, 0);
-            if (sfgetu(state->tmp) == CHECKSUM_OP)
-            {
+            if (sfgetu(state->tmp) == CHECKSUM_OP) {
                 cvt->flags |= CHECKSUM_TAIL;
-                if ((k = sfgetu(state->tmp)) != cvt->checksum)
-                {
+                if ((k = sfgetu(state->tmp)) != cvt->checksum) {
                     if (disc->errorf)
                         (*disc->errorf)(pz,
                                         disc,
@@ -747,15 +676,13 @@ cvtevent(Pz_t *pz, int op, void *data, size_t size, Pzdisc_t *disc)
                                         cvt->checksum);
                     pz->flags |= PZ_ERROR;
                     r = -1;
-                }
-                else
+                } else
                     r = 1;
             }
         }
         break;
     case PZ_TAILWRITE:
-        if (cvt->flags & CHECKSUM)
-        {
+        if (cvt->flags & CHECKSUM) {
             cvt->flags |= CHECKSUM_TAIL;
             sp = ( Sfio_t * )data;
             sfputu(state->tmp, CHECKSUM_OP);
@@ -778,12 +705,10 @@ pzdcconvert(Pz_t *pz, const Pzconvert_t *conversions)
 {
     State_t *state;
 
-    if (pz->disc->eventf != cvtevent && !(pz->flags & PZ_PUSHED))
-    {
+    if (pz->disc->eventf != cvtevent && !(pz->flags & PZ_PUSHED)) {
         if (!(state = vmnewof(pz->vm, 0, State_t, 1, 0)))
             return -1;
-        if (!(state->tmp = sfstropen()))
-        {
+        if (!(state->tmp = sfstropen())) {
             vmfree(pz->vm, state);
             return -1;
         }

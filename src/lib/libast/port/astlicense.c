@@ -255,20 +255,16 @@ comment(Notice_t *notice, Buffer_t *b, char *s, int n, int u)
     int cc;
 
     cc = notice->cc[1];
-    if (!s)
-    {
-        if (n)
-        {
+    if (!s) {
+        if (n) {
             PUT(b, notice->cc[n > 0 ? 0 : 1]);
             for (i = 0; i < COMDATA; i++)
                 PUT(b, cc);
             PUT(b, notice->cc[n > 0 ? 1 : 2]);
-        }
-        else
+        } else
             s = "";
     }
-    if (s)
-    {
+    if (s) {
         if (n > COMDATA)
             n = COMDATA;
         PUT(b, cc);
@@ -277,8 +273,7 @@ comment(Notice_t *notice, Buffer_t *b, char *s, int n, int u)
             n--;
         while (m-- > 0)
             PUT(b, ' ');
-        while (n-- > 0)
-        {
+        while (n-- > 0) {
             i = *s++;
             if (u > 0 && i >= 'a' && i <= 'z')
                 i = i - 'a' + 'A';
@@ -308,48 +303,37 @@ expand(Notice_t *notice, Buffer_t *b, const Item_t *item)
     int i;
     int k;
 
-    if (t = item->data)
-    {
+    if (t = item->data) {
         q = item->quote;
         e = t + item->size;
         i = 0;
-        while (t < e)
-        {
-            if (*t == '$' && t < (e + 2) && *(t + 1) == '{')
-            {
+        while (t < e) {
+            if (*t == '$' && t < (e + 2) && *(t + 1) == '{') {
                 k = m = 0;
                 x = t += 2;
                 while (t < e && (c = *t++) != '}')
                     if (c == '.')
                         x = t;
-                    else if (c == '-')
-                    {
+                    else if (c == '-') {
                         k = 1;
                         break;
-                    }
-                    else if (c == '/')
-                    {
+                    } else if (c == '/') {
                         m = 1;
                         break;
                     }
                 if ((c = lookup(key, x, t - x - 1)) >= 0
-                    && (x = notice->item[c].data))
-                {
+                    && (x = notice->item[c].data)) {
                     z = x + notice->item[c].size;
-                    while (x < z)
-                    {
+                    while (x < z) {
                         c = *x++;
                         if (!m || c >= '0' && c <= '9')
                             PUT(b, c);
                     }
-                }
-                else if (k)
-                {
+                } else if (k) {
                     k = 0;
                     i++;
                 }
-                if (k || m)
-                {
+                if (k || m) {
                     k = 1;
                     while (t < e)
                         if ((c = *t++) == '{')
@@ -357,16 +341,13 @@ expand(Notice_t *notice, Buffer_t *b, const Item_t *item)
                         else if (c == '}' && !--k)
                             break;
                 }
-            }
-            else if (q > 0 && *t == '\\'
-                     && (*(t + 1) == q || *(t + 1) == '\\'))
+            } else if (q > 0 && *t == '\\'
+                       && (*(t + 1) == q || *(t + 1) == '\\'))
                 t++;
-            else if (*t == '}' && i)
-            {
+            else if (*t == '}' && i) {
                 t++;
                 i--;
-            }
-            else
+            } else
                 PUT(b, *t++);
         }
     }
@@ -384,41 +365,32 @@ copyright(Notice_t *notice, Buffer_t *b)
     time_t clock;
 
     copy(b, "Copyright (c) ", -1);
-    if (notice->test)
-    {
+    if (notice->test) {
         clock = ( time_t )1000212300;
         t = ctime(&clock) + 20;
-    }
-    else if (!(t = notice->item[SOURCE].data))
-    {
+    } else if (!(t = notice->item[SOURCE].data)) {
         time(&clock);
         t = ctime(&clock) + 20;
     }
     if ((x = notice->item[START].data) && strncmp(t, x, 4) < 0)
         t = x;
-    if ((x = notice->item[SINCE].data) && strncmp(x, t, 4) < 0)
-    {
+    if ((x = notice->item[SINCE].data) && strncmp(x, t, 4) < 0) {
         expand(notice, b, &notice->item[SINCE]);
         PUT(b, '-');
     }
     copy(b, t, 4);
-    if (notice->item[PARENT].data)
-    {
+    if (notice->item[PARENT].data) {
         PUT(b, ' ');
         expand(notice, b, &notice->item[PARENT]);
     }
-    if (notice->item[CORPORATION].data)
-    {
+    if (notice->item[CORPORATION].data) {
         PUT(b, ' ');
         expand(notice, b, &notice->item[CORPORATION]);
-        if (notice->item[INCORPORATION].data)
-        {
+        if (notice->item[INCORPORATION].data) {
             PUT(b, ' ');
             expand(notice, b, &notice->item[INCORPORATION]);
         }
-    }
-    else if (notice->item[COMPANY].data)
-    {
+    } else if (notice->item[COMPANY].data) {
         PUT(b, ' ');
         expand(notice, b, &notice->item[COMPANY]);
     }
@@ -446,31 +418,26 @@ push(Stack_t *sp,
     int n;
     char path[1024];
 
-    if (size <= 8)
-    {
+    if (size <= 8) {
         copy(buf, file, -1);
         copy(buf, ": no space", -1);
         PUT(buf, 0);
         return -1;
     }
-    if (*file != '/' && parent && (s = strrchr(parent, '/')))
-    {
+    if (*file != '/' && parent && (s = strrchr(parent, '/'))) {
         n = s - parent + 1;
-        if ((strlen(file) + n + 1) <= sizeof(path))
-        {
+        if ((strlen(file) + n + 1) <= sizeof(path)) {
             memcpy(path, parent, n);
             strcpy(path + n, file);
             file = path;
         }
     }
-    if ((i = open(file, O_RDONLY | O_cloexec)) < 0)
-    {
+    if ((i = open(file, O_RDONLY | O_cloexec)) < 0) {
         /* this hack viewpath lookup works for default package setups */
         if (file == path)
             for (s = path; *s; s++)
                 if (s[0] == '/' && s[1] == 'a' && s[2] == 'r' && s[3] == 'c'
-                    && s[4] == 'h' && s[5] == '/')
-                {
+                    && s[4] == 'h' && s[5] == '/') {
                     t = s;
                     for (s += 6; *s && *s != '/'; s++)
                         ;
@@ -478,8 +445,7 @@ push(Stack_t *sp,
                         ;
                     i = open(file, O_RDONLY | O_cloexec);
                 }
-        if (i < 0)
-        {
+        if (i < 0) {
             copy(buf, file, -1);
             copy(buf, ": cannot open", -1);
             PUT(buf, 0);
@@ -488,8 +454,7 @@ push(Stack_t *sp,
     }
     n = read(i, info, size - 1);
     close(i);
-    if (n < 0)
-    {
+    if (n < 0) {
         copy(buf, file, -1);
         copy(buf, ": cannot read", -1);
         PUT(buf, 0);
@@ -545,15 +510,13 @@ astlicense(char *p,
     level = 0;
     data = info;
     level = -1;
-    if (options)
-    {
+    if (options) {
         level++;
         input[level].file = "<options>";
         input[level].info = options;
         input[level].line = 0;
     }
-    if (file && *file)
-    {
+    if (file && *file) {
         if (push(
             &input[++level], file, 0, data, &info[sizeof(info)] - data, &buf))
             return -1;
@@ -574,18 +537,15 @@ astlicense(char *p,
     notice.item[STYLE] = notice.item[CLASS] = lic[notice.type];
     notice.item[STYLE].quote = notice.item[CLASS].quote = 0;
     contributor = i = k = 0;
-    for (;;)
-    {
+    for (;;) {
         first = 1;
-        while (c = *s)
-        {
+        while (c = *s) {
             while (c == ' ' || c == '\t' || c == '\n' && ++input[level].line
                    || c == '\r' || c == ',' || c == ';' || c == ')')
                 c = *++s;
             if (!c)
                 break;
-            if (c == '#')
-            {
+            if (c == '#') {
                 while (*++s && *s != '\n')
                     ;
                 if (*s)
@@ -593,8 +553,7 @@ astlicense(char *p,
                 input[level].line++;
                 continue;
             }
-            if (c == '.')
-            {
+            if (c == '.') {
                 while ((c = *++s) && (c == ' ' || c == '\t'))
                     ;
                 file = s;
@@ -603,8 +562,7 @@ astlicense(char *p,
                 *s = 0;
                 while (c && c != '\n')
                     c = *++s;
-                if (*file)
-                {
+                if (*file) {
                     input[level].info = s + (c != 0);
                     if (++level >= (sizeof(input) / sizeof(input[0]))
                         || push(&input[level],
@@ -619,8 +577,7 @@ astlicense(char *p,
                 }
                 continue;
             }
-            if (c == '\n')
-            {
+            if (c == '\n') {
                 s++;
                 input[level].line++;
                 continue;
@@ -638,26 +595,20 @@ astlicense(char *p,
             if (c == '+' || c == ']')
                 c = *++s;
             quote = 0;
-            if (c == '=' || first)
-            {
-                if (c == '=')
-                {
+            if (c == '=' || first) {
+                if (c == '=') {
                     q = ((c = *++s) == '"' || c == '\'') ? *s++ : 0;
-                    if (c == '(')
-                    {
+                    if (c == '(') {
                         s++;
                         if (h == LICENSE)
                             contributor = 0;
                         else if (h == CONTRIBUTOR)
                             contributor = 1;
-                        else
-                        {
+                        else {
                             q = 1;
                             i = 0;
-                            for (;;)
-                            {
-                                switch (*s++)
-                                {
+                            for (;;) {
+                                switch (*s++) {
                                 case 0:
                                     s--;
                                     break;
@@ -699,28 +650,23 @@ astlicense(char *p,
                             && s++ && (quote = q))
                         || q && c != q
                         || !q && c != ' ' && c != '\t' && c != '\n'
-                           && c != '\r' && c != ',' && c != ';'))
-                    {
+                           && c != '\r' && c != ',' && c != ';')) {
                         if (c == '\n')
                             input[level].line++;
                         s++;
                     }
-                }
-                else
-                {
+                } else {
                     h = STYLE;
                     v = x;
                 }
                 if (c == '\n')
                     input[level].line++;
-                if (contributor)
-                {
+                if (contributor) {
                     for (i = 0; i < notice.ids; i++)
                         if (n == notice.id[i].name.size
                             && !strncmp(x, notice.id[i].name.data, n))
                             break;
-                    if (i < IDS)
-                    {
+                    if (i < IDS) {
                         notice.id[i].name.data = x;
                         notice.id[i].name.size = n;
                         notice.id[i].name.quote = 0;
@@ -730,26 +676,20 @@ astlicense(char *p,
                         if (notice.ids <= i)
                             notice.ids = i + 1;
                     }
-                }
-                else if (h == QUERY)
-                {
+                } else if (h == QUERY) {
                     if ((s - v) == 3 && v[0] == 'a' && v[1] == 'l'
-                        && v[2] == 'l')
-                    {
+                        && v[2] == 'l') {
                         for (i = 0; i < ITEMS; i++)
-                            if (notice.item[i].size)
-                            {
+                            if (notice.item[i].size) {
                                 expand(&notice, &buf, &key[i]);
                                 PUT(&buf, '=');
                                 for (h = 0;; h++)
-                                    if (h >= notice.item[i].size)
-                                    {
+                                    if (h >= notice.item[i].size) {
                                         h = 0;
                                         break;
-                                    }
-                                    else if (notice.item[i].data[h] == ' '
-                                             || notice.item[i].data[h]
-                                                == '\t')
+                                    } else if (notice.item[i].data[h] == ' '
+                                               || notice.item[i].data[h]
+                                                  == '\t')
                                         break;
                                 if (h)
                                     PUT(&buf, '\'');
@@ -758,27 +698,20 @@ astlicense(char *p,
                                     PUT(&buf, '\'');
                                 PUT(&buf, '\n');
                             }
-                    }
-                    else
-                    {
-                        if ((h = lookup(key, v, s - v)) < 0)
-                        {
+                    } else {
+                        if ((h = lookup(key, v, s - v)) < 0) {
                             item.data = v;
                             item.size = s - v;
                             item.quote = 0;
                             expand(&notice, &buf, &item);
-                        }
-                        else
+                        } else
                             expand(&notice, &buf, &notice.item[h]);
                         PUT(&buf, '\n');
                     }
                     return END(&buf);
-                }
-                else
-                {
+                } else {
                     if (h == STYLE)
-                        switch (c = lookup(lic, v, s - v))
-                        {
+                        switch (c = lookup(lic, v, s - v)) {
                         case NONE:
                             return 0;
                         case TEST:
@@ -804,19 +737,15 @@ astlicense(char *p,
                                 h = -1;
                             break;
                         }
-                    if (h >= 0)
-                    {
+                    if (h >= 0) {
                         notice.item[h].data
                         = (notice.item[h].size = s - v) ? v : ( char * )0;
                         notice.item[h].quote = quote;
                         k = 1;
                     }
                 }
-            }
-            else
-            {
-                if (input[level].file)
-                {
+            } else {
+                if (input[level].file) {
                     copy(&buf, "\"", -1);
                     copy(&buf, input[level].file, -1);
                     copy(&buf, "\", line ", -1);
@@ -846,28 +775,24 @@ astlicense(char *p,
     if (notice.type == INLINE
         && (!notice.verbose || !notice.item[NOTICE].data))
         return 0;
-    if (notice.type != USAGE)
-    {
+    if (notice.type != USAGE) {
         if (!notice.type)
             notice.type = SPECIAL;
         comment(&notice, &buf, NiL, 1, 0);
         comment(&notice, &buf, NiL, 0, 0);
-        if (notice.item[PACKAGE].data)
-        {
+        if (notice.item[PACKAGE].data) {
             copy(&tmp, "This software is part of the ", -1);
             expand(&notice, &tmp, &notice.item[PACKAGE]);
             copy(&tmp, " package", -1);
             comment(&notice, &buf, BUF(&tmp), USE(&tmp), 0);
         }
-        if (notice.type >= OPEN)
-        {
+        if (notice.type >= OPEN) {
             copyright(&notice, &tmp);
             comment(&notice, &buf, BUF(&tmp), USE(&tmp), 0);
             if (notice.type >= SPECIAL)
                 COMMENT(&notice, &buf, "All Rights Reserved", 0);
         }
-        if (notice.type == CPL || notice.type == EPL)
-        {
+        if (notice.type == CPL || notice.type == EPL) {
             copy(
             &tmp, notice.item[PACKAGE].data ? "and" : "This software", -1);
             copy(&tmp, " is licensed under the", -1);
@@ -876,49 +801,40 @@ astlicense(char *p,
                 copy(&tmp, "Eclipse Public License", -1);
             else
                 copy(&tmp, "Common Public License", -1);
-            if (notice.item[VERSION].data)
-            {
+            if (notice.item[VERSION].data) {
                 copy(&tmp, ", Version ", -1);
                 expand(&notice, &tmp, &notice.item[VERSION]);
             }
             comment(&notice, &buf, BUF(&tmp), USE(&tmp), 0);
-            if (notice.item[CORPORATION].data || notice.item[COMPANY].data)
-            {
+            if (notice.item[CORPORATION].data || notice.item[COMPANY].data) {
                 copy(&tmp, "by ", -1);
-                if (notice.item[PARENT].data)
-                {
+                if (notice.item[PARENT].data) {
                     expand(&notice, &tmp, &notice.item[PARENT]);
                     copy(&tmp, " ", -1);
                 }
-                if (notice.item[CORPORATION].data)
-                {
+                if (notice.item[CORPORATION].data) {
                     expand(&notice, &tmp, &notice.item[CORPORATION]);
-                    if (notice.item[INCORPORATION].data)
-                    {
+                    if (notice.item[INCORPORATION].data) {
                         copy(&tmp, " ", -1);
                         expand(&notice, &tmp, &notice.item[INCORPORATION]);
                     }
-                }
-                else if (notice.item[COMPANY].data)
+                } else if (notice.item[COMPANY].data)
                     expand(&notice, &tmp, &notice.item[COMPANY]);
                 comment(&notice, &buf, BUF(&tmp), USE(&tmp), 0);
             }
             comment(&notice, &buf, NiL, 0, 0);
             COMMENT(
             &notice, &buf, "A copy of the License is available at", 0);
-            if (notice.item[URL].data)
-            {
+            if (notice.item[URL].data) {
                 expand(&notice, &tmp, &notice.item[URL]);
                 comment(&notice, &buf, BUF(&tmp), USE(&tmp), 0);
-                if (notice.item[URLMD5].data)
-                {
+                if (notice.item[URLMD5].data) {
                     copy(&tmp, "(with md5 checksum ", -1);
                     expand(&notice, &tmp, &notice.item[URLMD5]);
                     copy(&tmp, ")", -1);
                     comment(&notice, &buf, BUF(&tmp), USE(&tmp), 0);
                 }
-            }
-            else if (notice.type == EPL)
+            } else if (notice.type == EPL)
                 COMMENT(&notice,
                         &buf,
                         "http://www.eclipse.org/org/documents/epl-v10.html",
@@ -927,37 +843,28 @@ astlicense(char *p,
                 COMMENT(
                 &notice, &buf, "http://www.opensource.org/licenses/cpl", 0);
             comment(&notice, &buf, NiL, 0, 0);
-        }
-        else if (notice.type == OPEN)
-        {
+        } else if (notice.type == OPEN) {
             copy(
             &tmp, notice.item[PACKAGE].data ? "and it" : "This software", -1);
             copy(&tmp, " may only be used by you under license from", -1);
             comment(&notice, &buf, BUF(&tmp), USE(&tmp), 0);
-            if (notice.item[i = CORPORATION].data)
-            {
-                if (notice.item[PARENT].data)
-                {
+            if (notice.item[i = CORPORATION].data) {
+                if (notice.item[PARENT].data) {
                     expand(&notice, &tmp, &notice.item[i = PARENT]);
                     copy(&tmp, " ", -1);
                 }
                 expand(&notice, &tmp, &notice.item[CORPORATION]);
                 comment(&notice, &buf, BUF(&tmp), USE(&tmp), 0);
-            }
-            else if (notice.item[i = COMPANY].data)
-            {
-                if (notice.item[PARENT].data)
-                {
+            } else if (notice.item[i = COMPANY].data) {
+                if (notice.item[PARENT].data) {
                     expand(&notice, &tmp, &notice.item[i = PARENT]);
                     copy(&tmp, " ", -1);
                 }
                 expand(&notice, &tmp, &notice.item[COMPANY]);
                 comment(&notice, &buf, BUF(&tmp), USE(&tmp), 0);
-            }
-            else
+            } else
                 i = -1;
-            if (notice.item[URL].data)
-            {
+            if (notice.item[URL].data) {
                 COMMENT(&notice,
                         &buf,
                         "A copy of the Source Code Agreement is available",
@@ -970,8 +877,7 @@ astlicense(char *p,
                 comment(&notice, &buf, NiL, 0, 0);
                 expand(&notice, &tmp, &notice.item[URL]);
                 comment(&notice, &buf, BUF(&tmp), USE(&tmp), 0);
-                if (notice.item[URLMD5].data)
-                {
+                if (notice.item[URLMD5].data) {
                     copy(&tmp, "(with an md5 checksum of ", -1);
                     expand(&notice, &tmp, &notice.item[URLMD5]);
                     copy(&tmp, ")", -1);
@@ -1000,9 +906,7 @@ astlicense(char *p,
             copy(&tmp, "intellectual property rights.", -1);
             comment(&notice, &buf, BUF(&tmp), USE(&tmp), 0);
             comment(&notice, &buf, NiL, 0, 0);
-        }
-        else if (notice.type == GPL)
-        {
+        } else if (notice.type == GPL) {
             comment(&notice, &buf, NiL, 0, 0);
             COMMENT(&notice,
                     &buf,
@@ -1049,9 +953,7 @@ astlicense(char *p,
             COMMENT(&notice, &buf, "If not, a copy is available at", 0);
             COMMENT(&notice, &buf, "http://www.gnu.org/copyleft/gpl.html", 0);
             comment(&notice, &buf, NiL, 0, 0);
-        }
-        else if (notice.type == BSD)
-        {
+        } else if (notice.type == BSD) {
             comment(&notice, &buf, NiL, 0, 0);
             COMMENT(
             &notice,
@@ -1177,9 +1079,7 @@ astlicense(char *p,
                     -1);
             COMMENT(&notice, &buf, "POSSIBILITY OF SUCH DAMAGE.", -1);
             comment(&notice, &buf, NiL, 0, 0);
-        }
-        else if (notice.type == ZLIB)
-        {
+        } else if (notice.type == ZLIB) {
             comment(&notice, &buf, NiL, 0, 0);
             COMMENT(&notice,
                     &buf,
@@ -1253,9 +1153,7 @@ astlicense(char *p,
             -1);
             COMMENT(&notice, &buf, "    distribution.", -1);
             comment(&notice, &buf, NiL, 0, 0);
-        }
-        else if (notice.type == MIT)
-        {
+        } else if (notice.type == MIT) {
             comment(&notice, &buf, NiL, 0, 0);
             COMMENT(
             &notice,
@@ -1342,47 +1240,35 @@ astlicense(char *p,
                     "SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
                     0);
             comment(&notice, &buf, NiL, 0, 0);
-        }
-        else
-        {
-            if (notice.type == PROPRIETARY)
-            {
+        } else {
+            if (notice.type == PROPRIETARY) {
                 if (notice.item[i = PARENT].data
                     || notice.item[i = CORPORATION].data
-                    || notice.item[i = COMPANY].data)
-                {
+                    || notice.item[i = COMPANY].data) {
                     expand(&notice, &tmp, &notice.item[i]);
                     copy(&tmp, " - ", -1);
-                }
-                else
+                } else
                     i = -1;
                 copy(&tmp, "Proprietary", -1);
                 comment(&notice, &buf, BUF(&tmp), USE(&tmp), 1);
                 comment(&notice, &buf, NiL, 0, 0);
-                if (notice.item[URL].data)
-                {
+                if (notice.item[URL].data) {
                     copy(&tmp, "This is proprietary source code", -1);
                     if (i >= 0)
                         copy(&tmp, " licensed by", -1);
                     comment(&notice, &buf, BUF(&tmp), USE(&tmp), 1);
-                    if (notice.item[PARENT].data)
-                    {
+                    if (notice.item[PARENT].data) {
                         expand(&notice, &tmp, &notice.item[PARENT]);
                         copy(&tmp, " ", -1);
                     }
-                    if (notice.item[CORPORATION].data)
-                    {
+                    if (notice.item[CORPORATION].data) {
                         expand(&notice, &tmp, &notice.item[CORPORATION]);
                         comment(&notice, &buf, BUF(&tmp), USE(&tmp), 1);
-                    }
-                    else if (notice.item[COMPANY].data)
-                    {
+                    } else if (notice.item[COMPANY].data) {
                         expand(&notice, &tmp, &notice.item[COMPANY]);
                         comment(&notice, &buf, BUF(&tmp), USE(&tmp), 1);
                     }
-                }
-                else
-                {
+                } else {
                     copy(
                     &tmp, "This is unpublished proprietary source code", -1);
                     if (i >= 0)
@@ -1391,8 +1277,7 @@ astlicense(char *p,
                     if (notice.item[i = PARENT].data
                         || notice.item[i = CORPORATION].data)
                         expand(&notice, &tmp, &notice.item[i]);
-                    if (notice.item[COMPANY].data)
-                    {
+                    if (notice.item[COMPANY].data) {
                         if (SIZ(&tmp))
                             PUT(&tmp, ' ');
                         expand(&notice, &tmp, &notice.item[COMPANY]);
@@ -1409,29 +1294,22 @@ astlicense(char *p,
                             1);
                 }
                 comment(&notice, &buf, NiL, 0, 0);
-            }
-            else if (notice.type == NONEXCLUSIVE)
-            {
+            } else if (notice.type == NONEXCLUSIVE) {
                 COMMENT(&notice, &buf, "For nonexclusive individual use", 1);
                 comment(&notice, &buf, NiL, 0, 0);
-            }
-            else if (notice.type == NONCOMMERCIAL)
-            {
+            } else if (notice.type == NONCOMMERCIAL) {
                 COMMENT(&notice, &buf, "For noncommercial use", 1);
                 comment(&notice, &buf, NiL, 0, 0);
             }
-            if (notice.type >= PROPRIETARY && !notice.item[URL].data)
-            {
+            if (notice.type >= PROPRIETARY && !notice.item[URL].data) {
                 COMMENT(
                 &notice, &buf, "Unpublished & Not for Publication", 0);
                 comment(&notice, &buf, NiL, 0, 0);
             }
-            if (notice.item[URL].data)
-            {
+            if (notice.item[URL].data) {
                 copy(&tmp, "This software is licensed", -1);
                 if (notice.item[CORPORATION].data
-                    || notice.item[COMPANY].data)
-                {
+                    || notice.item[COMPANY].data) {
                     copy(&tmp, " by", -1);
                     if ((notice.item[PARENT].size
                          + (notice.item[CORPORATION].data
@@ -1442,22 +1320,18 @@ astlicense(char *p,
                         comment(&notice, &buf, BUF(&tmp), USE(&tmp), 0);
                     else
                         PUT(&tmp, ' ');
-                    if (notice.item[PARENT].data)
-                    {
+                    if (notice.item[PARENT].data) {
                         expand(&notice, &tmp, &notice.item[PARENT]);
                         copy(&tmp, " ", -1);
                     }
-                    if (notice.item[CORPORATION].data)
-                    {
+                    if (notice.item[CORPORATION].data) {
                         expand(&notice, &tmp, &notice.item[CORPORATION]);
-                        if (notice.item[INCORPORATION].data)
-                        {
+                        if (notice.item[INCORPORATION].data) {
                             copy(&tmp, " ", -1);
                             expand(
                             &notice, &tmp, &notice.item[INCORPORATION]);
                         }
-                    }
-                    else if (notice.item[COMPANY].data)
+                    } else if (notice.item[COMPANY].data)
                         expand(&notice, &tmp, &notice.item[COMPANY]);
                 }
                 comment(&notice, &buf, BUF(&tmp), USE(&tmp), 0);
@@ -1467,17 +1341,14 @@ astlicense(char *p,
                         0);
                 expand(&notice, &tmp, &notice.item[URL]);
                 comment(&notice, &buf, BUF(&tmp), USE(&tmp), 0);
-                if (notice.item[URLMD5].data)
-                {
+                if (notice.item[URLMD5].data) {
                     copy(&tmp, "(with an md5 checksum of ", -1);
                     expand(&notice, &tmp, &notice.item[URLMD5]);
                     copy(&tmp, ")", -1);
                     comment(&notice, &buf, BUF(&tmp), USE(&tmp), 0);
                 }
                 comment(&notice, &buf, NiL, 0, 0);
-            }
-            else if (notice.type == PROPRIETARY)
-            {
+            } else if (notice.type == PROPRIETARY) {
                 COMMENT(&notice,
                         &buf,
                         "The copyright notice above does not evidence any",
@@ -1489,23 +1360,19 @@ astlicense(char *p,
                 comment(&notice, &buf, NiL, 0, 0);
             }
         }
-        if (v = notice.item[NOTICE].data)
-        {
+        if (v = notice.item[NOTICE].data) {
             x = v + notice.item[NOTICE].size;
             if (*v == '\n')
                 v++;
             item.quote = notice.item[NOTICE].quote;
-            do
-            {
+            do {
                 for (item.data = v; v < x && *v != '\n'; v++)
                     ;
-                if ((item.size = v - item.data) && *item.data == '\t')
-                {
+                if ((item.size = v - item.data) && *item.data == '\t') {
                     item.data++;
                     item.size--;
                     h = 0;
-                }
-                else
+                } else
                     h = -1;
                 expand(&notice, &tmp, &item);
                 comment(&notice, &buf, BUF(&tmp), USE(&tmp), h);
@@ -1513,38 +1380,32 @@ astlicense(char *p,
             if (item.size)
                 comment(&notice, &buf, NiL, 0, 0);
         }
-        if (notice.item[ORGANIZATION].data)
-        {
+        if (notice.item[ORGANIZATION].data) {
             expand(&notice, &tmp, &notice.item[ORGANIZATION]);
             comment(&notice, &buf, BUF(&tmp), USE(&tmp), 0);
             if (notice.item[i = PARENT].data
                 || notice.item[i = CORPORATION].data)
                 expand(&notice, &tmp, &notice.item[i]);
-            if (notice.item[COMPANY].data)
-            {
+            if (notice.item[COMPANY].data) {
                 if (SIZ(&tmp))
                     PUT(&tmp, ' ');
                 expand(&notice, &tmp, &notice.item[COMPANY]);
             }
             if (SIZ(&tmp))
                 comment(&notice, &buf, BUF(&tmp), USE(&tmp), 0);
-            if (notice.item[LOCATION].data)
-            {
+            if (notice.item[LOCATION].data) {
                 expand(&notice, &tmp, &notice.item[LOCATION]);
                 comment(&notice, &buf, BUF(&tmp), USE(&tmp), 0);
             }
             comment(&notice, &buf, NiL, 0, 0);
         }
     }
-    if (v = notice.item[AUTHOR].data)
-    {
+    if (v = notice.item[AUTHOR].data) {
         x = v + notice.item[AUTHOR].size;
         q = (x - v) == 1 && (*v == '*' || *v == '-');
         k = q && notice.type != USAGE ? -1 : 0;
-        for (;;)
-        {
-            if (!q)
-            {
+        for (;;) {
+            if (!q) {
                 while (v < x
                        && (*v == ' ' || *v == '\t' || *v == '\r' || *v == '\n'
                            || *v == ',' || *v == '+'))
@@ -1562,19 +1423,14 @@ astlicense(char *p,
                 if (q
                     || item.size == notice.id[i].name.size
                        && !strncmp(
-                          item.data, notice.id[i].name.data, item.size))
-                {
+                          item.data, notice.id[i].name.data, item.size)) {
                     h = 1;
-                    if (notice.type == USAGE)
-                    {
+                    if (notice.type == USAGE) {
                         copy(&buf, "[-author?", -1);
                         expand(&notice, &buf, &notice.id[i].value);
                         PUT(&buf, ']');
-                    }
-                    else
-                    {
-                        if (k < 0)
-                        {
+                    } else {
+                        if (k < 0) {
                             COMMENT(&notice, &buf, "CONTRIBUTORS", 0);
                             comment(&notice, &buf, NiL, 0, 0);
                         }
@@ -1587,18 +1443,13 @@ astlicense(char *p,
                 }
             if (q)
                 break;
-            if (!h)
-            {
-                if (notice.type == USAGE)
-                {
+            if (!h) {
+                if (notice.type == USAGE) {
                     copy(&buf, "[-author?", -1);
                     expand(&notice, &buf, &item);
                     PUT(&buf, ']');
-                }
-                else
-                {
-                    if (k < 0)
-                    {
+                } else {
+                    if (k < 0) {
                         COMMENT(&notice, &buf, "CONTRIBUTORS", 0);
                         comment(&notice, &buf, NiL, 0, 0);
                     }
@@ -1611,20 +1462,17 @@ astlicense(char *p,
         if (k > 0)
             comment(&notice, &buf, NiL, 0, 0);
     }
-    if (notice.type == USAGE)
-    {
+    if (notice.type == USAGE) {
         copy(&buf, "[-copyright?", -1);
         copyright(&notice, &buf);
         PUT(&buf, ']');
-        if (notice.item[URL].data)
-        {
+        if (notice.item[URL].data) {
             copy(&buf, "[-license?", -1);
             expand(&notice, &buf, &notice.item[URL]);
             PUT(&buf, ']');
         }
         PUT(&buf, '\n');
-    }
-    else
+    } else
         comment(&notice, &buf, NiL, -1, 0);
     return END(&buf);
 }

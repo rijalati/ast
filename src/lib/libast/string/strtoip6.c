@@ -53,8 +53,7 @@ strtoip6(const char *s, char **e, unsigned char *addr, unsigned char *bits)
 
     static unsigned char lex[256];
 
-    if (!lex[0])
-    {
+    if (!lex[0]) {
         for (c = 0; c < sizeof(lex); ++c)
             lex[c] = END;
         lex['0'] = 0;
@@ -82,10 +81,8 @@ strtoip6(const char *s, char **e, unsigned char *addr, unsigned char *bits)
     z = 0;
     a = 0;
     if (*s)
-        for (;;)
-        {
-            switch (c = lex[*(( unsigned char * )s++)])
-            {
+        for (;;) {
+            switch (c = lex[*(( unsigned char * )s++)]) {
             case END:
             case PFX:
                 if ((x - b) < 2)
@@ -99,34 +96,28 @@ strtoip6(const char *s, char **e, unsigned char *addr, unsigned char *bits)
                 *b++ = a >> 8;
                 *b++ = a;
                 a = 0;
-                if (*s == ':')
-                {
-                    if (z)
-                    {
+                if (*s == ':') {
+                    if (z) {
                         s--;
                         break;
                     }
                     z = b;
-                    if ((c = lex[*(( unsigned char * )++s)]) >= 16)
-                    {
+                    if ((c = lex[*(( unsigned char * )++s)]) >= 16) {
                         s++;
                         break;
                     }
                 }
                 continue;
             case DOT:
-                if (b >= x)
-                {
+                if (b >= x) {
                     s--;
                     break;
                 }
                 *b++
                 = ((a >> 8) & 0xf) * 100 + ((a >> 4) & 0xf) * 10 + (a & 0xf);
                 a = 0;
-                for (;;)
-                {
-                    switch (c = lex[*(( unsigned char * )s++)])
-                    {
+                for (;;) {
+                    switch (c = lex[*(( unsigned char * )s++)]) {
                     case COL:
                     case END:
                     case PFX:
@@ -146,18 +137,14 @@ strtoip6(const char *s, char **e, unsigned char *addr, unsigned char *bits)
                     }
                     break;
                 }
-                if (c == COL)
-                {
-                    if (*s == ':')
-                    {
-                        if (z)
-                        {
+                if (c == COL) {
+                    if (*s == ':') {
+                        if (z) {
                             s--;
                             break;
                         }
                         z = b;
-                        if ((c = lex[*(( unsigned char * )++s)]) >= 16)
-                        {
+                        if ((c = lex[*(( unsigned char * )++s)]) >= 16) {
                             s++;
                             break;
                         }
@@ -174,27 +161,21 @@ strtoip6(const char *s, char **e, unsigned char *addr, unsigned char *bits)
         }
     if (b == addr)
         c = END + 1;
-    else
-    {
-        if (z)
-        {
+    else {
+        if (z) {
             while (b > z)
                 *--x = *--b;
             while (x > z)
                 *--x = 0;
-        }
-        else
+        } else
             while (b < x)
                 *b++ = 0;
-        if (bits)
-        {
-            if (c == PFX)
-            {
+        if (bits) {
+            if (c == PFX) {
                 a = 0;
                 while ((c = lex[*(( unsigned char * )s++)]) < 10)
                     a = a * 10 + c;
-            }
-            else
+            } else
                 a = 0xff;
             *bits = a;
         }

@@ -38,14 +38,12 @@ int force;
 
     tp = NULL;
     if (from && *from
-        && search_tag(rp->fd, rp->ap, from, 0, &tp, G_LINK, &dir))
-    {
+        && search_tag(rp->fd, rp->ap, from, 0, &tp, G_LINK, &dir)) {
         message((0, "Version %s not found", from));
         return (-1);
     }
 
-    if (!gettagbyspec(dir, to, 0, &dump))
-    {
+    if (!gettagbyspec(dir, to, 0, &dump)) {
         message((0, "Version %s existed", to));
         return (-1);
     }
@@ -53,15 +51,12 @@ int force;
     sfsprintf(
     buf, sizeof(buf), "%s%c%s", to, CHRMARKER, (tp ? tp->version : NULL));
 
-    if (!force && (dump = getmarker(dir, buf)))
-    {
-        if (!R_ISMARKER(dump))
-        {
+    if (!force && (dump = getmarker(dir, buf))) {
+        if (!R_ISMARKER(dump)) {
             message((0, "Version %s existed", buf));
             return (-1);
         }
-        if (dump->stat.st_ino != st->st_ino)
-        {
+        if (dump->stat.st_ino != st->st_ino) {
             message((0, "Marker %s existed", buf));
             return (-1);
         }
@@ -81,8 +76,7 @@ char *s;
 {
     rdirent_t *ep;
 
-    for (ep = dir; ep; ep = ep->next)
-    {
+    for (ep = dir; ep; ep = ep->next) {
         if (strcmp(ep->tag->version, s) == 0)
             return (ep->tag);
     }
@@ -97,22 +91,19 @@ char *s;
     rdirent_t *r;
 
     r = NULL;
-    for (ep = dir; ep; ep = ep->next)
-    {
+    for (ep = dir; ep; ep = ep->next) {
         if (!R_ISMARKER(ep->tag))
             continue;
         if ((t = strrchr(ep->tag->version, CHRMARKER)) == NULL)
             continue;
 
-        if (!(*++t))
-        {
+        if (!(*++t)) {
             if (!r || r->tag->stat.st_ctime < ep->tag->stat.st_ctime)
                 r = ep;
             continue;
         }
 
-        if (strcmp(t, s) == 0)
-        {
+        if (strcmp(t, s) == 0) {
             if (!r || r->tag->stat.st_ctime < ep->tag->stat.st_ctime)
                 r = ep;
         }
@@ -131,12 +122,10 @@ char *s;
 
     r = NULL;
 
-    for (ep = dir; ep; ep = ep->next)
-    {
+    for (ep = dir; ep; ep = ep->next) {
         if (!R_ISMARKER(ep->tag))
             continue;
-        if (markermatch(ep->tag->version, s))
-        {
+        if (markermatch(ep->tag->version, s)) {
             if (!r || r->tag->stat.st_ctime < ep->tag->stat.st_ctime)
                 r = ep;
         }

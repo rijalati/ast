@@ -42,15 +42,12 @@ pathsetlink(const char *buf, const char *name)
     int n;
     char tmp[PATH_MAX];
 
-    while (*s)
-    {
-        if (*s++ == univ_cond[0] && !strncmp(s - 1, univ_cond, univ_size))
-        {
+    while (*s) {
+        if (*s++ == univ_cond[0] && !strncmp(s - 1, univ_cond, univ_size)) {
             s--;
             t = tmp;
             for (n = 0; n < UNIV_MAX; n++)
-                if (*univ_name[n])
-                {
+                if (*univ_name[n]) {
                     *t++ = ' ';
 #    ifdef ATT_UNIV
                     *t++ = '1' + n;

@@ -108,22 +108,17 @@ int *bracePtr;      /* If non-zero fill in with non-zero/zero
      * be changed back eventually, or all of Tcl should call isascii.
      */
 
-    while (isspace(UCHAR(*list)))
-    {
+    while (isspace(UCHAR(*list))) {
         list++;
     }
-    if (*list == '{')
-    {
+    if (*list == '{') {
         openBraces = 1;
         list++;
-    }
-    else if (*list == '"')
-    {
+    } else if (*list == '"') {
         inQuotes = 1;
         list++;
     }
-    if (bracePtr != 0)
-    {
+    if (bracePtr != 0) {
         *bracePtr = openBraces;
     }
     p = list;
@@ -133,10 +128,8 @@ int *bracePtr;      /* If non-zero fill in with non-zero/zero
      * the end of the string).
      */
 
-    while (1)
-    {
-        switch (*p)
-        {
+    while (1) {
+        switch (*p) {
 
             /*
              * Open brace: don't treat specially unless the element is
@@ -144,8 +137,7 @@ int *bracePtr;      /* If non-zero fill in with non-zero/zero
              */
 
         case '{':
-            if (openBraces != 0)
-            {
+            if (openBraces != 0) {
                 openBraces++;
             }
             break;
@@ -156,24 +148,20 @@ int *bracePtr;      /* If non-zero fill in with non-zero/zero
              */
 
         case '}':
-            if (openBraces == 1)
-            {
+            if (openBraces == 1) {
                 char *p2;
 
                 size = p - list;
                 p++;
-                if (isspace(UCHAR(*p)) || (*p == 0))
-                {
+                if (isspace(UCHAR(*p)) || (*p == 0)) {
                     goto done;
                 }
                 for (p2 = p;
                      (*p2 != 0) && (!isspace(UCHAR(*p2))) && (p2 < p + 20);
-                     p2++)
-                {
+                     p2++) {
                     /* null body */
                 }
-                if (interp != NULL)
-                {
+                if (interp != NULL) {
                     Tcl_ResetResult(interp);
                     sprintf(interp->result,
                             "list element in braces followed by \"%.*s\" "
@@ -182,9 +170,7 @@ int *bracePtr;      /* If non-zero fill in with non-zero/zero
                             p);
                 }
                 return TCL_ERROR;
-            }
-            else if (openBraces != 0)
-            {
+            } else if (openBraces != 0) {
                 openBraces--;
             }
             break;
@@ -194,8 +180,7 @@ int *bracePtr;      /* If non-zero fill in with non-zero/zero
              * backslash sequence.
              */
 
-        case '\\':
-        {
+        case '\\': {
             int size;
 
             ( void )Tcl_Backslash(p, &size);
@@ -214,8 +199,7 @@ int *bracePtr;      /* If non-zero fill in with non-zero/zero
         case '\r':
         case '\t':
         case '\v':
-            if ((openBraces == 0) && !inQuotes)
-            {
+            if ((openBraces == 0) && !inQuotes) {
                 size = p - list;
                 goto done;
             }
@@ -226,24 +210,20 @@ int *bracePtr;      /* If non-zero fill in with non-zero/zero
              */
 
         case '"':
-            if (inQuotes)
-            {
+            if (inQuotes) {
                 char *p2;
 
                 size = p - list;
                 p++;
-                if (isspace(UCHAR(*p)) || (*p == 0))
-                {
+                if (isspace(UCHAR(*p)) || (*p == 0)) {
                     goto done;
                 }
                 for (p2 = p;
                      (*p2 != 0) && (!isspace(UCHAR(*p2))) && (p2 < p + 20);
-                     p2++)
-                {
+                     p2++) {
                     /* null body */
                 }
-                if (interp != NULL)
-                {
+                if (interp != NULL) {
                     Tcl_ResetResult(interp);
                     sprintf(interp->result,
                             "list element in quotes followed by \"%.*s\" %s",
@@ -260,19 +240,14 @@ int *bracePtr;      /* If non-zero fill in with non-zero/zero
              */
 
         case 0:
-            if (openBraces != 0)
-            {
-                if (interp != NULL)
-                {
+            if (openBraces != 0) {
+                if (interp != NULL) {
                     Tcl_SetResult(
                     interp, "unmatched open brace in list", TCL_STATIC);
                 }
                 return TCL_ERROR;
-            }
-            else if (inQuotes)
-            {
-                if (interp != NULL)
-                {
+            } else if (inQuotes) {
+                if (interp != NULL) {
                     Tcl_SetResult(
                     interp, "unmatched open quote in list", TCL_STATIC);
                 }
@@ -285,14 +260,12 @@ int *bracePtr;      /* If non-zero fill in with non-zero/zero
     }
 
 done:
-    while (isspace(UCHAR(*p)))
-    {
+    while (isspace(UCHAR(*p))) {
         p++;
     }
     *elementPtr = list;
     *nextPtr = p;
-    if (sizePtr != 0)
-    {
+    if (sizePtr != 0) {
         *sizePtr = size;
     }
     return TCL_OK;
@@ -327,17 +300,13 @@ char *dst;                                          /* ... to here. */
     char c;
     int numRead;
 
-    for (c = *src; count > 0; src++, c = *src, count--)
-    {
-        if (c == '\\')
-        {
+    for (c = *src; count > 0; src++, c = *src, count--) {
+        if (c == '\\') {
             *dst = Tcl_Backslash(src, &numRead);
             dst++;
             src += numRead - 1;
             count -= numRead - 1;
-        }
-        else
-        {
+        } else {
             *dst = c;
             dst++;
         }
@@ -396,49 +365,40 @@ char ***argvPtr;    /* Pointer to place to store pointer to array
      * the number of space characters in the list.
      */
 
-    for (size = 1, p = list; *p != 0; p++)
-    {
-        if (isspace(UCHAR(*p)))
-        {
+    for (size = 1, p = list; *p != 0; p++) {
+        if (isspace(UCHAR(*p))) {
             size++;
         }
     }
     size++; /* Leave space for final NULL pointer. */
     argv = ( char ** )ckalloc(
     ( unsigned )((size * sizeof(char *)) + (p - list) + 1));
-    for (i = 0, p = (( char * )argv) + size * sizeof(char *); *list != 0; i++)
-    {
+    for (i = 0, p = (( char * )argv) + size * sizeof(char *); *list != 0;
+         i++) {
         result
         = TclFindElement(interp, list, &element, &list, &elSize, &brace);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             ckfree(( char * )argv);
             return result;
         }
-        if (*element == 0)
-        {
+        if (*element == 0) {
             break;
         }
-        if (i >= size)
-        {
+        if (i >= size) {
             ckfree(( char * )argv);
-            if (interp != NULL)
-            {
+            if (interp != NULL) {
                 Tcl_SetResult(
                 interp, "internal error in Tcl_SplitList", TCL_STATIC);
             }
             return TCL_ERROR;
         }
         argv[i] = p;
-        if (brace)
-        {
+        if (brace) {
             strncpy(p, element, ( size_t )elSize);
             p += elSize;
             *p = 0;
             p++;
-        }
-        else
-        {
+        } else {
             TclCopyAndCollapse(elSize, element, p);
             p += elSize + 1;
         }
@@ -517,26 +477,21 @@ int *flagPtr; /* Where to store information to guide
 
     nestingLevel = 0;
     flags = 0;
-    if (string == NULL)
-    {
+    if (string == NULL) {
         string = "";
     }
     p = string;
-    if ((*p == '{') || (*p == '"') || (*p == 0))
-    {
+    if ((*p == '{') || (*p == '"') || (*p == 0)) {
         flags |= USE_BRACES;
     }
-    for (; *p != 0; p++)
-    {
-        switch (*p)
-        {
+    for (; *p != 0; p++) {
+        switch (*p) {
         case '{':
             nestingLevel++;
             break;
         case '}':
             nestingLevel--;
-            if (nestingLevel < 0)
-            {
+            if (nestingLevel < 0) {
                 flags |= TCL_DONT_USE_BRACES | BRACES_UNMATCHED;
             }
             break;
@@ -552,12 +507,9 @@ int *flagPtr; /* Where to store information to guide
             flags |= USE_BRACES;
             break;
         case '\\':
-            if ((p[1] == 0) || (p[1] == '\n'))
-            {
+            if ((p[1] == 0) || (p[1] == '\n')) {
                 flags = TCL_DONT_USE_BRACES;
-            }
-            else
-            {
+            } else {
                 int size;
 
                 ( void )Tcl_Backslash(p, &size);
@@ -567,8 +519,7 @@ int *flagPtr; /* Where to store information to guide
             break;
         }
     }
-    if (nestingLevel != 0)
-    {
+    if (nestingLevel != 0) {
         flags = TCL_DONT_USE_BRACES | BRACES_UNMATCHED;
     }
     *flagPtr = flags;
@@ -615,28 +566,22 @@ int flags; /* Flags produced by Tcl_ScanElement. */
      * code for details of how this works.
      */
 
-    if ((src == NULL) || (*src == 0))
-    {
+    if ((src == NULL) || (*src == 0)) {
         p[0] = '{';
         p[1] = '}';
         p[2] = 0;
         return 2;
     }
-    if ((flags & USE_BRACES) && !(flags & TCL_DONT_USE_BRACES))
-    {
+    if ((flags & USE_BRACES) && !(flags & TCL_DONT_USE_BRACES)) {
         *p = '{';
         p++;
-        for (; *src != 0; src++, p++)
-        {
+        for (; *src != 0; src++, p++) {
             *p = *src;
         }
         *p = '}';
         p++;
-    }
-    else
-    {
-        if (*src == '{')
-        {
+    } else {
+        if (*src == '{') {
             /*
              * Can't have a leading brace unless the whole element is
              * enclosed in braces.  Add a backslash before the brace.
@@ -650,10 +595,8 @@ int flags; /* Flags produced by Tcl_ScanElement. */
             src++;
             flags |= BRACES_UNMATCHED;
         }
-        for (; *src != 0; src++)
-        {
-            switch (*src)
-            {
+        for (; *src != 0; src++) {
+            switch (*src) {
             case ']':
             case '[':
             case '$':
@@ -675,8 +618,7 @@ int flags; /* Flags produced by Tcl_ScanElement. */
                  * if the braces aren't backslashed.
                  */
 
-                if (flags & BRACES_UNMATCHED)
-                {
+                if (flags & BRACES_UNMATCHED) {
                     *p = '\\';
                     p++;
                 }
@@ -755,17 +697,13 @@ char **argv;                             /* Array of string values. */
      * Pass 1: estimate space, gather flags.
      */
 
-    if (argc <= LOCAL_SIZE)
-    {
+    if (argc <= LOCAL_SIZE) {
         flagPtr = localFlags;
-    }
-    else
-    {
+    } else {
         flagPtr = ( int * )ckalloc(( unsigned )argc * sizeof(int));
     }
     numChars = 1;
-    for (i = 0; i < argc; i++)
-    {
+    for (i = 0; i < argc; i++) {
         numChars += Tcl_ScanElement(argv[i], &flagPtr[i]) + 1;
     }
 
@@ -775,24 +713,19 @@ char **argv;                             /* Array of string values. */
 
     result = ( char * )ckalloc(( unsigned )numChars);
     dst = result;
-    for (i = 0; i < argc; i++)
-    {
+    for (i = 0; i < argc; i++) {
         numChars = Tcl_ConvertElement(argv[i], dst, flagPtr[i]);
         dst += numChars;
         *dst = ' ';
         dst++;
     }
-    if (dst == result)
-    {
+    if (dst == result) {
         *dst = 0;
-    }
-    else
-    {
+    } else {
         dst[-1] = 0;
     }
 
-    if (flagPtr != localFlags)
-    {
+    if (flagPtr != localFlags) {
         ckfree(( char * )flagPtr);
     }
     return result;
@@ -824,18 +757,15 @@ char **argv;                           /* Array of strings to concatenate. */
     char *p;
     char *result;
 
-    for (totalSize = 1, i = 0; i < argc; i++)
-    {
+    for (totalSize = 1, i = 0; i < argc; i++) {
         totalSize += strlen(argv[i]) + 1;
     }
     result = ( char * )ckalloc(( unsigned )totalSize);
-    if (argc == 0)
-    {
+    if (argc == 0) {
         *result = '\0';
         return result;
     }
-    for (p = result, i = 0; i < argc; i++)
-    {
+    for (p = result, i = 0; i < argc; i++) {
         char *element;
         int length;
 
@@ -846,18 +776,15 @@ char **argv;                           /* Array of strings to concatenate. */
          */
 
         element = argv[i];
-        while (isspace(UCHAR(*element)))
-        {
+        while (isspace(UCHAR(*element))) {
             element++;
         }
         for (length = strlen(element);
              (length > 0) && (isspace(UCHAR(element[length - 1])));
-             length--)
-        {
+             length--) {
             /* Null loop body. */
         }
-        if (length == 0)
-        {
+        if (length == 0) {
             continue;
         }
         ( void )strncpy(p, element, ( size_t )length);
@@ -865,12 +792,9 @@ char **argv;                           /* Array of strings to concatenate. */
         *p = ' ';
         p++;
     }
-    if (p != result)
-    {
+    if (p != result) {
         p[-1] = 0;
-    }
-    else
-    {
+    } else {
         *p = 0;
     }
     return result;
@@ -901,26 +825,20 @@ char *pattern; /* Pattern, which may contain
 {
     char c2;
 
-    while (1)
-    {
+    while (1) {
         /* See if we're at the end of both the pattern and the string.
          * If so, we succeeded.  If we're at the end of the pattern
          * but not at the end of the string, we failed.
          */
 
-        if (*pattern == 0)
-        {
-            if (*string == 0)
-            {
+        if (*pattern == 0) {
+            if (*string == 0) {
                 return 1;
-            }
-            else
-            {
+            } else {
                 return 0;
             }
         }
-        if ((*string == 0) && (*pattern != '*'))
-        {
+        if ((*string == 0) && (*pattern != '*')) {
             return 0;
         }
 
@@ -930,21 +848,16 @@ char *pattern; /* Pattern, which may contain
          * match or we reach the end of the string.
          */
 
-        if (*pattern == '*')
-        {
+        if (*pattern == '*') {
             pattern += 1;
-            if (*pattern == 0)
-            {
+            if (*pattern == 0) {
                 return 1;
             }
-            while (1)
-            {
-                if (Tcl_StringMatch(string, pattern))
-                {
+            while (1) {
+                if (Tcl_StringMatch(string, pattern)) {
                     return 1;
                 }
-                if (*string == 0)
-                {
+                if (*string == 0) {
                     return 0;
                 }
                 string += 1;
@@ -955,8 +868,7 @@ char *pattern; /* Pattern, which may contain
          * any single character.
          */
 
-        if (*pattern == '?')
-        {
+        if (*pattern == '?') {
             goto thisCharOK;
         }
 
@@ -965,42 +877,32 @@ char *pattern; /* Pattern, which may contain
          * (two characters separated by "-").
          */
 
-        if (*pattern == '[')
-        {
+        if (*pattern == '[') {
             pattern += 1;
-            while (1)
-            {
-                if ((*pattern == ']') || (*pattern == 0))
-                {
+            while (1) {
+                if ((*pattern == ']') || (*pattern == 0)) {
                     return 0;
                 }
-                if (*pattern == *string)
-                {
+                if (*pattern == *string) {
                     break;
                 }
-                if (pattern[1] == '-')
-                {
+                if (pattern[1] == '-') {
                     c2 = pattern[2];
-                    if (c2 == 0)
-                    {
+                    if (c2 == 0) {
                         return 0;
                     }
-                    if ((*pattern <= *string) && (c2 >= *string))
-                    {
+                    if ((*pattern <= *string) && (c2 >= *string)) {
                         break;
                     }
-                    if ((*pattern >= *string) && (c2 <= *string))
-                    {
+                    if ((*pattern >= *string) && (c2 <= *string)) {
                         break;
                     }
                     pattern += 2;
                 }
                 pattern += 1;
             }
-            while (*pattern != ']')
-            {
-                if (*pattern == 0)
-                {
+            while (*pattern != ']') {
+                if (*pattern == 0) {
                     pattern--;
                     break;
                 }
@@ -1013,11 +915,9 @@ char *pattern; /* Pattern, which may contain
          * so we do exact matching on the character that follows.
          */
 
-        if (*pattern == '\\')
-        {
+        if (*pattern == '\\') {
             pattern += 1;
-            if (*pattern == 0)
-            {
+            if (*pattern == 0) {
                 return 0;
             }
         }
@@ -1026,8 +926,7 @@ char *pattern; /* Pattern, which may contain
          * characters of each string match.
          */
 
-        if (*pattern != *string)
-        {
+        if (*pattern != *string) {
             return 0;
         }
 
@@ -1068,29 +967,21 @@ Tcl_FreeProc *freeProc; /* Gives information about the string:
     Tcl_FreeProc *oldFreeProc = iPtr->freeProc;
     char *oldResult = iPtr->result;
 
-    if (string == NULL)
-    {
+    if (string == NULL) {
         iPtr->resultSpace[0] = 0;
         iPtr->result = iPtr->resultSpace;
         iPtr->freeProc = 0;
-    }
-    else if (freeProc == TCL_VOLATILE)
-    {
+    } else if (freeProc == TCL_VOLATILE) {
         length = strlen(string);
-        if (length > TCL_RESULT_SIZE)
-        {
+        if (length > TCL_RESULT_SIZE) {
             iPtr->result = ( char * )ckalloc(( unsigned )length + 1);
             iPtr->freeProc = TCL_DYNAMIC;
-        }
-        else
-        {
+        } else {
             iPtr->result = iPtr->resultSpace;
             iPtr->freeProc = 0;
         }
         strcpy(iPtr->result, string);
-    }
-    else
-    {
+    } else {
         iPtr->result = string;
         iPtr->freeProc = freeProc;
     }
@@ -1101,15 +992,11 @@ Tcl_FreeProc *freeProc; /* Gives information about the string:
      * was part of the old result value.
      */
 
-    if (oldFreeProc != 0)
-    {
+    if (oldFreeProc != 0) {
         if ((oldFreeProc == TCL_DYNAMIC)
-            || (oldFreeProc == ( Tcl_FreeProc * )free))
-        {
+            || (oldFreeProc == ( Tcl_FreeProc * )free)) {
             ckfree(oldResult);
-        }
-        else
-        {
+        } else {
             (*oldFreeProc)(oldResult);
         }
     }
@@ -1150,11 +1037,9 @@ TCL_VARARGS_DEF(Tcl_Interp *, arg1)
 
     iPtr = ( Interp * )TCL_VARARGS_START(Tcl_Interp *, arg1, argList);
     newSpace = 0;
-    while (1)
-    {
+    while (1) {
         string = va_arg(argList, char *);
-        if (string == NULL)
-        {
+        if (string == NULL) {
             break;
         }
         newSpace += strlen(string);
@@ -1168,8 +1053,7 @@ TCL_VARARGS_DEF(Tcl_Interp *, arg1)
 
     if ((iPtr->result != iPtr->appendResult)
         || (iPtr->appendResult[iPtr->appendUsed] != 0)
-        || ((newSpace + iPtr->appendUsed) >= iPtr->appendAvl))
-    {
+        || ((newSpace + iPtr->appendUsed) >= iPtr->appendAvl)) {
         SetupAppendBuffer(iPtr, newSpace);
     }
 
@@ -1179,11 +1063,9 @@ TCL_VARARGS_DEF(Tcl_Interp *, arg1)
      */
 
     TCL_VARARGS_START(Tcl_Interp *, arg1, argList);
-    while (1)
-    {
+    while (1) {
         string = va_arg(argList, char *);
-        if (string == NULL)
-        {
+        if (string == NULL) {
             break;
         }
         strcpy(iPtr->appendResult + iPtr->appendUsed, string);
@@ -1231,8 +1113,7 @@ char *string; /* String to convert to list element and
     size = Tcl_ScanElement(string, &flags) + 1;
     if ((iPtr->result != iPtr->appendResult)
         || (iPtr->appendResult[iPtr->appendUsed] != 0)
-        || ((size + iPtr->appendUsed) >= iPtr->appendAvl))
-    {
+        || ((size + iPtr->appendUsed) >= iPtr->appendAvl)) {
         SetupAppendBuffer(iPtr, size + iPtr->appendUsed);
     }
 
@@ -1242,8 +1123,7 @@ char *string; /* String to convert to list element and
      */
 
     dst = iPtr->appendResult + iPtr->appendUsed;
-    if (TclNeedSpace(iPtr->appendResult, dst))
-    {
+    if (TclNeedSpace(iPtr->appendResult, dst)) {
         iPtr->appendUsed++;
         *dst = ' ';
         dst++;
@@ -1283,24 +1163,20 @@ int newSpace; /* Make sure that at least this many bytes
      * append buffer the official Tcl result.
      */
 
-    if (iPtr->result != iPtr->appendResult)
-    {
+    if (iPtr->result != iPtr->appendResult) {
         /*
          * If an oversized buffer was used recently, then free it up
          * so we go back to a smaller buffer.  This avoids tying up
          * memory forever after a large operation.
          */
 
-        if (iPtr->appendAvl > 500)
-        {
+        if (iPtr->appendAvl > 500) {
             ckfree(iPtr->appendResult);
             iPtr->appendResult = NULL;
             iPtr->appendAvl = 0;
         }
         iPtr->appendUsed = strlen(iPtr->result);
-    }
-    else if (iPtr->result[iPtr->appendUsed] != 0)
-    {
+    } else if (iPtr->result[iPtr->appendUsed] != 0) {
         /*
          * Most likely someone has modified a result created by
          * Tcl_AppendResult et al. so that it has a different size.
@@ -1310,29 +1186,22 @@ int newSpace; /* Make sure that at least this many bytes
         iPtr->appendUsed = strlen(iPtr->result);
     }
     totalSpace = newSpace + iPtr->appendUsed;
-    if (totalSpace >= iPtr->appendAvl)
-    {
+    if (totalSpace >= iPtr->appendAvl) {
         char *new;
 
-        if (totalSpace < 100)
-        {
+        if (totalSpace < 100) {
             totalSpace = 200;
-        }
-        else
-        {
+        } else {
             totalSpace *= 2;
         }
         new = ( char * )ckalloc(( unsigned )totalSpace);
         strcpy(new, iPtr->result);
-        if (iPtr->appendResult != NULL)
-        {
+        if (iPtr->appendResult != NULL) {
             ckfree(iPtr->appendResult);
         }
         iPtr->appendResult = new;
         iPtr->appendAvl = totalSpace;
-    }
-    else if (iPtr->result != iPtr->appendResult)
-    {
+    } else if (iPtr->result != iPtr->appendResult) {
         strcpy(iPtr->appendResult, iPtr->result);
     }
     Tcl_FreeResult(iPtr);
@@ -1405,11 +1274,9 @@ TCL_VARARGS_DEF(Tcl_Interp *, arg1)
 
     iPtr = ( Interp * )TCL_VARARGS_START(Tcl_Interp *, arg1, argList);
     flags = TCL_GLOBAL_ONLY | TCL_LIST_ELEMENT;
-    while (1)
-    {
+    while (1) {
         string = va_arg(argList, char *);
-        if (string == NULL)
-        {
+        if (string == NULL) {
             break;
         }
         ( void )Tcl_SetVar2(
@@ -1448,23 +1315,16 @@ Tcl_Interp *interp; /* Interpreter for error reporting. */
 char *string;       /* String containing list index. */
 int *indexPtr;      /* Where to store index. */
 {
-    if (isdigit(UCHAR(*string)) || (*string == '-'))
-    {
-        if (Tcl_GetInt(interp, string, indexPtr) != TCL_OK)
-        {
+    if (isdigit(UCHAR(*string)) || (*string == '-')) {
+        if (Tcl_GetInt(interp, string, indexPtr) != TCL_OK) {
             return TCL_ERROR;
         }
-        if (*indexPtr < 0)
-        {
+        if (*indexPtr < 0) {
             *indexPtr = 0;
         }
-    }
-    else if (strncmp(string, "end", strlen(string)) == 0)
-    {
+    } else if (strncmp(string, "end", strlen(string)) == 0) {
         *indexPtr = INT_MAX;
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "bad index \"",
                          string,
@@ -1512,25 +1372,21 @@ char *string; /* String for which to produce
     regexp *result;
 
     length = strlen(string);
-    for (i = 0; i < NUM_REGEXPS; i++)
-    {
+    for (i = 0; i < NUM_REGEXPS; i++) {
         if ((length == iPtr->patLengths[i])
-            && (strcmp(string, iPtr->patterns[i]) == 0))
-        {
+            && (strcmp(string, iPtr->patterns[i]) == 0)) {
             /*
              * Move the matched pattern to the first slot in the
              * cache and shift the other patterns down one position.
              */
 
-            if (i != 0)
-            {
+            if (i != 0) {
                 int j;
                 char *cachedString;
 
                 cachedString = iPtr->patterns[i];
                 result = iPtr->regexps[i];
-                for (j = i - 1; j >= 0; j--)
-                {
+                for (j = i - 1; j >= 0; j--) {
                     iPtr->patterns[j + 1] = iPtr->patterns[j];
                     iPtr->patLengths[j + 1] = iPtr->patLengths[j];
                     iPtr->regexps[j + 1] = iPtr->regexps[j];
@@ -1550,21 +1406,18 @@ char *string; /* String for which to produce
 
     TclRegError(( char * )NULL);
     result = TclRegComp(string);
-    if (TclGetRegError() != NULL)
-    {
+    if (TclGetRegError() != NULL) {
         Tcl_AppendResult(interp,
                          "couldn't compile regular expression pattern: ",
                          TclGetRegError(),
                          ( char * )NULL);
         return NULL;
     }
-    if (iPtr->patterns[NUM_REGEXPS - 1] != NULL)
-    {
+    if (iPtr->patterns[NUM_REGEXPS - 1] != NULL) {
         ckfree(iPtr->patterns[NUM_REGEXPS - 1]);
         ckfree(( char * )iPtr->regexps[NUM_REGEXPS - 1]);
     }
-    for (i = NUM_REGEXPS - 2; i >= 0; i--)
-    {
+    for (i = NUM_REGEXPS - 2; i >= 0; i--) {
         iPtr->patterns[i + 1] = iPtr->patterns[i];
         iPtr->patLengths[i + 1] = iPtr->patLengths[i];
         iPtr->regexps[i + 1] = iPtr->regexps[i];
@@ -1612,8 +1465,7 @@ char *start;        /* If string is part of a larger string,
     regexp *regexpPtr = ( regexp * )re;
     TclRegError(( char * )NULL);
     match = TclRegExec(regexpPtr, string, start);
-    if (TclGetRegError() != NULL)
-    {
+    if (TclGetRegError() != NULL) {
         Tcl_ResetResult(interp);
         Tcl_AppendResult(interp,
                          "error while matching regular expression: ",
@@ -1657,12 +1509,9 @@ char **endPtr;   /* Store address of character just after last
 {
     regexp *regexpPtr = ( regexp * )re;
 
-    if (index >= NSUBEXP)
-    {
+    if (index >= NSUBEXP) {
         *startPtr = *endPtr = NULL;
-    }
-    else
-    {
+    } else {
         *startPtr = regexpPtr->startp[index];
         *endPtr = regexpPtr->endp[index];
     }
@@ -1696,8 +1545,7 @@ char *pattern;      /* Regular expression to match against
     Tcl_RegExp re;
 
     re = Tcl_RegExpCompile(interp, pattern);
-    if (re == NULL)
-    {
+    if (re == NULL) {
         return -1;
     }
     return Tcl_RegExpExec(interp, re, string, string);
@@ -1762,8 +1610,7 @@ int length;   /* Number of characters from string
     int newSize;
     char *newString, *dst, *end;
 
-    if (length < 0)
-    {
+    if (length < 0) {
         length = strlen(string);
     }
     newSize = length + dsPtr->length;
@@ -1774,15 +1621,13 @@ int length;   /* Number of characters from string
      * will be room to grow before we have to allocate again.
      */
 
-    if (newSize >= dsPtr->spaceAvl)
-    {
+    if (newSize >= dsPtr->spaceAvl) {
         dsPtr->spaceAvl = newSize * 2;
         newString = ( char * )ckalloc(( unsigned )dsPtr->spaceAvl);
         memcpy(( VOID * )newString,
                ( VOID * )dsPtr->string,
                ( size_t )dsPtr->length);
-        if (dsPtr->string != dsPtr->staticSpace)
-        {
+        if (dsPtr->string != dsPtr->staticSpace) {
             ckfree(dsPtr->string);
         }
         dsPtr->string = newString;
@@ -1795,8 +1640,7 @@ int length;   /* Number of characters from string
 
     for (dst = dsPtr->string + dsPtr->length, end = string + length;
          string < end;
-         string++, dst++)
-    {
+         string++, dst++) {
         *dst = *string;
     }
     *dst = 0;
@@ -1842,15 +1686,13 @@ char *string;       /* String to append.  Must be
      * string in some cases.
      */
 
-    if (newSize >= dsPtr->spaceAvl)
-    {
+    if (newSize >= dsPtr->spaceAvl) {
         dsPtr->spaceAvl = newSize * 2;
         newString = ( char * )ckalloc(( unsigned )dsPtr->spaceAvl);
         memcpy(( VOID * )newString,
                ( VOID * )dsPtr->string,
                ( size_t )dsPtr->length);
-        if (dsPtr->string != dsPtr->staticSpace)
-        {
+        if (dsPtr->string != dsPtr->staticSpace) {
             ckfree(dsPtr->string);
         }
         dsPtr->string = newString;
@@ -1862,8 +1704,7 @@ char *string;       /* String to append.  Must be
      */
 
     dst = dsPtr->string + dsPtr->length;
-    if (TclNeedSpace(dsPtr->string, dst))
-    {
+    if (TclNeedSpace(dsPtr->string, dst)) {
         *dst = ' ';
         dst++;
         dsPtr->length++;
@@ -1897,12 +1738,10 @@ void Tcl_DStringSetLength(dsPtr,
                                                        * dynamic string. */
 int length; /* New length for dynamic string. */
 {
-    if (length < 0)
-    {
+    if (length < 0) {
         length = 0;
     }
-    if (length >= dsPtr->spaceAvl)
-    {
+    if (length >= dsPtr->spaceAvl) {
         char *newString;
 
         dsPtr->spaceAvl = length + 1;
@@ -1917,8 +1756,7 @@ int length; /* New length for dynamic string. */
         memcpy(( VOID * )newString,
                ( VOID * )dsPtr->string,
                ( size_t )dsPtr->length);
-        if (dsPtr->string != dsPtr->staticSpace)
-        {
+        if (dsPtr->string != dsPtr->staticSpace) {
             ckfree(dsPtr->string);
         }
         dsPtr->string = newString;
@@ -1948,8 +1786,7 @@ int length; /* New length for dynamic string. */
 void Tcl_DStringFree(dsPtr) Tcl_DString *dsPtr; /* Structure describing
                                                  * dynamic string. */
 {
-    if (dsPtr->string != dsPtr->staticSpace)
-    {
+    if (dsPtr->string != dsPtr->staticSpace) {
         ckfree(dsPtr->string);
     }
     dsPtr->string = dsPtr->staticSpace;
@@ -1985,18 +1822,13 @@ Tcl_DString *dsPtr; /* Dynamic string that is to become
                      * the result of interp. */
 {
     Tcl_ResetResult(interp);
-    if (dsPtr->string != dsPtr->staticSpace)
-    {
+    if (dsPtr->string != dsPtr->staticSpace) {
         interp->result = dsPtr->string;
         interp->freeProc = TCL_DYNAMIC;
-    }
-    else if (dsPtr->length < TCL_RESULT_SIZE)
-    {
+    } else if (dsPtr->length < TCL_RESULT_SIZE) {
         interp->result = (( Interp * )interp)->resultSpace;
         strcpy(interp->result, dsPtr->string);
-    }
-    else
-    {
+    } else {
         Tcl_SetResult(interp, dsPtr->string, TCL_VOLATILE);
     }
     dsPtr->string = dsPtr->staticSpace;
@@ -2031,21 +1863,16 @@ Tcl_DString *dsPtr; /* Dynamic string that is to become
                      * the result of interp. */
 {
     Interp *iPtr = ( Interp * )interp;
-    if (dsPtr->string != dsPtr->staticSpace)
-    {
+    if (dsPtr->string != dsPtr->staticSpace) {
         ckfree(dsPtr->string);
     }
     dsPtr->length = strlen(iPtr->result);
-    if (iPtr->freeProc != NULL)
-    {
+    if (iPtr->freeProc != NULL) {
         if ((iPtr->freeProc == TCL_DYNAMIC)
-            || (iPtr->freeProc == ( Tcl_FreeProc * )free))
-        {
+            || (iPtr->freeProc == ( Tcl_FreeProc * )free)) {
             dsPtr->string = iPtr->result;
             dsPtr->spaceAvl = dsPtr->length + 1;
-        }
-        else
-        {
+        } else {
             dsPtr->string
             = ( char * )ckalloc(( unsigned )(dsPtr->length + 1));
             strcpy(dsPtr->string, iPtr->result);
@@ -2053,16 +1880,11 @@ Tcl_DString *dsPtr; /* Dynamic string that is to become
         }
         dsPtr->spaceAvl = dsPtr->length + 1;
         iPtr->freeProc = NULL;
-    }
-    else
-    {
-        if (dsPtr->length < TCL_DSTRING_STATIC_SIZE)
-        {
+    } else {
+        if (dsPtr->length < TCL_DSTRING_STATIC_SIZE) {
             dsPtr->string = dsPtr->staticSpace;
             dsPtr->spaceAvl = TCL_DSTRING_STATIC_SIZE;
-        }
-        else
-        {
+        } else {
             dsPtr->string
             = ( char * )ckalloc(( unsigned )(dsPtr->length + 1));
             dsPtr->spaceAvl = dsPtr->length + 1;
@@ -2093,12 +1915,9 @@ Tcl_DString *dsPtr; /* Dynamic string that is to become
 
 void Tcl_DStringStartSublist(dsPtr) Tcl_DString *dsPtr; /* Dynamic string. */
 {
-    if (TclNeedSpace(dsPtr->string, dsPtr->string + dsPtr->length))
-    {
+    if (TclNeedSpace(dsPtr->string, dsPtr->string + dsPtr->length)) {
         Tcl_DStringAppend(dsPtr, " {", -1);
-    }
-    else
-    {
+    } else {
         Tcl_DStringAppend(dsPtr, "{", -1);
     }
 }
@@ -2164,10 +1983,8 @@ char *dst;          /* Where to store converted value;
      * values from being converted to integers unintentionally.
      */
 
-    for (p = dst; *p != 0; p++)
-    {
-        if ((*p == '.') || (isalpha(UCHAR(*p))))
-        {
+    for (p = dst; *p != 0; p++) {
+        if ((*p == '.') || (isalpha(UCHAR(*p)))) {
             return;
         }
     }
@@ -2213,10 +2030,9 @@ int flags;             /* Information about what happened. */
      * the default value of the format string.
      */
 
-    if (flags & TCL_TRACE_UNSETS)
-    {
-        if ((flags & TCL_TRACE_DESTROYED) && !(flags & TCL_INTERP_DESTROYED))
-        {
+    if (flags & TCL_TRACE_UNSETS) {
+        if ((flags & TCL_TRACE_DESTROYED)
+            && !(flags & TCL_INTERP_DESTROYED)) {
             Tcl_TraceVar2(interp,
                           name1,
                           name2,
@@ -2231,14 +2047,12 @@ int flags;             /* Information about what happened. */
     }
 
     value = Tcl_GetVar2(interp, name1, name2, flags & TCL_GLOBAL_ONLY);
-    if (value == NULL)
-    {
+    if (value == NULL) {
         value = "";
     }
     prec = strtoul(value, &end, 10);
     if ((prec <= 0) || (prec > TCL_MAX_PREC) || (prec > 100) || (end == value)
-        || (*end != 0))
-    {
+        || (*end != 0)) {
         char oldValue[10];
 
         sprintf(oldValue, "%d", iPtr->pdPrec);
@@ -2282,29 +2096,23 @@ char *end; /* End of string (place where space will
      *	   preceded by a character other than backslash.
      */
 
-    if (end == start)
-    {
+    if (end == start) {
         return 0;
     }
     end--;
-    if (*end != '{')
-    {
-        if (isspace(UCHAR(*end)) && ((end == start) || (end[-1] != '\\')))
-        {
+    if (*end != '{') {
+        if (isspace(UCHAR(*end)) && ((end == start) || (end[-1] != '\\'))) {
             return 0;
         }
         return 1;
     }
-    do
-    {
-        if (end == start)
-        {
+    do {
+        if (end == start) {
             return 0;
         }
         end--;
     } while (*end == '{');
-    if (isspace(UCHAR(*end)))
-    {
+    if (isspace(UCHAR(*end))) {
         return 0;
     }
     return 1;

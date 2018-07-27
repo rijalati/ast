@@ -100,8 +100,7 @@ va_list args;
 
     if (!sp || !(s = sfvprints(form, args)))
         return -1;
-    else
-    {
+    else {
         if (!(*sp = ( char * )malloc(n = strlen(s) + 1)))
             return -1;
         memcpy(*sp, s, n);

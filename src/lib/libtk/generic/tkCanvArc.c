@@ -278,8 +278,7 @@ char **argv;        /* Arguments describing arc. */
 {
     ArcItem *arcPtr = ( ArcItem * )itemPtr;
 
-    if (argc < 4)
-    {
+    if (argc < 4) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          Tk_PathName(Tk_CanvasTkwin(canvas)),
@@ -294,8 +293,7 @@ char **argv;        /* Arguments describing arc. */
      * Carry out once-only initialization.
      */
 
-    if (arcUid == NULL)
-    {
+    if (arcUid == NULL) {
         arcUid = Tk_GetUid("arc");
         chordUid = Tk_GetUid("chord");
         pieSliceUid = Tk_GetUid("pieslice");
@@ -330,14 +328,12 @@ char **argv;        /* Arguments describing arc. */
         || (Tk_CanvasGetCoord(interp, canvas, argv[2], &arcPtr->bbox[2])
             != TCL_OK)
         || (Tk_CanvasGetCoord(interp, canvas, argv[3], &arcPtr->bbox[3])
-            != TCL_OK))
-    {
+            != TCL_OK)) {
         return TCL_ERROR;
     }
 
     if (ConfigureArc(interp, canvas, itemPtr, argc - 4, argv + 4, 0)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         DeleteArc(canvas, itemPtr, Tk_Display(Tk_CanvasTkwin(canvas)));
         return TCL_ERROR;
     }
@@ -376,17 +372,14 @@ char **argv;        /* Array of coordinates: x1, y1,
     char c0[TCL_DOUBLE_SPACE], c1[TCL_DOUBLE_SPACE];
     char c2[TCL_DOUBLE_SPACE], c3[TCL_DOUBLE_SPACE];
 
-    if (argc == 0)
-    {
+    if (argc == 0) {
         Tcl_PrintDouble(interp, arcPtr->bbox[0], c0);
         Tcl_PrintDouble(interp, arcPtr->bbox[1], c1);
         Tcl_PrintDouble(interp, arcPtr->bbox[2], c2);
         Tcl_PrintDouble(interp, arcPtr->bbox[3], c3);
         Tcl_AppendResult(
         interp, c0, " ", c1, " ", c2, " ", c3, ( char * )NULL);
-    }
-    else if (argc == 4)
-    {
+    } else if (argc == 4) {
         if ((Tk_CanvasGetCoord(interp, canvas, argv[0], &arcPtr->bbox[0])
              != TCL_OK)
             || (Tk_CanvasGetCoord(interp, canvas, argv[1], &arcPtr->bbox[1])
@@ -394,14 +387,11 @@ char **argv;        /* Array of coordinates: x1, y1,
             || (Tk_CanvasGetCoord(interp, canvas, argv[2], &arcPtr->bbox[2])
                 != TCL_OK)
             || (Tk_CanvasGetCoord(interp, canvas, argv[3], &arcPtr->bbox[3])
-                != TCL_OK))
-        {
+                != TCL_OK)) {
             return TCL_ERROR;
         }
         ComputeArcBbox(canvas, arcPtr);
-    }
-    else
-    {
+    } else {
         sprintf(
         interp->result, "wrong # coordinates: expected 0 or 4, got %d", argc);
         return TCL_ERROR;
@@ -446,8 +436,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
     tkwin = Tk_CanvasTkwin(canvas);
     if (Tk_ConfigureWidget(
         interp, tkwin, configSpecs, argc, argv, ( char * )arcPtr, flags)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -458,16 +447,14 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 
     i = arcPtr->start / 360.0;
     arcPtr->start -= i * 360.0;
-    if (arcPtr->start < 0)
-    {
+    if (arcPtr->start < 0) {
         arcPtr->start += 360.0;
     }
     i = arcPtr->extent / 360.0;
     arcPtr->extent -= i * 360.0;
 
     if ((arcPtr->style != arcUid) && (arcPtr->style != chordUid)
-        && (arcPtr->style != pieSliceUid))
-    {
+        && (arcPtr->style != pieSliceUid)) {
         Tcl_AppendResult(interp,
                          "bad -style option \"",
                          arcPtr->style,
@@ -477,60 +464,46 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
         return TCL_ERROR;
     }
 
-    if (arcPtr->width < 0)
-    {
+    if (arcPtr->width < 0) {
         arcPtr->width = 1;
     }
-    if (arcPtr->outlineColor == NULL)
-    {
+    if (arcPtr->outlineColor == NULL) {
         newGC = None;
-    }
-    else
-    {
+    } else {
         gcValues.foreground = arcPtr->outlineColor->pixel;
         gcValues.cap_style = CapButt;
         gcValues.line_width = arcPtr->width;
         mask = GCForeground | GCCapStyle | GCLineWidth;
-        if (arcPtr->outlineStipple != None)
-        {
+        if (arcPtr->outlineStipple != None) {
             gcValues.stipple = arcPtr->outlineStipple;
             gcValues.fill_style = FillStippled;
             mask |= GCStipple | GCFillStyle;
         }
         newGC = Tk_GetGC(tkwin, mask, &gcValues);
     }
-    if (arcPtr->outlineGC != None)
-    {
+    if (arcPtr->outlineGC != None) {
         Tk_FreeGC(Tk_Display(tkwin), arcPtr->outlineGC);
     }
     arcPtr->outlineGC = newGC;
 
-    if ((arcPtr->fillColor == NULL) || (arcPtr->style == arcUid))
-    {
+    if ((arcPtr->fillColor == NULL) || (arcPtr->style == arcUid)) {
         newGC = None;
-    }
-    else
-    {
+    } else {
         gcValues.foreground = arcPtr->fillColor->pixel;
-        if (arcPtr->style == chordUid)
-        {
+        if (arcPtr->style == chordUid) {
             gcValues.arc_mode = ArcChord;
-        }
-        else
-        {
+        } else {
             gcValues.arc_mode = ArcPieSlice;
         }
         mask = GCForeground | GCArcMode;
-        if (arcPtr->fillStipple != None)
-        {
+        if (arcPtr->fillStipple != None) {
             gcValues.stipple = arcPtr->fillStipple;
             gcValues.fill_style = FillStippled;
             mask |= GCStipple | GCFillStyle;
         }
         newGC = Tk_GetGC(tkwin, mask, &gcValues);
     }
-    if (arcPtr->fillGC != None)
-    {
+    if (arcPtr->fillGC != None) {
         Tk_FreeGC(Tk_Display(tkwin), arcPtr->fillGC);
     }
     arcPtr->fillGC = newGC;
@@ -565,32 +538,25 @@ Display *display; /* Display containing window for
 {
     ArcItem *arcPtr = ( ArcItem * )itemPtr;
 
-    if (arcPtr->numOutlinePoints != 0)
-    {
+    if (arcPtr->numOutlinePoints != 0) {
         ckfree(( char * )arcPtr->outlinePtr);
     }
-    if (arcPtr->outlineColor != NULL)
-    {
+    if (arcPtr->outlineColor != NULL) {
         Tk_FreeColor(arcPtr->outlineColor);
     }
-    if (arcPtr->fillColor != NULL)
-    {
+    if (arcPtr->fillColor != NULL) {
         Tk_FreeColor(arcPtr->fillColor);
     }
-    if (arcPtr->fillStipple != None)
-    {
+    if (arcPtr->fillStipple != None) {
         Tk_FreeBitmap(display, arcPtr->fillStipple);
     }
-    if (arcPtr->outlineStipple != None)
-    {
+    if (arcPtr->outlineStipple != None) {
         Tk_FreeBitmap(display, arcPtr->outlineStipple);
     }
-    if (arcPtr->outlineGC != None)
-    {
+    if (arcPtr->outlineGC != None) {
         Tk_FreeGC(display, arcPtr->outlineGC);
     }
-    if (arcPtr->fillGC != None)
-    {
+    if (arcPtr->fillGC != None) {
         Tk_FreeGC(display, arcPtr->fillGC);
     }
 }
@@ -626,15 +592,13 @@ ArcItem *arcPtr; /* Item whose bbox is to be
      * Make sure that the first coordinates are the lowest ones.
      */
 
-    if (arcPtr->bbox[1] > arcPtr->bbox[3])
-    {
+    if (arcPtr->bbox[1] > arcPtr->bbox[3]) {
         double tmp;
         tmp = arcPtr->bbox[3];
         arcPtr->bbox[3] = arcPtr->bbox[1];
         arcPtr->bbox[1] = tmp;
     }
-    if (arcPtr->bbox[0] > arcPtr->bbox[2])
-    {
+    if (arcPtr->bbox[0] > arcPtr->bbox[2]) {
         double tmp;
         tmp = arcPtr->bbox[2];
         arcPtr->bbox[2] = arcPtr->bbox[0];
@@ -655,51 +619,42 @@ ArcItem *arcPtr; /* Item whose bbox is to be
     TkIncludePoint(( Tk_Item * )arcPtr, arcPtr->center2);
     center[0] = (arcPtr->bbox[0] + arcPtr->bbox[2]) / 2;
     center[1] = (arcPtr->bbox[1] + arcPtr->bbox[3]) / 2;
-    if (arcPtr->style != arcUid)
-    {
+    if (arcPtr->style != arcUid) {
         TkIncludePoint(( Tk_Item * )arcPtr, center);
     }
 
     tmp = -arcPtr->start;
-    if (tmp < 0)
-    {
+    if (tmp < 0) {
         tmp += 360.0;
     }
-    if ((tmp < arcPtr->extent) || ((tmp - 360) > arcPtr->extent))
-    {
+    if ((tmp < arcPtr->extent) || ((tmp - 360) > arcPtr->extent)) {
         point[0] = arcPtr->bbox[2];
         point[1] = center[1];
         TkIncludePoint(( Tk_Item * )arcPtr, point);
     }
     tmp = 90.0 - arcPtr->start;
-    if (tmp < 0)
-    {
+    if (tmp < 0) {
         tmp += 360.0;
     }
-    if ((tmp < arcPtr->extent) || ((tmp - 360) > arcPtr->extent))
-    {
+    if ((tmp < arcPtr->extent) || ((tmp - 360) > arcPtr->extent)) {
         point[0] = center[0];
         point[1] = arcPtr->bbox[1];
         TkIncludePoint(( Tk_Item * )arcPtr, point);
     }
     tmp = 180.0 - arcPtr->start;
-    if (tmp < 0)
-    {
+    if (tmp < 0) {
         tmp += 360.0;
     }
-    if ((tmp < arcPtr->extent) || ((tmp - 360) > arcPtr->extent))
-    {
+    if ((tmp < arcPtr->extent) || ((tmp - 360) > arcPtr->extent)) {
         point[0] = arcPtr->bbox[0];
         point[1] = center[1];
         TkIncludePoint(( Tk_Item * )arcPtr, point);
     }
     tmp = 270.0 - arcPtr->start;
-    if (tmp < 0)
-    {
+    if (tmp < 0) {
         tmp += 360.0;
     }
-    if ((tmp < arcPtr->extent) || ((tmp - 360) > arcPtr->extent))
-    {
+    if ((tmp < arcPtr->extent) || ((tmp - 360) > arcPtr->extent)) {
         point[0] = center[0];
         point[1] = arcPtr->bbox[3];
         TkIncludePoint(( Tk_Item * )arcPtr, point);
@@ -710,12 +665,9 @@ ArcItem *arcPtr; /* Item whose bbox is to be
      * being drawn) and add one extra pixel just for safety.
      */
 
-    if (arcPtr->outlineColor == NULL)
-    {
+    if (arcPtr->outlineColor == NULL) {
         tmp = 1;
-    }
-    else
-    {
+    } else {
         tmp = (arcPtr->width + 1) / 2 + 1;
     }
     arcPtr->header.x1 -= tmp;
@@ -764,12 +716,10 @@ int x, y, width, height; /* Describes region of canvas that
     canvas, arcPtr->bbox[0], arcPtr->bbox[1], &x1, &y1);
     Tk_CanvasDrawableCoords(
     canvas, arcPtr->bbox[2], arcPtr->bbox[3], &x2, &y2);
-    if (x2 <= x1)
-    {
+    if (x2 <= x1) {
         x2 = x1 + 1;
     }
-    if (y2 <= y1)
-    {
+    if (y2 <= y1) {
         y2 = y1 + 1;
     }
     start = (64 * arcPtr->start) + 0.5;
@@ -781,10 +731,8 @@ int x, y, width, height; /* Describes region of canvas that
      * some window servers to crash and should be a no-op anyway.
      */
 
-    if ((arcPtr->fillGC != None) && (extent != 0))
-    {
-        if (arcPtr->fillStipple != None)
-        {
+    if ((arcPtr->fillGC != None) && (extent != 0)) {
+        if (arcPtr->fillStipple != None) {
             Tk_CanvasSetStippleOrigin(canvas, arcPtr->fillGC);
         }
         XFillArc(display,
@@ -796,19 +744,15 @@ int x, y, width, height; /* Describes region of canvas that
                  ( unsigned )(y2 - y1),
                  start,
                  extent);
-        if (arcPtr->fillStipple != None)
-        {
+        if (arcPtr->fillStipple != None) {
             XSetTSOrigin(display, arcPtr->fillGC, 0, 0);
         }
     }
-    if (arcPtr->outlineGC != None)
-    {
-        if (arcPtr->outlineStipple != None)
-        {
+    if (arcPtr->outlineGC != None) {
+        if (arcPtr->outlineStipple != None) {
             Tk_CanvasSetStippleOrigin(canvas, arcPtr->outlineGC);
         }
-        if (extent != 0)
-        {
+        if (extent != 0) {
             XDrawArc(display,
                      drawable,
                      arcPtr->outlineGC,
@@ -826,20 +770,16 @@ int x, y, width, height; /* Describes region of canvas that
          * being displayed); just draw lines instead.
          */
 
-        if (arcPtr->width <= 2)
-        {
+        if (arcPtr->width <= 2) {
             Tk_CanvasDrawableCoords(
             canvas, arcPtr->center1[0], arcPtr->center1[1], &x1, &y1);
             Tk_CanvasDrawableCoords(
             canvas, arcPtr->center2[0], arcPtr->center2[1], &x2, &y2);
 
-            if (arcPtr->style == chordUid)
-            {
+            if (arcPtr->style == chordUid) {
                 XDrawLine(
                 display, drawable, arcPtr->outlineGC, x1, y1, x2, y2);
-            }
-            else if (arcPtr->style == pieSliceUid)
-            {
+            } else if (arcPtr->style == pieSliceUid) {
                 short cx, cy;
 
                 Tk_CanvasDrawableCoords(
@@ -853,11 +793,8 @@ int x, y, width, height; /* Describes region of canvas that
                 XDrawLine(
                 display, drawable, arcPtr->outlineGC, cx, cy, x2, y2);
             }
-        }
-        else
-        {
-            if (arcPtr->style == chordUid)
-            {
+        } else {
+            if (arcPtr->style == chordUid) {
                 TkFillPolygon(canvas,
                               arcPtr->outlinePtr,
                               CHORD_OUTLINE_PTS,
@@ -865,9 +802,7 @@ int x, y, width, height; /* Describes region of canvas that
                               drawable,
                               arcPtr->outlineGC,
                               None);
-            }
-            else if (arcPtr->style == pieSliceUid)
-            {
+            } else if (arcPtr->style == pieSliceUid) {
                 TkFillPolygon(canvas,
                               arcPtr->outlinePtr,
                               PIE_OUTLINE1_PTS,
@@ -884,8 +819,7 @@ int x, y, width, height; /* Describes region of canvas that
                               None);
             }
         }
-        if (arcPtr->outlineStipple != None)
-        {
+        if (arcPtr->outlineStipple != None) {
             XSetTSOrigin(display, arcPtr->outlineGC, 0, 0);
         }
     }
@@ -926,12 +860,9 @@ double *pointPtr; /* Pointer to x and y coordinates. */
     double poly[8], polyDist, width, t1, t2;
     int filled, angleInRange;
 
-    if ((arcPtr->fillGC != None) || (arcPtr->outlineGC == None))
-    {
+    if ((arcPtr->fillGC != None) || (arcPtr->outlineGC == None)) {
         filled = 1;
-    }
-    else
-    {
+    } else {
         filled = 0;
     }
 
@@ -946,18 +877,14 @@ double *pointPtr; /* Pointer to x and y coordinates. */
     vertex[1] = (arcPtr->bbox[1] + arcPtr->bbox[3]) / 2.0;
     t1 = (pointPtr[1] - vertex[1]) / (arcPtr->bbox[3] - arcPtr->bbox[1]);
     t2 = (pointPtr[0] - vertex[0]) / (arcPtr->bbox[2] - arcPtr->bbox[0]);
-    if ((t1 == 0.0) && (t2 == 0.0))
-    {
+    if ((t1 == 0.0) && (t2 == 0.0)) {
         pointAngle = 0;
-    }
-    else
-    {
+    } else {
         pointAngle = -atan2(t1, t2) * 180 / PI;
     }
     diff = pointAngle - arcPtr->start;
     diff -= (( int )(diff / 360.0) * 360.0);
-    if (diff < 0)
-    {
+    if (diff < 0) {
         diff += 360.0;
     }
     angleInRange
@@ -969,10 +896,8 @@ double *pointPtr; /* Pointer to x and y coordinates. */
      * we're dealing with.
      */
 
-    if (arcPtr->style == arcUid)
-    {
-        if (angleInRange)
-        {
+    if (arcPtr->style == arcUid) {
+        if (angleInRange) {
             return TkOvalToPoint(
             arcPtr->bbox, ( double )arcPtr->width, 0, pointPtr);
         }
@@ -980,55 +905,41 @@ double *pointPtr; /* Pointer to x and y coordinates. */
                      pointPtr[1] - arcPtr->center1[1]);
         newDist = hypot(pointPtr[0] - arcPtr->center2[0],
                         pointPtr[1] - arcPtr->center2[1]);
-        if (newDist < dist)
-        {
+        if (newDist < dist) {
             return newDist;
         }
         return dist;
     }
 
-    if ((arcPtr->fillGC != None) || (arcPtr->outlineGC == None))
-    {
+    if ((arcPtr->fillGC != None) || (arcPtr->outlineGC == None)) {
         filled = 1;
-    }
-    else
-    {
+    } else {
         filled = 0;
     }
-    if (arcPtr->outlineGC == None)
-    {
+    if (arcPtr->outlineGC == None) {
         width = 0.0;
-    }
-    else
-    {
+    } else {
         width = arcPtr->width;
     }
 
-    if (arcPtr->style == pieSliceUid)
-    {
-        if (width > 1.0)
-        {
+    if (arcPtr->style == pieSliceUid) {
+        if (width > 1.0) {
             dist = TkPolygonToPoint(
             arcPtr->outlinePtr, PIE_OUTLINE1_PTS, pointPtr);
             newDist
             = TkPolygonToPoint(arcPtr->outlinePtr + 2 * PIE_OUTLINE1_PTS,
                                PIE_OUTLINE2_PTS,
                                pointPtr);
-        }
-        else
-        {
+        } else {
             dist = TkLineToPoint(vertex, arcPtr->center1, pointPtr);
             newDist = TkLineToPoint(vertex, arcPtr->center2, pointPtr);
         }
-        if (newDist < dist)
-        {
+        if (newDist < dist) {
             dist = newDist;
         }
-        if (angleInRange)
-        {
+        if (angleInRange) {
             newDist = TkOvalToPoint(arcPtr->bbox, width, filled, pointPtr);
-            if (newDist < dist)
-            {
+            if (newDist < dist) {
                 dist = newDist;
             }
         }
@@ -1044,13 +955,10 @@ double *pointPtr; /* Pointer to x and y coordinates. */
      * excluded for pie slices).
      */
 
-    if (width > 1.0)
-    {
+    if (width > 1.0) {
         dist
         = TkPolygonToPoint(arcPtr->outlinePtr, CHORD_OUTLINE_PTS, pointPtr);
-    }
-    else
-    {
+    } else {
         dist = TkLineToPoint(arcPtr->center1, arcPtr->center2, pointPtr);
     }
     poly[0] = poly[6] = vertex[0];
@@ -1060,24 +968,17 @@ double *pointPtr; /* Pointer to x and y coordinates. */
     poly[4] = arcPtr->center2[0];
     poly[5] = arcPtr->center2[1];
     polyDist = TkPolygonToPoint(poly, 4, pointPtr);
-    if (angleInRange)
-    {
+    if (angleInRange) {
         if ((arcPtr->extent < -180.0) || (arcPtr->extent > 180.0)
-            || (polyDist > 0.0))
-        {
+            || (polyDist > 0.0)) {
             newDist = TkOvalToPoint(arcPtr->bbox, width, filled, pointPtr);
-            if (newDist < dist)
-            {
+            if (newDist < dist) {
                 dist = newDist;
             }
         }
-    }
-    else
-    {
-        if ((arcPtr->extent < -180.0) || (arcPtr->extent > 180.0))
-        {
-            if (filled && (polyDist < dist))
-            {
+    } else {
+        if ((arcPtr->extent < -180.0) || (arcPtr->extent > 180.0)) {
+            if (filled && (polyDist < dist)) {
                 dist = polyDist;
             }
         }
@@ -1129,20 +1030,14 @@ double *rectPtr;  /* Pointer to array of four coordinates
                  * of rectangle. */
     int newInside;
 
-    if ((arcPtr->fillGC != None) || (arcPtr->outlineGC == None))
-    {
+    if ((arcPtr->fillGC != None) || (arcPtr->outlineGC == None)) {
         filled = 1;
-    }
-    else
-    {
+    } else {
         filled = 0;
     }
-    if (arcPtr->outlineGC == None)
-    {
+    if (arcPtr->outlineGC == None) {
         width = 0.0;
-    }
-    else
-    {
+    } else {
         width = arcPtr->width;
     }
 
@@ -1185,8 +1080,7 @@ double *rectPtr;  /* Pointer to array of four coordinates
     numPoints = 2;
     pointPtr += 4;
 
-    if ((arcPtr->style == pieSliceUid) && (arcPtr->extent < 180.0))
-    {
+    if ((arcPtr->style == pieSliceUid) && (arcPtr->extent < 180.0)) {
         pointPtr[0] = 0.0;
         pointPtr[1] = 0.0;
         numPoints++;
@@ -1194,48 +1088,40 @@ double *rectPtr;  /* Pointer to array of four coordinates
     }
 
     tmp = -arcPtr->start;
-    if (tmp < 0)
-    {
+    if (tmp < 0) {
         tmp += 360.0;
     }
-    if ((tmp < arcPtr->extent) || ((tmp - 360) > arcPtr->extent))
-    {
+    if ((tmp < arcPtr->extent) || ((tmp - 360) > arcPtr->extent)) {
         pointPtr[0] = rx;
         pointPtr[1] = 0.0;
         numPoints++;
         pointPtr += 2;
     }
     tmp = 90.0 - arcPtr->start;
-    if (tmp < 0)
-    {
+    if (tmp < 0) {
         tmp += 360.0;
     }
-    if ((tmp < arcPtr->extent) || ((tmp - 360) > arcPtr->extent))
-    {
+    if ((tmp < arcPtr->extent) || ((tmp - 360) > arcPtr->extent)) {
         pointPtr[0] = 0.0;
         pointPtr[1] = -ry;
         numPoints++;
         pointPtr += 2;
     }
     tmp = 180.0 - arcPtr->start;
-    if (tmp < 0)
-    {
+    if (tmp < 0) {
         tmp += 360.0;
     }
-    if ((tmp < arcPtr->extent) || ((tmp - 360) > arcPtr->extent))
-    {
+    if ((tmp < arcPtr->extent) || ((tmp - 360) > arcPtr->extent)) {
         pointPtr[0] = -rx;
         pointPtr[1] = 0.0;
         numPoints++;
         pointPtr += 2;
     }
     tmp = 270.0 - arcPtr->start;
-    if (tmp < 0)
-    {
+    if (tmp < 0) {
         tmp += 360.0;
     }
-    if ((tmp < arcPtr->extent) || ((tmp - 360) > arcPtr->extent))
-    {
+    if ((tmp < arcPtr->extent) || ((tmp - 360) > arcPtr->extent)) {
         pointPtr[0] = 0.0;
         pointPtr[1] = ry;
         numPoints++;
@@ -1249,18 +1135,15 @@ double *rectPtr;  /* Pointer to array of four coordinates
 
     inside = (points[0] > tRect[0]) && (points[0] < tRect[2])
              && (points[1] > tRect[1]) && (points[1] < tRect[3]);
-    for (pointPtr = points + 2; numPoints > 1; pointPtr += 2, numPoints--)
-    {
+    for (pointPtr = points + 2; numPoints > 1; pointPtr += 2, numPoints--) {
         newInside = (pointPtr[0] > tRect[0]) && (pointPtr[0] < tRect[2])
                     && (pointPtr[1] > tRect[1]) && (pointPtr[1] < tRect[3]);
-        if (newInside != inside)
-        {
+        if (newInside != inside) {
             return 0;
         }
     }
 
-    if (inside)
-    {
+    if (inside) {
         return 1;
     }
 
@@ -1272,46 +1155,33 @@ double *rectPtr;  /* Pointer to array of four coordinates
      * polygon(s) forming the sides of a chord or pie-slice.
      */
 
-    if (arcPtr->style == pieSliceUid)
-    {
-        if (width >= 1.0)
-        {
+    if (arcPtr->style == pieSliceUid) {
+        if (width >= 1.0) {
             if (TkPolygonToArea(arcPtr->outlinePtr, PIE_OUTLINE1_PTS, rectPtr)
-                != -1)
-            {
+                != -1) {
                 return 0;
             }
             if (TkPolygonToArea(arcPtr->outlinePtr + 2 * PIE_OUTLINE1_PTS,
                                 PIE_OUTLINE2_PTS,
                                 rectPtr)
-                != -1)
-            {
+                != -1) {
                 return 0;
             }
-        }
-        else
-        {
+        } else {
             if ((TkLineToArea(center, arcPtr->center1, rectPtr) != -1)
-                || (TkLineToArea(center, arcPtr->center2, rectPtr) != -1))
-            {
+                || (TkLineToArea(center, arcPtr->center2, rectPtr) != -1)) {
                 return 0;
             }
         }
-    }
-    else if (arcPtr->style == chordUid)
-    {
-        if (width >= 1.0)
-        {
+    } else if (arcPtr->style == chordUid) {
+        if (width >= 1.0) {
             if (TkPolygonToArea(arcPtr->outlinePtr, CHORD_OUTLINE_PTS, rectPtr)
-                != -1)
-            {
+                != -1) {
                 return 0;
             }
-        }
-        else
-        {
-            if (TkLineToArea(arcPtr->center1, arcPtr->center2, rectPtr) != -1)
-            {
+        } else {
+            if (TkLineToArea(arcPtr->center1, arcPtr->center2, rectPtr)
+                != -1) {
                 return 0;
             }
         }
@@ -1329,13 +1199,16 @@ double *rectPtr;  /* Pointer to array of four coordinates
            tRect[0], tRect[2], tRect[3], rx, ry, arcPtr->start, arcPtr->extent)
         || VertLineToArc(
            tRect[0], tRect[1], tRect[3], rx, ry, arcPtr->start, arcPtr->extent)
-        || VertLineToArc(
-           tRect[2], tRect[1], tRect[3], rx, ry, arcPtr->start, arcPtr->extent))
-    {
+        || VertLineToArc(tRect[2],
+                         tRect[1],
+                         tRect[3],
+                         rx,
+                         ry,
+                         arcPtr->start,
+                         arcPtr->extent)) {
         return 0;
     }
-    if ((width > 1.0) && !filled)
-    {
+    if ((width > 1.0) && !filled) {
         rx -= width;
         ry -= width;
         if (HorizLineToArc(
@@ -1360,8 +1233,7 @@ double *rectPtr;  /* Pointer to array of four coordinates
                              rx,
                              ry,
                              arcPtr->start,
-                             arcPtr->extent))
-        {
+                             arcPtr->extent)) {
             return 0;
         }
     }
@@ -1374,8 +1246,7 @@ double *rectPtr;  /* Pointer to array of four coordinates
      * it isn't, the arc's really outside the rectangle.
      */
 
-    if (ArcToPoint(canvas, itemPtr, rectPtr) == 0.0)
-    {
+    if (ArcToPoint(canvas, itemPtr, rectPtr) == 0.0) {
         return 0;
     }
     return -1;
@@ -1484,8 +1355,7 @@ static void ComputeArcOutline(arcPtr) ArcItem *arcPtr; /* Information about
      * either a chord or pie-slice outline.
      */
 
-    if (arcPtr->numOutlinePoints == 0)
-    {
+    if (arcPtr->numOutlinePoints == 0) {
         arcPtr->outlinePtr
         = ( double * )ckalloc(( unsigned )(26 * sizeof(double)));
         arcPtr->numOutlinePoints = 22;
@@ -1549,22 +1419,16 @@ static void ComputeArcOutline(arcPtr) ArcItem *arcPtr; /* Information about
      */
 
     halfWidth = arcPtr->width / 2.0;
-    if (((boxWidth * sin1) == 0.0) && ((boxHeight * cos1) == 0.0))
-    {
+    if (((boxWidth * sin1) == 0.0) && ((boxHeight * cos1) == 0.0)) {
         angle = 0.0;
-    }
-    else
-    {
+    } else {
         angle = atan2(boxWidth * sin1, boxHeight * cos1);
     }
     corner1[0] = arcPtr->center1[0] + cos(angle) * halfWidth;
     corner1[1] = arcPtr->center1[1] + sin(angle) * halfWidth;
-    if (((boxWidth * sin2) == 0.0) && ((boxHeight * cos2) == 0.0))
-    {
+    if (((boxWidth * sin2) == 0.0) && ((boxHeight * cos2) == 0.0)) {
         angle = 0.0;
-    }
-    else
-    {
+    } else {
         angle = atan2(boxWidth * sin2, boxHeight * cos2);
     }
     corner2[0] = arcPtr->center2[0] + cos(angle) * halfWidth;
@@ -1577,8 +1441,7 @@ static void ComputeArcOutline(arcPtr) ArcItem *arcPtr; /* Information about
      * center point.  The second point is the corner point.
      */
 
-    if (arcPtr->style == chordUid)
-    {
+    if (arcPtr->style == chordUid) {
         outlinePtr[0] = outlinePtr[12] = corner1[0];
         outlinePtr[1] = outlinePtr[13] = corner1[1];
         TkGetButtPoints(arcPtr->center2,
@@ -1597,9 +1460,7 @@ static void ComputeArcOutline(arcPtr) ArcItem *arcPtr; /* Information about
         = arcPtr->center2[0] + outlinePtr[10] - arcPtr->center1[0];
         outlinePtr[9]
         = arcPtr->center2[1] + outlinePtr[11] - arcPtr->center1[1];
-    }
-    else if (arcPtr->style == pieSliceUid)
-    {
+    } else if (arcPtr->style == pieSliceUid) {
         /*
          * For pie slices, generate two polygons, one for each side
          * of the pie slice.  The first arm has a shape like this,
@@ -1655,13 +1516,10 @@ static void ComputeArcOutline(arcPtr) ArcItem *arcPtr; /* Information about
                         outlinePtr + 12,
                         outlinePtr + 16);
         if ((arcPtr->extent > 180)
-            || ((arcPtr->extent < 0) && (arcPtr->extent > -180)))
-        {
+            || ((arcPtr->extent < 0) && (arcPtr->extent > -180))) {
             outlinePtr[14] = outlinePtr[0];
             outlinePtr[15] = outlinePtr[1];
-        }
-        else
-        {
+        } else {
             outlinePtr[14] = outlinePtr[2];
             outlinePtr[15] = outlinePtr[3];
         }
@@ -1720,8 +1578,7 @@ double start, extent; /* Angles that define extent of arc, in
 
     ty = y / ry;
     tmp = 1 - ty * ty;
-    if (tmp < 0)
-    {
+    if (tmp < 0) {
         return 0;
     }
     tx = sqrt(tmp);
@@ -1731,12 +1588,10 @@ double start, extent; /* Angles that define extent of arc, in
      * Test both intersection points.
      */
 
-    if ((x >= x1) && (x <= x2) && AngleInRange(tx, ty, start, extent))
-    {
+    if ((x >= x1) && (x <= x2) && AngleInRange(tx, ty, start, extent)) {
         return 1;
     }
-    if ((-x >= x1) && (-x <= x2) && AngleInRange(-tx, ty, start, extent))
-    {
+    if ((-x >= x1) && (-x <= x2) && AngleInRange(-tx, ty, start, extent)) {
         return 1;
     }
     return 0;
@@ -1787,8 +1642,7 @@ double start, extent; /* Angles that define extent of arc, in
 
     tx = x / rx;
     tmp = 1 - tx * tx;
-    if (tmp < 0)
-    {
+    if (tmp < 0) {
         return 0;
     }
     ty = sqrt(tmp);
@@ -1798,12 +1652,10 @@ double start, extent; /* Angles that define extent of arc, in
      * Test both intersection points.
      */
 
-    if ((y > y1) && (y < y2) && AngleInRange(tx, ty, start, extent))
-    {
+    if ((y > y1) && (y < y2) && AngleInRange(tx, ty, start, extent)) {
         return 1;
     }
-    if ((-y > y1) && (-y < y2) && AngleInRange(tx, -ty, start, extent))
-    {
+    if ((-y > y1) && (-y < y2) && AngleInRange(tx, -ty, start, extent)) {
         return 1;
     }
     return 0;
@@ -1838,22 +1690,18 @@ double extent; /* Size of arc in degrees >=-360, <=360. */
 {
     double diff;
 
-    if ((x == 0.0) && (y == 0.0))
-    {
+    if ((x == 0.0) && (y == 0.0)) {
         return 1;
     }
     diff = -atan2(y, x);
     diff = diff * (180.0 / PI) - start;
-    while (diff > 360.0)
-    {
+    while (diff > 360.0) {
         diff -= 360.0;
     }
-    while (diff < 0.0)
-    {
+    while (diff < 0.0) {
         diff += 360.0;
     }
-    if (extent >= 0)
-    {
+    if (extent >= 0) {
         return diff <= extent;
     }
     return (diff - 360.0) >= extent;
@@ -1898,8 +1746,7 @@ int prepass;        /* 1 means this is a prepass to
     y2 = Tk_CanvasPsY(canvas, arcPtr->bbox[3]);
     ang1 = arcPtr->start;
     ang2 = ang1 + arcPtr->extent;
-    if (ang2 < ang1)
-    {
+    if (ang2 < ang1) {
         ang1 = ang2;
         ang2 = arcPtr->start;
     }
@@ -1909,8 +1756,7 @@ int prepass;        /* 1 means this is a prepass to
      * of the arc.
      */
 
-    if (arcPtr->fillGC != None)
-    {
+    if (arcPtr->fillGC != None) {
         sprintf(
         buffer,
         "matrix currentmatrix\n%.15g %.15g translate %.15g %.15g scale\n",
@@ -1919,40 +1765,31 @@ int prepass;        /* 1 means this is a prepass to
         (arcPtr->bbox[2] - arcPtr->bbox[0]) / 2,
         (y1 - y2) / 2);
         Tcl_AppendResult(interp, buffer, ( char * )NULL);
-        if (arcPtr->style == chordUid)
-        {
+        if (arcPtr->style == chordUid) {
             sprintf(buffer,
                     "0 0 1 %.15g %.15g arc closepath\nsetmatrix\n",
                     ang1,
                     ang2);
-        }
-        else
-        {
+        } else {
             sprintf(buffer,
                     "0 0 moveto 0 0 1 %.15g %.15g arc closepath\nsetmatrix\n",
                     ang1,
                     ang2);
         }
         Tcl_AppendResult(interp, buffer, ( char * )NULL);
-        if (Tk_CanvasPsColor(interp, canvas, arcPtr->fillColor) != TCL_OK)
-        {
+        if (Tk_CanvasPsColor(interp, canvas, arcPtr->fillColor) != TCL_OK) {
             return TCL_ERROR;
         };
-        if (arcPtr->fillStipple != None)
-        {
+        if (arcPtr->fillStipple != None) {
             Tcl_AppendResult(interp, "clip ", ( char * )NULL);
             if (Tk_CanvasPsStipple(interp, canvas, arcPtr->fillStipple)
-                != TCL_OK)
-            {
+                != TCL_OK) {
                 return TCL_ERROR;
             }
-            if (arcPtr->outlineGC != None)
-            {
+            if (arcPtr->outlineGC != None) {
                 Tcl_AppendResult(interp, "grestore gsave\n", ( char * )NULL);
             }
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp, "fill\n", ( char * )NULL);
         }
     }
@@ -1961,8 +1798,7 @@ int prepass;        /* 1 means this is a prepass to
      * If there's an outline for the arc, draw it.
      */
 
-    if (arcPtr->outlineGC != None)
-    {
+    if (arcPtr->outlineGC != None) {
         sprintf(
         buffer,
         "matrix currentmatrix\n%.15g %.15g translate %.15g %.15g scale\n",
@@ -1975,52 +1811,39 @@ int prepass;        /* 1 means this is a prepass to
         Tcl_AppendResult(interp, buffer, ( char * )NULL);
         sprintf(buffer, "%d setlinewidth\n0 setlinecap\n", arcPtr->width);
         Tcl_AppendResult(interp, buffer, ( char * )NULL);
-        if (Tk_CanvasPsColor(interp, canvas, arcPtr->outlineColor) != TCL_OK)
-        {
+        if (Tk_CanvasPsColor(interp, canvas, arcPtr->outlineColor)
+            != TCL_OK) {
             return TCL_ERROR;
         }
-        if (arcPtr->outlineStipple != None)
-        {
+        if (arcPtr->outlineStipple != None) {
             Tcl_AppendResult(interp, "StrokeClip ", ( char * )NULL);
             if (Tk_CanvasPsStipple(interp, canvas, arcPtr->outlineStipple)
-                != TCL_OK)
-            {
+                != TCL_OK) {
                 return TCL_ERROR;
             }
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp, "stroke\n", ( char * )NULL);
         }
-        if (arcPtr->style != arcUid)
-        {
+        if (arcPtr->style != arcUid) {
             Tcl_AppendResult(interp, "grestore gsave\n", ( char * )NULL);
-            if (arcPtr->style == chordUid)
-            {
+            if (arcPtr->style == chordUid) {
                 Tk_CanvasPsPath(
                 interp, canvas, arcPtr->outlinePtr, CHORD_OUTLINE_PTS);
-            }
-            else
-            {
+            } else {
                 Tk_CanvasPsPath(
                 interp, canvas, arcPtr->outlinePtr, PIE_OUTLINE1_PTS);
                 if (Tk_CanvasPsColor(interp, canvas, arcPtr->outlineColor)
-                    != TCL_OK)
-                {
+                    != TCL_OK) {
                     return TCL_ERROR;
                 }
-                if (arcPtr->outlineStipple != None)
-                {
+                if (arcPtr->outlineStipple != None) {
                     Tcl_AppendResult(interp, "clip ", ( char * )NULL);
                     if (Tk_CanvasPsStipple(
                         interp, canvas, arcPtr->outlineStipple)
-                        != TCL_OK)
-                    {
+                        != TCL_OK) {
                         return TCL_ERROR;
                     }
-                }
-                else
-                {
+                } else {
                     Tcl_AppendResult(interp, "fill\n", ( char * )NULL);
                 }
                 Tcl_AppendResult(interp, "grestore gsave\n", ( char * )NULL);
@@ -2030,21 +1853,16 @@ int prepass;        /* 1 means this is a prepass to
                                 PIE_OUTLINE2_PTS);
             }
             if (Tk_CanvasPsColor(interp, canvas, arcPtr->outlineColor)
-                != TCL_OK)
-            {
+                != TCL_OK) {
                 return TCL_ERROR;
             }
-            if (arcPtr->outlineStipple != None)
-            {
+            if (arcPtr->outlineStipple != None) {
                 Tcl_AppendResult(interp, "clip ", ( char * )NULL);
                 if (Tk_CanvasPsStipple(interp, canvas, arcPtr->outlineStipple)
-                    != TCL_OK)
-                {
+                    != TCL_OK) {
                     return TCL_ERROR;
                 }
-            }
-            else
-            {
+            } else {
                 Tcl_AppendResult(interp, "fill\n", ( char * )NULL);
             }
         }

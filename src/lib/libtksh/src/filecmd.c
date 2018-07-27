@@ -46,8 +46,7 @@ char **argv;        /* Argument strings. */
     struct stat statBuf;
     Tcl_DString buffer;
 
-    if (argc < 3)
-    {
+    if (argc < 3) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -64,15 +63,12 @@ char **argv;        /* Argument strings. */
      */
 
     fileName = Tcl_TildeSubst(interp, argv[2], &buffer);
-    if (fileName == NULL)
-    {
+    if (fileName == NULL) {
         result = TCL_ERROR;
         goto done;
     }
-    if ((c == 'd') && (strncmp(argv[1], "dirname", length) == 0))
-    {
-        if (argc != 3)
-        {
+    if ((c == 'd') && (strncmp(argv[1], "dirname", length) == 0)) {
+        if (argc != 3) {
             argv[1] = "dirname";
         not3Args:
             Tcl_AppendResult(interp,
@@ -86,79 +82,58 @@ char **argv;        /* Argument strings. */
             goto done;
         }
         p = strrchr(fileName, '/');
-        if (p == NULL)
-        {
+        if (p == NULL) {
             interp->result = ".";
-        }
-        else if (p == fileName)
-        {
+        } else if (p == fileName) {
             interp->result = "/";
-        }
-        else
-        {
+        } else {
             *p = 0;
             Tcl_SetResult(interp, fileName, TCL_VOLATILE);
             *p = '/';
         }
         goto done;
-    }
-    else if ((c == 'r') && (strncmp(argv[1], "rootname", length) == 0)
-             && (length >= 2))
-    {
+    } else if ((c == 'r') && (strncmp(argv[1], "rootname", length) == 0)
+               && (length >= 2)) {
         char *lastSlash;
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             argv[1] = "rootname";
             goto not3Args;
         }
         p = strrchr(fileName, '.');
         lastSlash = strrchr(fileName, '/');
-        if ((p == NULL) || ((lastSlash != NULL) && (lastSlash > p)))
-        {
+        if ((p == NULL) || ((lastSlash != NULL) && (lastSlash > p))) {
             Tcl_SetResult(interp, fileName, TCL_VOLATILE);
-        }
-        else
-        {
+        } else {
             *p = 0;
             Tcl_SetResult(interp, fileName, TCL_VOLATILE);
             *p = '.';
         }
         goto done;
-    }
-    else if ((c == 'e') && (strncmp(argv[1], "extension", length) == 0)
-             && (length >= 3))
-    {
+    } else if ((c == 'e') && (strncmp(argv[1], "extension", length) == 0)
+               && (length >= 3)) {
         char *lastSlash;
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             argv[1] = "extension";
             goto not3Args;
         }
         p = strrchr(fileName, '.');
         lastSlash = strrchr(fileName, '/');
-        if ((p != NULL) && ((lastSlash == NULL) || (lastSlash < p)))
-        {
+        if ((p != NULL) && ((lastSlash == NULL) || (lastSlash < p))) {
             Tcl_SetResult(interp, p, TCL_VOLATILE);
         }
         goto done;
-    }
-    else if ((c == 't') && (strncmp(argv[1], "tail", length) == 0)
-             && (length >= 2))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 't') && (strncmp(argv[1], "tail", length) == 0)
+               && (length >= 2)) {
+        if (argc != 3) {
             argv[1] = "tail";
             goto not3Args;
         }
         p = strrchr(fileName, '/');
-        if (p != NULL)
-        {
+        if (p != NULL) {
             Tcl_SetResult(interp, p + 1, TCL_VOLATILE);
-        }
-        else
-        {
+        } else {
             Tcl_SetResult(interp, fileName, TCL_VOLATILE);
         }
         goto done;
@@ -169,57 +144,42 @@ char **argv;        /* Argument strings. */
      * kernel call.
      */
 
-    if (fileName == NULL)
-    {
+    if (fileName == NULL) {
         result = TCL_ERROR;
         goto done;
     }
     if ((c == 'r') && (strncmp(argv[1], "readable", length) == 0)
-        && (length >= 5))
-    {
-        if (argc != 3)
-        {
+        && (length >= 5)) {
+        if (argc != 3) {
             argv[1] = "readable";
             goto not3Args;
         }
         mode = R_OK;
     checkAccess:
-        if (access(fileName, mode) == -1)
-        {
+        if (access(fileName, mode) == -1) {
             interp->result = "0";
-        }
-        else
-        {
+        } else {
             interp->result = "1";
         }
         goto done;
-    }
-    else if ((c == 'w') && (strncmp(argv[1], "writable", length) == 0))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 'w') && (strncmp(argv[1], "writable", length) == 0)) {
+        if (argc != 3) {
             argv[1] = "writable";
             goto not3Args;
         }
         mode = W_OK;
         goto checkAccess;
-    }
-    else if ((c == 'e') && (strncmp(argv[1], "executable", length) == 0)
-             && (length >= 3))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 'e') && (strncmp(argv[1], "executable", length) == 0)
+               && (length >= 3)) {
+        if (argc != 3) {
             argv[1] = "executable";
             goto not3Args;
         }
         mode = X_OK;
         goto checkAccess;
-    }
-    else if ((c == 'e') && (strncmp(argv[1], "exists", length) == 0)
-             && (length >= 3))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 'e') && (strncmp(argv[1], "exists", length) == 0)
+               && (length >= 3)) {
+        if (argc != 3) {
             argv[1] = "exists";
             goto not3Args;
         }
@@ -231,44 +191,32 @@ char **argv;        /* Argument strings. */
      * Lastly, check stuff that requires the file to be stat-ed.
      */
 
-    if ((c == 'a') && (strncmp(argv[1], "atime", length) == 0))
-    {
-        if (argc != 3)
-        {
+    if ((c == 'a') && (strncmp(argv[1], "atime", length) == 0)) {
+        if (argc != 3) {
             argv[1] = "atime";
             goto not3Args;
         }
-        if (stat(fileName, &statBuf) == -1)
-        {
+        if (stat(fileName, &statBuf) == -1) {
             goto badStat;
         }
         sprintf(interp->result, "%ld", statBuf.st_atime);
         goto done;
-    }
-    else if ((c == 'i') && (strncmp(argv[1], "isdirectory", length) == 0)
-             && (length >= 3))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 'i') && (strncmp(argv[1], "isdirectory", length) == 0)
+               && (length >= 3)) {
+        if (argc != 3) {
             argv[1] = "isdirectory";
             goto not3Args;
         }
         statOp = 2;
-    }
-    else if ((c == 'i') && (strncmp(argv[1], "isfile", length) == 0)
-             && (length >= 3))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 'i') && (strncmp(argv[1], "isfile", length) == 0)
+               && (length >= 3)) {
+        if (argc != 3) {
             argv[1] = "isfile";
             goto not3Args;
         }
         statOp = 1;
-    }
-    else if ((c == 'l') && (strncmp(argv[1], "lstat", length) == 0))
-    {
-        if (argc != 4)
-        {
+    } else if ((c == 'l') && (strncmp(argv[1], "lstat", length) == 0)) {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -278,8 +226,7 @@ char **argv;        /* Argument strings. */
             goto done;
         }
 
-        if (lstat(fileName, &statBuf) == -1)
-        {
+        if (lstat(fileName, &statBuf) == -1) {
             Tcl_AppendResult(interp,
                              "couldn't lstat \"",
                              argv[2],
@@ -291,38 +238,28 @@ char **argv;        /* Argument strings. */
         }
         result = StoreStatData(interp, argv[3], &statBuf);
         goto done;
-    }
-    else if ((c == 'm') && (strncmp(argv[1], "mtime", length) == 0))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 'm') && (strncmp(argv[1], "mtime", length) == 0)) {
+        if (argc != 3) {
             argv[1] = "mtime";
             goto not3Args;
         }
-        if (stat(fileName, &statBuf) == -1)
-        {
+        if (stat(fileName, &statBuf) == -1) {
             goto badStat;
         }
         sprintf(interp->result, "%ld", statBuf.st_mtime);
         goto done;
-    }
-    else if ((c == 'o') && (strncmp(argv[1], "owned", length) == 0))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 'o') && (strncmp(argv[1], "owned", length) == 0)) {
+        if (argc != 3) {
             argv[1] = "owned";
             goto not3Args;
         }
         statOp = 0;
-    }
-    else if ((c == 'r') && (strncmp(argv[1], "readlink", length) == 0)
-             && (length >= 5))
-    {
+    } else if ((c == 'r') && (strncmp(argv[1], "readlink", length) == 0)
+               && (length >= 5)) {
         char linkValue[MAXPATHLEN + 1];
         int linkLength;
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             argv[1] = "readlink";
             goto not3Args;
         }
@@ -341,8 +278,7 @@ char **argv;        /* Argument strings. */
 #else
         linkLength = readlink(fileName, linkValue, sizeof(linkValue) - 1);
 #endif /* S_IFLNK */
-        if (linkLength == -1)
-        {
+        if (linkLength == -1) {
             Tcl_AppendResult(interp,
                              "couldn't readlink \"",
                              argv[2],
@@ -355,27 +291,20 @@ char **argv;        /* Argument strings. */
         linkValue[linkLength] = 0;
         Tcl_SetResult(interp, linkValue, TCL_VOLATILE);
         goto done;
-    }
-    else if ((c == 's') && (strncmp(argv[1], "size", length) == 0)
-             && (length >= 2))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 's') && (strncmp(argv[1], "size", length) == 0)
+               && (length >= 2)) {
+        if (argc != 3) {
             argv[1] = "size";
             goto not3Args;
         }
-        if (stat(fileName, &statBuf) == -1)
-        {
+        if (stat(fileName, &statBuf) == -1) {
             goto badStat;
         }
         sprintf(interp->result, "%ld", statBuf.st_size);
         goto done;
-    }
-    else if ((c == 's') && (strncmp(argv[1], "stat", length) == 0)
-             && (length >= 2))
-    {
-        if (argc != 4)
-        {
+    } else if ((c == 's') && (strncmp(argv[1], "stat", length) == 0)
+               && (length >= 2)) {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -385,8 +314,7 @@ char **argv;        /* Argument strings. */
             goto done;
         }
 
-        if (stat(fileName, &statBuf) == -1)
-        {
+        if (stat(fileName, &statBuf) == -1) {
         badStat:
             Tcl_AppendResult(interp,
                              "couldn't stat \"",
@@ -399,24 +327,18 @@ char **argv;        /* Argument strings. */
         }
         result = StoreStatData(interp, argv[3], &statBuf);
         goto done;
-    }
-    else if ((c == 't') && (strncmp(argv[1], "type", length) == 0)
-             && (length >= 2))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 't') && (strncmp(argv[1], "type", length) == 0)
+               && (length >= 2)) {
+        if (argc != 3) {
             argv[1] = "type";
             goto not3Args;
         }
-        if (lstat(fileName, &statBuf) == -1)
-        {
+        if (lstat(fileName, &statBuf) == -1) {
             goto badStat;
         }
         interp->result = GetFileType(( int )statBuf.st_mode);
         goto done;
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(
         interp,
         "bad option \"",
@@ -430,13 +352,11 @@ char **argv;        /* Argument strings. */
         result = TCL_ERROR;
         goto done;
     }
-    if (stat(fileName, &statBuf) == -1)
-    {
+    if (stat(fileName, &statBuf) == -1) {
         interp->result = "0";
         goto done;
     }
-    switch (statOp)
-    {
+    switch (statOp) {
     case 0:
         mode = (geteuid() == statBuf.st_uid);
         break;
@@ -447,12 +367,9 @@ char **argv;        /* Argument strings. */
         mode = S_ISDIR(statBuf.st_mode);
         break;
     }
-    if (mode)
-    {
+    if (mode) {
         interp->result = "1";
-    }
-    else
-    {
+    } else {
         interp->result = "0";
     }
 
@@ -491,62 +408,52 @@ struct stat *statPtr; /* Pointer to buffer containing
 
     sprintf(string, "%ld", statPtr->st_dev);
     if (Tcl_SetVar2(interp, varName, "dev", string, TCL_LEAVE_ERR_MSG)
-        == NULL)
-    {
+        == NULL) {
         return TCL_ERROR;
     }
     sprintf(string, "%ld", statPtr->st_ino);
     if (Tcl_SetVar2(interp, varName, "ino", string, TCL_LEAVE_ERR_MSG)
-        == NULL)
-    {
+        == NULL) {
         return TCL_ERROR;
     }
     sprintf(string, "%ld", statPtr->st_mode);
     if (Tcl_SetVar2(interp, varName, "mode", string, TCL_LEAVE_ERR_MSG)
-        == NULL)
-    {
+        == NULL) {
         return TCL_ERROR;
     }
     sprintf(string, "%ld", statPtr->st_nlink);
     if (Tcl_SetVar2(interp, varName, "nlink", string, TCL_LEAVE_ERR_MSG)
-        == NULL)
-    {
+        == NULL) {
         return TCL_ERROR;
     }
     sprintf(string, "%ld", ( long )statPtr->st_uid);
     if (Tcl_SetVar2(interp, varName, "uid", string, TCL_LEAVE_ERR_MSG)
-        == NULL)
-    {
+        == NULL) {
         return TCL_ERROR;
     }
     sprintf(string, "%ld", ( long )statPtr->st_gid);
     if (Tcl_SetVar2(interp, varName, "gid", string, TCL_LEAVE_ERR_MSG)
-        == NULL)
-    {
+        == NULL) {
         return TCL_ERROR;
     }
     sprintf(string, "%ld", statPtr->st_size);
     if (Tcl_SetVar2(interp, varName, "size", string, TCL_LEAVE_ERR_MSG)
-        == NULL)
-    {
+        == NULL) {
         return TCL_ERROR;
     }
     sprintf(string, "%ld", statPtr->st_atime);
     if (Tcl_SetVar2(interp, varName, "atime", string, TCL_LEAVE_ERR_MSG)
-        == NULL)
-    {
+        == NULL) {
         return TCL_ERROR;
     }
     sprintf(string, "%ld", statPtr->st_mtime);
     if (Tcl_SetVar2(interp, varName, "mtime", string, TCL_LEAVE_ERR_MSG)
-        == NULL)
-    {
+        == NULL) {
         return TCL_ERROR;
     }
     sprintf(string, "%ld", statPtr->st_ctime);
     if (Tcl_SetVar2(interp, varName, "ctime", string, TCL_LEAVE_ERR_MSG)
-        == NULL)
-    {
+        == NULL) {
         return TCL_ERROR;
     }
     if (Tcl_SetVar2(interp,
@@ -554,8 +461,7 @@ struct stat *statPtr; /* Pointer to buffer containing
                     "type",
                     GetFileType(( int )statPtr->st_mode),
                     TCL_LEAVE_ERR_MSG)
-        == NULL)
-    {
+        == NULL) {
         return TCL_ERROR;
     }
     return TCL_OK;
@@ -580,32 +486,19 @@ struct stat *statPtr; /* Pointer to buffer containing
 
 static char *GetFileType(mode) int mode;
 {
-    if (S_ISREG(mode))
-    {
+    if (S_ISREG(mode)) {
         return "file";
-    }
-    else if (S_ISDIR(mode))
-    {
+    } else if (S_ISDIR(mode)) {
         return "directory";
-    }
-    else if (S_ISCHR(mode))
-    {
+    } else if (S_ISCHR(mode)) {
         return "characterSpecial";
-    }
-    else if (S_ISBLK(mode))
-    {
+    } else if (S_ISBLK(mode)) {
         return "blockSpecial";
-    }
-    else if (S_ISFIFO(mode))
-    {
+    } else if (S_ISFIFO(mode)) {
         return "fifo";
-    }
-    else if (S_ISLNK(mode))
-    {
+    } else if (S_ISLNK(mode)) {
         return "link";
-    }
-    else if (S_ISSOCK(mode))
-    {
+    } else if (S_ISSOCK(mode)) {
         return "socket";
     }
     return "unknown";
@@ -670,10 +563,8 @@ char ***argvPtr; /* Pointer to place to store pointer to array
 
     size = Tcl_DStringLength(&buffer);
     *argcPtr = 0;
-    for (i = 0; i < size; i++)
-    {
-        if (p[i] == '\0')
-        {
+    for (i = 0; i < size; i++) {
+        if (p[i] == '\0') {
             (*argcPtr)++;
         }
     }
@@ -698,11 +589,9 @@ char ***argvPtr; /* Pointer to place to store pointer to array
      * Now set up the argv pointers.
      */
 
-    for (i = 0; i < *argcPtr; i++)
-    {
+    for (i = 0; i < *argcPtr; i++) {
         (*argvPtr)[i] = p;
-        while ((*p++) != '\0')
-        {
+        while ((*p++) != '\0') {
         }
     }
     (*argvPtr)[i] = NULL;
@@ -739,13 +628,10 @@ Tcl_DString *bufPtr; /* Pointer to DString to use for the result. */
      * Deal with the root directory as a special case.
      */
 
-    if (path[0] == '/')
-    {
+    if (path[0] == '/') {
         Tcl_DStringAppend(bufPtr, "/", 2);
         p = path + 1;
-    }
-    else
-    {
+    } else {
         p = path;
     }
 
@@ -754,25 +640,20 @@ Tcl_DString *bufPtr; /* Pointer to DString to use for the result. */
      * prefixed with "./" so they are not affected by tilde substitution.
      */
 
-    for (;;)
-    {
+    for (;;) {
         elementStart = p;
-        while ((*p != '\0') && (*p != '/'))
-        {
+        while ((*p != '\0') && (*p != '/')) {
             p++;
         }
         length = p - elementStart;
-        if (length > 0)
-        {
-            if ((elementStart[0] == '~') && (elementStart != path))
-            {
+        if (length > 0) {
+            if ((elementStart[0] == '~') && (elementStart != path)) {
                 Tcl_DStringAppend(bufPtr, "./", 2);
             }
             Tcl_DStringAppend(bufPtr, elementStart, length);
             Tcl_DStringAppend(bufPtr, "", 1);
         }
-        if (*p++ == '\0')
-        {
+        if (*p++ == '\0') {
             break;
         }
     }
@@ -803,8 +684,7 @@ char **argv;        /* Argument strings. */
     iPtr->interpType = INTERP_KSH;
     TkshSetListMode(INTERP_KSH);
 
-    if (Tksh_CreatePipeline(interp, argc - 1, argv + 1, &buffer) == TCL_OK)
-    {
+    if (Tksh_CreatePipeline(interp, argc - 1, argv + 1, &buffer) == TCL_OK) {
         dprintf(("EXEC: %s%s%s\n", ".sh.result=$(", buffer.string, " 2>&1)"));
         result
         = Tcl_VarEval(interp, ".sh.result=$(", buffer.string, ")", NULL);
@@ -847,48 +727,36 @@ Tksh_CreatePipeline(Tcl_Interp *interp,
 
     cmdCount = 1;
     lastBar = -1;
-    for (i = 0; i < argc; i++)
-    {
+    for (i = 0; i < argc; i++) {
         useForStdErr = 0;
         if ((argv[i][0] == '|')
             && (((argv[i][1] == 0))
-                || ((argv[i][1] == '&') && (argv[i][2] == 0))))
-        {
-            if ((i == (lastBar + 1)) || (i == (argc - 1)))
-            {
+                || ((argv[i][1] == '&') && (argv[i][2] == 0)))) {
+            if ((i == (lastBar + 1)) || (i == (argc - 1))) {
                 interp->result = "illegal use of | or |& in command";
                 return -1;
             }
             lastBar = i;
             cmdCount++;
-            if (argv[i][1])
-            {
+            if (argv[i][1]) {
                 Tcl_DStringAppend(buffer, " 2>&1 |", -1);
                 useForStdErr = 1;
-            }
-            else
-            {
+            } else {
                 Tcl_DStringAppend(buffer, " 2>/dev/null |", -1);
             }
-            if (input)
-            {
+            if (input) {
                 Tcl_DStringAppend(buffer, "\n", -1);
                 Tcl_DStringAppend(buffer, input, -1);
                 Tcl_DStringAppend(buffer, "\nTKSH_HUP\n", -1);
                 input = NULL;
             }
             continue;
-        }
-        else if (argv[i][0] == '<')
-        {
-            if (argv[i][1] == '<')
-            {
+        } else if (argv[i][0] == '<') {
+            if (argv[i][1] == '<') {
                 input = argv[i] + 2;
-                if (*input == 0)
-                {
+                if (*input == 0) {
                     input = argv[i + 1];
-                    if (input == 0)
-                    {
+                    if (input == 0) {
                         Tcl_AppendResult(interp,
                                          "can't specify \"",
                                          argv[i],
@@ -899,83 +767,61 @@ Tksh_CreatePipeline(Tcl_Interp *interp,
                     skip = 1;
                 }
                 Tcl_DStringAppend(buffer, " <<\\TKSH_HUP", -1);
-            }
-            else
-            {
+            } else {
                 input = 0;
                 Tcl_DStringAppend(buffer, " ", -1);
                 Tcl_DStringAppend(buffer, argv[i], -1);
             }
-        }
-        else if (argv[i][0] == '>')
-        {
+        } else if (argv[i][0] == '>') {
             char *rtype;
             if (argv[i][1] == 0)
                 Tcl_DStringAppend(buffer, " >|", -1);
-            else
-            {
-                if (argv[i][1] == '>')
-                {
+            else {
+                if (argv[i][1] == '>') {
                     p = argv[i] + 2;
                     rtype = " >>";
-                }
-                else
-                {
+                } else {
                     p = argv[i] + 1;
                     rtype = " >|";
                 }
                 if ((!(*p)) && (!argv[i + 1]))
                     goto errorSpec;
-                if (*p == '&')
-                {
+                if (*p == '&') {
                     p++;
                     Tcl_DStringAppend(buffer, rtype, -1);
                     if (*p)
                         Tcl_DStringAppend(buffer, p, -1);
-                    else
-                    {
+                    else {
                         Tcl_DStringAppend(buffer, argv[i + 1], -1);
                         skip = 1;
                     }
                     Tcl_DStringAppend(buffer, " 2>&1", -1);
                     useForStdErr = 1;
-                }
-                else
-                {
+                } else {
                     Tcl_DStringAppend(buffer, " ", -1);
                     Tcl_DStringAppend(buffer, argv[i], -1);
                 }
             }
-        }
-        else if ((argv[i][0] == '2') && (argv[i][1] == '>'))
-        {
+        } else if ((argv[i][0] == '2') && (argv[i][1] == '>')) {
             int atOk;
 
             useForStdErr = 1;
             p = argv[i] + 2;
-            if (*p == '>')
-            {
+            if (*p == '>') {
                 p++;
                 atOk = 0;
-            }
-            else
-            {
+            } else {
                 atOk = 1;
             }
-            if (atOk && (argv[i][2] == '@'))
-            {
+            if (atOk && (argv[i][2] == '@')) {
                 /* Not fully handled... */
                 if (strcmp(argv[i] + 3, "stdout") == 0)
                     Tcl_DStringAppend(buffer, " 2>&1", -1);
-            }
-            else
-            {
+            } else {
                 Tcl_DStringAppend(buffer, " ", -1);
                 Tcl_DStringAppend(buffer, argv[i], -1);
             }
-        }
-        else
-        {
+        } else {
             Tcl_DStringAppendElement(buffer, argv[i]);
             continue;
         }
@@ -983,13 +829,11 @@ Tksh_CreatePipeline(Tcl_Interp *interp,
         skip = 0;
         continue;
     }
-    if (argc == 0)
-    {
+    if (argc == 0) {
         interp->result = "didn't specify command to execute";
         return -1;
     }
-    if (input)
-    {
+    if (input) {
         Tcl_DStringAppend(buffer, "\n", -1);
         Tcl_DStringAppend(buffer, input, -1);
         Tcl_DStringAppend(buffer, "\nTKSH_HUP\n", -1);
@@ -1035,14 +879,12 @@ TclCreatePipeline(Tcl_Interp *interp,
         return TCL_ERROR;
 
     iop = sh_iogetiop(SH_IOCOPROCESS, SF_READ);
-    if (outPipePtr)
-    {
+    if (outPipePtr) {
         fdOut = fcntl(sffileno(iop), F_DUPFD, 10);
         *outPipePtr = Tcl_GetFile(( ClientData )fdOut, TCL_UNIX_FD);
     }
     iop = sh_iogetiop(SH_IOCOPROCESS, SF_WRITE);
-    if (inPipePtr)
-    {
+    if (inPipePtr) {
         fdIn = fcntl(sffileno(iop), F_DUPFD, 10);
         *inPipePtr = Tcl_GetFile(( ClientData )fdIn, TCL_UNIX_FD);
     }
@@ -1072,10 +914,8 @@ TclGetExtension(char *name)
     if ((p != NULL) && (lastSep != NULL) && (lastSep > p))
         p = NULL;
     /* Back up to the first period in a series of contiguous dots.*/
-    if (p != NULL)
-    {
-        while ((p > name) && *(p - 1) == '.')
-        {
+    if (p != NULL) {
+        while ((p > name) && *(p - 1) == '.') {
             p--;
         }
     }
@@ -1093,8 +933,7 @@ Tcl_DString *resultPtr; /* Pointer to previously initialized DString. */
     Tcl_DStringInit(&buffer);
     oldLength = Tcl_DStringLength(resultPtr);
 
-    for (i = 0; i < argc; i++)
-    {
+    for (i = 0; i < argc; i++) {
         p = argv[i];
         /*
          * If the path is absolute, reset the result buffer.
@@ -1103,27 +942,20 @@ Tcl_DString *resultPtr; /* Pointer to previously initialized DString. */
          * beginning of the path.
          */
 
-        if (*p == '/')
-        {
+        if (*p == '/') {
             Tcl_DStringSetLength(resultPtr, oldLength);
             Tcl_DStringAppend(resultPtr, "/", 1);
-            while (*p == '/')
-            {
+            while (*p == '/') {
                 p++;
             }
-        }
-        else if (*p == '~')
-        {
+        } else if (*p == '~') {
             Tcl_DStringSetLength(resultPtr, oldLength);
-        }
-        else if ((Tcl_DStringLength(resultPtr) != oldLength) && (p[0] == '.')
-                 && (p[1] == '/') && (p[2] == '~'))
-        {
+        } else if ((Tcl_DStringLength(resultPtr) != oldLength)
+                   && (p[0] == '.') && (p[1] == '/') && (p[2] == '~')) {
             p += 2;
         }
 
-        if (*p == '\0')
-        {
+        if (*p == '\0') {
             continue;
         }
 
@@ -1133,8 +965,7 @@ Tcl_DString *resultPtr; /* Pointer to previously initialized DString. */
 
         length = Tcl_DStringLength(resultPtr);
         if ((length != oldLength)
-            && (Tcl_DStringValue(resultPtr)[length - 1] != '/'))
-        {
+            && (Tcl_DStringValue(resultPtr)[length - 1] != '/')) {
             Tcl_DStringAppend(resultPtr, "/", 1);
             length++;
         }
@@ -1146,21 +977,15 @@ Tcl_DString *resultPtr; /* Pointer to previously initialized DString. */
 
         Tcl_DStringSetLength(resultPtr, ( int )(length + strlen(p)));
         dest = Tcl_DStringValue(resultPtr) + length;
-        for (; *p != '\0'; p++)
-        {
-            if (*p == '/')
-            {
-                while (p[1] == '/')
-                {
+        for (; *p != '\0'; p++) {
+            if (*p == '/') {
+                while (p[1] == '/') {
                     p++;
                 }
-                if (p[1] != '\0')
-                {
+                if (p[1] != '\0') {
                     *dest++ = '/';
                 }
-            }
-            else
-            {
+            } else {
                 *dest++ = *p;
             }
         }

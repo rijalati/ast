@@ -42,10 +42,8 @@ write_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     int errors = error_info.errors;
     Dssformat_t *format;
 
-    for (;;)
-    {
-        switch (optget(argv, write_usage))
-        {
+    for (;;) {
+        switch (optget(argv, write_usage)) {
         case '?':
             if (disc->errorf)
                 (*disc->errorf)(
@@ -61,24 +59,20 @@ write_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     if (error_info.errors > errors)
         return -1;
     argv += opt_info.index;
-    if (expr->data = *argv++)
-    {
-        if (*argv)
-        {
+    if (expr->data = *argv++) {
+        if (*argv) {
             if (disc->errorf)
                 (*disc->errorf)(
                 NiL, disc, ERROR_USAGE | 4, "%s", optusage(NiL));
             return -1;
         }
-        if (!(format = dssformat(expr->data, disc, DSS(cx)->meth)))
-        {
+        if (!(format = dssformat(expr->data, disc, DSS(cx)->meth))) {
             if (disc->errorf)
                 (*disc->errorf)(
                 NiL, disc, 2, "%s: unknown format", ( char * )expr->data);
             return -1;
         }
-    }
-    else
+    } else
         format = 0;
     if (!(expr->data
           = dssfopen(DSS(cx), expr->file, expr->op, DSS_FILE_WRITE, format)))

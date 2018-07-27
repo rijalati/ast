@@ -52,18 +52,13 @@ Sfdisc_t *disc; /* discipline */
     ssize_t r, w;
 
     fi = ( Filter_t * )disc;
-    for (;;)
-    {
+    for (;;) {
         /* get some raw data to stuff down the pipe */
-        if (fi->next && fi->next >= fi->endb)
-        {
-            if ((r = sfrd(f, fi->raw, sizeof(fi->raw), disc)) > 0)
-            {
+        if (fi->next && fi->next >= fi->endb) {
+            if ((r = sfrd(f, fi->raw, sizeof(fi->raw), disc)) > 0) {
                 fi->next = fi->raw;
                 fi->endb = fi->raw + r;
-            }
-            else
-            { /* eof, close write end of pipes */
+            } else { /* eof, close write end of pipes */
                 sfset(fi->filter, SF_READ, 0);
                 close(sffileno(fi->filter));
                 sfset(fi->filter, SF_READ, 1);
@@ -71,8 +66,8 @@ Sfdisc_t *disc; /* discipline */
             }
         }
 
-        if (fi->next && (w = fi->endb - fi->next) > 0)
-        { /* see if pipe is ready for write */
+        if (fi->next && (w = fi->endb - fi->next) > 0) { /* see if pipe is
+                                                            ready for write */
             sfset(fi->filter, SF_READ, 0);
             r = sfpoll(&fi->filter, 1, 1);
             sfset(fi->filter, SF_READ, 1);
@@ -145,8 +140,7 @@ Void_t *data;
 Sfdisc_t *disc;
 #endif
 {
-    if (type == SF_FINAL || type == SF_DPOP)
-    {
+    if (type == SF_FINAL || type == SF_DPOP) {
         sfclose((( Filter_t * )disc)->filter);
         free(disc);
     }
@@ -172,8 +166,7 @@ char *cmd;                        /* program to run as a filter	*/
     /* unbuffered stream */
     sfsetbuf(filter, NIL(Void_t *), 0);
 
-    if (!(fi = ( Filter_t * )malloc(sizeof(Filter_t))))
-    {
+    if (!(fi = ( Filter_t * )malloc(sizeof(Filter_t)))) {
         sfclose(filter);
         return -1;
     }
@@ -185,8 +178,7 @@ char *cmd;                        /* program to run as a filter	*/
     fi->filter = filter;
     fi->next = fi->endb = fi->raw;
 
-    if (sfdisc(f, ( Sfdisc_t * )fi) != ( Sfdisc_t * )fi)
-    {
+    if (sfdisc(f, ( Sfdisc_t * )fi) != ( Sfdisc_t * )fi) {
         sfclose(filter);
         free(fi);
         return -1;

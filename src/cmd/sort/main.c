@@ -324,8 +324,7 @@ optinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
     iconv_list_t *ic;
     int n;
 
-    if (streq(s, "codesets"))
-    {
+    if (streq(s, "codesets")) {
         n = 0;
         for (ic = iconv_list(NiL); ic; ic = iconv_list(ic))
             if (ic->ccode >= 0)
@@ -335,8 +334,7 @@ optinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
                               ic->name,
                               ic->desc);
         return n;
-    }
-    else if (streq(s, "methods"))
+    } else if (streq(s, "methods"))
         return rskeylist(NiL, sp, 1);
     return 0;
 }
@@ -373,19 +371,15 @@ fileopen(Sort_t *sp, const char *path)
 
     if (fp = sp->opened)
         sp->opened = 0;
-    else
-    {
-        if (pathstdin(path))
-        {
+    else {
+        if (pathstdin(path)) {
             if (sp->hadstdin)
                 error(3, "%s: can only read once", path);
             sp->hadstdin = 1;
             fp = sfstdin;
-        }
-        else if (!(fp = sfopen(NiL, path, "r")))
+        } else if (!(fp = sfopen(NiL, path, "r")))
             error(ERROR_SYSTEM | 3, "%s: cannot open", path);
-        if (rsfileread(sp->rec, fp, path))
-        {
+        if (rsfileread(sp->rec, fp, path)) {
             if (fp != sfstdin)
                 sfclose(fp);
             return 0;
@@ -437,16 +431,14 @@ showplugins(Sort_t *sp, Rskey_t *kp, const char *style)
 
     if (streq(style, "list"))
         style = 0;
-    else
-    {
+    else {
         oexit = error_info.exit;
         error_info.exit = noexit;
     }
     if (*kp->input)
         while (name = *kp->input++)
             showlib(sp, kp, name, style);
-    else if (dls = dllsopen("sort", NiL, NiL))
-    {
+    else if (dls = dllsopen("sort", NiL, NiL)) {
         while (dle = dllsread(dls))
             showlib(sp, kp, dle->name, style);
         dllsclose(dls);
@@ -494,10 +486,8 @@ parse(Sort_t *sp, char **argv)
     struct stat st;
 
     optinit(&optdisc, optinfo);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 0:
             break;
         case 'c':
@@ -551,8 +541,7 @@ parse(Sort_t *sp, char **argv)
                       *opt_info.arg,
                       key->tab);
             mbtinit(&q);
-            if ((n = mbtsize(opt_info.arg, MB_LEN_MAX, &q)) < 1)
-            {
+            if ((n = mbtsize(opt_info.arg, MB_LEN_MAX, &q)) < 1) {
                 error(1,
                       "%s: %s: invalid tab character",
                       opt_info.option,
@@ -586,8 +575,7 @@ parse(Sort_t *sp, char **argv)
                 n = 'r';
         size:
             z = strton(s, &e, NiL, 1);
-            if (*e == '%')
-            {
+            if (*e == '%') {
                 error(2,
                       "%s %c%s: %% not supported -- do you really want that "
                       "much memory?",
@@ -599,13 +587,11 @@ parse(Sort_t *sp, char **argv)
             if (*e
                 || z < ((n == 'm' || n == 'o' || n == 'r' || isupper(n))
                         ? 0
-                        : 512))
-            {
+                        : 512)) {
                 error(2, "%s %c%s: invalid size", opt_info.option, n, s);
                 return -1;
             }
-            switch (n)
-            {
+            switch (n) {
             case 'a':
                 key->alignsize = z;
                 break;
@@ -645,8 +631,7 @@ parse(Sort_t *sp, char **argv)
             error_info.trace = -opt_info.num;
             continue;
         case 'K':
-            if (opt_info.offset)
-            {
+            if (opt_info.offset) {
                 opt_info.offset = 0;
                 opt_info.index++;
             }
@@ -661,8 +646,7 @@ parse(Sort_t *sp, char **argv)
             continue;
         case 'R':
             key->disc->data = recstr(opt_info.arg, &e);
-            if (*e)
-            {
+            if (*e) {
                 error(2, "%s: invalid record format", opt_info.arg);
                 return -1;
             }
@@ -671,8 +655,7 @@ parse(Sort_t *sp, char **argv)
         case 'y':
             n = 'p';
             s = opt_info.arg;
-            if (*s && *(e = s + strlen(s) - 1) != '%' && !isalpha(*e))
-            {
+            if (*s && *(e = s + strlen(s) - 1) != '%' && !isalpha(*e)) {
                 sfsprintf(opt, sizeof(opt), "%ski", s);
                 s = opt;
             }
@@ -683,8 +666,7 @@ parse(Sort_t *sp, char **argv)
         case 'X':
             s = opt_info.arg;
             opt_info.num = strton(s, &e, NiL, 1);
-            if (*e)
-            {
+            if (*e) {
                 if (streq(s, "dump"))
                     opt_info.num = TEST_dump;
                 else if (streq(s, "io"))
@@ -697,12 +679,10 @@ parse(Sort_t *sp, char **argv)
                     opt_info.num = TEST_reserve;
                 else if (streq(s, "show"))
                     opt_info.num = TEST_show;
-                else if (streq(s, "test"))
-                {
+                else if (streq(s, "test")) {
                     sfprintf(sfstdout, "ok\n");
                     exit(0);
-                }
-                else
+                } else
                     error(1, "%s: unknown test", s);
             }
             if (*opt_info.option == '+')
@@ -728,25 +708,20 @@ parse(Sort_t *sp, char **argv)
         break;
     }
     argv += opt_info.index;
-    if (obsolescent && (opt_info.index <= 1 || !streq(*(argv - 1), "--")))
-    {
+    if (obsolescent && (opt_info.index <= 1 || !streq(*(argv - 1), "--"))) {
         /*
          * check for obsolescent `-o output' after first file operand
          */
 
         a = v = argv;
-        while (s = *a++)
-        {
-            if (*s == '-' && *(s + 1) == 'o')
-            {
-                if (!*(s += 2) && !(s = *a++))
-                {
+        while (s = *a++) {
+            if (*s == '-' && *(s + 1) == 'o') {
+                if (!*(s += 2) && !(s = *a++)) {
                     error(2, "-o: output argument expected");
                     break;
                 }
                 key->output = s;
-            }
-            else
+            } else
                 *v++ = s;
         }
         *v = 0;
@@ -757,8 +732,7 @@ parse(Sort_t *sp, char **argv)
      * disciplines have the opportunity to modify key info
      */
 
-    while (lib = firstlib)
-    {
+    while (lib = firstlib) {
         if (rslib(sp->rec, key, lib->name, 0))
             return 1;
         firstlib = firstlib->next;
@@ -779,17 +753,14 @@ parse(Sort_t *sp, char **argv)
     if (map = RECTYPE(key->disc->data) == REC_method
               && REC_M_INDEX(key->disc->data) == REC_M_path)
         for (n = 0, i = -1; p = key->input[n]; n++)
-            if (s = strrchr(p, '%'))
-            {
+            if (s = strrchr(p, '%')) {
                 r = recstr(s + 1, &e);
-                if (!*e || *e == '.' && e > (s + 1))
-                {
+                if (!*e || *e == '.' && e > (s + 1)) {
                     if (r != key->disc->data && i >= 0
                         && (RECTYPE(r) != REC_variable
                             || RECTYPE(key->disc->data) != REC_variable
                             || REC_V_ATTRIBUTES(r)
-                               != REC_V_ATTRIBUTES(key->disc->data)))
-                    {
+                               != REC_V_ATTRIBUTES(key->disc->data))) {
                         error(2,
                               "%s: format %s incompatible with %s format %s",
                               p,
@@ -807,11 +778,9 @@ parse(Sort_t *sp, char **argv)
             }
     if (RECTYPE(key->disc->data) == REC_method
         && ((n = REC_M_INDEX(key->disc->data)) == REC_M_path
-            || n == REC_M_data))
-    {
+            || n == REC_M_data)) {
         if ((sp->opened = fileopen(sp, key->input[0]))
-            && (s = sfreserve(sp->opened, SF_UNBOUND, SF_LOCKR)))
-        {
+            && (s = sfreserve(sp->opened, SF_UNBOUND, SF_LOCKR))) {
             struct stat st;
 
             z = sfvalue(sp->opened);
@@ -819,9 +788,7 @@ parse(Sort_t *sp, char **argv)
                 st.st_size = 0;
             key->disc->data = recfmt(s, z, st.st_size);
             sfread(sp->opened, s, 0);
-        }
-        else
-        {
+        } else {
             z = sp->opened ? sfvalue(sp->opened) : -1;
             key->disc->data = REC_N_TYPE();
         }
@@ -833,14 +800,12 @@ parse(Sort_t *sp, char **argv)
     if (RECTYPE(key->disc->data) == REC_fixed)
         key->fixed = REC_F_SIZE(key->disc->data);
     if (map && key->output && key->disc->data != REC_N_TYPE()
-        && (stat(key->output, &st) || S_ISREG(st.st_mode)))
-    {
+        && (stat(key->output, &st) || S_ISREG(st.st_mode))) {
         if (p = strrchr(key->output, '/'))
             s = p + 1;
         else
             s = key->output;
-        if (!strchr(s, '%'))
-        {
+        if (!strchr(s, '%')) {
             p = key->output;
             if (!(e = strrchr(s, '.')))
                 e = s + strlen(s);
@@ -882,11 +847,9 @@ dumpkey(Rs_t *rs,
     int i;
     char buf[2];
 
-    if ((n = (*sp->defkeyf)(rs, dat, datlen, key, keylen, disc)) > 0)
-    {
+    if ((n = (*sp->defkeyf)(rs, dat, datlen, key, keylen, disc)) > 0) {
         buf[1] = 0;
-        for (i = 0; i < n; i++)
-        {
+        for (i = 0; i < n; i++) {
             buf[0] = key[i];
             sfputr(sp->tp, fmtesc(buf), -1);
         }
@@ -931,8 +894,7 @@ init(Sort_t *sp, Rskeydisc_t *dp, char **argv)
     key->type |= RS_DATA;
     if ((n = strtol(astconf("PAGESIZE", NiL, NiL), &t, 0)) > 0 && !*t)
         key->alignsize = n;
-    if ((n = parse(sp, argv)) || rskeyinit(key))
-    {
+    if ((n = parse(sp, argv)) || rskeyinit(key)) {
         rskeyclose(key);
         if (n < 0)
             error(ERROR_USAGE | 4, "%s", optusage(NiL));
@@ -949,8 +911,7 @@ init(Sort_t *sp, Rskeydisc_t *dp, char **argv)
         x = INMAX;
     else if (x < INMIN && !sp->chunk)
         x = INMIN;
-    if (sp->single = !key->input[1])
-    {
+    if (sp->single = !key->input[1]) {
         if (!(sp->opened = fileopen(sp, key->input[0])))
             error(ERROR_SYSTEM | 3, "%s: cannot open", key->input[0]);
         if (fstat(sffileno(sp->opened), &is))
@@ -961,29 +922,23 @@ init(Sort_t *sp, Rskeydisc_t *dp, char **argv)
         {
             sp->total = 0;
             sp->test |= TEST_read;
-        }
-        else if (x > (sp->total = is.st_size))
+        } else if (x > (sp->total = is.st_size))
             x = sp->total;
-    }
-    else
+    } else
         sp->test |= TEST_read;
     if (sp->zip & SF_READ)
         sp->test |= TEST_read;
     fixed = key->fixed;
-    if ((sp->test & TEST_reserve) || !(sp->test & TEST_read))
-    {
+    if ((sp->test & TEST_reserve) || !(sp->test & TEST_read)) {
         sp->map = 1;
         if (z)
             x = key->procsize;
         if (fixed)
             x += fixed - x % fixed;
-    }
-    else
-    {
+    } else {
         if (z)
             x = key->procsize;
-        for (;;)
-        {
+        for (;;) {
             if (fixed)
                 x += fixed - x % fixed;
             if (sp->buf = ( char * )vmalign(Vmheap, x, key->alignsize))
@@ -993,20 +948,17 @@ init(Sort_t *sp, Rskeydisc_t *dp, char **argv)
         }
         sp->hit = x - key->alignsize;
     }
-    if (sp->test & TEST_keys)
-    {
+    if (sp->test & TEST_keys) {
         if (!key->disc->defkeyf)
             error(2, "no key function to intercept");
         else if (!(sp->tp = sfstropen()))
             error(ERROR_SYSTEM | 3, "out of space");
-        else
-        {
+        else {
             sp->defkeyf = key->disc->defkeyf;
             key->disc->defkeyf = dumpkey;
         }
     }
-    if (key->nproc > 1)
-    {
+    if (key->nproc > 1) {
         off_t offset;
         off_t total;
         off_t size;
@@ -1014,15 +966,13 @@ init(Sort_t *sp, Rskeydisc_t *dp, char **argv)
         int i;
         Job_t *jp;
 
-        if (!sp->map || pathstdin(key->input[0]))
-        {
+        if (!sp->map || pathstdin(key->input[0])) {
         uno:
             key->nproc = 1;
-        }
-        else if ((n = (sp->total + key->procsize - 1) / (key->procsize)) <= 1)
+        } else if ((n = (sp->total + key->procsize - 1) / (key->procsize))
+                   <= 1)
             goto uno;
-        else
-        {
+        else {
             if (n < key->nproc)
                 key->nproc = n;
             else
@@ -1030,13 +980,11 @@ init(Sort_t *sp, Rskeydisc_t *dp, char **argv)
             if (!(sp->jobs = vmnewof(Vmheap, 0, Job_t, n, 0)))
                 goto uno;
             size = (sp->total + n - 1) / n;
-            if (fixed)
-            {
+            if (fixed) {
                 if (size % fixed)
                     size += fixed - size % fixed;
                 i = (size + x - 1) / x;
-                if (i * n > sp->xfiles)
-                {
+                if (i * n > sp->xfiles) {
                     error(1,
                           "multi-process multi-stage not implemented; "
                           "falling back to one processor");
@@ -1048,8 +996,7 @@ init(Sort_t *sp, Rskeydisc_t *dp, char **argv)
                 size = chunk * i;
                 offset = 0;
                 total = sp->total;
-                for (jp = sp->jobs; jp < sp->jobs + n; jp++)
-                {
+                for (jp = sp->jobs; jp < sp->jobs + n; jp++) {
                     jp->offset = offset;
                     if (size > total)
                         size = total;
@@ -1060,8 +1007,7 @@ init(Sort_t *sp, Rskeydisc_t *dp, char **argv)
                 }
                 if (key->procsize > chunk)
                     key->procsize = chunk;
-                else
-                {
+                else {
                     size = key->procsize;
                     i = (chunk + size - 1) / size;
                     size = chunk / i;
@@ -1069,9 +1015,7 @@ init(Sort_t *sp, Rskeydisc_t *dp, char **argv)
                         size += fixed - size % fixed;
                     key->procsize = size;
                 }
-            }
-            else
-            {
+            } else {
                 char *s;
                 char *t;
                 char *b;
@@ -1081,8 +1025,7 @@ init(Sort_t *sp, Rskeydisc_t *dp, char **argv)
                 Sfio_t *ip;
 
                 i = (size + x - 1) / x;
-                if (i * n > sp->xfiles)
-                {
+                if (i * n > sp->xfiles) {
                     error(1,
                           "multi-process multi-stage not implemented; "
                           "falling back to one processor");
@@ -1097,13 +1040,11 @@ init(Sort_t *sp, Rskeydisc_t *dp, char **argv)
                 file = key->input[0];
                 if (!(ip = fileopen(sp, file)))
                     error(ERROR_SYSTEM | 3, "%s: cannot read", file);
-                for (jp = sp->jobs; jp < sp->jobs + n; jp++)
-                {
+                for (jp = sp->jobs; jp < sp->jobs + n; jp++) {
                     jp->offset = offset;
                     if (((size = ideal) + scan) >= total)
                         size = total;
-                    else
-                    {
+                    else {
                         /*UNDENT...*/
 
                         /*
@@ -1125,10 +1066,8 @@ init(Sort_t *sp, Rskeydisc_t *dp, char **argv)
                             file,
                             ( Sflong_t )offset + size);
                         s = t = b + scan / 2 - 1;
-                        while (*s++ != '\n')
-                        {
-                            if (t < b)
-                            {
+                        while (*s++ != '\n') {
+                            if (t < b) {
                             bigger:
                                 if (((size += scan) + offset)
                                     >= (total - scan))
@@ -1149,15 +1088,13 @@ init(Sort_t *sp, Rskeydisc_t *dp, char **argv)
                                     file,
                                     ( Sflong_t )offset + size);
                                 t = (s = b) + scan;
-                                do
-                                {
+                                do {
                                     if (s >= t)
                                         goto bigger;
                                 } while (*s++ != '\n');
                                 break;
                             }
-                            if (*t-- == '\n')
-                            {
+                            if (*t-- == '\n') {
                                 s = t + 2;
                                 break;
                             }
@@ -1190,39 +1127,30 @@ init(Sort_t *sp, Rskeydisc_t *dp, char **argv)
      */
 
     n = stat("/dev/null", &is);
-    if (pathstdout(key->output))
-    {
+    if (pathstdout(key->output)) {
         key->output = "/dev/stdout";
         sp->op = sfstdout;
         if (!n && !fstat(sffileno(sp->op), &os) && os.st_dev == is.st_dev
             && os.st_ino == is.st_ino)
             key->type |= RS_IGNORE;
-    }
-    else if (key->input)
-    {
-        if (!stat(key->output, &os))
-        {
+    } else if (key->input) {
+        if (!stat(key->output, &os)) {
             if (!n && os.st_dev == is.st_dev && os.st_ino == is.st_ino)
                 key->type |= RS_IGNORE;
             else if (eaccess(key->output, W_OK))
                 error(ERROR_SYSTEM | 3, "%s: cannot write", key->output);
-            else if (!fs3d(FS3D_TEST) || !iview(&os))
-            {
+            else if (!fs3d(FS3D_TEST) || !iview(&os)) {
                 p = key->input;
                 while (s = *p++)
-                    if (!pathstdin(s))
-                    {
+                    if (!pathstdin(s)) {
                         if (stat(s, &is))
                             error(ERROR_SYSTEM | 2, "%s: not found", s);
                         else if (os.st_dev == is.st_dev
-                                 && os.st_ino == is.st_ino)
-                        {
-                            if (t = strrchr(key->output, '/'))
-                            {
+                                 && os.st_ino == is.st_ino) {
+                            if (t = strrchr(key->output, '/')) {
                                 s = key->output;
                                 *t = 0;
-                            }
-                            else
+                            } else
                                 s = ".";
                             if (sp->overwrite
                                 = pathtemp(NiL, 0, s, error_info.id, &n))
@@ -1257,16 +1185,14 @@ init(Sort_t *sp, Rskeydisc_t *dp, char **argv)
      * finally ready for recsort now
      */
 
-    if (rsinit(sp->rec, key->meth, key->procsize, key->type, key))
-    {
+    if (rsinit(sp->rec, key->meth, key->procsize, key->type, key)) {
         error(ERROR_SYSTEM | 2, "sort library initialization error");
         rskeyclose(key);
         return -1;
     }
     if (sp->rec->meth->type == RS_MTCOPY)
         sp->chunk = 1;
-    if (sp->test & TEST_io)
-    {
+    if (sp->test & TEST_io) {
         for (n = 0; s = key->input[n]; n++)
             error(0, "%s input[%d]\t\"%s\"", error_info.id, n, s);
         if (s = key->output)
@@ -1284,19 +1210,16 @@ clear(Sort_t *sp, Sfio_t *fp)
 {
     int i;
 
-    for (i = fp ? sp->mfiles : 0; i < sp->nfiles; i++)
-    {
+    for (i = fp ? sp->mfiles : 0; i < sp->nfiles; i++) {
         rstempclose(sp->rec, sp->files[i]);
         sp->files[i] = 0;
     }
-    if (fp)
-    {
+    if (fp) {
         sp->files[sp->mfiles++] = fp;
         sp->nfiles = sp->mfiles;
         if (sp->mfiles >= (sp->xfiles - 1))
             sp->mfiles = 0;
-    }
-    else
+    } else
         sp->nfiles = sp->mfiles = 0;
 }
 
@@ -1314,27 +1237,22 @@ flush(Sort_t *sp, size_t r)
     size_t m;
     size_t b;
 
-    if (sp->chunk)
-    {
+    if (sp->chunk) {
         /*
          * skip merge and output sorted chunk
          */
 
-        if (rswrite(sp->rec, sp->op, RS_OTEXT))
-        {
+        if (rswrite(sp->rec, sp->op, RS_OTEXT)) {
             if (!error_info.errors)
                 error(ERROR_SYSTEM | 2, "%s: write error", sp->key->output);
             return -1;
         }
-    }
-    else if (sp->rec->meth->type != RS_MTVERIFY)
-    {
+    } else if (sp->rec->meth->type != RS_MTVERIFY) {
         /*
          * write to an intermediate file and rewind for rsmerge
          */
 
-        if (!(fp = sp->files[sp->nfiles]))
-        {
+        if (!(fp = sp->files[sp->nfiles])) {
             if (sp->child || !(fp = rstempwrite(sp->rec, ( Sfio_t * )0)))
                 error(ERROR_SYSTEM | 3,
                       "cannot create intermediate sort file %d",
@@ -1344,13 +1262,11 @@ flush(Sort_t *sp, size_t r)
         sp->nfiles++;
         if (sp->verbose)
             error(0, "%s write intermediate", error_info.id);
-        if (rswrite(sp->rec, fp, 0))
-        {
+        if (rswrite(sp->rec, fp, 0)) {
             error(ERROR_SYSTEM | 2, "intermediate sort file write error");
             return -1;
         }
-        if (rstempread(sp->rec, fp))
-        {
+        if (rstempread(sp->rec, fp)) {
             error(ERROR_SYSTEM | 2, "intermediate sort file rewind error");
             return -1;
         }
@@ -1359,8 +1275,7 @@ flush(Sort_t *sp, size_t r)
          * multi-stage merge when open file limit exceeded
          */
 
-        if (sp->nfiles >= sp->xfiles)
-        {
+        if (sp->nfiles >= sp->xfiles) {
             if (sp->child || !(fp = rstempwrite(sp->rec, ( Sfio_t * )0)))
                 error(ERROR_SYSTEM | 3,
                       "cannot create intermediate merge file");
@@ -1370,14 +1285,12 @@ flush(Sort_t *sp, size_t r)
                         fp,
                         sp->files + sp->mfiles,
                         sp->nfiles - sp->mfiles,
-                        0))
-            {
+                        0)) {
                 error(ERROR_SYSTEM | 2,
                       "intermediate merge file write error");
                 return -1;
             }
-            if (rstempread(sp->rec, fp))
-            {
+            if (rstempread(sp->rec, fp)) {
                 error(ERROR_SYSTEM | 2,
                       "intermediate merge file rewind error");
                 return -1;
@@ -1390,18 +1303,14 @@ flush(Sort_t *sp, size_t r)
      * slide over partial record data so the next read is aligned
      */
 
-    if (!sp->map && (m = sp->cur - r))
-    {
+    if (!sp->map && (m = sp->cur - r)) {
         n = roundof(m, sp->key->alignsize) - m;
-        if (n < r)
-        {
+        if (n < r) {
             m = n;
             while (r < sp->cur)
                 sp->buf[n++] = sp->buf[r++];
             sp->cur = n;
-        }
-        else
-        {
+        } else {
             b = r;
             r += m;
             n += m;
@@ -1410,8 +1319,7 @@ flush(Sort_t *sp, size_t r)
                 sp->buf[--n] = sp->buf[--r];
             m = n;
         }
-    }
-    else
+    } else
         m = sp->cur = 0;
     return m;
 }
@@ -1443,8 +1351,7 @@ input(Sort_t *sp, Sfio_t *ip, const char *name, int last)
     z = 0;
     if (sp->bufsize)
         sfsetbuf(ip, NiL, sp->bufsize);
-    else if (sfsize(ip) > SF_BUFSIZE)
-    {
+    else if (sfsize(ip) > SF_BUFSIZE) {
         if (sp->map)
             sfsetbuf(ip, NiL, z = sp->end);
         else
@@ -1454,35 +1361,27 @@ input(Sort_t *sp, Sfio_t *ip, const char *name, int last)
         w = sfsize(ip);
     r = sp->cur = roundof(sp->cur, sp->key->alignsize);
     p = 0;
-    for (;;)
-    {
-        if (sp->cur > sp->hit)
-        {
+    for (;;) {
+        if (sp->cur > sp->hit) {
             if (sp->single && !sp->nfiles && sp->total == (sp->map ? 0 : p))
                 break;
             if ((r = flush(sp, r)) < 0)
                 return -1;
         }
-        if (!sp->map)
-        {
+        if (!sp->map) {
             n = sfeof(ip) ? 0
                           : sfread(ip, sp->buf + sp->cur, sp->end - sp->cur);
-            if (last)
-            {
+            if (last) {
                 if ((c = sfgetc(ip)) == EOF)
                     sp->rec->type |= RS_LAST;
                 else
                     sfungetc(ip, c);
             }
-        }
-        else
-        {
+        } else {
             sp->buf = ( char * )sfreserve(ip, m, SF_LOCKR);
             n = sfvalue(ip);
-            if (!sp->buf)
-            {
-                if (m < 0 && n < -m && z == sp->end)
-                {
+            if (!sp->buf) {
+                if (m < 0 && n < -m && z == sp->end) {
                     sfsetbuf(ip, NiL, z = 2 * sp->end);
                     sp->buf = ( char * )sfreserve(ip, m, SF_LOCKR);
                     n = sfvalue(ip);
@@ -1508,27 +1407,23 @@ input(Sort_t *sp, Sfio_t *ip, const char *name, int last)
                       sizeof(n),
                       n);
         }
-        if (n <= 0)
-        {
+        if (n <= 0) {
             if (n < 0)
                 error(ERROR_SYSTEM | 3, "read error");
             if (sp->cur <= r)
                 break;
-            if (sp->key->fixed)
-            {
+            if (sp->key->fixed) {
                 error(
                 1, "incomplete record length=%lld", (Sflong_t)(sp->cur - r));
                 break;
             }
             if (RECTYPE(sp->key->disc->data) == REC_delimited
                 && sp->buf[sp->cur - 1]
-                   != (c = REC_D_DELIMITER(sp->key->disc->data)))
-            {
+                   != (c = REC_D_DELIMITER(sp->key->disc->data))) {
                 sp->buf[sp->cur++] = c;
                 if (c == '\n')
                     error(1, "newline appended");
-                else
-                {
+                else {
                     del[0] = c;
                     del[1] = 0;
                     error(1, "%s appended", fmtquote(del, "'", NiL, 1, 0));
@@ -1544,8 +1439,7 @@ input(Sort_t *sp, Sfio_t *ip, const char *name, int last)
                   (Sflong_t)(sp->cur - r));
         if ((p = rsprocess(sp->rec, sp->buf + r, sp->cur - r)) < 0)
             error(ERROR_SYSTEM | 3, "sort error");
-        if (sp->verbose)
-        {
+        if (sp->verbose) {
             if (sp->child)
                 error(0,
                       "%s process %lld -> %lld",
@@ -1555,52 +1449,39 @@ input(Sort_t *sp, Sfio_t *ip, const char *name, int last)
             else
                 error(0, " %lld", ( Sflong_t )p);
         }
-        if (sp->map)
-        {
+        if (sp->map) {
             if (sp->map > 2)
                 break;
             sfread(ip, sp->buf, p);
-            if (p)
-            {
+            if (p) {
                 m = -(n - p + 1);
                 if (((sp->total -= p) / 3) < (sp->end / 2)
-                    && sp->total > sp->end)
-                {
+                    && sp->total > sp->end) {
                     if ((r = flush(sp, r)) < 0)
                         return -1;
                     sfsetbuf(ip, NiL, sp->total);
                 }
-            }
-            else if (sp->map == 1)
-            {
+            } else if (sp->map == 1) {
                 sp->map++;
                 m = -(n + 1);
-            }
-            else if (n > sp->end)
-            {
+            } else if (n > sp->end) {
                 error(2, "monster record", n, sp->end, sp->cur, p);
                 break;
-            }
-            else if (sp->key->fixed)
-            {
+            } else if (sp->key->fixed) {
                 error(1, "incomplete record length=%ld", n - p);
                 break;
-            }
-            else
-            {
+            } else {
                 sp->cur = n - p;
                 if (!(b = vmnewof(Vmheap, 0, char, sp->cur, 1)))
                     error(ERROR_SYSTEM | 3, "out of space");
                 memcpy(b, sp->buf + p, sp->cur);
                 if (RECTYPE(sp->key->disc->data) == REC_delimited
                     && b[sp->cur - 1]
-                       != (c = REC_D_DELIMITER(sp->key->disc->data)))
-                {
+                       != (c = REC_D_DELIMITER(sp->key->disc->data))) {
                     b[sp->cur++] = '\n';
                     if (c == '\n')
                         error(1, "newline appended");
-                    else
-                    {
+                    else {
                         del[0] = c;
                         del[1] = 0;
                         error(
@@ -1611,8 +1492,7 @@ input(Sort_t *sp, Sfio_t *ip, const char *name, int last)
                 sp->map++;
                 goto process;
             }
-        }
-        else
+        } else
             r += p;
     }
     error_info.file = 0;
@@ -1646,8 +1526,7 @@ partseek(Sfio_t *fp, Sfoff_t lloffset, int op, Sfdisc_t *dp)
     Part_t *pp = ( Part_t * )dp;
     off_t offset = lloffset;
 
-    switch (op)
-    {
+    switch (op) {
     case SEEK_SET:
         offset += pp->offset;
         break;
@@ -1659,8 +1538,7 @@ partseek(Sfio_t *fp, Sfoff_t lloffset, int op, Sfdisc_t *dp)
         op = SEEK_SET;
         break;
     }
-    if ((offset = sfsk(fp, offset, op, dp)) >= 0)
-    {
+    if ((offset = sfsk(fp, offset, op, dp)) >= 0) {
         offset -= pp->offset;
         pp->remain = pp->size - offset;
     }
@@ -1695,8 +1573,7 @@ jobs(Sort_t *sp)
               sp->key->nproc,
               ( Sflong_t )sp->total);
     xp = sp->jobs + sp->key->nproc;
-    if (sp->test & TEST_show)
-    {
+    if (sp->test & TEST_show) {
         for (jp = sp->jobs; jp < xp; jp++)
             error(0,
                   "%s#%d pos %12lld : len %10lld : buf %10lld : num %2d",
@@ -1721,11 +1598,9 @@ jobs(Sort_t *sp)
     part.disc.disc = 0;
     file = sp->key->input[0];
     j = 0;
-    for (jp = sp->jobs; jp < xp; jp++)
-    {
+    for (jp = sp->jobs; jp < xp; jp++) {
         ip = fileopen(sp, file);
-        switch (fork())
-        {
+        switch (fork()) {
         case -1:
             error(ERROR_SYSTEM | 3, "not enough child processes");
         case 0:
@@ -1759,16 +1634,12 @@ jobs(Sort_t *sp)
     sp->nfiles = f;
     i = 0;
     j = sp->key->nproc;
-    while (j > 0)
-    {
-        if (wait(&status) != -1)
-        {
+    while (j > 0) {
+        if (wait(&status) != -1) {
             if (status)
                 i++;
             j--;
-        }
-        else if (errno != EINTR)
-        {
+        } else if (errno != EINTR) {
             error(ERROR_SYSTEM | 3,
                   "%d process%s did not complete",
                   j,
@@ -1802,38 +1673,31 @@ done(Sort_t *sp)
      * file now is the time to commit to it
      */
 
-    if (sp->overwrite)
-    {
+    if (sp->overwrite) {
         if (error_info.errors)
             remove(sp->overwrite);
-        else if (sp->preserve)
-        {
+        else if (sp->preserve) {
             Sfio_t *ip;
             Sfio_t *op;
 
-            if (ip = sfopen(NiL, sp->overwrite, "r"))
-            {
-                if (op = sfopen(NiL, sp->key->output, "w"))
-                {
+            if (ip = sfopen(NiL, sp->overwrite, "r")) {
+                if (op = sfopen(NiL, sp->key->output, "w")) {
                     if ((sfmove(ip, op, SF_UNBOUND, -1) < 0 || sfclose(op)
                          || !sfeof(ip))
                         && !error_info.errors)
                         error(
                         ERROR_SYSTEM | 2, "%s: write error", sp->key->output);
                     sfclose(op);
-                }
-                else
+                } else
                     error(
                     ERROR_SYSTEM | 2, "%s: cannot write", sp->key->output);
                 sfclose(ip);
                 remove(sp->overwrite);
-            }
-            else
+            } else
                 error(ERROR_SYSTEM | 2, "%s: cannot read", sp->overwrite);
             sp->preserve = 0;
-        }
-        else if (remove(sp->key->output)
-                 || rename(sp->overwrite, sp->key->output))
+        } else if (remove(sp->key->output)
+                   || rename(sp->overwrite, sp->key->output))
             error(ERROR_SYSTEM | 2, "%s: cannot overwrite", sp->key->output);
         free(sp->overwrite);
         sp->overwrite = 0;
@@ -1856,24 +1720,19 @@ main(int argc, char **argv)
     error_info.id = "sort";
     if (init(&sort, &sort.disc, argv))
         exit(1);
-    if (sort.test & TEST_dump)
-    {
+    if (sort.test & TEST_dump) {
         sfprintf(sfstderr, "main\n\tintermediates=%d\n", sort.xfiles);
         rskeydump(sort.key, sfstderr);
     }
-    if (sort.key->type & RS_CAT)
-    {
-        while (s = *sort.key->input++)
-        {
+    if (sort.key->type & RS_CAT) {
+        while (s = *sort.key->input++) {
             fp = fileopen(&sort, s);
             if (sfmove(fp, sfstdout, SF_UNBOUND, -1) < 0 || !sfeof(fp))
                 error(ERROR_SYSTEM | 2, "%s: read error", s);
             if (sferror(sfstdout) || rsfileclose(sort.rec, fp))
                 break;
         }
-    }
-    else
-    {
+    } else {
         merge = sort.key->merge && sort.key->input[0] && sort.key->input[1]
                 ? sort.key->input
                 : ( char ** )0;
@@ -1882,21 +1741,17 @@ main(int argc, char **argv)
             jobs(&sort);
         else if (sort.test & TEST_show)
             exit(0);
-        else
-        {
+        else {
             last = 0;
             if (!merge && (sort.rec->type & RS_MORE))
                 for (i = 0; s = sort.key->input[i]; i++)
                     if ((pathstdin(s) && !fstat(0, &st) || !stat(s, &st))
                         && st.st_size)
                         last = s;
-            while (s = *sort.key->input++)
-            {
+            while (s = *sort.key->input++) {
                 fp = fileopen(&sort, s);
-                if (merge)
-                {
-                    if (sort.nfiles >= sort.xfiles)
-                    {
+                if (merge) {
+                    if (sort.nfiles >= sort.xfiles) {
                         clear(&sort, NiL);
                         sort.key->input = merge;
                         merge = 0;
@@ -1906,18 +1761,15 @@ main(int argc, char **argv)
                         continue;
                     }
                     sort.files[sort.nfiles++] = fp;
-                }
-                else if (input(&sort, fp, s, s == last) < 0)
+                } else if (input(&sort, fp, s, s == last) < 0)
                     break;
-                else if (fp != sfstdin && !sort.map)
-                {
+                else if (fp != sfstdin && !sort.map) {
                     sfclose(fp);
                     fp = 0;
                 }
             }
         }
-        if (sort.nfiles)
-        {
+        if (sort.nfiles) {
             if (sort.cur && flush(&sort, sort.cur) < 0)
                 return 1;
             if (sort.verbose)
@@ -1929,9 +1781,7 @@ main(int argc, char **argv)
                         merge ? RS_TEXT : RS_OTEXT))
                 error(ERROR_SYSTEM | 3, "merge error");
             clear(&sort, NiL);
-        }
-        else
-        {
+        } else {
             if (sort.verbose)
                 error(0, "%s write text", error_info.id);
             if (rswrite(sort.rec, sort.op, RS_OTEXT) && !error_info.errors)

@@ -42,26 +42,21 @@ codexmeth(const char *name)
         return CODEXERROR->meth;
     plugin = 0;
     meth = codexstate.first;
-    while (meth)
-    {
+    while (meth) {
         if (!codexcmp(name, meth->name))
             return meth;
         last = meth;
-        if (!(meth = meth->next) && !plugin)
-        {
+        if (!(meth = meth->next) && !plugin) {
             plugin = 1;
             for (s = name, t = 0; *s && *s != '+'; s++)
-                if (*s == '-')
-                {
+                if (*s == '-') {
                     if (t)
                         break;
                     t = s;
                 }
-            do
-            {
+            do {
                 sfsprintf(tmp, sizeof(tmp), "%-.*s", s - name, name);
-                if (dll = dllplug("codex", tmp, NiL, RTLD_LAZY, NiL, 0))
-                {
+                if (dll = dllplug("codex", tmp, NiL, RTLD_LAZY, NiL, 0)) {
                     if ((lib = ( Codexlib_f )dlllook(dll, "codex_lib"))
                         && (meth = (*lib)(name)))
                         last->next = meth;

@@ -115,8 +115,7 @@ main(int argc, char **argv)
     int sep = 0;
     int n;
 
-    if (argc <= 1)
-    {
+    if (argc <= 1) {
         printf("%u.%u.%u.%u-%u.%u.%u.%u-%u.%u.%u.%u\n",
                8 * sizeof(float),
                FLT_DIG,
@@ -132,12 +131,9 @@ main(int argc, char **argv)
                LDBL_MAX_10_EXP);
         return 0;
     }
-    while (s = *++argv)
-    {
-        if (!strncmp(s, "LC_ALL=", 7))
-        {
-            if (!setlocale(LC_ALL, s + 7))
-            {
+    while (s = *++argv) {
+        if (!strncmp(s, "LC_ALL=", 7)) {
+            if (!setlocale(LC_ALL, s + 7)) {
                 printf("%s failed\n", s);
                 return 0;
             }

@@ -89,8 +89,7 @@ next(struct msg *msgvec)
     int mdot;
 
     skip = MDELETE | MNONE;
-    if (msgvec->m_index)
-    {
+    if (msgvec->m_index) {
         /*
          * If some messages were supplied, find the
          * first applicable one following dot using
@@ -105,19 +104,15 @@ next(struct msg *msgvec)
          */
 
         for (ip = msgvec;; ip++)
-            if (!ip->m_index)
-            {
+            if (!ip->m_index) {
                 ip = msgvec;
                 break;
-            }
-            else if (ip->m_index > mdot)
+            } else if (ip->m_index > mdot)
                 break;
         ip2 = ip;
-        do
-        {
+        do {
             mp = state.msg.list + ip2->m_index - 1;
-            if (!(mp->m_flag & skip))
-            {
+            if (!(mp->m_flag & skip)) {
                 state.msg.dot = mp;
                 goto hitit;
             }
@@ -149,8 +144,7 @@ next(struct msg *msgvec)
     for (mp = state.msg.dot + 1; mp < state.msg.list + state.msg.count; mp++)
         if (!(mp->m_flag & skip))
             break;
-    if (mp >= state.msg.list + state.msg.count)
-    {
+    if (mp >= state.msg.list + state.msg.count) {
         note(0, "At EOF");
         return 0;
     }
@@ -180,8 +174,7 @@ snarf(char *line, int *flag)
     char *s;
     int quote;
 
-    if (!*line)
-    {
+    if (!*line) {
         *flag = 0;
         return 0;
     }
@@ -199,14 +192,11 @@ snarf(char *line, int *flag)
      * cmdpipe() allows quoted string as last arg.
      */
 
-    if (s > line && (*(s - 1) == '"' || *(s - 1) == '\''))
-    {
+    if (s > line && (*(s - 1) == '"' || *(s - 1) == '\'')) {
         quote = *--s;
         *s = 0;
-        do
-        {
-            if (s <= line)
-            {
+        do {
+            if (s <= line) {
                 note(0, "Unbalanced %c quote", quote);
                 *flag = -1;
                 return 0;
@@ -223,17 +213,14 @@ snarf(char *line, int *flag)
 
     while (s > line && !isspace(*s))
         s--;
-    if (!*s)
-    {
+    if (!*s) {
         *flag = 0;
         return 0;
     }
-    if (isspace(*s))
-    {
+    if (isspace(*s)) {
         *s++ = 0;
         *flag = 1;
-    }
-    else
+    } else
         *flag = 0;
     return s;
 }
@@ -256,26 +243,20 @@ save1(char *str, Dt_t **ignore, unsigned long flags)
     struct mhcontext mh;
     struct stat st;
 
-    if (!(file = snarf(str, &f)))
-    {
+    if (!(file = snarf(str, &f))) {
         if (f < 0)
             return 1;
-    }
-    else if (streq(file, "+"))
-    {
+    } else if (streq(file, "+")) {
         file = 0;
         flags |= FOLLOWUP;
     }
-    if (!f)
-    {
-        if (!(state.msg.list->m_index = first(0, MMNORM)))
-        {
+    if (!f) {
+        if (!(state.msg.list->m_index = first(0, MMNORM))) {
             note(0, "No messages to %s", state.cmd->c_name);
             return 1;
         }
         (state.msg.list + 1)->m_index = 0;
-    }
-    else if (getmsglist(str, 0) < 0)
+    } else if (getmsglist(str, 0) < 0)
         return 1;
     if (flags & FOLLOWUP)
         file = record(
@@ -287,46 +268,35 @@ save1(char *str, Dt_t **ignore, unsigned long flags)
         file = expand(file ? file : "&", 1);
     if (!file)
         return 1;
-    if (state.var.debug)
-    {
+    if (state.var.debug) {
         note(DEBUG, "%s to \"%s\"", state.cmd->c_name, file);
         return 0;
     }
     note(PROMPT, "\"%s\" ", file);
     folder = FFILE;
-    if (stat(file, &st) < 0)
-    {
-        if (*file == '@')
-        {
+    if (stat(file, &st) < 0) {
+        if (*file == '@') {
             folder = FIMAP;
             disp = "[Imap]";
-        }
-        else
+        } else
             disp = "[New file]";
-    }
-    else if (S_ISDIR(st.st_mode))
-    {
+    } else if (S_ISDIR(st.st_mode)) {
         folder = FMH;
         disp = "[Added]";
-    }
-    else if (S_ISREG(st.st_mode))
+    } else if (S_ISREG(st.st_mode))
         disp = state.clobber ? "[Overwritten]" : "[Appended]";
-    else
-    {
+    else {
         note(0, "%s: cannot save to file", file);
         return 1;
     }
-    switch (folder)
-    {
+    switch (folder) {
     case FFILE:
         if (!(fp = fileopen(file, state.clobber ? "EMw" : "EMa")))
             return 1;
-        for (ip = state.msg.list; ip->m_index; ip++)
-        {
+        for (ip = state.msg.list; ip->m_index; ip++) {
             mp = state.msg.list + ip->m_index - 1;
             touchmsg(mp);
-            if (copy(mp, fp, ignore, NiL, 0) < 0)
-            {
+            if (copy(mp, fp, ignore, NiL, 0) < 0) {
                 note(SYSTEM, "%s", file);
                 fileclose(fp);
                 return 1;
@@ -338,12 +308,10 @@ save1(char *str, Dt_t **ignore, unsigned long flags)
             note(SYSTEM, "%s", file);
         break;
     case FIMAP:
-        for (ip = state.msg.list; ip->m_index; ip++)
-        {
+        for (ip = state.msg.list; ip->m_index; ip++) {
             mp = state.msg.list + ip->m_index - 1;
             touchmsg(mp);
-            if (imap_save(mp, file) < 0)
-            {
+            if (imap_save(mp, file) < 0) {
                 note(SYSTEM, "%s", file);
                 return 1;
             }
@@ -353,14 +321,12 @@ save1(char *str, Dt_t **ignore, unsigned long flags)
         break;
     case FMH:
         mhgetcontext(&mh, file, 1);
-        for (ip = state.msg.list; ip->m_index; ip++)
-        {
+        for (ip = state.msg.list; ip->m_index; ip++) {
             mp = state.msg.list + ip->m_index - 1;
             touchmsg(mp);
             sfprintf(state.path.temp, "%s/%d", file, mh.next);
             temp = struse(state.path.temp);
-            if (fp = fileopen(temp, "MEw"))
-            {
+            if (fp = fileopen(temp, "MEw")) {
                 if (copy(mp, fp, ignore, NiL, 0) < 0)
                     note(SYSTEM, "%s", temp);
                 fileclose(fp);
@@ -437,24 +403,19 @@ delm(struct msg *msgvec)
     int last;
 
     last = 0;
-    for (ip = msgvec; ip->m_index; ip++)
-    {
+    for (ip = msgvec; ip->m_index; ip++) {
         mp = state.msg.list + ip->m_index - 1;
         touchmsg(mp);
         msgflags(mp, MDELETE | MTOUCH, MPRESERVE | MSAVE | MBOX);
         last = ip->m_index;
     }
-    if (last)
-    {
+    if (last) {
         state.msg.dot = state.msg.list + last - 1;
         last = first(0, MDELETE);
-        if (last)
-        {
+        if (last) {
             state.msg.dot = state.msg.list + last - 1;
             return 0;
-        }
-        else
-        {
+        } else {
             state.msg.dot = state.msg.list;
             return -1;
         }
@@ -486,18 +447,15 @@ deltype(struct msg *msgvec)
     int lastdot;
 
     lastdot = state.msg.dot - state.msg.list + 1;
-    if (delm(msgvec) >= 0)
-    {
+    if (delm(msgvec) >= 0) {
         if ((state.msg.list->m_index = state.msg.dot - state.msg.list + 1)
-            > lastdot)
-        {
+            > lastdot) {
             touchmsg(state.msg.dot);
             (state.msg.list + 1)->m_index = 0;
             return type(state.msg.list);
         }
         note(0, "At EOF");
-    }
-    else
+    } else
         note(0, "No more messages");
     return 0;
 }
@@ -511,8 +469,7 @@ undelete(struct msg *msgvec)
     struct msg *mp;
     struct msg *ip;
 
-    for (ip = msgvec; ip->m_index; ip++)
-    {
+    for (ip = msgvec; ip->m_index; ip++) {
         mp = state.msg.list + ip->m_index - 1;
         touchmsg(mp);
         state.msg.dot = mp;
@@ -527,8 +484,7 @@ undelete(struct msg *msgvec)
 static int
 ignoreshow(Dt_t *dt, void *object, void *context)
 {
-    if ((( struct name * )object)->flags & *(( int * )context))
-    {
+    if ((( struct name * )object)->flags & *(( int * )context)) {
         *(( int * )context) |= HIT;
         printf("%s\n", (( struct name * )object)->name);
     }
@@ -545,16 +501,13 @@ ignore1(Dt_t **ignore, char **list, unsigned long flags)
     char **ap;
     struct name *tp;
 
-    if (*list)
-    {
+    if (*list) {
         for (ap = list; *ap; ap++)
             if (tp = dictsearch(ignore, *ap, INSERT | IGNORECASE))
                 tp->flags = flags;
         if (*ignore)
             dictflags(ignore) |= flags;
-    }
-    else
-    {
+    } else {
         dictwalk(ignore, ignoreshow, &flags);
         if (!(flags & HIT))
             note(0,
@@ -657,27 +610,21 @@ getatt(struct part *ap,
     FILE *op;
     struct stat st;
 
-    if (name == ap->name)
-    {
+    if (name == ap->name) {
         cmd = 0;
-        if (state.var.attachments)
-        {
+        if (state.var.attachments) {
             sfprintf(state.path.temp, "%s/%s", state.var.attachments, name);
             name = expand(struse(state.path.temp), 1);
-        }
-        else
+        } else
             name = savestr(name);
-    }
-    else if (!(cmd = iscmd(name)) && !(name = expand(name, 1)))
+    } else if (!(cmd = iscmd(name)) && !(name = expand(name, 1)))
         return 1;
-    if (!stat(name, &st) && S_ISDIR(st.st_mode))
-    {
+    if (!stat(name, &st) && S_ISDIR(st.st_mode)) {
         if (s = strrchr(ap->name, '/'))
             s++;
         else
             s = ap->name;
-        if (!streq(name, "."))
-        {
+        if (!streq(name, ".")) {
             sfprintf(state.path.temp, "%s/%s", name, s);
             s = struse(state.path.temp);
         }
@@ -686,51 +633,39 @@ getatt(struct part *ap,
     if (!ap->code[0]
         && mimeview(state.part.mime, "encoding", name, ap->type, ap->opts))
         strncopy(ap->code, ap->type, sizeof(ap->code));
-    if (ap->code[0] && !isdigit(ap->code[0]))
-    {
+    if (ap->code[0] && !isdigit(ap->code[0])) {
         sfprintf(state.path.temp, "uudecode -h -x %s", ap->code);
         if (!mimecmp("text", ap->type, NiL))
             sfprintf(state.path.temp, " -t");
         if (cmd)
             sfprintf(state.path.temp, " -o - | %s", cmd);
-        else if (filestd(name, "w"))
-        {
+        else if (filestd(name, "w")) {
             if ((flags & GMIME) && mime(1)
                 && (s = mimeview(
                     state.part.mime, NiL, NiL, ap->type, ap->opts)))
                 sfprintf(state.path.temp, " | %s", s);
             sfprintf(state.path.temp, " | %s", state.var.pager);
-        }
-        else
-        {
+        } else {
             sfprintf(state.path.temp, " -o ");
             shquote(state.path.temp, name);
         }
         s = struse(state.path.temp);
         n = 1;
-    }
-    else if (cmd)
-    {
+    } else if (cmd) {
         s = cmd;
         n = -1;
-    }
-    else if (filestd(name, "w"))
-    {
+    } else if (filestd(name, "w")) {
         if ((flags & GMIME) && mime(1)
-            && (s = mimeview(state.part.mime, NiL, NiL, ap->type, ap->opts)))
-        {
+            && (s
+                = mimeview(state.part.mime, NiL, NiL, ap->type, ap->opts))) {
             sfprintf(state.path.temp, "%s | %s", s, state.var.pager);
             s = struse(state.path.temp);
             n = 1;
-        }
-        else
-        {
+        } else {
             s = state.var.pager;
             n = -1;
         }
-    }
-    else
-    {
+    } else {
         s = name;
         n = 0;
     }
@@ -765,22 +700,18 @@ get1(char **argv, unsigned long flags)
     int r;
 
     if (state.msg.dot < state.msg.list
-        || state.msg.dot >= state.msg.list + state.msg.count)
-    {
+        || state.msg.dot >= state.msg.list + state.msg.count) {
         note(0, "No current message");
         return 1;
     }
     if (state.folder == FIMAP)
         return imap_get1(argv, flags);
-    if (!(ap = state.part.in.head) || !state.part.in.count)
-    {
+    if (!(ap = state.part.in.head) || !state.part.in.count) {
         note(0, "No attachments in current message");
         return 1;
     }
-    if (!*argv)
-    {
-        do
-        {
+    if (!*argv) {
+        do {
             if (ap->count)
                 printf("(attachment %2d %s %20s \"%s\")\n",
                        ap->count,
@@ -794,53 +725,39 @@ get1(char **argv, unsigned long flags)
         note(PANIC, "Out of space");
     s = *argv++;
     r = 0;
-    for (;;)
-    {
+    for (;;) {
         while (isspace(*s))
             s++;
         if (!*s)
             break;
-        else if (*s == ',')
-        {
+        else if (*s == ',') {
             s++;
             r = 0;
-        }
-        else if (*s == '*')
-        {
+        } else if (*s == '*') {
             if (!r)
                 r = 1;
             for (i = r; i <= state.part.in.count; i++)
                 a[i] = 1;
             r = 0;
-        }
-        else if (*s == '-')
-        {
+        } else if (*s == '-') {
             s++;
             r = 1;
-        }
-        else
-        {
+        } else {
             n = strtol(s, &e, 0);
-            if (n > 0 && n <= state.part.in.count)
-            {
-                if (r)
-                {
+            if (n > 0 && n <= state.part.in.count) {
+                if (r) {
                     for (i = r; i <= n; i++)
                         a[i] = 1;
                     r = 0;
-                }
-                else
+                } else
                     a[n] = 1;
-            }
-            else
-            {
+            } else {
                 note(0, "%s: invalid attachment number", s);
                 while (*e && !isspace(*e))
                     e++;
             }
             s = e;
-            if (*s == '-')
-            {
+            if (*s == '-') {
                 s++;
                 r = n;
             }
@@ -848,11 +765,9 @@ get1(char **argv, unsigned long flags)
     }
     r = 0;
     for (i = 1; i <= state.part.in.count; i++)
-        if (a[i])
-        {
+        if (a[i]) {
             while (ap->count != i)
-                if (!(ap = ap->next))
-                {
+                if (!(ap = ap->next)) {
                     note(0, "%d: attachment number out of range", i);
                     r = 1;
                     goto done;
@@ -905,24 +820,20 @@ split1(char *str, Dt_t **ignore, long num, char *dir, int verbose, int flag)
     char *file;
 
     s = dir;
-    if (!(dir = expand(dir, 1)) || !*dir || !isdir(dir))
-    {
+    if (!(dir = expand(dir, 1)) || !*dir || !isdir(dir)) {
         note(0, "\"%s\": directory argument expected", s);
         return 1;
     }
     if (getmsglist(str, 0) < 0)
         return 1;
-    for (ip = state.msg.list; ip->m_index; ip++)
-    {
+    for (ip = state.msg.list; ip->m_index; ip++) {
         mp = state.msg.dot = state.msg.list + ip->m_index - 1;
         sfprintf(state.path.buf, "%s/%d", dir, num);
         file = struse(state.path.buf);
-        if (fp = fileopen(file, "Ew"))
-        {
+        if (fp = fileopen(file, "Ew")) {
             if (copy(mp, fp, ignore, NiL, GMIME) < 0)
                 note(SYSTEM, "%s", dir);
-            else
-            {
+            else {
                 if (verbose)
                     note(PROMPT,
                          "%s %ld %ld %ld",
@@ -930,12 +841,9 @@ split1(char *str, Dt_t **ignore, long num, char *dir, int verbose, int flag)
                          num,
                          ( long )mp->m_lines,
                          ( long )mp->m_size);
-                if (ap = state.part.in.head)
-                {
-                    do
-                    {
-                        if (!(ap->flags & PART_body))
-                        {
+                if (ap = state.part.in.head) {
+                    do {
+                        if (!(ap->flags & PART_body)) {
                             sfprintf(
                             state.path.buf, "%s/%d-%d", dir, num, ap->count);
                             file = struse(state.path.buf);
@@ -977,18 +885,15 @@ split0(char *str, Dt_t **ignore, int flag)
     char *start;
     char *e;
 
-    if (!(file = snarf(str, &f)) && f < 0)
-    {
+    if (!(file = snarf(str, &f)) && f < 0) {
         note(0, "file argument expected");
         return 1;
     }
-    if (!(start = snarf(str, &f)))
-    {
+    if (!(start = snarf(str, &f))) {
         note(0, "numeric argument expected");
         return 1;
     }
-    if ((num = strtol(start, &e, 0)) < 0 || *e)
-    {
+    if ((num = strtol(start, &e, 0)) < 0 || *e) {
         note(0, "\"%s\": numeric argument expected", start);
         return 1;
     }
@@ -1022,8 +927,7 @@ split(char *str)
 int
 incorporate(void)
 {
-    if (state.folder == FMH)
-    {
+    if (state.folder == FMH) {
         int sawcom = 0;
         long count;
         long dot;
@@ -1034,20 +938,16 @@ incorporate(void)
         sawcom = state.sawcom;
         dot = state.msg.dot - state.msg.list;
         state.incorporating = 1;
-        if (!setfolder("%"))
-        {
+        if (!setfolder("%")) {
             split1("*", NiL, next, state.path.prev, 0, MSAVE);
-            if (!setfolder("#"))
-            {
+            if (!setfolder("#")) {
                 folderinfo(count);
                 state.msg.dot = state.msg.list + ((dot < 0) ? 0 : dot);
             }
         }
         state.incorporating = 0;
         state.sawcom = sawcom;
-    }
-    else
-    {
+    } else {
         int eof;
         int n;
 
@@ -1056,8 +956,7 @@ incorporate(void)
             note(0, "The \"%s\" command failed", state.cmd->c_name);
         else if (!n)
             note(0, "No new mail");
-        else
-        {
+        else {
             state.msg.dot = folderinfo(state.msg.count - n);
             if (eof)
                 state.sawcom = 0;

@@ -68,14 +68,12 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
         *pn = getpgrp();
     else if (streq(s, "ppid"))
         *pn = getppid();
-    else if (streq(s, "tid") || streq(s, "tty"))
-    {
+    else if (streq(s, "tid") || streq(s, "tty")) {
         for (fd = 0; fd < 3; fd++)
             if ((tid = tcgetpgrp(fd)) >= 0)
                 break;
         *pn = tid;
-    }
-    else if (streq(s, "sid"))
+    } else if (streq(s, "sid"))
 #if _lib_getsid
         *pn = getsid(0);
 #else
@@ -83,8 +81,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
 #endif
     else if (streq(s, "format"))
         *ps = ( char * )handle;
-    else
-    {
+    else {
         error(2, "%s: unknown format identifier", s);
         return 0;
     }
@@ -97,10 +94,8 @@ b_pids(int argc, char **argv, Shbltin_t *context)
     char *format = 0;
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'f':
             format = opt_info.arg;
             continue;

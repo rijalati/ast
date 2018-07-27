@@ -46,10 +46,8 @@ MAIN()
 
     b = buf;
     endb = buf + sizeof(buf);
-    while (b < endb)
-    {
-        for (k = 0; k < 256 && b < endb; ++k)
-        {
+    while (b < endb) {
+        for (k = 0; k < 256 && b < endb; ++k) {
             for (n = 0; n < Freq[k] && b < endb; ++n)
                 *b++ = k;
         }

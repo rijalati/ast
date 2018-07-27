@@ -61,8 +61,7 @@ getdate(const char *s)
     static struct tm ts;
 
     t = tmscan(s, &e, NiL, &f, NiL, TM_PEDANTIC);
-    if (*e || *f)
-    {
+    if (*e || *f) {
         /* of course we all know what 7 means */
         getdate_err = 7;
         return 0;

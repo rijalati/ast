@@ -32,15 +32,12 @@ ptvinvert(Ptv_t *a)
     Ptv_t *t;
     Ptvprefix_t *ap;
 
-    if (t = ptvopen(a->disc, a->size))
-    {
+    if (t = ptvopen(a->disc, a->size)) {
         fvset(a->size, a->r[0], 0);
         fvset(a->size, a->r[1], 1);
         for (ap = ( Ptvprefix_t * )dtfirst(a->dict); ap;
-             ap = ( Ptvprefix_t * )dtnext(a->dict, ap))
-        {
-            if (fvcmp(a->size, a->r[0], ap->min) < 0)
-            {
+             ap = ( Ptvprefix_t * )dtnext(a->dict, ap)) {
+            if (fvcmp(a->size, a->r[0], ap->min) < 0) {
                 fvsub(a->size, a->r[2], ap->min, a->r[1]);
                 if (!ptvinsert(t, a->r[0], a->r[2]))
                     break;
@@ -48,8 +45,7 @@ ptvinvert(Ptv_t *a)
             fvadd(a->size, a->r[0], ap->max, a->r[1]);
         }
         fvset(a->size, a->r[2], 0);
-        if (fvcmp(a->size, a->r[0], a->r[1]) > 0 || !dtsize(a->dict))
-        {
+        if (fvcmp(a->size, a->r[0], a->r[1]) > 0 || !dtsize(a->dict)) {
             fvset(a->size, a->r[2], 0);
             fvsub(a->size, a->r[3], a->r[2], a->r[1]);
             ptvinsert(t, a->r[0], a->r[3]);

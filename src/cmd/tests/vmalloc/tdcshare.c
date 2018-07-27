@@ -35,8 +35,7 @@ tmain()
     char *arg[5];
     pid_t ppid, cpid;
 
-    if (k = tchild())
-    {
+    if (k = tchild()) {
         cpid = getpid();
         shmfile = argv[k];
         mapfile = argv[k + 1];
@@ -68,9 +67,7 @@ tmain()
             terror("Child[pid=%d]: Can't open map region in child process",
                    cpid);
         tinfo("Child[pid=%d]: map region opened", cpid);
-    }
-    else
-    {
+    } else {
         ppid = getpid();
         shmfile = tstfile("shm", -1);
         mapfile = tstfile("map", -1);

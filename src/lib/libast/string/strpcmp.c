@@ -30,8 +30,7 @@
 int
 strpcmp(const char *a, const char *b)
 {
-    while (*a == *b)
-    {
+    while (*a == *b) {
         if (!*a++)
             return 0;
         b++;

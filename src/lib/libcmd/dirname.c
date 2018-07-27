@@ -77,21 +77,17 @@ l_dirname(Sfio_t *outfile, const char *pathname)
     /* back over non-slash chars */
     for (; last > pathname && *last != '/'; last--)
         ;
-    if (last == pathname)
-    {
+    if (last == pathname) {
         /* all '/' or "" */
         if (*pathname != '/')
             last = pathname = ".";
-    }
-    else
-    {
+    } else {
         /* back over trailing '/' */
         for (; *last == '/' && last > pathname; last--)
             ;
     }
     /* preserve // */
-    if (last != pathname && pathname[0] == '/' && pathname[1] == '/')
-    {
+    if (last != pathname && pathname[0] == '/' && pathname[1] == '/') {
         while (pathname[2] == '/' && pathname < last)
             pathname++;
         if (last != pathname && pathname[0] == '/' && pathname[1] == '/'
@@ -109,10 +105,8 @@ b_dirname(int argc, char **argv, Shbltin_t *context)
     char buf[PATH_MAX];
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'f':
             mode |= PATH_REGULAR;
             continue;

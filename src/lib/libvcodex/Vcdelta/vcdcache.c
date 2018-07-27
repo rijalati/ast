@@ -72,8 +72,7 @@ void vcdkaclear(ka) Vcdcache_t *ka;
 {
     ssize_t i;
 
-    if (ka)
-    {
+    if (ka) {
         for (i = 0; i < ka->s_near; ++i)
             ka->c_near[i] = 0;
         ka->n = 0;
@@ -91,10 +90,8 @@ static void vcdkaupdate(ka, addr) Vcdcache_t *ka;
 ssize_t addr;
 #endif
 {
-    if (ka)
-    {
-        if (ka->s_near > 0)
-        {
+    if (ka) {
+        if (ka->s_near > 0) {
             ka->c_near[ka->n] = addr;
             if ((ka->n += 1) >= ka->s_near)
                 ka->n = 0;
@@ -123,22 +120,18 @@ ssize_t *mode; /* to return the coded address		*/
         goto done;
 
     d = here - addr;
-    if ((sz = vcsizeu(d)) < bestsz)
-    {
+    if ((sz = vcsizeu(d)) < bestsz) {
         bestd = d;
         bestm = VCD_HERE;
         if ((bestsz = sz) == 1)
             goto done;
     }
 
-    if (ka)
-    {
-        for (i = 0; i < ka->s_near; ++i)
-        {
+    if (ka) {
+        for (i = 0; i < ka->s_near; ++i) {
             if ((d = addr - ka->c_near[i]) < 0)
                 continue;
-            if ((sz = vcsizeu(d)) < bestsz)
-            {
+            if ((sz = vcsizeu(d)) < bestsz) {
                 bestd = d;
                 bestm = (VCD_HERE + 1) + i;
                 if ((bestsz = sz) == 1)
@@ -146,8 +139,7 @@ ssize_t *mode; /* to return the coded address		*/
             }
         }
         if (ka->s_same > 0
-            && ka->c_same[d = addr % (ka->s_same * 256)] == addr)
-        {
+            && ka->c_same[d = addr % (ka->s_same * 256)] == addr) {
             bestd = d % 256;
             bestm = (VCD_HERE + 1) + ka->s_near + d / 256;
         }
@@ -177,8 +169,7 @@ ssize_t mode;
         a = vciogetu(addr);
     else if (mode == VCD_HERE)
         a = here - vciogetu(addr);
-    else if (ka)
-    {
+    else if (ka) {
         if ((m = mode - (VCD_HERE + 1)) >= 0 && m < ka->s_near)
             a = ka->c_near[m] + vciogetu(addr);
         else if ((m = mode - (VCD_HERE + 1 + ka->s_near)) >= 0
@@ -186,8 +177,7 @@ ssize_t mode;
             a = ka->c_same[vciogetc(addr) + m * 256];
         else
             return -1;
-    }
-    else
+    } else
         return -1;
 
     vcdkaupdate(ka, a);

@@ -46,8 +46,7 @@ _fts_read(FTS *fts)
     static FTSENT *ne;
 
     if ((oe = _ast_fts_read(fts)) && ast.version < 20100102L
-        && (ne || (ne = newof(0, FTSENT, 1, 0))))
-    {
+        && (ne || (ne = newof(0, FTSENT, 1, 0)))) {
         *ne = *oe;
         oe = ne;
         ne->fts_namelen = ne->_fts_namelen;

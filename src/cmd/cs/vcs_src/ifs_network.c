@@ -38,15 +38,13 @@ int timeout;
     int rtn, num;
     Cs_poll_t fds;
 
-    if (IfsAbortFlag)
-    {
+    if (IfsAbortFlag) {
         nFile->size = 0;
         return 0;
     }
     nFile->err = 0;
     /* move the cache data to the beginning of netbuf */
-    if (nFile->size > 0)
-    {
+    if (nFile->size > 0) {
         if (nFile->size >= sizeof(nFile->netbuf))
             return sizeof(nFile->netbuf); /* cache buffer full */
         memcpy(nFile->netbuf, nFile->netbuf + nFile->head, nFile->size);
@@ -55,36 +53,30 @@ int timeout;
 
     fds.fd = nFile->socket;
     fds.events = CS_POLL_READ;
-    while (1)
-    {
+    while (1) {
         rtn = cspoll(&fds, 1, timeout);
         if (rtn >= 0)
             break;
 
         /* error occured in select call */
         nFile->err = errno;
-        if (errno != EINTR)
-        {
+        if (errno != EINTR) {
             logit("NetRead: select error\n");
             break;
         }
-        if (IfsAbortFlag == 1)
-        {
+        if (IfsAbortFlag == 1) {
             nFile->size = 0;
             return 0;
         }
         logit("NetRead: bypass signal\n");
     }
 
-    if (rtn == 0)
-    {
+    if (rtn == 0) {
         /* select timeout */
         if (timeout > 0)
             logit("NetRead: timeout\n");
         return -1;
-    }
-    else if (fds.status == CS_POLL_READ)
-    {
+    } else if (fds.status == CS_POLL_READ) {
         num = sizeof(nFile->netbuf) - nFile->size;
         num = read(fds.fd, nFile->netbuf + nFile->size, num);
         if (num > 0)
@@ -111,12 +103,10 @@ int NetDataReady(nFile) NetFile *nFile;
  */
 int NetEOF(nFile) NetFile *nFile;
 {
-    if (nFile->size > 0)
-    { /* data exists */
+    if (nFile->size > 0) { /* data exists */
         return 0;
     }
-    if (NetFillCache(nFile, 0) == 0 && nFile->size == 0)
-    {
+    if (NetFillCache(nFile, 0) == 0 && nFile->size == 0) {
         /* read successful & no data ready */
         return 1;
     }
@@ -139,11 +129,9 @@ int bufsize;
         return -1;
     nFile->err = 0;
     readlen = 0;
-    while (1)
-    {
+    while (1) {
         /* read data from cache buf */
-        if ((len = nFile->size) > 0)
-        {
+        if ((len = nFile->size) > 0) {
             if (len > bufsize)
                 len = bufsize;
             memcpy(buf, nFile->netbuf + nFile->head, len);
@@ -155,8 +143,7 @@ int bufsize;
             buf += len;
             bufsize -= len;
         }
-        if (NetFillCache(nFile, SOCK_TIMEOUT) == -1 || nFile->size == 0)
-        {
+        if (NetFillCache(nFile, SOCK_TIMEOUT) == -1 || nFile->size == 0) {
             return (readlen > 0 ? readlen : -1);
         }
     }
@@ -175,8 +162,7 @@ int bufsize;
     if (IfsAbortFlag || nFile == NULL || buf == NULL)
         return NULL;
     ptr = buf;
-    while (bufsize > 1 && NetRead(nFile, ptr, 1) == 1)
-    {
+    while (bufsize > 1 && NetRead(nFile, ptr, 1) == 1) {
         bufsize--;
         if (*ptr++ == '\n')
             break;
@@ -199,11 +185,9 @@ int bufsize;
         return -1;
     fd = nFile->socket;
     writelen = 0;
-    while (bufsize > 0)
-    {
+    while (bufsize > 0) {
         len = write(fd, buf, bufsize);
-        if (len <= 0)
-        {
+        if (len <= 0) {
             nFile->err = errno;
             break;
         }
@@ -244,8 +228,7 @@ int port;
     int fd;
     char buf[STRLEN];
 
-    if ((srv->flags & IFS_PROXY) || !(addr = csaddr(host)) && srv->proxy)
-    {
+    if ((srv->flags & IFS_PROXY) || !(addr = csaddr(host)) && srv->proxy) {
         nFile = NetConnect(
         &nilsrv, srv->proxy ? srv->proxy : PROXY_HOST, PROXY_PORT);
         if (nFile == NULL)
@@ -258,8 +241,7 @@ int port;
                   csname(0));
         NetWrite(nFile, buf, strlen(buf));
         if (NetGets(nFile, buf, sizeof(buf)) != NULL
-            && strcmp(buf, "0\n") == 0)
-        {
+            && strcmp(buf, "0\n") == 0) {
             NetGets(nFile, buf, sizeof(buf));
             logit("proxy reply: ");
             logit(buf);
@@ -268,8 +250,7 @@ int port;
         NetClose(nFile);
         return NULL;
     }
-    if (!addr)
-    {
+    if (!addr) {
         cserrno = E_GETHOST;
         return NULL;
     }

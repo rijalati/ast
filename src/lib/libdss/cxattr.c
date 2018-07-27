@@ -144,22 +144,17 @@ cxattr(Cx_t *cx, const char *s, char **p, Cxformat_t *f, Cxdisc_t *disc)
     char buf[32];
 
     b = s;
-    for (;;)
-    {
+    for (;;) {
         while (*s == ':' || isspace(*s))
             s++;
         if (!*s)
             break;
-        if (!strncasecmp(s, "base=", 5))
-        {
+        if (!strncasecmp(s, "base=", 5)) {
             f->base = ( int )strtol(s + 5, &e, 10);
             s = ( const char * )e;
-        }
-        else if (!strncasecmp(s, "code=", 5))
-        {
+        } else if (!strncasecmp(s, "code=", 5)) {
             t = s + 5;
-            switch (*t++)
-            {
+            switch (*t++) {
             case 'a':
             case 'A':
                 n = CC_ASCII;
@@ -187,8 +182,7 @@ cxattr(Cx_t *cx, const char *s, char **p, Cxformat_t *f, Cxdisc_t *disc)
             }
             if (*t == '2')
                 t++;
-            switch (*t++)
-            {
+            switch (*t++) {
             case 'a':
             case 'A':
                 n = CCOP(n, CC_ASCII);
@@ -217,22 +211,16 @@ cxattr(Cx_t *cx, const char *s, char **p, Cxformat_t *f, Cxdisc_t *disc)
                 return 0;
             }
             s = t;
-        }
-        else if (!strncasecmp(s, "width=", 6))
-        {
+        } else if (!strncasecmp(s, "width=", 6)) {
             f->width = ( int )strtol(s + 6, &e, 10);
             s = ( const char * )e;
-        }
-        else
-        {
+        } else {
             for (t = s; *t && *t != ':' && !isspace(*t); t++)
                 ;
-            for (a = attributes;; a++)
-            {
+            for (a = attributes;; a++) {
                 if (a >= &attributes[elementsof(attributes)])
                     goto last;
-                if ((t - s) == a->size && !strncasecmp(s, a->name, t - s))
-                {
+                if ((t - s) == a->size && !strncasecmp(s, a->name, t - s)) {
                     if (a->flags)
                         f->flags |= a->flags;
                     if (a->width)
@@ -248,19 +236,14 @@ cxattr(Cx_t *cx, const char *s, char **p, Cxformat_t *f, Cxdisc_t *disc)
         }
     }
 last:
-    if (!cx || !isalpha(*s))
-    {
+    if (!cx || !isalpha(*s)) {
         type
         = (!cx || (s == b)) ? ( Cxtype_t * )0 : cxtype(cx, "number", disc);
         if (p)
             *p = ( char * )s;
-    }
-    else
-    {
-        if (*t)
-        {
-            if ((t - s) >= sizeof(buf))
-            {
+    } else {
+        if (*t) {
+            if ((t - s) >= sizeof(buf)) {
                 if (p)
                     *p = ( char * )s;
                 return 0;
@@ -268,8 +251,7 @@ last:
             memcpy(buf, s, t - s);
             buf[t - s] = 0;
             e = buf;
-        }
-        else
+        } else
             e = ( char * )s;
         if (type = cxtype(cx, e, disc))
             s = t;

@@ -83,8 +83,7 @@ huff(ulg *b,        /* code lengths in bits (all assumed <= BMAX) */
     memset(c, 0, sizeof(c));
     p = b;
     i = n;
-    do
-    {
+    do {
         c[*p]++; /* assume all entries <= BMAX */
         p++;     /* Can't combine with above line (Solaris bug) */
     } while (--i);
@@ -128,8 +127,7 @@ huff(ulg *b,        /* code lengths in bits (all assumed <= BMAX) */
     memset(v, 0, sizeof(v));
     p = b;
     i = 0;
-    do
-    {
+    do {
         if ((j = *p++) != 0)
             v[x[j]++] = i;
     } while (++i < n);
@@ -145,15 +143,12 @@ huff(ulg *b,        /* code lengths in bits (all assumed <= BMAX) */
     z = 0;                   /* ditto */
 
     /* go through the bit lengths (k already is bits in shortest code) */
-    for (; k <= g; k++)
-    {
+    for (; k <= g; k++) {
         a = c[k];
-        while (a--)
-        {
+        while (a--) {
             /* here i is the Huffman code of length k bits for value *p */
             /* make tables up to required level */
-            while (k > w + l[h])
-            {
+            while (k > w + l[h]) {
                 w += l[h++]; /* add bits already decoded */
 
                 /* compute minimum size table less than or equal to *m bits */
@@ -176,8 +171,7 @@ huff(ulg *b,        /* code lengths in bits (all assumed <= BMAX) */
 
                 /* allocate and link in new table */
                 q = ( Huff_t * )vmalloc(vm, (z + 1) * sizeof(Huff_t));
-                if (q == NULL)
-                {
+                if (q == NULL) {
                     return 3; /* not enough memory */
                 }
 
@@ -186,8 +180,7 @@ huff(ulg *b,        /* code lengths in bits (all assumed <= BMAX) */
                 u[h] = ++q; /* table starts after link */
 
                 /* connect to last table, if there is one */
-                if (h)
-                {
+                if (h) {
                     x[h] = i; /* save pattern for backing up */
                     r.b
                     = ( uch )l[h - 1];   /* bits to dump before this table */
@@ -202,14 +195,11 @@ huff(ulg *b,        /* code lengths in bits (all assumed <= BMAX) */
             r.b = (uch)(k - w);
             if (p >= v + n)
                 r.e = 99; /* out of values--invalid code */
-            else if (*p < s)
-            {
+            else if (*p < s) {
                 r.e
                 = (uch)(*p < 256 ? 16 : 15); /* 256 is end-of-block code */
                 r.v.n = ( ush )*p++; /* simple code is just the value */
-            }
-            else
-            {
+            } else {
                 r.e = ( uch )e[*p - s]; /* non-simple--look up in lists */
                 r.v.n = d[*p++ - s];
             }

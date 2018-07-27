@@ -99,20 +99,16 @@ uniq(Sfio_t *fdin,
 
     if (mode & C_FLAG)
         cwidth = CWIDTH + 1;
-    while (1)
-    {
+    while (1) {
         if (bufp = sfgetr(fdin, '\n', 0))
             n = sfvalue(fdin);
-        else if (bufp = sfgetr(fdin, '\n', SF_LASTR))
-        {
+        else if (bufp = sfgetr(fdin, '\n', SF_LASTR)) {
             n = sfvalue(fdin);
             bufp = memcpy(fmtbuf(n + 1), bufp, n);
             bufp[n++] = '\n';
-        }
-        else
+        } else
             n = 0;
-        if (n)
-        {
+        if (n) {
             cp = bufp;
             ep = cp + n;
             if (f = fields)
@@ -123,92 +119,69 @@ uniq(Sfio_t *fdin,
                     while (cp < ep && *cp != ' ' && *cp != '\t')
                         cp++;
                 }
-            if (chars)
-            {
+            if (chars) {
                 if (mb)
                     for (f = chars; f; f--)
                         mbchar(&w, cp, MB_LEN_MAX, &q);
                 else
                     cp += chars;
             }
-            if ((reclen = n - (cp - bufp)) <= 0)
-            {
+            if ((reclen = n - (cp - bufp)) <= 0) {
                 reclen = 1;
                 cp = bufp + n - 1;
-            }
-            else if (width >= 0 && width < reclen)
-            {
-                if (mb)
-                {
+            } else if (width >= 0 && width < reclen) {
+                if (mb) {
                     reclen = 0;
                     mp = cp;
-                    while (reclen < width && mp < ep)
-                    {
+                    while (reclen < width && mp < ep) {
                         reclen++;
                         mbchar(&w, mp, MB_LEN_MAX, &q);
                     }
                     reclen = mp - cp;
-                }
-                else
+                } else
                     reclen = width;
             }
-        }
-        else
+        } else
             reclen = -2;
-        if (reclen == oreclen && (!reclen || !(*compare)(cp, orecp, reclen)))
-        {
+        if (reclen == oreclen
+            && (!reclen || !(*compare)(cp, orecp, reclen))) {
             count++;
             if (!all)
                 continue;
             next = count;
-        }
-        else
-        {
+        } else {
             next = 0;
-            if (outsize > 0)
-            {
+            if (outsize > 0) {
                 if (((mode & D_FLAG) && count == 0)
-                    || ((mode & U_FLAG) && count))
-                {
+                    || ((mode & U_FLAG) && count)) {
                     if (outp != sbufp)
                         sfwrite(fdout, outp, 0);
-                }
-                else
-                {
-                    if (cwidth)
-                    {
-                        if (count < 9)
-                        {
+                } else {
+                    if (cwidth) {
+                        if (count < 9) {
                             f = 0;
                             while (f < CWIDTH - 1)
                                 outp[f++] = ' ';
                             outp[f++] = '0' + count + 1;
                             outp[f] = ' ';
-                        }
-                        else if (count < MAXCNT)
-                        {
+                        } else if (count < MAXCNT) {
                             count++;
                             f = CWIDTH;
                             outp[f--] = ' ';
-                            do
-                            {
+                            do {
                                 outp[f--] = '0' + (count % 10);
                             } while (count /= 10);
                             while (f >= 0)
                                 outp[f--] = ' ';
-                        }
-                        else
-                        {
+                        } else {
                             outsize -= (CWIDTH + 1);
-                            if (outp != sbufp)
-                            {
+                            if (outp != sbufp) {
                                 if (!(sbufp = fmtbuf(outsize)))
                                     return (1);
                                 memcpy(sbufp, outp + CWIDTH + 1, outsize);
                                 sfwrite(fdout, outp, 0);
                                 outp = sbufp;
-                            }
-                            else
+                            } else
                                 outp += CWIDTH + 1;
                             sfprintf(fdout, "%4d ", count + 1);
                         }
@@ -220,29 +193,25 @@ uniq(Sfio_t *fdin,
         }
         if (n == 0)
             break;
-        if (count = next)
-        {
+        if (count = next) {
             if (sfwrite(fdout, outp, outsize) != outsize)
                 return (1);
             if (*all >= 0)
                 *all = 1;
             sep = 0;
-        }
-        else
+        } else
             sep = all && *all > 0;
         /* save current record */
         if (!(outbuff = sfreserve(fdout, 0, 0))
             || (outsize = sfvalue(fdout)) < 0)
             return (1);
         outp = outbuff;
-        if (outsize < n + cwidth + sep)
-        {
+        if (outsize < n + cwidth + sep) {
             /* no room in outp, clear lock and use side buffer */
             sfwrite(fdout, outp, 0);
             if (!(sbufp = outp = fmtbuf(outsize = n + cwidth + sep)))
                 return (1);
-        }
-        else
+        } else
             outsize = n + cwidth + sep;
         memcpy(outp + cwidth + sep, bufp, n);
         if (sep)
@@ -265,10 +234,8 @@ b_uniq(int argc, char **argv, Shbltin_t *context)
     Compare_f compare = ( Compare_f )memcmp;
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'c':
             mode |= C_FLAG;
             continue;
@@ -277,8 +244,7 @@ b_uniq(int argc, char **argv, Shbltin_t *context)
             continue;
         case 'D':
             mode |= D_FLAG;
-            switch (( int )opt_info.num)
-            {
+            switch (( int )opt_info.num) {
             case 'p':
                 sep = 1;
                 break;
@@ -323,23 +289,18 @@ b_uniq(int argc, char **argv, Shbltin_t *context)
         error(2, "-c and -D are mutually exclusive");
     if (error_info.errors)
         error(ERROR_usage(2), "%s", optusage(NiL));
-    if ((cp = *argv) && (argv++, !streq(cp, "-")))
-    {
+    if ((cp = *argv) && (argv++, !streq(cp, "-"))) {
         if (!(fpin = sfopen(NiL, cp, "r")))
             error(ERROR_system(1), "%s: cannot open", cp);
-    }
-    else
+    } else
         fpin = sfstdin;
-    if (cp = *argv)
-    {
+    if (cp = *argv) {
         argv++;
         if (!(fpout = sfopen(NiL, cp, "w")))
             error(ERROR_system(1), "%s: cannot create", cp);
-    }
-    else
+    } else
         fpout = sfstdout;
-    if (*argv)
-    {
+    if (*argv) {
         error(2, "too many arguments");
         error(ERROR_usage(2), "%s", optusage(NiL));
     }

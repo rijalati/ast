@@ -90,38 +90,27 @@ getfield(Field_t *f, int restore)
         *s = f->delimiter;
     b = ++s;
     lp = rp = n = 0;
-    for (;;)
-    {
-        if (!(c = *s++))
-        {
+    for (;;) {
+        if (!(c = *s++)) {
             f->delimiter = 0;
             break;
-        }
-        else if (c == CC_esc || c == '\\')
-        {
+        } else if (c == CC_esc || c == '\\') {
             if (*s)
                 s++;
-        }
-        else if (c == lp)
+        } else if (c == lp)
             n++;
         else if (c == rp)
             n--;
-        else if (n <= 0)
-        {
-            if (c == '(' && restore)
-            {
+        else if (n <= 0) {
+            if (c == '(' && restore) {
                 lp = '(';
                 rp = ')';
                 n = 1;
-            }
-            else if (c == '[' && restore)
-            {
+            } else if (c == '[' && restore) {
                 lp = '[';
                 rp = ']';
                 n = 1;
-            }
-            else if (c == f->delimiter)
-            {
+            } else if (c == f->delimiter) {
                 *(f->next = --s) = 0;
                 break;
             }
@@ -153,15 +142,13 @@ getfmt(Sfio_t *sp, void *vp, Sffmt_t *dp)
     regmatch_t match[10];
 
     fp->level++;
-    if (fp->fmt.t_str && fp->fmt.n_str > 0 && (v = fmtbuf(fp->fmt.n_str + 1)))
-    {
+    if (fp->fmt.t_str && fp->fmt.n_str > 0
+        && (v = fmtbuf(fp->fmt.n_str + 1))) {
         memcpy(v, fp->fmt.t_str, fp->fmt.n_str);
         v[fp->fmt.n_str] = 0;
         b = v;
-        for (;;)
-        {
-            switch (*v++)
-            {
+        for (;;) {
+            switch (*v++) {
             case 0:
                 break;
             case '(':
@@ -173,8 +160,7 @@ getfmt(Sfio_t *sp, void *vp, Sffmt_t *dp)
             case '=':
             case ':':
             case ',':
-                if (h <= 0)
-                {
+                if (h <= 0) {
                     a = v;
                     break;
                 }
@@ -182,12 +168,10 @@ getfmt(Sfio_t *sp, void *vp, Sffmt_t *dp)
             default:
                 continue;
             }
-            if (i = *--v)
-            {
+            if (i = *--v) {
                 *v = 0;
                 if (i == ':' && fp->fmt.fmt == 's' && strlen(a) > 4
-                    && !isalnum(*(a + 4)))
-                {
+                    && !isalnum(*(a + 4))) {
                     d = *(a + 4);
                     *(a + 4) = 0;
                     if (streq(a, "case"))
@@ -208,15 +192,12 @@ getfmt(Sfio_t *sp, void *vp, Sffmt_t *dp)
         fp->fmt.t_str = t;
         if (i)
             *v++ = i;
-    }
-    else
-    {
+    } else {
         h = (*fp->lookup)(fp->handle, &fp->fmt, a, &s, &n);
         v = 0;
     }
     fp->fmt.flags |= SFFMT_VALUE;
-    switch (fp->fmt.fmt)
-    {
+    switch (fp->fmt.fmt) {
     case 'c':
         value->c = s ? *s : n;
         break;
@@ -237,13 +218,10 @@ getfmt(Sfio_t *sp, void *vp, Sffmt_t *dp)
         value->p = pointerof(n);
         break;
     case 'q':
-        if (s)
-        {
+        if (s) {
             fp->fmt.fmt = 's';
             value->s = fmtquote(s, "$'", "'", strlen(s), 0);
-        }
-        else
-        {
+        } else {
             fp->fmt.fmt = 'd';
             value->q = n;
         }
@@ -254,17 +232,13 @@ getfmt(Sfio_t *sp, void *vp, Sffmt_t *dp)
                 || sfprintf(fp->tmp[1], "%I*d", sizeof(n), n) <= 0
                 || !(s = sfstruse(fp->tmp[1]))))
             s = "";
-        if (x)
-        {
+        if (x) {
             h = 0;
             d = initfield(&f, v + 4);
-            switch (x)
-            {
+            switch (x) {
             case FMT_case:
-                while ((a = getfield(&f, 1)) && (v = getfield(&f, 0)))
-                {
-                    if (strmatch(s, a))
-                    {
+                while ((a = getfield(&f, 1)) && (v = getfield(&f, 0))) {
+                    if (strmatch(s, a)) {
                         Fmt_t fmt;
 
                         fmt = *fp;
@@ -288,8 +262,7 @@ getfmt(Sfio_t *sp, void *vp, Sffmt_t *dp)
                 }
                 break;
             case FMT_edit:
-                for (x = 0; *f.next; x ^= 1)
-                {
+                for (x = 0; *f.next; x ^= 1) {
                     if (fp->re[x])
                         regfree(fp->re[x]);
                     else
@@ -301,8 +274,8 @@ getfmt(Sfio_t *sp, void *vp, Sffmt_t *dp)
                         break;
                     f.next += fp->re[x]->re_npat;
                     if (!regexec(fp->re[x], s, elementsof(match), match, 0)
-                        && !regsubexec(fp->re[x], s, elementsof(match), match))
-                    {
+                        && !regsubexec(
+                           fp->re[x], s, elementsof(match), match)) {
                         s = fp->re[x]->re_sub->re_buf;
                         if (fp->re[x]->re_sub->re_flags & REG_SUB_STOP)
                             break;

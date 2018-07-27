@@ -69,8 +69,7 @@ static void PreserveExitProc _ANSI_ARGS_((ClientData clientData));
 static void PreserveExitProc(clientData) ClientData clientData; /* NULL
                                                                    -Unused. */
 {
-    if (spaceAvl != 0)
-    {
+    if (spaceAvl != 0) {
         ckfree(( char * )refArray);
         refArray = ( Reference * )NULL;
         inUse = 0;
@@ -108,10 +107,8 @@ void Tcl_Preserve(clientData) ClientData clientData; /* Pointer to malloc'ed
      * just increment its reference count.
      */
 
-    for (i = 0, refPtr = refArray; i < inUse; i++, refPtr++)
-    {
-        if (refPtr->clientData == clientData)
-        {
+    for (i = 0, refPtr = refArray; i < inUse; i++, refPtr++) {
+        if (refPtr->clientData == clientData) {
             refPtr->refCount++;
             return;
         }
@@ -122,18 +119,14 @@ void Tcl_Preserve(clientData) ClientData clientData; /* Pointer to malloc'ed
      * bigger if it is full.
      */
 
-    if (inUse == spaceAvl)
-    {
-        if (spaceAvl == 0)
-        {
+    if (inUse == spaceAvl) {
+        if (spaceAvl == 0) {
             Tcl_CreateExitHandler(( Tcl_ExitProc * )PreserveExitProc,
                                   ( ClientData )NULL);
             refArray = ( Reference * )ckalloc(
             ( unsigned )(INITIAL_SIZE * sizeof(Reference)));
             spaceAvl = INITIAL_SIZE;
-        }
-        else
-        {
+        } else {
             Reference *new;
 
             new = ( Reference * )ckalloc(
@@ -186,15 +179,12 @@ void Tcl_Release(clientData) ClientData clientData; /* Pointer to malloc'ed
     Tcl_FreeProc *freeProc;
     int i;
 
-    for (i = 0, refPtr = refArray; i < inUse; i++, refPtr++)
-    {
-        if (refPtr->clientData != clientData)
-        {
+    for (i = 0, refPtr = refArray; i < inUse; i++, refPtr++) {
+        if (refPtr->clientData != clientData) {
             continue;
         }
         refPtr->refCount--;
-        if (refPtr->refCount == 0)
-        {
+        if (refPtr->refCount == 0) {
 
             /*
              * Must remove information from the slot before calling freeProc
@@ -206,19 +196,14 @@ void Tcl_Release(clientData) ClientData clientData; /* Pointer to malloc'ed
             freeProc = refPtr->freeProc;
             mustFree = refPtr->mustFree;
             inUse--;
-            if (i < inUse)
-            {
+            if (i < inUse) {
                 refArray[i] = refArray[inUse];
             }
-            if (mustFree)
-            {
+            if (mustFree) {
                 if ((freeProc == TCL_DYNAMIC)
-                    || (freeProc == ( Tcl_FreeProc * )free))
-                {
+                    || (freeProc == ( Tcl_FreeProc * )free)) {
                     ckfree(( char * )clientData);
-                }
-                else
-                {
+                } else {
                     (*freeProc)(( char * )clientData);
                 }
             }
@@ -264,14 +249,11 @@ Tcl_FreeProc *freeProc; /* Procedure to actually do free. */
      * "mustFree" flag (the flag had better not be set already!).
      */
 
-    for (i = 0, refPtr = refArray; i < inUse; i++, refPtr++)
-    {
-        if (refPtr->clientData != clientData)
-        {
+    for (i = 0, refPtr = refArray; i < inUse; i++, refPtr++) {
+        if (refPtr->clientData != clientData) {
             continue;
         }
-        if (refPtr->mustFree)
-        {
+        if (refPtr->mustFree) {
             panic("Tcl_EventuallyFree called twice for 0x%x\n", clientData);
         }
         refPtr->mustFree = 1;
@@ -283,12 +265,9 @@ Tcl_FreeProc *freeProc; /* Procedure to actually do free. */
      * No reference for this block.  Free it now.
      */
 
-    if ((freeProc == TCL_DYNAMIC) || (freeProc == ( Tcl_FreeProc * )free))
-    {
+    if ((freeProc == TCL_DYNAMIC) || (freeProc == ( Tcl_FreeProc * )free)) {
         ckfree(( char * )clientData);
-    }
-    else
-    {
+    } else {
         (*freeProc)(( char * )clientData);
     }
 }

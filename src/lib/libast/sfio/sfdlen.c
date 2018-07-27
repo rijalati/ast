@@ -47,8 +47,7 @@ int _sfdlen(v) Sfdouble_t v;
     else
         exp = 0;
 
-    for (w = 1; w <= N_ARRAY; ++w)
-    { /* get 2^SF_PRECIS precision at a time */
+    for (w = 1; w <= N_ARRAY; ++w) { /* get 2^SF_PRECIS precision at a time */
         n = ( int )(x = ldexpl(v, SF_PRECIS));
         v = x - n;
         if (v <= 0.)

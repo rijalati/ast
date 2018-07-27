@@ -47,10 +47,8 @@ csport(Cs_t *state, const char *type, const char *serv)
     n = strtol(serv, &t, 0);
     if (t > serv && *t == '.')
         strtol(t + 1, &t, 0);
-    if (*t)
-    {
-        if (strneq(serv, CS_SVC_INET, sizeof(CS_SVC_INET) - 1))
-        {
+    if (*t) {
+        if (strneq(serv, CS_SVC_INET, sizeof(CS_SVC_INET) - 1)) {
             serv += sizeof(CS_SVC_INET) - 1;
 #if CS_LIB_SOCKET || CS_LIB_V10
             {
@@ -66,8 +64,7 @@ csport(Cs_t *state, const char *type, const char *serv)
 #    endif
             }
 #endif
-            switch (strkey(serv))
-            {
+            switch (strkey(serv)) {
             case HASHKEY6('t', 'c', 'p', 'm', 'u', 'x'):
                 return 1;
             case HASHKEY4('e', 'c', 'h', 'o'):

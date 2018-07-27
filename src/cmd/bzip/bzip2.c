@@ -176,26 +176,18 @@
 #    if 0
    /*-- lcc-win32 seems to expand wildcards itself --*/
 #        define APPEND_FILESPEC(root, spec)                                  \
-            do                                                               \
-            {                                                                \
-                if ((spec)[0] == '-')                                        \
-                {                                                            \
+            do {                                                             \
+                if ((spec)[0] == '-') {                                      \
                     root = snocString((root), (spec));                       \
-                }                                                            \
-                else                                                         \
-                {                                                            \
+                } else {                                                     \
                     struct _finddata_t c_file;                               \
                     long hFile;                                              \
                     hFile = _findfirst((spec), &c_file);                     \
-                    if (hFile == -1L)                                        \
-                    {                                                        \
+                    if (hFile == -1L) {                                      \
                         root = snocString((root), (spec));                   \
-                    }                                                        \
-                    else                                                     \
-                    {                                                        \
+                    } else {                                                 \
                         int anInt = 0;                                       \
-                        while (anInt == 0)                                   \
-                        {                                                    \
+                        while (anInt == 0) {                                 \
                             root = snocString((root), &c_file.name[0]);      \
                             anInt = _findnext(hFile, &c_file);               \
                         }                                                    \
@@ -207,8 +199,7 @@
 #    endif
 
 #    define SET_BINARY_MODE(fd)                                              \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             int retVal = setmode(fileno(fd), O_BINARY);                      \
             ERROR_IF_MINUS_ONE(retVal);                                      \
         } while (0)
@@ -338,8 +329,7 @@ compressStream(FILE *stream, FILE *zStream)
     if (verbosity >= 2)
         fprintf(stderr, "\n");
 
-    while (True)
-    {
+    while (True) {
 
         if (myfeof(stream))
             break;
@@ -361,8 +351,7 @@ compressStream(FILE *stream, FILE *zStream)
     ret = fflush(zStream);
     if (ret == EOF)
         goto errhandler_io;
-    if (zStream != stdout)
-    {
+    if (zStream != stdout) {
         ret = fclose(zStream);
         if (ret == EOF)
             goto errhandler_io;
@@ -390,8 +379,7 @@ compressStream(FILE *stream, FILE *zStream)
 
 errhandler:
     bzWriteClose(&bzerr_dummy, bzf, 1, &nbytes_in, &nbytes_out);
-    switch (bzerr)
-    {
+    switch (bzerr) {
     case BZ_MEM_ERROR:
         outOfMemory();
     case BZ_IO_ERROR:
@@ -429,8 +417,7 @@ uncompressStream(FILE *zStream, FILE *stream)
     if (ferror(zStream))
         goto errhandler_io;
 
-    while (True)
-    {
+    while (True) {
 
         bzf = bzReadOpen(
         &bzerr, zStream, verbosity, ( int )smallMode, unused, nUnused);
@@ -438,8 +425,7 @@ uncompressStream(FILE *zStream, FILE *stream)
             goto errhandler;
         streamNo++;
 
-        while (bzerr == BZ_OK)
-        {
+        while (bzerr == BZ_OK) {
             nread = bzRead(&bzerr, bzf, obuf, 5000);
             if (bzerr == BZ_DATA_ERROR_MAGIC)
                 goto errhandler;
@@ -477,8 +463,7 @@ uncompressStream(FILE *zStream, FILE *stream)
     ret = fflush(stream);
     if (ret != 0)
         goto errhandler_io;
-    if (stream != stdout)
-    {
+    if (stream != stdout) {
         ret = fclose(stream);
         if (ret == EOF)
             goto errhandler_io;
@@ -489,8 +474,7 @@ uncompressStream(FILE *zStream, FILE *stream)
 
 errhandler:
     bzReadClose(&bzerr_dummy, bzf);
-    switch (bzerr)
-    {
+    switch (bzerr) {
     case BZ_IO_ERROR:
     errhandler_io:
         ioError();
@@ -502,12 +486,9 @@ errhandler:
     case BZ_UNEXPECTED_EOF:
         compressedStreamEOF();
     case BZ_DATA_ERROR_MAGIC:
-        if (streamNo == 1)
-        {
+        if (streamNo == 1) {
             return False;
-        }
-        else
-        {
+        } else {
             fprintf(stderr,
                     "\n%s: %s: trailing garbage after EOF ignored\n",
                     progName,
@@ -541,8 +522,7 @@ testStream(FILE *zStream)
     if (ferror(zStream))
         goto errhandler_io;
 
-    while (True)
-    {
+    while (True) {
 
         bzf = bzReadOpen(
         &bzerr, zStream, verbosity, ( int )smallMode, unused, nUnused);
@@ -550,8 +530,7 @@ testStream(FILE *zStream)
             goto errhandler;
         streamNo++;
 
-        while (bzerr == BZ_OK)
-        {
+        while (bzerr == BZ_OK) {
             bzRead(&bzerr, bzf, obuf, 5000);
             if (bzerr == BZ_DATA_ERROR_MAGIC)
                 goto errhandler;
@@ -585,8 +564,7 @@ testStream(FILE *zStream)
 
 errhandler:
     bzReadClose(&bzerr_dummy, bzf);
-    switch (bzerr)
-    {
+    switch (bzerr) {
     case BZ_IO_ERROR:
     errhandler_io:
         ioError();
@@ -600,15 +578,12 @@ errhandler:
         fprintf(stderr, "\n%s: file ends unexpectedly\n", inName);
         return False;
     case BZ_DATA_ERROR_MAGIC:
-        if (streamNo == 1)
-        {
+        if (streamNo == 1) {
             fprintf(stderr,
                     "\n%s: bad magic number (ie, not created by bzip2)\n",
                     inName);
             return False;
-        }
-        else
-        {
+        } else {
             fprintf(stderr,
                     "\n%s: %s: trailing garbage after EOF ignored\n",
                     progName,
@@ -655,8 +630,7 @@ cleanUpAndFail(Int32 ec)
 {
     IntNative retVal;
 
-    if (srcMode == SM_F2F && opMode != OM_TEST)
-    {
+    if (srcMode == SM_F2F && opMode != OM_TEST) {
         fprintf(stderr,
                 "%s: Deleting output file %s, if it exists.\n",
                 progName,
@@ -670,8 +644,7 @@ cleanUpAndFail(Int32 ec)
             "%s: WARNING: deletion of output file (apparently) failed.\n",
             progName);
     }
-    if (numFileNames > 0 && numFilesProcessed < numFileNames)
-    {
+    if (numFileNames > 0 && numFilesProcessed < numFileNames) {
         fprintf(stderr,
                 "%s: WARNING: some files have not been processed:\n"
                 "\t%d specified on command line, %d not processed yet.\n\n",
@@ -770,8 +743,7 @@ mySIGSEGVorSIGBUScatcher(IntNative n)
     showFileNames();
     if (opMode == OM_Z)
         cleanUpAndFail(3);
-    else
-    {
+    else {
         cadvise();
         cleanUpAndFail(2);
     }
@@ -808,8 +780,7 @@ pad(Char *s)
 void
 copyFileName(Char *to, Char *from)
 {
-    if (strlen(from) > FILE_NAME_LEN - 10)
-    {
+    if (strlen(from) > FILE_NAME_LEN - 10) {
         fprintf(
         stderr,
         "bzip2: file name\n`%s'\nis suspiciously (> 1024 chars) long.\n"
@@ -939,8 +910,7 @@ compress(Char *name)
     if (name == NULL && srcMode != SM_I2O)
         panic("compress: bad modes\n");
 
-    switch (srcMode)
-    {
+    switch (srcMode) {
     case SM_I2O:
         copyFileName(inName, "(stdin)");
         copyFileName(outName, "(stdout)");
@@ -956,38 +926,33 @@ compress(Char *name)
         break;
     }
 
-    if (srcMode != SM_I2O && containsDubiousChars(inName))
-    {
+    if (srcMode != SM_I2O && containsDubiousChars(inName)) {
         fprintf(
         stderr, "%s: There are no files matching `%s'.\n", progName, inName);
         return;
     }
-    if (srcMode != SM_I2O && !fileExists(inName))
-    {
+    if (srcMode != SM_I2O && !fileExists(inName)) {
         fprintf(stderr,
                 "%s: Input file %s doesn't exist, skipping.\n",
                 progName,
                 inName);
         return;
     }
-    if (srcMode != SM_I2O && endsInBz2(inName))
-    {
+    if (srcMode != SM_I2O && endsInBz2(inName)) {
         fprintf(stderr,
                 "%s: Input file name %s ends in `.bz2', skipping.\n",
                 progName,
                 inName);
         return;
     }
-    if (srcMode != SM_I2O && notAStandardFile(inName))
-    {
+    if (srcMode != SM_I2O && notAStandardFile(inName)) {
         fprintf(stderr,
                 "%s: Input file %s is not a normal file, skipping.\n",
                 progName,
                 inName);
         return;
     }
-    if (srcMode == SM_F2F && !forceOverwrite && fileExists(outName))
-    {
+    if (srcMode == SM_F2F && !forceOverwrite && fileExists(outName)) {
         fprintf(stderr,
                 "%s: Output file %s already exists, skipping.\n",
                 progName,
@@ -995,14 +960,12 @@ compress(Char *name)
         return;
     }
 
-    switch (srcMode)
-    {
+    switch (srcMode) {
 
     case SM_I2O:
         inStr = stdin;
         outStr = stdout;
-        if (isatty(fileno(stdout)))
-        {
+        if (isatty(fileno(stdout))) {
             fprintf(stderr,
                     "%s: I won't write compressed data to a terminal.\n",
                     progName);
@@ -1015,8 +978,7 @@ compress(Char *name)
     case SM_F2O:
         inStr = fopen(inName, "rb");
         outStr = stdout;
-        if (isatty(fileno(stdout)))
-        {
+        if (isatty(fileno(stdout))) {
             fprintf(stderr,
                     "%s: I won't write compressed data to a terminal.\n",
                     progName);
@@ -1024,8 +986,7 @@ compress(Char *name)
             stderr, "%s: For help, type: `%s --help'.\n", progName, progName);
             return;
         };
-        if (inStr == NULL)
-        {
+        if (inStr == NULL) {
             fprintf(stderr,
                     "%s: Can't open input file %s, skipping.\n",
                     progName,
@@ -1037,16 +998,14 @@ compress(Char *name)
     case SM_F2F:
         inStr = fopen(inName, "rb");
         outStr = fopen(outName, "wb");
-        if (outStr == NULL)
-        {
+        if (outStr == NULL) {
             fprintf(stderr,
                     "%s: Can't create output file %s, skipping.\n",
                     progName,
                     outName);
             return;
         }
-        if (inStr == NULL)
-        {
+        if (inStr == NULL) {
             fprintf(stderr,
                     "%s: Can't open input file %s, skipping.\n",
                     progName,
@@ -1061,8 +1020,7 @@ compress(Char *name)
         break;
     }
 
-    if (verbosity >= 1)
-    {
+    if (verbosity >= 1) {
         fprintf(stderr, "  %s: ", inName);
         pad(inName);
         fflush(stderr);
@@ -1074,11 +1032,9 @@ compress(Char *name)
     outputHandleJustInCase = NULL;
 
     /*--- If there was an I/O error, we won't get here. ---*/
-    if (srcMode == SM_F2F)
-    {
+    if (srcMode == SM_F2F) {
         copyDatePermissionsAndOwner(inName, outName);
-        if (!keepInputFiles)
-        {
+        if (!keepInputFiles) {
             IntNative retVal = remove(inName);
             ERROR_IF_NOT_ZERO(retVal);
         }
@@ -1097,8 +1053,7 @@ uncompress(Char *name)
     if (name == NULL && srcMode != SM_I2O)
         panic("uncompress: bad modes\n");
 
-    switch (srcMode)
-    {
+    switch (srcMode) {
     case SM_I2O:
         copyFileName(inName, "(stdin)");
         copyFileName(outName, "(stdout)");
@@ -1115,38 +1070,33 @@ uncompress(Char *name)
         break;
     }
 
-    if (srcMode != SM_I2O && containsDubiousChars(inName))
-    {
+    if (srcMode != SM_I2O && containsDubiousChars(inName)) {
         fprintf(
         stderr, "%s: There are no files matching `%s'.\n", progName, inName);
         return;
     }
-    if (srcMode != SM_I2O && !fileExists(inName))
-    {
+    if (srcMode != SM_I2O && !fileExists(inName)) {
         fprintf(stderr,
                 "%s: Input file %s doesn't exist, skipping.\n",
                 progName,
                 inName);
         return;
     }
-    if (srcMode != SM_I2O && !endsInBz2(inName))
-    {
+    if (srcMode != SM_I2O && !endsInBz2(inName)) {
         fprintf(stderr,
                 "%s: Input file name %s doesn't end in `.bz2', skipping.\n",
                 progName,
                 inName);
         return;
     }
-    if (srcMode != SM_I2O && notAStandardFile(inName))
-    {
+    if (srcMode != SM_I2O && notAStandardFile(inName)) {
         fprintf(stderr,
                 "%s: Input file %s is not a normal file, skipping.\n",
                 progName,
                 inName);
         return;
     }
-    if (srcMode == SM_F2F && !forceOverwrite && fileExists(outName))
-    {
+    if (srcMode == SM_F2F && !forceOverwrite && fileExists(outName)) {
         fprintf(stderr,
                 "%s: Output file %s already exists, skipping.\n",
                 progName,
@@ -1154,14 +1104,12 @@ uncompress(Char *name)
         return;
     }
 
-    switch (srcMode)
-    {
+    switch (srcMode) {
 
     case SM_I2O:
         inStr = stdin;
         outStr = stdout;
-        if (isatty(fileno(stdin)))
-        {
+        if (isatty(fileno(stdin))) {
             fprintf(stderr,
                     "%s: I won't read compressed data from a terminal.\n",
                     progName);
@@ -1174,8 +1122,7 @@ uncompress(Char *name)
     case SM_F2O:
         inStr = fopen(inName, "rb");
         outStr = stdout;
-        if (inStr == NULL)
-        {
+        if (inStr == NULL) {
             fprintf(stderr,
                     "%s: Can't open input file %s, skipping.\n",
                     progName,
@@ -1187,16 +1134,14 @@ uncompress(Char *name)
     case SM_F2F:
         inStr = fopen(inName, "rb");
         outStr = fopen(outName, "wb");
-        if (outStr == NULL)
-        {
+        if (outStr == NULL) {
             fprintf(stderr,
                     "%s: Can't create output file %s, skipping.\n",
                     progName,
                     outName);
             return;
         }
-        if (inStr == NULL)
-        {
+        if (inStr == NULL) {
             fprintf(stderr,
                     "%s: Can't open input file %s, skipping.\n",
                     progName,
@@ -1211,8 +1156,7 @@ uncompress(Char *name)
         break;
     }
 
-    if (verbosity >= 1)
-    {
+    if (verbosity >= 1) {
         fprintf(stderr, "  %s: ", inName);
         pad(inName);
         fflush(stderr);
@@ -1224,34 +1168,25 @@ uncompress(Char *name)
     outputHandleJustInCase = NULL;
 
     /*--- If there was an I/O error, we won't get here. ---*/
-    if (magicNumberOK)
-    {
-        if (srcMode == SM_F2F)
-        {
+    if (magicNumberOK) {
+        if (srcMode == SM_F2F) {
             copyDatePermissionsAndOwner(inName, outName);
-            if (!keepInputFiles)
-            {
+            if (!keepInputFiles) {
                 IntNative retVal = remove(inName);
                 ERROR_IF_NOT_ZERO(retVal);
             }
         }
-    }
-    else
-    {
-        if (srcMode == SM_F2F)
-        {
+    } else {
+        if (srcMode == SM_F2F) {
             IntNative retVal = remove(outName);
             ERROR_IF_NOT_ZERO(retVal);
         }
     }
 
-    if (magicNumberOK)
-    {
+    if (magicNumberOK) {
         if (verbosity >= 1)
             fprintf(stderr, "done\n");
-    }
-    else
-    {
+    } else {
         if (verbosity >= 1)
             fprintf(stderr, "not a bzip2 file, skipping.\n");
         else
@@ -1274,8 +1209,7 @@ testf(Char *name)
         panic("testf: bad modes\n");
 
     copyFileName(outName, "(none)");
-    switch (srcMode)
-    {
+    switch (srcMode) {
     case SM_I2O:
         copyFileName(inName, "(stdin)");
         break;
@@ -1287,30 +1221,26 @@ testf(Char *name)
         break;
     }
 
-    if (srcMode != SM_I2O && containsDubiousChars(inName))
-    {
+    if (srcMode != SM_I2O && containsDubiousChars(inName)) {
         fprintf(
         stderr, "%s: There are no files matching `%s'.\n", progName, inName);
         return;
     }
-    if (srcMode != SM_I2O && !fileExists(inName))
-    {
+    if (srcMode != SM_I2O && !fileExists(inName)) {
         fprintf(stderr,
                 "%s: Input file %s doesn't exist, skipping.\n",
                 progName,
                 inName);
         return;
     }
-    if (srcMode != SM_I2O && !endsInBz2(inName))
-    {
+    if (srcMode != SM_I2O && !endsInBz2(inName)) {
         fprintf(stderr,
                 "%s: Input file name %s doesn't end in `.bz2', skipping.\n",
                 progName,
                 inName);
         return;
     }
-    if (srcMode != SM_I2O && notAStandardFile(inName))
-    {
+    if (srcMode != SM_I2O && notAStandardFile(inName)) {
         fprintf(stderr,
                 "%s: Input file %s is not a normal file, skipping.\n",
                 progName,
@@ -1318,12 +1248,10 @@ testf(Char *name)
         return;
     }
 
-    switch (srcMode)
-    {
+    switch (srcMode) {
 
     case SM_I2O:
-        if (isatty(fileno(stdin)))
-        {
+        if (isatty(fileno(stdin))) {
             fprintf(stderr,
                     "%s: I won't read compressed data from a terminal.\n",
                     progName);
@@ -1337,8 +1265,7 @@ testf(Char *name)
     case SM_F2O:
     case SM_F2F:
         inStr = fopen(inName, "rb");
-        if (inStr == NULL)
-        {
+        if (inStr == NULL) {
             fprintf(stderr,
                     "%s: Can't open input file %s, skipping.\n",
                     progName,
@@ -1352,8 +1279,7 @@ testf(Char *name)
         break;
     }
 
-    if (verbosity >= 1)
-    {
+    if (verbosity >= 1) {
         fprintf(stderr, "  %s: ", inName);
         pad(inName);
         fflush(stderr);
@@ -1487,15 +1413,12 @@ mkCell(void)
 Cell *
 snocString(Cell *root, Char *name)
 {
-    if (root == NULL)
-    {
+    if (root == NULL) {
         Cell *tmp = mkCell();
         tmp->name = ( Char * )myMalloc(5 + strlen(name));
         strcpy(tmp->name, name);
         return tmp;
-    }
-    else
-    {
+    } else {
         Cell *tmp = root;
         while (tmp->link != NULL)
             tmp = tmp->link;
@@ -1519,8 +1442,7 @@ main(IntNative argc, Char *argv[])
 
     /*-- Be really really really paranoid :-) --*/
     if (sizeof(Int32) != 4 || sizeof(UInt32) != 4 || sizeof(Int16) != 2
-        || sizeof(UInt16) != 2 || sizeof(Char) != 1 || sizeof(UChar) != 1)
-    {
+        || sizeof(UInt16) != 2 || sizeof(Char) != 1 || sizeof(UChar) != 1) {
         fprintf(stderr,
                 "bzip2: I'm not configured correctly for this platform!\n"
                 "\tI require Int32, Int16 and Char to have sizes\n"
@@ -1573,8 +1495,7 @@ main(IntNative argc, Char *argv[])
     longestFileName = 7;
     numFileNames = 0;
     for (aa = argList; aa != NULL; aa = aa->link)
-        if (aa->name[0] != '-')
-        {
+        if (aa->name[0] != '-') {
             numFileNames++;
             if (longestFileName < ( Int32 )strlen(aa->name))
                 longestFileName = ( Int32 )strlen(aa->name);
@@ -1592,24 +1513,21 @@ main(IntNative argc, Char *argv[])
     /*-- Note that subsequent flag handling may change this. --*/
     opMode = OM_Z;
     tmp = progName;
-    for (;;)
-    {
-        switch (*tmp++)
-        {
+    for (;;) {
+        switch (*tmp++) {
         case 0:
             break;
         case 'u':
         case 'U':
-            if (!strncasecmp(tmp, "nzip", 4))
-            {
+            if (!strncasecmp(tmp, "nzip", 4)) {
                 opMode = OM_UNZ;
                 break;
             }
             continue;
         case 'z':
         case 'Z':
-            if (!strncasecmp(tmp, "zcat", 4) || !strncasecmp(tmp, "z2cat", 5))
-            {
+            if (!strncasecmp(tmp, "zcat", 4)
+                || !strncasecmp(tmp, "z2cat", 5)) {
                 opMode = OM_UNZ;
                 srcMode = (numFileNames == 0) ? SM_I2O : SM_F2O;
                 break;
@@ -1625,8 +1543,7 @@ main(IntNative argc, Char *argv[])
     for (aa = argList; aa != NULL; aa = aa->link)
         if (aa->name[0] == '-' && aa->name[1] != '-')
             for (j = 1; aa->name[j] != '\0'; j++)
-                switch (aa->name[j])
-                {
+                switch (aa->name[j]) {
                 case 'c':
                     srcMode = SM_F2O;
                     break;
@@ -1695,8 +1612,7 @@ main(IntNative argc, Char *argv[])
                 }
 
     /*-- And again ... --*/
-    for (aa = argList; aa != NULL; aa = aa->link)
-    {
+    for (aa = argList; aa != NULL; aa = aa->link) {
         if (ISFLAG("--stdout"))
             srcMode = SM_F2O;
         else if (ISFLAG("--decompress"))
@@ -1721,13 +1637,10 @@ main(IntNative argc, Char *argv[])
             workFactor = 150;
         else if (ISFLAG("--verbose"))
             verbosity++;
-        else if (ISFLAG("--help"))
-        {
+        else if (ISFLAG("--help")) {
             usage(progName);
             exit(1);
-        }
-        else if (strncmp(aa->name, "--", 2) == 0)
-        {
+        } else if (strncmp(aa->name, "--", 2) == 0) {
             fprintf(stderr, "%s: Bad flag `%s'\n", progName, aa->name);
             usage(progName);
             exit(1);
@@ -1739,14 +1652,12 @@ main(IntNative argc, Char *argv[])
     if (opMode == OM_Z && smallMode)
         blockSize100k = 2;
 
-    if (srcMode == SM_F2O && numFileNames == 0)
-    {
+    if (srcMode == SM_F2O && numFileNames == 0) {
         fprintf(stderr, "%s: -c expects at least one filename.\n", progName);
         exit(1);
     }
 
-    if (opMode == OM_TEST && srcMode == SM_F2O)
-    {
+    if (opMode == OM_TEST && srcMode == SM_F2O) {
         fprintf(stderr, "%s: -c and -t cannot be used together.\n", progName);
         exit(1);
     }
@@ -1754,44 +1665,35 @@ main(IntNative argc, Char *argv[])
     if (opMode != OM_Z)
         blockSize100k = 0;
 
-    if (opMode == OM_Z)
-    {
+    if (opMode == OM_Z) {
         if (srcMode == SM_I2O)
             compress(NULL);
         else
             for (aa = argList; aa != NULL; aa = aa->link)
-                if (aa->name[0] != '-')
-                {
+                if (aa->name[0] != '-') {
                     numFilesProcessed++;
                     compress(aa->name);
                 }
-    }
-    else if (opMode == OM_UNZ)
-    {
+    } else if (opMode == OM_UNZ) {
         if (srcMode == SM_I2O)
             uncompress(NULL);
         else
             for (aa = argList; aa != NULL; aa = aa->link)
-                if (aa->name[0] != '-')
-                {
+                if (aa->name[0] != '-') {
                     numFilesProcessed++;
                     uncompress(aa->name);
                 }
-    }
-    else
-    {
+    } else {
         testFailsExist = False;
         if (srcMode == SM_I2O)
             testf(NULL);
         else
             for (aa = argList; aa != NULL; aa = aa->link)
-                if (aa->name[0] != '-')
-                {
+                if (aa->name[0] != '-') {
                     numFilesProcessed++;
                     testf(aa->name);
                 }
-        if (testFailsExist)
-        {
+        if (testFailsExist) {
             fprintf(
             stderr,
             "\n"

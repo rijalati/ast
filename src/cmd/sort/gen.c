@@ -63,8 +63,7 @@ gen(int m)
 {
     int c;
 
-    if (state.part >= state.range['d'].min)
-    {
+    if (state.part >= state.range['d'].min) {
         state.part = 0;
         RAND();
     }
@@ -90,20 +89,17 @@ main(int argc, char **argv)
     state.charset = ALPHA;
     i = 0;
     e = "0123456789";
-    while (c = *e++)
-    {
+    while (c = *e++) {
         hit[c] = 1;
         data[i++] = c;
     }
     e = "abcdefghijklmnopqrstuvwxyz";
-    while (c = *e++)
-    {
+    while (c = *e++) {
         hit[c] = 1;
         data[i++] = c;
     }
     e = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    while (c = *e++)
-    {
+    while (c = *e++) {
         hit[c] = 1;
         data[i++] = c;
     }
@@ -121,8 +117,7 @@ main(int argc, char **argv)
     while (c = optget(argv,
                       "bd:[dup[:max]]f:[float-key[:max]]i:[int-key[:max]]k:["
                       "key]l:[lcm]p:[prefix[:max]]r:[record:[max]]s:[size]"))
-        switch (c)
-        {
+        switch (c) {
         case 'b':
             state.charset = BINARY;
             break;
@@ -148,8 +143,7 @@ main(int argc, char **argv)
         }
     if (state.range['l'].min)
         ROUND(state.range['s'].min, state.range['l'].min);
-    if (state.range['r'].max)
-    {
+    if (state.range['r'].max) {
         newline = 1;
         state.range['r'].min--;
         if (state.range['r'].max < state.range['r'].min)
@@ -158,11 +152,9 @@ main(int argc, char **argv)
             state.range['r'].max = 1;
         else
             state.range['r'].max -= state.range['r'].min + 1;
-    }
-    else
+    } else
         state.range['r'].max = 1;
-    if (state.range['p'].min)
-    {
+    if (state.range['p'].min) {
         if (state.range['p'].min > state.range['r'].min)
             state.range['p'].min = state.range['r'].min;
         if (state.range['p'].max < state.range['p'].min)
@@ -176,8 +168,7 @@ main(int argc, char **argv)
         else
             state.range['p'].max -= state.range['p'].min + 1;
     }
-    if (state.range['f'].min)
-    {
+    if (state.range['f'].min) {
         if (state.range['f'].min >= state.range['r'].min)
             state.range['f'].min = state.range['r'].min - 1;
         if (state.range['f'].max < state.range['f'].min)
@@ -191,8 +182,7 @@ main(int argc, char **argv)
         else
             state.range['f'].max -= state.range['f'].min + 1;
     }
-    if (state.range['i'].min)
-    {
+    if (state.range['i'].min) {
         if (state.range['i'].min >= state.range['r'].min)
             state.range['i'].min = state.range['r'].min - 1;
         if (state.range['i'].max < state.range['i'].min)
@@ -217,11 +207,9 @@ main(int argc, char **argv)
                   1)))
         error(ERROR_SYSTEM | 3, "out of space [buf]");
     n = state.range['s'].min;
-    do
-    {
+    do {
         i = 0;
-        if (state.range['f'].min)
-        {
+        if (state.range['f'].min) {
             k = state.range['f'].min + (RAND() % state.range['f'].max) - 6;
             state.buf[i++] = '.';
             while (i < k)
@@ -232,15 +220,13 @@ main(int argc, char **argv)
             state.buf[i++] = gen(NUMERIC);
             state.buf[i++] = ':';
         }
-        if (state.range['i'].min)
-        {
+        if (state.range['i'].min) {
             k = state.range['i'].min + (RAND() % state.range['i'].max);
             while (i < k)
                 state.buf[i++] = gen(NUMERIC);
             state.buf[i++] = ':';
         }
-        if (state.range['p'].min)
-        {
+        if (state.range['p'].min) {
             k = state.range['p'].min + (RAND() % state.range['p'].max);
             c = gen(state.charset);
             while (i < k)
@@ -251,16 +237,14 @@ main(int argc, char **argv)
             : state.range['r'].min + (RAND() % state.range['r'].max);
         while (i < k)
             state.buf[i++] = gen(state.charset);
-        if (state.range['k'].min)
-        {
+        if (state.range['k'].min) {
             k = state.range['r'].min + (RAND() % state.range['r'].max);
             while (i < k)
                 state.buf[i++] = ' ';
         }
         if (newline)
             state.buf[i++] = '\n';
-        if (i > n)
-        {
+        if (i > n) {
             i = n;
             if (newline)
                 state.buf[n - 1] = '\n';

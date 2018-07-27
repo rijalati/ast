@@ -37,30 +37,23 @@ rstat(char *name, Stat_t *st, int res)
 {
     Time_t t;
 
-    if (internal.openfile)
-    {
+    if (internal.openfile) {
         internal.openfile = 0;
         close(internal.openfd);
     }
     while ((internal.openfd = open(name, O_RDONLY | O_BINARY | O_CLOEXEC))
-           < 0)
-    {
-        if (errno != EINTR)
-        {
-            if (errno == EACCES)
-            {
-                if (state.maxview && !state.fsview)
-                {
+           < 0) {
+        if (errno != EINTR) {
+            if (errno == EACCES) {
+                if (state.maxview && !state.fsview) {
                     int oerrno = errno;
                     Stat_t rm;
 
                     if (!stat(name, st) && st->st_nlink > 1 && !st->st_size
-                        && !(st->st_mode & S_IPERM))
-                    {
+                        && !(st->st_mode & S_IPERM)) {
                         edit(internal.tmp, name, KEEP, ".../...", DELETE);
                         if (!stat(sfstruse(internal.tmp), &rm)
-                            && rm.st_ino == st->st_ino)
-                        {
+                            && rm.st_ino == st->st_ino) {
                             /*
                              * not in this or any lower view
                              */
@@ -85,22 +78,19 @@ rstat(char *name, Stat_t *st, int res)
     if (fstat(internal.openfd, st))
         return -1;
 #if _WINIX
-    if (st->st_nlink > 1)
-    {
+    if (st->st_nlink > 1) {
         internal.openfile = 0;
         close(internal.openfd);
         internal.openfd = -1;
     }
 #endif
 found:
-    if (!tmxgetmtime(st))
-    {
+    if (!tmxgetmtime(st)) {
         if (S_ISREG(st->st_mode) || S_ISDIR(st->st_mode))
             error(1, "%s modify time must be after the epoch", name);
         tmxsetmtime(st, OLDTIME);
     }
-    if (state.regress && (S_ISBLK(st->st_mode) || S_ISCHR(st->st_mode)))
-    {
+    if (state.regress && (S_ISBLK(st->st_mode) || S_ISCHR(st->st_mode))) {
         t = CURTIME;
         tmxsetmtime(st, t);
     }
@@ -145,17 +135,14 @@ append(List_t *p, List_t *q)
 {
     List_t *t;
 
-    if (t = p)
-    {
-        if (q)
-        {
+    if (t = p) {
+        if (q) {
             while (t->next)
                 t = t->next;
             t->next = q;
         }
         return p;
-    }
-    else
+    } else
         return q;
 }
 
@@ -191,11 +178,9 @@ listcopy(List_t *p)
         return 0;
     newlist(r);
     q = r;
-    while (p)
-    {
+    while (p) {
         q->rule = p->rule;
-        if (p = p->next)
-        {
+        if (p = p->next) {
             newlist(t);
             q = q->next = t;
         }
@@ -217,14 +202,12 @@ timefmt(const char *fmt, Time_t t)
         t = 100000000;
     else if (t == OLDTIME)
         t = 200000000;
-    else if (state.regress)
-    {
+    else if (state.regress) {
         if (t < state.start)
             t = 300000000;
         else
             t = 400000000;
-    }
-    else
+    } else
         return fmttmx((fmt && *fmt) ? fmt : "%s.%6N", t);
     return fmttmx((fmt && *fmt) ? fmt : "%s.%1N", t);
 }
@@ -241,15 +224,13 @@ timenum(const char *s, char **p)
     unsigned long m;
     char *e;
 
-    if ((t = strtoull(s, &e, 10)) == (Time_t)(-1))
-    {
+    if ((t = strtoull(s, &e, 10)) == (Time_t)(-1)) {
         if (p)
             *p = ( char * )s;
         return TMX_NOTIME;
     }
     n = 0;
-    if (*e == '.')
-    {
+    if (*e == '.') {
         m = 1000000000;
         while (isdigit(*++e))
             n += (*e - '0') * (m /= 10);
@@ -326,25 +307,20 @@ printext(Sfio_t *sp, void *vp, Sffmt_t *dp)
     char *e;
     Time_t tm;
 
-    if (fp->all)
-    {
+    if (fp->all) {
         s = fp->arg;
         fp->arg += strlen(s);
-    }
-    else if (!(s = getarg(&fp->arg, NiL)))
+    } else if (!(s = getarg(&fp->arg, NiL)))
         return -1;
-    if (dp->n_str > 0)
-    {
+    if (dp->n_str > 0) {
         if (!fp->tmp)
             fp->tmp = sfstropen();
         sfprintf(fp->tmp, "%.*s", dp->n_str, dp->t_str);
         txt = sfstruse(fp->tmp);
-    }
-    else
+    } else
         txt = 0;
     dp->flags |= SFFMT_VALUE;
-    switch (dp->fmt)
-    {
+    switch (dp->fmt) {
     case 'C':
         error(1, "%%%c: obsolete: use the %%c format", dp->fmt);
         dp->fmt = 'c';
@@ -385,38 +361,28 @@ printext(Sfio_t *sp, void *vp, Sffmt_t *dp)
         /*FALLTHROUGH*/
     case 's':
         value->s = s;
-        if (txt)
-        {
-            if (streq(txt, "identifier"))
-            {
+        if (txt) {
+            if (streq(txt, "identifier")) {
                 if (*s && !istype(*s, C_ID1))
                     *s++ = '_';
                 for (; *s; s++)
                     if (!istype(*s, C_ID1 | C_ID2))
                         *s = '_';
-            }
-            else if (streq(txt, "invert"))
-            {
+            } else if (streq(txt, "invert")) {
                 for (; *s; s++)
                     if (isupper(*s))
                         *s = tolower(*s);
                     else if (islower(*s))
                         *s = toupper(*s);
-            }
-            else if (streq(txt, "lower"))
-            {
+            } else if (streq(txt, "lower")) {
                 for (; *s; s++)
                     if (isupper(*s))
                         *s = tolower(*s);
-            }
-            else if (streq(txt, "upper"))
-            {
+            } else if (streq(txt, "upper")) {
                 for (; *s; s++)
                     if (islower(*s))
                         *s = toupper(*s);
-            }
-            else if (streq(txt, "variable"))
-            {
+            } else if (streq(txt, "variable")) {
                 for (; *s; s++)
                     if (!istype(*s, C_VARIABLE1 | C_VARIABLE2))
                         *s = '.';
@@ -476,14 +442,12 @@ strprintf(Sfio_t *sp, const char *format, char *argp, int all, int term)
     fmt.arg = argp;
     fmt.all = all;
     n = 0;
-    while ((i = sfprintf(sp, "%!", &fmt)) >= 0)
-    {
+    while ((i = sfprintf(sp, "%!", &fmt)) >= 0) {
         n += i;
         if (fmt.arg <= argp || !*(argp = fmt.arg))
             break;
     }
-    if (term != -1)
-    {
+    if (term != -1) {
         sfputc(sp, term);
         n++;
     }
@@ -514,27 +478,21 @@ getarg(char **buf, int *flags)
         *flags &= ~(A_group | A_metarule | A_scope);
     for (s = *buf; isspace(*s); s++)
         ;
-    if (flags && !(*flags & A_nooptions) && s[0] == '-' && s[1] == '-')
-    {
-        if (!s[2] || isspace(s[2]))
-        {
+    if (flags && !(*flags & A_nooptions) && s[0] == '-' && s[1] == '-') {
+        if (!s[2] || isspace(s[2])) {
             for (s += 2; isspace(*s); s++)
                 ;
             *flags |= A_nooptions;
-        }
-        else
+        } else
             *flags |= A_scope;
     }
     if (!*(a = t = s))
         return 0;
     paren = 0;
-    for (;;)
-    {
-        switch (c = *s++)
-        {
+    for (;;) {
+        switch (c = *s++) {
         case '\\':
-            if (*s)
-            {
+            if (*s) {
                 *t++ = c;
                 c = *s++;
             }
@@ -549,8 +507,7 @@ getarg(char **buf, int *flags)
             break;
         case '"':
         case '\'':
-            if (!paren)
-            {
+            if (!paren) {
                 for (q = t; *s && *s != c; *t++ = *s++)
                     if (*s == '\\' && *(s + 1))
                         *t++ = *s++;

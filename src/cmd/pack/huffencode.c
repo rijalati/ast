@@ -40,12 +40,10 @@ putbuff(Sfio_t *, unsigned char *);
 #define putbits(buff, left, bits, n)                                         \
     (left += (n), buff = ((buff << (n)) | (bits)))
 #define outchars(fp, buff, left, outp, n)                                    \
-    while (left >= CHAR_BIT)                                                 \
-    {                                                                        \
+    while (left >= CHAR_BIT) {                                               \
         left -= CHAR_BIT;                                                    \
         *outp++ = buff >> left;                                              \
-        if (outp >= outend)                                                  \
-        {                                                                    \
+        if (outp >= outend) {                                                \
             if ((n = putbuff(fp, outp)) < 0)                                 \
                 return (-1);                                                 \
             hp->outsize += n;                                                \
@@ -68,11 +66,9 @@ huffencode(Huff_t *hp, Sfio_t *infile, Sfio_t *outfile, int size)
     int n;
     unsigned char *outp;
     Sfio_t *fp = outfile;
-    if (hp->id != lastid)
-    {
+    if (hp->id != lastid) {
         /* compute the bit patterns for each character */
-        for (n = 0, i = hp->maxlev; i > 0; i--)
-        {
+        for (n = 0, i = hp->maxlev; i > 0; i--) {
             for (c = 0; c <= END; c++)
                 if (hp->length[c] == i)
                     bits[c] = n++;
@@ -89,12 +85,9 @@ huffencode(Huff_t *hp, Sfio_t *infile, Sfio_t *outfile, int size)
           = ( unsigned char * )sfreserve(fp, SF_UNBOUND, SF_LOCKR)))
         return (-1);
     outend = outp + sfvalue(fp);
-    do
-    {
-        if (!(inbuff = ( unsigned char * )sfreserve(infile, SF_UNBOUND, 0)))
-        {
-            if ((n = sfvalue(infile)) == 0)
-            {
+    do {
+        if (!(inbuff = ( unsigned char * )sfreserve(infile, SF_UNBOUND, 0))) {
+            if ((n = sfvalue(infile)) == 0) {
                 c = END;
                 goto endof;
             }
@@ -103,8 +96,7 @@ huffencode(Huff_t *hp, Sfio_t *infile, Sfio_t *outfile, int size)
         n = sfvalue(infile);
         if (size >= 0 && size < n)
             n = size;
-        while (n-- > 0)
-        {
+        while (n-- > 0) {
             c = *inbuff++;
         endof:
             i = hp->length[c];
@@ -114,8 +106,7 @@ huffencode(Huff_t *hp, Sfio_t *infile, Sfio_t *outfile, int size)
         if (size > 0 && n && (size -= n) <= 0)
             goto done;
     } while (c != END);
-    if (left)
-    {
+    if (left) {
         i = CHAR_BIT - left;
         putbits(buffer, left, 0, i);
         outchars(fp, buffer, left, outp, i);

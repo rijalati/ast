@@ -49,8 +49,7 @@ tksh_cmd_split(int argc, char *argv[], Shbltin_t *context)
     newargv = ( char ** )malloc(size + argc * (sizeof(char *) + 1));
     newptr = ( char * )(newargv + argc);
 
-    for (i = 1; i < argc; i++)
-    {
+    for (i = 1; i < argc; i++) {
         newargv[i - 1] = newptr;
         newptr = strcopy(newptr, argv[i]) + 1;
     }
@@ -81,8 +80,7 @@ Tksh_ConvertList(Tcl_Interp *interp, char *list, int toMode)
 
     result = NULL;
     oldMode = TkshSetListMode(fromMode);
-    if (Tcl_SplitList(interp, list, &argc, &argv) == TCL_OK)
-    {
+    if (Tcl_SplitList(interp, list, &argc, &argv) == TCL_OK) {
         TkshSetListMode(toMode);
         result = Tcl_Merge(argc, argv);
     }
@@ -104,23 +102,20 @@ Tcl_SplitList(Tcl_Interp *interp, char *list, int *argcPtr, char ***argvPtr)
         return Tcl_TclSplitList(interp, list, argcPtr, argvPtr);
 #endif
 
-    if (!init)
-    {
+    if (!init) {
         sh_addbuiltin(SPLIT_CMD_NAME, tksh_cmd_split, ( void * )args);
         init = 1;
     }
 
     command = ( char * )malloc(strlen(list) + strlen(SPLIT_CMD_NAME) + 2);
     dprintf2(("Splitting...\n"));
-    if (args && command)
-    {
+    if (args && command) {
         sprintf(command, "%s %s", SPLIT_CMD_NAME, list);
 
         args->argcPtr = argcPtr;
         args->argvPtr = argvPtr;
 
-        if ((str = sfopen(( Sfio_t * )0, command, "s")))
-        {
+        if ((str = sfopen(( Sfio_t * )0, command, "s"))) {
             sh_eval(str, 0x8000);
             sfclose(str);
             result = Tksh_OkOrErr();
@@ -200,17 +195,13 @@ char **argv;                          /* Array of string values. */
      * Pass 1: estimate space, gather flags.
      */
 
-    if (argc <= LOCAL_SIZE)
-    {
+    if (argc <= LOCAL_SIZE) {
         flagPtr = localFlags;
-    }
-    else
-    {
+    } else {
         flagPtr = ( int * )ckalloc(( unsigned )argc * sizeof(int));
     }
     numChars = 1;
-    for (i = 0; i < argc; i++)
-    {
+    for (i = 0; i < argc; i++) {
         numChars += Tcl_ScanElement(argv[i], &flagPtr[i]) + 1;
     }
 
@@ -220,24 +211,19 @@ char **argv;                          /* Array of string values. */
 
     result = ( char * )ckalloc(( unsigned )numChars);
     dst = result;
-    for (i = 0; i < argc; i++)
-    {
+    for (i = 0; i < argc; i++) {
         numChars = Tcl_ConvertElement(argv[i], dst, flagPtr[i]);
         dst += numChars;
         *dst = ' ';
         dst++;
     }
-    if (dst == result)
-    {
+    if (dst == result) {
         *dst = 0;
-    }
-    else
-    {
+    } else {
         dst[-1] = 0;
     }
 
-    if (flagPtr != localFlags)
-    {
+    if (flagPtr != localFlags) {
         ckfree(( char * )flagPtr);
     }
     return result;

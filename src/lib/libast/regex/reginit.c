@@ -912,19 +912,15 @@ State_t state = {
 void *
 alloc(regdisc_t *disc, void *p, size_t n)
 {
-    if (disc->re_resizef)
-    {
+    if (disc->re_resizef) {
         if (!n && (disc->re_flags & REG_NOFREE))
             return 0;
         return (*disc->re_resizef)(disc->re_resizehandle, p, n);
-    }
-    else if (!n)
-    {
+    } else if (!n) {
         if (!(disc->re_flags & REG_NOFREE))
             free(p);
         return 0;
-    }
-    else if (p)
+    } else if (p)
         return realloc(p, n);
     else
         return malloc(n);

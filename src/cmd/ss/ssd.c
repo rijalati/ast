@@ -260,8 +260,7 @@ static Proc_t *remote;
 static void
 finish(int status)
 {
-    if (remote)
-    {
+    if (remote) {
         kill(remote->pid, SIGKILL);
         procclose(remote);
     }
@@ -284,17 +283,14 @@ update(char *data, unsigned long now, int delay, CSSTAT *ss)
     static unsigned long down;
     static char flush[] = ".flush.";
 
-    if (ss->up < 0)
-    {
+    if (ss->up < 0) {
         tm = CSTIME();
         if (down)
             ss->up -= ( long )(tm - down);
         down = tm;
     }
-    if (now)
-    {
-        if (now > next || ss->idle < idle)
-        {
+    if (now) {
+        if (now > next || ss->idle < idle) {
             next = now + delay;
             now = 0;
         }
@@ -304,8 +300,7 @@ update(char *data, unsigned long now, int delay, CSSTAT *ss)
     if (!now && csnote(data, ss) || stat(data, &st))
         finish(1);
     idle = ss->idle;
-    if (delay)
-    {
+    if (delay) {
         sleep(delay);
         if (remote && remove(flush))
             close(open(flush, O_WRONLY | O_CREAT | O_TRUNC, 0));
@@ -366,8 +361,7 @@ main(int argc, char **argv)
     if (chdir(buf))
         error(ERROR_SYSTEM | 3, "%s: chdir error", buf);
     data = csname(0);
-    if (argv[1] && strcmp(argv[1], data))
-    {
+    if (argv[1] && strcmp(argv[1], data)) {
         /*
          * start remote status daemon
          */
@@ -381,8 +375,7 @@ main(int argc, char **argv)
             exit(0);
         sfsprintf(buf, sizeof(buf), "./%s", data);
         csstat(buf, &ss);
-        if (s = csattr(CS_HOST_LOCAL, "type"))
-        {
+        if (s = csattr(CS_HOST_LOCAL, "type")) {
             strcpy(tmp, s);
             if (s = csattr(data, "type"))
                 pathrepl(cmd, sizeof(cmd), tmp, s);
@@ -400,8 +393,7 @@ main(int argc, char **argv)
         av[1] = data;
         av[2] = cmd;
         av[3] = 0;
-        for (;;)
-        {
+        for (;;) {
             update(data, 0, 0, &ss);
             if (!(remote
                   = procopen(av[0], av, NiL, NiL, PROC_UID | PROC_GID)))
@@ -449,28 +441,23 @@ main(int argc, char **argv)
 #if NAMELIST
     for (n = 0; n < elementsof(symbols); n++)
         names[n].n_name = symbols[n].name;
-    if ((kf = open(memfile, O_RDONLY)) >= 0)
-    {
+    if ((kf = open(memfile, O_RDONLY)) >= 0) {
         if (chdir("/"))
             error(ERROR_SYSTEM | 3, "/: chdir error");
         s = 0;
         for (i = 0; i < elementsof(sysfiles); i++)
-            if (!access(sysfiles[i], F_OK))
-            {
+            if (!access(sysfiles[i], F_OK)) {
                 s = sysfiles[i];
                 break;
             }
-        if (!s)
-        {
+        if (!s) {
             if (!(root = opendir(".")))
                 error(ERROR_SYSTEM | 3, "/: cannot read");
-            while (entry = readdir(root))
-            {
+            while (entry = readdir(root)) {
                 if ((i = strlen(entry->d_name) - 2) > 0
                     && entry->d_name[i] == 'i' && entry->d_name[i + 1] == 'x'
                     && !stat(entry->d_name, &st)
-                    && (st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)))
-                {
+                    && (st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))) {
                     s = entry->d_name;
                     break;
                 }
@@ -479,8 +466,7 @@ main(int argc, char **argv)
         }
         nlist(s, names);
         for (n = 0; n < elementsof(symbols); n++)
-            if (!names[n].n_type)
-            {
+            if (!names[n].n_type) {
                 error(1, "%s: %s not in nlist", s, names[n].n_name);
                 close(kf);
                 kf = -1;
@@ -493,24 +479,20 @@ main(int argc, char **argv)
     {
         sfsprintf(
         buf, sizeof(buf), "%s/%s%s%s", WHODIR, WHOPRE, data, WHOSUF);
-        if ((wf = open(buf, O_RDONLY)) >= 0)
-        {
+        if ((wf = open(buf, O_RDONLY)) >= 0) {
             if (read(wf, &who, sizeof(who)) != sizeof(who)
-                || who.wd_vers != WHOVERS || who.wd_type != WHOTYPE)
-            {
+                || who.wd_vers != WHOVERS || who.wd_type != WHOTYPE) {
                 error(1, "%s: rwhod protocol mismatch", buf);
                 close(wf);
                 wf = -1;
-            }
-            else
+            } else
                 whofile = strdup(buf);
         }
     }
     strcpy(cmd + strlen(cmd), ".idle");
     if (eaccess(cmd, X_OK))
         idlecmd = 0;
-    else
-    {
+    else {
         idlecmd = 1;
         iv[0] = cmd;
         iv[1] = data;
@@ -523,8 +505,7 @@ main(int argc, char **argv)
 
     ss.idle = 4 * 60 * 60;
     now = CSTIME();
-    for (;;)
-    {
+    for (;;) {
         then = now;
         now = CSTIME();
 
@@ -534,8 +515,7 @@ main(int argc, char **argv)
 
         if (fstat(uf, &st))
             error(ERROR_SYSTEM | 3, "%s: stat error", usrfile);
-        if (usertime != ( unsigned long )st.st_mtime)
-        {
+        if (usertime != ( unsigned long )st.st_mtime) {
             usertime = st.st_mtime;
             if (lseek(uf, 0L, 0))
                 error(ERROR_SYSTEM | 3, "%s: seek error", usrfile);
@@ -549,8 +529,7 @@ main(int argc, char **argv)
          * find the min user idle time
          */
 
-        if (idlecmd)
-        {
+        if (idlecmd) {
             /*
              * check idle command
              */
@@ -558,14 +537,12 @@ main(int argc, char **argv)
             if (!(proc = procopen(
                   iv[0], iv, NiL, NiL, PROC_READ | PROC_UID | PROC_GID)))
                 idlecmd = 0;
-            else
-            {
+            else {
                 idlecmd = 1;
                 n = read(proc->rfd, buf, sizeof(buf));
                 if (procclose(proc) || n < 0)
                     idlecmd = 0;
-                else
-                {
+                else {
                     if (n > 0)
                         n--;
                     buf[n] = 0;
@@ -575,15 +552,13 @@ main(int argc, char **argv)
                         ss.idle = 0;
                     else if (streq(buf, "free"))
                         ss.idle = ~0;
-                    else if (streq(buf, "idle"))
-                    {
+                    else if (streq(buf, "idle")) {
                         n = since(then);
                         if ((ss.idle + n) < ss.idle)
                             ss.idle = ~0;
                         else
                             ss.idle += n;
-                    }
-                    else
+                    } else
                         idlecmd = -1;
                 }
             }
@@ -592,13 +567,11 @@ main(int argc, char **argv)
             ss.idle = ~0;
         ss.users = 0;
         for (i = 0; i < usercount; i++)
-            if (usrs[i].ut_name[0] && usrs[i].ut_line[0])
-            {
+            if (usrs[i].ut_name[0] && usrs[i].ut_line[0]) {
                 sfsprintf(buf, sizeof(buf), "/dev/%s", usrs[i].ut_line);
                 if (stat(buf, &st))
                     usrs[i].ut_name[0] = 0;
-                else
-                {
+                else {
                     v = since(st.st_atime);
                     if (v < CS_STAT_IGNORE)
                         ss.users++;
@@ -606,19 +579,16 @@ main(int argc, char **argv)
                         ss.idle = v;
                 }
             }
-        if (idlecmd <= 0 || !ss.users)
-        {
+        if (idlecmd <= 0 || !ss.users) {
             /*
              * check devices for min idle time
              */
 
             for (i = 0; i < elementsof(devfiles); i++)
-                if (devfiles[i])
-                {
+                if (devfiles[i]) {
                     if (stat(devfiles[i], &st))
                         devfiles[i] = 0;
-                    else
-                    {
+                    else {
                         v = since(st.st_atime);
                         if (!ss.users && v < CS_STAT_IGNORE)
                             ss.users++;
@@ -633,15 +603,13 @@ main(int argc, char **argv)
          */
 
 #if NAMELIST
-        if (kf >= 0)
-        {
+        if (kf >= 0) {
             /*
              * update memfile symbol values
              */
 
             for (n = 0; n < elementsof(symbols); n++)
-                if (symbols[n].once >= 0)
-                {
+                if (symbols[n].once >= 0) {
                     if (lseek(kf, ( long )names[n].n_value, 0)
                         != ( long )names[n].n_value)
                         error(ERROR_SYSTEM | 3,
@@ -666,11 +634,9 @@ main(int argc, char **argv)
                         cp_time[i] += CP_TIME(n)[i];
 #    endif
             ss.load = (avenrun * 100) / FSCALE;
-        }
-        else
+        } else
 #endif
-        if (wf >= 0)
-        {
+        if (wf >= 0) {
             if (lseek(wf, 0L, 0))
                 error(ERROR_SYSTEM | 3, "%s: seek error", whofile);
             read(wf, &who, sizeof(who));
@@ -678,12 +644,10 @@ main(int argc, char **argv)
             boottime = who.wd_boottime;
             for (i = 0; i < elementsof(cp_time); i++)
                 cp_time[i] = 100;
-        }
-        else if (!(proc = procopen(
-                   av[0], av, NiL, NiL, PROC_READ | PROC_UID | PROC_GID)))
+        } else if (!(proc = procopen(
+                     av[0], av, NiL, NiL, PROC_READ | PROC_UID | PROC_GID)))
             error(ERROR_SYSTEM | 3, "%s: exec error", av[0]);
-        else
-        {
+        else {
             /*
              * defer to process with memfile access
              */
@@ -696,14 +660,12 @@ main(int argc, char **argv)
                 error(3, "%s: invalid output", av[0]);
             ss.load = strton(s + 1, NiL, NiL, 100);
             n = 0;
-            if ((s = strchr(buf, 'u')) && *++s == 'p')
-            {
+            if ((s = strchr(buf, 'u')) && *++s == 'p') {
                 n = strtol(s + 1, &e, 10) * 60 * 60;
                 s = e;
                 while (isspace(*s))
                     s++;
-                if (*s == 'd')
-                {
+                if (*s == 'd') {
                     n *= 24;
                     while (*s && !isdigit(*s))
                         s++;
@@ -723,8 +685,7 @@ main(int argc, char **argv)
          */
 
         t = 0;
-        for (i = 0; i < elementsof(cp_time); i++)
-        {
+        for (i = 0; i < elementsof(cp_time); i++) {
             if ((cp_diff[i] = cp_time[i] - cp_prev[i]) < 0)
                 cp_diff[i] = -cp_diff[i];
             t += cp_diff[i];

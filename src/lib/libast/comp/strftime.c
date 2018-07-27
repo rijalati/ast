@@ -64,8 +64,7 @@ strftime(char *buf, size_t len, const char *format, const struct tm *tm)
         || tm->tm_hour < 0 || tm->tm_hour > 23 || tm->tm_wday < 0
         || tm->tm_wday > 6 || tm->tm_mday < 1 || tm->tm_mday > 31
         || tm->tm_mon < 0 || tm->tm_mon > 11 || tm->tm_year < 0
-        || tm->tm_year > (2138 - 1900))
-    {
+        || tm->tm_year > (2138 - 1900)) {
         if (tm->tm_sec >= 0 && tm->tm_sec <= 60)
             tl.tm_sec = tm->tm_sec;
         if (tm->tm_min >= 0 && tm->tm_min <= 59)
@@ -80,9 +79,7 @@ strftime(char *buf, size_t len, const char *format, const struct tm *tm)
             tl.tm_mon = tm->tm_mon;
         if (tm->tm_year >= 0 && tm->tm_year <= (2138 - 1900))
             tl.tm_year = tm->tm_year;
-    }
-    else
-    {
+    } else {
         tl.tm_sec = tm->tm_sec;
         tl.tm_min = tm->tm_min;
         tl.tm_hour = tm->tm_hour;

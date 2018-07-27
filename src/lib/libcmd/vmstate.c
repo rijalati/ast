@@ -85,8 +85,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
         *pn = state->vs.s_busy;
     else if (streq(s, "busy_blocks"))
         *pn = state->vs.n_busy;
-    else if (streq(s, "flags"))
-    {
+    else if (streq(s, "flags")) {
         *ps = s = fmtbuf(32);
         if (state->vs.mode & VM_DBCHECK)
             s = stpcpy(s, "DBCHECK|");
@@ -100,15 +99,13 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
             *(s - 1) = 0;
         else
             strcpy(s, "0");
-    }
-    else if (streq(s, "free_size"))
+    } else if (streq(s, "free_size"))
         *pn = state->vs.s_free;
     else if (streq(s, "free_blocks"))
         *pn = state->vs.n_free;
     else if (streq(s, "format"))
         *ps = ( char * )state->format;
-    else if (streq(s, "method"))
-    {
+    else if (streq(s, "method")) {
         if (state->vs.mode & VM_MTBEST)
             *ps = "best";
         else if (state->vs.mode & VM_MTPOOL)
@@ -119,9 +116,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
             *ps = "debug";
         else
             *ps = "UNKNOWN";
-    }
-    else
-    {
+    } else {
         error(2, "%s: unknown format identifier", s);
         return 0;
     }
@@ -148,10 +143,8 @@ b_vmstate(int argc, char **argv, Shbltin_t *context)
 
     memset(&state, 0, sizeof(state));
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'f':
             state.format = opt_info.arg;
             continue;

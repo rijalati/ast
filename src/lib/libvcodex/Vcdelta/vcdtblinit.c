@@ -65,8 +65,7 @@ Vcdindex_t *idx;
     i += 1;
 
     /**/ DEBUG_SET(k, 0); /* the single ADD instructions */
-    for (s = 0; s <= siz->add; ++s)
-    {
+    for (s = 0; s <= siz->add; ++s) {
         code[i].inst1.type = VCD_ADD;
         code[i].inst1.size = s;
         code[i].inst1.mode = 0;
@@ -86,8 +85,7 @@ Vcdindex_t *idx;
     /**/ DEBUG_SET(k, 0); /* the single COPY instructions */
     for (m = VCD_SELF; m <= maxm; ++m)
         for (s = 0, maxs = siz->copy[m]; s <= maxs;
-             s = s == 0 ? COPYMIN : s + 1)
-        {
+             s = s == 0 ? COPYMIN : s + 1) {
             code[i].inst1.type = VCD_COPY;
             code[i].inst1.size = s;
             code[i].inst1.mode = m;
@@ -104,8 +102,7 @@ Vcdindex_t *idx;
     /**/ DEBUG_SET(k, 0); /* merged ADD+COPY instructions */
     for (m = VCD_SELF; m <= maxm; ++m)
         for (s = 1, maxs = siz->add1[m]; s <= maxs; ++s)
-            for (t = COPYMIN, maxt = siz->copy2[m]; t <= maxt; ++t)
-            {
+            for (t = COPYMIN, maxt = siz->copy2[m]; t <= maxt; ++t) {
                 code[i].inst1.type = VCD_ADD;
                 code[i].inst1.size = s;
                 code[i].inst1.mode = 0;
@@ -122,8 +119,7 @@ Vcdindex_t *idx;
     /**/ DEBUG_SET(k, 0); /* merged COPY+ADD instructions */
     for (m = VCD_SELF; m <= maxm; ++m)
         for (s = COPYMIN, maxs = siz->copy1[m]; s <= maxs; ++s)
-            for (t = 1, maxt = siz->add2[m]; t <= maxt; ++t)
-            {
+            for (t = 1, maxt = siz->add2[m]; t <= maxt; ++t) {
                 code[i].inst1.type = VCD_COPY;
                 code[i].inst1.size = s;
                 code[i].inst1.mode = m;
@@ -148,8 +144,7 @@ void
 _vcdtblinit()
 #endif
 {
-    if (!_Vcdtbl)
-    {
+    if (!_Vcdtbl) {
         vcdtblmake(&_Vcdtable, &_Vcdsize, &_Vcdindex);
         _Vcdtbl = &_Vcdtable;
     }

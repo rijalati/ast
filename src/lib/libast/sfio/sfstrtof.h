@@ -250,42 +250,33 @@ char **end;
 
     digits = 0;
     fraction = -1;
-    if (c == '0')
-    {
+    if (c == '0') {
         c = GET(s);
-        if (c == 'x' || c == 'X')
-        {
+        if (c == 'x' || c == 'X') {
             /*
              * hex floating point -- easy
              */
 
             cv = _Sfcv36;
             v = 0;
-            for (;;)
-            {
+            for (;;) {
                 c = GET(s);
-                if ((part = cv[c]) < 16)
-                {
+                if ((part = cv[c]) < 16) {
                     digits++;
                     v *= 16;
                     v += part;
-                }
-                else if (c == decimal)
-                {
+                } else if (c == decimal) {
                     decimal = -1;
                     fraction = digits;
-                }
-                else
+                } else
                     break;
             }
             m = 0;
-            if (c == 'p' || c == 'P')
-            {
+            if (c == 'p' || c == 'P') {
                 c = GET(s);
                 if ((enegative = c == '-') || c == '+')
                     c = GET(s);
-                while (c >= '0' && c <= '9')
-                {
+                while (c >= '0' && c <= '9') {
                     m = (m << 3) + (m << 1) + (c - '0');
                     c = GET(s);
                 }
@@ -299,8 +290,7 @@ char **end;
              * consume the optional suffix
              */
 
-            switch (c)
-            {
+            switch (c) {
             case 'f':
             case 'F':
             case 'l':
@@ -314,17 +304,13 @@ char **end;
                 return negative ? -v : v;
             if (fraction >= 0)
                 m -= 4 * (digits - fraction);
-            if (m < S2F_exp_2_min)
-            {
-                if ((m -= S2F_exp_2_min) < S2F_exp_2_min)
-                {
+            if (m < S2F_exp_2_min) {
+                if ((m -= S2F_exp_2_min) < S2F_exp_2_min) {
                     ERR(ERANGE);
                     return 0;
                 }
                 v = S2F_ldexp(v, S2F_exp_2_min);
-            }
-            else if (m > S2F_exp_2_max)
-            {
+            } else if (m > S2F_exp_2_max) {
                 ERR(ERANGE);
                 return negative ? -S2F_inf : S2F_inf;
             }
@@ -333,24 +319,18 @@ char **end;
         }
         while (c == '0')
             c = GET(s);
-    }
-    else if (c == decimal)
-    {
+    } else if (c == decimal) {
         decimal = -1;
         fraction = 0;
-        for (;;)
-        {
+        for (;;) {
             c = GET(s);
             if (c != '0')
                 break;
             digits++;
         }
-    }
-    else if (c == 'i' || c == 'I')
-    {
+    } else if (c == 'i' || c == 'I') {
         if ((c = GET(s)) != 'n' && c != 'N'
-            || (c = GET(s)) != 'f' && c != 'F')
-        {
+            || (c = GET(s)) != 'f' && c != 'F') {
             REV(s, t, b);
             PUT(s);
             return 0;
@@ -360,20 +340,16 @@ char **end;
         if (((c) == 'i' || c == 'I') && ((c = GET(s)) == 'n' || c == 'N')
             && ((c = GET(s)) == 'i' || c == 'I')
             && ((c = GET(s)) == 't' || c == 'T')
-            && ((c = GET(s)) == 'y' || c == 'Y'))
-        {
+            && ((c = GET(s)) == 'y' || c == 'Y')) {
             c = GET(s);
             SET(s, t, b);
         }
         REV(s, t, b);
         PUT(s);
         return negative ? -S2F_inf : S2F_inf;
-    }
-    else if (c == 'n' || c == 'N')
-    {
+    } else if (c == 'n' || c == 'N') {
         if ((c = GET(s)) != 'a' && c != 'A'
-            || (c = GET(s)) != 'n' && c != 'N')
-        {
+            || (c = GET(s)) != 'n' && c != 'N') {
             REV(s, t, b);
             PUT(s);
             return 0;
@@ -383,9 +359,7 @@ char **end;
         while (c && !isspace(c));
         PUT(s);
         return negative ? -S2F_nan : S2F_nan;
-    }
-    else if (c < '1' || c > '9')
-    {
+    } else if (c < '1' || c > '9') {
         REV(s, t, b);
         PUT(s);
         NON(s);
@@ -398,46 +372,36 @@ char **end;
 
     n = 0;
     m = 0;
-    for (;;)
-    {
-        if (c >= '0' && c <= '9')
-        {
+    for (;;) {
+        if (c >= '0' && c <= '9') {
             digits++;
             n = (n << 3) + (n << 1) + (c - '0');
-            if (n >= ((~(( S2F_batch )0)) / 10) && part < elementsof(parts))
-            {
+            if (n >= ((~(( S2F_batch )0)) / 10) && part < elementsof(parts)) {
                 parts[part].batch = n;
                 n = 0;
                 parts[part].digits = digits;
                 part++;
             }
-        }
-        else if (m && (digits - m) != 3)
+        } else if (m && (digits - m) != 3)
             break;
-        else if (c == decimal)
-        {
+        else if (c == decimal) {
             decimal = -1;
             thousand = -1;
             m = 0;
             fraction = digits;
-        }
-        else if (c != thousand)
+        } else if (c != thousand)
             break;
-        else if (!(m = digits))
-        {
+        else if (!(m = digits)) {
             SET(s, t, b);
             break;
-        }
-        else
-        {
+        } else {
             SET(s, t, b);
             back_n = n;
             back_part = part;
         }
         c = GET(s);
     }
-    if (m && (digits - m) != 3)
-    {
+    if (m && (digits - m) != 3) {
         REV(s, t, b);
         n = back_n;
         part = back_part;
@@ -447,8 +411,7 @@ char **end;
      * don't forget the last part
      */
 
-    if (n && part < elementsof(parts))
-    {
+    if (n && part < elementsof(parts)) {
         parts[part].batch = n;
         parts[part].digits = digits;
         part++;
@@ -460,14 +423,12 @@ char **end;
 
     if (fraction >= 0)
         digits = fraction;
-    if (c == 'e' || c == 'E')
-    {
+    if (c == 'e' || c == 'E') {
         c = GET(s);
         if ((enegative = (c == '-')) || c == '+')
             c = GET(s);
         n = 0;
-        while (c >= '0' && c <= '9')
-        {
+        while (c >= '0' && c <= '9') {
             n = (n << 3) + (n << 1) + (c - '0');
             c = GET(s);
         }
@@ -483,8 +444,7 @@ char **end;
      * consume the optional suffix
      */
 
-    switch (c)
-    {
+    switch (c) {
     case 'f':
     case 'F':
     case 'l':
@@ -512,20 +472,16 @@ char **end;
      * combine the parts
      */
 
-    while (part--)
-    {
+    while (part--) {
         p = parts[part].batch;
         c = digits - parts[part].digits;
-        if (c > S2F_exp_10_max)
-        {
+        if (c > S2F_exp_10_max) {
             ERR(ERANGE);
             return negative ? -S2F_inf : S2F_inf;
         }
-        if (c > 0)
-        {
+        if (c > 0) {
 #if _ast_mpy_overflow_fpe
-            if ((S2F_max / p) < S2F_pow10[c])
-            {
+            if ((S2F_max / p) < S2F_pow10[c]) {
                 ERR(ERANGE);
                 return negative ? -S2F_inf : S2F_inf;
             }
@@ -534,16 +490,13 @@ char **end;
         }
         v += p;
     }
-    if (m)
-    {
-        while (m > S2F_exp_10_max)
-        {
+    if (m) {
+        while (m > S2F_exp_10_max) {
             m -= S2F_exp_10_max;
             v /= S2F_pow10[S2F_exp_10_max];
         }
 #if _ast_div_underflow_fpe
-        if ((S2F_min * p) > S2F_pow10[c])
-        {
+        if ((S2F_min * p) > S2F_pow10[c]) {
             ERR(ERANGE);
             return negative ? -S2F_inf : S2F_inf;
         }
@@ -556,13 +509,10 @@ char **end;
      */
 
 check:
-    if (v < S2F_min)
-    {
+    if (v < S2F_min) {
         ERR(ERANGE);
         v = 0;
-    }
-    else if (v > S2F_max)
-    {
+    } else if (v > S2F_max) {
         ERR(ERANGE);
         v = S2F_inf;
     }

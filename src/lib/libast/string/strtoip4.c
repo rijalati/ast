@@ -62,16 +62,13 @@ strtoip4(const char *s, char **e, uint32_t *paddr, unsigned char *pbits)
     addr = 0;
     bits = 0;
     part = 0;
-    do
-    {
+    do {
         n = 0;
         while ((c = *s++) >= '0' && c <= '9')
             n = n * 10 + (c - '0');
-        if ((c == 'x' || c == 'X') && !part)
-        {
+        if ((c == 'x' || c == 'X') && !part) {
             addr = n;
-            for (;;)
-            {
+            for (;;) {
                 if ((c = *s++) >= '0' && c <= '9')
                     c -= '0';
                 else if (c >= 'a' && c <= 'f')
@@ -95,14 +92,11 @@ strtoip4(const char *s, char **e, uint32_t *paddr, unsigned char *pbits)
     if (old = part < 4)
         while (part++ < 4)
             addr <<= 8;
-    if (pbits)
-    {
-        if (c == '/')
-        {
+    if (pbits) {
+        if (c == '/') {
             part = 0;
             z = 0;
-            for (;;)
-            {
+            for (;;) {
                 n = 0;
                 while ((c = *s++) >= '0' && c <= '9')
                     n = n * 10 + (c - '0');
@@ -116,20 +110,17 @@ strtoip4(const char *s, char **e, uint32_t *paddr, unsigned char *pbits)
                 goto done;
             if (z <= 32 && (!old || part < 2))
                 bits = z;
-            else if (z)
-            {
+            else if (z) {
                 if (part == 4 && (z & 0x8000001) == 1)
                     z = ~z;
                 while (!(z & 1))
                     z >>= 1;
-                while (z & 1)
-                {
+                while (z & 1) {
                     z >>= 1;
                     bits++;
                 }
             }
-        }
-        else if ((z = (addr >> 24)) < 128)
+        } else if ((z = (addr >> 24)) < 128)
             bits = 8;
         else if (z < 192)
             bits = 16;

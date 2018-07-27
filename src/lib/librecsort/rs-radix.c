@@ -78,36 +78,29 @@ static Rsobj_t *radixlist(rs) Rs_t *rs;
     work->left->right = NIL(Rsobj_t *);
     list = NIL(Rsobj_t *);
 
-    if (rs->type & RS_KSAMELEN)
-    {
+    if (rs->type & RS_KSAMELEN) {
         maxph = work->keylen - 1;
-        for (work->order = 0; work;)
-        {
+        for (work->order = 0; work;) {
             next = work->left->right;
             work->left->right = NIL(Rsobj_t *);
 
             lo = maxpart;
             n = 0;
-            if ((ph = ( ssize_t )work->order) == maxph)
-            {
-                for (; work; work = work->right)
-                {
+            if ((ph = ( ssize_t )work->order) == maxph) {
+                for (; work; work = work->right) {
                     bin = part + work->key[ph];
-                    if (!(r = *bin))
-                    {
+                    if (!(r = *bin)) {
                         *bin = work;
                         if (lo > bin)
                             lo = bin;
                         n += 1;
-                    }
-                    else
+                    } else
                         EQUAL(r, work, t);
                 }
 
                 endl = list ? (endl->right = *lo) : (list = *lo);
                 *lo = NIL(Rsobj_t *);
-                for (bin = lo + 1, n -= 1; n > 0; ++bin)
-                {
+                for (bin = lo + 1, n -= 1; n > 0; ++bin) {
                     if (!(r = *bin))
                         continue;
                     n -= 1;
@@ -116,16 +109,12 @@ static Rsobj_t *radixlist(rs) Rs_t *rs;
                 }
 
                 work = next;
-            }
-            else
-            {
-                for (; work; work = work->right)
-                {
+            } else {
+                for (; work; work = work->right) {
                     bin = part + work->key[ph];
                     if ((r = *bin))
                         r->left->right = work;
-                    else
-                    {
+                    else {
                         r = *bin = work;
                         if (lo > bin)
                             lo = bin;
@@ -139,10 +128,8 @@ static Rsobj_t *radixlist(rs) Rs_t *rs;
                 t = work->left;
                 *lo = NIL(Rsobj_t *);
                 work->order = ph;
-                for (bin = lo + 1, n -= 1; n > 0; ++bin)
-                {
-                    if ((r = *bin))
-                    {
+                for (bin = lo + 1, n -= 1; n > 0; ++bin) {
+                    if ((r = *bin)) {
                         n -= 1;
                         r->order = ph;
                         t->right = r;
@@ -155,44 +142,34 @@ static Rsobj_t *radixlist(rs) Rs_t *rs;
                 t->right = next;
             }
 
-            if (work && work->left == work)
-            {
+            if (work && work->left == work) {
                 endl = list ? (endl->right = work) : (list = work);
-                for (work = work->right; work; work = work->right)
-                {
+                for (work = work->right; work; work = work->right) {
                     if (work->left != work)
                         break;
                     endl = endl->right = work;
                 }
             }
         }
-    }
-    else
-    {
-        for (work->order = 0; work;)
-        {
+    } else {
+        for (work->order = 0; work;) {
             next = work->left->right;
             work->left->right = NIL(Rsobj_t *);
             empty = NIL(Rsobj_t *);
             lo = maxpart;
             n = 0;
             ph = ( ssize_t )work->order;
-            for (; work; work = work->right)
-            {
-                if (ph >= work->keylen)
-                {
+            for (; work; work = work->right) {
+                if (ph >= work->keylen) {
                     if (!empty)
                         empty = work;
                     else
                         EQUAL(empty, work, t);
-                }
-                else
-                {
+                } else {
                     bin = part + work->key[ph];
                     if ((r = *bin))
                         r->left->right = work;
-                    else
-                    {
+                    else {
                         r = *bin = work;
                         if (lo > bin)
                             lo = bin;
@@ -202,8 +179,7 @@ static Rsobj_t *radixlist(rs) Rs_t *rs;
                 }
             }
 
-            if (empty)
-            {
+            if (empty) {
                 if (list)
                     endl->right = empty;
                 else
@@ -213,18 +189,15 @@ static Rsobj_t *radixlist(rs) Rs_t *rs;
 
             if (n <= 0)
                 work = next;
-            else
-            {
+            else {
                 ph += 1;
                 work = *lo;
                 *lo = NIL(Rsobj_t *);
                 t = work->left;
                 work->order = ph;
 
-                for (bin = lo + 1, n -= 1; n > 0; ++bin)
-                {
-                    if ((r = *bin))
-                    {
+                for (bin = lo + 1, n -= 1; n > 0; ++bin) {
+                    if ((r = *bin)) {
                         n -= 1;
 
                         r->order = ph;
@@ -238,11 +211,9 @@ static Rsobj_t *radixlist(rs) Rs_t *rs;
                 t->right = next;
             }
 
-            if (work && work->left == work)
-            {
+            if (work && work->left == work) {
                 endl = list ? (endl->right = work) : (list = work);
-                for (work = work->right; work; work = work->right)
-                {
+                for (work = work->right; work; work = work->right) {
                     if (work->left != work)
                         break;
                     endl = endl->right = work;
@@ -251,8 +222,7 @@ static Rsobj_t *radixlist(rs) Rs_t *rs;
         }
     }
 
-    if (list)
-    {
+    if (list) {
         list->left = endl;
         endl->right = NIL(Rsobj_t *);
     }

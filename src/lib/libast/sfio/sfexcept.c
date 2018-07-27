@@ -49,8 +49,8 @@ Sfdisc_t *disc; /* discipline in use */
     if (local && io <= 0)
         f->flags |= io < 0 ? SF_ERROR : SF_EOF;
 
-    if (disc && disc->exceptf)
-    { /* let the stream be generally accessible for this duration */
+    if (disc && disc->exceptf) { /* let the stream be generally accessible for
+                                    this duration */
         if (local && lock)
             SFOPEN(f, 0);
 
@@ -70,14 +70,12 @@ Sfdisc_t *disc; /* discipline in use */
             SFMTXRETURN(f, SF_EDISC);
     }
 
-    if (f->flags & SF_STRING)
-    {
+    if (f->flags & SF_STRING) {
         if (type == SF_READ)
             goto chk_stack;
         else if (type != SF_WRITE && type != SF_SEEK)
             SFMTXRETURN(f, SF_EDONE);
-        if (local && io >= 0)
-        {
+        if (local && io >= 0) {
             if (f->size >= 0 && !(f->flags & SF_MALLOC))
                 goto chk_stack;
             /* extend buffer */
@@ -100,8 +98,7 @@ Sfdisc_t *disc; /* discipline in use */
         SFMTXRETURN(f, SF_EDISC);
     }
 
-    if (errno == EINTR)
-    {
+    if (errno == EINTR) {
         if (_Sfexiting || (f->bits & SF_ENDING) || /* stop being a hero	*/
             (f->flags & SF_IOINTR)) /* application requests to return	*/
             SFMTXRETURN(f, SF_EDONE);
@@ -115,8 +112,8 @@ Sfdisc_t *disc; /* discipline in use */
 chk_stack:
     if (local && f->push
         && ((type == SF_READ && f->next >= f->endb)
-            || (type == SF_WRITE && f->next <= f->data)))
-    { /* pop the stack */
+            || (type == SF_WRITE && f->next <= f->data))) { /* pop the stack
+                                                             */
         reg Sfio_t *pf;
 
         if (lock)
@@ -131,8 +128,7 @@ chk_stack:
             SFLOCK(f, 0);
 
         ev = ev < 0 ? SF_EDONE : SF_ESTACK;
-    }
-    else
+    } else
         ev = SF_EDONE;
 
     SFMTXRETURN(f, ev);

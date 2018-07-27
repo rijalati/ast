@@ -102,31 +102,26 @@ static struct ppkeyword keys[]
 static int
 msgppargs(char **argv, int last)
 {
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 0:
             break;
         case '?':
-            if (!last)
-            {
+            if (!last) {
                 opt_info.again = 1;
                 return 1;
             }
             error(ERROR_USAGE | 4, "%s", opt_info.arg);
             break;
         case ':':
-            if (!last)
-            {
+            if (!last) {
                 opt_info.again = 1;
                 return 1;
             }
             error(2, "%s", opt_info.arg);
             continue;
         default:
-            if (!last)
-            {
+            if (!last) {
                 opt_info.again = 1;
                 return 1;
             }
@@ -153,8 +148,7 @@ main(int argc, char **argv)
     error_info.id = s;
     ppop(PP_DEFAULT, PPDEFAULT);
     optjoin(argv, msgppargs, ppargs, NiL);
-    if (strlen(s) >= 5 && *(s + 3) != 'c')
-    {
+    if (strlen(s) >= 5 && *(s + 3) != 'c') {
         ppop(PP_PLUSPLUS, 1);
         ppop(PP_NOHASH, 1);
         ppop(PP_PROBE, "CC");
@@ -188,23 +182,19 @@ main(int argc, char **argv)
     if (!(tmp = sfstropen()))
         error(ERROR_SYSTEM | 3, "out of space");
     x = 0;
-    for (;;)
-    {
+    for (;;) {
         c = pplex();
     again:
-        switch (c)
-        {
+        switch (c) {
         case 0:
             break;
         case T_TRANSLATE:
-            switch (c = pplex())
-            {
+            switch (c = pplex()) {
             case '(':
                 x = 1;
                 break;
             case ')':
-                if ((c = pplex()) != '(')
-                {
+                if ((c = pplex()) != '(') {
                     x = 0;
                     goto again;
                 }
@@ -225,8 +215,7 @@ main(int argc, char **argv)
             continue;
         case T_STDIO:
             if ((c = pplex()) != '(' || (c = pplex()) != T_STDERR
-                || (c = pplex()) != ',')
-            {
+                || (c = pplex()) != ',') {
                 x = 0;
                 goto again;
             }
@@ -238,26 +227,20 @@ main(int argc, char **argv)
             continue;
         case T_ID:
             s = pp.symbol->name;
-            if (x > 0)
-            {
+            if (x > 0) {
                 if ((c = pplex()) == '+' && ppisinteger(c = pplex()))
                     sfprintf(sfstdout, "var %s %s\n", pp.token, s);
                 else
                     sfprintf(sfstdout, "var %s\n", s);
-            }
-            else if (s[0] == 'b' && s[1] == '_' && s[2])
-            {
+            } else if (s[0] == 'b' && s[1] == '_' && s[2]) {
                 if ((c = pplex()) == '(' && (c = pplex()) == T_INT
                     && (c = pplex()) == T_ID && (c = pplex()) == ','
                     && (c = pplex()) == T_CHAR && (c = pplex()) == '*')
                     sfprintf(sfstdout, "cmd %s\n", s + 2);
                 else
                     goto again;
-            }
-            else
-            {
-                if ((c = pplex()) == '[')
-                {
+            } else {
+                if ((c = pplex()) == '[') {
                     if (ppisinteger(c = pplex()))
                         c = pplex();
                     if (c != ']')
@@ -265,15 +248,13 @@ main(int argc, char **argv)
                     c = pplex();
                 }
                 if (c == '=' && (c = pplex()) == T_STRING
-                    && !strmatch(pp.token, OMIT))
-                {
+                    && !strmatch(pp.token, OMIT)) {
                     sfprintf(sfstdout, "def %s \"%s\"\n", s, pp.token);
                     sfprintf(tmp, "#define %s \"%s\"\n", s, pp.token);
                     if (!(s = sfstruse(tmp)))
                         error(ERROR_SYSTEM | 3, "out of space");
                     ppinput(s, "string", 0);
-                }
-                else
+                } else
                     goto again;
             }
             continue;

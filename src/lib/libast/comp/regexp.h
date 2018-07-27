@@ -95,45 +95,36 @@ _re_read(regexp_t *re,
 #        endif
 
     re->re_nodelim = 0;
-    if ((c = GETC()) == seof || c == '\n' || c == -1 || c == 0)
-    {
-        if (c != seof)
-        {
+    if ((c = GETC()) == seof || c == '\n' || c == -1 || c == 0) {
+        if (c != seof) {
             UNGETC(c);
             re->re_nodelim = 1;
         }
-        if (!re->re_sed && !prev)
-        {
+        if (!re->re_sed && !prev) {
             ERROR(41);
         }
         RETURN(( char * )endbuf);
     }
     UNGETC(c);
     prev = 0;
-    for (;;)
-    {
-        if ((c = GETC()) == seof || c == '\n' || c == -1 || c == 0)
-        {
-            if (re->re_sed)
-            {
+    for (;;) {
+        if ((c = GETC()) == seof || c == '\n' || c == -1 || c == 0) {
+            if (re->re_sed) {
                 ERROR(36);
             }
             UNGETC(c);
             re->re_nodelim = 1;
             break;
         }
-        if (c == '\\')
-        {
+        if (c == '\\') {
             _re_putc(c);
-            if ((c = GETC()) == seof || c == '\n' || c == -1 || c == 0)
-            {
+            if ((c = GETC()) == seof || c == '\n' || c == -1 || c == 0) {
                 ERROR(36);
             }
         }
         _re_putc(c);
     }
-    if (c = _re_comp(re, _re_putc(0), ep, ( char * )endbuf - ep))
-    {
+    if (c = _re_comp(re, _re_putc(0), ep, ( char * )endbuf - ep)) {
         ERROR(c);
     }
     prev = endbuf;

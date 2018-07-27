@@ -41,8 +41,7 @@ dumpname(Sfio_t *sp, Rule_t *r, char *sep)
     int paren;
     int quote;
 
-    if (!dumpall && state.list)
-    {
+    if (!dumpall && state.list) {
         s = (r->property & P_state) || (r->dynamic & D_alias) ? r->name
                                                               : unbound(r);
         for (t = s, paren = 0; *t && (paren || !istype(*t, C_TERMINAL)); t++)
@@ -52,10 +51,8 @@ dumpname(Sfio_t *sp, Rule_t *r, char *sep)
                 paren--;
         if (quote = (*t || t == s))
             sfputc(sp, '"');
-        for (; *s; s++)
-        {
-            switch (*s)
-            {
+        for (; *s; s++) {
+            switch (*s) {
             case '"':
                 if (quote)
                     sfputc(sp, '\\');
@@ -69,13 +66,10 @@ dumpname(Sfio_t *sp, Rule_t *r, char *sep)
         }
         if (quote)
             sfputc(sp, '"');
-    }
-    else
-    {
+    } else {
         if (*r->name)
             sfputr(sp, r->name, -1);
-        else
-        {
+        else {
             sfputc(sp, '"');
             sfputc(sp, '"');
         }
@@ -114,36 +108,29 @@ listrule(const char *s, char *v, void *h)
         return 0;
     sfputc(sp, '\n');
     dumpname(sp, r, " : ");
-    if (dumpall || !state.list)
-    {
+    if (dumpall || !state.list) {
         if ((r->property & P_staterule) && isaltstate(r->name))
             sfputr(sp, "cancel=", -1);
         sfprintf(sp, "[%s] ", timestr(r->time));
     }
-    if (!(r->property & P_attribute))
-    {
+    if (!(r->property & P_attribute)) {
         if (r->attribute)
             for (p = internal.attribute->prereqs; p; p = p->next)
                 if (r->attribute & p->rule->attribute)
                     sfputr(sp, p->rule->name, ' ');
         if (r->scan)
             for (p = internal.scan->prereqs; p; p = p->next)
-                if (p->rule->scan == r->scan)
-                {
+                if (p->rule->scan == r->scan) {
                     sfputr(sp, p->rule->name, ' ');
                     break;
                 }
     }
-    if (dumpall || !state.list)
-    {
-        if (r->property & P_state)
-        {
-            if (r->property & P_staterule)
-            {
+    if (dumpall || !state.list) {
+        if (r->property & P_state) {
+            if (r->property & P_staterule) {
                 if (!isaltstate(r->name))
                     sfprintf(sp, "event=[%s] ", timestr(r->event));
-            }
-            else if (r->property & P_statevar)
+            } else if (r->property & P_statevar)
                 sfputr(sp, "statevar", ' ');
             else
                 sfputr(sp, "state", ' ');
@@ -172,8 +159,7 @@ listrule(const char *s, char *v, void *h)
             sfputr(sp, "after", ' ');
         if (r->property & P_always)
             sfputr(sp, "always", ' ');
-        if (r->property & P_attribute)
-        {
+        if (r->property & P_attribute) {
             if (r->attribute)
                 sfprintf(sp, "attribute=0x%08x ", r->attribute);
             else if (r->scan)
@@ -297,8 +283,7 @@ listrule(const char *s, char *v, void *h)
         else if (!(r->dynamic & D_bound))
             sfputr(sp, "unbound", -1);
         else
-            switch (r->status)
-            {
+            switch (r->status) {
             case NOTYET:
                 break;
             case UPDATE:
@@ -328,8 +313,7 @@ listrule(const char *s, char *v, void *h)
                 break;
 #endif
             }
-        if (r->mark)
-        {
+        if (r->mark) {
             sfputr(sp, " |mark", '|');
             if (r->mark & M_bind)
                 sfputr(sp, "bind", '|');
@@ -349,17 +333,14 @@ listrule(const char *s, char *v, void *h)
                 sfputr(sp, "waiting", '|');
         }
         sfputc(sp, '\n');
-    }
-    else
-    {
+    } else {
         if (r->property & P_accept)
             sfputr(sp, internal.accept->name, ' ');
         if (r->property & P_after)
             sfputr(sp, internal.after->name, ' ');
         if (r->property & P_always)
             sfputr(sp, internal.always->name, ' ');
-        if (r->property & P_attribute)
-        {
+        if (r->property & P_attribute) {
             if (r->attribute)
                 sfputr(sp, internal.attribute->name, ' ');
             else if (r->scan)
@@ -409,18 +390,15 @@ listrule(const char *s, char *v, void *h)
         if (r->property & P_virtual)
             sfputr(sp, internal.virt->name, ' ');
     }
-    if (p = r->prereqs)
-    {
+    if (p = r->prereqs) {
         if (dumpall || !state.list)
             sfputr(sp, " prerequisites:", ' ');
         for (; p; p = p->next)
             dumpname(sp, p->rule, " ");
         sfputc(sp, '\n');
-    }
-    else if (!dumpall && state.list)
+    } else if (!dumpall && state.list)
         sfputc(sp, '\n');
-    if (r->action && *r->action)
-    {
+    if (r->action && *r->action) {
         if (dumpall || !state.list)
             sfputr(sp, " action:", '\n');
         dumpaction(sp, NiL, r->action, "\t");
@@ -444,24 +422,20 @@ listvar(const char *s, char *u, void *h)
     Sfio_t *sp = ( Sfio_t * )h;
 
     if (dumpall
-        || !(v->property & V_import) && (!state.list || !isintvar(v->name)))
-    {
-        if (!dumpall && state.list)
-        {
+        || !(v->property & V_import) && (!state.list || !isintvar(v->name))) {
+        if (!dumpall && state.list) {
             for (q = ( char * )s; istype(*q, C_ID1 | C_ID2); q++)
                 ;
             if (*q)
                 q = "\"";
-        }
-        else
+        } else
             q = null;
         sfprintf(sp, "%s%s%s ", q, s, q);
 #if DEBUG
         if (state.test & 0x00004000)
             sfprintf(sp, "@%p ", v);
 #endif
-        if (dumpall || !state.list)
-        {
+        if (dumpall || !state.list) {
             sfputr(sp, "[", ' ');
             if (v->property & V_append)
                 sfputr(sp, "append", ' ');
@@ -481,8 +455,7 @@ listvar(const char *s, char *u, void *h)
                 sfputr(sp, "local_D", ' ');
             if (v->property & V_local_E)
                 sfputr(sp, "local_E", ' ');
-            if (v->property & V_oldvalue)
-            {
+            if (v->property & V_oldvalue) {
                 sfputr(sp, "oldvalue", -1);
                 if (t = getold(s))
                     sfprintf(sp, "=`%s'", t);
@@ -501,8 +474,7 @@ listvar(const char *s, char *u, void *h)
             sfputr(sp, "]", ' ');
         }
         sfprintf(sp, "= %s", t = v->value);
-        if ((v->property & V_auxiliary) && (v = auxiliary(v->name, 0)))
-        {
+        if ((v->property & V_auxiliary) && (v = auxiliary(v->name, 0))) {
             if (!dumpall && state.list)
                 sfprintf(sp, "\n%s%s%s ", q, s, q);
             else if (*t)
@@ -523,21 +495,18 @@ dump(Sfio_t *sp, int verbose)
 {
     static int dumping;
 
-    if (!dumping++)
-    {
+    if (!dumping++) {
         if (state.vardump || state.ruledump)
             state.list = 0;
         if (verbose)
             hashdump(NiL, (error_info.trace <= -20) ? HASH_BUCKET : 0);
         if (state.list)
             sfprintf(sp, "/* %s */\n\n", version);
-        if (!dumpall && (state.list || state.vardump))
-        {
+        if (!dumpall && (state.list || state.vardump)) {
             sfprintf(sp, "\n/* Variables */\n\n");
             hashwalk(table.var, 0, listvar, sp);
         }
-        if (!dumpall && (state.list || state.ruledump))
-        {
+        if (!dumpall && (state.list || state.ruledump)) {
             sfprintf(sp, "\n/* Rules */\n");
             hashwalk(table.rule, 0, listrule, sp);
         }
@@ -564,10 +533,8 @@ dumpregress(Sfio_t *sp, const char *prefix, const char *name, char *value)
     sfprintf(sp, "%s%s %s ", state.mam.label, prefix, name ? name : "-");
     n = -1;
     if (value)
-        for (;;)
-        {
-            switch (c = *value++)
-            {
+        for (;;) {
+            switch (c = *value++) {
             case 0:
                 break;
             case '\n':
@@ -591,13 +558,10 @@ dumpregress(Sfio_t *sp, const char *prefix, const char *name, char *value)
                 n = 1;
                 continue;
             case '/':
-                if (n)
-                {
+                if (n) {
                     bp = np = value - 1;
-                    for (;;)
-                    {
-                        switch (*value++)
-                        {
+                    for (;;) {
+                        switch (*value++) {
                         case ' ':
                         case '\t':
                         case '\n':
@@ -616,14 +580,12 @@ dumpregress(Sfio_t *sp, const char *prefix, const char *name, char *value)
                     }
                     c = *--value;
                     *value = 0;
-                    if (strmatch(np, "*.*"))
-                    {
+                    if (strmatch(np, "*.*")) {
                         *value = c;
                         c = *(value = np);
                         *value = 0;
                     }
-                    if (!(rp = getreg(bp)))
-                    {
+                    if (!(rp = getreg(bp))) {
                         rp = newof(0, int, 1, 0);
                         *rp = ++index;
                         putreg(0, rp);
@@ -631,15 +593,13 @@ dumpregress(Sfio_t *sp, const char *prefix, const char *name, char *value)
                     sfprintf(sp, "${PATH_%d}", *rp);
                     *value = c;
                     n = 0;
-                }
-                else
+                } else
                     sfputc(sp, c);
                 continue;
             case '-':
             case '+':
                 sfputc(sp, c);
-                if (n)
-                {
+                if (n) {
                     if (!(c = *value++))
                         break;
                     sfputc(sp, c);
@@ -667,29 +627,22 @@ dumpaction(Sfio_t *sp, const char *name, char *action, const char *prefix)
     char *mamlabel;
     char *sep;
 
-    if (prefix)
-    {
+    if (prefix) {
         mamlabel = null;
         name = null;
         sep = null;
-    }
-    else
-    {
-        if (state.mam.regress)
-        {
+    } else {
+        if (state.mam.regress) {
             dumpregress(sp, "exec", name, action);
             return;
         }
-        if (state.mam.out)
-        {
+        if (state.mam.out) {
             mamlabel = state.mam.label;
             prefix = "exec";
             if (!name)
                 name = "-";
             sep = " ";
-        }
-        else
-        {
+        } else {
             while (isspace(*action))
                 action++;
             if (!*action)
@@ -700,8 +653,7 @@ dumpaction(Sfio_t *sp, const char *name, char *action, const char *prefix)
             sep = null;
         }
     }
-    for (;;)
-    {
+    for (;;) {
         if (s = strchr(action, '\n'))
             *s = 0;
         sfprintf(sp, "%s%s %s%s%s\n", mamlabel, prefix, name, sep, action);
@@ -738,8 +690,7 @@ dumprule(Sfio_t *sp, Rule_t *r)
 
     dumpall++;
     z = 0;
-    while ((r->dynamic & D_alias) && r != z)
-    {
+    while ((r->dynamic & D_alias) && r != z) {
         listrule(r->name, ( char * )r, sp);
         z = r;
         if (!(r = getrule(unbound(r))))

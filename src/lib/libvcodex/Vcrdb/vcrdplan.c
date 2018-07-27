@@ -42,8 +42,7 @@ ssize_t n2;
     ssize_t n, h;
 
     n1 = n1 > n2 ? n2 : n1;
-    for (h = 0, n = 0; n < n1; ++n)
-    {
+    for (h = 0, n = 0; n < n1; ++n) {
         if (s1[n] == s2[n])
             h += 1;
     }
@@ -107,8 +106,7 @@ ssize_t *last;
         here[0] = s1[i] == s2[0] ? 1 : 0;
 
         /* the rest of this row */
-        for (abov = last[0], left = here[0], k = 1; k < n2; ++k)
-        {
+        for (abov = last[0], left = here[0], k = 1; k < n2; ++k) {
             diag = abov + (s1[i] == s2[k] ? 1 : 0);
             abov = last[k];
             if (left < abov)
@@ -153,8 +151,7 @@ ssize_t n_smpl;
 #endif
 
     dtsz = mtch = 0;
-    for (rcrd = tbl->fld[f].rcrd, s = 0; s < n_smpl; ++s)
-    {
+    for (rcrd = tbl->fld[f].rcrd, s = 0; s < n_smpl; ++s) {
         r = smpl[s];
         if ((k = vect ? vect[r] : r) < 0 || k >= tbl->recn)
             return -1;
@@ -212,8 +209,8 @@ Vcodex_t *vcw; /* weight function, NULL for match()	*/
     /* construct the string of field data */
     if (!(data = ( Vcchar_t * )malloc(tbl->recn * tbl->fld[f].maxz)))
         return -1;
-    for (dt = data, dtsz = 0, rcrd = tbl->fld[f].rcrd, s = 0; s < n_smpl; ++s)
-    {
+    for (dt = data, dtsz = 0, rcrd = tbl->fld[f].rcrd, s = 0; s < n_smpl;
+         ++s) {
         r = smpl[s];
         if ((k = vect ? vect[r] : r) < 0 || k >= tbl->recn)
             return -1;
@@ -265,8 +262,7 @@ Vcodex_t *vcw;                                       /* general compressor	*/
         return pl;
 
     /* allocate space for intermediate computation */
-    if (!(wght = ( ssize_t * )calloc(fldn + recn, sizeof(ssize_t))))
-    {
+    if (!(wght = ( ssize_t * )calloc(fldn + recn, sizeof(ssize_t)))) {
         free(pl);
         pl = NIL(Vcrdplan_t *);
         goto done;
@@ -278,8 +274,7 @@ Vcodex_t *vcw;                                       /* general compressor	*/
         n_smpl += 1;                           /**/
     DEBUG_PRINT(2, "n_smpl=%d\n", n_smpl);
     for (z = (z = n_smpl / 4) * n_smpl >= 4096 ? z : 4096 / n_smpl; z > 0;
-         --z)
-    {
+         --z) {
         p = VCRAND() % recn;      /* sample a set centered around p */
         if ((f = p - n_smpl) < 4) /* first few records tend to be spurious */
             f = 4;
@@ -303,19 +298,16 @@ Vcodex_t *vcw;                                       /* general compressor	*/
                               optimum branching */
 
     /* compute the self-weight and transform vector of each field */
-    for (f = 0; f < fldn; ++f)
-    {
+    for (f = 0; f < fldn; ++f) {
         if (vcrdvector(tbl, f, NIL(Vcchar_t *), 0, VC_ENCODE) == 1)
             wght[f] = 0; /* all field values are equal */
         else if ((wght[f]
                   = rdentropy(tbl, f, NIL(ssize_t *), smpl, n_smpl, vcw))
-                 < 0)
-        {
+                 < 0) {
             free(pl);
             pl = NIL(Vcrdplan_t *);
             goto done;
-        }
-        else
+        } else
             wght[f] = maxz - wght[f];
     }
 
@@ -323,8 +315,8 @@ Vcodex_t *vcw;                                       /* general compressor	*/
      * relations */
     if (!(gr = gropen(NIL(Grdisc_t *), GR_DIRECTED)))
         goto done;
-    for (f = 0; f < fldn; ++f)
-    { /* create the node corresponding to this column */
+    for (f = 0; f < fldn;
+         ++f) { /* create the node corresponding to this column */
         if (!(nd = grnode(gr, ( Void_t * )f, 1)))
             goto done;
         if (wght[f] <= 0) /* reorder won't do anything */
@@ -339,16 +331,14 @@ Vcodex_t *vcw;                                       /* general compressor	*/
                 goto done;
             if ((z = maxz
                      - rdentropy(tbl, f, tbl->fld[p].vect, smpl, n_smpl, vcw))
-                > wght[f])
-            {
+                > wght[f]) {
                 if (!(e = gredge(gr, pd, nd, ( Void_t * )0, 1)))
                     goto done;
                 grbrweight(e, z);
             }
             if ((z = maxz
                      - rdentropy(tbl, p, tbl->fld[f].vect, smpl, n_smpl, vcw))
-                > wght[p])
-            {
+                > wght[p]) {
                 if (!(e = gredge(gr, nd, pd, ( Void_t * )0, 1)))
                     goto done;
                 grbrweight(e, z);
@@ -409,18 +399,13 @@ int type;           /* VC_ENCODE/DECODE	*/
     ssize_t r, recn = tbl->recn;
     Vcrdrecord_t *rcrd = tbl->fld[f].rcrd;
 
-    if (type == VC_ENCODE)
-    {
-        for (r = 0; r < recn; ++r)
-        {
+    if (type == VC_ENCODE) {
+        for (r = 0; r < recn; ++r) {
             rtmp[r].data = rcrd[vect[r]].data;
             rtmp[r].dtsz = rcrd[vect[r]].dtsz;
         }
-    }
-    else
-    {
-        for (r = 0; r < recn; ++r)
-        {
+    } else {
+        for (r = 0; r < recn; ++r) {
             rtmp[vect[r]].data = rcrd[r].data;
             rtmp[vect[r]].dtsz = rcrd[r].dtsz;
         }
@@ -495,17 +480,14 @@ int type;       /* VC_ENCODE or VC_DECODE	*/
     for (f = 0; f < fldn; ++f) /* no transform vector done yet */
         tbl->fld[f].type &= ~VCRD_VECTOR;
 
-    if (type == VC_ENCODE)
-    {
+    if (type == VC_ENCODE) {
         for (f = 0; f < fldn; ++f) /* build needed transform vectors first */
             if ((p = pl->pred[f]) != f)
                 vcrdvector(tbl, p, NIL(Vcchar_t *), 0, VC_ENCODE);
         for (f = 0; f < fldn; ++f) /* now transform fields with predictors */
             if ((p = pl->pred[f]) != f)
                 fldtransform(tbl, f, tbl->fld[p].vect, rtmp, VC_ENCODE);
-    }
-    else
-    {
+    } else {
         for (f = 0; f < fldn; ++f)
             if (fldinvert(tbl, pl, f, 0, rtmp) < 0)
                 break;

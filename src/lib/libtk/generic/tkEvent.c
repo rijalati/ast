@@ -196,26 +196,20 @@ ClientData clientData; /* Arbitrary data to pass to proc. */
      */
 
     found = 0;
-    if (winPtr->handlerList == NULL)
-    {
+    if (winPtr->handlerList == NULL) {
         handlerPtr
         = ( TkEventHandler * )ckalloc(( unsigned )sizeof(TkEventHandler));
         winPtr->handlerList = handlerPtr;
         goto initHandler;
-    }
-    else
-    {
+    } else {
         for (handlerPtr = winPtr->handlerList;;
-             handlerPtr = handlerPtr->nextPtr)
-        {
+             handlerPtr = handlerPtr->nextPtr) {
             if ((handlerPtr->proc == proc)
-                && (handlerPtr->clientData == clientData))
-            {
+                && (handlerPtr->clientData == clientData)) {
                 handlerPtr->mask = mask;
                 found = 1;
             }
-            if (handlerPtr->nextPtr == NULL)
-            {
+            if (handlerPtr->nextPtr == NULL) {
                 break;
             }
         }
@@ -225,8 +219,7 @@ ClientData clientData; /* Arbitrary data to pass to proc. */
      * Create a new handler if no matching old handler was found.
      */
 
-    if (!found)
-    {
+    if (!found) {
         handlerPtr->nextPtr
         = ( TkEventHandler * )ckalloc(sizeof(TkEventHandler));
         handlerPtr = handlerPtr->nextPtr;
@@ -278,15 +271,12 @@ ClientData clientData;
      */
 
     for (handlerPtr = winPtr->handlerList, prevPtr = NULL;;
-         prevPtr = handlerPtr, handlerPtr = handlerPtr->nextPtr)
-    {
-        if (handlerPtr == NULL)
-        {
+         prevPtr = handlerPtr, handlerPtr = handlerPtr->nextPtr) {
+        if (handlerPtr == NULL) {
             return;
         }
         if ((handlerPtr->mask == mask) && (handlerPtr->proc == proc)
-            && (handlerPtr->clientData == clientData))
-        {
+            && (handlerPtr->clientData == clientData)) {
             break;
         }
     }
@@ -296,10 +286,8 @@ ClientData clientData;
      * process the next one instead.
      */
 
-    for (ipPtr = pendingPtr; ipPtr != NULL; ipPtr = ipPtr->nextPtr)
-    {
-        if (ipPtr->nextHandler == handlerPtr)
-        {
+    for (ipPtr = pendingPtr; ipPtr != NULL; ipPtr = ipPtr->nextPtr) {
+        if (ipPtr->nextHandler == handlerPtr) {
             ipPtr->nextHandler = handlerPtr->nextPtr;
         }
     }
@@ -308,12 +296,9 @@ ClientData clientData;
      * Free resources associated with the handler.
      */
 
-    if (prevPtr == NULL)
-    {
+    if (prevPtr == NULL) {
         winPtr->handlerList = handlerPtr->nextPtr;
-    }
-    else
-    {
+    } else {
         prevPtr->nextPtr = handlerPtr->nextPtr;
     }
     ckfree(( char * )handlerPtr);
@@ -356,12 +341,9 @@ ClientData clientData; /* One-word value to pass to proc. */
     handlerPtr->clientData = clientData;
     handlerPtr->deleteFlag = 0;
     handlerPtr->nextPtr = NULL;
-    if (genericList == NULL)
-    {
+    if (genericList == NULL) {
         genericList = handlerPtr;
-    }
-    else
-    {
+    } else {
         lastGenericPtr->nextPtr = handlerPtr;
     }
     lastGenericPtr = handlerPtr;
@@ -391,10 +373,8 @@ ClientData clientData;
 {
     GenericHandler *handler;
 
-    for (handler = genericList; handler; handler = handler->nextPtr)
-    {
-        if ((handler->proc == proc) && (handler->clientData == clientData))
-        {
+    for (handler = genericList; handler; handler = handler->nextPtr) {
+        if ((handler->proc == proc) && (handler->clientData == clientData)) {
             handler->deleteFlag = 1;
         }
     }
@@ -435,12 +415,9 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
      * an event is fully processed, go no further.
      */
 
-    for (genPrevPtr = NULL, genericPtr = genericList; genericPtr != NULL;)
-    {
-        if (genericPtr->deleteFlag)
-        {
-            if (!genericHandlersActive)
-            {
+    for (genPrevPtr = NULL, genericPtr = genericList; genericPtr != NULL;) {
+        if (genericPtr->deleteFlag) {
+            if (!genericHandlersActive) {
                 GenericHandler *tmpPtr;
 
                 /*
@@ -450,32 +427,25 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
                  */
 
                 tmpPtr = genericPtr->nextPtr;
-                if (genPrevPtr == NULL)
-                {
+                if (genPrevPtr == NULL) {
                     genericList = tmpPtr;
-                }
-                else
-                {
+                } else {
                     genPrevPtr->nextPtr = tmpPtr;
                 }
-                if (tmpPtr == NULL)
-                {
+                if (tmpPtr == NULL) {
                     lastGenericPtr = genPrevPtr;
                 }
                 ( void )ckfree(( char * )genericPtr);
                 genericPtr = tmpPtr;
                 continue;
             }
-        }
-        else
-        {
+        } else {
             int done;
 
             genericHandlersActive++;
             done = (*genericPtr->proc)(genericPtr->clientData, eventPtr);
             genericHandlersActive--;
-            if (done)
-            {
+            if (done) {
                 return;
             }
         }
@@ -490,11 +460,9 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
      * quit.
      */
 
-    if (eventPtr->type == MappingNotify)
-    {
+    if (eventPtr->type == MappingNotify) {
         dispPtr = TkGetDisplay(eventPtr->xmapping.display);
-        if (dispPtr != NULL)
-        {
+        if (dispPtr != NULL) {
             XRefreshKeyboardMapping(&eventPtr->xmapping);
             dispPtr->bindInfoStale = 1;
         }
@@ -511,18 +479,15 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
 
     handlerWindow = eventPtr->xany.window;
     mask = eventMasks[eventPtr->xany.type];
-    if (mask == StructureNotifyMask)
-    {
-        if (eventPtr->xmap.event != eventPtr->xmap.window)
-        {
+    if (mask == StructureNotifyMask) {
+        if (eventPtr->xmap.event != eventPtr->xmap.window) {
             mask = SubstructureNotifyMask;
             handlerWindow = eventPtr->xmap.event;
         }
     }
     winPtr
     = ( TkWindow * )Tk_IdToWindow(eventPtr->xany.display, handlerWindow);
-    if (winPtr == NULL)
-    {
+    if (winPtr == NULL) {
 
         /*
          * There isn't a TkWindow structure for this window.
@@ -531,8 +496,7 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
          * certain properties).
          */
 
-        if (eventPtr->type == PropertyNotify)
-        {
+        if (eventPtr->type == PropertyNotify) {
             TkSelPropProc(eventPtr);
         }
         return;
@@ -548,13 +512,11 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
      */
 
     if ((winPtr->flags & TK_ALREADY_DEAD)
-        && (eventPtr->type != DestroyNotify))
-    {
+        && (eventPtr->type != DestroyNotify)) {
         return;
     }
 
-    if (winPtr->mainPtr != NULL)
-    {
+    if (winPtr->mainPtr != NULL) {
 
         /*
          * Protect interpreter for this window from possible deletion
@@ -573,8 +535,7 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
          */
 
         if ((mask & (FocusChangeMask | EnterWindowMask | LeaveWindowMask))
-            && !TkFocusFilterEvent(winPtr, eventPtr))
-        {
+            && !TkFocusFilterEvent(winPtr, eventPtr)) {
             Tcl_Release(( ClientData )interp);
             return;
         }
@@ -587,26 +548,21 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
          * windows don't share the same screen).
          */
 
-        if (mask & (KeyPressMask | KeyReleaseMask))
-        {
+        if (mask & (KeyPressMask | KeyReleaseMask)) {
             TkWindow *focusPtr;
             int winX, winY, focusX, focusY;
 
             winPtr->dispPtr->lastEventTime = eventPtr->xkey.time;
             focusPtr = TkGetFocus(winPtr);
-            if (focusPtr == NULL)
-            {
+            if (focusPtr == NULL) {
                 Tcl_Release(( ClientData )interp);
                 return;
             }
             if ((focusPtr->display != winPtr->display)
-                || (focusPtr->screenNum != winPtr->screenNum))
-            {
+                || (focusPtr->screenNum != winPtr->screenNum)) {
                 eventPtr->xkey.x = -1;
                 eventPtr->xkey.y = -1;
-            }
-            else
-            {
+            } else {
                 Tk_GetRootCoords(( Tk_Window )winPtr, &winX, &winY);
                 Tk_GetRootCoords(( Tk_Window )focusPtr, &focusX, &focusY);
                 eventPtr->xkey.x -= focusX - winX;
@@ -623,22 +579,15 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
 
         if (mask
             & (ButtonPressMask | ButtonReleaseMask | PointerMotionMask
-               | EnterWindowMask | LeaveWindowMask))
-        {
-            if (mask & (ButtonPressMask | ButtonReleaseMask))
-            {
+               | EnterWindowMask | LeaveWindowMask)) {
+            if (mask & (ButtonPressMask | ButtonReleaseMask)) {
                 winPtr->dispPtr->lastEventTime = eventPtr->xbutton.time;
-            }
-            else if (mask & PointerMotionMask)
-            {
+            } else if (mask & PointerMotionMask) {
                 winPtr->dispPtr->lastEventTime = eventPtr->xmotion.time;
-            }
-            else
-            {
+            } else {
                 winPtr->dispPtr->lastEventTime = eventPtr->xcrossing.time;
             }
-            if (TkPointerEvent(eventPtr, winPtr) == 0)
-            {
+            if (TkPointerEvent(eventPtr, winPtr) == 0) {
                 goto done;
             }
         }
@@ -652,10 +601,8 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
      * (XFilterEvent needs this context).
      */
 
-    if (!(winPtr->flags & TK_CHECKED_IC))
-    {
-        if (winPtr->dispPtr->inputMethod != NULL)
-        {
+    if (!(winPtr->flags & TK_CHECKED_IC)) {
+        if (winPtr->dispPtr->inputMethod != NULL) {
             winPtr->inputContext
             = XCreateIC(winPtr->dispPtr->inputMethod,
                         XNInputStyle,
@@ -668,8 +615,7 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
         }
         winPtr->flags |= TK_CHECKED_IC;
     }
-    if (XFilterEvent(eventPtr, None))
-    {
+    if (XFilterEvent(eventPtr, None)) {
         goto done;
     }
 #endif /* TK_USE_INPUT_METHODS */
@@ -679,8 +625,7 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
      * time in the display.
      */
 
-    if (eventPtr->type == PropertyNotify)
-    {
+    if (eventPtr->type == PropertyNotify) {
         winPtr->dispPtr->lastEventTime = eventPtr->xproperty.time;
     }
 
@@ -694,33 +639,24 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
     ip.nextHandler = NULL;
     ip.nextPtr = pendingPtr;
     pendingPtr = &ip;
-    if (mask == 0)
-    {
+    if (mask == 0) {
         if ((eventPtr->type == SelectionClear)
             || (eventPtr->type == SelectionRequest)
-            || (eventPtr->type == SelectionNotify))
-        {
+            || (eventPtr->type == SelectionNotify)) {
             TkSelEventProc(( Tk_Window )winPtr, eventPtr);
-        }
-        else if ((eventPtr->type == ClientMessage)
-                 && (eventPtr->xclient.message_type
-                     == Tk_InternAtom(( Tk_Window )winPtr, "WM_PROTOCOLS")))
-        {
+        } else if ((eventPtr->type == ClientMessage)
+                   && (eventPtr->xclient.message_type
+                       == Tk_InternAtom(( Tk_Window )winPtr,
+                                        "WM_PROTOCOLS"))) {
             TkWmProtocolEventProc(winPtr, eventPtr);
         }
-    }
-    else
-    {
-        for (handlerPtr = winPtr->handlerList; handlerPtr != NULL;)
-        {
-            if ((handlerPtr->mask & mask) != 0)
-            {
+    } else {
+        for (handlerPtr = winPtr->handlerList; handlerPtr != NULL;) {
+            if ((handlerPtr->mask & mask) != 0) {
                 ip.nextHandler = handlerPtr->nextPtr;
                 (*(handlerPtr->proc))(handlerPtr->clientData, eventPtr);
                 handlerPtr = ip.nextHandler;
-            }
-            else
-            {
+            } else {
                 handlerPtr = handlerPtr->nextPtr;
             }
         }
@@ -732,8 +668,7 @@ void Tk_HandleEvent(eventPtr) XEvent *eventPtr; /* Event to dispatch. */
          * these events here than in the lower-level procedures.
          */
 
-        if ((ip.winPtr != None) && (mask != SubstructureNotifyMask))
-        {
+        if ((ip.winPtr != None) && (mask != SubstructureNotifyMask)) {
             TkBindEventProc(winPtr, eventPtr);
         }
     }
@@ -745,8 +680,7 @@ done:
      * deleted if requested.
      */
 
-    if (interp != ( Tcl_Interp * )NULL)
-    {
+    if (interp != ( Tcl_Interp * )NULL) {
         Tcl_Release(( ClientData )interp);
     }
 }
@@ -783,18 +717,14 @@ void TkEventDeadWindow(winPtr) TkWindow *winPtr; /* Information about the
      * are being deleted).
      */
 
-    while (winPtr->handlerList != NULL)
-    {
+    while (winPtr->handlerList != NULL) {
         handlerPtr = winPtr->handlerList;
         winPtr->handlerList = handlerPtr->nextPtr;
-        for (ipPtr = pendingPtr; ipPtr != NULL; ipPtr = ipPtr->nextPtr)
-        {
-            if (ipPtr->nextHandler == handlerPtr)
-            {
+        for (ipPtr = pendingPtr; ipPtr != NULL; ipPtr = ipPtr->nextPtr) {
+            if (ipPtr->nextHandler == handlerPtr) {
                 ipPtr->nextHandler = NULL;
             }
-            if (ipPtr->winPtr == winPtr)
-            {
+            if (ipPtr->winPtr == winPtr) {
                 ipPtr->winPtr = None;
             }
         }
@@ -828,13 +758,11 @@ Time TkCurrentTime(dispPtr) TkDisplay *dispPtr; /* Display for which the time
 {
     XEvent *eventPtr;
 
-    if (pendingPtr == NULL)
-    {
+    if (pendingPtr == NULL) {
         return dispPtr->lastEventTime;
     }
     eventPtr = pendingPtr->eventPtr;
-    switch (eventPtr->type)
-    {
+    switch (eventPtr->type) {
     case ButtonPress:
     case ButtonRelease:
         return eventPtr->xbutton.time;
@@ -925,24 +853,19 @@ Tcl_QueuePosition position; /* Where to put it on the queue:
      * Find our display structure for the event's display.
      */
 
-    for (dispPtr = tkDisplayList;; dispPtr = dispPtr->nextPtr)
-    {
-        if (dispPtr == NULL)
-        {
+    for (dispPtr = tkDisplayList;; dispPtr = dispPtr->nextPtr) {
+        if (dispPtr == NULL) {
             return;
         }
-        if (dispPtr->display == eventPtr->xany.display)
-        {
+        if (dispPtr->display == eventPtr->xany.display) {
             break;
         }
     }
 
-    if ((dispPtr->delayedMotionPtr != NULL) && (position == TCL_QUEUE_TAIL))
-    {
+    if ((dispPtr->delayedMotionPtr != NULL) && (position == TCL_QUEUE_TAIL)) {
         if ((eventPtr->type == MotionNotify)
             && (eventPtr->xmotion.window
-                == dispPtr->delayedMotionPtr->event.xmotion.window))
-        {
+                == dispPtr->delayedMotionPtr->event.xmotion.window)) {
             /*
              * The new event is a motion event in the same window as the
              * saved motion event.  Just replace the saved event with the
@@ -951,11 +874,9 @@ Tcl_QueuePosition position; /* Where to put it on the queue:
 
             dispPtr->delayedMotionPtr->event = *eventPtr;
             return;
-        }
-        else if ((eventPtr->type != GraphicsExpose)
-                 && (eventPtr->type != NoExpose)
-                 && (eventPtr->type != Expose))
-        {
+        } else if ((eventPtr->type != GraphicsExpose)
+                   && (eventPtr->type != NoExpose)
+                   && (eventPtr->type != Expose)) {
             /*
              * The new event may conflict with the saved motion event.  Queue
              * the saved motion event now so that it will be processed before
@@ -971,24 +892,20 @@ Tcl_QueuePosition position; /* Where to put it on the queue:
     wevPtr = ( TkWindowEvent * )ckalloc(sizeof(TkWindowEvent));
     wevPtr->header.proc = WindowEventProc;
     wevPtr->event = *eventPtr;
-    if ((eventPtr->type == MotionNotify) && (position == TCL_QUEUE_TAIL))
-    {
+    if ((eventPtr->type == MotionNotify) && (position == TCL_QUEUE_TAIL)) {
         /*
          * The new event is a motion event so don't queue it immediately;
          * save it around in case another motion event arrives that it can
          * be collapsed with.
          */
 
-        if (dispPtr->delayedMotionPtr != NULL)
-        {
+        if (dispPtr->delayedMotionPtr != NULL) {
             panic(
             "Tk_QueueWindowEvent found unexpected delayed motion event");
         }
         dispPtr->delayedMotionPtr = wevPtr;
         Tcl_DoWhenIdle(DelayedMotionProc, ( ClientData )dispPtr);
-    }
-    else
-    {
+    } else {
         Tcl_QueueEvent(&wevPtr->header, position);
     }
 }
@@ -1021,10 +938,8 @@ XEvent *eventPtr; /* The event to be sent. */
     Tk_QueueWindowEvent(eventPtr, TCL_QUEUE_TAIL);
 
     childPtr = winPtr->childList;
-    while (childPtr != NULL)
-    {
-        if (!Tk_IsTopLevel(childPtr))
-        {
+    while (childPtr != NULL) {
+        if (!Tk_IsTopLevel(childPtr)) {
             TkQueueEventForAllChildren(( Tk_Window )childPtr, eventPtr);
         }
         childPtr = childPtr->nextPtr;
@@ -1061,21 +976,15 @@ int flags; /* Flags that indicate what events to
     TkWindowEvent *wevPtr = ( TkWindowEvent * )evPtr;
     Tk_RestrictAction result;
 
-    if (!(flags & TCL_WINDOW_EVENTS))
-    {
+    if (!(flags & TCL_WINDOW_EVENTS)) {
         return 0;
     }
-    if (restrictProc != NULL)
-    {
+    if (restrictProc != NULL) {
         result = (*restrictProc)(restrictArg, &wevPtr->event);
-        if (result != TK_PROCESS_EVENT)
-        {
-            if (result == TK_DEFER_EVENT)
-            {
+        if (result != TK_PROCESS_EVENT) {
+            if (result == TK_DEFER_EVENT) {
                 return 0;
-            }
-            else
-            {
+            } else {
                 /*
                  * TK_DELETE_EVENT: return and say we processed the event,
                  * even though we didn't do anything at all.
@@ -1113,8 +1022,7 @@ ClientData clientData; /* Pointer to display containing a delayed
 {
     TkDisplay *dispPtr = ( TkDisplay * )clientData;
 
-    if (dispPtr->delayedMotionPtr == NULL)
-    {
+    if (dispPtr->delayedMotionPtr == NULL) {
         panic("DelayedMotionProc found no delayed mouse motion event");
     }
     Tcl_QueueEvent(&dispPtr->delayedMotionPtr->header, TCL_QUEUE_TAIL);
@@ -1141,8 +1049,7 @@ ClientData clientData; /* Pointer to display containing a delayed
 void
 Tk_MainLoop()
 {
-    while (Tk_GetNumMainWindows() > 0)
-    {
+    while (Tk_GetNumMainWindows() > 0) {
         Tcl_DoOneEvent(0);
     }
 }

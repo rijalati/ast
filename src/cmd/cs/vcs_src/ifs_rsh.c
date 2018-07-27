@@ -47,16 +47,12 @@ int RshGetFile(srv) struct server_info *srv;
     mitem = srv->mitem;
     hostid = mitem->host;
     userid = mitem->user;
-    if (*rpath == '\0' || DashD(lpath))
-    {
+    if (*rpath == '\0' || DashD(lpath)) {
         if (*rpath == '\0')
             rpath = "/";
-        if (userid == NULL || *userid == '\0')
-        {
+        if (userid == NULL || *userid == '\0') {
             sfsprintf(cmd, sizeof(cmd), "rsh %s", hostid);
-        }
-        else
-        {
+        } else {
             sfsprintf(cmd, sizeof(cmd), "rsh -l %s %s", userid, hostid);
         }
         sfsprintf(buf, sizeof(buf), "%s /bin/ls -alL %s", cmd, rpath);
@@ -65,8 +61,7 @@ int RshGetFile(srv) struct server_info *srv;
         if ((fp = popen(buf, "rw")) == NULL)
             return -1;
         MakeTmpFile(lpath, tmpfile, sizeof(tmpfile));
-        if ((fd = open(tmpfile, O_WRONLY | O_CREAT, 0644)) < 0)
-        {
+        if ((fd = open(tmpfile, O_WRONLY | O_CREAT, 0644)) < 0) {
             cserrno = E_DATAXFER;
             return -1;
         }
@@ -80,15 +75,10 @@ int RshGetFile(srv) struct server_info *srv;
         ftp_makedents(tmpfile);
         rename(tmpfile, "._dir");
         symlink(mitem->timeout, "._cache_time");
-    }
-    else
-    {
-        if (userid == NULL || *userid == '\0')
-        {
+    } else {
+        if (userid == NULL || *userid == '\0') {
             sfsprintf(cmd, sizeof(cmd), "%s", hostid);
-        }
-        else
-        {
+        } else {
             sfsprintf(cmd, sizeof(cmd), "%s@%s", userid, hostid);
         }
         MakeTmpFile(lpath, tmpfile, sizeof(tmpfile));

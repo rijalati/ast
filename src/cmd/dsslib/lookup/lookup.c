@@ -61,8 +61,7 @@ lookup_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     char buf[PATH_MAX];
 
     if (!(vm = vmopen(Vmdcheap, Vmlast, 0))
-        || !(state = vmnewof(vm, 0, State_t, 1, 0)))
-    {
+        || !(state = vmnewof(vm, 0, State_t, 1, 0))) {
         if (vm)
             vmclose(vm);
         if (disc->errorf)
@@ -76,17 +75,13 @@ lookup_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     sfprintf(
     cx->buf, "%s%s", strchr(dss_lib_lookup.description, '['), lookup_usage);
     s = sfstruse(cx->buf);
-    for (;;)
-    {
-        switch (optget(argv, s))
-        {
+    for (;;) {
+        switch (optget(argv, s)) {
         case '?':
-            if (disc->errorf)
-            {
+            if (disc->errorf) {
                 (*disc->errorf)(
                 cx, disc, ERROR_USAGE | 4, "%s", opt_info.arg);
-            }
-            else
+            } else
                 goto bad;
             continue;
         case ':':
@@ -101,25 +96,21 @@ lookup_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     if (error_info.errors > errors)
         goto bad;
     argv += opt_info.index;
-    if (!argv[0] || !argv[1] || argv[2])
-    {
+    if (!argv[0] || !argv[1] || argv[2]) {
         if (disc->errorf)
             (*disc->errorf)(
             cx, disc, 2, "file and variable arguments expected");
         goto bad;
     }
-    if (!(state->variable = cxvariable(cx, argv[1], NiL, disc)))
-    {
+    if (!(state->variable = cxvariable(cx, argv[1], NiL, disc))) {
         if (disc->errorf)
             (*disc->errorf)(cx, disc, 2, "%s: variable not defined", argv[1]);
         goto bad;
     }
     if (!(sp = dssfind(argv[0], NiL, DSS_VERBOSE, buf, sizeof(buf), disc)))
         goto bad;
-    while (s = sfgetr(sp, '\n', SF_STRING))
-    {
-        if (!(v = vmnewof(vm, NiL, Value_t, 1, sfvalue(sp))))
-        {
+    while (s = sfgetr(sp, '\n', SF_STRING)) {
+        if (!(v = vmnewof(vm, NiL, Value_t, 1, sfvalue(sp)))) {
             if (disc->errorf)
                 (*disc->errorf)(cx, disc, ERROR_SYSTEM | 2, "out of space");
             goto bad;

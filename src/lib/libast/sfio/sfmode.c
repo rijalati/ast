@@ -82,10 +82,8 @@ _sfcleanup()
 
     sfsync(NIL(Sfio_t *));
 
-    for (p = &_Sfpool; p; p = p->next)
-    {
-        for (n = 0; n < p->n_sf; ++n)
-        {
+    for (p = &_Sfpool; p; p = p->next) {
+        for (n = 0; n < p->n_sf; ++n) {
             if (!(f = p->sf[n]) || SFFROZEN(f))
                 continue;
 
@@ -127,8 +125,7 @@ int _sfsetpool(f) Sfio_t *f;
     reg Sfio_t **array;
     reg int n, rv;
 
-    if (!_Sfcleanup)
-    {
+    if (!_Sfcleanup) {
         _Sfcleanup = _sfcleanup;
         ( void )atexit(_sfcleanup);
     }
@@ -140,14 +137,12 @@ int _sfsetpool(f) Sfio_t *f;
 
     rv = -1;
 
-    if (p->n_sf >= p->s_sf)
-    {
+    if (p->n_sf >= p->s_sf) {
         if (p->s_sf == 0) /* initialize pool array */
         {
             p->s_sf = sizeof(p->array) / sizeof(p->array[0]);
             p->sf = p->array;
-        }
-        else /* allocate a larger array */
+        } else /* allocate a larger array */
         {
             n = (p->sf != p->array ? p->s_sf : (p->s_sf / 4 + 1) * 4) + 4;
             if (!(array = ( Sfio_t ** )malloc(n * sizeof(Sfio_t *))))
@@ -187,14 +182,11 @@ reg ssize_t size;
 
     /* make buffer if nothing yet */
     size = ((size + SF_GRAIN - 1) / SF_GRAIN) * SF_GRAIN;
-    if (!(rsrv = f->rsrv) || size > rsrv->size)
-    {
+    if (!(rsrv = f->rsrv) || size > rsrv->size) {
         if (!(rs = ( Sfrsrv_t * )malloc(size + sizeof(Sfrsrv_t))))
             size = -1;
-        else
-        {
-            if (rsrv)
-            {
+        else {
+            if (rsrv) {
                 if (rsrv->slen > 0)
                     memcpy(rs, rsrv, sizeof(Sfrsrv_t) + rsrv->slen);
                 free(rsrv);
@@ -248,8 +240,7 @@ int stdio; /* stdio popen() does not reset SIGPIPE handler */
     p->sigp = (!stdio && pid >= 0 && (f->flags & SF_WRITE)) ? 1 : 0;
 
 #ifdef SIGPIPE /* protect from broken pipe signal */
-    if (p->sigp)
-    {
+    if (p->sigp) {
         Sfsignal_f handler;
 
         ( void )vtmtxlock(_Sfmutex);
@@ -283,8 +274,7 @@ int _sfpclose(f) reg Sfio_t *f; /* stream to close */
 
     if (p->pid < 0)
         status = 0;
-    else
-    { /* close the associated stream */
+    else { /* close the associated stream */
         if (p->file >= 0)
             CLOSE(p->file);
 
@@ -305,8 +295,7 @@ int _sfpclose(f) reg Sfio_t *f; /* stream to close */
 
 #ifdef SIGPIPE
         ( void )vtmtxlock(_Sfmutex);
-        if (p->sigp && (_Sfsigp -= 1) <= 0)
-        {
+        if (p->sigp && (_Sfsigp -= 1) <= 0) {
             Sfsignal_f handler;
             if ((handler = signal(SIGPIPE, SIG_DFL)) != SIG_DFL
                 && handler != ignoresig)
@@ -334,17 +323,14 @@ int type;
     if (!(p = f->proc))
         return -1;
 
-    if (type == SF_WRITE)
-    { /* save unread data */
+    if (type == SF_WRITE) { /* save unread data */
         p->ndata = f->endb - f->next;
-        if (p->ndata > p->size)
-        {
+        if (p->ndata > p->size) {
             if (p->rdata)
                 free(( char * )p->rdata);
             if ((p->rdata = ( uchar * )malloc(p->ndata)))
                 p->size = p->ndata;
-            else
-            {
+            else {
                 p->size = 0;
                 return -1;
             }
@@ -352,13 +338,10 @@ int type;
         if (p->ndata > 0)
             memcpy(( Void_t * )p->rdata, ( Void_t * )f->next, p->ndata);
         f->endb = f->data;
-    }
-    else
-    {                           /* restore read data */
+    } else {                    /* restore read data */
         if (p->ndata > f->size) /* may lose data!!! */
             p->ndata = f->size;
-        if (p->ndata > 0)
-        {
+        if (p->ndata > 0) {
             memcpy(( Void_t * )f->data, ( Void_t * )p->rdata, p->ndata);
             f->endb = f->data + p->ndata;
             p->ndata = 0;
@@ -366,8 +349,7 @@ int type;
     }
 
     /* switch file descriptor */
-    if (p->pid >= 0)
-    {
+    if (p->pid >= 0) {
         type = f->file;
         f->file = p->file;
         p->file = type;
@@ -396,58 +378,47 @@ reg int local;                               /* a local call */
         & SF_SYNCED) /* for (SF_SYNCED|SF_READ) stream, just junk data */
     {
         wanted &= ~SF_SYNCED;
-        if ((f->mode & (SF_SYNCED | SF_READ)) == (SF_SYNCED | SF_READ))
-        {
+        if ((f->mode & (SF_SYNCED | SF_READ)) == (SF_SYNCED | SF_READ)) {
             f->next = f->endb = f->endr = f->data;
             f->mode &= ~SF_SYNCED;
         }
     }
 
-    if ((!local && SFFROZEN(f)) || (!(f->flags & SF_STRING) && f->file < 0))
-    {
-        if (local || !f->disc || !f->disc->exceptf)
-        {
+    if ((!local && SFFROZEN(f)) || (!(f->flags & SF_STRING) && f->file < 0)) {
+        if (local || !f->disc || !f->disc->exceptf) {
             local = 1;
             goto err_notify;
         }
 
-        for (;;)
-        {
+        for (;;) {
             if ((rv = (*f->disc->exceptf)(f, SF_LOCKED, 0, f->disc)) < 0)
                 return rv;
             if ((!local && SFFROZEN(f))
-                || (!(f->flags & SF_STRING) && f->file < 0))
-            {
-                if (rv == 0)
-                {
+                || (!(f->flags & SF_STRING) && f->file < 0)) {
+                if (rv == 0) {
                     local = 1;
                     goto err_notify;
-                }
-                else
+                } else
                     continue;
-            }
-            else
+            } else
                 break;
         }
     }
 
-    if (f->mode & SF_GETR)
-    {
+    if (f->mode & SF_GETR) {
         f->mode &= ~SF_GETR;
 #if _mmap_worthy
-        if (f->bits & SF_MMAP)
-        {
+        if (f->bits & SF_MMAP) {
             if (!++f->ngetr)
                 f->tiny[0]++;
-            if (((f->tiny[0] << 8) | f->ngetr) >= (4 * SF_NMAP))
-            { /* turn off mmap to avoid page faulting */
+            if (((f->tiny[0] << 8) | f->ngetr)
+                >= (4 * SF_NMAP)) { /* turn off mmap to avoid page faulting */
                 sfsetbuf(f, ( Void_t * )f->tiny, ( size_t )SF_UNBOUND);
                 f->ngetr = f->tiny[0] = 0;
             }
         }
 #endif
-        if (f->getr)
-        {
+        if (f->getr) {
             f->next[-1] = f->getr;
             f->getr = 0;
         }
@@ -457,16 +428,13 @@ reg int local;                               /* a local call */
         (*_Sfstdsync)(f);
 
     if (f->disc == _Sfudisc && wanted == SF_WRITE
-        && sfclose((*_Sfstack)(f, NIL(Sfio_t *))) < 0)
-    {
+        && sfclose((*_Sfstack)(f, NIL(Sfio_t *))) < 0) {
         local = 1;
         goto err_notify;
     }
 
-    if (f->mode & SF_POOL)
-    { /* move to head of pool */
-        if (f == f->pool->sf[0] || (*_Sfpmove)(f, 0) < 0)
-        {
+    if (f->mode & SF_POOL) { /* move to head of pool */
+        if (f == f->pool->sf[0] || (*_Sfpmove)(f, 0) < 0) {
             local = 1;
             goto err_notify;
         }
@@ -477,10 +445,8 @@ reg int local;                               /* a local call */
 
     /* buffer initialization */
     wanted &= SF_RDWR;
-    if (f->mode & SF_INIT)
-    {
-        if (!f->pool && _sfsetpool(f) < 0)
-        {
+    if (f->mode & SF_INIT) {
+        if (!f->pool && _sfsetpool(f) < 0) {
             rv = -1;
             goto done;
         }
@@ -491,8 +457,7 @@ reg int local;                               /* a local call */
         if (wanted != ( int )(f->mode & SF_RDWR) && !(f->flags & wanted))
             goto err_notify;
 
-        if ((f->flags & SF_STRING) && f->size >= 0 && f->data)
-        {
+        if ((f->flags & SF_STRING) && f->size >= 0 && f->data) {
             f->mode &= ~SF_INIT;
             f->extent
             = ((f->flags & SF_READ) || (f->bits & SF_BOTH)) ? f->size : 0;
@@ -503,9 +468,7 @@ reg int local;                               /* a local call */
                 f->endr = f->endb;
             else
                 f->endw = f->endb;
-        }
-        else
-        {
+        } else {
             n = f->flags;
             ( void )SFSETBUF(f, f->data, f->size);
             f->flags |= (n & SF_MALLOC);
@@ -515,15 +478,13 @@ reg int local;                               /* a local call */
     if (wanted == ( int )SFMODE(f, 1))
         goto done;
 
-    switch (SFMODE(f, 1))
-    {
+    switch (SFMODE(f, 1)) {
     case SF_WRITE: /* switching to SF_READ */
         if (wanted == 0 || wanted == SF_WRITE)
             break;
         if (!(f->flags & SF_READ))
             goto err_notify;
-        else if (f->flags & SF_STRING)
-        {
+        else if (f->flags & SF_STRING) {
             SFSTRSIZE(f);
             f->endb = f->data + f->extent;
             f->mode = SF_READ;
@@ -534,8 +495,7 @@ reg int local;                               /* a local call */
         if (f->next > f->data && SFFLSBUF(f, -1) < 0)
             goto err_notify;
 
-        if (f->size == 0)
-        { /* unbuffered */
+        if (f->size == 0) { /* unbuffered */
             f->data = f->tiny;
             f->size = sizeof(f->tiny);
         }
@@ -548,27 +508,22 @@ reg int local;                               /* a local call */
 
         break;
 
-    case (SF_READ | SF_SYNCED): /* a previously sync-ed read stream */
-        if (wanted != SF_WRITE)
-        { /* just reset the pointers */
+    case (SF_READ | SF_SYNCED):   /* a previously sync-ed read stream */
+        if (wanted != SF_WRITE) { /* just reset the pointers */
             f->mode = SF_READ | SF_LOCK;
 
             /* see if must go with new physical location */
             if ((f->flags & (SF_SHARE | SF_PUBLIC)) == (SF_SHARE | SF_PUBLIC)
-                && (addr = SFSK(f, 0, SEEK_CUR, f->disc)) != f->here)
-            {
+                && (addr = SFSK(f, 0, SEEK_CUR, f->disc)) != f->here) {
 #if _mmap_worthy
-                if ((f->bits & SF_MMAP) && f->data)
-                {
+                if ((f->bits & SF_MMAP) && f->data) {
                     SFMUNMAP(f, f->data, f->endb - f->data);
                     f->data = NIL(uchar *);
                 }
 #endif
                 f->endb = f->endr = f->endw = f->next = f->data;
                 f->here = addr;
-            }
-            else
-            {
+            } else {
                 addr = f->here + (f->endb - f->next);
                 if (SFSK(f, addr, SEEK_SET, f->disc) < 0)
                     goto err_notify;
@@ -584,8 +539,7 @@ reg int local;                               /* a local call */
             break;
         else if (!(f->flags & SF_WRITE))
             goto err_notify;
-        else if (f->flags & SF_STRING)
-        {
+        else if (f->flags & SF_STRING) {
             f->endb = f->data + f->size;
             f->mode = SF_WRITE | SF_LOCK;
             break;
@@ -596,11 +550,12 @@ reg int local;                               /* a local call */
             goto err_notify;
 
         /* reset buffer and seek pointer */
-        if (!(f->mode & SF_SYNCED))
-        {
+        if (!(f->mode & SF_SYNCED)) {
             n = f->endb - f->next;
-            if (f->extent >= 0 && (n > 0 || (f->data && (f->bits & SF_MMAP))))
-            { /* reset file pointer */
+            if (f->extent >= 0
+                && (n > 0
+                    || (f->data && (f->bits & SF_MMAP)))) { /* reset file
+                                                               pointer */
                 addr = f->here - n;
                 if (SFSK(f, addr, SEEK_SET, f->disc) < 0)
                     goto err_notify;
@@ -610,19 +565,16 @@ reg int local;                               /* a local call */
 
         f->mode = SF_WRITE | SF_LOCK;
 #if _mmap_worthy
-        if (f->bits & SF_MMAP)
-        {
+        if (f->bits & SF_MMAP) {
             if (f->data)
                 SFMUNMAP(f, f->data, f->endb - f->data);
             ( void )SFSETBUF(f, ( Void_t * )f->tiny, ( size_t )SF_UNBOUND);
         }
 #endif
-        if (f->data == f->tiny)
-        {
+        if (f->data == f->tiny) {
             f->endb = f->data = f->next = NIL(uchar *);
             f->size = 0;
-        }
-        else
+        } else
             f->endb = (f->next = f->data) + f->size;
 
         break;

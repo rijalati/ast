@@ -76,8 +76,7 @@
 #define RETURN(e, n, fn)                                                     \
     if (*fn && !e)                                                           \
         e = E2BIG;                                                           \
-    if (e)                                                                   \
-    {                                                                        \
+    if (e) {                                                                 \
         errno = e;                                                           \
         return (size_t)(-1);                                                 \
     }                                                                        \
@@ -250,11 +249,9 @@ _win_codeset(const char *name)
     if (name[0] == '0' && name[1] == 'x' && (n = strtol(name, &e, 0)) > 0
         && !*e)
         return n;
-    for (;;)
-    {
+    for (;;) {
         sfsprintf(tmp, sizeof(tmp), "%s/%s", _win_maps, name);
-        if (!(sp = sfopen(0, tmp, "r")))
-        {
+        if (!(sp = sfopen(0, tmp, "r"))) {
             s = ( char * )name;
             if ((s[0] == 'c' || s[0] == 'C') && (s[1] == 'p' || s[1] == 'P'))
                 s += 2;
@@ -264,15 +261,12 @@ _win_codeset(const char *name)
             if (!(sp = sfopen(0, tmp, "r")))
                 break;
         }
-        for (;;)
-        {
-            if (!(s = sfgetr(sp, '\n', 0)))
-            {
+        for (;;) {
+            if (!(s = sfgetr(sp, '\n', 0))) {
                 sfclose(sp);
                 return -1;
             }
-            if (!strncasecmp(s, "AliasForCharSet=", 16))
-            {
+            if (!strncasecmp(s, "AliasForCharSet=", 16)) {
                 n = sfvalue(sp) - 17;
                 s += 16;
                 if (n >= sizeof(aka))
@@ -283,8 +277,7 @@ _win_codeset(const char *name)
                 name = ( const char * )aka;
                 break;
             }
-            if (!strncasecmp(s, "CodePage=", 9))
-            {
+            if (!strncasecmp(s, "CodePage=", 9)) {
                 s += 9;
                 n = strtol(s, 0, 0);
                 sfclose(sp);
@@ -357,17 +350,14 @@ _win_iconv(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
                  cc->to.index);
 #    endif
     if (cc->from.index == cc->to.index
-        || cc->from.index != CP_UCS2 && cc->to.index == 0)
-    {
+        || cc->from.index != CP_UCS2 && cc->to.index == 0) {
         /*
          * easy
          */
 
         fz = tz = (*fn < *tn) ? *fn : *tn;
         memcpy(*tb, *fb, fz);
-    }
-    else
-    {
+    } else {
         ub = 0;
         un = *fn;
 
@@ -375,21 +365,17 @@ _win_iconv(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
          * from => ucs-2
          */
 
-        if (cc->to.index == CP_UCS2)
-        {
+        if (cc->to.index == CP_UCS2) {
             if ((tz = MultiByteToWideChar(cc->from.index,
                                           0,
                                           ( LPCSTR )*fb,
                                           ( int )*fn,
                                           ( LPWSTR )*tb,
                                           *tn))
-                && tz <= *tn)
-            {
+                && tz <= *tn) {
                 fz = *fn;
                 tz *= sizeof(WCHAR);
-            }
-            else
-            {
+            } else {
                 /*
                  * target too small
                  * binary search on input size to make it fit
@@ -398,8 +384,7 @@ _win_iconv(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
                 oz = 0;
                 pz = *fn / 2;
                 fz = *fn - pz;
-                for (;;)
-                {
+                for (;;) {
                     while (!(tz = MultiByteToWideChar(cc->from.index,
                                                       0,
                                                       ( LPCSTR )*fb,
@@ -411,35 +396,29 @@ _win_iconv(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
                     tz *= sizeof(WCHAR);
                     if (tz == *tn)
                         break;
-                    if (!(pz /= 2))
-                    {
+                    if (!(pz /= 2)) {
                         if (!(fz = oz))
                             goto nope;
                         break;
                     }
                     if (tz > *tn)
                         fz -= pz;
-                    else
-                    {
+                    else {
                         oz = fz;
                         fz += pz;
                     }
                 }
             }
-        }
-        else
-        {
-            if (cc->from.index == CP_UCS2)
-            {
+        } else {
+            if (cc->from.index == CP_UCS2) {
                 un = *fn / sizeof(WCHAR);
                 ub = ( LPWSTR )*fb;
-            }
-            else if (!(un = MultiByteToWideChar(cc->from.index,
-                                                0,
-                                                ( LPCSTR )*fb,
-                                                ( int )*fn,
-                                                ( LPWSTR )*tb,
-                                                0)))
+            } else if (!(un = MultiByteToWideChar(cc->from.index,
+                                                  0,
+                                                  ( LPCSTR )*fb,
+                                                  ( int )*fn,
+                                                  ( LPWSTR )*tb,
+                                                  0)))
                 goto nope;
             else if (!(ub = ( LPWSTR )malloc(un * sizeof(WCHAR))))
                 goto nope;
@@ -458,8 +437,7 @@ _win_iconv(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
             if (tz = WideCharToMultiByte(
                 cc->to.index, 0, ( LPCWSTR )ub, un, *tb, *tn, 0, 0))
                 fz = *fn;
-            else
-            {
+            else {
                 /*
                  * target too small
                  * binary search on input size to make it fit
@@ -468,8 +446,7 @@ _win_iconv(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
                 oz = 0;
                 pz = *fn / 2;
                 bz = *fn - pz;
-                for (;;)
-                {
+                for (;;) {
                     while (!(fz = MultiByteToWideChar(cc->from.index,
                                                       0,
                                                       ( LPCSTR )*fb,
@@ -483,16 +460,14 @@ _win_iconv(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
                         goto nope;
                     if (tz == *tn)
                         break;
-                    if (!(pz /= 2))
-                    {
+                    if (!(pz /= 2)) {
                         if (!(fz = oz))
                             goto nope;
                         break;
                     }
                     if (tz > *tn)
                         bz -= pz;
-                    else
-                    {
+                    else {
                         oz = bz;
                         bz += pz;
                     }
@@ -553,8 +528,7 @@ _ast_iconv_name(const char *m, char *b, size_t n)
     char *o;
 #endif
 
-    if (!b)
-    {
+    if (!b) {
         b = buf;
         n = sizeof(buf);
     }
@@ -574,13 +548,11 @@ _ast_iconv_name(const char *m, char *b, size_t n)
                  __LINE__,
                  m);
 #endif
-    if (m == name_native)
-    {
+    if (m == name_native) {
         cc = CC_NATIVE;
         goto native;
     }
-    for (;;)
-    {
+    for (;;) {
 #if DEBUG_TRACE
         if (error_info.trace < DEBUG_TRACE)
             sfprintf(sfstderr,
@@ -599,51 +571,39 @@ _ast_iconv_name(const char *m, char *b, size_t n)
                         cp->match,
                         sub,
                         elementsof(sub) / 2,
-                        STR_MAXIMAL | STR_LEFT | STR_ICASE))
-        {
-            if (!(c = m[sub[1]]))
-            {
+                        STR_MAXIMAL | STR_LEFT | STR_ICASE)) {
+            if (!(c = m[sub[1]])) {
                 bp = cp;
                 break;
             }
-            if (sub[1] > n && !isalpha(c))
-            {
+            if (sub[1] > n && !isalpha(c)) {
                 bp = cp;
                 n = sub[1];
             }
         }
-        if (cp->ccode < 0)
-        {
+        if (cp->ccode < 0) {
             if (!(++cp)->name)
                 break;
-        }
-        else if (!(cp = ( const _ast_iconv_list_t * )ccmaplist(
-                   ( _ast_iconv_list_t * )cp)))
+        } else if (!(cp = ( const _ast_iconv_list_t * )ccmaplist(
+                     ( _ast_iconv_list_t * )cp)))
             cp = codes;
     }
-    if (cp = bp)
-    {
+    if (cp = bp) {
         cc = cp->ccode;
-        if (cp->canon)
-        {
-            if (cp->index)
-            {
+        if (cp->canon) {
+            if (cp->index) {
                 for (m += sub[1]; *m && !isalnum(*m); m++)
                     ;
                 if (!isdigit(*m))
                     m = cp->index;
-            }
-            else
+            } else
                 m = "1";
             b += sfsprintf(b, e - b, cp->canon, m);
             if (cc == CC_UTF && *m != '8')
                 cc = CC_ICONV;
-        }
-        else if (cc == CC_NATIVE)
-        {
+        } else if (cc == CC_NATIVE) {
         native:
-            switch (CC_NATIVE)
-            {
+            switch (CC_NATIVE) {
             case CC_EBCDIC:
                 m = ( const char * )"EBCDIC";
                 break;
@@ -679,8 +639,7 @@ _ast_iconv_name(const char *m, char *b, size_t n)
 #endif
         return cc;
     }
-    while (b < e && (c = *m++))
-    {
+    while (b < e && (c = *m++)) {
         if (islower(c))
             c = toupper(c);
         *b++ = c;
@@ -722,48 +681,39 @@ utf2bin(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
     fe = f + (*fn);
     t = ( unsigned char * )(*tb);
     te = t + (*tn);
-    while (t < te && f < fe)
-    {
+    while (t < te && f < fe) {
         p = f;
         c = *f++;
-        if (c & 0x80)
-        {
-            if (!(c & 0x40))
-            {
+        if (c & 0x80) {
+            if (!(c & 0x40)) {
                 f = p;
                 e = EILSEQ;
                 break;
             }
-            if (c & 0x20)
-            {
+            if (c & 0x20) {
                 w = (c & 0x0F) << 12;
-                if (f >= fe)
-                {
+                if (f >= fe) {
                     f = p;
                     e = EINVAL;
                     break;
                 }
                 c = *f++;
-                if (c & 0x40)
-                {
+                if (c & 0x40) {
                     f = p;
                     e = EILSEQ;
                     break;
                 }
                 w |= (c & 0x3F) << 6;
-            }
-            else
+            } else
                 w = (c & 0x1F) << 6;
-            if (f >= fe)
-            {
+            if (f >= fe) {
                 f = p;
                 e = EINVAL;
                 break;
             }
             c = *f++;
             w |= (c & 0x3F);
-        }
-        else
+        } else
             w = c;
         *t++ = w;
     }
@@ -795,45 +745,32 @@ bin2utf(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
     fe = f + (*fn);
     t = ( unsigned char * )(*tb);
     te = t + (*tn);
-    while (f < fe && t < te)
-    {
-        if (!mbwide())
-        {
+    while (f < fe && t < te) {
+        if (!mbwide()) {
             c = 1;
             w = *f;
-        }
-        else if ((c = (*_ast_info.mb_towc)(&w, ( char * )f, fe - f)) < 0)
-        {
+        } else if ((c = (*_ast_info.mb_towc)(&w, ( char * )f, fe - f)) < 0) {
             e = EINVAL;
             break;
-        }
-        else if (!c)
+        } else if (!c)
             c = 1;
         if (!(w & ~0x7F))
             *t++ = w;
-        else
-        {
-            if (!(w & ~0x7FF))
-            {
-                if (t >= (te - 2))
-                {
+        else {
+            if (!(w & ~0x7FF)) {
+                if (t >= (te - 2)) {
                     e = E2BIG;
                     break;
                 }
                 *t++ = 0xC0 + (w >> 6);
-            }
-            else if (!(w & ~0xffff))
-            {
-                if (t >= (te - 3))
-                {
+            } else if (!(w & ~0xffff)) {
+                if (t >= (te - 3)) {
                     e = E2BIG;
                     break;
                 }
                 *t++ = 0xE0 + (w >> 12);
                 *t++ = 0x80 + ((w >> 6) & 0x3F);
-            }
-            else
-            {
+            } else {
                 e = EILSEQ;
                 break;
             }
@@ -872,8 +809,7 @@ umeinit(void)
     int i;
     int c;
 
-    if (!ume_d[ume_D[0]])
-    {
+    if (!ume_d[ume_D[0]]) {
         s = ume_D;
         while (c = *s++)
             ume_d[c] = 1;
@@ -909,46 +845,35 @@ ume2bin(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
     t = ( unsigned char * )(*tb);
     te = t + (*tn);
     s = 0;
-    while (f < fe && t < te)
-    {
+    while (f < fe && t < te) {
         p = f;
         c = *f++;
-        if (s)
-        {
+        if (s) {
             if (c == '-' && s > 1)
                 s = 0;
-            else if ((w = ume_m[c]) == NOE)
-            {
+            else if ((w = ume_m[c]) == NOE) {
                 s = 0;
                 *t++ = c;
-            }
-            else if (f >= (fe - 2))
-            {
+            } else if (f >= (fe - 2)) {
                 f = p;
                 e = EINVAL;
                 break;
-            }
-            else
-            {
+            } else {
                 s = 2;
                 w = (w << 6) | ume_m[*f++];
                 w = (w << 6) | ume_m[*f++];
                 if (!(w & ~0xFF))
                     *t++ = w;
-                else if (t >= (te - 1))
-                {
+                else if (t >= (te - 1)) {
                     f = p;
                     e = E2BIG;
                     break;
-                }
-                else
-                {
+                } else {
                     *t++ = (w >> 8) & 0xFF;
                     *t++ = w & 0xFF;
                 }
             }
-        }
-        else if (c == '+')
+        } else if (c == '+')
             s = 1;
         else
             *t++ = c;
@@ -984,38 +909,26 @@ bin2ume(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
     t = ( unsigned char * )(*tb);
     te = t + (*tn);
     s = 0;
-    while (f < fe && t < (te - s))
-    {
-        if (!mbwide())
-        {
+    while (f < fe && t < (te - s)) {
+        if (!mbwide()) {
             c = 1;
             w = *f;
-        }
-        else if ((c = (*_ast_info.mb_towc)(&w, ( char * )f, fe - f)) < 0)
-        {
+        } else if ((c = (*_ast_info.mb_towc)(&w, ( char * )f, fe - f)) < 0) {
             e = EINVAL;
             break;
-        }
-        else if (!c)
+        } else if (!c)
             c = 1;
-        if (!(w & ~0x7F) && ume_d[w])
-        {
-            if (s)
-            {
+        if (!(w & ~0x7F) && ume_d[w]) {
+            if (s) {
                 s = 0;
                 *t++ = '-';
             }
             *t++ = w;
-        }
-        else if (t >= (te - (4 + s)))
-        {
+        } else if (t >= (te - (4 + s))) {
             e = E2BIG;
             break;
-        }
-        else
-        {
-            if (!s)
-            {
+        } else {
+            if (!s) {
                 s = 1;
                 *t++ = '+';
             }
@@ -1054,20 +967,16 @@ u16n2bin(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
     fe = f + (*fn);
     t = ( unsigned char * )(*tb);
     te = t + (*tn);
-    while (f < (fe - 1) && t < te)
-    {
+    while (f < (fe - 1) && t < te) {
         w = *f++;
         w = (w << 8) | *f++;
         if (!(w & ~0xFF))
             *t++ = w;
-        else if (t >= (te - 1))
-        {
+        else if (t >= (te - 1)) {
             f -= 2;
             e = E2BIG;
             break;
-        }
-        else
-        {
+        } else {
             *t++ = (w >> 8) & 0xFF;
             *t++ = w & 0xFF;
         }
@@ -1100,19 +1009,15 @@ bin2u16n(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
     fe = f + (*fn);
     t = ( unsigned char * )(*tb);
     te = t + (*tn);
-    while (f < fe && t < (te - 1))
-    {
-        if (!mbwide())
-        {
+    while (f < fe && t < (te - 1)) {
+        if (!mbwide()) {
             c = 1;
             w = *f;
         }
-        if ((c = (*_ast_info.mb_towc)(&w, ( char * )f, fe - f)) < 0)
-        {
+        if ((c = (*_ast_info.mb_towc)(&w, ( char * )f, fe - f)) < 0) {
             e = EINVAL;
             break;
-        }
-        else if (!c)
+        } else if (!c)
             c = 1;
         *t++ = (w >> 8) & 0xFF;
         *t++ = w & 0xFF;
@@ -1145,20 +1050,16 @@ u16s2bin(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
     fe = f + (*fn);
     t = ( unsigned char * )(*tb);
     te = t + (*tn);
-    while (f < (fe - 1) && t < te)
-    {
+    while (f < (fe - 1) && t < te) {
         w = *f++;
         w = w | (*f++ << 8);
         if (!(w & ~0xFF))
             *t++ = w;
-        else if (t >= (te - 1))
-        {
+        else if (t >= (te - 1)) {
             f -= 2;
             e = E2BIG;
             break;
-        }
-        else
-        {
+        } else {
             *t++ = (w >> 8) & 0xFF;
             *t++ = w & 0xFF;
         }
@@ -1191,19 +1092,14 @@ bin2u16s(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
     fe = f + (*fn);
     t = ( unsigned char * )(*tb);
     te = t + (*tn);
-    while (f < fe && t < (te - 1))
-    {
-        if (!mbwide())
-        {
+    while (f < fe && t < (te - 1)) {
+        if (!mbwide()) {
             c = 1;
             w = *f;
-        }
-        else if ((c = (*_ast_info.mb_towc)(&w, ( char * )f, fe - f)) < 0)
-        {
+        } else if ((c = (*_ast_info.mb_towc)(&w, ( char * )f, fe - f)) < 0) {
             e = EINVAL;
             break;
-        }
-        else if (!c)
+        } else if (!c)
             c = 1;
         *t++ = w & 0xFF;
         *t++ = (w >> 8) & 0xFF;
@@ -1326,8 +1222,7 @@ _ast_iconv_open(const char *t, const char *f)
 
     for (i = 0; i < elementsof(freelist); i++)
         if ((cc = freelist[i]) && streq(to, cc->to.name)
-            && streq(fr, cc->from.name))
-        {
+            && streq(fr, cc->from.name)) {
             freelist[i] = 0;
 #if _lib_iconv_open
             /*
@@ -1367,10 +1262,8 @@ _ast_iconv_open(const char *t, const char *f)
              || (cc->cvt = _win_iconv_open(cc, to, fr)) != (_ast_iconv_t)(-1))
         cc->from.fun = ( _ast_iconv_f )_win_iconv;
 #endif
-    else
-    {
-        switch (fc)
-        {
+    else {
+        switch (fc) {
         case CC_UTF:
             cc->from.fun = utf2bin;
             break;
@@ -1425,8 +1318,7 @@ _ast_iconv_open(const char *t, const char *f)
             cc->from.map = ccmap(fc, CC_ASCII);
             break;
         }
-        switch (tc)
-        {
+        switch (tc) {
         case CC_UTF:
             cc->to.fun = bin2utf;
             break;
@@ -1509,14 +1401,12 @@ _ast_iconv_close(_ast_iconv_t cd)
      */
 
     i = freeindex;
-    for (;;)
-    {
+    for (;;) {
         if (++i >= elementsof(freelist))
             i = 0;
         if (!freelist[i])
             break;
-        if (i == freeindex)
-        {
+        if (i == freeindex) {
             if (++i >= elementsof(freelist))
                 i = 0;
 
@@ -1524,8 +1414,7 @@ _ast_iconv_close(_ast_iconv_t cd)
              * close the oldest
              */
 
-            if (oc = freelist[i])
-            {
+            if (oc = freelist[i]) {
 #if _lib_iconv_open
                 if (oc->cvt != (iconv_t)(-1))
                     r = iconv_close(oc->cvt);
@@ -1560,8 +1449,7 @@ _ast_iconv(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
     size_t tfn;
     size_t i;
 
-    if (!fb || !*fb)
-    {
+    if (!fb || !*fb) {
         /* TODO: reset to the initial state */
         if (!tb || !*tb)
             return 0;
@@ -1569,15 +1457,12 @@ _ast_iconv(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
         return 0;
     }
     n = *tn;
-    if (cc)
-    {
-        if (cc->from.fun)
-        {
-            if (cc->to.fun)
-            {
+    if (cc) {
+        if (cc->from.fun) {
+            if (cc->to.fun) {
                 if (!cc->buf
-                    && !(cc->buf = oldof(0, char, cc->size = SF_BUFSIZE, 0)))
-                {
+                    && !(cc->buf
+                         = oldof(0, char, cc->size = SF_BUFSIZE, 0))) {
                     errno = ENOMEM;
                     return -1;
                 }
@@ -1599,21 +1484,17 @@ _ast_iconv(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
             if ((*cc->from.fun)(cc->cvt, fb, fn, tb, tn) == (size_t)(-1))
                 return -1;
             n -= *tn;
-            if (m = cc->to.map)
-            {
+            if (m = cc->to.map) {
                 e = ( unsigned char * )(*tb);
                 for (t = e - n; t < e; t++)
                     *t = m[*t];
             }
             return n;
-        }
-        else if (cc->to.fun)
-        {
+        } else if (cc->to.fun) {
             if (!(m = cc->from.map))
                 return (*cc->to.fun)(cc->cvt, fb, fn, tb, tn);
             if (!cc->buf
-                && !(cc->buf = oldof(0, char, cc->size = SF_BUFSIZE, 0)))
-            {
+                && !(cc->buf = oldof(0, char, cc->size = SF_BUFSIZE, 0))) {
                 errno = ENOMEM;
                 return -1;
             }
@@ -1631,15 +1512,13 @@ _ast_iconv(_ast_iconv_t cd, char **fb, size_t *fn, char **tb, size_t *tn)
     }
     if (n > *fn)
         n = *fn;
-    if (cc && (m = cc->from.map))
-    {
+    if (cc && (m = cc->from.map)) {
         f = ( unsigned char * )(*fb);
         e = f + n;
         t = ( unsigned char * )(*tb);
         while (f < e)
             *t++ = m[*f++];
-    }
-    else
+    } else
         memcpy(*tb, *fb, n);
     *fb += n;
     *fn -= n;
@@ -1676,22 +1555,18 @@ _ast_iconv_write(_ast_iconv_t cd,
      * the old api had optional size_t* instead of Iconv_disc_t*
      */
 
-    if (!disc || disc->version < 20110101L || disc->version >= 30000101L)
-    {
+    if (!disc || disc->version < 20110101L || disc->version >= 30000101L) {
         e = ( size_t * )disc;
         disc = &compat;
         iconv_init(disc, 0);
-    }
-    else
+    } else
         e = 0;
     r = 0;
     tn = 0;
     ok = 1;
-    while (ok && *fn > 0)
-    {
+    while (ok && *fn > 0) {
         if (!(tb = ( char * )sfreserve(op, -(tn + 1), SF_WRITE | SF_LOCKR))
-            || !(tn = sfvalue(op)))
-        {
+            || !(tn = sfvalue(op))) {
             if (!r)
                 r = -1;
             break;
@@ -1736,8 +1611,7 @@ _ast_iconv_write(_ast_iconv_t cd,
             if (_r != (size_t)(-1) || !fn)
                 break;
 #endif
-            switch (errno)
-            {
+            switch (errno) {
             case E2BIG:
                 break;
             case EINVAL:
@@ -1761,10 +1635,8 @@ _ast_iconv_write(_ast_iconv_t cd,
                     *fb - fo);
             bad:
                 disc->errors++;
-                if (!(disc->flags & ICONV_FATAL))
-                {
-                    if (!(disc->flags & ICONV_OMIT) && tn > 0)
-                    {
+                if (!(disc->flags & ICONV_FATAL)) {
+                    if (!(disc->flags & ICONV_OMIT) && tn > 0) {
                         *ts++ = (disc->fill >= 0) ? disc->fill : **fb;
                         tn--;
                     }
@@ -1839,17 +1711,13 @@ _ast_iconv_move(_ast_iconv_t cd,
      * the old api had optional size_t* instead of Iconv_disc_t*
      */
 
-    if (!disc || disc->version < 20110101L || disc->version >= 30000101L)
-    {
+    if (!disc || disc->version < 20110101L || disc->version >= 30000101L) {
         e = ( size_t * )disc;
         disc = &compat;
         iconv_init(disc, 0);
-    }
-    else
-    {
+    } else {
         e = 0;
-        if (disc->version >= 20121001L)
-        {
+        if (disc->version >= 20121001L) {
             checksig = disc->checksig;
             handle = disc->handle;
         }
@@ -1864,8 +1732,7 @@ _ast_iconv_move(_ast_iconv_t cd,
     fn = 0;
     ff = 1;
     fl = 0;
-    for (;;)
-    {
+    for (;;) {
 #if DEBUG_TRACE
         if (error_info.trace < DEBUG_TRACE)
             sfprintf(sfstderr,
@@ -1883,16 +1750,13 @@ _ast_iconv_move(_ast_iconv_t cd,
                      tn,
                      tl);
 #endif
-        if (checksig && (*checksig)(handle))
-        {
+        if (checksig && (*checksig)(handle)) {
             r = -1;
             break;
         }
-        if (ff || !fn)
-        {
+        if (ff || !fn) {
             ff = 0;
-            if (fb)
-            {
+            if (fb) {
                 i = fs - fb;
                 if (locked)
                     sfread(ip, fb, i);
@@ -1909,8 +1773,7 @@ _ast_iconv_move(_ast_iconv_t cd,
                  || !(fo = sfvalue(ip)))
                 && (!(fb = ( char * )sfreserve(
                       ip, n == SF_UNBOUND ? (-fn - 1) : n, locked = 0))
-                    || !(fo = sfvalue(ip))))
-            {
+                    || !(fo = sfvalue(ip)))) {
 #if DEBUG_TRACE
                 if (error_info.trace < DEBUG_TRACE)
                     sfprintf(sfstderr,
@@ -1938,13 +1801,11 @@ _ast_iconv_move(_ast_iconv_t cd,
                 sizeof(fo),
                 fo);
 #endif
-            if (fn == fo)
-            {
+            if (fn == fo) {
                 if (fl)
                     break;
                 fl = 1;
-            }
-            else
+            } else
                 fn = fo;
             fs = fb;
 #if DEBUG_TRACE
@@ -1961,31 +1822,26 @@ _ast_iconv_move(_ast_iconv_t cd,
                 fn);
 #endif
         }
-        if (tf || !tn)
-        {
+        if (tf || !tn) {
             tf = 0;
-            if (tb)
-            {
+            if (tb) {
                 i = ts - tb;
                 sfwrite(op, tb, i);
                 r += i;
             }
             if (!(tb = ( char * )sfreserve(op, -tn - 1, SF_WRITE | SF_LOCKR))
-                || !(to = sfvalue(op)))
-            {
+                || !(to = sfvalue(op))) {
                 if (!r)
                     r = -1;
                 tb = 0;
                 break;
             }
             ts = tb;
-            if (tn == to)
-            {
+            if (tn == to) {
                 if (tl)
                     break;
                 tl = 1;
-            }
-            else
+            } else
                 tn = to;
 #if DEBUG_TRACE
             if (error_info.trace < DEBUG_TRACE)
@@ -2020,8 +1876,7 @@ _ast_iconv_move(_ast_iconv_t cd,
                      sizeof(tn),
                      tn);
 #endif
-        if (_ast_iconv(cd, &fs, &fn, &ts, &tn) == (size_t)(-1))
-        {
+        if (_ast_iconv(cd, &fs, &fn, &ts, &tn) == (size_t)(-1)) {
 #if DEBUG_TRACE
             if (error_info.trace < DEBUG_TRACE)
                 sfprintf(sfstderr,
@@ -2040,16 +1895,12 @@ _ast_iconv_move(_ast_iconv_t cd,
                          tn,
                          errno);
 #endif
-            if (errno == E2BIG)
-            {
+            if (errno == E2BIG) {
                 if (tl)
                     break;
                 tf = 1;
-            }
-            else if (errno == EINVAL)
-            {
-                if (fl)
-                {
+            } else if (errno == EINVAL) {
+                if (fl) {
                     if (disc->errorf)
                         (*disc->errorf)(
                         NiL,
@@ -2061,9 +1912,7 @@ _ast_iconv_move(_ast_iconv_t cd,
                     goto bad;
                 }
                 ff = 1;
-            }
-            else
-            {
+            } else {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL,
@@ -2076,8 +1925,7 @@ _ast_iconv_move(_ast_iconv_t cd,
                 disc->errors++;
                 if (disc->flags & ICONV_FATAL)
                     break;
-                if (!(disc->flags & ICONV_OMIT) && tn > 0)
-                {
+                if (!(disc->flags & ICONV_OMIT) && tn > 0) {
                     *ts++ = (disc->fill >= 0) ? disc->fill : *fs;
                     tn--;
                 }
@@ -2085,10 +1933,8 @@ _ast_iconv_move(_ast_iconv_t cd,
                 fn--;
             }
         }
-        if (i = fs - fb)
-        {
-            if (n != SF_UNBOUND)
-            {
+        if (i = fs - fb) {
+            if (n != SF_UNBOUND) {
                 if (n <= i)
                     break;
                 n -= i;
@@ -2106,16 +1952,14 @@ _ast_iconv_move(_ast_iconv_t cd,
                  fb,
                  fn);
 #endif
-    if (fb)
-    {
+    if (fb) {
         if (locked)
             sfread(ip, fb, i);
         else
             for (j = fn; --j >= i;)
                 sfungetc(ip, fb[j]);
     }
-    if (tb)
-    {
+    if (tb) {
         i = ts - tb;
         sfwrite(op, tb, i);
         r += i;
@@ -2139,20 +1983,16 @@ _ast_iconv_list(_ast_iconv_list_t *cp)
 #if _UWIN
     struct dirent *ent;
 
-    if (!cp)
-    {
+    if (!cp) {
         if (!(cp = newof(0, _ast_iconv_list_t, 1, 0)))
             return ccmaplist(NiL);
-        if (!(cp->data = opendir(_win_maps)))
-        {
+        if (!(cp->data = opendir(_win_maps))) {
             free(cp);
             return ccmaplist(NiL);
         }
     }
-    if (cp->data)
-    {
-        if (ent = readdir(( DIR * )cp->data))
-        {
+    if (cp->data) {
+        if (ent = readdir(( DIR * )cp->data)) {
             cp->name = cp->match = cp->desc = ( const char * )ent->d_name;
             return cp;
         }

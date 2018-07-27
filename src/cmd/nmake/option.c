@@ -494,8 +494,7 @@ getoption(const char *name)
     int c;
 
     if (!(op = ( Option_t * )hashget(opt.table, name))
-        && (strchr(name, '-') || strchr(name, '_')))
-    {
+        && (strchr(name, '-') || strchr(name, '_'))) {
         while (c = *name++)
             if (c != '-' && c != '_')
                 sfputc(internal.tmp, c);
@@ -512,8 +511,7 @@ putoption(Option_t *op, int index)
     char buf[16];
 
     hashput(opt.table, op->name, ( char * )op);
-    if (strchr(op->name, '-') || strchr(op->name, '_'))
-    {
+    if (strchr(op->name, '-') || strchr(op->name, '_')) {
         s = op->name;
         while (c = *s++)
             if (c != '-' && c != '_')
@@ -522,15 +520,13 @@ putoption(Option_t *op, int index)
     }
     if (op->flags & Of)
         sfsprintf(buf, sizeof(buf), "+%d", OPT(op->flags));
-    else
-    {
+    else {
         buf[0] = '-';
         buf[1] = OPT(op->flags);
         buf[2] = 0;
     }
     hashput(opt.table, strdup(buf), ( char * )op);
-    if (index >= elementsof(options))
-    {
+    if (index >= elementsof(options)) {
         sfsprintf(buf, sizeof(buf), "-%d", index);
         hashput(opt.table, strdup(buf), ( char * )op);
     }
@@ -546,11 +542,9 @@ optinit(void)
     int i;
 
     opt.table = hashalloc(NiL, HASH_name, "options", 0);
-    for (i = 0; i < elementsof(options); i++)
-    {
+    for (i = 0; i < elementsof(options); i++) {
         options[i].flags |= Om;
-        switch (OPT(options[i].flags))
-        {
+        switch (OPT(options[i].flags)) {
         case OPT(OPT_debug):
             options[i].value = ( char * )&error_info.trace;
             break;
@@ -577,8 +571,7 @@ optflag(int flag)
 
     if (flag & Of)
         sfsprintf(buf, sizeof(buf), "+%d", OPT(flag));
-    else
-    {
+    else {
         buf[0] = '-';
         buf[1] = OPT(flag);
         buf[2] = 0;
@@ -600,14 +593,12 @@ setcall(Option_t *op, int readonly)
     int oreadonly;
     char buf[16];
 
-    if (op->set && (r = getrule(op->set)))
-    {
+    if (op->set && (r = getrule(op->set))) {
         oset = op->set;
         op->set = 0;
         oreadonly = state.readonly;
         state.readonly = readonly;
-        switch (op->flags & (Ob | On | Os))
-        {
+        switch (op->flags & (Ob | On | Os)) {
         case Ob:
             call(r, *(( unsigned char * )op->value) ? "1" : null);
             break;
@@ -634,8 +625,7 @@ declarestr(Sfio_t *sp, const char *s)
     int c;
 
     if (s && *s)
-        while (c = *s++)
-        {
+        while (c = *s++) {
             if (c == OPT_SEP)
                 sfputc(sp, c);
             sfputc(sp, c);
@@ -688,11 +678,9 @@ genusage(Option_t *op, int index, int last)
 {
     long pos;
 
-    if (op)
-    {
+    if (op) {
         sfputc(opt.usage, '[');
-        if (!(op->flags & Of))
-        {
+        if (!(op->flags & Of)) {
             sfputc(opt.usage, OPT(op->flags));
             if (op->flags & Oo)
                 sfputc(opt.usage, '!');
@@ -700,8 +688,7 @@ genusage(Option_t *op, int index, int last)
         }
         sfprintf(
         opt.usage, "%d:%s?%s]", index + OPT_OFFSET, op->name, op->description);
-        if (op->arg)
-        {
+        if (op->arg) {
             if (op->flags & On)
                 sfputc(opt.usage, '#');
             else
@@ -738,20 +725,16 @@ mamwrite(Sfio_t *fp, const void *buf, size_t n, Sfdisc_t *dp)
     static int siz;
 
     z = n;
-    if (n > 1 && (( char * )buf)[n - 1] == '\n')
-    {
-        if (n >= siz)
-        {
+    if (n > 1 && (( char * )buf)[n - 1] == '\n') {
+        if (n >= siz) {
             siz = roundof(n + 1, 1024);
             tmp = newof(tmp, char, siz, 0);
         }
         memcpy(tmp, buf, n);
         tmp[n - 1] = 0;
-        if (s = call(makerule(external.mamaction), tmp))
-        {
+        if (s = call(makerule(external.mamaction), tmp)) {
             z = strlen(s);
-            if (z >= siz)
-            {
+            if (z >= siz) {
                 siz = roundof(z + 1, 1024);
                 tmp = newof(tmp, char, siz, 0);
             }
@@ -788,8 +771,7 @@ regressinit(const char *type)
     int i;
 
     error_info.version = 0;
-    if (*type == 's')
-    {
+    if (*type == 's') {
         t = CURTIME;
         if (i = tmxnsec(t) && !stat(".", &st) && !tmxnsec(tmxgetatime(&st))
                 && !tmxnsec(tmxgetmtime(&st)))
@@ -862,36 +844,28 @@ field(char **p, int sep, int app, int lenient)
 
     if (!(c = *(s = *p)) || c == app)
         return 0;
-    if (c == sep)
-    {
+    if (c == sep) {
         *p = s + 1;
         return 0;
     }
     v = t = s;
-    for (;;)
-    {
-        if (!(c = *t++ = *s++))
-        {
+    for (;;) {
+        if (!(c = *t++ = *s++)) {
             s--;
             t--;
             break;
-        }
-        else if (c == sep)
-        {
-            if (lenient || !*s)
-            {
+        } else if (c == sep) {
+            if (lenient || !*s) {
                 t--;
                 s--;
                 break;
             }
-            if (*s == OPT_NON && (!*(s + 1) || *(s + 1) == sep))
-            {
+            if (*s == OPT_NON && (!*(s + 1) || *(s + 1) == sep)) {
                 t--;
                 s++;
                 break;
             }
-            if (*s != c)
-            {
+            if (*s != c) {
                 t--;
                 s--;
                 break;
@@ -921,14 +895,12 @@ setop(Option_t *op, int n, char *s, int type)
     int readonly;
 
     readonly = state.readonly;
-    if (OPT(op->flags) != OPT(OPT_option))
-    {
+    if (OPT(op->flags) != OPT(OPT_option)) {
         if (type == ':' && (op->flags & OPT_SET))
             return;
         if (readonly)
             op->flags |= OPT_READONLY;
-        else if (!state.user && (op->flags & OPT_READONLY))
-        {
+        else if (!state.user && (op->flags & OPT_READONLY)) {
             Oplist_t *x;
 
             /*
@@ -959,34 +931,28 @@ setop(Option_t *op, int n, char *s, int type)
         if (error_info.trace <= -3)
             error(-3, "option(%s,%d,\"%s\")", showop(op), n, s ? s : null);
     }
-    if (type != ':')
-    {
+    if (type != ':') {
         op->flags |= OPT_SET;
         op->flags &= ~OPT_DEFAULT;
-    }
-    else if (!(op->flags & OPT_SET))
-    {
+    } else if (!(op->flags & OPT_SET)) {
         op->flags |= OPT_DEFAULT;
         if (!state.loading)
             op->flags |= OPT_COMPILE;
     }
     if (state.reading)
         op->flags |= OPT_COMPILE;
-    if (op->flags & Oi)
-    {
+    if (op->flags & Oi) {
         if (op->flags & On)
             n = -n;
         else
             n = !n;
-    }
-    else if (op->flags & Ob)
+    } else if (op->flags & Ob)
         n = n != 0;
     else if ((op->flags & (Os | Ov)) == Os && n && !s)
         error(3, "-%c: option argument expected", OPT(op->flags));
     if (!n)
         s = 0;
-    switch (OPT(op->flags))
-    {
+    switch (OPT(op->flags)) {
     case OPT(OPT_believe):
         if (state.compile < COMPILED)
             state.believe = n;
@@ -1012,25 +978,20 @@ setop(Option_t *op, int n, char *s, int type)
         else if (*s == *(state.corrupt = "ignore")
                  && (!*(s + 1) || !strcmp(s, state.corrupt)))
             ;
-        else
-        {
+        else {
             state.corrupt = 0;
             error(2, "%s: invalid corrupt action", s);
         }
         return;
     case OPT(OPT_global):
-        if (!s)
-        {
-            if (n)
-            {
+        if (!s) {
+            if (n) {
                 state.pushed = 1;
                 state.push_global = state.global;
                 state.global = 1;
                 state.push_user = state.user;
                 state.user = 0;
-            }
-            else if (state.pushed)
-            {
+            } else if (state.pushed) {
                 state.pushed = 0;
                 state.global = state.push_global;
                 state.user = state.push_user;
@@ -1047,8 +1008,7 @@ setop(Option_t *op, int n, char *s, int type)
         /*FALLTHROUGH*/
     case OPT(OPT_define):
     case OPT(OPT_undef):
-        if (s)
-        {
+        if (s) {
             sfprintf(internal.tmp, "-%c%s", OPT(op->flags), s);
             if (!(r = getrule(sfstruse(internal.tmp))))
                 r = makerule(NiL);
@@ -1056,8 +1016,7 @@ setop(Option_t *op, int n, char *s, int type)
         }
         return;
     case OPT(OPT_preprocess):
-        if (!state.preprocess)
-        {
+        if (!state.preprocess) {
             state.preprocess = 1;
             if (!state.compatibility)
                 error(
@@ -1066,17 +1025,14 @@ setop(Option_t *op, int n, char *s, int type)
         }
         return;
     case OPT(OPT_errorid):
-        if (s && *s)
-        {
+        if (s && *s) {
             if (state.errorid)
                 sfprintf(internal.tmp, "%s/", state.errorid);
             sfprintf(internal.tmp, "%s", s);
             state.errorid = strdup(sfstruse(internal.tmp));
             sfprintf(internal.tmp, "%s [%s]", idname, state.errorid);
             error_info.id = strdup(sfstruse(internal.tmp));
-        }
-        else
-        {
+        } else {
             op->flags &= ~OPT_SET;
             error_info.id = idname;
         }
@@ -1089,12 +1045,10 @@ setop(Option_t *op, int n, char *s, int type)
         state.jobs = n;
         return;
     case OPT(OPT_mam):
-        if (t = s)
-        {
+        if (t = s) {
             if (t[0] == 'n' && t[1] == 'o')
                 t += 2;
-            if (streq(t, "hold"))
-            {
+            if (streq(t, "hold")) {
                 if (t == s)
                     state.mam.hold++;
                 else
@@ -1102,24 +1056,20 @@ setop(Option_t *op, int n, char *s, int type)
                 return;
             }
         }
-        if (state.mam.label != null)
-        {
+        if (state.mam.label != null) {
             if (state.mam.label)
                 free(state.mam.label);
             state.mam.label = null;
         }
-        if (state.mam.options)
-        {
+        if (state.mam.options) {
             free(state.mam.options);
             state.mam.options = 0;
         }
-        if (state.mam.root)
-        {
+        if (state.mam.root) {
             free(state.mam.root);
             state.mam.root = 0;
         }
-        if (state.mam.out)
-        {
+        if (state.mam.out) {
             if (state.mam.out != sfstdout && state.mam.out != sfstderr)
                 sfclose(state.mam.out);
             state.mam.out = 0;
@@ -1127,8 +1077,7 @@ setop(Option_t *op, int n, char *s, int type)
         state.mam.dontcare = state.mam.dynamic = state.mam.regress
         = state.mam.statix = state.mam.parent = 0;
         state.mam.port = 1;
-        if (s)
-        {
+        if (s) {
             char *o;
             char *u;
             Sfio_t *tmp;
@@ -1144,8 +1093,7 @@ setop(Option_t *op, int n, char *s, int type)
                 && (!*(s + 1) || !strcmp(s, state.mam.type)))
                 state.mam.dynamic = 1;
             else if (*s == *(state.mam.type = "regress")
-                     && (!*(s + 1) || !strcmp(s, state.mam.type)))
-            {
+                     && (!*(s + 1) || !strcmp(s, state.mam.type))) {
                 state.regress = "sync";
                 state.mam.regress = 1;
                 state.silent = 1;
@@ -1153,25 +1101,21 @@ setop(Option_t *op, int n, char *s, int type)
                     table.regress
                     = hashalloc(table.rule, HASH_name, "regress-paths", 0);
                 regressinit(state.regress);
-            }
-            else if (*s == *(state.mam.type = "static")
-                     && (!*(s + 1) || !strcmp(s, state.mam.type)))
+            } else if (*s == *(state.mam.type = "static")
+                       && (!*(s + 1) || !strcmp(s, state.mam.type)))
                 state.mam.statix = 1;
             else
                 error(
                 3,
                 "%s: invalid mam type: {dynamic,regress,static} expected",
                 s);
-            while (s = o)
-            {
+            while (s = o) {
                 if (o = strchr(s, ','))
                     *o++ = 0;
-                if (*s == 'n' && *(s + 1) == 'o')
-                {
+                if (*s == 'n' && *(s + 1) == 'o') {
                     s += 2;
                     n = 0;
-                }
-                else
+                } else
                     n = 1;
                 if (*s == *(u = "dontcare") && (!*(s + 1) || !strcmp(s, u)))
                     state.mam.dontcare = n;
@@ -1183,25 +1127,20 @@ setop(Option_t *op, int n, char *s, int type)
                     "%s: invalid mam option: [no]{dontcare,port} expected",
                     s);
             }
-            if (t)
-            {
+            if (t) {
                 s = t;
-                if (t = strchr(s, ':'))
-                {
+                if (t = strchr(s, ':')) {
                     *t++ = 0;
-                    if (isdigit(*t))
-                    {
+                    if (isdigit(*t)) {
                         while (isdigit(*t))
                             state.mam.parent
                             = state.mam.parent * 10 + *t++ - '0';
-                        if (!state.mam.regress)
-                        {
+                        if (!state.mam.regress) {
                             sfprintf(internal.tmp, "%05d ", state.pid);
                             state.mam.label = strdup(sfstruse(internal.tmp));
                         }
                     }
-                    if (*t)
-                    {
+                    if (*t) {
                         if (*t != ':')
                             error(3, "%s: mam label expected", t);
                         t++;
@@ -1209,16 +1148,13 @@ setop(Option_t *op, int n, char *s, int type)
                     if (!*t)
                         t = 0;
                 }
-            }
-            else
+            } else
                 s = null;
             if (!*s || streq(s, "-") || streq(s, "/dev/fd/1")
-                || streq(s, "/dev/stdout"))
-            {
+                || streq(s, "/dev/stdout")) {
                 s = "/dev/stdout";
                 state.mam.out = sfstdout;
-            }
-            else if (streq(s, "/dev/fd/2") || streq(s, "/dev/stderr"))
+            } else if (streq(s, "/dev/fd/2") || streq(s, "/dev/stderr"))
                 state.mam.out = sfstderr;
             else if (!(state.mam.out
                        = sfopen(NiL, s, state.mam.parent ? "ae" : "we")))
@@ -1236,8 +1172,7 @@ setop(Option_t *op, int n, char *s, int type)
             if (*s != '/')
                 sfprintf(internal.tmp, "%s/", internal.pwd);
             sfprintf(internal.tmp, "%s:%d", s, state.pid);
-            if (t)
-            {
+            if (t) {
                 sfprintf(internal.nam, "$(\"%s\":P=A)", t);
                 expand(tmp, sfstruse(internal.nam));
                 state.mam.root = strdup(sfstruse(tmp));
@@ -1250,8 +1185,7 @@ setop(Option_t *op, int n, char *s, int type)
         return;
     case OPT(OPT_option):
         s = strdup(s);
-        while (*s)
-        {
+        while (*s) {
             char *name;
             char *func;
             char *desc;
@@ -1262,33 +1196,26 @@ setop(Option_t *op, int n, char *s, int type)
             char buf[16];
 
             sep = *s;
-            if (isalpha(sep))
-            {
+            if (isalpha(sep)) {
                 n = sep | Ob;
                 sep = *++s;
-            }
-            else
-            {
+            } else {
                 n = '?' | Of | Ob;
                 if (sep == OPT_NON)
                     sep = *++s;
             }
             app = (sep == ':') ? ';' : ':';
             s++;
-            if (!(name = field(&s, sep, app, 1)))
-            {
+            if (!(name = field(&s, sep, app, 1))) {
                 if (n & Of)
                     error(2, "option flag and name omitted");
                 else
                     error(2, "-%c: option name omitted", OPT(n));
                 break;
             }
-            if (t = field(&s, sep, app, 1))
-            {
-                for (;;)
-                {
-                    switch (*t++)
-                    {
+            if (t = field(&s, sep, app, 1)) {
+                for (;;) {
+                    switch (*t++) {
                     case 0:
                         break;
                     case 'a':
@@ -1326,14 +1253,12 @@ setop(Option_t *op, int n, char *s, int type)
             func = field(&s, sep, app, 1);
             desc = field(&s, sep, app, 0);
             args = field(&s, sep, app, 0);
-            if (!(n & Of))
-            {
+            if (!(n & Of)) {
                 for (nop = &options[0]; nop < &options[elementsof(options)];
                      nop++)
                     if (OPT(nop->flags) == OPT(n))
                         break;
-                if (nop < &options[elementsof(options)])
-                {
+                if (nop < &options[elementsof(options)]) {
                     error(
                     2, "--%s: -%c conflicts with --%s", s, OPT(n), nop->name);
                     return;
@@ -1342,11 +1267,9 @@ setop(Option_t *op, int n, char *s, int type)
                 buf[1] = OPT(n);
                 buf[2] = 0;
                 nop = getoption(buf);
-            }
-            else
+            } else
                 nop = 0;
-            if (nop)
-            {
+            if (nop) {
                 if (n & On)
                     *(( int * )nop->value) = *(( unsigned char * )nop->value);
                 else if (n & Os)
@@ -1360,8 +1283,7 @@ setop(Option_t *op, int n, char *s, int type)
                     = catrule(".OPTION.", nop->name, ".LIST.", 1);
                 if (!desc)
                     desc = "option.";
-                if (*desc != '(')
-                {
+                if (*desc != '(') {
                     sfputc(internal.tmp, '(');
                     if ((t = parsefile()) && *t)
                         edit(internal.tmp, t, DELETE, KEEP, DELETE);
@@ -1376,8 +1298,7 @@ setop(Option_t *op, int n, char *s, int type)
                 nop->description = desc;
                 if (!args && (nop->flags & (On | Os)))
                     args = (nop->flags & On) ? "number" : "string";
-                if (args && (nop->flags & Ob))
-                {
+                if (args && (nop->flags & Ob)) {
                     nop->flags &= ~Ob;
                     nop->flags |= Os;
                 }
@@ -1386,9 +1307,7 @@ setop(Option_t *op, int n, char *s, int type)
                 genusage(nop, opt.usageindex++, 1);
                 if (nop->set && (nop->flags & OPT_SET))
                     readonly = 1;
-            }
-            else if (!(nop = getoption(name)))
-            {
+            } else if (!(nop = getoption(name))) {
                 nop = newof(0, Option_t, 1, sizeof(char *));
                 nop->value = ( char * )(nop + 1);
                 nop->flags = n | OPT_EXTERNAL;
@@ -1400,15 +1319,12 @@ setop(Option_t *op, int n, char *s, int type)
                     opt.head = nop;
                 opt.tail = nop;
                 goto set_insert;
-            }
-            else if (!(nop->flags & OPT_EXTERNAL))
+            } else if (!(nop->flags & OPT_EXTERNAL))
                 error(1, "--%s is an internal option", nop->name);
-            else
-            {
-                if (nop->flags & Of)
-                {
-                    if ((n & (Ob | On | Os)) != (nop->flags & (Ob | On | Os)))
-                    {
+            else {
+                if (nop->flags & Of) {
+                    if ((n & (Ob | On | Os))
+                        != (nop->flags & (Ob | On | Os))) {
                         if (n & Os)
                             *(( char ** )nop->value) = 0;
                         else if ((n & On) && (nop->flags & Ob))
@@ -1419,8 +1335,7 @@ setop(Option_t *op, int n, char *s, int type)
                             = *(( int * )nop->value) != 0;
                     }
                     nop->flags = n;
-                }
-                else if (OPT(nop->flags) != OPT(n))
+                } else if (OPT(nop->flags) != OPT(n))
                     error(1,
                           "--%s: option flag -%c conflicts with -%c",
                           nop->name,
@@ -1452,8 +1367,7 @@ setop(Option_t *op, int n, char *s, int type)
             state.exec = 0;
         return;
     case OPT(OPT_regress):
-        if (n)
-        {
+        if (n) {
             if (!s)
                 s = "-";
             if ((*s == *(state.regress = "message") || *s == '-')
@@ -1462,15 +1376,13 @@ setop(Option_t *op, int n, char *s, int type)
             else if (*s == *(state.regress = "sync")
                      && (!*(s + 1) || !strcmp(s, state.regress)))
                 ;
-            else
-            {
+            else {
                 state.regress = 0;
                 error(2, "%s: invalid regress action", s);
             }
             if (state.regress)
                 regressinit(state.regress);
-        }
-        else
+        } else
             state.regress = 0;
         return;
     case OPT(OPT_reread):
@@ -1478,12 +1390,10 @@ setop(Option_t *op, int n, char *s, int type)
             state.forceread = 1;
         return;
     case OPT(OPT_silent):
-        if (state.silent = n)
-        {
+        if (state.silent = n) {
             if (!error_info.trace)
                 error_info.trace = 2;
-        }
-        else if (error_info.trace > 0)
+        } else if (error_info.trace > 0)
             error_info.trace = 0;
         return;
     case OPT(OPT_targetprefix):
@@ -1492,10 +1402,8 @@ setop(Option_t *op, int n, char *s, int type)
         else if (s)
             s = strdup(s);
         if (state.targetprefix = s)
-            for (;;)
-            {
-                switch (*s++)
-                {
+            for (;;) {
+                switch (*s++) {
                 case 0:
                     break;
                 case '%':
@@ -1526,15 +1434,13 @@ setop(Option_t *op, int n, char *s, int type)
     case OPT(OPT_writeobject):
         if (!n)
             s = 0;
-        else if (state.makefile)
-        {
+        else if (state.makefile) {
             error(1,
                   "%s: object file name cannot change after %s read",
                   op->name,
                   state.makefile);
             return;
-        }
-        else if (!s)
+        } else if (!s)
             s = "-";
         else
             s = strdup(s);
@@ -1548,19 +1454,15 @@ setop(Option_t *op, int n, char *s, int type)
         else
             s = strdup(s);
         state.writestate = s;
-        if (state.statefile)
-        {
+        if (state.statefile) {
             free(state.statefile);
             state.statefile = 0;
         }
         return;
     }
-    if (op->value)
-    {
-        if (op->flags & Ob)
-        {
-            switch (type)
-            {
+    if (op->value) {
+        if (op->flags & Ob) {
+            switch (type) {
             case '^':
                 *(( unsigned char * )op->value) ^= n;
                 break;
@@ -1568,11 +1470,8 @@ setop(Option_t *op, int n, char *s, int type)
                 *(( unsigned char * )op->value) = n != 0;
                 break;
             }
-        }
-        else if (op->flags & On)
-        {
-            switch (type)
-            {
+        } else if (op->flags & On) {
+            switch (type) {
             case '+':
                 *(( int * )op->value) += n;
                 break;
@@ -1592,19 +1491,14 @@ setop(Option_t *op, int n, char *s, int type)
                 *(( int * )op->value) = n;
                 break;
             }
-        }
-        else if (op->flags & Os)
-        {
-            if (op->flags & Oa)
-            {
-                if (s)
-                {
+        } else if (op->flags & Os) {
+            if (op->flags & Oa) {
+                if (s) {
                     /*
                      * s is a ':' list
                      */
 
-                    for (;;)
-                    {
+                    for (;;) {
                         if (t = strchr(s, ':'))
                             *t = 0;
                         addprereq((*( Rule_t ** )op->value),
@@ -1615,30 +1509,23 @@ setop(Option_t *op, int n, char *s, int type)
                         *t++ = ':';
                         s = t;
                     }
-                }
-                else
-                {
+                } else {
                     freelist((*( Rule_t ** )op->value)->prereqs);
                     (*( Rule_t ** )op->value)->prereqs = 0;
                 }
-            }
-            else
+            } else
                 *(( char ** )op->value) = s ? strdup(s) : 0;
         }
     }
     if (op->set)
         setcall(op, readonly);
-    if ((op->flags & Op) && !state.reading && !state.user)
-    {
-        if ((op->flags & Os) && s)
-        {
+    if ((op->flags & Op) && !state.reading && !state.user) {
+        if ((op->flags & Os) && s) {
             sfprintf(internal.tmp, "--%s=%s", op->name, s);
             if (!(r = getrule(sfstruse(internal.tmp))))
                 r = makerule(NiL);
             addprereq(internal.preprocess, r, PREREQ_APPEND);
-        }
-        else if ((op->flags & (Ob | On)) && n)
-        {
+        } else if ((op->flags & (Ob | On)) && n) {
             if (!n)
                 sfprintf(internal.tmp, "--no%s", op->name);
             else if (n != 1)
@@ -1671,8 +1558,7 @@ genop(Sfio_t *sp, Option_t *op, int setting, int flag)
     char *v;
     List_t *p;
 
-    switch (setting)
-    {
+    switch (setting) {
     case '?':
         if (op->flags & OPT_SET)
             sfprintf(sp, "1");
@@ -1686,8 +1572,7 @@ genop(Sfio_t *sp, Option_t *op, int setting, int flag)
         flag &= ~Oi;
         break;
     }
-    switch (op->flags & (Ob | On | Os))
-    {
+    switch (op->flags & (Ob | On | Os)) {
     case Ob:
         if (op->value)
             n = *(( unsigned char * )op->value);
@@ -1697,8 +1582,7 @@ genop(Sfio_t *sp, Option_t *op, int setting, int flag)
             n = !n;
         if ((flag & Of) && (op->flags & Oo))
             n = !n;
-        switch (setting)
-        {
+        switch (setting) {
         case 0:
             if (!n)
                 return;
@@ -1709,13 +1593,10 @@ genop(Sfio_t *sp, Option_t *op, int setting, int flag)
         default:
             if (op->flags & OPT_DEFAULT)
                 sfprintf(sp, "--%s:=", op->name);
-            else if (n)
-            {
+            else if (n) {
                 sfprintf(sp, "--%s", op->name);
                 return;
-            }
-            else
-            {
+            } else {
                 sfprintf(sp, "--no%s", op->name);
                 return;
             }
@@ -1732,8 +1613,7 @@ genop(Sfio_t *sp, Option_t *op, int setting, int flag)
             n = -n;
         if (flag & Oi)
             n = !n;
-        switch (setting)
-        {
+        switch (setting) {
         case 0:
             if (!n)
                 return;
@@ -1746,8 +1626,7 @@ genop(Sfio_t *sp, Option_t *op, int setting, int flag)
                 sfprintf(sp, "--%s:=", op->name);
             else if (n)
                 sfprintf(sp, "--%s=", op->name);
-            else
-            {
+            else {
                 sfprintf(sp, "--no%s", op->name);
                 return;
             }
@@ -1756,11 +1635,9 @@ genop(Sfio_t *sp, Option_t *op, int setting, int flag)
         sfprintf(sp, (op->flags & Oa) ? "0x%08lx" : "%ld", n);
         break;
     case Os:
-        if ((op->flags & Oa) && op->value && !(flag & Oi))
-        {
+        if ((op->flags & Oa) && op->value && !(flag & Oi)) {
             p = (*( Rule_t ** )op->value)->prereqs;
-            switch (setting)
-            {
+            switch (setting) {
             case 0:
                 if (!p)
                     return;
@@ -1773,30 +1650,25 @@ genop(Sfio_t *sp, Option_t *op, int setting, int flag)
                     sfprintf(sp, "--%s:=", op->name);
                 else if (p)
                     sfprintf(sp, "--%s=", op->name);
-                else
-                {
+                else {
                     sfprintf(sp, "--no%s", op->name);
                     return;
                 }
                 break;
             }
             if (p)
-                for (;;)
-                {
+                for (;;) {
                     shquote(sp, fmtesc(p->rule->name));
                     if (!(p = p->next))
                         break;
                     sfputc(sp, ':');
                 }
-        }
-        else
-        {
+        } else {
             if (op->value && !(flag & Oi))
                 v = *(( char ** )op->value);
             else
                 v = 0;
-            switch (setting)
-            {
+            switch (setting) {
             case 0:
             case '#':
                 if (!v)
@@ -1810,15 +1682,13 @@ genop(Sfio_t *sp, Option_t *op, int setting, int flag)
                     sfprintf(sp, "--%s:=", op->name);
                 else if (v)
                     sfprintf(sp, "--%s=", op->name);
-                else
-                {
+                else {
                     sfprintf(sp, "--no%s", op->name);
                     return;
                 }
                 break;
             }
-            if (v)
-            {
+            if (v) {
                 if (setting)
                     shquote(sp, fmtesc(v));
                 else
@@ -1851,11 +1721,9 @@ optcheck(int must)
     Oplist_t *x;
     int errors;
 
-    if (must)
-    {
+    if (must) {
         errors = error_info.errors;
-        while (x = opt.delayed)
-        {
+        while (x = opt.delayed) {
             opt.delayed = x->next;
             if (*x->option)
                 set(x->option, 1, NiL);
@@ -1863,8 +1731,7 @@ optcheck(int must)
         }
         if (error_info.errors != errors)
             finish(2);
-    }
-    else
+    } else
         for (x = opt.delayed; x; x = x->next)
             if (!set(x->option, 0, NiL))
                 *x->option = 0;
@@ -1895,8 +1762,7 @@ listops(Sfio_t *sp, int setting)
     sep = 0;
     sc = ' ';
     clear = 0;
-    switch (setting)
-    {
+    switch (setting) {
     case '-':
         mask = 0;
         test = 0;
@@ -1922,20 +1788,17 @@ listops(Sfio_t *sp, int setting)
         test = OPT_COMPILE;
         clear = ~OPT_COMPILE;
         for (op = opt.head; op; op = op->next)
-            if (op->flags & OPT_DECLARE)
-            {
+            if (op->flags & OPT_DECLARE) {
                 op->flags &= ~OPT_DECLARE;
                 if (sep)
                     sfputc(sp, ':');
-                else
-                {
+                else {
                     sep = 1;
                     sfprintf(sp, "--%s=", optflag(OPT_option)->name);
                 }
                 declare(sp, op);
             }
-        while (x = opt.hidden)
-        {
+        while (x = opt.hidden) {
             opt.hidden = x->next;
             if (sep)
                 sfputc(sp, sc);
@@ -1952,8 +1815,7 @@ listops(Sfio_t *sp, int setting)
         break;
     }
     for (op = opt.head; op; op = op->next)
-        if ((op->flags & mask) == test)
-        {
+        if ((op->flags & mask) == test) {
             if (sep)
                 sfputc(sp, sc);
             else
@@ -1996,16 +1858,12 @@ optset(int i, char *v, Sfio_t *scope)
     Oplist_t *x;
     char buf[16];
 
-    if (i > 0)
-    {
-        if (state.readonly && !state.interpreter)
-        {
-            if (strchr(v, ' ') || strchr(v, '\t'))
-            {
+    if (i > 0) {
+        if (state.readonly && !state.interpreter) {
+            if (strchr(v, ' ') || strchr(v, '\t')) {
                 while (*v && *v != '=')
                     sfputc(internal.tmp, *v++);
-                if (*v)
-                {
+                if (*v) {
                     sfputc(internal.tmp, *v++);
                     if (!strchr(v, '\"'))
                         sfprintf(internal.tmp, "\"%s\"", v);
@@ -2014,8 +1872,7 @@ optset(int i, char *v, Sfio_t *scope)
                 }
                 n = sfstrtell(internal.tmp);
                 v = sfstruse(internal.tmp);
-            }
-            else
+            } else
                 n = strlen(v);
             x = newof(0, Oplist_t, 1, n + 1);
             x->option = strcpy(( char * )(x + 1), v);
@@ -2023,21 +1880,17 @@ optset(int i, char *v, Sfio_t *scope)
                 opt.lastdelayed = opt.lastdelayed->next = x;
             else
                 opt.delayed = opt.lastdelayed = x;
-        }
-        else
+        } else
             error((i == '?' && opt_info.option[0] == '-'
                    && opt_info.option[1] != '?')
                   ? (ERROR_USAGE | (state.interpreter ? 2 : 4))
                   : 2,
                   "%s",
                   opt_info.arg);
-    }
-    else
-    {
+    } else {
         if ((i = -OPT_OFFSET - i) < elementsof(options))
             op = &options[i];
-        else
-        {
+        else {
             sfsprintf(buf, sizeof(buf), "-%d", i);
             op = getoption(buf);
         }
@@ -2069,16 +1922,13 @@ set(char *s, int must, Sfio_t *scope)
 
     r = 0;
     info = opt_info;
-    while (i = optstr(s, sfstrbase(opt.usage)))
-    {
-        if (i > 0 && !must)
-        {
+    while (i = optstr(s, sfstrbase(opt.usage))) {
+        if (i > 0 && !must) {
             r = -1;
             break;
         }
         s += opt_info.offset;
-        if (!must)
-        {
+        if (!must) {
             oreadonly = state.readonly;
             state.readonly = 1;
         }
@@ -2126,46 +1976,36 @@ again:
         optset(i, argv[opt_info.index - (opt_info.offset == 0)], NiL);
     if (!done && streq(argv[opt_info.index - 1], "--"))
         done = 1;
-    for (i = opt_info.index; i < argc; i++)
-    {
+    for (i = opt_info.index; i < argc; i++) {
         s = argv[i];
         while (isspace(*s))
             s++;
-        if (!done && (*s == '-' || *s == '+') && *(s + 1))
-        {
+        if (!done && (*s == '-' || *s == '+') && *(s + 1)) {
             opt_info.index = i;
             opt_info.offset = 0;
             goto again;
         }
-        if (*s)
-        {
+        if (*s) {
             for (e = s; c = *s; s++)
-                if (c == ',')
-                {
+                if (c == ',') {
                     s = null;
                     break;
-                }
-                else if (istype(c, C_TERMINAL) && c != '+' && c != '&')
-                {
+                } else if (istype(c, C_TERMINAL) && c != '+' && c != '&') {
                     while (isspace(*s))
                         s++;
-                    if (*s == '=' || *(s + 1) == '=')
-                    {
+                    if (*s == '=' || *(s + 1) == '=') {
                         argf[i] |= ARG_ASSIGN;
                         state.reading = 1;
                         parse(NiL, e, "command line assignment", NiL);
                         state.reading = 0;
-                    }
-                    else
-                    {
+                    } else {
                         argf[i] |= ARG_SCRIPT;
                         if (!args)
                             args = i;
                     }
                     break;
                 }
-            if (!*s)
-            {
+            if (!*s) {
                 argf[i] |= ARG_TARGET;
                 if (!args)
                     args = i;
@@ -2196,8 +2036,7 @@ punt(int old)
         error(PANIC,
               "makefile prerequisites cause unbounded make exec recursion");
     vec = sfstropen();
-    if (old)
-    {
+    if (old) {
         expand(internal.tmp, getval(external.old, VAL_PRIMARY));
         putptr(vec, strdup(sfstruse(internal.tmp)));
 
@@ -2252,8 +2091,7 @@ punt(int old)
          * mam arguments -- assume oldmake knows mam
          */
 
-        if (state.mam.options)
-        {
+        if (state.mam.options) {
             sfputc(internal.tmp, '-');
             if (state.never)
                 sfputc(internal.tmp, 'N');
@@ -2270,14 +2108,11 @@ punt(int old)
          * makefile arguments
          */
 
-        if (!(p = internal.makefiles->prereqs))
-        {
+        if (!(p = internal.makefiles->prereqs)) {
             putptr(vec, "-f");
             putptr(vec, state.makefile);
-        }
-        else
-            for (; p; p = p->next)
-            {
+        } else
+            for (; p; p = p->next) {
                 putptr(vec, "-f");
                 putptr(vec, p->rule->name);
             }
@@ -2289,8 +2124,7 @@ punt(int old)
         for (i = 1; i < state.argc; i++)
             if (state.argf[i] & (ARG_ASSIGN | ARG_TARGET))
                 putptr(vec, state.argv[i]);
-        if (!state.silent)
-        {
+        if (!state.silent) {
             /*
              * echo the exec action external.old style
              */
@@ -2304,9 +2138,7 @@ punt(int old)
                 sfprintf(sfstderr, "%s ", *av++);
             sfprintf(sfstderr, "\n");
         }
-    }
-    else
-    {
+    } else {
         /*
          * copy the original argv adding OPT_reread
          * and possibly OPT_preprocess

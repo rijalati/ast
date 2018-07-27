@@ -124,15 +124,12 @@ char **argv;
     else
         cmd = argv[0];
 
-    if (strcmp(cmd, CMD_MASTER))
-    {
+    if (strcmp(cmd, CMD_MASTER)) {
         if (*cmd == 'i')
             cmd++;
         len = strlen(cmd);
-        for (i = 0; i < CMD_MAX; i++)
-        {
-            if (cmdeq(cmd, i, len))
-            {
+        for (i = 0; i < CMD_MAX; i++) {
+            if (cmdeq(cmd, i, len)) {
                 argv[0] = cmd;
                 ret = (*COMMAND[i].main)(argc, argv);
                 exit(ret);
@@ -142,8 +139,7 @@ char **argv;
     error_info.id = cmd;
 
     while (n = optget(argv, "hxs:[cs_server]"))
-        switch (n)
-        {
+        switch (n) {
         case 'h':
             elist[0] = argv[0];
             im_help(1, elist);
@@ -152,8 +148,7 @@ char **argv;
             s = opt_info.arg;
             if ((fd = csopen(s, CS_OPEN_READ)) < 0)
                 printf("cannot connect cs server %s\n", s);
-            else
-            {
+            else {
                 istate.cs_svc = strdup(s);
                 istate.fd = fd;
             }
@@ -179,20 +174,16 @@ char **argv;
     }
 
     PROMPT();
-    while (s = gets(buf))
-    {
-        if (*s == '\0')
-        {
+    while (s = gets(buf)) {
+        if (*s == '\0') {
             PROMPT();
             continue;
         }
         nlist = mkargv(s, elist, 20);
         cmd = elist[0];
         len = strlen(cmd);
-        for (i = 0; i < CMD_MAX; i++)
-        {
-            if (cmdeq(cmd, i, len))
-            {
+        for (i = 0; i < CMD_MAX; i++) {
+            if (cmdeq(cmd, i, len)) {
                 ( void )(*COMMAND[i].main)(nlist, elist);
                 break;
             }
@@ -209,8 +200,7 @@ int n;
 {
     int i;
 
-    for (i = 0; i < n && *s;)
-    {
+    for (i = 0; i < n && *s;) {
         while (*s && isspace(*s))
             s++;
         if (!*s)
@@ -240,10 +230,8 @@ char **argv;
     char *s;
     int len;
 
-    if (argc == 1)
-    {
-        for (i = 0; i < CMD_MAX; i++)
-        {
+    if (argc == 1) {
+        for (i = 0; i < CMD_MAX; i++) {
             if (COMMAND[i].help != NULL)
                 ( void )(*COMMAND[i].help)(COMMAND[i].name);
             else
@@ -252,14 +240,11 @@ char **argv;
         return (0);
     }
 
-    while ((--argc) > 0)
-    {
+    while ((--argc) > 0) {
         s = *(++argv);
         len = strlen(s);
-        for (i = 0; i < CMD_MAX; i++)
-        {
-            if (cmdeq(s, i, len))
-            {
+        for (i = 0; i < CMD_MAX; i++) {
+            if (cmdeq(s, i, len)) {
                 if (COMMAND[i].help != NULL)
                     ( void )(*COMMAND[i].help)(COMMAND[i].name);
                 else
@@ -290,8 +275,7 @@ char c;
 {
     int i;
 
-    for (i = 0; i < n && *s;)
-    {
+    for (i = 0; i < n && *s;) {
         w[i++] = s;
         while (*s && *s != c)
             s++;
@@ -338,17 +322,14 @@ char **argv;
 
     s = *argv;
     s++;
-    if (*s != '\0')
-    {
+    if (*s != '\0') {
         len = sfsprintf(buf, 2048, "%s ", s);
         s = buf + len;
-    }
-    else
+    } else
         s = buf;
     argc--;
     argv++;
-    if (argc > 0)
-    {
+    if (argc > 0) {
         argv[argc] = NULL;
         arr2str(s, argv, ' ');
     }
@@ -363,8 +344,7 @@ char c;
     int i;
     char *t;
 
-    for (i = 0; arr[i]; i++)
-    {
+    for (i = 0; arr[i]; i++) {
         if (i)
             *s++ = c;
         for (t = arr[i]; *t; t++, s++)

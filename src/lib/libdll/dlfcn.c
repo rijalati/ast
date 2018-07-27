@@ -92,8 +92,7 @@ dlsym(void *dll, const char *name)
     long addr;
 
     handle = dll == ( void * )&all ? ( shl_t )0 : ( shl_t )dll;
-    if (shl_findsym(&handle, name, TYPE_UNDEFINED, &addr))
-    {
+    if (shl_findsym(&handle, name, TYPE_UNDEFINED, &addr)) {
         err = errno;
         return 0;
     }
@@ -156,8 +155,7 @@ getquery(void)
 {
     if (!ld_info)
         ld_info = malloc(ld_info_size);
-    for (;;)
-    {
+    for (;;) {
         if (!ld_info)
             return 1;
         if (!loadquery(L_GETINFO, ld_info, ld_info_size))
@@ -179,15 +177,13 @@ getinfo(void *module)
     struct ld_info *info = ld_info;
     int n = 1;
 
-    if (!ld_info || module != last_module)
-    {
+    if (!ld_info || module != last_module) {
         last_module = module;
         if (getquery())
             return 0;
         info = ld_info;
     }
-    while (n)
-    {
+    while (n) {
         if (( char * )(info->ldinfo_dataorg) <= ( char * )module
             && ( char * )module <= (( char * )(info->ldinfo_dataorg)
                                     + ( unsigned )(info->ldinfo_datasize)))
@@ -220,8 +216,7 @@ getloc(struct hdr *hdr, char *data, char *name)
     = ( void * )(( char * )hdr + hdr->s[hdr->a.o_snloader - 1].s_scnptr);
     ldsym = ( void * )(ldhdr + 1);
     /* search the exports symbols */
-    for (i = 0; i < ldhdr->l_nsyms; ldsym++, i++)
-    {
+    for (i = 0; i < ldhdr->l_nsyms; ldsym++, i++) {
         char *symname, symbuf[9];
         char *loc;
         /* the symbol name representation is a nuisance since
@@ -229,13 +224,11 @@ getloc(struct hdr *hdr, char *data, char *name)
          * not be null terminated. This code works around
          * that by brute force
          */
-        if (ldsym->l_zeroes)
-        {
+        if (ldsym->l_zeroes) {
             symname = symbuf;
             memcpy(symbuf, ldsym->l_name, 8);
             symbuf[8] = 0;
-        }
-        else
+        } else
             symname
             = ( void * )(ldsym->l_offset + ( ulong )ldhdr + ldhdr->l_stoff);
         if (strcmp(symname, name))
@@ -259,8 +252,7 @@ dlsym(void *handle, const char *name)
 
     if (!(info = getinfo(handle))
         || !(addr = getloc(
-             info->ldinfo_textorg, info->ldinfo_dataorg, ( char * )name)))
-    {
+             info->ldinfo_textorg, info->ldinfo_dataorg, ( char * )name))) {
         err = errno;
         return 0;
     }
@@ -388,41 +380,33 @@ dlopen(const char *path, int mode)
 
     static int init = 0;
 
-    if (!_dyld_present())
-    {
+    if (!_dyld_present()) {
         dlmessage = e_static;
         return 0;
     }
-    if (!init)
-    {
+    if (!init) {
         init = 1;
         NSInstallLinkEditErrorHandlers(&handlers);
     }
     if (!path)
         dll = &global;
-    else if (!(dll = newof(0, Dll_t, 1, strlen(path))))
-    {
+    else if (!(dll = newof(0, Dll_t, 1, strlen(path)))) {
         dlmessage = e_space;
         return 0;
-    }
-    else
-    {
-        switch (NSCreateObjectFileImageFromFile(path, &image))
-        {
+    } else {
+        switch (NSCreateObjectFileImageFromFile(path, &image)) {
         case NSObjectFileImageSuccess:
             dll->module = NSLinkModule(
             image, path, (mode & RTLD_LAZY) ? 0 : NSLINKMODULE_OPTION_BINDNOW);
             NSDestroyObjectFileImage(image);
-            if (!dll->module)
-            {
+            if (!dll->module) {
                 free(dll);
                 return 0;
             }
             break;
         case NSObjectFileImageInappropriateFile:
             dll->image = NSAddImage(path, 0);
-            if (!dll->image)
-            {
+            if (!dll->image) {
                 free(dll);
                 return 0;
             }
@@ -442,8 +426,7 @@ dlclose(void *handle)
 {
     Dll_t *dll = ( Dll_t * )handle;
 
-    if (!dll || dll == DL_NEXT || dll->magic != DL_MAGIC)
-    {
+    if (!dll || dll == DL_NEXT || dll->magic != DL_MAGIC) {
         dlmessage = e_handle;
         return -1;
     }
@@ -459,22 +442,17 @@ lookup(Dll_t *dll, const char *name)
     unsigned long pun;
     void *address;
 
-    if (dll == DL_NEXT)
-    {
+    if (dll == DL_NEXT) {
         if (!_dyld_func_lookup(name, &pun))
             return 0;
         address = ( NSSymbol )pun;
-    }
-    else if (dll->module)
+    } else if (dll->module)
         address = NSLookupSymbolInModule(dll->module, name);
-    else if (dll->image)
-    {
+    else if (dll->image) {
         if (!NSIsSymbolNameDefinedInImage(dll->image, name))
             return 0;
         address = NSLookupSymbolInImage(dll->image, name, 0);
-    }
-    else
-    {
+    } else {
         if (!NSIsSymbolNameDefined(name))
             return 0;
         address = NSLookupAndBindSymbol(name);
@@ -493,20 +471,17 @@ dlsym(void *handle, const char *name)
 
     if (!dll
         || dll != DL_NEXT
-           && (dll->magic != DL_MAGIC || !dll->image && !dll->module))
-    {
+           && (dll->magic != DL_MAGIC || !dll->image && !dll->module)) {
         dlmessage = e_handle;
         return 0;
     }
     if (!(address = lookup(dll, name)) && name[0] != '_'
-        && strlen(name) < (sizeof(buf) - 1))
-    {
+        && strlen(name) < (sizeof(buf) - 1)) {
         buf[0] = '_';
         strcpy(buf + 1, name);
         address = lookup(dll, buf);
     }
-    if (!address)
-    {
+    if (!address) {
         dlmessage = dll == DL_NEXT ? e_cover : e_undefined;
         return 0;
     }

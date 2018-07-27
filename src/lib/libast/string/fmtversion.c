@@ -46,8 +46,7 @@ fmtversion(unsigned long v)
                   (v / 10000) % 10000,
                   (v / 100) % 100,
                   v % 100);
-    else
-    {
+    else {
         if (n = (v >> 24) & 0xff)
             cur += sfsprintf(cur, end - cur, "%d.", n);
         if (n = (v >> 16) & 0xff)

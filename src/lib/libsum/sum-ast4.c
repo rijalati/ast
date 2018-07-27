@@ -70,8 +70,7 @@ ast4_open(const Method_t *method, const char *name)
 {
     Ast4_t *p;
 
-    if (p = newof(0, Ast4_t, 1, 0))
-    {
+    if (p = newof(0, Ast4_t, 1, 0)) {
         p->method = ( Method_t * )method;
         p->name = name;
     }
@@ -86,8 +85,7 @@ ast4_block(Sum_t *p, const void *s, size_t n)
     unsigned char *e = b + n;
     int c;
 
-    while (b < e)
-    {
+    while (b < e) {
         c = *b++;
         a->sum0 = a->sum0 * 0x63c63cd9 + 0x9c39c33d + c;
         a->sum1 = a->sum1 * 0x00000011 + 0x00017cfb + c;

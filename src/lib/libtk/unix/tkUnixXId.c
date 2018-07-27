@@ -121,15 +121,12 @@ static XID AllocXId(display) Display *display; /* Display for which to
      */
 
     stackPtr = dispPtr->idStackPtr;
-    if (stackPtr != NULL)
-    {
-        while (stackPtr->numUsed == 0)
-        {
+    if (stackPtr != NULL) {
+        while (stackPtr->numUsed == 0) {
             dispPtr->idStackPtr = stackPtr->nextPtr;
             ckfree(( char * )stackPtr);
             stackPtr = dispPtr->idStackPtr;
-            if (stackPtr == NULL)
-            {
+            if (stackPtr == NULL) {
                 goto defAlloc;
             }
         }
@@ -183,8 +180,7 @@ XID xid; /* Identifier that is no longer
      */
 
     stackPtr = dispPtr->idStackPtr;
-    if ((stackPtr == NULL) || (stackPtr->numUsed >= IDS_PER_STACK))
-    {
+    if ((stackPtr == NULL) || (stackPtr->numUsed >= IDS_PER_STACK)) {
         stackPtr = ( TkIdStack * )ckalloc(sizeof(TkIdStack));
         stackPtr->numUsed = 0;
         stackPtr->dispPtr = dispPtr;
@@ -269,8 +265,7 @@ Window w; /* X identifier for window on dispPtr. */
      */
 
     stackPtr = dispPtr->windowStackPtr;
-    if ((stackPtr == NULL) || (stackPtr->numUsed >= IDS_PER_STACK))
-    {
+    if ((stackPtr == NULL) || (stackPtr->numUsed >= IDS_PER_STACK)) {
         stackPtr = ( TkIdStack * )ckalloc(sizeof(TkIdStack));
         stackPtr->numUsed = 0;
         stackPtr->dispPtr = dispPtr;
@@ -290,8 +285,7 @@ Window w; /* X identifier for window on dispPtr. */
      * scheduled.
      */
 
-    if (!dispPtr->idCleanupScheduled)
-    {
+    if (!dispPtr->idCleanupScheduled) {
         dispPtr->idCleanupScheduled = 1;
         Tcl_CreateTimerHandler(100, WindowIdCleanup, ( ClientData * )dispPtr);
     }
@@ -338,14 +332,12 @@ ClientData clientData; /* Pointer to TkDisplay for display */
      *	   the procedure gets invoked.
      */
 
-    if (dispPtr->destroyCount > 0)
-    {
+    if (dispPtr->destroyCount > 0) {
         goto tryAgain;
     }
     delta = LastKnownRequestProcessed(dispPtr->display)
             - dispPtr->lastDestroyRequest;
-    if (delta < 0)
-    {
+    if (delta < 0) {
         XSync(dispPtr->display, False);
     }
     anyEvents = 0;
@@ -353,8 +345,7 @@ ClientData clientData; /* Pointer to TkDisplay for display */
     CheckRestrictProc, ( ClientData )&anyEvents, &oldData);
     Tcl_DoOneEvent(TCL_DONT_WAIT | TCL_WINDOW_EVENTS);
     Tk_RestrictEvents(oldProc, oldData, &oldData);
-    if (anyEvents)
-    {
+    if (anyEvents) {
         goto tryAgain;
     }
 
@@ -363,8 +354,7 @@ ClientData clientData; /* Pointer to TkDisplay for display */
      * more (see comments for TkFreeWindowId).  Schedule the final freeing.
      */
 
-    if (dispPtr->windowStackPtr != NULL)
-    {
+    if (dispPtr->windowStackPtr != NULL) {
         Tcl_CreateTimerHandler(
         5000, WindowIdCleanup2, ( ClientData )dispPtr->windowStackPtr);
         dispPtr->windowStackPtr = NULL;
@@ -405,8 +395,7 @@ ClientData clientData; /* Pointer to TkIdStack list. */
     TkIdStack *lastPtr;
 
     lastPtr = stackPtr;
-    while (lastPtr->nextPtr != NULL)
-    {
+    while (lastPtr->nextPtr != NULL) {
         lastPtr = lastPtr->nextPtr;
     }
     lastPtr->nextPtr = stackPtr->dispPtr->idStackPtr;

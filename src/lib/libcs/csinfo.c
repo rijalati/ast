@@ -44,15 +44,14 @@ csinfo(Cs_t *state, const char *file, int *line)
         sp = tokline(file, SF_STRING, line);
     else if (!strchr(file, '/') || stat(file, &st) || S_ISDIR(st.st_mode)
              || !(sp = tokline(file, SF_READ, line)))
-        for (n = 0; n <= 1; n++)
-        {
+        for (n = 0; n <= 1; n++) {
             sfsprintf(tmp,
                       sizeof(tmp),
                       "%s/%s",
                       n ? csvar(state, CS_VAR_SHARE, 0) : CS_SVC_DIR,
                       file);
-            if (pathpath(tmp, "", PATH_REGULAR | PATH_READ, buf, sizeof(buf)))
-            {
+            if (pathpath(
+                tmp, "", PATH_REGULAR | PATH_READ, buf, sizeof(buf))) {
                 sp = tokline(buf, SF_READ, line);
                 break;
             }

@@ -43,8 +43,7 @@ Sfoff_t sfsize(f) Sfio_t *f;
         && _sfmode(f, mode, 0) < 0)
         SFMTXRETURN(f, (Sfoff_t)(-1));
 
-    if (f->flags & SF_STRING)
-    {
+    if (f->flags & SF_STRING) {
         SFSTRSIZE(f);
         SFMTXRETURN(f, f->extent);
     }
@@ -53,15 +52,12 @@ Sfoff_t sfsize(f) Sfio_t *f;
 
     s = f->here;
 
-    if (f->extent >= 0)
-    {
-        if (f->flags & (SF_SHARE | SF_APPENDWR))
-        {
+    if (f->extent >= 0) {
+        if (f->flags & (SF_SHARE | SF_APPENDWR)) {
             for (disc = f->disc; disc; disc = disc->disc)
                 if (disc->seekf)
                     break;
-            if (!_sys_stat || disc)
-            {
+            if (!_sys_stat || disc) {
                 Sfoff_t e;
                 if ((e = SFSK(f, 0, SEEK_END, disc)) >= 0)
                     f->extent = e;
@@ -69,8 +65,7 @@ Sfoff_t sfsize(f) Sfio_t *f;
                     f->here = SFSK(f, ( Sfoff_t )0, SEEK_CUR, disc);
             }
 #if _sys_stat
-            else
-            {
+            else {
                 sfstat_t st;
                 if (sysfstatf(f->file, &st) < 0)
                     f->extent = -1;
@@ -84,11 +79,10 @@ Sfoff_t sfsize(f) Sfio_t *f;
             f->here = SFSK(f, ( Sfoff_t )0, SEEK_CUR, f->disc);
     }
 
-    if (f->here != s && (f->mode & SF_READ))
-    { /* buffered data is known to be invalid */
+    if (f->here != s
+        && (f->mode & SF_READ)) { /* buffered data is known to be invalid */
 #if _mmap_worthy
-        if ((f->bits & SF_MMAP) && f->data)
-        {
+        if ((f->bits & SF_MMAP) && f->data) {
             SFMUNMAP(f, f->data, f->endb - f->data);
             f->data = NIL(uchar *);
         }
@@ -101,12 +95,10 @@ Sfoff_t sfsize(f) Sfio_t *f;
     else if (f->extent < f->here)
         f->extent = f->here;
 
-    if ((s = f->extent) >= 0)
-    {
+    if ((s = f->extent) >= 0) {
         if (f->flags & SF_APPENDWR)
             s += (f->next - f->data);
-        else if (f->mode & SF_WRITE)
-        {
+        else if (f->mode & SF_WRITE) {
             s = f->here + (f->next - f->data);
             if (s < f->extent)
                 s = f->extent;

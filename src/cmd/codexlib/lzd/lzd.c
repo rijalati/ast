@@ -71,8 +71,7 @@ fill(State_t *state)
                   state->buf,
                   sizeof(state->buf),
                   &state->codex->sfdisc))
-        <= 0)
-    {
+        <= 0) {
         state->eof = 1;
         return 0;
     }
@@ -85,8 +84,7 @@ getcode(State_t *state)
 {
     unsigned short x;
 
-    while (state->nbits > state->bitcount)
-    {
+    while (state->nbits > state->bitcount) {
         state->bitbuf |= GETCHAR(state) << state->bitcount;
         state->bitcount += 8;
     }
@@ -119,8 +117,7 @@ addcode(State_t *state, int suf_code, int old_code)
 {
     state->table[state->free_code].z_ch = suf_code;
     state->table[state->free_code].next = old_code;
-    if (++state->free_code >= state->max_code && state->nbits < MAXBITS)
-    {
+    if (++state->free_code >= state->max_code && state->nbits < MAXBITS) {
         state->nbits++;
         state->bitmask <<= 1;
         state->bitmask |= 1;
@@ -133,8 +130,7 @@ lzd_open(Codex_t *p, char *const args[], Codexnum_t flags)
 {
     State_t *state;
 
-    if (!(state = newof(0, State_t, 1, 0)))
-    {
+    if (!(state = newof(0, State_t, 1, 0))) {
         if (p->disc->errorf)
             (*p->disc->errorf)(NiL, p->disc, 2, "out of space");
         return -1;
@@ -167,39 +163,30 @@ lzd_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
 
     if (state->eof)
         return state->bad;
-    if (state->cpy)
-    {
+    if (state->cpy) {
         state->cpy = 0;
-        while (state->sp != 0)
-        {
+        while (state->sp != 0) {
             *s++ = pop(state);
-            if (s >= e)
-            {
+            if (s >= e) {
                 state->cpy = 1;
                 return s - ( char * )buf;
             }
         }
     }
-    while ((c = getcode(state)) != Z_EOF)
-    {
-        if (c == CLEAR)
-        {
+    while ((c = getcode(state)) != Z_EOF) {
+        if (c == CLEAR) {
             clrcode(state);
             *s++ = state->fin_char = state->suf_code = state->old_code = c
             = getcode(state);
             if (s >= e)
                 return s - ( char * )buf;
-        }
-        else
-        {
+        } else {
             state->in_code = c;
-            if (c >= state->free_code)
-            {
+            if (c >= state->free_code) {
                 c = state->old_code;
                 push(state, state->fin_char);
             }
-            while (c > 255)
-            {
+            while (c > 255) {
                 push(state, state->table[c].z_ch);
                 c = state->table[c].next;
             }
@@ -207,11 +194,9 @@ lzd_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
             addcode(state, state->suf_code, state->old_code);
             state->old_code = state->in_code;
             push(state, state->suf_code);
-            while (state->sp != 0)
-            {
+            while (state->sp != 0) {
                 *s++ = pop(state);
-                if (s >= e)
-                {
+                if (s >= e) {
                     state->cpy = 1;
                     return s - ( char * )buf;
                 }

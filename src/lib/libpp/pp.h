@@ -69,8 +69,7 @@
 #    define PPTOKSIZ ((PPBUFSIZ / 2) - 1) /* max token size	*/
 
 #    define PPWRITE(n)                                                       \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             if (write(1, pp.outbuf, n) != (n))                               \
                 pperror(ERROR_SYSTEM | 3, "%s: write error", pp.outfile);    \
             pp.offset += (n);                                                \
@@ -82,27 +81,20 @@
 #    define pppendout() (pp.outp - pp.outbuf)
 #    define ppputchar(c) (*pp.outp++ = (c))
 #    define ppflushout()                                                     \
-        do                                                                   \
-        {                                                                    \
-            if (pp.outp > pp.outbuf)                                         \
-            {                                                                \
+        do {                                                                 \
+            if (pp.outp > pp.outbuf) {                                       \
                 PPWRITE(pp.outp - pp.outbuf);                                \
                 pp.outp = pp.outbuf;                                         \
             }                                                                \
         } while (0)
 #    define ppcheckout()                                                     \
-        do                                                                   \
-        {                                                                    \
-            if (pp.outp > pp.oute)                                           \
-            {                                                                \
+        do {                                                                 \
+            if (pp.outp > pp.oute) {                                         \
                 PPWRITE(PPBUFSIZ);                                           \
-                if (pp.outbuf == pp.outb)                                    \
-                {                                                            \
+                if (pp.outbuf == pp.outb) {                                  \
                     pp.outbuf += PPBUFSIZ;                                   \
                     pp.oute += PPBUFSIZ;                                     \
-                }                                                            \
-                else                                                         \
-                {                                                            \
+                } else {                                                     \
                     pp.outbuf -= PPBUFSIZ;                                   \
                     memcpy(pp.outbuf, pp.oute, pp.outp - pp.oute);           \
                     pp.oute -= PPBUFSIZ;                                     \

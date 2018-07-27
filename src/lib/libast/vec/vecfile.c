@@ -45,13 +45,10 @@ vecfile(const char *file)
     struct stat st;
 
     vec = 0;
-    if ((fd = open(file, O_RDONLY | O_CLOEXEC)) >= 0)
-    {
+    if ((fd = open(file, O_RDONLY | O_CLOEXEC)) >= 0) {
         if (!fstat(fd, &st) && S_ISREG(st.st_mode) && (n = st.st_size) > 0
-            && (buf = newof(0, char, n + 1, 0)))
-        {
-            if (read(fd, buf, n) == n)
-            {
+            && (buf = newof(0, char, n + 1, 0))) {
+            if (read(fd, buf, n) == n) {
                 buf[n] = 0;
                 vec = vecload(buf);
             }

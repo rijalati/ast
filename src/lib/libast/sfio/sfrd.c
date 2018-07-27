@@ -41,8 +41,7 @@ _sfwrsync()
     reg int n;
 
     /* sync all pool heads */
-    for (p = _Sfpool.next; p; p = p->next)
-    {
+    for (p = _Sfpool.next; p; p = p->next) {
         if (p->n_sf <= 0)
             continue;
         f = p->sf[0];
@@ -52,8 +51,7 @@ _sfwrsync()
     }
 
     /* and all the ones in the discrete pool */
-    for (n = 0; n < _Sfpool.n_sf; ++n)
-    {
+    for (n = 0; n < _Sfpool.n_sf; ++n) {
         f = _Sfpool.sf[n];
 
         if (!SFFROZEN(f) && f->next > f->data && (f->mode & SF_WRITE)
@@ -91,18 +89,15 @@ Sfdisc_t *disc;
     {
         if (f->mode != SF_READ && _sfmode(f, SF_READ, 0) < 0)
             SFMTXRETURN(f, -1);
-        if (f->next < f->endb)
-        {
+        if (f->next < f->endb) {
             if (SFSYNC(f) < 0)
                 SFMTXRETURN(f, -1);
-            if ((f->mode & (SF_SYNCED | SF_READ)) == (SF_SYNCED | SF_READ))
-            {
+            if ((f->mode & (SF_SYNCED | SF_READ)) == (SF_SYNCED | SF_READ)) {
                 f->endb = f->next = f->endr = f->data;
                 f->mode &= ~SF_SYNCED;
             }
 #if _mmap_worthy
-            if ((f->bits & SF_MMAP) && f->data)
-            {
+            if ((f->bits & SF_MMAP) && f->data) {
                 SFMUNMAP(f, f->data, f->endb - f->data);
                 f->data = NIL(uchar *);
             }
@@ -111,16 +106,14 @@ Sfdisc_t *disc;
         }
     }
 
-    for (dosync = 0;;)
-    { /* stream locked by sfsetfd() */
+    for (dosync = 0;;) { /* stream locked by sfsetfd() */
         if (!(f->flags & SF_STRING) && f->file < 0)
             SFMTXRETURN(f, 0);
 
         f->flags &= ~(SF_EOF | SF_ERROR);
 
         dc = disc;
-        if (f->flags & SF_STRING)
-        {
+        if (f->flags & SF_STRING) {
             if ((r = (f->data + f->extent) - f->next) < 0)
                 r = 0;
             if (r <= 0)
@@ -130,29 +123,25 @@ Sfdisc_t *disc;
 
         /* warn that a read is about to happen */
         SFDISC(f, dc, readf);
-        if (dc && dc->exceptf && (f->flags & SF_IOCHECK))
-        {
+        if (dc && dc->exceptf && (f->flags & SF_IOCHECK)) {
             reg int rv;
             if (local)
                 SETLOCAL(f);
             if ((rv = _sfexcept(f, SF_READ, n, dc)) > 0)
                 n = rv;
-            else if (rv < 0)
-            {
+            else if (rv < 0) {
                 f->flags |= SF_ERROR;
                 SFMTXRETURN(f, ( ssize_t )rv);
             }
         }
 
 #if _mmap_worthy
-        if (f->bits & SF_MMAP)
-        {
+        if (f->bits & SF_MMAP) {
             reg ssize_t a, round;
             sfstat_t st;
 
             /* determine if we have to copy data to buffer */
-            if (( uchar * )buf >= f->data && ( uchar * )buf <= f->endb)
-            {
+            if (( uchar * )buf >= f->data && ( uchar * )buf <= f->endb) {
                 n += f->endb - f->next;
                 buf = NIL(char *);
             }
@@ -166,41 +155,34 @@ Sfdisc_t *disc;
 
             /* before mapping, make sure we have data to map */
             if ((f->flags & SF_SHARE)
-                || (size_t)(r = f->extent - f->here) < n)
-            {
+                || (size_t)(r = f->extent - f->here) < n) {
                 if ((r = sysfstatf(f->file, &st)) < 0)
                     goto do_except;
-                if ((r = (f->extent = st.st_size) - f->here) <= 0)
-                {
+                if ((r = (f->extent = st.st_size) - f->here) <= 0) {
                     r = 0; /* eof */
                     goto do_except;
                 }
             }
 
             /* make sure current position is page aligned */
-            if ((a = (size_t)(f->here % _Sfpage)) != 0)
-            {
+            if ((a = (size_t)(f->here % _Sfpage)) != 0) {
                 f->here -= a;
                 r += a;
             }
 
             /* map minimal requirement */
-            if (_Sfmaxm != ( size_t )SF_UNBOUND)
-            {
-                if (_Sfmaxm)
-                {
+            if (_Sfmaxm != ( size_t )SF_UNBOUND) {
+                if (_Sfmaxm) {
                     if (r > _Sfmaxm)
                         r = _Sfmaxm;
-                }
-                else if (r > (round = (1 + (n + a) / f->size) * f->size))
+                } else if (r > (round = (1 + (n + a) / f->size) * f->size))
                     r = round;
             }
 
             if (f->data)
                 SFMUNMAP(f, f->data, f->endb - f->data);
 
-            for (;;)
-            {
+            for (;;) {
                 f->data = ( uchar * )sysmmapf(( caddr_t )0,
                                               ( size_t )r,
                                               (PROT_READ | PROT_WRITE),
@@ -209,8 +191,7 @@ Sfdisc_t *disc;
                                               ( sfoff_t )f->here);
                 if (f->data && ( caddr_t )f->data != (caddr_t)(-1))
                     break;
-                else
-                {
+                else {
                     f->data = NIL(uchar *);
                     if ((r >>= 1) < (_Sfpage * SF_NMAP)
                         || (errno != EAGAIN && errno != ENOMEM))
@@ -218,8 +199,7 @@ Sfdisc_t *disc;
                 }
             }
 
-            if (f->data)
-            {
+            if (f->data) {
                 if (f->bits & SF_SEQUENTIAL)
                     SFMMSEQON(f, f->data, r);
                 f->next = f->data + a;
@@ -230,20 +210,16 @@ Sfdisc_t *disc;
                 /* make known our seek location */
                 ( void )SFSK(f, f->here, SEEK_SET, dc);
 
-                if (buf)
-                {
+                if (buf) {
                     if (n > (size_t)(r - a))
                         n = (ssize_t)(r - a);
                     memcpy(buf, f->next, n);
                     f->next += n;
-                }
-                else
+                } else
                     n = f->endb - f->next;
 
                 SFMTXRETURN(f, n);
-            }
-            else
-            {
+            } else {
                 r = -1;
                 f->here += a;
 
@@ -254,8 +230,7 @@ Sfdisc_t *disc;
                 ( void )SFSETBUF(
                 f, ( Void_t * )f->tiny, ( size_t )SF_UNBOUND);
 
-                if (!buf)
-                {
+                if (!buf) {
                     buf = ( Void_t * )f->data;
                     n = f->size;
                 }
@@ -264,15 +239,13 @@ Sfdisc_t *disc;
 #endif
 
         /* sync unseekable write streams to prevent deadlock */
-        if (!dosync && f->extent < 0)
-        {
+        if (!dosync && f->extent < 0) {
             dosync = 1;
             _sfwrsync();
         }
 
         /* make sure file pointer is right */
-        if (f->extent >= 0 && (f->flags & SF_SHARE))
-        {
+        if (f->extent >= 0 && (f->flags & SF_SHARE)) {
             if (!(f->flags & SF_PUBLIC))
                 f->here = SFSK(f, f->here, SEEK_SET, dc);
             else
@@ -282,8 +255,7 @@ Sfdisc_t *disc;
         oerrno = errno;
         errno = 0;
 
-        if (dc && dc->readf)
-        {
+        if (dc && dc->readf) {
             int share = f->flags & SF_SHARE;
 
             if (rcrv) /* pass on rcrv for possible continuations */
@@ -299,37 +271,32 @@ Sfdisc_t *disc;
                 f->mode &= ~rcrv;
             else
                 f->flags |= share;
-        }
-        else if (SFISNULL(f))
+        } else if (SFISNULL(f))
             r = 0;
-        else if (f->extent < 0 && (f->flags & SF_SHARE) && rcrv)
-        { /* try peek read */
+        else if (f->extent < 0 && (f->flags & SF_SHARE)
+                 && rcrv) { /* try peek read */
             r = sfpkrd(f->file,
                        ( char * )buf,
                        n,
                        (rcrv & SF_RC) ? ( int )f->getr : -1,
                        -1L,
                        (rcrv & SF_RV) ? 1 : 0);
-            if (r > 0)
-            {
+            if (r > 0) {
                 if (rcrv & SF_RV)
                     f->mode |= SF_PKRD;
                 else
                     f->mode |= SF_RC;
             }
-        }
-        else
+        } else
             r = sysreadf(f->file, buf, n);
 
         if (errno == 0)
             errno = oerrno;
 
-        if (r > 0)
-        {
+        if (r > 0) {
             if (!(f->bits & SF_DCDOWN)) /* not a continuation call */
             {
-                if (!(f->mode & SF_PKRD))
-                {
+                if (!(f->mode & SF_PKRD)) {
                     f->here += r;
                     if (f->extent >= 0 && f->extent < f->here)
                         f->extent = f->here;
@@ -345,8 +312,7 @@ Sfdisc_t *disc;
     do_except:
         if (local)
             SETLOCAL(f);
-        switch (_sfexcept(f, SF_READ, ( ssize_t )r, dc))
-        {
+        switch (_sfexcept(f, SF_READ, ( ssize_t )r, dc)) {
         case SF_ECONT:
             goto do_continue;
         case SF_EDONE:

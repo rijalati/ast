@@ -89,8 +89,7 @@ int TkPlatformInit(interp) Tcl_Interp *interp;
     char *libDir;
 
     libDir = Tcl_GetVar(interp, "tk_library", TCL_GLOBAL_ONLY);
-    if (libDir == NULL)
-    {
+    if (libDir == NULL) {
         libDir = pathpath(LIB_DIR,
                           "",
                           PATH_EXECUTE | PATH_READ,

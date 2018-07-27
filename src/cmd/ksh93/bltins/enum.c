@@ -115,14 +115,11 @@ enuminfo(Opt_t *op, Sfio_t *out, const char *str, Optdisc_t *fp)
     ep = ( struct Enum * )np->nvfun;
     if (strcmp(str, "default") == 0)
         sfprintf(out, "\b%s\b", ep->values[0]);
-    else if (strcmp(str, "case") == 0)
-    {
+    else if (strcmp(str, "case") == 0) {
         if (ep->iflag)
             sfprintf(out, "not ");
-    }
-    else
-        while (v = ep->values[n++])
-        {
+    } else
+        while (v = ep->values[n++]) {
             sfprintf(out, ", \b%s\b", v);
         }
     return (0);
@@ -145,27 +142,23 @@ put_enum(Namval_t *np, const char *val, int flags, Namfun_t *fp)
     struct Enum *ep = ( struct Enum * )fp;
     const char *v;
     unsigned short i = 0, n;
-    if (!val && !(flags & NV_INTEGER))
-    {
+    if (!val && !(flags & NV_INTEGER)) {
         nv_putv(np, val, flags, fp);
         nv_disc(np, &ep->hdr, NV_POP);
         if (!ep->hdr.nofree)
             free(( void * )ep);
         return;
     }
-    if (flags & NV_INTEGER)
-    {
+    if (flags & NV_INTEGER) {
         nv_putv(np, val, flags, fp);
         return;
     }
-    while (v = ep->values[i])
-    {
+    while (v = ep->values[i]) {
         if (ep->iflag)
             n = strcasecmp(v, val);
         else
             n = strcmp(v, val);
-        if (n == 0)
-        {
+        if (n == 0) {
             nv_putv(np, ( char * )&i, NV_UINT16, fp);
             return;
         }
@@ -205,14 +198,12 @@ create_enum(Namval_t *np, const char *name, int flags, Namfun_t *fp)
     int i, n;
     mp = nv_namptr(ep->node, 0);
     mp->nvenv = ( char * )np;
-    for (i = 0; v = ep->values[i]; i++)
-    {
+    for (i = 0; v = ep->values[i]; i++) {
         if (ep->iflag)
             n = strcasecmp(v, name);
         else
             n = strcmp(v, name);
-        if (n == 0)
-        {
+        if (n == 0) {
             mp->nvalue.s = i;
             mp->nvname = ( char * )v;
             fp->last = ( char * )(name + strlen(name));
@@ -220,8 +211,7 @@ create_enum(Namval_t *np, const char *name, int flags, Namfun_t *fp)
         }
     }
     if (strcmp(name, "MAX") == 0 || strcmp(name, "MIN") == 0
-        || strcmp(name, "DIG") == 0)
-    {
+        || strcmp(name, "DIG") == 0) {
         if (name[2] == 'X')
             i--;
         else if (name[2] == 'G')
@@ -249,16 +239,14 @@ sh_outenum(Shell_t *shp, Sfio_t *iop, Namval_t *tp)
     char nvtype[sizeof(NV_CLASS)];
     struct Enum *ep;
     int i;
-    if (!tp)
-    {
+    if (!tp) {
         strcpy(nvtype, NV_CLASS);
         if (!(mp = nv_open(nvtype, shp->var_tree, NV_NOADD | NV_VARNAME)))
             return (0);
         dp = nv_dict(mp);
         tp = ( Namval_t * )dtfirst(dp);
     }
-    while (tp)
-    {
+    while (tp) {
         if (!tp->nvfun || !(ep = ( struct Enum * )nv_hasdisc(tp, &ENUM_disc)))
             continue;
         sfprintf(iop, "enum %s%s=(\n", (ep->iflag ? "-i " : ""), tp->nvname);
@@ -295,10 +283,8 @@ b_enum(int argc, char **argv, Shbltin_t *context)
     } optdisc;
 
     cmdinit(argc, argv, context, ERROR_CATALOG, ERROR_NOTIFY);
-    for (;;)
-    {
-        switch (optget(argv, enum_usage))
-        {
+    for (;;) {
+        switch (optget(argv, enum_usage)) {
         case 'p':
             pflag = true;
             continue;
@@ -315,15 +301,13 @@ b_enum(int argc, char **argv, Shbltin_t *context)
         break;
     }
     argv += opt_info.index;
-    if (error_info.errors)
-    {
+    if (error_info.errors) {
         error(ERROR_USAGE | 2, "%s", optusage(NiL));
         return 1;
     }
     if (!*argv)
         sh_outenum(shp, sfstdout, ( Namval_t * )0);
-    while (cp = *argv++)
-    {
+    while (cp = *argv++) {
         if (!(np = nv_open(cp, shp->var_tree, NV_VARNAME | NV_NOADD))
             || !(ap = nv_arrayptr(np)) || ap->fun || (sz = ap->nelem) < 2)
             error(ERROR_exit(1),
@@ -332,8 +316,7 @@ b_enum(int argc, char **argv, Shbltin_t *context)
         n = stktell(shp->stk);
         sfprintf(shp->stk, "%s.%s%c", NV_CLASS, np->nvname, 0);
         tp = nv_open(stkptr(shp->stk, n), shp->var_tree, NV_VARNAME);
-        if (pflag)
-        {
+        if (pflag) {
             sh_outenum(shp, sfstdout, tp);
             continue;
         }
@@ -343,8 +326,7 @@ b_enum(int argc, char **argv, Shbltin_t *context)
         nv_onattr(tp, NV_UINT16);
         nv_putval(tp, ( char * )&i, NV_INTEGER);
         nv_putsub(np, ( char * )0, 0L, ARRAY_SCAN);
-        do
-        {
+        do {
             sz += strlen(nv_getval(np));
         } while (nv_nextsub(np));
         sz += n * sizeof(char *);
@@ -360,8 +342,7 @@ b_enum(int argc, char **argv, Shbltin_t *context)
         nv_putsub(np, ( char * )0, 0L, ARRAY_SCAN);
         ep->values[n] = 0;
         i = 0;
-        do
-        {
+        do {
             ep->values[i++] = cp;
             sp = nv_getval(np);
             n = strlen(sp);

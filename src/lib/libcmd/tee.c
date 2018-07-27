@@ -74,12 +74,10 @@ tee_write(Sfio_t *fp, const void *buf, size_t n, Sfdisc_t *handle)
     int fd = sffileno(fp);
     ssize_t r;
 
-    do
-    {
+    do {
         bp = ( const char * )buf;
         ep = bp + n;
-        while (bp < ep)
-        {
+        while (bp < ep) {
             if ((r = write(fd, bp, ep - bp)) <= 0)
                 return -1;
             bp += r;
@@ -94,8 +92,7 @@ tee_cleanup(Tee_t *tp)
     int *hp;
     int n;
 
-    if (tp)
-    {
+    if (tp) {
         sfdisc(sfstdout, NiL);
         if (tp->line >= 0)
             sfset(sfstdout, SF_LINE, tp->line);
@@ -113,10 +110,8 @@ b_tee(int argc, char **argv, Shbltin_t *context)
     char *cp;
     int line;
 
-    if (argc <= 0)
-    {
-        if (context && (tp = ( Tee_t * )sh_context(context)->data))
-        {
+    if (argc <= 0) {
+        if (context && (tp = ( Tee_t * )sh_context(context)->data)) {
             sh_context(context)->data = 0;
             tee_cleanup(tp);
         }
@@ -124,10 +119,8 @@ b_tee(int argc, char **argv, Shbltin_t *context)
     }
     cmdinit(argc, argv, context, ERROR_CATALOG, ERROR_CALLBACK);
     line = -1;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             oflag &= ~O_TRUNC;
             oflag |= O_APPEND;
@@ -156,25 +149,21 @@ b_tee(int argc, char **argv, Shbltin_t *context)
     argv += opt_info.index;
     argc -= opt_info.index;
 #if _ANCIENT_BSD_COMPATIBILITY
-    if (*argv && streq(*argv, "-"))
-    {
+    if (*argv && streq(*argv, "-")) {
         signal(SIGINT, SIG_IGN);
         argv++;
         argc--;
     }
 #endif
-    if (argc > 0)
-    {
-        if (tp = ( Tee_t * )stakalloc(sizeof(Tee_t) + argc * sizeof(int)))
-        {
+    if (argc > 0) {
+        if (tp = ( Tee_t * )stakalloc(sizeof(Tee_t) + argc * sizeof(int))) {
             memset(&tp->disc, 0, sizeof(tp->disc));
             tp->disc.writef = tee_write;
             if (context)
                 sh_context(context)->data = ( void * )tp;
             tp->line = line;
             hp = tp->fd;
-            while (cp = *argv++)
-            {
+            while (cp = *argv++) {
                 while ((*hp = open(cp,
                                    oflag,
                                    S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP
@@ -189,13 +178,11 @@ b_tee(int argc, char **argv, Shbltin_t *context)
             }
             if (hp == tp->fd)
                 tp = 0;
-            else
-            {
+            else {
                 *hp = -1;
                 sfdisc(sfstdout, &tp->disc);
             }
-        }
-        else
+        } else
             error(ERROR_exit(0), "out of space");
     }
     if ((sfmove(sfstdin, sfstdout, SF_UNBOUND, -1) < 0 || !sfeof(sfstdin))

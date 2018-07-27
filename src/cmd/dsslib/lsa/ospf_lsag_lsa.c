@@ -125,19 +125,15 @@ identf_lsag_lsa_file(Dssfile_t *fp, void *data_p, size_t size, Dssdisc_t *disc)
      * Check the first record.
      * Make sure that the record contains appropriate magic header.
      */
-    if (size < sizeof(*mp))
-    {
-        if (disc->errorf && (fp->dss->flags & DSS_DEBUG))
-        {
+    if (size < sizeof(*mp)) {
+        if (disc->errorf && (fp->dss->flags & DSS_DEBUG)) {
             (*disc->errorf)(
             NULL, disc, 2, "%s: not enough bytes for magic hdr", FORMAT_NAME);
         }
         return 0;
     }
-    if (!streq(mp->name, MAGIC_NAME))
-    {
-        if (disc->errorf && (fp->dss->flags & DSS_DEBUG))
-        {
+    if (!streq(mp->name, MAGIC_NAME)) {
+        if (disc->errorf && (fp->dss->flags & DSS_DEBUG)) {
             (*disc->errorf)(
             NULL,
             disc,
@@ -150,10 +146,8 @@ identf_lsag_lsa_file(Dssfile_t *fp, void *data_p, size_t size, Dssdisc_t *disc)
         }
         return 0;
     }
-    if (!streq(mp->type, MAGIC_TYPE))
-    {
-        if (disc->errorf && (fp->dss->flags & DSS_DEBUG))
-        {
+    if (!streq(mp->type, MAGIC_TYPE)) {
+        if (disc->errorf && (fp->dss->flags & DSS_DEBUG)) {
             (*disc->errorf)(
             NULL,
             disc,
@@ -167,17 +161,14 @@ identf_lsag_lsa_file(Dssfile_t *fp, void *data_p, size_t size, Dssdisc_t *disc)
         return 0;
     }
     version = ntohl(mp->version);
-    switch (version)
-    {
+    switch (version) {
     case MAGIC_VERSION:
         m_size = ntohl(mp->size);
 #if 0
 		sfprintf(sfstderr, "identf_lsag_lsa_file() m_size: %u\n", m_size);
 #endif
-        if (m_size < (LSA_HDR_LEN + sizeof(areaid_t)))
-        {
-            if (disc->errorf)
-            {
+        if (m_size < (LSA_HDR_LEN + sizeof(areaid_t))) {
+            if (disc->errorf) {
                 (*disc->errorf)(NULL,
                                 disc,
                                 2,
@@ -190,8 +181,7 @@ identf_lsag_lsa_file(Dssfile_t *fp, void *data_p, size_t size, Dssdisc_t *disc)
         break;
 
     default:
-        if (disc->errorf)
-        {
+        if (disc->errorf) {
             (*disc->errorf)(
             NULL, disc, 2, "%s: version in file is incorrect", FORMAT_NAME);
         }
@@ -226,21 +216,16 @@ open_lsag_lsa_file(Dssfile_t *fp, Dssdisc_t *disc)
 #if 0
 	sfprintf(sfstderr, "open_lsag_lsa_file() file: %s\n", fp->path);
 #endif
-    if (fp->flags & DSS_FILE_WRITE)
-    {
-    }
-    else
-    {
+    if (fp->flags & DSS_FILE_WRITE) {
+    } else {
 
         /*
          * Reread the magic header to get the file pointer to advance
          * to the first LSA record.
          */
         if (sfread(fp->io, &magic_hdr, sizeof(Magicid_t))
-            != sizeof(Magicid_t))
-        {
-            if (disc->errorf)
-            {
+            != sizeof(Magicid_t)) {
+            if (disc->errorf) {
                 (*disc->errorf)(NULL,
                                 disc,
                                 ERROR_SYSTEM | 2,
@@ -286,14 +271,12 @@ close_lsag_lsa_file(Dssfile_t *fp, Dssdisc_t *disc)
 	sfprintf(sfstderr, "close_lsag_lsa_file() file: %s\n", fp->path);
 #endif
     state_p = ( lsag_lsa_state_t * )(fp->data);
-    if (!state_p)
-    {
+    if (!state_p) {
         return -1;
     }
 
     /* Free space allocated to store LSA inside fp->data. */
-    if (state_p->lsag_lsap)
-    {
+    if (state_p->lsag_lsap) {
         MD_FREE(state_p->lsag_lsap);
     }
 
@@ -336,8 +319,7 @@ read_lsag_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
      * and store them in '*lsa_can_p'.
      */
     bytes_read = sfread(fp->io, buff, PRE_LSA_PARAMS_SIZE);
-    if (bytes_read != PRE_LSA_PARAMS_SIZE)
-    {
+    if (bytes_read != PRE_LSA_PARAMS_SIZE) {
         return 0;
     }
     buff_p = buff;
@@ -354,16 +336,14 @@ read_lsag_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
     uint32_t, buff_p, 0, lsa_can_p->lsu_areaid, bytes_left);
 
     /* Read LSA header */
-    if (LSA_HDR_LEN > (state_p->lsag_lsa_max_len))
-    {
+    if (LSA_HDR_LEN > (state_p->lsag_lsa_max_len)) {
         MD_REALLOC(
         state_p->lsag_lsap, state_p->lsag_lsap, uint8_t *, LSA_HDR_LEN);
         ASSERT(state_p->lsag_lsap);
         state_p->lsag_lsa_max_len = LSA_HDR_LEN;
     }
     lsap = ( ospf_lsa_t * )(state_p->lsag_lsap);
-    if (sfread(fp->io, lsap, LSA_HDR_LEN) != LSA_HDR_LEN)
-    {
+    if (sfread(fp->io, lsap, LSA_HDR_LEN) != LSA_HDR_LEN) {
         return 0;
     }
     lsa_can_p->lsa_id = NTOH_LSA_ID(lsap->lsa_id_f);
@@ -387,8 +367,7 @@ read_lsag_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
     /* Read LSA data as is */
     lsa_data_len = lsa_len - LSA_HDR_LEN;
     calloc_lsa_can_data(lsa_can_p, lsa_data_len);
-    if (sfread(fp->io, lsa_can_p->lsa_data_p, lsa_data_len) != lsa_data_len)
-    {
+    if (sfread(fp->io, lsa_can_p->lsa_data_p, lsa_data_len) != lsa_data_len) {
         return 0;
     }
 

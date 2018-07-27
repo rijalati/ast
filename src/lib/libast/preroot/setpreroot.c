@@ -49,21 +49,18 @@ setpreroot(char **argv, const char *dir)
                                NiL,
                                PATH_ABSOLUTE | PATH_REGULAR | PATH_EXECUTE,
                                buf,
-                               sizeof(buf)))))
-    {
+                               sizeof(buf))))) {
         argc = 3;
         for (ap = argv; *ap++; argc++)
             ;
-        if (av = newof(0, char *, argc, 0))
-        {
+        if (av = newof(0, char *, argc, 0)) {
             ap = av;
             *ap++ = PR_COMMAND;
             *ap++ = ( char * )dir;
             *ap++ = cmd;
             while (*ap++ = *argv++)
                 ;
-            if (!(s = getenv(PR_SILENT)) || !*s)
-            {
+            if (!(s = getenv(PR_SILENT)) || !*s) {
                 sfprintf(sfstderr, "+");
                 ap = av;
                 while (s = *ap++)

@@ -50,8 +50,7 @@ b_return(int n, char *argv[], Shbltin_t *context)
     struct checkpt *pp = ( struct checkpt * )shp->jmplist;
     const char *options = (**argv == 'r' ? sh_optreturn : sh_optexit);
     while ((n = optget(argv, options)))
-        switch (n)
-        {
+        switch (n) {
         case ':':
             if (!strmatch(argv[opt_info.index], "[+-]+([0-9])"))
                 errormsg(SH_DICT, 2, "%s", opt_info.arg);
@@ -92,8 +91,7 @@ b_break(int n, char *argv[], Shbltin_t *context)
     int cont = **argv == 'c';
     Shell_t *shp = context->shp;
     while ((n = optget(argv, cont ? sh_optcont : sh_optbreak)))
-        switch (n)
-        {
+        switch (n) {
         case ':':
             errormsg(SH_DICT, 2, "%s", opt_info.arg);
             break;
@@ -105,14 +103,12 @@ b_break(int n, char *argv[], Shbltin_t *context)
         errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
     argv += opt_info.index;
     n = 1;
-    if (arg = *argv)
-    {
+    if (arg = *argv) {
         n = ( int )strtol(arg, &arg, 10);
         if (n <= 0 || *arg)
             errormsg(SH_DICT, ERROR_exit(1), e_nolabels, *argv);
     }
-    if (shp->st.loopcnt)
-    {
+    if (shp->st.loopcnt) {
         shp->st.execbrk = shp->st.breakcnt = n;
         if (shp->st.breakcnt > shp->st.loopcnt)
             shp->st.breakcnt = shp->st.loopcnt;

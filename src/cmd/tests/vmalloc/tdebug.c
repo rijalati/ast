@@ -35,8 +35,7 @@ tmain()
         terror("Can't puff a pipe");
     vmdebug(pfd[1]);
 
-    for (k = 0; k < 10; ++k)
-    {
+    for (k = 0; k < 10; ++k) {
         if (!(addr[k] = vmalloc(vm, ALLOCSZ)))
             terror("Allocation of block[%d] failed", k);
         if (((( Vmulong_t )addr[k]) % ALIGN) != 0)

@@ -41,21 +41,18 @@ pzsync(Pz_t *pz)
     int r;
 
     op = pz->ws.io ? pz->ws.io : pz->io;
-    if (pz->ws.bp)
-    {
+    if (pz->ws.bp) {
         /*
          * flush the pzwrite() window
          */
 
         pz->ws.bp = 0;
         pp = pz->part;
-        if (pz->flags & PZ_SORT)
-        {
+        if (pz->flags & PZ_SORT) {
             pz->flags &= ~PZ_SORT;
             elt = ( Pzelt_t * )dtfirst(pz->sort.order);
             n = pp->row;
-            while (elt && pzwrite(pz, op, elt->buf, n) == n)
-            {
+            while (elt && pzwrite(pz, op, elt->buf, n) == n) {
                 old = elt;
                 elt = ( Pzelt_t * )dtnext(pz->sort.order, elt);
                 dtdelete(pz->sort.order, old);
@@ -81,12 +78,10 @@ pzsync(Pz_t *pz)
          * and write it by group to op
          */
 
-        if (pp->nmap)
-        {
+        if (pp->nmap) {
             pp->mix[0] = buf = pz->wrk;
             m = 0;
-            for (j = 1; j < pp->nmap; j++)
-            {
+            for (j = 1; j < pp->nmap; j++) {
                 m += n;
                 pp->mix[j] = (pp->lab[j] == pp->lab[j - 1])
                              ? (pp->mix[j - 1] + 1)
@@ -94,19 +89,16 @@ pzsync(Pz_t *pz)
             }
             buf = pz->buf;
             for (i = 0; i < n; i++)
-                for (j = 0; j < pp->nmap; j++)
-                {
+                for (j = 0; j < pp->nmap; j++) {
                     *pp->mix[j] = *buf++;
                     pp->mix[j] += pp->inc[j];
                 }
             m = n * pp->nmap;
             sfputu(op, m);
             buf = pz->wrk;
-            for (i = 0; i < pp->ngrp; i++)
-            {
+            for (i = 0; i < pp->ngrp; i++) {
                 m = n * pp->grp[i];
-                if (sfwrite(op, buf, m) != m || sfsync(op))
-                {
+                if (sfwrite(op, buf, m) != m || sfsync(op)) {
                     if (pz->disc->errorf)
                         (*pz->disc->errorf)(pz,
                                             pz->disc,
@@ -116,9 +108,7 @@ pzsync(Pz_t *pz)
                 }
                 buf += m;
             }
-        }
-        else
-        {
+        } else {
             /*
              * this is a phony size that is verified on inflate
              * 0 here would terminate the inflate loop in the
@@ -134,8 +124,7 @@ pzsync(Pz_t *pz)
 
         m = pz->ws.vp - pz->val;
         sfputu(op, m);
-        if (sfwrite(op, pz->val, m) != m || sfsync(op))
-        {
+        if (sfwrite(op, pz->val, m) != m || sfsync(op)) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(pz,
                                     pz->disc,
@@ -144,8 +133,7 @@ pzsync(Pz_t *pz)
             return -1;
         }
         m = sfstrtell(tmp);
-        if (sfwrite(op, sfstrseek(tmp, 0, SEEK_SET), m) != m || sfsync(op))
-        {
+        if (sfwrite(op, sfstrseek(tmp, 0, SEEK_SET), m) != m || sfsync(op)) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(pz,
                                     pz->disc,
@@ -153,9 +141,7 @@ pzsync(Pz_t *pz)
                                     "lo frequency code write error");
             return -1;
         }
-    }
-    else if ((pz->flags & PZ_WRITE) && sfsync(op))
-    {
+    } else if ((pz->flags & PZ_WRITE) && sfsync(op)) {
         if (pz->disc->errorf)
             (*pz->disc->errorf)(
             pz, pz->disc, ERROR_SYSTEM | 2, "write error");

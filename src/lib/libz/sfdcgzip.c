@@ -102,26 +102,22 @@ sfgzexcept(Sfio_t *sp, int op, void *val, Sfdisc_t *dp)
 		}
 	}
 #endif
-    switch (op)
-    {
+    switch (op) {
     case SF_ATEXIT:
         sfdisc(sp, SF_POPDISC);
         return 0;
     case SF_CLOSING:
     case SF_DPOP:
     case SF_FINAL:
-        if (gz->gz)
-        {
+        if (gz->gz) {
             SFDCNEXT(sp, f);
             if (r = gzclose(gz->gz) ? -1 : 0)
                 sp->_flags |= SF_ERROR;
             gz->gz = 0;
             SFDCPREV(sp, f);
-        }
-        else
+        } else
             r = 0;
-        if (gz->op)
-        {
+        if (gz->op) {
             sfclose(gz->op);
             gz->op = 0;
         }
@@ -206,8 +202,7 @@ sfdcgzip(Sfio_t *sp, int flags)
     char mode[10];
 
     rd = sfset(sp, 0, 0) & SF_READ;
-    if (rd)
-    {
+    if (rd) {
         unsigned char *s;
         int n;
         int r;
@@ -232,22 +227,20 @@ sfdcgzip(Sfio_t *sp, int flags)
         if (!s)
             return -1;
         n = 0;
-        if (s[0] == 0x1f)
-        {
+        if (s[0] == 0x1f) {
             if (s[1] == 0x8b)
                 n = 'g';
             else if (s[1] == 0x9d)
                 n = 'c';
-        }
-        else if (s[0] == 0xd6 && s[1] == 0xc3 && s[2] == 0xc4 && s[3] == 0xd8)
+        } else if (s[0] == 0xd6 && s[1] == 0xc3 && s[2] == 0xc4
+                   && s[3] == 0xd8)
             n = 'v';
         sfread(sp, s, 0);
         if (!n)
             return 0;
         if (flags & SFGZ_VERIFY)
             return n != 0;
-        switch (n)
-        {
+        switch (n) {
         case 'c':
             return (r = sfdclzw(sp, flags)) > 0 ? 'c' : r;
         case 'v':
@@ -262,8 +255,7 @@ sfdcgzip(Sfio_t *sp, int flags)
             close(n);
             return r > 0 ? 'v' : r;
         }
-    }
-    else if (flags & SFGZ_VERIFY)
+    } else if (flags & SFGZ_VERIFY)
         return -1;
     if (!(gz = newof(0, Sfgzip_t, 1, 0)))
         return -1;
@@ -285,12 +277,10 @@ sfdcgzip(Sfio_t *sp, int flags)
 #if PRIVATE
     sfset(sp, SF_SHARE | SF_PUBLIC, 0);
 #endif
-    if (!rd)
-    {
+    if (!rd) {
         m = 0;
         z = 0;
-    }
-    else if (!(z = sfreserve(sp, 0, -1) ? ( size_t )sfvalue(sp) : 0))
+    } else if (!(z = sfreserve(sp, 0, -1) ? ( size_t )sfvalue(sp) : 0))
         m = 0;
     else if (m = sfreserve(sp, z, 0))
         z = ( size_t )sfvalue(sp);
@@ -300,8 +290,7 @@ sfdcgzip(Sfio_t *sp, int flags)
     if (rd && (gz->op = sfopen(NiL, "/dev/null", "r")))
         sfswap(sp, gz->op);
     if (!(gz->gz = gzbopen(fd, mode, m, z))
-        || sfdisc(sp, &gz->disc) != &gz->disc)
-    {
+        || sfdisc(sp, &gz->disc) != &gz->disc) {
         free(gz);
         return -1;
     }

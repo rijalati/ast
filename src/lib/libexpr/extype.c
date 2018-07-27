@@ -37,8 +37,7 @@
 char *
 extype(int type)
 {
-    switch (type)
-    {
+    switch (type) {
     case FLOATING:
         return "double";
     case STRING:

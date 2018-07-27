@@ -36,8 +36,7 @@ huffgethdr(Sfio_t *infile)
     Huff_t *hp;
     int i, j, c;
     /* allocate space for huffman tree */
-    if (!(hp = newof(0, Huff_t, 1, 0)))
-    {
+    if (!(hp = newof(0, Huff_t, 1, 0))) {
         errno = ENOMEM;
         return (( Huff_t * )0);
     }
@@ -49,8 +48,7 @@ huffgethdr(Sfio_t *infile)
         hp->insize = (hp->insize << CHAR_BIT) + sfgetc(infile);
     /* get number of levels in maxlev, */
     hp->maxlev = sfgetc(infile);
-    if (hp->maxlev == 0)
-    {
+    if (hp->maxlev == 0) {
         /* larger than  2**32 */
         for (i = 0; i < 4; i++)
             hp->insize = (hp->insize << CHAR_BIT) + sfgetc(infile);
@@ -59,8 +57,7 @@ huffgethdr(Sfio_t *infile)
     if (hp->maxlev < 0 || hp->maxlev > HUFFLEV)
         goto error;
     /* get number of leaves on level i  */
-    for (i = 1; i <= hp->maxlev; i++)
-    {
+    for (i = 1; i <= hp->maxlev; i++) {
         if ((c = sfgetc(infile)) < 0)
             goto error;
         hp->levcount[i] = c;
@@ -69,13 +66,11 @@ huffgethdr(Sfio_t *infile)
     for (i = 0; i <= END; i++)
         hp->length[i] = 0;
     hp->nchars = 0;
-    for (i = 1; i <= hp->maxlev; i++)
-    {
+    for (i = 1; i <= hp->maxlev; i++) {
         j = hp->levcount[i];
         if ((hp->nchars += j) >= END)
             goto error;
-        while (j-- > 0)
-        {
+        while (j-- > 0) {
             if ((c = sfgetc(infile)) < 0)
                 goto error;
             hp->length[c] = i;

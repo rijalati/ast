@@ -54,8 +54,7 @@ Sfoff_t here; /* current target position	*/
     mtsz = size + 2 * VCWEXTRA(size);
     if ((here -= VCWEXTRA(mtsz)) < 0)
         here = 0;
-    if ((here + mtsz) > mir->ssize && (here = mir->ssize - mtsz) < 0)
-    {
+    if ((here + mtsz) > mir->ssize && (here = mir->ssize - mtsz) < 0) {
         here = 0;
         mtsz = ( size_t )mir->ssize;
     }
@@ -83,15 +82,13 @@ int type;
 {
     Mirror_t *mir;
 
-    switch (type)
-    {
+    switch (type) {
     case VCW_OPENING:
         if (!(mir = ( Mirror_t * )malloc(sizeof(Mirror_t))))
             return -1;
 
         if (!vcw->disc || !vcw->disc->srcf
-            || sfseek(vcw->disc->srcf, ( Sfoff_t )0, 0) < 0)
-        {
+            || sfseek(vcw->disc->srcf, ( Sfoff_t )0, 0) < 0) {
             free(mir);
             return -1;
         }

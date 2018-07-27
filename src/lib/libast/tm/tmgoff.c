@@ -48,17 +48,14 @@ tmgoff(const char *s, char **e, int d)
     int east;
     const char *t = s;
 
-    if ((east = *s == '+') || *s == '-')
-    {
+    if ((east = *s == '+') || *s == '-') {
         s++;
-        if (isdigit(*s) && isdigit(*(s + 1)))
-        {
+        if (isdigit(*s) && isdigit(*(s + 1))) {
             n = ((*s - '0') * 10 + (*(s + 1) - '0')) * 60;
             s += 2;
             if (*s == ':')
                 s++;
-            if (isdigit(*s) && isdigit(*(s + 1)))
-            {
+            if (isdigit(*s) && isdigit(*(s + 1))) {
                 n += ((*s - '0') * 10 + (*(s + 1) - '0'));
                 s += 2;
                 if (*s == ':')

@@ -92,8 +92,7 @@ pretty(Sfio_t *out, int o, int delim, int flags)
     char buf[10];
 
     s = buf;
-    if ((flags & CMP_BYTES) || !(flags & CMP_CHARS))
-    {
+    if ((flags & CMP_BYTES) || !(flags & CMP_CHARS)) {
         *s++ = ' ';
         if ((flags & CMP_CHARS) && delim != -1)
             *s++ = ' ';
@@ -101,31 +100,25 @@ pretty(Sfio_t *out, int o, int delim, int flags)
         *s++ = '0' + ((o >> 3) & 07);
         *s++ = '0' + (o & 07);
     }
-    if (flags & CMP_CHARS)
-    {
+    if (flags & CMP_CHARS) {
         *s++ = ' ';
         c = ccmapc(o, CC_NATIVE, CC_ASCII);
-        if (c & 0x80)
-        {
+        if (c & 0x80) {
             m = 1;
             *s++ = 'M';
             c &= 0x7f;
             o = ccmapc(c, CC_ASCII, CC_NATIVE);
-        }
-        else
+        } else
             m = 0;
-        if (isspace(o) || !isprint(o))
-        {
+        if (isspace(o) || !isprint(o)) {
             if (!m)
                 *s++ = ' ';
             *s++ = '^';
             c ^= 0x40;
             o = ccmapc(c, CC_ASCII, CC_NATIVE);
-        }
-        else if (m)
+        } else if (m)
             *s++ = '-';
-        else
-        {
+        else {
             *s++ = ' ';
             *s++ = ' ';
         }
@@ -160,18 +153,14 @@ cmp(const char *file1,
     int ret = 0;
     unsigned char *last;
 
-    for (;;)
-    {
-        if ((c1 = e1 - p1) <= 0)
-        {
+    for (;;) {
+        if ((c1 = e1 - p1) <= 0) {
             if (count > 0 && !(count -= n1))
                 return ret;
             if (!(p1 = ( unsigned char * )sfreserve(f1, SF_UNBOUND, 0))
-                || (c1 = sfvalue(f1)) <= 0)
-            {
+                || (c1 = sfvalue(f1)) <= 0) {
                 if ((e2 - p2) > 0
-                    || sfreserve(f2, SF_UNBOUND, 0) && sfvalue(f2) > 0)
-                {
+                    || sfreserve(f2, SF_UNBOUND, 0) && sfvalue(f2) > 0) {
                     ret = 1;
                     if (!(flags & CMP_SILENT))
                         error(ERROR_exit(1), "EOF on %s", file1);
@@ -183,11 +172,9 @@ cmp(const char *file1,
             e1 = p1 + c1;
             n1 = c1;
         }
-        if ((c2 = e2 - p2) <= 0)
-        {
+        if ((c2 = e2 - p2) <= 0) {
             if (!(p2 = ( unsigned char * )sfreserve(f2, SF_UNBOUND, 0))
-                || (c2 = sfvalue(f2)) <= 0)
-            {
+                || (c2 = sfvalue(f2)) <= 0) {
                 if (!(flags & CMP_SILENT))
                     error(ERROR_exit(1), "EOF on %s", file2);
                 return 1;
@@ -197,22 +184,16 @@ cmp(const char *file1,
         if (c1 > c2)
             c1 = c2;
         pos += c1;
-        if (flags & CMP_SILENT)
-        {
+        if (flags & CMP_SILENT) {
             if (memcmp(p1, p2, c1))
                 return 1;
             p1 += c1;
             p2 += c1;
-        }
-        else
-        {
+        } else {
             last = p1 + c1;
-            while (p1 < last)
-            {
-                if ((c1 = *p1++) != *p2++)
-                {
-                    if (differences >= 0)
-                    {
+            while (p1 < last) {
+                if ((c1 = *p1++) != *p2++) {
+                    if (differences >= 0) {
                         if (!differences)
                             return 1;
                         differences--;
@@ -239,13 +220,11 @@ cmp(const char *file1,
                                  pos - (last - p1),
                                  sizeof(lines),
                                  lines);
-                    if (flags & (CMP_BYTES | CMP_CHARS | CMP_VERBOSE))
-                    {
+                    if (flags & (CMP_BYTES | CMP_CHARS | CMP_VERBOSE)) {
                         sfputc(sfstdout, (flags & CMP_VERBOSE) ? ' ' : ',');
                         pretty(sfstdout, c1, -1, flags);
                         pretty(sfstdout, *(p2 - 1), '\n', flags);
-                    }
-                    else
+                    } else
                         sfputc(sfstdout, '\n');
 #endif
                     if (!differences
@@ -281,10 +260,8 @@ b_cmp(int argc, char **argv, Shbltin_t *context)
 
     NoP(argc);
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'b':
             flags |= CMP_BYTES;
             continue;
@@ -301,8 +278,7 @@ b_cmp(int argc, char **argv, Shbltin_t *context)
                 o2 = strtoll(e + 1, &e, 0);
             else
                 o2 = o1;
-            if (*e)
-            {
+            if (*e) {
                 error(2, "%s: skip1:skip2 expected", opt_info.arg);
                 break;
             }
@@ -331,52 +307,43 @@ b_cmp(int argc, char **argv, Shbltin_t *context)
     n = 2;
     if (streq(file1, "-"))
         f1 = sfstdin;
-    else if (!(f1 = sfopen(NiL, file1, "r")))
-    {
+    else if (!(f1 = sfopen(NiL, file1, "r"))) {
         if (!(flags & CMP_SILENT))
             error(ERROR_system(0), "%s: cannot open", file1);
         goto done;
     }
     if (streq(file2, "-"))
         f2 = sfstdin;
-    else if (!(f2 = sfopen(NiL, file2, "r")))
-    {
+    else if (!(f2 = sfopen(NiL, file2, "r"))) {
         if (!(flags & CMP_SILENT))
             error(ERROR_system(0), "%s: cannot open", file2);
         goto done;
     }
-    if (s = *argv++)
-    {
+    if (s = *argv++) {
         o1 = strtoll(s, &e, 0);
-        if (*e)
-        {
+        if (*e) {
             error(ERROR_exit(0), "%s: %s: invalid skip", file1, s);
             goto done;
         }
-        if (s = *argv++)
-        {
+        if (s = *argv++) {
             o2 = strtoll(s, &e, 0);
-            if (*e)
-            {
+            if (*e) {
                 error(ERROR_exit(0), "%s: %s: invalid skip", file2, s);
                 goto done;
             }
         }
-        if (*argv)
-        {
+        if (*argv) {
             error(ERROR_usage(0), "%s", optusage(NiL));
             goto done;
         }
     }
-    if (o1 && sfseek(f1, o1, SEEK_SET) != o1)
-    {
+    if (o1 && sfseek(f1, o1, SEEK_SET) != o1) {
         if (!(flags & CMP_SILENT))
             error(ERROR_exit(0), "EOF on %s", file1);
         n = 1;
         goto done;
     }
-    if (o2 && sfseek(f2, o2, SEEK_SET) != o2)
-    {
+    if (o2 && sfseek(f2, o2, SEEK_SET) != o2) {
         if (!(flags & CMP_SILENT))
             error(ERROR_exit(0), "EOF on %s", file2);
         n = 1;

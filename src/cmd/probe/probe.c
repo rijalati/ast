@@ -183,8 +183,7 @@ rofs(const char *path)
 {
     struct statvfs vfs;
 
-    if (!statvfs(path, &vfs))
-    {
+    if (!statvfs(path, &vfs)) {
 #    if defined(ST_RDONLY)
         if (vfs.f_flag & ST_RDONLY)
             return 1;
@@ -221,10 +220,8 @@ verify(char *path, char *old, char *processor, int must)
     Sfio_t *of;
 
     r = 0;
-    if (nf = sfopen(NiL, path, "r"))
-    {
-        if ((ns = sfgetr(nf, '\n', 1)) && (nz = sfvalue(nf) - 1) > 0)
-        {
+    if (nf = sfopen(NiL, path, "r")) {
+        if ((ns = sfgetr(nf, '\n', 1)) && (nz = sfvalue(nf) - 1) > 0) {
             ns += nz;
             if ((oz = strlen(processor)) <= nz && !strcmp(processor, ns - oz))
                 r = 1;
@@ -232,10 +229,8 @@ verify(char *path, char *old, char *processor, int must)
                 error(2, "%s: %s clashes with %s", path, processor, ns - nz);
         }
         if (r && old && sfseek(nf, 0L, 0) == 0
-            && (of = sfopen(NiL, old, "r")))
-        {
-            for (;;)
-            {
+            && (of = sfopen(NiL, old, "r"))) {
+            for (;;) {
                 ns = sfreserve(nf, 0, 0);
                 nz = sfvalue(nf);
                 os = sfreserve(of, 0, 0);
@@ -256,8 +251,7 @@ verify(char *path, char *old, char *processor, int must)
                 r = 0;
         }
         sfclose(nf);
-    }
-    else if (must)
+    } else if (must)
         error(ERROR_SYSTEM | 2, "%s: cannot read", path);
     return r;
 }
@@ -309,10 +303,8 @@ main(int argc, char **argv)
 
     NoP(argc);
     error_info.id = probe = COMMAND;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             options |= ATTRIBUTES;
             continue;
@@ -360,10 +352,8 @@ main(int argc, char **argv)
     if (error_info.errors || !(language = *argv++) || !(tool = *argv++)
         || !(processor = *argv++) || *argv)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
-    if (*processor != '/')
-    {
-        if (s = strchr(processor, ' '))
-        {
+    if (*processor != '/') {
+        if (s = strchr(processor, ' ')) {
             n = s - processor;
             processor = strncpy(attributes, processor, n);
             *(processor + n) = 0;
@@ -392,13 +382,11 @@ main(int argc, char **argv)
                            attributes,
                            sizeof(attributes))))
         error(3, "cannot generate probe key");
-    if (stat(path, &ps))
-    {
+    if (stat(path, &ps)) {
         ps.st_mtime = 0;
         ps.st_mode = 0;
     }
-    if ((options & TEST) || !(ps.st_mode & S_IWUSR))
-    {
+    if ((options & TEST) || !(ps.st_mode & S_IWUSR)) {
         /*
          * verify the hierarchy before any ops
          */
@@ -410,8 +398,7 @@ main(int argc, char **argv)
         strcpy(base + 6, probe);
         if (stat(path, &vs))
             error(ERROR_SYSTEM | 3, "%s: not found", path);
-        if ((vs.st_mode & S_ISUID) && !rofs(path))
-        {
+        if ((vs.st_mode & S_ISUID) && !rofs(path)) {
             suid = (n = geteuid()) != getuid();
             if (suid && vs.st_uid != n)
                 error(3, "%s: effective uid mismatch", path);
@@ -420,8 +407,7 @@ main(int argc, char **argv)
                 error(ERROR_SYSTEM | 3, "%s: not found", path);
             if (suid && vs.st_uid != n)
                 error(3, "%s: effective uid mismatch", path);
-        }
-        else
+        } else
             suid = -1;
         strcpy(base, probe);
         if (stat(path, &vs))
@@ -447,10 +433,8 @@ main(int argc, char **argv)
                                     attributes,
                                     sizeof(attributes))))
             error(3, "cannot generate probe key");
-        else
-        {
-            if (stat(path, &ps))
-            {
+        else {
+            if (stat(path, &ps)) {
                 ps.st_mtime = 0;
                 ps.st_mode = 0;
             }
@@ -464,12 +448,10 @@ main(int argc, char **argv)
      * ops ok now
      */
 
-    if (options & DELETE)
-    {
+    if (options & DELETE) {
         if (lstat(processor, &vs)
             || getuid() != vs.st_uid
-               && (!ps.st_mode || getgid() != ps.st_gid))
-        {
+               && (!ps.st_mode || getgid() != ps.st_gid)) {
             /*
              * request not by owner of processor
              * so limit to probe owner
@@ -480,31 +462,24 @@ main(int argc, char **argv)
         }
         if (remove(path))
             error(ERROR_SYSTEM | 3, "%s: cannot delete", path);
-    }
-    else
-    {
+    } else {
         if (!(options & (FORCE | TEST)) && ps.st_mode
             && (ptime <= ( unsigned long )ps.st_mtime
                 || ptime <= ( unsigned long )ps.st_ctime
-                || (ps.st_mode & S_IWUSR)))
-        {
+                || (ps.st_mode & S_IWUSR))) {
             if (ptime <= ( unsigned long )ps.st_mtime
-                || ptime <= ( unsigned long )ps.st_ctime)
-            {
+                || ptime <= ( unsigned long )ps.st_ctime) {
                 if (!options)
                     error(1, "%s: information already generated", path);
-            }
-            else if (!(options & OVERRIDE) && (ps.st_mode & S_IWUSR))
+            } else if (!(options & OVERRIDE) && (ps.st_mode & S_IWUSR))
                 error(0,
                       "%s probe information for %s language processor %s "
                       "must be manually regenerated",
                       tool,
                       language,
                       processor);
-        }
-        else if ((options & (FORCE | GENERATE | TEST))
-                 || !(options & ~(FORCE | GENERATE | SILENT | TRACE)))
-        {
+        } else if ((options & (FORCE | GENERATE | TEST))
+                   || !(options & ~(FORCE | GENERATE | SILENT | TRACE))) {
             /*
              * recursion check using environment sentinel
              */
@@ -524,13 +499,11 @@ main(int argc, char **argv)
              * generate the new info in a tmp file
              */
 
-            if (suid < 0)
-            {
+            if (suid < 0) {
                 strcpy(base, ".");
                 if (access(path, F_OK))
                     for (s = path + (*path == '/'); s = strchr(s, '/');
-                         *s++ = '/')
-                    {
+                         *s++ = '/') {
                         *s = 0;
                         if (access(path, F_OK)
                             && mkdir(path,
@@ -553,8 +526,7 @@ main(int argc, char **argv)
             for (n = 0; n < elementsof(signals); n++)
                 if (signal(signals[n], interrupt) == SIG_IGN)
                     signal(signals[n], SIG_IGN);
-            if (!(options & TEST))
-            {
+            if (!(options & TEST)) {
                 if (!(fp = sfopen(NiL, tmp, "w")))
                     error(ERROR_SYSTEM | 3, "%s: cannot write", tmp);
                 chmod(tmp, S_IRUSR | S_IRGRP | S_IROTH);
@@ -593,49 +565,40 @@ main(int argc, char **argv)
                 error(ERROR_SYSTEM | 2, "%s: command exec error", script);
             else if (n > 0)
                 error(2, "%s: command exit code %d", script, n);
-            else if (!(options & TEST))
-            {
+            else if (!(options & TEST)) {
                 /*
                  * verify and rename to the real probe key path
                  */
 
                 strcpy(base, key);
-                if (verify(tmp, path, processor, 1))
-                {
+                if (verify(tmp, path, processor, 1)) {
                     remove(path);
-                    if (!rename(tmp, path))
-                    {
+                    if (!rename(tmp, path)) {
                         /*
                          * warp the file to yesterday to
                          * accomodate make installations
                          */
 
-                        if (!stat(path, &ps))
-                        {
+                        if (!stat(path, &ps)) {
                             ps.st_mtime
                             = ( unsigned long )ps.st_mtime - 24 * 60 * 60;
                             touch(path, ps.st_mtime, ps.st_mtime, 0);
                         }
-                    }
-                    else if (!verify(path, NiL, processor, 0))
-                    {
+                    } else if (!verify(path, NiL, processor, 0)) {
                         n = -1;
                         error(ERROR_SYSTEM | 2,
                               "%s: cannot rename to %s",
                               tmp,
                               path);
                     }
-                }
-                else
+                } else
                     n = -1;
             }
             if (n && !(options & TEST))
                 remove(tmp);
         }
-        if (!error_info.errors)
-        {
-            if (options & OVERRIDE)
-            {
+        if (!error_info.errors) {
+            if (options & OVERRIDE) {
                 n = 5;
                 base = path + strlen(path);
                 while (base > path && (*--base != '/' || --n))
@@ -647,15 +610,12 @@ main(int argc, char **argv)
                     v = override;
                 sfsprintf(
                 cmd, sizeof(cmd), "%-.*s%s", v - override, override, base);
-                if (!(options & KEY))
-                {
+                if (!(options & KEY)) {
                     if (!access(cmd, F_OK))
                         error(3, "%s: override already generated", cmd);
-                    if (!(pf = sfopen(NiL, cmd, "w")))
-                    {
+                    if (!(pf = sfopen(NiL, cmd, "w"))) {
                         for (s = cmd + (*cmd == '/'); s = strchr(s, '/');
-                             *s++ = '/')
-                        {
+                             *s++ = '/') {
                             *s = 0;
                             if (access(cmd, F_OK)
                                 && mkdir(cmd,
@@ -675,17 +635,13 @@ main(int argc, char **argv)
                         error(ERROR_SYSTEM | 3, "%s: copy error", cmd);
                 }
                 sfprintf(sfstdout, "%s\n", cmd);
-            }
-            else
-            {
+            } else {
                 if (options & KEY)
                     sfprintf(sfstdout, "%s\n", path);
                 if (options & ATTRIBUTES)
                     sfprintf(sfstdout, "%s\n", attributes);
-                if (!(options & TEST))
-                {
-                    if (options & LIST)
-                    {
+                if (!(options & TEST)) {
+                    if (options & LIST) {
                         if (!(fp = sfopen(NiL, path, "r")))
                             error(ERROR_SYSTEM | 3, "%s: cannot read", path);
                         sfmove(fp, sfstdout, SF_UNBOUND, -1);

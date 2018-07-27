@@ -75,8 +75,7 @@
         Int32 zz, tmp;                                                       \
         zz = z;                                                              \
         tmp = heap[zz];                                                      \
-        while (weight[tmp] < weight[heap[zz >> 1]])                          \
-        {                                                                    \
+        while (weight[tmp] < weight[heap[zz >> 1]]) {                        \
             heap[zz] = heap[zz >> 1];                                        \
             zz >>= 1;                                                        \
         }                                                                    \
@@ -88,8 +87,7 @@
         Int32 zz, yy, tmp;                                                   \
         zz = z;                                                              \
         tmp = heap[zz];                                                      \
-        while (True)                                                         \
-        {                                                                    \
+        while (True) {                                                       \
             yy = zz << 1;                                                    \
             if (yy > nHeap)                                                  \
                 break;                                                       \
@@ -122,8 +120,7 @@ hbMakeCodeLengths(UChar *len, Int32 *freq, Int32 alphaSize, Int32 maxLen)
     for (i = 0; i < alphaSize; i++)
         weight[i + 1] = (freq[i] == 0 ? 1 : freq[i]) << 8;
 
-    while (True)
-    {
+    while (True) {
 
         nNodes = alphaSize;
         nHeap = 0;
@@ -132,8 +129,7 @@ hbMakeCodeLengths(UChar *len, Int32 *freq, Int32 alphaSize, Int32 maxLen)
         weight[0] = 0;
         parent[0] = -2;
 
-        for (i = 1; i <= alphaSize; i++)
-        {
+        for (i = 1; i <= alphaSize; i++) {
             parent[i] = -1;
             nHeap++;
             heap[nHeap] = i;
@@ -142,8 +138,7 @@ hbMakeCodeLengths(UChar *len, Int32 *freq, Int32 alphaSize, Int32 maxLen)
 
         AssertH(nHeap < (BZ_MAX_ALPHA_SIZE + 2), 2001);
 
-        while (nHeap > 1)
-        {
+        while (nHeap > 1) {
             n1 = heap[1];
             heap[1] = heap[nHeap];
             nHeap--;
@@ -164,12 +159,10 @@ hbMakeCodeLengths(UChar *len, Int32 *freq, Int32 alphaSize, Int32 maxLen)
         AssertH(nNodes < (BZ_MAX_ALPHA_SIZE * 2), 2002);
 
         tooLong = False;
-        for (i = 1; i <= alphaSize; i++)
-        {
+        for (i = 1; i <= alphaSize; i++) {
             j = 0;
             k = i;
-            while (parent[k] >= 0)
-            {
+            while (parent[k] >= 0) {
                 k = parent[k];
                 j++;
             }
@@ -181,8 +174,7 @@ hbMakeCodeLengths(UChar *len, Int32 *freq, Int32 alphaSize, Int32 maxLen)
         if (!tooLong)
             break;
 
-        for (i = 1; i < alphaSize; i++)
-        {
+        for (i = 1; i < alphaSize; i++) {
             j = weight[i] >> 8;
             j = 1 + (j / 2);
             weight[i] = j << 8;
@@ -202,11 +194,9 @@ hbAssignCodes(Int32 *code,
     Int32 n, vec, i;
 
     vec = 0;
-    for (n = minLen; n <= maxLen; n++)
-    {
+    for (n = minLen; n <= maxLen; n++) {
         for (i = 0; i < alphaSize; i++)
-            if (length[i] == n)
-            {
+            if (length[i] == n) {
                 code[i] = vec;
                 vec++;
             };
@@ -230,8 +220,7 @@ hbCreateDecodeTables(Int32 *limit,
     pp = 0;
     for (i = minLen; i <= maxLen; i++)
         for (j = 0; j < alphaSize; j++)
-            if (length[j] == i)
-            {
+            if (length[j] == i) {
                 perm[pp] = j;
                 pp++;
             };
@@ -248,8 +237,7 @@ hbCreateDecodeTables(Int32 *limit,
         limit[i] = 0;
     vec = 0;
 
-    for (i = minLen; i <= maxLen; i++)
-    {
+    for (i = minLen; i <= maxLen; i++) {
         vec += (base[i + 1] - base[i]);
         limit[i] = vec - 1;
         vec <<= 1;

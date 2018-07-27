@@ -82,8 +82,7 @@ tmain()
         {
             cpid[k] = pid;
             continue;
-        }
-        else /* child process */
+        } else /* child process */
         {
             workload(
             ( unsigned int )getpid()); /* now start working concurrently */
@@ -105,8 +104,7 @@ tmain()
 
     gettimeofday(&tv2, 0); /* get end of time */
 
-    if (tv1.tv_usec > tv2.tv_usec)
-    {
+    if (tv1.tv_usec > tv2.tv_usec) {
         tv2.tv_sec -= 1;
         tv2.tv_usec += 1000000;
     }

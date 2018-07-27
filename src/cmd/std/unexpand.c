@@ -101,15 +101,13 @@ gettabs(const char *arg, int *ntab)
     const char *cp = arg;
     int c, n = 1, old = -1;
     int *tablist;
-    while (c = *cp++)
-    {
+    while (c = *cp++) {
         if (c == ' ' || c == '\t' || c == ',')
             n++;
     }
     tablist = newof(NiL, int, n, 0);
     n = 0;
-    while (1)
-    {
+    while (1) {
         cp = arg;
         while ((c = *cp) && c == ' ' || c == '\t' || c == ',')
             cp++;
@@ -147,23 +145,19 @@ expand(Sfio_t *in,
     else
         state[' '] = S_SPACE;
     errno = 0;
-    while (buff = cp = sfreserve(in, SF_UNBOUND, 0))
-    {
+    while (buff = cp = sfreserve(in, SF_UNBOUND, 0)) {
         first = cp - n;
         cpend = cp + sfvalue(in);
         if (state[n = *( unsigned char * )(cpend - 1)] == 0
             || (n == ' ' && type == 0))
             cpend[-1] = 0; /* put in sentinal */
         savec = n;
-        while (1)
-        {
+        while (1) {
             while ((n = state[*( unsigned char * )cp++]) == 0)
                 ;
-            switch (n)
-            {
+            switch (n) {
             case S_SPACE:
-                if (tabmax == 0 || cp == first + 1)
-                {
+                if (tabmax == 0 || cp == first + 1) {
                     int i, tabspace = tablist[0];
                     n = 1;
                     cp -= 1;
@@ -173,8 +167,7 @@ expand(Sfio_t *in,
                         n++;
                     i = cp - buff;
                     /* check for end of buffer */
-                    if (cp[n] == 0 && cp + n + 1 == cpend && savec == ' ')
-                    {
+                    if (cp[n] == 0 && cp + n + 1 == cpend && savec == ' ') {
                         /* keep grabbing spaces */
                         int c;
                         if (i)
@@ -188,16 +181,13 @@ expand(Sfio_t *in,
                         buff = cp + n;
                     }
                     cp += n;
-                    if (n >= tabspace || cp + n > cpend)
-                    {
-                        if (i)
-                        {
+                    if (n >= tabspace || cp + n > cpend) {
+                        if (i) {
                             sfwrite(out, buff, i);
                             i = 0;
                         }
                         buff = cp;
-                        while (n >= tabspace)
-                        {
+                        while (n >= tabspace) {
                             sfputc(out, '\t');
                             n -= tabspace;
                             if (++i < tabmax)
@@ -219,11 +209,9 @@ expand(Sfio_t *in,
                 n = (cp - 1) - first;
                 if (tabmax == 1)
                     n = tablist[0] * ((n + tablist[0]) / tablist[0]) - n;
-                else
-                {
+                else {
                     int i = 0;
-                    while (1)
-                    {
+                    while (1) {
                         if (i >= tabmax)
                             n = 1;
                         else if (tablist[i++] <= n)
@@ -235,8 +223,7 @@ expand(Sfio_t *in,
                 }
                 if (n <= 1)
                     sfputc(out, ' ');
-                else
-                {
+                else {
                     sfnputc(out, ' ', n);
                     first -= (n - 1);
                 }
@@ -249,8 +236,7 @@ expand(Sfio_t *in,
                     first = cp;
                 break;
             case S_EOF:
-                if (cp == cpend)
-                {
+                if (cp == cpend) {
                     /* end of buffer */
                     cp[-1] = savec;
                 }
@@ -263,8 +249,7 @@ expand(Sfio_t *in,
                     state['\t'] = S_TAB;
                 break;
             }
-            if (cp >= cpend)
-            {
+            if (cp >= cpend) {
                 if ((n = cp - buff) > 0)
                     sfwrite(out, buff, n);
                 n = cp - first;
@@ -298,8 +283,7 @@ main(int argc, char **argv)
     else
         usage = unexpand_usage;
     while (n = optget(argv, usage))
-        switch (n)
-        {
+        switch (n) {
         case 't':
             tablist = gettabs(opt_info.arg, &ntabs);
             break;
@@ -330,12 +314,10 @@ main(int argc, char **argv)
         error(ERROR_usage(2), "%s", optusage(( char * )0));
     if (cp = *argv)
         argv++;
-    do
-    {
+    do {
         if (!cp || streq(cp, "-"))
             fp = sfstdin;
-        else if (!(fp = sfopen(NiL, cp, "r")))
-        {
+        else if (!(fp = sfopen(NiL, cp, "r"))) {
             error(ERROR_system(0), "%s: cannot open", cp);
             error_info.errors = 1;
             continue;

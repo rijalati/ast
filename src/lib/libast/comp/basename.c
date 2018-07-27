@@ -40,15 +40,12 @@ basename(char *pathname)
     if (last > first)
         while (*--last == '/' && last > first)
             ;
-    if (last == first && *last == '/')
-    {
+    if (last == first && *last == '/') {
         /* all '/' or "" */
         if (*first == '/')
             if (*++last == '/') /* keep leading // */
                 last++;
-    }
-    else
-    {
+    } else {
         for (first = last++; first > pathname && *first != '/'; first--)
             ;
         if (*first == '/')

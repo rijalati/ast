@@ -66,21 +66,18 @@ int c;                        /* the value to be pushed back */
     SFLOCK(f, 0);
 
     /* fast handling of the typical unget */
-    if (f->next > f->data && f->next[-1] == ( uchar )c)
-    {
+    if (f->next > f->data && f->next[-1] == ( uchar )c) {
         f->next -= 1;
         goto done;
     }
 
     /* make a string stream for unget characters */
-    if (f->disc != _Sfudisc)
-    {
+    if (f->disc != _Sfudisc) {
         if (!(uf = sfnew(NIL(Sfio_t *),
                          NIL(char *),
                          ( size_t )SF_UNBOUND,
                          -1,
-                         SF_STRING | SF_READ)))
-        {
+                         SF_STRING | SF_READ))) {
             c = -1;
             goto done;
         }
@@ -92,13 +89,11 @@ int c;                        /* the value to be pushed back */
     }
 
     /* space for data */
-    if (f->next == f->data)
-    {
+    if (f->next == f->data) {
         reg uchar *data;
         if (f->size < 0)
             f->size = 0;
-        if (!(data = ( uchar * )malloc(f->size + 16)))
-        {
+        if (!(data = ( uchar * )malloc(f->size + 16))) {
             c = -1;
             goto done;
         }

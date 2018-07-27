@@ -438,8 +438,7 @@ imapflagnames(Sfio_t *sp, const Imaplex_t *tab, int n, int flags)
 
     sep = 0;
     for (end = tab + n; tab < end; tab++)
-        if (flags & tab->code)
-        {
+        if (flags & tab->code) {
             if (sep)
                 sfputc(sp, ' ');
             else
@@ -458,8 +457,7 @@ imapflagnames(Sfio_t *sp, const Imaplex_t *tab, int n, int flags)
 static void
 imapdumparg(Imap_t *imap, Imaparg_t *ap, int level)
 {
-    switch (ap->type)
-    {
+    switch (ap->type) {
     case IMAP_data:
         sfprintf(sfstdout,
                  " {%d}%.*s",
@@ -468,16 +466,13 @@ imapdumparg(Imap_t *imap, Imaparg_t *ap, int level)
                  ap->value.data.buffer);
         break;
     case IMAP_list:
-        if (ap = ap->value.list.head)
-        {
+        if (ap = ap->value.list.head) {
             sfprintf(sfstdout, " (");
-            do
-            {
+            do {
                 imapdumparg(imap, ap, level + 1);
             } while (ap = ap->next);
             sfprintf(sfstdout, " )");
-        }
-        else
+        } else
             sfprintf(sfstdout, " NIL");
         break;
     case IMAP_name:
@@ -513,8 +508,7 @@ imapset(Imap_t *imap, Imaparg_t *ap, int code)
                                                sizeof(imapflags[0]),
                                                stracmp,
                                                ap->value.name,
-                                               NiL)))
-        {
+                                               NiL))) {
             if (fp->code == IMAP_FLAG_LOCAL)
                 for (i = 0; i < elementsof(imapflags); i++)
                     if (imapflags[i].code & IMAP_FLAG_LOCAL)
@@ -538,14 +532,11 @@ imapgetarg(Imap_t *imap, Imapop_t *op, Imaplist_t *lp, int *ep, char *s)
     char *e;
 
     eol = ep ? *ep : 0;
-    for (;;)
-    {
+    for (;;) {
         for (; isspace(*s); s++)
             ;
-        if (*s)
-        {
-            if (*s == eol)
-            {
+        if (*s) {
+            if (*s == eol) {
                 *ep = 0;
                 return s + 1;
             }
@@ -556,14 +547,12 @@ imapgetarg(Imap_t *imap, Imapop_t *op, Imaplist_t *lp, int *ep, char *s)
             else
                 lp->head = ap;
             lp->tail = ap;
-            if (!eol && op->code <= IMAP_BYE && *s != '[')
-            {
+            if (!eol && op->code <= IMAP_BYE && *s != '[') {
                 ap->type = IMAP_string;
                 ap->value.string = s;
                 return 0;
             }
-            switch (*s)
-            {
+            switch (*s) {
             case '{':
                 ap->type = IMAP_data;
                 ap->value.data.length = strtol(s + 1, &e, 10);
@@ -607,8 +596,8 @@ imapgetarg(Imap_t *imap, Imapop_t *op, Imaplist_t *lp, int *ep, char *s)
                 ap->value.number = strtol(s, &e, 10);
                 return e;
             case 'N':
-                if (*(s + 1) == 'I' && *(s + 2) == 'L' && !isalnum(*(s + 3)))
-                {
+                if (*(s + 1) == 'I' && *(s + 2) == 'L'
+                    && !isalnum(*(s + 3))) {
                     ap->type = IMAP_list;
                     ap->value.list.head = 0;
                     return s + 3;
@@ -622,14 +611,11 @@ imapgetarg(Imap_t *imap, Imapop_t *op, Imaplist_t *lp, int *ep, char *s)
                         m = c;
                     else if (c == ']')
                         m = 0;
-                    else if (m == 0)
-                    {
-                        if (c == eol)
-                        {
+                    else if (m == 0) {
+                        if (c == eol) {
                             *ep = 0;
                             break;
-                        }
-                        else if (isspace(c))
+                        } else if (isspace(c))
                             break;
                     }
                 if (c)
@@ -658,13 +644,11 @@ imapputarg(Imap_t *imap, Imaparg_t *ap)
     char *t;
     int n;
 
-    switch (ap->type)
-    {
+    switch (ap->type) {
     case IMAP_data:
         t = s = ap->value.data.buffer;
         e = s + ap->value.data.length;
-        while (t = ( char * )memchr(t, '\r', e - t))
-        {
+        while (t = ( char * )memchr(t, '\r', e - t)) {
             if (++t >= e)
                 break;
             if (*t != '\n')
@@ -679,8 +663,7 @@ imapputarg(Imap_t *imap, Imaparg_t *ap)
             if ((s = ++t) >= e)
                 break;
         }
-        if ((n = e - s) > 0)
-        {
+        if ((n = e - s) > 0) {
             if (imap->copy.prefix)
                 sfwrite(imap->copy.fp,
                         imap->copy.prefix,
@@ -729,15 +712,12 @@ imapop(Imap_t *imap)
 
     for (; isspace(*s); s++)
         ;
-    if (*s == '*')
-    {
+    if (*s == '*') {
         for (; *++s && !isspace(*s);)
             ;
         op = imap->op;
         op->state = IMAP_STATE_sent;
-    }
-    else
-    {
+    } else {
         n = ( int )strtol(s, &e, 10);
         s = e;
         op = imap->op + n;
@@ -760,13 +740,11 @@ imapop(Imap_t *imap)
 
     for (; isspace(*s); s++)
         ;
-    if (isdigit(*s))
-    {
+    if (isdigit(*s)) {
         n = ( int )strtol(s, &e, 10);
         for (s = e; isspace(*s); s++)
             ;
-    }
-    else
+    } else
         n = 0;
 
     /*
@@ -802,8 +780,7 @@ imapop(Imap_t *imap)
      */
 
     bt = 0;
-    while (z > s && *(z - 1) == '}')
-    {
+    while (z > s && *(z - 1) == '}') {
         n = z - s + 1;
         if (!(bp = vmnewof(op->vm, 0, Imapblock_t, 1, n)))
             note(FATAL | SYSTEM, "Out of space [imap block]");
@@ -829,16 +806,14 @@ imapop(Imap_t *imap)
         if (TRACING('m'))
             note(ERROR, "imap: mesg %s", s);
     }
-    if (bt)
-    {
+    if (bt) {
         if (!(bp = vmnewof(op->vm, 0, Imapblock_t, 1, n)))
             note(FATAL | SYSTEM, "Out of space [imap block]");
         bp->length = z - s;
         bp->data = s;
         bt->next = bp;
         s = bh->data;
-    }
-    else
+    } else
         bh = 0;
     op->blocks = bh;
     op->args.head = op->args.tail = 0;
@@ -868,8 +843,7 @@ imap_ENVELOPE(Imap_t *imap, Imaparg_t *vp, Msg_t *mp)
     ip = ( Imapmsg_t * )mp->m_info;
     if (!vp)
         return;
-    if (s = vp->value.string)
-    {
+    if (s = vp->value.string) {
         s = fmttime("%a %b %e %H:%M %Z %Y", tmdate(s, NiL, NiL));
         if (ip->date)
             strcpy(ip->date, s);
@@ -889,8 +863,7 @@ imap_ENVELOPE(Imap_t *imap, Imaparg_t *vp, Msg_t *mp)
         return;
     if ((s = vp->value.string) && state.var.local)
         s = localize(s);
-    if (s && *s)
-    {
+    if (s && *s) {
         sfprintf(imap->tp, "%s@%s", ip->from, s);
         ip->from = struse(imap->tp);
     }
@@ -919,16 +892,14 @@ imap_BODYSTRUCTURE(Imap_t *imap, Imaparg_t *ap, Msg_t *mp, Imapbody_t *bp)
         (( Imapmsg_t * )mp->m_info)->parts = pp;
     bp->lastpart = pp;
     (*bp->id)++;
-    if (ap->type == IMAP_list)
-    {
+    if (ap->type == IMAP_list) {
         pp->content = IMAP_CONTENT_multipart;
         if (bp->id >= &bp->idstack[elementsof(bp->idstack) - 1])
             note(FATAL,
                  "imap: multipart nesting too deep -- %d max",
                  elementsof(bp->idstack));
         *++bp->id = 0;
-        do
-        {
+        do {
             imap_BODYSTRUCTURE(imap, ap->value.list.head, mp, bp);
         } while ((ap = ap->next) && ap->type == IMAP_list);
         bp->id--;
@@ -937,16 +908,13 @@ imap_BODYSTRUCTURE(Imap_t *imap, Imaparg_t *ap, Msg_t *mp, Imapbody_t *bp)
             sfprintf(imap->tp, "/%s", strlower(ap->value.string));
         pp->type = vmstrdup(imap->vm, struse(imap->tp));
         pp->id = "";
-    }
-    else
-    {
+    } else {
         id = bp->idstack;
         sfprintf(imap->tp, "%d", *id);
         while (++id <= bp->id)
             sfprintf(imap->tp, ".%d", *id);
         pp->id = vmstrdup(imap->vm, struse(imap->tp));
-        if (s = ap->value.string)
-        {
+        if (s = ap->value.string) {
             s = strlower(s);
             if (streq(s, "text"))
                 pp->content = IMAP_CONTENT_text;
@@ -962,13 +930,11 @@ imap_BODYSTRUCTURE(Imap_t *imap, Imaparg_t *ap, Msg_t *mp, Imapbody_t *bp)
         if (!ap || !(ap = ap->next))
             return;
         if (vp = ap->value.list.head)
-            do
-            {
+            do {
                 s = vp->value.string;
                 if (!(vp = vp->next))
                     break;
-                if (s && streq(s, "NAME") && vp->value.string)
-                {
+                if (s && streq(s, "NAME") && vp->value.string) {
                     pp->name = vmstrdup(imap->vm, vp->value.string);
                     break;
                 }
@@ -982,8 +948,7 @@ imap_BODYSTRUCTURE(Imap_t *imap, Imaparg_t *ap, Msg_t *mp, Imapbody_t *bp)
         pp->size = ap->value.number;
         if (!(ap = ap->next))
             return;
-        switch (pp->content)
-        {
+        switch (pp->content) {
         case IMAP_CONTENT_message:
             if (bp->id >= &bp->idstack[elementsof(bp->idstack) - 1])
                 note(FATAL,
@@ -997,17 +962,14 @@ imap_BODYSTRUCTURE(Imap_t *imap, Imaparg_t *ap, Msg_t *mp, Imapbody_t *bp)
             break;
         case IMAP_CONTENT_text:
             pp->lines = ap->value.number;
-            if (!pp->name)
-            {
+            if (!pp->name) {
                 if (!(ap = ap->next) || !(ap = ap->next))
                     return;
                 if (ap->type == IMAP_list && (ap = ap->value.list.head)
                     && (s = ap->value.string) && streq(s, "ATTACHMENT")
                     && (ap = ap->next) && (ap = ap->value.list.head))
-                    while ((s = ap->value.name) && (ap = ap->next))
-                    {
-                        if (streq(s, "FILENAME"))
-                        {
+                    while ((s = ap->value.name) && (ap = ap->next)) {
+                        if (streq(s, "FILENAME")) {
                             pp->name = vmstrdup(imap->vm, ap->value.string);
                             break;
                         }
@@ -1017,8 +979,7 @@ imap_BODYSTRUCTURE(Imap_t *imap, Imaparg_t *ap, Msg_t *mp, Imapbody_t *bp)
             }
             break;
         case IMAP_CONTENT_data:
-            if (!pp->name)
-            {
+            if (!pp->name) {
                 sfprintf(imap->tp,
                          "%d.att",
                          (( Imapmsg_t * )mp->m_info)->attachments + 1);
@@ -1026,13 +987,11 @@ imap_BODYSTRUCTURE(Imap_t *imap, Imaparg_t *ap, Msg_t *mp, Imapbody_t *bp)
             }
             break;
         }
-        if (pp->name)
-        {
+        if (pp->name) {
             mp->m_lines += 2;
             pp->content = IMAP_CONTENT_attachment;
             pp->attachment = ++(( Imapmsg_t * )mp->m_info)->attachments;
-        }
-        else
+        } else
             mp->m_lines += pp->lines;
     }
 }
@@ -1060,12 +1019,10 @@ imap_FETCH(Imap_t *imap, Imapop_t *op)
              state.msg.count);
     mp = state.msg.list + op->count - 1;
     ip = ( Imapmsg_t * )mp->m_info;
-    if (ap = op->args.head)
-    {
+    if (ap = op->args.head) {
         if (ap->type == IMAP_list)
             ap = ap->value.list.head;
-        while (ap)
-        {
+        while (ap) {
             if (ap->type != IMAP_name)
                 xp = 0;
             else if (!(xp = ( Imaplex_t * )strsearch(imapfetch,
@@ -1073,10 +1030,8 @@ imap_FETCH(Imap_t *imap, Imapop_t *op)
                                                      sizeof(Imaplex_t),
                                                      stracmp,
                                                      ap->value.name,
-                                                     NiL)))
-            {
-                if (s = strchr(ap->value.name, '['))
-                {
+                                                     NiL))) {
+                if (s = strchr(ap->value.name, '[')) {
                     *s = 0;
                     xp = ( Imaplex_t * )strsearch(imapfetch,
                                                   elementsof(imapfetch),
@@ -1089,11 +1044,9 @@ imap_FETCH(Imap_t *imap, Imapop_t *op)
                 if ((TRACING('u')) && !xp)
                     note(ERROR, "imap: %s: unknown response", ap->value.name);
             }
-            if (ap = ap->next)
-            {
+            if (ap = ap->next) {
                 if (xp)
-                    switch (xp->code)
-                    {
+                    switch (xp->code) {
                     case IMAP_FETCH_BODY:
                         imapputarg(imap, ap);
                         break;
@@ -1151,8 +1104,7 @@ imapsync(Imap_t *imap)
     int dot;
 
     dot = state.msg.dot ? (state.msg.dot - state.msg.list) : 0;
-    while (state.msg.count < imap->mailbox.exists)
-    {
+    while (state.msg.count < imap->mailbox.exists) {
         mp = newmsg(0);
         if (state.msg.count < imap->mailbox.unseen || !imap->mailbox.unseen)
             mp->m_flag = MUSED | MREAD;
@@ -1181,8 +1133,7 @@ imaprecv(Imap_t *imap, Imapop_t *wp)
     int i;
     char *s;
 
-    if (!wp || wp == imap->op)
-    {
+    if (!wp || wp == imap->op) {
         for (op = imap->op + 1;; op++)
             if (op >= &imap->op[elementsof(imap->op)])
                 return 0;
@@ -1191,36 +1142,29 @@ imaprecv(Imap_t *imap, Imapop_t *wp)
     }
     if (!wp)
         to = 0;
-    else if (wp->state != IMAP_STATE_sent && wp != imap->op)
-    {
+    else if (wp->state != IMAP_STATE_sent && wp != imap->op) {
         if (wp->code)
             return wp;
         note(ERROR, "imap: %d: operation never sent", wp - imap->op);
         return 0;
-    }
-    else
+    } else
         to = -1;
-    for (;;)
-    {
-        switch (sfpoll(&imap->rp, 1, to))
-        {
+    for (;;) {
+        switch (sfpoll(&imap->rp, 1, to)) {
         case 0:
             if (wp)
                 note(
                 ERROR, "imap: %d: operation not completed", wp - imap->op);
             break;
         case 1:
-            if (op = imapop(imap))
-            {
-                if (TRACING('a'))
-                {
+            if (op = imapop(imap)) {
+                if (TRACING('a')) {
                     note(
                     ERROR, "imap: exec op %d count %d", op->code, op->count);
                     for (ap = op->args.head; ap; ap = ap->next)
                         imapdumparg(imap, ap, 0);
                 }
-                switch (op->code)
-                {
+                switch (op->code) {
                 case IMAP_BAD:
                 case IMAP_NO:
                     n = 1;
@@ -1232,17 +1176,14 @@ imaprecv(Imap_t *imap, Imapop_t *wp)
                     goto status;
                 case IMAP_CAPABILITY:
                     for (ap = op->args.head; ap; ap = ap->next)
-                        if (ap->type == IMAP_name)
-                        {
+                        if (ap->type == IMAP_name) {
                             s = ap->value.name;
                             /*UNDENT...*/
 
-                            if (strneq(s, "IMAP", 4))
-                            {
+                            if (strneq(s, "IMAP", 4)) {
                                 s += 4;
                                 if ((i = ( int )strtol(s, &s, 10))
-                                    >= imap->version)
-                                {
+                                    >= imap->version) {
                                     if (i > imap->version)
                                         imap->revision = 0;
                                     imap->version = i;
@@ -1252,8 +1193,7 @@ imaprecv(Imap_t *imap, Imapop_t *wp)
                                     if (i > imap->revision)
                                         imap->revision = i;
                                 }
-                            }
-                            else if (strneq(s, "AUTH=", 5))
+                            } else if (strneq(s, "AUTH=", 5))
                                 if (xp = ( Imaplex_t * )strsearch(
                                     imapauth,
                                     elementsof(imapauth),
@@ -1269,16 +1209,14 @@ imaprecv(Imap_t *imap, Imapop_t *wp)
                 case IMAP_EXISTS:
                     if (imap->mailbox.exists < 0)
                         imap->mailbox.exists = op->count;
-                    else
-                    {
+                    else {
                         n = op->count - imap->mailbox.exists;
                         if (n > 0)
                             note(ERROR,
                                  "(NOTE %d new message%s incorporated)",
                                  n,
                                  n == 1 ? "" : "s");
-                        else if (n < 0)
-                        {
+                        else if (n < 0) {
                             n = -n;
                             note(
                             ERROR,
@@ -1315,8 +1253,7 @@ imaprecv(Imap_t *imap, Imapop_t *wp)
                     /*
                      * check for status
                      */
-                    if (ap = op->args.head)
-                    {
+                    if (ap = op->args.head) {
                         if (ap->type == IMAP_list
                             && (sp = ap->value.list.head)
                             && sp->type == IMAP_name
@@ -1326,14 +1263,12 @@ imaprecv(Imap_t *imap, Imapop_t *wp)
                                 sizeof(Imaplex_t),
                                 stracmp,
                                 sp->value.name,
-                                NiL)))
-                        {
+                                NiL))) {
                             /*UNDENT...*/
 
                             ap = ap->next;
                             sp = sp->next;
-                            switch (xp->code)
-                            {
+                            switch (xp->code) {
                             case IMAP_STATUS_ALERT:
                             case IMAP_STATUS_NEWNAME:
                             case IMAP_STATUS_PARSE:
@@ -1388,8 +1323,7 @@ imaprecv(Imap_t *imap, Imapop_t *wp)
                     break;
                 case IMAP_SEARCH:
                     for (ap = op->args.head; ap; ap = ap->next)
-                        if (ap->type == IMAP_number)
-                        {
+                        if (ap->type == IMAP_number) {
                             imap->index->m_index = ap->value.number;
                             imap->index++;
                         }
@@ -1441,8 +1375,7 @@ imapvsend(Imap_t *imap, int retain, const char *fmt, va_list ap)
     if (!(i = imap->tag))
         i = 1;
     c = i;
-    while (imap->op[i].state)
-    {
+    while (imap->op[i].state) {
         if (++i >= elementsof(imap->op))
             i = 1;
         if (i == c)
@@ -1458,10 +1391,8 @@ imapvsend(Imap_t *imap, int retain, const char *fmt, va_list ap)
     sfvprintf(imap->np, fmt, ap);
     s = struse(imap->np);
     q = 0;
-    for (;;)
-    {
-        switch (c = *s++)
-        {
+    for (;;) {
+        switch (c = *s++) {
         case 0:
             break;
         case '"':
@@ -1474,16 +1405,14 @@ imapvsend(Imap_t *imap, int retain, const char *fmt, va_list ap)
         case '\n':
         case '\r':
         case '\t':
-            if (!q)
-            {
+            if (!q) {
                 for (; (c = *s)
                        && (c == ' ' || c == '\n' || c == '\r' || c == '\t');
                      s++)
                     ;
                 if (c && c != ')')
                     sfputc(imap->tp, ' ');
-            }
-            else
+            } else
                 sfputc(imap->tp, c);
             continue;
         case '(':
@@ -1496,8 +1425,7 @@ imapvsend(Imap_t *imap, int retain, const char *fmt, va_list ap)
             continue;
         case ')':
             sfputc(imap->tp, c);
-            if (!q)
-            {
+            if (!q) {
                 for (; (c = *s)
                        && (c == ' ' || c == '\n' || c == '\r' || c == '\t');
                      s++)
@@ -1515,8 +1443,7 @@ imapvsend(Imap_t *imap, int retain, const char *fmt, va_list ap)
     s = struse(imap->tp);
     if (TRACING('s'))
         note(ERROR, "imap: send %s", s);
-    if (sfprintf(imap->sp, "%s\r\n", s) < 0 || sfsync(imap->sp) < 0)
-    {
+    if (sfprintf(imap->sp, "%s\r\n", s) < 0 || sfsync(imap->sp) < 0) {
         note(ERROR | SYSTEM, "imap: server send error");
         i = 0;
     }
@@ -1578,8 +1505,7 @@ imapconnect(Imap_t *imap)
      * the imapexec()'s in this function -- not good
      */
 
-    if (imap->connected < 0)
-    {
+    if (imap->connected < 0) {
         note(FATAL, "imap: connection/authentication error");
         return -1;
     }
@@ -1588,18 +1514,15 @@ imapconnect(Imap_t *imap)
      * the old connection if any is useless now
      */
 
-    if (imap->sp)
-    {
+    if (imap->sp) {
         sfclose(imap->sp);
         imap->sp = 0;
     }
-    if (imap->rp)
-    {
+    if (imap->rp) {
         sfclose(imap->rp);
         imap->rp = 0;
     }
-    if (!imap->host || !imap->user || !imap->meth)
-    {
+    if (!imap->host || !imap->user || !imap->meth) {
         char *host;
         char *user;
         char *meth;
@@ -1611,10 +1534,8 @@ imapconnect(Imap_t *imap)
          *	<host> [ <user> [ <meth> [ <arg> ... ] ] ]
          */
 
-        if (fp = fileopen(state.var.imap, "IRXr"))
-        {
-            while (host = sfgetr(fp, '\n', 1))
-            {
+        if (fp = fileopen(state.var.imap, "IRXr")) {
+            while (host = sfgetr(fp, '\n', 1)) {
                 for (; isspace(*host); host++)
                     ;
                 if (!*host || *host == '#')
@@ -1623,16 +1544,14 @@ imapconnect(Imap_t *imap)
                     ;
                 if (*user)
                     *user++ = 0;
-                if (!imap->host || streq(imap->host, host))
-                {
+                if (!imap->host || streq(imap->host, host)) {
                     for (; isspace(*user); user++)
                         ;
                     for (meth = user; *meth && !isspace(*meth); meth++)
                         ;
                     if (*meth)
                         *meth++ = 0;
-                    if (!imap->user || streq(imap->user, user))
-                    {
+                    if (!imap->user || streq(imap->user, user)) {
                         for (; isspace(*meth); meth++)
                             ;
                         goto match;
@@ -1642,9 +1561,7 @@ imapconnect(Imap_t *imap)
             host = 0;
             user = 0;
             meth = 0;
-        }
-        else
-        {
+        } else {
             host = imap->host;
             user = imap->user;
             meth = imap->meth;
@@ -1660,18 +1577,14 @@ imapconnect(Imap_t *imap)
             imap->user = user ? vmstrdup(imap->gm, user) : state.var.user;
         if (meth && (!*meth || streq(meth, "*")))
             meth = 0;
-        if (!imap->meth || meth && !streq(meth, imap->meth))
-        {
-            if (!meth)
-            {
-                if (streq(imap->user, "anonymous"))
-                {
+        if (!imap->meth || meth && !streq(meth, imap->meth)) {
+            if (!meth) {
+                if (streq(imap->user, "anonymous")) {
                     sfprintf(imap->tp, "LOGIN ANONYMOUS %s", state.var.user);
                     if (state.var.domain)
                         sfprintf(imap->tp, "@%s", state.var.domain);
                     meth = struse(imap->tp);
-                }
-                else
+                } else
                     meth = "AUTHENTICATE XFILE";
             }
             imap->meth = vmstrdup(imap->gm, meth);
@@ -1686,28 +1599,23 @@ imapconnect(Imap_t *imap)
 
     sfprintf(imap->tp, "/dev/tcp/%s/inet.imap", imap->host);
     svc = struse(imap->tp);
-    if ((fd = csopen(&cs, svc, 0)) < 0)
-    {
+    if ((fd = csopen(&cs, svc, 0)) < 0) {
         note(ERROR | SYSTEM, "imap: %s: cannot connect to service", svc);
         return -1;
     }
     if (!(imap->sp = sfnew(NiL, NiL, SF_UNBOUND, fd, SF_WRITE))
-        || !(imap->rp = sfnew(NiL, NiL, SF_UNBOUND, fd, SF_READ)))
-    {
-        if (imap->sp)
-        {
+        || !(imap->rp = sfnew(NiL, NiL, SF_UNBOUND, fd, SF_READ))) {
+        if (imap->sp) {
             sfclose(imap->sp);
             imap->sp = 0;
-        }
-        else
+        } else
             close(fd);
         note(ERROR | SYSTEM, "imap: %s: cannot buffer service", svc);
         return -1;
     }
     imap->connected = -1;
     if (imapexec(imap, "CAPABILITY") || imap->version < IMAP_VERSION
-        || imap->version == IMAP_VERSION && imap->revision < IMAP_REVISION)
-    {
+        || imap->version == IMAP_VERSION && imap->revision < IMAP_REVISION) {
         if (imap->version)
             note(ERROR | SYSTEM,
                  "imap: %s: service version %d.%d must be at least %d.%d",
@@ -1720,8 +1628,7 @@ imapconnect(Imap_t *imap)
             note(ERROR | SYSTEM, "imap: %s: service connect error", svc);
         goto drop;
     }
-    if (!imap->authenticated)
-    {
+    if (!imap->authenticated) {
         /*
          * do the authentication
          * imap->authenticated<0 is a hint to the
@@ -1729,8 +1636,7 @@ imapconnect(Imap_t *imap)
          */
 
         imap->authenticated = -1;
-        if (imapexec(imap, "%s", imap->meth))
-        {
+        if (imapexec(imap, "%s", imap->meth)) {
             note(
             ERROR | SYSTEM, "imap: %s: service authentication error", svc);
             goto drop;
@@ -1740,13 +1646,11 @@ imapconnect(Imap_t *imap)
     imap->connected = 1;
     return 0;
 drop:
-    if (imap->sp)
-    {
+    if (imap->sp) {
         sfclose(imap->sp);
         imap->sp = 0;
     }
-    if (imap->rp)
-    {
+    if (imap->rp) {
         sfclose(imap->rp);
         imap->rp = 0;
     }
@@ -1763,15 +1667,13 @@ imapinit(void)
 {
     Imap_t *imap;
 
-    if (!(imap = newof(0, Imap_t, 1, 0)))
-    {
+    if (!(imap = newof(0, Imap_t, 1, 0))) {
         note(ERROR | SYSTEM, "Out of space [imap]");
         return 0;
     }
     memfatal(&imap->vmdisc);
     if (!(imap->gm = vmopen(&imap->vmdisc, Vmlast, 0))
-        || !(imap->vm = vmopen(&imap->vmdisc, Vmlast, 0)))
-    {
+        || !(imap->vm = vmopen(&imap->vmdisc, Vmlast, 0))) {
         note(ERROR | SYSTEM, "Out of space [imap state vm]");
         if (imap->gm)
             vmclose(imap->gm);
@@ -1779,8 +1681,7 @@ imapinit(void)
         return 0;
     }
     if (!(imap->mp = sfstropen()) || !(imap->tp = sfstropen())
-        || !(imap->np = sfstropen()))
-    {
+        || !(imap->np = sfstropen())) {
         note(ERROR | SYSTEM, "Out of space [imap tmp string stream]");
         vmclose(imap->gm);
         vmclose(imap->vm);
@@ -1804,8 +1705,7 @@ imapclose(Imap_t *imap)
     while (imaprecv(imap, imap->op))
         ;
     imap->selected = 0;
-    if (state.folder == FIMAP)
-    {
+    if (state.folder == FIMAP) {
         n = 0;
         for (mp = state.msg.list; mp < state.msg.list + state.msg.count; mp++)
             if (!(mp->m_flag & MDELETE))
@@ -1858,26 +1758,22 @@ imap_setptr(char *name, int isedit)
         strncopy(state.path.mail, name, sizeof(state.path.mail));
     if (*name == '@')
         name++;
-    else if (strneq(name, "imap://", 7))
-    {
+    else if (strneq(name, "imap://", 7)) {
         sfprintf(imap->tp, "%s", name + 7);
         s = struse(imap->tp);
-        if (!(t = strchr(s, '/')))
-        {
+        if (!(t = strchr(s, '/'))) {
             note(ERROR, "imap: %s: user name expected", name);
             return -1;
         }
         *t++ = 0;
-        if (!imap->host || !streq(imap->host, s))
-        {
+        if (!imap->host || !streq(imap->host, s)) {
             imap->host = vmstrdup(imap->gm, s);
             imap->connected = 0;
             imap->meth = 0;
         }
         if (s = strchr(t, '/'))
             *s++ = 0;
-        if (!imap->user || !streq(imap->user, t))
-        {
+        if (!imap->user || !streq(imap->user, t)) {
             imap->user = vmstrdup(imap->gm, t);
             imap->connected = 0;
             imap->meth = 0;
@@ -1909,8 +1805,7 @@ imap_msg(int m)
     Msg_t *mp;
 
     mp = state.msg.list + m - 1;
-    if (!mp->m_info)
-    {
+    if (!mp->m_info) {
         imap = IMAP;
         if (!(mp->m_info = ( void * )vmnewof(imap->vm, 0, Imapmsg_t, 1, 0)))
             note(FATAL, "out of space [imap msg info]");
@@ -1921,8 +1816,7 @@ imap_msg(int m)
             note(FATAL, "imap: %d: cannot fetch message info", m);
         if (state.var.spam && !(mp->m_flag & (MSCAN | MSPAM)))
             setinput(mp);
-        if (TRACING('b'))
-        {
+        if (TRACING('b')) {
             Imapmsg_t *ip;
             Imappart_t *pp;
 
@@ -1980,21 +1874,17 @@ imap_command(char *s)
     Imaplex_t *xp;
     unsigned long trace;
 
-    if (strneq(s, "dump", 4) && (!(n = *(s + 4)) || isspace(n)))
-    {
+    if (strneq(s, "dump", 4) && (!(n = *(s + 4)) || isspace(n))) {
         for (s += 4; isspace(*s); s++)
             ;
-        if (!*s)
-        {
+        if (!*s) {
         list:
             sfprintf(sfstdout, "dump items are:");
             for (n = 0; n < elementsof(imapdump); n++)
                 sfprintf(sfstdout, " %s", imapdump[n].name);
             sfprintf(sfstdout, "\n");
-        }
-        else
-            for (items = 0;;)
-            {
+        } else
+            for (items = 0;;) {
                 for (; isspace(*s); s++)
                     ;
                 if (!*s)
@@ -2005,27 +1895,21 @@ imap_command(char *s)
                                                      elementsof(imapdump),
                                                      sizeof(imapdump[0]),
                                                      s,
-                                                     &e)))
-                {
+                                                     &e))) {
                     note(ERROR, "%s: unknown dump item", s);
                     goto list;
                 }
                 for (s = e; isspace(*s); s++)
                     ;
-                if (isdigit(*s))
-                {
+                if (isdigit(*s)) {
                     n = strtol(s, &e, 0);
                     s = e;
-                }
-                else if (*s == '*')
-                {
+                } else if (*s == '*') {
                     s++;
                     n = -1;
-                }
-                else
+                } else
                     n = 0;
-                switch (xp->code)
-                {
+                switch (xp->code) {
                 case IMAP_DUMP_FLAGS:
                     for (n = 0; n < elementsof(imapflags); n++)
                         sfprintf(sfstdout,
@@ -2061,35 +1945,27 @@ imap_command(char *s)
                     sfprintf(
                     sfstdout, "         unseen %d\n", imap->mailbox.unseen);
                     break;
-                case IMAP_DUMP_MESSAGE:
-                {
+                case IMAP_DUMP_MESSAGE: {
                     Msg_t *mp;
                     Msg_t *ep;
                     Imapmsg_t *ip;
                     Imappart_t *pp;
 
-                    if (n > state.msg.count)
-                    {
+                    if (n > state.msg.count) {
                         sfprintf(sfstdout, "%d: invalid message", n);
                         break;
                     }
-                    if (n < 0)
-                    {
+                    if (n < 0) {
                         mp = state.msg.list;
                         ep = state.msg.list + state.msg.count;
-                    }
-                    else if (n > 0)
-                    {
+                    } else if (n > 0) {
                         ep = state.msg.list + n;
                         mp = ep - 1;
-                    }
-                    else
-                    {
+                    } else {
                         mp = state.msg.dot;
                         ep = mp + 1;
                     }
-                    for (; mp < ep; mp++)
-                    {
+                    for (; mp < ep; mp++) {
                         sfprintf(sfstdout,
                                  "message %4d %s\n",
                                  mp - state.msg.list + 1,
@@ -2114,8 +1990,7 @@ imap_command(char *s)
                     }
                     break;
                 }
-                case IMAP_DUMP_QUEUE:
-                {
+                case IMAP_DUMP_QUEUE: {
                     Imapop_t *op;
 
                     for (op = imap->op + 1;
@@ -2157,9 +2032,7 @@ imap_command(char *s)
                 }
             }
         n = 0;
-    }
-    else
-    {
+    } else {
         trace = state.trace;
         TRACE('r');
         n = imapexec(imap, "%s", s);
@@ -2194,8 +2067,7 @@ imap_copy(struct msg *mp,
     mp = imap_msg(i);
     ip = ( Imapmsg_t * )mp->m_info;
     imap->copy.fp = op;
-    if (imap->copy.prefix = prefix)
-    {
+    if (imap->copy.prefix = prefix) {
         imap->copy.prefixlen = strlen(prefix);
         s = prefix + imap->copy.prefixlen;
         while (--s >= prefix && isspace(*s))
@@ -2205,28 +2077,22 @@ imap_copy(struct msg *mp,
     }
     sfprintf(op, "From %s %s\n", ip->from, ip->date);
     sfprintf(imap->tp, "FETCH %d (BODY[HEADER", i);
-    if (ignore && *ignore)
-    {
+    if (ignore && *ignore) {
         if (ignore == &state.ignoreall)
             sfprintf(imap->tp, ".FIELDS NIL");
-        else
-        {
-            if (dictflags(ignore) & RETAIN)
-            {
+        else {
+            if (dictflags(ignore) & RETAIN) {
                 i = RETAIN;
                 sfprintf(imap->tp, ".FIELDS (");
                 s = "";
-            }
-            else
-            {
+            } else {
                 i = IGNORE;
                 sfprintf(imap->tp, ".FIELDS.NOT (From");
                 s = " ";
             }
             for (np = ( struct name * )dtfirst(*ignore); np;
                  np = ( struct name * )dtnext(*ignore, np))
-                if (np->flags & i)
-                {
+                if (np->flags & i) {
                     sfprintf(imap->tp, "%s%s", s, np->name);
                     s = " ";
                 }
@@ -2236,8 +2102,7 @@ imap_copy(struct msg *mp,
         for (pp = ip->parts; pp; pp = pp->next)
             if (pp->content == IMAP_CONTENT_text)
                 sfprintf(imap->tp, " BODY[%s]", pp->id);
-    }
-    else
+    } else
         sfprintf(imap->tp, "] BODY[TEXT]");
     sfprintf(imap->tp, ")");
     if (imapexec(IMAP, struse(imap->tp)))
@@ -2342,10 +2207,8 @@ imap_getatt(Msg_t *mp,
     int n;
     char *cmd;
 
-    if (!(cmd = iscmd(name)))
-    {
-        if (state.var.attachments && name == pp->name)
-        {
+    if (!(cmd = iscmd(name))) {
+        if (state.var.attachments && name == pp->name) {
             sfprintf(state.path.temp, "%s/%s", state.var.attachments, name);
             name = struse(state.path.temp);
         }
@@ -2355,8 +2218,7 @@ imap_getatt(Msg_t *mp,
     if (pp->encoding && mime(1)
         && mimeview(state.part.mime, "encoding", name, pp->type, pp->options))
         pp->encoding = pp->type;
-    if (pp->encoding && !isdigit(pp->encoding[0]))
-    {
+    if (pp->encoding && !isdigit(pp->encoding[0])) {
         sfprintf(state.path.temp, "uudecode -h -x %s", pp->encoding);
         if (!mimecmp("text", pp->type, NiL))
             sfprintf(state.path.temp, " -t");
@@ -2364,31 +2226,23 @@ imap_getatt(Msg_t *mp,
             sfprintf(state.path.temp, " -o - | %s", cmd);
         else if (filestd(name, "w"))
             sfprintf(state.path.temp, " | %s", state.var.pager);
-        else
-        {
+        else {
             sfprintf(state.path.temp, " -o ", name);
             shquote(state.path.temp, name);
         }
         s = struse(state.path.temp);
         n = 1;
-    }
-    else if (cmd)
-    {
+    } else if (cmd) {
         s = cmd;
         n = -1;
-    }
-    else if (filestd(name, "w"))
-    {
+    } else if (filestd(name, "w")) {
         s = state.var.pager;
         n = -1;
-    }
-    else
-    {
+    } else {
         s = name;
         n = 0;
     }
-    if (state.var.debug)
-    {
+    if (state.var.debug) {
         note(DEBUG, "%s `%s'", n ? "pipe" : "file", s);
         if ((flags & GMIME) && mime(1)
             && (s = mimeview(
@@ -2396,8 +2250,7 @@ imap_getatt(Msg_t *mp,
             note(DEBUG, "mimeview `%s'", s);
         return 0;
     }
-    if (!(imap->copy.fp = n ? pipeopen(s, "w") : fileopen(s, "ERw")))
-    {
+    if (!(imap->copy.fp = n ? pipeopen(s, "w") : fileopen(s, "ERw"))) {
         imap->copy.fp = sfstdout;
         return 1;
     }
@@ -2440,22 +2293,18 @@ imap_get1(char **argv, unsigned long flags)
     int r;
 
     if (state.msg.dot < state.msg.list
-        || state.msg.dot >= state.msg.list + state.msg.count)
-    {
+        || state.msg.dot >= state.msg.list + state.msg.count) {
         note(ERROR, "No current message");
         return 1;
     }
     mp = imap_msg(state.msg.dot - state.msg.list + 1);
     ip = ( Imapmsg_t * )mp->m_info;
-    if (!ip->attachments || !(pp = ip->parts))
-    {
+    if (!ip->attachments || !(pp = ip->parts)) {
         note(ERROR, "No attachments in current message");
         return 1;
     }
-    if (!*argv)
-    {
-        do
-        {
+    if (!*argv) {
+        do {
             if (pp->content == IMAP_CONTENT_attachment)
                 sfprintf(sfstdout,
                          "(attachment %3d %s %18s \"%s\")\n",
@@ -2470,53 +2319,39 @@ imap_get1(char **argv, unsigned long flags)
         note(PANIC, "Out of space [imap attachments]");
     s = *argv++;
     r = 0;
-    for (;;)
-    {
+    for (;;) {
         while (isspace(*s))
             s++;
         if (!*s)
             break;
-        else if (*s == ',')
-        {
+        else if (*s == ',') {
             s++;
             r = 0;
-        }
-        else if (*s == '*')
-        {
+        } else if (*s == '*') {
             if (!r)
                 r = 1;
             for (i = r; i <= ip->attachments; i++)
                 a[i] = 1;
             r = 0;
-        }
-        else if (*s == '-')
-        {
+        } else if (*s == '-') {
             s++;
             r = 1;
-        }
-        else
-        {
+        } else {
             n = strtol(s, &e, 0);
-            if (n > 0 && n <= ip->attachments)
-            {
-                if (r)
-                {
+            if (n > 0 && n <= ip->attachments) {
+                if (r) {
                     for (i = r; i <= n; i++)
                         a[i] = 1;
                     r = 0;
-                }
-                else
+                } else
                     a[n] = 1;
-            }
-            else
-            {
+            } else {
                 note(ERROR, "%s: invalid attachment number", s);
                 while (*e && !isspace(*e))
                     e++;
             }
             s = e;
-            if (*s == '-')
-            {
+            if (*s == '-') {
                 s++;
                 r = n;
             }
@@ -2524,17 +2359,14 @@ imap_get1(char **argv, unsigned long flags)
     }
     r = 0;
     for (i = 1; i <= ip->attachments; i++)
-        if (a[i])
-        {
+        if (a[i]) {
             while (pp->attachment != i)
-                if (!(pp = pp->next))
-                {
+                if (!(pp = pp->next)) {
                     note(ERROR, "%d: attachment number out of range", i);
                     r = 1;
                     goto done;
                 }
-            if (pp->content != IMAP_CONTENT_attachment)
-            {
+            if (pp->content != IMAP_CONTENT_attachment) {
                 note(ERROR, "%d: not an attachment", i);
                 continue;
             }
@@ -2583,15 +2415,12 @@ imap_printhead(int m, int who)
         disposition = 'N';
     else
         disposition = who ? 'R' : ' ';
-    if (who)
-    {
+    if (who) {
         if (!state.var.domain || strchr(ip->from, '@'))
             printf("%c %s\n", disposition, ip->from);
         else
             printf("%c %s@%s\n", disposition, ip->from, state.var.domain);
-    }
-    else
-    {
+    } else {
         sizes = counts(!!state.var.news, mp->m_lines, mp->m_size);
         subjlen = state.screenwidth - 50 - strlen(sizes);
         if (ip->subject && subjlen >= 0)
@@ -2636,19 +2465,16 @@ imap_flags(Imap_t *imap, Msg_t *mp, int flags, char *op)
     c = '(';
     for (i = 0; i < elementsof(imapflags); i++)
         if ((imapflags[i].flag & flags)
-            && (imapflags[i].code & IMAP_FLAG_PERMANENT))
-        {
+            && (imapflags[i].code & IMAP_FLAG_PERMANENT)) {
             sfprintf(imap->tp, "%c%s", c, imapflags[i].name);
             c = ' ';
         }
-    if (c == ' ')
-    {
+    if (c == ' ') {
         sfprintf(imap->tp, ")");
         if (!imapsend(imap, 0, "%s", struse(imap->tp)))
             note(
             ERROR, "%d: message flags not updated", mp - state.msg.list + 1);
-    }
-    else
+    } else
         sfstrseek(imap->tp, 0, SEEK_SET);
 }
 
@@ -2664,14 +2490,12 @@ imap_msgflags(Msg_t *mp, int set, int clr)
 
     if (mp->m_flag & ~clr & MDELETE)
         return;
-    if (flags = mp->m_flag & clr)
-    {
+    if (flags = mp->m_flag & clr) {
         mp->m_flag &= ~clr;
         if (flags & (MDELETE | MREAD | MSCAN | MSPAM))
             imap_flags(imap, mp, flags, "-");
     }
-    if (flags = ~mp->m_flag & set)
-    {
+    if (flags = ~mp->m_flag & set) {
         mp->m_flag |= set;
         if (flags & (MDELETE | MREAD | MSCAN | MSPAM))
             imap_flags(imap, mp, flags, "+");
@@ -2691,8 +2515,7 @@ imap_msglist(char *s)
 
     for (; isspace(*s); s++)
         ;
-    if (*s != '(')
-    {
+    if (*s != '(') {
         note(ERROR, "imap: %s: invalid SEARCH expression", s);
         return 0;
     }

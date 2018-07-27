@@ -172,8 +172,7 @@ __OTORP__(const char *newfile; const char *oldfile; int preserve;)
     struct stat st;
     time_t ut[2];
 
-    if (stat(oldfile, &st))
-    {
+    if (stat(oldfile, &st)) {
         if (preserve)
             return -1;
         st.st_mode = 0;
@@ -183,8 +182,7 @@ __OTORP__(const char *newfile; const char *oldfile; int preserve;)
     if (st.st_mode &= (S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IWGRP
                        | S_IXGRP | S_IROTH | S_IWOTH | S_IXOTH))
         chmod(oldfile, st.st_mode);
-    if (preserve)
-    {
+    if (preserve) {
         ut[0] = st.st_atime;
         ut[1] = st.st_mtime;
         preserve = utime(oldfile, ut);
@@ -1328,26 +1326,21 @@ void ppfsm __PARAM__((int op, char *s), (op, s)) __OTORP__(int op; char *s;)
     struct fsminit *fp;
 
 
-    switch (op)
-    {
+    switch (op) {
 
 
     case 4:
-        for (fp = fsminit;; fp++)
-        {
+        for (fp = fsminit;; fp++) {
             if ((n = fp->nextstate) >= (0 + 28))
                 n = ~n;
-            if (fp->state == (-1))
-            {
+            if (fp->state == (-1)) {
 
 
                 break;
             }
             rp = _pp_fsmtab[fp->state];
-            for (i = 0; i < sizeof(fp->ch) && (c = fp->ch[i]); i++)
-            {
-                switch (c)
-                {
+            for (i = 0; i < sizeof(fp->ch) && (c = fp->ch[i]); i++) {
+                switch (c) {
                 case 023:
                     for (c = 0; c <= 255; c++)
                         rp[c] = n;
@@ -1383,15 +1376,13 @@ void ppfsm __PARAM__((int op, char *s), (op, s)) __OTORP__(int op; char *s;)
         }
 
 
-        for (i = 0; i < (0 + 28); i++)
-        {
+        for (i = 0; i < (0 + 28); i++) {
             rp = _pp_fsmtab[i];
             s = spl;
             while (c = *s++)
                 if (c != '@'
                     || !((rp) >= _pp_fsmtab[(0 + 13)]
-                         && (rp) <= _pp_fsmtab[(0 + 18)]))
-                {
+                         && (rp) <= _pp_fsmtab[(0 + 18)])) {
                     if (rp[c] >= 0)
                         rp[c] = ~rp[c];
                     rp[c] &= ~(1 << 7);
@@ -1518,8 +1509,7 @@ __OTORP__(const char *s; const char *t; int n;)
 {
     const char *e = s + n;
 
-    while (s < e)
-    {
+    while (s < e) {
         if (*s != *t || !*s)
             return *s - *t;
         s++;
@@ -1546,14 +1536,11 @@ __OTORP__(char *iob; int level; char *msg; char *arg;)
     char buf[1024];
 
     p = strcopy((buf), ("proto: "));
-    if (iob)
-    {
+    if (iob) {
         Proto_t *proto = ( Proto_t * )(iob - sizeof(Proto_t));
 
-        if (proto->line)
-        {
-            if (proto->file)
-            {
+        if (proto->line) {
+            if (proto->file) {
                 *p++ = '"';
                 p = strcopy((p), (proto->file));
                 *p++ = '"';
@@ -1562,26 +1549,21 @@ __OTORP__(char *iob; int level; char *msg; char *arg;)
             }
             p = strcopy((p), ("line "));
             p = number(p, proto->line);
-        }
-        else if (proto->file)
+        } else if (proto->file)
             p = strcopy((p), (proto->file));
-    }
-    else
-    {
+    } else {
         p = strcopy((p), (msg));
         msg = arg;
         arg = 0;
     }
-    if (*(p - 1) != ' ')
-    {
+    if (*(p - 1) != ' ') {
         *p++ = ':';
         *p++ = ' ';
     }
     if (level == 1)
         p = strcopy((p), ("warning: "));
     p = strcopy((p), (msg));
-    if (arg)
-    {
+    if (arg) {
         *p++ = ' ';
         p = strcopy((p), (arg));
     }
@@ -1727,10 +1709,8 @@ __OTORP__(Notice_t *notice; Buffer_t * b; char *s; int n; int u;)
     int cc;
 
     cc = notice->cc[1];
-    if (!s)
-    {
-        if (n)
-        {
+    if (!s) {
+        if (n) {
             (((b)->nxt < (b)->end)
              ? (*(b)->nxt++ = (notice->cc[n > 0 ? 0 : 1]))
              : ((notice->cc[n > 0 ? 0 : 1]), (-1)));
@@ -1739,12 +1719,10 @@ __OTORP__(Notice_t *notice; Buffer_t * b; char *s; int n; int u;)
             (((b)->nxt < (b)->end)
              ? (*(b)->nxt++ = (notice->cc[n > 0 ? 1 : 2]))
              : ((notice->cc[n > 0 ? 1 : 2]), (-1)));
-        }
-        else
+        } else
             s = "";
     }
-    if (s)
-    {
+    if (s) {
         if (n > 70)
             n = 70;
         (((b)->nxt < (b)->end) ? (*(b)->nxt++ = (cc)) : ((cc), (-1)));
@@ -1753,8 +1731,7 @@ __OTORP__(Notice_t *notice; Buffer_t * b; char *s; int n; int u;)
             n--;
         while (m-- > 0)
             (((b)->nxt < (b)->end) ? (*(b)->nxt++ = (' ')) : ((' '), (-1)));
-        while (n-- > 0)
-        {
+        while (n-- > 0) {
             i = *s++;
             if (u > 0 && i >= 'a' && i <= 'z')
                 i = i - 'a' + 'A';
@@ -1783,49 +1760,38 @@ __OTORP__(Notice_t *notice; Buffer_t * b; const Item_t *item;)
     int i;
     int k;
 
-    if (t = item->data)
-    {
+    if (t = item->data) {
         q = item->quote;
         e = t + item->size;
         i = 0;
-        while (t < e)
-        {
-            if (*t == '$' && t < (e + 2) && *(t + 1) == '{')
-            {
+        while (t < e) {
+            if (*t == '$' && t < (e + 2) && *(t + 1) == '{') {
                 k = m = 0;
                 x = t += 2;
                 while (t < e && (c = *t++) != '}')
                     if (c == '.')
                         x = t;
-                    else if (c == '-')
-                    {
+                    else if (c == '-') {
                         k = 1;
                         break;
-                    }
-                    else if (c == '/')
-                    {
+                    } else if (c == '/') {
                         m = 1;
                         break;
                     }
                 if ((c = lookup(key, x, t - x - 1)) >= 0
-                    && (x = notice->item[c].data))
-                {
+                    && (x = notice->item[c].data)) {
                     z = x + notice->item[c].size;
-                    while (x < z)
-                    {
+                    while (x < z) {
                         c = *x++;
                         if (!m || c >= '0' && c <= '9')
                             (((b)->nxt < (b)->end) ? (*(b)->nxt++ = (c))
                                                    : ((c), (-1)));
                     }
-                }
-                else if (k)
-                {
+                } else if (k) {
                     k = 0;
                     i++;
                 }
-                if (k || m)
-                {
+                if (k || m) {
                     k = 1;
                     while (t < e)
                         if ((c = *t++) == '{')
@@ -1833,16 +1799,13 @@ __OTORP__(Notice_t *notice; Buffer_t * b; const Item_t *item;)
                         else if (c == '}' && !--k)
                             break;
                 }
-            }
-            else if (q > 0 && *t == '\\'
-                     && (*(t + 1) == q || *(t + 1) == '\\'))
+            } else if (q > 0 && *t == '\\'
+                       && (*(t + 1) == q || *(t + 1) == '\\'))
                 t++;
-            else if (*t == '}' && i)
-            {
+            else if (*t == '}' && i) {
                 t++;
                 i--;
-            }
-            else
+            } else
                 (((b)->nxt < (b)->end) ? (*(b)->nxt++ = (*t++))
                                        : ((*t++), (-1)));
         }
@@ -1858,41 +1821,32 @@ __OTORP__(Notice_t *notice; Buffer_t * b;)
     time_t clock;
 
     copy(b, "Copyright (c) ", -1);
-    if (notice->test)
-    {
+    if (notice->test) {
         clock = ( time_t )1000212300;
         t = ctime(&clock) + 20;
-    }
-    else if (!(t = notice->item[18].data))
-    {
+    } else if (!(t = notice->item[18].data)) {
         time(&clock);
         t = ctime(&clock) + 20;
     }
     if ((x = notice->item[19].data) && sstrncmp(t, x, 4) < 0)
         t = x;
-    if ((x = notice->item[17].data) && sstrncmp(x, t, 4) < 0)
-    {
+    if ((x = notice->item[17].data) && sstrncmp(x, t, 4) < 0) {
         expand(notice, b, &notice->item[17]);
         (((b)->nxt < (b)->end) ? (*(b)->nxt++ = ('-')) : (('-'), (-1)));
     }
     copy(b, t, 4);
-    if (notice->item[15].data)
-    {
+    if (notice->item[15].data) {
         (((b)->nxt < (b)->end) ? (*(b)->nxt++ = (' ')) : ((' '), (-1)));
         expand(notice, b, &notice->item[15]);
     }
-    if (notice->item[5].data)
-    {
+    if (notice->item[5].data) {
         (((b)->nxt < (b)->end) ? (*(b)->nxt++ = (' ')) : ((' '), (-1)));
         expand(notice, b, &notice->item[5]);
-        if (notice->item[8].data)
-        {
+        if (notice->item[8].data) {
             (((b)->nxt < (b)->end) ? (*(b)->nxt++ = (' ')) : ((' '), (-1)));
             expand(notice, b, &notice->item[8]);
         }
-    }
-    else if (notice->item[2].data)
-    {
+    } else if (notice->item[2].data) {
         (((b)->nxt < (b)->end) ? (*(b)->nxt++ = (' ')) : ((' '), (-1)));
         expand(notice, b, &notice->item[2]);
     }
@@ -1918,31 +1872,26 @@ __OTORP__(Stack_t *sp; char *file; char *parent; char *info; int size;
     int n;
     char path[1024];
 
-    if (size <= 8)
-    {
+    if (size <= 8) {
         copy(buf, file, -1);
         copy(buf, ": no space", -1);
         (((buf)->nxt < (buf)->end) ? (*(buf)->nxt++ = (0)) : ((0), (-1)));
         return -1;
     }
-    if (*file != '/' && parent && (s = strrchr(parent, '/')))
-    {
+    if (*file != '/' && parent && (s = strrchr(parent, '/'))) {
         n = s - parent + 1;
-        if ((sstrlen(file) + n + 1) <= sizeof(path))
-        {
+        if ((sstrlen(file) + n + 1) <= sizeof(path)) {
             memcopy(path, parent, n);
             strcopy(path + n, file);
             file = path;
         }
     }
-    if ((i = open(file, O_RDONLY | 0)) < 0)
-    {
+    if ((i = open(file, O_RDONLY | 0)) < 0) {
 
         if (file == path)
             for (s = path; *s; s++)
                 if (s[0] == '/' && s[1] == 'a' && s[2] == 'r' && s[3] == 'c'
-                    && s[4] == 'h' && s[5] == '/')
-                {
+                    && s[4] == 'h' && s[5] == '/') {
                     t = s;
                     for (s += 6; *s && *s != '/'; s++)
                         ;
@@ -1950,8 +1899,7 @@ __OTORP__(Stack_t *sp; char *file; char *parent; char *info; int size;
                         ;
                     i = open(file, O_RDONLY | 0);
                 }
-        if (i < 0)
-        {
+        if (i < 0) {
             copy(buf, file, -1);
             copy(buf, ": cannot open", -1);
             (((buf)->nxt < (buf)->end) ? (*(buf)->nxt++ = (0)) : ((0), (-1)));
@@ -1960,8 +1908,7 @@ __OTORP__(Stack_t *sp; char *file; char *parent; char *info; int size;
     }
     n = read(i, info, size - 1);
     close(i);
-    if (n < 0)
-    {
+    if (n < 0) {
         copy(buf, file, -1);
         copy(buf, ": cannot read", -1);
         (((buf)->nxt < (buf)->end) ? (*(buf)->nxt++ = (0)) : ((0), (-1)));
@@ -2009,15 +1956,13 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
     level = 0;
     data = info;
     level = -1;
-    if (options)
-    {
+    if (options) {
         level++;
         input[level].file = "<options>";
         input[level].info = options;
         input[level].line = 0;
     }
-    if (file && *file)
-    {
+    if (file && *file) {
         if (push(
             &input[++level], file, 0, data, &info[sizeof(info)] - data, &buf))
             return -1;
@@ -2038,18 +1983,15 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
     notice.item[20] = notice.item[1] = lic[notice.type];
     notice.item[20].quote = notice.item[1].quote = 0;
     contributor = i = k = 0;
-    for (;;)
-    {
+    for (;;) {
         first = 1;
-        while (c = *s)
-        {
+        while (c = *s) {
             while (c == ' ' || c == '\t' || c == '\n' && ++input[level].line
                    || c == '\r' || c == ',' || c == ';' || c == ')')
                 c = *++s;
             if (!c)
                 break;
-            if (c == '#')
-            {
+            if (c == '#') {
                 while (*++s && *s != '\n')
                     ;
                 if (*s)
@@ -2057,8 +1999,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                 input[level].line++;
                 continue;
             }
-            if (c == '.')
-            {
+            if (c == '.') {
                 while ((c = *++s) && (c == ' ' || c == '\t'))
                     ;
                 file = s;
@@ -2067,8 +2008,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                 *s = 0;
                 while (c && c != '\n')
                     c = *++s;
-                if (*file)
-                {
+                if (*file) {
                     input[level].info = s + (c != 0);
                     if (++level >= (sizeof(input) / sizeof(input[0]))
                         || push(&input[level],
@@ -2083,8 +2023,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                 }
                 continue;
             }
-            if (c == '\n')
-            {
+            if (c == '\n') {
                 s++;
                 input[level].line++;
                 continue;
@@ -2102,26 +2041,20 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
             if (c == '+' || c == ']')
                 c = *++s;
             quote = 0;
-            if (c == '=' || first)
-            {
-                if (c == '=')
-                {
+            if (c == '=' || first) {
+                if (c == '=') {
                     q = ((c = *++s) == '"' || c == '\'') ? *s++ : 0;
-                    if (c == '(')
-                    {
+                    if (c == '(') {
                         s++;
                         if (h == 9)
                             contributor = 0;
                         else if (h == 4)
                             contributor = 1;
-                        else
-                        {
+                        else {
                             q = 1;
                             i = 0;
-                            for (;;)
-                            {
-                                switch (*s++)
-                                {
+                            for (;;) {
+                                switch (*s++) {
                                 case 0:
                                     s--;
                                     break;
@@ -2163,28 +2096,23 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                             && s++ && (quote = q))
                         || q && c != q
                         || !q && c != ' ' && c != '\t' && c != '\n'
-                           && c != '\r' && c != ',' && c != ';'))
-                    {
+                           && c != '\r' && c != ',' && c != ';')) {
                         if (c == '\n')
                             input[level].line++;
                         s++;
                     }
-                }
-                else
-                {
+                } else {
                     h = 20;
                     v = x;
                 }
                 if (c == '\n')
                     input[level].line++;
-                if (contributor)
-                {
+                if (contributor) {
                     for (i = 0; i < notice.ids; i++)
                         if (n == notice.id[i].name.size
                             && !sstrncmp(x, notice.id[i].name.data, n))
                             break;
-                    if (i < 64)
-                    {
+                    if (i < 64) {
                         notice.id[i].name.data = x;
                         notice.id[i].name.size = n;
                         notice.id[i].name.quote = 0;
@@ -2194,29 +2122,23 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                         if (notice.ids <= i)
                             notice.ids = i + 1;
                     }
-                }
-                else if (h == 16)
-                {
+                } else if (h == 16) {
                     if ((s - v) == 3 && v[0] == 'a' && v[1] == 'l'
-                        && v[2] == 'l')
-                    {
+                        && v[2] == 'l') {
                         for (i = 0; i < (sizeof(key) / sizeof(key[0]) - 1);
                              i++)
-                            if (notice.item[i].size)
-                            {
+                            if (notice.item[i].size) {
                                 expand(&notice, &buf, &key[i]);
                                 (((&buf)->nxt < (&buf)->end)
                                  ? (*(&buf)->nxt++ = ('='))
                                  : (('='), (-1)));
                                 for (h = 0;; h++)
-                                    if (h >= notice.item[i].size)
-                                    {
+                                    if (h >= notice.item[i].size) {
                                         h = 0;
                                         break;
-                                    }
-                                    else if (notice.item[i].data[h] == ' '
-                                             || notice.item[i].data[h]
-                                                == '\t')
+                                    } else if (notice.item[i].data[h] == ' '
+                                               || notice.item[i].data[h]
+                                                  == '\t')
                                         break;
                                 if (h)
                                     (((&buf)->nxt < (&buf)->end)
@@ -2231,17 +2153,13 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                                  ? (*(&buf)->nxt++ = ('\n'))
                                  : (('\n'), (-1)));
                             }
-                    }
-                    else
-                    {
-                        if ((h = lookup(key, v, s - v)) < 0)
-                        {
+                    } else {
+                        if ((h = lookup(key, v, s - v)) < 0) {
                             item.data = v;
                             item.size = s - v;
                             item.quote = 0;
                             expand(&notice, &buf, &item);
-                        }
-                        else
+                        } else
                             expand(&notice, &buf, &notice.item[h]);
                         (((&buf)->nxt < (&buf)->end)
                          ? (*(&buf)->nxt++ = ('\n'))
@@ -2252,12 +2170,9 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                               : (&buf)->nxt)
                             = 0,
                             (&buf)->nxt - (&buf)->buf);
-                }
-                else
-                {
+                } else {
                     if (h == 20)
-                        switch (c = lookup(lic, v, s - v))
-                        {
+                        switch (c = lookup(lic, v, s - v)) {
                         case 0:
                             return 0;
                         case 2:
@@ -2283,19 +2198,15 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                                 h = -1;
                             break;
                         }
-                    if (h >= 0)
-                    {
+                    if (h >= 0) {
                         notice.item[h].data
                         = (notice.item[h].size = s - v) ? v : ( char * )0;
                         notice.item[h].quote = quote;
                         k = 1;
                     }
                 }
-            }
-            else
-            {
-                if (input[level].file)
-                {
+            } else {
+                if (input[level].file) {
                     copy(&buf, "\"", -1);
                     copy(&buf, input[level].file, -1);
                     copy(&buf, "\", line ", -1);
@@ -2325,14 +2236,12 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
         return 0;
     if (notice.type == 1 && (!notice.verbose || !notice.item[12].data))
         return 0;
-    if (notice.type != 4)
-    {
+    if (notice.type != 4) {
         if (!notice.type)
             notice.type = 12;
         comment(&notice, &buf, (( char * )0), 1, 0);
         comment(&notice, &buf, (( char * )0), 0, 0);
-        if (notice.item[14].data)
-        {
+        if (notice.item[14].data) {
             copy(&tmp, "This software is part of the ", -1);
             expand(&notice, &tmp, &notice.item[14]);
             copy(&tmp, " package", -1);
@@ -2344,8 +2253,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                      (&tmp)->siz),
                     0);
         }
-        if (notice.type >= 5)
-        {
+        if (notice.type >= 5) {
             copyright(&notice, &tmp);
             comment(&notice,
                     &buf,
@@ -2361,8 +2269,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                         sizeof("All Rights Reserved") - 1,
                         0);
         }
-        if (notice.type == 6 || notice.type == 7)
-        {
+        if (notice.type == 6 || notice.type == 7) {
             copy(&tmp, notice.item[14].data ? "and" : "This software", -1);
             copy(&tmp, " is licensed under the", -1);
             comment(&notice,
@@ -2376,8 +2283,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                 copy(&tmp, "Eclipse Public License", -1);
             else
                 copy(&tmp, "Common Public License", -1);
-            if (notice.item[23].data)
-            {
+            if (notice.item[23].data) {
                 copy(&tmp, ", Version ", -1);
                 expand(&notice, &tmp, &notice.item[23]);
             }
@@ -2388,24 +2294,19 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                      (&tmp)->nxt = (&tmp)->buf,
                      (&tmp)->siz),
                     0);
-            if (notice.item[5].data || notice.item[2].data)
-            {
+            if (notice.item[5].data || notice.item[2].data) {
                 copy(&tmp, "by ", -1);
-                if (notice.item[15].data)
-                {
+                if (notice.item[15].data) {
                     expand(&notice, &tmp, &notice.item[15]);
                     copy(&tmp, " ", -1);
                 }
-                if (notice.item[5].data)
-                {
+                if (notice.item[5].data) {
                     expand(&notice, &tmp, &notice.item[5]);
-                    if (notice.item[8].data)
-                    {
+                    if (notice.item[8].data) {
                         copy(&tmp, " ", -1);
                         expand(&notice, &tmp, &notice.item[8]);
                     }
-                }
-                else if (notice.item[2].data)
+                } else if (notice.item[2].data)
                     expand(&notice, &tmp, &notice.item[2]);
                 comment(&notice,
                         &buf,
@@ -2421,8 +2322,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                     "A copy of the License is available at",
                     sizeof("A copy of the License is available at") - 1,
                     0);
-            if (notice.item[21].data)
-            {
+            if (notice.item[21].data) {
                 expand(&notice, &tmp, &notice.item[21]);
                 comment(&notice,
                         &buf,
@@ -2431,8 +2331,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                          (&tmp)->nxt = (&tmp)->buf,
                          (&tmp)->siz),
                         0);
-                if (notice.item[22].data)
-                {
+                if (notice.item[22].data) {
                     copy(&tmp, "(with md5 checksum ", -1);
                     expand(&notice, &tmp, &notice.item[22]);
                     copy(&tmp, ")", -1);
@@ -2444,8 +2343,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                              (&tmp)->siz),
                             0);
                 }
-            }
-            else if (notice.type == 7)
+            } else if (notice.type == 7)
                 comment(
                 &notice,
                 &buf,
@@ -2460,9 +2358,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                         sizeof("http://www.opensource.org/licenses/cpl") - 1,
                         0);
             comment(&notice, &buf, (( char * )0), 0, 0);
-        }
-        else if (notice.type == 5)
-        {
+        } else if (notice.type == 5) {
             copy(&tmp, notice.item[14].data ? "and it" : "This software", -1);
             copy(&tmp, " may only be used by you under license from", -1);
             comment(&notice,
@@ -2472,10 +2368,8 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                      (&tmp)->nxt = (&tmp)->buf,
                      (&tmp)->siz),
                     0);
-            if (notice.item[i = 5].data)
-            {
-                if (notice.item[15].data)
-                {
+            if (notice.item[i = 5].data) {
+                if (notice.item[15].data) {
                     expand(&notice, &tmp, &notice.item[i = 15]);
                     copy(&tmp, " ", -1);
                 }
@@ -2487,11 +2381,8 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                          (&tmp)->nxt = (&tmp)->buf,
                          (&tmp)->siz),
                         0);
-            }
-            else if (notice.item[i = 2].data)
-            {
-                if (notice.item[15].data)
-                {
+            } else if (notice.item[i = 2].data) {
+                if (notice.item[15].data) {
                     expand(&notice, &tmp, &notice.item[i = 15]);
                     copy(&tmp, " ", -1);
                 }
@@ -2503,11 +2394,9 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                          (&tmp)->nxt = (&tmp)->buf,
                          (&tmp)->siz),
                         0);
-            }
-            else
+            } else
                 i = -1;
-            if (notice.item[21].data)
-            {
+            if (notice.item[21].data) {
                 comment(
                 &notice,
                 &buf,
@@ -2535,8 +2424,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                          (&tmp)->nxt = (&tmp)->buf,
                          (&tmp)->siz),
                         0);
-                if (notice.item[22].data)
-                {
+                if (notice.item[22].data) {
                     copy(&tmp, "(with an md5 checksum of ", -1);
                     expand(&notice, &tmp, &notice.item[22]);
                     copy(&tmp, ")", -1);
@@ -2592,9 +2480,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                      (&tmp)->siz),
                     0);
             comment(&notice, &buf, (( char * )0), 0, 0);
-        }
-        else if (notice.type == 11)
-        {
+        } else if (notice.type == 11) {
             comment(&notice, &buf, (( char * )0), 0, 0);
             comment(
             &notice,
@@ -2683,9 +2569,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                     sizeof("http://www.gnu.org/copyleft/gpl.html") - 1,
                     0);
             comment(&notice, &buf, (( char * )0), 0, 0);
-        }
-        else if (notice.type == 8)
-        {
+        } else if (notice.type == 8) {
             comment(&notice, &buf, (( char * )0), 0, 0);
             comment(&notice,
                     &buf,
@@ -2893,9 +2777,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                     sizeof("POSSIBILITY OF SUCH DAMAGE.") - 1,
                     -1);
             comment(&notice, &buf, (( char * )0), 0, 0);
-        }
-        else if (notice.type == 9)
-        {
+        } else if (notice.type == 9) {
             comment(&notice, &buf, (( char * )0), 0, 0);
             comment(&notice,
                     &buf,
@@ -3012,9 +2894,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                     sizeof("    distribution.") - 1,
                     -1);
             comment(&notice, &buf, (( char * )0), 0, 0);
-        }
-        else if (notice.type == 10)
-        {
+        } else if (notice.type == 10) {
             comment(&notice, &buf, (( char * )0), 0, 0);
             comment(&notice,
                     &buf,
@@ -3153,18 +3033,13 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
             - 1,
             0);
             comment(&notice, &buf, (( char * )0), 0, 0);
-        }
-        else
-        {
-            if (notice.type == 15)
-            {
+        } else {
+            if (notice.type == 15) {
                 if (notice.item[i = 15].data || notice.item[i = 5].data
-                    || notice.item[i = 2].data)
-                {
+                    || notice.item[i = 2].data) {
                     expand(&notice, &tmp, &notice.item[i]);
                     copy(&tmp, " - ", -1);
-                }
-                else
+                } else
                     i = -1;
                 copy(&tmp, "Proprietary", -1);
                 comment(&notice,
@@ -3175,8 +3050,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                          (&tmp)->siz),
                         1);
                 comment(&notice, &buf, (( char * )0), 0, 0);
-                if (notice.item[21].data)
-                {
+                if (notice.item[21].data) {
                     copy(&tmp, "This is proprietary source code", -1);
                     if (i >= 0)
                         copy(&tmp, " licensed by", -1);
@@ -3187,13 +3061,11 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                              (&tmp)->nxt = (&tmp)->buf,
                              (&tmp)->siz),
                             1);
-                    if (notice.item[15].data)
-                    {
+                    if (notice.item[15].data) {
                         expand(&notice, &tmp, &notice.item[15]);
                         copy(&tmp, " ", -1);
                     }
-                    if (notice.item[5].data)
-                    {
+                    if (notice.item[5].data) {
                         expand(&notice, &tmp, &notice.item[5]);
                         comment(&notice,
                                 &buf,
@@ -3202,9 +3074,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                                  (&tmp)->nxt = (&tmp)->buf,
                                  (&tmp)->siz),
                                 1);
-                    }
-                    else if (notice.item[2].data)
-                    {
+                    } else if (notice.item[2].data) {
                         expand(&notice, &tmp, &notice.item[2]);
                         comment(&notice,
                                 &buf,
@@ -3214,9 +3084,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                                  (&tmp)->siz),
                                 1);
                     }
-                }
-                else
-                {
+                } else {
                     copy(
                     &tmp, "This is unpublished proprietary source code", -1);
                     if (i >= 0)
@@ -3230,8 +3098,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                             1);
                     if (notice.item[i = 15].data || notice.item[i = 5].data)
                         expand(&notice, &tmp, &notice.item[i]);
-                    if (notice.item[2].data)
-                    {
+                    if (notice.item[2].data) {
                         if (((&tmp)->nxt - (&tmp)->buf))
                             (((&tmp)->nxt < (&tmp)->end)
                              ? (*(&tmp)->nxt++ = (' '))
@@ -3261,18 +3128,14 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                             1);
                 }
                 comment(&notice, &buf, (( char * )0), 0, 0);
-            }
-            else if (notice.type == 13)
-            {
+            } else if (notice.type == 13) {
                 comment(&notice,
                         &buf,
                         "For nonexclusive individual use",
                         sizeof("For nonexclusive individual use") - 1,
                         1);
                 comment(&notice, &buf, (( char * )0), 0, 0);
-            }
-            else if (notice.type == 14)
-            {
+            } else if (notice.type == 14) {
                 comment(&notice,
                         &buf,
                         "For noncommercial use",
@@ -3280,8 +3143,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                         1);
                 comment(&notice, &buf, (( char * )0), 0, 0);
             }
-            if (notice.type >= 15 && !notice.item[21].data)
-            {
+            if (notice.type >= 15 && !notice.item[21].data) {
                 comment(&notice,
                         &buf,
                         "Unpublished & Not for Publication",
@@ -3289,11 +3151,9 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                         0);
                 comment(&notice, &buf, (( char * )0), 0, 0);
             }
-            if (notice.item[21].data)
-            {
+            if (notice.item[21].data) {
                 copy(&tmp, "This software is licensed", -1);
-                if (notice.item[5].data || notice.item[2].data)
-                {
+                if (notice.item[5].data || notice.item[2].data) {
                     copy(&tmp, " by", -1);
                     if ((notice.item[15].size
                          + (notice.item[5].data
@@ -3311,21 +3171,17 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                         (((&tmp)->nxt < (&tmp)->end)
                          ? (*(&tmp)->nxt++ = (' '))
                          : ((' '), (-1)));
-                    if (notice.item[15].data)
-                    {
+                    if (notice.item[15].data) {
                         expand(&notice, &tmp, &notice.item[15]);
                         copy(&tmp, " ", -1);
                     }
-                    if (notice.item[5].data)
-                    {
+                    if (notice.item[5].data) {
                         expand(&notice, &tmp, &notice.item[5]);
-                        if (notice.item[8].data)
-                        {
+                        if (notice.item[8].data) {
                             copy(&tmp, " ", -1);
                             expand(&notice, &tmp, &notice.item[8]);
                         }
-                    }
-                    else if (notice.item[2].data)
+                    } else if (notice.item[2].data)
                         expand(&notice, &tmp, &notice.item[2]);
                 }
                 comment(&notice,
@@ -3350,8 +3206,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                          (&tmp)->nxt = (&tmp)->buf,
                          (&tmp)->siz),
                         0);
-                if (notice.item[22].data)
-                {
+                if (notice.item[22].data) {
                     copy(&tmp, "(with an md5 checksum of ", -1);
                     expand(&notice, &tmp, &notice.item[22]);
                     copy(&tmp, ")", -1);
@@ -3364,9 +3219,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                             0);
                 }
                 comment(&notice, &buf, (( char * )0), 0, 0);
-            }
-            else if (notice.type == 15)
-            {
+            } else if (notice.type == 15) {
                 comment(
                 &notice,
                 &buf,
@@ -3384,23 +3237,19 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                 comment(&notice, &buf, (( char * )0), 0, 0);
             }
         }
-        if (v = notice.item[12].data)
-        {
+        if (v = notice.item[12].data) {
             x = v + notice.item[12].size;
             if (*v == '\n')
                 v++;
             item.quote = notice.item[12].quote;
-            do
-            {
+            do {
                 for (item.data = v; v < x && *v != '\n'; v++)
                     ;
-                if ((item.size = v - item.data) && *item.data == '\t')
-                {
+                if ((item.size = v - item.data) && *item.data == '\t') {
                     item.data++;
                     item.size--;
                     h = 0;
-                }
-                else
+                } else
                     h = -1;
                 expand(&notice, &tmp, &item);
                 comment(&notice,
@@ -3414,8 +3263,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
             if (item.size)
                 comment(&notice, &buf, (( char * )0), 0, 0);
         }
-        if (notice.item[13].data)
-        {
+        if (notice.item[13].data) {
             expand(&notice, &tmp, &notice.item[13]);
             comment(&notice,
                     &buf,
@@ -3426,8 +3274,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                     0);
             if (notice.item[i = 15].data || notice.item[i = 5].data)
                 expand(&notice, &tmp, &notice.item[i]);
-            if (notice.item[2].data)
-            {
+            if (notice.item[2].data) {
                 if (((&tmp)->nxt - (&tmp)->buf))
                     (((&tmp)->nxt < (&tmp)->end) ? (*(&tmp)->nxt++ = (' '))
                                                  : ((' '), (-1)));
@@ -3441,8 +3288,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                          (&tmp)->nxt = (&tmp)->buf,
                          (&tmp)->siz),
                         0);
-            if (notice.item[10].data)
-            {
+            if (notice.item[10].data) {
                 expand(&notice, &tmp, &notice.item[10]);
                 comment(&notice,
                         &buf,
@@ -3455,15 +3301,12 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
             comment(&notice, &buf, (( char * )0), 0, 0);
         }
     }
-    if (v = notice.item[0].data)
-    {
+    if (v = notice.item[0].data) {
         x = v + notice.item[0].size;
         q = (x - v) == 1 && (*v == '*' || *v == '-');
         k = q && notice.type != 4 ? -1 : 0;
-        for (;;)
-        {
-            if (!q)
-            {
+        for (;;) {
+            if (!q) {
                 while (v < x
                        && (*v == ' ' || *v == '\t' || *v == '\r' || *v == '\n'
                            || *v == ',' || *v == '+'))
@@ -3481,21 +3324,16 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                 if (q
                     || item.size == notice.id[i].name.size
                        && !sstrncmp(
-                          item.data, notice.id[i].name.data, item.size))
-                {
+                          item.data, notice.id[i].name.data, item.size)) {
                     h = 1;
-                    if (notice.type == 4)
-                    {
+                    if (notice.type == 4) {
                         copy(&buf, "[-author?", -1);
                         expand(&notice, &buf, &notice.id[i].value);
                         (((&buf)->nxt < (&buf)->end)
                          ? (*(&buf)->nxt++ = (']'))
                          : ((']'), (-1)));
-                    }
-                    else
-                    {
-                        if (k < 0)
-                        {
+                    } else {
+                        if (k < 0) {
                             comment(&notice,
                                     &buf,
                                     "CONTRIBUTORS",
@@ -3518,19 +3356,14 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
                 }
             if (q)
                 break;
-            if (!h)
-            {
-                if (notice.type == 4)
-                {
+            if (!h) {
+                if (notice.type == 4) {
                     copy(&buf, "[-author?", -1);
                     expand(&notice, &buf, &item);
                     (((&buf)->nxt < (&buf)->end) ? (*(&buf)->nxt++ = (']'))
                                                  : ((']'), (-1)));
-                }
-                else
-                {
-                    if (k < 0)
-                    {
+                } else {
+                    if (k < 0) {
                         comment(&notice,
                                 &buf,
                                 "CONTRIBUTORS",
@@ -3553,14 +3386,12 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
         if (k > 0)
             comment(&notice, &buf, (( char * )0), 0, 0);
     }
-    if (notice.type == 4)
-    {
+    if (notice.type == 4) {
         copy(&buf, "[-copyright?", -1);
         copyright(&notice, &buf);
         (((&buf)->nxt < (&buf)->end) ? (*(&buf)->nxt++ = (']'))
                                      : ((']'), (-1)));
-        if (notice.item[21].data)
-        {
+        if (notice.item[21].data) {
             copy(&buf, "[-license?", -1);
             expand(&notice, &buf, &notice.item[21]);
             (((&buf)->nxt < (&buf)->end) ? (*(&buf)->nxt++ = (']'))
@@ -3568,8 +3399,7 @@ __OTORP__(char *p; int size; char *file; char *options; int cc1; int cc2;
         }
         (((&buf)->nxt < (&buf)->end) ? (*(&buf)->nxt++ = ('\n'))
                                      : (('\n'), (-1)));
-    }
-    else
+    } else
         comment(&notice, &buf, (( char * )0), -1, 0);
     return (*((&buf)->nxt >= (&buf)->end ? ((&buf)->nxt = (&buf)->end - 1)
                                          : (&buf)->nxt)
@@ -3604,8 +3434,7 @@ __OTORP__(Proto_t *proto; char *op; int flags;)
 {
     char *s;
 
-    if (flags & (1L << 10))
-    {
+    if (flags & (1L << 10)) {
         op =
 #line 440
         strcopy(
@@ -3636,16 +3465,14 @@ __OTORP__(Proto_t *proto; char *op; int flags;)
         "__inline\n#      endif\n#    endif\n#  endif\n#endif\n#if "
         "!defined(__LINKAGE__)\n#define __LINKAGE__		/* 2004-08-11 "
         "transition */\n#endif\n"));
-    }
-    else
+    } else
         op =
 #line 451
         strcopy((op),
                 ("\n#if !defined(__PROTO__)\n#include "
                  "<prototyped.h>\n#endif\n#if !defined(__LINKAGE__)\n#define "
                  "__LINKAGE__		/* 2004-08-11 transition */\n#endif\n"));
-    if (proto->package)
-    {
+    if (proto->package) {
         s = "\
 #ifndef	__MANGLE_%_DATA__\n\
 #  ifdef _BLD_%\n\
@@ -3665,10 +3492,8 @@ __OTORP__(Proto_t *proto; char *op; int flags;)
 #  endif\n\
 #endif\n\
 ";
-        for (;;)
-        {
-            switch (*op++ = *s++)
-            {
+        for (;;) {
+            switch (*op++ = *s++) {
             case 0:
                 op--;
                 break;
@@ -3698,13 +3523,11 @@ static char *nns __PARAM__((char *s), (s)) __OTORP__(char *s;)
 static int directive __PARAM__((char *s, int dir), (s, dir))
 __OTORP__(char *s; int dir;)
 {
-    switch (*(s = nns(s)))
-    {
+    switch (*(s = nns(s))) {
     case 'e':
     case 'i':
         dir <<= 2;
-        switch (*++s)
-        {
+        switch (*++s) {
         case 'f':
             dir |= 01;
             break;
@@ -3761,8 +3584,7 @@ __OTORP__(Proto_t *proto; long flags;)
     int args = 0;
 
 
-    do
-    {
+    do {
         (ip = proto->ip);
         (op = proto->op);
         call = proto->call;
@@ -3775,20 +3597,17 @@ fsm_start:
     proto->tp = ip;
     state = 0;
     bp = ip;
-    do
-    {
+    do {
         rp = _pp_fsmtab[state];
     fsm_get:
         while (!(state = rp[c = (*( unsigned char * )ip++)]))
             ;
     fsm_next:;
     } while (state > 0);
-    if ((n = ip - bp - 1) > 0)
-    {
+    if ((n = ip - bp - 1) > 0) {
         ip = bp;
         do
-            switch (n)
-            {
+            switch (n) {
             default:
                 memcopy(op, ip, n);
                 op += n;
@@ -3816,13 +3635,11 @@ fsm_start:
     }
     state = ~state;
 fsm_terminal:
-    switch (((state) & ((1 << (7 + 1)) - 1)))
-    {
+    switch (((state) & ((1 << (7 + 1)) - 1))) {
     case ((0 + 28) + 11):
         if (op > proto->ob && *(op - 1) == '='
             && (op == proto->ob + 1 || *(op - 2) != '='))
-            switch (c)
-            {
+            switch (c) {
             case '+':
             case '-':
             case '*':
@@ -3839,8 +3656,7 @@ fsm_terminal:
         break;
 
     case ((0 + 28) + 1):
-        switch (c)
-        {
+        switch (c) {
         case '\n':
             if (((rp) >= _pp_fsmtab[(0 + 16)] && (rp) <= _pp_fsmtab[(0 + 18)]))
                 goto fsm_newline;
@@ -3855,8 +3671,8 @@ fsm_terminal:
             else
 
                 (*op++ = (c));
-            if (((rp) >= _pp_fsmtab[(0 + 16)] && (rp) <= _pp_fsmtab[(0 + 18)]))
-            {
+            if (((rp) >= _pp_fsmtab[(0 + 16)]
+                 && (rp) <= _pp_fsmtab[(0 + 18)])) {
                 rp = _pp_fsmtab[(0 + 16)];
                 break;
             }
@@ -3880,13 +3696,11 @@ fsm_terminal:
         goto fsm_get;
 
     case ((0 + 28) + 2):
-        if (c)
-        {
+        if (c) {
             if (state = _pp_fsmtab[(0 + 28)]
                                   [((( rp )-_pp_fsmtab[0]) / (255 + 1)) + 1])
                 goto fsm_terminal;
-            do
-            {
+            do {
                 (proto->ip = ip);
                 (proto->op = op);
                 proto->flags &= ~((1L << 5) | (1L << 9) | (1L << 17)
@@ -3901,8 +3715,7 @@ fsm_terminal:
         (ip--);
     fsm_eob:
         if ((flags & ((1L << 1) | ((1L << 16)) | (1L << 21))) == ((1L << 16))
-            && (proto->flags & (1L << 16)))
-        {
+            && (proto->flags & (1L << 16))) {
 
             if (!(flags & (1L << 5)))
 
@@ -3910,8 +3723,7 @@ fsm_terminal:
             c = ip - proto->ib;
             if (!(flags & (1L << 15)))
                 im = proto->tp;
-            if (ip > proto->ib)
-            {
+            if (ip > proto->ib) {
                 n = ip - im;
                 if (ip - n < proto->ib)
                     proto->flags |= (1L << 4);
@@ -3919,8 +3731,7 @@ fsm_terminal:
                 ip = proto->ib;
             }
             proto->tp -= c;
-            if (flags & (1L << 15))
-            {
+            if (flags & (1L << 15)) {
                 im -= c;
                 ie -= c;
             }
@@ -3928,10 +3739,8 @@ fsm_terminal:
                 aim -= c;
             if (aie)
                 aie -= c;
-            if ((n = read(proto->fd, ip, proto->iz)) > 0)
-            {
-                if ((proto->options & (1L << 0)) && n < proto->iz)
-                {
+            if ((n = read(proto->fd, ip, proto->iz)) > 0) {
+                if ((proto->options & (1L << 0)) && n < proto->iz) {
                     proto->flags &= ~(1L << 16);
                     close(proto->fd);
                 }
@@ -3948,13 +3757,11 @@ fsm_terminal:
         if (state & (1 << 7))
             goto fsm_splice;
 
-        if (!(flags & (1L << 21)) && (state = rp[c = (255 + 1)]))
-        {
+        if (!(flags & (1L << 21)) && (state = rp[c = (255 + 1)])) {
             bp = ip;
             goto fsm_next;
         }
-        do
-        {
+        do {
             (proto->ip = ip);
             (proto->op = op);
             proto->flags &= ~((1L << 5) | (1L << 9) | (1L << 17) | (1L << 27)
@@ -3969,24 +3776,20 @@ fsm_terminal:
     case ((0 + 28) + 3):
         quot = c;
 
-        if (c == '"' && qe)
-        {
+        if (c == '"' && qe) {
             for (n = 0, t = qe + 1;
                  t < op
                  && (*t == ' ' || *t == '\t' || *t == '\n' && ++n
                      || *t >= 'A' && *t <= 'Z' || *t == '_');
                  t++)
                 ;
-            if (t == op)
-            {
+            if (t == op) {
                 op = qe;
                 qe = 0;
                 qn = n;
-            }
-            else
+            } else
                 (*op++ = (c));
-        }
-        else
+        } else
 
             (*op++ = (c));
         rp = _pp_fsmtab[(0 + 21)];
@@ -3994,31 +3797,24 @@ fsm_terminal:
         goto fsm_get;
 
     case ((0 + 28) + 4):
-        if (c == quot)
-        {
+        if (c == quot) {
 
             if (!(flags & (1L << 3)))
                 qe = (c == '"') ? op : ( char * )0;
 
             (*op++ = (c));
 
-            while (qn > 0)
-            {
+            while (qn > 0) {
                 qn--;
                 (*op++ = ('\n'));
             }
-        }
-        else if (c != '\n' && c != (255 + 1))
-        {
+        } else if (c != '\n' && c != (255 + 1)) {
             (*op++ = (c));
             bp = ip;
             goto fsm_get;
-        }
-        else
-        {
+        } else {
 
-            while (qn > 0)
-            {
+            while (qn > 0) {
                 qn--;
                 (*op++ = ('\n'));
             }
@@ -4034,8 +3830,7 @@ fsm_terminal:
             (*op++ = (c));
         else
 
-            switch (c)
-            {
+            switch (c) {
             case 'a':
                 n = (('A' == 0301) ? 0057 : 0007);
                 goto fsm_oct;
@@ -4046,8 +3841,7 @@ fsm_terminal:
                 n = 0013;
                 goto fsm_oct;
             case 'x':
-                do
-                {
+                do {
                     (proto->ip = ip);
                     (proto->op = op);
                     proto->flags &= ~((1L << 5) | (1L << 9) | (1L << 17)
@@ -4059,8 +3853,7 @@ fsm_terminal:
                 } while (0);
                 lex(proto, (flags & ((1L << 16))) | (1L << 21));
                 for (n = x = 0; (c = (*( unsigned char * )ip++)), x < 3; x++)
-                    switch (c)
-                    {
+                    switch (c) {
                     case '0':
                     case '1':
                     case '2':
@@ -4111,8 +3904,7 @@ fsm_terminal:
         (ip--);
 
         if ((flags & (1L << 5)) && *proto->tp == 's'
-            && !sstrncmp(proto->tp, "static", 6))
-        {
+            && !sstrncmp(proto->tp, "static", 6)) {
             c = ((0500 + 4) + 9);
             break;
         }
@@ -4129,23 +3921,18 @@ fsm_terminal:
     fsm_newline:
         proto->line++;
 
-        if (flags & (1L << 5))
-        {
+        if (flags & (1L << 5)) {
             if (op != proto->ob && (*(op - 1)) != ' ' && (*(op - 1)) != '\n')
                 (*op++ = (' '));
-        }
-        else
+        } else
 
             (*op++ = (c));
-        if (flags & (1L << 3))
-        {
+        if (flags & (1L << 3)) {
 
-            if (flags & (1L << 0))
-            {
+            if (flags & (1L << 0)) {
                 if (flags & (1L << 5))
                     (op = ko);
-                if (flags & (1L << 12))
-                {
+                if (flags & (1L << 12)) {
                     *(ip - 1) = 0;
                     op = strcopy((om), ("/* "));
                     op = strcopy((op), (im));
@@ -4154,13 +3941,11 @@ fsm_terminal:
                 flags
                 &= ~((1L << 2) | (1L << 3) | (1L << 7) | (1L << 8)
                      | (1L << 12) | (1L << 15) | (1L << 22) | (1L << 26));
-            }
-            else
+            } else
 
             {
                 if ((flags & ((1L << 2) | (1L << 22)))
-                    == ((1L << 2) | (1L << 22)))
-                {
+                    == ((1L << 2) | (1L << 22))) {
                     *(ip - 1) = 0;
                     op = strcopy(
                     (om), ("#if defined(__STDC__) || defined(__STDPP__)\n"));
@@ -4170,19 +3955,15 @@ fsm_terminal:
                     ip = im;
                     *op++ = *ip++;
                     while (*op = *ip++)
-                        if (*op++ == '#' && *ip != '(')
-                        {
+                        if (*op++ == '#' && *ip != '(') {
                             op--;
                             while (*--op == ' ' || *op == '\t')
                                 ;
-                            if (*ip == '#')
-                            {
+                            if (*ip == '#') {
                                 op = strcopy((op + 1), ("/**/"));
                                 while (*++ip == ' ' || *ip == '\t')
                                     ;
-                            }
-                            else
-                            {
+                            } else {
                                 if (*op != '"')
                                     *++op = '"';
                                 op++;
@@ -4215,14 +3996,12 @@ fsm_terminal:
         }
         if (paren == 0
             && (flags & ((1L << 15) | (1L << 21) | (1L << 23) | (1L << 24)))
-               == (1L << 24))
-        {
+               == (1L << 24)) {
 
             if (flags & (1L << 5))
                 (op = ko);
 
-            do
-            {
+            do {
                 (proto->ip = ip);
                 (proto->op = op);
                 proto->flags &= ~((1L << 5) | (1L << 9) | (1L << 17)
@@ -4258,8 +4037,7 @@ fsm_terminal:
         if (!(flags & (1L << 1)))
             switch ((((( long )(*proto->tp)) << 16)
                      | ((( long )(*(ip - 1))) << 8)
-                     | (( long )(ip - proto->tp))))
-            {
+                     | (( long )(ip - proto->tp)))) {
             case (((( long )('N')) << 16) | ((( long )('N')) << 8)
                   | (( long )(3))):
                 if (proto->tp[1] == 'o')
@@ -4273,8 +4051,7 @@ fsm_terminal:
                   | (( long )(4))):
                 if (!(flags & (1L << 21))
                     && (flags & ((1L << 3) | (1L << 25))) != (1L << 3)
-                    && !sstrncmp(proto->tp, "else", 4))
-                {
+                    && !sstrncmp(proto->tp, "else", 4)) {
                     c = ((0500 + 4) + 8);
                     goto fsm_id;
                 }
@@ -4286,8 +4063,7 @@ fsm_terminal:
                 break;
             case (((( long )('f')) << 16) | ((( long )('r')) << 8)
                   | (( long )(3))):
-                if (!(flags & (1L << 21)) && !sstrncmp(proto->tp, "for", 3))
-                {
+                if (!(flags & (1L << 21)) && !sstrncmp(proto->tp, "for", 3)) {
                     c = ((0500 + 4) + 11);
                     goto fsm_id;
                 }
@@ -4303,11 +4079,9 @@ fsm_terminal:
                          & ((1L << 15) | (1L << 23) | (1L << 25) | (1L << 26)))
                     && proto->brace == 0 && paren == 0 && group == 0
                     && (last == ';' || last == '}' || last == '\n'
-                        || last == 0))
-                {
+                        || last == 0)) {
                     flags |= (1L << 23);
-                    do
-                    {
+                    do {
                         (proto->ip = ip);
                         (proto->op = op);
                         proto->flags &= ~((1L << 5) | (1L << 9) | (1L << 17)
@@ -4319,8 +4093,7 @@ fsm_terminal:
                     } while (0);
                     line = proto->line;
                     op = strcopy((op - 6), ("__INLINE__"));
-                    do
-                    {
+                    do {
                         (proto->ip = ip);
                         (proto->op = op);
                         proto->flags &= ~((1L << 5) | (1L << 9) | (1L << 17)
@@ -4335,8 +4108,7 @@ fsm_terminal:
             case (((( long )('r')) << 16) | ((( long )('n')) << 8)
                   | (( long )(6))):
                 if (!(flags & (1L << 21))
-                    && !sstrncmp(proto->tp, "return", 6))
-                {
+                    && !sstrncmp(proto->tp, "return", 6)) {
                     c = ((0500 + 4) + 17);
                     goto fsm_id;
                 }
@@ -4344,8 +4116,7 @@ fsm_terminal:
             case (((( long )('s')) << 16) | ((( long )('c')) << 8)
                   | (( long )(6))):
                 if ((proto->options & (1L << 6))
-                    && !sstrncmp(proto->tp, "static", 6))
-                {
+                    && !sstrncmp(proto->tp, "static", 6)) {
                     proto->ox = op - 6;
                     flags |= (1L << 6);
                 }
@@ -4353,8 +4124,7 @@ fsm_terminal:
             case (((( long )('t')) << 16) | ((( long )('f')) << 8)
                   | (( long )(7))):
                 if (!(flags & (1L << 21))
-                    && !sstrncmp(proto->tp, "typedef", 7))
-                {
+                    && !sstrncmp(proto->tp, "typedef", 7)) {
                     flags |= (1L << 26);
                     c = ((0500 + 4) + 9);
                 }
@@ -4366,15 +4136,12 @@ fsm_terminal:
                 break;
             case (((( long )('v')) << 16) | ((( long )('d')) << 8)
                   | (( long )(4))):
-                if (!sstrncmp(proto->tp, "void", 4))
-                {
+                if (!sstrncmp(proto->tp, "void", 4)) {
                     if (flags
                         & ((1L << 0) | (1L << 19) | (1L << 10) | (1L << 11)))
                         c = ((0500 + 4) + 30);
-                    else
-                    {
-                        do
-                        {
+                    else {
+                        do {
                             (proto->ip = ip);
                             (proto->op = op);
                             proto->flags
@@ -4388,16 +4155,13 @@ fsm_terminal:
                         } while (0);
                         line = proto->line;
                         if (lex(proto, (flags & ((1L << 16))) | (1L << 21))
-                            == '*')
-                        {
+                            == '*') {
                             memcopy(op - 4, "__V_", 4);
                             memcopy(ip - 4, "__V_", 4);
-                        }
-                        else
+                        } else
                             c = ((0500 + 4) + 30);
                         proto->line = line;
-                        do
-                        {
+                        do {
                             (proto->ip = ip);
                             (proto->op = op);
                             proto->flags
@@ -4415,8 +4179,8 @@ fsm_terminal:
                 break;
             case (((( long )('w')) << 16) | ((( long )('e')) << 8)
                   | (( long )(5))):
-                if (!(flags & (1L << 21)) && !sstrncmp(proto->tp, "while", 5))
-                {
+                if (!(flags & (1L << 21))
+                    && !sstrncmp(proto->tp, "while", 5)) {
                     c = ((0500 + 4) + 26);
                     goto fsm_id;
                 }
@@ -4434,8 +4198,7 @@ fsm_terminal:
     case ((0 + 28) + 15):
         (ip--);
 
-        if ((flags & ((1L << 5) | (1L << 15))) == (1L << 5))
-        {
+        if ((flags & ((1L << 5) | (1L << 15))) == (1L << 5)) {
             while (op > proto->ob && (*(op - 1) == ' ' || *(op - 1) == '\t'))
                 op--;
             if (op > proto->ob && *(op - 1) != '\n')
@@ -4445,19 +4208,15 @@ fsm_terminal:
         goto fsm_start;
 
     default:
-        if (state & (1 << 7))
-        {
-            if (c == '\\')
-            {
-                if (!(n = (*( unsigned char * )ip++)))
-                {
+        if (state & (1 << 7)) {
+            if (c == '\\') {
+                if (!(n = (*( unsigned char * )ip++))) {
                     goto fsm_eob;
                 fsm_splice:
                     c = '\\';
                     n = (*( unsigned char * )ip++);
                 }
-                if (n == '\n')
-                {
+                if (n == '\n') {
                     proto->line++;
                     (*op++ = ('\\'));
                     (*op++ = ('\n'));
@@ -4475,18 +4234,15 @@ fsm_terminal:
         bp = ip;
         goto fsm_get;
     }
-    if (!(flags & ((1L << 10) | (1L << 11) | (1L << 21))))
-    {
+    if (!(flags & ((1L << 10) | (1L << 11) | (1L << 21)))) {
         if (!(flags & (1L << 3)))
-            switch (c)
-            {
+            switch (c) {
             case '(':
 
                 if (!(flags & (1L << 0)) || proto->brace == 0)
 
                 {
-                    if (paren++ == 0)
-                    {
+                    if (paren++ == 0) {
 
                         if (!(flags & (1L << 0)) || group <= 1)
 
@@ -4503,40 +4259,29 @@ fsm_terminal:
                             om = op - 1;
                         }
                         sub = 0;
-                    }
-                    else if (paren == 2 && !aim)
-                    {
+                    } else if (paren == 2 && !aim) {
                         sub++;
-                        if (last == '(')
-                        {
+                        if (last == '(') {
                             flags &= ~(1L << 15);
                             om = 0;
-                        }
-                        else if (flags & (1L << 8))
-                        {
+                        } else if (flags & (1L << 8)) {
                             aim = ip - 1;
                             aom = op - 1;
-                        }
-                        else if ((flags & ((1L << 15) | (1L << 25)))
-                                 == (1L << 15))
-                        {
+                        } else if ((flags & ((1L << 15) | (1L << 25)))
+                                   == (1L << 15)) {
                             for (m = ip - 2;
                                  m > im && (*m == ' ' || *m == '\t');
                                  m--)
                                 ;
-                            if (m != im && sub == 1)
-                            {
+                            if (m != im && sub == 1) {
                                 m = im + (*nns(ip) == '*');
                             }
-                            if (m == im)
-                            {
+                            if (m == im) {
                                 flags &= ~(1L << 15);
                                 om = 0;
                             }
-                        }
-                        else if ((flags & (1L << 15)) && sub == 1
-                                 && *nns(ip) != '*')
-                        {
+                        } else if ((flags & (1L << 15)) && sub == 1
+                                   && *nns(ip) != '*') {
                             flags &= ~(1L << 15);
                             om = 0;
                         }
@@ -4548,13 +4293,10 @@ fsm_terminal:
 
                 if (!(flags & (1L << 0)) || proto->brace == 0)
 
-                    if (--paren == 0)
-                    {
+                    if (--paren == 0) {
 
-                        if (flags & (1L << 0))
-                        {
-                            if (group != 2)
-                            {
+                        if (flags & (1L << 0)) {
+                            if (group != 2) {
                                 c = (0401 + 0);
                                 break;
                             }
@@ -4562,16 +4304,13 @@ fsm_terminal:
                         }
 
                         ie = ip;
-                    }
-                    else if (paren == 1 && (flags & (1L << 8)) && !aie)
+                    } else if (paren == 1 && (flags & (1L << 8)) && !aie)
                         aie = ip;
                 break;
             case '*':
-                if (last == '(' && group == 2)
-                {
+                if (last == '(' && group == 2) {
                     group--;
-                    if (paren == 1)
-                    {
+                    if (paren == 1) {
                         flags |= (1L << 8);
                         aim = aie = 0;
                     }
@@ -4586,19 +4325,15 @@ fsm_terminal:
                        == ((1L << 15) | (1L << 25))
                     && ((dir & 03) != 03 || ((dir >> 2) & 03) != 01))
                     flags |= (1L << 3);
-                else if (!(flags & ((1L << 1) | (1L << 3))))
-                {
+                else if (!(flags & ((1L << 1) | (1L << 3)))) {
                     flags |= (1L << 3);
-                    if (!(flags & (1L << 19)))
-                    {
+                    if (!(flags & (1L << 19))) {
                         bp = ip;
                         while (*ip == ' ' || *ip == '\t')
                             ip++;
                         if (*ip == 'l' && *++ip == 'i' && *++ip == 'n'
-                            && *++ip == 'e')
-                        {
-                            if (*++ip == ' ' || *ip == '\t')
-                            {
+                            && *++ip == 'e') {
+                            if (*++ip == ' ' || *ip == '\t') {
                                 proto->line = 0;
                                 while (*++ip >= '0' && *ip <= '9')
                                     proto->line
@@ -4608,14 +4343,12 @@ fsm_terminal:
                         }
 
                         else if ((flags & ((1L << 0) | (1L << 5)))
-                                 == (1L << 0))
-                        {
+                                 == (1L << 0)) {
                             n = 0;
                             t = ip + 6;
                             while (ip < t && *ip >= 'a' && *ip <= 'z')
                                 n = (((n) << 5) + ((*ip++) - ('a' - 1)));
-                            switch (n)
-                            {
+                            switch (n) {
                             case ((((((((((('e') - ('a' - 1))) << 5)
                                         + (('l') - ('a' - 1))))
                                       << 5)
@@ -4633,8 +4366,7 @@ fsm_terminal:
                                 while (*ip == ' ' || *ip == '\t')
                                     ip++;
                                 if (*ip != '\n' && *ip != '/'
-                                    && *(ip + 1) != '*')
-                                {
+                                    && *(ip + 1) != '*') {
                                     flags |= (1L << 12) | (1L << 15);
                                     im = ip;
                                     om = op + (ip - bp);
@@ -4725,22 +4457,19 @@ fsm_terminal:
                                 om = op - 1;
                                 break;
                             }
-                        }
-                        else
+                        } else
 
                         {
                             if (*ip == 'i' && *++ip == 'n' && *++ip == 'c'
                                 && *++ip == 'l' && *++ip == 'u'
-                                && *++ip == 'd' && *++ip == 'e')
-                            {
+                                && *++ip == 'd' && *++ip == 'e') {
                                 while (*++ip == ' ' || *ip == '\t')
                                     ;
                                 if (*ip++ == '<' && *ip++ == 's'
                                     && *ip++ == 't' && *ip++ == 'd'
                                     && *ip++ == 'a' && *ip++ == 'r'
                                     && *ip++ == 'g' && *ip++ == '.'
-                                    && *ip++ == 'h' && *ip++ == '>')
-                                {
+                                    && *ip++ == 'h' && *ip++ == '>') {
                                     op =
 #line 1262
                                     strcopy((op),
@@ -4752,19 +4481,16 @@ fsm_terminal:
                                     op = linesync(proto, op, proto->line);
                                     break;
                                 }
-                            }
-                            else if (*ip == 'd' && *++ip == 'e'
-                                     && *++ip == 'f' && *++ip == 'i'
-                                     && *++ip == 'n' && *++ip == 'e'
-                                     && (*++ip == ' ' || *ip == '\t'))
-                            {
+                            } else if (*ip == 'd' && *++ip == 'e'
+                                       && *++ip == 'f' && *++ip == 'i'
+                                       && *++ip == 'n' && *++ip == 'e'
+                                       && (*++ip == ' ' || *ip == '\t')) {
                                 while (*++ip == ' ' || *ip == '\t')
                                     ;
                                 if (*ip == 'e' && *++ip == 'x' && *++ip == 't'
                                     && *++ip == 'e' && *++ip == 'r'
                                     && *++ip == 'n'
-                                    && (*++ip == ' ' || *ip == '\t'))
-                                {
+                                    && (*++ip == ' ' || *ip == '\t')) {
                                     t = ip;
                                     while (*++t == ' ' || *t == '\t')
                                         ;
@@ -4777,8 +4503,7 @@ fsm_terminal:
                                     t = ip;
                                     while (*++t == ' ' || *t == '\t')
                                         ;
-                                    if (*t == '_' && *(t + 1) == '_')
-                                    {
+                                    if (*t == '_' && *(t + 1) == '_') {
                                         op = strcopy((op),
                                                      ("undef __MANGLE__\n"));
                                         op = linesync(proto, op, proto->line);
@@ -4791,20 +4516,17 @@ fsm_terminal:
                                 flags |= (1L << 2) | (1L << 15);
                                 im = bp - 1;
                                 om = op - 1;
-                            }
-                            else if (*ip == 'u' && *++ip == 'n'
-                                     && *++ip == 'd' && *++ip == 'e'
-                                     && *++ip == 'f'
-                                     && (*++ip == ' ' || *ip == '\t'))
-                            {
+                            } else if (*ip == 'u' && *++ip == 'n'
+                                       && *++ip == 'd' && *++ip == 'e'
+                                       && *++ip == 'f'
+                                       && (*++ip == ' ' || *ip == '\t')) {
                                 while (*++ip == ' ' || *ip == '\t')
                                     ;
                                 if (*ip == 'e' && *++ip == 'x' && *++ip == 't'
                                     && *++ip == 'e' && *++ip == 'r'
                                     && *++ip == 'n'
                                     && (*++ip == ' ' || *ip == '\t'
-                                        || *ip == '\n' || *ip == '\r'))
-                                {
+                                        || *ip == '\n' || *ip == '\r')) {
                                     op
                                     = strcopy((op), ("undef __MANGLE__\n"));
                                     op = linesync(proto, op, proto->line);
@@ -4820,23 +4542,18 @@ fsm_terminal:
                         ip = bp;
                     }
                     break;
-                }
-                else
+                } else
                     break;
 
             case '{':
-                if (proto->brace++ == 0 && paren == 0)
-                {
+                if (proto->brace++ == 0 && paren == 0) {
                     if (last == '=')
                         flags |= (1L << 9);
 
-                    else if (flags & (1L << 0))
-                    {
+                    else if (flags & (1L << 0)) {
                         if ((flags & ((1L << 15) | (1L << 17) | (1L << 23)))
-                            == (1L << 15))
-                        {
-                            if (args)
-                            {
+                            == (1L << 15)) {
+                            if (args) {
                                 v = number(op, args < 0 ? -args : args);
                                 v = strcopy(
                                 (v), (" argument actual/formal mismatch"));
@@ -4852,17 +4569,13 @@ fsm_terminal:
 
                             v = ie;
                             while (ie < ip)
-                                if (*ie++ == '/' && *ie == '*')
-                                {
+                                if (*ie++ == '/' && *ie == '*') {
                                     e = ie - 1;
-                                    while (++ie < ip)
-                                    {
-                                        if (*ie == '*')
-                                        {
+                                    while (++ie < ip) {
+                                        if (*ie == '*') {
                                             while (ie < ip && *ie == '*')
                                                 ie++;
-                                            if (ie < ip && *ie == '/')
-                                            {
+                                            if (ie < ip && *ie == '/') {
                                                 while (++ie < ip
                                                        && (*ie == ' '
                                                            || *ie == '\t'))
@@ -4886,39 +4599,32 @@ fsm_terminal:
                             ie = v;
 
                             op = om++;
-                            if (flags & (1L << 5))
-                            {
+                            if (flags & (1L << 5)) {
                                 v = op;
                                 while (v > ko && *--v != ' ')
                                     ;
-                                if (*v != ' ')
-                                {
+                                if (*v != ' ') {
                                     om = (v = (op += 4)) + 1;
-                                    while (v >= ko + 4)
-                                    {
+                                    while (v >= ko + 4) {
                                         *v = *(v - 4);
                                         v--;
                                     }
                                     memcopy(ko, "int ", 4);
                                 }
-                                if (*v == ' ')
-                                {
+                                if (*v == ' ') {
                                     while (*(v + 1) == '*')
                                         *v++ = '*';
                                     *v = '\t';
-                                    if ((v - ko) <= 8)
-                                    {
+                                    if ((v - ko) <= 8) {
                                         om = (e = ++op) + 1;
-                                        while (e > v)
-                                        {
+                                        while (e > v) {
                                             *e = *(e - 1);
                                             e--;
                                         }
                                     }
                                 }
                                 om = (v = (op += 7)) + 1;
-                                while (v >= ko + 7)
-                                {
+                                while (v >= ko + 7) {
                                     *v = *(v - 7);
                                     v--;
                                 }
@@ -4928,11 +4634,9 @@ fsm_terminal:
                             t = op;
                             e = 0;
 
-                            while (ie < ip)
-                            {
+                            while (ie < ip) {
                                 if ((c = *ie) == ' ' || c == '\t'
-                                    || c == '\n')
-                                {
+                                    || c == '\n') {
                                     while ((c = *++ie) == ' ' || c == '\t'
                                            || c == '\n')
                                         ;
@@ -4941,10 +4645,8 @@ fsm_terminal:
                                     if (c != '*' && op > om)
                                         (*op++ = (' '));
                                 }
-                                if ((n = ((c = *ie) == ',')) || c == ';')
-                                {
-                                    if (flags & (1L << 5))
-                                    {
+                                if ((n = ((c = *ie) == ',')) || c == ';') {
+                                    if (flags & (1L << 5)) {
                                         m = op;
                                         while (op > om
                                                && ((c = *(op - 1)) == '('
@@ -4958,8 +4660,7 @@ fsm_terminal:
                                             op--;
                                         while (*(op - 1) == ' ')
                                             op--;
-                                        if (!e)
-                                        {
+                                        if (!e) {
                                             e = op;
                                             while (e > om && *(e - 1) == '*')
                                                 e--;
@@ -4975,16 +4676,14 @@ fsm_terminal:
                                             (*op++ = (*v++));
                                     }
                                     (*op++ = (','));
-                                    if (n)
-                                    {
+                                    if (n) {
                                         if (x = !e)
                                             e = op - 1;
                                         (*op++ = (' '));
                                         m = t;
                                         while (m < e)
                                             (*op++ = (*m++));
-                                        if (x)
-                                        {
+                                        if (x) {
                                             m = e;
                                             while (*--e != ' ')
                                                 ;
@@ -5000,14 +4699,11 @@ fsm_terminal:
                                         (op--);
                                     else
                                         (*op++ = (' '));
-                                    if (!n)
-                                    {
+                                    if (!n) {
                                         t = op;
                                         e = 0;
                                     }
-                                }
-                                else if (*ie == '*')
-                                {
+                                } else if (*ie == '*') {
                                     if (op > om && (c = *(op - 1)) == ' ')
                                         op--;
                                     while (*ie == '*')
@@ -5017,18 +4713,14 @@ fsm_terminal:
                                         ie++;
                                     if (c != '(')
                                         (*op++ = (' '));
-                                }
-                                else if (*ie == '(')
-                                {
+                                } else if (*ie == '(') {
                                     if (op > om && *(op - 1) == ' ')
                                         op--;
                                     (*op++ = (*ie++));
                                     while (*ie == ' ' || *ie == '\t'
                                            || *ie == '\n')
                                         ie++;
-                                }
-                                else if (*ie == ')')
-                                {
+                                } else if (*ie == ')') {
                                     if (op > om && *(op - 1) == '(')
                                         proto_error(
                                         ( char * )proto + sizeof(Proto_t),
@@ -5040,35 +4732,29 @@ fsm_terminal:
                                     while (*ie == ' ' || *ie == '\t'
                                            || *ie == '\n')
                                         ie++;
-                                }
-                                else if ((flags & (1L << 5))
-                                         && (op == om || *(op - 1) == ' ')
-                                         && *ie == 'r'
-                                         && !sstrncmp(ie, "register", 8)
-                                         && (*(ie + 8) == ' '
-                                             || *(ie + 8) == '\t'
-                                             || *(ie + 8) == '\n'))
-                                {
+                                } else if ((flags & (1L << 5))
+                                           && (op == om || *(op - 1) == ' ')
+                                           && *ie == 'r'
+                                           && !sstrncmp(ie, "register", 8)
+                                           && (*(ie + 8) == ' '
+                                               || *(ie + 8) == '\t'
+                                               || *(ie + 8) == '\n')) {
                                     ie += 8;
                                     if (op > om)
                                         (op--);
-                                }
-                                else
+                                } else
                                     (*op++ = (*ie++));
                             }
 
                             if (op <= om)
                                 op = strcopy((op), ("void"));
                             (*op++ = (')'));
-                            if (flags & (1L << 5))
-                            {
+                            if (flags & (1L << 5)) {
                                 (*op++ = (';'));
                                 (*op++ = ('\n'));
                                 (proto->op = op);
                                 (ko = op);
-                            }
-                            else
-                            {
+                            } else {
                                 (*op++ = ('\n'));
                                 (*op++ = (*ip));
                             }
@@ -5080,8 +4766,7 @@ fsm_terminal:
                     else if ((flags
                               & ((1L << 15) | (1L << 19) | (1L << 23)
                                  | (1L << 25)))
-                             == ((1L << 15) | (1L << 25)))
-                    {
+                             == ((1L << 15) | (1L << 25))) {
                         line = proto->line;
                         op = strcopy((om), (" __PARAM__("));
                         op = memcopy(op, im, ie - im);
@@ -5089,26 +4774,21 @@ fsm_terminal:
                         (*op++ = (' '));
                         (*op++ = ('('));
                         flags &= ~((1L << 15) | (1L << 23));
-                        if (flags & (1L << 27))
-                        {
+                        if (flags & (1L << 27)) {
                             if ((vc = ie - im + 1) > sizeof(proto->variadic))
                                 vc = sizeof(proto->variadic);
                             memcopy(proto->variadic, im, vc);
                             op = strcopy((op),
                                          ("va_alist)) __OTORP__(va_dcl)\n{"));
-                        }
-                        else
-                        {
+                        } else {
                             flags |= (1L << 23);
                             proto->ip = im;
                             proto->op = op;
                             group = 0;
                             brack = 0;
-                            for (;;)
-                            {
+                            for (;;) {
                                 switch (lex(
-                                proto, (flags & ((1L << 16))) | (1L << 21)))
-                                {
+                                proto, (flags & ((1L << 16))) | (1L << 21))) {
                                 case '[':
                                     brack++;
                                     continue;
@@ -5120,11 +4800,9 @@ fsm_terminal:
                                         group++;
                                     continue;
                                 case ')':
-                                    if (--paren == 0)
-                                    {
+                                    if (--paren == 0) {
                                         group = 0;
-                                        if (flags & (1L << 15))
-                                        {
+                                        if (flags & (1L << 15)) {
                                             flags
                                             &= ~((1L << 15) | (1L << 23));
                                             op = memcopy(op, m, e - m);
@@ -5133,11 +4811,9 @@ fsm_terminal:
                                     }
                                     continue;
                                 case ',':
-                                    if (paren == 1)
-                                    {
+                                    if (paren == 1) {
                                         group = 0;
-                                        if (flags & (1L << 15))
-                                        {
+                                        if (flags & (1L << 15)) {
                                             flags
                                             &= ~((1L << 15) | (1L << 23));
                                             op = memcopy(op, m, e - m);
@@ -5148,8 +4824,7 @@ fsm_terminal:
                                     }
                                     continue;
                                 case (0401 + 0):
-                                    if (group <= 1 && !brack)
-                                    {
+                                    if (group <= 1 && !brack) {
                                         flags |= (1L << 15);
                                         m = proto->tp;
                                         e = proto->ip;
@@ -5163,8 +4838,7 @@ fsm_terminal:
                             (*op++ = (')'));
                             (*op++ = (')'));
                         }
-                        if (!(flags & (1L << 23)))
-                        {
+                        if (!(flags & (1L << 23))) {
                             flags |= (1L << 23);
                             proto->op = strcopy((op), (" __OTORP__("));
                             proto->ip = im + 1;
@@ -5182,13 +4856,11 @@ fsm_terminal:
                         if (flags & (1L << 6))
                             memcopy(proto->ox, "extern", 6);
                         op = linesync(proto, op, proto->line = line);
-                        if (flags & (1L << 3))
-                        {
+                        if (flags & (1L << 3)) {
                             proto->brace = 0;
                             (*op++ = ('\n'));
                             (*op++ = ('#'));
-                        }
-                        else if (!(flags & (1L << 27)))
+                        } else if (!(flags & (1L << 27)))
                             (*op++ = ('{'));
                     }
                 }
@@ -5200,8 +4872,7 @@ fsm_terminal:
             case '}':
                 flags &= ~((1L << 7) | (1L << 8) | (1L << 15) | (1L << 17)
                            | (1L << 23) | (1L << 25));
-                if (--proto->brace == 0)
-                {
+                if (--proto->brace == 0) {
                     flags &= ~((1L << 9) | (1L << 27) | (1L << 28));
 
                     if (flags & (1L << 5))
@@ -5216,8 +4887,7 @@ fsm_terminal:
                     flags |= (1L << 3);
                 else if (paren == 0
                          && (flags & ((1L << 9) | (1L << 15) | (1L << 23)))
-                            == (1L << 15))
-                {
+                            == (1L << 15)) {
                     if (last == ')' && proto->brace
                         && (group != 2 || call != 2))
                         flags |= (1L << 23);
@@ -5227,12 +4897,10 @@ fsm_terminal:
                 goto fsm_other;
             case ',':
 
-                if (flags & (1L << 0))
-                {
+                if (flags & (1L << 0)) {
                     if (paren == 1)
                         args++;
-                    else
-                    {
+                    else {
                         args--;
                         flags &= ~(1L << 15);
                     }
@@ -5247,23 +4915,18 @@ fsm_terminal:
                 if (flags & (1L << 9))
                     ;
 
-                else if (flags & (1L << 0))
-                {
-                    if (paren == 0)
-                    {
+                else if (flags & (1L << 0)) {
+                    if (paren == 0) {
                         if ((flags & (1L << 15)) && last == ')')
                             flags &= ~(1L << 15);
-                        if (!(flags & (1L << 15)))
-                        {
+                        if (!(flags & (1L << 15))) {
                             call = 0;
                             group = 0;
                             flags &= ~(1L << 23);
                             if (flags & (1L << 5))
                                 (op = ko);
-                            if (flags & (1L << 24))
-                            {
-                                do
-                                {
+                            if (flags & (1L << 24)) {
+                                do {
                                     (proto->ip = ip);
                                     (proto->op = op);
                                     proto->flags
@@ -5277,9 +4940,7 @@ fsm_terminal:
                                 } while (0);
                                 return 0;
                             }
-                        }
-                        else
-                        {
+                        } else {
                             args--;
                             if ((flags & ((1L << 5) | (1L << 23)))
                                 == ((1L << 5) | (1L << 23)))
@@ -5288,14 +4949,11 @@ fsm_terminal:
                     }
                 }
 
-                else if (paren == 0)
-                {
+                else if (paren == 0) {
                     if ((flags & ((1L << 15) | (1L << 17) | (1L << 23)))
                         == (1L << 15)
-                        && call > 1)
-                    {
-                        if ((flags & (1L << 14)) && func)
-                        {
+                        && call > 1) {
+                        if ((flags & (1L << 14)) && func) {
                             func[0] = 'F';
                             func[1] = 'U';
                             func[2] = 'N';
@@ -5303,8 +4961,7 @@ fsm_terminal:
                             func = 0;
                         }
                         if ((flags & ((1L << 1) | (1L << 8))) == (1L << 8)
-                            && aim && aie < im)
-                        {
+                            && aim && aie < im) {
                             while (
                             aie < ip
                             && (*aie == ' ' || *aie == '\t' || *aie == '\n'))
@@ -5316,8 +4973,7 @@ fsm_terminal:
                             while (v < aie
                                    && (*v == ' ' || *v == '\t' || *v == '\n'))
                                 v++;
-                            if (v == aie || !(flags & (1L << 20)))
-                            {
+                            if (v == aie || !(flags & (1L << 20))) {
                                 if (flags & (1L << 20))
                                     n = 3;
                                 else if (v == aie && *v == '(')
@@ -5327,8 +4983,7 @@ fsm_terminal:
                                 ko = op;
                                 om += n;
                                 v = op += n;
-                                while (v >= ko + n)
-                                {
+                                while (v >= ko + n) {
                                     *v = *(v - n);
                                     v--;
                                 }
@@ -5336,26 +4991,21 @@ fsm_terminal:
                                     memcopy(aom, "(...))", 6);
                                 else if (n == 10)
                                     memcopy(aom, "(__VARARG__))", 13);
-                                else
-                                {
+                                else {
                                     ko = strcopy((aom), (" __PROTO__("));
                                     ko = memcopy(ko, aim, aie - aim);
                                     *ko = ')';
-                                    if (++ko >= om)
-                                    {
+                                    if (++ko >= om) {
                                         *ko++ = ')';
                                         om = ko;
                                     }
                                 }
                             }
-                        }
-                        else if (flags & (1L << 26))
-                        {
+                        } else if (flags & (1L << 26)) {
                             op = om;
                             while (*--op == ' ' || *op == '\t' || *op == '\n')
                                 ;
-                            if (*op != ')')
-                            {
+                            if (*op != ')') {
                                 op = om += 14;
                                 *--op = ')';
                                 while ((x = *(op - 14)) >= 'A' && x <= 'Z'
@@ -5367,23 +5017,19 @@ fsm_terminal:
                         }
                         if (flags & (1L << 17))
                             ;
-                        else if (flags & (1L << 20))
-                        {
+                        else if (flags & (1L << 20)) {
                             op = om;
                             if (!(flags & (1L << 25)))
                                 op = strcopy((op), ("(...)"));
                             else
                                 op = memcopy(op, im, ie - im);
                             (*op++ = (c));
-                        }
-                        else
-                        {
+                        } else {
                             if (flags & (1L << 1))
                                 op = strcopy((om), ("()"));
                             else if (!(flags & (1L << 25)))
                                 op = strcopy((om), ("(__VARARG__)"));
-                            else
-                            {
+                            else {
                                 op = strcopy((om), (" __PROTO__("));
                                 op = memcopy(op, im, ie - im);
                                 (*op++ = (')'));
@@ -5393,24 +5039,19 @@ fsm_terminal:
                             (*op++ = (c));
                         }
                         flags &= ~((1L << 15) | (1L << 27) | (1L << 28));
-                        if (c == ',' && !(flags & (1L << 8)))
-                        {
+                        if (c == ',' && !(flags & (1L << 8))) {
                             call = 1;
                             group = 0;
                             break;
                         }
-                    }
-                    else if (flags & ((1L << 17) | (1L << 23)))
+                    } else if (flags & ((1L << 17) | (1L << 23)))
                         call = 0;
-                    if (c == ';')
-                    {
+                    if (c == ';') {
                         flags &= ~((1L << 6) | (1L << 14) | (1L << 25)
                                    | (1L << 26));
                         call = 0;
-                        if (flags & (1L << 24))
-                        {
-                            do
-                            {
+                        if (flags & (1L << 24)) {
+                            do {
                                 (proto->ip = ip);
                                 (proto->op = op);
                                 proto->flags
@@ -5424,15 +5065,13 @@ fsm_terminal:
                             } while (0);
                             return 0;
                         }
-                    }
-                    else
+                    } else
                         call = call > 1 && c == ',';
                     group = 0;
                     flags &= ~((1L << 7) | (1L << 8) | (1L << 15) | (1L << 17)
                                | (1L << 23));
-                }
-                else if (paren == 1 && group == 1
-                         && !(flags & ((1L << 7) | (1L << 14))))
+                } else if (paren == 1 && group == 1
+                           && !(flags & ((1L << 7) | (1L << 14))))
                     flags |= (1L << 25) | (1L << 17);
                 break;
             case ((0500 + 4) + 6):
@@ -5441,37 +5080,29 @@ fsm_terminal:
                 break;
             case ((0500 + 4) + 9):
 
-                if (flags & (1L << 0))
-                {
+                if (flags & (1L << 0)) {
                     if (proto->brace == 0)
                         flags |= (1L << 23);
-                }
-                else
+                } else
 
-                if (paren == 0 && !(flags & (1L << 26)))
-                {
+                if (paren == 0 && !(flags & (1L << 26))) {
                     flags |= (1L << 14);
-                    if (!(flags & (1L << 19)) || proto->package)
-                    {
+                    if (!(flags & (1L << 19)) || proto->package) {
                         op = strcopy((op), (" __MANGLE__"));
-                        if (proto->package)
-                        {
+                        if (proto->package) {
                             op = strcopy((op - 1), (proto->package));
                             func = op + 1;
                             op = strcopy((op), ("_DATA__"));
                         }
-                    }
-                    else
+                    } else
                         func = 0;
                 }
                 break;
             case (0401 + 29):
                 if (paren == 0
-                    && (flags & ((1L << 1) | (1L << 27))) == (1L << 1))
-                {
+                    && (flags & ((1L << 1) | (1L << 27))) == (1L << 1)) {
                     op -= 3;
-                    do
-                    {
+                    do {
                         (proto->ip = ip);
                         (proto->op = op);
                         proto->flags &= ~((1L << 5) | (1L << 9) | (1L << 17)
@@ -5490,13 +5121,11 @@ fsm_terminal:
             case ((0500 + 4) + 30):
                 goto fsm_id;
             case (0500 + 1):
-                if ((flags & ((1L << 19) | (1L << 27))) == (1L << 27))
-                {
+                if ((flags & ((1L << 19) | (1L << 27))) == (1L << 27)) {
                     flags &= ~(1L << 15);
                     line = proto->line;
                     op = strcopy((op - 8), ("__VA_START__"));
-                    do
-                    {
+                    do {
                         (proto->ip = ip);
                         (proto->op = op);
                         proto->flags &= ~((1L << 5) | (1L << 9) | (1L << 17)
@@ -5506,17 +5135,14 @@ fsm_terminal:
                                            | (1L << 27) | (1L << 28));
                         proto->call = call;
                     } while (0);
-                    for (;;)
-                    {
+                    for (;;) {
                         switch (
-                        lex(proto, (flags & ((1L << 16))) | (1L << 21)))
-                        {
+                        lex(proto, (flags & ((1L << 16))) | (1L << 21))) {
                         case 0:
                         case ';':
                             break;
                         case (0401 + 0):
-                            if (!(flags & (1L << 15)))
-                            {
+                            if (!(flags & (1L << 15))) {
                                 flags |= (1L << 15);
                                 m = proto->tp;
                                 e = proto->ip;
@@ -5527,19 +5153,15 @@ fsm_terminal:
                         }
                         break;
                     }
-                    do
-                    {
+                    do {
                         (ip = proto->ip);
                         (op = proto->op);
                         call = proto->call;
                     } while (0);
-                    if (flags & (1L << 15))
-                    {
+                    if (flags & (1L << 15)) {
                         v = m;
                         n = e - m;
-                    }
-                    else
-                    {
+                    } else {
                         v = "ap";
                         n = 2;
                     }
@@ -5552,23 +5174,18 @@ fsm_terminal:
                     if (*bp == 'r' && !sstrncmp(bp, "register", 8)
                         && (*(bp + 8) == ' ' || *(bp + 8) == '\t'))
                         bp += 9;
-                    for (;;)
-                    {
+                    for (;;) {
                         switch (
-                        lex(proto, (flags & ((1L << 16))) | (1L << 21)))
-                        {
+                        lex(proto, (flags & ((1L << 16))) | (1L << 21))) {
                         case '(':
                             if (paren++)
                                 group++;
                             continue;
                         case ')':
-                            if (--paren == 0)
-                            {
-                                if (flags & (1L << 15))
-                                {
+                            if (--paren == 0) {
+                                if (flags & (1L << 15)) {
                                     flags &= ~(1L << 15);
-                                    if (!(flags & (1L << 28)))
-                                    {
+                                    if (!(flags & (1L << 28))) {
                                         op = memcopy(op, m, e - m);
                                         op = strcopy((op), (" = "));
                                     }
@@ -5593,13 +5210,10 @@ fsm_terminal:
                             }
                             continue;
                         case ',':
-                            if (paren == 1)
-                            {
-                                if (flags & (1L << 15))
-                                {
+                            if (paren == 1) {
+                                if (flags & (1L << 15)) {
                                     flags &= ~(1L << 15);
-                                    if (!(flags & (1L << 28)))
-                                    {
+                                    if (!(flags & (1L << 28))) {
                                         op = memcopy(op, m, e - m);
                                         op = strcopy((op), (" = "));
                                     }
@@ -5630,8 +5244,7 @@ fsm_terminal:
                             }
                             continue;
                         case (0401 + 0):
-                            if (group <= 1)
-                            {
+                            if (group <= 1) {
                                 flags |= (1L << 15);
                                 m = proto->tp;
                                 e = proto->ip;
@@ -5652,23 +5265,19 @@ fsm_terminal:
             case (0401 + 0):
             fsm_id:
 
-                if (flags & (1L << 0))
-                {
+                if (flags & (1L << 0)) {
                     if (!args && paren == 1)
                         args++;
                     break;
                 }
 
-                if (paren == 0)
-                {
-                    if (last == ')')
-                    {
+                if (paren == 0) {
+                    if (last == ')') {
                         if (proto->brace == 0 && !(flags & (1L << 1)))
                             flags |= (1L << 23);
                         call = !call;
-                    }
-                    else if ((flags & (1L << 23)) || c == (0401 + 0)
-                             || c == ((0500 + 4) + 30))
+                    } else if ((flags & (1L << 23)) || c == (0401 + 0)
+                               || c == ((0500 + 4) + 30))
                         call++;
                     else
                         flags |= (1L << 23);
@@ -5679,13 +5288,10 @@ fsm_terminal:
                 flags |= (1L << 25);
                 break;
             case (0401 + 1):
-                if (*proto->tp >= '0' && *proto->tp <= '9')
-                {
+                if (*proto->tp >= '0' && *proto->tp <= '9') {
                     n = 0;
-                    for (;; op--)
-                    {
-                        switch (*(op - 1))
-                        {
+                    for (;; op--) {
+                        switch (*(op - 1)) {
                         case 'f':
                         case 'F':
                             t = op;
@@ -5699,16 +5305,14 @@ fsm_terminal:
                             break;
                         case 'l':
                         case 'L':
-                            if (!(n & 01))
-                            {
+                            if (!(n & 01)) {
                                 n |= 01;
                                 t = op;
                                 while ((c = *--t) >= '0' && c <= '9'
                                        || c >= 'a' && c <= 'z'
                                        || c >= 'A' && c <= 'Z')
                                     ;
-                                if (*t == '.')
-                                {
+                                if (*t == '.') {
                                     n = 0;
                                     op--;
                                     break;
@@ -5724,8 +5328,7 @@ fsm_terminal:
                     }
                     if (n & 01)
                         *op++ = 'L';
-                    if (n & 02)
-                    {
+                    if (n & 02) {
                         m = op;
                         t = op = m + 10;
                         while ((c = *--m) >= '0' && c <= '9'
@@ -5768,38 +5371,31 @@ fsm_terminal:
 
             (proto->op = op);
         goto fsm_start;
-    }
-    else if (flags & ((1L << 10) | (1L << 11)))
-    {
+    } else if (flags & ((1L << 10) | (1L << 11))) {
 
         if ((flags & (1L << 29)) && c == '%' && *ip == '{')
             t = 0;
         else
 
         {
-            if (c == '#')
-            {
+            if (c == '#') {
                 for (t = ip; *t == ' ' || *t == '\t'; t++)
                     ;
                 if (*t++ == 'i' && *t++ == 'f' && *t++ == 'n' && *t++ == 'd'
-                    && *t++ == 'e' && *t++ == 'f')
-                {
+                    && *t++ == 'e' && *t++ == 'f') {
 
 
                     t = 0;
                 }
-            }
-            else
+            } else
                 t = "";
         }
-        if (t)
-        {
+        if (t) {
 
             n = ip - proto->tp;
             ip -= n;
             op -= n;
-        }
-        else
+        } else
             while (*ip != '\n')
                 *op++ = *ip++;
         op = init(proto, op, flags);
@@ -5808,8 +5404,7 @@ fsm_terminal:
         proto->flags &= ~((1L << 10) | (1L << 11));
         goto fsm_start;
     }
-    do
-    {
+    do {
         (proto->ip = ip);
         (proto->op = op);
         proto->flags
@@ -5902,20 +5497,17 @@ __OTORP__(char *file; int fd; char *notice; char *options; char *package;
         comment = "/*";
     if (!(proto->cc[0] = comment[0]))
         notice = options = 0;
-    else if (comment[1])
-    {
+    else if (comment[1]) {
         proto->cc[1] = comment[1];
         proto->cc[2] = comment[2] ? comment[2] : comment[0];
-    }
-    else
+    } else
         proto->cc[1] = proto->cc[2] = comment[0];
 
 
     n = read(fd, proto->ip, proto->iz);
     if (!(proto->flags & (1L << 16)))
         close(fd);
-    if (n < 0)
-    {
+    if (n < 0) {
         pppclose(iob);
         return 0;
     }
@@ -5938,22 +5530,18 @@ __OTORP__(char *file; int fd; char *notice; char *options; char *package;
     pragma = -1;
     s = proto->ip;
     m = 80;
-    while (m-- > 0 && *s && hit != (0x01 | 0x02))
-    {
+    while (m-- > 0 && *s && hit != (0x01 | 0x02)) {
         while (*s == ' ' || *s == '\t')
             s++;
-        if (*s == '#')
-        {
+        if (*s == '#') {
             b = s++;
             while (*s == ' ' || *s == '\t')
                 s++;
             if (*s == *"pragma"
                 && !sstrncmp(s, "pragma", sizeof("pragma") - 1)
-                && (*(s += sizeof("pragma") - 1) == ' ' || *s == '\t'))
-            {
+                && (*(s += sizeof("pragma") - 1) == ' ' || *s == '\t')) {
                 clr = 0;
-                while (*s && *s != '\r' && *s != '\n')
-                {
+                while (*s && *s != '\r' && *s != '\n') {
                     for (; *s == ' ' || *s == '\t'; s++)
                         ;
                     for (t = s; *s && *s != ' ' && *s != '\t' && *s != '\r'
@@ -5964,12 +5552,10 @@ __OTORP__(char *file; int fd; char *notice; char *options; char *package;
                     for (i = 0; i < (sizeof(pragmas) / sizeof(pragmas[0]));
                          i++)
                         if (pragmas[i].size == z
-                            && !sstrncmp(t, pragmas[i].name, z))
-                        {
+                            && !sstrncmp(t, pragmas[i].name, z)) {
                             clr = 1;
                             hit |= pragmas[i].hit;
-                            switch (pragmas[i].hit)
-                            {
+                            switch (pragmas[i].hit) {
                             case 0x02:
                                 notice = options = 0;
                                 break;
@@ -5979,8 +5565,7 @@ __OTORP__(char *file; int fd; char *notice; char *options; char *package;
                             }
                         }
                 }
-                if (clr)
-                {
+                if (clr) {
 
                     if (!(flags & (1 << 1)) || (flags & (1 << 8)))
 
@@ -5988,50 +5573,42 @@ __OTORP__(char *file; int fd; char *notice; char *options; char *package;
                             ;
                 }
             }
-        }
-        else if (*s == *"/* : : generated by proto : : */\n"
-                 && !sstrncmp(s,
-                              "/* : : generated by proto : : */\n",
-                              sizeof("/* : : generated by proto : : */\n")
-                              - 1))
-        {
+        } else if (*s == *"/* : : generated by proto : : */\n"
+                   && !sstrncmp(s,
+                                "/* : : generated by proto : : */\n",
+                                sizeof("/* : : generated by proto : : */\n")
+                                - 1)) {
             pragma = 0;
             break;
         }
 
         else if (*s == '%' && *(s + 1) == '{')
             proto->flags |= (1L << 29);
-        else if (!(hit & 0x02))
-        {
-            if (*s == *com && !sstrncmp(s, com, comlen))
-            {
+        else if (!(hit & 0x02)) {
+            if (*s == *com && !sstrncmp(s, com, comlen)) {
                 hit |= 0x02;
                 notice = options = 0;
-            }
-            else
+            } else
                 for (; *s && *s != '\n' && !(hit & 0x02); s++)
                     for (i = 0; i < (sizeof(notices) / sizeof(notices[0]));
                          i++)
                         if (*s == notices[i].name[0]
-                            && !sstrncmp(s, notices[i].name, notices[i].size))
-                        {
+                            && !sstrncmp(
+                               s, notices[i].name, notices[i].size)) {
                             s += notices[i].size;
-                            if (notices[i].val)
-                            {
+                            if (notices[i].val) {
                                 while (*s == ' ' || *s == '\t')
                                     s++;
                                 if (*s == '('
                                     && (*(s + 1) == 'c' || *(s + 1) == 'C')
                                     && *(s + 2) == ')'
                                     || *s >= '0' && *s <= '9'
-                                       && *(s + 1) >= '0' && *(s + 1) <= '9')
-                                {
+                                       && *(s + 1) >= '0'
+                                       && *(s + 1) <= '9') {
                                     hit |= notices[i].hit;
                                     notice = options = 0;
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 hit |= notices[i].hit;
                                 notice = options = 0;
                             }
@@ -6059,29 +5636,21 @@ __OTORP__(char *file; int fd; char *notice; char *options; char *package;
         && file[--m] == 'y' && file[--m] == '.')
         proto->flags |= (1L << 29);
 
-    if (pragma <= 0)
-    {
-        if (flags & (1 << 10))
-        {
+    if (pragma <= 0) {
+        if (flags & (1 << 10)) {
             flags &= ~((1 << 4) | (1 << 5));
             proto->flags |= (1L << 19);
-        }
-        else if (!(flags & ((1 << 3) | (1 << 9))))
-        {
+        } else if (!(flags & ((1 << 3) | (1 << 9)))) {
             pppclose(iob);
             return 0;
-        }
-        else if ((flags & ((1 << 3) | (1 << 9))) == (1 << 9) || !pragma)
-        {
+        } else if ((flags & ((1 << 3) | (1 << 9))) == (1 << 9) || !pragma) {
             proto->flags |= (1L << 18);
             if (proto->flags & (1L << 16))
                 proto->oz += proto->iz;
             proto->iz = n;
-            if (notice || options)
-            {
+            if (notice || options) {
                 if (proto->cc[0] == '#' && proto->ip[0] == '#'
-                    && proto->ip[1] == '!')
-                {
+                    && proto->ip[1] == '!') {
                     s = proto->ip;
                     while (*s && *s++ != '\n')
                         ;
@@ -6091,8 +5660,7 @@ __OTORP__(char *file; int fd; char *notice; char *options; char *package;
                     proto->iz = n -= m;
                 }
 
-                if (proto->cc[0])
-                {
+                if (proto->cc[0]) {
                     if ((comlen = astlicense(proto->op,
                                              proto->oz,
                                              notice,
@@ -6118,19 +5686,16 @@ __OTORP__(char *file; int fd; char *notice; char *options; char *package;
         }
     }
 
-    if (!(retain & (1 << 6)))
-    {
+    if (!(retain & (1 << 6))) {
         retain |= (1 << 6);
         ppfsm(4, (( char * )0));
     }
 
     proto->line = 1;
 
-    if (notice || options || (flags & ((1 << 4) | (1 << 5))))
-    {
+    if (notice || options || (flags & ((1 << 4) | (1 << 5)))) {
 
-        if (notice || options)
-        {
+        if (notice || options) {
             if ((comlen = astlicense(proto->op,
                                      proto->oz,
                                      notice,
@@ -6147,41 +5712,32 @@ __OTORP__(char *file; int fd; char *notice; char *options; char *package;
                 proto->op += comlen;
         }
 
-        if (flags & (1 << 5))
-        {
+        if (flags & (1 << 5)) {
             proto->flags |= (1L << 11);
             if (flags & (1 << 11))
                 retain |= (1 << 5);
-        }
-        else if (flags & (1 << 4))
-        {
+        } else if (flags & (1 << 4)) {
             if (flags & (1 << 11))
                 retain |= (1 << 4);
 
-            if (flags & (1 << 0))
-            {
+            if (flags & (1 << 0)) {
                 *proto->op++ = '#';
                 proto->op = strcopy((proto->op), ("pragma"));
                 *proto->op++ = ' ';
                 proto->op = strcopy((proto->op), (pragmas[0].name));
                 *proto->op++ = '\n';
-            }
-            else
+            } else
 
                 proto->flags |= (1L << 10);
         }
 
-        if (!(flags & (1 << 0)))
-        {
-            if (proto->flags & (1L << 29))
-            {
+        if (!(flags & (1 << 0))) {
+            if (proto->flags & (1L << 29)) {
                 proto->op = strcopy((proto->op), ("\n%{\n" + !notice));
                 proto->op = strcopy((proto->op),
                                     ("/* : : generated by proto : : */\n"));
                 proto->op = strcopy((proto->op), ("%}\n"));
-            }
-            else
-            {
+            } else {
                 if (n || notice || options)
                     *proto->op++ = '\n';
                 proto->op = strcopy((proto->op),
@@ -6196,8 +5752,7 @@ __OTORP__(char *file; int fd; char *notice; char *options; char *package;
 
 
     proto->file = file;
-    if (flags & (1 << 0))
-    {
+    if (flags & (1 << 0)) {
         proto->flags |= (1L << 0);
         if (!(flags & (1 << 4)))
             proto->flags |= (1L << 5);
@@ -6212,43 +5767,34 @@ int pppread __PARAM__((char *iob), (iob)) __OTORP__(char *iob;)
     Proto_t *proto = ( Proto_t * )(iob - sizeof(Proto_t));
     int n;
 
-    if (proto->flags & (1L << 18))
-    {
-        if (proto->iz)
-        {
+    if (proto->flags & (1L << 18)) {
+        if (proto->iz) {
             n = proto->iz;
             proto->iz = 0;
-        }
-        else if (!(proto->flags & (1L << 16)))
+        } else if (!(proto->flags & (1L << 16)))
             n = 0;
         else if ((n = read(proto->fd, proto->ob, proto->oz)) <= 0
-                 || (proto->options & (1L << 0)) && n < proto->oz)
-        {
+                 || (proto->options & (1L << 0)) && n < proto->oz) {
             proto->flags &= ~(1L << 16);
             close(proto->fd);
         }
-    }
-    else
-    {
-        if (proto->op == proto->ob)
-        {
+    } else {
+        if (proto->op == proto->ob) {
             if (proto->flags & (1L << 4))
                 return -1;
 
-            if (proto->flags & (1L << 29))
-            {
+            if (proto->flags & (1L << 29)) {
                 char *ip = proto->ip;
                 char *op = proto->ob;
                 char *ep = proto->ob + proto->oz - 2;
 
-                if (!*ip)
-                {
+                if (!*ip) {
                     ip = proto->ip = proto->ib;
                     if (!(proto->flags & (1L << 16)))
                         n = 0;
                     else if ((n = read(proto->fd, ip, proto->iz)) <= 0
-                             || (proto->options & (1L << 0)) && n < proto->iz)
-                    {
+                             || (proto->options & (1L << 0))
+                                && n < proto->iz) {
                         if (n < 0)
                             n = 0;
                         proto->flags &= ~(1L << 16);
@@ -6256,11 +5802,9 @@ int pppread __PARAM__((char *iob), (iob)) __OTORP__(char *iob;)
                     }
                     ip[n] = 0;
                 }
-                if (proto->flags & (1L << 30))
-                {
+                if (proto->flags & (1L << 30)) {
                     proto->flags &= ~(1L << 30);
-                    if (*ip == '%')
-                    {
+                    if (*ip == '%') {
                         *op++ = *ip++;
                         if (proto->flags & (1L << 31))
                             proto->flags &= ~(1L << 29);
@@ -6269,14 +5813,12 @@ int pppread __PARAM__((char *iob), (iob)) __OTORP__(char *iob;)
                     }
                 }
                 if (proto->flags & (1L << 29))
-                    while (op < ep && (n = *op++ = *ip))
-                    {
+                    while (op < ep && (n = *op++ = *ip)) {
                         ip++;
-                        if (n == '%')
-                        {
+                        if (n == '%') {
                             if (*ip == '%'
-                                && (ip == proto->ip + 1 || *(ip - 2) == '\n'))
-                            {
+                                && (ip == proto->ip + 1
+                                    || *(ip - 2) == '\n')) {
                                 *op++ = *ip++;
                                 if (proto->flags & (1L << 31))
                                     proto->flags &= ~(1L << 29);
@@ -6284,20 +5826,17 @@ int pppread __PARAM__((char *iob), (iob)) __OTORP__(char *iob;)
                                     proto->flags |= (1L << 31);
                                 break;
                             }
-                            if (!*ip)
-                            {
+                            if (!*ip) {
                                 *op++ = '%';
                                 proto->flags |= (1L << 30);
                                 break;
                             }
-                        }
-                        else if (n == '\n')
+                        } else if (n == '\n')
                             proto->line++;
                     }
                 proto->op = memcopy(proto->ob, proto->ip, ip - proto->ip);
                 proto->ip = ip;
-            }
-            else
+            } else
 
                 lex(proto, proto->flags);
             if ((proto->flags & ((1L << 4) | (1L << 16))) == (1L << 4))
@@ -6339,27 +5878,23 @@ __OTORP__(char *file; char *license; char *options; char *package; char *copy;
 
     if (file && access(file, 4))
         proto_error((( char * )0), 2, file, "not found");
-    else if (b = pppopen(file, 0, license, options, package, comment, flags))
-    {
+    else if (b
+             = pppopen(file, 0, license, options, package, comment, flags)) {
         if (!file)
             fd = 1;
-        else if (flags & ((1 << 13) << 1))
-        {
+        else if (flags & ((1 << 13) << 1)) {
             e = file + sstrlen(file) - 1;
             x = *e;
             *e = '_';
-            if ((fd = creat(file, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) < 0)
-            {
+            if ((fd = creat(file, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH))
+                < 0) {
                 proto_error(b, 2, file, "cannot create temporary file");
                 pppclose(b);
                 return flags | ((1 << 13) << 0);
             }
             *e = x;
-        }
-        else if (copy)
-        {
-            if (((n = sstrlen(copy)) + sstrlen(file) + 2) > sizeof(buf))
-            {
+        } else if (copy) {
+            if (((n = sstrlen(copy)) + sstrlen(file) + 2) > sizeof(buf)) {
                 proto_error(b, 2, copy, "copy path too long");
                 pppclose(b);
                 return flags | ((1 << 13) << 0);
@@ -6369,20 +5904,17 @@ __OTORP__(char *file; char *license; char *options; char *package; char *copy;
             if (*file != '/')
                 *e++ = '/';
             strcopy(e, file);
-            if ((fd = creat(buf, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) < 0)
-            {
+            if ((fd = creat(buf, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH))
+                < 0) {
                 for (e = buf; *e == '/'; e++)
                     ;
-                do
-                {
-                    if (*e == '/')
-                    {
+                do {
+                    if (*e == '/') {
                         *e = 0;
                         if (access(buf, 0)
                             && mkdir(buf,
                                      S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP
-                                     | S_IXGRP | S_IROTH | S_IXOTH))
-                        {
+                                     | S_IXGRP | S_IROTH | S_IXOTH)) {
                             proto_error(
                             b, 2, buf, "cannot create copy directory");
                             pppclose(b);
@@ -6392,26 +5924,21 @@ __OTORP__(char *file; char *license; char *options; char *package; char *copy;
                     }
                 } while (*e++);
                 if ((fd = creat(buf, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH))
-                    < 0)
-                {
+                    < 0) {
                     proto_error(b, 2, buf, "cannot create copy file");
                     pppclose(b);
                     return flags | ((1 << 13) << 0);
                 }
             }
             file = buf;
-        }
-        else
+        } else
             fd = 1;
         if (file && (flags & ((1 << 13) << 2)))
             proto_error(b, 0, "convert to", file);
-        while ((n = pppread(b)) > 0)
-        {
+        while ((n = pppread(b)) > 0) {
             p = b;
-            for (;;)
-            {
-                if ((m = write(fd, p, n)) <= 0)
-                {
+            for (;;) {
+                if ((m = write(fd, p, n)) <= 0) {
                     proto_error(b, 2, "write error", (( char * )0));
                     flags |= ((1 << 13) << 0);
                     break;
@@ -6425,8 +5952,7 @@ __OTORP__(char *file; char *license; char *options; char *package; char *copy;
         }
         if (fd > 1)
             close(fd);
-        if (file && (flags & ((1 << 13) << 1)))
-        {
+        if (file && (flags & ((1 << 13) << 1))) {
             *e = '_';
             strcopy(b, file);
             *e = x;
@@ -6462,8 +5988,7 @@ __OTORP__(char *file; char *comment;)
     char *suffix;
     int i;
 
-    if (file && (!comment || !*comment))
-    {
+    if (file && (!comment || !*comment)) {
         suffix = 0;
         while (*file)
             if (*file++ == '.')
@@ -6497,12 +6022,9 @@ __OTORP__(int argc; char **argv;)
 
     ;
 
-    while ((file = *++argv) && *file == '-' && *(file + 1))
-    {
-        for (;;)
-        {
-            switch (*++file)
-            {
+    while ((file = *++argv) && *file == '-' && *(file + 1)) {
+        for (;;) {
+            switch (*++file) {
             case 0:
                 break;
             case 'c':
@@ -6513,8 +6035,7 @@ __OTORP__(int argc; char **argv;)
                 flags |= (1 << 1);
                 continue;
             case 'e':
-                if (!*(package = ++file) && !(package = *++argv))
-                {
+                if (!*(package = ++file) && !(package = *++argv)) {
                     file = "??";
                     continue;
                 }
@@ -6529,8 +6050,7 @@ __OTORP__(int argc; char **argv;)
                 flags |= (1 << 0);
                 continue;
             case 'l':
-                if (!*(license = ++file) && !(license = *++argv))
-                {
+                if (!*(license = ++file) && !(license = *++argv)) {
                     file = "??";
                     continue;
                 }
@@ -6539,21 +6059,18 @@ __OTORP__(int argc; char **argv;)
                 flags |= (1 << 7);
                 continue;
             case 'o':
-                if (!*(b = ++file) && !(b = *++argv))
-                {
+                if (!*(b = ++file) && !(b = *++argv)) {
                     file = "??";
                     continue;
                 }
-                if (!options)
-                {
+                if (!options) {
                     options = op = opt;
                     oe = op + sizeof(opt) - 1;
                 }
                 n = sstrlen(b);
                 if ((n + 1) >= (oe - op))
                     proto_error((( char * )0), 3, b, "too many options");
-                else
-                {
+                else {
                     *op++ = '\n';
                     memcopy(op, b, n + 1);
                     op += n;
@@ -6581,15 +6098,13 @@ __OTORP__(int argc; char **argv;)
                 flags |= (1 << 1) | (1 << 8);
                 continue;
             case 'C':
-                if (!*(copy = ++file) && !(copy = *++argv))
-                {
+                if (!*(copy = ++file) && !(copy = *++argv)) {
                     file = "??";
                     continue;
                 }
                 break;
             case 'L':
-                if (!*(list = ++file) && !(list = *++argv))
-                {
+                if (!*(list = ++file) && !(list = *++argv)) {
                     file = "??";
                     continue;
                 }
@@ -6614,20 +6129,17 @@ __OTORP__(int argc; char **argv;)
     }
 
 
-    if (list)
-    {
+    if (list) {
         if (*list == '-' && !*(list + 1))
             fd = 0;
         else if ((fd = open(list, O_RDONLY)) < 0)
             proto_error((( char * )0), 3, list, "not found");
-        do
-        {
+        do {
             for (b = buf; (n = read(fd, b, 1)) > 0 && *b != '\n'
                           && b < &buf[sizeof(buf) - 1];
                  b++)
                 ;
-            if (b > buf)
-            {
+            if (b > buf) {
                 *b = 0;
                 flags = proto(buf,
                               license,

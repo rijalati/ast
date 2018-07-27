@@ -55,16 +55,12 @@ csread(Cs_t *state, int fd, void *buf, size_t size, int op)
               fd,
               size,
               op == CS_EXACT ? "EXACT" : op == CS_LIMIT ? "LIMIT" : "LINE"));
-    if (op == CS_LINE && size > 1)
-    {
+    if (op == CS_LINE && size > 1) {
         if ((n = cspeek(state, fd, buf, size - 1)) > 0
-            && (p[n] = 0, e = strchr(p, '\n')))
-        {
+            && (p[n] = 0, e = strchr(p, '\n'))) {
             e++;
             op = CS_EXACT;
-        }
-        else
-        {
+        } else {
             while (p < e && (n = read(fd, p, 1)) == 1 && *p++ != '\n')
                 ;
             if (n <= 0 || p == ( char * )buf || *(p - 1) != '\n')
@@ -84,10 +80,8 @@ csread(Cs_t *state, int fd, void *buf, size_t size, int op)
             return n;
         }
     }
-    while (n = read(fd, p, e - p))
-    {
-        if (n < 0)
-        {
+    while (n = read(fd, p, e - p)) {
+        if (n < 0) {
             if (restart && errno == EINTR)
                 continue;
             break;
@@ -109,8 +103,7 @@ csread(Cs_t *state, int fd, void *buf, size_t size, int op)
                && (*(p - 1) == '\n'
                    || n > 1 && *(p - 1) == '\r' && *(p - 2) == '\n'))
             return p - ( char * )buf;
-        if (p >= e)
-        {
+        if (p >= e) {
             if (op == CS_EXACT)
                 return p - ( char * )buf;
             break;
@@ -128,8 +121,7 @@ csread(Cs_t *state, int fd, void *buf, size_t size, int op)
          ( char * )buf));
     }
 bad:
-    if (p != ( char * )buf || n < 0)
-    {
+    if (p != ( char * )buf || n < 0) {
         errno = EINVAL;
         messagef(
         (state->id,

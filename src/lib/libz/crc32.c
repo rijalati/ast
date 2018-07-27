@@ -118,8 +118,7 @@ make_crc_table()
     /* See if another task is already doing this (not thread-safe, but better
        than nothing -- significantly reduces duration of vulnerability in
        case the advice about DYNAMIC_CRC_TABLE is ignored) */
-    if (first)
-    {
+    if (first) {
         first = 0;
 
         /* make exclusive-or pattern from polynomial (0xedb88320UL) */
@@ -128,8 +127,7 @@ make_crc_table()
             poly |= 1UL << (31 - p[n]);
 
         /* generate a crc for every 8-bit value */
-        for (n = 0; n < 256; n++)
-        {
+        for (n = 0; n < 256; n++) {
             c = ( unsigned long )n;
             for (k = 0; k < 8; k++)
                 c = c & 1 ? poly ^ (c >> 1) : c >> 1;
@@ -139,12 +137,10 @@ make_crc_table()
 #    ifdef BYFOUR
         /* generate crc for each value followed by one, two, and three zeros,
            and then the byte reversal of those as well as the first table */
-        for (n = 0; n < 256; n++)
-        {
+        for (n = 0; n < 256; n++) {
             c = crc_table[0][n];
             crc_table[4][n] = REV(c);
-            for (k = 1; k < 4; k++)
-            {
+            for (k = 1; k < 4; k++) {
                 c = crc_table[0][c & 0xff] ^ (c >> 8);
                 crc_table[k][n] = c;
                 crc_table[k + 4][n] = REV(c);
@@ -153,9 +149,7 @@ make_crc_table()
 #    endif /* BYFOUR */
 
         crc_table_empty = 0;
-    }
-    else
-    { /* not first */
+    } else { /* not first */
         /* wait for the other guy to finish (not efficient, but rare) */
         while (crc_table_empty)
             ;
@@ -176,8 +170,7 @@ make_crc_table()
         write_table(out, crc_table[0]);
 #        ifdef BYFOUR
         fprintf(out, "#ifdef BYFOUR\n");
-        for (k = 1; k < 8; k++)
-        {
+        for (k = 1; k < 8; k++) {
             fprintf(out, "  },\n  {\n");
             write_table(out, crc_table[k]);
         }
@@ -252,8 +245,7 @@ unsigned len;
 #endif /* DYNAMIC_CRC_TABLE */
 
 #ifdef BYFOUR
-    if (sizeof(void *) == sizeof(ptrdiff_t))
-    {
+    if (sizeof(void *) == sizeof(ptrdiff_t)) {
         u4 endian;
 
         endian = 1;
@@ -264,14 +256,12 @@ unsigned len;
     }
 #endif /* BYFOUR */
     crc = crc ^ 0xffffffffUL;
-    while (len >= 8)
-    {
+    while (len >= 8) {
         DO8;
         len -= 8;
     }
     if (len)
-        do
-        {
+        do {
             DO1;
         } while (--len);
     return crc ^ 0xffffffffUL;
@@ -306,28 +296,24 @@ unsigned len;
 
     c = ( u4 )crc;
     c = ~c;
-    while (len && (( ptrdiff_t )buf & 3))
-    {
+    while (len && (( ptrdiff_t )buf & 3)) {
         c = crc_table[0][(c ^ *buf++) & 0xff] ^ (c >> 8);
         len--;
     }
 
     buf4 = ( const u4 FAR * )( const void FAR * )buf;
-    while (len >= 32)
-    {
+    while (len >= 32) {
         DOLIT32;
         len -= 32;
     }
-    while (len >= 4)
-    {
+    while (len >= 4) {
         DOLIT4;
         len -= 4;
     }
     buf = ( const unsigned char FAR * )buf4;
 
     if (len)
-        do
-        {
+        do {
             c = crc_table[0][(c ^ *buf++) & 0xff] ^ (c >> 8);
         } while (--len);
     c = ~c;
@@ -361,21 +347,18 @@ unsigned len;
 
     c = REV(( u4 )crc);
     c = ~c;
-    while (len && (( ptrdiff_t )buf & 3))
-    {
+    while (len && (( ptrdiff_t )buf & 3)) {
         c = crc_table[4][(c >> 24) ^ *buf++] ^ (c << 8);
         len--;
     }
 
     buf4 = ( const u4 FAR * )( const void FAR * )buf;
     buf4--;
-    while (len >= 32)
-    {
+    while (len >= 32) {
         DOBIG32;
         len -= 32;
     }
-    while (len >= 4)
-    {
+    while (len >= 4) {
         DOBIG4;
         len -= 4;
     }
@@ -383,8 +366,7 @@ unsigned len;
     buf = ( const unsigned char FAR * )buf4;
 
     if (len)
-        do
-        {
+        do {
             c = crc_table[4][(c >> 24) ^ *buf++] ^ (c << 8);
         } while (--len);
     c = ~c;
@@ -403,8 +385,7 @@ unsigned long vec;
     unsigned long sum;
 
     sum = 0;
-    while (vec)
-    {
+    while (vec) {
         if (vec & 1)
             sum ^= *mat;
         vec >>= 1;
@@ -442,8 +423,7 @@ z_off_t len2;
     /* put operator for one zero bit in odd */
     odd[0] = 0xedb88320L; /* CRC-32 polynomial */
     row = 1;
-    for (n = 1; n < GF2_DIM; n++)
-    {
+    for (n = 1; n < GF2_DIM; n++) {
         odd[n] = row;
         row <<= 1;
     }
@@ -456,8 +436,7 @@ z_off_t len2;
 
     /* apply len2 zeros to crc1 (first square will put the operator for one
        zero byte, eight zero bits, in even) */
-    do
-    {
+    do {
         /* apply zeros operator for this bit of len2 */
         gf2_matrix_square(even, odd);
         if (len2 & 1)

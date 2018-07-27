@@ -42,8 +42,7 @@ int
 main()
 {
 #if _lib_getgroups
-    if (sizeof(int) > sizeof(gid_t))
-    {
+    if (sizeof(int) > sizeof(gid_t)) {
         int n;
         int i;
         int r;
@@ -52,8 +51,7 @@ main()
         r = sizeof(int) / sizeof(gid_t);
         if ((n = getgroups((sizeof(groups) / sizeof(groups[0])) / r, groups))
             > 0)
-            for (i = 1; i <= n; i++)
-            {
+            for (i = 1; i <= n; i++) {
                 groups[i] = (( gid_t )0);
                 if (getgroups(i, groups) != i)
                     goto botched;

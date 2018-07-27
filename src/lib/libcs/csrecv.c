@@ -130,8 +130,7 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
 #endif
 
     messagef((state->id, NiL, -8, "recv(%d,%d) call", fd, n));
-    if (n < 1)
-    {
+    if (n < 1) {
         errno = EINVAL;
         return -1;
     }
@@ -143,10 +142,8 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
 
 #if CS_LIB_V10
 
-    if (!ioctl(fd, TCPGETADDR, &tcp))
-    {
-        if ((fds[0] = tcp_accept(fd, &tcp)) < 0)
-        {
+    if (!ioctl(fd, TCPGETADDR, &tcp)) {
+        if ((fds[0] = tcp_accept(fd, &tcp)) < 0) {
             messagef((state->id, NiL, -1, "recv: %d: tcp accept error", fd));
             return -1;
         }
@@ -160,8 +157,7 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
 #    if CS_LIB_SOCKET
 
     namlen = sizeof(nam);
-    if ((fds[0] = accept(fd, ( struct sockaddr * )&nam, &namlen)) >= 0)
-    {
+    if ((fds[0] = accept(fd, ( struct sockaddr * )&nam, &namlen)) >= 0) {
 
 #        if CS_LIB_SOCKET_UN && !CS_LIB_STREAM
 
@@ -169,24 +165,20 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
         if (nam.sin_family == AF_UNSPEC)
             nam.sin_family = AF_UNIX;
 #            endif
-        if (nam.sin_family == AF_UNIX)
-        {
+        if (nam.sin_family == AF_UNIX) {
 #            if CS_LIB_SOCKET_RIGHTS
-            if (write(fds[0], "", 1) != 1)
-            {
+            if (write(fds[0], "", 1) != 1) {
                 messagef(
                 (state->id, NiL, -1, "recv: %d: ping write error", fd));
                 close(fds[0]);
                 return -1;
             }
-            if (sockrecv(fds[0], id, rfd, 1) != 1)
-            {
+            if (sockrecv(fds[0], id, rfd, 1) != 1) {
                 messagef(
                 (state->id, NiL, -1, "recv: %d: sockrecv error", fd));
                 goto eperm;
             }
-            if (fstat(rfd[0], &st))
-            {
+            if (fstat(rfd[0], &st)) {
                 messagef((state->id,
                           NiL,
                           -1,
@@ -200,8 +192,7 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
                 errno = EPERM;
                 return -1;
             }
-            if ((st.st_mode & CS_AUTH_MASK) != CS_AUTH_MODE)
-            {
+            if ((st.st_mode & CS_AUTH_MASK) != CS_AUTH_MODE) {
                 messagef((state->id,
                           NiL,
                           -1,
@@ -213,16 +204,14 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
             }
             close(rfd[0]);
 #            else
-            if (fstat(fds[0], &st))
-            {
+            if (fstat(fds[0], &st)) {
                 st.st_uid = geteuid();
                 st.st_gid = getegid();
             }
 #            endif
             id->uid = st.st_uid;
             id->gid = st.st_gid;
-        }
-        else
+        } else
 
 #        endif
 
@@ -238,11 +227,9 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
 
 #if CS_LIB_STREAM || CS_LIB_V10
 
-    if (ioctl(fd, I_RECVFD, &rcv) < 0)
-    {
+    if (ioctl(fd, I_RECVFD, &rcv) < 0) {
         messagef((state->id, NiL, -1, "recv: %d: ioctl I_RECVFD error", fd));
-        switch (errno)
-        {
+        switch (errno) {
         case EIO:
 #    ifdef EBADMSG
         case EBADMSG:
@@ -255,14 +242,12 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
         if (!(m = read(fd, &hdr, sizeof(hdr))))
 #    endif
             m = read(fd, &hdr, sizeof(hdr));
-        if (m != sizeof(hdr))
-        {
+        if (m != sizeof(hdr)) {
             errno = EINVAL;
             messagef((state->id, NiL, -1, "recv: %d: hdr read error", fd));
             return -1;
         }
-        if (hdr.count <= 0)
-        {
+        if (hdr.count <= 0) {
             errno = EINVAL;
             messagef((state->id,
                       NiL,
@@ -272,10 +257,8 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
                       hdr.count));
             return -1;
         }
-        for (i = 0; i < hdr.count; i++)
-        {
-            if (ioctl(fd, I_RECVFD, &rcv) < 0)
-            {
+        for (i = 0; i < hdr.count; i++) {
+            if (ioctl(fd, I_RECVFD, &rcv) < 0) {
                 messagef((state->id,
                           NiL,
                           -1,
@@ -293,8 +276,7 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
 
 #    ifdef I_ACCEPT
 
-    else if (ioctl(rcv.fd, I_ACCEPT, NiL) < 0)
-    {
+    else if (ioctl(rcv.fd, I_ACCEPT, NiL) < 0) {
         messagef((state->id, NiL, -1, "recv: %d: ioctl I_ACCEPT error", fd));
         close(rcv.fd);
         return -1;
@@ -302,8 +284,7 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
 
 #    endif
 
-    else
-    {
+    else {
 
         i = 1;
         fds[0] = rcv.fd;
@@ -317,20 +298,17 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
 
 #    if CS_LIB_SOCKET_RIGHTS
 
-    if ((i = sockrecv(fd, id, rfd, n + 1)) <= 1)
-    {
+    if ((i = sockrecv(fd, id, rfd, n + 1)) <= 1) {
         messagef((state->id, NiL, -1, "recv: %d: sockrecv error", fd));
     nope:
-        if (i >= 0)
-        {
+        if (i >= 0) {
             errno = EPERM;
             while (--i >= 0)
                 close(rfd[i]);
         }
         return -1;
     }
-    if (fstat(rfd[0], &st))
-    {
+    if (fstat(rfd[0], &st)) {
         messagef((state->id,
                   NiL,
                   -1,
@@ -339,8 +317,7 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
                   rfd[0]));
         goto nope;
     }
-    if ((st.st_mode & CS_AUTH_MASK) != CS_AUTH_MODE)
-    {
+    if ((st.st_mode & CS_AUTH_MASK) != CS_AUTH_MODE) {
         messagef((state->id,
                   NiL,
                   -1,
@@ -359,8 +336,7 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
 
 #    else
 
-    if (!access(CS_PROC_FD_TST, F_OK))
-    {
+    if (!access(CS_PROC_FD_TST, F_OK)) {
         int i;
         int j;
         char *s;
@@ -368,8 +344,7 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
         struct stat st;
 
         s = state->temp;
-        if ((i = recv(fd, s, sizeof(state->temp), 0)) <= 0)
-        {
+        if ((i = recv(fd, s, sizeof(state->temp), 0)) <= 0) {
             messagef((state->id, NiL, -1, "recv: %d: read error", fd));
             return -1;
         }
@@ -384,8 +359,7 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
         for (i = 0; i < n; i++)
             fds[i] = strtol(s, &s, 0);
         s = state->temp;
-        for (i = j = 0; i < n; i++)
-        {
+        for (i = j = 0; i < n; i++) {
             sfsprintf(s, sizeof(state->temp), CS_PROC_FD_FMT, pid, fds[i]);
             if (!stat(s, &st)
                 && (fds[i] = open(
@@ -396,17 +370,13 @@ csrecv(Cs_t *state, int fd, Csid_t *id, int *fds, int n)
                    >= 0)
                 j++;
         }
-        if (id)
-        {
+        if (id) {
             id->hid = 0;
             id->pid = pid;
-            if (!stat(CS_PROC_FD_TST, &st))
-            {
+            if (!stat(CS_PROC_FD_TST, &st)) {
                 id->uid = st.st_uid;
                 id->gid = st.st_gid;
-            }
-            else
-            {
+            } else {
                 id->uid = geteuid();
                 id->gid = getegid();
             }

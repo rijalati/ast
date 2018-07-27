@@ -37,10 +37,8 @@ copyin(Archive_t *ap)
     File_t *f = &ap->file;
 
     deltabase(ap);
-    while (getprologue(ap))
-    {
-        while (getheader(ap, f))
-        {
+    while (getprologue(ap)) {
+        while (getheader(ap, f)) {
             if (selectfile(ap, f))
                 filein(ap, f);
             else
@@ -66,14 +64,11 @@ copyout(Ftw_t *ftw)
     Archive_t *ap = state.out;
     File_t *f = &ap->file;
 
-    if (getfile(ap, f, ftw))
-    {
-        if (selectfile(ap, f))
-        {
+    if (getfile(ap, f, ftw)) {
+        if (selectfile(ap, f)) {
             f->fd = openin(ap, f);
             deltaout(NiL, ap, f);
-        }
-        else
+        } else
             ftw->status = FTW_SKIP;
     }
     return 0;
@@ -95,27 +90,20 @@ fileout(Archive_t *ap, File_t *f)
 
     if (f->delta.op == DELTA_verify)
         ap->selected--;
-    else if (putheader(ap, f))
-    {
+    else if (putheader(ap, f)) {
         if (!ap->format->putdata
-            || !(*ap->format->putdata)(&state, ap, f, f->fd))
-        {
+            || !(*ap->format->putdata)(&state, ap, f, f->fd)) {
             err = 0;
             c = f->st->st_size;
-            while (c > 0)
-            {
+            while (c > 0) {
                 n = m = c > state.buffersize ? state.buffersize : c;
-                if (!err)
-                {
-                    if (f->fd >= 0)
-                    {
+                if (!err) {
+                    if (f->fd >= 0) {
                         if ((n = read(f->fd, ap->io->next, m)) < 0
-                            && errno == EIO)
-                        {
+                            && errno == EIO) {
                             static char *buf;
 
-                            if (!buf)
-                            {
+                            if (!buf) {
                                 n = 1024 * 8;
                                 error(1,
                                       "EIO read error -- falling back to "
@@ -127,32 +115,26 @@ fileout(Archive_t *ap, File_t *f)
                             if ((n = read(f->fd, buf, m)) > 0)
                                 memcpy(ap->io->next, buf, n);
                         }
-                    }
-                    else if (bp = getbuffer(f->fd))
-                    {
+                    } else if (bp = getbuffer(f->fd)) {
                         memcpy(ap->io->next, bp->next, m);
                         if (f->extended && ap->convert[SECTION_CONTROL].f2a)
                             ccmapstr(ap->convert[SECTION_CONTROL].f2a,
                                      ap->io->next,
                                      m);
                         bp->next += m;
-                    }
-                    else if (bread(
-                             f->ap, ap->io->next, ( off_t )0, ( off_t )n, 1)
-                             <= 0)
+                    } else if (bread(
+                               f->ap, ap->io->next, ( off_t )0, ( off_t )n, 1)
+                               <= 0)
                         n = -1;
                 }
-                if (n <= 0)
-                {
+                if (n <= 0) {
                     if (n)
                         error(ERROR_SYSTEM | 2, "%s: read error", f->path);
                     else
                         error(2, "%s: file size changed", f->path);
                     memzero(ap->io->next, state.buffersize);
                     err = 1;
-                }
-                else
-                {
+                } else {
                     c -= n;
                     bput(ap, n);
                 }
@@ -185,17 +167,13 @@ filein(Archive_t *ap, File_t *f)
 
     if (f->skip)
         goto skip;
-    else if (state.list)
-    {
-        if (fp = filter(ap, f))
-        {
-            for (n = 0; s = fp->argv[n]; n++)
-            {
+    else if (state.list) {
+        if (fp = filter(ap, f)) {
+            for (n = 0; s = fp->argv[n]; n++) {
                 while (*s)
                     if (*s++ == '%' && *s == '(')
                         break;
-                if (*s)
-                {
+                if (*s) {
                     s = fp->argv[n];
                     listprintf(state.tmp.str, ap, f, s);
                     if (!(fp->argv[n] = sfstruse(state.tmp.str)))
@@ -206,8 +184,7 @@ filein(Archive_t *ap, File_t *f)
             pp = procopen(*fp->argv, fp->argv, NiL, NiL, PROC_WRITE);
             if (s)
                 fp->argv[n] = s;
-            if (!pp)
-            {
+            if (!pp) {
                 error(2,
                       "%s: %s: cannot execute filter %s",
                       ap->name,
@@ -216,19 +193,15 @@ filein(Archive_t *ap, File_t *f)
                 goto skip;
             }
             if (!ap->format->getdata
-                || !(*ap->format->getdata)(&state, ap, f, pp->wfd))
-            {
+                || !(*ap->format->getdata)(&state, ap, f, pp->wfd)) {
                 checksum = 0;
-                for (c = f->st->st_size; c > 0; c -= n)
-                {
+                for (c = f->st->st_size; c > 0; c -= n) {
                     n = (c > state.buffersize) ? state.buffersize : c;
-                    if (!(s = bget(ap, n, NiL)))
-                    {
+                    if (!(s = bget(ap, n, NiL))) {
                         error(ERROR_SYSTEM | 2, "%s: read error", f->name);
                         break;
                     }
-                    if (write(pp->wfd, s, n) != n)
-                    {
+                    if (write(pp->wfd, s, n) != n) {
                         error(ERROR_SYSTEM | 2, "%s: write error", f->name);
                         break;
                     }
@@ -253,10 +226,8 @@ filein(Archive_t *ap, File_t *f)
         }
         listentry(f);
         goto skip;
-    }
-    else
-        switch (f->delta.op)
-        {
+    } else
+        switch (f->delta.op) {
         case DELTA_create:
             if (f->delta.base)
                 error(3,
@@ -292,8 +263,7 @@ filein(Archive_t *ap, File_t *f)
             c = f->st->st_size;
             if ((wfd = openout(ap, f)) < 0)
                 goto skip;
-            if (state.ordered)
-            {
+            if (state.ordered) {
                 if (!f->delta.base->uncompressed)
                     paxdelta(NiL,
                              ap,
@@ -330,8 +300,7 @@ filein(Archive_t *ap, File_t *f)
                              ap,
                              c,
                              0);
-            }
-            else if (!f->delta.base->uncompressed)
+            } else if (!f->delta.base->uncompressed)
                 paxdelta(NiL,
                          ap,
                          f,
@@ -397,24 +366,19 @@ filein(Archive_t *ap, File_t *f)
         default:
         regular:
             wfd = openout(ap, f);
-            if (wfd >= 0)
-            {
+            if (wfd >= 0) {
                 holeinit(wfd);
                 if (!ap->format->getdata
-                    || !(*ap->format->getdata)(&state, ap, f, wfd))
-                {
+                    || !(*ap->format->getdata)(&state, ap, f, wfd)) {
                     checksum = 0;
-                    for (c = f->st->st_size; c > 0; c -= n)
-                    {
+                    for (c = f->st->st_size; c > 0; c -= n) {
                         n = (c > state.buffersize) ? state.buffersize : c;
-                        if (!(s = bget(ap, n, NiL)))
-                        {
+                        if (!(s = bget(ap, n, NiL))) {
                             error(
                             ERROR_SYSTEM | 2, "%s: read error", f->name);
                             break;
                         }
-                        if (holewrite(wfd, s, n) != n)
-                        {
+                        if (holewrite(wfd, s, n) != n) {
                             error(
                             ERROR_SYSTEM | 2, "%s: write error", f->name);
                             break;
@@ -434,11 +398,9 @@ filein(Archive_t *ap, File_t *f)
                           ap->format->name,
                           checksum,
                           f->checksum);
-            }
-            else if (ap->format->getdata)
+            } else if (ap->format->getdata)
                 (*ap->format->getdata)(&state, ap, f, wfd);
-            else
-            {
+            else {
                 if (wfd < -1)
                     listentry(f);
                 goto skip;
@@ -485,16 +447,13 @@ copyinout(Ftw_t *ftw)
     int rfd;
     int wfd;
 
-    if (getfile(state.out, f, ftw) && selectfile(state.out, f))
-    {
+    if (getfile(state.out, f, ftw) && selectfile(state.out, f)) {
         s = f->name;
         f->name
         = stash(&state.out->path.copy, NiL, state.pwdlen + f->namesize);
         strcpy(stpcpy(f->name, state.pwd), s + (*s == '/'));
-        if ((wfd = openout(state.out, f)) >= 0)
-        {
-            if ((rfd = openin(state.out, f)) >= 0)
-            {
+        if ((wfd = openout(state.out, f)) >= 0) {
+            if ((rfd = openin(state.out, f)) >= 0) {
 #if defined(SEEK_DATA) && defined(SEEK_HOLE)
                 off_t data;
                 off_t hole;
@@ -502,29 +461,24 @@ copyinout(Ftw_t *ftw)
 
                 data = 0;
                 more = 1;
-                while (more)
-                {
-                    if ((hole = lseek(rfd, data, SEEK_HOLE)) < data)
-                    {
+                while (more) {
+                    if ((hole = lseek(rfd, data, SEEK_HOLE)) < data) {
                         hole = lseek(rfd, 0, SEEK_END);
                         more = 0;
                     }
-                    while ((c = hole - data) > 0)
-                    {
+                    while ((c = hole - data) > 0) {
                         if (c > state.buffersize)
                             c = state.buffersize;
                         if (lseek(rfd, data, SEEK_SET) != data
                             || (n = read(rfd, state.tmp.buffer, ( size_t )c))
-                               <= 0)
-                        {
+                               <= 0) {
                             error(
                             ERROR_SYSTEM | 2, "%s: read error", f->name);
                             more = 0;
                             break;
                         }
                         if (lseek(wfd, data, SEEK_SET) != data
-                            || write(wfd, state.tmp.buffer, n) != n)
-                        {
+                            || write(wfd, state.tmp.buffer, n) != n) {
                             error(
                             ERROR_SYSTEM | 2, "%s: write error", f->name);
                             more = 0;
@@ -535,8 +489,7 @@ copyinout(Ftw_t *ftw)
                     }
                     if (!more)
                         break;
-                    if ((data = lseek(rfd, hole, SEEK_DATA)) < hole)
-                    {
+                    if ((data = lseek(rfd, hole, SEEK_DATA)) < hole) {
                         if ((data = lseek(rfd, -1, SEEK_END)) < 0
                             || (data + 1) > hole
                                && (lseek(wfd, data, SEEK_SET) != data
@@ -549,20 +502,17 @@ copyinout(Ftw_t *ftw)
                 }
 #else
                 holeinit(wfd);
-                for (c = f->st->st_size; c > 0; c -= n)
-                {
+                for (c = f->st->st_size; c > 0; c -= n) {
                     if ((n = read(rfd,
                                   state.tmp.buffer,
                                   (size_t)((c > state.buffersize)
                                            ? state.buffersize
                                            : c)))
-                        <= 0)
-                    {
+                        <= 0) {
                         error(ERROR_SYSTEM | 2, "%s: read error", f->name);
                         break;
                     }
-                    if (holewrite(wfd, state.tmp.buffer, n) != n)
-                    {
+                    if (holewrite(wfd, state.tmp.buffer, n) != n) {
                         error(ERROR_SYSTEM | 2, "%s: write error", f->name);
                         break;
                     }
@@ -574,11 +524,9 @@ copyinout(Ftw_t *ftw)
                 closein(state.out, f, rfd);
                 setfile(state.out, f);
                 listentry(f);
-            }
-            else
+            } else
                 closeout(state.out, f, wfd);
-        }
-        else if (wfd != -1)
+        } else if (wfd != -1)
             listentry(f);
     }
     return 0;
@@ -608,13 +556,10 @@ skip(char *s, int d)
     while (c = *s++)
         if (c == q)
             q = 0;
-        else if (c == '\\')
-        {
+        else if (c == '\\') {
             if (*s)
                 s++;
-        }
-        else if (!q)
-        {
+        } else if (!q) {
             if (c == d)
                 return s - 1;
             else if (c == '"' || c == '\'')
@@ -640,8 +585,7 @@ copy(Archive_t *ap, int (*copyfile)(Ftw_t *))
     char *mode;
     char *mtime;
 
-    if (ap)
-    {
+    if (ap) {
         deltabase(ap);
         if (ap->delta && ap->delta->format != ap->expected && ap->expected)
             error(3,
@@ -649,8 +593,7 @@ copy(Archive_t *ap, int (*copyfile)(Ftw_t *))
                   ap->name,
                   ap->delta->format->name,
                   ap->expected->name);
-        if (state.append || state.update)
-        {
+        if (state.append || state.update) {
             ap->format = ap->delta->format;
             if (!(ap->format->flags & APPEND))
                 error(3,
@@ -670,20 +613,16 @@ copy(Archive_t *ap, int (*copyfile)(Ftw_t *))
                copyfile,
                state.ftwflags | FTW_MULTIPLE,
                state.exact ? ( Ftw_cmp_t )0 : cmpftw);
-    else
-    {
+    else {
         sfopen(sfstdin, NiL, "rt");
         sfset(sfstdin, SF_SHARE, 0);
         mode = state.mode;
         mtime = state.mtime;
-        for (;;)
-        {
-            if (s = state.peekfile)
-            {
+        for (;;) {
+            if (s = state.peekfile) {
                 state.peekfile = 0;
                 c = state.peeklen;
-            }
-            else if (!(s = sfgetr(sfstdin, '\n', 1)))
+            } else if (!(s = sfgetr(sfstdin, '\n', 1)))
                 break;
             else
                 c = sfvalue(sfstdin) - 1;
@@ -691,8 +630,7 @@ copy(Archive_t *ap, int (*copyfile)(Ftw_t *))
             if (!(s = sfstruse(state.tmp.lst)))
                 nospace();
             flags = state.ftwflags;
-            if (state.filter.line)
-            {
+            if (state.filter.line) {
                 if (!(c = *s++))
                     continue;
                 state.filter.options = s;
@@ -706,43 +644,35 @@ copy(Archive_t *ap, int (*copyfile)(Ftw_t *))
                 state.filter.path = s;
                 if (!(s = skip(s, c)))
                     state.filter.name = state.filter.path;
-                else
-                {
+                else {
                     *s++ = 0;
                     state.filter.name = s;
                     if (s = skip(s, c))
                         *s = 0;
                 }
                 s = state.filter.options;
-                for (;;)
-                {
+                for (;;) {
                     if (t = strchr(s, ','))
                         *t = 0;
-                    if (v = strchr(s, '='))
-                    {
+                    if (v = strchr(s, '=')) {
                         *v++ = 0;
                         c = strtol(v, NiL, 0);
-                    }
-                    else
+                    } else
                         c = 1;
-                    if (s[0] == 'n' && s[1] == 'o')
-                    {
+                    if (s[0] == 'n' && s[1] == 'o') {
                         s += 2;
                         c = !c;
                     }
-                    if (streq(s, "logical") || streq(s, "physical"))
-                    {
+                    if (streq(s, "logical") || streq(s, "physical")) {
                         if (s[0] == 'p')
                             c = !c;
                         if (c)
                             flags &= ~(FTW_META | FTW_PHYSICAL);
-                        else
-                        {
+                        else {
                             flags &= ~(FTW_META);
                             flags |= FTW_PHYSICAL;
                         }
-                    }
-                    else if (streq(s, "mode"))
+                    } else if (streq(s, "mode"))
                         state.mode = v;
                     else if (streq(s, "mtime"))
                         state.mtime = v;
@@ -756,15 +686,13 @@ copy(Archive_t *ap, int (*copyfile)(Ftw_t *))
             c = *s ? ftwalk(s, copyfile, flags, NiL) : 0;
             state.mode = mode;
             state.mtime = mtime;
-            if (c)
-            {
+            if (c) {
                 error(2, "%s: not completely copied", s);
                 break;
             }
         }
     }
-    if (ap)
-    {
+    if (ap) {
         deltadelete(ap);
         putepilogue(ap);
     }

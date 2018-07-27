@@ -106,8 +106,7 @@ test_strmatch(Shell_t *shp, const char *str, const char *pat)
     int match[2 * (MATCH_MAX + 1)], n;
     int c, m = 0;
     const char *cp = pat;
-    while (c = *cp++)
-    {
+    while (c = *cp++) {
         if (c == '(')
             m++;
         if (c == '\\' && *cp)
@@ -140,8 +139,7 @@ b_test(int argc, char *argv[], Shbltin_t *context)
     tdata.sh = context->shp;
     tdata.av = argv;
     tdata.ap = 1;
-    if (c_eq(cp, '['))
-    {
+    if (c_eq(cp, '[')) {
         cp = argv[--argc];
         if (!c_eq(cp, ']'))
             errormsg(SH_DICT, ERROR_exit(2), e_missing, "']'");
@@ -149,18 +147,15 @@ b_test(int argc, char *argv[], Shbltin_t *context)
     if (argc <= 1)
         return (1);
     cp = argv[1];
-    if (c_eq(cp, '(') && argc <= 6 && c_eq(argv[argc - 1], ')'))
-    {
+    if (c_eq(cp, '(') && argc <= 6 && c_eq(argv[argc - 1], ')')) {
         /* special case  ( binop ) to conform with standard */
-        if (!(argc == 4 && (not = sh_lookup(cp = argv[2], shtab_testops))))
-        {
+        if (!(argc == 4 && (not = sh_lookup(cp = argv[2], shtab_testops)))) {
             cp = (++argv)[1];
             argc -= 2;
         }
     }
     not = c_eq(cp, '!');
-    if (not&&c_eq(argv[2], '(') && argc <= 7 && c_eq(argv[argc - 1], ')'))
-    {
+    if (not&&c_eq(argv[2], '(') && argc <= 7 && c_eq(argv[argc - 1], ')')) {
         int i;
         for (i = 2; i < argc; i++)
             tdata.av[i] = tdata.av[i + 1];
@@ -168,20 +163,17 @@ b_test(int argc, char *argv[], Shbltin_t *context)
         argc -= 2;
     }
     /* posix portion for test */
-    switch (argc)
-    {
+    switch (argc) {
     case 5:
         if (!not)
             break;
         argv++;
         /* fall through */
-    case 4:
-    {
+    case 4: {
         int op = sh_lookup(cp = argv[2], shtab_testops);
         if (op & TEST_BINOP)
             break;
-        if (!op)
-        {
+        if (!op) {
             if (argc == 5)
                 break;
             if (not&&cp[0] == '-' && cp[2] == 0)
@@ -197,11 +189,9 @@ b_test(int argc, char *argv[], Shbltin_t *context)
     case 3:
         if (not)
             return (*argv[2] != 0);
-        if (cp[0] != '-' || cp[2] || cp[1] == '?')
-        {
+        if (cp[0] != '-' || cp[2] || cp[1] == '?') {
             if (cp[0] == '-' && (cp[1] == '-' || cp[1] == '?')
-                && strcmp(argv[2], "--") == 0)
-            {
+                && strcmp(argv[2], "--") == 0) {
                 char *av[3];
                 av[0] = argv[0];
                 av[1] = argv[1];
@@ -232,29 +222,22 @@ expr(struct test *tp, int flag)
     int r;
     char *p;
     r = e3(tp);
-    while (tp->ap < tp->ac)
-    {
+    while (tp->ap < tp->ac) {
         p = nxtarg(tp, 0);
         /* check for -o and -a */
-        if (flag && c_eq(p, ')'))
-        {
+        if (flag && c_eq(p, ')')) {
             tp->ap--;
             break;
         }
-        if (*p == '-' && *(p + 2) == 0)
-        {
-            if (*++p == 'o')
-            {
-                if (flag == 2)
-                {
+        if (*p == '-' && *(p + 2) == 0) {
+            if (*++p == 'o') {
+                if (flag == 2) {
                     tp->ap--;
                     break;
                 }
                 r |= expr(tp, 3);
                 continue;
-            }
-            else if (*p == 'a')
-            {
+            } else if (*p == 'a') {
                 r &= expr(tp, 2);
                 continue;
             }
@@ -269,10 +252,8 @@ expr(struct test *tp, int flag)
 static char *
 nxtarg(struct test *tp, int mt)
 {
-    if (tp->ap >= tp->ac)
-    {
-        if (mt)
-        {
+    if (tp->ap >= tp->ac) {
+        if (mt) {
             tp->ap++;
             return (0);
         }
@@ -291,8 +272,7 @@ e3(struct test *tp)
     arg = nxtarg(tp, 0);
     if (arg && c_eq(arg, '!'))
         return (!e3(tp));
-    if (c_eq(arg, '('))
-    {
+    if (c_eq(arg, '(')) {
         op = expr(tp, 1);
         cp = nxtarg(tp, 0);
         if (!cp || !c_eq(cp, ')'))
@@ -302,25 +282,19 @@ e3(struct test *tp)
     cp = nxtarg(tp, 1);
     if (cp != 0 && (c_eq(cp, '=') || c2_eq(cp, '!', '=')))
         goto skip;
-    if (c2_eq(arg, '-', 't'))
-    {
-        if (cp)
-        {
+    if (c2_eq(arg, '-', 't')) {
+        if (cp) {
             op = strtol(cp, &binop, 10);
             return (*binop ? 0 : tty_check(op));
-        }
-        else
-        {
+        } else {
             /* test -t with no arguments */
             tp->ap--;
             return (tty_check(1));
         }
     }
-    if (*arg == '-' && arg[2] == 0)
-    {
+    if (*arg == '-' && arg[2] == 0) {
         op = arg[1];
-        if (!cp)
-        {
+        if (!cp) {
             /* for backward compatibility with new flags */
             if (op == 0 || !strchr(test_opchars + 10, op))
                 return (1);
@@ -329,8 +303,7 @@ e3(struct test *tp)
         if (strchr(test_opchars, op))
             return (test_unop(tp->sh, op, cp));
     }
-    if (!cp)
-    {
+    if (!cp) {
         tp->ap--;
         return (*arg != 0);
     }
@@ -350,8 +323,7 @@ test_unop(Shell_t *shp, int op, const char *arg)
 {
     struct stat statb;
     int f;
-    switch (op)
-    {
+    switch (op) {
     case 'r':
         return (permission(arg, R_OK));
     case 'w':
@@ -457,15 +429,13 @@ test_unop(Shell_t *shp, int op, const char *arg)
             return (sh_lookopt(arg + 1, &f) > 0);
         op = sh_lookopt(arg, &f);
         return (op && (f == (sh_isoption(shp, op) != false)));
-    case 't':
-    {
+    case 't': {
         char *last;
         op = strtol(arg, &last, 10);
         return (*last ? 0 : tty_check(op));
     }
     case 'v':
-    case 'R':
-    {
+    case 'R': {
         Namval_t *np;
         Namarr_t *ap;
         int isref;
@@ -476,8 +446,7 @@ test_unop(Shell_t *shp, int op, const char *arg)
         isref = nv_isref(np);
         if (op == 'R')
             return (isref);
-        if (isref)
-        {
+        if (isref) {
             if (np->nvalue.cp)
                 np = nv_refnode(np);
             else
@@ -487,8 +456,7 @@ test_unop(Shell_t *shp, int op, const char *arg)
             return (nv_arrayisset(np, ap));
         return (!nv_isnull(np) || nv_isattr(np, NV_INTEGER));
     }
-    default:
-    {
+    default: {
         static char a[3] = "-?";
         a[1] = op;
         errormsg(SH_DICT, ERROR_exit(2), e_badop, a);
@@ -502,17 +470,14 @@ int
 test_binop(Shell_t *shp, int op, const char *left, const char *right)
 {
     double lnum, rnum;
-    if (op & TEST_ARITH)
-    {
-        if (*left == '0')
-        {
+    if (op & TEST_ARITH) {
+        if (*left == '0') {
             while (*left == '0')
                 left++;
             if (!isdigit(*left))
                 left--;
         }
-        if (*right == '0')
-        {
+        if (*right == '0') {
             while (*right == '0')
                 right++;
             if (!isdigit(*right))
@@ -521,8 +486,7 @@ test_binop(Shell_t *shp, int op, const char *left, const char *right)
         lnum = sh_arith(shp, left);
         rnum = sh_arith(shp, right);
     }
-    switch (op)
-    {
+    switch (op) {
     /* op must be one of the following values */
     case TEST_AND:
     case TEST_OR:
@@ -624,12 +588,10 @@ sh_access(const char *name, int mode)
     /* swap the real uid to effective, check access then restore */
     /* first swap real and effective gid, if different */
     if (shp->gd->groupid == shp->gd->euserid
-        || setregid(shp->gd->egroupid, shp->gd->groupid) == 0)
-    {
+        || setregid(shp->gd->egroupid, shp->gd->groupid) == 0) {
         /* next swap real and effective uid, if needed */
         if (shp->gd->userid == shp->gd->euserid
-            || setreuid(shp->gd->euserid, shp->gd->userid) == 0)
-        {
+            || setreuid(shp->gd->euserid, shp->gd->userid) == 0) {
             mode = access(name, mode);
             /* restore ids */
             if (shp->gd->userid != shp->gd->euserid)
@@ -637,39 +599,32 @@ sh_access(const char *name, int mode)
             if (shp->gd->groupid != shp->gd->egroupid)
                 setregid(shp->gd->groupid, shp->gd->egroupid);
             return (mode);
-        }
-        else if (shp->gd->groupid != shp->gd->egroupid)
+        } else if (shp->gd->groupid != shp->gd->egroupid)
             setregid(shp->gd->groupid, shp->gd->egroupid);
     }
 #endif /* _lib_setreuid */
 skip:
-    if (test_stat(name, &statb) == 0)
-    {
+    if (test_stat(name, &statb) == 0) {
         if (mode == F_OK)
             return (mode);
-        else if (shp->gd->euserid == 0)
-        {
+        else if (shp->gd->euserid == 0) {
             if (!S_ISREG(statb.st_mode) || mode != X_OK)
                 return (0);
             /* root needs execute permission for someone */
             mode = (S_IXUSR | S_IXGRP | S_IXOTH);
-        }
-        else if (shp->gd->euserid == statb.st_uid)
+        } else if (shp->gd->euserid == statb.st_uid)
             mode <<= 6;
         else if (shp->gd->egroupid == statb.st_gid)
             mode <<= 3;
 #ifdef _lib_getgroups
         /* on some systems you can be in several groups */
-        else
-        {
+        else {
             static int maxgroups;
             gid_t *groups;
             int n;
-            if (maxgroups == 0)
-            {
+            if (maxgroups == 0) {
                 /* first time */
-                if ((maxgroups = getgroups(0, ( gid_t * )0)) <= 0)
-                {
+                if ((maxgroups = getgroups(0, ( gid_t * )0)) <= 0) {
                     /* pre-POSIX system */
                     maxgroups = shgd->lim.ngroups_max;
                 }
@@ -677,10 +632,8 @@ skip:
             groups
             = ( gid_t * )stkalloc(shp->stk, (maxgroups + 1) * sizeof(gid_t));
             n = getgroups(maxgroups, groups);
-            while (--n >= 0)
-            {
-                if (groups[n] == statb.st_gid)
-                {
+            while (--n >= 0) {
+                if (groups[n] == statb.st_gid) {
                     mode <<= 3;
                     break;
                 }
@@ -715,8 +668,7 @@ test_mode(const char *file)
 static int
 test_stat(const char *name, struct stat *buff)
 {
-    if (*name == 0)
-    {
+    if (*name == 0) {
         errno = ENOENT;
         return (-1);
     }

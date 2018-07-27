@@ -95,11 +95,9 @@ TkshCreateInterp(Tcl_Interp *interp, void *data)
     initFirstInterp = 1;
     dprintfInterp(interp);
 
-    for (cmdInfoPtr = builtInCmds; cmdInfoPtr->name != NULL; cmdInfoPtr++)
-    {
+    for (cmdInfoPtr = builtInCmds; cmdInfoPtr->name != NULL; cmdInfoPtr++) {
         name = cmdInfoPtr->name;
-        if ((strcmp(name, "source") != 0) && (strcmp(name, "after") != 0))
-        {
+        if ((strcmp(name, "source") != 0) && (strcmp(name, "after") != 0)) {
             strcpy(buf + 4, name);
             name = buf;
         }
@@ -217,8 +215,7 @@ TkshLibDir(void)
 
     static char *libDir;
 
-    if (!libDir && !(libDir = getenv(LIB_DIR_ENV)) || !*libDir)
-    {
+    if (!libDir && !(libDir = getenv(LIB_DIR_ENV)) || !*libDir) {
         if (!(libDir = pathpath(
               LIB_DIR, "", PATH_EXECUTE | PATH_READ, buf, sizeof(buf))))
             sfsprintf(buf, sizeof(buf), "/usr/local/%s", LIB_DIR);
@@ -250,8 +247,7 @@ double
 fixstrtod(char *string, char **endPtr)
 {
     double d = strtod(string, endPtr);
-    if ((endPtr != NULL) && (*endPtr != string) && ((*endPtr)[-1] == 0))
-    {
+    if ((endPtr != NULL) && (*endPtr != string) && ((*endPtr)[-1] == 0)) {
         *endPtr -= 1;
     }
     return d;
@@ -284,38 +280,30 @@ void Tcl_SourceRCFile(interp) Tcl_Interp *interp; /* Interpreter to source rc
 
     fileName = Tcl_GetVar(interp, "tcl_rcFileName", TCL_GLOBAL_ONLY);
 
-    if (fileName != NULL)
-    {
+    if (fileName != NULL) {
         Tcl_Channel c;
         char *fullName;
 
         Tcl_DStringInit(&temp);
         fullName = Tcl_TranslateFileName(interp, fileName, &temp);
-        if (fullName == NULL)
-        {
+        if (fullName == NULL) {
             errChannel = Tcl_GetStdChannel(TCL_STDERR);
-            if (errChannel)
-            {
+            if (errChannel) {
                 Tcl_Write(errChannel, interp->result, -1);
                 Tcl_Write(errChannel, "\n", 1);
             }
-        }
-        else
-        {
+        } else {
 
             /*
              * Test for the existence of the rc file before trying to read it.
              */
 
             c = Tcl_OpenFileChannel(NULL, fullName, "r", 0);
-            if (c != ( Tcl_Channel )NULL)
-            {
+            if (c != ( Tcl_Channel )NULL) {
                 Tcl_Close(NULL, c);
-                if (Tcl_EvalFile(interp, fullName) != TCL_OK)
-                {
+                if (Tcl_EvalFile(interp, fullName) != TCL_OK) {
                     errChannel = Tcl_GetStdChannel(TCL_STDERR);
-                    if (errChannel)
-                    {
+                    if (errChannel) {
                         Tcl_Write(errChannel, interp->result, -1);
                         Tcl_Write(errChannel, "\n", 1);
                     }

@@ -100,8 +100,7 @@ static int
 setopt(void *a, const void *p, int n, const char *v)
 {
     NoP(v);
-    if (p)
-    {
+    if (p) {
         if (n)
             *(( int * )a) |= (( Namval_t * )p)->value;
         else
@@ -166,23 +165,19 @@ static int
 modify(Proc_t *proc, int forked, int op, long arg1, long arg2)
 {
 #if _lib_fork
-    if (forked)
-    {
+    if (forked) {
         int i;
 #    ifndef TIOCSCTTY
         char *s;
 #    endif
 
-        switch (op)
-        {
+        switch (op) {
         case PROC_fd_dup:
         case PROC_fd_dup | PROC_FD_PARENT:
         case PROC_fd_dup | PROC_FD_CHILD:
         case PROC_fd_dup | PROC_FD_PARENT | PROC_FD_CHILD:
-            if (arg1 != arg2)
-            {
-                if (arg2 != PROC_ARG_NULL)
-                {
+            if (arg1 != arg2) {
+                if (arg2 != PROC_ARG_NULL) {
                     close(arg2);
                     if (fcntl(arg1, F_DUPFD, arg2) != arg2)
                         return -1;
@@ -223,8 +218,7 @@ modify(Proc_t *proc, int forked, int op, long arg1, long arg2)
         case PROC_sys_pgrp:
             if (arg1 < 0)
                 setsid();
-            else if (arg1 > 0)
-            {
+            else if (arg1 > 0) {
                 if (arg1 == 1)
                     arg1 = 0;
                 if (setpgid(0, arg1) < 0 && arg1 && errno == EPERM)
@@ -252,21 +246,17 @@ modify(Proc_t *proc, int forked, int op, long arg1, long arg2)
             return -1;
         m->next = proc->mods;
         proc->mods = m;
-        switch (m->op = op)
-        {
+        switch (m->op = op) {
         case PROC_fd_dup:
         case PROC_fd_dup | PROC_FD_PARENT:
         case PROC_fd_dup | PROC_FD_CHILD:
         case PROC_fd_dup | PROC_FD_PARENT | PROC_FD_CHILD:
             m->arg.fd.parent.fd = ( short )arg1;
             m->arg.fd.parent.flag = fcntl(arg1, F_GETFD, 0);
-            if ((m->arg.fd.child.fd = ( short )arg2) != arg1)
-            {
-                if (arg2 != PROC_ARG_NULL)
-                {
+            if ((m->arg.fd.child.fd = ( short )arg2) != arg1) {
+                if (arg2 != PROC_ARG_NULL) {
                     m->arg.fd.child.flag = fcntl(arg2, F_GETFD, 0);
-                    if ((m->save = fcntl(arg2, F_dupfd_cloexec, 3)) < 0)
-                    {
+                    if ((m->save = fcntl(arg2, F_dupfd_cloexec, 3)) < 0) {
                         m->op = 0;
                         return -1;
                     }
@@ -278,14 +268,11 @@ modify(Proc_t *proc, int forked, int op, long arg1, long arg2)
                         return -1;
                     if (op & PROC_FD_CHILD)
                         close(arg1);
-                }
-                else if (op & PROC_FD_CHILD)
-                {
+                } else if (op & PROC_FD_CHILD) {
                     if (m->arg.fd.parent.flag)
                         break;
                     fcntl(arg1, F_SETFD, FD_CLOEXEC);
-                }
-                else if (!m->arg.fd.parent.flag)
+                } else if (!m->arg.fd.parent.flag)
                     break;
                 else
                     fcntl(arg1, F_SETFD, 0);
@@ -340,10 +327,8 @@ restore(Proc_t *proc)
     oerrno = errno;
     m = proc->mods;
     proc->mods = 0;
-    while (m)
-    {
-        switch (m->op)
-        {
+    while (m) {
+        switch (m->op) {
         case PROC_fd_dup:
         case PROC_fd_dup | PROC_FD_PARENT:
         case PROC_fd_dup | PROC_FD_CHILD:
@@ -351,12 +336,9 @@ restore(Proc_t *proc)
             if (m->op & PROC_FD_PARENT)
                 close(m->arg.fd.parent.fd);
             if (m->arg.fd.child.fd != m->arg.fd.parent.fd
-                && m->arg.fd.child.fd != PROC_ARG_NULL)
-            {
-                if (!(m->op & PROC_FD_PARENT))
-                {
-                    if (m->op & PROC_FD_CHILD)
-                    {
+                && m->arg.fd.child.fd != PROC_ARG_NULL) {
+                if (!(m->op & PROC_FD_PARENT)) {
+                    if (m->op & PROC_FD_CHILD) {
                         close(m->arg.fd.parent.fd);
                         fcntl(
                         m->arg.fd.child.fd, F_DUPFD, m->arg.fd.parent.fd);
@@ -369,9 +351,8 @@ restore(Proc_t *proc)
                 close(m->save);
                 if (m->arg.fd.child.flag)
                     fcntl(m->arg.fd.child.fd, F_SETFD, FD_CLOEXEC);
-            }
-            else if ((m->op & (PROC_FD_PARENT | PROC_FD_CHILD))
-                     == PROC_FD_CHILD)
+            } else if ((m->op & (PROC_FD_PARENT | PROC_FD_CHILD))
+                       == PROC_FD_CHILD)
                 fcntl(m->arg.fd.parent.fd, F_SETFD, 0);
             break;
         case PROC_sig_dfl:
@@ -457,8 +438,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
             || !pathpath(
                cmd, NiL, PATH_REGULAR | PATH_EXECUTE, path, sizeof(path))))
         goto bad;
-    switch (flags & (PROC_READ | PROC_WRITE))
-    {
+    switch (flags & (PROC_READ | PROC_WRITE)) {
     case 0:
         procfd = -1;
         break;
@@ -486,8 +466,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
         envv = environ;
     else if (environ && envv != ( char ** )environ
              && (envv || (flags & PROC_PARANOID)
-                 || argv && (environ[0][0] != '_' || environ[0][1] != '=')))
-    {
+                 || argv && (environ[0][0] != '_' || environ[0][1] != '='))) {
         if (!setenviron(NiL))
             goto bad;
 #if _use_spawnveg
@@ -495,14 +474,12 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
             newenv = 1;
 #endif
     }
-    if (procfd >= 0)
-    {
+    if (procfd >= 0) {
 #if _pipe_rw
         if (pipe(pio))
             goto bad;
 #else
-        if (procfd > 1)
-        {
+        if (procfd > 1) {
 #    if _lib_socketpair
             if (socketpair(AF_UNIX, SOCK_STREAM, 0, pio))
                 goto bad;
@@ -510,13 +487,11 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
             if (pipe(pio) || pipe(poi))
                 goto bad;
 #    endif
-        }
-        else if (pipe(pio))
+        } else if (pipe(pio))
             goto bad;
 #endif
     }
-    if (flags & PROC_OVERLAY)
-    {
+    if (flags & PROC_OVERLAY) {
         proc->pid = 0;
         forked = 1;
     }
@@ -525,12 +500,10 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
         proc->pid = 0;
 #endif
 #if _lib_fork
-    else
-    {
+    else {
         if (!(flags & PROC_FOREGROUND))
             sigcritical(SIG_REG_EXEC | SIG_REG_PROC);
-        else
-        {
+        else {
             signalled = 1;
             proc->sigint = signal(SIGINT, SIG_IGN);
             proc->sigquit = signal(SIGQUIT, SIG_IGN);
@@ -554,15 +527,12 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
         proc->pid = fork();
         if (!(flags & PROC_FOREGROUND))
             sigcritical(0);
-        else if (!proc->pid)
-        {
-            if (proc->sigint != SIG_IGN)
-            {
+        else if (!proc->pid) {
+            if (proc->sigint != SIG_IGN) {
                 proc->sigint = SIG_DFL;
                 signal(SIGINT, proc->sigint);
             }
-            if (proc->sigquit != SIG_IGN)
-            {
+            if (proc->sigquit != SIG_IGN) {
                 proc->sigquit = SIG_DFL;
                 signal(SIGQUIT, proc->sigquit);
             }
@@ -578,14 +548,12 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
 #            endif
 #        endif
 #    endif
-        }
-        else if (proc->pid == -1)
+        } else if (proc->pid == -1)
             goto bad;
         forked = 1;
     }
 #endif
-    if (!proc->pid)
-    {
+    if (!proc->pid) {
 #if _use_spawnveg
         char **oenviron = 0;
         char *oenviron0 = 0;
@@ -593,15 +561,11 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
         v = 0;
 #endif
 #if _lib_fork
-        if (flags & PROC_ORPHAN)
-        {
-            if (!(proc->pid = fork()))
-            {
+        if (flags & PROC_ORPHAN) {
+            if (!(proc->pid = fork())) {
                 close(pop[0]);
                 close(pop[1]);
-            }
-            else
-            {
+            } else {
                 if (proc->pid > 0)
                     write(pop[1], &proc->pid, sizeof(proc->pid));
                 _exit(EXIT_NOEXEC);
@@ -612,10 +576,8 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
         stropt(
         getenv(PROC_ENV_OPTIONS), options, sizeof(*options), setopt, &debug);
 #    if _lib_fork
-        if (debug & PROC_OPT_TRACE)
-        {
-            if (!fork())
-            {
+        if (debug & PROC_OPT_TRACE) {
+            if (!fork()) {
                 sfsprintf(path, sizeof(path), "%d", getppid());
                 execlp("trace", "trace", "-p", path, NiL);
                 _exit(EXIT_NOTFOUND);
@@ -624,8 +586,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
         }
 #    endif
 #endif
-        if (flags & PROC_DAEMON)
-        {
+        if (flags & PROC_DAEMON) {
 #ifdef SIGHUP
             modify(proc, forked, PROC_sig_ign, SIGHUP, 0);
 #endif
@@ -640,8 +601,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
             modify(proc, forked, PROC_sig_ign, SIGTTOU, 0);
 #endif
         }
-        if (flags & (PROC_BACKGROUND | PROC_DAEMON))
-        {
+        if (flags & (PROC_BACKGROUND | PROC_DAEMON)) {
             modify(proc, forked, PROC_sig_ign, SIGINT, 0);
 #ifdef SIGQUIT
             modify(proc, forked, PROC_sig_ign, SIGQUIT, 0);
@@ -649,10 +609,8 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
         }
         if (flags & (PROC_DAEMON | PROC_SESSION))
             modify(proc, forked, PROC_sys_pgrp, -1, 0);
-        if (forked || (flags & PROC_OVERLAY))
-        {
-            if ((flags & PROC_PRIVELEGED) && !geteuid())
-            {
+        if (forked || (flags & PROC_OVERLAY)) {
+            if ((flags & PROC_PRIVELEGED) && !geteuid()) {
                 setuid(geteuid());
                 setgid(getegid());
             }
@@ -661,8 +619,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
             if (flags & (PROC_PARANOID | PROC_UID))
                 setuid(getuid());
         }
-        if (procfd > 1)
-        {
+        if (procfd > 1) {
             if (modify(proc,
                        forked,
                        PROC_fd_dup | PROC_FD_CHILD,
@@ -685,9 +642,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
                           PROC_ARG_NULL))
                 goto cleanup;
 #endif
-        }
-        else if (procfd >= 0)
-        {
+        } else if (procfd >= 0) {
             if (modify(proc,
                        forked,
                        PROC_fd_dup | PROC_FD_CHILD,
@@ -704,8 +659,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
         }
         if (modv)
             for (i = 0; n = modv[i]; i++)
-                switch (PROC_OP(n))
-                {
+                switch (PROC_OP(n)) {
                 case PROC_fd_dup:
                 case PROC_fd_dup | PROC_FD_PARENT:
                 case PROC_fd_dup | PROC_FD_CHILD:
@@ -730,8 +684,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
 #    endif
 #endif
 #if _use_spawnveg
-        if (newenv)
-        {
+        if (newenv) {
             p = environ;
             while (*p++)
                 ;
@@ -740,8 +693,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
                 goto cleanup;
         }
 #endif
-        if (argv && envv != ( char ** )environ)
-        {
+        if (argv && envv != ( char ** )environ) {
 #if _use_spawnveg
             if (!newenv && environ[0][0] == '_' && environ[0][1] == '=')
                 oenviron0 = environ[0];
@@ -765,8 +717,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
             return proc;
 #endif
 #if DEBUG_PROC
-        if (!(debug & PROC_OPT_EXEC) || (debug & PROC_OPT_VERBOSE))
-        {
+        if (!(debug & PROC_OPT_EXEC) || (debug & PROC_OPT_VERBOSE)) {
             if ((debug & PROC_OPT_ENVIRONMENT) && (p = environ))
                 while (*p)
                     sfprintf(sfstderr, "%s\n", *p++);
@@ -781,8 +732,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
             p = argv;
         }
 #endif
-        if (cmd)
-        {
+        if (cmd) {
             strcpy(env + 2, path);
             if (forked || (flags & PROC_OVERLAY))
                 execve(path, p, environ);
@@ -798,8 +748,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
              * try cmd as a shell script
              */
 
-            if (!(flags & PROC_ARGMOD))
-            {
+            if (!(flags & PROC_ARGMOD)) {
                 while (*p++)
                     ;
                 if (!(v = newof(0, char *, p - argv + 2, 0)))
@@ -824,8 +773,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
             proc->pid = spawnveg(env + 2, p, environ, proc->pgrp);
 #endif
     cleanup:
-        if (forked)
-        {
+        if (forked) {
             if (!(flags & PROC_OVERLAY))
                 _exit(errno == ENOENT ? EXIT_NOTFOUND : EXIT_NOEXEC);
             goto bad;
@@ -833,27 +781,22 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
 #if _use_spawnveg
         if (v)
             free(v);
-        if (p = oenviron)
-        {
+        if (p = oenviron) {
             environ = 0;
             while (*p)
                 if (!setenviron(*p++))
                     goto bad;
             free(oenviron);
-        }
-        else if (oenviron0)
+        } else if (oenviron0)
             environ[0] = oenviron0;
         restore(proc);
         if (flags & PROC_OVERLAY)
             exit(0);
 #endif
     }
-    if (proc->pid != -1)
-    {
-        if (!forked)
-        {
-            if (flags & PROC_FOREGROUND)
-            {
+    if (proc->pid != -1) {
+        if (!forked) {
+            if (flags & PROC_FOREGROUND) {
                 signalled = 1;
                 proc->sigint = signal(SIGINT, SIG_IGN);
                 proc->sigquit = signal(SIGQUIT, SIG_IGN);
@@ -872,11 +815,9 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
 #    endif
 #endif
             }
-        }
-        else if (modv)
+        } else if (modv)
             for (i = 0; n = modv[i]; i++)
-                switch (PROC_OP(n))
-                {
+                switch (PROC_OP(n)) {
                 case PROC_fd_dup | PROC_FD_PARENT:
                 case PROC_fd_dup | PROC_FD_PARENT | PROC_FD_CHILD:
                     close(PROC_ARG(n, 1));
@@ -884,8 +825,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
                 case PROC_sys_pgrp:
                     if (proc->pgrp < 0)
                         proc->pgrp = proc->pid;
-                    else if (proc->pgrp > 0)
-                    {
+                    else if (proc->pgrp > 0) {
                         if (proc->pgrp == 1)
                             proc->pgrp = proc->pid;
                         if (setpgid(proc->pid, proc->pgrp) < 0
@@ -894,12 +834,10 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
                     }
                     break;
                 }
-        if (procfd >= 0)
-        {
+        if (procfd >= 0) {
 #ifdef SIGPIPE
             if ((flags & (PROC_WRITE | PROC_IGNORE))
-                == (PROC_WRITE | PROC_IGNORE))
-            {
+                == (PROC_WRITE | PROC_IGNORE)) {
                 Handler_t handler;
 
                 if ((handler = signal(SIGPIPE, ignoresig)) != SIG_DFL
@@ -907,8 +845,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
                     signal(SIGPIPE, handler);
             }
 #endif
-            switch (procfd)
-            {
+            switch (procfd) {
             case 0:
                 proc->wfd = pio[1];
                 close(pio[0]);
@@ -933,8 +870,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
         }
         if (!proc->pid)
             proc->pid = getpid();
-        else if (flags & PROC_ORPHAN)
-        {
+        else if (flags & PROC_ORPHAN) {
             while (waitpid(proc->pid, &i, 0) == -1 && errno == EINTR)
                 ;
             if (read(pop[0], &proc->pid, sizeof(proc->pid))
@@ -945,8 +881,7 @@ procopen(const char *cmd, char **argv, char **envv, long *modv, int flags)
         return proc;
     }
 bad:
-    if (signalled)
-    {
+    if (signalled) {
         if (proc->sigint != SIG_IGN)
             signal(SIGINT, proc->sigint);
         if (proc->sigquit != SIG_IGN)
@@ -966,8 +901,7 @@ bad:
     }
     if ((flags & PROC_CLEANUP) && modv)
         for (i = 0; n = modv[i]; i++)
-            switch (PROC_OP(n))
-            {
+            switch (PROC_OP(n)) {
             case PROC_fd_dup:
             case PROC_fd_dup | PROC_FD_PARENT:
             case PROC_fd_dup | PROC_FD_CHILD:

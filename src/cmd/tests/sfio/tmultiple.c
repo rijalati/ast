@@ -27,16 +27,14 @@ tmain()
 {
     char *s;
 
-    if (argc > 1)
-    {
+    if (argc > 1) {
         if (strcmp(argv[1], "-r") == 0) /* doing sfgetr */
         {
             if (!(s = sfgetr(sfstdin, '\n', 1)) || strcmp(s, "Line2") != 0)
                 terror("Coprocess getr did not get Line2");
             if (!(s = sfgetr(sfstdin, '\n', 1)) || strcmp(s, "Line3") != 0)
                 terror("Coprocess getr did not get Line3");
-        }
-        else /* doing sfmove */
+        } else /* doing sfmove */
         {
             Sfio_t *f = sfopen(NIL(Sfio_t *), NIL(char *), "swr");
             if (!f)

@@ -62,10 +62,11 @@
         (1L << (8 * sizeof(int) - 2)) /* no free on bucket                   \
                                        */
 #    define HASH_HIDDEN                                                      \
-        (1L << (8 * sizeof(int) - 3))                /* hidden by scope      \
-                                                      */
-#    define HASH_HIDES (1L << (8 * sizeof(int) - 4)) /* hides lower scope    \
-                                                      */
+        (1L << (8 * sizeof(int) - 3)) /* hidden by scope                     \
+                                       */
+#    define HASH_HIDES                                                       \
+        (1L << (8 * sizeof(int) - 4)) /* hides lower scope                   \
+                                       */
 #    define HASH_OPAQUED                                                     \
         (1L << (8 * sizeof(int) - 5)) /* opaqued placeholder	*/
 #    define HASH_FREENAME                                                    \

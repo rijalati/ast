@@ -121,8 +121,7 @@ workload(int pnum)
     int k, r;
 
     Pnum = pnum;
-    for (k = 0; k < N_STEP; ++k)
-    {
+    for (k = 0; k < N_STEP; ++k) {
         if (k > 0 && (k % 100) == 0)
             tinfo("Process %3d(pid=%d): progress to %d", Pnum, Pid[Pnum], k);
 
@@ -174,8 +173,7 @@ tmain()
     Lcks = ( unsigned short * )(Lcki + N_SLOT);
     Lckc = ( unsigned char * )(Lcks + N_SLOT);
 
-    for (k = 1; k <= N_PROC; ++k)
-    {
+    for (k = 1; k <= N_PROC; ++k) {
         if ((pid = fork()) < 0)
             terror("Can't create a child process");
         else if (pid > 0) /* parent process */
@@ -183,8 +181,7 @@ tmain()
             Pid[k] = pid;
             *Nproc += 1;
             continue;
-        }
-        else /* child process */
+        } else /* child process */
         {
             for (;; usleep(1000)) /* wait until all are alive */
                 if (*Nproc == N_PROC)

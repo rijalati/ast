@@ -35,8 +35,7 @@ ptrebit(Pt_t *a, int m)
     if (b = ptopen(a->disc))
         for (ap = ( Ptprefix_t * )dtfirst(a->dict); ap;
              ap = ( Ptprefix_t * )dtnext(a->dict, ap))
-            if (!ptinsert(b, PTMIN(ap->min, m), PTMAX(ap->max, m)))
-            {
+            if (!ptinsert(b, PTMIN(ap->min, m), PTMAX(ap->max, m))) {
                 ptclose(b);
                 return 0;
             }

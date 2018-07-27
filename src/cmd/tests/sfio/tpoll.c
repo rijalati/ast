@@ -29,10 +29,8 @@ tmain()
     char *s;
     int fd[2];
 
-    if (argc > 1)
-    {
-        while ((s = sfgetr(sfstdin, '\n', 1)))
-        {
+    if (argc > 1) {
+        while ((s = sfgetr(sfstdin, '\n', 1))) {
             sfputr(sfstdout, s, '\n');
             sfsync(sfstdout);
         }

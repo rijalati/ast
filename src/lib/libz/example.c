@@ -21,8 +21,7 @@
 
 #define CHECK_ERR(err, msg)                                                  \
     {                                                                        \
-        if (err != Z_OK)                                                     \
-        {                                                                    \
+        if (err != Z_OK) {                                                   \
             fprintf(stderr, "%s error: %d\n", msg, err);                     \
             exit(1);                                                         \
         }                                                                    \
@@ -72,13 +71,10 @@ uLong comprLen, uncomprLen;
     err = uncompress(uncompr, &uncomprLen, compr, comprLen);
     CHECK_ERR(err, "uncompress");
 
-    if (strcmp(( char * )uncompr, hello))
-    {
+    if (strcmp(( char * )uncompr, hello)) {
         fprintf(stderr, "bad uncompress\n");
         exit(1);
-    }
-    else
-    {
+    } else {
         printf("uncompress(): %s\n", ( char * )uncompr);
     }
 }
@@ -100,19 +96,16 @@ uLong uncomprLen;
     z_off_t pos;
 
     file = gzopen(fname, "wb");
-    if (file == NULL)
-    {
+    if (file == NULL) {
         fprintf(stderr, "gzopen error\n");
         exit(1);
     }
     gzputc(file, 'h');
-    if (gzputs(file, "ello") != 4)
-    {
+    if (gzputs(file, "ello") != 4) {
         fprintf(stderr, "gzputs err: %s\n", gzerror(file, &err));
         exit(1);
     }
-    if (gzprintf(file, ", %s!", "hello") != 8)
-    {
+    if (gzprintf(file, ", %s!", "hello") != 8) {
         fprintf(stderr, "gzprintf err: %s\n", gzerror(file, &err));
         exit(1);
     }
@@ -120,31 +113,25 @@ uLong uncomprLen;
     gzclose(file);
 
     file = gzopen(fname, "rb");
-    if (file == NULL)
-    {
+    if (file == NULL) {
         fprintf(stderr, "gzopen error\n");
         exit(1);
     }
     strcpy(( char * )uncompr, "garbage");
 
-    if (gzread(file, uncompr, ( unsigned )uncomprLen) != len)
-    {
+    if (gzread(file, uncompr, ( unsigned )uncomprLen) != len) {
         fprintf(stderr, "gzread err: %s\n", gzerror(file, &err));
         exit(1);
     }
-    if (strcmp(( char * )uncompr, hello))
-    {
+    if (strcmp(( char * )uncompr, hello)) {
         fprintf(stderr, "bad gzread: %s\n", ( char * )uncompr);
         exit(1);
-    }
-    else
-    {
+    } else {
         printf("gzread(): %s\n", ( char * )uncompr);
     }
 
     pos = gzseek(file, -8L, SEEK_CUR);
-    if (pos != 6 || gztell(file) != pos)
-    {
+    if (pos != 6 || gztell(file) != pos) {
         fprintf(stderr,
                 "gzseek error, pos=%ld, gztell=%ld\n",
                 ( long )pos,
@@ -152,31 +139,25 @@ uLong uncomprLen;
         exit(1);
     }
 
-    if (gzgetc(file) != ' ')
-    {
+    if (gzgetc(file) != ' ') {
         fprintf(stderr, "gzgetc error\n");
         exit(1);
     }
 
-    if (gzungetc(' ', file) != ' ')
-    {
+    if (gzungetc(' ', file) != ' ') {
         fprintf(stderr, "gzungetc error\n");
         exit(1);
     }
 
     gzgets(file, ( char * )uncompr, ( int )uncomprLen);
-    if (strlen(( char * )uncompr) != 7)
-    { /* " hello!" */
+    if (strlen(( char * )uncompr) != 7) { /* " hello!" */
         fprintf(stderr, "gzgets err after gzseek: %s\n", gzerror(file, &err));
         exit(1);
     }
-    if (strcmp(( char * )uncompr, hello + 6))
-    {
+    if (strcmp(( char * )uncompr, hello + 6)) {
         fprintf(stderr, "bad gzgets after gzseek\n");
         exit(1);
-    }
-    else
-    {
+    } else {
         printf("gzgets() after gzseek: %s\n", ( char * )uncompr);
     }
 
@@ -204,15 +185,13 @@ uLong comprLen;
     c_stream.next_in = ( Bytef * )hello;
     c_stream.next_out = compr;
 
-    while (c_stream.total_in != len && c_stream.total_out < comprLen)
-    {
+    while (c_stream.total_in != len && c_stream.total_out < comprLen) {
         c_stream.avail_in = c_stream.avail_out = 1; /* force small buffers */
         err = deflate(&c_stream, Z_NO_FLUSH);
         CHECK_ERR(err, "deflate");
     }
     /* Finish the stream, still forcing small buffers: */
-    for (;;)
-    {
+    for (;;) {
         c_stream.avail_out = 1;
         err = deflate(&c_stream, Z_FINISH);
         if (err == Z_STREAM_END)
@@ -246,8 +225,7 @@ uLong comprLen, uncomprLen;
     err = inflateInit(&d_stream);
     CHECK_ERR(err, "inflateInit");
 
-    while (d_stream.total_out < uncomprLen && d_stream.total_in < comprLen)
-    {
+    while (d_stream.total_out < uncomprLen && d_stream.total_in < comprLen) {
         d_stream.avail_in = d_stream.avail_out = 1; /* force small buffers */
         err = inflate(&d_stream, Z_NO_FLUSH);
         if (err == Z_STREAM_END)
@@ -258,13 +236,10 @@ uLong comprLen, uncomprLen;
     err = inflateEnd(&d_stream);
     CHECK_ERR(err, "inflateEnd");
 
-    if (strcmp(( char * )uncompr, hello))
-    {
+    if (strcmp(( char * )uncompr, hello)) {
         fprintf(stderr, "bad inflate\n");
         exit(1);
-    }
-    else
-    {
+    } else {
         printf("inflate(): %s\n", ( char * )uncompr);
     }
 }
@@ -296,8 +271,7 @@ uLong comprLen, uncomprLen;
     c_stream.avail_in = ( uInt )uncomprLen;
     err = deflate(&c_stream, Z_NO_FLUSH);
     CHECK_ERR(err, "deflate");
-    if (c_stream.avail_in != 0)
-    {
+    if (c_stream.avail_in != 0) {
         fprintf(stderr, "deflate not greedy\n");
         exit(1);
     }
@@ -317,8 +291,7 @@ uLong comprLen, uncomprLen;
     CHECK_ERR(err, "deflate");
 
     err = deflate(&c_stream, Z_FINISH);
-    if (err != Z_STREAM_END)
-    {
+    if (err != Z_STREAM_END) {
         fprintf(stderr, "deflate should report Z_STREAM_END\n");
         exit(1);
     }
@@ -348,8 +321,7 @@ uLong comprLen, uncomprLen;
     err = inflateInit(&d_stream);
     CHECK_ERR(err, "inflateInit");
 
-    for (;;)
-    {
+    for (;;) {
         d_stream.next_out = uncompr; /* discard the output */
         d_stream.avail_out = ( uInt )uncomprLen;
         err = inflate(&d_stream, Z_NO_FLUSH);
@@ -361,13 +333,10 @@ uLong comprLen, uncomprLen;
     err = inflateEnd(&d_stream);
     CHECK_ERR(err, "inflateEnd");
 
-    if (d_stream.total_out != 2 * uncomprLen + comprLen / 2)
-    {
+    if (d_stream.total_out != 2 * uncomprLen + comprLen / 2) {
         fprintf(stderr, "bad large inflate: %ld\n", d_stream.total_out);
         exit(1);
-    }
-    else
-    {
+    } else {
         printf("large_inflate(): OK\n");
     }
 }
@@ -400,8 +369,7 @@ uLong *comprLen;
     c_stream.avail_in = len - 3;
 
     err = deflate(&c_stream, Z_FINISH);
-    if (err != Z_STREAM_END)
-    {
+    if (err != Z_STREAM_END) {
         CHECK_ERR(err, "deflate");
     }
     err = deflateEnd(&c_stream);
@@ -442,8 +410,7 @@ uLong comprLen, uncomprLen;
     CHECK_ERR(err, "inflateSync");
 
     err = inflate(&d_stream, Z_FINISH);
-    if (err != Z_DATA_ERROR)
-    {
+    if (err != Z_DATA_ERROR) {
         fprintf(stderr, "inflate should report DATA_ERROR\n");
         /* Because of incorrect adler32 */
         exit(1);
@@ -482,8 +449,7 @@ uLong comprLen;
     c_stream.avail_in = ( uInt )strlen(hello) + 1;
 
     err = deflate(&c_stream, Z_FINISH);
-    if (err != Z_STREAM_END)
-    {
+    if (err != Z_STREAM_END) {
         fprintf(stderr, "deflate should report Z_STREAM_END\n");
         exit(1);
     }
@@ -516,15 +482,12 @@ uLong comprLen, uncomprLen;
     d_stream.next_out = uncompr;
     d_stream.avail_out = ( uInt )uncomprLen;
 
-    for (;;)
-    {
+    for (;;) {
         err = inflate(&d_stream, Z_NO_FLUSH);
         if (err == Z_STREAM_END)
             break;
-        if (err == Z_NEED_DICT)
-        {
-            if (d_stream.adler != dictId)
-            {
+        if (err == Z_NEED_DICT) {
+            if (d_stream.adler != dictId) {
                 fprintf(stderr, "unexpected dictionary");
                 exit(1);
             }
@@ -537,13 +500,10 @@ uLong comprLen, uncomprLen;
     err = inflateEnd(&d_stream);
     CHECK_ERR(err, "inflateEnd");
 
-    if (strcmp(( char * )uncompr, hello))
-    {
+    if (strcmp(( char * )uncompr, hello)) {
         fprintf(stderr, "bad inflate with dict\n");
         exit(1);
-    }
-    else
-    {
+    } else {
         printf("inflate with dictionary: %s\n", ( char * )uncompr);
     }
 }
@@ -560,13 +520,10 @@ char *argv[];
     uLong uncomprLen = comprLen;
     static const char *myVersion = ZLIB_VERSION;
 
-    if (zlibVersion()[0] != myVersion[0])
-    {
+    if (zlibVersion()[0] != myVersion[0]) {
         fprintf(stderr, "incompatible zlib version\n");
         exit(1);
-    }
-    else if (strcmp(zlibVersion(), ZLIB_VERSION) != 0)
-    {
+    } else if (strcmp(zlibVersion(), ZLIB_VERSION) != 0) {
         fprintf(stderr, "warning: different zlib version\n");
     }
 
@@ -580,8 +537,7 @@ char *argv[];
     /* compr and uncompr are cleared to avoid reading uninitialized
      * data and to ensure that uncompr compresses well.
      */
-    if (compr == Z_NULL || uncompr == Z_NULL)
-    {
+    if (compr == Z_NULL || uncompr == Z_NULL) {
         printf("out of memory\n");
         exit(1);
     }

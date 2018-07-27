@@ -92,8 +92,7 @@ initialize(void)
 
     mp = me = 0;
     if ((s = getenv("SFOPEN_INTERCEPT")) && (s = strdup(s)))
-        for (;;)
-        {
+        for (;;) {
             while (isspace(*s))
                 s++;
             for (t = s; isalnum(*s); s++)
@@ -105,10 +104,8 @@ initialize(void)
                 ;
             if (*s)
                 *s++ = 0;
-            if (streq(t, "input") || streq(t, "output"))
-            {
-                if (mp)
-                {
+            if (streq(t, "input") || streq(t, "output")) {
+                if (mp) {
                     for (x = s; *s && *s != d; s++)
                         ;
                     if (*s)
@@ -125,9 +122,7 @@ initialize(void)
                     else
                         ie[n] = mp->io[n] = io;
                 }
-            }
-            else if (streq(t, "program"))
-            {
+            } else if (streq(t, "program")) {
                 if (!(mv = newof(0, Match_t, 1, 0)))
                     break;
                 if (*v)
@@ -137,15 +132,11 @@ initialize(void)
                 else
                     mp = mv;
                 ie[0] = ie[1] = 0;
-            }
-            else if (streq(t, "option"))
-            {
-                if (*v == 'n' && *(v + 1) == 'o')
-                {
+            } else if (streq(t, "option")) {
+                if (*v == 'n' && *(v + 1) == 'o') {
                     v += 2;
                     n = 0;
-                }
-                else
+                } else
                     n = 1;
                 if (streq(v, "dump"))
                     state.dump = n;
@@ -169,22 +160,18 @@ sfopen(Sfio_t *f, const char *path, const char *mode)
 
     ssize_t sub[20];
 
-    if (path && error_info.id)
-    {
-        if (!state.init)
-        {
+    if (path && error_info.id) {
+        if (!state.init) {
             state.init = 1;
             if (state.cmd = sfstropen())
                 state.match = initialize();
-            if (state.dump)
-            {
+            if (state.dump) {
                 sfprintf(sfstdout, "SFIO_INTERCEPT\n");
                 if (state.dump)
                     sfprintf(sfstdout, "	option	dump\n");
                 if (state.verbose)
                     sfprintf(sfstdout, "	option	verbose\n");
-                for (mp = state.match; mp; mp = mp->next)
-                {
+                for (mp = state.match; mp; mp = mp->next) {
                     sfprintf(sfstdout, "	program	%s	\n", mp->pattern);
                     for (io = mp->io[0]; io; io = io->next)
                         sfprintf(sfstdout,
@@ -199,14 +186,11 @@ sfopen(Sfio_t *f, const char *path, const char *mode)
                 }
             }
         }
-        if (mp = state.match)
-        {
+        if (mp = state.match) {
             n = 0;
             s = mode;
-            for (;;)
-            {
-                switch (*s++)
-                {
+            for (;;) {
+                switch (*s++) {
                 case 0:
                     break;
                 case 'b':
@@ -222,13 +206,10 @@ sfopen(Sfio_t *f, const char *path, const char *mode)
                 break;
             }
             if (n > 0 || n == 0 && !access(path, R_OK))
-                do
-                {
+                do {
                     if ((!mp->pattern || strmatch(error_info.id, mp->pattern))
-                        && (io = mp->io[n]))
-                    {
-                        do
-                        {
+                        && (io = mp->io[n])) {
+                        do {
                             if (!io->pattern && !(m = 0)
                                 || (m = strgrpmatch(path,
                                                     io->pattern,
@@ -238,25 +219,20 @@ sfopen(Sfio_t *f, const char *path, const char *mode)
                                                     | STR_RIGHT)))
                                 break;
                         } while (io = io->next);
-                        if (io)
-                        {
-                            if (s = io->command)
-                            {
+                        if (io) {
+                            if (s = io->command) {
                                 m *= 2;
                                 r = 1;
-                                while (c = *s++)
-                                {
+                                while (c = *s++) {
                                     if (c == '\\' && *s && (c = *s++) >= '0'
-                                        && c <= '9')
-                                    {
+                                        && c <= '9') {
                                         c = 2 * (c - '0');
                                         if (c < m
                                             && (r = sub[c + 1] - sub[c]))
                                             sfwrite(
                                             state.cmd, path + sub[c], r);
                                         r = 0;
-                                    }
-                                    else
+                                    } else
                                         sfputc(state.cmd, c);
                                 }
                                 if (r)

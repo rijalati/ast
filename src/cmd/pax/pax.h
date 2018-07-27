@@ -89,8 +89,7 @@ typedef struct Tarheader_s Tarheader_t;
 #    define holeinit(fd) (state.hole = 0)
 #    define holedone(fd)                                                     \
         do                                                                   \
-            if (state.hole)                                                  \
-            {                                                                \
+            if (state.hole) {                                                \
                 lseek(fd, state.hole - 1, SEEK_CUR);                         \
                 state.hole = 0;                                              \
                 write(fd, "", 1);                                            \

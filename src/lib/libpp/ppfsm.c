@@ -1762,30 +1762,25 @@ ppfsm(int op, char *s)
     int x;
 #endif
 
-    switch (op)
-    {
+    switch (op) {
 
 #if !PROTOMAIN
 
     case FSM_IDADD:
         while (c = *s++)
-            if (!ppisid(c))
-            {
-                if (fsm[TOKEN][c] == ~S_HUH)
-                {
+            if (!ppisid(c)) {
+                if (fsm[TOKEN][c] == ~S_HUH) {
                     setid(c);
                     for (i = 0; i < TERMINAL; i++)
                         fsm[i][c] = IDSTATE(fsm[i]['_']);
-                }
-                else
+                } else
                     error(2, "%c: cannot add to identifier set", c);
             }
         break;
 
     case FSM_IDDEL:
         while (c = *s++)
-            if (ppisid(c))
-            {
+            if (ppisid(c)) {
                 clrid(c);
                 for (i = 0; i < TERMINAL; i++)
                     fsm[i][c] = ~S_HUH;
@@ -1795,15 +1790,12 @@ ppfsm(int op, char *s)
 #endif
 
     case FSM_INIT:
-        for (fp = fsminit;; fp++)
-        {
+        for (fp = fsminit;; fp++) {
             if ((n = fp->nextstate) >= TERMINAL)
                 n = ~n;
-            if (fp->state == OP)
-            {
+            if (fp->state == OP) {
 #if !PROTOMAIN
-                switch (n)
-                {
+                switch (n) {
                 case COPY:
                     c = fp->ch[0];
                     n = fp->ch[2];
@@ -1817,10 +1809,8 @@ ppfsm(int op, char *s)
                 break;
             }
             rp = fsm[fp->state];
-            for (i = 0; i < sizeof(fp->ch) && (c = fp->ch[i]); i++)
-            {
-                switch (c)
-                {
+            for (i = 0; i < sizeof(fp->ch) && (c = fp->ch[i]); i++) {
+                switch (c) {
                 case C_XXX:
                     for (c = 0; c <= MAX; c++)
                         rp[c] = n;
@@ -1860,13 +1850,11 @@ ppfsm(int op, char *s)
          * and same non-terminal transitions
          */
 
-        for (i = 0; i < TERMINAL; i++)
-        {
+        for (i = 0; i < TERMINAL; i++) {
             rp = fsm[i];
             s = spl;
             while (c = *s++)
-                if (c != MARK || !INCOMMENT(rp))
-                {
+                if (c != MARK || !INCOMMENT(rp)) {
                     if (rp[c] >= 0)
                         rp[c] = ~rp[c];
                     rp[c] &= ~SPLICE;
@@ -1914,21 +1902,17 @@ ppfsm(int op, char *s)
 #if !PROTOMAIN
 
     case FSM_PLUSPLUS:
-        if (pp.option & PLUSPLUS)
-        {
+        if (pp.option & PLUSPLUS) {
             fsm[COLON1][':'] = ~KEEP(T_SCOPE);
             fsm[DOT1]['*'] = ~KEEP(T_DOTREF);
             fsm[MINUS1]['>'] = ARROW1;
             fsm[COM1]['/'] = COM5;
             t = "%<:";
-            for (i = 0; i < TERMINAL; i++)
-            {
+            for (i = 0; i < TERMINAL; i++) {
                 rp = fsm[i];
-                if (!INCOMMENT(rp) && !INQUOTE(rp))
-                {
+                if (!INCOMMENT(rp) && !INQUOTE(rp)) {
                     s = t;
-                    while (c = *s++)
-                    {
+                    while (c = *s++) {
                         if (rp[c] > 0)
                             rp[c] = ~rp[c];
                         else if (!rp[c])
@@ -1940,9 +1924,7 @@ ppfsm(int op, char *s)
             s = t;
             while (c = *s++)
                 setsplice(c);
-        }
-        else
-        {
+        } else {
             fsm[COLON1][':'] = ~S_CHRB;
             fsm[DOT1]['*'] = ~S_CHRB;
             fsm[MINUS1]['>'] = ~KEEP(T_PTRMEM);
@@ -1953,17 +1935,14 @@ ppfsm(int op, char *s)
 #    if COMPATIBLE
 
     case FSM_COMPATIBILITY:
-        if (pp.state & COMPATIBILITY)
-        {
+        if (pp.state & COMPATIBILITY) {
             fsm[HEX1]['e'] = HEX1;
             fsm[HEX1]['E'] = HEX1;
             fsm[QNUM]['e'] = QNUM;
             fsm[QNUM]['E'] = QNUM;
             fsm[QNUM]['u'] = ~QUAL(QNUM);
             fsm[QNUM]['U'] = ~QUAL(QNUM);
-        }
-        else
-        {
+        } else {
             fsm[HEX1]['e'] = HEX3;
             fsm[HEX1]['E'] = HEX3;
             fsm[QNUM]['e'] = QEXP;
@@ -2006,32 +1985,25 @@ ppfsm(int op, char *s)
         break;
 
     case FSM_MACRO:
-        if (pp.truncate && strlen(s) >= pp.truncate)
-        {
+        if (pp.truncate && strlen(s) >= pp.truncate) {
             x = s[pp.truncate];
             s[pp.truncate] = 0;
-        }
-        else
+        } else
             x = -1;
         i = MAC0 + ((c = *s++) != 'L');
-        if ((n = fsm[QUICK][c]) != (i + NMAC))
-        {
+        if ((n = fsm[QUICK][c]) != (i + NMAC)) {
             n = i;
             if (!*s)
                 n += NMAC;
         }
         if (fsm[QUICK][c] != n)
             fsm[QUICK][c] = fsm[QCOM][c] = fsm[QTOK][c] = n;
-        if (c = *s++)
-        {
-            for (;;)
-            {
-                if ((i = n) < HIT0)
-                {
+        if (c = *s++) {
+            for (;;) {
+                if ((i = n) < HIT0) {
                     if (n < MACN)
                         n++;
-                    if (!*s)
-                    {
+                    if (!*s) {
                         n += NMAC;
                         break;
                     }
@@ -2039,23 +2011,19 @@ ppfsm(int op, char *s)
                         fsm[i][c] = n;
                     if (fsm[i + NMAC][c] < HIT0)
                         fsm[i + NMAC][c] = n;
-                }
-                else
-                {
+                } else {
                     if (n < HITN)
                         n++;
                     if (!*s)
                         break;
-                    if (fsm[i][c] < HIT0)
-                    {
+                    if (fsm[i][c] < HIT0) {
                         n -= NMAC;
                         fsm[i][c] = n;
                     }
                 }
                 c = *s++;
             }
-            if (x >= 0)
-            {
+            if (x >= 0) {
                 *s = x;
                 for (n = CHAR_MIN; n <= CHAR_MAX; n++)
                     if (ppisidig(n))
@@ -2083,13 +2051,10 @@ ppfsm(int op, char *s)
 void
 refill(int c)
 {
-    if (pp.in->flags & IN_eof)
-    {
+    if (pp.in->flags & IN_eof) {
         pp.in->nextchr--;
         c = 0;
-    }
-    else
-    {
+    } else {
         *((pp.in->nextchr = pp.in->buffer + PPBAKSIZ) - 1) = c;
         c =
 #    if PROTOTYPE
@@ -2099,8 +2064,7 @@ refill(int c)
 #    endif
         read(pp.in->fd, pp.in->nextchr, PPBUFSIZ);
     }
-    if (c > 0)
-    {
+    if (c > 0) {
         if (pp.in->nextchr[c - 1] == '\n')
             pp.in->flags |= IN_newline;
         else
@@ -2108,22 +2072,16 @@ refill(int c)
 #    if PROTOTYPE
         if (!(pp.in->flags & IN_prototype))
 #    endif
-            if (c < PPBUFSIZ && (pp.in->flags & IN_regular))
-            {
+            if (c < PPBUFSIZ && (pp.in->flags & IN_regular)) {
                 pp.in->flags |= IN_eof;
                 close(pp.in->fd);
                 pp.in->fd = -1;
             }
-    }
-    else
-    {
-        if (c < 0)
-        {
+    } else {
+        if (c < 0) {
             error(ERROR_SYSTEM | 3, "read error");
             c = 0;
-        }
-        else if ((pp.in->flags ^ pp.in->prev->flags) & IN_c)
-        {
+        } else if ((pp.in->flags ^ pp.in->prev->flags) & IN_c) {
             static char ket[] = { 0, '}', '\n', 0 };
 
             pp.in->flags ^= IN_c;

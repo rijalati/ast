@@ -45,8 +45,7 @@
 #if DEBUG
 #    define debug(x)                                                         \
         do                                                                   \
-            if (error_info.trace < 0)                                        \
-            {                                                                \
+            if (error_info.trace < 0) {                                      \
                 error x;                                                     \
             }                                                                \
         while (0)
@@ -102,8 +101,7 @@
 #define getvar(name) (( Var_t * )hashget(table.var, (name)))
 #define message(x)                                                           \
     do                                                                       \
-        if (error_info.trace < 0)                                            \
-        {                                                                    \
+        if (error_info.trace < 0) {                                          \
             error x;                                                         \
         }                                                                    \
     while (0)
@@ -115,8 +113,7 @@
      || ((r)->property & P_dontcare) && ((r)->dynamic & D_bound)             \
         && !(r)->time)
 #define oldname(r)                                                           \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         if (getbound(r->uname))                                              \
             putbound(0, 0);                                                  \
         if (r->dynamic & D_alias)                                            \
@@ -174,64 +171,49 @@
 #define isstatevar(s) (nametype(s, NiL) & (NAME_statevar))
 
 #define freelist(x)                                                          \
-    do                                                                       \
-    {                                                                        \
-        if (x)                                                               \
-        {                                                                    \
+    do {                                                                     \
+        if (x) {                                                             \
             (x)->rule = ( Rule_t * )internal.freelists;                      \
             internal.freelists = ( char * )(x);                              \
         }                                                                    \
     } while (0)
 #define freerule(r)                                                          \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         zero(*r);                                                            \
         *(( char ** )r) = internal.freerules;                                \
         internal.freerules = ( char * )(r);                                  \
     } while (0)
 #define freevar(v)                                                           \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         (v)->property &= (V_free | V_import);                                \
         *(( char ** )v) = internal.freevars;                                 \
         internal.freevars = ( char * )(v);                                   \
     } while (0)
 
 #define newlist(x)                                                           \
-    do                                                                       \
-    {                                                                        \
-        if (x = ( List_t * )internal.freelists)                              \
-        {                                                                    \
-            if (x->next)                                                     \
-            {                                                                \
+    do {                                                                     \
+        if (x = ( List_t * )internal.freelists) {                            \
+            if (x->next) {                                                   \
                 x = x->next;                                                 \
                 *(( char ** )internal.freelists) = ( char * )x->next;        \
-            }                                                                \
-            else                                                             \
+            } else                                                           \
                 internal.freelists = ( char * )x->rule;                      \
-        }                                                                    \
-        else                                                                 \
+        } else                                                               \
             x = ( List_t * )newchunk(&internal.freelists, sizeof(List_t));   \
     } while (0)
 #define newrule(r)                                                           \
-    do                                                                       \
-    {                                                                        \
-        if (r = ( Rule_t * )internal.freerules)                              \
-        {                                                                    \
+    do {                                                                     \
+        if (r = ( Rule_t * )internal.freerules) {                            \
             internal.freerules = (*(( char ** )r));                          \
             zero(*r);                                                        \
-        }                                                                    \
-        else                                                                 \
+        } else                                                               \
             r = ( Rule_t * )newchunk(&internal.freerules, sizeof(Rule_t));   \
     } while (0)
 #define newvar(v)                                                            \
-    do                                                                       \
-    {                                                                        \
-        if (v = ( Var_t * )internal.freevars)                                \
-        {                                                                    \
+    do {                                                                     \
+        if (v = ( Var_t * )internal.freevars) {                              \
             internal.freevars = (*(( char ** )v));                           \
-        }                                                                    \
-        else                                                                 \
+        } else                                                               \
             v = ( Var_t * )newchunk(&internal.freevars, sizeof(Var_t));      \
     } while (0)
 

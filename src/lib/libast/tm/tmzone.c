@@ -60,16 +60,13 @@ tmzone(const char *name, char **end, const char *type, int *dst)
     tmset(tm_info.zone);
     if ((name[0] == '+' || name[0] == '-')
         && (fixed.west = tmgoff(name, &e, TM_LOCALZONE)) != TM_LOCALZONE
-        && (!*e || isspace(*e)))
-    {
+        && (!*e || isspace(*e))) {
         p = fixed.standard = fixed.daylight = off;
         *p++ = 'Z';
-        if ((d = fixed.west) <= 0)
-        {
+        if ((d = fixed.west) <= 0) {
             d = -d;
             *p++ = 'E';
-        }
-        else
+        } else
             *p++ = 'W';
         p += sfsprintf(p, sizeof(off) - 2, "%u", d / 60);
         if (d = (d % 60) / 15)
@@ -81,19 +78,16 @@ tmzone(const char *name, char **end, const char *type, int *dst)
         if (dst)
             *dst = 0;
         return &fixed;
-    }
-    else if ((name[0] == 'Z' || name[0] == 'Y')
-             && (name[1] == 'E' || name[1] == 'W') && name[2] >= '0'
-             && name[2] <= '9')
-    {
+    } else if ((name[0] == 'Z' || name[0] == 'Y')
+               && (name[1] == 'E' || name[1] == 'W') && name[2] >= '0'
+               && name[2] <= '9') {
         e = ( char * )name + 2;
         fixed.west = 0;
         while (*e >= '0' && *e <= '9')
             fixed.west = fixed.west * 10 + (*e++ - '0');
         fixed.west *= 60;
         d = 0;
-        switch (*e)
-        {
+        switch (*e) {
         case 'C':
             d += 15;
             /*FALLTHROUGH*/
@@ -119,21 +113,17 @@ tmzone(const char *name, char **end, const char *type, int *dst)
     }
     zp = tm_info.local;
     p = 0;
-    do
-    {
+    do {
         if (zp->type)
             p = zp->type;
-        if (!type || type == p || !p)
-        {
-            if (tmword(name, end, zp->standard, NiL, 0))
-            {
+        if (!type || type == p || !p) {
+            if (tmword(name, end, zp->standard, NiL, 0)) {
                 if (dst)
                     *dst = 0;
                 return zp;
             }
             if (zp->dst && zp->daylight
-                && tmword(name, end, zp->daylight, NiL, 0))
-            {
+                && tmword(name, end, zp->daylight, NiL, 0)) {
                 if (dst)
                     *dst = zp->dst;
                 return zp;

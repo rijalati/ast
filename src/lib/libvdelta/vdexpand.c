@@ -47,13 +47,11 @@ static int vdunfold(tab) reg Table_t *tab;
     n_tar = tab->n_tar;
     tar = tab->tar;
 
-    for (t = 0, c_addr = 0; t < n_tar;)
-    {
+    for (t = 0, c_addr = 0; t < n_tar;) {
         inst = STRGETC(tab);
         k_type = K_GET(inst);
 
-        if (!VD_ISCOPY(k_type))
-        {
+        if (!VD_ISCOPY(k_type)) {
             if (K_ISMERGE(k_type)) /* merge/add instruction	*/
                 size = A_TGET(inst);
             else if (A_ISHERE(inst)) /* locally coded ADD size	*/
@@ -71,19 +69,15 @@ static int vdunfold(tab) reg Table_t *tab;
             STRREAD(tab, tar + t, size);
             t += size;
 
-            if (K_ISMERGE(k_type))
-            {
+            if (K_ISMERGE(k_type)) {
                 size = C_TGET(inst);
                 k_type -= K_MERGE;
                 goto do_copy;
             }
-        }
-        else
-        {
+        } else {
             if (C_ISHERE(inst)) /* locally coded COPY size */
                 size = C_LGET(inst);
-            else
-            {
+            else {
                 STRGETU(tab, size);
                 size = C_GET(size);
             }
@@ -91,13 +85,10 @@ static int vdunfold(tab) reg Table_t *tab;
             if ((t + size) > n_tar) /* out of sync */
                 return -1;
 
-            if (k_type >= K_QUICK && k_type < (K_QUICK + K_QTYPE))
-            {
+            if (k_type >= K_QUICK && k_type < (K_QUICK + K_QTYPE)) {
                 copy = STRGETC(tab);
                 copy = tab->quick[copy + ((k_type - K_QUICK) << VD_BITS)];
-            }
-            else
-            {
+            } else {
                 STRGETU(tab, copy);
                 if (k_type >= K_RECENT && k_type < (K_RECENT + K_RTYPE))
                     copy += tab->recent[k_type - K_RECENT];

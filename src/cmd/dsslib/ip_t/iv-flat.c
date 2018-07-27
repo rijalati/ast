@@ -113,8 +113,7 @@ flatset(Iv_t *iv, unsigned char *lo, unsigned char *hi, void *data)
 
     if (!iv || !(fl = ( Flat_t * )iv->data) || !(dt = fl->dt))
         return -1;
-    if (fl->search)
-    {
+    if (fl->search) {
         fl->dc.comparf = flatbldcmp;
         dtdisc(dt, &fl->dc, DT_SAMECMP /* not truthful but ok */);
         fl->search = 0;
@@ -128,18 +127,15 @@ flatset(Iv_t *iv, unsigned char *lo, unsigned char *hi, void *data)
     **   ++++           ++++++          ++++++++++++++++
     */
     if ((sg = dtprev(dt, &seg))
-        && fvcmp(size, fvcpy(size, pt = iv->r2, sg->hi), lo) >= 0)
-    {
-        if (fvcmp(size, pt, hi) >= 0)
-        {
+        && fvcmp(size, fvcpy(size, pt = iv->r2, sg->hi), lo) >= 0) {
+        if (fvcmp(size, pt, hi) >= 0) {
             if (data == sg->data) /* no need for new segment	*/
                 return 0;
             /* set left side of old segment	*/
             fvsub(size, sg->hi, lo, iv->unit);
             if (data != unmatched && !dtinsert(dt, &seg))
                 return -1;
-            if (fvcmp(size, pt, hi) > 0)
-            {
+            if (fvcmp(size, pt, hi) > 0) {
                 /* set right side of old segment	*/
                 fvadd(size, seg.lo = iv->r1, hi, iv->unit);
                 seg.hi = pt;
@@ -148,8 +144,7 @@ flatset(Iv_t *iv, unsigned char *lo, unsigned char *hi, void *data)
                     return -1;
             }
             return 0;
-        }
-        else
+        } else
             /* set left side of old segment	*/
             fvsub(size, sg->hi, lo, iv->unit);
     }
@@ -158,16 +153,13 @@ flatset(Iv_t *iv, unsigned char *lo, unsigned char *hi, void *data)
     ** ........      ........      ........  ...   ....
     ** ++++          ++++++++      +++++++++++++++++++++++
     */
-    if ((sg = dtsearch(dt, &seg)))
-    {
-        if (fvcmp(size, sg->hi, hi) > 0)
-        {
+    if ((sg = dtsearch(dt, &seg))) {
+        if (fvcmp(size, sg->hi, hi) > 0) {
             if (data == sg->data)
                 return 0;
             /* right side of old seg */
             fvadd(size, sg->lo, hi, iv->unit);
-        }
-        else
+        } else
             dtdelete(dt, sg);
     }
 
@@ -176,27 +168,23 @@ flatset(Iv_t *iv, unsigned char *lo, unsigned char *hi, void *data)
     **  +++++++       ++++++++++    ++++++++++++++++++++++++
     */
     while ((sg = dtnext(dt, &seg)) && fvcmp(size, sg->lo, hi) <= 0)
-        if (fvcmp(size, sg->hi, hi) > 0)
-        {
+        if (fvcmp(size, sg->hi, hi) > 0) {
             fvadd(size, sg->lo, hi, iv->unit);
             break;
-        }
-        else
+        } else
             dtdelete(dt, sg);
 
     /* mergeable with previous segment */
     if ((sg = dtprev(dt, &seg)) && data == sg->data
         && fvcmp(size, (fvadd(size, iv->r1, sg->hi, iv->unit), iv->r1), lo)
-           == 0)
-    {
+           == 0) {
         seg.lo = fvcpy(size, iv->r2, sg->lo);
         dtdelete(dt, sg);
     }
     /* mergeable with next segment */
     if ((sg = dtnext(dt, &seg)) && data == sg->data
         && fvcmp(size, (fvadd(size, iv->r1, hi, iv->unit), iv->r1), sg->lo)
-           == 0)
-    {
+           == 0) {
         seg.hi = fvcpy(size, iv->r1, sg->hi);
         dtdelete(dt, sg);
     }
@@ -220,8 +208,7 @@ flatget(Iv_t *iv, unsigned char *pt)
 
     if (!(fl = ( Flat_t * )iv->data) || !(dt = fl->dt))
         return 0;
-    if (!fl->search)
-    {
+    if (!fl->search) {
         fl->dc.comparf = flatsrchcmp;
         dtdisc(dt, &fl->dc, DT_SAMECMP /* not truthful but ok */);
         fl->search = 1;
@@ -241,8 +228,7 @@ flatseg(Iv_t *iv, unsigned char *pt)
 
     if (!(fl = ( Flat_t * )iv->data) || !(dt = fl->dt))
         return 0;
-    if (!fl->search)
-    {
+    if (!fl->search) {
         fl->dc.comparf = flatsrchcmp;
         dtdisc(dt, &fl->dc, DT_SAMECMP /* not truthful but ok */);
         fl->search = 1;
@@ -257,8 +243,7 @@ flatevent(Iv_t *iv, int type, void *data)
 {
     Flat_t *fl;
 
-    switch (type)
-    {
+    switch (type) {
     case IV_OPEN:
         if (!(fl = ( Flat_t * )malloc(sizeof(Flat_t))))
             return -1;
@@ -273,8 +258,7 @@ flatevent(Iv_t *iv, int type, void *data)
                0,
                0,
                0);
-        if (!(fl->dt = dtopen(&fl->dc, Dtoset)))
-        {
+        if (!(fl->dt = dtopen(&fl->dc, Dtoset))) {
             free(fl);
             return -1;
         }

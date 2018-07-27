@@ -46,17 +46,14 @@ Sflong_t v;                  /* the value to be written */
     SFLOCK(f, 0);
 
     s = ps = &(c[N_ARRAY - 1]);
-    if (v < 0)
-    { /* add 1 to avoid 2-complement problems with -SF_MAXINT */
+    if (v < 0) { /* add 1 to avoid 2-complement problems with -SF_MAXINT */
         v = -(v + 1);
         *s = (uchar)(SFSVALUE(v) | SF_SIGN);
-    }
-    else
+    } else
         *s = (uchar)(SFSVALUE(v));
     v = ( Sfulong_t )v >> SF_SBITS;
 
-    while (v > 0)
-    {
+    while (v > 0) {
         *--s = (uchar)(SFUVALUE(v) | SF_MORE);
         v = ( Sfulong_t )v >> SF_UBITS;
     }
@@ -64,10 +61,8 @@ Sflong_t v;                  /* the value to be written */
 
     if (n > 8 || SFWPEEK(f, ps, p) < n)
         n = SFWRITE(f, ( Void_t * )s, n); /* write the hard way */
-    else
-    {
-        switch (n)
-        {
+    else {
+        switch (n) {
         case 8:
             *ps++ = *s++;
         case 7:

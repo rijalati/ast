@@ -41,12 +41,10 @@ vchdir(const char *path)
 {
     int n;
 
-    if (strlen(path) >= PATH_MAX)
-    {
+    if (strlen(path) >= PATH_MAX) {
         errno = ENAMETOOLONG;
         n = -1;
-    }
-    else
+    } else
         n = chdir(path);
     return n;
 }
@@ -71,8 +69,7 @@ pathcd(const char *path, const char *home)
     int r;
 
     r = 0;
-    for (;;)
-    {
+    for (;;) {
         /*
          * this should work 99% of the time
          */
@@ -99,8 +96,7 @@ pathcd(const char *path, const char *home)
         sfputr(stkstd, p, 0);
         stkseek(stkstd, i);
         p = stkptr(stkstd, i);
-        for (;;)
-        {
+        for (;;) {
             /*
              * get a short prefix component
              */
@@ -123,8 +119,7 @@ pathcd(const char *path, const char *home)
              * do the remainder
              */
 
-            if ((n -= s - p) < PATH_MAX)
-            {
+            if ((n -= s - p) < PATH_MAX) {
                 if (chdir(s))
                     break;
                 return r;

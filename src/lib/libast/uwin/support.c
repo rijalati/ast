@@ -112,23 +112,19 @@ double N;
         return (x);
 
 #        if defined(vax) || defined(tahoe)
-    if ((k = *px & mexp) != ~msign)
-    {
+    if ((k = *px & mexp) != ~msign) {
         if (N < -260)
             return (nunf * nunf);
-        else if (N > 260)
-        {
+        else if (N > 260) {
             return (copysign(infnan(ERANGE), x));
         }
 #        else  /* defined(vax)||defined(tahoe) */
-    if ((k = *px & mexp) != mexp)
-    {
+    if ((k = *px & mexp) != mexp) {
         if (N < -2100)
             return (nunf * nunf);
         else if (N > 2100)
             return (novf + novf);
-        if (k == 0)
-        {
+        if (k == 0) {
             x *= scalb(1.0, prep1);
             N -= prep1;
             return (scalb(x, N));
@@ -145,8 +141,7 @@ double N;
         {
             *px = (*px & ~mexp) | ( short )(1 << gap);
             x *= scalb(1.0, k - 1);
-        }
-        else
+        } else
             return (nunf * nunf);
     }
     return (x);
@@ -218,8 +213,7 @@ extern double logb(x) double x;
             return (-(1.0 / zero));
     else if (x != x)
         return (x);
-    else
-    {
+    else {
         *px &= msign;
         return (x);
     }
@@ -283,8 +277,7 @@ extern double drem(x, p) double x, p;
     if ((*px & mexp) == mexp)
 #            endif /* defined(vax)||defined(tahoe) */
         return (x - p) - (x - p); /* create nan if x is inf */
-    if (p == zero)
-    {
+    if (p == zero) {
 #            if defined(vax) || defined(tahoe)
         return (infnan(EDOM));
 #            else  /* defined(vax)||defined(tahoe) */
@@ -313,21 +306,16 @@ extern double drem(x, p) double x, p;
         x = drem(x, p);
         x *= b;
         return (drem(x, p) / b);
-    }
-    else if (p >= novf / 2)
-    {
+    } else if (p >= novf / 2) {
         p /= 2;
         x /= 2;
         return (drem(x, p) * 2);
-    }
-    else
-    {
+    } else {
         dp = p + p;
         hp = p / 2;
         sign = *px & ~msign;
         *px &= msign;
-        while (x > dp)
-        {
+        while (x > dp) {
             k = (*px & mexp) - (*pd & mexp);
             tmp = dp;
             *pt += k;
@@ -342,8 +330,7 @@ extern double drem(x, p) double x, p;
 
             x -= tmp;
         }
-        if (x > hp)
-        {
+        if (x > hp) {
             x -= p;
             if (x >= hp)
                 x -= p;
@@ -388,8 +375,7 @@ extern double sqrt(x) double x;
         return (x);
 
     /* sqrt(negative) is invalid */
-    if (x < zero)
-    {
+    if (x < zero) {
 #        if defined(vax) || defined(tahoe)
         return (infnan(EDOM)); /* NaN */
 #        else  /* defined(vax)||defined(tahoe) */
@@ -408,8 +394,7 @@ extern double sqrt(x) double x;
         x = scalb(x, -m); /* subnormal number */
     m += n;
     n = m / 2;
-    if ((n + n) != m)
-    {
+    if ((n + n) != m) {
         x *= 2;
         m -= 1;
         n = m / 2;
@@ -420,17 +405,14 @@ extern double sqrt(x) double x;
     s = 4.0;
     x -= 1.0;
     r = 1;
-    for (i = 1; i <= k; i++)
-    {
+    for (i = 1; i <= k; i++) {
         t = s + 1;
         x *= 4;
         r /= 2;
-        if (t <= x)
-        {
+        if (t <= x) {
             s = t + t + 2, x -= t;
             q += r;
-        }
-        else
+        } else
             s *= 2;
     }
 
@@ -440,8 +422,7 @@ extern double sqrt(x) double x;
     if (x == zero)
         goto end;
     100 + r; /* trigger inexact flag */
-    if (s < x)
-    {
+    if (s < x) {
         q += r;
         x -= s;
         s += 2;
@@ -457,8 +438,7 @@ extern double sqrt(x) double x;
         if (t >= 0)
             q += r;
     } /* else: Round-to-nearest */
-    else
-    {
+    else {
         s *= 2;
         x *= 4;
         t = (x - s) - 1;

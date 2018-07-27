@@ -230,8 +230,7 @@ ClientData clientData; /* The client data associated with the
      * always OK to create or rename the command.
      */
 
-    if (proc != AliasCmd)
-    {
+    if (proc != AliasCmd) {
         return TCL_OK;
     }
 
@@ -243,8 +242,7 @@ ClientData clientData; /* The client data associated with the
 
     aliasPtr = ( Alias * )clientData;
     nextAliasPtr = aliasPtr;
-    while (1)
-    {
+    while (1) {
 
         /*
          * If the target of the next alias in the chain is the same as the
@@ -252,8 +250,7 @@ ClientData clientData; /* The client data associated with the
          */
 
         if ((strcmp(nextAliasPtr->targetName, cmdName) == 0)
-            && (nextAliasPtr->targetInterp == cmdInterp))
-        {
+            && (nextAliasPtr->targetInterp == cmdInterp)) {
             Tcl_AppendResult(interp,
                              "cannot define or rename alias \"",
                              aliasPtr->aliasName,
@@ -269,8 +266,7 @@ ClientData clientData; /* The client data associated with the
 
         if (Tcl_GetCommandInfo(
             nextAliasPtr->targetInterp, nextAliasPtr->targetName, &cmdInfo)
-            == 0)
-        {
+            == 0) {
             return TCL_OK;
         }
 
@@ -279,8 +275,7 @@ ClientData clientData; /* The client data associated with the
          * loop to its target command. Otherwise we do not have a loop.
          */
 
-        if (cmdInfo.proc != AliasCmd)
-        {
+        if (cmdInfo.proc != AliasCmd) {
             return TCL_OK;
         }
         nextAliasPtr = ( Alias * )cmdInfo.clientData;
@@ -324,34 +319,27 @@ static int MakeSafe(interp) Tcl_Interp *interp; /* Interpreter to be made
 
     Tcl_ResetResult(interp);
     if ((Tcl_Eval(interp, cmdGetGlobalCmds) == TCL_ERROR)
-        || (Tcl_SplitList(interp, interp->result, &argc, &argv) != TCL_OK))
-    {
+        || (Tcl_SplitList(interp, interp->result, &argc, &argv) != TCL_OK)) {
         return TCL_ERROR;
     }
-    for (i = 0; i < argc; i++)
-    {
-        for (keep = 0, j = 0; j < TclCommandsToKeepCt; j++)
-        {
-            if (strcmp(TclCommandsToKeep[j], argv[i]) == 0)
-            {
+    for (i = 0; i < argc; i++) {
+        for (keep = 0, j = 0; j < TclCommandsToKeepCt; j++) {
+            if (strcmp(TclCommandsToKeep[j], argv[i]) == 0) {
                 keep = 1;
                 break;
             }
         }
-        if (keep == 0)
-        {
+        if (keep == 0) {
             ( void )Tcl_DeleteCommand(interp, argv[i]);
         }
     }
     ckfree(( char * )argv);
     masterPtr = ( Master * )Tcl_GetAssocData(interp, "tclMasterRecord", NULL);
-    if (masterPtr == ( Master * )NULL)
-    {
+    if (masterPtr == ( Master * )NULL) {
         panic("MakeSafe: could not find master record");
     }
     masterPtr->isSafe = 1;
-    if (Tcl_Eval(interp, cmdNoEnv) == TCL_ERROR)
-    {
+    if (Tcl_Eval(interp, cmdNoEnv) == TCL_ERROR) {
         return TCL_ERROR;
     }
 
@@ -367,18 +355,15 @@ static int MakeSafe(interp) Tcl_Interp *interp; /* Interpreter to be made
      */
 
     chan = Tcl_GetStdChannel(TCL_STDIN);
-    if (chan != ( Tcl_Channel )NULL)
-    {
+    if (chan != ( Tcl_Channel )NULL) {
         Tcl_UnregisterChannel(interp, chan);
     }
     chan = Tcl_GetStdChannel(TCL_STDOUT);
-    if (chan != ( Tcl_Channel )NULL)
-    {
+    if (chan != ( Tcl_Channel )NULL) {
         Tcl_UnregisterChannel(interp, chan);
     }
     chan = Tcl_GetStdChannel(TCL_STDERR);
-    if (chan != ( Tcl_Channel )NULL)
-    {
+    if (chan != ( Tcl_Channel )NULL) {
         Tcl_UnregisterChannel(interp, chan);
     }
 
@@ -417,24 +402,20 @@ Master **masterPtrPtr; /* (Return) its master record. */
     if (masterPtrPtr != ( Master ** )NULL)
         *masterPtrPtr = masterPtr;
 
-    if (Tcl_SplitList(interp, path, &argc, &argv) != TCL_OK)
-    {
+    if (Tcl_SplitList(interp, path, &argc, &argv) != TCL_OK) {
         return ( Tcl_Interp * )NULL;
     }
 
-    for (searchInterp = interp, i = 0; i < argc; i++)
-    {
+    for (searchInterp = interp, i = 0; i < argc; i++) {
 
         hPtr = Tcl_FindHashEntry(&(masterPtr->slaveTable), argv[i]);
-        if (hPtr == ( Tcl_HashEntry * )NULL)
-        {
+        if (hPtr == ( Tcl_HashEntry * )NULL) {
             ckfree(( char * )argv);
             return ( Tcl_Interp * )NULL;
         }
         slavePtr = ( Slave * )Tcl_GetHashValue(hPtr);
         searchInterp = slavePtr->slaveInterp;
-        if (searchInterp == ( Tcl_Interp * )NULL)
-        {
+        if (searchInterp == ( Tcl_Interp * )NULL) {
             ckfree(( char * )argv);
             return ( Tcl_Interp * )NULL;
         }
@@ -442,8 +423,7 @@ Master **masterPtrPtr; /* (Return) its master record. */
         = ( Master * )Tcl_GetAssocData(searchInterp, "tclMasterRecord", NULL);
         if (masterPtrPtr != ( Master ** )NULL)
             *masterPtrPtr = masterPtr;
-        if (masterPtr == ( Master * )NULL)
-        {
+        if (masterPtr == ( Master * )NULL) {
             ckfree(( char * )argv);
             return ( Tcl_Interp * )NULL;
         }
@@ -487,30 +467,23 @@ int safe;           /* Should we make it "safe"? */
     char *masterPath;         /* Path to its master. */
 
     masterPtr = ( Master * )Tcl_GetAssocData(interp, "tclMasterRecord", NULL);
-    if (masterPtr == ( Master * )NULL)
-    {
+    if (masterPtr == ( Master * )NULL) {
         panic("CreatSlave: could not find master record");
     }
 
-    if (Tcl_SplitList(interp, slavePath, &argc, &argv) != TCL_OK)
-    {
+    if (Tcl_SplitList(interp, slavePath, &argc, &argv) != TCL_OK) {
         return ( Tcl_Interp * )NULL;
     }
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         masterInterp = interp;
-        if (argc == 1)
-        {
+        if (argc == 1) {
             slavePath = argv[0];
         }
-    }
-    else
-    {
+    } else {
         masterPath = Tcl_Merge(argc - 1, argv);
         masterInterp = GetInterp(interp, masterPtr, masterPath, &masterPtr);
-        if (masterInterp == ( Tcl_Interp * )NULL)
-        {
+        if (masterInterp == ( Tcl_Interp * )NULL) {
             Tcl_AppendResult(interp,
                              "interpreter named \"",
                              masterPath,
@@ -522,14 +495,12 @@ int safe;           /* Should we make it "safe"? */
         }
         ckfree(( char * )masterPath);
         slavePath = argv[argc - 1];
-        if (!safe)
-        {
+        if (!safe) {
             safe = masterPtr->isSafe;
         }
     }
     hPtr = Tcl_CreateHashEntry(&(masterPtr->slaveTable), slavePath, &new);
-    if (new == 0)
-    {
+    if (new == 0) {
         Tcl_AppendResult(interp,
                          "interpreter named \"",
                          slavePath,
@@ -539,8 +510,7 @@ int safe;           /* Should we make it "safe"? */
         return ( Tcl_Interp * )NULL;
     }
     slaveInterp = Tcl_CreateInterp();
-    if (slaveInterp == ( Tcl_Interp * )NULL)
-    {
+    if (slaveInterp == ( Tcl_Interp * )NULL) {
         panic("CreateSlave: out of memory while creating a new interpreter");
     }
     slavePtr = ( Slave * )ckalloc(( unsigned )sizeof(Slave));
@@ -561,8 +531,7 @@ int safe;           /* Should we make it "safe"? */
     Tcl_SetVar(slaveInterp, "tcl_interactive", "0", TCL_GLOBAL_ONLY);
 
     if (((safe) && (MakeSafe(slaveInterp) == TCL_ERROR))
-        || ((!safe) && (Tcl_Init(slaveInterp) == TCL_ERROR)))
-    {
+        || ((!safe) && (Tcl_Init(slaveInterp) == TCL_ERROR))) {
         Tcl_ResetResult(interp);
         Tcl_AddErrorInfo(
         interp,
@@ -574,14 +543,11 @@ int safe;           /* Should we make it "safe"? */
         ( char * )NULL,
         Tcl_GetVar2(slaveInterp, "errorCode", ( char * )NULL, TCL_GLOBAL_ONLY),
         TCL_GLOBAL_ONLY);
-        if (slaveInterp->freeProc != NULL)
-        {
+        if (slaveInterp->freeProc != NULL) {
             interp->result = slaveInterp->result;
             interp->freeProc = slaveInterp->freeProc;
             slaveInterp->freeProc = 0;
-        }
-        else
-        {
+        } else {
             Tcl_SetResult(interp, slaveInterp->result, TCL_VOLATILE);
         }
         Tcl_ResetResult(slaveInterp);
@@ -624,16 +590,14 @@ char **argv;        /* Argument strings. */
     static int interpCounter = 0; /* Unique id for created names. */
 
     masterPtr = ( Master * )Tcl_GetAssocData(interp, "tclMasterRecord", NULL);
-    if (masterPtr == ( Master * )NULL)
-    {
+    if (masterPtr == ( Master * )NULL) {
         panic("CreateInterpObject: could not find master record");
     }
     moreFlags = 1;
     slavePath = NULL;
     safe = masterPtr->isSafe;
 
-    if (argc < 2 || argc > 5)
-    {
+    if (argc < 2 || argc > 5) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -641,22 +605,15 @@ char **argv;        /* Argument strings. */
                          ( char * )NULL);
         return TCL_ERROR;
     }
-    for (i = 2; i < argc; i++)
-    {
+    for (i = 2; i < argc; i++) {
         len = strlen(argv[i]);
-        if ((argv[i][0] == '-') && (moreFlags != 0))
-        {
+        if ((argv[i][0] == '-') && (moreFlags != 0)) {
             if ((argv[i][1] == 's') && (strncmp(argv[i], "-safe", len) == 0)
-                && (len > 1))
-            {
+                && (len > 1)) {
                 safe = 1;
-            }
-            else if ((strncmp(argv[i], "--", len) == 0) && (len > 1))
-            {
+            } else if ((strncmp(argv[i], "--", len) == 0) && (len > 1)) {
                 moreFlags = 0;
-            }
-            else
-            {
+            } else {
                 Tcl_AppendResult(interp,
                                  "bad option \"",
                                  argv[i],
@@ -664,25 +621,19 @@ char **argv;        /* Argument strings. */
                                  ( char * )NULL);
                 return TCL_ERROR;
             }
-        }
-        else
-        {
+        } else {
             slavePath = argv[i];
         }
     }
-    if (slavePath == ( char * )NULL)
-    {
+    if (slavePath == ( char * )NULL) {
         sprintf(localSlaveName, "interp%d", interpCounter);
         interpCounter++;
         slavePath = localSlaveName;
     }
-    if (CreateSlave(interp, slavePath, safe) != NULL)
-    {
+    if (CreateSlave(interp, slavePath, safe) != NULL) {
         Tcl_AppendResult(interp, slavePath, ( char * )NULL);
         return TCL_OK;
-    }
-    else
-    {
+    } else {
         /*
          * CreateSlave already set interp->result if there was an error,
          * so we do not do it here.
@@ -723,34 +674,25 @@ char *path;         /* Path of interpreter to delete. */
     char *masterPath;         /* One-before-last component in path.*/
 
     masterPtr = ( Master * )Tcl_GetAssocData(interp, "tclMasterRecord", NULL);
-    if (masterPtr == ( Master * )NULL)
-    {
+    if (masterPtr == ( Master * )NULL) {
         panic("DeleteInterpObject: could not find master record");
     }
-    if (Tcl_SplitList(interp, path, &localArgc, &localArgv) != TCL_OK)
-    {
+    if (Tcl_SplitList(interp, path, &localArgc, &localArgv) != TCL_OK) {
         Tcl_AppendResult(
         interp, "bad interpreter path \"", path, "\"", ( char * )NULL);
         return TCL_ERROR;
     }
-    if (localArgc < 2)
-    {
+    if (localArgc < 2) {
         masterInterp = interp;
-        if (localArgc == 0)
-        {
+        if (localArgc == 0) {
             slaveName = "";
-        }
-        else
-        {
+        } else {
             slaveName = localArgv[0];
         }
-    }
-    else
-    {
+    } else {
         masterPath = Tcl_Merge(localArgc - 1, localArgv);
         masterInterp = GetInterp(interp, masterPtr, masterPath, &masterPtr);
-        if (masterInterp == ( Tcl_Interp * )NULL)
-        {
+        if (masterInterp == ( Tcl_Interp * )NULL) {
             Tcl_AppendResult(interp,
                              "interpreter named \"",
                              masterPath,
@@ -764,8 +706,7 @@ char *path;         /* Path of interpreter to delete. */
         slaveName = localArgv[localArgc - 1];
     }
     hPtr = Tcl_FindHashEntry(&(masterPtr->slaveTable), slaveName);
-    if (hPtr == ( Tcl_HashEntry * )NULL)
-    {
+    if (hPtr == ( Tcl_HashEntry * )NULL) {
         ckfree(( char * )localArgv);
         Tcl_AppendResult(
         interp, "interpreter named \"", path, "\" not found", ( char * )NULL);
@@ -773,8 +714,7 @@ char *path;         /* Path of interpreter to delete. */
     }
     slavePtr = ( Slave * )Tcl_GetHashValue(hPtr);
     slaveName = Tcl_GetCommandName(masterInterp, slavePtr->interpCmd);
-    if (Tcl_DeleteCommand(masterInterp, slaveName) != 0)
-    {
+    if (Tcl_DeleteCommand(masterInterp, slaveName) != 0) {
         ckfree(( char * )localArgv);
         Tcl_AppendResult(
         interp, "interpreter named \"", path, "\" not found", ( char * )NULL);
@@ -809,10 +749,8 @@ char **argv;        /* Contains path to interps to
 {
     int i;
 
-    for (i = 2; i < argc; i++)
-    {
-        if (DeleteOneInterpObject(interp, argv[i]) != TCL_OK)
-        {
+    for (i = 2; i < argc; i++) {
+        if (DeleteOneInterpObject(interp, argv[i]) != TCL_OK) {
             return TCL_ERROR;
         }
     }
@@ -876,8 +814,7 @@ char **argv;              /* with alias. */
      * uses "" as the source for an alias.
      */
 
-    if (slavePtr == ( Slave * )NULL)
-    {
+    if (slavePtr == ( Slave * )NULL) {
         slavePtr = ( Slave * )ckalloc(( unsigned )sizeof(Slave));
         slavePtr->masterInterp = ( Tcl_Interp * )NULL;
         slavePtr->slaveEntry = ( Tcl_HashEntry * )NULL;
@@ -890,10 +827,8 @@ char **argv;              /* with alias. */
                                  ( ClientData )slavePtr);
     }
 
-    if ((targetName == ( char * )NULL) || (targetName[0] == '\0'))
-    {
-        if (argc != 0)
-        {
+    if ((targetName == ( char * )NULL) || (targetName[0] == '\0')) {
+        if (argc != 0) {
             Tcl_AppendResult(curInterp,
                              "malformed command: should be",
                              " \"alias ",
@@ -917,12 +852,10 @@ char **argv;              /* with alias. */
 
     aliasPtr->argv = ( char ** )NULL;
     aliasPtr->argc = argc;
-    if (aliasPtr->argc > 0)
-    {
+    if (aliasPtr->argc > 0) {
         aliasPtr->argv
         = ( char ** )ckalloc(( unsigned )sizeof(char *) * aliasPtr->argc);
-        for (i = 0; i < argc; i++)
-        {
+        for (i = 0; i < argc; i++) {
             aliasPtr->argv[i]
             = ( char * )ckalloc(( unsigned )strlen(argv[i]) + 1);
             strcpy(aliasPtr->argv[i], argv[i]);
@@ -931,14 +864,11 @@ char **argv;              /* with alias. */
 
     if (TclPreventAliasLoop(
         curInterp, slaveInterp, aliasName, AliasCmd, ( ClientData )aliasPtr)
-        != TCL_OK)
-    {
-        for (i = 0; i < argc; i++)
-        {
+        != TCL_OK) {
+        for (i = 0; i < argc; i++) {
             ckfree(aliasPtr->argv[i]);
         }
-        if (aliasPtr->argv != ( char ** )NULL)
-        {
+        if (aliasPtr->argv != ( char ** )NULL) {
             ckfree(( char * )aliasPtr->argv);
         }
         ckfree(aliasPtr->aliasName);
@@ -959,11 +889,9 @@ char **argv;              /* with alias. */
      * the alias command. Then retry.
      */
 
-    do
-    {
+    do {
         hPtr = Tcl_CreateHashEntry(&(slavePtr->aliasTable), aliasName, &new);
-        if (new == 0)
-        {
+        if (new == 0) {
             tmpAliasPtr = ( Alias * )Tcl_GetHashValue(hPtr);
             tmpAliasName
             = Tcl_GetCommandName(slaveInterp, tmpAliasPtr->slaveCmd);
@@ -992,8 +920,7 @@ char **argv;              /* with alias. */
     targetPtr->slaveCmd = aliasPtr->slaveCmd;
     targetPtr->slaveInterp = slaveInterp;
 
-    do
-    {
+    do {
         hPtr = Tcl_CreateHashEntry(
         &(masterPtr->targetTable), ( char * )aliasCounter, &new);
         aliasCounter++;
@@ -1041,12 +968,10 @@ char **argv;        /* Argument strings. */
     Master *masterMasterPtr; /* Master record for master interp. */
 
     masterPtr = ( Master * )Tcl_GetAssocData(interp, "tclMasterRecord", NULL);
-    if (masterPtr == ( Master * )NULL)
-    {
+    if (masterPtr == ( Master * )NULL) {
         panic("SlaveAliasHelper: could not find master record");
     }
-    if (argc < 4)
-    {
+    if (argc < 4) {
         Tcl_AppendResult(
         interp,
         "wrong # args: should be \"",
@@ -1056,8 +981,7 @@ char **argv;        /* Argument strings. */
         return TCL_ERROR;
     }
     slaveInterp = GetInterp(interp, masterPtr, argv[2], NULL);
-    if (slaveInterp == ( Tcl_Interp * )NULL)
-    {
+    if (slaveInterp == ( Tcl_Interp * )NULL) {
         Tcl_AppendResult(interp,
                          "could not find interpreter \"",
                          argv[2],
@@ -1065,16 +989,13 @@ char **argv;        /* Argument strings. */
                          ( char * )NULL);
         return TCL_ERROR;
     }
-    if (argc == 4)
-    {
+    if (argc == 4) {
         return DescribeAlias(interp, slaveInterp, argv[3]);
     }
-    if (argc == 5 && strcmp(argv[4], "") == 0)
-    {
+    if (argc == 5 && strcmp(argv[4], "") == 0) {
         return DeleteAlias(interp, slaveInterp, argv[3]);
     }
-    if (argc < 6)
-    {
+    if (argc < 6) {
         Tcl_AppendResult(
         interp,
         "wrong # args: should be \"",
@@ -1084,8 +1005,7 @@ char **argv;        /* Argument strings. */
         return TCL_ERROR;
     }
     masterInterp = GetInterp(interp, masterPtr, argv[4], &masterMasterPtr);
-    if (masterInterp == ( Tcl_Interp * )NULL)
-    {
+    if (masterInterp == ( Tcl_Interp * )NULL) {
         Tcl_AppendResult(interp,
                          "could not find interpreter \"",
                          argv[4],
@@ -1133,8 +1053,7 @@ char *aliasName;         /* Name of alias to describe. */
 
     slavePtr
     = ( Slave * )Tcl_GetAssocData(slaveInterp, "tclSlaveRecord", NULL);
-    if (slavePtr == ( Slave * )NULL)
-    {
+    if (slavePtr == ( Slave * )NULL) {
 
         /*
          * It's possible that the interpreter still does not have a slave
@@ -1156,14 +1075,12 @@ char *aliasName;         /* Name of alias to describe. */
                                  ( ClientData )slavePtr);
     }
     hPtr = Tcl_FindHashEntry(&(slavePtr->aliasTable), aliasName);
-    if (hPtr == ( Tcl_HashEntry * )NULL)
-    {
+    if (hPtr == ( Tcl_HashEntry * )NULL) {
         return TCL_OK;
     }
     aliasPtr = ( Alias * )Tcl_GetHashValue(hPtr);
     Tcl_AppendResult(interp, aliasPtr->targetName, ( char * )NULL);
-    for (i = 0; i < aliasPtr->argc; i++)
-    {
+    for (i = 0; i < aliasPtr->argc; i++) {
         Tcl_AppendElement(interp, aliasPtr->argv[i]);
     }
 
@@ -1197,8 +1114,7 @@ char *aliasName;         /* Name of alias to delete. */
 
     slavePtr
     = ( Slave * )Tcl_GetAssocData(slaveInterp, "tclSlaveRecord", NULL);
-    if (slavePtr == ( Slave * )NULL)
-    {
+    if (slavePtr == ( Slave * )NULL) {
         Tcl_AppendResult(
         interp, "alias \"", aliasName, "\" not found", ( char * )NULL);
         return TCL_ERROR;
@@ -1213,8 +1129,7 @@ char *aliasName;         /* Name of alias to delete. */
      */
 
     hPtr = Tcl_FindHashEntry(&(slavePtr->aliasTable), aliasName);
-    if (hPtr == ( Tcl_HashEntry * )NULL)
-    {
+    if (hPtr == ( Tcl_HashEntry * )NULL) {
         Tcl_AppendResult(
         interp, "alias \"", aliasName, "\" not found", ( char * )NULL);
         return TCL_ERROR;
@@ -1229,8 +1144,7 @@ char *aliasName;         /* Name of alias to delete. */
      * target table.
      */
 
-    if (Tcl_DeleteCommand(slaveInterp, aliasName) != 0)
-    {
+    if (Tcl_DeleteCommand(slaveInterp, aliasName) != 0) {
         panic("DeleteAlias: did not find alias to be deleted");
     }
 
@@ -1270,22 +1184,19 @@ Tcl_Interp *targetInterp; /* Interpreter to find. */
     Master *masterPtr; /* Interim storage for Master record. */
     Slave *slavePtr;   /* Interim storage for Slave record. */
 
-    if (targetInterp == askingInterp)
-    {
+    if (targetInterp == askingInterp) {
         return TCL_OK;
     }
-    if (targetInterp == ( Tcl_Interp * )NULL)
-    {
+    if (targetInterp == ( Tcl_Interp * )NULL) {
         return TCL_ERROR;
     }
     slavePtr
     = ( Slave * )Tcl_GetAssocData(targetInterp, "tclSlaveRecord", NULL);
-    if (slavePtr == ( Slave * )NULL)
-    {
+    if (slavePtr == ( Slave * )NULL) {
         return TCL_ERROR;
     }
-    if (Tcl_GetInterpPath(askingInterp, slavePtr->masterInterp) == TCL_ERROR)
-    {
+    if (Tcl_GetInterpPath(askingInterp, slavePtr->masterInterp)
+        == TCL_ERROR) {
         /*
          * AskingInterp->result was set by recursive call.
          */
@@ -1293,8 +1204,7 @@ Tcl_Interp *targetInterp; /* Interpreter to find. */
     }
     masterPtr = ( Master * )Tcl_GetAssocData(
     slavePtr->masterInterp, "tclMasterRecord", NULL);
-    if (masterPtr == ( Master * )NULL)
-    {
+    if (masterPtr == ( Master * )NULL) {
         panic("Tcl_GetInterpPath: could not find master record");
     }
     Tcl_AppendElement(
@@ -1336,13 +1246,11 @@ char *aliasName;          /* The target of this allias. */
 
     masterPtr
     = ( Master * )Tcl_GetAssocData(askingInterp, "tclMasterRecord", NULL);
-    if (masterPtr == ( Master * )NULL)
-    {
+    if (masterPtr == ( Master * )NULL) {
         panic("GetTarget: could not find master record");
     }
     slaveInterp = GetInterp(askingInterp, masterPtr, path, NULL);
-    if (slaveInterp == ( Tcl_Interp * )NULL)
-    {
+    if (slaveInterp == ( Tcl_Interp * )NULL) {
         Tcl_AppendResult(askingInterp,
                          "could not find interpreter \"",
                          path,
@@ -1352,13 +1260,11 @@ char *aliasName;          /* The target of this allias. */
     }
     slaveSlavePtr
     = ( Slave * )Tcl_GetAssocData(slaveInterp, "tclSlaveRecord", NULL);
-    if (slaveSlavePtr == ( Slave * )NULL)
-    {
+    if (slaveSlavePtr == ( Slave * )NULL) {
         panic("GetTarget: could not find slave record");
     }
     hPtr = Tcl_FindHashEntry(&(slaveSlavePtr->aliasTable), aliasName);
-    if (hPtr == ( Tcl_HashEntry * )NULL)
-    {
+    if (hPtr == ( Tcl_HashEntry * )NULL) {
         Tcl_AppendResult(askingInterp,
                          "alias \"",
                          aliasName,
@@ -1369,12 +1275,11 @@ char *aliasName;          /* The target of this allias. */
         return TCL_ERROR;
     }
     aliasPtr = ( Alias * )Tcl_GetHashValue(hPtr);
-    if (aliasPtr == ( Alias * )NULL)
-    {
+    if (aliasPtr == ( Alias * )NULL) {
         panic("GetTarget: could not find alias record");
     }
-    if (Tcl_GetInterpPath(askingInterp, aliasPtr->targetInterp) == TCL_ERROR)
-    {
+    if (Tcl_GetInterpPath(askingInterp, aliasPtr->targetInterp)
+        == TCL_ERROR) {
         Tcl_ResetResult(askingInterp);
         Tcl_AppendResult(askingInterp,
                          "target interpreter for alias \"",
@@ -1424,8 +1329,7 @@ char **argv;           /* Argument strings. */
     char *cmd;                /* Command to eval. */
     Tcl_Channel chan;         /* Channel to share or transfer. */
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -1436,24 +1340,19 @@ char **argv;           /* Argument strings. */
     cmdName = argv[1];
 
     masterPtr = ( Master * )Tcl_GetAssocData(interp, "tclMasterRecord", NULL);
-    if (masterPtr == ( Master * )NULL)
-    {
+    if (masterPtr == ( Master * )NULL) {
         panic("Tcl_InterpCmd: could not find master record");
     }
 
     len = strlen(cmdName);
 
-    if (cmdName[0] == 'a')
-    {
-        if ((strncmp(cmdName, "alias", len) == 0) && (len <= 5))
-        {
+    if (cmdName[0] == 'a') {
+        if ((strncmp(cmdName, "alias", len) == 0) && (len <= 5)) {
             return SlaveAliasHelper(interp, argc, argv);
         }
 
-        if (strcmp(cmdName, "aliases") == 0)
-        {
-            if (argc != 2 && argc != 3)
-            {
+        if (strcmp(cmdName, "aliases") == 0) {
+            if (argc != 2 && argc != 3) {
                 Tcl_AppendResult(interp,
                                  "wrong # args: should be \"",
                                  argv[0],
@@ -1461,11 +1360,9 @@ char **argv;           /* Argument strings. */
                                  ( char * )NULL);
                 return TCL_ERROR;
             }
-            if (argc == 3)
-            {
+            if (argc == 3) {
                 slaveInterp = GetInterp(interp, masterPtr, argv[2], NULL);
-                if (slaveInterp == ( Tcl_Interp * )NULL)
-                {
+                if (slaveInterp == ( Tcl_Interp * )NULL) {
                     Tcl_AppendResult(interp,
                                      "interpreter \"",
                                      argv[2],
@@ -1473,21 +1370,17 @@ char **argv;           /* Argument strings. */
                                      ( char * )NULL);
                     return TCL_ERROR;
                 }
-            }
-            else
-            {
+            } else {
                 slaveInterp = interp;
             }
             slavePtr = ( Slave * )Tcl_GetAssocData(
             slaveInterp, "tclSlaveRecord", NULL);
-            if (slavePtr == ( Slave * )NULL)
-            {
+            if (slavePtr == ( Slave * )NULL) {
                 return TCL_OK;
             }
             for (hPtr = Tcl_FirstHashEntry(&(slavePtr->aliasTable), &hSearch);
                  hPtr != NULL;
-                 hPtr = Tcl_NextHashEntry(&hSearch))
-            {
+                 hPtr = Tcl_NextHashEntry(&hSearch)) {
                 Tcl_AppendElement(
                 interp, Tcl_GetHashKey(&(slavePtr->aliasTable), hPtr));
             }
@@ -1495,22 +1388,17 @@ char **argv;           /* Argument strings. */
         }
     }
 
-    if ((cmdName[0] == 'c') && (strncmp(cmdName, "create", len) == 0))
-    {
+    if ((cmdName[0] == 'c') && (strncmp(cmdName, "create", len) == 0)) {
         return CreateInterpObject(interp, argc, argv);
     }
 
-    if ((cmdName[0] == 'd') && (strncmp(cmdName, "delete", len) == 0))
-    {
+    if ((cmdName[0] == 'd') && (strncmp(cmdName, "delete", len) == 0)) {
         return DeleteInterpObject(interp, argc, argv);
     }
 
-    if (cmdName[0] == 'e')
-    {
-        if ((strncmp(cmdName, "eval", len) == 0) && (len > 1))
-        {
-            if (argc < 4)
-            {
+    if (cmdName[0] == 'e') {
+        if ((strncmp(cmdName, "eval", len) == 0) && (len > 1)) {
+            if (argc < 4) {
                 Tcl_AppendResult(interp,
                                  "wrong # args: should be \"",
                                  argv[0],
@@ -1519,8 +1407,7 @@ char **argv;           /* Argument strings. */
                 return TCL_ERROR;
             }
             slaveInterp = GetInterp(interp, masterPtr, argv[2], NULL);
-            if (slaveInterp == ( Tcl_Interp * )NULL)
-            {
+            if (slaveInterp == ( Tcl_Interp * )NULL) {
                 Tcl_AppendResult(interp,
                                  "interpreter named \"",
                                  argv[2],
@@ -1541,10 +1428,8 @@ char **argv;           /* Argument strings. */
              * which is directed at a target command in the same interpreter.
              */
 
-            if (interp != slaveInterp)
-            {
-                if (result == TCL_ERROR)
-                {
+            if (interp != slaveInterp) {
+                if (result == TCL_ERROR) {
 
                     /*
                      * An error occurred, so transfer error information from
@@ -1571,14 +1456,11 @@ char **argv;           /* Argument strings. */
                                             TCL_GLOBAL_ONLY),
                                 TCL_GLOBAL_ONLY);
                 }
-                if (slaveInterp->freeProc != NULL)
-                {
+                if (slaveInterp->freeProc != NULL) {
                     interp->result = slaveInterp->result;
                     interp->freeProc = slaveInterp->freeProc;
                     slaveInterp->freeProc = 0;
-                }
-                else
-                {
+                } else {
                     Tcl_SetResult(interp, slaveInterp->result, TCL_VOLATILE);
                 }
                 Tcl_ResetResult(slaveInterp);
@@ -1586,10 +1468,8 @@ char **argv;           /* Argument strings. */
             Tcl_Release(( ClientData )slaveInterp);
             return result;
         }
-        if ((strncmp(cmdName, "exists", len) == 0) && (len > 2))
-        {
-            if (argc > 3)
-            {
+        if ((strncmp(cmdName, "exists", len) == 0) && (len > 2)) {
+            if (argc > 3) {
                 Tcl_AppendResult(interp,
                                  "wrong # args: should be \"",
                                  argv[0],
@@ -1597,32 +1477,23 @@ char **argv;           /* Argument strings. */
                                  ( char * )NULL);
                 return TCL_ERROR;
             }
-            if (argc == 3)
-            {
+            if (argc == 3) {
                 if (GetInterp(interp, masterPtr, argv[2], NULL)
-                    == ( Tcl_Interp * )NULL)
-                {
+                    == ( Tcl_Interp * )NULL) {
                     Tcl_AppendResult(interp, "0", ( char * )NULL);
-                }
-                else
-                {
+                } else {
                     Tcl_AppendResult(interp, "1", ( char * )NULL);
                 }
-            }
-            else
-            {
+            } else {
                 Tcl_AppendResult(interp, "1", ( char * )NULL);
             }
             return TCL_OK;
         }
     }
 
-    if (cmdName[0] == 'i')
-    {
-        if ((len > 1) && (strncmp(cmdName, "issafe", len) == 0))
-        {
-            if (argc > 3)
-            {
+    if (cmdName[0] == 'i') {
+        if ((len > 1) && (strncmp(cmdName, "issafe", len) == 0)) {
+            if (argc > 3) {
                 Tcl_AppendResult(interp,
                                  "wrong # args: should be \"",
                                  argv[0],
@@ -1630,12 +1501,10 @@ char **argv;           /* Argument strings. */
                                  ( char * )NULL);
                 return TCL_ERROR;
             }
-            if (argc == 3)
-            {
+            if (argc == 3) {
                 slaveInterp
                 = GetInterp(interp, masterPtr, argv[2], &masterPtr);
-                if (slaveInterp == ( Tcl_Interp * )NULL)
-                {
+                if (slaveInterp == ( Tcl_Interp * )NULL) {
                     Tcl_AppendResult(interp,
                                      "interpreter \"",
                                      argv[2],
@@ -1644,24 +1513,18 @@ char **argv;           /* Argument strings. */
                     return TCL_ERROR;
                 }
             }
-            if (masterPtr->isSafe == 0)
-            {
+            if (masterPtr->isSafe == 0) {
                 Tcl_AppendResult(interp, "0", ( char * )NULL);
-            }
-            else
-            {
+            } else {
                 Tcl_AppendResult(interp, "1", ( char * )NULL);
             }
             return TCL_OK;
         }
     }
 
-    if (cmdName[0] == 's')
-    {
-        if ((strncmp(cmdName, "slaves", len) == 0) && (len > 1))
-        {
-            if (argc != 2 && argc != 3)
-            {
+    if (cmdName[0] == 's') {
+        if ((strncmp(cmdName, "slaves", len) == 0) && (len > 1)) {
+            if (argc != 2 && argc != 3) {
                 Tcl_AppendResult(interp,
                                  "wrong # args: should be \"",
                                  argv[0],
@@ -1669,11 +1532,9 @@ char **argv;           /* Argument strings. */
                                  ( char * )NULL);
                 return TCL_ERROR;
             }
-            if (argc == 3)
-            {
+            if (argc == 3) {
                 if (GetInterp(interp, masterPtr, argv[2], &masterPtr)
-                    == ( Tcl_Interp * )NULL)
-                {
+                    == ( Tcl_Interp * )NULL) {
                     Tcl_AppendResult(interp,
                                      "interpreter \"",
                                      argv[2],
@@ -1685,17 +1546,14 @@ char **argv;           /* Argument strings. */
             for (hPtr
                  = Tcl_FirstHashEntry(&(masterPtr->slaveTable), &hSearch);
                  hPtr != NULL;
-                 hPtr = Tcl_NextHashEntry(&hSearch))
-            {
+                 hPtr = Tcl_NextHashEntry(&hSearch)) {
                 Tcl_AppendElement(
                 interp, Tcl_GetHashKey(&(masterPtr->slaveTable), hPtr));
             }
             return TCL_OK;
         }
-        if ((strncmp(cmdName, "share", len) == 0) && (len > 1))
-        {
-            if (argc != 5)
-            {
+        if ((strncmp(cmdName, "share", len) == 0) && (len > 1)) {
+            if (argc != 5) {
                 Tcl_AppendResult(interp,
                                  "wrong # args: should be \"",
                                  argv[0],
@@ -1704,8 +1562,7 @@ char **argv;           /* Argument strings. */
                 return TCL_ERROR;
             }
             masterInterp = GetInterp(interp, masterPtr, argv[2], NULL);
-            if (masterInterp == ( Tcl_Interp * )NULL)
-            {
+            if (masterInterp == ( Tcl_Interp * )NULL) {
                 Tcl_AppendResult(interp,
                                  "interpreter \"",
                                  argv[2],
@@ -1714,8 +1571,7 @@ char **argv;           /* Argument strings. */
                 return TCL_ERROR;
             }
             slaveInterp = GetInterp(interp, masterPtr, argv[4], NULL);
-            if (slaveInterp == ( Tcl_Interp * )NULL)
-            {
+            if (slaveInterp == ( Tcl_Interp * )NULL) {
                 Tcl_AppendResult(interp,
                                  "interpreter \"",
                                  argv[4],
@@ -1724,10 +1580,8 @@ char **argv;           /* Argument strings. */
                 return TCL_ERROR;
             }
             chan = Tcl_GetChannel(masterInterp, argv[3], NULL);
-            if (chan == ( Tcl_Channel )NULL)
-            {
-                if (interp != masterInterp)
-                {
+            if (chan == ( Tcl_Channel )NULL) {
+                if (interp != masterInterp) {
                     Tcl_AppendResult(
                     interp, masterInterp->result, ( char * )NULL);
                     Tcl_ResetResult(masterInterp);
@@ -1739,10 +1593,8 @@ char **argv;           /* Argument strings. */
         }
     }
 
-    if ((cmdName[0] == 't') && (strncmp(cmdName, "target", len) == 0))
-    {
-        if (argc != 4)
-        {
+    if ((cmdName[0] == 't') && (strncmp(cmdName, "target", len) == 0)) {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1753,10 +1605,8 @@ char **argv;           /* Argument strings. */
         return GetTarget(interp, argv[2], argv[3]);
     }
 
-    if ((cmdName[0] == 't') && (strncmp(cmdName, "transfer", len) == 0))
-    {
-        if (argc != 5)
-        {
+    if ((cmdName[0] == 't') && (strncmp(cmdName, "transfer", len) == 0)) {
+        if (argc != 5) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1765,24 +1615,20 @@ char **argv;           /* Argument strings. */
             return TCL_ERROR;
         }
         masterInterp = GetInterp(interp, masterPtr, argv[2], NULL);
-        if (masterInterp == ( Tcl_Interp * )NULL)
-        {
+        if (masterInterp == ( Tcl_Interp * )NULL) {
             Tcl_AppendResult(
             interp, "interpreter \"", argv[2], "\" not found", ( char * )NULL);
             return TCL_ERROR;
         }
         slaveInterp = GetInterp(interp, masterPtr, argv[4], NULL);
-        if (slaveInterp == ( Tcl_Interp * )NULL)
-        {
+        if (slaveInterp == ( Tcl_Interp * )NULL) {
             Tcl_AppendResult(
             interp, "interpreter \"", argv[4], "\" not found", ( char * )NULL);
             return TCL_ERROR;
         }
         chan = Tcl_GetChannel(masterInterp, argv[3], NULL);
-        if (chan == ( Tcl_Channel )NULL)
-        {
-            if (interp != masterInterp)
-            {
+        if (chan == ( Tcl_Channel )NULL) {
+            if (interp != masterInterp) {
                 Tcl_AppendResult(
                 interp, masterInterp->result, ( char * )NULL);
                 Tcl_ResetResult(masterInterp);
@@ -1790,10 +1636,8 @@ char **argv;           /* Argument strings. */
             return TCL_ERROR;
         }
         Tcl_RegisterChannel(slaveInterp, chan);
-        if (Tcl_UnregisterChannel(masterInterp, chan) != TCL_OK)
-        {
-            if (interp != masterInterp)
-            {
+        if (Tcl_UnregisterChannel(masterInterp, chan) != TCL_OK) {
+            if (interp != masterInterp) {
                 Tcl_AppendResult(
                 interp, masterInterp->result, ( char * )NULL);
                 Tcl_ResetResult(masterInterp);
@@ -1849,8 +1693,7 @@ char **argv;           /* Argument strings. */
     int result;              /* Loop counter, status return. */
     size_t len;              /* Length of command name. */
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -1860,8 +1703,7 @@ char **argv;           /* Argument strings. */
     }
 
     slaveInterp = ( Tcl_Interp * )clientData;
-    if (slaveInterp == ( Tcl_Interp * )NULL)
-    {
+    if (slaveInterp == ( Tcl_Interp * )NULL) {
         Tcl_AppendResult(
         interp, "interpreter ", argv[0], " has been deleted", ( char * )NULL);
         return TCL_ERROR;
@@ -1869,20 +1711,16 @@ char **argv;           /* Argument strings. */
 
     slavePtr
     = ( Slave * )Tcl_GetAssocData(slaveInterp, "tclSlaveRecord", NULL);
-    if (slavePtr == ( Slave * )NULL)
-    {
+    if (slavePtr == ( Slave * )NULL) {
         panic("SlaveObjectCmd: could not find slave record");
     }
 
     cmdName = argv[1];
     len = strlen(cmdName);
 
-    if (cmdName[0] == 'a')
-    {
-        if (strncmp(cmdName, "alias", len) == 0)
-        {
-            switch (argc - 2)
-            {
+    if (cmdName[0] == 'a') {
+        if (strncmp(cmdName, "alias", len) == 0) {
+            switch (argc - 2) {
             case 0:
                 Tcl_AppendResult(interp,
                                  "wrong # args: should be \"",
@@ -1904,8 +1742,7 @@ char **argv;           /* Argument strings. */
             default:
                 masterPtr = ( Master * )Tcl_GetAssocData(
                 interp, "tclMasterRecord", NULL);
-                if (masterPtr == ( Master * )NULL)
-                {
+                if (masterPtr == ( Master * )NULL) {
                     panic("SlaveObjectCmd: could not find master record");
                 }
                 return AliasHelper(interp,
@@ -1919,8 +1756,7 @@ char **argv;           /* Argument strings. */
             }
         }
 
-        if (strncmp(cmdName, "aliases", len) == 0)
-        {
+        if (strncmp(cmdName, "aliases", len) == 0) {
 
             /*
              * Return the names of all the aliases created in the
@@ -1929,8 +1765,7 @@ char **argv;           /* Argument strings. */
 
             for (hPtr = Tcl_FirstHashEntry(&(slavePtr->aliasTable), &hSearch);
                  hPtr != ( Tcl_HashEntry * )NULL;
-                 hPtr = Tcl_NextHashEntry(&hSearch))
-            {
+                 hPtr = Tcl_NextHashEntry(&hSearch)) {
                 aliasPtr = ( Alias * )Tcl_GetHashValue(hPtr);
                 Tcl_AppendElement(interp, aliasPtr->aliasName);
             }
@@ -1938,12 +1773,9 @@ char **argv;           /* Argument strings. */
         }
     }
 
-    if (cmdName[0] == 'e')
-    {
-        if ((len > 1) && (strncmp(cmdName, "eval", len) == 0))
-        {
-            if (argc < 3)
-            {
+    if (cmdName[0] == 'e') {
+        if ((len > 1) && (strncmp(cmdName, "eval", len) == 0)) {
+            if (argc < 3) {
                 Tcl_AppendResult(interp,
                                  "wrong # args: should be \"",
                                  argv[0],
@@ -1965,10 +1797,8 @@ char **argv;           /* Argument strings. */
              * directed at a target command in the same interpreter.
              */
 
-            if (interp != slaveInterp)
-            {
-                if (result == TCL_ERROR)
-                {
+            if (interp != slaveInterp) {
+                if (result == TCL_ERROR) {
 
                     /*
                      * An error occurred, so transfer error information from
@@ -1995,14 +1825,11 @@ char **argv;           /* Argument strings. */
                                             TCL_GLOBAL_ONLY),
                                 TCL_GLOBAL_ONLY);
                 }
-                if (slaveInterp->freeProc != NULL)
-                {
+                if (slaveInterp->freeProc != NULL) {
                     interp->result = slaveInterp->result;
                     interp->freeProc = slaveInterp->freeProc;
                     slaveInterp->freeProc = 0;
-                }
-                else
-                {
+                } else {
                     Tcl_SetResult(interp, slaveInterp->result, TCL_VOLATILE);
                 }
                 Tcl_ResetResult(slaveInterp);
@@ -2012,12 +1839,9 @@ char **argv;           /* Argument strings. */
         }
     }
 
-    if (cmdName[0] == 'i')
-    {
-        if ((len > 1) && (strncmp(cmdName, "issafe", len) == 0))
-        {
-            if (argc > 2)
-            {
+    if (cmdName[0] == 'i') {
+        if ((len > 1) && (strncmp(cmdName, "issafe", len) == 0)) {
+            if (argc > 2) {
                 Tcl_AppendResult(interp,
                                  "wrong # args: should be \"",
                                  argv[0],
@@ -2027,16 +1851,12 @@ char **argv;           /* Argument strings. */
             }
             masterPtr = ( Master * )Tcl_GetAssocData(
             slaveInterp, "tclMasterRecord", NULL);
-            if (masterPtr == ( Master * )NULL)
-            {
+            if (masterPtr == ( Master * )NULL) {
                 panic("SlaveObjectCmd: could not find master record");
             }
-            if (masterPtr->isSafe == 1)
-            {
+            if (masterPtr->isSafe == 1) {
                 Tcl_AppendResult(interp, "1", ( char * )NULL);
-            }
-            else
-            {
+            } else {
                 Tcl_AppendResult(interp, "0", ( char * )NULL);
             }
             return TCL_OK;
@@ -2079,8 +1899,7 @@ ClientData clientData; /* The SlaveRecord for the command. */
     slaveInterp = ( Tcl_Interp * )clientData;
     slavePtr
     = ( Slave * )Tcl_GetAssocData(slaveInterp, "tclSlaveRecord", NULL);
-    if (slavePtr == ( Slave * )NULL)
-    {
+    if (slavePtr == ( Slave * )NULL) {
         panic("SlaveObjectDeleteProc: could not find slave record");
     }
 
@@ -2152,8 +1971,7 @@ char **argv;           /* Argument strings. */
 
     result = Tcl_GetCommandInfo(
     aliasPtr->targetInterp, aliasPtr->targetName, &cmdInfo);
-    if (result == 0)
-    {
+    if (result == 0) {
         Tcl_AppendResult(interp,
                          "aliased target \"",
                          aliasPtr->targetName,
@@ -2163,24 +1981,19 @@ char **argv;           /* Argument strings. */
                          ( char * )NULL);
         return TCL_ERROR;
     }
-    if (aliasPtr->argc <= 0)
-    {
+    if (aliasPtr->argc <= 0) {
         localArgv = argv;
         localArgc = argc;
-    }
-    else
-    {
+    } else {
         addArgc = aliasPtr->argc;
         localArgc = argc + addArgc;
         localArgv
         = ( char ** )ckalloc(( unsigned )sizeof(char *) * localArgc);
         localArgv[0] = argv[0];
-        for (i = 0, j = 1; i < addArgc; i++, j++)
-        {
+        for (i = 0, j = 1; i < addArgc; i++, j++) {
             localArgv[j] = aliasPtr->argv[i];
         }
-        for (i = 1; i < argc; i++, j++)
-        {
+        for (i = 1; i < argc; i++, j++) {
             localArgv[j] = argv[i];
         }
     }
@@ -2202,25 +2015,17 @@ char **argv;           /* Argument strings. */
     result = (cmdInfo.proc)(
     cmdInfo.clientData, ( Tcl_Interp * )iPtr, localArgc, localArgv);
     iPtr->numLevels--;
-    if (iPtr->numLevels == 0)
-    {
-        if (result == TCL_RETURN)
-        {
+    if (iPtr->numLevels == 0) {
+        if (result == TCL_RETURN) {
             result = TclUpdateReturnInfo(iPtr);
         }
-        if ((result != TCL_OK) && (result != TCL_ERROR))
-        {
+        if ((result != TCL_OK) && (result != TCL_ERROR)) {
             Tcl_ResetResult(( Tcl_Interp * )iPtr);
-            if (result == TCL_BREAK)
-            {
+            if (result == TCL_BREAK) {
                 iPtr->result = "invoked \"break\" outside of a loop";
-            }
-            else if (result == TCL_CONTINUE)
-            {
+            } else if (result == TCL_CONTINUE) {
                 iPtr->result = "invoked \"continue\" outside of a loop";
-            }
-            else
-            {
+            } else {
                 iPtr->result = iPtr->resultSpace;
                 sprintf(
                 iPtr->resultSpace, "command returned bad code: %d", result);
@@ -2233,8 +2038,7 @@ char **argv;           /* Argument strings. */
      * Clean up any locally allocated argument vector structure.
      */
 
-    if (localArgv != argv)
-    {
+    if (localArgv != argv) {
         ckfree(( char * )localArgv);
     }
 
@@ -2248,10 +2052,8 @@ char **argv;           /* Argument strings. */
      * been deleted.
      */
 
-    if (interp != ( Tcl_Interp * )iPtr)
-    {
-        if (result == TCL_ERROR)
-        {
+    if (interp != ( Tcl_Interp * )iPtr) {
+        if (result == TCL_ERROR) {
             /*
              * An error occurred, so transfer error information from the
              * destination interpreter back to our interpreter.  Some tricky
@@ -2267,8 +2069,7 @@ char **argv;           /* Argument strings. */
              *    interpreter's $errorInfo.
              */
 
-            if (!(iPtr->flags & ERR_ALREADY_LOGGED))
-            {
+            if (!(iPtr->flags & ERR_ALREADY_LOGGED)) {
                 Tcl_AddErrorInfo(( Tcl_Interp * )iPtr, "");
             }
             iPtr->flags &= ~ERR_ALREADY_LOGGED;
@@ -2287,14 +2088,11 @@ char **argv;           /* Argument strings. */
                                     TCL_GLOBAL_ONLY),
                         TCL_GLOBAL_ONLY);
         }
-        if (iPtr->freeProc != NULL)
-        {
+        if (iPtr->freeProc != NULL) {
             interp->result = iPtr->result;
             interp->freeProc = iPtr->freeProc;
             iPtr->freeProc = 0;
-        }
-        else
-        {
+        } else {
             Tcl_SetResult(interp, iPtr->result, TCL_VOLATILE);
         }
         Tcl_ResetResult(( Tcl_Interp * )iPtr);
@@ -2336,12 +2134,10 @@ ClientData clientData; /* The alias record for this alias. */
 
     ckfree(( char * )aliasPtr->targetName);
     ckfree(( char * )aliasPtr->aliasName);
-    for (i = 0; i < aliasPtr->argc; i++)
-    {
+    for (i = 0; i < aliasPtr->argc; i++) {
         ckfree(( char * )aliasPtr->argv[i]);
     }
-    if (aliasPtr->argv != ( char ** )NULL)
-    {
+    if (aliasPtr->argv != ( char ** )NULL) {
         ckfree(( char * )aliasPtr->argv);
     }
 
@@ -2382,8 +2178,7 @@ Tcl_Interp *interp;    /* Interpreter being deleted. */
     masterPtr = ( Master * )clientData;
     for (hPtr = Tcl_FirstHashEntry(&(masterPtr->slaveTable), &hSearch);
          hPtr != NULL;
-         hPtr = Tcl_NextHashEntry(&hSearch))
-    {
+         hPtr = Tcl_NextHashEntry(&hSearch)) {
         slavePtr = ( Slave * )Tcl_GetHashValue(hPtr);
         cmdName = Tcl_GetCommandName(interp, slavePtr->interpCmd);
         ( void )Tcl_DeleteCommand(interp, cmdName);
@@ -2392,8 +2187,7 @@ Tcl_Interp *interp;    /* Interpreter being deleted. */
 
     for (hPtr = Tcl_FirstHashEntry(&(masterPtr->targetTable), &hSearch);
          hPtr != NULL;
-         hPtr = Tcl_FirstHashEntry(&(masterPtr->targetTable), &hSearch))
-    {
+         hPtr = Tcl_FirstHashEntry(&(masterPtr->targetTable), &hSearch)) {
         targetPtr = ( Target * )Tcl_GetHashValue(hPtr);
         cmdName
         = Tcl_GetCommandName(targetPtr->slaveInterp, targetPtr->slaveCmd);
@@ -2439,13 +2233,11 @@ Tcl_Interp *interp;    /* Interpreter being deleted. */
      * slavePtr is not NULL. Otherwise we panic.
      */
 
-    if (slavePtr == NULL)
-    {
+    if (slavePtr == NULL) {
         panic("SlaveRecordDeleteProc: NULL slavePtr");
     }
 
-    if (slavePtr->interpCmd != ( Tcl_Command )NULL)
-    {
+    if (slavePtr->interpCmd != ( Tcl_Command )NULL) {
         Command *cmdPtr = ( Command * )slavePtr->interpCmd;
 
         /*
@@ -2486,8 +2278,7 @@ Tcl_Interp *interp;    /* Interpreter being deleted. */
     hTblPtr = ( Tcl_HashTable * )&(slavePtr->aliasTable);
     for (hPtr = Tcl_FirstHashEntry(hTblPtr, &hSearch);
          hPtr != ( Tcl_HashEntry * )NULL;
-         hPtr = Tcl_FirstHashEntry(hTblPtr, &hSearch))
-    {
+         hPtr = Tcl_FirstHashEntry(hTblPtr, &hSearch)) {
         aliasPtr = ( Alias * )Tcl_GetHashValue(hPtr);
 
         /*
@@ -2565,13 +2356,11 @@ int Tcl_IsSafe(interp) Tcl_Interp *interp; /* Is this interpreter "safe" ? */
 {
     Master *masterPtr; /* Its master record. */
 
-    if (interp == ( Tcl_Interp * )NULL)
-    {
+    if (interp == ( Tcl_Interp * )NULL) {
         return 0;
     }
     masterPtr = ( Master * )Tcl_GetAssocData(interp, "tclMasterRecord", NULL);
-    if (masterPtr == ( Master * )NULL)
-    {
+    if (masterPtr == ( Master * )NULL) {
         panic("Tcl_IsSafe: could not find master record");
     }
     return masterPtr->isSafe;
@@ -2596,8 +2385,7 @@ int Tcl_IsSafe(interp) Tcl_Interp *interp; /* Is this interpreter "safe" ? */
 int Tcl_MakeSafe(interp) Tcl_Interp *interp; /* Make this interpreter "safe".
                                               */
 {
-    if (interp == ( Tcl_Interp * )NULL)
-    {
+    if (interp == ( Tcl_Interp * )NULL) {
         return TCL_ERROR;
     }
     return MakeSafe(interp);
@@ -2631,8 +2419,7 @@ Tcl_Interp *interp; /* Interpreter to start search at. */
 char *slavePath;    /* Name of slave to create. */
 int isSafe;         /* Should new slave be "safe" ? */
 {
-    if ((interp == ( Tcl_Interp * )NULL) || (slavePath == ( char * )NULL))
-    {
+    if ((interp == ( Tcl_Interp * )NULL) || (slavePath == ( char * )NULL)) {
         return NULL;
     }
     return CreateSlave(interp, slavePath, isSafe);
@@ -2661,13 +2448,11 @@ char *slavePath;    /* Path of slave to find. */
 {
     Master *masterPtr; /* Interim storage for Master record. */
 
-    if ((interp == ( Tcl_Interp * )NULL) || (slavePath == ( char * )NULL))
-    {
+    if ((interp == ( Tcl_Interp * )NULL) || (slavePath == ( char * )NULL)) {
         return NULL;
     }
     masterPtr = ( Master * )Tcl_GetAssocData(interp, "tclMasterRecord", NULL);
-    if (masterPtr == ( Master * )NULL)
-    {
+    if (masterPtr == ( Master * )NULL) {
         panic("Tcl_GetSlave: could not find master record");
     }
     return GetInterp(interp, masterPtr, slavePath, NULL);
@@ -2694,13 +2479,11 @@ Tcl_Interp *Tcl_GetMaster(interp) Tcl_Interp *interp; /* Get the master of
 {
     Slave *slavePtr; /* Slave record of this interpreter. */
 
-    if (interp == ( Tcl_Interp * )NULL)
-    {
+    if (interp == ( Tcl_Interp * )NULL) {
         return NULL;
     }
     slavePtr = ( Slave * )Tcl_GetAssocData(interp, "tclSlaveRecord", NULL);
-    if (slavePtr == ( Slave * )NULL)
-    {
+    if (slavePtr == ( Slave * )NULL) {
         return NULL;
     }
     return slavePtr->masterInterp;
@@ -2735,14 +2518,12 @@ char **argv;              /* These are the additional args. */
 
     if ((slaveInterp == ( Tcl_Interp * )NULL)
         || (targetInterp == ( Tcl_Interp * )NULL)
-        || (slaveCmd == ( char * )NULL) || (targetCmd == ( char * )NULL))
-    {
+        || (slaveCmd == ( char * )NULL) || (targetCmd == ( char * )NULL)) {
         return TCL_ERROR;
     }
     masterPtr
     = ( Master * )Tcl_GetAssocData(targetInterp, "tclMasterRecord", NULL);
-    if (masterPtr == ( Master * )NULL)
-    {
+    if (masterPtr == ( Master * )NULL) {
         panic("Tcl_CreateAlias: could not find master record");
     }
     return AliasHelper(slaveInterp,
@@ -2790,37 +2571,30 @@ char ***argvPtr;              /* (Return) additional arguments. */
     Tcl_HashEntry *hPtr; /* Search element. */
     Alias *aliasPtr;     /* Storage for alias found. */
 
-    if ((interp == ( Tcl_Interp * )NULL) || (aliasName == ( char * )NULL))
-    {
+    if ((interp == ( Tcl_Interp * )NULL) || (aliasName == ( char * )NULL)) {
         return TCL_ERROR;
     }
     slavePtr = ( Slave * )Tcl_GetAssocData(interp, "tclSlaveRecord", NULL);
-    if (slavePtr == ( Slave * )NULL)
-    {
+    if (slavePtr == ( Slave * )NULL) {
         panic("Tcl_GetAlias: could not find slave record");
     }
     hPtr = Tcl_FindHashEntry(&(slavePtr->aliasTable), aliasName);
-    if (hPtr == ( Tcl_HashEntry * )NULL)
-    {
+    if (hPtr == ( Tcl_HashEntry * )NULL) {
         Tcl_AppendResult(
         interp, "alias \"", aliasName, "\" not found", ( char * )NULL);
         return TCL_ERROR;
     }
     aliasPtr = ( Alias * )Tcl_GetHashValue(hPtr);
-    if (targetInterpPtr != ( Tcl_Interp ** )NULL)
-    {
+    if (targetInterpPtr != ( Tcl_Interp ** )NULL) {
         *targetInterpPtr = aliasPtr->targetInterp;
     }
-    if (targetNamePtr != ( char ** )NULL)
-    {
+    if (targetNamePtr != ( char ** )NULL) {
         *targetNamePtr = aliasPtr->targetName;
     }
-    if (argcPtr != ( int * )NULL)
-    {
+    if (argcPtr != ( int * )NULL) {
         *argcPtr = aliasPtr->argc;
     }
-    if (argvPtr != ( char *** )NULL)
-    {
+    if (argvPtr != ( char *** )NULL) {
         *argvPtr = aliasPtr->argv;
     }
     return TCL_OK;

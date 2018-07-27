@@ -184,8 +184,7 @@ struct csfdhdr /* send/recv fd data header	*/
 #        if _lib_sigblock
 #            define csprotect(h)                                             \
                 do                                                           \
-                    if (!((h)->flags & CS_PIPE_BLOCKED))                     \
-                    {                                                        \
+                    if (!((h)->flags & CS_PIPE_BLOCKED)) {                   \
                         (h)->flags |= CS_PIPE_BLOCKED;                       \
                         sigblock(sigmask(SIGPIPE));                          \
                         errorf((h)->id, NiL, -99, "protect");                \
@@ -194,8 +193,7 @@ struct csfdhdr /* send/recv fd data header	*/
 #        else
 #            define csprotect(h)                                             \
                 do                                                           \
-                    if (!((h)->flags & CS_PIPE_BLOCKED))                     \
-                    {                                                        \
+                    if (!((h)->flags & CS_PIPE_BLOCKED)) {                   \
                         Handler_t f;                                         \
                         (h)->flags |= CS_PIPE_BLOCKED;                       \
                         if ((f = signal(SIGPIPE, SIG_IGN)) != SIG_DFL)       \
@@ -207,8 +205,7 @@ struct csfdhdr /* send/recv fd data header	*/
 #    else
 #        define csprotect(h)                                                 \
             do                                                               \
-                if (!((h)->flags & CS_PIPE_BLOCKED))                         \
-                {                                                            \
+                if (!((h)->flags & CS_PIPE_BLOCKED)) {                       \
                     (h)->flags |= CS_PIPE_BLOCKED;                           \
                     errorf((h)->id, NiL, -99, "protect");                    \
                 }                                                            \
@@ -237,8 +234,7 @@ extern int errno;
 
 #    if CS_LIB_SOCKET
 #        define csdb(h)                                                      \
-            do                                                               \
-            {                                                                \
+            do {                                                             \
                 if ((h)->db <= 0)                                            \
                     cssetdb(h);                                              \
             } while (0)

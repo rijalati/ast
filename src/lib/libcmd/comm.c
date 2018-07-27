@@ -71,15 +71,11 @@ comm(Sfio_t *in1, Sfio_t *in2, Sfio_t *out, int mode)
         n1 = sfvalue(in1);
     if (cp2 = sfgetr(in2, '\n', 0))
         n2 = sfvalue(in2);
-    while (cp1 && cp2)
-    {
+    while (cp1 && cp2) {
         n = (n1 < n2 ? n1 : n2);
-        if ((comp = memcmp(cp1, cp2, n - 1)) == 0 && (comp = n1 - n2) == 0)
-        {
-            if (mode & C_COMMON)
-            {
-                if (mode != C_COMMON)
-                {
+        if ((comp = memcmp(cp1, cp2, n - 1)) == 0 && (comp = n1 - n2) == 0) {
+            if (mode & C_COMMON) {
+                if (mode != C_COMMON) {
                     sfputc(out, '\t');
                     if (mode == C_ALL)
                         sfputc(out, '\t');
@@ -91,11 +87,8 @@ comm(Sfio_t *in1, Sfio_t *in2, Sfio_t *out, int mode)
                 n1 = sfvalue(in1);
             if (cp2 = sfgetr(in2, '\n', 0))
                 n2 = sfvalue(in2);
-        }
-        else if (comp > 0)
-        {
-            if (mode & C_FILE2)
-            {
+        } else if (comp > 0) {
+            if (mode & C_FILE2) {
                 if (mode & C_FILE1)
                     sfputc(out, '\t');
                 if (sfwrite(out, cp2, n2) < 0)
@@ -103,9 +96,7 @@ comm(Sfio_t *in1, Sfio_t *in2, Sfio_t *out, int mode)
             }
             if (cp2 = sfgetr(in2, '\n', 0))
                 n2 = sfvalue(in2);
-        }
-        else
-        {
+        } else {
             if ((mode & C_FILE1) && sfwrite(out, cp1, n1) < 0)
                 return (-1);
             if (cp1 = sfgetr(in1, '\n', 0))
@@ -113,26 +104,22 @@ comm(Sfio_t *in1, Sfio_t *in2, Sfio_t *out, int mode)
         }
     }
     n = 0;
-    if (cp2)
-    {
+    if (cp2) {
         cp1 = cp2;
         in1 = in2;
         n1 = n2;
         if (mode & C_FILE1)
             n = 1;
         mode &= C_FILE2;
-    }
-    else
+    } else
         mode &= C_FILE1;
-    if (!mode || !cp1)
-    {
+    if (!mode || !cp1) {
         if (cp1 && in1 == sfstdin)
             sfseek(in1, ( Sfoff_t )0, SEEK_END);
         return (0);
     }
     /* process the remaining stream */
-    while (1)
-    {
+    while (1) {
         if (n)
             sfputc(out, '\t');
         if (sfwrite(out, cp1, n1) < 0)
@@ -152,10 +139,8 @@ b_comm(int argc, char *argv[], Shbltin_t *context)
     Sfio_t *f1, *f2;
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case '1':
             mode &= ~C_FILE1;
             continue;
@@ -188,12 +173,10 @@ b_comm(int argc, char *argv[], Shbltin_t *context)
         f2 = sfstdin;
     else if (!(f2 = sfopen(NiL, cp, "r")))
         error(ERROR_system(1), "%s: cannot open", cp);
-    if (mode)
-    {
+    if (mode) {
         if (comm(f1, f2, sfstdout, mode) < 0)
             error(ERROR_system(1), " write error");
-    }
-    else if (f1 == sfstdin || f2 == sfstdin)
+    } else if (f1 == sfstdin || f2 == sfstdin)
         sfseek(sfstdin, ( Sfoff_t )0, SEEK_END);
     if (f1 != sfstdin)
         sfclose(f1);

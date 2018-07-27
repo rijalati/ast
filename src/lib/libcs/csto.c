@@ -37,8 +37,7 @@ csto(Cs_t *state, int fd, const void *buf, size_t siz, Csaddr_t *addr)
 
     udp.host = addr->addr[0];
     udp.port = addr->addr[1];
-    if (cswrite(state, fd, &udp, sizeof(udp)) != sizeof(udp))
-    {
+    if (cswrite(state, fd, &udp, sizeof(udp)) != sizeof(udp)) {
         messagef((state->id, NiL, -1, "to: %d: hdr write error", fd));
         return -1;
     }

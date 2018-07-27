@@ -47,8 +47,7 @@ localclose(Ardir_t *ar)
 
     if (!ar || !(state = ( State_t * )ar->data))
         r = -1;
-    else
-    {
+    else {
         if (!state->sp || sfclose(state->sp))
             r = -1;
         else
@@ -77,8 +76,7 @@ localopen(Ardir_t *ar, char *buf, size_t n)
     cmd
     = sfprints("${ARDIR:-ar} ${ARDIRFLAGS:-tv} '%s' 2>/dev/null", ar->path);
     if (!(state->sp = sfpopen(NiL, cmd, "r"))
-        || (c = sfgetc(state->sp)) == EOF || sfungetc(state->sp, c) == EOF)
-    {
+        || (c = sfgetc(state->sp)) == EOF || sfungetc(state->sp, c) == EOF) {
         localclose(ar);
         return -1;
     }
@@ -98,8 +96,7 @@ localnext(Ardir_t *ar)
     char *e;
     int n;
 
-    while (s = sfgetr(state->sp, '\n', 1))
-    {
+    while (s = sfgetr(state->sp, '\n', 1)) {
         /*
          * assume ``junk Mmm ... member''
          */
@@ -108,20 +105,16 @@ localnext(Ardir_t *ar)
             continue;
         *t++ = 0;
         if (state->count++ || !strmatch(t, SYMDIR_local))
-            while (s = strchr(s, ' '))
-            {
+            while (s = strchr(s, ' ')) {
                 if (isupper(*++s) && islower(s[1]) && islower(s[2])
-                    && s[3] == ' ')
-                {
+                    && s[3] == ' ') {
                     ar->dirent.mtime = tmdate(s, &e, NiL);
-                    if (!*e)
-                    {
+                    if (!*e) {
                         if ((n = strlen(t)) > ar->truncate)
                             ar->truncate = n;
                         break;
                     }
-                }
-                else
+                } else
                     ar->dirent.size = strtoul(s, NiL, 10);
             }
         ar->dirent.name = t;

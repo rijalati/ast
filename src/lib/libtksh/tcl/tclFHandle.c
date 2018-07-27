@@ -72,8 +72,7 @@ int type; /* Type of file handle. */
     Tcl_HashEntry *entryPtr;
     int new;
 
-    if (!initialized)
-    {
+    if (!initialized) {
         Tcl_InitHashTable(&fileTable, sizeof(FileHashKey) / sizeof(int));
         Tcl_CreateExitHandler(FileExitProc, 0);
         initialized = 1;
@@ -81,8 +80,7 @@ int type; /* Type of file handle. */
     key.osHandle = osHandle;
     key.type = type;
     entryPtr = Tcl_CreateHashEntry(&fileTable, ( char * )&key, &new);
-    if (new)
-    {
+    if (new) {
         FileHandle *newHandlePtr;
         newHandlePtr = ( FileHandle * )ckalloc(sizeof(FileHandle));
         newHandlePtr->key = key;
@@ -119,8 +117,7 @@ void Tcl_FreeFile(handle) Tcl_File handle;
      * Invoke free procedure, then delete the handle.
      */
 
-    if (handlePtr->proc)
-    {
+    if (handlePtr->proc) {
         (*handlePtr->proc)(handlePtr->data);
     }
 
@@ -135,11 +132,9 @@ void Tcl_FreeFile(handle) Tcl_File handle;
      * deleted hash table would cause a panic.
      */
 
-    if (initialized)
-    {
+    if (initialized) {
         entryPtr = Tcl_FindHashEntry(&fileTable, ( char * )&handlePtr->key);
-        if (entryPtr)
-        {
+        if (entryPtr) {
             Tcl_DeleteHashEntry(entryPtr);
         }
     }
@@ -171,8 +166,7 @@ int *typePtr;
 
     if (!handlePtr)
         return 0;
-    if (typePtr)
-    {
+    if (typePtr) {
         *typePtr = handlePtr->key.type;
     }
     return handlePtr->key.osHandle;
@@ -228,8 +222,7 @@ ClientData Tcl_GetNotifierData(handle, procPtr) Tcl_File handle;
 Tcl_FileFreeProc **procPtr;
 {
     FileHandle *handlePtr = ( FileHandle * )handle;
-    if (procPtr != NULL)
-    {
+    if (procPtr != NULL) {
         *procPtr = handlePtr->proc;
     }
     return handlePtr->data;

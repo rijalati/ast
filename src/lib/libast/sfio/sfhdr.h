@@ -373,13 +373,11 @@
 #        define SFMTXdecl(ff, _mf_) Sfio_t *_mf_ = (ff)
 #        define SFMTXbegin(ff, _mf_, rv)                                     \
             {                                                                \
-                if ((ff)->_flags & SF_MTSAFE)                                \
-                {                                                            \
+                if ((ff)->_flags & SF_MTSAFE) {                              \
                     (_mf_) = (ff);                                           \
                     if (sfmutex((ff), SFMTX_LOCK) != 0)                      \
                         return (rv);                                         \
-                    if (_Sfnotify)                                           \
-                    {                                                        \
+                    if (_Sfnotify) {                                         \
                         (*_Sfnotify)(                                        \
                         (_mf_), SF_MTACCESS, ( Void_t * )(&(ff)));           \
                         if (!(ff))                                           \
@@ -389,8 +387,7 @@
             }
 #        define SFMTXend(ff, _mf_)                                           \
             {                                                                \
-                if ((ff)->_flags & SF_MTSAFE)                                \
-                {                                                            \
+                if ((ff)->_flags & SF_MTSAFE) {                              \
                     if (_Sfnotify)                                           \
                         (*_Sfnotify)((_mf_), SF_MTACCESS, NIL(Void_t *));    \
                     sfmutex((ff), SFMTX_UNLOCK);                             \
@@ -710,8 +707,7 @@
 #        include "lclib.h"
 #        define SFSETLOCALE(dp, tp)                                          \
             do                                                               \
-                if (*(dp) == 0)                                              \
-                {                                                            \
+                if (*(dp) == 0) {                                            \
                     Lc_numeric_t *lv                                         \
                     = ( Lc_numeric_t * )LCINFO(AST_LC_NUMERIC)->data;        \
                     *(dp) = lv->decimal;                                     \
@@ -723,15 +719,12 @@
 #    if !defined(SFSETLOCALE) && _lib_locale
 #        include <locale.h>
 #        define SFSETLOCALE(decimal, thousand)                               \
-            do                                                               \
-            {                                                                \
+            do {                                                             \
                 struct lconv *lv;                                            \
-                if (*(decimal) == 0)                                         \
-                {                                                            \
+                if (*(decimal) == 0) {                                       \
                     *(decimal) = '.';                                        \
                     *(thousand) = -1;                                        \
-                    if ((lv = localeconv()))                                 \
-                    {                                                        \
+                    if ((lv = localeconv())) {                               \
                         if (lv->decimal_point && *lv->decimal_point)         \
                             *(decimal)                                       \
                             = *( unsigned char * )lv->decimal_point;         \
@@ -963,15 +956,13 @@ typedef struct _sfextern_s
 /* set/unset sequential states for mmap */
 #    if _lib_madvise && defined(MADV_SEQUENTIAL) && defined(MADV_NORMAL)
 #        define SFMMSEQON(f, a, s)                                           \
-            do                                                               \
-            {                                                                \
+            do {                                                             \
                 int oerrno = errno;                                          \
                 ( void )madvise((caddr_t)(a), (size_t)(s), MADV_SEQUENTIAL); \
                 errno = oerrno;                                              \
             } while (0)
 #        define SFMMSEQOFF(f, a, s)                                          \
-            do                                                               \
-            {                                                                \
+            do {                                                             \
                 int oerrno = errno;                                          \
                 ( void )madvise((caddr_t)(a), (size_t)(s), MADV_NORMAL);     \
                 errno = oerrno;                                              \
@@ -1113,8 +1104,7 @@ typedef struct _sfextern_s
 #    define SFSTRSIZE(f)                                                     \
         {                                                                    \
             Sfoff_t s = (f)->next - (f)->data;                               \
-            if (s > (f)->here)                                               \
-            {                                                                \
+            if (s > (f)->here) {                                             \
                 (f)->here = s;                                               \
                 if (s > (f)->extent)                                         \
                     (f)->extent = s;                                         \
@@ -1237,61 +1227,44 @@ typedef struct _sftab_
         {                                                                    \
             if (v < 5 * scale)                                               \
                 if (v < 2 * scale)                                           \
-                    if (v < 1 * scale)                                       \
-                    {                                                        \
+                    if (v < 1 * scale) {                                     \
                         digit = '0';                                         \
-                    }                                                        \
-                    else                                                     \
-                    {                                                        \
+                    } else {                                                 \
                         digit = '1';                                         \
                         v -= 1 * scale;                                      \
                     }                                                        \
-                else if (v < 3 * scale)                                      \
-                {                                                            \
+                else if (v < 3 * scale) {                                    \
                     digit = '2';                                             \
                     v -= 2 * scale;                                          \
-                }                                                            \
-                else if (v < 4 * scale)                                      \
-                {                                                            \
+                } else if (v < 4 * scale) {                                  \
                     digit = '3';                                             \
                     v -= 3 * scale;                                          \
-                }                                                            \
-                else                                                         \
-                {                                                            \
+                } else {                                                     \
                     digit = '4';                                             \
                     v -= 4 * scale;                                          \
                 }                                                            \
             else if (v < 7 * scale)                                          \
-                if (v < 6 * scale)                                           \
-                {                                                            \
+                if (v < 6 * scale) {                                         \
                     digit = '5';                                             \
                     v -= 5 * scale;                                          \
-                }                                                            \
-                else                                                         \
-                {                                                            \
+                } else {                                                     \
                     digit = '6';                                             \
                     v -= 6 * scale;                                          \
                 }                                                            \
-            else if (v < 8 * scale)                                          \
-            {                                                                \
+            else if (v < 8 * scale) {                                        \
                 digit = '7';                                                 \
                 v -= 7 * scale;                                              \
-            }                                                                \
-            else if (v < 9 * scale)                                          \
-            {                                                                \
+            } else if (v < 9 * scale) {                                      \
                 digit = '8';                                                 \
                 v -= 8 * scale;                                              \
-            }                                                                \
-            else                                                             \
-            {                                                                \
+            } else {                                                         \
                 digit = '9';                                                 \
                 v -= 9 * scale;                                              \
             }                                                                \
         }
 #    define sfucvt(v, s, n, list, type, utype)                               \
         {                                                                    \
-            while (( utype )v >= 10000)                                      \
-            {                                                                \
+            while (( utype )v >= 10000) {                                    \
                 n = v;                                                       \
                 v = (type)((( utype )v) / 10000);                            \
                 n = (type)(( utype )n - (( utype )v) * 10000);               \
@@ -1301,31 +1274,22 @@ typedef struct _sftab_
                 s[2] = *(list = ( char * )_Sfdec + (n <<= 1));               \
                 s[3] = *(list + 1);                                          \
             }                                                                \
-            if (v < 100)                                                     \
-            {                                                                \
-                if (v < 10)                                                  \
-                {                                                            \
+            if (v < 100) {                                                   \
+                if (v < 10) {                                                \
                     s -= 1;                                                  \
                     s[0] = ( char )('0' + v);                                \
-                }                                                            \
-                else                                                         \
-                {                                                            \
+                } else {                                                     \
                     s -= 2;                                                  \
                     s[0] = *(list = ( char * )_Sfdec + (v <<= 1));           \
                     s[1] = *(list + 1);                                      \
                 }                                                            \
-            }                                                                \
-            else                                                             \
-            {                                                                \
-                if (v < 1000)                                                \
-                {                                                            \
+            } else {                                                         \
+                if (v < 1000) {                                              \
                     s -= 3;                                                  \
                     SFDIGIT(v, 100, s[0]);                                   \
                     s[1] = *(list = ( char * )_Sfdec + (v <<= 1));           \
                     s[2] = *(list + 1);                                      \
-                }                                                            \
-                else                                                         \
-                {                                                            \
+                } else {                                                     \
                     s -= 4;                                                  \
                     SFDIGIT(v, 1000, s[0]);                                  \
                     SFDIGIT(v, 100, s[1]);                                   \
@@ -1357,8 +1321,7 @@ typedef struct _sftab_
 
 /* note that MEMCPY advances the associated pointers */
 #    define MEMCPY(to, fr, n)                                                \
-        switch (n)                                                           \
-        {                                                                    \
+        switch (n) {                                                         \
         default:                                                             \
             memcpy(( Void_t * )to, ( Void_t * )fr, n);                       \
             to += n;                                                         \
@@ -1380,8 +1343,7 @@ typedef struct _sftab_
             *to++ = *fr++;                                                   \
         }
 #    define MEMSET(s, c, n)                                                  \
-        switch (n)                                                           \
-        {                                                                    \
+        switch (n) {                                                         \
         default:                                                             \
             memset(( Void_t * )s, ( int )c, n);                              \
             s += n;                                                          \

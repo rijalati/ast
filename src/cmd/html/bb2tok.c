@@ -81,16 +81,13 @@ token(State_t *state,
       const Header_t *head,
       int push)
 {
-    if (!head)
-    {
-        if (state->keep)
-        {
+    if (!head) {
+        if (state->keep) {
             if (*state->lex == LABEL
                 && (streq(text, ":") || streq(text, "Code")
                     || streq(text, "wrote")))
                 return;
-            if (state->prev)
-            {
+            if (state->prev) {
                 sfprintf(
                 op,
                 "%s<%s%s>\n",
@@ -105,19 +102,15 @@ token(State_t *state,
             }
             sfputr(op, text, *state->lex == HEADER ? ' ' : '\n');
         }
-    }
-    else if (push)
-    {
-        if (state->prev)
-        {
+    } else if (push) {
+        if (state->prev) {
             if (head->lex == LINK && state->prev->lex == NAME && state->push)
                 return;
             if (head->lex == LINE && state->prev->lex == HEADER
                 && !state->push)
                 return;
             if (head->lex == HEADER && push && state->prev->lex == HEADER
-                && !state->push)
-            {
+                && !state->push) {
                 state->prev = 0;
                 return;
             }
@@ -137,8 +130,7 @@ token(State_t *state,
             if (head->lex == LINE && state->prev->lex == BODY && !state->push)
                 state->keep = 0;
         }
-        switch (head->lex)
-        {
+        switch (head->lex) {
         case CODE:
             state->prev = 0;
             sfprintf(op, "<%s>", head->out);
@@ -149,13 +141,9 @@ token(State_t *state,
         }
         state->prev = ( Header_t * )head;
         state->push = push;
-    }
-    else
-    {
-        if (state->keep && state->prev)
-        {
-            if (state->prev->lex == head->lex && state->push)
-            {
+    } else {
+        if (state->keep && state->prev) {
+            if (state->prev->lex == head->lex && state->push) {
                 state->prev = 0;
                 return;
             }
@@ -175,10 +163,8 @@ token(State_t *state,
 }
 
 #define TOKEN(sp, op, tok, t)                                                \
-    do                                                                       \
-    {                                                                        \
-        if (t > tok)                                                         \
-        {                                                                    \
+    do {                                                                     \
+        if (t > tok) {                                                       \
             *t = 0;                                                          \
             token(sp, op, t = tok, 0, 0);                                    \
         }                                                                    \
@@ -213,10 +199,8 @@ parse(const char *path, Sfio_t *ip, Sfio_t *op)
     state.keep = 0;
     t = tok;
     k = q = n = level = 0;
-    for (;;)
-    {
-        switch (c = sfgetc(ip))
-        {
+    for (;;) {
+        switch (c = sfgetc(ip)) {
         case EOF:
             TOKEN(&state, op, tok, t);
             break;
@@ -224,10 +208,8 @@ parse(const char *path, Sfio_t *ip, Sfio_t *op)
             TOKEN(&state, op, tok, t);
             x = 0;
             s = tag;
-            for (;;)
-            {
-                switch (c = sfgetc(ip))
-                {
+            for (;;) {
+                switch (c = sfgetc(ip)) {
                 case EOF:
                     TOKEN(&state, op, tok, t);
                     return;
@@ -259,8 +241,7 @@ parse(const char *path, Sfio_t *ip, Sfio_t *op)
             }
             *s = 0;
             s = tag;
-            if (!k)
-            {
+            if (!k) {
                 if (s[0] == 'b' && s[1] == 'o' && s[2] == 'd' && s[3] == 'y'
                     && (!s[4] || s[4] == ' '))
                     k = 1;
@@ -270,20 +251,16 @@ parse(const char *path, Sfio_t *ip, Sfio_t *op)
             if (s[0] == 's' && s[1] == 'p' && s[2] == 'a' && s[3] == 'n'
                 && (!s[4] || s[4] == ' ') && (s += 4)
                 || s[0] == 't' && s[1] == 'd' && (!s[2] || s[2] == ' ')
-                   && (s += 2))
-            {
+                   && (s += 2)) {
                 h = 0;
-                if (s[0] == ' ' && strneq(s + 1, "class=\"", 7))
-                {
+                if (s[0] == ' ' && strneq(s + 1, "class=\"", 7)) {
                     for (e = s += 8; *e && *e != '"'; e++)
                         ;
                     *e = 0;
                     for (i = 0; i < elementsof(header); i++)
-                        if (streq(s, header[i].in))
-                        {
+                        if (streq(s, header[i].in)) {
                             h = &header[i];
-                            if (level < elementsof(block))
-                            {
+                            if (level < elementsof(block)) {
                                 PUSH(&state, op, h);
                                 n++;
                             }
@@ -293,36 +270,28 @@ parse(const char *path, Sfio_t *ip, Sfio_t *op)
                 if (level < elementsof(block) && (block[level] = h))
                     *++state.lex = h->lex;
                 level++;
-            }
-            else if (s[0] == '/'
-                     && (s[1] == 's' && s[2] == 'p' && s[3] == 'a'
-                         && s[4] == 'n' && !s[5]
-                         || s[1] == 't' && s[2] == 'd' && !s[3]))
-            {
-                if (level > 0)
-                {
+            } else if (s[0] == '/'
+                       && (s[1] == 's' && s[2] == 'p' && s[3] == 'a'
+                           && s[4] == 'n' && !s[5]
+                           || s[1] == 't' && s[2] == 'd' && !s[3])) {
+                if (level > 0) {
                     level--;
-                    if (level < elementsof(block) && (h = block[level]))
-                    {
+                    if (level < elementsof(block) && (h = block[level])) {
                         POP(&state, op, h);
                         n--;
                         state.lex--;
                     }
                 }
-            }
-            else if (n)
-            {
+            } else if (n) {
                 if (s[0] == 'b' && s[1] == 'r'
-                    && (!s[2] || s[2] == ' ' || s[2] == '/'))
-                {
+                    && (!s[2] || s[2] == ' ' || s[2] == '/')) {
                     if ((c = sfgetc(ip)) == '\n')
                         continue;
                     sfungetc(ip, c);
                 }
                 if (s[0] == 'a' && s[1] == ' ')
                     PUSH(&state, op, &header[LINK]);
-                else
-                {
+                else {
                     c = ' ';
                     goto space;
                 }
@@ -382,10 +351,8 @@ main(int argc, char **argv)
 
     NoP(argc);
     error_info.id = "bb2tok";
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case '?':
             error(ERROR_USAGE | 4, "%s", opt_info.arg);
             continue;
@@ -398,16 +365,12 @@ main(int argc, char **argv)
     argv += opt_info.index;
     if (error_info.errors)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
-    do
-    {
+    do {
         if (!(s = *argv) || streq(s, "-") || streq(s, "/dev/stdin")
-            || streq(s, "/dev/fd/0"))
-        {
+            || streq(s, "/dev/fd/0")) {
             s = "/dev/stdin";
             ip = sfstdin;
-        }
-        else if (!(ip = sfopen(NiL, s, "r")))
-        {
+        } else if (!(ip = sfopen(NiL, s, "r"))) {
             error(ERROR_SYSTEM | 2, "%s: cannot read", s);
             continue;
         }

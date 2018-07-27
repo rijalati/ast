@@ -92,8 +92,7 @@ TkRegion damageRgn;      /* Region to accumulate damage in. */
     XSync(info.display, False);
     oldProc
     = Tk_RestrictEvents(ScrollRestrictProc, ( ClientData )&info, &oldArg);
-    while (!info.done)
-    {
+    while (!info.done) {
         Tcl_DoOneEvent(TCL_WINDOW_EVENTS | TCL_DONT_WAIT);
     }
     Tk_RestrictEvents(oldProc, oldArg, &dummy);
@@ -132,17 +131,13 @@ XEvent *eventPtr;
      */
 
     if (info->done || (eventPtr->xany.display != info->display)
-        || (eventPtr->xany.window != info->window))
-    {
+        || (eventPtr->xany.window != info->window)) {
         return TK_DEFER_EVENT;
     }
 
-    if (eventPtr->type == NoExpose)
-    {
+    if (eventPtr->type == NoExpose) {
         info->done = 1;
-    }
-    else if (eventPtr->type == GraphicsExpose)
-    {
+    } else if (eventPtr->type == GraphicsExpose) {
         rect.x = eventPtr->xgraphicsexpose.x;
         rect.y = eventPtr->xgraphicsexpose.y;
         rect.width = eventPtr->xgraphicsexpose.width;
@@ -150,13 +145,10 @@ XEvent *eventPtr;
         XUnionRectWithRegion(
         &rect, ( Region )info->region, ( Region )info->region);
 
-        if (eventPtr->xgraphicsexpose.count == 0)
-        {
+        if (eventPtr->xgraphicsexpose.count == 0) {
             info->done = 1;
         }
-    }
-    else if (eventPtr->type == Expose)
-    {
+    } else if (eventPtr->type == Expose) {
 
         /*
          * This case is tricky.  This event was already queued before
@@ -176,9 +168,7 @@ XEvent *eventPtr;
         rect.y += info->dy;
         XUnionRectWithRegion(
         &rect, ( Region )info->region, ( Region )info->region);
-    }
-    else
-    {
+    } else {
         return TK_DEFER_EVENT;
     }
     return TK_DISCARD_EVENT;

@@ -38,21 +38,17 @@ wcstoutf32s(uint32_t *utf32, wchar_t *wchar, size_t n)
     ssize_t res;
     Mbstate_t q;
 
-    if (ast.locale.set & AST_LC_utf8)
-    {
+    if (ast.locale.set & AST_LC_utf8) {
         char tmp[UTF8_LEN_MAX + 1];
 
         mbinit(&q);
-        for (i = 0; i < n; i++)
-        {
+        for (i = 0; i < n; i++) {
             if (mbconv(tmp, wchar[i], &q) < 0)
                 break;
             utf32[i] = wchar[i];
         }
         res = ( ssize_t )i;
-    }
-    else
-    {
+    } else {
         char *inbuf;
         char *inbuf_start;
         char *outbuf;
@@ -74,20 +70,16 @@ wcstoutf32s(uint32_t *utf32, wchar_t *wchar, size_t n)
         if (!inbuf_start)
             return -1;
         outbuf_start = inbuf_start + inbytesleft + 2;
-        if (mbwide())
-        {
+        if (mbwide()) {
             ssize_t len;
 
             mbinit(&q);
             for (inbuf = inbuf_start, i = 0; i < n; i++, inbuf += len)
-                if ((len = mbconv(inbuf, wchar[i], &q)) < 0)
-                {
+                if ((len = mbconv(inbuf, wchar[i], &q)) < 0) {
                     inbuf[i] = 0;
                     break;
                 }
-        }
-        else
-        {
+        } else {
             /*
              * We need this because Linux's |wcrtomb()| doesn't
              * handle single-byte locales like ISO8859-15
@@ -106,8 +98,7 @@ wcstoutf32s(uint32_t *utf32, wchar_t *wchar, size_t n)
                          &inbytesleft,
                          &outbuf,
                          &outbytesleft))
-            >= 0)
-        {
+            >= 0) {
             const char *s;
 
             for (s = outbuf_start, i = 0; i < n && s < ( const char * )outbuf;

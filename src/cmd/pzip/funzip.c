@@ -51,10 +51,8 @@ main(int argc, char **argv)
     int flags = SFGZ_NOCRC;
 
     error_info.id = "funzip";
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'x':
             flags &= ~SFGZ_NOCRC;
             continue;
@@ -70,12 +68,10 @@ main(int argc, char **argv)
     argv += opt_info.index;
     if (error_info.errors || *argv && *(argv + 1))
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
-    if (!(file = *argv))
-    {
+    if (!(file = *argv)) {
         file = "/dev/stdin";
         sp = sfstdin;
-    }
-    else if (!(sp = sfopen(NiL, file, "r")))
+    } else if (!(sp = sfopen(NiL, file, "r")))
         error(ERROR_SYSTEM | 3, "%s: cannot read", file);
     if ((r = sfdcgzip(sp, flags)) < 0)
         error(3, "sfdcgzip discipline push error");

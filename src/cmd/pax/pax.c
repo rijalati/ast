@@ -165,8 +165,7 @@ static void
 interrupt(int sig)
 {
     signal(sig, SIG_IGN);
-    switch (sig)
-    {
+    switch (sig) {
     case SIGINT:
     case SIGQUIT:
         sfprintf(sfstderr, "\n");
@@ -186,27 +185,23 @@ substitute(Map_t **lastmap, char *s)
     Map_t *mp;
     int c;
 
-    for (;;)
-    {
+    for (;;) {
         while (isspace(*s))
             s++;
         if (!*s)
             break;
         if (!(mp = newof(0, Map_t, 1, 0)))
             error(3, "no space [substitution]");
-        if (!(c
-              = regcomp(&mp->re, s, REG_DELIMITED | REG_LENIENT | REG_NULL)))
-        {
+        if (!(c = regcomp(
+              &mp->re, s, REG_DELIMITED | REG_LENIENT | REG_NULL))) {
             s += mp->re.re_npat;
             if (!(c = regsubcomp(&mp->re, s, NiL, 0, 0)))
                 s += mp->re.re_npat;
         }
         if (c)
             regfatal(&mp->re, 4, c);
-        for (;;)
-        {
-            switch (*s++)
-            {
+        for (;;) {
+            switch (*s++) {
             case 'i':
                 mp->flags |= MAP_INDEX;
                 continue;
@@ -230,8 +225,7 @@ substitute(Map_t **lastmap, char *s)
 static ssize_t
 meterror(int fd, const void *buf, size_t n)
 {
-    if (state.meter.last)
-    {
+    if (state.meter.last) {
         sfprintf(sfstderr, "%*s\r", state.meter.last, "");
         state.meter.last = 0;
     }
@@ -254,13 +248,11 @@ action(const char *command, int pattern)
     regex_t *re;
 
     s = ( char * )command;
-    if (pattern && *s && *s == *(s + 1))
-    {
+    if (pattern && *s && *s == *(s + 1)) {
         s += 2;
         pattern = 0;
     }
-    if (pattern)
-    {
+    if (pattern) {
         if (!(re = newof(0, regex_t, 1, 0)))
             nospace();
         if (c = regcomp(re,
@@ -269,27 +261,21 @@ action(const char *command, int pattern)
                         | REG_LENIENT | REG_NULL | REG_LEFT | REG_RIGHT))
             regfatal(re, 4, c);
         s += re->re_npat;
-    }
-    else
+    } else
         re = 0;
     command = ( const char * )s;
     q = 0;
     n = 3;
     while (c = *s++)
-        if (c == '"' || c == '\'')
-        {
+        if (c == '"' || c == '\'') {
             if (!q)
                 q = c;
             else if (q == c)
                 q = 0;
-        }
-        else if (c == '\\')
-        {
+        } else if (c == '\\') {
             if (q != '\'' && *s)
                 s++;
-        }
-        else if (!q && isspace(c))
-        {
+        } else if (!q && isspace(c)) {
             n++;
             while (isspace(*s))
                 s++;
@@ -307,26 +293,21 @@ action(const char *command, int pattern)
     n = 1;
     t = s;
     while (c = *s++)
-        if (c == '"' || c == '\'')
-        {
+        if (c == '"' || c == '\'') {
             if (!q)
                 q = c;
             else if (q == c)
                 q = 0;
             else
                 *t++ = c;
-        }
-        else if (c == '\\')
-        {
+        } else if (c == '\\') {
             if (q == '\'')
                 *t++ = c;
             else if (*s)
                 *t++ = *s++;
-        }
-        else if (q || !isspace(c))
+        } else if (q || !isspace(c))
             *t++ = c;
-        else
-        {
+        else {
             *t++ = 0;
             while (isspace(*s))
                 s++;
@@ -348,8 +329,7 @@ filter(Archive_t *ap, File_t *f)
     Filter_t *fp;
 
     if (f->st->st_size && (fp = state.filter.list))
-        do
-        {
+        do {
             if (!fp->re || !regexec(fp->re, f->name, NiL, 0, 0))
                 return fp;
         } while (fp = fp->next);
@@ -396,10 +376,8 @@ setoptions(char *line,
     offset = opt_info.offset;
     if (line && hdr)
         end = line + hdr;
-    for (;;)
-    {
-        if (hdr)
-        {
+    for (;;) {
+        if (hdr) {
             if (!*line)
                 break;
             while (isspace(*line))
@@ -416,10 +394,8 @@ setoptions(char *line,
                 line++;
             o = line;
             assignment = 0;
-            for (;;)
-            {
-                switch (*line++)
-                {
+            for (;;) {
+                switch (*line++) {
                 case 0:
                     line--;
                     break;
@@ -427,8 +403,7 @@ setoptions(char *line,
                     *(line - 1) = 0;
                     break;
                 case ':':
-                    if (*line == '=')
-                    {
+                    if (*line == '=') {
                         *(line - 1) = 0;
                         line++;
                         assignment = 1;
@@ -443,22 +418,18 @@ setoptions(char *line,
             v = line;
             line = e;
             y = 1;
-            if (!(op = ( Option_t * )hashget(state.options, o)))
-            {
+            if (!(op = ( Option_t * )hashget(state.options, o))) {
                 s = o;
-                if (strneq(o, VENDOR ".", sizeof(VENDOR)))
-                {
+                if (strneq(o, VENDOR ".", sizeof(VENDOR))) {
                     o += sizeof(VENDOR);
                     op = ( Option_t * )hashget(state.options, o);
                 }
-                if (!op && *o == 'n' && *(o + 1) == 'o')
-                {
+                if (!op && *o == 'n' && *(o + 1) == 'o') {
                     o += 2;
                     y = 0;
                     op = ( Option_t * )hashget(state.options, o);
                 }
-                if (!op)
-                {
+                if (!op) {
                     if (islower(*s) && !strchr(s, '.'))
                         error(2, "%s: unknown option", s);
                     continue;
@@ -468,18 +439,15 @@ setoptions(char *line,
                 n = 0;
             else if (!(op->flags & OPT_NUMBER))
                 n = 1;
-            else
-            {
+            else {
                 n = strtonll(v, &e, NiL, 0);
                 if (*e)
                     error(
                     2, "%s: %s: invalid numeric option value", op->name, v);
             }
-        }
-        else if (!(c = line ? optstr(line, usage) : optget(argv, usage)))
+        } else if (!(c = line ? optstr(line, usage) : optget(argv, usage)))
             break;
-        else if (c > 0)
-        {
+        else if (c > 0) {
             if (c == '?')
                 error(ERROR_USAGE | 4, "%s", opt_info.arg);
             if (c == ':'
@@ -487,9 +455,7 @@ setoptions(char *line,
                     || islower(*opt_info.name) && !strchr(opt_info.name, '.')))
                 error(2, "%s", opt_info.arg);
             continue;
-        }
-        else
-        {
+        } else {
             assignment = opt_info.assignment == ':';
             y = (n = opt_info.number) != 0;
             if (!(v = opt_info.arg))
@@ -512,8 +478,7 @@ setoptions(char *line,
          *	1	global=
          */
 
-        switch (type)
-        {
+        switch (type) {
         case EXTTYPE:
             c = 4;
             vp = &op->temp;
@@ -536,23 +501,19 @@ setoptions(char *line,
                  c));
         if (op->level > c)
             continue;
-        if (y && (op->flags & (OPT_HEADER | OPT_READONLY)) == OPT_HEADER)
-        {
+        if (y && (op->flags & (OPT_HEADER | OPT_READONLY)) == OPT_HEADER) {
             if (vp == &op->temp)
                 op->entry = ap->entry;
             else
                 op->level = c;
-            if (*v)
-            {
+            if (*v) {
                 op->flags |= OPT_SET;
                 if (op->flags & OPT_NUMBER)
                     vp->number = n;
                 stash(vp, v, 0);
-            }
-            else
+            } else
                 vp = 0;
-        }
-        else
+        } else
             vp = 0;
         message((-4,
                  "option: %c %s%s%s=%s entry=%d:%d level=%d:%d number=%I*u",
@@ -567,16 +528,13 @@ setoptions(char *line,
                  c,
                  sizeof(n),
                  n));
-        switch (op->index)
-        {
+        switch (op->index) {
         case OPT_action:
-            if (*v)
-            {
+            if (*v) {
                 xp = action(v, 1);
                 if (!xp->re)
                     state.filter.all = xp;
-                else
-                {
+                else {
                     if (state.filter.last)
                         state.filter.last->next = xp;
                     else
@@ -589,13 +547,11 @@ setoptions(char *line,
             state.append = y;
             break;
         case OPT_atime:
-            if (vp)
-            {
+            if (vp) {
             settime:
                 vp->number = strtoul(vp->string, &e, 10);
                 vp->fraction = 0;
-                if (*e)
-                {
+                if (*e) {
                     if (*e != '.')
                         vp->number = tmdate(vp->string, &e, NiL);
                     if (*e == '.')
@@ -605,8 +561,7 @@ setoptions(char *line,
                               "%s: invalid %s date string",
                               vp->string,
                               options[op->index].name);
-                    else if (vp->fraction)
-                    {
+                    else if (vp->fraction) {
                         y = e - s;
                         for (y = e - s; y < 9; y++)
                             vp->fraction *= 10;
@@ -620,14 +575,11 @@ setoptions(char *line,
             ap = getarchive(state.operation);
             if (ap->delta)
                 error(3, "base archive already specified");
-            if (y)
-            {
+            if (y) {
                 initdelta(ap, NiL);
-                if (!*v || streq(v, "-"))
-                {
+                if (!*v || streq(v, "-")) {
                     state.delta2delta++;
-                    if (!(state.operation & OUT))
-                    {
+                    if (!(state.operation & OUT)) {
                         ap->delta->format = getformat(FMT_IGNORE, 1);
                         break;
                     }
@@ -637,8 +589,7 @@ setoptions(char *line,
             }
             break;
         case OPT_blocksize:
-            if (y)
-            {
+            if (y) {
                 state.blocksize = n;
                 if (state.blocksize < MINBLOCK)
                     error(3, "block size must be at least %d", MINBLOCK);
@@ -646,8 +597,7 @@ setoptions(char *line,
                     error(1,
                           "block size should probably be a multiple of %d",
                           BLOCKSIZE);
-            }
-            else
+            } else
                 state.blocksize = DEFBLOCKS * BLOCKSIZE;
             break;
         case OPT_blok:
@@ -655,8 +605,7 @@ setoptions(char *line,
                 getarchive(IN)->io->blok = getarchive(OUT)->io->blok = n;
             else
                 while (*v)
-                    switch (*v++)
-                    {
+                    switch (*v++) {
                     case 'i':
                         getarchive(IN)->io->blok = 1;
                         break;
@@ -669,31 +618,26 @@ setoptions(char *line,
                     }
             break;
         case OPT_checksum:
-            if (y)
-            {
+            if (y) {
                 if (e = strchr(v, ':'))
                     *e++ = 0;
-                else
-                {
+                else {
                     e = v;
                     v = "md5";
                 }
                 state.checksum.name = strdup(e);
                 if (!(state.checksum.sum = sumopen(v)))
                     error(3, "%s: %s: unknown checksum algorithm", e, v);
-            }
-            else
+            } else
                 state.checksum.name = 0;
             break;
         case OPT_chmod:
-            if (y && *v)
-            {
+            if (y && *v) {
                 strperm(v, &e, 0);
                 if (*e)
                     error(3, "%s: invalid file mode expression", v);
                 state.mode = strdup(v);
-            }
-            else
+            } else
                 state.mode = 0;
             break;
         case OPT_clobber:
@@ -716,14 +660,12 @@ setoptions(char *line,
                 goto settime;
             break;
         case OPT_debug:
-            if (y)
-            {
+            if (y) {
                 y = error_info.trace;
                 error_info.trace = -( int )n;
                 if (!y)
                     message((-10, "usage %s", usage));
-            }
-            else
+            } else
                 error_info.trace = 0;
             break;
         case OPT_delete:
@@ -750,12 +692,9 @@ setoptions(char *line,
                 ap->delta->compress = 1;
             break;
         case OPT_delta_index:
-            if (ap)
-            {
-                if (type == GLBTYPE)
-                {
-                    if (ap->delta && (c = n - ap->delta->index - 1))
-                    {
+            if (ap) {
+                if (type == GLBTYPE) {
+                    if (ap->delta && (c = n - ap->delta->index - 1)) {
                         if (c > 0)
                             error(2,
                                   "%s: corrupt archive: %d missing file%s",
@@ -769,14 +708,12 @@ setoptions(char *line,
                                   -c,
                                   -c == 1 ? "" : "s");
                     }
-                }
-                else
+                } else
                     ap->file.delta.index = n;
             }
             break;
         case OPT_delta_method:
-            if (ap)
-            {
+            if (ap) {
                 if (!(fp = getformat(v, 0)) || !(fp->flags & DELTA))
                     error(
                     3, "%s: %s: delta method not supported", ap->name, v);
@@ -827,27 +764,21 @@ setoptions(char *line,
             ap->name = strdup(v);
             break;
         case OPT_filter:
-            if (y && *v)
-            {
+            if (y && *v) {
                 state.filter.command = v;
                 state.descend = 0;
-            }
-            else
+            } else
                 state.filter.command = 0;
             break;
         case OPT_format:
             ap = getarchive(state.operation);
             if (!y)
                 ap->format = 0;
-            else if (s = strdup(v))
-            {
+            else if (s = strdup(v)) {
                 v = s;
-                do
-                {
-                    for (e = s, o = 0;;)
-                    {
-                        switch (*e++)
-                        {
+                do {
+                    for (e = s, o = 0;;) {
+                        switch (*e++) {
                         case 0:
                             e = 0;
                             break;
@@ -863,8 +794,7 @@ setoptions(char *line,
                             s = e;
                             continue;
                         case '=':
-                            if (!o)
-                            {
+                            if (!o) {
                                 *(e - 1) = 0;
                                 o = e;
                             }
@@ -875,15 +805,13 @@ setoptions(char *line,
                         break;
                     }
                     if (!(fp = getformat(s, 0)) && s == v && s[0] == 't'
-                        && !strchr(s, ':') && (fp = getformat(s + 1, 0)))
-                    {
+                        && !strchr(s, ':') && (fp = getformat(s + 1, 0))) {
                         if (ap->format = getformat("tar", 0))
                             s++;
                         else
                             fp = 0;
                     }
-                    if (!fp)
-                    {
+                    if (!fp) {
                         if (!pathpath("lib/pax",
                                       opt.arg0,
                                       PATH_EXECUTE,
@@ -895,20 +823,16 @@ setoptions(char *line,
                             || !(sp = sfopen(NiL, tmp2, "r")))
                             error(3, "%s: unknown archive format", s);
                         while (e = sfgetr(sp, '\n', 1))
-                            if (*e != '#')
-                            {
+                            if (*e != '#') {
                                 setoptions(
                                 e, sfvalue(sp), NiL, state.usage, ap, type);
                                 if (line && !hdr)
                                     line += opt_info.offset;
                             }
                         sfclose(sp);
-                    }
-                    else
-                    {
+                    } else {
                         fp->details = o;
-                        switch (fp->flags & (ARCHIVE | COMPRESS | DELTA))
-                        {
+                        switch (fp->flags & (ARCHIVE | COMPRESS | DELTA)) {
                         case ARCHIVE:
                             ap->format = fp;
                             break;
@@ -928,16 +852,14 @@ setoptions(char *line,
             break;
         case OPT_from:
         case OPT_to:
-            if (!cvt)
-            {
+            if (!cvt) {
                 cvt = 1;
                 from = to = CC_NATIVE;
             }
             ap = getarchive(state.operation);
             if ((y = ccmapid(v)) < 0)
                 error(3, "%s: unknown character code set", v);
-            switch (op->index)
-            {
+            switch (op->index) {
             case OPT_from:
                 from = y;
                 break;
@@ -957,8 +879,7 @@ setoptions(char *line,
                 state.header.global = v;
             break;
         case OPT_ignore:
-            if (y && *v)
-            {
+            if (y && *v) {
                 if (assignment)
                     sfprintf(opt.ignore_ext,
                              "%s(%s)",
@@ -978,19 +899,15 @@ setoptions(char *line,
             state.intermediate = y;
             break;
         case OPT_invalid:
-            if (line)
-            {
+            if (line) {
                 n = 0;
                 y = strlen(v);
                 s = op->details;
-                while (s = strchr(s, '['))
-                {
+                while (s = strchr(s, '[')) {
                     c = *++s;
                     o = ++s;
-                    for (;;)
-                    {
-                        if (strneq(v, o, y))
-                        {
+                    for (;;) {
+                        if (strneq(v, o, y)) {
                             s = "";
                             n = c;
                             break;
@@ -1001,8 +918,7 @@ setoptions(char *line,
                     }
                 }
             }
-            switch (( int )n)
-            {
+            switch (( int )n) {
             case 'b':
                 state.header.invalid = INVALID_binary;
                 break;
@@ -1030,8 +946,7 @@ setoptions(char *line,
             state.keepgoing = y;
             break;
         case OPT_label:
-            if (*state.volume)
-            {
+            if (*state.volume) {
                 if (assignment)
                     sfsprintf(tmp1, sizeof(tmp1), "%s %s", v, state.volume);
                 else
@@ -1054,24 +969,20 @@ setoptions(char *line,
                 sfputr(opt.listformat, v, ' ');
             break;
         case OPT_listmacro:
-            if (y && *v)
-            {
+            if (y && *v) {
                 if (s = strchr(v, '='))
                     *s++ = 0;
-                if (!(op = ( Option_t * )hashget(state.options, v)))
-                {
+                if (!(op = ( Option_t * )hashget(state.options, v))) {
                     if (!s)
                         break;
                     if (!(op = newof(0, Option_t, 1, 0)))
                         nospace();
                     op->name = hashput(state.options, 0, op);
                 }
-                if (s)
-                {
+                if (s) {
                     op->macro = strdup(s);
                     *(s - 1) = 0;
-                }
-                else
+                } else
                     op->macro = 0;
             }
             break;
@@ -1094,12 +1005,10 @@ setoptions(char *line,
                 state.ftwflags &= ~(FTW_META | FTW_PHYSICAL);
             break;
         case OPT_meter:
-            if (state.meter.on = y)
-            {
+            if (state.meter.on = y) {
                 if (!(state.meter.tmp = sfstropen()))
                     nospace();
-                if (state.meter.fancy = isatty(sffileno(sfstderr)))
-                {
+                if (state.meter.fancy = isatty(sffileno(sfstderr))) {
                     error_info.write = meterror;
                     astwinsize(1, NiL, &state.meter.width);
                     if (state.meter.width < 2 * (METER_width + 1))
@@ -1115,8 +1024,7 @@ setoptions(char *line,
                 goto settime;
             break;
         case OPT_options:
-            if (v)
-            {
+            if (v) {
                 setoptions(v, 0, NiL, usage, ap, type);
                 if (line && !hdr)
                     line += opt_info.offset;
@@ -1135,19 +1043,15 @@ setoptions(char *line,
             state.passphrase = y ? strdup(v) : ( char * )0;
             break;
         case OPT_physical:
-            if (y)
-            {
+            if (y) {
                 state.ftwflags &= ~FTW_META;
                 state.ftwflags |= FTW_PHYSICAL;
-            }
-            else
+            } else
                 state.ftwflags &= ~FTW_PHYSICAL;
             break;
         case OPT_preserve:
-            for (;;)
-            {
-                switch (*v++)
-                {
+            for (;;) {
+                switch (*v++) {
                 case 0:
                     break;
                 case 'a':
@@ -1199,13 +1103,11 @@ setoptions(char *line,
             state.record.format = y ? *v : 0;
             break;
         case OPT_record_header:
-            if (!y)
-            {
+            if (!y) {
                 state.record.header = 0;
                 state.record.headerlen = 0;
-            }
-            else if (!(state.record.headerlen
-                       = stresc(state.record.header = strdup(v))))
+            } else if (!(state.record.headerlen
+                         = stresc(state.record.header = strdup(v))))
                 state.record.headerlen = 1;
             break;
         case OPT_record_line:
@@ -1221,13 +1123,11 @@ setoptions(char *line,
             state.record.size = n;
             break;
         case OPT_record_trailer:
-            if (!y)
-            {
+            if (!y) {
                 state.record.trailer = 0;
                 state.record.trailerlen = 0;
-            }
-            else if (!(state.record.trailerlen
-                       = stresc(state.record.trailer = strdup(v))))
+            } else if (!(state.record.trailerlen
+                         = stresc(state.record.trailer = strdup(v))))
                 state.record.trailerlen = 1;
             break;
         case OPT_reset_atime:
@@ -1262,10 +1162,8 @@ setoptions(char *line,
             s = strtape(v, &e);
             if (*s)
                 ap->name = s;
-            for (;;)
-            {
-                switch (*e++)
-                {
+            for (;;) {
+                switch (*e++) {
                 case 'k':
                     if (!(n = strtonll(e, &e, 0, 1)))
                         n = -1;
@@ -1292,21 +1190,18 @@ setoptions(char *line,
                 state.test = 0;
             break;
         case OPT_testdate:
-            if (y)
-            {
+            if (y) {
                 state.testdate = tmdate(v, &e, NiL);
                 if (*e)
                     error(3,
                           "%s: invalid %s date string",
                           v,
                           options[op->index].name);
-            }
-            else
+            } else
                 state.testdate = ~0;
             break;
         case OPT_times:
-            if (y)
-            {
+            if (y) {
                 setoptions(
                 "atime:= ctime:= mtime:=", 0, NiL, usage, ap, type);
                 if (line && !hdr)
@@ -1319,8 +1214,7 @@ setoptions(char *line,
                 = y;
             else
                 while (*v)
-                    switch (*v++)
-                    {
+                    switch (*v++) {
                     case 'i':
                         getarchive(IN)->io->unblocked = 1;
                         break;
@@ -1349,8 +1243,7 @@ setoptions(char *line,
                 state.operation |= OUT;
             else
                 state.operation &= ~OUT;
-            if (!(state.operation & IN) && state.in && !state.out)
-            {
+            if (!(state.operation & IN) && state.in && !state.out) {
                 state.out = state.in;
                 state.in = 0;
                 state.out->io->mode = O_CREAT | O_TRUNC | O_WRONLY;
@@ -1367,13 +1260,11 @@ setoptions(char *line,
             break;
         }
     }
-    if (line && !hdr)
-    {
+    if (line && !hdr) {
         opt_info.index = index;
         opt_info.offset = offset;
     }
-    if (cvt)
-    {
+    if (cvt) {
         ap->convert[0].on = 1;
         convert(ap, SECTION_DATA, from, to);
     }
@@ -1412,10 +1303,8 @@ ignore(void)
         ext = 0;
     else if (!(ext = sfstruse(opt.ignore_ext)))
         nospace();
-    if ((all || ext) && (pos = hashscan(state.options, 0)))
-    {
-        while (hashnext(pos))
-        {
+    if ((all || ext) && (pos = hashscan(state.options, 0))) {
+        while (hashnext(pos)) {
             op = ( Option_t * )pos->bucket->value;
             if (!(op->flags & OPT_READONLY)
                 && (all && matchopt(pos->bucket->name, all, op) && (lev = 8)
@@ -1441,13 +1330,11 @@ listformat(Sfio_t *sp, Format_t *fp)
     int c;
 
     sfprintf(sp, "[+%s", fp->name);
-    if (p = fp->match)
-    {
+    if (p = fp->match) {
         sfputc(sp, '|');
         if (*p == '(')
             p++;
-        while (c = *p++)
-        {
+        while (c = *p++) {
             if (c == ')' && !*p)
                 break;
             if (c == '?' || c == ']')
@@ -1457,14 +1344,12 @@ listformat(Sfio_t *sp, Format_t *fp)
     }
     sfputc(sp, '?');
     p = fp->desc;
-    while (c = *p++)
-    {
+    while (c = *p++) {
         if (c == ']')
             sfputc(sp, c);
         sfputc(sp, c);
     }
-    switch (fp->flags & (IN | OUT))
-    {
+    switch (fp->flags & (IN | OUT)) {
     case 0:
         sfputr(sp, "; for listing only", -1);
         break;
@@ -1492,19 +1377,16 @@ optinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
     int c;
     Ardirmeth_t *ar;
 
-    switch (*s)
-    {
+    switch (*s) {
     case 'c':
-        for (ic = iconv_list(NiL); ic; ic = iconv_list(ic))
-        {
+        for (ic = iconv_list(NiL); ic; ic = iconv_list(ic)) {
             sfputc(sp, '[');
             sfputc(sp, '+');
             sfputc(sp, '\b');
             p = ic->match;
             if (*p == '(')
                 p++;
-            while (c = *p++)
-            {
+            while (c = *p++) {
                 if (c == ')' && !*p)
                     break;
                 if (c == '?' || c == ']')
@@ -1513,8 +1395,7 @@ optinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
             }
             sfputc(sp, '?');
             p = ic->desc;
-            while (c = *p++)
-            {
+            while (c = *p++) {
                 if (c == ']')
                     sfputc(sp, c);
                 sfputc(sp, c);
@@ -1528,13 +1409,11 @@ optinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
     case 'D':
         fp = 0;
         while (fp = nextformat(fp))
-            if (fp->flags & DELTA)
-            {
+            if (fp->flags & DELTA) {
                 sfprintf(sp, "[+%s", fp->name);
                 sfputc(sp, '?');
                 p = fp->desc;
-                while (c = *p++)
-                {
+                while (c = *p++) {
                     if (c == ']')
                         sfputc(sp, c);
                     sfputc(sp, c);
@@ -1566,8 +1445,7 @@ optinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
     case 'l':
         for (i = 1; options[i].name; i++)
             if ((options[i].flags & (OPT_GLOBAL | OPT_READONLY))
-                == OPT_READONLY)
-            {
+                == OPT_READONLY) {
                 sfprintf(
                 sp, "[+%s?%s]\n", options[i].name, options[i].description);
                 if (options[i].details)
@@ -1647,13 +1525,11 @@ main(int argc, char **argv)
     options[OPT_release].flags |= OPT_SET;
     if (!(state.options = hashalloc(NiL, HASH_name, "options", 0)))
         nospace();
-    for (i = 1; options[i].name; i++)
-    {
+    for (i = 1; options[i].name; i++) {
         p = options[i].name;
         if (strchr(p, '|'))
             p = strdup(p);
-        do
-        {
+        do {
             if (s = strchr(p, '|'))
                 *s++ = 0;
             hashput(state.options, p, &options[options[i].index]);
@@ -1668,27 +1544,24 @@ main(int argc, char **argv)
         nospace();
     sfputr(state.tmp.str, usage, -1);
     for (i = 1; options[i].name; i++)
-        if ((options[i].flags & (OPT_GLOBAL | OPT_READONLY)) != OPT_READONLY)
-        {
+        if ((options[i].flags & (OPT_GLOBAL | OPT_READONLY))
+            != OPT_READONLY) {
             sfputc(state.tmp.str, '[');
-            if (options[i].flag)
-            {
+            if (options[i].flag) {
                 sfputc(state.tmp.str, options[i].flag);
                 if (options[i].flags & OPT_INVERT)
                     sfputc(state.tmp.str, '!');
             }
             sfprintf(
             state.tmp.str, "=%d:%s", options[i].index, options[i].name);
-            if (options[i].flags & OPT_VENDOR)
-            {
+            if (options[i].flags & OPT_VENDOR) {
                 for (s = ( char * )options[i].name; p = strchr(s, '|');
                      s = p + 1)
                     sfprintf(state.tmp.str, "|%s.%-.*s", VENDOR, p - s, s);
                 sfprintf(state.tmp.str, "|%s.%s", VENDOR, s);
             }
             sfprintf(state.tmp.str, "?%s]", options[i].description);
-            if (options[i].argument)
-            {
+            if (options[i].argument) {
                 sfputc(state.tmp.str,
                        (options[i].flags & OPT_NUMBER) ? '#' : ':');
                 if (options[i].flags & OPT_OPTIONAL)
@@ -1708,8 +1581,7 @@ main(int argc, char **argv)
     argc -= opt_info.index;
     if (error_info.errors)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
-    if (!state.operation)
-    {
+    if (!state.operation) {
         state.operation = IN;
         state.list = 1;
     }
@@ -1730,10 +1602,8 @@ main(int argc, char **argv)
         nospace();
     sfstrclose(opt.listformat);
     ignore();
-    if (s = state.filter.command)
-    {
-        if (streq(s, "-"))
-        {
+    if (s = state.filter.command) {
+        if (streq(s, "-")) {
             state.filter.line = -1;
             s = "sh -c";
         }
@@ -1749,8 +1619,7 @@ main(int argc, char **argv)
      * determine the buffer sizes
      */
 
-    switch (state.operation)
-    {
+    switch (state.operation) {
     case IN | OUT:
         if (!state.in)
             break;
@@ -1761,14 +1630,12 @@ main(int argc, char **argv)
         break;
     }
     blocksize = state.blocksize;
-    if (ap = state.out)
-    {
+    if (ap = state.out) {
         if (!ap->format)
             ap->format = state.format;
         else if (state.operation == (IN | OUT))
             pass = 1;
-        if (state.operation == OUT)
-        {
+        if (state.operation == OUT) {
             if (state.files)
                 state.ftwflags |= FTW_POST;
         }
@@ -1777,8 +1644,7 @@ main(int argc, char **argv)
         ap->io->fd = 1;
         if (!ap->name || streq(ap->name, "-"))
             ap->name = defoutput;
-        else
-        {
+        else {
             close(1);
             if (open(ap->name,
                      ap->io->mode | O_BINARY,
@@ -1788,28 +1654,22 @@ main(int argc, char **argv)
         }
         if (fstat(ap->io->fd, &st))
             error(ERROR_SYSTEM | 3, "%s: cannot stat", ap->name);
-        if (S_ISREG(st.st_mode))
-        {
+        if (S_ISREG(st.st_mode)) {
             ap->io->seekable = 1;
             ap->io->size = st.st_size;
         }
-        if (!state.blocksize)
-        {
+        if (!state.blocksize) {
             st.st_mode = modex(st.st_mode);
             if (state.test & 0000040)
                 st.st_mode = X_IFCHR;
-            if (X_ITYPE(st.st_mode) == X_IFREG)
-            {
+            if (X_ITYPE(st.st_mode) == X_IFREG) {
                 state.blocksize = ap->format->regular;
                 ap->io->unblocked = 1;
-            }
-            else
+            } else
                 state.blocksize = ap->format->special;
             state.buffersize = state.blocksize *= BLOCKSIZE;
         }
-    }
-    else
-    {
+    } else {
         if (state.blocksize)
             state.buffersize = state.blocksize;
         else
@@ -1819,20 +1679,17 @@ main(int argc, char **argv)
         if (state.record.size)
             error(1, "record size automatically determined on archive read");
     }
-    if (ap = state.in)
-    {
+    if (ap = state.in) {
         if (!ap->name || streq(ap->name, "-"))
             ap->name = definput;
-        else
-        {
+        else {
             close(0);
             if (open(ap->name, ap->io->mode | O_BINARY))
                 error(ERROR_SYSTEM | 3, "%s: cannot read", ap->name);
         }
         if (fstat(ap->io->fd, &st))
             error(ERROR_SYSTEM | 3, "%s: cannot stat", ap->name);
-        if (S_ISREG(st.st_mode))
-        {
+        if (S_ISREG(st.st_mode)) {
             ap->io->seekable = 1;
             ap->io->size = st.st_size;
         }
@@ -1861,35 +1718,28 @@ main(int argc, char **argv)
      * initialize the main io
      */
 
-    switch (state.operation)
-    {
+    switch (state.operation) {
     case IN:
     case OUT:
         getarchive(state.operation);
         break;
     }
-    if (ap = state.in)
-    {
+    if (ap = state.in) {
         binit(ap);
-        if (state.append && !state.out)
-        {
+        if (state.append && !state.out) {
             error(1, "append ignored for archive read");
             state.append = 0;
         }
     }
-    if (ap = state.out)
-    {
+    if (ap = state.out) {
         if (!ap->format)
             ap->format = state.format;
-        if (state.append || state.update)
-        {
-            if (ap->delta)
-            {
+        if (state.append || state.update) {
+            if (ap->delta) {
                 error(1, "append/update ignored for archive delta");
                 state.update = 0;
             }
-            if (state.append && state.update)
-            {
+            if (state.append && state.update) {
                 error(1, "append ignored for archive update");
                 state.append = 0;
             }
@@ -1898,15 +1748,13 @@ main(int argc, char **argv)
                 3, "%s: append/update requires seekable archive", ap->name);
             else if (!ap->io->size)
                 state.append = state.update = 0;
-            else
-            {
+            else {
                 initdelta(ap, NiL);
                 ap->delta->base = ap;
             }
         }
         binit(ap);
-        if (ap->compress)
-        {
+        if (ap->compress) {
             Proc_t *proc;
             List_t *p;
             char *cmd[4];
@@ -1938,8 +1786,7 @@ main(int argc, char **argv)
             p->next = state.proc;
             state.proc = p;
         }
-        if (state.checksum.name)
-        {
+        if (state.checksum.name) {
             if (!(state.checksum.path
                   = pathtemp(NiL, 0, NiL, error_info.id, NiL)))
                 nospace();
@@ -1951,8 +1798,7 @@ main(int argc, char **argv)
             state.checksum.sp, "method=%s\n", state.checksum.sum->name);
             sfprintf(state.checksum.sp, "permissions\n");
         }
-        if (state.install.name)
-        {
+        if (state.install.name) {
             if (!(state.install.path
                   = pathtemp(NiL, 0, NiL, error_info.id, NiL)))
                 nospace();
@@ -1974,20 +1820,16 @@ main(int argc, char **argv)
         && !(state.restore = hashalloc(
              NiL, HASH_set, HASH_ALLOCATE, HASH_name, "restore", 0)))
         error(3, "cannot allocate directory table");
-    if (state.owner)
-    {
-        if (state.operation & IN)
-        {
+    if (state.owner) {
+        if (state.operation & IN) {
             state.modemask = 0;
-            if (opt.owner)
-            {
+            if (opt.owner) {
                 if ((state.setuid = struid(opt.owner)) < 0
                     || (state.setgid = strgid(opt.owner)) < 0)
                     error(3, "%s: invalid user name", opt.owner);
                 state.flags |= SETIDS;
             }
-        }
-        else
+        } else
             error(1, "ownership assignment ignored on archive write");
     }
     if (state.verify)
@@ -1997,10 +1839,8 @@ main(int argc, char **argv)
         umask(0);
     state.modemask = ~state.modemask;
 #if DEBUG
-    if ((state.test & 0000010) && (pos = hashscan(state.options, 0)))
-    {
-        while (hashnext(pos))
-        {
+    if ((state.test & 0000010) && (pos = hashscan(state.options, 0))) {
+        while (hashnext(pos)) {
             op = ( Option_t * )pos->bucket->value;
             if (op->name == pos->bucket->name)
                 sfprintf(sfstderr,
@@ -2022,16 +1862,13 @@ main(int argc, char **argv)
     for (i = 0; i < elementsof(signals); i++)
         if (signal(signals[i], interrupt) == SIG_IGN)
             signal(signals[i], SIG_IGN);
-    switch (state.operation)
-    {
+    switch (state.operation) {
     case IN:
-        if (*argv)
-        {
+        if (*argv) {
             initmatch(argv);
             if (state.exact)
                 state.matchsense = 1;
-        }
-        else if (state.exact)
+        } else if (state.exact)
             error(3, "file arguments expected");
         getcwd(state.pwd, PATH_MAX);
         state.pwdlen = strlen(state.pwd);
@@ -2057,17 +1894,13 @@ main(int argc, char **argv)
         break;
 
     case (IN | OUT):
-        if (pass || state.in || state.out)
-        {
+        if (pass || state.in || state.out) {
             state.pass = 1;
             if (*argv)
                 initmatch(argv);
             deltapass(getarchive(IN), getarchive(OUT));
-        }
-        else
-        {
-            if (--argc < 0)
-            {
+        } else {
+            if (--argc < 0) {
                 error(2, "destination directory required for pass mode");
                 error(ERROR_USAGE | 4, "%s", optusage(NiL));
             }
@@ -2116,8 +1949,7 @@ finish(int code)
     char *x4 = x3 + x;
     off_t n;
 
-    while (state.proc)
-    {
+    while (state.proc) {
         procclose(( Proc_t * )state.proc->item);
         state.proc = state.proc->next;
     }
@@ -2129,18 +1961,14 @@ finish(int code)
     if (state.restore)
         hashwalk(state.restore, 0, restore, NiL);
     sfsync(sfstdout);
-    if (state.meter.last)
-    {
+    if (state.meter.last) {
         sfprintf(sfstderr, "%*s\r", state.meter.last, "");
         state.meter.last = 0;
-    }
-    else if (state.dropcount)
-    {
+    } else if (state.dropcount) {
         sfprintf(sfstderr, "\n");
         sfsync(sfstderr);
     }
-    if (state.summary)
-    {
+    if (state.summary) {
         ap = getarchive(state.operation);
         n = ap->io->count + ap->io->expand + ap->io->offset;
         message((-1,
@@ -2160,8 +1988,7 @@ finish(int code)
                  n,
                  sizeof(n),
                  (n + BLOCKSIZE - 1) / BLOCKSIZE));
-        if (ap->entries)
-        {
+        if (ap->entries) {
             if (ap->volume > 1)
                 sfsprintf(x1, x, ", %d volumes", ap->volume);
             else
@@ -2171,8 +1998,7 @@ finish(int code)
             else
                 *x2 = 0;
             n = (n + BLOCKSIZE - 1) / BLOCKSIZE;
-            if (state.verbose || state.meter.on)
-            {
+            if (state.verbose || state.meter.on) {
                 sfsprintf(x3,
                           x,
                           "%I*u file%s, ",
@@ -2184,8 +2010,7 @@ finish(int code)
                     x4, x, "%I*u updated, ", sizeof(ap->updated), ap->updated);
                 else
                     *x4 = 0;
-            }
-            else
+            } else
                 *x3 = *x4 = 0;
             sfprintf(sfstderr,
                      "%s%s%I*d block%s%s%s\n",
@@ -2199,8 +2024,7 @@ finish(int code)
         }
     }
     sfsync(sfstderr);
-    if (state.interrupt)
-    {
+    if (state.interrupt) {
         signal(state.interrupt, SIG_DFL);
         kill(getpid(), state.interrupt);
         pause();
@@ -2220,12 +2044,10 @@ release(void)
     char *t;
 
     if ((s = strchr(usage, '@')) && (t = strchr(s, '\n'))
-        && (b = fmtbuf(t - s + 1)))
-    {
+        && (b = fmtbuf(t - s + 1))) {
         memcpy(b, s, t - s);
         b[t - s] = 0;
-    }
-    else
+    } else
         b = fmtident(usage);
     return b;
 }

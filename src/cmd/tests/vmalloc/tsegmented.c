@@ -57,8 +57,7 @@ tmain()
 
     if (!(vm = vmopen(&Disc, Vmbest, 0)))
         terror("Opening region0");
-    for (n = 0; n < SEGN; ++n)
-    {
+    for (n = 0; n < SEGN; ++n) {
         if (!(data[n][0] = vmalloc(vm, (SEGZ / SEGN) / 2 + 32)))
             terror("vmalloc failed");
         if (!(data[n][1] = vmalloc(vm, (SEGZ / SEGN) / 2 + 32)))
@@ -88,10 +87,8 @@ tmain()
         for (n = 1; n < NBLOCK;
              n += 2) /* free every other block to keep fragmented */
             vmfree(vm, blk[n]);
-        for (n = 0; n < SEGN; ++n)
-        {
-            if (!(big = vmalloc(vm, SEGZ / 4)))
-            {
+        for (n = 0; n < SEGN; ++n) {
+            if (!(big = vmalloc(vm, SEGZ / 4))) {
                 tinfo("vmalloc failed due to lack of memory as expected");
                 break;
             }

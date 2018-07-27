@@ -67,8 +67,7 @@ int vmclose(vm) Vmalloc_t *vm;
     mode = vmdt->mode; /* remember this in case it gets destroyed below */
     if (rv == 0) /* memory obtained from discipline can be deallocated */
     {
-        for (seg = vmdt->seg; seg; seg = next)
-        {
+        for (seg = vmdt->seg; seg; seg = next) {
             next = seg->next;
             ( void )(*disc->memoryf)(vm, seg->base, seg->size, 0, disc);
         }

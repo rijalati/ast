@@ -33,19 +33,15 @@ tksh_userinit(Shell_t *shp, int subshell)
     char *args[2];
     Namval_t *np;
 
-    if (np = nv_open("source", shp->alias_tree, NV_NOADD))
-    {
+    if (np = nv_open("source", shp->alias_tree, NV_NOADD)) {
         nv_unset(np);
         nv_close(np);
     }
-    if (subshell < 0)
-    {
+    if (subshell < 0) {
         if (nv_open("tkloop", shp->fun_tree, NV_NOADD))
             sh_trap("tkloop", 0);
         return;
-    }
-    else if (subshell > 0)
-    {
+    } else if (subshell > 0) {
         TkshSubShell();
         return;
     }
@@ -60,8 +56,7 @@ tksh_userinit(Shell_t *shp, int subshell)
     else if ((len >= 6) && (strcmp(end - 6, "tclksh") == 0))
         /* b_tclinit(0, (char **) 0, (void *) 0); */
         b_tclinit(1, args, ( Shbltin_t * )0);
-    else
-    {
+    else {
         sh_addbuiltin("tclinit", b_tclinit, ( void * )0);
         sh_addbuiltin("tkinit", b_tkinit, ( void * )0);
     }

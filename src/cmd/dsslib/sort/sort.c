@@ -86,8 +86,7 @@ key(Rs_t *rs,
 
     k = key;
     e = k + keysize;
-    for (field = state->sortkey->head; field; field = field->next)
-    {
+    for (field = state->sortkey->head; field; field = field->next) {
         if (cxcast(state->cx,
                    &r,
                    ( Cxvariable_t * )field->user,
@@ -128,8 +127,7 @@ count(Rs_t *rs, int op, void *data, void *arg, Rsdisc_t *disc)
     char *s;
     ssize_t n;
 
-    switch (op)
-    {
+    switch (op) {
     case RS_POP:
         break;
     case RS_WRITE:
@@ -137,13 +135,11 @@ count(Rs_t *rs, int op, void *data, void *arg, Rsdisc_t *disc)
         n = 1;
         for (q = r->equal; q; q = q->right)
             n++;
-        if (n >= state->count)
-        {
+        if (n >= state->count) {
             n = sfprintf(
             state->uniqstack, "%I*u %-.*s", sizeof(n), n, r->datalen, r->data);
             s = stkfreeze(state->uniqstack, 0);
-            if (rsprocess(state->uniq, s, -n) <= 0)
-            {
+            if (rsprocess(state->uniq, s, -n) <= 0) {
                 if (state->cx->disc->errorf)
                     (*state->cx->disc->errorf)(state->cx,
                                                disc,
@@ -175,8 +171,7 @@ sort_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     char opt[2];
 
     if (!(vm = vmopen(Vmdcheap, Vmlast, 0))
-        || !(state = vmnewof(vm, 0, State_t, 1, 0)))
-    {
+        || !(state = vmnewof(vm, 0, State_t, 1, 0))) {
         if (vm)
             vmclose(vm);
         if (disc->errorf)
@@ -202,10 +197,8 @@ sort_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     cx->buf, "%s%s", strchr(dss_lib_sort.description, '['), sort_usage);
     s = sfstruse(cx->buf);
     uniq = 0;
-    for (;;)
-    {
-        switch (optget(argv, s))
-        {
+    for (;;) {
+        switch (optget(argv, s)) {
         case 0:
             break;
         case 'c':
@@ -215,12 +208,10 @@ sort_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
             uniq = 1;
             continue;
         case '?':
-            if (disc->errorf)
-            {
+            if (disc->errorf) {
                 (*disc->errorf)(
                 cx, disc, ERROR_USAGE | 4, "%s", opt_info.arg);
-            }
-            else
+            } else
                 goto bad;
             continue;
         case ':':
@@ -243,15 +234,12 @@ sort_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     argv += opt_info.index;
     n = 0;
     num = state->sortkey->head && state->sortkey->head->rflag ? "nr" : "n";
-    while (s = *argv++)
-    {
-        if (t = strchr(s, '-'))
-        {
+    while (s = *argv++) {
+        if (t = strchr(s, '-')) {
             sfwrite(cx->buf, s, t - s);
             s = sfstruse(cx->buf);
             t++;
-        }
-        else
+        } else
             t = 0;
         if (!(variable = cxvariable(cx, s, NiL, disc)))
             goto bad;
@@ -261,13 +249,11 @@ sort_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         state->sortkey->tail->user = variable;
         n = 1;
     }
-    if (uniq)
-    {
+    if (uniq) {
         state->sortkey->type &= ~RS_DATA;
         state->sortkey->type |= RS_UNIQ;
     }
-    if (state->count)
-    {
+    if (state->count) {
         state->sortdisc.events |= RS_WRITE;
         state->sortdisc.eventf = count;
         if (!(state->uniqstack = stkopen(0)))
@@ -279,8 +265,7 @@ sort_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
             goto bad;
         if (rskey(state->uniqkey, "1n", 0))
             goto bad;
-        if (rskeyinit(state->uniqkey))
-        {
+        if (rskeyinit(state->uniqkey)) {
             if (disc->errorf)
                 (*disc->errorf)(cx, disc, ERROR_SYSTEM | 2, "uniq key error");
             goto bad;
@@ -289,27 +274,22 @@ sort_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                    state->uniqkey->meth,
                    state->uniqkey->procsize,
                    state->uniqkey->type,
-                   state->uniqkey))
-        {
+                   state->uniqkey)) {
             if (disc->errorf)
                 (*disc->errorf)(
                 cx, disc, ERROR_SYSTEM | 2, "uniq initialization error");
             goto bad;
         }
     }
-    if (rskeyinit(state->sortkey))
-    {
+    if (rskeyinit(state->sortkey)) {
         if (disc->errorf)
             (*disc->errorf)(cx, disc, ERROR_SYSTEM | 2, "sort key error");
         goto bad;
     }
-    if (n)
-    {
+    if (n) {
         state->sortdisc.defkeyf = key;
         state->sortdisc.key = 1;
-    }
-    else if (state->sortkey->head->rflag)
-    {
+    } else if (state->sortkey->head->rflag) {
         state->sortdisc.defkeyf = rev;
         state->sortdisc.key = 1;
     }
@@ -317,8 +297,7 @@ sort_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                state->sortkey->meth,
                state->sortkey->procsize,
                state->sortkey->type,
-               state->sortkey))
-    {
+               state->sortkey)) {
         if (disc->errorf)
             (*disc->errorf)(
             cx, disc, ERROR_SYSTEM | 2, "sort initialization error");
@@ -362,8 +341,7 @@ sort_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     n = stktell(state->file->io);
     s = stkfreeze(state->file->io, 0);
     state->data = data;
-    if (rsprocess(state->sort, s, -n) <= 0)
-    {
+    if (rsprocess(state->sort, s, -n) <= 0) {
         if (disc->errorf)
             (*disc->errorf)(
             cx, disc, ERROR_SYSTEM | 2, "sort record process error");
@@ -379,30 +357,25 @@ sort_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     int r;
 
     r = 0;
-    if (rswrite(state->sort, expr->op, RS_OTEXT))
-    {
+    if (rswrite(state->sort, expr->op, RS_OTEXT)) {
         if (disc->errorf)
             (*disc->errorf)(cx, disc, ERROR_SYSTEM | 2, "sort output error");
         r = -1;
     }
     while (rsdisc(state->sort, NiL, RS_POP))
         ;
-    if (rsclose(state->sort))
-    {
+    if (rsclose(state->sort)) {
         if (disc->errorf)
             (*disc->errorf)(cx, disc, ERROR_SYSTEM | 2, "sort close error");
         r = -1;
     }
-    if (rskeyclose(state->sortkey))
-    {
+    if (rskeyclose(state->sortkey)) {
         if (disc->errorf)
             (*disc->errorf)(cx, disc, ERROR_SYSTEM | 2, "sort key error");
         r = -1;
     }
-    if (state->uniq)
-    {
-        if (rswrite(state->uniq, expr->op, RS_OTEXT))
-        {
+    if (state->uniq) {
+        if (rswrite(state->uniq, expr->op, RS_OTEXT)) {
             if (disc->errorf)
                 (*disc->errorf)(
                 cx, disc, ERROR_SYSTEM | 2, "uniq output error");
@@ -410,15 +383,13 @@ sort_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         }
         while (rsdisc(state->uniq, NiL, RS_POP))
             ;
-        if (rsclose(state->uniq))
-        {
+        if (rsclose(state->uniq)) {
             if (disc->errorf)
                 (*disc->errorf)(
                 cx, disc, ERROR_SYSTEM | 2, "uniq close error");
             r = -1;
         }
-        if (rskeyclose(state->uniqkey))
-        {
+        if (rskeyclose(state->uniqkey)) {
             if (disc->errorf)
                 (*disc->errorf)(cx, disc, ERROR_SYSTEM | 2, "uniq key error");
             r = -1;

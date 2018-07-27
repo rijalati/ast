@@ -89,18 +89,14 @@ ssize_t size;                                /* number of them	*/
                                        + (size ? 0 : sizeof(Vcmethod_t **)))))
         return -1;
 
-    if (_Vcmtlist)
-    {
+    if (_Vcmtlist) {
         mtl->next = _Vcmtlist->next;
         _Vcmtlist->next = mtl;
-    }
-    else
-    {
+    } else {
         mtl->next = NIL(Vcmtlist_t *);
         _Vcmtlist = mtl;
     }
-    if (!size)
-    {
+    if (!size) {
         lst = ( Vcmethod_t ** )(mtl + 1);
         *lst = ( Vcmethod_t * )list;
         list = lst;
@@ -128,8 +124,7 @@ char *path;
     Vcmethod_t *meth;
     Vclib_f libf;
 
-    if ((libf = ( Vclib_f )dlllook(dll, VC_LIB)) && (meth = (*libf)(path)))
-    {
+    if ((libf = ( Vclib_f )dlllook(dll, VC_LIB)) && (meth = (*libf)(path))) {
         vcaddmeth(( Vcmethod_t ** )meth, 0);
         return meth;
     }
@@ -157,8 +152,7 @@ vcmtinit()
     vcaddmeth(_Vcmethods, sizeof(_Vcmethods) / sizeof(_Vcmethods[0]));
 
 #if _PACKAGE_ast
-    if (dls = dllsopen(VC_ID, NiL, NiL))
-    {
+    if (dls = dllsopen(VC_ID, NiL, NiL)) {
         while (dle = dllsread(dls))
             if (dll = dlopen(dle->path, RTLD_LAZY))
                 plugin(dll, dle->path);
@@ -197,10 +191,8 @@ int portable; /* name is in portable format	*/
     if (!(port = portable ? name : vcstrcode(name, buf1, sizeof(buf1))))
         return NIL(Vcmethod_t *);
 
-    for (mtl = _Vcmtlist; mtl; mtl = mtl->next)
-    {
-        for (i = 0; i < mtl->size; ++i)
-        {
+    for (mtl = _Vcmtlist; mtl; mtl = mtl->next) {
+        for (i = 0; i < mtl->size; ++i) {
             if (!(ident = vcgetident(mtl->list[i], buf2, sizeof(buf2))))
                 return NIL(Vcmethod_t *);
             if (strcmp(port, ident) == 0)
@@ -209,8 +201,7 @@ int portable; /* name is in portable format	*/
     }
 
 #if _PACKAGE_ast
-    if (portable && (map = ccmap(CC_ASCII, CC_NATIVE)))
-    {
+    if (portable && (map = ccmap(CC_ASCII, CC_NATIVE))) {
         for (i = 0; i < sizeof(buf2) - 1; i++)
             buf2[i] = map[(( unsigned char * )name)[i]];
         name = buf2;
@@ -247,10 +238,8 @@ Void_t *disc;
     if (!walkf)
         return -1;
 
-    for (mtl = _Vcmtlist; mtl; mtl = mtl->next)
-    {
-        for (i = 0; i < mtl->size; ++i)
-        {
+    for (mtl = _Vcmtlist; mtl; mtl = mtl->next) {
+        for (i = 0; i < mtl->size; ++i) {
             rv = (*walkf)(( Void_t * )mtl->list[i],
                           mtl->list[i]->name,
                           mtl->list[i]->desc,
@@ -288,8 +277,7 @@ int type;    /* different coding types:	*/
         return 0;
 
 #define MAXNAME 128 /* max length for name */
-    for (k = 0; k < sizeof(data); ++k)
-    {
+    for (k = 0; k < sizeof(data); ++k) {
         if (!isalnum(name[k]))
             break;
         data[k] = name[k];
@@ -299,53 +287,43 @@ int type;    /* different coding types:	*/
 
     if (type == 0) /* string */
     {
-        if ((v = ( Vcchar_t * )val) != NIL(Vcchar_t *))
-        {
+        if ((v = ( Vcchar_t * )val) != NIL(Vcchar_t *)) {
             data[k++] = '=';
-            while (k < sizeof(data) - 1)
-            {
+            while (k < sizeof(data) - 1) {
                 if (*v == 0)
                     break;
                 data[k++] = *v++;
             }
         }
-    }
-    else if (type == 1) /* char, code in C-style octals */
+    } else if (type == 1) /* char, code in C-style octals */
     {
         data[k++] = '=';
 
         type = ( unsigned char )TYPECAST(int, val);
         data[k++] = '\\';
-        if (type >= 64)
-        {
+        if (type >= 64) {
             data[k++] = '0' + type / 64;
             type %= 64;
             goto do_8;
-        }
-        else if (type >= 8)
-        {
+        } else if (type >= 8) {
             data[k++] = '0';
         do_8:
             data[k++] = '0' + type / 8;
             type %= 8;
             goto do_0;
-        }
-        else
-        {
+        } else {
             data[k++] = '0';
             data[k++] = '0';
         do_0:
             data[k++] = '0' + type;
         }
-    }
-    else if (type > 0) /* int, code in base 10 */
+    } else if (type > 0) /* int, code in base 10 */
     {
         data[k++] = '=';
 
         if ((type = TYPECAST(int, val)) < 0)
             type = -type;
-        for (v = data + sizeof(data);;)
-        {
+        for (v = data + sizeof(data);;) {
             *--v = '0' + type % 10;
             type /= 10;
             if (type == 0)
@@ -407,8 +385,7 @@ Vcmtarg_t **arg; /* to return the matched argument	*/
             break;
 
     /* extract the name */
-    for (k = 0; *data && k < sizeof(name); ++data, ++k)
-    {
+    for (k = 0; *data && k < sizeof(name); ++data, ++k) {
         if (!isalnum(*data))
             break;
         name[k] = *data;
@@ -467,41 +444,33 @@ int type;                                        /* see above		*/
         vlsz = 0;
     asep = csep == VC_METHSEP ? VC_METHALTSEP : 0;
 
-    for (endbrace = -1;;)
-    {
-        if ((c = *data++) == 0 || c == csep || c == asep)
-        {
+    for (endbrace = -1;;) {
+        if ((c = *data++) == 0 || c == csep || c == asep) {
         end_string:
             if (c == 0) /* point to the zero-byte */
                 data -= 1;
-            if (vlsz > 0)
-            {
+            if (vlsz > 0) {
                 *val = 0;
                 vlsz -= 1;
             }
             return data;
         }
 
-        if (c == '[')
-        {
+        if (c == '[') {
             endbrace = ']';
 
             if (type == 0) /* grab group as is */
             {
-                do
-                {
-                    if (vlsz > 1)
-                    {
+                do {
+                    if (vlsz > 1) {
                         *val++ = c;
                         vlsz -= 1;
                     }
                     if (c == endbrace)
                         break;
-                    if (c == '\\' && *data == endbrace)
-                    {
+                    if (c == '\\' && *data == endbrace) {
                         c = *data++;
-                        if (vlsz > 1)
-                        {
+                        if (vlsz > 1) {
                             *val++ = c;
                             vlsz -= 1;
                         }
@@ -510,8 +479,7 @@ int type;                                        /* see above		*/
 
                 if (c == 0)
                     goto end_string;
-                if (vlsz > 1)
-                {
+                if (vlsz > 1) {
                     *val++ = c;
                     vlsz -= 1;
                 }
@@ -524,25 +492,21 @@ int type;                                        /* see above		*/
                 goto end_string;
         }
 
-        if (c == endbrace)
-        {
+        if (c == endbrace) {
             endbrace = -1;
             continue;
         }
 
-        if (c == '\\')
-        {
+        if (c == '\\') {
             if (type == 0) /* no processing, just keeping next letter */
             {
-                if (vlsz > 1)
-                {
+                if (vlsz > 1) {
                     *val++ = c;
                     vlsz -= 1;
                 }
                 if ((c = *data++) == 0)
                     goto end_string;
-                if (vlsz > 1)
-                {
+                if (vlsz > 1) {
                     *val++ = c;
                     vlsz -= 1;
                 }
@@ -553,16 +517,13 @@ int type;                                        /* see above		*/
                 goto end_string;           /* unexpected eos */
             else if (c >= '0' && c <= '7') /* \ddd notation */
             {
-                for (c -= '0', k = 0; k < 2; ++k)
-                {
+                for (c -= '0', k = 0; k < 2; ++k) {
                     if (*data < '0' || *data > '7')
                         break;
                     c = c * 8 + (*data++ - '0');
                 }
-            }
-            else
-                switch (c)
-                {
+            } else
+                switch (c) {
                 case 't':
                     c = '\t';
                     break;
@@ -578,8 +539,7 @@ int type;                                        /* see above		*/
                 }
         }
 
-        if (vlsz > 1)
-        {
+        if (vlsz > 1) {
             *val++ = c;
             vlsz -= 1;
         }

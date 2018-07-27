@@ -37,8 +37,7 @@ msgsetmask(const char *s)
 
     m = 0;
     invert = *s == '!';
-    for (;;)
-    {
+    for (;;) {
         do
             if (!(c = *s++))
                 goto done;

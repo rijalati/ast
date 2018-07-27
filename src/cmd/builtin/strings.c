@@ -70,8 +70,7 @@ static const char usage[]
 static int
 mapchar(int c)
 {
-    switch (c)
-    {
+    switch (c) {
     case '\a':
         return ('a');
     case '\b':
@@ -103,15 +102,13 @@ outstring(Sfio_t *out, char *cp, int nbytes, int flags)
     int d;
     int n = nbytes;
 
-    while (n-- > 0)
-    {
+    while (n-- > 0) {
         c = *cp;
         if (flags & MULTIBYTE)
             cp += 2;
         else
             cp++;
-        if ((flags & MULTILINE) && (d = mapchar(c)))
-        {
+        if ((flags & MULTILINE) && (d = mapchar(c))) {
             sfputc(out, '\\');
             nbytes++;
             c = d;
@@ -135,8 +132,7 @@ strings(Sfio_t *in, Sfio_t *out, int width, char *format, int flags)
 
     char fmt[64];
 
-    if (format)
-    {
+    if (format) {
         c = strlen(format) - 1;
         if (flags & MULTIBYTE)
             sfsprintf(fmt, sizeof(fmt), "%%%.*sI*%c", c, format, format[c]);
@@ -149,22 +145,16 @@ strings(Sfio_t *in, Sfio_t *out, int width, char *format, int flags)
     }
     sep = (flags & MULTILINE) ? 0 : '\n';
     while ((inp = ( unsigned char * )sfgetr(in, sep, 0))
-           || (inp = ( unsigned char * )sfgetr(in, sep, -1)))
-    {
+           || (inp = ( unsigned char * )sfgetr(in, sep, -1))) {
         c = sfvalue(in);
         inend = inp + c;
         offset += c;
-        for (;;)
-        {
+        for (;;) {
             if (inp >= inend || !(c = *inp++)
-                || !isprint(c) && (!(flags & MULTILINE) || !special(c)))
-            {
-                if (n >= width && !state)
-                {
-                    if (format)
-                    {
-                        if (flags & (MULTIBYTE | MULTILINE))
-                        {
+                || !isprint(c) && (!(flags & MULTILINE) || !special(c))) {
+                if (n >= width && !state) {
+                    if (format) {
+                        if (flags & (MULTIBYTE | MULTILINE)) {
                             if (sfprintf(out,
                                          fmt,
                                          sizeof(offset),
@@ -176,16 +166,14 @@ strings(Sfio_t *in, Sfio_t *out, int width, char *format, int flags)
                                           - ((flags & MULTIBYTE) + 1) * n - 1,
                                           n,
                                           flags);
-                        }
-                        else
+                        } else
                             n = sfprintf(out,
                                          fmt,
                                          sizeof(offset),
                                          offset - (inend - inp) - n,
                                          n,
                                          inp - n - 1);
-                    }
-                    else if (flags & (MULTIBYTE | MULTILINE))
+                    } else if (flags & (MULTIBYTE | MULTILINE))
                         n = outstring(out,
                                       ( char * )inp
                                       - ((flags & MULTIBYTE) + 1) * n - 1,
@@ -202,11 +190,9 @@ strings(Sfio_t *in, Sfio_t *out, int width, char *format, int flags)
                     state = 0;
                 if (inp >= inend)
                     break;
-            }
-            else if (state)
+            } else if (state)
                 n = 0;
-            else
-            {
+            else {
                 if (flags & MULTIBYTE)
                     state = 1;
                 n++;
@@ -229,10 +215,8 @@ b_strings(int argc, char **argv, Shbltin_t *context)
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
     if (argv[1] && streq(argv[1], "-"))
         argv++;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             /* ignore this */
             continue;
@@ -273,18 +257,15 @@ b_strings(int argc, char **argv, Shbltin_t *context)
         error(ERROR_usage(2), "%s", optusage(NiL));
     if (cp = *argv)
         argv++;
-    do
-    {
+    do {
         if (!cp || streq(cp, "-"))
             fp = sfstdin;
-        else if (!(fp = sfopen(NiL, cp, "r")))
-        {
+        else if (!(fp = sfopen(NiL, cp, "r"))) {
             error(ERROR_system(0), "%s: cannot open", cp);
             error_info.errors = 1;
             continue;
         }
-        if (!strings(fp, sfstdout, width, format, flags))
-        {
+        if (!strings(fp, sfstdout, width, format, flags)) {
             error(ERROR_system(0), "%s: failed", cp);
             error_info.errors = 1;
         }

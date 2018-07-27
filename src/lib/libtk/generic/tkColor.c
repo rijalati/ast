@@ -167,8 +167,7 @@ Tk_Uid name;     /* Name of color to allocated (in form
     XColor color;
     Display *display = Tk_Display(tkwin);
 
-    if (!initialized)
-    {
+    if (!initialized) {
         ColorInit();
     }
 
@@ -181,8 +180,7 @@ Tk_Uid name;     /* Name of color to allocated (in form
     nameKey.colormap = Tk_Colormap(tkwin);
     nameKey.display = display;
     nameHashPtr = Tcl_CreateHashEntry(&nameTable, ( char * )&nameKey, &new);
-    if (!new)
-    {
+    if (!new) {
         tkColPtr = ( TkColor * )Tcl_GetHashValue(nameHashPtr);
         tkColPtr->refCount++;
         return &tkColPtr->color;
@@ -194,17 +192,13 @@ Tk_Uid name;     /* Name of color to allocated (in form
      * this saves a server round-trip for those names.
      */
 
-    if (*name != '#')
-    {
+    if (*name != '#') {
         XColor screen;
 
         if (XAllocNamedColor(display, nameKey.colormap, name, &screen, &color)
-            != 0)
-        {
+            != 0) {
             DeleteStressedCmap(display, nameKey.colormap);
-        }
-        else
-        {
+        } else {
             /*
              * Couldn't allocate the color.  Try translating the name to
              * a color value, to see whether the problem is a bad color
@@ -213,8 +207,7 @@ Tk_Uid name;     /* Name of color to allocated (in form
              */
 
             if (XLookupColor(display, nameKey.colormap, name, &color, &screen)
-                == 0)
-            {
+                == 0) {
                 Tcl_AppendResult(
                 interp, "unknown color name \"", name, "\"", ( char * )NULL);
                 Tcl_DeleteHashEntry(nameHashPtr);
@@ -222,22 +215,16 @@ Tk_Uid name;     /* Name of color to allocated (in form
             }
             FindClosestColor(tkwin, &screen, &color);
         }
-    }
-    else
-    {
-        if (XParseColor(display, nameKey.colormap, name, &color) == 0)
-        {
+    } else {
+        if (XParseColor(display, nameKey.colormap, name, &color) == 0) {
             Tcl_AppendResult(
             interp, "invalid color name \"", name, "\"", ( char * )NULL);
             Tcl_DeleteHashEntry(nameHashPtr);
             return ( XColor * )NULL;
         }
-        if (XAllocColor(display, nameKey.colormap, &color) != 0)
-        {
+        if (XAllocColor(display, nameKey.colormap, &color) != 0) {
             DeleteStressedCmap(display, nameKey.colormap);
-        }
-        else
-        {
+        } else {
             FindClosestColor(tkwin, &color, &color);
         }
     }
@@ -297,8 +284,7 @@ XColor *colorPtr; /* Red, green, and blue fields indicate
     TkColor *tkColPtr;
     Display *display = Tk_Display(tkwin);
 
-    if (!initialized)
-    {
+    if (!initialized) {
         ColorInit();
     }
 
@@ -314,8 +300,7 @@ XColor *colorPtr; /* Red, green, and blue fields indicate
     valueKey.display = display;
     valueHashPtr
     = Tcl_CreateHashEntry(&valueTable, ( char * )&valueKey, &new);
-    if (!new)
-    {
+    if (!new) {
         tkColPtr = ( TkColor * )Tcl_GetHashValue(valueHashPtr);
         tkColPtr->refCount++;
         return &tkColPtr->color;
@@ -330,12 +315,9 @@ XColor *colorPtr; /* Red, green, and blue fields indicate
     tkColPtr->color.red = valueKey.red;
     tkColPtr->color.green = valueKey.green;
     tkColPtr->color.blue = valueKey.blue;
-    if (XAllocColor(display, valueKey.colormap, &tkColPtr->color) != 0)
-    {
+    if (XAllocColor(display, valueKey.colormap, &tkColPtr->color) != 0) {
         DeleteStressedCmap(display, valueKey.colormap);
-    }
-    else
-    {
+    } else {
         FindClosestColor(tkwin, &tkColPtr->color, &tkColPtr->color);
     }
     tkColPtr->magic = COLOR_MAGIC;
@@ -379,8 +361,7 @@ char *Tk_NameOfColor(colorPtr) XColor *colorPtr; /* Color whose name is
     static char string[20];
 
     if ((tkColPtr->magic == COLOR_MAGIC)
-        && (tkColPtr->tablePtr == &nameTable))
-    {
+        && (tkColPtr->tablePtr == &nameTable)) {
         void *ptr = tkColPtr->hashPtr->key.words;
         return (( NameKey * )ptr)->name;
     }
@@ -428,13 +409,11 @@ Drawable drawable; /* Drawable in which the color will be
      * allocated by Tk_GetColor.
      */
 
-    if (tkColPtr->magic != COLOR_MAGIC)
-    {
+    if (tkColPtr->magic != COLOR_MAGIC) {
         panic("Tk_GCForColor called with bogus color");
     }
 
-    if (tkColPtr->gc == None)
-    {
+    if (tkColPtr->gc == None) {
         gcValues.foreground = tkColPtr->color.pixel;
         tkColPtr->gc = XCreateGC(
         DisplayOfScreen(tkColPtr->screen), drawable, GCForeground, &gcValues);
@@ -475,14 +454,12 @@ void Tk_FreeColor(colorPtr) XColor *colorPtr; /* Color to be released.  Must
      * allocated by Tk_GetColor.
      */
 
-    if (tkColPtr->magic != COLOR_MAGIC)
-    {
+    if (tkColPtr->magic != COLOR_MAGIC) {
         panic("Tk_FreeColor called with bogus color");
     }
 
     tkColPtr->refCount--;
-    if (tkColPtr->refCount == 0)
-    {
+    if (tkColPtr->refCount == 0) {
 
         /*
          * Careful!  Don't free black or white, since this will
@@ -498,8 +475,7 @@ void Tk_FreeColor(colorPtr) XColor *colorPtr; /* Color to be released.  Must
         visual = tkColPtr->visual;
         if ((visual->class != StaticGray) && (visual->class != StaticColor)
             && (tkColPtr->color.pixel != BlackPixelOfScreen(screen))
-            && (tkColPtr->color.pixel != WhitePixelOfScreen(screen)))
-        {
+            && (tkColPtr->color.pixel != WhitePixelOfScreen(screen))) {
             Tk_ErrorHandler handler;
 
             handler = Tk_CreateErrorHandler(DisplayOfScreen(screen),
@@ -515,8 +491,7 @@ void Tk_FreeColor(colorPtr) XColor *colorPtr; /* Color to be released.  Must
                         0L);
             Tk_DeleteErrorHandler(handler);
         }
-        if (tkColPtr->gc != None)
-        {
+        if (tkColPtr->gc != None) {
             XFreeGC(DisplayOfScreen(screen), tkColPtr->gc);
         }
         DeleteStressedCmap(DisplayOfScreen(screen), tkColPtr->colormap);
@@ -592,25 +567,21 @@ XColor *actualColorPtr;  /* Structure to fill in with RGB and
      * a new one if needed.
      */
 
-    for (stressPtr = dispPtr->stressPtr;; stressPtr = stressPtr->nextPtr)
-    {
-        if (stressPtr == NULL)
-        {
+    for (stressPtr = dispPtr->stressPtr;; stressPtr = stressPtr->nextPtr) {
+        if (stressPtr == NULL) {
             stressPtr = ( TkStressedCmap * )ckalloc(sizeof(TkStressedCmap));
             stressPtr->colormap = colormap;
             template.visualid = XVisualIDFromVisual(Tk_Visual(tkwin));
             visInfoPtr = XGetVisualInfo(
             Tk_Display(tkwin), VisualIDMask, &template, &numFound);
-            if (numFound < 1)
-            {
+            if (numFound < 1) {
                 panic("FindClosestColor couldn't lookup visual");
             }
             stressPtr->numColors = visInfoPtr->colormap_size;
             XFree(( char * )visInfoPtr);
             stressPtr->colorPtr = ( XColor * )ckalloc(
             ( unsigned )(stressPtr->numColors * sizeof(XColor)));
-            for (i = 0; i < stressPtr->numColors; i++)
-            {
+            for (i = 0; i < stressPtr->numColors; i++) {
                 stressPtr->colorPtr[i].pixel = ( unsigned long )i;
             }
             XQueryColors(dispPtr->display,
@@ -621,8 +592,7 @@ XColor *actualColorPtr;  /* Structure to fill in with RGB and
             dispPtr->stressPtr = stressPtr;
             break;
         }
-        if (stressPtr->colormap == colormap)
-        {
+        if (stressPtr->colormap == colormap) {
             break;
         }
     }
@@ -635,17 +605,14 @@ XColor *actualColorPtr;  /* Structure to fill in with RGB and
      * over and over again, until something succeeds.
      */
 
-    while (1)
-    {
-        if (stressPtr->numColors == 0)
-        {
+    while (1) {
+        if (stressPtr->numColors == 0) {
             panic("FindClosestColor ran out of colors");
         }
         closestDistance = 1e30;
         closest = 0;
         for (colorPtr = stressPtr->colorPtr, i = 0; i < stressPtr->numColors;
-             colorPtr++, i++)
-        {
+             colorPtr++, i++) {
             /*
              * Use Euclidean distance in RGB space, weighted by Y (of YIQ)
              * as the objective function;  this accounts for differences
@@ -662,16 +629,14 @@ XColor *actualColorPtr;  /* Structure to fill in with RGB and
             tmp
             = .11 * ((( int )desiredColorPtr->blue) - ( int )colorPtr->blue);
             distance += tmp * tmp;
-            if (distance < closestDistance)
-            {
+            if (distance < closestDistance) {
                 closest = i;
                 closestDistance = distance;
             }
         }
         if (XAllocColor(
             dispPtr->display, colormap, &stressPtr->colorPtr[closest])
-            != 0)
-        {
+            != 0) {
             *actualColorPtr = stressPtr->colorPtr[closest];
             return;
         }
@@ -714,10 +679,8 @@ Colormap colormap; /* Colormap to check for stress. */
 
     for (stressPtr = (( TkWindow * )tkwin)->dispPtr->stressPtr;
          stressPtr != NULL;
-         stressPtr = stressPtr->nextPtr)
-    {
-        if (stressPtr->colormap == colormap)
-        {
+         stressPtr = stressPtr->nextPtr) {
+        if (stressPtr->colormap == colormap) {
             return 1;
         }
     }
@@ -758,16 +721,11 @@ Colormap colormap; /* Colormap to flush. */
     TkDisplay *dispPtr = TkGetDisplay(display);
 
     for (prevPtr = NULL, stressPtr = dispPtr->stressPtr; stressPtr != NULL;
-         prevPtr = stressPtr, stressPtr = stressPtr->nextPtr)
-    {
-        if (stressPtr->colormap == colormap)
-        {
-            if (prevPtr == NULL)
-            {
+         prevPtr = stressPtr, stressPtr = stressPtr->nextPtr) {
+        if (stressPtr->colormap == colormap) {
+            if (prevPtr == NULL) {
                 dispPtr->stressPtr = stressPtr->nextPtr;
-            }
-            else
-            {
+            } else {
                 prevPtr->nextPtr = stressPtr->nextPtr;
             }
             ckfree(( char * )stressPtr->colorPtr);

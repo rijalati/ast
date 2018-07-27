@@ -69,17 +69,14 @@ typedef struct Bgp_s /* method handle		*/
 #    define BGP_METHOD_ANONYMIZE 0x0001
 
 #    define BGPVEC(s, r, t, p, m, v, e, d)                                   \
-        do                                                                   \
-        {                                                                    \
-            if (m > (v)->maxsize)                                            \
-            {                                                                \
+        do {                                                                 \
+            if (m > (v)->maxsize) {                                          \
                 int n;                                                       \
                 (s)->size = roundof((s)->size, sizeof(t));                   \
                 n = ((s)->size >= (s)->temp)                                 \
                     ? 0                                                      \
                     : ((s)->temp - (s)->size) / sizeof(t);                   \
-                if (m > n)                                                   \
-                {                                                            \
+                if (m > n) {                                                 \
                     if ((d)->errorf)                                         \
                         (*(d)->errorf)(                                      \
                         NiL, d, 1, "%s length %d truncated to %d", e, m, n); \
@@ -94,20 +91,16 @@ typedef struct Bgp_s /* method handle		*/
         } while (0)
 
 #    define BGPPERM(s, r, t, p, m, x, e, d)                                  \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             int a;                                                           \
             int n;                                                           \
             a = roundof((s)->size, sizeof(t));                               \
             n = m * sizeof(t) + x;                                           \
-            if ((a + n) <= (s)->temp)                                        \
-            {                                                                \
+            if ((a + n) <= (s)->temp) {                                      \
                 (s)->size = a + n;                                           \
                 memset((r)->data + a, 0, n);                                 \
                 p = ( t * )((r)->data + a);                                  \
-            }                                                                \
-            else                                                             \
-            {                                                                \
+            } else {                                                         \
                 if ((d)->errorf)                                             \
                     (*(d)->errorf)(                                          \
                     NiL, d, 1, "out of space for %s size %d", e, n);         \
@@ -116,19 +109,15 @@ typedef struct Bgp_s /* method handle		*/
         } while (0)
 
 #    define BGPTEMP(s, r, t, p, m, x, e, d)                                  \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             int a;                                                           \
             int n;                                                           \
             n = m * sizeof(t) + x;                                           \
-            if ((a = ( int )(s)->temp - n) >= 0)                             \
-            {                                                                \
+            if ((a = ( int )(s)->temp - n) >= 0) {                           \
                 (s)->temp = truncof(a, ALIGN_BOUND1);                        \
                 memset((r)->data + (s)->temp, 0, n);                         \
                 p = ( t * )((r)->data + (s)->temp);                          \
-            }                                                                \
-            else                                                             \
-            {                                                                \
+            } else {                                                         \
                 if ((d)->errorf)                                             \
                     (*(d)->errorf)(                                          \
                     NiL, d, 1, "out of space for %s size %d", e, n);         \

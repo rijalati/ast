@@ -43,8 +43,7 @@ static Opt_t *freecontext;
 Opt_t *
 optctx(Opt_t *p, Opt_t *o)
 {
-    if (o)
-    {
+    if (o) {
         if (freecontext)
             free(o);
         else
@@ -52,13 +51,10 @@ optctx(Opt_t *p, Opt_t *o)
         if (!p)
             return 0;
     }
-    if (p)
-    {
+    if (p) {
         o = _opt_infop_;
         _opt_infop_ = p;
-    }
-    else
-    {
+    } else {
         if (o = freecontext)
             freecontext = 0;
         else if (!(o = newof(0, Opt_t, 1, 0)))

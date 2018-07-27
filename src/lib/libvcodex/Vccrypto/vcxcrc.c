@@ -40,10 +40,8 @@ crctab()
 {
     Vcuint32_t k, n, c;
 
-    if (!Didtab)
-    {
-        for (n = 0; n < 256; ++n)
-        {
+    if (!Didtab) {
+        for (n = 0; n < 256; ++n) {
             for (c = n, k = 0; k < 8; ++k)
                 c = (c & 1) ? (0xedb88320 ^ (c >> 1)) : (c >> 1);
             Crctab[n] = c;
@@ -76,8 +74,7 @@ crc_init(Vcx_t *xx, Vcxmethod_t *meth, Vcchar_t *key, ssize_t keyz)
     {
         ssize_t sz = sizeof(crc->obuf) < sizeof(xx->key) ? sizeof(crc->obuf)
                                                          : sizeof(xx->key);
-        if ((xx->keyz = _vcxmakekey(key, keyz, xx->key, sz)) < 0)
-        {
+        if ((xx->keyz = _vcxmakekey(key, keyz, xx->key, sz)) < 0) {
             free(crc);
             return -1;
         }
@@ -111,8 +108,7 @@ crc_digest(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
     if (!xx || xx->meth != Vcxcrcsum || !(crc = ( Crc_t * )xx->data))
         return -1;
 
-    if (data && size > 0)
-    {
+    if (data && size > 0) {
         c = crc->crc;
         for (k = 0; k < size; ++k)
             c = Crctab[(c ^ data[k]) & 0xff] ^ (c >> 8);

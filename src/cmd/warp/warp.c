@@ -321,8 +321,7 @@ intercept(Call_t *p)
 
     if (p->warped)
         return;
-    if (!state.dll)
-    {
+    if (!state.dll) {
 #ifdef __EXPORT__
         o = getenv("WARP");
 #else
@@ -332,18 +331,15 @@ intercept(Call_t *p)
         char *t;
 
         e = environ;
-        if (!e)
-        {
+        if (!e) {
             s = "warp: AHA: no env\n";
             write(2, s, strlen(s));
         }
         p = state.env;
         x = &state.env[elementsof(state.env) - 1];
         o = 0;
-        while (s = *e++)
-        {
-            switch (s[0])
-            {
+        while (s = *e++) {
+            switch (s[0]) {
             case 'L':
                 if (s[1] != 'D' || s[2] != '_' || s[3] != 'P' || s[4] != 'R'
                     || s[5] != 'E' || s[6] != 'L' || s[7] != 'O'
@@ -365,8 +361,7 @@ intercept(Call_t *p)
             }
             if (p >= x)
                 break;
-            if (!(t = malloc(strlen(s) + 1)))
-            {
+            if (!(t = malloc(strlen(s) + 1))) {
                 s = "warp: out of space [env]\n";
                 write(2, s, strlen(s));
                 _exit(125);
@@ -374,13 +369,10 @@ intercept(Call_t *p)
             *p++ = strcpy(t, s);
         }
 #endif
-        if (s = o)
-        {
+        if (s = o) {
             v = 'w';
-            for (;;)
-            {
-                switch (*s++)
-                {
+            for (;;) {
+                switch (*s++) {
                 case 0:
                     break;
                 case ' ':
@@ -404,12 +396,10 @@ intercept(Call_t *p)
                     n = 0;
                     while (*s >= '0' && *s <= '9')
                         n = n * 10 + *s++ - '0';
-                    if (n)
-                    {
+                    if (n) {
                         if (c)
                             n = -n;
-                        switch (v)
-                        {
+                        switch (v) {
                         case 'b':
                             state.base = n;
                             break;
@@ -432,8 +422,7 @@ intercept(Call_t *p)
                 }
                 break;
             }
-            if (state.trace)
-            {
+            if (state.trace) {
                 write(2, id + 10, strlen(id + 10));
                 write(2, " ", 1);
                 write(2, o, strlen(o));
@@ -443,21 +432,18 @@ intercept(Call_t *p)
         if (state.factor == 1)
             state.factor = 0;
         state.mix = state.base;
-        if (!(state.dll = dllnext(RTLD_LAZY)))
-        {
+        if (!(state.dll = dllnext(RTLD_LAZY))) {
             write(2, msg, sizeof(msg) - 1);
             exit(2);
         }
     }
-    if (!p->call && !(p->call = ( Syscall_f )dlsym(state.dll, p->mangled)))
-    {
+    if (!p->call && !(p->call = ( Syscall_f )dlsym(state.dll, p->mangled))) {
         write(2, "warp: ", 6);
         write(2, p->mangled, strlen(p->mangled));
         write(2, ": cannot intercept\n", 1);
         exit(2);
     }
-    if (state.trace)
-    {
+    if (state.trace) {
         write(2, "warp: ", 6);
         write(2, p->mangled, strlen(p->mangled));
         write(2, "\n", 1);
@@ -532,8 +518,7 @@ warp_gettimeofday(Call_t *p, struct timeval *tv, void *tz)
     int r;
 
     intercept(p);
-    if ((r = (*( Gettimeofday_f )p->call)(tv, tz)) != -1 && !p->warped)
-    {
+    if ((r = (*( Gettimeofday_f )p->call)(tv, tz)) != -1 && !p->warped) {
         if (p->level != state.level)
             p->warped = 1;
         else if (tv)
@@ -662,8 +647,7 @@ warp_select(Call_t *p,
     if (p->warped || !state.factor || !tv || !tv->tv_sec && !tv->tv_usec)
         return (*( Select_f )p->call)(n, rp, wp, ep, tv);
     x = *tv;
-    if (x.tv_sec)
-    {
+    if (x.tv_sec) {
         UNWARP_REL(x.tv_sec);
         if (x.tv_sec)
             x.tv_usec = 0;
@@ -726,12 +710,10 @@ warp_time(Call_t *p, time_t *clock)
     time_t t;
 
     intercept(p);
-    if ((t = (*( Time_f )p->call)(clock)) != (time_t)(-1) && !p->warped)
-    {
+    if ((t = (*( Time_f )p->call)(clock)) != (time_t)(-1) && !p->warped) {
         if (p->level != state.level)
             p->warped = 1;
-        else
-        {
+        else {
             WARP_ABS(t);
             if (clock)
                 WARP_ABS(*clock);
@@ -790,8 +772,7 @@ warp_times(Call_t *p, struct tms *tv)
     clock_t t;
 
     intercept(p);
-    if ((t = (*( Times_f )p->call)(tv)) != (clock_t)(-1) && !p->warped)
-    {
+    if ((t = (*( Times_f )p->call)(tv)) != (clock_t)(-1) && !p->warped) {
         if (p->level != state.level)
             p->warped = 1;
         else
@@ -857,8 +838,7 @@ warp_utime(Call_t *p, const char *path, const struct utimbuf *tv)
     UNWARP_ABS(tb.actime);
     UNWARP_ABS(tb.modtime);
     r = (*( Utime_f )p->call)(path, &tb);
-    if (p->level != state.level)
-    {
+    if (p->level != state.level) {
         p->warped = 1;
         r = (*( Utime_f )p->call)(path, tv);
     }
@@ -923,14 +903,12 @@ warp_utimensat(int dirfd,
     intercept(p);
     if (!tv || p->warped)
         return (*( Utimensat_f )p->call)(dirfd, path, tv, flags);
-    for (i = 0; i < elementsof(tb); i++)
-    {
+    for (i = 0; i < elementsof(tb); i++) {
         tb[i] = tv[i];
         UNWARP_ABS(tb[i].tv_sec);
     }
     r = (*( Utimensat_f )p->call)(dirfd, path, tb, flags);
-    if (p->level != state.level)
-    {
+    if (p->level != state.level) {
         p->warped = 1;
         r = (*( Utimensat_f )p->call)(dirfd, path, tv, flags);
     }
@@ -997,14 +975,12 @@ warp_utimes(Call_t *p, const char *path, const struct timeval *tv)
     intercept(p);
     if (!tv || p->warped)
         return (*( Utimes_f )p->call)(path, tv);
-    for (i = 0; i < elementsof(tb); i++)
-    {
+    for (i = 0; i < elementsof(tb); i++) {
         tb[i] = tv[i];
         UNWARP_ABS(tb[i].tv_sec);
     }
     r = (*( Utimes_f )p->call)(path, tb);
-    if (p->level != state.level)
-    {
+    if (p->level != state.level) {
         p->warped = 1;
         r = (*( Utimes_f )p->call)(path, tv);
     }
@@ -1065,14 +1041,12 @@ warp_utimets(Call_t *p, const char *path, const struct timespec *tv)
     intercept(p);
     if (!tv || p->warped)
         return (*( Utimets_f )p->call)(path, tv);
-    for (i = 0; i < elementsof(tb); i++)
-    {
+    for (i = 0; i < elementsof(tb); i++) {
         tb[i] = tv[i];
         UNWARP_ABS(tb[i].tv_sec);
     }
     r = (*( Utimets_f )p->call)(path, tb);
-    if (p->level != state.level)
-    {
+    if (p->level != state.level) {
         p->warped = 1;
         r = (*( Utimets_f )p->call)(path, tv);
     }
@@ -1130,13 +1104,11 @@ warp_xst(Call_t *p, const int ver, struct stat *st)
 {
     static const char msg[] = "warp: _STAT_VER\n";
 
-    if (!p->warped)
-    {
+    if (!p->warped) {
         if (p->level != state.level)
             p->warped = 1;
 #    if defined(_STAT64_VER)
-        else if (ver >= _STAT64_VER)
-        {
+        else if (ver >= _STAT64_VER) {
             struct stat64 *st64 = ( struct stat64 * )st;
             static const char msg64[] = "warp: _STAT64_VER\n";
 
@@ -1147,16 +1119,13 @@ warp_xst(Call_t *p, const int ver, struct stat *st)
             WARP_ABS(st64->st_mtime);
         }
 #    endif
-        else if (ver == _STAT_VER)
-        {
+        else if (ver == _STAT_VER) {
             if (state.trace)
                 write(2, msg, sizeof(msg) - 1);
             WARP_ABS(st->st_atime);
             WARP_ABS(st->st_ctime);
             WARP_ABS(st->st_mtime);
-        }
-        else if (state.trace)
-        {
+        } else if (state.trace) {
             static char msg[] = "warp: stat version 0\n";
 
             msg[19] = '0' + ver;
@@ -1250,13 +1219,11 @@ warp_xst64(Call_t *p, const int ver, struct stat64 *st)
 {
     static const char msg[] = "warp: _STAT_VER\n";
 
-    if (!p->warped)
-    {
+    if (!p->warped) {
         if (p->level != state.level)
             p->warped = 1;
 #        if defined(_STAT64_VER)
-        else if (ver >= _STAT64_VER)
-        {
+        else if (ver >= _STAT64_VER) {
             struct stat64 *st64 = ( struct stat64 * )st;
             static const char msg64[] = "warp: _STAT64_VER\n";
 
@@ -1267,16 +1234,13 @@ warp_xst64(Call_t *p, const int ver, struct stat64 *st)
             WARP_ABS(st64->st_mtime);
         }
 #        endif
-        else if (ver == _STAT_VER)
-        {
+        else if (ver == _STAT_VER) {
             if (state.trace)
                 write(2, msg, sizeof(msg) - 1);
             WARP_ABS(st->st_atime);
             WARP_ABS(st->st_ctime);
             WARP_ABS(st->st_mtime);
-        }
-        else if (state.trace)
-        {
+        } else if (state.trace) {
             static char msg[] = "warp: stat version 0\n";
 
             msg[19] = '0' + ver;
@@ -1369,12 +1333,10 @@ __xstat64(const int ver, const char *path, struct stat64 *st)
 static void
 warp_st(Call_t *p, struct stat *st)
 {
-    if (!p->warped)
-    {
+    if (!p->warped) {
         if (p->level != state.level)
             p->warped = 1;
-        else
-        {
+        else {
             WARP_ABS(st->st_atime);
             WARP_ABS(st->st_ctime);
             WARP_ABS(st->st_mtime);
@@ -1598,12 +1560,10 @@ __stat32(const char *path, struct stat *st)
 static void
 warp_st64(Call_t *p, struct stat64 *st)
 {
-    if (!p->warped)
-    {
+    if (!p->warped) {
         if (p->level != state.level)
             p->warped = 1;
-        else
-        {
+        else {
             WARP_ABS(st->st_atime);
             WARP_ABS(st->st_ctime);
             WARP_ABS(st->st_mtime);
@@ -1786,8 +1746,7 @@ warp_clock_gettime(Call_t *p, int clock, struct timespec *tv)
     int r;
 
     intercept(p);
-    if ((r = (*( Clock_gettime_f )p->call)(clock, tv)) != -1 && !p->warped)
-    {
+    if ((r = (*( Clock_gettime_f )p->call)(clock, tv)) != -1 && !p->warped) {
         if (p->level != state.level)
             p->warped = 1;
         else if (tv)
@@ -1851,12 +1810,10 @@ warp_getitimer(Call_t *p, int i, struct itimerval *v)
 
     intercept(p);
     if ((r = (*( Getitimer_f )p->call)(i, v)) != -1 && !p->warped
-        && state.factor)
-    {
+        && state.factor) {
         if (p->level != state.level)
             p->warped = 1;
-        else
-        {
+        else {
             WARP_REL(v->it_interval.tv_sec);
             WARP_REL(v->it_value.tv_sec);
         }
@@ -1925,28 +1882,24 @@ warp_setitimer(Call_t *p,
     if (p->warped || !state.factor)
         return (*( Setitimer_f )p->call)(i, v, o);
     x = *v;
-    if (x.it_interval.tv_sec)
-    {
+    if (x.it_interval.tv_sec) {
         UNWARP_REL(x.it_interval.tv_sec);
         if (x.it_interval.tv_sec)
             x.it_interval.tv_usec = 0;
         else if (!(x.it_interval.tv_usec /= state.factor))
             x.it_interval.tv_usec = 10;
     }
-    if (x.it_value.tv_sec)
-    {
+    if (x.it_value.tv_sec) {
         UNWARP_REL(x.it_value.tv_sec);
         if (x.it_value.tv_sec)
             x.it_value.tv_usec = 0;
         else if (!(x.it_value.tv_usec /= state.factor))
             x.it_value.tv_usec = 10;
     }
-    if ((r = (*( Setitimer_f )p->call)(i, &x, o)) != -1 && !p->warped)
-    {
+    if ((r = (*( Setitimer_f )p->call)(i, &x, o)) != -1 && !p->warped) {
         if (p->level != state.level)
             p->warped = 1;
-        else if (o)
-        {
+        else if (o) {
             WARP_REL(o->it_interval.tv_sec);
             WARP_REL(o->it_value.tv_sec);
         }
@@ -2015,15 +1968,11 @@ warp_env(char *const arge[])
     int n;
 
     env = ( char ** )arge;
-    if (*state.env)
-    {
-        if (e = env)
-        {
-            while (s = *e++)
-            {
+    if (*state.env) {
+        if (e = env) {
+            while (s = *e++) {
                 x = state.env;
-                while (t = *x++)
-                {
+                while (t = *x++) {
                     u = s;
                     while (*t++ == *u++)
                         if (!*t)
@@ -2032,31 +1981,25 @@ warp_env(char *const arge[])
                 goto missing;
             found:;
             }
-        }
-        else
+        } else
             s = *state.env;
     missing:
-        if (s)
-        {
-            if (state.trace)
-            {
+        if (s) {
+            if (state.trace) {
                 s = "warp: execve env missing\n";
                 write(2, s, strlen(s));
             }
-            if (e = env)
-            {
+            if (e = env) {
                 while (*e++)
                     ;
                 n = e - env;
-            }
-            else
+            } else
                 n = 1;
             e = state.env;
             while (*e++)
                 ;
             n += (e - state.env) - 1;
-            if (!(z = ( char ** )malloc(n * sizeof(char **))))
-            {
+            if (!(z = ( char ** )malloc(n * sizeof(char **)))) {
                 s = "warp: execve env malloc error\n";
                 write(2, s, strlen(s));
                 _exit(125);
@@ -2069,26 +2012,20 @@ warp_env(char *const arge[])
             if (e)
                 while (*z++ = *e++)
                     ;
-            if (state.trace)
-            {
+            if (state.trace) {
                 z = env;
-                while (t = *z++)
-                {
+                while (t = *z++) {
                     s = "warp: execve new env ";
                     write(2, s, strlen(s));
                     write(2, t, strlen(t));
                     write(2, "\n", 1);
                 }
             }
-        }
-        else if (state.trace)
-        {
+        } else if (state.trace) {
             s = "warp: execve env ok\n";
             write(2, s, strlen(s));
         }
-    }
-    else if (state.trace)
-    {
+    } else if (state.trace) {
         s = "warp: execve skip check\n";
         write(2, s, strlen(s));
     }

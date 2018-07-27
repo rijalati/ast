@@ -81,8 +81,7 @@ optset(Jcl_t *jcl, int c, Jcldisc_t *disc)
 {
     unsigned long f;
 
-    switch (c)
-    {
+    switch (c) {
     case 'i':
         f = JCL_IMPORT;
         break;
@@ -108,8 +107,7 @@ optset(Jcl_t *jcl, int c, Jcldisc_t *disc)
         error(ERROR_USAGE | 4, "%s", opt_info.arg);
         return 0;
     }
-    if ((jcl->roflags & (JCL_MAPPED | f)) != (JCL_MAPPED | f))
-    {
+    if ((jcl->roflags & (JCL_MAPPED | f)) != (JCL_MAPPED | f)) {
         if (!(jcl->roflags & JCL_MAPPED))
             jcl->roflags |= f;
         if (opt_info.number)
@@ -164,8 +162,7 @@ lastdelim(const char *s)
 char *
 matched(int n, size_t *z, Jcldisc_t *disc)
 {
-    if (n > state.matched)
-    {
+    if (n > state.matched) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "${%d}: not defined for this pattern", n);
@@ -187,36 +184,28 @@ tail(const char *t, const char *s, int set)
     const char *b;
 
     b = s;
-    for (;;)
-    {
-        if (*t == '*')
-        {
-            if (!*++t)
-            {
-                if (set)
-                {
+    for (;;) {
+        if (*t == '*') {
+            if (!*++t) {
+                if (set) {
                     state.matched++;
                     return (s - b)
                            + (state.match[state.matched].length = strlen(
                               state.match[state.matched].string = s));
                 }
                 return 1;
-            }
-            else
-            {
+            } else {
                 t++;
                 if (!(u = nextdelim(s)))
                     break;
-                if (set)
-                {
+                if (set) {
                     state.matched++;
                     state.match[state.matched].length = u - s;
                     state.match[state.matched].string = s;
                 }
                 s = u + 1;
             }
-        }
-        else if (*t != *s++)
+        } else if (*t != *s++)
             break;
         else if (!*t++)
             return s - b - 1;
@@ -248,22 +237,18 @@ match(const char *name)
     all = -1;
     state.match[0].string = name;
     state.matched = 0;
-    for (;;)
-    {
+    for (;;) {
         lp = 0;
-        if (state.match[state.matched].map)
-        {
+        if (state.match[state.matched].map) {
             i = 0;
             buf[0] = name[0];
             if (!(mp
                   = ( Map_t * )dtprev(state.match[state.matched].map, &map)))
                 mp = ( Map_t * )dtfirst(state.match[state.matched].map);
             for (; mp && mp->same >= i;
-                 mp = ( Map_t * )dtnext(state.match[state.matched].map, mp))
-            {
+                 mp = ( Map_t * )dtnext(state.match[state.matched].map, mp)) {
                 for (j = i; name[j] == mp->prefix[j]; j++)
-                    if (!name[j])
-                    {
+                    if (!name[j]) {
                         if (mp->tail)
                             break;
                         mp->length = j + n;
@@ -276,8 +261,7 @@ match(const char *name)
                         return mp;
                     }
                 if (!mp->prefix[j]
-                    && (!mp->tail || tail(mp->tail, &name[j], 0)))
-                {
+                    && (!mp->tail || tail(mp->tail, &name[j], 0))) {
                     i = j;
                     lp = mp;
                     lp->length = j + n;
@@ -290,8 +274,7 @@ match(const char *name)
                 }
             }
         }
-        if (lp)
-        {
+        if (lp) {
             if (lp->tail)
                 lp->length += tail(lp->tail, &name[i], 1);
             return lp;
@@ -301,8 +284,7 @@ match(const char *name)
         if (state.matched >= state.matches)
             break;
         state.matched++;
-        if (!(s = nextdelim(name)))
-        {
+        if (!(s = nextdelim(name))) {
             if (state.match[state.matched].all)
                 all = state.matched;
             break;
@@ -311,12 +293,10 @@ match(const char *name)
         n += (state.match[state.matched].length = s - name) + 1;
         name = s + 1;
     }
-    if (all >= 0)
-    {
+    if (all >= 0) {
         state.match[0].length = strlen(state.match[0].string);
         mp = state.match[all].all;
-        switch (all)
-        {
+        switch (all) {
         case 0:
             all++;
             state.match[1].string = state.match[0].string;
@@ -350,23 +330,19 @@ suffix(Sfio_t *sp, const char *s, Jcldisc_t *disc)
     Suf_t *xp;
     int n;
 
-    if (!state.suf)
-    {
+    if (!state.suf) {
         state.sufdisc.link = offsetof(Suf_t, link);
         state.sufdisc.key = offsetof(Suf_t, name);
         state.sufdisc.size = 0;
-        if (!(state.suf = dtopen(&state.sufdisc, Dtoset)))
-        {
+        if (!(state.suf = dtopen(&state.sufdisc, Dtoset))) {
             sfclose(sp);
             nospace(NiL, disc);
             return -1;
         }
     }
-    if (!dtmatch(state.suf, s))
-    {
+    if (!dtmatch(state.suf, s)) {
         n = strlen(s);
-        if (!(xp = newof(0, Suf_t, 1, n)))
-        {
+        if (!(xp = newof(0, Suf_t, 1, n))) {
             sfclose(sp);
             nospace(NiL, disc);
             return -1;
@@ -406,23 +382,18 @@ jclmap(Jcl_t *jcl, const char *file, Jcldisc_t *disc)
     char tmp[PATH_MAX];
 
     jcl->flags |= JCL_MAPPED;
-    if (!file || !*file)
-    {
+    if (!file || !*file) {
         file = JCL_MAPFILE;
         dontcare = 1;
-    }
-    else if (streq(file, "-"))
+    } else if (streq(file, "-"))
         return 0;
     else
         dontcare = 0;
-    if (!(sp = sfopen(NiL, file, "r")))
-    {
+    if (!(sp = sfopen(NiL, file, "r"))) {
         sp = 0;
-        if (!strchr(file, '/'))
-        {
+        if (!strchr(file, '/')) {
             sfsprintf(tmp, sizeof(tmp), "lib/jcl/%s", file);
-            if (!pathpath(tmp, "", PATH_REGULAR, buf, sizeof(buf)))
-            {
+            if (!pathpath(tmp, "", PATH_REGULAR, buf, sizeof(buf))) {
                 if (dontcare)
                     return 0;
                 if (disc->errorf)
@@ -432,8 +403,7 @@ jclmap(Jcl_t *jcl, const char *file, Jcldisc_t *disc)
             }
             sp = sfopen(NiL, file = ( char * )buf, "r");
         }
-        if (!sp)
-        {
+        if (!sp) {
             if (disc->errorf)
                 (*disc->errorf)(
                 NiL, disc, ERROR_SYSTEM | 2, "%s: cannot read map file", file);
@@ -444,39 +414,30 @@ jclmap(Jcl_t *jcl, const char *file, Jcldisc_t *disc)
     error_info.file = ( char * )file;
     oline = error_info.line;
     error_info.line = 0;
-    while (s = sfgetr(sp, '\n', 1))
-    {
+    while (s = sfgetr(sp, '\n', 1)) {
         error_info.line++;
         if (*s != '#'
-            && tokscan(s, NiL, " %s %v ", &op, arg, elementsof(arg)) >= 1)
-        {
-            if (streq(op, "export"))
-            {
+            && tokscan(s, NiL, " %s %v ", &op, arg, elementsof(arg)) >= 1) {
+            if (streq(op, "export")) {
                 n = 0;
                 while (s = arg[n++])
                     if (!jclsym(jcl, s, NiL, JCL_SYM_EXPORT) && disc->errorf)
                         (*disc->errorf)(
                         NiL, disc, 1, "%s: invalid assignment", s);
-            }
-            else if (streq(op, "map"))
-            {
-                if (!(s = arg[0]) || !arg[1])
-                {
+            } else if (streq(op, "map")) {
+                if (!(s = arg[0]) || !arg[1]) {
                     if (disc->errorf)
                         (*disc->errorf)(
                         NiL, disc, 2, "%s: prefix map [suffix] expected", op);
                     continue;
                 }
                 k = 0;
-                while (*s == '*' && delimiter(*(s + 1)))
-                {
+                while (*s == '*' && delimiter(*(s + 1))) {
                     s += 2;
                     k++;
                 }
-                if (*s == '*')
-                {
-                    if (*(s + 1))
-                    {
+                if (*s == '*') {
+                    if (*(s + 1)) {
                         if (disc->errorf)
                             (*disc->errorf)(
                             NiL,
@@ -492,8 +453,7 @@ jclmap(Jcl_t *jcl, const char *file, Jcldisc_t *disc)
                     s++;
                     k++;
                 }
-                if (k >= elementsof(state.match))
-                {
+                if (k >= elementsof(state.match)) {
                     if (disc->errorf)
                         (*disc->errorf)(
                         NiL,
@@ -510,11 +470,9 @@ jclmap(Jcl_t *jcl, const char *file, Jcldisc_t *disc)
                     state.matches = k;
                 tail = 0;
                 for (t = s; *t; t++)
-                    if (*t == '*')
-                    {
+                    if (*t == '*') {
                         if (!delimiter(*(t - 1)) && --t
-                            || *(t + 1) && !delimiter(*(t + 1)))
-                        {
+                            || *(t + 1) && !delimiter(*(t + 1))) {
                             if (disc->errorf)
                                 (*disc->errorf)(
                                 NiL,
@@ -531,17 +489,14 @@ jclmap(Jcl_t *jcl, const char *file, Jcldisc_t *disc)
                         if (!tail)
                             tail = t;
                     }
-                if (n = t - s)
-                {
-                    if (!state.match[k].map)
-                    {
+                if (n = t - s) {
+                    if (!state.match[k].map) {
                         state.mapped |= (1 << k);
                         state.mapdisc.link = offsetof(Map_t, link);
                         state.mapdisc.key = offsetof(Map_t, prefix);
                         state.mapdisc.size = -1;
                         if (!(state.match[k].map
-                              = dtopen(&state.mapdisc, Dtoset)))
-                        {
+                              = dtopen(&state.mapdisc, Dtoset))) {
                             nospace(NiL, disc);
                             return -1;
                         }
@@ -551,20 +506,16 @@ jclmap(Jcl_t *jcl, const char *file, Jcldisc_t *disc)
                     c = dtmatch(state.match[k].map, s) != 0;
                     if (tail)
                         *tail = '*';
-                    if (c)
-                    {
+                    if (c) {
                         if (disc->errorf)
                             (*disc->errorf)(
                             NiL, disc, 2, "%s: duplicate map prefix", arg[0]);
                         continue;
                     }
-                }
-                else
-                {
+                } else {
                     if (!*(s = arg[0]))
                         s = "*";
-                    if (state.match[k].all)
-                    {
+                    if (state.match[k].all) {
                         if (disc->errorf)
                             (*disc->errorf)(
                             NiL, disc, 2, "%s: duplicate map prefix", s);
@@ -575,8 +526,7 @@ jclmap(Jcl_t *jcl, const char *file, Jcldisc_t *disc)
                                  Map_t,
                                  1,
                                  n + strlen(arg[1])
-                                 + (arg[2] ? strlen(arg[2]) : 0) + 8)))
-                {
+                                 + (arg[2] ? strlen(arg[2]) : 0) + 8))) {
                     sfclose(sp);
                     nospace(NiL, disc);
                     return -1;
@@ -601,22 +551,18 @@ jclmap(Jcl_t *jcl, const char *file, Jcldisc_t *disc)
                 if ((s = ( char * )nextdelim(mp->suffix))
                     && suffix(sp, s, disc))
                     return -1;
-            }
-            else if (streq(op, "set"))
-            {
+            } else if (streq(op, "set")) {
                 const char *use;
                 Jcloptset_f set;
 
-                if (!(use = disc->usage) || !(set = disc->optsetf))
-                {
+                if (!(use = disc->usage) || !(set = disc->optsetf)) {
                     use = usage;
                     set = optset;
                 }
                 jcl->roflags |= JCL_MAPPED;
                 opt = opt_info;
                 n = 0;
-                while (s = arg[n++])
-                {
+                while (s = arg[n++]) {
                     s = expand(jcl, s, JCL_SYM_EXPORT | JCL_SYM_SET);
                     if (*s == '-' || *s == '+')
                         while (c = optstr(s, use))
@@ -630,33 +576,26 @@ jclmap(Jcl_t *jcl, const char *file, Jcldisc_t *disc)
                 }
                 opt_info = opt;
                 jcl->roflags &= ~JCL_MAPPED;
-            }
-            else if (streq(op, "suf") || streq(op, "suffix"))
-            {
+            } else if (streq(op, "suf") || streq(op, "suffix")) {
                 n = 0;
                 while (s = arg[n++])
-                    if (!delimiter(*s))
-                    {
+                    if (!delimiter(*s)) {
                         if (disc->errorf)
                             (*disc->errorf)(
                             NiL, disc, 1, "%s: invalid suffix", s);
-                    }
-                    else if (suffix(sp, s, disc))
+                    } else if (suffix(sp, s, disc))
                         return -1;
-            }
-            else if (disc->errorf)
+            } else if (disc->errorf)
                 (*disc->errorf)(NiL, disc, 1, "%s: unknown op", op);
         }
     }
     sfclose(sp);
     error_info.file = ofile;
     error_info.line = oline;
-    for (k = 0; k <= state.matches; k++)
-    {
+    for (k = 0; k <= state.matches; k++) {
         if (state.match[k].map)
             for (pp = 0, mp = ( Map_t * )dtfirst(state.match[k].map); mp;
-                 pp = mp, mp = ( Map_t * )dtnext(state.match[k].map, mp))
-            {
+                 pp = mp, mp = ( Map_t * )dtnext(state.match[k].map, mp)) {
                 mp->same = 0;
                 if (pp)
                     while (mp->prefix[mp->same] == pp->prefix[mp->same])
@@ -714,62 +653,48 @@ jclpath(Jcl_t *jcl, const char *name)
     if (s = mark(name, 0, 0, jcl->disc))
         name = ( const char * )s;
     if (*name != '/' && (*name != '.' || *(name + 1) != '/') && state.mapped
-        && (m = match(name)))
-    {
+        && (m = match(name))) {
         name += m->length;
-        if (*m->suffix && *name && (n = suflen(name)))
-        {
+        if (*m->suffix && *name && (n = suflen(name))) {
             n = strlen(name) - n;
             sfprintf(
             jcl->vp, "%s%-.*s%s%s", m->map, n, name, m->suffix, name + n);
-        }
-        else if (*m->suffix && *m->map && (n = suflen(m->map)))
-        {
+        } else if (*m->suffix && *m->map && (n = suflen(m->map))) {
             n = strlen(m->map) - n;
             sfprintf(
             jcl->vp, "%-.*s%s%s%s", n, m->map, name, m->suffix, m->map + n);
-        }
-        else
+        } else
             sfprintf(jcl->vp, "%s%s%s", m->map, name, m->suffix);
         if (!(name = sfstruse(jcl->vp)))
             nospace(jcl, NiL);
         name = ( const char * )expand(jcl, name, JCL_SYM_SET);
         message((-7, "match     %s => %s", oname, name));
-    }
-    else
+    } else
         m = 0;
-    if ((s = strrchr(name, '(')) && (t = strrchr(s, ')')) && !*(t + 1))
-    {
-        if (name != ( const char * )sfstrbase(jcl->vp))
-        {
+    if ((s = strrchr(name, '(')) && (t = strrchr(s, ')')) && !*(t + 1)) {
+        if (name != ( const char * )sfstrbase(jcl->vp)) {
             sfprintf(jcl->vp, "%s", name);
             if (!(name = ( const char * )sfstruse(jcl->vp)))
                 nospace(jcl, NiL);
             s = strrchr(name, '(');
         }
         strtol(s + 1, &e, 0);
-        if (*e == ')' && !*(e + 1))
-        {
+        if (*e == ')' && !*(e + 1)) {
             jcl->flags |= JCL_GDG;
             *s++ = '/';
             if (*(s + 1) == '0' && (s + 2) == e
-                || *(s + 1) == '+' && *(s + 2) == '0' && (s + 3) == e)
-            {
+                || *(s + 1) == '+' && *(s + 2) == '0' && (s + 3) == e) {
                 *s++ = '0';
                 *s = 0;
-            }
-            else
-            {
+            } else {
                 *e = 0;
                 sfprintf(jcl->tp, "$(gdginstance %s)", name);
                 if (!(s = sfstruse(jcl->tp)))
                     nospace(jcl, NiL);
-                if (jcl->flags & JCL_EXEC)
-                {
+                if (jcl->flags & JCL_EXEC) {
                     if (!(pp = sfpopen(NiL, s, "r"))
                         || !(t = sfgetr(pp, '\n', 0))
-                        || sfprintf(jcl->vp, "%s", t) || sfclose(pp))
-                    {
+                        || sfprintf(jcl->vp, "%s", t) || sfclose(pp)) {
                         if (jcl->disc->errorf)
                             (*jcl->disc->errorf)(
                             NiL,
@@ -777,20 +702,15 @@ jclpath(Jcl_t *jcl, const char *name)
                             1,
                             "%s: cannot map generation data group",
                             s);
-                    }
-                    else if (!(name = ( const char * )sfstruse(jcl->vp)))
+                    } else if (!(name = ( const char * )sfstruse(jcl->vp)))
                         nospace(jcl, NiL);
-                }
-                else
-                {
+                } else {
                     sfprintf(jcl->vp, "%s", s);
                     if (!(name = ( const char * )sfstruse(jcl->vp)))
                         nospace(jcl, NiL);
                 }
             }
-        }
-        else
-        {
+        } else {
             *s = '/';
             *strrchr(s, ')') = 0;
         }

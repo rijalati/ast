@@ -35,8 +35,7 @@ _vm_open(void)
 {
     Vmalloc_t *vp;
 
-    if (vp = newof(0, Vmalloc_t, 1, 0))
-    {
+    if (vp = newof(0, Vmalloc_t, 1, 0)) {
         vp->current = &vp->base;
         vp->data = vp->current->data;
         vp->size = sizeof(vp->current->data);
@@ -53,8 +52,7 @@ _vm_close(Vmalloc_t *vp)
     if (!vp)
         return -1;
     np = vp->base.next;
-    while (cp = np)
-    {
+    while (cp = np) {
         np = cp->next;
         free(cp);
     }
@@ -73,8 +71,7 @@ _vm_resize(Vmalloc_t *vp, void *o, unsigned long size)
     vp->last = size;
     if (o && size < z)
         return o;
-    if ((o ? (size - z) : size) > vp->size)
-    {
+    if ((o ? (size - z) : size) > vp->size) {
         n = (size > sizeof(vp->current->data))
             ? (size - sizeof(vp->current->data))
             : 0;
@@ -83,20 +80,17 @@ _vm_resize(Vmalloc_t *vp, void *o, unsigned long size)
         vp->current = vp->current->next;
         vp->data = vp->current->data;
         vp->size = n ? 0 : sizeof(vp->current->data);
-        if (o)
-        {
+        if (o) {
             memcpy(vp->data, o, z);
             o = ( void * )vp->data;
         }
-    }
-    else if (o)
+    } else if (o)
         size -= z;
     p = vp->data;
     size = roundof(size, VM_ALIGN);
     if (size >= vp->size)
         vp->size = 0;
-    else
-    {
+    else {
         vp->size -= size;
         vp->data += size;
     }

@@ -59,8 +59,7 @@ static Rsobj_t *copylist(rs) Rs_t *rs;
 {
     reg Copy_t *copy = ( Copy_t * )rs->methdata;
 
-    if (copy->tail)
-    {
+    if (copy->tail) {
         copy->tail->right = 0;
         copy->tail = 0;
     }

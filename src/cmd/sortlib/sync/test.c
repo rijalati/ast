@@ -42,8 +42,7 @@ E00(int index, Rsobj_t *rp, Rsobj_t *dp, void **data)
     int x;
     char env[32];
 
-    if (!(state = ( State_t * )*data))
-    {
+    if (!(state = ( State_t * )*data)) {
         sfsprintf(env, sizeof(env), "SORT_E%02u_STATUS", index);
         if (!(s = getenv(env)))
             s = "";
@@ -54,15 +53,13 @@ E00(int index, Rsobj_t *rp, Rsobj_t *dp, void **data)
         strcpy(state->sp = ( char * )(state + 1), s);
         *data = state;
         x = SS_EXIT_FIRST;
-    }
-    else if (rp == dp)
+    } else if (rp == dp)
         x = SS_EXIT_LAST;
     else
         x = SS_EXIT_MOST;
     state->count++;
     if (*state->sp)
-        switch (state->pretty = *state->sp++)
-        {
+        switch (state->pretty = *state->sp++) {
         case 'A':
         case 'R':
             state->status = RS_ACCEPT;
@@ -78,8 +75,7 @@ E00(int index, Rsobj_t *rp, Rsobj_t *dp, void **data)
             break;
         case 'M':
             state->status = RS_ACCEPT;
-            switch (rp->data[1])
-            {
+            switch (rp->data[1]) {
             case 'a':
                 rp->data[1] = 'z';
                 break;

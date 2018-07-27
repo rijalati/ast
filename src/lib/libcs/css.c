@@ -88,20 +88,17 @@ drop(Css_t *css, Cspoll_t *pp)
         css = state.main;
     fd = pp->fd;
     ip = &state.fdinfo[fd];
-    if (ip->css == css)
-    {
+    if (ip->css == css) {
         user = (ip->events & CS_POLL_USER) != 0;
         ip->events = 0;
         if (css->auth)
             state.auth[fd].seq = 0;
-        if (ip->actionf)
-        {
+        if (ip->actionf) {
             ip->status = CS_POLL_CLOSE;
             if ((*ip->actionf)(css, ip, css->disc) > 0)
                 fd = -1;
         }
-        if (state.fdpolling > 0)
-        {
+        if (state.fdpolling > 0) {
             state.fdpolling--;
             *pp = state.fdpoll[state.fdpolling];
         }
@@ -129,8 +126,7 @@ cssopen(const char *path, Cssdisc_t *disc)
     char *t;
     struct stat st;
 
-    if (!state.servers)
-    {
+    if (!state.servers) {
         csprotect(&cs);
         if ((n = ( int )strtol(astconf("OPEN_MAX", NiL, NiL), NiL, 0))
             < OPEN_MIN)
@@ -169,11 +165,9 @@ cssopen(const char *path, Cssdisc_t *disc)
     css->id = state.main->id;
     css->disc = disc;
     css->fdmax = state.fdmax;
-    if (path && strchr(path, '/'))
-    {
+    if (path && strchr(path, '/')) {
         strcpy(css->path, path);
-        if (tokscan(css->path, NiL, "/dev/%s/%s/%s", &s, NiL, &t) != 3)
-        {
+        if (tokscan(css->path, NiL, "/dev/%s/%s/%s", &s, NiL, &t) != 3) {
             if (css->disc->errorf)
                 (*css->disc->errorf)(
                 css, css->disc, 3, "%s: invalid connect stream path", path);
@@ -184,10 +178,8 @@ cssopen(const char *path, Cssdisc_t *disc)
             *s = 0;
         strncpy(css->service, t, n);
         errno = EBADF;
-        if ((css->fd = csopen(css->state, path, CS_OPEN_CREATE)) < 0)
-        {
-            if (css->disc->errorf)
-            {
+        if ((css->fd = csopen(css->state, path, CS_OPEN_CREATE)) < 0) {
+            if (css->disc->errorf) {
                 if (errno == EEXIST)
                     (*css->disc->errorf)(
                     css, css->disc, 3, "%s: server already running", path);
@@ -201,17 +193,14 @@ cssopen(const char *path, Cssdisc_t *disc)
             goto bad;
         }
         css->disc->flags &= ~CSS_AUTHENTICATE;
-    }
-    else
-    {
+    } else {
         sfsprintf(css->service, n, "/dev/fdp/local/%s", path);
         path = ( char * )cspath(css->state, 0, 0);
         type = strmatch(path, "/dev/??p/*/*") ? path[5] : 'f';
         css->perm = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
         if ((css->disc->flags & CSS_AUTHENTICATE)
             && csopen(
-               css->state, css->service, CS_OPEN_CREATE | CS_OPEN_MOUNT))
-        {
+               css->state, css->service, CS_OPEN_CREATE | CS_OPEN_MOUNT)) {
             if (css->disc->errorf)
                 (*css->disc->errorf)(
                 css,
@@ -227,22 +216,19 @@ cssopen(const char *path, Cssdisc_t *disc)
         && csdaemon(css->state,
                     (css->disc->flags & CSS_PRESERVE)
                     ? ~0L
-                    : ((1 << css->fd) | (1 << 2))))
-    {
+                    : ((1 << css->fd) | (1 << 2)))) {
         if (css->disc->errorf)
             (*css->disc->errorf)(
             css, css->disc, 3, "cannot dive into background");
         goto bad;
     }
-    if (css->state->control)
-    {
+    if (css->state->control) {
         strcpy(css->mount, css->state->mount);
         css->control = strrchr(css->mount, '/') + 1;
         strcpy(css->control + 1, CS_MNT_TAIL);
         s = css->control - 1;
         *s = 0;
-        if (stat(css->mount, &st))
-        {
+        if (stat(css->mount, &st)) {
             if (css->disc->errorf)
                 (*css->disc->errorf)(css,
                                      css->disc,
@@ -251,8 +237,7 @@ cssopen(const char *path, Cssdisc_t *disc)
                                      css->mount);
             goto bad;
         }
-        if ((css->disc->flags & CSS_DAEMON) && chdir(css->mount))
-        {
+        if ((css->disc->flags & CSS_DAEMON) && chdir(css->mount)) {
             if (css->disc->errorf)
                 (*css->disc->errorf)(css,
                                      css->disc,
@@ -275,16 +260,14 @@ cssopen(const char *path, Cssdisc_t *disc)
         while (s > css->mount)
             if (*--s == '/' && ++n >= 3)
                 break;
-        if (n != 3)
-        {
+        if (n != 3) {
             if (css->disc->errorf)
                 (*css->disc->errorf)(
                 css, css->disc, 3, "%s: invalid mount directory", css->mount);
             goto bad;
         }
         *s = 0;
-        if (lstat(css->mount, &st))
-        {
+        if (lstat(css->mount, &st)) {
             if (css->disc->errorf)
                 (*css->disc->errorf)(
                 css,
@@ -301,8 +284,7 @@ cssopen(const char *path, Cssdisc_t *disc)
         if (lstat(s, &st)
             && (mkdir(s, S_IRWXU | S_IRWXG | S_IRWXO)
                 || chmod(s, S_ISVTX | S_IRWXU | S_IRWXG | S_IRWXO)
-                || lstat(s, &st)))
-        {
+                || lstat(s, &st))) {
             if (css->disc->errorf)
                 (*css->disc->errorf)(
                 css,
@@ -317,8 +299,7 @@ cssopen(const char *path, Cssdisc_t *disc)
         css->uid = st.st_uid;
         css->gid = st.st_gid;
         if (type == 't' && *(css->control - 2) != CS_MNT_OTHER
-            && *(css->control - 2) != '.' && *(css->control - 2) != '*')
-        {
+            && *(css->control - 2) != '.' && *(css->control - 2) != '*') {
             css->auth = 1;
             state.nauth++;
             CSTIME();
@@ -334,8 +315,7 @@ cssopen(const char *path, Cssdisc_t *disc)
                      st.st_mode & (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)))
                 || chmod(css->mount,
                          st.st_mode & (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH))
-                || cschallenge(css->state, css->mount, NiL, &css->newkey))
-            {
+                || cschallenge(css->state, css->mount, NiL, &css->newkey)) {
                 if (css->disc->errorf)
                     (*css->disc->errorf)(
                     css,
@@ -361,8 +341,7 @@ cssopen(const char *path, Cssdisc_t *disc)
                            csname(css->state, 0));
         sfsprintf(s, sizeof(css->buf) - (s - css->buf), "/proc/%d", getpid());
         pathsetlink(css->buf, css->mount);
-        if (css->disc->flags & CSS_LOG)
-        {
+        if (css->disc->flags & CSS_LOG) {
             *css->control = CS_MNT_OLDLOG;
             strcpy(css->buf, css->mount);
             *css->control = CS_MNT_LOG;
@@ -381,8 +360,8 @@ cssopen(const char *path, Cssdisc_t *disc)
             ~css->perm
             & (S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH));
     }
-    if ((css->disc->flags & CSS_INTERRUPT) && !(state.flags & CSS_INTERRUPT))
-    {
+    if ((css->disc->flags & CSS_INTERRUPT)
+        && !(state.flags & CSS_INTERRUPT)) {
         state.flags |= CSS_INTERRUPT;
         for (n = 0; n < elementsof(signals); n++)
             if (signal(signals[n], SIG_IGN) != SIG_IGN)
@@ -417,16 +396,12 @@ cssclose(Css_t *css)
 
     pss = 0;
     xss = state.servers;
-    while (xss)
-    {
-        if (xss == css || !css)
-        {
+    while (xss) {
+        if (xss == css || !css) {
             if (xss->disc->exceptf && (xss->disc->flags & CSS_CLOSE))
                 (*xss->disc->exceptf)(css, CSS_CLOSE, 0, xss->disc);
-            if (state.fdinfo)
-            {
-                for (i = k = 0; i < state.fdpolling;)
-                {
+            if (state.fdinfo) {
+                for (i = k = 0; i < state.fdpolling;) {
                     if (state.fdinfo[state.fdpoll[i].fd].css == xss)
                         drop(xss, &state.fdpoll[i]);
                     else
@@ -435,8 +410,7 @@ cssclose(Css_t *css)
                 state.fdpolling = k;
             }
             if (state.pid == getpid() && xss->control)
-                for (i = 0; i < elementsof(mnt); i++)
-                {
+                for (i = 0; i < elementsof(mnt); i++) {
                     *xss->control = mnt[i];
                     remove(xss->control);
                 }
@@ -453,17 +427,14 @@ cssclose(Css_t *css)
             free(oss);
             if (css)
                 return 0;
-        }
-        else
-        {
+        } else {
             pss = xss;
             xss = xss->next;
         }
     }
     if (css)
         return -1;
-    if (!state.servers && state.fdpoll)
-    {
+    if (!state.servers && state.fdpoll) {
         free(state.fdpoll);
         state.fdpoll = 0;
     }
@@ -504,37 +475,29 @@ again:
     ip = state.fdinfo + fd;
     if (op == 0)
         return ip->events ? ip : ( Cssfd_t * )0;
-    if (op & CS_POLL_ARG)
-    {
+    if (op & CS_POLL_ARG) {
         cmd = op & CS_POLL_MASK;
         nfd = (op >> CS_POLL_SHIFT) & CS_POLL_MASK;
         op = nfd == CS_POLL_MASK ? CS_POLL_CLOSE : 0;
-    }
-    else
+    } else
         cmd = 0;
-    if (op != CS_POLL_CLOSE)
-    {
-        if (op & CS_POLL_AUTH)
-        {
+    if (op != CS_POLL_CLOSE) {
+        if (op & CS_POLL_AUTH) {
             if (!css->auth)
                 op &= ~CS_POLL_AUTH;
         }
-        if (op & CS_POLL_CONNECT)
-        {
+        if (op & CS_POLL_CONNECT) {
             op &= ~(CS_POLL_CONTROL | CS_POLL_WRITE);
             op |= CS_POLL_READ;
         }
-        for (n = 0;; n++)
-        {
-            if (n >= state.fdpolling)
-            {
+        for (n = 0;; n++) {
+            if (n >= state.fdpolling) {
                 if (!(op & CS_POLL_AUTH | CS_POLL_CONNECT | CS_POLL_READ
                       | CS_POLL_WRITE))
                     return 0;
                 if (fcntl(fd, F_SETFD, FD_CLOEXEC) && errno == EBADF)
                     return 0;
-                if ((op & (CS_POLL_AUTH | CS_POLL_CONNECT)) == CS_POLL_AUTH)
-                {
+                if ((op & (CS_POLL_AUTH | CS_POLL_CONNECT)) == CS_POLL_AUTH) {
                     state.auth[fd].seq = 1;
                     state.auth[fd].expire = cs.time + EXPIRE;
                 }
@@ -561,15 +524,12 @@ again:
                 return ip;
 #endif
             }
-            if (state.fdpoll[n].fd == fd)
-            {
-                switch (cmd)
-                {
+            if (state.fdpoll[n].fd == fd) {
+                switch (cmd) {
                 case 0:
                     if (ip->css != css)
                         return 0;
-                    if (css->fd != fd)
-                    {
+                    if (css->fd != fd) {
                         if (ip->events & CS_POLL_BEFORE)
                             state.fdbefore--;
                         if (ip->events & CS_POLL_CONNECT)
@@ -583,14 +543,11 @@ again:
                             css->fdlistening++;
                         if (ip->events & CS_POLL_USER)
                             css->fduser++;
-                        if (op & CS_POLL_WRITE)
-                        {
+                        if (op & CS_POLL_WRITE) {
 #ifdef O_NONBLOCK
-                            if (!(ip->set & CS_POLL_WRITE))
-                            {
+                            if (!(ip->set & CS_POLL_WRITE)) {
                                 ip->set |= CS_POLL_WRITE;
-                                if ((flags = fcntl(fd, F_GETFL, 0)) >= 0)
-                                {
+                                if ((flags = fcntl(fd, F_GETFL, 0)) >= 0) {
                                     flags |= O_NONBLOCK;
                                     fcntl(fd, F_SETFL, flags);
                                     messagef((state.main->id,
@@ -630,8 +587,7 @@ again:
                 }
 #if DEBUG
             show:
-                if (error_info.trace <= -9)
-                {
+                if (error_info.trace <= -9) {
                     errorf(
                     state.main->id,
                     NiL,
@@ -656,12 +612,9 @@ again:
                 return ip;
             }
         }
-    }
-    else if (css->fd != fd)
-    {
+    } else if (css->fd != fd) {
         for (n = 0; n < state.fdpolling; n++)
-            if (state.fdpoll[n].fd == fd)
-            {
+            if (state.fdpoll[n].fd == fd) {
                 drop(state.fdinfo[fd].css, &state.fdpoll[n]);
                 break;
             }
@@ -707,8 +660,7 @@ csspoll(unsigned long ms, unsigned long flags)
     char **vp;
     char *va[8];
 
-    if (state.polling && !(flags & CSS_RECURSIVE))
-    {
+    if (state.polling && !(flags & CSS_RECURSIVE)) {
         errno = EBUSY;
         return 0;
     }
@@ -718,22 +670,17 @@ csspoll(unsigned long ms, unsigned long flags)
     else
         timeout = CSTIME() + ((ms + 999) / 1000);
     oerrno = errno;
-    for (;;)
-    {
-        while (state.fdpending <= 0)
-        {
+    for (;;) {
+        while (state.fdpending <= 0) {
             CSTIME();
-            if (timeout && timeout >= cs.time)
-            {
+            if (timeout && timeout >= cs.time) {
                 errno = oerrno;
                 return 0;
             }
-            if (state.nauth && cs.time > state.expire)
-            {
+            if (state.nauth && cs.time > state.expire) {
                 state.expire = cs.time + KEYEXPIRE;
                 for (css = state.servers; css; css = css->next)
-                    if (css->auth)
-                    {
+                    if (css->auth) {
                         css->oldkey = css->newkey;
                         n = cs.time & 077;
                         do
@@ -745,8 +692,8 @@ csspoll(unsigned long ms, unsigned long flags)
                             css->state, css->mount, NiL, &css->newkey))
                             css->newkey = css->oldkey;
                     }
-                for (pp = state.fdpoll; pp < state.fdpoll + state.fdpolling;)
-                {
+                for (pp = state.fdpoll;
+                     pp < state.fdpoll + state.fdpolling;) {
                     ap = state.auth + pp->fd;
                     if (ap->seq && cs.time > ap->expire)
                         drop(state.fdinfo[pp->fd].css, pp);
@@ -755,19 +702,16 @@ csspoll(unsigned long ms, unsigned long flags)
                 }
             }
             to = ms;
-            for (css = state.servers; css; css = css->next)
-            {
+            for (css = state.servers; css; css = css->next) {
                 css->fdpending = 0;
-                if (css->disc->timeout)
-                {
+                if (css->disc->timeout) {
                     if (css->timeout_last != css->disc->timeout)
                         css->timeout_last = css->timeout_remain
                         = css->disc->timeout;
                     if (to > css->timeout_remain)
                         to = css->timeout_remain;
                 }
-                if (css->disc->wakeup)
-                {
+                if (css->disc->wakeup) {
                     if (css->wakeup_last != css->disc->wakeup)
                         css->wakeup_last = css->wakeup_remain
                         = css->disc->wakeup;
@@ -776,15 +720,14 @@ csspoll(unsigned long ms, unsigned long flags)
                 }
             }
             if (state.fdbefore)
-                for (pp = state.fdpoll; pp < state.fdpoll + state.fdpolling;)
-                {
-                    if (pp->events & CS_POLL_BEFORE)
-                    {
+                for (pp = state.fdpoll;
+                     pp < state.fdpoll + state.fdpolling;) {
+                    if (pp->events & CS_POLL_BEFORE) {
                         ip = state.fdinfo + pp->fd;
                         ip->status = CS_POLL_BEFORE;
                         if (ip->actionf
-                            && (*ip->actionf)(ip->css, ip, ip->css->disc) < 0)
-                        {
+                            && (*ip->actionf)(ip->css, ip, ip->css->disc)
+                               < 0) {
                             drop(ip->css, pp);
                             continue;
                         }
@@ -794,15 +737,12 @@ csspoll(unsigned long ms, unsigned long flags)
             z = cs.time;
             if ((state.fdpending
                  = cspoll(&cs, state.fdpoll, state.fdpolling, to))
-                < 0)
-            {
+                < 0) {
                 err = errno;
                 sig = (err == EINTR) ? cs.interrupt : 0;
                 clrsig = 0;
                 clrerr = 0;
-            }
-            else
-            {
+            } else {
                 err = 0;
                 sig = 0;
             }
@@ -812,8 +752,7 @@ csspoll(unsigned long ms, unsigned long flags)
                 z = (cs.time - z) * 1000;
             else
                 z = to;
-            if (ms != CS_NEVER)
-            {
+            if (ms != CS_NEVER) {
                 if (ms > z)
                     ms -= z;
                 else
@@ -825,14 +764,11 @@ csspoll(unsigned long ms, unsigned long flags)
                     if (pp->status & (CS_POLL_READ | CS_POLL_WRITE))
                         state.fdinfo[pp->fd].css->fdpending++;
             for (css = state.servers; css; css = css->next)
-                if (css->disc->exceptf)
-                {
-                    if (css->disc->timeout)
-                    {
+                if (css->disc->exceptf) {
+                    if (css->disc->timeout) {
                         if (css->fdpending)
                             css->timeout_remain = css->disc->timeout;
-                        else if (css->timeout_remain <= z)
-                        {
+                        else if (css->timeout_remain <= z) {
                             if ((css->disc->flags & CSS_DORMANT)
                                 && css->fdpolling
                                    <= (css->fdlistening + css->fduser))
@@ -843,12 +779,10 @@ csspoll(unsigned long ms, unsigned long flags)
                                 css, CSS_TIMEOUT, 0, css->disc);
                             css->timeout_last = css->timeout_remain
                             = css->disc->timeout;
-                        }
-                        else
+                        } else
                             css->timeout_remain -= z;
                     }
-                    if (css->disc->wakeup)
-                    {
+                    if (css->disc->wakeup) {
                         messagef((state.main->id,
                                   NiL,
                                   -4,
@@ -862,30 +796,24 @@ csspoll(unsigned long ms, unsigned long flags)
                                   css->disc->wakeup,
                                   sizeof(css->wakeup_remain),
                                   css->wakeup_remain));
-                        if (css->wakeup_remain <= z)
-                        {
+                        if (css->wakeup_remain <= z) {
                             (*css->disc->exceptf)(
                             css, CSS_WAKEUP, 0, css->disc);
                             css->wakeup_last = css->wakeup_remain
                             = css->disc->wakeup;
-                        }
-                        else
+                        } else
                             css->wakeup_remain -= z;
                     }
-                    if (err)
-                    {
+                    if (err) {
                         if ((css->disc->flags & CSS_INTERRUPT)
-                            && (sig || err == EINTR))
-                        {
+                            && (sig || err == EINTR)) {
                             if (!sig)
                                 clrerr = 1;
                             else if ((*css->disc->exceptf)(
                                      css, CSS_INTERRUPT, sig, css->disc)
                                      >= 0)
                                 clrsig = 1;
-                        }
-                        else if (css->disc->flags & CSS_ERROR)
-                        {
+                        } else if (css->disc->flags & CSS_ERROR) {
                             if ((*css->disc->exceptf)(
                                 css, CSS_ERROR, err, css->disc)
                                 >= 0)
@@ -897,17 +825,15 @@ csspoll(unsigned long ms, unsigned long flags)
                 && (ms != CS_NEVER
                     || (flags & CSS_INTERRUPT) && (sig || err == EINTR)
                        && !clrsig
-                    || (flags & CSS_ERROR) && !sig && err != EINTR && !clrerr))
-            {
+                    || (flags & CSS_ERROR) && !sig && err != EINTR
+                       && !clrerr)) {
                 errno = err;
                 state.polling--;
                 return 0;
             }
         }
-        do
-        {
-            if (++state.fdnext >= state.fdpolling)
-            {
+        do {
+            if (++state.fdnext >= state.fdpolling) {
                 if (state.fdloop-- < 0)
                     break;
                 state.fdnext = 0;
@@ -928,13 +854,10 @@ csspoll(unsigned long ms, unsigned long flags)
             css = ip->css;
             status = pp->status & ~(CS_POLL_BEFORE | CS_POLL_USER);
             pp->status = 0;
-            switch (status)
-            {
+            switch (status) {
             case CS_POLL_AUTH | CS_POLL_CONNECT | CS_POLL_READ:
-                if (css->auth)
-                {
-                    if (csrecv(css->state, fd, &id, &fdnew, 1) == 1)
-                    {
+                if (css->auth) {
+                    if (csrecv(css->state, fd, &id, &fdnew, 1) == 1) {
                         state.auth[fdnew].id = id;
                         cssfd(css, fdnew, CS_POLL_AUTH | CS_POLL_READ);
                     }
@@ -954,8 +877,7 @@ csspoll(unsigned long ms, unsigned long flags)
                                      : CS_POLL_CLOSE);
                 break;
             case CS_POLL_AUTH | CS_POLL_READ:
-                switch ((ap = state.auth + fd)->seq)
-                {
+                switch ((ap = state.auth + fd)->seq) {
                 case 1:
                     if ((n = csread(
                          css->state, fd, css->buf, sizeof(css->buf), CS_LINE))
@@ -964,8 +886,7 @@ csspoll(unsigned long ms, unsigned long flags)
                     css->buf[n - 1] = 0;
                     if (tokscan(css->buf, &t, "%lu", &key) != 1)
                         goto reject;
-                    switch (key)
-                    {
+                    switch (key) {
                     case CS_KEY_SEND:
                         n = sfsprintf(
                         css->tmp, sizeof(css->tmp), "%s\n", css->mount);
@@ -977,8 +898,7 @@ csspoll(unsigned long ms, unsigned long flags)
                             || key != css->newkey && key != css->oldkey
                             || tokscan(t, NiL, "%ld", &ap->id.pid) != 1)
                             goto reject;
-                        if (!(ap->seq = css->challenge))
-                        {
+                        if (!(ap->seq = css->challenge)) {
                             st.st_uid = css->uid;
                             st.st_gid = css->gid;
                             goto ok;
@@ -1034,8 +954,7 @@ csspoll(unsigned long ms, unsigned long flags)
                             break;
                     if (n >= elementsof(css->fid))
                         goto reject;
-                    if (lstat(css->buf, &st))
-                    {
+                    if (lstat(css->buf, &st)) {
                         /*
                          * kick the NonFS cache
                          */
@@ -1058,8 +977,7 @@ csspoll(unsigned long ms, unsigned long flags)
                     if (cswrite(css->state, fd, "\n", 1) != 1)
                         goto reject;
                     pp->events &= ~CS_POLL_AUTH;
-                    if (css->disc->acceptf)
-                    {
+                    if (css->disc->acceptf) {
                         ip = state.fdinfo + pp->fd;
                         ap->id.uid = st.st_uid;
                         ap->id.gid = st.st_gid;
@@ -1100,8 +1018,7 @@ csspoll(unsigned long ms, unsigned long flags)
                           fd,
                           ip->actionf));
                 if (!ip->actionf
-                    || (n = (*ip->actionf)(css, ip, css->disc)) == 0)
-                {
+                    || (n = (*ip->actionf)(css, ip, css->disc)) == 0) {
                     state.fdpending--;
                     state.polling--;
                     return ip;

@@ -68,8 +68,7 @@ b_exec(int argc, char *argv[], Shbltin_t *context)
     logdata.sh = context->shp;
     logdata.sh->st.ioset = 0;
     while (n = optget(argv, sh_optexec))
-        switch (n)
-        {
+        switch (n) {
         case 'a':
             logdata.arg0 = opt_info.arg;
             argc = 0;
@@ -108,23 +107,20 @@ B_login(int argc, char *argv[], Shbltin_t *context)
     const char *pname;
     if (argc)
         shp = context->shp;
-    else
-    {
+    else {
         logp = ( struct login * )context;
         shp = logp->sh;
     }
     pp = ( struct checkpt * )shp->jmplist;
     if (sh_isoption(shp, SH_RESTRICTED))
         errormsg(SH_DICT, ERROR_exit(1), e_restricted, argv[0]);
-    else
-    {
+    else {
         struct argnod *arg = shp->envlist;
         Namval_t *np;
         char *cp;
         if (shp->subshell && !shp->subshare)
             sh_subfork();
-        if (logp && logp->clear)
-        {
+        if (logp && logp->clear) {
 #ifdef _ENV_H
             env_close(shp->env);
             shp->env = env_open(( char ** )0, 3);
@@ -132,11 +128,9 @@ B_login(int argc, char *argv[], Shbltin_t *context)
             nv_scan(shp->var_tree, noexport, 0, NV_EXPORT, NV_EXPORT);
 #endif
         }
-        while (arg)
-        {
+        while (arg) {
             if ((cp = strchr(arg->argval, '='))
-                && (*cp = 0, np = nv_search(arg->argval, shp->var_tree, 0)))
-            {
+                && (*cp = 0, np = nv_search(arg->argval, shp->var_tree, 0))) {
                 nv_onattr(np, NV_EXPORT);
                 sh_envput(shp, np);
             }
@@ -169,8 +163,7 @@ b_let(int argc, char *argv[], Shbltin_t *context)
     Shell_t *shp = context->shp;
     NOT_USED(argc);
     while (r = optget(argv, sh_optlet))
-        switch (r)
-        {
+        switch (r) {
         case ':':
             errormsg(SH_DICT, 2, "%s", opt_info.arg);
             break;
@@ -193,8 +186,7 @@ b_eval(int argc, char *argv[], Shbltin_t *context)
     Shell_t *shp = context->shp;
     NOT_USED(argc);
     while (r = optget(argv, sh_opteval))
-        switch (r)
-        {
+        switch (r) {
         case ':':
             errormsg(SH_DICT, 2, "%s", opt_info.arg);
             break;
@@ -205,8 +197,7 @@ b_eval(int argc, char *argv[], Shbltin_t *context)
     if (error_info.errors)
         errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
     argv += opt_info.index;
-    if (*argv && **argv)
-    {
+    if (*argv && **argv) {
         sh_offstate(shp, SH_MONITOR);
         sh_eval(shp, sh_sfeval(argv), 0);
     }
@@ -229,8 +220,7 @@ b_dot_cmd(int n, char *argv[], Shbltin_t *context)
     Sfio_t *iop = 0;
     short level;
     while (n = optget(argv, sh_optdot))
-        switch (n)
-        {
+        switch (n) {
         case ':':
             errormsg(SH_DICT, 2, "%s", opt_info.arg);
             break;
@@ -244,28 +234,21 @@ b_dot_cmd(int n, char *argv[], Shbltin_t *context)
         errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
     if (shp->dot_depth + 1 > DOTMAX)
         errormsg(SH_DICT, ERROR_exit(1), e_toodeep, script);
-    if (!(np = shp->posix_fun))
-    {
+    if (!(np = shp->posix_fun)) {
         /* check for KornShell style function first */
         np = nv_search(script, shp->fun_tree, 0);
-        if (np && is_afunction(np) && !nv_isattr(np, NV_FPOSIX))
-        {
-            if (!np->nvalue.ip)
-            {
+        if (np && is_afunction(np) && !nv_isattr(np, NV_FPOSIX)) {
+            if (!np->nvalue.ip) {
                 path_search(shp, script, NIL(Pathcomp_t **), 0);
-                if (np->nvalue.ip)
-                {
+                if (np->nvalue.ip) {
                     if (nv_isattr(np, NV_FPOSIX))
                         np = 0;
-                }
-                else
+                } else
                     errormsg(SH_DICT, ERROR_exit(1), e_found, script);
             }
-        }
-        else
+        } else
             np = 0;
-        if (!np)
-        {
+        if (!np) {
             if ((fd = path_open(shp, script, path_get(shp, script))) < 0)
                 errormsg(SH_DICT, ERROR_system(1), e_open, script);
             filename = path_fullname(shp, stkptr(shp->stk, PATH_OFFSET));
@@ -275,8 +258,7 @@ b_dot_cmd(int n, char *argv[], Shbltin_t *context)
     shp->st.lineno
     = np ? (( struct functnod * )nv_funtree(np))->functline : 1;
     shp->st.var_local = shp->st.save_tree = shp->var_tree;
-    if (filename)
-    {
+    if (filename) {
         shp->st.filename = filename;
         shp->st.lineno = 1;
     }
@@ -286,8 +268,7 @@ b_dot_cmd(int n, char *argv[], Shbltin_t *context)
     shp->st.self = &savst;
     shp->topscope = ( Shscope_t * )shp->st.self;
     prevscope->save_tree = shp->var_tree;
-    if (np)
-    {
+    if (np) {
         shp->st.filename
         = np->nvalue.rp->fname ? strdup(np->nvalue.rp->fname) : 0;
     }
@@ -297,14 +278,12 @@ b_dot_cmd(int n, char *argv[], Shbltin_t *context)
         argsave = sh_argnew(shp, argv, &saveargfor);
     sh_pushcontext(shp, &buff, SH_JMPDOT);
     jmpval = sigsetjmp(buff.buff, 0);
-    if (jmpval == 0)
-    {
+    if (jmpval == 0) {
         shp->dot_depth++;
         if (np)
             sh_exec(
             shp, ( Shnode_t * )(nv_funtree(np)), sh_isstate(shp, SH_ERREXIT));
-        else
-        {
+        else {
             buffer = malloc(IOBSIZE + 1);
             iop = sfnew(NIL(Sfio_t *), buffer, IOBSIZE, fd, SF_READ);
             sh_offstate(shp, SH_NOFORK);
@@ -319,8 +298,7 @@ b_dot_cmd(int n, char *argv[], Shbltin_t *context)
     shp->dot_depth--;
     if ((np || argv[1]) && jmpval != SH_JMPSCRIPT)
         sh_argreset(shp, ( struct dolnod * )argsave, saveargfor);
-    else
-    {
+    else {
         prevscope->dolc = shp->st.dolc;
         prevscope->dolv = shp->st.dolv;
     }
@@ -365,8 +343,7 @@ b_shift(int n, char *argv[], Shbltin_t *context)
     char *arg;
     Shell_t *shp = context->shp;
     while ((n = optget(argv, sh_optshift)))
-        switch (n)
-        {
+        switch (n) {
         case ':':
             errormsg(SH_DICT, 2, "%s", opt_info.arg);
             break;
@@ -380,8 +357,7 @@ b_shift(int n, char *argv[], Shbltin_t *context)
     n = ((arg = *argv) ? ( int )sh_arith(shp, arg) : 1);
     if (n < 0 || shp->st.dolc < n)
         errormsg(SH_DICT, ERROR_exit(1), e_number, arg);
-    else
-    {
+    else {
         shp->st.dolv += n;
         shp->st.dolc -= n;
     }
@@ -393,8 +369,7 @@ b_wait(int n, char *argv[], Shbltin_t *context)
 {
     Shell_t *shp = context->shp;
     while ((n = optget(argv, sh_optwait)))
-        switch (n)
-        {
+        switch (n) {
         case ':':
             errormsg(SH_DICT, 2, "%s", opt_info.arg);
             break;
@@ -426,8 +401,7 @@ b_bg(int n, char *argv[], Shbltin_t *context)
     else if (*argv[0] == 'd')
         optstr = sh_optdisown;
     while ((n = optget(argv, optstr)))
-        switch (n)
-        {
+        switch (n) {
         case ':':
             errormsg(SH_DICT, 2, "%s", opt_info.arg);
             break;
@@ -438,8 +412,7 @@ b_bg(int n, char *argv[], Shbltin_t *context)
     if (error_info.errors)
         errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
     argv += opt_info.index;
-    if (!sh_isoption(shp, SH_MONITOR) || !job.jobcontrol)
-    {
+    if (!sh_isoption(shp, SH_MONITOR) || !job.jobcontrol) {
         if (sh_isstate(shp, SH_INTERACTIVE))
             errormsg(SH_DICT, ERROR_exit(1), e_no_jctl);
         return (1);
@@ -457,8 +430,7 @@ b_jobs(int n, char *argv[], Shbltin_t *context)
     int flag = 0;
     Shell_t *shp = context->shp;
     while ((n = optget(argv, sh_optjobs)))
-        switch (n)
-        {
+        switch (n) {
         case 'l':
             flag = JOB_LFLAG;
             break;
@@ -499,8 +471,7 @@ b_universe(int argc, char *argv[], Shbltin_t *context)
     int n;
     NOT_USED(context);
     while ((n = optget(argv, sh_optuniverse)))
-        switch (n)
-        {
+        switch (n) {
         case ':':
             errormsg(SH_DICT, 2, "%s", opt_info.arg);
             break;
@@ -512,13 +483,10 @@ b_universe(int argc, char *argv[], Shbltin_t *context)
     argc -= opt_info.index;
     if (error_info.errors || argc > 1)
         errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
-    if (arg = argv[0])
-    {
+    if (arg = argv[0]) {
         if (!astconf("UNIVERSE", 0, arg))
             errormsg(SH_DICT, ERROR_exit(1), e_badname, arg);
-    }
-    else
-    {
+    } else {
         if (!(arg = astconf("UNIVERSE", 0, 0)))
             errormsg(SH_DICT, ERROR_exit(1), e_nouniverse);
         else
@@ -543,19 +511,15 @@ b_vpath(int argc, char *argv[], Shbltin_t *context)
     const char *optstr;
     char *vend;
     Shell_t *shp = context->shp;
-    if (argv[0][1] == 'p')
-    {
+    if (argv[0][1] == 'p') {
         optstr = sh_optvpath;
         flag = FS3D_VIEW;
-    }
-    else
-    {
+    } else {
         optstr = sh_optvmap;
         flag = FS3D_VERSION;
     }
     while (n = optget(argv, optstr))
-        switch (n)
-        {
+        switch (n) {
         case ':':
             errormsg(SH_DICT, 2, "%s", opt_info.arg);
             break;
@@ -573,28 +537,23 @@ b_vpath(int argc, char *argv[], Shbltin_t *context)
 #    endif
     argv += opt_info.index;
     argc -= opt_info.index;
-    switch (argc)
-    {
+    switch (argc) {
     case 0:
     case 1:
         flag |= FS3D_GET;
-        if ((n = mount(*argv, ( char * )0, flag, 0)) >= 0)
-        {
+        if ((n = mount(*argv, ( char * )0, flag, 0)) >= 0) {
             vend = stkalloc(shp->stk, ++n);
             n = mount(*argv, vend, flag | FS3D_SIZE(n), 0);
         }
         if (n < 0)
             goto failed;
-        if (argc == 1)
-        {
+        if (argc == 1) {
             sfprintf(sfstdout, "%s\n", vend);
             break;
         }
         n = 0;
-        while (flag = *vend++)
-        {
-            if (flag == ' ')
-            {
+        while (flag = *vend++) {
+            if (flag == ' ') {
                 flag = e_sptbnl[n + 1];
                 n = !n;
             }

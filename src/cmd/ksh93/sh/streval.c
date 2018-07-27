@@ -239,10 +239,8 @@ U2F(Sfulong_t u)
 static void
 array_args(Shell_t *shp, char *tp, int n)
 {
-    while (n--)
-    {
-        if (tp[n] == 5)
-        {
+    while (n--) {
+        if (tp[n] == 5) {
             Namval_t *np = nv_namptr(shp->mathnodes, n);
             nv_offattr(np, NV_LDOUBLE);
         }
@@ -269,8 +267,7 @@ arith_exec(Arith_t *ep)
     node.emode = ep->emode;
     node.expr = ep->expr;
     node.elen = ep->elen;
-    if (level++ >= MAXLEVEL)
-    {
+    if (level++ >= MAXLEVEL) {
         arith_error(e_recursive, ep->expr, ep->emode);
         return (0);
     }
@@ -281,16 +278,13 @@ arith_exec(Arith_t *ep)
         shp->stk, ep->staksize * (sizeof(Sfdouble_t) + 1));
     tp = ( char * )(sp + ep->staksize);
     tp--, sp--;
-    while (c = *cp++)
-    {
-        if (c & T_NOFLOAT)
-        {
+    while (c = *cp++) {
+        if (c & T_NOFLOAT) {
             if (type
                 || ((c & T_BINARY) && (c & T_OP) != A_MOD && tp[-1] == 1))
                 arith_error(e_incompatible, ep->expr, ep->emode);
         }
-        switch (c & T_OP)
-        {
+        switch (c & T_OP) {
         case A_JMP:
         case A_JMPZ:
         case A_JMPNZ:
@@ -353,8 +347,7 @@ arith_exec(Arith_t *ep)
             num = (*ep->fun)(&ptr, &node, VALUE, num);
             if (lastval)
                 lastval = node.ovalue;
-            if (node.emode & ARITH_ASSIGNOP)
-            {
+            if (node.emode & ARITH_ASSIGNOP) {
                 lastsub = node.nosub;
                 node.nosub = 0;
                 node.emode &= ~ARITH_ASSIGNOP;
@@ -363,8 +356,7 @@ arith_exec(Arith_t *ep)
                 arith_error(node.value, ptr, ep->emode);
             *++sp = num;
             type = node.isfloat;
-            if ((d = num) > LDBL_LLONG_MAX && num <= LDBL_ULLONG_MAX)
-            {
+            if ((d = num) > LDBL_LLONG_MAX && num <= LDBL_ULLONG_MAX) {
                 type = TYPE_U;
                 d -= LDBL_LLONG_MAX;
             }
@@ -392,21 +384,18 @@ arith_exec(Arith_t *ep)
                 node.eflag = 1;
             node.ptr = 0;
             num = (*ep->fun)(&ptr, &node, ASSIGN, num);
-            if (lastval && node.ptr)
-            {
+            if (lastval && node.ptr) {
                 Sfdouble_t r;
                 node.flag = 0;
                 node.value = lastval;
                 r = (*ep->fun)(&ptr, &node, VALUE, num);
-                if (r != num)
-                {
+                if (r != num) {
                     node.flag = c;
                     node.value = ( char * )dp;
                     num = (*ep->fun)(&ptr, &node, ASSIGN, r);
                 }
-            }
-            else if (lastval && num == 0 && sh_isoption(shp, SH_NOUNSET)
-                     && nv_isnull(( Namval_t * )lastval))
+            } else if (lastval && num == 0 && sh_isoption(shp, SH_NOUNSET)
+                       && nv_isnull(( Namval_t * )lastval))
                 arith_error(( char * )ERROR_dictionary(e_notset),
                             nv_name(( Namval_t * )lastval),
                             3);
@@ -449,12 +438,10 @@ arith_exec(Arith_t *ep)
         case A_TIMES:
             num *= sp[-1];
             break;
-        case A_POW:
-        {
+        case A_POW: {
             extern Math_f sh_mathstdfun(const char *, size_t, short *);
             static Math_2f_f powfn;
-            if (!powfn)
-            {
+            if (!powfn) {
                 powfn = ( Math_2f_f )sh_mathstdfun("pow", 3, NULL);
                 if (!powfn)
                     powfn = ( Math_2f_f )pow;
@@ -471,17 +458,14 @@ arith_exec(Arith_t *ep)
                 num = (Sflong_t)(sp[-1]) % (Sflong_t)(num);
             break;
         case A_DIV:
-            if (type || tp[-1])
-            {
+            if (type || tp[-1]) {
                 num = sp[-1] / num;
                 type = type > tp[-1] ? type : tp[-1];
-            }
-            else if ((Sfulong_t)(num < 0 ? -num : num) == 0)
+            } else if ((Sfulong_t)(num < 0 ? -num : num) == 0)
                 arith_error(e_divzero, ep->expr, ep->emode);
             else if (type == TYPE_U || tp[-1] == TYPE_U)
                 num = U2F((Sfulong_t)(sp[-1]) / (Sfulong_t)(num));
-            else
-            {
+            else {
                 Sfdouble_t x = floorl(sp[-1]);
                 Sfdouble_t y = floorl(num);
                 num = floorl(x / y);
@@ -549,8 +533,7 @@ arith_exec(Arith_t *ep)
             sp--, tp--;
             fun = *(( Math_f * )(ep->code + ( int )(*sp)));
             type = *tp;
-            if (c & T_BINARY)
-            {
+            if (c & T_BINARY) {
                 c &= ~T_BINARY;
                 arg[0] = num;
                 arg[1] = 0;
@@ -571,8 +554,7 @@ arith_exec(Arith_t *ep)
             sp -= 2, tp -= 2;
             fun = *(( Math_f * )(ep->code + ( int )(*sp)));
             type = *tp;
-            if (c & T_BINARY)
-            {
+            if (c & T_BINARY) {
                 c &= ~T_BINARY;
                 arg[0] = sp[1];
                 arg[1] = num;
@@ -603,8 +585,7 @@ arith_exec(Arith_t *ep)
             sp -= 3, tp -= 3;
             fun = *(( Math_f * )(ep->code + ( int )(*sp)));
             type = *tp;
-            if (c & T_BINARY)
-            {
+            if (c & T_BINARY) {
                 c &= ~T_BINARY;
                 arg[0] = sp[1];
                 arg[1] = sp[2];
@@ -620,8 +601,7 @@ arith_exec(Arith_t *ep)
         }
         if (c)
             lastval = 0;
-        if (c & T_BINARY)
-        {
+        if (c & T_BINARY) {
             node.ptr = 0;
             sp--, tp--;
             if (*tp > type)
@@ -645,11 +625,9 @@ gettok(struct vars *vp)
 {
     int c, op;
     vp->errchr = vp->nextchr;
-    while (1)
-    {
+    while (1) {
         c = getchr(vp);
-        switch (op = getop(c))
-        {
+        switch (op = getop(c)) {
         case 0:
             vp->errchr = vp->nextchr;
             continue;
@@ -657,8 +635,7 @@ gettok(struct vars *vp)
             vp->nextchr--;
             break;
         case A_COMMA:
-            if (vp->shp->decomma && (c = peekchr(vp)) >= '0' && c <= '9')
-            {
+            if (vp->shp->decomma && (c = peekchr(vp)) >= '0' && c <= '9') {
                 op = A_DIG;
                 goto keep;
             }
@@ -676,16 +653,14 @@ gettok(struct vars *vp)
             ungetchr(vp);
             break;
         case A_QUEST:
-            if (peekchr(vp) == ':')
-            {
+            if (peekchr(vp) == ':') {
                 getchr(vp);
                 op = A_QCOLON;
             }
             break;
         case A_LT:
         case A_GT:
-            if (peekchr(vp) == c)
-            {
+            if (peekchr(vp) == c) {
                 getchr(vp);
                 op -= 2;
                 break;
@@ -701,8 +676,7 @@ gettok(struct vars *vp)
         case A_MINUS:
         case A_OR:
         case A_AND:
-            if (peekchr(vp) == c)
-            {
+            if (peekchr(vp) == c) {
                 getchr(vp);
                 op--;
             }
@@ -732,8 +706,7 @@ expr(struct vars *vp, int precedence)
 again:
     op = gettok(vp);
     c = 2 * MAXPREC + 1;
-    switch (op)
-    {
+    switch (op) {
     case A_PLUS:
         goto again;
     case A_EOF:
@@ -765,12 +738,10 @@ again:
         wasop = 1;
     }
     invalid = wasop;
-    while (1)
-    {
+    while (1) {
         assignop.value = 0;
         op = gettok(vp);
-        if (op == A_DIG || op == A_REG || op == A_LIT)
-        {
+        if (op == A_DIG || op == A_REG || op == A_LIT) {
             if (!wasop)
                 ERROR(vp, e_synbad);
             goto number;
@@ -778,8 +749,7 @@ again:
         if (wasop++ && op != A_LPAR)
             ERROR(vp, e_synbad);
         /* check for assignment operation */
-        if (peekchr(vp) == '=' && !(strval_precedence[op] & NOASSIGN))
-        {
+        if (peekchr(vp) == '=' && !(strval_precedence[op] & NOASSIGN)) {
             if ((!lvalue.value || precedence > 3))
                 ERROR(vp, e_notlvalue);
             if (precedence == 3)
@@ -787,17 +757,14 @@ again:
             assignop = lvalue;
             getchr(vp);
             c = 3;
-        }
-        else
-        {
+        } else {
             c = (strval_precedence[op] & PRECMASK);
             if (c == MAXPREC || op == A_POW)
                 c++;
             c *= 2;
         }
         /* from here on c is the new precedence level */
-        if (lvalue.value && (op != A_ASSIGN))
-        {
+        if (lvalue.value && (op != A_ASSIGN)) {
             if (vp->staksize++ >= vp->stakmaxsize)
                 vp->stakmaxsize = vp->staksize;
             if (op == A_EQ || op == A_NEQ)
@@ -812,8 +779,7 @@ again:
             if (!(strval_precedence[op] & SEQPOINT))
                 lvalue.value = 0;
             invalid = 0;
-        }
-        else if (precedence == A_LVALUE)
+        } else if (precedence == A_LVALUE)
             ERROR(vp, e_notlvalue);
         if (invalid && op > A_ASSIGN)
             ERROR(vp, e_synbad);
@@ -821,14 +787,12 @@ again:
             goto done;
         if (strval_precedence[op] & RASSOC)
             c--;
-        if ((c < (2 * MAXPREC + 1)) && !(strval_precedence[op] & SEQPOINT))
-        {
+        if ((c < (2 * MAXPREC + 1)) && !(strval_precedence[op] & SEQPOINT)) {
             wasop = 0;
             if (!expr(vp, c))
                 return (false);
         }
-        switch (op)
-        {
+        switch (op) {
         case A_RPAR:
             if (!vp->paren)
                 ERROR(vp, e_paren);
@@ -840,21 +804,18 @@ again:
             wasop = 0;
             if (vp->infun)
                 vp->infun++;
-            else
-            {
+            else {
                 sfputc(shp->stk, A_POP);
                 vp->staksize--;
             }
-            if (!expr(vp, c))
-            {
+            if (!expr(vp, c)) {
                 stkseek(shp->stk, stktell(shp->stk) - 1);
                 return (false);
             }
             lvalue.value = 0;
             break;
 
-        case A_LPAR:
-        {
+        case A_LPAR: {
             int infun = vp->infun;
             int userfun = 0;
             Sfdouble_t (*fun)(Sfdouble_t, ...);
@@ -863,8 +824,7 @@ again:
                 nargs = -nargs;
             fun = lvalue.fun;
             lvalue.fun = 0;
-            if (fun)
-            {
+            if (fun) {
                 if (vp->staksize++ >= vp->stakmaxsize)
                     vp->stakmaxsize = vp->staksize;
                 vp->infun = 1;
@@ -875,8 +835,7 @@ again:
                 sfputc(shp->stk, A_PUSHF);
                 stkpush(shp->stk, vp, fun, Math_f);
                 sfputc(shp->stk, 1 + (userfun == T_BINARY));
-            }
-            else
+            } else
                 vp->infun = 0;
             if (!invalid)
                 ERROR(vp, e_synbad);
@@ -884,12 +843,10 @@ again:
             if (!expr(vp, 1))
                 return (false);
             vp->paren--;
-            if (fun)
-            {
+            if (fun) {
                 int x = (nargs & 010) ? 2 : -1;
                 int call = A_CALL1F;
-                if (nargs & 0100)
-                {
+                if (nargs & 0100) {
                     call = A_CALL1V;
                 }
                 nargs &= 7;
@@ -914,20 +871,17 @@ again:
         case A_ASSIGN:
             if (!lvalue.value)
                 ERROR(vp, e_notlvalue);
-            if (op == A_ASSIGN)
-            {
+            if (op == A_ASSIGN) {
                 sfputc(shp->stk, A_STORE);
                 stkpush(shp->stk, vp, lvalue.value, char *);
                 stkpush(shp->stk, vp, lvalue.flag, short);
                 vp->staksize--;
-            }
-            else
+            } else
                 sfputc(shp->stk, op);
             lvalue.value = 0;
             break;
 
-        case A_QUEST:
-        {
+        case A_QUEST: {
             int offset1, offset2;
             sfputc(shp->stk, A_JMPZ);
             offset1 = stkpush(shp->stk, vp, 0, short);
@@ -954,8 +908,7 @@ again:
 
         case A_QCOLON:
         case A_ANDAND:
-        case A_OROR:
-        {
+        case A_OROR: {
             int offset;
             if (op == A_ANDAND)
                 op = A_JMPZ;
@@ -1001,8 +954,7 @@ again:
             ERROR(vp, e_synbad);
         number:
             wasop = 0;
-            if (*vp->nextchr == 'L' && vp->nextchr[1] == '\'')
-            {
+            if (*vp->nextchr == 'L' && vp->nextchr[1] == '\'') {
                 vp->nextchr++;
                 op = A_LIT;
             }
@@ -1010,24 +962,19 @@ again:
             lvalue.isfloat = 0;
             lvalue.expr = vp->expr;
             lvalue.emode = vp->emode;
-            if (op == A_LIT)
-            {
+            if (op == A_LIT) {
                 /* character constants */
-                if (pos[1] == '\\' && pos[2] == '\'' && pos[3] != '\'')
-                {
+                if (pos[1] == '\\' && pos[2] == '\'' && pos[3] != '\'') {
                     d = '\\';
                     vp->nextchr += 2;
-                }
-                else
+                } else
                     d = chresc(pos + 1, ( char ** )&vp->nextchr);
                 /* posix allows the trailing ' to be optional */
                 if (*vp->nextchr == '\'')
                     vp->nextchr++;
-            }
-            else
+            } else
                 d = (*vp->convert)(&vp->nextchr, &lvalue, LOOKUP, 0);
-            if (vp->nextchr == pos)
-            {
+            if (vp->nextchr == pos) {
                 if (vp->errmsg.value = lvalue.value)
                     vp->errstr = pos;
                 ERROR(vp, op == A_LIT ? e_charconst : e_synbad);
@@ -1051,8 +998,7 @@ again:
             break;
         }
         invalid = 0;
-        if (assignop.value)
-        {
+        if (assignop.value) {
             if (vp->staksize++ >= vp->stakmaxsize)
                 vp->stakmaxsize = vp->staksize;
             if (assignop.flag < 0)
@@ -1088,12 +1034,10 @@ arith_compile(Shell_t *shp,
     stkseek(shp->stk, sizeof(Arith_t));
     if (nounset)
         sh_offoption(shp, SH_NOUNSET);
-    if (!expr(&cur, 0) && cur.errmsg.value)
-    {
+    if (!expr(&cur, 0) && cur.errmsg.value) {
         if (cur.errstr)
             string = cur.errstr;
-        if ((*fun)(&string, &cur.errmsg, MESSAGE, 0) < 0)
-        {
+        if ((*fun)(&string, &cur.errmsg, MESSAGE, 0) < 0) {
             stkseek(shp->stk, 0);
             *last = ( char * )Empty;
             if (nounset)
@@ -1182,8 +1126,7 @@ extern int
 matherr(struct exception *ep)
 {
     const char *message;
-    switch (ep->type)
-    {
+    switch (ep->type) {
 #    ifdef DOMAIN
     case DOMAIN:
         message = ERROR_dictionary(e_domain);

@@ -76,8 +76,7 @@ Sfdisc_t *disc; /* discipline */
     if (addr + n <= sk->extent)
         return sfread(sf, buf, n);
 
-    if ((r = (ssize_t)(sk->extent - addr)) > 0)
-    {
+    if ((r = (ssize_t)(sk->extent - addr)) > 0) {
         if ((w = sfread(sf, buf, r)) != r)
             return w;
         buf = ( char * )buf + r;
@@ -85,13 +84,10 @@ Sfdisc_t *disc; /* discipline */
     }
 
     /* do a raw read */
-    if ((w = sfrd(f, buf, n, disc)) <= 0)
-    {
+    if ((w = sfrd(f, buf, n, disc)) <= 0) {
         sk->eof = 1;
         w = 0;
-    }
-    else
-    {
+    } else {
         if ((p = sfwrite(sf, buf, w)) != w)
             sk->eof = 1;
         if (p > 0)
@@ -119,8 +115,7 @@ Sfdisc_t *disc;
     sk = ( Seek_t * )disc;
     sf = sk->shadow;
 
-    switch (type)
-    {
+    switch (type) {
     case SEEK_SET:
         addr -= sk->discard;
         break;
@@ -136,14 +131,12 @@ Sfdisc_t *disc;
 
     if (addr < 0)
         return (Sfoff_t)(-1);
-    else if (addr > sk->extent)
-    {
+    else if (addr > sk->extent) {
         if (sk->eof)
             return (Sfoff_t)(-1);
 
         /* read enough to reach the seek point */
-        while (addr > sk->extent)
-        {
+        while (addr > sk->extent) {
             if (addr > sk->extent + sizeof(buf))
                 w = sizeof(buf);
             else
@@ -152,8 +145,7 @@ Sfdisc_t *disc;
                 w = r - 1;
             else if ((w = sfwrite(sf, buf, r)) > 0)
                 sk->extent += w;
-            if (w != r)
-            {
+            if (w != r) {
                 sk->eof = 1;
                 break;
             }
@@ -181,8 +173,7 @@ Sfdisc_t *disc;
 
     sk = ( Seek_t * )disc;
 
-    switch (type)
-    {
+    switch (type) {
     case SF_FINAL:
     case SF_DPOP:
         sfclose(sk->shadow);
@@ -224,8 +215,7 @@ int sfdcseekable(f) Sfio_t *f;
     sk->extent = 0;
     sk->eof = 0;
 
-    if (sfdisc(f, ( Sfdisc_t * )sk) != ( Sfdisc_t * )sk)
-    {
+    if (sfdisc(f, ( Sfdisc_t * )sk) != ( Sfdisc_t * )sk) {
         sfclose(sk->shadow);
         free(sk);
         return -1;

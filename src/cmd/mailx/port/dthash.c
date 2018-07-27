@@ -104,10 +104,8 @@ static void dthtab(dt) Dt_t *dt;
 
     /* rehash elements */
     eslot = (oslot = dt->data->htab) + dt->data->ntab;
-    for (; oslot < eslot; ++oslot)
-    {
-        for (t = *oslot; t;)
-        {
+    for (; oslot < eslot; ++oslot) {
+        for (t = *oslot; t;) {
             chain = slot + HINDEX(nslot, t->hash);
             next = t->right;
             t->right = *chain;
@@ -139,22 +137,18 @@ int type;
 
     UNFLATTEN(dt);
 
-    if (!obj)
-    {
+    if (!obj) {
         if (dt->data->size <= 0 || !(type & (DT_CLEAR | DT_FIRST | DT_LAST)))
             return NIL(Void_t *);
 
         eslot = (slot = dt->data->htab) + dt->data->ntab;
-        if (type & DT_CLEAR)
-        { /* clean out all objects */
-            for (; slot < eslot; ++slot)
-            {
+        if (type & DT_CLEAR) { /* clean out all objects */
+            for (; slot < eslot; ++slot) {
                 t = *slot;
                 *slot = NIL(Dtlink_t *);
                 if (!disc->freef && disc->link >= 0)
                     continue;
-                while (t)
-                {
+                while (t) {
                     r = t->right;
                     if (disc->freef)
                         (*disc->freef)(dt, OBJ(t, disc), disc);
@@ -166,8 +160,7 @@ int type;
             dt->data->here = NIL(Dtlink_t *);
             dt->data->size = 0;
             return NIL(Void_t *);
-        }
-        else /* computing the first/last object */
+        } else /* computing the first/last object */
         {
             t = NIL(Dtlink_t *);
             while (slot < eslot && !t)
@@ -184,10 +177,8 @@ int type;
     /* object, key, hash value */
     if (type & DT_MATCH)
         key = ( char * )obj;
-    else
-    {
-        if (type & DT_RENEW)
-        {
+    else {
+        if (type & DT_RENEW) {
             r = ( Dtlink_t * )obj;
             obj = OBJ(r, disc);
         }
@@ -196,16 +187,13 @@ int type;
 
     /* find the object */
     prev = NIL(Dtlink_t *);
-    if (!(t = dt->data->here) || OBJ(t, disc) != obj)
-    {
+    if (!(t = dt->data->here) || OBJ(t, disc) != obj) {
         hsh = HASH(dt, key, disc);
         if (dt->data->ntab == 0)
             t = NIL(Dtlink_t *);
-        else
-        {
+        else {
             t = *(slot = dt->data->htab + HINDEX(dt->data->ntab, hsh));
-            for (; t; prev = t, t = t->right)
-            {
+            for (; t; prev = t, t = t->right) {
                 if (hsh != t->hash)
                     continue;
                 k = ( char * )OBJ(t, disc);
@@ -224,33 +212,27 @@ int type;
         /* about to insert, resize table if necessary */
         if ((dt->data->size += 1) > HLOAD(dt->data->ntab))
             dthtab(dt);
-        if (dt->data->ntab == 0)
-        {
+        if (dt->data->ntab == 0) {
             dt->data->size -= 1;
             return NIL(Void_t *);
         }
 
-        if (type & DT_INSERT)
-        {
+        if (type & DT_INSERT) {
             if (disc->makef && !(obj = (*disc->makef)(dt, obj, disc)))
                 return NIL(Void_t *);
-            if (disc->link < 0)
-            {
+            if (disc->link < 0) {
                 t = ( Dtlink_t * )(*dt->memoryf)(
                 dt, NIL(Void_t *), sizeof(Dthold_t), disc);
-                if (!t)
-                {
+                if (!t) {
                     if (disc->makef && disc->freef)
                         (*disc->freef)(dt, obj, disc);
                     return NIL(Void_t *);
                 }
                 (( Dthold_t * )t)->obj = obj;
-            }
-            else
+            } else
                 t = ELT(obj, disc);
             t->hash = hsh;
-        }
-        else
+        } else
             t = r;
 
         /* insert object */
@@ -261,8 +243,7 @@ int type;
         return obj;
     }
 
-    if (type & (DT_MATCH | DT_SEARCH | DT_INSERT))
-    {
+    if (type & (DT_MATCH | DT_SEARCH | DT_INSERT)) {
         if (prev) /* move to front heuristic */
         {
             prev->right = t->right;
@@ -283,12 +264,10 @@ int type;
     }
 
     slot = dt->data->htab + HINDEX(dt->data->ntab, t->hash);
-    if (type & DT_NEXT)
-    {
+    if (type & DT_NEXT) {
         if (t->right)
             t = t->right;
-        else
-        {
+        else {
             t = NIL(Dtlink_t *);
             eslot = dt->data->htab + dt->data->ntab;
             for (slot += 1; slot < eslot; ++slot)
@@ -297,9 +276,7 @@ int type;
         }
         dt->data->here = t;
         return t ? OBJ(t, disc) : NIL(Void_t *);
-    }
-    else if (type & DT_DELETE)
-    {
+    } else if (type & DT_DELETE) {
         if (!prev && t != *slot)
             for (prev = *slot; prev->right != t; prev = prev->right)
                 ;
@@ -316,16 +293,14 @@ int type;
         dt->data->size -= 1;
         dt->data->here = r;
         return obj;
-    }
-    else /* if(type&DT_PREV) */
+    } else /* if(type&DT_PREV) */
     {
         if (!prev && t != *slot)
             for (prev = *slot; prev->right != t; prev = prev->right)
                 ;
         if (prev)
             t = prev;
-        else
-        {
+        else {
             t = NIL(Dtlink_t *);
             eslot = dt->data->htab;
             for (slot -= 1; slot >= eslot; --slot)

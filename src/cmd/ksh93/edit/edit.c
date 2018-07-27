@@ -70,8 +70,7 @@ static char *savelex;
 static int
 printchar(int c)
 {
-    switch (c)
-    {
+    switch (c) {
 
     case cntl('A'):
         return ('A');
@@ -203,17 +202,14 @@ tty_get(int fd, struct termios *tty)
     Edit_t *ep = ( Edit_t * )(shgd->ed_context);
     if (fd == ep->e_savefd)
         *tty = ep->e_savetty;
-    else
-    {
-        while (tcgetattr(fd, tty) == SYSERR)
-        {
+    else {
+        while (tcgetattr(fd, tty) == SYSERR) {
             if (errno != EINTR)
                 return (SYSERR);
             errno = 0;
         }
         /* save terminal settings if in cannonical state */
-        if (ep->e_raw == 0)
-        {
+        if (ep->e_raw == 0) {
             ep->e_savetty = *tty;
             ep->e_savefd = fd;
         }
@@ -230,15 +226,13 @@ int
 tty_set(int fd, int action, struct termios *tty)
 {
     Edit_t *ep = ( Edit_t * )(shgd->ed_context);
-    if (fd >= 0)
-    {
+    if (fd >= 0) {
 #ifdef future
         if (ep->e_savefd >= 0
             && compare(&ep->e_savetty, tty, sizeof(struct termios)))
             return (0);
 #endif
-        while (tcsetattr(fd, action, tty) == SYSERR)
-        {
+        while (tcsetattr(fd, action, tty) == SYSERR) {
             if (errno != EINTR)
                 return (SYSERR);
             errno = 0;
@@ -314,8 +308,7 @@ tty_raw(int fd, int echomode)
 #if L_MASK || VENIX
     if (ttyparm.sg_flags & LCASE)
         return (-1);
-    if (!(ttyparm.sg_flags & ECHO))
-    {
+    if (!(ttyparm.sg_flags & ECHO)) {
         if (!echomode)
             return (-1);
         echo = 0;
@@ -338,8 +331,7 @@ tty_raw(int fd, int echomode)
     ep->e_ttyspeed = (ttyparm.sg_ospeed >= B1200 ? FAST : SLOW);
 #    ifdef TIOCGLTC
     /* try to remove effect of ^V  and ^Y and ^O */
-    if (ioctl(fd, TIOCGLTC, &l_chars) != SYSERR)
-    {
+    if (ioctl(fd, TIOCGLTC, &l_chars) != SYSERR) {
         lchars = l_chars;
         lchars.t_lnextc = -1;
         lchars.t_flushc = -1;
@@ -349,8 +341,7 @@ tty_raw(int fd, int echomode)
     }
 #    endif /* TIOCGLTC */
 #else
-    if (!(ttyparm.c_lflag & ECHO))
-    {
+    if (!(ttyparm.c_lflag & ECHO)) {
         if (!echomode)
             return (-1);
         echo = 0;
@@ -426,8 +417,7 @@ tty_alt(int fd)
     Edit_t *ep = ( Edit_t * )(shgd->ed_context);
     int mask;
     struct tchars ttychars;
-    switch (ep->e_raw)
-    {
+    switch (ep->e_raw) {
     case ECHOMODE:
         return (-1);
     case ALTMODE:
@@ -436,8 +426,7 @@ tty_alt(int fd)
         tty_cooked(fd);
     }
     l_changed = 0;
-    if (ep->e_ttyspeed == 0)
-    {
+    if (ep->e_ttyspeed == 0) {
         if ((tty_get(fd, &ttyparm) != SYSERR))
             ep->e_ttyspeed = (ttyparm.sg_ospeed >= B1200 ? FAST : SLOW);
         ep->e_raw = ALTMODE;
@@ -452,8 +441,7 @@ tty_alt(int fd)
         l_changed = L_MASK;
     if (ioctl(fd, TIOCLBIS, &mask) == SYSERR)
         return (-1);
-    if (ttychars.t_brkc != ESC)
-    {
+    if (ttychars.t_brkc != ESC) {
         ttychars.t_brkc = ESC;
         l_changed |= T_CHARS;
         if (ioctl(fd, TIOCSETC, &ttychars) == SYSERR)
@@ -473,8 +461,7 @@ int
 tty_alt(int fd)
 {
     Edit_t *ep = ( Edit_t * )(shgd->ed_context);
-    switch (ep->e_raw)
-    {
+    switch (ep->e_raw) {
     case ECHOMODE:
         return (-1);
     case ALTMODE:
@@ -550,8 +537,7 @@ ed_window(void)
     char *cp = nv_getval(COLUMNS);
     if (cp)
         cols = ( int )strtol(cp, ( char ** )0, 10) - 1;
-    else
-    {
+    else {
         astwinsize(2, &rows, &cols);
         if (--cols < 0)
             cols = DFLTWINDOW - 1;
@@ -636,8 +622,7 @@ ed_setup(Edit_t *ep, int fd, int reedit)
     ep->e_fd = fd;
     ep->e_multiline = sh_isoption(shp, SH_MULTILINE) != 0;
 #ifdef SIGWINCH
-    if (shp->winch)
-    {
+    if (shp->winch) {
         int rows = 0, cols = 0;
         int32_t v;
         astwinsize(2, &rows, &cols);
@@ -662,14 +647,11 @@ ed_setup(Edit_t *ep, int fd, int reedit)
 #else
     last = ep->e_prbuff;
 #endif /* KSHELL */
-    if (shp->gd->hist_ptr)
-    {
+    if (shp->gd->hist_ptr) {
         History_t *hp = shp->gd->hist_ptr;
         ep->e_hismax = hist_max(hp);
         ep->e_hismin = hist_min(hp);
-    }
-    else
-    {
+    } else {
         ep->e_hismax = ep->e_hismin = ep->e_hloff = 0;
     }
     ep->e_hline = ep->e_hismax;
@@ -687,22 +669,18 @@ ed_setup(Edit_t *ep, int fd, int reedit)
     {
         int c;
         while (prev = last, c = mbchar(last))
-            switch (c)
-            {
-            case ESC:
-            {
+            switch (c) {
+            case ESC: {
                 int skip = 0;
                 ep->e_crlf = 0;
                 if (pp < ppmax)
                     *pp++ = c;
-                for (n = 1; c = *last++; n++)
-                {
+                for (n = 1; c = *last++; n++) {
                     if (pp < ppmax)
                         *pp++ = c;
                     if (c == '\a' || c == ESC || c == '\r')
                         break;
-                    if (skip || (c >= '0' && c <= '9'))
-                    {
+                    if (skip || (c >= '0' && c <= '9')) {
                         skip = 0;
                         continue;
                     }
@@ -734,8 +712,7 @@ ed_setup(Edit_t *ep, int fd, int reedit)
 
             case '\t':
                 /* expand tabs */
-                while ((pp - ep->e_prompt) % TABSIZE)
-                {
+                while ((pp - ep->e_prompt) % TABSIZE) {
                     if (pp >= ppmax)
                         break;
                     *pp++ = ' ';
@@ -747,13 +724,11 @@ ed_setup(Edit_t *ep, int fd, int reedit)
                 break;
 
             default:
-                if (c == myquote)
-                {
+                if (c == myquote) {
                     qlen += inquote;
                     inquote ^= 1;
                 }
-                if (pp < ppmax)
-                {
+                if (pp < ppmax) {
                     if (inquote)
                         qlen++;
                     else if (!is_print(c))
@@ -769,8 +744,7 @@ ed_setup(Edit_t *ep, int fd, int reedit)
     if (pp - ep->e_prompt > qlen)
         ep->e_plen = pp - ep->e_prompt - qlen;
     *pp = 0;
-    if (!ep->e_multiline && (ep->e_wsize -= ep->e_plen) < 7)
-    {
+    if (!ep->e_multiline && (ep->e_wsize -= ep->e_plen) < 7) {
         int shift = 7 - ep->e_wsize;
         ep->e_wsize = 7;
         pp = ep->e_prompt + 1;
@@ -779,8 +753,7 @@ ed_setup(Edit_t *ep, int fd, int reedit)
         last[-ep->e_plen - 2] = '\r';
     }
     sfsync(sfstderr);
-    if (fd == sffileno(sfstderr))
-    {
+    if (fd == sffileno(sfstderr)) {
         /* can't use output buffer when reading from stderr */
         static char *buff;
         if (!buff)
@@ -798,16 +771,14 @@ ed_setup(Edit_t *ep, int fd, int reedit)
         sfset(sfstderr, SF_READ, 1);
     sfwrite(sfstderr, ep->e_outptr, 0);
     ep->e_eol = reedit;
-    if (ep->e_multiline)
-    {
+    if (ep->e_multiline) {
 #ifdef _cmd_tput
         char *term;
         if (!ep->e_term)
             ep->e_term = nv_search("TERM", shp->var_tree, 0);
         if (ep->e_term && (term = nv_getval(ep->e_term))
             && strlen(term) < sizeof(ep->e_termname)
-            && strcmp(term, ep->e_termname))
-        {
+            && strcmp(term, ep->e_termname)) {
             bool r = sh_isoption(shp, SH_RESTRICTED);
             if (r)
                 sh_offoption(shp, SH_RESTRICTED);
@@ -822,8 +793,7 @@ ed_setup(Edit_t *ep, int fd, int reedit)
 #endif
         ep->e_wsize = MAXLINE - (ep->e_plen + 1);
     }
-    if (ep->e_default && (pp = nv_getval(ep->e_default)))
-    {
+    if (ep->e_default && (pp = nv_getval(ep->e_default))) {
         n = strlen(pp);
         if (n > LOOKAHEAD)
             n = LOOKAHEAD;
@@ -832,8 +802,7 @@ ed_setup(Edit_t *ep, int fd, int reedit)
             ep->e_lbuf[n] = *pp++;
         ep->e_default = 0;
     }
-    if (ep->sh->st.trap[SH_KEYTRAP])
-    {
+    if (ep->sh->st.trap[SH_KEYTRAP]) {
         if (!savelex)
             savelex = ( char * )malloc(shp->lexsize);
         if (savelex)
@@ -876,21 +845,18 @@ ed_read(void *context, int fd, char *buff, int size, int reedit)
     int (*waitevent)(int, long, int) = shp->gd->waitevent;
     if (ep->e_raw == ALTMODE)
         mode = 1;
-    if (size < 0)
-    {
+    if (size < 0) {
         mode = 1;
         size = -size;
     }
     sh_onstate(shp, SH_TTYWAIT);
     errno = EINTR;
     shp->gd->waitevent = 0;
-    while (rv < 0 && errno == EINTR)
-    {
+    while (rv < 0 && errno == EINTR) {
         if (shp->trapnote & (SH_SIGSET | SH_SIGTRAP))
             goto done;
         if (ep->sh->winch && sh_isstate(shp, SH_INTERACTIVE)
-            && (sh_isoption(shp, SH_VI) || sh_isoption(shp, SH_EMACS)))
-        {
+            && (sh_isoption(shp, SH_VI) || sh_isoption(shp, SH_EMACS))) {
             Edpos_t lastpos;
             int n, rows, newsize;
             /* move cursor to start of first line */
@@ -901,12 +867,10 @@ ed_read(void *context, int fd, char *buff, int size, int reedit)
             while (n--)
                 ed_putstring(ep, CURSOR_UP);
             if (ep->e_multiline && newsize > ep->e_winsz
-                && (lastpos.line = (ep->e_plen + ep->e_peol) / ep->e_winsz))
-            {
+                && (lastpos.line = (ep->e_plen + ep->e_peol) / ep->e_winsz)) {
                 /* clear the current command line */
                 n = lastpos.line;
-                while (lastpos.line--)
-                {
+                while (lastpos.line--) {
                     ed_nputchar(ep, ep->e_winsz, ' ');
                     ed_putchar(ep, '\n');
                 }
@@ -924,8 +888,7 @@ ed_read(void *context, int fd, char *buff, int size, int reedit)
             if (!ep->e_multiline && ep->e_wsize < MAXLINE)
                 ep->e_wsize = ep->e_winsz - 2;
             ep->e_nocrnl = 1;
-            if (*ep->e_vi_insert)
-            {
+            if (*ep->e_vi_insert) {
                 buff[0] = ESC;
                 buff[1] = cntl('L');
                 buff[2] = 'a';
@@ -934,16 +897,14 @@ ed_read(void *context, int fd, char *buff, int size, int reedit)
             if (sh_isoption(ep->sh, SH_EMACS) || sh_isoption(ep->sh, SH_VI))
                 buff[0] = cntl('L');
             return (1);
-        }
-        else
+        } else
             ep->sh->winch = 0;
         /* an interrupt that should be ignored */
         errno = 0;
         if (!waitevent || (rv = (*waitevent)(fd, -1L, 0)) >= 0)
             rv = sfpkrd(fd, buff, size, delim, -1L, mode);
     }
-    if (rv < 0)
-    {
+    if (rv < 0) {
 #ifdef _hdr_utime
 #    define fixtime()                                                        \
         if (isdevtty)                                                        \
@@ -951,17 +912,15 @@ ed_read(void *context, int fd, char *buff, int size, int reedit)
         int isdevtty = 0;
         struct stat statb;
         struct utimbuf utimes;
-        if (errno == 0 && !ep->e_tty)
-        {
-            if ((ep->e_tty = ttyname(fd)) && stat(ep->e_tty, &statb) >= 0)
-            {
+        if (errno == 0 && !ep->e_tty) {
+            if ((ep->e_tty = ttyname(fd)) && stat(ep->e_tty, &statb) >= 0) {
                 ep->e_tty_ino = statb.st_ino;
                 ep->e_tty_dev = statb.st_dev;
             }
         }
         if (ep->e_tty_ino && fstat(fd, &statb) >= 0
-            && statb.st_ino == ep->e_tty_ino && statb.st_dev == ep->e_tty_dev)
-        {
+            && statb.st_ino == ep->e_tty_ino
+            && statb.st_dev == ep->e_tty_dev) {
             utimes.actime = statb.st_atime;
             utimes.modtime = statb.st_mtime;
             isdevtty = 1;
@@ -969,8 +928,7 @@ ed_read(void *context, int fd, char *buff, int size, int reedit)
 #else
 #    define fixtime()
 #endif /* _hdr_utime */
-        while (1)
-        {
+        while (1) {
             rv = read(fd, buff, size);
             if (rv >= 0 || errno != EINTR)
                 break;
@@ -979,8 +937,7 @@ ed_read(void *context, int fd, char *buff, int size, int reedit)
             /* an interrupt that should be ignored */
             fixtime();
         }
-    }
-    else if (rv >= 0 && mode > 0)
+    } else if (rv >= 0 && mode > 0)
         rv = read(fd, buff, rv > 0 ? rv : 1);
 done:
     shp->gd->waitevent = waitevent;
@@ -1004,16 +961,13 @@ putstack(Edit_t *ep, char string[], int nbyte, int type)
     int size, offset = ep->e_lookahead + nbyte;
     *(endp = &p[nbyte]) = 0;
     endp = &p[nbyte];
-    do
-    {
+    do {
         c = ( int )((*p) & STRIP);
-        if (c < 0x80 && c != '<')
-        {
+        if (c < 0x80 && c != '<') {
             if (type)
                 c = -c;
 #    ifndef CBREAK
-            if (c == '\0')
-            {
+            if (c == '\0') {
                 /*** user break key ***/
                 ep->e_lookahead = 0;
 #        if KSHELL
@@ -1022,12 +976,9 @@ putstack(Edit_t *ep, char string[], int nbyte, int type)
 #        endif /* KSHELL */
             }
 #    endif /* CBREAK */
-        }
-        else
-        {
+        } else {
         again:
-            if ((c = mbchar(p)) >= 0)
-            {
+            if ((c = mbchar(p)) >= 0) {
                 p--; /* incremented below */
                 if (type)
                     c = -c;
@@ -1036,17 +987,13 @@ putstack(Edit_t *ep, char string[], int nbyte, int type)
             else if (errno == EILSEQ)
                 errno = 0;
 #    endif
-            else if ((endp - p) < mbmax())
-            {
-                if ((c = ed_read(ep, ep->e_fd, endp, 1, 0)) == 1)
-                {
+            else if ((endp - p) < mbmax()) {
+                if ((c = ed_read(ep, ep->e_fd, endp, 1, 0)) == 1) {
                     *++endp = 0;
                     goto again;
                 }
                 return (c);
-            }
-            else
-            {
+            } else {
                 ed_ringbell();
                 c = -( int )((*p) & STRIP);
                 offset += mbmax() - 1;
@@ -1056,21 +1003,18 @@ putstack(Edit_t *ep, char string[], int nbyte, int type)
         p++;
     } while (p < endp);
     /* shift lookahead buffer if necessary */
-    if (offset -= ep->e_lookahead)
-    {
+    if (offset -= ep->e_lookahead) {
         for (size = offset; size < nbyte; size++)
             ep->e_lbuf[ep->e_lookahead + size - offset]
             = ep->e_lbuf[ep->e_lookahead + size];
     }
     ep->e_lookahead += nbyte - offset;
 #else
-    while (nbyte > 0)
-    {
+    while (nbyte > 0) {
         c = string[--nbyte] & STRIP;
         ep->e_lbuf[ep->e_lookahead++] = (type ? -c : c);
 #    ifndef CBREAK
-        if (c == '\0')
-        {
+        if (c == '\0') {
             /*** user break key ***/
             ep->e_lookahead = 0;
 #        if KSHELL
@@ -1098,8 +1042,7 @@ ed_getchar(Edit_t *ep, int mode)
 {
     int n, c;
     char readin[LOOKAHEAD + 1];
-    if (!ep->e_lookahead)
-    {
+    if (!ep->e_lookahead) {
         ed_flush(ep);
         ep->e_inmacro = 0;
         /* The while is necessary for reads of partial multbyte chars */
@@ -1108,26 +1051,19 @@ ed_getchar(Edit_t *ep, int mode)
             n = putstack(ep, readin, n, 1);
         *ep->e_vi_insert = 0;
     }
-    if (ep->e_lookahead)
-    {
+    if (ep->e_lookahead) {
         /* check for possible key mapping */
-        if ((c = ep->e_lbuf[--ep->e_lookahead]) < 0)
-        {
-            if (mode <= 0 && -c == ep->e_intr)
-            {
+        if ((c = ep->e_lbuf[--ep->e_lookahead]) < 0) {
+            if (mode <= 0 && -c == ep->e_intr) {
                 killpg(getpgrp(), SIGINT);
                 siglongjmp(ep->e_env, UINTR);
             }
-            if (mode <= 0 && ep->sh->st.trap[SH_KEYTRAP])
-            {
+            if (mode <= 0 && ep->sh->st.trap[SH_KEYTRAP]) {
                 ep->e_keytrap = 1;
                 n = 1;
-                if ((readin[0] = -c) == ESC)
-                {
-                    while (1)
-                    {
-                        if (!ep->e_lookahead)
-                        {
+                if ((readin[0] = -c) == ESC) {
+                    while (1) {
+                        if (!ep->e_lookahead) {
                             if ((c = sfpkrd(ep->e_fd,
                                             readin + n,
                                             1,
@@ -1139,8 +1075,7 @@ ed_getchar(Edit_t *ep, int mode)
                         }
                         if (!ep->e_lookahead)
                             break;
-                        if ((c = ep->e_lbuf[--ep->e_lookahead]) >= 0)
-                        {
+                        if ((c = ep->e_lbuf[--ep->e_lookahead]) >= 0) {
                             ep->e_lookahead++;
                             break;
                         }
@@ -1152,16 +1087,13 @@ ed_getchar(Edit_t *ep, int mode)
                             break;
                     }
                 }
-                if (n = keytrap(ep, readin, n, LOOKAHEAD - n, mode))
-                {
+                if (n = keytrap(ep, readin, n, LOOKAHEAD - n, mode)) {
                     putstack(ep, readin, n, 0);
                     c = ep->e_lbuf[--ep->e_lookahead];
-                }
-                else
+                } else
                     c = ed_getchar(ep, mode);
                 ep->e_keytrap = 0;
-            }
-            else
+            } else
                 c = -c;
         }
         /*** map '\r' to '\n' ***/
@@ -1171,8 +1103,7 @@ ed_getchar(Edit_t *ep, int mode)
             && !(c == '\t' || c == ESC || c == '\\' || c == '='
                  || c == cntl('L') || isdigit(c)))
             ep->e_tabcount = 0;
-    }
-    else
+    } else
         siglongjmp(ep->e_env, (n == 0 ? UEOF : UINTR));
     return (c);
 }
@@ -1202,20 +1133,16 @@ ed_putchar(Edit_t *ep, int c)
     /* check for place holder */
     if (c == MARKER)
         return;
-    if ((size = mbconv(buf, ( wchar_t )c)) > 1)
-    {
+    if ((size = mbconv(buf, ( wchar_t )c)) > 1) {
         for (i = 0; i < (size - 1); i++)
             *dp++ = buf[i];
         c = buf[i];
-    }
-    else
-    {
+    } else {
         buf[0] = c;
         size = 1;
     }
 #endif /* SHOPT_MULTIBYTE */
-    if (buf[0] == '_' && size == 1)
-    {
+    if (buf[0] == '_' && size == 1) {
         *dp++ = ' ';
         *dp++ = '\b';
     }
@@ -1241,24 +1168,19 @@ ed_curpos(Edit_t *ep, genchar *phys, int off, int cur, Edpos_t curpos)
 #if SHOPT_MULTIBYTE
     char p[16];
 #endif /* SHOPT_MULTIBYTE */
-    if (cur && off >= cur)
-    {
+    if (cur && off >= cur) {
         sp += cur;
         off -= cur;
         pos = curpos;
         col = pos.col;
-    }
-    else
-    {
+    } else {
         pos.line = 0;
-        while (col > ep->e_winsz)
-        {
+        while (col > ep->e_winsz) {
             pos.line++;
             col -= (ep->e_winsz + 1);
         }
     }
-    while (off-- > 0)
-    {
+    while (off-- > 0) {
         if (c)
             c = *sp++;
 #if SHOPT_MULTIBYTE
@@ -1287,19 +1209,16 @@ ed_setcursor(Edit_t *ep, genchar *physical, int old, int new, int first)
     Edpos_t newpos;
 
     delta = new - old;
-    if (first < 0)
-    {
+    if (first < 0) {
         first = 0;
         clear = 1;
     }
     if (delta == 0 && !clear)
         return (new);
-    if (ep->e_multiline)
-    {
+    if (ep->e_multiline) {
         ep->e_curpos = ed_curpos(ep, physical, old, 0, ep->e_curpos);
         if (clear && old >= ep->e_peol
-            && (clear = ep->e_winsz - ep->e_curpos.col) > 0)
-        {
+            && (clear = ep->e_winsz - ep->e_curpos.col) > 0) {
             ed_nputchar(ep, clear, ' ');
             ed_nputchar(ep, clear, '\b');
             return (new);
@@ -1309,8 +1228,7 @@ ed_setcursor(Edit_t *ep, genchar *physical, int old, int new, int first)
             && oldline < ep->e_curpos.line && delta < 0)
             ed_putstring(ep, "\r\n");
         oldline = newpos.line;
-        if (ep->e_curpos.line > newpos.line)
-        {
+        if (ep->e_curpos.line > newpos.line) {
             int n, pline, plen = ep->e_plen;
             for (; ep->e_curpos.line > newpos.line; ep->e_curpos.line--)
                 ed_putstring(ep, CURSOR_UP);
@@ -1319,19 +1237,16 @@ ed_setcursor(Edit_t *ep, genchar *physical, int old, int new, int first)
                 plen -= pline * (ep->e_winsz + 1);
             else
                 plen = 0;
-            if ((n = plen - ep->e_curpos.col) > 0)
-            {
+            if ((n = plen - ep->e_curpos.col) > 0) {
                 ep->e_curpos.col += n;
                 ed_putchar(ep, '\r');
                 if (!ep->e_crlf && pline == 0)
                     ed_putstring(ep, ep->e_prompt);
-                else
-                {
+                else {
                     int m = ep->e_winsz + 1 - plen;
                     ed_putchar(ep, '\n');
                     n = plen;
-                    if (m < ed_genlen(physical))
-                    {
+                    if (m < ed_genlen(physical)) {
                         while (physical[m] && n-- > 0)
                             ed_putchar(ep, physical[m++]);
                     }
@@ -1339,9 +1254,7 @@ ed_setcursor(Edit_t *ep, genchar *physical, int old, int new, int first)
                     ed_putstring(ep, CURSOR_UP);
                 }
             }
-        }
-        else if (ep->e_curpos.line < newpos.line)
-        {
+        } else if (ep->e_curpos.line < newpos.line) {
             ed_nputchar(ep, newpos.line - ep->e_curpos.line, '\n');
             ep->e_curpos.line = newpos.line;
             ed_putchar(ep, '\r');
@@ -1349,27 +1262,22 @@ ed_setcursor(Edit_t *ep, genchar *physical, int old, int new, int first)
         }
         delta = newpos.col - ep->e_curpos.col;
         old = new - delta;
-    }
-    else
+    } else
         newpos.line = 0;
-    if (delta < 0)
-    {
+    if (delta < 0) {
         int bs = newpos.line && ep->e_plen > ep->e_winsz;
         /*** move to left ***/
         delta = -delta;
         /*** attempt to optimize cursor movement ***/
         if (!ep->e_crlf || bs
-            || (2 * delta <= ((old - first) + (newpos.line ? 0 : ep->e_plen))))
-        {
+            || (2 * delta
+                <= ((old - first) + (newpos.line ? 0 : ep->e_plen)))) {
             ed_nputchar(ep, delta, '\b');
             delta = 0;
-        }
-        else
-        {
+        } else {
             if (newpos.line == 0)
                 ed_putstring(ep, ep->e_prompt);
-            else
-            {
+            else {
                 first = 1 + (newpos.line * ep->e_winsz - ep->e_plen);
                 ed_putchar(ep, '\r');
             }
@@ -1401,16 +1309,14 @@ ed_virt_to_phys(Edit_t *ep,
     int d, r;
     sp += voff;
     dp += poff;
-    for (r = poff; c = *sp; sp++)
-    {
+    for (r = poff; c = *sp; sp++) {
         if (curp == sp)
             r = dp - phys;
 #if SHOPT_MULTIBYTE
         d = mbwidth(( wchar_t )c);
         if (d == 1 && is_cntrl(c))
             d = -1;
-        if (d > 1)
-        {
+        if (d > 1) {
             /* multiple width character put in place holders */
             *dp++ = c;
             while (--d > 0)
@@ -1419,15 +1325,12 @@ ed_virt_to_phys(Edit_t *ep,
             if (dp >= dpmax)
                 break;
             continue;
-        }
-        else
+        } else
 #else
         d = (is_cntrl(c) ? -1 : 1);
 #endif /* SHOPT_MULTIBYTE */
-        if (d < 0)
-        {
-            if (c == '\t')
-            {
+        if (d < 0) {
+            if (c == '\t') {
                 c = dp - phys;
                 if (sh_isoption(ep->sh, SH_VI))
                     c += ep->e_plen;
@@ -1435,9 +1338,7 @@ ed_virt_to_phys(Edit_t *ep,
                 while (--c > 0)
                     *dp++ = ' ';
                 c = ' ';
-            }
-            else
-            {
+            } else {
                 *dp++ = '^';
                 c = printchar(c);
             }
@@ -1468,8 +1369,7 @@ ed_internal(const char *src, genchar *dest)
     int c;
     wchar_t *dp = ( wchar_t * )dest;
     if (dest
-        == ( genchar * )roundof(cp - ( unsigned char * )0, sizeof(genchar)))
-    {
+        == ( genchar * )roundof(cp - ( unsigned char * )0, sizeof(genchar))) {
         genchar buffer[MAXLINE];
         c = ed_internal(src, buffer);
         ed_gencpy(( genchar * )dp, buffer);
@@ -1494,8 +1394,7 @@ ed_external(const genchar *src, char *dest)
     int c, size;
     char *dp = dest;
     char *dpmax = dp + sizeof(genchar) * MAXLINE - 2;
-    if (( char * )src == dp)
-    {
+    if (( char * )src == dp) {
         char buffer[MAXLINE * sizeof(genchar)];
         c = ed_external(src, buffer);
 
@@ -1506,10 +1405,8 @@ ed_external(const genchar *src, char *dest)
 #    endif
         return (c);
     }
-    while ((wc = *src++) && dp < dpmax)
-    {
-        if ((size = mbconv(dp, wc)) < 0)
-        {
+    while ((wc = *src++) && dp < dpmax) {
+        if ((size = mbconv(dp, wc)) < 0) {
             /* copy the character as is */
             size = 1;
             *dp = wc;
@@ -1571,8 +1468,7 @@ ed_genlen(const genchar *str)
 static int
 compare(const char *a, const char *b, int n)
 {
-    while (n-- > 0)
-    {
+    while (n-- > 0) {
         if (*a++ != *b++)
             return (0);
     }
@@ -1599,12 +1495,10 @@ keytrap(Edit_t *ep, char *inbuff, int insize, int bufsize, int mode)
 #    endif /* SHOPT_MULTIBYTE */
     inbuff[insize] = 0;
     ep->e_col = ep->e_cur;
-    if (mode == -2)
-    {
+    if (mode == -2) {
         ep->e_col++;
         *ep->e_vi_insert = ESC;
-    }
-    else
+    } else
         *ep->e_vi_insert = 0;
     nv_putval(ED_CHRNOD, inbuff, NV_NOFREE);
     nv_putval(ED_COLNOD, ( char * )&ep->e_col, NV_NOFREE | NV_INTEGER);
@@ -1615,13 +1509,11 @@ keytrap(Edit_t *ep, char *inbuff, int insize, int bufsize, int mode)
     shp->savexit = savexit;
     if ((cp = nv_getval(ED_CHRNOD)) == inbuff)
         nv_unset(ED_CHRNOD);
-    else if (bufsize > 0)
-    {
+    else if (bufsize > 0) {
         strncpy(inbuff, cp, bufsize);
         inbuff[bufsize - 1] = '\0';
         insize = ( int )strlen(inbuff);
-    }
-    else
+    } else
         insize = 0;
     nv_unset(ED_TXTNOD);
     return (insize);
@@ -1650,29 +1542,21 @@ ed_histlencopy(const char *cp, char *dp)
 {
     int c, n = 1, col = 1;
     const char *oldcp = cp;
-    for (n = 0; c = mbchar(cp); oldcp = cp, col++)
-    {
-        if (c == '\n' && *cp)
-        {
+    for (n = 0; c = mbchar(cp); oldcp = cp, col++) {
+        if (c == '\n' && *cp) {
             n += 2;
-            if (dp)
-            {
+            if (dp) {
                 *dp++ = '^';
                 *dp++ = 'J';
                 col += 2;
             }
-        }
-        else if (c == '\t')
-        {
+        } else if (c == '\t') {
             n++;
             if (dp)
                 *dp++ = ' ';
-        }
-        else
-        {
+        } else {
             n += cp - oldcp;
-            if (dp)
-            {
+            if (dp) {
                 while (oldcp < cp)
                     *dp++ = *oldcp++;
             }
@@ -1696,8 +1580,7 @@ ed_histgen(Edit_t *ep, const char *pattern)
         return (0);
     if (ep->e_cur <= 2)
         maxmatch = 0;
-    else if (maxmatch && ep->e_cur > maxmatch)
-    {
+    else if (maxmatch && ep->e_cur > maxmatch) {
         ep->hlist = 0;
         ep->hfirst = 0;
         return (0);
@@ -1707,15 +1590,12 @@ ed_histgen(Edit_t *ep, const char *pattern)
         return (0);
     cp = stkalloc(ep->sh->stk, m = strlen(pattern) + 6);
     sfsprintf(cp, m, "@(%s)*%c", pattern, 0);
-    if (ep->hlist)
-    {
+    if (ep->hlist) {
         m = strlen(ep->hpat) - 4;
-        if (memcmp(pattern, ep->hpat + 2, m) == 0)
-        {
+        if (memcmp(pattern, ep->hpat + 2, m) == 0) {
             n = strcmp(cp, ep->hpat) == 0;
             for (argv = av = ( char ** )ep->hlist, mp = ep->hfirst; mp;
-                 mp = mp->next)
-            {
+                 mp = mp->next) {
                 if (n || strmatch(mp->data, cp))
                     *av++ = ( char * )mp;
             }
@@ -1733,16 +1613,14 @@ ed_histgen(Edit_t *ep, const char *pattern)
     ep->hpat[m] = 0;
     pattern = cp;
     index1 = ( int )hp->histind;
-    for (index2 = index1 - hp->histsize; index1 > index2; index1--)
-    {
+    for (index2 = index1 - hp->histsize; index1 > index2; index1--) {
         offset = hist_tell(hp, index1);
         sfseek(hp->histfp, offset, SEEK_SET);
         if (!(cp = sfgetr(hp->histfp, 0, 0)))
             continue;
         if (*cp == '#')
             continue;
-        if (strmatch(cp, pattern))
-        {
+        if (strmatch(cp, pattern)) {
             l = ed_histlencopy(cp, ( char * )0);
             mp
             = ( Histmatch_t * )stkalloc(ep->sh->stk, sizeof(Histmatch_t) + l);
@@ -1756,23 +1634,19 @@ ed_histgen(Edit_t *ep, const char *pattern)
             ac++;
         }
     }
-    if (ac > 0)
-    {
+    if (ac > 0) {
         l = ac;
         argv = av
         = ( char ** )stkalloc(ep->sh->stk, (ac + 1) * sizeof(char *));
         for (mplast = 0; l >= 0 && (*av = ( char * )mp);
-             mplast = mp, mp = mp->next, av++)
-        {
+             mplast = mp, mp = mp->next, av++) {
             l--;
         }
         *av = 0;
         strsort(argv, ac, ed_sortdata);
         mplast = ( Histmatch_t * )argv[0];
-        for (ar = av = &argv[1]; mp = ( Histmatch_t * )*av; av++)
-        {
-            if (strcmp(mp->data, mplast->data) == 0)
-            {
+        for (ar = av = &argv[1]; mp = ( Histmatch_t * )*av; av++) {
+            if (strcmp(mp->data, mplast->data) == 0) {
                 mplast->count++;
                 if (mp->index > mplast->index)
                     mplast->index = mp->index;
@@ -1799,8 +1673,7 @@ ed_histlist(Edit_t *ep, int n)
 {
     Histmatch_t *mp, **mpp = ep->hlist + ep->hoff;
     int i, last = 0, save[2];
-    if (n)
-    {
+    if (n) {
         /* don't bother updating the screen if there is typeahead */
         if (!ep->e_lookahead && sfpkrd(ep->e_fd, save, 1, '\r', 200L, -1) > 0)
             ed_ungetchar(ep, save[0]);
@@ -1808,20 +1681,15 @@ ed_histlist(Edit_t *ep, int n)
             return;
         ed_putchar(ep, '\n');
         ed_putchar(ep, '\r');
-    }
-    else
-    {
+    } else {
         ep->hlist = 0;
         ep->nhlist = 0;
     }
     ed_putstring(ep, KILL_LINE);
-    if (n)
-    {
-        for (i = 1; (mp = *mpp) && i <= 16; i++, mpp++)
-        {
+    if (n) {
+        for (i = 1; (mp = *mpp) && i <= 16; i++, mpp++) {
             last = 0;
-            if (mp->len >= ep->e_winsz - 4)
-            {
+            if (mp->len >= ep->e_winsz - 4) {
                 last = ep->e_winsz - 4;
                 save[0] = mp->data[last - 1];
                 save[1] = mp->data[last];
@@ -1833,8 +1701,7 @@ ed_histlist(Edit_t *ep, int n)
             ed_putchar(ep, ')');
             ed_putchar(ep, ' ');
             ed_putstring(ep, mp->data);
-            if (last)
-            {
+            if (last) {
                 mp->data[last - 1] = save[0];
                 mp->data[last] = save[1];
             }
@@ -1862,22 +1729,16 @@ int
 sh_ioctl(int fd, int cmd, void *val, int sz)
 {
     int r, err = errno;
-    if (sizeof(val) == sizeof(void *))
-    {
+    if (sizeof(val) == sizeof(void *)) {
         while ((r = ioctl(fd, cmd, val)) < 0 && errno == EINTR)
             errno = err;
-    }
-    else
-    {
+    } else {
         Sflong_t l = ( Sflong_t )val;
-        if (sizeof(val) == sizeof(long))
-        {
+        if (sizeof(val) == sizeof(long)) {
             while ((r = ioctl(fd, cmd, ( unsigned long )l)) < 0
                    && errno == EINTR)
                 errno = err;
-        }
-        else if (sizeof(int) != sizeof(long))
-        {
+        } else if (sizeof(int) != sizeof(long)) {
             while ((r = ioctl(fd, cmd, ( unsigned int )l)) < 0
                    && errno == EINTR)
                 errno = err;

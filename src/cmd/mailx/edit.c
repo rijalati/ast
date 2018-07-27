@@ -89,10 +89,8 @@ edit1(struct msg *msgvec, int type)
     /*
      * Deal with each message to be edited . . .
      */
-    for (ip = msgvec; ip->m_index; ip++)
-    {
-        if (ip > msgvec)
-        {
+    for (ip = msgvec; ip->m_index; ip++) {
+        if (ip > msgvec) {
             char buf[100];
             char *p;
 
@@ -109,9 +107,8 @@ edit1(struct msg *msgvec, int type)
         state.msg.dot = mp = state.msg.list + ip->m_index - 1;
         touchmsg(mp);
         sigint = signal(SIGINT, SIG_IGN);
-        if (fp
-            = run_editor(setinput(mp), mp->m_size, NiL, type, state.readonly))
-        {
+        if (fp = run_editor(
+            setinput(mp), mp->m_size, NiL, type, state.readonly)) {
             if (!state.msg.op)
                 settmp(NiL, 0);
             fseek(state.msg.op, ( off_t )0, SEEK_END);
@@ -176,12 +173,10 @@ run_editor(FILE *fp, off_t size, struct header *hp, int type, int readonly)
      */
     if (!(ep = fileopen(state.tmp.edit, "EMw")))
         goto ret1;
-    if (size)
-    {
+    if (size) {
         if (size < 0)
             size = 0;
-        if (hp && state.var.editheaders)
-        {
+        if (hp && state.var.editheaders) {
             editheaders = GEDIT | GRULE;
             headout(ep, hp, editheaders | GNL);
         }
@@ -216,8 +211,7 @@ run_editor(FILE *fp, off_t size, struct header *hp, int type, int readonly)
     if (!(ep = fileopen(state.tmp.edit, "Ea+")))
         goto ret2;
     if (editheaders
-        && headset(&pp, NiL, ep, hp, NiL, editheaders | GTO | GMETOO))
-    {
+        && headset(&pp, NiL, ep, hp, NiL, editheaders | GTO | GMETOO)) {
         while (headget(&pp))
             ;
         remove(state.tmp.edit);
@@ -248,8 +242,7 @@ run_editor(FILE *fp, off_t size, struct header *hp, int type, int readonly)
     else
         lc = 0;
 
-    switch (lc)
-    {
+    switch (lc) {
     case 0:
         if (putc('\n', ep) == EOF)
             break;

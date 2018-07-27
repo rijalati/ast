@@ -58,26 +58,19 @@ setenviron(const char *akey)
     ast.env_serial++;
     if (intercepts.intercept_setenviron)
         return (*intercepts.intercept_setenviron)(akey);
-    if (p && !v)
-    {
+    if (p && !v) {
         environ = next = p;
         *++next = 0;
-    }
-    else if (p != v || !v)
-    {
-        if (v)
-        {
+    } else if (p != v || !v) {
+        if (v) {
             while (*v++)
                 ;
             n = v - environ + INCREMENT;
             v = environ;
-        }
-        else
+        } else
             n = INCREMENT;
-        if (!p || (last - p + 1) < n)
-        {
-            if (!p && fs3d(FS3D_TEST))
-            {
+        if (!p || (last - p + 1) < n) {
+            if (!p && fs3d(FS3D_TEST)) {
                 /*
                  * kick 3d initialization
                  */
@@ -104,9 +97,7 @@ setenviron(const char *akey)
                     p++;
         next = p;
         p = envv;
-    }
-    else if (next == last)
-    {
+    } else if (next == last) {
         n = last - v + INCREMENT + 1;
         if (!(p = newof(p, char *, n, 0)))
             return 0;
@@ -116,17 +107,12 @@ setenviron(const char *akey)
     }
     if (!key)
         return ok;
-    for (; s = *p; p++)
-    {
+    for (; s = *p; p++) {
         t = key;
-        do
-        {
-            if (!*t || *t == '=')
-            {
-                if (*s == '=')
-                {
-                    if (!*t)
-                    {
+        do {
+            if (!*t || *t == '=') {
+                if (*s == '=') {
+                    if (!*t) {
                         v = p++;
                         while (*v++ = *p++)
                             ;

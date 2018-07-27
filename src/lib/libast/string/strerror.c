@@ -81,16 +81,13 @@ _ast_strerror(int err)
     else
         msg = 0;
 #endif
-    if (msg)
-    {
+    if (msg) {
 #if !_PACKAGE_astsa
-        if (ERROR_translating())
-        {
+        if (ERROR_translating()) {
 #    if _lib_strerror
             static int sys;
 
-            if (!sys)
-            {
+            if (!sys) {
                 char *s;
                 char *t;
                 char *p;
@@ -109,8 +106,7 @@ _ast_strerror(int err)
 
                 if (!(s = strerror(1)))
                     sys = -1;
-                else
-                {
+                else {
                     t = fmtbuf(z = strlen(s) + 1);
                     strcpy(t, s);
                     ast.locale.set |= AST_LC_internal;

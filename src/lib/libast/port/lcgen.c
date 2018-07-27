@@ -214,26 +214,21 @@ char *p3;
     part[3] = 0;
     n = 0;
     fprintf(f, "\n");
-    do
-    {
+    do {
         i = m = 0;
         b = buf;
         e = &buf[sizeof(buf) - 1];
-        while (b < e)
-        {
+        while (b < e) {
             if (!(s = part[i++]))
                 break;
             if (i > 1)
                 *b++ = '_';
-            while ((c = *s++) && b < e)
-            {
-                if (c == '|')
-                {
+            while ((c = *s++) && b < e) {
+                if (c == '|') {
                     part[i - 1] = s;
                     m = 1;
                     break;
-                }
-                else if (islower(c))
+                } else if (islower(c))
                     c = toupper(c);
                 else if (!isalnum(c))
                     c = '_';
@@ -287,18 +282,15 @@ char **argv;
 
     command = *argv++;
     line = 0;
-    if (!(hdr = *argv++) || !(lib = *argv++) || *argv)
-    {
+    if (!(hdr = *argv++) || !(lib = *argv++) || *argv) {
         fprintf(stderr, "%s: { hdr lib tab } arguments expected\n", command);
         return 1;
     }
-    if (!(hf = fopen(hdr, "w")))
-    {
+    if (!(hf = fopen(hdr, "w"))) {
         fprintf(stderr, "%s: %s: cannot write\n", command, hdr);
         return 1;
     }
-    if (!(lf = fopen(lib, "w")))
-    {
+    if (!(lf = fopen(lib, "w"))) {
         fprintf(stderr, "%s: %s: cannot write\n", command, lib);
         return 1;
     }
@@ -335,8 +327,7 @@ char **argv;
     fprintf(lf, "#include \"lclib.h\"\n");
     fprintf(lf, "#include \"lclang.h\"\n");
     fprintf(lf, "\n");
-    while (s = fgets(buf, sizeof(buf), stdin))
-    {
+    while (s = fgets(buf, sizeof(buf), stdin)) {
         line++;
         while (isspace(*s))
             s++;
@@ -344,8 +335,7 @@ char **argv;
             continue;
         b = s;
         vp = arg;
-        for (;;)
-        {
+        for (;;) {
             for (*vp++ = s; *s && !isspace(*s); s++)
                 ;
             if (!*s)
@@ -359,12 +349,9 @@ char **argv;
         }
         while (vp < ve)
             *vp++ = 0;
-        if (*arg[0] == ':')
-        {
-            if (!strcmp(arg[0], ":map:"))
-            {
-                if (type != TERRITORY)
-                {
+        if (*arg[0] == ':') {
+            if (!strcmp(arg[0], ":map:")) {
+                if (type != TERRITORY) {
                     fprintf(
                     stderr,
                     "%s: %d: %s: must be specified after :territory:\n",
@@ -375,11 +362,8 @@ char **argv;
                 }
                 type = MAP;
                 continue;
-            }
-            else if (!strcmp(arg[0], ":charset:"))
-            {
-                if (type != INIT)
-                {
+            } else if (!strcmp(arg[0], ":charset:")) {
+                if (type != INIT) {
                     fprintf(stderr,
                             "%s: %d: %s must be specified first\n",
                             command,
@@ -389,11 +373,8 @@ char **argv;
                 }
                 type = CHARSET;
                 continue;
-            }
-            else if (!strcmp(arg[0], ":territory:"))
-            {
-                if (type != LANGUAGE)
-                {
+            } else if (!strcmp(arg[0], ":territory:")) {
+                if (type != LANGUAGE) {
                     fprintf(
                     stderr,
                     "%s: %d: %s: must be specified after :language:\n",
@@ -404,11 +385,8 @@ char **argv;
                 }
                 type = TERRITORY;
                 continue;
-            }
-            else if (!strcmp(arg[0], ":language:"))
-            {
-                if (type != CHARSET)
-                {
+            } else if (!strcmp(arg[0], ":language:")) {
+                if (type != CHARSET) {
                     fprintf(stderr,
                             "%s: %d: %s must be specified after :charset:\n",
                             command,
@@ -418,27 +396,22 @@ char **argv;
                 }
                 type = LANGUAGE;
                 continue;
-            }
-            else
-            {
+            } else {
                 fprintf(
                 stderr, "%s: %d: %s invalid\n", command, line, arg[0]);
                 return 1;
             }
         }
-        if (!arg[1])
-        {
+        if (!arg[1]) {
             fprintf(stderr,
                     "%s: %d: at least two arguments expected\n",
                     command,
                     line);
             return 1;
         }
-        switch (type)
-        {
+        switch (type) {
         case CHARSET:
-            if (!(cp = newof(0, Charset_t, 1, s - b + 1)))
-            {
+            if (!(cp = newof(0, Charset_t, 1, s - b + 1))) {
                 fprintf(stderr, "%s: %d: out of space\n", command, line);
                 return 1;
             }
@@ -446,8 +419,7 @@ char **argv;
             cp->link.code = copy(&b, arg[0]);
             cp->alternates = copy(&b, arg[1]);
             cp->ms = copy(&b, arg[2]);
-            if (cp != ( Charset_t * )enter(&state.charset, ( Link_t * )cp))
-            {
+            if (cp != ( Charset_t * )enter(&state.charset, ( Link_t * )cp)) {
                 fprintf(stderr,
                         "%s: %d: %s: duplicate charset\n",
                         command,
@@ -457,8 +429,7 @@ char **argv;
             }
             break;
         case TERRITORY:
-            if (!(tp = newof(0, Territory_t, 1, s - b + 1)))
-            {
+            if (!(tp = newof(0, Territory_t, 1, s - b + 1))) {
                 fprintf(stderr, "%s: %d: out of space\n", command, line);
                 return 1;
             }
@@ -466,17 +437,14 @@ char **argv;
             tp->link.code = copy(&b, arg[0]);
             tp->name = copy(&b, arg[1]);
             tp->languages = 0;
-            if (s = copy(&b, arg[2]))
-            {
+            if (s = copy(&b, arg[2])) {
                 i = 0;
-                while (*(b = s))
-                {
+                while (*(b = s)) {
                     for (; *s && *s != ':' && *s != '|'; s++)
                         ;
                     if (c = *s)
                         *s++ = 0;
-                    if (!(lp = ( Language_t * )lookup(&state.language, b)))
-                    {
+                    if (!(lp = ( Language_t * )lookup(&state.language, b))) {
                         fprintf(stderr,
                                 "%s: %d: %s: unknown language\n",
                                 command,
@@ -484,8 +452,7 @@ char **argv;
                                 b);
                         return 1;
                     }
-                    if (!(ll = newof(0, Language_list_t, 1, 0)))
-                    {
+                    if (!(ll = newof(0, Language_list_t, 1, 0))) {
                         fprintf(
                         stderr, "%s: %d: out of space\n", command, line);
                         return 1;
@@ -498,8 +465,7 @@ char **argv;
                     ll->language = lp;
                     ll->next = 0;
                     i++;
-                    if (c == ':')
-                    {
+                    if (c == ':') {
                         for (b = s; *s && *s != '|'; s++)
                             ;
                         if (*s)
@@ -512,8 +478,7 @@ char **argv;
                     territory_language_max = i;
             }
             if (tp
-                != ( Territory_t * )enter(&state.territory, ( Link_t * )tp))
-            {
+                != ( Territory_t * )enter(&state.territory, ( Link_t * )tp)) {
                 fprintf(stderr,
                         "%s: %d: %s: duplicate territory\n",
                         command,
@@ -523,8 +488,7 @@ char **argv;
             }
             break;
         case LANGUAGE:
-            if (!(lp = newof(0, Language_t, 1, s - b + 1)))
-            {
+            if (!(lp = newof(0, Language_t, 1, s - b + 1))) {
                 fprintf(stderr, "%s: %d: out of space\n", command, line);
                 return 1;
             }
@@ -535,8 +499,7 @@ char **argv;
             if (!arg[3])
                 lp->charset = 0;
             else if (!(lp->charset
-                       = ( Charset_t * )lookup(&state.charset, arg[3])))
-            {
+                       = ( Charset_t * )lookup(&state.charset, arg[3]))) {
                 fprintf(stderr,
                         "%s: %d: %s: unknown charset\n",
                         command,
@@ -545,17 +508,14 @@ char **argv;
                 return 1;
             }
             lp->attributes = 0;
-            if (s = copy(&b, arg[4]))
-            {
+            if (s = copy(&b, arg[4])) {
                 i = 0;
                 fprintf(lf,
                         "\nconst Lc_attribute_t attribute_%s[] =\n{\n",
                         lp->link.code);
-                while (*(b = s))
-                {
+                while (*(b = s)) {
                     for (f = 0; *s && *s != '|'; s++)
-                        if (*s == ':')
-                        {
+                        if (*s == ':') {
                             *s++ = 0;
                             f = s;
                         }
@@ -566,16 +526,14 @@ char **argv;
                         fprintf(lf, "LC_%s,", f);
                     else
                         fprintf(lf, "0,");
-                    if (!(ap = newof(0, Attribute_t, 1, 0)))
-                    {
+                    if (!(ap = newof(0, Attribute_t, 1, 0))) {
                         fprintf(
                         stderr, "%s: %d: out of space\n", command, line);
                         return 1;
                     }
                     ap->link.code = b;
                     ap->link.index = i++;
-                    if (!(al = newof(0, Attribute_list_t, 1, 0)))
-                    {
+                    if (!(al = newof(0, Attribute_list_t, 1, 0))) {
                         fprintf(
                         stderr, "%s: %d: out of space\n", command, line);
                         return 1;
@@ -594,8 +552,8 @@ char **argv;
                     language_attribute_max = i;
                 fprintf(lf, "};\n");
             }
-            if (lp != ( Language_t * )enter(&state.language, ( Link_t * )lp))
-            {
+            if (lp
+                != ( Language_t * )enter(&state.language, ( Link_t * )lp)) {
                 fprintf(stderr,
                         "%s: %d: %s: duplicate language\n",
                         command,
@@ -605,22 +563,19 @@ char **argv;
             }
             break;
         case MAP:
-            if (!(mp = newof(0, Map_t, 1, s - b + 1)))
-            {
+            if (!(mp = newof(0, Map_t, 1, s - b + 1))) {
                 fprintf(stderr, "%s: %d: out of space\n", command, line);
                 return 1;
             }
             b = ( char * )(mp + 1);
             mp->link.code = copy(&b, arg[0]);
-            if (!arg[2])
-            {
+            if (!arg[2]) {
                 fprintf(
                 stderr, "%s: %d: territory code expected\n", command, line);
                 return 1;
             }
             if (!(mp->language
-                  = ( Language_t * )lookup(&state.language, arg[1])))
-            {
+                  = ( Language_t * )lookup(&state.language, arg[1]))) {
                 fprintf(stderr,
                         "%s: %d: %s: unknown language\n",
                         command,
@@ -629,8 +584,7 @@ char **argv;
                 return 1;
             }
             if (!(mp->territory
-                  = ( Territory_t * )lookup(&state.territory, arg[2])))
-            {
+                  = ( Territory_t * )lookup(&state.territory, arg[2]))) {
                 fprintf(stderr,
                         "%s: %d: %s: unknown territory\n",
                         command,
@@ -641,8 +595,7 @@ char **argv;
             if (!arg[3])
                 mp->charset = 0;
             else if (!(mp->charset
-                       = ( Charset_t * )lookup(&state.charset, arg[3])))
-            {
+                       = ( Charset_t * )lookup(&state.charset, arg[3]))) {
                 fprintf(stderr,
                         "%s: %d: %s: unknown charset\n",
                         command,
@@ -651,16 +604,13 @@ char **argv;
                 return 1;
             }
             mp->attribute = 0;
-            if (arg[4])
-            {
+            if (arg[4]) {
                 for (al = mp->language->attributes; al; al = al->next)
-                    if (!strcmp(al->attribute->link.code, arg[4]))
-                    {
+                    if (!strcmp(al->attribute->link.code, arg[4])) {
                         mp->attribute = al->attribute;
                         break;
                     }
-                if (!mp->attribute)
-                {
+                if (!mp->attribute) {
                     fprintf(stderr,
                             "%s: %d: %s: unknown attribute\n",
                             command,
@@ -669,8 +619,7 @@ char **argv;
                     return 1;
                 }
             }
-            if (mp != ( Map_t * )enter(&state.map, ( Link_t * )mp))
-            {
+            if (mp != ( Map_t * )enter(&state.map, ( Link_t * )mp)) {
                 fprintf(stderr,
                         "%s: %d: %s: duplicate map\n",
                         command,
@@ -779,8 +728,7 @@ char **argv;
     fprintf(hf, "#undef\textern\n");
     fprintf(lf, "\nconst Lc_charset_t lc_charsets[] =\n{\n");
     for (cp = ( Charset_t * )state.charset.root; cp;
-         cp = ( Charset_t * )cp->link.next)
-    {
+         cp = ( Charset_t * )cp->link.next) {
         fprintf(lf, "{\"%s\",", cp->link.code);
         if (cp->alternates)
             fprintf(lf, "\"%s\",", cp->alternates);
@@ -803,8 +751,7 @@ char **argv;
         fprintf(lf, "0,");
     fprintf(lf, "},\n");
     for (lp = ( Language_t * )state.language.root; lp;
-         lp = ( Language_t * )lp->link.next)
-    {
+         lp = ( Language_t * )lp->link.next) {
         fprintf(lf, "{\"%s\",\"%s\",", lp->link.code, lp->name);
         if (lp->alternates)
             fprintf(lf, "\"%s\",", lp->alternates);
@@ -837,8 +784,7 @@ char **argv;
         fprintf(lf, "0,");
     fprintf(lf, "},\n");
     for (tp = ( Territory_t * )state.territory.root; tp;
-         tp = ( Territory_t * )tp->link.next)
-    {
+         tp = ( Territory_t * )tp->link.next) {
         fprintf(lf, "{\"%s\",\"%s\",", tp->link.code, tp->name);
         if (tp->primary)
             fprintf(lf, "LC_primary,");
@@ -857,8 +803,7 @@ char **argv;
     }
     fprintf(lf, "\t0\n};\n");
     fprintf(lf, "\nconst Lc_map_t lc_maps[] =\n{\n");
-    for (mp = ( Map_t * )state.map.root; mp; mp = ( Map_t * )mp->link.next)
-    {
+    for (mp = ( Map_t * )state.map.root; mp; mp = ( Map_t * )mp->link.next) {
         fprintf(lf, "{\"%s\",", mp->link.code);
         fprintf(lf, "&lc_languages[%d],", mp->language->link.index);
         fprintf(lf, "&lc_territories[%d],", mp->territory->link.index);

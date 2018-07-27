@@ -199,8 +199,7 @@ tmain()
     if (sfseek(f, ( Sfoff_t )0, 0) != ( Sfoff_t )0)
         terror("Bad sfseek call");
 
-    for (n = 0; n < 10; ++n)
-    {
+    for (n = 0; n < 10; ++n) {
         if (!(s = sfgetr(f, '\n', SF_STRING)))
             terror("Bad sfgetr call");
         if (strcmp(s, "0123456789") != 0)

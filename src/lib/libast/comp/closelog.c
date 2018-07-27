@@ -37,8 +37,7 @@ NoN(closelog)
 void
 closelog(void)
 {
-    if (log.fd >= 0)
-    {
+    if (log.fd >= 0) {
         close(log.fd);
         log.fd = -1;
     }

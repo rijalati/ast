@@ -37,8 +37,7 @@ mamcanon(char *path)
     char *s;
 
     s = path + strlen(path);
-    while (s > path + 1 && *(s - 1) == '.' && *(s - 2) == '/')
-    {
+    while (s > path + 1 && *(s - 1) == '.' && *(s - 2) == '/') {
         for (s -= 2; s > path + 1 && *(s - 1) == '/'; s--)
             ;
         *s = 0;
@@ -57,16 +56,13 @@ mamerror(int fd, const void *b, size_t n)
     char *e;
     char *t;
 
-    if (state.mam.level > 0)
-    {
-        if (e = strchr(s, ':'))
-        {
+    if (state.mam.level > 0) {
+        if (e = strchr(s, ':')) {
             for (s = e; *++s && *s == ' ';)
                 ;
             n -= s - ( char * )b;
         }
-        switch (state.mam.level)
-        {
+        switch (state.mam.level) {
         case ERROR_WARNING:
             t = "warning";
             break;
@@ -103,13 +99,11 @@ mamname(Rule_t *r)
         return r->name;
     if (state.mam.dynamic && (r->dynamic & D_alias))
         r = makerule(r->name);
-    if (state.mam.statix)
-    {
+    if (state.mam.statix) {
         a = localview(r);
         if ((s = call(makerule(external.mamname), a)) && !streq(a, s))
             a = s;
-    }
-    else
+    } else
         a
         = ((r->property & P_target) || !state.user)
           ? unbound(r)
@@ -117,8 +111,7 @@ mamname(Rule_t *r)
     if (state.mam.root
         && (*a == '/'
             || (r->dynamic & (D_entries | D_member | D_membertoo | D_regular))
-            || stat(r->name, &st)))
-    {
+            || stat(r->name, &st))) {
         if (*a != '/')
             sfprintf(internal.nam, "%s/", internal.pwd);
         sfprintf(internal.nam, "%s", a);
@@ -146,8 +139,7 @@ mampush(Sfio_t *sp, Rule_t *r, Flags_t flags)
     if (strmatch(r->name, "${mam_*}"))
         return 0;
     pop = !(r->dynamic & D_built) || (flags & P_force);
-    if (!state.mam.hold)
-    {
+    if (!state.mam.hold) {
         sfprintf(sp,
                  "%s%s %s%s%s%s%s\n",
                  state.mam.label,
@@ -157,8 +149,7 @@ mampush(Sfio_t *sp, Rule_t *r, Flags_t flags)
                  (flags & P_implicit) ? " implicit" : null,
                  (flags & P_joint) ? " joint" : null,
                  (r->property & P_state) ? " state" : null);
-        if (pop && (state.mam.dynamic || state.mam.regress))
-        {
+        if (pop && (state.mam.dynamic || state.mam.regress)) {
             if (r->uname && strcmp(r->uname, mamname(r)))
                 sfprintf(sp,
                          "%sbind %s %s %s\n",
@@ -190,16 +181,14 @@ mampop(Sfio_t *sp, Rule_t *r, Flags_t flags)
     if ((r->property & (P_joint | P_target)) == (P_joint | P_target)
         && r->prereqs->rule->prereqs->rule == r
         && mampush(sp, r->prereqs->rule, flags | P_joint | P_virtual)
-        && !(r->prereqs->rule->property & P_target))
-    {
+        && !(r->prereqs->rule->property & P_target)) {
         for (p = r->prereqs->rule->prereqs; p; p = p->next)
             if (mampush(sp, p->rule, flags))
                 mampop(sp, p->rule, flags | P_joint);
         mampop(sp, r->prereqs->rule, flags | P_joint | P_virtual);
         r->prereqs->rule->property |= P_target;
     }
-    if (!state.mam.hold)
-    {
+    if (!state.mam.hold) {
         s = staterule(RULE, r, NiL, 0);
         sfprintf(sp,
                  "%sdone %s%s%s%s%s\n",

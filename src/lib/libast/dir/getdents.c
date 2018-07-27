@@ -55,15 +55,13 @@ getdents(int fd, void *buf, size_t siz)
 {
     struct stat st;
 
-    if (siz < DIRBLKSIZ)
-    {
+    if (siz < DIRBLKSIZ) {
         errno = EINVAL;
         return (-1);
     }
     if (fstat(fd, &st))
         return (-1);
-    if (!S_ISDIR(st.st_mode))
-    {
+    if (!S_ISDIR(st.st_mode)) {
 #    ifdef ENOTDIR
         errno = ENOTDIR;
 #    else
@@ -91,19 +89,16 @@ getdents(int fd, void *buf, size_t siz)
         sp = ( char * )buf + siz - m - 1;
         if (!(n = dirread(fd, sp, m)))
             return (0);
-        if (n > 0)
-        {
+        if (n > 0) {
             up = ( struct dirent * )buf;
             sp[n] = 0;
-            while (sp < ( char * )buf + siz - m + n)
-            {
+            while (sp < ( char * )buf + siz - m + n) {
                 i = 0;
                 while (*sp >= '0' && *sp <= '9')
                     i = 10 * i + *sp++ - '0';
                 while (*sp && *sp != '\t')
                     sp++;
-                if (*sp++)
-                {
+                if (*sp++) {
                     up->d_fileno = i;
                     u = up->d_name;
                     while ((*u = *sp++) && u < up->d_name + MAXNAMLEN)
@@ -146,15 +141,12 @@ getdents(int fd, void *buf, size_t siz)
         if ((!(m = n & ~511) || m < MAXREC)
             && (!(m = n & ~255) || m < MAXREC))
             m = n;
-        do
-        {
+        do {
             if ((n = read(fd, ( char * )buf + siz - m, m)) <= 0)
                 break;
             sp = ( struct direct * )(( char * )buf + siz - m);
-            while (sp < ( struct direct * )(( char * )buf + siz - m + n))
-            {
-                if (sp->d_ino)
-                {
+            while (sp < ( struct direct * )(( char * )buf + siz - m + n)) {
+                if (sp->d_ino) {
                     up->d_fileno = sp->d_ino;
                     s = sp->d_name;
                     u = tmp;

@@ -83,8 +83,7 @@ textfopen(Dssfile_t *file, Dssdisc_t *disc)
                                0,
                                Cxvalue_t,
                                (( Text_t * )file->dss->meth->data)->vars,
-                               0)))
-    {
+                               0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -120,14 +119,10 @@ lextok(char *s, int c, Cxstring_t *p)
     b = s;
     q = 0;
     t = 0;
-    for (;;)
-    {
-        if (!*s)
-        {
-            if (!q)
-            {
-                if (c && c != ' ')
-                {
+    for (;;) {
+        if (!*s) {
+            if (!q) {
+                if (c && c != ' ') {
                     s = b;
                     b = null;
                     break;
@@ -136,9 +131,7 @@ lextok(char *s, int c, Cxstring_t *p)
             if (t)
                 *t = 0;
             break;
-        }
-        else if (*s == '\\')
-        {
+        } else if (*s == '\\') {
             u = s;
             if (!*++s)
                 continue;
@@ -146,31 +139,23 @@ lextok(char *s, int c, Cxstring_t *p)
                 b = s;
             else if (!t)
                 t = u;
-        }
-        else if (q)
-        {
-            if (*s == q)
-            {
+        } else if (q) {
+            if (*s == q) {
                 q = 0;
                 if (!t)
                     t = s;
                 s++;
                 continue;
-            }
-            else if (*s == '\r')
+            } else if (*s == '\r')
                 *s = 0;
-        }
-        else if (*s == '"' || *s == '\'')
-        {
+        } else if (*s == '"' || *s == '\'') {
             q = *s++;
             if (b == (s - 1))
                 b = s;
             else if (!t)
                 t = s - 1;
             continue;
-        }
-        else if (*s == c || c == ' ' && *s == '\t')
-        {
+        } else if (*s == c || c == ' ' && *s == '\t') {
             *s++ = 0;
             if (t)
                 *t = 0;
@@ -209,10 +194,8 @@ textread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         return 0;
     num = 0;
     f = text->format;
-    for (;;)
-    {
-        switch (c = *f++)
-        {
+    for (;;) {
+        switch (c = *f++) {
         case 0:
             break;
         case ' ':
@@ -220,8 +203,7 @@ textread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 s++;
             break;
         case '%':
-            switch (c = *f++)
-            {
+            switch (c = *f++) {
             case 'h':
             case 'l':
                 q = c;
@@ -231,8 +213,7 @@ textread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 q = 0;
                 break;
             }
-            switch (c)
-            {
+            switch (c) {
             case 0:
                 f--;
                 continue;
@@ -251,8 +232,7 @@ textread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             case 'i':
                 if (!*s)
                     data[num].number = 0;
-                else
-                {
+                else {
                     strtoip4(s, &t, &a, NiL);
                     data[num].number = a;
                     s = t;
@@ -271,8 +251,7 @@ textread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             number:
                 if (!*s)
                     data[num].number = 0;
-                else
-                {
+                else {
                     data[num].number = strtol(s, &t, c);
                     s = t;
                 }
@@ -282,8 +261,7 @@ textread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             case 'g':
                 if (!*s)
                     data[num].number = 0;
-                else
-                {
+                else {
                     data[num].number = strtod(s, &t);
                     s = t;
                 }
@@ -292,20 +270,17 @@ textread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             case 's':
                 if (q = *f)
                     f++;
-                if (!*s)
-                {
+                if (!*s) {
                     data[num].string.data = null;
                     data[num].string.size = 0;
-                }
-                else
+                } else
                     s = lextok(s, q, &data[num].string);
                 num++;
                 break;
             case 't':
                 if (!*s)
                     data[num].number = 0;
-                else
-                {
+                else {
                     data[num].number = tmdate(s, &t, NiL);
                     if (*t && *t != *f && *t != '\n')
                         data[num].number = strtol(s, &t, 0);
@@ -343,25 +318,21 @@ textwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 
     num = 0;
     f = text->format;
-    for (;;)
-    {
-        switch (c = *f++)
-        {
+    for (;;) {
+        switch (c = *f++) {
         case 0:
             break;
         case ' ':
             sfputc(file->io, ' ');
             break;
         case '%':
-            switch (c = *f++)
-            {
+            switch (c = *f++) {
             case 'h':
             case 'l':
                 c = *f++;
                 break;
             }
-            switch (c)
-            {
+            switch (c) {
             case 0:
                 f--;
                 continue;
@@ -468,15 +439,12 @@ textmeth(const char *name,
     int p;
     int index;
 
-    if (options)
-    {
+    if (options) {
         if (dssoptlib(ometh->cx->buf, &dss_lib_text, usage, disc))
             goto drop;
         s = sfstruse(ometh->cx->buf);
-        for (;;)
-        {
-            switch (optstr(options, s))
-            {
+        for (;;) {
+            switch (optstr(options, s)) {
             case '?':
                 if (disc->errorf)
                     (*disc->errorf)(
@@ -496,8 +464,7 @@ textmeth(const char *name,
           = newof(0,
                   Dssmeth_t,
                   1,
-                  sizeof(Text_t) + strlen(name) + 2 * strlen(schema) + 2)))
-    {
+                  sizeof(Text_t) + strlen(name) + 2 * strlen(schema) + 2))) {
         free(meth);
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "out of space");
@@ -509,17 +476,14 @@ textmeth(const char *name,
     index = 0;
     s = ( char * )schema;
     f = text->format;
-    for (;;)
-    {
-        switch (c = *s++)
-        {
+    for (;;) {
+        switch (c = *s++) {
         case 0:
             break;
         case '%':
             *f++ = '%';
             var = 0;
-            switch (c = *s++)
-            {
+            switch (c = *s++) {
             case 0:
                 goto invalid;
             case 'h':
@@ -547,10 +511,8 @@ textmeth(const char *name,
                 t = f;
                 d = 0;
                 p = 1;
-                for (;;)
-                {
-                    switch (c = *s++)
-                    {
+                for (;;) {
+                    switch (c = *s++) {
                     case 0:
                         goto invalid;
                     case '(':
@@ -565,8 +527,7 @@ textmeth(const char *name,
                     case ':':
                         if (d)
                             *t++ = c;
-                        else
-                        {
+                        else {
                             *t++ = 0;
                             d = t;
                         }
@@ -578,15 +539,13 @@ textmeth(const char *name,
                     break;
                 }
                 *t = 0;
-                if (dtmatch(meth->cx->variables, f))
-                {
+                if (dtmatch(meth->cx->variables, f)) {
                     if (disc->errorf)
                         (*disc->errorf)(
                         NiL, disc, 2, "%s: duplicate field", f);
                     goto drop;
                 }
-                if (!(var = newof(0, Cxvariable_t, 1, t - f + 1)))
-                {
+                if (!(var = newof(0, Cxvariable_t, 1, t - f + 1))) {
                     if (disc->errorf)
                         (*disc->errorf)(NiL, disc, 2, "out of space");
                     goto drop;
@@ -597,10 +556,8 @@ textmeth(const char *name,
                     var->description = strcpy(t + 1, d);
                 break;
             }
-            for (;;)
-            {
-                switch (c = *s++)
-                {
+            for (;;) {
+                switch (c = *s++) {
                 case 0:
                     goto invalid;
                 case 'h':
@@ -624,10 +581,8 @@ textmeth(const char *name,
                 }
                 break;
             }
-            if (var)
-            {
-                switch (c)
-                {
+            if (var) {
+                switch (c) {
                 case 'd':
                 case 'f':
                 case 'g':

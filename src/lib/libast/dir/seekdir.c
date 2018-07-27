@@ -43,8 +43,7 @@ seekdir(DIR *dirp, long loc)
     off_t base;   /* file location of block */
     off_t offset; /* offset within block */
 
-    if (telldir(dirp) != loc)
-    {
+    if (telldir(dirp) != loc) {
         lseek(dirp->dd_fd, 0L, SEEK_SET);
         dirp->dd_loc = dirp->dd_size = 0;
         while (telldir(dirp) != loc)

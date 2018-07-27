@@ -135,27 +135,21 @@ translation(Xl_t *xp, char *s)
     char *d;
     char *e;
 
-    do
-    {
+    do {
         for (; isspace(*s); s++)
             ;
         for (d = e = 0, t = s; *t; t++)
-            if (*t == ',')
-            {
+            if (*t == ',') {
                 e = t;
                 *e++ = 0;
                 break;
-            }
-            else if (isspace(*t))
+            } else if (isspace(*t))
                 d = t;
-        if (d)
-        {
+        if (d) {
             *d++ = 0;
             for (px = xp; px; px = px->next)
-                if (streq(px->name, s))
-                {
-                    if (strcoll(px->date, d) < 0)
-                    {
+                if (streq(px->name, s)) {
+                    if (strcoll(px->date, d) < 0) {
                         free(px->date);
                         if (!(px->date = strdup(d)))
                             error(ERROR_SYSTEM | 3,
@@ -163,8 +157,7 @@ translation(Xl_t *xp, char *s)
                     }
                     break;
                 }
-            if (!px)
-            {
+            if (!px) {
                 if (!(px = newof(0, Xl_t, 1, strlen(s)))
                     || !(px->date = strdup(d)))
                     error(ERROR_SYSTEM | 3, "out of space [translation]");
@@ -192,15 +185,13 @@ ccsfprintf(int from, int to, Sfio_t *sp, const char *format, ...)
     va_start(ap, format);
     if (from == to)
         n = sfvprintf(sp, format, ap);
-    else if (tp = sfstropen())
-    {
+    else if (tp = sfstropen()) {
         n = sfvprintf(tp, format, ap);
         s = sfstrbase(tp);
         ccmaps(s, n, from, to);
         n = sfwrite(sp, s, n);
         sfstrclose(tp);
-    }
-    else
+    } else
         n = -1;
     return n;
 }
@@ -232,10 +223,8 @@ main(int argc, char **argv)
 
     NoP(argc);
     error_info.id = "msggen";
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'f':
             format = list = 1;
             continue;
@@ -262,54 +251,42 @@ main(int argc, char **argv)
      * set and list only need catfile
      */
 
-    if (set)
-    {
+    if (set) {
         sfprintf(sfstdout, "%d\n", mcindex(catfile, NiL, NiL, NiL));
         return error_info.errors != 0;
-    }
-    else if (list)
-    {
+    } else if (list) {
         if (!(sp = sfopen(NiL, catfile, "r")))
             error(ERROR_SYSTEM | 3, "%s: cannot read catalog", catfile);
         if (!(mc = mcopen(sp)))
             error(ERROR_SYSTEM | 3, "%s: catalog content error", catfile);
         sfclose(sp);
-        if (format)
-        {
+        if (format) {
             for (set = 1; set <= mc->num; set++)
-                if (mc->set[set].num)
-                {
+                if (mc->set[set].num) {
                     sfprintf(sfstdout, "$set %d\n", set);
                     for (num = 1; num <= mc->set[set].num; num++)
                         if (s = mc->set[set].msg[num])
                             sfprintf(sfstdout, "%d \"%s\"\n", num, fmtfmt(s));
                 }
-        }
-        else
-        {
-            if (*mc->translation)
-            {
+        } else {
+            if (*mc->translation) {
                 ccsfprintf(CC_NATIVE, CC_ASCII, sfstdout, "$translation ");
                 sfprintf(sfstdout, "%s", mc->translation);
                 ccsfprintf(CC_NATIVE, CC_ASCII, sfstdout, "\n");
             }
             ccsfprintf(CC_NATIVE, CC_ASCII, sfstdout, "$quote \"\n");
             for (set = 1; set <= mc->num; set++)
-                if (mc->set[set].num)
-                {
+                if (mc->set[set].num) {
                     ccsfprintf(
                     CC_NATIVE, CC_ASCII, sfstdout, "$set %d\n", set);
                     for (num = 1; num <= mc->set[set].num; num++)
-                        if (s = mc->set[set].msg[num])
-                        {
+                        if (s = mc->set[set].msg[num]) {
                             ccsfprintf(
                             CC_NATIVE, CC_ASCII, sfstdout, "%d \"", num);
-                            while (c = *s++)
-                            {
+                            while (c = *s++) {
                                 /*INDENT...*/
 
-                                switch (c)
-                                {
+                                switch (c) {
                                 case 0x22: /* " */
                                 case 0x5C: /* \ */
                                     sfputc(sfstdout, 0x5C);
@@ -349,8 +326,7 @@ main(int argc, char **argv)
         }
         mcclose(mc);
         return error_info.errors != 0;
-    }
-    else if (!(msgfile = *argv++) || *argv)
+    } else if (!(msgfile = *argv++) || *argv)
         error(3, "exactly one message file must be specified");
 
     /*
@@ -375,32 +351,27 @@ main(int argc, char **argv)
     q = 0;
     set = 1;
     error_info.file = msgfile;
-    while (s = sfgetr(mp, '\n', 1))
-    {
+    while (s = sfgetr(mp, '\n', 1)) {
         error_info.line++;
         if (!*s)
             continue;
-        if (*s == '$')
-        {
+        if (*s == '$') {
             if (!*++s || isspace(*s))
                 continue;
             for (t = s; *s && !isspace(*s); s++)
                 ;
             if (*s)
                 *s++ = 0;
-            if (streq(t, "delset"))
-            {
+            if (streq(t, "delset")) {
                 while (isspace(*s))
                     s++;
                 num = ( int )strtol(s, NiL, 0);
                 if (num < mc->num && mc->set[num].num)
                     for (i = 1; i <= mc->set[num].num; i++)
                         mcput(mc, num, i, NiL);
-            }
-            else if (streq(t, "quote"))
+            } else if (streq(t, "quote"))
                 q = *s ? *s : 0;
-            else if (streq(t, "set"))
-            {
+            else if (streq(t, "set")) {
                 while (isspace(*s))
                     s++;
                 num = ( int )strtol(s, &e, 0);
@@ -408,29 +379,20 @@ main(int argc, char **argv)
                     set = num;
                 else
                     error(2, "set number expected");
-            }
-            else if (streq(t, "translation"))
+            } else if (streq(t, "translation"))
                 xp = translation(xp, s);
-        }
-        else
-        {
+        } else {
             t = s + sfvalue(mp);
             num = ( int )strtol(s, &e, 0);
-            if (e != s)
-            {
+            if (e != s) {
                 s = e;
-                if (!*s)
-                {
+                if (!*s) {
                     if (mcput(mc, set, num, NiL))
                         error(2, "(%d,%d): cannot delete message", set, num);
-                }
-                else if (isspace(*s++))
-                {
-                    if (t > (s + 1) && *(t -= 2) == '\\')
-                    {
+                } else if (isspace(*s++)) {
+                    if (t > (s + 1) && *(t -= 2) == '\\') {
                         sfwrite(tp, s, t - s);
-                        while (s = sfgetr(mp, '\n', 0))
-                        {
+                        while (s = sfgetr(mp, '\n', 0)) {
                             error_info.line++;
                             t = s + sfvalue(mp);
                             if (t <= (s + 1) || *(t -= 2) != '\\')
@@ -440,33 +402,27 @@ main(int argc, char **argv)
                         if (!(s = sfstruse(tp)))
                             error(ERROR_SYSTEM | 3, "out of space");
                     }
-                    if (q)
-                    {
-                        if (*s++ != q)
-                        {
+                    if (q) {
+                        if (*s++ != q) {
                             error(
                             2, "(%d,%d): %c quote expected", set, num, q);
                             continue;
                         }
                         b = t = s;
-                        while (c = *s++)
-                        {
-                            if (c == '\\')
-                            {
+                        while (c = *s++) {
+                            if (c == '\\') {
                                 c = chresc(s - 1, &e);
                                 s = e;
                                 if (c)
                                     *t++ = c;
                                 else
                                     error(1, "nul character ignored");
-                            }
-                            else if (c == q)
+                            } else if (c == q)
                                 break;
                             else
                                 *t++ = c;
                         }
-                        if (*s)
-                        {
+                        if (*s) {
                             error(
                             2,
                             "(%d,%d): characters after quote not expected",
@@ -479,11 +435,9 @@ main(int argc, char **argv)
                     }
                     if (mcput(mc, set, num, s))
                         error(2, "(%d,%d): cannot add message", set, num);
-                }
-                else
+                } else
                     error(2, "message text expected");
-            }
-            else
+            } else
                 error(2, "message number expected");
         }
     }
@@ -494,11 +448,9 @@ main(int argc, char **argv)
      * fix up the translation record
      */
 
-    if (xp)
-    {
+    if (xp) {
         t = "";
-        for (;;)
-        {
+        for (;;) {
             for (bp = 0, px = xp; px; px = px->next)
                 if (px->date && (!bp || strcoll(bp->date, px->date) < 0))
                     bp = px;
@@ -520,8 +472,7 @@ main(int argc, char **argv)
     if (!(s = pathtemp(NiL, 0, "", error_info.id, NiL))
         || !(sp = sfopen(NiL, s, "w")))
         error(ERROR_SYSTEM | 3, "%s: cannot write catalog file", catfile);
-    if (mcdump(mc, sp) || mcclose(mc) || sfclose(sp))
-    {
+    if (mcdump(mc, sp) || mcclose(mc) || sfclose(sp)) {
         remove(s);
         error(ERROR_SYSTEM | 3, "%s: temporary catalog file write error", s);
     }

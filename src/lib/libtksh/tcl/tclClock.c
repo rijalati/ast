@@ -56,8 +56,7 @@ char **argv;        /* Argument strings. */
     int useGMT = 0;
     unsigned long clockVal;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -67,10 +66,8 @@ char **argv;        /* Argument strings. */
     }
     c = argv[1][0];
     length = strlen(argv[1]);
-    if ((c == 'c') && (strncmp(argv[1], "clicks", length) == 0))
-    {
-        if (argc != 2)
-        {
+    if ((c == 'c') && (strncmp(argv[1], "clicks", length) == 0)) {
+        if (argc != 2) {
             Tcl_AppendResult(interp,
                              "wrong # arguments: must be \"",
                              argv[0],
@@ -80,13 +77,10 @@ char **argv;        /* Argument strings. */
         }
         sprintf(interp->result, "%lu", TclpGetClicks());
         return TCL_OK;
-    }
-    else if ((c == 'f') && (strncmp(argv[1], "format", length) == 0))
-    {
+    } else if ((c == 'f') && (strncmp(argv[1], "format", length) == 0)) {
         char *format = "%a %b %d %X %Z %Y";
 
-        if ((argc < 3) || (argc > 7))
-        {
+        if ((argc < 3) || (argc > 7)) {
         wrongFmtArgs:
             Tcl_AppendResult(
             interp,
@@ -97,28 +91,20 @@ char **argv;        /* Argument strings. */
             return TCL_ERROR;
         }
 
-        if (ParseTime(interp, argv[2], &clockVal) != TCL_OK)
-        {
+        if (ParseTime(interp, argv[2], &clockVal) != TCL_OK) {
             return TCL_ERROR;
         }
 
         argPtr = argv + 3;
         argc -= 3;
-        while ((argc > 1) && (argPtr[0][0] == '-'))
-        {
-            if (strcmp(argPtr[0], "-format") == 0)
-            {
+        while ((argc > 1) && (argPtr[0][0] == '-')) {
+            if (strcmp(argPtr[0], "-format") == 0) {
                 format = argPtr[1];
-            }
-            else if (strcmp(argPtr[0], "-gmt") == 0)
-            {
-                if (Tcl_GetBoolean(interp, argPtr[1], &useGMT) != TCL_OK)
-                {
+            } else if (strcmp(argPtr[0], "-gmt") == 0) {
+                if (Tcl_GetBoolean(interp, argPtr[1], &useGMT) != TCL_OK) {
                     return TCL_ERROR;
                 }
-            }
-            else
-            {
+            } else {
                 Tcl_AppendResult(interp,
                                  "bad option \"",
                                  argPtr[0],
@@ -129,21 +115,17 @@ char **argv;        /* Argument strings. */
             argPtr += 2;
             argc -= 2;
         }
-        if (argc != 0)
-        {
+        if (argc != 0) {
             goto wrongFmtArgs;
         }
 
         return FormatClock(interp, clockVal, useGMT, format);
-    }
-    else if ((c == 's') && (strncmp(argv[1], "scan", length) == 0))
-    {
+    } else if ((c == 's') && (strncmp(argv[1], "scan", length) == 0)) {
         unsigned long baseClock;
         long zone;
         char *baseStr = NULL;
 
-        if ((argc < 3) || (argc > 7))
-        {
+        if ((argc < 3) || (argc > 7)) {
         wrongScanArgs:
             Tcl_AppendResult(
             interp,
@@ -156,21 +138,14 @@ char **argv;        /* Argument strings. */
 
         argPtr = argv + 3;
         argc -= 3;
-        while ((argc > 1) && (argPtr[0][0] == '-'))
-        {
-            if (strcmp(argPtr[0], "-base") == 0)
-            {
+        while ((argc > 1) && (argPtr[0][0] == '-')) {
+            if (strcmp(argPtr[0], "-base") == 0) {
                 baseStr = argPtr[1];
-            }
-            else if (strcmp(argPtr[0], "-gmt") == 0)
-            {
-                if (Tcl_GetBoolean(interp, argPtr[1], &useGMT) != TCL_OK)
-                {
+            } else if (strcmp(argPtr[0], "-gmt") == 0) {
+                if (Tcl_GetBoolean(interp, argPtr[1], &useGMT) != TCL_OK) {
                     return TCL_ERROR;
                 }
-            }
-            else
-            {
+            } else {
                 Tcl_AppendResult(interp,
                                  "bad option \"",
                                  argPtr[0],
@@ -181,32 +156,24 @@ char **argv;        /* Argument strings. */
             argPtr += 2;
             argc -= 2;
         }
-        if (argc != 0)
-        {
+        if (argc != 0) {
             goto wrongScanArgs;
         }
 
-        if (baseStr != NULL)
-        {
+        if (baseStr != NULL) {
             if (ParseTime(interp, baseStr, &baseClock) != TCL_OK)
                 return TCL_ERROR;
-        }
-        else
-        {
+        } else {
             baseClock = TclpGetSeconds();
         }
 
-        if (useGMT)
-        {
+        if (useGMT) {
             zone = -50000; /* Force GMT */
-        }
-        else
-        {
+        } else {
             zone = TclpGetTimeZone(baseClock);
         }
 
-        if (TclGetDate(argv[2], baseClock, zone, &clockVal) < 0)
-        {
+        if (TclGetDate(argv[2], baseClock, zone, &clockVal) < 0) {
             Tcl_AppendResult(interp,
                              "unable to convert date-time string \"",
                              argv[2],
@@ -217,11 +184,8 @@ char **argv;        /* Argument strings. */
 
         sprintf(interp->result, "%lu", ( long )clockVal);
         return TCL_OK;
-    }
-    else if ((c == 's') && (strncmp(argv[1], "seconds", length) == 0))
-    {
-        if (argc != 2)
-        {
+    } else if ((c == 's') && (strncmp(argv[1], "seconds", length) == 0)) {
+        if (argc != 2) {
             Tcl_AppendResult(interp,
                              "wrong # arguments: must be \"",
                              argv[0],
@@ -231,9 +195,7 @@ char **argv;        /* Argument strings. */
         }
         sprintf(interp->result, "%lu", TclpGetSeconds());
         return TCL_OK;
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "unknown option \"",
                          argv[1],
@@ -274,38 +236,31 @@ unsigned long *timePtr;
      * in advance.
      */
     errno = 0;
-    for (p = ( char * )string; isspace(UCHAR(*p)); p++)
-    {
+    for (p = ( char * )string; isspace(UCHAR(*p)); p++) {
         /* Empty loop body. */
     }
-    if (*p == '+')
-    {
+    if (*p == '+') {
         p++;
     }
     i = strtoul(p, &end, 0);
-    if (end == p)
-    {
+    if (end == p) {
         goto badTime;
     }
-    if (errno == ERANGE)
-    {
+    if (errno == ERANGE) {
         interp->result = "integer value too large to represent";
         Tcl_SetErrorCode(
         interp, "ARITH", "IOVERFLOW", interp->result, ( char * )NULL);
         return TCL_ERROR;
     }
-    while ((*end != '\0') && isspace(UCHAR(*end)))
-    {
+    while ((*end != '\0') && isspace(UCHAR(*end))) {
         end++;
     }
-    if (*end != '\0')
-    {
+    if (*end != '\0') {
         goto badTime;
     }
 
     *timePtr = ( time_t )i;
-    if (*timePtr != i)
-    {
+    if (*timePtr != i) {
         goto badTime;
     }
     return TCL_OK;
@@ -354,8 +309,7 @@ char *format;           /* Format string */
      */
     static int calledTzset = 0;
 
-    if (!calledTzset)
-    {
+    if (!calledTzset) {
         tzset();
         calledTzset = 1;
     }
@@ -367,17 +321,13 @@ char *format;           /* Format string */
      * struct tm.  No matter what was specified, they use the global time
      * zone.  (Thanks Solaris).
      */
-    if (useGMT)
-    {
+    if (useGMT) {
         char *varValue;
 
         varValue = Tcl_GetVar2(interp, "env", "TZ", TCL_GLOBAL_ONLY);
-        if (varValue != NULL)
-        {
+        if (varValue != NULL) {
             savedTZEnv = strcpy(ckalloc(strlen(varValue) + 1), varValue);
-        }
-        else
-        {
+        } else {
             savedTZEnv = NULL;
         }
         Tcl_SetVar2(interp, "env", "TZ", "GMT", TCL_GLOBAL_ONLY);
@@ -394,14 +344,10 @@ char *format;           /* Format string */
      * based on the number of percents in the string.
      */
 
-    for (bufSize = 0, p = format; *p != '\0'; p++)
-    {
-        if (*p == '%')
-        {
+    for (bufSize = 0, p = format; *p != '\0'; p++) {
+        if (*p == '%') {
             bufSize += 40;
-        }
-        else
-        {
+        } else {
             bufSize++;
         }
     }
@@ -410,23 +356,18 @@ char *format;           /* Format string */
 
     if (TclStrftime(
         buffer.string, ( unsigned int )bufSize, format, timeDataPtr)
-        == 0)
-    {
+        == 0) {
         Tcl_DStringFree(&buffer);
         Tcl_AppendResult(interp, "bad format string", ( char * )NULL);
         return TCL_ERROR;
     }
 
 #ifdef TCL_USE_TIMEZONE_VAR
-    if (useGMT)
-    {
-        if (savedTZEnv != NULL)
-        {
+    if (useGMT) {
+        if (savedTZEnv != NULL) {
             Tcl_SetVar2(interp, "env", "TZ", savedTZEnv, TCL_GLOBAL_ONLY);
             ckfree(savedTZEnv);
-        }
-        else
-        {
+        } else {
             Tcl_UnsetVar2(interp, "env", "TZ", TCL_GLOBAL_ONLY);
         }
         timezone = savedTimeZone;

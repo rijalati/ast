@@ -67,8 +67,7 @@ systrace(const char *id)
                      NiL,
                      ov,
                      PROC_ARGMOD | PROC_GID | PROC_UID
-                     | (n == (elementsof(trace) - 1) ? PROC_CLEANUP : 0))))
-        {
+                     | (n == (elementsof(trace) - 1) ? PROC_CLEANUP : 0)))) {
             sleep(1);
             break;
         }

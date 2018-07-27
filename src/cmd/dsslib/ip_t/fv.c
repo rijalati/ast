@@ -46,8 +46,7 @@ fvset(int n, unsigned char *r, long v)
     int i;
 
     i = n;
-    while (i--)
-    {
+    while (i--) {
         r[i] = v;
         v >>= 8;
     }
@@ -97,15 +96,13 @@ fvlsh(int n, unsigned char *r, const unsigned char *a, int v)
     int b;
     int g;
 
-    if (g = v / 8)
-    {
+    if (g = v / 8) {
         for (i = 0; i < n - g; i++)
             r[i] = r[i + g];
         for (; i < n; i++)
             r[i] = 0;
     }
-    if (b = v % 8)
-    {
+    if (b = v % 8) {
         for (i = 0; i < n - 1; i++)
             r[i] = (r[i] << b) | (r[i + 1] >> (8 - b));
         r[i] <<= b;
@@ -120,15 +117,13 @@ fvrsh(int n, unsigned char *r, const unsigned char *a, int v)
     int b;
     int g;
 
-    if (g = v / 8)
-    {
+    if (g = v / 8) {
         for (i = n - 1; i >= g; i--)
             r[i] = r[i - g];
         for (; i >= 0; i--)
             r[i] = 0;
     }
-    if (b = v % 8)
-    {
+    if (b = v % 8) {
         for (i = n - 1; i > 0; i--)
             r[i] = (r[i] >> b) | (r[i - 1] << (8 - b));
         r[i] >>= b;
@@ -155,8 +150,7 @@ fvadd(int n, unsigned char *r, const unsigned char *a, const unsigned char *b)
 
     c = 0;
     i = n;
-    while (i--)
-    {
+    while (i--) {
         c = (t = a[i] + b[i] + c) > 0xff;
         r[i] = t;
     }
@@ -172,8 +166,7 @@ fvsub(int n, unsigned char *r, const unsigned char *a, const unsigned char *b)
 
     c = 0;
     i = n;
-    while (i--)
-    {
+    while (i--) {
         c = (t = a[i] - b[i] - c) < 0;
         r[i] = t;
     }
@@ -249,13 +242,11 @@ fvmpy(int n, unsigned char *r, const unsigned char *a, const unsigned char *b)
     fvset(n, r, 0);
     for (i = 0; i < n - 1 && !a[i]; i++)
         ;
-    while (i < n)
-    {
+    while (i < n) {
         m = a[i++];
         c = 0;
         j = n;
-        while (j--)
-        {
+        while (j--) {
             c = (t = m * b[j] + c) >> 8;
             r[j] += t;
         }
@@ -331,26 +322,22 @@ fvdiv(int n,
     fvcpy(n, u = d + n, a);
     v = u + n;
     fvset(n, r, 0);
-    for (;;)
-    {
+    for (;;) {
         for (i = 0; i < n && !u[i]; i++)
             ;
         if (i > j)
             break;
         x = u[i];
         y = b[j];
-        if (x >= y)
-        {
+        if (x >= y) {
             if (j == 0)
                 break;
             for (s = 0; x >= (y << (s + 1)); s++)
                 ;
-            for (;;)
-            {
+            for (;;) {
                 for (k = 0; k < i; k++)
                     d[k] = 0;
-                for (x = j; x < n; x++)
-                {
+                for (x = j; x < n; x++) {
                     d[k - 1] |= b[x] >> (8 - s);
                     d[k] = b[x] << s;
                     k++;
@@ -363,20 +350,16 @@ fvdiv(int n,
                     goto done;
             }
             r[i] |= 1 << s;
-        }
-        else if (i == (n - 1))
+        } else if (i == (n - 1))
             break;
-        else
-        {
+        else {
             for (s = 0; x < (y >> (s + 1)); s++)
                 ;
-            for (;;)
-            {
+            for (;;) {
                 for (k = 0; k < i; k++)
                     d[k] = 0;
                 d[k] = 0;
-                for (x = j; x < n; x++)
-                {
+                for (x = j; x < n; x++) {
                     d[k] |= b[x] >> s;
                     if (++k < n)
                         d[k] = b[x] << (8 - s);
@@ -461,13 +444,11 @@ fmtfv(int n, const unsigned char *a, int x, int c, int g)
     *--s = 0;
     o = s;
     p = c ? g : 0;
-    if (b = newof(0, unsigned char, 3 * n, 0))
-    {
+    if (b = newof(0, unsigned char, 3 * n, 0)) {
         fvcpy(n, b, a);
         fvset(n, d = b + n, x);
         r = d + n;
-        for (;;)
-        {
+        for (;;) {
             i = n;
             while (--i && !b[i])
                 ;
@@ -475,8 +456,7 @@ fmtfv(int n, const unsigned char *a, int x, int c, int g)
                 break;
             fvdiv(n, b, r, b, d);
             *--s = digit[r[n - 1]];
-            if (!--p)
-            {
+            if (!--p) {
                 p = g;
                 *--s = c;
             }
@@ -489,8 +469,7 @@ fmtfv(int n, const unsigned char *a, int x, int c, int g)
         *--s = '0';
     else if (x == 8)
         *--s = '0';
-    else if (x == 16)
-    {
+    else if (x == 16) {
         *--s = 'x';
         *--s = '0';
     }
@@ -507,8 +486,7 @@ strfv(int n, unsigned char *r, const char *s, char **e, int b, int d)
 
     static unsigned char dig[256];
 
-    if (!dig[0])
-    {
+    if (!dig[0]) {
         memset(dig, 0xff, sizeof(dig));
         for (i = '0'; i <= '9'; i++)
             dig[i] = i - '0';
@@ -520,41 +498,32 @@ strfv(int n, unsigned char *r, const char *s, char **e, int b, int d)
     fvset(n, r, 0);
     while (*s == ' ' || *s == '\t')
         s++;
-    if (*s != '0')
-    {
+    if (*s != '0') {
         if (!b)
             b = 10;
-    }
-    else if (*(s + 1) == 'x' || *(s + 1) == 'X')
-    {
-        if (!b || b == 16)
-        {
+    } else if (*(s + 1) == 'x' || *(s + 1) == 'X') {
+        if (!b || b == 16) {
             s += 2;
             b = 16;
         }
-    }
-    else if (!b)
+    } else if (!b)
         b = *(s + 1) >= '0' && *(s + 1) <= '9' ? 8 : 10;
-    while (c = *s++)
-    {
+    while (c = *s++) {
         if (c == d)
             continue;
-        else if ((c = dig[c]) == 0xff)
-        {
+        else if ((c = dig[c]) == 0xff) {
             c = 0;
             break;
         }
         x = 0;
         i = n;
-        while (i--)
-        {
+        while (i--) {
             t = r[i] * b + x;
             x = t >> 8;
             r[i] = t;
         }
         i = n;
-        while (i--)
-        {
+        while (i--) {
             c = (t = r[i] + c) > 0xff;
             r[i] = t;
             if (!c)
@@ -587,8 +556,7 @@ fvplo(int z, int m, unsigned char *r, const unsigned char *a)
     int i;
     int n;
 
-    if (m)
-    {
+    if (m) {
         fvcpy(z, r, a);
         m = z * 8 - m;
         n = m / 8;
@@ -598,8 +566,7 @@ fvplo(int z, int m, unsigned char *r, const unsigned char *a)
             r[z - i] = 0;
         if (m)
             r[z - n] &= ~((1 << m) - 1);
-    }
-    else
+    } else
         fvset(z, r, 0);
     return r;
 }
@@ -614,8 +581,7 @@ fvphi(int z, int m, unsigned char *r, const unsigned char *a)
     int i;
     int n;
 
-    if (m)
-    {
+    if (m) {
         fvcpy(z, r, a);
         m = z * 8 - m;
         n = m / 8;
@@ -625,8 +591,7 @@ fvphi(int z, int m, unsigned char *r, const unsigned char *a)
             r[z - i] = 0xFF;
         if (m)
             r[z - n] |= ((1 << m) - 1);
-    }
-    else
+    } else
         for (i = 0; i < z; i++)
             r[i] = 0xFF;
     return r;

@@ -68,16 +68,13 @@ tmain()
     Dtstat_t stat;
 
     /* construct objects */
-    for (i = 0; i < N_OBJ; ++i)
-    {
+    for (i = 0; i < N_OBJ; ++i) {
         Obj[i].key = i;
         Obj[i].ord = i;
     }
 
-    for (meth = 0; meth < 4; ++meth)
-    {
-        switch (meth)
-        {
+    for (meth = 0; meth < 4; ++meth) {
+        switch (meth) {
         case 0:
             name = "Dtoset";
             if (!(dt = dtopen(&Disc, Dtoset)))
@@ -106,8 +103,7 @@ tmain()
         dtcustomize(dt, DT_SHARE, 1); /* make it more interesting */
 
         /* add all objects into dictionary */
-        for (i = 0; i < N_OBJ; ++i)
-        {
+        for (i = 0; i < N_OBJ; ++i) {
             obj = Obj + i;
             o = (meth == 2 /* Dtlist */) ? dtappend(dt, obj)
                                          : dtinsert(dt, obj);
@@ -122,8 +118,7 @@ tmain()
         tresource(-1, 0);
         if (!(walk = dtstart(dt, NIL(Void_t *))))
             terror("%s: Can't open walk", name);
-        for (k = 0, o = dtstep(dt, walk); o;)
-        {
+        for (k = 0, o = dtstep(dt, walk); o;) {
             Ord[k++] = o;
             o = dtstep(dt, walk);
         }
@@ -140,10 +135,8 @@ tmain()
                 terror("%s: Can't create a path at pos=%d",
                        name,
                        p * (N_OBJ / N_PATH));
-        for (k = 0; k < N_OBJ / N_PATH; ++k)
-        {
-            for (p = 0; p < N_PATH; ++p)
-            {
+        for (k = 0; k < N_OBJ / N_PATH; ++k) {
+            for (p = 0; p < N_PATH; ++p) {
                 if (!(o = dtstep(dt, path[p])))
                     terror("%s: missing an object", name);
                 if (o != Ord[p * (N_OBJ / N_PATH) + k])

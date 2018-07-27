@@ -64,8 +64,7 @@ pds_getprologue(Pax_t *pax,
         return 0;
     b = buf;
     e = b + b[1];
-    while (b != e)
-    {
+    while (b != e) {
         n = 12 + 2 * (b[11] & 0x1f);
         if ((e - b) < n)
             return 0;
@@ -77,21 +76,18 @@ pds_getprologue(Pax_t *pax,
         nospace();
     pds->map = ccmap(CC_EBCDIC_O, CC_NATIVE);
     links = 0;
-    while ((b = ( unsigned char * )paxget(pax, ap, -256, NiL)) && !b[0])
-    {
+    while ((b = ( unsigned char * )paxget(pax, ap, -256, NiL)) && !b[0]) {
         n = b[1];
         b += 2;
         e = b + n;
-        while ((e - b) >= 12)
-        {
+        while ((e - b) >= 12) {
             if (b[0] == 0xff
                 && !memcmp(b, "\xff\xff\xff\xff\xff\xff\xff\xff", 8))
                 goto done;
             n = 12 + 2 * (b[11] & 0x1f);
             if ((e - b) < n)
                 break;
-            if (i >= m)
-            {
+            if (i >= m) {
                 m += 32;
                 if (!(pds = newof(pds, Pds_t, 1, (m - 1) * sizeof(Pdsdir_t))))
                     nospace();
@@ -112,12 +108,10 @@ pds_getprologue(Pax_t *pax,
                                         NiL,
                                         0)
                                : NOW;
-            if (b[11] & 0x80)
-            {
+            if (b[11] & 0x80) {
                 links++;
                 pds->dir[i].link = &pds->dir[i].name[0];
-            }
-            else
+            } else
                 pds->dir[i].link = 0;
             b += n;
             for (n = 8; n > 0 && pds->dir[i].name[n - 1] == ' '; n--)
@@ -127,25 +121,21 @@ pds_getprologue(Pax_t *pax,
         }
     }
 done:
-    if (!(pds->size = i))
-    {
+    if (!(pds->size = i)) {
         free(pds);
         return 0;
     }
     m = 0;
-    while (links > 0)
-    {
+    while (links > 0) {
         while (!pds->dir[m].link)
             m++;
         for (n = 0; n < i; n++)
             if (n != m && pds->dir[n].block == pds->dir[m].block)
                 break;
-        if (n < m)
-        {
+        if (n < m) {
             pds->dir[n].link = pds->dir[m].name;
             pds->dir[m].link = 0;
-        }
-        else if (n < i)
+        } else if (n < i)
             pds->dir[m].link = pds->dir[n].name;
         else
             pds->dir[m].link = 0;
@@ -160,8 +150,7 @@ done:
 static int
 pds_done(Pax_t *pax, Archive_t *ap)
 {
-    if (ap->data)
-    {
+    if (ap->data) {
         free(ap->data);
         ap->data = 0;
     }

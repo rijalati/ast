@@ -103,10 +103,8 @@ int *intPtr;        /* Filled in with number of pages
 
     length = strlen(argv[2]);
     c = argv[2][0];
-    if ((c == 'm') && (strncmp(argv[2], "moveto", length) == 0))
-    {
-        if (argc != 4)
-        {
+    if ((c == 'm') && (strncmp(argv[2], "moveto", length) == 0)) {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -116,16 +114,12 @@ int *intPtr;        /* Filled in with number of pages
                              ( char * )NULL);
             return TK_SCROLL_ERROR;
         }
-        if (Tcl_GetDouble(interp, argv[3], dblPtr) != TCL_OK)
-        {
+        if (Tcl_GetDouble(interp, argv[3], dblPtr) != TCL_OK) {
             return TK_SCROLL_ERROR;
         }
         return TK_SCROLL_MOVETO;
-    }
-    else if ((c == 's') && (strncmp(argv[2], "scroll", length) == 0))
-    {
-        if (argc != 5)
-        {
+    } else if ((c == 's') && (strncmp(argv[2], "scroll", length) == 0)) {
+        if (argc != 5) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -135,22 +129,16 @@ int *intPtr;        /* Filled in with number of pages
                              ( char * )NULL);
             return TK_SCROLL_ERROR;
         }
-        if (Tcl_GetInt(interp, argv[3], intPtr) != TCL_OK)
-        {
+        if (Tcl_GetInt(interp, argv[3], intPtr) != TCL_OK) {
             return TK_SCROLL_ERROR;
         }
         length = strlen(argv[4]);
         c = argv[4][0];
-        if ((c == 'p') && (strncmp(argv[4], "pages", length) == 0))
-        {
+        if ((c == 'p') && (strncmp(argv[4], "pages", length) == 0)) {
             return TK_SCROLL_PAGES;
-        }
-        else if ((c == 'u') && (strncmp(argv[4], "units", length) == 0))
-        {
+        } else if ((c == 'u') && (strncmp(argv[4], "units", length) == 0)) {
             return TK_SCROLL_UNITS;
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp,
                              "bad argument \"",
                              argv[4],
@@ -190,10 +178,8 @@ char *TkFindStateString(mapPtr, numKey) CONST TkStateMap *mapPtr; /* The state
                                                                      table. */
 int numKey; /* The key to try to find in the table. */
 {
-    for (; mapPtr->strKey != NULL; mapPtr++)
-    {
-        if (numKey == mapPtr->numKey)
-        {
+    for (; mapPtr->strKey != NULL; mapPtr++) {
+        if (numKey == mapPtr->numKey) {
             return mapPtr->strKey;
         }
     }
@@ -229,20 +215,16 @@ CONST char *strKey;       /* String to try to find in lookup table. */
 {
     CONST TkStateMap *mPtr;
 
-    if (mapPtr->strKey == NULL)
-    {
+    if (mapPtr->strKey == NULL) {
         panic("TkFindStateNum: no choices in lookup table");
     }
 
-    for (mPtr = mapPtr; mPtr->strKey != NULL; mPtr++)
-    {
-        if (strcmp(strKey, mPtr->strKey) == 0)
-        {
+    for (mPtr = mapPtr; mPtr->strKey != NULL; mPtr++) {
+        if (strcmp(strKey, mPtr->strKey) == 0) {
             return mPtr->numKey;
         }
     }
-    if (interp != NULL)
-    {
+    if (interp != NULL) {
         mPtr = mapPtr;
         Tcl_AppendResult(interp,
                          "bad ",
@@ -252,8 +234,7 @@ CONST char *strKey;       /* String to try to find in lookup table. */
                          "\": must be ",
                          mPtr->strKey,
                          ( char * )NULL);
-        for (mPtr++; mPtr->strKey != NULL; mPtr++)
-        {
+        for (mPtr++; mPtr->strKey != NULL; mPtr++) {
             Tcl_AppendResult(interp, ", ", mPtr->strKey, ( char * )NULL);
         }
     }

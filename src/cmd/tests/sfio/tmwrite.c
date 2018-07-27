@@ -56,17 +56,14 @@ tmain()
     fr = sfopen(NIL(Sfio_t *), tstfile("sf", 0), "w+");
 
     /* create records */
-    for (i = 0; i < N_WRITER; ++i)
-    {
+    for (i = 0; i < N_WRITER; ++i) {
         fw[i] = sfopen(NIL(Sfio_t *), tstfile("sf", 0), "a");
         count[i] = 0;
     }
 
-    for (done = 0; done < N_WRITER;)
-    {
+    for (done = 0; done < N_WRITER;) {
         i = ( int )(vrandom() % N_WRITER);
-        if (count[i] < N_RECORD)
-        {
+        if (count[i] < N_RECORD) {
             r = size[i][count[i]];
             if (!(s = sfreserve(fw[i], r, SF_LOCKR)) || sfvalue(fw[i]) < r)
                 terror("sfreserve fails in process %d", i);
@@ -74,8 +71,7 @@ tmain()
             s[r - 1] = '\n';
             sfwrite(fw[i], s, r);
 
-            if ((count[i] += 1) == N_RECORD)
-            {
+            if ((count[i] += 1) == N_RECORD) {
                 done += 1;
                 sfclose(fw[i]);
             }
@@ -85,8 +81,7 @@ tmain()
     for (i = 0; i < N_WRITER; ++i)
         count[i] = 0;
 
-    while ((s = sfgetr(fr, '\n', 0)))
-    {
+    while ((s = sfgetr(fr, '\n', 0))) {
         if ((i = s[0] - '0') < 0 || i >= N_WRITER)
             terror("Wrong record type");
 

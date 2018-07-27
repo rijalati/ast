@@ -101,8 +101,7 @@ tp_getprologue(Pax_t *pax,
     if (!(ar = newof(0, Ar_t, 1, n - sizeof(Dir_t))))
         return paxnospace(pax);
     if (paxread(pax, ap, NiL, PAX_BLOCK, 0, 0) != PAX_BLOCK
-        || paxread(pax, ap, ar->dir, n, 0, 0) != n)
-    {
+        || paxread(pax, ap, ar->dir, n, 0, 0) != n) {
         error(2, "%s: %s format directory read error", ap->name, fp->name);
         free(ar);
         return -1;
@@ -124,8 +123,7 @@ tp_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
     ui1 *e;
     int16_t w;
 
-    do
-    {
+    do {
         if (ar->dp >= ar->ep)
             return 0;
         dp = ar->dp++;
@@ -133,8 +131,7 @@ tp_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
     w = 0;
     for (e = (s = ( ui1 * )ar->dir) + sizeof(Dir_t); s < e; s += 2)
         w += s[0] + (s[1] << 8);
-    if (w)
-    {
+    if (w) {
         error(2,
               "%s: %s format directory entry %d checksum error",
               ap->name,
@@ -173,16 +170,12 @@ tp_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
     if (fd < 0)
         r = 1;
     else if (sp = paxpart(pax, ap, f->st->st_size))
-        for (;;)
-        {
-            if ((n = sfread(sp, pax->buf, sizeof(pax->buf))) < 0)
-            {
+        for (;;) {
+            if ((n = sfread(sp, pax->buf, sizeof(pax->buf))) < 0) {
                 (*pax->errorf)(
                 NiL, pax, 2, "%s: %s: unexpected EOF", ap->name, f->name);
                 break;
-            }
-            else if (n == 0)
-            {
+            } else if (n == 0) {
                 r = 1;
                 break;
             }
@@ -190,8 +183,7 @@ tp_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
             if (paxdata(pax, ap, f, fd, pax->buf, n))
                 break;
         }
-    if (skip && paxread(pax, ap, NiL, skip, 0, 0) != skip)
-    {
+    if (skip && paxread(pax, ap, NiL, skip, 0, 0) != skip) {
         (*pax->errorf)(NiL,
                        pax,
                        2,

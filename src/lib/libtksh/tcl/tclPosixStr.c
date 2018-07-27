@@ -38,8 +38,7 @@
 char *
 Tcl_ErrnoId()
 {
-    switch (errno)
-    {
+    switch (errno) {
 #ifdef E2BIG
     case E2BIG:
         return "E2BIG";
@@ -623,8 +622,7 @@ Tcl_ErrnoId()
 char *Tcl_ErrnoMsg(err) int err; /* Error number (such as in errno variable).
                                   */
 {
-    switch (err)
-    {
+    switch (err) {
 #ifdef E2BIG
     case E2BIG:
         return "argument list too long";
@@ -1208,8 +1206,7 @@ char *Tcl_ErrnoMsg(err) int err; /* Error number (such as in errno variable).
 
 char *Tcl_SignalId(sig) int sig; /* Number of signal. */
 {
-    switch (sig)
-    {
+    switch (sig) {
 #ifdef SIGABRT
     case SIGABRT:
         return "SIGABRT";
@@ -1377,8 +1374,7 @@ char *Tcl_SignalId(sig) int sig; /* Number of signal. */
 
 char *Tcl_SignalMsg(sig) int sig; /* Number of signal. */
 {
-    switch (sig)
-    {
+    switch (sig) {
 #ifdef SIGABRT
     case SIGABRT:
         return "SIGABRT";

@@ -75,22 +75,18 @@ namebase(Sfio_t *outfile, char *pathname, char *suffix)
     if (last > first)
         while (*--last == '/' && last > first)
             ;
-    if (last == first && *last == '/')
-    {
+    if (last == first && *last == '/') {
         /* all '/' or "" */
         if (*first == '/')
             if (*++last == '/') /* keep leading // */
                 last++;
-    }
-    else
-    {
+    } else {
         for (first = last++; first > pathname && *first != '/'; first--)
             ;
         if (*first == '/')
             first++;
         /* check for trailing suffix */
-        if (suffix && (n = strlen(suffix)) && n < (last - first))
-        {
+        if (suffix && (n = strlen(suffix)) && n < (last - first)) {
             if (memcmp(last - n, suffix, n) == 0)
                 last -= n;
         }
@@ -108,10 +104,8 @@ b_basename(int argc, char **argv, Shbltin_t *context)
     int all = 0;
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             all = 1;
             continue;

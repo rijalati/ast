@@ -75,10 +75,8 @@ main(int argc, char **argv)
 
     NoP(argc);
     error_info.id = "rec";
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'c':
             count = !!opt_info.num;
             continue;
@@ -110,14 +108,11 @@ main(int argc, char **argv)
     sfprintf(sfstdout, "%s", fmtrec(f, 0));
     if (*e)
         sfprintf(sfstdout, " [%s]", e);
-    if (sp && RECTYPE(f) == REC_method)
-    {
+    if (sp && RECTYPE(f) == REC_method) {
         e = "";
-        switch (REC_M_INDEX(f))
-        {
+        switch (REC_M_INDEX(f)) {
         case REC_M_data:
-            if (s = sfreserve(sp, SF_UNBOUND, SF_LOCKR))
-            {
+            if (s = sfreserve(sp, SF_UNBOUND, SF_LOCKR)) {
                 z = sfvalue(sp);
                 if (fstat(sffileno(sp), &st) || st.st_size < z)
                     st.st_size = 0;
@@ -139,16 +134,13 @@ main(int argc, char **argv)
             sfprintf(sfstdout, " [%s]", e);
     }
     sfprintf(sfstdout, "\n");
-    if (sp && (count || length))
-    {
+    if (sp && (count || length)) {
         r = 0;
         t = 0;
         b = s = e = 0;
         m = SF_UNBOUND;
-        for (;;)
-        {
-            if (s >= e)
-            {
+        for (;;) {
+            if (s >= e) {
                 if (b)
                     sfread(sp, b, s - b);
                 o = sftell(sp);
@@ -162,18 +154,15 @@ main(int argc, char **argv)
                     sfstdout, "reserve %d at %I*d\n", e - s, sizeof(o), o);
             }
             z = reclen(f, s, e - s);
-            if (z > 0)
-            {
+            if (z > 0) {
                 if (length)
                     sfprintf(sfstdout, "%I*d\n", sizeof(z), z);
                 r++;
                 t += z;
                 if (z <= (e - s))
                     s += z;
-                else
-                {
-                    if (b)
-                    {
+                else {
+                    if (b) {
                         sfread(sp, b, e - b);
                         b = 0;
                     }
@@ -188,8 +177,7 @@ main(int argc, char **argv)
                                  sizeof(o),
                                  o);
                     z -= e - s;
-                    if (!sfreserve(sp, z, 0))
-                    {
+                    if (!sfreserve(sp, z, 0)) {
                         if (length && (z = sfvalue(sp)))
                             sfprintf(
                             sfstdout, "partial %I*d\n", sizeof(z), z);
@@ -197,20 +185,15 @@ main(int argc, char **argv)
                     }
                     s = e;
                 }
-            }
-            else if (z < 0)
-            {
+            } else if (z < 0) {
                 sfprintf(sfstdout, "recfmt FAILED\n");
                 break;
-            }
-            else
-            {
+            } else {
                 if (reserve)
                     sfprintf(sfstdout,
                              "recfmt 0 with %d remaining in buffer\n",
                              e - s);
-                if (b)
-                {
+                if (b) {
                     sfread(sp, b, s - b);
                     b = 0;
                 }

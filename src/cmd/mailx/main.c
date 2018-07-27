@@ -182,16 +182,14 @@ setopt(struct list *op, char *s, char *v)
         note(PANIC, "Out of space");
     op = op->next;
     s = strcopy(op->name, s);
-    if (v)
-    {
+    if (v) {
         *s++ = '=';
         strcpy(s, v);
     }
     state.onstack++;
     initargs(&vec);
     getargs(&vec, op->name);
-    if (endargs(&vec) > 0)
-    {
+    if (endargs(&vec) > 0) {
         state.cmdline = 1;
         set(vec.argv);
         state.cmdline = 0;
@@ -211,12 +209,10 @@ resetopt(struct list *op)
     struct argvec vec;
 
     np = op->next;
-    while (op = np)
-    {
+    while (op = np) {
         initargs(&vec);
         getargs(&vec, op->name);
-        if (endargs(&vec) > 0)
-        {
+        if (endargs(&vec) > 0) {
             state.cmdline = 1;
             set(vec.argv);
             state.cmdline = 0;
@@ -267,10 +263,8 @@ main(int argc, char **argv)
      */
     ef = 0;
     opterr = 0;
-    for (;;)
-    {
-        switch (getopt(argc, argv, usage))
-        {
+    for (;;) {
+        switch (getopt(argc, argv, usage)) {
         case 0:
         case EOF:
             break;
@@ -469,8 +463,7 @@ Usage: mail [-o [no]name[=value]] [-s subject] [-c cc] [-b bcc] to ...\n\
     /*
      * Check for inconsistent arguments.
      */
-    if (state.mode == RECEIVE && (head.h_flags & GSTD))
-    {
+    if (state.mode == RECEIVE && (head.h_flags & GSTD)) {
         if (!state.var.sendheaders)
             note(FATAL | IDENTIFY,
                  "You must specify direct recipients with -s, -c, or -b");
@@ -500,8 +493,7 @@ Usage: mail [-o [no]name[=value]] [-s subject] [-c cc] [-b bcc] to ...\n\
      * Reset command line options so they take precedence over the rc's.
      */
     resetopt(&options);
-    if (state.mode == SEND)
-    {
+    if (state.mode == SEND) {
         sendmail(&head, flags);
         /*
          * why wait?
@@ -519,8 +511,7 @@ Usage: mail [-o [no]name[=value]] [-s subject] [-c cc] [-b bcc] to ...\n\
         exit(1);
     if (sig = setjmp(state.jump.header))
         resume(sig);
-    else
-    {
+    else {
         if ((prevint = signal(SIGINT, SIG_IGN)) != SIG_IGN)
             signal(SIGINT, hdrstop);
         if (!state.var.quiet)
@@ -529,8 +520,7 @@ Usage: mail [-o [no]name[=value]] [-s subject] [-c cc] [-b bcc] to ...\n\
         fflush(stdout);
         signal(SIGINT, prevint);
     }
-    if (!state.var.justheaders)
-    {
+    if (!state.var.justheaders) {
         commands();
         signal(SIGHUP, SIG_IGN);
         signal(SIGINT, SIG_IGN);

@@ -94,8 +94,7 @@ _vmchkmem(Vmuchar_t *area, size_t size)
 ssize_t
 _vmpagesize(void)
 {
-    if (_Vmpagesize <= 0)
-    {
+    if (_Vmpagesize <= 0) {
 #if _lib_getpagesize
         if ((_Vmpagesize = getpagesize()) <= 0)
 #endif
@@ -120,16 +119,14 @@ _vmboundaries(void)
 #if !_WINIX
     /* try to get a shared memory segment, memz is the successful size */
     memz = sizeof(void *) < 8 ? 1024 * 1024 : 64 * 1024 * 1024;
-    for (; memz >= _Vmpagesize; memz /= 2)
-    {
+    for (; memz >= _Vmpagesize; memz /= 2) {
         z = ROUND(memz, _Vmpagesize);
         if ((shmid = shmget(IPC_PRIVATE, z, IPC_CREAT | 0600)) >= 0)
             break;
     }
     if (memz >= _Vmpagesize) /* did get a shared segment */
         memz = ROUND(memz, _Vmpagesize);
-    else
-    { /**/
+    else { /**/
         DEBUG_MESSAGE("shmget() failed");
         return ( int )_Vmpagesize;
     }
@@ -142,8 +139,7 @@ _vmboundaries(void)
     min = ( Vmuchar_t * )ROUND(( unsigned long )min, _Vmpagesize); /* heap  */
     max = ( Vmuchar_t * )(&max);
     max = ( Vmuchar_t * )ROUND(( unsigned long )max, _Vmpagesize); /* stack */
-    if (min > max)
-    {
+    if (min > max) {
         tmp = min;
         min = max;
         max = tmp;
@@ -151,15 +147,12 @@ _vmboundaries(void)
 
     /* now attach a segment to see where it falls in the range */
     if (!(shm = shmat(shmid, NIL(Void_t *), 0600))
-        || shm == ( Vmuchar_t * )(-1))
-    { /**/
+        || shm == ( Vmuchar_t * )(-1)) { /**/
         DEBUG_MESSAGE("shmat() failed first NULL attachment");
         goto done;
-    }
-    else
+    } else
         shmdt(( Void_t * )shm);
-    if (shm < min || shm > max)
-    { /**/
+    if (shm < min || shm > max) { /**/
         DEBUG_MESSAGE("shmat() got an out-of-range address");
         goto done;
     }
@@ -169,12 +162,10 @@ _vmboundaries(void)
     rght = max - shm;
 
     min = max = shm; /* compute bounds of known mappable memory */
-    for (size = 7 * (left > rght ? left : rght) / 8; size > memz; size /= 2)
-    {
+    for (size = 7 * (left > rght ? left : rght) / 8; size > memz; size /= 2) {
         size = ROUND(size, _Vmpagesize);
         shm = left > rght ? max - size : min + size;
-        if ((tmp = shmat(shmid, shm, 0600)) == shm)
-        {
+        if ((tmp = shmat(shmid, shm, 0600)) == shm) {
             shmdt(( Void_t * )tmp);
             if (left > rght)
                 min = shm;
@@ -191,8 +182,7 @@ _vmboundaries(void)
     }
 
     /* search outward from last computed bound for a better bound */
-    for (z = memz; z < size; z *= 2)
-    {
+    for (z = memz; z < size; z *= 2) {
         shm = left > rght ? min - z : max + z;
         if ((tmp = shmat(shmid, shm, 0600)) == shm)
             shmdt(( Void_t * )tmp);
@@ -238,8 +228,7 @@ _vmboundaries(void)
         munmap(( Void_t * )shm, _Vmpagesize);
 
     if (tmp && tmp != ( Vmuchar_t * )(-1) && shm
-        && shm != ( Vmuchar_t * )(-1))
-    {
+        && shm != ( Vmuchar_t * )(-1)) {
         _Vmmemsbrk = shm + _Vmpagesize; /* mmap starts from here */
 
         if (tmp >= (_Vmmemmin + (_Vmmemmax - _Vmmemmin) / 2)

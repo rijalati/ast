@@ -50,8 +50,7 @@ delsuftree(Suftree *root)
     if (!root)
         return;
     root -= 1;
-    while (root)
-    {
+    while (root) {
         Suftree *next;
         next = NEXT(root);
         free(root);
@@ -72,8 +71,7 @@ child_find(Suftree *node, Element c)
         else
             last = np;
 
-    if (np && last)
-    {
+    if (np && last) {
         /* move-to-front heuristic */
         SIBLING(last) = SIBLING(np);
         SIBLING(np) = CHILD(node);
@@ -88,8 +86,7 @@ getmem(Suftree *root, int n)
 {
     Suftree *list;
 
-    if (!(list = ( Suftree * )malloc((n + 1) * sizeof(Suftree))))
-    {
+    if (!(list = ( Suftree * )malloc((n + 1) * sizeof(Suftree)))) {
         if (root)
             delsuftree(root);
         return 0;
@@ -97,8 +94,7 @@ getmem(Suftree *root, int n)
 
     /* store where this list is for later deletion */
     NEXT(list) = 0;
-    if (root)
-    {
+    if (root) {
         for (root -= 1; NEXT(root); root = NEXT(root))
             ;
         NEXT(root) = list;
@@ -159,24 +155,20 @@ bldsuftree(Element *src, long len)
     endsrc = src + len;
 
     /* now build the tree */
-    for (; src < endsrc; ++src)
-    {
+    for (; src < endsrc; ++src) {
         /* prepare for scanning the current suffix */
-        if (locus != root)
-        {
+        if (locus != root) {
             /* define the string to be rescanned */
             rescan = LABEL(locus);
             relen = LENGTH(locus);
 
             /* minus the first character of the previous prefix */
-            if (clocus == root)
-            {
+            if (clocus == root) {
                 rescan++;
                 if (relen > 0)
                     --relen;
             }
-        }
-        else
+        } else
             mtlen = relen = 0;
 
         /* the length of the known-to-be-matched part */
@@ -189,8 +181,7 @@ bldsuftree(Element *src, long len)
         = LINK(clocus);
 
         /* rescan */
-        while (relen > 0)
-        {
+        while (relen > 0) {
             /* find a child of link that starts with the
                first character of rescan. We then know that
                rescan must match a prefix of that child.
@@ -203,17 +194,14 @@ bldsuftree(Element *src, long len)
             = link;
 
             /* rescan contains LABEL(match) */
-            if (relen >= LENGTH(match))
-            {
+            if (relen >= LENGTH(match)) {
                 link = match;
                 relen -= LENGTH(match);
                 rescan += LENGTH(match);
             }
             /* rescan is a proper prefix of LABEL(match) */
-            else
-            {
-                if (list >= endlist)
-                {
+            else {
+                if (list >= endlist) {
                     if (!(list = getmem(root, ALLOCSIZE)))
                         return 0;
                     else
@@ -245,8 +233,7 @@ bldsuftree(Element *src, long len)
         /* scan to match as much as possible */
         locus = link;
         sp = src + mtlen;
-        while (sp < endsrc)
-        {
+        while (sp < endsrc) {
             /* see if it matches some child of clocus */
             if (!(match = child_find(locus, *sp)))
                 break;
@@ -262,16 +249,13 @@ bldsuftree(Element *src, long len)
                     break;
 
             /* the whole node is matched */
-            if (mp >= endmatch)
-            {
+            if (mp >= endmatch) {
                 locus = match;
                 mtlen += LENGTH(match);
             }
             /* found the extended locus of this suffix */
-            else
-            {
-                if (list >= endlist)
-                {
+            else {
+                if (list >= endlist) {
                     if (!(list = getmem(root, ALLOCSIZE)))
                         return 0;
                     else
@@ -297,8 +281,7 @@ bldsuftree(Element *src, long len)
             }
         }
 
-        if (list >= endlist)
-        {
+        if (list >= endlist) {
             if (!(list = getmem(root, ALLOCSIZE)))
                 return 0;
             else
@@ -334,8 +317,7 @@ mtchsuftree(Suftree *tree, Element *str, long len, Element **mtchp)
 
     mlen = 0;
     endstr = str + len;
-    while (1)
-    {
+    while (1) {
         if (!(match = child_find(tree, *str)))
             break;
 
@@ -360,8 +342,7 @@ mtchsuftree(Suftree *tree, Element *str, long len, Element **mtchp)
 
     if (mlen == 0) /* no match */
         *mtchp = 0;
-    else
-    {
+    else {
         /* find where the match starts */
         while (CHILD(tree))
             tree = CHILD(tree);

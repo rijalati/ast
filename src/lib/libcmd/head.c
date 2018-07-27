@@ -80,17 +80,14 @@ b_head(int argc, char **argv, Shbltin_t *context)
     char *format = ( char * )header_fmt + 1;
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'c':
             delim = -1;
             /*FALLTHROUGH*/
         case 'n':
             if (opt_info.offset
-                && argv[opt_info.index][opt_info.offset] == 'c')
-            {
+                && argv[opt_info.index][opt_info.offset] == 'c') {
                 delim = -1;
                 opt_info.offset++;
             }
@@ -125,24 +122,19 @@ b_head(int argc, char **argv, Shbltin_t *context)
         error(ERROR_usage(2), "%s", optusage(NiL));
     if (cp = *argv)
         argv++;
-    do
-    {
-        if (!cp || streq(cp, "-"))
-        {
+    do {
+        if (!cp || streq(cp, "-")) {
             cp = "/dev/stdin";
             fp = sfstdin;
             sfset(fp, SF_SHARE, 1);
-        }
-        else if (!(fp = sfopen(NiL, cp, "r")))
-        {
+        } else if (!(fp = sfopen(NiL, cp, "r"))) {
             error(ERROR_system(0), "%s: cannot open", cp);
             continue;
         }
         if (argc > header)
             sfprintf(sfstdout, format, cp);
         format = ( char * )header_fmt;
-        if (skip > 0)
-        {
+        if (skip > 0) {
             if ((moved = sfmove(fp, NiL, skip, delim)) < 0
                 && !ERROR_PIPE(errno) && errno != EINTR)
                 error(ERROR_system(0), "%s: skip error", cp);

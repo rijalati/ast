@@ -117,15 +117,13 @@ procfs_init(Pss_t *pss)
     if ((fd = open(pss->buf, O_RDONLY | O_BINARY)) < 0)
         return -1;
     close(fd);
-    if (!(state = vmnewof(pss->vm, 0, State_t, 1, 0)))
-    {
+    if (!(state = vmnewof(pss->vm, 0, State_t, 1, 0))) {
         if (pss->disc->errorf)
             (*pss->disc->errorf)(
             pss, pss->disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
     }
-    if (!(state->dir = opendir(_PS_dir)))
-    {
+    if (!(state->dir = opendir(_PS_dir))) {
         if (pss->disc->errorf)
             (*pss->disc->errorf)(
             pss, pss->disc, ERROR_SYSTEM | 1, "%s: cannot open", _PS_dir);
@@ -154,8 +152,7 @@ procfs_read(Pss_t *pss, Pss_id_t pid)
     if (pid)
         pss->pid = pid;
     else
-        do
-        {
+        do {
             if (!(ent = readdir(state->dir)))
                 return 0;
             pss->pid = ( Pss_id_t )strtol(ent->d_name, &e, 10);
@@ -179,8 +176,7 @@ procfs_part(Pss_t *pss, Pssent_t *pe)
               _PS_path_num,
               ( unsigned long )pss->pid,
               _PS_status);
-    if ((fd = open(pss->buf, O_RDONLY | O_BINARY)) < 0)
-    {
+    if ((fd = open(pss->buf, O_RDONLY | O_BINARY)) < 0) {
         if (pss->disc->errorf
             && ((pss->disc->flags & PSS_VERBOSE) || errno != ENOENT))
             (*pss->disc->errorf)(pss,
@@ -191,22 +187,17 @@ procfs_part(Pss_t *pss, Pssent_t *pe)
         return 0;
     }
 #    ifdef _PS_scan_format
-    if ((n = read(fd, pss->buf, sizeof(pss->buf))) <= 0 || fstat(fd, &st))
-    {
+    if ((n = read(fd, pss->buf, sizeof(pss->buf))) <= 0 || fstat(fd, &st)) {
         n = -1;
         errno = EINVAL;
-    }
-    else
-    {
+    } else {
         memset(pr, sizeof(*pr), 0);
         n = sfsscanf(pss->buf, _PS_scan_format, _PS_scan_args(pr));
-        if (n < _PS_scan_count)
-        {
+        if (n < _PS_scan_count) {
             char *s;
 
             for (s = pss->buf; *s; s++)
-                if (*s == '(')
-                {
+                if (*s == '(') {
                     for (; *s && *s != ')'; s++)
                         if (isspace(*s))
                             *s = '_';
@@ -239,17 +230,14 @@ procfs_part(Pss_t *pss, Pssent_t *pe)
         pr->pr_rssize /= 1024;
 #        endif
 #        ifdef _PS_scan_boot
-        if (!pss->boot)
-        {
+        if (!pss->boot) {
             char *s;
             Sfio_t *fp;
 
             pss->boot = 1;
-            if (fp = sfopen(NiL, "/proc/stat", "r"))
-            {
+            if (fp = sfopen(NiL, "/proc/stat", "r")) {
                 while (s = sfgetr(fp, '\n', 0))
-                    if (strneq(s, "btime ", 6))
-                    {
+                    if (strneq(s, "btime ", 6)) {
                         pss->boot = strtol(s + 6, NiL, 10);
                         break;
                     }
@@ -270,8 +258,7 @@ procfs_part(Pss_t *pss, Pssent_t *pe)
 #        endif
 #    endif
     close(fd);
-    if (n < 0)
-    {
+    if (n < 0) {
         if (pss->disc->errorf)
             (*pss->disc->errorf)(pss,
                                  pss->disc,
@@ -317,10 +304,8 @@ procfs_full(Pss_t *pss, Pssent_t *pe)
     char *s;
     int i;
 
-    if (pe->state != PSS_ZOMBIE)
-    {
-        if (fields & PSS_args)
-        {
+    if (pe->state != PSS_ZOMBIE) {
+        if (fields & PSS_args) {
 #    if _mem_pr_psargs_prpsinfo
             s = pr->pr_psargs;
 #    else
@@ -328,14 +313,12 @@ procfs_full(Pss_t *pss, Pssent_t *pe)
             s = "<unknown>";
             sfsprintf(
             pss->buf, sizeof(pss->buf), _PS_path_num, pe->pid, _PS_args);
-            if ((i = open(pss->buf, O_RDONLY | O_BINARY)) >= 0)
-            {
+            if ((i = open(pss->buf, O_RDONLY | O_BINARY)) >= 0) {
                 int n;
 
                 n = read(i, pss->buf, sizeof(pss->buf) - 1);
                 close(i);
-                if (n > 0)
-                {
+                if (n > 0) {
                     s = pss->buf;
                     for (i = 0; i < n; i++)
                         if (!s[i])
@@ -345,8 +328,7 @@ procfs_full(Pss_t *pss, Pssent_t *pe)
             }
 #        else
             s = pr->pr_fname;
-            if (s[0] == '(' && s[i = strlen(s) - 1] == ')')
-            {
+            if (s[0] == '(' && s[i = strlen(s) - 1] == ')') {
                 s[i] = 0;
                 s++;
             }
@@ -354,11 +336,9 @@ procfs_full(Pss_t *pss, Pssent_t *pe)
 #    endif
             pe->args = s;
         }
-        if (fields & PSS_command)
-        {
+        if (fields & PSS_command) {
             s = pr->pr_fname;
-            if (s[0] == '(' && s[i = strlen(s) - 1] == ')')
-            {
+            if (s[0] == '(' && s[i = strlen(s) - 1] == ')') {
                 s[i] = 0;
                 s++;
             }

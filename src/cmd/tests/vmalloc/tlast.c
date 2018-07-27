@@ -29,8 +29,7 @@ tmain()
     if (!(vm = vmopen(Vmdcheap, Vmlast, 0)))
         terror("Can't open");
 
-    for (i = 0; i < 10; ++i)
-    {
+    for (i = 0; i < 10; ++i) {
         addr[i] = vmalloc(vm, 8);
         if (((( Vmulong_t )addr[i]) % ALIGN) != 0)
             terror("Unaligned addr");

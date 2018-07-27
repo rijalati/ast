@@ -32,8 +32,7 @@ asoactivecpu(void)
 {
     static int _AsoCpuCount = 0;
 
-    if (_AsoCpuCount <= 0)
-    {
+    if (_AsoCpuCount <= 0) {
         /* ad-hoc methods in decreasing order of precedence */
 #if 0
 		if (_AsoCpuCount <= 0)
@@ -44,21 +43,17 @@ asoactivecpu(void)
 				_AsoCpuCount = atoi(s);
 		}
 #endif
-        if (_AsoCpuCount <= 0)
-        {
+        if (_AsoCpuCount <= 0) {
             char *s;
             ssize_t n;
             int fd;
             char buf[8 * 1024];
 
-            if ((fd = open("/proc/stat", O_INTERCEPT | O_RDONLY)) >= 0)
-            {
-                if ((n = read(fd, buf, sizeof(buf) - 1)) > 0)
-                {
+            if ((fd = open("/proc/stat", O_INTERCEPT | O_RDONLY)) >= 0) {
+                if ((n = read(fd, buf, sizeof(buf) - 1)) > 0) {
                     s = buf;
                     buf[n] = 0;
-                    do
-                    {
+                    do {
                         if (s[0] == 'c' && s[1] == 'p' && s[2] == 'u'
                             && (s[3] == ' ' || s[3] >= '0' && s[3] <= '9'))
                             _AsoCpuCount++;

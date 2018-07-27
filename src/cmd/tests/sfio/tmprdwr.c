@@ -43,8 +43,7 @@ Sfdisc_t *disc;
     Mydisc_t *dc = ( Mydisc_t * )disc;
     int r;
 
-    if (dc->size <= 0)
-    {
+    if (dc->size <= 0) {
         if ((r = read(dc->recv, &dc->size, sizeof(int))) != sizeof(int))
             return 0;
 
@@ -79,15 +78,13 @@ Sfio_t *f;
     char buf[11 * CNT], *bp;
     int i, s, size, rv;
 
-    for (s = 0, bp = buf; s < CNT; ++s)
-    {
+    for (s = 0, bp = buf; s < CNT; ++s) {
         for (i = 0; i < 10; ++i)
             *bp++ = '0' + i % 10;
         *bp++ = '\0';
     }
 
-    for (i = 0; i < ITER; i++)
-    {
+    for (i = 0; i < ITER; i++) {
         /* write out a buffer of data */
         if ((size = write(sffileno(f), buf, sizeof(buf))) != sizeof(buf))
             terror("Bad write to file");
@@ -96,8 +93,7 @@ Sfio_t *f;
         /**/ TSTDEBUG(("Writer just wrote %d bytes", size));
 
         /* now wait until readprocess exhausts the data */
-        while (size > 0)
-        {
+        while (size > 0) {
             if ((rv = read(recv, &s, sizeof(int))) != sizeof(int))
                 terror("Reading amount of consumed data, rv=%d", rv);
             /**/ TSTDEBUG(("Writer was told of a %d byte read", s));
@@ -139,8 +135,7 @@ tmain()
     disc.size = 0;
     sfdisc(fr, &disc.disc);
 
-    switch (fork())
-    {
+    switch (fork()) {
     case -1:
         terror("fork() failed");
     case 0:
@@ -151,8 +146,7 @@ tmain()
     default:
         close(child[1]);
         close(parent[0]);
-        for (i = 0, s = 0; i <= ITER * CNT; ++i)
-        {
+        for (i = 0, s = 0; i <= ITER * CNT; ++i) {
             if ((rv = sfread(fr, buf, 11)) != 11)
                 break;
             s += rv;

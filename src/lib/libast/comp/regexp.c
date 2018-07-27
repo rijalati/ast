@@ -65,8 +65,7 @@ _re_comp(regexp_t *re, const char *pattern, char *handle, unsigned int size)
     env->size = size - sizeof(Env_t);
     regalloc(env, block, REG_NOFREE);
     n = regcomp(&env->re, pattern, REG_LENIENT | REG_NULL);
-    switch (n)
-    {
+    switch (n) {
     case 0:
         break;
     case REG_ERANGE:
@@ -104,8 +103,7 @@ _re_exec(regexp_t *re, const char *subject, const char *handle, int anchor)
         return 0;
     re->re_loc1 = ( char * )subject + match[0].rm_so;
     re->re_loc2 = ( char * )subject + match[0].rm_eo;
-    for (n = 1; n <= env->re.re_nsub; n++)
-    {
+    for (n = 1; n <= env->re.re_nsub; n++) {
         re->re_braslist[n - 1] = ( char * )subject + match[n].rm_so;
         re->re_braelist[n - 1] = ( char * )subject + match[n].rm_eo;
     }

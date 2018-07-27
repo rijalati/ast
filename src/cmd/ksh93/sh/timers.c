@@ -99,8 +99,7 @@ sigalrm(int sig)
     static double left;
 #ifdef _lib_sigaction
     Shell_t *shp = sh_getinterp();
-    if (shp->st.trapcom[SIGALRM] && *shp->st.trapcom[SIGALRM])
-    {
+    if (shp->st.trapcom[SIGALRM] && *shp->st.trapcom[SIGALRM]) {
         shp->siginfo[SIGALRM] = malloc(sizeof(siginfo_t));
         memcpy(shp->siginfo[SIGALRM], context, sizeof(siginfo_t));
     }
@@ -111,8 +110,7 @@ sigalrm(int sig)
         time_state &= ~SIGALRM_CALL;
     else if (alarm(0))
         kill(getpid(), SIGALRM | SH_TRAP);
-    if (time_state)
-    {
+    if (time_state) {
         if (time_state & IN_ADDTIMEOUT)
             time_state |= DEFER_SIGALRM;
         errno = EINTR;
@@ -120,29 +118,21 @@ sigalrm(int sig)
     }
     time_state |= IN_SIGALRM;
     sigrelease(SIGALRM);
-    while (1)
-    {
+    while (1) {
         now = getnow();
         tpold = tpmin = 0;
-        for (tplast = 0, tp = tptop; tp; tp = tpnext)
-        {
+        for (tplast = 0, tp = tptop; tp; tp = tpnext) {
             tpnext = tp->next;
-            if (tp->action)
-            {
-                if (tp->wakeup <= now)
-                {
+            if (tp->action) {
+                if (tp->wakeup <= now) {
                     if (!tpold || tpold->wakeup > tp->wakeup)
                         tpold = tp;
-                }
-                else
-                {
+                } else {
                     if (!tpmin || tpmin->wakeup > tp->wakeup)
                         tpmin = tp;
                 }
                 tplast = tp;
-            }
-            else
-            {
+            } else {
                 if (tplast)
                     tplast->next = tp->next;
                 else
@@ -151,15 +141,13 @@ sigalrm(int sig)
                 tpfree = tp;
             }
         }
-        if ((tp = tpold) && tp->incr)
-        {
+        if ((tp = tpold) && tp->incr) {
             while ((tp->wakeup += tp->incr) <= now)
                 ;
             if (!tpmin || tpmin->wakeup > tp->wakeup)
                 tpmin = tp;
         }
-        if (tpmin && (left == 0 || (tp && tpmin->wakeup < (now + left))))
-        {
+        if (tpmin && (left == 0 || (tp && tpmin->wakeup < (now + left)))) {
             if (left == 0)
                 signal(SIGALRM, sigalrm);
             left = setalarm(tpmin->wakeup - now);
@@ -168,8 +156,7 @@ sigalrm(int sig)
             else
                 left = tpmin->wakeup - now;
         }
-        if (tp)
-        {
+        if (tp) {
             void (*action)(void *);
             action = tp->action;
             if (!tp->incr)
@@ -178,8 +165,7 @@ sigalrm(int sig)
             time_state &= ~IN_SIGALRM;
             (*action)(tp->handle);
             time_state |= IN_SIGALRM;
-        }
-        else
+        } else
             break;
     }
     if (!tpmin)
@@ -221,26 +207,21 @@ sh_timeradd(unsigned long msec,
     time_state |= IN_ADDTIMEOUT;
     tp->next = tptop;
     tptop = tp;
-    if (!tpmin || tp->wakeup < tpmin->wakeup)
-    {
+    if (!tpmin || tp->wakeup < tpmin->wakeup) {
         tpmin = tp;
         fn = ( Handler_t )signal(SIGALRM, sigalrm);
-        if ((t = setalarm(t)) > 0 && fn && fn != ( Handler_t )sigalrm)
-        {
+        if ((t = setalarm(t)) > 0 && fn && fn != ( Handler_t )sigalrm) {
             Handler_t *hp = ( Handler_t * )malloc(sizeof(Handler_t));
-            if (hp)
-            {
+            if (hp) {
                 *hp = fn;
                 sh_timeradd(( long )(1000 * t), 0, oldalrm, ( void * )hp);
             }
         }
         tp = tptop;
-    }
-    else if (tpmin && !tpmin->action)
+    } else if (tpmin && !tpmin->action)
         time_state |= DEFER_SIGALRM;
     time_state &= ~IN_ADDTIMEOUT;
-    if (time_state & DEFER_SIGALRM)
-    {
+    if (time_state & DEFER_SIGALRM) {
         time_state = SIGALRM_CALL;
         kill(getpid(), SIGALRM);
         if (tp != tptop)
@@ -258,12 +239,10 @@ timerdel(void *handle)
     Timer_t *tp = ( Timer_t * )handle;
     if (tp)
         tp->action = 0;
-    else
-    {
+    else {
         for (tp = tptop; tp; tp = tp->next)
             tp->action = 0;
-        if (tpmin)
-        {
+        if (tpmin) {
             tpmin = 0;
             setalarm(( double )0);
         }

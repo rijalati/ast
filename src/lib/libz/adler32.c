@@ -33,8 +33,7 @@
 /* use NO_DIVIDE if your processor does not do division in hardware */
 #ifdef NO_DIVIDE
 #    define MOD(a)                                                           \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             if (a >= (BASE << 16))                                           \
                 a -= (BASE << 16);                                           \
             if (a >= (BASE << 15))                                           \
@@ -71,8 +70,7 @@
                 a -= BASE;                                                   \
         } while (0)
 #    define MOD4(a)                                                          \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             if (a >= (BASE << 4))                                            \
                 a -= (BASE << 4);                                            \
             if (a >= (BASE << 3))                                            \
@@ -103,8 +101,7 @@ uInt len;
     adler &= 0xffff;
 
     /* in case user likes doing a byte at a time, keep it fast */
-    if (len == 1)
-    {
+    if (len == 1) {
         adler += buf[0];
         if (adler >= BASE)
             adler -= BASE;
@@ -119,10 +116,8 @@ uInt len;
         return 1L;
 
     /* in case short lengths are provided, keep it somewhat fast */
-    if (len < 16)
-    {
-        while (len--)
-        {
+    if (len < 16) {
+        while (len--) {
             adler += *buf++;
             sum2 += adler;
         }
@@ -133,12 +128,10 @@ uInt len;
     }
 
     /* do length NMAX blocks -- requires just one modulo operation */
-    while (len >= NMAX)
-    {
+    while (len >= NMAX) {
         len -= NMAX;
         n = NMAX / 16; /* NMAX is divisible by 16 */
-        do
-        {
+        do {
             DO16(buf); /* 16 sums unrolled */
             buf += 16;
         } while (--n);
@@ -147,16 +140,13 @@ uInt len;
     }
 
     /* do remaining bytes (less than NMAX, still just one modulo) */
-    if (len)
-    { /* avoid modulos if none remaining */
-        while (len >= 16)
-        {
+    if (len) { /* avoid modulos if none remaining */
+        while (len >= 16) {
             len -= 16;
             DO16(buf);
             buf += 16;
         }
-        while (len--)
-        {
+        while (len--) {
             adler += *buf++;
             sum2 += adler;
         }

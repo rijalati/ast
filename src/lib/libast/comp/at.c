@@ -54,8 +54,7 @@ static unsigned int _at_lock;
                 unsigned int _at_tid;                                        \
                 int _at_works;                                               \
                 char _at_##path[PATH_MAX];                                   \
-                if (_at_works = works)                                       \
-                {                                                            \
+                if (_at_works = works) {                                     \
                     if (*path == '/')                                        \
                         cwd = AT_FDCWD;                                      \
                     else if (cwd != AT_FDCWD)                                \
@@ -65,9 +64,7 @@ static unsigned int _at_lock;
                                   cwd,                                       \
                                   "/",                                       \
                                   path);                                     \
-                }                                                            \
-                else if (cwd != AT_FDCWD && *path != '/')                    \
-                {                                                            \
+                } else if (cwd != AT_FDCWD && *path != '/') {                \
                     sigcritical(SIG_REG_ALL);                                \
                     _at_tid = asothreadid();                                 \
                     if (_at_lock == _at_tid)                                 \
@@ -75,8 +72,7 @@ static unsigned int _at_lock;
                     else                                                     \
                         asolock(&_at_lock, _at_tid, ASO_LOCK);               \
                     if ((_at_dot = open(".", O_SEARCH | O_CLOEXEC)) < 0      \
-                        || fchdir(cwd))                                      \
-                    {                                                        \
+                        || fchdir(cwd)) {                                    \
                         if (_at_tid)                                         \
                             asolock(&_at_lock, _at_tid, ASO_UNLOCK);         \
                         sigcritical(SIG_REG_POP);                            \
@@ -91,8 +87,7 @@ static unsigned int _at_lock;
                 unsigned int _at_tid;                                        \
                 int _at_works;                                               \
                 char _at_##link[PATH_MAX];                                   \
-                if (_at_works = works)                                       \
-                {                                                            \
+                if (_at_works = works) {                                     \
                     if (*link == '/')                                        \
                         lwd = AT_FDCWD;                                      \
                     else if (lwd != AT_FDCWD)                                \
@@ -102,9 +97,7 @@ static unsigned int _at_lock;
                                   lwd,                                       \
                                   "/",                                       \
                                   link);                                     \
-                }                                                            \
-                else                                                         \
-                {                                                            \
+                } else {                                                     \
                     errno = EINVAL;                                          \
                     return -1;                                               \
                 }
@@ -118,8 +111,7 @@ static unsigned int _at_lock;
                 int _at_works;                                               \
                 unsigned int _at_tid;                                        \
                 char _at_##path[PATH_MAX];                                   \
-                if (_at_works = works)                                       \
-                {                                                            \
+                if (_at_works = works) {                                     \
                     if (*path == '/')                                        \
                         cwd = AT_FDCWD;                                      \
                     else if (cwd != AT_FDCWD)                                \
@@ -139,8 +131,7 @@ else if (cwd != AT_FDCWD && *path != '/')
         _at_tid = 0;
     else
         asolock(&_at_lock, _at_tid, ASO_LOCK);
-    if ((_at_dot = open(".", O_SEARCH | O_CLOEXEC)) < 0 || fchdir(cwd))
-    {
+    if ((_at_dot = open(".", O_SEARCH | O_CLOEXEC)) < 0 || fchdir(cwd)) {
         if (_at_tid)
             asolock(&_at_lock, _at_tid, ASO_UNLOCK);
         sigcritical(SIG_REG_POP);
@@ -155,8 +146,7 @@ else if (cwd != AT_FDCWD && *path != '/')
                 unsigned int _at_tid;                                        \
                 int _at_works;                                               \
                 char _at_##link[PATH_MAX];                                   \
-                if (_at_works = works)                                       \
-                {                                                            \
+                if (_at_works = works) {                                     \
                     if (*link == '/')                                        \
                         lwd = AT_FDCWD;                                      \
                     else if (lwd != AT_FDCWD)                                \
@@ -167,9 +157,7 @@ else if (cwd != AT_FDCWD && *path != '/')
                                   lwd,                                       \
                                   "/",                                       \
                                   link);                                     \
-                }                                                            \
-                else                                                         \
-                {                                                            \
+                } else {                                                     \
                     errno = EINVAL;                                          \
                     return -1;                                               \
                 }
@@ -192,8 +180,7 @@ else if (cwd != AT_FDCWD && *path != '/')
             int _at_dot = -1;                                                \
             int _at_ret;                                                     \
             unsigned int _at_tid;                                            \
-            if (cwd != AT_FDCWD && *path != '/')                             \
-            {                                                                \
+            if (cwd != AT_FDCWD && *path != '/') {                           \
                 sigcritical(SIG_REG_ALL);                                    \
                 _at_tid = asothreadid();                                     \
                 if (_at_lock == _at_tid)                                     \
@@ -201,8 +188,7 @@ else if (cwd != AT_FDCWD && *path != '/')
                 else                                                         \
                     asolock(&_at_lock, _at_tid, ASO_LOCK);                   \
                 if ((_at_dot = open(".", O_SEARCH | O_CLOEXEC)) < 0          \
-                    || fchdir(cwd))                                          \
-                {                                                            \
+                    || fchdir(cwd)) {                                        \
                     if (_at_tid)                                             \
                         asolock(&_at_lock, _at_tid, ASO_UNLOCK);             \
                     sigcritical(SIG_REG_POP);                                \
@@ -213,8 +199,7 @@ else if (cwd != AT_FDCWD && *path != '/')
 #    define ATPATH(cwd, path) path
 
 #    define ATEND()                                                          \
-        if (_at_dot >= 0)                                                    \
-        {                                                                    \
+        if (_at_dot >= 0) {                                                  \
             _at_ret = fchdir(_at_dot);                                       \
             close(_at_dot);                                                  \
             if (_at_tid)                                                     \
@@ -254,8 +239,7 @@ fchmodat(int cwd, const char *path, mode_t mode, int flags)
 {
     int r;
 
-    if (flags & AT_SYMLINK_NOFOLLOW)
-    {
+    if (flags & AT_SYMLINK_NOFOLLOW) {
 #    if _lib_lchmod
         ATBEG(cwd, path, _fd_dir_lchmod);
         r = lchmod(ATPATH(cwd, path), mode);
@@ -264,9 +248,7 @@ fchmodat(int cwd, const char *path, mode_t mode, int flags)
         errno = ENOSYS;
         r = -1;
 #    endif
-    }
-    else
-    {
+    } else {
         ATBEG(cwd, path, _fd_dir_chmod);
         r = chmod(ATPATH(cwd, path), mode);
         ATEND();
@@ -285,8 +267,7 @@ fchownat(int cwd, const char *path, uid_t owner, gid_t group, int flags)
 {
     int r;
 
-    if (flags & AT_SYMLINK_NOFOLLOW)
-    {
+    if (flags & AT_SYMLINK_NOFOLLOW) {
 #    if _lib_lchown
         ATBEG(cwd, path, _fd_dir_lchown);
         r = lchown(ATPATH(cwd, path), owner, group);
@@ -295,9 +276,7 @@ fchownat(int cwd, const char *path, uid_t owner, gid_t group, int flags)
         errno = ENOSYS;
         r = -1;
 #    endif
-    }
-    else
-    {
+    } else {
         ATBEG(cwd, path, _fd_dir_chown);
         r = chown(ATPATH(cwd, path), owner, group);
         ATEND();
@@ -334,25 +313,19 @@ linkat(int pwd, const char *path, int lwd, const char *linkpath, int flags)
 {
     int r;
 
-    if (pwd == AT_FDCWD || *path == '/')
-    {
+    if (pwd == AT_FDCWD || *path == '/') {
         if (lwd == AT_FDCWD || *linkpath == '/')
             r = link(path, linkpath);
-        else
-        {
+        else {
             ATBEG(lwd, linkpath, _fd_dir_link);
             r = link(path, ATPATH(lwd, linkpath));
             ATEND();
         }
-    }
-    else if (lwd == AT_FDCWD || *linkpath == '/')
-    {
+    } else if (lwd == AT_FDCWD || *linkpath == '/') {
         ATBEG(pwd, path, _fd_dir_link);
         r = link(ATPATH(pwd, path), linkpath);
         ATEND();
-    }
-    else
-    {
+    } else {
 #    ifdef ATBEGL
         ATBEGL(lwd, linkpath, _fd_dir_link);
         ATBEG(pwd, path, _fd_dir_link);
@@ -468,25 +441,19 @@ renameat(int fwd, const char *fpath, int twd, const char *tpath)
 {
     int r;
 
-    if (fwd == AT_FDCWD || *fpath == '/')
-    {
+    if (fwd == AT_FDCWD || *fpath == '/') {
         if (twd == AT_FDCWD || *tpath == '/')
             r = rename(fpath, tpath);
-        else
-        {
+        else {
             ATBEG(twd, tpath, _fd_dir_rename);
             r = rename(fpath, ATPATH(twd, tpath));
             ATEND();
         }
-    }
-    else if (twd == AT_FDCWD || *tpath == '/')
-    {
+    } else if (twd == AT_FDCWD || *tpath == '/') {
         ATBEG(fwd, fpath, _fd_dir_rename);
         r = rename(ATPATH(fwd, fpath), tpath);
         ATEND();
-    }
-    else
-    {
+    } else {
 #    ifdef ATBEGL
         ATBEGL(twd, tpath, _fd_dir_rename);
         ATBEG(fwd, fpath, _fd_dir_rename);

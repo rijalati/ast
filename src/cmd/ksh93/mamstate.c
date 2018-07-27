@@ -46,27 +46,23 @@ char **argv;
     struct stat st;
     char buf[1024];
 
-    if (!(s = *++argv) || stat(s, &st))
-    {
+    if (!(s = *++argv) || stat(s, &st)) {
         fprintf(stderr, "Usage: mamstate reference [ file ... | <files ]\n");
         exit(1);
     }
     ref = ( long )st.st_mtime;
     if (s = *++argv)
-        do
-        {
+        do {
             if (!stat(s, &st))
                 printf("%s %ld\n", s, ( long )st.st_mtime - ref);
         } while (s = *++argv);
     else
-        do
-        {
+        do {
             s = buf;
             while ((c = getchar()) != EOF && c != ' ' && c != '\n')
                 if (s < buf + sizeof(buf) - 1)
                     *s++ = c;
-            if (s > buf)
-            {
+            if (s > buf) {
                 *s = 0;
                 if (!stat(buf, &st))
                     printf("%s %ld\n", buf, ( long )st.st_mtime - ref);

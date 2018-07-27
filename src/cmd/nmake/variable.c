@@ -63,51 +63,43 @@ scanprereqs(Sfio_t *sp,
         prereqs[i++] = x->prereqs;
     else
         top = 1;
-    if (top)
-    {
+    if (top) {
         if ((x = staterule(RULE, r, NiL, 0)) && x->prereqs != r->prereqs)
             prereqs[i++] = x->prereqs;
         prereqs[i++] = r->prereqs;
     }
-    if (r->active && r->active->primary)
-    {
+    if (r->active && r->active->primary) {
         t.rule = makerule(r->active->primary);
         t.next = 0;
         prereqs[i++] = &t;
     }
     while (--i >= 0)
-        for (p = prereqs[i]; p; p = p->next)
-        {
+        for (p = prereqs[i]; p; p = p->next) {
             x = p->rule;
-            do
-            {
+            do {
                 if (!(x->dynamic & D_alias))
                     z = 0;
                 else if (!(z = getrule(x->name)))
                     break;
-                if (x->mark & M_generate)
-                {
-                    if (!sp)
-                    {
+                if (x->mark & M_generate) {
+                    if (!sp) {
                         x->mark &= ~M_generate;
                         if (top >= 0)
                             scanprereqs(sp, x, dostate, all, 0, sep, op);
                     }
-                }
-                else if (sp
-                         && (all
-                             || ((x->property & P_state) || x->scan
-                                 || (y = staterule(PREREQS, x, NiL, 0))
-                                    && y->scan
-                                 || !r->scan)
-                                && !(x->property & (P_use | P_virtual))
-                                && (!(x->property & P_ignore)
-                                    || (x->property & P_parameter))
-                                && (!(x->property & P_dontcare) || x->time)))
-                {
+                } else if (sp
+                           && (all
+                               || ((x->property & P_state) || x->scan
+                                   || (y = staterule(PREREQS, x, NiL, 0))
+                                      && y->scan
+                                   || !r->scan)
+                                  && !(x->property & (P_use | P_virtual))
+                                  && (!(x->property & P_ignore)
+                                      || (x->property & P_parameter))
+                                  && (!(x->property & P_dontcare)
+                                      || x->time))) {
                     x->mark |= M_generate;
-                    if (all || ((x->property & P_state) != 0) == dostate)
-                    {
+                    if (all || ((x->property & P_state) != 0) == dostate) {
                         if (sep)
                             sfputc(sp, ' ');
                         else
@@ -176,24 +168,20 @@ getval(char *s, int op)
 
     if (!*s)
         return null;
-    else if (isstatevar(s))
-    {
+    else if (isstatevar(s)) {
         if (!(r = getrule(s)))
             return null;
         if ((r->property & (P_functional | P_virtual)) && r->status != UPDATE)
             maketop(r, 0, NiL);
         return r->statedata ? r->statedata : null;
-    }
-    else if (!istype(*s, C_VARIABLE1 | C_ID1 | C_ID2))
-    {
+    } else if (!istype(*s, C_VARIABLE1 | C_ID1 | C_ID2)) {
         sep = 0;
 
         /*
          * some internal vars have no associated rule
          */
 
-        switch (var = *s)
-        {
+        switch (var = *s) {
 
 #if __OBSOLETE__ < 20100101
         case '+': /* 20051122 restore for backwards compatibility -- shoulda
@@ -217,15 +205,13 @@ getval(char *s, int op)
              * -[^:alnum:]	defined by genop()/listops()
              */
 
-            if (c = *++s)
-            {
+            if (c = *++s) {
                 if (isalnum(c))
                     c = 0;
                 else
                     s++;
             }
-            if (*s)
-            {
+            if (*s) {
                 getop(internal.val, s, c);
                 return sfstruse(internal.val);
             }
@@ -242,8 +228,7 @@ getval(char *s, int op)
 
         case '=': /* command line script args and export vars */
             for (n = 1; n < state.argc; n++)
-                if (state.argf[n] & (ARG_ASSIGN | ARG_SCRIPT))
-                {
+                if (state.argf[n] & (ARG_ASSIGN | ARG_SCRIPT)) {
                     if (sep)
                         sfputc(internal.val, ' ');
                     else
@@ -251,8 +236,7 @@ getval(char *s, int op)
                     shquote(internal.val, state.argv[n]);
                 }
             for (p = internal.script->prereqs; p; p = p->next)
-                if (v = getvar(p->rule->name))
-                {
+                if (v = getvar(p->rule->name)) {
                     if (sep)
                         sfputc(internal.val, ' ');
                     else
@@ -262,9 +246,7 @@ getval(char *s, int op)
                              v->name,
                              (v->property & V_scan) ? "=" : null);
                     shquote(internal.val, v->value);
-                }
-                else if (strchr(p->rule->name, '='))
-                {
+                } else if (strchr(p->rule->name, '=')) {
                     if (sep)
                         sfputc(internal.val, ' ');
                     else
@@ -277,42 +259,32 @@ getval(char *s, int op)
             ;
         next = 0;
         tokens = 0;
-        for (;;)
-        {
+        for (;;) {
             val = null;
             while (*s == ' ')
                 s++;
-            if (!*s)
-            {
+            if (!*s) {
                 if (tokens)
                     goto done;
                 r = state.frame->target;
-            }
-            else
-            {
-                if (next = strchr(s, ' '))
-                {
+            } else {
+                if (next = strchr(s, ' ')) {
                     *next = 0;
                     if (!tokens++)
                         state.val++;
                 }
-                if (*s == MARK_CONTEXT)
-                {
+                if (*s == MARK_CONTEXT) {
                     if (!(t = next))
                         t = s + strlen(s);
-                    if (*--t == MARK_CONTEXT)
-                    {
+                    if (*--t == MARK_CONTEXT) {
                         *t = 0;
                         s++;
-                    }
-                    else
+                    } else
                         t = 0;
-                }
-                else
+                } else
                     t = 0;
                 if (!(r = getrule(s)))
-                    switch (var)
-                    {
+                    switch (var) {
                     case '!':
                     case '&':
                     case '?':
@@ -330,14 +302,12 @@ getval(char *s, int op)
                     && strmatch(s, internal.issource))
                     r = source(r);
             }
-            for (n = pop; n > 0; n--)
-            {
+            for (n = pop; n > 0; n--) {
                 if (!r->active)
                     goto done;
                 r = r->active->parent->target;
             }
-            switch (c = var)
-            {
+            switch (c = var) {
 
             case '#': /* local arg count */
                 val = 0;
@@ -353,8 +323,7 @@ getval(char *s, int op)
 
             case '<': /* target name */
                 if ((r->property & (P_joint | P_target))
-                    != (P_joint | P_target))
-                {
+                    != (P_joint | P_target)) {
                     val = BINDING(r, op);
                     break;
                 }
@@ -366,20 +335,16 @@ getval(char *s, int op)
             case '*': /* all target file prerequisites */
             case '~': /* all target prerequisites */
                 n = 0;
-                if (r->active && (t = r->active->primary))
-                {
+                if (r->active && (t = r->active->primary)) {
                     x = makerule(t);
                     t = BINDING(x, op);
-                    if (c == '>')
-                    {
+                    if (c == '>') {
                         val = t;
                         break;
                     }
                     sfputr(internal.val, t, -1);
                     n = 1;
-                }
-                else
-                {
+                } else {
                     x = 0;
                     n = 0;
                 }
@@ -388,8 +353,7 @@ getval(char *s, int op)
                      && (z = staterule(RULE, r, NiL, -1)))
                     ? z->time
                     : r->time;
-                for (p = r->prereqs; p; p = p->next)
-                {
+                for (p = r->prereqs; p; p = p->next) {
                     if (p->rule != x
                         && (c == '~'
                             && (!(op & VAL_FILE) || !notfile(p->rule)
@@ -411,19 +375,15 @@ getval(char *s, int op)
                                                  && z->time > e)
                                           || (r->property & P_archive)
                                              && !(p->rule->dynamic & D_member)
-                                             && p->rule->time))))
-                    {
+                                             && p->rule->time)))) {
                         t = BINDING(p->rule, op);
                         if (n)
                             sfputc(internal.val, ' ');
-                        else
-                        {
-                            if (!p->next)
-                            {
+                        else {
+                            if (!p->next) {
                                 val = t;
                                 break;
-                            }
-                            else
+                            } else
                                 n = 1;
                             if (sep)
                                 sfputc(internal.val, ' ');
@@ -441,13 +401,11 @@ getval(char *s, int op)
                 break;
 
             case '%': /* target stem or functional args */
-                if (r->active && r->active->stem)
-                {
+                if (r->active && r->active->stem) {
                     val = r->active->stem;
                     if (state.context && (t = strrchr(val, '/')))
                         val = t + 1;
-                }
-                else
+                } else
                     val = unbound(r);
                 break;
 
@@ -463,8 +421,7 @@ getval(char *s, int op)
                 if (!r->active)
                     break;
                 if ((r->property & (P_joint | P_target))
-                    != (P_joint | P_target))
-                {
+                    != (P_joint | P_target)) {
                     if (r->active->original
                         && !streq(r->active->original, r->name))
                         val = state.localview
@@ -473,8 +430,7 @@ getval(char *s, int op)
                     break;
                 }
                 for (p = r->prereqs->rule->prereqs; p; p = p->next)
-                    if (p->rule->active && (t = p->rule->active->original))
-                    {
+                    if (p->rule->active && (t = p->rule->active->original)) {
                         if (sep)
                             sfputc(internal.val, ' ');
                         else
@@ -493,52 +449,41 @@ getval(char *s, int op)
                 return null;
             }
         done:
-            if (tokens)
-            {
-                if (val && *val)
-                {
+            if (tokens) {
+                if (val && *val) {
                     if (sep)
                         sfputc(internal.val, ' ');
                     else
                         sep = 1;
                     sfputr(internal.val, val, -1);
                 }
-                if (!next)
-                {
+                if (!next) {
                     state.val--;
                     return sfstruse(internal.val);
                 }
                 *next++ = ' ';
                 s = next;
-            }
-            else if (val)
+            } else if (val)
                 return val;
             else
                 return sfstruse(internal.val);
         }
-    }
-    else if ((v = getvar(s)) || (t = strchr(s, ' ')))
-    {
-        if (v)
-        {
+    } else if ((v = getvar(s)) || (t = strchr(s, ' '))) {
+        if (v) {
             t = 0;
             if (!(v->property & V_functional)
                 || (r = getrule(v->name)) && !(r->property & P_functional))
                 r = 0;
-        }
-        else
-        {
+        } else {
             /*
              * functional var with args
              */
 
             *t = 0;
-            if (!(v = getvar(s)) || !v->builtin)
-            {
+            if (!(v = getvar(s)) || !v->builtin) {
                 if (!(r = getrule(s)) || !(r->property & P_functional))
                     r = catrule(".", s, ".", 0);
-                if (!r || !(r->property & P_functional))
-                {
+                if (!r || !(r->property & P_functional)) {
                     *t++ = ' ';
                     return null;
                 }
@@ -549,13 +494,10 @@ getval(char *s, int op)
             }
             *t++ = ' ';
         }
-        if (v->builtin)
-        {
+        if (v->builtin) {
             ap = arg;
-            if (t)
-            {
-                for (;;)
-                {
+            if (t) {
+                for (;;) {
                     while (isspace(*t))
                         t++;
                     if (!*t)
@@ -565,12 +507,10 @@ getval(char *s, int op)
                         break;
                     while (*t && !isspace(*t))
                         t++;
-                    if (*t == '"' || *t == '\'')
-                    {
+                    if (*t == '"' || *t == '\'') {
                         o = t;
                         n = *t++;
-                        while (*t && (n || !isspace(*t)))
-                        {
+                        while (*t && (n || !isspace(*t))) {
                             if (*t == n)
                                 n = 0;
                             else if (!n && (*t == '"' || *t == '\''))
@@ -591,22 +531,19 @@ getval(char *s, int op)
         }
         if (r)
             maketop(r, 0, t ? t : null);
-        if (state.reading && !state.global)
-        {
+        if (state.reading && !state.global) {
             v->property &= ~V_compiled;
             if (istype(*s, C_ID1))
                 v->property |= V_frozen;
         }
         if (state.mam.regress && state.user > 1
-            && (v->property & (V_import | V_local_E)) == V_import)
-        {
+            && (v->property & (V_import | V_local_E)) == V_import) {
             v->property |= V_local_E;
             dumpregress(state.mam.out, "setv", v->name, v->value);
         }
         t = (op & VAL_PRIMARY) ? v->value : null;
         if ((v->property & V_auxiliary) && (op & VAL_AUXILIARY)
-            && (a = auxiliary(v->name, 0)) && *a->value)
-        {
+            && (a = auxiliary(v->name, 0)) && *a->value) {
             if (!*t)
                 return a->value;
             sfprintf(internal.val, "%s %s", t, a->value);
@@ -631,14 +568,12 @@ resetvar(Var_t *p, char *v, int append)
     int n;
 
     n = strlen(v);
-    if (!p->value || (p->property & V_import) || n > p->length)
-    {
+    if (!p->value || (p->property & V_import) || n > p->length) {
         if (append)
             n = (n + 1023) & ~1023;
         if (n < MINVALUE)
             n = MINVALUE;
-        if (!(p->property & V_free))
-        {
+        if (!(p->property & V_free)) {
             p->property |= V_free;
             p->value = 0;
         }
@@ -673,15 +608,13 @@ setvar(char *s, char *v, int flags)
      */
 
     n = nametype(s, NiL);
-    if (n & NAME_statevar)
-    {
+    if (n & NAME_statevar) {
         bindstate(makerule(s), v);
         return 0;
     }
     if (!(isid = !!(n & NAME_identifier))
         && !(n & (NAME_variable | NAME_intvar))
-        && !istype(*s, C_VARIABLE1 | C_ID1 | C_ID2) && *s != '(')
-    {
+        && !istype(*s, C_VARIABLE1 | C_ID1 | C_ID2) && *s != '(') {
         if (flags & V_retain)
             return 0;
         error(2, "%s: invalid variable name", s);
@@ -691,15 +624,12 @@ setvar(char *s, char *v, int flags)
      * check for a previous definition
      */
 
-    if (undefined = !(p = getvar(s)))
-    {
+    if (undefined = !(p = getvar(s))) {
         newvar(p);
-        if (p->property & V_import)
-        {
+        if (p->property & V_import) {
             p->property &= ~V_import;
             p->value = 0;
-        }
-        else if (p->value)
+        } else if (p->value)
             *p->value = 0;
         p->name = putvar(0, p);
         p->builtin = 0;
@@ -709,10 +639,8 @@ setvar(char *s, char *v, int flags)
      * check the variable attributes for precedence
      */
 
-    if (flags & V_auxiliary)
-    {
-        if (!p->value)
-        {
+    if (flags & V_auxiliary) {
+        if (!p->value) {
             p->value = null;
             p->property |= V_import;
         }
@@ -723,34 +651,25 @@ setvar(char *s, char *v, int flags)
     if (state.user || state.readonly || undefined
         || !(p->property & V_readonly)
            && (!state.pushed && !(p->property & V_import) || state.global != 1
-               || (flags & V_import) || state.base && !state.init))
-    {
-        if (flags & V_import)
-        {
-            if (p->property & V_free)
-            {
+               || (flags & V_import) || state.base && !state.init)) {
+        if (flags & V_import) {
+            if (p->property & V_free) {
                 p->property &= ~V_free;
                 free(p->value);
             }
             p->value = v;
-        }
-        else
-        {
+        } else {
             t = v;
             if (state.user)
                 p->property &= ~V_append;
-            if (n = (flags & V_append))
-            {
+            if (n = (flags & V_append)) {
                 if (state.reading && !state.global && isid)
                     p->property |= V_frozen;
-                if (p->value && *p->value)
-                {
-                    if (*v)
-                    {
+                if (p->value && *p->value) {
+                    if (*v) {
                         sfprintf(internal.nam, "%s %s", p->value, v);
                         t = sfstruse(internal.nam);
-                    }
-                    else
+                    } else
                         t = p->value;
                 }
             }
@@ -760,72 +679,57 @@ setvar(char *s, char *v, int flags)
             p->property |= V_import;
         else
             p->property &= ~V_import;
-        if (state.readonly)
-        {
+        if (state.readonly) {
             p->property |= V_readonly;
             if (flags & V_append)
                 p->property |= V_append;
-        }
-        else if (state.init)
+        } else if (state.init)
             p->property |= V_compiled;
         else
             p->property &= ~V_compiled;
-        if ((flags & V_scan) && !(p->property & V_scan))
-        {
-            if (isid && state.user <= 1)
-            {
+        if ((flags & V_scan) && !(p->property & V_scan)) {
+            if (isid && state.user <= 1) {
                 p->property |= V_scan;
                 staterule(VAR, NiL, p->name, -1);
-            }
-            else
+            } else
                 error(
                 1, "%s: not marked as candidate state variable", p->name);
         }
         if (state.vardump && !(p->property & V_import))
             dumpvar(sfstdout, p);
-    }
-    else if (state.reading)
-    {
-        if (p->property & V_readonly)
-        {
+    } else if (state.reading) {
+        if (p->property & V_readonly) {
             /*
              * save old value for makefile compiler
              */
 
             s = (p->property & V_oldvalue) ? getold(p->name) : ( char * )0;
             t = v;
-            if (flags & V_append)
-            {
+            if (flags & V_append) {
                 if (state.reading && !state.global && isid)
                     p->property |= V_frozen;
-                if (s && *s)
-                {
-                    if (*v)
-                    {
+                if (s && *s) {
+                    if (*v) {
                         sfprintf(internal.nam, "%s %s", s, v);
                         t = sfstruse(internal.nam);
-                    }
-                    else
+                    } else
                         t = s;
                 }
             }
             putold(p->name, strdup(t));
             p->property |= V_oldvalue;
-            if ((p->property & V_append) && p->value && *p->value)
-            {
+            if ((p->property & V_append) && p->value && *p->value) {
                 sfprintf(
                 internal.nam, "%s %s", t, p->value + (s ? strlen(s) + 1 : 0));
                 resetvar(p, sfstruse(internal.nam), 1);
             }
         }
-        if (isid && (flags & V_scan) && state.makefile)
-        {
+        if (isid && (flags & V_scan) && state.makefile) {
             p->property |= V_scan;
             staterule(VAR, NiL, p->name, -1);
         }
     }
-    if (!p->value)
-    {
+    if (!p->value) {
         p->value = strdup(null);
         p->property |= V_free;
     }
@@ -843,8 +747,7 @@ colonlist(Sfio_t *sp, char *s, int exp, int del)
     char *p;
     Var_t *v;
 
-    if (exp)
-    {
+    if (exp) {
         if (!(v = getvar(s)))
             return 0;
         s = v->value;
@@ -855,8 +758,7 @@ colonlist(Sfio_t *sp, char *s, int exp, int del)
     if (!*(s = p))
         return 0;
     for (;;)
-        switch (*p++)
-        {
+        switch (*p++) {
         case ':':
             if (*(p - 1) = del)
                 break;
@@ -880,19 +782,16 @@ localvar(Sfio_t *sp, Var_t *v, char *value, int property)
     Var_t *x;
 
     prefix = (property & V_local_D) ? null : "_";
-    if (state.mam.out && (!(v->property & property) || !sp))
-    {
+    if (state.mam.out && (!(v->property & property) || !sp)) {
         v->property |= property;
         sfprintf(
         state.mam.out, "%ssetv %s%s ", state.mam.label, prefix, v->name);
-        if (*(s = value))
-        {
+        if (*(s = value)) {
             sfprintf(state.mam.out,
                      "%s%s",
                      (property & V_local_D) ? "-D" : null,
                      v->name);
-            if (!(property & V_local_D) || *s != '1' || *(s + 1))
-            {
+            if (!(property & V_local_D) || *s != '1' || *(s + 1)) {
                 sfputc(state.mam.out, '=');
                 sfputc(state.mam.out, '"');
 
@@ -900,13 +799,10 @@ localvar(Sfio_t *sp, Var_t *v, char *value, int property)
                  * this quoting allows simple parameterization
                  */
 
-                while (c = *s++)
-                {
-                    switch (c)
-                    {
+                while (c = *s++) {
+                    switch (c) {
                     case '$':
-                        if (istype(*s, C_ID1))
-                        {
+                        if (istype(*s, C_ID1)) {
                             for (t = s; istype(*t, C_ID1 | C_ID2); t++)
                                 ;
                             c = *t;
@@ -916,8 +812,7 @@ localvar(Sfio_t *sp, Var_t *v, char *value, int property)
                             c = '$';
                             if (x)
                                 break;
-                        }
-                        else if (*s == '{')
+                        } else if (*s == '{')
                             break;
                         /*FALLTHROUGH*/
                     case '\\':
@@ -930,8 +825,7 @@ localvar(Sfio_t *sp, Var_t *v, char *value, int property)
                 }
                 sfputc(state.mam.out, '"');
             }
-        }
-        else if (property & V_local_D)
+        } else if (property & V_local_D)
             sfprintf(state.mam.out, "-U%s%s", prefix, v->name);
         sfputc(state.mam.out, '\n');
     }
@@ -951,8 +845,7 @@ readenv(void)
     char *t;
 
     for (e = environ; t = *e; e++)
-        if (istype(*t, C_ID1))
-        {
+        if (istype(*t, C_ID1)) {
             while (istype(*t, C_ID2))
                 sfputc(internal.nam, *t++);
             if (*t++ == '=')

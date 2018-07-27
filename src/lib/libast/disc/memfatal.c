@@ -51,8 +51,7 @@ nomalloc(Vmalloc_t *region, int type, void *obj, Vmdisc_t *disc)
     Vmstat_t st;
 
     NoP(disc);
-    switch (type)
-    {
+    switch (type) {
     case VM_NOMEM:
         vmstat(region, &st);
         error(ERROR_SYSTEM | 3,
@@ -94,8 +93,7 @@ memfatal(void)
 int
 memfatal_20130509(Vmdisc_t *disc)
 {
-    if (!disc)
-    {
+    if (!disc) {
         malloc(0);
         if (!(disc = vmdisc(Vmregion, NiL)))
             return -1;

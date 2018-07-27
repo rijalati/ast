@@ -110,13 +110,11 @@ omitted(char *name)
     char *t;
     struct block *d;
 
-    for (d = state.omit; d; d = d->next)
-    {
+    for (d = state.omit; d; d = d->next) {
         s = name;
         t = d->data;
         do
-            if (!*t)
-            {
+            if (!*t) {
                 if (!*s || *s == '/')
                     return 1;
                 break;
@@ -139,24 +137,20 @@ initdir(char *s, char *suf)
     char buf[MAXNAME];
 
     d = mamrule(state.mam->main, s);
-    if (!(d->attributes & A_directory))
-    {
+    if (!(d->attributes & A_directory)) {
         d->attributes |= A_directory;
         n = 0;
-        while (*s == '.' && *(s + 1) == '.' && *(s + 2) == '/')
-        {
+        while (*s == '.' && *(s + 1) == '.' && *(s + 2) == '/') {
             s += 3;
             n++;
         }
-        if (!strmatch(s, "include|lib"))
-        {
+        if (!strmatch(s, "include|lib")) {
             sfsprintf(buf, sizeof(buf), "%s%s", state.atom.source->name, suf);
             z = mamrule(state.mam->main, buf);
             z->attributes |= A_directory;
             mamprereq(state.mam->main, z, d, NiL);
             mamprereq(state.mam->main, state.atom.sources, z, NiL);
-        }
-        else if (n > state.ancestor)
+        } else if (n > state.ancestor)
             state.ancestor = n;
     }
     return d;
@@ -172,17 +166,14 @@ dumpvalue(int col, char *s, int sep)
     int c;
     char *v;
 
-    if (sep && sep != '\\')
-    {
+    if (sep && sep != '\\') {
         sfputc(sfstdout, sep);
         col++;
     }
     for (;;)
-        switch (c = *s++)
-        {
+        switch (c = *s++) {
         case 0:
-            if (sep && sep != '\t')
-            {
+            if (sep && sep != '\t') {
                 col = 1;
                 sfputc(sfstdout, '\n');
             }
@@ -195,8 +186,7 @@ dumpvalue(int col, char *s, int sep)
                 goto emit;
             while (isspace(*s))
                 s++;
-            if (*s)
-            {
+            if (*s) {
                 sfputr(sfstdout, " \\\n\t", -1);
                 col = 8;
             }
@@ -206,14 +196,12 @@ dumpvalue(int col, char *s, int sep)
                 c = *s++;
             goto emit;
         case '$':
-            if (isalpha(*s) || *s == '_')
-            {
+            if (isalpha(*s) || *s == '_') {
                 for (v = s; isalnum(*v) || *v == '_'; v++)
                     ;
                 c = *v;
                 *v = 0;
-                if (getvar(state.mam->main, s))
-                {
+                if (getvar(state.mam->main, s)) {
                     sfprintf(sfstdout, "$(%s)", s);
                     col += (v - s) + 3;
                     *(s = v) = c;
@@ -242,15 +230,12 @@ dumpname(int col, char *s)
     int n;
 
     n = strlen(s);
-    if (col + n >= LONGLINE)
-    {
+    if (col + n >= LONGLINE) {
         sfputr(sfstdout, " \\\n\t\t", -1);
         col = 16;
-    }
-    else if (col <= 1)
+    } else if (col <= 1)
         col = 1;
-    else
-    {
+    else {
         sfputc(sfstdout, ' ');
         col++;
     }
@@ -276,22 +261,19 @@ ccflags(char *s, struct var *v)
     static int init;
 
     b = buf;
-    for (;;)
-    {
+    for (;;) {
         while (*s && *s != '-')
             s++;
         if (!*s)
             break;
-        for (t = s; *t; t++)
-        {
+        for (t = s; *t; t++) {
             if (isspace(*t))
                 break;
             if (*t == '\\' && !*++t)
                 break;
         }
         *t++ = 0;
-        switch (*(s + 1))
-        {
+        switch (*(s + 1)) {
         case 'c':
         case 'U':
             break;
@@ -321,10 +303,8 @@ ccflags(char *s, struct var *v)
         }
         s = t;
     }
-    if (v && b > buf)
-    {
-        if (!init)
-        {
+    if (v && b > buf) {
+        if (!init) {
             init = 1;
             sfputc(sfstdout, '\n');
         }
@@ -358,32 +338,25 @@ initrule(const char *as, char *ar, void *handle)
         s = "";
     if (r->action || !(t = strrchr(r->name, '/')))
         x->base = r->name;
-    else if (omitted(r->name))
-    {
+    else if (omitted(r->name)) {
         r->attributes |= A_omit;
         x->base = t + 1;
-    }
-    else
-    {
+    } else {
         *t = 0;
         x->directory = initdir(r->name, s);
         *t++ = '/';
         x->base = t;
     }
-    if (strmatch(x->base, "lib*.a"))
-    {
+    if (strmatch(x->base, "lib*.a")) {
         x->target = x->base;
         s = x->base = strdup(x->base + 1);
         s[0] = '-';
         s[1] = 'l';
         s[strlen(s) - 2] = 0;
-    }
-    else if ((p = r->action) && s[1] == 'o' && !s[2])
-    {
+    } else if ((p = r->action) && s[1] == 'o' && !s[2]) {
         r->action = 0;
         r->prereqs = 0;
-        while (p)
-        {
+        while (p) {
             ccflags(p->data, NiL);
             p = p->next;
         }
@@ -415,8 +388,7 @@ dumpprereqs(int col, struct rule *r)
 {
     struct list *p;
 
-    if (!(r->attributes & (A_listprereq | A_omit)))
-    {
+    if (!(r->attributes & (A_listprereq | A_omit))) {
         r->attributes |= A_listprereq;
         col = dumpname(col,
                        r->local.pointer
@@ -438,8 +410,7 @@ static void
 dumpaction(struct block *p)
 {
     if (p)
-        do
-        {
+        do {
             dumpvalue(0, p->data, '\t');
             sfputc(sfstdout, '\n');
         } while (p = p->next);
@@ -455,11 +426,9 @@ dump(struct rule *r)
     int col;
     struct list *p;
 
-    if (!(r->attributes & (A_listtarg | A_metarule)))
-    {
+    if (!(r->attributes & (A_listtarg | A_metarule))) {
         r->attributes |= A_listtarg;
-        if (r->action || r->prereqs)
-        {
+        if (r->action || r->prereqs) {
             clrprereqs(r);
             r->attributes |= A_listprereq;
             sfputc(sfstdout, '\n');
@@ -472,8 +441,7 @@ dump(struct rule *r)
                            : r->name);
             col = dumpname(col, ":");
             for (p = r->prereqs; p; p = p->next)
-                if (!(p->rule->attributes & A_listprereq))
-                {
+                if (!(p->rule->attributes & A_listprereq)) {
                     clrprereqs(p->rule);
                     col = dumpprereqs(col, p->rule);
                 }
@@ -501,16 +469,12 @@ dumpstate(const char *an, char *av, void *handle)
     static int init;
 
     NoP(handle);
-    if (*s++ == '-')
-    {
-        if (*s == 'D')
-        {
+    if (*s++ == '-') {
+        if (*s == 'D') {
             while (isalnum(*++s))
                 ;
-            if (*s++ == '=')
-            {
-                if (!init)
-                {
+            if (*s++ == '=') {
+                if (!init) {
                     init = 1;
                     sfputc(sfstdout, '\n');
                 }
@@ -518,18 +482,13 @@ dumpstate(const char *an, char *av, void *handle)
                 col = dumpname(0, name);
                 sfputr(sfstdout, " == ", -1);
                 col += 2;
-                if (*s == '"')
-                {
+                if (*s == '"') {
                     s[strlen(s) - 1] = 0;
                     dumpvalue(col, s + 1, '\\');
-                }
-                else
+                } else
                     dumpvalue(col, s, 0);
-            }
-            else
-            {
-                if (!init)
-                {
+            } else {
+                if (!init) {
                     init = 1;
                     sfputc(sfstdout, '\n');
                 }
@@ -537,11 +496,8 @@ dumpstate(const char *an, char *av, void *handle)
                 dumpname(0, name);
                 sfputr(sfstdout, " == 1\n", -1);
             }
-        }
-        else if (*s == 'U')
-        {
-            if (!init)
-            {
+        } else if (*s == 'U') {
+            if (!init) {
                 init = 1;
                 sfputc(sfstdout, '\n');
             }
@@ -589,10 +545,8 @@ main(int argc, char **argv)
 
     NoP(argc);
     error_info.id = "mamnew";
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'd':
             error_info.trace = -opt_info.num;
             continue;

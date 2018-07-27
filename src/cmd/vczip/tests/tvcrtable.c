@@ -42,8 +42,7 @@ MAIN()
 
     /* construct first half of test data */
     dtsz1 = 0;
-    for (k = 0, r = 0; r < 6; ++r, ++k)
-    {
+    for (k = 0, r = 0; r < 6; ++r, ++k) {
         if (k >= sizeof(Record1) / sizeof(Record1[0]))
             k = 0;
         n = strlen(Record1[k]);
@@ -55,8 +54,7 @@ MAIN()
 
     /* construct second half of test data */
     dtsz2 = dtsz1;
-    for (k = 0, r = 0; r < 6; ++r, ++k)
-    {
+    for (k = 0, r = 0; r < 6; ++r, ++k) {
         if (k >= sizeof(Record2) / sizeof(Record2[0]))
             k = 0;
         n = strlen(Record2[k]);

@@ -59,8 +59,7 @@ prog(const char *command, char *path, size_t size)
 #endif
 
 #ifdef _PROC_PROG
-    if ((n = readlink(_PROC_PROG, path, size)) > 0 && *path == '/')
-    {
+    if ((n = readlink(_PROC_PROG, path, size)) > 0 && *path == '/') {
         if (n < size)
             path[n] = 0;
         return n;
@@ -76,14 +75,12 @@ prog(const char *command, char *path, size_t size)
         return strlen(path);
 #endif
 #if _WINIX
-    if (s = GetCommandLine())
-    {
+    if (s = GetCommandLine()) {
         n = 0;
         q = 0;
         t = path;
         e = path + size - 1;
-        while (c = *s++)
-        {
+        while (c = *s++) {
             if (c == q)
                 q = 0;
             else if (!q && c == '"')
@@ -100,8 +97,7 @@ prog(const char *command, char *path, size_t size)
         return (t - path) + n;
     }
 #endif
-    if (command)
-    {
+    if (command) {
         s = ( char * )command;
         goto found;
     }
@@ -120,8 +116,7 @@ pathprog(const char *command, char *path, size_t size)
     ssize_t n;
 
     if ((n = prog(command, path, size)) > 0 && n < size && *path != '/'
-        && (rel = strdup(path)))
-    {
+        && (rel = strdup(path))) {
         n = pathpath(rel, NiL, PATH_REGULAR | PATH_EXECUTE, path, size)
             ? strlen(path)
             : 0;

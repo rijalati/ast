@@ -101,14 +101,12 @@ pdpnext(Ardir_t *ar)
     ssize_t z;
 
     state->current = state->offset;
-    if (lseek(ar->fd, state->offset, SEEK_SET) != state->offset)
-    {
+    if (lseek(ar->fd, state->offset, SEEK_SET) != state->offset) {
         ar->error = errno;
         return 0;
     }
     if (read(ar->fd, ( char * )&state->header, sizeof(state->header))
-        != sizeof(state->header))
-    {
+        != sizeof(state->header)) {
         if ((z = read(ar->fd, ( char * )&state->header, 1)) < 0)
             ar->error = errno;
         else if (z > 0)
@@ -149,8 +147,7 @@ pdpchange(Ardir_t *ar, Ardirent_t *ent)
     off_t o;
 
     o = state->current + offsetof(Header_t, ar_date);
-    if (lseek(ar->fd, o, SEEK_SET) != o)
-    {
+    if (lseek(ar->fd, o, SEEK_SET) != o) {
         ar->error = errno;
         return -1;
     }
@@ -159,8 +156,7 @@ pdpchange(Ardir_t *ar, Ardirent_t *ent)
             sizeof(state->header.ar_date),
             ( intmax_t )ent->mtime);
     if (write(ar->fd, &state->header.ar_date, sizeof(state->header.ar_date))
-        != sizeof(state->header.ar_date))
-    {
+        != sizeof(state->header.ar_date)) {
         ar->error = errno;
         return -1;
     }

@@ -110,10 +110,8 @@ sigcritical(int op)
 #    endif
 #endif
 
-    if (op > 0)
-    {
-        if (!level++)
-        {
+    if (op > 0) {
+        if (!level++) {
             region = op;
             if (op & SIG_REG_SET)
                 level--;
@@ -135,8 +133,7 @@ sigcritical(int op)
             for (i = 0; i < elementsof(signals); i++)
                 if ((op & signals[i].op)
                     && (handler[i] = signal(signals[i].sig, interrupt))
-                       == SIG_IGN)
-                {
+                       == SIG_IGN) {
                     signal(signals[i].sig, handler[i]);
                     hold &= ~sigmask(signals[i].sig);
                 }
@@ -144,14 +141,11 @@ sigcritical(int op)
 #endif
         }
         return level;
-    }
-    else if (op < 0)
-    {
+    } else if (op < 0) {
 #if _lib_sigprocmask
         sigpending(&nmask);
         for (i = 0; i < elementsof(signals); i++)
-            if (region & signals[i].op)
-            {
+            if (region & signals[i].op) {
                 if (sigismember(&nmask, signals[i].sig))
                     return 1;
             }
@@ -164,16 +158,13 @@ sigcritical(int op)
         return hold != 0;
 #    endif
 #endif
-    }
-    else
-    {
+    } else {
         /*
          * a vfork() may have intervened so we
          * allow apparent nesting mismatches
          */
 
-        if (--level <= 0)
-        {
+        if (--level <= 0) {
             level = 0;
 #if _lib_sigprocmask
             sigprocmask(SIG_SETMASK, &mask, NiL);
@@ -184,11 +175,9 @@ sigcritical(int op)
             for (i = 0; i < elementsof(signals); i++)
                 if (region & signals[i].op)
                     signal(signals[i].sig, handler[i]);
-            if (hold)
-            {
+            if (hold) {
                 for (i = 0; i < elementsof(signals); i++)
-                    if (region & signals[i].op)
-                    {
+                    if (region & signals[i].op) {
                         if (hold & sigmask(signals[i].sig))
                             kill(getpid(), signals[i].sig);
                     }

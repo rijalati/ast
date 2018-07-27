@@ -33,8 +33,7 @@ static void _vdinit(io) reg Vdio_t *io;
 {
     if ((io->data = ( uchar * )io->delta->data))
         io->size = io->delta->size;
-    else
-    {
+    else {
         io->data = io->buf;
         io->size = sizeof(io->buf);
     }
@@ -60,8 +59,7 @@ static int _vdfilbuf(io) reg Vdio_t *io;
 
     if ((n = SIZE(io)) > LEFT(io))
         n = LEFT(io);
-    if ((n = (*READF(io))(DATA(io), n, HERE(io), DELTA(io))) > 0)
-    {
+    if ((n = (*READF(io))(DATA(io), n, HERE(io), DELTA(io))) > 0) {
         ENDB(io) = (NEXT(io) = DATA(io)) + n;
         HERE(io) += n;
         LEFT(io) -= n;
@@ -103,8 +101,7 @@ reg ulong v;
 {
     reg int c;
 
-    for (v &= I_MORE - 1;;)
-    {
+    for (v &= I_MORE - 1;;) {
         if ((c = VDGETC(io)) < 0)
             return (ulong)(-1L);
         if (!(c & I_MORE))
@@ -135,8 +132,7 @@ reg ulong v;
         return -1;
 
     next = io->next;
-    switch (len)
-    {
+    switch (len) {
     default:
         memcpy(( Void_t * )next, ( Void_t * )s, len);
         next += len;
@@ -165,8 +161,7 @@ reg int n;
     reg uchar *next;
     reg int r, m;
 
-    for (m = n; m > 0;)
-    {
+    for (m = n; m > 0;) {
         if ((r = REMAIN(io)) <= 0 && (r = _vdfilbuf(io)) <= 0)
             break;
         if (r > m)
@@ -193,8 +188,7 @@ reg int n;
     reg uchar *next;
     reg int w, m;
 
-    for (m = n; m > 0;)
-    {
+    for (m = n; m > 0;) {
         if ((w = REMAIN(io)) <= 0 && (w = _vdflsbuf(io)) <= 0)
             break;
         if (w > m)

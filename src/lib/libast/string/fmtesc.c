@@ -71,12 +71,10 @@ fmtquote(const char *as, const char *qb, const char *qe, size_t n, int flags)
     shell = 0;
     doublequote = 0;
     singlequote = 0;
-    if (qb)
-    {
+    if (qb) {
         if (qb[0] == '$' && qb[1] == '\'' && qb[2] == 0)
             shell = 1;
-        else if ((flags & FMT_SHELL) && qb[1] == 0)
-        {
+        else if ((flags & FMT_SHELL) && qb[1] == 0) {
             if (qb[0] == '"')
                 doublequote = 1;
             else if (qb[0] == '\'')
@@ -84,16 +82,13 @@ fmtquote(const char *as, const char *qb, const char *qe, size_t n, int flags)
         }
         while (*b = *qb++)
             b++;
-    }
-    else if (flags & FMT_SHELL)
+    } else if (flags & FMT_SHELL)
         doublequote = 1;
     f = b;
     escaped = spaced = !!(flags & FMT_ALWAYS);
     mbtinit(&q);
-    while (s < e)
-    {
-        if ((m = mbtsize(s, MB_LEN_MAX, &q)) > 1 && (s + m) <= e)
-        {
+    while (s < e) {
+        if ((m = mbtsize(s, MB_LEN_MAX, &q)) > 1 && (s + m) <= e) {
 #if _hdr_wchar && _hdr_wctype
             c = mbchar(&w, s, MB_LEN_MAX, &q);
             if (!spaced && !escaped && (iswspace(c) || iswcntrl(c)))
@@ -102,17 +97,13 @@ fmtquote(const char *as, const char *qb, const char *qe, size_t n, int flags)
 #endif
             while (m--)
                 *b++ = *s++;
-        }
-        else
-        {
+        } else {
             c = *s++;
             if (!(flags & FMT_ESCAPED)
-                && (iscntrl(c) || !isprint(c) || c == '\\'))
-            {
+                && (iscntrl(c) || !isprint(c) || c == '\\')) {
                 escaped = 1;
                 *b++ = '\\';
-                switch (c)
-                {
+                switch (c) {
                 case CC_bel:
                     c = 'a';
                     break;
@@ -140,81 +131,63 @@ fmtquote(const char *as, const char *qb, const char *qe, size_t n, int flags)
                 case '\\':
                     break;
                 default:
-                    if (!(flags & FMT_WIDE) || !(c & 0200))
-                    {
+                    if (!(flags & FMT_WIDE) || !(c & 0200)) {
                         *b++ = '0' + ((c >> 6) & 07);
                         *b++ = '0' + ((c >> 3) & 07);
                         c = '0' + (c & 07);
-                    }
-                    else
+                    } else
                         b--;
                     break;
                 }
-            }
-            else if (c == '\\')
-            {
+            } else if (c == '\\') {
                 escaped = 1;
                 *b++ = c;
                 if (*s)
                     c = *s++;
-            }
-            else if (qe && strchr(qe, c))
-            {
-                if (singlequote && c == '\'')
-                {
+            } else if (qe && strchr(qe, c)) {
+                if (singlequote && c == '\'') {
                     spaced = 1;
                     *b++ = '\'';
                     *b++ = '\\';
                     *b++ = '\'';
                     c = '\'';
-                }
-                else
-                {
+                } else {
                     escaped = 1;
                     *b++ = '\\';
                 }
-            }
-            else if (c == '$' || c == '`')
-            {
+            } else if (c == '$' || c == '`') {
                 if (c == '$' && (flags & FMT_PARAM)
-                    && (*s == '{' || *s == '('))
-                {
-                    if (singlequote || shell)
-                    {
+                    && (*s == '{' || *s == '(')) {
+                    if (singlequote || shell) {
                         escaped = 1;
                         *b++ = '\'';
                         *b++ = c;
                         *b++ = *s++;
-                        if (shell)
-                        {
+                        if (shell) {
                             spaced = 1;
                             *b++ = '$';
                         }
                         c = '\'';
-                    }
-                    else
-                    {
+                    } else {
                         escaped = 1;
                         *b++ = c;
                         c = *s++;
                     }
-                }
-                else if (doublequote)
+                } else if (doublequote)
                     *b++ = '\\';
                 else if (singlequote || (flags & FMT_SHELL))
                     spaced = 1;
-            }
-            else if (!spaced && !escaped
-                     && (isspace(c)
-                         || ((flags & FMT_SHELL) || shell)
-                            && (strchr("\";~&|()<>[]*?", c)
-                                || c == '#' && (b == f || isspace(*(b - 1))))))
+            } else if (!spaced && !escaped
+                       && (isspace(c)
+                           || ((flags & FMT_SHELL) || shell)
+                              && (strchr("\";~&|()<>[]*?", c)
+                                  || c == '#'
+                                     && (b == f || isspace(*(b - 1))))))
                 spaced = 1;
             *b++ = c;
         }
     }
-    if (qb)
-    {
+    if (qb) {
         if (!escaped)
             buf += shell + !spaced;
         if (qe && (escaped || spaced))

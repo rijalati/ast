@@ -168,17 +168,14 @@ bsOpenWriteStream(FILE *stream)
 void
 bsPutBit(BitStream *bs, Int32 bit)
 {
-    if (bs->buffLive == 8)
-    {
+    if (bs->buffLive == 8) {
         Int32 retVal = putc(( UChar )bs->buffer, bs->handle);
         if (retVal == EOF)
             writeError();
         bytesOut++;
         bs->buffLive = 1;
         bs->buffer = bit & 0x1;
-    }
-    else
-    {
+    } else {
         bs->buffer = ((bs->buffer << 1) | (bit & 0x1));
         bs->buffLive++;
     };
@@ -192,16 +189,12 @@ bsPutBit(BitStream *bs, Int32 bit)
 Int32
 bsGetBit(BitStream *bs)
 {
-    if (bs->buffLive > 0)
-    {
+    if (bs->buffLive > 0) {
         bs->buffLive--;
         return (((bs->buffer) >> (bs->buffLive)) & 0x1);
-    }
-    else
-    {
+    } else {
         Int32 retVal = getc(bs->handle);
-        if (retVal == EOF)
-        {
+        if (retVal == EOF) {
             if (errno != 0)
                 readError();
             return 2;
@@ -219,10 +212,8 @@ bsClose(BitStream *bs)
 {
     Int32 retVal;
 
-    if (bs->mode == 'w')
-    {
-        while (bs->buffLive < 8)
-        {
+    if (bs->mode == 'w') {
+        while (bs->buffLive < 8) {
             bs->buffLive++;
             bs->buffer <<= 1;
         };
@@ -235,8 +226,7 @@ bsClose(BitStream *bs)
             writeError();
     }
     retVal = fclose(bs->handle);
-    if (retVal == EOF)
-    {
+    if (retVal == EOF) {
         if (bs->mode == 'w')
             writeError();
         else
@@ -315,8 +305,7 @@ main(Int32 argc, Char **argv)
     stderr,
     "bzip2recover v0.9.0c: extracts blocks from damaged .bz2 files.\n");
 
-    if (argc != 2)
-    {
+    if (argc != 2) {
         fprintf(
         stderr, "%s: usage is `%s damaged_file_name'.\n", progName, progName);
         exit(1);
@@ -325,8 +314,7 @@ main(Int32 argc, Char **argv)
     strcpy(inFileName, argv[1]);
 
     inFile = fopen(inFileName, "rb");
-    if (inFile == NULL)
-    {
+    if (inFile == NULL) {
         fprintf(stderr, "%s: can't read `%s'\n", progName, inFileName);
         exit(1);
     }
@@ -341,15 +329,12 @@ main(Int32 argc, Char **argv)
 
     rbCtr = 0;
 
-    while (True)
-    {
+    while (True) {
         b = bsGetBit(bsIn);
         bitsRead++;
-        if (b == 2)
-        {
+        if (b == 2) {
             if (bitsRead >= bStart[currBlock]
-                && (bitsRead - bStart[currBlock]) >= 40)
-            {
+                && (bitsRead - bStart[currBlock]) >= 40) {
                 bEnd[currBlock] = bitsRead - 1;
                 if (currBlock > 0)
                     fprintf(stderr,
@@ -357,8 +342,7 @@ main(Int32 argc, Char **argv)
                             currBlock,
                             bStart[currBlock],
                             bEnd[currBlock]);
-            }
-            else
+            } else
                 currBlock--;
             break;
         }
@@ -367,14 +351,13 @@ main(Int32 argc, Char **argv)
         if (((buffHi & 0x0000ffff) == BLOCK_HEADER_HI
              && buffLo == BLOCK_HEADER_LO)
             || ((buffHi & 0x0000ffff) == BLOCK_ENDMARK_HI
-                && buffLo == BLOCK_ENDMARK_LO))
-        {
+                && buffLo == BLOCK_ENDMARK_LO)) {
             if (bitsRead > 49)
                 bEnd[currBlock] = bitsRead - 49;
             else
                 bEnd[currBlock] = 0;
-            if (currBlock > 0 && (bEnd[currBlock] - bStart[currBlock]) >= 130)
-            {
+            if (currBlock > 0
+                && (bEnd[currBlock] - bStart[currBlock]) >= 130) {
                 fprintf(stderr,
                         "   block %d runs from %d to %d\n",
                         rbCtr + 1,
@@ -394,8 +377,7 @@ main(Int32 argc, Char **argv)
 
     /*-- identified blocks run from 1 to rbCtr inclusive. --*/
 
-    if (rbCtr < 1)
-    {
+    if (rbCtr < 1) {
         fprintf(stderr,
                 "%s: sorry, I couldn't find any block boundaries.\n",
                 progName);
@@ -405,8 +387,7 @@ main(Int32 argc, Char **argv)
     fprintf(stderr, "%s: splitting into blocks\n", progName);
 
     inFile = fopen(inFileName, "rb");
-    if (inFile == NULL)
-    {
+    if (inFile == NULL) {
         fprintf(stderr, "%s: can't open `%s'\n", progName, inFileName);
         exit(1);
     }
@@ -419,8 +400,7 @@ main(Int32 argc, Char **argv)
     bitsRead = 0;
     outFile = NULL;
     wrBlock = 0;
-    while (True)
-    {
+    while (True) {
         b = bsGetBit(bsIn);
         if (b == 2)
             break;
@@ -430,17 +410,14 @@ main(Int32 argc, Char **argv)
             blockCRC = (buffHi << 16) | (buffLo >> 16);
 
         if (outFile != NULL && bitsRead >= rbStart[wrBlock]
-            && bitsRead <= rbEnd[wrBlock])
-        {
+            && bitsRead <= rbEnd[wrBlock]) {
             bsPutBit(bsWr, b);
         }
 
         bitsRead++;
 
-        if (bitsRead == rbEnd[wrBlock] + 1)
-        {
-            if (outFile != NULL)
-            {
+        if (bitsRead == rbEnd[wrBlock] + 1) {
+            if (outFile != NULL) {
                 bsPutUChar(bsWr, 0x17);
                 bsPutUChar(bsWr, 0x72);
                 bsPutUChar(bsWr, 0x45);
@@ -453,9 +430,7 @@ main(Int32 argc, Char **argv)
             if (wrBlock >= rbCtr)
                 break;
             wrBlock++;
-        }
-        else if (bitsRead == rbStart[wrBlock])
-        {
+        } else if (bitsRead == rbStart[wrBlock]) {
             outFileName[0] = 0;
             sprintf(outFileName, "rec%4d", wrBlock + 1);
             for (p = outFileName; *p != 0; p++)
@@ -471,8 +446,7 @@ main(Int32 argc, Char **argv)
                     outFileName);
 
             outFile = fopen(outFileName, "wb");
-            if (outFile == NULL)
-            {
+            if (outFile == NULL) {
                 fprintf(
                 stderr, "%s: can't write `%s'\n", progName, outFileName);
                 exit(1);

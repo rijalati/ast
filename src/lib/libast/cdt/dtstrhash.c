@@ -43,9 +43,7 @@ dtstrhash(uint h, char *args, int n)
     {
         for (; *s != 0; ++s)
             h = ((h ^ s[0]) * FNV_PRIME) ^ (h >> (_ast_sizeof_int - 1) * 8);
-    }
-    else
-    {
+    } else {
         unsigned char *ends;
         for (ends = s + n; s < ends; ++s)
             h = ((h ^ s[0]) * FNV_PRIME) ^ (h >> (_ast_sizeof_int - 1) * 8);

@@ -31,8 +31,7 @@ int type;
 void *data;
 #endif
 {
-    switch (type)
-    {
+    switch (type) {
     case SF_NEW:
     case SF_CLOSING:
     case SF_SETFD:

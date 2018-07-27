@@ -32,8 +32,7 @@ Tcl_AppInitProc *appInitProc; /* Application-specific initialization
      */
 
     fileName = NULL;
-    if ((argc > 1) && (argv[1][0] != '-'))
-    {
+    if ((argc > 1) && (argv[1][0] != '-')) {
         fileName = argv[1];
         argc--;
         argv++;
@@ -62,11 +61,9 @@ Tcl_AppInitProc *appInitProc; /* Application-specific initialization
      * Invoke application-specific initialization.
      */
 
-    if ((*appInitProc)(interp) != TCL_OK)
-    {
+    if ((*appInitProc)(interp) != TCL_OK) {
         errChannel = Tcl_GetStdChannel(TCL_STDERR);
-        if (errChannel)
-        {
+        if (errChannel) {
             Tcl_Write(
             errChannel, "application-specific initialization failed: ", -1);
             Tcl_Write(errChannel, interp->result, -1);
@@ -79,14 +76,11 @@ Tcl_AppInitProc *appInitProc; /* Application-specific initialization
      * and quit.
      */
 
-    if (fileName != NULL)
-    {
+    if (fileName != NULL) {
         code = Tcl_EvalFile(interp, fileName);
-        if (code != TCL_OK)
-        {
+        if (code != TCL_OK) {
             errChannel = Tcl_GetStdChannel(TCL_STDERR);
-            if (errChannel)
-            {
+            if (errChannel) {
                 /*
                  * The following statement guarantees that the errorInfo
                  * variable is set properly.
@@ -114,8 +108,7 @@ done:;
 int
 Tcl_AppInit(Tcl_Interp *interp)
 {
-    if (Tcl_Init(interp) == TCL_ERROR)
-    {
+    if (Tcl_Init(interp) == TCL_ERROR) {
         return TCL_ERROR;
     }
 

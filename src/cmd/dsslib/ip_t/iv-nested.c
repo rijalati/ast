@@ -95,23 +95,19 @@ nestcmp(Dt_t *dt, void *o1, void *o2, Dtdisc_t *disc)
         return 1;
     h = fvcmp(size, i1->hi, i2->hi);
     l = fvcmp(size, i1->lo, i2->lo);
-    if (l < 0)
-    {
+    if (l < 0) {
         if (h >= 0) /* i1 contains i2		*/
             return -1;
         else
             return 0; /* i1 crossing i2 on the left	*/
-    }
-    else if (l == 0)
-    {
+    } else if (l == 0) {
         if (h < 0) /* i1 is contained in i2	*/
             return 1;
         else if (h == 0) /* equal segments		*/
             return 0;
         else
             return -1; /* i1 contains i2		*/
-    }
-    else /* if (l > 0) */
+    } else             /* if (l > 0) */
     {
         if (h <= 0) /* i1 is contained in i2	*/
             return 1;
@@ -133,20 +129,17 @@ nestset(Iv_t *iv, unsigned char *lo, unsigned char *hi, void *data)
     itvl.lo = lo;
     itvl.hi = hi;
     itvl.data = data;
-    if (!(it = ( Itvl_t * )dtsearch(nst->dt, &itvl)))
-    {
+    if (!(it = ( Itvl_t * )dtsearch(nst->dt, &itvl))) {
         nst->changed = 1;
         return dtinsert(nst->dt, &itvl) ? 0 : -1;
-    }
-    else if (fvcmp(size, it->lo, lo) || fvcmp(size, it->hi, hi))
+    } else if (fvcmp(size, it->lo, lo) || fvcmp(size, it->hi, hi))
         return -1;             /* must have been a crossing element */
     else if (it->data != data) /* just update the data	*/
     {
         nst->changed = 1;
         it->data = data;
         return 0;
-    }
-    else
+    } else
         return 0;
 }
 
@@ -215,16 +208,14 @@ nestevent(Iv_t *iv, int type, void *data)
 {
     Nest_t *nst;
 
-    switch (type)
-    {
+    switch (type) {
     case IV_OPEN:
         if (!(nst = newof(0, Nest_t, 1, 0)))
             return -1;
         nst->dc.makef = nestmake;
         nst->dc.freef = nestfree;
         nst->dc.comparf = nestcmp;
-        if (!(nst->dt = dtopen(&nst->dc, Dtoset)))
-        {
+        if (!(nst->dt = dtopen(&nst->dc, Dtoset))) {
             free(nst);
             return -1;
         }
@@ -237,8 +228,7 @@ nestevent(Iv_t *iv, int type, void *data)
         iv->data = ( void * )nst;
         break;
     case IV_CLOSE:
-        if ((nst = ( Nest_t * )iv->data))
-        {
+        if ((nst = ( Nest_t * )iv->data)) {
             if (nst->flat)
                 ivclose(nst->flat);
             if (nst->dt)

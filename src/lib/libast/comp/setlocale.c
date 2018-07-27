@@ -83,8 +83,7 @@ header(void)
 {
     static int done = 0;
 
-    if (!done)
-    {
+    if (!done) {
         done = 1;
         sfprintf(sfstderr,
                  "locale      %17s %16s %16s %16s %s\n",
@@ -124,8 +123,7 @@ native_locale(const char *locale, char *buf, size_t siz)
     char lbuf[128];
     char cbuf[128];
 
-    if (locale && *locale)
-    {
+    if (locale && *locale) {
         if (!(lc = lcmake(locale)))
             return 0;
         lang = lc->language->index;
@@ -133,24 +131,20 @@ native_locale(const char *locale, char *buf, size_t siz)
         for (ap = lc->attributes; ap; ap = ap->next)
             if (ctry = ap->attribute->index)
                 break;
-        if (!ctry)
-        {
+        if (!ctry) {
             for (i = 0; i < elementsof(lc->territory->languages); i++)
-                if (lc->territory->languages[i] == lc->language)
-                {
+                if (lc->territory->languages[i] == lc->language) {
                     ctry = lc->territory->indices[i];
                     break;
                 }
-            if (!ctry)
-            {
+            if (!ctry) {
                 if (!lang)
                     return 0;
                 ctry = SUBLANG_DEFAULT;
             }
         }
         lcid = MAKELCID(MAKELANGID(lang, ctry), SORT_DEFAULT);
-    }
-    else
+    } else
         lcid = GetUserDefaultLCID();
     if (GetLocaleInfo(lcid, LOCALE_SENGLANGUAGE, lbuf, sizeof(lbuf)) <= 0
         || GetLocaleInfo(lcid, LOCALE_SENGCOUNTRY, cbuf, sizeof(cbuf)) <= 0)
@@ -287,13 +281,11 @@ debug_mbrtowc(wchar_t *p, const char *s, size_t n, mbstate_t *ms)
 
     if (n < 1)
         return (size_t)(-1);
-    if (!s || !*s)
-    {
+    if (!s || !*s) {
         mbsinit(ms);
         return 0;
     }
-    switch ((( unsigned char * )s)[0])
-    {
+    switch ((( unsigned char * )s)[0]) {
     case DL0:
         dr = DR0;
         break;
@@ -318,11 +310,9 @@ debug_mbrtowc(wchar_t *p, const char *s, size_t n, mbstate_t *ms)
         q++;
     if (q != r || *(( unsigned char * )q) != dr)
         return -1;
-    if (p)
-    {
+    if (p) {
         c = 1;
-        while (--q >= s)
-        {
+        while (--q >= s) {
             c <<= DC;
             c |= *(( unsigned char * )q);
         }
@@ -349,16 +339,13 @@ debug_wcrtomb(char *s, wchar_t c, mbstate_t *q)
     int k;
 
     w = 0;
-    if (c >= 0 && c <= UCHAR_MAX)
-    {
+    if (c >= 0 && c <= UCHAR_MAX) {
         w++;
         if (s)
             *s = c;
-    }
-    else if ((i = c & ((1 << DZ) - 1)) > DX)
+    } else if ((i = c & ((1 << DZ) - 1)) > DX)
         return -1;
-    else
-    {
+    else {
         w++;
         if (s)
             *s++ = DL0;
@@ -366,8 +353,7 @@ debug_wcrtomb(char *s, wchar_t c, mbstate_t *q)
         w++;
         if (s)
             *s++ = i + '0';
-        while (i--)
-        {
+        while (i--) {
             w++;
             if (s)
                 *s++ = (k = c & ((1 << DC) - 1)) ? k : '?';
@@ -430,22 +416,18 @@ debug_strxfrm(char *t, const char *s, size_t n)
     z = 0;
     if (e = t)
         e += n;
-    while (s[0])
-    {
+    while (s[0]) {
         if (((( unsigned char * )s)[0] == DL0
              || (( unsigned char * )s)[0] == DL1)
-            && (w = s[1]) >= '0' && w <= ('0' + DC))
-        {
+            && (w = s[1]) >= '0' && w <= ('0' + DC)) {
             w -= '0';
             q = s + 2;
             r = q + w;
             while (q < r && *q)
                 q++;
             if (*(( unsigned char * )q) == DR0
-                || *(( unsigned char * )q) == DR1)
-            {
-                if (t)
-                {
+                || *(( unsigned char * )q) == DR1) {
+                if (t) {
                     for (q = s + 2; q < r; q++)
                         if (t < e)
                             *t++ = debug_order[*q];
@@ -458,10 +440,8 @@ debug_strxfrm(char *t, const char *s, size_t n)
                 continue;
             }
         }
-        if ((s[0] == 'c' || s[0] == 'C') && (s[1] == 'h' || s[1] == 'H'))
-        {
-            if (t)
-            {
+        if ((s[0] == 'c' || s[0] == 'C') && (s[1] == 'h' || s[1] == 'H')) {
+            if (t) {
                 if (t < e)
                     *t++ = debug_order[s[0]];
                 if (t < e)
@@ -476,10 +456,8 @@ debug_strxfrm(char *t, const char *s, size_t n)
             continue;
         }
         if ((s[0] == 's' || s[0] == 'S') && (s[1] == 's' || s[1] == 'S')
-            && (s[2] == 't' || s[2] == 'T'))
-        {
-            if (t)
-            {
+            && (s[2] == 't' || s[2] == 'T')) {
+            if (t) {
                 if (t < e)
                     *t++ = debug_order[s[0]];
                 if (t < e)
@@ -493,8 +471,7 @@ debug_strxfrm(char *t, const char *s, size_t n)
             z += DX;
             continue;
         }
-        if (t)
-        {
+        if (t) {
             if (t < e)
                 *t++ = debug_order[s[0]];
             if (t < e)
@@ -544,18 +521,13 @@ default_wcwidth(wchar_t w)
 static int
 set_collate(Lc_category_t *cp)
 {
-    if (locales[cp->internal]->flags & LC_debug)
-    {
+    if (locales[cp->internal]->flags & LC_debug) {
         ast.collate = debug_strcoll;
         ast.mb_xfrm = debug_strxfrm;
-    }
-    else if (locales[cp->internal]->flags & LC_default)
-    {
+    } else if (locales[cp->internal]->flags & LC_default) {
         ast.collate = strcmp;
         ast.mb_xfrm = 0;
-    }
-    else
-    {
+    } else {
         ast.collate = strcoll;
         ast.mb_xfrm = strxfrm;
     }
@@ -575,8 +547,7 @@ static size_t
 sjis_mbrtowc(wchar_t *p, const char *s, size_t n, mbstate_t *q)
 {
     if (n && p && s && (*s == '\\' || *s == '~')
-        && !memcmp(q, &ast._ast_mbstate_init, sizeof(ast._ast_mbstate_init)))
-    {
+        && !memcmp(q, &ast._ast_mbstate_init, sizeof(ast._ast_mbstate_init))) {
         *p = *s;
         return 1;
     }
@@ -2704,13 +2675,11 @@ ast_mbrchar(wchar_t *w, const char *s, size_t n, Mbstate_t *q)
 
     m = (*ast._ast_mbrtowc)(w, s, n, ( mbstate_t * )q);
     if (m == (size_t)(-2) && (q->mb_errno = E2BIG)
-        || m == (size_t)(-1) && (q->mb_errno = EILSEQ))
-    {
+        || m == (size_t)(-1) && (q->mb_errno = EILSEQ)) {
         m = 1;
         if (w)
             *w = n ? *( unsigned char * )s : 0;
-    }
-    else
+    } else
         q->mb_errno = 0;
     return m;
 }
@@ -2730,10 +2699,8 @@ ast_mbsrtowcs(wchar_t *w, const char **p, size_t n, mbstate_t *q)
     s = *p;
     b = w;
     e = w + n;
-    while (w < e && (m = mbrtowc(w, s, MB_LEN_MAX, q)) != (size_t)(-2))
-    {
-        if (m == (size_t)(-1))
-        {
+    while (w < e && (m = mbrtowc(w, s, MB_LEN_MAX, q)) != (size_t)(-2)) {
+        if (m == (size_t)(-1)) {
             *p = s;
             return m;
         }
@@ -2762,15 +2729,12 @@ ast_wcsrtombs(char *s, const wchar_t **w, size_t n, mbstate_t *q)
     p = *w;
     b = s;
     e = s + n;
-    while (s < e)
-    {
-        if (!*p)
-        {
+    while (s < e) {
+        if (!*p) {
             p = 0;
             break;
         }
-        if ((m = wcrtomb(buf, *p, q)) == (size_t)(-1))
-        {
+        if ((m = wcrtomb(buf, *p, q)) == (size_t)(-1)) {
             *w = p;
             return m;
         }
@@ -2796,14 +2760,12 @@ set_ctype(Lc_category_t *cp)
 {
     ast.mb_sync = 0;
     ast.mb_alpha = ( Isw_f )iswalpha;
-    if (ast.mb_uc2wc != ( void * )(-1))
-    {
+    if (ast.mb_uc2wc != ( void * )(-1)) {
         if (ast.mb_uc2wc)
             iconv_close(( iconv_t )ast.mb_uc2wc);
         ast.mb_uc2wc = ( void * )(-1);
     }
-    if (ast.mb_wc2uc != ( void * )(-1))
-    {
+    if (ast.mb_wc2uc != ( void * )(-1)) {
         if (ast.mb_wc2uc)
             iconv_close(( iconv_t )ast.mb_wc2uc);
         ast.mb_wc2uc = ( void * )(-1);
@@ -2816,8 +2778,7 @@ set_ctype(Lc_category_t *cp)
                  cp->name,
                  locales[cp->internal]->name);
 #endif
-    if (locales[cp->internal]->flags & LC_debug)
-    {
+    if (locales[cp->internal]->flags & LC_debug) {
         ast.mb_cur_max = DEBUG_LEN_MAX;
         ast.mb_width = debug_wcwidth;
         ast.mb_alpha = debug_alpha;
@@ -2829,10 +2790,8 @@ set_ctype(Lc_category_t *cp)
         ast.mb_len = debug_mblen;
         ast.mb_towc = debug_mbtowc;
         ast.mb_conv = debug_wctomb;
-    }
-    else if ((locales[cp->internal]->flags & LC_utf8)
-             && !(ast.locale.set & AST_LC_native))
-    {
+    } else if ((locales[cp->internal]->flags & LC_utf8)
+               && !(ast.locale.set & AST_LC_native)) {
         ast.mb_cur_max = UTF8_LEN_MAX;
         if ((locales[cp->internal]->flags & LC_local)
             || !(ast.mb_width = wcwidth))
@@ -2846,11 +2805,9 @@ set_ctype(Lc_category_t *cp)
         ast.mb_len = utf8_mblen;
         ast.mb_towc = utf8towc;
         ast.mb_conv = utf8_wctomb;
-    }
-    else if ((locales[cp->internal]->flags & LC_default)
-             || (ast.mb_cur_max = MB_CUR_MAX) <= 1 || !(ast.mb_len = mblen)
-             || !(ast.mb_towc = mbtowc))
-    {
+    } else if ((locales[cp->internal]->flags & LC_default)
+               || (ast.mb_cur_max = MB_CUR_MAX) <= 1 || !(ast.mb_len = mblen)
+               || !(ast.mb_towc = mbtowc)) {
         ast.mb_cur_max = 1;
         ast.mb_width = default_wcwidth;
         ast._ast_mbrlen = 0;
@@ -2861,9 +2818,7 @@ set_ctype(Lc_category_t *cp)
         ast.mb_len = 0;
         ast.mb_towc = 0;
         ast.mb_conv = 0;
-    }
-    else
-    {
+    } else {
         if (!(ast.mb_width = wcwidth))
             ast.mb_width = default_wcwidth;
         ast._ast_mbrlen = mbrlen;
@@ -2885,8 +2840,7 @@ set_ctype(Lc_category_t *cp)
             mbinit(&q);
             c = '\\';
             s = &c;
-            if (mbchar(&w, s, 1, &q) != c)
-            {
+            if (mbchar(&w, s, 1, &q) != c) {
                 ast.mb_towc = sjis_mbtowc;
                 ast._ast_mbrtowc = sjis_mbrtowc;
             }
@@ -2943,24 +2897,21 @@ set_numeric(Lc_category_t *cp)
                  cp->name,
                  locales[cp->internal]->name);
 #endif
-    if (!LCINFO(category)->data)
-    {
+    if (!LCINFO(category)->data) {
         if (locales[cp->internal]->flags & LC_local)
             dp = locales[cp->internal]->territory == &lc_territories[0]
                  ? &default_numeric
                  : *locales[cp->internal]->territory->code == 'e'
                    ? &eu_numeric
                    : &us_numeric;
-        else if ((lp = localeconv()) && (dp = newof(0, Lc_numeric_t, 1, 0)))
-        {
+        else if ((lp = localeconv()) && (dp = newof(0, Lc_numeric_t, 1, 0))) {
             dp->decimal = lp->decimal_point && *lp->decimal_point
                           ? *( unsigned char * )lp->decimal_point
                           : '.';
             dp->thousand = lp->thousands_sep && *lp->thousands_sep
                            ? *( unsigned char * )lp->thousands_sep
                            : -1;
-        }
-        else
+        } else
             dp = &default_numeric;
         LCINFO(category)->data = ( void * )dp;
     }
@@ -3021,8 +2972,7 @@ static const Unamval_t options[] = { "debug",
 static int
 setopt(void *a, const void *p, int n, const char *v)
 {
-    if (p)
-    {
+    if (p) {
         if (n)
             ast.locale.set |= (( Unamval_t * )p)->value;
         else
@@ -3040,8 +2990,7 @@ default_setlocale(int category, const char *locale)
 {
     Lc_t *lc;
 
-    if (locale)
-    {
+    if (locale) {
         if (!(lc = lcmake(locale)) || !(lc->flags & LC_default))
             return 0;
         locales[0]->flags &= ~lc->flags;
@@ -3101,12 +3050,10 @@ single(int category, Lc_t *lc, unsigned int flags)
                  lc ? lc->name : 0,
                  flags);
 #endif
-    if (flags & (LC_setenv | LC_setlocale))
-    {
+    if (flags & (LC_setenv | LC_setlocale)) {
         if (!(ast.locale.set & AST_LC_internal))
             lc_categories[category].prev = lc;
-        if ((flags & LC_setenv) && lc_all && locales[category])
-        {
+        if ((flags & LC_setenv) && lc_all && locales[category]) {
             if (lc_categories[category].setf)
                 (*lc_categories[category].setf)(&lc_categories[category]);
             return ( char * )locales[category]->name;
@@ -3119,19 +3066,15 @@ single(int category, Lc_t *lc, unsigned int flags)
         && !(lc = lang))
         lc = lcmake(NiL);
     sys = 0;
-    if (locales[category] != lc)
-    {
+    if (locales[category] != lc) {
         if (lc_categories[category].external
-            == -lc_categories[category].internal)
-        {
+            == -lc_categories[category].internal) {
             for (i = 1; i < AST_LC_COUNT; i++)
-                if (locales[i] == lc)
-                {
+                if (locales[i] == lc) {
                     sys = ( char * )lc->name;
                     break;
                 }
-        }
-        else if (lc->flags & (LC_debug | LC_local))
+        } else if (lc->flags & (LC_debug | LC_local))
             sys
             = setlocale(lc_categories[category].external, lcmake(NiL)->name);
         else if (!(sys
@@ -3144,15 +3087,13 @@ single(int category, Lc_t *lc, unsigned int flags)
             = setlocale(lc_categories[category].external, lc->language->code);
         if (sys)
             lc->flags |= LC_checked;
-        else
-        {
+        else {
             /*
              * check for local override
              * currently this means an LC_MESSAGES dir exists
              */
 
-            if (!(lc->flags & LC_checked))
-            {
+            if (!(lc->flags & LC_checked)) {
                 char path[PATH_MAX];
 
                 if (mcfind(lc->code, NiL, LC_MESSAGES, 0, path, sizeof(path)))
@@ -3168,8 +3109,7 @@ single(int category, Lc_t *lc, unsigned int flags)
         }
         locales[category] = lc;
         if (lc_categories[category].setf
-            && (*lc_categories[category].setf)(&lc_categories[category]))
-        {
+            && (*lc_categories[category].setf)(&lc_categories[category])) {
             locales[category] = lc_categories[category].prev;
             return 0;
         }
@@ -3181,21 +3121,16 @@ single(int category, Lc_t *lc, unsigned int flags)
             ast.locale.set &= ~(1 << category);
         else
             ast.locale.set |= (1 << category);
-    }
-    else if (lc_categories[category].flags ^ flags)
-    {
+    } else if (lc_categories[category].flags ^ flags) {
         lc_categories[category].flags &= ~(LC_setenv | LC_setlocale);
         lc_categories[category].flags |= flags;
-    }
-    else
-    {
+    } else {
         if (lc_categories[category].setf)
             (*lc_categories[category].setf)(&lc_categories[category]);
         return ( char * )lc->name;
     }
     if ((ast.locale.set & (AST_LC_debug | AST_LC_setlocale))
-        && !(ast.locale.set & AST_LC_internal))
-    {
+        && !(ast.locale.set & AST_LC_internal)) {
         header();
         sfprintf(sfstderr,
                  "locale set  %17s %16s %16s %16s",
@@ -3241,8 +3176,7 @@ single(int category, Lc_t *lc, unsigned int flags)
             : ast.mb_alpha == utf8_alpha
               ? " utf8_alpha"
               : ast.mb_alpha == ( Isw_f )iswalpha ? " iswalpha" : "");
-        else if (category == AST_LC_NUMERIC)
-        {
+        else if (category == AST_LC_NUMERIC) {
             Lc_numeric_t *dp = ( Lc_numeric_t * )LCINFO(category)->data;
 
             sfprintf(sfstderr,
@@ -3288,19 +3222,16 @@ composite(const char *s, int initialize)
     char buf[PATH_MAX / 2];
 
     k = n = 0;
-    while (s[0] == 'L' && s[1] == 'C' && s[2] == '_')
-    {
+    while (s[0] == 'L' && s[1] == 'C' && s[2] == '_') {
         n++;
         j = 0;
         w = s;
-        for (i = 1; i < AST_LC_COUNT; i++)
-        {
+        for (i = 1; i < AST_LC_COUNT; i++) {
             s = w;
             t = lc_categories[i].name;
             while (*t && *s++ == *t++)
                 ;
-            if (!*t && *s++ == '=')
-            {
+            if (!*t && *s++ == '=') {
                 cat[j++] = i;
                 if (s[0] != 'L' || s[1] != 'C' || s[2] != '_')
                     break;
@@ -3310,22 +3241,17 @@ composite(const char *s, int initialize)
         }
         for (s = w; *s && *s != '='; s++)
             ;
-        if (!*s)
-        {
+        if (!*s) {
             for (i = 0; i < k; i++)
                 single(stk[i], NiL, 0);
             return -1;
         }
         w = ++s;
-        for (;;)
-        {
-            if (!*s)
-            {
+        for (;;) {
+            if (!*s) {
                 p = lcmake(w);
                 break;
-            }
-            else if (*s++ == ';')
-            {
+            } else if (*s++ == ';') {
                 if ((m = s - w - 1) >= sizeof(buf))
                     m = sizeof(buf) - 1;
                 memcpy(buf, w, m);
@@ -3335,46 +3261,38 @@ composite(const char *s, int initialize)
             }
         }
         for (i = 0; i < j; i++)
-            if (!initialize)
-            {
-                if (!single(cat[i], p, 0))
-                {
+            if (!initialize) {
+                if (!single(cat[i], p, 0)) {
                     for (i = 0; i < k; i++)
                         single(stk[i], NiL, 0);
                     return -1;
                 }
                 stk[k++] = cat[i];
-            }
-            else if (!lc_categories[cat[i]].prev
-                     && !(ast.locale.set & AST_LC_internal))
+            } else if (!lc_categories[cat[i]].prev
+                       && !(ast.locale.set & AST_LC_internal))
                 lc_categories[cat[i]].prev = p;
     }
-    while (s[0] == '/' && s[1] && n < (AST_LC_COUNT - 1))
-    {
+    while (s[0] == '/' && s[1] && n < (AST_LC_COUNT - 1)) {
         n++;
         for (w = ++s; *s && *s != '/'; s++)
             ;
         if (!*s)
             p = lcmake(w);
-        else
-        {
+        else {
             if ((j = s - w - 1) >= sizeof(buf))
                 j = sizeof(buf) - 1;
             memcpy(buf, w, j);
             buf[j] = 0;
             p = lcmake(buf);
         }
-        if (!initialize)
-        {
-            if (!single(n, p, 0))
-            {
+        if (!initialize) {
+            if (!single(n, p, 0)) {
                 for (i = 1; i < n; i++)
                     single(i, NiL, 0);
                 return -1;
             }
-        }
-        else if (!lc_categories[n].prev
-                 && !(ast.locale.set & AST_LC_internal))
+        } else if (!lc_categories[n].prev
+                   && !(ast.locale.set & AST_LC_internal))
             lc_categories[n].prev = p;
     }
     return n;
@@ -3408,8 +3326,7 @@ _ast_setlocale(int category, const char *locale)
 
     if ((category = lcindex(category, 0)) < 0)
         return 0;
-    if (!locale)
-    {
+    if (!locale) {
         /*
          * return the current state
          */
@@ -3422,8 +3339,7 @@ _ast_setlocale(int category, const char *locale)
         for (i = 1; i < AST_LC_COUNT; i++)
             cat[i] = -1;
         for (i = 1, k = 0; i < AST_LC_COUNT; i++)
-            if (cat[i] < 0)
-            {
+            if (cat[i] < 0) {
                 k++;
                 cat[i] = i;
                 for (j = i + 1; j < AST_LC_COUNT; j++)
@@ -3433,13 +3349,11 @@ _ast_setlocale(int category, const char *locale)
         if (k == 1)
             return ( char * )locales[1]->name;
         for (i = 1; i < AST_LC_COUNT; i++)
-            if (cat[i] >= 0 && !(locales[i]->flags & LC_default))
-            {
+            if (cat[i] >= 0 && !(locales[i]->flags & LC_default)) {
                 if (sfstrtell(sp))
                     sfprintf(sp, ";");
                 for (j = i, k = cat[i]; j < AST_LC_COUNT; j++)
-                    if (cat[j] == k)
-                    {
+                    if (cat[j] == k) {
                         cat[j] = -1;
                         sfprintf(sp, "%s=", lc_categories[j].name);
                     }
@@ -3449,14 +3363,12 @@ _ast_setlocale(int category, const char *locale)
             return ( char * )locales[0]->name;
         return sfstruse(sp);
     }
-    if (!ast.locale.serial++)
-    {
+    if (!ast.locale.serial++) {
         stropt(getenv("LC_OPTIONS"), options, sizeof(*options), setopt, NiL);
         initialized = 0;
     }
     if ((ast.locale.set & (AST_LC_debug | AST_LC_setlocale))
-        && !(ast.locale.set & AST_LC_internal))
-    {
+        && !(ast.locale.set & AST_LC_internal)) {
         header();
         sfprintf(sfstderr,
                  "locale user %17s %16s %16s %16s%s%s\n",
@@ -3468,20 +3380,14 @@ _ast_setlocale(int category, const char *locale)
                  initialized ? "" : " initial",
                  (ast.locale.set & AST_LC_setenv) ? " setenv" : "");
     }
-    if (ast.locale.set & AST_LC_setenv)
-    {
+    if (ast.locale.set & AST_LC_setenv) {
         f = LC_setenv;
         p = *locale ? lcmake(locale) : ( Lc_t * )0;
-    }
-    else if (*locale)
-    {
+    } else if (*locale) {
         f = LC_setlocale;
         p = lcmake(locale);
-    }
-    else if (category == AST_LC_ALL)
-    {
-        if (!initialized)
-        {
+    } else if (category == AST_LC_ALL) {
+        if (!initialized) {
             char *u;
             char tmp[256];
 
@@ -3491,44 +3397,37 @@ _ast_setlocale(int category, const char *locale)
              */
 
             u = 0;
-            if ((s = getenv("LANG")) && *s)
-            {
+            if ((s = getenv("LANG")) && *s) {
                 if (streq(s, local)
                     && (u || (u = native_locale(locale, tmp, sizeof(tmp)))))
                     s = u;
                 lang = lcmake(s);
-            }
-            else
+            } else
                 lang = 0;
-            if ((s = getenv("LC_ALL")) && *s)
-            {
+            if ((s = getenv("LC_ALL")) && *s) {
                 if (streq(s, local)
                     && (u || (u = native_locale(locale, tmp, sizeof(tmp)))))
                     s = u;
                 lc_all = lcmake(s);
-            }
-            else
+            } else
                 lc_all = 0;
             for (i = 1; i < AST_LC_COUNT; i++)
                 if (lc_categories[i].flags & LC_setlocale)
                     /* explicitly set by setlocale() */;
-                else if ((s = getenv(lc_categories[i].name)) && *s)
-                {
+                else if ((s = getenv(lc_categories[i].name)) && *s) {
                     if (streq(s, local)
                         && (u
                             || (u = native_locale(locale, tmp, sizeof(tmp)))))
                         s = u;
                     lc_categories[i].prev = lcmake(s);
-                }
-                else
+                } else
                     lc_categories[i].prev = 0;
             for (i = 1; i < AST_LC_COUNT; i++)
                 if (!single(i,
                             lc_all && !(lc_categories[i].flags & LC_setlocale)
                             ? lc_all
                             : lc_categories[i].prev,
-                            0))
-                {
+                            0)) {
                     while (i--)
                         single(i, NiL, 0);
                     return 0;
@@ -3546,49 +3445,39 @@ _ast_setlocale(int category, const char *locale)
             initialized = 1;
         }
         goto compose;
-    }
-    else if (category == AST_LC_LANG || !(p = lc_categories[category].prev))
-    {
+    } else if (category == AST_LC_LANG
+               || !(p = lc_categories[category].prev)) {
         f = 0;
         p = lcmake("C");
-    }
-    else
+    } else
         f = 0;
-    if (category == AST_LC_LANG)
-    {
-        if (lang != p)
-        {
+    if (category == AST_LC_LANG) {
+        if (lang != p) {
             lang = p;
             if (!lc_all)
                 for (i = 1; i < AST_LC_COUNT; i++)
-                    if (!single(i, lc_categories[i].prev, 0))
-                    {
+                    if (!single(i, lc_categories[i].prev, 0)) {
                         while (i--)
                             single(i, NiL, 0);
                         return 0;
                     }
         }
-    }
-    else if (category != AST_LC_ALL)
-    {
+    } else if (category != AST_LC_ALL) {
         if (f || !lc_all)
             return single(category, p, f);
         if (p && !(ast.locale.set & AST_LC_internal))
             lc_categories[category].prev = p;
         return ( char * )locales[category]->name;
-    }
-    else if (composite(locale, 0) < 0)
+    } else if (composite(locale, 0) < 0)
         return 0;
-    else if (lc_all != p)
-    {
+    else if (lc_all != p) {
         lc_all = p;
         for (i = 1; i < AST_LC_COUNT; i++)
             if (!single(i,
                         lc_all && !(lc_categories[i].flags & LC_setlocale)
                         ? lc_all
                         : lc_categories[i].prev,
-                        0))
-            {
+                        0)) {
                 while (i--)
                     single(i, NiL, 0);
                 return 0;

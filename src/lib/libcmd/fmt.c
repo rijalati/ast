@@ -88,31 +88,26 @@ outline(Fmt_t *fp)
     *fp->outp = 0;
     while (*cp++ == ' ')
         n++;
-    if (n >= TABSZ)
-    {
+    if (n >= TABSZ) {
         n /= TABSZ;
         cp = &fp->outbuf[TABSZ * n];
         while (n--)
             *--cp = '\t';
-    }
-    else
+    } else
         cp = fp->outbuf;
     fp->nwords = 0;
     if (!isoption(fp, 'o'))
         sfputr(fp->out, cp, '\n');
-    else if (*cp)
-    {
+    else if (*cp) {
         n = fp->indent;
-        if (*cp != '[')
-        {
+        if (*cp != '[') {
             if (*cp == ' ')
                 cp++;
             n += INDENT;
         }
         while (n--)
             sfputc(fp->out, ' ');
-        if (fp->quote)
-        {
+        if (fp->quote) {
             if ((d = (fp->outp - cp)) <= 0)
                 c = 0;
             else if ((c = fp->outp[-1]) == 'n' && d > 1
@@ -122,11 +117,9 @@ outline(Fmt_t *fp)
                      "\"%s%s\"\n",
                      cp,
                      c == ']' || c == '{' || c == '}' ? "" : " ");
-        }
-        else
+        } else
             sfputr(fp->out, cp, '\n');
-        if (fp->nextdent)
-        {
+        if (fp->nextdent) {
             fp->indent += fp->nextdent;
             fp->endbuf -= fp->nextdent;
             fp->nextdent = 0;
@@ -154,8 +147,7 @@ split(Fmt_t *fp, char *buf, int splice)
      * preserve blank lines
      */
 
-    if ((*ep == 0 || *buf == '.') && !isoption(fp, 'o'))
-    {
+    if ((*ep == 0 || *buf == '.') && !isoption(fp, 'o')) {
         if (*ep)
             prefix = strlen(buf);
         outline(fp);
@@ -168,15 +160,13 @@ split(Fmt_t *fp, char *buf, int splice)
         outline(fp);
     if (!fp->outp || prefix < fp->prefix)
         fp->prefix = prefix;
-    while (c)
-    {
+    while (c) {
         cp = ep;
         while (*ep == ' ')
             ep++;
         if (cp != ep && isoption(fp, 'u'))
             cp = ep - 1;
-        while (c = *ep)
-        {
+        while (c = *ep) {
             if (c == ' ')
                 break;
             ep++;
@@ -189,8 +179,7 @@ split(Fmt_t *fp, char *buf, int splice)
                 ep++;
         }
         n = (ep - cp);
-        if (n && isoption(fp, 'o'))
-        {
+        if (n && isoption(fp, 'o')) {
             for (qp = cp; qp < ep; qp++)
                 if (*qp == '\\')
                     qp++;
@@ -202,8 +191,7 @@ split(Fmt_t *fp, char *buf, int splice)
         if (fp->nwords > 0 && &fp->outp[n] >= fp->endbuf && !fp->retain && !q)
             outline(fp);
     skip:
-        if (fp->nwords == 0)
-        {
+        if (fp->nwords == 0) {
             if (fp->prefix)
                 memset(fp->outbuf, ' ', fp->prefix);
             fp->outp = &fp->outbuf[fp->prefix];
@@ -217,8 +205,7 @@ split(Fmt_t *fp, char *buf, int splice)
     }
     if (isoption(fp, 's') || *buf == 0)
         outline(fp);
-    else if (fp->outp)
-    {
+    else if (fp->outp) {
         /*
          * two spaces at ends of sentences
          */
@@ -253,16 +240,12 @@ dofmt(Fmt_t *fp)
            || (cp = sfgetr(fp->in, '\n', 0)) && !(splice = 0)
               && (lp = cp + sfvalue(fp->in) - 1)
            || (cp = sfgetr(fp->in, '\n', SF_LASTR)) && (splice = 1)
-              && (lp = cp + sfvalue(fp->in)))
-    {
-        if (isoption(fp, 'o'))
-        {
-            if (!isoption(fp, 'i'))
-            {
+              && (lp = cp + sfvalue(fp->in))) {
+        if (isoption(fp, 'o')) {
+            if (!isoption(fp, 'i')) {
                 setoption(fp, 'i');
                 b = 0;
-                while (cp < lp)
-                {
+                while (cp < lp) {
                     if (*cp == ' ')
                         b += 1;
                     else if (*cp == '\t')
@@ -272,23 +255,18 @@ dofmt(Fmt_t *fp)
                     cp++;
                 }
                 fp->indent = roundof(b, INDENT);
-            }
-            else
+            } else
                 while (cp < lp && (*cp == ' ' || *cp == '\t'))
                     cp++;
-            if (!isoption(fp, 'q') && cp < lp)
-            {
+            if (!isoption(fp, 'q') && cp < lp) {
                 setoption(fp, 'q');
-                if (*cp == '"')
-                {
+                if (*cp == '"') {
                     ep = lp;
                     while (--ep > cp)
-                        if (*ep == '"')
-                        {
+                        if (*ep == '"') {
                             fp->quote = 1;
                             break;
-                        }
-                        else if (*ep != ' ' && *ep != '\t')
+                        } else if (*ep != ' ' && *ep != '\t')
                             break;
                 }
             }
@@ -296,130 +274,94 @@ dofmt(Fmt_t *fp)
     again:
         dp = buf;
         ep = 0;
-        for (b = 1;; b = 0)
-        {
-            if (cp >= lp)
-            {
+        for (b = 1;; b = 0) {
+            if (cp >= lp) {
                 cp = 0;
                 break;
             }
             c = *cp++;
-            if (isoption(fp, 'o'))
-            {
-                if (c == '\\')
-                {
+            if (isoption(fp, 'o')) {
+                if (c == '\\') {
                     x = 0;
                     c = ' ';
                     cp--;
-                    while (cp < lp)
-                    {
-                        if (*cp == '\\')
-                        {
+                    while (cp < lp) {
+                        if (*cp == '\\') {
                             cp++;
-                            if ((lp - cp) < 1)
-                            {
+                            if ((lp - cp) < 1) {
                                 c = '\\';
                                 break;
                             }
-                            if (*cp == 'n')
-                            {
+                            if (*cp == 'n') {
                                 cp++;
                                 c = '\n';
-                                if ((lp - cp) > 2)
-                                {
+                                if ((lp - cp) > 2) {
                                     if (*cp == ']'
-                                        || *cp == '@' && *(cp + 1) == '(')
-                                    {
+                                        || *cp == '@' && *(cp + 1) == '(') {
                                         *dp++ = '\\';
                                         *dp++ = 'n';
                                         c = *cp++;
                                         break;
                                     }
-                                    if (*cp == '\\' && *(cp + 1) == 'n')
-                                    {
+                                    if (*cp == '\\' && *(cp + 1) == 'n') {
                                         cp += 2;
                                         *dp++ = '\n';
                                         break;
                                     }
                                 }
-                            }
-                            else if (*cp == 't' || *cp == ' ')
-                            {
+                            } else if (*cp == 't' || *cp == ' ') {
                                 cp++;
                                 x = 1;
                                 c = ' ';
-                            }
-                            else
-                            {
+                            } else {
                                 if (x && dp != buf && *(dp - 1) != ' ')
                                     *dp++ = ' ';
                                 *dp++ = '\\';
                                 c = *cp++;
                                 break;
                             }
-                        }
-                        else if (*cp == ' ' || *cp == '\t')
-                        {
+                        } else if (*cp == ' ' || *cp == '\t') {
                             cp++;
                             c = ' ';
                             x = 1;
-                        }
-                        else
-                        {
+                        } else {
                             if (x && c != '\n' && dp != buf
                                 && *(dp - 1) != ' ')
                                 *dp++ = ' ';
                             break;
                         }
                     }
-                    if (c == '\n')
-                    {
+                    if (c == '\n') {
                         c = 0;
                         goto flush;
                     }
                     if (c == ' ' && (dp == buf || *(dp - 1) == ' '))
                         continue;
-                }
-                else if (c == '"')
-                {
-                    if (b || cp >= lp)
-                    {
+                } else if (c == '"') {
+                    if (b || cp >= lp) {
                         if (fp->quote)
                             continue;
                         fp->section = 0;
                     }
-                }
-                else if (c == '\a')
-                {
+                } else if (c == '\a') {
                     *dp++ = '\\';
                     c = 'a';
-                }
-                else if (c == '\b')
-                {
+                } else if (c == '\b') {
                     *dp++ = '\\';
                     c = 'b';
-                }
-                else if (c == '\f')
-                {
+                } else if (c == '\f') {
                     *dp++ = '\\';
                     c = 'f';
-                }
-                else if (c == '\v')
-                {
+                } else if (c == '\v') {
                     *dp++ = '\\';
                     c = 'v';
-                }
-                else if (c == ']'
-                         && (cp >= lp
-                             || *cp != ':' && *cp != '#' && *cp != '!'))
-                {
-                    if (cp < lp && *cp == ']')
-                    {
+                } else if (c == ']'
+                           && (cp >= lp
+                               || *cp != ':' && *cp != '#' && *cp != '!')) {
+                    if (cp < lp && *cp == ']') {
                         cp++;
                         *dp++ = c;
-                    }
-                    else
-                    {
+                    } else {
                         fp->section = 1;
                         fp->retain = 0;
                     flush:
@@ -429,32 +371,24 @@ dofmt(Fmt_t *fp)
                         outline(fp);
                         goto again;
                     }
-                }
-                else if (fp->section)
-                {
-                    if (c == '[')
-                    {
+                } else if (fp->section) {
+                    if (c == '[') {
                         if (b)
                             fp->retain = 1;
-                        else
-                        {
+                        else {
                             cp--;
                             c = 0;
                             goto flush;
                         }
                         fp->section = 0;
-                    }
-                    else if (c == '{')
-                    {
+                    } else if (c == '{') {
                         x = 1;
-                        for (tp = cp; tp < lp; tp++)
-                        {
+                        for (tp = cp; tp < lp; tp++) {
                             if (*tp == '[' || *tp == '\n')
                                 break;
                             if (*tp == ' ' || *tp == '\t' || *tp == '"')
                                 continue;
-                            if (*tp == '\\' && (lp - tp) > 1)
-                            {
+                            if (*tp == '\\' && (lp - tp) > 1) {
                                 if (*++tp == 'n')
                                     break;
                                 if (*tp == 't' || *tp == '\n')
@@ -463,44 +397,31 @@ dofmt(Fmt_t *fp)
                             x = 0;
                             break;
                         }
-                        if (x)
-                        {
+                        if (x) {
                             if (fp->endbuf
                                 > (fp->outbuf + fp->indent + 2 * INDENT))
                                 fp->nextdent = 2 * INDENT;
                             goto flush;
-                        }
-                        else
+                        } else
                             fp->section = 0;
-                    }
-                    else if (c == '}')
-                    {
-                        if (fp->indent && (b || *(cp - 2) != 'f'))
-                        {
-                            if (b)
-                            {
+                    } else if (c == '}') {
+                        if (fp->indent && (b || *(cp - 2) != 'f')) {
+                            if (b) {
                                 fp->indent -= 2 * INDENT;
                                 fp->endbuf += 2 * INDENT;
-                            }
-                            else
-                            {
+                            } else {
                                 cp--;
                                 c = 0;
                             }
                             goto flush;
-                        }
-                        else
+                        } else
                             fp->section = 0;
-                    }
-                    else if (c == ' ' || c == '\t')
+                    } else if (c == ' ' || c == '\t')
                         continue;
                     else
                         fp->section = 0;
-                }
-                else if (c == '?' && (cp >= lp || *cp != '?'))
-                {
-                    if (fp->retain)
-                    {
+                } else if (c == '?' && (cp >= lp || *cp != '?')) {
+                    if (fp->retain) {
                         cp--;
                         while (cp < lp && *cp != ' ' && *cp != '\t'
                                && *cp != ']' && dp < &buf[sizeof(buf) - 3])
@@ -516,23 +437,17 @@ dofmt(Fmt_t *fp)
                             outline(fp);
                         continue;
                     }
-                }
-                else if (c == ' ' || c == '\t')
+                } else if (c == ' ' || c == '\t')
                     for (c = ' '; *cp == ' ' || *cp == '\t'; cp++)
                         ;
-            }
-            else if (c == '\b')
-            {
-                if (dp > buf)
-                {
+            } else if (c == '\b') {
+                if (dp > buf) {
                     dp--;
                     if (ep)
                         ep--;
                 }
                 continue;
-            }
-            else if (c == '\t')
-            {
+            } else if (c == '\t') {
                 /*
                  * expand tabs
                  */
@@ -540,23 +455,19 @@ dofmt(Fmt_t *fp)
                 if (!ep)
                     ep = dp;
                 c = isoption(fp, 'o') ? 1 : TABSZ - (dp - buf) % TABSZ;
-                if (dp >= &buf[sizeof(buf) - c - 3])
-                {
+                if (dp >= &buf[sizeof(buf) - c - 3]) {
                     cp--;
                     break;
                 }
                 while (c-- > 0)
                     *dp++ = ' ';
                 continue;
-            }
-            else if (!isprint(c))
+            } else if (!isprint(c))
                 continue;
-            if (dp >= &buf[sizeof(buf) - 3])
-            {
+            if (dp >= &buf[sizeof(buf) - 3]) {
                 tp = dp;
                 while (--tp > buf)
-                    if (isspace(*tp))
-                    {
+                    if (isspace(*tp)) {
                         cp -= dp - tp;
                         dp = tp;
                         break;
@@ -600,10 +511,8 @@ b_fmt(int argc, char **argv, Shbltin_t *context)
     fmt.retain = 0;
     fmt.section = 1;
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (n = optget(argv, usage))
-        {
+    for (;;) {
+        switch (n = optget(argv, usage)) {
         case 'c':
         case 'o':
         case 's':
@@ -633,12 +542,10 @@ b_fmt(int argc, char **argv, Shbltin_t *context)
         clroption(&fmt, 'u');
     if (cp = *argv)
         argv++;
-    do
-    {
+    do {
         if (!cp || streq(cp, "-"))
             fmt.in = sfstdin;
-        else if (!(fmt.in = sfopen(NiL, cp, "r")))
-        {
+        else if (!(fmt.in = sfopen(NiL, cp, "r"))) {
             error(ERROR_system(0), "%s: cannot open", cp);
             error_info.errors = 1;
             continue;

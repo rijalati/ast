@@ -35,15 +35,13 @@
 int
 astintercept(Shbltin_t *call, int set)
 {
-    if (call->shgetenv)
-    {
+    if (call->shgetenv) {
         if (set)
             intercepts.intercept_getenv = call->shgetenv;
         else
             intercepts.intercept_getenv = 0;
     }
-    if (call->shsetenv)
-    {
+    if (call->shsetenv) {
         if (set)
             intercepts.intercept_setenviron = call->shsetenv;
         else

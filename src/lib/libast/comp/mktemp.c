@@ -49,20 +49,16 @@ temp(char *buf, int *fdp)
     size_t len;
 
     len = strlen(buf);
-    if (s = strrchr(buf, '/'))
-    {
+    if (s = strrchr(buf, '/')) {
         *s++ = 0;
         d = buf;
-    }
-    else
-    {
+    } else {
         s = buf;
         d = "";
     }
     if ((n = strlen(s)) < 6 || strcmp(s + n - 6, "XXXXXX"))
         *buf = 0;
-    else
-    {
+    else {
         *(s + n - 6) = 0;
         if (!pathtemp(buf, len, d, s, fdp))
             *buf = 0;

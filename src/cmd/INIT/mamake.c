@@ -312,20 +312,15 @@ report(int level, char *text, char *item, unsigned long stamp)
 {
     int i;
 
-    if (level >= state.debug)
-    {
+    if (level >= state.debug) {
         if (level)
             identify(stderr);
-        if (level < 0)
-        {
+        if (level < 0) {
             fprintf(stderr, "debug%d: ", level);
             for (i = 1; i < state.indent; i++)
                 fprintf(stderr, "  ");
-        }
-        else
-        {
-            if (state.sp && state.sp->line)
-            {
+        } else {
+            if (state.sp && state.sp->line) {
                 if (state.sp->file)
                     fprintf(stderr, "%s: ", state.sp->file);
                 fprintf(stderr, "%ld: ", state.sp->line);
@@ -356,8 +351,7 @@ dont(Rule_t *r, int code, int keepgoing)
     identify(stderr);
     if (!code)
         fprintf(stderr, "don't know how to make %s\n", r->name);
-    else
-    {
+    else {
         fprintf(stderr,
                 "*** exit code %d making %s%s\n",
                 code,
@@ -428,8 +422,7 @@ appendn(Buf_t *buf, char *str, int n)
     int m;
     int i;
 
-    if ((n + 1) >= (buf->end - buf->nxt))
-    {
+    if ((n + 1) >= (buf->end - buf->nxt)) {
         i = buf->nxt - buf->buf;
         m = (((buf->end - buf->buf) + n + CHUNK + 1) / CHUNK) * CHUNK;
         if (!(buf->buf = newof(buf->buf, char, m, 0)))
@@ -507,14 +500,11 @@ search(Dict_t *dict, char *name, void *value)
 
     root = dict->root;
     left = right = lroot = rroot = 0;
-    while (root)
-    {
+    while (root) {
         if (!(cmp = strcmp(name, root->name)))
             break;
-        else if (cmp < 0)
-        {
-            if (root->left && (cmp = strcmp(name, root->left->name)) <= 0)
-            {
+        else if (cmp < 0) {
+            if (root->left && (cmp = strcmp(name, root->left->name)) <= 0) {
                 ROTATE(root, left, right, t);
                 if (!cmp)
                     break;
@@ -526,11 +516,8 @@ search(Dict_t *dict, char *name, void *value)
             right = root;
             root = root->left;
             right->left = 0;
-        }
-        else
-        {
-            if (root->right && (cmp = strcmp(name, root->right->name)) >= 0)
-            {
+        } else {
+            if (root->right && (cmp = strcmp(name, root->right->name)) >= 0) {
                 ROTATE(root, right, left, t);
                 if (!cmp)
                     break;
@@ -544,8 +531,7 @@ search(Dict_t *dict, char *name, void *value)
             left->right = 0;
         }
     }
-    if (root)
-    {
+    if (root) {
         if (right)
             right->left = root->right;
         else
@@ -554,15 +540,12 @@ search(Dict_t *dict, char *name, void *value)
             left->right = root->left;
         else
             lroot = root->left;
-    }
-    else if (value)
-    {
+    } else if (value) {
         if (!(root = newof(0, Dict_item_t, 1, strlen(name))))
             report(3, "out of space [dictionary]", name, ( unsigned long )0);
         strcpy(root->name, name);
     }
-    if (root)
-    {
+    if (root) {
         if (value)
             root->value = value;
         root->left = lroot;
@@ -570,13 +553,10 @@ search(Dict_t *dict, char *name, void *value)
         dict->root = root;
         return value ? ( void * )root->name : root->value;
     }
-    if (left)
-    {
+    if (left) {
         left->right = rroot;
         dict->root = lroot;
-    }
-    else if (right)
-    {
+    } else if (right) {
         right->left = lroot;
         dict->root = rroot;
     }
@@ -595,8 +575,7 @@ apply(Dict_t *dict,
 {
     Dict_item_t *right;
 
-    do
-    {
+    do {
         right = item->right;
         if (item->left && apply(dict, item->left, func, handle))
             return -1;
@@ -625,8 +604,7 @@ rule(char *name)
 {
     Rule_t *r;
 
-    if (!(r = ( Rule_t * )search(state.rules, name, NiL)))
-    {
+    if (!(r = ( Rule_t * )search(state.rules, name, NiL))) {
         if (!(r = newof(0, Rule_t, 1, 0)))
             report(3, "out of space [rule]", name, ( unsigned long )0);
         r->name = ( char * )search(state.rules, name, ( void * )r);
@@ -645,8 +623,7 @@ cons(Rule_t *r, Rule_t *p)
 
     for (x = r->prereqs; x && x->rule != p; x = x->next)
         ;
-    if (!x)
-    {
+    if (!x) {
         if (!(x = newof(0, List_t, 1, 0)))
             report(3, "out of space [list]", r->name, ( unsigned long )0);
         x->rule = p;
@@ -681,24 +658,20 @@ view(void)
     if ((s = ( char * )search(state.vars, "PWD", NiL)) && !stat(s, &ts)
         && ts.st_dev == st.st_dev && ts.st_ino == st.st_ino)
         state.pwd = s;
-    if (!state.pwd)
-    {
+    if (!state.pwd) {
         if (!getcwd(buf, sizeof(buf) - 1))
             report(3, "cannot determine PWD", NiL, ( unsigned long )0);
         state.pwd = duplicate(buf);
         search(state.vars, "PWD", state.pwd);
     }
-    if ((s = ( char * )search(state.vars, "VPATH", NiL)) && *s)
-    {
+    if ((s = ( char * )search(state.vars, "VPATH", NiL)) && *s) {
         zp = 0;
-        for (;;)
-        {
+        for (;;) {
             for (t = s; *t && *t != ':'; t++)
                 ;
             if (c = *t)
                 *t = 0;
-            if (!state.view)
-            {
+            if (!state.view) {
                 /*
                  * determine the viewpath offset
                  */
@@ -709,12 +682,10 @@ view(void)
                     report(3, "cannot stat", state.pwd, ( unsigned long )0);
                 if (ts.st_dev == st.st_dev && ts.st_ino == st.st_ino)
                     p = ".";
-                else
-                {
+                else {
                     p = state.pwd + strlen(state.pwd);
                     while (p > state.pwd)
-                        if (*--p == '/')
-                        {
+                        if (*--p == '/') {
                             if (p == state.pwd)
                                 report(3,
                                        ". not under VPATH",
@@ -728,8 +699,7 @@ view(void)
                                        ( unsigned long )0);
                             *p = '/';
                             if (ts.st_dev == st.st_dev
-                                && ts.st_ino == st.st_ino)
-                            {
+                                && ts.st_ino == st.st_ino) {
                                 p++;
                                 break;
                             }
@@ -773,10 +743,8 @@ cond(char *s)
     if (*s == '?')
         s++;
     n = 0;
-    for (;;)
-    {
-        switch (*s++)
-        {
+    for (;;) {
+        switch (*s++) {
         case 0:
             break;
         case '{':
@@ -814,10 +782,8 @@ substitute(Buf_t *buf, char *s)
     int a = 0;
     int i;
 
-    while (c = *s++)
-    {
-        if (c == '$' && *s == '{')
-        {
+    while (c = *s++) {
+        if (c == '$' && *s == '{') {
             b = s - 1;
             i = 1;
             for (n = *(t = ++s) == '-' ? 0 : '-';
@@ -827,15 +793,13 @@ substitute(Buf_t *buf, char *s)
                 if (!isalnum(c) && c != '_')
                     i = 0;
             *s = 0;
-            if (c == '[')
-            {
+            if (c == '[') {
                 append(buf, b);
                 *s = c;
                 continue;
             }
             v = ( char * )search(state.vars, t, NiL);
-            if ((c == ':' || c == '=') && (!v || c == ':' && !*v))
-            {
+            if ((c == ':' || c == '=') && (!v || c == ':' && !*v)) {
                 append(buf, b);
                 *s = c;
                 continue;
@@ -843,8 +807,7 @@ substitute(Buf_t *buf, char *s)
             if (t[0] == 'A' && t[1] == 'R' && t[2] == 0)
                 a = 1;
             *s = c;
-            if (c && c != '}')
-            {
+            if (c && c != '}') {
                 n = 1;
                 for (t = ++s; *s; s++)
                     if (*s == '{')
@@ -852,33 +815,25 @@ substitute(Buf_t *buf, char *s)
                     else if (*s == '}' && !--n)
                         break;
             }
-            switch (c)
-            {
+            switch (c) {
             case '?':
                 q = cond(t - 1);
-                if (v)
-                {
+                if (v) {
                     if (((q - t) != 1 || *t != '*') && strncmp(v, t, q - t))
                         v = 0;
-                }
-                else if (q == t)
+                } else if (q == t)
                     v = s;
                 t = cond(q);
-                if (v)
-                {
-                    if (t > q)
-                    {
+                if (v) {
+                    if (t > q) {
                         c = *t;
                         *t = 0;
                         substitute(buf, q + 1);
                         *t = c;
                     }
-                }
-                else
-                {
+                } else {
                     q = cond(t);
-                    if (q > t)
-                    {
+                    if (q > t) {
                         c = *q;
                         *q = 0;
                         substitute(buf, t + 1);
@@ -888,8 +843,7 @@ substitute(Buf_t *buf, char *s)
                 break;
             case '+':
             case '-':
-                if ((v == 0 || *v == 0) == (c == '-'))
-                {
+                if ((v == 0 || *v == 0) == (c == '-')) {
                     c = *s;
                     *s = 0;
                     substitute(buf, t);
@@ -902,12 +856,10 @@ substitute(Buf_t *buf, char *s)
             case 0:
             case '=':
             case '}':
-                if (v)
-                {
+                if (v) {
                     if (a && t[0] == 'm' && t[1] == 'a' && t[2] == 'm'
                         && t[3] == '_' && t[4] == 'l' && t[5] == 'i'
-                        && t[6] == 'b')
-                    {
+                        && t[6] == 'b') {
                         for (t = v; *t == ' '; t++)
                             ;
                         for (; *t && *t != ' '; t++)
@@ -919,12 +871,9 @@ substitute(Buf_t *buf, char *s)
                         substitute(buf, v);
                         if (t)
                             *t = ' ';
-                    }
-                    else
+                    } else
                         substitute(buf, v);
-                }
-                else if (i)
-                {
+                } else if (i) {
                     c = *s;
                     *s = 0;
                     append(buf, b);
@@ -935,8 +884,7 @@ substitute(Buf_t *buf, char *s)
             }
             if (*s)
                 s++;
-        }
-        else
+        } else
             add(buf, c);
     }
 }
@@ -965,8 +913,7 @@ status(Buf_t *buf, int off, char *path, struct stat *st)
 
     if (!stat(path, st))
         return path;
-    if (!(tmp = buf))
-    {
+    if (!(tmp = buf)) {
         tmp = buffer();
         off = 0;
     }
@@ -977,13 +924,11 @@ status(Buf_t *buf, int off, char *path, struct stat *st)
     append(tmp, ".exe");
     s = use(tmp);
     r = stat(s, st);
-    if (!buf)
-    {
+    if (!buf) {
         drop(tmp);
         s = path;
     }
-    if (r)
-    {
+    if (r) {
         if (off)
             s[off] = 0;
         s = 0;
@@ -1004,48 +949,37 @@ find(Buf_t *buf, char *file, struct stat *st)
     int c;
     int o;
 
-    if (s = status(buf, 0, file, st))
-    {
+    if (s = status(buf, 0, file, st)) {
         report(-3, s, "find", ( unsigned long )0);
         return s;
     }
-    if (vp = state.view)
-    {
+    if (vp = state.view) {
         node = 0;
-        if (*file == '/')
-        {
-            do
-            {
-                if (!strncmp(file, vp->dir, vp->node))
-                {
+        if (*file == '/') {
+            do {
+                if (!strncmp(file, vp->dir, vp->node)) {
                     file += vp->node;
                     node = 2;
                     break;
                 }
             } while (vp = vp->next);
-        }
-        else
+        } else
             vp = vp->next;
         if (vp)
-            do
-            {
-                if (node)
-                {
+            do {
+                if (node) {
                     c = vp->dir[vp->node];
                     vp->dir[vp->node] = 0;
                     append(buf, vp->dir);
                     vp->dir[vp->node] = c;
-                }
-                else
-                {
+                } else {
                     append(buf, vp->dir);
                     append(buf, "/");
                 }
                 append(buf, file);
                 o = get(buf);
                 s = use(buf);
-                if (s = status(buf, o, s, st))
-                {
+                if (s = status(buf, o, s, st)) {
                     report(-3, s, "find", ( unsigned long )0);
                     return s;
                 }
@@ -1066,8 +1000,7 @@ bindfile(Rule_t *r)
     struct stat st;
 
     buf = buffer();
-    if (s = find(buf, r->name, &st))
-    {
+    if (s = find(buf, r->name, &st)) {
         if (s != r->name)
             r->path = duplicate(s);
         r->time = st.st_mtime;
@@ -1120,24 +1053,18 @@ push(char *file, Stdio_t *fp, int flags)
         state.sp->file = "pipeline";
     else if (flags & STREAM_PIPE)
         report(3, "pipe error", file, ( unsigned long )0);
-    else if (!file || !strcmp(file, "-") || !strcmp(file, "/dev/stdin"))
-    {
+    else if (!file || !strcmp(file, "-") || !strcmp(file, "/dev/stdin")) {
         flags |= STREAM_KEEP;
         state.sp->file = "/dev/stdin";
         state.sp->fp = stdin;
-    }
-    else
-    {
+    } else {
         buf = buffer();
-        if (path = find(buf, file, &st))
-        {
+        if (path = find(buf, file, &st)) {
             if (!(state.sp->fp = fopen(path, "r")))
                 report(3, "cannot read", path, ( unsigned long )0);
             state.sp->file = duplicate(path);
             drop(buf);
-        }
-        else
-        {
+        } else {
             drop(buf);
             pop();
             if (flags & STREAM_MUST)
@@ -1191,13 +1118,10 @@ execute(char *s)
     buf = buffer();
     append(buf, state.shell);
     append(buf, " -c '");
-    while (c = *s++)
-    {
-        if (c == '\'')
-        {
+    while (c = *s++) {
+        if (c == '\'') {
             add(buf, c);
-            for (s--; *s == c; s++)
-            {
+            for (s--; *s == c; s++) {
                 add(buf, '\\');
                 add(buf, c);
             }
@@ -1233,42 +1157,34 @@ run(Rule_t *r, char *s)
     if (r->flags & RULE_error)
         return r->time;
     buf = buffer();
-    if (!strncmp(s, "mamake -r ", 10))
-    {
+    if (!strncmp(s, "mamake -r ", 10)) {
         state.verified = 1;
         x = !state.never;
-    }
-    else
+    } else
         x = state.exec;
     if (x)
         append(buf, "trap - 1 2 3 15\nPATH=.:$PATH\nset -x\n");
-    if (state.view)
-    {
-        do
-        {
+    if (state.view) {
+        do {
             for (; delimiter(*s); s++)
                 add(buf, *s);
             for (t = s; *s && !delimiter(*s); s++)
                 ;
             c = *s;
             *s = 0;
-            if (c == '=')
-            {
+            if (c == '=') {
                 append(buf, t);
                 continue;
             }
             if ((q = ( Rule_t * )search(state.rules, t, NiL)) && q->path
                 && !(q->flags & RULE_generated))
                 append(buf, q->path);
-            else
-            {
+            else {
                 append(buf, t);
-                if (*t == '-' && *(t + 1) == 'I' && (*(t + 2) || c))
-                {
+                if (*t == '-' && *(t + 1) == 'I' && (*(t + 2) || c)) {
                     if (*(t + 2))
                         i = 2;
-                    else
-                    {
+                    else {
                         for (i = 3; *(t + i) == ' ' || *(t + i) == '\t'; i++)
                             ;
                         *s = c;
@@ -1280,17 +1196,14 @@ run(Rule_t *r, char *s)
                         *s = 0;
                         append(buf, t + 2);
                     }
-                    if (*(t + i) && *(t + i) != '/')
-                    {
+                    if (*(t + i) && *(t + i) != '/') {
                         v = state.view;
-                        while (v = v->next)
-                        {
+                        while (v = v->next) {
                             add(buf, ' ');
                             for (j = 0; j < i; j++)
                                 add(buf, *(t + j));
                             append(buf, v->dir);
-                            if (*(t + i) != '.' || *(t + i + 1))
-                            {
+                            if (*(t + i) != '.' || *(t + i + 1)) {
                                 add(buf, '/');
                                 append(buf, t + i);
                             }
@@ -1300,26 +1213,19 @@ run(Rule_t *r, char *s)
             }
         } while (*s = c);
         s = use(buf);
-    }
-    else if (x)
-    {
+    } else if (x) {
         append(buf, s);
         s = use(buf);
     }
-    if (x)
-    {
+    if (x) {
         if (c = execute(s))
             dont(r, c, state.keepgoing);
-        if (status(( Buf_t * )0, 0, r->name, &st))
-        {
+        if (status(( Buf_t * )0, 0, r->name, &st)) {
             r->time = st.st_mtime;
             r->flags |= RULE_exists;
-        }
-        else
+        } else
             r->time = NOW;
-    }
-    else
-    {
+    } else {
         fprintf(stdout, "%s\n", s);
         if (state.debug)
             fflush(stdout);
@@ -1354,14 +1260,12 @@ path(Buf_t *buf, char *s, int must)
         return x;
     if (!(p = ( char * )search(state.vars, "PATH", NiL)))
         report(3, "variable not defined", "PATH", ( unsigned long )0);
-    do
-    {
+    do {
         for (d = p; *p && *p != ':'; p++)
             ;
         c = *p;
         *p = 0;
-        if (*d && (*d != '.' || *(d + 1)))
-        {
+        if (*d && (*d != '.' || *(d + 1))) {
             append(buf, d);
             add(buf, '/');
         }
@@ -1420,8 +1324,7 @@ probe(void)
         add(buf, let[h & 0xf]);
     s = use(buf);
     h = stat(s, &st) ? ( unsigned long )0 : ( unsigned long )st.st_mtime;
-    if (h < q || !push(s, ( Stdio_t * )0, 0))
-    {
+    if (h < q || !push(s, ( Stdio_t * )0, 0)) {
         tmp = buffer();
         append(tmp, cmd);
         add(tmp, ' ');
@@ -1450,16 +1353,14 @@ attributes(Rule_t *r, char *s)
     char *t;
     int n;
 
-    for (;;)
-    {
+    for (;;) {
         for (; *s == ' '; s++)
             ;
         for (t = s; *s && *s != ' '; s++)
             ;
         if (!(n = s - t))
             break;
-        switch (*t)
-        {
+        switch (*t) {
         case 'd':
             if (n == 8 && !strncmp(t, "dontcare", n))
                 r->flags |= RULE_dontcare;
@@ -1501,13 +1402,11 @@ require(char *lib, int dontcare)
 
     if (dynamic < 0)
         dynamic = (s = search(state.vars, "mam_cc_L", NiL)) ? atoi(s) : 0;
-    if (!(r = search(state.vars, lib, NiL)))
-    {
+    if (!(r = search(state.vars, lib, NiL))) {
         buf = buffer();
         tmp = buffer();
         s = 0;
-        for (;;)
-        {
+        for (;;) {
             if (s)
                 append(buf, s);
             if (r = search(state.vars, "mam_cc_PREFIX_ARCHIVE", NiL))
@@ -1518,14 +1417,12 @@ require(char *lib, int dontcare)
             r = expand(tmp, use(buf));
             if (!stat(r, &st))
                 break;
-            if (s)
-            {
+            if (s) {
                 r = lib;
                 break;
             }
             s = "${INSTALLROOT}/lib/";
-            if (dynamic)
-            {
+            if (dynamic) {
                 append(buf, s);
                 if (r = search(state.vars, "mam_cc_PREFIX_SHARED", NiL))
                     append(buf, r);
@@ -1533,8 +1430,7 @@ require(char *lib, int dontcare)
                 if (r = search(state.vars, "mam_cc_SUFFIX_SHARED", NiL))
                     append(buf, r);
                 r = expand(tmp, use(buf));
-                if (!stat(r, &st))
-                {
+                if (!stat(r, &st)) {
                     r = lib;
                     break;
                 }
@@ -1545,37 +1441,30 @@ require(char *lib, int dontcare)
         search(state.vars, lib, r);
         append(tmp, lib + 2);
         append(tmp, ".req");
-        if (!(f = fopen(use(tmp), "r")))
-        {
+        if (!(f = fopen(use(tmp), "r"))) {
             append(tmp, "${INSTALLROOT}/lib/lib/");
             append(tmp, lib + 2);
             f = fopen(expand(buf, use(tmp)), "r");
         }
-        if (f)
-        {
-            for (;;)
-            {
+        if (f) {
+            for (;;) {
                 while ((c = fgetc(f)) == ' ' || c == '\t' || c == '\n')
                     ;
                 if (c == EOF)
                     break;
-                do
-                {
+                do {
                     add(tmp, c);
                 } while ((c = fgetc(f)) != EOF && c != ' ' && c != '\t'
                          && c != '\n');
                 s = use(tmp);
-                if (s[0] && (s[0] != '-' || s[1]))
-                {
+                if (s[0] && (s[0] != '-' || s[1])) {
                     add(buf, ' ');
                     append(buf, require(s, 0));
                 }
             }
             fclose(f);
             r = use(buf);
-        }
-        else if (dontcare)
-        {
+        } else if (dontcare) {
             append(tmp, "set -\n");
             append(tmp, "cd /tmp\n");
             append(tmp, "echo 'int main(){return 0;}' > x.${!-$$}.c\n");
@@ -1619,18 +1508,15 @@ make(Rule_t *r)
     r->making++;
     if (r->flags & RULE_active)
         state.active++;
-    if (*r->name)
-    {
+    if (*r->name) {
         z = bindfile(r);
         state.indent++;
         report(-1, r->name, "make", r->time);
-    }
-    else
+    } else
         z = 0;
     buf = buffer();
     cmd = 0;
-    while (s = input())
-    {
+    while (s = input()) {
         for (; *s == ' '; s++)
             ;
         for (; isdigit(*s); s++)
@@ -1639,8 +1525,7 @@ make(Rule_t *r)
             ;
         for (u = s; *s && *s != ' '; s++)
             ;
-        if (*s)
-        {
+        if (*s) {
             for (*s++ = 0; *s == ' '; s++)
                 ;
             for (t = s; *s && *s != ' '; s++)
@@ -1649,26 +1534,22 @@ make(Rule_t *r)
                 for (*s++ = 0; *s == ' '; s++)
                     ;
             v = s;
-        }
-        else
+        } else
             t = v = s;
-        switch (KEY(u[0], u[1], u[2], u[3]))
-        {
+        switch (KEY(u[0], u[1], u[2], u[3])) {
         case KEY('b', 'i', 'n', 'd'):
             if ((t[0] == '-' || t[0] == '+') && t[1] == 'l'
                 && (s = require(t, !strcmp(v, "dontcare")))
                 && strncmp(r->name, "FEATURE/", 8)
                 && strcmp(r->name, "configure.h"))
-                for (;;)
-                {
+                for (;;) {
                     for (t = s; *s && *s != ' '; s++)
                         ;
                     if (*s)
                         *s = 0;
                     else
                         s = 0;
-                    if (*t)
-                    {
+                    if (*t) {
                         q = rule(expand(buf, t));
                         attributes(q, v);
                         x = bindfile(q);
@@ -1689,10 +1570,8 @@ make(Rule_t *r)
                 report(2, "improper done statement", t, ( unsigned long )0);
             attributes(r, v);
             if (cmd && state.active
-                && (state.force || r->time < z || !r->time && !z))
-            {
-                if (state.explain && !state.force)
-                {
+                && (state.force || r->time < z || !r->time && !z)) {
+                if (state.explain && !state.force) {
                     if (!r->time)
                         fprintf(stderr, "%s [not found]\n", r->name);
                     else
@@ -1715,14 +1594,12 @@ make(Rule_t *r)
             break;
         case KEY('e', 'x', 'e', 'c'):
             r->flags |= RULE_generated;
-            if (r->path)
-            {
+            if (r->path) {
                 free(r->path);
                 r->path = 0;
                 r->time = 0;
             }
-            if (state.active)
-            {
+            if (state.active) {
                 if (cmd)
                     add(cmd, '\n');
                 else
@@ -1732,8 +1609,7 @@ make(Rule_t *r)
             continue;
         case KEY('m', 'a', 'k', 'e'):
             q = rule(expand(buf, t));
-            if (!q->making)
-            {
+            if (!q->making) {
                 attributes(q, v);
                 x = make(q);
                 if (!(q->flags & RULE_ignore) && z < x)
@@ -1744,8 +1620,7 @@ make(Rule_t *r)
             continue;
         case KEY('p', 'r', 'e', 'v'):
             q = rule(expand(buf, t));
-            if (!q->making)
-            {
+            if (!q->making) {
                 if (!(q->flags & RULE_ignore) && z < q->time)
                     z = q->time;
                 if (q->flags & RULE_error)
@@ -1756,21 +1631,17 @@ make(Rule_t *r)
             }
             continue;
         case KEY('s', 'e', 't', 'v'):
-            if (!search(state.vars, t, NiL))
-            {
-                if (*v == '"')
-                {
+            if (!search(state.vars, t, NiL)) {
+                if (*v == '"') {
                     s = v + strlen(v) - 1;
-                    if (*s == '"')
-                    {
+                    if (*s == '"') {
                         *s = 0;
                         v++;
                     }
                 }
                 search(state.vars, t, duplicate(expand(buf, v)));
             }
-            if (!state.probed && t[0] == 'C' && t[1] == 'C' && !t[2])
-            {
+            if (!state.probed && t[0] == 'C' && t[1] == 'C' && !t[2]) {
                 state.probed = 1;
                 probe();
             }
@@ -1783,8 +1654,7 @@ make(Rule_t *r)
     drop(buf);
     if (cmd)
         drop(cmd);
-    if (*r->name)
-    {
+    if (*r->name) {
         report(-1, r->name, "done", z);
         state.indent--;
     }
@@ -1885,25 +1755,20 @@ scan(Dict_item_t *item, void *handle)
      * always make initializers
      */
 
-    if (initializer(r->name))
-    {
+    if (initializer(r->name)) {
         if (!(r->flags & RULE_made))
             update(r);
         return 0;
     }
     buf = buffer();
-    for (i = 0; i < elementsof(files); i++)
-    {
+    for (i = 0; i < elementsof(files); i++) {
         append(buf, r->name);
         add(buf, '/');
         append(buf, files[i]);
-        if (push(use(buf), ( Stdio_t * )0, 0))
-        {
-            while (s = input())
-            {
+        if (push(use(buf), ( Stdio_t * )0, 0)) {
+            while (s = input()) {
                 j = p = 0;
-                while (*s)
-                {
+                while (*s) {
                     for (k = 1; (i = *s) == ' ' || i == '\t' || i == '"'
                                 || i == '\'';
                          s++)
@@ -1923,20 +1788,15 @@ scan(Dict_item_t *item, void *handle)
                     if (!t[0])
                         k = 0;
                     else if ((t[0] == '-' || t[0] == '+') && t[1] == 'l'
-                             && t[2])
-                    {
+                             && t[2]) {
                         append(buf, "lib");
                         append(buf, t + 2);
                         t = use(buf);
-                    }
-                    else if (p)
-                    {
+                    } else if (p) {
                         if (t[0] == '+' && !t[1])
                             p = 2;
-                        else if (p == 1)
-                        {
-                            if (i != ':' || strncmp(s, "command", 7))
-                            {
+                        else if (p == 1) {
+                            if (i != ':' || strncmp(s, "command", 7)) {
                                 append(buf, "lib");
                                 append(buf, t);
                                 t = use(buf);
@@ -1945,32 +1805,25 @@ scan(Dict_item_t *item, void *handle)
                                 while (*s && (*s == ' ' || *s == '\t'))
                                     s++;
                         }
-                    }
-                    else if (i == ':')
-                    {
+                    } else if (i == ':') {
                         if (j != ':' || !isupper(*t))
                             k = 0;
-                        else if (!strcmp(t, "PACKAGE"))
-                        {
+                        else if (!strcmp(t, "PACKAGE")) {
                             p = 1;
                             k = 0;
-                        }
-                        else
+                        } else
                             for (u = t; *u; u++)
                                 if (isupper(*u))
                                     *u = tolower(*u);
-                                else if (!isalnum(*u))
-                                {
+                                else if (!isalnum(*u)) {
                                     k = 0;
                                     break;
                                 }
-                    }
-                    else if (t[0] != 'l' || t[1] != 'i' || t[2] != 'b')
+                    } else if (t[0] != 'l' || t[1] != 'i' || t[2] != 'b')
                         k = 0;
                     else
                         for (u = t + 3; *u; u++)
-                            if (!isalnum(*u))
-                            {
+                            if (!isalnum(*u)) {
                                 k = 0;
                                 break;
                             }
@@ -1979,8 +1832,7 @@ scan(Dict_item_t *item, void *handle)
                             && q != r
                             || *t++ == 'l' && *t++ == 'i' && *t++ == 'b' && *t
                                && (q = ( Rule_t * )search(state.leaf, t, NiL))
-                               && q != r))
-                    {
+                               && q != r)) {
                         for (t = w = r->name; *w; w++)
                             if (*w == '/')
                                 t = w + 1;
@@ -1999,11 +1851,9 @@ scan(Dict_item_t *item, void *handle)
             for (s = 0, w = r->name; *w; w++)
                 if (*w == '/')
                     s = w;
-            if (s)
-            {
+            if (s) {
                 if ((s - r->name) > 3 && *(s - 1) == 'b' && *(s - 2) == 'i'
-                    && *(s - 3) == 'l' && *(s - 4) != '/')
-                {
+                    && *(s - 3) == 'l' && *(s - 4) != '/') {
                     /*
                      * foolib : foo : libfoo
                      */
@@ -2021,20 +1871,17 @@ scan(Dict_item_t *item, void *handle)
                     if (q && q != r)
                         cons(r, q);
                     *(s - 3) = 'l';
-                }
-                else if (((s - r->name) != 3 || *(s - 1) != 'b'
-                          || *(s - 2) != 'i' || *(s - 3) != 'l')
-                         && (*(s + 1) != 'l' || *(s + 2) != 'i'
-                             || *(s + 3) != 'b'))
-                {
+                } else if (((s - r->name) != 3 || *(s - 1) != 'b'
+                            || *(s - 2) != 'i' || *(s - 3) != 'l')
+                           && (*(s + 1) != 'l' || *(s + 2) != 'i'
+                               || *(s + 3) != 'b')) {
                     /*
                      * huh/foobar : lib/libfoo
                      */
 
                     s++;
                     t = s + strlen(s);
-                    while (--t > s)
-                    {
+                    while (--t > s) {
                         append(buf, "lib/lib");
                         appendn(buf, s, t - s);
                         q = ( Rule_t * )search(state.leaf, use(buf), NiL);
@@ -2075,12 +1922,10 @@ active(Dict_item_t *item, void *handle)
 {
     Rule_t *r = ( Rule_t * )item->value;
 
-    if (r->flags & RULE_active)
-    {
+    if (r->flags & RULE_active) {
         if (r->leaf || search(state.leaf, r->name, NiL))
             state.active = 0;
-        else
-        {
+        else {
             add(state.opt, ' ');
             append(state.opt, r->name);
         }
@@ -2114,13 +1959,11 @@ recurse(char *pattern)
     append(buf, pattern);
     s = use(buf);
     push("recurse", popen(s, "r"), STREAM_PIPE);
-    while (s = input())
-    {
+    while (s = input()) {
         append(buf, s);
         add(buf, '/');
         append(buf, mamfile);
-        if (find(tmp, use(buf), &st))
-        {
+        if (find(tmp, use(buf), &st)) {
             r = rule(s);
             if (t = last(r->name, '/'))
                 t++;
@@ -2138,8 +1981,7 @@ recurse(char *pattern)
      * grab the non-leaf active targets
      */
 
-    if (!state.active)
-    {
+    if (!state.active) {
         state.active = 1;
         walk(state.rules, active, NiL);
     }
@@ -2184,10 +2026,8 @@ main(int argc, char **argv)
 
 #if _PACKAGE_ast
     error_info.id = state.id;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'e':
             append(state.opt, " -e");
             state.explain = 1;
@@ -2253,12 +2093,9 @@ main(int argc, char **argv)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
     argv += opt_info.index;
 #else
-    while ((s = *++argv) && *s == '-')
-    {
-        if (*(s + 1) == '-')
-        {
-            if (!*(s + 2))
-            {
+    while ((s = *++argv) && *s == '-') {
+        if (*(s + 1) == '-') {
+            if (!*(s + 2)) {
                 append(state.opt, " --");
                 argv++;
                 break;
@@ -2268,18 +2105,14 @@ main(int argc, char **argv)
             if (!strncmp(s, "debug-symbols", t - s)
                 && append(state.opt, " -G")
                 || !strncmp(s, "strip-symbols", t - s)
-                   && append(state.opt, " -S"))
-            {
-                if (*t)
-                {
+                   && append(state.opt, " -S")) {
+                if (*t) {
                     v = t + 1;
                     if (t > s && *(t - 1) == '+')
                         t--;
                     c = *t;
                     *t = 0;
-                }
-                else
-                {
+                } else {
                     c = 0;
                     v = "1";
                 }
@@ -2291,10 +2124,8 @@ main(int argc, char **argv)
             usage();
             break;
         }
-        for (;;)
-        {
-            switch (*++s)
-            {
+        for (;;) {
+            switch (*++s) {
             case 0:
                 break;
             case 'e':
@@ -2338,14 +2169,11 @@ main(int argc, char **argv)
             case 'C':
             case 'D':
                 t = s;
-                if (!*++s && !(s = *++argv))
-                {
+                if (!*++s && !(s = *++argv)) {
                     report(2, "option value expected", t, ( unsigned long )0);
                     usage();
-                }
-                else
-                    switch (*t)
-                    {
+                } else
+                    switch (*t) {
                     case 'f':
                         append(state.opt, " -f ");
                         append(state.opt, s);
@@ -2381,8 +2209,7 @@ main(int argc, char **argv)
 
     for (e = environ; s = *e; e++)
         for (t = s; *t; t++)
-            if (*t == '=')
-            {
+            if (*t == '=') {
                 *t = 0;
                 search(state.vars, s, t + 1);
                 *t = '=';
@@ -2393,11 +2220,9 @@ main(int argc, char **argv)
      * grab the command line targets and variable definitions
      */
 
-    while (s = *argv++)
-    {
+    while (s = *argv++) {
         for (t = s; *t; t++)
-            if (*t == '=')
-            {
+            if (*t == '=') {
                 v = t + 1;
                 if (t > s && *(t - 1) == '+')
                     t--;
@@ -2412,8 +2237,7 @@ main(int argc, char **argv)
                 *t = c;
                 break;
             }
-        if (!*t)
-        {
+        if (!*t) {
             /*
              * handle a few targets for nmake compatibility
              */

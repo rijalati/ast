@@ -130,8 +130,7 @@ fullGtU(UChar *block,
 
     k = nblock;
 
-    do
-    {
+    do {
 
         c1 = block[i1];
         c2 = block[i2];
@@ -222,12 +221,10 @@ simpleSort(EState *s, Int32 lo, Int32 hi, Int32 d)
         hp++;
     hp--;
 
-    for (; hp >= 0; hp--)
-    {
+    for (; hp >= 0; hp--) {
         h = incs[hp];
         i = lo + h;
-        while (True)
-        {
+        while (True) {
 
             /*-- copy 1 --*/
             if (i > hi)
@@ -235,8 +232,7 @@ simpleSort(EState *s, Int32 lo, Int32 hi, Int32 d)
             v = zptr[i];
             j = i;
             while (fullGtU(
-            block, quadrant, nblock, workDone, zptr[j - h] + d, v + d))
-            {
+            block, quadrant, nblock, workDone, zptr[j - h] + d, v + d)) {
                 zptr[j] = zptr[j - h];
                 j = j - h;
                 if (j <= (lo + h - 1))
@@ -251,8 +247,7 @@ simpleSort(EState *s, Int32 lo, Int32 hi, Int32 d)
             v = zptr[i];
             j = i;
             while (fullGtU(
-            block, quadrant, nblock, workDone, zptr[j - h] + d, v + d))
-            {
+            block, quadrant, nblock, workDone, zptr[j - h] + d, v + d)) {
                 zptr[j] = zptr[j - h];
                 j = j - h;
                 if (j <= (lo + h - 1))
@@ -267,8 +262,7 @@ simpleSort(EState *s, Int32 lo, Int32 hi, Int32 d)
             v = zptr[i];
             j = i;
             while (fullGtU(
-            block, quadrant, nblock, workDone, zptr[j - h] + d, v + d))
-            {
+            block, quadrant, nblock, workDone, zptr[j - h] + d, v + d)) {
                 zptr[j] = zptr[j - h];
                 j = j - h;
                 if (j <= (lo + h - 1))
@@ -303,8 +297,7 @@ simpleSort(EState *s, Int32 lo, Int32 hi, Int32 d)
 static void
 vswap(UInt32 *zptr, Int32 p1, Int32 p2, Int32 n)
 {
-    while (n > 0)
-    {
+    while (n > 0) {
         swap(zptr[p1], zptr[p2]);
         p1++;
         p2++;
@@ -316,14 +309,12 @@ static UChar
 med3(UChar a, UChar b, UChar c)
 {
     UChar t;
-    if (a > b)
-    {
+    if (a > b) {
         t = a;
         a = b;
         b = t;
     };
-    if (b > c)
-    {
+    if (b > c) {
         t = b;
         b = c;
         c = t;
@@ -389,15 +380,13 @@ qSort3(EState *s, Int32 loSt, Int32 hiSt, Int32 dSt)
     sp = 0;
     push(loSt, hiSt, dSt);
 
-    while (sp > 0)
-    {
+    while (sp > 0) {
 
         AssertH(sp < QSORT_STACK_SIZE, 1001);
 
         pop(lo, hi, d);
 
-        if (hi - lo < SMALL_THRESH || d > DEPTH_THRESH)
-        {
+        if (hi - lo < SMALL_THRESH || d > DEPTH_THRESH) {
             simpleSort(s, lo, hi, d);
             if (*workDone > workLimit && firstAttempt)
                 return;
@@ -411,15 +400,12 @@ qSort3(EState *s, Int32 loSt, Int32 hiSt, Int32 dSt)
         unLo = ltLo = lo;
         unHi = gtHi = hi;
 
-        while (True)
-        {
-            while (True)
-            {
+        while (True) {
+            while (True) {
                 if (unLo > unHi)
                     break;
                 n = (( Int32 )block[zptr[unLo] + d]) - med;
-                if (n == 0)
-                {
+                if (n == 0) {
                     swap(zptr[unLo], zptr[ltLo]);
                     ltLo++;
                     unLo++;
@@ -429,13 +415,11 @@ qSort3(EState *s, Int32 loSt, Int32 hiSt, Int32 dSt)
                     break;
                 unLo++;
             }
-            while (True)
-            {
+            while (True) {
                 if (unLo > unHi)
                     break;
                 n = (( Int32 )block[zptr[unHi] + d]) - med;
-                if (n == 0)
-                {
+                if (n == 0) {
                     swap(zptr[unHi], zptr[gtHi]);
                     gtHi--;
                     unHi--;
@@ -454,8 +438,7 @@ qSort3(EState *s, Int32 loSt, Int32 hiSt, Int32 dSt)
 
         AssertD(unHi == unLo - 1, "bad termination in qSort3");
 
-        if (gtHi < ltLo)
-        {
+        if (gtHi < ltLo) {
             push(lo, hi, d + 1);
             continue;
         }
@@ -516,8 +499,7 @@ sortMain(EState *s)
         quadrant[i] = 0;
 
 
-    if (nblock <= 4000)
-    {
+    if (nblock <= 4000) {
 
         /*--
            Use simpleSort(), since the full sorting mechanism
@@ -532,9 +514,7 @@ sortMain(EState *s)
         simpleSort(s, 0, nblock - 1, 0);
         if (s->verbosity >= 4)
             VPrintf0("        simpleSort done.\n");
-    }
-    else
-    {
+    } else {
 
         numQSorted = 0;
         for (i = 0; i <= 255; i++)
@@ -547,8 +527,7 @@ sortMain(EState *s)
             ftab[i] = 0;
 
         c1 = block[nblock - 1];
-        for (i = 0; i < nblock; i++)
-        {
+        for (i = 0; i < nblock; i++) {
             c2 = block[i];
             ftab[(c1 << 8) + c2]++;
             c1 = c2;
@@ -558,8 +537,7 @@ sortMain(EState *s)
             ftab[i] += ftab[i - 1];
 
         c1 = block[0];
-        for (i = 0; i < nblock - 1; i++)
-        {
+        for (i = 0; i < nblock - 1; i++) {
             c2 = block[i + 1];
             j = (c1 << 8) + c2;
             c1 = c2;
@@ -585,15 +563,12 @@ sortMain(EState *s)
             do
                 h = 3 * h + 1;
             while (h <= 256);
-            do
-            {
+            do {
                 h = h / 3;
-                for (i = h; i <= 255; i++)
-                {
+                for (i = h; i <= 255; i++) {
                     vv = runningOrder[i];
                     j = i;
-                    while (BIGFREQ(runningOrder[j - h]) > BIGFREQ(vv))
-                    {
+                    while (BIGFREQ(runningOrder[j - h]) > BIGFREQ(vv)) {
                         runningOrder[j] = runningOrder[j - h];
                         j = j - h;
                         if (j <= (h - 1))
@@ -609,8 +584,7 @@ sortMain(EState *s)
            The main sorting loop.
         --*/
 
-        for (i = 0; i <= 255; i++)
-        {
+        for (i = 0; i <= 255; i++) {
 
             /*--
                Process big buckets, starting with the least full.
@@ -628,17 +602,13 @@ sortMain(EState *s)
                completed many of the small buckets [ss, j], so
                we don't have to sort them at all.
             --*/
-            for (j = 0; j <= 255; j++)
-            {
-                if (j != ss)
-                {
+            for (j = 0; j <= 255; j++) {
+                if (j != ss) {
                     sb = (ss << 8) + j;
-                    if (!(ftab[sb] & SETMASK))
-                    {
+                    if (!(ftab[sb] & SETMASK)) {
                         Int32 lo = ftab[sb] & CLEARMASK;
                         Int32 hi = (ftab[sb + 1] & CLEARMASK) - 1;
-                        if (hi > lo)
-                        {
+                        if (hi > lo) {
                             if (s->verbosity >= 4)
                                 VPrintf4(
                                 "        qsort [0x%x, 0x%x]   done %d   this "
@@ -676,27 +646,23 @@ sortMain(EState *s)
                 get0 = ftab[ss << 8] & CLEARMASK;
                 put1 = hi;
                 get1 = (ftab[(ss + 1) << 8] & CLEARMASK) - 1;
-                while (get0 < put0)
-                {
+                while (get0 < put0) {
                     j = zptr[get0] - 1;
                     if (j < 0)
                         j += nblock;
                     c1 = block[j];
-                    if (c1 == ssc)
-                    {
+                    if (c1 == ssc) {
                         zptr[put0] = j;
                         put0++;
                     };
                     get0++;
                 }
-                while (get1 > put1)
-                {
+                while (get1 > put1) {
                     j = zptr[get1] - 1;
                     if (j < 0)
                         j += nblock;
                     c1 = block[j];
-                    if (c1 == ssc)
-                    {
+                    if (c1 == ssc) {
                         zptr[put1] = j;
                         put1--;
                     };
@@ -746,8 +712,7 @@ sortMain(EState *s)
             --*/
             bigDone[ss] = True;
 
-            if (i < 255)
-            {
+            if (i < 255) {
                 Int32 bbStart = ftab[ss << 8] & CLEARMASK;
                 Int32 bbSize = (ftab[(ss + 1) << 8] & CLEARMASK) - bbStart;
                 Int32 shifts = 0;
@@ -755,8 +720,7 @@ sortMain(EState *s)
                 while ((bbSize >> shifts) > 65534)
                     shifts++;
 
-                for (j = 0; j < bbSize; j++)
-                {
+                for (j = 0; j < bbSize; j++) {
                     Int32 a2update = zptr[bbStart + j];
                     UInt16 qVal = (UInt16)(j >> shifts);
                     quadrant[a2update] = qVal;
@@ -778,14 +742,12 @@ sortMain(EState *s)
 
             for (j = ftab[ss << 8] & CLEARMASK;
                  j < (ftab[(ss + 1) << 8] & CLEARMASK);
-                 j++)
-            {
+                 j++) {
                 k = zptr[j] - 1;
                 if (k < 0)
                     k += nblock;
                 c1 = block[k];
-                if (!bigDone[c1])
-                {
+                if (!bigDone[c1]) {
                     zptr[copy[c1]] = k;
                     copy[c1]++;
                 }
@@ -812,8 +774,7 @@ randomiseBlock(EState *s)
     for (i = 0; i < 256; i++)
         s->inUse[i] = False;
 
-    for (i = 0; i < s->nblock; i++)
-    {
+    for (i = 0; i < s->nblock; i++) {
         BZ_RAND_UPD_MASK;
         s->block[i] ^= BZ_RAND_MASK;
         s->inUse[s->block[i]] = True;
@@ -840,8 +801,7 @@ blockSort(EState *s)
                  s->nblock - 1,
                  ( float )(s->workDone) / ( float )(s->nblock - 1));
 
-    if (s->workDone > s->workLimit && s->firstAttempt)
-    {
+    if (s->workDone > s->workLimit && s->firstAttempt) {
         if (s->verbosity >= 2)
             VPrintf0("    sorting aborted; randomising block\n");
         randomiseBlock(s);
@@ -858,8 +818,7 @@ blockSort(EState *s)
 
     s->origPtr = -1;
     for (i = 0; i < s->nblock; i++)
-        if (s->zptr[i] == 0)
-        {
+        if (s->zptr[i] == 0) {
             s->origPtr = i;
             break;
         };

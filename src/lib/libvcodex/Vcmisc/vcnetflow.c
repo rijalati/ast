@@ -103,8 +103,7 @@ ssize_t sz;                                        /* data size			*/
 {
     ssize_t z;
 
-    if ((z = rc->dtsz + sz) > rc->dtbf)
-    {
+    if ((z = rc->dtsz + sz) > rc->dtbf) {
         z = ((z + 1024) / 1024) * 1024;
         if (!rc->data || rc->dtbf == 0)
             rc->data = ( Vcchar_t * )malloc(z);
@@ -137,8 +136,7 @@ Vcchar_t **epckt; /* to return good end of packet	*/
     if (dt > (enddt - V9_HEADER) || NETINT(dt) != V9_PACKET)
         return -1; /* corrupted data */
 
-    for (*epckt = dt, dt += V9_HEADER;; *epckt = dt)
-    {
+    for (*epckt = dt, dt += V9_HEADER;; *epckt = dt) {
         if (BADINT(dt, enddt) || GETINT(dt, id) == V9_PACKET)
             return 0;
         if (BADINT(dt, enddt) || GETINT(dt, sz) < 0)
@@ -151,8 +149,7 @@ Vcchar_t **epckt; /* to return good end of packet	*/
 
             if (id == V9_TEMPLATE) /* set sizes of data records */
             {
-                while (dt < edt)
-                { /* template id and element count */
+                while (dt < edt) { /* template id and element count */
                     if (BADINT(dt, edt) || GETINT(dt, id) < V9_DATA)
                         break;
                     if (BADINT(dt, edt) || GETINT(dt, n) < 0)
@@ -174,14 +171,12 @@ Vcchar_t **epckt; /* to return good end of packet	*/
             }
 
             dt = edt; /* skip to next flowset */
-        }
-        else /* end of flowsets. compute and return the zero-padding */
+        } else /* end of flowsets. compute and return the zero-padding */
         {
             if (id > 0)   /* will be a bad start for next parse */
                 return 0; /* but this one is ok */
 
-            for (z = 4, *epckt = dt;; z += 4, *epckt = dt)
-            {
+            for (z = 4, *epckt = dt;; z += 4, *epckt = dt) {
                 if (BADINT(dt, enddt) || GETINT(dt, id) != 0)
                     return z;
                 if (BADINT(dt, enddt) || GETINT(dt, sz) != 0)
@@ -217,8 +212,7 @@ Nflrcrd_t *rcrd; /* list of head data for all packets	*/
      */
     cnt = 0;
     fdt = rc->data;
-    for (erdt = (rdt = rcrd->data) + rcrd->dtsz; rdt < erdt; rdt += 6)
-    {
+    for (erdt = (rdt = rcrd->data) + rcrd->dtsz; rdt < erdt; rdt += 6) {
         if (NETINT(rdt) != rc->id)
             continue;
         fsz = NETINT(rdt + 2) - 4; /* size of data flowset */
@@ -237,8 +231,7 @@ Nflrcrd_t *rcrd; /* list of head data for all packets	*/
 
     /* remove zero-paddings and code their lengths in header */
     fdt = cdt = rc->data;
-    for (erdt = (rdt = rcrd->data) + rcrd->dtsz; rdt < erdt; rdt += 6)
-    {
+    for (erdt = (rdt = rcrd->data) + rcrd->dtsz; rdt < erdt; rdt += 6) {
         if (NETINT(rdt) != rc->id)
             continue;
         fsz = NETINT(rdt + 2) - 4; /* size of data flowset */
@@ -276,8 +269,7 @@ Void_t **out;
     nfl = vcgetmtdata(vc, Netflow_t *);
     memset(&rcrd, 0, sizeof(rcrd));
     for (npckt = 0, enddt = (dt = ( Vcchar_t * )data) + size; dt < enddt;
-         dt = epckt)
-    { /* make sure this is a well-defined packet */
+         dt = epckt) { /* make sure this is a well-defined packet */
         if ((sz = v9whole(nfl, dt, enddt, &epckt)) < 0)
             break; /**/
         DEBUG_COUNT(pcktcnt);
@@ -297,8 +289,7 @@ Void_t **out;
             goto done;
 
         pad[0] = pad[1] = 0; /* process flowset data */
-        for (dt += V9_HEADER; dt < epckt; dt += sz - 4)
-        {
+        for (dt += V9_HEADER; dt < epckt; dt += sz - 4) {
             GETINT(dt, id);
             GETINT(dt, sz);
             if (id == 0 && sz == 0)
@@ -329,8 +320,7 @@ Void_t **out;
 
     whole = V9WHOLE(npckt) ? V9_WHOLE : 0;
     sz = 0; /* compute buffer size */
-    for (rc = dtfirst(nfl->rcdt); rc; rc = dtnext(nfl->rcdt, rc))
-    {
+    for (rc = dtfirst(nfl->rcdt); rc; rc = dtnext(nfl->rcdt, rc)) {
         if (rc->id >= V9_DATA) /* remove padding as needed */
             v9padding(rc, &rcrd);
 
@@ -338,8 +328,7 @@ Void_t **out;
         {
             rc->cdsz = rc->dtsz;
             rc->code = rc->data;
-        }
-        else /* processing by parts */
+        } else /* processing by parts */
         {
             if (rc->sz <= 0) /* use the bwt since column size is unknown */
                 rc->cdsz = vcapply(nfl->bwt, rc->data, rc->dtsz, &rc->code);
@@ -362,8 +351,7 @@ Void_t **out;
     {
         rcrd.code = rcrd.data;
         rcrd.cdsz = rcrd.dtsz;
-    }
-    else /* use the table transform on this 2-D array */
+    } else /* use the table transform on this 2-D array */
     {
         rcrd.ctxt = vcinitcontext(nfl->tbl, rcrd.ctxt);
         vcsetmtarg(nfl->tbl, "columns", TYPECAST(Void_t *, 6), 2);
@@ -380,8 +368,7 @@ Void_t **out;
 
     vcioputu(&io, rcrd.cdsz);            /* size of coded header data */
     vcioputs(&io, rcrd.code, rcrd.cdsz); /* coded header data */
-    for (rc = dtfirst(nfl->rcdt); rc; rc = dtnext(nfl->rcdt, rc))
-    {
+    for (rc = dtfirst(nfl->rcdt); rc; rc = dtnext(nfl->rcdt, rc)) {
         vcioputu(&io, rc->id);
         vcioputu(&io, rc->sz);
         vcioputu(&io, rc->cdsz);
@@ -389,8 +376,7 @@ Void_t **out;
     } /**/
     DEBUG_ASSERT(vciosize(&io) == sz);
 
-    if (whole)
-    {
+    if (whole) {
         if ((sz = vcapply(nfl->bwt, output, sz, &dt)) < 0)
             goto done;
         vcbuffer(vc, output, 0, 0); /* free current output */
@@ -465,8 +451,7 @@ Void_t **out;
         return -1;
     vcioskip(&io, rcrd.cdsz);
 
-    if (!whole)
-    {
+    if (!whole) {
         if ((rcrd.cdsz = vcapply(nfl->tbl, rcrd.code, rcrd.cdsz, &rcrd.code))
             < 0)
             return -1;
@@ -475,8 +460,7 @@ Void_t **out;
         return -1;
 
     /* decode packet/flowset data */
-    while (vciomore(&io) > 0)
-    {
+    while (vciomore(&io) > 0) {
         if ((rcrd.id = vciogetu(&io)) < 0)
             return -1;
         if (!(rc = dtinsert(nfl->rcdt, &rcrd)))
@@ -492,14 +476,11 @@ Void_t **out;
         if (whole) /* already decoded */
             continue;
 
-        if (rc->sz == 0)
-        {
+        if (rc->sz == 0) {
             if ((rc->cdsz = vcapply(nfl->bwt, rc->code, rc->cdsz, &rc->code))
                 < 0)
                 return -1;
-        }
-        else
-        {
+        } else {
             if ((rc->cdsz = vcapply(nfl->tbl, rc->code, rc->cdsz, &rc->code))
                 < 0)
                 return -1;
@@ -512,8 +493,7 @@ Void_t **out;
     if (!(output = vcbuffer(vc, NIL(Vcchar_t *), sz, 0)))
         return -1;
     vcioinit(&io, output, sz);
-    for (pad = 0, enddt = (dt = rcrd.code) + rcrd.cdsz; dt < enddt;)
-    {
+    for (pad = 0, enddt = (dt = rcrd.code) + rcrd.cdsz; dt < enddt;) {
         if (NETINT(dt) == V9_PACKET) /* finish up last packet */
         {
             for (; pad > 0 && vciomore(&io) > 0; --pad)
@@ -542,9 +522,7 @@ Void_t **out;
             pad = pz;
             pz = 0;
             sz = V9_HEADER - 4;
-        }
-        else
-        {
+        } else {
             sz -= 4;
             if (id >= V9_DATA && rc->sz > 0)
                 sz = (sz / rc->sz) * rc->sz;
@@ -592,35 +570,26 @@ Void_t **out;
 
     if (!(dt = ( Vcchar_t * )data) || (size < V5_HEADER && size < V7_HEADER))
         return 0;
-    if ((fid = NETINT(dt)) == V1_PACKET)
-    {
+    if ((fid = NETINT(dt)) == V1_PACKET) {
         hdz = V1_HEADER;
         rcz = V1_RECORD;
-    }
-    else if (fid == V5_PACKET)
-    {
+    } else if (fid == V5_PACKET) {
         hdz = V5_HEADER;
         rcz = V5_RECORD;
-    }
-    else if (fid == V6_PACKET)
-    {
+    } else if (fid == V6_PACKET) {
         hdz = V6_HEADER;
         rcz = V6_RECORD;
-    }
-    else if (fid == V7_PACKET)
-    {
+    } else if (fid == V7_PACKET) {
         hdz = V7_HEADER;
         rcz = V7_RECORD;
-    }
-    else
+    } else
         return 0;
 
     memset(&rchd, 0, sizeof(rchd));
     memset(&rcrd, 0, sizeof(rcrd));
 
     enddt = (dt = ( Vcchar_t * )data) + size;
-    while ((pckt = dt) < enddt)
-    {
+    while ((pckt = dt) < enddt) {
         if (BADINT(dt, enddt) || GETINT(dt, id) != fid)
             break;
         if (BADINT(dt, enddt) || GETINT(dt, sz) < 0)
@@ -640,8 +609,7 @@ Void_t **out;
 
     if (pckt == ( Vcchar_t * )data)
         return 0;
-    else
-    {
+    else {
         vc->undone = size - (pckt - ( Vcchar_t * )data);
         size = pckt - ( Vcchar_t * )data;
     }
@@ -658,8 +626,7 @@ Void_t **out;
 
     sz = vcsizeu(size) + 1 + vcsizeu(rchd.cdsz) + rchd.cdsz
          + vcsizeu(rcrd.cdsz) + rcrd.cdsz;
-    if (out)
-    {
+    if (out) {
         if (!(output = vcbuffer(vc, NIL(Vcchar_t *), sz, 0)))
             goto done;
         *out = output;
@@ -709,27 +676,19 @@ Void_t **out;
 
     if (vciomore(&io) <= 0 || (tid = vciogetc(&io)) < 0)
         return -1;
-    if (tid == V1_PACKET)
-    {
+    if (tid == V1_PACKET) {
         hdz = V1_HEADER;
         rcz = V1_RECORD;
-    }
-    else if (tid == V5_PACKET)
-    {
+    } else if (tid == V5_PACKET) {
         hdz = V5_HEADER;
         rcz = V5_RECORD;
-    }
-    else if (tid == V6_PACKET)
-    {
+    } else if (tid == V6_PACKET) {
         hdz = V6_HEADER;
         rcz = V6_RECORD;
-    }
-    else if (tid == V7_PACKET)
-    {
+    } else if (tid == V7_PACKET) {
         hdz = V7_HEADER;
         rcz = V7_RECORD;
-    }
-    else
+    } else
         return -1;
 
     if (vciomore(&io) <= 0 || (rchd.cdsz = vciogetu(&io)) < 0)
@@ -756,8 +715,7 @@ Void_t **out;
         return -1;
     vcioinit(&io, output, sz);
 
-    for (enddt = (dt = rchd.code) + rchd.cdsz; dt < enddt; dt += hdz - 4)
-    {
+    for (enddt = (dt = rchd.code) + rchd.cdsz; dt < enddt; dt += hdz - 4) {
         if (vciomore(&io) < hdz)
             return -1;
         vcioputs(&io, dt, hdz);
@@ -812,8 +770,7 @@ Void_t **out;
             return cdsz;
 
         sz = vcsizeu(size) + 1 + cdsz;
-        if (out)
-        {
+        if (out) {
             if (!(output = vcbuffer(vc, NIL(Vcchar_t *), sz, 0)))
                 return -1;
             *out = output;
@@ -939,8 +896,7 @@ Void_t *params;
     Netflow_t *nfl;
     int rv = -1;
 
-    if (type == VC_OPENING)
-    {
+    if (type == VC_OPENING) {
         if (!(nfl = ( Netflow_t * )calloc(1, sizeof(Netflow_t))))
             return -1;
 
@@ -958,9 +914,7 @@ Void_t *params;
 
         vcsetmtdata(vc, nfl);
         return 0;
-    }
-    else if (type == VC_CLOSING)
-    {
+    } else if (type == VC_CLOSING) {
         if (!(nfl = vcgetmtdata(vc, Netflow_t *)))
             return -1;
         rv = 0; /* normal closing */
@@ -972,8 +926,7 @@ Void_t *params;
         if (nfl->rcdt)
             dtclose(nfl->rcdt);
         return rv;
-    }
-    else
+    } else
         return 0;
 }
 

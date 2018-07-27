@@ -104,16 +104,13 @@ main(int argc, char *argv[])
     if (!(iop = sfstropen()))
         error(ERROR_system(1), "out of space [tmp string]");
     sfputr(iop, usage_head, -1);
-    if (pcat)
-    {
+    if (pcat) {
         sfputr(iop, usage_pcat1, -1);
         sfputr(iop, usage_common, -1);
         sfputr(iop, usage_pcat2, -1);
         sfputr(iop, usage_tail, -1);
         sfputr(iop, pcat_see_also, -1);
-    }
-    else
-    {
+    } else {
         sfputr(iop, usage_unpack1, -1);
         sfputr(iop, usage_common, -1);
         sfputr(iop, usage_unpack2, -1);
@@ -124,8 +121,7 @@ main(int argc, char *argv[])
         error(ERROR_SYSTEM | 3, "out of space");
 
     while (n = optget(argv, usage))
-        switch (n)
-        {
+        switch (n) {
         case ':':
             error(2, "%s", opt_info.arg);
             break;
@@ -137,22 +133,19 @@ main(int argc, char *argv[])
     if (error_info.errors || !*argv)
         error(ERROR_usage(2), "%s", optusage(( char * )0));
     sfclose(iop);
-    while (outfile = *argv++)
-    {
+    while (outfile = *argv++) {
         fpin = fpout = ( Sfio_t * )0;
         hp = ( Huff_t * )0;
         deleted = 0;
         if (!(infile = inname(outfile)))
             continue;
-        if (!(fpin = sfopen(( Sfio_t * )0, infile, "r")))
-        {
+        if (!(fpin = sfopen(( Sfio_t * )0, infile, "r"))) {
             error(ERROR_system(0), "%s: cannot open", infile);
             continue;
         }
         if (pcat)
             fpout = sfstdout;
-        else
-        {
+        else {
             if (fstat(sffileno(fpin), &statb) < 0)
                 error(ERROR_system(0), "%s: cannot stat", infile);
             else if (S_ISDIR(statb.st_mode))
@@ -176,8 +169,7 @@ main(int argc, char *argv[])
                       "%s: cannot change mode to %o",
                       outfile,
                       statb.st_mode);
-            else
-            {
+            else {
                 chown(outfile, statb.st_uid, statb.st_gid);
                 goto ok;
             }
@@ -188,10 +180,8 @@ main(int argc, char *argv[])
             error(2, "%s: read error", infile);
         else if (huffdecode(hp, fpin, fpout, SF_UNBOUND) < 0)
             error(2, "%s: read error", outfile);
-        else
-        {
-            if (!pcat)
-            {
+        else {
+            if (!pcat) {
                 touch(outfile, statb.st_atime, statb.st_mtime, 1);
                 sfprintf(sfstdout, "%s: %s: unpacked\n", command, infile);
                 deleted = 0;
@@ -225,8 +215,7 @@ inname(char *outfile)
     char *cp;
     int n = strlen(outfile);
     int sufflen = strlen(suffix);
-    if (cp = ( char * )malloc(n + sufflen + 1))
-    {
+    if (cp = ( char * )malloc(n + sufflen + 1)) {
         strcpy(cp, outfile);
         if (streq(suffix, cp + n - sufflen))
             outfile[n - sufflen] = 0;

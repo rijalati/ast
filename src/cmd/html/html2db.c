@@ -54,19 +54,15 @@ flatten(const char *path, Sfio_t *ip, Sfio_t *op)
     char tag[256];
 
     b = p = 0;
-    for (;;)
-    {
-        switch (c = sfgetc(ip))
-        {
+    for (;;) {
+        switch (c = sfgetc(ip)) {
         case EOF:
             break;
         case '<':
             q = 0;
             s = tag;
-            for (;;)
-            {
-                switch (c = sfgetc(ip))
-                {
+            for (;;) {
+                switch (c = sfgetc(ip)) {
                 case EOF:
                     return;
                 case '>':
@@ -83,10 +79,8 @@ flatten(const char *path, Sfio_t *ip, Sfio_t *op)
             }
             *s = 0;
             q = 0;
-            for (;;)
-            {
-                switch (c = sfgetc(ip))
-                {
+            for (;;) {
+                switch (c = sfgetc(ip)) {
                 case EOF:
                     return;
                 case '\'':
@@ -108,28 +102,22 @@ flatten(const char *path, Sfio_t *ip, Sfio_t *op)
             s = tag;
             if (s[0] == 'T' && s[1] == 'D' && s[2] == 0)
                 p = 1;
-            else if (s[0] == '/' && s[1] == 'T')
-            {
-                if (s[2] == 'D' && s[3] == 0)
-                {
+            else if (s[0] == '/' && s[1] == 'T') {
+                if (s[2] == 'D' && s[3] == 0) {
                     b = p = 0;
                     sfputc(op, ';');
-                }
-                else if (s[2] == 'R' && s[3] == 0)
+                } else if (s[2] == 'R' && s[3] == 0)
                     sfputc(op, '\n');
             }
             continue;
         default:
-            if (p)
-            {
-                if (isspace(c))
-                {
+            if (p) {
+                if (isspace(c)) {
                     if (b)
                         continue;
                     b = 1;
                     c = ' ';
-                }
-                else
+                } else
                     b = 0;
                 sfputc(op, c);
             }
@@ -147,10 +135,8 @@ main(int argc, char **argv)
 
     NoP(argc);
     error_info.id = "html2db";
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case '?':
             error(ERROR_USAGE | 4, "%s", opt_info.arg);
             continue;
@@ -163,16 +149,12 @@ main(int argc, char **argv)
     argv += opt_info.index;
     if (error_info.errors)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
-    do
-    {
+    do {
         if (!(s = *argv) || streq(s, "-") || streq(s, "/dev/stdin")
-            || streq(s, "/dev/fd/0"))
-        {
+            || streq(s, "/dev/fd/0")) {
             s = "/dev/stdin";
             ip = sfstdin;
-        }
-        else if (!(ip = sfopen(NiL, s, "r")))
-        {
+        } else if (!(ip = sfopen(NiL, s, "r"))) {
             error(ERROR_SYSTEM | 2, "%s: cannot read", s);
             continue;
         }

@@ -68,8 +68,7 @@ pathexists(char *path, int mode)
     if ((ast.locale.set & (AST_LC_debug | AST_LC_find))
         == (AST_LC_debug | AST_LC_find))
         sfprintf(sfstderr, "locale test %s\n", path);
-    while (c)
-    {
+    while (c) {
         p = t;
         for (s = e; *e && *e != '/'; e++)
             ;
@@ -77,38 +76,32 @@ pathexists(char *path, int mode)
         *e = 0;
         for (t = p->tree; t && (*cmp)(s, t->name); t = t->next)
             ;
-        if (!t)
-        {
-            if (!(t = newof(0, Tree_t, 1, strlen(s))))
-            {
+        if (!t) {
+            if (!(t = newof(0, Tree_t, 1, strlen(s)))) {
                 *e = c;
                 return 0;
             }
             strcpy(t->name, s);
             t->next = p->tree;
             p->tree = t;
-            if (c)
-            {
+            if (c) {
                 *e = c;
                 for (s = ee = e + 1; *ee && *ee != '/'; ee++)
                     ;
                 cc = *ee;
                 *ee = 0;
-            }
-            else
+            } else
                 ee = 0;
             if ((ast.locale.set & (AST_LC_debug | AST_LC_find))
                 == (AST_LC_debug | AST_LC_find))
                 sfprintf(sfstderr, "locale stat %s\n", path);
             x = stat(path, &st);
-            if (ee)
-            {
+            if (ee) {
                 e = ee;
                 c = cc;
                 if (!x || errno == ENOENT)
                     t->mode = PATH_READ | PATH_EXECUTE;
-                if (!(p = newof(0, Tree_t, 1, strlen(s))))
-                {
+                if (!(p = newof(0, Tree_t, 1, strlen(s)))) {
                     *e = c;
                     return 0;
                 }
@@ -117,8 +110,7 @@ pathexists(char *path, int mode)
                 t->tree = p;
                 t = p;
             }
-            if (x)
-            {
+            if (x) {
                 *e = c;
                 return 0;
             }

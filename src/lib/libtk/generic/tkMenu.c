@@ -702,8 +702,7 @@ char **argv;           /* Argument strings. */
     Tk_Window new;
     Menu *menuPtr;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -720,8 +719,7 @@ char **argv;           /* Argument strings. */
      */
 
     new = Tk_CreateWindowFromPath(interp, tkwin, argv[1], "");
-    if (new == NULL)
-    {
+    if (new == NULL) {
         return TCL_ERROR;
     }
 
@@ -771,8 +769,7 @@ char **argv;           /* Argument strings. */
                           ExposureMask | StructureNotifyMask,
                           MenuEventProc,
                           ( ClientData )menuPtr);
-    if (ConfigureMenu(interp, menuPtr, argc - 2, argv + 2, 0) != TCL_OK)
-    {
+    if (ConfigureMenu(interp, menuPtr, argc - 2, argv + 2, 0) != TCL_OK) {
         goto error;
     }
 
@@ -814,8 +811,7 @@ char **argv;           /* Argument strings. */
     size_t length;
     int c;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -827,12 +823,10 @@ char **argv;           /* Argument strings. */
     c = argv[1][0];
     length = strlen(argv[1]);
     if ((c == 'a') && (strncmp(argv[1], "activate", length) == 0)
-        && (length >= 2))
-    {
+        && (length >= 2)) {
         int index;
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -840,29 +834,22 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (GetMenuIndex(interp, menuPtr, argv[2], 0, &index) != TCL_OK)
-        {
+        if (GetMenuIndex(interp, menuPtr, argv[2], 0, &index) != TCL_OK) {
             goto error;
         }
-        if (menuPtr->active == index)
-        {
+        if (menuPtr->active == index) {
             goto done;
         }
-        if (index >= 0)
-        {
+        if (index >= 0) {
             if ((menuPtr->entries[index]->type == SEPARATOR_ENTRY)
-                || (menuPtr->entries[index]->state == tkDisabledUid))
-            {
+                || (menuPtr->entries[index]->state == tkDisabledUid)) {
                 index = -1;
             }
         }
         result = ActivateMenuEntry(menuPtr, index);
-    }
-    else if ((c == 'a') && (strncmp(argv[1], "add", length) == 0)
-             && (length >= 2))
-    {
-        if (argc < 3)
-        {
+    } else if ((c == 'a') && (strncmp(argv[1], "add", length) == 0)
+               && (length >= 2)) {
+        if (argc < 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -872,16 +859,12 @@ char **argv;           /* Argument strings. */
         }
         if (MenuAddOrInsert(
             interp, menuPtr, ( char * )NULL, argc - 2, argv + 2)
-            != TCL_OK)
-        {
+            != TCL_OK) {
             goto error;
         }
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "cget", length) == 0)
-             && (length >= 2))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 'c') && (strncmp(argv[1], "cget", length) == 0)
+               && (length >= 2)) {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -891,40 +874,30 @@ char **argv;           /* Argument strings. */
         }
         result = Tk_ConfigureValue(
         interp, menuPtr->tkwin, configSpecs, ( char * )menuPtr, argv[2], 0);
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
-             && (length >= 2))
-    {
-        if (argc == 2)
-        {
+    } else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
+               && (length >= 2)) {
+        if (argc == 2) {
             result = Tk_ConfigureInfo(interp,
                                       menuPtr->tkwin,
                                       configSpecs,
                                       ( char * )menuPtr,
                                       ( char * )NULL,
                                       0);
-        }
-        else if (argc == 3)
-        {
+        } else if (argc == 3) {
             result = Tk_ConfigureInfo(interp,
                                       menuPtr->tkwin,
                                       configSpecs,
                                       ( char * )menuPtr,
                                       argv[2],
                                       0);
-        }
-        else
-        {
+        } else {
             result = ConfigureMenu(
             interp, menuPtr, argc - 2, argv + 2, TK_CONFIG_ARGV_ONLY);
         }
-    }
-    else if ((c == 'd') && (strncmp(argv[1], "delete", length) == 0))
-    {
+    } else if ((c == 'd') && (strncmp(argv[1], "delete", length) == 0)) {
         int first, last, i, numDeleted;
 
-        if ((argc != 3) && (argc != 4))
-        {
+        if ((argc != 3) && (argc != 4)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -932,65 +905,49 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (GetMenuIndex(interp, menuPtr, argv[2], 0, &first) != TCL_OK)
-        {
+        if (GetMenuIndex(interp, menuPtr, argv[2], 0, &first) != TCL_OK) {
             goto error;
         }
-        if (argc == 3)
-        {
+        if (argc == 3) {
             last = first;
-        }
-        else
-        {
-            if (GetMenuIndex(interp, menuPtr, argv[3], 0, &last) != TCL_OK)
-            {
+        } else {
+            if (GetMenuIndex(interp, menuPtr, argv[3], 0, &last) != TCL_OK) {
                 goto error;
             }
         }
-        if (menuPtr->tearOff && (first == 0))
-        {
+        if (menuPtr->tearOff && (first == 0)) {
             /*
              * Sorry, can't delete the tearoff entry;  must reconfigure
              * the menu.
              */
             first = 1;
         }
-        if ((first < 0) || (last < first))
-        {
+        if ((first < 0) || (last < first)) {
             goto done;
         }
         numDeleted = last + 1 - first;
-        for (i = first; i <= last; i++)
-        {
+        for (i = first; i <= last; i++) {
             Tcl_EventuallyFree(( ClientData )menuPtr->entries[i],
                                DestroyMenuEntry);
         }
-        for (i = last + 1; i < menuPtr->numEntries; i++)
-        {
+        for (i = last + 1; i < menuPtr->numEntries; i++) {
             menuPtr->entries[i - numDeleted] = menuPtr->entries[i];
         }
         menuPtr->numEntries -= numDeleted;
-        if ((menuPtr->active >= first) && (menuPtr->active <= last))
-        {
+        if ((menuPtr->active >= first) && (menuPtr->active <= last)) {
             menuPtr->active = -1;
-        }
-        else if (menuPtr->active > last)
-        {
+        } else if (menuPtr->active > last) {
             menuPtr->active -= numDeleted;
         }
-        if (!(menuPtr->flags & RESIZE_PENDING))
-        {
+        if (!(menuPtr->flags & RESIZE_PENDING)) {
             menuPtr->flags |= RESIZE_PENDING;
             Tcl_DoWhenIdle(ComputeMenuGeometry, ( ClientData )menuPtr);
         }
-    }
-    else if ((c == 'e') && (length >= 7)
-             && (strncmp(argv[1], "entrycget", length) == 0))
-    {
+    } else if ((c == 'e') && (length >= 7)
+               && (strncmp(argv[1], "entrycget", length) == 0)) {
         int index;
 
-        if (argc != 4)
-        {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -998,12 +955,10 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (GetMenuIndex(interp, menuPtr, argv[2], 0, &index) != TCL_OK)
-        {
+        if (GetMenuIndex(interp, menuPtr, argv[2], 0, &index) != TCL_OK) {
             goto error;
         }
-        if (index < 0)
-        {
+        if (index < 0) {
             goto done;
         }
         mePtr = menuPtr->entries[index];
@@ -1015,14 +970,11 @@ char **argv;           /* Argument strings. */
                                    argv[3],
                                    COMMAND_MASK << mePtr->type);
         Tcl_Release(( ClientData )mePtr);
-    }
-    else if ((c == 'e') && (length >= 7)
-             && (strncmp(argv[1], "entryconfigure", length) == 0))
-    {
+    } else if ((c == 'e') && (length >= 7)
+               && (strncmp(argv[1], "entryconfigure", length) == 0)) {
         int index;
 
-        if (argc < 3)
-        {
+        if (argc < 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1030,36 +982,29 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (GetMenuIndex(interp, menuPtr, argv[2], 0, &index) != TCL_OK)
-        {
+        if (GetMenuIndex(interp, menuPtr, argv[2], 0, &index) != TCL_OK) {
             goto error;
         }
-        if (index < 0)
-        {
+        if (index < 0) {
             goto done;
         }
         mePtr = menuPtr->entries[index];
         Tcl_Preserve(( ClientData )mePtr);
-        if (argc == 3)
-        {
+        if (argc == 3) {
             result = Tk_ConfigureInfo(interp,
                                       menuPtr->tkwin,
                                       entryConfigSpecs,
                                       ( char * )mePtr,
                                       ( char * )NULL,
                                       COMMAND_MASK << mePtr->type);
-        }
-        else if (argc == 4)
-        {
+        } else if (argc == 4) {
             result = Tk_ConfigureInfo(interp,
                                       menuPtr->tkwin,
                                       entryConfigSpecs,
                                       ( char * )mePtr,
                                       argv[3],
                                       COMMAND_MASK << mePtr->type);
-        }
-        else
-        {
+        } else {
             result = ConfigureMenuEntry(interp,
                                         menuPtr,
                                         mePtr,
@@ -1070,14 +1015,11 @@ char **argv;           /* Argument strings. */
                                         | COMMAND_MASK << mePtr->type);
         }
         Tcl_Release(( ClientData )mePtr);
-    }
-    else if ((c == 'i') && (strncmp(argv[1], "index", length) == 0)
-             && (length >= 3))
-    {
+    } else if ((c == 'i') && (strncmp(argv[1], "index", length) == 0)
+               && (length >= 3)) {
         int index;
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1085,24 +1027,17 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (GetMenuIndex(interp, menuPtr, argv[2], 0, &index) != TCL_OK)
-        {
+        if (GetMenuIndex(interp, menuPtr, argv[2], 0, &index) != TCL_OK) {
             goto error;
         }
-        if (index < 0)
-        {
+        if (index < 0) {
             interp->result = "none";
-        }
-        else
-        {
+        } else {
             sprintf(interp->result, "%d", index);
         }
-    }
-    else if ((c == 'i') && (strncmp(argv[1], "insert", length) == 0)
-             && (length >= 3))
-    {
-        if (argc < 4)
-        {
+    } else if ((c == 'i') && (strncmp(argv[1], "insert", length) == 0)
+               && (length >= 3)) {
+        if (argc < 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1111,18 +1046,14 @@ char **argv;           /* Argument strings. */
             goto error;
         }
         if (MenuAddOrInsert(interp, menuPtr, argv[2], argc - 3, argv + 3)
-            != TCL_OK)
-        {
+            != TCL_OK) {
             goto error;
         }
-    }
-    else if ((c == 'i') && (strncmp(argv[1], "invoke", length) == 0)
-             && (length >= 3))
-    {
+    } else if ((c == 'i') && (strncmp(argv[1], "invoke", length) == 0)
+               && (length >= 3)) {
         int index;
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1130,74 +1061,57 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (GetMenuIndex(interp, menuPtr, argv[2], 0, &index) != TCL_OK)
-        {
+        if (GetMenuIndex(interp, menuPtr, argv[2], 0, &index) != TCL_OK) {
             goto error;
         }
-        if (index < 0)
-        {
+        if (index < 0) {
             goto done;
         }
         mePtr = menuPtr->entries[index];
-        if (mePtr->state == tkDisabledUid)
-        {
+        if (mePtr->state == tkDisabledUid) {
             goto done;
         }
         Tcl_Preserve(( ClientData )mePtr);
-        if (mePtr->type == CHECK_BUTTON_ENTRY)
-        {
-            if (mePtr->flags & ENTRY_SELECTED)
-            {
+        if (mePtr->type == CHECK_BUTTON_ENTRY) {
+            if (mePtr->flags & ENTRY_SELECTED) {
                 if (Tcl_SetVar(interp,
                                mePtr->name,
                                mePtr->offValue,
                                TCL_GLOBAL_ONLY | TCL_LEAVE_ERR_MSG)
-                    == NULL)
-                {
+                    == NULL) {
                     result = TCL_ERROR;
                 }
-            }
-            else
-            {
+            } else {
                 if (Tcl_SetVar(interp,
                                mePtr->name,
                                mePtr->onValue,
                                TCL_GLOBAL_ONLY | TCL_LEAVE_ERR_MSG)
-                    == NULL)
-                {
+                    == NULL) {
                     result = TCL_ERROR;
                 }
             }
-        }
-        else if (mePtr->type == RADIO_BUTTON_ENTRY)
-        {
+        } else if (mePtr->type == RADIO_BUTTON_ENTRY) {
             if (Tcl_SetVar(interp,
                            mePtr->name,
                            mePtr->onValue,
                            TCL_GLOBAL_ONLY | TCL_LEAVE_ERR_MSG)
-                == NULL)
-            {
+                == NULL) {
                 result = TCL_ERROR;
             }
         }
-        if ((result == TCL_OK) && (mePtr->command != NULL))
-        {
+        if ((result == TCL_OK) && (mePtr->command != NULL)) {
             result = TkCopyAndGlobalEval(interp, mePtr->command);
         }
-        if ((result == TCL_OK) && (mePtr->type == CASCADE_ENTRY))
-        {
+        if ((result == TCL_OK) && (mePtr->type == CASCADE_ENTRY)) {
             result = PostSubmenu(menuPtr->interp, menuPtr, mePtr);
         }
         Tcl_Release(( ClientData )mePtr);
-    }
-    else if ((c == 'p') && (strncmp(argv[1], "post", length) == 0)
-             && (length == 4))
-    {
+    } else if ((c == 'p') && (strncmp(argv[1], "post", length) == 0)
+               && (length == 4)) {
         int x, y, tmp, vRootX, vRootY;
         int vRootWidth, vRootHeight;
 
-        if (argc != 4)
-        {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1206,8 +1120,7 @@ char **argv;           /* Argument strings. */
             goto error;
         }
         if ((Tcl_GetInt(interp, argv[2], &x) != TCL_OK)
-            || (Tcl_GetInt(interp, argv[3], &y) != TCL_OK))
-        {
+            || (Tcl_GetInt(interp, argv[3], &y) != TCL_OK)) {
             goto error;
         }
 
@@ -1223,16 +1136,13 @@ char **argv;           /* Argument strings. */
          * the menu's geometry if needed.
          */
 
-        if (menuPtr->postCommand != NULL)
-        {
+        if (menuPtr->postCommand != NULL) {
             result
             = TkCopyAndGlobalEval(menuPtr->interp, menuPtr->postCommand);
-            if (result != TCL_OK)
-            {
+            if (result != TCL_OK) {
                 return result;
             }
-            if (menuPtr->flags & RESIZE_PENDING)
-            {
+            if (menuPtr->flags & RESIZE_PENDING) {
                 Tcl_CancelIdleCall(ComputeMenuGeometry,
                                    ( ClientData )menuPtr);
                 ComputeMenuGeometry(( ClientData )menuPtr);
@@ -1267,40 +1177,31 @@ char **argv;           /* Argument strings. */
         y += vRootY;
         tmp = WidthOfScreen(Tk_Screen(menuPtr->tkwin))
               - Tk_ReqWidth(menuPtr->tkwin);
-        if (x > tmp)
-        {
+        if (x > tmp) {
             x = tmp;
         }
-        if (x < 0)
-        {
+        if (x < 0) {
             x = 0;
         }
         tmp = HeightOfScreen(Tk_Screen(menuPtr->tkwin))
               - Tk_ReqHeight(menuPtr->tkwin);
-        if (y > tmp)
-        {
+        if (y > tmp) {
             y = tmp;
         }
-        if (y < 0)
-        {
+        if (y < 0) {
             y = 0;
         }
-        if ((x != Tk_X(menuPtr->tkwin)) || (y != Tk_Y(menuPtr->tkwin)))
-        {
+        if ((x != Tk_X(menuPtr->tkwin)) || (y != Tk_Y(menuPtr->tkwin))) {
             Tk_MoveToplevelWindow(menuPtr->tkwin, x, y);
         }
-        if (!Tk_IsMapped(menuPtr->tkwin))
-        {
+        if (!Tk_IsMapped(menuPtr->tkwin)) {
             Tk_MapWindow(menuPtr->tkwin);
         }
         XRaiseWindow(menuPtr->display, Tk_WindowId(menuPtr->tkwin));
-    }
-    else if ((c == 'p') && (strncmp(argv[1], "postcascade", length) == 0)
-             && (length > 4))
-    {
+    } else if ((c == 'p') && (strncmp(argv[1], "postcascade", length) == 0)
+               && (length > 4)) {
         int index;
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1308,24 +1209,17 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (GetMenuIndex(interp, menuPtr, argv[2], 0, &index) != TCL_OK)
-        {
+        if (GetMenuIndex(interp, menuPtr, argv[2], 0, &index) != TCL_OK) {
             goto error;
         }
-        if ((index < 0) || (menuPtr->entries[index]->type != CASCADE_ENTRY))
-        {
+        if ((index < 0) || (menuPtr->entries[index]->type != CASCADE_ENTRY)) {
             result = PostSubmenu(interp, menuPtr, ( MenuEntry * )NULL);
-        }
-        else
-        {
+        } else {
             result = PostSubmenu(interp, menuPtr, menuPtr->entries[index]);
         }
-    }
-    else if ((c == 't') && (strncmp(argv[1], "type", length) == 0))
-    {
+    } else if ((c == 't') && (strncmp(argv[1], "type", length) == 0)) {
         int index;
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1333,17 +1227,14 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (GetMenuIndex(interp, menuPtr, argv[2], 0, &index) != TCL_OK)
-        {
+        if (GetMenuIndex(interp, menuPtr, argv[2], 0, &index) != TCL_OK) {
             goto error;
         }
-        if (index < 0)
-        {
+        if (index < 0) {
             goto done;
         }
         mePtr = menuPtr->entries[index];
-        switch (mePtr->type)
-        {
+        switch (mePtr->type) {
         case COMMAND_ENTRY:
             interp->result = "command";
             break;
@@ -1363,11 +1254,8 @@ char **argv;           /* Argument strings. */
             interp->result = "tearoff";
             break;
         }
-    }
-    else if ((c == 'u') && (strncmp(argv[1], "unpost", length) == 0))
-    {
-        if (argc != 2)
-        {
+    } else if ((c == 'u') && (strncmp(argv[1], "unpost", length) == 0)) {
+        if (argc != 2) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1376,17 +1264,13 @@ char **argv;           /* Argument strings. */
             goto error;
         }
         Tk_UnmapWindow(menuPtr->tkwin);
-        if (result == TCL_OK)
-        {
+        if (result == TCL_OK) {
             result = PostSubmenu(interp, menuPtr, ( MenuEntry * )NULL);
         }
-    }
-    else if ((c == 'y') && (strncmp(argv[1], "yposition", length) == 0))
-    {
+    } else if ((c == 'y') && (strncmp(argv[1], "yposition", length) == 0)) {
         int index;
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1394,21 +1278,15 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (GetMenuIndex(interp, menuPtr, argv[2], 0, &index) != TCL_OK)
-        {
+        if (GetMenuIndex(interp, menuPtr, argv[2], 0, &index) != TCL_OK) {
             goto error;
         }
-        if (index < 0)
-        {
+        if (index < 0) {
             interp->result = "0";
-        }
-        else
-        {
+        } else {
             sprintf(interp->result, "%d", menuPtr->entries[index]->y);
         }
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(
         interp,
         "bad option \"",
@@ -1457,32 +1335,25 @@ static void DestroyMenu(memPtr) char *memPtr; /* Info about menu widget. */
      * stuff.
      */
 
-    for (i = 0; i < menuPtr->numEntries; i++)
-    {
+    for (i = 0; i < menuPtr->numEntries; i++) {
         DestroyMenuEntry(( char * )menuPtr->entries[i]);
     }
-    if (menuPtr->entries != NULL)
-    {
+    if (menuPtr->entries != NULL) {
         ckfree(( char * )menuPtr->entries);
     }
-    if (menuPtr->textGC != None)
-    {
+    if (menuPtr->textGC != None) {
         Tk_FreeGC(menuPtr->display, menuPtr->textGC);
     }
-    if (menuPtr->gray != None)
-    {
+    if (menuPtr->gray != None) {
         Tk_FreeBitmap(menuPtr->display, menuPtr->gray);
     }
-    if (menuPtr->disabledGC != None)
-    {
+    if (menuPtr->disabledGC != None) {
         Tk_FreeGC(menuPtr->display, menuPtr->disabledGC);
     }
-    if (menuPtr->activeGC != None)
-    {
+    if (menuPtr->activeGC != None) {
         Tk_FreeGC(menuPtr->display, menuPtr->activeGC);
     }
-    if (menuPtr->indicatorGC != None)
-    {
+    if (menuPtr->indicatorGC != None) {
         Tk_FreeGC(menuPtr->display, menuPtr->indicatorGC);
     }
     Tk_FreeOptions(configSpecs, ( char * )menuPtr, menuPtr->display, 0);
@@ -1519,8 +1390,7 @@ static void DestroyMenuEntry(memPtr) char *memPtr; /* Pointer to entry to be
      * stuff.
      */
 
-    if (menuPtr->postedCascade == mePtr)
-    {
+    if (menuPtr->postedCascade == mePtr) {
         /*
          * Ignore errors while unposting the menu, since it's possible
          * that the menu has already been deleted and the unpost will
@@ -1529,32 +1399,25 @@ static void DestroyMenuEntry(memPtr) char *memPtr; /* Pointer to entry to be
 
         PostSubmenu(menuPtr->interp, menuPtr, ( MenuEntry * )NULL);
     }
-    if (mePtr->image != NULL)
-    {
+    if (mePtr->image != NULL) {
         Tk_FreeImage(mePtr->image);
     }
-    if (mePtr->selectImage != NULL)
-    {
+    if (mePtr->selectImage != NULL) {
         Tk_FreeImage(mePtr->image);
     }
-    if (mePtr->textGC != None)
-    {
+    if (mePtr->textGC != None) {
         Tk_FreeGC(menuPtr->display, mePtr->textGC);
     }
-    if (mePtr->activeGC != None)
-    {
+    if (mePtr->activeGC != None) {
         Tk_FreeGC(menuPtr->display, mePtr->activeGC);
     }
-    if (mePtr->disabledGC != None)
-    {
+    if (mePtr->disabledGC != None) {
         Tk_FreeGC(menuPtr->display, mePtr->disabledGC);
     }
-    if (mePtr->indicatorGC != None)
-    {
+    if (mePtr->indicatorGC != None) {
         Tk_FreeGC(menuPtr->display, mePtr->indicatorGC);
     }
-    if (mePtr->name != NULL)
-    {
+    if (mePtr->name != NULL) {
         Tcl_UntraceVar(menuPtr->interp,
                        mePtr->name,
                        TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
@@ -1609,8 +1472,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
                            argv,
                            ( char * )menuPtr,
                            flags)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -1627,26 +1489,20 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
     gcValues.background = Tk_3DBorderColor(menuPtr->border)->pixel;
     newGC = Tk_GetGC(
     menuPtr->tkwin, GCForeground | GCBackground | GCFont, &gcValues);
-    if (menuPtr->textGC != None)
-    {
+    if (menuPtr->textGC != None) {
         Tk_FreeGC(menuPtr->display, menuPtr->textGC);
     }
     menuPtr->textGC = newGC;
 
-    if (menuPtr->disabledFg != NULL)
-    {
+    if (menuPtr->disabledFg != NULL) {
         gcValues.foreground = menuPtr->disabledFg->pixel;
         mask = GCForeground | GCBackground | GCFont;
-    }
-    else
-    {
+    } else {
         gcValues.foreground = gcValues.background;
-        if (menuPtr->gray == None)
-        {
+        if (menuPtr->gray == None) {
             menuPtr->gray
             = Tk_GetBitmap(interp, menuPtr->tkwin, Tk_GetUid("gray50"));
-            if (menuPtr->gray == None)
-            {
+            if (menuPtr->gray == None) {
                 return TCL_ERROR;
             }
         }
@@ -1655,8 +1511,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
         mask = GCForeground | GCFillStyle | GCStipple;
     }
     newGC = Tk_GetGC(menuPtr->tkwin, mask, &gcValues);
-    if (menuPtr->disabledGC != None)
-    {
+    if (menuPtr->disabledGC != None) {
         Tk_FreeGC(menuPtr->display, menuPtr->disabledGC);
     }
     menuPtr->disabledGC = newGC;
@@ -1666,34 +1521,28 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
     gcValues.background = Tk_3DBorderColor(menuPtr->activeBorder)->pixel;
     newGC = Tk_GetGC(
     menuPtr->tkwin, GCForeground | GCBackground | GCFont, &gcValues);
-    if (menuPtr->activeGC != None)
-    {
+    if (menuPtr->activeGC != None) {
         Tk_FreeGC(menuPtr->display, menuPtr->activeGC);
     }
     menuPtr->activeGC = newGC;
 
     gcValues.foreground = menuPtr->indicatorFg->pixel;
     newGC = Tk_GetGC(menuPtr->tkwin, GCForeground | GCFont, &gcValues);
-    if (menuPtr->indicatorGC != None)
-    {
+    if (menuPtr->indicatorGC != None) {
         Tk_FreeGC(menuPtr->display, menuPtr->indicatorGC);
     }
     menuPtr->indicatorGC = newGC;
 
-    if (menuPtr->transient)
-    {
+    if (menuPtr->transient) {
         atts.override_redirect = True;
         atts.save_under = True;
-    }
-    else
-    {
+    } else {
         atts.override_redirect = False;
         atts.save_under = False;
     }
     if ((atts.override_redirect
          != Tk_Attributes(menuPtr->tkwin)->override_redirect)
-        || (atts.save_under != Tk_Attributes(menuPtr->tkwin)->save_under))
-    {
+        || (atts.save_under != Tk_Attributes(menuPtr->tkwin)->save_under)) {
         Tk_ChangeWindowAttributes(
         menuPtr->tkwin, CWOverrideRedirect | CWSaveUnder, &atts);
     }
@@ -1708,8 +1557,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * in the parent.
      */
 
-    for (i = 0; i < menuPtr->numEntries; i++)
-    {
+    for (i = 0; i < menuPtr->numEntries; i++) {
         MenuEntry *mePtr;
 
         mePtr = menuPtr->entries[i];
@@ -1727,28 +1575,22 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * isn't an initial tear-off entry at the beginning of the menu.
      */
 
-    if (menuPtr->tearOff)
-    {
+    if (menuPtr->tearOff) {
         if ((menuPtr->numEntries == 0)
-            || (menuPtr->entries[0]->type != TEAROFF_ENTRY))
-        {
+            || (menuPtr->entries[0]->type != TEAROFF_ENTRY)) {
             MenuNewEntry(menuPtr, 0, TEAROFF_ENTRY);
         }
-    }
-    else if ((menuPtr->numEntries > 0)
-             && (menuPtr->entries[0]->type == TEAROFF_ENTRY))
-    {
+    } else if ((menuPtr->numEntries > 0)
+               && (menuPtr->entries[0]->type == TEAROFF_ENTRY)) {
         Tcl_EventuallyFree(( ClientData )menuPtr->entries[0],
                            DestroyMenuEntry);
-        for (i = 1; i < menuPtr->numEntries; i++)
-        {
+        for (i = 1; i < menuPtr->numEntries; i++) {
             menuPtr->entries[i - 1] = menuPtr->entries[i];
         }
         menuPtr->numEntries--;
     }
 
-    if (!(menuPtr->flags & RESIZE_PENDING))
-    {
+    if (!(menuPtr->flags & RESIZE_PENDING)) {
         menuPtr->flags |= RESIZE_PENDING;
         Tcl_DoWhenIdle(ComputeMenuGeometry, ( ClientData )menuPtr);
     }
@@ -1801,11 +1643,9 @@ int flags;          /* Additional flags to pass to
      * high and dry).
      */
 
-    if (menuPtr->postedCascade == mePtr)
-    {
+    if (menuPtr->postedCascade == mePtr) {
         if (PostSubmenu(menuPtr->interp, menuPtr, ( MenuEntry * )NULL)
-            != TCL_OK)
-        {
+            != TCL_OK) {
             Tcl_BackgroundError(menuPtr->interp);
         }
     }
@@ -1817,8 +1657,7 @@ int flags;          /* Additional flags to pass to
 
     if ((mePtr->name != NULL)
         && ((mePtr->type == CHECK_BUTTON_ENTRY)
-            || (mePtr->type == RADIO_BUTTON_ENTRY)))
-    {
+            || (mePtr->type == RADIO_BUTTON_ENTRY))) {
         Tcl_UntraceVar(menuPtr->interp,
                        mePtr->name,
                        TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
@@ -1833,8 +1672,7 @@ int flags;          /* Additional flags to pass to
                            argv,
                            ( char * )mePtr,
                            flags | (COMMAND_MASK << mePtr->type))
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -1844,38 +1682,27 @@ int flags;          /* Additional flags to pass to
      * defaults, sizing strings, graphics contexts, etc.
      */
 
-    if (mePtr->label == NULL)
-    {
+    if (mePtr->label == NULL) {
         mePtr->labelLength = 0;
-    }
-    else
-    {
+    } else {
         mePtr->labelLength = strlen(mePtr->label);
     }
-    if (mePtr->accel == NULL)
-    {
+    if (mePtr->accel == NULL) {
         mePtr->accelLength = 0;
-    }
-    else
-    {
+    } else {
         mePtr->accelLength = strlen(mePtr->accel);
     }
 
-    if (mePtr->state == tkActiveUid)
-    {
-        if (index != menuPtr->active)
-        {
+    if (mePtr->state == tkActiveUid) {
+        if (index != menuPtr->active) {
             ActivateMenuEntry(menuPtr, index);
         }
-    }
-    else
-    {
-        if (index == menuPtr->active)
-        {
+    } else {
+        if (index == menuPtr->active) {
             ActivateMenuEntry(menuPtr, -1);
         }
-        if ((mePtr->state != tkNormalUid) && (mePtr->state != tkDisabledUid))
-        {
+        if ((mePtr->state != tkNormalUid)
+            && (mePtr->state != tkDisabledUid)) {
             Tcl_AppendResult(interp,
                              "bad state value \"",
                              mePtr->state,
@@ -1888,8 +1715,7 @@ int flags;          /* Additional flags to pass to
 
     if ((mePtr->fontPtr != NULL) || (mePtr->border != NULL)
         || (mePtr->fg != NULL) || (mePtr->activeBorder != NULL)
-        || (mePtr->activeFg != NULL))
-    {
+        || (mePtr->activeFg != NULL)) {
         gcValues.foreground
         = (mePtr->fg != NULL) ? mePtr->fg->pixel : menuPtr->fg->pixel;
         gcValues.background
@@ -1911,13 +1737,10 @@ int flags;          /* Additional flags to pass to
                    GCForeground | GCBackground | GCFont | GCGraphicsExposures,
                    &gcValues);
 
-        if (menuPtr->disabledFg != NULL)
-        {
+        if (menuPtr->disabledFg != NULL) {
             gcValues.foreground = menuPtr->disabledFg->pixel;
             mask = GCForeground | GCBackground | GCFont | GCGraphicsExposures;
-        }
-        else
-        {
+        } else {
             gcValues.foreground = gcValues.background;
             gcValues.fill_style = FillStippled;
             gcValues.stipple = menuPtr->gray;
@@ -1936,56 +1759,44 @@ int flags;          /* Additional flags to pass to
         = Tk_GetGC(menuPtr->tkwin,
                    GCForeground | GCBackground | GCFont | GCGraphicsExposures,
                    &gcValues);
-    }
-    else
-    {
+    } else {
         newGC = None;
         newActiveGC = None;
         newDisabledGC = None;
     }
-    if (mePtr->textGC != None)
-    {
+    if (mePtr->textGC != None) {
         Tk_FreeGC(menuPtr->display, mePtr->textGC);
     }
     mePtr->textGC = newGC;
-    if (mePtr->activeGC != None)
-    {
+    if (mePtr->activeGC != None) {
         Tk_FreeGC(menuPtr->display, mePtr->activeGC);
     }
     mePtr->activeGC = newActiveGC;
-    if (mePtr->disabledGC != None)
-    {
+    if (mePtr->disabledGC != None) {
         Tk_FreeGC(menuPtr->display, mePtr->disabledGC);
     }
     mePtr->disabledGC = newDisabledGC;
-    if (mePtr->indicatorFg != NULL)
-    {
+    if (mePtr->indicatorFg != NULL) {
         gcValues.foreground = mePtr->indicatorFg->pixel;
         newGC = Tk_GetGC(menuPtr->tkwin, GCForeground, &gcValues);
-    }
-    else
-    {
+    } else {
         newGC = None;
     }
-    if (mePtr->indicatorGC != None)
-    {
+    if (mePtr->indicatorGC != None) {
         Tk_FreeGC(menuPtr->display, mePtr->indicatorGC);
     }
     mePtr->indicatorGC = newGC;
 
     if ((mePtr->type == CHECK_BUTTON_ENTRY)
-        || (mePtr->type == RADIO_BUTTON_ENTRY))
-    {
+        || (mePtr->type == RADIO_BUTTON_ENTRY)) {
         char *value;
 
-        if (mePtr->name == NULL)
-        {
+        if (mePtr->name == NULL) {
             mePtr->name
             = ( char * )ckalloc(( unsigned )(mePtr->labelLength + 1));
             strcpy(mePtr->name, (mePtr->label == NULL) ? "" : mePtr->label);
         }
-        if (mePtr->onValue == NULL)
-        {
+        if (mePtr->onValue == NULL) {
             mePtr->onValue
             = ( char * )ckalloc(( unsigned )(mePtr->labelLength + 1));
             strcpy(mePtr->onValue,
@@ -2001,15 +1812,11 @@ int flags;          /* Additional flags to pass to
 
         value = Tcl_GetVar(interp, mePtr->name, TCL_GLOBAL_ONLY);
         mePtr->flags &= ~ENTRY_SELECTED;
-        if (value != NULL)
-        {
-            if (strcmp(value, mePtr->onValue) == 0)
-            {
+        if (value != NULL) {
+            if (strcmp(value, mePtr->onValue) == 0) {
                 mePtr->flags |= ENTRY_SELECTED;
             }
-        }
-        else
-        {
+        } else {
             Tcl_SetVar(interp,
                        mePtr->name,
                        (mePtr->type == CHECK_BUTTON_ENTRY) ? mePtr->offValue
@@ -2029,51 +1836,40 @@ int flags;          /* Additional flags to pass to
      * counts don't go to zero and cause image data to be discarded.
      */
 
-    if (mePtr->imageString != NULL)
-    {
+    if (mePtr->imageString != NULL) {
         image = Tk_GetImage(interp,
                             menuPtr->tkwin,
                             mePtr->imageString,
                             MenuImageProc,
                             ( ClientData )mePtr);
-        if (image == NULL)
-        {
+        if (image == NULL) {
             return TCL_ERROR;
         }
-    }
-    else
-    {
+    } else {
         image = NULL;
     }
-    if (mePtr->image != NULL)
-    {
+    if (mePtr->image != NULL) {
         Tk_FreeImage(mePtr->image);
     }
     mePtr->image = image;
-    if (mePtr->selectImageString != NULL)
-    {
+    if (mePtr->selectImageString != NULL) {
         image = Tk_GetImage(interp,
                             menuPtr->tkwin,
                             mePtr->selectImageString,
                             MenuSelectImageProc,
                             ( ClientData )mePtr);
-        if (image == NULL)
-        {
+        if (image == NULL) {
             return TCL_ERROR;
         }
-    }
-    else
-    {
+    } else {
         image = NULL;
     }
-    if (mePtr->selectImage != NULL)
-    {
+    if (mePtr->selectImage != NULL) {
         Tk_FreeImage(mePtr->selectImage);
     }
     mePtr->selectImage = image;
 
-    if (!(menuPtr->flags & RESIZE_PENDING))
-    {
+    if (!(menuPtr->flags & RESIZE_PENDING)) {
         menuPtr->flags |= RESIZE_PENDING;
         Tcl_DoWhenIdle(ComputeMenuGeometry, ( ClientData )menuPtr);
     }
@@ -2112,21 +1908,18 @@ ClientData clientData; /* Structure describing menu. */
     int i, y;
     int imageWidth, imageHeight;
 
-    if (menuPtr->tkwin == NULL)
-    {
+    if (menuPtr->tkwin == NULL) {
         return;
     }
 
     maxLabelWidth = maxIndicatorWidth = maxAccelWidth = 0;
     y = menuPtr->borderWidth;
 
-    for (i = 0; i < menuPtr->numEntries; i++)
-    {
+    for (i = 0; i < menuPtr->numEntries; i++) {
         mePtr = menuPtr->entries[i];
         indicatorSpace = 0;
         fontPtr = mePtr->fontPtr;
-        if (fontPtr == NULL)
-        {
+        if (fontPtr == NULL) {
             fontPtr = menuPtr->fontPtr;
         }
 
@@ -2140,38 +1933,28 @@ ClientData clientData; /* Structure describing menu. */
          * of the entry.
          */
 
-        if (mePtr->image != NULL)
-        {
+        if (mePtr->image != NULL) {
             Tk_SizeOfImage(mePtr->image, &imageWidth, &imageHeight);
 
         imageOrBitmap:
             mePtr->height = imageHeight;
             width = imageWidth;
-            if (mePtr->indicatorOn)
-            {
-                if (mePtr->type == CHECK_BUTTON_ENTRY)
-                {
+            if (mePtr->indicatorOn) {
+                if (mePtr->type == CHECK_BUTTON_ENTRY) {
                     indicatorSpace = (14 * mePtr->height) / 10;
                     mePtr->indicatorDiameter = (65 * mePtr->height) / 100;
-                }
-                else if (mePtr->type == RADIO_BUTTON_ENTRY)
-                {
+                } else if (mePtr->type == RADIO_BUTTON_ENTRY) {
                     indicatorSpace = (14 * mePtr->height) / 10;
                     mePtr->indicatorDiameter = (75 * mePtr->height) / 100;
                 }
             }
-        }
-        else if (mePtr->bitmap != None)
-        {
+        } else if (mePtr->bitmap != None) {
             Tk_SizeOfBitmap(
             menuPtr->display, mePtr->bitmap, &imageWidth, &imageHeight);
             goto imageOrBitmap;
-        }
-        else
-        {
+        } else {
             mePtr->height = fontPtr->ascent + fontPtr->descent;
-            if (mePtr->label != NULL)
-            {
+            if (mePtr->label != NULL) {
                 ( void )TkMeasureChars(fontPtr,
                                        mePtr->label,
                                        mePtr->labelLength,
@@ -2180,36 +1963,26 @@ ClientData clientData; /* Structure describing menu. */
                                        0,
                                        TK_NEWLINES_NOT_SPECIAL,
                                        &width);
-            }
-            else
-            {
+            } else {
                 width = 0;
             }
-            if (mePtr->indicatorOn)
-            {
-                if (mePtr->type == CHECK_BUTTON_ENTRY)
-                {
+            if (mePtr->indicatorOn) {
+                if (mePtr->type == CHECK_BUTTON_ENTRY) {
                     indicatorSpace = mePtr->height;
                     mePtr->indicatorDiameter = (80 * mePtr->height) / 100;
-                }
-                else if (mePtr->type == RADIO_BUTTON_ENTRY)
-                {
+                } else if (mePtr->type == RADIO_BUTTON_ENTRY) {
                     indicatorSpace = mePtr->height;
                     mePtr->indicatorDiameter = mePtr->height;
                 }
             }
         }
         mePtr->height += 2 * menuPtr->activeBorderWidth + 2;
-        if (width > maxLabelWidth)
-        {
+        if (width > maxLabelWidth) {
             maxLabelWidth = width;
         }
-        if (mePtr->type == CASCADE_ENTRY)
-        {
+        if (mePtr->type == CASCADE_ENTRY) {
             width = 2 * CASCADE_ARROW_WIDTH;
-        }
-        else if (mePtr->accel != NULL)
-        {
+        } else if (mePtr->accel != NULL) {
             ( void )TkMeasureChars(fontPtr,
                                    mePtr->accel,
                                    mePtr->accelLength,
@@ -2218,25 +1991,19 @@ ClientData clientData; /* Structure describing menu. */
                                    0,
                                    TK_NEWLINES_NOT_SPECIAL,
                                    &width);
-        }
-        else
-        {
+        } else {
             width = 0;
         }
-        if (width > maxAccelWidth)
-        {
+        if (width > maxAccelWidth) {
             maxAccelWidth = width;
         }
-        if (mePtr->type == SEPARATOR_ENTRY)
-        {
+        if (mePtr->type == SEPARATOR_ENTRY) {
             mePtr->height = 8;
         }
-        if (mePtr->type == TEAROFF_ENTRY)
-        {
+        if (mePtr->type == TEAROFF_ENTRY) {
             mePtr->height = 12;
         }
-        if (indicatorSpace > maxIndicatorWidth)
-        {
+        if (indicatorSpace > maxIndicatorWidth) {
             maxIndicatorWidth = indicatorSpace;
         }
         mePtr->y = y;
@@ -2252,15 +2019,13 @@ ClientData clientData; /* Structure describing menu. */
      */
 
     menuPtr->indicatorSpace = maxIndicatorWidth + MARGIN_WIDTH;
-    if (maxIndicatorWidth != 0)
-    {
+    if (maxIndicatorWidth != 0) {
         menuPtr->indicatorSpace += MARGIN_WIDTH;
     }
     menuPtr->labelWidth = maxLabelWidth + MARGIN_WIDTH;
     width = menuPtr->indicatorSpace + menuPtr->labelWidth + maxAccelWidth
             + 2 * menuPtr->borderWidth + 2 * menuPtr->activeBorderWidth;
-    if (maxAccelWidth != 0)
-    {
+    if (maxAccelWidth != 0) {
         width += MARGIN_WIDTH;
     }
     height = y + menuPtr->borderWidth;
@@ -2270,21 +2035,16 @@ ClientData clientData; /* Structure describing menu. */
      * 1 (a zero-sized menu should never really occur, anyway).
      */
 
-    if (width <= 0)
-    {
+    if (width <= 0) {
         width = 1;
     }
-    if (height <= 0)
-    {
+    if (height <= 0) {
         height = 1;
     }
     if ((width != Tk_ReqWidth(menuPtr->tkwin))
-        || (height != Tk_ReqHeight(menuPtr->tkwin)))
-    {
+        || (height != Tk_ReqHeight(menuPtr->tkwin))) {
         Tk_GeometryRequest(menuPtr->tkwin, width, height);
-    }
-    else
-    {
+    } else {
         /*
          * Must always force a redisplay here if the window is mapped
          * (even if the size didn't change, something else might have
@@ -2328,8 +2088,7 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
     XPoint points[3];
 
     menuPtr->flags &= ~REDRAW_PENDING;
-    if ((menuPtr->tkwin == NULL) || !Tk_IsMapped(tkwin))
-    {
+    if ((menuPtr->tkwin == NULL) || !Tk_IsMapped(tkwin)) {
         return;
     }
 
@@ -2340,11 +2099,9 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
     strictMotif = Tk_StrictMotif(menuPtr->tkwin);
     leftEdge = menuPtr->borderWidth + menuPtr->indicatorSpace
                + menuPtr->activeBorderWidth;
-    for (index = 0; index < menuPtr->numEntries; index++)
-    {
+    for (index = 0; index < menuPtr->numEntries; index++) {
         mePtr = menuPtr->entries[index];
-        if (!(mePtr->flags & ENTRY_NEEDS_REDISPLAY))
-        {
+        if (!(mePtr->flags & ENTRY_NEEDS_REDISPLAY)) {
             continue;
         }
         mePtr->flags &= ~ENTRY_NEEDS_REDISPLAY;
@@ -2354,24 +2111,18 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
          */
 
         bgBorder = mePtr->border;
-        if (bgBorder == NULL)
-        {
+        if (bgBorder == NULL) {
             bgBorder = menuPtr->border;
         }
-        if (strictMotif)
-        {
+        if (strictMotif) {
             activeBorder = bgBorder;
-        }
-        else
-        {
+        } else {
             activeBorder = mePtr->activeBorder;
-            if (activeBorder == NULL)
-            {
+            if (activeBorder == NULL) {
                 activeBorder = menuPtr->activeBorder;
             }
         }
-        if (mePtr->state == tkActiveUid)
-        {
+        if (mePtr->state == tkActiveUid) {
             bgBorder = activeBorder;
             Tk_Fill3DRectangle(menuPtr->tkwin,
                                Tk_WindowId(tkwin),
@@ -2382,9 +2133,7 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
                                mePtr->height,
                                menuPtr->activeBorderWidth,
                                TK_RELIEF_RAISED);
-        }
-        else
-        {
+        } else {
             Tk_Fill3DRectangle(menuPtr->tkwin,
                                Tk_WindowId(tkwin),
                                bgBorder,
@@ -2400,30 +2149,21 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
          * Choose the gc for drawing the foreground part of the entry.
          */
 
-        if ((mePtr->state == tkActiveUid) && !strictMotif)
-        {
+        if ((mePtr->state == tkActiveUid) && !strictMotif) {
             gc = mePtr->activeGC;
-            if (gc == NULL)
-            {
+            if (gc == NULL) {
                 gc = menuPtr->activeGC;
             }
-        }
-        else
-        {
+        } else {
             if ((mePtr->state == tkDisabledUid)
-                && (menuPtr->disabledFg != NULL))
-            {
+                && (menuPtr->disabledFg != NULL)) {
                 gc = mePtr->disabledGC;
-                if (gc == NULL)
-                {
+                if (gc == NULL) {
                     gc = menuPtr->disabledGC;
                 }
-            }
-            else
-            {
+            } else {
                 gc = mePtr->textGC;
-                if (gc == NULL)
-                {
+                if (gc == NULL) {
                     gc = menuPtr->textGC;
                 }
             }
@@ -2434,20 +2174,17 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
          */
 
         fontPtr = mePtr->fontPtr;
-        if (fontPtr == NULL)
-        {
+        if (fontPtr == NULL) {
             fontPtr = menuPtr->fontPtr;
         }
         baseline
         = mePtr->y + (mePtr->height + fontPtr->ascent - fontPtr->descent) / 2;
-        if (mePtr->image != NULL)
-        {
+        if (mePtr->image != NULL) {
             int width, height;
 
             Tk_SizeOfImage(mePtr->image, &width, &height);
             if ((mePtr->selectImage != NULL)
-                && (mePtr->flags & ENTRY_SELECTED))
-            {
+                && (mePtr->flags & ENTRY_SELECTED)) {
                 Tk_RedrawImage(
                 mePtr->selectImage,
                 0,
@@ -2457,9 +2194,7 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
                 Tk_WindowId(tkwin),
                 leftEdge,
                 ( int )(mePtr->y + (mePtr->height - height) / 2));
-            }
-            else
-            {
+            } else {
                 Tk_RedrawImage(
                 mePtr->image,
                 0,
@@ -2470,9 +2205,7 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
                 leftEdge,
                 ( int )(mePtr->y + (mePtr->height - height) / 2));
             }
-        }
-        else if (mePtr->bitmap != None)
-        {
+        } else if (mePtr->bitmap != None) {
             int width, height;
 
             Tk_SizeOfBitmap(menuPtr->display, mePtr->bitmap, &width, &height);
@@ -2487,14 +2220,11 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
                        leftEdge,
                        ( int )(mePtr->y + (mePtr->height - height) / 2),
                        1);
-        }
-        else
-        {
+        } else {
             baseline
             = mePtr->y
               + (mePtr->height + fontPtr->ascent - fontPtr->descent) / 2;
-            if (mePtr->label != NULL)
-            {
+            if (mePtr->label != NULL) {
                 TkDisplayChars(menuPtr->display,
                                Tk_WindowId(tkwin),
                                gc,
@@ -2505,8 +2235,7 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
                                baseline,
                                leftEdge,
                                TK_NEWLINES_NOT_SPECIAL);
-                if (mePtr->underline >= 0)
-                {
+                if (mePtr->underline >= 0) {
                     TkUnderlineChars(menuPtr->display,
                                      Tk_WindowId(tkwin),
                                      gc,
@@ -2526,8 +2255,7 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
          * Draw accelerator or cascade arrow.
          */
 
-        if (mePtr->type == CASCADE_ENTRY)
-        {
+        if (mePtr->type == CASCADE_ENTRY) {
             points[0].x = Tk_Width(tkwin) - menuPtr->borderWidth
                           - menuPtr->activeBorderWidth - MARGIN_WIDTH
                           - CASCADE_ARROW_WIDTH;
@@ -2546,9 +2274,7 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
                              (menuPtr->postedCascade == mePtr)
                              ? TK_RELIEF_SUNKEN
                              : TK_RELIEF_RAISED);
-        }
-        else if (mePtr->accel != NULL)
-        {
+        } else if (mePtr->accel != NULL) {
             TkDisplayChars(menuPtr->display,
                            Tk_WindowId(tkwin),
                            gc,
@@ -2566,12 +2292,10 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
          */
 
         gc = mePtr->indicatorGC;
-        if (gc == None)
-        {
+        if (gc == None) {
             gc = menuPtr->indicatorGC;
         }
-        if ((mePtr->type == CHECK_BUTTON_ENTRY) && mePtr->indicatorOn)
-        {
+        if ((mePtr->type == CHECK_BUTTON_ENTRY) && mePtr->indicatorOn) {
             int dim, x, y;
 
             dim = mePtr->indicatorDiameter;
@@ -2590,8 +2314,7 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
             x += DECORATION_BORDER_WIDTH;
             y += DECORATION_BORDER_WIDTH;
             dim -= 2 * DECORATION_BORDER_WIDTH;
-            if ((dim > 0) && (mePtr->flags & ENTRY_SELECTED))
-            {
+            if ((dim > 0) && (mePtr->flags & ENTRY_SELECTED)) {
                 XFillRectangle(menuPtr->display,
                                Tk_WindowId(tkwin),
                                gc,
@@ -2606,8 +2329,7 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
          * Draw radio-button indicator.
          */
 
-        if ((mePtr->type == RADIO_BUTTON_ENTRY) && mePtr->indicatorOn)
-        {
+        if ((mePtr->type == RADIO_BUTTON_ENTRY) && mePtr->indicatorOn) {
             XPoint points[4];
             int radius;
 
@@ -2622,8 +2344,7 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
             points[2].y = points[0].y;
             points[3].x = points[1].x;
             points[3].y = points[0].y - radius;
-            if (mePtr->flags & ENTRY_SELECTED)
-            {
+            if (mePtr->flags & ENTRY_SELECTED) {
                 XFillPolygon(menuPtr->display,
                              Tk_WindowId(tkwin),
                              gc,
@@ -2631,9 +2352,7 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
                              4,
                              Convex,
                              CoordModeOrigin);
-            }
-            else
-            {
+            } else {
                 Tk_Fill3DPolygon(menuPtr->tkwin,
                                  Tk_WindowId(tkwin),
                                  menuPtr->border,
@@ -2655,8 +2374,7 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
          * Draw separator.
          */
 
-        if (mePtr->type == SEPARATOR_ENTRY)
-        {
+        if (mePtr->type == SEPARATOR_ENTRY) {
             XPoint points[2];
 
             points[0].x = 0;
@@ -2676,8 +2394,7 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
          * Draw tear-off line.
          */
 
-        if (mePtr->type == TEAROFF_ENTRY)
-        {
+        if (mePtr->type == TEAROFF_ENTRY) {
             XPoint points[2];
             int width, maxX;
 
@@ -2687,11 +2404,9 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
             width = 6;
             maxX = Tk_Width(tkwin) - 1;
 
-            while (points[0].x < maxX)
-            {
+            while (points[0].x < maxX) {
                 points[1].x = points[0].x + width;
-                if (points[1].x > maxX)
-                {
+                if (points[1].x > maxX) {
                     points[1].x = maxX;
                 }
                 Tk_Draw3DPolygon(menuPtr->tkwin,
@@ -2710,8 +2425,8 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
          * foreground color, generate the stippled effect.
          */
 
-        if ((mePtr->state == tkDisabledUid) && (menuPtr->disabledFg == NULL))
-        {
+        if ((mePtr->state == tkDisabledUid)
+            && (menuPtr->disabledFg == NULL)) {
             XFillRectangle(
             menuPtr->display,
             Tk_WindowId(tkwin),
@@ -2728,18 +2443,14 @@ static void DisplayMenu(clientData) ClientData clientData; /* Information
      * clear it.
      */
 
-    if (menuPtr->numEntries >= 1)
-    {
+    if (menuPtr->numEntries >= 1) {
         mePtr = menuPtr->entries[menuPtr->numEntries - 1];
         y = mePtr->y + mePtr->height;
-    }
-    else
-    {
+    } else {
         y = menuPtr->borderWidth;
     }
     height = Tk_Height(tkwin) - menuPtr->borderWidth - y;
-    if (height > 0)
-    {
+    if (height > 0) {
         Tk_Fill3DRectangle(tkwin,
                            Tk_WindowId(tkwin),
                            menuPtr->border,
@@ -2794,68 +2505,50 @@ int *indexPtr;      /* Where to store converted relief. */
 {
     int i, y;
 
-    if ((string[0] == 'a') && (strcmp(string, "active") == 0))
-    {
+    if ((string[0] == 'a') && (strcmp(string, "active") == 0)) {
         *indexPtr = menuPtr->active;
         return TCL_OK;
     }
 
     if (((string[0] == 'l') && (strcmp(string, "last") == 0))
-        || ((string[0] == 'e') && (strcmp(string, "end") == 0)))
-    {
+        || ((string[0] == 'e') && (strcmp(string, "end") == 0))) {
         *indexPtr = menuPtr->numEntries - ((lastOK) ? 0 : 1);
         return TCL_OK;
     }
 
-    if ((string[0] == 'n') && (strcmp(string, "none") == 0))
-    {
+    if ((string[0] == 'n') && (strcmp(string, "none") == 0)) {
         *indexPtr = -1;
         return TCL_OK;
     }
 
-    if (string[0] == '@')
-    {
-        if (Tcl_GetInt(interp, string + 1, &y) == TCL_OK)
-        {
-            for (i = 0; i < menuPtr->numEntries; i++)
-            {
+    if (string[0] == '@') {
+        if (Tcl_GetInt(interp, string + 1, &y) == TCL_OK) {
+            for (i = 0; i < menuPtr->numEntries; i++) {
                 MenuEntry *mePtr = menuPtr->entries[i];
 
-                if (y < (mePtr->y + mePtr->height))
-                {
+                if (y < (mePtr->y + mePtr->height)) {
                     break;
                 }
             }
-            if (i >= menuPtr->numEntries)
-            {
+            if (i >= menuPtr->numEntries) {
                 i = menuPtr->numEntries - 1;
             }
             *indexPtr = i;
             return TCL_OK;
-        }
-        else
-        {
+        } else {
             Tcl_SetResult(interp, ( char * )NULL, TCL_STATIC);
         }
     }
 
-    if (isdigit(UCHAR(string[0])))
-    {
-        if (Tcl_GetInt(interp, string, &i) == TCL_OK)
-        {
-            if (i >= menuPtr->numEntries)
-            {
-                if (lastOK)
-                {
+    if (isdigit(UCHAR(string[0]))) {
+        if (Tcl_GetInt(interp, string, &i) == TCL_OK) {
+            if (i >= menuPtr->numEntries) {
+                if (lastOK) {
                     i = menuPtr->numEntries;
-                }
-                else
-                {
+                } else {
                     i = menuPtr->numEntries - 1;
                 }
-            }
-            else if (i < 0)
-            {
+            } else if (i < 0) {
                 i = -1;
             }
             *indexPtr = i;
@@ -2864,14 +2557,12 @@ int *indexPtr;      /* Where to store converted relief. */
         Tcl_SetResult(interp, ( char * )NULL, TCL_STATIC);
     }
 
-    for (i = 0; i < menuPtr->numEntries; i++)
-    {
+    for (i = 0; i < menuPtr->numEntries; i++) {
         char *label;
 
         label = menuPtr->entries[i]->label;
         if ((label != NULL)
-            && (Tcl_StringMatch(menuPtr->entries[i]->label, string)))
-        {
+            && (Tcl_StringMatch(menuPtr->entries[i]->label, string))) {
             *indexPtr = i;
             return TCL_OK;
         }
@@ -2906,29 +2597,21 @@ static void MenuEventProc(clientData,
 XEvent *eventPtr; /* Information about event. */
 {
     Menu *menuPtr = ( Menu * )clientData;
-    if ((eventPtr->type == Expose) && (eventPtr->xexpose.count == 0))
-    {
+    if ((eventPtr->type == Expose) && (eventPtr->xexpose.count == 0)) {
         EventuallyRedrawMenu(menuPtr, ( MenuEntry * )NULL);
-    }
-    else if (eventPtr->type == ConfigureNotify)
-    {
+    } else if (eventPtr->type == ConfigureNotify) {
         EventuallyRedrawMenu(menuPtr, ( MenuEntry * )NULL);
-    }
-    else if (eventPtr->type == DestroyNotify)
-    {
-        if (menuPtr->tkwin != NULL)
-        {
+    } else if (eventPtr->type == DestroyNotify) {
+        if (menuPtr->tkwin != NULL) {
             menuPtr->tkwin = NULL;
             Tcl_DeleteCommand(
             menuPtr->interp,
             Tcl_GetCommandName(menuPtr->interp, menuPtr->widgetCmd));
         }
-        if (menuPtr->flags & REDRAW_PENDING)
-        {
+        if (menuPtr->flags & REDRAW_PENDING) {
             Tcl_CancelIdleCall(DisplayMenu, ( ClientData )menuPtr);
         }
-        if (menuPtr->flags & RESIZE_PENDING)
-        {
+        if (menuPtr->flags & RESIZE_PENDING) {
             Tcl_CancelIdleCall(ComputeMenuGeometry, ( ClientData )menuPtr);
         }
         Tcl_EventuallyFree(( ClientData )menuPtr, DestroyMenu);
@@ -2966,8 +2649,7 @@ ClientData clientData; /* Pointer to widget record for widget. */
      * destroys the widget.
      */
 
-    if (tkwin != NULL)
-    {
+    if (tkwin != NULL) {
         menuPtr->tkwin = NULL;
         Tk_DestroyWindow(tkwin);
     }
@@ -3009,16 +2691,13 @@ int type;  /* The type of the new entry. */
 
     newEntries = ( MenuEntry ** )ckalloc(
     ( unsigned )((menuPtr->numEntries + 1) * sizeof(MenuEntry *)));
-    for (i = 0; i < index; i++)
-    {
+    for (i = 0; i < index; i++) {
         newEntries[i] = menuPtr->entries[i];
     }
-    for (; i < menuPtr->numEntries; i++)
-    {
+    for (; i < menuPtr->numEntries; i++) {
         newEntries[i + 1] = menuPtr->entries[i];
     }
-    if (menuPtr->numEntries != 0)
-    {
+    if (menuPtr->numEntries != 0) {
         ckfree(( char * )menuPtr->entries);
     }
     menuPtr->entries = newEntries;
@@ -3093,25 +2772,19 @@ char **argv;        /* Arguments to command:  first arg
     size_t length;
     MenuEntry *mePtr;
 
-    if (indexString != NULL)
-    {
-        if (GetMenuIndex(interp, menuPtr, indexString, 1, &index) != TCL_OK)
-        {
+    if (indexString != NULL) {
+        if (GetMenuIndex(interp, menuPtr, indexString, 1, &index) != TCL_OK) {
             return TCL_ERROR;
         }
-    }
-    else
-    {
+    } else {
         index = menuPtr->numEntries;
     }
-    if (index < 0)
-    {
+    if (index < 0) {
         Tcl_AppendResult(
         interp, "bad index \"", indexString, "\"", ( char * )NULL);
         return TCL_ERROR;
     }
-    if (menuPtr->tearOff && (index == 0))
-    {
+    if (menuPtr->tearOff && (index == 0)) {
         index = 1;
     }
 
@@ -3122,30 +2795,19 @@ char **argv;        /* Arguments to command:  first arg
     c = argv[0][0];
     length = strlen(argv[0]);
     if ((c == 'c') && (strncmp(argv[0], "cascade", length) == 0)
-        && (length >= 2))
-    {
+        && (length >= 2)) {
         type = CASCADE_ENTRY;
-    }
-    else if ((c == 'c') && (strncmp(argv[0], "checkbutton", length) == 0)
-             && (length >= 2))
-    {
+    } else if ((c == 'c') && (strncmp(argv[0], "checkbutton", length) == 0)
+               && (length >= 2)) {
         type = CHECK_BUTTON_ENTRY;
-    }
-    else if ((c == 'c') && (strncmp(argv[0], "command", length) == 0)
-             && (length >= 2))
-    {
+    } else if ((c == 'c') && (strncmp(argv[0], "command", length) == 0)
+               && (length >= 2)) {
         type = COMMAND_ENTRY;
-    }
-    else if ((c == 'r') && (strncmp(argv[0], "radiobutton", length) == 0))
-    {
+    } else if ((c == 'r') && (strncmp(argv[0], "radiobutton", length) == 0)) {
         type = RADIO_BUTTON_ENTRY;
-    }
-    else if ((c == 's') && (strncmp(argv[0], "separator", length) == 0))
-    {
+    } else if ((c == 's') && (strncmp(argv[0], "separator", length) == 0)) {
         type = SEPARATOR_ENTRY;
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "bad menu entry type \"",
                          argv[0],
@@ -3157,11 +2819,9 @@ char **argv;        /* Arguments to command:  first arg
     mePtr = MenuNewEntry(menuPtr, index, type);
     if (ConfigureMenuEntry(
         interp, menuPtr, mePtr, index, argc - 1, argv + 1, 0)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         DestroyMenuEntry(( ClientData )mePtr);
-        for (i = index + 1; i < menuPtr->numEntries; i++)
-        {
+        for (i = index + 1; i < menuPtr->numEntries; i++) {
             menuPtr->entries[i - 1] = menuPtr->entries[i];
         }
         menuPtr->numEntries--;
@@ -3208,11 +2868,10 @@ int flags;             /* Describes what just happened. */
      * trace unless the whole interpreter is going away.
      */
 
-    if (flags & TCL_TRACE_UNSETS)
-    {
+    if (flags & TCL_TRACE_UNSETS) {
         mePtr->flags &= ~ENTRY_SELECTED;
-        if ((flags & TCL_TRACE_DESTROYED) && !(flags & TCL_INTERP_DESTROYED))
-        {
+        if ((flags & TCL_TRACE_DESTROYED)
+            && !(flags & TCL_INTERP_DESTROYED)) {
             Tcl_TraceVar(interp,
                          mePtr->name,
                          TCL_GLOBAL_ONLY | TCL_TRACE_WRITES
@@ -3230,24 +2889,17 @@ int flags;             /* Describes what just happened. */
      */
 
     value = Tcl_GetVar(interp, mePtr->name, TCL_GLOBAL_ONLY);
-    if (value == NULL)
-    {
+    if (value == NULL) {
         value = "";
     }
-    if (strcmp(value, mePtr->onValue) == 0)
-    {
-        if (mePtr->flags & ENTRY_SELECTED)
-        {
+    if (strcmp(value, mePtr->onValue) == 0) {
+        if (mePtr->flags & ENTRY_SELECTED) {
             return ( char * )NULL;
         }
         mePtr->flags |= ENTRY_SELECTED;
-    }
-    else if (mePtr->flags & ENTRY_SELECTED)
-    {
+    } else if (mePtr->flags & ENTRY_SELECTED) {
         mePtr->flags &= ~ENTRY_SELECTED;
-    }
-    else
-    {
+    } else {
         return ( char * )NULL;
     }
     EventuallyRedrawMenu(menuPtr, ( MenuEntry * )NULL);
@@ -3279,24 +2931,18 @@ MenuEntry *mePtr; /* Entry to redraw.  NULL means redraw
                    * all the entries in the menu. */
 {
     int i;
-    if (menuPtr->tkwin == NULL)
-    {
+    if (menuPtr->tkwin == NULL) {
         return;
     }
-    if (mePtr != NULL)
-    {
+    if (mePtr != NULL) {
         mePtr->flags |= ENTRY_NEEDS_REDISPLAY;
-    }
-    else
-    {
-        for (i = 0; i < menuPtr->numEntries; i++)
-        {
+    } else {
+        for (i = 0; i < menuPtr->numEntries; i++) {
             menuPtr->entries[i]->flags |= ENTRY_NEEDS_REDISPLAY;
         }
     }
     if ((menuPtr->tkwin == NULL) || !Tk_IsMapped(menuPtr->tkwin)
-        || (menuPtr->flags & REDRAW_PENDING))
-    {
+        || (menuPtr->flags & REDRAW_PENDING)) {
         return;
     }
     Tcl_DoWhenIdle(DisplayMenu, ( ClientData )menuPtr);
@@ -3335,13 +2981,11 @@ MenuEntry *mePtr;   /* Info about submenu that is to be
     int result, x, y;
     Tk_Window tkwin;
 
-    if (mePtr == menuPtr->postedCascade)
-    {
+    if (mePtr == menuPtr->postedCascade) {
         return TCL_OK;
     }
 
-    if (menuPtr->postedCascade != NULL)
-    {
+    if (menuPtr->postedCascade != NULL) {
         /*
          * Note: when unposting a submenu, we have to redraw the entire
          * parent menu.  This is because of a combination of the following
@@ -3363,27 +3007,23 @@ MenuEntry *mePtr;   /* Info about submenu that is to be
         result = Tcl_VarEval(
         interp, menuPtr->postedCascade->name, " unpost", ( char * )NULL);
         menuPtr->postedCascade = NULL;
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             return result;
         }
     }
 
     if ((mePtr != NULL) && (mePtr->name != NULL)
-        && Tk_IsMapped(menuPtr->tkwin))
-    {
+        && Tk_IsMapped(menuPtr->tkwin)) {
         /*
          * Make sure that the cascaded submenu is a child of the
          * parent menu.
          */
 
         tkwin = Tk_NameToWindow(interp, mePtr->name, menuPtr->tkwin);
-        if (tkwin == NULL)
-        {
+        if (tkwin == NULL) {
             return TCL_ERROR;
         }
-        if (Tk_Parent(tkwin) != menuPtr->tkwin)
-        {
+        if (Tk_Parent(tkwin) != menuPtr->tkwin) {
             Tcl_AppendResult(interp,
                              "cascaded sub-menu ",
                              Tk_PathName(tkwin),
@@ -3405,8 +3045,7 @@ MenuEntry *mePtr;   /* Info about submenu that is to be
         sprintf(string, "%d %d", x, y);
         result
         = Tcl_VarEval(interp, mePtr->name, " post ", string, ( char * )NULL);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             return result;
         }
         menuPtr->postedCascade = mePtr;
@@ -3442,8 +3081,7 @@ int index; /* Index of entry to activate, or
     MenuEntry *mePtr;
     int result = TCL_OK;
 
-    if (menuPtr->active >= 0)
-    {
+    if (menuPtr->active >= 0) {
         mePtr = menuPtr->entries[menuPtr->active];
 
         /*
@@ -3451,15 +3089,13 @@ int index; /* Index of entry to activate, or
          * might already have been changed to disabled).
          */
 
-        if (mePtr->state == tkActiveUid)
-        {
+        if (mePtr->state == tkActiveUid) {
             mePtr->state = tkNormalUid;
         }
         EventuallyRedrawMenu(menuPtr, menuPtr->entries[menuPtr->active]);
     }
     menuPtr->active = index;
-    if (index >= 0)
-    {
+    if (index >= 0) {
         mePtr = menuPtr->entries[index];
         mePtr->state = tkActiveUid;
         EventuallyRedrawMenu(menuPtr, mePtr);
@@ -3495,8 +3131,7 @@ int imgWidth, imgHeight; /* New dimensions of image. */
 {
     Menu *menuPtr = (( MenuEntry * )clientData)->menuPtr;
 
-    if ((menuPtr->tkwin != NULL) && !(menuPtr->flags & RESIZE_PENDING))
-    {
+    if ((menuPtr->tkwin != NULL) && !(menuPtr->flags & RESIZE_PENDING)) {
         menuPtr->flags |= RESIZE_PENDING;
         Tcl_DoWhenIdle(ComputeMenuGeometry, ( ClientData )menuPtr);
     }
@@ -3532,8 +3167,7 @@ int imgWidth, imgHeight; /* New dimensions of image. */
     MenuEntry *mePtr = ( MenuEntry * )clientData;
 
     if ((mePtr->flags & ENTRY_SELECTED)
-        && !(mePtr->menuPtr->flags & REDRAW_PENDING))
-    {
+        && !(mePtr->menuPtr->flags & REDRAW_PENDING)) {
         mePtr->menuPtr->flags |= REDRAW_PENDING;
         Tcl_DoWhenIdle(DisplayMenu, ( ClientData )mePtr->menuPtr);
     }

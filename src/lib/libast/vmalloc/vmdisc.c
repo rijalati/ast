@@ -45,8 +45,7 @@ Vmdisc_t *disc;
 {
     Vmdisc_t *old = vm->disc;
 
-    if (disc)
-    {
+    if (disc) {
         if (old->exceptf
             && (*old->exceptf)(vm, VM_DISC, ( Void_t * )disc, old) != 0)
             return NIL(Vmdisc_t *);

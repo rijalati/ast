@@ -63,15 +63,12 @@ Void_t **out;
     /* compute the transform */
     dt = ( Vcchar_t * )data;
     bw = output;
-    for (k = 0; k < size; ++k)
-    {
+    for (k = 0; k < size; ++k) {
         if (idx[k] == 0) /* special coding of the 0th position */
         {                /**/
             DEBUG_ASSERT(k == sp);
             bw[k] = k == 0 ? 0 : bw[k - 1];
-        }
-        else
-        { /**/
+        } else { /**/
             DEBUG_ASSERT(idx[k] < size);
             bw[k] = dt[idx[k] - 1];
         }
@@ -145,24 +142,21 @@ Void_t **out;
 
     for (k = 0; k < 256; ++k)
         base[k] = 0;
-    for (n = 0; n <= sz; ++n)
-    {
+    for (n = 0; n <= sz; ++n) {
         if (n == sp)
             continue;
         pick[n] = base[dt[n]];
         base[dt[n]] += 1;
     }
 
-    for (b = 0, n = 0; n < 256; ++n)
-    {
+    for (b = 0, n = 0; n < 256; ++n) {
         k = base[n];
         base[n] = b;
         b += k;
     }
 
     /* construct string from right to left */
-    for (n = sz, k = sz - 1; k >= 0; --k)
-    {
+    for (n = sz, k = sz - 1; k >= 0; --k) {
         output[k] = dt[n];
         n = base[dt[n]] + pick[n]; /**/
         DEBUG_ASSERT(n != sp || k == 0);

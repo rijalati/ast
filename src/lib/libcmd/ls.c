@@ -448,8 +448,7 @@ printable(State_t *state, char *s)
     wchar_t w;
     Mbstate_t q;
 
-    if (state->lsflags & LS_ESCAPE)
-    {
+    if (state->lsflags & LS_ESCAPE) {
         if (!(state->lsflags & LS_QUOTE))
             return fmtesc(s);
         if (state->lsflags & LS_SHELL)
@@ -461,12 +460,10 @@ printable(State_t *state, char *s)
         return fmtquote(s, "\"", "\"", strlen(s), FMT_ALWAYS);
     }
     c = strlen(s) + 4;
-    if (c > state->prsize)
-    {
+    if (c > state->prsize) {
         state->prsize = roundof(c, 512);
         if (!(state->prdata
-              = vmnewof(state->vm, state->prdata, char, state->prsize, 0)))
-        {
+              = vmnewof(state->vm, state->prdata, char, state->prsize, 0))) {
             error(ERROR_SYSTEM | 2, "out of space");
             return 0;
         }
@@ -477,16 +474,13 @@ printable(State_t *state, char *s)
     if (!mbwide())
         while (c = *s++)
             *t++ = (iscntrl(c) || !isprint(c)) ? '?' : c;
-    else
-    {
+    else {
         mbinit(&q);
         for (p = s; c = mbchar(&w, s, MB_LEN_MAX, &q);)
-            if (mberrno(&q))
-            {
+            if (mberrno(&q)) {
                 s++;
                 *t++ = '?';
-            }
-            else if (mbwidth(c) <= 0)
+            } else if (mbwidth(c) <= 0)
                 *t++ = '?';
             else
                 while (p < s)
@@ -525,10 +519,8 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
     else
         st = 0;
     t = TMX_NOTIME;
-    if (!(kp = ( Key_t * )dtmatch(state->keys, fp->t_str)))
-    {
-        if (*fp->t_str != '$')
-        {
+    if (!(kp = ( Key_t * )dtmatch(state->keys, fp->t_str))) {
+        if (*fp->t_str != '$') {
             error(2, "%s: unknown format key", fp->t_str);
             return 0;
         }
@@ -540,8 +532,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
         kp->index = KEY_environ;
         kp->disable = 1;
     }
-    if (kp->macro && !kp->disable)
-    {
+    if (kp->macro && !kp->disable) {
         kp->disable = 1;
         if (!mp && !(mp = sfstropen()))
             goto nospace;
@@ -549,13 +540,10 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
         if (!(s = sfstruse(mp)))
             goto nospace;
         kp->disable = 0;
-    }
-    else
-        switch (kp->index)
-        {
+    } else
+        switch (kp->index) {
         case KEY_atime:
-            if (st)
-            {
+            if (st) {
                 n = st->st_atime;
                 t = tmxgetatime(st);
             }
@@ -567,8 +555,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
                 n = BLOCKS(state, st);
             break;
         case KEY_ctime:
-            if (st)
-            {
+            if (st) {
                 n = st->st_ctime;
                 t = tmxgetctime(st);
             }
@@ -598,23 +585,20 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
                     : minor(st->st_dev);
             break;
         case KEY_dir_blocks:
-            if (!state->scale)
-            {
+            if (!state->scale) {
                 n = state->list.count.blocks;
                 break;
             }
             /*FALLTHROUGH*/
         case KEY_dir_bytes:
             n = state->list.count.bytes;
-            if (state->scale)
-            {
+            if (state->scale) {
                 s = fmtscale(n, state->scale);
                 fp->fmt = 's';
             }
             break;
         case KEY_dir_count:
-            if (ent != state->top)
-            {
+            if (ent != state->top) {
                 if (state->lsflags & LS_SEPARATE)
                     n = state->directories;
                 else if (state->lsflags & LS_LABEL)
@@ -632,8 +616,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
             s = state->flags;
             break;
         case KEY_gid:
-            if (st)
-            {
+            if (st) {
                 if (fp->fmt == 's')
                     s = fmtgid(st->st_gid);
                 else
@@ -645,13 +628,11 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
                 n = st->st_ino;
             break;
         case KEY_linkpath:
-            if (ent && (ent->fts_info & FTS_SL))
-            {
+            if (ent && (ent->fts_info & FTS_SL)) {
                 char *dirnam;
                 int c;
 
-                if ((st->st_size + 1) > state->txtsize)
-                {
+                if ((st->st_size + 1) > state->txtsize) {
                     state->txtsize = roundof(st->st_size + 1, 512);
                     if (!(state->txtdata = vmnewof(
                           state->vm, state->txtdata, char, state->txtsize, 0)))
@@ -659,8 +640,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
                 }
                 if (*ent->fts_name == '/' || !state->list.dirnam)
                     dirnam = ent->fts_name;
-                else
-                {
+                else {
                     sfprintf(state->tmp,
                              "%s/%s",
                              state->list.dirnam
@@ -671,8 +651,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
                 }
                 c = pathgetlink(dirnam, state->txtdata, state->txtsize);
                 s = (c > 0) ? PRINTABLE(state, state->txtdata) : "";
-            }
-            else
+            } else
                 return 0;
             break;
         case KEY_linkop:
@@ -717,8 +696,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
                 arg = fmt_mode;
             break;
         case KEY_mtime:
-            if (st)
-            {
+            if (st) {
                 n = st->st_mtime;
                 t = tmxgetmtime(st);
             }
@@ -745,27 +723,23 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
                 arg = fmt_perm;
             break;
         case KEY_size:
-            if (st)
-            {
+            if (st) {
                 n = st->st_size;
-                if (state->scale)
-                {
+                if (state->scale) {
                     s = fmtscale(n, state->scale);
                     fp->fmt = 's';
                 }
             }
             break;
         case KEY_total_blocks:
-            if (!state->scale)
-            {
+            if (!state->scale) {
                 n = state->total.blocks;
                 break;
             }
             /*FALLTHROUGH*/
         case KEY_total_bytes:
             n = state->total.bytes;
-            if (state->scale)
-            {
+            if (state->scale) {
                 s = fmtscale(n, state->scale);
                 fp->fmt = 's';
             }
@@ -774,8 +748,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
             n = state->total.files;
             break;
         case KEY_uid:
-            if (st)
-            {
+            if (st) {
                 if (fp->fmt == 's')
                     s = fmtuid(st->st_uid);
                 else
@@ -789,11 +762,9 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
         default:
             return 0;
         }
-    if (s)
-    {
+    if (s) {
         *ps = s;
-        if (mbwide())
-        {
+        if (mbwide()) {
             char *p;
             wchar_t w;
             Mbstate_t q;
@@ -806,33 +777,27 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
                 else if ((i = mbwidth(w)) >= 0)
                     state->adjust -= (s - p) + i - 2;
         }
-    }
-    else if (fp->fmt == 's' && arg)
-    {
+    } else if (fp->fmt == 's' && arg) {
         if (strneq(arg, fmt_mode, sizeof(fmt_mode) - 1))
             *ps = fmtmode(n, 0);
         else if (strneq(arg, fmt_perm, sizeof(fmt_perm) - 1))
             *ps = fmtperm(n & S_IPERM);
-        else
-        {
-            if (strneq(arg, fmt_time, sizeof(fmt_time) - 1))
-            {
+        else {
+            if (strneq(arg, fmt_time, sizeof(fmt_time) - 1)) {
                 arg += sizeof(fmt_time) - 1;
                 if (*arg == '=')
                     arg++;
             }
             if (!*arg)
                 arg = state->timefmt;
-            if (( unsigned long )n >= state->testdate)
-            {
+            if (( unsigned long )n >= state->testdate) {
                 n = state->testdate;
                 t = TMX_NOTIME;
             }
             *ps
             = t == TMX_NOTIME ? fmttime(arg, ( time_t )n) : fmttmx(arg, t);
         }
-    }
-    else
+    } else
         *pn = n;
     return 1;
 nospace:
@@ -865,8 +830,7 @@ pr(State_t *state, FTSENT *ent, int fill)
         && S_ISLNK(ent->fts_statp->st_mode))
         ent->fts_info = FTS_SL;
 #endif
-    if (state->testsize && (ent->fts_info & FTS_F))
-    {
+    if (state->testsize && (ent->fts_info & FTS_F)) {
         ent->fts_statp->st_size <<= state->testsize;
         ent->fts_statp->st_blocks = ent->fts_statp->st_size / LS_BLOCKSIZE;
     }
@@ -874,8 +838,7 @@ pr(State_t *state, FTSENT *ent, int fill)
     state->adjust = 0;
     fill
     -= sfkeyprintf(sfstdout, state, state->format, key, NiL) + state->adjust;
-    if (!(state->lsflags & LS_COMMAS))
-    {
+    if (!(state->lsflags & LS_COMMAS)) {
         if (fill > 0)
             while (fill-- > 0)
                 sfputc(sfstdout, ' ');
@@ -905,15 +868,11 @@ col(State_t *state, FTSENT *ent, int length)
     state->list.ent = ent;
     if (keys[KEY_header].macro && ent->fts_level >= 0)
         sfkeyprintf(sfstdout, state, keys[KEY_header].macro, key, NiL);
-    if ((files = state->list.count.files) > 0)
-    {
-        if (!(state->lsflags & LS_COLUMNS) || length <= 0)
-        {
+    if ((files = state->list.count.files) > 0) {
+        if (!(state->lsflags & LS_COLUMNS) || length <= 0) {
             n = w = 1;
             a = 0;
-        }
-        else
-        {
+        } else {
             i = ent->fts_name[1];
             ent->fts_name[1] = 0;
             state->adjust = 2;
@@ -924,55 +883,44 @@ col(State_t *state, FTSENT *ent, int length)
             ent->fts_name[1] = i;
             n = ((state->width - (length + BETWEEN + 2)) < 0) ? 1 : 2;
         }
-        if (state->lsflags & LS_COMMAS)
-        {
+        if (state->lsflags & LS_COMMAS) {
             length = w - 1;
             i = 0;
             n = state->width;
             for (p = ent->fts_link; p; p = p->fts_link)
-                if (p->fts_number != INVISIBLE)
-                {
+                if (p->fts_number != INVISIBLE) {
                     if (!mbwide())
                         w = p->fts_namelen;
-                    else
-                    {
+                    else {
                         wchar_t x;
                         Mbstate_t q;
 
                         mbinit(&q);
                         for (s = p->fts_name;
                              w = mbchar(&x, s, MB_LEN_MAX, &q);)
-                            if (mberrno(&q))
-                            {
+                            if (mberrno(&q)) {
                                 s++;
                                 w++;
-                            }
-                            else if ((n = mbwidth(i)) > 0)
+                            } else if ((n = mbwidth(i)) > 0)
                                 w += n;
                     }
                     w += a;
-                    if ((n -= length + w) < 0)
-                    {
+                    if ((n -= length + w) < 0) {
                         n = state->width - (length + w);
                         if (i)
                             sfputr(sfstdout, ",\n", -1);
-                    }
-                    else if (i)
+                    } else if (i)
                         sfputr(sfstdout, ", ", -1);
                     pr(state, p, 0);
                     i = 1;
                 }
             if (i)
                 sfputc(sfstdout, '\n');
-        }
-        else if (n <= 1)
-        {
+        } else if (n <= 1) {
             for (p = ent->fts_link; p; p = p->fts_link)
                 if (p->fts_number != INVISIBLE)
                     pr(state, p, 0);
-        }
-        else
-        {
+        } else {
             FTSENT **x;
             int c;
             int j;
@@ -985,16 +933,14 @@ col(State_t *state, FTSENT *ent, int length)
             int w;
             int z;
 
-            if (files > state->sizsiz)
-            {
+            if (files > state->sizsiz) {
                 state->sizsiz = roundof(files, 64);
                 if (!(
                     state->siz = vmnewof(
                     state->vm, state->siz, unsigned short, state->sizsiz, 0)))
                     error(ERROR_SYSTEM | 2, "out of space");
             }
-            if ((files + 1) > state->vecsiz)
-            {
+            if ((files + 1) > state->vecsiz) {
                 state->vecsiz = roundof(files + 1, 64);
                 if (!(state->vec = vmnewof(
                       state->vm, state->vec, FTSENT *, state->vecsiz, 0)))
@@ -1007,14 +953,11 @@ col(State_t *state, FTSENT *ent, int length)
                     x[i++] = p;
             n = i / (state->width / (length + BETWEEN)) + 1;
             o = 0;
-            if ((state->lsflags & LS_ACROSS) && n > 1)
-            {
+            if ((state->lsflags & LS_ACROSS) && n > 1) {
                 c = (i - 1) / n + 1;
-                do
-                {
+                do {
                     w = -AFTER;
-                    for (j = 0; j < c; j++)
-                    {
+                    for (j = 0; j < c; j++) {
                         z = 0;
                         for (l = 0, r = j; l < n && r < i; r += c, l++)
                             if (z < (x[r]->fts_namelen + a))
@@ -1028,8 +971,7 @@ col(State_t *state, FTSENT *ent, int length)
                 n = o ? o : 1;
                 c = (i - 1) / n + 1;
                 k = 0;
-                for (j = 0; j < c; j++)
-                {
+                for (j = 0; j < c; j++) {
                     state->siz[k] = 0;
                     for (l = 0, r = j; l < n && r < i; r += c, l++)
                         if (state->siz[k] < x[r]->fts_namelen)
@@ -1042,35 +984,28 @@ col(State_t *state, FTSENT *ent, int length)
                         pr(state,
                            x[w],
                            l < (k - 1) && w < (i - 1) ? state->siz[l] : 0);
-            }
-            else
-            {
+            } else {
                 o = 0;
-                if (n > 1)
-                {
+                if (n > 1) {
                     if (!(q = i / n))
                         q = 1;
                     for (c = q;
                          (c - q) < 2 && c <= state->width / (BETWEEN + 1);
-                         ++c)
-                    {
+                         ++c) {
                         n = m = (i + c - 1) / c;
                         if ((r = i - m * c) > state->height)
                             n -= (r + c - 1) / c;
-                        for (; n <= m; n++)
-                        {
+                        for (; n <= m; n++) {
                             w = -AFTER;
                             j = 0;
-                            while (j < i)
-                            {
+                            while (j < i) {
                                 z = 0;
                                 for (l = 0; l < n && j < i; j++, l++)
                                     if (z < x[j]->fts_namelen)
                                         z = x[j]->fts_namelen;
                                 w += z + a + BETWEEN;
                             }
-                            if (w <= state->width)
-                            {
+                            if (w <= state->width) {
                                 q = c;
                                 o = n;
                                 break;
@@ -1080,8 +1015,7 @@ col(State_t *state, FTSENT *ent, int length)
                 }
                 n = o ? o : 1;
                 j = k = 0;
-                while (j < i)
-                {
+                while (j < i) {
                     state->siz[k] = 0;
                     for (l = 0; l < n && j < i; j++, l++)
                         if (state->siz[k] < x[j]->fts_namelen)
@@ -1175,14 +1109,12 @@ order_extension(FTSENT *f1, FTSENT *f2)
 
     x1 = strrchr(f1->fts_name, '.');
     x2 = strrchr(f2->fts_name, '.');
-    if (x1)
-    {
+    if (x1) {
         if (x2)
             n = strcoll(x1, x2);
         else
             n = 1;
-    }
-    else if (x2)
+    } else if (x2)
         n = -1;
     else
         n = 0;
@@ -1214,14 +1146,11 @@ order(FTSENT *const *f1, FTSENT *const *f2)
     int n;
 
     if ((state->lsflags & (LS_DIRECTORY | LS_LABEL)) == LS_LABEL
-        && (*f1)->fts_level == 0)
-    {
-        if ((*f1)->fts_info == FTS_D)
-        {
+        && (*f1)->fts_level == 0) {
+        if ((*f1)->fts_info == FTS_D) {
             if ((*f2)->fts_info != FTS_D)
                 return 1;
-        }
-        else if ((*f2)->fts_info == FTS_D)
+        } else if ((*f2)->fts_info == FTS_D)
             return -1;
     }
     n = (*state->order)(*f1, *f2);
@@ -1249,20 +1178,14 @@ dir(State_t *state, FTSENT *ent)
     state->list.count.blocks = 0;
     state->list.count.bytes = 0;
     state->list.count.files = 0;
-    for (p = ent->fts_link; p; p = p->fts_link)
-    {
+    for (p = ent->fts_link; p; p = p->fts_link) {
         if (p->fts_level == 0 && p->fts_info == FTS_D
-            && !(state->lsflags & LS_DIRECTORY))
-        {
+            && !(state->lsflags & LS_DIRECTORY)) {
             p->fts_number = INVISIBLE;
             top++;
-        }
-        else if (VISIBLE(state, p))
-        {
-            if (p->fts_info == FTS_NS)
-            {
-                if (ent->fts_level < 0 || !(state->lsflags & LS_NOSTAT))
-                {
+        } else if (VISIBLE(state, p)) {
+            if (p->fts_info == FTS_NS) {
+                if (ent->fts_level < 0 || !(state->lsflags & LS_NOSTAT)) {
                     if (ent->fts_path[0] == '.' && !ent->fts_path[1])
                         error(2, "%s: not found", p->fts_name);
                     else
@@ -1270,9 +1193,7 @@ dir(State_t *state, FTSENT *ent)
                         2, "%s/%s: not found", ent->fts_path, p->fts_name);
                     goto invisible;
                 }
-            }
-            else
-            {
+            } else {
                 state->list.count.blocks += BLOCKS(state, p->fts_statp);
                 state->list.count.bytes += p->fts_statp->st_size;
             }
@@ -1281,9 +1202,7 @@ dir(State_t *state, FTSENT *ent)
                 length = p->fts_namelen;
             if (!(state->lsflags & LS_RECURSIVE))
                 fts_set(NiL, p, FTS_SKIP);
-        }
-        else
-        {
+        } else {
         invisible:
             p->fts_number = INVISIBLE;
             fts_set(NiL, p, FTS_SKIP);
@@ -1294,14 +1213,11 @@ dir(State_t *state, FTSENT *ent)
     state->total.files += state->list.count.files;
     col(state, ent, length);
     state->lsflags |= LS_SEPARATE;
-    if (top)
-    {
-        if (state->list.count.files)
-        {
+    if (top) {
+        if (state->list.count.files) {
             state->directories++;
             state->top = 0;
-        }
-        else if (top > 1)
+        } else if (top > 1)
             state->top = 0;
         else
             state->top = ent->fts_link;
@@ -1318,13 +1234,11 @@ dir(State_t *state, FTSENT *ent)
 static int
 ls(State_t *state, FTSENT *ent)
 {
-    if (!VISIBLE(state, ent))
-    {
+    if (!VISIBLE(state, ent)) {
         fts_set(NiL, ent, FTS_SKIP);
         return 0;
     }
-    switch (ent->fts_info)
-    {
+    switch (ent->fts_info) {
     case FTS_NS:
         if (ent->fts_parent->fts_info == FTS_DNX)
             break;
@@ -1351,8 +1265,7 @@ ls(State_t *state, FTSENT *ent)
             break;
         if (!(state->lsflags & LS_RECURSIVE))
             fts_set(NiL, ent, FTS_SKIP);
-        else if (ent->fts_info == FTS_DNX)
-        {
+        else if (ent->fts_info == FTS_DNX) {
             error(
             2, "%s: cannot search directory", ent->fts_path, ent->fts_level);
             fts_set(NiL, ent, FTS_SKIP);
@@ -1365,8 +1278,7 @@ ls(State_t *state, FTSENT *ent)
         return 0;
     }
     fts_set(NiL, ent, FTS_SKIP);
-    if (ent->fts_level == 1)
-    {
+    if (ent->fts_level == 1) {
         memset(&state->list, 0, sizeof(state->list));
         state->list.ent = ent;
         pr(state, ent, 0);
@@ -1397,8 +1309,7 @@ walk(const char *path,
     FTSENT *dd[2];
 
     flags |= FTS_NOPOSTORDER;
-    if (!(f = fts_open(( char *const * )path, flags, comparf)))
-    {
+    if (!(f = fts_open(( char *const * )path, flags, comparf))) {
         if (!path || !(path = ( const char * )(*(( char ** )path))))
             return -1;
         ns = strlen(path) + 1;
@@ -1415,12 +1326,10 @@ walk(const char *path,
     }
     f->fts_handle = state;
     rv = 0;
-    if (e = fts_children(f, 0))
-    {
+    if (e = fts_children(f, 0)) {
         nd = 0;
         for (x = e; x; x = x->fts_link)
-            if (x->fts_info & FTS_DD)
-            {
+            if (x->fts_info & FTS_DD) {
                 x->fts_info &= ~FTS_DD;
                 dd[nd++] = x;
                 if (nd >= elementsof(dd))
@@ -1435,18 +1344,15 @@ walk(const char *path,
             if (!(x->fts_info & FTS_D))
                 x->_fts_status = FTS_SKIP;
     }
-    while (!rv && !sh_checksig(state->context) && (e = fts_read(f)))
-    {
+    while (!rv && !sh_checksig(state->context) && (e = fts_read(f))) {
         oi = e->fts_info;
         os = e->_fts_status;
         nd = 0;
-        switch (e->fts_info)
-        {
+        switch (e->fts_info) {
         case FTS_D:
         case FTS_DNX:
             for (x = fts_children(f, 0); x; x = x->fts_link)
-                if (x->fts_info & FTS_DD)
-                {
+                if (x->fts_info & FTS_DD) {
                     x->fts_info &= ~FTS_DD;
                     dd[nd++] = x;
                     if (nd >= elementsof(dd))
@@ -1511,8 +1417,7 @@ b_ls(int argc, char **argv, Shbltin_t *context)
     state.keydisc.link = offsetof(Key_t, link);
     if (!(fmt = sfstropen()) || !(state.tmp = sfstropen())
         || !(state.vm = vmopen(Vmdcheap, Vmbest, 0))
-        || !(state.keys = dtnew(state.vm, &state.keydisc, Dtset)))
-    {
+        || !(state.keys = dtnew(state.vm, &state.keydisc, Dtset))) {
         error(ERROR_SYSTEM | 2, "out of space");
         goto done;
     }
@@ -1534,8 +1439,7 @@ b_ls(int argc, char **argv, Shbltin_t *context)
         state.lsflags |= LS_RECURSIVE;
     else if (streq(s, "lsx"))
         state.lsflags |= LS_ACROSS | LS_COLUMNS;
-    else if (isatty(1))
-    {
+    else if (isatty(1)) {
         state.lsflags |= LS_COLUMNS;
         if (!strmatch(setlocale(LC_ALL, NiL), "*[Uu][Tt][Ff]?(-)8"))
             state.lsflags |= LS_PRINTABLE;
@@ -1545,10 +1449,8 @@ b_ls(int argc, char **argv, Shbltin_t *context)
     state.testdate = ~0;
     state.timefmt = "%?%l";
     lsflags = state.lsflags;
-    while (n = optget(argv, usage))
-    {
-        switch (n)
-        {
+    while (n = optget(argv, usage)) {
+        switch (n) {
         case 'a':
             set(&state, LS_ALL);
             break;
@@ -1630,8 +1532,7 @@ b_ls(int argc, char **argv, Shbltin_t *context)
             break;
         case 'w':
             state.width = strtol(opt_info.arg, &e, 0);
-            if (*e == 'x' || *e == 'X' || *e == '.' || *e == '+')
-            {
+            if (*e == 'x' || *e == 'X' || *e == '.' || *e == '+') {
                 state.height = state.width;
                 state.width = strtol(e + 1, &e, 0);
             }
@@ -1648,8 +1549,7 @@ b_ls(int argc, char **argv, Shbltin_t *context)
             if (!opt_info.arg)
                 state.order = order_none;
             else
-                switch (opt_info.num)
-                {
+                switch (opt_info.num) {
                 case 'a':
                     state.order = order_atime;
                     break;
@@ -1680,8 +1580,7 @@ b_ls(int argc, char **argv, Shbltin_t *context)
                 }
             break;
         case 'z':
-            switch (opt_info.num)
-            {
+            switch (opt_info.num) {
             case -10:
                 if (!strcmp(setlocale(LC_TIME, NiL), "C"))
                     break;
@@ -1704,15 +1603,13 @@ b_ls(int argc, char **argv, Shbltin_t *context)
                 break;
             case -12:
                 s = opt_info.arg + 1;
-                if (strchr(s, '\n'))
-                {
+                if (strchr(s, '\n')) {
                     /*
                      * gnu compatibility
                      */
 
                     s = sfprints("%%Q\n%s\n", s);
-                    if (!s || !(s = vmstrdup(state.vm, s)))
-                    {
+                    if (!s || !(s = vmstrdup(state.vm, s))) {
                         error(ERROR_SYSTEM | 2, "out of space");
                         goto done;
                     }
@@ -1734,25 +1631,21 @@ b_ls(int argc, char **argv, Shbltin_t *context)
         case 'D':
             if (s = strchr(opt_info.arg, '='))
                 *s++ = 0;
-            if (*opt_info.arg == 'n' && *(opt_info.arg + 1) == 'o')
-            {
+            if (*opt_info.arg == 'n' && *(opt_info.arg + 1) == 'o') {
                 opt_info.arg += 2;
                 s = 0;
             }
-            if (!(kp = ( Key_t * )dtmatch(state.keys, opt_info.arg)))
-            {
+            if (!(kp = ( Key_t * )dtmatch(state.keys, opt_info.arg))) {
                 if (!s)
                     break;
-                if (!(kp = vmnewof(state.vm, 0, Key_t, 1, 0)))
-                {
+                if (!(kp = vmnewof(state.vm, 0, Key_t, 1, 0))) {
                     error(ERROR_SYSTEM | 2, "out of space");
                     goto done;
                 }
                 kp->name = opt_info.arg;
                 dtinsert(state.keys, kp);
             }
-            if (kp->macro = s)
-            {
+            if (kp->macro = s) {
                 stresc(s);
                 if (strmatch(s, "*:case:*"))
                     state.lsflags |= LS_STAT;
@@ -1774,8 +1667,7 @@ b_ls(int argc, char **argv, Shbltin_t *context)
         case 'J':
             state.lsflags
             &= ~(LS_ALWAYS | LS_ESCAPE | LS_PRINTABLE | LS_QUOTE | LS_SHELL);
-            switch (opt_info.num)
-            {
+            switch (opt_info.num) {
             case 'c':
                 state.lsflags |= LS_ESCAPE | LS_PRINTABLE | LS_QUOTE;
                 break;
@@ -1826,15 +1718,13 @@ b_ls(int argc, char **argv, Shbltin_t *context)
             state.order = order_none;
             break;
         case 'V':
-            switch (opt_info.num)
-            {
+            switch (opt_info.num) {
             case 't':
                 if (!isatty(1))
                     break;
                 /*FALLTHROUGH*/
             case 'a':
-                if (kp = ( Key_t * )dtmatch(state.keys, "name"))
-                {
+                if (kp = ( Key_t * )dtmatch(state.keys, "name")) {
                     stresc(kp->macro = fmt_color);
                     state.lsflags |= LS_STAT;
                 }
@@ -1843,8 +1733,7 @@ b_ls(int argc, char **argv, Shbltin_t *context)
             break;
         case 'W':
             state.timeflags = 0;
-            switch (opt_info.num)
-            {
+            switch (opt_info.num) {
             case 'a':
                 state.timeflags = LS_ATIME;
                 break;
@@ -1857,8 +1746,7 @@ b_ls(int argc, char **argv, Shbltin_t *context)
             set(&state, LS_EXTENSION);
             break;
         case 'Y':
-            switch (opt_info.num)
-            {
+            switch (opt_info.num) {
             case 'a':
                 state.lsflags |= LS_ACROSS | LS_COLUMNS;
                 break;
@@ -1930,14 +1818,11 @@ b_ls(int argc, char **argv, Shbltin_t *context)
         state.order = order_name;
     if (!state.timeflags)
         state.timeflags = state.lsflags;
-    if (state.lsflags & (LS_COLUMNS | LS_COMMAS))
-    {
+    if (state.lsflags & (LS_COLUMNS | LS_COMMAS)) {
         if (state.lsflags & LS_LONG)
             state.lsflags &= ~(LS_COLUMNS | LS_COMMAS);
-        else
-        {
-            if (!state.width)
-            {
+        else {
+            if (!state.width) {
                 astwinsize(1, &state.height, &state.width);
                 if (state.width <= 20)
                     state.width = 80;
@@ -1955,19 +1840,16 @@ b_ls(int argc, char **argv, Shbltin_t *context)
                   | LS_INUMBER
 #endif
                   ))
-             && !sfstrtell(fmt))
-    {
+             && !sfstrtell(fmt)) {
         state.lsflags |= LS_NOSTAT;
         state.ftsflags |= FTS_NOSTAT | FTS_NOCHDIR;
     }
-    if (!sfstrtell(fmt))
-    {
+    if (!sfstrtell(fmt)) {
         if (state.lsflags & LS_INUMBER)
             sfputr(fmt, "%6(ino)u ", -1);
         if (state.lsflags & LS_BLOCKS)
             sfputr(fmt, "%5(blocks)u ", -1);
-        if (state.lsflags & LS_LONG)
-        {
+        if (state.lsflags & LS_LONG) {
             sfputr(fmt, "%(mode)s %3(nlink)u", -1);
             if (!(state.lsflags & LS_NOUSER))
                 sfprintf(
@@ -1989,26 +1871,22 @@ b_ls(int argc, char **argv, Shbltin_t *context)
             sfputr(fmt, "%(markdir)s", -1);
         if (state.lsflags & LS_LONG)
             sfputr(fmt, "%(linkop:case:?*: %(linkop)s %(linkpath)s)s", -1);
-    }
-    else
+    } else
         sfstrseek(fmt, -1, SEEK_CUR);
-    if (!(state.format = sfstruse(fmt)))
-    {
+    if (!(state.format = sfstruse(fmt))) {
         error(ERROR_SYSTEM | 2, "out of space");
         goto done;
     }
     if (dump)
         sfprintf(sfstdout, "%s\n", state.format);
-    else
-    {
+    else {
         stresc(state.format);
 
         /*
          * do it
          */
 
-        if (!argv[0])
-        {
+        if (!argv[0]) {
             argv = av;
             argv[0] = ".";
             argv[1] = 0;

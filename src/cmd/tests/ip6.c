@@ -40,10 +40,8 @@ main(int argc, char **argv)
     int r;
     int all = 1;
 
-    while (s = *++argv)
-    {
-        if (*s == '-' && !*(s + 1))
-        {
+    while (s = *++argv) {
+        if (*s == '-' && !*(s + 1)) {
             all = !all;
             continue;
         }
@@ -51,8 +49,7 @@ main(int argc, char **argv)
         f = fmtip6(a, b);
         c = *e;
         *e = 0;
-        if (r || all || strcmp(s, f))
-        {
+        if (r || all || strcmp(s, f)) {
             *e = c;
             printf("%d %32s %32s %s\n", r, s, e, f);
         }

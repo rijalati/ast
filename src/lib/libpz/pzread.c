@@ -49,10 +49,8 @@ pzread(Pz_t *pz, void *buf, size_t z)
         return -1;
     else
         n = z;
-    if (writef = pz->disc->writef)
-    {
-        if (sfstrbuf(pz->str, buf, z, 0))
-        {
+    if (writef = pz->disc->writef) {
+        if (sfstrbuf(pz->str, buf, z, 0)) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(
                 pz, pz->disc, 2, "cannot initailize tmp stream");
@@ -63,21 +61,15 @@ pzread(Pz_t *pz, void *buf, size_t z)
             return -1;
         ob = pz->wrk;
         w = -1;
-    }
-    else
-    {
+    } else {
         ob = ( unsigned char * )buf;
         om = ob + n;
     }
-    if (pz->flags & PZ_FORCE)
-    {
-        if (writef)
-        {
+    if (pz->flags & PZ_FORCE) {
+        if (writef) {
             m = pz->part->row;
-            if (!(ob = ( unsigned char * )sfreserve(pz->io, m, 0)))
-            {
-                if (sfvalue(pz->io))
-                {
+            if (!(ob = ( unsigned char * )sfreserve(pz->io, m, 0))) {
+                if (sfvalue(pz->io)) {
                     if (pz->disc->errorf)
                         (*pz->disc->errorf)(
                         pz, pz->disc, 2, "%s: data corrupted", pz->path);
@@ -90,12 +82,9 @@ pzread(Pz_t *pz, void *buf, size_t z)
             if (z < n)
                 return -1;
             w = (z / n) * n;
-            while ((w -= n) > 0)
-            {
-                if (!(ob = ( unsigned char * )sfreserve(pz->io, m, 0)))
-                {
-                    if (sfvalue(pz->io))
-                    {
+            while ((w -= n) > 0) {
+                if (!(ob = ( unsigned char * )sfreserve(pz->io, m, 0))) {
+                    if (sfvalue(pz->io)) {
                         if (pz->disc->errorf)
                             (*pz->disc->errorf)(
                             pz, pz->disc, 2, "%s: data corrupted", pz->path);
@@ -107,14 +96,11 @@ pzread(Pz_t *pz, void *buf, size_t z)
                     return -1;
             }
             return ( ssize_t )sfstrtell(pz->str);
-        }
-        else
+        } else
             return sfread(pz->io, buf, n);
     }
-    if (pz->prefix.count)
-    {
-        if (pz->prefix.data)
-        {
+    if (pz->prefix.count) {
+        if (pz->prefix.data) {
             if (z < (m = pz->prefix.count))
                 m = z;
             memcpy(buf, pz->prefix.data, m);
@@ -124,23 +110,17 @@ pzread(Pz_t *pz, void *buf, size_t z)
         }
         pz->prefix.count = 0;
     }
-    for (;;)
-    {
-        if (!pz->rs.hi)
-        {
+    for (;;) {
+        if (!pz->rs.hi) {
             if (pz->rs.lo)
                 return 0;
-            if (!(m = sfgetu(pz->io)))
-            {
-                if ((k = sfgetc(pz->io)) == PZ_MARK_PART)
-                {
+            if (!(m = sfgetu(pz->io))) {
+                if ((k = sfgetc(pz->io)) == PZ_MARK_PART) {
                     if ((m = sfgetu(pz->io)) && !sferror(pz->io)
                         && !sfeof(pz->io)
-                        && (x = ( unsigned char * )sfreserve(pz->io, m, 0)))
-                    {
+                        && (x = ( unsigned char * )sfreserve(pz->io, m, 0))) {
                         r = om - ob;
-                        if (m > r)
-                        {
+                        if (m > r) {
                             sfungetc(pz->io, 0);
                             memcpy(ob, x, r);
                             pz->prefix.count = m - r;
@@ -150,11 +130,9 @@ pzread(Pz_t *pz, void *buf, size_t z)
                         memcpy(ob, x, m);
                         ob += m;
                     }
-                }
-                else if (k != -1)
+                } else if (k != -1)
                     sfungetc(pz->io, k);
-                switch (pzfile(pz))
-                {
+                switch (pzfile(pz)) {
                 case 0:
                     pz->rs.lo = 1;
                     goto done;
@@ -164,11 +142,9 @@ pzread(Pz_t *pz, void *buf, size_t z)
                     return -1;
                 }
             }
-            if (pp->nmap)
-            {
+            if (pp->nmap) {
                 if (m > pz->win || (m % pp->nmap)
-                    || sfread(pz->io, pz->buf, m) != m)
-                {
+                    || sfread(pz->io, pz->buf, m) != m) {
                     if (pz->disc->errorf)
                         (*pz->disc->errorf)(pz,
                                             pz->disc,
@@ -181,8 +157,7 @@ pzread(Pz_t *pz, void *buf, size_t z)
                 m = 0;
                 j = 0;
                 k = 0;
-                for (i = 0; i < pp->nmap; i++)
-                {
+                for (i = 0; i < pp->nmap; i++) {
                     if (i > 0 && pp->lab[i] == pp->lab[i - 1])
                         j++;
                     else
@@ -191,9 +166,7 @@ pzread(Pz_t *pz, void *buf, size_t z)
                         pp->mix[k++] = pz->buf + j;
                     m += n;
                 }
-            }
-            else if (m != 1)
-            {
+            } else if (m != 1) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(pz,
                                         pz->disc,
@@ -203,8 +176,7 @@ pzread(Pz_t *pz, void *buf, size_t z)
                 return -1;
             }
             m = sfgetu(pz->io);
-            if (m < pp->row || sfread(pz->io, pz->pat, pp->row) != pp->row)
-            {
+            if (m < pp->row || sfread(pz->io, pz->pat, pp->row) != pp->row) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(pz,
                                         pz->disc,
@@ -214,8 +186,7 @@ pzread(Pz_t *pz, void *buf, size_t z)
                 return -1;
             }
             m -= pp->row;
-            if (sfread(pz->io, pz->nxt = pz->val, m) != m)
-            {
+            if (sfread(pz->io, pz->nxt = pz->val, m) != m) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(pz,
                                         pz->disc,
@@ -227,32 +198,26 @@ pzread(Pz_t *pz, void *buf, size_t z)
             pz->rs.hi = k;
             PZGETZ(pz, pz->io, pz->rs.lo, i);
         }
-        for (;;)
-        {
-            while (pz->rs.lo > 0)
-            {
+        for (;;) {
+            while (pz->rs.lo > 0) {
                 pz->rs.lo--;
                 memcpy(ob, pz->pat, pp->row);
-                for (i = 0; i < pz->rs.hi; i++)
-                {
+                for (i = 0; i < pz->rs.hi; i++) {
                     ob[pp->map[i]] = *pp->mix[i];
                     pp->mix[i] += pp->inc[i];
                 }
-                if (writef)
-                {
+                if (writef) {
                     if ((n = (*writef)(pz, pz->str, ob, pz->disc)) <= 0)
                         return -1;
                     if (w < 0)
                         w = (z / n) * (n - 1);
                     if ((w -= n) <= 0)
                         goto done;
-                }
-                else if ((ob += pp->row) >= om)
+                } else if ((ob += pp->row) >= om)
                     goto done;
             }
             PZGETP(pz, pz->io, m, i, break);
-            for (;;)
-            {
+            for (;;) {
                 pz->pat[m - 1] = *pz->nxt++;
                 PZGETP(pz, pz->io, m, i, break);
             }

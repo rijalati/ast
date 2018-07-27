@@ -74,8 +74,7 @@ delputl(int n, long v)
     int i;
     unsigned char c[4];
 
-    for (i = 0; i < n; ++i)
-    {
+    for (i = 0; i < n; ++i) {
         c[i] = ( unsigned char )(v % BASE);
         v /= BASE;
     }
@@ -88,13 +87,10 @@ delputl(int n, long v)
 static int
 delputs(long n, long addr)
 {
-    if (n < (Dend - Dnext))
-    {
+    if (n < (Dend - Dnext)) {
         memcpy(Dnext, Btar + addr, n);
         Dnext += n;
-    }
-    else
-    {
+    } else {
         if (delflush() < 0)
             return -1;
         if (write(Dfd, Btar + addr, n) != n)
@@ -111,15 +107,12 @@ putMove(Move *ip)
 
     inst = ip->type;
     inst |= (NBYTE(ip->size) & 07) << 3;
-    if (ip->type == DELTA_MOVE)
-    {
+    if (ip->type == DELTA_MOVE) {
         inst |= NBYTE(ip->addr) & 07;
         if (delputc(inst) < 0 || delputl(NBYTE(ip->size), ip->size) < 0
             || delputl(NBYTE(ip->addr), ip->addr) < 0)
             return -1;
-    }
-    else
-    {
+    } else {
         if (delputc(inst) < 0 || delputl(NBYTE(ip->size), ip->size) < 0
             || delputs(ip->size, ip->addr) < 0)
             return -1;
@@ -137,12 +130,10 @@ newMove(int type, long size, long addr, Move *last)
     ip->type = type;
     ip->size = size;
     ip->addr = addr;
-    if (last)
-    {
+    if (last) {
         last->next = ip;
         ip->last = last;
-    }
-    else
+    } else
         ip->last = 0;
     ip->next = 0;
     return ip;
@@ -173,8 +164,7 @@ makeAdd(char *beg, char *end, Move *last)
         return 0;
 
     /* remove small previous adjacent moves */
-    while (last)
-    {
+    while (last) {
         int a_size, cost_m, cost_a;
 
         if (last->type == DELTA_ADD)
@@ -193,15 +183,13 @@ makeAdd(char *beg, char *end, Move *last)
     }
 
     /* merge with adjacent adds */
-    if (last && last->type == DELTA_ADD)
-    {
+    if (last && last->type == DELTA_ADD) {
         ip->size += last->size;
         ip->addr -= last->size;
         last = delMove(last);
     }
 
-    if (last)
-    {
+    if (last) {
         last->next = ip;
         ip->last = last;
     }
@@ -220,8 +208,7 @@ chkMove(long m_size, long m_addr, long a_size)
         return 0;
 
     /* it's good but it may be better to merge it to an add */
-    if (a_size > 0)
-    {
+    if (a_size > 0) {
         int m_cost, a_cost;
 
         m_cost = cost_m + NBYTE(a_size) + a_size;
@@ -247,8 +234,7 @@ optMove(Move *s)
 
     m_cost = 0;
     a_cost = 0;
-    for (ip = s; ip; ip = ip->next)
-    {
+    for (ip = s; ip; ip = ip->next) {
         long cost_m, cost_a;
 
         if (ip->type == DELTA_ADD || ip->size > (M_MAX + A_MAX))
@@ -260,13 +246,11 @@ optMove(Move *s)
         /* costs of alternatives */
         cost_m = m_cost;
         cost_a = a_cost;
-        if (add > 0)
-        {
+        if (add > 0) {
             cost_m += 1 + add + NBYTE(add);
             cost_a += add;
         }
-        if (ip->next && ip->next->type == DELTA_ADD)
-        {
+        if (ip->next && ip->next->type == DELTA_ADD) {
             cost_m += 1 + ip->next->size + NBYTE(ip->next->size);
             cost_a += ip->next->size;
         }
@@ -278,8 +262,7 @@ optMove(Move *s)
 
         /* convert the entire sequence to an add */
         s->type = DELTA_ADD;
-        while (ip != s)
-        {
+        while (ip != s) {
             last = ip->last;
             s->size += ip->size;
             delMove(ip);
@@ -287,14 +270,12 @@ optMove(Move *s)
         }
 
         /* merge adjacent adds */
-        if ((last = s->last) && last->type == DELTA_ADD)
-        {
+        if ((last = s->last) && last->type == DELTA_ADD) {
             last->size += s->size;
             delMove(s);
             s = last;
         }
-        if (s->next && s->next->type == DELTA_ADD)
-        {
+        if (s->next && s->next->type == DELTA_ADD) {
             s->size += s->next->size;
             delMove(s->next);
         }
@@ -335,28 +316,23 @@ delta(char *src, long n_src, char *tar, long n_tar, int delfd)
     last = 0;
 
     /* try making suffix tree */
-    if (!(tree = n_tar > 0 ? bldsuftree(src, n_src) : ( Suftree * )0))
-    {
+    if (!(tree = n_tar > 0 ? bldsuftree(src, n_src) : ( Suftree * )0)) {
         /* not enough space for tree, remove matching prefix and suffix */
         for (; src <= esrc && tar <= etar; ++src, ++tar)
             if (*src != *tar)
                 break;
-        if ((size = src - Bsrc) > 0)
-        {
+        if ((size = src - Bsrc) > 0) {
             int cost_m, cost_a;
 
             cost_m = NBYTE(size) + NBYTE(0);
             cost_a = NBYTE(size) + size;
-            if (cost_m < cost_a)
-            {
+            if (cost_m < cost_a) {
                 moves = newMove(DELTA_MOVE, size, 0L, NiL);
                 if (!moves)
                     return -1;
                 n_src -= src - Bsrc;
                 n_tar -= tar - Btar;
-            }
-            else
-            {
+            } else {
                 src = Bsrc;
                 tar = Btar;
             }
@@ -365,11 +341,9 @@ delta(char *src, long n_src, char *tar, long n_tar, int delfd)
         for (sp = esrc, tp = etar; sp >= src && tp >= tar; --sp, --tp)
             if (*sp != *tp)
                 break;
-        if ((size = esrc - sp) > 0)
-        {
+        if ((size = esrc - sp) > 0) {
             addr = sp + 1 - Bsrc;
-            if (chkMove(size, addr, 0L) > 0)
-            {
+            if (chkMove(size, addr, 0L) > 0) {
                 last = newMove(DELTA_MOVE, size, addr, NiL);
                 if (!last)
                     return -1;
@@ -386,8 +360,7 @@ delta(char *src, long n_src, char *tar, long n_tar, int delfd)
 
     /* compute block moves */
     tp = 0;
-    while (n_tar > 0)
-    {
+    while (n_tar > 0) {
         char *match;
 
         if (tree)
@@ -401,10 +374,8 @@ delta(char *src, long n_src, char *tar, long n_tar, int delfd)
             size, ( long )(match - Bsrc), ( long )(tp ? tp - tar : 0));
 
         /* output a block move */
-        if (size > 0)
-        {
-            if (tp)
-            {
+        if (size > 0) {
+            if (tp) {
                 moves = makeAdd(tp, tar, moves);
                 if (!moves)
                     return -1;
@@ -415,9 +386,7 @@ delta(char *src, long n_src, char *tar, long n_tar, int delfd)
                 return -1;
             tar += size;
             n_tar -= size;
-        }
-        else
-        {
+        } else {
             if (!tp)
                 tp = tar;
             tar += 1;
@@ -426,10 +395,9 @@ delta(char *src, long n_src, char *tar, long n_tar, int delfd)
     }
 
     /* add any remaining blocks */
-    if (tp)
-    {
-        if (last && chkMove(last->size, last->addr, ( long )(tar - tp)) <= 0)
-        {
+    if (tp) {
+        if (last
+            && chkMove(last->size, last->addr, ( long )(tar - tp)) <= 0) {
             tar += last->size;
             last = delMove(last);
         }
@@ -437,8 +405,7 @@ delta(char *src, long n_src, char *tar, long n_tar, int delfd)
         if (!moves)
             return -1;
     }
-    if (last)
-    {
+    if (last) {
         moves->next = last;
         last->last = moves;
     }
@@ -450,8 +417,7 @@ delta(char *src, long n_src, char *tar, long n_tar, int delfd)
         mtchstring(NiL, 0L, NiL, 0L, NiL);
 
     /* optimize move instructions */
-    if (moves)
-    {
+    if (moves) {
         Move *ip;
 
         ip = moves;
@@ -467,8 +433,7 @@ delta(char *src, long n_src, char *tar, long n_tar, int delfd)
 
     /* write out the move instructions */
     addr = 0L;
-    while (moves)
-    {
+    while (moves) {
         if (moves->type == DELTA_ADD)
             moves->addr = addr;
         addr += moves->size;

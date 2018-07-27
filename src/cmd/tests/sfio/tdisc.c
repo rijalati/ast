@@ -101,14 +101,11 @@ Sfdisc_t *disc;
 {
     static int called = 0;
 
-    if (!called)
-    {
+    if (!called) {
         called = 1;
         strcpy(buf, "123456");
         return 6;
-    }
-    else
-    {
+    } else {
         terror("Discipline is called twice");
         return -1;
     }
@@ -172,8 +169,7 @@ tmain()
     sfdisc(f, &Udisc);
     if (!(s = sfreserve(f, n, 0)))
         terror("Reading string1");
-    if (strncmp(s, u, n) != 0)
-    {
+    if (strncmp(s, u, n) != 0) {
         s[n - 1] = 0;
         terror("Input1=%s, Expect=%s", s, u);
     }
@@ -182,8 +178,7 @@ tmain()
     sfdisc(f, &Ldisc);
     if (!(s = sfreserve(f, n, 0)))
         terror("Reading string2");
-    if (strncmp(s, l, n) != 0)
-    {
+    if (strncmp(s, l, n) != 0) {
         s[n - 1] = 0;
         terror("Input2=%s, Expect=%s", s, l);
     }

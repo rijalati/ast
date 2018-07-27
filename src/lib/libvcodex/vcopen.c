@@ -56,8 +56,7 @@ int flags;                               /* control flags		*/
     if (!meth || !(vc = ( Vcodex_t * )calloc(1, sizeof(Vcodex_t))))
         return NIL(Vcodex_t *);
 
-    if (!(vc->applyf = (flags & VC_ENCODE) ? meth->encodef : meth->decodef))
-    {
+    if (!(vc->applyf = (flags & VC_ENCODE) ? meth->encodef : meth->decodef)) {
         free(vc);
         return NIL(Vcodex_t *);
     }
@@ -69,14 +68,12 @@ int flags;                               /* control flags		*/
     vc->errorf = 0;
 
     if (disc && disc->eventf
-        && (*disc->eventf)(vc, VC_OPENING, NIL(Void_t *), disc) < 0)
-    {
+        && (*disc->eventf)(vc, VC_OPENING, NIL(Void_t *), disc) < 0) {
         free(vc);
         return NIL(Vcodex_t *);
     }
 
-    if (meth->eventf && (*meth->eventf)(vc, VC_OPENING, init) < 0)
-    {
+    if (meth->eventf && (*meth->eventf)(vc, VC_OPENING, init) < 0) {
         free(vc);
         return NIL(Vcodex_t *);
     }
@@ -119,10 +116,8 @@ int type;                                /* VC_ENCODE, VC_DECODE	*/
     if (type != VC_ENCODE && type != VC_DECODE)
         return NIL(Vcodex_t *);
 
-    for (list = NIL(Meth_t *);;)
-    { /* get one method specification */
-        if (!(spec = vcsubstring(spec, VC_METHSEP, meth, sizeof(meth), 0)))
-        {
+    for (list = NIL(Meth_t *);;) { /* get one method specification */
+        if (!(spec = vcsubstring(spec, VC_METHSEP, meth, sizeof(meth), 0))) {
             if (sp <= stack)
                 break;
             sp--;
@@ -139,8 +134,7 @@ int type;                                /* VC_ENCODE, VC_DECODE	*/
         meth[m] = 0;
 
         /* find the actual method structure */
-        if (!(vcmt = vcgetmeth(meth, 0)))
-        {
+        if (!(vcmt = vcgetmeth(meth, 0))) {
             if (sp >= &stack[sizeof(stack) / sizeof(stack[0])])
                 goto done;
             if (!(s = vcgetalias(meth, sp->buf, sizeof(sp->buf))))
@@ -162,25 +156,21 @@ int type;                                /* VC_ENCODE, VC_DECODE	*/
     }
 
     vc = NIL(Vcodex_t *);
-    for (mt = list; mt; mt = mt->next)
-    {
+    for (mt = list; mt; mt = mt->next) {
         if (!(coder = vcopen(NIL(Vcdisc_t *),
                              mt->vcmt,
                              ( Void_t * )mt->args,
                              vc,
-                             type | VC_CLOSECODER)))
-        {
+                             type | VC_CLOSECODER))) {
             vcclose(vc);
             vc = NIL(Vcodex_t *);
             goto done;
-        }
-        else
+        } else
             vc = coder;
     }
 
 done:
-    for (; list; list = mt)
-    {
+    for (; list; list = mt) {
         mt = list->next;
         free(list);
     }

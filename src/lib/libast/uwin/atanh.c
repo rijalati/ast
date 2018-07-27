@@ -79,8 +79,7 @@ extern double atanh(x) double x;
     z = copysign(0.5, x);
     x = copysign(x, 1.0);
 #    if defined(vax) || defined(tahoe)
-    if (x == 1.0)
-    {
+    if (x == 1.0) {
         return (copysign(1.0, z) * infnan(ERANGE)); /* sign(x)*INF */
     }
 #    endif /* defined(vax)||defined(tahoe) */

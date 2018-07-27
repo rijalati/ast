@@ -47,8 +47,7 @@ Vcint_t v;
     n = &data[sizeof(data)] - code;
 
     ptr = io->next;
-    switch (n)
-    {
+    switch (n) {
     default:
         memcpy(ptr, code, n);
         ptr += n;
@@ -113,11 +112,9 @@ Vcint_t max;
         *--code = (v >>= 8) & 255;
     n = &data[sizeof(data)] - code;
 
-    if (io)
-    {
+    if (io) {
         ptr = io->next;
-        switch (n)
-        {
+        switch (n) {
         default:
             memcpy(ptr, code, n);
             ptr += n;
@@ -192,8 +189,7 @@ Vcchar_t z; /* 2nd coding letter	*/
     Vcchar_t *ptr = io->next;
     ssize_t n;
 
-    for (;;)
-    {
+    for (;;) {
         *ptr++ = (v & 1) == 0 ? a : z;
         if ((v -= 2) < 0)
             break;
@@ -221,19 +217,14 @@ Vcchar_t z; /* 2nd coding letter	*/
 
     v = -1;
     d = 1;
-    for (ptr = io->next, endp = io->endb; ptr < endp; ++ptr)
-    {
-        if (*ptr == a)
-        {
+    for (ptr = io->next, endp = io->endb; ptr < endp; ++ptr) {
+        if (*ptr == a) {
             v += d;
             d <<= 1;
-        }
-        else if (*ptr == z)
-        {
+        } else if (*ptr == z) {
             d <<= 1;
             v += d;
-        }
-        else
+        } else
             break;
     }
 
@@ -300,28 +291,19 @@ Vcint_t v;
     for (n = 0; v > 0xf; v >>= 4, n += 8)
         vcioaddb(io, io->bits, io->nbits, Gfour[v & 0xf], 8);
 
-    if (v <= 0x3)
-    {
-        if (v <= 0x1)
-        {
+    if (v <= 0x3) {
+        if (v <= 0x1) {
             vcioaddb(io, io->bits, io->nbits, Glast[v], 1);
             return n + 1;
-        }
-        else
-        {
+        } else {
             vcioaddb(io, io->bits, io->nbits, Glast[v], 3);
             return n + 3;
         }
-    }
-    else
-    {
-        if (v <= 0x7)
-        {
+    } else {
+        if (v <= 0x7) {
             vcioaddb(io, io->bits, io->nbits, Glast[v], 5);
             return n + 5;
-        }
-        else
-        {
+        } else {
             vcioaddb(io, io->bits, io->nbits, Glast[v], 7);
             return n + 7;
         }
@@ -349,13 +331,11 @@ Vcint_t _vciogetg(io) Vcio_t *io;
     */
     if (Ifour[255] == 0) /* initialize the inversion arrays */
     {
-        for (k = 0; k < 256; ++k)
-        {
+        for (k = 0; k < 256; ++k) {
             for (b = 7; b >= 1; b -= 2) /* find the high odd bit */
                 if (k & (1 << b))
                     break;
-            if (b >= 1)
-            {
+            if (b >= 1) {
                 Ifour[k] = b - 8; /* set # of bits needed */
 
                 if ((k & ~((1 << b) - 1)) == k) /* set value in Ilast[] */
@@ -372,8 +352,7 @@ Vcint_t _vciogetg(io) Vcio_t *io;
             Ifour[Gfour[k] >> (VC_BITSIZE - 8)] = k;
     }
 
-    for (v = 0, s = 0;; s += 4)
-    {
+    for (v = 0, s = 0;; s += 4) {
         vciofilb(io, io->bits, io->nbits, 8);
         if (io->nbits == 0)
             return -1;
@@ -383,14 +362,11 @@ Vcint_t _vciogetg(io) Vcio_t *io;
         else
             b = ( int )((io->bits >> (VC_BITSIZE - k)) << (8 - k));
 
-        if ((g = Ifour[b]) >= 0)
-        {
+        if ((g = Ifour[b]) >= 0) {
             if (io->nbits < 8)
                 return -1;
             k = 8;
-        }
-        else
-        {
+        } else {
             k = -g;
             g = Ilast[b];
         }
@@ -455,8 +431,7 @@ ssize_t nlist;
     /* compute the frequencies of the sizes of significant bits */
     for (i = 0; i < VC_INTSIZE; ++i)
         freq[i] = 0;
-    for (i = 0; i < nlist; ++i)
-    {
+    for (i = 0; i < nlist; ++i) {
         v = list[i];
         freq[NBITS(v) - 1] += 1;
     }
@@ -473,15 +448,12 @@ ssize_t nlist;
         vcioputc(io, s);
 
         vciosetb(io, b, n, VC_ENCODE);
-        for (i = 0; i < nlist; ++i)
-        {
+        for (i = 0; i < nlist; ++i) {
             v = (( Vcint_t )list[i]) << (VC_INTSIZE - s);
             vcioaddb(io, b, n, v, s);
         }
         vcioendb(io, b, n, VC_ENCODE);
-    }
-    else
-    {
+    } else {
         vcioputc(io, s | (1 << 7)); /* the max size of any integer */
         if ((s = vchputcode(VC_INTSIZE, size, s, vcionext(io), vciomore(io)))
             < 0)
@@ -490,23 +462,18 @@ ssize_t nlist;
             vcioskip(io, s);
 
         vciosetb(io, b, n, VC_ENCODE);
-        for (i = 0; i < nlist; ++i)
-        {
+        for (i = 0; i < nlist; ++i) {
             v = ( Vcint_t )list[i];
             s = NBITS(v) - 1;
             vcioaddb(io, b, n, bits[s], size[s]);
 
-            for (v = ( Vcint_t )list[i], s += 1;;)
-            {
-                if (s > 8)
-                {
+            for (v = ( Vcint_t )list[i], s += 1;;) {
+                if (s > 8) {
                     e = (v & 0xff) << (VC_INTSIZE - 8);
                     vcioaddb(io, b, n, e, 8);
                     v >>= 8;
                     s -= 8;
-                }
-                else
-                {
+                } else {
                     e = v << (VC_INTSIZE - s);
                     vcioaddb(io, b, n, e, s);
                     break;
@@ -543,15 +510,12 @@ ssize_t nlist;
 
     if (!(s & (1 << 7))) /* all integers have the same size */
     {
-        for (nl = 0; nl < nlist; ++nl)
-        {
+        for (nl = 0; nl < nlist; ++nl) {
             vciofilb(io, b, n, s);
             list[nl] = (Vcint_t)(b >> (VC_BITSIZE - s));
             vciodelb(io, b, n, s);
         }
-    }
-    else
-    {
+    } else {
         s &= ~(1 << 7);
         if ((s = vchgetcode(VC_INTSIZE, cdsz, s, vcionext(io), vciomore(io)))
             < 0)
@@ -566,8 +530,7 @@ ssize_t nlist;
         size = trie->size;
         ntop = trie->ntop;
         vciosetb(io, b, n, VC_DECODE);
-        for (s = ntop, p = 0, nl = 0;;)
-        {
+        for (s = ntop, p = 0, nl = 0;;) {
             vciofilb(io, b, n, s);
 
             p += (b >> (VC_BITSIZE - s)); /* slot to look into */
@@ -576,18 +539,14 @@ ssize_t nlist;
                 s = ( int )node[p] + 1;      /* get the actual length */
                 vciodelb(io, b, n, size[p]); /* consume bits */
 
-                for (v = 0, d = 0;;)
-                {
-                    if (s > 8)
-                    {
+                for (v = 0, d = 0;;) {
+                    if (s > 8) {
                         vciofilb(io, b, n, 8);
                         v |= (b >> (VC_BITSIZE - 8)) << d;
                         vciodelb(io, b, n, 8);
                         d += 8;
                         s -= 8;
-                    }
-                    else
-                    {
+                    } else {
                         vciofilb(io, b, n, s);
                         v |= (b >> (VC_BITSIZE - s)) << d;
                         vciodelb(io, b, n, s);
@@ -601,11 +560,9 @@ ssize_t nlist;
 
                 s = ntop;
                 p = 0; /* restart at trie top for next integer */
-            }
-            else if (size[p] == 0) /* corrupted data */
+            } else if (size[p] == 0) /* corrupted data */
                 return -1;
-            else
-            {
+            else {
                 vciodelb(&io, b, n, s); /* consume bits */
                 s = -size[p];
                 p = node[p]; /* trie recursion */
@@ -638,19 +595,14 @@ vcpositive(Vcint_t *list, ssize_t nlist, ssize_t *pos, ssize_t *neg, int type)
     if (type == VC_ENCODE) /* encoding */
     {
         /* transform runs to positives */
-        for (type = 1, k = 0; k < nlist; ++k)
-        {
-            if ((v = list[k]) < 0)
-            {
+        for (type = 1, k = 0; k < nlist; ++k) {
+            if ((v = list[k]) < 0) {
                 if (type > 0)
                     type = -1;
                 else
                     list[k] = -v;
-            }
-            else if (v > 0)
-            {
-                if (type < 0)
-                {
+            } else if (v > 0) {
+                if (type < 0) {
                     type = 1;
                     list[k] = -v;
                 }
@@ -658,8 +610,7 @@ vcpositive(Vcint_t *list, ssize_t nlist, ssize_t *pos, ssize_t *neg, int type)
         }
 
         /* count positives/negatives to decide proportion */
-        for (n = p = 0, k = 0; k < nlist; ++k)
-        {
+        for (n = p = 0, k = 0; k < nlist; ++k) {
             if ((v = list[k]) > 0)
                 p += 1;
             else if (v < 0)
@@ -673,24 +624,19 @@ vcpositive(Vcint_t *list, ssize_t nlist, ssize_t *pos, ssize_t *neg, int type)
             for (k = 0; k < nlist; ++k)
                 list[k] = -list[k];
             n = 1;
-        }
-        else
-        { /* reduce proportions */
-            while (p >= 128 && n >= 128)
-            {
+        } else { /* reduce proportions */
+            while (p >= 128 && n >= 128) {
                 p /= 2;
                 n /= 2;
             }
             for (k = 127; k > 1; --k)
-                if ((p % k) == 0 && (n % k) == 0)
-                {
+                if ((p % k) == 0 && (n % k) == 0) {
                     p /= k;
                     n /= k;
                 }
 
             /* now do the coding */
-            for (s = n + p, k = 0; k < nlist; ++k)
-            {
+            for (s = n + p, k = 0; k < nlist; ++k) {
                 if ((v = list[k]) == 0)
                     continue;
                 else if (v > 0)
@@ -702,9 +648,7 @@ vcpositive(Vcint_t *list, ssize_t nlist, ssize_t *pos, ssize_t *neg, int type)
 
         *pos = p;
         *neg = n;
-    }
-    else
-    {
+    } else {
         p = *pos;
         n = *neg;
 
@@ -712,11 +656,9 @@ vcpositive(Vcint_t *list, ssize_t nlist, ssize_t *pos, ssize_t *neg, int type)
         {
             for (k = 0; k < nlist; ++k)
                 list[k] = -list[k];
-        }
-        else if (p > 0 && n > 0) /* nontrivial coding */
+        } else if (p > 0 && n > 0) /* nontrivial coding */
         {
-            for (s = n + p, k = 0; k < nlist; ++k)
-            {
+            for (s = n + p, k = 0; k < nlist; ++k) {
                 if ((v = list[k]) == 0)
                     continue;
                 if ((g = (v - 1) % s) < p)
@@ -727,8 +669,7 @@ vcpositive(Vcint_t *list, ssize_t nlist, ssize_t *pos, ssize_t *neg, int type)
         }
 
         /* undo the sign switching */
-        for (type = 1, k = 0; k < nlist; ++k)
-        {
+        for (type = 1, k = 0; k < nlist; ++k) {
             v = list[k];
             if (type < 0)
                 list[k] = -v;
@@ -762,8 +703,7 @@ int type;     /* VC_ENCODE/VC_DECODE	*/
     if (min >= max || near < min || near >= max)
         return -1; /* an error in specification */
 
-    if (type == VC_ENCODE)
-    {
+    if (type == VC_ENCODE) {
         if (v < min || v >= max)
             return -1; /* out of range */
 
@@ -775,9 +715,7 @@ int type;     /* VC_ENCODE/VC_DECODE	*/
             return (a << 1) - (v <= 0 ? 0 : 1);
         else
             return a + n;
-    }
-    else if (type == VC_DECODE)
-    {
+    } else if (type == VC_DECODE) {
         near -= min;
         max -= min;
         if (v < 0 || v >= max)
@@ -789,8 +727,7 @@ int type;     /* VC_ENCODE/VC_DECODE	*/
         else
             a = n == near ? v : near - (v - n);
         return a + min;
-    }
-    else
+    } else
         return -1;
 }
 
@@ -808,16 +745,14 @@ ssize_t z;
     int k;
     char buf[sizeof(Vcint_t) * 4];
 
-    for (k = sizeof(buf) - 1; k >= 0; --k)
-    {
+    for (k = sizeof(buf) - 1; k >= 0; --k) {
         buf[k] = '0' + (i % 10);
         if ((i /= 10) == 0)
             break;
     }
     if ((i = sizeof(buf) - k) >= z)
         return -1;
-    else
-    {
+    else {
         memcpy(a, buf + k, i);
         a[i] = 0;
         return i;
@@ -984,8 +919,7 @@ ssize_t **listp;                                 /* to return list	*/
 {
     ssize_t n, k, *list;
 
-    for (n = 0, k = 0;;)
-    {
+    for (n = 0, k = 0;;) {
         while (str[k] == ' ' || str[k] == '\t' || str[k] == comma)
             k += 1;
         if (!isdigit(str[k]))
@@ -1002,16 +936,14 @@ ssize_t **listp;                                 /* to return list	*/
     if (!(list = ( ssize_t * )malloc(n * sizeof(ssize_t))))
         return -1;
 
-    for (n = 0, k = 0;;)
-    {
+    for (n = 0, k = 0;;) {
         while (str[k] == ' ' || str[k] == '\t' || str[k] == comma)
             k += 1;
         if (!isdigit(str[k]))
             break;
 
         list[n] = 0;
-        while (isdigit(str[k]))
-        {
+        while (isdigit(str[k])) {
             list[n] = list[n] * 10 + (str[k] - '0');
             k += 1;
         }
@@ -1037,8 +969,7 @@ vchexcode(Vcchar_t *byte, ssize_t bytez, Vcchar_t *hex, ssize_t hexz, int type)
         memcpy(Lower, ( Vcchar_t * )("0123456789abcdef"), 16);
         for (b = 0; b < 256; ++b)
             Rev[b] = (Vcchar_t)(~0);
-        for (b = 0; b < 16; ++b)
-        {
+        for (b = 0; b < 16; ++b) {
             Rev[Upper[b]] = b; /* upper-case */
             Rev[Lower[b]] = b; /* lower-case */
         }
@@ -1056,8 +987,7 @@ vchexcode(Vcchar_t *byte, ssize_t bytez, Vcchar_t *hex, ssize_t hexz, int type)
         /* 0 for lower-case, anything else upper-case */
         dig = type == 0 ? Lower : Upper;
 
-        for (h = 0, b = 0; b < bytez; b += 1, h += 2)
-        {
+        for (h = 0, b = 0; b < bytez; b += 1, h += 2) {
             if (h >= hexz - 1)
                 return -1;
             hex[h] = dig[(byte[b] >> 4) & 0xf];
@@ -1067,13 +997,11 @@ vchexcode(Vcchar_t *byte, ssize_t bytez, Vcchar_t *hex, ssize_t hexz, int type)
         if (h < hexz)
             hex[h] = 0;
         return h;
-    }
-    else /* hex to byte, allow mixed case */
+    } else /* hex to byte, allow mixed case */
     {
         if (hexz % 2 != 0 || bytez < hexz / 2)
             return -1;
-        for (b = 0, h = 0; h < hexz; h += 2, b += 1)
-        {
+        for (b = 0, h = 0; h < hexz; h += 2, b += 1) {
             if (b >= bytez || (l = Rev[hex[h + 0]]) == (Vcchar_t)(~0)
                 || (r = Rev[hex[h + 1]]) == (Vcchar_t)(~0))
                 return -1;

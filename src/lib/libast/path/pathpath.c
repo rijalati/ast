@@ -60,26 +60,21 @@ pathpath_20100601(const char *p,
 
     static char *cmd;
 
-    if (!path)
-    {
+    if (!path) {
         path = buf;
         if (!size || size > sizeof(buf))
             size = sizeof(buf);
     }
-    if (!p)
-    {
+    if (!p) {
         if (cmd)
             free(cmd);
         cmd = a ? strdup(a) : ( char * )0;
         return 0;
     }
-    if (strlen(p) < size)
-    {
+    if (strlen(p) < size) {
         strcpy(path, p);
-        if (pathexists(path, mode))
-        {
-            if (*p != '/' && (mode & PATH_ABSOLUTE))
-            {
+        if (pathexists(path, mode)) {
+            if (*p != '/' && (mode & PATH_ABSOLUTE)) {
                 getcwd(buf, sizeof(buf));
                 s = buf + strlen(buf);
                 sfsprintf(s, sizeof(buf) - (s - buf), "/%s", p);
@@ -91,25 +86,19 @@ pathpath_20100601(const char *p,
     }
     if (*p == '/')
         a = 0;
-    else if (s = ( char * )a)
-    {
+    else if (s = ( char * )a) {
         x = s;
-        if (strchr(p, '/'))
-        {
+        if (strchr(p, '/')) {
             a = p;
             p = "..";
-        }
-        else
+        } else
             a = 0;
-        if ((!cmd || *cmd) && (strchr(s, '/') || (s = cmd)))
-        {
+        if ((!cmd || *cmd) && (strchr(s, '/') || (s = cmd))) {
             if (!cmd && *s == '/')
                 cmd = strdup(s);
-            if (strlen(s) < (sizeof(buf) - 6))
-            {
+            if (strlen(s) < (sizeof(buf) - 6)) {
                 s = stpcpy(path, s);
-                for (;;)
-                {
+                for (;;) {
                     do
                         if (s <= path)
                             goto normal;
@@ -119,8 +108,7 @@ pathpath_20100601(const char *p,
                             goto normal;
                     while (*--s != '/');
                     strcpy(s + 1, "bin");
-                    if (pathexists(path, PATH_EXECUTE))
-                    {
+                    if (pathexists(path, PATH_EXECUTE)) {
                         if (s = pathaccess(path, p, a, mode, path, size))
                             return path == buf ? strdup(s) : s;
                         goto normal;

@@ -77,8 +77,7 @@ Void_t *val;
 Sffmt_t *fe;
 #endif
 {
-    if (fe->fmt == 'Z')
-    {
+    if (fe->fmt == 'Z') {
         fe->fmt = 'c';
         fe->size = -1;
         fe->base = -1;
@@ -86,9 +85,7 @@ Sffmt_t *fe;
         fe->flags |= SFFMT_VALUE;
         (( Value_t * )val)->l = 0x04050607;
         (( Value_t * )val)->c = 0;
-    }
-    else if (fe->fmt == 'Y')
-    {
+    } else if (fe->fmt == 'Y') {
         fe->fmt = 'c';
         fe->size = -1;
         fe->base = ':';
@@ -112,8 +109,7 @@ Sffmt_t *fe;
 {
     OXcount += 1;
 
-    switch (fe->fmt)
-    {
+    switch (fe->fmt) {
     case 'd':
         *(( int * )v) = 10;
         fe->flags |= SFFMT_VALUE;
@@ -149,8 +145,7 @@ Void_t *v;
 Sffmt_t *fe;
 #endif
 {
-    switch (fe->fmt)
-    {
+    switch (fe->fmt) {
     case 'a':
         fe->fmt = 'u';
         return 0;
@@ -209,8 +204,7 @@ Void_t *val;
 Sffmt_t *fe;
 #endif
 {
-    switch (fe->fmt)
-    {
+    switch (fe->fmt) {
     case 'D':
         fe->fmt = 'd';
         return 0;
@@ -407,8 +401,7 @@ tmain()
     if (strcmp(buf1, buf2) != 0)
         terror("Failed %% +G test");
 
-    if (sizeof(int) == 4 && sizeof(short) == 2)
-    {
+    if (sizeof(int) == 4 && sizeof(short) == 2) {
         char *s = sfprints("%hx", 0xffffffff);
         if (!s || strcmp(s, "ffff") != 0)
             terror("Failed %%hx test");
@@ -418,8 +411,7 @@ tmain()
             terror("Failed %%I2x test");
     }
 
-    if (sizeof(int) == 4 && sizeof(char) == 1)
-    {
+    if (sizeof(int) == 4 && sizeof(char) == 1) {
         char *s = sfprints("%hhx", 0xffffffff);
         if (!s || strcmp(s, "ff") != 0)
             terror("Failed %%hhx test");
@@ -550,8 +542,7 @@ tmain()
         if (strcmp(buf, s) != 0)
             terror("Failed conversion with I flag");
 
-        if (sizeof(Sflong_t) * 8 == 64)
-        {
+        if (sizeof(Sflong_t) * 8 == 64) {
             s = sfprints("%I64u", (~(( Sflong_t )0) / 2));
             if (strcmp(buf, s) != 0)
                 terror("Failed conversion with I64 flag");
@@ -565,8 +556,7 @@ tmain()
     if (i != j)
         terror("Failed converting highbit");
 
-    for (i = -10000; i < 10000; i += 123)
-    {
+    for (i = -10000; i < 10000; i += 123) {
         s = sfprints("%d", i);
         j = atoi(s);
         if (j != i)

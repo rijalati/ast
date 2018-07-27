@@ -79,8 +79,7 @@ context_line(Context_t *cp)
     ssize_t r;
 
     lp = &cp->line[cp->curline];
-    if (lp->show)
-    {
+    if (lp->show) {
         if (cp->listf(lp,
                       lp->show == ':',
                       cp->before ? 0 : lp->line != cp->next && cp->next,
@@ -94,13 +93,11 @@ context_line(Context_t *cp)
         n -= cp->total;
     cp->line[n].show = 0;
     lp = &cp->line[cp->curline];
-    if (lp->drop)
-    {
+    if (lp->drop) {
         free(lp->drop);
         lp->drop = 0;
     }
-    if (cp->cur >= cp->end)
-    {
+    if (cp->cur >= cp->end) {
         lp->drop = cp->buf;
         if (!(cp->buf = oldof(0, char, CONTEXT_BLOCK, 0)))
             return 0;
@@ -109,21 +106,17 @@ context_line(Context_t *cp)
             return 0;
         cp->end = cp->buf + r;
     }
-    if (lp->span)
-    {
+    if (lp->span) {
         lp->span = 0;
         free(lp->data);
     }
     n = cp->end - cp->cur;
-    if (s = memchr(cp->cur, '\n', n))
-    {
+    if (s = memchr(cp->cur, '\n', n)) {
         lp->data = cp->cur;
         n = s - cp->cur + 1;
         cp->cur += n;
         lp->size = n;
-    }
-    else
-    {
+    } else {
         m = roundof(n, CONTEXT_LINE);
         if (!(t = oldof(0, char, m, 0)))
             return 0;
@@ -135,14 +128,12 @@ context_line(Context_t *cp)
         lp->drop = cp->buf;
         if (!(cp->buf = oldof(0, char, CONTEXT_BLOCK, 0)))
             return 0;
-        do
-        {
+        do {
             if ((r = sfread(cp->ip, cp->buf, CONTEXT_BLOCK)) <= 0)
                 return 0;
             cp->end = cp->buf + r;
             n = (s = memchr(cp->buf, '\n', r)) ? (s - cp->buf + 1) : r;
-            if (n > (e - t))
-            {
+            if (n > (e - t)) {
                 r = t - lp->data;
                 m = r + (s - cp->buf);
                 m = roundof(m, CONTEXT_LINE);
@@ -168,18 +159,15 @@ context_show(Context_t *cp)
     int k;
 
     j = cp->curline;
-    for (i = 0; i < cp->after; i++)
-    {
+    for (i = 0; i < cp->after; i++) {
         if (++j >= cp->total)
             j = 0;
         cp->line[j].show = '-';
     }
-    for (i = 0; i < cp->before; i++)
-    {
+    for (i = 0; i < cp->before; i++) {
         if (++j >= cp->total)
             j = 0;
-        if (!cp->line[j].show && cp->line[j].line)
-        {
+        if (!cp->line[j].show && cp->line[j].line) {
             cp->line[j].show = '-';
             if (cp->listf(&cp->line[j],
                           0,
@@ -198,8 +186,7 @@ context_close(Context_t *cp)
     int i;
     int j;
 
-    for (j = 0; j < cp->total; j++)
-    {
+    for (j = 0; j < cp->total; j++) {
         if (cp->line[j].drop)
             free(cp->line[j].drop);
         if (cp->line[j].span)

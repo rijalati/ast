@@ -57,12 +57,12 @@ dumpv9fopen(Dssfile_t *file, Dssdisc_t *disc)
 {
     Netflow_file_t *pp;
 
-    if (!(pp = vmnewof(file->vm,
-                       0,
-                       Netflow_file_t,
-                       1,
-                       (file->flags & DSS_FILE_WRITE) ? NETFLOW_PACKET : 0)))
-    {
+    if (!(pp
+          = vmnewof(file->vm,
+                    0,
+                    Netflow_file_t,
+                    1,
+                    (file->flags & DSS_FILE_WRITE) ? NETFLOW_PACKET : 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -92,25 +92,19 @@ dumpv9fread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     int z;
     int o;
 
-    if ((pp->data += pp->next) <= (pp->last - pp->next))
-    {
+    if ((pp->data += pp->next) <= (pp->last - pp->next)) {
         if (file->dss->flags & DSS_DEBUG)
             sfprintf(sfstderr, "count %d\n", pp->count);
         pp->count--;
-    }
-    else
-    {
+    } else {
         pp->data = pp->last;
-        for (;;)
-        {
+        for (;;) {
             if (file->dss->flags & DSS_DEBUG)
                 sfprintf(sfstderr, "count %d\n", pp->count);
-            while (!pp->count--)
-            {
+            while (!pp->count--) {
                 file->offset = sftell(file->io);
                 if (!(pp->data = ( unsigned char * )sfreserve(
-                      file->io, NETFLOW_PACKET, 0)))
-                {
+                      file->io, NETFLOW_PACKET, 0))) {
                     if (sfvalue(file->io))
                         goto incomplete;
                     return 0;
@@ -141,20 +135,17 @@ dumpv9fread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                          file->count,
                          rp->count - pp->count);
             n = BE2(pp->data);
-            if ((z = BE2(pp->data) - 4) <= 0)
-            {
+            if ((z = BE2(pp->data) - 4) <= 0) {
                 pp->count = 0;
                 continue;
             }
             pp->last = pp->data + z;
             if (file->dss->flags & DSS_DEBUG)
                 sfprintf(sfstderr, "id %d size %d\n", n, z);
-            if (n > FLOW_META)
-            {
+            if (n > FLOW_META) {
                 for (tp = mp->templates; tp && tp->id != n; tp = tp->next)
                     ;
-                if (!tp || !tp->size)
-                {
+                if (!tp || !tp->size) {
                     if (!(file->dss->flags & DSS_QUIET) && disc->errorf)
                         (*disc->errorf)(
                         NiL,
@@ -171,8 +162,7 @@ dumpv9fread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 /* HERE: add an options indicator to the record schema instead
                  * of discarding? */
 
-                if (tp->options)
-                {
+                if (tp->options) {
                     pp->count = 0;
                     continue;
                 }
@@ -180,12 +170,10 @@ dumpv9fread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 pp->next = tp->size;
                 break;
             }
-            if (n == FLOW_TEMPLATE)
-            {
+            if (n == FLOW_TEMPLATE) {
                 bp = (( Netflow_method_t * )file->dss->data)->base;
                 pp->count++;
-                while (pp->data < (pp->last - 4))
-                {
+                while (pp->data < (pp->last - 4)) {
                     n = BE2(pp->data);
                     m = BE2(pp->data);
                     if (file->dss->flags & DSS_DEBUG)
@@ -197,14 +185,11 @@ dumpv9fread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                     if (tp)
                         memset(tp->field, 0, sizeof(tp->field));
                     else if (!(tp = vmnewof(
-                               file->dss->vm, 0, Netflow_template_t, 1, 0)))
-                    {
+                               file->dss->vm, 0, Netflow_template_t, 1, 0))) {
                         if (disc->errorf)
                             (*disc->errorf)(NiL, disc, 2, "out of space");
                         return -1;
-                    }
-                    else
-                    {
+                    } else {
                         tp->id = n;
                         tp->next = mp->templates;
                         mp->templates = tp;
@@ -213,12 +198,10 @@ dumpv9fread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                     pp->count--;
                     file->count++;
                     o = 0;
-                    while (m--)
-                    {
+                    while (m--) {
                         n = BE2(pp->data);
                         z = BE2(pp->data);
-                        if (n >= 1 && n <= NETFLOW_TEMPLATE)
-                        {
+                        if (n >= 1 && n <= NETFLOW_TEMPLATE) {
                             fp = &tp->field[n - 1];
                             fp->type = bp->field[n - 1].type;
                             fp->offset = o;
@@ -242,13 +225,10 @@ dumpv9fread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                                  tp->elements,
                                  tp->size);
                 }
-            }
-            else if (n == FLOW_OPTION)
-            {
+            } else if (n == FLOW_OPTION) {
                 pp->count++;
                 bp = (( Netflow_method_t * )file->dss->data)->base;
-                while (pp->data < (pp->last - 6))
-                {
+                while (pp->data < (pp->last - 6)) {
                     n = BE2(pp->data);
                     m = BE2(pp->data) / 4;
                     k = BE2(pp->data) / 4;
@@ -263,14 +243,11 @@ dumpv9fread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                     if (tp)
                         memset(tp->field, 0, sizeof(tp->field));
                     else if (!(tp = vmnewof(
-                               file->dss->vm, 0, Netflow_template_t, 1, 0)))
-                    {
+                               file->dss->vm, 0, Netflow_template_t, 1, 0))) {
                         if (disc->errorf)
                             (*disc->errorf)(NiL, disc, 2, "out of space");
                         return -1;
-                    }
-                    else
-                    {
+                    } else {
                         tp->id = n;
                         tp->next = mp->templates;
                         mp->templates = tp;
@@ -280,8 +257,7 @@ dumpv9fread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                     pp->count--;
                     file->count++;
                     o = 0;
-                    while (m--)
-                    {
+                    while (m--) {
                         n = BE2(pp->data);
                         z = BE2(pp->data);
                         if (file->dss->flags & DSS_DEBUG)
@@ -294,12 +270,10 @@ dumpv9fread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                             o);
                         o += z;
                     }
-                    while (k--)
-                    {
+                    while (k--) {
                         n = BE2(pp->data);
                         z = BE2(pp->data);
-                        if (n >= 1 && n <= NETFLOW_TEMPLATE)
-                        {
+                        if (n >= 1 && n <= NETFLOW_TEMPLATE) {
                             fp = &tp->field[n - 1];
                             fp->type = bp->field[n - 1].type;
                             fp->offset = o;
@@ -324,9 +298,7 @@ dumpv9fread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                                  tp->elements,
                                  tp->size);
                 }
-            }
-            else
-            {
+            } else {
                 if (!(file->dss->flags & DSS_QUIET) && disc->errorf)
                     (*disc->errorf)(
                     NiL,

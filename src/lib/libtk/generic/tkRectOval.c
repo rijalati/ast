@@ -221,8 +221,7 @@ char **argv;        /* Arguments describing rectangle. */
 {
     RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
 
-    if (argc < 4)
-    {
+    if (argc < 4) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          Tk_PathName(Tk_CanvasTkwin(canvas)),
@@ -256,14 +255,12 @@ char **argv;        /* Arguments describing rectangle. */
         || (Tk_CanvasGetCoord(interp, canvas, argv[2], &rectOvalPtr->bbox[2])
             != TCL_OK)
         || (Tk_CanvasGetCoord(interp, canvas, argv[3], &rectOvalPtr->bbox[3])
-            != TCL_OK))
-    {
+            != TCL_OK)) {
         return TCL_ERROR;
     }
 
     if (ConfigureRectOval(interp, canvas, itemPtr, argc - 4, argv + 4, 0)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         DeleteRectOval(canvas, itemPtr, Tk_Display(Tk_CanvasTkwin(canvas)));
         return TCL_ERROR;
     }
@@ -302,17 +299,14 @@ char **argv;        /* Array of coordinates: x1, y1,
     char c0[TCL_DOUBLE_SPACE], c1[TCL_DOUBLE_SPACE];
     char c2[TCL_DOUBLE_SPACE], c3[TCL_DOUBLE_SPACE];
 
-    if (argc == 0)
-    {
+    if (argc == 0) {
         Tcl_PrintDouble(interp, rectOvalPtr->bbox[0], c0);
         Tcl_PrintDouble(interp, rectOvalPtr->bbox[1], c1);
         Tcl_PrintDouble(interp, rectOvalPtr->bbox[2], c2);
         Tcl_PrintDouble(interp, rectOvalPtr->bbox[3], c3);
         Tcl_AppendResult(
         interp, c0, " ", c1, " ", c2, " ", c3, ( char * )NULL);
-    }
-    else if (argc == 4)
-    {
+    } else if (argc == 4) {
         if ((Tk_CanvasGetCoord(interp, canvas, argv[0], &rectOvalPtr->bbox[0])
              != TCL_OK)
             || (Tk_CanvasGetCoord(
@@ -323,14 +317,11 @@ char **argv;        /* Array of coordinates: x1, y1,
                 != TCL_OK)
             || (Tk_CanvasGetCoord(
                 interp, canvas, argv[3], &rectOvalPtr->bbox[3])
-                != TCL_OK))
-        {
+                != TCL_OK)) {
             return TCL_ERROR;
         }
         ComputeRectOvalBbox(canvas, rectOvalPtr);
-    }
-    else
-    {
+    } else {
         sprintf(
         interp->result, "wrong # coordinates: expected 0 or 4, got %d", argc);
         return TCL_ERROR;
@@ -375,8 +366,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
     tkwin = Tk_CanvasTkwin(canvas);
     if (Tk_ConfigureWidget(
         interp, tkwin, configSpecs, argc, argv, ( char * )rectOvalPtr, flags)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -385,49 +375,37 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * graphics contexts.
      */
 
-    if (rectOvalPtr->width < 1)
-    {
+    if (rectOvalPtr->width < 1) {
         rectOvalPtr->width = 1;
     }
-    if (rectOvalPtr->outlineColor == NULL)
-    {
+    if (rectOvalPtr->outlineColor == NULL) {
         newGC = None;
-    }
-    else
-    {
+    } else {
         gcValues.foreground = rectOvalPtr->outlineColor->pixel;
         gcValues.cap_style = CapProjecting;
         gcValues.line_width = rectOvalPtr->width;
         mask = GCForeground | GCCapStyle | GCLineWidth;
         newGC = Tk_GetGC(tkwin, mask, &gcValues);
     }
-    if (rectOvalPtr->outlineGC != None)
-    {
+    if (rectOvalPtr->outlineGC != None) {
         Tk_FreeGC(Tk_Display(tkwin), rectOvalPtr->outlineGC);
     }
     rectOvalPtr->outlineGC = newGC;
 
-    if (rectOvalPtr->fillColor == NULL)
-    {
+    if (rectOvalPtr->fillColor == NULL) {
         newGC = None;
-    }
-    else
-    {
+    } else {
         gcValues.foreground = rectOvalPtr->fillColor->pixel;
-        if (rectOvalPtr->fillStipple != None)
-        {
+        if (rectOvalPtr->fillStipple != None) {
             gcValues.stipple = rectOvalPtr->fillStipple;
             gcValues.fill_style = FillStippled;
             mask = GCForeground | GCStipple | GCFillStyle;
-        }
-        else
-        {
+        } else {
             mask = GCForeground;
         }
         newGC = Tk_GetGC(tkwin, mask, &gcValues);
     }
-    if (rectOvalPtr->fillGC != None)
-    {
+    if (rectOvalPtr->fillGC != None) {
         Tk_FreeGC(Tk_Display(tkwin), rectOvalPtr->fillGC);
     }
     rectOvalPtr->fillGC = newGC;
@@ -463,24 +441,19 @@ Display *display; /* Display containing window for
 {
     RectOvalItem *rectOvalPtr = ( RectOvalItem * )itemPtr;
 
-    if (rectOvalPtr->outlineColor != NULL)
-    {
+    if (rectOvalPtr->outlineColor != NULL) {
         Tk_FreeColor(rectOvalPtr->outlineColor);
     }
-    if (rectOvalPtr->fillColor != NULL)
-    {
+    if (rectOvalPtr->fillColor != NULL) {
         Tk_FreeColor(rectOvalPtr->fillColor);
     }
-    if (rectOvalPtr->fillStipple != None)
-    {
+    if (rectOvalPtr->fillStipple != None) {
         Tk_FreeBitmap(display, rectOvalPtr->fillStipple);
     }
-    if (rectOvalPtr->outlineGC != None)
-    {
+    if (rectOvalPtr->outlineGC != None) {
         Tk_FreeGC(display, rectOvalPtr->outlineGC);
     }
-    if (rectOvalPtr->fillGC != None)
-    {
+    if (rectOvalPtr->fillGC != None) {
         Tk_FreeGC(display, rectOvalPtr->fillGC);
     }
 }
@@ -517,27 +490,22 @@ RectOvalItem *rectOvalPtr; /* Item whose bbox is to be
      * Make sure that the first coordinates are the lowest ones.
      */
 
-    if (rectOvalPtr->bbox[1] > rectOvalPtr->bbox[3])
-    {
+    if (rectOvalPtr->bbox[1] > rectOvalPtr->bbox[3]) {
         double tmp;
         tmp = rectOvalPtr->bbox[3];
         rectOvalPtr->bbox[3] = rectOvalPtr->bbox[1];
         rectOvalPtr->bbox[1] = tmp;
     }
-    if (rectOvalPtr->bbox[0] > rectOvalPtr->bbox[2])
-    {
+    if (rectOvalPtr->bbox[0] > rectOvalPtr->bbox[2]) {
         double tmp;
         tmp = rectOvalPtr->bbox[2];
         rectOvalPtr->bbox[2] = rectOvalPtr->bbox[0];
         rectOvalPtr->bbox[0] = tmp;
     }
 
-    if (rectOvalPtr->outlineColor == NULL)
-    {
+    if (rectOvalPtr->outlineColor == NULL) {
         bloat = 0;
-    }
-    else
-    {
+    } else {
         bloat = (rectOvalPtr->width + 1) / 2;
     }
 
@@ -554,15 +522,13 @@ RectOvalItem *rectOvalPtr; /* Item whose bbox is to be
                                       : rectOvalPtr->bbox[1] - .5;
     rectOvalPtr->header.y1 = tmp - bloat;
     dtmp = rectOvalPtr->bbox[2];
-    if (dtmp < (rectOvalPtr->bbox[0] + 1))
-    {
+    if (dtmp < (rectOvalPtr->bbox[0] + 1)) {
         dtmp = rectOvalPtr->bbox[0] + 1;
     }
     tmp = (dtmp >= 0) ? dtmp + .5 : dtmp - .5;
     rectOvalPtr->header.x2 = tmp + bloat;
     dtmp = rectOvalPtr->bbox[3];
-    if (dtmp < (rectOvalPtr->bbox[1] + 1))
-    {
+    if (dtmp < (rectOvalPtr->bbox[1] + 1)) {
         dtmp = rectOvalPtr->bbox[1] + 1;
     }
     tmp = (dtmp >= 0) ? dtmp + .5 : dtmp - .5;
@@ -610,12 +576,10 @@ int x, y, width, height; /* Describes region of canvas that
     canvas, rectOvalPtr->bbox[0], rectOvalPtr->bbox[1], &x1, &y1);
     Tk_CanvasDrawableCoords(
     canvas, rectOvalPtr->bbox[2], rectOvalPtr->bbox[3], &x2, &y2);
-    if (x2 <= x1)
-    {
+    if (x2 <= x1) {
         x2 = x1 + 1;
     }
-    if (y2 <= y1)
-    {
+    if (y2 <= y1) {
         y2 = y1 + 1;
     }
 
@@ -626,14 +590,11 @@ int x, y, width, height; /* Describes region of canvas that
      * read-only.
      */
 
-    if (rectOvalPtr->fillGC != None)
-    {
-        if (rectOvalPtr->fillStipple != None)
-        {
+    if (rectOvalPtr->fillGC != None) {
+        if (rectOvalPtr->fillStipple != None) {
             Tk_CanvasSetStippleOrigin(canvas, rectOvalPtr->fillGC);
         }
-        if (rectOvalPtr->header.typePtr == &tkRectangleType)
-        {
+        if (rectOvalPtr->header.typePtr == &tkRectangleType) {
             XFillRectangle(display,
                            drawable,
                            rectOvalPtr->fillGC,
@@ -641,9 +602,7 @@ int x, y, width, height; /* Describes region of canvas that
                            y1,
                            ( unsigned int )(x2 - x1),
                            ( unsigned int )(y2 - y1));
-        }
-        else
-        {
+        } else {
             XFillArc(display,
                      drawable,
                      rectOvalPtr->fillGC,
@@ -654,15 +613,12 @@ int x, y, width, height; /* Describes region of canvas that
                      0,
                      360 * 64);
         }
-        if (rectOvalPtr->fillStipple != None)
-        {
+        if (rectOvalPtr->fillStipple != None) {
             XSetTSOrigin(display, rectOvalPtr->fillGC, 0, 0);
         }
     }
-    if (rectOvalPtr->outlineGC != None)
-    {
-        if (rectOvalPtr->header.typePtr == &tkRectangleType)
-        {
+    if (rectOvalPtr->outlineGC != None) {
+        if (rectOvalPtr->header.typePtr == &tkRectangleType) {
             XDrawRectangle(display,
                            drawable,
                            rectOvalPtr->outlineGC,
@@ -670,9 +626,7 @@ int x, y, width, height; /* Describes region of canvas that
                            y1,
                            ( unsigned )(x2 - x1),
                            ( unsigned )(y2 - y1));
-        }
-        else
-        {
+        } else {
             XDrawArc(display,
                      drawable,
                      rectOvalPtr->outlineGC,
@@ -728,8 +682,7 @@ double *pointPtr; /* Pointer to x and y coordinates. */
     y1 = rectPtr->bbox[1];
     x2 = rectPtr->bbox[2];
     y2 = rectPtr->bbox[3];
-    if (rectPtr->outlineGC != None)
-    {
+    if (rectPtr->outlineGC != None) {
         inc = rectPtr->width / 2.0;
         x1 -= inc;
         y1 -= inc;
@@ -745,31 +698,25 @@ double *pointPtr; /* Pointer to x and y coordinates. */
      */
 
     if ((pointPtr[0] >= x1) && (pointPtr[0] < x2) && (pointPtr[1] >= y1)
-        && (pointPtr[1] < y2))
-    {
-        if ((rectPtr->fillGC != None) || (rectPtr->outlineGC == None))
-        {
+        && (pointPtr[1] < y2)) {
+        if ((rectPtr->fillGC != None) || (rectPtr->outlineGC == None)) {
             return 0.0;
         }
         xDiff = pointPtr[0] - x1;
         tmp = x2 - pointPtr[0];
-        if (tmp < xDiff)
-        {
+        if (tmp < xDiff) {
             xDiff = tmp;
         }
         yDiff = pointPtr[1] - y1;
         tmp = y2 - pointPtr[1];
-        if (tmp < yDiff)
-        {
+        if (tmp < yDiff) {
             yDiff = tmp;
         }
-        if (yDiff < xDiff)
-        {
+        if (yDiff < xDiff) {
             xDiff = yDiff;
         }
         xDiff -= rectPtr->width;
-        if (xDiff < 0.0)
-        {
+        if (xDiff < 0.0) {
             return 0.0;
         }
         return xDiff;
@@ -779,29 +726,19 @@ double *pointPtr; /* Pointer to x and y coordinates. */
      * Point is outside rectangle.
      */
 
-    if (pointPtr[0] < x1)
-    {
+    if (pointPtr[0] < x1) {
         xDiff = x1 - pointPtr[0];
-    }
-    else if (pointPtr[0] > x2)
-    {
+    } else if (pointPtr[0] > x2) {
         xDiff = pointPtr[0] - x2;
-    }
-    else
-    {
+    } else {
         xDiff = 0;
     }
 
-    if (pointPtr[1] < y1)
-    {
+    if (pointPtr[1] < y1) {
         yDiff = y1 - pointPtr[1];
-    }
-    else if (pointPtr[1] > y2)
-    {
+    } else if (pointPtr[1] > y2) {
         yDiff = pointPtr[1] - y2;
-    }
-    else
-    {
+    } else {
         yDiff = 0;
     }
 
@@ -844,8 +781,7 @@ double *pointPtr; /* Pointer to x and y coordinates. */
 
     width = ovalPtr->width;
     filled = ovalPtr->fillGC != None;
-    if (ovalPtr->outlineGC == None)
-    {
+    if (ovalPtr->outlineGC == None) {
         width = 0.0;
         filled = 1;
     }
@@ -885,31 +821,27 @@ double *areaPtr;  /* Pointer to array of four coordinates
     double halfWidth;
 
     halfWidth = rectPtr->width / 2.0;
-    if (rectPtr->outlineGC == None)
-    {
+    if (rectPtr->outlineGC == None) {
         halfWidth = 0.0;
     }
 
     if ((areaPtr[2] <= (rectPtr->bbox[0] - halfWidth))
         || (areaPtr[0] >= (rectPtr->bbox[2] + halfWidth))
         || (areaPtr[3] <= (rectPtr->bbox[1] - halfWidth))
-        || (areaPtr[1] >= (rectPtr->bbox[3] + halfWidth)))
-    {
+        || (areaPtr[1] >= (rectPtr->bbox[3] + halfWidth))) {
         return -1;
     }
     if ((rectPtr->fillGC == None) && (rectPtr->outlineGC != None)
         && (areaPtr[0] >= (rectPtr->bbox[0] + halfWidth))
         && (areaPtr[1] >= (rectPtr->bbox[1] + halfWidth))
         && (areaPtr[2] <= (rectPtr->bbox[2] - halfWidth))
-        && (areaPtr[3] <= (rectPtr->bbox[3] - halfWidth)))
-    {
+        && (areaPtr[3] <= (rectPtr->bbox[3] - halfWidth))) {
         return -1;
     }
     if ((areaPtr[0] <= (rectPtr->bbox[0] - halfWidth))
         && (areaPtr[1] <= (rectPtr->bbox[1] - halfWidth))
         && (areaPtr[2] >= (rectPtr->bbox[2] + halfWidth))
-        && (areaPtr[3] >= (rectPtr->bbox[3] + halfWidth)))
-    {
+        && (areaPtr[3] >= (rectPtr->bbox[3] + halfWidth))) {
         return 1;
     }
     return 0;
@@ -953,8 +885,7 @@ double *areaPtr;  /* Pointer to array of four coordinates
      */
 
     halfWidth = ovalPtr->width / 2.0;
-    if (ovalPtr->outlineGC == None)
-    {
+    if (ovalPtr->outlineGC == None) {
         halfWidth = 0.0;
     }
     oval[0] = ovalPtr->bbox[0] - halfWidth;
@@ -972,8 +903,7 @@ double *areaPtr;  /* Pointer to array of four coordinates
      */
 
     if ((result == 0) && (ovalPtr->outlineGC != None)
-        && (ovalPtr->fillGC == None))
-    {
+        && (ovalPtr->fillGC == None)) {
         double centerX, centerY, width, height;
         double xDelta1, yDelta1, xDelta2, yDelta2;
 
@@ -990,8 +920,7 @@ double *areaPtr;  /* Pointer to array of four coordinates
         yDelta2 = (areaPtr[3] - centerY) / height;
         yDelta2 *= yDelta2;
         if (((xDelta1 + yDelta1) < 1.0) && ((xDelta1 + yDelta2) < 1.0)
-            && ((xDelta2 + yDelta1) < 1.0) && ((xDelta2 + yDelta2) < 1.0))
-        {
+            && ((xDelta2 + yDelta1) < 1.0) && ((xDelta2 + yDelta2) < 1.0)) {
             return -1;
         }
     }
@@ -1117,8 +1046,7 @@ int prepass;        /* 1 means this is a prepass to
      */
 
 
-    if (rectOvalPtr->header.typePtr == &tkRectangleType)
-    {
+    if (rectOvalPtr->header.typePtr == &tkRectangleType) {
         sprintf(pathCmd,
                 "%.15g %.15g moveto %.15g 0 rlineto 0 %.15g rlineto %.15g 0 "
                 "rlineto closepath\n",
@@ -1127,9 +1055,7 @@ int prepass;        /* 1 means this is a prepass to
                 rectOvalPtr->bbox[2] - rectOvalPtr->bbox[0],
                 y2 - y1,
                 rectOvalPtr->bbox[0] - rectOvalPtr->bbox[2]);
-    }
-    else
-    {
+    } else {
         sprintf(pathCmd,
                 "matrix currentmatrix\n%.15g %.15g translate %.15g %.15g "
                 "scale 1 0 moveto 0 0 1 0 360 arc\nsetmatrix\n",
@@ -1143,29 +1069,22 @@ int prepass;        /* 1 means this is a prepass to
      * First draw the filled area of the rectangle.
      */
 
-    if (rectOvalPtr->fillColor != NULL)
-    {
+    if (rectOvalPtr->fillColor != NULL) {
         Tcl_AppendResult(interp, pathCmd, ( char * )NULL);
         if (Tk_CanvasPsColor(interp, canvas, rectOvalPtr->fillColor)
-            != TCL_OK)
-        {
+            != TCL_OK) {
             return TCL_ERROR;
         }
-        if (rectOvalPtr->fillStipple != None)
-        {
+        if (rectOvalPtr->fillStipple != None) {
             Tcl_AppendResult(interp, "clip ", ( char * )NULL);
             if (Tk_CanvasPsStipple(interp, canvas, rectOvalPtr->fillStipple)
-                != TCL_OK)
-            {
+                != TCL_OK) {
                 return TCL_ERROR;
             }
-            if (rectOvalPtr->outlineColor != NULL)
-            {
+            if (rectOvalPtr->outlineColor != NULL) {
                 Tcl_AppendResult(interp, "grestore gsave\n", ( char * )NULL);
             }
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp, "fill\n", ( char * )NULL);
         }
     }
@@ -1174,15 +1093,13 @@ int prepass;        /* 1 means this is a prepass to
      * Now draw the outline, if there is one.
      */
 
-    if (rectOvalPtr->outlineColor != NULL)
-    {
+    if (rectOvalPtr->outlineColor != NULL) {
         Tcl_AppendResult(interp, pathCmd, ( char * )NULL);
         sprintf(string, "%d setlinewidth", rectOvalPtr->width);
         Tcl_AppendResult(
         interp, string, " 0 setlinejoin 2 setlinecap\n", ( char * )NULL);
         if (Tk_CanvasPsColor(interp, canvas, rectOvalPtr->outlineColor)
-            != TCL_OK)
-        {
+            != TCL_OK) {
             return TCL_ERROR;
         }
         Tcl_AppendResult(interp, "stroke\n", ( char * )NULL);

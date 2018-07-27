@@ -41,8 +41,7 @@ msgread(int fd, char *buf, size_t siz)
 
     if ((n = cspeek(&cs, fd, buf, MSG_SIZE_SIZE)) >= 0)
         o = 0;
-    else
-    {
+    else {
         n = csread(&cs, fd, buf, MSG_SIZE_SIZE, CS_EXACT);
         o = MSG_SIZE_SIZE;
     }

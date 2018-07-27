@@ -95,10 +95,8 @@ b_sync(int argc, char **argv, Shbltin_t *context)
     bool do_sync = 0;
 
     NoP(context);
-    for (;;)
-    {
-        switch (optget(argv, optsync))
-        {
+    for (;;) {
+        switch (optget(argv, optsync)) {
         case 'f':
             do_sfsync = 1;
             continue;

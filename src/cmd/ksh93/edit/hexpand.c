@@ -82,13 +82,10 @@ parse_subst(Shell_t *shp, const char *s, struct subst *sb)
 
     cp = ( char * )s + 1;
 
-    while (n < 2)
-    {
-        if (*cp == del || *cp == '\n' || *cp == '\0')
-        {
+    while (n < 2) {
+        if (*cp == del || *cp == '\n' || *cp == '\0') {
             /* delimiter or EOL */
-            if (stktell(shp->stk) != off)
-            {
+            if (stktell(shp->stk) != off) {
                 /* dupe string on stack and rewind stack */
                 sfputc(shp->stk, '\0');
                 if (sb->str[n])
@@ -101,23 +98,18 @@ parse_subst(Shell_t *shp, const char *s, struct subst *sb)
             /* if not delimiter, we've reached EOL. Get outta here. */
             if (*cp != del)
                 break;
-        }
-        else if (*cp == '\\')
-        {
+        } else if (*cp == '\\') {
             if (*(cp + 1) == del) /* quote delimiter */
             {
                 sfputc(shp->stk, del);
                 cp++;
-            }
-            else if (*(cp + 1) == '&' && n == 1)
-            { /* quote '&' only in "new" */
+            } else if (*(cp + 1) == '&'
+                       && n == 1) { /* quote '&' only in "new" */
                 sfputc(shp->stk, '&');
                 cp++;
-            }
-            else
+            } else
                 sfputc(shp->stk, '\\');
-        }
-        else if (*cp == '&' && n == 1 && sb->str[0])
+        } else if (*cp == '&' && n == 1 && sb->str[0])
             /* substitute '&' with "old" in "new" */
             sfputr(shp->stk, sb->str[0], -1);
         else
@@ -167,13 +159,11 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
     hc[0] = '!';
     hc[1] = '^';
     hc[2] = 0;
-    if ((np = nv_open("histchars", shp->var_tree, 0)) && (cp = nv_getval(np)))
-    {
-        if (cp[0])
-        {
+    if ((np = nv_open("histchars", shp->var_tree, 0))
+        && (cp = nv_getval(np))) {
+        if (cp[0]) {
             hc[0] = cp[0];
-            if (cp[1])
-            {
+            if (cp[1]) {
                 hc[1] = cp[1];
                 if (cp[2])
                     hc[2] = cp[2];
@@ -187,12 +177,10 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
 
     cp = ( char * )ln;
 
-    while (cp && *cp)
-    {
+    while (cp && *cp) {
         /* read until event/quick substitution/comment designator */
         if ((*cp != hc[0] && *cp != hc[1] && *cp != hc[2])
-            || (*cp == hc[1] && cp != ln))
-        {
+            || (*cp == hc[1] && cp != ln)) {
             if (*cp == '\\') /* skip escaped designators */
                 sfputc(shp->stk, *cp++);
             else if (*cp == '\'') /* skip quoted designators */
@@ -231,8 +219,7 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
             goto getline;
         }
 
-        switch (c = *++cp)
-        {
+        switch (c = *++cp) {
         case ' ':
         case '\t':
         case '\n':
@@ -282,14 +269,13 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
         default:
             /* read until end of string or word designator/modifier */
             str = cp;
-            while (*cp)
-            {
+            while (*cp) {
                 cp++;
                 if ((!(flag & HIST_QUESTION)
                      && (*cp == ':' || isspace(*cp) || *cp == '^' || *cp == '$'
                          || *cp == '*' || *cp == '-' || *cp == '%'))
-                    || ((flag & HIST_QUESTION) && (*cp == '?' || *cp == '\n')))
-                {
+                    || ((flag & HIST_QUESTION)
+                        && (*cp == '?' || *cp == '\n'))) {
                     c = *cp;
                     *cp = '\0';
                 }
@@ -311,16 +297,14 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
             if ((n = hl.hist_command) == -1)
                 n = 0; /* not found */
         }
-        if (n)
-        {
+        if (n) {
             if (n < 0) /* determine index for backref */
                 n = shgd->hist_ptr->histind + n;
             /* search and use history file if found */
             if (n > 0 && hist_seek(shgd->hist_ptr, n) != -1)
                 ref = shgd->hist_ptr->histfp;
         }
-        if (!ref)
-        {
+        if (!ref) {
             /* string not found or command # out of range */
             c = *cp;
             *cp = '\0';
@@ -348,32 +332,24 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
             goto getsel;
 
         n = 0;
-        while (n < 2)
-        {
-            switch (c = *cp++)
-            {
+        while (n < 2) {
+            switch (c = *cp++) {
             case '^': /* first word */
-                if (n == 0)
-                {
+                if (n == 0) {
                     w[0] = w[1] = 1;
                     goto skip;
-                }
-                else
+                } else
                     goto skip2;
             case '$': /* last word */
                 w[n] = -1;
                 goto skip;
             case '%': /* match from !?string? event designator */
-                if (n == 0)
-                {
-                    if (!str)
-                    {
+                if (n == 0) {
+                    if (!str) {
                         w[0] = 0;
                         w[1] = -1;
                         ref = wm;
-                    }
-                    else
-                    {
+                    } else {
                         w[0] = -2;
                         w[1] = sftell(ref) + hl.hist_char;
                     }
@@ -408,8 +384,7 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
             case '7':
             case '8':
             case '9': /* specify index */
-                if ((*evp == ':') || w[1] == -2)
-                {
+                if ((*evp == ':') || w[1] == -2) {
                     w[n] = c - '0';
                     while (isdigit(c = *cp++))
                         w[n] = w[n] * 10 + c - '0';
@@ -417,16 +392,14 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
                     if (n == 0)
                         w[1] = w[0];
                     n++;
-                }
-                else
+                } else
                     n = 2;
                 cp--;
                 break;
             }
         }
 
-        if (w[0] != -2 && w[1] > 0 && w[0] > w[1])
-        {
+        if (w[0] != -2 && w[1] > 0 && w[0] > w[1]) {
             c = *cp;
             *cp = '\0';
             errormsg(SH_DICT, ERROR_ERROR, "%s: bad word specifier", evp);
@@ -446,16 +419,13 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
            whitespace into single blank or a newline */
         n = i = q = 0;
 
-        while ((c = sfgetc(ref)) > 0)
-        {
-            if (isspace(c))
-            {
+        while ((c = sfgetc(ref)) > 0) {
+            if (isspace(c)) {
                 flag |= (c == '\n' ? HIST_NEWLINE : 0);
                 continue;
             }
 
-            if (n >= w[0] && ((w[0] != -2) ? (w[1] < 0 || n <= w[1]) : 1))
-            {
+            if (n >= w[0] && ((w[0] != -2) ? (w[1] < 0 || n <= w[1]) : 1)) {
                 if (w[0] < 0)
                     sfseek(tmp, 0, SEEK_SET);
                 else
@@ -466,12 +436,10 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
 
                 flag &= ~HIST_NEWLINE;
                 p = 1;
-            }
-            else
+            } else
                 p = 0;
 
-            do
-            {
+            do {
                 cc = strchr(qc, c);
                 q ^= cc ? 1 << ( int )(cc - qc) : 0;
                 if (p)
@@ -484,20 +452,17 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
             flag |= (c == '\n' ? HIST_NEWLINE : 0);
             n++;
         }
-        if (w[0] != -2 && w[1] >= 0 && w[1] >= n)
-        {
+        if (w[0] != -2 && w[1] >= 0 && w[1] >= n) {
             c = *cp;
             *cp = '\0';
             errormsg(SH_DICT, ERROR_ERROR, "%s: bad word specifier", evp);
             *cp = c;
             DONE();
-        }
-        else if (w[1] == -2) /* skip last word */
+        } else if (w[1] == -2) /* skip last word */
             sfseek(tmp, i, SEEK_SET);
 
         /* remove trailing newline */
-        if (sftell(tmp))
-        {
+        if (sftell(tmp)) {
             sfseek(tmp, -1, SEEK_CUR);
             if (sfgetc(tmp) == '\n')
                 sfungetc(tmp, '\n');
@@ -505,15 +470,13 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
 
         sfputc(tmp, '\0');
 
-        if (str)
-        {
+        if (str) {
             if (wm)
                 sfclose(wm);
             wm = tmp;
         }
 
-        if (cc && (flag & HIST_HASH))
-        {
+        if (cc && (flag & HIST_HASH)) {
             /* close !# temp file */
             sfclose(ref);
             flag &= ~HIST_HASH;
@@ -524,15 +487,12 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
         evp = cp;
 
         /* selected line/words are now in buffer, now go for the modifiers */
-        while (*cp == ':' || (flag & HIST_QUICKSUBST))
-        {
-            if (flag & HIST_QUICKSUBST)
-            {
+        while (*cp == ':' || (flag & HIST_QUICKSUBST)) {
+            if (flag & HIST_QUICKSUBST) {
                 flag &= ~HIST_QUICKSUBST;
                 c = 's';
                 cp--;
-            }
-            else
+            } else
                 c = *++cp;
 
             sfseek(tmp, 0, SEEK_SET);
@@ -546,8 +506,7 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
 
             if (cc = strchr(modifiers, c))
                 flag |= mod_flags[cc - modifiers];
-            else
-            {
+            else {
                 errormsg(
                 SH_DICT, ERROR_ERROR, "%c: unrecognized history modifier", c);
                 DONE();
@@ -556,24 +515,22 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
             if (c == 'h' || c == 'r') /* head or base */
             {
                 n = -1;
-                while ((c = sfgetc(tmp)) > 0)
-                { /* remember position of / or . */
+                while ((c = sfgetc(tmp))
+                       > 0) { /* remember position of / or . */
                     if ((c == '/' && *cp == 'h') || (c == '.' && *cp == 'r'))
                         n = sftell(tmp2);
                     sfputc(tmp2, c);
                 }
-                if (n > 0)
-                { /* rewind to last / or . */
+                if (n > 0) { /* rewind to last / or . */
                     sfseek(tmp2, n, SEEK_SET);
                     /* end string there */
                     sfputc(tmp2, '\0');
                 }
-            }
-            else if (c == 't' || c == 'e') /* tail or suffix */
+            } else if (c == 't' || c == 'e') /* tail or suffix */
             {
                 n = 0;
-                while ((c = sfgetc(tmp)) > 0)
-                { /* remember position of / or . */
+                while ((c = sfgetc(tmp))
+                       > 0) { /* remember position of / or . */
                     if ((c == '/' && *cp == 't') || (c == '.' && *cp == 'e'))
                         n = sftell(tmp);
                 }
@@ -582,21 +539,17 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
                 /* copy from there on */
                 while ((c = sfgetc(tmp)) > 0)
                     sfputc(tmp2, c);
-            }
-            else if (c == 's' || c == '&')
-            {
+            } else if (c == 's' || c == '&') {
                 cp++;
 
-                if (c == 's')
-                {
+                if (c == 's') {
                     /* preset old with match from !?string? */
                     if (!sb.str[0] && wm)
                         sb.str[0] = strdup(sfsetbuf(wm, ( Void_t * )1, 0));
                     cp = parse_subst(shp, cp, &sb);
                 }
 
-                if (!sb.str[0] || !sb.str[1])
-                {
+                if (!sb.str[0] || !sb.str[1]) {
                     c = *cp;
                     *cp = '\0';
                     errormsg(SH_DICT,
@@ -612,20 +565,16 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
                 str = sfsetbuf(tmp, ( Void_t * )1, 0);
 
                 flag |= HIST_SUBSTITUTE;
-                while (flag & HIST_SUBSTITUTE)
-                {
+                while (flag & HIST_SUBSTITUTE) {
                     /* find string */
-                    if (cc = strstr(str, sb.str[0]))
-                    { /* replace it */
+                    if (cc = strstr(str, sb.str[0])) { /* replace it */
                         c = *cc;
                         *cc = '\0';
                         sfputr(tmp2, str, -1);
                         sfputr(tmp2, sb.str[1], -1);
                         *cc = c;
                         str = cc + strlen(sb.str[0]);
-                    }
-                    else if (!sftell(tmp2))
-                    { /* not successfull */
+                    } else if (!sftell(tmp2)) { /* not successfull */
                         c = *cp;
                         *cp = '\0';
                         errormsg(SH_DICT,
@@ -646,8 +595,7 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
                     cp--;
             }
 
-            if (sftell(tmp2))
-            { /* if any substitions done, swap buffers */
+            if (sftell(tmp2)) { /* if any substitions done, swap buffers */
                 if (wm != tmp)
                     sfclose(tmp);
                 tmp = tmp2;
@@ -659,17 +607,14 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
         }
 
         /* flush temporary buffer to stack */
-        if (tmp)
-        {
+        if (tmp) {
             sfseek(tmp, 0, SEEK_SET);
 
             if (flag & HIST_QUOTE)
                 sfputc(shp->stk, '\'');
 
-            while ((c = sfgetc(tmp)) > 0)
-            {
-                if (isspace(c))
-                {
+            while ((c = sfgetc(tmp)) > 0) {
+                if (isspace(c)) {
                     flag = flag & ~HIST_NEWLINE;
 
                     /* squash white space to either a
@@ -682,23 +627,18 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
 
                     c = (flag & HIST_NEWLINE) ? '\n' : ' ';
 
-                    if (flag & HIST_QUOTE_BR)
-                    {
+                    if (flag & HIST_QUOTE_BR) {
                         sfputc(shp->stk, '\'');
                         sfputc(shp->stk, c);
                         sfputc(shp->stk, '\'');
-                    }
-                    else
+                    } else
                         sfputc(shp->stk, c);
-                }
-                else if ((c == '\'') && (flag & HIST_QUOTE))
-                {
+                } else if ((c == '\'') && (flag & HIST_QUOTE)) {
                     sfputc(shp->stk, '\'');
                     sfputc(shp->stk, '\\');
                     sfputc(shp->stk, c);
                     sfputc(shp->stk, '\'');
-                }
-                else
+                } else
                     sfputc(shp->stk, c);
             }
             if (flag & HIST_QUOTE)
@@ -709,8 +649,7 @@ hist_expand(Shell_t *shp, const char *ln, char **xp)
     sfputc(shp->stk, '\0');
 
 done:
-    if (cc && (flag & HIST_HASH))
-    {
+    if (cc && (flag & HIST_HASH)) {
         /* close !# temp file */
         sfclose(ref);
         free(cc);

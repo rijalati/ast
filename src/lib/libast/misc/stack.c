@@ -44,13 +44,11 @@ stackalloc(int size, void *error)
         size = 100;
     if (!(stack = newof(0, struct stacktable, 1, 0)))
         return (0);
-    if (!(b = newof(0, struct stackblock, 1, 0)))
-    {
+    if (!(b = newof(0, struct stackblock, 1, 0))) {
         free(stack);
         return (0);
     }
-    if (!(b->stack = newof(0, void *, size, 0)))
-    {
+    if (!(b->stack = newof(0, void *, size, 0))) {
         free(b);
         free(stack);
         return (0);
@@ -76,8 +74,7 @@ stackfree(STACK stack)
     struct stackblock *p;
 
     b = stack->blocks;
-    while (p = b)
-    {
+    while (p = b) {
         b = p->next;
         free(p->stack);
         free(p);
@@ -118,13 +115,11 @@ stackpush(STACK stack, void *value)
 {
     struct stackblock *b;
 
-    if (++stack->position.index >= stack->size)
-    {
+    if (++stack->position.index >= stack->size) {
         b = stack->position.block;
         if (b->next)
             b = b->next;
-        else
-        {
+        else {
             if (!(b->next = newof(0, struct stackblock, 1, 0)))
                 return (-1);
             b = b->next;
@@ -157,15 +152,13 @@ stackpop(STACK stack)
 
     if (stack->position.index < 0)
         return (-1);
-    else if (--stack->position.index < 0)
-    {
+    else if (--stack->position.index < 0) {
         if (!stack->position.block->prev)
             return (0);
         stack->position.block = stack->position.block->prev;
         stack->position.index = stack->size - 1;
         return (1);
-    }
-    else
+    } else
         return (1);
 }
 

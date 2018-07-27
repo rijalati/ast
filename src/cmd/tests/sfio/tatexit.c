@@ -54,8 +54,7 @@ char **argv;
         atexit(ae);
 
         system(sfprints("%s 1", argv[0]));
-    }
-    else /* atexit function registered before some sfio access */
+    } else /* atexit function registered before some sfio access */
     {
         atexit(ae);
 

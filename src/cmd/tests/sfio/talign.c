@@ -64,8 +64,7 @@ tmain()
 
     sfdisc(f, &Disc);
 
-    for (i = 0;; i += 64)
-    {
+    for (i = 0;; i += 64) {
         sfseek(f, ( Sfoff_t )i, 0);
         if (!(s = sfreserve(f, 619, SF_LOCKR)))
             break;

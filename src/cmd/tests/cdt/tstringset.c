@@ -27,8 +27,7 @@ strcmp(const char *s1, const char *s2)
 {
     int d;
     N_cmp++;
-    for (;; s1++, s2++)
-    {
+    for (;; s1++, s2++) {
         if ((d = s1[0] - s2[0]))
             return d;
         if (s1[0] == 0)
@@ -54,8 +53,7 @@ tmain()
     for (i = 0; i < N_obj; ++i)
         Perm[i] = i;
 #if RANDOM
-    for (i = N_obj; i > 1; --i)
-    {
+    for (i = N_obj; i > 1; --i) {
         k = (( unsigned int )rand()) % i;
         t = Perm[k];
         Perm[k] = Perm[i - 1];
@@ -78,15 +76,12 @@ tmain()
     dt = dtopen(&disc, Dtset);
 
     /* insert into table */
-    for (i = 0; i < N_obj; ++i)
-    {
+    for (i = 0; i < N_obj; ++i) {
         dtinsert(dt, Key[i]);
-        if (((i + 1) % 1000) == 0)
-        {
+        if (((i + 1) % 1000) == 0) {
             if (dtsize(dt) != i + 1)
                 terror("Bad size=%d, should be %d", k, i + 1);
-            for (k = 0; k < 1000; ++k)
-            {
+            for (k = 0; k < 1000; ++k) {
                 sprintf(tmp, Pat, (( unsigned int )rand()) % (i + 1));
                 if (!(ks = ( char * )dtsearch(dt, tmp)))
                     terror("Not finding '%s'", tmp);
@@ -95,8 +90,7 @@ tmain()
     }
 
     /* search in order of insertion */
-    for (Count = 0, i = 0; i < N_obj; ++i)
-    {
+    for (Count = 0, i = 0; i < N_obj; ++i) {
         if (!(ks = ( char * )dtsearch(dt, Key[i])))
             terror("Not finding '%s'", Key[i]);
         if (strcmp(ks, Key[i]) == 0)
@@ -106,8 +100,7 @@ tmain()
         terror("Count=%d but should be %d", Count, N_obj);
 
     /* search in a random order */
-    for (Count = 0, i = 0; i < N_obj; ++i)
-    {
+    for (Count = 0, i = 0; i < N_obj; ++i) {
         sprintf(tmp, Pat, (( unsigned int )rand()) % N_obj);
         if (!(ks = ( char * )dtsearch(dt, tmp)))
             terror("Not finding '%s'", Key[i]);
@@ -118,8 +111,7 @@ tmain()
         terror("Count=%d but should be %d", Count, N_obj);
 
     /* search in increasing order */
-    for (Count = 0, i = 0; i < N_obj; ++i)
-    {
+    for (Count = 0, i = 0; i < N_obj; ++i) {
         sprintf(tmp, Pat, i);
         if (!(ks = ( char * )dtsearch(dt, tmp)))
             terror("Not finding '%s'", tmp);

@@ -87,8 +87,7 @@ tmain()
     if (!(f = sfopen(f, tstfile("sf", 0), "r")))
         terror("Can't open to read");
 
-    for (n = 0; n < 10; ++n)
-    {
+    for (n = 0; n < 10; ++n) {
         if ((r = sfread(f, buf2, sizeof(buf))) != sizeof(buf))
             terror("Bad read size=%d", r);
         if (strncmp(buf, buf2, sizeof(buf)) != 0)

@@ -88,13 +88,11 @@ fmtint(intmax_t ll, int unsign)
     int j = 0, k = 3 * sizeof(ll);
     if (unsign || ll >= 0)
         n = ll;
-    else
-    {
+    else {
         n = -ll;
         j = 1;
     }
-    if (n < 10)
-    {
+    if (n < 10) {
         buff = fmtbuf(k = 3);
         buff[--k] = 0;
         buff[--k] = '0' + n;
@@ -102,8 +100,7 @@ fmtint(intmax_t ll, int unsign)
     }
     buff = fmtbuf(k);
     buff[--k] = 0;
-    do
-    {
+    do {
         k -= 3;
         if ((m = n) >= 1000)
             m = n % 1000;

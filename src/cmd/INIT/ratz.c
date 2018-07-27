@@ -873,8 +873,7 @@ uInt len;
 {
     if (len == 0)
         return;
-    do
-    {
+    do {
         *dest++ = *source++; /* ??? to be unrolled */
     } while (--len != 0);
 }
@@ -885,8 +884,7 @@ uInt len;
 {
     uInt j;
 
-    for (j = 0; j < len; j++)
-    {
+    for (j = 0; j < len; j++) {
         if (s1[j] != s2[j])
             return 2 * (s1[j] > s2[j]) - 1;
     }
@@ -898,8 +896,7 @@ uInt len;
 {
     if (len == 0)
         return;
-    do
-    {
+    do {
         *dest++ = 0; /* ??? to be unrolled */
     } while (--len != 0);
 }
@@ -947,14 +944,11 @@ zcalloc(voidpf opaque, unsigned items, unsigned size)
     /* If we allocate less than 65520 bytes, we assume that farmalloc
      * will return a usable pointer which doesn't have to be normalized.
      */
-    if (bsize < 65520L)
-    {
+    if (bsize < 65520L) {
         buf = farmalloc(bsize);
         if (*( ush * )&buf != 0)
             return buf;
-    }
-    else
-    {
+    } else {
         buf = farmalloc(bsize + 16L);
     }
     if (buf == NULL || next_ptr >= MAX_PTR)
@@ -972,20 +966,17 @@ void
 zcfree(voidpf opaque, voidpf ptr)
 {
     int n;
-    if (*( ush * )&ptr != 0)
-    { /* object < 64K */
+    if (*( ush * )&ptr != 0) { /* object < 64K */
         farfree(ptr);
         return;
     }
     /* Find the original pointer */
-    for (n = 0; n < next_ptr; n++)
-    {
+    for (n = 0; n < next_ptr; n++) {
         if (ptr != table[n].new_ptr)
             continue;
 
         farfree(table[n].org_ptr);
-        while (++n < next_ptr)
-        {
+        while (++n < next_ptr) {
             table[n - 1] = table[n];
         }
         next_ptr--;
@@ -1152,8 +1143,7 @@ unsigned len;
 #        endif /* DYNAMIC_CRC_TABLE */
 
 #        ifdef BYFOUR
-    if (sizeof(void *) == sizeof(ptrdiff_t))
-    {
+    if (sizeof(void *) == sizeof(ptrdiff_t)) {
         u4 endian;
 
         endian = 1;
@@ -1164,14 +1154,12 @@ unsigned len;
     }
 #        endif /* BYFOUR */
     crc = crc ^ 0xffffffff;
-    while (len >= 8)
-    {
+    while (len >= 8) {
         DO8;
         len -= 8;
     }
     if (len)
-        do
-        {
+        do {
             DO1;
         } while (--len);
     return crc ^ 0xffffffff;
@@ -1210,8 +1198,7 @@ unsigned len;
 /* use NO_DIVIDE if your processor does not do division in hardware */
 #        ifdef NO_DIVIDE
 #            define MOD(a)                                                   \
-                do                                                           \
-                {                                                            \
+                do {                                                         \
                     if (a >= (BASE << 16))                                   \
                         a -= (BASE << 16);                                   \
                     if (a >= (BASE << 15))                                   \
@@ -1248,8 +1235,7 @@ unsigned len;
                         a -= BASE;                                           \
                 } while (0)
 #            define MOD4(a)                                                  \
-                do                                                           \
-                {                                                            \
+                do {                                                         \
                     if (a >= (BASE << 4))                                    \
                         a -= (BASE << 4);                                    \
                     if (a >= (BASE << 3))                                    \
@@ -1280,8 +1266,7 @@ uInt len;
     adler &= 0xffff;
 
     /* in case user likes doing a byte at a time, keep it fast */
-    if (len == 1)
-    {
+    if (len == 1) {
         adler += buf[0];
         if (adler >= BASE)
             adler -= BASE;
@@ -1296,10 +1281,8 @@ uInt len;
         return 1L;
 
     /* in case short lengths are provided, keep it somewhat fast */
-    if (len < 16)
-    {
-        while (len--)
-        {
+    if (len < 16) {
+        while (len--) {
             adler += *buf++;
             sum2 += adler;
         }
@@ -1310,12 +1293,10 @@ uInt len;
     }
 
     /* do length NMAX blocks -- requires just one modulo operation */
-    while (len >= NMAX)
-    {
+    while (len >= NMAX) {
         len -= NMAX;
         n = NMAX / 16; /* NMAX is divisible by 16 */
-        do
-        {
+        do {
             DO16(buf); /* 16 sums unrolled */
             buf += 16;
         } while (--n);
@@ -1324,16 +1305,13 @@ uInt len;
     }
 
     /* do remaining bytes (less than NMAX, still just one modulo) */
-    if (len)
-    { /* avoid modulos if none remaining */
-        while (len >= 16)
-        {
+    if (len) { /* avoid modulos if none remaining */
+        while (len >= 16) {
             len -= 16;
             DO16(buf);
             buf += 16;
         }
-        while (len--)
-        {
+        while (len--) {
             adler += *buf++;
             sum2 += adler;
         }
@@ -1928,8 +1906,7 @@ unsigned short FAR *work;
             break;
     if (root > max)
         root = max;
-    if (max == 0)
-    {                                  /* no symbols to code at all */
+    if (max == 0) {                    /* no symbols to code at all */
         this.op = ( unsigned char )64; /* invalid code marker */
         this.bits = ( unsigned char )1;
         this.val = ( unsigned short )0;
@@ -1946,8 +1923,7 @@ unsigned short FAR *work;
 
     /* check for an over-subscribed or incomplete set of lengths */
     left = 1;
-    for (len = 1; len <= MAXBITS; len++)
-    {
+    for (len = 1; len <= MAXBITS; len++) {
         left <<= 1;
         left -= count[len];
         if (left < 0)
@@ -1999,8 +1975,7 @@ unsigned short FAR *work;
      */
 
     /* set up for code type */
-    switch (type)
-    {
+    switch (type) {
     case CODES:
         base = extra = work; /* dummy value--not used */
         end = 19;
@@ -2034,22 +2009,16 @@ unsigned short FAR *work;
         return 1;
 
     /* process all codes and make table entries */
-    for (;;)
-    {
+    for (;;) {
         /* create table entry */
         this.bits = ( unsigned char )(len - drop);
-        if (( int )(work[sym]) < end)
-        {
+        if (( int )(work[sym]) < end) {
             this.op = ( unsigned char )0;
             this.val = work[sym];
-        }
-        else if (( int )(work[sym]) > end)
-        {
+        } else if (( int )(work[sym]) > end) {
             this.op = ( unsigned char )(extra[work[sym]]);
             this.val = base[work[sym]];
-        }
-        else
-        {
+        } else {
             this.op = ( unsigned char )(32 + 64); /* end of block */
             this.val = 0;
         }
@@ -2058,8 +2027,7 @@ unsigned short FAR *work;
         incr = (( unsigned int )1) << (len - drop);
         fill = (( unsigned int )1) << curr;
         min = fill; /* save offset to next table */
-        do
-        {
+        do {
             fill -= incr;
             next[(huff >> drop) + fill] = this;
         } while (fill != 0);
@@ -2068,26 +2036,22 @@ unsigned short FAR *work;
         incr = (( unsigned int )1) << (len - 1);
         while (huff & incr)
             incr >>= 1;
-        if (incr != 0)
-        {
+        if (incr != 0) {
             huff &= incr - 1;
             huff += incr;
-        }
-        else
+        } else
             huff = 0;
 
         /* go to next symbol, update count, len */
         sym++;
-        if (--(count[len]) == 0)
-        {
+        if (--(count[len]) == 0) {
             if (len == max)
                 break;
             len = lens[work[sym]];
         }
 
         /* create new sub-table if needed */
-        if (len > root && (huff & mask) != low)
-        {
+        if (len > root && (huff & mask) != low) {
             /* if first time, transition to sub-tables */
             if (drop == 0)
                 drop = root;
@@ -2098,8 +2062,7 @@ unsigned short FAR *work;
             /* determine length of next table */
             curr = len - drop;
             left = ( int )(1 << curr);
-            while (curr + drop < max)
-            {
+            while (curr + drop < max) {
                 left -= count[curr + drop];
                 if (left <= 0)
                     break;
@@ -2131,11 +2094,9 @@ unsigned short FAR *work;
     this.op = ( unsigned char )64; /* invalid code marker */
     this.bits = ( unsigned char )(len - drop);
     this.val = ( unsigned short )0;
-    while (huff != 0)
-    {
+    while (huff != 0) {
         /* when done with sub-table, drop back to root table */
-        if (drop != 0 && (huff & mask) != low)
-        {
+        if (drop != 0 && (huff & mask) != low) {
             drop = 0;
             len = root;
             next = *table;
@@ -2149,12 +2110,10 @@ unsigned short FAR *work;
         incr = (( unsigned int )1) << (len - 1);
         while (huff & incr)
             incr >>= 1;
-        if (incr != 0)
-        {
+        if (incr != 0) {
             huff &= incr - 1;
             huff += incr;
-        }
-        else
+        } else
             huff = 0;
     }
 
@@ -2276,10 +2235,8 @@ unsigned start; /* inflate()'s starting value for strm->avail_out */
 
     /* decode literals and length/distances until end-of-block or not enough
        input data or output space */
-    do
-    {
-        if (bits < 15)
-        {
+    do {
+        if (bits < 15) {
             hold += ( unsigned long )(PUP(in)) << bits;
             bits += 8;
             hold += ( unsigned long )(PUP(in)) << bits;
@@ -2291,23 +2248,18 @@ unsigned start; /* inflate()'s starting value for strm->avail_out */
         hold >>= op;
         bits -= op;
         op = ( unsigned )(this.op);
-        if (op == 0)
-        { /* literal */
+        if (op == 0) { /* literal */
             Tracevv((stderr,
                      this.val >= 0x20 && this.val < 0x7f
                      ? "inflate:         literal '%c'\n"
                      : "inflate:         literal 0x%02x\n",
                      this.val));
             PUP(out) = ( unsigned char )(this.val);
-        }
-        else if (op & 16)
-        { /* length base */
+        } else if (op & 16) { /* length base */
             len = ( unsigned )(this.val);
             op &= 15; /* number of extra bits */
-            if (op)
-            {
-                if (bits < op)
-                {
+            if (op) {
+                if (bits < op) {
                     hold += ( unsigned long )(PUP(in)) << bits;
                     bits += 8;
                 }
@@ -2316,8 +2268,7 @@ unsigned start; /* inflate()'s starting value for strm->avail_out */
                 bits -= op;
             }
             Tracevv((stderr, "inflate:         length %u\n", len));
-            if (bits < 15)
-            {
+            if (bits < 15) {
                 hold += ( unsigned long )(PUP(in)) << bits;
                 bits += 8;
                 hold += ( unsigned long )(PUP(in)) << bits;
@@ -2329,24 +2280,20 @@ unsigned start; /* inflate()'s starting value for strm->avail_out */
             hold >>= op;
             bits -= op;
             op = ( unsigned )(this.op);
-            if (op & 16)
-            { /* distance base */
+            if (op & 16) { /* distance base */
                 dist = ( unsigned )(this.val);
                 op &= 15; /* number of extra bits */
-                if (bits < op)
-                {
+                if (bits < op) {
                     hold += ( unsigned long )(PUP(in)) << bits;
                     bits += 8;
-                    if (bits < op)
-                    {
+                    if (bits < op) {
                         hold += ( unsigned long )(PUP(in)) << bits;
                         bits += 8;
                     }
                 }
                 dist += ( unsigned )hold & (((( unsigned int )1) << op) - 1);
 #        ifdef INFLATE_STRICT
-                if (dist > dmax)
-                {
+                if (dist > dmax) {
                     strm->msg = ( char * )"invalid distance too far back";
                     state->mode = BAD;
                     break;
@@ -2356,125 +2303,94 @@ unsigned start; /* inflate()'s starting value for strm->avail_out */
                 bits -= op;
                 Tracevv((stderr, "inflate:         distance %u\n", dist));
                 op = ( unsigned )(out - beg); /* max distance in output */
-                if (dist > op)
-                {                   /* see if copy from window */
-                    op = dist - op; /* distance back in window */
-                    if (op > whave)
-                    {
+                if (dist > op) {              /* see if copy from window */
+                    op = dist - op;           /* distance back in window */
+                    if (op > whave) {
                         strm->msg = ( char * )"invalid distance too far back";
                         state->mode = BAD;
                         break;
                     }
                     from = window - OFF;
-                    if (write == 0)
-                    { /* very common case */
+                    if (write == 0) { /* very common case */
                         from += wsize - op;
-                        if (op < len)
-                        { /* some from window */
+                        if (op < len) { /* some from window */
                             len -= op;
-                            do
-                            {
+                            do {
                                 PUP(out) = PUP(from);
                             } while (--op);
                             from = out - dist; /* rest from output */
                         }
-                    }
-                    else if (write < op)
-                    { /* wrap around window */
+                    } else if (write < op) { /* wrap around window */
                         from += wsize + write - op;
                         op -= write;
-                        if (op < len)
-                        { /* some from end of window */
+                        if (op < len) { /* some from end of window */
                             len -= op;
-                            do
-                            {
+                            do {
                                 PUP(out) = PUP(from);
                             } while (--op);
                             from = window - OFF;
-                            if (write < len)
-                            { /* some from start of window */
+                            if (write < len) { /* some from start of window */
                                 op = write;
                                 len -= op;
-                                do
-                                {
+                                do {
                                     PUP(out) = PUP(from);
                                 } while (--op);
                                 from = out - dist; /* rest from output */
                             }
                         }
-                    }
-                    else
-                    { /* contiguous in window */
+                    } else { /* contiguous in window */
                         from += write - op;
-                        if (op < len)
-                        { /* some from window */
+                        if (op < len) { /* some from window */
                             len -= op;
-                            do
-                            {
+                            do {
                                 PUP(out) = PUP(from);
                             } while (--op);
                             from = out - dist; /* rest from output */
                         }
                     }
-                    while (len > 2)
-                    {
+                    while (len > 2) {
                         PUP(out) = PUP(from);
                         PUP(out) = PUP(from);
                         PUP(out) = PUP(from);
                         len -= 3;
                     }
-                    if (len)
-                    {
+                    if (len) {
                         PUP(out) = PUP(from);
                         if (len > 1)
                             PUP(out) = PUP(from);
                     }
-                }
-                else
-                {
+                } else {
                     from = out - dist; /* copy direct from output */
-                    do
-                    { /* minimum length is three */
+                    do {               /* minimum length is three */
                         PUP(out) = PUP(from);
                         PUP(out) = PUP(from);
                         PUP(out) = PUP(from);
                         len -= 3;
                     } while (len > 2);
-                    if (len)
-                    {
+                    if (len) {
                         PUP(out) = PUP(from);
                         if (len > 1)
                             PUP(out) = PUP(from);
                     }
                 }
-            }
-            else if ((op & 64) == 0)
-            { /* 2nd level distance code */
+            } else if ((op & 64) == 0) { /* 2nd level distance code */
                 this
                 = dcode[this.val + (hold & (((( unsigned int )1) << op) - 1))];
                 goto dodist;
-            }
-            else
-            {
+            } else {
                 strm->msg = ( char * )"invalid distance code";
                 state->mode = BAD;
                 break;
             }
-        }
-        else if ((op & 64) == 0)
-        { /* 2nd level length code */
+        } else if ((op & 64) == 0) { /* 2nd level length code */
             this
             = lcode[this.val + (hold & (((( unsigned int )1) << op) - 1))];
             goto dolen;
-        }
-        else if (op & 32)
-        { /* end-of-block */
+        } else if (op & 32) { /* end-of-block */
             Tracevv((stderr, "inflate:         end of block\n"));
             state->mode = TYPE;
             break;
-        }
-        else
-        {
+        } else {
             strm->msg = ( char * )"invalid literal/length code";
             state->mode = BAD;
             break;
@@ -2584,8 +2500,7 @@ int stream_size;
     if (strm == Z_NULL)
         return Z_STREAM_ERROR;
     strm->msg = Z_NULL; /* in case we return an error */
-    if (strm->zalloc == ( alloc_func )0)
-    {
+    if (strm->zalloc == ( alloc_func )0) {
         strm->zalloc = zcalloc;
         strm->opaque = ( voidpf )0;
     }
@@ -2597,21 +2512,17 @@ int stream_size;
         return Z_MEM_ERROR;
     Tracev((stderr, "inflate: allocated\n"));
     strm->state = ( struct internal_state FAR * )state;
-    if (windowBits < 0)
-    {
+    if (windowBits < 0) {
         state->wrap = 0;
         windowBits = -windowBits;
-    }
-    else
-    {
+    } else {
         state->wrap = (windowBits >> 4) + 1;
 #        ifdef GUNZIP
         if (windowBits < 48)
             windowBits &= 15;
 #        endif
     }
-    if (windowBits < 8 || windowBits > 15)
-    {
+    if (windowBits < 8 || windowBits > 15) {
         ZFREE(strm, state);
         strm->state = Z_NULL;
         return Z_STREAM_ERROR;
@@ -2812,8 +2723,7 @@ unsigned out;
     state = ( struct inflate_state FAR * )strm->state;
 
     /* if it hasn't been done already, allocate space for the window */
-    if (state->window == Z_NULL)
-    {
+    if (state->window == Z_NULL) {
         state->window = ( unsigned char FAR * )ZALLOC(
         strm, (( unsigned int )1) << state->wbits, sizeof(unsigned char));
         if (state->window == Z_NULL)
@@ -2821,8 +2731,7 @@ unsigned out;
     }
 
     /* if window not in use yet, initialize */
-    if (state->wsize == 0)
-    {
+    if (state->wsize == 0) {
         state->wsize = (( unsigned int )1) << state->wbits;
         state->write = 0;
         state->whave = 0;
@@ -2830,27 +2739,21 @@ unsigned out;
 
     /* copy state->wsize or less output bytes into the circular window */
     copy = out - strm->avail_out;
-    if (copy >= state->wsize)
-    {
+    if (copy >= state->wsize) {
         zmemcpy(state->window, strm->next_out - state->wsize, state->wsize);
         state->write = 0;
         state->whave = state->wsize;
-    }
-    else
-    {
+    } else {
         dist = state->wsize - state->write;
         if (dist > copy)
             dist = copy;
         zmemcpy(state->window + state->write, strm->next_out - copy, dist);
         copy -= dist;
-        if (copy)
-        {
+        if (copy) {
             zmemcpy(state->window, strm->next_out - copy, copy);
             state->write = copy;
             state->whave = state->wsize;
-        }
-        else
-        {
+        } else {
             state->write += dist;
             if (state->write == state->wsize)
                 state->write = 0;
@@ -2875,16 +2778,14 @@ unsigned out;
 /* check macros for header crc */
 #        ifdef GUNZIP
 #            define CRC2(check, word)                                        \
-                do                                                           \
-                {                                                            \
+                do {                                                         \
                     hbuf[0] = ( unsigned char )(word);                       \
                     hbuf[1] = ( unsigned char )((word) >> 8);                \
                     check = crc32(check, hbuf, 2);                           \
                 } while (0)
 
 #            define CRC4(check, word)                                        \
-                do                                                           \
-                {                                                            \
+                do {                                                         \
                     hbuf[0] = ( unsigned char )(word);                       \
                     hbuf[1] = ( unsigned char )((word) >> 8);                \
                     hbuf[2] = ( unsigned char )((word) >> 16);               \
@@ -2895,8 +2796,7 @@ unsigned out;
 
 /* Load registers with state in inflate() for speed */
 #        define LOAD()                                                       \
-            do                                                               \
-            {                                                                \
+            do {                                                             \
                 put = strm->next_out;                                        \
                 left = strm->avail_out;                                      \
                 next = strm->next_in;                                        \
@@ -2907,8 +2807,7 @@ unsigned out;
 
 /* Restore state from registers in inflate() */
 #        define RESTORE()                                                    \
-            do                                                               \
-            {                                                                \
+            do {                                                             \
                 strm->next_out = put;                                        \
                 strm->avail_out = left;                                      \
                 strm->next_in = next;                                        \
@@ -2919,8 +2818,7 @@ unsigned out;
 
 /* Clear the input bit accumulator */
 #        define INITBITS()                                                   \
-            do                                                               \
-            {                                                                \
+            do {                                                             \
                 hold = 0;                                                    \
                 bits = 0;                                                    \
             } while (0)
@@ -2928,8 +2826,7 @@ unsigned out;
 /* Get a byte of input into the bit accumulator, or return from inflate()
    if there is no input available. */
 #        define PULLBYTE()                                                   \
-            do                                                               \
-            {                                                                \
+            do {                                                             \
                 if (have == 0)                                               \
                     goto inf_leave;                                          \
                 have--;                                                      \
@@ -2940,8 +2837,7 @@ unsigned out;
 /* Assure that there are at least n bits in the bit accumulator.  If there is
    not enough available input to do that, then return from inflate(). */
 #        define NEEDBITS(n)                                                  \
-            do                                                               \
-            {                                                                \
+            do {                                                             \
                 while (bits < ( unsigned )(n))                               \
                     PULLBYTE();                                              \
             } while (0)
@@ -2952,16 +2848,14 @@ unsigned out;
 
 /* Remove n bits from the bit accumulator */
 #        define DROPBITS(n)                                                  \
-            do                                                               \
-            {                                                                \
+            do {                                                             \
                 hold >>= (n);                                                \
                 bits -= ( unsigned )(n);                                     \
             } while (0)
 
 /* Remove zero to seven bits as needed to go to a byte boundary */
 #        define BYTEBITS()                                                   \
-            do                                                               \
-            {                                                                \
+            do {                                                             \
                 hold >>= bits & 7;                                           \
                 bits -= bits & 7;                                            \
             } while (0)
@@ -3089,18 +2983,15 @@ int flush;
     out = left;
     ret = Z_OK;
     for (;;)
-        switch (state->mode)
-        {
+        switch (state->mode) {
         case HEAD:
-            if (state->wrap == 0)
-            {
+            if (state->wrap == 0) {
                 state->mode = TYPEDO;
                 break;
             }
             NEEDBITS(16);
 #        ifdef GUNZIP
-            if ((state->wrap & 2) && hold == 0x8b1f)
-            { /* gzip header */
+            if ((state->wrap & 2) && hold == 0x8b1f) { /* gzip header */
                 state->check = crc32(0L, Z_NULL, 0);
                 CRC2(state->check, hold);
                 INITBITS();
@@ -3114,22 +3005,19 @@ int flush;
 #        else
             if (
 #        endif
-                ((BITS(8) << 8) + (hold >> 8)) % 31)
-            {
+                ((BITS(8) << 8) + (hold >> 8)) % 31) {
                 strm->msg = ( char * )"incorrect header check";
                 state->mode = BAD;
                 break;
             }
-            if (BITS(4) != Z_DEFLATED)
-            {
+            if (BITS(4) != Z_DEFLATED) {
                 strm->msg = ( char * )"unknown compression method";
                 state->mode = BAD;
                 break;
             }
             DROPBITS(4);
             len = BITS(4) + 8;
-            if (len > state->wbits)
-            {
+            if (len > state->wbits) {
                 strm->msg = ( char * )"invalid window size";
                 state->mode = BAD;
                 break;
@@ -3144,14 +3032,12 @@ int flush;
         case FLAGS:
             NEEDBITS(16);
             state->flags = ( int )(hold);
-            if ((state->flags & 0xff) != Z_DEFLATED)
-            {
+            if ((state->flags & 0xff) != Z_DEFLATED) {
                 strm->msg = ( char * )"unknown compression method";
                 state->mode = BAD;
                 break;
             }
-            if (state->flags & 0xe000)
-            {
+            if (state->flags & 0xe000) {
                 strm->msg = ( char * )"unknown header flags set";
                 state->mode = BAD;
                 break;
@@ -3172,8 +3058,7 @@ int flush;
             state->mode = OS;
         case OS:
             NEEDBITS(16);
-            if (state->head != Z_NULL)
-            {
+            if (state->head != Z_NULL) {
                 state->head->xflags = ( int )(hold & 0xff);
                 state->head->os = ( int )(hold >> 8);
             }
@@ -3182,8 +3067,7 @@ int flush;
             INITBITS();
             state->mode = EXLEN;
         case EXLEN:
-            if (state->flags & 0x0400)
-            {
+            if (state->flags & 0x0400) {
                 NEEDBITS(16);
                 state->length = ( unsigned )(hold);
                 if (state->head != Z_NULL)
@@ -3191,20 +3075,17 @@ int flush;
                 if (state->flags & 0x0200)
                     CRC2(state->check, hold);
                 INITBITS();
-            }
-            else if (state->head != Z_NULL)
+            } else if (state->head != Z_NULL)
                 state->head->extra = Z_NULL;
             state->mode = EXTRA;
         case EXTRA:
-            if (state->flags & 0x0400)
-            {
+            if (state->flags & 0x0400) {
                 copy = state->length;
                 if (copy > have)
                     copy = have;
-                if (copy)
-                {
-                    if (state->head != Z_NULL && state->head->extra != Z_NULL)
-                    {
+                if (copy) {
+                    if (state->head != Z_NULL
+                        && state->head->extra != Z_NULL) {
                         len = state->head->extra_len - state->length;
                         zmemcpy(state->head->extra + len,
                                 next,
@@ -3224,13 +3105,11 @@ int flush;
             state->length = 0;
             state->mode = NAME;
         case NAME:
-            if (state->flags & 0x0800)
-            {
+            if (state->flags & 0x0800) {
                 if (have == 0)
                     goto inf_leave;
                 copy = 0;
-                do
-                {
+                do {
                     len = ( unsigned )(next[copy++]);
                     if (state->head != Z_NULL && state->head->name != Z_NULL
                         && state->length < state->head->name_max)
@@ -3242,19 +3121,16 @@ int flush;
                 next += copy;
                 if (len)
                     goto inf_leave;
-            }
-            else if (state->head != Z_NULL)
+            } else if (state->head != Z_NULL)
                 state->head->name = Z_NULL;
             state->length = 0;
             state->mode = COMMENT;
         case COMMENT:
-            if (state->flags & 0x1000)
-            {
+            if (state->flags & 0x1000) {
                 if (have == 0)
                     goto inf_leave;
                 copy = 0;
-                do
-                {
+                do {
                     len = ( unsigned )(next[copy++]);
                     if (state->head != Z_NULL
                         && state->head->comment != Z_NULL
@@ -3267,24 +3143,20 @@ int flush;
                 next += copy;
                 if (len)
                     goto inf_leave;
-            }
-            else if (state->head != Z_NULL)
+            } else if (state->head != Z_NULL)
                 state->head->comment = Z_NULL;
             state->mode = HCRC;
         case HCRC:
-            if (state->flags & 0x0200)
-            {
+            if (state->flags & 0x0200) {
                 NEEDBITS(16);
-                if (hold != (state->check & 0xffff))
-                {
+                if (hold != (state->check & 0xffff)) {
                     strm->msg = ( char * )"header crc mismatch";
                     state->mode = BAD;
                     break;
                 }
                 INITBITS();
             }
-            if (state->head != Z_NULL)
-            {
+            if (state->head != Z_NULL) {
                 state->head->hcrc = ( int )((state->flags >> 9) & 1);
                 state->head->done = 1;
             }
@@ -3298,8 +3170,7 @@ int flush;
             INITBITS();
             state->mode = DICT;
         case DICT:
-            if (state->havedict == 0)
-            {
+            if (state->havedict == 0) {
                 RESTORE();
                 return Z_NEED_DICT;
             }
@@ -3309,8 +3180,7 @@ int flush;
             if (flush == Z_BLOCK)
                 goto inf_leave;
         case TYPEDO:
-            if (state->last)
-            {
+            if (state->last) {
                 BYTEBITS();
                 state->mode = CHECK;
                 break;
@@ -3318,8 +3188,7 @@ int flush;
             NEEDBITS(3);
             state->last = BITS(1);
             DROPBITS(1);
-            switch (BITS(2))
-            {
+            switch (BITS(2)) {
             case 0: /* stored block */
                 Tracev((stderr,
                         "inflate:     stored block%s\n",
@@ -3348,8 +3217,7 @@ int flush;
         case STORED:
             BYTEBITS(); /* go to byte boundary */
             NEEDBITS(32);
-            if ((hold & 0xffff) != ((hold >> 16) ^ 0xffff))
-            {
+            if ((hold & 0xffff) != ((hold >> 16) ^ 0xffff)) {
                 strm->msg = ( char * )"invalid stored block lengths";
                 state->mode = BAD;
                 break;
@@ -3361,8 +3229,7 @@ int flush;
             state->mode = COPY;
         case COPY:
             copy = state->length;
-            if (copy)
-            {
+            if (copy) {
                 if (copy > have)
                     copy = have;
                 if (copy > left)
@@ -3389,8 +3256,7 @@ int flush;
             state->ncode = BITS(4) + 4;
             DROPBITS(4);
 #        ifndef PKZIP_BUG_WORKAROUND
-            if (state->nlen > 286 || state->ndist > 30)
-            {
+            if (state->nlen > 286 || state->ndist > 30) {
                 strm->msg = ( char * )"too many length or distance symbols";
                 state->mode = BAD;
                 break;
@@ -3400,8 +3266,7 @@ int flush;
             state->have = 0;
             state->mode = LENLENS;
         case LENLENS:
-            while (state->have < state->ncode)
-            {
+            while (state->have < state->ncode) {
                 NEEDBITS(3);
                 state->lens[order[state->have++]] = ( unsigned short )BITS(3);
                 DROPBITS(3);
@@ -3417,8 +3282,7 @@ int flush;
                                 &(state->next),
                                 &(state->lenbits),
                                 state->work);
-            if (ret)
-            {
+            if (ret) {
                 strm->msg = ( char * )"invalid code lengths set";
                 state->mode = BAD;
                 break;
@@ -3427,29 +3291,22 @@ int flush;
             state->have = 0;
             state->mode = CODELENS;
         case CODELENS:
-            while (state->have < state->nlen + state->ndist)
-            {
-                for (;;)
-                {
+            while (state->have < state->nlen + state->ndist) {
+                for (;;) {
                     this = state->lencode[BITS(state->lenbits)];
                     if (( unsigned )(this.bits) <= bits)
                         break;
                     PULLBYTE();
                 }
-                if (this.val < 16)
-                {
+                if (this.val < 16) {
                     NEEDBITS(this.bits);
                     DROPBITS(this.bits);
                     state->lens[state->have++] = this.val;
-                }
-                else
-                {
-                    if (this.val == 16)
-                    {
+                } else {
+                    if (this.val == 16) {
                         NEEDBITS(this.bits + 2);
                         DROPBITS(this.bits);
-                        if (state->have == 0)
-                        {
+                        if (state->have == 0) {
                             strm->msg = ( char * )"invalid bit length repeat";
                             state->mode = BAD;
                             break;
@@ -3457,25 +3314,20 @@ int flush;
                         len = state->lens[state->have - 1];
                         copy = 3 + BITS(2);
                         DROPBITS(2);
-                    }
-                    else if (this.val == 17)
-                    {
+                    } else if (this.val == 17) {
                         NEEDBITS(this.bits + 3);
                         DROPBITS(this.bits);
                         len = 0;
                         copy = 3 + BITS(3);
                         DROPBITS(3);
-                    }
-                    else
-                    {
+                    } else {
                         NEEDBITS(this.bits + 7);
                         DROPBITS(this.bits);
                         len = 0;
                         copy = 11 + BITS(7);
                         DROPBITS(7);
                     }
-                    if (state->have + copy > state->nlen + state->ndist)
-                    {
+                    if (state->have + copy > state->nlen + state->ndist) {
                         strm->msg = ( char * )"invalid bit length repeat";
                         state->mode = BAD;
                         break;
@@ -3499,8 +3351,7 @@ int flush;
                                 &(state->next),
                                 &(state->lenbits),
                                 state->work);
-            if (ret)
-            {
+            if (ret) {
                 strm->msg = ( char * )"invalid literal/lengths set";
                 state->mode = BAD;
                 break;
@@ -3513,8 +3364,7 @@ int flush;
                                 &(state->next),
                                 &(state->distbits),
                                 state->work);
-            if (ret)
-            {
+            if (ret) {
                 strm->msg = ( char * )"invalid distances set";
                 state->mode = BAD;
                 break;
@@ -3522,25 +3372,21 @@ int flush;
             Tracev((stderr, "inflate:       codes ok\n"));
             state->mode = LEN;
         case LEN:
-            if (have >= 6 && left >= 258)
-            {
+            if (have >= 6 && left >= 258) {
                 RESTORE();
                 inflate_fast(strm, out);
                 LOAD();
                 break;
             }
-            for (;;)
-            {
+            for (;;) {
                 this = state->lencode[BITS(state->lenbits)];
                 if (( unsigned )(this.bits) <= bits)
                     break;
                 PULLBYTE();
             }
-            if (this.op && (this.op & 0xf0) == 0)
-            {
+            if (this.op && (this.op & 0xf0) == 0) {
                 last = this;
-                for (;;)
-                {
+                for (;;) {
                     this
                     = state
                       ->lencode[last.val
@@ -3553,8 +3399,7 @@ int flush;
             }
             DROPBITS(this.bits);
             state->length = ( unsigned )this.val;
-            if (( int )(this.op) == 0)
-            {
+            if (( int )(this.op) == 0) {
                 Tracevv((stderr,
                          this.val >= 0x20 && this.val < 0x7f
                          ? "inflate:         literal '%c'\n"
@@ -3563,14 +3408,12 @@ int flush;
                 state->mode = LIT;
                 break;
             }
-            if (this.op & 32)
-            {
+            if (this.op & 32) {
                 Tracevv((stderr, "inflate:         end of block\n"));
                 state->mode = TYPE;
                 break;
             }
-            if (this.op & 64)
-            {
+            if (this.op & 64) {
                 strm->msg = ( char * )"invalid literal/length code";
                 state->mode = BAD;
                 break;
@@ -3578,8 +3421,7 @@ int flush;
             state->extra = ( unsigned )(this.op) & 15;
             state->mode = LENEXT;
         case LENEXT:
-            if (state->extra)
-            {
+            if (state->extra) {
                 NEEDBITS(state->extra);
                 state->length += BITS(state->extra);
                 DROPBITS(state->extra);
@@ -3587,18 +3429,15 @@ int flush;
             Tracevv((stderr, "inflate:         length %u\n", state->length));
             state->mode = DIST;
         case DIST:
-            for (;;)
-            {
+            for (;;) {
                 this = state->distcode[BITS(state->distbits)];
                 if (( unsigned )(this.bits) <= bits)
                     break;
                 PULLBYTE();
             }
-            if ((this.op & 0xf0) == 0)
-            {
+            if ((this.op & 0xf0) == 0) {
                 last = this;
-                for (;;)
-                {
+                for (;;) {
                     this
                     = state
                       ->distcode[last.val
@@ -3610,8 +3449,7 @@ int flush;
                 DROPBITS(last.bits);
             }
             DROPBITS(this.bits);
-            if (this.op & 64)
-            {
+            if (this.op & 64) {
                 strm->msg = ( char * )"invalid distance code";
                 state->mode = BAD;
                 break;
@@ -3620,22 +3458,19 @@ int flush;
             state->extra = ( unsigned )(this.op) & 15;
             state->mode = DISTEXT;
         case DISTEXT:
-            if (state->extra)
-            {
+            if (state->extra) {
                 NEEDBITS(state->extra);
                 state->offset += BITS(state->extra);
                 DROPBITS(state->extra);
             }
 #        ifdef INFLATE_STRICT
-            if (state->offset > state->dmax)
-            {
+            if (state->offset > state->dmax) {
                 strm->msg = ( char * )"invalid distance too far back";
                 state->mode = BAD;
                 break;
             }
 #        endif
-            if (state->offset > state->whave + out - left)
-            {
+            if (state->offset > state->whave + out - left) {
                 strm->msg = ( char * )"invalid distance too far back";
                 state->mode = BAD;
                 break;
@@ -3647,21 +3482,16 @@ int flush;
             if (left == 0)
                 goto inf_leave;
             copy = out - left;
-            if (state->offset > copy)
-            { /* copy from window */
+            if (state->offset > copy) { /* copy from window */
                 copy = state->offset - copy;
-                if (copy > state->write)
-                {
+                if (copy > state->write) {
                     copy -= state->write;
                     from = state->window + (state->wsize - copy);
-                }
-                else
+                } else
                     from = state->window + (state->write - copy);
                 if (copy > state->length)
                     copy = state->length;
-            }
-            else
-            { /* copy from output */
+            } else { /* copy from output */
                 from = put - state->offset;
                 copy = state->length;
             }
@@ -3669,8 +3499,7 @@ int flush;
                 copy = left;
             left -= copy;
             state->length -= copy;
-            do
-            {
+            do {
                 *put++ = *from++;
             } while (--copy);
             if (state->length == 0)
@@ -3684,8 +3513,7 @@ int flush;
             state->mode = LEN;
             break;
         case CHECK:
-            if (state->wrap)
-            {
+            if (state->wrap) {
                 NEEDBITS(32);
                 out -= left;
                 strm->total_out += out;
@@ -3699,8 +3527,7 @@ int flush;
                     state->flags ? hold :
 #        endif
                                  REVERSE(hold))
-                    != state->check)
-                {
+                    != state->check) {
                     strm->msg = ( char * )"incorrect data check";
                     state->mode = BAD;
                     break;
@@ -3711,11 +3538,9 @@ int flush;
 #        ifdef GUNZIP
             state->mode = LENGTH;
         case LENGTH:
-            if (state->wrap && state->flags)
-            {
+            if (state->wrap && state->flags) {
                 NEEDBITS(32);
-                if (hold != (state->total & 0xffffffff))
-                {
+                if (hold != (state->total & 0xffffffff)) {
                     strm->msg = ( char * )"incorrect length check";
                     state->mode = BAD;
                     break;
@@ -3747,8 +3572,7 @@ int flush;
 inf_leave:
     RESTORE();
     if (state->wsize || (state->mode < CHECK && out != strm->avail_out))
-        if (updatewindow(strm, out))
-        {
+        if (updatewindow(strm, out)) {
             state->mode = MEM;
             return Z_MEM_ERROR;
         }
@@ -3797,8 +3621,7 @@ uInt dictLength;
         return Z_STREAM_ERROR;
 
     /* check for correct dictionary id */
-    if (state->mode == DICT)
-    {
+    if (state->mode == DICT) {
         id = adler32(0L, Z_NULL, 0);
         id = adler32(id, dictionary, dictLength);
         if (id != state->check)
@@ -3806,19 +3629,15 @@ uInt dictLength;
     }
 
     /* copy dictionary to window */
-    if (updatewindow(strm, strm->avail_out))
-    {
+    if (updatewindow(strm, strm->avail_out)) {
         state->mode = MEM;
         return Z_MEM_ERROR;
     }
-    if (dictLength > state->wsize)
-    {
+    if (dictLength > state->wsize) {
         zmemcpy(
         state->window, dictionary + dictLength - state->wsize, state->wsize);
         state->whave = state->wsize;
-    }
-    else
-    {
+    } else {
         zmemcpy(
         state->window + state->wsize - dictLength, dictionary, dictLength);
         state->whave = dictLength;
@@ -3868,8 +3687,7 @@ unsigned len;
 
     got = *have;
     next = 0;
-    while (next < len && got < 4)
-    {
+    while (next < len && got < 4) {
         if (( int )(buf[next]) == (got < 2 ? 0 : 0xff))
             got++;
         else if (buf[next])
@@ -3897,14 +3715,12 @@ int ZEXPORT inflateSync(strm) z_streamp strm;
         return Z_BUF_ERROR;
 
     /* if first time, start search in bit buffer */
-    if (state->mode != SYNC)
-    {
+    if (state->mode != SYNC) {
         state->mode = SYNC;
         state->hold <<= state->bits & 7;
         state->bits -= state->bits & 7;
         len = 0;
-        while (state->bits >= 8)
-        {
+        while (state->bits >= 8) {
             buf[len++] = ( unsigned char )(state->hold);
             state->hold >>= 8;
             state->bits -= 8;
@@ -3970,12 +3786,10 @@ z_streamp source;
     if (copy == Z_NULL)
         return Z_MEM_ERROR;
     window = Z_NULL;
-    if (state->window != Z_NULL)
-    {
+    if (state->window != Z_NULL) {
         window = ( unsigned char FAR * )ZALLOC(
         source, (( unsigned int )1) << state->wbits, sizeof(unsigned char));
-        if (window == Z_NULL)
-        {
+        if (window == Z_NULL) {
             ZFREE(source, copy);
             return Z_MEM_ERROR;
         }
@@ -3985,14 +3799,12 @@ z_streamp source;
     zmemcpy(dest, source, sizeof(z_stream));
     zmemcpy(copy, state, sizeof(struct inflate_state));
     if (state->lencode >= state->codes
-        && state->lencode <= state->codes + ENOUGH - 1)
-    {
+        && state->lencode <= state->codes + ENOUGH - 1) {
         copy->lencode = copy->codes + (state->lencode - state->codes);
         copy->distcode = copy->codes + (state->distcode - state->codes);
     }
     copy->next = copy->codes + (state->next - state->codes);
-    if (window != Z_NULL)
-    {
+    if (window != Z_NULL) {
         wsize = (( unsigned int )1) << state->wbits;
         zmemcpy(window, state->window, wsize);
     }
@@ -4133,59 +3945,41 @@ FILE *fp;
     s->transparent = 0;
 
     s->path = ( char * )ALLOC(strlen(path) + 1);
-    if (s->path == NULL)
-    {
+    if (s->path == NULL) {
         return destroy(s), ( gzFile )Z_NULL;
     }
     strcpy(s->path, path); /* do this early for debugging */
 
     s->mode = '\0';
-    do
-    {
+    do {
         if (*p == 'r')
             s->mode = 'r';
         if (*p == 'w' || *p == 'a')
             s->mode = 'w';
-        if (*p >= '0' && *p <= '9')
-        {
+        if (*p >= '0' && *p <= '9') {
             level = *p - '0';
-        }
-        else if (*p == 'f')
-        {
+        } else if (*p == 'f') {
             strategy = Z_FILTERED;
-        }
-        else if (*p == 'h')
-        {
+        } else if (*p == 'h') {
             strategy = Z_HUFFMAN_ONLY;
-        }
-        else if (*p == 'R')
-        {
+        } else if (*p == 'R') {
             strategy = Z_RLE;
 #        if _PACKAGE_ast
-        }
-        else if (*p == 'n')
-        {
+        } else if (*p == 'n') {
             s->nocrc = 1;
-        }
-        else if (*p == 'o')
-        {
+        } else if (*p == 'o') {
             s->noclose = 1;
-        }
-        else if (*p == 'v')
-        {
+        } else if (*p == 'v') {
             s->verified = 1;
 #        endif
-        }
-        else
-        {
+        } else {
             *m++ = *p; /* copy the mode */
         }
     } while (*p++ && m != fmode + sizeof(fmode));
     if (s->mode == '\0')
         return destroy(s), ( gzFile )Z_NULL;
 
-    if (s->mode == 'w')
-    {
+    if (s->mode == 'w') {
 #        ifdef NO_GZCOMPRESS
         err = Z_STREAM_ERROR;
 #        else
@@ -4198,13 +3992,10 @@ FILE *fp;
 
         s->stream.next_out = s->outbuf = ( Byte * )ALLOC(Z_BUFSIZE);
 #        endif
-        if (err != Z_OK || s->outbuf == Z_NULL)
-        {
+        if (err != Z_OK || s->outbuf == Z_NULL) {
             return destroy(s), ( gzFile )Z_NULL;
         }
-    }
-    else
-    {
+    } else {
         s->stream.next_in = s->inbuf = ( Byte * )ALLOC(Z_BUFSIZE);
 
         err = inflateInit2(&(s->stream), -MAX_WBITS);
@@ -4214,8 +4005,7 @@ FILE *fp;
          * return Z_STREAM_END. Here the gzip CRC32 ensures that 4 bytes are
          * present after the compressed stream.
          */
-        if (err != Z_OK || s->inbuf == Z_NULL)
-        {
+        if (err != Z_OK || s->inbuf == Z_NULL) {
             return destroy(s), ( gzFile )Z_NULL;
         }
     }
@@ -4223,12 +4013,10 @@ FILE *fp;
 
     errno = 0;
 
-    if (!(s->file = fp) && !(s->file = F_OPEN(path, fmode)))
-    {
+    if (!(s->file = fp) && !(s->file = F_OPEN(path, fmode))) {
         return destroy(s), ( gzFile )Z_NULL;
     }
-    if (s->mode == 'w')
-    {
+    if (s->mode == 'w') {
         /* Write a very simple .gz header:
          */
         fprintf(s->file,
@@ -4249,9 +4037,7 @@ FILE *fp;
          * start anyway in write mode, so this initialization is not
          * necessary.
          */
-    }
-    else
-    {
+    } else {
 #        if _PACKAGE_ast
         sfsetbuf(s->file, ( void * )s->file, SF_UNBOUND);
 #        endif
@@ -4287,12 +4073,10 @@ local int get_byte(s) gz_stream *s;
 {
     if (s->z_eof)
         return EOF;
-    if (s->stream.avail_in == 0)
-    {
+    if (s->stream.avail_in == 0) {
         errno = 0;
         s->stream.avail_in = ( uInt )fread(s->inbuf, 1, Z_BUFSIZE, s->file);
-        if (s->stream.avail_in == 0)
-        {
+        if (s->stream.avail_in == 0) {
             s->z_eof = 1;
             if (ferror(s->file))
                 s->z_err = Z_ERRNO;
@@ -4322,15 +4106,12 @@ local void check_header(s) gz_stream *s;
 
 #        if _PACKAGE_ast
     if (!s->verified)
-        for (len = 0; len < 2; len++)
-        {
+        for (len = 0; len < 2; len++) {
             c = get_byte(s);
-            if (c != gz_magic[len])
-            {
+            if (c != gz_magic[len]) {
                 if (len != 0)
                     s->stream.avail_in++, s->stream.next_in--;
-                if (c != EOF)
-                {
+                if (c != EOF) {
                     s->stream.avail_in++, s->stream.next_in--;
                     s->transparent = 1;
                 }
@@ -4343,8 +4124,7 @@ local void check_header(s) gz_stream *s;
        where first byte of header is at the end of the buffer after the last
        gzip segment */
     len = s->stream.avail_in;
-    if (len < 2)
-    {
+    if (len < 2) {
         if (len)
             s->inbuf[0] = s->stream.next_in[0];
         errno = 0;
@@ -4353,8 +4133,7 @@ local void check_header(s) gz_stream *s;
             s->z_err = Z_ERRNO;
         s->stream.avail_in += len;
         s->stream.next_in = s->inbuf;
-        if (s->stream.avail_in < 2)
-        {
+        if (s->stream.avail_in < 2) {
             s->transparent = s->stream.avail_in;
             return;
         }
@@ -4362,8 +4141,7 @@ local void check_header(s) gz_stream *s;
 
     /* Peek ahead to check the gzip magic header */
     if (s->stream.next_in[0] != gz_magic[0]
-        || s->stream.next_in[1] != gz_magic[1])
-    {
+        || s->stream.next_in[1] != gz_magic[1]) {
         s->transparent = 1;
         return;
     }
@@ -4374,8 +4152,7 @@ local void check_header(s) gz_stream *s;
     /* Check the rest of the gzip header */
     method = get_byte(s);
     flags = get_byte(s);
-    if (method != Z_DEFLATED || (flags & RESERVED) != 0)
-    {
+    if (method != Z_DEFLATED || (flags & RESERVED) != 0) {
         s->z_err = Z_DATA_ERROR;
         return;
     }
@@ -4384,26 +4161,22 @@ local void check_header(s) gz_stream *s;
     for (len = 0; len < 6; len++)
         ( void )get_byte(s);
 
-    if ((flags & EXTRA_FIELD) != 0)
-    { /* skip the extra field */
+    if ((flags & EXTRA_FIELD) != 0) { /* skip the extra field */
         len = ( uInt )get_byte(s);
         len += (( uInt )get_byte(s)) << 8;
         /* len is garbage if EOF but the loop below will quit anyway */
         while (len-- != 0 && get_byte(s) != EOF)
             ;
     }
-    if ((flags & ORIG_NAME) != 0)
-    { /* skip the original file name */
+    if ((flags & ORIG_NAME) != 0) { /* skip the original file name */
         while ((c = get_byte(s)) != 0 && c != EOF)
             ;
     }
-    if ((flags & COMMENT) != 0)
-    { /* skip the .gz file comment */
+    if ((flags & COMMENT) != 0) { /* skip the .gz file comment */
         while ((c = get_byte(s)) != 0 && c != EOF)
             ;
     }
-    if ((flags & HEAD_CRC) != 0)
-    { /* skip the header crc */
+    if ((flags & HEAD_CRC) != 0) { /* skip the header crc */
         for (len = 0; len < 2; len++)
             ( void )get_byte(s);
     }
@@ -4423,29 +4196,23 @@ local int destroy(s) gz_stream *s;
 
     TRYFREE(s->msg);
 
-    if (s->stream.state != NULL)
-    {
-        if (s->mode == 'w')
-        {
+    if (s->stream.state != NULL) {
+        if (s->mode == 'w') {
 #        ifdef NO_GZCOMPRESS
             err = Z_STREAM_ERROR;
 #        else
             err = deflateEnd(&(s->stream));
 #        endif
-        }
-        else if (s->mode == 'r')
-        {
+        } else if (s->mode == 'r') {
             err = inflateEnd(&(s->stream));
         }
     }
 #        if _PACKAGE_ast
     if (s->file != NULL
         && (s->noclose ? (s->mode == 'r' ? 0 : fflush(s->file))
-                       : fclose(s->file)))
-    {
+                       : fclose(s->file))) {
 #        else
-    if (s->file != NULL && fclose(s->file))
-    {
+    if (s->file != NULL && fclose(s->file)) {
 #        endif
 #        ifdef ESPIPE
         if (errno != ESPIPE) /* fclose is broken for pipes in HP/UX */
@@ -4486,32 +4253,27 @@ unsigned len;
     s->stream.next_out = ( Bytef * )buf;
     s->stream.avail_out = len;
 
-    if (s->stream.avail_out && s->back != EOF)
-    {
+    if (s->stream.avail_out && s->back != EOF) {
         *next_out++ = s->back;
         s->stream.next_out++;
         s->stream.avail_out--;
         s->back = EOF;
         s->out++;
         start++;
-        if (s->last)
-        {
+        if (s->last) {
             s->z_err = Z_STREAM_END;
             return 1;
         }
     }
 
-    while (s->stream.avail_out != 0)
-    {
+    while (s->stream.avail_out != 0) {
 
-        if (s->transparent)
-        {
+        if (s->transparent) {
             /* Copy first the lookahead bytes: */
             uInt n = s->stream.avail_in;
             if (n > s->stream.avail_out)
                 n = s->stream.avail_out;
-            if (n > 0)
-            {
+            if (n > 0) {
                 zmemcpy(s->stream.next_out, s->stream.next_in, n);
                 next_out += n;
                 s->stream.next_out = next_out;
@@ -4519,8 +4281,7 @@ unsigned len;
                 s->stream.avail_out -= n;
                 s->stream.avail_in -= n;
             }
-            if (s->stream.avail_out > 0)
-            {
+            if (s->stream.avail_out > 0) {
                 s->stream.avail_out
                 -= ( uInt )fread(next_out, 1, s->stream.avail_out, s->file);
             }
@@ -4531,17 +4292,14 @@ unsigned len;
                 s->z_eof = 1;
             return ( int )len;
         }
-        if (s->stream.avail_in == 0 && !s->z_eof)
-        {
+        if (s->stream.avail_in == 0 && !s->z_eof) {
 
             errno = 0;
             s->stream.avail_in
             = ( uInt )fread(s->inbuf, 1, Z_BUFSIZE, s->file);
-            if (s->stream.avail_in == 0)
-            {
+            if (s->stream.avail_in == 0) {
                 s->z_eof = 1;
-                if (ferror(s->file))
-                {
+                if (ferror(s->file)) {
                     s->z_err = Z_ERRNO;
                     break;
                 }
@@ -4554,8 +4312,7 @@ unsigned len;
         s->in -= s->stream.avail_in;
         s->out -= s->stream.avail_out;
 
-        if (s->z_err == Z_STREAM_END)
-        {
+        if (s->z_err == Z_STREAM_END) {
             /* Check CRC and original size */
 #        if _PACKAGE_ast
             if (!s->nocrc)
@@ -4565,24 +4322,19 @@ unsigned len;
             start = s->stream.next_out;
 
 #        if _PACKAGE_ast
-            if (getLong(s) != s->crc && !s->nocrc)
-            {
+            if (getLong(s) != s->crc && !s->nocrc) {
 #        else
-            if (getLong(s) != s->crc)
-            {
+            if (getLong(s) != s->crc) {
 #        endif
                 s->z_err = Z_DATA_ERROR;
-            }
-            else
-            {
+            } else {
                 ( void )getLong(s);
                 /* The uncompressed length returned by above getlong() may be
                  * different from s->out in case of concatenated .gz files.
                  * Check for such files:
                  */
                 check_header(s);
-                if (s->z_err == Z_OK)
-                {
+                if (s->z_err == Z_OK) {
                     inflateReset(&(s->stream));
 #        if _PACKAGE_ast
                     if (!s->nocrc)
@@ -4901,10 +4653,8 @@ gzFile gz;
 char *buf;
 unsigned long n;
 {
-    while (n > 0)
-    {
-        if (!block(fp, gz, buf))
-        {
+    while (n > 0) {
+        if (!block(fp, gz, buf)) {
             fprintf(stderr, "%s: unexpected EOF\n", state.id);
             return 1;
         }
@@ -4948,46 +4698,39 @@ sear_seek(off_t offset, int tmp)
     GetModuleFileName(NULL, cmd, sizeof(cmd));
     sear_stdin = dup(0);
     close(0);
-    if (open(cmd, O_BINARY | O_RDONLY) || lseek(0, offset, 0) != offset)
-    {
+    if (open(cmd, O_BINARY | O_RDONLY) || lseek(0, offset, 0) != offset) {
         fprintf(
         stderr, "%s: %s: cannot seek to data offset\n", state.id, cmd);
         return -1;
     }
-    if (tmp)
-    {
-        if ((n = GetTempPath(sizeof(cmd), cmd)) <= 0 || n > sizeof(cmd))
-        {
+    if (tmp) {
+        if ((n = GetTempPath(sizeof(cmd), cmd)) <= 0 || n > sizeof(cmd)) {
             fprintf(stderr,
                     "%s: cannot determine temporary directory path\n",
                     state.id);
             return -1;
         }
-        if (!GetTempFileName(cmd, "SEA", 0, sear_buf))
-        {
+        if (!GetTempFileName(cmd, "SEA", 0, sear_buf)) {
             fprintf(
             stderr, "%s: cannot determine temporary file path\n", state.id);
             return -1;
         }
         sear_tmp = sear_buf;
-        if (!DeleteFile(sear_tmp))
-        {
+        if (!DeleteFile(sear_tmp)) {
             fprintf(stderr,
                     "%s: %s: cannot initialize temporary directory\n",
                     state.id,
                     sear_tmp);
             return -1;
         }
-        if (!CreateDirectory(sear_tmp, NULL))
-        {
+        if (!CreateDirectory(sear_tmp, NULL)) {
             fprintf(stderr,
                     "%s: %s: cannot create temporary directory\n",
                     state.id,
                     sear_tmp);
             return -1;
         }
-        if (!SetCurrentDirectory(sear_tmp))
-        {
+        if (!SetCurrentDirectory(sear_tmp)) {
             fprintf(stderr,
                     "%s: %s: cannot cd to temporary directory\n",
                     state.id,
@@ -5010,22 +4753,18 @@ sear_rm_r(char *dir)
 
     if (!SetCurrentDirectory(dir))
         return;
-    if ((hp = FindFirstFile("*.*", &info)) != INVALID_HANDLE_VALUE)
-    {
-        do
-        {
-            if (!(info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-            {
+    if ((hp = FindFirstFile("*.*", &info)) != INVALID_HANDLE_VALUE) {
+        do {
+            if (!(info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
                 if (info.dwFileAttributes & FILE_ATTRIBUTE_READONLY)
                     SetFileAttributes(info.cFileName,
                                       info.dwFileAttributes
                                       & ~FILE_ATTRIBUTE_READONLY);
                 DeleteFile(info.cFileName);
-            }
-            else if (info.cFileName[0] != '.'
-                     || info.cFileName[1] != 0
-                        && (info.cFileName[1] != '.'
-                            || info.cFileName[2] != 0))
+            } else if (info.cFileName[0] != '.'
+                       || info.cFileName[1] != 0
+                          && (info.cFileName[1] != '.'
+                              || info.cFileName[2] != 0))
                 sear_rm_r(info.cFileName);
         } while (FindNextFile(hp, &info));
         FindClose(hp);
@@ -5063,8 +4802,7 @@ sear_system(const char *command, int nowindow)
     if (!CreateProcess(
         path, ( char * )command, 0, 0, TRUE, flags, NULL, NULL, &sinfo, &pinfo))
         n = GetLastError() == ERROR_FILE_NOT_FOUND ? 127 : 126;
-    else
-    {
+    else {
         CloseHandle(pinfo.hThread);
         WaitForSingleObject(pinfo.hProcess, INFINITE);
         if (!GetExitCodeProcess(pinfo.hProcess, &n))
@@ -5105,42 +4843,35 @@ sear_exec(const char *cmd, char *const *arg, char *operands, int code)
 
     fflush(stdout);
     fflush(stderr);
-    if (sear_tmp)
-    {
+    if (sear_tmp) {
         close(0);
         dup(sear_stdin);
         close(sear_stdin);
         nowindow = 0;
-        if (cmd)
-        {
+        if (cmd) {
             if (arg)
                 for (r = 0; arg[r]; r++)
-                    if (!strcmp(arg[r], "remote"))
-                    {
+                    if (!strcmp(arg[r], "remote")) {
                         nowindow = 1;
                         break;
                     }
             sh = 0;
             for (a = cmd; *a && *a != ' '; a++)
                 if (a[0] == '.' && a[1] == 's' && a[2] == 'h'
-                    && (!a[3] || a[3] == ' '))
-                {
+                    && (!a[3] || a[3] == ' ')) {
                     sh = 1;
                     break;
                 }
             b = buf;
             e = buf + sizeof(buf) - 1;
-            if (sh || arg)
-            {
-                if (sh)
-                {
+            if (sh || arg) {
+                if (sh) {
                     b = copy(b, "ksh.exe ", e);
                     if (*cmd && *cmd != '/')
                         b = copy(b, "./", e);
                 }
                 b = copy(b, cmd, e);
-                while (a = *arg++)
-                {
+                while (a = *arg++) {
                     if ((e - b) < 3)
                         break;
                     b = copy(b, " \"", e);
@@ -5148,26 +4879,22 @@ sear_exec(const char *cmd, char *const *arg, char *operands, int code)
                     b = copy(b, "\"", e);
                 }
             }
-            if (operands)
-            {
+            if (operands) {
                 if (b == buf)
                     b = copy(b, cmd, e);
                 b = copy(b, " -- ", e);
                 b = copy(b, operands, e);
             }
-            if (b > buf)
-            {
+            if (b > buf) {
                 *b = 0;
                 cmd = ( const char * )buf;
             }
             r = sear_system(cmd, nowindow);
-        }
-        else
+        } else
             r = code;
         if (code >= 0)
             sear_rm_r(sear_tmp);
-    }
-    else
+    } else
         r = cmd ? 0 : code;
     return r;
 }
@@ -5219,8 +4946,7 @@ char **argv;
     meter = 0;
     unzip = 0;
     verbose = 0;
-    if (s = *argv)
-    {
+    if (s = *argv) {
         t = s;
         while (*s)
             if (*s++ == '/')
@@ -5228,14 +4954,11 @@ char **argv;
         if (!strcmp(t, "gunzip"))
             unzip = 1;
         state.id = t;
-    }
-    else
+    } else
         state.id = "ratz";
-    switch ('~')
-    {
+    switch ('~') {
     case 0241:
-        switch ('\n')
-        {
+        switch ('\n') {
         case 0025:
             a2x = a2o;
             break;
@@ -5260,10 +4983,8 @@ char **argv;
 #    endif
 #    if _PACKAGE_ast
     error_info.id = state.id;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'c':
             unzip = 1;
             continue;
@@ -5306,22 +5027,17 @@ char **argv;
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
     argv += opt_info.index;
 #    else
-    while ((s = *++argv) && *s == '-' && *(s + 1))
-    {
-        if (*(s + 1) == '-')
-        {
-            if (!*(s + 2))
-            {
+    while ((s = *++argv) && *s == '-' && *(s + 1)) {
+        if (*(s + 1) == '-') {
+            if (!*(s + 2)) {
                 argv++;
                 break;
             }
             usage();
             break;
         }
-        for (;;)
-        {
-            switch (c = *++s)
-            {
+        for (;;) {
+            switch (c = *++s) {
             case 0:
                 break;
             case 'c':
@@ -5366,8 +5082,7 @@ char **argv;
 #    endif
 
 #    if defined(_SEAR_SEEK)
-    if (sear_seek(( off_t )_SEAR_SEEK, install && !list))
-    {
+    if (sear_seek(( off_t )_SEAR_SEEK, install && !list)) {
         Sleep(2 * 1000);
         return 1;
     }
@@ -5382,42 +5097,34 @@ char **argv;
     ungetc(c, stdin);
     if (c != gz_magic[0])
         gz = 0;
-    else if (!(gz = gzfopen(stdin, FOPEN_READ)))
-    {
+    else if (!(gz = gzfopen(stdin, FOPEN_READ))) {
         fprintf(stderr, "%s: gunzip open error\n", state.id);
         EXIT(1);
     }
-    if (unzip)
-    {
-        if (!gz)
-        {
+    if (unzip) {
+        if (!gz) {
             fprintf(stderr, "%s: not a gzip file\n", state.id);
             EXIT(1);
         }
         while ((c = gzread(gz, buf, sizeof(buf))) > 0)
-            if (fwrite(buf, c, 1, stdout) != 1)
-            {
+            if (fwrite(buf, c, 1, stdout) != 1) {
                 fprintf(stderr, "%s: write error\n", state.id);
                 EXIT(1);
             }
-        if (c < 0)
-        {
+        if (c < 0) {
             fprintf(stderr, "%s: read error\n", state.id);
             EXIT(1);
         }
-        if (fflush(stdout))
-        {
+        if (fflush(stdout)) {
             fprintf(stderr, "%s: flush error\n", state.id);
             EXIT(1);
         }
         EXIT(0);
     }
-    if (meter)
-    {
+    if (meter) {
         if ((pos = lseek(0, ( off_t )0, SEEK_CUR)) < 0)
             meter = 0;
-        else
-        {
+        else {
             if (lseek(0, (off_t)(-4), SEEK_END) < 0 || read(0, num, 4) != 4)
                 meter = 0;
             else if (!(total = ((num[0] | (num[1] << 8) | (num[2] << 16)
@@ -5433,8 +5140,7 @@ char **argv;
      * loop on all the header blocks
      */
 
-    while (block(stdin, gz, ( char * )&header))
-    {
+    while (block(stdin, gz, ( char * )&header)) {
         /*
          * last 2 blocks are NUL
          */
@@ -5448,8 +5154,7 @@ char **argv;
 
         s = header.chksum;
         e = header.chksum + sizeof(header.chksum);
-        if (a2x)
-        {
+        if (a2x) {
             for (; s < e; s++)
                 *s = a2x[*( unsigned char * )s];
             s = header.chksum;
@@ -5463,8 +5168,7 @@ char **argv;
         while (s < e)
             m += *( unsigned char * )s++;
         m &= TAR_SUMASK;
-        if (m != n)
-        {
+        if (m != n) {
             if (state.files)
                 fprintf(stderr, "%s: archive corrupted\n", state.id);
             else
@@ -5488,8 +5192,7 @@ char **argv;
         state.files++;
         t = path;
         if (!strncmp(header.magic, TMAGIC, sizeof(header.magic))
-            && *header.prefix)
-        {
+            && *header.prefix) {
             s = header.prefix;
             e = header.prefix + sizeof(header.prefix);
             while (s < e && (c = *s++))
@@ -5511,22 +5214,17 @@ char **argv;
         while (*s)
             if (*s++ == '/')
                 t = s;
-        if (t)
-        {
+        if (t) {
             *--t = 0;
-            if (!list && access(path, 0))
-            {
+            if (!list && access(path, 0)) {
                 s = path;
-                do
-                {
-                    if (!(c = *s) || c == '/')
-                    {
+                do {
+                    if (!(c = *s) || c == '/') {
                         *s = 0;
                         if (access(path, 0)
                             && mkdir(path,
                                      S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP
-                                     | S_IXGRP | S_IROTH | S_IXOTH))
-                        {
+                                     | S_IXGRP | S_IROTH | S_IXOTH)) {
                             fprintf(stderr,
                                     "%s: %s: cannot create directory\n",
                                     state.id,
@@ -5550,16 +5248,13 @@ char **argv;
         if (local
             && (path[0] == '/'
                 || path[0] == '.' && path[1] == '.'
-                   && (!path[2] || path[2] == '/')))
-        {
+                   && (!path[2] || path[2] == '/'))) {
             fprintf(
             stderr, "%s: %s: non-local path rejected", state.id, path);
             if ((header.typeflag == REGTYPE || header.typeflag == AREGTYPE)
                 && (n = number(header.size)))
-                while (n > 0)
-                {
-                    if (!block(stdin, gz, buf))
-                    {
+                while (n > 0) {
+                    if (!block(stdin, gz, buf)) {
                         fprintf(stderr, "%s: unexpected EOF\n", state.id);
                         EXIT(1);
                     }
@@ -5594,10 +5289,8 @@ char **argv;
             mode |= S_IWOTH;
         if (n & TOEXEC)
             mode |= S_IXOTH;
-        if (list || meter)
-        {
-            if (meter)
-            {
+        if (list || meter) {
+            if (meter) {
                 int i;
                 int j;
                 int k;
@@ -5609,21 +5302,16 @@ char **argv;
                     if (s[0] == ' ' && s[1] == '-' && s[2] == '-'
                         && s[3] == ' ')
                         break;
-                if (*s)
-                {
-                    if (clear)
-                    {
+                if (*s) {
+                    if (clear) {
                         fprintf(stderr, "%*s", clear, "\r");
                         clear = 0;
                     }
                     fprintf(stderr, "\n%s\n\n", path);
-                }
-                else
-                {
+                } else {
                     n = ( int )strlen(s = path);
                     p = (state.blocks * 100) / total;
-                    if (n > (METER_width - METER_parts - 1))
-                    {
+                    if (n > (METER_width - METER_parts - 1)) {
                         s += n - (METER_width - METER_parts - 1);
                         n = METER_width - METER_parts - 1;
                     }
@@ -5643,13 +5331,9 @@ char **argv;
                     clear = fprintf(
                     stderr, "%02d%% |%s| %s%*s", p, bar, s, k, "\r");
                 }
-            }
-            else
-            {
-                if (verbose)
-                {
-                    switch (header.typeflag)
-                    {
+            } else {
+                if (verbose) {
+                    switch (header.typeflag) {
                     case REGTYPE:
                     case AREGTYPE:
                         c = '-';
@@ -5669,8 +5353,7 @@ char **argv;
                     }
                     printf("%c", c);
                     m = 0400;
-                    while (m)
-                    {
+                    while (m) {
                         printf("%c", (n & m) ? 'r' : '-');
                         m >>= 1;
                         printf("%c", (n & m) ? 'w' : '-');
@@ -5680,8 +5363,7 @@ char **argv;
                     }
                     printf(" %10lu ", number(header.size));
                 }
-                switch (header.typeflag)
-                {
+                switch (header.typeflag) {
                 case LNKTYPE:
                     printf("%s == %s\n", path, header.linkname);
                     break;
@@ -5693,22 +5375,18 @@ char **argv;
                     break;
                 }
             }
-            if (list)
-            {
+            if (list) {
                 if (skip(stdin, gz, buf, number(header.size)))
                     EXIT(1);
                 continue;
             }
-        }
-        else if (verbose)
+        } else if (verbose)
             printf("%s\n", path);
-        switch (header.typeflag)
-        {
+        switch (header.typeflag) {
         case REGTYPE:
         case AREGTYPE:
             while (!(fp = fopen(path, FOPEN_WRITE)))
-                if (unlink(path))
-                {
+                if (unlink(path)) {
                     fprintf(stderr,
                             "%s: warning: %s: cannot create file\n",
                             state.id,
@@ -5717,32 +5395,25 @@ char **argv;
                 }
             n = number(header.size);
             c = a2x ? 0 : -1;
-            while (n > 0)
-            {
-                if (!block(stdin, gz, buf))
-                {
+            while (n > 0) {
+                if (!block(stdin, gz, buf)) {
                     fprintf(stderr, "%s: unexpected EOF\n", state.id);
                     EXIT(1);
                 }
-                switch (c)
-                {
+                switch (c) {
                 case 0:
-                    if ((m = n) < 4)
-                    {
+                    if ((m = n) < 4) {
                         for (e = (s = buf) + m; s < e; s++)
                             if (a2x[*( unsigned char * )s] != '\n')
                                 break;
-                    }
-                    else
-                    {
+                    } else {
                         if (m > 256)
                             m = 256;
                         for (e = (s = buf) + m; s < e; s++)
                             if (!ascii_text[*( unsigned char * )s])
                                 break;
                     }
-                    if (s < e)
-                    {
+                    if (s < e) {
                         c = -1;
                         break;
                     }
@@ -5756,8 +5427,7 @@ char **argv;
                 if (fp
                     && fwrite(
                        buf, n > sizeof(header) ? sizeof(header) : n, 1, fp)
-                       != 1)
-                {
+                       != 1) {
                     fprintf(stderr, "%s: %s: write error\n", state.id, path);
                     EXIT(1);
                 }
@@ -5765,8 +5435,7 @@ char **argv;
                     break;
                 n -= sizeof(header);
             }
-            if (fp && fclose(fp))
-            {
+            if (fp && fclose(fp)) {
                 fprintf(stderr, "%s: %s: write error\n", state.id, path);
                 EXIT(1);
             }
@@ -5775,8 +5444,7 @@ char **argv;
             if (access(path, 0)
                 && mkdir(path,
                          S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IXGRP
-                         | S_IROTH | S_IXOTH))
-            {
+                         | S_IROTH | S_IXOTH)) {
                 fprintf(
                 stderr, "%s: %s: cannot create directory\n", state.id, path);
                 EXIT(1);
@@ -5785,8 +5453,7 @@ char **argv;
         case SYMTYPE:
 #    if defined(S_IFLNK) || defined(S_ISLNK)
             while (symlink(header.linkname, path))
-                if (unlink(path))
-                {
+                if (unlink(path)) {
                     fprintf(stderr,
                             "%s: %s: cannot symlink to %s\n",
                             state.id,
@@ -5799,8 +5466,7 @@ char **argv;
 #    if !_WIN32 || _WINIX
         case LNKTYPE:
             while (link(header.linkname, path))
-                if (unlink(path))
-                {
+                if (unlink(path)) {
                     fprintf(stderr,
                             "%s: %s: cannot link to %s\n",
                             state.id,
@@ -5842,8 +5508,7 @@ char **argv;
 #        if !defined(_SEAR_ARGS)
 #            define _SEAR_ARGS 0
 #        endif
-    if (install && sear_exec(_SEAR_EXEC, argv, _SEAR_ARGS, install))
-    {
+    if (install && sear_exec(_SEAR_EXEC, argv, _SEAR_ARGS, install)) {
         Sleep(2 * 1000);
         return 1;
     }

@@ -113,10 +113,8 @@ waitpid(pid_t pid, int *status, int flags)
 
     pp = 0;
     zp = zombies;
-    while (zp)
-    {
-        if (zp->pid >= 0 && (zp->pid == pid || pid <= 0))
-        {
+    while (zp) {
+        if (zp->pid >= 0 && (zp->pid == pid || pid <= 0)) {
             if (pp)
                 pp->next = zp->next;
             else
@@ -130,19 +128,16 @@ waitpid(pid_t pid, int *status, int flags)
     }
     if (pid > 0 && kill(pid, 0) < 0)
         return (-1);
-    for (;;)
-    {
+    for (;;) {
 #        if !_lib_wait2 && !_lib_wait3
 #            if !defined(SIGCLD)
         oerrno = errno;
 #            endif
-        if (flags & WNOHANG)
-        {
+        if (flags & WNOHANG) {
             caught = 0;
 #            if defined(SIGCLD)
             handler = signal(SIGCLD, catch);
-            if (!caught)
-            {
+            if (!caught) {
                 signal(SIGCLD, handler);
                 return (0);
             }
@@ -162,16 +157,14 @@ waitpid(pid_t pid, int *status, int flags)
             signal(SIGCLD, handler);
 #                else
 #                    if defined(SIGALRM)
-        if (flags & WNOHANG)
-        {
+        if (flags & WNOHANG) {
             if (n == 0 && !caught || n == 1)
                 alarm(n);
             else if (n > 1)
                 alarm(n - caught);
             signal(SIGALRM, handler);
         }
-        if (p == -1 && errno == EINTR)
-        {
+        if (p == -1 && errno == EINTR) {
             errno = oerrno;
             p = 0;
             s = 0;
@@ -183,14 +176,12 @@ waitpid(pid_t pid, int *status, int flags)
             p = wait3(&s, flags & WNOHANG, NiL);
 #            endif
 #        endif
-        if (p <= 0)
-        {
+        if (p <= 0) {
             if (p == 0 && status)
                 *status = s;
             return (p);
         }
-        if (pid <= 0 || p == pid)
-        {
+        if (pid <= 0 || p == pid) {
             if (status)
                 *status = s;
             return (p);

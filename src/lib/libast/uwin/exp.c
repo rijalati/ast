@@ -145,10 +145,8 @@ extern double exp(x) double x;
     if (x != x)
         return (x); /* x is NaN */
 #        endif /* !defined(vax)&&!defined(tahoe) */
-    if (x <= lnhuge)
-    {
-        if (x >= lntiny)
-        {
+    if (x <= lnhuge) {
+        if (x >= lntiny) {
 
             /* argument reduction : x --> x - k*ln2 */
 
@@ -195,10 +193,8 @@ double __exp__D(x, c) double x, c;
     if (x != x)
         return (x); /* x is NaN */
 #    endif /* !defined(vax)&&!defined(tahoe) */
-    if (x <= lnhuge)
-    {
-        if (x >= lntiny)
-        {
+    if (x <= lnhuge) {
+        if (x >= lntiny) {
 
             /* argument reduction : x --> x - k*ln2 */
             z = invln2 * x;

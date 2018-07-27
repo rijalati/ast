@@ -64,8 +64,7 @@ ps_init(Pss_t *pss)
     unsigned long fields;
     char *s;
 
-    if (!(state = vmnewof(pss->vm, 0, State_t, 1, 0)))
-    {
+    if (!(state = vmnewof(pss->vm, 0, State_t, 1, 0))) {
         if (pss->disc->errorf)
             (*pss->disc->errorf)(
             pss, pss->disc, ERROR_SYSTEM | 2, "out of space");
@@ -102,24 +101,20 @@ ps_read(Pss_t *pss, Pss_id_t pid)
     unsigned long fields;
     int sep;
 
-    if (pid || !state->scan)
-    {
-        if (state->ps)
-        {
+    if (pid || !state->scan) {
+        if (state->ps) {
             sfclose(state->ps);
             state->ps = 0;
         }
         s = pss->buf;
         e = s + sizeof(pss->buf);
         s += sfsprintf(s, e - s, "%s", PSS_ps);
-        if (!pid)
-        {
+        if (!pid) {
             if (pss->disc->flags & (PSS_ALL | PSS_UNMATCHED))
                 s += sfsprintf(s, e - s, " %s", PSS_ps_every);
             else
                 switch (pss->disc->flags
-                        & (PSS_ATTACHED | PSS_DETACHED | PSS_LEADER))
-                {
+                        & (PSS_ATTACHED | PSS_DETACHED | PSS_LEADER)) {
                 case PSS_ATTACHED | PSS_DETACHED | PSS_LEADER:
                     s += sfsprintf(s, e - s, " %s", PSS_ps_every);
                     break;
@@ -139,17 +134,14 @@ ps_read(Pss_t *pss, Pss_id_t pid)
         fields = pss->disc->fields | PSS_default;
         sep = ' ';
         for (po = pso; po->field; po++)
-            if (po->field & fields)
-            {
+            if (po->field & fields) {
                 s += sfsprintf(s, e - s, "%c%s", sep, po->name);
                 sep = ',';
             }
-        if (pid)
-        {
+        if (pid) {
             state->scan = 0;
             s += sfsprintf(s, e - s, " -p %lu", ( unsigned long )pid);
-        }
-        else
+        } else
             state->scan = 1;
         if ((pss->disc->flags & PSS_VERBOSE) && pss->disc->errorf)
             (*pss->disc->errorf)(pss, pss->disc, 0, "%s", pss->buf);
@@ -166,22 +158,18 @@ number(char *s, char **p, int base)
     unsigned long n;
     char *e;
 
-    for (;;)
-    {
+    for (;;) {
         n = strtoul(s, &e, base);
         if (*e && !isspace(*e))
-            switch (base)
-            {
+            switch (base) {
             case 8:
-                if (*e == '8' || *e == '9')
-                {
+                if (*e == '8' || *e == '9') {
                     base = 10;
                     continue;
                 }
                 /*FALLTHROUGH*/
             case 10:
-                if (isxdigit(*e))
-                {
+                if (isxdigit(*e)) {
                     base = 16;
                     continue;
                 }
@@ -211,8 +199,7 @@ ps_part(Pss_t *pss, Pssent_t *pe)
     memset(pe, sizeof(*pe), 0);
     fields = pss->disc->fields | PSS_default;
     for (po = pso; po->field; po++)
-        if (po->field & fields)
-        {
+        if (po->field & fields) {
             while (isspace(*s))
                 s++;
             if (!*s)
@@ -220,8 +207,7 @@ ps_part(Pss_t *pss, Pssent_t *pe)
             if (state->debug && pss->disc->errorf)
                 (*pss->disc->errorf)(
                 pss, pss->disc, 2, "%s: %s", po->name, s);
-            switch (po->field)
-            {
+            switch (po->field) {
             case PSS_addr:
                 pe->addr = ( void * )number(s, &e, 16);
                 break;
@@ -243,8 +229,7 @@ ps_part(Pss_t *pss, Pssent_t *pe)
                 break;
             case PSS_gid:
                 for (e = s; *e; e++)
-                    if (isspace(*e))
-                    {
+                    if (isspace(*e)) {
                         *e++ = 0;
                         break;
                     }
@@ -297,8 +282,7 @@ ps_part(Pss_t *pss, Pssent_t *pe)
                 c = *s;
                 *s = 0;
                 pe->start = tmdate(t, &e, NiL);
-                if (( unsigned long )pe->start > state->now)
-                {
+                if (( unsigned long )pe->start > state->now) {
                     sfsprintf(pss->buf, sizeof(pss->buf), "last %s", t);
                     pe->start = tmdate(pss->buf, NiL, NiL);
                 }
@@ -318,8 +302,7 @@ ps_part(Pss_t *pss, Pssent_t *pe)
                 break;
             case PSS_tty:
                 for (e = s; *e; e++)
-                    if (isspace(*e))
-                    {
+                    if (isspace(*e)) {
                         *e++ = 0;
                         break;
                     }
@@ -327,8 +310,7 @@ ps_part(Pss_t *pss, Pssent_t *pe)
                 break;
             case PSS_uid:
                 for (e = s; *e; e++)
-                    if (isspace(*e))
-                    {
+                    if (isspace(*e)) {
                         *e++ = 0;
                         break;
                     }

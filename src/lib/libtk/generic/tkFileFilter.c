@@ -89,12 +89,10 @@ int isWindows;            /* True if we are running on Windows. */
     int code = TCL_OK;
     int i;
 
-    if (Tcl_SplitList(interp, string, &listArgc, &listArgv) != TCL_OK)
-    {
+    if (Tcl_SplitList(interp, string, &listArgc, &listArgv) != TCL_OK) {
         return TCL_ERROR;
     }
-    if (listArgc == 0)
-    {
+    if (listArgc == 0) {
         goto done;
     }
 
@@ -105,8 +103,7 @@ int isWindows;            /* True if we are running on Windows. */
      */
     TkFreeFileFilters(flistPtr);
 
-    for (i = 0; i < listArgc; i++)
-    {
+    for (i = 0; i < listArgc; i++) {
         /*
          * Each file type should have two or three elements: the first one
          * is the name of the type and the second is the filter of the type.
@@ -115,14 +112,12 @@ int isWindows;            /* True if we are running on Windows. */
         int count;
         FileFilter *filterPtr;
 
-        if (Tcl_SplitList(interp, listArgv[i], &count, &typeInfo) != TCL_OK)
-        {
+        if (Tcl_SplitList(interp, listArgv[i], &count, &typeInfo) != TCL_OK) {
             code = TCL_ERROR;
             goto done;
         }
 
-        if (count != 2 && count != 3)
-        {
+        if (count != 2 && count != 3) {
             Tcl_AppendResult(
             interp,
             "bad file type \"",
@@ -137,34 +132,27 @@ int isWindows;            /* True if we are running on Windows. */
 
         filterPtr = GetFilter(flistPtr, typeInfo[0]);
 
-        if (count == 2)
-        {
+        if (count == 2) {
             code = AddClause(interp, filterPtr, typeInfo[1], NULL, isWindows);
-        }
-        else
-        {
+        } else {
             code = AddClause(
             interp, filterPtr, typeInfo[1], typeInfo[2], isWindows);
         }
-        if (code != TCL_OK)
-        {
+        if (code != TCL_OK) {
             goto done;
         }
 
-        if (typeInfo)
-        {
+        if (typeInfo) {
             ckfree(( char * )typeInfo);
         }
         typeInfo = NULL;
     }
 
 done:
-    if (typeInfo)
-    {
+    if (typeInfo) {
         ckfree(( char * )typeInfo);
     }
-    if (listArgv)
-    {
+    if (listArgv) {
         ckfree(( char * )listArgv);
     }
     return code;
@@ -191,8 +179,7 @@ FileFilterList *flistPtr; /* List of file filters to free */
     FileFilter *filterPtr, *toFree;
 
     filterPtr = flistPtr->filters;
-    while (filterPtr)
-    {
+    while (filterPtr) {
         toFree = filterPtr;
         filterPtr = filterPtr->next;
         FreeClauses(toFree);
@@ -235,23 +222,18 @@ int isWindows;         /* True if we are running on Windows; False
     int i;
     int code = TCL_OK;
 
-    if (Tcl_SplitList(interp, patternsStr, &globCount, &globList) != TCL_OK)
-    {
+    if (Tcl_SplitList(interp, patternsStr, &globCount, &globList) != TCL_OK) {
         code = TCL_ERROR;
         goto done;
     }
-    if (ostypesStr != NULL)
-    {
+    if (ostypesStr != NULL) {
         if (Tcl_SplitList(interp, ostypesStr, &ostypeCount, &ostypeList)
-            != TCL_OK)
-        {
+            != TCL_OK) {
             code = TCL_ERROR;
             goto done;
         }
-        for (i = 0; i < ostypeCount; i++)
-        {
-            if (strlen(ostypeList[i]) != 4)
-            {
+        for (i = 0; i < ostypeCount; i++) {
+            if (strlen(ostypeList[i]) != 4) {
                 Tcl_AppendResult(interp,
                                  "bad Macintosh file type \"",
                                  ostypeList[i],
@@ -273,45 +255,34 @@ int isWindows;         /* True if we are running on Windows; False
     clausePtr->macTypes = NULL;
     clausePtr->macTypesTail = NULL;
 
-    if (filterPtr->clauses == NULL)
-    {
+    if (filterPtr->clauses == NULL) {
         filterPtr->clauses = filterPtr->clausesTail = clausePtr;
-    }
-    else
-    {
+    } else {
         filterPtr->clausesTail->next = clausePtr;
         filterPtr->clausesTail = clausePtr;
     }
     clausePtr->next = NULL;
 
-    if (globCount > 0 && globList != NULL)
-    {
-        for (i = 0; i < globCount; i++)
-        {
+    if (globCount > 0 && globList != NULL) {
+        for (i = 0; i < globCount; i++) {
             GlobPattern *globPtr
             = ( GlobPattern * )ckalloc(sizeof(GlobPattern));
             int len;
 
             len = (strlen(globList[i]) + 1) * sizeof(char);
 
-            if (globList[i][0] && globList[i][0] != '*')
-            {
+            if (globList[i][0] && globList[i][0] != '*') {
                 /*
                  * Prepend a "*" to patterns that do not have a leading "*"
                  */
                 globPtr->pattern = ( char * )ckalloc(len + 1);
                 globPtr->pattern[0] = '*';
                 strcpy(globPtr->pattern + 1, globList[i]);
-            }
-            else if (isWindows)
-            {
-                if (strcmp(globList[i], "*") == 0)
-                {
+            } else if (isWindows) {
+                if (strcmp(globList[i], "*") == 0) {
                     globPtr->pattern = ( char * )ckalloc(4 * sizeof(char));
                     strcpy(globPtr->pattern, "*.*");
-                }
-                else if (strcmp(globList[i], "") == 0)
-                {
+                } else if (strcmp(globList[i], "") == 0) {
                     /*
                      * An empty string means "match all files with no
                      * extensions"
@@ -319,15 +290,11 @@ int isWindows;         /* True if we are running on Windows; False
                      */
                     globPtr->pattern = ( char * )ckalloc(3 * sizeof(char));
                     strcpy(globPtr->pattern, "*.");
-                }
-                else
-                {
+                } else {
                     globPtr->pattern = ( char * )ckalloc(len);
                     strcpy(globPtr->pattern, globList[i]);
                 }
-            }
-            else
-            {
+            } else {
                 globPtr->pattern = ( char * )ckalloc(len);
                 strcpy(globPtr->pattern, globList[i]);
             }
@@ -336,22 +303,17 @@ int isWindows;         /* True if we are running on Windows; False
              * Add the glob pattern into the list of patterns.
              */
 
-            if (clausePtr->patterns == NULL)
-            {
+            if (clausePtr->patterns == NULL) {
                 clausePtr->patterns = clausePtr->patternsTail = globPtr;
-            }
-            else
-            {
+            } else {
                 clausePtr->patternsTail->next = globPtr;
                 clausePtr->patternsTail = globPtr;
             }
             globPtr->next = NULL;
         }
     }
-    if (ostypeCount > 0 && ostypeList != NULL)
-    {
-        for (i = 0; i < ostypeCount; i++)
-        {
+    if (ostypeCount > 0 && ostypeList != NULL) {
+        for (i = 0; i < ostypeCount; i++) {
             MacFileType *mfPtr
             = ( MacFileType * )ckalloc(sizeof(MacFileType));
 
@@ -360,12 +322,9 @@ int isWindows;         /* True if we are running on Windows; False
             /*
              * Add the Mac type pattern into the list of Mac types
              */
-            if (clausePtr->macTypes == NULL)
-            {
+            if (clausePtr->macTypes == NULL) {
                 clausePtr->macTypes = clausePtr->macTypesTail = mfPtr;
-            }
-            else
-            {
+            } else {
                 clausePtr->macTypesTail->next = mfPtr;
                 clausePtr->macTypesTail = mfPtr;
             }
@@ -374,12 +333,10 @@ int isWindows;         /* True if we are running on Windows; False
     }
 
 done:
-    if (globList)
-    {
+    if (globList) {
         ckfree(( char * )globList);
     }
-    if (ostypeList)
-    {
+    if (ostypeList) {
         ckfree(( char * )ostypeList);
     }
 
@@ -411,10 +368,8 @@ char *name;               /* Name of the filter. It is usually displayed
     FileFilter *filterPtr;
 
     for (filterPtr = flistPtr->filters; filterPtr;
-         filterPtr = filterPtr->next)
-    {
-        if (strcmp(filterPtr->name, name) == 0)
-        {
+         filterPtr = filterPtr->next) {
+        if (strcmp(filterPtr->name, name) == 0) {
             return filterPtr;
         }
     }
@@ -425,12 +380,9 @@ char *name;               /* Name of the filter. It is usually displayed
     filterPtr->name = ( char * )ckalloc((strlen(name) + 1) * sizeof(char));
     strcpy(filterPtr->name, name);
 
-    if (flistPtr->filters == NULL)
-    {
+    if (flistPtr->filters == NULL) {
         flistPtr->filters = flistPtr->filtersTail = filterPtr;
-    }
-    else
-    {
+    } else {
         flistPtr->filtersTail->next = filterPtr;
         flistPtr->filtersTail = filterPtr;
     }
@@ -461,8 +413,7 @@ FileFilter *filterPtr; /* FileFilter whose clauses are to be freed */
     FileFilterClause *clausePtr, *toFree;
 
     clausePtr = filterPtr->clauses;
-    while (clausePtr)
-    {
+    while (clausePtr) {
         toFree = clausePtr;
         clausePtr = clausePtr->next;
         FreeGlobPatterns(toFree);
@@ -494,8 +445,7 @@ FileFilterClause *clausePtr; /* The clause whose patterns are to be freed*/
     GlobPattern *globPtr, *toFree;
 
     globPtr = clausePtr->patterns;
-    while (globPtr)
-    {
+    while (globPtr) {
         toFree = globPtr;
         globPtr = globPtr->next;
 
@@ -527,8 +477,7 @@ FileFilterClause *clausePtr; /* The clause whose mac types are to be
     MacFileType *mfPtr, *toFree;
 
     mfPtr = clausePtr->macTypes;
-    while (mfPtr)
-    {
+    while (mfPtr) {
         toFree = mfPtr;
         mfPtr = mfPtr->next;
         ckfree(( char * )toFree);

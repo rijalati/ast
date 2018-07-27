@@ -51,17 +51,13 @@ time_t ftime;
 
     len = strlen(fname);
     sfsprintf(flogname, sizeof(flogname), "._log.%d", ftime);
-    if ((flog = fopen(flogname, "w")) == NULL)
-    {
+    if ((flog = fopen(flogname, "w")) == NULL) {
         return -1;
     }
     fprintf(flog, "%s %d\n", fname, ftime);
-    if ((fent = fopen("._log", "r")) != NULL)
-    {
-        while (fgets(buf, sizeof(buf), fent) != NULL)
-        {
-            if (strncmp(buf, fname, len) != 0 || buf[len] != ' ')
-            {
+    if ((fent = fopen("._log", "r")) != NULL) {
+        while (fgets(buf, sizeof(buf), fent) != NULL) {
+            if (strncmp(buf, fname, len) != 0 || buf[len] != ' ') {
                 fprintf(flog, "%s", buf);
             }
         }
@@ -136,16 +132,14 @@ char *buf;
     fi->fname = ptr;
     fi->ftype = 0;
     fi->fsize = 0;
-    switch (buf[0])
-    {
+    switch (buf[0]) {
     /* -rw-rw-r--  1 CSIE     ftp          1509 Sep 14 08:31 README */
     /* lrwxrwxrwx  1 CSIE     ftp             8 Nov 14  1993 dir -> pub/dir */
     /* drwxrwxr-x 25 CSIE     ftp          1024 Jan 31 04:56 pub */
     case 'd':
         fi->ftype = 1; /* unix directory */
     case '-':          /* unix regular file */
-        if (*(ptr - 14) == ' ')
-        {
+        if (*(ptr - 14) == ' ') {
             ptr -= 15;
             while (*ptr != ' ')
                 ptr--;
@@ -167,8 +161,7 @@ char *buf;
     case '0': /* NT 3.0 file system */
     case '1':
         fi->ftype = (buf[25] == 'D' ? 1 : 0);
-        if (*(ptr - 2) != ' ')
-        {
+        if (*(ptr - 2) != ' ') {
             ptr -= 2;
             while (*ptr != ' ')
                 ptr--;
@@ -198,20 +191,13 @@ int ftp_makedents(tmpfile) char *tmpfile;
     if ((fdir = fopen(tmpfile, "r")) == NULL)
         return -1;
     fent = fopen("._log", "w");
-    while (fgets(buf, sizeof(buf), fdir) != NULL)
-    {
-        if (ftp_parselist(&finfo, buf))
-        {
-            if (finfo.ftype == 1)
-            { /* directory file */
+    while (fgets(buf, sizeof(buf), fdir) != NULL) {
+        if (ftp_parselist(&finfo, buf)) {
+            if (finfo.ftype == 1) { /* directory file */
                 mkdir(finfo.fname, 0755);
-            }
-            else if (finfo.ftype == 2)
-            { /* link file */
+            } else if (finfo.ftype == 2) { /* link file */
                 symlink(finfo.info, finfo.fname);
-            }
-            else
-            { /* regular */
+            } else { /* regular */
                 MakeImageFile(finfo.fname, finfo.fsize);
                 fprintf(fent, "%s %d\n", finfo.fname, modtime);
             }
@@ -258,26 +244,21 @@ int bsize;
     char tmpbuf[STRLEN];
     char token[4], *ptr;
 
-    if (buf == NULL)
-    {
+    if (buf == NULL) {
         buf = tmpbuf;
         bsize = sizeof(tmpbuf);
     }
-    if (NetGets(nFile, buf, bsize) == NULL)
-    {
+    if (NetGets(nFile, buf, bsize) == NULL) {
         debug_logit("FtpReply: NetGets return NULL\n");
         return -1;
     }
 
     /* parsing multi-line response */
-    if (buf[3] == '-')
-    {
+    if (buf[3] == '-') {
         strncpy(token, buf, 3);
         token[3] = ' ';
-        while (strncmp(buf, token, 4) != 0)
-        {
-            if (NetGets(nFile, buf, bsize) == NULL)
-            {
+        while (strncmp(buf, token, 4) != 0) {
+            if (NetGets(nFile, buf, bsize) == NULL) {
                 debug_logit("Multi-line parse error\n");
                 return -1;
             }
@@ -285,8 +266,7 @@ int bsize;
     }
 
     /* trim "...\r\n" to "...\n" */
-    if ((ptr = strchr(buf, '\r')) != NULL && ptr[1] == '\n')
-    {
+    if ((ptr = strchr(buf, '\r')) != NULL && ptr[1] == '\n') {
         *ptr++ = '\n';
         *ptr = '\0';
     }
@@ -317,13 +297,11 @@ NetFile *nFile;
 
     FtpCommand(nFile, "PASV", NULL);
     if (FtpReply(nFile, reply, sizeof(reply)) != 220
-        || (ptr = strchr(reply, '(')) == NULL)
-    {
+        || (ptr = strchr(reply, '(')) == NULL) {
         cserrno = E_CONNECT;
         return NULL;
     }
-    if (SplitFields(arg, 6, ptr + 1, ',') < 6)
-    {
+    if (SplitFields(arg, 6, ptr + 1, ',') < 6) {
         cserrno = E_CONNECT;
         return NULL;
     }
@@ -347,15 +325,13 @@ char *tmpfile;
     int fd, len;
 
     nFile = srv->mitem->nFile;
-    if ((nData = FtpDataConnect(srv, nFile)) == NULL)
-    {
+    if ((nData = FtpDataConnect(srv, nFile)) == NULL) {
         if (IfsAbortFlag)
             FtpDisconnect(srv);
         cserrno = E_CONNECT;
         return -1;
     }
-    if (FtpTalk(nFile, cmd, rpath) >= 200)
-    {
+    if (FtpTalk(nFile, cmd, rpath) >= 200) {
         if (IfsAbortFlag)
             FtpDisconnect(srv);
         NetClose(nData);
@@ -363,19 +339,15 @@ char *tmpfile;
         return -1;
     }
     cserrno = E_NIL;
-    if ((fd = open(tmpfile, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0)
-    {
+    if ((fd = open(tmpfile, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0) {
         cserrno = E_DATAXFER;
-    }
-    else
-    {
+    } else {
         while ((len = NetRead(nData, buf, sizeof(buf))) > 0)
             write(fd, buf, len);
         close(fd);
     }
     NetClose(nData);
-    if (FtpReply(nFile, NULL, 0) != 220)
-    { /* xfer result */
+    if (FtpReply(nFile, NULL, 0) != 220) { /* xfer result */
         cserrno = E_DATAXFER;
     }
     if (IfsAbortFlag)
@@ -394,8 +366,7 @@ char *tmpfile;
 
     if (*rpath == '/' && rpath[1] == '~') /* home directory mount */
         rpath++;
-    if (FtpXfer(srv, "RETR", rpath, tmpfile) == -1)
-    {
+    if (FtpXfer(srv, "RETR", rpath, tmpfile) == -1) {
         return -1;
     }
     MakePath(lpath);
@@ -421,8 +392,7 @@ char *tmpfile;
         rpath++;
     FtpCommand(nFile, "CWD", rpath);
     if (FtpReply(nFile, buf, sizeof(buf)) != 250
-        || strncmp(buf, "250 Unable to locate", 20) == 0)
-    {
+        || strncmp(buf, "250 Unable to locate", 20) == 0) {
         /* typo of SMART_CD patch (of jdli@csie.nctu.edu.tw) */
         logit("<ftp>: cwd error\n");
         cserrno = E_DATAXFER;
@@ -431,8 +401,7 @@ char *tmpfile;
     logit("<ftp>: xfer directory\n");
     if (FtpXfer(srv, "LIST", NULL, tmpfile) == -1)
         return -1;
-    if (chdir(lpath) == -1)
-    {
+    if (chdir(lpath) == -1) {
         sfsprintf(buf, sizeof(buf), "%s/._dir", lpath);
         MakePath(buf);
         chdir(lpath);
@@ -455,46 +424,37 @@ int FtpConnect(srv) struct server_info *srv;
     char pass[80], *user;
     int port;
 
-    if (nFile != NULL)
-    {
-        if (FtpTalk(nFile, "NOOP", NULL) == 200)
-        {
+    if (nFile != NULL) {
+        if (FtpTalk(nFile, "NOOP", NULL) == 200) {
             sfsprintf(csusrmsg, sizeof(csusrmsg), "use fd:%d", nFile->socket);
             return 0;
         }
     }
     logit("<ftp>: connect\n");
     port = (mitem->port ? mitem->port : 21);
-    if ((nFile = NetConnect(srv, mitem->host, port)) == NULL)
-    {
+    if ((nFile = NetConnect(srv, mitem->host, port)) == NULL) {
         logit("<ftp>: connect failed!\n");
         return -1;
     }
-    if (FtpReply(nFile, NULL, 0) != 220)
-    { /* initial message */
+    if (FtpReply(nFile, NULL, 0) != 220) { /* initial message */
         cserrno = E_CONNECT;
         NetClose(nFile);
         return -1;
     }
     logit("<ftp>: login\n");
     user = mitem->user ? mitem->user : "anonymous";
-    if (mitem->passlen > 0)
-    {
+    if (mitem->passlen > 0) {
         SecurityDataAccess(mitem->pass, pass, mitem->passlen);
-    }
-    else
-    {
+    } else {
         strcpy(pass, "ftpcs@");
     }
     if (FtpTalk(nFile, "USER", user) != 330
-        || FtpTalk(nFile, "PASS", pass) != 230)
-    {
+        || FtpTalk(nFile, "PASS", pass) != 230) {
         cserrno = E_USERAUTH;
         NetClose(nFile);
         return -1;
     }
-    if (FtpTalk(nFile, "TYPE", "I") != 200)
-    {
+    if (FtpTalk(nFile, "TYPE", "I") != 200) {
         cserrno = E_CONNECT;
         NetClose(nFile);
         return -1;
@@ -513,8 +473,7 @@ int FtpDisconnect(srv) struct server_info *srv;
     struct mount_item *mitem = srv->mitem;
     NetFile *nFile = mitem->nFile;
 
-    if (nFile != NULL)
-    {
+    if (nFile != NULL) {
         logit("<ftp>: disconnect\n");
         NetClose(nFile);
         mitem->nFile = NULL;
@@ -539,22 +498,16 @@ int FtpGetFile(srv) struct server_info *srv;
     if (mitem->nFile == NULL)
         if (FtpConnect(srv) == -1)
             return -1;
-    if (NetDataReady(mitem->nFile))
-    { /* maybe connection timeout */
+    if (NetDataReady(mitem->nFile)) { /* maybe connection timeout */
         FtpDisconnect(srv);
         if (FtpConnect(srv) == -1) /* make a new connection */
             return -1;
     }
-    if (*rpath == '\0' || DashD(lpath))
-    {
+    if (*rpath == '\0' || DashD(lpath)) {
         ans = FtpXferDir(srv, tmpfile);
-    }
-    else if (DashF(lpath))
-    {
+    } else if (DashF(lpath)) {
         ans = FtpXferFile(srv, tmpfile);
-    }
-    else
-    {
+    } else {
         if ((ans = FtpXferDir(srv, tmpfile)) == -1)
             ans = FtpXferFile(srv, tmpfile);
     }
@@ -579,35 +532,30 @@ int FtpPutFile(srv) struct server_info *srv;
         return -1;
     nFile = mitem->nFile;
     logit("<ftp>: store file\n");
-    if ((fd = open(srv->lpath, O_RDONLY, 0)) < 0)
-    {
+    if ((fd = open(srv->lpath, O_RDONLY, 0)) < 0) {
         cserrno = E_DATAXFER;
         return -1;
     }
-    if ((nData = FtpDataConnect(srv, nFile)) == NULL)
-    {
+    if ((nData = FtpDataConnect(srv, nFile)) == NULL) {
         close(fd);
         return -1;
     }
     rpath = srv->rpath;
     if (*rpath == '/' && rpath[1] == '~') /* home directory mount */
         rpath++;
-    if (FtpTalk(nFile, "STOR", rpath) >= 200)
-    {
+    if (FtpTalk(nFile, "STOR", rpath) >= 200) {
         logit("<ftp>: stor error\n");
         cserrno = E_DATAXFER;
         NetClose(nData);
         close(fd);
         return -1;
     }
-    while ((len = read(fd, buf, sizeof(buf))) > 0)
-    {
+    while ((len = read(fd, buf, sizeof(buf))) > 0) {
         NetWrite(nData, buf, len);
     }
     NetClose(nData);
     close(fd);
-    if (FtpReply(nFile, NULL, 0) != 220)
-    { /* transfer result */
+    if (FtpReply(nFile, NULL, 0) != 220) { /* transfer result */
         cserrno = E_DATAXFER;
         return -1;
     }

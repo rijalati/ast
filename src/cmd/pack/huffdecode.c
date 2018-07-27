@@ -30,8 +30,7 @@
 #define CHUNK 9
 #define END (1 << CHAR_BIT)
 #define fillbuff(b, left, bit, inp)                                          \
-    while (left < (bit))                                                     \
-    {                                                                        \
+    while (left < (bit)) {                                                   \
         if (inp >= inend && !(inp = getbuff()))                              \
             return (-1);                                                     \
         left += CHAR_BIT;                                                    \
@@ -76,8 +75,7 @@ huffdecode(Huff_t *hp, Sfio_t *input, Sfio_t *output, int size)
     unsigned char *outbuff;
     Sfoff_t insize = hp->outsize;
     /* decode the header if called with different hp */
-    if (lastid != hp->id)
-    {
+    if (lastid != hp->id) {
         decode_header(hp);
         if (!hp->id)
             hp->id = id++;
@@ -88,8 +86,7 @@ huffdecode(Huff_t *hp, Sfio_t *input, Sfio_t *output, int size)
           = ( unsigned char * )sfreserve(output, SF_UNBOUND, SF_LOCKR)))
         return (sfvalue(output));
     n = sfvalue(output);
-    if (size >= 0)
-    {
+    if (size >= 0) {
         if (n > size)
             n = size;
         size -= n;
@@ -103,20 +100,16 @@ huffdecode(Huff_t *hp, Sfio_t *input, Sfio_t *output, int size)
     buffer = hp->buffer;
     left = hp->left;
     /* main decoding loop */
-    while (1)
-    {
-        if (lev == 0)
-        {
+    while (1) {
+        if (lev == 0) {
             fillbuff(buffer, left, hp->maxlev, inp);
             i = getbits(buffer, left, CHUNK);
-            if ((n = (numbits[i] - 1)) >= 0)
-            {
+            if ((n = (numbits[i] - 1)) >= 0) {
                 putbits(buffer, left, n);
                 *outp++ = outchar[i];
                 goto pout;
             }
-            if (hp->excess)
-            {
+            if (hp->excess) {
                 putbits(buffer, left, hp->excess);
                 i >>= hp->excess;
             }
@@ -124,27 +117,22 @@ huffdecode(Huff_t *hp, Sfio_t *input, Sfio_t *output, int size)
         }
         i <<= 1;
         i += getbits(buffer, left, 1);
-        if ((n = i - intnodes[lev + 1]) >= 0)
-        {
+        if ((n = i - intnodes[lev + 1]) >= 0) {
             {
                 char *p = &tree[lev + 1][n];
-                if (p == eof)
-                {
+                if (p == eof) {
                     size = 0;
                     outend = outp;
-                }
-                else
+                } else
                     *outp++ = *p;
             }
         pout:
-            if (outp >= outend)
-            {
+            if (outp >= outend) {
                 n = outp - outbuff;
                 hp->outsize += n;
                 if (sfwrite(output, outbuff, n) < 0)
                     return (-1);
-                if (size == 0)
-                {
+                if (size == 0) {
                     hp->buffer = buffer;
                     hp->left = left;
                     sfread(infile, inbuff, inp - inbuff);
@@ -154,8 +142,7 @@ huffdecode(Huff_t *hp, Sfio_t *input, Sfio_t *output, int size)
                       output, SF_UNBOUND, SF_LOCKR)))
                     return (-1);
                 n = sfvalue(output);
-                if (size > 0)
-                {
+                if (size > 0) {
                     if (n > size)
                         n = size;
                     size -= n;
@@ -164,8 +151,7 @@ huffdecode(Huff_t *hp, Sfio_t *input, Sfio_t *output, int size)
                 outend = outp + n;
             }
             lev = 0;
-        }
-        else
+        } else
             lev++;
     }
 }
@@ -175,12 +161,10 @@ decode_header(Huff_t *hp)
 {
     int c, i, n, k;
     eof = &characters[0];
-    for (i = 1; i <= hp->maxlev; i++)
-    {
+    for (i = 1; i <= hp->maxlev; i++) {
         intnodes[i] = hp->levcount[i];
         tree[i] = eof;
-        for (c = 0; c < (1 << CHAR_BIT); c++)
-        {
+        for (c = 0; c < (1 << CHAR_BIT); c++) {
             if (hp->length[c] == i)
                 *eof++ = c;
         }
@@ -190,27 +174,22 @@ decode_header(Huff_t *hp)
      * convert intnodes[i] to be number of
      * internal nodes possessed by level i
      */
-    for (n = 0, i = hp->maxlev; i >= 1; i--)
-    {
+    for (n = 0, i = hp->maxlev; i >= 1; i--) {
         c = intnodes[i];
         intnodes[i] = n /= 2;
         n += c;
     }
     /* compute output char and number of bits used for each CHUNK of bits */
     c = (1 << CHUNK) - 1;
-    for (i = 1; i <= CHUNK; i++)
-    {
-        for (k = tree[i + 1] - tree[i]; --k >= 0;)
-        {
-            for (n = 0; n < 1 << (CHUNK - i); n++)
-            {
+    for (i = 1; i <= CHUNK; i++) {
+        for (k = tree[i + 1] - tree[i]; --k >= 0;) {
+            for (n = 0; n < 1 << (CHUNK - i); n++) {
                 numbits[c] = CHUNK + 1 - i;
                 outchar[c--] = tree[i][k];
             }
         }
     }
-    if (hp->maxlev <= CHUNK)
-    {
+    if (hp->maxlev <= CHUNK) {
         hp->excess = CHUNK + 1 - hp->maxlev;
         hp->maxlev = CHUNK;
     }

@@ -107,31 +107,25 @@ rm(State_t *state, FTSENT *ent)
     struct stat st;
 
     if (ent->fts_info == FTS_NS || ent->fts_info == FTS_ERR
-        || ent->fts_info == FTS_SLNONE)
-    {
+        || ent->fts_info == FTS_SLNONE) {
         if (!state->force)
             error(2, "%s: not found", ent->fts_path);
-    }
-    else if (state->fs3d && iview(ent->fts_statp))
+    } else if (state->fs3d && iview(ent->fts_statp))
         fts_set(NiL, ent, FTS_SKIP);
     else
-        switch (ent->fts_info)
-        {
+        switch (ent->fts_info) {
         case FTS_DNR:
         case FTS_DNX:
-            if (state->unconditional)
-            {
+            if (state->unconditional) {
                 if (!beenhere(ent))
                     break;
                 if (!chmod(ent->fts_name,
-                           (ent->fts_statp->st_mode & S_IPERM) | S_IRWXU))
-                {
+                           (ent->fts_statp->st_mode & S_IPERM) | S_IRWXU)) {
                     fts_set(NiL, ent, FTS_AGAIN);
                     break;
                 }
                 error_info.errors++;
-            }
-            else if (!state->force)
+            } else if (!state->force)
                 error(2,
                       "%s: cannot %s directory",
                       ent->fts_path,
@@ -145,8 +139,7 @@ rm(State_t *state, FTSENT *ent)
         case FTS_DC:
             path = ent->fts_name;
             if (path[0] == '.' && (!path[1] || path[1] == '.' && !path[2])
-                && (ent->fts_level > 0 || path[1]))
-            {
+                && (ent->fts_level > 0 || path[1])) {
                 fts_set(NiL, ent, FTS_SKIP);
                 if (!state->force)
                     error(2, "%s: cannot remove", ent->fts_path);
@@ -154,30 +147,25 @@ rm(State_t *state, FTSENT *ent)
                     error_info.errors++;
                 break;
             }
-            if (!state->recursive)
-            {
+            if (!state->recursive) {
                 fts_set(NiL, ent, FTS_SKIP);
-                if (!state->directory)
-                {
+                if (!state->directory) {
                     error(2, "%s: directory", ent->fts_path);
                     break;
                 }
             }
-            if (!beenhere(ent))
-            {
+            if (!beenhere(ent)) {
                 if (state->unconditional
                     && (ent->fts_statp->st_mode & S_IRWXU) != S_IRWXU)
                     chmod(path,
                           (ent->fts_statp->st_mode & S_IPERM) | S_IRWXU);
-                if (ent->fts_level > 0)
-                {
+                if (ent->fts_level > 0) {
                     char *s;
 
                     if (ent->fts_accpath == ent->fts_name
                         || !(s = strrchr(ent->fts_accpath, '/')))
                         v = !stat(".", &st);
-                    else
-                    {
+                    else {
                         path = ent->fts_accpath;
                         *s = 0;
                         v = !stat(path, &st);
@@ -190,57 +178,46 @@ rm(State_t *state, FTSENT *ent)
                                   == ent->fts_parent->fts_statp->st_dev
                             || strchr(astconf("PATH_ATTRIBUTES", path, NiL),
                                       'l');
-                }
-                else
+                } else
                     v = 1;
-                if (v)
-                {
-                    if (state->interactive)
-                    {
+                if (v) {
+                    if (state->interactive) {
                         if ((v = astquery(
                              -1, "remove directory %s? ", ent->fts_path))
                             < 0
                             || sh_checksig(state->context))
                             return -1;
-                        if (v > 0)
-                        {
+                        if (v > 0) {
                             fts_set(NiL, ent, FTS_SKIP);
                             nonempty(ent);
                         }
                     }
                     if (!state->directory && ent->fts_info == FTS_D)
                         break;
-                }
-                else
-                {
+                } else {
                     ent->fts_info = FTS_DC;
                     error(1, "%s: hard link to directory", ent->fts_path);
                 }
-            }
-            else if (ent->fts_info == FTS_D)
+            } else if (ent->fts_info == FTS_D)
                 break;
             /*FALLTHROUGH*/
         case FTS_DP:
-            if (isempty(ent) || state->directory)
-            {
+            if (isempty(ent) || state->directory) {
                 path = ent->fts_name;
-                if (path[0] != '.' || path[1])
-                {
+                if (path[0] != '.' || path[1]) {
                     path = ent->fts_accpath;
                     if (state->verbose)
                         sfputr(sfstdout, ent->fts_path, '\n');
                     if ((state->recursive || state->directory) ? rmdir(path)
                                                                : unlink(path))
-                        switch (errno)
-                        {
+                        switch (errno) {
                         case ENOENT:
                             break;
                         case EEXIST:
 #if defined(ENOTEMPTY) && (ENOTEMPTY) != (EEXIST)
                         case ENOTEMPTY:
 #endif
-                            if (ent->fts_info == FTS_DP && !beenhere(ent))
-                            {
+                            if (ent->fts_info == FTS_DP && !beenhere(ent)) {
                                 retry(ent);
                                 fts_set(NiL, ent, FTS_AGAIN);
                                 break;
@@ -256,14 +233,11 @@ rm(State_t *state, FTSENT *ent)
                                 error_info.errors++;
                             break;
                         }
-                }
-                else if (!state->force)
+                } else if (!state->force)
                     error(2, "%s: cannot remove", ent->fts_path);
                 else
                     error_info.errors++;
-            }
-            else
-            {
+            } else {
                 nonempty(ent);
                 if (!state->force)
                     error(2, "%s: directory not removed", ent->fts_path);
@@ -275,20 +249,16 @@ rm(State_t *state, FTSENT *ent)
             path = ent->fts_accpath;
             if (state->verbose)
                 sfputr(sfstdout, ent->fts_path, '\n');
-            if (state->interactive)
-            {
+            if (state->interactive) {
                 if ((v = astquery(-1, "remove %s? ", ent->fts_path)) < 0
                     || sh_checksig(state->context))
                     return -1;
-                if (v > 0)
-                {
+                if (v > 0) {
                     nonempty(ent);
                     break;
                 }
-            }
-            else if (!(ent->fts_info & FTS_SL) && !state->force
-                     && state->terminal && eaccess(path, W_OK))
-            {
+            } else if (!(ent->fts_info & FTS_SL) && !state->force
+                       && state->terminal && eaccess(path, W_OK)) {
                 if ((v = astquery(
                      -1,
                      "override protection %s for %s? ",
@@ -304,28 +274,23 @@ rm(State_t *state, FTSENT *ent)
                     < 0
                     || sh_checksig(state->context))
                     return -1;
-                if (v > 0)
-                {
+                if (v > 0) {
                     nonempty(ent);
                     break;
                 }
             }
 #if _lib_fsync
             if (state->clobber && S_ISREG(ent->fts_statp->st_mode)
-                && ent->fts_statp->st_size > 0)
-            {
+                && ent->fts_statp->st_size > 0) {
                 if ((n = open(path, O_WRONLY | O_cloexec)) < 0)
                     error(
                     ERROR_SYSTEM | 2, "%s: cannot clear data", ent->fts_path);
-                else
-                {
+                else {
                     off_t c = ent->fts_statp->st_size;
 
-                    for (;;)
-                    {
+                    for (;;) {
                         if (write(n, state->buf, sizeof(state->buf))
-                            != sizeof(state->buf))
-                        {
+                            != sizeof(state->buf)) {
                             error(ERROR_SYSTEM | 2,
                                   "%s: data clear error",
                                   ent->fts_path);
@@ -340,11 +305,9 @@ rm(State_t *state, FTSENT *ent)
                 }
             }
 #endif
-            if (remove(path))
-            {
+            if (remove(path)) {
                 nonempty(ent);
-                switch (errno)
-                {
+                switch (errno) {
                 case ENOENT:
                     break;
                 default:
@@ -374,10 +337,8 @@ b_rm(int argc, char **argv, Shbltin_t *context)
     state.context = context;
     state.fs3d = fs3d(FS3D_TEST);
     state.terminal = isatty(0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'd':
             state.directory = 1;
             continue;
@@ -432,22 +393,18 @@ b_rm(int argc, char **argv, Shbltin_t *context)
     state.uid = geteuid();
     state.unconditional
     = state.unconditional && state.recursive && state.force;
-    if (state.recursive && state.fs3d)
-    {
+    if (state.recursive && state.fs3d) {
         set3d = state.fs3d;
         state.fs3d = 0;
         fs3d(0);
-    }
-    else
+    } else
         set3d = 0;
-    if (fts = fts_open(argv, FTS_PHYSICAL, NiL))
-    {
+    if (fts = fts_open(argv, FTS_PHYSICAL, NiL)) {
         while (!sh_checksig(context) && (ent = fts_read(fts))
                && !rm(&state, ent))
             ;
         fts_close(fts);
-    }
-    else if (!state.force)
+    } else if (!state.force)
         error(ERROR_SYSTEM | 2, "%s: cannot remove", argv[0]);
     if (set3d)
         fs3d(set3d);

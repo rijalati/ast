@@ -62,21 +62,17 @@ static Sfpool_t *newpool(mode) reg int mode;
     reg Sfpool_t *p, *last = &_Sfpool;
 
     /* look to see if there is a free pool */
-    for (last = &_Sfpool, p = last->next; p; last = p, p = p->next)
-    {
-        if (p->mode == SF_AVAIL)
-        {
+    for (last = &_Sfpool, p = last->next; p; last = p, p = p->next) {
+        if (p->mode == SF_AVAIL) {
             p->mode = 0;
             break;
         }
     }
 
-    if (!p)
-    {
+    if (!p) {
         POOLMTXLOCK(last);
 
-        if (!(p = ( Sfpool_t * )malloc(sizeof(Sfpool_t))))
-        {
+        if (!(p = ( Sfpool_t * )malloc(sizeof(Sfpool_t)))) {
             POOLMTXUNLOCK(last);
             return NIL(Sfpool_t *);
         }
@@ -127,12 +123,10 @@ int n;                                      /* current position in pool	*/
     rv = -1;
 
     if (!(p->mode & SF_SHARE) || (head->mode & SF_READ)
-        || (f->mode & SF_READ))
-    {
+        || (f->mode & SF_READ)) {
         if (SFSYNC(head) < 0)
             goto done;
-    }
-    else /* shared pool of write-streams, data can be moved among streams */
+    } else /* shared pool of write-streams, data can be moved among streams */
     {
         if (SFMODE(head, 1) != SF_WRITE && _sfmode(head, SF_WRITE, 1) < 0)
             goto done;
@@ -147,8 +141,7 @@ int n;                                      /* current position in pool	*/
                 v -= k;
             else /* write failed, recover buffer then quit */
             {
-                if (w > 0)
-                {
+                if (w > 0) {
                     v -= w;
                     memmove(head->data, (head->data + w), v);
                 }
@@ -197,8 +190,7 @@ int n;                                      /* position in pool	*/
     f->pool = NIL(Sfpool_t *);
     f->mode &= ~SF_POOL;
 
-    if (p->n_sf == 0 || p == &_Sfpool)
-    {
+    if (p->n_sf == 0 || p == &_Sfpool) {
         if (p != &_Sfpool)
             delpool(p);
         goto done;
@@ -208,8 +200,7 @@ int n;                                      /* position in pool	*/
     for (n = 0; n < p->n_sf; ++n)
         if (!SFFROZEN(p->sf[n]))
             break;
-    if (n < p->n_sf && n > 0)
-    {
+    if (n < p->n_sf && n > 0) {
         f = p->sf[n];
         p->sf[n] = p->sf[0];
         p->sf[0] = f;
@@ -222,8 +213,7 @@ int n;                                      /* position in pool	*/
         _SFOPEN(f);
 
     /* if only one stream left, delete pool */
-    if (p->n_sf == 1)
-    {
+    if (p->n_sf == 1) {
         _sfpdelete(p, f, 0);
         _sfsetpool(f);
     }
@@ -245,8 +235,7 @@ reg int type; /* <0 : deleting, 0: move-to-front, >0: inserting */
 
     if (type > 0)
         return _sfsetpool(f);
-    else
-    {
+    else {
         if (!(p = f->pool))
             return -1;
         for (n = p->n_sf - 1; n >= 0; --n)
@@ -287,19 +276,16 @@ reg int mode;
     if (f) /* check for permissions */
     {
         SFMTXLOCK(f);
-        if ((f->mode & SF_RDWR) != f->mode && _sfmode(f, 0, 0) < 0)
-        {
+        if ((f->mode & SF_RDWR) != f->mode && _sfmode(f, 0, 0) < 0) {
             SFMTXUNLOCK(f);
             return NIL(Sfio_t *);
         }
         if (f->disc == _Sfudisc)
             ( void )sfclose((*_Sfstack)(f, NIL(Sfio_t *)));
     }
-    if (pf)
-    {
+    if (pf) {
         SFMTXLOCK(pf);
-        if ((pf->mode & SF_RDWR) != pf->mode && _sfmode(pf, 0, 0) < 0)
-        {
+        if ((pf->mode & SF_RDWR) != pf->mode && _sfmode(pf, 0, 0) < 0) {
             if (f)
                 SFMTXUNLOCK(f);
             SFMTXUNLOCK(pf);
@@ -310,8 +296,7 @@ reg int mode;
     }
 
     /* f already in the same pool with pf */
-    if (f == pf || (pf && f->pool == pf->pool && f->pool != &_Sfpool))
-    {
+    if (f == pf || (pf && f->pool == pf->pool && f->pool != &_Sfpool)) {
         if (f)
             SFMTXUNLOCK(f);
         if (pf)
@@ -386,13 +371,11 @@ reg int mode;
     rv = pf;
 
 done:
-    if (f)
-    {
+    if (f) {
         SFOPEN(f, 0);
         SFMTXUNLOCK(f);
     }
-    if (pf)
-    {
+    if (pf) {
         SFOPEN(pf, 0);
         SFMTXUNLOCK(pf);
     }

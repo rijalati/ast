@@ -110,17 +110,14 @@ Tcl_AppInitProc *appInitProc; /* Application-specific initialization
      */
 
     fileName = NULL;
-    if (argc > 1)
-    {
+    if (argc > 1) {
         length = strlen(argv[1]);
-        if ((length >= 2) && (strncmp(argv[1], "-file", length) == 0))
-        {
+        if ((length >= 2) && (strncmp(argv[1], "-file", length) == 0)) {
             argc--;
             argv++;
         }
     }
-    if ((argc > 1) && (argv[1][0] != '-'))
-    {
+    if ((argc > 1) && (argv[1][0] != '-')) {
         fileName = argv[1];
         argc--;
         argv++;
@@ -166,11 +163,9 @@ Tcl_AppInitProc *appInitProc; /* Application-specific initialization
      * Invoke application-specific initialization.
      */
 
-    if ((*appInitProc)(interp) != TCL_OK)
-    {
+    if ((*appInitProc)(interp) != TCL_OK) {
         errChannel = Tcl_GetStdChannel(TCL_STDERR);
-        if (errChannel)
-        {
+        if (errChannel) {
             Tcl_Write(
             errChannel, "application-specific initialization failed: ", -1);
             Tcl_Write(errChannel, interp->result, -1);
@@ -182,17 +177,13 @@ Tcl_AppInitProc *appInitProc; /* Application-specific initialization
      * Invoke the script specified on the command line, if any.
      */
 
-    if (fileName != NULL)
-    {
+    if (fileName != NULL) {
         code = Tcl_EvalFile(interp, fileName);
-        if (code != TCL_OK)
-        {
+        if (code != TCL_OK) {
             goto error;
         }
         tty = 0;
-    }
-    else
-    {
+    } else {
 
         /*
          * Evaluate the .rc file, if one has been specified.
@@ -205,20 +196,17 @@ Tcl_AppInitProc *appInitProc; /* Application-specific initialization
          */
 
         inChannel = Tcl_GetStdChannel(TCL_STDIN);
-        if (inChannel)
-        {
+        if (inChannel) {
             Tcl_CreateChannelHandler(
             inChannel, TCL_READABLE, StdinProc, ( ClientData )inChannel);
         }
-        if (tty)
-        {
+        if (tty) {
             Prompt(interp, 0);
         }
     }
 
     outChannel = Tcl_GetStdChannel(TCL_STDOUT);
-    if (outChannel)
-    {
+    if (outChannel) {
         Tcl_Flush(outChannel);
     }
     Tcl_DStringInit(&command);
@@ -242,8 +230,7 @@ error:
 
     Tcl_AddErrorInfo(interp, "");
     errChannel = Tcl_GetStdChannel(TCL_STDERR);
-    if (errChannel)
-    {
+    if (errChannel) {
         Tcl_Write(
         errChannel, Tcl_GetVar(interp, "errorInfo", TCL_GLOBAL_ONLY), -1);
         Tcl_Write(errChannel, "\n", 1);
@@ -283,22 +270,15 @@ int mask;                                                      /* Not used. */
 
     count = Tcl_Gets(chan, &line);
 
-    if (count < 0)
-    {
-        if (!gotPartial)
-        {
-            if (tty)
-            {
+    if (count < 0) {
+        if (!gotPartial) {
+            if (tty) {
                 Tcl_Exit(0);
-            }
-            else
-            {
+            } else {
                 Tcl_DeleteChannelHandler(chan, StdinProc, ( ClientData )chan);
             }
             return;
-        }
-        else
-        {
+        } else {
             count = 0;
         }
     }
@@ -307,8 +287,7 @@ int mask;                                                      /* Not used. */
     cmd = Tcl_DStringAppend(&command, "\n", -1);
     Tcl_DStringFree(&line);
 
-    if (!Tcl_CommandComplete(cmd))
-    {
+    if (!Tcl_CommandComplete(cmd)) {
         gotPartial = 1;
         goto prompt;
     }
@@ -327,10 +306,8 @@ int mask;                                                      /* Not used. */
     Tcl_CreateChannelHandler(
     chan, TCL_READABLE, StdinProc, ( ClientData )chan);
     Tcl_DStringFree(&command);
-    if (*interp->result != 0)
-    {
-        if ((code != TCL_OK) || (tty))
-        {
+    if (*interp->result != 0) {
+        if ((code != TCL_OK) || (tty)) {
             /*
              * The statement below used to call "printf", but that resulted
              * in core dumps under Solaris 2.3 if the result was very long.
@@ -347,8 +324,7 @@ int mask;                                                      /* Not used. */
      */
 
 prompt:
-    if (tty)
-    {
+    if (tty) {
         Prompt(interp, gotPartial);
     }
     Tcl_ResetResult(interp);
@@ -386,11 +362,9 @@ int partial; /* Non-zero means there already
 
     promptCmd = Tcl_GetVar(
     interp, partial ? "tcl_prompt2" : "tcl_prompt1", TCL_GLOBAL_ONLY);
-    if (promptCmd == NULL)
-    {
+    if (promptCmd == NULL) {
     defaultPrompt:
-        if (!partial)
-        {
+        if (!partial) {
 
             /*
              * We must check that outChannel is a real channel - it
@@ -399,17 +373,13 @@ int partial; /* Non-zero means there already
              */
 
             outChannel = Tcl_GetChannel(interp, "stdout", NULL);
-            if (outChannel != ( Tcl_Channel )NULL)
-            {
+            if (outChannel != ( Tcl_Channel )NULL) {
                 Tcl_Write(outChannel, "% ", 2);
             }
         }
-    }
-    else
-    {
+    } else {
         code = Tcl_Eval(interp, promptCmd);
-        if (code != TCL_OK)
-        {
+        if (code != TCL_OK) {
             Tcl_AddErrorInfo(interp, "\n    (script that generates prompt)");
             /*
              * We must check that errChannel is a real channel - it
@@ -418,8 +388,7 @@ int partial; /* Non-zero means there already
              */
 
             errChannel = Tcl_GetChannel(interp, "stderr", NULL);
-            if (errChannel != ( Tcl_Channel )NULL)
-            {
+            if (errChannel != ( Tcl_Channel )NULL) {
                 Tcl_Write(errChannel, interp->result, -1);
                 Tcl_Write(errChannel, "\n", 1);
             }
@@ -427,8 +396,7 @@ int partial; /* Non-zero means there already
         }
     }
     outChannel = Tcl_GetChannel(interp, "stdout", NULL);
-    if (outChannel != ( Tcl_Channel )NULL)
-    {
+    if (outChannel != ( Tcl_Channel )NULL) {
         Tcl_Flush(outChannel);
     }
 }

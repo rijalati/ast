@@ -46,33 +46,25 @@ reg Rsobj_t *obj;
     obj->equal = NIL(Rsobj_t *);
     OBJHEAD(obj);
 
-    if (!(root = splay->root))
-    {
+    if (!(root = splay->root)) {
         obj->left = obj->right = NIL(Rsobj_t *);
         splay->root = obj;
         return 0;
     }
 
     OBJCMP(obj, root, cmp);
-    if (cmp == 0)
-    {
+    if (cmp == 0) {
         EQUAL(root, obj, t);
         return 0;
-    }
-    else if (cmp > 0)
-    {
-        if (!root->right)
-        {
+    } else if (cmp > 0) {
+        if (!root->right) {
             obj->left = root;
             obj->right = NIL(Rsobj_t *);
             splay->root = obj;
             return 0;
         }
-    }
-    else
-    {
-        if (!root->left)
-        {
+    } else {
+        if (!root->left) {
             obj->right = root;
             obj->left = NIL(Rsobj_t *);
             splay->root = obj;
@@ -80,66 +72,47 @@ reg Rsobj_t *obj;
         }
     }
 
-    for (l = r = &link;;)
-    {
-        if (cmp < 0)
-        {
-            if ((t = root->left))
-            {
+    for (l = r = &link;;) {
+        if (cmp < 0) {
+            if ((t = root->left)) {
                 OBJCMP(obj, t, cmp);
-                if (cmp < 0)
-                {
+                if (cmp < 0) {
                     RROTATE(root, t);
                     RLINK(r, root);
                     if (!(root = root->left))
                         goto no_root;
-                }
-                else if (cmp == 0)
-                {
+                } else if (cmp == 0) {
                     RROTATE(root, t);
                     goto has_root;
-                }
-                else
-                {
+                } else {
                     LLINK(l, t);
                     RLINK(r, root);
                     if (!(root = t->right))
                         goto no_root;
                 }
-            }
-            else
-            {
+            } else {
                 RLINK(r, root);
                 goto no_root;
             }
-        }
-        else /*if(cmp > 0)*/
+        } else /*if(cmp > 0)*/
         {
-            if ((t = root->right))
-            {
+            if ((t = root->right)) {
                 OBJCMP(obj, t, cmp);
-                if (cmp > 0)
-                {
+                if (cmp > 0) {
                     LROTATE(root, t);
                     LLINK(l, root);
                     if (!(root = root->right))
                         goto no_root;
-                }
-                else if (cmp == 0)
-                {
+                } else if (cmp == 0) {
                     LROTATE(root, t);
                     goto has_root;
-                }
-                else
-                {
+                } else {
                     RLINK(r, t);
                     LLINK(l, root);
                     if (!(root = t->left))
                         goto no_root;
                 }
-            }
-            else
-            {
+            } else {
                 LLINK(l, root);
                 goto no_root;
             }
@@ -184,15 +157,11 @@ static Rsobj_t *flatten(r) reg Rsobj_t *r;
         RROTATE(r, t);
 
     /* flatten tree */
-    for (list = p = r, r = r->right;; p = r, r = r->right)
-    {
-        if (!r)
-        {
+    for (list = p = r, r = r->right;; p = r, r = r->right) {
+        if (!r) {
             list->left = p;
             return list;
-        }
-        else if ((t = r->left))
-        {
+        } else if ((t = r->left)) {
             do
                 RROTATE(r, t);
             while ((t = r->left));

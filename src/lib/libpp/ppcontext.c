@@ -39,14 +39,11 @@ ppcontext(void *context, int flags)
     struct ppcontext *np = ( struct ppcontext * )context;
     struct ppcontext *op;
 
-    if (flags & 01)
-    {
+    if (flags & 01) {
         if (!(op = pp.context))
             op = pp.context = newof(0, struct ppcontext, 1, 0);
         memcpy(op, _PP_CONTEXT_BASE_, sizeof(struct ppcontext));
-    }
-    else
-    {
+    } else {
         if (!(op = np))
             op = ( struct ppcontext * )_PP_CONTEXT_BASE_;
         if (op->filtab)
@@ -59,8 +56,7 @@ ppcontext(void *context, int flags)
             free(op->date);
         if (op->time)
             free(op->time);
-        if (np)
-        {
+        if (np) {
             free(np);
             np = 0;
         }

@@ -57,8 +57,7 @@ pathinclude(const char *dir)
     Dir_t *dp;
     struct stat st;
 
-    if (dir && *dir && !streq(dir, ".") && directory(dir, &st))
-    {
+    if (dir && *dir && !streq(dir, ".") && directory(dir, &st)) {
         for (dp = state.head; dp; dp = dp->next)
             if (streq(dir, dp->dir))
                 return 0;
@@ -101,17 +100,14 @@ pathfind(const char *name,
 
     if (type && !*type
         || ((s = strrchr(name, '/')) || (s = ( char * )name))
-           && strchr(s, '.'))
-    {
-        if (regular(name, &st))
-        {
+           && strchr(s, '.')) {
+        if (regular(name, &st)) {
             strncopy(buf, name, size);
             return buf;
         }
         type = 0;
     }
-    if (type)
-    {
+    if (type) {
         sfsprintf(buf, size, "%s.%s", name, type);
         if (regular(buf, &st))
             return buf;
@@ -124,14 +120,12 @@ pathfind(const char *name,
      * on the assumption that error_info.file is properly stacked
      */
 
-    if (error_info.file && (s = strrchr(error_info.file, '/')))
-    {
+    if (error_info.file && (s = strrchr(error_info.file, '/'))) {
         sfsprintf(
         buf, size, "%-.*s%s", s - error_info.file + 1, error_info.file, name);
         if (regular(buf, &st))
             return buf;
-        if (type)
-        {
+        if (type) {
             sfsprintf(buf,
                       size,
                       "%-.*s%s%.s",
@@ -148,13 +142,11 @@ pathfind(const char *name,
      * check the include dir list
      */
 
-    for (dp = state.head; dp; dp = dp->next)
-    {
+    for (dp = state.head; dp; dp = dp->next) {
         sfsprintf(tmp, sizeof(tmp), "%s/%s", dp->dir, name);
         if (pathpath(tmp, "", PATH_REGULAR, buf, size))
             return buf;
-        if (type)
-        {
+        if (type) {
             sfsprintf(tmp, sizeof(tmp), "%s/%s.%s", dp->dir, name, type);
             if (pathpath(tmp, "", PATH_REGULAR, buf, size))
                 return buf;
@@ -165,15 +157,13 @@ pathfind(const char *name,
      * finally a lib related search on PATH
      */
 
-    if (lib)
-    {
+    if (lib) {
         if (s = strrchr(( char * )lib, ':'))
             lib = ( const char * )s + 1;
         sfsprintf(tmp, sizeof(tmp), "lib/%s/%s", lib, name);
         if (pathpath(tmp, "", PATH_REGULAR, buf, size))
             return buf;
-        if (type)
-        {
+        if (type) {
             sfsprintf(tmp, sizeof(tmp), "lib/%s/%s.%s", lib, name, type);
             if (pathpath(tmp, "", PATH_REGULAR, buf, size))
                 return buf;

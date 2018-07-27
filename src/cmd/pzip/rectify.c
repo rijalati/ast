@@ -164,28 +164,22 @@ rectify(Sfio_t *fp, char *file, int verbose)
         state.mod[i].index = i;
     max = 0;
     offset = 0;
-    while (s = sfreserve(fp, SF_UNBOUND, 0))
-    {
+    while (s = sfreserve(fp, SF_UNBOUND, 0)) {
         n = sfvalue(fp);
-        for (i = 0; i < n; i++)
-        {
+        for (i = 0; i < n; i++) {
             cur = offset + i;
             q = state.hit + s[i];
             dif = cur - *q;
             *q = cur;
-            if (dif < elementsof(state.mod))
-            {
+            if (dif < elementsof(state.mod)) {
                 p = state.mod + dif;
                 if (dif > max)
                     max = dif;
                 p->count++;
-                if ((cur - p->offset) <= dif)
-                {
+                if ((cur - p->offset) <= dif) {
                     if (!p->run++)
                         p->start = cur;
-                }
-                else if (p->run)
-                {
+                } else if (p->run) {
                     if (state.run && p->run >= state.run
                         && p->index >= state.min)
                         sfprintf(sfstdout,
@@ -203,8 +197,7 @@ rectify(Sfio_t *fp, char *file, int verbose)
     qsort(state.mod, elementsof(state.mod), sizeof(state.mod[0]), bycount);
     n = 0;
     for (i = 0; i < elementsof(state.mod) && n < state.count; i++)
-        if (state.mod[i].index >= state.min)
-        {
+        if (state.mod[i].index >= state.min) {
             n++;
             sfprintf(sfstdout,
                      "rec %7lu %7lu %7lu\n",
@@ -225,8 +218,7 @@ dump(Sfio_t *op, unsigned char *b, size_t n)
     unsigned char *x;
 
     x = state.group ? (b + n) : b;
-    while (b < e)
-    {
+    while (b < e) {
         sfprintf(op, state.format4, b[0], b[1], b[2], b[3]);
         if ((b += 4) < x)
             sfputc(op, ' ');
@@ -282,8 +274,7 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
     error_info.line = 0;
     offset = 0;
     nest = -1;
-    while (s = sfgetr(dp, '\n', 0))
-    {
+    while (s = sfgetr(dp, '\n', 0)) {
         error_info.line++;
         for (t = s + sfvalue(dp) - 1; *s == ' ' || *s == '\t'; s++)
             ;
@@ -291,8 +282,7 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
             ;
         for (; *s == ' ' || *s == '\t'; s++)
             ;
-        switch (op)
-        {
+        switch (op) {
         case '#':
         case '\n':
             break;
@@ -348,8 +338,7 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
             break;
         case 'd':
             size = number(&s);
-            if (offset >= state.offset)
-            {
+            if (offset >= state.offset) {
                 if (verbose)
                     sfprintf(sfstdout,
                              "=== %I*d === %ld === %-.*s\n",
@@ -366,8 +355,7 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
                           sizeof(offset),
                           offset);
                 dump(sfstdout, p, size);
-            }
-            else if (sfseek(fp, ( Sfoff_t )size, SEEK_CUR) < 0)
+            } else if (sfseek(fp, ( Sfoff_t )size, SEEK_CUR) < 0)
                 error(ERROR_SYSTEM | 3,
                       "%s: cannot seek %ld bytes at %I*d",
                       file,
@@ -398,11 +386,9 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
         case 'r':
             size = number(&s);
             count = number(&s);
-            if (offset < state.offset)
-            {
+            if (offset < state.offset) {
                 skip = count * size;
-                if ((offset + skip) > state.offset)
-                {
+                if ((offset + skip) > state.offset) {
                     skip = (state.offset - offset) / size;
                     count -= skip;
                     skip *= size;
@@ -417,8 +403,7 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
                     offset += skip;
                 }
             }
-            if (offset >= state.offset)
-            {
+            if (offset >= state.offset) {
                 if (verbose)
                     sfprintf(sfstdout,
                              "=== %I*d === %ld * %ld === %-.*s\n",
@@ -428,12 +413,10 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
                              count,
                              t - s,
                              s);
-                if (state.context && count > (3 * state.context))
-                {
+                if (state.context && count > (3 * state.context)) {
                     skip = (count - 2 * state.context) * size;
                     count = state.context;
-                    while (count-- > 0)
-                    {
+                    while (count-- > 0) {
                         if (!(p = sfreserve(fp, size, 0)))
                             error(ERROR_SYSTEM | 3,
                                   "cannot read %ld bytes at %I*d",
@@ -455,8 +438,7 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
                     offset += skip;
                     count = state.context;
                 }
-                while (count-- > 0)
-                {
+                while (count-- > 0) {
                     if (!(p = sfreserve(fp, size, 0)))
                         error(ERROR_SYSTEM | 3,
                               "cannot read %ld bytes at %I*d",
@@ -466,9 +448,7 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
                     offset += size;
                     dump(sfstdout, p, size);
                 }
-            }
-            else
-            {
+            } else {
                 skip = count * size;
                 if (sfseek(fp, skip, SEEK_CUR) < 0)
                     error(ERROR_SYSTEM | 3,
@@ -486,12 +466,10 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
                 error(3, "no sized record types defined");
             context = 0;
             count = number(&s);
-            do
-            {
+            do {
                 if (!(p = sfreserve(fp, state.typelen, SF_LOCKR)))
                     break;
-                switch (state.typelen)
-                {
+                switch (state.typelen) {
                 case 4:
                     id[4] = (p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
                 case 3:
@@ -503,16 +481,14 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
                 }
                 sfread(fp, p, 0);
                 if (state.type[state.typelast].id
-                    != id[state.type[state.typelast].len])
-                {
+                    != id[state.type[state.typelast].len]) {
                     for (state.typelast = 0;
                          state.typelast < state.types
                          && state.type[state.typelast].id
                             != id[state.type[state.typelast].len];
                          state.typelast++)
                         ;
-                    if (state.typelast >= state.types)
-                    {
+                    if (state.typelast >= state.types) {
                         if (verbose)
                             sfprintf(sfstdout,
                                      "=== %I*d === %0*x === type not found\n",
@@ -541,8 +517,7 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
                           size,
                           sizeof(offset),
                           offset);
-                if (state.type[state.typelast].unit)
-                {
+                if (state.type[state.typelast].unit) {
                     size += p[state.type[state.typelast].offset]
                             * state.type[state.typelast].unit;
                     sfread(fp, p, 0);
@@ -553,8 +528,7 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
                               sizeof(offset),
                               offset);
                 }
-                if (offset >= state.offset)
-                {
+                if (offset >= state.offset) {
                     if (!state.context)
                         dump(sfstdout, p, size);
                     else if (context++ < state.context)
@@ -577,8 +551,7 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
             e = p + size;
             while (p < e)
                 count = (count << 8) | *p++;
-            if (offset >= state.offset)
-            {
+            if (offset >= state.offset) {
                 if (verbose)
                     sfprintf(sfstdout,
                              "=== %I*d === %ld === %-.*s\n",
@@ -596,9 +569,7 @@ describe(Sfio_t *dp, char *desc, Sfio_t *fp, char *file, int verbose)
                           offset);
                 sfprintf(
                 sfstdout, "\"%s\"\n", fmtnesq(( char * )p, "\"", count));
-            }
-            else
-            {
+            } else {
                 offset += 2;
                 if (sfseek(fp, ( Sfoff_t )count, SEEK_CUR) < 0)
                     error(ERROR_SYSTEM | 3,
@@ -659,10 +630,8 @@ main(int argc, char **argv)
     state.group = 1;
     state.min = 8;
     state.run = 0;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'c':
             state.context = opt_info.num;
             continue;
@@ -716,8 +685,7 @@ main(int argc, char **argv)
         error(ERROR_SYSTEM | 3, "%s: cannot open description file", desc);
     if (file = *argv)
         argv++;
-    do
-    {
+    do {
         if (!file || streq(file, "-"))
             fp = sfstdin;
         else if (!(fp = sfopen(NiL, file, "r")))

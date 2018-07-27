@@ -90,12 +90,9 @@ bangexp(char *str, size_t size)
     s = str;
     t = buf;
     e = t + sizeof(buf) - 1;
-    while (*s)
-    {
-        if (*s == '!' && state.var.bang)
-        {
-            if ((e - t) < strlen(state.last.bang))
-            {
+    while (*s) {
+        if (*s == '!' && state.var.bang) {
+            if ((e - t) < strlen(state.last.bang)) {
             overf:
                 note(0, "Command buffer overflow");
                 return -1;
@@ -105,8 +102,7 @@ bangexp(char *str, size_t size)
             s++;
             continue;
         }
-        if (*s == '\\' && s[1] == '!')
-        {
+        if (*s == '\\' && s[1] == '!') {
             if (t >= e)
                 goto overf;
             *t++ = '!';
@@ -165,33 +161,26 @@ margin(FILE *fp,
     int q;
     const char *av[8];
 
-    if (sep)
-    {
+    if (sep) {
         fprintf(fp, "%*s", n = indent, name);
-        for (c = 0; c < sep; c++)
-        {
+        for (c = 0; c < sep; c++) {
             putc(' ', fp);
             n++;
         }
-    }
-    else
-    {
+    } else {
         fprintf(fp, "%s ", name);
         n = strlen(name) + 1;
     }
     ap = av;
     *ap++ = T(s);
-    if (vp && (s = vp->initialize))
-    {
+    if (vp && (s = vp->initialize)) {
         *ap++ = " ";
-        if (*s)
-        {
+        if (*s) {
             *ap++ = T("The default value is");
             *ap++ = " \"";
             *ap++ = s;
             *ap++ = "\".";
-        }
-        else if (vp->set)
+        } else if (vp->set)
             *ap++ = T("The default value is computed at runtime.");
         else
             *ap++ = T("On by default.");
@@ -200,38 +189,27 @@ margin(FILE *fp,
     ap = av;
     q = 0;
     while (s = *ap++)
-        while (c = *s++)
-        {
+        while (c = *s++) {
             if (c == '\n'
-                || (isspace(c) || q && !isalnum(c)) && n >= (MARGIN - 4))
-            {
+                || (isspace(c) || q && !isalnum(c)) && n >= (MARGIN - 4)) {
                 if (!isspace(c))
                     putchar(c);
                 fprintf(fp, "\n%*s", n = indent, " ");
-                for (c = 0; c < sep; c++)
-                {
+                for (c = 0; c < sep; c++) {
                     putc(' ', fp);
                     n++;
                 }
-            }
-            else if (c == '\t')
-            {
-                if (tab)
-                {
-                    while (n < tab)
-                    {
+            } else if (c == '\t') {
+                if (tab) {
+                    while (n < tab) {
                         putc(' ', fp);
                         n++;
                     }
-                }
-                else
-                    do
-                    {
+                } else
+                    do {
                         putc(' ', fp);
                     } while (++n % 4);
-            }
-            else
-            {
+            } else {
                 if (c == q)
                     q = 0;
                 else if (c == '"')
@@ -274,12 +252,10 @@ helpvar(FILE *fp, const struct var *vp)
 {
     char *help;
 
-    if (vp->flags & A)
-    {
+    if (vp->flags & A) {
         sfprintf(state.path.temp, T("Equivalent to %s."), vp->help);
         help = struse(state.path.temp);
-    }
-    else
+    } else
         help = ( char * )vp->help;
     margin(fp, vp->name, help, 14, 2, 0, vp);
 }
@@ -312,49 +288,40 @@ help(char **argv)
     r = "--------";
     all = isall(s);
     cat = 0;
-    if (all || !s || (streq(s, l) || streq(s, t)) && ++cat)
-    {
+    if (all || !s || (streq(s, l) || streq(s, t)) && ++cat) {
         fprintf(fp, "%s\n%s\n%s\n", r, t, r);
         for (cp = state.cmdtab; cp < &state.cmdtab[state.cmdnum]; cp++)
             helpcmd(fp, cp);
     }
-    if (all || s)
-    {
+    if (all || s) {
         l = "variables";
         t = T(l);
         r = "---------";
         if (all && !(cp = 0)
             || (cp = ( const struct cmd * )strpsearch(
                 state.cmdtab, state.cmdnum, sizeof(struct cmd), s, NiL))
-            || (streq(s, l) || streq(s, t)) && ++cat)
-        {
-            if (!cp || a && cp->c_func == ( Cmd_f )set)
-            {
-                if (!cp && !cat || !a || isall(a))
-                {
+            || (streq(s, l) || streq(s, t)) && ++cat) {
+            if (!cp || a && cp->c_func == ( Cmd_f )set) {
+                if (!cp && !cat || !a || isall(a)) {
                     fprintf(fp, "%s\n%s\n%s\n", r, t, r);
                     for (vp = state.vartab; vp < &state.vartab[state.varnum];
                          vp++)
                         helpvar(fp, vp);
-                }
-                else if (vp
-                         = ( const struct var * )strsearch(state.vartab,
-                                                           state.varnum,
-                                                           sizeof(struct var),
-                                                           stracmp,
-                                                           a,
-                                                           NiL))
+                } else if (vp = ( const struct var * )strsearch(
+                           state.vartab,
+                           state.varnum,
+                           sizeof(struct var),
+                           stracmp,
+                           a,
+                           NiL))
                     helpvar(fp, vp);
                 else
                     note(0, "\"%s\": unknown variable", a);
-            }
-            else
+            } else
                 helpcmd(fp, cp);
         }
-        if (!cp)
-        {
-            if (s && (*s == '~' || *s == *state.var.escape))
-            {
+        if (!cp) {
+            if (s && (*s == '~' || *s == *state.var.escape)) {
                 if (*++s)
                     a = s;
                 s = state.var.escape;
@@ -363,27 +330,24 @@ help(char **argv)
             t = T(l);
             r = "---------------";
             if (all || *s == *state.var.escape
-                || (streq(s, t) || streq(s, l) || streq(s, "tilde")) && ++cat)
-            {
-                if (!a)
-                {
+                || (streq(s, t) || streq(s, l) || streq(s, "tilde"))
+                   && ++cat) {
+                if (!a) {
                     fprintf(fp, "%s\n%s %s\n%s\n", r, t, T("commands"), r);
                     for (ep = state.esctab; ep < &state.esctab[state.escnum];
                          ep++)
                         helpesc(fp, ep);
-                }
-                else if (ep
-                         = ( const struct esc * )strsearch(state.esctab,
-                                                           state.escnum,
-                                                           sizeof(struct esc),
-                                                           stracmp,
-                                                           a,
-                                                           NiL))
+                } else if (ep = ( const struct esc * )strsearch(
+                           state.esctab,
+                           state.escnum,
+                           sizeof(struct esc),
+                           stracmp,
+                           a,
+                           NiL))
                     helpesc(fp, ep);
                 else
                     note(0, "\"%s\": unknown escape command", a);
-            }
-            else if (!cat)
+            } else if (!cat)
                 note(0, "\"%s\": unknown command", s);
         }
     }
@@ -405,17 +369,14 @@ cd(char **arglist)
         cp = state.var.home;
     else if (!(cp = expand(*arglist, 1)))
         return 1;
-    if (cp[0] == '-' && cp[1] == 0)
-    {
-        if (!(cp = state.var.oldpwd))
-        {
+    if (cp[0] == '-' && cp[1] == 0) {
+        if (!(cp = state.var.oldpwd)) {
             note(0, "No previous working directory");
             return 1;
         }
         show = 1;
     }
-    if (chdir(cp) < 0)
-    {
+    if (chdir(cp) < 0) {
 #if _PACKAGE_ast
         if (state.var.cdpath
             && (cp[0] != '.'
@@ -426,16 +387,13 @@ cd(char **arglist)
                           NiL,
                           0,
                           state.path.path,
-                          sizeof(state.path.path)))
-        {
+                          sizeof(state.path.path))) {
             cp = state.path.path;
             show = 1;
-        }
-        else
+        } else
 #endif
             show = -1;
-        if (show < 0 || chdir(cp) < 0)
-        {
+        if (show < 0 || chdir(cp) < 0) {
             note(SYSTEM, "%s", cp);
             return 1;
         }
@@ -473,8 +431,7 @@ cmdmkdir(char **arglist)
         return 1;
     if (*cp == '@')
         imap_mkdir(cp);
-    else if (mkdir(cp, MAILMODE | S_IXUSR))
-    {
+    else if (mkdir(cp, MAILMODE | S_IXUSR)) {
         note(SYSTEM, "%s", cp);
         return 1;
     }
@@ -495,8 +452,7 @@ cmdrename(char **arglist)
         return 1;
     if (*f == '@')
         imap_rename(f, t);
-    else if (rename(f, t))
-    {
+    else if (rename(f, t)) {
         note(SYSTEM, "%s: cannot rename to %s", f, t);
         return 1;
     }
@@ -516,8 +472,7 @@ cmdrmdir(char **arglist)
         return 1;
     if (*cp == '@')
         imap_rmdir(cp);
-    else if (rmdir(cp))
-    {
+    else if (rmdir(cp)) {
         note(SYSTEM, "%s", cp);
         return 1;
     }
@@ -562,10 +517,8 @@ reply1(struct msg *msgvec, unsigned long flags, int all)
     struct header head;
 
     memset(&head, 0, sizeof(head));
-    if (all)
-    {
-        if (msgvec->m_index && (msgvec + 1)->m_index)
-        {
+    if (all) {
+        if (msgvec->m_index && (msgvec + 1)->m_index) {
             note(0, "Sorry, can't reply to multiple messages at once");
             return 1;
         }
@@ -578,11 +531,8 @@ reply1(struct msg *msgvec, unsigned long flags, int all)
         if (cp = grab(mp, GCC, NiL))
             extract(&head, GCC, cp);
         extract(&head, GTO | GFIRST | GMETOO, rp);
-    }
-    else
-    {
-        for (ip = msgvec; ip->m_index; ip++)
-        {
+    } else {
+        for (ip = msgvec; ip->m_index; ip++) {
             mp = state.msg.list + ip->m_index - 1;
             touchmsg(mp);
             state.msg.dot = mp;
@@ -595,8 +545,7 @@ reply1(struct msg *msgvec, unsigned long flags, int all)
     if (head.h_subject = grab(mp, GSUB, NiL))
         head.h_flags |= GSUB;
     head.h_subject = reedit(head.h_subject);
-    if (flags & (FOLLOWUP | INTERPOLATE))
-    {
+    if (flags & (FOLLOWUP | INTERPOLATE)) {
         if (head.h_messageid = grab(mp, GMESSAGEID, NiL))
             head.h_flags |= GMESSAGEID;
         if (head.h_references = grab(mp, GREFERENCES, NiL))
@@ -663,8 +612,7 @@ size(struct msg *msgvec)
     struct msg *mp;
     struct msg *ip;
 
-    for (ip = msgvec; ip->m_index; ip++)
-    {
+    for (ip = msgvec; ip->m_index; ip++) {
         mp = state.msg.list + ip->m_index - 1;
         note(0,
              "%d: %ld/%ld",
@@ -682,8 +630,7 @@ size(struct msg *msgvec)
 int
 cmdexit(int e)
 {
-    if (!state.sourcing)
-    {
+    if (!state.sourcing) {
         if (state.msg.imap.state)
             imap_exit(e);
         exit(e);
@@ -707,30 +654,24 @@ set(char **argv)
     if (!*argv || (all = isall(*argv) && !*(argv + 1)))
         errs += varlist(all);
     else
-        while (cp = *argv++)
-        {
+        while (cp = *argv++) {
             np = cp;
-            for (;;)
-            {
-                if (*cp == '=')
-                {
+            for (;;) {
+                if (*cp == '=') {
                     ep = cp;
                     *cp++ = 0;
                     break;
                 }
-                if (!*cp++)
-                {
+                if (!*cp++) {
                     ep = 0;
                     cp = state.on;
                     break;
                 }
             }
-            if (!*np)
-            {
+            if (!*np) {
                 note(0, "Non-null variable name required");
                 errs++;
-            }
-            else
+            } else
                 errs += varset(np, cp);
             if (ep)
                 *ep = '=';
@@ -789,45 +730,35 @@ alias1(char **argv, unsigned long flags)
 
     if (!(name = *argv++))
         dictwalk(&state.aliases, listalias, NiL);
-    else if (!*argv)
-    {
+    else if (!*argv) {
         if (!(ap = dictsearch(&state.aliases, name, LOOKUP | IGNORECASE)))
             note(0, "\"%s\": unknown alias", name);
         else
             listalias(NiL, ap, NiL);
-    }
-    else if (streq(name, "<"))
-    {
+    } else if (streq(name, "<")) {
         /*
          * sendmail alias file parse
          */
-        while (name = *argv++)
-        {
-            if (fp = fileopen(name, "EXr"))
-            {
-                while (s = fgets(buf, sizeof(buf), fp))
-                {
+        while (name = *argv++) {
+            if (fp = fileopen(name, "EXr")) {
+                while (s = fgets(buf, sizeof(buf), fp)) {
                     for (; isspace(*s); s++)
                         ;
-                    if (*s != '#')
-                    {
+                    if (*s != '#') {
                         for (t = s; *t && *t != ':' && !isspace(*t); t++)
                             ;
-                        if (*t)
-                        {
+                        if (*t) {
                             *t++ = 0;
                             while (*t == ':' || isspace(*t))
                                 t++;
                             ap = dictsearch(
                             &state.aliases, s, INSERT | IGNORECASE);
                             ap->flags |= flags;
-                            do
-                            {
+                            do {
                                 for (v = t; *v && *v != ',' && !isspace(*v);
                                      v++)
                                     ;
-                                if (*v)
-                                {
+                                if (*v) {
                                     *v++ = 0;
                                     while (*v == ',' || isspace(*v))
                                         v++;
@@ -845,16 +776,13 @@ alias1(char **argv, unsigned long flags)
                 fileclose(fp);
             }
         }
-    }
-    else
-    {
+    } else {
         /*
          * Insert names from the command list into the alias group.
          */
         ap = dictsearch(&state.aliases, name, INSERT | IGNORECASE);
         ap->flags |= flags;
-        while (name = *argv++)
-        {
+        while (name = *argv++) {
             if (!(mp = newof(0, struct list, 1, strlen(name) + 1)))
                 note(PANIC, "Out of space");
             strcpy(mp->name, name);
@@ -910,12 +838,10 @@ alternates(char **argv)
 
     if (!*argv)
         dictwalk(&state.aliases, listalternate, NiL);
-    else
-    {
+    else {
         av[1] = state.var.user;
         av[2] = 0;
-        while (s = *argv++)
-        {
+        while (s = *argv++) {
             av[0] = s;
             alias1(av, GALTERNATE);
         }
@@ -941,8 +867,7 @@ null(int e)
 int
 folder(char **argv)
 {
-    if (!argv[0])
-    {
+    if (!argv[0]) {
         folderinfo(0);
         return 0;
     }
@@ -962,10 +887,8 @@ echo(char **argv)
     int sep;
 
     sep = 0;
-    while (s = *argv++)
-    {
-        if (s = expand(s, 0))
-        {
+    while (s = *argv++) {
+        if (s = expand(s, 0)) {
             if (sep++)
                 putchar(' ');
             printf("%s", s);
@@ -987,25 +910,20 @@ cmdif(char **argv)
     char *x;
     int n;
 
-    if (state.cond)
-    {
+    if (state.cond) {
         note(0, "Invalid nested \"%s\"", state.cmd->c_name);
         return 1;
     }
     s = argv[0];
     t = (x = argv[1]) ? argv[2] : ( char * )0;
-    if (n = streq(s, "!"))
-    {
+    if (n = streq(s, "!")) {
         s = x;
         x = t;
         t = 0;
-    }
-    else if (n = *s == '!')
+    } else if (n = *s == '!')
         s++;
-    if (*s && (!*(s + 1) || *(s + 1) == '?') && !x && *(x = s + 2))
-    {
-        switch (*s)
-        {
+    if (*s && (!*(s + 1) || *(s + 1) == '?') && !x && *(x = s + 2)) {
+        switch (*s) {
         case 'd':
             if (!x || t)
                 goto bad;
@@ -1034,12 +952,10 @@ cmdif(char **argv)
         n ^= varget(s) != 0;
     else if (!t || n)
         goto bad;
-    else
-    {
+    else {
         if (n = *x == '!')
             x++;
-        switch (*x)
-        {
+        switch (*x) {
         case '=':
             if (*++x == '=')
                 x++;
@@ -1049,8 +965,7 @@ cmdif(char **argv)
             n = -1;
             break;
         }
-        if (n < 0 || *x)
-        {
+        if (n < 0 || *x) {
             note(0,
                  "\"%s\": unknown %s condition operator",
                  argv[1],
@@ -1063,8 +978,7 @@ ok:
     return 0;
 bad:
     sfprintf(state.path.temp, "%s", s);
-    if (x)
-    {
+    if (x) {
         sfprintf(state.path.temp, " %s", x);
         if (t)
             sfprintf(state.path.temp, " %s", t);
@@ -1083,8 +997,7 @@ bad:
 int
 cmdelse(void)
 {
-    if (!state.cond)
-    {
+    if (!state.cond) {
         note(0, "\"%s\" without matching \"if\"", state.cmd->c_name);
         return 1;
     }
@@ -1099,8 +1012,7 @@ int
 cmdendif(void)
 {
 
-    if (!state.cond)
-    {
+    if (!state.cond) {
         note(0, "\"%s\" without matching \"if\"", state.cmd->c_name);
         return 1;
     }

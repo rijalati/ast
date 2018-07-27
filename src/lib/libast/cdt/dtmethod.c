@@ -74,8 +74,7 @@ Dtmethod_t *meth;
         dt->data = newdt;
         dtrestore(dt, list);
         return oldmt;
-    }
-    else /* switch failed, restore dictionary to previous states */
+    } else /* switch failed, restore dictionary to previous states */
     {
         dtrestore(dt, list);
         return NIL(Dtmethod_t *);
@@ -91,8 +90,7 @@ dtcustomize(Dt_t *dt, int type, int action)
     if ((type & DT_SHARE)
         && (!dt->meth->eventf
             || (*dt->meth->eventf)(dt, DT_SHARE, ( Void_t * )(( long )action))
-               >= 0))
-    {
+               >= 0)) {
         if (action <= 0)
             dt->data->type &= ~DT_SHARE;
         else
@@ -104,8 +102,7 @@ dtcustomize(Dt_t *dt, int type, int action)
         && (!dt->meth->eventf
             || (*dt->meth->eventf)(
                dt, DT_ANNOUNCE, ( Void_t * )(( long )action))
-               >= 0))
-    {
+               >= 0)) {
         if (action <= 0)
             dt->data->type &= ~DT_ANNOUNCE;
         else

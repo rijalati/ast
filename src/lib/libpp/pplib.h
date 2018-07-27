@@ -422,8 +422,7 @@ struct pathid /* physical file name and id	*/
 
 #    if DEBUG & TRACE_message
 #        define message(x)                                                   \
-            do                                                               \
-            {                                                                \
+            do {                                                             \
                 if (tracing)                                                 \
                     error x;                                                 \
             } while (0)
@@ -433,8 +432,7 @@ struct pathid /* physical file name and id	*/
 
 #    if DEBUG & TRACE_debug
 #        define debug(x)                                                     \
-            do                                                               \
-            {                                                                \
+            do {                                                             \
                 if (tracing)                                                 \
                     error x;                                                 \
             } while (0)
@@ -448,8 +446,7 @@ struct pathid /* physical file name and id	*/
 
 #    define MEMCPY(to, fr, n)                                                \
         do                                                                   \
-            switch (n)                                                       \
-            {                                                                \
+            switch (n) {                                                     \
             default:                                                         \
                 memcpy(to, fr, n);                                           \
                 to += n;                                                     \
@@ -490,8 +487,7 @@ struct pathid /* physical file name and id	*/
 #    define popframe(m) (m = m->prev)
 #    define pptokchr(c) pptokstr(NiL, (c))
 #    define pushcontrol()                                                    \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             if (pp.control++ >= pp.maxcon)                                   \
                 ppnest();                                                    \
         } while (0)
@@ -519,23 +515,20 @@ struct pathid /* physical file name and id	*/
 #    define ARGOFFSET '1' /* macro arg mark offset	*/
 
 #    define STRAPP(p, v, r)                                                  \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             r = (v);                                                         \
             while ((*p++) = (*r++))                                          \
                 ;                                                            \
         } while (0)
 #    define STRCOPY(p, v, r)                                                 \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             r = (v);                                                         \
             while ((*p++) = (*r++))                                          \
                 ;                                                            \
             p--;                                                             \
         } while (0)
 #    define STRCOPY2(p, r)                                                   \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             while ((*p++) = (*r++))                                          \
                 ;                                                            \
             p--;                                                             \
@@ -624,11 +617,9 @@ struct pathid /* physical file name and id	*/
          & ((1L << (sizeof(long) * CHAR_BIT - BLOCKBITS)) - 1))
 
 #    define PUSH(t, p)                                                       \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             count(push);                                                     \
-            if (!pp.in->next)                                                \
-            {                                                                \
+            if (!pp.in->next) {                                              \
                 pp.in->next = newof(0, struct ppinstk, 1, 0);                \
                 pp.in->next->prev = pp.in;                                   \
             }                                                                \
@@ -640,8 +631,7 @@ struct pathid /* physical file name and id	*/
 #    define PUSH_BUFFER(f, p, n) pppush(IN_BUFFER, f, p, n)
 
 #    define PUSH_COPY(p, n)                                                  \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             struct ppinstk *cur;                                             \
             PUSH(IN_COPY, cur);                                              \
             cur->line = error_info.line;                                     \
@@ -655,8 +645,7 @@ struct pathid /* physical file name and id	*/
         } while (0)
 
 #    define PUSH_EXPAND(p, n)                                                \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             struct ppinstk *cur;                                             \
             PUSH(IN_EXPAND, cur);                                            \
             cur->line = error_info.line;                                     \
@@ -676,8 +665,7 @@ struct pathid /* physical file name and id	*/
 #    define PUSH_INIT(f, p) pppush(IN_INIT, f, p, 1)
 
 #    define PUSH_MACRO(p)                                                    \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             struct ppinstk *cur;                                             \
             PUSH(IN_MACRO, cur);                                             \
             cur->symbol = p;                                                 \
@@ -693,8 +681,7 @@ struct pathid /* physical file name and id	*/
         } while (0)
 
 #    define PUSH_TUPLE(p, v)                                                 \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             struct ppinstk *cur;                                             \
             PUSH(IN_MACRO, cur);                                             \
             cur->symbol = p;                                                 \
@@ -708,8 +695,7 @@ struct pathid /* physical file name and id	*/
         } while (0)
 
 #    define PUSH_MULTILINE(p)                                                \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             struct ppinstk *cur;                                             \
             int n;                                                           \
             PUSH(IN_MULTILINE, cur);                                         \
@@ -741,8 +727,7 @@ struct pathid /* physical file name and id	*/
         } while (0)
 
 #    define PUSH_QUOTE(p, n)                                                 \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             struct ppinstk *cur;                                             \
             PUSH(IN_QUOTE, cur);                                             \
             cur->nextchr = p;                                                \
@@ -758,8 +743,7 @@ struct pathid /* physical file name and id	*/
 #    define PUSH_RESCAN(p) pppush(IN_RESCAN, NiL, p, 0)
 
 #    define PUSH_SQUOTE(p, n)                                                \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             struct ppinstk *cur;                                             \
             PUSH(IN_SQUOTE, cur);                                            \
             cur->nextchr = p;                                                \
@@ -773,8 +757,7 @@ struct pathid /* physical file name and id	*/
         } while (0)
 
 #    define PUSH_STRING(p)                                                   \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             struct ppinstk *cur;                                             \
             PUSH(IN_STRING, cur);                                            \
             cur->nextchr = p;                                                \
@@ -787,8 +770,7 @@ struct pathid /* physical file name and id	*/
         } while (0)
 
 #    define PUSH_LINE(p)                                                     \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             struct ppinstk *cur;                                             \
             PUSH(IN_STRING, cur);                                            \
             cur->nextchr = p;                                                \
@@ -800,8 +782,7 @@ struct pathid /* physical file name and id	*/
         } while (0)
 
 #    define POP_LINE()                                                       \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             debug((-7, "POP  in=%s", ppinstr(pp.in)));                       \
             pp.in = pp.in->prev;                                             \
             pp.state &= ~(DISABLE | NOSPACE | PASSEOF | STRIP);              \

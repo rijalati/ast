@@ -34,8 +34,7 @@ Sfio_t *sp;
 {
     Sfio_t *op = sp;
 
-    if (!sp)
-    {
+    if (!sp) {
 #if _PACKAGE_ast
         char path[PATH_MAX];
         int fd;
@@ -49,12 +48,10 @@ Sfio_t *sp;
         if (!(sp = sftmp(0)))
             return 0;
 #endif
-    }
-    else
+    } else
         sfresize(sp, 0);
     if ((rs->events & RS_TEMP_WRITE)
-        && rsnotify(rs, RS_TEMP_WRITE, sp, ( Void_t * )0, rs->disc) < 0)
-    {
+        && rsnotify(rs, RS_TEMP_WRITE, sp, ( Void_t * )0, rs->disc) < 0) {
         if (!op)
             sfclose(sp);
         sp = 0;
@@ -78,8 +75,7 @@ Sfio_t *sp;
 
     if (sfsync(sp))
         return -1;
-    if (rs->events & RS_TEMP_READ)
-    {
+    if (rs->events & RS_TEMP_READ) {
         if ((n = rsnotify(rs, RS_TEMP_READ, sp, ( Void_t * )0, rs->disc)) < 0)
             return -1;
         if (n)
@@ -102,8 +98,7 @@ Sfio_t *sp;
 {
     int n;
 
-    if (rs->events & RS_TEMP_CLOSE)
-    {
+    if (rs->events & RS_TEMP_CLOSE) {
         if ((n = rsnotify(rs, RS_TEMP_CLOSE, sp, ( Void_t * )0, rs->disc))
             < 0)
             return -1;

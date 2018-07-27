@@ -219,25 +219,21 @@
  */
 
 #    define GET(p, c, tp, xp)                                                \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             if ((c = GETCHR()) == EOB && pp.in->type == IN_FILE)             \
                 FGET(p, c, tp, xp);                                          \
         } while (0)
 
 #    define FGET(p, c, tp, xp)                                               \
-        do                                                                   \
-        {                                                                    \
-            if (op > xp + PPTOKSIZ)                                          \
-            {                                                                \
+        do {                                                                 \
+            if (op > xp + PPTOKSIZ) {                                        \
                 if (!INCOMMENT(rp) && !(pp.state & (NOTEXT | SKIPCONTROL)))  \
                     error(2, "long token truncated");                        \
                 op = xp + PPTOKSIZ;                                          \
             }                                                                \
             if ((pp.in->flags & IN_flush) && pp.level == 1 && !INMACRO(rp)   \
                 && (!pp.comment || !INCOMMENT(rp))                           \
-                && (c = op - pp.outbuf) > 0 && *(op - 1) == '\n')            \
-            {                                                                \
+                && (c = op - pp.outbuf) > 0 && *(op - 1) == '\n') {          \
                 PPWRITE(c);                                                  \
                 op = tp = pp.outp = pp.outbuf;                               \
             }                                                                \
@@ -249,8 +245,7 @@
         } while (0)
 
 #    define POP()                                                            \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             debug((-7,                                                       \
                    "POP  in=%s next=%s state=%s",                            \
                    ppinstr(cur),                                             \

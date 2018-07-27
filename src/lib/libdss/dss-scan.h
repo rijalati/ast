@@ -47,10 +47,8 @@ scan_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     int errors;
 
     errors = error_info.errors;
-    for (;;)
-    {
-        switch (optget(argv, scan_usage))
-        {
+    for (;;) {
+        switch (optget(argv, scan_usage)) {
         case '?':
             if (disc->errorf)
                 (*disc->errorf)(
@@ -68,8 +66,7 @@ scan_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     argv += opt_info.index;
     if (file = *argv)
         argv++;
-    else if (files)
-    {
+    else if (files) {
         argv = files;
         files = 0;
         if (file = *argv)
@@ -77,23 +74,17 @@ scan_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     }
     expr = expr->pass;
     sp = 0;
-    for (;;)
-    {
-        if (sp)
-        {
-            if (!(file = sfgetr(sp, '\n', 1)))
-            {
+    for (;;) {
+        if (sp) {
+            if (!(file = sfgetr(sp, '\n', 1))) {
                 sfclose(sp);
                 sp = 0;
                 goto next;
             }
-        }
-        else if (file && *file == '<')
-        {
+        } else if (file && *file == '<') {
             while (isspace(*++file))
                 ;
-            if (!(sp = sfopen(NiL, file, "r")))
-            {
+            if (!(sp = sfopen(NiL, file, "r"))) {
                 if (disc->errorf)
                     (*disc->errorf)(NiL,
                                     disc,
@@ -104,24 +95,20 @@ scan_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
             }
             continue;
         }
-        if (ip = dssfopen(dss, file, NiL, DSS_FILE_READ, NiL))
-        {
-            if (dssbeg(dss, expr))
-            {
+        if (ip = dssfopen(dss, file, NiL, DSS_FILE_READ, NiL)) {
+            if (dssbeg(dss, expr)) {
                 dssfclose(ip);
                 return -1;
             }
             while (record = dssfread(ip))
-                if (dsseval(dss, expr, record) < 0)
-                {
+                if (dsseval(dss, expr, record) < 0) {
                     dssfclose(ip);
                     return -1;
                 }
             dssfclose(ip);
         }
     next:
-        if (!sp && !(file = *argv++))
-        {
+        if (!sp && !(file = *argv++)) {
             if (!files)
                 break;
             argv = files;

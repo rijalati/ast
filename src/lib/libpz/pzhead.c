@@ -45,12 +45,10 @@ pzheadread(Pz_t *pz)
      * check the header magic
      */
 
-    if (s = ( unsigned char * )sfreserve(pz->io, 4, 1))
-    {
+    if (s = ( unsigned char * )sfreserve(pz->io, 4, 1)) {
         i = s[0];
         n = s[1];
-    }
-    else
+    } else
         i = n = 0;
     if (pz->disc->errorf)
         (*pz->disc->errorf)(
@@ -64,25 +62,19 @@ pzheadread(Pz_t *pz)
         n,
         pz->disc->partition,
         s ? "" : " (nil)");
-    if (i != PZ_MAGIC_1 || n != PZ_MAGIC_2 || s[2] == 0 || s[3] >= 10)
-    {
+    if (i != PZ_MAGIC_1 || n != PZ_MAGIC_2 || s[2] == 0 || s[3] >= 10) {
         sfread(pz->io, s, 0);
         if (pz->flags & PZ_SPLIT)
             return 0;
-        if (pz->flags & PZ_DISC)
-        {
+        if (pz->flags & PZ_DISC) {
             pz->flags &= ~PZ_POP;
             return -1;
         }
         if (!(pz->flags & (PZ_READ | PZ_WRITE | PZ_STAT))
-            && (m = pz->prefix.count))
-        {
-            if (pz->prefix.terminator >= 0)
-            {
-                while (m-- > 0)
-                {
-                    if (!sfgetr(pz->io, pz->prefix.terminator, 0))
-                    {
+            && (m = pz->prefix.count)) {
+            if (pz->prefix.terminator >= 0) {
+                while (m-- > 0) {
+                    if (!sfgetr(pz->io, pz->prefix.terminator, 0)) {
                         if (pz->disc->errorf)
                             (*pz->disc->errorf)(
                             pz,
@@ -96,9 +88,7 @@ pzheadread(Pz_t *pz)
                         return -1;
                     }
                 }
-            }
-            else if (!sfreserve(pz->io, m, 0))
-            {
+            } else if (!sfreserve(pz->io, m, 0)) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(
                     pz,
@@ -112,24 +102,20 @@ pzheadread(Pz_t *pz)
                 return -1;
             }
         }
-        if (!(n = pz->row))
-        {
+        if (!(n = pz->row)) {
             if ((pz->flags & PZ_ACCEPT) || !sfsize(pz->io))
                 n = 1;
             else if ((n = pzfixed(pz, pz->io, NiL, 0)) <= 0
-                     && pz->disc->partition)
-            {
+                     && pz->disc->partition) {
                 pz->flags |= PZ_ROWONLY;
                 if (!pzpartition(pz, pz->disc->partition))
                     n = pz->row;
                 pz->flags &= ~PZ_ROWONLY;
             }
         }
-        if (n <= 0)
-        {
+        if (n <= 0) {
             if (!(pz->flags & PZ_DELAY)
-                && (pz->disc->partition || !(pz->flags & PZ_FORCE)))
-            {
+                && (pz->disc->partition || !(pz->flags & PZ_FORCE))) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(
                     pz, pz->disc, 2, "%s: unknown input format", pz->path);
@@ -150,8 +136,7 @@ pzheadread(Pz_t *pz)
     pz->flags &= ~PZ_FORCE;
     pz->major = sfgetc(pz->io);
     pz->minor = sfgetc(pz->io);
-    switch (pz->major)
-    {
+    switch (pz->major) {
     case 1:
         if (pz->minor <= 2)
             goto noway;
@@ -205,18 +190,15 @@ pzheadwrite(Pz_t *pz, Sfio_t *op)
     sfputc(op, pz->major = PZ_MAJOR);
     sfputc(op, pz->minor = PZ_MINOR);
     sfputu(op, pz->win);
-    if (pz->disc->comment)
-    {
+    if (pz->disc->comment) {
         sfputc(op, PZ_HDR_comment);
         m = strlen(pz->disc->comment) + 1;
         sfputu(op, m);
         sfwrite(op, pz->disc->comment, m);
     }
-    if (pz->det && (m = sfstrtell(pz->det)))
-    {
+    if (pz->det && (m = sfstrtell(pz->det))) {
         sfputc(op, PZ_HDR_options);
-        if (!(s = sfstruse(pz->det)))
-        {
+        if (!(s = sfstruse(pz->det))) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(
                 pz, pz->disc, ERROR_SYSTEM | 2, "out of space");
@@ -226,16 +208,12 @@ pzheadwrite(Pz_t *pz, Sfio_t *op)
         sfputu(op, m);
         sfwrite(op, s, m);
     }
-    if (i = pz->prefix.count)
-    {
+    if (i = pz->prefix.count) {
         sfputc(op, PZ_HDR_prefix);
-        if (pz->prefix.terminator >= 0)
-        {
+        if (pz->prefix.terminator >= 0) {
             m = 0;
-            while (i-- > 0)
-            {
-                if (!(s = sfgetr(pz->io, pz->prefix.terminator, 0)))
-                {
+            while (i-- > 0) {
+                if (!(s = sfgetr(pz->io, pz->prefix.terminator, 0))) {
                     if (pz->disc->errorf)
                         (*pz->disc->errorf)(
                         pz,
@@ -252,12 +230,9 @@ pzheadwrite(Pz_t *pz, Sfio_t *op)
                 sfwrite(pz->tmp, s, n);
             }
             s = sfstrseek(pz->tmp, 0, SEEK_SET);
-        }
-        else
-        {
+        } else {
             m = i;
-            if (!(s = ( char * )sfreserve(pz->io, m, 0)))
-            {
+            if (!(s = ( char * )sfreserve(pz->io, m, 0))) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(
                     pz,
@@ -290,41 +265,33 @@ pzheadprint(Pz_t *pz, Sfio_t *op, int parts)
 
     if (pz->flags & PZ_FORCE)
         sfprintf(op, "# fixed record input\n");
-    else
-    {
+    else {
         sfprintf(op, "# pzip %d.%d partition\n", pz->major, pz->minor);
         if (pz->disc->comment)
             sfprintf(op, "# %s\n", pz->disc->comment);
         sfprintf(op, "# window %I*u\n", sizeof(pz->win), pz->win);
-        if (pz->prefix.count)
-        {
+        if (pz->prefix.count) {
             sfprintf(
             op, "\nprefix=%I*u", sizeof(pz->prefix.count), pz->prefix.count);
-            if (pz->prefix.terminator >= 0)
-            {
+            if (pz->prefix.terminator >= 0) {
                 t = pz->prefix.terminator;
                 sfprintf(op, "*%s\n", fmtquote(&t, "'", "'", 1, FMT_ALWAYS));
-            }
-            else
+            } else
                 sfputc(op, '\n');
         }
-        if (pz->headoptions || pz->det)
-        {
+        if (pz->headoptions || pz->det) {
             sfputc(op, '\n');
             if (pz->headoptions)
                 sfputr(op, pz->headoptions, '\n');
-            if (pz->det)
-            {
+            if (pz->det) {
                 sfwrite(op, sfstrbase(pz->det), sfstrtell(pz->det));
                 sfputc(op, '\n');
             }
         }
     }
-    if (parts)
-    {
+    if (parts) {
         pp = pz->partdict ? ( Pzpart_t * )dtfirst(pz->partdict) : pz->part;
-        while (pp)
-        {
+        while (pp) {
             if (pzpartprint(pz, pp, op))
                 return -1;
             if (!pz->partdict)
@@ -364,8 +331,7 @@ pzfile(Pz_t *pz)
         pz, pz->disc, -1, "%s: pzfile: i=%02x", pz->path, i);
     if (i == -1)
         return 0;
-    if (i == PZ_MARK_TAIL)
-    {
+    if (i == PZ_MARK_TAIL) {
         /*
          * file trailer
          */
@@ -382,8 +348,7 @@ pzfile(Pz_t *pz)
     if (pz->disc->errorf)
         (*pz->disc->errorf)(
         pz, pz->disc, -1, "%s: pzfile: i=%02x j=%02x", pz->path, i, j);
-    if (i == PZ_MAGIC_1 && j == PZ_MAGIC_2)
-    {
+    if (i == PZ_MAGIC_1 && j == PZ_MAGIC_2) {
         /*
          * next file header
          */

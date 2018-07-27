@@ -54,8 +54,7 @@ Void_t **datap;
         return -1;
 
     dtsz = 0; /* get all the encoding strings */
-    for (n = -1, coder = vc; coder; coder = coder->coder)
-    {
+    for (n = -1, coder = vc; coder; coder = coder->coder) {
         if ((n += 1) >= N_CODERS)
             return -1; /* too many continuation coders */
 
@@ -65,16 +64,14 @@ Void_t **datap;
         dtsz += strlen(ident) + 1;
 
         store[n].dtsz = 0;
-        if (coder->meth->eventf)
-        {
+        if (coder->meth->eventf) {
             mtcd.data = NIL(Vcchar_t *);
             mtcd.size = 0;
             rv
             = (*coder->meth->eventf)(coder, VC_EXTRACT, ( Void_t * )(&mtcd));
             if (rv < 0)
                 return -1;
-            else if (rv > 0)
-            {
+            else if (rv > 0) {
                 if ((store[n].dtsz = mtcd.size) < 0)
                     return -1;
                 store[n].data = mtcd.data;
@@ -89,8 +86,7 @@ Void_t **datap;
 
     /* write out data of all coders */
     vcioinit(&io, data, dtsz);
-    for (k = 0; k <= n; ++k)
-    {
+    for (k = 0; k <= n; ++k) {
         if (!(ident = vcgetident(store[k].meth, buf, sizeof(buf))))
             return -1;
         vcioputs(&io, ident, strlen(ident) + 1);
@@ -127,8 +123,7 @@ size_t dtsz;
     vcioinit(&io, data, dtsz);
     vc = coder = NIL(Vcodex_t *);
 
-    while (vciomore(&io) > 0)
-    {
+    while (vciomore(&io) > 0) {
         mt = ( char * )vcionext(&io);
         for (sz = vciomore(&io), k = 0; k < sz; ++k)
             if (mt[k] == 0)
@@ -146,8 +141,7 @@ size_t dtsz;
         vcioskip(&io, sz);
 
         cdr = NIL(Vcodex_t *);
-        if (meth->eventf)
-        {
+        if (meth->eventf) {
             mtcd.data = dt;
             mtcd.size = sz;
             mtcd.coder = NIL(Vcodex_t *);
@@ -158,8 +152,7 @@ size_t dtsz;
                 cdr = mtcd.coder;
         }
 
-        if (!cdr && !(cdr = vcopen(0, meth, 0, 0, VC_DECODE)))
-        {
+        if (!cdr && !(cdr = vcopen(0, meth, 0, 0, VC_DECODE))) {
         error:
             if (vc)
                 vcclose(vc);
@@ -168,8 +161,7 @@ size_t dtsz;
 
         if (!coder)
             vc = cdr;
-        else
-        {
+        else {
             coder->coder = cdr;
             coder->flags |= VC_CLOSECODER;
         }

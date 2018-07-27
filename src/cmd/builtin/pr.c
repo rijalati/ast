@@ -200,20 +200,16 @@ static int
 prtrailer(Pr_t *pp, int line)
 {
     int n = pp->pagelen - line;
-    if (pp->flags & D_FLAG)
-    {
+    if (pp->flags & D_FLAG) {
         if (n == 0)
             n = !pp->pageodd;
         else
             n = 2 * n - pp->pageodd;
     }
-    if (pp->flags & F_FLAG)
-    {
+    if (pp->flags & F_FLAG) {
         if (sfputc(pp->outfile, '\f') < 0)
             return -1;
-    }
-    else
-    {
+    } else {
         if (sfnputc(pp->outfile, '\n', n + HDRSZ) < 0)
             return -1;
     }
@@ -228,16 +224,14 @@ prpage(Pr_t *pp)
 {
     int n, tflag = !(pp->flags & T_FLAG);
     Sfio_t *out = 0;
-    while (1)
-    {
+    while (1) {
         if (pp->pageno++ >= pp->pageskip)
             out = pp->outfile;
         if (out && tflag)
             prheader(pp);
         if ((n = sfmove(pp->infile, out, pp->pagelen, '\n')) != pp->pagelen)
             break;
-        if (out && tflag)
-        {
+        if (out && tflag) {
             if (!sfreserve(pp->infile, 0, 0) || sfvalue(pp->infile) < 0)
                 break;
             sfnputc(pp->outfile, '\n', HDRSZ);
@@ -257,11 +251,9 @@ static int
 outspaces(Pr_t *pp, int spaces, int col)
 {
     int n = 0;
-    if (pp->ogap)
-    {
+    if (pp->ogap) {
         /* changes spaces  <pp->otab> */
-        while (spaces >= col)
-        {
+        while (spaces >= col) {
             if (sfputc(pp->outfile, pp->otab) < 0)
                 return -1;
             n++;
@@ -288,30 +280,25 @@ outcol(Pr_t *pp, char *buff, int size, int spaces)
     int n = S_NL, col = 0;
     char *cp, *buffend;
     int omod = 0;
-    if (pp->igap || pp->ogap)
-    {
+    if (pp->igap || pp->ogap) {
         cp = buff;
         buffend = cp + size;
-        if (size = spaces)
-        {
+        if (size = spaces) {
             if (pp->ogap)
                 omod = pp->ogap - (pp->colno - size) % pp->ogap;
             if (n = state[*( unsigned char * )cp++])
                 goto skip;
             outspaces(pp, size, omod);
         }
-        while (1)
-        {
+        while (1) {
             /* skip over regular characters */
             while ((n = state[*( unsigned char * )cp++]) == 0)
                 ;
             size = cp - buff;
             col += (size - 1);
-            if (pp->width && col >= pp->width)
-            {
+            if (pp->width && col >= pp->width) {
                 size -= (col + 1 - pp->width);
-                if (buffend[-1] == '\n')
-                {
+                if (buffend[-1] == '\n') {
                     buff[size - 1] = '\n';
                     break;
                 }
@@ -326,8 +313,7 @@ outcol(Pr_t *pp, char *buff, int size, int spaces)
             if (pp->ogap)
                 omod = pp->ogap - (pp->colno + col) % pp->ogap;
         skip:
-            while (n > S_NL && cp < buffend)
-            {
+            while (n > S_NL && cp < buffend) {
                 if (n == S_SPACE)
                     n = 1;
                 else
@@ -336,25 +322,20 @@ outcol(Pr_t *pp, char *buff, int size, int spaces)
                 col += n;
                 n = state[*( unsigned char * )cp++];
             }
-            if (n == S_NL)
-            {
+            if (n == S_NL) {
                 /* delete trailing white-space */
                 sfputc(pp->outfile, '\n');
                 return 0;
             }
-            if (cp >= buffend || (pp->width && col >= pp->width))
-            {
+            if (cp >= buffend || (pp->width && col >= pp->width)) {
                 /* return spaces needed to complete field */
-                if (col >= pp->width)
-                {
-                    if (buffend[-1] == '\n')
-                    {
+                if (col >= pp->width) {
+                    if (buffend[-1] == '\n') {
                         sfputc(pp->outfile, '\n');
                         return 0;
                     }
                     size -= (col - pp->width);
-                }
-                else
+                } else
                     size += pp->width - col;
                 return size;
             }
@@ -377,17 +358,14 @@ prline(Pr_t *pp)
     int n, line = pp->pagelen;
     char *cp;
     pp->colno = pp->offset;
-    if (pp->pageskip > 0)
-    {
+    if (pp->pageskip > 0) {
         n = pp->pageskip * pp->pagelen;
         if (sfmove(pp->infile, NiL, n, '\n') != n)
             return 0;
     }
-    while (cp = sfgetr(pp->infile, '\n', 0))
-    {
+    while (cp = sfgetr(pp->infile, '\n', 0)) {
         n = sfvalue(pp->infile);
-        if (line >= pp->pagelen)
-        {
+        if (line >= pp->pagelen) {
             line = 0;
             pp->pageno++;
             if (!(pp->flags & T_FLAG) && prheader(pp) < 0)
@@ -400,14 +378,12 @@ prline(Pr_t *pp)
             pp->outfile, "%*d%c", pp->numwidth, ++pp->lineno, pp->nchar);
         if (outcol(pp, cp, n, 0) < 0)
             return -1;
-        if (++line >= pp->pagelen && !(pp->flags & T_FLAG))
-        {
+        if (++line >= pp->pagelen && !(pp->flags & T_FLAG)) {
             if (pp->flags & F_FLAG)
                 sfputc(pp->outfile, '\f');
             else
                 sfnputc(pp->outfile, '\n', HDRSZ);
-        }
-        else if (pp->flags & D_FLAG)
+        } else if (pp->flags & D_FLAG)
             sfputc(pp->outfile, '\n');
     }
     if (!(pp->flags & T_FLAG))
@@ -423,8 +399,7 @@ outpage(Pr_t *pp, int n)
 {
     char *cp, **next = pp->fieldlist;
     int line = 0, incr, size, j, c, old;
-    if (pp->pageno++ < pp->pageskip)
-    {
+    if (pp->pageno++ < pp->pageskip) {
         pp->lineno += pp->pagelen;
         return 0;
     }
@@ -434,16 +409,13 @@ outpage(Pr_t *pp, int n)
         incr = 1;
     else
         incr = (n + pp->columns - 1) / pp->columns;
-    while (1)
-    {
+    while (1) {
         /* print out a line */
-        if (!(pp->flags & A_FLAG))
-        {
+        if (!(pp->flags & A_FLAG)) {
             if (line >= incr)
                 break;
             next = pp->fieldlist + line;
-        }
-        else if (next >= pp->fieldlast)
+        } else if (next >= pp->fieldlast)
             break;
         if (pp->offset)
             sfwrite(pp->outfile, pp->margin, pp->offlen);
@@ -451,8 +423,7 @@ outpage(Pr_t *pp, int n)
             sfprintf(
             pp->outfile, "%*d%c", pp->numwidth, ++pp->lineno, pp->nchar);
         pp->colno = pp->offset;
-        for (old = 0, j = pp->columns; --j >= 0;)
-        {
+        for (old = 0, j = pp->columns; --j >= 0;) {
             if (next + incr >= pp->fieldlast)
                 j = 0;
             cp = *next;
@@ -465,8 +436,7 @@ outpage(Pr_t *pp, int n)
             if ((old = outcol(pp, cp, size, old)) < 0)
                 return -1;
             pp->colno += pp->width;
-            if (j > 0 && pp->schar)
-            {
+            if (j > 0 && pp->schar) {
                 sfputc(pp->outfile, pp->schar);
                 pp->colno = old;
                 if (pp->schar == pp->otab && pp->ogap)
@@ -499,54 +469,43 @@ prcol(Pr_t *pp)
     Sfio_t *fp = pp->infile;
     int nstream, r = 0, skip = pp->pageskip;
     nextmax = pp->fieldlist + pp->columns * pp->pagelen;
-    do
-    {
+    do {
         next = pp->fieldlist;
         *next = pp->fieldptr = pp->fieldbuff;
-        if (pp->streams)
-        {
+        if (pp->streams) {
             nstream = 0;
             fp = *pp->streams;
         }
-        while (1)
-        {
-            if (fp && (cp = sfgetr(fp, '\n', 0)))
-            {
+        while (1) {
+            if (fp && (cp = sfgetr(fp, '\n', 0))) {
                 if ((size = sfvalue(fp)) > pp->width)
                     size = pp->width;
                 if (!skip)
                     memcpy(pp->fieldptr, cp, size);
-            }
-            else if (pp->streams)
-            {
-                if (fp)
-                {
+            } else if (pp->streams) {
+                if (fp) {
                     if (fp != sfstdin)
                         sfclose(fp);
                     pp->streams[nstream] = 0;
-                    if (--pp->nopen <= 0)
-                    {
+                    if (--pp->nopen <= 0) {
                         next -= (pp->columns - 1);
                         break;
                     }
                 }
                 size = 1;
-            }
-            else
+            } else
                 break;
             pp->fieldptr += size;
             *++next = pp->fieldptr;
             if (next >= nextmax)
                 break;
-            if (pp->streams)
-            {
+            if (pp->streams) {
                 if (++nstream >= pp->columns)
                     nstream = 0;
                 fp = pp->streams[nstream];
             }
         }
-        if (skip > 0)
-        {
+        if (skip > 0) {
             skip--;
             break;
         }
@@ -568,10 +527,8 @@ c_read(Sfio_t *fp, void *buf, size_t n, Sfdisc_t *dp)
 
     static const char hat[] = "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_";
 
-    if (pp->control.cur >= pp->control.end)
-    {
-        if (n > pp->control.siz)
-        {
+    if (pp->control.cur >= pp->control.end) {
+        if (n > pp->control.siz) {
             pp->control.siz = roundof(n, 1024);
             if (!(pp->control.buf
                   = newof(pp->control.buf, char, pp->control.siz, 0)))
@@ -582,24 +539,19 @@ c_read(Sfio_t *fp, void *buf, size_t n, Sfdisc_t *dp)
         pp->control.cur = pp->control.buf;
         pp->control.end = pp->control.buf + z;
     }
-    while (pp->control.cur < pp->control.end && s < e)
-    {
-        if ((c = mbsize(pp->control.cur, e - s, &pp->q)) > 1)
-        {
+    while (pp->control.cur < pp->control.end && s < e) {
+        if ((c = mbsize(pp->control.cur, e - s, &pp->q)) > 1) {
             if (c > (e - s))
                 break;
             while (c--)
                 *s++ = *pp->control.cur++;
-        }
-        else
-        {
+        } else {
             c = ccmapchr(pp->control.map, *pp->control.cur);
             if (c > 040 || c == 011 || c == 012)
                 *s++ = *pp->control.cur++;
             else if ((e - s) < 2)
                 break;
-            else
-            {
+            else {
                 pp->control.cur++;
                 *s++ = '^';
                 *s++ = hat[c];
@@ -619,10 +571,8 @@ v_read(Sfio_t *fp, void *buf, size_t n, Sfdisc_t *dp)
     int c;
     ssize_t z;
 
-    if (pp->control.cur >= pp->control.end)
-    {
-        if (n > pp->control.siz)
-        {
+    if (pp->control.cur >= pp->control.end) {
+        if (n > pp->control.siz) {
             pp->control.siz = roundof(n, 1024);
             if (!(pp->control.buf
                   = newof(pp->control.buf, char, pp->control.siz, 0)))
@@ -633,31 +583,24 @@ v_read(Sfio_t *fp, void *buf, size_t n, Sfdisc_t *dp)
         pp->control.cur = pp->control.buf;
         pp->control.end = pp->control.buf + z;
     }
-    while (pp->control.cur < pp->control.end && s < e)
-    {
-        if ((c = mbsize(pp->control.cur, e - s, &pp->q)) > 1)
-        {
+    while (pp->control.cur < pp->control.end && s < e) {
+        if ((c = mbsize(pp->control.cur, e - s, &pp->q)) > 1) {
             if (c > (e - s))
                 break;
             while (c--)
                 *s++ = *pp->control.cur++;
-        }
-        else
-        {
+        } else {
             c = *pp->control.cur++;
             if ((iscntrl(c) || !isprint(c)) && c != '\t' && c != '\n'
-                || c == '\\')
-            {
+                || c == '\\') {
                 t = fmtquote(pp->control.cur - 1, NiL, NiL, 1, 0);
-                if (strlen(t) > (e - s))
-                {
+                if (strlen(t) > (e - s)) {
                     pp->control.cur--;
                     break;
                 }
                 while (*s = *t++)
                     s++;
-            }
-            else
+            } else
                 *s++ = c;
         }
     }
@@ -675,10 +618,8 @@ b_pr(int argc, char **argv, Shbltin_t *context)
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
     pp = prinit();
-    for (;;)
-    {
-        switch (n = optget(argv, usage))
-        {
+    for (;;) {
+        switch (n = optget(argv, usage)) {
         case 0:
             break;
         case 'a':
@@ -736,8 +677,7 @@ b_pr(int argc, char **argv, Shbltin_t *context)
         case 'i':
         case 'e':
             if (opt_info.arg && opt_info.arg == argv[opt_info.index - 1]
-                && (!(cp = argv[opt_info.index]) || *cp != '-'))
-            {
+                && (!(cp = argv[opt_info.index]) || *cp != '-')) {
                 /* space allowed only if next argument
                  * begins with - */
                 opt_info.index--;
@@ -749,10 +689,8 @@ b_pr(int argc, char **argv, Shbltin_t *context)
                 pp->ogap = TABSZ;
             else
                 pp->numwidth = NWIDTH;
-            if (opt_info.arg)
-            {
-                if (!isdigit(*opt_info.arg))
-                {
+            if (opt_info.arg) {
+                if (!isdigit(*opt_info.arg)) {
                     if (n == 'e')
                         pp->itab = *opt_info.arg++;
                     else if (n == 'i')
@@ -760,8 +698,7 @@ b_pr(int argc, char **argv, Shbltin_t *context)
                     else
                         pp->nchar = *opt_info.arg++;
                 }
-                if (*opt_info.arg)
-                {
+                if (*opt_info.arg) {
                     long l = strtol(opt_info.arg, &opt_info.arg, 10);
                     if (l < 0 || *opt_info.arg)
                         error(2, "-%c: requires positive integer", n);
@@ -776,8 +713,7 @@ b_pr(int argc, char **argv, Shbltin_t *context)
             continue;
         case 's':
             if (opt_info.arg && opt_info.arg == argv[opt_info.index - 1]
-                && (!(cp = argv[opt_info.index]) || *cp != '-'))
-            {
+                && (!(cp = argv[opt_info.index]) || *cp != '-')) {
                 /* space allowed only if next argument
                  * begins with - */
                 opt_info.index--;
@@ -818,8 +754,7 @@ b_pr(int argc, char **argv, Shbltin_t *context)
     pp->pageodd = (pp->pagelen & 1);
     if (pp->flags & D_FLAG)
         pp->pagelen = (pp->pagelen + 1) / 2;
-    if (pp->flags & M_FLAG)
-    {
+    if (pp->flags & M_FLAG) {
         pp->columns = argc - opt_info.index;
         pp->flags |= A_FLAG;
     }
@@ -827,15 +762,11 @@ b_pr(int argc, char **argv, Shbltin_t *context)
 	if(pp->width)
 		pp->width -= pp->offset;
 #endif
-    if (pp->columns > 0)
-    {
-        if (pp->columns == 1)
-        {
+    if (pp->columns > 0) {
+        if (pp->columns == 1) {
             pp->columns = 0;
             pp->flags &= ~(M_FLAG | A_FLAG);
-        }
-        else
-        {
+        } else {
             if (pp->igap == 0)
                 pp->igap = TABSZ;
             if (pp->ogap == 0)
@@ -862,20 +793,16 @@ b_pr(int argc, char **argv, Shbltin_t *context)
     pp->state['\n'] = S_NL;
     if (pp->ogap)
         pp->omod = (pp->numwidth + pp->numwidth > 0) % pp->ogap;
-    if (pp->offset)
-    {
+    if (pp->offset) {
         /* pre-compute leading margin */
-        if (pp->ogap)
-        {
+        if (pp->ogap) {
             n = pp->offset / pp->ogap;
             pp->offlen = pp->offset - n * (pp->ogap - 1);
-        }
-        else
+        } else
             n = 0;
         if (!(pp->margin = ( char * )stakalloc(pp->offset)))
             error(ERROR_exit(1), "not enough memory");
-        for (cp = pp->margin; cp < pp->margin + pp->offlen; cp++)
-        {
+        for (cp = pp->margin; cp < pp->margin + pp->offlen; cp++) {
             if (n-- > 0)
                 *cp = pp->otab;
             else
@@ -884,13 +811,11 @@ b_pr(int argc, char **argv, Shbltin_t *context)
     }
     if (cp = *argv)
         argv++;
-    do
-    {
+    do {
         pp->filename = cp;
         if (!cp || strcmp(cp, "-") == 0)
             fp = sfstdin;
-        else if (!(fp = sfopen(NiL, cp, "r")))
-        {
+        else if (!(fp = sfopen(NiL, cp, "r"))) {
             if (!(pp->flags & R_FLAG))
                 error(ERROR_system(0), "%s: cannot open", cp);
             error_info.errors = 1;
@@ -900,10 +825,8 @@ b_pr(int argc, char **argv, Shbltin_t *context)
             error(2, "cannot push control character discipline");
         if (pp->streams)
             pp->streams[n++] = fp;
-        else
-        {
-            if (!(pp->flags & T_FLAG))
-            {
+        else {
+            if (!(pp->flags & T_FLAG)) {
                 if (pp->flags & X_FLAG)
                     strcpy(pp->date, "- Date/Time --");
                 else
@@ -915,8 +838,7 @@ b_pr(int argc, char **argv, Shbltin_t *context)
             }
             pp->lineno = pp->pageno = 0;
             pp->infile = fp;
-            if (pp->flags & M_FLAG)
-            {
+            if (pp->flags & M_FLAG) {
                 pp->streams
                 = ( Sfio_t ** )stakalloc(pp->columns * sizeof(Sfio_t *));
                 *pp->streams = fp;
@@ -934,8 +856,7 @@ b_pr(int argc, char **argv, Shbltin_t *context)
                 sfclose(fp);
         }
     } while (cp = *argv++);
-    if (pp->streams)
-    {
+    if (pp->streams) {
         pp->nopen = n;
         prcol(pp);
     }

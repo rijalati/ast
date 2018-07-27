@@ -35,12 +35,10 @@ regstat(const regex_t *p)
     p->env->stats.re_flags = p->env->flags;
     p->env->stats.re_info = 0;
     e = p->env->rex;
-    if (e && e->type == REX_BM)
-    {
+    if (e && e->type == REX_BM) {
         p->env->stats.re_record = p->env->rex->re.bm.size;
         e = e->next;
-    }
-    else
+    } else
         p->env->stats.re_record = 0;
     if (e && e->type == REX_BEG)
         e = e->next;

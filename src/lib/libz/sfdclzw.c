@@ -227,8 +227,7 @@ output(LZW_t *zs, Sfio_t *f, code_int ocode, Sfdisc_t *dp)
     r_off = offset;
     bits = n_bits;
     bp = buf;
-    if (ocode >= 0)
-    {
+    if (ocode >= 0) {
         /* Get to the first byte. */
         bp += (r_off >> 3);
         r_off &= 7;
@@ -241,8 +240,7 @@ output(LZW_t *zs, Sfio_t *f, code_int ocode, Sfdisc_t *dp)
         bits -= (8 - r_off);
         ocode >>= 8 - r_off;
         /* Get any 8 bit parts in the middle (<=1 for up to 16 bits). */
-        if (bits >= 8)
-        {
+        if (bits >= 8) {
             *bp++ = ocode;
             ocode >>= 8;
             bits -= 8;
@@ -251,8 +249,7 @@ output(LZW_t *zs, Sfio_t *f, code_int ocode, Sfdisc_t *dp)
         if (bits)
             *bp = ocode;
         offset += n_bits;
-        if (offset == (n_bits << 3))
-        {
+        if (offset == (n_bits << 3)) {
             bp = buf;
             bits = n_bits;
             bytes_out += bits;
@@ -266,27 +263,22 @@ output(LZW_t *zs, Sfio_t *f, code_int ocode, Sfdisc_t *dp)
          * If the next entry is going to be too big for the ocode size,
          * then increase it, if possible.
          */
-        if (free_ent > maxcode || (clear_flg > 0))
-        {
+        if (free_ent > maxcode || (clear_flg > 0)) {
             /*
              * Write the whole buffer, because the input side won't
              * discover the size increase until after it has read it.
              */
-            if (offset > 0)
-            {
+            if (offset > 0) {
                 if (sfwr(f, buf, n_bits, dp) != n_bits)
                     return (-1);
                 bytes_out += n_bits;
             }
             offset = 0;
 
-            if (clear_flg)
-            {
+            if (clear_flg) {
                 maxcode = MAXCODE(n_bits = INIT_BITS);
                 clear_flg = 0;
-            }
-            else
-            {
+            } else {
                 n_bits++;
                 if (n_bits == maxbits)
                     maxcode = maxmaxcode;
@@ -294,12 +286,9 @@ output(LZW_t *zs, Sfio_t *f, code_int ocode, Sfdisc_t *dp)
                     maxcode = MAXCODE(n_bits);
             }
         }
-    }
-    else
-    {
+    } else {
         /* At EOF, write the rest of the buffer. */
-        if (offset > 0)
-        {
+        if (offset > 0) {
             offset = (offset + 7) / 8;
             if (sfwr(f, buf, offset, dp) != offset)
                 return (-1);
@@ -325,23 +314,20 @@ getcode(LZW_t *zs, Sfio_t *f, Sfdisc_t *dp)
     char_type *bp;
 
     bp = gbuf;
-    if (clear_flg > 0 || roffset >= size || free_ent > maxcode)
-    {
+    if (clear_flg > 0 || roffset >= size || free_ent > maxcode) {
         /*
          * If the next entry will be too big for the current gcode
          * size, then we must increase the size.  This implies reading
          * a new buffer full, too.
          */
-        if (free_ent > maxcode)
-        {
+        if (free_ent > maxcode) {
             n_bits++;
             if (n_bits == maxbits) /* Won't get any bigger now. */
                 maxcode = maxmaxcode;
             else
                 maxcode = MAXCODE(n_bits);
         }
-        if (clear_flg > 0)
-        {
+        if (clear_flg > 0) {
             maxcode = MAXCODE(n_bits = INIT_BITS);
             clear_flg = 0;
         }
@@ -365,8 +351,7 @@ getcode(LZW_t *zs, Sfio_t *f, Sfdisc_t *dp)
     r_off = 8 - r_off; /* Now, roffset into gcode word. */
 
     /* Get any 8 bit parts in the middle (<=1 for up to 16 bits). */
-    if (bits >= 8)
-    {
+    if (bits >= 8) {
         gcode |= *bp++ << r_off;
         r_off += 8;
         bits -= 8;
@@ -388,8 +373,7 @@ cl_hash(LZW_t *zs, count_int cl_hsize) /* Reset code table. */
     m1 = -1;
     htab_p = htab + cl_hsize;
     i = cl_hsize - 16;
-    do
-    { /* Might use Sys V memset(3) here. */
+    do { /* Might use Sys V memset(3) here. */
         *(htab_p - 16) = m1;
         *(htab_p - 15) = m1;
         *(htab_p - 14) = m1;
@@ -420,20 +404,17 @@ cl_block(LZW_t *zs, Sfio_t *f, Sfdisc_t *dp) /* Table clear for block
 
     checkpoint = in_count + CHECK_GAP;
 
-    if (in_count > 0x007fffff)
-    { /* Shift will overflow. */
+    if (in_count > 0x007fffff) { /* Shift will overflow. */
         rat = bytes_out >> 8;
         if (rat == 0) /* Don't divide by zero. */
             rat = 0x7fffffff;
         else
             rat = in_count / rat;
-    }
-    else
+    } else
         rat = (in_count << 8) / bytes_out; /* 8 fractional bits. */
     if (rat > ratio)
         ratio = rat;
-    else
-    {
+    else {
         ratio = 0;
         cl_hash(zs, ( count_int )hsize);
         free_ent = FIRST;
@@ -456,8 +437,7 @@ lzw_sync(LZW_t *zs, Sfio_t *f, Sfoff_t off, Sfdisc_t *dp)
 #if 1
     static int nosync;
 
-    if (off == -1)
-    {
+    if (off == -1) {
         if (!nosync)
             nosync = getenv("SFDCLZW_nosync") ? 1 : -1;
         if (nosync > 0)
@@ -484,8 +464,7 @@ lzw_except(Sfio_t *f, int op, void *val, Sfdisc_t *dp)
     int r;
 
     NoP(f);
-    switch (op)
-    {
+    switch (op) {
     case SF_ATEXIT:
         sfdisc(f, SF_POPDISC);
         return 0;
@@ -493,13 +472,11 @@ lzw_except(Sfio_t *f, int op, void *val, Sfdisc_t *dp)
     case SF_DPOP:
     case SF_FINAL:
         r = 0;
-        if (dp->writef)
-        {
+        if (dp->writef) {
             SFDCNEXT(f, flags);
             if (output(zs, f, ( code_int )ent, dp) == -1)
                 r = -1;
-            else
-            {
+            else {
                 out_count++;
                 if (output(zs, f, ( code_int )-1, dp) == -1)
                     r = -1;
@@ -592,19 +569,16 @@ lzw_write(Sfio_t *f, const Void_t *wbp, size_t num, Sfdisc_t *dp)
     cl_hash(zs, ( count_int )hsize_reg); /* Clear hash table. */
 
 middle:
-    for (i = 0; count--;)
-    {
+    for (i = 0; count--;) {
         c = *bp++;
         in_count++;
         fcode = ( long )((( long )c << maxbits) + ent);
         i = ((c << hshift) ^ ent); /* Xor hashing. */
 
-        if (htabof(i) == fcode)
-        {
+        if (htabof(i) == fcode) {
             ent = codetabof(i);
             continue;
-        }
-        else if (( long )htabof(i) < 0) /* Empty slot. */
+        } else if (( long )htabof(i) < 0) /* Empty slot. */
             goto nomatch;
         disp = hsize_reg - i; /* Secondary hash (after G. Knott). */
         if (i == 0)
@@ -613,8 +587,7 @@ middle:
         if ((i -= disp) < 0)
             i += hsize_reg;
 
-        if (htabof(i) == fcode)
-        {
+        if (htabof(i) == fcode) {
             ent = codetabof(i);
             continue;
         }
@@ -625,13 +598,10 @@ middle:
             return (-1);
         out_count++;
         ent = c;
-        if (free_ent < maxmaxcode)
-        {
+        if (free_ent < maxmaxcode) {
             codetabof(i) = free_ent++; /* code -> hashtable */
             htabof(i) = fcode;
-        }
-        else if (( count_int )in_count >= checkpoint && block_compress)
-        {
+        } else if (( count_int )in_count >= checkpoint && block_compress) {
             if (cl_block(zs, f, dp) == -1)
                 return (-1);
         }
@@ -658,8 +628,7 @@ lzw_read(Sfio_t *f, Void_t *rbp, size_t num, Sfdisc_t *dp)
     zs = ( LZW_t * )dp;
     count = num;
     bp = ( u_char * )rbp;
-    switch (state)
-    {
+    switch (state) {
     case S_START:
         state = S_MIDDLE;
         break;
@@ -681,8 +650,7 @@ lzw_read(Sfio_t *f, Void_t *rbp, size_t num, Sfdisc_t *dp)
         return (-1);
     /* As above, initialize the first 256 entries in the table. */
     maxcode = MAXCODE(n_bits = INIT_BITS);
-    for (code = 255; code >= 0; code--)
-    {
+    for (code = 255; code >= 0; code--) {
         tab_prefixof(code) = 0;
         tab_suffixof(code) = ( char_type )code;
     }
@@ -697,11 +665,9 @@ lzw_read(Sfio_t *f, Void_t *rbp, size_t num, Sfdisc_t *dp)
     count--;
     stackp = de_stack;
 
-    while ((code = getcode(zs, f, dp)) > -1)
-    {
+    while ((code = getcode(zs, f, dp)) > -1) {
 
-        if ((code == CLEAR) && block_compress)
-        {
+        if ((code == CLEAR) && block_compress) {
             for (code = 255; code >= 0; code--)
                 tab_prefixof(code) = 0;
             clear_flg = 1;
@@ -712,15 +678,13 @@ lzw_read(Sfio_t *f, Void_t *rbp, size_t num, Sfdisc_t *dp)
         incode = code;
 
         /* Special case for KwKwK string. */
-        if (code >= free_ent)
-        {
+        if (code >= free_ent) {
             *stackp++ = finchar;
             code = oldcode;
         }
 
         /* Generate output characters in reverse order. */
-        while (code >= 256)
-        {
+        while (code >= 256) {
             *stackp++ = tab_suffixof(code);
             code = tab_prefixof(code);
         }
@@ -728,16 +692,14 @@ lzw_read(Sfio_t *f, Void_t *rbp, size_t num, Sfdisc_t *dp)
 
         /* And put them out in forward order.  */
     middle:
-        do
-        {
+        do {
             if (count-- == 0)
                 return (num);
             *bp++ = *--stackp;
         } while (stackp > de_stack);
 
         /* Generate the new entry. */
-        if ((code = free_ent) < maxmaxcode)
-        {
+        if ((code = free_ent) < maxmaxcode) {
             tab_prefixof(code) = ( u_short )oldcode;
             tab_suffixof(code) = finchar;
             free_ent = code + 1;
@@ -770,8 +732,7 @@ sfdclzw(Sfio_t *f, int flags)
 {
     LZW_t *zs;
 
-    if (sfset(f, 0, 0) & SF_READ)
-    {
+    if (sfset(f, 0, 0) & SF_READ) {
         unsigned char *s;
         int n;
 
@@ -828,8 +789,7 @@ sfdclzw(Sfio_t *f, int flags)
     size = 0;
 
     sfset(f, SF_SHARE | SF_PUBLIC, 0);
-    if (sfdisc(f, &zs->disc) != &zs->disc)
-    {
+    if (sfdisc(f, &zs->disc) != &zs->disc) {
         free(zs);
         return -1;
     }

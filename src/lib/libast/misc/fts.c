@@ -192,16 +192,12 @@ node(FTS *fts, FTSENT *parent, char *name, size_t namelen)
     FTSENT *f;
     size_t n;
 
-    if (fts->free && namelen < MINNAME)
-    {
+    if (fts->free && namelen < MINNAME) {
         f = fts->free;
         fts->free = f->fts_link;
-    }
-    else
-    {
+    } else {
         n = (namelen < MINNAME ? MINNAME : namelen + 1) - sizeof(int);
-        if (!(f = newof(0, FTSENT, 1, n)))
-        {
+        if (!(f = newof(0, FTSENT, 1, n))) {
             fts->fts_errno = errno;
             fts->state = FTS_error;
             return 0;
@@ -281,18 +277,15 @@ search(FTSENT *e,
     FTSENT *rroot;
 
     left = right = lroot = rroot = 0;
-    while (root)
-    {
+    while (root) {
         if (!(cmp = (*comparf)(&e, &root)) && !insert)
             break;
-        if (cmp < 0)
-        {
+        if (cmp < 0) {
             /*
              * this is the left zig-zig case
              */
 
-            if (root->left && (cmp = (*comparf)(&e, &root->left)) <= 0)
-            {
+            if (root->left && (cmp = (*comparf)(&e, &root->left)) <= 0) {
                 RROTATE(root);
                 if (!cmp && !insert)
                     break;
@@ -309,15 +302,12 @@ search(FTSENT *e,
             right = root;
             root = root->left;
             right->left = 0;
-        }
-        else
-        {
+        } else {
             /*
              * this is the right zig-zig case
              */
 
-            if (root->right && (cmp = (*comparf)(&e, &root->right)) >= 0)
-            {
+            if (root->right && (cmp = (*comparf)(&e, &root->right)) >= 0) {
                 LROTATE(root);
                 if (!cmp && !insert)
                     break;
@@ -338,8 +328,7 @@ search(FTSENT *e,
     }
     if (!root)
         root = e;
-    else
-    {
+    else {
         if (right)
             right->left = root->right;
         else
@@ -368,8 +357,7 @@ deleteroot(FTSENT *root)
     right = root->right;
     if (!(left = root->left))
         root = right;
-    else
-    {
+    else {
         while (left->right)
             LROTATE(left);
         left->right = right;
@@ -389,29 +377,22 @@ getlist(FTSENT **top, FTSENT **bot, FTSENT *root)
 {
     FTSENT *stack = 0;
 
-    for (;;)
-    {
-        if (root->left)
-        {
+    for (;;) {
+        if (root->left) {
             root->stack = stack;
             stack = root;
             root = root->left;
-        }
-        else
-        {
-            for (;;)
-            {
+        } else {
+            for (;;) {
                 if (*top)
                     *bot = (*bot)->fts_link = root;
                 else
                     *bot = *top = root;
-                if (root->right)
-                {
+                if (root->right) {
                     root = root->right;
                     break;
                 }
-                if (!(root = stack))
-                {
+                if (!(root = stack)) {
                     (*bot)->fts_link = 0;
                     return;
                 }
@@ -432,8 +413,7 @@ setdir(char *home, char *path)
 
     if (path[0] == '/')
         cdrv = pathcd(path, NiL);
-    else
-    {
+    else {
         /*
          * note that path and home are in the same buffer
          */
@@ -457,14 +437,12 @@ setpdir(char *home, char *path, char *base)
     int c;
     int cdrv;
 
-    if (base > path)
-    {
+    if (base > path) {
         c = base[0];
         base[0] = 0;
         cdrv = setdir(home, path);
         base[0] = c;
-    }
-    else
+    } else
         cdrv = pathcd(home, NiL);
     return cdrv;
 }
@@ -490,12 +468,9 @@ popdirs(FTS *fts)
 #ifndef verify
     verify = 0;
 #endif
-    while (fts->nd > 0)
-    {
-        for (s = buf; s < e && fts->nd > 0; fts->nd--)
-        {
-            if (fts->pwd)
-            {
+    while (fts->nd > 0) {
+        for (s = buf; s < e && fts->nd > 0; fts->nd--) {
+            if (fts->pwd) {
 #ifndef verify
                 verify |= fts->pwd->symlink;
 #endif
@@ -520,15 +495,12 @@ popdirs(FTS *fts)
 static int
 info(FTS *fts, FTSENT *f, const char *path, struct stat *sp, int flags)
 {
-    if (path)
-    {
+    if (path) {
 #ifdef S_ISLNK
-        if (!f->symlink && (ISTYPE(f, DT_UNKNOWN) || ISTYPE(f, DT_LNK)))
-        {
+        if (!f->symlink && (ISTYPE(f, DT_UNKNOWN) || ISTYPE(f, DT_LNK))) {
             if (lstat(path, sp) < 0)
                 goto bad;
-        }
-        else
+        } else
 #endif
         if (stat(path, sp) < 0)
             goto bad;
@@ -536,18 +508,14 @@ info(FTS *fts, FTSENT *f, const char *path, struct stat *sp, int flags)
 #ifdef S_ISLNK
 again:
 #endif
-    if (S_ISDIR(sp->st_mode))
-    {
-        if ((flags & FTS_NOSTAT) && !fts->fs3d)
-        {
+    if (S_ISDIR(sp->st_mode)) {
+        if ((flags & FTS_NOSTAT) && !fts->fs3d) {
             f->fts_parent->nlink--;
 #ifdef D_TYPE
-            if ((f->nlink = sp->st_nlink) < 2)
-            {
+            if ((f->nlink = sp->st_nlink) < 2) {
                 f->must = 2;
                 f->nlink = 2;
-            }
-            else
+            } else
                 f->must = 0;
 #else
             if ((f->nlink = sp->st_nlink) >= 2)
@@ -555,38 +523,30 @@ again:
             else
                 f->must = 2;
 #endif
-        }
-        else
+        } else
             f->must = 2;
         TYPE(f, DT_DIR);
         f->fts_info = FTS_D;
     }
 #ifdef S_ISLNK
-    else if (S_ISLNK((sp)->st_mode))
-    {
+    else if (S_ISLNK((sp)->st_mode)) {
         struct stat sb;
 
         f->symlink = 1;
-        if (flags & FTS_PHYSICAL)
-        {
+        if (flags & FTS_PHYSICAL) {
             TYPE(f, DT_LNK);
             f->fts_info = FTS_SL;
-        }
-        else if (stat(path, &sb) >= 0)
-        {
+        } else if (stat(path, &sb) >= 0) {
             *sp = sb;
             flags = FTS_PHYSICAL;
             goto again;
-        }
-        else
-        {
+        } else {
             TYPE(f, DT_LNK);
             f->fts_info = FTS_SLNONE;
         }
     }
 #endif
-    else
-    {
+    else {
         TYPE(f, DT_REG);
         f->fts_info = FTS_F;
     }
@@ -621,8 +581,7 @@ toplist(FTS *fts, char *const *pathnames)
     metaphysical
     = (fts->flags & (FTS_META | FTS_PHYSICAL)) == (FTS_META | FTS_PHYSICAL);
     top = bot = 0;
-    while (path = *pathnames++)
-    {
+    while (path = *pathnames++) {
         /*
          * make elements
          */
@@ -634,19 +593,14 @@ toplist(FTS *fts, char *const *pathnames)
             f->fts_namelen = (fts->flags & FTS_SEEDOTDIR)
                              ? strlen(path)
                              : (pathcanon(path, strlen(path) + 1, 0) - path);
-        else if (*path != '.')
-        {
+        else if (*path != '.') {
             f->fts_namelen = strlen(path);
             fts->flags |= FTS_SEEDOTDIR;
-        }
-        else
-        {
-            if (fts->flags & FTS_NOSEEDOTDIR)
-            {
+        } else {
+            if (fts->flags & FTS_NOSEEDOTDIR) {
                 fts->flags &= ~FTS_SEEDOTDIR;
                 s = path;
-                while (*s++ == '.' && *s++ == '/')
-                {
+                while (*s++ == '.' && *s++ == '/') {
                     while (*s == '/')
                         s++;
                     if (!*s)
@@ -656,8 +610,7 @@ toplist(FTS *fts, char *const *pathnames)
                         ;
                     path = f->fts_name;
                 }
-            }
-            else
+            } else
                 fts->flags |= FTS_SEEDOTDIR;
             for (s = path + strlen(path); s > path && *(s - 1) == '/'; s--)
                 ;
@@ -667,12 +620,10 @@ toplist(FTS *fts, char *const *pathnames)
 #if __OBSOLETE__ < 20140101
         f->_fts_namelen = ( unsigned short )f->fts_namelen;
 #endif
-        if (!*path)
-        {
+        if (!*path) {
             errno = ENOENT;
             f->fts_info = FTS_NS;
-        }
-        else
+        } else
             info(fts, f, path, f->fts_statp, fts->flags);
 #ifdef S_ISLNK
 
@@ -681,23 +632,18 @@ toplist(FTS *fts, char *const *pathnames)
          * away with calling your idea a hack
          */
 
-        if (metaphysical && f->fts_info == FTS_SL)
-        {
-            if (stat(path, &st) >= 0)
-            {
+        if (metaphysical && f->fts_info == FTS_SL) {
+            if (stat(path, &st) >= 0) {
                 *f->fts_statp = st;
                 info(fts, f, NiL, f->fts_statp, 0);
-            }
-            else
+            } else
                 f->fts_info = FTS_SLNONE;
         }
 #endif
-        if (bot)
-        {
+        if (bot) {
             bot->fts_link = f;
             bot = f;
-        }
-        else
+        } else
             top = bot = f;
     }
     return top;
@@ -741,8 +687,7 @@ resize(FTS *fts, size_t inc)
 
     n_old = fts->homesize;
     fts->homesize = ((fts->homesize + inc + 4) / PATH_MAX + 1) * PATH_MAX;
-    if (!(newp = newof(0, char, fts->homesize, 0)))
-    {
+    if (!(newp = newof(0, char, fts->homesize, 0))) {
         fts->fts_errno = errno;
         fts->state = FTS_error;
         return -1;
@@ -783,10 +728,8 @@ fts_open(char *const *pathnames,
      */
 
     fts->homesize = 2 * PATH_MAX;
-    for (;;)
-    {
-        if (!(fts->home = newof(fts->home, char, fts->homesize, 0)))
-        {
+    for (;;) {
+        if (!(fts->home = newof(fts->home, char, fts->homesize, 0))) {
             free(fts);
             return 0;
         }
@@ -822,15 +765,13 @@ fts_open(char *const *pathnames,
      * make the list of top elements
      */
 
-    if (!pathnames || (flags & FTS_ONEPATH) || !*pathnames)
-    {
+    if (!pathnames || (flags & FTS_ONEPATH) || !*pathnames) {
         char *v[2];
 
         v[0] = pathnames && (flags & FTS_ONEPATH) ? ( char * )pathnames : ".";
         v[1] = 0;
         fts->todo = toplist(fts, v);
-    }
-    else
+    } else
         fts->todo = toplist(fts, pathnames);
 #if _HUH_1997_01_07
     if (!fts->todo || fts->todo->fts_info == FTS_NS && !fts->todo->fts_link)
@@ -863,31 +804,24 @@ fts_read(FTS *fts)
 #endif
 
     for (;;)
-        switch (fts->state)
-        {
+        switch (fts->state) {
 
         case FTS_top_return:
 
             f = fts->todo;
             t = 0;
             while (f)
-                if (f->status == FTS_SKIP)
-                {
-                    if (t)
-                    {
+                if (f->status == FTS_SKIP) {
+                    if (t) {
                         t->fts_link = f->fts_link;
                         drop(fts, f);
                         f = t->fts_link;
-                    }
-                    else
-                    {
+                    } else {
                         fts->todo = f->fts_link;
                         drop(fts, f);
                         f = fts->todo;
                     }
-                }
-                else
-                {
+                } else {
                     t = f;
                     f = f->fts_link;
                 }
@@ -913,8 +847,7 @@ fts_read(FTS *fts)
              * initialize the top level
              */
 
-            if (f->fts_level == 0)
-            {
+            if (f->fts_level == 0) {
                 fts->parent->fts_number = f->fts_number;
                 fts->parent->fts_pointer = f->fts_pointer;
                 fts->parent->fts_statp = f->fts_statp;
@@ -934,8 +867,7 @@ fts_read(FTS *fts)
              * chdir to parent if asked for
              */
 
-            if (fts->cd < 0)
-            {
+            if (fts->cd < 0) {
                 fts->cd = setdir(fts->home, fts->path);
                 fts->pwd = f->fts_parent;
                 fts->curdir = fts->cd ? 0 : f->fts_parent;
@@ -958,20 +890,16 @@ fts_read(FTS *fts)
              * check for cycle and open dir
              */
 
-            if (f->fts_info == FTS_D)
-            {
+            if (f->fts_info == FTS_D) {
                 if ((fts->diroot = search(f, fts->diroot, statcmp, 0)) != f
                     || f->fts_level > 0 && (t = f)
-                       && statcmp(&t, &f->fts_parent) == 0)
-                {
+                       && statcmp(&t, &f->fts_parent) == 0) {
                     f->fts_info = FTS_DC;
                     f->fts_cycle = fts->diroot;
-                }
-                else if (!(fts->flags & FTS_TOP)
-                         && (!(fts->flags & FTS_XDEV)
-                             || f->statb.st_dev
-                                == f->fts_parent->statb.st_dev))
-                {
+                } else if (!(fts->flags & FTS_TOP)
+                           && (!(fts->flags & FTS_XDEV)
+                               || f->statb.st_dev
+                                  == f->fts_parent->statb.st_dev)) {
                     /*
                      * buffer is known to be large enough here!
                      */
@@ -988,8 +916,7 @@ fts_read(FTS *fts)
                 }
             }
             f->nd = f->fts_info & ~FTS_DNX;
-            if (f->nd || !(fts->flags & FTS_NOPREORDER))
-            {
+            if (f->nd || !(fts->flags & FTS_NOPREORDER)) {
                 fts->current = f;
                 fts->link = f->fts_link;
                 f->fts_link = 0;
@@ -1007,10 +934,8 @@ fts_read(FTS *fts)
              * prune
              */
 
-            if (!fts->dir || f->nd || f->status == FTS_SKIP)
-            {
-                if (fts->dir)
-                {
+            if (!fts->dir || f->nd || f->status == FTS_SKIP) {
+                if (fts->dir) {
                     closedir(fts->dir);
                     fts->dir = 0;
                 }
@@ -1022,12 +947,10 @@ fts_read(FTS *fts)
              * FTS_D or FTS_DNX, about to read children
              */
 
-            if (fts->cd == 0)
-            {
+            if (fts->cd == 0) {
                 if ((fts->cd = chdir(fts->name)) < 0)
                     pathcd(fts->home, NiL);
-                else if (fts->pwd != f)
-                {
+                else if (fts->pwd != f) {
                     f->pwd = fts->pwd;
                     fts->pwd = f;
                 }
@@ -1045,31 +968,24 @@ fts_read(FTS *fts)
 
         case FTS_readdir:
 
-            while (d = readdir(fts->dir))
-            {
+            while (d = readdir(fts->dir)) {
                 s = d->d_name;
-                if (s[0] == '.')
-                {
-                    if (s[1] == 0)
-                    {
+                if (s[0] == '.') {
+                    if (s[1] == 0) {
                         fts->current->nlink--;
                         if (!(fts->flags & FTS_SEEDOT))
                             continue;
                         n = 1;
-                    }
-                    else if (s[1] == '.' && s[2] == 0)
-                    {
+                    } else if (s[1] == '.' && s[2] == 0) {
                         fts->current->nlink--;
                         if (fts->current->must == 1)
                             fts->current->must = 0;
                         if (!(fts->flags & FTS_SEEDOT))
                             continue;
                         n = 2;
-                    }
-                    else
+                    } else
                         n = 0;
-                }
-                else
+                } else
                     n = 0;
 
                 /*
@@ -1085,59 +1001,49 @@ fts_read(FTS *fts)
                  * check for space
                  */
 
-                if (i >= fts->endbuf - fts->endbase)
-                {
+                if (i >= fts->endbuf - fts->endbase) {
                     if (resize(fts, i))
                         return 0;
                     fts->endbase = fts->base + fts->baselen;
                     if (fts->endbase[-1] != '/')
                         fts->endbase++;
                 }
-                if (fts->cpname)
-                {
+                if (fts->cpname) {
                     memcpy(fts->endbase, s, i + 1);
                     if (fts->cd)
                         s = fts->path;
                 }
-                if (n)
-                {
+                if (n) {
                     /*
                      * don't recurse on . and ..
                      */
 
                     if (n == 1)
                         f->fts_statp = fts->current->fts_statp;
-                    else
-                    {
+                    else {
                         if (f->fts_info != FTS_NS)
                             fts->dotdot = f;
-                        if (fts->current->fts_parent->fts_level < 0)
-                        {
+                        if (fts->current->fts_parent->fts_level < 0) {
                             f->fts_statp = &fts->current->fts_parent->statb;
                             info(fts, f, s, f->fts_statp, 0);
-                        }
-                        else
+                        } else
                             f->fts_statp
                             = fts->current->fts_parent->fts_statp;
                     }
                     f->fts_info = FTS_DOT;
-                }
-                else if ((fts->nostat || SKIP(fts, f))
-                         && (f->fts_info = FTS_NSOK)
-                         || info(fts, f, s, &f->statb, fts->flags))
+                } else if ((fts->nostat || SKIP(fts, f))
+                           && (f->fts_info = FTS_NSOK)
+                           || info(fts, f, s, &f->statb, fts->flags))
                     f->statb.st_ino = D_FILENO(d);
                 if (fts->comparf)
                     fts->root = search(f, fts->root, fts->comparf, 1);
                 else if (fts->children || f->fts_info == FTS_D
-                         || f->fts_info == FTS_SL)
-                {
+                         || f->fts_info == FTS_SL) {
                     if (fts->top)
                         fts->bot = fts->bot->fts_link = f;
                     else
                         fts->top = fts->bot = f;
-                }
-                else
-                {
+                } else {
                     /*
                      * terminal node
                      */
@@ -1161,15 +1067,13 @@ fts_read(FTS *fts)
             fts->dir = 0;
             if (fts->root)
                 getlist(&fts->top, &fts->bot, fts->root);
-            if (fts->children)
-            {
+            if (fts->children) {
                 /*
                  * try moving back to parent dir
                  */
 
                 fts->base[fts->baselen] = 0;
-                if (fts->cd <= 0)
-                {
+                if (fts->cd <= 0) {
                     f = fts->current->fts_parent;
                     if (fts->cd < 0 || f != fts->curdir || !fts->dotdot
                         || !SAME(f->fts_statp, fts->dotdot->fts_statp)
@@ -1199,8 +1103,7 @@ fts_read(FTS *fts)
         case FTS_children_resume:
 
             fts->base[fts->baselen] = 0;
-            if (fts->top)
-            {
+            if (fts->top) {
                 fts->bot->fts_link = fts->todo;
                 fts->todo = fts->top;
                 fts->top = 0;
@@ -1219,11 +1122,9 @@ fts_read(FTS *fts)
 
         case FTS_popstack_resume:
 
-            while (fts->todo && f == fts->todo)
-            {
+            while (fts->todo && f == fts->todo) {
                 t = f->fts_parent;
-                if ((f->fts_info & FTS_DP) == FTS_D)
-                {
+                if ((f->fts_info & FTS_DP) == FTS_D) {
                     /*
                      * delete from <dev,ino> tree
                      */
@@ -1231,8 +1132,7 @@ fts_read(FTS *fts)
                     if (f != fts->diroot)
                         fts->diroot = search(f, fts->diroot, statcmp, 0);
                     fts->diroot = deleteroot(fts->diroot);
-                    if (f == fts->curdir)
-                    {
+                    if (f == fts->curdir) {
                         fts->nd++;
                         fts->curdir = t;
                     }
@@ -1243,8 +1143,7 @@ fts_read(FTS *fts)
 
                     if (!(fts->flags & FTS_NOPOSTORDER)
                         && f->status != FTS_SKIP
-                        && f->status != FTS_NOPOSTORDER)
-                    {
+                        && f->status != FTS_NOPOSTORDER) {
                         /*
                          * move to parent dir
                          */
@@ -1286,13 +1185,10 @@ fts_read(FTS *fts)
                  * try again or delete from top of stack
                  */
 
-                if (f->status == FTS_AGAIN)
-                {
+                if (f->status == FTS_AGAIN) {
                     f->fts_info = FTS_D;
                     f->status = 0;
-                }
-                else
-                {
+                } else {
                     fts->todo = fts->todo->fts_link;
                     drop(fts, f);
                 }
@@ -1303,14 +1199,12 @@ fts_read(FTS *fts)
              * reset current directory
              */
 
-            if (fts->nd > 0 && popdirs(fts) < 0)
-            {
+            if (fts->nd > 0 && popdirs(fts) < 0) {
                 pathcd(fts->home, NiL);
                 fts->curdir = 0;
                 fts->cd = -1;
             }
-            if (fts->todo)
-            {
+            if (fts->todo) {
                 if (*fts->base)
                     fts->base += f->fts_namelen;
                 if (*(fts->base - 1) != '/')
@@ -1333,12 +1227,10 @@ fts_read(FTS *fts)
 
             i = f->fts_info != FTS_DNX;
             n = f->status == FTS_SKIP;
-            if (!n && fts->cd == 0)
-            {
+            if (!n && fts->cd == 0) {
                 if ((fts->cd = chdir(fts->base)) < 0)
                     pathcd(fts->home, NiL);
-                else if (fts->pwd != f)
-                {
+                else if (fts->pwd != f) {
                     f->pwd = fts->pwd;
                     fts->pwd = f;
                 }
@@ -1352,26 +1244,20 @@ fts_read(FTS *fts)
             if (fts->base[fts->baselen - 1] != '/')
                 fts->base[fts->baselen] = '/';
             for (fts->bot = 0, f = fts->top; f;)
-                if (n || f->status == FTS_SKIP)
-                {
+                if (n || f->status == FTS_SKIP) {
                     if (fts->bot)
                         fts->bot->fts_link = f->fts_link;
                     else
                         fts->top = f->fts_link;
                     drop(fts, f);
                     f = fts->bot ? fts->bot->fts_link : fts->top;
-                }
-                else
-                {
-                    if (fts->children > 1 && i)
-                    {
+                } else {
+                    if (fts->children > 1 && i) {
                         if (f->status == FTS_STAT)
                             info(fts, f, NiL, f->fts_statp, 0);
-                        else if (f->fts_info == FTS_NSOK && !SKIP(fts, f))
-                        {
+                        else if (f->fts_info == FTS_NSOK && !SKIP(fts, f)) {
                             s = f->fts_name;
-                            if (fts->cd)
-                            {
+                            if (fts->cd) {
                                 memcpy(fts->endbase, s, f->fts_namelen + 1);
                                 s = fts->path;
                             }
@@ -1402,15 +1288,12 @@ fts_read(FTS *fts)
              * follow symlink if asked to
              */
 
-            if (f->status == FTS_FOLLOW)
-            {
+            if (f->status == FTS_FOLLOW) {
                 f->status = 0;
                 if (f->fts_info == FTS_SL || ISTYPE(f, DT_LNK)
-                    || f->fts_info == FTS_NSOK)
-                {
+                    || f->fts_info == FTS_NSOK) {
                     info(fts, f, f->fts_accpath, f->fts_statp, 0);
-                    if (f->fts_info != FTS_SL)
-                    {
+                    if (f->fts_info != FTS_SL) {
                         fts->state = FTS_preorder;
                         continue;
                     }
@@ -1429,15 +1312,12 @@ fts_read(FTS *fts)
         case FTS_terminal:
 
             f = fts->current;
-            if (f->status == FTS_FOLLOW)
-            {
+            if (f->status == FTS_FOLLOW) {
                 f->status = 0;
                 if (f->fts_info == FTS_SL || ISTYPE(f, DT_LNK)
-                    || f->fts_info == FTS_NSOK)
-                {
+                    || f->fts_info == FTS_NSOK) {
                     info(fts, f, f->fts_accpath, f->fts_statp, 0);
-                    if (f->symlink && f->fts_info != FTS_SL)
-                    {
+                    if (f->symlink && f->fts_info != FTS_SL) {
                         if (!(f->fts_link = fts->top))
                             fts->bot = f;
                         fts->top = f;
@@ -1470,8 +1350,7 @@ note:
     for (p = notify; p; p = p->next)
         if ((n = (*p->notifyf)(fts, f, p->context)) > 0)
             break;
-        else if (n < 0)
-        {
+        else if (n < 0) {
             fts->fts_errno = EINVAL;
             fts->state = FTS_error;
             return 0;
@@ -1492,8 +1371,7 @@ fts_set(FTS *fts, FTSENT *f, int status)
     if (fts || !f)
 #endif
     return -1;
-    switch (status)
-    {
+    switch (status) {
     case FTS_AGAIN:
         break;
     case FTS_FOLLOW:
@@ -1526,8 +1404,7 @@ fts_children(FTS *fts, int flags)
 {
     FTSENT *f;
 
-    switch (fts->state)
-    {
+    switch (fts->state) {
 
     case 0:
 
@@ -1598,18 +1475,15 @@ fts_close(FTS *fts)
     free(fts->home);
     if (fts->state == FTS_children_return)
         fts->current->fts_link = fts->link;
-    if (fts->top)
-    {
+    if (fts->top) {
         fts->bot->fts_link = fts->todo;
         fts->todo = fts->top;
     }
-    for (f = fts->todo; f; f = x)
-    {
+    for (f = fts->todo; f; f = x) {
         x = f->fts_link;
         free(f);
     }
-    for (f = fts->free; f; f = x)
-    {
+    for (f = fts->free; f; f = x) {
         x = f->fts_link;
         free(f);
     }
@@ -1628,20 +1502,16 @@ fts_notify(Notify_f notifyf, void *context)
     Notify_t *np;
     Notify_t *pp;
 
-    if (context)
-    {
+    if (context) {
         if (!(np = newof(0, Notify_t, 1, 0)))
             return -1;
         np->notifyf = notifyf;
         np->context = context;
         np->next = notify;
         notify = np;
-    }
-    else
-    {
+    } else {
         for (np = notify, pp = 0; np; pp = np, np = np->next)
-            if (np->notifyf == notifyf)
-            {
+            if (np->notifyf == notifyf) {
                 if (pp)
                     pp->next = np->next;
                 else

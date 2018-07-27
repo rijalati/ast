@@ -52,31 +52,24 @@ next(Cx_t *cx)
 
     if (cx->eof || !cx->include)
         return 0;
-    for (;;)
-    {
-        while (cx->include->next >= cx->include->last)
-        {
-            if (cx->include->newline > 1)
-            {
+    for (;;) {
+        while (cx->include->next >= cx->include->last) {
+            if (cx->include->newline > 1) {
                 cx->include->newline--;
                 return '\n';
             }
-            if (cx->include->prompt)
-            {
-                if (cx->include->head)
-                {
+            if (cx->include->prompt) {
+                if (cx->include->head) {
                     cx->include->head = 0;
                     sfputr(sfstderr, cx->disc->ps1, -1);
-                }
-                else
+                } else
                     sfputr(
                     sfstderr, cx->disc->ps2 ? cx->disc->ps2 : "> ", -1);
             }
             if ((cx->include->base = sfgetr(cx->include->sp, '\n', 0))
                 && !(cx->include->newline = 0)
                 || (cx->include->base = sfgetr(cx->include->sp, '\n', -1))
-                   && (cx->include->newline = 2))
-            {
+                   && (cx->include->newline = 2)) {
                 cx->include->next = cx->include->base;
                 cx->include->last
                 = cx->include->base + sfvalue(cx->include->sp);
@@ -88,17 +81,13 @@ next(Cx_t *cx)
                              cx->include->last - cx->include->next,
                              cx->include->base,
                              cx->include->newline ? "\n" : "");
-            }
-            else if (cx->include->final || !cx->include->pop)
-            {
+            } else if (cx->include->final || !cx->include->pop) {
                 cx->include->eof = 1;
                 return 0;
-            }
-            else if (cxpop(cx, cx->include) <= 0)
+            } else if (cxpop(cx, cx->include) <= 0)
                 return 0;
         }
-        for (;;)
-        {
+        for (;;) {
             /*
              * NOTE: sgi.mips3 gets memory fault here if
              *	 cx->include->last is on the boundary of an
@@ -152,8 +141,7 @@ _trace_next(Cx_t* cx)
 static void
 back(Cx_t *cx)
 {
-    if (cx->include->next > cx->include->base)
-    {
+    if (cx->include->next > cx->include->base) {
         if (cx->include && cx->include->newline == 1)
             cx->include->newline++;
         else
@@ -193,8 +181,7 @@ cxcontext(Cx_t *cx)
     if ((t - cx->include->base) < 40)
         sfprintf(
         cx->tp, "%-.*s<<<", t - cx->include->base, cx->include->base);
-    else
-    {
+    else {
         for (s = t - 30; s > cx->include->base
                          && (cx->ctype[*( unsigned char * )s]
                              & (CX_CTYPE_ALPHA | CX_CTYPE_DIGIT));
@@ -225,10 +212,8 @@ cxcodename(int code)
     i = code >> CX_ATTR;
     if (i >= (elementsof(name) - 1))
         sfsprintf(b, n, "<%d:%o>", i + 1, code & ((1 << CX_ATTR) - 1));
-    else
-    {
-        switch (name[i])
-        {
+    else {
+        switch (name[i]) {
         case 'C':
             s = stpcpy(s, "CALL");
             break;
@@ -272,8 +257,7 @@ cxcodename(int code)
         case '~':
             if (code == CX_NOMATCH)
                 *s++ = '!';
-            else
-            {
+            else {
                 code &= ~CX_ASSIGN;
                 *s++ = '=';
             }
@@ -311,13 +295,11 @@ cxcodetrace(Cx_t *cx,
     o = cxcodename(pc->op);
     if ((*o == 'G' || *o == 'S') && *(o + 1) == 'E')
         sfsprintf(val, sizeof(val), "  %s", pc->data.variable->name);
-    else if (*o == 'C')
-    {
+    else if (*o == 'C') {
         if (pc->data.pointer)
             sfsprintf(
             val, sizeof(val), "  %s", (( Cxedit_t * )pc->data.pointer)->name);
-    }
-    else if (pc->type == cx->state->type_string)
+    } else if (pc->type == cx->state->type_string)
         sfsprintf(val, sizeof(val), "  \"%-.6s\"", pc->data.string.data);
     else if (pc->type == cx->state->type_number)
         sfsprintf(val, sizeof(val), "  %8.4Lf", pc->data.number);
@@ -325,8 +307,7 @@ cxcodetrace(Cx_t *cx,
         sfsprintf(val, sizeof(val), "  %p", pc->data.pointer);
     else
         val[0] = 0;
-    if (bp)
-    {
+    if (bp) {
         if ((sp - 1)->type == cx->state->type_string)
             sfsprintf(a,
                       sizeof(a),
@@ -354,9 +335,7 @@ cxcodetrace(Cx_t *cx,
             sfsprintf(b, sizeof(b), "  [%d]%p", sp - bp, sp->value.pointer);
         else
             b[0] = 0;
-    }
-    else
-    {
+    } else {
         a[0] = 0;
         b[0] = 0;
     }
@@ -412,8 +391,7 @@ cxpush(Cx_t *cx,
     int retain;
     char tmp[PATH_MAX];
 
-    if (sp)
-    {
+    if (sp) {
         retain = 1;
         if (buf && cx->disc->errorf)
             (*cx->disc->errorf)(
@@ -421,15 +399,12 @@ cxpush(Cx_t *cx,
             cx->disc,
             1,
             "both file and buffer specified -- buffer ignored");
-    }
-    else
-    {
+    } else {
         retain = 0;
         if (buf
             && (!(sp = sfstropen())
                 || sfstrbuf(
-                   sp, ( char * )buf, len >= 0 ? len : strlen(buf) + 1, 0)))
-        {
+                   sp, ( char * )buf, len >= 0 ? len : strlen(buf) + 1, 0))) {
             if (sp)
                 sfclose(sp);
             if (cx->disc->errorf)
@@ -437,29 +412,22 @@ cxpush(Cx_t *cx,
             return 0;
         }
     }
-    if (!file || streq(file, "-"))
-    {
+    if (!file || streq(file, "-")) {
         path = 0;
-        if (!sp)
-        {
+        if (!sp) {
             sp = sfstdin;
             retain = 1;
         }
         prompt = cx->disc->ps1 && isatty(sffileno(sp));
-    }
-    else
-    {
+    } else {
         if (sp)
             path = ( char * )file;
-        else if (!(path = pathfind(file, cx->id, NiL, tmp, sizeof(tmp))))
-        {
+        else if (!(path = pathfind(file, cx->id, NiL, tmp, sizeof(tmp)))) {
             if (cx->disc->errorf)
                 (*cx->disc->errorf)(
                 NiL, cx->disc, 2, "%s: include file not found", file);
             return 0;
-        }
-        else if (!(sp = sfopen(NiL, path, "r")))
-        {
+        } else if (!(sp = sfopen(NiL, path, "r"))) {
             if (cx->disc->errorf)
                 (*cx->disc->errorf)(
                 NiL, cx->disc, 2, "%s: cannot read", path);
@@ -467,8 +435,7 @@ cxpush(Cx_t *cx,
         }
         prompt = 0;
     }
-    if (!(ip = vmnewof(cx->vm, 0, Cxinclude_t, 1, path ? strlen(path) : 0)))
-    {
+    if (!(ip = vmnewof(cx->vm, 0, Cxinclude_t, 1, path ? strlen(path) : 0))) {
         if (!retain)
             sfclose(sp);
         if (cx->disc->errorf)
@@ -504,13 +471,11 @@ cxpop(Cx_t *cx, void *pop)
     Cxinclude_t *pp = ( Cxinclude_t * )pop;
     Cxinclude_t *ip;
 
-    if (!(ip = cx->include))
-    {
+    if (!(ip = cx->include)) {
         cx->eof = 1;
         return -1;
     }
-    do
-    {
+    do {
         if (!ip->retain)
             sfclose(ip->sp);
         cx->include = ip->pop;
@@ -533,10 +498,8 @@ cxatfree(Cx_t *cx, Cxexpr_t *expr, Cxdone_f donef, void *data)
 {
     Cxdone_t *dp;
 
-    if (donef)
-    {
-        if (!(dp = vmnewof(expr->vm, 0, Cxdone_t, 1, 0)))
-        {
+    if (donef) {
+        if (!(dp = vmnewof(expr->vm, 0, Cxdone_t, 1, 0))) {
             if (cx->disc->errorf)
                 (*cx->disc->errorf)(cx, cx->disc, 2, "out of space");
             return -1;
@@ -545,9 +508,7 @@ cxatfree(Cx_t *cx, Cxexpr_t *expr, Cxdone_f donef, void *data)
         dp->data = data;
         dp->next = expr->done;
         expr->done = dp;
-    }
-    else
-    {
+    } else {
         for (dp = expr->done; dp; dp = dp->next)
             (*dp->donef)(cx, dp->data, cx->disc);
         expr->done = 0;
@@ -567,8 +528,7 @@ identifier(Cx_t *cx, Cxcompile_t *cc, int c, Cxoperand_t *r)
     r->refs = 0;
     if (!c)
         c = next(cx);
-    if (!cx->referencef)
-    {
+    if (!cx->referencef) {
         if (cx->disc->errorf)
             (*cx->disc->errorf)(
             cx, cx->disc, 2, "%s variables not supported", cxcontext(cx));
@@ -576,19 +536,15 @@ identifier(Cx_t *cx, Cxcompile_t *cc, int c, Cxoperand_t *r)
     }
     if (c == '.')
         sfputc(cx->tp, c);
-    else
-    {
-        for (;;)
-        {
-            do
-            {
+    else {
+        for (;;) {
+            do {
                 sfputc(cx->tp, c);
             } while (cx->ctype[c = next(cx)]
                      & (CX_CTYPE_ALPHA | CX_CTYPE_DIGIT));
             if (c != ':' || r->refs)
                 break;
-            if (next(cx) != ':')
-            {
+            if (next(cx) != ':') {
                 back(cx);
                 break;
             }
@@ -619,14 +575,11 @@ variable(Cx_t *cx, Cxcompile_t *cc, int c, Cxtype_t *m, Cxtype_t **type)
     if (identifier(cx, cc, c, &a))
         return 0;
     b.type = m;
-    if (a.refs)
-    {
+    if (a.refs) {
         if (!(r.value.variable
               = cxfunction(cx, a.value.string.data, cx->disc)))
             return 0;
-    }
-    else
-    {
+    } else {
         a.refs = 0;
         if (!m && type
             && (*type = ( Cxtype_t * )dtmatch(cx->types, a.value.string.data))
@@ -658,8 +611,7 @@ cast(Cx_t *cx,
                               r->value.string.size,
                               cx->em,
                               cx->disc)
-        < 0)
-    {
+        < 0) {
         (*cx->disc->errorf)(cx,
                             cx->disc,
                             2,
@@ -757,16 +709,14 @@ code(Cx_t *cx,
     else
         x.data.string.size = strlen(x.data.string.data = ( char * )pointer);
     x.callout = 0;
-    if (op == CX_REF || op == CX_GET)
-    {
+    if (op == CX_REF || op == CX_GET) {
         if ((
             (f = cxrecode(cx, op, type1, type2, cx->disc))
             || (f = cxrecode(
                 cx, op, cx->state->type_void, cx->state->type_void, cx->disc)))
             && (*f)(cx, expr, &x, NiL, NiL, NiL, cx->disc))
             return 0;
-        if (op == CX_GET && (( Cxvariable_t * )pointer)->member)
-        {
+        if (op == CX_GET && (( Cxvariable_t * )pointer)->member) {
             x.callout = (( Cxvariable_t * )pointer)->member->member->getf;
             x.pp--;
         }
@@ -775,15 +725,12 @@ code(Cx_t *cx,
         v1 = v2 = i1->data.variable;
         if (op != CX_REF)
             type1 = type2 = i1->type;
-    }
-    else if (op != CX_END)
-    {
+    } else if (op != CX_END) {
         i1 = ( Cxinstruction_t * )(sfstrseek(cc->xp, 0, SEEK_CUR)
                                    - 2 * sizeof(Cxinstruction_t));
         i2 = i1 + 1;
         if ((i1->op == CX_GET || i1->op == CX_CAST && (i1 - 1)->op == CX_GET)
-            && (f = cxrecode(cx, op, type1, type2, cx->disc)))
-        {
+            && (f = cxrecode(cx, op, type1, type2, cx->disc))) {
             expr->vm = cc->vm;
             expr->done = cc->done;
             if ((*f)(cx, expr, &x, i1, i2, NiL, cx->disc))
@@ -807,17 +754,14 @@ code(Cx_t *cx,
         && (x.callout
             = cxcallout(cx, op, type1->fundamental, type2, cx->disc)))
         goto done;
-    if (type1 == type2 || (op & CX_UNARY))
-    {
+    if (type1 == type2 || (op & CX_UNARY)) {
         type1 = type2 = type1->fundamental;
         if (x.callout = cxcallout(cx, op, type1, type2, cx->disc))
             goto done;
     }
-    if (type1 != type2)
-    {
+    if (type1 != type2) {
         if (v1 && (c.callout = cxcallout(cx, CX_CAST, type1, type2, cx->disc))
-            && (x.callout = cxcallout(cx, op, type2, type2, cx->disc)))
-        {
+            && (x.callout = cxcallout(cx, op, type2, type2, cx->disc))) {
             t = *( Cxinstruction_t * )(sfstrseek(
             cc->xp, -sizeof(Cxinstruction_t), SEEK_CUR));
             c.op = CX_CAST;
@@ -842,15 +786,13 @@ code(Cx_t *cx,
             sfwrite(cc->xp, &t, sizeof(t));
             goto done;
         }
-        if (x.callout = cxcallout(cx, op, type1, type1, cx->disc))
-        {
+        if (x.callout = cxcallout(cx, op, type1, type1, cx->disc)) {
             if (v1 && v1->format.map && cxisstring(type2)
                 && !cxstr2num(cx,
                               &v1->format,
                               i2->data.string.data,
                               i2->data.string.size,
-                              &m))
-            {
+                              &m)) {
                 i2->op = CX_NUM;
                 i2->type = cx->state->type_number;
                 i2->data.number = ( Cxinteger_t )m;
@@ -861,25 +803,21 @@ code(Cx_t *cx,
                               &v2->format,
                               i1->data.string.data,
                               i1->data.string.size,
-                              &m))
-            {
+                              &m)) {
                 i1->op = CX_NUM;
                 i1->type = cx->state->type_number;
                 i1->data.number = ( Cxinteger_t )m;
                 goto done;
             }
-            if (cxisstring(type2))
-            {
+            if (cxisstring(type2)) {
                 if (cxisnumber(type1) && i2->op == CX_STR
-                    && i2->data.string.size == 1)
-                {
+                    && i2->data.string.size == 1) {
                     i2->op = CX_NUM;
                     i2->type = cx->state->type_number;
                     i2->data.number = i2->data.string.data[0];
                     goto done;
                 }
-                if (type1->internalf)
-                {
+                if (type1->internalf) {
                     if ((*type1->internalf)(cx,
                                             type1,
                                             NiL,
@@ -897,12 +835,10 @@ code(Cx_t *cx,
                     goto done;
                 }
             }
-            if (cxisnumber(type2) && cxisstring(type1))
-            {
+            if (cxisnumber(type2) && cxisstring(type1)) {
                 if (i1->op == CX_STR && i1->data.string.size == 1
                     && (x.callout
-                        = cxcallout(cx, op, type2, type2, cx->disc)))
-                {
+                        = cxcallout(cx, op, type2, type2, cx->disc))) {
                     i1->op = CX_NUM;
                     i1->type = cx->state->type_number;
                     i1->data.number = i1->data.string.data[0];
@@ -917,12 +853,10 @@ code(Cx_t *cx,
         if (v1 && cxisstring(type1) && !v2 && cxisnumber(type2)
             && (x.callout = cxcallout(
                 cx, op, type1->fundamental, type1->fundamental, cx->disc))
-            && !cxnum2str(cx, &v1->format, i2->data.number, &s))
-        {
+            && !cxnum2str(cx, &v1->format, i2->data.number, &s)) {
             i2->op = CX_STR;
             i2->type = type1->fundamental;
-            if (!(i2->data.string.data = vmstrdup(cc->vm, s)))
-            {
+            if (!(i2->data.string.data = vmstrdup(cc->vm, s))) {
                 if (cx->disc->errorf)
                     (*cx->disc->errorf)(cx, cx->disc, 2, "out of space");
                 return 0;
@@ -933,12 +867,10 @@ code(Cx_t *cx,
         if (v2 && cxisstring(type2) && !v1 && cxisnumber(type1)
             && (x.callout = cxcallout(
                 cx, op, type2->fundamental, type2->fundamental, cx->disc))
-            && !cxnum2str(cx, &v2->format, i1->data.number, &s))
-        {
+            && !cxnum2str(cx, &v2->format, i1->data.number, &s)) {
             i1->op = CX_STR;
             i1->type = type2->fundamental;
-            if (!(i1->data.string.data = vmstrdup(cc->vm, s)))
-            {
+            if (!(i1->data.string.data = vmstrdup(cc->vm, s))) {
                 if (cx->disc->errorf)
                     (*cx->disc->errorf)(cx, cx->disc, 2, "out of space");
                 return 0;
@@ -948,22 +880,19 @@ code(Cx_t *cx,
         }
         if (cxisstring(type2) && type1->internalf
             && (x.callout = cxcallout(
-                cx, op, type1->fundamental, type1->fundamental, cx->disc)))
-        {
+                cx, op, type1->fundamental, type1->fundamental, cx->disc))) {
             if (cxisnumber(type1) && v1 && v1->format.map
                 && !cxstr2num(cx,
                               &v1->format,
                               i2->data.string.data,
                               i2->data.string.size,
-                              &m))
-            {
+                              &m)) {
                 i2->op = CX_NUM;
                 i2->type = type1->fundamental;
                 i2->data.number = ( Cxinteger_t )m;
                 goto done;
             }
-            if (!v2)
-            {
+            if (!v2) {
                 r.type = type1->fundamental;
                 if ((*type1->internalf)(cx,
                                         type1,
@@ -984,22 +913,19 @@ code(Cx_t *cx,
         }
         if (cxisstring(type1) && type2->internalf
             && (x.callout
-                = cxcallout(cx, op, type2->fundamental, type2, cx->disc)))
-        {
+                = cxcallout(cx, op, type2->fundamental, type2, cx->disc))) {
             if (cxisnumber(type2) && v2 && v2->format.map
                 && !cxstr2num(cx,
                               &v2->format,
                               i1->data.string.data,
                               i1->data.string.size,
-                              &m))
-            {
+                              &m)) {
                 i1->op = CX_NUM;
                 i1->type = type2->fundamental;
                 i1->data.number = ( Cxinteger_t )m;
                 goto done;
             }
-            if (!v1)
-            {
+            if (!v1) {
                 r.type = type2->fundamental;
                 if ((*type2->internalf)(cx,
                                         type2,
@@ -1043,8 +969,7 @@ done:
     if ((cx->flags & CX_DEBUG) && sfstrtell(cc->xp))
         cxcodetrace(
         cx, "comp", &x, ( unsigned int )sfstrtell(cc->xp) / sizeof(x), 0, 0);
-    if (sfwrite(cc->xp, &x, sizeof(x)) != sizeof(x))
-    {
+    if (sfwrite(cc->xp, &x, sizeof(x)) != sizeof(x)) {
         if (cx->disc->errorf)
             (*cx->disc->errorf)(cx, cx->disc, 2, "out of space");
         return 0;
@@ -1087,25 +1012,19 @@ prototype(Cx_t *cx,
     o = *op;
     t = 0;
     r = 0;
-    for (;;)
-    {
-        if ((c = *s++) == 0)
-        {
+    for (;;) {
+        if ((c = *s++) == 0) {
             s--;
             break;
-        }
-        else if (c == '[')
+        } else if (c == '[')
             o++;
         else if (c == ']')
             o--;
-        else if (c == '.')
-        {
-            if (!e)
-            {
+        else if (c == '.') {
+            if (!e) {
                 e = s;
                 o = 0;
-                while (--e > ( char * )v->prototype)
-                {
+                while (--e > ( char * )v->prototype) {
                     if ((c = *e) == '[' || !o--)
                         break;
                     else if (c == ']')
@@ -1114,23 +1033,18 @@ prototype(Cx_t *cx,
                 o = 1;
             }
             s = e;
-            if (*s == '.')
-            {
+            if (*s == '.') {
                 t = cx->state->type_void;
                 r = 1;
                 break;
             }
-        }
-        else if (c == '*')
-        {
+        } else if (c == '*') {
             t = cx->state->type_void;
             r = 1;
             break;
-        }
-        else if (c == '&'
-                 && (cx->ctype[*( unsigned char * )s] & CX_CTYPE_ALPHA)
-                 || (cx->ctype[c] & CX_CTYPE_ALPHA))
-        {
+        } else if (c == '&'
+                   && (cx->ctype[*( unsigned char * )s] & CX_CTYPE_ALPHA)
+                   || (cx->ctype[c] & CX_CTYPE_ALPHA)) {
             if (c != '&')
                 s--;
             for (u = buf; (cx->ctype[*( unsigned char * )s]
@@ -1139,14 +1053,11 @@ prototype(Cx_t *cx,
                 if (u < &buf[sizeof(buf) - 1])
                     *u++ = *s;
             *u = 0;
-            if (t = cxtype(cx, buf, cx->disc))
-            {
+            if (t = cxtype(cx, buf, cx->disc)) {
                 if (c == '&')
                     t = cx->state->type_reference;
                 r = 1;
-            }
-            else
-            {
+            } else {
                 if (cx->disc->errorf)
                     (*cx->disc->errorf)(cx,
                                         cx->disc,
@@ -1206,13 +1117,10 @@ again:
     m = 0;
     x = 0;
     v = 0;
-    while (c = next(cx))
-    {
-        if (o = cx->table->opcode[c])
-        {
+    while (c = next(cx)) {
+        if (o = cx->table->opcode[c]) {
             i = 0;
-            if ((p = next(cx)) == c)
-            {
+            if ((p = next(cx)) == c) {
                 p = next(cx);
                 if (c == '!')
                     o = CX_LOG;
@@ -1220,35 +1128,24 @@ again:
                     o |= CX_X2;
                 i++;
             }
-            if (p == '~')
-            {
-                if (c == '=')
-                {
+            if (p == '~') {
+                if (c == '=') {
                     o = CX_MATCH;
                     i++;
-                }
-                else if (c == '!')
-                {
+                } else if (c == '!') {
                     o = CX_NOMATCH;
                     i++;
-                }
-                else
+                } else
                     back(cx);
-            }
-            else if (p == '=' && !(o & CX_ASSIGN))
-            {
+            } else if (p == '=' && !(o & CX_ASSIGN)) {
                 o |= CX_ASSIGN;
                 o &= ~CX_UNARY;
                 i++;
-            }
-            else
+            } else
                 back(cx);
-            if (o == CX_ADDADD || o == CX_SUBSUB)
-            {
-                if (!v)
-                {
-                    if (x)
-                    {
+            if (o == CX_ADDADD || o == CX_SUBSUB) {
+                if (!v) {
+                    if (x) {
                         if (cx->disc->errorf)
                             (*cx->disc->errorf)(cx,
                                                 cx->disc,
@@ -1308,8 +1205,7 @@ again:
                           0,
                           NiL))
                     goto bad;
-                if (x)
-                {
+                if (x) {
                     if (!code(cx,
                               cc,
                               expr,
@@ -1339,16 +1235,13 @@ again:
             }
             if (!x)
                 o |= CX_UNARY;
-            if (o == CX_AND && precedence == cx->table->precedence[CX_CALL])
-            {
+            if (o == CX_AND && precedence == cx->table->precedence[CX_CALL]) {
                 while (i--)
                     back(cx);
                 goto done;
             }
-            if ((o & CX_ASSIGN) && !cx->table->comparison[o])
-            {
-                if (!v)
-                {
+            if ((o & CX_ASSIGN) && !cx->table->comparison[o]) {
+                if (!v) {
                     if (cx->disc->errorf)
                         (*cx->disc->errorf)(cx,
                                             cx->disc,
@@ -1358,8 +1251,7 @@ again:
                     goto bad;
                 }
                 p = cx->table->precedence[CX_SET];
-                if (o != CX_SET)
-                {
+                if (o != CX_SET) {
                     if (cxisvoid(v->type))
                         goto undefined;
                     o &= ~CX_ASSIGN;
@@ -1375,9 +1267,7 @@ again:
                               NiL))
                         goto bad;
                 }
-            }
-            else if (o == CX_REF)
-            {
+            } else if (o == CX_REF) {
                 if (!(v = variable(cx, cc, 0, m, 0)))
                     goto bad;
                 m = 0;
@@ -1395,11 +1285,8 @@ again:
                 v = 0;
                 x = 1;
                 continue;
-            }
-            else
-            {
-                if (x == 2)
-                {
+            } else {
+                if (x == 2) {
                     if (!code(cx,
                               cc,
                               expr,
@@ -1411,9 +1298,7 @@ again:
                               0,
                               NiL))
                         goto bad;
-                }
-                else if (v)
-                {
+                } else if (v) {
                     if (cxisvoid(v->type))
                         goto undefined;
                     if (!code(cx,
@@ -1431,12 +1316,10 @@ again:
                 }
                 p = cx->table->precedence[o];
             }
-            if (!p)
-            {
+            if (!p) {
                 if ((o & CX_UNARY) && c == '/')
                     goto quote;
-                if (cx->disc->errorf)
-                {
+                if (cx->disc->errorf) {
                     if (o & CX_UNARY)
                         (*cx->disc->errorf)(cx,
                                             cx->disc,
@@ -1450,25 +1333,20 @@ again:
                 }
                 goto bad;
             }
-            if (o & CX_UNARY)
-            {
+            if (o & CX_UNARY) {
                 if (x)
                     goto operator_expected;
-            }
-            else
-            {
+            } else {
                 if (!x)
                     goto operand_expected;
             }
-            if (precedence >= p && o != CX_SET)
-            {
+            if (precedence >= p && o != CX_SET) {
                 while (i--)
                     back(cx);
                 goto done;
             }
             z = 0;
-            if (!(o & CX_UNARY) && cx->table->logical[o])
-            {
+            if (!(o & CX_UNARY) && cx->table->logical[o]) {
                 if (!cxislogical(cc->type)
                     && !code(cx,
                              cc,
@@ -1481,8 +1359,7 @@ again:
                              0,
                              NiL))
                     goto bad;
-                if (o == CX_ANDAND || o == CX_OROR)
-                {
+                if (o == CX_ANDAND || o == CX_OROR) {
                     z = sfstrtell(cc->xp);
                     if (!code(cx,
                               cc,
@@ -1501,8 +1378,7 @@ again:
             if (parse(cx, cc, expr, p, NiL) != cx->state->type_void
                 || cx->error)
                 goto bad;
-            if (cx->table->logical[o] && !cxislogical(cc->type))
-            {
+            if (cx->table->logical[o] && !cxislogical(cc->type)) {
                 if (!code(cx,
                           cc,
                           expr,
@@ -1532,12 +1408,9 @@ again:
                 goto bad;
             if (cx->table->comparison[o] || cx->table->logical[o])
                 h = 0;
-            if (v)
-            {
-                if (v->type != cc->type)
-                {
-                    if (v->type != cx->state->type_void)
-                    {
+            if (v) {
+                if (v->type != cc->type) {
+                    if (v->type != cx->state->type_void) {
                         if (cx->disc->errorf)
                             (*cx->disc->errorf)(cx,
                                                 cx->disc,
@@ -1567,19 +1440,15 @@ again:
                 (( Cxinstruction_t * )(sfstrbase(cc->xp) + z))->data.number
                 = (sfstrtell(cc->xp) - z) / sizeof(Cxinstruction_t);
             x = 1;
-        }
-        else if (cx->ctype[c] & CX_CTYPE_DIGIT)
-        {
+        } else if (cx->ctype[c] & CX_CTYPE_DIGIT) {
             if (x)
                 goto operator_expected;
             i = 0;
             sfputc(cx->tp, c);
             while (cx->ctype[c = next(cx)]
-                   & (CX_CTYPE_ALPHA | CX_CTYPE_DIGIT | CX_CTYPE_FLOAT))
-            {
+                   & (CX_CTYPE_ALPHA | CX_CTYPE_DIGIT | CX_CTYPE_FLOAT)) {
                 sfputc(cx->tp, c);
-                switch (c)
-                {
+                switch (c) {
                 case '#':
                     i = 4;
                     break;
@@ -1588,8 +1457,7 @@ again:
                     break;
                 case 'e':
                 case 'E':
-                    if (i < 3)
-                    {
+                    if (i < 3) {
                         i = 3;
                         if ((c = next(cx)) == '-' || c == '+')
                             sfputc(cx->tp, c);
@@ -1605,8 +1473,7 @@ again:
                 n = ( double )strtonll(s, &e, NiL, 0);
             if (i || *e)
                 n = strtod(s, &e);
-            if (*e)
-            {
+            if (*e) {
                 if (cx->disc->errorf)
                     (*cx->disc->errorf)(
                     cx, cx->disc, 2, "%s: invalid numeric constant", s);
@@ -1624,16 +1491,12 @@ again:
                       NiL))
                 goto bad;
             x = 1;
-        }
-        else if (cx->ctype[c] & CX_CTYPE_ALPHA)
-        {
+        } else if (cx->ctype[c] & CX_CTYPE_ALPHA) {
             if (x)
                 goto operator_expected;
         alpha:
-            if (!(v = variable(cx, cc, c, m, &t)))
-            {
-                if (t)
-                {
+            if (!(v = variable(cx, cc, c, m, &t))) {
+                if (t) {
                     x = 2;
                     continue;
                 }
@@ -1643,13 +1506,11 @@ again:
             m = 0;
             while ((c = next(cx)) == ' ' || c == '\t' || c == '\r')
                 ;
-            if (v->function)
-            {
+            if (v->function) {
                 i = 0;
                 if (c == '(')
                     p = q = ')';
-                else
-                {
+                else {
                     p = '\n';
                     q = ';';
                     if (c && c != p && c != q)
@@ -1674,41 +1535,35 @@ again:
                 e = 0;
                 if ((r = prototype(cx, cc, v, &t, &s, &e, &o)) < 0)
                     goto bad;
-                if (c != p && c != q)
-                {
+                if (c != p && c != q) {
                     cc->collecting++;
                     k = cc->paren;
                     cc->paren = p == ')';
-                    for (;;)
-                    {
+                    for (;;) {
                         z = sfstrtell(cc->xp);
                         if (parse(
                             cx, cc, expr, cx->table->precedence[CX_CALL], NiL)
                             != cx->state->type_void
-                            || cx->error)
-                        {
+                            || cx->error) {
                             cc->collecting--;
                             cc->paren = k;
                             goto bad;
                         }
-                        if (sfstrtell(cc->xp) != z)
-                        {
+                        if (sfstrtell(cc->xp) != z) {
                             i++;
-                            while (cc->type != t && t != cx->state->type_void)
-                            {
+                            while (cc->type != t
+                                   && t != cx->state->type_void) {
                                 if (o && r > 0
                                     && (r = prototype(
                                         cx, cc, v, &t, &s, &e, &o))
                                        > 0)
                                     continue;
-                                if (r < 0)
-                                {
+                                if (r < 0) {
                                     cc->collecting--;
                                     cc->paren = k;
                                     goto bad;
                                 }
-                                if (cx->disc->errorf)
-                                {
+                                if (cx->disc->errorf) {
                                     if (r < 0)
                                         (*cx->disc->errorf)(
                                         cx,
@@ -1734,15 +1589,13 @@ again:
                                 goto bad;
                             }
                             if ((r = prototype(cx, cc, v, &t, &s, &e, &o))
-                                < 0)
-                            {
+                                < 0) {
                                 cc->collecting--;
                                 cc->paren = k;
                                 goto bad;
                             }
                         }
-                        if (!(c = next(cx)))
-                        {
+                        if (!(c = next(cx))) {
                             if (cx->disc->errorf)
                                 (*cx->disc->errorf)(
                                 cx,
@@ -1761,8 +1614,7 @@ again:
                     }
                     cc->collecting--;
                     cc->paren = k;
-                    if (c != p && c != q)
-                    {
+                    if (c != p && c != q) {
                         if (cx->disc->errorf)
                             (*cx->disc->errorf)(
                             cx,
@@ -1774,8 +1626,7 @@ again:
                         goto bad;
                     }
                 }
-                if (r > 0 && !o)
-                {
+                if (r > 0 && !o) {
                     if (cx->disc->errorf)
                         (*cx->disc->errorf)(
                         cx,
@@ -1800,28 +1651,22 @@ again:
                           0,
                           NiL))
                     goto bad;
-                if (g)
-                {
+                if (g) {
                     if (codecast(cx, cc, g, cast, NiL))
                         goto bad;
                     g = 0;
                 }
                 v = 0;
-            }
-            else if (c == '(')
-            {
+            } else if (c == '(') {
                 if (cx->disc->errorf)
                     (*cx->disc->errorf)(
                     cx, cx->disc, 2, "%s: unknown function", v->name);
                 goto bad;
-            }
-            else
+            } else
                 back(cx);
             x = 1;
-        }
-        else
-            switch (c)
-            {
+        } else
+            switch (c) {
             case 0:
                 goto done;
             case '.':
@@ -1830,8 +1675,7 @@ again:
                 if (!x || !v
                     || (!(m = v->type) || !m->member || !m->member->members)
                        && (!(m = v->type->base) || !m->member
-                           || !m->member->members))
-                {
+                           || !m->member->members)) {
                     if (cx->disc->errorf)
                         (*cx->disc->errorf)(
                         cx,
@@ -1856,8 +1700,7 @@ again:
                 v = 0;
                 continue;
             case ',':
-                if (cc->collecting)
-                {
+                if (cc->collecting) {
                     next(cx);
                     goto done;
                 }
@@ -1883,13 +1726,12 @@ again:
                 clear(cx);
                 goto done;
             case '\n':
-                if (cc->collecting)
-                {
+                if (cc->collecting) {
                     if (!cc->paren)
                         goto done;
-                }
-                else if (precedence <= cx->table->precedence[CX_CALL]
-                         || precedence > cx->table->precedence[CX_PAREN] && x)
+                } else if (precedence <= cx->table->precedence[CX_CALL]
+                           || precedence > cx->table->precedence[CX_PAREN]
+                              && x)
                     goto done;
                 continue;
             case ' ':
@@ -1900,14 +1742,12 @@ again:
                 if (x)
                     goto operator_expected;
                 e = cx->include->next;
-                if (cx->ctype[c = next(cx)] & CX_CTYPE_ALPHA)
-                {
+                if (cx->ctype[c = next(cx)] & CX_CTYPE_ALPHA) {
                     if (!identifier(cx, cc, c, &w) && (c = next(cx)) == ')'
                         && ((c = next(cx)) == '('
-                            || (cx->ctype[c] & CX_CTYPE_ALPHA)))
-                    {
-                        if (!(g = cxtype(cx, w.value.string.data, cx->disc)))
-                        {
+                            || (cx->ctype[c] & CX_CTYPE_ALPHA))) {
+                        if (!(g
+                              = cxtype(cx, w.value.string.data, cx->disc))) {
                             if (cx->disc->errorf)
                                 (*cx->disc->errorf)(cx,
                                                     cx->disc,
@@ -1919,11 +1759,9 @@ again:
                         }
                         if (c != '(')
                             goto alpha;
-                    }
-                    else
+                    } else
                         cx->include->next = e;
-                }
-                else
+                } else
                     cx->include->next = e;
                 x = 1;
                 k = cc->balanced;
@@ -1936,10 +1774,8 @@ again:
                 cc->balanced = k;
                 if (u != cx->state->type_void || cx->error)
                     goto bad;
-                for (;;)
-                {
-                    switch (next(cx))
-                    {
+                for (;;) {
+                    switch (next(cx)) {
                     case ' ':
                     case '\n':
                     case '\r':
@@ -1948,10 +1784,8 @@ again:
                     case ')':
                         if (k)
                             goto keep;
-                        do
-                        {
-                            if (!(c = next(cx)) || c == ';' || c == '\n')
-                            {
+                        do {
+                            if (!(c = next(cx)) || c == ';' || c == '\n') {
                                 if (cc->level > 0)
                                     goto done;
                                 goto keep;
@@ -1960,8 +1794,7 @@ again:
                         s = cx->include->next;
                         back(cx);
                         if (c == '|' || c == '?')
-                            do
-                            {
+                            do {
                                 if (s >= cx->include->last || *s == '{')
                                     goto keep;
                             } while (isspace(*s++));
@@ -1978,8 +1811,7 @@ again:
                     }
                     break;
                 }
-                if (g)
-                {
+                if (g) {
                     if (cx->disc->errorf)
                         (*cx->disc->errorf)(cx,
                                             cx->disc,
@@ -1990,8 +1822,7 @@ again:
                 }
                 break;
             case ')':
-                if (!precedence)
-                {
+                if (!precedence) {
                     if (cx->disc->errorf)
                         (*cx->disc->errorf)(
                         cx, cx->disc, 2, "%s too many )'s", cxcontext(cx));
@@ -2003,15 +1834,13 @@ again:
                     goto operand_expected;
                 if (precedence >= cx->table->precedence[CX_TST])
                     goto done;
-                if ((c = next(cx)) != ':')
-                {
+                if ((c = next(cx)) != ':') {
                     back(cx);
                     if (parse(cx, cc, expr, cx->table->precedence[CX_TST], NiL)
                         != cx->state->type_void
                         || cx->error)
                         goto bad;
-                    if (next(cx) != ':')
-                    {
+                    if (next(cx) != ':') {
                         back(cx);
                         if (cx->disc->errorf)
                             (*cx->disc->errorf)(
@@ -2022,17 +1851,16 @@ again:
                             cxcontext(cx));
                         goto bad;
                     }
-                }
-                else if (!code(cx,
-                               cc,
-                               expr,
-                               CX_NOP,
-                               0,
-                               cx->state->type_void,
-                               cx->state->type_void,
-                               NiL,
-                               0,
-                               NiL))
+                } else if (!code(cx,
+                                 cc,
+                                 expr,
+                                 CX_NOP,
+                                 0,
+                                 cx->state->type_void,
+                                 cx->state->type_void,
+                                 NiL,
+                                 0,
+                                 NiL))
                     goto bad;
                 if (parse(cx, cc, expr, cx->table->precedence[CX_TST], NiL)
                     != cx->state->type_void
@@ -2058,10 +1886,8 @@ again:
             quote:
                 if (x)
                     goto operator_expected;
-                while ((p = next(cx)) != c)
-                {
-                    if (!p)
-                    {
+                while ((p = next(cx)) != c) {
+                    if (!p) {
                         if (cx->disc->errorf)
                             (*cx->disc->errorf)(cx,
                                                 cx->disc,
@@ -2075,8 +1901,7 @@ again:
                         sfputc(cx->tp, p);
                 }
                 stresc(s = sfstruse(cx->tp));
-                if (!(s = vmstrdup(cc->vm, s)))
-                {
+                if (!(s = vmstrdup(cc->vm, s))) {
                     if (cx->disc->errorf)
                         (*cx->disc->errorf)(cx, cx->disc, 2, "out of space");
                     goto bad;
@@ -2105,8 +1930,7 @@ again:
                 goto bad;
             }
     }
-    if (!x)
-    {
+    if (!x) {
         if (ref)
             *ref = h;
         cc->level--;
@@ -2119,8 +1943,7 @@ done:
         goto operand_expected;
     if (c && (precedence || c != '\n' && c != ';'))
         back(cx);
-    if (x == 2)
-    {
+    if (x == 2) {
         if (!code(cx,
                   cc,
                   expr,
@@ -2132,9 +1955,7 @@ done:
                   0,
                   NiL))
             goto bad;
-    }
-    else if (v)
-    {
+    } else if (v) {
         if (cxisvoid(v->type))
             goto undefined;
         if (!code(
@@ -2182,8 +2003,7 @@ node(Cx_t *cx, Cxcompile_t *cc, size_t n)
 {
     Cxexpr_t *expr;
 
-    if (!(expr = vmnewof(cc->vm, 0, Cxexpr_t, 1, n)))
-    {
+    if (!(expr = vmnewof(cc->vm, 0, Cxexpr_t, 1, n))) {
         if (cx->disc->errorf)
             (*cx->disc->errorf)(NiL, cx->disc, 2, "out of space");
         return 0;
@@ -2223,8 +2043,7 @@ compile(Cx_t *cx, Cxcompile_t *cc, int balanced)
     pos = sfstrtell(cc->xp);
     if (parse(cx, cc, expr, 0, NiL) != cx->state->type_void || cx->error)
         return 0;
-    if ((sfstrtell(cc->xp) - pos) >= sizeof(Cxinstruction_t))
-    {
+    if ((sfstrtell(cc->xp) - pos) >= sizeof(Cxinstruction_t)) {
         Cxinstruction_t *pc;
 
         /*
@@ -2233,8 +2052,7 @@ compile(Cx_t *cx, Cxcompile_t *cc, int balanced)
 
         pc = ( Cxinstruction_t * )(sfstrseek(cc->xp, 0, SEEK_CUR)
                                    - 1 * sizeof(Cxinstruction_t));
-        if (pc->op == CX_GET && !cxislogical(pc->type))
-        {
+        if (pc->op == CX_GET && !cxislogical(pc->type)) {
             if (!code(cx,
                       cc,
                       expr,
@@ -2262,19 +2080,16 @@ compile(Cx_t *cx, Cxcompile_t *cc, int balanced)
         return 0;
     n = sfstrtell(cc->xp) - pos;
     if (!(expr->query->prog = vmnewof(
-          cc->vm, 0, Cxinstruction_t, n / sizeof(Cxinstruction_t), 0)))
-    {
+          cc->vm, 0, Cxinstruction_t, n / sizeof(Cxinstruction_t), 0))) {
         if (cx->disc->errorf)
             (*cx->disc->errorf)(NiL, cx->disc, 2, "out of space");
         return 0;
     }
     memcpy(expr->query->prog, sfstrbase(cc->xp) + pos, n);
-    if (cc->depth > cc->stacksize)
-    {
+    if (cc->depth > cc->stacksize) {
         cc->stacksize = roundof(cc->depth, 64);
         if (!(cc->stack
-              = vmnewof(cc->vm, cc->stack, Cxoperand_t, cc->stacksize, 0)))
-        {
+              = vmnewof(cc->vm, cc->stack, Cxoperand_t, cc->stacksize, 0))) {
             if (cx->disc->errorf)
                 (*cx->disc->errorf)(cx, cx->disc, 2, "out of space");
             return 0;
@@ -2311,10 +2126,8 @@ compose(Cx_t *cx, Cxcompile_t *cc, int prec)
     q = 0;
     r = 0;
     o = sfstrtell(cc->tp);
-    for (;;)
-    {
-        switch (c = next(cx))
-        {
+    for (;;) {
+        switch (c = next(cx)) {
         case '"':
         case '\'':
             if (c == q)
@@ -2334,12 +2147,10 @@ compose(Cx_t *cx, Cxcompile_t *cc, int prec)
                 sfputc(cc->tp, c);
             else if (sfstrtell(cc->tp) != o)
                 goto syntax;
-            else
-            {
+            else {
                 if (!(fp = compose(cx, cc, '}')))
                     return 0;
-                if (next(cx) != '}')
-                {
+                if (next(cx) != '}') {
                     if (cx->disc->errorf)
                         (*cx->disc->errorf)(cx,
                                             cx->disc,
@@ -2352,8 +2163,7 @@ compose(Cx_t *cx, Cxcompile_t *cc, int prec)
                     ;
                 back(cx);
                 if (c != 0 && c != '|' && c != '?' && c != ':' && c != ';'
-                    && c != ',' && c != '}' && c != '>')
-                {
+                    && c != ',' && c != '}' && c != '>') {
                     if (cx->disc->errorf)
                         (*cx->disc->errorf)(NiL,
                                             cx->disc,
@@ -2362,8 +2172,7 @@ compose(Cx_t *cx, Cxcompile_t *cc, int prec)
                                             cxcontext(cx));
                     return 0;
                 }
-                if (fp->next || fp->pass || fp->fail)
-                {
+                if (fp->next || fp->pass || fp->fail) {
                     gp = fp;
                     if (!(fp = node(cx, cc, 0)))
                         return 0;
@@ -2376,8 +2185,7 @@ compose(Cx_t *cx, Cxcompile_t *cc, int prec)
                 sfputc(cc->tp, c);
             else if (sfstrtell(cc->tp) != o)
                 goto syntax;
-            else
-            {
+            else {
                 back(cx);
                 if (!(fp = compile(cx, cc, 0)))
                     return 0;
@@ -2393,8 +2201,7 @@ compose(Cx_t *cx, Cxcompile_t *cc, int prec)
                 goto syntax;
             continue;
         case ':':
-            if (next(cx) == c)
-            {
+            if (next(cx) == c) {
                 sfputc(cc->tp, c);
                 sfputc(cc->tp, c);
                 continue;
@@ -2415,12 +2222,10 @@ compose(Cx_t *cx, Cxcompile_t *cc, int prec)
         case '?':
         case ';':
         case '}':
-            if (q)
-            {
+            if (q) {
                 if (c)
                     sfputc(cc->tp, c);
-                else
-                {
+                else {
                     if (cx->disc->errorf)
                         (*cx->disc->errorf)(cx,
                                             cx->disc,
@@ -2430,53 +2235,40 @@ compose(Cx_t *cx, Cxcompile_t *cc, int prec)
                                             cxcontext(cx));
                     return 0;
                 }
-            }
-            else
-            {
-                if (sfstrtell(cc->tp) != p)
-                {
+            } else {
+                if (sfstrtell(cc->tp) != p) {
                     sfputc(cc->tp, 0);
-                    if (r)
-                    {
+                    if (r) {
                         s = sfstrbase(cc->tp) + p;
                         if (!*s)
                             goto syntax;
-                        if (!(f = ( char * )vmstrdup(cc->vm, s)))
-                        {
+                        if (!(f = ( char * )vmstrdup(cc->vm, s))) {
                             if (cx->disc->errorf)
                                 (*cx->disc->errorf)(
                                 NiL, cx->disc, 2, "out of space");
                             return 0;
                         }
                         sfstrseek(cc->tp, p, SEEK_SET);
-                    }
-                    else
-                    {
+                    } else {
                         sfwrite(cx->tp, &p, sizeof(p));
                         p = sfstrtell(cc->tp);
                     }
                 }
-                if (c == '>')
-                {
+                if (c == '>') {
                     if (r)
                         goto syntax;
                     else if (next(cx) == '>')
                         r = "a";
-                    else
-                    {
+                    else {
                         back(cx);
                         r = "w";
                     }
-                }
-                else if (!isspace(c))
-                {
-                    if (!(n = sfstrtell(cc->tp)) && prec == '}')
-                    {
+                } else if (!isspace(c)) {
+                    if (!(n = sfstrtell(cc->tp)) && prec == '}') {
                         back(cx);
                         return node(cx, cc, 0);
                     }
-                    if (!fp)
-                    {
+                    if (!fp) {
                         if (!n)
                             goto syntax;
                         m = sfstrtell(cx->tp) / sizeof(p);
@@ -2491,8 +2283,7 @@ compose(Cx_t *cx, Cxcompile_t *cc, int prec)
                             *v++ = s + *x++;
                         *v = 0;
                         if (!(fp->query = cxquery(cx, s, cx->disc))
-                            && !(cx->test & 0x00000400))
-                        {
+                            && !(cx->test & 0x00000400)) {
                             if (cx->disc->errorf)
                                 (*cx->disc->errorf)(
                                 cx, cx->disc, 2, "%s: query not found", s);
@@ -2501,13 +2292,10 @@ compose(Cx_t *cx, Cxcompile_t *cc, int prec)
                         if (fp->query->ref
                             && (*fp->query->ref)(cx, fp, fp->argv, cx->disc))
                             return 0;
-                    }
-                    else if (n)
+                    } else if (n)
                         goto syntax;
-                    if (r)
-                    {
-                        if (!(fp->op = sfopen(NiL, f, r)))
-                        {
+                    if (r) {
+                        if (!(fp->op = sfopen(NiL, f, r))) {
                             if (cx->disc->errorf)
                                 (*cx->disc->errorf)(cx,
                                                     cx->disc,
@@ -2523,45 +2311,33 @@ compose(Cx_t *cx, Cxcompile_t *cc, int prec)
                         rp = fp;
                     if (c == 0)
                         break;
-                    if (prec == '|' || prec == '?' || prec == ';')
-                    {
-                        if (c == ';' || c == '}')
-                        {
+                    if (prec == '|' || prec == '?' || prec == ';') {
+                        if (c == ';' || c == '}') {
+                            back(cx);
+                            break;
+                        }
+                    } else if (prec == '}') {
+                        if (c == '}') {
                             back(cx);
                             break;
                         }
                     }
-                    else if (prec == '}')
-                    {
-                        if (c == '}')
-                        {
-                            back(cx);
-                            break;
-                        }
-                    }
-                    if (c == ':')
-                    {
+                    if (c == ':') {
                         back(cx);
                         break;
-                    }
-                    else if (c == ';' || c == ',')
-                    {
+                    } else if (c == ';' || c == ',') {
                         if (!(fp = fp->next = compose(cx, cc, c)))
                             return 0;
-                    }
-                    else if (c == '?')
-                    {
+                    } else if (c == '?') {
                         if (peek(cx, 1) != ':'
                             && !(fp->pass = compose(cx, cc, c)))
                             return 0;
-                        if (peek(cx, 1) == ':')
-                        {
+                        if (peek(cx, 1) == ':') {
                             next(cx);
                             if (!(fp->fail = compose(cx, cc, c)))
                                 return 0;
                         }
-                    }
-                    else if (!(fp->pass = compose(cx, cc, c)))
+                    } else if (!(fp->pass = compose(cx, cc, c)))
                         return 0;
                     p = 0;
                 }
@@ -2575,8 +2351,7 @@ compose(Cx_t *cx, Cxcompile_t *cc, int prec)
     }
     return rp;
 syntax:
-    if (cx->disc->errorf)
-    {
+    if (cx->disc->errorf) {
         if (c)
             (*cx->disc->errorf)(cx,
                                 cx->disc,
@@ -2603,8 +2378,7 @@ defaults(Cxcompile_t *cc, Cxexpr_t *expr, Cxexpr_t *parent, Sfio_t *op)
 {
     static Cxquery_t null;
 
-    do
-    {
+    do {
         expr->vm = cc->vm;
         expr->done = cc->done;
         expr->stack = cc->stack;
@@ -2634,22 +2408,17 @@ list(Sfio_t *sp, Cxexpr_t *expr)
     Cxinstruction_t *pc;
     char **v;
 
-    for (;;)
-    {
-        if (expr->group)
-        {
+    for (;;) {
+        if (expr->group) {
             sfputc(sp, '{');
             list(sp, expr->group);
             sfputc(sp, '}');
-        }
-        else if (expr->argv)
+        } else if (expr->argv)
             for (v = expr->argv; *v; v++)
                 sfputr(sp, *v, *(v + 1) ? ' ' : -1);
-        else if (pc = expr->query->prog)
-        {
+        else if (pc = expr->query->prog) {
             sfputc(sp, '(');
-            while (pc->op != CX_END)
-            {
+            while (pc->op != CX_END) {
                 sfprintf(sp,
                          "%s %s %d ",
                          cxcodename(pc->op),
@@ -2665,21 +2434,17 @@ list(Sfio_t *sp, Cxexpr_t *expr)
                 pc++;
             }
             sfputc(sp, ')');
-        }
-        else
+        } else
             sfprintf(sp, "()");
         if (expr->file)
             sfprintf(sp, ">%s", expr->file);
-        if (expr->fail)
-        {
+        if (expr->fail) {
             sfputc(sp, '?');
             if (expr->pass)
                 list(sp, expr->pass);
             sfputc(sp, ':');
             list(sp, expr->fail);
-        }
-        else if (expr->pass)
-        {
+        } else if (expr->pass) {
             sfputc(sp, '|');
             list(sp, expr->pass);
         }
@@ -2731,8 +2496,7 @@ cxcomp(Cx_t *cx)
     cx, CX_RET, cx->state->type_void, cx->state->type_void, cx->disc);
     cx->referencef = cxcallout(
     cx, CX_REF, cx->state->type_string, cx->state->type_void, cx->disc);
-    if (sfsync(cx->op) < 0)
-    {
+    if (sfsync(cx->op) < 0) {
         if (cx->disc->errorf)
             (*cx->disc->errorf)(cx, cx->disc, 2, "write error");
         goto done;
@@ -2740,19 +2504,15 @@ cxcomp(Cx_t *cx)
     if (!(cc->vm = vmopen(Vmdcheap, Vmlast, 0)))
         goto nospace;
     cx->include->head = 1;
-    if (!(c = peek(cx, !cx->interactive)))
-    {
+    if (!(c = peek(cx, !cx->interactive))) {
         if (!cx->include->pop)
             cx->eof = 1;
         goto done;
-    }
-    else if (c == '{' || c == '(')
-    {
+    } else if (c == '{' || c == '(') {
         if (!(expr = compose(cx, cc, 0)))
             goto done;
         clear(cx);
-    }
-    else if (!(expr = compile(cx, cc, cx->flags & CX_BALANCED)))
+    } else if (!(expr = compile(cx, cc, cx->flags & CX_BALANCED)))
         goto done;
     defaults(cc, expr, expr, sfstdout);
     cc->vm = 0;
@@ -2763,8 +2523,7 @@ nospace:
 done:
     if (!cx->include && !(cx->flags & CX_BALANCED))
         cx->eof = 1;
-    if (cc)
-    {
+    if (cc) {
         if (cc->tp)
             sfstrclose(cc->tp);
         if (cc->xp)

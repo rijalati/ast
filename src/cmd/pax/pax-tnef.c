@@ -88,8 +88,7 @@ tnef_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
     f->st->st_mtime = f->st->st_ctime = f->st->st_atime = NOW;
     f->st->st_size = 0;
     while (paxread(pax, ap, s = state.tmp.buffer, ( off_t )0, ( off_t )9, 0)
-           > 0)
-    {
+           > 0) {
         level = swapget(ap->swap, s + 0, 1);
         n = swapget(ap->swap, s + 1, 4);
         type = n >> 16;
@@ -97,25 +96,20 @@ tnef_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
         n = 0;
         size = swapget(ap->swap, s + 5, 4);
         part = ap->io->buffersize;
-        if (size > part)
-        {
-            if (level == 2)
-            {
+        if (size > part) {
+            if (level == 2) {
                 level = 0;
-                if (name == 0x800f)
-                {
+                if (name == 0x800f) {
                     f->st->st_size = size;
                     tnef->offset = paxseek(pax, ap, ( off_t )0, SEEK_CUR, 0);
-                }
-                else
+                } else
                     error(1,
                           "%s: %s format 0x%04x attribute ignored",
                           ap->name,
                           ap->format->name,
                           name);
             }
-            while (size > part)
-            {
+            while (size > part) {
                 size -= part;
                 if (!(s = paxget(pax, ap, part, NiL)))
                     error(3,
@@ -151,8 +145,7 @@ tnef_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
                   ap->name,
                   ap->format->name);
         if (level == 2)
-            switch (name)
-            {
+            switch (name) {
             case 0x800f: /* data */
                 f->st->st_size = size;
                 tnef->offset
@@ -163,8 +156,7 @@ tnef_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
                     f->name = paxstash(pax, &ap->stash.head, s, size);
                 break;
             case 0x8013: /* date */
-                if (type == 0x0003 && size >= 12)
-                {
+                if (type == 0x0003 && size >= 12) {
                     tm.tm_year = swapget(ap->swap, s + 0, 2) - 1900;
                     tm.tm_mon = swapget(ap->swap, s + 2, 2) - 1;
                     tm.tm_mday = swapget(ap->swap, s + 4, 2);
@@ -175,19 +167,16 @@ tnef_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
                 }
                 break;
             case 0x9005: /* attachment */
-                if (size >= 4)
-                {
+                if (size >= 4) {
                     e = s + size - 4;
                     n = swapget(ap->swap, s, 4);
                     s += 4;
-                    while (n-- && s < e)
-                    {
+                    while (n-- && s < e) {
                         type = swapget(ap->swap, s, 2);
                         s += 2;
                         name = swapget(ap->swap, s, 2);
                         s += 2;
-                        switch (type)
-                        {
+                        switch (type) {
                         case 0x0002:
                         case 0x000b:
                             s += 2;
@@ -211,8 +200,7 @@ tnef_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
                         case 0x0102:
                             m = swapget(ap->swap, s, 4);
                             s += 4;
-                            while (m--)
-                            {
+                            while (m--) {
                                 z = swapget(ap->swap, s, 4);
                                 s += 4;
                                 z = roundof(z, 4);
@@ -232,8 +220,7 @@ tnef_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
                           "%s: %s input must be seekable",
                           ap->name,
                           ap->format->name);
-                if (!*f->name)
-                {
+                if (!*f->name) {
                     if (s = strrchr(ap->name, '/'))
                         s++;
                     else
@@ -260,8 +247,7 @@ tnef_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
 static int
 tnef_done(Pax_t *pax, Archive_t *ap)
 {
-    if (ap->data)
-    {
+    if (ap->data) {
         free(ap->data);
         ap->data = 0;
     }

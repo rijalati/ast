@@ -84,8 +84,7 @@ lha_getprologue(Pax_t *pax,
         h += buf[i];
     if ((h & 0xff) != buf[1])
         return 0;
-    if (!(ar = newof(0, Ar_t, 1, 0)))
-    {
+    if (!(ar = newof(0, Ar_t, 1, 0))) {
         if (ar)
             free(ar);
         return paxnospace(pax);
@@ -135,27 +134,21 @@ lha_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
     f->name[i] = 0;
     hdr += i + 20;
     n -= i;
-    if (n >= 24)
-    {
+    if (n >= 24) {
         ar->checksum = swapget(3, hdr + 0, 2);
         ar->system = hdr[2];
         ar->minor_version = hdr[3];
         ar->check = 1;
         hdr += 4;
-    }
-    else if (n == 22)
-    {
+    } else if (n == 22) {
         ar->checksum = swapget(3, hdr + 0, 2);
         ar->system = 0;
         ar->check = 1;
         hdr += 2;
-    }
-    else if (n == 20)
-    {
+    } else if (n == 20) {
         ar->system = 0;
         ar->check = 0;
-    }
-    else
+    } else
         return paxcorrupt(pax, ap, NiL, NiL);
     n = 7;
     n += sfsprintf(ar->method + n,
@@ -165,15 +158,12 @@ lha_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
                    f->uncompressed);
     if (ar->check)
         n += sfsprintf(ar->method + n, sizeof(ar->method) - n, "|%s", SUM);
-    if (ar->system == 'U')
-    {
+    if (ar->system == 'U') {
         f->st->st_mtime = swapget(3, hdr + 0, 4);
         f->st->st_mode = swapget(3, hdr + 4, 2) & pax->modemask;
         f->st->st_uid = swapget(3, hdr + 6, 2);
         f->st->st_gid = swapget(3, hdr + 8, 2);
-    }
-    else
-    {
+    } else {
         memset(&tm, 0, sizeof(tm));
         tm.tm_year = ((dostime >> (16 + 9)) & 0x7f) + 80;
         tm.tm_mon = ((dostime >> (16 + 5)) & 0x0f) - 1;
@@ -187,8 +177,7 @@ lha_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
                    | X_IXGRP | X_IROTH | X_IWOTH | X_IXOTH;
         else if (mode & 0x01)
             mode = X_IFREG | X_IRUSR | X_IRGRP | X_IROTH;
-        else
-        {
+        else {
             mode = X_IFREG | X_IRUSR | X_IWUSR | X_IRGRP | X_IWGRP | X_IROTH
                    | X_IWOTH;
             if ((s = strrchr(f->name, '.')) && (s[1] == 'e' || s[1] == 'E')
@@ -226,8 +215,7 @@ lha_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
     r = -1;
     if (fd < 0)
         r = 1;
-    else if (sp = paxpart(pax, ap, f->st->st_size))
-    {
+    else if (sp = paxpart(pax, ap, f->st->st_size)) {
         if ((pop = codex(sp, ar->method, CODEX_DECODE, &ar->codexdisc, NiL))
             < 0)
             (*pax->errorf)(NiL,
@@ -237,20 +225,14 @@ lha_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
                            ap->name,
                            f->name,
                            ar->method);
-        else
-        {
-            for (;;)
-            {
-                if ((n = sfread(sp, pax->buf, sizeof(pax->buf))) < 0)
-                {
+        else {
+            for (;;) {
+                if ((n = sfread(sp, pax->buf, sizeof(pax->buf))) < 0) {
                     (*pax->errorf)(
                     NiL, pax, 2, "%s: %s: unexpected EOF", ap->name, f->name);
                     break;
-                }
-                else if (n == 0)
-                {
-                    if (ar->check)
-                    {
+                } else if (n == 0) {
+                    if (ar->check) {
                         if (codexdata(sp, &sum) <= 0)
                             (*pax->errorf)(
                             NiL,
@@ -271,8 +253,7 @@ lha_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
             codexpop(sp, pop);
         }
     }
-    if (paxseek(pax, ap, pos, SEEK_SET, 0) != pos)
-    {
+    if (paxseek(pax, ap, pos, SEEK_SET, 0) != pos) {
         (*pax->errorf)(NiL,
                        pax,
                        2,

@@ -51,8 +51,7 @@ strnacmp(const char *a, const char *b, size_t n)
 
     m = ccmap(CC_NATIVE, CC_ASCII);
     ue = ua + n;
-    while (ua < ue)
-    {
+    while (ua < ue) {
         c = m[*ua++];
         if (d = c - m[*ub++])
             return d;

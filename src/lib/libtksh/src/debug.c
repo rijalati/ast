@@ -66,13 +66,10 @@ __dprintfArgs(char *string, int argc, char *argv[])
 {
     int arg;
     sfprintf(outFile, string);
-    if (argc)
-    {
+    if (argc) {
         for (arg = 0; arg < argc; arg++)
             sfprintf(outFile, " <%.10s>", argv[arg]);
-    }
-    else
-    {
+    } else {
         for (arg = 0; argv[arg]; arg++)
             sfprintf(outFile, " <%.10s>", argv[arg]);
     }
@@ -85,8 +82,7 @@ dinit()
     char *lev;
 
     debugInitialized = 1;
-    if ((lev = getenv("JDEBUG")))
-    {
+    if ((lev = getenv("JDEBUG"))) {
         debugLevel = atoi(lev);
         if (debugLevel == 0)
             debugLevel = 1;

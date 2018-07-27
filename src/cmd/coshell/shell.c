@@ -38,8 +38,7 @@ quote(Sfio_t *sp, char *s)
 {
     int c;
 
-    while (c = *s++)
-    {
+    while (c = *s++) {
         sfputc(sp, c);
         if (c == '\'')
             sfputr(sp, "\\''", -1);
@@ -60,24 +59,19 @@ shellopen(Coshell_t *sp, int fd)
     Sfio_t *vp;
     char *av[4];
 
-    if (!sp)
-    {
+    if (!sp) {
         if (fd >= 0)
             error(ERROR_OUTPUT | 2, fd, "host not found");
-    }
-    else if (sp->fd || sp == &state.wait)
+    } else if (sp->fd || sp == &state.wait)
         return 0;
-    else
-    {
+    else {
         update(sp);
-        if (sp->stat.up < 0)
-        {
+        if (sp->stat.up < 0) {
             if (fd >= 0)
                 error(ERROR_OUTPUT | 2, fd, "%s: host is down", sp->name);
             return -1;
         }
-        if (!(xp = sfstropen()) || !(vp = sfstropen()))
-        {
+        if (!(xp = sfstropen()) || !(vp = sfstropen())) {
             if (xp)
                 vp = 0;
             goto nospace;
@@ -85,8 +79,7 @@ shellopen(Coshell_t *sp, int fd)
         sfprintf(xp, sp->shell[0] ? sp->shell : state.sh, sp->type);
         if (!(sh = sfstruse(xp)))
             goto nospace;
-        if (sp == state.shell)
-        {
+        if (sp == state.shell) {
             sfprintf(vp,
                      "%s=%s %s=%s %s='%s %s' COINIT='%s' %s /dev/fd/4 "
                      ">/dev/null 2>&1 3<%s 4<&3 5>&- 6>&- 7>&- 8>&- 9>&- &",
@@ -102,9 +95,7 @@ shellopen(Coshell_t *sp, int fd)
                      state.mesg);
             av[0] = "sh";
             av[1] = "-c";
-        }
-        else
-        {
+        } else {
             sfprintf(
             vp,
             "%s -c 'trap \"\" HUP; %s=%s %s=%s %s= COINIT='\\''%s%s'\\'' %s "
@@ -126,8 +117,7 @@ shellopen(Coshell_t *sp, int fd)
             goto nospace;
         av[3] = 0;
         message((-2, "%s %s \"%s\"", sh, av[1], av[2]));
-        if (!(proc = procopen(sh, av, NiL, NiL, 0)))
-        {
+        if (!(proc = procopen(sh, av, NiL, NiL, 0))) {
             if (fd >= 0)
                 error(ERROR_OUTPUT | 2, fd, "%s: cannot exec shell", sh);
             sfstrclose(xp);
@@ -140,8 +130,7 @@ shellopen(Coshell_t *sp, int fd)
         sp->start = cs.time;
         if (sp->update > cs.time + UPDATE)
             sp->update = cs.time + UPDATE;
-        if (sp->mode & SHELL_OVERRIDE)
-        {
+        if (sp->mode & SHELL_OVERRIDE) {
             if (!sp->override)
                 state.override++;
             sp->override = cs.time + (sp->home ? HOME : OVERRIDE);
@@ -176,15 +165,12 @@ shellclose(Coshell_t *sp, int fd)
 
     if (sp->fd != -1)
         message((-1, "%s: close shell", sp->name));
-    if (sp->fd < 0)
-    {
-        if (sp->fd != -1)
-        {
+    if (sp->fd < 0) {
+        if (sp->fd != -1) {
             kill(-sp->fd, SIGKILL);
             state.shellwait--;
         }
-        if (sp->idle_override)
-        {
+        if (sp->idle_override) {
             sp->idle = sp->idle_override;
             sp->idle_override = 0;
         }
@@ -192,35 +178,28 @@ shellclose(Coshell_t *sp, int fd)
         sp->update = cs.time + FORGET;
         sp->rank = RANK * 100;
         state.open -= sp->cpu;
-        if (sp->override)
-        {
+        if (sp->override) {
             sp->override = 0;
             state.override--;
             sp->update = 0;
         }
         for (jp = state.job; sp->running && jp <= state.jobmax; jp++)
-            if (jp->shell == sp && jp->pid)
-            {
-                if (jp->cmd)
-                {
+            if (jp->shell == sp && jp->pid) {
+                if (jp->cmd) {
                     sp->running--;
                     sp->total--;
                     jp->shell = 0;
                     shellexec(jp, jp->cmd, jp->fd);
-                }
-                else
+                } else
                     jobkill(jp, SIGKILL);
             }
         if (sp->fd != -1)
             waitpid(-sp->fd, NiL, 0);
         sp->fd = 0;
-    }
-    else if (sp->fd > 0)
-    {
+    } else if (sp->fd > 0) {
         drop(sp->fd);
         sp->start = cs.time;
-    }
-    else if (fd >= 0)
+    } else if (fd >= 0)
         error(ERROR_OUTPUT | 2, fd, "%s: not open", sp->name);
 }
 
@@ -264,14 +243,12 @@ shellexec(Cojob_t *jp, char *msg, int fd)
                 &att,
                 &env,
                 &act)
-        != 9)
-    {
+        != 9) {
         error(
         ERROR_OUTPUT | 2, con[fd].info.user.fds[2], "invalid exec message");
         goto noexec;
     }
-    if (!jp || !(sp = jp->shell) || sp == &state.wait)
-    {
+    if (!jp || !(sp = jp->shell) || sp == &state.wait) {
         /*
          * find a shell slot
          */
@@ -281,19 +258,15 @@ shellexec(Cojob_t *jp, char *msg, int fd)
         if (sp == &state.wait)
             state.joblimit--;
         if (state.running >= (state.perserver + state.jobwait)
-            || con[fd].info.user.running >= state.peruser)
-        {
+            || con[fd].info.user.running >= state.peruser) {
             sp = &state.wait;
             if (!jp)
                 attributes(att, &attr, &con[fd].info.user.attr);
-        }
-        else if (!(sp = search((flags & CO_LOCAL) ? DEF | JOB : JOB,
-                               att,
-                               &attr,
-                               &con[fd].info.user.attr)))
-        {
-            if (s = con[fd].info.user.expr)
-            {
+        } else if (!(sp = search((flags & CO_LOCAL) ? DEF | JOB : JOB,
+                                 att,
+                                 &attr,
+                                 &con[fd].info.user.attr))) {
+            if (s = con[fd].info.user.expr) {
                 if (att)
                     error(ERROR_OUTPUT | 2,
                           con[fd].info.user.fds[2],
@@ -305,8 +278,7 @@ shellexec(Cojob_t *jp, char *msg, int fd)
                           con[fd].info.user.fds[2],
                           "%s: invalid host",
                           s);
-            }
-            else if (att)
+            } else if (att)
                 error(ERROR_OUTPUT | 2,
                       con[fd].info.user.fds[2],
                       "%s: invalid host",
@@ -317,29 +289,25 @@ shellexec(Cojob_t *jp, char *msg, int fd)
                       "all hosts closed");
             goto noexec;
         }
-        if (sp->fd <= 0 && shellopen(sp, con[fd].info.user.fds[2]))
-        {
+        if (sp->fd <= 0 && shellopen(sp, con[fd].info.user.fds[2])) {
             error(ERROR_OUTPUT | 2,
                   con[fd].info.user.fds[2],
                   "%s: cannot open",
                   sp->name);
             goto noexec;
         }
-        if (!jp)
-        {
+        if (!jp) {
             /*
              * find a free job slot
              */
 
             jp = state.jobnext;
-            for (;;)
-            {
+            for (;;) {
                 if (jp++ >= state.jobmax)
                     jp = state.job;
                 if (!jp->pid)
                     break;
-                if (jp == state.jobnext)
-                {
+                if (jp == state.jobnext) {
                     jp = 0;
                     error(ERROR_OUTPUT | 2,
                           con[fd].info.user.fds[2],
@@ -360,8 +328,7 @@ shellexec(Cojob_t *jp, char *msg, int fd)
             jp->lost = 0;
             jp->user = 0;
             jp->sys = 0;
-            if (!state.running++)
-            {
+            if (!state.running++) {
                 state.clock = cs.time;
                 if (state.busy)
                     cswakeup(state.wakeup = UPDATE * 1000L);
@@ -380,8 +347,7 @@ shellexec(Cojob_t *jp, char *msg, int fd)
         state.jobwait++;
     jp->cmd = cmd;
     cmd = msg;
-    if (sp->fd <= 0)
-    {
+    if (sp->fd <= 0) {
         jp->pid = QUEUE;
         if (sp == &state.wait)
             state.joblimit++;
@@ -398,12 +364,10 @@ shellexec(Cojob_t *jp, char *msg, int fd)
              (flags & CO_SILENT) ? "" : "+x ",
              jp - state.job,
              (flags & CO_IGNORE) ? "" : " ERR");
-    if (!out)
-    {
+    if (!out) {
         if (con[fd].info.user.pump)
             sfprintf(state.string, "print '#%05d'\n", 1);
-        else
-        {
+        else {
             sfprintf(state.string,
                      "print '#%05d.%05d'\n",
                      jp - state.job,
@@ -411,14 +375,12 @@ shellexec(Cojob_t *jp, char *msg, int fd)
             jp->ref++;
         }
     }
-    if (!err)
-    {
+    if (!err) {
         if (!out && con[fd].info.user.fds[1] == con[fd].info.user.fds[2])
             err = "&1";
         else if (con[fd].info.user.pump)
             sfprintf(state.string, "print -u2 '#%05d'\n", 2);
-        else
-        {
+        else {
             sfprintf(state.string,
                      "print -u2 '#%05d.%05d'\n",
                      jp - state.job,
@@ -455,14 +417,12 @@ shellexec(Cojob_t *jp, char *msg, int fd)
         sfprintf(state.string, "%s/", pwd);
     sfprintf(state.string, "%s &\nprint -u3 j %d $!\n", err, jp - state.job);
     n = sfstrtell(state.string);
-    if (!(s = sfstruse(state.string)))
-    {
+    if (!(s = sfstruse(state.string))) {
         error(ERROR_OUTPUT | 2, con[fd].info.user.fds[2], "out of space");
         goto nojob;
     }
     message((-5, "job: %s", s));
-    if (cswrite(sp->fd, s, n) != n)
-    {
+    if (cswrite(sp->fd, s, n) != n) {
         error(ERROR_OUTPUT | 2,
               con[fd].info.user.fds[2],
               "%s: lost host connection",
@@ -502,10 +462,8 @@ shellcheck(void)
     Coshell_t *sp;
 
     sp = state.shell;
-    do
-    {
-        if (sp->fd < 0 && cs.time > (sp->start + LOST))
-        {
+    do {
+        if (sp->fd < 0 && cs.time > (sp->start + LOST)) {
             message((-4,
                      "shellcheck: %s: hung %s",
                      sp->name,

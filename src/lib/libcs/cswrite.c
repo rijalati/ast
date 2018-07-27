@@ -33,8 +33,7 @@ cswrite(Cs_t *state, int fd, const void *buf, size_t n)
     char *p = ( char * )buf;
     ssize_t i;
 
-    while (n > 0)
-    {
+    while (n > 0) {
         messagef((state->id,
                   NiL,
                   -9,
@@ -44,8 +43,7 @@ cswrite(Cs_t *state, int fd, const void *buf, size_t n)
                   n - 1,
                   (n > 0 && *(( char * )buf + n - 1) == '\n') ? ( char * )buf
                                                               : "..."));
-        if ((i = write(fd, p, n)) <= 0)
-        {
+        if ((i = write(fd, p, n)) <= 0) {
             messagef((state->id, NiL, -9, "write(%d,%d) [%d]", fd, n, i));
             if (i && p == ( char * )buf)
                 return i;

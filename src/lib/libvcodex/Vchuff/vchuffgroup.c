@@ -74,8 +74,7 @@ typedef struct _group_s
 
 /* sum frequencies for distinct objects */
 #define GRPfreq(fr, oo, kk)                                                  \
-    switch (kk)                                                              \
-    {                                                                        \
+    switch (kk) {                                                            \
     case 16:                                                                 \
         fr[oo->obj] += oo->freq;                                             \
         oo++;                                                                \
@@ -126,8 +125,7 @@ typedef struct _group_s
         oo++;                                                                \
     }
 #define GRPFREQ(fr, o, n)                                                    \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         Obj_t *oo = ( Obj_t * )(o);                                          \
         ssize_t nn = (ssize_t)(n);                                           \
         for (; nn > 0; nn -= VCH_SW)                                         \
@@ -136,8 +134,7 @@ typedef struct _group_s
 
 /* accumulate coding size of all objects */
 #define GRPsize(v, sz, oo, kk)                                               \
-    switch (kk)                                                              \
-    {                                                                        \
+    switch (kk) {                                                            \
     case 16:                                                                 \
         v += sz[oo->obj] * oo->freq;                                         \
         oo++;                                                                \
@@ -188,8 +185,7 @@ typedef struct _group_s
         oo++;                                                                \
     }
 #define GRPSIZE(v, sz, o, n)                                                 \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         Obj_t *oo = ( Obj_t * )(o);                                          \
         ssize_t nn = (ssize_t)(n);                                           \
         v = 0;                                                               \
@@ -261,16 +257,14 @@ ssize_t ptsz;
         return -1;
 
     /* ptsz is such that a object frequency should fit in a byte */
-    for (d = 0, p = 0, i = 0; i < npts; i += 1, d += ptsz)
-    {
+    for (d = 0, p = 0, i = 0; i < npts; i += 1, d += ptsz) {
         grp->ppos[i] = p;
 
         CLRTABLE(freq, VCH_SIZE);
         ADDFREQ(freq, Vchobj_t *, data + d, i == npts - 1 ? dtsz - d : ptsz);
         CLRTABLE(size, VCH_SIZE);
         vchsize(VCH_SIZE, freq, size, 0);
-        for (k = 0; k < VCH_SIZE; ++k)
-        {
+        for (k = 0; k < VCH_SIZE; ++k) {
             if (freq[k] != 0) /* info of non-trivial code only */
             {
                 grp->obj[p].obj = ( Vchobj_t )k;
@@ -357,13 +351,11 @@ int niter;    /* # of iterations to run	*/
         vcqsort(sort, npts, sizeof(ssize_t), partcmp, grp);
 
         /* now make tables */
-        for (z = npts / ntbl, p = 0, t = 0; t < ntbl; t += 1)
-        {
+        for (z = npts / ntbl, p = 0, t = 0; t < ntbl; t += 1) {
             fr = freq[t];
             CLRTABLE(fr, VCH_SIZE);
 
-            for (n = p + z > npts ? (npts - p) : z; n > 0; --n, ++p)
-            {
+            for (n = p + z > npts ? (npts - p) : z; n > 0; --n, ++p) {
                 k = sort[p];
                 GRPFREQ(fr, obj + ppos[k], ppos[k + 1] - ppos[k]);
             }
@@ -372,17 +364,14 @@ int niter;    /* # of iterations to run	*/
             tbl[t].nblks = 0;
             tbl[t].cost = 0;
         }
-    }
-    else /* increasing number of tables */
-    {    /**/
+    } else /* increasing number of tables */
+    {      /**/
         DEBUG_ASSERT(ntbl <= GRP_NTBL && grp->ntbl <= GRP_NTBL);
         memcpy(tbl, grp->tbl, grp->ntbl * sizeof(Table_t));
         n = ntbl - grp->ntbl;
         ntbl = grp->ntbl;
-        for (; n > 0; --n)
-        {
-            for (z = 0, p = -1, i = 0; i < grp->ntbl; ++i)
-            {
+        for (; n > 0; --n) {
+            for (z = 0, p = -1, i = 0; i < grp->ntbl; ++i) {
                 if (tbl[i].cost <= z)
                     continue;
                 z = tbl[p = i].cost;
@@ -396,8 +385,7 @@ int niter;    /* # of iterations to run	*/
             z = tbl[p].nblks / 2 - 1;
             fr = freq[p];
             CLRTABLE(fr, VCH_SIZE);
-            for (i = 0; i < npts; ++i)
-            {
+            for (i = 0; i < npts; ++i) {
                 if (work[i] != p)
                     continue;
                 GRPFREQ(fr, obj + ppos[i], ppos[i + 1] - ppos[i]);
@@ -420,20 +408,16 @@ int niter;    /* # of iterations to run	*/
     }
 
     /**/ DEBUG_PRINT(2, "\tgrppart: #table aiming for=%d\n", ntbl);
-    for (iter = 1;; iter++)
-    { /**/
+    for (iter = 1;; iter++) { /**/
         DEBUG_PRINT(2, "\t\titer=%d ", iter);
         DEBUG_PRINT(2, "cmpsz=%d ", (grp->cmpsz + 7) / 8);
 
-        for (k = 0; k < ntbl; ++k)
-        {
+        for (k = 0; k < ntbl; ++k) {
             fr = freq[k];
             sz = tbl[k].size;
-            if ((z = tbl[k].maxs) > 0)
-            {
+            if ((z = tbl[k].maxs) > 0) {
                 z += (z <= 4 ? 15 : z <= 8 ? 7 : z <= 16 ? 1 : 0);
-                for (p = 0; p < VCH_SIZE; ++p)
-                {
+                for (p = 0; p < VCH_SIZE; ++p) {
                     if (fr[p] != 0)
                         fr[p] = 0; /* clear frequency table */
                     else
@@ -444,15 +428,13 @@ int niter;    /* # of iterations to run	*/
             tbl[k].nblks = 0;
         }
 
-        for (i = 0; i < npts; i += 1)
-        {
+        for (i = 0; i < npts; i += 1) {
             ssize_t bestz, bestt;
 
             /* find the table best matching this part */
             p = ppos[i];
             n = ppos[i + 1] - ppos[i];
-            for (bestz = GRP_HUGE, bestt = -1, k = 0; k < ntbl; ++k)
-            {
+            for (bestz = GRP_HUGE, bestt = -1, k = 0; k < ntbl; ++k) {
                 if (tbl[k].maxs == 0) /* representing a run */
                     z = (n == 1 && obj[p].obj == tbl[k].runb) ? 0 : GRP_HUGE;
                 else /* normal table, tally up the lengths */
@@ -460,8 +442,7 @@ int niter;    /* # of iterations to run	*/
                     sz = tbl[k].size;
                     GRPSIZE(z, sz, obj + p, n);
                 }
-                if (z < bestz || bestt < 0)
-                {
+                if (z < bestz || bestt < 0) {
                     bestz = z;
                     bestt = k;
                 }
@@ -474,8 +455,7 @@ int niter;    /* # of iterations to run	*/
         }
 
         /* remove empty tables */
-        for (p = k = 0; k < ntbl; ++k)
-        {
+        for (p = k = 0; k < ntbl; ++k) {
             map[k] = k; /* start as identity map */
 
             if (tbl[k].nblks <= 0) /* empty table */
@@ -491,8 +471,7 @@ int niter;    /* # of iterations to run	*/
         }
         if (p < ntbl) /* tables were moved, reset part indexes */
         {
-            for (i = 0; i < npts; ++i)
-            { /**/
+            for (i = 0; i < npts; ++i) { /**/
                 DEBUG_ASSERT(work[i] < ntbl);
                 work[i] = map[work[i]];
                 /**/ DEBUG_ASSERT(work[i] < p);
@@ -501,21 +480,17 @@ int niter;    /* # of iterations to run	*/
         }
 
         z = 0; /* recompute encoding cost given new grouping */
-        for (k = 0; k < ntbl; ++k)
-        {
+        for (k = 0; k < ntbl; ++k) {
             fr = freq[k];
             sz = tbl[k].size;
             tbl[k].maxs = vchsize(VCH_SIZE, fr, sz, &tbl[k].runb);
-            if (tbl[k].maxs > 0)
-            {
+            if (tbl[k].maxs > 0) {
                 DOTPRODUCT(p, fr, sz, VCH_SIZE); /* encoding size */
                 n = vchputcode(VCH_SIZE, sz, tbl[k].maxs, tmp, sizeof(tmp));
                 p += (n + vcsizeu(n)) * 8;
                 tbl[k].cost = p;
                 z += p; /* add to total cost */
-            }
-            else
-            { /**/
+            } else {    /**/
                 DEBUG_ASSERT(tbl[k].runb >= 0);
                 z += (tbl[k].cost = 2 * 8); /* one 0-byte and the run byte */
             }
@@ -533,23 +508,20 @@ int niter;    /* # of iterations to run	*/
         }
 
         /**/ DEBUG_PRINT(2, "z=%d\n", (z + 7) / 8);
-        if (z > grp->hufsz)
-        { /**/
+        if (z > grp->hufsz) { /**/
             DEBUG_PRINT(2, "Stop iterating: z=%d > huffman size\n", z);
             grp->ntbl = 0;
             return;
         }
 
-        if (z < (p = grp->cmpsz))
-        {
+        if (z < (p = grp->cmpsz)) {
             grp->ntbl = ntbl;
             grp->cmpsz = z;
             memcpy(part, work, npts);
             memcpy(grp->tbl, tbl, ntbl * sizeof(Table_t));
         }
 
-        if (ntbl == 1 || iter >= niter || (iter > 1 && z >= p - 64))
-        { /**/
+        if (ntbl == 1 || iter >= niter || (iter > 1 && z >= p - 64)) { /**/
             DEBUG_PRINT(2, "\t\t#table=%d ", grp->ntbl);
             /**/ DEBUG_PRINT(2, "cmpsz=%d\n", (grp->cmpsz + 7) / 8);
             return;
@@ -564,12 +536,10 @@ grpptsz(size_t dtsz)
     ssize_t ptsz, exp, lnz;
 
     lnz = vclogi(dtsz); /* log_2 of data size */
-    if (lnz >= 16)
-    {
+    if (lnz >= 16) {
         exp = (exp = (lnz - 15)) > 8 ? 8 : exp;
         ptsz = (1 << exp) * lnz; /* ptsz here is >= 32 */
-    }
-    else
+    } else
         ptsz = dtsz / (1 << 10); /* ptsz here <= 64 */
 
     ptsz = ptsz < 16 ? 16 : ptsz > 1024 ? 1024 : ptsz;
@@ -655,8 +625,7 @@ Void_t **out; /* to return output buffer 	*/
     vcioputu(&io, ptsz); /* the part size used */
 
     /* output the coding tables and compute the coding bits */
-    for (k = 0; k < ntbl; ++k)
-    {
+    for (k = 0; k < ntbl; ++k) {
         vcioputc(&io, tbl[k].maxs);
         if (tbl[k].maxs == 0) /* coding a run */
             vcioputc(&io, tbl[k].runb);
@@ -685,8 +654,7 @@ Void_t **out; /* to return output buffer 	*/
 
     /* now write out the encoded data */
     vciosetb(&io, b, n, VC_ENCODE);
-    for (p = 0, i = 0; i < npts; i += 1, p += ptsz)
-    {
+    for (p = 0, i = 0; i < npts; i += 1, p += ptsz) {
         if (tbl[part[i]].maxs == 0)
             continue;
 
@@ -755,8 +723,7 @@ Void_t **out; /* to return output buffer 	*/
     if ((ptsz = ( ssize_t )vciogetu(&io)) < 0) /* size of each part	*/
         goto done;
 
-    for (k = 0; k < ntbl; ++k)
-    {
+    for (k = 0; k < ntbl; ++k) {
         if ((tbl[k].maxs = vciogetc(&io)) < 0) /* max code size	*/
             goto done;
         else if (tbl[k].maxs == 0) /* this is a run */
@@ -793,38 +760,32 @@ Void_t **out; /* to return output buffer 	*/
     endo = (o = output) + sz;
 
     vciosetb(&io, b, n, VC_DECODE);
-    for (k = 0; k < npts; ++k)
-    {
+    for (k = 0; k < npts; ++k) {
         dt = o + (k == npts - 1 ? endo - o : ptsz); /* end of this part */
         if (tbl[part[k]].maxs == 0)                 /* reconstruct a run */
         {
             p = tbl[part[k]].runb;
             while (o < dt)
                 *o++ = ( Vcchar_t )p;
-        }
-        else /* reconstructing a Huffman-coded set of bytes */
+        } else /* reconstructing a Huffman-coded set of bytes */
         {
             node = trie[part[k]]->node;
             size = trie[part[k]]->size;
             ntop = trie[part[k]]->ntop;
-            for (sz = ntop, p = 0;;)
-            {
+            for (sz = ntop, p = 0;;) {
                 vciofilb(&io, b, n, sz);
 
                 p += (b >> (VC_BITSIZE - sz));
-                if (size[p] > 0)
-                {
+                if (size[p] > 0) {
                     vciodelb(&io, b, n, size[p]);
                     *o = ( Vcchar_t )node[p];
                     if ((o += 1) >= dt)
                         break;
                     sz = ntop;
                     p = 0;
-                }
-                else if (size[p] == 0)
+                } else if (size[p] == 0)
                     return -1;
-                else
-                {
+                else {
                     vciodelb(&io, b, n, sz);
                     sz = -size[p];
                     p = node[p];
@@ -866,8 +827,7 @@ Void_t *params;
     Group_t *grp;
     int rv = -1;
 
-    if (type == VC_OPENING)
-    {
+    if (type == VC_OPENING) {
         if (!(grp = ( Group_t * )calloc(1, sizeof(Group_t))))
             return -1;
 
@@ -879,13 +839,10 @@ Void_t *params;
 
         vcsetmtdata(vc, grp);
         return 0;
-    }
-    else if (type == VC_CLOSING)
-    {
+    } else if (type == VC_CLOSING) {
         rv = 0;
     do_closing:
-        if ((grp = vcgetmtdata(vc, Group_t *)))
-        {
+        if ((grp = vcgetmtdata(vc, Group_t *))) {
             if (grp->huf)
                 vcclose(grp->huf);
             if (grp->mtf)
@@ -901,19 +858,15 @@ Void_t *params;
 
         vcsetmtdata(vc, NIL(Group_t *));
         return rv;
-    }
-    else if (type == VC_FREEBUFFER)
-    {
-        if ((grp = vcgetmtdata(vc, Group_t *)))
-        {
+    } else if (type == VC_FREEBUFFER) {
+        if ((grp = vcgetmtdata(vc, Group_t *))) {
             if (grp->mtf)
                 vcbuffer(grp->mtf, NIL(Vcchar_t *), -1, -1);
             if (grp->huf)
                 vcbuffer(grp->huf, NIL(Vcchar_t *), -1, -1);
         }
         return 0;
-    }
-    else
+    } else
         return 0;
 }
 

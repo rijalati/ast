@@ -57,16 +57,14 @@ Vcbit_t *bits; /* encoding bits to be computed	*/
     if (!(sort = ( ssize_t ** )malloc(nsym * sizeof(ssize_t *))))
         return -1;
 
-    for (notz = 0, i = 0; i < nsym; ++i)
-    {
+    for (notz = 0, i = 0; i < nsym; ++i) {
         if (size[i] == 0)
             continue;
         sort[notz++] = size + i;
     }
     vcqsort(sort, notz, sizeof(ssize_t *), sizecmp, 0);
 
-    for (i = 0; i < notz; i = k)
-    {
+    for (i = 0; i < notz; i = k) {
         s = *sort[i];
         for (k = i; k < notz && *sort[k] == s; ++k)
             bits[sort[k] - size] = (b++) << (VC_BITSIZE - s);

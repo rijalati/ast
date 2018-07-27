@@ -98,14 +98,11 @@ register_file(FILE *fp, int pid)
 FILE *
 filestd(char *file, char *mode)
 {
-    if (*mode == 'r')
-    {
+    if (*mode == 'r') {
         if (streq(file, "-") || streq(file, "/dev/stdin")
             || streq(file, "/dev/fd/0"))
             return stdin;
-    }
-    else if (*mode == 'w')
-    {
+    } else if (*mode == 'w') {
         if (streq(file, "-") || streq(file, "/dev/stdout")
             || streq(file, "/dev/fd/1"))
             return stdout;
@@ -137,10 +134,8 @@ fileopen(char *file, char *mode)
     int regular = 0;
     int verbose = 0;
 
-    for (;; mode++)
-    {
-        switch (*mode)
-        {
+    for (;; mode++) {
+        switch (*mode) {
         case 'E':
             verbose = 1;
             continue;
@@ -165,31 +160,26 @@ fileopen(char *file, char *mode)
     if (mask)
         n = umask(~MAILMODE);
     fp = fopen(file, mode);
-    if (mask)
-    {
+    if (mask) {
         umask(n);
         if (state.readonly && streq(mode, "w"))
             chmod(file, S_IRUSR);
     }
-    if (fp)
-    {
-        if (fstat(fileno(fp), &state.openstat))
-        {
+    if (fp) {
+        if (fstat(fileno(fp), &state.openstat)) {
             fclose(fp);
             if (verbose)
                 note(SYSTEM, "%s", file);
             return 0;
         }
-        if (S_ISDIR(state.openstat.st_mode))
-        {
+        if (S_ISDIR(state.openstat.st_mode)) {
             fclose(fp);
             errno = EISDIR;
             if (verbose)
                 note(SYSTEM, "%s", file);
             return 0;
         }
-        if (regular && !S_ISREG(state.openstat.st_mode))
-        {
+        if (regular && !S_ISREG(state.openstat.st_mode)) {
             fclose(fp);
             errno = EFTYPE;
             if (verbose)
@@ -202,8 +192,7 @@ fileopen(char *file, char *mode)
 #if 0 && MORE_DISCIPLINE
 		sfsetbuf(fp, (void*)fp, SF_UNBOUND);
 #endif
-    }
-    else if (verbose)
+    } else if (verbose)
         note(SYSTEM, "%s", file);
     return fp;
 }
@@ -217,8 +206,7 @@ filefd(int fd, char *mode)
 {
     FILE *fp;
 
-    if (fp = fdopen(fd, mode))
-    {
+    if (fp = fdopen(fd, mode)) {
         register_file(fp, 0);
         fcntl(fileno(fp), F_SETFD, 1);
     }
@@ -239,8 +227,7 @@ filetemp(char *buf, int size, int type, int fd)
     char *e;
     FILE *fp = 0;
 
-    if (!(b = buf))
-    {
+    if (!(b = buf)) {
         if (fd <= 0)
             return 0;
         b = state.path.path;
@@ -252,21 +239,18 @@ filetemp(char *buf, int size, int type, int fd)
     if (s < e)
         *s++ = type;
     strncopy(s, "XXXXXX", e - s);
-    if (fd)
-    {
+    if (fd) {
         fd = mkstemp(b);
         if (!buf && *b)
             remove(b);
-        if (fd < 0 || !(fp = filefd(fd, "r+")))
-        {
+        if (fd < 0 || !(fp = filefd(fd, "r+"))) {
             if (fd >= 0)
                 close(fd);
             note(FATAL | SYSTEM | ERROR | IDENTIFY,
                  "\"%s\": temporary file error",
                  b);
         }
-    }
-    else
+    } else
         mktemp(b);
     if (!*b)
         note(
@@ -290,31 +274,26 @@ fileclose(FILE *fp)
     if (fp == stdout || fp == stderr)
         return fflush(fp);
     r = 0;
-    for (pp = &state.files;; pp = &p->link)
-    {
-        if (!(p = *pp))
-        {
+    for (pp = &state.files;; pp = &p->link) {
+        if (!(p = *pp)) {
             fclose(fp);
             return 0;
         }
-        if (p->fp == fp)
-        {
+        if (p->fp == fp) {
             r = p->pid;
             *pp = p->link;
             free(p);
             break;
         }
     }
-    if (r)
-    {
+    if (r) {
         holdsigs();
         fclose(fp);
         signal(SIGPIPE, SIG_IGN);
         r = wait_command(r);
         signal(SIGPIPE, SIG_DFL);
         relsesigs();
-    }
-    else
+    } else
         r = fclose(fp);
     return r;
 }
@@ -361,36 +340,28 @@ filecopy(const char *in,
     char buf[LINESIZE + 1];
 
     buf[sizeof(buf) - 1] = 0;
-    while (n >= 0)
-    {
-        if ((c = fread(buf, 1, sizeof(buf) - 1, ip)) <= 0)
-        {
-            if (c < 0)
-            {
+    while (n >= 0) {
+        if ((c = fread(buf, 1, sizeof(buf) - 1, ip)) <= 0) {
+            if (c < 0) {
                 r = -1;
-                if (in)
-                {
+                if (in) {
                     note(SYSTEM, "%s", in);
                     in = 0;
                 }
             }
             break;
         }
-        if (n)
-        {
+        if (n) {
             if (n > c)
                 n -= c;
-            else
-            {
+            else {
                 c = n;
                 n = -1;
             }
         }
-        if (fwrite(buf, 1, c, op) != c)
-        {
+        if (fwrite(buf, 1, c, op) != c) {
             r = -1;
-            if (on)
-            {
+            if (on) {
                 note(SYSTEM, "%s", on);
                 on = 0;
             }
@@ -405,14 +376,12 @@ filecopy(const char *in,
     }
     if (flags & GNL)
         putc('\n', op);
-    if (fflush(op))
-    {
+    if (fflush(op)) {
         r = -1;
         if (on)
             note(SYSTEM, "%s", on);
     }
-    if (n > 0)
-    {
+    if (n > 0) {
         r = -1;
         if (in)
             note(SYSTEM, "%s", in);
@@ -454,10 +423,8 @@ pipeopen(char *cmd, char *mode)
         goto bad;
     fcntl(p[READ], F_SETFD, 1);
     fcntl(p[WRITE], F_SETFD, 1);
-    for (;; mode++)
-    {
-        switch (*mode)
-        {
+    for (;; mode++) {
+        switch (*mode) {
         case 'J':
             jump = 1;
             continue;
@@ -467,21 +434,17 @@ pipeopen(char *cmd, char *mode)
         }
         break;
     }
-    if (*mode == 'r')
-    {
+    if (*mode == 'r') {
         myside = p[READ];
         fd0 = -1;
         hisside = fd1 = p[WRITE];
-    }
-    else
-    {
+    } else {
         myside = p[WRITE];
         hisside = fd0 = p[READ];
         fd1 = -1;
     }
     if ((pid = start_command(state.var.shell, 0, fd0, fd1, "-c", cmd, NiL))
-        < 0)
-    {
+        < 0) {
         close(p[READ]);
         close(p[WRITE]);
         goto bad;
@@ -519,8 +482,7 @@ run_command(char *cmd,
 
     if ((pid = start_command(cmd, critical, infd, outfd, a0, a1, a2)) < 0)
         return -1;
-    if (code = wait_command(pid))
-    {
+    if (code = wait_command(pid)) {
         note(SYSTEM, "Fatal exit code %d from %s", code, cmd);
         return -1;
     }
@@ -550,15 +512,12 @@ start_command(char *cmd,
 
     if (!a0 && a1)
         args = ( char ** )a1;
-    else
-    {
+    else {
         initargs(&vec);
         getargs(&vec, cmd);
-        if (a0)
-        {
+        if (a0) {
             addarg(&vec, a0);
-            if (a1)
-            {
+            if (a1) {
                 addarg(&vec, a1);
                 if (a2)
                     addarg(&vec, a2);
@@ -568,38 +527,31 @@ start_command(char *cmd,
         cmd = vec.argv[0];
         args = vec.argv;
     }
-    if (infd > READ)
-    {
-        if ((savein = dup(READ)) < 0)
-        {
+    if (infd > READ) {
+        if ((savein = dup(READ)) < 0) {
             note(SYSTEM, "%s: Cannot save standard input", cmd);
             return -1;
         }
         fcntl(savein, F_SETFD, 1);
         fcntl(infd, F_SETFD, 1);
         close(READ);
-        if (dup(infd) != READ)
-        {
+        if (dup(infd) != READ) {
             note(SYSTEM, "%s: Cannot redirect standard input", cmd);
             dup(savein);
             close(savein);
             return -1;
         }
-    }
-    else
+    } else
         infd = -1;
-    if (outfd > WRITE)
-    {
-        if ((saveout = dup(WRITE)) < 0)
-        {
+    if (outfd > WRITE) {
+        if ((saveout = dup(WRITE)) < 0) {
             note(SYSTEM, "%s: Cannot save standard output", cmd);
             return -1;
         }
         fcntl(saveout, F_SETFD, 1);
         fcntl(outfd, F_SETFD, 1);
         close(WRITE);
-        if (dup(outfd) != WRITE)
-        {
+        if (dup(outfd) != WRITE) {
             note(SYSTEM, "%s: Cannot redirect standard input", cmd);
             dup(savein);
             close(savein);
@@ -607,11 +559,9 @@ start_command(char *cmd,
             close(saveout);
             return -1;
         }
-    }
-    else
+    } else
         outfd = -1;
-    if (state.var.debug)
-    {
+    if (state.var.debug) {
         note(DEBUG | PROMPT, "spawn:");
         for (p = args; *p; p++)
             printf(" \"%s\"", *p);
@@ -623,22 +573,18 @@ start_command(char *cmd,
         note(SYSTEM, "%s", cmd);
     if (critical)
         sigcritical(0);
-    if (infd > READ)
-    {
+    if (infd > READ) {
         close(READ);
-        if (dup(savein) != READ)
-        {
+        if (dup(savein) != READ) {
             note(SYSTEM, "%s: Cannot restore standard input", cmd);
             return -1;
         }
         close(savein);
         fcntl(READ, F_SETFD, 0);
     }
-    if (outfd > WRITE)
-    {
+    if (outfd > WRITE) {
         close(WRITE);
-        if (dup(saveout) != WRITE)
-        {
+        if (dup(saveout) != WRITE) {
             note(SYSTEM, "%s: Cannot restore standard output", cmd);
             return -1;
         }
@@ -656,8 +602,7 @@ findchild(int pid)
     for (cpp = &state.children; *cpp && (*cpp)->pid != pid;
          cpp = &(*cpp)->link)
         ;
-    if (*cpp || (*cpp = ( struct child * )malloc(sizeof(struct child))))
-    {
+    if (*cpp || (*cpp = ( struct child * )malloc(sizeof(struct child)))) {
         (*cpp)->pid = pid;
         (*cpp)->done = (*cpp)->free = 0;
         (*cpp)->link = 0;

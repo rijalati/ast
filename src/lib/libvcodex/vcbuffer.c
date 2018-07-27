@@ -46,8 +46,7 @@ ssize_t head;    /* head room in front of buffer 	*/
 
     if (trunc) /* truncating a buffer */
     {          /* find the buffer */
-        for (; vc; vc = vc->coder)
-        {
+        for (; vc; vc = vc->coder) {
             for (n = NIL(Vcbuffer_t *), b = vc->list; b; n = b, b = b->next)
                 if (trunc >= b->buf && trunc < b->buf + b->size)
                     break;
@@ -80,8 +79,7 @@ ssize_t head;    /* head room in front of buffer 	*/
             }
 
             size += (head = trunc - ( Vcchar_t * )b->buf);
-            if (size < 3 * b->size / 4)
-            {
+            if (size < 3 * b->size / 4) {
                 if (!(n = ( Vcbuffer_t * )realloc(b,
                                                   sizeof(Vcbuffer_t) + size)))
                     RETURN(NIL(Vcchar_t *));
@@ -103,16 +101,13 @@ ssize_t head;    /* head room in front of buffer 	*/
         }
 
         return NIL(Vcchar_t *);
-    }
-    else if (size < 0) /* free all buffers */
+    } else if (size < 0) /* free all buffers */
     {
-        for (; vc; vc = vc->coder)
-        {
+        for (; vc; vc = vc->coder) {
             if (vc->meth->eventf) /* tell vc to free its internal buffers */
                 (*vc->meth->eventf)(vc, VC_FREEBUFFER, 0);
 
-            for (b = vc->list; b; b = n)
-            {
+            for (b = vc->list; b; b = n) {
                 n = b->next;
 
                 /**/ DEBUG_SET(Busy, Busy - b->size);
@@ -128,9 +123,7 @@ ssize_t head;    /* head room in front of buffer 	*/
         }
 
         return NIL(Vcchar_t *);
-    }
-    else
-    {
+    } else {
         head = (head <= 0 ? 0 : head) + vc->head; /* required head room */
         if (!(b = ( Vcbuffer_t * )malloc(sizeof(Vcbuffer_t) + head + size)))
             RETURN(NIL(Vcchar_t *));

@@ -35,8 +35,7 @@ strkey(const char *s)
     int n = 0;
     int c;
 
-    while (n++ < HASHKEYMAX)
-    {
+    while (n++ < HASHKEYMAX) {
         c = *s;
         if (c >= 'a' && c <= 'z')
             x = HASHKEYPART(x, c);

@@ -31,8 +31,7 @@ Void_t *data;
 Sfdisc_t *disc;
 #endif
 {
-    if (type == SF_CLOSING || type == SF_FINAL)
-    {
+    if (type == SF_CLOSING || type == SF_FINAL) {
         if (f != Fclose)
             return -1;
         if (type == SF_CLOSING && (f->mode & SF_RDWR) != f->mode)
@@ -151,8 +150,7 @@ tmain()
     sfsprintf(str, sizeof(str), "%s%s%s%s", s1, s2, s3, s4);
     if ((ss = sfgetr(f, '\n', 1)))
         terror("There shouldn't have been any new-line");
-    else
-    {
+    else {
         if (!(ss = sfgetr(f, '\n', -1)))
             terror("Reading streams");
         n = sfvalue(f);

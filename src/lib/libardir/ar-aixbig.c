@@ -77,8 +77,7 @@ aixbigclose(Ardir_t *ar)
 {
     State_t *state;
 
-    if (ar && (state = ( State_t * )ar->data))
-    {
+    if (ar && (state = ( State_t * )ar->data)) {
         if (state->name)
             free(state->name);
         free(state);
@@ -132,83 +131,69 @@ aixbignext(Ardir_t *ar)
 
     if ((state->current = state->offset) >= state->last)
         return 0;
-    if (lseek(ar->fd, state->offset, SEEK_SET) != state->offset)
-    {
+    if (lseek(ar->fd, state->offset, SEEK_SET) != state->offset) {
         ar->error = errno;
         return 0;
     }
     if (read(ar->fd, ( char * )&state->member, sizeof(state->member))
-        != sizeof(state->member))
-    {
+        != sizeof(state->member)) {
         if ((n = read(ar->fd, ( char * )&state->member, 1)) < 0)
             ar->error = errno;
         else if (n > 0)
             ar->error = EINVAL;
         return 0;
     }
-    if (sfsscanf(state->member.ar_namlen, "%ld", &n) != 1)
-    {
+    if (sfsscanf(state->member.ar_namlen, "%ld", &n) != 1) {
         ar->error = EINVAL;
         return 0;
     }
-    if (n >= state->namesize)
-    {
+    if (n >= state->namesize) {
         state->namesize = roundof(n + 1, 256);
-        if (!(state->name = newof(state->name, char, state->namesize, 0)))
-        {
+        if (!(state->name = newof(state->name, char, state->namesize, 0))) {
             ar->error = errno;
             return 0;
         }
         ar->dirent.name = state->name;
     }
     memcpy(state->name, state->member._ar_name.ar_name, 2);
-    if (n > 2)
-    {
-        if (read(ar->fd, state->name + 2, n - 2) != (n - 2))
-        {
+    if (n > 2) {
+        if (read(ar->fd, state->name + 2, n - 2) != (n - 2)) {
             ar->error = errno;
             return 0;
         }
-        if (lseek(ar->fd, -(Sfoff_t)(n - 2), SEEK_CUR) < 0)
-        {
+        if (lseek(ar->fd, -(Sfoff_t)(n - 2), SEEK_CUR) < 0) {
             ar->error = errno;
             return 0;
         }
     }
     state->name[n] = 0;
     ar->dirent.offset = state->offset + sizeof(Member_t) + n - 2;
-    if (sfsscanf(state->member.ar_date, "%lu", &u) != 1)
-    {
+    if (sfsscanf(state->member.ar_date, "%lu", &u) != 1) {
         ar->error = EINVAL;
         return 0;
     }
     ar->dirent.mtime = u;
-    if (sfsscanf(state->member.ar_uid, "%lu", &u) != 1)
-    {
+    if (sfsscanf(state->member.ar_uid, "%lu", &u) != 1) {
         ar->error = EINVAL;
         return 0;
     }
     ar->dirent.uid = u;
-    if (sfsscanf(state->member.ar_gid, "%lu", &u) != 1)
-    {
+    if (sfsscanf(state->member.ar_gid, "%lu", &u) != 1) {
         ar->error = EINVAL;
         return 0;
     }
     ar->dirent.gid = u;
-    if (sfsscanf(state->member.ar_mode, "%lo", &u) != 1)
-    {
+    if (sfsscanf(state->member.ar_mode, "%lo", &u) != 1) {
         ar->error = EINVAL;
         return 0;
     }
     ar->dirent.mode = u;
-    if (sfsscanf(state->member.ar_size, "%ld", &u) != 1)
-    {
+    if (sfsscanf(state->member.ar_size, "%ld", &u) != 1) {
         ar->error = EINVAL;
         return 0;
     }
     ar->dirent.size = u;
-    if (sfsscanf(state->member.ar_nxtmem, "%ld", &u) != 1)
-    {
+    if (sfsscanf(state->member.ar_nxtmem, "%ld", &u) != 1) {
         ar->error = EINVAL;
         return 0;
     }
@@ -228,15 +213,13 @@ aixbigchange(Ardir_t *ar, Ardirent_t *ent)
     char buf[sizeof(state->member.ar_date) + 1];
 
     o = state->current + offsetof(Member_t, ar_date);
-    if (lseek(ar->fd, o, SEEK_SET) != o)
-    {
+    if (lseek(ar->fd, o, SEEK_SET) != o) {
         ar->error = errno;
         return -1;
     }
     sfsprintf(
     buf, sizeof(buf), "%-*lu", sizeof(buf) - 1, ( unsigned long )ent->mtime);
-    if (write(ar->fd, buf, sizeof(buf) - 1) != (sizeof(buf) - 1))
-    {
+    if (write(ar->fd, buf, sizeof(buf) - 1) != (sizeof(buf) - 1)) {
         ar->error = errno;
         return -1;
     }

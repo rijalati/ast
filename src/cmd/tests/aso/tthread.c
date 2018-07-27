@@ -50,12 +50,10 @@ consumer(void *arg)
     Obj_t *obj;
     unsigned int id = ( unsigned int )integralof(arg);
 
-    while (1)
-    {
+    while (1) {
         asolock(&Asolock, id, ASO_LOCK);
 
-        if ((obj = Objlist))
-        {
+        if ((obj = Objlist)) {
             Objlist = obj->next;
             free(obj);
             N_free += 1;
@@ -81,8 +79,7 @@ tmain()
     tinfo("testing with %d threads", N_THREADS);
     Asolock = 0;
     /* create object list */
-    for (i = 0; i < N_OBJS; i++)
-    {
+    for (i = 0; i < N_OBJS; i++) {
         if (!(obj = malloc(sizeof(Obj_t))))
             terror("malloc failed");
         obj->value = i;
@@ -106,8 +103,7 @@ tmain()
     if (N_free != N_OBJS)
         terror("free() call error -- expected %d, got %d", N_OBJS, N_free);
 
-    if (tv1.tv_usec > tv2.tv_usec)
-    {
+    if (tv1.tv_usec > tv2.tv_usec) {
         tv2.tv_sec--;
         tv2.tv_usec += 1000000;
     }

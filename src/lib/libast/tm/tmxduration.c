@@ -47,26 +47,20 @@ tmxduration(const char *s, char **e)
         s++;
     if (*s == 'P' || *s == 'p')
         ns = tmxdate(s, &last, now) - now;
-    else
-    {
+    else {
         ns = strtod(s, &last) * TMX_RESOLUTION;
-        if (*last && (f = sfstropen()))
-        {
+        if (*last && (f = sfstropen())) {
             sfprintf(f, "exact %s", s);
             t = sfstruse(f);
             ts = tmxdate(t, &x, now);
-            if ((i = x - t - 6) > (last - s))
-            {
+            if ((i = x - t - 6) > (last - s)) {
                 last = ( char * )s + i;
                 ns = ts - now;
-            }
-            else
-            {
+            } else {
                 sfprintf(f, "p%s", s);
                 t = sfstruse(f);
                 ts = tmxdate(t, &x, now);
-                if ((i = x - t - 1) > (last - s))
-                {
+                if ((i = x - t - 1) > (last - s)) {
                     last = ( char * )s + i;
                     ns = ts - now;
                 }

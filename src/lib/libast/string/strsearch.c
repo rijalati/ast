@@ -49,8 +49,7 @@ strsearch(const void *tab,
     char *mid;
     int v;
 
-    while (lo <= hi)
-    {
+    while (lo <= hi) {
         mid = lo + (((hi - lo) / siz) / 2) * siz;
         if (!(v = context ? (*( Strcmp_context_f )comparf)(
                             name, *(( char ** )mid), context)

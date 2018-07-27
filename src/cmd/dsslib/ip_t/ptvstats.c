@@ -50,8 +50,7 @@ ptvstats(Ptv_t *a, Sfio_t *sp)
           0,
           unsigned char,
           (2 * (bits + 1)) * (sizeof(unsigned char *) + a->size),
-          0)))
-    {
+          0))) {
         if (a->disc->errorf)
             (*a->disc->errorf)(
             NiL, a->disc, ERROR_SYSTEM | 2, "out of space");
@@ -61,8 +60,7 @@ ptvstats(Ptv_t *a, Sfio_t *sp)
     total_addresses = ( unsigned char * )(prefixes + bits + 1);
     total_prefixes = total_addresses + a->size;
     v = total_prefixes + a->size;
-    for (i = 0; i <= bits; i++)
-    {
+    for (i = 0; i <= bits; i++) {
         addresses[i] = v;
         v += a->size;
         prefixes[i] = v;
@@ -84,23 +82,19 @@ ptvstats(Ptv_t *a, Sfio_t *sp)
     fvnot(a->size, a->r[0], a->r[0]);
     fvset(a->size, a->r[2], 256);
     for (i = n = 0; i <= bits; i++)
-        if (fvcmp(a->size, prefixes[i], a->r[1]) >= 0)
-        {
+        if (fvcmp(a->size, prefixes[i], a->r[1]) >= 0) {
             n++;
             fvadd(a->size, total_prefixes, total_prefixes, prefixes[i]);
-            if (fvcmp(a->size, addresses[i], a->r[1]) >= 0)
-            {
+            if (fvcmp(a->size, addresses[i], a->r[1]) >= 0) {
                 fvdiv(a->size, a->r[3], a->r[5], a->r[0], addresses[i]);
                 if (fvcmp(a->size, a->r[3], a->r[2]) < 0)
                     tc = ( int )(( double )(sizeof(tot) - (sizeof(S) - 10))
                                  / ( double )a->r[3][a->size - 1]);
                 else
                     tc = 0;
-            }
-            else
+            } else
                 tc = 0;
-            if (fvcmp(a->size, addresses[i], a->r[1]) >= 0)
-            {
+            if (fvcmp(a->size, addresses[i], a->r[1]) >= 0) {
                 fvdiv(
                 a->size, a->r[3], a->r[5], total_addresses, addresses[i]);
                 if (fvcmp(a->size, a->r[3], a->r[2]) < 0)
@@ -108,8 +102,7 @@ ptvstats(Ptv_t *a, Sfio_t *sp)
                                  / ( double )a->r[3][a->size - 1]);
                 else
                     pc = 0;
-            }
-            else
+            } else
                 pc = 0;
             sfprintf(sp,
                      "/%-3d %16s %16s  %s%s\n",

@@ -146,16 +146,13 @@ int tty_check(fd) int fd;
 int tty_get(fd, tty) int fd;
 struct termios *tty;
 {
-    if (fd != savefd)
-    {
+    if (fd != savefd) {
 #ifndef SIG_NORESTART
         VOID (*savint)() = st.intfn;
         st.intfn = 0;
 #endif /* SIG_NORESTART */
-        while (tcgetattr(fd, &savetty) == SYSERR)
-        {
-            if (errno != EINTR)
-            {
+        while (tcgetattr(fd, &savetty) == SYSERR) {
+            if (errno != EINTR) {
 #ifndef SIG_NORESTART
                 st.intfn = savint;
 #endif /* SIG_NORESTART */
@@ -182,8 +179,7 @@ struct termios *tty;
 int tty_set(fd, action, tty) int fd, action;
 struct termios *tty;
 {
-    if (fd >= 0)
-    {
+    if (fd >= 0) {
 #ifndef SIG_NORESTART
         VOID (*savint)() = st.intfn;
 #endif /* SIG_NORESTART */
@@ -194,10 +190,8 @@ struct termios *tty;
 #ifndef SIG_NORESTART
         st.intfn = 0;
 #endif /* SIG_NORESTART */
-        while (tcsetattr(fd, action, tty) == SYSERR)
-        {
-            if (errno != EINTR)
-            {
+        while (tcsetattr(fd, action, tty) == SYSERR) {
+            if (errno != EINTR) {
 #ifndef SIG_NORESTART
                 st.intfn = savint;
 #endif /* SIG_NORESTART */
@@ -289,8 +283,7 @@ int tty_raw(fd) int fd;
 #        endif /* _SELECT5_ */
 #        ifdef TIOCGLTC
     /* try to remove effect of ^V  and ^Y and ^O */
-    if (ioctl(fd, TIOCGLTC, &l_chars) != SYSERR)
-    {
+    if (ioctl(fd, TIOCGLTC, &l_chars) != SYSERR) {
         lchars = l_chars;
         lchars.t_lnextc = -1;
         lchars.t_flushc = -1;
@@ -356,8 +349,7 @@ int tty_alt(fd) int fd;
     if (editb.e_raw == RAWMODE)
         tty_cooked(fd);
     l_changed = 0;
-    if (editb.e_ttyspeed == 0)
-    {
+    if (editb.e_ttyspeed == 0) {
         if ((tty_get(fd, &ttyparm) != SYSERR))
             editb.e_ttyspeed = (ttyparm.sg_ospeed >= B1200 ? FAST : SLOW);
         editb.e_raw = ALTMODE;
@@ -372,8 +364,7 @@ int tty_alt(fd) int fd;
         l_changed = L_MASK;
     if (ioctl(fd, TIOCLBIS, &mask) == SYSERR)
         return (BAD);
-    if (ttychars.t_brkc != ESC)
-    {
+    if (ttychars.t_brkc != ESC) {
         ttychars.t_brkc = ESC;
         l_changed |= T_CHARS;
         if (ioctl(fd, TIOCSETC, &ttychars) == SYSERR)
@@ -459,15 +450,13 @@ ed_window()
 {
     int n = DFLTWINDOW - 1;
     char *cp = nam_strval(COLUMNS);
-    if (cp)
-    {
+    if (cp) {
         n = ( int )strtol(cp, ( char ** )0, 10) - 1;
         if (n > MAXWINDOW)
             n = MAXWINDOW;
     }
 #    ifdef TIOCGWINSZ
-    else
-    {
+    else {
         /* for 5620's and 630's */
         struct winsize size;
         if (ioctl(ERRIO, TIOCGWINSZ, &size) != -1)
@@ -496,8 +485,7 @@ ed_flush()
     write(fd, editb.e_outbase, ( unsigned )n);
     editb.e_outptr = editb.e_outbase;
 #    ifdef _SELECT5_
-    if (delay && n > delay / 100)
-    {
+    if (delay && n > delay / 100) {
         /* delay until output drains */
         struct timeval timeloc;
         n *= 10;
@@ -570,17 +558,14 @@ void ed_setup(fd) int fd;
 #    else
     last = editb.e_prbuff;
 #    endif /* KSHELL */
-    if (hist_ptr)
-    {
+    if (hist_ptr) {
         struct history *fp = hist_ptr;
         editb.e_hismax = fp->fixind;
         editb.e_hloff = 0;
         editb.e_hismin = fp->fixind - fp->fixmax;
         if (editb.e_hismin < 0)
             editb.e_hismin = 0;
-    }
-    else
-    {
+    } else {
         editb.e_hismax = editb.e_hismin = editb.e_hloff = 0;
     }
     editb.e_hline = editb.e_hismax;
@@ -592,8 +577,7 @@ void ed_setup(fd) int fd;
     {
         int c;
         while (c = *last++)
-            switch (c)
-            {
+            switch (c) {
             case '\r':
                 if (pp == (editb.e_prompt + 2)) /* quote char */
                     myquote = *(pp - 1);
@@ -609,8 +593,7 @@ void ed_setup(fd) int fd;
 
             case '\t':
                 /* expand tabs */
-                while ((pp - editb.e_prompt) % TABSIZE)
-                {
+                while ((pp - editb.e_prompt) % TABSIZE) {
                     if (pp >= ppmax)
                         break;
                     *pp++ = ' ';
@@ -622,13 +605,11 @@ void ed_setup(fd) int fd;
                 break;
 
             default:
-                if (c == myquote)
-                {
+                if (c == myquote) {
                     qlen += inquote;
                     inquote ^= 1;
                 }
-                if (pp < ppmax)
-                {
+                if (pp < ppmax) {
                     qlen += inquote;
                     *pp++ = c;
                     if (!inquote && !isprint(c))
@@ -638,8 +619,7 @@ void ed_setup(fd) int fd;
     }
     editb.e_plen = pp - editb.e_prompt - qlen;
     *pp = 0;
-    if ((editb.e_wsize -= editb.e_plen) < 7)
-    {
+    if ((editb.e_wsize -= editb.e_plen) < 7) {
         int shift = 7 - editb.e_wsize;
         editb.e_wsize = 7;
         pp = editb.e_prompt + 1;
@@ -672,8 +652,7 @@ ed_macro(i) int i;
     else
         macro[2] = 0;
     if (isalnum(i) && (np = nam_search(macro, sh.alias_tree, N_NOSCOPE))
-        && (out = nam_strval(np)))
-    {
+        && (out = nam_strval(np))) {
 #        ifdef MULTIBYTE
         /* copy to buff in internal representation */
         int c = out[LOOKAHEAD];
@@ -738,19 +717,16 @@ int mode;
         int c;
         int chktilde;
         char *cp;
-        if (out > outbuff)
-        {
+        if (out > outbuff) {
             /* go to beginning of word */
-            do
-            {
+            do {
                 out--;
                 c = *( unsigned char * )out;
             } while (out > outbuff && !isqmeta(c));
             /* copy word into arg */
             if (isqmeta(c))
                 out++;
-        }
-        else
+        } else
             out = outbuff;
         begin = out;
         chktilde = (*out == '~');
@@ -758,26 +734,22 @@ int mode;
         addstar = '*';
         strip = 1;
         /* copy word to arg and do ~ expansion */
-        do
-        {
+        do {
             c = *( unsigned char * )out;
             if (isexp(c))
                 addstar = 0;
             if ((c == '/') && (addstar == 0))
                 strip = 0;
             stakputc(c);
-            if (chktilde && (c == 0 || c == '/'))
-            {
+            if (chktilde && (c == 0 || c == '/')) {
                 chktilde = 0;
                 *out = 0;
-                if (cp = sh_tilde(begin))
-                {
+                if (cp = sh_tilde(begin)) {
                     istilde++;
                     stakseek(ARGVAL);
                     stakputs(cp);
                     stakputc(c);
-                    if (c == 0)
-                    {
+                    if (c == 0) {
                         addstar = 0;
                         strip = 0;
                     }
@@ -806,15 +778,12 @@ int mode;
         com = arg_build(&narg, comptr);
         st.intfn = savfn;
         /*  match? */
-        if (*com == 0 || (!istilde && narg <= 1 && eq(ap->argval, *com)))
-        {
+        if (*com == 0 || (!istilde && narg <= 1 && eq(ap->argval, *com))) {
             rval = -1;
             goto done;
         }
-        if (mode == '=')
-        {
-            if (strip)
-            {
+        if (mode == '=') {
+            if (strip) {
                 char **ptrcom;
                 for (ptrcom = com; *ptrcom; ptrcom++)
                     /* trim directory prefix */
@@ -829,12 +798,10 @@ int mode;
         /* see if there is enough room */
         size = *eol - (out - begin);
 #        ifdef tenex
-        if (mode == '\\')
-        {
+        if (mode == '\\') {
             /* just expand until name is unique */
             size += strlen(*com);
-        }
-        else
+        } else
 #        endif
         {
             size += narg;
@@ -846,8 +813,7 @@ int mode;
             }
         }
         /* see if room for expansion */
-        if (outbuff + size >= &outbuff[MAXLINE])
-        {
+        if (outbuff + size >= &outbuff[MAXLINE]) {
             com[0] = ap->argval;
             com[1] = 0;
         }
@@ -855,19 +821,16 @@ int mode;
         strcpy(stakptr(0), out);
         out = sh_copy(*com++, begin);
 #        ifdef tenex
-        if (mode == '\\')
-        {
+        if (mode == '\\') {
             if (*com == 0 && out[-1] != '/')
                 *out++ = ' ';
             while (*com && *begin)
                 out = overlay(begin, *com++);
             if (*begin == 0)
                 ed_ringbell();
-        }
-        else
+        } else
 #        endif
-            while (*com)
-            {
+            while (*com) {
                 *out++ = ' ';
                 out = sh_copy(*com++, out);
             }
@@ -914,8 +877,7 @@ ed_fulledit()
     if (!hist_ptr || (st.states & BUILTIN))
         return (BAD);
     /* use EDITOR on current command */
-    if (editb.e_hline == editb.e_hismax)
-    {
+    if (editb.e_hline == editb.e_hismax) {
         if (editb.e_eol <= 0)
             return (BAD);
         editb.e_inbuf[editb.e_eol + 1] = 0;
@@ -949,8 +911,7 @@ ed_getchar()
     static int cursize;
 #    endif /* MULTIBYTE */
     char readin[LOOKAHEAD];
-    if (lookahead)
-    {
+    if (lookahead) {
         c = previous[--lookahead];
         /*** map '\r' to '\n' ***/
         if (c == '\r' && !in_raw)
@@ -976,8 +937,7 @@ retry:
     i = -1;
     errno = 0;
     editb.e_inmacro = 0;
-    while (slowsig() == 0 && maxtry--)
-    {
+    while (slowsig() == 0 && maxtry--) {
         errno = 0;
         if ((i = read(fildes, readin, nchar)) != -1)
             break;
@@ -985,24 +945,18 @@ retry:
 #    ifdef MULTIBYTE
     lookahead = maxtry = i;
     i = 0;
-    while (i < maxtry)
-    {
+    while (i < maxtry) {
         c = readin[i++] & STRIP;
     next:
-        if (cursize-- > 0)
-        {
+        if (cursize-- > 0) {
             curchar = (curchar << 7) | (c & ~HIGHBIT);
-            if (cursize == 0)
-            {
+            if (cursize == 0) {
                 c = curchar;
                 goto gotit;
-            }
-            else if (i >= maxtry)
+            } else if (i >= maxtry)
                 goto retry;
             continue;
-        }
-        else if (curchar = echarset(c))
-        {
+        } else if (curchar = echarset(c)) {
             cursize = in_csize(curchar);
             if (curchar != 1)
                 c = 0;
@@ -1016,14 +970,12 @@ retry:
     gotit:
         previous[--lookahead] = c;
 #    else
-    while (i > 0)
-    {
+    while (i > 0) {
         c = readin[--i] & STRIP;
         previous[lookahead++] = c;
 #    endif /* MULTIBYTE */
 #    ifndef CBREAK
-        if (c == '\0')
-        {
+        if (c == '\0') {
             /*** user break key ***/
             lookahead = 0;
 #        ifdef KSHELL
@@ -1035,8 +987,7 @@ retry:
     }
 #    ifdef MULTIBYTE
     /* shift lookahead buffer if necessary */
-    if (lookahead)
-    {
+    if (lookahead) {
         for (i = lookahead; i < maxtry; i++)
             previous[i - lookahead] = previous[i];
     }
@@ -1068,8 +1019,7 @@ void ed_putchar(c) int c;
     /* check for place holder */
     if (c == MARKER)
         return;
-    if (d = icharset(c))
-    {
+    if (d = icharset(c)) {
         if (d == 2)
             *dp++ = ESS2;
         else if (d == 3)
@@ -1080,8 +1030,7 @@ void ed_putchar(c) int c;
         c |= HIGHBIT;
     }
 #    endif /* MULTIBYTE */
-    if (c == '_')
-    {
+    if (c == '_') {
         *dp++ = ' ';
         *dp++ = '\b';
     }
@@ -1111,14 +1060,12 @@ int cur, voff, poff;
 #    endif /* MULTIBYTE */
     sp += voff;
     dp += poff;
-    for (r = poff; c = *sp; sp++)
-    {
+    for (r = poff; c = *sp; sp++) {
         if (curp == sp)
             r = dp - phys;
 #    ifdef MULTIBYTE
         d = out_csize(icharset(c));
-        if (d > 1)
-        {
+        if (d > 1) {
             /* multiple width character put in place holders */
             *dp++ = c;
             while (--d > 0)
@@ -1127,13 +1074,10 @@ int cur, voff, poff;
             if (dp >= dpmax)
                 break;
             continue;
-        }
-        else
+        } else
 #    endif /* MULTIBYTE */
-        if (!isprint(c))
-        {
-            if (c == '\t')
-            {
+        if (!isprint(c)) {
+            if (c == '\t') {
                 c = dp - phys;
                 if (is_option(EDITVI))
                     c += editb.e_plen;
@@ -1141,9 +1085,7 @@ int cur, voff, poff;
                 while (--c > 0)
                     *dp++ = ' ';
                 c = ' ';
-            }
-            else
-            {
+            } else {
                 *dp++ = '^';
                 c ^= TO_PRINT;
             }
@@ -1173,23 +1115,19 @@ genchar *dest;
     genchar *dp = dest;
     int d;
     int size;
-    if (( unsigned char * )dest == src)
-    {
+    if (( unsigned char * )dest == src) {
         genchar buffer[MAXLINE];
         c = ed_internal(src, buffer);
         ed_gencpy(dp, buffer);
         return (c);
     }
-    while (c = *src++)
-    {
-        if (size = echarset(c))
-        {
+    while (c = *src++) {
+        if (size = echarset(c)) {
             d = (size == 1 ? c : 0);
             c = size;
             size = in_csize(c);
             c <<= 7 * (ESS_MAXCHAR - size);
-            if (d)
-            {
+            if (d) {
                 size--;
                 c = (c << 7) | (d & ~HIGHBIT);
             }
@@ -1215,17 +1153,14 @@ char *dest;
     char *dp = dest;
     int d;
     char *dpmax = dp + sizeof(genchar) * MAXLINE - 2;
-    if (( char * )src == dp)
-    {
+    if (( char * )src == dp) {
         char buffer[MAXLINE * sizeof(genchar)];
         c = ed_external(src, buffer);
         strcpy(dest, buffer);
         return (c);
     }
-    while ((c = *src++) && dp < dpmax)
-    {
-        if (d = icharset(c))
-        {
+    while ((c = *src++) && dp < dpmax) {
+        if (d = icharset(c)) {
             if (d == 2)
                 *dp++ = ESS2;
             else if (d == 3)
@@ -1294,8 +1229,7 @@ ed_setwidth(string) char *string;
     int n = 0;
     static char widths[6] = { 1, 1 };
     while (1)
-        switch (c = *string++)
-        {
+        switch (c = *string++) {
         case ':':
             if (state != 1)
                 return (1);
@@ -1309,16 +1243,13 @@ ed_setwidth(string) char *string;
             widths[indx++] = n;
             if (state == 1)
                 widths[indx++] = n;
-            if (c == 0)
-            {
-                for (n = 1; n <= 3; n++)
-                {
+            if (c == 0) {
+                for (n = 1; n <= 3; n++) {
                     int_charsize[n] = widths[c++];
                     int_charsize[n + 4] = widths[c++];
                 }
                 return (0);
-            }
-            else if (c == ',')
+            } else if (c == ',')
                 state = 0;
             n = 0;
             break;
@@ -1349,8 +1280,7 @@ static int compare(a, b, n) char *a;
 char *b;
 int n;
 {
-    while (n-- > 0)
-    {
+    while (n-- > 0) {
         if (*a++ != *b++)
             return (0);
     }
@@ -1383,8 +1313,7 @@ tcgetattr(fd, tt) struct termios *tt;
     echoctl = (ECHOCTL != 0);
     if ((r = ioctl(fd, TCGETS, tt)) >= 0 || errno != EINVAL)
         return (r);
-    if ((r = ioctl(fd, TCGETA, &ott)) >= 0)
-    {
+    if ((r = ioctl(fd, TCGETA, &ott)) >= 0) {
         tt->c_lflag = ott.c_lflag;
         tt->c_oflag = ott.c_oflag;
         tt->c_iflag = ott.c_iflag;
@@ -1401,8 +1330,7 @@ tcsetattr(fd, mode, tt) int mode;
 struct termios *tt;
 {
     int r;
-    if (tcgeta)
-    {
+    if (tcgeta) {
         int i;
         ott.c_lflag = tt->c_lflag;
         ott.c_oflag = tt->c_oflag;
@@ -1410,8 +1338,7 @@ struct termios *tt;
         ott.c_cflag = tt->c_cflag;
         for (i = 0; i < NCC; i++)
             ott.c_cc[i] = tt->c_cc[i];
-        if (tt->c_lflag & ECHOCTL)
-        {
+        if (tt->c_lflag & ECHOCTL) {
             ott.c_lflag &= ~(ECHOCTL | IEXTEN);
             ott.c_iflag &= ~(IGNCR | ICRNL);
             ott.c_iflag |= INLCR;
@@ -1419,8 +1346,7 @@ struct termios *tt;
             ott.c_cc[VEOL] = '\r';            /* CR -> eol char */
             ott.c_cc[VEOL2] = tt->c_cc[VEOF]; /* EOF -> eol char */
         }
-        switch (mode)
-        {
+        switch (mode) {
         case TCSANOW:
             mode = TCSETA;
             break;

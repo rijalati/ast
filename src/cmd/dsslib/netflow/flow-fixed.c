@@ -61,8 +61,7 @@ fixedident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
         && (swap = swapop(&magic, &mp->magic, sizeof(magic))) >= 0
         && streq(mp->name, MAGIC_NAME)
         && swapget(swap ^ int_swap, &mp->size, sizeof(mp->size))
-           == sizeof(Netflow_t))
-    {
+           == sizeof(Netflow_t)) {
         file->skip = sizeof(Netflow_t);
         file->ident = swap;
         return 1;
@@ -77,26 +76,21 @@ fixedident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
 static int
 fixedopen(Dssfile_t *file, Dssdisc_t *disc)
 {
-    if (file->flags & DSS_FILE_READ)
-    {
-        if (!sfreserve(file->io, file->skip, 0))
-        {
+    if (file->flags & DSS_FILE_READ) {
+        if (!sfreserve(file->io, file->skip, 0)) {
             if (disc->errorf)
                 (*disc->errorf)(
                 NiL, disc, ERROR_SYSTEM | 2, "header read error");
             return -1;
         }
         if (!(file->data
-              = ( void * )vmnewof(file->dss->vm, 0, State_t, 1, 0)))
-        {
+              = ( void * )vmnewof(file->dss->vm, 0, State_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
         }
         (( State_t * )file->data)->swap = file->ident;
-    }
-    else if (!(file->flags & DSS_FILE_APPEND))
-    {
+    } else if (!(file->flags & DSS_FILE_APPEND)) {
         Fixedheader_t hdr;
 
         memset(&hdr, 0, sizeof(hdr));
@@ -120,10 +114,8 @@ fixedread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     State_t *state = ( State_t * )file->data;
     Netflow_t *rp;
 
-    if (!(rp = ( Netflow_t * )sfreserve(file->io, sizeof(*rp), 0)))
-    {
-        if (sfvalue(file->io))
-        {
+    if (!(rp = ( Netflow_t * )sfreserve(file->io, sizeof(*rp), 0))) {
+        if (sfvalue(file->io)) {
             if (disc->errorf)
                 (*disc->errorf)(NiL,
                                 disc,
@@ -134,8 +126,7 @@ fixedread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         }
         return 0;
     }
-    if (state->swap)
-    {
+    if (state->swap) {
     }
     record->data = rp;
     record->size = sizeof(*rp);
@@ -150,8 +141,7 @@ static int
 fixedwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
     if (sfwrite(file->io, record->data, sizeof(Netflow_t))
-        != sizeof(Netflow_t))
-    {
+        != sizeof(Netflow_t)) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%swrite error", cxlocation(file->dss->cx, record));

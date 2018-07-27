@@ -52,8 +52,7 @@ tmain()
         terror("sfmove failed n=%d", n);
     sfclose(sfstdout);
 
-    for (n = 0; n < 100; ++n)
-    {
+    for (n = 0; n < 100; ++n) {
         if (!(s = sfgetr(sfstdin, '\n', 1)))
             terror("Can't read data");
         if (strcmp(s, "123456789") != 0)

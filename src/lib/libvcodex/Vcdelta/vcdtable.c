@@ -106,12 +106,10 @@ size_t n;
     /* convert the new table to a string, then encode it against _Vcdtbl */
     vcdtbl2str(tbl, tarbuf);
     vcioinit(&io, buf, n);
-    if ((rv = vcapply(vc, tarbuf, sizeof(tarbuf), &del)) > 0)
-    {
+    if ((rv = vcapply(vc, tarbuf, sizeof(tarbuf), &del)) > 0) {
         if (rv + 2 > n)
             rv = -1;
-        else
-        {
+        else {
             vcioputc(&io, tbl->s_near);
             vcioputc(&io, tbl->s_same);
             vcioputs(&io, del, rv);

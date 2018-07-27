@@ -38,12 +38,10 @@ ptcover(Pt_t *a, Pt_t *b)
         return 0;
     ap = ( Ptprefix_t * )dtfirst(a->dict);
     bp = ( Ptprefix_t * )dtfirst(b->dict);
-    while (ap && bp)
-    {
+    while (ap && bp) {
         if (ap->min > bp->max)
             bp = ( Ptprefix_t * )dtnext(b->dict, bp);
-        else
-        {
+        else {
             if (ap->max >= bp->min && !ptinsert(t, ap->min, ap->max))
                 break;
             ap = ( Ptprefix_t * )dtnext(a->dict, ap);

@@ -91,8 +91,7 @@ tmain()
         buf[i] = (i % 26) + 'a';
 
     n = 0;
-    for (i = 0; i < 33; ++i)
-    {
+    for (i = 0; i < 33; ++i) {
         if (!(s = sfreserve(sfstdout, sizeof(buf), SF_LOCKR)))
             terror("Can't reserve write buffer");
 
@@ -113,8 +112,7 @@ tmain()
         terror("Wrong size for file");
 
     i = 0;
-    for (;;)
-    {
+    for (;;) {
         if (!(s = sfreserve(sfstdin, 16 * sizeof(buf), 0)))
             break;
         else
@@ -129,8 +127,7 @@ tmain()
         terror("sfseek failed0");
     sfsetbuf(sfstdin, bigbuf, sizeof(bigbuf));
     i = 0;
-    for (;;)
-    {
+    for (;;) {
         if (!(s = sfreserve(sfstdin, 16 * sizeof(buf), 0)))
             break;
         else
@@ -144,8 +141,7 @@ tmain()
 
     if (sfopen(sfstdout, tstfile("sf", 0), "w") != sfstdout)
         terror("Can't open to write");
-    for (i = 0; i < 32; ++i)
-    {
+    for (i = 0; i < 32; ++i) {
         for (k = 0; k < sizeof(bigbuf); ++k)
             bigbuf[k] = '0' + (k + i) % 10;
         if (sfwrite(sfstdout, bigbuf, sizeof(bigbuf)) != sizeof(bigbuf))
@@ -158,8 +154,7 @@ tmain()
     sfsetbuf(sfstdin, NIL(Void_t *), 8 * 1024);
     if (!(s = sfreserve(sfstdin, 16 * sizeof(bigbuf), 0)))
         terror("sfreserve failed");
-    for (i = 0; i < 16; ++i)
-    {
+    for (i = 0; i < 16; ++i) {
         for (k = 0; k < sizeof(bigbuf); ++k)
             if (*s++ != ('0' + (k + i) % 10))
                 terror("Wrong data i=%d k=%d", i, k);
@@ -170,14 +165,12 @@ tmain()
     if (sfread(sfstdin, bigbuf, sizeof(bigbuf)) != sizeof(bigbuf))
         terror("sfread failed");
     s = bigbuf;
-    for (i = 1; i < 2; ++i)
-    {
+    for (i = 1; i < 2; ++i) {
         for (k = 0; k < sizeof(bigbuf); ++k)
             if (*s++ != ('0' + (k + i) % 10))
                 terror("Wrong data2 i=%d k=%d", i, k);
     }
-    if (!(s = sfreserve(sfstdin, 16 * sizeof(bigbuf), SF_LOCKR)))
-    {
+    if (!(s = sfreserve(sfstdin, 16 * sizeof(bigbuf), SF_LOCKR))) {
         sfsetbuf(sfstdin, NIL(Void_t *), 16 * sizeof(bigbuf));
         if (!(s = sfreserve(sfstdin, 16 * sizeof(bigbuf), SF_LOCKR)))
             terror("sfreserve failed2");
@@ -188,8 +181,7 @@ tmain()
     if (sfreserve(sfstdin, 0, 0) != s)
         terror("Reserve pointer changed?");
 #endif
-    for (i = 2; i < 17; ++i)
-    {
+    for (i = 2; i < 17; ++i) {
         for (k = 0; k < sizeof(bigbuf); ++k)
             if (*s++ != ('0' + (k + i) % 10))
                 terror("Wrong data3 i=%d k=%d", i, k);
@@ -243,8 +235,7 @@ tmain()
     if (strncmp(s, "0123456789", 10) != 0)
         terror("Reserved data was corrupted");
 
-    for (i = 0; i < 18; i += 6)
-    {
+    for (i = 0; i < 18; i += 6) {
         if (!(f = sftmp(i)))
             terror("Can't open tempfile");
 
@@ -292,8 +283,7 @@ tmain()
     if (strncmp(s, bigbuf + 5, 100) != 0)
         terror("Wrong data at bottom2");
     sfread(f, s, 5);
-    for (i = 1; i < 10; ++i)
-    {
+    for (i = 1; i < 10; ++i) {
         if (!(s = sfreserve(f, -96, SF_LOCKR)))
             terror("sfreserve failed at bottom loop");
         if (sfvalue(f) != 100)

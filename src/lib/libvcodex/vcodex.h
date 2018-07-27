@@ -420,45 +420,39 @@ _END_EXTERNS_
 */
 #    define vciosetb(                                                        \
     io, bt, nb, tp) /* (tp) is only for symmetry with vcioendb */            \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             (bt) = 0;                                                        \
             (nb) = 0;                                                        \
         } while (0)
 
 #    define vciofilb(                                                        \
     io, bt, nb, mb) /* getting bits from stream into (bt) */                 \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             if ((nb) < (mb))                                                 \
-                while ((nb) <= (VC_BITSIZE - 8) && (io)->next < (io)->endb)  \
-                {                                                            \
+                while ((nb) <= (VC_BITSIZE - 8)                              \
+                       && (io)->next < (io)->endb) {                         \
                     (nb) += 8;                                               \
                     (bt) |= (*(io)->next++ << (VC_BITSIZE - (nb)));          \
                 }                                                            \
         } while (0)
 
 #    define vciodelb(io, bt, nb, nd) /* consume bits already read */         \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             (bt) <<= (nd);                                                   \
             (nb) -= (nd);                                                    \
         } while (0)
 
 #    define vcioflsb(                                                        \
     io, bt, nb) /* putting accumulated bits out to stream */                 \
-        do                                                                   \
-        {                                                                    \
-            for (; (nb) >= 8 && (io)->next < (io)->endb; (nb) -= 8)          \
-            {                                                                \
+        do {                                                                 \
+            for (; (nb) >= 8 && (io)->next < (io)->endb; (nb) -= 8) {        \
                 *(io)->next++ = (Vcchar_t)((bt) >> (VC_BITSIZE - 8));        \
                 (bt) <<= 8;                                                  \
             }                                                                \
         } while (0)
 
 #    define vcioaddb(io, bt, nb, ad, na) /* add new bits to accumulator */   \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             if (((nb) + (na)) > VC_BITSIZE)                                  \
                 vcioflsb((io), (bt), (nb));                                  \
             (bt) |= (ad) >> (nb);                                            \
@@ -466,19 +460,15 @@ _END_EXTERNS_
         } while (0)
 
 #    define vcioendb(io, bt, nb, tp) /* finishing bit operations */          \
-        do                                                                   \
-        {                                                                    \
-            if ((tp) == VC_ENCODE)                                           \
-            {                                                                \
+        do {                                                                 \
+            if ((tp) == VC_ENCODE) {                                         \
                 vcioflsb(io, bt, nb);                                        \
                 if ((nb) > 0) /* finish up the partial last byte */          \
                 {                                                            \
                     *(io)->next++ = (Vcchar_t)((bt) >> (VC_BITSIZE - 8));    \
                     (bt) = 0;                                                \
                 }                                                            \
-            }                                                                \
-            else                                                             \
-            {                                                                \
+            } else {                                                         \
                 while (((nb) -= 8) >= 0)                                     \
                     (io)->next--;                                            \
                 (bt) = 0;                                                    \

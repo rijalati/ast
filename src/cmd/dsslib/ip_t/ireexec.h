@@ -52,12 +52,10 @@ IRENEXT(Ire_t *ire, Re_t *re, int must, IREINT *lp, IREINT *rp)
         return !ire->right || lp >= rp;
     if ((rp - lp) < must)
         return 0;
-    if (re->lo)
-    {
+    if (re->lo) {
         must -= re->lo;
         bp = lp + re->lo - 1;
-    }
-    else if (IRENEXT(ire, re->next, must, lp, rp))
+    } else if (IRENEXT(ire, re->next, must, lp, rp))
         return 1;
     else
         bp = lp;
@@ -69,29 +67,22 @@ IRENEXT(Ire_t *ire, Re_t *re, int must, IREINT *lp, IREINT *rp)
         ep = lp + re->hi;
     if ((rp - ep) < must)
         ep = rp - must;
-    for (cp = lp; cp < ep; cp++)
-    {
-        if (*cp == ire->group && ire->group)
-        {
+    for (cp = lp; cp < ep; cp++) {
+        if (*cp == ire->group && ire->group) {
             j = *++cp;
-            if (cp < bp)
-            {
+            if (cp < bp) {
                 bp += j + 1;
                 ep += j + 1;
             }
             cp += j;
             j = 1 - j;
-        }
-        else
+        } else
             j = 0;
-        if (re->n)
-        {
-            while (j < 1)
-            {
+        if (re->n) {
+            while (j < 1) {
                 n = cp[j++];
                 for (i = 0; i < re->n; i++)
-                    if (n == re->id[i])
-                    {
+                    if (n == re->id[i]) {
                         if (re->invert)
                             return 0;
                         goto hit;
@@ -120,8 +111,7 @@ IREEXEC(Ire_t *ire, void *data, size_t size)
     int left = ire->left;
     int must = ire->must;
 
-    do
-    {
+    do {
         if (IRENEXT(ire, re, must, lp, rp))
             return 1;
         if (*lp++ == ire->group && ire->group)

@@ -82,8 +82,7 @@
 static void
 drop(Mime_t *mp)
 {
-    if (mp->magic)
-    {
+    if (mp->magic) {
         magicclose(mp->magic);
         mp->magic = 0;
     }
@@ -98,13 +97,11 @@ mimetype(Mime_t *mp, Sfio_t *fp, const char *file, struct stat *st)
 {
     if (mp->disc->flags & MIME_NOMAGIC)
         return 0;
-    if (!mp->magic)
-    {
+    if (!mp->magic) {
         mp->magicd.version = MAGIC_VERSION;
         mp->magicd.flags = MAGIC_MIME;
         mp->magicd.errorf = mp->disc->errorf;
-        if (!(mp->magic = magicopen(&mp->magicd)))
-        {
+        if (!(mp->magic = magicopen(&mp->magicd))) {
             mp->disc->flags |= MIME_NOMAGIC;
             return 0;
         }

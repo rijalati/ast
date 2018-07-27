@@ -121,15 +121,13 @@ kvm_init(Pss_t *pss)
 {
     State_t *state;
 
-    if (!(state = vmnewof(pss->vm, 0, State_t, 1, 0)))
-    {
+    if (!(state = vmnewof(pss->vm, 0, State_t, 1, 0))) {
         if (pss->disc->errorf)
             (*pss->disc->errorf)(
             pss, pss->disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
     }
-    if (!(state->kd = kvm_open(NiL, NiL, 0, O_RDONLY, NiL)))
-    {
+    if (!(state->kd = kvm_open(NiL, NiL, 0, O_RDONLY, NiL))) {
         if (pss->disc->errorf)
             (*pss->disc->errorf)(
             pss, pss->disc, ERROR_SYSTEM | 1, "kvm open error");
@@ -155,15 +153,12 @@ kvm_readf(Pss_t *pss, Pss_id_t pid)
     State_t *state = ( State_t * )pss->data;
     int count;
 
-    if (pid)
-    {
+    if (pid) {
         if (!(state->kp
               = kvm_getprocs(state->kd, KERN_PROC_PID, pid, &count)))
             return -1;
         state->ke = state->kp + count;
-    }
-    else if (!state->kp)
-    {
+    } else if (!state->kp) {
         if (!(state->kp = kvm_getprocs(state->kd, KERN_PROC_ALL, 0, &count)))
             return -1;
         state->ke = state->kp + count;
@@ -189,8 +184,7 @@ kvm_part(Pss_t *pss, Pssent_t *pe)
 #    if 0
 	pe->sid = state->px->e_sess->s_sid;
 #    endif
-    switch (state->pr->p_stat)
-    {
+    switch (state->pr->p_stat) {
     case SIDL:
         pe->state = 'I';
         break;
@@ -221,23 +215,18 @@ kvm_full(Pss_t *pss, Pssent_t *pe)
     char *s;
     int i;
 
-    if (pe->state != PSS_ZOMBIE)
-    {
-        if (fields & PSS_args)
-        {
+    if (pe->state != PSS_ZOMBIE) {
+        if (fields & PSS_args) {
             s = state->pr->p_comm;
-            if (s[0] == '(' && s[i = strlen(s) - 1] == ')')
-            {
+            if (s[0] == '(' && s[i = strlen(s) - 1] == ')') {
                 s[i] = 0;
                 s++;
             }
             pe->args = s;
         }
-        if (fields & PSS_command)
-        {
+        if (fields & PSS_command) {
             s = state->pr->p_comm;
-            if (s[0] == '(' && s[i = strlen(s) - 1] == ')')
-            {
+            if (s[0] == '(' && s[i = strlen(s) - 1] == ')') {
                 s[i] = 0;
                 s++;
             }

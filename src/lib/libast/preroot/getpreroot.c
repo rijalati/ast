@@ -56,8 +56,7 @@ getpreroot(char *path, const char *cmd)
 
     if (!path)
         path = buf;
-    if (cmd)
-    {
+    if (cmd) {
         sfsprintf(
         buf,
         sizeof(buf),
@@ -76,9 +75,7 @@ getpreroot(char *path, const char *cmd)
         if (path == p)
             return (0);
         return (path == buf ? strdup(path) : path);
-    }
-    else
-    {
+    } else {
         char *d;
         DIR *dirp = 0;
         int namlen;
@@ -109,8 +106,7 @@ getpreroot(char *path, const char *cmd)
         *d++ = '/';
         p = path + PATH_MAX - 1;
         *p = 0;
-        for (;;)
-        {
+        for (;;) {
             tmp = cur;
             cur = par;
             par = tmp;
@@ -129,18 +125,15 @@ getpreroot(char *path, const char *cmd)
                 ERROR(errno);
 #    endif
             *d++ = '/';
-            if (par->st_dev == cur->st_dev)
-            {
-                if (par->st_ino == cur->st_ino)
-                {
+            if (par->st_dev == cur->st_dev) {
+                if (par->st_ino == cur->st_ino) {
                     closedir(dirp);
                     *--p = '/';
                     if (ruid != euid)
                         setuid(euid);
                     if (path == buf)
                         return (strdup(p));
-                    if (path != p)
-                    {
+                    if (path != p) {
                         d = path;
                         while (*d++ = *p++)
                             ;
@@ -149,8 +142,7 @@ getpreroot(char *path, const char *cmd)
                 }
 #    ifdef D_FILENO
                 while (entry = readdir(dirp))
-                    if (D_FILENO(entry) == cur->st_ino)
-                    {
+                    if (D_FILENO(entry) == cur->st_ino) {
                         namlen = D_NAMLEN(entry);
                         goto found;
                     }
@@ -162,8 +154,7 @@ getpreroot(char *path, const char *cmd)
 
                 rewinddir(dirp);
             }
-            do
-            {
+            do {
                 if (!(entry = readdir(dirp)))
                     ERROR(ENOENT);
                 namlen = D_NAMLEN(entry);

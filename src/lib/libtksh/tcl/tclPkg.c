@@ -87,14 +87,12 @@ char *version;      /* Version string for package. */
     Package *pkgPtr;
 
     pkgPtr = FindPackage(interp, name);
-    if (pkgPtr->version == NULL)
-    {
+    if (pkgPtr->version == NULL) {
         pkgPtr->version = ckalloc(( unsigned )(strlen(version) + 1));
         strcpy(pkgPtr->version, version);
         return TCL_OK;
     }
-    if (ComparePkgVersions(pkgPtr->version, version, ( int * )NULL) == 0)
-    {
+    if (ComparePkgVersions(pkgPtr->version, version, ( int * )NULL) == 0) {
         return TCL_OK;
     }
     Tcl_AppendResult(interp,
@@ -161,11 +159,9 @@ int exact;          /* Non-zero means that only the particular
      * package loaded by the "package ifneeded" script.
      */
 
-    for (pass = 1;; pass++)
-    {
+    for (pass = 1;; pass++) {
         pkgPtr = FindPackage(interp, name);
-        if (pkgPtr->version != NULL)
-        {
+        if (pkgPtr->version != NULL) {
             break;
         }
 
@@ -176,32 +172,26 @@ int exact;          /* Non-zero means that only the particular
 
         bestPtr = NULL;
         for (availPtr = pkgPtr->availPtr; availPtr != NULL;
-             availPtr = availPtr->nextPtr)
-        {
+             availPtr = availPtr->nextPtr) {
             if ((bestPtr != NULL)
                 && (ComparePkgVersions(
                     availPtr->version, bestPtr->version, ( int * )NULL)
-                    <= 0))
-            {
+                    <= 0)) {
                 continue;
             }
-            if (version != NULL)
-            {
+            if (version != NULL) {
                 result
                 = ComparePkgVersions(availPtr->version, version, &satisfies);
-                if ((result != 0) && exact)
-                {
+                if ((result != 0) && exact) {
                     continue;
                 }
-                if (!satisfies)
-                {
+                if (!satisfies) {
                     continue;
                 }
             }
             bestPtr = availPtr;
         }
-        if (bestPtr != NULL)
-        {
+        if (bestPtr != NULL) {
             /*
              * We found an ifneeded script for the package.  Be careful while
              * executing it:  this could cause reentrancy, so (a) protect the
@@ -213,10 +203,8 @@ int exact;          /* Non-zero means that only the particular
             Tcl_Preserve(( ClientData )script);
             code = Tcl_GlobalEval(interp, script);
             Tcl_Release(( ClientData )script);
-            if (code != TCL_OK)
-            {
-                if (code == TCL_ERROR)
-                {
+            if (code != TCL_OK) {
+                if (code == TCL_ERROR) {
                     Tcl_AddErrorInfo(interp,
                                      "\n    (\"package ifneeded\" script)");
                 }
@@ -233,29 +221,24 @@ int exact;          /* Non-zero means that only the particular
          * we should not get here in the first place).
          */
 
-        if (pass > 1)
-        {
+        if (pass > 1) {
             break;
         }
         script = (( Interp * )interp)->packageUnknown;
-        if (script != NULL)
-        {
+        if (script != NULL) {
             Tcl_DStringInit(&command);
             Tcl_DStringAppend(&command, script, -1);
             Tcl_DStringAppendElement(&command, name);
             Tcl_DStringAppend(&command, " ", 1);
             Tcl_DStringAppend(
             &command, (version != NULL) ? version : "{}", -1);
-            if (exact)
-            {
+            if (exact) {
                 Tcl_DStringAppend(&command, " -exact", 7);
             }
             code = Tcl_GlobalEval(interp, Tcl_DStringValue(&command));
             Tcl_DStringFree(&command);
-            if (code != TCL_OK)
-            {
-                if (code == TCL_ERROR)
-                {
+            if (code != TCL_OK) {
+                if (code == TCL_ERROR) {
                     Tcl_AddErrorInfo(interp,
                                      "\n    (\"package unknown\" script)");
                 }
@@ -265,11 +248,9 @@ int exact;          /* Non-zero means that only the particular
         }
     }
 
-    if (pkgPtr->version == NULL)
-    {
+    if (pkgPtr->version == NULL) {
         Tcl_AppendResult(interp, "can't find package ", name, ( char * )NULL);
-        if (version != NULL)
-        {
+        if (version != NULL) {
             Tcl_AppendResult(interp, " ", version, ( char * )NULL);
         }
         return NULL;
@@ -280,13 +261,11 @@ int exact;          /* Non-zero means that only the particular
      * provided version meets the current requirement.
      */
 
-    if (version == NULL)
-    {
+    if (version == NULL) {
         return pkgPtr->version;
     }
     result = ComparePkgVersions(pkgPtr->version, version, &satisfies);
-    if ((satisfies && !exact) || (result == 0))
-    {
+    if ((satisfies && !exact) || (result == 0)) {
         return pkgPtr->version;
     }
     Tcl_AppendResult(interp,
@@ -334,8 +313,7 @@ char **argv;        /* Argument strings. */
     Tcl_HashTable *tablePtr;
     char *version;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -345,23 +323,18 @@ char **argv;        /* Argument strings. */
     }
     c = argv[1][0];
     length = strlen(argv[1]);
-    if ((c == 'f') && (strncmp(argv[1], "forget", length) == 0))
-    {
-        for (i = 2; i < argc; i++)
-        {
+    if ((c == 'f') && (strncmp(argv[1], "forget", length) == 0)) {
+        for (i = 2; i < argc; i++) {
             hPtr = Tcl_FindHashEntry(&iPtr->packageTable, argv[i]);
-            if (hPtr == NULL)
-            {
+            if (hPtr == NULL) {
                 return TCL_OK;
             }
             pkgPtr = ( Package * )Tcl_GetHashValue(hPtr);
             Tcl_DeleteHashEntry(hPtr);
-            if (pkgPtr->version != NULL)
-            {
+            if (pkgPtr->version != NULL) {
                 ckfree(pkgPtr->version);
             }
-            while (pkgPtr->availPtr != NULL)
-            {
+            while (pkgPtr->availPtr != NULL) {
                 availPtr = pkgPtr->availPtr;
                 pkgPtr->availPtr = availPtr->nextPtr;
                 ckfree(availPtr->version);
@@ -371,11 +344,8 @@ char **argv;        /* Argument strings. */
             }
             ckfree(( char * )pkgPtr);
         }
-    }
-    else if ((c == 'i') && (strncmp(argv[1], "ifneeded", length) == 0))
-    {
-        if ((argc != 4) && (argc != 5))
-        {
+    } else if ((c == 'i') && (strncmp(argv[1], "ifneeded", length) == 0)) {
+        if ((argc != 4) && (argc != 5)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -383,31 +353,23 @@ char **argv;        /* Argument strings. */
                              ( char * )NULL);
             return TCL_ERROR;
         }
-        if (CheckVersion(interp, argv[3]) != TCL_OK)
-        {
+        if (CheckVersion(interp, argv[3]) != TCL_OK) {
             return TCL_ERROR;
         }
-        if (argc == 4)
-        {
+        if (argc == 4) {
             hPtr = Tcl_FindHashEntry(&iPtr->packageTable, argv[2]);
-            if (hPtr == NULL)
-            {
+            if (hPtr == NULL) {
                 return TCL_OK;
             }
             pkgPtr = ( Package * )Tcl_GetHashValue(hPtr);
-        }
-        else
-        {
+        } else {
             pkgPtr = FindPackage(interp, argv[2]);
         }
         for (availPtr = pkgPtr->availPtr, prevPtr = NULL; availPtr != NULL;
-             prevPtr = availPtr, availPtr = availPtr->nextPtr)
-        {
+             prevPtr = availPtr, availPtr = availPtr->nextPtr) {
             if (ComparePkgVersions(availPtr->version, argv[3], ( int * )NULL)
-                == 0)
-            {
-                if (argc == 4)
-                {
+                == 0) {
+                if (argc == 4) {
                     interp->result = availPtr->script;
                     return TCL_OK;
                 }
@@ -416,33 +378,25 @@ char **argv;        /* Argument strings. */
                 break;
             }
         }
-        if (argc == 4)
-        {
+        if (argc == 4) {
             return TCL_OK;
         }
-        if (availPtr == NULL)
-        {
+        if (availPtr == NULL) {
             availPtr = ( PkgAvail * )ckalloc(sizeof(PkgAvail));
             availPtr->version = ckalloc(( unsigned )(strlen(argv[3]) + 1));
             strcpy(availPtr->version, argv[3]);
-            if (prevPtr == NULL)
-            {
+            if (prevPtr == NULL) {
                 availPtr->nextPtr = pkgPtr->availPtr;
                 pkgPtr->availPtr = availPtr;
-            }
-            else
-            {
+            } else {
                 availPtr->nextPtr = prevPtr->nextPtr;
                 prevPtr->nextPtr = availPtr;
             }
         }
         availPtr->script = ckalloc(( unsigned )(strlen(argv[4]) + 1));
         strcpy(availPtr->script, argv[4]);
-    }
-    else if ((c == 'n') && (strncmp(argv[1], "names", length) == 0))
-    {
-        if (argc != 2)
-        {
+    } else if ((c == 'n') && (strncmp(argv[1], "names", length) == 0)) {
+        if (argc != 2) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -452,19 +406,14 @@ char **argv;        /* Argument strings. */
         }
         tablePtr = &iPtr->packageTable;
         for (hPtr = Tcl_FirstHashEntry(tablePtr, &search); hPtr != NULL;
-             hPtr = Tcl_NextHashEntry(&search))
-        {
+             hPtr = Tcl_NextHashEntry(&search)) {
             pkgPtr = ( Package * )Tcl_GetHashValue(hPtr);
-            if ((pkgPtr->version != NULL) || (pkgPtr->availPtr != NULL))
-            {
+            if ((pkgPtr->version != NULL) || (pkgPtr->availPtr != NULL)) {
                 Tcl_AppendElement(interp, Tcl_GetHashKey(tablePtr, hPtr));
             }
         }
-    }
-    else if ((c == 'p') && (strncmp(argv[1], "provide", length) == 0))
-    {
-        if ((argc != 3) && (argc != 4))
-        {
+    } else if ((c == 'p') && (strncmp(argv[1], "provide", length) == 0)) {
+        if ((argc != 3) && (argc != 4)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -472,29 +421,22 @@ char **argv;        /* Argument strings. */
                              ( char * )NULL);
             return TCL_ERROR;
         }
-        if (argc == 3)
-        {
+        if (argc == 3) {
             hPtr = Tcl_FindHashEntry(&iPtr->packageTable, argv[2]);
-            if (hPtr != NULL)
-            {
+            if (hPtr != NULL) {
                 pkgPtr = ( Package * )Tcl_GetHashValue(hPtr);
-                if (pkgPtr->version != NULL)
-                {
+                if (pkgPtr->version != NULL) {
                     interp->result = pkgPtr->version;
                 }
             }
             return TCL_OK;
         }
-        if (CheckVersion(interp, argv[3]) != TCL_OK)
-        {
+        if (CheckVersion(interp, argv[3]) != TCL_OK) {
             return TCL_ERROR;
         }
         return Tcl_PkgProvide(interp, argv[2], argv[3]);
-    }
-    else if ((c == 'r') && (strncmp(argv[1], "require", length) == 0))
-    {
-        if (argc < 3)
-        {
+    } else if ((c == 'r') && (strncmp(argv[1], "require", length) == 0)) {
+        if (argc < 3) {
         requireSyntax:
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
@@ -503,62 +445,42 @@ char **argv;        /* Argument strings. */
                              ( char * )NULL);
             return TCL_ERROR;
         }
-        if ((argv[2][0] == '-') && (strcmp(argv[2], "-exact") == 0))
-        {
+        if ((argv[2][0] == '-') && (strcmp(argv[2], "-exact") == 0)) {
             exact = 1;
-        }
-        else
-        {
+        } else {
             exact = 0;
         }
         version = NULL;
-        if (argc == (4 + exact))
-        {
+        if (argc == (4 + exact)) {
             version = argv[3 + exact];
-            if (CheckVersion(interp, version) != TCL_OK)
-            {
+            if (CheckVersion(interp, version) != TCL_OK) {
                 return TCL_ERROR;
             }
-        }
-        else if ((argc != 3) || exact)
-        {
+        } else if ((argc != 3) || exact) {
             goto requireSyntax;
         }
         version = Tcl_PkgRequire(interp, argv[2 + exact], version, exact);
-        if (version == NULL)
-        {
+        if (version == NULL) {
             return TCL_ERROR;
         }
         interp->result = version;
-    }
-    else if ((c == 'u') && (strncmp(argv[1], "unknown", length) == 0))
-    {
-        if (argc == 2)
-        {
-            if (iPtr->packageUnknown != NULL)
-            {
+    } else if ((c == 'u') && (strncmp(argv[1], "unknown", length) == 0)) {
+        if (argc == 2) {
+            if (iPtr->packageUnknown != NULL) {
                 iPtr->result = iPtr->packageUnknown;
             }
-        }
-        else if (argc == 3)
-        {
-            if (iPtr->packageUnknown != NULL)
-            {
+        } else if (argc == 3) {
+            if (iPtr->packageUnknown != NULL) {
                 ckfree(iPtr->packageUnknown);
             }
-            if (argv[2][0] == 0)
-            {
+            if (argv[2][0] == 0) {
                 iPtr->packageUnknown = NULL;
-            }
-            else
-            {
+            } else {
                 iPtr->packageUnknown
                 = ( char * )ckalloc(( unsigned )(strlen(argv[2]) + 1));
                 strcpy(iPtr->packageUnknown, argv[2]);
             }
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -566,12 +488,9 @@ char **argv;        /* Argument strings. */
                              ( char * )NULL);
             return TCL_ERROR;
         }
-    }
-    else if ((c == 'v') && (strncmp(argv[1], "vcompare", length) == 0)
-             && (length >= 2))
-    {
-        if (argc != 4)
-        {
+    } else if ((c == 'v') && (strncmp(argv[1], "vcompare", length) == 0)
+               && (length >= 2)) {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -580,19 +499,15 @@ char **argv;        /* Argument strings. */
             return TCL_ERROR;
         }
         if ((CheckVersion(interp, argv[2]) != TCL_OK)
-            || (CheckVersion(interp, argv[3]) != TCL_OK))
-        {
+            || (CheckVersion(interp, argv[3]) != TCL_OK)) {
             return TCL_ERROR;
         }
         sprintf(interp->result,
                 "%d",
                 ComparePkgVersions(argv[2], argv[3], ( int * )NULL));
-    }
-    else if ((c == 'v') && (strncmp(argv[1], "versions", length) == 0)
-             && (length >= 2))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 'v') && (strncmp(argv[1], "versions", length) == 0)
+               && (length >= 2)) {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -601,21 +516,16 @@ char **argv;        /* Argument strings. */
             return TCL_ERROR;
         }
         hPtr = Tcl_FindHashEntry(&iPtr->packageTable, argv[2]);
-        if (hPtr != NULL)
-        {
+        if (hPtr != NULL) {
             pkgPtr = ( Package * )Tcl_GetHashValue(hPtr);
             for (availPtr = pkgPtr->availPtr; availPtr != NULL;
-                 availPtr = availPtr->nextPtr)
-            {
+                 availPtr = availPtr->nextPtr) {
                 Tcl_AppendElement(interp, availPtr->version);
             }
         }
-    }
-    else if ((c == 'v') && (strncmp(argv[1], "vsatisfies", length) == 0)
-             && (length >= 2))
-    {
-        if (argc != 4)
-        {
+    } else if ((c == 'v') && (strncmp(argv[1], "vsatisfies", length) == 0)
+               && (length >= 2)) {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -624,15 +534,12 @@ char **argv;        /* Argument strings. */
             return TCL_ERROR;
         }
         if ((CheckVersion(interp, argv[2]) != TCL_OK)
-            || (CheckVersion(interp, argv[3]) != TCL_OK))
-        {
+            || (CheckVersion(interp, argv[3]) != TCL_OK)) {
             return TCL_ERROR;
         }
         ComparePkgVersions(argv[2], argv[3], &satisfies);
         sprintf(interp->result, "%d", satisfies);
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "bad option \"",
                          argv[1],
@@ -674,15 +581,12 @@ char *name;         /* Name of package to fine. */
     Package *pkgPtr;
 
     hPtr = Tcl_CreateHashEntry(&iPtr->packageTable, name, &new);
-    if (new)
-    {
+    if (new) {
         pkgPtr = ( Package * )ckalloc(sizeof(Package));
         pkgPtr->version = NULL;
         pkgPtr->availPtr = NULL;
         Tcl_SetHashValue(hPtr, pkgPtr);
-    }
-    else
-    {
+    } else {
         pkgPtr = ( Package * )Tcl_GetHashValue(hPtr);
     }
     return pkgPtr;
@@ -716,15 +620,12 @@ void TclFreePackageInfo(iPtr) Interp *iPtr; /* Interpereter that is being
 
     for (hPtr = Tcl_FirstHashEntry(&iPtr->packageTable, &search);
          hPtr != NULL;
-         hPtr = Tcl_NextHashEntry(&search))
-    {
+         hPtr = Tcl_NextHashEntry(&search)) {
         pkgPtr = ( Package * )Tcl_GetHashValue(hPtr);
-        if (pkgPtr->version != NULL)
-        {
+        if (pkgPtr->version != NULL) {
             ckfree(pkgPtr->version);
         }
-        while (pkgPtr->availPtr != NULL)
-        {
+        while (pkgPtr->availPtr != NULL) {
             availPtr = pkgPtr->availPtr;
             pkgPtr->availPtr = availPtr->nextPtr;
             ckfree(availPtr->version);
@@ -734,8 +635,7 @@ void TclFreePackageInfo(iPtr) Interp *iPtr; /* Interpereter that is being
         ckfree(( char * )pkgPtr);
     }
     Tcl_DeleteHashTable(&iPtr->packageTable);
-    if (iPtr->packageUnknown != NULL)
-    {
+    if (iPtr->packageUnknown != NULL) {
         ckfree(iPtr->packageUnknown);
     }
 }
@@ -767,19 +667,15 @@ char *string; /* Supposedly a version number, which is
 {
     char *p = string;
 
-    if (!isdigit(UCHAR(*p)))
-    {
+    if (!isdigit(UCHAR(*p))) {
         goto error;
     }
-    for (p++; *p != 0; p++)
-    {
-        if (!isdigit(UCHAR(*p)) && (*p != '.'))
-        {
+    for (p++; *p != 0; p++) {
+        if (!isdigit(UCHAR(*p)) && (*p != '.')) {
             goto error;
         }
     }
-    if (p[-1] != '.')
-    {
+    if (p[-1] != '.') {
         return TCL_OK;
     }
 
@@ -831,20 +727,17 @@ int *satPtr; /* If non-null, the word pointed to is
      */
 
     thisIsMajor = 1;
-    while (1)
-    {
+    while (1) {
         /*
          * Parse one decimal number from the front of each string.
          */
 
         n1 = n2 = 0;
-        while ((*v1 != 0) && (*v1 != '.'))
-        {
+        while ((*v1 != 0) && (*v1 != '.')) {
             n1 = 10 * n1 + (*v1 - '0');
             v1++;
         }
-        while ((*v2 != 0) && (*v2 != '.'))
-        {
+        while ((*v2 != 0) && (*v2 != '.')) {
             n2 = 10 * n2 + (*v2 - '0');
             v2++;
         }
@@ -854,38 +747,27 @@ int *satPtr; /* If non-null, the word pointed to is
          * current numbers match.
          */
 
-        if (n1 != n2)
-        {
+        if (n1 != n2) {
             break;
         }
-        if (*v1 != 0)
-        {
+        if (*v1 != 0) {
             v1++;
-        }
-        else if (*v2 == 0)
-        {
+        } else if (*v2 == 0) {
             break;
         }
-        if (*v2 != 0)
-        {
+        if (*v2 != 0) {
             v2++;
         }
         thisIsMajor = 0;
     }
-    if (satPtr != NULL)
-    {
+    if (satPtr != NULL) {
         *satPtr = (n1 == n2) || ((n1 > n2) && !thisIsMajor);
     }
-    if (n1 > n2)
-    {
+    if (n1 > n2) {
         return 1;
-    }
-    else if (n1 == n2)
-    {
+    } else if (n1 == n2) {
         return 0;
-    }
-    else
-    {
+    } else {
         return -1;
     }
 }

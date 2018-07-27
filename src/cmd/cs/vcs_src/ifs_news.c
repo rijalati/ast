@@ -55,13 +55,11 @@ int bsize;
 {
     char tmpbuf[STRLEN];
 
-    if (buf == NULL)
-    {
+    if (buf == NULL) {
         buf = tmpbuf;
         bsize = sizeof(tmpbuf);
     }
-    if (NetGets(nFile, buf, bsize) == NULL)
-    {
+    if (NetGets(nFile, buf, bsize) == NULL) {
         debug_logit("FtpReply: NetGets return NULL\n");
         return -1;
     }
@@ -79,14 +77,11 @@ char *destfile;
     char buf[STRLEN], *ptr;
 
     fp = (destfile ? fopen(destfile, "w") : NULL);
-    while (NetGets(nFile, buf, sizeof(buf)) != NULL)
-    {
-        if ((ptr = strchr(buf, '\r')) != NULL && ptr[1] == '\n')
-        {
+    while (NetGets(nFile, buf, sizeof(buf)) != NULL) {
+        if ((ptr = strchr(buf, '\r')) != NULL && ptr[1] == '\n') {
             *ptr = '\0';
         }
-        if (buf[0] == '.' && buf[1] == '\0')
-        { /* end of file */
+        if (buf[0] == '.' && buf[1] == '\0') { /* end of file */
             if (fp)
                 fclose(fp);
             return 0;
@@ -108,8 +103,7 @@ int NewsListGroups(srv) struct server_info *srv;
     char destfile[STRLEN];
 
     NewsCommand(nFile, "LIST", NULL);
-    if (NewsReply(nFile, NULL, 0) != 215)
-    {
+    if (NewsReply(nFile, NULL, 0) != 215) {
         logit("<news>: LIST error\n");
         cserrno = E_DATAXFER;
         return -1;
@@ -136,8 +130,7 @@ char *lpath;
     char *oldgroup;
 
     oldgroup = NewsData.Group[nFile->socket];
-    if (oldgroup != NULL)
-    {
+    if (oldgroup != NULL) {
         if (strcmp(group, oldgroup) == 0)
             return 0;
         free(oldgroup);
@@ -145,8 +138,7 @@ char *lpath;
     NewsData.Group[nFile->socket] = strdup(group);
     NewsCommand(nFile, "GROUP", group);
     if (NewsReply(nFile, buf, sizeof(buf)) != 211
-        || SplitFields(arg, 5, buf, ' ') != 5)
-    {
+        || SplitFields(arg, 5, buf, ' ') != 5) {
         logit("<news>: unknown group\n");
         cserrno = E_DATAXFER;
         return -1;
@@ -162,8 +154,7 @@ char *lpath;
               ( int )strtol(arg[2], ( char ** )0, 0),
               ( int )strtol(arg[3], ( char ** )0, 0));
     NewsCommand(nFile, "XOVER", buf);
-    if (NewsReply(nFile, NULL, 0) != 224)
-    {
+    if (NewsReply(nFile, NULL, 0) != 224) {
         logit("<news>: xover error\n");
         cserrno = E_DATAXFER;
         return -1;
@@ -172,17 +163,13 @@ char *lpath;
     /* 224 data follows */
     sfsprintf(buf, sizeof(buf), "%s/._dir", lpath);
     MakePath(buf);
-    if (NewsXferFile(nFile, buf) == -1)
-    {
+    if (NewsXferFile(nFile, buf) == -1) {
         return -1;
     }
     chdir(lpath);
-    if ((fp = fopen("._dir", "r")) != NULL)
-    {
-        while (fgets(buf, sizeof(buf), fp) != NULL)
-        {
-            if (SplitFields(arg, 7, buf, '\t') == 7)
-            {
+    if ((fp = fopen("._dir", "r")) != NULL) {
+        while (fgets(buf, sizeof(buf), fp) != NULL) {
+            if (SplitFields(arg, 7, buf, '\t') == 7) {
                 MakeImageFile(arg[0], ( int )strtol(arg[6], ( char ** )0, 0));
             }
         }
@@ -204,8 +191,7 @@ char *article;
     if (NewsEnterGroup(srv, group, NULL) == -1)
         return -1;
     NewsCommand(nFile, "ARTICLE", article);
-    if (NewsReply(nFile, NULL, 0) != 220)
-    {
+    if (NewsReply(nFile, NULL, 0) != 220) {
         logit("<news>: get article error\n");
         cserrno = E_DATAXFER;
         return -1;
@@ -222,11 +208,9 @@ int NewsConnect(srv) struct server_info *srv;
     NetFile *nFile = mitem->nFile;
     int port;
 
-    if (nFile != NULL)
-    {
+    if (nFile != NULL) {
         NewsCommand(nFile, "MODE", "READER");
-        if (NewsReply(nFile, NULL, 0) == 200)
-        {
+        if (NewsReply(nFile, NULL, 0) == 200) {
             return 0;
         }
         NetClose(nFile);
@@ -235,14 +219,12 @@ int NewsConnect(srv) struct server_info *srv;
     port = (mitem->port ? mitem->port : 119);
     if ((nFile = NetConnect(srv, mitem->host, port)) == NULL)
         return -1;
-    if (NewsReply(nFile, NULL, 0) != 200)
-    {
+    if (NewsReply(nFile, NULL, 0) != 200) {
         NetClose(nFile);
         return -1;
     }
     NewsCommand(nFile, "MODE", "READER");
-    if (NewsReply(nFile, NULL, 0) != 200)
-    {
+    if (NewsReply(nFile, NULL, 0) != 200) {
         NetClose(nFile);
         return -1;
     }
@@ -258,8 +240,7 @@ int NewsDisconnect(srv) struct server_info *srv;
     struct mount_item *mitem = srv->mitem;
     NetFile *nFile = mitem->nFile;
 
-    if (nFile != NULL)
-    {
+    if (nFile != NULL) {
         NetClose(nFile);
         mitem->nFile = NULL;
     }
@@ -278,28 +259,24 @@ int NewsGetFile(srv) struct server_info *srv;
     if (mitem->nFile == NULL)
         if (NewsConnect(srv) == -1)
             return -1;
-    if (NetDataReady(mitem->nFile))
-    { /* 503 Timeout or invalid mode */
+    if (NetDataReady(mitem->nFile)) { /* 503 Timeout or invalid mode */
         NewsDisconnect(srv);
         if (NewsConnect(srv) == -1)
             return -1;
     }
 
     rpath = srv->rpath;
-    if (*rpath == '\0')
-    {
+    if (*rpath == '\0') {
         return NewsListGroups(srv);
     }
 
     strcpy(group, rpath + 1); /* group(/article) */
-    if ((article = strchr(group, '/')) == NULL)
-    {
+    if ((article = strchr(group, '/')) == NULL) {
         return NewsEnterGroup(srv, group, srv->lpath);
     }
 
     *article++ = '\0';
-    if (strchr(article, '/') != NULL)
-    { /* too many arguments */
+    if (strchr(article, '/') != NULL) { /* too many arguments */
         logit("<news>: invalid path\n");
         return -1;
     }

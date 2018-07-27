@@ -48,10 +48,9 @@ int rc;                             /* record separator.	*/
 
     f->val = sn = -1;
     ss = ( char * )s;
-    for (w = 0; (*s || rc >= 0);)
-    { /* need to communicate string size to exception handler */
-        if ((f->flags & SF_STRING) && f->next >= f->endb)
-        {
+    for (w = 0; (*s || rc >= 0);) { /* need to communicate string size to
+                                       exception handler */
+        if ((f->flags & SF_STRING) && f->next >= f->endb) {
             sn = sn < 0 ? strlen(s) : (sn - (s - ss));
             ss = ( char * )s;                /* save current checkpoint */
             f->val = sn + (rc >= 0 ? 1 : 0); /* space requirement */
@@ -64,33 +63,27 @@ int rc;                             /* record separator.	*/
         if (p < 0) /* something not right about buffering */
             break;
 
-        if (p == 0 || (f->flags & SF_WHOLE))
-        {
+        if (p == 0 || (f->flags & SF_WHOLE)) {
             n = sn < 0 ? strlen(s) : sn - (s - ss);
-            if (p >= (n + (rc < 0 ? 0 : 1)))
-            { /* buffer can hold everything */
-                if (n > 0)
-                {
+            if (p
+                >= (n + (rc < 0 ? 0 : 1))) { /* buffer can hold everything */
+                if (n > 0) {
                     memcpy(ps, s, n);
                     ps += n;
                     w += n;
                 }
-                if (rc >= 0)
-                {
+                if (rc >= 0) {
                     *ps++ = rc;
                     w += 1;
                 }
                 f->next = ps;
-            }
-            else
-            { /* create a reserve buffer to hold data */
+            } else { /* create a reserve buffer to hold data */
                 Sfrsrv_t *rsrv;
 
                 p = n + (rc >= 0 ? 1 : 0);
                 if (!(rsrv = _sfrsrv(f, p)))
                     n = 0;
-                else
-                {
+                else {
                     if (n > 0)
                         memcpy(rsrv->data, s, n);
                     if (rc >= 0)
@@ -104,8 +97,7 @@ int rc;                             /* record separator.	*/
             break;
         }
 
-        if (*s == 0)
-        {
+        if (*s == 0) {
             *ps++ = rc;
             f->next = ps;
             w += 1;
@@ -131,8 +123,7 @@ int rc;                             /* record separator.	*/
 
     /* check for line buffering */
     else if ((f->flags & SF_LINE) && !(f->flags & SF_STRING)
-             && (n = f->next - f->data) > 0)
-    {
+             && (n = f->next - f->data) > 0) {
         if (n > w)
             n = w;
         f->next -= n;

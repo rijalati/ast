@@ -102,10 +102,8 @@ identf_text_lsa_file(Dssfile_t *fp, void *buff_p, size_t size, Dssdisc_t *disc)
     /* Check if first line is ascii-readable or not */
     s = ( char * )buff_p;
     n = sizeof(magic_name) + sizeof(magic_version);
-    if (size < n)
-    {
-        if (disc->errorf && (fp->dss->flags & DSS_DEBUG))
-        {
+    if (size < n) {
+        if (disc->errorf && (fp->dss->flags & DSS_DEBUG)) {
             (*disc->errorf)(NULL,
                             disc,
                             2,
@@ -114,10 +112,8 @@ identf_text_lsa_file(Dssfile_t *fp, void *buff_p, size_t size, Dssdisc_t *disc)
         }
         return 0;
     }
-    if (!strneq(s, magic_name, sizeof(magic_name) - 1))
-    {
-        if (disc->errorf && (fp->dss->flags & DSS_DEBUG))
-        {
+    if (!strneq(s, magic_name, sizeof(magic_name) - 1)) {
+        if (disc->errorf && (fp->dss->flags & DSS_DEBUG)) {
             (*disc->errorf)(
             NULL,
             disc,
@@ -131,10 +127,8 @@ identf_text_lsa_file(Dssfile_t *fp, void *buff_p, size_t size, Dssdisc_t *disc)
         return 0;
     }
     s += sizeof(magic_name);
-    if (!strneq(s, magic_version, sizeof(magic_name) - 1))
-    {
-        if (disc->errorf && (fp->dss->flags & DSS_DEBUG))
-        {
+    if (!strneq(s, magic_version, sizeof(magic_name) - 1)) {
+        if (disc->errorf && (fp->dss->flags & DSS_DEBUG)) {
             (*disc->errorf)(
             NULL,
             disc,
@@ -162,15 +156,11 @@ identf_text_lsa_file(Dssfile_t *fp, void *buff_p, size_t size, Dssdisc_t *disc)
 static int
 open_text_lsa_file(Dssfile_t *fp, Dssdisc_t *disc)
 {
-    if (fp->flags & DSS_FILE_WRITE)
-    {
-        if (!BIT_TEST(fp->flags, DSS_FILE_APPEND))
-        {
+    if (fp->flags & DSS_FILE_WRITE) {
+        if (!BIT_TEST(fp->flags, DSS_FILE_APPEND)) {
             sfprintf(fp->io, "%s%s", magic_name, magic_version);
         }
-    }
-    else
-    {
+    } else {
 #if 0
 		/* Want to support read?? */
 		/*XXX*/
@@ -234,8 +224,7 @@ write_text_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
              lsa_can_p->lsu_lsa_no);
 
     /* Write LSA instance type */
-    switch (lsa_can_p->lsa_inst_type)
-    {
+    switch (lsa_can_p->lsa_inst_type) {
     case LSA_INST_NEW:
         sfprintf(iop, "new|");
         break;
@@ -276,8 +265,7 @@ write_text_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
     /* Write LSA data as a string of bytes in hex-format. */
     sfprintf(iop, "%u|", lsa_can_p->lsa_data_size);
     for (i = 0, data_p = lsa_can_p->lsa_data_p; i < lsa_can_p->lsa_data_size;
-         i++)
-    {
+         i++) {
         sfprintf(iop, "%.2x", data_p[i]);
     } /* End of for (i) */
     sfprintf(iop, "|\n");

@@ -86,17 +86,13 @@ dssfopen(Dss_t *dss,
     Sfdisc_t top;
     char buf[PATH_MAX];
 
-    if (flags & DSS_FILE_WRITE)
-    {
-        if (io)
-        {
+    if (flags & DSS_FILE_WRITE) {
+        if (io) {
             memset(&top, 0, sizeof(top));
-            if (sfdisc(io, &top))
-            {
+            if (sfdisc(io, &top)) {
                 n = top.disc == &dss->state->compress_preferred;
                 sfdisc(io, SF_POPDISC);
-                if (n)
-                {
+                if (n) {
                     sfdisc(io, SF_POPDISC);
                     sfdczip(io,
                             path,
@@ -109,53 +105,43 @@ dssfopen(Dss_t *dss,
         if (dss->flags & DSS_APPEND)
             flags |= DSS_FILE_APPEND;
     }
-    if (!path || !*path || streq(path, "-"))
-    {
-        if (flags & DSS_FILE_WRITE)
-        {
+    if (!path || !*path || streq(path, "-")) {
+        if (flags & DSS_FILE_WRITE) {
             if (io)
                 path = "output-stream";
-            else
-            {
+            else {
                 path = "/dev/stdout";
                 io = sfstdout;
             }
-        }
-        else if (io)
+        } else if (io)
             path = "input-stream";
-        else
-        {
+        else {
             path = "/dev/stdin";
             io = sfstdin;
         }
         flags |= DSS_FILE_KEEP;
-    }
-    else if (io)
+    } else if (io)
         flags |= DSS_FILE_KEEP;
-    else if (flags & DSS_FILE_WRITE)
-    {
-        if (!(io = sfopen(NiL, path, (flags & DSS_FILE_APPEND) ? "a" : "w")))
-        {
+    else if (flags & DSS_FILE_WRITE) {
+        if (!(io
+              = sfopen(NiL, path, (flags & DSS_FILE_APPEND) ? "a" : "w"))) {
             if (dss->disc->errorf)
                 (*dss->disc->errorf)(
                 NiL, dss->disc, ERROR_SYSTEM | 2, "%s: cannot open", path);
             return 0;
         }
-    }
-    else if (!(io
-               = dssfind(path, "", DSS_VERBOSE, buf, sizeof(buf), dss->disc)))
+    } else if (!(io = dssfind(
+                 path, "", DSS_VERBOSE, buf, sizeof(buf), dss->disc)))
         return 0;
     else
         path = ( const char * )buf;
-    if (!(vm = vmopen(Vmdcheap, Vmbest, 0)))
-    {
+    if (!(vm = vmopen(Vmdcheap, Vmbest, 0))) {
         if (dss->disc->errorf)
             (*dss->disc->errorf)(
             NiL, dss->disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
     }
-    if (!(file = vmnewof(vm, 0, Dssfile_t, 1, strlen(path) + 1)))
-    {
+    if (!(file = vmnewof(vm, 0, Dssfile_t, 1, strlen(path) + 1))) {
         if (dss->disc->errorf)
             (*dss->disc->errorf)(
             NiL, dss->disc, ERROR_SYSTEM | 2, "out of space");
@@ -169,10 +155,8 @@ dssfopen(Dss_t *dss,
     file->vm = vm;
     file->io = io;
     file->flags = flags;
-    if (flags & DSS_FILE_WRITE)
-    {
-        if (!(file->format = format) && !(file->format = dss->format))
-        {
+    if (flags & DSS_FILE_WRITE) {
+        if (!(file->format = format) && !(file->format = dss->format)) {
             if (dss->disc->errorf)
                 (*dss->disc->errorf)(
                 NiL, dss->disc, 2, "output method format must be specified");
@@ -182,19 +166,15 @@ dssfopen(Dss_t *dss,
         }
         file->readf = noreadf;
         file->writef = file->format->writef;
-    }
-    else
-    {
+    } else {
         if (sfsize(file->io)
             || !fstat(sffileno(file->io), &st)
                && (S_ISFIFO(st.st_mode)
 #ifdef S_ISSOCK
                    || S_ISSOCK(st.st_mode)
 #endif
-                   ))
-        {
-            if (sfdczip(file->io, file->path, NiL, dss->disc->errorf) < 0)
-            {
+                   )) {
+            if (sfdczip(file->io, file->path, NiL, dss->disc->errorf) < 0) {
                 if (dss->disc->errorf)
                     (*dss->disc->errorf)(NiL,
                                          dss->disc,
@@ -206,8 +186,7 @@ dssfopen(Dss_t *dss,
             }
             s = sfreserve(file->io, SF_UNBOUND, SF_LOCKR);
             n = sfvalue(file->io);
-            if (!s)
-            {
+            if (!s) {
                 if (n && dss->disc->errorf)
                     (*dss->disc->errorf)(NiL,
                                          dss->disc,
@@ -224,8 +203,7 @@ dssfopen(Dss_t *dss,
                  = ( Dssformat_t * )dtnext(dss->meth->formats, file->format))
                 ;
             sfread(file->io, s, 0);
-            if (!file->format)
-            {
+            if (!file->format) {
                 if (dss->disc->errorf)
                     (*dss->disc->errorf)(NiL,
                                          dss->disc,
@@ -238,8 +216,7 @@ dssfopen(Dss_t *dss,
             }
             if (i < 0)
                 return 0;
-            if (format && format != file->format)
-            {
+            if (format && format != file->format) {
                 if (dss->disc->errorf)
                     (*dss->disc->errorf)(
                     NiL,
@@ -262,9 +239,7 @@ dssfopen(Dss_t *dss,
                                      dss->meth->name,
                                      file->format->name);
             file->readf = file->format->readf;
-        }
-        else
-        {
+        } else {
             file->format = format
                            ? format
                            : dss->format
@@ -276,8 +251,7 @@ dssfopen(Dss_t *dss,
         if (!dss->format)
             dss->format = file->format;
     }
-    if (!file->format)
-    {
+    if (!file->format) {
         if (dss->disc->errorf)
             (*dss->disc->errorf)(NiL,
                                  dss->disc,
@@ -289,8 +263,7 @@ dssfopen(Dss_t *dss,
         return 0;
     }
     file->record.file = file;
-    if ((*file->format->openf)(file, dss->disc))
-    {
+    if ((*file->format->openf)(file, dss->disc)) {
         dssfclose(file);
         return 0;
     }
@@ -312,11 +285,9 @@ dssfclose(Dssfile_t *file)
     dss = file->dss;
     if (!file->io)
         r = -1;
-    else
-    {
+    else {
         r = file->format ? (*file->format->closef)(file, dss->disc) : 0;
-        if ((file->flags & DSS_FILE_WRITE) && sfsync(file->io))
-        {
+        if ((file->flags & DSS_FILE_WRITE) && sfsync(file->io)) {
             if (dss->disc->errorf)
                 (*dss->disc->errorf)(NiL,
                                      dss->disc,
@@ -345,8 +316,7 @@ dssfread(Dssfile_t *file)
 
     file->count++;
     file->offset += file->length;
-    if ((r = (*file->readf)(file, &file->record, file->dss->disc)) <= 0)
-    {
+    if ((r = (*file->readf)(file, &file->record, file->dss->disc)) <= 0) {
         if (r < 0)
             file->flags |= DSS_FILE_ERROR;
         file->count--;

@@ -51,10 +51,8 @@ tableident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
 
     s = ( char * )buf;
     e = s + n;
-    for (;;)
-    {
-        for (;;)
-        {
+    for (;;) {
+        for (;;) {
             if (s >= e)
                 return 0;
             c = *s++;
@@ -64,8 +62,7 @@ tableident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
                 break;
         }
         f = s - 1;
-        for (;;)
-        {
+        for (;;) {
             if (s >= e)
                 return 0;
             c = *s++;
@@ -91,8 +88,7 @@ tableopen(Dssfile_t *file, Dssdisc_t *disc)
 {
     Tablestate_t *state;
 
-    if (!(state = vmnewof(file->dss->vm, 0, Tablestate_t, 1, 0)))
-    {
+    if (!(state = vmnewof(file->dss->vm, 0, Tablestate_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -117,8 +113,7 @@ tableread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     char *e;
     Bgproute_t *op;
 
-    for (;;)
-    {
+    for (;;) {
         op = &state->route[state->index];
         rp = &state->route[state->index = !state->index];
         if (!(s = sfgetr(file->io, '\n', 1)))
@@ -131,8 +126,7 @@ tableread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         rp->type = BGP_TYPE_withdraw;
         rp->attr = BGP_valid;
         rp->origin = BGP_ORIGIN_incomplete;
-        if (state->v6)
-        {
+        if (state->v6) {
             rp->addr.v4 = 0;
             rp->bits = 0;
             if (strtoip6(s, &p, rp->prefixv6, rp->prefixv6 + IP6BITS))
@@ -141,8 +135,7 @@ tableread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             for (s = p; *s == ' ' || *s == '\t'; s++)
                 ;
             rp->hop.v4 = strtoul(s, &p, 0);
-            switch (*p)
-            {
+            switch (*p) {
             case 'a':
             case 'b':
             case 'c':
@@ -157,8 +150,7 @@ tableread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             case 'F':
             case ':':
                 rp->hop.v4 = 0;
-                if (!strtoip6(s, &e, rp->hop.v6, NiL) && e > p)
-                {
+                if (!strtoip6(s, &e, rp->hop.v6, NiL) && e > p) {
                     rp->type = BGP_TYPE_announce;
                     rp->attr |= BGP_slot;
                     rp->set |= BGP_SET_hopv6;
@@ -169,8 +161,7 @@ tableread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                     break;
                 /*FALLTHROUGH*/
             default:
-                if (rp->hop.v4)
-                {
+                if (rp->hop.v4) {
                     rp->type = BGP_TYPE_announce;
                     rp->attr |= BGP_slot;
                 }
@@ -184,17 +175,14 @@ tableread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 continue;
             else if (rp->hop.v4 && op->hop.v4 && rp->hop.v4 == op->hop.v4)
                 continue;
-        }
-        else
-        {
+        } else {
             if (strtoip4(s, &p, &rp->addr.v4, &rp->bits))
                 break;
             for (s = p; *s == ' ' || *s == '\t'; s++)
                 ;
             rp->hop.v4 = strtoul(s, &p, 0);
             if (p > s && (*p != '.' || !strtoip4(s, NiL, &rp->hop.v4, NiL))
-                && rp->hop.v4)
-            {
+                && rp->hop.v4) {
                 rp->type = BGP_TYPE_announce;
                 rp->attr |= BGP_slot;
             }
@@ -221,8 +209,7 @@ tablewrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 
     switch (
     rp->attr
-    & (BGP_best | BGP_damped | BGP_internal | BGP_suppressed | BGP_valid))
-    {
+    & (BGP_best | BGP_damped | BGP_internal | BGP_suppressed | BGP_valid)) {
     case BGP_best | BGP_valid:
     case BGP_internal | BGP_valid:
         break;
@@ -234,8 +221,7 @@ tablewrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         sfprintf(file->io, "%-19u", rp->hop.v4);
     else
         sfprintf(file->io, "%-19s", fmtip4(rp->hop.v4, -1));
-    if (sfputc(file->io, '\n') == EOF)
-    {
+    if (sfputc(file->io, '\n') == EOF) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "write error");
         return -1;

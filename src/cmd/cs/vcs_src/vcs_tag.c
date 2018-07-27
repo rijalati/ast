@@ -41,8 +41,7 @@ tag_t *tp;
            && sfread(f, ( char * )s, len) != len)
         return (NULL);
 
-    if (tp->type & LOG)
-    {
+    if (tp->type & LOG) {
         tp->del = WHERE(f);
         ADVANCE(f, tp->dsize);
     }

@@ -82,8 +82,7 @@ mcfind(const char *locale,
     if (!(lc = locale ? lcmake(locale) : locales[category]))
         return 0;
     oerrno = errno;
-    if (catalog && *catalog == '/')
-    {
+    if (catalog && *catalog == '/') {
         i = eaccess(catalog, R_OK);
         errno = oerrno;
         if (i)
@@ -99,28 +98,22 @@ mcfind(const char *locale,
     paths[i++] = "lib/locale/%l/%C/%N";
     paths[i] = 0;
     next = 1;
-    for (i = 0; p = paths[i]; i += next)
-    {
+    for (i = 0; p = paths[i]; i += next) {
         first = 1;
         last = 0;
         e = &file[elementsof(file) - 1];
-        while (*p)
-        {
+        while (*p) {
             s = file;
-            for (;;)
-            {
-                switch (c = *p++)
-                {
+            for (;;) {
+                switch (c = *p++) {
                 case 0:
                     p--;
                     break;
                 case ':':
                     break;
                 case '%':
-                    if (s < e)
-                    {
-                        switch (c = *p++)
-                        {
+                    if (s < e) {
+                        switch (c = *p++) {
                         case 0:
                             p--;
                             continue;
@@ -128,17 +121,13 @@ mcfind(const char *locale,
                             v = catalog;
                             break;
                         case 'L':
-                            if (first)
-                            {
+                            if (first) {
                                 first = 0;
-                                if (next)
-                                {
+                                if (next) {
                                     v = lc->code;
                                     if (lc->code != lc->language->code)
                                         next = 0;
-                                }
-                                else
-                                {
+                                } else {
                                     next = 1;
                                     v = lc->language->code;
                                 }
@@ -173,8 +162,7 @@ mcfind(const char *locale,
                         break;
                     if (category != AST_LC_MESSAGES
                         && strneq(p, lc_messages, sizeof(lc_messages) - 1)
-                        && p[sizeof(lc_messages) - 1] == '/')
-                    {
+                        && p[sizeof(lc_messages) - 1] == '/') {
                         p += sizeof(lc_messages) - 1;
                         goto case_C;
                     }
@@ -200,8 +188,7 @@ mcfind(const char *locale,
                              ? PATH_READ
                              : (PATH_REGULAR | PATH_READ | PATH_ABSOLUTE),
                              path,
-                             size))
-            {
+                             size)) {
                 if (ast.locale.set & (AST_LC_find | AST_LC_setlocale))
                     sfprintf(sfstderr, "locale path %s\n", s);
                 errno = oerrno;
@@ -234,14 +221,12 @@ mcopen(Sfio_t *ip)
     char buf[MC_MAGIC_SIZE];
 
     oerrno = errno;
-    if (ip)
-    {
+    if (ip) {
         /*
          * check the magic
          */
 
-        if (sfread(ip, buf, MC_MAGIC_SIZE) != MC_MAGIC_SIZE)
-        {
+        if (sfread(ip, buf, MC_MAGIC_SIZE) != MC_MAGIC_SIZE) {
             errno = oerrno;
             return 0;
         }
@@ -254,15 +239,13 @@ mcopen(Sfio_t *ip)
      */
 
     if (!(vm = vmopen(Vmdcheap, Vmbest, 0))
-        || !(mc = vmnewof(vm, 0, Mc_t, 1, 0)))
-    {
+        || !(mc = vmnewof(vm, 0, Mc_t, 1, 0))) {
         errno = oerrno;
         return 0;
     }
     mc->vm = vm;
     mc->cvt = (iconv_t)(-1);
-    if (ip)
-    {
+    if (ip) {
         /*
          * read the translation record
          */
@@ -274,8 +257,7 @@ mcopen(Sfio_t *ip)
          * read the optional header records
          */
 
-        do
-        {
+        do {
             if (!(sp = sfgetr(ip, 0, 0)))
                 goto bad;
         } while (*sp);
@@ -289,8 +271,7 @@ mcopen(Sfio_t *ip)
         mc->num = sfgetu(ip);
         if (sfeof(ip))
             goto bad;
-    }
-    else if (!(mc->translation = vmnewof(vm, 0, char, 1, 0)))
+    } else if (!(mc->translation = vmnewof(vm, 0, char, 1, 0)))
         goto bad;
 
     /*
@@ -310,8 +291,7 @@ mcopen(Sfio_t *ip)
      * get the set dimensions and initialize the msg pointers
      */
 
-    while (i = sfgetu(ip))
-    {
+    while (i = sfgetu(ip)) {
         if (i > mc->num)
             goto bad;
         n = sfgetu(ip);
@@ -326,8 +306,7 @@ mcopen(Sfio_t *ip)
 
     for (i = 1; i <= mc->num; i++)
         for (j = 1; j <= mc->set[i].num; j++)
-            if (n = sfgetu(ip))
-            {
+            if (n = sfgetu(ip)) {
                 mc->set[i].msg[j] = sp;
                 sp += n;
             }
@@ -367,8 +346,7 @@ mcget(Mc_t *mc, int set, int num, const char *msg)
         return ( char * )msg;
     if (mc->cvt == (iconv_t)(-1))
         return s;
-    if ((p = sfstrtell(mc->tmp)) > sfstrsize(mc->tmp) / 2)
-    {
+    if ((p = sfstrtell(mc->tmp)) > sfstrsize(mc->tmp) / 2) {
         p = 0;
         sfstrseek(mc->tmp, p, SEEK_SET);
     }
@@ -403,19 +381,16 @@ mcput(Mc_t *mc, int set, int num, const char *msg)
      * deletions don't kick in allocations (duh)
      */
 
-    if (!msg)
-    {
+    if (!msg) {
         if (set <= mc->num && num <= mc->set[set].num
-            && (s = mc->set[set].msg[num]))
-        {
+            && (s = mc->set[set].msg[num])) {
             /*
              * decrease the string table size
              */
 
             mc->set[set].msg[num] = 0;
             mc->nstrs -= strlen(s) + 1;
-            if (mc->set[set].num == num)
-            {
+            if (mc->set[set].num == num) {
                 /*
                  * decrease the max msg num
                  */
@@ -424,8 +399,7 @@ mcput(Mc_t *mc, int set, int num, const char *msg)
                 while (num && !mp[--num])
                     ;
                 mc->nmsgs -= mc->set[set].num - num;
-                if (!(mc->set[set].num = num) && mc->num == set)
-                {
+                if (!(mc->set[set].num = num) && mc->num == set) {
                     /*
                      * decrease the max set num
                      */
@@ -443,10 +417,8 @@ mcput(Mc_t *mc, int set, int num, const char *msg)
      * keep track of the highest set and allocate if necessary
      */
 
-    if (set > mc->num)
-    {
-        if (set > mc->gen)
-        {
+    if (set > mc->num) {
+        if (set > mc->gen) {
             i = MC_SET_MAX;
             if (!(sp = vmnewof(mc->vm, 0, Mcset_t, i + 1, 0)))
                 return -1;
@@ -463,12 +435,9 @@ mcput(Mc_t *mc, int set, int num, const char *msg)
      * keep track of the highest msg and allocate if necessary
      */
 
-    if (num > sp->num)
-    {
-        if (num > sp->gen)
-        {
-            if (!mc->gen)
-            {
+    if (num > sp->num) {
+        if (num > sp->gen) {
+            if (!mc->gen) {
                 i = (MC_NUM_MAX + 1) / 32;
                 if (i <= num)
                     i = 2 * num;
@@ -480,9 +449,7 @@ mcput(Mc_t *mc, int set, int num, const char *msg)
                 sp->msg = mp;
                 for (i = 1; i <= sp->num; i++)
                     mp[i] = sp->msg[i];
-            }
-            else
-            {
+            } else {
                 i = 2 * mc->gen;
                 if (i > MC_NUM_MAX)
                     i = MC_NUM_MAX;
@@ -500,8 +467,7 @@ mcput(Mc_t *mc, int set, int num, const char *msg)
      * decrease the string table size
      */
 
-    if (s = sp->msg[num])
-    {
+    if (s = sp->msg[num]) {
         /*
          * no-op if no change
          */
@@ -570,8 +536,7 @@ mcdump(Mc_t *mc, Sfio_t *op)
      */
 
     for (i = 1; i <= mc->num; i++)
-        if (mc->set[i].num)
-        {
+        if (mc->set[i].num) {
             sfputu(op, i);
             sfputu(op, mc->set[i].num);
         }
@@ -582,11 +547,9 @@ mcdump(Mc_t *mc, Sfio_t *op)
      */
 
     for (i = 1; i <= mc->num; i++)
-        if (mc->set[i].num)
-        {
+        if (mc->set[i].num) {
             sp = mc->set + i;
-            for (j = 1; j <= sp->num; j++)
-            {
+            for (j = 1; j <= sp->num; j++) {
                 n = (s = sp->msg[j]) ? (strlen(s) + 1) : 0;
                 sfputu(op, n);
             }
@@ -597,8 +560,7 @@ mcdump(Mc_t *mc, Sfio_t *op)
      */
 
     for (i = 1; i <= mc->num; i++)
-        if (mc->set[i].num)
-        {
+        if (mc->set[i].num) {
             sp = mc->set + i;
             for (j = 1; j <= sp->num; j++)
                 if (s = sp->msg[j])
@@ -639,31 +601,26 @@ mcindex(const char *s, char **e, int *set, int *msg)
 
     m = 0;
     n = strtol(s, &t, 0);
-    if (t == ( char * )s)
-    {
+    if (t == ( char * )s) {
         SFCVINIT();
         cv = _Sfcv36;
-        for (n = m = 0; (c = cv[*s]) < 36; s++)
-        {
+        for (n = m = 0; (c = cv[*s]) < 36; s++) {
             m++;
             n ^= c;
         }
         m = (m <= 3) ? 63 : ((1 << (m + 3)) - 1);
         n = ((n - 9) & m) + 1;
-    }
-    else
+    } else
         s = ( const char * )t;
     r = n;
     if (*s)
         m = strtol(s + 1, e, 0);
-    else
-    {
+    else {
         if (e)
             *e = ( char * )s;
         if (m)
             m = 0;
-        else
-        {
+        else {
             m = n;
             n = 1;
         }

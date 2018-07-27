@@ -37,8 +37,7 @@ ptvrebit(Ptv_t *a, int m)
              ap = ( Ptvprefix_t * )dtnext(a->dict, ap))
             if (!ptvinsert(b,
                            ptvmin(a->size, b->r[0], ap->min, m),
-                           ptvmin(a->size, b->r[1], ap->max, m)))
-            {
+                           ptvmin(a->size, b->r[1], ap->max, m))) {
                 ptvclose(b);
                 return 0;
             }

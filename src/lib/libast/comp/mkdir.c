@@ -43,8 +43,7 @@ mkdir(const char *path, mode_t mode)
 
 
     n = errno;
-    if (!access(path, F_OK))
-    {
+    if (!access(path, F_OK)) {
         errno = EEXIST;
         return (-1);
     }

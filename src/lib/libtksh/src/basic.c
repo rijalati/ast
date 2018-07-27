@@ -191,8 +191,7 @@ Tcl_CreateInterp()
     iPtr->appendResult = NULL;
     iPtr->appendAvl = 0;
     iPtr->appendUsed = 0;
-    for (i = 0; i < NUM_REGEXPS; i++)
-    {
+    for (i = 0; i < NUM_REGEXPS; i++) {
         iPtr->patterns[i] = NULL;
         iPtr->patLengths[i] = -1;
         iPtr->regexps[i] = NULL;
@@ -274,8 +273,7 @@ ClientData clientData;      /* One-word value to pass to proc. */
     sprintf(buffer, "Assoc Data Key #%d", assocDataCounter);
     assocDataCounter++;
 
-    if (iPtr->assocData == ( Tcl_HashTable * )NULL)
-    {
+    if (iPtr->assocData == ( Tcl_HashTable * )NULL) {
         iPtr->assocData = ( Tcl_HashTable * )ckalloc(sizeof(Tcl_HashTable));
         Tcl_InitHashTable(iPtr->assocData, TCL_STRING_KEYS);
     }
@@ -318,16 +316,13 @@ ClientData clientData;      /* One-word value to pass to proc. */
     AssocData *dPtr;
 
     hTablePtr = iPtr->assocData;
-    if (hTablePtr == ( Tcl_HashTable * )NULL)
-    {
+    if (hTablePtr == ( Tcl_HashTable * )NULL) {
         return;
     }
     for (hPtr = Tcl_FirstHashEntry(hTablePtr, &hSearch); hPtr != NULL;
-         hPtr = Tcl_NextHashEntry(&hSearch))
-    {
+         hPtr = Tcl_NextHashEntry(&hSearch)) {
         dPtr = ( AssocData * )Tcl_GetHashValue(hPtr);
-        if ((dPtr->proc == proc) && (dPtr->clientData == clientData))
-        {
+        if ((dPtr->proc == proc) && (dPtr->clientData == clientData)) {
             ckfree(( char * )dPtr);
             Tcl_DeleteHashEntry(hPtr);
             return;
@@ -366,18 +361,14 @@ ClientData clientData;      /* One-word value to pass to proc. */
     Tcl_HashEntry *hPtr;
     int new;
 
-    if (iPtr->assocData == ( Tcl_HashTable * )NULL)
-    {
+    if (iPtr->assocData == ( Tcl_HashTable * )NULL) {
         iPtr->assocData = ( Tcl_HashTable * )ckalloc(sizeof(Tcl_HashTable));
         Tcl_InitHashTable(iPtr->assocData, TCL_STRING_KEYS);
     }
     hPtr = Tcl_CreateHashEntry(iPtr->assocData, name, &new);
-    if (new == 0)
-    {
+    if (new == 0) {
         dPtr = ( AssocData * )Tcl_GetHashValue(hPtr);
-    }
-    else
-    {
+    } else {
         dPtr = ( AssocData * )ckalloc(sizeof(AssocData));
     }
     dPtr->proc = proc;
@@ -412,18 +403,15 @@ char *name;                                        /* Name of association. */
     AssocData *dPtr;
     Tcl_HashEntry *hPtr;
 
-    if (iPtr->assocData == ( Tcl_HashTable * )NULL)
-    {
+    if (iPtr->assocData == ( Tcl_HashTable * )NULL) {
         return;
     }
     hPtr = Tcl_FindHashEntry(iPtr->assocData, name);
-    if (hPtr == ( Tcl_HashEntry * )NULL)
-    {
+    if (hPtr == ( Tcl_HashEntry * )NULL) {
         return;
     }
     dPtr = ( AssocData * )Tcl_GetHashValue(hPtr);
-    if (dPtr->proc != NULL)
-    {
+    if (dPtr->proc != NULL) {
         (dPtr->proc)(dPtr->clientData, interp);
     }
     ckfree(( char * )dPtr);
@@ -458,18 +446,15 @@ Tcl_InterpDeleteProc **procPtr; /* Pointer to place to store address
     AssocData *dPtr;
     Tcl_HashEntry *hPtr;
 
-    if (iPtr->assocData == ( Tcl_HashTable * )NULL)
-    {
+    if (iPtr->assocData == ( Tcl_HashTable * )NULL) {
         return ( ClientData )NULL;
     }
     hPtr = Tcl_FindHashEntry(iPtr->assocData, name);
-    if (hPtr == ( Tcl_HashEntry * )NULL)
-    {
+    if (hPtr == ( Tcl_HashEntry * )NULL) {
         return ( ClientData )NULL;
     }
     dPtr = ( AssocData * )Tcl_GetHashValue(hPtr);
-    if (procPtr != ( Tcl_InterpDeleteProc ** )NULL)
-    {
+    if (procPtr != ( Tcl_InterpDeleteProc ** )NULL) {
         *procPtr = dPtr->proc;
     }
     return dPtr->clientData;
@@ -510,8 +495,7 @@ static void DeleteInterpProc(interp) Tcl_Interp *interp; /* Interpreter to
      * Punt if there is an error in the Tcl_Release/Tcl_Preserve matchup.
      */
 
-    if (iPtr->numLevels > 0)
-    {
+    if (iPtr->numLevels > 0) {
         panic("DeleteInterpProc called with active evals");
     }
 
@@ -520,8 +504,7 @@ static void DeleteInterpProc(interp) Tcl_Interp *interp; /* Interpreter to
      * did we get here?
      */
 
-    if (!(iPtr->flags & DELETED))
-    {
+    if (!(iPtr->flags & DELETED)) {
         panic("DeleteInterpProc called on interpreter not marked deleted");
     }
 
@@ -536,8 +519,7 @@ static void DeleteInterpProc(interp) Tcl_Interp *interp; /* Interpreter to
 
     for (hPtr = Tcl_FirstHashEntry(&iPtr->mathFuncTable, &search);
          hPtr != NULL;
-         hPtr = Tcl_NextHashEntry(&search))
-    {
+         hPtr = Tcl_NextHashEntry(&search)) {
         ckfree(( char * )Tcl_GetHashValue(hPtr));
     }
     Tcl_DeleteHashTable(&iPtr->mathFuncTable);
@@ -547,17 +529,14 @@ static void DeleteInterpProc(interp) Tcl_Interp *interp; /* Interpreter to
      * callbacks, so we iterate.
      */
 
-    while (iPtr->assocData != ( Tcl_HashTable * )NULL)
-    {
+    while (iPtr->assocData != ( Tcl_HashTable * )NULL) {
         hTablePtr = iPtr->assocData;
         iPtr->assocData = ( Tcl_HashTable * )NULL;
         for (hPtr = Tcl_FirstHashEntry(hTablePtr, &search); hPtr != NULL;
-             hPtr = Tcl_FirstHashEntry(hTablePtr, &search))
-        {
+             hPtr = Tcl_FirstHashEntry(hTablePtr, &search)) {
             dPtr = ( AssocData * )Tcl_GetHashValue(hPtr);
             Tcl_DeleteHashEntry(hPtr);
-            if (dPtr->proc != NULL)
-            {
+            if (dPtr->proc != NULL) {
                 (*dPtr->proc)(dPtr->clientData, interp);
             }
             ckfree(( char * )dPtr);
@@ -583,18 +562,15 @@ static void DeleteInterpProc(interp) Tcl_Interp *interp; /* Interpreter to
     Tcl_FreeResult(interp);
     interp->result = NULL;
 
-    if (iPtr->errorInfo != NULL)
-    {
+    if (iPtr->errorInfo != NULL) {
         ckfree(iPtr->errorInfo);
         iPtr->errorInfo = NULL;
     }
-    if (iPtr->errorCode != NULL)
-    {
+    if (iPtr->errorCode != NULL) {
         ckfree(iPtr->errorCode);
         iPtr->errorCode = NULL;
     }
-    if (iPtr->appendResult != NULL)
-    {
+    if (iPtr->appendResult != NULL) {
         ckfree(iPtr->appendResult);
         iPtr->appendResult = NULL;
     }
@@ -623,8 +599,7 @@ static void DeleteInterpProc(interp) Tcl_Interp *interp; /* Interpreter to
      */
 
     tclInInterpreterDeletion--;
-    if (tclInInterpreterDeletion < 0)
-    {
+    if (tclInInterpreterDeletion < 0) {
         tclInInterpreterDeletion = 0;
     }
 
@@ -686,8 +661,7 @@ Tcl_Interp *interp; /* Token for command interpreter (returned
      * If the interpreter has already been marked deleted, just punt.
      */
 
-    if (iPtr->flags & DELETED)
-    {
+    if (iPtr->flags & DELETED) {
         return;
     }
 
@@ -795,18 +769,13 @@ Tcl_Trace trace; /* Token for trace (returned previously by
     Trace *tracePtr = ( Trace * )trace;
     Trace *tracePtr2;
 
-    if (iPtr->tracePtr == tracePtr)
-    {
+    if (iPtr->tracePtr == tracePtr) {
         iPtr->tracePtr = tracePtr->nextPtr;
         ckfree(( char * )tracePtr);
-    }
-    else
-    {
+    } else {
         for (tracePtr2 = iPtr->tracePtr; tracePtr2 != NULL;
-             tracePtr2 = tracePtr2->nextPtr)
-        {
-            if (tracePtr2->nextPtr == tracePtr)
-            {
+             tracePtr2 = tracePtr2->nextPtr) {
+            if (tracePtr2->nextPtr == tracePtr) {
                 tracePtr2->nextPtr = tracePtr->nextPtr;
                 ckfree(( char * )tracePtr);
                 return;
@@ -850,8 +819,7 @@ char *message;                                     /* Message to record. */
      * interp->result and the new message.
      */
 
-    if (!(iPtr->flags & ERR_IN_PROGRESS))
-    {
+    if (!(iPtr->flags & ERR_IN_PROGRESS)) {
         Tcl_SetVar2(
         interp, "errorInfo", ( char * )NULL, interp->result, TCL_GLOBAL_ONLY);
         iPtr->flags |= ERR_IN_PROGRESS;
@@ -861,8 +829,7 @@ char *message;                                     /* Message to record. */
          * the error, set it to "NONE".
          */
 
-        if (!(iPtr->flags & ERROR_CODE_SET))
-        {
+        if (!(iPtr->flags & ERROR_CODE_SET)) {
             ( void )Tcl_SetVar2(
             interp, "errorCode", ( char * )NULL, "NONE", TCL_GLOBAL_ONLY);
         }
@@ -910,11 +877,9 @@ TCL_VARARGS_DEF(Tcl_Interp *, arg1)
 
     interp = TCL_VARARGS_START(Tcl_Interp *, arg1, argList);
     Tcl_DStringInit(&buf);
-    while (1)
-    {
+    while (1) {
         string = va_arg(argList, char *);
-        if (string == NULL)
-        {
+        if (string == NULL) {
             break;
         }
         Tcl_DStringAppend(&buf, string, -1);
@@ -953,8 +918,7 @@ int depth; /* New value for maximimum depth. */
     int old;
 
     old = iPtr->maxNestingDepth;
-    if (depth > 0)
-    {
+    if (depth > 0) {
         iPtr->maxNestingDepth = depth;
     }
     return old;

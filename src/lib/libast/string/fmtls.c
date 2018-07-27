@@ -68,20 +68,17 @@ fmtls(char *buf,
                        LS_W_INUMBER - 1,
                        sizeof(st->st_ino),
                        st->st_ino);
-    if (flags & LS_BLOCKS)
-    {
+    if (flags & LS_BLOCKS) {
         n = iblocks(st);
         s += sfsprintf(s, LS_W_MAX, "%*I*u ", LS_W_BLOCKS - 1, sizeof(n), n);
     }
-    if (flags & LS_LONG)
-    {
+    if (flags & LS_LONG) {
         s += sfsprintf(s,
                        LS_W_MAX,
                        "%s%3u",
                        fmtmode(st->st_mode, flags & LS_EXTERNAL),
                        ( unsigned int )st->st_nlink);
-        if (!(flags & LS_NOUSER))
-        {
+        if (!(flags & LS_NOUSER)) {
             if (flags & LS_NUMBER)
                 s += sfsprintf(s,
                                LS_W_MAX,
@@ -93,8 +90,7 @@ fmtls(char *buf,
                 s += sfsprintf(
                 s, LS_W_MAX, " %-*s", LS_W_NAME - 1, fmtuid(st->st_uid));
         }
-        if (!(flags & LS_NOGROUP))
-        {
+        if (!(flags & LS_NOGROUP)) {
             if (flags & LS_NUMBER)
                 s += sfsprintf(s,
                                LS_W_MAX,
@@ -117,16 +113,14 @@ fmtls(char *buf,
         s = tmfmt(s, LS_W_LONG / 2, "%?%QL", &tm);
         *s++ = ' ';
     }
-    if (info)
-    {
+    if (info) {
         while (*s = *info++)
             s++;
         *s++ = ' ';
     }
     while (*s = *name++)
         s++;
-    if (flags & LS_MARK)
-    {
+    if (flags & LS_MARK) {
         if (S_ISDIR(st->st_mode))
             *s++ = '/';
 #ifdef S_ISLNK
@@ -136,8 +130,7 @@ fmtls(char *buf,
         else if (st->st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))
             *s++ = '*';
     }
-    if (link)
-    {
+    if (link) {
         s += sfsprintf(s,
                        LS_W_MAX,
                        " %s %s",

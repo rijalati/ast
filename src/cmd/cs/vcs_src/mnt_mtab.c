@@ -56,8 +56,7 @@ int rm_entry(mpoint) char *mpoint;
 
     if (istate.mtab == NULL)
         return (1);
-    if ((entry = ( entry_t * )hashrm(istate.mtab, mpoint)) != NULL)
-    {
+    if ((entry = ( entry_t * )hashrm(istate.mtab, mpoint)) != NULL) {
         free(entry->mpoint);
         free(entry->vcscmd);
         free(( char * )entry);
@@ -77,12 +76,10 @@ char **argv;
     error_info.id = argv[0];
     opt_info.index = 1;
     while (n = optget(argv, "s:[server]"))
-        switch (n)
-        {
+        switch (n) {
         case 's':
             s = opt_info.arg;
-            if ((fd = csopen(s, CS_OPEN_READ)) < 0)
-            {
+            if ((fd = csopen(s, CS_OPEN_READ)) < 0) {
                 printf("cannot connect cs server %s\n", s);
                 return (-1);
             }
@@ -110,10 +107,8 @@ caddr_t dump;
 
     memset(reply, 0, sizeof(reply));
 
-    if (value != NULL && (vcscmd = (( entry_t * )value)->vcscmd) != NULL)
-    {
-        if (vcs_write(vcscmd) > 0 && vcs_read(reply, 1024 * 2) > 0)
-        {
+    if (value != NULL && (vcscmd = (( entry_t * )value)->vcscmd) != NULL) {
+        if (vcs_write(vcscmd) > 0 && vcs_read(reply, 1024 * 2) > 0) {
             printmtmsg(reply);
             return (0);
         }

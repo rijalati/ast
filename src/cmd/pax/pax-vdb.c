@@ -66,8 +66,7 @@ vdb_getprologue(Pax_t *pax,
         || !strneq(s + 1, VDB_MAGIC, sizeof(VDB_MAGIC) - 1)
         || s[sizeof(VDB_MAGIC)] != VDB_DELIMITER)
         return 0;
-    if (s[sizeof(VDB_MAGIC) + 1] != '\n')
-    {
+    if (s[sizeof(VDB_MAGIC) + 1] != '\n') {
         s[n] = 0;
         if (t = strchr(s, '\n'))
             *t = 0;
@@ -78,8 +77,7 @@ vdb_getprologue(Pax_t *pax,
         return 0;
     if (read(ap->io->fd, s, VDB_LENGTH + 1) != (VDB_LENGTH + 1))
         return 0;
-    if (!vdb)
-    {
+    if (!vdb) {
         if (!(vdb = newof(0, Vdb_t, 1, 0)))
             nospace();
         ap->data = vdb;
@@ -117,8 +115,7 @@ vdb_done(Pax_t *pax, Archive_t *ap)
 {
     Vdb_t *vdb = ( Vdb_t * )ap->data;
 
-    if (vdb)
-    {
+    if (vdb) {
         if (vdb->directory)
             sfclose(vdb->directory);
         free(vdb);
@@ -154,8 +151,7 @@ vdb_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
     *f->st = vdb->st;
     f->st->st_size = strtol(t, &t, 10);
     if (*t++ == vdb->delimiter)
-        do
-        {
+        do {
             if (s = strchr(t, vdb->delimiter))
                 *s++ = 0;
             if (strneq(t, VDB_DATE, sizeof(VDB_DATE) - 1))
@@ -187,8 +183,7 @@ vdb_putprologue(Pax_t *pax, Archive_t *ap, int append)
 {
     Vdb_t *vdb = ( Vdb_t * )ap->data;
 
-    if (!vdb)
-    {
+    if (!vdb) {
         if (!(vdb = newof(0, Vdb_t, 1, 0)) || !(vdb->directory = sfstropen()))
             nospace();
         ap->data = vdb;
@@ -220,22 +215,18 @@ vdb_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
         ap, f, state.record.header ? state.record.headerlen : f->namesize);
     if (state.record.header)
         paxwrite(pax, ap, state.record.header, state.record.headerlen);
-    else
-    {
+    else {
         f->name[f->namesize - 1] = '\n';
         paxwrite(pax, ap, f->name, f->namesize);
         f->name[f->namesize - 1] = 0;
     }
-    if (!(c = state.record.delimiter))
-    {
+    if (!(c = state.record.delimiter)) {
         c = VDB_DELIMITER;
         s = ( unsigned char * )state.tmp.buffer;
         n = 1024;
-        if (f->fd >= 0)
-        {
+        if (f->fd >= 0) {
             n = read(f->fd, s, n);
-            if (n > 0)
-            {
+            if (n > 0) {
                 int dp;
                 int ds;
                 int mp = 0;
@@ -254,16 +245,13 @@ vdb_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
                     if (n == '_' || n == '/' || n == '.' || n == '\n'
                         || n == '\\')
                         /* nop */;
-                    else if (isspace(n))
-                    {
-                        if (( int )hit[n] > ms)
-                        {
+                    else if (isspace(n)) {
+                        if (( int )hit[n] > ms) {
                             ms = hit[n];
                             ds = n;
                         }
-                    }
-                    else if (( int )hit[n] > mp && isprint(n) && !isalnum(n))
-                    {
+                    } else if (( int )hit[n] > mp && isprint(n)
+                               && !isalnum(n)) {
                         mp = hit[n];
                         dp = n;
                     }

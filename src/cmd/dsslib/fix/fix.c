@@ -91,8 +91,7 @@ fix_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     Vmalloc_t *vm;
 
     if (!(vm = vmopen(Vmdcheap, Vmlast, 0))
-        || !(state = vmnewof(vm, 0, State_t, 1, 0)))
-    {
+        || !(state = vmnewof(vm, 0, State_t, 1, 0))) {
         if (vm)
             vmclose(vm);
         if (disc->errorf)
@@ -103,13 +102,10 @@ fix_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     if (dssoptlib(cx->buf, &dss_lib_fix, usage, disc))
         goto bad;
     s = sfstruse(cx->buf);
-    for (;;)
-    {
-        switch (optget(argv, s))
-        {
+    for (;;) {
+        switch (optget(argv, s)) {
         case 's':
-            if (!(state->stamp = strdup(opt_info.arg)))
-            {
+            if (!(state->stamp = strdup(opt_info.arg))) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -136,24 +132,20 @@ fix_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         goto bad;
     argv += opt_info.index;
     state->fielddisc.comparf = fieldcmp;
-    if (!(state->fields = dtnew(vm, &state->fielddisc, Dtoset)))
-    {
+    if (!(state->fields = dtnew(vm, &state->fielddisc, Dtoset))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         goto bad;
     }
     for (variable = ( Cxvariable_t * )dtfirst(cx->fields); variable;
-         variable = ( Cxvariable_t * )dtnext(cx->fields, variable))
-    {
-        if (!(field = vmnewof(vm, 0, Field_t, 1, 0)))
-        {
+         variable = ( Cxvariable_t * )dtnext(cx->fields, variable)) {
+        if (!(field = vmnewof(vm, 0, Field_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             goto bad;
         }
         field->variable = variable;
-        switch (variable->type->representation)
-        {
+        switch (variable->type->representation) {
         case CX_buffer:
             field->representation = FIELD_buffer;
             break;
@@ -164,18 +156,13 @@ fix_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
             field->representation = FIELD_number;
             break;
         }
-        if (field->width = variable->format.width)
-        {
+        if (field->width = variable->format.width) {
             field->flags = variable->format.flags;
             dtinsert(state->fields, field);
-        }
-        else if (field->width = variable->type->format.width)
-        {
+        } else if (field->width = variable->type->format.width) {
             field->flags = variable->type->format.flags;
             dtinsert(state->fields, field);
-        }
-        else
-        {
+        } else {
             field->train = state->train;
             state->train = field;
         }
@@ -194,23 +181,18 @@ fix_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     Field_t *field;
     Cxoperand_t arg;
 
-    for (field = state->train; field; field = field->train)
-    {
+    for (field = state->train; field; field = field->train) {
         if (cxcast(
             cx, &arg, field->variable, field->variable->type, data, NiL))
             return -1;
-        if (field->representation == FIELD_number)
-        {
-            if (arg.value.number < 0)
-            {
+        if (field->representation == FIELD_number) {
+            if (arg.value.number < 0) {
                 arg.value.number = -arg.value.number;
                 field->flags = CX_UNSIGNED;
             }
             if (field->max < arg.value.number)
                 field->max = arg.value.number;
-        }
-        else if (field->width < arg.value.buffer.size)
-        {
+        } else if (field->width < arg.value.buffer.size) {
             error(-1,
                   "AHA fix_act %s.width %d  arg.size %d",
                   field->variable->name,
@@ -235,17 +217,12 @@ fix_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     char *s;
 
     b = 0;
-    for (field = state->train; field; field = field->train)
-    {
-        if (field->representation == FIELD_number)
-        {
-            if (field->max != ( Cxinteger_t )field->max)
-            {
+    for (field = state->train; field; field = field->train) {
+        if (field->representation == FIELD_number) {
+            if (field->max != ( Cxinteger_t )field->max) {
                 field->width = 8;
                 field->flags = CX_FLOAT;
-            }
-            else
-            {
+            } else {
                 field->flags ^= CX_UNSIGNED | CX_INTEGER;
                 if (field->max > ( unsigned long )0xffffffff)
                     field->width = 8;
@@ -254,9 +231,7 @@ fix_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                 else
                     field->width = 2;
             }
-        }
-        else
-        {
+        } else {
             if ((w = (field->width * 3) / 2) < 8)
                 w = 8;
             else if (w < (1 << 15))
@@ -269,8 +244,7 @@ fix_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                   w);
             if (field->representation == FIELD_string)
                 field->width = w;
-            else
-            {
+            else {
                 b += w;
                 field->width = 4;
             }
@@ -317,8 +291,7 @@ fix_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     w = 0;
     for (lib = ( Dsslib_t * )dtfirst(cx->state->libraries); lib;
          lib = ( Dsslib_t * )dtnext(cx->state->libraries, lib))
-        if (lib->types && !lib->meth)
-        {
+        if (lib->types && !lib->meth) {
             sfprintf(expr->op, "	<LIBRARY>%s</>\n", lib->name);
             if (!w && streq(lib->name, "num_t"))
                 w = 1;
@@ -326,16 +299,15 @@ fix_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     if (!w)
         sfprintf(expr->op, "	<LIBRARY>num_t</>\n");
     for (field = ( Field_t * )dtfirst(state->fields); field;
-         field = ( Field_t * )dtnext(state->fields, field))
-    {
+         field = ( Field_t * )dtnext(state->fields, field)) {
         sfprintf(expr->op, "	<FIELD>\n");
         sfprintf(expr->op, "		<NAME>%s</>\n", field->variable->name);
         sfprintf(
         expr->op, "		<DESCRIPTION>%s</>\n", field->variable->description);
-        sfprintf(expr->op, "		<TYPE>%s</>\n", field->variable->type->name);
+        sfprintf(
+        expr->op, "		<TYPE>%s</>\n", field->variable->type->name);
         sfprintf(expr->op, "		<PHYSICAL>\n");
-        switch (field->representation)
-        {
+        switch (field->representation) {
         case FIELD_buffer:
             sfprintf(expr->op, "			<TYPE>buffer</>\n");
             break;
@@ -352,8 +324,7 @@ fix_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         sfprintf(expr->op, "		</>\n");
         sfprintf(expr->op, "	</>\n");
     }
-    if (r > x)
-    {
+    if (r > x) {
         sfprintf(expr->op, "	<FIELD>\n");
         sfprintf(expr->op, "		<NAME>%s</>\n", b ? "_HEAP_" : "_PAD_");
         sfprintf(expr->op,

@@ -51,10 +51,8 @@ ciscoident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
 
     s = ( char * )buf;
     e = s + n;
-    for (;;)
-    {
-        for (;;)
-        {
+    for (;;) {
+        for (;;) {
             if (s >= e)
                 return 0;
             c = *s++;
@@ -65,8 +63,7 @@ ciscoident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
                 break;
         }
         f = s - 1;
-        for (;;)
-        {
+        for (;;) {
             if (s >= e)
                 return 0;
             if (*s++ == '\n')
@@ -92,14 +89,13 @@ static int
 ciscoopen(Dssfile_t *file, Dssdisc_t *disc)
 {
     if (!(file->data
-          = ( void * )vmnewof(file->dss->vm, 0, Ciscostate_t, 1, 0)))
-    {
+          = ( void * )vmnewof(file->dss->vm, 0, Ciscostate_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
     }
-    if ((file->flags & (DSS_FILE_WRITE | DSS_FILE_APPEND)) == DSS_FILE_WRITE)
-    {
+    if ((file->flags & (DSS_FILE_WRITE | DSS_FILE_APPEND))
+        == DSS_FILE_WRITE) {
         sfprintf(file->io,
                  "Status codes: s suppressed, d damped, h history, * valid, "
                  "> best, i internal, r rib-failure, S stale\n");
@@ -131,8 +127,7 @@ ciscoread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     Cxoperand_t r;
 
     rp = &state->route;
-    for (;;)
-    {
+    for (;;) {
         if (!(s = sfgetr(file->io, '\n', 0)))
             return 0;
         e = s + sfvalue(file->io);
@@ -144,14 +139,12 @@ ciscoread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             && (s[0] == ' ' || s[0] == '*' || s[0] == '-' || s[0] == '+'
                 || s[0] == 'r')
             && (s[3] >= '0' && s[3] <= '9'
-                || n > 61 && s[3] == ' ' && s[20] >= '0' && s[20] <= '9'))
-        {
+                || n > 61 && s[3] == ' ' && s[20] >= '0' && s[20] <= '9')) {
             rp->attr = 0;
             rp->type = BGP_TYPE_table_dump;
             rp->origin = BGP_ORIGIN_incomplete;
             for (i = 0; i < 3; i++)
-                switch (s[i])
-                {
+                switch (s[i]) {
                 case '>':
                     rp->attr |= BGP_best;
                     break;
@@ -194,8 +187,7 @@ ciscoread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             else
                 for (s = p; *s == ' '; s++)
                     ;
-            if (*s == '\r' || *s == '\n')
-            {
+            if (*s == '\r' || *s == '\n') {
                 if (!(s = sfgetr(file->io, '\n', 0)))
                     return 0;
                 if ((n = sfvalue(file->io)) <= 61)
@@ -224,16 +216,14 @@ ciscoread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 < 0)
                 break;
             p += i;
-            if (r.value.buffer.size > elementsof(rp->data))
-            {
+            if (r.value.buffer.size > elementsof(rp->data)) {
                 ap = ( Bgpasn_t * )r.value.buffer.data;
                 n = r.value.buffer.size / sizeof(Bgpasn_t);
                 for (o = 0, i = 1; i < n; i++)
                     if (ap[i] != ap[o])
                         ap[o++] = ap[i];
                 r.value.buffer.size = o * sizeof(Bgpasn_t);
-                if (r.value.buffer.size > elementsof(rp->data))
-                {
+                if (r.value.buffer.size > elementsof(rp->data)) {
                     o = elementsof(rp->data);
                     if (disc->errorf && !(file->dss->flags & DSS_QUIET))
                         (*disc->errorf)(
@@ -243,8 +233,7 @@ ciscoread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                         "%s: AS path too long -- truncated to %d",
                         file->format->name,
                         o / sizeof(Bgpasn_t));
-                }
-                else if (disc->errorf && !(file->dss->flags & DSS_QUIET))
+                } else if (disc->errorf && !(file->dss->flags & DSS_QUIET))
                     (*disc->errorf)(
                     NiL,
                     disc,
@@ -259,10 +248,8 @@ ciscoread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             rp->path.size = o / sizeof(Bgpasn_t);
             rp->cluster.offset = rp->cluster.size = rp->community.offset
             = rp->community.size = 0;
-            for (;;)
-            {
-                switch (*p++)
-                {
+            for (;;) {
+                switch (*p++) {
                 case 'C':
                     if ((i = (*bgp->type_community->internalf)(
                          file->dss->cx,
@@ -278,8 +265,7 @@ ciscoread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                         break;
                     p += i;
                     if ((n = r.value.buffer.size)
-                        > (elementsof(rp->data) - o))
-                    {
+                        > (elementsof(rp->data) - o)) {
                         n
                         = (elementsof(rp->data) - o) & (sizeof(Bgpasn_t) - 1);
                         if (disc->errorf && !(file->dss->flags & DSS_QUIET))
@@ -312,8 +298,7 @@ ciscoread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                     p += i;
                     o = roundof(o, sizeof(Bgpnum_t));
                     if ((n = r.value.buffer.size)
-                        > (elementsof(rp->data) - o))
-                    {
+                        > (elementsof(rp->data) - o)) {
                         n
                         = (elementsof(rp->data) - o) & (sizeof(Bgpnum_t) - 1);
                         if (disc->errorf && !(file->dss->flags & DSS_QUIET))
@@ -412,8 +397,7 @@ ciscowrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         sfputc(io, ' ');
     if (rp->addr.v4 == state->paddr && rp->bits == state->pbits)
         sfprintf(io, "                 ");
-    else
-    {
+    else {
         state->paddr = rp->addr.v4;
         state->pbits = rp->bits;
         if (sfprintf(io, "%-16s", fmtip4(rp->addr.v4, rp->bits)) > 16)
@@ -431,36 +415,29 @@ ciscowrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     else
         sfprintf(io, "       ");
     sfprintf(io, "%6u", rp->weight);
-    if (j = rp->path.size)
-    {
+    if (j = rp->path.size) {
         ap = BGPPATH(rp);
         for (i = 0; i < j; i++)
-            if (ap[i] == BGP_SET16)
-            {
-                if (k = ap[++i])
-                {
+            if (ap[i] == BGP_SET16) {
+                if (k = ap[++i]) {
                     k += i - 1;
                     sfprintf(io, " {%u", ap[++i]);
                     while (i < k)
                         sfprintf(io, ",%u", ap[++i]);
                     sfputc(io, '}');
-                }
-                else
+                } else
                     sfprintf(io, " %u", ap[++i]);
-            }
-            else
+            } else
                 sfprintf(io, " %u", ap[i]);
     }
-    if (rp->community.size)
-    {
+    if (rp->community.size) {
         sfputc(io, ' ');
         sfputc(io, 'C');
         ap = BGPCOMMUNITY(rp);
         for (i = 0, j = rp->community.size; i < j; i += 2)
             sfprintf(io, " %u:%u", ap[i], ap[i + 1]);
     }
-    if (rp->cluster.size)
-    {
+    if (rp->cluster.size) {
         sfputc(io, ' ');
         sfputc(io, 'I');
         np = BGPCLUSTER(rp);
@@ -469,13 +446,11 @@ ciscowrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     }
     if (rp->time)
         sfprintf(io, " T %s", fmttime("%K", rp->time));
-    if (rp->origin)
-    {
+    if (rp->origin) {
         sfputc(io, ' ');
         sfputc(io, rp->origin);
     }
-    if (sfputc(io, '\n') == EOF)
-    {
+    if (sfputc(io, '\n') == EOF) {
         if (disc->errorf)
             (*disc->errorf)(NiL,
                             disc,

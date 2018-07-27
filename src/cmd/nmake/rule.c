@@ -51,8 +51,7 @@ nametype(const char *name, char **e)
 
     t = 0;
     s = name;
-    switch (*s)
-    {
+    switch (*s) {
     case 0:
         return 0;
     case MARK_CONTEXT:
@@ -73,10 +72,8 @@ nametype(const char *name, char **e)
                               : istype(*s, C_VARIABLE1) ? NAME_variable : 0;
         break;
     }
-    for (;;)
-    {
-        switch (*s++)
-        {
+    for (;;) {
+        switch (*s++) {
         case 0:
             s -= 2;
             break;
@@ -117,20 +114,16 @@ nametype(const char *name, char **e)
             q &= ~(NAME_identifier | NAME_variable);
             continue;
         case '(':
-            if (s > name + 1)
-            {
+            if (s > name + 1) {
                 t &= ~NAME_staterule;
                 q &= ~NAME_staterule;
             }
             continue;
         case ')':
-            if (t & NAME_staterule)
-            {
+            if (t & NAME_staterule) {
                 t &= ~NAME_staterule;
                 q |= NAME_staterule;
-            }
-            else
-            {
+            } else {
                 q &= ~NAME_staterule;
                 q |= t & (NAME_glob | NAME_dynamic);
             }
@@ -147,16 +140,14 @@ nametype(const char *name, char **e)
         }
         break;
     }
-    if ((q & NAME_context) && *s == MARK_CONTEXT)
-    {
+    if ((q & NAME_context) && *s == MARK_CONTEXT) {
         if (e)
             *e = ( char * )(s + 1);
         if (e)
             *e = ( char * )(s + 1);
         return NAME_context;
     }
-    if (q & NAME_staterule)
-    {
+    if (q & NAME_staterule) {
         if (*s == ')')
             return NAME_statevar;
         if (*(name + 1) == '+')
@@ -194,17 +185,14 @@ maprule(char *s, Rule_t *r)
     if ((o = getrule(s)) == r)
         return r->name;
     s = putrule(0, r);
-    if (o && (pos = hashscan(table.rule, 0)))
-    {
-        if (!warned)
-        {
+    if (o && (pos = hashscan(table.rule, 0))) {
+        if (!warned) {
             warned++;
             if (state.warn)
                 error(
                 1, "%d maprule() calls -- should not happen", UCHAR_MAX + 1);
         }
-        while (hashnext(pos))
-        {
+        while (hashnext(pos)) {
             q = ( Rule_t * )pos->bucket->value;
             if (q == o)
                 pos->bucket->value = ( char * )r;
@@ -228,13 +216,11 @@ makerule(char *name)
     Rule_t *r;
     int n;
 
-    if (name)
-    {
+    if (name) {
         if (r = getrule(name))
             return r;
         if (((n = nametype(name, NiL)) & NAME_path)
-            && (table.rule->flags & HASH_ALLOCATE))
-        {
+            && (table.rule->flags & HASH_ALLOCATE)) {
             pathcanon(name, 0, 0);
             if (r = getrule(name))
                 return r;
@@ -246,17 +232,13 @@ makerule(char *name)
         (*state.compnew)(r->name, ( char * )r, state.comparg);
     if (!name)
         n = nametype(r->name, NiL);
-    if (n & (NAME_staterule | NAME_altstate))
-    {
+    if (n & (NAME_staterule | NAME_altstate)) {
         r->dynamic |= D_compiled;
         r->property |= P_state | P_staterule;
-    }
-    else if (n & NAME_statevar)
-    {
+    } else if (n & NAME_statevar) {
         r->dynamic |= D_compiled;
         r->property |= P_state | P_statevar;
-    }
-    else if (state.init || state.readonly)
+    } else if (state.init || state.readonly)
         r->dynamic |= D_compiled;
     else
         r->dynamic &= ~D_compiled;
@@ -286,8 +268,7 @@ special(Rule_t *r)
         return 1;
     if ((s = r->name) && !istype(*s, C_ID2))
         for (;;)
-            switch (*s++)
-            {
+            switch (*s++) {
             case 0:
                 return 1;
             case '/':
@@ -324,17 +305,12 @@ addprereq(Rule_t *r, Rule_t *x, int op)
     List_t *p;
     List_t *q;
 
-    if (x != r)
-    {
-        if (p = r->prereqs)
-        {
+    if (x != r) {
+        if (p = r->prereqs) {
             q = 0;
-            while (p)
-            {
-                if (x == p->rule)
-                {
-                    if (op == PREREQ_DELETE)
-                    {
+            while (p) {
+                if (x == p->rule) {
+                    if (op == PREREQ_DELETE) {
                         if (q)
                             q->next = p->next;
                         else
@@ -343,25 +319,20 @@ addprereq(Rule_t *r, Rule_t *x, int op)
                     if (!(x->property & P_multiple))
                         break;
                 }
-                if (!p->next)
-                {
-                    if (op != PREREQ_DELETE)
-                    {
+                if (!p->next) {
+                    if (op != PREREQ_DELETE) {
                         if (r->property & P_state)
                             state.savestate = 1;
                         if (!state.init && !state.readonly)
                             r->dynamic &= ~D_compiled;
-                        if (op == PREREQ_LENGTH)
-                        {
+                        if (op == PREREQ_LENGTH) {
                             int n;
 
                             n = strlen(x->name);
                             p = r->prereqs;
                             q = 0;
-                            for (;;)
-                            {
-                                if (!p || strlen(p->rule->name) < n)
-                                {
+                            for (;;) {
+                                if (!p || strlen(p->rule->name) < n) {
                                     if (q)
                                         q->next = cons(x, p);
                                     else
@@ -371,8 +342,7 @@ addprereq(Rule_t *r, Rule_t *x, int op)
                                 q = p;
                                 p = p->next;
                             }
-                        }
-                        else if (op == PREREQ_INSERT)
+                        } else if (op == PREREQ_INSERT)
                             r->prereqs = cons(x, r->prereqs);
                         else
                             p->next = cons(x, NiL);
@@ -382,9 +352,7 @@ addprereq(Rule_t *r, Rule_t *x, int op)
                 q = p;
                 p = p->next;
             }
-        }
-        else if (op != PREREQ_DELETE)
-        {
+        } else if (op != PREREQ_DELETE) {
             if (r->property & P_state)
                 state.savestate = 1;
             if (!state.init && !state.readonly)
@@ -410,36 +378,30 @@ associate(Rule_t *a, Rule_t *r, char *s, List_t **pos)
     Rule_t *z;
     List_t *u;
 
-    if (r)
-    {
+    if (r) {
         if (r->property & (P_attribute | P_readonly))
             return 0;
         s = r->name;
     }
-    do
-    {
+    do {
         u = 0;
         for (p = pos && *pos ? (*pos)->next : a->prereqs; p; p = p->next)
-            if ((x = p->rule) != r)
-            {
-                if (x->property & P_attribute)
-                {
+            if ((x = p->rule) != r) {
+                if (x->property & P_attribute) {
                     if (r
                         && (hasattribute(r, x, NiL)
                             || !r->scan && x->scan
                                && (z = staterule(RULE, r, NiL, -1))
                                && z->scan == x->scan))
                         break;
-                }
-                else if (x->name[0] == '%' && !x->name[1])
+                } else if (x->name[0] == '%' && !x->name[1])
                     u = p;
                 else if (metamatch(NiL, s, x->name)
                          || r && r->uname && !(r->property & P_state)
                             && metamatch(NiL, r->uname, x->name))
                     break;
             }
-        if (p || (p = u))
-        {
+        if (p || (p = u)) {
             if (pos)
                 *pos = p;
             return (p->rule->property & P_attribute)
@@ -471,20 +433,16 @@ prereqchange(Rule_t *r, List_t *newprereqs, Rule_t *o, List_t *oldprereqs)
     if ((r->property & (P_joint | P_target)) == (P_joint | P_target)
         && r != r->prereqs->rule->prereqs->rule)
         return 0;
-    if ((r->attribute ^ o->attribute) & ~internal.accept->attribute)
-    {
+    if ((r->attribute ^ o->attribute) & ~internal.accept->attribute) {
         reason((1, "%s named attributes changed", r->name));
         return 1;
     }
 more:
-    for (;;)
-    {
-        if (newprereqs)
-        {
+    for (;;) {
+        if (newprereqs) {
             if (IGNORECHANGE(r, newprereqs->rule))
                 newprereqs = newprereqs->next;
-            else if (oldprereqs)
-            {
+            else if (oldprereqs) {
                 if (IGNORECHANGE(r, oldprereqs->rule))
                     oldprereqs = oldprereqs->next;
                 else if (newprereqs->rule == oldprereqs->rule
@@ -492,26 +450,20 @@ more:
                               ^ oldprereqs->rule->dynamic)
                              & (D_alias | D_bound))
                             && getrule(newprereqs->rule)
-                               == getrule(oldprereqs->rule))
-                {
+                               == getrule(oldprereqs->rule)) {
                     newprereqs = newprereqs->next;
                     oldprereqs = oldprereqs->next;
-                }
-                else
+                } else
                     break;
-            }
-            else
+            } else
                 break;
-        }
-        else if (oldprereqs && IGNORECHANGE(r, oldprereqs->rule))
+        } else if (oldprereqs && IGNORECHANGE(r, oldprereqs->rule))
             oldprereqs = oldprereqs->next;
         else
             break;
     }
-    if (newprereqs)
-    {
-        if ((r->dynamic & (D_entries | D_regular)) == D_entries || EXPLAIN)
-        {
+    if (newprereqs) {
+        if ((r->dynamic & (D_entries | D_regular)) == D_entries || EXPLAIN) {
             for (p = oldprereqs;
                  p
                  && (newprereqs->rule != p->rule
@@ -520,16 +472,14 @@ more:
                      || getrule(newprereqs->rule) != getrule(p->rule));
                  p = p->next)
                 ;
-            if (p)
-            {
+            if (p) {
                 if ((r->dynamic & (D_entries | D_regular)) == D_entries)
                     goto more;
                 reason((1,
                         "%s prerequisite %s re-ordered",
                         r->name,
                         newprereqs->rule->name));
-            }
-            else
+            } else
                 reason((1,
                         "%s prerequisite %s added",
                         r->name,
@@ -537,8 +487,7 @@ more:
         }
         return 1;
     }
-    if (oldprereqs)
-    {
+    if (oldprereqs) {
         reason(
         (1, "%s prerequisite %s deleted", r->name, oldprereqs->rule->name));
         return 1;
@@ -571,19 +520,16 @@ reset(const char *s, char *v, void *h)
     Rule_t *r = ( Rule_t * )v;
     Stat_t st;
 
-    if (!(r->property & P_state))
-    {
+    if (!(r->property & P_state)) {
         if ((r->status == EXISTS || r->status == FAILED)
-            && !(r->property & P_virtual))
-        {
+            && !(r->property & P_virtual)) {
             r->status = NOTYET;
             if (!stat(r->name, &st))
                 r->time = tmxgetmtime(&st);
             r->dynamic
             &= ~(D_entries | D_hasafter | D_hasbefore | D_hasmake | D_hasscope
                  | D_hassemaphore | D_scanned | D_triggered);
-        }
-        else
+        } else
             r->dynamic &= ~(D_entries | D_scanned);
     }
     return 0;
@@ -609,28 +555,22 @@ immediate(Rule_t *r)
     Flags_t a;
     Seconds_t t;
 
-    if (r == internal.retain || r == internal.state)
-    {
+    if (r == internal.retain || r == internal.state) {
         getimmediate(r, &prereqs, &action);
         a = r == internal.retain ? V_retain : V_scan;
         for (p = prereqs; p; p = p->next)
-            if (v = varstate(p->rule, -1))
-            {
+            if (v = varstate(p->rule, -1)) {
                 if (a == V_scan)
                     setvar(v->name, v->value, V_scan);
                 else
                     v->property |= a;
             }
-    }
-    else if (r == internal.rebind || r == internal.accept)
-    {
+    } else if (r == internal.rebind || r == internal.accept) {
         getimmediate(r, &prereqs, &action);
         i = r == internal.accept;
         for (p = prereqs; p; p = p->next)
             rebind(p->rule, i);
-    }
-    else if (r == internal.unbind)
-    {
+    } else if (r == internal.unbind) {
         getimmediate(r, &prereqs, &action);
         for (p = prereqs; p; p = p->next)
             if ((p->rule->dynamic & (D_bound | D_scanned))
@@ -639,26 +579,20 @@ immediate(Rule_t *r)
                 p->rule->mark |= M_mark;
         hashwalk(table.rule, 0, unbind, r);
         hashwalk(table.rule, 0, unbind, NiL);
-    }
-    else if (r == internal.bind || r == internal.force)
-    {
+    } else if (r == internal.bind || r == internal.force) {
         getimmediate(r, &prereqs, &action);
-        for (p = prereqs; p; p = p->next)
-        {
+        for (p = prereqs; p; p = p->next) {
             x = p->rule;
             message((-2, "bind(%s)", x->name));
             x = bind(x);
-            if (r == internal.force)
-            {
+            if (r == internal.force) {
                 if (x->time || !(x->property & P_dontcare))
                     x->time = CURTIME;
                 x->property |= P_force;
             }
         }
-    }
-    else if (r == internal.always || r == internal.local || r == internal.make
-             || r == internal.run)
-    {
+    } else if (r == internal.always || r == internal.local
+               || r == internal.make || r == internal.run) {
         int errors;
         Time_t now;
         Time_t tm = 0;
@@ -667,28 +601,23 @@ immediate(Rule_t *r)
         i = !prereqs;
         now = CURTIME;
         errors = 0;
-        for (p = prereqs; p; p = p->next)
-        {
+        for (p = prereqs; p; p = p->next) {
             if ((p->rule->status == UPDATE || p->rule->status == MAKING)
                 && !(p->rule->property & P_repeat))
                 p->rule = internal.empty;
-            else
-            {
+            else {
                 errors += make(p->rule, &tm, NiL, 0);
                 if (tm >= now)
                     i = 1;
             }
         }
-        if (r != internal.run)
-        {
+        if (r != internal.run) {
             if (prereqs)
                 errors += complete(NiL, prereqs, &tm, 0);
             if (tm >= now)
                 i = 1;
-            if (action)
-            {
-                if (!errors && i)
-                {
+            if (action) {
+                if (!errors && i) {
                     r->status = UPDATE;
                     trigger(r, NiL, action, 0);
                     complete(r, NiL, NiL, 0);
@@ -698,48 +627,37 @@ immediate(Rule_t *r)
                 r->property &= ~(P_always | P_local);
         }
         r->property &= ~(P_foreground | P_make | P_read);
-    }
-    else if (r == internal.include)
-    {
+    } else if (r == internal.include) {
         getimmediate(r, &prereqs, &action);
         i = COMP_INCLUDE;
         g = state.global;
         u = state.user;
-        for (p = prereqs; p; p = p->next)
-        {
+        for (p = prereqs; p; p = p->next) {
             x = p->rule;
             if (streq(x->name, "-"))
                 i ^= COMP_DONTCARE;
-            else if (streq(x->name, "+"))
-            {
+            else if (streq(x->name, "+")) {
                 state.global = 1;
                 state.user = 0;
-            }
-            else if (x->property & P_use)
+            } else if (x->property & P_use)
                 action = x->action;
             else
                 readfile(x->name, i, action);
         }
         state.global = g;
         state.user = u;
-    }
-    else if (r == internal.alarm)
-    {
+    } else if (r == internal.alarm) {
         getimmediate(r, &prereqs, &action);
-        if (p = prereqs)
-        {
+        if (p = prereqs) {
             t = strelapsed(p->rule->name, &e, 1);
             if (*e)
                 t = 0;
             else
                 p = p->next;
-        }
-        else
+        } else
             t = 0;
         wakeup(t, p);
-    }
-    else if (r == internal.sync)
-    {
+    } else if (r == internal.sync) {
         getimmediate(r, &prereqs, &action);
         if (!prereqs)
             savestate();
@@ -750,43 +668,33 @@ immediate(Rule_t *r)
         else
             compile(prereqs->rule->name,
                     prereqs->next ? prereqs->next->rule->name : ( char * )0);
-    }
-    else if (r == internal.reset)
-    {
+    } else if (r == internal.reset) {
         getimmediate(r, &prereqs, &action);
         hashwalk(table.rule, 0, reset, NiL);
-    }
-    else if (r == internal.wait)
-    {
+    } else if (r == internal.wait) {
         getimmediate(r, &prereqs, &action);
         complete(NiL, prereqs, NiL, 0);
-    }
-    else if (r == internal.freeze)
-    {
+    } else if (r == internal.freeze) {
         getimmediate(r, &prereqs, &action);
         for (p = prereqs; p; p = p->next)
             if (v = getvar(p->rule->name))
                 v->property |= V_frozen;
-    }
-    else if ((r->property & P_attribute) && !r->attribute)
+    } else if ((r->property & P_attribute) && !r->attribute)
         return;
     else if (!state.op && state.reading && state.compileonly)
         return;
-    else
-    {
+    else {
         maketop(r, 0, NiL);
         getimmediate(r, &prereqs, &action);
     }
     if (prereqs)
         freelist(prereqs);
-    if (r->prereqs)
-    {
+    if (r->prereqs) {
         freelist(r->prereqs);
         r->prereqs = 0;
     }
     r->action = 0;
-    if (r = staterule(RULE, r, NiL, 0))
-    {
+    if (r = staterule(RULE, r, NiL, 0)) {
         r->prereqs = 0;
         r->action = 0;
     }
@@ -802,29 +710,23 @@ remdup(List_t *p)
     List_t *q;
     List_t *x;
 
-    for (x = p, q = 0; p; p = p->next)
-    {
-        if (p->rule->mark & M_mark)
-        {
+    for (x = p, q = 0; p; p = p->next) {
+        if (p->rule->mark & M_mark) {
             if (q)
                 q->next = p->next;
 #if DEBUG
-            else
-            {
+            else {
                 dumprule(sfstderr, p->rule);
                 error(PANIC, "stray mark on %s", p->rule->name);
             }
 #endif
-        }
-        else
-        {
+        } else {
             if (!(p->rule->property & P_multiple))
                 p->rule->mark |= M_mark;
             q = p;
         }
     }
-    while (x)
-    {
+    while (x) {
         x->rule->mark &= ~M_mark;
         x = x->next;
     }
@@ -855,18 +757,15 @@ dynamic(Rule_t *r)
 
     tmp = sfstropen();
     oframe = state.frame;
-    if ((r->property & P_use) && !(state.frame = r->active))
-    {
+    if ((r->property & P_use) && !(state.frame = r->active)) {
         zero(frame);
         frame.target = r;
         state.frame = frame.parent = &frame;
     }
     vec[1] = 0;
     added = 0;
-    for (p = r->prereqs, q = 0; p; p = p->next)
-    {
-        if (isdynamic(p->rule->name))
-        {
+    for (p = r->prereqs, q = 0; p; p = p->next) {
+        if (isdynamic(p->rule->name)) {
             if (q)
                 q->next = p->next;
             else
@@ -875,15 +774,13 @@ dynamic(Rule_t *r)
             expand(tmp, u->name);
             buf = sfstruse(tmp);
             flags = 0;
-            while (s = getarg(&buf, &flags))
-            {
+            while (s = getarg(&buf, &flags)) {
                 added = 1;
                 if (isglob(s))
                     v = globv(NiL, s);
                 else
                     *(v = vec) = s;
-                while (s = *v++)
-                {
+                while (s = *v++) {
                     x = makerule(s);
                     if (x->dynamic & D_alias)
                         x = makerule(x->name);
@@ -908,8 +805,7 @@ dynamic(Rule_t *r)
                     q = t;
                 }
             }
-        }
-        else
+        } else
             q = p;
     }
     if (added)
@@ -932,11 +828,9 @@ hasattribute(Rule_t *r, Rule_t *a, Rule_t *x)
     List_t *p;
 
     attrname = *a->name == ATTRNAME;
-    if (a->property & P_attribute)
-    {
+    if (a->property & P_attribute) {
         n = r->property;
-        if (x && !(n & P_readonly))
-        {
+        if (x && !(n & P_readonly)) {
             n |= x->property
                  & ~(P_attribute | P_immediate | P_implicit | P_internal
                      | P_operator | P_readonly | P_state | P_staterule
@@ -950,8 +844,7 @@ hasattribute(Rule_t *r, Rule_t *a, Rule_t *x)
          * the first group may conflict with a->attribute
          */
 
-        if (attrname)
-        {
+        if (attrname) {
             if (a == internal.accept)
                 return n & P_accept;
             if (a == internal.attribute)
@@ -959,8 +852,7 @@ hasattribute(Rule_t *r, Rule_t *a, Rule_t *x)
             if (a == internal.ignore)
                 return n & P_ignore;
         }
-        if (a != internal.retain)
-        {
+        if (a != internal.retain) {
             if (a->attribute & r->attribute)
                 return 1;
             if (x
@@ -970,8 +862,7 @@ hasattribute(Rule_t *r, Rule_t *a, Rule_t *x)
                     || r == internal.retain))
                 return 1;
         }
-        if (attrname)
-        {
+        if (attrname) {
             /*
              * the rest have no a->attribute conflicts
              */
@@ -994,8 +885,7 @@ hasattribute(Rule_t *r, Rule_t *a, Rule_t *x)
             if (a->property & n
                 & ~(P_accept | P_attribute | P_ignore | P_internal
                     | P_metarule | P_readonly | P_staterule | P_statevar
-                    | P_target))
-            {
+                    | P_target)) {
                 if (a == internal.after)
                     return n & P_after;
                 if (a == internal.always)
@@ -1044,11 +934,8 @@ hasattribute(Rule_t *r, Rule_t *a, Rule_t *x)
         }
         if (a->scan)
             return a->scan == r->scan || !r->scan && x && x->scan == a->scan;
-    }
-    else
-    {
-        if (attrname)
-        {
+    } else {
+        if (attrname) {
             /*
              * r->dynamic readonly attributes
              */
@@ -1148,12 +1035,10 @@ merge(Rule_t *from, Rule_t *to, int op)
 {
     List_t *p;
 
-    if (from->name)
-    {
+    if (from->name) {
         if (from == to
             || to->status != NOTYET
-               && (to->status != UPDATE || !(from->property & P_use)))
-        {
+               && (to->status != UPDATE || !(from->property & P_use))) {
             /*
              * this is a workaround to separate the view vs. local binding for
              *this case: from	sub/foo == foo to	/dir/foo == foo it may
@@ -1162,8 +1047,7 @@ merge(Rule_t *from, Rule_t *to, int op)
 
             if (!state.exec && state.mam.statix && (from->dynamic & D_alias)
                 && (to->property & P_terminal) && from->uname && to->uname
-                && *from->name != '/' && *to->name == '/')
-            {
+                && *from->name != '/' && *to->name == '/') {
                 Rule_t *fromstate;
                 Rule_t *tostate;
 
@@ -1201,8 +1085,7 @@ merge(Rule_t *from, Rule_t *to, int op)
         to->property &= ~P_terminal;
     if ((from->property & (P_metarule | P_terminal)) == P_terminal)
         to->property &= ~P_implicit;
-    if (op & MERGE_ALL)
-    {
+    if (op & MERGE_ALL) {
         if (!to->action)
             to->action = from->action;
         to->attribute |= from->attribute;
@@ -1217,23 +1100,18 @@ merge(Rule_t *from, Rule_t *to, int op)
             to->status = from->status;
         for (p = from->prereqs; p; p = p->next)
             addprereq(to, p->rule, PREREQ_APPEND);
-        if (!(to->property & P_state))
-        {
-            if (op & MERGE_BOUND)
-            {
+        if (!(to->property & P_state)) {
+            if (op & MERGE_BOUND) {
                 from->mark |= M_bind;
                 to->mark |= M_bind;
             }
             mergestate(from, to);
-            if (op & MERGE_BOUND)
-            {
+            if (op & MERGE_BOUND) {
                 from->mark &= ~M_bind;
                 to->mark &= ~M_bind;
             }
         }
-    }
-    else if (op & MERGE_FORCE)
-    {
+    } else if (op & MERGE_FORCE) {
         if (from->attribute && from != internal.accept
             && from != internal.ignore && from != internal.retain
             && ((to->property & (P_attribute | P_use)) != P_attribute
@@ -1242,9 +1120,7 @@ merge(Rule_t *from, Rule_t *to, int op)
             to->attribute |= from->attribute;
         if (from->scan)
             to->scan = from->scan;
-    }
-    else
-    {
+    } else {
         if (from->attribute && from != internal.accept
             && from != internal.ignore && from != internal.retain
             && ((to->property & (P_attribute | P_use)) != P_attribute
@@ -1281,8 +1157,7 @@ mergestate(Rule_t *from, Rule_t *to)
     else
         return;
 #if DEBUG
-    if (state.test & 0x00000800)
-    {
+    if (state.test & 0x00000800) {
         error(2,
               "MERGESTATE from: %s: %s time=[%s] event=[%s]",
               from->name,
@@ -1298,8 +1173,7 @@ mergestate(Rule_t *from, Rule_t *to)
     }
 #endif
     if ((from->dynamic & D_alias) && fromstate->time
-        && !statetimeq(fromstate, tostate))
-    {
+        && !statetimeq(fromstate, tostate)) {
         /*
          * the solution is conservative but ok
          * since aliases probably don't change
@@ -1311,10 +1185,8 @@ mergestate(Rule_t *from, Rule_t *to)
         reason((1, "%s alias has changed to %s", unbound(from), unbound(to)));
         to->dynamic |= D_aliaschanged;
     }
-    if (fromstate->event != tostate->event)
-    {
-        if (fromstate->event < tostate->event)
-        {
+    if (fromstate->event != tostate->event) {
+        if (fromstate->event < tostate->event) {
             /*
              * merge in the other direction
              */
@@ -1332,8 +1204,7 @@ mergestate(Rule_t *from, Rule_t *to)
         tostate->name = s;
         for (i = RULE + 1; i <= STATERULES; i++)
             if ((fromstate = staterule(i, from, NiL, 0))
-                && !staterule(i, to, NiL, 0))
-            {
+                && !staterule(i, to, NiL, 0)) {
                 tostate = staterule(i, to, NiL, 1);
                 s = tostate->name;
                 *tostate = *fromstate;
@@ -1442,8 +1313,7 @@ b_getconf(char **args)
 
     if (name = *args)
         args++;
-    if (path = *args)
-    {
+    if (path = *args) {
         if (path[0] == '-' && !path[1])
             path = 0;
         args++;
@@ -1470,26 +1340,22 @@ b_getopts(char **args)
 
     s = getval(">", 0);
     if (*s == '-' && (id = *args++) && (r = getrule(*args++))
-        && (usage = r->action) && (prefix = *args))
-    {
+        && (usage = r->action) && (prefix = *args)) {
         if (streq(id, "-"))
             oid = 0;
-        else
-        {
+        else {
             oid = error_info.id;
             error_info.id = id;
         }
         info = opt_info;
         opt_info.index = 0;
         opt_info.offset = 0;
-        for (;;)
-        {
+        for (;;) {
             while (isspace(s[opt_info.offset]))
                 opt_info.offset++;
             if (s[opt_info.offset] != '-')
                 break;
-            switch (optstr(s, usage))
-            {
+            switch (optstr(s, usage)) {
             case 0:
                 break;
             case '?':
@@ -1762,8 +1628,7 @@ initrule(void)
      * initialize the builtin attributes
      */
 
-    if (!repeat)
-    {
+    if (!repeat) {
         static Frame_t frame;
 
         frame.target = internal.internal;
@@ -1789,8 +1654,7 @@ initrule(void)
 
     hashwalk(table.dir, 0, diratom, NiL);
 #if !BINDINDEX
-    for (i = 0; i <= state.maxview; i++)
-    {
+    for (i = 0; i <= state.maxview; i++) {
         r = getrule(state.view[i].path);
         r->view = i;
         state.view[i].path = r->name;
@@ -1828,10 +1692,8 @@ view(char *s, char *d, List_t *p)
         d[--i] = 0;
     r = makerule(d);
     if ((unique(r) || !r->time) && !streq(r->name, internal.dot->name)
-        && !streq(r->name, internal.pwd))
-    {
-        if (state.maxview < MAXVIEW - 1)
-        {
+        && !streq(r->name, internal.pwd)) {
+        if (state.maxview < MAXVIEW - 1) {
 #if BINDINDEX
             r->dynamic |= D_bindindex;
             state.view[++state.maxview].path = r;
@@ -1841,8 +1703,7 @@ view(char *s, char *d, List_t *p)
             state.view[state.maxview].pathlen = i;
             r->view = state.maxview;
             p = p->next = cons(r, NiL);
-            if (s != d)
-            {
+            if (s != d) {
                 i = pathcanon(s, 0, 0) - s;
                 if (i > 2 && s[i - 1] == '/')
                     s[--i] = 0;
@@ -1864,8 +1725,7 @@ view(char *s, char *d, List_t *p)
                      state.view[state.maxview].path,
                      state.view[state.maxview].root));
 #endif
-        }
-        else
+        } else
             error(1, "view level %s ignored -- %d max", r->name, MAXVIEW);
     }
     return p;
@@ -1894,15 +1754,12 @@ initview(void)
 
     p = internal.view->prereqs = cons(internal.dot, NiL);
     tmp = sfstropen();
-    if (fs3d(FS3D_TEST))
-    {
+    if (fs3d(FS3D_TEST)) {
         if ((n = (s = colonlist(tmp, external.viewnode, 1, ' ')) != 0)
-            || (s = colonlist(tmp, external.viewdot, 1, ' ')))
-        {
+            || (s = colonlist(tmp, external.viewdot, 1, ' '))) {
             tok = tokopen(s, 0);
             if (s = n ? tokread(tok) : ".")
-                while (t = tokread(tok))
-                {
+                while (t = tokread(tok)) {
                     message((-2, "vpath %s %s", s, t));
                     mount(t, s, FS3D_VIEW, NiL);
                     s = t;
@@ -1913,10 +1770,8 @@ initview(void)
             sfputr(tmp, "/...", -1);
         sfputc(tmp, 0);
         s = t = sfstrseek(tmp, 0, SEEK_CUR);
-        while (!stat(t -= 4, &top))
-        {
-            if (state.maxview >= MAXVIEW - 1)
-            {
+        while (!stat(t -= 4, &top)) {
+            if (state.maxview >= MAXVIEW - 1) {
                 error(
                 1, "view levels past %s ignored -- %d max", t += 4, MAXVIEW);
                 break;
@@ -1935,15 +1790,11 @@ initview(void)
         if (!stat(".", &top) && !stat("...", &bot) && top.st_ino == bot.st_ino
             && top.st_dev == bot.st_dev)
             state.virtualdot = 1;
-    }
-    else
-    {
+    } else {
         unique(internal.dot);
-        if (s = colonlist(tmp, external.viewnode, 1, ' '))
-        {
+        if (s = colonlist(tmp, external.viewnode, 1, ' ')) {
             tok = tokopen(s, 1);
-            while (s = tokread(tok))
-            {
+            while (s = tokread(tok)) {
                 if (*s != '/')
                     sfprintf(internal.tmp, "%s/", internal.pwd);
                 sfputr(internal.tmp, s, -1);
@@ -1954,8 +1805,7 @@ initview(void)
                 n = s - t;
                 pwd = 0;
                 if (strncmp(internal.pwd, t, n)
-                    || (c = internal.pwd[n]) && c != '/')
-                {
+                    || (c = internal.pwd[n]) && c != '/') {
                     /*
                      * ksh pwd and ast getcwd() are logical
                      * others are physical
@@ -1963,16 +1813,13 @@ initview(void)
                      * if they're not
                      */
 
-                    if (!stat(t, &top))
-                    {
+                    if (!stat(t, &top)) {
                         sfputr(internal.nam, internal.pwd, -1);
                         u = sfstruse(internal.nam);
                         c = 0;
-                        for (;;)
-                        {
+                        for (;;) {
                             if (!stat(u, &bot) && bot.st_ino == top.st_ino
-                                && bot.st_dev == top.st_dev)
-                            {
+                                && bot.st_dev == top.st_dev) {
                                 sfprintf(internal.nam,
                                          "%s%s",
                                          t,
@@ -1987,14 +1834,12 @@ initview(void)
                             c = 1;
                         }
                     }
-                    if (!pwd)
-                    {
+                    if (!pwd) {
                         setvar(external.viewnode, NiL, 0);
                         break;
                     }
                 }
-                if (pwd)
-                {
+                if (pwd) {
                     internal.pwd = pwd;
                     internal.pwdlen = pwdlen;
                     setvar(external.pwd, internal.pwd, V_import);
@@ -2014,12 +1859,10 @@ initview(void)
                          state.view[state.maxview].path,
                          state.view[state.maxview].root));
 #endif
-                while (s = tokread(tok))
-                {
+                while (s = tokread(tok)) {
                     if (!c)
                         p = view(s, NiL, p);
-                    else
-                    {
+                    else {
                         if (*s != '/')
                             sfprintf(internal.tmp, "%s/", internal.pwd);
                         sfprintf(internal.tmp, "%s%s", s, internal.pwd + n);
@@ -2032,19 +1875,16 @@ initview(void)
             }
             tokclose(tok);
         }
-        if (s = colonlist(tmp, external.viewdot, 1, ' '))
-        {
+        if (s = colonlist(tmp, external.viewdot, 1, ' ')) {
             n = state.maxview;
             tok = tokopen(s, 1);
-            while (s = tokread(tok))
-            {
+            while (s = tokread(tok)) {
                 pathcanon(s, 0, 0);
                 if (!n || *s != '.' || *(s + 1) != '.'
                     || *(s + 2) && *(s + 2) != '/')
                     p = view(s, NiL, p);
                 else
-                    for (c = 0; c <= n; c++)
-                    {
+                    for (c = 0; c <= n; c++) {
 #if BINDINDEX
                         sfprintf(internal.tmp,
                                  "%s/%s",

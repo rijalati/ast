@@ -40,12 +40,10 @@ int
 cosync(Coshell_t *co, const char *file, int fd, int mode)
 {
 #if defined(_cmd_nfsd)
-    if (!co || (co->flags & CO_SERVER))
-    {
+    if (!co || (co->flags & CO_SERVER)) {
         char tmp[PATH_MAX];
 
-        if (file && *file)
-        {
+        if (file && *file) {
             const char *s;
             char *t;
             char *b;
@@ -58,8 +56,7 @@ cosync(Coshell_t *co, const char *file, int fd, int mode)
 
             s = file;
             b = t = tmp;
-            while (t < &tmp[sizeof(tmp) - 1])
-            {
+            while (t < &tmp[sizeof(tmp) - 1]) {
                 if (!(*t = *s++))
                     break;
                 if (*t++ == '/')
@@ -74,8 +71,7 @@ cosync(Coshell_t *co, const char *file, int fd, int mode)
                 >= 0)
                 close(td);
             unlink(tmp);
-            if (fd >= 0 && mode >= 0)
-            {
+            if (fd >= 0 && mode >= 0) {
                 if ((td = open(file, mode | O_cloexec)) < 0)
                     return (-1);
                 close(fd);
@@ -84,13 +80,11 @@ cosync(Coshell_t *co, const char *file, int fd, int mode)
             }
         }
 #    if defined(F_SETLK)
-        else
-        {
+        else {
             int clean = 0;
             struct flock lock;
 
-            if (fd < 0)
-            {
+            if (fd < 0) {
                 if (!file || mode < 0
                     || (fd = open(file, O_RDONLY | O_cloexec)) < 0)
                     return (-1);
@@ -105,8 +99,7 @@ cosync(Coshell_t *co, const char *file, int fd, int mode)
             lock.l_whence = 0;
             lock.l_start = 0;
             lock.l_len = 1;
-            if (!fcntl(fd, F_SETLK, &lock))
-            {
+            if (!fcntl(fd, F_SETLK, &lock)) {
                 lock.l_type = F_UNLCK;
                 fcntl(fd, F_SETLK, &lock);
             }
@@ -121,8 +114,7 @@ cosync(Coshell_t *co, const char *file, int fd, int mode)
              * this kind of stuff doesn't happen with *real* file systems
              */
 
-            if (file && *file)
-            {
+            if (file && *file) {
                 strcpy(tmp, file);
                 fd = strlen(tmp) - 1;
                 tmp[fd] = (tmp[fd] == '*') ? '?' : '*';

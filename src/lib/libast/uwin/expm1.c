@@ -134,10 +134,8 @@ extern double expm1(x) double x;
         return (x); /* x is NaN */
 #    endif /* !defined(vax)&&!defined(tahoe) */
 
-    if (x <= lnhuge)
-    {
-        if (x >= -40.0)
-        {
+    if (x <= lnhuge) {
+        if (x >= -40.0) {
 
             /* argument reduction : x - k*ln2 */
             k = ( int )(invln2 * x) + copysign(0.5, x); /* k=NINT(x/ln2) */
@@ -148,35 +146,26 @@ extern double expm1(x) double x;
             if (k == 0)
                 return (z + __exp__E(z, c));
             if (k == 1)
-                if (z < -0.25)
-                {
+                if (z < -0.25) {
                     x = z + half;
                     x += __exp__E(z, c);
                     return (x + x);
-                }
-                else
-                {
+                } else {
                     z += __exp__E(z, c);
                     x = half + z;
                     return (x + x);
                 }
             /* end of k=1 */
 
-            else
-            {
-                if (k <= prec)
-                {
+            else {
+                if (k <= prec) {
                     x = one - scalb(one, -k);
                     z += __exp__E(z, c);
-                }
-                else if (k < 100)
-                {
+                } else if (k < 100) {
                     x = __exp__E(z, c) - scalb(one, -k);
                     x += z;
                     z = one;
-                }
-                else
-                {
+                } else {
                     x = __exp__E(z, c) + z;
                     z = one;
                 }
@@ -188,8 +177,7 @@ extern double expm1(x) double x;
 
         else
         /* expm1(-big#) rounded to -1 (inexact) */
-        if (finite(x))
-        {
+        if (finite(x)) {
             ln2hi + ln2lo;
             return (-one);
         }

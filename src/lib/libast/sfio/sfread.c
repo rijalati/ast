@@ -50,26 +50,21 @@ size_t n;                            /* number of bytes to be read. 	*/
         SFMTXRETURN(f, (ssize_t)(n == 0 ? 0 : -1));
 
     /* release peek lock */
-    if (f->mode & SF_PEEK)
-    {
+    if (f->mode & SF_PEEK) {
         if (!(f->mode & SF_READ))
             SFMTXRETURN(f, (ssize_t)(-1));
 
-        if (f->mode & SF_GETR)
-        {
+        if (f->mode & SF_GETR) {
             if ((( uchar * )buf + f->val) != f->next
                 && (!f->rsrv || f->rsrv->data != ( uchar * )buf))
                 SFMTXRETURN(f, (ssize_t)(-1));
             f->mode &= ~SF_PEEK;
             SFMTXRETURN(f, 0);
-        }
-        else
-        {
+        } else {
             if (( uchar * )buf != f->next)
                 SFMTXRETURN(f, (ssize_t)(-1));
             f->mode &= ~SF_PEEK;
-            if (f->mode & SF_PKRD)
-            { /* actually read the data now */
+            if (f->mode & SF_PKRD) { /* actually read the data now */
                 f->mode &= ~SF_PKRD;
                 if (n > 0)
                     n = (r = sysreadf(f->file, f->data, n)) < 0 ? 0 : r;
@@ -83,10 +78,8 @@ size_t n;                            /* number of bytes to be read. 	*/
     }
 
     s = begs = ( uchar * )buf;
-    for (;; f->mode &= ~SF_LOCK)
-    { /* check stream mode */
-        if (SFMODE(f, local) != SF_READ && _sfmode(f, SF_READ, local) < 0)
-        {
+    for (;; f->mode &= ~SF_LOCK) { /* check stream mode */
+        if (SFMODE(f, local) != SF_READ && _sfmode(f, SF_READ, local) < 0) {
             n = s > begs ? s - begs : (size_t)(-1);
             SFMTXRETURN(f, ( ssize_t )n);
         }
@@ -107,8 +100,7 @@ size_t n;                            /* number of bytes to be read. 	*/
         if (n <= 0) /* all done */
             break;
 
-        if (!(f->flags & SF_STRING) && !(f->bits & SF_MMAP))
-        {
+        if (!(f->flags & SF_STRING) && !(f->bits & SF_MMAP)) {
             f->next = f->endb = f->data;
 
             /* exact IO is desirable for these cases */
@@ -124,18 +116,14 @@ size_t n;                            /* number of bytes to be read. 	*/
                 r = ( ssize_t )n;
 
             /* read directly to user's buffer */
-            if (r == ( ssize_t )n && (r = SFRD(f, s, r, f->disc)) >= 0)
-            {
+            if (r == ( ssize_t )n && (r = SFRD(f, s, r, f->disc)) >= 0) {
                 s += r;
                 n -= r;
                 if (r == 0 || n == 0) /* eof or eob */
                     break;
-            }
-            else
+            } else
                 goto do_filbuf;
-        }
-        else
-        {
+        } else {
         do_filbuf:
             if (justseek)
                 f->bits |= SF_JUSTSEEK;

@@ -55,10 +55,8 @@ strlcpy(char *s, const char *t, size_t n)
     const char *o = t;
 
     if (n)
-        do
-        {
-            if (!--n)
-            {
+        do {
+            if (!--n) {
                 *s = 0;
                 break;
             }

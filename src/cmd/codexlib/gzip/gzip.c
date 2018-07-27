@@ -32,8 +32,7 @@ gzip_ident(Codexmeth_t *meth,
 {
     unsigned char *h = ( unsigned char * )head;
 
-    if (headsize >= 3 && h[0] == 0x1f && h[1] == 0x8b)
-    {
+    if (headsize >= 3 && h[0] == 0x1f && h[1] == 0x8b) {
         strncopy(name, meth->name, namesize);
         return 1;
     }
@@ -52,25 +51,19 @@ gzip_open(Codex_t *p, char *const args[], Codexnum_t flags)
     int level = DEFLEVEL;
 
     i = 2;
-    while (s = args[i++])
-    {
+    while (s = args[i++]) {
         if (isdigit(*s))
             v = strton(s, &e, NiL, 0);
-        else
-        {
+        else {
             e = ( char * )s;
-            if (e[0] == 'n' && e[1] == 'o')
-            {
+            if (e[0] == 'n' && e[1] == 'o') {
                 e += 2;
                 v = 0;
-            }
-            else
+            } else
                 v = 1;
         }
-        if (!*e)
-        {
-            if (v < MINLEVEL || v > MAXLEVEL)
-            {
+        if (!*e) {
+            if (v < MINLEVEL || v > MAXLEVEL) {
                 if (p->disc->errorf)
                     (*p->disc->errorf)(
                     NiL,
@@ -83,26 +76,22 @@ gzip_open(Codex_t *p, char *const args[], Codexnum_t flags)
                 return -1;
             }
             level = v;
-        }
-        else if (!streq(e, "crc"))
+        } else if (!streq(e, "crc"))
             crc = v;
-        else
-        {
+        else {
             if (p->disc->errorf)
                 (*p->disc->errorf)(NiL, p->disc, 2, "%s: unknown option", s);
             return -1;
         }
     }
-    if (!(p->op
-          = sfopen(NiL, "/dev/null", (p->flags & CODEX_DECODE) ? "r" : "w")))
-    {
+    if (!(p->op = sfopen(
+          NiL, "/dev/null", (p->flags & CODEX_DECODE) ? "r" : "w"))) {
         if (p->disc->errorf)
             (*p->disc->errorf)(NiL, p->disc, 2, "cannot swap main stream");
         return -1;
     }
     sfswap(p->op, p->sp);
-    if (!(state = newof(0, State_t, 1, 0)))
-    {
+    if (!(state = newof(0, State_t, 1, 0))) {
         if (p->disc->errorf)
             (*p->disc->errorf)(NiL, p->disc, 2, "out of space");
         return -1;

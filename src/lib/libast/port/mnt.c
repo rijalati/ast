@@ -43,10 +43,8 @@ NoN(mnt)
  */
 
 #    define FIXARGS(p, m, s)                                                 \
-        do                                                                   \
-        {                                                                    \
-            if ((p) && *(p) != '/')                                          \
-            {                                                                \
+        do {                                                                 \
+            if ((p) && *(p) != '/') {                                        \
                 mode = p;                                                    \
                 path = 0;                                                    \
             }                                                                \
@@ -77,26 +75,20 @@ set(Header_t *hp,
     const char *x;
 
     hp->mnt.flags = 0;
-    if (x = ( const char * )strchr(fs, ':'))
-    {
-        if (*++x && *x != '\\')
-        {
+    if (x = ( const char * )strchr(fs, ':')) {
+        if (*++x && *x != '\\') {
             hp->mnt.flags |= MNT_REMOTE;
-            if (*x == '(')
-            {
+            if (*x == '(') {
                 fs = x;
                 type = "auto";
             }
         }
-    }
-    else if (x = ( const char * )strchr(fs, '@'))
-    {
+    } else if (x = ( const char * )strchr(fs, '@')) {
         hp->mnt.flags |= MNT_REMOTE;
         sfsprintf(
         hp->buf, sizeof(hp->buf) - 1, "%s:%*.*s", x + 1, x - fs, x - fs, fs);
         fs = ( const char * )hp->buf;
-    }
-    else if (strmatch(type, "[aAnN][fF][sS]*"))
+    } else if (strmatch(type, "[aAnN][fF][sS]*"))
         hp->mnt.flags |= MNT_REMOTE;
     if (streq(fs, "none"))
         fs = dir;
@@ -105,8 +97,7 @@ set(Header_t *hp,
     hp->mnt.type = ( char * )type;
     hp->mnt.options = ( char * )options;
 #    if __CYGWIN__
-    if (streq(type, "system") || streq(type, "user"))
-    {
+    if (streq(type, "system") || streq(type, "user")) {
         char *s;
         int mode;
         DWORD vser;
@@ -127,8 +118,7 @@ set(Header_t *hp,
         SetErrorMode(mode);
         s = stpcpy(hp->mnt.options = hp->opt, type);
         s = stpcpy(s, ",ignorecase");
-        if (options)
-        {
+        if (options) {
             *s++ = ',';
             strcpy(s, options);
         }
@@ -313,8 +303,7 @@ mntopen(const char *path, const char *mode)
 #        else
     n = getmntinfo(&mp->next, 0);
 #        endif
-    if (n <= 0)
-    {
+    if (n <= 0) {
         free(mp);
         return 0;
     }
@@ -330,8 +319,7 @@ mntread(void *handle)
     int n;
     unsigned long flags;
 
-    if (mp->next < mp->last)
-    {
+    if (mp->next < mp->last) {
         flags = mp->next->f_flags;
         n = 0;
         for (i = 0; i < elementsof(options); i++)
@@ -394,8 +382,7 @@ mntopen(const char *path, const char *mode)
     if (!(mp = newof(0, Handle_t, 1, SIZE)))
         return 0;
     if ((mp->count = mntctl(MCTL_QUERY, sizeof(Handle_t) + SIZE, &mp->info))
-        <= 0)
-    {
+        <= 0) {
         free(mp);
         return 0;
     }
@@ -411,26 +398,22 @@ mntread(void *handle)
     char *t;
     char *o;
 
-    if (mp->count > 0)
-    {
+    if (mp->count > 0) {
         if (vmt2datasize(mp->next, VMT_HOST)
-            && (s = vmt2dataptr(mp->next, VMT_HOST)) && !streq(s, "-"))
-        {
+            && (s = vmt2dataptr(mp->next, VMT_HOST)) && !streq(s, "-")) {
             sfsprintf(mp->remote,
                       sizeof(mp->remote) - 1,
                       "%s:%s",
                       s,
                       vmt2dataptr(mp->next, VMT_OBJECT));
             s = mp->remote;
-        }
-        else
+        } else
             s = vmt2dataptr(mp->next, VMT_OBJECT);
         if (vmt2datasize(mp->next, VMT_ARGS))
             o = vmt2dataptr(mp->next, VMT_ARGS);
         else
             o = NiL;
-        switch (mp->next->vmt_gfstype)
-        {
+        switch (mp->next->vmt_gfstype) {
 #            ifdef MNT_AIX
         case MNT_AIX:
             t = "aix";
@@ -588,8 +571,7 @@ mntopen(const char *path, const char *mode)
     FIXARGS(path, mode, MOUNTED);
     if (!(mp = newof(0, Handle_t, 1, 0)))
         return 0;
-    if (!(mp->fp = setmntent(path, mode)))
-    {
+    if (!(mp->fp = setmntent(path, mode))) {
         free(mp);
         return 0;
     }
@@ -602,8 +584,7 @@ mntread(void *handle)
     Handle_t *mp = ( Handle_t * )handle;
     struct mntent *mnt;
 
-    if (mnt = getmntent(mp->fp))
-    {
+    if (mnt = getmntent(mp->fp)) {
         set(
         &mp->hdr, mnt->mnt_fsname, mnt->mnt_dir, mnt->mnt_type, OPTIONS(mnt));
         return &mp->hdr.mnt;
@@ -726,8 +707,7 @@ mntread(void *handle)
 
 #                if _lib_w_getmntent
 
-    if (mp->count-- <= 0)
-    {
+    if (mp->count-- <= 0) {
         if ((mp->count = w_getmntent(mp->buf, sizeof(mp->buf))) <= 0)
             return 0;
         mp->count--;
@@ -746,8 +726,7 @@ mntread(void *handle)
 #                    if _hdr_mnttab
 
     while (sfread(mp->fp, &mp->buf, sizeof(mp->buf)) == sizeof(mp->buf))
-        if (*mp->mnt->mnt_fsname && *mp->mnt->mnt_dir)
-        {
+        if (*mp->mnt->mnt_fsname && *mp->mnt->mnt_dir) {
 #                        ifndef mnt_type
             struct stat st;
 
@@ -786,8 +765,7 @@ again:
     b = s = mp->mnt->mnt_fsname;
     m = s + sizeof(mp->mnt->mnt_fsname) - 1;
     for (;;)
-        switch (c = sfgetc(mp->fp))
-        {
+        switch (c = sfgetc(mp->fp)) {
         case EOF:
             return 0;
         case '"':
@@ -804,8 +782,7 @@ again:
         case '\t':
 #                        endif
             if (s != b && !q)
-                switch (++x)
-                {
+                switch (++x) {
                 case 1:
                     *s = 0;
                     b = s = mp->mnt->mnt_dir;
@@ -828,8 +805,7 @@ again:
                 }
             break;
         case '\n':
-            if (x >= 3)
-            {
+            if (x >= 3) {
                 set(&mp->hdr,
                     mp->mnt->mnt_fsname,
                     mp->mnt->mnt_dir,

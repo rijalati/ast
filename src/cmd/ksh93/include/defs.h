@@ -576,8 +576,7 @@ sh_diropenat(Shell_t *, int, const char *);
 #    define sh_setstate(shp, x) ((shp)->st.states = (x))
 
 #    define sh_sigcheck(shp)                                                 \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             if (shp->trapnote & SH_SIGSET)                                   \
                 sh_exit((shp), SH_EXITSIG);                                  \
         } while (0)

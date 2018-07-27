@@ -68,19 +68,15 @@ base64encode(const void *fb,
 
     m = ( unsigned char * )alp;
     fp = fe = ( unsigned char * )fb;
-    if (fz >= 3)
-    {
+    if (fz >= 3) {
         n = fz % 3;
         fe += fz - n;
         fz = n;
     }
-    if (tp = ( unsigned char * )tb)
-    {
+    if (tp = ( unsigned char * )tb) {
         te = tp + tz - B64_EC + 1;
         n = 0;
-    }
-    else
-    {
+    } else {
         if (fn)
             *fn = fp;
         if (tn)
@@ -89,15 +85,12 @@ base64encode(const void *fb,
         te = tp + sizeof(tmp) - B64_EC + 1;
         n = 1;
     }
-    for (;;)
-    {
+    for (;;) {
         tc = tp + B64_EC * B64_CHUNK;
-        do
-        {
+        do {
             if (fp >= fe)
                 goto done;
-            if (tp >= te)
-            {
+            if (tp >= te) {
                 if (fn)
                     *fn = fp;
                 if (tn)
@@ -114,19 +107,15 @@ base64encode(const void *fb,
             *tp++ = m[(b >> 6) & 077];
             *tp++ = m[b & 077];
         } while (tp < tc);
-        if (n)
-        {
+        if (n) {
             n += tp - tmp + (fp < fe);
             tp = tmp;
-        }
-        else
+        } else
             *tp++ = '\n';
     }
 done:
-    if (fz)
-    {
-        if (tp >= te)
-        {
+    if (fz) {
+        if (tp >= te) {
             if (fn)
                 *fn = fp;
             if (tn)
@@ -145,8 +134,7 @@ done:
     }
     if (n)
         n += (tp - tmp) - 1;
-    else
-    {
+    else {
         if (tp > ( unsigned char * )tb && *(tp - 1) == '\n')
             tp--;
         if (tp < te)
@@ -184,8 +172,7 @@ base64decode(const void *fb,
     unsigned char *fc;
     ssize_t n;
 
-    if (!(m = map)[0])
-    {
+    if (!(m = map)[0]) {
         memset(m, B64_IGN, sizeof(map));
         for (tp = ( unsigned char * )alp; c = *tp; tp++)
             m[c] = tp - ( unsigned char * )alp;
@@ -194,43 +181,32 @@ base64decode(const void *fb,
     }
     fp = ( unsigned char * )fb;
     fe = fp + fz;
-    if (tp = ( unsigned char * )tb)
-    {
+    if (tp = ( unsigned char * )tb) {
         te = tp + tz;
         if (tz > 2)
             tz = 2;
         tx = te - tz;
         n = 0;
-    }
-    else
-    {
+    } else {
         te = tx = tp;
         n = 1;
     }
-    for (;;)
-    {
+    for (;;) {
         fc = fp;
         state = 0;
         v = 0;
-        while (fp < fe)
-        {
-            if ((c = m[*fp++]) < 64)
-            {
+        while (fp < fe) {
+            if ((c = m[*fp++]) < 64) {
                 v = (v << 6) | c;
-                if (++state == 4)
-                {
-                    if (tp >= tx)
-                    {
+                if (++state == 4) {
+                    if (tp >= tx) {
                         if (n)
                             n += 3;
-                        else
-                        {
+                        else {
                             n = tp - ( unsigned char * )tb + 4;
-                            if (tp < te)
-                            {
+                            if (tp < te) {
                                 *tp++ = (v >> 16);
-                                if (tp < te)
-                                {
+                                if (tp < te) {
                                     *tp++ = (v >> 8);
                                     if (tp < te)
                                         *tp++ = (v);
@@ -241,9 +217,7 @@ base64decode(const void *fb,
                             if (fn)
                                 *fn = fc;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         *tp++ = (v >> 16);
                         *tp++ = (v >> 8);
                         *tp++ = (v);
@@ -252,12 +226,10 @@ base64decode(const void *fb,
                     state = 0;
                     v = 0;
                 }
-            }
-            else if (c == B64_PAD)
+            } else if (c == B64_PAD)
                 break;
         }
-        switch (state)
-        {
+        switch (state) {
         case 0:
             goto done;
         case 2:
@@ -265,8 +237,7 @@ base64decode(const void *fb,
                 *tp++ = v >> 4;
             else if (n)
                 n++;
-            else
-            {
+            else {
                 n = tp - ( unsigned char * )tb + 2;
                 if (tn)
                     *tn = tp;
@@ -275,24 +246,20 @@ base64decode(const void *fb,
             }
             break;
         case 3:
-            if (tp < te)
-            {
+            if (tp < te) {
                 *tp++ = v >> 10;
                 if (tp < te)
                     *tp++ = v >> 2;
-                else
-                {
+                else {
                     n = tp - ( unsigned char * )tb + 2;
                     if (tn)
                         *tn = tp;
                     if (fn)
                         *fn = fc;
                 }
-            }
-            else if (n)
+            } else if (n)
                 n += 2;
-            else
-            {
+            else {
                 n = tp - ( unsigned char * )tb + 3;
                 if (tn)
                     *tn = tp;
@@ -310,8 +277,7 @@ base64decode(const void *fb,
 done:
     if (n)
         n--;
-    else
-    {
+    else {
         if (tp < te)
             *tp = 0;
         n = tp - ( unsigned char * )tb;

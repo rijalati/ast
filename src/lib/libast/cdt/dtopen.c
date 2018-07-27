@@ -62,26 +62,21 @@ unsigned long version;
     pdt.meth = meth;
     dtdisc(&pdt, disc, 0); /* note that this sets pdt.memoryf */
 
-    if (disc->eventf)
-    {
+    if (disc->eventf) {
         if ((ev = (*disc->eventf)(&pdt, DT_OPEN, ( Void_t * )(&data), disc))
             < 0)
             return NIL(Dt_t *); /* something bad happened */
-        else if (ev > 0)
-        {
+        else if (ev > 0) {
             if (data) /* shared data are being restored */
             {
-                if ((data->type & DT_METHODS) != meth->type)
-                {
+                if ((data->type & DT_METHODS) != meth->type) {
                     DTERROR(
                     &pdt, "Error in matching methods to restore dictionary");
                     return NIL(Dt_t *);
                 }
                 pdt.data = data;
             }
-        }
-        else
-        {
+        } else {
             if (data) /* dt should be allocated with dt->data */
                 type |= DT_INDATA;
         }
@@ -95,8 +90,7 @@ unsigned long version;
     /* now allocate/initialize the actual dictionary structure */
     if (pdt.data->type & DT_INDATA)
         dt = &pdt.data->dict;
-    else if (!(dt = ( Dt_t * )malloc(sizeof(Dt_t))))
-    {
+    else if (!(dt = ( Dt_t * )malloc(sizeof(Dt_t)))) {
         ( void )(*meth->eventf)(&pdt, DT_CLOSE, NIL(Void_t *));
         DTERROR(&pdt, "Error in allocating a new dictionary");
         return NIL(Dt_t *);
@@ -147,8 +141,7 @@ _dtmake(Dt_t *dt, Void_t *obj, int type)
     if ((h = ( Dthold_t * )(dt->memoryf)(
          dt, NIL(Void_t *), sizeof(Dthold_t), disc)))
         h->obj = obj;
-    else
-    {
+    else {
         DTERROR(dt, "Error in allocating an object holder");
         if (!(type & DT_ATTACH) && disc->makef && disc->freef)
             ( void )(*disc->freef)(dt, obj, disc); /* free just-made obj */

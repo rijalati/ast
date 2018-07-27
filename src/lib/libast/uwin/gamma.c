@@ -150,19 +150,16 @@ extern double gamma(x) double x;
     struct Double u;
     endian = (*( int * )&one) ? 1 : 0;
 
-    if (x >= 6)
-    {
+    if (x >= 6) {
         if (x > 171.63)
             return (one / zero);
         u = large_gam(x);
         return (__exp__D(u.a, u.b));
-    }
-    else if (x >= 1.0 + LEFT + x0)
+    } else if (x >= 1.0 + LEFT + x0)
         return (small_gam(x));
     else if (x > 1.e-17)
         return (smaller_gam(x));
-    else if (x > -1.e-17)
-    {
+    else if (x > -1.e-17) {
         if (x == 0.0)
             if (!_IEEE)
                 return (infnan(ERANGE));
@@ -170,15 +167,12 @@ extern double gamma(x) double x;
                 return (one / x);
         one + 1e-20; /* Raise inexact flag. */
         return (one / x);
-    }
-    else if (!finite(x))
-    {
+    } else if (!finite(x)) {
         if (_IEEE) /* x = NaN, -Inf */
             return (x * x);
         else
             return (infnan(EDOM));
-    }
-    else
+    } else
         return (neg_gam(x));
 }
 /*
@@ -225,8 +219,7 @@ static double small_gam(x) double x;
     struct Double yy, r;
     y = x - one;
     ym1 = y - one;
-    if (y <= 1.0 + (LEFT + x0))
-    {
+    if (y <= 1.0 + (LEFT + x0)) {
         yy = ratfun_gam(y - x0, 0);
         return (yy.a + yy.b);
     }
@@ -236,8 +229,7 @@ static double small_gam(x) double x;
     y = ym1;
     yy.b = r.b = y - yy.a;
     /* Argument reduction: G(x+1) = x*G(x) */
-    for (ym1 = y - one; ym1 > LEFT + x0; y = ym1--, yy.a--)
-    {
+    for (ym1 = y - one; ym1 > LEFT + x0; y = ym1--, yy.a--) {
         t = r.a * yy.a;
         r.b = r.a * yy.b + y * r.b;
         r.a = t;
@@ -257,8 +249,7 @@ static double smaller_gam(x) double x;
 {
     double t, d;
     struct Double r, xx;
-    if (x < x0 + LEFT)
-    {
+    if (x < x0 + LEFT) {
         t = x, TRUNC(t);
         d = (t + x) * (x - t);
         t *= t;
@@ -272,9 +263,7 @@ static double smaller_gam(x) double x;
         d -= t;
         d += x;
         x = xx.a + xx.b;
-    }
-    else
-    {
+    } else {
         xx.a = x, TRUNC(xx.a);
         xx.b = x - xx.a;
         t = x - x0;
@@ -345,8 +334,7 @@ static double neg_gam(x) double x;
     else
         z = cos(M_PI * (0.5 - z));
     /* Special case: G(1-x) = Inf; G(x) may be nonzero. */
-    if (x < -170)
-    {
+    if (x < -170) {
         if (x < -190)
             return (( double )sgn * tiny * tiny);
         y = one - x; /* exact: 128 < |x| < 255 */

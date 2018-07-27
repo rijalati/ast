@@ -82,16 +82,14 @@ optinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
     int c;
 
     if (streq(s, "codesets"))
-        for (ic = iconv_list(NiL); ic; ic = iconv_list(ic))
-        {
+        for (ic = iconv_list(NiL); ic; ic = iconv_list(ic)) {
             sfputc(sp, '[');
             sfputc(sp, '+');
             sfputc(sp, '\b');
             p = ic->match;
             if (*p == '(')
                 p++;
-            while (c = *p++)
-            {
+            while (c = *p++) {
                 if (c == ')' && !*p)
                     break;
                 if (c == '?' || c == ']')
@@ -100,8 +98,7 @@ optinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
             }
             sfputc(sp, '?');
             p = ic->desc;
-            while (c = *p++)
-            {
+            while (c = *p++) {
                 if (c == ']')
                     sfputc(sp, c);
                 sfputc(sp, c);
@@ -122,8 +119,7 @@ listall(void *context)
     for (ic = iconv_list(NiL); ic; ic = iconv_list(ic))
         sfprintf(sfstdout, "  %s -- %s\n", ic->match, ic->desc);
     p = "/usr/bin/iconv";
-    if (!access(p, X_OK) || !access(p += 4, X_OK))
-    {
+    if (!access(p, X_OK) || !access(p += 4, X_OK)) {
         char *argv[3];
 
         sfprintf(sfstdout, "\n");
@@ -175,10 +171,8 @@ b_iconv(int argc, char **argv, Shbltin_t *context)
      * grab the options
      */
 
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             all = 1;
             id.flags &= ~ICONV_FATAL;
@@ -219,8 +213,7 @@ b_iconv(int argc, char **argv, Shbltin_t *context)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
     if (list)
         return listall(context);
-    if ((cvt = iconv_open(to, from)) == (iconv_t)(-1))
-    {
+    if ((cvt = iconv_open(to, from)) == (iconv_t)(-1)) {
         if ((cvt = iconv_open(to, "utf-8")) == (iconv_t)(-1))
             error(3, "%s: unknown destination codeset", to);
         iconv_close(cvt);
@@ -232,15 +225,11 @@ b_iconv(int argc, char **argv, Shbltin_t *context)
     fail = 0;
     if (file = *argv)
         argv++;
-    do
-    {
-        if (!file || streq(file, "-"))
-        {
+    do {
+        if (!file || streq(file, "-")) {
             file = "/dev/stdin";
             ip = sfstdin;
-        }
-        else if (!(ip = sfopen(NiL, file, "r")))
-        {
+        } else if (!(ip = sfopen(NiL, file, "r"))) {
             error(ERROR_SYSTEM | 2, "%s: cannot open", file);
             continue;
         }
@@ -248,12 +237,10 @@ b_iconv(int argc, char **argv, Shbltin_t *context)
         iconv_move(cvt, ip, sfstdout, SF_UNBOUND, &id);
         if (!id.errors && (!sfeof(ip) || sferror(ip)))
             error(ERROR_SYSTEM | 2, "%s: conversion read error", file);
-        if (id.errors)
-        {
+        if (id.errors) {
             if (ignore || !id.errors)
                 fail = 1;
-            else if (!id.errorf && all)
-            {
+            else if (!id.errorf && all) {
                 if (id.errors == 1)
                     error(
                     2, "%s: %d character conversion error", file, id.errors);

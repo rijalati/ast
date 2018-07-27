@@ -73,18 +73,15 @@ char **argv;                   /* Values of command-line arguments. */
 
 int Tcl_AppInit(interp) Tcl_Interp *interp; /* Interpreter for application. */
 {
-    if (Tcl_Init(interp) == TCL_ERROR)
-    {
+    if (Tcl_Init(interp) == TCL_ERROR) {
         return TCL_ERROR;
     }
-    if (Tk_Init(interp) == TCL_ERROR)
-    {
+    if (Tk_Init(interp) == TCL_ERROR) {
         return TCL_ERROR;
     }
     Tcl_StaticPackage(interp, "Tk", Tk_Init, ( Tcl_PackageInitProc * )NULL);
 #ifdef TK_TEST
-    if (Tktest_Init(interp) == TCL_ERROR)
-    {
+    if (Tktest_Init(interp) == TCL_ERROR) {
         return TCL_ERROR;
     }
     Tcl_StaticPackage(

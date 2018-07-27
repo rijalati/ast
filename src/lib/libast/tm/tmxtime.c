@@ -78,19 +78,16 @@ tmxtime(Tm_t *tm, int west)
     t += tm->tm_min;
     t *= 60;
     t += sec = tm->tm_sec;
-    if (west != TM_UTCZONE && !(tm_info.flags & TM_UTC))
-    {
+    if (west != TM_UTCZONE && !(tm_info.flags & TM_UTC)) {
         /*
          * time zone adjustments
          */
 
-        if (west == TM_LOCALZONE)
-        {
+        if (west == TM_LOCALZONE) {
             t += tm_info.zone->west * 60;
             if (!tm_info.zone->daylight)
                 tm->tm_isdst = 0;
-            else
-            {
+            else {
                 y = tm->tm_year;
                 tm->tm_year = tmequiv(tm) - 1900;
                 now = tmxsec(tmxtime(tm, tm_info.zone->west));
@@ -100,14 +97,11 @@ tmxtime(Tm_t *tm, int west)
                 if (tm->tm_isdst = tl->tm_isdst)
                     t += tm_info.zone->dst * 60;
             }
-        }
-        else
-        {
+        } else {
             t += west * 60;
             if (!tm_info.zone->daylight)
                 tm->tm_isdst = 0;
-            else if (tm->tm_isdst < 0)
-            {
+            else if (tm->tm_isdst < 0) {
                 y = tm->tm_year;
                 tm->tm_year = tmequiv(tm) - 1900;
                 tm->tm_isdst = 0;
@@ -118,12 +112,10 @@ tmxtime(Tm_t *tm, int west)
                 tm->tm_isdst = tl->tm_isdst;
             }
         }
-    }
-    else if (tm->tm_isdst)
+    } else if (tm->tm_isdst)
         tm->tm_isdst = 0;
     *to = *tm;
-    if (tm_info.flags & TM_LEAP)
-    {
+    if (tm_info.flags & TM_LEAP) {
         /*
          * leap second adjustments
          */

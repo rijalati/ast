@@ -54,8 +54,7 @@ infof(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
 {
     const Limit_t *tp;
 
-    for (tp = shtab_limits; tp->option; tp++)
-    {
+    for (tp = shtab_limits; tp->option; tp++) {
         sfprintf(sp,
                  "[%c=%d:%s?The %s",
                  tp->option,
@@ -93,8 +92,7 @@ b_ulimit(int argc, char *argv[], Shbltin_t *context)
     disc.infof = infof;
     opt_info.disc = &disc;
     while ((n = optget(argv, sh_optulimit)))
-        switch (n)
-        {
+        switch (n) {
         case 'H':
             mode |= HARD;
             continue;
@@ -122,8 +120,7 @@ b_ulimit(int argc, char *argv[], Shbltin_t *context)
     limit = argv[opt_info.index];
     if (hit == 0)
         for (n = 0; shtab_limits[n].option; n++)
-            if (shtab_limits[n].index == RLIMIT_FSIZE)
-            {
+            if (shtab_limits[n].index == RLIMIT_FSIZE) {
                 hit |= (1L << n);
                 break;
             }
@@ -133,27 +130,23 @@ b_ulimit(int argc, char *argv[], Shbltin_t *context)
         errormsg(SH_DICT, ERROR_usage(2), optusage(( char * )0));
     if (mode == 0)
         mode = (HARD | SOFT);
-    for (tp = shtab_limits; tp->option && hit; tp++, hit >>= 1)
-    {
+    for (tp = shtab_limits; tp->option && hit; tp++, hit >>= 1) {
         if (!(hit & 1))
             continue;
         nosupport = (n = tp->index) == RLIMIT_UNKNOWN;
         unit = shtab_units[tp->type];
-        if (limit)
-        {
+        if (limit) {
             if (shp->subshell && !shp->subshare)
                 sh_subfork();
             if (strcmp(limit, e_unlimited) == 0)
                 i = INFINITY;
-            else
-            {
+            else {
                 char *last;
                 /* an explicit suffix unit overrides the default */
                 if ((i = strtol(limit, &last, 0)) != INFINITY && !*last)
                     i *= unit;
                 else if ((i = strton(limit, &last, NiL, 0)) == INFINITY
-                         || *last)
-                {
+                         || *last) {
                     if ((i = sh_strnum(shp, limit, &last, 2)) == INFINITY
                         || *last)
                         errormsg(SH_DICT, ERROR_system(1), e_number, limit);
@@ -162,8 +155,7 @@ b_ulimit(int argc, char *argv[], Shbltin_t *context)
             }
             if (nosupport)
                 errormsg(SH_DICT, ERROR_system(1), e_readonly, tp->name);
-            else
-            {
+            else {
 #    ifdef _lib_getrlimit
                 if (getrlimit(n, &rlp) < 0)
                     errormsg(SH_DICT, ERROR_system(1), e_number, limit);
@@ -178,11 +170,8 @@ b_ulimit(int argc, char *argv[], Shbltin_t *context)
                     errormsg(SH_DICT, ERROR_system(1), e_number, limit);
 #    endif /* _lib_getrlimit */
             }
-        }
-        else
-        {
-            if (!nosupport)
-            {
+        } else {
+            if (!nosupport) {
 #    ifdef _lib_getrlimit
                 if (getrlimit(n, &rlp) < 0)
                     errormsg(SH_DICT, ERROR_system(1), e_number, limit);
@@ -199,8 +188,7 @@ b_ulimit(int argc, char *argv[], Shbltin_t *context)
                     errormsg(SH_DICT, ERROR_system(1), e_number, limit);
 #    endif     /* _lib_getrlimit */
             }
-            if (label)
-            {
+            if (label) {
                 if (tp->type != LIM_COUNT)
                     sfsprintf(tmp,
                               sizeof(tmp),
@@ -211,18 +199,14 @@ b_ulimit(int argc, char *argv[], Shbltin_t *context)
                     sfsprintf(tmp, sizeof(tmp), "%s", tp->name);
                 sfprintf(sfstdout, "%-30s (-%c)  ", tmp, tp->option);
             }
-            if (nosupport)
-            {
+            if (nosupport) {
                 if (!tp->conf || !*(conf = astconf(tp->conf, NiL, NiL)))
                     conf = ( char * )e_nosupport;
                 sfputr(sfstdout, conf, '\n');
-            }
-            else if (i != INFINITY)
-            {
+            } else if (i != INFINITY) {
                 i += (unit - 1);
                 sfprintf(sfstdout, "%I*d\n", sizeof(i), i / unit);
-            }
-            else
+            } else
                 sfputr(sfstdout, e_unlimited, '\n');
         }
     }

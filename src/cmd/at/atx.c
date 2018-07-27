@@ -46,8 +46,7 @@ stampwrite(int fd, const void *buf, size_t n)
     ssize_t z;
 
     r = 0;
-    if (fd == 2 && (s = fmttime(AT_TIME_FORMAT, time(0))))
-    {
+    if (fd == 2 && (s = fmttime(AT_TIME_FORMAT, time(0)))) {
         i = strlen(s);
         s[i++] = ' ';
         if ((z = write(fd, s, i)) < 0)
@@ -56,8 +55,7 @@ stampwrite(int fd, const void *buf, size_t n)
             r += z;
         for (s = ( char * )buf; s < (( char * )buf + n - 1) && !isspace(*s);
              s++)
-            if (*s == ':')
-            {
+            if (*s == ':') {
                 while (++s < (( char * )buf + n - 1) && isspace(*s))
                     ;
                 n -= s - ( char * )buf;

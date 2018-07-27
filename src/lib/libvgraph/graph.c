@@ -24,13 +24,11 @@ nodefree(Dt_t *nodes, Void_t *node, Dtdisc_t *disc)
     Graph_t *gr = GRSTRUCTOF(Graph_t, nddc, disc);
     Grdata_t *dt, *next;
 
-    if (node)
-    {
+    if (node) {
         if (gr->disc && gr->disc->eventf)
             (*gr->disc->eventf)(gr, GR_NODE | GR_CLOSING, node, gr->disc);
 
-        for (dt = (( Grnode_t * )node)->data; dt; dt = next)
-        {
+        for (dt = (( Grnode_t * )node)->data; dt; dt = next) {
             next = dt->next;
             (*dt->algo->dataf)(dt->algo, GR_NODE | GR_CLOSING, dt);
         }
@@ -62,13 +60,11 @@ edgefree(Dt_t *edges, Void_t *edge, Dtdisc_t *disc)
     Graph_t *gr = GRSTRUCTOF(Graph_t, eddc, disc);
     Grdata_t *dt, *next;
 
-    if (edge)
-    {
+    if (edge) {
         if (gr->disc && gr->disc->eventf)
             (*gr->disc->eventf)(gr, GR_EDGE | GR_CLOSING, edge, gr->disc);
 
-        for (dt = (( Gredge_t * )edge)->data; dt; dt = next)
-        {
+        for (dt = (( Gredge_t * )edge)->data; dt; dt = next) {
             next = dt->next;
             (*dt->algo->dataf)(dt->algo, GR_EDGE | GR_CLOSING, dt);
         }
@@ -94,15 +90,12 @@ grnode(Graph_t *gr, Void_t *label, int type)
 
     if (type < 0) /* deleting a node */
     {
-        if (nd)
-        {
-            for (e = nd->oedge; e; e = enext)
-            {
+        if (nd) {
+            for (e = nd->oedge; e; e = enext) {
                 enext = e;
                 gredge(gr, e->tail, e->head, e->label, -1);
             }
-            for (e = nd->iedge; e; e = enext)
-            {
+            for (e = nd->iedge; e; e = enext) {
                 enext = e;
                 gredge(gr, e->tail, e->head, e->label, -1);
             }
@@ -138,8 +131,7 @@ gredge(Graph_t *gr, Grnode_t *tail, Grnode_t *head, Void_t *label, int type)
     ssize_t sz;
 
     if (gr->type == GR_UNDIRECTED) /* enforce tail <= head */
-        if (tail > head)
-        {
+        if (tail > head) {
             nd = tail;
             tail = head;
             head = nd;
@@ -154,13 +146,10 @@ gredge(Graph_t *gr, Grnode_t *tail, Grnode_t *head, Void_t *label, int type)
 
     if (type < 0) /* deleting */
     {
-        if (ed)
-        {
+        if (ed) {
             for (pe = NIL(Gredge_t *), e = ed->tail->oedge; e;
-                 pe = e, e = e->onext)
-            {
-                if (e == ed)
-                {
+                 pe = e, e = e->onext) {
+                if (e == ed) {
                     if (pe)
                         pe->onext = e->onext;
                     else
@@ -169,10 +158,8 @@ gredge(Graph_t *gr, Grnode_t *tail, Grnode_t *head, Void_t *label, int type)
                 }
             }
             for (pe = NIL(Gredge_t *), e = ed->head->iedge; e;
-                 pe = e, e = e->inext)
-            {
-                if (e == ed)
-                {
+                 pe = e, e = e->inext) {
+                if (e == ed) {
                     if (pe)
                         pe->inext = e->inext;
                     else
@@ -244,15 +231,13 @@ grrestore(Graph_t *gr)
     Gredge_t *ed;
 
     for (nd = ( Grnode_t * )dtflatten(gr->nodes); nd;
-         nd = ( Grnode_t * )dtlink(gr, nd))
-    {
+         nd = ( Grnode_t * )dtlink(gr, nd)) {
         nd->oedge = nd->iedge = NIL(Gredge_t *);
         nd->fold = nd;
         nd->link = NIL(Grnode_t *);
     }
     for (ed = ( Gredge_t * )dtflatten(gr->edges); ed;
-         ed = ( Gredge_t * )dtlink(gr, ed))
-    {
+         ed = ( Gredge_t * )dtlink(gr, ed)) {
         ed->onext = ed->tail->oedge;
         ed->tail->oedge = ed;
         ed->inext = ed->head->iedge;
@@ -281,8 +266,7 @@ grclose(Graph_t *gr)
     if (gr->edges)
         dtclose(gr->edges);
 
-    for (dt = gr->data; dt; dt = next)
-    {
+    for (dt = gr->data; dt; dt = next) {
         next = dt->next;
         (*dt->algo->dataf)(dt->algo, GR_GRAPH | GR_CLOSING, dt);
     }
@@ -308,15 +292,13 @@ gropen(Grdisc_t *disc, int type)
     DTDISC(&gr->eddc, 0, 0, 0, 0, edgefree, edgecmp, 0, 0, 0);
 
     if (!(gr->nodes = dtopen(&gr->nddc, Dtoset))
-        || !(gr->edges = dtopen(&gr->eddc, Dtoset)))
-    {
+        || !(gr->edges = dtopen(&gr->eddc, Dtoset))) {
         grclose(gr);
         return NIL(Graph_t *);
     }
 
     if ((gr->disc = disc)
-        && (*gr->disc->eventf)(gr, GR_GRAPH | GR_OPENING, 0, gr->disc) < 0)
-    {
+        && (*gr->disc->eventf)(gr, GR_GRAPH | GR_OPENING, 0, gr->disc) < 0) {
         grclose(gr);
         return NIL(Graph_t *);
     }

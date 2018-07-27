@@ -141,33 +141,26 @@ donl(Nl_t *pp, Sfio_t *in, Sfio_t *out)
         sfsprintf(format, sizeof(format), "%%%dd%%s", pp->width);
     else
         sfsprintf(format, sizeof(format), "%%0%dd%%s", pp->width);
-    while (cp = sfgetr(in, '\n', 0))
-    {
+    while (cp = sfgetr(in, '\n', 0)) {
         outline = 0;
         if (*cp != '\n')
             blank = 0;
         else
             blank++;
         n = sfvalue(in);
-        if (*cp == pp->delim1 && cp[1] == pp->delim2)
-        {
-            if (cp[2] == '\n')
-            {
+        if (*cp == pp->delim1 && cp[1] == pp->delim2) {
+            if (cp[2] == '\n') {
                 sectnum = SECTION_FOOT;
                 sfputc(out, '\n');
                 continue;
-            }
-            else if (cp[2] == pp->delim1 && cp[3] == pp->delim2)
-            {
-                if (cp[4] == '\n')
-                {
+            } else if (cp[2] == pp->delim1 && cp[3] == pp->delim2) {
+                if (cp[4] == '\n') {
                     sectnum = SECTION_BODY;
                     sfputc(out, '\n');
                     continue;
                 }
                 if (cp[4] == pp->delim1 && cp[5] == pp->delim2
-                    && cp[6] == '\n')
-                {
+                    && cp[6] == '\n') {
                     sectnum = SECTION_HEAD;
                     if (!pp->pflag)
                         line = pp->startnum;
@@ -184,26 +177,21 @@ donl(Nl_t *pp, Sfio_t *in, Sfio_t *out)
 			continue;
 		}
 #endif
-        else if (pp->section[sectnum] == TYPE_ALL)
-        {
-            if (!blank || blank == pp->blines)
-            {
+        else if (pp->section[sectnum] == TYPE_ALL) {
+            if (!blank || blank == pp->blines) {
                 outline = 1;
                 blank = 0;
             }
-        }
-        else if (pp->section[sectnum] != TYPE_TEXT)
+        } else if (pp->section[sectnum] != TYPE_TEXT)
             outline = !regnexec(
             ( regex_t * )pp->section[sectnum], cp, n, ( size_t )0, NULL, 0);
         else if (*cp != '\n')
             outline = 1;
-        if (outline)
-        {
+        if (outline) {
             blank = 0;
             sfprintf(out, format, line, pp->sep);
             line += pp->incr;
-        }
-        else
+        } else
             sfnputc(out, ' ', width);
         sfwrite(out, cp, n);
     }
@@ -233,8 +221,7 @@ b_nl(int argc, char **argv, Shbltin_t *context)
     nl.pflag = 0;
 
     while (n = optget(argv, usage))
-        switch (n)
-        {
+        switch (n) {
         case 'p':
             nl.pflag |= 1;
             break;
@@ -252,8 +239,7 @@ b_nl(int argc, char **argv, Shbltin_t *context)
                 m = SECTION_BODY;
             else
                 m = SECTION_FOOT;
-            switch (*opt_info.arg)
-            {
+            switch (*opt_info.arg) {
             case 'a':
                 nl.section[m] = TYPE_ALL;
                 break;
@@ -308,8 +294,7 @@ b_nl(int argc, char **argv, Shbltin_t *context)
     if (*argv && !(in = sfopen(( Sfio_t * )0, *argv, "r")))
         error(ERROR_system(1), "%s: cannot open for reading", *argv);
     n = donl(&nl, in, sfstdout);
-    for (m = 0; m < 3; m++)
-    {
+    for (m = 0; m < 3; m++) {
         if (nl.section[m] == ( void * )&re[m])
             regfree(&re[m]);
     }

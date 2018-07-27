@@ -59,8 +59,7 @@ init(void)
     _ast_fltmax_t g;
 
     g = 1;
-    for (x = 0; x < elementsof(pow2tab); x++)
-    {
+    for (x = 0; x < elementsof(pow2tab); x++) {
         pow2tab[x] = g;
         g *= 2;
     }
@@ -91,11 +90,9 @@ frexpl(_ast_fltmax_t f, int *p)
      */
 
     x = k = LDBL_MAX_EXP / 2;
-    if (f < 1)
-    {
+    if (f < 1) {
         g = 1.0L / f;
-        for (;;)
-        {
+        for (;;) {
             k = (k + 1) / 2;
             if (g < pow2(x))
                 x -= k;
@@ -107,11 +104,8 @@ frexpl(_ast_fltmax_t f, int *p)
         if (g == pow2(x))
             x--;
         x = -x;
-    }
-    else if (f > 1)
-    {
-        for (;;)
-        {
+    } else if (f > 1) {
+        for (;;) {
             k = (k + 1) / 2;
             if (f > pow2(x))
                 x += k;
@@ -122,8 +116,7 @@ frexpl(_ast_fltmax_t f, int *p)
         }
         if (f == pow2(x))
             x++;
-    }
-    else
+    } else
         x = 1;
     *p = x;
 

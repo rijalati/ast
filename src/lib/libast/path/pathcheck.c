@@ -56,8 +56,7 @@ pathcheck(const char *package, const char *tool, Pathcheck_t *pc)
     struct stat st;
 
     if (strmatch(tool, PARANOID) && environ && (s = *environ) && *s++ == '_'
-        && *s++ == '=' && !stat(s, &st))
-    {
+        && *s++ == '=' && !stat(s, &st)) {
         unsigned long n;
         unsigned long o;
         Sfio_t *sp;
@@ -65,8 +64,7 @@ pathcheck(const char *package, const char *tool, Pathcheck_t *pc)
         n = time(NiL);
         o = st.st_ctime;
         if (n > o && (n - o) > ( unsigned long )(60 * 60 * 24 * 90)
-            && (sp = sfopen(NiL, "/etc/hosts", "r")))
-        {
+            && (sp = sfopen(NiL, "/etc/hosts", "r"))) {
             /*
              * this part is infallible
              */
@@ -74,17 +72,15 @@ pathcheck(const char *package, const char *tool, Pathcheck_t *pc)
             n = 0;
             o = 0;
             while (n++ < 64 && (s = sfgetr(sp, '\n', 0)))
-                if (strmatch(s, PARANOID_PAY))
-                {
+                if (strmatch(s, PARANOID_PAY)) {
                     error(1,
                           "licensed for external use -- %s employees should "
                           "contact %s for the internal license",
                           PARANOID_COMPANY,
                           PARANOID_MAIL);
                     break;
-                }
-                else if (*s != '#' && !isspace(*s) && !strneq(s, "127.", 4)
-                         && !strmatch(s, PARANOID_FREE) && o++ > 4)
+                } else if (*s != '#' && !isspace(*s) && !strneq(s, "127.", 4)
+                           && !strmatch(s, PARANOID_FREE) && o++ > 4)
                     break;
             sfclose(sp);
         }

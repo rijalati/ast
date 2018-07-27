@@ -68,21 +68,17 @@ Sfio_t *f2;                         /* top of stack	*/
     /* give access to other internal functions */
     _Sfstack = sfstack;
 
-    if (f2 == SF_POPSTACK)
-    {
+    if (f2 == SF_POPSTACK) {
         if (!(f2 = f1->push))
             STKMTXRETURN(f1, f2, NIL(Sfio_t *));
         f2->mode &= ~SF_PUSH;
-    }
-    else
-    {
+    } else {
         if (f2->push)
             STKMTXRETURN(f1, f2, NIL(Sfio_t *));
         if (f1->pool && f1->pool != &_Sfpool && f1->pool != f2->pool
-            && f1 == f1->pool->sf[0])
-        { /* get something else to pool front since f1 will be locked */
-            for (n = 1; n < f1->pool->n_sf; ++n)
-            {
+            && f1 == f1->pool->sf[0]) { /* get something else to pool front
+                                           since f1 will be locked */
+            for (n = 1; n < f1->pool->n_sf; ++n) {
                 if (SFFROZEN(f1->pool->sf[n]))
                     continue;
                 (*_Sfpmove)(f1->pool->sf[n], 0);
@@ -108,14 +104,11 @@ Sfio_t *f2;                         /* top of stack	*/
     SFLOCK(f1, 0);
     SFLOCK(f2, 0);
 
-    if (f2->push != f2)
-    { /* freeze the pushed stream */
+    if (f2->push != f2) { /* freeze the pushed stream */
         f2->mode |= SF_PUSH;
         f1->push = f2;
         rf = f1;
-    }
-    else
-    { /* unfreeze the just exposed stream */
+    } else { /* unfreeze the just exposed stream */
         f1->mode &= ~SF_PUSH;
         f2->push = NIL(Sfio_t *);
         rf = f2;

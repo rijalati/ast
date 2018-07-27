@@ -59,30 +59,25 @@ regcollate(const char *s, char **e, char *buf, size_t size, wchar_t *wc)
     t = s;
     mbtinit(&q);
     w = mbtchar(&w, s, MB_LEN_MAX, &q);
-    if ((r = (s - t)) > 1)
-    {
+    if ((r = (s - t)) > 1) {
         if (*s++ != term || *s++ != ']')
             goto oops;
         goto done;
     }
-    if (*s == term && *(s + 1) == ']')
-    {
+    if (*s == term && *(s + 1) == ']') {
         s += 2;
         goto done;
     }
     b = buf;
     x = buf + size - 2;
     s = t;
-    for (;;)
-    {
+    for (;;) {
         if (!(c = *s++))
             goto oops;
-        if (c == term)
-        {
+        if (c == term) {
             if (!(c = *s++))
                 goto oops;
-            if (c != term)
-            {
+            if (c != term) {
                 if (c != ']')
                     goto oops;
                 break;
@@ -103,8 +98,7 @@ regcollate(const char *s, char **e, char *buf, size_t size, wchar_t *wc)
         goto nope;
     t = ( const char * )buf;
 done:
-    if (r <= size && ( char * )t != buf)
-    {
+    if (r <= size && ( char * )t != buf) {
         memcpy(buf, t, r);
         if (r < size)
             buf[r] = 0;

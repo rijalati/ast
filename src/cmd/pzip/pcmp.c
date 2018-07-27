@@ -79,18 +79,15 @@ dif(unsigned char *f,
     p = ( unsigned char * )memcpy(t, f, cols);
     sfwrite(dp, p, cols);
     n = 1;
-    for (e = f + fsize; f < e; f += cols)
-    {
+    for (e = f + fsize; f < e; f += cols) {
         for (i = 0; i < cols; i++)
-            if (p[i] != f[i])
-            {
+            if (p[i] != f[i]) {
                 sfputu(dp, n);
                 sfputu(dp, i + 1);
                 sfputc(vp, p[i] = f[i]);
                 n = 0;
                 while (++i < cols)
-                    if (p[i] != f[i])
-                    {
+                    if (p[i] != f[i]) {
                         sfputu(dp, i + 1);
                         sfputc(vp, p[i] = f[i]);
                     }
@@ -132,11 +129,9 @@ main(int argc, char **argv)
     state.level = 6;
     cols = 100;
     rows = 1000;
-    for (;;)
-    {
+    for (;;) {
         switch (
-        optget(argv, "c#[cols]l#[compression-level]r#[rows]vT#[test-mask]"))
-        {
+        optget(argv, "c#[cols]l#[compression-level]r#[rows]vT#[test-mask]")) {
         case 'c':
             cols = opt_info.num;
             continue;
@@ -185,8 +180,7 @@ main(int argc, char **argv)
      */
 
     h = ( unsigned int )time(NiL) ^ ( unsigned int )getpid();
-    for (n = 0; n < 100; n++)
-    {
+    for (n = 0; n < 100; n++) {
         m = (UINT_MAX / 100) * n;
         memset(dat, 040, cols);
         for (s = p = dat; s < end; p = s, s += cols)

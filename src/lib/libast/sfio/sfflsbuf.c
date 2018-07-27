@@ -47,8 +47,7 @@ int c;                         /* if c>=0, c is also written out */
 
     GETLOCAL(f, local);
 
-    for (written = 0;; f->mode &= ~SF_LOCK)
-    { /* check stream mode */
+    for (written = 0;; f->mode &= ~SF_LOCK) { /* check stream mode */
         if (SFMODE(f, local) != SF_WRITE && _sfmode(f, SF_WRITE, local) < 0)
             SFMTXRETURN(f, -1);
         SFLOCK(f, local);
@@ -56,8 +55,9 @@ int c;                         /* if c>=0, c is also written out */
         /* current data extent */
         n = f->next - (data = f->data);
 
-        if (n == (f->endb - data) && (f->flags & SF_STRING))
-        { /* call sfwr() to extend string buffer and process events */
+        if (n == (f->endb - data)
+            && (f->flags & SF_STRING)) { /* call sfwr() to extend string
+                                            buffer and process events */
             w = ((f->bits & SF_PUTR) && f->val > 0) ? f->val : 1;
             ( void )SFWR(f, data, w, f->disc);
 
@@ -65,29 +65,22 @@ int c;                         /* if c>=0, c is also written out */
                handlers may turn a string stream to a file stream */
             if (f->next < f->endb || !(f->flags & SF_STRING))
                 n = f->next - (data = f->data);
-            else
-            {
+            else {
                 SFOPEN(f, local);
                 SFMTXRETURN(f, -1);
             }
         }
 
-        if (c >= 0)
-        { /* write into buffer */
-            if (n < (f->endb - (data = f->data)))
-            {
+        if (c >= 0) { /* write into buffer */
+            if (n < (f->endb - (data = f->data))) {
                 *f->next++ = c;
                 if (c == '\n' && (f->flags & SF_LINE)
-                    && !(f->flags & SF_STRING))
-                {
+                    && !(f->flags & SF_STRING)) {
                     c = -1;
                     n += 1;
-                }
-                else
+                } else
                     break;
-            }
-            else if (n == 0)
-            { /* unbuffered io */
+            } else if (n == 0) { /* unbuffered io */
                 outc = ( uchar )c;
                 data = &outc;
                 c = -1;
@@ -99,17 +92,14 @@ int c;                         /* if c>=0, c is also written out */
             break;
 
         isall = SFISALL(f, isall);
-        if ((w = SFWR(f, data, n, f->disc)) > 0)
-        {
+        if ((w = SFWR(f, data, n, f->disc)) > 0) {
             if ((n -= w) > 0) /* save unwritten data, then resume */
                 memmove(( char * )f->data, ( char * )data + w, n);
             written += w;
             f->next = f->data + n;
             if (c < 0 && (!isall || n == 0))
                 break;
-        }
-        else if (w == 0)
-        {
+        } else if (w == 0) {
             if (written > 0) /* some buffer was cleared */
                 break;       /* do normal exit below */
             else             /* nothing was done, returning failure */
@@ -117,8 +107,7 @@ int c;                         /* if c>=0, c is also written out */
                 SFOPEN(f, local);
                 SFMTXRETURN(f, -1);
             }
-        }
-        else /* w < 0 means SF_EDISC or SF_ESTACK in sfwr() */
+        } else /* w < 0 means SF_EDISC or SF_ESTACK in sfwr() */
         {
             if (c < 0) /* back to the calling write operation */
                 break;

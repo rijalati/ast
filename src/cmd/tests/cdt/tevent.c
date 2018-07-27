@@ -29,8 +29,7 @@ event(Dt_t *dt, int type, Void_t *obj, Dtdisc_t *disc)
         Index = 0;
     Event[Index++] = type;
 
-    if (type == DT_HASHSIZE)
-    {
+    if (type == DT_HASHSIZE) {
         *( ssize_t * )obj = 1024;
         return 1;
     }
@@ -43,14 +42,11 @@ chkevent(int type)
 {
     int i, cnt;
 
-    if (type < 0)
-    {
+    if (type < 0) {
         memset(Event, 0, sizeof(Event));
         Index = 0;
         return 0;
-    }
-    else
-    {
+    } else {
         cnt = 0;
         for (i = 0; i < sizeof(Event) / sizeof(Event[0]); ++i)
             if (Event[i] == type)
@@ -64,8 +60,7 @@ memory(Dt_t *dt, Void_t *obj, size_t size, Dtdisc_t *disc)
 {
     if (!obj)
         return malloc(size);
-    else
-    {
+    else {
         free(obj);
         return NIL(Void_t *);
     }

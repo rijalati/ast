@@ -62,12 +62,10 @@ pathaccess_20100601(const char *dirs,
     int sep = ':';
     char cwd[PATH_MAX];
 
-    do
-    {
+    do {
         dirs = pathcat(dirs, sep, a, b, path, size);
         pathcanon(path, size, 0);
-        if ((!sib || *path == '/') && pathexists(path, mode))
-        {
+        if ((!sib || *path == '/') && pathexists(path, mode)) {
             if (*path == '/' || !(mode & PATH_ABSOLUTE))
                 return path;
             dirs = getcwd(cwd, sizeof(cwd));

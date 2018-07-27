@@ -80,17 +80,14 @@ getsaveset(Pax_t *pax, Archive_t *ap, File_t *f, Saveset_t *ss, int header)
     int i;
     long n;
 
-    for (;;)
-    {
+    for (;;) {
         ss->bp += ss->lastsize;
-        while (ss->bp >= ss->block + state.blocksize)
-        {
+        while (ss->bp >= ss->block + state.blocksize) {
             ss->bp = ss->block;
             ss->lastsize = 0;
             if (paxread(
                 pax, ap, ss->bp, ( off_t )0, ( off_t )state.blocksize, 0)
-                <= 0)
-            {
+                <= 0) {
                 ap->format = getformat("slt", 1);
                 if (header)
                     gettrailer(ap, f);
@@ -109,10 +106,8 @@ getsaveset(Pax_t *pax, Archive_t *ap, File_t *f, Saveset_t *ss, int header)
         i = swapget(1, ss->bp + RECHDR_type, 2);
         ss->bp += RECHDR_SIZE;
         message((-2, "record: type=%d size=%d", i, ss->lastsize));
-        if (i == REC_file)
-        {
-            if (header)
-            {
+        if (i == REC_file) {
+            if (header) {
                 p = ss->bp;
                 if (swapget(1, p, 2) != FILHDR_MAGIC)
                     error(
@@ -124,29 +119,23 @@ getsaveset(Pax_t *pax, Archive_t *ap, File_t *f, Saveset_t *ss, int header)
                     3, "invalid %s format file attribute", ap->format->name);
                 t = f->name = paxstash(pax, &ap->stash.head, NiL, i);
                 n = 0;
-                for (s = p + FILHDR_data + 1; s < p + FILHDR_data + i; s++)
-                {
+                for (s = p + FILHDR_data + 1; s < p + FILHDR_data + i; s++) {
                     if (isupper(*s))
                         *t++ = tolower(*s);
-                    else if (n)
-                    {
+                    else if (n) {
                         if (*s == ';')
                             break;
                         *t++ = *s;
-                    }
-                    else if (*s == ']')
-                    {
+                    } else if (*s == ']') {
                         n = 1;
                         *t++ = '/';
-                    }
-                    else if (*s == '.')
+                    } else if (*s == '.')
                         *t++ = '/';
                     else
                         *t++ = *s;
                 }
                 *t = 0;
-                for (i = 0; i < 5; i++)
-                {
+                for (i = 0; i < 5; i++) {
                     s = p + FILHDR_size;
                     if ((p += FILHDR_SIZE + ( long )swapget(1, s, 2))
                         > ss->block + state.blocksize)
@@ -162,8 +151,7 @@ getsaveset(Pax_t *pax, Archive_t *ap, File_t *f, Saveset_t *ss, int header)
                 = ( long )(swapget(1, p + FILHDR_data + FILATT_blocks, 2) - 1)
                   * BLOCKSIZE
                   + ( long )swapget(1, p + FILHDR_data + FILATT_frag, 2);
-                for (; i < 15; i++)
-                {
+                for (; i < 15; i++) {
                     s = p + FILHDR_size;
                     if ((p += FILHDR_SIZE + ( long )swapget(1, s, 2))
                         > ss->block + state.blocksize)
@@ -187,8 +175,7 @@ getsaveset(Pax_t *pax, Archive_t *ap, File_t *f, Saveset_t *ss, int header)
             ss->bp -= RECHDR_SIZE;
             ss->lastsize = 0;
             return 0;
-        }
-        else if (i == REC_vbn && !header)
+        } else if (i == REC_vbn && !header)
             return 1;
     }
 }
@@ -196,8 +183,7 @@ getsaveset(Pax_t *pax, Archive_t *ap, File_t *f, Saveset_t *ss, int header)
 static int
 vmsbackup_done(Pax_t *pax, Archive_t *ap)
 {
-    if (ap->data)
-    {
+    if (ap->data) {
         free(ap->data);
         ap->data = 0;
     }
@@ -216,16 +202,14 @@ vmsbackup_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
 
     if (wfd < 0)
         wfp = 0;
-    else if (!(wfp = sfnew(NiL, NiL, SF_UNBOUND, wfd, SF_WRITE)))
-    {
+    else if (!(wfp = sfnew(NiL, NiL, SF_UNBOUND, wfd, SF_WRITE))) {
         error(2, "%s: cannot write", f->name);
         return -1;
     }
     j = 0;
     k = 0;
     c = 0;
-    while (getsaveset(pax, ap, f, ss, 0))
-    {
+    while (getsaveset(pax, ap, f, ss, 0)) {
         /*
          * this part transcribed from vmsbackup
          */
@@ -233,8 +217,7 @@ vmsbackup_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
         i = 0;
         if (wfp)
             while ((c + i) < f->st->st_size && i < ss->lastsize)
-                switch (ss->recfmt)
-                {
+                switch (ss->recfmt) {
                 case 1: /* fixed length		*/
                     if (j <= 0)
                         j = ss->reclen;
@@ -244,20 +227,15 @@ vmsbackup_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
                     break;
                 case 2: /* variable length	*/
                 case 3: /* with fixed control	*/
-                    if (j <= 0)
-                    {
+                    if (j <= 0) {
                         j = k = swapget(1, &ss->bp[i], 2);
                         i += 2;
-                        if (ss->recfmt == 3)
-                        {
+                        if (ss->recfmt == 3) {
                             i += ss->recvfc;
                             j -= ss->recvfc;
                         }
-                    }
-                    else
-                    {
-                        if (j == k && ss->recatt == 1)
-                        {
+                    } else {
+                        if (j == k && ss->recatt == 1) {
                             if (ss->bp[i] == '0')
                                 ss->bp[i] = '\n';
                             else if (ss->bp[i] == '1')
@@ -267,8 +245,7 @@ vmsbackup_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
                         i++;
                         j--;
                     }
-                    if (j <= 0)
-                    {
+                    if (j <= 0) {
                         sfputc(wfp, '\n');
                         if (i & 1)
                             i++;
@@ -302,8 +279,7 @@ vmsbackup_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
     next:
         c += i;
     }
-    if (wfp)
-    {
+    if (wfp) {
         sfclose(wfp);
         setfile(ap, f);
     }
@@ -322,23 +298,19 @@ vmsbackup_validate(Pax_t *pax, Archive_t *ap, File_t *f)
     Saveset_t *ss = ( Saveset_t * )ap->data;
     char *s;
 
-    if (f->type != X_IFREG)
-    {
+    if (f->type != X_IFREG) {
         error(2,
               "%s: only regular files copied in %s format",
               f->path,
               ap->format->name);
         return 0;
     }
-    if (s = strrchr(f->name, '/'))
-    {
+    if (s = strrchr(f->name, '/')) {
         s++;
         error(1, "%s: file name stripped to %s", f->name, s);
-    }
-    else
+    } else
         s = f->name;
-    if (strlen(s) > sizeof(ss->id) - 1)
-    {
+    if (strlen(s) > sizeof(ss->id) - 1) {
         error(2, "%s: file name too long", f->name);
         return 0;
     }

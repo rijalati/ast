@@ -107,27 +107,22 @@ getfsids(Sfio_t *sp, const char *name, int flags, int lastchar)
     char **p;
     char **x;
 
-    if (lastchar)
-    {
+    if (lastchar) {
         if (flags & O_FLAG)
             flags = 1;
         else
             flags = 0;
-    }
-    else if (flags & N_FLAG)
+    } else if (flags & N_FLAG)
         flags = 1;
     else
         flags = -1;
     setfsgent();
     while (fs = getfsgnam(name))
-        if (!isfsg(fs))
-        {
-            if (p = fs->fs_mem)
-            {
+        if (!isfsg(fs)) {
+            if (p = fs->fs_mem) {
                 if (flags > 0)
                     x = 0;
-                else
-                {
+                else {
                     char **q;
                     char *t;
                     int n;
@@ -140,8 +135,7 @@ getfsids(Sfio_t *sp, const char *name, int flags, int lastchar)
                         break;
                     s = ( char * )(x + (q - p));
                     q = x;
-                    while (t = *p++)
-                    {
+                    while (t = *p++) {
                         *q++ = s;
                         while (*s++ = *t++)
                             ;
@@ -149,25 +143,20 @@ getfsids(Sfio_t *sp, const char *name, int flags, int lastchar)
                     *q = 0;
                     p = x;
                 }
-                while (s = *p++)
-                {
-                    if (lastchar == '=')
-                    {
+                while (s = *p++) {
+                    if (lastchar == '=') {
                         lastchar = ',';
                         sfputr(sp, " fsid=", -1);
-                    }
-                    else if (!lastchar)
+                    } else if (!lastchar)
                         lastchar = ' ';
                     else
                         sfputc(sp, lastchar);
                     if (flags > 0)
                         sfprintf(sp, "%s", s);
-                    else
-                    {
+                    else {
                         setfsgent();
                         while (fs = getfsgnam(s))
-                            if (isfsg(fs))
-                            {
+                            if (isfsg(fs)) {
                                 if (flags < 0)
                                     sfprintf(sp, "%u", fs->fs_id);
                                 else
@@ -191,15 +180,12 @@ static void
 putid(Sfio_t *sp, int flags, const char *label, const char *name, long number)
 {
     sfprintf(sp, "%s=", label);
-    if (flags & O_FLAG)
-    {
+    if (flags & O_FLAG) {
         if (name)
             sfputr(sp, name, -1);
         else
             sfprintf(sp, "%lu", number);
-    }
-    else
-    {
+    } else {
         sfprintf(sp, "%u", number);
         if (name)
             sfprintf(sp, "(%s)", name);
@@ -231,16 +217,14 @@ getids(Sfio_t *sp, const char *name, int flags)
 
     static gid_t *groups;
 
-    if (flags & GG_FLAG)
-    {
+    if (flags & GG_FLAG) {
         static int maxgroups = -1;
 
         /*
          * get supplemental groups if required
          */
 
-        if (maxgroups < 0)
-        {
+        if (maxgroups < 0) {
             /*
              * first time
              */
@@ -251,8 +235,7 @@ getids(Sfio_t *sp, const char *name, int flags)
                 error(ERROR_exit(1), "out of space [group array]");
         }
         ngroups = getgroups(maxgroups, groups);
-        for (i = j = 0; i < ngroups; i++)
-        {
+        for (i = j = 0; i < ngroups; i++) {
             for (k = 0; k < j && groups[k] != groups[i]; k++)
                 ;
             if (k >= j)
@@ -260,13 +243,10 @@ getids(Sfio_t *sp, const char *name, int flags)
         }
         ngroups = j;
     }
-    if (name)
-    {
+    if (name) {
         flags |= X_FLAG;
-        if (!(flags & N_FLAG) || (flags & (G_FLAG | GG_FLAG)))
-        {
-            if (!(pw = getpwnam(name)))
-            {
+        if (!(flags & N_FLAG) || (flags & (G_FLAG | GG_FLAG))) {
+            if (!(pw = getpwnam(name))) {
                 user = strtol(name, &s, 0);
                 if (*s || !(pw = getpwuid(user)))
                     error(ERROR_exit(1), "%s: name not found", name);
@@ -276,20 +256,16 @@ getids(Sfio_t *sp, const char *name, int flags)
             group = pw->pw_gid;
         }
 #if _lib_fsid
-        if (!(flags & N_FLAG) || (flags & S_FLAG))
-        {
+        if (!(flags & N_FLAG) || (flags & S_FLAG)) {
             setfsgent();
-            do
-            {
+            do {
                 if (!(fs = getfsgnam(name)))
                     error(ERROR_exit(1), "%u: fss name not found", name);
             } while (isfsg(fs));
             fs_id = fs->fs_id;
         }
 #endif
-    }
-    else
-    {
+    } else {
         if (flags & G_FLAG)
             group = (flags & R_FLAG) ? getgid() : getegid();
         if (flags & (GG_FLAG | N_FLAG | U_FLAG))
@@ -306,18 +282,15 @@ getids(Sfio_t *sp, const char *name, int flags)
     if ((flags & N_FLAG) && (flags & G_FLAG))
         gname = (grp = getgrgid(group)) ? grp->gr_name : ( char * )0;
 #if _lib_fsid
-    if ((flags & N_FLAG) && (flags & S_FLAG))
-    {
+    if ((flags & N_FLAG) && (flags & S_FLAG)) {
         setfsgent();
         fs_name = (fs = getfsgid(fs_id)) ? fs->fs_grp : ( char * )0;
     }
 #endif
-    if ((flags & (U_FLAG | G_FLAG | S_FLAG)) == (U_FLAG | G_FLAG | S_FLAG))
-    {
+    if ((flags & (U_FLAG | G_FLAG | S_FLAG)) == (U_FLAG | G_FLAG | S_FLAG)) {
         putid(sp, flags, "uid", name, user);
         putid(sp, flags, " gid", gname, group);
-        if ((flags & X_FLAG) && name)
-        {
+        if ((flags & X_FLAG) && name) {
 #if _lib_getgrent
 #    if _lib_setgrent
             setgrent();
@@ -326,8 +299,7 @@ getids(Sfio_t *sp, const char *name, int flags)
             while (grp = getgrent())
                 if (p = grp->gr_mem)
                     while (s = *p++)
-                        if (streq(s, name))
-                        {
+                        if (streq(s, name)) {
                             if (lastchar == '=')
                                 sfputr(sp, " groups", -1);
                             sfputc(sp, lastchar);
@@ -345,9 +317,7 @@ getids(Sfio_t *sp, const char *name, int flags)
 #if _lib_fsid
             getfsids(sp, name, flags, '=');
 #endif
-        }
-        else
-        {
+        } else {
             if ((euid = geteuid()) != user)
                 putid(sp,
                       flags,
@@ -360,22 +330,18 @@ getids(Sfio_t *sp, const char *name, int flags)
                       " egid",
                       (grp = getgrgid(egid)) ? grp->gr_name : ( char * )0,
                       egid);
-            if (ngroups > 0)
-            {
+            if (ngroups > 0) {
                 sfputr(sp, " groups", -1);
                 lastchar = '=';
-                for (i = 0; i < ngroups; i++)
-                {
+                for (i = 0; i < ngroups; i++) {
                     group = groups[i];
                     sfputc(sp, lastchar);
-                    if (grp = getgrgid(group))
-                    {
+                    if (grp = getgrgid(group)) {
                         if (flags & O_FLAG)
                             sfprintf(sp, "%s", grp->gr_name);
                         else
                             sfprintf(sp, "%u(%s)", group, grp->gr_name);
-                    }
-                    else
+                    } else
                         sfprintf(sp, "%u", group);
                     lastchar = ',';
                 }
@@ -387,24 +353,18 @@ getids(Sfio_t *sp, const char *name, int flags)
         sfputc(sp, '\n');
         return (0);
     }
-    if (flags & U_FLAG)
-    {
+    if (flags & U_FLAG) {
         if ((flags & N_FLAG) && name)
             sfputr(sp, name, '\n');
         else
             sfprintf(sp, "%u\n", user);
-    }
-    else if (flags & G_FLAG)
-    {
+    } else if (flags & G_FLAG) {
         if ((flags & N_FLAG) && gname)
             sfputr(sp, gname, '\n');
         else
             sfprintf(sp, "%u\n", group);
-    }
-    else if (flags & GG_FLAG)
-    {
-        if ((flags & X_FLAG) && name)
-        {
+    } else if (flags & GG_FLAG) {
+        if ((flags & X_FLAG) && name) {
 #if _lib_getgrent
 #    if _lib_setgrent
             setgrent();
@@ -413,8 +373,7 @@ getids(Sfio_t *sp, const char *name, int flags)
             while (grp = getgrent())
                 if (p = grp->gr_mem)
                     while (s = *p++)
-                        if (streq(s, name))
-                        {
+                        if (streq(s, name)) {
                             if (i++)
                                 sfputc(sp, ' ');
                             if (flags & N_FLAG)
@@ -428,11 +387,8 @@ getids(Sfio_t *sp, const char *name, int flags)
             if (i)
                 sfputc(sp, '\n');
 #endif
-        }
-        else if (ngroups > 0)
-        {
-            for (i = 0;;)
-            {
+        } else if (ngroups > 0) {
+            for (i = 0;;) {
                 group = groups[i];
                 if ((flags & N_FLAG) && (grp = getgrgid(group)))
                     sfprintf(sp, "%s", grp->gr_name);
@@ -446,8 +402,7 @@ getids(Sfio_t *sp, const char *name, int flags)
         }
     }
 #if _lib_fsid
-    else if (flags & S_FLAG)
-    {
+    else if (flags & S_FLAG) {
         if ((flags & X_FLAG) && name)
             getfsids(sp, name, flags, 0);
         else if ((flags & N_FLAG) && fs_name)
@@ -466,10 +421,8 @@ b_id(int argc, char **argv, Shbltin_t *context)
     int n;
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             continue;
         case 'G':
@@ -506,8 +459,7 @@ b_id(int argc, char **argv, Shbltin_t *context)
         error(2, "incompatible options selected");
     if (error_info.errors || argc > 1)
         error(ERROR_usage(2), "%s", optusage(NiL));
-    if (!(flags & ~(N_FLAG | R_FLAG)))
-    {
+    if (!(flags & ~(N_FLAG | R_FLAG))) {
         if (flags & N_FLAG)
             flags |= O_FLAG;
         flags |= (U_FLAG | G_FLAG | N_FLAG | R_FLAG | S_FLAG | GG_FLAG);

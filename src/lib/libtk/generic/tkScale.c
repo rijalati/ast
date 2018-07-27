@@ -546,8 +546,7 @@ char **argv;           /* Argument strings. */
     Scale *scalePtr;
     Tk_Window new;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -557,8 +556,7 @@ char **argv;           /* Argument strings. */
     }
 
     new = Tk_CreateWindowFromPath(interp, tkwin, argv[1], ( char * )NULL);
-    if (new == NULL)
-    {
+    if (new == NULL) {
         return TCL_ERROR;
     }
 
@@ -629,8 +627,7 @@ char **argv;           /* Argument strings. */
                           | FocusChangeMask,
                           ScaleEventProc,
                           ( ClientData )scalePtr);
-    if (ConfigureScale(interp, scalePtr, argc - 2, argv + 2, 0) != TCL_OK)
-    {
+    if (ConfigureScale(interp, scalePtr, argc - 2, argv + 2, 0) != TCL_OK) {
         goto error;
     }
 
@@ -672,8 +669,7 @@ char **argv;           /* Argument strings. */
     size_t length;
     int c;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -685,10 +681,8 @@ char **argv;           /* Argument strings. */
     c = argv[1][0];
     length = strlen(argv[1]);
     if ((c == 'c') && (strncmp(argv[1], "cget", length) == 0)
-        && (length >= 2))
-    {
-        if (argc != 3)
-        {
+        && (length >= 2)) {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -698,42 +692,32 @@ char **argv;           /* Argument strings. */
         }
         result = Tk_ConfigureValue(
         interp, scalePtr->tkwin, configSpecs, ( char * )scalePtr, argv[2], 0);
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
-             && (length >= 3))
-    {
-        if (argc == 2)
-        {
+    } else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
+               && (length >= 3)) {
+        if (argc == 2) {
             result = Tk_ConfigureInfo(interp,
                                       scalePtr->tkwin,
                                       configSpecs,
                                       ( char * )scalePtr,
                                       ( char * )NULL,
                                       0);
-        }
-        else if (argc == 3)
-        {
+        } else if (argc == 3) {
             result = Tk_ConfigureInfo(interp,
                                       scalePtr->tkwin,
                                       configSpecs,
                                       ( char * )scalePtr,
                                       argv[2],
                                       0);
-        }
-        else
-        {
+        } else {
             result = ConfigureScale(
             interp, scalePtr, argc - 2, argv + 2, TK_CONFIG_ARGV_ONLY);
         }
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "coords", length) == 0)
-             && (length >= 3))
-    {
+    } else if ((c == 'c') && (strncmp(argv[1], "coords", length) == 0)
+               && (length >= 3)) {
         int x, y;
         double value;
 
-        if ((argc != 2) && (argc != 3))
-        {
+        if ((argc != 2) && (argc != 3)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -741,38 +725,28 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (argc == 3)
-        {
-            if (Tcl_GetDouble(interp, argv[2], &value) != TCL_OK)
-            {
+        if (argc == 3) {
+            if (Tcl_GetDouble(interp, argv[2], &value) != TCL_OK) {
                 goto error;
             }
-        }
-        else
-        {
+        } else {
             value = scalePtr->value;
         }
-        if (scalePtr->vertical)
-        {
+        if (scalePtr->vertical) {
             x = scalePtr->vertTroughX + scalePtr->width / 2
                 + scalePtr->borderWidth;
             y = ValueToPixel(scalePtr, value);
-        }
-        else
-        {
+        } else {
             x = ValueToPixel(scalePtr, value);
             y = scalePtr->horizTroughY + scalePtr->width / 2
                 + scalePtr->borderWidth;
         }
         sprintf(interp->result, "%d %d", x, y);
-    }
-    else if ((c == 'g') && (strncmp(argv[1], "get", length) == 0))
-    {
+    } else if ((c == 'g') && (strncmp(argv[1], "get", length) == 0)) {
         double value;
         int x, y;
 
-        if ((argc != 2) && (argc != 4))
-        {
+        if ((argc != 2) && (argc != 4)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -780,27 +754,20 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (argc == 2)
-        {
+        if (argc == 2) {
             value = scalePtr->value;
-        }
-        else
-        {
+        } else {
             if ((Tcl_GetInt(interp, argv[2], &x) != TCL_OK)
-                || (Tcl_GetInt(interp, argv[3], &y) != TCL_OK))
-            {
+                || (Tcl_GetInt(interp, argv[3], &y) != TCL_OK)) {
                 goto error;
             }
             value = PixelToValue(scalePtr, x, y);
         }
         sprintf(interp->result, scalePtr->format, value);
-    }
-    else if ((c == 'i') && (strncmp(argv[1], "identify", length) == 0))
-    {
+    } else if ((c == 'i') && (strncmp(argv[1], "identify", length) == 0)) {
         int x, y, thing;
 
-        if (argc != 4)
-        {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -809,13 +776,11 @@ char **argv;           /* Argument strings. */
             goto error;
         }
         if ((Tcl_GetInt(interp, argv[2], &x) != TCL_OK)
-            || (Tcl_GetInt(interp, argv[3], &y) != TCL_OK))
-        {
+            || (Tcl_GetInt(interp, argv[3], &y) != TCL_OK)) {
             goto error;
         }
         thing = ScaleElement(scalePtr, x, y);
-        switch (thing)
-        {
+        switch (thing) {
         case TROUGH1:
             interp->result = "trough1";
             break;
@@ -826,13 +791,10 @@ char **argv;           /* Argument strings. */
             interp->result = "trough2";
             break;
         }
-    }
-    else if ((c == 's') && (strncmp(argv[1], "set", length) == 0))
-    {
+    } else if ((c == 's') && (strncmp(argv[1], "set", length) == 0)) {
         double value;
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -840,17 +802,13 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (Tcl_GetDouble(interp, argv[2], &value) != TCL_OK)
-        {
+        if (Tcl_GetDouble(interp, argv[2], &value) != TCL_OK) {
             goto error;
         }
-        if (scalePtr->state != tkDisabledUid)
-        {
+        if (scalePtr->state != tkDisabledUid) {
             SetScaleValue(scalePtr, value, 1, 1);
         }
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(
         interp,
         "bad option \"",
@@ -895,24 +853,20 @@ static void DestroyScale(memPtr) char *memPtr; /* Info about scale widget. */
      * stuff.
      */
 
-    if (scalePtr->varName != NULL)
-    {
+    if (scalePtr->varName != NULL) {
         Tcl_UntraceVar(scalePtr->interp,
                        scalePtr->varName,
                        TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
                        ScaleVarProc,
                        ( ClientData )scalePtr);
     }
-    if (scalePtr->troughGC != None)
-    {
+    if (scalePtr->troughGC != None) {
         Tk_FreeGC(scalePtr->display, scalePtr->troughGC);
     }
-    if (scalePtr->copyGC != None)
-    {
+    if (scalePtr->copyGC != None) {
         Tk_FreeGC(scalePtr->display, scalePtr->copyGC);
     }
-    if (scalePtr->textGC != None)
-    {
+    if (scalePtr->textGC != None) {
         Tk_FreeGC(scalePtr->display, scalePtr->textGC);
     }
     Tk_FreeOptions(configSpecs, ( char * )scalePtr, scalePtr->display, 0);
@@ -956,8 +910,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * Eliminate any existing trace on a variable monitored by the scale.
      */
 
-    if (scalePtr->varName != NULL)
-    {
+    if (scalePtr->varName != NULL) {
         Tcl_UntraceVar(interp,
                        scalePtr->varName,
                        TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
@@ -972,8 +925,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
                            argv,
                            ( char * )scalePtr,
                            flags)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -983,17 +935,14 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * the value of the variable, if it exists.
      */
 
-    if (scalePtr->varName != NULL)
-    {
+    if (scalePtr->varName != NULL) {
         char *stringValue, *end;
         double value;
 
         stringValue = Tcl_GetVar(interp, scalePtr->varName, TCL_GLOBAL_ONLY);
-        if (stringValue != NULL)
-        {
+        if (stringValue != NULL) {
             value = strtod(stringValue, &end);
-            if ((end != stringValue) && (*end == 0))
-            {
+            if ((end != stringValue) && (*end == 0)) {
                 scalePtr->value = RoundToResolution(scalePtr, value);
             }
         }
@@ -1010,16 +959,11 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      */
 
     length = strlen(scalePtr->orientUid);
-    if (strncmp(scalePtr->orientUid, "vertical", length) == 0)
-    {
+    if (strncmp(scalePtr->orientUid, "vertical", length) == 0) {
         scalePtr->vertical = 1;
-    }
-    else if (strncmp(scalePtr->orientUid, "horizontal", length) == 0)
-    {
+    } else if (strncmp(scalePtr->orientUid, "horizontal", length) == 0) {
         scalePtr->vertical = 0;
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "bad orientation \"",
                          scalePtr->orientUid,
@@ -1039,8 +983,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      */
 
     if ((scalePtr->tickInterval < 0)
-        ^ ((scalePtr->toValue - scalePtr->fromValue) < 0))
-    {
+        ^ ((scalePtr->toValue - scalePtr->fromValue) < 0)) {
         scalePtr->tickInterval = -scalePtr->tickInterval;
     }
 
@@ -1054,18 +997,14 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
     ComputeFormat(scalePtr);
     SetScaleValue(scalePtr, scalePtr->value, 1, 1);
 
-    if (scalePtr->label != NULL)
-    {
+    if (scalePtr->label != NULL) {
         scalePtr->labelLength = strlen(scalePtr->label);
-    }
-    else
-    {
+    } else {
         scalePtr->labelLength = 0;
     }
 
     if ((scalePtr->state != tkNormalUid) && (scalePtr->state != tkDisabledUid)
-        && (scalePtr->state != tkActiveUid))
-    {
+        && (scalePtr->state != tkActiveUid)) {
         Tcl_AppendResult(interp,
                          "bad state value \"",
                          scalePtr->state,
@@ -1079,26 +1018,22 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 
     gcValues.foreground = scalePtr->troughColorPtr->pixel;
     newGC = Tk_GetGC(scalePtr->tkwin, GCForeground, &gcValues);
-    if (scalePtr->troughGC != None)
-    {
+    if (scalePtr->troughGC != None) {
         Tk_FreeGC(scalePtr->display, scalePtr->troughGC);
     }
     scalePtr->troughGC = newGC;
-    if (scalePtr->copyGC == None)
-    {
+    if (scalePtr->copyGC == None) {
         gcValues.graphics_exposures = False;
         scalePtr->copyGC
         = Tk_GetGC(scalePtr->tkwin, GCGraphicsExposures, &gcValues);
     }
-    if (scalePtr->highlightWidth < 0)
-    {
+    if (scalePtr->highlightWidth < 0) {
         scalePtr->highlightWidth = 0;
     }
     gcValues.font = scalePtr->fontPtr->fid;
     gcValues.foreground = scalePtr->textColorPtr->pixel;
     newGC = Tk_GetGC(scalePtr->tkwin, GCForeground | GCFont, &gcValues);
-    if (scalePtr->textGC != None)
-    {
+    if (scalePtr->textGC != None) {
         Tk_FreeGC(scalePtr->display, scalePtr->textGC);
     }
     scalePtr->textGC = newGC;
@@ -1148,12 +1083,10 @@ static void ComputeFormat(scalePtr) Scale *scalePtr; /* Information about
 
     maxValue = fabs(scalePtr->fromValue);
     x = fabs(scalePtr->toValue);
-    if (x > maxValue)
-    {
+    if (x > maxValue) {
         maxValue = x;
     }
-    if (maxValue == 0)
-    {
+    if (maxValue == 0) {
         maxValue = 1;
     }
     mostSigDigit = floor(log10(maxValue));
@@ -1169,18 +1102,14 @@ static void ComputeFormat(scalePtr) Scale *scalePtr; /* Information about
      */
 
     numDigits = scalePtr->digits;
-    if (numDigits <= 0)
-    {
-        if (scalePtr->resolution > 0)
-        {
+    if (numDigits <= 0) {
+        if (scalePtr->resolution > 0) {
             /*
              * A resolution was specified for the scale, so just use it.
              */
 
             leastSigDigit = floor(log10(scalePtr->resolution));
-        }
-        else
-        {
+        } else {
             /*
              * No resolution was specified, so compute the difference
              * in value between adjacent pixels and use it for the least
@@ -1188,22 +1117,17 @@ static void ComputeFormat(scalePtr) Scale *scalePtr; /* Information about
              */
 
             x = fabs(scalePtr->fromValue - scalePtr->toValue);
-            if (scalePtr->length > 0)
-            {
+            if (scalePtr->length > 0) {
                 x /= scalePtr->length;
             }
-            if (x > 0)
-            {
+            if (x > 0) {
                 leastSigDigit = floor(log10(x));
-            }
-            else
-            {
+            } else {
                 leastSigDigit = 0;
             }
         }
         numDigits = mostSigDigit - leastSigDigit + 1;
-        if (numDigits < 1)
-        {
+        if (numDigits < 1) {
             numDigits = 1;
         }
     }
@@ -1214,31 +1138,24 @@ static void ComputeFormat(scalePtr) Scale *scalePtr; /* Information about
      */
 
     eDigits = numDigits + 4;
-    if (numDigits > 1)
-    {
+    if (numDigits > 1) {
         eDigits++; /* Decimal point. */
     }
     afterDecimal = numDigits - mostSigDigit - 1;
-    if (afterDecimal < 0)
-    {
+    if (afterDecimal < 0) {
         afterDecimal = 0;
     }
     fDigits
     = (mostSigDigit >= 0) ? mostSigDigit + afterDecimal : afterDecimal;
-    if (afterDecimal > 0)
-    {
+    if (afterDecimal > 0) {
         fDigits++; /* Decimal point. */
     }
-    if (mostSigDigit < 0)
-    {
+    if (mostSigDigit < 0) {
         fDigits++; /* Zero to left of decimal point. */
     }
-    if (fDigits <= eDigits)
-    {
+    if (fDigits <= eDigits) {
         sprintf(scalePtr->format, "%%.%df", afterDecimal);
-    }
-    else
-    {
+    } else {
         sprintf(scalePtr->format, "%%.%de", numDigits - 1);
     }
 }
@@ -1275,32 +1192,26 @@ scalePtr) Scale *scalePtr; /* Information about widget. */
      * handle them first and then quit.
      */
 
-    if (!scalePtr->vertical)
-    {
+    if (!scalePtr->vertical) {
         lineHeight = scalePtr->fontPtr->ascent + scalePtr->fontPtr->descent;
         y = scalePtr->inset;
         extraSpace = 0;
-        if (scalePtr->labelLength != 0)
-        {
+        if (scalePtr->labelLength != 0) {
             scalePtr->horizLabelY = y + SPACING;
             y += lineHeight + SPACING;
             extraSpace = SPACING;
         }
-        if (scalePtr->showValue)
-        {
+        if (scalePtr->showValue) {
             scalePtr->horizValueY = y + SPACING;
             y += lineHeight + SPACING;
             extraSpace = SPACING;
-        }
-        else
-        {
+        } else {
             scalePtr->horizValueY = y;
         }
         y += extraSpace;
         scalePtr->horizTroughY = y;
         y += scalePtr->width + 2 * scalePtr->borderWidth;
-        if (scalePtr->tickInterval != 0)
-        {
+        if (scalePtr->tickInterval != 0) {
             scalePtr->horizTickY = y + SPACING;
             y += lineHeight + 2 * SPACING;
         }
@@ -1334,8 +1245,7 @@ scalePtr) Scale *scalePtr; /* Information about widget. */
                  &dummy,
                  &dummy,
                  &bbox);
-    if (valuePixels < bbox.rbearing - bbox.lbearing)
-    {
+    if (valuePixels < bbox.rbearing - bbox.lbearing) {
         valuePixels = bbox.rbearing - bbox.lbearing;
     }
 
@@ -1345,38 +1255,28 @@ scalePtr) Scale *scalePtr; /* Information about widget. */
      */
 
     x = scalePtr->inset;
-    if ((scalePtr->tickInterval != 0) && (scalePtr->showValue))
-    {
+    if ((scalePtr->tickInterval != 0) && (scalePtr->showValue)) {
         scalePtr->vertTickRightX = x + SPACING + valuePixels;
         scalePtr->vertValueRightX = scalePtr->vertTickRightX + valuePixels
                                     + scalePtr->fontPtr->ascent / 2;
         x = scalePtr->vertValueRightX + SPACING;
-    }
-    else if (scalePtr->tickInterval != 0)
-    {
+    } else if (scalePtr->tickInterval != 0) {
         scalePtr->vertTickRightX = x + SPACING + valuePixels;
         scalePtr->vertValueRightX = scalePtr->vertTickRightX;
         x = scalePtr->vertTickRightX + SPACING;
-    }
-    else if (scalePtr->showValue)
-    {
+    } else if (scalePtr->showValue) {
         scalePtr->vertTickRightX = x;
         scalePtr->vertValueRightX = x + SPACING + valuePixels;
         x = scalePtr->vertValueRightX + SPACING;
-    }
-    else
-    {
+    } else {
         scalePtr->vertTickRightX = x;
         scalePtr->vertValueRightX = x;
     }
     scalePtr->vertTroughX = x;
     x += 2 * scalePtr->borderWidth + scalePtr->width;
-    if (scalePtr->labelLength == 0)
-    {
+    if (scalePtr->labelLength == 0) {
         scalePtr->vertLabelX = 0;
-    }
-    else
-    {
+    } else {
         XTextExtents(scalePtr->fontPtr,
                      scalePtr->label,
                      scalePtr->labelLength,
@@ -1434,8 +1334,7 @@ XRectangle *drawnAreaPtr; /* Initally contains area of window;
      * Display the information from left to right across the window.
      */
 
-    if (!(scalePtr->flags & REDRAW_OTHER))
-    {
+    if (!(scalePtr->flags & REDRAW_OTHER)) {
         drawnAreaPtr->x = scalePtr->vertTickRightX;
         drawnAreaPtr->y = scalePtr->inset;
         drawnAreaPtr->width = scalePtr->vertTroughX + scalePtr->width
@@ -1452,34 +1351,26 @@ XRectangle *drawnAreaPtr; /* Initally contains area of window;
                        drawnAreaPtr->height,
                        0,
                        TK_RELIEF_FLAT);
-    if (scalePtr->flags & REDRAW_OTHER)
-    {
+    if (scalePtr->flags & REDRAW_OTHER) {
         /*
          * Display the tick marks.
          */
 
-        if (scalePtr->tickInterval != 0)
-        {
+        if (scalePtr->tickInterval != 0) {
             for (tickValue = scalePtr->fromValue;;
-                 tickValue += scalePtr->tickInterval)
-            {
+                 tickValue += scalePtr->tickInterval) {
                 /*
                  * The RoundToResolution call gets rid of accumulated
                  * round-off errors, if any.
                  */
 
                 tickValue = RoundToResolution(scalePtr, tickValue);
-                if (scalePtr->toValue >= scalePtr->fromValue)
-                {
-                    if (tickValue > scalePtr->toValue)
-                    {
+                if (scalePtr->toValue >= scalePtr->fromValue) {
+                    if (tickValue > scalePtr->toValue) {
                         break;
                     }
-                }
-                else
-                {
-                    if (tickValue < scalePtr->toValue)
-                    {
+                } else {
+                    if (tickValue < scalePtr->toValue) {
                         break;
                     }
                 }
@@ -1493,8 +1384,7 @@ XRectangle *drawnAreaPtr; /* Initally contains area of window;
      * Display the value, if it is desired.
      */
 
-    if (scalePtr->showValue)
-    {
+    if (scalePtr->showValue) {
         DisplayVerticalValue(
         scalePtr, drawable, scalePtr->value, scalePtr->vertValueRightX);
     }
@@ -1520,12 +1410,9 @@ XRectangle *drawnAreaPtr; /* Initally contains area of window;
                    ( unsigned )scalePtr->width,
                    ( unsigned )(Tk_Height(tkwin) - 2 * scalePtr->inset
                                 - 2 * scalePtr->borderWidth));
-    if (scalePtr->state == tkActiveUid)
-    {
+    if (scalePtr->state == tkActiveUid) {
         sliderBorder = scalePtr->activeBorder;
-    }
-    else
-    {
+    } else {
         sliderBorder = scalePtr->bgBorder;
     }
     width = scalePtr->width;
@@ -1533,8 +1420,7 @@ XRectangle *drawnAreaPtr; /* Initally contains area of window;
     x = scalePtr->vertTroughX + scalePtr->borderWidth;
     y = ValueToPixel(scalePtr, scalePtr->value) - height;
     shadowWidth = scalePtr->borderWidth / 2;
-    if (shadowWidth == 0)
-    {
+    if (shadowWidth == 0) {
         shadowWidth = 1;
     }
     Tk_Draw3DRectangle(tkwin,
@@ -1573,8 +1459,7 @@ XRectangle *drawnAreaPtr; /* Initally contains area of window;
      * Draw the label to the right of the scale.
      */
 
-    if ((scalePtr->flags & REDRAW_OTHER) && (scalePtr->labelLength != 0))
-    {
+    if ((scalePtr->flags & REDRAW_OTHER) && (scalePtr->labelLength != 0)) {
         XDrawString(scalePtr->display,
                     drawable,
                     scalePtr->textGC,
@@ -1631,12 +1516,10 @@ int rightEdge;     /* X-coordinate of right edge of text,
      * inside the window.
      */
 
-    if ((y - bbox.ascent) < (scalePtr->inset + SPACING))
-    {
+    if ((y - bbox.ascent) < (scalePtr->inset + SPACING)) {
         y = scalePtr->inset + SPACING + bbox.ascent;
     }
-    if ((y + bbox.descent) > (Tk_Height(tkwin) - scalePtr->inset - SPACING))
-    {
+    if ((y + bbox.descent) > (Tk_Height(tkwin) - scalePtr->inset - SPACING)) {
         y = Tk_Height(tkwin) - scalePtr->inset - SPACING - bbox.descent;
     }
     XDrawString(scalePtr->display,
@@ -1687,8 +1570,7 @@ XRectangle *drawnAreaPtr; /* Initally contains area of window;
      * Display the information from bottom to top across the window.
      */
 
-    if (!(scalePtr->flags & REDRAW_OTHER))
-    {
+    if (!(scalePtr->flags & REDRAW_OTHER)) {
         drawnAreaPtr->x = scalePtr->inset;
         drawnAreaPtr->y = scalePtr->horizValueY;
         drawnAreaPtr->width -= 2 * scalePtr->inset;
@@ -1705,34 +1587,26 @@ XRectangle *drawnAreaPtr; /* Initally contains area of window;
                        drawnAreaPtr->height,
                        0,
                        TK_RELIEF_FLAT);
-    if (scalePtr->flags & REDRAW_OTHER)
-    {
+    if (scalePtr->flags & REDRAW_OTHER) {
         /*
          * Display the tick marks.
          */
 
-        if (scalePtr->tickInterval != 0)
-        {
+        if (scalePtr->tickInterval != 0) {
             for (tickValue = scalePtr->fromValue;;
-                 tickValue += scalePtr->tickInterval)
-            {
+                 tickValue += scalePtr->tickInterval) {
                 /*
                  * The RoundToResolution call gets rid of accumulated
                  * round-off errors, if any.
                  */
 
                 tickValue = RoundToResolution(scalePtr, tickValue);
-                if (scalePtr->toValue >= scalePtr->fromValue)
-                {
-                    if (tickValue > scalePtr->toValue)
-                    {
+                if (scalePtr->toValue >= scalePtr->fromValue) {
+                    if (tickValue > scalePtr->toValue) {
                         break;
                     }
-                }
-                else
-                {
-                    if (tickValue < scalePtr->toValue)
-                    {
+                } else {
+                    if (tickValue < scalePtr->toValue) {
                         break;
                     }
                 }
@@ -1746,8 +1620,7 @@ XRectangle *drawnAreaPtr; /* Initally contains area of window;
      * Display the value, if it is desired.
      */
 
-    if (scalePtr->showValue)
-    {
+    if (scalePtr->showValue) {
         DisplayHorizontalValue(
         scalePtr, drawable, scalePtr->value, scalePtr->horizValueY);
     }
@@ -1774,12 +1647,9 @@ XRectangle *drawnAreaPtr; /* Initally contains area of window;
                    ( unsigned )(Tk_Width(tkwin) - 2 * scalePtr->inset
                                 - 2 * scalePtr->borderWidth),
                    ( unsigned )scalePtr->width);
-    if (scalePtr->state == tkActiveUid)
-    {
+    if (scalePtr->state == tkActiveUid) {
         sliderBorder = scalePtr->activeBorder;
-    }
-    else
-    {
+    } else {
         sliderBorder = scalePtr->bgBorder;
     }
     width = scalePtr->sliderLength / 2;
@@ -1787,8 +1657,7 @@ XRectangle *drawnAreaPtr; /* Initally contains area of window;
     x = ValueToPixel(scalePtr, scalePtr->value) - width;
     y += scalePtr->borderWidth;
     shadowWidth = scalePtr->borderWidth / 2;
-    if (shadowWidth == 0)
-    {
+    if (shadowWidth == 0) {
         shadowWidth = 1;
     }
     Tk_Draw3DRectangle(tkwin,
@@ -1827,8 +1696,7 @@ XRectangle *drawnAreaPtr; /* Initally contains area of window;
      * Draw the label at the top of the scale.
      */
 
-    if ((scalePtr->flags & REDRAW_OTHER) && (scalePtr->labelLength != 0))
-    {
+    if ((scalePtr->flags & REDRAW_OTHER) && (scalePtr->labelLength != 0)) {
         XDrawString(scalePtr->display,
                     drawable,
                     scalePtr->textGC,
@@ -1887,12 +1755,10 @@ int top;           /* Y-coordinate of top edge of text,
      */
 
     x -= (bbox.rbearing - bbox.lbearing) / 2;
-    if ((x + bbox.lbearing) < (scalePtr->inset + SPACING))
-    {
+    if ((x + bbox.lbearing) < (scalePtr->inset + SPACING)) {
         x = scalePtr->inset + SPACING - bbox.lbearing;
     }
-    if ((x + bbox.rbearing) > (Tk_Width(tkwin) - scalePtr->inset))
-    {
+    if ((x + bbox.rbearing) > (Tk_Width(tkwin) - scalePtr->inset)) {
         x = Tk_Width(tkwin) - scalePtr->inset - SPACING - bbox.rbearing;
     }
     XDrawString(
@@ -1927,8 +1793,7 @@ static void DisplayScale(clientData) ClientData clientData; /* Widget record
     char string[PRINT_CHARS];
     XRectangle drawnArea;
 
-    if ((scalePtr->tkwin == NULL) || !Tk_IsMapped(scalePtr->tkwin))
-    {
+    if ((scalePtr->tkwin == NULL) || !Tk_IsMapped(scalePtr->tkwin)) {
         goto done;
     }
 
@@ -1938,21 +1803,18 @@ static void DisplayScale(clientData) ClientData clientData; /* Widget record
 
     Tcl_Preserve(( ClientData )scalePtr);
     Tcl_Preserve(( ClientData )interp);
-    if ((scalePtr->flags & INVOKE_COMMAND) && (scalePtr->command != NULL))
-    {
+    if ((scalePtr->flags & INVOKE_COMMAND) && (scalePtr->command != NULL)) {
         sprintf(string, scalePtr->format, scalePtr->value);
         result
         = Tcl_VarEval(interp, scalePtr->command, " ", string, ( char * )NULL);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             Tcl_AddErrorInfo(interp, "\n    (command executed by scale)");
             Tcl_BackgroundError(interp);
         }
     }
     Tcl_Release(( ClientData )interp);
     scalePtr->flags &= ~INVOKE_COMMAND;
-    if (scalePtr->tkwin == NULL)
-    {
+    if (scalePtr->tkwin == NULL) {
         Tcl_Release(( ClientData )scalePtr);
         return;
     }
@@ -1981,12 +1843,9 @@ static void DisplayScale(clientData) ClientData clientData; /* Widget record
      * different.
      */
 
-    if (scalePtr->vertical)
-    {
+    if (scalePtr->vertical) {
         DisplayVerticalScale(scalePtr, pixmap, &drawnArea);
-    }
-    else
-    {
+    } else {
         DisplayHorizontalScale(scalePtr, pixmap, &drawnArea);
     }
 
@@ -1996,10 +1855,8 @@ static void DisplayScale(clientData) ClientData clientData; /* Widget record
      * highlight.
      */
 
-    if (scalePtr->flags & REDRAW_OTHER)
-    {
-        if (scalePtr->relief != TK_RELIEF_FLAT)
-        {
+    if (scalePtr->flags & REDRAW_OTHER) {
+        if (scalePtr->relief != TK_RELIEF_FLAT) {
             Tk_Draw3DRectangle(tkwin,
                                pixmap,
                                scalePtr->bgBorder,
@@ -2011,16 +1868,12 @@ static void DisplayScale(clientData) ClientData clientData; /* Widget record
                                scalePtr->borderWidth,
                                scalePtr->relief);
         }
-        if (scalePtr->highlightWidth != 0)
-        {
+        if (scalePtr->highlightWidth != 0) {
             GC gc;
 
-            if (scalePtr->flags & GOT_FOCUS)
-            {
+            if (scalePtr->flags & GOT_FOCUS) {
                 gc = Tk_GCForColor(scalePtr->highlightColorPtr, pixmap);
-            }
-            else
-            {
+            } else {
                 gc = Tk_GCForColor(scalePtr->highlightBgColorPtr, pixmap);
             }
             Tk_DrawFocusHighlight(
@@ -2074,27 +1927,22 @@ int x, y; /* Coordinates within scalePtr's window. */
 {
     int sliderFirst;
 
-    if (scalePtr->vertical)
-    {
+    if (scalePtr->vertical) {
         if ((x < scalePtr->vertTroughX)
             || (x >= (scalePtr->vertTroughX + 2 * scalePtr->borderWidth
-                      + scalePtr->width)))
-        {
+                      + scalePtr->width))) {
             return OTHER;
         }
         if ((y < scalePtr->inset)
-            || (y >= (Tk_Height(scalePtr->tkwin) - scalePtr->inset)))
-        {
+            || (y >= (Tk_Height(scalePtr->tkwin) - scalePtr->inset))) {
             return OTHER;
         }
         sliderFirst = ValueToPixel(scalePtr, scalePtr->value)
                       - scalePtr->sliderLength / 2;
-        if (y < sliderFirst)
-        {
+        if (y < sliderFirst) {
             return TROUGH1;
         }
-        if (y < (sliderFirst + scalePtr->sliderLength))
-        {
+        if (y < (sliderFirst + scalePtr->sliderLength)) {
             return SLIDER;
         }
         return TROUGH2;
@@ -2102,23 +1950,19 @@ int x, y; /* Coordinates within scalePtr's window. */
 
     if ((y < scalePtr->horizTroughY)
         || (y >= (scalePtr->horizTroughY + 2 * scalePtr->borderWidth
-                  + scalePtr->width)))
-    {
+                  + scalePtr->width))) {
         return OTHER;
     }
     if ((x < scalePtr->inset)
-        || (x >= (Tk_Width(scalePtr->tkwin) - scalePtr->inset)))
-    {
+        || (x >= (Tk_Width(scalePtr->tkwin) - scalePtr->inset))) {
         return OTHER;
     }
     sliderFirst
     = ValueToPixel(scalePtr, scalePtr->value) - scalePtr->sliderLength / 2;
-    if (x < sliderFirst)
-    {
+    if (x < sliderFirst) {
         return TROUGH1;
     }
-    if (x < (sliderFirst + scalePtr->sliderLength))
-    {
+    if (x < (sliderFirst + scalePtr->sliderLength)) {
         return SLIDER;
     }
     return TROUGH2;
@@ -2150,21 +1994,17 @@ int x, y;                                     /* Coordinates of point within
 {
     double value, pixelRange;
 
-    if (scalePtr->vertical)
-    {
+    if (scalePtr->vertical) {
         pixelRange = Tk_Height(scalePtr->tkwin) - scalePtr->sliderLength
                      - 2 * scalePtr->inset - 2 * scalePtr->borderWidth;
         value = y;
-    }
-    else
-    {
+    } else {
         pixelRange = Tk_Width(scalePtr->tkwin) - scalePtr->sliderLength
                      - 2 * scalePtr->inset - 2 * scalePtr->borderWidth;
         value = x;
     }
 
-    if (pixelRange <= 0)
-    {
+    if (pixelRange <= 0) {
         /*
          * Not enough room for the slider to actually slide:  just return
          * the scale's current value.
@@ -2175,12 +2015,10 @@ int x, y;                                     /* Coordinates of point within
     value
     -= scalePtr->sliderLength / 2 + scalePtr->inset + scalePtr->borderWidth;
     value /= pixelRange;
-    if (value < 0)
-    {
+    if (value < 0) {
         value = 0;
     }
-    if (value > 1)
-    {
+    if (value > 1) {
         value = 1;
     }
     value
@@ -2220,20 +2058,14 @@ double value; /* Reading of the widget. */
                                      : Tk_Width(scalePtr->tkwin))
                  - scalePtr->sliderLength - 2 * scalePtr->inset
                  - 2 * scalePtr->borderWidth;
-    if (valueRange == 0)
-    {
+    if (valueRange == 0) {
         y = 0;
-    }
-    else
-    {
+    } else {
         y = ( int )((value - scalePtr->fromValue) * pixelRange / valueRange
                     + 0.5);
-        if (y < 0)
-        {
+        if (y < 0) {
             y = 0;
-        }
-        else if (y > pixelRange)
-        {
+        } else if (y > pixelRange) {
             y = pixelRange;
         }
     }
@@ -2265,48 +2097,33 @@ XEvent *eventPtr;      /* Information about event. */
 {
     Scale *scalePtr = ( Scale * )clientData;
 
-    if ((eventPtr->type == Expose) && (eventPtr->xexpose.count == 0))
-    {
+    if ((eventPtr->type == Expose) && (eventPtr->xexpose.count == 0)) {
         EventuallyRedrawScale(scalePtr, REDRAW_ALL);
-    }
-    else if (eventPtr->type == DestroyNotify)
-    {
-        if (scalePtr->tkwin != NULL)
-        {
+    } else if (eventPtr->type == DestroyNotify) {
+        if (scalePtr->tkwin != NULL) {
             scalePtr->tkwin = NULL;
             Tcl_DeleteCommand(
             scalePtr->interp,
             Tcl_GetCommandName(scalePtr->interp, scalePtr->widgetCmd));
         }
-        if (scalePtr->flags & REDRAW_ALL)
-        {
+        if (scalePtr->flags & REDRAW_ALL) {
             Tcl_CancelIdleCall(DisplayScale, ( ClientData )scalePtr);
         }
         Tcl_EventuallyFree(( ClientData )scalePtr, DestroyScale);
-    }
-    else if (eventPtr->type == ConfigureNotify)
-    {
+    } else if (eventPtr->type == ConfigureNotify) {
         ComputeScaleGeometry(scalePtr);
         EventuallyRedrawScale(scalePtr, REDRAW_ALL);
-    }
-    else if (eventPtr->type == FocusIn)
-    {
-        if (eventPtr->xfocus.detail != NotifyInferior)
-        {
+    } else if (eventPtr->type == FocusIn) {
+        if (eventPtr->xfocus.detail != NotifyInferior) {
             scalePtr->flags |= GOT_FOCUS;
-            if (scalePtr->highlightWidth > 0)
-            {
+            if (scalePtr->highlightWidth > 0) {
                 EventuallyRedrawScale(scalePtr, REDRAW_ALL);
             }
         }
-    }
-    else if (eventPtr->type == FocusOut)
-    {
-        if (eventPtr->xfocus.detail != NotifyInferior)
-        {
+    } else if (eventPtr->type == FocusOut) {
+        if (eventPtr->xfocus.detail != NotifyInferior) {
             scalePtr->flags &= ~GOT_FOCUS;
-            if (scalePtr->highlightWidth > 0)
-            {
+            if (scalePtr->highlightWidth > 0) {
                 EventuallyRedrawScale(scalePtr, REDRAW_ALL);
             }
         }
@@ -2344,8 +2161,7 @@ ClientData clientData; /* Pointer to widget record for widget. */
      * destroys the widget.
      */
 
-    if (tkwin != NULL)
-    {
+    if (tkwin != NULL) {
         scalePtr->tkwin = NULL;
         Tk_DestroyWindow(tkwin);
     }
@@ -2382,32 +2198,25 @@ int invokeCommand; /* Non-zero means invoked -command option
 
     value = RoundToResolution(scalePtr, value);
     if ((value < scalePtr->fromValue)
-        ^ (scalePtr->toValue < scalePtr->fromValue))
-    {
+        ^ (scalePtr->toValue < scalePtr->fromValue)) {
         value = scalePtr->fromValue;
     }
     if ((value > scalePtr->toValue)
-        ^ (scalePtr->toValue < scalePtr->fromValue))
-    {
+        ^ (scalePtr->toValue < scalePtr->fromValue)) {
         value = scalePtr->toValue;
     }
-    if (scalePtr->flags & NEVER_SET)
-    {
+    if (scalePtr->flags & NEVER_SET) {
         scalePtr->flags &= ~NEVER_SET;
-    }
-    else if (scalePtr->value == value)
-    {
+    } else if (scalePtr->value == value) {
         return;
     }
     scalePtr->value = value;
-    if (invokeCommand)
-    {
+    if (invokeCommand) {
         scalePtr->flags |= INVOKE_COMMAND;
     }
     EventuallyRedrawScale(scalePtr, REDRAW_SLIDER);
 
-    if (setVar && (scalePtr->varName != NULL))
-    {
+    if (setVar && (scalePtr->varName != NULL)) {
         sprintf(string, scalePtr->format, scalePtr->value);
         scalePtr->flags |= SETTING_VAR;
         Tcl_SetVar(
@@ -2442,12 +2251,10 @@ int what; /* What to redraw:  REDRAW_SLIDER
            * or REDRAW_ALL. */
 {
     if ((what == 0) || (scalePtr->tkwin == NULL)
-        || !Tk_IsMapped(scalePtr->tkwin))
-    {
+        || !Tk_IsMapped(scalePtr->tkwin)) {
         return;
     }
-    if ((scalePtr->flags & REDRAW_ALL) == 0)
-    {
+    if ((scalePtr->flags & REDRAW_ALL) == 0) {
         Tcl_DoWhenIdle(DisplayScale, ( ClientData )scalePtr);
     }
     scalePtr->flags |= what;
@@ -2477,23 +2284,17 @@ double value;                                           /* Value to round. */
 {
     double rem, new;
 
-    if (scalePtr->resolution <= 0)
-    {
+    if (scalePtr->resolution <= 0) {
         return value;
     }
     new = scalePtr->resolution *floor(value / scalePtr->resolution);
     rem = value - new;
-    if (rem < 0)
-    {
-        if (rem <= -scalePtr->resolution / 2)
-        {
+    if (rem < 0) {
+        if (rem <= -scalePtr->resolution / 2) {
             new -= scalePtr->resolution;
         }
-    }
-    else
-    {
-        if (rem >= scalePtr->resolution / 2)
-        {
+    } else {
+        if (rem >= scalePtr->resolution / 2) {
             new += scalePtr->resolution;
         }
     }
@@ -2536,10 +2337,9 @@ int flags;             /* Information about what happened. */
      * the whole interpreter is going away.
      */
 
-    if (flags & TCL_TRACE_UNSETS)
-    {
-        if ((flags & TCL_TRACE_DESTROYED) && !(flags & TCL_INTERP_DESTROYED))
-        {
+    if (flags & TCL_TRACE_UNSETS) {
+        if ((flags & TCL_TRACE_DESTROYED)
+            && !(flags & TCL_INTERP_DESTROYED)) {
             Tcl_TraceVar(interp,
                          scalePtr->varName,
                          TCL_GLOBAL_ONLY | TCL_TRACE_WRITES
@@ -2558,21 +2358,16 @@ int flags;             /* Information about what happened. */
      * of the variable.
      */
 
-    if (scalePtr->flags & SETTING_VAR)
-    {
+    if (scalePtr->flags & SETTING_VAR) {
         return ( char * )NULL;
     }
     result = NULL;
     stringValue = Tcl_GetVar(interp, scalePtr->varName, TCL_GLOBAL_ONLY);
-    if (stringValue != NULL)
-    {
+    if (stringValue != NULL) {
         value = strtod(stringValue, &end);
-        if ((end == stringValue) || (*end != 0))
-        {
+        if ((end == stringValue) || (*end != 0)) {
             result = "can't assign non-numeric value to scale variable";
-        }
-        else
-        {
+        } else {
             scalePtr->value = RoundToResolution(scalePtr, value);
         }
 

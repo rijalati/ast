@@ -232,11 +232,9 @@ settime(Shbltin_t *context,
         return tmxsettime(now);
     argv = args;
     s = "/usr/bin/date";
-    if (!streq(cmd, s) && (!eaccess(s, X_OK) || !eaccess(s += 4, X_OK)))
-    {
+    if (!streq(cmd, s) && (!eaccess(s, X_OK) || !eaccess(s += 4, X_OK))) {
         *argv++ = s;
-        if (streq(astconf("UNIVERSE", NiL, NiL), "att"))
-        {
+        if (streq(astconf("UNIVERSE", NiL, NiL), "att")) {
             tmxfmt(buf,
                    sizeof(buf),
                    "%m%d%H"
@@ -244,9 +242,7 @@ settime(Shbltin_t *context,
                    now);
             if (adjust)
                 *argv++ = "-a";
-        }
-        else
-        {
+        } else {
             tmxfmt(buf,
                    sizeof(buf),
                    "%Y%m%d%H"
@@ -275,8 +271,7 @@ convert(Fmt_t *f, char *s, Time_t now)
     char *t;
     char *u;
 
-    do
-    {
+    do {
         now = tmxscan(s, &t, f->format, &u, now, 0);
         if (!*t && (!f->format || !*u))
             break;
@@ -320,10 +315,8 @@ b_date(int argc, char **argv, Shbltin_t *context)
     fmts = &fmt;
     fmt.format = "";
     fmt.next = 0;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
         case 'c':
         case 'm':
@@ -368,8 +361,7 @@ b_date(int argc, char **argv, Shbltin_t *context)
             show = 1;
             continue;
         case 'T':
-            switch (opt_info.num)
-            {
+            switch (opt_info.num) {
             case 'd':
                 format = "%Y-%m-%d";
                 continue;
@@ -403,11 +395,9 @@ b_date(int argc, char **argv, Shbltin_t *context)
     if (error_info.errors)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
     now = tmxgettime();
-    if (listzones)
-    {
+    if (listzones) {
         s = "-";
-        while (listzones->standard)
-        {
+        while (listzones->standard) {
             if (listzones->type)
                 s = listzones->type;
             sfprintf(sfstdout,
@@ -420,14 +410,10 @@ b_date(int argc, char **argv, Shbltin_t *context)
             listzones++;
             show = 1;
         }
-    }
-    else if (elapsed)
-    {
+    } else if (elapsed) {
         e = 0;
-        while (s = *argv++)
-        {
-            if (!(t = *argv++))
-            {
+        while (s = *argv++) {
+            if (!(t = *argv++)) {
                 argv--;
                 t = "now";
             }
@@ -440,31 +426,23 @@ b_date(int argc, char **argv, Shbltin_t *context)
         }
         sfputr(sfstdout, fmtelapsed(( unsigned long )tmxsec(e), 1), '\n');
         show = 1;
-    }
-    else if (unelapsed)
-    {
-        while (s = *argv++)
-        {
+    } else if (unelapsed) {
+        while (s = *argv++) {
             u = strelapsed(s, &t, unelapsed);
             if (*t)
                 error(3, "%s: invalid elapsed time", s);
             sfprintf(sfstdout, "%lu\n", u);
         }
         show = 1;
-    }
-    else if (filetime)
-    {
+    } else if (filetime) {
         if (!*argv)
             error(ERROR_USAGE | 4, "%s", optusage(NiL));
         n = argv[1] != 0;
-        while (s = *argv++)
-        {
+        while (s = *argv++) {
             if (stat(s, &st))
                 error(2, "%s: not found", s);
-            else
-            {
-                switch (filetime)
-                {
+            else {
+                switch (filetime) {
                 case 'a':
                     now = tmxgetatime(&st);
                     break;
@@ -483,46 +461,35 @@ b_date(int argc, char **argv, Shbltin_t *context)
                 show = 1;
             }
         }
-    }
-    else
-    {
-        if ((s = *argv) && !format && *s == '+')
-        {
+    } else {
+        if ((s = *argv) && !format && *s == '+') {
             format = s + 1;
             argv++;
             s = *argv;
         }
-        if (s || (s = string))
-        {
+        if (s || (s = string)) {
             if (*argv && string)
                 error(ERROR_USAGE | 4, "%s", optusage(NiL));
             now = convert(fmts, s, now);
-            if (*argv && (s = *++argv))
-            {
+            if (*argv && (s = *++argv)) {
                 show = 1;
-                do
-                {
-                    if (!last)
-                    {
+                do {
+                    if (!last) {
                         tmxfmt(buf, sizeof(buf), format, now);
                         sfprintf(sfstdout, "%s\n", buf);
                     }
                     now = convert(fmts, s, now);
                 } while (s = *++argv);
             }
-        }
-        else
+        } else
             show = 1;
-        if (format || show)
-        {
+        if (format || show) {
             tmxfmt(buf, sizeof(buf), format, now);
             sfprintf(sfstdout, "%s\n", buf);
-        }
-        else if (settime(context, cmd, now, increment, network))
+        } else if (settime(context, cmd, now, increment, network))
             error(ERROR_SYSTEM | 3, "cannot set system time");
     }
-    while (fmts != &fmt)
-    {
+    while (fmts != &fmt) {
         f = fmts;
         fmts = fmts->next;
         free(f);

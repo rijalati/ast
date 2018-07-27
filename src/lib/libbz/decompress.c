@@ -70,8 +70,7 @@ makeMaps_d(DState *s)
     Int32 i;
     s->nInUse = 0;
     for (i = 0; i < 256; i++)
-        if (s->inUse[i])
-        {
+        if (s->inUse[i]) {
             s->seqToUnseq[s->nInUse] = i;
             s->nInUse++;
         }
@@ -88,10 +87,8 @@ makeMaps_d(DState *s)
 #define GET_BITS(lll, vvv, nnn)                                              \
     case lll:                                                                \
         s->state = lll;                                                      \
-        while (True)                                                         \
-        {                                                                    \
-            if (s->bsLive >= nnn)                                            \
-            {                                                                \
+        while (True) {                                                       \
+            if (s->bsLive >= nnn) {                                          \
                 UInt32 v;                                                    \
                 v = (s->bsBuff >> (s->bsLive - nnn)) & ((1 << nnn) - 1);     \
                 s->bsLive -= nnn;                                            \
@@ -115,8 +112,7 @@ makeMaps_d(DState *s)
 /*---------------------------------------------------*/
 #define GET_MTF_VAL(label1, label2, lval)                                    \
     {                                                                        \
-        if (groupPos == 0)                                                   \
-        {                                                                    \
+        if (groupPos == 0) {                                                 \
             groupNo++;                                                       \
             groupPos = BZ_G_SIZE;                                            \
             gSel = s->selector[groupNo];                                     \
@@ -128,8 +124,7 @@ makeMaps_d(DState *s)
         groupPos--;                                                          \
         zn = gMinlen;                                                        \
         GET_BITS(label1, zvec, zn);                                          \
-        while (zvec > gLimit[zn])                                            \
-        {                                                                    \
+        while (zvec > gLimit[zn]) {                                          \
             zn++;                                                            \
             GET_BIT(label2, zj);                                             \
             zvec = (zvec << 1) | zj;                                         \
@@ -173,8 +168,7 @@ decompress(DState *s)
     Int32 *gBase;
     Int32 *gPerm;
 
-    if (s->state == BZ_X_MAGIC_1)
-    {
+    if (s->state == BZ_X_MAGIC_1) {
         /*initialise the save area*/
         s->save_i = 0;
         s->save_j = 0;
@@ -230,8 +224,7 @@ decompress(DState *s)
 
     retVal = BZ_OK;
 
-    switch (s->state)
-    {
+    switch (s->state) {
 
         GET_UCHAR(BZ_X_MAGIC_1, uc);
         if (uc != 'B')
@@ -250,16 +243,13 @@ decompress(DState *s)
             RETURN(BZ_DATA_ERROR_MAGIC);
         s->blockSize100k -= '0';
 
-        if (s->smallDecompress)
-        {
+        if (s->smallDecompress) {
             s->ll16 = BZALLOC(s->blockSize100k * 100000 * sizeof(UInt16));
             s->ll4
             = BZALLOC(((1 + s->blockSize100k * 100000) >> 1) * sizeof(UChar));
             if (s->ll16 == NULL || s->ll4 == NULL)
                 RETURN(BZ_MEM_ERROR);
-        }
-        else
-        {
+        } else {
             s->tt = BZALLOC(s->blockSize100k * 100000 * sizeof(Int32));
             if (s->tt == NULL)
                 RETURN(BZ_MEM_ERROR);
@@ -312,8 +302,7 @@ decompress(DState *s)
         s->origPtr = (s->origPtr << 8) | (( Int32 )uc);
 
         /*--- Receive the mapping table ---*/
-        for (i = 0; i < 16; i++)
-        {
+        for (i = 0; i < 16; i++) {
             GET_BIT(BZ_X_MAPPING_1, uc);
             if (uc == 1)
                 s->inUse16[i] = True;
@@ -326,8 +315,7 @@ decompress(DState *s)
 
         for (i = 0; i < 16; i++)
             if (s->inUse16[i])
-                for (j = 0; j < 16; j++)
-                {
+                for (j = 0; j < 16; j++) {
                     GET_BIT(BZ_X_MAPPING_2, uc);
                     if (uc == 1)
                         s->inUse[i * 16 + j] = True;
@@ -338,11 +326,9 @@ decompress(DState *s)
         /*--- Now the selectors ---*/
         GET_BITS(BZ_X_SELECTOR_1, nGroups, 3);
         GET_BITS(BZ_X_SELECTOR_2, nSelectors, 15);
-        for (i = 0; i < nSelectors; i++)
-        {
+        for (i = 0; i < nSelectors; i++) {
             j = 0;
-            while (True)
-            {
+            while (True) {
                 GET_BIT(BZ_X_SELECTOR_3, uc);
                 if (uc == 0)
                     break;
@@ -359,12 +345,10 @@ decompress(DState *s)
             for (v = 0; v < nGroups; v++)
                 pos[v] = v;
 
-            for (i = 0; i < nSelectors; i++)
-            {
+            for (i = 0; i < nSelectors; i++) {
                 v = s->selectorMtf[i];
                 tmp = pos[v];
-                while (v > 0)
-                {
+                while (v > 0) {
                     pos[v] = pos[v - 1];
                     v--;
                 }
@@ -374,13 +358,10 @@ decompress(DState *s)
         }
 
         /*--- Now the coding tables ---*/
-        for (t = 0; t < nGroups; t++)
-        {
+        for (t = 0; t < nGroups; t++) {
             GET_BITS(BZ_X_CODING_1, curr, 5);
-            for (i = 0; i < alphaSize; i++)
-            {
-                while (True)
-                {
+            for (i = 0; i < alphaSize; i++) {
+                while (True) {
                     if (curr < 1 || curr > 20)
                         RETURN(BZ_DATA_ERROR);
                     GET_BIT(BZ_X_CODING_2, uc);
@@ -397,12 +378,10 @@ decompress(DState *s)
         }
 
         /*--- Create the Huffman decoding tables ---*/
-        for (t = 0; t < nGroups; t++)
-        {
+        for (t = 0; t < nGroups; t++) {
             minLen = 32;
             maxLen = 0;
-            for (i = 0; i < alphaSize; i++)
-            {
+            for (i = 0; i < alphaSize; i++) {
                 if (s->len[t][i] > maxLen)
                     maxLen = s->len[t][i];
                 if (s->len[t][i] < minLen)
@@ -432,10 +411,8 @@ decompress(DState *s)
         {
             Int32 ii, jj, kk;
             kk = MTFA_SIZE - 1;
-            for (ii = 256 / MTFL_SIZE - 1; ii >= 0; ii--)
-            {
-                for (jj = MTFL_SIZE - 1; jj >= 0; jj--)
-                {
+            for (ii = 256 / MTFL_SIZE - 1; ii >= 0; ii--) {
+                for (jj = MTFL_SIZE - 1; jj >= 0; jj--) {
                     s->mtfa[kk] = (UChar)(ii * MTFL_SIZE + jj);
                     kk--;
                 }
@@ -448,19 +425,16 @@ decompress(DState *s)
 
         GET_MTF_VAL(BZ_X_MTF_1, BZ_X_MTF_2, nextSym);
 
-        while (True)
-        {
+        while (True) {
 
             if (nextSym == EOB)
                 break;
 
-            if (nextSym == BZ_RUNA || nextSym == BZ_RUNB)
-            {
+            if (nextSym == BZ_RUNA || nextSym == BZ_RUNB) {
 
                 es = -1;
                 N = 1;
-                do
-                {
+                do {
                     if (nextSym == BZ_RUNA)
                         es = es + (0 + 1) * N;
                     else if (nextSym == BZ_RUNB)
@@ -474,15 +448,13 @@ decompress(DState *s)
                 s->unzftab[uc] += es;
 
                 if (s->smallDecompress)
-                    while (es > 0)
-                    {
+                    while (es > 0) {
                         s->ll16[nblock] = ( UInt16 )uc;
                         nblock++;
                         es--;
                     }
                 else
-                    while (es > 0)
-                    {
+                    while (es > 0) {
                         s->tt[nblock] = ( UInt32 )uc;
                         nblock++;
                         es--;
@@ -491,9 +463,7 @@ decompress(DState *s)
                 if (nblock > nblockMAX)
                     RETURN(BZ_DATA_ERROR);
                 continue;
-            }
-            else
-            {
+            } else {
 
                 if (nblock > nblockMAX)
                     RETURN(BZ_DATA_ERROR);
@@ -504,13 +474,11 @@ decompress(DState *s)
                     UInt32 nn;
                     nn = (UInt32)(nextSym - 1);
 
-                    if (nn < MTFL_SIZE)
-                    {
+                    if (nn < MTFL_SIZE) {
                         /* avoid general-case expense */
                         pp = s->mtfbase[0];
                         uc = s->mtfa[pp + nn];
-                        while (nn > 3)
-                        {
+                        while (nn > 3) {
                             Int32 z = pp + nn;
                             s->mtfa[(z)] = s->mtfa[( z )-1];
                             s->mtfa[( z )-1] = s->mtfa[( z )-2];
@@ -518,28 +486,23 @@ decompress(DState *s)
                             s->mtfa[( z )-3] = s->mtfa[( z )-4];
                             nn -= 4;
                         }
-                        while (nn > 0)
-                        {
+                        while (nn > 0) {
                             s->mtfa[(pp + nn)] = s->mtfa[(pp + nn) - 1];
                             nn--;
                         };
                         s->mtfa[pp] = uc;
-                    }
-                    else
-                    {
+                    } else {
                         /* general case */
                         lno = nn / MTFL_SIZE;
                         off = nn % MTFL_SIZE;
                         pp = s->mtfbase[lno] + off;
                         uc = s->mtfa[pp];
-                        while (pp > s->mtfbase[lno])
-                        {
+                        while (pp > s->mtfbase[lno]) {
                             s->mtfa[pp] = s->mtfa[pp - 1];
                             pp--;
                         };
                         s->mtfbase[lno]++;
-                        while (lno > 0)
-                        {
+                        while (lno > 0) {
                             s->mtfbase[lno]--;
                             s->mtfa[s->mtfbase[lno]]
                             = s->mtfa[s->mtfbase[lno - 1] + MTFL_SIZE - 1];
@@ -547,13 +510,10 @@ decompress(DState *s)
                         }
                         s->mtfbase[0]--;
                         s->mtfa[s->mtfbase[0]] = uc;
-                        if (s->mtfbase[0] == 0)
-                        {
+                        if (s->mtfbase[0] == 0) {
                             kk = MTFA_SIZE - 1;
-                            for (ii = 256 / MTFL_SIZE - 1; ii >= 0; ii--)
-                            {
-                                for (jj = MTFL_SIZE - 1; jj >= 0; jj--)
-                                {
+                            for (ii = 256 / MTFL_SIZE - 1; ii >= 0; ii--) {
+                                for (jj = MTFL_SIZE - 1; jj >= 0; jj--) {
                                     s->mtfa[kk]
                                     = s->mtfa[s->mtfbase[ii] + jj];
                                     kk--;
@@ -591,16 +551,14 @@ decompress(DState *s)
         for (i = 1; i <= 256; i++)
             s->cftab[i] += s->cftab[i - 1];
 
-        if (s->smallDecompress)
-        {
+        if (s->smallDecompress) {
 
             /*-- Make a copy of cftab, used in generation of T --*/
             for (i = 0; i <= 256; i++)
                 s->cftabCopy[i] = s->cftab[i];
 
             /*-- compute the T vector --*/
-            for (i = 0; i < nblock; i++)
-            {
+            for (i = 0; i < nblock; i++) {
                 uc = (UChar)(s->ll16[i]);
                 SET_LL(i, s->cftabCopy[uc]);
                 s->cftabCopy[uc]++;
@@ -609,8 +567,7 @@ decompress(DState *s)
             /*-- Compute T^(-1) by pointer reversal on T --*/
             i = s->origPtr;
             j = GET_LL(i);
-            do
-            {
+            do {
                 Int32 tmp = GET_LL(j);
                 SET_LL(j, i);
                 i = j;
@@ -619,26 +576,20 @@ decompress(DState *s)
 
             s->tPos = s->origPtr;
             s->nblock_used = 0;
-            if (s->blockRandomised)
-            {
+            if (s->blockRandomised) {
                 BZ_RAND_INIT_MASK;
                 BZ_GET_SMALL(s->k0);
                 s->nblock_used++;
                 BZ_RAND_UPD_MASK;
                 s->k0 ^= BZ_RAND_MASK;
-            }
-            else
-            {
+            } else {
                 BZ_GET_SMALL(s->k0);
                 s->nblock_used++;
             }
-        }
-        else
-        {
+        } else {
 
             /*-- compute the T^(-1) vector --*/
-            for (i = 0; i < nblock; i++)
-            {
+            for (i = 0; i < nblock; i++) {
                 uc = (UChar)(s->tt[i] & 0xff);
                 s->tt[s->cftab[uc]] |= (i << 8);
                 s->cftab[uc]++;
@@ -646,16 +597,13 @@ decompress(DState *s)
 
             s->tPos = s->tt[s->origPtr] >> 8;
             s->nblock_used = 0;
-            if (s->blockRandomised)
-            {
+            if (s->blockRandomised) {
                 BZ_RAND_INIT_MASK;
                 BZ_GET_FAST(s->k0);
                 s->nblock_used++;
                 BZ_RAND_UPD_MASK;
                 s->k0 ^= BZ_RAND_MASK;
-            }
-            else
-            {
+            } else {
                 BZ_GET_FAST(s->k0);
                 s->nblock_used++;
             }

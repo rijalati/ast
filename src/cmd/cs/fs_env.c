@@ -130,16 +130,14 @@ svc_read(void *handle, int fd)
 
     con = state->con + fd;
     message((-1, "fd=%d state=%s", fd, state_name[con->state]));
-    switch (con->state)
-    {
+    switch (con->state) {
     case CMD:
         if ((n = csread(fd, buf, sizeof(buf), CS_LINE)) <= 1)
             goto drop;
         buf[n - 1] = 0;
         if (tokscan(buf, NiL, " %s %s %s ", &op, &logical, &path) < 1)
             goto nope;
-        switch (strkey(op))
-        {
+        switch (strkey(op)) {
         case HASHKEY5('d', 'e', 'b', 'u', 'g'):
             error_info.trace = -strtol(logical, NiL, 10);
             goto nope;
@@ -179,22 +177,19 @@ svc_read(void *handle, int fd)
         ret = 0;
         err = 0;
         op = 0;
-        switch (msg.call)
-        {
+        switch (msg.call) {
         case MSG_getdents:
             err = ENOSYS;
             break;
         case MSG_read:
             if (( long )msg.argv[2].number < 0)
                 err = EINVAL;
-            else if ((n = con->size - con->offset) > 0)
-            {
+            else if ((n = con->size - con->offset) > 0) {
                 if (n > MAXIO)
                     n = MAXIO;
                 if (n > msg.argv[2].number)
                     n = msg.argv[2].number;
-                if (n > 0)
-                {
+                if (n > 0) {
                     op = con->data + con->offset;
                     con->offset += n;
                     ret = n;
@@ -202,8 +197,7 @@ svc_read(void *handle, int fd)
             }
             break;
         case MSG_seek:
-            switch (msg.argv[2].number)
-            {
+            switch (msg.argv[2].number) {
             case SEEK_SET:
                 n = msg.argv[1].number;
                 break;
@@ -269,8 +263,7 @@ svc_timeout(void *handle)
 {
     State_t *state = ( State_t * )handle;
 
-    if (!state->active)
-    {
+    if (!state->active) {
         if (state->dormant)
             exit(0);
         state->dormant = 1;

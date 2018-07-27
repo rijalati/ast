@@ -91,8 +91,7 @@ bsInitWrite(EState *s)
 static void
 bsFinishWrite(EState *s)
 {
-    while (s->bsLive > 0)
-    {
+    while (s->bsLive > 0) {
         (( UChar * )(s->quadrant))[s->numZ] = (UChar)(s->bsBuff >> 24);
         s->numZ++;
         s->bsBuff <<= 8;
@@ -104,8 +103,7 @@ bsFinishWrite(EState *s)
 /*---------------------------------------------------*/
 #define bsNEEDW(nz)                                                          \
     {                                                                        \
-        while (s->bsLive >= 8)                                               \
-        {                                                                    \
+        while (s->bsLive >= 8) {                                             \
             (( UChar * )(s->quadrant))[s->numZ] = (UChar)(s->bsBuff >> 24);  \
             s->numZ++;                                                       \
             s->bsBuff <<= 8;                                                 \
@@ -154,8 +152,7 @@ makeMaps_e(EState *s)
     Int32 i;
     s->nInUse = 0;
     for (i = 0; i < 256; i++)
-        if (s->inUse[i])
-        {
+        if (s->inUse[i]) {
             s->unseqToSeq[i] = s->nInUse;
             s->nInUse++;
         }
@@ -185,8 +182,7 @@ generateMTFValues(EState *s)
     for (i = 0; i < s->nInUse; i++)
         yy[i] = ( UChar )i;
 
-    for (i = 0; i < s->nblock; i++)
-    {
+    for (i = 0; i < s->nblock; i++) {
         UChar ll_i;
 
         AssertD(wr <= i, "generateMTFValues(1)");
@@ -198,8 +194,7 @@ generateMTFValues(EState *s)
 
         j = 0;
         tmp = yy[j];
-        while (ll_i != tmp)
-        {
+        while (ll_i != tmp) {
             j++;
             tmp2 = tmp;
             tmp = yy[j];
@@ -207,19 +202,13 @@ generateMTFValues(EState *s)
         };
         yy[0] = tmp;
 
-        if (j == 0)
-        {
+        if (j == 0) {
             zPend++;
-        }
-        else
-        {
-            if (zPend > 0)
-            {
+        } else {
+            if (zPend > 0) {
                 zPend--;
-                while (True)
-                {
-                    switch (zPend % 2)
-                    {
+                while (True) {
+                    switch (zPend % 2) {
                     case 0:
                         s->szptr[wr] = BZ_RUNA;
                         wr++;
@@ -243,13 +232,10 @@ generateMTFValues(EState *s)
         }
     }
 
-    if (zPend > 0)
-    {
+    if (zPend > 0) {
         zPend--;
-        while (True)
-        {
-            switch (zPend % 2)
-            {
+        while (True) {
+            switch (zPend % 2) {
             case 0:
                 s->szptr[wr] = BZ_RUNA;
                 wr++;
@@ -333,20 +319,17 @@ sendMTFValues(EState *s)
         nPart = nGroups;
         remF = s->nMTF;
         gs = 0;
-        while (nPart > 0)
-        {
+        while (nPart > 0) {
             tFreq = remF / nPart;
             ge = gs - 1;
             aFreq = 0;
-            while (aFreq < tFreq && ge < alphaSize - 1)
-            {
+            while (aFreq < tFreq && ge < alphaSize - 1) {
                 ge++;
                 aFreq += s->mtfFreq[ge];
             }
 
             if (ge > gs && nPart != nGroups && nPart != 1
-                && ((nGroups - nPart) % 2 == 1))
-            {
+                && ((nGroups - nPart) % 2 == 1)) {
                 aFreq -= s->mtfFreq[ge];
                 ge--;
             }
@@ -376,8 +359,7 @@ sendMTFValues(EState *s)
     /*---
        Iterate up to BZ_N_ITERS times to improve the tables.
     ---*/
-    for (iter = 0; iter < BZ_N_ITERS; iter++)
-    {
+    for (iter = 0; iter < BZ_N_ITERS; iter++) {
 
         for (t = 0; t < nGroups; t++)
             fave[t] = 0;
@@ -389,8 +371,7 @@ sendMTFValues(EState *s)
         nSelectors = 0;
         totc = 0;
         gs = 0;
-        while (True)
-        {
+        while (True) {
 
             /*--- Set group start & end marks. --*/
             if (gs >= s->nMTF)
@@ -406,12 +387,10 @@ sendMTFValues(EState *s)
             for (t = 0; t < nGroups; t++)
                 cost[t] = 0;
 
-            if (nGroups == 6)
-            {
+            if (nGroups == 6) {
                 UInt16 cost0, cost1, cost2, cost3, cost4, cost5;
                 cost0 = cost1 = cost2 = cost3 = cost4 = cost5 = 0;
-                for (i = gs; i <= ge; i++)
-                {
+                for (i = gs; i <= ge; i++) {
                     UInt16 icv = s->szptr[i];
                     cost0 += s->len[0][icv];
                     cost1 += s->len[1][icv];
@@ -426,11 +405,8 @@ sendMTFValues(EState *s)
                 cost[3] = cost3;
                 cost[4] = cost4;
                 cost[5] = cost5;
-            }
-            else
-            {
-                for (i = gs; i <= ge; i++)
-                {
+            } else {
+                for (i = gs; i <= ge; i++) {
                     UInt16 icv = s->szptr[i];
                     for (t = 0; t < nGroups; t++)
                         cost[t] += s->len[t][icv];
@@ -444,8 +420,7 @@ sendMTFValues(EState *s)
             bc = 999999999;
             bt = -1;
             for (t = 0; t < nGroups; t++)
-                if (cost[t] < bc)
-                {
+                if (cost[t] < bc) {
                     bc = cost[t];
                     bt = t;
                 };
@@ -462,8 +437,7 @@ sendMTFValues(EState *s)
 
             gs = ge + 1;
         }
-        if (s->verbosity >= 3)
-        {
+        if (s->verbosity >= 3) {
             VPrintf2(
             "      pass %d: size is %d, grp uses are ", iter + 1, totc / 8);
             for (t = 0; t < nGroups; t++)
@@ -490,13 +464,11 @@ sendMTFValues(EState *s)
         UChar pos[BZ_N_GROUPS], ll_i, tmp2, tmp;
         for (i = 0; i < nGroups; i++)
             pos[i] = i;
-        for (i = 0; i < nSelectors; i++)
-        {
+        for (i = 0; i < nSelectors; i++) {
             ll_i = s->selector[i];
             j = 0;
             tmp = pos[j];
-            while (ll_i != tmp)
-            {
+            while (ll_i != tmp) {
                 j++;
                 tmp2 = tmp;
                 tmp = pos[j];
@@ -508,12 +480,10 @@ sendMTFValues(EState *s)
     };
 
     /*--- Assign actual codes for the tables. --*/
-    for (t = 0; t < nGroups; t++)
-    {
+    for (t = 0; t < nGroups; t++) {
         minLen = 32;
         maxLen = 0;
-        for (i = 0; i < alphaSize; i++)
-        {
+        for (i = 0; i < alphaSize; i++) {
             if (s->len[t][i] > maxLen)
                 maxLen = s->len[t][i];
             if (s->len[t][i] < minLen)
@@ -528,8 +498,7 @@ sendMTFValues(EState *s)
     /*--- Transmit the mapping table. ---*/
     {
         Bool inUse16[16];
-        for (i = 0; i < 16; i++)
-        {
+        for (i = 0; i < 16; i++) {
             inUse16[i] = False;
             for (j = 0; j < 16; j++)
                 if (s->inUse[i * 16 + j])
@@ -545,8 +514,7 @@ sendMTFValues(EState *s)
 
         for (i = 0; i < 16; i++)
             if (inUse16[i])
-                for (j = 0; j < 16; j++)
-                {
+                for (j = 0; j < 16; j++) {
                     if (s->inUse[i * 16 + j])
                         bsW(s, 1, 1);
                     else
@@ -561,8 +529,7 @@ sendMTFValues(EState *s)
     nBytes = s->numZ;
     bsW(s, 3, nGroups);
     bsW(s, 15, nSelectors);
-    for (i = 0; i < nSelectors; i++)
-    {
+    for (i = 0; i < nSelectors; i++) {
         for (j = 0; j < s->selectorMtf[i]; j++)
             bsW(s, 1, 1);
         bsW(s, 1, 0);
@@ -573,19 +540,15 @@ sendMTFValues(EState *s)
     /*--- Now the coding tables. ---*/
     nBytes = s->numZ;
 
-    for (t = 0; t < nGroups; t++)
-    {
+    for (t = 0; t < nGroups; t++) {
         Int32 curr = s->len[t][0];
         bsW(s, 5, curr);
-        for (i = 0; i < alphaSize; i++)
-        {
-            while (curr < s->len[t][i])
-            {
+        for (i = 0; i < alphaSize; i++) {
+            while (curr < s->len[t][i]) {
                 bsW(s, 2, 2);
                 curr++; /* 10 */
             };
-            while (curr > s->len[t][i])
-            {
+            while (curr > s->len[t][i]) {
                 bsW(s, 2, 3);
                 curr--; /* 11 */
             };
@@ -600,15 +563,13 @@ sendMTFValues(EState *s)
     nBytes = s->numZ;
     selCtr = 0;
     gs = 0;
-    while (True)
-    {
+    while (True) {
         if (gs >= s->nMTF)
             break;
         ge = gs + BZ_G_SIZE - 1;
         if (ge >= s->nMTF)
             ge = s->nMTF - 1;
-        for (i = gs; i <= ge; i++)
-        {
+        for (i = gs; i <= ge; i++) {
             AssertH(s->selector[selCtr] < nGroups, 3006);
             bsW(s,
                 s->len[s->selector[selCtr]][s->szptr[i]],
@@ -629,8 +590,7 @@ sendMTFValues(EState *s)
 void
 compressBlock(EState *s, Bool is_last_block)
 {
-    if (s->nblock > 0)
-    {
+    if (s->nblock > 0) {
 
         BZ_FINALISE_CRC(s->blockCRC);
         s->combinedCRC = (s->combinedCRC << 1) | (s->combinedCRC >> 31);
@@ -651,8 +611,7 @@ compressBlock(EState *s, Bool is_last_block)
     }
 
     /*-- If this is the first block, create the stream header. --*/
-    if (s->blockNo == 1)
-    {
+    if (s->blockNo == 1) {
         bsInitWrite(s);
         bsPutUChar(s, 'B');
         bsPutUChar(s, 'Z');
@@ -660,8 +619,7 @@ compressBlock(EState *s, Bool is_last_block)
         bsPutUChar(s, '0' + s->blockSize100k);
     }
 
-    if (s->nblock > 0)
-    {
+    if (s->nblock > 0) {
 
         bsPutUChar(s, 0x31);
         bsPutUChar(s, 0x41);
@@ -674,12 +632,10 @@ compressBlock(EState *s, Bool is_last_block)
         bsPutUInt32(s, s->blockCRC);
 
         /*-- Now a single bit indicating randomisation. --*/
-        if (s->blockRandomised)
-        {
+        if (s->blockRandomised) {
             bsW(s, 1, 1);
             s->nBlocksRandomised++;
-        }
-        else
+        } else
             bsW(s, 1, 0);
 
         bsW(s, 24, s->origPtr);
@@ -689,8 +645,7 @@ compressBlock(EState *s, Bool is_last_block)
 
 
     /*-- If this is the last block, add the stream trailer. --*/
-    if (is_last_block)
-    {
+    if (is_last_block) {
 
         if (s->verbosity >= 2 && s->nBlocksRandomised > 0)
             VPrintf2("    %d block%s needed randomisation\n",

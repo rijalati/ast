@@ -222,33 +222,26 @@ bgp_get(Cx_t *cx,
     Bgproute_t *rp;
     Cxvariable_t *vp = ( Cxvariable_t * )pc->data.variable;
 
-    if (data)
-    {
+    if (data) {
         bgp = BGPDATA(data);
         rp = ( Bgproute_t * )DSSDATA(data);
-    }
-    else if (rp = ( Bgproute_t * )r->value.buffer.data)
+    } else if (rp = ( Bgproute_t * )r->value.buffer.data)
         bgp = ( Bgp_t * )DSS(cx)->data;
-    else
-    {
+    else {
         memset(&r->value, 0, sizeof(r->value));
         return 0;
     }
-    switch (vp->index)
-    {
+    switch (vp->index) {
     case BGP_afi:
         r->value.number = rp->afi ? rp->afi : MRT_AFI_IPV4;
         break;
     case BGP_agg_addr:
-        if (rp->set & BGP_SET_agg_addrv6)
-        {
+        if (rp->set & BGP_SET_agg_addrv6) {
             r->value.buffer.data = rp->agg_addr.v6;
             r->value.buffer.size = sizeof(rp->agg_addr.v6);
             r->value.buffer.elements = 0;
             r->type = bgp->type_ipv6addr;
-        }
-        else
-        {
+        } else {
             r->value.number = rp->agg_addr.v4;
             r->type = bgp->type_ipv4addr;
         }
@@ -264,15 +257,12 @@ bgp_get(Cx_t *cx,
         r->value.buffer.elements = 0;
         break;
     case BGP_agg_addr32:
-        if (rp->set & BGP_SET_agg_addr32v6)
-        {
+        if (rp->set & BGP_SET_agg_addr32v6) {
             r->value.buffer.data = rp->agg_addr32.v6;
             r->value.buffer.size = sizeof(rp->agg_addr32.v6);
             r->value.buffer.elements = 0;
             r->type = bgp->type_ipv6addr;
-        }
-        else
-        {
+        } else {
             r->value.number = rp->agg_addr32.v4;
             r->type = bgp->type_ipv4addr;
         }
@@ -297,13 +287,10 @@ bgp_get(Cx_t *cx,
         r->value.number = rp->agg_as32;
         break;
     case BGP_aigp:
-        if (rp->set & BGP_SET_aigp)
-        {
+        if (rp->set & BGP_SET_aigp) {
             r->value.buffer.data = &rp->aigp;
             r->value.buffer.size = sizeof(Bgpaigp_t);
-        }
-        else
-        {
+        } else {
             r->value.buffer.data = 0;
             r->value.buffer.size = 0;
         }
@@ -330,15 +317,12 @@ bgp_get(Cx_t *cx,
         r->value.buffer.elements = 0;
         break;
     case BGP_dpa_addr:
-        if (rp->set & BGP_SET_dpa_addrv6)
-        {
+        if (rp->set & BGP_SET_dpa_addrv6) {
             r->value.buffer.data = rp->dpa_addr.v6;
             r->value.buffer.size = sizeof(rp->dpa_addr.v6);
             r->value.buffer.elements = 0;
             r->type = bgp->type_ipv6addr;
-        }
-        else
-        {
+        } else {
             r->value.number = rp->dpa_addr.v4;
             r->type = bgp->type_ipv4addr;
         }
@@ -363,15 +347,12 @@ bgp_get(Cx_t *cx,
         r->value.number = rp->dpa_as32;
         break;
     case BGP_dst_addr:
-        if (rp->set & BGP_SET_dst_addrv6)
-        {
+        if (rp->set & BGP_SET_dst_addrv6) {
             r->value.buffer.data = rp->dst_addr.v6;
             r->value.buffer.size = sizeof(rp->dst_addr.v6);
             r->value.buffer.elements = 0;
             r->type = bgp->type_ipv6addr;
-        }
-        else
-        {
+        } else {
             r->value.number = rp->dst_addr.v4;
             r->type = bgp->type_ipv4addr;
         }
@@ -404,15 +385,12 @@ bgp_get(Cx_t *cx,
         r->value.number = rp->flags;
         break;
     case BGP_hop:
-        if (rp->set & BGP_SET_hopv6)
-        {
+        if (rp->set & BGP_SET_hopv6) {
             r->value.buffer.data = rp->hop.v6;
             r->value.buffer.size = sizeof(rp->hop.v6);
             r->value.buffer.elements = 0;
             r->type = bgp->type_ipv6addr;
-        }
-        else
-        {
+        } else {
             r->value.number = rp->hop.v4;
             r->type = bgp->type_ipv4addr;
         }
@@ -447,13 +425,10 @@ bgp_get(Cx_t *cx,
         r->value.number = rp->message;
         break;
     case BGP_mvpn:
-        if (rp->mvpn)
-        {
+        if (rp->mvpn) {
             r->value.buffer.data = rp->data + rp->mvpn;
             r->value.buffer.size = sizeof(Bgpmvpn_t);
-        }
-        else
-        {
+        } else {
             r->value.buffer.data = 0;
             r->value.buffer.size = 0;
         }
@@ -471,29 +446,23 @@ bgp_get(Cx_t *cx,
         r->value.number = rp->origin ? rp->origin : BGP_ORIGIN_unset;
         break;
     case BGP_originator:
-        if (rp->set & BGP_SET_originatorv6)
-        {
+        if (rp->set & BGP_SET_originatorv6) {
             r->value.buffer.data = rp->originator.v6;
             r->value.buffer.size = sizeof(rp->originator.v6);
             r->value.buffer.elements = 0;
             r->type = bgp->type_ipv6addr;
-        }
-        else
-        {
+        } else {
             r->value.number = rp->originator.v4;
             r->type = bgp->type_ipv4addr;
         }
         break;
     case BGP_path:
-        if (rp->path.size)
-        {
+        if (rp->path.size) {
             r->value.buffer.data = rp->data + rp->path.offset;
             r->value.buffer.size = rp->path.size * sizeof(Bgpasn_t);
             r->value.buffer.elements = rp->path.elements;
             r->type = bgp->type_as16path;
-        }
-        else
-        {
+        } else {
             r->value.buffer.data = rp->data + rp->path32.offset;
             r->value.buffer.size = rp->path32.size * sizeof(Bgpnum_t);
             r->value.buffer.elements = rp->path32.elements;
@@ -511,15 +480,12 @@ bgp_get(Cx_t *cx,
         r->value.buffer.elements = rp->path32.elements;
         break;
     case BGP_prefix:
-        if (rp->set & BGP_SET_prefixv6)
-        {
+        if (rp->set & BGP_SET_prefixv6) {
             r->value.buffer.data = rp->prefixv6;
             r->value.buffer.size = sizeof(rp->prefixv6);
             r->value.buffer.elements = 0;
             r->type = bgp->type_ipv6prefix;
-        }
-        else
-        {
+        } else {
             r->value.number = ( Cxnumber_t )rp->addr.v4 * 64 + rp->bits;
             r->type = bgp->type_ipv4prefix;
         }
@@ -536,13 +502,10 @@ bgp_get(Cx_t *cx,
         r->value.buffer.elements = 0;
         break;
     case BGP_rd:
-        if (rp->set & BGP_SET_rd)
-        {
+        if (rp->set & BGP_SET_rd) {
             r->value.buffer.data = &rp->rd;
             r->value.buffer.size = sizeof(Bgprd_t);
-        }
-        else
-        {
+        } else {
             r->value.buffer.data = 0;
             r->value.buffer.size = 0;
         }
@@ -552,15 +515,12 @@ bgp_get(Cx_t *cx,
         r->value.number = rp->safi ? rp->safi : MRT_SAFI_NLRI_UCAST_FORWARD;
         break;
     case BGP_src_addr:
-        if (rp->set & BGP_SET_src_addrv6)
-        {
+        if (rp->set & BGP_SET_src_addrv6) {
             r->value.buffer.data = rp->src_addr.v6;
             r->value.buffer.size = sizeof(rp->src_addr.v6);
             r->value.buffer.elements = 0;
             r->type = bgp->type_ipv6addr;
-        }
-        else
-        {
+        } else {
             r->value.number = rp->src_addr.v4;
             r->type = bgp->type_ipv4addr;
         }
@@ -591,13 +551,10 @@ bgp_get(Cx_t *cx,
         r->value.number = rp->time ? rp->time : rp->stamp;
         break;
     case BGP_tunnel:
-        if (rp->tunnel)
-        {
+        if (rp->tunnel) {
             r->value.buffer.data = rp->data + rp->tunnel;
             r->value.buffer.size = sizeof(Bgptunnel_t);
-        }
-        else
-        {
+        } else {
             r->value.buffer.data = 0;
             r->value.buffer.size = 0;
         }
@@ -664,23 +621,18 @@ aigp_get(Cx_t *cx,
     Bgproute_t *rp;
     Bgpaigp_t *ap;
 
-    if (data)
-    {
+    if (data) {
         rp = ( Bgproute_t * )DSSDATA(data);
         ap = &rp->aigp;
-    }
-    else
-    {
+    } else {
         ap = ( Bgpaigp_t * )r->value.buffer.data;
         rp = ( Bgproute_t * )(( char * )ap - offsetof(Bgproute_t, aigp));
     }
-    if (!ap)
-    {
+    if (!ap) {
         memset(&r->value, 0, sizeof(r->value));
         return 0;
     }
-    switch (pc->data.variable->index)
-    {
+    switch (pc->data.variable->index) {
     case BGP_AIGP_aigp:
         r->value.buffer.data = rp->data + ap->aigp.offset;
         r->value.buffer.size = ap->aigp.size * sizeof(Bgpnum_t);
@@ -746,38 +698,30 @@ mvpn_get(Cx_t *cx,
     Bgproute_t *rp;
     Bgpmvpn_t *mp;
 
-    if (data)
-    {
+    if (data) {
         bgp = BGPDATA(data);
         rp = ( Bgproute_t * )DSSDATA(data);
         if (rp->mvpn)
             mp = ( Bgpmvpn_t * )&rp->data[rp->mvpn];
         else
             mp = 0;
-    }
-    else
-    {
+    } else {
         bgp = ( Bgp_t * )DSS(cx)->data;
         rp = 0;
         mp = ( Bgpmvpn_t * )r->value.buffer.data;
     }
-    if (!mp)
-    {
+    if (!mp) {
         memset(&r->value, 0, sizeof(r->value));
         return 0;
     }
-    switch (pc->data.variable->index)
-    {
+    switch (pc->data.variable->index) {
     case BGP_MVPN_group_addr:
-        if (mp->set & BGP_MVPN_SET_group_addrv6)
-        {
+        if (mp->set & BGP_MVPN_SET_group_addrv6) {
             r->value.buffer.data = mp->group_addr.v6;
             r->value.buffer.size = sizeof(mp->group_addr.v6);
             r->value.buffer.elements = 0;
             r->type = bgp->type_ipv6addr;
-        }
-        else
-        {
+        } else {
             r->value.number = mp->group_addr.v4;
             r->type = bgp->type_ipv4addr;
         }
@@ -793,28 +737,22 @@ mvpn_get(Cx_t *cx,
         r->value.buffer.elements = 0;
         break;
     case BGP_MVPN_key:
-        if (mp->key)
-        {
+        if (mp->key) {
             r->value.buffer.data = ( char * )mp + mp->key;
             r->value.buffer.size = sizeof(Bgproute_t);
-        }
-        else
-        {
+        } else {
             r->value.buffer.data = 0;
             r->value.buffer.size = 0;
         }
         r->value.buffer.elements = 0;
         break;
     case BGP_MVPN_originator:
-        if (mp->set & BGP_MVPN_SET_originatorv6)
-        {
+        if (mp->set & BGP_MVPN_SET_originatorv6) {
             r->value.buffer.data = mp->originator.v6;
             r->value.buffer.size = sizeof(mp->originator.v6);
             r->value.buffer.elements = 0;
             r->type = bgp->type_ipv6addr;
-        }
-        else
-        {
+        } else {
             r->value.number = mp->originator.v4;
             r->type = bgp->type_ipv4addr;
         }
@@ -830,28 +768,22 @@ mvpn_get(Cx_t *cx,
         r->value.buffer.elements = 0;
         break;
     case BGP_MVPN_rd:
-        if (mp->set & BGP_MVPN_SET_rd)
-        {
+        if (mp->set & BGP_MVPN_SET_rd) {
             r->value.buffer.data = &mp->rd;
             r->value.buffer.size = sizeof(Bgprd_t);
-        }
-        else
-        {
+        } else {
             r->value.buffer.data = 0;
             r->value.buffer.size = 0;
         }
         r->value.buffer.elements = 0;
         break;
     case BGP_MVPN_src_addr:
-        if (mp->set & BGP_MVPN_SET_src_addrv6)
-        {
+        if (mp->set & BGP_MVPN_SET_src_addrv6) {
             r->value.buffer.data = mp->src_addr.v6;
             r->value.buffer.size = sizeof(mp->src_addr.v6);
             r->value.buffer.elements = 0;
             r->type = bgp->type_ipv6addr;
-        }
-        else
-        {
+        } else {
             r->value.number = mp->src_addr.v4;
             r->type = bgp->type_ipv4addr;
         }
@@ -916,34 +848,25 @@ rd_get(Cx_t *cx,
     Bgproute_t *rp;
     Bgprd_t *rd;
 
-    if (data)
-    {
+    if (data) {
         bgp = BGPDATA(data);
         rp = ( Bgproute_t * )DSSDATA(data);
         rd = &rp->rd;
-    }
-    else if (rd = ( Bgprd_t * )r->value.buffer.data)
-    {
+    } else if (rd = ( Bgprd_t * )r->value.buffer.data) {
         bgp = ( Bgp_t * )DSS(cx)->data;
         rp = 0;
-    }
-    else
-    {
+    } else {
         memset(&r->value, 0, sizeof(r->value));
         return 0;
     }
-    switch (pc->data.variable->index)
-    {
+    switch (pc->data.variable->index) {
     case BGP_RD_addr:
-        if (rd->set & BGP_RD_SET_addrv6)
-        {
+        if (rd->set & BGP_RD_SET_addrv6) {
             r->value.buffer.data = rd->addr.v6;
             r->value.buffer.size = sizeof(rd->addr.v6);
             r->value.buffer.elements = 0;
             r->type = bgp->type_ipv6addr;
-        }
-        else
-        {
+        } else {
             r->value.number = rd->addr.v4;
             r->type = bgp->type_ipv4addr;
         }
@@ -1008,23 +931,19 @@ tunnel_get(Cx_t *cx,
     Bgproute_t *rp;
     Bgptunnel_t *ta;
 
-    if (data)
-    {
+    if (data) {
         rp = ( Bgproute_t * )DSSDATA(data);
         if (rp->tunnel)
             ta = ( Bgptunnel_t * )&rp->data[rp->tunnel];
         else
             ta = 0;
-    }
-    else
+    } else
         ta = ( Bgptunnel_t * )r->value.buffer.data;
-    if (!ta)
-    {
+    if (!ta) {
         memset(&r->value, 0, sizeof(r->value));
         return 0;
     }
-    switch (pc->data.variable->index)
-    {
+    switch (pc->data.variable->index) {
     case BGP_TA_flags:
         r->value.number = ta->flags;
         break;
@@ -1151,8 +1070,7 @@ bgpmeth(const char *name,
     Dssformat_t *fp;
     Dssmeth_t *copy;
 
-    if (!dtsize(meth->formats))
-    {
+    if (!dtsize(meth->formats)) {
         cxaddvariable(meth->cx, NiL, disc);
         for (i = 0; types[i].name; i++)
             if (cxaddtype(meth->cx, &types[i], disc))
@@ -1167,16 +1085,13 @@ bgpmeth(const char *name,
         for (fp = bgp_formats; fp; fp = fp->next)
             dtinsert(meth->formats, fp);
     }
-    if (options)
-    {
+    if (options) {
         if (dssoptlib(meth->cx->buf, &dss_lib_bgp, usage, disc))
             return 0;
         s = sfstruse(meth->cx->buf);
         i = 0;
-        for (;;)
-        {
-            switch (optstr(options, s))
-            {
+        for (;;) {
+            switch (optstr(options, s)) {
             case 'a':
                 i |= BGP_METHOD_ANONYMIZE;
                 continue;
@@ -1192,10 +1107,8 @@ bgpmeth(const char *name,
             }
             break;
         }
-        if (i)
-        {
-            if (!(copy = newof(0, Dssmeth_t, 1, 0)))
-            {
+        if (i) {
+            if (!(copy = newof(0, Dssmeth_t, 1, 0))) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -1228,8 +1141,7 @@ bgpopen(Dss_t *dss, Dssdisc_t *disc)
         || !(bgp->type_ipv4prefix = cxtype(dss->cx, "ipv4prefix_t", disc))
         || !(bgp->type_ipv6addr = cxtype(dss->cx, "ipv6addr_t", disc))
         || !(bgp->type_ipv6prefix = cxtype(dss->cx, "ipv6prefix_t", disc))
-        || !(bgp->tmp = sfstropen()))
-    {
+        || !(bgp->tmp = sfstropen())) {
         if (bgp)
             vmfree(dss->vm, bgp);
         if (disc->errorf)

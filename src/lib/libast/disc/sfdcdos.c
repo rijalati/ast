@@ -64,12 +64,11 @@ static void addmapping(dp) Dosdisc_t *dp;
 #endif
 {
     int n;
-    if ((n = dp->maptop++) >= dp->mapsize)
-    {
+    if ((n = dp->maptop++) >= dp->mapsize) {
         dp->mapsize *= 2;
-        if (!(dp->maptable = ( struct map * )realloc(
-              ( void * )dp->maptable, (dp->mapsize + 1) * sizeof(struct map))))
-        {
+        if (!(dp->maptable = ( struct map * )realloc(( void * )dp->maptable,
+                                                     (dp->mapsize + 1)
+                                                     * sizeof(struct map)))) {
             dp->maptop--;
             dp->mapsize *= 2;
             return;
@@ -91,13 +90,11 @@ int whence;
 {
     struct map *mp;
     static struct map dummy;
-    if (offset <= dp->begin)
-    {
+    if (offset <= dp->begin) {
         dummy.logical = dummy.physical = offset;
         return (&dummy);
     }
-    if (!(mp = dp->maptable))
-    {
+    if (!(mp = dp->maptable)) {
         dummy.logical = dp->begin;
         dummy.physical = dummy.logical + 1;
         return (&dummy);
@@ -121,29 +118,25 @@ Sfdisc_t *disc;
     Dosdisc_t *dp = ( Dosdisc_t * )disc;
     char *cp = ( char * )buff, *first, *cpmax;
     int n, count, m;
-    if (dp->extra)
-    {
+    if (dp->extra) {
         dp->extra = 0;
         *cp = dp->last;
         return (1);
     }
-    while (1)
-    {
+    while (1) {
         if ((n = sfrd(iop, buff, size, disc)) <= 0)
             return (n);
         dp->plast = dp->phere;
         dp->phere += n;
         dp->llast = dp->lhere;
         cpmax = cp + n - 1;
-        if (dp->last == '\r' && *cp != '\n')
-        {
+        if (dp->last == '\r' && *cp != '\n') {
             /* should insert a '\r' */;
         }
         dp->last = *cpmax;
         if (n > 1)
             break;
-        if (dp->last != '\r')
-        {
+        if (dp->last != '\r') {
             dp->lhere++;
             return (1);
         }
@@ -153,8 +146,7 @@ Sfdisc_t *disc;
     else if (dp->last != '\n' || cpmax[-1] != '\r')
         *cpmax = '\r';
     dp->lhere += n;
-    while (1)
-    {
+    while (1) {
         while (*cp++ != '\r')
             ;
         if (cp > cpmax || *cp == '\n')
@@ -162,8 +154,7 @@ Sfdisc_t *disc;
     }
     dp->skip = cp - 1 - ( char * )buff;
     /* if not \r\n in buffer, just return */
-    if ((count = cpmax + 1 - cp) <= 0)
-    {
+    if ((count = cpmax + 1 - cp) <= 0) {
         *cpmax = dp->last;
         if (!dp->maptable)
             dp->begin += n;
@@ -171,12 +162,10 @@ Sfdisc_t *disc;
         count = 0;
         goto done;
     }
-    if (!dp->maptable)
-    {
+    if (!dp->maptable) {
         dp->begin += cp - ( char * )buff - 1;
         if (dp->maptable
-            = ( struct map * )malloc((MINMAP + 1) * sizeof(struct map)))
-        {
+            = ( struct map * )malloc((MINMAP + 1) * sizeof(struct map))) {
             dp->mapsize = MINMAP;
             dp->maptable[0].logical = dp->begin;
             dp->maptable[0].physical = dp->maptable[0].logical + 1;
@@ -185,8 +174,7 @@ Sfdisc_t *disc;
         }
     }
     /* save original discipline inside buffer */
-    if (count > dp->bsize)
-    {
+    if (count > dp->bsize) {
         if (dp->bsize == 0)
             dp->buff = malloc(count);
         else
@@ -197,8 +185,7 @@ Sfdisc_t *disc;
     }
     memcpy(dp->buff, cp, count);
     count = 1;
-    while (1)
-    {
+    while (1) {
         first = cp;
         if (cp == cpmax)
             cp++;
@@ -216,8 +203,7 @@ Sfdisc_t *disc;
     cpmax[-count] = dp->last;
     dp->lhere -= count;
 done:
-    if (dp->lhere > dp->lmax)
-    {
+    if (dp->lhere > dp->lmax) {
         dp->lmax = dp->lhere;
         dp->pmax = dp->phere;
         if (dp->maptable
@@ -246,28 +232,22 @@ int whence;
     Sfoff_t n, m = 0;
     char *cp;
 
-    if (whence == SEEK_CUR)
-    {
+    if (whence == SEEK_CUR) {
         whence = -1;
         n = offset - dp->plast;
         iop->next = iop->data + n;
         offset = dp->llast;
-    }
-    else
-    {
+    } else {
         whence = 1;
         n = offset - dp->llast;
         offset = dp->plast;
     }
     offset += n;
-    if ((n -= dp->skip) > 0)
-    {
+    if ((n -= dp->skip) > 0) {
         m = whence;
         cp = ( char * )dp->buff;
-        while (n--)
-        {
-            if (*cp++ == '\r' && *cp == '\n')
-            {
+        while (n--) {
+            if (*cp++ == '\r' && *cp == '\n') {
                 m += whence;
                 if (whence > 0)
                     n++;
@@ -294,8 +274,7 @@ Sfdisc_t *disc;
     Sfoff_t physical;
     int n, size;
 retry:
-    switch (whence)
-    {
+    switch (whence) {
     case SEEK_CUR:
         offset = sfsk(iop, ( Sfoff_t )0, SEEK_CUR, disc);
         if (offset <= dp->begin)
@@ -325,16 +304,14 @@ retry:
         size = sfvalue(iop);
     else
         size = iop->endb - iop->data;
-    if (mp)
-    {
+    if (mp) {
         sfsk(iop, mp->physical, SEEK_SET, disc);
         dp->phere = mp->physical;
         dp->lhere = mp->logical;
         if ((*disc->readf)(iop, iop->data, size, disc) < 0)
             return (-1);
     }
-    while (1)
-    {
+    while (1) {
         if (whence == SEEK_CUR && dp->phere >= offset)
             break;
         if (whence == SEEK_SET && dp->lhere >= offset)
@@ -342,10 +319,8 @@ retry:
         n = (*disc->readf)(iop, iop->data, size, disc);
         if (n < 0)
             return (-1);
-        if (n == 0)
-        {
-            if (whence == SEEK_END && offset < 0)
-            {
+        if (n == 0) {
+            if (whence == SEEK_END && offset < 0) {
                 offset = dp->lhere;
                 whence = SEEK_SET;
                 goto retry;
@@ -355,16 +330,13 @@ retry:
     }
     if (whence == SEEK_END)
         offset += dp->lhere;
-    else
-    {
+    else {
         physical = cur_offset(dp, offset, iop, whence);
-        if (whence == SEEK_SET)
-        {
+        if (whence == SEEK_SET) {
             sfsk(iop, physical, SEEK_SET, disc);
             dp->phere = physical;
             dp->lhere = offset;
-        }
-        else
+        } else
             offset = physical;
     }
     return (offset);
@@ -381,8 +353,7 @@ Sfdisc_t *disc;
 #endif
 {
     Dosdisc_t *dp = ( Dosdisc_t * )disc;
-    if (type == SF_DPOP || type == SF_FINAL)
-    {
+    if (type == SF_DPOP || type == SF_FINAL) {
         if (dp->bsize > 0)
             free(( void * )dp->buff);
         if (dp->mapsize)
@@ -414,8 +385,7 @@ int sfdcdos(f) Sfio_t *f;
     dos->disc.seekf = dos_seek;
     dos->disc.exceptf = dos_except;
 
-    if (sfdisc(f, ( Sfdisc_t * )dos) != ( Sfdisc_t * )dos)
-    {
+    if (sfdisc(f, ( Sfdisc_t * )dos) != ( Sfdisc_t * )dos) {
         free(dos);
         return -1;
     }

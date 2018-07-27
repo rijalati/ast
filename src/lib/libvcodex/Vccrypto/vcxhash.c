@@ -37,8 +37,7 @@ vcxhash(Vcchar_t *data, ssize_t dtsz, Vcchar_t *hash, ssize_t hssz)
     if (vcxinit(&xx, Vcxaessum, NIL(Vcchar_t *), 0) < 0)
         return -1;
 
-    for (dgsz = hssz; dgsz > 0; dgsz -= sz, hash += sz)
-    {
+    for (dgsz = hssz; dgsz > 0; dgsz -= sz, hash += sz) {
         if ((sz = vcxencode(&xx, data, dtsz, &dg)) <= 0)
             return -1;
         if (sz > dgsz)

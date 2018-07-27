@@ -84,17 +84,14 @@ pathkey_20100601(const char *lang,
 
     if (!key)
         key = buf;
-    if (tool && streq(tool, "mam"))
-    {
+    if (tool && streq(tool, "mam")) {
         for (n = 0; *path; path++)
             n = n * 0x63c63cd9L + *path + 0x9c39c33dL;
         k = key;
         for (n &= 0xffffffffL; n; n >>= 4)
             *k++ = let[n & 0xf];
         *k = 0;
-    }
-    else
-    {
+    } else {
         for (c = 0; c < elementsof(env); c++)
             env[c] = 0;
         n = 0;
@@ -103,12 +100,10 @@ pathkey_20100601(const char *lang,
          * trailing flags in path
          */
 
-        if (flags = strchr(path, ' '))
-        {
+        if (flags = strchr(path, ' ')) {
             if (flags == path)
                 flags = 0;
-            else
-            {
+            else {
                 strlcpy(tmp, path, sizeof(tmp));
                 *(flags = tmp + (flags - path)) = 0;
                 path = tmp;
@@ -133,8 +128,7 @@ pathkey_20100601(const char *lang,
         if (attr)
             attr = stpcpy(attr, "PREROOT='");
 #if FS_PREROOT
-        if (k = getenv(PR_BASE))
-        {
+        if (k = getenv(PR_BASE)) {
             if (s = strrchr(k, '/'))
                 k = s + 1;
             n = memsum(k, strlen(k), n);
@@ -142,16 +136,14 @@ pathkey_20100601(const char *lang,
         if (attr && (getpreroot(attr, path) || getpreroot(attr, NiL)))
             attr += strlen(attr);
 #else
-        if ((k = getenv("VIRTUAL_ROOT")) && *k == '/')
-        {
+        if ((k = getenv("VIRTUAL_ROOT")) && *k == '/') {
             n = memsum(k, strlen(k), n);
             if (attr)
                 attr = stpcpy(attr, k);
         }
 #endif
 #if _UWIN
-        if (!stat("/", &st) && st.st_ino == 64)
-        {
+        if (!stat("/", &st) && st.st_ino == 64) {
             k = "/64";
             n = memsum(k, strlen(k), n);
             if (attr)
@@ -165,8 +157,7 @@ pathkey_20100601(const char *lang,
 
         if (attr)
             attr = stpcpy(attr, "' UNIVERSE='");
-        if (k = astconf("UNIVERSE", NiL, NiL))
-        {
+        if (k = astconf("UNIVERSE", NiL, NiL)) {
             n = memsum(k, strlen(k), n);
             if (attr)
                 attr = stpcpy(attr, k);
@@ -191,8 +182,7 @@ pathkey_20100601(const char *lang,
         if (!(k = getenv("PROBE_ATTRIBUTES")))
             k = getenv("VERSION_ENVIRONMENT");
         if (k)
-            while (c < (elementsof(usr) - 1))
-            {
+            while (c < (elementsof(usr) - 1)) {
                 while (*k && (*k == ':' || *k == ' '))
                     k++;
                 if (!*k)
@@ -205,10 +195,8 @@ pathkey_20100601(const char *lang,
         ver[0] = ( char * )lang;
         ver[1] = k = (s = strrchr(path, '/')) ? s + 1 : path;
         s = buf;
-        if (isdigit(*k))
-        {
-            if (*k == '3' && *(k + 1) == 'b')
-            {
+        if (isdigit(*k)) {
+            if (*k == '3' && *(k + 1) == 'b') {
                 /*
                  * cuteness never pays
                  */
@@ -217,12 +205,10 @@ pathkey_20100601(const char *lang,
                 *s++ = 'B';
                 *s++ = 'B';
                 *s++ = 'B';
-            }
-            else
+            } else
                 *s++ = 'U';
         }
-        for (; (c = *k) && s < &buf[sizeof(buf) - 1]; k++)
-        {
+        for (; (c = *k) && s < &buf[sizeof(buf) - 1]; k++) {
             if (!isalnum(c))
                 c = '_';
             else if (islower(c))
@@ -230,44 +216,36 @@ pathkey_20100601(const char *lang,
             *s++ = c;
         }
         *s = 0;
-        for (p = environ; *p; p++)
-        {
+        for (p = environ; *p; p++) {
             s = "VERSION_";
             for (k = *p; *k && *k == *s; k++, s++)
                 ;
-            if (*k && !*s)
-            {
+            if (*k && !*s) {
                 for (c = 0; c < elementsof(ver); c++)
-                    if (!env[c] && (s = ver[c]))
-                    {
+                    if (!env[c] && (s = ver[c])) {
                         for (t = k; *t && *t != '=' && *t++ == *s; s++)
                             ;
-                        if (*t == '=' && (!*s || (s - ver[c]) > 1))
-                        {
+                        if (*t == '=' && (!*s || (s - ver[c]) > 1)) {
                             env[c] = *p;
                             goto found;
                         }
                     }
             }
-            if (!env[2])
-            {
+            if (!env[2]) {
                 s = buf;
                 for (k = *p; *k && *s++ == *k; k++)
                     ;
                 if ((s - buf) > 2 && k[0] == 'V' && k[1] == 'E' && k[2] == 'R'
-                    && k[3] == '=')
-                {
+                    && k[3] == '=') {
                     env[2] = *p;
                     goto found;
                 }
             }
             for (c = 0; c < elementsof(usr) && (s = usr[c]); c++)
-                if (!env[c + elementsof(env) - elementsof(usr)])
-                {
+                if (!env[c + elementsof(env) - elementsof(usr)]) {
                     for (k = *p; *k && *k == *s; k++, s++)
                         ;
-                    if (*k == '=' && (!*s || *s == ':' || *s == ' '))
-                    {
+                    if (*k == '=' && (!*s || *s == ':' || *s == ' ')) {
                         env[c + elementsof(env) - elementsof(usr)] = *p;
                         goto found;
                     }
@@ -275,28 +253,23 @@ pathkey_20100601(const char *lang,
         found:;
         }
         for (c = 0; c < elementsof(env); c++)
-            if (k = env[c])
-            {
-                if (attr)
-                {
+            if (k = env[c]) {
+                if (attr) {
                     *attr++ = ' ';
                     while ((*attr++ = *k++) != '=')
                         ;
                     *attr++ = '\'';
                     attr = stpcpy(attr, k);
                     *attr++ = '\'';
-                }
-                else
+                } else
                     while (*k && *k++ != '=')
                         ;
                 n = memsum(k, strlen(k), n);
             }
-        if (attr)
-        {
+        if (attr) {
             attr = stpcpy(attr, " ATTRIBUTES='PREROOT UNIVERSE");
             for (c = 0; c < elementsof(env); c++)
-                if (k = env[c])
-                {
+                if (k = env[c]) {
                     *attr++ = ' ';
                     while ((*attr = *k++) != '=')
                         attr++;
@@ -319,17 +292,14 @@ pathkey_20100601(const char *lang,
             t = path;
         else if ((t = s - 4) < flags)
             t = flags + 1;
-        for (;;)
-        {
-            if (--s < t)
-            {
+        for (;;) {
+            if (--s < t) {
                 if (t == path)
                     break;
                 s = flags - 2;
                 t = path;
             }
-            if (*s != '/' && *s != ' ')
-            {
+            if (*s != '/' && *s != ' ') {
                 *--k = *s;
                 if (k <= key + 8)
                     break;

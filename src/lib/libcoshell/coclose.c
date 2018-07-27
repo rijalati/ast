@@ -54,8 +54,7 @@ shut(Coshell_t *co)
 
     sfclose(co->msgfp);
     close(co->cmdfd);
-    if (co->pid)
-    {
+    if (co->pid) {
         if (co->running > 0)
             killpg(co->pid, SIGTERM);
         state.current = co;
@@ -66,8 +65,7 @@ shut(Coshell_t *co)
         alarm(n);
         signal(SIGALRM, handler);
         killpg(co->pid, SIGTERM);
-    }
-    else
+    } else
         status = 0;
     if (co->flags & CO_DEBUG)
         errormsg(state.lib,
@@ -77,8 +75,7 @@ shut(Coshell_t *co)
                  co->total,
                  fmtelapsed(co->user, CO_QUANT),
                  fmtelapsed(co->sys, CO_QUANT));
-    for (sv = co->service; sv; sv = sv->next)
-    {
+    for (sv = co->service; sv; sv = sv->next) {
         if (sv->fd > 0)
             close(sv->fd);
         if (sv->pid)
@@ -86,10 +83,8 @@ shut(Coshell_t *co)
     }
     cs = state.coshells;
     ps = 0;
-    while (cs)
-    {
-        if (cs == co)
-        {
+    while (cs) {
+        if (cs == co) {
             cs = cs->next;
             if (ps)
                 ps->next = cs;

@@ -36,8 +36,7 @@
 #    include "pt.h"
 
 #    define PTSCAN(t, x, b, m, s)                                            \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             Ptprefix_t *_pt_p;                                               \
             Ptaddr_t _pt_min;                                                \
             Ptaddr_t _pt_max;                                                \
@@ -45,18 +44,15 @@
             Ptaddr_t x;                                                      \
             unsigned int b;                                                  \
             for (_pt_p = ( Ptprefix_t * )dtfirst((t)->dict); _pt_p;          \
-                 _pt_p = ( Ptprefix_t * )dtnext((t)->dict, _pt_p))           \
-            {                                                                \
+                 _pt_p = ( Ptprefix_t * )dtnext((t)->dict, _pt_p)) {         \
                 _pt_min = _pt_p->min;                                        \
                 _pt_max = _pt_p->max;                                        \
-                do                                                           \
-                {                                                            \
+                do {                                                         \
                     x = _pt_min;                                             \
                     m = 1;                                                   \
                     b = PTBITS;                                              \
                     while (m && !(x & ((1 << PTSHIFT) - 1))                  \
-                           && (_pt_min | ((m << PTSHIFT) - 1)) <= _pt_max)   \
-                    {                                                        \
+                           && (_pt_min | ((m << PTSHIFT) - 1)) <= _pt_max) { \
                         x >>= PTSHIFT;                                       \
                         m <<= PTSHIFT;                                       \
                         b -= PTSHIFT;                                        \

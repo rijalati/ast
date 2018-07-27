@@ -130,10 +130,8 @@ int locking;                                        /* (0)1: (un)locking	*/
     uchar *lckp = hash->lock + (hsh & hash->lmax);
     uint *refn = hash->refn + (hsh & hash->lmax);
 
-    if (locking)
-    {
-        if (type & (H_INSERT | H_DELETE))
-        {
+    if (locking) {
+        if (type & (H_INSERT | H_DELETE)) {
             asospindecl();
             for (asospininit();; asospinnext())
                 if (asocaschar(lckp, 0, 1) == 0) /* got lock */
@@ -143,14 +141,11 @@ int locking;                                        /* (0)1: (un)locking	*/
         /* increase reference count */
         asoaddint(refn, 1); /**/
         DEBUG_ASSERT(refn > 0);
-    }
-    else
-    {                       /* decrease reference count */
+    } else {                /* decrease reference count */
         asosubint(refn, 1); /**/
         DEBUG_ASSERT(refn >= 0);
 
-        if (type & (H_INSERT | H_DELETE))
-        { /**/
+        if (type & (H_INSERT | H_DELETE)) { /**/
             DEBUG_ASSERT(*lckp == 1);
             asocaschar(lckp, 1, 0); /* unlock */
         }
@@ -177,8 +172,7 @@ ssize_t ppos; /* position in parent table	*/
 
     /* allocate table and initialize data */
     z = sizeof(Htbl_t) + (HSIZE(hash, lev) - 1) * sizeof(Dtlink_t *);
-    if (!(tbl = ( Htbl_t * )(*dt->memoryf)(dt, 0, z, dt->disc)))
-    {
+    if (!(tbl = ( Htbl_t * )(*dt->memoryf)(dt, 0, z, dt->disc))) {
         DTERROR(dt, "Error in allocating a hashtrie table");
         return NIL(Htbl_t *);
     }
@@ -239,8 +233,7 @@ int zap;     /* < 0: free all structures	*/
     Hash_t *hash = ( Hash_t * )dt->data;
     int share = hash->data.type & DT_SHARE;
 
-    for (tblz = HSIZE(hash, lev), p = 0; p < tblz; ++p)
-    {
+    for (tblz = HSIZE(hash, lev), p = 0; p < tblz; ++p) {
         if (lev == 0) /* lock the class as necessary */
             HCLSLOCK(dt, p, DT_DELETE, share);
 
@@ -253,8 +246,7 @@ int zap;     /* < 0: free all structures	*/
             HCLSOPEN(dt, p, DT_DELETE, share);
     }
 
-    if (zap < 0 || (zap >= 0 && lev > 0))
-    {
+    if (zap < 0 || (zap >= 0 && lev > 0)) {
         if ((ptbl = ( Htbl_t * )tbl->link._ptbl))
             ptbl->list[HVALUE(tbl->link._ppos)] = NIL(Dtlink_t *);
         (*dt->memoryf)(dt, ( Void_t * )tbl, 0, dt->disc);
@@ -292,23 +284,18 @@ int type;     /* operation type		*/
     int share = hash->data.type & DT_SHARE;
 
     obj = NIL(Void_t *);
-    for (tblz = HSIZE(hash, lev); pos < tblz && !obj; ++pos)
-    {
+    for (tblz = HSIZE(hash, lev); pos < tblz && !obj; ++pos) {
         if (lev == 0 || type != 0) /* type != 0 means not a recursion */
             HCLSLOCK(dt, lev == 0 ? pos : hsh, DT_SEARCH, share);
 
-        if ((p = t = asogetptr(tbl->list + pos)))
-        {
-            if (HTABLE(t))
-            {
+        if ((p = t = asogetptr(tbl->list + pos))) {
+            if (HTABLE(t)) {
                 if (!(p
                       = asogetptr(&((( Htbl_t * )t)->pobj)))) /* type == 0 */
                     obj = hfirst(dt, fngr, ( Htbl_t * )t, lev + 1, 0, 0, 0);
                 else
                     goto o_bj; /* p is a valid object */
-            }
-            else
-            {
+            } else {
             o_bj:
                 obj = _DTOBJ(dt->disc, p);
                 if (fngr) /* faster dtnext/dtprev next time */
@@ -321,8 +308,7 @@ int type;     /* operation type		*/
             }
         }
 
-        if (lev == 0 || type != 0)
-        {
+        if (lev == 0 || type != 0) {
             DTANNOUNCE(dt, obj, type); /* announce obj before opening */
             HCLSOPEN(dt, lev == 0 ? pos : hsh, DT_SEARCH, share);
         }
@@ -392,14 +378,12 @@ int zap;         /* erase the location		*/
     Hash_t *hash = ( Hash_t * )dt->data;
     int share = hash->data.type & DT_SHARE;
 
-    for (tblz = HSIZE(hash, lev), p = 0; p < tblz; ++p)
-    {
+    for (tblz = HSIZE(hash, lev), p = 0; p < tblz; ++p) {
         if (lev == 0) /* hard lock in case we need to zap it */
             HCLSLOCK(dt, p, DT_DELETE, share);
 
         lnkp = HLNKP(tbl, p);
-        if ((t = asogetptr(lnkp)))
-        {
+        if ((t = asogetptr(lnkp))) {
             if (last) /* append to flattened list */
                 last = (last->_rght = t);
             else
@@ -435,17 +419,14 @@ int type;
     Dtdisc_t *disc = dt->disc;
     Hash_t *hash = ( Hash_t * )dt->data;
 
-    if (type & (DT_EXTRACT | DT_FLATTEN))
-    {
+    if (type & (DT_EXTRACT | DT_FLATTEN)) {
         list = NIL(Dtlink_t *);
         ( void )hflatten(
         dt, &list, NIL(Dtlink_t *), hash->root, 0, (type & DT_EXTRACT));
-    }
-    else /*if(type&DT_RESTORE)*/
+    } else /*if(type&DT_RESTORE)*/
     {
         hash->data.size = 0;
-        for (l = list; l; l = next)
-        {
+        for (l = list; l; l = next) {
             next = l->_rght;
             obj = _DTOBJ(disc, l);
             if ((dt->meth->searchf)(dt, ( Void_t * )l, DT_RELINK) == obj)
@@ -475,21 +456,18 @@ Dtstat_t *st;
         return -1;
 
     size = 0;
-    for (tblz = HSIZE(hash, lev), p = 0; p < tblz; ++p)
-    {
+    for (tblz = HSIZE(hash, lev), p = 0; p < tblz; ++p) {
         if (lev == 0)
             HCLSLOCK(dt, p, DT_SEARCH, share);
 
         z = rz = 0;
-        if ((t = asogetptr(tbl->list + p)))
-        {
+        if ((t = asogetptr(tbl->list + p))) {
             if (!HTABLE(t))
                 z = 1;
             else if ((rz = hsize(dt, ( Htbl_t * )t, lev + 1, st)) >= 0)
                 z = (( Htbl_t * )t)->pobj ? 1 : 0;
         }
-        if (rz >= 0)
-        {
+        if (rz >= 0) {
             size += z + rz;
             if (z > 0 && st && lev < DT_MAXSIZE)
                 st->lsize[lev] += z;
@@ -502,12 +480,10 @@ Dtstat_t *st;
             return -1;
     }
 
-    if (st)
-    {
+    if (st) {
         st->tslot = HSIZE(hash, 0);
         st->mlev = lev > st->mlev ? lev : st->mlev;
-        if (lev < DT_MAXSIZE)
-        {
+        if (lev < DT_MAXSIZE) {
             st->msize = lev > st->msize ? lev : st->msize;
             st->tsize[lev] += HSIZE(hash, lev); /* #slots per level */
         }
@@ -530,8 +506,7 @@ Dtstat_t *st;
 
     if (!st)
         size = hash->data.size;
-    else
-    {
+    else {
         memset(st, 0, sizeof(Dtstat_t));
         st->meth = dt->meth->type;
         st->size = size = hsize(dt, hash->root, 0, st);
@@ -569,8 +544,7 @@ dthashtrie(Dt_t *dt, Void_t *obj, int type)
     /* operations not dealing with a particular object or walk-related */
     if (type
         & (DT_START | DT_STEP | DT_STOP | DT_FIRST | DT_LAST | DT_CLEAR
-           | DT_STAT | DT_EXTRACT | DT_RESTORE | DT_FLATTEN))
-    {
+           | DT_STAT | DT_EXTRACT | DT_RESTORE | DT_FLATTEN)) {
         if (type & DT_START) /* starting a walk */
         {
             if (!(fngr
@@ -583,8 +557,7 @@ dthashtrie(Dt_t *dt, Void_t *obj, int type)
                 return obj ? ( Void_t * )fngr : NIL(Void_t *);
             }
             /* else, search for obj below */
-        }
-        else if (type & DT_STEP) /* take a step forward in a walk */
+        } else if (type & DT_STEP) /* take a step forward in a walk */
         {
             if (!(fngr = ( Fngr_t * )obj) || !(lnk = fngr->here))
                 return NIL(Void_t *);
@@ -596,14 +569,12 @@ dthashtrie(Dt_t *dt, Void_t *obj, int type)
 
             DTANNOUNCE(dt, obj, type);
             return obj;
-        }
-        else if (type & DT_STOP) /* stop a walk */
+        } else if (type & DT_STOP) /* stop a walk */
         {
             if (obj) /* free associated memory */
                 (*dt->memoryf)(dt, obj, 0, disc);
             return NIL(Void_t *);
-        }
-        else if (type & (DT_FIRST | DT_LAST))
+        } else if (type & (DT_FIRST | DT_LAST))
             return hfirst(dt, fngr, hash->root, 0, 0, 0, type);
         else if (type & DT_CLEAR)
             return hclear(dt, hash->root, 0, 0);
@@ -627,16 +598,12 @@ dthashtrie(Dt_t *dt, Void_t *obj, int type)
         lnk = ( Dtlink_t * )obj;
         obj = _DTOBJ(disc, lnk);
         key = _DTKEY(disc, obj);
-    }
-    else
-    {
+    } else {
         lnk = NIL(Dtlink_t *);
-        if (type & DT_MATCH)
-        {
+        if (type & DT_MATCH) {
             key = obj;
             obj = NIL(Void_t *);
-        }
-        else
+        } else
             key = _DTKEY(disc, obj);
     }
     hsh = _DTHSH(dt, key, disc); /* hash value from hash function */
@@ -646,26 +613,22 @@ dthashtrie(Dt_t *dt, Void_t *obj, int type)
 
     opnt = NIL(Htbl_t *);
     opnp = oplv = -1; /* open space suitable for insertion */
-    for (tbl = hash->root, lev = 0;;)
-    {
+    for (tbl = hash->root, lev = 0;;) {
         hshp = HBASP(hash, lev, hsh); /* base location of object */
         srch = HSRCH(hash, lev);      /* number of search steps */
         modz = HSIZE(hash, lev) - 1;  /* circular search of table */
-        for (pos = hshp, k = 0; k < srch; ++k, pos = ((pos + 1) & modz))
-        {
+        for (pos = hshp, k = 0; k < srch; ++k, pos = ((pos + 1) & modz)) {
             if ((t = asogetptr(tbl->list + pos)) && HTABLE(t))
                 t = (( Htbl_t * )t)->pobj;
 
             if (!t) /* empty slot */
             {
-                if (!opnt && (type & H_INSERT))
-                {
+                if (!opnt && (type & H_INSERT)) {
                     opnt = tbl;
                     opnp = pos;
                 }
                 continue;
-            }
-            else if (t->_hash != hsh) /* cannot match */
+            } else if (t->_hash != hsh) /* cannot match */
                 continue;
             else /* potential match, verify */
             {
@@ -673,8 +636,7 @@ dthashtrie(Dt_t *dt, Void_t *obj, int type)
                 ky = _DTKEY(disc, o);
                 if (_DTCMP(dt, key, ky, disc) != 0)
                     continue;
-                else if (type & (DT_REMOVE | DT_NEXT | DT_PREV | DT_START))
-                {
+                else if (type & (DT_REMOVE | DT_NEXT | DT_PREV | DT_START)) {
                     if (type & DT_START) /* starting a walk, return fingered
                                             data */
                     {
@@ -685,9 +647,8 @@ dthashtrie(Dt_t *dt, Void_t *obj, int type)
 
                         HCLSOPEN(dt, hsh, type, share);
                         return ( Void_t * )fngr;
-                    }
-                    else if (o != obj) /* try to find exact object in case of
-                                          a bag */
+                    } else if (o != obj) /* try to find exact object in case
+                                            of a bag */
                     {
                         if (type & (DT_NEXT | DT_PREV)) /* track last matched
                                                            object */
@@ -702,49 +663,38 @@ dthashtrie(Dt_t *dt, Void_t *obj, int type)
             }
 
             /* if get here, a matching object was found */
-            if (type & (DT_SEARCH | DT_MATCH | DT_ATLEAST | DT_ATMOST))
-            {
+            if (type & (DT_SEARCH | DT_MATCH | DT_ATLEAST | DT_ATMOST)) {
                 obj = _DTOBJ(disc, t); /* save in case deleted on unlocking */
                 DTANNOUNCE(dt, obj, type);
                 HCLSOPEN(dt, hsh, type, share);
                 return obj;
-            }
-            else if (type & (DT_NEXT | DT_PREV))
-            {
+            } else if (type & (DT_NEXT | DT_PREV)) {
                 HCLSOPEN(dt, hsh, type, share);
                 return hnext(dt, fngr, tbl, lev, pos, hsh, type);
-            }
-            else if (type & (DT_DELETE | DT_DETACH | DT_REMOVE))
-            {
+            } else if (type & (DT_DELETE | DT_DETACH | DT_REMOVE)) {
                 obj = _DTOBJ(disc, t); /* save before deletion */
                 hdelete(dt, HLNKP(tbl, pos), type);
                 asosubsize(&hash->data.size, 1);
                 DTANNOUNCE(dt, obj, type);
                 HCLSOPEN(dt, hsh, type, share);
                 return obj;
-            }
-            else
-            { /**/
+            } else { /**/
                 DEBUG_ASSERT(type & H_INSERT);
                 if (!(dt->meth->type & DT_RHBAG)) /* no duplicates */
                 {
                     if (type & (DT_INSERT | DT_APPEND | DT_ATTACH))
-                        type |= DT_MATCH; /* for announcement */
-                    else if (type & DT_RELINK)
-                    { /**/
+                        type |= DT_MATCH;        /* for announcement */
+                    else if (type & DT_RELINK) { /**/
                         DEBUG_ASSERT(lnk);
                         o = _DTOBJ(disc, t); /* remove a duplicate */
                         _dtfree(dt, lnk, DT_DELETE);
                         DTANNOUNCE(dt, o, DT_DELETE);
-                    }
-                    else if (type & DT_INSTALL)
-                    {
+                    } else if (type & DT_INSTALL) {
                         o = _DTOBJ(disc, t); /* remove old object */
                         lnkp = HLNKP(tbl, pos);
                         hdelete(dt, lnkp, DT_DELETE);
                         DTANNOUNCE(dt, o, DT_DELETE);
-                        if (!opnt)
-                        {
+                        if (!opnt) {
                             opnt = tbl;
                             opnp = pos;
                             oplv = lev;
@@ -756,25 +706,21 @@ dthashtrie(Dt_t *dt, Void_t *obj, int type)
                     DTANNOUNCE(dt, obj, type);
                     HCLSOPEN(dt, hsh, type, share);
                     return obj;
-                }
-                else if (opnt) /* already got an open slot */
+                } else if (opnt) /* already got an open slot */
                     goto do_insert;
                 else
                     for (;;) /* try finding an open slot */
                     {
-                        for (; k < srch; ++k, pos = ((pos + 1) & modz))
-                        {
+                        for (; k < srch; ++k, pos = ((pos + 1) & modz)) {
                             lnkp = HLNKP(tbl, pos);
-                            if (!asogetptr(lnkp))
-                            {
+                            if (!asogetptr(lnkp)) {
                                 opnt = tbl;
                                 opnp = pos;
                                 goto do_insert;
                             }
                         }
 
-                        if ((t = asogetptr(tbl->list + hshp)) && HTABLE(t))
-                        {
+                        if ((t = asogetptr(tbl->list + hshp)) && HTABLE(t)) {
                             tbl = ( Htbl_t * )t;
                             lev += 1;
                             hshp = HBASP(hash, lev, hsh);
@@ -782,33 +728,28 @@ dthashtrie(Dt_t *dt, Void_t *obj, int type)
                             srch = HSRCH(hash, lev);
                             k = 0;
                             modz = HSIZE(hash, lev) - 1;
-                        }
-                        else
+                        } else
                             goto do_insert;
                     }
             }
         }
 
-        if ((t = asogetptr(tbl->list + hshp)) && HTABLE(t))
-        {
+        if ((t = asogetptr(tbl->list + hshp)) && HTABLE(t)) {
             tbl = ( Htbl_t * )t;
             lev += 1; /* continue search by recursion */
-        }
-        else if (type & (DT_NEXT | DT_PREV | DT_START))
-        {
+        } else if (type & (DT_NEXT | DT_PREV | DT_START)) {
             HCLSOPEN(dt, hsh, type, share);
             if (type & DT_START) /* no matching object, no walk */
             {
                 ( void )(*dt->memoryf)(dt, ( Void_t * )fngr, 0, disc);
                 return NIL(Void_t *);
-            }
-            else if (opnt) /* (opnt,opnp,oplv) is the last known matching obj
-                            */
+            } else if (opnt) /* (opnt,opnp,oplv) is the last known matching
+                              * obj
+                              */
                 return hnext(dt, fngr, opnt, oplv, opnp, hsh, type);
             else
                 return NIL(Void_t *);
-        }
-        else if (type & H_INSERT)
+        } else if (type & H_INSERT)
             goto do_insert; /* inserting a  new object */
         else                /* search/delete failed */
         {
@@ -822,8 +763,7 @@ do_insert: /**/
     if (!opnt) /* make a new subtable */
     {
         lev += 1;
-        if (!(opnt = htable(dt, lev, tbl, hshp)))
-        {
+        if (!(opnt = htable(dt, lev, tbl, hshp))) {
             HCLSOPEN(dt, hsh, type, share);
             return NIL(Void_t *);
         }
@@ -837,8 +777,7 @@ do_insert: /**/
 
     if (!lnk && (lnk = _dtmake(dt, obj, type)))
         asoaddsize(&hash->data.size, 1);
-    if (lnk)
-    {
+    if (lnk) {
         lnk->_hash = hsh;         /* memoize hash for fast compares */
         lnkp = HLNKP(opnt, opnp); /**/
         DEBUG_ASSERT(*lnkp == NIL(Dtlink_t *));
@@ -860,14 +799,12 @@ hashevent(Dt_t *dt, int event, Void_t *arg)
     if (!(disc = dt->disc))
         return -1;
 
-    if (event == DT_OPEN)
-    {
+    if (event == DT_OPEN) {
         if (hash) /* already allocated private data */
             return 0;
 
-        if (!(hash
-              = ( Hash_t * )(*dt->memoryf)(dt, 0, sizeof(Hash_t), dt->disc)))
-        {
+        if (!(hash = ( Hash_t * )(*dt->memoryf)(
+              dt, 0, sizeof(Hash_t), dt->disc))) {
             DTERROR(dt, "Error in allocating a hashtrie table");
             return -1;
         }
@@ -885,8 +822,7 @@ hashevent(Dt_t *dt, int event, Void_t *arg)
 
         hash->shft[0] = 0; /* amount to shift right before masking */
         hash->mask[0] = (1 << b) - 1; /* mask to get bits after shifting */
-        for (k = 1; k < H_NLEV && b < H_NBITS; ++k)
-        {
+        for (k = 1; k < H_NLEV && b < H_NBITS; ++k) {
             z = k == 1
                 ? H_BIT1
                 : k == 2 ? H_BIT2
@@ -906,12 +842,9 @@ hashevent(Dt_t *dt, int event, Void_t *arg)
             ( void )(*dt->memoryf)(dt, hash, 0, disc);
             dt->data = NIL(Dtdata_t *);
             return -1;
-        }
-        else
+        } else
             return 1;
-    }
-    else if (event == DT_CLOSE)
-    {
+    } else if (event == DT_CLOSE) {
         if (!hash)
             return 0;
         if (hash->root) /* free all objects in dictionary */
@@ -923,9 +856,8 @@ hashevent(Dt_t *dt, int event, Void_t *arg)
         ( void )(*dt->memoryf)(dt, hash, 0, disc);
         dt->data = NIL(Dtdata_t *);
         return 0;
-    }
-    else if (event
-             == DT_SHARE) /* turn on/off concurrency - return 1 on success */
+    } else if (event == DT_SHARE) /* turn on/off concurrency - return 1 on
+                                     success */
     {
         if (!hash)
             return -1;
@@ -937,8 +869,7 @@ hashevent(Dt_t *dt, int event, Void_t *arg)
             {
                 z = (hash->mask[0] + 1) * sizeof(uchar);
                 if (!(hash->lock
-                      = ( uchar * )(*dt->memoryf)(dt, 0, z, dt->disc)))
-                {
+                      = ( uchar * )(*dt->memoryf)(dt, 0, z, dt->disc))) {
                     DTERROR(dt, "Error in allocating hashtrie locks");
                     return -1;
                 }
@@ -951,8 +882,7 @@ hashevent(Dt_t *dt, int event, Void_t *arg)
             {
                 z = (hash->mask[0] + 1) * sizeof(uint);
                 if (!(hash->refn
-                      = ( uint * )(*dt->memoryf)(dt, 0, z, dt->disc)))
-                {
+                      = ( uint * )(*dt->memoryf)(dt, 0, z, dt->disc))) {
                     DTERROR(dt, "Error in allocating hashtrie references");
                     return -1;
                 }
@@ -960,8 +890,7 @@ hashevent(Dt_t *dt, int event, Void_t *arg)
             }
         }
         return 1;
-    }
-    else
+    } else
         return 0;
 }
 

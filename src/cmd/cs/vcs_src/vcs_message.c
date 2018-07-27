@@ -28,8 +28,7 @@ tracev(int level, va_list ap)
 {
     char *format;
 
-    if (!level || debug && level <= debug)
-    {
+    if (!level || debug && level <= debug) {
         if (level)
             sfprintf(sfstdout, "[%d] ", level);
         format = va_arg(ap, char *);

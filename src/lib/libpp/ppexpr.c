@@ -57,8 +57,7 @@ exists(int op, char *pred, char *args)
     type = pplex();
     pp.state &= ~HEADER;
     pp.token = pptoken;
-    switch (type)
-    {
+    switch (type) {
     case T_STRING:
     case T_HEADER:
         break;
@@ -67,14 +66,11 @@ exists(int op, char *pred, char *args)
         c = 0;
         goto done;
     }
-    if (op == X_EXISTS)
-    {
-        if ((c = pplex()) == ',')
-        {
-            while ((c = pplex()) == T_STRING)
-            {
-                if (pathaccess(pp.token, file, NiL, 0, pp.path, MAXTOKEN + 1))
-                {
+    if (op == X_EXISTS) {
+        if ((c = pplex()) == ',') {
+            while ((c = pplex()) == T_STRING) {
+                if (pathaccess(
+                    pp.token, file, NiL, 0, pp.path, MAXTOKEN + 1)) {
                     pathcanon(pp.path, 0, 0);
                     message((-2, "%s: %s found", pred, pp.path));
                     c = 1;
@@ -88,14 +84,11 @@ exists(int op, char *pred, char *args)
             strcpy(pp.path, file);
             message((-2, "%s: %s not found", pred, file));
             c = 0;
-        }
-        else
+        } else
             c = ppsearch(file, type, SEARCH_EXISTS) >= 0;
-    }
-    else if (op == X_EXISTS_NEXT)
+    } else if (op == X_EXISTS_NEXT)
         c = ppsearch(file, type, SEARCH_EXISTS | SEARCH_NEXT) >= 0;
-    else
-    {
+    else {
         struct ppfile *fp;
 
         fp = ppsetfile(file);
@@ -137,8 +130,7 @@ compare(char *pred, char *args, int match)
               &re, pp.token, REG_AUGMENTED | REG_LENIENT | REG_NULL))
              || (c = regexec(&re, tmp, NiL, 0, 0)) && c != REG_NOMATCH)
         regfatal(&re, 4, c);
-    else
-    {
+    else {
         c = !c;
         regfree(&re);
     }
@@ -176,8 +168,7 @@ predicate(int warn)
 
     index = ( int )hashref(pp.strtab, pp.token);
     if (warn && peekchr() != '(')
-        switch (index)
-        {
+        switch (index) {
         case X_DEFINED:
         case X_EXISTS:
         case X_EXISTS_NEXT:
@@ -197,8 +188,7 @@ predicate(int warn)
     pp.state |= DISABLE;
     type = pppredargs();
     pp.state &= ~DISABLE;
-    switch (type)
-    {
+    switch (type) {
     case T_ID:
     case T_STRING:
         break;
@@ -220,8 +210,7 @@ predicate(int warn)
 
     debug((-6, "pred=%s args=%s", pred, args));
     if ((pp.state & STRICT) && !(pp.mode & HOSTED))
-        switch (index)
-        {
+        switch (index) {
         case X_DEFINED:
         case X_SIZEOF:
             break;
@@ -229,18 +218,15 @@ predicate(int warn)
             error(1, "%s(%s): non-standard predicate test", pred, args);
             return 0;
         }
-    switch (index)
-    {
+    switch (index) {
     case X_DEFINED:
         if (type != T_ID)
             error(1, "%s: identifier argument expected", pred);
         else if ((sym = pprefmac(args, REF_IF)) && sym->macro)
             return 1;
         else if (args[0] == '_' && args[1] == '_'
-                 && !strncmp(args, "__STDPP__", 9))
-        {
-            if (pp.hosted == 1 && pp.in->prev->type == IN_FILE)
-            {
+                 && !strncmp(args, "__STDPP__", 9)) {
+            if (pp.hosted == 1 && pp.in->prev->type == IN_FILE) {
                 pp.mode |= HOSTED;
                 pp.flags |= PP_hosted;
             }
@@ -271,12 +257,10 @@ predicate(int warn)
         if (warn && !(pp.mode & HOSTED) && (sym = ppsymref(pp.symtab, pred))
             && (sym->flags & SYM_PREDICATE))
             error(1, "use #%s(%s) to disambiguate", pred, args);
-        if (p = ( struct pplist * )hashget(pp.prdtab, pred))
-        {
+        if (p = ( struct pplist * )hashget(pp.prdtab, pred)) {
             if (!*args)
                 return 1;
-            while (p)
-            {
+            while (p) {
                 if (streq(p->value, args))
                     return 1;
                 p = p->next;
@@ -306,8 +290,7 @@ subexpr(int precedence, int *pun)
     int un = 0;
     int xn;
 
-    switch (lex(c))
-    {
+    switch (lex(c)) {
     case 0:
     case '\n':
         unlex(c);
@@ -333,16 +316,13 @@ subexpr(int precedence, int *pun)
         break;
     }
     un <<= 1;
-    for (;;)
-    {
-        switch (lex(c))
-        {
+    for (;;) {
+        switch (lex(c)) {
         case 0:
         case '\n':
             goto done;
         case ')':
-            if (!precedence)
-            {
+            if (!precedence) {
                 if (!errmsg && !(pp.mode & INACTIVE))
                     errmsg = "too many )'s";
                 return 0;
@@ -350,16 +330,14 @@ subexpr(int precedence, int *pun)
             goto done;
         case '(':
             n = subexpr(1, &un);
-            if (lex(c) != ')')
-            {
+            if (lex(c) != ')') {
                 unlex(c);
                 if (!errmsg && !(pp.mode & INACTIVE))
                     errmsg = "closing ) expected";
                 return 0;
             }
         gotoperand:
-            if (operand)
-            {
+            if (operand) {
                 if (!errmsg && !(pp.mode & INACTIVE))
                     errmsg = "operator expected";
                 return 0;
@@ -371,36 +349,29 @@ subexpr(int precedence, int *pun)
             if (precedence > 1)
                 goto done;
             un = 0;
-            if (lex(c) == ':')
-            {
+            if (lex(c) == ':') {
                 if (!n)
                     n = subexpr(2, &un);
-                else
-                {
+                else {
                     x = pp.mode;
                     pp.mode |= INACTIVE;
                     subexpr(2, &xn);
                     pp.mode = x;
                 }
-            }
-            else
-            {
+            } else {
                 unlex(c);
                 x = subexpr(2, &xn);
-                if (lex(c) != ':')
-                {
+                if (lex(c) != ':') {
                     unlex(c);
                     if (!errmsg && !(pp.mode & INACTIVE))
                         errmsg = ": expected for ? operator";
                     return 0;
                 }
-                if (n)
-                {
+                if (n) {
                     n = x;
                     un = xn;
                     subexpr(2, &xn);
-                }
-                else
+                } else
                     n = subexpr(2, &un);
             }
             break;
@@ -413,8 +384,7 @@ subexpr(int precedence, int *pun)
                 goto done;
             if ((n != 0) == (c == T_ANDAND))
                 n = subexpr(xn, &un) != 0;
-            else
-            {
+            else {
                 x = pp.mode;
                 pp.mode |= INACTIVE;
                 subexpr(xn, &un);
@@ -451,11 +421,9 @@ subexpr(int precedence, int *pun)
             if (precedence > 8)
                 goto done;
             x = subexpr(9, &un);
-            switch (c)
-            {
+            switch (c) {
             case '<':
-                switch (un)
-                {
+                switch (un) {
                 case 01:
                     n = n < ( unsigned long )x;
                     break;
@@ -471,8 +439,7 @@ subexpr(int precedence, int *pun)
                 }
                 break;
             case T_LE:
-                switch (un)
-                {
+                switch (un) {
                 case 01:
                     n = n <= ( unsigned long )x;
                     break;
@@ -488,8 +455,7 @@ subexpr(int precedence, int *pun)
                 }
                 break;
             case T_GE:
-                switch (un)
-                {
+                switch (un) {
                 case 01:
                     n = n >= ( unsigned long )x;
                     break;
@@ -505,8 +471,7 @@ subexpr(int precedence, int *pun)
                 }
                 break;
             case '>':
-                switch (un)
-                {
+                switch (un) {
                 case 01:
                     n = n > ( unsigned long )x;
                     break;
@@ -553,13 +518,11 @@ subexpr(int precedence, int *pun)
             x = subexpr(12, &un);
             if (c == '*')
                 n *= x;
-            else if (x == 0)
-            {
+            else if (x == 0) {
                 if (!errmsg && !(pp.mode & INACTIVE))
                     errmsg = "divide by zero";
                 return 0;
-            }
-            else if (c == '/')
+            } else if (c == '/')
                 n /= x;
             else
                 n %= x;
@@ -568,8 +531,7 @@ subexpr(int precedence, int *pun)
             pp.state |= DISABLE;
             c = pplex();
             pp.state &= ~DISABLE;
-            if (c != T_ID)
-            {
+            if (c != T_ID) {
                 if (!errmsg && !(pp.mode & INACTIVE))
                     errmsg = "# must precede a predicate identifier";
                 return 0;
@@ -584,8 +546,7 @@ subexpr(int precedence, int *pun)
             *(pp.toknxt - 1) = 0;
             n = chrtoi(pp.token + 1);
             *(pp.toknxt - 1) = c;
-            if (n & ~((1 << CHAR_BIT) - 1))
-            {
+            if (n & ~((1 << CHAR_BIT) - 1)) {
                 if (!(pp.mode & HOSTED))
                     error(1,
                           "'%s': multi-character character constants are not "
@@ -630,8 +591,7 @@ subexpr(int precedence, int *pun)
     }
 done:
     unlex(c);
-    if (!operand)
-    {
+    if (!operand) {
     nooperand:
         if (!errmsg && !(pp.mode & INACTIVE))
             errmsg = "operand expected";
@@ -663,8 +623,7 @@ ppexpr(int *pun)
     n = subexpr(0, pun);
     if (peektoken == ':' && !errmsg && !(pp.mode & INACTIVE))
         errmsg = "invalid use of :";
-    if (errmsg)
-    {
+    if (errmsg) {
         error(2, "%s in expression", errmsg);
         errmsg = 0;
         n = 0;
@@ -686,8 +645,7 @@ ppexpr(int *pun)
 int
 ppoption(char *s)
 {
-    switch (( int )hashget(pp.strtab, s))
-    {
+    switch (( int )hashget(pp.strtab, s)) {
     case X_ALLMULTIPLE:
         return pp.mode & ALLMULTIPLE;
     case X_BUILTIN:

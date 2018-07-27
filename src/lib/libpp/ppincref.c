@@ -36,8 +36,7 @@ ppincref(char *parent, char *file, int line, int type)
 
     NoP(parent);
     NoP(line);
-    if (type & PP_SYNC_PUSH)
-    {
+    if (type & PP_SYNC_PUSH) {
         level = 0;
         for (sp = pp.in; sp; sp = sp->prev)
             if (sp->type == IN_FILE)

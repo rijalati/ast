@@ -307,17 +307,14 @@ check_limits(Shell_t *shp, char *cp)
     *ep++ = '.';
     if (!np || !nv_isattr(np, NV_INTEGER))
         return (0);
-    if (nv_isattr(np, NV_DOUBLE) == NV_DOUBLE)
-    {
+    if (nv_isattr(np, NV_DOUBLE) == NV_DOUBLE) {
         const Fltconst_t *fp = fltconst;
         n = sizeof(fltconst) / sizeof(Fltconst_t);
-        for (; n-- > 0; fp++)
-        {
+        for (; n-- > 0; fp++) {
             if (strcmp(fp->name, ep) == 0)
                 break;
         }
-        if (n >= 0)
-        {
+        if (n >= 0) {
             node = *np;
             node.nvalue.ldp = &dd;
             if (nv_isattr(np, NV_SHORT))
@@ -328,37 +325,28 @@ check_limits(Shell_t *shp, char *cp)
                 *node.nvalue.dp = fp->d;
             return (&node);
         }
-    }
-    else
-    {
+    } else {
         const Intconst_t *ip = intconst;
         n = sizeof(intconst) / sizeof(Intconst_t);
-        for (; n-- >= 0; ip++)
-        {
+        for (; n-- >= 0; ip++) {
             if (strcmp(ip->name, ep) == 0)
                 break;
         }
-        if (n >= 0)
-        {
+        if (n >= 0) {
             int unsign = nv_isattr(np, NV_LTOU);
             node = *np;
             node.nvalue.ldp = &dd;
-            if (nv_isattr(np, NV_SHORT))
-            {
+            if (nv_isattr(np, NV_SHORT)) {
                 if (unsign)
                     node.nvalue.u = ip->us;
                 else
                     node.nvalue.s = ip->ss;
-            }
-            else if (nv_isattr(np, NV_LONG))
-            {
+            } else if (nv_isattr(np, NV_LONG)) {
                 if (unsign)
                     *node.nvalue.llp = ip->ul;
                 else
                     *node.nvalue.llp = ip->sl;
-            }
-            else
-            {
+            } else {
                 if (unsign)
                     *node.nvalue.ip = ip->ui;
                 else
@@ -387,8 +375,7 @@ scope(Namval_t *np, struct lval *lvalue, int assign)
     if (nosub < 0 && lvalue->ovalue)
         return (( Namval_t * )lvalue->ovalue);
     lvalue->ovalue = 0;
-    if (cp >= lvalue->expr && cp < lvalue->expr + lvalue->elen)
-    {
+    if (cp >= lvalue->expr && cp < lvalue->expr + lvalue->elen) {
         int offset;
         /* do binding to node now */
         int d = cp[flag];
@@ -396,8 +383,7 @@ scope(Namval_t *np, struct lval *lvalue, int assign)
         if ((!(np = nv_open(
                cp, root, assign | NV_VARNAME | NV_NOADD | NV_NOFAIL))
              || nv_isnull(np))
-            && sh_macfun(shp, cp, offset = stktell(shp->stk)))
-        {
+            && sh_macfun(shp, cp, offset = stktell(shp->stk))) {
             Fun = sh_arith(shp, sub = stkptr(shp->stk, offset));
             FunNode.nvalue.ldp = &Fun;
             FunNode.nvshell = shp;
@@ -405,8 +391,7 @@ scope(Namval_t *np, struct lval *lvalue, int assign)
             cp[flag] = d;
             return (&FunNode);
         }
-        if (!np)
-        {
+        if (!np) {
             if (assign)
                 np = nv_open(cp, root, assign | NV_VARNAME);
             else
@@ -421,9 +406,8 @@ scope(Namval_t *np, struct lval *lvalue, int assign)
         else
             flag = 0;
         cp = ( char * )np;
-    }
-    else if (assign == NV_ASSIGN && nv_isnull(np)
-             && !nv_isattr(np, ~(NV_MINIMAL | NV_NOFREE)))
+    } else if (assign == NV_ASSIGN && nv_isnull(np)
+               && !nv_isattr(np, ~(NV_MINIMAL | NV_NOFREE)))
         flags |= NV_ADD;
     if ((lvalue->emode & ARITH_COMP) && dtvnext(root)
         && ((sdict && (mp = nv_search(cp, sdict, flags & ~NV_ADD)))
@@ -432,8 +416,7 @@ scope(Namval_t *np, struct lval *lvalue, int assign)
                 && (mp = nv_search(
                     cp, nsdict, flags & ~(NV_ADD | HASH_NOSCOPE))))))
         np = mp;
-    while (nv_isref(np))
-    {
+    while (nv_isref(np)) {
 #if SHOPT_FIXEDARRAY
         int n, dim;
         dim = nv_refdimen(np);
@@ -442,36 +425,29 @@ scope(Namval_t *np, struct lval *lvalue, int assign)
         sub = nv_refsub(np);
         np = nv_refnode(np);
 #if SHOPT_FIXEDARRAY
-        if (n)
-        {
+        if (n) {
             Namarr_t *ap = nv_arrayptr(np);
             ap->nelem = dim;
             nv_putsub(np, ( char * ), n, 0);
-        }
-        else
+        } else
 #endif /* SHOPT_FIXEDARRAY */
         if (sub)
             nv_putsub(np, sub, 0, assign == NV_ASSIGN ? ARRAY_ADD : 0);
     }
-    if (!nosub && flag)
-    {
+    if (!nosub && flag) {
         int hasdot = 0;
         cp = ( char * )&lvalue->expr[flag];
-        if (sub)
-        {
+        if (sub) {
             goto skip;
         }
         sub = cp;
-        while (1)
-        {
+        while (1) {
             Namarr_t *ap;
             Namval_t *nq;
             cp = nv_endsubscript(np, cp, 0, ( void * )shp);
-            if (c || *cp == '.')
-            {
+            if (c || *cp == '.') {
                 c = '.';
-                while (*cp == '.')
-                {
+                while (*cp == '.') {
                     hasdot = 1;
                     cp++;
                     while (c = mbchar(cp), isaname(c))
@@ -482,16 +458,14 @@ scope(Namval_t *np, struct lval *lvalue, int assign)
             }
             flag = *cp;
             *cp = 0;
-            if (c || hasdot)
-            {
+            if (c || hasdot) {
                 sfprintf(shp->strbuf, "%s%s%c", nv_name(np), sub, 0);
                 sub = sfstruse(shp->strbuf);
             }
             if (strchr(sub, '$'))
                 sub = sh_mactrim(shp, sub, 0);
             *cp = flag;
-            if (c || hasdot)
-            {
+            if (c || hasdot) {
                 np = nv_open(sub, shp->var_tree, NV_VARNAME | assign);
                 return (np);
             }
@@ -515,11 +489,9 @@ scope(Namval_t *np, struct lval *lvalue, int assign)
         skip:
             if (nq = nv_opensub(np))
                 np = nq;
-            else
-            {
+            else {
                 ap = nv_arrayptr(np);
-                if (ap && !ap->table)
-                {
+                if (ap && !ap->table) {
                     ap->table = dtopen(&_Nvdisc, Dtoset);
                     dtuserdata(ap->table, shp, 1);
                 }
@@ -531,8 +503,7 @@ scope(Namval_t *np, struct lval *lvalue, int assign)
             }
             sub = cp;
         }
-    }
-    else if (nosub > 0)
+    } else if (nosub > 0)
         nv_putsub(np, ( char * )0, nosub - 1, 0);
     return (np);
 }
@@ -542,13 +513,11 @@ sh_mathstdfun(const char *fname, size_t fsize, short *nargs)
 {
     const struct mathtab *tp;
     char c = fname[0];
-    for (tp = shtab_math; *tp->fname; tp++)
-    {
+    for (tp = shtab_math; *tp->fname; tp++) {
         if (*tp->fname > c)
             break;
         if (tp->fname[1] == c && tp->fname[fsize + 1] == 0
-            && strncmp(&tp->fname[1], fname, fsize) == 0)
-        {
+            && strncmp(&tp->fname[1], fname, fsize) == 0) {
             if (nargs)
                 *nargs = *tp->fname;
             return (tp->fnptr);
@@ -585,49 +554,37 @@ number(const char *s, char **p, int b, struct lval *lvalue)
     lvalue->eflag = 0;
     lvalue->isfloat = 0;
     r = strtonll(s, &t, &base, -1);
-    if (*t == '8' || *t == '9')
-    {
+    if (*t == '8' || *t == '9') {
         base = 10;
         errno = 0;
         r = strtonll(s, &t, &base, -1);
     }
     if (base <= 1)
         base = 10;
-    if (*t == '_')
-    {
-        if ((r == 1 || r == 2) && strcmp(t, "_PI") == 0)
-        {
+    if (*t == '_') {
+        if ((r == 1 || r == 2) && strcmp(t, "_PI") == 0) {
             t += 3;
             r = Mtable[( int )r - 1].value;
-        }
-        else if (r == 2 && strcmp(t, "_SQRTPI") == 0)
-        {
+        } else if (r == 2 && strcmp(t, "_SQRTPI") == 0) {
             t += 7;
             r = Mtable[2].value;
         }
     }
     c = r == LLONG_MAX && errno ? 'e' : *t;
     if (c == GETDECIMAL(0) || c == 'e' || c == 'E'
-        || base == 16 && (c == 'p' || c == 'P'))
-    {
+        || base == 16 && (c == 'p' || c == 'P')) {
         r = strtold(s, &t);
         lvalue->isfloat = TYPE_LD;
     }
-    if (t > s)
-    {
-        if (*t == 'f' || *t == 'F')
-        {
+    if (t > s) {
+        if (*t == 'f' || *t == 'F') {
             t++;
             lvalue->isfloat = TYPE_F;
             r = ( float )r;
-        }
-        else if (*t == 'l' || *t == 'L')
-        {
+        } else if (*t == 'l' || *t == 'L') {
             t++;
             lvalue->isfloat = TYPE_LD;
-        }
-        else if (*t == 'd' || *t == 'D')
-        {
+        } else if (*t == 'd' || *t == 'D') {
             t++;
             lvalue->isfloat = TYPE_LD;
             r = ( double )r;
@@ -645,10 +602,8 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
     Sfdouble_t r = 0;
     char *str = ( char * )*ptr;
     char *cp;
-    switch (type)
-    {
-    case ASSIGN:
-    {
+    switch (type) {
+    case ASSIGN: {
         Namval_t *np = ( Namval_t * )(lvalue->value);
         np = scope(np, lvalue, 1);
         nv_putval(np, ( char * )&n, NV_LDOUBLE);
@@ -659,25 +614,21 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
         lvalue->value = ( char * )np;
         break;
     }
-    case LOOKUP:
-    {
+    case LOOKUP: {
         int c = *str;
         char *xp = str;
         lvalue->value = ( char * )0;
         if (c == '.')
             str++;
         c = mbchar(str);
-        if (isaletter(c))
-        {
+        if (isaletter(c)) {
             Namval_t *np = 0;
             int dot = 0;
-            while (1)
-            {
+            while (1) {
                 while (xp = str, c = mbchar(str), isaname(c))
                     ;
                 str = xp;
-                while (c == '[' && dot == NV_NOADD)
-                {
+                while (c == '[' && dot == NV_NOADD) {
                     str = nv_endsubscript(( Namval_t * )0, str, 0, shp);
                     c = *str;
                 }
@@ -692,8 +643,7 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
                 if (sh_checkid(cp + 1, ( char * )0))
                     str -= 2;
             }
-            if (c == '(')
-            {
+            if (c == '(') {
                 int off = stktell(shp->stk);
                 int fsize = str - ( char * )(*ptr);
                 const struct mathtab *tp;
@@ -702,8 +652,7 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
                 lvalue->fun = 0;
                 sfprintf(shp->stk, ".sh.math.%.*s%c", fsize, *ptr, 0);
                 stkseek(shp->stk, off);
-                if (nq = nv_search(stkptr(shp->stk, off), shp->fun_tree, 0))
-                {
+                if (nq = nv_search(stkptr(shp->stk, off), shp->fun_tree, 0)) {
                     lvalue->nargs = -nq->nvalue.rp->argc;
                     lvalue->fun = ( Math_f )nq;
                     break;
@@ -719,8 +668,7 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
                     lvalue->value = ( char * )ERROR_dictionary(e_function);
                 return (r);
             }
-            if ((lvalue->emode & ARITH_COMP) && dot)
-            {
+            if ((lvalue->emode & ARITH_COMP) && dot) {
                 lvalue->value = ( char * )*ptr;
                 lvalue->flag = str - lvalue->value;
                 break;
@@ -728,28 +676,22 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
             *str = 0;
             if (sh_isoption(shp, SH_NOEXEC))
                 np = L_ARGNOD;
-            else
-            {
+            else {
                 int offset = stktell(shp->stk);
                 char *saveptr = stkfreeze(shp->stk, 0);
                 Dt_t *root = (lvalue->emode & ARITH_COMP) ? shp->var_base
                                                           : shp->var_tree;
                 *str = c;
                 cp = str;
-                while (c == '[' || c == '.')
-                {
-                    if (c == '[')
-                    {
+                while (c == '[' || c == '.') {
+                    if (c == '[') {
                         str = nv_endsubscript(np, str, 0, ( void * )shp);
-                        if ((c = *str) != '[' && c != '.')
-                        {
+                        if ((c = *str) != '[' && c != '.') {
                             str = cp;
                             c = '[';
                             break;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         dot = NV_NOADD | NV_NOFAIL;
                         str++;
                         while (xp = str, c = mbchar(str), isaname(c))
@@ -762,39 +704,31 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
                 Varsubscript = false;
                 if ((cp[0] == 'i' || cp[0] == 'I')
                     && (cp[1] == 'n' || cp[1] == 'N')
-                    && (cp[2] == 'f' || cp[2] == 'F') && cp[3] == 0)
-                {
+                    && (cp[2] == 'f' || cp[2] == 'F') && cp[3] == 0) {
                     Inf = strtold("Inf", NiL);
                     Infnod.nvalue.ldp = &Inf;
                     np = &Infnod;
                     np->nvshell = shp;
                     nv_onattr(np, NV_NOFREE | NV_LDOUBLE | NV_RDONLY);
-                }
-                else if ((cp[0] == 'n' || cp[0] == 'N')
-                         && (cp[1] == 'a' || cp[1] == 'A')
-                         && (cp[2] == 'n' || cp[2] == 'N') && cp[3] == 0)
-                {
+                } else if ((cp[0] == 'n' || cp[0] == 'N')
+                           && (cp[1] == 'a' || cp[1] == 'A')
+                           && (cp[2] == 'n' || cp[2] == 'N') && cp[3] == 0) {
                     NaN = strtold("NaN", NiL);
                     NaNnod.nvalue.ldp = &NaN;
                     np = &NaNnod;
                     np->nvshell = shp;
                     nv_onattr(np, NV_NOFREE | NV_LDOUBLE | NV_RDONLY);
-                }
-                else
-                {
+                } else {
                     const struct Mathconst *mp = 0;
                     np = 0;
 #if 1
-                    if (strchr("ELPS12", **ptr))
-                    {
-                        for (mp = Mtable; *mp->name; mp++)
-                        {
+                    if (strchr("ELPS12", **ptr)) {
+                        for (mp = Mtable; *mp->name; mp++) {
                             if (strcmp(mp->name, *ptr) == 0)
                                 break;
                         }
                     }
-                    if (mp && *mp->name)
-                    {
+                    if (mp && *mp->name) {
                         r = mp->value;
                         lvalue->isfloat = TYPE_LD;
                         goto skip2;
@@ -810,8 +744,7 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
                         = nv_open(*ptr,
                                   root,
                                   NV_NOREF | NV_NOASSIGN | NV_VARNAME | dot);
-                    if (!np || Varsubscript)
-                    {
+                    if (!np || Varsubscript) {
                         np = 0;
                         lvalue->value = ( char * )*ptr;
                         lvalue->flag = str - lvalue->value;
@@ -835,13 +768,10 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
             if (nv_isattr(np, NV_DOUBLE) == NV_DOUBLE)
                 lvalue->isfloat = 1;
             lvalue->flag = 0;
-            if (c == '[')
-            {
+            if (c == '[') {
                 lvalue->flag = (str - lvalue->expr);
-                do
-                {
-                    while (c == '.')
-                    {
+                do {
+                    while (c == '.') {
                         str++;
                         while (xp = str, c = mbchar(str), isaname(c))
                             ;
@@ -852,22 +782,18 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
                 } while ((c = *str) == '[' || c == '.');
                 break;
             }
-        }
-        else
+        } else
             r = number(xp, &str, 0, lvalue);
         break;
     }
-    case VALUE:
-    {
+    case VALUE: {
         Namval_t *np = ( Namval_t * )(lvalue->value);
         Namarr_t *ap;
         if (sh_isoption(shp, SH_NOEXEC))
             return (0);
         np = scope(np, lvalue, 0);
-        if (!np)
-        {
-            if (sh_isoption(shp, SH_NOUNSET))
-            {
+        if (!np) {
+            if (sh_isoption(shp, SH_NOUNSET)) {
                 *ptr = lvalue->value;
                 goto skip;
             }
@@ -877,8 +803,7 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
         if (lvalue->eflag)
             lvalue->ptr = ( void * )nv_hasdisc(np, &ENUM_disc);
         else if (( Namfun_t * )lvalue->ptr && !nv_hasdisc(np, &ENUM_disc)
-                 && !nv_isattr(np, NV_INTEGER))
-        {
+                 && !nv_isattr(np, NV_INTEGER)) {
             Namval_t *mp, node;
             mp = (( Namfun_t * )lvalue->ptr)->type;
             memset(&node, 0, sizeof(node));
@@ -891,8 +816,7 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
         lvalue->eflag = 0;
         if (((lvalue->emode & 2) || lvalue->level > 1
              || (lvalue->nextop != A_STORE && sh_isoption(shp, SH_NOUNSET)))
-            && nv_isnull(np) && !nv_isattr(np, NV_INTEGER))
-        {
+            && nv_isnull(np) && !nv_isattr(np, NV_INTEGER)) {
             *ptr = nv_name(np);
         skip:
             lvalue->value = ( char * )ERROR_dictionary(e_notset);
@@ -900,8 +824,7 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
             return (0);
         }
         if (lvalue->userfn && (ap = nv_arrayptr(np))
-            && (ap->flags & ARRAY_UNDEF))
-        {
+            && (ap->flags & ARRAY_UNDEF)) {
             r = ( Sfdouble_t )integralof(np);
             lvalue->isfloat = 5;
             return (r);
@@ -910,16 +833,13 @@ arith(const char **ptr, struct lval *lvalue, int type, Sfdouble_t n)
         if (nv_isattr(np, NV_INTEGER | NV_BINARY) == (NV_INTEGER | NV_BINARY))
             lvalue->isfloat = (r != ( Sflong_t )r) ? TYPE_LD : 0;
         else if (nv_isattr(np, (NV_DOUBLE | NV_SHORT))
-                 == (NV_DOUBLE | NV_SHORT))
-        {
+                 == (NV_DOUBLE | NV_SHORT)) {
             lvalue->isfloat = TYPE_F;
             r = ( float )r;
-        }
-        else if (nv_isattr(np, (NV_DOUBLE | NV_LONG))
-                 == (NV_DOUBLE | NV_LONG))
+        } else if (nv_isattr(np, (NV_DOUBLE | NV_LONG))
+                   == (NV_DOUBLE | NV_LONG))
             lvalue->isfloat = TYPE_LD;
-        else if (nv_isattr(np, NV_DOUBLE) == NV_DOUBLE)
-        {
+        else if (nv_isattr(np, NV_DOUBLE) == NV_DOUBLE) {
             lvalue->isfloat = TYPE_D;
             r = ( double )r;
         }
@@ -972,25 +892,21 @@ sh_strnum_20120720(Shell_t *shp, const char *str, char **ptr, int mode)
 {
     Sfdouble_t d;
     char *last;
-    if (*str == 0)
-    {
+    if (*str == 0) {
         if (ptr)
             *ptr = ( char * )str;
         return (0);
     }
     errno = 0;
     d = number(str, &last, shp->inarith ? 0 : 10, NiL);
-    if (*last)
-    {
-        if (*last != '.' || last[1] != '.')
-        {
+    if (*last) {
+        if (*last != '.' || last[1] != '.') {
             d = strval(shp, str, &last, arith, mode);
             Varsubscript = true;
         }
         if (!ptr && *last && mode > 0)
             errormsg(SH_DICT, ERROR_exit(1), e_lexbadchar, *last, str);
-    }
-    else if (!d && *str == '-')
+    } else if (!d && *str == '-')
         d = -0.0;
     if (ptr)
         *ptr = last;

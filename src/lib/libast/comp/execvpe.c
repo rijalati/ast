@@ -54,16 +54,14 @@ execvpe(const char *name, char *const argv[], char *const envv[])
              name, NULL, PATH_REGULAR | PATH_EXECUTE, buffer, sizeof(buffer))))
         path = name;
     execve(path, argv, envv);
-    if (errno == ENOEXEC)
-    {
+    if (errno == ENOEXEC) {
         char **newargv;
         char **ov;
         char **nv;
 
         for (ov = ( char ** )argv; *ov++;)
             ;
-        if (newargv = newof(0, char *, ov + 1 - ( char ** )argv, 0))
-        {
+        if (newargv = newof(0, char *, ov + 1 - ( char ** )argv, 0)) {
             nv = newargv;
             *nv++ = "sh";
             *nv++ = ( char * )path;
@@ -73,8 +71,7 @@ execvpe(const char *name, char *const argv[], char *const envv[])
             path = pathshell();
             execve(path, newargv, envv);
             free(newargv);
-        }
-        else
+        } else
             errno = ENOMEM;
     }
     return -1;

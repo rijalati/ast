@@ -91,29 +91,22 @@ int flags;             /* Or'ed combination of various flag bits,
     size_t length;         /* Number of characters in current argument. */
     int i;
 
-    if (flags & TK_ARGV_DONT_SKIP_FIRST_ARG)
-    {
+    if (flags & TK_ARGV_DONT_SKIP_FIRST_ARG) {
         srcIndex = dstIndex = 0;
         argc = *argcPtr;
-    }
-    else
-    {
+    } else {
         srcIndex = dstIndex = 1;
         argc = *argcPtr - 1;
     }
 
-    while (argc > 0)
-    {
+    while (argc > 0) {
         curArg = argv[srcIndex];
         srcIndex++;
         argc--;
         length = strlen(curArg);
-        if (length > 0)
-        {
+        if (length > 0) {
             c = curArg[1];
-        }
-        else
-        {
+        } else {
             c = 0;
         }
 
@@ -124,46 +117,35 @@ int flags;             /* Or'ed combination of various flag bits,
          */
 
         matchPtr = NULL;
-        for (i = 0; i < 2; i++)
-        {
-            if (i == 0)
-            {
+        for (i = 0; i < 2; i++) {
+            if (i == 0) {
                 infoPtr = argTable;
-            }
-            else
-            {
+            } else {
                 infoPtr = defaultTable;
             }
             for (; (infoPtr != NULL) && (infoPtr->type != TK_ARGV_END);
-                 infoPtr++)
-            {
-                if (infoPtr->key == NULL)
-                {
+                 infoPtr++) {
+                if (infoPtr->key == NULL) {
                     continue;
                 }
                 if ((infoPtr->key[1] != c)
-                    || (strncmp(infoPtr->key, curArg, length) != 0))
-                {
+                    || (strncmp(infoPtr->key, curArg, length) != 0)) {
                     continue;
                 }
                 if ((tkwin == NULL)
                     && ((infoPtr->type == TK_ARGV_CONST_OPTION)
                         || (infoPtr->type == TK_ARGV_OPTION_VALUE)
-                        || (infoPtr->type == TK_ARGV_OPTION_NAME_VALUE)))
-                {
+                        || (infoPtr->type == TK_ARGV_OPTION_NAME_VALUE))) {
                     continue;
                 }
-                if (infoPtr->key[length] == 0)
-                {
+                if (infoPtr->key[length] == 0) {
                     matchPtr = infoPtr;
                     goto gotMatch;
                 }
-                if (flags & TK_ARGV_NO_ABBREV)
-                {
+                if (flags & TK_ARGV_NO_ABBREV) {
                     continue;
                 }
-                if (matchPtr != NULL)
-                {
+                if (matchPtr != NULL) {
                     Tcl_AppendResult(interp,
                                      "ambiguous option \"",
                                      curArg,
@@ -174,16 +156,14 @@ int flags;             /* Or'ed combination of various flag bits,
                 matchPtr = infoPtr;
             }
         }
-        if (matchPtr == NULL)
-        {
+        if (matchPtr == NULL) {
 
             /*
              * Unrecognized argument.  Just copy it down, unless the caller
              * prefers an error to be registered.
              */
 
-            if (flags & TK_ARGV_NO_LEFTOVERS)
-            {
+            if (flags & TK_ARGV_NO_LEFTOVERS) {
                 Tcl_AppendResult(interp,
                                  "unrecognized argument \"",
                                  curArg,
@@ -202,23 +182,18 @@ int flags;             /* Or'ed combination of various flag bits,
 
     gotMatch:
         infoPtr = matchPtr;
-        switch (infoPtr->type)
-        {
+        switch (infoPtr->type) {
         case TK_ARGV_CONSTANT:
             *(( int * )infoPtr->dst) = ( int )infoPtr->src;
             break;
         case TK_ARGV_INT:
-            if (argc == 0)
-            {
+            if (argc == 0) {
                 goto missingArg;
-            }
-            else
-            {
+            } else {
                 char *endPtr;
 
                 *(( int * )infoPtr->dst) = strtol(argv[srcIndex], &endPtr, 0);
-                if ((endPtr == argv[srcIndex]) || (*endPtr != 0))
-                {
+                if ((endPtr == argv[srcIndex]) || (*endPtr != 0)) {
                     Tcl_AppendResult(interp,
                                      "expected integer argument ",
                                      "for \"",
@@ -234,24 +209,18 @@ int flags;             /* Or'ed combination of various flag bits,
             }
             break;
         case TK_ARGV_STRING:
-            if (argc == 0)
-            {
+            if (argc == 0) {
                 goto missingArg;
-            }
-            else
-            {
+            } else {
                 *(( char ** )infoPtr->dst) = argv[srcIndex];
                 srcIndex++;
                 argc--;
             }
             break;
         case TK_ARGV_UID:
-            if (argc == 0)
-            {
+            if (argc == 0) {
                 goto missingArg;
-            }
-            else
-            {
+            } else {
                 *(( Tk_Uid * )infoPtr->dst) = Tk_GetUid(argv[srcIndex]);
                 srcIndex++;
                 argc--;
@@ -261,17 +230,13 @@ int flags;             /* Or'ed combination of various flag bits,
             *(( int * )infoPtr->dst) = dstIndex;
             goto argsDone;
         case TK_ARGV_FLOAT:
-            if (argc == 0)
-            {
+            if (argc == 0) {
                 goto missingArg;
-            }
-            else
-            {
+            } else {
                 char *endPtr;
 
                 *(( double * )infoPtr->dst) = strtod(argv[srcIndex], &endPtr);
-                if ((endPtr == argv[srcIndex]) || (*endPtr != 0))
-                {
+                if ((endPtr == argv[srcIndex]) || (*endPtr != 0)) {
                     Tcl_AppendResult(interp,
                                      "expected floating-point ",
                                      "argument for \"",
@@ -286,29 +251,25 @@ int flags;             /* Or'ed combination of various flag bits,
                 argc--;
             }
             break;
-        case TK_ARGV_FUNC:
-        {
+        case TK_ARGV_FUNC: {
             int (*handlerProc)();
 
             handlerProc = ( int (*)() )infoPtr->src;
 
-            if ((*handlerProc)(infoPtr->dst, infoPtr->key, argv[srcIndex]))
-            {
+            if ((*handlerProc)(infoPtr->dst, infoPtr->key, argv[srcIndex])) {
                 srcIndex += 1;
                 argc -= 1;
             }
             break;
         }
-        case TK_ARGV_GENFUNC:
-        {
+        case TK_ARGV_GENFUNC: {
             int (*handlerProc)();
 
             handlerProc = ( int (*)() )infoPtr->src;
 
             argc = (*handlerProc)(
             infoPtr->dst, interp, infoPtr->key, argc, argv + srcIndex);
-            if (argc < 0)
-            {
+            if (argc < 0) {
                 return TCL_ERROR;
             }
             break;
@@ -321,8 +282,7 @@ int flags;             /* Or'ed combination of various flag bits,
             tkwin, infoPtr->dst, infoPtr->src, TK_INTERACTIVE_PRIO);
             break;
         case TK_ARGV_OPTION_VALUE:
-            if (argc < 1)
-            {
+            if (argc < 1) {
                 goto missingArg;
             }
             Tk_AddOption(
@@ -331,8 +291,7 @@ int flags;             /* Or'ed combination of various flag bits,
             argc--;
             break;
         case TK_ARGV_OPTION_NAME_VALUE:
-            if (argc < 2)
-            {
+            if (argc < 2) {
                 Tcl_AppendResult(interp,
                                  "\"",
                                  curArg,
@@ -359,8 +318,7 @@ int flags;             /* Or'ed combination of various flag bits,
      */
 
 argsDone:
-    while (argc)
-    {
+    while (argc) {
         argv[dstIndex] = argv[srcIndex];
         srcIndex++;
         dstIndex++;
@@ -420,77 +378,61 @@ int flags;             /* If the TK_ARGV_NO_DEFAULTS bit is set
      */
 
     width = 4;
-    for (i = 0; i < 2; i++)
-    {
+    for (i = 0; i < 2; i++) {
         for (infoPtr = i ? defaultTable : argTable;
              infoPtr->type != TK_ARGV_END;
-             infoPtr++)
-        {
+             infoPtr++) {
             int length;
-            if (infoPtr->key == NULL)
-            {
+            if (infoPtr->key == NULL) {
                 continue;
             }
             length = strlen(infoPtr->key);
-            if (length > width)
-            {
+            if (length > width) {
                 width = length;
             }
         }
     }
 
     Tcl_AppendResult(interp, "Command-specific options:", ( char * )NULL);
-    for (i = 0;; i++)
-    {
+    for (i = 0;; i++) {
         for (infoPtr = i ? defaultTable : argTable;
              infoPtr->type != TK_ARGV_END;
-             infoPtr++)
-        {
-            if ((infoPtr->type == TK_ARGV_HELP) && (infoPtr->key == NULL))
-            {
+             infoPtr++) {
+            if ((infoPtr->type == TK_ARGV_HELP) && (infoPtr->key == NULL)) {
                 Tcl_AppendResult(interp, "\n", infoPtr->help, ( char * )NULL);
                 continue;
             }
             Tcl_AppendResult(
             interp, "\n ", infoPtr->key, ":", ( char * )NULL);
             numSpaces = width + 1 - strlen(infoPtr->key);
-            while (numSpaces > 0)
-            {
-                if (numSpaces >= NUM_SPACES)
-                {
+            while (numSpaces > 0) {
+                if (numSpaces >= NUM_SPACES) {
                     Tcl_AppendResult(interp, spaces, ( char * )NULL);
-                }
-                else
-                {
+                } else {
                     Tcl_AppendResult(
                     interp, spaces + NUM_SPACES - numSpaces, ( char * )NULL);
                 }
                 numSpaces -= NUM_SPACES;
             }
             Tcl_AppendResult(interp, infoPtr->help, ( char * )NULL);
-            switch (infoPtr->type)
-            {
-            case TK_ARGV_INT:
-            {
+            switch (infoPtr->type) {
+            case TK_ARGV_INT: {
                 sprintf(tmp, "%d", *(( int * )infoPtr->dst));
                 Tcl_AppendResult(
                 interp, "\n\t\tDefault value: ", tmp, ( char * )NULL);
                 break;
             }
-            case TK_ARGV_FLOAT:
-            {
+            case TK_ARGV_FLOAT: {
                 sprintf(tmp, "%g", *(( double * )infoPtr->dst));
                 Tcl_AppendResult(
                 interp, "\n\t\tDefault value: ", tmp, ( char * )NULL);
                 break;
             }
-            case TK_ARGV_STRING:
-            {
+            case TK_ARGV_STRING: {
                 char *string;
 
                 string = *(( char ** )infoPtr->dst);
-                if (string != NULL)
-                {
+                if (string != NULL) {
                     Tcl_AppendResult(interp,
                                      "\n\t\tDefault value: \"",
                                      string,
@@ -499,15 +441,13 @@ int flags;             /* If the TK_ARGV_NO_DEFAULTS bit is set
                 }
                 break;
             }
-            default:
-            {
+            default: {
                 break;
             }
             }
         }
 
-        if ((flags & TK_ARGV_NO_DEFAULTS) || (i > 0))
-        {
+        if ((flags & TK_ARGV_NO_DEFAULTS) || (i > 0)) {
             break;
         }
         Tcl_AppendResult(

@@ -166,8 +166,7 @@ static const unsigned char bcd_negative[] = {
 static void
 syntax(Ss_t *ss, char *s)
 {
-    if (ss->disc->errorf)
-    {
+    if (ss->disc->errorf) {
         if (s)
             (*ss->disc->errorf)(NiL, ss->disc, 2, "%s: unknown keyword", s);
         else
@@ -195,8 +194,7 @@ lex(Ss_t *ss)
     char *t;
     int q;
 
-    if (s = ss->peek)
-    {
+    if (s = ss->peek) {
         ss->peek = ss->peekpeek;
         ss->peekpeek = 0;
         ss->item++;
@@ -205,10 +203,8 @@ lex(Ss_t *ss)
 #endif
         return s;
     }
-    for (;;)
-    {
-        switch (*ss->data)
-        {
+    for (;;) {
+        switch (*ss->data) {
         case ',':
             ss->data++;
             ss->part = 1;
@@ -216,16 +212,14 @@ lex(Ss_t *ss)
         case ' ':
         case '\t':
         case '\r':
-            if (ss->item < 2)
-            {
+            if (ss->item < 2) {
                 ss->data++;
                 continue;
             }
             /*FALLTHROUGH*/
         case '*':
         case 0:
-            if (!ss->part)
-            {
+            if (!ss->part) {
                 ss->part = 1;
                 ss->data = null;
 #if DEBUG_TRACE
@@ -233,10 +227,8 @@ lex(Ss_t *ss)
 #endif
                 return SC;
             }
-            do
-            {
-                if (!(ss->data = sfgetr(ss->io, '\n', 1)))
-                {
+            do {
+                if (!(ss->data = sfgetr(ss->io, '\n', 1))) {
                     ss->data = null;
                     return 0;
                 }
@@ -255,19 +247,15 @@ lex(Ss_t *ss)
     ss->part = 0;
     s = ss->data;
     q = 0;
-    for (;;)
-    {
-        switch (*ss->data++)
-        {
+    for (;;) {
+        switch (*ss->data++) {
         case 0:
             ss->data = null;
             ss->item++;
             return s;
         case '=':
-            if (!q)
-            {
-                if ((ss->data - s) == 1)
-                {
+            if (!q) {
+                if ((ss->data - s) == 1) {
                     ss->item++;
                     return EQ;
                 }
@@ -276,10 +264,8 @@ lex(Ss_t *ss)
             }
             continue;
         case ':':
-            if (!q)
-            {
-                if ((ss->data - s) == 1)
-                {
+            if (!q) {
+                if ((ss->data - s) == 1) {
                     ss->item++;
                     return CO;
                 }
@@ -288,10 +274,8 @@ lex(Ss_t *ss)
             }
             continue;
         case '(':
-            if (!q)
-            {
-                if ((ss->data - s) == 1)
-                {
+            if (!q) {
+                if ((ss->data - s) == 1) {
                     ss->item++;
                     return OP;
                 }
@@ -300,10 +284,8 @@ lex(Ss_t *ss)
             }
             continue;
         case ')':
-            if (!q)
-            {
-                if ((ss->data - s) == 1)
-                {
+            if (!q) {
+                if ((ss->data - s) == 1) {
                     ss->item++;
                     return CP;
                 }
@@ -312,8 +294,7 @@ lex(Ss_t *ss)
             }
             continue;
         case ',':
-            if (!q)
-            {
+            if (!q) {
                 ss->part = 1;
                 break;
             }
@@ -325,13 +306,11 @@ lex(Ss_t *ss)
                 break;
             continue;
         case '\'':
-            if (q && *ss->data == '\'')
-            {
+            if (q && *ss->data == '\'') {
                 for (t = ++s; t < ss->data; t++)
                     *t = *(t - 1);
                 ss->data++;
-            }
-            else
+            } else
                 q = !q;
             continue;
         default:
@@ -358,8 +337,7 @@ value(Ss_t *ss, int flags)
     char *s;
 
     if (!(s = lex(ss))
-        || (flags & LEX_COND) && streq(s, "COND") && !(s = lex(ss)))
-    {
+        || (flags & LEX_COND) && streq(s, "COND") && !(s = lex(ss))) {
         syntax(ss, s);
         return 0;
     }
@@ -368,10 +346,8 @@ value(Ss_t *ss, int flags)
     else if (s != EQ || !(s = lex(ss))
              || (flags & LEX_GROUP) && s != OP
                 && (!(flags & LEX_NONE) || streq(s, "NONE") && (s = 0))
-                && (!(flags & LEX_COPY) || streq(s, "COPY") && (s = 0)))
-    {
-        if (ss->disc->errorf)
-        {
+                && (!(flags & LEX_COPY) || streq(s, "COPY") && (s = 0))) {
+        if (ss->disc->errorf) {
             if (s)
                 (*ss->disc->errorf)(NiL,
                                     ss->disc,
@@ -399,8 +375,7 @@ type(Ss_t *ss, char *s, int silent)
     int n;
 
     switch (
-    CH(toupper(s[0]), toupper(s[0] ? s[1] : 0), toupper(s[1] ? s[2] : 0)))
-    {
+    CH(toupper(s[0]), toupper(s[0] ? s[1] : 0), toupper(s[1] ? s[2] : 0))) {
     case CH('A', 'C', 0):
         n = SS_ascii;
         break;
@@ -479,8 +454,7 @@ codeset(Ss_t *ss, int n)
     ss->ch = n == CC_ASCII ? SS_ascii : SS_ebcdic;
     memset(ss->acin, UCHAR_MAX, UCHAR_MAX + 1);
     memset(ss->chin, UCHAR_MAX, UCHAR_MAX + 1);
-    for (n = 0, s = "0123456789"; *s; s++, n++)
-    {
+    for (n = 0, s = "0123456789"; *s; s++, n++) {
         c = ccmapchr(ss->n2a, *s);
         ss->acin[c] = n;
         ss->acex[n] = c;
@@ -488,8 +462,7 @@ codeset(Ss_t *ss, int n)
         ss->chin[c] = n;
         ss->chex[n] = c;
     }
-    for (n = 10, s = "abcdef"; *s; s++, n++)
-    {
+    for (n = 10, s = "abcdef"; *s; s++, n++) {
         c = ccmapchr(ss->n2a, *s);
         ss->acin[c] = n;
         ss->acex[n] = c;
@@ -497,8 +470,7 @@ codeset(Ss_t *ss, int n)
         ss->chin[c] = n;
         ss->chex[n] = c;
     }
-    for (n = 10, s = "ABCDEF"; *s; s++, n++)
-    {
+    for (n = 10, s = "ABCDEF"; *s; s++, n++) {
         c = ccmapchr(ss->n2a, *s);
         ss->acin[c] = n;
         c = ccmapchr(ss->n2e, *s);
@@ -515,12 +487,10 @@ eat(Ss_t *ss)
 {
     char *s;
 
-    while (s = lex(ss))
-    {
+    while (s = lex(ss)) {
         if (s == CP)
             return 0;
-        if (s == SC)
-        {
+        if (s == SC) {
             xel(ss, s);
             return 0;
         }
@@ -553,47 +523,37 @@ fields(Ss_t *ss, int tuple, int flags, size_t *zp)
 
     if (!(s = value(ss, flags | LEX_GROUP | LEX_NONE)))
         return 0;
-    if ((flags & LEX_COPY) && streq(s, "COPY"))
-    {
+    if ((flags & LEX_COPY) && streq(s, "COPY")) {
         ss->copy = 1;
         return 0;
     }
     z = 0;
     bp = dp = 0;
-    if (s == OP)
-    {
+    if (s == OP) {
         if (!(s = lex(ss)))
             goto msg;
-        if (isdigit(*s))
-        {
+        if (isdigit(*s)) {
             a = tuple;
-            do
-            {
+            do {
                 if (s == CO)
                     a = 0;
-                else
-                {
+                else {
                     if (++a > tuple
-                        && (a != 3 || !isalpha(*s) || !isalpha(*(s + 1))))
-                    {
-                        if (!bp)
-                        {
+                        && (a != 3 || !isalpha(*s) || !isalpha(*(s + 1)))) {
+                        if (!bp) {
                             bp = ep = dp;
                             dp = 0;
-                        }
-                        else if ((flags & LEX_JOIN)
-                                 && (ep->offset + ep->size) == dp->offset
-                                 && !dp->value && !ep->value
-                                 && dp->reverse == ep->reverse)
+                        } else if ((flags & LEX_JOIN)
+                                   && (ep->offset + ep->size) == dp->offset
+                                   && !dp->value && !ep->value
+                                   && dp->reverse == ep->reverse)
                             ep->size += dp->size;
-                        else
-                        {
+                        else {
                             ep = ep->next = dp;
                             dp = 0;
                         }
                         if (!dp
-                            && !(dp = vmnewof(ss->vm, 0, Ssfield_t, 1, 0)))
-                        {
+                            && !(dp = vmnewof(ss->vm, 0, Ssfield_t, 1, 0))) {
                             if (ss->disc->errorf)
                                 (*ss->disc->errorf)(NiL,
                                                     ss->disc,
@@ -603,50 +563,40 @@ fields(Ss_t *ss, int tuple, int flags, size_t *zp)
                         }
                         a = 1;
                     }
-                    switch (a)
-                    {
+                    switch (a) {
                     case 1:
                     case 2:
-                        if ((x = toupper(*s)) == 'E' && streq(s, "EDIT"))
-                        {
+                        if ((x = toupper(*s)) == 'E' && streq(s, "EDIT")) {
                             if (ss->disc->errorf)
                                 (*ss->disc->errorf)(
                                 NiL, ss->disc, 2, "%s: not supported", s);
                             if (!(s = value(ss, LEX_GROUP)) || eat(ss))
                                 return 0;
-                        }
-                        else if (x == 'L' && streq(s, "LENGTH"))
-                        {
+                        } else if (x == 'L' && streq(s, "LENGTH")) {
                             if (ss->disc->errorf)
                                 (*ss->disc->errorf)(
                                 NiL, ss->disc, 2, "%s: not supported", s);
                             if (!(s = value(ss, 0)))
                                 return 0;
-                        }
-                        else if (x == 'S' && streq(s, "SIGNS"))
-                        {
+                        } else if (x == 'S' && streq(s, "SIGNS")) {
                             if (ss->disc->errorf)
                                 (*ss->disc->errorf)(
                                 NiL, ss->disc, 2, "%s: not supported", s);
                             if (!(s = value(ss, LEX_GROUP)) || eat(ss))
                                 return 0;
-                        }
-                        else
-                        {
+                        } else {
                             n = strtoul(s, &e, 10);
                             if (((x = toupper(*e)) == 'A' || x == 'B'
                                  || x == 'C' || x == 'X')
                                 && *(e + 1) == '\''
-                                && *(v = e + strlen(e) - 1) == '\'')
-                            {
+                                && *(v = e + strlen(e) - 1) == '\'') {
                                 s = e + 2;
                                 e = v;
                                 c = e - s;
                                 if (!n)
                                     n = 1;
                                 if (!(dp->value
-                                      = vmnewof(ss->vm, 0, char, n *c, 1)))
-                                {
+                                      = vmnewof(ss->vm, 0, char, n *c, 1))) {
                                     if (ss->disc->errorf)
                                         (*ss->disc->errorf)(NiL,
                                                             ss->disc,
@@ -654,22 +604,17 @@ fields(Ss_t *ss, int tuple, int flags, size_t *zp)
                                                             "out of space");
                                     return 0;
                                 }
-                                if (x == 'B')
-                                {
+                                if (x == 'B') {
                                     for (v = dp->value; s < e; s += 8)
                                         *v++ = ( unsigned char )strntoul(
                                         s, 8, NiL, 2);
                                     c = v - dp->value;
-                                }
-                                else if (x == 'X')
-                                {
+                                } else if (x == 'X') {
                                     for (v = dp->value; s < e; s += 2)
                                         *v++ = ( unsigned char )strntoul(
                                         s, 2, NiL, 16);
                                     c = v - dp->value;
-                                }
-                                else
-                                {
+                                } else {
                                     strcpy(dp->value, s);
                                     dp->value[c] = 0;
                                     c = stresc(dp->value);
@@ -683,9 +628,7 @@ fields(Ss_t *ss, int tuple, int flags, size_t *zp)
                                 while (--n)
                                     memcpy(s += c, dp->value, c);
                                 a = 2;
-                            }
-                            else if ((x == 'X' || x == 'Z') && !*(e + 1))
-                            {
+                            } else if ((x == 'X' || x == 'Z') && !*(e + 1)) {
                                 if (x == 'X')
                                     c = ' ';
                                 else
@@ -693,8 +636,7 @@ fields(Ss_t *ss, int tuple, int flags, size_t *zp)
                                 if (!n)
                                     n = 1;
                                 if (!(dp->value
-                                      = vmnewof(ss->vm, 0, char, n, 0)))
-                                {
+                                      = vmnewof(ss->vm, 0, char, n, 0))) {
                                     if (ss->disc->errorf)
                                         (*ss->disc->errorf)(NiL,
                                                             ss->disc,
@@ -706,11 +648,8 @@ fields(Ss_t *ss, int tuple, int flags, size_t *zp)
                                 while (n--)
                                     dp->value[n] = c;
                                 a = 2;
-                            }
-                            else
-                            {
-                                switch (a)
-                                {
+                            } else {
+                                switch (a) {
                                 case 1:
                                     dp->offset = n - 1;
                                     break;
@@ -718,8 +657,7 @@ fields(Ss_t *ss, int tuple, int flags, size_t *zp)
                                     z += (dp->size = n);
                                     break;
                                 }
-                                if (*e)
-                                {
+                                if (*e) {
                                     if (ss->disc->errorf)
                                         (*ss->disc->errorf)(
                                         NiL,
@@ -733,8 +671,7 @@ fields(Ss_t *ss, int tuple, int flags, size_t *zp)
                         }
                         break;
                     case 3:
-                        if (tuple != 3)
-                        {
+                        if (tuple != 3) {
                             if (tuple > 3 && !bp && !*(s + 1))
                                 tuple = 3;
                             else if (dp->type = type(ss, s, 0))
@@ -745,8 +682,7 @@ fields(Ss_t *ss, int tuple, int flags, size_t *zp)
                         }
                         /*FALLTHROUGH*/
                     case 4:
-                        switch (*s)
-                        {
+                        switch (*s) {
                         case 'a':
                         case 'A':
                             break;
@@ -769,21 +705,16 @@ fields(Ss_t *ss, int tuple, int flags, size_t *zp)
                 if (!(s = lex(ss)))
                     goto msg;
             } while (s != CP);
-        }
-        else if ((flags & LEX_COPY) && streq(s, "COPY"))
-        {
+        } else if ((flags & LEX_COPY) && streq(s, "COPY")) {
             if ((s = lex(ss)) != CP)
                 goto msg;
             ss->copy = 1;
             return 0;
-        }
-        else if ((flags & LEX_NONE) && streq(s, "NONE"))
-        {
+        } else if ((flags & LEX_NONE) && streq(s, "NONE")) {
             if ((s = lex(ss)) != CP)
                 goto msg;
             return 0;
-        }
-        else
+        } else
             xel(ss, s);
     }
     if (!bp)
@@ -820,65 +751,51 @@ options(Ss_t *ss,
 
     if (dp)
         *dp = 0;
-    while (s = lex(ss))
-    {
+    while (s = lex(ss)) {
         if (s == SC)
             break;
         else if (s == OP || s == CP)
             ;
-        else if (streq(s, "CODE") || streq(s, "CODESET"))
-        {
+        else if (streq(s, "CODE") || streq(s, "CODESET")) {
             if (!(s = value(ss, 0)))
                 return -1;
-            if ((n = ccmapid(s)) < 0)
-            {
+            if ((n = ccmapid(s)) < 0) {
                 if (ss->disc->errorf)
                     (*ss->disc->errorf)(
                     NiL, ss->disc, 2, "%s: invalid codeset name", s);
                 return -1;
             }
             codeset(ss, n);
-        }
-        else if (streq(s, "COPY"))
+        } else if (streq(s, "COPY"))
             ss->copy = 1;
-        else if (streq(s, "CONVERT") || streq(s, "VTOF"))
-        {
+        else if (streq(s, "CONVERT") || streq(s, "VTOF")) {
             if (!fp)
                 goto msg;
             fp->format = REC_F_TYPE(0);
-        }
-        else if (streq(s, "EQUALS"))
+        } else if (streq(s, "EQUALS"))
             ss->stable = 'Y';
         else if (streq(s, "NOEQUALS"))
             ss->stable = 'N';
-        else if (streq(s, "FIELDS"))
-        {
+        else if (streq(s, "FIELDS")) {
             n = ss->copy;
             if (dp && !(*dp = fields(ss, tuple, flags, zp)) && ss->copy == n)
                 return -1;
-        }
-        else if (streq(s, "FORMAT"))
-        {
+        } else if (streq(s, "FORMAT")) {
             if (!(s = value(ss, 0)) || !(n = type(ss, s, 0)))
                 return -1;
             for (ip = *dp; ip; ip = ip->next)
                 ip->type = n;
-        }
-        else if (streq(s, "FTOV"))
-        {
+        } else if (streq(s, "FTOV")) {
             if (!fp)
                 goto msg;
             fp->format = SS_V_IBM;
-        }
-        else if (streq(s, "LENGTH"))
-        {
+        } else if (streq(s, "LENGTH")) {
             if (!(s = value(ss, 0)))
                 return -1;
             if ((n = s == OP) && !(s = lex(ss)))
                 goto msg;
             ss->size = strtoul(s, &e, 10);
-            if (*e)
-            {
+            if (*e) {
                 if (ss->disc->errorf)
                     (*ss->disc->errorf)(
                     NiL, ss->disc, 2, "%s: invalid number", s);
@@ -886,13 +803,10 @@ options(Ss_t *ss,
             }
             if (n && eat(ss))
                 return -1;
-        }
-        else if (streq(s, "TYPE"))
-        {
+        } else if (streq(s, "TYPE")) {
             if (!(s = value(ss, 0)))
                 return -1;
-            switch (*(e = s))
-            {
+            switch (*(e = s)) {
             case 'd':
             case 'D':
                 ss->type = 'D';
@@ -905,55 +819,43 @@ options(Ss_t *ss,
                 break;
             case 'v':
             case 'V':
-                if (*++e == 'b' || *e == 'B')
-                {
+                if (*++e == 'b' || *e == 'B') {
                     e++;
                     ss->type = 'B';
-                }
-                else
+                } else
                     ss->type = 'V';
                 break;
             }
-            if (*e)
-            {
+            if (*e) {
                 if (ss->disc->errorf)
                     (*ss->disc->errorf)(
                     NiL, ss->disc, 2, "%s: invalid record type", s);
                 return -1;
             }
-        }
-        else if (streq(s, "SIZE"))
-        {
+        } else if (streq(s, "SIZE")) {
             if (!(s = value(ss, 0)))
                 return -1;
-        }
-        else if (streq(s, "SKIPREC"))
-        {
+        } else if (streq(s, "SKIPREC")) {
             if (!(s = value(ss, 0)))
                 return -1;
             ss->skip = strtoull(s, &e, 10);
-            if (*e)
-            {
+            if (*e) {
                 if (ss->disc->errorf)
                     (*ss->disc->errorf)(
                     NiL, ss->disc, 2, "%s: invalid number", s);
                 return -1;
             }
-        }
-        else if (streq(s, "STOPAFT"))
-        {
+        } else if (streq(s, "STOPAFT")) {
             if (!(s = value(ss, 0)))
                 return -1;
             ss->stop = strtoull(s, &e, 10) + 1;
-            if (*e)
-            {
+            if (*e) {
                 if (ss->disc->errorf)
                     (*ss->disc->errorf)(
                     NiL, ss->disc, 2, "%s: invalid number", s);
                 return -1;
             }
-        }
-        else if (ss->disc->errorf)
+        } else if (ss->disc->errorf)
             (*ss->disc->errorf)(NiL, ss->disc, 1, "%s: unknown option", s);
     }
     return 0;
@@ -980,53 +882,38 @@ operand(Ss_t *ss, Ssexpr_t *lp)
     unsigned char *map;
     int c;
 
-    if (!(s = lex(ss)))
-    {
+    if (!(s = lex(ss))) {
         syntax(ss, s);
         return 0;
-    }
-    else if (s == OP)
-    {
+    } else if (s == OP) {
         if (!(xp = compile(ss, 1)))
             return 0;
-        if ((s = lex(ss)) != CP)
-        {
+        if ((s = lex(ss)) != CP) {
             if (ss->disc->errorf)
                 (*ss->disc->errorf)(NiL, ss->disc, 2, "%s: ) expected", s);
             return 0;
         }
-    }
-    else if (!(xp = vmnewof(ss->vm, 0, Ssexpr_t, 1, 0)))
-    {
+    } else if (!(xp = vmnewof(ss->vm, 0, Ssexpr_t, 1, 0))) {
         if (ss->disc->errorf)
             (*ss->disc->errorf)(
             NiL, ss->disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
-    }
-    else if (streq(s, "NOT"))
-    {
+    } else if (streq(s, "NOT")) {
         xp->op = SS_OP_not;
         if (!(xp->left.expr = compile(ss, 13)))
             return 0;
-    }
-    else if (!(dp = vmnewof(ss->vm, 0, Ssfield_t, 1, 0)))
-    {
+    } else if (!(dp = vmnewof(ss->vm, 0, Ssfield_t, 1, 0))) {
         if (ss->disc->errorf)
             (*ss->disc->errorf)(
             NiL, ss->disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
-    }
-    else
-    {
+    } else {
         xp->left.field = dp;
-        if (isdigit(*s))
-        {
+        if (isdigit(*s)) {
             xp->op = SS_OP_field;
             dp->offset = strtol(s, &e, 10);
-            if (*e)
-            {
-                if (ss->disc->errorf)
-                {
+            if (*e) {
+                if (ss->disc->errorf) {
                     if (lp)
                         (*ss->disc->errorf)(
                         NiL, ss->disc, 2, "%s: invalid number", s);
@@ -1036,45 +923,36 @@ operand(Ss_t *ss, Ssexpr_t *lp)
                 }
                 return 0;
             }
-            if (!(s = lex(ss)))
-            {
+            if (!(s = lex(ss))) {
                 syntax(ss, s);
                 return 0;
             }
-            if (isdigit(*s))
-            {
+            if (isdigit(*s)) {
                 dp->offset--;
                 dp->size = strtoul(s, &e, 10);
-                if (*e)
-                {
+                if (*e) {
                     if (ss->disc->errorf)
                         (*ss->disc->errorf)(
                         NiL, ss->disc, 2, "%s: field size expected", s);
                     return 0;
                 }
-                if (!(s = lex(ss)))
-                {
+                if (!(s = lex(ss))) {
                     syntax(ss, s);
                     return 0;
                 }
                 dp->type = type(ss, s, 1);
-            }
-            else
-            {
+            } else {
                 xel(ss, s);
-                if (lp)
-                {
+                if (lp) {
                     dp->type = lp->left.field->type;
                     dp->size = lp->left.field->size;
                 }
                 xp->op = SS_OP_value;
             }
-        }
-        else if (((c = toupper(*s)) == 'C' || c == 'A') && *(s + 1) == '\'')
-        {
+        } else if (((c = toupper(*s)) == 'C' || c == 'A')
+                   && *(s + 1) == '\'') {
             e = s + strlen(s) - 1;
-            if (*e != '\'' || *(e + 1))
-            {
+            if (*e != '\'' || *(e + 1)) {
                 if (ss->disc->errorf)
                     (*ss->disc->errorf)(
                     NiL, ss->disc, 2, "%s: invalid string constant", s);
@@ -1082,8 +960,7 @@ operand(Ss_t *ss, Ssexpr_t *lp)
             }
             s += 2;
             dp->size = e - s;
-            if (!(dp->value = vmnewof(ss->vm, 0, char, dp->size, 1)))
-            {
+            if (!(dp->value = vmnewof(ss->vm, 0, char, dp->size, 1))) {
                 if (ss->disc->errorf)
                     (*ss->disc->errorf)(
                     NiL, ss->disc, ERROR_SYSTEM | 2, "out of space");
@@ -1094,12 +971,9 @@ operand(Ss_t *ss, Ssexpr_t *lp)
             if (map = c == 'C' ? ss->n2e : ss->n2a)
                 ccmapstr(map, dp->value, dp->size);
             xp->op = SS_OP_value;
-        }
-        else if (c == 'X' && *(s + 1) == '\'')
-        {
+        } else if (c == 'X' && *(s + 1) == '\'') {
             e = s + strlen(s) - 1;
-            if (*e != '\'')
-            {
+            if (*e != '\'') {
                 if (ss->disc->errorf)
                     (*ss->disc->errorf)(NiL,
                                         ss->disc,
@@ -1110,8 +984,7 @@ operand(Ss_t *ss, Ssexpr_t *lp)
             }
             s += 2;
             dp->size = (e - s + 1) / 2;
-            if (!(dp->value = vmnewof(ss->vm, 0, char, dp->size, 0)))
-            {
+            if (!(dp->value = vmnewof(ss->vm, 0, char, dp->size, 0))) {
                 if (ss->disc->errorf)
                     (*ss->disc->errorf)(
                     NiL, ss->disc, ERROR_SYSTEM | 2, "out of space");
@@ -1120,12 +993,9 @@ operand(Ss_t *ss, Ssexpr_t *lp)
             for (v = dp->value; s < e; s += 2)
                 *v++ = strntoul(s, 2, NiL, 16);
             xp->op = SS_OP_value;
-        }
-        else if (c == 'B' && *(s + 1) == '\'')
-        {
+        } else if (c == 'B' && *(s + 1) == '\'') {
             e = s + strlen(s) - 1;
-            if (*e != '\'')
-            {
+            if (*e != '\'') {
                 if (ss->disc->errorf)
                     (*ss->disc->errorf)(NiL,
                                         ss->disc,
@@ -1136,8 +1006,7 @@ operand(Ss_t *ss, Ssexpr_t *lp)
             }
             s += 2;
             dp->size = (e - s + 7) / 8;
-            if (!(dp->value = vmnewof(ss->vm, 0, char, dp->size, 0)))
-            {
+            if (!(dp->value = vmnewof(ss->vm, 0, char, dp->size, 0))) {
                 if (ss->disc->errorf)
                     (*ss->disc->errorf)(
                     NiL, ss->disc, ERROR_SYSTEM | 2, "out of space");
@@ -1146,9 +1015,7 @@ operand(Ss_t *ss, Ssexpr_t *lp)
             for (v = dp->value; s < e; s += 8)
                 *v++ = strntoul(s, 8, NiL, 2);
             xp->op = SS_OP_value;
-        }
-        else
-        {
+        } else {
             if (ss->disc->errorf)
                 (*ss->disc->errorf)(
                 NiL, ss->disc, 2, "%s: operand expected", s);
@@ -1174,109 +1041,78 @@ compile(Ss_t *ss, int precedence)
 
     if (!(xp = operand(ss, NiL)))
         return 0;
-    for (;;)
-    {
+    for (;;) {
 #if DEBUG_TRACE
         sfprintf(sfstderr, "compile(%d) ", precedence);
         listexpr(ss, sfstderr, xp);
         sfprintf(sfstderr, "\n");
 #endif
-        if (!(s = lex(ss)))
-        {
+        if (!(s = lex(ss))) {
             if (precedence)
                 syntax(ss, s);
             break;
-        }
-        else if (s == CP)
-        {
+        } else if (s == CP) {
             xel(ss, s);
             break;
-        }
-        else
-        {
-            if (streq(s, "AND"))
-            {
+        } else {
+            if (streq(s, "AND")) {
                 pr = 4;
                 op = SS_OP_and;
-            }
-            else if (streq(s, "OR"))
-            {
+            } else if (streq(s, "OR")) {
                 pr = 3;
                 op = SS_OP_or;
-            }
-            else if (streq(s, "EQ"))
-            {
+            } else if (streq(s, "EQ")) {
                 pr = 8;
                 op = SS_OP_eq;
-            }
-            else if (streq(s, "NE"))
-            {
+            } else if (streq(s, "NE")) {
                 pr = 8;
                 op = SS_OP_ne;
-            }
-            else if (streq(s, "LT"))
-            {
+            } else if (streq(s, "LT")) {
                 pr = 8;
                 op = SS_OP_lt;
-            }
-            else if (streq(s, "LE"))
-            {
+            } else if (streq(s, "LE")) {
                 pr = 8;
                 op = SS_OP_le;
-            }
-            else if (streq(s, "GE"))
-            {
+            } else if (streq(s, "GE")) {
                 pr = 8;
                 op = SS_OP_ge;
-            }
-            else if (streq(s, "GT"))
-            {
+            } else if (streq(s, "GT")) {
                 pr = 8;
                 op = SS_OP_gt;
-            }
-            else
-            {
+            } else {
                 if (ss->disc->errorf)
                     (*ss->disc->errorf)(
                     NiL, ss->disc, 2, "%s: operator expected", s);
                 return 0;
             }
-            if (precedence >= pr)
-            {
+            if (precedence >= pr) {
                 xel(ss, s);
                 break;
             }
             lp = xp;
-            if (ssopexpr(op))
-            {
+            if (ssopexpr(op)) {
                 if (!(rp = compile(ss, pr)))
                     return 0;
-                if (ssopdata(lp->op) || ssopdata(rp->op))
-                {
+                if (ssopdata(lp->op) || ssopdata(rp->op)) {
                     if (ss->disc->errorf)
                         (*ss->disc->errorf)(
                         NiL, ss->disc, 2, "expression operand expected");
                     return 0;
                 }
-            }
-            else if (!ssopdata(lp->op))
-            {
+            } else if (!ssopdata(lp->op)) {
+                if (ss->disc->errorf)
+                    (*ss->disc->errorf)(
+                    NiL, ss->disc, 2, "data operand expected");
+                return 0;
+            } else if (!(rp = operand(ss, lp)))
+                return 0;
+            else if (!ssopdata(rp->op)) {
                 if (ss->disc->errorf)
                     (*ss->disc->errorf)(
                     NiL, ss->disc, 2, "data operand expected");
                 return 0;
             }
-            else if (!(rp = operand(ss, lp)))
-                return 0;
-            else if (!ssopdata(rp->op))
-            {
-                if (ss->disc->errorf)
-                    (*ss->disc->errorf)(
-                    NiL, ss->disc, 2, "data operand expected");
-                return 0;
-            }
-            if (!(xp = vmnewof(ss->vm, 0, Ssexpr_t, 1, 0)))
-            {
+            if (!(xp = vmnewof(ss->vm, 0, Ssexpr_t, 1, 0))) {
                 if (ss->disc->errorf)
                     (*ss->disc->errorf)(
                     NiL, ss->disc, ERROR_SYSTEM | 2, "out of space");
@@ -1305,15 +1141,13 @@ finalize(Ss_t *ss, Ssexpr_t *xp, int type)
     char *v;
     long n;
 
-    switch (xp->op)
-    {
+    switch (xp->op) {
     case SS_OP_false:
     case SS_OP_true:
         return 0;
     case SS_OP_and:
     case SS_OP_or:
-        if (ssopexpr(xp->left.expr->op) && !ssopexpr(xp->right.expr->op))
-        {
+        if (ssopexpr(xp->left.expr->op) && !ssopexpr(xp->right.expr->op)) {
             tp = xp->left.expr;
             xp->left.expr = xp->right.expr;
             xp->right.expr = tp;
@@ -1329,10 +1163,8 @@ finalize(Ss_t *ss, Ssexpr_t *xp, int type)
     dp = xp->right.expr->left.field;
     if (!dp->type)
         dp->type = xp->left.expr->left.field->type;
-    if (xp->right.expr->op == SS_OP_value && !dp->value)
-    {
-        if (!(v = vmnewof(ss->vm, 0, char, dp->size, 1)))
-        {
+    if (xp->right.expr->op == SS_OP_value && !dp->value) {
+        if (!(v = vmnewof(ss->vm, 0, char, dp->size, 1))) {
             if (ss->disc->errorf)
                 (*ss->disc->errorf)(
                 NiL, ss->disc, ERROR_SYSTEM | 2, "out of space");
@@ -1342,50 +1174,41 @@ finalize(Ss_t *ss, Ssexpr_t *xp, int type)
         s = v + dp->size - 1;
         n = dp->offset;
         dp->offset = 0;
-        switch (dp->type)
-        {
+        switch (dp->type) {
         case SS_bcd:
-            if (n < 0)
-            {
+            if (n < 0) {
                 n = -n;
                 *s = 0x0D;
-            }
-            else
+            } else
                 *s = 0x0C;
             *s |= bcd_unit[n % 10];
             n /= 10;
-            while (s-- > v)
-            {
+            while (s-- > v) {
                 *s = bcd_pack[n % 100];
                 n /= 100;
             }
             break;
         case SS_be:
-            do
-            {
+            do {
                 *s = n & 0xFF;
                 n >>= 8;
             } while (s-- > v);
             break;
         case SS_le:
-            do
-            {
+            do {
                 *v = n & 0xFF;
                 n >>= 8;
             } while (v++ < s);
             break;
         case SS_zd:
-            if (n < 0)
-            {
+            if (n < 0) {
                 n = -n;
                 *s = 0xD0;
-            }
-            else
+            } else
                 *s = 0xC0;
             *s |= n % 10;
             n /= 10;
-            while (s-- > v)
-            {
+            while (s-- > v) {
                 *s = n % 10;
                 n /= 10;
             }
@@ -1419,49 +1242,36 @@ cond(Ss_t *ss)
 
     if (!(s = value(ss, LEX_COND)))
         return 0;
-    else if (streq(s, "ALL"))
-    {
-        if (!(xp = vmnewof(ss->vm, 0, Ssexpr_t, 1, 0)))
-        {
+    else if (streq(s, "ALL")) {
+        if (!(xp = vmnewof(ss->vm, 0, Ssexpr_t, 1, 0))) {
             if (ss->disc->errorf)
                 (*ss->disc->errorf)(
                 NiL, ss->disc, ERROR_SYSTEM | 2, "out of space");
             return 0;
         }
         xp->op = SS_OP_true;
-    }
-    else if (streq(s, "NONE"))
-    {
-        if (!(xp = vmnewof(ss->vm, 0, Ssexpr_t, 1, 0)))
-        {
+    } else if (streq(s, "NONE")) {
+        if (!(xp = vmnewof(ss->vm, 0, Ssexpr_t, 1, 0))) {
             if (ss->disc->errorf)
                 (*ss->disc->errorf)(
                 NiL, ss->disc, ERROR_SYSTEM | 2, "out of space");
             return 0;
         }
         xp->op = SS_OP_false;
-    }
-    else if (s != OP)
-    {
+    } else if (s != OP) {
         syntax(ss, s);
         return 0;
-    }
-    else if (!(xp = compile(ss, 0)))
+    } else if (!(xp = compile(ss, 0)))
         return 0;
-    else if ((s = lex(ss)) != CP)
-    {
+    else if ((s = lex(ss)) != CP) {
         if (ss->disc->errorf)
             (*ss->disc->errorf)(NiL, ss->disc, 2, "%s: ) expected", s);
         return 0;
-    }
-    else if (s = lex(ss))
-    {
-        if (!streq(s, "FORMAT"))
-        {
+    } else if (s = lex(ss)) {
+        if (!streq(s, "FORMAT")) {
             xel(ss, s);
             n = SS_be;
-        }
-        else if (!(s = value(ss, 0)) || !(n = type(ss, s, 0)))
+        } else if (!(s = value(ss, 0)) || !(n = type(ss, s, 0)))
             return 0;
         if (finalize(ss, xp, n))
             return 0;
@@ -1478,8 +1288,7 @@ group(Ss_t *ss, Ssfile_t *fp, const char *id)
 {
     Ssgroup_t *gp;
 
-    if (!(gp = vmnewof(ss->vm, 0, Ssgroup_t, 1, strlen(id) + 1)))
-    {
+    if (!(gp = vmnewof(ss->vm, 0, Ssgroup_t, 1, strlen(id) + 1))) {
         if (ss->disc->errorf)
             (*ss->disc->errorf)(
             NiL, ss->disc, ERROR_SYSTEM | 2, "out of space");
@@ -1527,13 +1336,10 @@ load(Ss_t *ss,
                             path,
                             sizeof(path)))
             break;
-    if (!dll)
-    {
-        if ((e = getenv(lib)) && (e = strdup(e)))
-        {
+    if (!dll) {
+        if ((e = getenv(lib)) && (e = strdup(e))) {
             s = e;
-            while (*s)
-            {
+            while (*s) {
                 while (isspace(*s))
                     s++;
                 t = s;
@@ -1541,8 +1347,7 @@ load(Ss_t *ss,
                     s++;
                 if (*s)
                     *s++ = 0;
-                if (*t)
-                {
+                if (*t) {
                     for (i = 0; i < elementsof(sys); i++)
                         if (dll = dllplugin(sys[i],
                                             t,
@@ -1559,8 +1364,7 @@ load(Ss_t *ss,
             }
             free(e);
         }
-        if (!dll)
-        {
+        if (!dll) {
             if (disc->errorf)
                 (*disc->errorf)(NiL,
                                 disc,
@@ -1572,8 +1376,7 @@ load(Ss_t *ss,
             return -1;
         }
     }
-    if (!(exitf = ( Ssexit_f )dlllook(dll, fun)))
-    {
+    if (!(exitf = ( Ssexit_f )dlllook(dll, fun))) {
         if (disc->errorf)
             (*disc->errorf)(NiL,
                             disc,
@@ -1587,8 +1390,7 @@ load(Ss_t *ss,
     if ((interceptf = ( Ssintercept_f )dlllook(dll, "rs_intercept"))
         || (interceptf = ( Ssintercept_f )dlllook(NiL, "rs_intercept")))
         ss->intercept = interceptf;
-    switch (( int )strtol(usr + 1, NiL, 10))
-    {
+    switch (( int )strtol(usr + 1, NiL, 10)) {
     case 11:
     case 21:
     case 31:
@@ -1642,14 +1444,12 @@ ssopen(const char *file, Ssdisc_t *disc)
     int oline;
     int n;
 
-    if (!(vm = vmopen(Vmdcheap, Vmbest, 0)))
-    {
+    if (!(vm = vmopen(Vmdcheap, Vmbest, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
     }
-    if (!(ss = vmnewof(vm, 0, Ss_t, 1, sizeof(Ssfile_t))))
-    {
+    if (!(ss = vmnewof(vm, 0, Ss_t, 1, sizeof(Ssfile_t)))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         vmclose(vm);
@@ -1661,20 +1461,16 @@ ssopen(const char *file, Ssdisc_t *disc)
     codeset(ss, disc->code);
     oline = error_info.line;
     ofile = error_info.file;
-    if (!(ss->buf = sfstropen()))
-    {
+    if (!(ss->buf = sfstropen())) {
         if (ss->disc->errorf)
             (*ss->disc->errorf)(
             NiL, ss->disc, ERROR_SYSTEM | 2, "out of space");
         goto bad;
     }
-    if (!file || !*file || streq(file, "-"))
-    {
+    if (!file || !*file || streq(file, "-")) {
         file = 0;
         ss->io = sfstdin;
-    }
-    else if (!(ss->io = sfopen(NiL, file, "r")))
-    {
+    } else if (!(ss->io = sfopen(NiL, file, "r"))) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, ERROR_SYSTEM | 2, "%s: cannot read", file);
@@ -1685,22 +1481,17 @@ ssopen(const char *file, Ssdisc_t *disc)
     ss->data = null;
     error_info.line = 0;
     error_info.file = ( char * )file;
-    while (s = lex(ss))
-    {
+    while (s = lex(ss)) {
         if (s == SC)
             ;
-        else if (streq(s, "ALTSEQ"))
-        {
-            while (s = lex(ss))
-            {
+        else if (streq(s, "ALTSEQ")) {
+            while (s = lex(ss)) {
                 if (s == SC)
                     break;
-                else if (streq(s, "CODE"))
-                {
+                else if (streq(s, "CODE")) {
                     if (!(s = value(ss, LEX_GROUP)))
                         goto bad;
-                    while (s = lex(ss))
-                    {
+                    while (s = lex(ss)) {
                         if (s == SC)
                             goto msg;
                         else if (s == CP)
@@ -1712,40 +1503,30 @@ ssopen(const char *file, Ssdisc_t *disc)
                                             "ALTSEQ: not supported (CODE=%s)",
                                             s);
                     }
-                }
-                else
+                } else
                     goto msg;
             }
-        }
-        else if (streq(s, "END"))
+        } else if (streq(s, "END"))
             break;
-        else if (streq(s, "INCLUDE") || streq(s, "OMIT") && (ss->omit = 1))
-        {
+        else if (streq(s, "INCLUDE") || streq(s, "OMIT") && (ss->omit = 1)) {
             if (!(ss->expr = cond(ss)))
                 goto bad;
-        }
-        else if (streq(s, "INREC"))
-        {
+        } else if (streq(s, "INREC")) {
             if (options(ss, LEX_JOIN, NiL, &ss->in, 2, &ss->insize))
                 goto bad;
-        }
-        else if (streq(s, "MODS"))
-        {
-            while (s = lex(ss))
-            {
+        } else if (streq(s, "MODS")) {
+            while (s = lex(ss)) {
                 if (s == SC)
                     break;
                 else if (s[0] == 'E' && isdigit(s[1]) && isdigit(s[2])
-                         && !s[3])
-                {
+                         && !s[3]) {
                     char *usr[4];
 
                     usr[0] = s;
                     if (!(s = value(ss, LEX_GROUP)))
                         goto bad;
                     n = 1;
-                    while (s = lex(ss))
-                    {
+                    while (s = lex(ss)) {
                         if (s == SC)
                             goto msg;
                         else if (s == CP)
@@ -1757,15 +1538,11 @@ ssopen(const char *file, Ssdisc_t *disc)
                         goto msg;
                     if (load(ss, usr[0], usr[1], usr[3], disc))
                         goto bad;
-                }
-                else
+                } else
                     goto msg;
             }
-        }
-        else if (streq(s, "OPTION"))
-        {
-            while (s = lex(ss))
-            {
+        } else if (streq(s, "OPTION")) {
+            while (s = lex(ss)) {
                 if (s == SC)
                     break;
                 else if (streq(s, "EQUALS"))
@@ -1775,11 +1552,8 @@ ssopen(const char *file, Ssdisc_t *disc)
                 else
                     goto msg;
             }
-        }
-        else if (streq(s, "OUTFIL"))
-        {
-            if (!(fp = vmnewof(ss->vm, 0, Ssfile_t, 1, 0)))
-            {
+        } else if (streq(s, "OUTFIL")) {
+            if (!(fp = vmnewof(ss->vm, 0, Ssfile_t, 1, 0))) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -1787,102 +1561,75 @@ ssopen(const char *file, Ssdisc_t *disc)
             }
             ep = ep->next = fp;
             fp->format = REC_N_TYPE();
-            while (s = lex(ss))
-            {
+            while (s = lex(ss)) {
                 if (s == SC)
                     break;
-                else if (streq(s, "FILES") || streq(s, "FNAMES"))
-                {
+                else if (streq(s, "FILES") || streq(s, "FNAMES")) {
                     if (!(s = value(ss, 0)))
                         goto bad;
-                    if (s == OP)
-                    {
+                    if (s == OP) {
                         while ((s = lex(ss)) && s != CP)
                             if (group(ss, fp, s))
                                 goto bad;
                         if (s != CP)
                             goto msg;
-                    }
-                    else if (group(ss, fp, s))
+                    } else if (group(ss, fp, s))
                         goto bad;
-                }
-                else if (streq(s, "INCLUDE")
-                         || streq(s, "OMIT") && (fp->omit = 1))
-                {
+                } else if (streq(s, "INCLUDE")
+                           || streq(s, "OMIT") && (fp->omit = 1)) {
                     if (!(fp->expr = cond(ss)))
                         goto bad;
-                }
-                else if (streq(s, "OUTREC"))
-                {
+                } else if (streq(s, "OUTREC")) {
                     if (!(fp->out = fields(ss, 2, LEX_JOIN, &fp->size)))
                         goto bad;
-                }
-                else if (streq(s, "SAVE"))
+                } else if (streq(s, "SAVE"))
                     fp->save = 1;
                 else
                     goto msg;
             }
-            if (!fp->group)
-            {
+            if (!fp->group) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL, disc, 2, "FILES or FNAMES expected in OUTFIL group");
                 goto bad;
             }
-        }
-        else if (streq(s, "OUTREC"))
-        {
+        } else if (streq(s, "OUTREC")) {
             if (options(ss, LEX_JOIN, fp, &fp->out, 2, &fp->size))
                 goto bad;
-        }
-        else if (streq(s, "RECORD"))
-        {
+        } else if (streq(s, "RECORD")) {
             if (options(ss, 0, NiL, NiL, 0, NiL))
                 goto bad;
-        }
-        else if (streq(s, "SORT") || streq(s, "MERGE") && (ss->merge = 1))
-        {
+        } else if (streq(s, "SORT") || streq(s, "MERGE") && (ss->merge = 1)) {
             if (options(ss, LEX_COPY | LEX_JOIN, NiL, &ss->sort, 4, NiL))
                 goto bad;
-        }
-        else if (streq(s, "SUM"))
-        {
-            while (s = lex(ss))
-            {
+        } else if (streq(s, "SUM")) {
+            while (s = lex(ss)) {
                 if (s == SC)
                     break;
-                else if (streq(s, "FIELDS"))
-                {
+                else if (streq(s, "FIELDS")) {
                     ss->sum = fields(ss, 2, LEX_NONE, NiL);
                     ss->uniq = 1;
-                }
-                else if (streq(s, "FORMAT"))
-                {
+                } else if (streq(s, "FORMAT")) {
                     if (!(s = value(ss, 0)) || !(n = type(ss, s, 0)))
                         goto bad;
                     for (dp = ss->sum; dp; dp = dp->next)
                         if (!dp->type)
                             dp->type = n;
-                }
-                else if (streq(s, "XSUM"))
-                {
+                } else if (streq(s, "XSUM")) {
                     if ((s = getenv(SS_DD_XSUM)) && *s)
                         ss->xsum = vmstrdup(ss->vm, s);
-                }
-                else
+                } else
                     goto msg;
             }
-        }
-        else if (s[0] == '/' && (s[1] == '*' || s[1] == '/' && s[2] == '*'))
-        {
+        } else if (s[0] == '/'
+                   && (s[1] == '*' || s[1] == '/' && s[2] == '*')) {
             /*
              * kosher comment?
              */
 
             while ((s = lex(ss)) && s != SC)
                 ;
-        }
-        else
+        } else
             goto msg;
     }
     error_info.line = oline;
@@ -1913,11 +1660,9 @@ sskey(Ss_t *ss, Ssfield_t *dp)
 {
     char *s;
 
-    if (dp)
-    {
+    if (dp) {
         sfprintf(ss->buf, ".%u.%u", dp->offset + 1, dp->size);
-        switch (dp->type)
-        {
+        switch (dp->type) {
         case SS_bcd:
             sfprintf(ss->buf, "p");
             break;
@@ -1939,8 +1684,7 @@ sskey(Ss_t *ss, Ssfield_t *dp)
         }
         if (dp->reverse)
             sfprintf(ss->buf, "r");
-    }
-    else if (ss->size)
+    } else if (ss->size)
         sfprintf(ss->buf, ".%u", ss->size);
     else
         return 0;
@@ -1965,8 +1709,7 @@ listexpr(Ss_t *ss, Sfio_t *io, Ssexpr_t *xp)
     unsigned char *e;
 
     if (xp)
-        switch (xp->op)
-        {
+        switch (xp->op) {
         case SS_OP_field:
             sfprintf(io,
                      "[%u,%u,%c]",
@@ -2009,19 +1752,16 @@ listfields(Ss_t *ss, Sfio_t *io, Ssfield_t *dp, const char *label)
     unsigned char *v;
     unsigned char *e;
 
-    if (dp)
-    {
+    if (dp) {
         sfprintf(io, "  %s\n", label);
-        do
-        {
+        do {
             sfprintf(io,
                      "     %4lu %4lu %c %u",
                      dp->offset,
                      dp->size,
                      dp->type ? dp->type : SS_void,
                      dp->reverse);
-            if (v = ( unsigned char * )dp->value)
-            {
+            if (v = ( unsigned char * )dp->value) {
                 sfprintf(io, " ");
                 for (e = v + dp->size; v < e; v++)
                     sfprintf(io, "%02x", *v);
@@ -2048,15 +1788,13 @@ listfile(Ss_t *ss, Sfio_t *io, Ssfile_t *fp)
     if (!fp->out)
         sfprintf(io, " COPY");
     if (gp = fp->group)
-        do
-        {
+        do {
             sfprintf(io, " %s", gp->id);
             if (gp->name)
                 sfprintf(io, "=%s", gp->name);
         } while ((gp = gp->next) != fp->group);
     sfprintf(io, "\n");
-    if (fp->expr)
-    {
+    if (fp->expr) {
         sfprintf(io, "  %s=", fp->omit ? "OMIT" : "INCLUDE");
         listexpr(ss, io, fp->expr);
         sfprintf(io, "\n");
@@ -2075,8 +1813,7 @@ sslist(Ss_t *ss, Sfio_t *io)
     Ssfield_t *dp;
     char *s;
 
-    if (ss->in)
-    {
+    if (ss->in) {
         sfprintf(io, "FILE");
         if (ss->insize)
             sfprintf(io, " size=%u", ss->insize);
@@ -2093,14 +1830,12 @@ sslist(Ss_t *ss, Sfio_t *io)
         sfprintf(io, "  STOPAFT %I*u\n", sizeof(ss->stop), ss->stop - 1);
     if (ss->size)
         sfprintf(io, "  SIZE %u\n", ss->size);
-    if (ss->expr)
-    {
+    if (ss->expr) {
         sfprintf(io, "  %s=", ss->omit ? "OMIT" : "INCLUDE");
         listexpr(ss, io, ss->expr);
         sfprintf(io, "\n");
     }
-    if (ss->sort)
-    {
+    if (ss->sort) {
         if (ss->stable == 'Y')
             sfprintf(io, "  EQUALS\n");
         sfprintf(io, "  KEY");
@@ -2142,26 +1877,21 @@ sscopy(Ss_t *ss,
     int v;
 
     v = fp->format == SS_V_IBM ? 4 : 0;
-    if (!(dp = fp->out))
-    {
+    if (!(dp = fp->out)) {
         if (v && bsize >= 4 && (t = ( unsigned char * )buf)[2] == 0
             && t[3] == 0 && ((t[0] << 8) | t[1]) == bsize)
             v = 0;
         if ((rsize = bsize + v) > osize)
             return rsize;
         memcpy(out + v, buf, bsize);
-    }
-    else if ((rsize = fp->size + v) > osize)
+    } else if ((rsize = fp->size + v) > osize)
         return rsize;
-    else
-    {
+    else {
         t = ( unsigned char * )out + v;
-        do
-        {
+        do {
             s = dp->value ? ( unsigned char * )dp->value
                           : (( unsigned char * )buf + dp->offset);
-            switch (dp->size)
-            {
+            switch (dp->size) {
             case 7:
                 *t++ = *s++;
             case 6:
@@ -2184,8 +1914,7 @@ sscopy(Ss_t *ss,
             }
         } while (dp = dp->next);
     }
-    if (v)
-    {
+    if (v) {
         t = ( unsigned char * )out;
         *t++ = (rsize >> 8) & 0xff;
         *t++ = rsize & 0xff;
@@ -2221,23 +1950,19 @@ sswrite(Ss_t *ss, Ssfile_t *fp, const char *buf, size_t size)
                     && ((t[0] << 8) | t[1]) == size))
         v = 0;
     r = size + v;
-    if ((gp->end - gp->cur) < r)
-    {
-        if ((z = gp->cur - gp->beg) && sfwrite(gp->io, gp->beg, z) != z)
-        {
+    if ((gp->end - gp->cur) < r) {
+        if ((z = gp->cur - gp->beg) && sfwrite(gp->io, gp->beg, z) != z) {
             if (ss->disc->errorf)
                 (*ss->disc->errorf)(
                 NiL, ss->disc, ERROR_SYSTEM | 2, "%s: write error", gp->name);
             return -1;
         }
         z = (r < SS_RESERVE) ? SS_RESERVE : roundof(z, SS_BLOCK);
-        if (!(gp->beg = ( unsigned char * )sfreserve(gp->io, z, SF_LOCKR)))
-        {
+        if (!(gp->beg = ( unsigned char * )sfreserve(gp->io, z, SF_LOCKR))) {
             if ((z = sfvalue(gp->io)) < r)
                 z = r;
             if (!(gp->beg
-                  = ( unsigned char * )sfreserve(gp->io, z, SF_LOCKR)))
-            {
+                  = ( unsigned char * )sfreserve(gp->io, z, SF_LOCKR))) {
                 if (ss->disc->errorf)
                     (*ss->disc->errorf)(NiL,
                                         ss->disc,
@@ -2250,14 +1975,11 @@ sswrite(Ss_t *ss, Ssfile_t *fp, const char *buf, size_t size)
         gp->end = (gp->cur = gp->beg) + z;
     }
     t = gp->cur + v;
-    if (dp)
-    {
-        do
-        {
+    if (dp) {
+        do {
             s = dp->value ? ( unsigned char * )dp->value
                           : (( unsigned char * )buf + dp->offset);
-            switch (dp->size)
-            {
+            switch (dp->size) {
             case 7:
                 *t++ = *s++;
             case 6:
@@ -2279,14 +2001,11 @@ sswrite(Ss_t *ss, Ssfile_t *fp, const char *buf, size_t size)
                 break;
             }
         } while (dp = dp->next);
-    }
-    else
-    {
+    } else {
         memcpy(t, buf, size);
         t += size;
     }
-    if (v)
-    {
+    if (v) {
         s = gp->cur;
         r = t - s;
         *s++ = (r >> 8) & 0xff;
@@ -2313,83 +2032,63 @@ sssum(Ss_t *ss, Ssfield_t *dp, const char *buf, size_t size, char *out)
     int i;
     int j;
 
-    do
-    {
+    do {
         s = ( unsigned char * )buf + dp->offset;
         t = ( unsigned char * )out + dp->offset;
-        switch (dp->type)
-        {
+        switch (dp->type) {
         case SS_bcd:
             se = s + dp->size - 1;
             te = t + dp->size - 1;
-            if (bcd_negative[*se] == bcd_negative[*te])
-            {
-                if ((j = bcd_unpack[*te] + bcd_unpack[*se]) >= 10)
-                {
+            if (bcd_negative[*se] == bcd_negative[*te]) {
+                if ((j = bcd_unpack[*te] + bcd_unpack[*se]) >= 10) {
                     j -= 10;
                     i = 1;
-                }
-                else
+                } else
                     i = 0;
                 *te = bcd_unit[j] | (*se & 0x0F);
-                while (te-- > t)
-                {
+                while (te-- > t) {
                     se--;
-                    if ((j = bcd_unpack[*te] + bcd_unpack[*se] + i) >= 100)
-                    {
+                    if ((j = bcd_unpack[*te] + bcd_unpack[*se] + i) >= 100) {
                         j -= 100;
                         i = 1;
-                    }
-                    else
+                    } else
                         i = 0;
                     *te = bcd_pack[j];
                 }
                 if (i && ss->disc->errorf)
                     (*ss->disc->errorf)(NiL, ss->disc, 1, "sum overflow");
-            }
-            else
-            {
-                if ((j = ( int )bcd_unpack[*te] - ( int )bcd_unpack[*se]) < 0)
-                {
+            } else {
+                if ((j = ( int )bcd_unpack[*te] - ( int )bcd_unpack[*se])
+                    < 0) {
                     j += 10;
                     i = 1;
-                }
-                else
+                } else
                     i = 0;
                 *te = bcd_unit[j] | (*te & 0x0F);
-                while (se-- > s)
-                {
+                while (se-- > s) {
                     te--;
                     if ((j = ( int )bcd_unpack[*te] - ( int )bcd_unpack[*se]
                              - i)
-                        < 0)
-                    {
+                        < 0) {
                         j += 100;
                         i = 1;
-                    }
-                    else
+                    } else
                         i = 0;
                     *te = bcd_pack[j];
                 }
-                if (i)
-                {
+                if (i) {
                     te = t + dp->size - 1;
-                    if ((j = ( int )0 - ( int )bcd_unpack[*te]) < 0)
-                    {
+                    if ((j = ( int )0 - ( int )bcd_unpack[*te]) < 0) {
                         j += 10;
                         i = 1;
-                    }
-                    else
+                    } else
                         i = 0;
                     *te = bcd_unit[j] | ((*te & 0x0F) == 0x0C ? 0x0D : 0x0C);
-                    while (te-- > t)
-                    {
-                        if ((j = ( int )0 - ( int )bcd_unpack[*te] - i) < 0)
-                        {
+                    while (te-- > t) {
+                        if ((j = ( int )0 - ( int )bcd_unpack[*te] - i) < 0) {
                             j += 100;
                             i = 1;
-                        }
-                        else
+                        } else
                             i = 0;
                         *te = bcd_pack[j];
                     }
@@ -2400,8 +2099,7 @@ sssum(Ss_t *ss, Ssfield_t *dp, const char *buf, size_t size, char *out)
             n = 0;
             for (i = 0; i < dp->size; i++)
                 n = (n << 8) + s[i] + t[i];
-            for (i = dp->size - 1; i >= 0; i--)
-            {
+            for (i = dp->size - 1; i >= 0; i--) {
                 t[i] = (n & 0xFF);
                 n >>= 8;
             }
@@ -2410,8 +2108,7 @@ sssum(Ss_t *ss, Ssfield_t *dp, const char *buf, size_t size, char *out)
             n = 0;
             for (i = dp->size - 1; i >= 0; i--)
                 n = (n << 8) + s[i] + t[i];
-            for (i = 0; i < dp->size; i++)
-            {
+            for (i = 0; i < dp->size; i++) {
                 t[i] = (n & 0xFF);
                 n >>= 8;
             }
@@ -2419,72 +2116,53 @@ sssum(Ss_t *ss, Ssfield_t *dp, const char *buf, size_t size, char *out)
         case SS_zd:
             se = s + dp->size - 1;
             te = t + dp->size - 1;
-            if ((*se ^ *te) & 0x10)
-            {
-                if ((j = ( int )(*te & 0x0F) - ( int )(*se & 0x0F)) < 0)
-                {
+            if ((*se ^ *te) & 0x10) {
+                if ((j = ( int )(*te & 0x0F) - ( int )(*se & 0x0F)) < 0) {
                     j += 10;
                     i = 1;
-                }
-                else
+                } else
                     i = 0;
                 *te = (*te & 0xF0) | j;
-                while (se-- > s)
-                {
+                while (se-- > s) {
                     te--;
                     if ((j = ( int )(*te & 0x0F) - ( int )(*se & 0x0F) - i)
-                        < 0)
-                    {
+                        < 0) {
                         j += 10;
                         i = 1;
-                    }
-                    else
+                    } else
                         i = 0;
                     *te = 0xF0 | j;
                 }
-                if (i)
-                {
+                if (i) {
                     te = t + dp->size - 1;
-                    if ((j = ( int )0 - ( int )(*te & 0x0F)) < 0)
-                    {
+                    if ((j = ( int )0 - ( int )(*te & 0x0F)) < 0) {
                         j += 10;
                         i = 1;
-                    }
-                    else
+                    } else
                         i = 0;
                     *te = ((*te & 0x10) ? 0xC0 : 0xD0) | j;
-                    while (te-- > t)
-                    {
-                        if ((j = ( int )0 - ( int )(*te & 0x0F) - i) < 0)
-                        {
+                    while (te-- > t) {
+                        if ((j = ( int )0 - ( int )(*te & 0x0F) - i) < 0) {
                             j += 10;
                             i = 1;
-                        }
-                        else
+                        } else
                             i = 0;
                         *te = 0xF0 | j;
                     }
                 }
-            }
-            else
-            {
-                if ((j = (*te & 0x0F) + (*se & 0x0F)) >= 10)
-                {
+            } else {
+                if ((j = (*te & 0x0F) + (*se & 0x0F)) >= 10) {
                     j -= 10;
                     i = 1;
-                }
-                else
+                } else
                     i = 0;
                 *te = (*se & 0xF0) | j;
-                while (te-- > t)
-                {
+                while (te-- > t) {
                     se--;
-                    if ((j = (*te & 0x0F) + (*se & 0x0F) + i) >= 10)
-                    {
+                    if ((j = (*te & 0x0F) + (*se & 0x0F) + i) >= 10) {
                         j -= 10;
                         i = 1;
-                    }
-                    else
+                    } else
                         i = 0;
                     *te = 0xF0 | j;
                 }
@@ -2496,8 +2174,7 @@ sssum(Ss_t *ss, Ssfield_t *dp, const char *buf, size_t size, char *out)
             n = 0;
             for (i = 0; i < dp->size; i++)
                 n = n * 10 + ss->acin[s[i]] + ss->acin[t[i]];
-            while (i-- > 0)
-            {
+            while (i-- > 0) {
                 t[i] = ss->acex[n % 10];
                 n /= 10;
             }
@@ -2506,8 +2183,7 @@ sssum(Ss_t *ss, Ssfield_t *dp, const char *buf, size_t size, char *out)
             n = 0;
             for (i = 0; i < dp->size; i++)
                 n = (n << 3) + ss->acin[s[i]] + ss->acin[t[i]];
-            while (i-- > 0)
-            {
+            while (i-- > 0) {
                 t[i] = ss->acex[n & 07];
                 n >>= 3;
             }
@@ -2516,8 +2192,7 @@ sssum(Ss_t *ss, Ssfield_t *dp, const char *buf, size_t size, char *out)
             n = 0;
             for (i = 0; i < dp->size; i++)
                 n = (n << 4) + ss->acin[s[i]] + ss->acin[t[i]];
-            while (i-- > 0)
-            {
+            while (i-- > 0) {
                 t[i] = ss->acex[n & 0x0F];
                 n >>= 4;
             }
@@ -2526,8 +2201,7 @@ sssum(Ss_t *ss, Ssfield_t *dp, const char *buf, size_t size, char *out)
             n = 0;
             for (i = 0; i < dp->size; i++)
                 n = n * 10 + ss->chin[s[i]] + ss->chin[t[i]];
-            while (i-- > 0)
-            {
+            while (i-- > 0) {
                 t[i] = ss->chex[n % 10];
                 n /= 10;
             }
@@ -2536,8 +2210,7 @@ sssum(Ss_t *ss, Ssfield_t *dp, const char *buf, size_t size, char *out)
             n = 0;
             for (i = 0; i < dp->size; i++)
                 n = (n << 3) + ss->chin[s[i]] + ss->chin[t[i]];
-            while (i-- > 0)
-            {
+            while (i-- > 0) {
                 t[i] = ss->chex[n & 07];
                 n >>= 3;
             }
@@ -2546,8 +2219,7 @@ sssum(Ss_t *ss, Ssfield_t *dp, const char *buf, size_t size, char *out)
             n = 0;
             for (i = 0; i < dp->size; i++)
                 n = (n << 4) + ss->chin[s[i]] + ss->chin[t[i]];
-            while (i-- > 0)
-            {
+            while (i-- > 0) {
                 t[i] = ss->chex[n & 0x0F];
                 n >>= 4;
             }
@@ -2559,8 +2231,7 @@ sssum(Ss_t *ss, Ssfield_t *dp, const char *buf, size_t size, char *out)
             return -1;
         }
     } while (dp = dp->next);
-    if (ss->xio && sfwrite(ss->xio, buf, size) != size)
-    {
+    if (ss->xio && sfwrite(ss->xio, buf, size) != size) {
         if (ss->disc->errorf)
             (*ss->disc->errorf)(
             NiL, ss->disc, ERROR_SYSTEM | 2, "%s: XSUM write error", ss->xsum);
@@ -2581,8 +2252,7 @@ sseval(Ss_t *ss, Ssexpr_t *xp, const char *buf, size_t size)
     unsigned char *e;
     int r;
 
-    switch (xp->op)
-    {
+    switch (xp->op) {
     case SS_OP_false:
         return 0;
     case SS_OP_true:
@@ -2605,8 +2275,7 @@ sseval(Ss_t *ss, Ssexpr_t *xp, const char *buf, size_t size)
         : (( unsigned char * )buf + xp->right.expr->left.field->offset);
     while (a < e && !(r = ( int )*a++ - ( int )*b++))
         ;
-    switch (xp->op)
-    {
+    switch (xp->op) {
     case SS_OP_lt:
         return r < 0;
     case SS_OP_le:
@@ -2628,8 +2297,7 @@ ssdd(const char *id, const char *name, Ssdisc_t *disc)
 {
     Dd_t *dd;
 
-    if (!(dd = newof(0, Dd_t, 1, strlen(id) + strlen(name) + 2)))
-    {
+    if (!(dd = newof(0, Dd_t, 1, strlen(id) + strlen(name) + 2))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -2666,8 +2334,7 @@ ssio(Ss_t *ss, int list)
     struct stat ns;
     struct stat ws;
 
-    if (stat("/dev/null", &ns))
-    {
+    if (stat("/dev/null", &ns)) {
         ns.st_dev = 0;
         ns.st_ino = 0;
     }
@@ -2677,19 +2344,14 @@ ssio(Ss_t *ss, int list)
     if (!fstat(sffileno(fp->group->io), &ws) && SAME(&ws, &ns))
         fp->group->io = 0;
     for (n = 0; fp; fp = fp->next)
-        if (gp = ep = fp->group)
-        {
+        if (gp = ep = fp->group) {
             pg = fp->group = 0;
-            do
-            {
-                if (!gp->io)
-                {
+            do {
+                if (!gp->io) {
                     for (s = 0, pd = 0, dd = state.dd; dd;
                          pd = dd, dd = dd->next)
-                        if (streq(gp->id, dd->id) || streq(gp->id, dd->alt))
-                        {
-                            if (gp->name)
-                            {
+                        if (streq(gp->id, dd->id) || streq(gp->id, dd->alt)) {
+                            if (gp->name) {
                                 if (ss->disc->errorf)
                                     (*ss->disc->errorf)(
                                     NiL,
@@ -2707,13 +2369,10 @@ ssio(Ss_t *ss, int list)
                     if (!gp->name
                         && (s
                             || (s = getenv(
-                                sfprints("%s%s", SS_DD_OUT, gp->id)))))
-                    {
+                                sfprints("%s%s", SS_DD_OUT, gp->id))))) {
                         if (ss->mark && !strmatch(s, SS_MARKED)
-                            && !strmatch(s, "/dev/*"))
-                        {
-                            if (fp->size || !fp->out && ss->size)
-                            {
+                            && !strmatch(s, "/dev/*")) {
+                            if (fp->size || !fp->out && ss->size) {
                                 if ((e = strrchr(s, '.'))
                                     && strmatch(e, SS_SUFFIX))
                                     s
@@ -2728,9 +2387,7 @@ ssio(Ss_t *ss, int list)
                                                s,
                                                fp->size ? fp->size : ss->size,
                                                ss->suffix);
-                            }
-                            else if (ss->format != REC_N_TYPE())
-                            {
+                            } else if (ss->format != REC_N_TYPE()) {
                                 if ((e = strrchr(s, '.'))
                                     && strmatch(e, SS_SUFFIX))
                                     s = sfprints("%-.*s%%%s%s",
@@ -2745,18 +2402,16 @@ ssio(Ss_t *ss, int list)
                                                  ss->suffix);
                             }
                         }
-                        if (!(gp->name = vmstrdup(ss->vm, s)))
-                        {
+                        if (!(gp->name = vmstrdup(ss->vm, s))) {
                             if (ss->disc->errorf)
                                 (*ss->disc->errorf)(NiL,
                                                     ss->disc,
                                                     ERROR_SYSTEM | 2,
                                                     "out of space");
                             return -1;
-                        }
-                        else if (!list
-                                 && !(gp->io = sfopen(NiL, gp->name, "w")))
-                        {
+                        } else if (!list
+                                   && !(gp->io
+                                        = sfopen(NiL, gp->name, "w"))) {
                             if (ss->disc->errorf)
                                 (*ss->disc->errorf)(
                                 NiL,
@@ -2768,8 +2423,7 @@ ssio(Ss_t *ss, int list)
                             return -1;
                         }
                     }
-                    if (dd)
-                    {
+                    if (dd) {
                         if (pd)
                             pd->next = dd->next;
                         else
@@ -2777,13 +2431,12 @@ ssio(Ss_t *ss, int list)
                         free(dd);
                     }
                 }
-                if (gp->io && !fstat(sffileno(gp->io), &ws) && SAME(&ws, &ns))
-                {
+                if (gp->io && !fstat(sffileno(gp->io), &ws)
+                    && SAME(&ws, &ns)) {
                     sfclose(gp->io);
                     gp->io = 0;
                 }
-                if (gp->io || list)
-                {
+                if (gp->io || list) {
                     if (gp->io != sfstdout)
                         n++;
                     if (pg)
@@ -2796,11 +2449,9 @@ ssio(Ss_t *ss, int list)
             if (pg)
                 pg->next = fp->group;
         }
-    if (dd = state.dd)
-    {
+    if (dd = state.dd) {
         n = -1;
-        do
-        {
+        do {
             if (ss->disc->errorf)
                 (*ss->disc->errorf)(
                 NiL, ss->disc, 2, "%s: unknown auxiliary file", dd->id);
@@ -2809,8 +2460,7 @@ ssio(Ss_t *ss, int list)
             free(pd);
         } while (dd);
     }
-    if (!list && ss->xsum && !(ss->xio = sfopen(NiL, ss->xsum, "w")))
-    {
+    if (!list && ss->xsum && !(ss->xio = sfopen(NiL, ss->xsum, "w"))) {
         if (ss->disc->errorf)
             (*ss->disc->errorf)(NiL,
                                 ss->disc,
@@ -2835,13 +2485,10 @@ ssannounce(Ss_t *ss, Rs_t *rs)
     Ssgroup_t *pg;
 
     for (fp = ss->file; fp; fp = fp->next)
-        if (gp = ep = fp->group)
-        {
+        if (gp = ep = fp->group) {
             pg = fp->group = 0;
-            do
-            {
-                if (gp->io)
-                {
+            do {
+                if (gp->io) {
                     if (rsfilewrite(rs, gp->io, gp->name))
                         return -1;
                     if (pg)
@@ -2876,15 +2523,13 @@ ssclose(Ss_t *ss)
     r = 0;
     for (fp = ss->file; fp; fp = fp->next)
         if (gp = fp->group)
-            do
-            {
+            do {
                 if (gp->io
                     && ((z = gp->cur - gp->beg) >= 0
                         && sfwrite(gp->io, gp->beg, z) != z
                         || ((fp == ss->file || gp->io == sfstdout)
                             ? sfsync(gp->io)
-                            : sfclose(gp->io))))
-                {
+                            : sfclose(gp->io)))) {
                     if (ss->disc->errorf)
                         (*ss->disc->errorf)(NiL,
                                             ss->disc,
@@ -2894,8 +2539,7 @@ ssclose(Ss_t *ss)
                     r = -1;
                 }
             } while ((gp = gp->next) != fp->group);
-    if (ss->xio && sfclose(ss->xio))
-    {
+    if (ss->xio && sfclose(ss->xio)) {
         if (ss->disc->errorf)
             (*ss->disc->errorf)(
             NiL, ss->disc, ERROR_SYSTEM | 2, "%s: XSUM write error", ss->xsum);

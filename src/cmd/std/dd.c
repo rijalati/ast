@@ -386,8 +386,7 @@ fini(int code)
         sfsync(state.out.fp);
     else
         sfclose(state.out.fp);
-    if (!state.silent.value.number)
-    {
+    if (!state.silent.value.number) {
         sfprintf(sfstderr,
                  "%I*u+%I*u records in\n",
                  sizeof(Sfulong_t),
@@ -423,16 +422,13 @@ output(Sfio_t *sp, const Void_t *buf, size_t n, Sfdisc_t *disc)
     ssize_t r;
     size_t x;
 
-    if ((r = sfwr(sp, buf, n, disc)) > 0)
-    {
+    if ((r = sfwr(sp, buf, n, disc)) > 0) {
         x = r / state.obs.value.number;
         state.out.complete += x;
-        if (x = r - x * state.obs.value.number)
-        {
+        if (x = r - x * state.obs.value.number) {
             if (state.out.special)
                 state.out.partial++;
-            else if ((state.out.remains += x) >= state.obs.value.number)
-            {
+            else if ((state.out.remains += x) >= state.obs.value.number) {
                 state.out.remains -= state.obs.value.number;
                 state.out.complete++;
             }
@@ -472,15 +468,12 @@ main(int argc, char **argv)
     if (!(sp = sfstropen()))
         error(ERROR_SYSTEM | 3, "out of space");
     sfputr(sp, usage1, '\n');
-    for (op = &state.operand_begin; op <= &state.operand_end; op++)
-    {
+    for (op = &state.operand_begin; op <= &state.operand_end; op++) {
         sfprintf(
         sp, "[%d:%s?%s", op - &state.operand_begin + 10, op->name, op->help);
         i = ']';
-        if (desc[op->type].name)
-        {
-            if (desc[op->type].help)
-            {
+        if (desc[op->type].name) {
+            if (desc[op->type].help) {
                 if (*desc[op->type].help)
                     sfprintf(sp, " %s", desc[op->type].help);
                 else
@@ -488,21 +481,17 @@ main(int argc, char **argv)
                     sp, " \a%s\a may be one of:", desc[op->type].name);
                 sfprintf(sp, "]:[%s", desc[op->type].name);
                 desc[op->type].help = 0;
-                if (op->type == CONV)
-                {
+                if (op->type == CONV) {
                     i = '}';
                     sfprintf(sp, "]{\n");
                     for (vp = &state.conv_begin; vp <= &state.conv_end; vp++)
                         sfprintf(sp, "\t[+%s?%s]\n", vp->name, vp->help);
-                }
-                else if (op->type == CODE)
-                {
+                } else if (op->type == CODE) {
                     iconv_list_t *ic;
 
                     sfputc(sp, ']');
                     sfputc(sp, '{');
-                    for (ic = iconv_list(NiL); ic; ic = iconv_list(ic))
-                    {
+                    for (ic = iconv_list(NiL); ic; ic = iconv_list(ic)) {
                         sfputc(sp, '[');
                         sfputc(sp, '+');
                         sfputc(sp, '\b');
@@ -514,8 +503,7 @@ main(int argc, char **argv)
                     }
                     i = '}';
                 }
-            }
-            else
+            } else
                 sfprintf(sp, "]:[%s", desc[op->type].name);
         }
         sfputc(sp, i);
@@ -526,11 +514,9 @@ main(int argc, char **argv)
         error(ERROR_SYSTEM | 3, "out of space");
     if (signal(SIGINT, SIG_IGN) != SIG_IGN)
         signal(SIGINT, interrupt);
-    while (f = optget(argv, usage))
-    {
+    while (f = optget(argv, usage)) {
 
-        if (f > 0)
-        {
+        if (f > 0) {
             if (f == '?')
                 error(ERROR_USAGE | 4, "%s", opt_info.arg);
             if (f = ':')
@@ -539,15 +525,13 @@ main(int argc, char **argv)
         }
         op = &state.operand_begin - (f + 10);
         v = opt_info.arg;
-        switch (op->type)
-        {
+        switch (op->type) {
         case CODE:
         case STRING:
             op->value.string = v;
             break;
         case CONV:
-            do
-            {
+            do {
                 if (e = strchr(v, ','))
                     *e = 0;
                 vp = ( Operand_t * )strsearch(&state.conv_begin,
@@ -569,17 +553,14 @@ main(int argc, char **argv)
             break;
         case NUMBER:
             c = 0;
-            for (;;)
-            {
+            for (;;) {
                 n = strtonll(v, &e, NiL, 0);
                 if (n < 0)
                     error(3, "%s: %s must be >= 0", v, op->name);
-                if (!c)
-                {
+                if (!c) {
                     c = 1;
                     op->value.number = n;
-                }
-                else
+                } else
                     op->value.number *= n;
                 for (v = e; isspace(*v); v++)
                     ;
@@ -587,8 +568,7 @@ main(int argc, char **argv)
                     break;
                 while (isspace(*++v))
                     ;
-                if (!*v)
-                {
+                if (!*v) {
                     v = e;
                     break;
                 }
@@ -605,8 +585,7 @@ main(int argc, char **argv)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
     error_info.exit = fini;
     switch (( long )(state.conv.value.number
-                     & (A2E | A2I | A2N | A2O | E2A | I2A | N2A | O2A)))
-    {
+                     & (A2E | A2I | A2N | A2O | E2A | I2A | N2A | O2A))) {
     case 0:
         break;
     case A2E:
@@ -671,8 +650,7 @@ main(int argc, char **argv)
               state.block.value.string,
               state.conv.name,
               state.unblock.value.string);
-    if ((state.conv.value.number & (SYNC | UNBLOCK)) == (SYNC | UNBLOCK))
-    {
+    if ((state.conv.value.number & (SYNC | UNBLOCK)) == (SYNC | UNBLOCK)) {
         state.conv.value.number &= ~SYNC;
         error(1,
               "%s=%s ignored for %s=%s",
@@ -685,8 +663,7 @@ main(int argc, char **argv)
         state.swap.value.number = 1;
     else if (state.swap.value.number)
         state.conv.value.number |= SWAP;
-    if (state.oseek.value.number && (state.conv.value.number & NOTRUNC))
-    {
+    if (state.oseek.value.number && (state.conv.value.number & NOTRUNC)) {
         state.oseek.value.number = 0;
         error(1,
               "%s ignored for %s=%s",
@@ -701,8 +678,7 @@ main(int argc, char **argv)
               state.lcase.value.string,
               state.conv.name,
               state.ucase.value.string);
-    if (state.conv.value.number & (BLOCK | UNBLOCK))
-    {
+    if (state.conv.value.number & (BLOCK | UNBLOCK)) {
         if (!state.cbs.value.number)
             error(3,
                   "%s must be specified for %s=%s",
@@ -712,25 +688,20 @@ main(int argc, char **argv)
                   ? state.block.value.string
                   : state.unblock.value.string);
         state.pad = ' ';
-        if (state.conv.value.number & UNBLOCK)
-        {
+        if (state.conv.value.number & UNBLOCK) {
             state.ibs.value.number = state.cbs.value.number;
-            if (state.bs.value.number)
-            {
+            if (state.bs.value.number) {
                 state.obs.value.number = state.bs.value.number;
                 state.bs.value.number = 0;
             }
         }
-    }
-    else if (state.cbs.value.number)
-    {
+    } else if (state.cbs.value.number) {
         state.cbs.value.number = 0;
         error(1, "%s ignored", state.cbs.name);
     }
     if (n = state.bs.value.number)
         state.ibs.value.number = state.obs.value.number = n;
-    if (n = state.iseek.value.number)
-    {
+    if (n = state.iseek.value.number) {
         if (state.skip.value.number)
             error(3,
                   "only on of %s and %s may be specified",
@@ -750,28 +721,24 @@ main(int argc, char **argv)
               state.oseek.name,
               state.bs.name,
               state.obs.name);
-    if (!(s = state.ifn.value.string))
-    {
+    if (!(s = state.ifn.value.string)) {
         state.ifn.value.string = "/dev/stdin";
         state.in.fp = sfstdin;
 #if O_NONBLOCK
         if ((i = fcntl(sffileno(sfstdin), F_GETFL)) > 0 && (i & O_NONBLOCK))
             fcntl(sffileno(sfstdin), F_SETFL, i & ~O_NONBLOCK);
 #endif
-    }
-    else if (!(state.in.fp = sfopen(NiL, s, "rb")))
+    } else if (!(state.in.fp = sfopen(NiL, s, "rb")))
         error(ERROR_SYSTEM | 3, "%s: cannot read", s);
-    if (!(s = state.ofn.value.string))
-    {
+    if (!(s = state.ofn.value.string)) {
         state.ofn.value.string = "/dev/stdout";
         state.out.fp = sfstdout;
-    }
-    else if (!(state.out.fp
-               = sfopen(NiL,
-                        s,
-                        (state.conv.value.number & NOTRUNC)
-                        ? "a+b"
-                        : state.oseek.value.number ? "w+b" : "wb")))
+    } else if (!(state.out.fp
+                 = sfopen(NiL,
+                          s,
+                          (state.conv.value.number & NOTRUNC)
+                          ? "a+b"
+                          : state.oseek.value.number ? "w+b" : "wb")))
         error(ERROR_SYSTEM | 3, "%s: cannot write", s);
     if ((state.conv.value.number & ISPECIAL)
         || fstat(sffileno(state.in.fp), &st) || !S_ISREG(st.st_mode))
@@ -792,8 +759,7 @@ main(int argc, char **argv)
         state.bs.value.number = state.cbs.value.number;
     if (!(state.buffer = newof(0, char, state.bs.value.number, 0)))
         error(ERROR_SYSTEM | 3, "out of space");
-    if (n = state.skip.value.number)
-    {
+    if (n = state.skip.value.number) {
         if (!state.ibs.value.number)
             error(3,
                   "%s requires %s or %s",
@@ -801,16 +767,13 @@ main(int argc, char **argv)
                   state.bs.name,
                   state.ibs.name);
         n *= state.ibs.value.number;
-        if (sfseek(state.in.fp, n, SEEK_SET) != n)
-        {
-            do
-            {
+        if (sfseek(state.in.fp, n, SEEK_SET) != n) {
+            do {
                 if (!sfreserve(state.in.fp,
                                state.in.special && state.ibs.value.number < n
                                ? state.ibs.value.number
                                : n,
-                               0))
-                {
+                               0)) {
                     if (sfvalue(state.in.fp) > 0)
                         error(ERROR_SYSTEM | 3,
                               "%s: seek read error",
@@ -824,19 +787,15 @@ main(int argc, char **argv)
                       state.ifn.value.string);
         }
     }
-    if (n = state.oseek.value.number)
-    {
+    if (n = state.oseek.value.number) {
         n *= state.obs.value.number;
-        if (sfseek(state.out.fp, n, SEEK_SET) != n)
-        {
-            do
-            {
+        if (sfseek(state.out.fp, n, SEEK_SET) != n) {
+            do {
                 if (!sfreserve(state.out.fp,
                                state.out.special && state.obs.value.number < n
                                ? state.obs.value.number
                                : n,
-                               0))
-                {
+                               0)) {
                     if (sfvalue(state.out.fp) > 0)
                         error(ERROR_SYSTEM | 3,
                               "%s: seek read error",
@@ -861,40 +820,33 @@ main(int argc, char **argv)
     }
     if (state.silent.value.number)
         state.iconv.errorf = 0;
-    if (state.conv.value.number & NOERROR)
-    {
+    if (state.conv.value.number & NOERROR) {
         state.iconv.errorf = 0;
         if (state.conv.value.number & SYNC)
             state.iconv.fill = 0;
         else
             state.iconv.flags |= ICONV_OMIT;
-    }
-    else
+    } else
         state.iconv.flags |= ICONV_FATAL;
     memset(&disc, 0, sizeof(disc));
     disc.writef = output;
     sfdisc(state.out.fp, &disc);
     if (!state.obs.value.number)
         state.obs.value.number = BS;
-    if (state.conv.value.number & BLOCK)
-    {
+    if (state.conv.value.number & BLOCK) {
         c = state.cbs.value.number;
         memset(state.buffer, state.pad, c);
         while ((s = sfgetr(state.in.fp, '\n', 0))
-               || (s = sfgetr(state.in.fp, '\n', -1)))
-        {
+               || (s = sfgetr(state.in.fp, '\n', -1))) {
             state.in.complete++;
             n = sfvalue(state.in.fp) - 1;
-            if (n > c)
-            {
+            if (n > c) {
                 if (sfwrite(state.out.fp, s, c) != c)
                     error(ERROR_SYSTEM | 3,
                           "%s: write error",
                           state.ofn.value.string);
                 state.in.truncated++;
-            }
-            else
-            {
+            } else {
                 if (sfwrite(state.out.fp, s, n) != n)
                     error(ERROR_SYSTEM | 3,
                           "%s: write error",
@@ -906,9 +858,7 @@ main(int argc, char **argv)
                           state.ofn.value.string);
             }
         }
-    }
-    else
-    {
+    } else {
         if (!(c = state.ibs.value.number))
             c = BS;
         f = state.conv.value.number;
@@ -917,12 +867,10 @@ main(int argc, char **argv)
         if (!(r = state.count.value.number))
             r = -1;
         partial = 0;
-        while (state.in.complete != r)
-        {
+        while (state.in.complete != r) {
             b = sfreserve(state.in.fp, SF_UNBOUND, 0);
             m = sfvalue(state.in.fp);
-            if (!b)
-            {
+            if (!b) {
                 if (!m)
                     break;
                 error(ERROR_SYSTEM | ((f & NOERROR) ? 2 : 3),
@@ -930,8 +878,7 @@ main(int argc, char **argv)
                       state.ifn.value.string);
                 memset(b = state.buffer, state.pad, m = c);
             }
-            while (state.in.complete != r)
-            {
+            while (state.in.complete != r) {
                 s = b;
 
                 /*
@@ -939,8 +886,7 @@ main(int argc, char **argv)
                  * c is the specified (or default) block size
                  */
 
-                if (m >= c)
-                {
+                if (m >= c) {
                     /*
                      * the read gave us at least a complete block
                      */
@@ -962,9 +908,7 @@ main(int argc, char **argv)
 
                     if (state.in.complete >= r && (state.in.remains + n) >= c)
                         n -= state.in.remains;
-                }
-                else
-                {
+                } else {
                     /*
                      * read gave us less than a complete block
                      */
@@ -978,8 +922,7 @@ main(int argc, char **argv)
                      * (output) block boundry
                      */
 
-                    if ((state.in.remains + n) >= c)
-                    {
+                    if ((state.in.remains + n) >= c) {
                         state.in.complete++;
 
                         /*
@@ -987,21 +930,16 @@ main(int argc, char **argv)
                          * partial block byte count (remains)
                          */
 
-                        if (state.in.complete >= r)
-                        {
+                        if (state.in.complete >= r) {
                             n = c - state.in.remains;
                             state.in.remains += m - c;
-                        }
-                        else
-                        {
+                        } else {
                             partial++;
                             state.in.remains += m - c;
                         }
-                    }
-                    else
+                    } else
                         state.in.remains += n;
-                    if (f & SYNC)
-                    {
+                    if (f & SYNC) {
                         s = memcpy(state.buffer, s, n);
                         memset(s + n, state.pad, c - n);
                         n = c;
@@ -1009,8 +947,7 @@ main(int argc, char **argv)
                 }
                 if (f & SWAP)
                     swapmem(state.swap.value.number, s, s, n);
-                if (state.cvt != (iconv_t)(-1))
-                {
+                if (state.cvt != (iconv_t)(-1)) {
                     cb = s;
                     cc = n;
                     state.iconv.errors = 0;
@@ -1022,14 +959,12 @@ main(int argc, char **argv)
                         error(ERROR_SYSTEM | 3, "out of space");
                     m -= n - d;
                     if (state.iconv.errors
-                        && (state.iconv.flags & ICONV_FATAL))
-                    {
+                        && (state.iconv.flags & ICONV_FATAL)) {
                         m -= n;
                         n = 0;
                     }
                 }
-                switch (f & (LCASE | UCASE))
-                {
+                switch (f & (LCASE | UCASE)) {
                 case LCASE:
                     for (v = (e = s) + n; s < v; s++)
                         if (isupper(*s))
@@ -1043,8 +978,7 @@ main(int argc, char **argv)
                     s = e;
                     break;
                 }
-                if (f & UNBLOCK)
-                {
+                if (f & UNBLOCK) {
                     for (v = s + n; v > s && *(v - 1) == ' '; v--)
                         ;
                     if (sfwrite(state.out.fp, s, v - s) != (v - s)
@@ -1052,8 +986,7 @@ main(int argc, char **argv)
                         error(ERROR_SYSTEM | 3,
                               "%s: write error",
                               state.ofn.value.string);
-                }
-                else if (sfwrite(state.out.fp, s, n) != n)
+                } else if (sfwrite(state.out.fp, s, n) != n)
                     error(ERROR_SYSTEM | 3,
                           "%s: write error",
                           state.ofn.value.string);
@@ -1062,8 +995,7 @@ main(int argc, char **argv)
                 b += n;
             }
         }
-        if (state.in.partial)
-        {
+        if (state.in.partial) {
             state.in.complete -= partial;
             state.in.remains = 0;
         }

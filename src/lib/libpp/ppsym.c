@@ -42,11 +42,9 @@ main(int argc, char **argv)
     NoP(argc);
     if (dup(3) < 0 || !(out = sfnew(NiL, NiL, -1, 3, SF_WRITE)))
         out = sfstdout;
-    if (*++argv)
-    {
+    if (*++argv) {
         while (s = *argv++)
-            if (*s++ == '-' && *s++ == 'D' && isalpha(*s))
-            {
+            if (*s++ == '-' && *s++ == 'D' && isalpha(*s)) {
                 while (*s && *s != '=')
                     sfputc(out, *s++);
                 sfputc(out, '\n');
@@ -54,10 +52,8 @@ main(int argc, char **argv)
         return 0;
     }
     state = 0;
-    for (;;)
-    {
-        switch (c = sfgetc(sfstdin))
-        {
+    for (;;) {
+        switch (c = sfgetc(sfstdin)) {
         case EOF:
             break;
         case 'a':
@@ -126,15 +122,13 @@ main(int argc, char **argv)
         case '7':
         case '8':
         case '9':
-            if (state)
-            {
+            if (state) {
                 sfputc(out, c);
                 continue;
             }
             /*FALLTHROUGH*/
         default:
-            if (state)
-            {
+            if (state) {
                 sfputc(out, '\n');
                 state = 0;
             }

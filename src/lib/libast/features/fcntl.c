@@ -452,8 +452,7 @@ main(int argc, char **argv)
                 for (i = 0; i < ( int )(sizeof(o_search_native)
                                         / sizeof(o_search_native[0]));
                      i++)
-                    if (!close(open(tmp, o_search_native[i])))
-                    {
+                    if (!close(open(tmp, o_search_native[i]))) {
                         o_search_origin = "kernel bits otherwise undefined";
                         o_search = o_search_native[i];
                         if (o_search > o_local)
@@ -478,8 +477,7 @@ main(int argc, char **argv)
                 for (i = 0; i < ( int )(sizeof(o_directory_native)
                                         / sizeof(o_directory_native[0]));
                      i++)
-                    if (!close(open(tmp, O_DIRECTORY_native)))
-                    {
+                    if (!close(open(tmp, O_DIRECTORY_native))) {
                         snprintf(tmp, sizeof(tmp), "%s.f", argv[1]);
                         if (!close(
                             open(tmp, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR))

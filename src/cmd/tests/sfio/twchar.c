@@ -56,8 +56,7 @@ tmain()
     n = swscanf(L" hello-world ", L"%ls", wuf);
     if (n != 1)
         terror("swscanf %%ls %d expected, %d returned", 1, n);
-    else
-    {
+    else {
         wcstombs(str, wuf, sizeof(str));
         if (strcmp(tst, str))
             terror("swscanf %%ls \"%s\" expected, \"%s\" returned", tst, str);
@@ -66,8 +65,7 @@ tmain()
     n = swscanf(L" hello-world ", L"%S", wuf);
     if (n != 1)
         terror("swscanf %%S %d expected, %d returned", 1, n);
-    else
-    {
+    else {
         wcstombs(str, wuf, sizeof(str));
         if (strcmp(tst, str))
             terror("swscanf %%S \"%s\" expected, \"%s\" returned", tst, str);
@@ -122,8 +120,7 @@ tmain()
     n = sfsscanf(" hello-world ", "%ls", wuf);
     if (n != 1)
         terror("sfsscanf %%ls %d expected, %d returned", 1, n);
-    else
-    {
+    else {
         wcstombs(str, wuf, sizeof(str));
         if (strcmp(tst, str))
             terror(
@@ -133,8 +130,7 @@ tmain()
     n = sfsscanf(" hello-world ", "%S", wuf);
     if (n != 1)
         terror("sfsscanf %%S %d expected, %d returned", 1, n);
-    else
-    {
+    else {
         wcstombs(str, wuf, sizeof(str));
         if (strcmp(tst, str))
             terror("sfsscanf %%S \"%s\" expected, \"%s\" returned", tst, str);

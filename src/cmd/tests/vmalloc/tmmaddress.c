@@ -39,8 +39,7 @@ tmain()
     warn = ( char * )0;
     size = 0;
     m = sizeof(char *) == 4 ? 2 : 16;
-    for (k = 0; k < N_REGION; ++k)
-    {
+    for (k = 0; k < N_REGION; ++k) {
         region[k].size = (trandom() % m + m) * m;
         region[k].size *= 1024 * 1024;
 
@@ -48,8 +47,7 @@ tmain()
         {
             shmfile = tstfile("shm", k);
             if (!(dc = vmdcshare(shmfile, 1, region[k].size, -1))
-                || !(region[k].vm = vmopen(dc, Vmbest, 0)))
-            {
+                || !(region[k].vm = vmopen(dc, Vmbest, 0))) {
                 warn = "shmem";
                 break;
             }
@@ -59,13 +57,11 @@ tmain()
                   region[k].size / (1024 * 1024),
                   region[k].vm->data);
             size += region[k].size;
-        }
-        else /* interspersed the above with mmap */
+        } else /* interspersed the above with mmap */
         {
             mapfile = tstfile("map", k);
             if (!(dc = vmdcshare(mapfile, -1, region[k].size, -1))
-                || !(region[k].vm = vmopen(dc, Vmbest, 0)))
-            {
+                || !(region[k].vm = vmopen(dc, Vmbest, 0))) {
                 warn = "mmap";
                 break;
             }
@@ -77,8 +73,7 @@ tmain()
             size += region[k].size;
         }
 
-        for (i = 0; i < k; ++i)
-        {
+        for (i = 0; i < k; ++i) {
             if (( char * )region[i].vm->data >= ( char * )region[k].vm->data
                 && ( char * )region[i].vm->data
                    <= (( char * )region[k].vm->data + region[k].size))

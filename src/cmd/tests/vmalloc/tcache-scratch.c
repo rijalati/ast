@@ -44,18 +44,15 @@ worker(void *arg)
     if (w->object)
         free(w->object);
 
-    for (i = 0; i < w->iterations; ++i)
-    {
+    for (i = 0; i < w->iterations; ++i) {
         char *obj;
 
         if (!(obj = ( char * )malloc(w->objsize)))
             terror("malloc failed");
 
         /* write into obj a bunch of times */
-        for (j = 0; j < w->repetitions; ++j)
-        {
-            for (k = 0; k < w->objsize; ++k)
-            {
+        for (j = 0; j < w->repetitions; ++j) {
+            for (k = 0; k < w->objsize; ++k) {
                 volatile char ch;
                 obj[k] = ( char )k;
                 ch = obj[k];
@@ -87,8 +84,7 @@ tmain()
 
     tresource(-1, 0);
 
-    while (argc > 1)
-    {
+    while (argc > 1) {
         if (argv[1][0] == '-' && argv[1][1] == 't')
             nthreads = atoi(argv[1] + 2);
         else if (argv[1][0] == '-' && argv[1][1] == 'i')
@@ -116,8 +112,7 @@ tmain()
         if (!(objs[i] = ( char * )malloc(objsize)))
             terror("Can't allocate objs[%d]", i);
 
-    for (i = 0; i < nthreads; ++i)
-    {
+    for (i = 0; i < nthreads; ++i) {
         Worker_t *w = ( Worker_t * )malloc(sizeof(Worker_t));
         w->object = objs[i];
         w->objsize = objsize;

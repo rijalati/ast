@@ -54,8 +54,7 @@ working(char *store, int type, ssize_t size)
         terror("vmstat failed");
 
     nbusy = nfree = 0;
-    for (k = f = 0; k < N_ALLOC; ++k)
-    {
+    for (k = f = 0; k < N_ALLOC; ++k) {
         if (!(Piece[k].addr = vmalloc(vm, Piece[k].size)))
             terror("Vmalloc[k=%d,size=%d] failed ", k, Piece[k].size);
         nbusy += 1;
@@ -104,19 +103,16 @@ tmain()
 
     size = 0;   /* make up list of pieces for allocation */
     srandom(0); /* make it easier to debug */
-    for (k = 0; k < N_ALLOC; ++k)
-    {
+    for (k = 0; k < N_ALLOC; ++k) {
         Piece[k].size = (random() % M_SIZE) + 1;
         size += Piece[k].size + 32; /* add slop for malloc header */
     }
     for (f = 0; f < N_FREE;) /* set up what should be freed */
     {
-        for (k = 0; k < N_ALLOC; ++k)
-        {
+        for (k = 0; k < N_ALLOC; ++k) {
             if (Piece[k].free == 1)
                 continue;
-            else if (random() % (N_ALLOC / N_FREE) == 0)
-            {
+            else if (random() % (N_ALLOC / N_FREE) == 0) {
                 Piece[k].free = 1;
                 if ((f += 1) >= N_FREE)
                     break;

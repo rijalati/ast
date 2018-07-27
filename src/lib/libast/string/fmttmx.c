@@ -36,8 +36,7 @@ fmttmx(const char *fmt, Time_t t)
     int z;
 
     z = 0;
-    do
-    {
+    do {
         b = fmtbuf(z += 80);
         e = tmxfmt(b, z, fmt, t);
     } while (e == b + z);

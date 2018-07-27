@@ -47,19 +47,16 @@ initialize()
     int i;
 
     setlocale(LC_ALL, "");
-    for (i = 0; i <= UCHAR_MAX; i++)
-    {
+    for (i = 0; i <= UCHAR_MAX; i++) {
         state.all[i] = 1;
         state.ident[i] = i;
         state.fold[i] = islower(i) ? toupper(i) : i;
         if (blank(i))
             state.dict[i] = 1;
-        if (isalnum(i))
-        {
+        if (isalnum(i)) {
             state.dict[i] = 1;
             state.print[i] = 1;
-        }
-        else if (isprint(i))
+        } else if (isprint(i))
             state.print[i] = 1;
     }
 }
@@ -96,12 +93,10 @@ rskeyopen(keydisc) Rskeydisc_t *keydisc;
     kp->head = kp->tail = &kp->field.global;
     kp->field.global.end.field = MAXFIELD;
     kp->meth = Rsrasp;
-    if (mbcoll())
-    {
+    if (mbcoll()) {
         kp->xfrmsiz = 256;
         if (!(kp->xfrmbuf
-              = vmnewof(Vmheap, 0, unsigned char, kp->xfrmsiz, 0)))
-        {
+              = vmnewof(Vmheap, 0, unsigned char, kp->xfrmsiz, 0))) {
             vmfree(Vmheap, kp);
             kp = 0;
         }
@@ -126,16 +121,14 @@ rskeyclose(kp) Rskey_t *kp;
     if (!kp)
         return -1;
     np = kp->field.global.next;
-    while (fp = np)
-    {
+    while (fp = np) {
         np = fp->next;
         if (fp->freetrans)
             vmfree(Vmheap, fp->trans);
         vmfree(Vmheap, fp);
     }
     np = kp->accumulate.head;
-    while (fp = np)
-    {
+    while (fp = np) {
         np = fp->next;
         vmfree(Vmheap, fp);
     }

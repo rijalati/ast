@@ -75,8 +75,7 @@ Sfdisc_t *disc; /* discipline */
     un = ( Union_t * )disc;
     m = n;
     f = un->f[un->c].f;
-    while (1)
-    {
+    while (1) {
         if ((r = sfread(f, buf, m)) < 0 || (r == 0 && un->c == un->n - 1))
             break;
 
@@ -111,14 +110,12 @@ Sfdisc_t *disc;
     if (un->type & UNSEEKABLE)
         return -1L;
 
-    if (type == 2)
-    {
+    if (type == 2) {
         extent = 0;
         for (i = 0; i < un->n; ++i)
             extent += (sfsize(un->f[i].f) - un->f[i].lower);
         addr += extent;
-    }
-    else if (type == 1)
+    } else if (type == 1)
         addr += un->here;
 
     if (addr < 0)
@@ -126,8 +123,7 @@ Sfdisc_t *disc;
 
     /* find the stream where the addr could be in */
     extent = 0;
-    for (i = 0; i < un->n - 1; ++i)
-    {
+    for (i = 0; i < un->n - 1; ++i) {
         s = sfsize(un->f[i].f) - un->f[i].lower;
         if (addr < extent + s)
             break;
@@ -190,19 +186,16 @@ int n;
     un->disc.exceptf = unexcept;
     un->n = n;
 
-    for (i = 0; i < n; ++i)
-    {
+    for (i = 0; i < n; ++i) {
         un->f[i].f = array[i];
-        if (!(un->type & UNSEEKABLE))
-        {
+        if (!(un->type & UNSEEKABLE)) {
             un->f[i].lower = sfseek(array[i], ( Sfoff_t )0, 1);
             if (un->f[i].lower < 0)
                 un->type |= UNSEEKABLE;
         }
     }
 
-    if (sfdisc(f, ( Sfdisc_t * )un) != ( Sfdisc_t * )un)
-    {
+    if (sfdisc(f, ( Sfdisc_t * )un) != ( Sfdisc_t * )un) {
         free(un);
         return -1;
     }

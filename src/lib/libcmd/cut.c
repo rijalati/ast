@@ -141,13 +141,11 @@ cutinit(int mode, char *str, Delim_t *wdelim, Delim_t *ldelim, size_t reclen)
     if (!(cut
           = ( Cut_t * )stakalloc(sizeof(Cut_t) + strlen(cp) * sizeof(int))))
         error(ERROR_exit(1), "out of space");
-    if (cut->mb = mbwide())
-    {
+    if (cut->mb = mbwide()) {
         memset(cut->space, 0, sizeof(cut->space) / 2);
         memset(
         cut->space + sizeof(cut->space) / 2, SP_WIDE, sizeof(cut->space) / 2);
-    }
-    else
+    } else
         memset(cut->space, 0, sizeof(cut->space));
     cut->wdelim = *wdelim;
     if (wdelim->len == 1)
@@ -163,8 +161,7 @@ cutinit(int mode, char *str, Delim_t *wdelim, Delim_t *ldelim, size_t reclen)
     cut->reclen = reclen;
     lp = cut->list;
     for (;;)
-        switch (c = *cp++)
-        {
+        switch (c = *cp++) {
         case ' ':
         case '\t':
             while (*cp == ' ' || *cp == '\t')
@@ -172,46 +169,35 @@ cutinit(int mode, char *str, Delim_t *wdelim, Delim_t *ldelim, size_t reclen)
             /*FALLTHROUGH*/
         case 0:
         case ',':
-            if (range)
-            {
+            if (range) {
                 --range;
                 if ((n = (n ? (n - range) : (HUGE - 1))) < 0)
                     error(ERROR_exit(1), "invalid range for c/f option");
                 *lp++ = range;
                 *lp++ = n;
-            }
-            else
-            {
+            } else {
                 *lp++ = --n;
                 *lp++ = 1;
             }
-            if (c == 0)
-            {
+            if (c == 0) {
                 int *dp;
                 *lp = HUGE;
                 n = 1 + (lp - cut->list) / 2;
                 qsort(lp = cut->list, n, 2 * sizeof(*lp), mycomp);
                 /* eliminate overlapping regions */
-                for (n = 0, range = -2, dp = lp; *lp != HUGE; lp += 2)
-                {
-                    if (lp[0] <= range)
-                    {
-                        if (lp[1] == HUGE)
-                        {
+                for (n = 0, range = -2, dp = lp; *lp != HUGE; lp += 2) {
+                    if (lp[0] <= range) {
+                        if (lp[1] == HUGE) {
                             dp[-1] = HUGE;
                             break;
                         }
-                        if ((c = lp[0] + lp[1] - range) > 0)
-                        {
+                        if ((c = lp[0] + lp[1] - range) > 0) {
                             range += c;
                             dp[-1] += c;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         range = *dp++ = lp[0];
-                        if (lp[1] == HUGE)
-                        {
+                        if (lp[1] == HUGE) {
                             *dp++ = HUGE;
                             break;
                         }
@@ -221,8 +207,7 @@ cutinit(int mode, char *str, Delim_t *wdelim, Delim_t *ldelim, size_t reclen)
                 *dp = HUGE;
                 lp = cut->list;
                 /* convert ranges into gaps */
-                for (n = 0; *lp != HUGE; lp += 2)
-                {
+                for (n = 0; *lp != HUGE; lp += 2) {
                     c = *lp;
                     *lp -= n;
                     n = c + lp[1];
@@ -264,8 +249,7 @@ cutcols(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
     int must;
     const char *xx;
 
-    for (;;)
-    {
+    for (;;) {
         if (len = cut->reclen)
             bp = sfreserve(fdin, len, -1);
         else
@@ -277,22 +261,17 @@ cutcols(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
         if (!(ncol = skip = *(lp = cut->list)))
             ncol = *++lp;
         must = 1;
-        do
-        {
-            if (cut->nosplit)
-            {
+        do {
+            if (cut->nosplit) {
                 const char *s = bp;
                 int w = len < ncol ? len : ncol;
                 int z;
 
-                while (w > 0)
-                {
+                while (w > 0) {
                     if (!(*s & 0x80))
                         z = 1;
-                    else if ((z = mbtsize(s, w, &cut->q)) <= 0)
-                    {
-                        if (s == bp && xx)
-                        {
+                    else if ((z = mbtsize(s, w, &cut->q)) <= 0) {
+                        if (s == bp && xx) {
                             w += s - xx;
                             bp = ( char * )(s = xx);
                             xx = 0;
@@ -309,15 +288,12 @@ cutcols(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
                 }
                 c = s - bp;
                 ncol = !w && ncol >= len;
-            }
-            else if (cut->cflag)
-            {
+            } else if (cut->cflag) {
                 const char *s = bp;
                 int w = len;
                 int z;
 
-                while (w > 0 && ncol > 0)
-                {
+                while (w > 0 && ncol > 0) {
                     ncol--;
                     if (!(*s & 0x80) || (z = mbtsize(s, w, &cut->q)) <= 0)
                         z = 1;
@@ -326,17 +302,14 @@ cutcols(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
                 }
                 c = s - bp;
                 ncol = !w && (ncol || !skip);
-            }
-            else
-            {
+            } else {
                 if ((c = ncol) > len)
                     c = len;
                 else if (c == len && !skip)
                     ncol++;
                 ncol -= c;
             }
-            if (!skip && c)
-            {
+            if (!skip && c) {
                 if (sfwrite(fdout, ( char * )bp, c) < 0)
                     return;
                 must = 0;
@@ -348,8 +321,7 @@ cutcols(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
             ncol = *++lp;
             skip = !skip;
         } while (ncol != HUGE);
-        if (!cut->nlflag && (skip || must || cut->reclen))
-        {
+        if (!cut->nlflag && (skip || must || cut->reclen)) {
             if (cut->ldelim.len > 1)
                 sfwrite(fdout, cut->ldelim.str, cut->ldelim.len);
             else
@@ -383,43 +355,35 @@ cutfields(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
     unsigned char mb[8];
     /* process each buffer */
     while ((bp = ( unsigned char * )sfreserve(fdin, SF_UNBOUND, -1))
-           && (c = sfvalue(fdin)) > 0)
-    {
+           && (c = sfvalue(fdin)) > 0) {
         cp = bp;
         ep = cp + --c;
         if ((lastchar = cp[c]) != cut->eob)
             *ep = cut->eob;
         /* process each line in the buffer */
-        while (cp <= ep)
-        {
+        while (cp <= ep) {
             first = cp;
-            if (!inword)
-            {
+            if (!inword) {
                 nodelim = empty = 1;
                 copy = cp;
                 if (nfields = *(lp = cut->list))
                     copy = 0;
                 else
                     nfields = *++lp;
-            }
-            else if (copy)
+            } else if (copy)
                 copy = cp;
             inword = 0;
-            do
-            {
+            do {
                 /* skip over non-delimiter characters */
                 if (cut->mb)
-                    for (;;)
-                    {
-                        switch (c = sp[*( unsigned char * )cp++])
-                        {
+                    for (;;) {
+                        switch (c = sp[*( unsigned char * )cp++]) {
                         case 0:
                             continue;
                         case SP_WIDE:
                             wp = --cp;
                             while ((c = mbchar(&w, cp, ep - cp, &cut->q)),
-                                   mberrno(&cut->q) == E2BIG)
-                            {
+                                   mberrno(&cut->q) == E2BIG) {
                                 int i;
                                 int j;
                                 int k;
@@ -428,16 +392,14 @@ cutfields(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
                                  * stuff */
 
                                 cp = wp;
-                                if (lastchar != cut->eob)
-                                {
+                                if (lastchar != cut->eob) {
                                     *ep = lastchar;
                                     if ((c = mbchar(
                                          &w, cp, ep - cp + 1, &cut->q)),
                                         mberrno(&cut->q) != E2BIG)
                                         break;
                                 }
-                                if (copy)
-                                {
+                                if (copy) {
                                     empty = 0;
                                     if ((c = cp - copy) > 0
                                         && sfwrite(fdout, ( char * )copy, c)
@@ -460,21 +422,17 @@ cutfields(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
                                     mb[j++] = cp[k++];
                                 tp = ( char * )mb;
                                 w = mbchar(&w, tp, j, &cut->q);
-                                if (mberrno(&cut->q))
-                                {
+                                if (mberrno(&cut->q)) {
                                     w = 0;
                                     c = i;
-                                }
-                                else
+                                } else
                                     c = tp - ( char * )mb;
                                 first = bp = cp += c - i;
-                                if (copy)
-                                {
+                                if (copy) {
                                     copy = bp;
                                     if (w == cut->ldelim.chr)
                                         lastchar = cut->ldelim.chr;
-                                    else if (w != cut->wdelim.chr)
-                                    {
+                                    else if (w != cut->wdelim.chr) {
                                         empty = 0;
                                         if (sfwrite(fdout, ( char * )mb, c)
                                             < 0)
@@ -482,13 +440,11 @@ cutfields(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
                                     }
                                 }
                             }
-                            if (c == cut->wdelim.chr)
-                            {
+                            if (c == cut->wdelim.chr) {
                                 c = SP_WORD;
                                 break;
                             }
-                            if (c == cut->ldelim.chr)
-                            {
+                            if (c == cut->ldelim.chr) {
                                 c = SP_LINE;
                                 break;
                             }
@@ -499,15 +455,13 @@ cutfields(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
                         }
                         break;
                     }
-                else
-                {
+                else {
                     while (!(c = sp[*cp++]))
                         ;
                     wp = cp - 1;
                 }
                 /* check for end-of-line */
-                if (c == SP_LINE)
-                {
+                if (c == SP_LINE) {
                     if (cp <= ep)
                         break;
                     if (lastchar == cut->ldelim.chr)
@@ -523,35 +477,27 @@ cutfields(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
                 if (--nfields > 0)
                     continue;
                 nfields = *++lp;
-                if (copy)
-                {
+                if (copy) {
                     empty = 0;
                     if ((c = wp - copy) > 0
                         && sfwrite(fdout, ( char * )copy, c) < 0)
                         goto failed;
                     copy = 0;
-                }
-                else
+                } else
                     /* set to delimiter unless the first field */
                     copy = empty ? cp : wp;
             } while (!inword);
-            if (!inword)
-            {
-                if (!copy)
-                {
-                    if (nodelim)
-                    {
-                        if (!cut->sflag)
-                        {
-                            if (offset)
-                            {
+            if (!inword) {
+                if (!copy) {
+                    if (nodelim) {
+                        if (!cut->sflag) {
+                            if (offset) {
                                 sfseek(fdtmp, ( Sfoff_t )0, SEEK_SET);
                                 sfmove(fdtmp, fdout, offset, -1);
                             }
                             copy = first;
                         }
-                    }
-                    else
+                    } else
                         sfputc(fdout, '\n');
                 }
                 if (offset)
@@ -562,8 +508,7 @@ cutfields(Cut_t *cut, Sfio_t *fdin, Sfio_t *fdout)
                 goto failed;
         }
         /* see whether to save in tmp file */
-        if (inword && nodelim && !cut->sflag && (c = cp - first) > 0)
-        {
+        if (inword && nodelim && !cut->sflag && (c = cp - first) > 0) {
             /* copy line to tmpfile in case no fields */
             if (!fdtmp)
                 fdtmp = sftmp(BLOCK);
@@ -595,16 +540,13 @@ b_cut(int argc, char **argv, Shbltin_t *context)
     wdelim.chr = '\t';
     ldelim.chr = '\n';
     wdelim.len = ldelim.len = 1;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 0:
             break;
         case 'b':
         case 'c':
-            if (mode & C_FIELDS)
-            {
+            if (mode & C_FIELDS) {
                 error(2, "f option already specified");
                 continue;
             }
@@ -616,13 +558,11 @@ b_cut(int argc, char **argv, Shbltin_t *context)
             continue;
         case 'D':
             ldelim.str = opt_info.arg;
-            if (mbwide())
-            {
+            if (mbwide()) {
                 s = opt_info.arg;
                 mbinit(&q);
                 ldelim.chr = mbchar(&w, s, MB_LEN_MAX, &q);
-                if ((n = s - opt_info.arg) > 1)
-                {
+                if ((n = s - opt_info.arg) > 1) {
                     ldelim.len = n;
                     continue;
                 }
@@ -632,13 +572,11 @@ b_cut(int argc, char **argv, Shbltin_t *context)
             continue;
         case 'd':
             wdelim.str = opt_info.arg;
-            if (mbwide())
-            {
+            if (mbwide()) {
                 s = opt_info.arg;
                 mbinit(&q);
                 wdelim.chr = mbchar(&w, s, MB_LEN_MAX, &q);
-                if ((n = s - opt_info.arg) > 1)
-                {
+                if ((n = s - opt_info.arg) > 1) {
                     wdelim.len = n;
                     continue;
                 }
@@ -647,8 +585,7 @@ b_cut(int argc, char **argv, Shbltin_t *context)
             wdelim.len = 1;
             continue;
         case 'f':
-            if (mode & (C_CHARS | C_BYTES))
-            {
+            if (mode & (C_CHARS | C_BYTES)) {
                 error(2, "c option already specified");
                 continue;
             }
@@ -681,8 +618,7 @@ b_cut(int argc, char **argv, Shbltin_t *context)
     argv += opt_info.index;
     if (error_info.errors)
         error(ERROR_usage(2), "%s", optusage(NiL));
-    if (!cp)
-    {
+    if (!cp) {
         error(2, "b, c or f option must be specified");
         error(ERROR_usage(2), "%s", optusage(NiL));
     }
@@ -693,12 +629,10 @@ b_cut(int argc, char **argv, Shbltin_t *context)
     cut = cutinit(mode, cp, &wdelim, &ldelim, reclen);
     if (cp = *argv)
         argv++;
-    do
-    {
+    do {
         if (!cp || streq(cp, "-"))
             fp = sfstdin;
-        else if (!(fp = sfopen(NiL, cp, "r")))
-        {
+        else if (!(fp = sfopen(NiL, cp, "r"))) {
             error(ERROR_system(0), "%s: cannot open", cp);
             continue;
         }

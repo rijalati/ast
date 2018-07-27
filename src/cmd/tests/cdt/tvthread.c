@@ -113,16 +113,13 @@ volley(void *arg)
     insdt = !deldt;
 
     n_move = 0;
-    for (dir = 1; dir >= -1; dir -= 2)
-    {
-        for (k = dir > 0 ? 0 : N_OBJ - 1; k >= 0 && k < N_OBJ; k += dir)
-        {
+    for (dir = 1; dir >= -1; dir -= 2) {
+        for (k = dir > 0 ? 0 : N_OBJ - 1; k >= 0 && k < N_OBJ; k += dir) {
             obj.value = k;
             if (!(o = dtsearch(Dict[deldt], &obj)))
                 continue;
 
-            if ((rv = dtdelete(Dict[deldt], o)) == o)
-            {
+            if ((rv = dtdelete(Dict[deldt], o)) == o) {
                 asoincint(&o->del[deldt]);
 
                 if ((rv = dtinsert(Dict[insdt], o)) != o)
@@ -131,8 +128,7 @@ volley(void *arg)
                 asoincint(&o->ins[insdt]);
 
                 n_move += 1;
-            }
-            else if (rv)
+            } else if (rv)
                 terror("Unknown object %d", rv->value);
 
             if (k % 100 == 0)
@@ -154,8 +150,7 @@ tmain()
     topts();
 
     /* create two dictionaries to volley objects back and forth */
-    for (n = 0; n < 2; ++n)
-    {
+    for (n = 0; n < 2; ++n) {
         if (!(Dict[n] = opendictionary(&disc[n])))
             terror("Can't open dictionary %d", n);
 
@@ -164,8 +159,7 @@ tmain()
             terror("vmalloc failed %d", n);
         memset(list[n], 0, (N_OBJ / 2) * sizeof(Obj_t));
 
-        for (o = list[n], k = 0; k < N_OBJ / 2; ++k, ++o)
-        {
+        for (o = list[n], k = 0; k < N_OBJ / 2; ++k, ++o) {
             o->value = n == 0 ? k : k + N_OBJ / 2;
 
             if (dtinsert(Dict[n], o) != o)
@@ -187,10 +181,8 @@ tmain()
     n = dtsize(Dict[0]);
     p = dtsize(Dict[1]);
     tinfo("Dict[0]=%d Dict[1]=%d", n, p);
-    if ((n + p) != N_OBJ)
-    {
-        for (k = 0; k < N_OBJ; ++k)
-        {
+    if ((n + p) != N_OBJ) {
+        for (k = 0; k < N_OBJ; ++k) {
             obj.value = k;
             if ((o = dtsearch(Dict[0], &obj)))
                 continue;

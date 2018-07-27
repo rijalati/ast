@@ -43,15 +43,14 @@ int set;
     if (flags == 0 && set == 0)
         SFMTXRETURN(f, (f->flags & SF_FLAGS));
 
-    if ((oflags = (f->mode & SF_RDWR)) != ( int )f->mode)
-    { /* avoid sfsetbuf() isatty() call if user sets (SF_LINE|SF_WCWIDTH) */
+    if ((oflags = (f->mode & SF_RDWR))
+        != ( int )f->mode) { /* avoid sfsetbuf() isatty() call if user sets
+                                (SF_LINE|SF_WCWIDTH) */
         if (set && (flags & (SF_LINE | SF_WCWIDTH))
-            && !(f->flags & (SF_LINE | SF_WCWIDTH)))
-        {
+            && !(f->flags & (SF_LINE | SF_WCWIDTH))) {
             tflags = (SF_LINE | SF_WCWIDTH);
             f->flags |= tflags;
-        }
-        else
+        } else
             tflags = 0;
         rv = _sfmode(f, oflags, 0);
         if (tflags)
@@ -83,10 +82,8 @@ int set;
         f->flags &= ~SF_APPENDWR;
 
     /* turn to appropriate mode as necessary */
-    if ((flags &= SF_RDWR))
-    {
-        if (!set)
-        {
+    if ((flags &= SF_RDWR)) {
+        if (!set) {
             if (flags == SF_READ)
                 flags = SF_WRITE;
             else

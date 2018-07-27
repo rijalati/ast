@@ -82,8 +82,7 @@ MAIN()
 
     /* generate a large array of data using the frequency profile */
     b = buf;
-    for (k = 0; k < 256; ++k)
-    {
+    for (k = 0; k < 256; ++k) {
         for (n = 0; n < Freq[k]; ++n)
             *b++ = k;
     }
@@ -98,10 +97,8 @@ MAIN()
     /* test grouping method */
     b = buf;
     endb = buf + sizeof(buf);
-    while (b < endb)
-    {
-        for (k = 0; k < 256 && b < endb; ++k)
-        {
+    while (b < endb) {
+        for (k = 0; k < 256 && b < endb; ++k) {
             for (n = 0; n < Freq[k] && b < endb; ++n)
                 *b++ = k;
         }

@@ -92,16 +92,14 @@ spawnvpe(const char *name, char *const argv[], char *const envv[])
         name, NULL, PATH_REGULAR | PATH_EXECUTE, buffer, sizeof(buffer));
     if ((pid = spawnve(path, argv, envv)) >= 0)
         return pid;
-    if (errno == ENOEXEC)
-    {
+    if (errno == ENOEXEC) {
         char **newargv;
         char **ov;
         char **nv;
 
         for (ov = ( char ** )argv; *ov++;)
             ;
-        if (newargv = newof(0, char *, ov + 1 - ( char ** )argv, 0))
-        {
+        if (newargv = newof(0, char *, ov + 1 - ( char ** )argv, 0)) {
             nv = newargv;
             *nv++ = "sh";
             *nv++ = ( char * )path;
@@ -111,8 +109,7 @@ spawnvpe(const char *name, char *const argv[], char *const envv[])
             path = pathshell();
             pid = spawnve(path, newargv, environ);
             free(newargv);
-        }
-        else
+        } else
             errno = ENOMEM;
     }
     return pid;

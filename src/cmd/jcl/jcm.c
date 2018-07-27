@@ -235,10 +235,8 @@ card(Sfio_t *sp, unsigned char *map)
 
     s = state.data;
     z = CARD;
-    for (;;)
-    {
-        if (s >= state.last)
-        {
+    for (;;) {
+        if (s >= state.last) {
             n = s - state.data;
             m = (state.last - state.data) + 32 * CARD;
             if (!(state.data = newof(state.data, char, m, 0)))
@@ -259,20 +257,16 @@ card(Sfio_t *sp, unsigned char *map)
             ;
         if ((c = sfgetc(sp)) == EOF)
             break;
-        if (c != o)
-        {
+        if (c != o) {
             sfungetc(sp, c);
             break;
         }
-        if (ccmapchr(map, c) == 'T')
-        {
-            if ((c = sfgetc(sp)) == EOF)
-            {
+        if (ccmapchr(map, c) == 'T') {
+            if ((c = sfgetc(sp)) == EOF) {
                 sfungetc(sp, o);
                 break;
             }
-            if (ccmapchr(map, c) == '%')
-            {
+            if (ccmapchr(map, c) == '%') {
                 sfungetc(sp, c);
                 sfungetc(sp, o);
                 break;
@@ -304,8 +298,7 @@ prefix(const char *s, const char *e, int d)
         v = ( Jcmvar_t * )dtsearch(state.vars, &var);
     if (*v->name != *s)
         v = ( Jcmvar_t * )dtnext(state.vars, v);
-    for (; v && *v->name == *s; v = ( Jcmvar_t * )dtnext(state.vars, v))
-    {
+    for (; v && *v->name == *s; v = ( Jcmvar_t * )dtnext(state.vars, v)) {
         n = strlen(v->name);
         if (strneq(s, v->name, n))
             return s + n;
@@ -324,18 +317,14 @@ parameterize(Sfio_t *sp, const char *s, const char *e, int append, int index)
 
     if (e)
         d = ' ';
-    else
-    {
+    else {
         e = s + strlen(s);
         d = 0;
     }
-    while (s < e && (c = *s++) != d)
-    {
-        if (c == '~' && s < e && *s != d)
-        {
+    while (s < e && (c = *s++) != d) {
+        if (c == '~' && s < e && *s != d) {
             sfputr(sp, "$(" JCL_AUTO, -1);
-            switch (c = *s++)
-            {
+            switch (c = *s++) {
             case '#':
                 sfputr(sp, "pound", -1);
                 break;
@@ -349,34 +338,28 @@ parameterize(Sfio_t *sp, const char *s, const char *e, int append, int index)
                 sfputr(sp, "bang", -1);
                 break;
             default:
-                if (isalnum(c) && (t = prefix(s - 1, e, d)))
-                {
+                if (isalnum(c) && (t = prefix(s - 1, e, d))) {
                     sfwrite(sp, s - 1, t - s + 1);
                     s = t;
-                }
-                else
+                } else
                     sfprintf(sp, "special_%02x", c);
                 break;
             }
             c = ')';
-        }
-        else if (c == '%' && s < e && *s == c)
-        {
+        } else if (c == '%' && s < e && *s == c) {
             sfputr(sp, "$(" JCL_AUTO, -1);
             for (s++; s < e && (c = *s) != d
                       && (isalnum(c) || c == '$' && (c = '_'));
                  s++)
                 sfputc(sp, c);
             c = ')';
-        }
-        else if (state.portable && (c == '#' || c == '$' || c == ':'))
+        } else if (state.portable && (c == '#' || c == '$' || c == ':'))
             c = '_';
         sfputc(sp, c);
     }
     if (index)
         sfprintf(sp, "-%02d", index);
-    if (append)
-    {
+    if (append) {
         if (sfputc(sp, 0) < 0)
             nospace();
         sfstrseek(sp, -1, SEEK_CUR);
@@ -392,21 +375,17 @@ getevent(const char *s, const char *d, int uniq, int string, int index)
 {
     Jcmevent_t *event;
 
-    if (s)
-    {
+    if (s) {
         s = ( const char * )parameterize(
         state.tmp, s, string ? ( const char * )0 : s + 20, 1, index);
-        if (event = ( Jcmevent_t * )dtmatch(state.events, s))
-        {
-            if (!uniq)
-            {
+        if (event = ( Jcmevent_t * )dtmatch(state.events, s)) {
+            if (!uniq) {
                 sfstrseek(state.tmp, 0, SEEK_SET);
                 return event;
             }
             sfprintf(state.tmp, "{%lu}", ++event->dup);
         }
-    }
-    else
+    } else
         sfprintf(state.tmp, "{%lu}", ++state.pseudo);
     if (!(s = ( const char * )sfstruse(state.tmp))
         || !(event = newof(0, Jcmevent_t, 1, strlen(s))))
@@ -440,14 +419,11 @@ setvar(const char *s, const char *v, int init)
 {
     Jcmvar_t *var;
 
-    if (var = ( Jcmvar_t * )dtmatch(state.vars, s))
-    {
+    if (var = ( Jcmvar_t * )dtmatch(state.vars, s)) {
         if (!v || !init && var->init)
             return var;
         free(var->value);
-    }
-    else
-    {
+    } else {
         if (!(var = newof(0, Jcmvar_t, 1, 0)))
             nospace();
         var->dup = 1;
@@ -472,22 +448,19 @@ getlib(const char *s)
         return 0;
     if (state.lowercase)
         lower(name);
-    if (!(lib = ( Jcmlib_t * )dtmatch(state.libs, name)))
-    {
+    if (!(lib = ( Jcmlib_t * )dtmatch(state.libs, name))) {
         if (!(lib = newof(0, Jcmlib_t, 1, 0)))
             nospace();
         strcpy(lib->name, name);
         dtinsert(state.libs, lib);
-        if (!(t = strchr(lib->name, '%')) || *++t != '%')
-        {
+        if (!(t = strchr(lib->name, '%')) || *++t != '%') {
             if (!(t = strrchr(lib->name, '.')) || !*++t)
                 t = lib->name;
             sfsprintf(name, sizeof(name), "lib_%s", t);
             if (state.lowercase)
                 upper(name);
             if (var = ( Jcmvar_t * )dtmatch(state.vars, name))
-                do
-                {
+                do {
                     sfsprintf(
                     name, sizeof(name), "lib_%s_%lu", t, ++var->dup);
                     if (state.lowercase)
@@ -505,8 +478,7 @@ append(Jcmlist_t *list, Jcmevent_t *event)
     Jcmlist_t *p;
     Jcmlist_t *q;
 
-    for (p = list; p; p = p->next)
-    {
+    for (p = list; p; p = p->next) {
         if (p->event == event)
             return list;
         if (!p->next)
@@ -515,8 +487,7 @@ append(Jcmlist_t *list, Jcmevent_t *event)
     if (!(q = newof(0, Jcmlist_t, 1, 0)))
         nospace();
     q->event = event;
-    if (p)
-    {
+    if (p) {
         p->next = q;
         return list;
     }
@@ -552,8 +523,7 @@ init(const char *path)
     char *file;
     size_t line;
 
-    if (!(sp = sfopen(NiL, path, "r")))
-    {
+    if (!(sp = sfopen(NiL, path, "r"))) {
         error(ERROR_SYSTEM | 2, "%s: cannot read initialization file", path);
         return -1;
     }
@@ -561,8 +531,7 @@ init(const char *path)
     error_info.file = ( char * )path;
     line = error_info.line;
     error_info.line = 0;
-    while (s = sfgetr(sp, '\n', 1))
-    {
+    while (s = sfgetr(sp, '\n', 1)) {
         error_info.line++;
         e = s + sfvalue(sp) - 1;
         while (isspace(*s))
@@ -571,19 +540,15 @@ init(const char *path)
             continue;
         i = 0;
         for (t = s; *s; s++)
-            if (*s == '=')
-            {
+            if (*s == '=') {
                 i = 1;
                 *s++ = 0;
                 break;
-            }
-            else if (isspace(*s) && !i)
-            {
+            } else if (isspace(*s) && !i) {
                 i = -1;
                 *s = 0;
             }
-        if (i > 0 && isalpha(*t))
-        {
+        if (i > 0 && isalpha(*t)) {
             while (isspace(*s))
                 s++;
             while (e > s && isspace(*(e - 1)))
@@ -593,8 +558,7 @@ init(const char *path)
                 t += sizeof(JCL_AUTO) - 1;
             if (*t)
                 setvar(t, s, 1);
-        }
-        else
+        } else
             error(1, "invalid initialization line ignored: %s", t);
     }
     sfclose(sp);
@@ -611,17 +575,13 @@ dump(Sfio_t *sp, Jcmevent_t *event)
 
     event->mark = 1;
     sfprintf(sp, "%s : .VIRTUAL", event->name);
-    if (event->job)
-    {
+    if (event->job) {
         if (event->job->memlib == state.dummy
-            || event->job->overlib == state.dummy)
-        {
+            || event->job->overlib == state.dummy) {
             sfprintf(sp, " .FOREGROUND .DO.NOTHING");
             for (p = event->reqs; p; p = p->next)
                 sfprintf(sp, " %s", p->event->name);
-        }
-        else
-        {
+        } else {
             sfprintf(sp, " .JOB");
             for (v = event->job->set; v; v = v->next)
                 if (v->value)
@@ -637,8 +597,7 @@ dump(Sfio_t *sp, Jcmevent_t *event)
                 sfprintf(sp, " %s", p->event->name);
             sfprintf(sp, " %s", event->job->base);
         }
-    }
-    else if (!event->reqs)
+    } else if (!event->reqs)
         sfprintf(sp, " .EVENT.WAIT");
     else
         for (p = event->reqs; p; p = p->next)
@@ -650,14 +609,12 @@ dump(Sfio_t *sp, Jcmevent_t *event)
         for (p = event->clear; p; p = p->next)
             sfprintf(sp, " %s.CLEAR", p->event->name);
     sfprintf(sp, "\n");
-    if (event->raise)
-    {
+    if (event->raise) {
         for (p = event->raise; p; p = p->next)
             sfprintf(sp, "%s.RAISE ", p->event->name);
         sfprintf(sp, ": .AFTER .EVENT.RAISE\n");
     }
-    if (event->clear)
-    {
+    if (event->clear) {
         for (p = event->clear; p; p = p->next)
             sfprintf(sp, "%s.CLEAR ", p->event->name);
         sfprintf(sp, ": .AFTER .EVENT.CLEAR\n");
@@ -711,10 +668,8 @@ main(int argc, char **argv)
         || !(state.vars = dtopen(&state.vardisc, Dtoset)))
         nospace();
     index = 0;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'c':
             state.cards = opt_info.number;
             continue;
@@ -758,14 +713,12 @@ main(int argc, char **argv)
     state.dummy = getlib("DUMMY");
     state.all = getevent("all", NiL, 0, 1, 0);
     file = *argv;
-    if (!state.cards)
-    {
+    if (!state.cards) {
         sfprintf(sfstdout, ":JCL:\n\n");
         n = 0;
         for (var = ( Jcmvar_t * )dtfirst(state.vars); var;
              var = ( Jcmvar_t * )dtnext(state.vars, var))
-            if (var->init)
-            {
+            if (var->init) {
                 sfprintf(
                 sfstdout, "%s%s == %s\n", JCL_AUTO, var->name, var->value);
                 n = 1;
@@ -773,16 +726,13 @@ main(int argc, char **argv)
         if (n)
             sfprintf(sfstdout, "\n");
     }
-    do
-    {
+    do {
         if (!file)
             sp = sfstdin;
-        else if (!(sp = sfopen(NiL, file, "r")))
-        {
+        else if (!(sp = sfopen(NiL, file, "r"))) {
             error(ERROR_SYSTEM | 2, "%s: cannot read", file);
             continue;
-        }
-        else if (state.cards)
+        } else if (state.cards)
             sfprintf(sfstdout, "=== %s ===\n", file);
         else if (state.verbose)
             sfprintf(sfstderr, "=== %s ===\n", file);
@@ -794,8 +744,7 @@ main(int argc, char **argv)
         error_info.line = 0;
         vmclear(state.vm);
         firstcard = lastcard = 0;
-        while (s = card(sp, map))
-        {
+        while (s = card(sp, map)) {
             if (*s == 'T' && (t = strchr(s + 3, '=')) && *++t == '~')
                 setvar(t + 1, NiL, 0);
             if (!(cp = vmnewof(state.vm, 0, Jcmcard_t, 1, strlen(s))))
@@ -806,23 +755,19 @@ main(int argc, char **argv)
             else
                 lastcard = firstcard = cp;
         }
-        if (cp = firstcard)
-        {
+        if (cp = firstcard) {
             group = state.all;
             job = 0;
             reqs = raise = clear = 0;
-            do
-            {
+            do {
                 s = cp->data;
-                if (state.cards)
-                {
+                if (state.cards) {
                     sfprintf(sfstdout, "%s\n", s);
                     continue;
                 }
                 if (state.verbose)
                     sfprintf(sfstderr, "%s\n", s);
-                switch (s[0])
-                {
+                switch (s[0]) {
                 case 'B':
                     /* XXX: unknown per-job sparse */
                     break;
@@ -848,10 +793,8 @@ main(int argc, char **argv)
                                  parameterize(state.tmp, s + 1, NiL, 0, 0));
                     break;
                 case 'I':
-                    if (job)
-                    {
-                        if (index)
-                        {
+                    if (job) {
+                        if (index) {
                             s++;
                             for (n = 0; n < index; n++)
                                 reqs
@@ -872,14 +815,11 @@ main(int argc, char **argv)
                     reqs = raise = clear = 0;
                     job = getjob(s + 1);
                     job->relationship = s[64];
-                    if (s[60] == 'G')
-                    {
+                    if (s[60] == 'G') {
                         ep = getevent(job->name, NiL, 1, 1, 0);
                         group->reqs = append(group->reqs, ep);
                         group = ep;
-                    }
-                    else if (group == state.all)
-                    {
+                    } else if (group == state.all) {
                         if (s = strrchr(file, '/'))
                             s++;
                         else
@@ -897,8 +837,7 @@ main(int argc, char **argv)
                         = stash(parameterize(state.tmp, s + 1, s + 21, 0, 0));
                     break;
                 case 'O':
-                    if (job)
-                    {
+                    if (job) {
                         for (s++; *s; s += 25)
                             if (s[24] == '-')
                                 clear
@@ -917,14 +856,12 @@ main(int argc, char **argv)
                     /* XXX: unknown per-job sparse */
                     break;
                 case 'S':
-                    if (job)
-                    {
+                    if (job) {
                         if (lastshout = job->shout)
                             while (lastshout->next)
                                 lastshout = lastshout->next;
                         s++;
-                        while (*s)
-                        {
+                        while (*s) {
                             if (!(shout = newof(0, Jcmshout_t, 1, 0)))
                                 nospace();
                             if (lastshout)
@@ -953,19 +890,16 @@ main(int argc, char **argv)
                     }
                     break;
                 case 'T':
-                    if (job)
-                    {
+                    if (job) {
                         s = parameterize(state.tmp, s + 3, NiL, 0, 0);
                         n = strlen(s) + 2;
                         if (!(set = newof(0, Jcmset_t, 1, n)))
                             nospace();
                         strcpy(set->name, s);
-                        if (s = strchr(set->name, '='))
-                        {
+                        if (s = strchr(set->name, '=')) {
                             *s++ = 0;
                             set->value = s;
-                        }
-                        else
+                        } else
                             set->value = "";
                         var = ( Jcmvar_t * )dtmatch(state.vars, set->name);
                         if ((!(var
@@ -974,10 +908,8 @@ main(int argc, char **argv)
                             && (!(global = ( Jcmset_t * )dtmatch(state.set,
                                                                  set->name))
                                 || streq(global->value, set->value)
-                                || circular(set)))
-                        {
-                            if (!global)
-                            {
+                                || circular(set))) {
+                            if (!global) {
                                 if (!state.cards)
                                     sfprintf(sfstdout,
                                              "%s%s == %s\n",
@@ -992,13 +924,11 @@ main(int argc, char **argv)
                             }
                             set->value = 0;
                         }
-                        if (lastset = job->set)
-                        {
+                        if (lastset = job->set) {
                             while (lastset->next)
                                 lastset = lastset->next;
                             lastset->next = set;
-                        }
-                        else
+                        } else
                             job->set = set;
                     }
                     break;
@@ -1007,8 +937,7 @@ main(int argc, char **argv)
                         job->overlib = getlib(s + 1);
                     break;
                 case 'Z':
-                    if (job)
-                    {
+                    if (job) {
                         job->docmem
                         = stash(parameterize(state.tmp, s + 1, s + 9, 0, 0));
                         job->doclib = getlib(s + 9);
@@ -1030,8 +959,7 @@ main(int argc, char **argv)
         error_info.file = 0;
         error_info.line = 0;
     } while (file && (file = *++argv));
-    if (!state.cards)
-    {
+    if (!state.cards) {
         sfprintf(sfstdout, "\n");
         dump(sfstdout, state.all);
     }

@@ -54,13 +54,11 @@ ssize_t maxs;  /* max length of any code	*/
 
     huff->type = 0;
     huff->maxs = 0;
-    if (freq)
-    {
+    if (freq) {
         memcpy(huff->freq, freq, VCH_SIZE * sizeof(freq[0]));
         huff->type |= VCH_HASFREQ;
     }
-    if (size && maxs >= 0 && maxs < 32)
-    {
+    if (size && maxs >= 0 && maxs < 32) {
         memcpy(huff->size, size, VCH_SIZE * sizeof(size[0]));
         huff->maxs = maxs;
         huff->type |= VCH_HASSIZE;
@@ -93,8 +91,7 @@ Void_t **out; /* return encoded data 	*/
         return 0;
 
     /* compute code frequencies and lengths */
-    if (!(huff->type & VCH_HASFREQ))
-    {
+    if (!(huff->type & VCH_HASFREQ)) {
         CLRTABLE(freq, VCH_SIZE);
         ADDFREQ(freq, Vcchar_t *, data, dtsz);
         huff->type = 0;
@@ -105,12 +102,10 @@ Void_t **out; /* return encoded data 	*/
     huff->type = 0;
 
     /* estimate compressed size */
-    if (huff->maxs > 0)
-    {
+    if (huff->maxs > 0) {
         DOTPRODUCT(s, freq, size, VCH_SIZE);
         s = (s + 7) / 8; /* round up to byte count */
-    }
-    else
+    } else
         s = 1;
     s += vcsizeu(dtsz) + 1;
 
@@ -128,8 +123,7 @@ Void_t **out; /* return encoded data 	*/
     enddt = (dt = ( Vcchar_t * )data) + dtsz;
     if (huff->maxs == 0) /* a single run */
         vcioputc(&io, *dt);
-    else
-    { /* output the code tree */
+    else { /* output the code tree */
         if ((s = vchputcode(
              VCH_SIZE, size, huff->maxs, vcionext(&io), vciomore(&io)))
             <= 0)
@@ -190,14 +184,11 @@ Void_t **out; /* return decoded data	*/
         return -1;
     endo = (o = output) + sz;
 
-    if ((sz = vciogetc(&io)) == 0)
-    {
+    if ((sz = vciogetc(&io)) == 0) {
         n = vciogetc(&io);
         while (o < endo)
             *o++ = n;
-    }
-    else
-    {
+    } else {
         if ((n = vchgetcode(
              VCH_SIZE, huff->size, sz, vcionext(&io), vciomore(&io)))
             < 0)
@@ -216,8 +207,7 @@ Void_t **out; /* return decoded data	*/
         ntop = huff->trie->ntop;
 
         vciosetb(&io, b, n, VC_DECODE); /* associate b,n as bit vector */
-        for (sz = ntop, p = 0;;)
-        {
+        for (sz = ntop, p = 0;;) {
             vciofilb(&io, b, n, sz);
 
             p += (b >> (VC_BITSIZE - sz)); /* slot to look into */
@@ -228,12 +218,10 @@ Void_t **out; /* return decoded data	*/
                 if ((o += 1) >= endo)
                     break;
                 sz = ntop;
-                p = 0; /* restart at trie top */
-            }
-            else if (size[p] == 0) /* corrupted data */
+                p = 0;               /* restart at trie top */
+            } else if (size[p] == 0) /* corrupted data */
                 return -1;
-            else
-            {
+            else {
                 vciodelb(&io, b, n, sz); /* consume bits */
                 sz = -size[p];
                 p = node[p]; /* trie recursion */
@@ -261,8 +249,7 @@ Void_t *params;
 {
     Vchuff_t *huff;
 
-    if (type == VC_OPENING)
-    {
+    if (type == VC_OPENING) {
         if (!(huff = ( Vchuff_t * )malloc(sizeof(Vchuff_t))))
             return -1;
         huff->trie = NIL(Vchtrie_t *);
@@ -270,19 +257,15 @@ Void_t *params;
         huff->type = 0;
         vcsetmtdata(vc, huff);
         return 0;
-    }
-    else if (type == VC_CLOSING)
-    {
-        if ((huff = vcgetmtdata(vc, Vchuff_t *)))
-        {
+    } else if (type == VC_CLOSING) {
+        if ((huff = vcgetmtdata(vc, Vchuff_t *))) {
             if (huff->trie)
                 vchdeltrie(huff->trie);
             free(huff);
         }
         vcsetmtdata(vc, NIL(Vchuff_t *));
         return 0;
-    }
-    else
+    } else
         return 0;
 }
 

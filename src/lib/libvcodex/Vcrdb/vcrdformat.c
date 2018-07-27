@@ -51,16 +51,12 @@ static ssize_t rdhuffman(freq) Freq_t freq;
     Freq_t cdsz;
 
     /* use the Huffman coder to estimate coding cost */
-    if (vchsize(256, freq, cdsz, 0) <= 0)
-    {
+    if (vchsize(256, freq, cdsz, 0) <= 0) {
         for (w = 0, k = 0; k < 256; ++k)
             w += freq[k];
         return (vcsizeu(w) + 1) * 8; /* cost to encode a run */
-    }
-    else
-    {
-        for (w = 0, k = 0; k < 256; ++k)
-        {
+    } else {
+        for (w = 0, k = 0; k < 256; ++k) {
             w += freq[k] * cdsz[k];    /* cost for all bytes k */
             w += vcsizeu(cdsz[k]) * 8; /* cost of k's code */
         }
@@ -129,8 +125,7 @@ int rs;                                               /* record separator 	*/
     /* compute statistics for all possible field separators */
     print = 0;
     memset(fsep, 0, sizeof(fsep));
-    for (recn = 0, size = 0;;)
-    {
+    for (recn = 0, size = 0;;) {
         for (z = size; z < dtsz; ++z)
             if (data[z] == rs)
                 break;
@@ -160,8 +155,7 @@ int rs;                                               /* record separator 	*/
 
             if (k == TYPN) /* too many fldn types to be a good separator */
                 fsep[fs].typn = -1;
-            else
-            {
+            else {
                 if (k == fsep[fs].typn)
                     fsep[fs].typn += 1;
                 fsep[fs].typ[k] = fn; /* fldn type */
@@ -178,14 +172,12 @@ int rs;                                               /* record separator 	*/
 
     bestfs = -1;
     prefer = -1; /* test for preferred separators */
-    for (fs = 0; fs < 256; ++fs)
-    {
+    for (fs = 0; fs < 256; ++fs) {
         if (fsep[fs].typn <= 0)
             continue;
 
         /* move max #fields in any record and most #occurences  */
-        for (fn = 0, z = 0, k = 0; k < fsep[fs].typn; ++k)
-        {
+        for (fn = 0, z = 0, k = 0; k < fsep[fs].typn; ++k) {
             if (fsep[fs].typ[k] > fn)
                 fn = fsep[fs].typ[k];
             if (fsep[fs].rec[k] > z)
@@ -193,15 +185,13 @@ int rs;                                               /* record separator 	*/
         }
 
         if (z > 999 * recn / 1000 && (p = fsprefer(fs)) >= 0
-            && (prefer < 0 || p > prefer))
-        {
+            && (prefer < 0 || p > prefer)) {
             fsep[fs].rec[0] = recn + 1;
             fsep[fs].typn = 1;
             bestfs = fs;
             prefer = p;
-        }
-        else if (z < 95 * recn
-                     / 100) /* too few appearances to be a separator */
+        } else if (z < 95 * recn
+                       / 100) /* too few appearances to be a separator */
             fsep[fs].typn = -1;
         else /* to be considered later */
         {
@@ -217,8 +207,7 @@ int rs;                                               /* record separator 	*/
     }
 
     bestfs = -1; /* one with least variation across records in #fields */
-    for (fs = 0; fs < 256; ++fs)
-    {
+    for (fs = 0; fs < 256; ++fs) {
         if (fsep[fs].typn <= 0)
             continue;
         if (bestfs < 0 || fsep[bestfs].typn > fsep[fs].typn)
@@ -245,15 +234,13 @@ int rs;                                               /* record separator 	*/
     /* now find the separator with best coding size among the remainders */
     if (!(fld = ( Freq_t * )malloc(fsep[bestfs].typ[0] * sizeof(Freq_t))))
         return -1;
-    for (bestfs = -1, fs = 0; fs < 256; ++fs)
-    {
+    for (bestfs = -1, fs = 0; fs < 256; ++fs) {
         if (fsep[fs].typn <= 0)
             continue;
 
         /* compute coding size for all fields given fs as field sep */
         memset(fld, 0, fsep[fs].typ[0] * sizeof(Freq_t));
-        for (fn = 0, z = 0; z < size; ++z)
-        {
+        for (fn = 0, z = 0; z < size; ++z) {
             fld[fn][data[z]] += 1;
             if (data[z] == rs) /* see record sep, reset field index */
                 fn = 0;
@@ -350,12 +337,10 @@ static int
 printfield(ssize_t *fldz, ssize_t nf, int mrkc)
 {
     ssize_t f, c, k;
-    for (c = 0, f = 0; f < nf; ++f)
-    {
+    for (c = 0, f = 0; f < nf; ++f) {
         DEBUG_PRINT(2, "%c", mrkc);
         c += 1;
-        for (k = 1; k < fldz[f]; ++k)
-        {
+        for (k = 1; k < fldz[f]; ++k) {
             DEBUG_PRINT(2, "%c", '0' + (c % 10));
             c += 1;
         }
@@ -381,16 +366,14 @@ Freq_t *colf;   /* column frequencies	*/
     Freq_t freq, rght;
 
     memset(mark, 0, nc * sizeof(ssize_t));
-    for (c = 0; c < nc; ++c)
-    {
+    for (c = 0; c < nc; ++c) {
         mf = 0;
         mb = -1; /* find most frequent byte */
         memset(freq, 0, sizeof(freq));
         for (r = 0; r < nr; ++r)
             freq[data[r * nc + c]] += 1;
         for (k = 0; k < 256; ++k)
-            if (freq[k] > mf)
-            {
+            if (freq[k] > mf) {
                 mf = freq[k];
                 mb = k;
             }
@@ -427,16 +410,13 @@ Freq_t *colf;   /* column frequencies	*/
     memset(freq, 0, sizeof(Freq_t));
     memset(rght, 0, sizeof(Freq_t));
     for (c = 0; c < SIDE; ++c)
-        for (k = 0; k < 256; ++k)
-        {
+        for (k = 0; k < 256; ++k) {
             freq[k] += colf[c][k];
             rght[k] += colf[c + SIDE][k];
         }
-    for (c = SIDE;; ++c)
-    {
+    for (c = SIDE;; ++c) {
         lb = rb = mb = 0;
-        for (k = 0; k < 256; ++k)
-        {
+        for (k = 0; k < 256; ++k) {
             if (freq[k]) /* count left bytes */
                 lb += 1;
             if (rght[k]) /* count right bytes */
@@ -473,14 +453,12 @@ ssize_t algn;                                  /* alignment	*/
     ssize_t c, k, kk, nf;
 
     nf = 0;
-    for (c = 0; c < nc; c = k)
-    {
+    for (c = 0; c < nc; c = k) {
         for (k = c; k < nc; ++k)
             if (mark[k] != 0)
                 break;
 
-        if (k < nc)
-        {
+        if (k < nc) {
             if (mark[k] & FLD_MATCH) /* get all the matches */
             {
                 for (kk = k + 1; kk < nc; ++kk)
@@ -489,16 +467,12 @@ ssize_t algn;                                  /* alignment	*/
                 if ((kk - k)
                     >= (k - c) / 2) /* merge with [c,k) if appropriate */
                     k = kk > k + 1 ? kk : k;
-            }
-            else if ((kk = k + 1) < nc && mark[kk] == 0)
-            {
+            } else if ((kk = k + 1) < nc && mark[kk] == 0) {
                 for (; kk < nc; ++kk) /* grab only non-marked elts */
                     if (mark[kk] != 0)
                         break;
                 k = kk > k + 1 ? kk : k;
-            }
-            else
-            {
+            } else {
                 for (; kk < nc; ++kk) /* grab all marked elts */
                     if (mark[kk] == 0)
                         break;
@@ -527,8 +501,7 @@ Freq_t *colf;                                  /* column frequencies	*/
     Freq_t freq;
 
     cost = nf * 8;
-    for (c = 0, f = 0; f < nf; ++f)
-    {
+    for (c = 0, f = 0; f < nf; ++f) {
         memset(freq, 0, sizeof(Freq_t));
         for (endc = c + fldz[f]; c < endc; ++c)
             for (k = 0; k < 256; ++k)
@@ -576,8 +549,7 @@ Freq_t *colf; /* column frequencies	*/
     for (l = 0; l < nf; ++l) /* compute initial matrix weights */
     {
         memset(allf, 0, sizeof(allf));
-        for (r = l; r < nf; ++r)
-        {
+        for (r = l; r < nf; ++r) {
             for (k = 0; k < 256; ++k) /* stats for all columns */
                 allf[k] += fldf[r][k];
             seg[l][r].wght = rdhuffman(allf);
@@ -593,16 +565,14 @@ Freq_t *colf; /* column frequencies	*/
 
         if (r > 0) /* link all of column r-1 to the best of row r */
         {
-            for (k = r - 1; k >= 0; --k)
-            {
+            for (k = r - 1; k >= 0; --k) {
                 seg[k][r - 1].next = best;
                 seg[k][r - 1].wght += best->wght;
             }
         }
     }
 
-    for (k = 0, s = best; s; k += 1, s = s->next)
-    {
+    for (k = 0, s = best; s; k += 1, s = s->next) {
         l = (s - seg[0]) / nf; /* left side of group	*/
         r = (s - seg[0]) % nf; /* right side of group	*/
         for (sz = 0; l <= r; ++l)
@@ -638,8 +608,7 @@ int merge;
     if (!(fldz = ( ssize_t * )calloc(nc, sizeof(ssize_t))))
         return -1;
     if (!(colf
-          = ( Freq_t * )calloc(nc, sizeof(Freq_t) + 2 * sizeof(ssize_t))))
-    {
+          = ( Freq_t * )calloc(nc, sizeof(Freq_t) + 2 * sizeof(ssize_t)))) {
         free(fldz);
         return -1;
     }
@@ -661,18 +630,15 @@ int merge;
 
     fldc = -1;                         /* compute field partition and cost */
     fldmark(mark, data, nc, nr, colf); /* field marking */
-    if (algn > 0 && (nc % algn) == 0)
-    {
+    if (algn > 0 && (nc % algn) == 0) {
         nf = fldpartition(fldz, mark, nc, algn);
         /**/ DEBUG_ASSERT(printfield(fldz, nf, '|'));
         if (merge && (n = fldgrouping(fldz, nf, colf)) > 0)
             nf = n;
         /**/ DEBUG_ASSERT(printfield(fldz, nf, ':'));
         fldc = fldcost(fldz, nf, colf);
-    }
-    else
-        for (algn = 4; algn >= 1; algn /= 2)
-        {
+    } else
+        for (algn = 4; algn >= 1; algn /= 2) {
             if ((nc % algn) != 0)
                 continue;
             nt = fldpartition(tmpz, mark, nc, algn);
@@ -681,8 +647,7 @@ int merge;
                 nt = n;
             /**/ DEBUG_ASSERT(printfield(tmpz, nt, ':'));
             c = fldcost(tmpz, nt, colf);
-            if (fldc < 0 || c < fldc)
-            {
+            if (fldc < 0 || c < fldc) {
                 fldc = c;
                 nf = nt;
                 memcpy(fldz, tmpz, nf * sizeof(ssize_t));
@@ -693,12 +658,10 @@ done:
     free(colf);
 
     if (allc <= 0 || fldc <= 0
-        || (rdf->perf > 0. && (( double )fldc) / allc > rdf->perf))
-    {
+        || (rdf->perf > 0. && (( double )fldc) / allc > rdf->perf)) {
         free(fldz);
         return 0;
-    }
-    else /* good partition, keep it */
+    } else /* good partition, keep it */
     {
         rdf->fsep = rdf->rsep = -1;
         rdf->fldn = nf;
@@ -731,22 +694,18 @@ int merge;
 
     if (rsep > 0) /* check fsep only */
     {
-        if (rdsepar(&rdt, data, dtsz, rsep) <= 0)
-        {
+        if (rdsepar(&rdt, data, dtsz, rsep) <= 0) {
             rdt.rsep = rdt.fsep = rsep;
             rdt.perf = 1.0;
         }
-    }
-    else
-    {
+    } else {
         sz = dtsz < 1024 * 1024 ? dtsz
                                 : 1024 * 1024; /* max training data size */
 
         if ((nc = vcperiod(data, sz)) > 0 && (nr = sz / nc) > 0)
             rdfixed(&rdt, data, nc, nr, algn, merge);
 
-        if (rdt.perf <= 0.0 || rdt.perf > 0.75)
-        {
+        if (rdt.perf <= 0.0 || rdt.perf > 0.75) {
             for (rsep = '\n';;) /* check all possible rsep's */
             {
                 if (rdsepar(&rdt, data, sz, rsep) > 0)
@@ -770,11 +729,9 @@ int merge;
     else
         rdf = ( Vcrdformat_t * )calloc(
         1, sizeof(Vcrdformat_t) + rdt.fldn * sizeof(ssize_t));
-    if (rdf)
-    {
+    if (rdf) {
         memcpy(rdf, &rdt, sizeof(Vcrdformat_t));
-        if (rdf->fldn > 0)
-        {
+        if (rdf->fldn > 0) {
             rdf->fldz = ( ssize_t * )(rdf + 1);
             memcpy(rdf->fldz, rdt.fldz, rdf->fldn * sizeof(ssize_t));
         }

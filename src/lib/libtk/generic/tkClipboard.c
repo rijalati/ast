@@ -66,14 +66,11 @@ int maxBytes;          /* Maximum # of bytes to store at buffer. */
      * Skip to buffer containing offset byte
      */
 
-    for (cbPtr = targetPtr->firstBufferPtr;; cbPtr = cbPtr->nextPtr)
-    {
-        if (cbPtr == NULL)
-        {
+    for (cbPtr = targetPtr->firstBufferPtr;; cbPtr = cbPtr->nextPtr) {
+        if (cbPtr == NULL) {
             return 0;
         }
-        if (scanned + cbPtr->length > offset)
-        {
+        if (scanned + cbPtr->length > offset) {
             break;
         }
         scanned += cbPtr->length;
@@ -87,23 +84,18 @@ int maxBytes;          /* Maximum # of bytes to store at buffer. */
     srcPtr = cbPtr->buffer + (offset - scanned);
     destPtr = buffer;
     length = cbPtr->length - (offset - scanned);
-    while (1)
-    {
-        if (length > freeCount)
-        {
+    while (1) {
+        if (length > freeCount) {
             strncpy(destPtr, srcPtr, freeCount);
             return maxBytes;
-        }
-        else
-        {
+        } else {
             strncpy(destPtr, srcPtr, length);
             destPtr += length;
             count += length;
             freeCount -= length;
         }
         cbPtr = cbPtr->nextPtr;
-        if (cbPtr == NULL)
-        {
+        if (cbPtr == NULL) {
             break;
         }
         srcPtr = cbPtr->buffer;
@@ -148,12 +140,10 @@ int maxBytes;          /* Maximum # of bytes to store at buffer. */
     p = dispPtr->clipboardAppPtr->winPtr->nameUid;
     length = strlen(p);
     length -= offset;
-    if (length <= 0)
-    {
+    if (length <= 0) {
         return 0;
     }
-    if (length > maxBytes)
-    {
+    if (length > maxBytes) {
         length = maxBytes;
     }
     strncpy(buffer, p, length);
@@ -258,13 +248,11 @@ Tk_Window tkwin; /* Window in application that is clearing
     TkClipboardTarget *targetPtr, *nextTargetPtr;
     TkClipboardBuffer *cbPtr, *nextCbPtr;
 
-    if (dispPtr->clipWindow == NULL)
-    {
+    if (dispPtr->clipWindow == NULL) {
         int result;
 
         result = TkClipInit(interp, dispPtr);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             return result;
         }
     }
@@ -275,11 +263,9 @@ Tk_Window tkwin; /* Window in application that is clearing
      */
 
     for (targetPtr = dispPtr->clipTargetPtr; targetPtr != NULL;
-         targetPtr = nextTargetPtr)
-    {
+         targetPtr = nextTargetPtr) {
         for (cbPtr = targetPtr->firstBufferPtr; cbPtr != NULL;
-             cbPtr = nextCbPtr)
-        {
+             cbPtr = nextCbPtr) {
             ckfree(cbPtr->buffer);
             nextCbPtr = cbPtr->nextPtr;
             ckfree(( char * )cbPtr);
@@ -295,8 +281,7 @@ Tk_Window tkwin; /* Window in application that is clearing
      * Reclaim the clipboard selection if we lost it.
      */
 
-    if (!dispPtr->clipboardActive)
-    {
+    if (!dispPtr->clipboardActive) {
         Tk_OwnSelection(dispPtr->clipWindow,
                         dispPtr->clipboardAtom,
                         ClipboardLostSel,
@@ -355,12 +340,9 @@ char *buffer;       /* NULL terminated string containing the data
      * the clipboard.  If we don't own the clipboard selection, claim it.
      */
 
-    if (dispPtr->clipboardAppPtr != winPtr->mainPtr)
-    {
+    if (dispPtr->clipboardAppPtr != winPtr->mainPtr) {
         Tk_ClipboardClear(interp, tkwin);
-    }
-    else if (!dispPtr->clipboardActive)
-    {
+    } else if (!dispPtr->clipboardActive) {
         Tk_OwnSelection(dispPtr->clipWindow,
                         dispPtr->clipboardAtom,
                         ClipboardLostSel,
@@ -375,13 +357,11 @@ char *buffer;       /* NULL terminated string containing the data
      */
 
     for (targetPtr = dispPtr->clipTargetPtr; targetPtr != NULL;
-         targetPtr = targetPtr->nextPtr)
-    {
+         targetPtr = targetPtr->nextPtr) {
         if (targetPtr->type == type)
             break;
     }
-    if (targetPtr == NULL)
-    {
+    if (targetPtr == NULL) {
         targetPtr = ( TkClipboardTarget * )ckalloc(sizeof(TkClipboardTarget));
         targetPtr->type = type;
         targetPtr->format = format;
@@ -394,9 +374,7 @@ char *buffer;       /* NULL terminated string containing the data
                             ClipboardHandler,
                             ( ClientData )targetPtr,
                             format);
-    }
-    else if (targetPtr->format != format)
-    {
+    } else if (targetPtr->format != format) {
         Tcl_AppendResult(interp,
                          "format \"",
                          Tk_GetAtomName(tkwin, format),
@@ -414,12 +392,9 @@ char *buffer;       /* NULL terminated string containing the data
 
     cbPtr = ( TkClipboardBuffer * )ckalloc(sizeof(TkClipboardBuffer));
     cbPtr->nextPtr = NULL;
-    if (targetPtr->lastBufferPtr != NULL)
-    {
+    if (targetPtr->lastBufferPtr != NULL) {
         targetPtr->lastBufferPtr->nextPtr = cbPtr;
-    }
-    else
-    {
+    } else {
         targetPtr->firstBufferPtr = cbPtr;
     }
     targetPtr->lastBufferPtr = cbPtr;
@@ -465,8 +440,7 @@ char **argv;           /* Argument strings. */
     char c;
     char **args;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -476,48 +450,38 @@ char **argv;           /* Argument strings. */
     }
     c = argv[1][0];
     length = strlen(argv[1]);
-    if ((c == 'a') && (strncmp(argv[1], "append", length) == 0))
-    {
+    if ((c == 'a') && (strncmp(argv[1], "append", length) == 0)) {
         Atom target, format;
         char *targetName = NULL;
         char *formatName = NULL;
 
         for (count = argc - 2, args = argv + 2; count > 1;
-             count -= 2, args += 2)
-        {
-            if (args[0][0] != '-')
-            {
+             count -= 2, args += 2) {
+            if (args[0][0] != '-') {
                 break;
             }
             c = args[0][1];
             length = strlen(args[0]);
-            if ((c == '-') && (length == 2))
-            {
+            if ((c == '-') && (length == 2)) {
                 args++;
                 count--;
                 break;
             }
-            if ((c == 'd') && (strncmp(args[0], "-displayof", length) == 0))
-            {
+            if ((c == 'd') && (strncmp(args[0], "-displayof", length) == 0)) {
                 path = args[1];
-            }
-            else if ((c == 'f') && (strncmp(args[0], "-format", length) == 0))
-            {
+            } else if ((c == 'f')
+                       && (strncmp(args[0], "-format", length) == 0)) {
                 formatName = args[1];
-            }
-            else if ((c == 't') && (strncmp(args[0], "-type", length) == 0))
-            {
+            } else if ((c == 't')
+                       && (strncmp(args[0], "-type", length) == 0)) {
                 targetName = args[1];
-            }
-            else
-            {
+            } else {
                 Tcl_AppendResult(
                 interp, "unknown option \"", args[0], "\"", ( char * )NULL);
                 return TCL_ERROR;
             }
         }
-        if (count != 1)
-        {
+        if (count != 1) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -525,62 +489,45 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             return TCL_ERROR;
         }
-        if (path != NULL)
-        {
+        if (path != NULL) {
             tkwin = Tk_NameToWindow(interp, path, tkwin);
         }
-        if (tkwin == NULL)
-        {
+        if (tkwin == NULL) {
             return TCL_ERROR;
         }
-        if (targetName != NULL)
-        {
+        if (targetName != NULL) {
             target = Tk_InternAtom(tkwin, targetName);
-        }
-        else
-        {
+        } else {
             target = XA_STRING;
         }
-        if (formatName != NULL)
-        {
+        if (formatName != NULL) {
             format = Tk_InternAtom(tkwin, formatName);
-        }
-        else
-        {
+        } else {
             format = XA_STRING;
         }
         return Tk_ClipboardAppend(interp, tkwin, target, format, args[0]);
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "clear", length) == 0))
-    {
+    } else if ((c == 'c') && (strncmp(argv[1], "clear", length) == 0)) {
         for (count = argc - 2, args = argv + 2; count > 0;
-             count -= 2, args += 2)
-        {
-            if (args[0][0] != '-')
-            {
+             count -= 2, args += 2) {
+            if (args[0][0] != '-') {
                 break;
             }
-            if (count < 2)
-            {
+            if (count < 2) {
                 Tcl_AppendResult(
                 interp, "value for \"", *args, "\" missing", ( char * )NULL);
                 return TCL_ERROR;
             }
             c = args[0][1];
             length = strlen(args[0]);
-            if ((c == 'd') && (strncmp(args[0], "-displayof", length) == 0))
-            {
+            if ((c == 'd') && (strncmp(args[0], "-displayof", length) == 0)) {
                 path = args[1];
-            }
-            else
-            {
+            } else {
                 Tcl_AppendResult(
                 interp, "unknown option \"", args[0], "\"", ( char * )NULL);
                 return TCL_ERROR;
             }
         }
-        if (count > 0)
-        {
+        if (count > 0) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -588,18 +535,14 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             return TCL_ERROR;
         }
-        if (path != NULL)
-        {
+        if (path != NULL) {
             tkwin = Tk_NameToWindow(interp, path, tkwin);
         }
-        if (tkwin == NULL)
-        {
+        if (tkwin == NULL) {
             return TCL_ERROR;
         }
         return Tk_ClipboardClear(interp, tkwin);
-    }
-    else
-    {
+    } else {
         sprintf(interp->result,
                 "bad option \"%.50s\": must be clear or append",
                 argv[1]);
@@ -644,16 +587,14 @@ TkDisplay *dispPtr; /* Display to initialize. */
 
     dispPtr->clipWindow = Tk_CreateWindow(
     interp, ( Tk_Window )NULL, "_clip", DisplayString(dispPtr->display));
-    if (dispPtr->clipWindow == NULL)
-    {
+    if (dispPtr->clipWindow == NULL) {
         return TCL_ERROR;
     }
     atts.override_redirect = True;
     Tk_ChangeWindowAttributes(dispPtr->clipWindow, CWOverrideRedirect, &atts);
     Tk_MakeWindowExist(dispPtr->clipWindow);
 
-    if (dispPtr->multipleAtom == None)
-    {
+    if (dispPtr->multipleAtom == None) {
         /*
          * Need to invoke selection initialization to make sure that
          * atoms we depend on below are defined.

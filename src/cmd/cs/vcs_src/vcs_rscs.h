@@ -177,8 +177,7 @@ tag_t *
 getmarkerbyfrom();
 
 #define message(x)                                                           \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         trace x;                                                             \
     } while (0)
 

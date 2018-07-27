@@ -81,8 +81,7 @@ static void
 number(Sfio_t *op, const char *label, Cxnumber_t n, Cxformat_t *format)
 {
     sfprintf(op, " %s=", label);
-    if (format->details)
-    {
+    if (format->details) {
         if (((n >= 0) ? n : -n) < 1)
             n = 0;
         else if (n > FLTMAX_INTMAX_MAX)
@@ -90,10 +89,9 @@ number(Sfio_t *op, const char *label, Cxnumber_t n, Cxformat_t *format)
         else if (n < FLTMAX_INTMAX_MIN)
             n = FLTMAX_INTMAX_MIN;
         sfprintf(op, format->details, ( Cxinteger_t )n);
-    }
-    else if (n == 0
-             || ((n >= 0) ? n : -n) >= 1 && n >= FLTMAX_INTMAX_MIN
-                && n <= FLTMAX_UINTMAX_MAX && n == ( Cxinteger_t )n)
+    } else if (n == 0
+               || ((n >= 0) ? n : -n) >= 1 && n >= FLTMAX_INTMAX_MIN
+                  && n <= FLTMAX_UINTMAX_MAX && n == ( Cxinteger_t )n)
         sfprintf(op,
                  (format->flags & CX_UNSIGNED) ? "%llu" : "%lld",
                  ( Cxinteger_t )n);
@@ -110,23 +108,20 @@ invalidcmp(Dt_t *dict, void *a, void *b, Dtdisc_t *disc)
     size_t bz;
     int r;
 
-    if (!(r = strcmp(ap->variable->name, bp->variable->name)))
-    {
-        if (cxisstring(ap->variable->type) || cxisbuffer(ap->variable->type))
-        {
+    if (!(r = strcmp(ap->variable->name, bp->variable->name))) {
+        if (cxisstring(ap->variable->type)
+            || cxisbuffer(ap->variable->type)) {
             az = ap->value.buffer.size;
             bz = bp->value.buffer.size;
             if (!(r = memcmp(ap->value.buffer.data,
                              bp->value.buffer.data,
-                             az < bz ? az : bz)))
-            {
+                             az < bz ? az : bz))) {
                 if (az < bz)
                     r = -1;
                 if (az > bz)
                     r = 1;
             }
-        }
-        else if (ap->value.number < bp->value.number)
+        } else if (ap->value.number < bp->value.number)
             r = -1;
         else if (ap->value.number > bp->value.number)
             r = 1;
@@ -150,8 +145,7 @@ validate_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     Vmalloc_t *vm;
 
     if (!(vm = vmopen(Vmdcheap, Vmlast, 0))
-        || !(state = vmnewof(vm, 0, State_t, 1, 0)))
-    {
+        || !(state = vmnewof(vm, 0, State_t, 1, 0))) {
         if (vm)
             vmclose(vm);
         if (disc->errorf)
@@ -165,10 +159,8 @@ validate_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
              strchr(dss_lib_validate.description, '['),
              validate_usage);
     s = sfstruse(cx->buf);
-    for (;;)
-    {
-        switch (optget(argv, s))
-        {
+    for (;;) {
+        switch (optget(argv, s)) {
         case 'd':
             state->discard = 1;
             continue;
@@ -180,8 +172,7 @@ validate_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                                           CX_SET,
                                           cx->state->type_void,
                                           cx->state->type_void,
-                                          cx->disc)))
-            {
+                                          cx->disc))) {
                 if (cx->disc->errorf)
                     (*cx->disc->errorf)(
                     NiL, cx->disc, 3, "reair requires CX_SET callout");
@@ -215,21 +206,16 @@ validate_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     argv += opt_info.index;
     if (all = !*argv)
         variable = 0;
-    do
-    {
-        if (all)
-        {
+    do {
+        if (all) {
             if (!(variable
                   = ( Cxvariable_t * )(variable ? dtnext(cx->fields, variable)
                                                 : dtfirst(cx->fields))))
                 break;
-        }
-        else if (!(variable = cxvariable(cx, *argv, NiL, disc)))
+        } else if (!(variable = cxvariable(cx, *argv, NiL, disc)))
             goto bad;
-        if (variable->format.constraint || variable->format.map)
-        {
-            if (!(field = vmnewof(vm, 0, Field_t, 1, 0)))
-            {
+        if (variable->format.constraint || variable->format.map) {
+            if (!(field = vmnewof(vm, 0, Field_t, 1, 0))) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -244,21 +230,17 @@ validate_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     } while (all || *++argv);
     if (!state->field && disc->errorf)
         (*disc->errorf)(NiL, disc, 1, "no field has constraints or maps");
-    if (list)
-    {
-        for (field = state->field; field; field = field->next)
-        {
+    if (list) {
+        for (field = state->field; field; field = field->next) {
             sfprintf(expr->op, "%16s", field->variable->name);
             if (field->variable->format.map)
                 sfprintf(expr->op, " map");
-            if (constraint = field->variable->format.constraint)
-            {
+            if (constraint = field->variable->format.constraint) {
                 if (constraint->name)
                     sfprintf(expr->op, " name=%s", constraint->name);
                 if (constraint->constraintf)
                     sfprintf(expr->op, " external");
-                if (cxisnumber(field->variable->type))
-                {
+                if (cxisnumber(field->variable->type)) {
                     if (constraint->def)
                         number(expr->op,
                                "default",
@@ -274,8 +256,8 @@ validate_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                                "max",
                                constraint->max->number,
                                &field->variable->format);
-                }
-                else if (cxisstring(field->variable->type) && constraint->def)
+                } else if (cxisstring(field->variable->type)
+                           && constraint->def)
                     sfprintf(expr->op,
                              " default=\"%-.*s\"",
                              constraint->def->string.size,
@@ -292,18 +274,15 @@ validate_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         goto bad;
     }
     if (!(state->getf = cxcallout(
-          cx, CX_GET, cx->state->type_void, cx->state->type_void, cx->disc)))
-    {
+          cx, CX_GET, cx->state->type_void, cx->state->type_void, cx->disc))) {
         if (cx->disc->errorf)
             (*cx->disc->errorf)(
             NiL, cx->disc, 3, "validation requires CX_GET callout");
         goto bad;
     }
-    if (!state->verbose)
-    {
+    if (!state->verbose) {
         state->invaliddisc.comparf = invalidcmp;
-        if (!(state->invalid = dtnew(vm, &state->invaliddisc, Dtoset)))
-        {
+        if (!(state->invalid = dtnew(vm, &state->invaliddisc, Dtoset))) {
             if (cx->disc->errorf)
                 (*cx->disc->errorf)(
                 NiL, cx->disc, 3, "validation requires CX_GET callout");
@@ -329,21 +308,17 @@ validate_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     Invalid_t *ip;
     size_t n;
 
-    for (field = state->field; field; field = field->next)
-    {
+    for (field = state->field; field; field = field->next) {
         x.data.variable = field->variable;
         if ((*state->getf)(cx, &x, &o, NiL, NiL, data, disc))
             return -1;
-        if (field->variable->format.map)
-        {
-            if (cxisstring(field->variable->type))
-            {
+        if (field->variable->format.map) {
+            if (cxisstring(field->variable->type)) {
                 if (cxstr2num(cx,
                               &field->variable->format,
                               o.value.string.data,
                               o.value.string.size,
-                              NiL))
-                {
+                              NiL)) {
                     if (state->verbose && disc->errorf)
                         (*disc->errorf)(NiL,
                                         disc,
@@ -355,14 +330,11 @@ validate_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                                         o.value.string.data);
                     goto invalid;
                 }
-            }
-            else if (cxisnumber(field->variable->type))
-            {
+            } else if (cxisnumber(field->variable->type)) {
                 if (cxnum2str(cx,
                               &field->variable->format,
                               ( Cxinteger_t )o.value.number,
-                              NiL))
-                {
+                              NiL)) {
                     if (state->verbose && disc->errorf)
                         (*disc->errorf)(NiL,
                                         disc,
@@ -376,15 +348,12 @@ validate_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                 }
             }
         }
-        if (constraint = field->variable->format.constraint)
-        {
+        if (constraint = field->variable->format.constraint) {
             if (constraint->constraintf)
                 ;
-            if (cxisnumber(field->variable->type))
-            {
+            if (cxisnumber(field->variable->type)) {
                 if (constraint->min
-                    && o.value.number < constraint->min->number)
-                {
+                    && o.value.number < constraint->min->number) {
                     if (state->verbose && disc->errorf)
                         (*disc->errorf)(
                         NiL,
@@ -398,8 +367,7 @@ validate_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                     goto invalid;
                 }
                 if (constraint->max
-                    && o.value.number > constraint->max->number)
-                {
+                    && o.value.number > constraint->max->number) {
                     if (state->verbose && disc->errorf)
                         (*disc->errorf)(
                         NiL,
@@ -420,15 +388,12 @@ validate_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         }
         continue;
     invalid:
-        if (state->invalid)
-        {
+        if (state->invalid) {
             key.variable = field->variable;
             key.value = o.value;
-            if (!(ip = ( Invalid_t * )dtsearch(state->invalid, &key)))
-            {
+            if (!(ip = ( Invalid_t * )dtsearch(state->invalid, &key))) {
                 n = cxsize(field->variable->type, &o.value);
-                if (!(ip = vmnewof(state->vm, 0, Invalid_t, 1, n)))
-                {
+                if (!(ip = vmnewof(state->vm, 0, Invalid_t, 1, n))) {
                     if (disc->errorf)
                         (*disc->errorf)(
                         NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -436,8 +401,7 @@ validate_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                 }
                 *ip = key;
                 ip->value = o.value;
-                if (n)
-                {
+                if (n) {
                     ip->value.buffer.data = ( void * )(ip + 1);
                     memcpy(ip->value.buffer.data, o.value.buffer.data, n);
                 }
@@ -446,20 +410,16 @@ validate_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
             }
             ip->count++;
         }
-        if (state->setf && constraint && constraint->def)
-        {
+        if (state->setf && constraint && constraint->def) {
             o.type = field->variable->type;
             o.value = *constraint->def;
             if ((*state->setf)(cx, &x, &o, &o, NiL, data, disc))
                 return -1;
             field->repaired++;
-        }
-        else if (state->discard)
-        {
+        } else if (state->discard) {
             field->discarded++;
             return 0;
-        }
-        else
+        } else
             field->invalid++;
     }
     return 1;
@@ -474,16 +434,13 @@ validate_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     Cxoperand_t val;
     int heading;
 
-    if (state->summary)
-    {
+    if (state->summary) {
         heading = 1;
-        if (state->invalid && dtsize(state->invalid))
-        {
+        if (state->invalid && dtsize(state->invalid)) {
             heading = 0;
             sfprintf(expr->op, "%16s  %11s  %s\n", "FIELD", "COUNT", "VALUE");
             for (ip = ( Invalid_t * )dtfirst(state->invalid); ip;
-                 ip = ( Invalid_t * )dtnext(state->invalid, ip))
-            {
+                 ip = ( Invalid_t * )dtnext(state->invalid, ip)) {
                 val.type = ip->variable->type;
                 val.value = ip->value;
                 if (!cxcast(cx, &val, NiL, cx->state->type_string, NiL, NiL))
@@ -497,16 +454,13 @@ validate_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                              val.value.string.data);
             }
         }
-        if (!heading)
-        {
+        if (!heading) {
             heading = 1;
             sfprintf(expr->op, "\n");
         }
         for (field = state->field; field; field = field->next)
-            if (field->invalid || field->discarded || field->repaired)
-            {
-                if (heading)
-                {
+            if (field->invalid || field->discarded || field->repaired) {
+                if (heading) {
                     heading = 0;
                     sfprintf(expr->op,
                              "%16s  %11s %11s %11s\n",

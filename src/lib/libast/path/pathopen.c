@@ -91,25 +91,21 @@ getaddrinfo(const char *node,
     long n;
 
     if (!(hp = gethostbyname(node)) || hp->h_addrtype != AF_INET
-        || hp->h_length > sizeof(struct in_addr))
-    {
+        || hp->h_length > sizeof(struct in_addr)) {
         errno = EADDRNOTAVAIL;
         return EAI_SYSTEM;
     }
     ip_addr = ( unsigned long )(( struct in_addr * )hp->h_addr)->s_addr;
     if ((n = strtol(service, &prot, 10)) > 0 && n <= USHRT_MAX && !*prot)
         ip_port = htons(( unsigned short )n);
-    else
-    {
+    else {
         struct servent *sp;
         const char *protocol = 0;
 
         if (hint)
-            switch (hint->ai_socktype)
-            {
+            switch (hint->ai_socktype) {
             case SOCK_STREAM:
-                switch (hint->ai_protocol)
-                {
+                switch (hint->ai_protocol) {
                 case 0:
                     protocol = "tcp";
                     break;
@@ -124,16 +120,14 @@ getaddrinfo(const char *node,
                 protocol = "udp";
                 break;
             }
-        if (!protocol)
-        {
+        if (!protocol) {
             errno = EPROTONOSUPPORT;
             return 1;
         }
         if (sp = getservbyname(service, protocol))
             ip_port = sp->s_port;
     }
-    if (!ip_port)
-    {
+    if (!ip_port) {
         errno = EADDRNOTAVAIL;
         return EAI_SYSTEM;
     }
@@ -179,14 +173,11 @@ pathopen(int dfd,
     b = canon ? canon : ( char * )path;
     if (!pathdev(dfd, path, canon, size, flags, &dev))
         return 0;
-    if (dev.path.offset)
-    {
+    if (dev.path.offset) {
         oerrno = errno;
         oflags |= dev.oflags;
-        if (dev.fd >= 0)
-        {
-            if (dev.pid > 0 && dev.pid != getpid())
-            {
+        if (dev.fd >= 0) {
+            if (dev.pid > 0 && dev.pid != getpid()) {
                 if (flags & PATH_DEV)
                     return access(b, F_OK) ? -1 : 1;
                 return openat(AT_FDCWD, b, oflags | O_INTERCEPT, mode);
@@ -195,8 +186,7 @@ pathopen(int dfd,
             /* check for auxilliary directory fd which must be closed before
              * returning */
 
-            if (dev.oflags & O_INTERCEPT)
-            {
+            if (dev.oflags & O_INTERCEPT) {
                 if (!*(b += dev.path.offset))
                     b = ".";
                 if (flags & PATH_DEV)
@@ -215,8 +205,7 @@ pathopen(int dfd,
 
             if ((f = fcntl(dev.fd, F_GETFL, 0)) < 0)
                 return -1;
-            if (flags & PATH_DEV)
-            {
+            if (flags & PATH_DEV) {
                 if (!b[dev.path.offset])
                     return 1;
                 return faccessat(dev.fd, b + dev.path.offset, F_OK, 0) < 0
@@ -233,8 +222,7 @@ pathopen(int dfd,
             /* the path boils down to just dev.fd -- F_GETFL must match oflags
              */
 
-            if (!(f & O_RDWR) && (f & O_ACCMODE) != (oflags & O_ACCMODE))
-            {
+            if (!(f & O_RDWR) && (f & O_ACCMODE) != (oflags & O_ACCMODE)) {
                 errno = EACCES;
                 return -1;
             }
@@ -245,8 +233,7 @@ pathopen(int dfd,
                 return openat(dev.fd, ".", oflags | O_INTERCEPT, mode);
 #if O_XATTR
             if ((f = openat(dev.fd, ".", O_INTERCEPT | O_RDONLY | O_XATTR))
-                >= 0)
-            {
+                >= 0) {
                 fd = openat(f, "..", oflags | O_INTERCEPT, mode);
                 close(f);
                 return fd;
@@ -267,11 +254,9 @@ pathopen(int dfd,
                 >= 0)
                 goto adjust;
             return -1;
-        }
-        else if (dev.fd == AT_FDCWD)
+        } else if (dev.fd == AT_FDCWD)
             return (flags & PATH_DEV) ? 1 : -1;
-        else if (dev.prot.offset)
-        {
+        else if (dev.prot.offset) {
             int server
             = (oflags & (O_CREAT | O_NOCTTY)) == (O_CREAT | O_NOCTTY);
             int prot;
@@ -285,13 +270,11 @@ pathopen(int dfd,
             memset(&hint, 0, sizeof(hint));
             hint.ai_family = PF_UNSPEC;
             p = b + dev.prot.offset;
-            switch (p[0])
-            {
+            switch (p[0]) {
 #ifdef IPPROTO_SCTP
             case 's':
                 if (dev.prot.size != 4 || p[1] != 'c' || p[2] != 't'
-                    || p[3] != 'p' || p[4] != '/')
-                {
+                    || p[3] != 'p' || p[4] != '/') {
                     errno = ENOTDIR;
                     return -1;
                 }
@@ -301,8 +284,7 @@ pathopen(int dfd,
 #endif
             case 't':
                 if (dev.prot.size != 3 || p[1] != 'c' || p[2] != 'p'
-                    || p[3] != '/')
-                {
+                    || p[3] != '/') {
                     errno = ENOTDIR;
                     return -1;
                 }
@@ -310,8 +292,7 @@ pathopen(int dfd,
                 break;
             case 'u':
                 if (dev.prot.size != 3 || p[1] != 'd' || p[2] != 'p'
-                    || p[3] != '/')
-                {
+                    || p[3] != '/') {
                     errno = ENOTDIR;
                     return -1;
                 }
@@ -321,8 +302,7 @@ pathopen(int dfd,
                 errno = ENOTDIR;
                 return -1;
             }
-            if (!dev.host.offset)
-            {
+            if (!dev.host.offset) {
                 if (flags & PATH_DEV)
                     return 1;
                 errno = ENOENT;
@@ -334,31 +314,26 @@ pathopen(int dfd,
             memcpy(p, b + dev.host.offset, dev.host.size);
             q = p + dev.host.size;
             *q++ = 0;
-            if (dev.port.size)
-            {
+            if (dev.port.size) {
                 memcpy(q, b + dev.port.offset, dev.port.size);
                 q[dev.port.size] = 0;
-            }
-            else
+            } else
                 q = 0;
             if (streq(p, "local"))
                 p = "localhost";
             fd = getaddrinfo(p, q, &hint, &addr);
-            if (fd)
-            {
+            if (fd) {
                 if (fd != EAI_SYSTEM)
                     errno = ENOTDIR;
                 return -1;
             }
-            if (flags & PATH_DEV)
-            {
+            if (flags & PATH_DEV) {
                 fd = 1;
                 goto done;
             }
             errno = 0;
             fd = -1;
-            for (a = addr; a; a = a->ai_next)
-            {
+            for (a = addr; a; a = a->ai_next) {
                 /* some api's don't take the hint */
 
                 if (!(type = a->ai_socktype))
@@ -367,8 +342,7 @@ pathopen(int dfd,
                     type |= SOCK_CLOEXEC;
                 if (!(prot = a->ai_protocol))
                     prot = hint.ai_protocol;
-                if ((fd = socket(a->ai_family, type, prot)) >= 0)
-                {
+                if ((fd = socket(a->ai_family, type, prot)) >= 0) {
                     if (server && !bind(fd, a->ai_addr, a->ai_addrlen)
                         && !listen(fd, 5)
                         || !server && !connect(fd, a->ai_addr, a->ai_addrlen))
@@ -384,20 +358,17 @@ pathopen(int dfd,
         adjust:
             if (dev.oflags && (f = fcntl(fd, F_GETFL, 0)) >= 0
                 && (dev.oflags & f) != dev.oflags
-                && fcntl(fd, F_SETFL, f | dev.oflags) < 0)
-            {
+                && fcntl(fd, F_SETFL, f | dev.oflags) < 0) {
                 close(fd);
                 errno = EINVAL;
                 return -1;
             }
             errno = oerrno;
             return fd;
-        }
-        else
+        } else
             b += dev.path.offset;
     }
-    if (flags & PATH_DEV)
-    {
+    if (flags & PATH_DEV) {
         errno = ENODEV;
         return -1;
     }

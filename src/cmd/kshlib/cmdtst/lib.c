@@ -34,8 +34,7 @@
 void
 cmdtst_init(int flag, void *context)
 {
-    if (!flag)
-    {
+    if (!flag) {
 #undef CMDLIST
 #define CMDLIST(f) sh_builtin(context, #f, b_##f, 0);
 #include "cmdtstlist.h"

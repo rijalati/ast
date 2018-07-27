@@ -52,62 +52,46 @@ char *string;         /* String describing a direction. */
 Tk_Anchor *anchorPtr; /* Where to store Tk_Anchor corresponding
                        * to string. */
 {
-    switch (string[0])
-    {
+    switch (string[0]) {
     case 'n':
-        if (string[1] == 0)
-        {
+        if (string[1] == 0) {
             *anchorPtr = TK_ANCHOR_N;
             return TCL_OK;
-        }
-        else if ((string[1] == 'e') && (string[2] == 0))
-        {
+        } else if ((string[1] == 'e') && (string[2] == 0)) {
             *anchorPtr = TK_ANCHOR_NE;
             return TCL_OK;
-        }
-        else if ((string[1] == 'w') && (string[2] == 0))
-        {
+        } else if ((string[1] == 'w') && (string[2] == 0)) {
             *anchorPtr = TK_ANCHOR_NW;
             return TCL_OK;
         }
         goto error;
     case 's':
-        if (string[1] == 0)
-        {
+        if (string[1] == 0) {
             *anchorPtr = TK_ANCHOR_S;
             return TCL_OK;
-        }
-        else if ((string[1] == 'e') && (string[2] == 0))
-        {
+        } else if ((string[1] == 'e') && (string[2] == 0)) {
             *anchorPtr = TK_ANCHOR_SE;
             return TCL_OK;
-        }
-        else if ((string[1] == 'w') && (string[2] == 0))
-        {
+        } else if ((string[1] == 'w') && (string[2] == 0)) {
             *anchorPtr = TK_ANCHOR_SW;
             return TCL_OK;
-        }
-        else
-        {
+        } else {
             goto error;
         }
     case 'e':
-        if (string[1] == 0)
-        {
+        if (string[1] == 0) {
             *anchorPtr = TK_ANCHOR_E;
             return TCL_OK;
         }
         goto error;
     case 'w':
-        if (string[1] == 0)
-        {
+        if (string[1] == 0) {
             *anchorPtr = TK_ANCHOR_W;
             return TCL_OK;
         }
         goto error;
     case 'c':
-        if (strncmp(string, "center", strlen(string)) == 0)
-        {
+        if (strncmp(string, "center", strlen(string)) == 0) {
             *anchorPtr = TK_ANCHOR_CENTER;
             return TCL_OK;
         }
@@ -144,8 +128,7 @@ char *Tk_NameOfAnchor(anchor) Tk_Anchor anchor; /* Anchor for which
                                                  * identifying string is
                                                  * desired. */
 {
-    switch (anchor)
-    {
+    switch (anchor) {
     case TK_ANCHOR_N:
         return "n";
     case TK_ANCHOR_NE:
@@ -200,18 +183,15 @@ int *joinPtr;       /* Where to store join style corresponding
     c = string[0];
     length = strlen(string);
 
-    if ((c == 'b') && (strncmp(string, "bevel", length) == 0))
-    {
+    if ((c == 'b') && (strncmp(string, "bevel", length) == 0)) {
         *joinPtr = JoinBevel;
         return TCL_OK;
     }
-    if ((c == 'm') && (strncmp(string, "miter", length) == 0))
-    {
+    if ((c == 'm') && (strncmp(string, "miter", length) == 0)) {
         *joinPtr = JoinMiter;
         return TCL_OK;
     }
-    if ((c == 'r') && (strncmp(string, "round", length) == 0))
-    {
+    if ((c == 'r') && (strncmp(string, "round", length) == 0)) {
         *joinPtr = JoinRound;
         return TCL_OK;
     }
@@ -244,8 +224,7 @@ int *joinPtr;       /* Where to store join style corresponding
 char *Tk_NameOfJoinStyle(join) int join; /* Join style for which identifying
                                           * string is desired. */
 {
-    switch (join)
-    {
+    switch (join) {
     case JoinBevel:
         return "bevel";
     case JoinMiter:
@@ -288,18 +267,15 @@ int *capPtr;        /* Where to store cap style corresponding
     c = string[0];
     length = strlen(string);
 
-    if ((c == 'b') && (strncmp(string, "butt", length) == 0))
-    {
+    if ((c == 'b') && (strncmp(string, "butt", length) == 0)) {
         *capPtr = CapButt;
         return TCL_OK;
     }
-    if ((c == 'p') && (strncmp(string, "projecting", length) == 0))
-    {
+    if ((c == 'p') && (strncmp(string, "projecting", length) == 0)) {
         *capPtr = CapProjecting;
         return TCL_OK;
     }
-    if ((c == 'r') && (strncmp(string, "round", length) == 0))
-    {
+    if ((c == 'r') && (strncmp(string, "round", length) == 0)) {
         *capPtr = CapRound;
         return TCL_OK;
     }
@@ -332,8 +308,7 @@ int *capPtr;        /* Where to store cap style corresponding
 char *Tk_NameOfCapStyle(cap) int cap; /* Cap style for which identifying
                                        * string is desired. */
 {
-    switch (cap)
-    {
+    switch (cap) {
     case CapButt:
         return "butt";
     case CapProjecting:
@@ -376,18 +351,15 @@ Tk_Justify *justifyPtr; /* Where to store Tk_Justify corresponding
     c = string[0];
     length = strlen(string);
 
-    if ((c == 'l') && (strncmp(string, "left", length) == 0))
-    {
+    if ((c == 'l') && (strncmp(string, "left", length) == 0)) {
         *justifyPtr = TK_JUSTIFY_LEFT;
         return TCL_OK;
     }
-    if ((c == 'r') && (strncmp(string, "right", length) == 0))
-    {
+    if ((c == 'r') && (strncmp(string, "right", length) == 0)) {
         *justifyPtr = TK_JUSTIFY_RIGHT;
         return TCL_OK;
     }
-    if ((c == 'c') && (strncmp(string, "center", length) == 0))
-    {
+    if ((c == 'c') && (strncmp(string, "center", length) == 0)) {
         *justifyPtr = TK_JUSTIFY_CENTER;
         return TCL_OK;
     }
@@ -421,8 +393,7 @@ char *Tk_NameOfJustify(justify) Tk_Justify justify; /* Justification style for
                                                      * which identifying
                                                      * string is desired. */
 {
-    switch (justify)
-    {
+    switch (justify) {
     case TK_JUSTIFY_LEFT:
         return "left";
     case TK_JUSTIFY_RIGHT:
@@ -460,8 +431,7 @@ Tk_Uid Tk_GetUid(string) char *string; /* String to convert. */
 {
     int dummy;
 
-    if (!initialized)
-    {
+    if (!initialized) {
         Tcl_InitHashTable(&uidTable, TCL_STRING_KEYS);
         initialized = 1;
     }
@@ -502,19 +472,16 @@ double *doublePtr;  /* Place to store converted result. */
     double d;
 
     d = strtod(string, &end);
-    if (end == string)
-    {
+    if (end == string) {
     error:
         Tcl_AppendResult(
         interp, "bad screen distance \"", string, "\"", ( char * )NULL);
         return TCL_ERROR;
     }
-    while ((*end != '\0') && isspace(UCHAR(*end)))
-    {
+    while ((*end != '\0') && isspace(UCHAR(*end))) {
         end++;
     }
-    switch (*end)
-    {
+    switch (*end) {
     case 0:
         d /= WidthOfScreen(Tk_Screen(tkwin));
         d *= WidthMMOfScreen(Tk_Screen(tkwin));
@@ -537,12 +504,10 @@ double *doublePtr;  /* Place to store converted result. */
     default:
         goto error;
     }
-    while ((*end != '\0') && isspace(UCHAR(*end)))
-    {
+    while ((*end != '\0') && isspace(UCHAR(*end))) {
         end++;
     }
-    if (*end != 0)
-    {
+    if (*end != 0) {
         goto error;
     }
     *doublePtr = d;
@@ -582,19 +547,16 @@ int *intPtr;        /* Place to store converted result. */
     double d;
 
     d = strtod(string, &end);
-    if (end == string)
-    {
+    if (end == string) {
     error:
         Tcl_AppendResult(
         interp, "bad screen distance \"", string, "\"", ( char * )NULL);
         return TCL_ERROR;
     }
-    while ((*end != '\0') && isspace(UCHAR(*end)))
-    {
+    while ((*end != '\0') && isspace(UCHAR(*end))) {
         end++;
     }
-    switch (*end)
-    {
+    switch (*end) {
     case 0:
         break;
     case 'c':
@@ -620,20 +582,15 @@ int *intPtr;        /* Place to store converted result. */
     default:
         goto error;
     }
-    while ((*end != '\0') && isspace(UCHAR(*end)))
-    {
+    while ((*end != '\0') && isspace(UCHAR(*end))) {
         end++;
     }
-    if (*end != 0)
-    {
+    if (*end != 0) {
         goto error;
     }
-    if (d < 0)
-    {
+    if (d < 0) {
         *intPtr = ( int )(d - 0.5);
-    }
-    else
-    {
+    } else {
         *intPtr = ( int )(d + 0.5);
     }
     return TCL_OK;

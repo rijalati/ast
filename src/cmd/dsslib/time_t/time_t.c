@@ -78,8 +78,7 @@ time_internal(Cx_t *cx,
     char *f;
 
     buf = ( const char * )cxcvt(cx, buf, size);
-    if (CXDETAILS(details, format, type, 0))
-    {
+    if (CXDETAILS(details, format, type, 0)) {
         ret->value.number = tmscan(buf, &e, details, &f, NiL, 0);
         if (!*f && e > ( char * )buf)
             return e - ( char * )buf;
@@ -93,8 +92,7 @@ ns_init(void *data, Cxdisc_t *disc)
 {
     Precise_t *precise;
 
-    if (!(precise = newof(0, Precise_t, 1, 0)))
-    {
+    if (!(precise = newof(0, Precise_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
@@ -110,8 +108,7 @@ stamp_init(void *data, Cxdisc_t *disc)
 {
     Precise_t *precise;
 
-    if (!(precise = newof(0, Precise_t, 1, 0)))
-    {
+    if (!(precise = newof(0, Precise_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
@@ -214,13 +211,11 @@ precise_internal(Cx_t *cx,
     Time_t t;
 
     buf = ( const char * )cxcvt(cx, buf, size);
-    if (CXDETAILS(details, format, type, 0))
-    {
+    if (CXDETAILS(details, format, type, 0)) {
         t = tmxscan(buf, &e, details, &f, now, 0);
         if (*f || (e - ( char * )buf) < size)
             t = tmxdate(buf, &e, now);
-    }
-    else
+    } else
         t = tmxdate(buf, &e, now);
     if (precise->shift)
         t = n2s(t, precise->shift);
@@ -284,8 +279,7 @@ tm_hour_external(Cx_t *cx,
 
     v = value->number;
     CXDETAILS(details, format, type, "%d");
-    if (strchr(details, 's'))
-    {
+    if (strchr(details, 's')) {
         s = tm_info.format[TM_MERIDIAN + (v >= 12)];
         if (v > 12)
             v -= 12;
@@ -293,9 +287,7 @@ tm_hour_external(Cx_t *cx,
         if ((n + 1) > size)
             return n + 1;
         n = sfsprintf(buf, size, "%d%s", v, s);
-    }
-    else
-    {
+    } else {
         n = sfsprintf(buf, size, details, v);
         if ((n + 1) > size)
             n++;
@@ -345,16 +337,13 @@ tm_mon_external(Cx_t *cx,
     else
         v %= 12;
     CXDETAILS(details, format, type, "%d");
-    if (strchr(details, 's'))
-    {
+    if (strchr(details, 's')) {
         s = tm_info.format[TM_MONTH + v];
         n = strlen(s);
         if ((n + 1) > size)
             return n + 1;
         strcpy(buf, s);
-    }
-    else
-    {
+    } else {
         n = sfsprintf(buf, size, details, v + 1);
         if ((n + 1) > size)
             n++;
@@ -377,19 +366,17 @@ tm_mon_internal(Cx_t *cx,
     int v;
 
     v = ( int )strntol(buf, size, &e, 10);
-    if (e != ( char * )buf)
-    {
+    if (e != ( char * )buf) {
         if (v < 1 || v > 12)
             return -1;
         v--;
-    }
-    else if ((v = tmlex(buf,
-                        &e,
-                        tm_info.format + TM_MONTH_ABBREV,
-                        TM_DAY_ABBREV - TM_MONTH_ABBREV,
-                        NiL,
-                        0))
-             < 0)
+    } else if ((v = tmlex(buf,
+                          &e,
+                          tm_info.format + TM_MONTH_ABBREV,
+                          TM_DAY_ABBREV - TM_MONTH_ABBREV,
+                          NiL,
+                          0))
+               < 0)
         return -1;
     else if (v >= 12)
         v -= 12;
@@ -417,16 +404,13 @@ tm_wday_external(Cx_t *cx,
     else
         v %= 7;
     CXDETAILS(details, format, type, "%d");
-    if (strchr(details, 's'))
-    {
+    if (strchr(details, 's')) {
         s = tm_info.format[TM_DAY + v];
         n = strlen(s);
         if ((n + 1) > size)
             return n + 1;
         strcpy(buf, s);
-    }
-    else
-    {
+    } else {
         n = sfsprintf(buf, size, details, v + 1);
         if ((n + 1) > size)
             n++;
@@ -449,19 +433,17 @@ tm_wday_internal(Cx_t *cx,
     int v;
 
     v = ( int )strntol(buf, size, &e, 10);
-    if (e != ( char * )buf)
-    {
+    if (e != ( char * )buf) {
         if (v < 1 || v > 7)
             return -1;
         v--;
-    }
-    else if ((v = tmlex(buf,
-                        &e,
-                        tm_info.format + TM_DAY_ABBREV,
-                        TM_TIME - TM_DAY_ABBREV,
-                        NiL,
-                        0))
-             < 0)
+    } else if ((v = tmlex(buf,
+                          &e,
+                          tm_info.format + TM_DAY_ABBREV,
+                          TM_TIME - TM_DAY_ABBREV,
+                          NiL,
+                          0))
+               < 0)
         return -1;
     else if (v >= 7)
         v -= 7;
@@ -507,8 +489,7 @@ tm_init(void *data, Cxdisc_t *disc)
 {
     Tm_state_t *state;
 
-    if (!(state = newof(0, Tm_state_t, 1, 0)))
-    {
+    if (!(state = newof(0, Tm_state_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
@@ -531,25 +512,19 @@ tm_get(Cx_t *cx,
     int shift;
 
     t = r->value.number;
-    if (r->type && r->type->data)
-    {
+    if (r->type && r->type->data) {
         if (shift = (( Precise_t * )r->type->data)->shift)
             t = s2n(t, shift);
-    }
-    else if (b && b->type && b->type->data)
-    {
+    } else if (b && b->type && b->type->data) {
         if (shift = (( Precise_t * )b->type->data)->shift)
             t = s2n(t, shift);
-    }
-    else
+    } else
         t *= NS;
-    if (state->t != t)
-    {
+    if (state->t != t) {
         state->t = t;
         state->tm = *tmxmake(t);
     }
-    switch (pc->data.variable->index)
-    {
+    switch (pc->data.variable->index) {
     case TIME_T_sec:
         r->value.number = state->tm.tm_sec;
         break;
@@ -601,28 +576,21 @@ tm_set(Cx_t *cx,
     int shift;
 
     t = r->value.number;
-    if (r->type && r->type->data)
-    {
+    if (r->type && r->type->data) {
         if (shift = (( Precise_t * )r->type->data)->shift)
             t = s2n(t, shift);
-    }
-    else if (b && b->type && b->type->data)
-    {
+    } else if (b && b->type && b->type->data) {
         if (shift = (( Precise_t * )b->type->data)->shift)
             t = s2n(t, shift);
-    }
-    else
-    {
+    } else {
         shift = -1;
         t *= NS;
     }
-    if (state->t != t)
-    {
+    if (state->t != t) {
         state->t = t;
         state->tm = *tmxmake(t);
     }
-    switch (pc->data.variable->index)
-    {
+    switch (pc->data.variable->index) {
     case TIME_T_sec:
         state->tm.tm_sec = a->value.number;
         break;

@@ -50,13 +50,11 @@ tmweek(Tm_t *tm, int type, int week, int day)
 {
     int d;
 
-    if (week < 0)
-    {
+    if (week < 0) {
         if ((day = tm->tm_wday - tm->tm_yday % 7) < 0)
             day += 7;
         week = (tm->tm_yday + offset[day][type]) / 7;
-        if (type == 2)
-        {
+        if (type == 2) {
             if (!week)
                 week = (day > 0 && day < 6 || tmisleapyear(tm->tm_year - 1))
                        ? 53
@@ -74,8 +72,7 @@ tmweek(Tm_t *tm, int type, int week, int day)
     d = tm->tm_wday;
     tm->tm_mday = week * 7 - offset[d][type] + ((day || type != 2) ? day : 7);
     tmfix(tm);
-    if (d = tm->tm_wday - day)
-    {
+    if (d = tm->tm_wday - day) {
         tm->tm_mday -= d;
         tmfix(tm);
     }

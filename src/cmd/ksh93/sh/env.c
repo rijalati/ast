@@ -87,8 +87,7 @@ env_get(Env_t *ep)
     int n = ep->extra;
     if (ep->flags & ENV_VALID)
         return (ep->env + n);
-    if (ep->count > ep->max)
-    {
+    if (ep->count > ep->max) {
         if (ep->flags & ENV_MALLOCED)
             free(( void * )ep->env);
         if (!(ep->env = ( char ** )malloc(sizeof(char *) * (ep->count + 1))))
@@ -97,8 +96,7 @@ env_get(Env_t *ep)
         ep->max = ep->count;
     }
     for (vp = ( Evar_t * )dtfirst(ep->dt); vp;
-         vp = ( Evar_t * )dtnext(ep->dt, vp))
-    {
+         vp = ( Evar_t * )dtnext(ep->dt, vp)) {
         vp->index = (n << ENV_BITS) | (vp->index & ((1 << ENV_BITS) - 1));
         ep->env[n++] = vp->un.ptr;
     }
@@ -122,26 +120,21 @@ env_add(Env_t *ep, const char *str, int flags)
         return (1);
     if (flags & ENV_STRDUP)
         str = strdup(str);
-    if (vp)
-    {
+    if (vp) {
         if (vp->index & ENV_PMALLOC)
             free(( void * )vp->un.ptr);
         vp->un.ptr = ( char * )str;
         if (ep->env && (ep->flags & ENV_VALID))
             ep->env[vp->index >> ENV_BITS] = vp->un.ptr;
-    }
-    else
-    {
+    } else {
         ep->flags &= ~ENV_VALID;
         if (vp = ep->freelist)
             ep->freelist = vp->un.next;
-        else if (vp = newof(( Evar_t * )0, Evar_t, 2, 0))
-        {
+        else if (vp = newof(( Evar_t * )0, Evar_t, 2, 0)) {
             vp->index = ENV_VMALLOC;
             ep->freelist = (vp + 1);
             ep->freelist->un.next = 0;
-        }
-        else
+        } else
             return (0);
         vp->un.ptr = ( void * )str;
         if (!(vp = dtinsert(ep->dt, vp)))
@@ -196,29 +189,24 @@ env_open(char **envp, int extra)
         return (0);
     if (!(ep->dt = dtopen(&env_disc, Dtoset)))
         return (0);
-    if (env = envp)
-    {
+    if (env = envp) {
         while (*env++)
             ;
         n = (env + 2) - envp;
     }
-    if (extra == ENV_STABLE)
-    {
+    if (extra == ENV_STABLE) {
         ep->env = envp;
         ep->max = n - 1;
-    }
-    else
+    } else
         ep->count = ep->extra = extra;
     ep->freelist = vp = newof(( Evar_t * )0, Evar_t, n, 0);
     vp->index = ENV_VMALLOC;
-    while (--n > 0)
-    {
+    while (--n > 0) {
         vp->un.next = (vp + 1);
         vp++;
     }
     vp->un.next = 0;
-    if (env)
-    {
+    if (env) {
         for (env = envp; *env; env++)
             env_add(ep, *env, 0);
     }
@@ -234,22 +222,18 @@ env_close(Env_t *ep)
     Evar_t *vp, *vpnext, *top;
     if (ep->env && (ep->flags & ENV_MALLOCED))
         free(( void * )ep->env);
-    for (vp = ( Evar_t * )dtfirst(ep->dt); vp; vp = vpnext)
-    {
+    for (vp = ( Evar_t * )dtfirst(ep->dt); vp; vp = vpnext) {
         vpnext = ( Evar_t * )dtnext(ep->dt, vp);
         env_delete(ep, vp->un.ptr);
     }
-    for (top = 0, vp = ep->freelist; vp; vp = vpnext)
-    {
+    for (top = 0, vp = ep->freelist; vp; vp = vpnext) {
         vpnext = vp->un.next;
-        if (vp->index & ENV_VMALLOC)
-        {
+        if (vp->index & ENV_VMALLOC) {
             vp->un.next = top;
             top = vp;
         }
     }
-    for (vp = top; vp; vp = vpnext)
-    {
+    for (vp = top; vp; vp = vpnext) {
         vpnext = vp->un.next;
         free(( void * )vp);
     }

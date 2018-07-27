@@ -43,25 +43,21 @@ char *linkfile;
     int len;
     int textflag = 0;
 
-    if ((fsrc = fopen(srcfile, "r")) == NULL)
-    {
+    if ((fsrc = fopen(srcfile, "r")) == NULL) {
         return -1;
     }
-    if ((fhtml = fopen(htmlfile, "w")) == NULL)
-    {
+    if ((fhtml = fopen(htmlfile, "w")) == NULL) {
         fclose(fsrc);
         return -1;
     }
-    if ((flink = fopen(linkfile, "w")) == NULL)
-    {
+    if ((flink = fopen(linkfile, "w")) == NULL) {
         fclose(fhtml);
         fclose(fsrc);
         return -1;
     }
 
     /* parse header */
-    while (fgets(buf, sizeof(buf), fsrc) != NULL)
-    {
+    while (fgets(buf, sizeof(buf), fsrc) != NULL) {
         fprintf(flink, "%s", buf);
         if (buf[0] == '\n' || buf[0] == '\r')
             break;
@@ -69,16 +65,13 @@ char *linkfile;
             textflag = 1;
     }
 
-    if (textflag)
-    {
+    if (textflag) {
         /* parse htmlfile */
-        while (fgets(buf, sizeof(buf), fsrc) != NULL)
-        {
+        while (fgets(buf, sizeof(buf), fsrc) != NULL) {
             fprintf(fhtml, "%s", buf);
             ptr = buf;
             while ((p1 = strchr(ptr, '<')) != NULL
-                   && (p2 = strchr(p1, '>')) != NULL)
-            {
+                   && (p2 = strchr(p1, '>')) != NULL) {
                 p1++;
                 *p2++ = '\0';
 
@@ -88,9 +81,7 @@ char *linkfile;
                 ptr = p2;
             }
         }
-    }
-    else
-    {
+    } else {
         /* dump binary data */
         while ((len = fread(buf, 1, sizeof(buf), fsrc)) > 0)
             fwrite(buf, 1, len, fhtml);
@@ -120,13 +111,11 @@ char *tmpfile;
 
     if ((port = mitem->port) <= 0)
         port = 80;
-    if ((fout = fopen(tmpfile, "w")) == NULL)
-    {
+    if ((fout = fopen(tmpfile, "w")) == NULL) {
         logit("<http>: tmpfile open error\n");
         return -1;
     }
-    if ((nFile = NetConnect(srv, mitem->host, port)) == NULL)
-    {
+    if ((nFile = NetConnect(srv, mitem->host, port)) == NULL) {
         fclose(fout);
         logit("<http>: connect error\n");
         return -1;
@@ -151,8 +140,7 @@ char *tmpfile;
 #endif
 
     /* Cookie: <cookie-value> */
-    if (DataEntryQuery(srv->lpath, "cookie", line, sizeof(line)) > 0)
-    {
+    if (DataEntryQuery(srv->lpath, "cookie", line, sizeof(line)) > 0) {
         sfsprintf(buf, sizeof(buf), "Cookie: %s\n", line);
         NetWrite(nFile, buf, strlen(buf));
         debug_logit(buf);
@@ -165,13 +153,11 @@ char *tmpfile;
     /* reply: HTTP/1.0 200 Document follows */
     NetGets(nFile, line, sizeof(line));
     logit(line);
-    if ((ptr = strchr(line, ' ')) != NULL)
-    {
+    if ((ptr = strchr(line, ' ')) != NULL) {
         ans = ( int )strtol(ptr + 1, ( char ** )0, 0);
     }
     fputs(line, fout);
-    while ((len = NetRead(nFile, line, sizeof(line))) > 0)
-    {
+    while ((len = NetRead(nFile, line, sizeof(line))) > 0) {
         fwrite(line, 1, len, fout);
     }
     NetClose(nFile);
@@ -194,10 +180,8 @@ char *tmpfile;
     sfsprintf(rpath, sizeof(rpath), "%s/", srv->rpath);
     sfsprintf(linkfile, sizeof(linkfile), "%s/._dir", lpath);
     ans = HttpXfer(srv, rpath, linkfile, tmpfile);
-    if (ans < 300)
-    { /* 2xx Successful, 1xx Informational */
-        if (chdir(lpath))
-        {
+    if (ans < 300) { /* 2xx Successful, 1xx Informational */
+        if (chdir(lpath)) {
             MakePath(linkfile);
             if (chdir(lpath))
                 return 404; /* 404 Not Found */
@@ -227,8 +211,7 @@ char *tmpfile;
     *ptr = '/';
 
     ans = HttpXfer(srv, srv->rpath, linkfile, tmpfile);
-    if (ans < 300)
-    { /* 2xx Successful, 1xx Informational */
+    if (ans < 300) { /* 2xx Successful, 1xx Informational */
         MakePath(lpath);
         HttpConvert(tmpfile, lpath, linkfile);
     }
@@ -248,30 +231,21 @@ int HttpGetFile(srv) struct server_info *srv;
     MakeTmpFile(srv->lpath, tmpfile, sizeof(tmpfile));
     rpath = srv->rpath;
     if ((ptr = strrchr(rpath, '/')) != NULL
-        && strcmp(ptr, "/index.html") == 0)
-    {
+        && strcmp(ptr, "/index.html") == 0) {
         /* try get the directory html file (.../index.html) */
         *ptr = '\0';
         ptr = strrchr(srv->lpath, '/');
         *ptr = '\0';
     }
-    if (*rpath == '\0' || DashD(srv->lpath))
-    {
+    if (*rpath == '\0' || DashD(srv->lpath)) {
         ans = HttpXferDir(srv, tmpfile);
-    }
-    else if (DashF(srv->lpath))
-    {
+    } else if (DashF(srv->lpath)) {
         ans = HttpXferFile(srv, tmpfile);
-    }
-    else
-    {
+    } else {
         ans = HttpXferFile(srv, tmpfile);
-        if (ans >= 400)
-        { /* 4xx, 5xx (ex: 404 Not Found) */
+        if (ans >= 400) { /* 4xx, 5xx (ex: 404 Not Found) */
             return -1;
-        }
-        else if (ans >= 300)
-        { /* 3xx Redirection */
+        } else if (ans >= 300) { /* 3xx Redirection */
             ans = HttpXferDir(srv, tmpfile);
         }
     }
@@ -291,8 +265,7 @@ char *argv[];
     char buf[STRLEN];
     char *fpath, *key, *data;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         sfsprintf(csusrmsg,
                   sizeof(csusrmsg),
                   "1 Usage: userdef local-path key (-|data)");
@@ -300,34 +273,23 @@ char *argv[];
     }
     fpath = argv[0];
     key = argv[1];
-    if (argc < 3)
-    { /* query data */
-        if (DataEntryQuery(fpath, key, buf, sizeof(buf)) >= 0)
-        {
+    if (argc < 3) { /* query data */
+        if (DataEntryQuery(fpath, key, buf, sizeof(buf)) >= 0) {
             sfsprintf(
             csusrmsg, sizeof(csusrmsg), "0 %s %s %s", fpath, key, buf);
-        }
-        else
-        {
+        } else {
             sfsprintf(
             csusrmsg, sizeof(csusrmsg), "1 %s %s not-found", fpath, key);
         }
-    }
-    else if (*argv[2] == '-')
-    { /* delete header */
-        if (DataEntryDelete(fpath, key) == 0)
-        {
+    } else if (*argv[2] == '-') { /* delete header */
+        if (DataEntryDelete(fpath, key) == 0) {
             sfsprintf(
             csusrmsg, sizeof(csusrmsg), "0 %s %s deleted", fpath, key);
-        }
-        else
-        {
+        } else {
             sfsprintf(
             csusrmsg, sizeof(csusrmsg), "1 %s %s not-found", fpath, key);
         }
-    }
-    else
-    {
+    } else {
         data = argv[2];
         DataEntryInsert(fpath, key, data, strlen(data) + 1);
         sfsprintf(csusrmsg, sizeof(csusrmsg), "0 %s %s inserted", fpath, key);

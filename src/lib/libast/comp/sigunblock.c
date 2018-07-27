@@ -43,12 +43,10 @@ sigunblock(int s)
     sigset_t mask;
 
     sigemptyset(&mask);
-    if (s)
-    {
+    if (s) {
         sigaddset(&mask, s);
         op = SIG_UNBLOCK;
-    }
-    else
+    } else
         op = SIG_SETMASK;
     return (sigprocmask(op, &mask, NiL));
 #    else

@@ -39,12 +39,10 @@ cat(Cojob_t *job, char **path, Sfio_t *op)
 {
     Sfio_t *sp;
 
-    if (sp = sfopen(NiL, *path, "r"))
-    {
+    if (sp = sfopen(NiL, *path, "r")) {
         sfmove(sp, op, SF_UNBOUND, -1);
         sfclose(sp);
-    }
-    else
+    } else
         errormsg(state.lib,
                  ERROR_LIBRARY | 2,
                  "%s: cannot open job %d serialized output",
@@ -73,8 +71,7 @@ cojobs(Coshell_t *co)
     else
         any = 1;
     n = 0;
-    do
-    {
+    do {
         n += co->outstanding;
     } while (any && (co = co->next));
     return n;
@@ -97,8 +94,7 @@ copending(Coshell_t *co)
     else
         any = 1;
     n = 0;
-    do
-    {
+    do {
         n += co->outstanding + co->svc_outstanding;
     } while (any && (co = co->next));
     return n;
@@ -122,8 +118,7 @@ cozombie(Coshell_t *co)
     else
         any = 1;
     n = 0;
-    do
-    {
+    do {
         n += (co->outstanding + co->svc_outstanding)
              - (co->running + co->svc_running);
     } while (any && (co = co->next));
@@ -166,16 +161,14 @@ cowait(Coshell_t *co, Cojob_t *job, int timeout)
     active = 0;
     to = timeout >= 0 ? timeout : 60 * 1000;
 zombies:
-    do
-    {
+    do {
 #if 0
 		errormsg(state.lib, 2, "coshell %d zombie wait %lu timeout=%d outstanding=<%d,%d> running=<%d,%d>", co->index, serial, timeout, co->outstanding, co->svc_outstanding, co->running, co->svc_running);
 #endif
         if ((co->outstanding + co->svc_outstanding)
             > (co->running + co->svc_running))
             for (cj = co->jobs; cj; cj = cj->next)
-                if (cj->pid == CO_PID_ZOMBIE && (!job || cj == job))
-                {
+                if (cj->pid == CO_PID_ZOMBIE && (!job || cj == job)) {
                     cj->pid = CO_PID_FREE;
                     if (cj->service)
                         co->svc_outstanding--;
@@ -185,9 +178,7 @@ zombies:
 					errormsg(state.lib, 2, "coshell %d zombie wait %lu timeout=%d outstanding=<%d,%d> running=<%d,%d> reap job %d", co->index, serial, timeout, co->outstanding, co->svc_outstanding, co->running, co->svc_running, cj->id);
 #endif
                     return cj;
-                }
-                else if (cj->service && !cj->service->pid)
-                {
+                } else if (cj->service && !cj->service->pid) {
                     cj->pid = CO_PID_ZOMBIE;
                     cj->status = 2;
                     cj->service = 0;
@@ -195,12 +186,10 @@ zombies:
                 }
         if (co->running > 0)
             active = 1;
-        else if (co->svc_running > 0)
-        {
+        else if (co->svc_running > 0) {
             n = 0;
             for (cs = co->service; cs; cs = cs->next)
-                if (cs->pid && kill(cs->pid, 0))
-                {
+                if (cs->pid && kill(cs->pid, 0)) {
                     cs->pid = 0;
                     close(cs->fd);
                     cs->fd = -1;
@@ -220,13 +209,10 @@ zombies:
         goto echild;
     if (any)
         co = state.coshells;
-    do
-    {
+    do {
         loop = 0;
-        for (;;)
-        {
-            if (co->flags & CO_DEBUG)
-            {
+        for (;;) {
+            if (co->flags & CO_DEBUG) {
                 loop++;
                 errormsg(state.lib,
                          2,
@@ -251,10 +237,8 @@ zombies:
             }
             if (co->running <= 0 && co->svc_running <= 0)
                 break;
-            while ((n = sfpoll(&co->msgfp, 1, to)) < 1)
-            {
-                if (n < 0)
-                {
+            while ((n = sfpoll(&co->msgfp, 1, to)) < 1) {
+                if (n < 0) {
                     if (errno == EINTR)
                         return 0;
                     break;
@@ -267,8 +251,7 @@ zombies:
                  */
 
                 for (cj = co->jobs; cj; cj = cj->next)
-                    if (cj->pid > 0)
-                    {
+                    if (cj->pid > 0) {
                         n
                         = sfsprintf(buf,
                                     sizeof(buf),
@@ -328,8 +311,7 @@ zombies:
                          type,
                          id,
                          s);
-            if (!cj)
-            {
+            if (!cj) {
                 if (type == 'k')
                     continue;
                 errormsg(state.lib,
@@ -346,8 +328,7 @@ zombies:
              * now interpret the message
              */
 
-            switch (type)
-            {
+            switch (type) {
 
             case 'a':
                 /*
@@ -385,8 +366,7 @@ zombies:
 
                 cj->status = strtol(s, &e, 10);
                 user = sys = 0;
-                for (;;)
-                {
+                for (;;) {
                     if (e <= s)
                         break;
                     for (s = e; isalpha(*s) || isspace(*s); s++)
@@ -407,11 +387,9 @@ zombies:
                 if (cj->err)
                     cat(cj, &cj->err, sfstderr);
                 if (cj->pid > 0 || cj->service
-                    || (co->flags & (CO_INIT | CO_SERVER)))
-                {
+                    || (co->flags & (CO_INIT | CO_SERVER))) {
                 nuke:
-                    if (cj->pid > 0 && type != 'k')
-                    {
+                    if (cj->pid > 0 && type != 'k') {
                         /*
                          * nuke the zombies
                          */
@@ -423,8 +401,7 @@ zombies:
                         co->svc_running--;
                     else
                         co->running--;
-                    if (!job || cj == job)
-                    {
+                    if (!job || cj == job) {
                         cj->pid = CO_PID_FREE;
                         if (cj->service)
                             co->svc_outstanding--;
@@ -436,8 +413,7 @@ zombies:
                         return cj;
                     }
                     cj->pid = CO_PID_ZOMBIE;
-                }
-                else
+                } else
                     cj->pid = CO_PID_WARPED;
                 break;
             }

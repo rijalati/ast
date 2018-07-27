@@ -166,10 +166,8 @@ b_getconf(int argc, char **argv, Shbltin_t *context)
     dev = 0;
     flags = 0;
     pattern = 0;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             if (native)
                 goto defer;
@@ -234,11 +232,9 @@ b_getconf(int argc, char **argv, Shbltin_t *context)
     argv += opt_info.index;
     if (!(name = *argv))
         path = 0;
-    else if (streq(name, empty))
-    {
+    else if (streq(name, empty)) {
         name = 0;
-        if (path = *++argv)
-        {
+        if (path = *++argv) {
             argv++;
             if (streq(path, empty))
                 path = 0;
@@ -250,26 +246,19 @@ b_getconf(int argc, char **argv, Shbltin_t *context)
         error(ERROR_usage(2), "%s", optusage(NiL));
     if (!name)
         astconflist(sfstdout, path, flags, pattern);
-    else
-    {
+    else {
         if (native)
             flags |= (ASTCONF_system | ASTCONF_error);
-        do
-        {
-            if (!(path = *++argv))
-            {
+        do {
+            if (!(path = *++argv)) {
                 path = dev;
                 value = 0;
-            }
-            else
-            {
-                if (streq(path, empty))
-                {
+            } else {
+                if (streq(path, empty)) {
                     path = dev;
                     flags = 0;
                 }
-                if ((value = *++argv) && (streq(value, empty)))
-                {
+                if ((value = *++argv) && (streq(value, empty))) {
                     value = 0;
                     flags = 0;
                 }
@@ -277,17 +266,14 @@ b_getconf(int argc, char **argv, Shbltin_t *context)
             s = astgetconf(name, path, value, flags, errorf);
             if (error_info.errors)
                 break;
-            if (!s)
-            {
+            if (!s) {
                 if (native)
                     goto defer;
                 error(2, "%s: unknown name", name);
                 break;
             }
-            if (!value)
-            {
-                if (flags & ASTCONF_write)
-                {
+            if (!value) {
+                if (flags & ASTCONF_write) {
                     sfputr(sfstdout, name, ' ');
                     sfputr(sfstdout, path ? path : empty, ' ');
                 }
@@ -315,23 +301,18 @@ defer:
     q = !stat(equiv[0].path, &st0) && !stat(equiv[1].path, &st1)
         && st0.st_ino == st1.st_ino && st0.st_dev == st1.st_dev;
     m = 0;
-    do
-    {
+    do {
         for (t = s; *s && *s != ':'; s++)
             ;
-        if ((n = s - t) && *t == '/')
-        {
+        if ((n = s - t) && *t == '/') {
             if (q)
                 for (i = 0; i < 2; i++)
-                    if (n == equiv[i].len && !strncmp(t, equiv[i].path, n))
-                    {
+                    if (n == equiv[i].len && !strncmp(t, equiv[i].path, n)) {
                         if (m & (i + 1))
                             t = 0;
-                        else
-                        {
+                        else {
                             m |= (i + 1);
-                            if (!(m & (!i + 1)))
-                            {
+                            if (!(m & (!i + 1))) {
                                 m |= (!i + 1);
                                 e->path = t;
                                 e->len = n;
@@ -343,8 +324,7 @@ defer:
                             }
                         }
                     }
-            if (t)
-            {
+            if (t) {
                 e->path = t;
                 e->len = n;
                 e++;
@@ -353,29 +333,23 @@ defer:
         while (*s == ':')
             s++;
     } while (*s && e < &std[elementsof(std)]);
-    if (e < &std[elementsof(std)])
-    {
+    if (e < &std[elementsof(std)]) {
         e->len = strlen(e->path = "/usr/sbin");
-        if (++e < &std[elementsof(std)])
-        {
+        if (++e < &std[elementsof(std)]) {
             e->len = strlen(e->path = "/sbin");
             e++;
         }
     }
     if (s = getenv("PATH"))
-        do
-        {
+        do {
             for (t = s; *s && *s != ':'; s++)
                 ;
-            if ((n = s - t) && *t == '/')
-            {
+            if ((n = s - t) && *t == '/') {
                 for (p = std; p < e; p++)
-                    if (p->len == n && !strncmp(t, p->path, n))
-                    {
+                    if (p->len == n && !strncmp(t, p->path, n)) {
                         sfsprintf(
                         buf, sizeof(buf), "%-*.*s/%s", n, n, t, error_info.id);
-                        if (!access(buf, X_OK))
-                        {
+                        if (!access(buf, X_OK)) {
                             cmd = buf;
                             goto found;
                         }
@@ -389,12 +363,10 @@ defer:
      * defer to the first getconf on the standard PATH
      */
 
-    for (p = std; p < e; p++)
-    {
+    for (p = std; p < e; p++) {
         sfsprintf(
         buf, sizeof(buf), "%-*.*s/%s", p->len, p->len, p->path, error_info.id);
-        if (!access(buf, X_OK))
-        {
+        if (!access(buf, X_OK)) {
             cmd = buf;
             goto found;
         }

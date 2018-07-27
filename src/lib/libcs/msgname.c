@@ -32,16 +32,13 @@ msgname(unsigned long call)
 
     static char buf[12];
 
-    if ((n = MSG_CALL(call)) > MSG_STD)
-    {
+    if ((n = MSG_CALL(call)) > MSG_STD) {
         sfsprintf(buf, sizeof(buf), "user_%d", n);
         return ( const char * )buf;
     }
-    switch (MSG_VAR(call))
-    {
+    switch (MSG_VAR(call)) {
     case MSG_VAR_FILE:
-        if (MSG_ARG(call, 1) == MSG_ARG_file)
-        {
+        if (MSG_ARG(call, 1) == MSG_ARG_file) {
             sfsprintf(buf, sizeof(buf), "f%s", msg_info.name[n]);
             return ( const char * )buf;
         }

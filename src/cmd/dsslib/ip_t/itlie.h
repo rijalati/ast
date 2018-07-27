@@ -70,16 +70,13 @@ ITLEXTERNAL(Cx_t *cx,
     int n;
     int g;
 
-    if (j = value->buffer.size / sizeof(ITLINT))
-    {
+    if (j = value->buffer.size / sizeof(ITLINT)) {
         sep = ( char * )CXDETAILS(details, formats[0], type, "");
-        if (!(fmt = *sep++))
-        {
+        if (!(fmt = *sep++)) {
             fmt = 'd';
             sep = ",";
             def = 1;
-        }
-        else if (fmt == 's')
+        } else if (fmt == 's')
             def = 1;
         else
             def = sep == type->format.details;
@@ -91,38 +88,29 @@ ITLEXTERNAL(Cx_t *cx,
         i = 0;
         j -= tuple - 1;
         g = j + 1 + !group;
-        while (i < j)
-        {
-            if (i > g)
-            {
+        while (i < j) {
+            if (i > g) {
                 g = j + 1;
                 sfprintf(sp, "}");
                 t = sep;
-            }
-            else if (g == (j + 1) && ap[i] == (ITLINT)(~0) && i < (j - 1))
-            {
+            } else if (g == (j + 1) && ap[i] == (ITLINT)(~0) && i < (j - 1)) {
                 i++;
-                if (ap[i])
-                {
+                if (ap[i]) {
                     g = i + ap[i];
                     sfprintf(sp, "%s", sep);
                     t = "{";
-                }
-                else
+                } else
                     t = sep;
                 i++;
-            }
-            else
+            } else
                 t = sep;
-            for (k = 0; k < tuple; i++, k++, t = bet)
-            {
+            for (k = 0; k < tuple; i++, k++, t = bet) {
                 sfprintf(sp, "%s", t);
                 if (def && formats && formats[k] && formats[k]->map
                     && !cxnum2str(cx, formats[k], ( Cxinteger_t )ap[i], &s))
                     sfprintf(sp, "%s", s);
                 else if (ap[i])
-                    switch (fmt)
-                    {
+                    switch (fmt) {
                     case 'd':
                         sfprintf(sp, "%d", ap[i]);
                         break;
@@ -150,8 +138,7 @@ ITLEXTERNAL(Cx_t *cx,
                             sfprintf(sp, "%u%s", (v >> b) & m, b ? "." : "");
                         break;
                     default:
-                        if (dots)
-                        {
+                        if (dots) {
                             n = dots * 8;
                             goto dotted;
                         }
@@ -165,20 +152,16 @@ ITLEXTERNAL(Cx_t *cx,
         if (g < (j + 1))
             sfputc(sp, '}');
         i = sfstrtell(sp);
-        if (!(s = sfstruse(sp)))
-        {
+        if (!(s = sfstruse(sp))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
         }
-        if (j = strlen(sep))
-        {
+        if (j = strlen(sep)) {
             s += j;
             i -= j;
         }
-    }
-    else
-    {
+    } else {
         s = "";
         i = 0;
     }
@@ -226,16 +209,13 @@ ITLINTERNAL(Cx_t *cx,
     m = 1;
     m = (m << dots) - 1;
     for (; s < e; s++)
-        if (*s == ':' || isdigit(*s))
-        {
+        if (*s == ':' || isdigit(*s)) {
             t++;
             if (*s == ':')
                 n = 0;
-            else
-            {
+            else {
                 n = strntol(s, e - s, &p, 0);
-                for (;;)
-                {
+                for (;;) {
                     s = p;
                     if (s >= e || *s != '.')
                         break;
@@ -243,40 +223,32 @@ ITLINTERNAL(Cx_t *cx,
                 }
             }
             sfwrite(sp, &n, sizeof(n));
-            if (group && n == (ITLINT)(~0))
-            {
+            if (group && n == (ITLINT)(~0)) {
                 n = 0;
                 sfwrite(sp, &n, sizeof(n));
                 n = (ITLINT)(~0);
                 sfwrite(sp, &n, sizeof(n));
             }
-            if (s < e && *s != ':')
-            {
+            if (s < e && *s != ':') {
                 s--;
                 n = 0;
                 while (t++ < tuple)
                     sfwrite(sp, &n, sizeof(n));
                 t = 0;
             }
-        }
-        else if (*s == '{')
-        {
-            if (group)
-            {
+        } else if (*s == '{') {
+            if (group) {
                 n = (ITLINT)(~0);
                 sfwrite(sp, &n, sizeof(n));
                 o = sfstrtell(sp) / sizeof(n);
                 sfwrite(sp, &n, sizeof(n));
             }
-        }
-        else if (isalpha(*s) || *s == '?')
+        } else if (isalpha(*s) || *s == '?')
             break;
-    if (z = sfstrtell(sp) / sizeof(n))
-    {
+    if (z = sfstrtell(sp) / sizeof(n)) {
         if (!vm)
             vm = Vmregion;
-        if (!(vp = vmnewof(vm, 0, ITLINT, z, 0)))
-        {
+        if (!(vp = vmnewof(vm, 0, ITLINT, z, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
@@ -284,8 +256,7 @@ ITLINTERNAL(Cx_t *cx,
         memcpy(vp, sfstrseek(sp, 0, SEEK_SET), z * sizeof(n));
         if (o)
             vp[o] = z - o;
-    }
-    else
+    } else
         vp = 0;
     value->buffer.data = vp;
     value->buffer.size = z * sizeof(n);

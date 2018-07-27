@@ -57,20 +57,17 @@ mkmount(Cs_t *state,
         char *endtype)
 {
     *(state->control - 1) = 0;
-    if (eaccess(state->mount, R_OK | W_OK | X_OK))
-    {
+    if (eaccess(state->mount, R_OK | W_OK | X_OK)) {
         if (errno != ENOENT)
             goto bad;
         if (!endserv && !(endserv = strrchr(state->mount, '/')))
             goto bad;
         *endserv = 0;
-        if (eaccess(state->mount, X_OK))
-        {
+        if (eaccess(state->mount, X_OK)) {
             if (!endhost && !(endhost = strrchr(state->mount, '/')))
                 goto bad;
             *endhost = 0;
-            if (eaccess(state->mount, X_OK))
-            {
+            if (eaccess(state->mount, X_OK)) {
                 if (!endtype && !(endtype = strrchr(state->mount, '/')))
                     goto bad;
                 *endtype = 0;
@@ -93,8 +90,7 @@ mkmount(Cs_t *state,
             goto bad;
         if (mode != (S_IRWXU | S_IRWXG | S_IRWXO)
             && (uid >= 0 || gid >= 0 && (mode |= S_ISGID))
-            && (chown(state->mount, uid, gid) || chmod(state->mount, mode)))
-        {
+            && (chown(state->mount, uid, gid) || chmod(state->mount, mode))) {
             rmdir(state->mount);
             goto bad;
         }
@@ -134,8 +130,7 @@ remote(Cs_t *state,
 
     *av++ = CS_REMOTE_SHELL;
     *av++ = ( char * )host;
-    if (user && *user)
-    {
+    if (user && *user) {
         *av++ = "-l";
         *av++ = ( char * )user;
     }
@@ -188,23 +183,17 @@ initiate(Cs_t *state, char *user, char *path, char *service, char *name)
     local = csname(state, 0);
     s = service + strlen(service);
     *s++ = '/';
-    if (!(state->flags & CS_ADDR_SHARE))
-    {
+    if (!(state->flags & CS_ADDR_SHARE)) {
         sfsprintf(buf, sizeof(buf), "%s\n", state->host);
         if (!(sp = tokline(buf, SF_STRING, NiL)))
             return -1;
-    }
-    else if (state->flags & CS_ADDR_LOCAL)
-    {
+    } else if (state->flags & CS_ADDR_LOCAL) {
         sfsprintf(buf, sizeof(buf), "%s\n", CS_HOST_LOCAL);
         if (!(sp = tokline(buf, SF_STRING, NiL)))
             return -1;
-    }
-    else
-    {
+    } else {
         strcpy(s, CS_SVC_HOSTS);
-        if (!(sp = tokline(service, SF_READ, NiL)))
-        {
+        if (!(sp = tokline(service, SF_READ, NiL))) {
             if (streq(state->host, CS_HOST_SHARE))
                 sfsprintf(
                 buf, sizeof(buf), "%s\n%s\n", CS_HOST_SHARE, CS_HOST_LOCAL);
@@ -221,10 +210,8 @@ initiate(Cs_t *state, char *user, char *path, char *service, char *name)
     }
     sfsprintf(s, PATH_MAX - (s - service) - 1, "%s%s", name, CS_SVC_SUFFIX);
     while (s = sfgetr(sp, '\n', 1))
-        if (tokscan(s, NiL, " %s ", &on) == 1)
-        {
-            if (streq(on, CS_HOST_LOCAL) || streq(on, local))
-            {
+        if (tokscan(s, NiL, " %s ", &on) == 1) {
+            if (streq(on, CS_HOST_LOCAL) || streq(on, local)) {
                 sfclose(sp);
                 av[0] = service;
                 av[1] = path;
@@ -234,9 +221,7 @@ initiate(Cs_t *state, char *user, char *path, char *service, char *name)
                        < 0
                        ? -1
                        : 0;
-            }
-            else if (!streq(on, CS_HOST_SHARE))
-            {
+            } else if (!streq(on, CS_HOST_SHARE)) {
                 Proc_t *proc;
                 time_t otime;
                 struct stat st;
@@ -250,15 +235,12 @@ initiate(Cs_t *state, char *user, char *path, char *service, char *name)
                 ov[1] = PROC_FD_DUP(n, 1, PROC_FD_PARENT | PROC_FD_CHILD);
                 ov[2] = 0;
                 if (proc = procopen(
-                    av[0], av, NiL, ov, PROC_PRIVELEGED | PROC_ZOMBIE))
-                {
+                    av[0], av, NiL, ov, PROC_PRIVELEGED | PROC_ZOMBIE)) {
                     n = 1;
-                    for (;;)
-                    {
-                        if (!lstat(state->mount, &st) && st.st_ctime != otime)
-                        {
-                            if (!procclose(proc))
-                            {
+                    for (;;) {
+                        if (!lstat(state->mount, &st)
+                            && st.st_ctime != otime) {
+                            if (!procclose(proc)) {
                                 sfclose(sp);
                                 return 0;
                             }
@@ -271,16 +253,13 @@ initiate(Cs_t *state, char *user, char *path, char *service, char *name)
                          * fs cache delays
                          */
 
-                        if (n >= CS_REMOTE_DELAY)
-                        {
+                        if (n >= CS_REMOTE_DELAY) {
                             procclose(proc);
                             break;
                         }
-                        if (n == 1)
-                        {
+                        if (n == 1) {
                             *state->control = CS_MNT_TMP;
-                            if (remove(state->mount))
-                            {
+                            if (remove(state->mount)) {
                                 close(open(state->mount,
                                            O_WRONLY | O_CREAT | O_TRUNC,
                                            0));
@@ -292,8 +271,7 @@ initiate(Cs_t *state, char *user, char *path, char *service, char *name)
                         n <<= 1;
                     }
                 }
-            }
-            else if (!sfstacked(sp) && (np = csinfo(state, on, NiL)))
+            } else if (!sfstacked(sp) && (np = csinfo(state, on, NiL)))
                 sfstack(sp, np);
         }
     sfclose(sp);
@@ -355,16 +333,14 @@ agent(Cs_t *state, const char *host, const char *user, const char *path)
         m = 0;
     if ((fd = reopen(state, buf)) < 0)
         goto sorry;
-    if (m)
-    {
+    if (m) {
         if ((m = csread(state, proc->rfd, buf, sizeof(buf), CS_LINE)) <= 1)
             goto sorry;
         if (cswrite(state, fd, buf, m) != m)
             goto sorry;
         if ((n = csread(state, fd, num, sizeof(num), CS_LINE)) <= 0)
             goto sorry;
-        if (*num != '\n')
-        {
+        if (*num != '\n') {
             buf[m - 1] = 0;
             num[n - 1] = 0;
             n = sfsprintf(tmp,
@@ -420,14 +396,11 @@ doattach(Cs_t *state,
     int fds[2];
     struct stat st;
 
-    if (op & CS_OPEN_CREATE)
-    {
+    if (op & CS_OPEN_CREATE) {
         n = errno;
-        if (chmod(path, mode))
-        {
+        if (chmod(path, mode)) {
             remove(path);
-            if ((fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, mode)) < 0)
-            {
+            if ((fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, mode)) < 0) {
                 messagef((state->id,
                           NiL,
                           -1,
@@ -441,8 +414,7 @@ doattach(Cs_t *state,
             chmod(path, mode);
         }
         errno = n;
-        if (pipe(fds))
-        {
+        if (pipe(fds)) {
             messagef(
             (state->id, NiL, -1, "open: %s: pipe error", state->path, path));
             return -1;
@@ -474,19 +446,14 @@ doattach(Cs_t *state,
         }
         close(fds[1]);
         fd = fds[0];
-    }
-    else
-        for (;;)
-        {
-            if ((fd = open(path, O_RDWR)) >= 0)
-            {
+    } else
+        for (;;) {
+            if ((fd = open(path, O_RDWR)) >= 0) {
                 if (!fstat(fd, &st) && !S_ISREG(st.st_mode))
                     break;
                 close(fd);
                 remove(path);
-            }
-            else if ((op & CS_OPEN_TEST) || errno == EACCES)
-            {
+            } else if ((op & CS_OPEN_TEST) || errno == EACCES) {
                 messagef((state->id,
                           NiL,
                           -1,
@@ -495,8 +462,7 @@ doattach(Cs_t *state,
                           path));
                 return -1;
             }
-            if (initiate(state, user, opath, tmp, serv))
-            {
+            if (initiate(state, user, opath, tmp, serv)) {
                 messagef((state->id,
                           NiL,
                           -1,
@@ -533,17 +499,14 @@ doattach(Cs_t *state,
     nam.sun_family = AF_UNIX;
     strcpy(nam.sun_path, path);
     namlen = sizeof(nam.sun_family) + strlen(path) + 1;
-    for (n = 0;; n++)
-    {
-        if (n >= 10)
-        {
+    for (n = 0;; n++) {
+        if (n >= 10) {
             errno = ENXIO;
         badcon:
             close(fd);
             return -1;
         }
-        if ((fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
-        {
+        if ((fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
             messagef((state->id,
                       NiL,
                       -1,
@@ -552,10 +515,8 @@ doattach(Cs_t *state,
                       path));
             return -1;
         }
-        if (!connect(fd, ( struct sockaddr * )&nam, namlen))
-        {
-            if (op & CS_OPEN_CREATE)
-            {
+        if (!connect(fd, ( struct sockaddr * )&nam, namlen)) {
+            if (op & CS_OPEN_CREATE) {
                 errno = EEXIST;
                 goto badcon;
             }
@@ -565,9 +526,7 @@ doattach(Cs_t *state,
 #        else
             break;
 #        endif
-        }
-        else
-        {
+        } else {
             messagef((state->id,
                       NiL,
                       -1,
@@ -576,11 +535,9 @@ doattach(Cs_t *state,
                       path));
             if (errno == EACCES)
                 goto badcon;
-            else if (errno == EADDRNOTAVAIL || errno == ECONNREFUSED)
-            {
+            else if (errno == EADDRNOTAVAIL || errno == ECONNREFUSED) {
                 c = 0;
-                for (;;)
-                {
+                for (;;) {
                     *b = CS_MNT_PROCESS;
                     pid = pathgetlink(path, state->temp, sizeof(state->temp));
                     *b = CS_MNT_STREAM;
@@ -589,12 +546,9 @@ doattach(Cs_t *state,
                     sleep(1);
                 }
                 if (pid > 0 && (s = strrchr(state->temp, '/'))
-                    && (pid = strtol(s + 1, NiL, 0)) > 0)
-                {
-                    if (!kill(pid, 0) || errno != ESRCH)
-                    {
-                        if (op & CS_OPEN_CREATE)
-                        {
+                    && (pid = strtol(s + 1, NiL, 0)) > 0) {
+                    if (!kill(pid, 0) || errno != ESRCH) {
+                        if (op & CS_OPEN_CREATE) {
                             errno = EEXIST;
                             goto badcon;
                         }
@@ -611,10 +565,8 @@ doattach(Cs_t *state,
         }
         close(fd);
         errno = ENOENT;
-        if (op & CS_OPEN_CREATE)
-        {
-            if ((fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
-            {
+        if (op & CS_OPEN_CREATE) {
+            if ((fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
                 messagef((state->id,
                           NiL,
                           -1,
@@ -623,11 +575,9 @@ doattach(Cs_t *state,
                           path));
                 return -1;
             }
-            if (!bind(fd, ( struct sockaddr * )&nam, namlen))
-            {
+            if (!bind(fd, ( struct sockaddr * )&nam, namlen)) {
                 chmod(path, mode);
-                if (listen(fd, 32))
-                {
+                if (listen(fd, 32)) {
                     messagef((state->id,
                               NiL,
                               -1,
@@ -640,8 +590,7 @@ doattach(Cs_t *state,
                     goto badcon;
                 }
                 break;
-            }
-            else
+            } else
                 messagef((state->id,
                           NiL,
                           -1,
@@ -651,11 +600,9 @@ doattach(Cs_t *state,
             if (errno != EADDRINUSE || n && remove(path) && errno != ENOENT)
                 goto badcon;
             close(fd);
-        }
-        else if (op & CS_OPEN_TEST)
+        } else if (op & CS_OPEN_TEST)
             return -1;
-        else if (!n && initiate(state, user, opath, tmp, serv))
-        {
+        else if (!n && initiate(state, user, opath, tmp, serv)) {
             messagef((state->id,
                       NiL,
                       -1,
@@ -663,8 +610,7 @@ doattach(Cs_t *state,
                       state->path,
                       path));
             return -1;
-        }
-        else
+        } else
             sleep(2);
     }
 
@@ -747,8 +693,7 @@ csopen(Cs_t *state, const char *apath, int op)
     char buf[PATH_MAX];
     char tmp[PATH_MAX];
 
-    if (!path)
-    {
+    if (!path) {
         errno = EFAULT;
         return -1;
     }
@@ -762,14 +707,11 @@ csopen(Cs_t *state, const char *apath, int op)
      */
 
     opath = path;
-    if (pathgetlink(path, buf, sizeof(buf)) <= 0)
-    {
+    if (pathgetlink(path, buf, sizeof(buf)) <= 0) {
         if (strlen(path) >= sizeof(buf))
             return -1;
         strcpy(buf, path);
-    }
-    else if ((state->flags & CS_ADDR_LOCAL) && (s = strrchr(buf, '/')))
-    {
+    } else if ((state->flags & CS_ADDR_LOCAL) && (s = strrchr(buf, '/'))) {
         /*
          * dynamic ip assignment can change the addr
          * underfoot in some implementations so we
@@ -793,11 +735,9 @@ csopen(Cs_t *state, const char *apath, int op)
         return -1;
     if (b = strchr(s, '/'))
         *b++ = 0;
-    if (streq(s, "fdp"))
-    {
+    if (streq(s, "fdp")) {
 #if !(CS_LIB_SOCKET_UN || CS_LIB_STREAM || CS_LIB_V10)
-        if (access(CS_PROC_FD_TST, F_OK))
-        {
+        if (access(CS_PROC_FD_TST, F_OK)) {
             errno = ENODEV;
             messagef((state->id,
                       NiL,
@@ -808,16 +748,13 @@ csopen(Cs_t *state, const char *apath, int op)
             return -1;
         }
 #endif
-    }
-    else if (!streq(s, "tcp") && !streq(s, "udp"))
-    {
+    } else if (!streq(s, "tcp") && !streq(s, "udp")) {
         messagef(
         (state->id, NiL, -1, "open: %s: %s: invalid type", state->path, s));
         return -1;
     }
 #if !(CS_LIB_SOCKET || CS_LIB_STREAM || CS_LIB_V10)
-    else
-    {
+    else {
         errno = ENODEV;
         messagef(
         (state->id, NiL, -1, "open: %s: %s: not supported", state->path, s));
@@ -828,13 +765,11 @@ csopen(Cs_t *state, const char *apath, int op)
     qual = state->qual;
     if (!b)
         host = serv = 0;
-    else
-    {
+    else {
         host = b;
         if (!(s = strchr(b, '/')))
             serv = 0;
-        else
-        {
+        else {
             *s++ = 0;
             serv = s;
 
@@ -851,13 +786,10 @@ csopen(Cs_t *state, const char *apath, int op)
              */
 
             mode = S_IRWXU | S_IRWXG | S_IRWXO;
-            if (b = strchr(s, '/'))
-            {
+            if (b = strchr(s, '/')) {
                 *b++ = 0;
-                do
-                {
-                    if (*b == '#')
-                    {
+                do {
+                    if (*b == '#') {
                         arg = b + 1;
                         break;
                     }
@@ -867,8 +799,7 @@ csopen(Cs_t *state, const char *apath, int op)
                         *s++ = 0;
                     for (n = 0, t = b; *t; n = HASHKEYPART(n, *t++))
                         ;
-                    switch (n)
-                    {
+                    switch (n) {
                     case HASHKEY5('g', 'r', 'o', 'u', 'p'):
                         group = s ? s : "";
                         break;
@@ -927,24 +858,20 @@ csopen(Cs_t *state, const char *apath, int op)
               host,
               serv,
               qual));
-    if (host)
-    {
+    if (host) {
         /*
          * validate host
          */
 
-        if (!(state->addr = addr = csaddr(state, host)))
-        {
+        if (!(state->addr = addr = csaddr(state, host))) {
             if (serv && !(op & CS_OPEN_CREATE) && *type == 't'
                 && (port = csport(state, type, serv)) >= CS_PORT_MIN
-                && port <= CS_PORT_MAX)
-            {
+                && port <= CS_PORT_MAX) {
                 /*
                  * attempt proxy connection
                  */
 
-                if (nfd >= 0)
-                {
+                if (nfd >= 0) {
                     close(nfd);
                     nfd = -1;
                 }
@@ -953,8 +880,7 @@ csopen(Cs_t *state, const char *apath, int op)
                        ? csbind(
                          state, type, state->proxy.addr, state->proxy.port, 0L)
                        : reopen(state, csvar(state, CS_VAR_PROXY, 0)))
-                    >= 0)
-                {
+                    >= 0) {
                     state->proxy.addr = state->addr;
                     state->proxy.port = state->port;
                     n = sfsprintf(tmp,
@@ -967,12 +893,10 @@ csopen(Cs_t *state, const char *apath, int op)
                                   error_info.id ? error_info.id : state->id);
                     if (cswrite(state, fd, tmp, n) == n
                         && (n = csread(state, fd, tmp, sizeof(tmp), CS_LINE))
-                           >= 2)
-                    {
+                           >= 2) {
                         if (tmp[0] == '0' && tmp[1] == '\n')
                             return fd;
-                        if (error_info.trace <= -4 && n > 2)
-                        {
+                        if (error_info.trace <= -4 && n > 2) {
                             s = tmp;
                             s[n - 1] = 0;
                             while (*s && *s++ != '\n')
@@ -995,15 +919,13 @@ csopen(Cs_t *state, const char *apath, int op)
 #endif
             goto bad;
         }
-        if (op & CS_OPEN_LOCAL)
-        {
+        if (op & CS_OPEN_LOCAL) {
             state->flags |= CS_ADDR_LOCAL;
             state->flags &= ~CS_ADDR_REMOTE;
         }
         if (op & CS_OPEN_NOW)
             state->flags |= CS_ADDR_NOW;
-        if ((op & (CS_OPEN_AGENT | CS_OPEN_REMOTE)) == CS_OPEN_REMOTE)
-        {
+        if ((op & (CS_OPEN_AGENT | CS_OPEN_REMOTE)) == CS_OPEN_REMOTE) {
             state->flags |= CS_ADDR_REMOTE;
             state->flags &= ~CS_ADDR_LOCAL;
         }
@@ -1020,80 +942,62 @@ csopen(Cs_t *state, const char *apath, int op)
                 || !strneq(serv, CS_SVC_INET, sizeof(CS_SVC_INET) - 1)
                    && (strtol(serv, &t, 0), *t)))
             return agent(state, state->host, state->user, state->path);
-        if (s = user)
-        {
+        if (s = user) {
             n = geteuid();
-            if (*s)
-            {
-                if ((uid = struid(s)) < 0)
-                {
+            if (*s) {
+                if ((uid = struid(s)) < 0) {
                     uid = strtol(s, &t, 0);
-                    if (*t)
-                    {
+                    if (*t) {
                         errno = EACCES;
                         goto bad;
                     }
                 }
-                if (n && uid != n)
-                {
+                if (n && uid != n) {
                     errno = EACCES;
                     goto bad;
                 }
-            }
-            else
+            } else
                 uid = n;
             mode &= ~(S_IRWXG | S_IRWXO);
         }
-        if (s = group)
-        {
+        if (s = group) {
             n = getegid();
-            if (*s)
-            {
-                if ((gid = strgid(s)) < 0)
-                {
+            if (*s) {
+                if ((gid = strgid(s)) < 0) {
                     gid = strtol(s, &t, 0);
-                    if (*t)
-                    {
+                    if (*t) {
                         errno = EACCES;
                         goto bad;
                     }
                 }
-                if (geteuid() && gid != n)
-                {
+                if (geteuid() && gid != n) {
                     gid_t *groups;
                     int g;
 
                     if ((g = getgroups(0, NiL)) <= 0)
                         g = getconf("NGROUPS_MAX");
-                    if (groups = newof(0, gid_t, g, 0))
-                    {
+                    if (groups = newof(0, gid_t, g, 0)) {
                         for (n = getgroups(g, groups); n >= 0; n--)
                             if (gid == groups[n])
                                 break;
                         free(groups);
-                    }
-                    else
+                    } else
                         n = -1;
-                    if (n < 0)
-                    {
+                    if (n < 0) {
                         errno = EACCES;
                         goto bad;
                     }
                 }
-            }
-            else
+            } else
                 gid = n;
             mode &= ~S_IRWXO;
         }
-        if (s = trust)
-        {
+        if (s = trust) {
             if (!*s)
                 sid = geteuid();
-            else if ((sid = struid(s)) < 0)
-            {
+            else if ((sid = struid(s)) < 0) {
                 sid = strtol(s, &t, 0);
-                if (*t)
-                {
+                if (*t) {
                     errno = EACCES;
                     goto bad;
                 }
@@ -1101,40 +1005,32 @@ csopen(Cs_t *state, const char *apath, int op)
         }
         if (state->flags & CS_ADDR_SHARE)
             host = CS_HOST_SHARE;
-        else
-        {
+        else {
             host = state->host;
-            if (!(state->flags & CS_ADDR_LOCAL))
-            {
-                if (*type == 'f')
-                {
+            if (!(state->flags & CS_ADDR_LOCAL)) {
+                if (*type == 'f') {
                     errno = ENODEV;
                     goto bad;
                 }
-                if (op & CS_OPEN_CREATE)
-                {
+                if (op & CS_OPEN_CREATE) {
                     errno = EROFS;
                     goto bad;
                 }
             }
             if (serv && !qual && *type != 'f'
-                && (port = csport(state, type, serv)) != CS_PORT_INVALID)
-            {
+                && (port = csport(state, type, serv)) != CS_PORT_INVALID) {
                 if (op & CS_OPEN_CREATE)
                     addr = 0;
                 else if (port == CS_PORT_RESERVED || port == CS_PORT_NORMAL)
                     goto bad;
-                if (nfd >= 0)
-                {
+                if (nfd >= 0) {
                     close(nfd);
                     nfd = -1;
                 }
                 state->control = 0;
-                if ((fd = csbind(state, type, addr, port, 0L)) >= 0)
-                {
+                if ((fd = csbind(state, type, addr, port, 0L)) >= 0) {
                     if (mode != (S_IRWXU | S_IRWXG | S_IRWXO)
-                        && csauth(state, fd, NiL, NiL))
-                    {
+                        && csauth(state, fd, NiL, NiL)) {
                         close(fd);
                         return -1;
                     }
@@ -1148,8 +1044,7 @@ csopen(Cs_t *state, const char *apath, int op)
      * get the mount dir prefix
      */
 
-    if (opath == (b = path = state->mount))
-    {
+    if (opath == (b = path = state->mount)) {
 #ifdef ELOOP
         errno = ELOOP;
 #else
@@ -1157,10 +1052,8 @@ csopen(Cs_t *state, const char *apath, int op)
 #endif
         goto bad;
     }
-    if (*type == 'f')
-    {
-        if (host && !(state->flags & CS_ADDR_LOCAL))
-        {
+    if (*type == 'f') {
+        if (host && !(state->flags & CS_ADDR_LOCAL)) {
             errno = ENODEV;
             goto bad;
         }
@@ -1172,11 +1065,8 @@ csopen(Cs_t *state, const char *apath, int op)
             && (mkdir(path, S_IRWXU | S_IRWXG | S_IRWXO)
                 || chmod(path, S_ISVTX | S_IRWXU | S_IRWXG | S_IRWXO)))
             goto bad;
-    }
-    else
-    {
-        if (op & CS_OPEN_TRUST)
-        {
+    } else {
+        if (op & CS_OPEN_TRUST) {
             if (!pathaccess(csvar(state, CS_VAR_TRUST, 1),
                             csvar(state, CS_VAR_SHARE, 1),
                             NiL,
@@ -1184,12 +1074,11 @@ csopen(Cs_t *state, const char *apath, int op)
                             b,
                             sizeof(state->mount) - (b - state->mount)))
                 goto bad;
-        }
-        else if (!pathpath(csvar(state, CS_VAR_SHARE, 0),
-                           "",
-                           PATH_EXECUTE,
-                           b,
-                           sizeof(state->mount) - (b - state->mount)))
+        } else if (!pathpath(csvar(state, CS_VAR_SHARE, 0),
+                             "",
+                             PATH_EXECUTE,
+                             b,
+                             sizeof(state->mount) - (b - state->mount)))
             goto bad;
         b += strlen(b);
     }
@@ -1199,13 +1088,11 @@ csopen(Cs_t *state, const char *apath, int op)
      */
 
     b += sfsprintf(b, sizeof(state->mount) - (b - path), "/%s", type);
-    if (!host)
-    {
+    if (!host) {
         *(state->control = b + 1) = 0;
         if (nfd >= 0)
             close(nfd);
-        if ((fd = open(path, O_RDONLY)) < 0)
-        {
+        if ((fd = open(path, O_RDONLY)) < 0) {
             mkmount(
             state, S_IRWXU | S_IRWXG | S_IRWXO, -1, -1, NiL, NiL, NiL);
             fd = open(path, O_RDONLY);
@@ -1227,13 +1114,11 @@ csopen(Cs_t *state, const char *apath, int op)
 
     if (strlen(host) <= CS_MNT_MAX)
         b += sfsprintf(b, sizeof(state->mount) - (b - path), "/%s", host);
-    else
-    {
+    else {
         s = csntoa(state, addr);
         if (strlen(s) <= CS_MNT_MAX)
             b += sfsprintf(b, sizeof(state->mount) - (b - path), "/%s", s);
-        else
-        {
+        else {
             unsigned char *a = ( unsigned char * )&addr;
 
             b += sfsprintf(b,
@@ -1253,8 +1138,7 @@ csopen(Cs_t *state, const char *apath, int op)
               __LINE__,
               host,
               path));
-    if (!serv)
-    {
+    if (!serv) {
         *(state->control = b + 1) = 0;
         if (nfd >= 0)
             close(nfd);
@@ -1284,8 +1168,7 @@ csopen(Cs_t *state, const char *apath, int op)
     if (!pathpath(b, "", PATH_ABSOLUTE | PATH_EXECUTE, tmp, sizeof(tmp))
         || stat(tmp, &st))
         op |= CS_OPEN_TEST;
-    else
-    {
+    else {
         *strrchr(tmp, '/') = 0;
         if (!(op & CS_OPEN_TRUST))
             sid = st.st_uid;
@@ -1314,15 +1197,13 @@ csopen(Cs_t *state, const char *apath, int op)
 #else
     endqual = state->mount + sizeof(state->mount) - 1;
 #endif
-    if (qual)
-    {
+    if (qual) {
         if (b < endqual)
             *b++ = '-';
         while (b < endqual && *qual)
             *b++ = *qual++;
     }
-    if (*type == 't' && !auth)
-    {
+    if (*type == 't' && !auth) {
         if (b >= endqual)
             b--;
         *b++ = CS_MNT_OTHER;
@@ -1347,13 +1228,11 @@ csopen(Cs_t *state, const char *apath, int op)
         && mkmount(state, mode, uid, gid, endserv, endhost, endtype))
         goto bad;
     mode &= S_IRWXU | S_IRWXG | S_IRWXO;
-    if (nfd >= 0)
-    {
+    if (nfd >= 0) {
         close(nfd);
         nfd = -1;
     }
-    if (op & CS_OPEN_MOUNT)
-    {
+    if (op & CS_OPEN_MOUNT) {
         messagef((state->id,
                   NiL,
                   -1,
@@ -1363,8 +1242,7 @@ csopen(Cs_t *state, const char *apath, int op)
                   state->mount));
         return 0;
     }
-    if (*type == 'f')
-    {
+    if (*type == 'f') {
         /*
          * {fdp}
          */
@@ -1372,17 +1250,14 @@ csopen(Cs_t *state, const char *apath, int op)
         if ((fd = doattach(state, path, op, mode, user, opath, tmp, serv, b))
             < 0)
             return -1;
-    }
-    else
-    {
+    } else {
         /*
          * {tcp,udp}
          */
 
         messagef(
         (state->id, NiL, -8, "%s:%d %s", __FILE__, __LINE__, state->mount));
-        if ((fd = reopen(state, path)) < 0)
-        {
+        if ((fd = reopen(state, path)) < 0) {
             /*
              * check for old single char cs mount
              */
@@ -1397,10 +1272,8 @@ csopen(Cs_t *state, const char *apath, int op)
                           path));
             *(state->control + 1) = CS_MNT_TAIL[0];
         }
-        if (op & CS_OPEN_CREATE)
-        {
-            if (fd >= 0)
-            {
+        if (op & CS_OPEN_CREATE) {
+            if (fd >= 0) {
                 close(fd);
                 errno = EEXIST;
                 return -1;
@@ -1409,10 +1282,8 @@ csopen(Cs_t *state, const char *apath, int op)
                 return -1;
             sigcritical(1);
             *state->control = CS_MNT_LOCK;
-            if ((fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0)) < 0)
-            {
-                if (stat(path, &st))
-                {
+            if ((fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0)) < 0) {
+                if (stat(path, &st)) {
                     messagef((state->id,
                               NiL,
                               -1,
@@ -1421,8 +1292,7 @@ csopen(Cs_t *state, const char *apath, int op)
                               path));
                     goto unblock;
                 }
-                if ((CSTIME() - ( unsigned long )st.st_ctime) < 2 * 60)
-                {
+                if ((CSTIME() - ( unsigned long )st.st_ctime) < 2 * 60) {
                     errno = EEXIST;
                     messagef((state->id,
                               NiL,
@@ -1432,8 +1302,7 @@ csopen(Cs_t *state, const char *apath, int op)
                               path));
                     goto unblock;
                 }
-                if (remove(path))
-                {
+                if (remove(path)) {
                     messagef((state->id,
                               NiL,
                               -1,
@@ -1442,8 +1311,7 @@ csopen(Cs_t *state, const char *apath, int op)
                               path));
                     goto unblock;
                 }
-                if ((fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0)) < 0)
-                {
+                if ((fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0)) < 0) {
                     messagef((state->id,
                               NiL,
                               -1,
@@ -1460,12 +1328,10 @@ csopen(Cs_t *state, const char *apath, int op)
                 port = CS_NORMAL;
             else
                 port = CS_RESERVED;
-            if ((fd = csbind(state, type, 0L, port, 0L)) >= 0)
-            {
+            if ((fd = csbind(state, type, 0L, port, 0L)) >= 0) {
                 *state->control = CS_MNT_STREAM;
                 remove(path);
-                if (pathsetlink(cspath(state, fd, 0), path))
-                {
+                if (pathsetlink(cspath(state, fd, 0), path)) {
                     messagef((state->id,
                               NiL,
                               -1,
@@ -1483,12 +1349,10 @@ csopen(Cs_t *state, const char *apath, int op)
             *state->control = CS_MNT_STREAM;
             if (fd < 0)
                 return -1;
-        }
-        else if (fd < 0
-                 && ((op & CS_OPEN_TEST)
-                     || initiate(state, user, opath, tmp, serv)
-                     || (fd = reopen(state, path)) < 0))
-        {
+        } else if (fd < 0
+                   && ((op & CS_OPEN_TEST)
+                       || initiate(state, user, opath, tmp, serv)
+                       || (fd = reopen(state, path)) < 0)) {
             messagef((state->id,
                       NiL,
                       -1,
@@ -1496,14 +1360,11 @@ csopen(Cs_t *state, const char *apath, int op)
                       state->path,
                       path));
             return -1;
-        }
-        else if (!(op & CS_OPEN_AGENT))
-        {
+        } else if (!(op & CS_OPEN_AGENT)) {
             *state->control = CS_MNT_AUTH;
             n = csauth(state, fd, path, arg);
             *state->control = CS_MNT_STREAM;
-            if (n)
-            {
+            if (n) {
                 close(fd);
                 messagef((state->id,
                           NiL,
@@ -1521,13 +1382,11 @@ csopen(Cs_t *state, const char *apath, int op)
      * make sure its not a bogus mount
      */
 
-    if (mode != (S_IRWXU | S_IRWXG | S_IRWXO))
-    {
+    if (mode != (S_IRWXU | S_IRWXG | S_IRWXO)) {
         *state->control = 0;
         n = stat(path, &st);
         *state->control = CS_MNT_STREAM;
-        if (n)
-        {
+        if (n) {
             messagef((state->id,
                       NiL,
                       -1,
@@ -1537,8 +1396,7 @@ csopen(Cs_t *state, const char *apath, int op)
             close(fd);
             return -1;
         }
-        if (uid >= 0 && st.st_uid != uid || gid >= 0 && st.st_gid != gid)
-        {
+        if (uid >= 0 && st.st_uid != uid || gid >= 0 && st.st_gid != gid) {
             close(fd);
             errno = EPERM;
             messagef((state->id,

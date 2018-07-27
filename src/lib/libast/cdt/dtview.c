@@ -53,8 +53,7 @@ reg int type;
      */
     if ((type & (DT_MATCH | DT_SEARCH))
         || ((type & (DT_FIRST | DT_LAST | DT_ATLEAST | DT_ATMOST))
-            && !(dt->meth->type & DT_ORDERED)))
-    {
+            && !(dt->meth->type & DT_ORDERED))) {
         for (d = dt; d; d = d->view)
             if ((o = (*(d->meth->searchf))(d, obj, type)))
                 break;
@@ -72,8 +71,7 @@ reg int type;
         /* find the min/max element that satisfies the op requirement */
         n = nky = NIL(Void_t *);
         p = NIL(Dt_t *);
-        for (d = dt; d; d = d->view)
-        {
+        for (d = dt; d; d = d->view) {
             if (!(o = (*d->meth->searchf)(d, obj, type)))
                 continue;
             oky = _DTKEY(d->disc, o);
@@ -84,9 +82,7 @@ reg int type;
                 if (((type & (DT_NEXT | DT_FIRST | DT_ATLEAST)) && cmp < 0)
                     || ((type & (DT_PREV | DT_LAST | DT_ATMOST)) && cmp > 0))
                     goto b_est;
-            }
-            else
-            {
+            } else {
             b_est: /* current best element to fit op requirement */
                 p = d;
                 n = o;
@@ -102,8 +98,7 @@ reg int type;
     if (!(type & (DT_NEXT | DT_PREV)))
         return NIL(Void_t *);
 
-    if (!dt->walk)
-    {
+    if (!dt->walk) {
         for (d = dt; d; d = d->view)
             if ((o = (*(d->meth->searchf))(d, obj, DT_SEARCH)))
                 break;
@@ -112,12 +107,10 @@ reg int type;
             return NIL(Void_t *);
     }
 
-    for (d = dt->walk, obj = (*d->meth->searchf)(d, obj, type);;)
-    {
+    for (d = dt->walk, obj = (*d->meth->searchf)(d, obj, type);;) {
         while (obj) /* keep moving until finding an uncovered object */
         {
-            for (p = dt;; p = p->view)
-            {
+            for (p = dt;; p = p->view) {
                 if (p == d) /* adjacent object is uncovered */
                     return obj;
                 if ((*(p->meth->searchf))(p, obj, DT_SEARCH))
@@ -158,8 +151,7 @@ reg Dt_t *view;
         d->nview -= 1;
     dt->view = dt->walk = NIL(Dt_t *);
 
-    if (!view)
-    {
+    if (!view) {
         dt->searchf = dt->meth->searchf;
         return d;
     }

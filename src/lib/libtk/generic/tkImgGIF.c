@@ -174,14 +174,12 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
     int useGlobalColormap;
     int transparent = -1;
 
-    if (!ReadGIFHeader(f, &fileWidth, &fileHeight))
-    {
+    if (!ReadGIFHeader(f, &fileWidth, &fileHeight)) {
         Tcl_AppendResult(
         interp, "couldn't read GIF header from file \"", fileName, "\"", NULL);
         return TCL_ERROR;
     }
-    if ((fileWidth <= 0) || (fileHeight <= 0))
-    {
+    if ((fileWidth <= 0) || (fileHeight <= 0)) {
         Tcl_AppendResult(interp,
                          "GIF image file \"",
                          fileName,
@@ -190,33 +188,27 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
         return TCL_ERROR;
     }
 
-    if (fread(buf, 1, 3, f) != 3)
-    {
+    if (fread(buf, 1, 3, f) != 3) {
         return TCL_OK;
     }
     bitPixel = 2 << (buf[0] & 0x07);
 
-    if (BitSet(buf[0], LOCALCOLORMAP))
-    { /* Global Colormap */
-        if (!ReadColorMap(f, bitPixel, colorMap))
-        {
+    if (BitSet(buf[0], LOCALCOLORMAP)) { /* Global Colormap */
+        if (!ReadColorMap(f, bitPixel, colorMap)) {
             Tcl_AppendResult(
             interp, "error reading color map", ( char * )NULL);
             return TCL_ERROR;
         }
     }
 
-    if ((srcX + width) > fileWidth)
-    {
+    if ((srcX + width) > fileWidth) {
         width = fileWidth - srcX;
     }
-    if ((srcY + height) > fileHeight)
-    {
+    if ((srcY + height) > fileHeight) {
         height = fileHeight - srcY;
     }
     if ((width <= 0) || (height <= 0) || (srcX >= fileWidth)
-        || (srcY >= fileHeight))
-    {
+        || (srcY >= fileHeight)) {
         return TCL_OK;
     }
 
@@ -232,10 +224,8 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
     nBytes = fileHeight * block.pitch;
     block.pixelPtr = ( unsigned char * )ckalloc(( unsigned )nBytes);
 
-    while (1)
-    {
-        if (fread(buf, 1, 1, f) != 1)
-        {
+    while (1) {
+        if (fread(buf, 1, 1, f) != 1) {
             /*
              * Premature end of image.  We should really notify
              * the user, but for now just show garbage.
@@ -244,8 +234,7 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
             break;
         }
 
-        if (buf[0] == ';')
-        {
+        if (buf[0] == ';') {
             /*
              * GIF terminator.
              */
@@ -253,36 +242,31 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
             break;
         }
 
-        if (buf[0] == '!')
-        {
+        if (buf[0] == '!') {
             /*
              * This is a GIF extension.
              */
 
-            if (fread(buf, 1, 1, f) != 1)
-            {
+            if (fread(buf, 1, 1, f) != 1) {
                 interp->result
                 = "error reading extension function code in GIF image";
                 goto error;
             }
-            if (DoExtension(f, buf[0], &transparent) < 0)
-            {
+            if (DoExtension(f, buf[0], &transparent) < 0) {
                 interp->result = "error reading extension in GIF image";
                 goto error;
             }
             continue;
         }
 
-        if (buf[0] != ',')
-        {
+        if (buf[0] != ',') {
             /*
              * Not a valid start character; ignore it.
              */
             continue;
         }
 
-        if (fread(buf, 1, 9, f) != 9)
-        {
+        if (fread(buf, 1, 9, f) != 9) {
             interp->result
             = "couldn't read left/top/width/height in GIF image";
             goto error;
@@ -292,10 +276,8 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
 
         bitPixel = 1 << ((buf[8] & 0x07) + 1);
 
-        if (!useGlobalColormap)
-        {
-            if (!ReadColorMap(f, bitPixel, localColorMap))
-            {
+        if (!useGlobalColormap) {
+            if (!ReadColorMap(f, bitPixel, localColorMap)) {
                 Tcl_AppendResult(
                 interp, "error reading color map", ( char * )NULL);
                 goto error;
@@ -308,13 +290,10 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
                           localColorMap,
                           BitSet(buf[8], INTERLACE),
                           transparent)
-                != TCL_OK)
-            {
+                != TCL_OK) {
                 goto error;
             }
-        }
-        else
-        {
+        } else {
             if (ReadImage(interp,
                           ( char * )block.pixelPtr,
                           f,
@@ -323,8 +302,7 @@ int srcX, srcY;             /* Coordinates of top-left pixel to be used
                           colorMap,
                           BitSet(buf[8], INTERLACE),
                           transparent)
-                != TCL_OK)
-            {
+                != TCL_OK) {
                 goto error;
             }
         }
@@ -371,13 +349,11 @@ int *widthPtr, *heightPtr; /* The dimensions of the image are
 
     if ((fread(buf, 1, 6, f) != 6)
         || ((strncmp("GIF87a", ( char * )buf, 6) != 0)
-            && (strncmp("GIF89a", ( char * )buf, 6) != 0)))
-    {
+            && (strncmp("GIF89a", ( char * )buf, 6) != 0))) {
         return 0;
     }
 
-    if (fread(buf, 1, 4, f) != 4)
-    {
+    if (fread(buf, 1, 4, f) != 4) {
         return 0;
     }
 
@@ -400,8 +376,7 @@ unsigned char buffer[3][MAXCOLORMAPSIZE];
     int i;
     unsigned char rgb[3];
 
-    for (i = 0; i < number; ++i)
-    {
+    for (i = 0; i < number; ++i) {
         if (!ReadOK(fd, rgb, sizeof(rgb)))
             return 0;
 
@@ -420,8 +395,7 @@ int *transparent;
     static unsigned char buf[256];
     int count = 0;
 
-    switch (label)
-    {
+    switch (label) {
     case 0x01: /* Plain Text Extension */
         break;
 
@@ -429,32 +403,27 @@ int *transparent;
         break;
 
     case 0xfe: /* Comment Extension */
-        do
-        {
+        do {
             count = GetDataBlock(fd, ( unsigned char * )buf);
         } while (count > 0);
         return count;
 
     case 0xf9: /* Graphic Control Extension */
         count = GetDataBlock(fd, ( unsigned char * )buf);
-        if (count < 0)
-        {
+        if (count < 0) {
             return 1;
         }
-        if ((buf[0] & 0x1) != 0)
-        {
+        if ((buf[0] & 0x1) != 0) {
             *transparent = buf[3];
         }
 
-        do
-        {
+        do {
             count = GetDataBlock(fd, ( unsigned char * )buf);
         } while (count > 0);
         return count;
     }
 
-    do
-    {
+    do {
         count = GetDataBlock(fd, ( unsigned char * )buf);
     } while (count > 0);
     return count;
@@ -467,15 +436,13 @@ unsigned char *buf;
 {
     unsigned char count;
 
-    if (!ReadOK(fd, &count, 1))
-    {
+    if (!ReadOK(fd, &count, 1)) {
         return -1;
     }
 
     ZeroDataBlock = count == 0;
 
-    if ((count != 0) && (!ReadOK(fd, buf, count)))
-    {
+    if ((count != 0) && (!ReadOK(fd, buf, count))) {
         return -1;
     }
 
@@ -502,8 +469,7 @@ int transparent;
     /*
      *  Initialize the Compression routines
      */
-    if (!ReadOK(fd, &c, 1))
-    {
+    if (!ReadOK(fd, &c, 1)) {
         Tcl_AppendResult(interp,
                          "error reading GIF image: ",
                          Tcl_PosixError(interp),
@@ -511,22 +477,18 @@ int transparent;
         return TCL_ERROR;
     }
 
-    if (LWZReadByte(fd, 1, c) < 0)
-    {
+    if (LWZReadByte(fd, 1, c) < 0) {
         interp->result = "format error in GIF image";
         return TCL_ERROR;
     }
 
-    if (transparent != -1)
-    {
+    if (transparent != -1) {
         colStr = Tcl_GetVar(interp, "TRANSPARENT_GIF_COLOR", 0L);
-        if (colStr != NULL)
-        {
+        if (colStr != NULL) {
             XColor *colorPtr;
             colorPtr
             = Tk_GetColor(interp, Tk_MainWindow(interp), Tk_GetUid(colStr));
-            if (colorPtr)
-            {
+            if (colorPtr) {
                 cmap[CM_RED][transparent] = colorPtr->red >> 8;
                 cmap[CM_GREEN][transparent] = colorPtr->green >> 8;
                 cmap[CM_BLUE][transparent] = colorPtr->blue >> 8;
@@ -535,21 +497,17 @@ int transparent;
         }
     }
 
-    while ((v = LWZReadByte(fd, 0, c)) >= 0)
-    {
+    while ((v = LWZReadByte(fd, 0, c)) >= 0) {
 
         imagePtr[(xpos * 3) + (ypos * len * 3)] = cmap[CM_RED][v];
         imagePtr[(xpos * 3) + (ypos * len * 3) + 1] = cmap[CM_GREEN][v];
         imagePtr[(xpos * 3) + (ypos * len * 3) + 2] = cmap[CM_BLUE][v];
 
         ++xpos;
-        if (xpos == len)
-        {
+        if (xpos == len) {
             xpos = 0;
-            if (interlace)
-            {
-                switch (pass)
-                {
+            if (interlace) {
+                switch (pass) {
                 case 0:
                 case 1:
                     ypos += 8;
@@ -562,11 +520,9 @@ int transparent;
                     break;
                 }
 
-                if (ypos >= height)
-                {
+                if (ypos >= height) {
                     ++pass;
-                    switch (pass)
-                    {
+                    switch (pass) {
                     case 1:
                         ypos = 4;
                         break;
@@ -580,9 +536,7 @@ int transparent;
                         return TCL_OK;
                     }
                 }
-            }
-            else
-            {
+            } else {
                 ++ypos;
             }
         }
@@ -607,8 +561,7 @@ int input_code_size;
     int i;
 
 
-    if (flag)
-    {
+    if (flag) {
 
         set_code_size = input_code_size;
         code_size = set_code_size + 1;
@@ -621,26 +574,21 @@ int input_code_size;
 
         fresh = 1;
 
-        for (i = 0; i < clear_code; ++i)
-        {
+        for (i = 0; i < clear_code; ++i) {
             table[0][i] = 0;
             table[1][i] = i;
         }
-        for (; i < (1 << MAX_LWZ_BITS); ++i)
-        {
+        for (; i < (1 << MAX_LWZ_BITS); ++i) {
             table[0][i] = table[1][0] = 0;
         }
 
         sp = stack;
 
         return 0;
-    }
-    else if (fresh)
-    {
+    } else if (fresh) {
 
         fresh = 0;
-        do
-        {
+        do {
             firstcode = oldcode = GetCode(fd, code_size, 0);
         } while (firstcode == clear_code);
         return firstcode;
@@ -649,18 +597,14 @@ int input_code_size;
     if (sp > stack)
         return *--sp;
 
-    while ((code = GetCode(fd, code_size, 0)) >= 0)
-    {
-        if (code == clear_code)
-        {
-            for (i = 0; i < clear_code; ++i)
-            {
+    while ((code = GetCode(fd, code_size, 0)) >= 0) {
+        if (code == clear_code) {
+            for (i = 0; i < clear_code; ++i) {
                 table[0][i] = 0;
                 table[1][i] = i;
             }
 
-            for (; i < (1 << MAX_LWZ_BITS); ++i)
-            {
+            for (; i < (1 << MAX_LWZ_BITS); ++i) {
                 table[0][i] = table[1][i] = 0;
             }
 
@@ -670,9 +614,7 @@ int input_code_size;
             sp = stack;
             firstcode = oldcode = GetCode(fd, code_size, 0);
             return firstcode;
-        }
-        else if (code == end_code)
-        {
+        } else if (code == end_code) {
             int count;
             unsigned char buf[260];
 
@@ -688,17 +630,14 @@ int input_code_size;
 
         incode = code;
 
-        if (code >= max_code)
-        {
+        if (code >= max_code) {
             *sp++ = firstcode;
             code = oldcode;
         }
 
-        while (code >= clear_code)
-        {
+        while (code >= clear_code) {
             *sp++ = table[1][code];
-            if (code == table[0][code])
-            {
+            if (code == table[0][code]) {
                 return -2;
 
                 /*
@@ -713,15 +652,13 @@ int input_code_size;
 
         *sp++ = firstcode = table[1][code];
 
-        if ((code = max_code) < (1 << MAX_LWZ_BITS))
-        {
+        if ((code = max_code) < (1 << MAX_LWZ_BITS)) {
 
             table[0][code] = oldcode;
             table[1][code] = firstcode;
             ++max_code;
             if ((max_code >= max_code_size)
-                && (max_code_size < (1 << MAX_LWZ_BITS)))
-            {
+                && (max_code_size < (1 << MAX_LWZ_BITS))) {
                 max_code_size *= 2;
                 ++code_size;
             }
@@ -745,8 +682,7 @@ int flag;
     int i, j, ret;
     unsigned char count;
 
-    if (flag)
-    {
+    if (flag) {
         curbit = 0;
         lastbit = 0;
         done = 0;
@@ -754,10 +690,8 @@ int flag;
     }
 
 
-    if ((curbit + code_size) >= lastbit)
-    {
-        if (done)
-        {
+    if ((curbit + code_size) >= lastbit) {
+        if (done) {
             /* ran off the end of my bits */
             return -1;
         }

@@ -141,8 +141,7 @@ zip_getprologue(Pax_t *pax,
         return 0;
     if (!(vm = vmopen(Vmdcheap, Vmbest, 0)))
         return paxnospace(pax);
-    if (!(ar = vmnewof(vm, 0, Ar_t, 1, 0)))
-    {
+    if (!(ar = vmnewof(vm, 0, Ar_t, 1, 0))) {
         vmclose(vm);
         return paxnospace(pax);
     }
@@ -151,16 +150,13 @@ zip_getprologue(Pax_t *pax,
     ar->memdisc.key = offsetof(Mem_t, name);
     if (paxseek(pax, ap, -( off_t )ZIP_END_HEADER, SEEK_END, 1) > 0
         && (hdr = paxget(pax, ap, ZIP_END_HEADER, NiL))
-        && swapget(0, &hdr[0], 4) == ZIP_END_MAGIC)
-    {
-        if (!(ar->mem = dtnew(ar->vm, &ar->memdisc, Dtset)))
-        {
+        && swapget(0, &hdr[0], 4) == ZIP_END_MAGIC) {
+        if (!(ar->mem = dtnew(ar->vm, &ar->memdisc, Dtset))) {
             zip_done(pax, ap);
             return paxnospace(pax);
         }
         pos = swapget(3, &hdr[ZIP_END_OFF], 4);
-        if (paxseek(pax, ap, pos, SEEK_SET, 1) != pos)
-        {
+        if (paxseek(pax, ap, pos, SEEK_SET, 1) != pos) {
             (*pax->errorf)(NiL,
                            pax,
                            2,
@@ -172,11 +168,9 @@ zip_getprologue(Pax_t *pax,
         }
         ar->end = pos;
         while ((hdr = paxget(pax, ap, -ZIP_CEN_HEADER, NiL))
-               && swapget(0, &hdr[0], 4) == ZIP_CEN_MAGIC)
-        {
+               && swapget(0, &hdr[0], 4) == ZIP_CEN_MAGIC) {
             n = swapget(3, &hdr[ZIP_CEN_NAM], 2);
-            if (!(mem = vmnewof(ar->vm, 0, Mem_t, 1, n)))
-            {
+            if (!(mem = vmnewof(ar->vm, 0, Mem_t, 1, n))) {
                 zip_done(pax, ap);
                 return paxnospace(pax);
             }
@@ -185,8 +179,7 @@ zip_getprologue(Pax_t *pax,
             mem->checksum = swapget(3, &hdr[ZIP_CEN_CRC], 4);
             ext = swapget(3, &hdr[ZIP_CEN_EXT], 2);
             com = swapget(3, &hdr[ZIP_CEN_COM], 2);
-            if (paxread(pax, ap, mem->name, ( off_t )n, ( off_t )0, 0) <= 0)
-            {
+            if (paxread(pax, ap, mem->name, ( off_t )n, ( off_t )0, 0) <= 0) {
                 (*pax->errorf)(
                 NiL,
                 pax,
@@ -203,8 +196,7 @@ zip_getprologue(Pax_t *pax,
                 n--;
             mem->name[n] = 0;
             if (ext
-                && paxread(pax, ap, NiL, ( off_t )ext, ( off_t )0, 0) <= 0)
-            {
+                && paxread(pax, ap, NiL, ( off_t )ext, ( off_t )0, 0) <= 0) {
                 (*pax->errorf)(NiL,
                                pax,
                                2,
@@ -219,8 +211,7 @@ zip_getprologue(Pax_t *pax,
                 return -1;
             }
             if (com
-                && paxread(pax, ap, NiL, ( off_t )com, ( off_t )0, 0) <= 0)
-            {
+                && paxread(pax, ap, NiL, ( off_t )com, ( off_t )0, 0) <= 0) {
                 (*pax->errorf)(NiL,
                                pax,
                                2,
@@ -236,8 +227,7 @@ zip_getprologue(Pax_t *pax,
             }
             dtinsert(ar->mem, mem);
         }
-        if (paxseek(pax, ap, ( off_t )0, SEEK_SET, 1))
-        {
+        if (paxseek(pax, ap, ( off_t )0, SEEK_SET, 1)) {
             (*pax->errorf)(NiL,
                            pax,
                            2,
@@ -266,10 +256,8 @@ zip_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
     int m;
     Tm_t tm;
 
-    while (hdr = paxget(pax, ap, -(num = ZIP_LOC_HEADER), NiL))
-    {
-        switch (( long )swapget(0, hdr, 4))
-        {
+    while (hdr = paxget(pax, ap, -(num = ZIP_LOC_HEADER), NiL)) {
+        switch (( long )swapget(0, hdr, 4)) {
         case ZIP_LOC_MAGIC:
             n = swapget(3, &hdr[ZIP_LOC_NAM], 2);
             m = swapget(3, &hdr[ZIP_LOC_EXT], 2);
@@ -279,15 +267,13 @@ zip_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
                 break;
             f->name = paxstash(pax, &ap->stash.head, NiL, n);
             memcpy(f->name, hdr + ZIP_LOC_HEADER, n);
-            if (n > 0 && f->name[n - 1] == '/' || !n && f->name[0] == '/')
-            {
+            if (n > 0 && f->name[n - 1] == '/' || !n && f->name[0] == '/') {
                 if (n)
                     n--;
                 f->st->st_mode
                 = (X_IFDIR | X_IRUSR | X_IWUSR | X_IXUSR | X_IRGRP | X_IWGRP
                    | X_IXGRP | X_IROTH | X_IWOTH | X_IXOTH);
-            }
-            else
+            } else
                 f->st->st_mode = (X_IFREG | X_IRUSR | X_IWUSR | X_IRGRP
                                   | X_IWGRP | X_IROTH | X_IWOTH);
             f->st->st_mode &= pax->modemask;
@@ -309,14 +295,11 @@ zip_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
             f->st->st_mtime = tmtime(&tm, TM_LOCALZONE);
             f->linktype = PAX_NOLINK;
             f->linkpath = 0;
-            if (ar->mem && (mem = ( Mem_t * )dtmatch(ar->mem, f->name)))
-            {
+            if (ar->mem && (mem = ( Mem_t * )dtmatch(ar->mem, f->name))) {
                 f->st->st_size = mem->encoded;
                 f->uncompressed = mem->decoded;
                 ar->checksum = mem->checksum;
-            }
-            else
-            {
+            } else {
                 f->st->st_size = swapget(3, &hdr[ZIP_LOC_SIZ], 4);
                 f->uncompressed = swapget(3, &hdr[ZIP_LOC_LEN], 4);
                 ar->checksum = swapget(3, &hdr[ZIP_LOC_CRC], 4);
@@ -353,8 +336,7 @@ zip_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
         case ZIP_EXT_MAGIC:
             paxunread(pax, ap, hdr, num);
             if (paxread(pax, ap, NiL, ( off_t )ZIP_EXT_HEADER, ( off_t )0, 0)
-                <= 0)
-            {
+                <= 0) {
                 (*pax->errorf)(NiL,
                                pax,
                                2,
@@ -391,8 +373,7 @@ zip_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
     r = -1;
     if (fd < 0)
         r = 1;
-    else if (sp = paxpart(pax, ap, f->st->st_size))
-    {
+    else if (sp = paxpart(pax, ap, f->st->st_size)) {
         if ((pop = codex(sp, ar->method, CODEX_DECODE, &ar->codexdisc, NiL))
             < 0)
             (*pax->errorf)(NiL,
@@ -402,18 +383,13 @@ zip_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
                            ap->name,
                            f->name,
                            ar->method);
-        else
-        {
-            for (;;)
-            {
-                if ((n = sfread(sp, pax->buf, sizeof(pax->buf))) < 0)
-                {
+        else {
+            for (;;) {
+                if ((n = sfread(sp, pax->buf, sizeof(pax->buf))) < 0) {
                     (*pax->errorf)(
                     NiL, pax, 2, "%s: %s: unexpected EOF", ap->name, f->name);
                     break;
-                }
-                else if (n == 0)
-                {
+                } else if (n == 0) {
                     if (codexdata(sp, &sum) <= 0)
                         (*pax->errorf)(NiL,
                                        pax,
@@ -431,8 +407,7 @@ zip_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
             codexpop(sp, pop);
         }
     }
-    if (paxseek(pax, ap, pos, SEEK_SET, 0) != pos)
-    {
+    if (paxseek(pax, ap, pos, SEEK_SET, 0) != pos) {
         (*pax->errorf)(NiL,
                        pax,
                        2,

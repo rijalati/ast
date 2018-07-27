@@ -46,8 +46,7 @@ setenv(const char *name, const char *value, int overwrite)
 {
     char *s;
 
-    if (overwrite || !getenv(name))
-    {
+    if (overwrite || !getenv(name)) {
         if (!(s = sfprints("%s=%s", name, value)) || !(s = strdup(s)))
             return -1;
         return setenviron(s) ? 0 : -1;

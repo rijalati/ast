@@ -132,10 +132,8 @@ fdclose(Service_t *sp, int fd)
     service_list[fd] = 0;
     if (sp->fd == fd)
         sp->fd = -1;
-    for (i = 0; i < npoll; i++)
-    {
-        if (file_list[i] == fd)
-        {
+    for (i = 0; i < npoll; i++) {
+        if (file_list[i] == fd) {
             file_list[i] = file_list[npoll--];
             if (sp->actionf)
                 (*sp->actionf)(sp, fd, 1);
@@ -151,22 +149,17 @@ fdnotify(int fd1, int fd2)
     Service_t *sp;
     if (covered_fdnotify)
         (*covered_fdnotify)(fd1, fd2);
-    if (fd2 != SH_FDCLOSE)
-    {
+    if (fd2 != SH_FDCLOSE) {
         int i;
         service_list[fd2] = service_list[fd1];
         service_list[fd1] = 0;
-        for (i = 0; i < npoll; i++)
-        {
-            if (file_list[i] == fd1)
-            {
+        for (i = 0; i < npoll; i++) {
+            if (file_list[i] == fd1) {
                 file_list[i] = fd2;
                 return (0);
             }
         }
-    }
-    else if (sp = service_list[fd1])
-    {
+    } else if (sp = service_list[fd1]) {
         fdclose(sp, fd1);
         if (--sp->refcount == 0)
             nv_unset(sp->node);
@@ -187,14 +180,11 @@ process_stream(Sfio_t *iop)
         service_list[fd] = sp;
         sp->refcount++;
         file_list[npoll++] = fd;
-        if (fd >= 0)
-        {
+        if (fd >= 0) {
             if (sp->acceptf)
                 r = (*sp->acceptf)(sp, fd);
         }
-    }
-    else if (sp->actionf)
-    {
+    } else if (sp->actionf) {
         service_list[fd] = 0;
         r = (*sp->actionf)(sp, fd, 0);
         service_list[fd] = sp;
@@ -212,15 +202,13 @@ waitnotify(int fd, long timeout, int rw)
 
     if (fd >= 0)
         special = sh_fd2sfio(shp, fd);
-    while (1)
-    {
+    while (1) {
         pstream = poll_list;
         while (ready < nready)
             process_stream(pstream[ready++]);
         if (special)
             *pstream++ = special;
-        for (i = 0; i < npoll; i++)
-        {
+        for (i = 0; i < npoll; i++) {
             if (service_list[file_list[i]])
                 *pstream++ = sh_fd2sfio(shp, file_list[i]);
         }
@@ -249,8 +237,7 @@ waitnotify(int fd, long timeout, int rw)
 #endif
         if (nready <= 0)
             return (errno ? -1 : 0);
-        if (special && poll_list[0] == special)
-        {
+        if (special && poll_list[0] == special) {
             ready = 1;
             return (fd);
         }
@@ -287,19 +274,16 @@ Accept(Service_t *sp, int accept_fd)
     int fd;
 
     fd = fcntl(accept_fd, F_DUPFD, 10);
-    if (fd >= 0)
-    {
+    if (fd >= 0) {
         close(accept_fd);
-        if (nq)
-        {
+        if (nq) {
             char *av[3];
             char buff[20];
 
             av[1] = buff;
             av[2] = 0;
             sfsprintf(buff, sizeof(buff), "%d", fd);
-            if (sh_fun(shp, nq, sp->node, av))
-            {
+            if (sh_fun(shp, nq, sp->node, av)) {
                 close(fd);
                 return -1;
             }
@@ -319,8 +303,7 @@ Action(Service_t *sp, int fd, int close)
         nq = sp->disc[CLOSE];
     else
         nq = sp->disc[ACTION];
-    if (nq)
-    {
+    if (nq) {
         char *av[3];
         char buff[20];
 
@@ -356,14 +339,12 @@ setdisc(Namval_t *np, const char *event, Namval_t *action, Namfun_t *fp)
     int n = strlen(event) - 1;
     Namval_t *nq;
 
-    for (i = 0; cp = disctab[i]; i++)
-    {
+    for (i = 0; cp = disctab[i]; i++) {
         if (memcmp(event, cp, n))
             continue;
         if (action == np)
             action = sp->disc[i];
-        else
-        {
+        else {
             if (nq = sp->disc[i])
                 free(( void * )nq);
             if (action)
@@ -385,13 +366,10 @@ putval(Namval_t *np, const char *val, int flag, Namfun_t *fp)
     if (!val)
         fp = nv_stack(np, NiL);
     nv_putv(np, val, flag, fp);
-    if (!val)
-    {
+    if (!val) {
         int i;
-        for (i = 0; i < shp->gd->lim.open_max; i++)
-        {
-            if (service_list[i] == sp)
-            {
+        for (i = 0; i < shp->gd->lim.open_max; i++) {
+            if (service_list[i] == sp) {
                 close(i);
                 if (--sp->refcount <= 0)
                     break;
@@ -416,10 +394,8 @@ b_mkservice(int argc, char **argv, Shbltin_t *context)
     Shell_t *shp = context->shp;
 
     NOT_USED(argc);
-    for (;;)
-    {
-        switch (optget(argv, mkservice_usage))
-        {
+    for (;;) {
+        switch (optget(argv, mkservice_usage)) {
         case 0:
             break;
         case ':':
@@ -444,8 +420,7 @@ b_mkservice(int argc, char **argv, Shbltin_t *context)
     sp->context = context;
     sp->node = 0;
     sp->fun.disc = &servdisc;
-    if ((fd = sh_open(path, O_SERVICE | O_RDWR)) <= 0)
-    {
+    if ((fd = sh_open(path, O_SERVICE | O_RDWR)) <= 0) {
         free(( void * )sp);
         error(ERROR_exit(1), "%s: cannot start service", path);
     }
@@ -467,10 +442,8 @@ b_eloop(int argc, char **argv, Shbltin_t *context)
     Shell_t *shp = context->shp;
     long timeout = -1;
     NOT_USED(argc);
-    for (;;)
-    {
-        switch (optget(argv, eloop_usage))
-        {
+    for (;;) {
+        switch (optget(argv, eloop_usage)) {
         case 0:
             break;
         case 't':
@@ -488,8 +461,7 @@ b_eloop(int argc, char **argv, Shbltin_t *context)
     argv += opt_info.index;
     if (error_info.errors || *argv)
         error(ERROR_usage(2), optusage(NiL));
-    while (1)
-    {
+    while (1) {
         if (waitnotify(-1, timeout, 0) == 0)
             break;
         sfprintf(sfstderr, "interrupted\n");

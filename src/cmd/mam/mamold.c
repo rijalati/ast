@@ -106,17 +106,14 @@ dumpvalue(int col, char *s, int sep)
     int escape = 0;
     int quote = 0;
 
-    if (sep)
-    {
+    if (sep) {
         sfputc(sfstdout, sep);
         col++;
     }
     for (;;)
-        switch (c = *s++)
-        {
+        switch (c = *s++) {
         case 0:
-            if (sep && sep != '\t')
-            {
+            if (sep && sep != '\t') {
                 col = 1;
                 sfputc(sfstdout, '\n');
             }
@@ -127,8 +124,7 @@ dumpvalue(int col, char *s, int sep)
                 goto emit;
             while (isspace(*s))
                 s++;
-            if (*s)
-            {
+            if (*s) {
                 sfputr(sfstdout, " \\\n\t", -1);
                 col = 8;
             }
@@ -153,14 +149,12 @@ dumpvalue(int col, char *s, int sep)
         case '$':
             escape++;
             dollar = 1;
-            if (isalpha(*s) || *s == '_')
-            {
+            if (isalpha(*s) || *s == '_') {
                 for (v = s; isalnum(*v) || *v == '_'; v++)
                     ;
                 c = *v;
                 *v = 0;
-                if (getvar(state.mam->main, s))
-                {
+                if (getvar(state.mam->main, s)) {
                     sfprintf(sfstdout, "$(%s)", s);
                     col += (v - s) + 3;
                     *(s = v) = c;
@@ -169,19 +163,16 @@ dumpvalue(int col, char *s, int sep)
                 }
                 *v = c;
             }
-            if (escape)
-            {
+            if (escape) {
                 escape = 0;
                 if (!quote)
-                    switch (*s)
-                    {
+                    switch (*s) {
                     case '{':
                         if (*(v = s + 1))
                             v++;
                         while (isalnum(*v) || *v == '_')
                             v++;
-                        switch (*v)
-                        {
+                        switch (*v) {
                         case ':':
                         case '-':
                         case '+':
@@ -193,8 +184,7 @@ dumpvalue(int col, char *s, int sep)
                         break;
                     case '$':
                         s--;
-                        do
-                        {
+                        do {
                             sfputc(sfstdout, '$');
                             col++;
                         } while (*++s == '$');
@@ -204,12 +194,10 @@ dumpvalue(int col, char *s, int sep)
                         col++;
                         break;
                     }
-            }
-            else
+            } else
                 dollar = 0;
             c = '$';
-            if (dollar)
-            {
+            if (dollar) {
                 sfputc(sfstdout, c);
                 col++;
             }
@@ -231,24 +219,19 @@ dumpname(int col, char *s)
 {
     int n;
 
-    if (!state.graph)
-    {
+    if (!state.graph) {
         n = strlen(s);
-        if (col + n >= LONGLINE)
-        {
+        if (col + n >= LONGLINE) {
             sfputr(sfstdout, " \\\n\t\t", -1);
             col = 16;
-        }
-        else if (col <= 1)
+        } else if (col <= 1)
             col = 1;
-        else
-        {
+        else {
             sfputc(sfstdout, ' ');
             col++;
         }
         col += n;
-    }
-    else if (col++ > 1)
+    } else if (col++ > 1)
         sfputc(sfstdout, ' ');
     dumpvalue(0, s, 0);
     return col;
@@ -261,11 +244,9 @@ dumpname(int col, char *s)
 static void
 dumpaction(struct block *p)
 {
-    if (p)
-    {
+    if (p) {
         state.heredoc = 0;
-        for (;;)
-        {
+        for (;;) {
             dumpvalue(0, p->data, '\t');
             if (!(p = p->next))
                 break;
@@ -287,8 +268,7 @@ dumpprereqs(int col, struct rule *r)
     struct block *d;
     struct list *p;
 
-    if (!(r->attributes & A_listprereq))
-    {
+    if (!(r->attributes & A_listprereq)) {
         r->attributes |= A_listprereq;
         for (d = state.omit; d; d = d->next)
             if (strmatch(r->name, d->data))
@@ -310,19 +290,16 @@ dump(struct rule *r)
     int col;
     struct list *p;
 
-    if (!(r->attributes & (A_listtarg | A_metarule)))
-    {
+    if (!(r->attributes & (A_listtarg | A_metarule))) {
         r->attributes |= A_listtarg;
-        if (r->action || r->prereqs)
-        {
+        if (r->action || r->prereqs) {
             clrprereqs(r);
             r->attributes |= A_listprereq;
             sfputc(sfstdout, '\n');
             col = dumpname(1, r->name);
             col = dumpname(col, ":");
             for (p = r->prereqs; p; p = p->next)
-                if (!(p->rule->attributes & A_listprereq))
-                {
+                if (!(p->rule->attributes & A_listprereq)) {
                     clrprereqs(p->rule);
                     col = dumpprereqs(col, p->rule);
                 }
@@ -353,17 +330,13 @@ dumpvar(const char *an, char *av, void *handle)
     int c;
 
     NoP(handle);
-    if (*v->value)
-    {
+    if (*v->value) {
         s = t = v->value;
-        while (c = *t++ = *s++)
-        {
-            if (c == '\\')
-            {
+        while (c = *t++ = *s++) {
+            if (c == '\\') {
                 if (!(*t++ = *s++))
                     break;
-            }
-            else if (c == '"')
+            } else if (c == '"')
                 t--;
         }
         dumpvalue(dumpname(0, name), v->value, '=');
@@ -396,10 +369,8 @@ main(int argc, char **argv)
 
     NoP(argc);
     error_info.id = "mamold";
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'd':
             error_info.trace = -opt_info.num;
             continue;
@@ -436,8 +407,7 @@ main(int argc, char **argv)
      * scan, collect and dump
      */
 
-    if (!state.graph && !state.header)
-    {
+    if (!state.graph && !state.header) {
         sfprintf(sfstdout, "# # oldmake makefile generated by mamold # #\n");
         sfprintf(sfstdout,
                  "# oldmake ... null='' sharp='$(null)#' newline='$(null)\n");

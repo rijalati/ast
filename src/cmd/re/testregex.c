@@ -165,8 +165,7 @@ resizef(void *handle, void *data, size_t size)
 #endif
 
 #define H(x)                                                                 \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         if (html)                                                            \
             fprintf(stderr, x);                                              \
     } while (0)
@@ -270,8 +269,9 @@ help(int html)
     "3\n");
     T(
     "    /	                        field 2 is a regsubcomp() expression\n");
-    T("    =	                        field 3 is a regdecomp() "
-      "expression\n");
+    T(
+    "    =	                        field 3 is a regdecomp() "
+    "expression\n");
     T("\n");
     T("  Field 1 control lines:\n");
     T("\n");
@@ -628,16 +628,14 @@ quote(char *s, int len, unsigned long test)
         printf("NIL");
     else if (!*u && len <= 1)
         printf("NULL");
-    else if (test & TEST_EXPAND)
-    {
+    else if (test & TEST_EXPAND) {
         if (len < 0)
             len = strlen(( char * )u);
         e = u + len;
         if (test & TEST_DELIMIT)
             printf("\"");
         while (u < e)
-            switch (c = *u++)
-            {
+            switch (c = *u++) {
             case '\\':
                 printf("\\\\");
                 break;
@@ -674,12 +672,10 @@ quote(char *s, int len, unsigned long test)
             default:
 #ifdef MB_CUR_MAX
                 s = ( char * )u - 1;
-                if ((w = mblen(s, ( char * )e - s)) > 1)
-                {
+                if ((w = mblen(s, ( char * )e - s)) > 1) {
                     u += w - 1;
                     fwrite(s, 1, w, stdout);
-                }
-                else
+                } else
 #endif
                 if (!iscntrl(c) && isprint(c))
                     putchar(c);
@@ -689,8 +685,7 @@ quote(char *s, int len, unsigned long test)
             }
         if (test & TEST_DELIMIT)
             printf("\"");
-    }
-    else
+    } else
         printf("%s", s);
 }
 
@@ -707,22 +702,18 @@ report(char *comment,
     if (state.file)
         printf("%s:", state.file);
     printf("%d:", state.lineno);
-    if (re)
-    {
+    if (re) {
         printf(" ");
         quote(re, -1, test | TEST_DELIMIT);
-        if (s)
-        {
+        if (s) {
             printf(" versus ");
             quote(s, len, test | TEST_DELIMIT);
         }
     }
-    if (test & TEST_UNSPECIFIED)
-    {
+    if (test & TEST_UNSPECIFIED) {
         state.unspecified++;
         printf(" unspecified behavior");
-    }
-    else
+    } else
         state.errors++;
     if (state.which)
         printf(" %s", state.which);
@@ -732,8 +723,7 @@ report(char *comment,
         printf(" %s", fun);
     if (comment[strlen(comment) - 1] == '\n')
         printf(" %s", comment);
-    else
-    {
+    else {
         printf(" %s: ", comment);
         if (msg)
             printf("%s: ", msg);
@@ -746,8 +736,7 @@ error(regex_t *preg, int code)
     char *msg;
     char buf[256];
 
-    switch (code)
-    {
+    switch (code) {
     case REG_EBUS:
         msg = "bus error";
         break;
@@ -783,8 +772,7 @@ escape(char *s)
 
     for (b = t = s; *t = *s; s++, t++)
         if (*s == '\\')
-            switch (*++s)
-            {
+            switch (*++s) {
             case '\\':
                 break;
             case 'a':
@@ -826,10 +814,8 @@ escape(char *s)
                 q = *s == 'u' ? (s + 5) : ( char * )0;
                 c = 0;
                 e = s + 1;
-                while (!e || !q || s < q)
-                {
-                    switch (*++s)
-                    {
+                while (!e || !q || s < q) {
+                    switch (*++s) {
                     case 'a':
                     case 'b':
                     case 'c':
@@ -860,8 +846,7 @@ escape(char *s)
                         continue;
                     case '{':
                     case '[':
-                        if (s != e)
-                        {
+                        if (s != e) {
                             s--;
                             break;
                         }
@@ -892,10 +877,8 @@ escape(char *s)
             case '7':
                 c = *s - '0';
                 q = s + 2;
-                while (s < q)
-                {
-                    switch (*++s)
-                    {
+                while (s < q) {
+                    switch (*++s) {
                     case '0':
                     case '1':
                     case '2':
@@ -923,8 +906,7 @@ escape(char *s)
 static void
 matchoffprint(int off)
 {
-    switch (off)
-    {
+    switch (off) {
     case -2:
         printf("X");
         break;
@@ -952,16 +934,14 @@ matchprint(regmatch_t *match,
                 || match[nmatch - 1].rm_so >= 0
                    && match[nmatch - 1].rm_eo >= 0))
             break;
-    for (i = 0; i < nmatch; i++)
-    {
+    for (i = 0; i < nmatch; i++) {
         printf("(");
         matchoffprint(match[i].rm_so);
         printf(",");
         matchoffprint(match[i].rm_eo);
         printf(")");
     }
-    if (!(test & (TEST_ACTUAL | TEST_BASELINE)))
-    {
+    if (!(test & (TEST_ACTUAL | TEST_BASELINE))) {
         if (ans)
             printf(" expected: %s", ans);
         printf("\n");
@@ -986,17 +966,14 @@ matchcheck(regmatch_t *match,
 
     if (streq(ans, "OK"))
         return test & (TEST_BASELINE | TEST_PASS | TEST_VERIFY);
-    for (i = 0, p = ans; i < nmatch && *p; i++)
-    {
-        if (*p == '{')
-        {
+    for (i = 0, p = ans; i < nmatch && *p; i++) {
+        if (*p == '{') {
 #ifdef REG_DISCIPLINE
             char *x;
 
             if (!(x = sfstruse(state.disc.sp)))
                 bad("out of space [discipline string]\n", NiL, NiL, 0, 0);
-            if (strcmp(p, x))
-            {
+            if (strcmp(p, x)) {
                 if (test
                     & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_PASS
                        | TEST_QUERY | TEST_SUMMARY | TEST_VERIFY))
@@ -1012,44 +989,34 @@ matchcheck(regmatch_t *match,
         }
         if (*p++ != '(')
             bad("improper answer\n", re, s, -1, test);
-        if (*p == '?')
-        {
+        if (*p == '?') {
             m = -1;
             p++;
-        }
-        else if (*p == 'R' && !memcmp(p, "RE_DUP_MAX", 10))
-        {
+        } else if (*p == 'R' && !memcmp(p, "RE_DUP_MAX", 10)) {
             m = RE_DUP_MAX;
             p += 10;
             if (*p == '+' || *p == '-')
                 m += strtol(p, &p, 10);
-        }
-        else
+        } else
             m = strtol(p, &p, 10);
         if (*p++ != ',')
             bad("improper answer\n", re, s, -1, test);
-        if (*p == '?')
-        {
+        if (*p == '?') {
             n = -1;
             p++;
-        }
-        else if (*p == 'R' && !memcmp(p, "RE_DUP_MAX", 10))
-        {
+        } else if (*p == 'R' && !memcmp(p, "RE_DUP_MAX", 10)) {
             n = RE_DUP_MAX;
             p += 10;
             if (*p == '+' || *p == '-')
                 n += strtol(p, &p, 10);
-        }
-        else
+        } else
             n = strtol(p, &p, 10);
         if (*p++ != ')')
             bad("improper answer\n", re, s, -1, test);
-        if (m != match[i].rm_so || n != match[i].rm_eo)
-        {
+        if (m != match[i].rm_so || n != match[i].rm_eo) {
             if (!(test
                   & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_PASS
-                     | TEST_QUERY | TEST_SUMMARY | TEST_VERIFY)))
-            {
+                     | TEST_QUERY | TEST_SUMMARY | TEST_VERIFY))) {
                 report(
                 "failed: match was", NiL, re, s, len, NiL, flags, test);
                 matchprint(match, nmatch, nsub, ans, test);
@@ -1057,22 +1024,17 @@ matchcheck(regmatch_t *match,
             return 0;
         }
     }
-    for (; i < nmatch; i++)
-    {
-        if (match[i].rm_so != -1 || match[i].rm_eo != -1)
-        {
+    for (; i < nmatch; i++) {
+        if (match[i].rm_so != -1 || match[i].rm_eo != -1) {
             if (!(test
                   & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_PASS
-                     | TEST_QUERY | TEST_VERIFY)))
-            {
+                     | TEST_QUERY | TEST_VERIFY))) {
                 if ((test & TEST_IGNORE_POSITION)
-                    && (match[i].rm_so < 0 || match[i].rm_eo < 0))
-                {
+                    && (match[i].rm_so < 0 || match[i].rm_eo < 0)) {
                     state.ignored++;
                     return 0;
                 }
-                if (!(test & TEST_SUMMARY))
-                {
+                if (!(test & TEST_SUMMARY)) {
                     report(
                     "failed: match was", NiL, re, s, len, NiL, flags, test);
                     matchprint(match, nmatch, nsub, ans, test);
@@ -1082,12 +1044,10 @@ matchcheck(regmatch_t *match,
         }
     }
     if (!(test & TEST_IGNORE_OVER)
-        && match[nmatch].rm_so != state.NOMATCH.rm_so)
-    {
+        && match[nmatch].rm_so != state.NOMATCH.rm_so) {
         if (!(test
               & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_PASS
-                 | TEST_QUERY | TEST_SUMMARY | TEST_VERIFY)))
-        {
+                 | TEST_QUERY | TEST_SUMMARY | TEST_VERIFY))) {
             report(
             "failed: overran match array", NiL, re, s, len, NiL, flags, test);
             matchprint(match, nmatch + 1, nsub, NiL, test);
@@ -1105,12 +1065,10 @@ sigunblock(int s)
     sigset_t mask;
 
     sigemptyset(&mask);
-    if (s)
-    {
+    if (s) {
         sigaddset(&mask, s);
         op = SIG_UNBLOCK;
-    }
-    else
+    } else
         op = SIG_SETMASK;
     sigprocmask(op, &mask, NiL);
 #else
@@ -1128,8 +1086,7 @@ gotcha(int sig)
     signal(sig, gotcha);
     alarm(0);
     state.signals++;
-    switch (sig)
-    {
+    switch (sig) {
     case SIGALRM:
         ret = REG_EHUNG;
         break;
@@ -1153,14 +1110,12 @@ nextline(FILE *fp)
     char *e = &buf[sizeof(buf)];
     char *b;
 
-    for (;;)
-    {
+    for (;;) {
         if (!(b = fgets(s, e - s, fp)))
             return 0;
         state.lineno++;
         s += strlen(s);
-        if (s == b || *--s != '\n' || s == b || *(s - 1) != '\\')
-        {
+        if (s == b || *--s != '\n' || s == b || *(s - 1) != '\\') {
             *s = 0;
             break;
         }
@@ -1175,8 +1130,7 @@ note(unsigned long level, char *msg, unsigned long skip, unsigned long test)
     if (!(test
           & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_PASS
              | TEST_SUMMARY))
-        && !skip)
-    {
+        && !skip) {
         printf("NOTE\t");
         if (msg)
             printf("%s: ", msg);
@@ -1206,33 +1160,28 @@ extract(int *tabs,
 {
     if (test
         & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_OK | TEST_PASS
-           | TEST_SUMMARY))
-    {
+           | TEST_SUMMARY)) {
         state.extracted = 1;
-        if (test & TEST_OK)
-        {
+        if (test & TEST_OK) {
             state.passed++;
             if ((test & TEST_VERIFY)
                 && !(test
                      & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_PASS
-                        | TEST_SUMMARY)))
-            {
+                        | TEST_SUMMARY))) {
                 if (msg && strcmp(msg, "EXPECTED"))
                     printf("NOTE\t%s\n", msg);
                 return skip;
             }
             test &= ~(TEST_PASS | TEST_QUERY);
         }
-        if (test & (TEST_QUERY | TEST_VERIFY))
-        {
+        if (test & (TEST_QUERY | TEST_VERIFY)) {
             if (test & TEST_BASELINE)
                 test &= ~(TEST_BASELINE | TEST_PASS);
             else
                 test |= TEST_PASS;
             skip |= level;
         }
-        if (!(test & TEST_OK))
-        {
+        if (!(test & TEST_OK)) {
             if (test & TEST_UNSPECIFIED)
                 state.unspecified++;
             else
@@ -1259,8 +1208,7 @@ extract(int *tabs,
         if (msg)
             printf("%s%s", TABS(*tabs++), msg);
         putchar('\n');
-    }
-    else if (test & TEST_QUERY)
+    } else if (test & TEST_QUERY)
         skip = note(level, msg, skip, test);
     else if (test & TEST_VERIFY)
         state.extracted = 1;
@@ -1286,24 +1234,19 @@ catchfree(regex_t *preg,
 {
     int eret;
 
-    if (!(test & TEST_CATCH))
-    {
+    if (!(test & TEST_CATCH)) {
         regfree(preg);
         eret = 0;
-    }
-    else if (!(eret = setjmp(state.gotcha)))
-    {
+    } else if (!(eret = setjmp(state.gotcha))) {
         alarm(HUNG);
         regfree(preg);
         alarm(0);
-    }
-    else if (test
-             & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_PASS
-                | TEST_QUERY | TEST_SUMMARY | TEST_VERIFY))
+    } else if (test
+               & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_PASS
+                  | TEST_QUERY | TEST_SUMMARY | TEST_VERIFY))
         extract(
         tabs, spec, re, s, ans, msg, NiL, NiL, 0, 0, skip, level, test);
-    else
-    {
+    else {
         report("failed", "regfree", re, NiL, -1, msg, flags, test);
         error(preg, eret);
     }
@@ -1319,10 +1262,8 @@ expand(char *os, char *ot)
     int r;
     long m;
 
-    for (;;)
-    {
-        switch (*s++)
-        {
+    for (;;) {
+        switch (*s++) {
         case 0:
             break;
         case '{':
@@ -1332,8 +1273,7 @@ expand(char *os, char *ot)
             n--;
             continue;
         case 'R':
-            if (n == 1 && !memcmp(s, "E_DUP_MAX", 9))
-            {
+            if (n == 1 && !memcmp(s, "E_DUP_MAX", 9)) {
                 s--;
                 for (t = ot; os < s; *t++ = *os++)
                     ;
@@ -1345,15 +1285,13 @@ expand(char *os, char *ot)
                 m = RE_DUP_MAX;
                 if (*(s += 10) == '+' || *s == '-')
                     m += strtol(s, &s, 10);
-                if (r)
-                {
+                if (r) {
                     t -= 5;
                     while (m-- > 0)
                         *t++ = r;
                     while (*s && *s++ != '}')
                         ;
-                }
-                else
+                } else
                     t += snprintf(t, 32, "%ld", m);
                 while (*t = *s++)
                     t++;
@@ -1426,10 +1364,8 @@ main(int argc, char **argv)
         p++;
     *p = 0;
     while ((p = *++argv) && *p == '-')
-        for (;;)
-        {
-            switch (*++p)
-            {
+        for (;;) {
+            switch (*++p) {
             case 0:
                 break;
             case 'c':
@@ -1492,16 +1428,12 @@ main(int argc, char **argv)
     if (!*argv)
         argv = filter;
     locale = 0;
-    while (state.file = *argv++)
-    {
+    while (state.file = *argv++) {
         if (streq(state.file, "-") || streq(state.file, "/dev/stdin")
-            || streq(state.file, "/dev/fd/0"))
-        {
+            || streq(state.file, "/dev/fd/0")) {
             state.file = 0;
             fp = stdin;
-        }
-        else if (!(fp = fopen(state.file, "r")))
-        {
+        } else if (!(fp = fopen(state.file, "r"))) {
             fprintf(stderr, "%s: %s: cannot read\n", unit, state.file);
             return 2;
         }
@@ -1511,16 +1443,12 @@ main(int argc, char **argv)
         level = 1;
         if (!(test
               & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_PASS
-                 | TEST_SUMMARY)))
-        {
+                 | TEST_SUMMARY))) {
             printf("TEST\t%s ", unit);
-            if (s = state.file)
-            {
+            if (s = state.file) {
                 subunit = p = 0;
-                for (;;)
-                {
-                    switch (*s++)
-                    {
+                for (;;) {
+                    switch (*s++) {
                     case 0:
                         break;
                     case '/':
@@ -1540,8 +1468,7 @@ main(int argc, char **argv)
                     p = s - 1;
                 subunitlen = p - subunit;
                 printf("%-.*s ", subunitlen, subunit);
-            }
-            else
+            } else
                 subunit = 0;
             for (s = version; *s && (*s != ' ' || *(s + 1) != '$'); s++)
                 putchar(*s);
@@ -1569,22 +1496,18 @@ main(int argc, char **argv)
             s = "regex";
 #endif
             printf("NOTE\t%s\n", s);
-            if (elementsof(unsupported) > 1)
-            {
+            if (elementsof(unsupported) > 1) {
 #if (REG_TEST_DEFAULT & (REG_AUGMENTED | REG_EXTENDED | REG_SHELL))          \
 || !defined(REG_EXTENDED)
                 i = 0;
 #else
                 i = REG_EXTENDED != 0;
 #endif
-                for (got = 0; i < elementsof(unsupported) - 1; i++)
-                {
-                    if (!got)
-                    {
+                for (got = 0; i < elementsof(unsupported) - 1; i++) {
+                    if (!got) {
                         got = 1;
                         printf("NOTE\tunsupported: %s", unsupported[i]);
-                    }
-                    else
+                    } else
                         printf(",%s", unsupported[i]);
                 }
                 if (got)
@@ -1599,24 +1522,20 @@ main(int argc, char **argv)
             bad("out of space [discipline string stream]\n", NiL, NiL, 0, 0);
         preg.re_disc = &state.disc.disc;
 #endif
-        if (test & TEST_CATCH)
-        {
+        if (test & TEST_CATCH) {
             signal(SIGALRM, gotcha);
             signal(SIGBUS, gotcha);
             signal(SIGSEGV, gotcha);
         }
-        while (p = nextline(fp))
-        {
+        while (p = nextline(fp)) {
 
             /* parse: */
 
             line = p;
-            if (*p == ':' && !isspace(*(p + 1)))
-            {
+            if (*p == ':' && !isspace(*(p + 1))) {
                 while (*++p && *p != ':')
                     ;
-                if (!*p++)
-                {
+                if (!*p++) {
                     if (test & TEST_BASELINE)
                         printf("%s\n", line);
                     continue;
@@ -1624,20 +1543,17 @@ main(int argc, char **argv)
             }
             while (isspace(*p))
                 p++;
-            if (*p == 0 || *p == '#' || *p == 'T')
-            {
+            if (*p == 0 || *p == '#' || *p == 'T') {
                 if (test & TEST_BASELINE)
                     printf("%s\n", line);
                 continue;
             }
-            if (*p == ':' || *p == 'N')
-            {
+            if (*p == ':' || *p == 'N') {
                 if (test & TEST_BASELINE)
                     printf("%s\n", line);
                 else if (!(test
                            & (TEST_ACTUAL | TEST_FAIL | TEST_PASS
-                              | TEST_SUMMARY)))
-                {
+                              | TEST_SUMMARY))) {
                     while (*++p && !isspace(*p))
                         ;
                     while (isspace(*p))
@@ -1649,10 +1565,8 @@ main(int argc, char **argv)
             j = 0;
             i = 0;
             field[i++] = p;
-            for (;;)
-            {
-                switch (*p++)
-                {
+            for (;;) {
+                switch (*p++) {
                 case 0:
                     p--;
                     j = 0;
@@ -1666,8 +1580,7 @@ main(int argc, char **argv)
                         field[i - 1] = 0;
                     else if (streq(s, "NULL"))
                         *s = 0;
-                    while (*p == '\t')
-                    {
+                    while (*p == '\t') {
                         p++;
                         j++;
                     }
@@ -1694,18 +1607,15 @@ main(int argc, char **argv)
             state.extracted = 0;
             nmatch = 20;
             nsub = -1;
-            for (p = spec; *p; p++)
-            {
-                if (isdigit(*p))
-                {
+            for (p = spec; *p; p++) {
+                if (isdigit(*p)) {
                     nmatch = strtol(p, &p, 10);
                     if (nmatch >= elementsof(match))
                         bad("nmatch must be < 100\n", NiL, NiL, 0, 0);
                     p--;
                     continue;
                 }
-                switch (*p)
-                {
+                switch (*p) {
                 case 'A':
                     test |= TEST_ARE;
                     continue;
@@ -1720,8 +1630,7 @@ main(int argc, char **argv)
                         bad("locale nesting not supported\n", NiL, NiL, 0, 0);
                     if (i != 2)
                         bad("locale field expected\n", NiL, NiL, 0, 0);
-                    if (!(skip & level))
-                    {
+                    if (!(skip & level)) {
 #if defined(LC_COLLATE) && defined(LC_CTYPE)
                         s = field[1];
                         if (!s || streq(s, "POSIX"))
@@ -1736,8 +1645,7 @@ main(int argc, char **argv)
                             ans = "C";
                         if (!ans || !streq(ans, s) && streq(s, "C"))
                             skip = note(level, s, skip, test);
-                        else
-                        {
+                        else {
                             if (!(test
                                   & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL
                                      | TEST_PASS | TEST_SUMMARY)))
@@ -1878,13 +1786,10 @@ main(int argc, char **argv)
 
                 case '{':
                     level <<= 1;
-                    if (skip & (level >> 1))
-                    {
+                    if (skip & (level >> 1)) {
                         skip |= level;
                         cflags = NOTEST;
-                    }
-                    else
-                    {
+                    } else {
                         skip &= ~level;
                         test |= TEST_QUERY;
                     }
@@ -1892,10 +1797,8 @@ main(int argc, char **argv)
                 case '}':
                     if (level == 1)
                         bad("invalid {...} nesting\n", NiL, NiL, 0, 0);
-                    if ((skip & level) && !(skip & (level >> 1)))
-                    {
-                        if (!(test & (TEST_BASELINE | TEST_SUMMARY)))
-                        {
+                    if ((skip & level) && !(skip & (level >> 1))) {
+                        if (!(test & (TEST_BASELINE | TEST_SUMMARY))) {
                             if (test & (TEST_ACTUAL | TEST_FAIL))
                                 printf("}\n");
                             else if (!(test & TEST_PASS))
@@ -1903,11 +1806,9 @@ main(int argc, char **argv)
                         }
                     }
 #if defined(LC_COLLATE) && defined(LC_CTYPE)
-                    else if (locale & level)
-                    {
+                    else if (locale & level) {
                         locale = 0;
-                        if (!(skip & level))
-                        {
+                        if (!(skip & level)) {
                             s = "C";
                             setlocale(LC_COLLATE, s);
                             setlocale(LC_CTYPE, s);
@@ -1919,9 +1820,8 @@ main(int argc, char **argv)
                                      & (TEST_ACTUAL | TEST_BASELINE
                                         | TEST_PASS))
                                 printf("}\n");
-                        }
-                        else if (test
-                                 & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL))
+                        } else if (test
+                                   & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL))
                             printf("}\n");
                     }
 #endif
@@ -1936,30 +1836,23 @@ main(int argc, char **argv)
                 break;
             }
             if ((cflags | eflags) == NOTEST
-                || (skip & level) && (test & TEST_BASELINE))
-            {
-                if (test & TEST_BASELINE)
-                {
+                || (skip & level) && (test & TEST_BASELINE)) {
+                if (test & TEST_BASELINE) {
                     while (i > 1)
                         *delim[--i] = '\t';
                     printf("%s\n", line);
                 }
                 continue;
             }
-            if (test & TEST_OR)
-            {
-                if (!(test & TEST_VERIFY))
-                {
+            if (test & TEST_OR) {
+                if (!(test & TEST_VERIFY)) {
                     test &= ~TEST_OR;
                     if (state.passed == state.verify && i > 1)
                         printf("NOTE\t%s\n", field[1]);
                     continue;
-                }
-                else if (state.passed > state.verify)
+                } else if (state.passed > state.verify)
                     continue;
-            }
-            else if (test & TEST_AND)
-            {
+            } else if (test & TEST_AND) {
                 if (state.passed == state.verify)
                     continue;
                 state.passed = state.verify;
@@ -1968,29 +1861,22 @@ main(int argc, char **argv)
                 bad("too few fields\n", NiL, NiL, 0, test);
             while (i < elementsof(field))
                 field[i++] = 0;
-            if (re = field[1])
-            {
-                if (streq(re, "SAME"))
-                {
+            if (re = field[1]) {
+                if (streq(re, "SAME")) {
                     re = ppat;
                     test |= TEST_SAME;
-                }
-                else
-                {
+                } else {
                     if (test & TEST_EXPAND)
                         escape(re);
                     re = expand(re, patbuf);
                     strcpy(ppat = pat, re);
                 }
-            }
-            else
+            } else
                 ppat = 0;
             nstr = -1;
-            if (s = field[2])
-            {
+            if (s = field[2]) {
                 s = expand(s, strbuf);
-                if (test & TEST_EXPAND)
-                {
+                if (test & TEST_EXPAND) {
                     nstr = escape(s);
 #if _REG_nexec
                     if (nstr != strlen(s))
@@ -2027,52 +1913,41 @@ main(int argc, char **argv)
                 test &= ~TEST_BRE;
                 flags = cflags;
                 state.which = "BRE";
-            }
-            else
+            } else
 #endif
 #ifdef REG_EXTENDED
-            if (test & TEST_ERE)
-            {
+            if (test & TEST_ERE) {
                 test &= ~TEST_ERE;
                 flags = cflags | REG_EXTENDED;
                 state.which = "ERE";
-            }
-            else
+            } else
 #endif
 #ifdef REG_AUGMENTED
-            if (test & TEST_ARE)
-            {
+            if (test & TEST_ARE) {
                 test &= ~TEST_ARE;
                 flags = cflags | REG_AUGMENTED;
                 state.which = "ARE";
-            }
-            else
+            } else
 #endif
 #ifdef REG_LITERAL
-            if (test & TEST_LRE)
-            {
+            if (test & TEST_LRE) {
                 test &= ~TEST_LRE;
                 flags = cflags | REG_LITERAL;
                 state.which = "LRE";
-            }
-            else
+            } else
 #endif
 #ifdef REG_SHELL
-            if (test & TEST_SRE)
-            {
+            if (test & TEST_SRE) {
                 test &= ~TEST_SRE;
                 flags = cflags | REG_SHELL;
                 state.which = "SRE";
-            }
-            else
+            } else
 #    ifdef REG_AUGMENTED
-            if (test & TEST_KRE)
-            {
+            if (test & TEST_KRE) {
                 test &= ~TEST_KRE;
                 flags = cflags | REG_SHELL | REG_AUGMENTED;
                 state.which = "KRE";
-            }
-            else
+            } else
 #    endif
 #endif
             {
@@ -2093,8 +1968,7 @@ main(int argc, char **argv)
                 continue;
             }
             if ((test & (TEST_QUERY | TEST_VERBOSE | TEST_VERIFY))
-                == TEST_VERBOSE)
-            {
+                == TEST_VERBOSE) {
                 printf("test %-3d %s ", state.lineno, state.which);
                 quote(re, -1, test | TEST_DELIMIT);
                 printf(" ");
@@ -2124,28 +1998,24 @@ main(int argc, char **argv)
 #endif
             if (!(test & TEST_CATCH))
                 cret = regcomp(&preg, re, flags);
-            else if (!(cret = setjmp(state.gotcha)))
-            {
+            else if (!(cret = setjmp(state.gotcha))) {
                 alarm(HUNG);
                 cret = regcomp(&preg, re, flags);
                 alarm(0);
             }
 #if _REG_subcomp
-            if (!cret && (test & TEST_SUB))
-            {
+            if (!cret && (test & TEST_SUB)) {
                 fun = "regsubcomp";
                 p = re + preg.re_npat;
                 if (!(test & TEST_CATCH))
                     cret = regsubcomp(&preg, p, NiL, 0, 0);
-                else if (!(cret = setjmp(state.gotcha)))
-                {
+                else if (!(cret = setjmp(state.gotcha))) {
                     alarm(HUNG);
                     cret = regsubcomp(&preg, p, NiL, 0, 0);
                     alarm(0);
                 }
                 if (!cret && *(p += preg.re_npat)
-                    && !(preg.re_sub->re_flags & REG_SUB_LAST))
-                {
+                    && !(preg.re_sub->re_flags & REG_SUB_LAST)) {
                     if (catchfree(&preg,
                                   flags,
                                   tabs,
@@ -2167,8 +2037,7 @@ main(int argc, char **argv)
             }
 #endif
 #if _REG_decomp
-            if (!cret && (test & TEST_DECOMP))
-            {
+            if (!cret && (test & TEST_DECOMP)) {
                 char buf[128];
 
                 if ((j = nmatch) > sizeof(buf))
@@ -2177,14 +2046,12 @@ main(int argc, char **argv)
                 p = re + preg.re_npat;
                 if (!(test & TEST_CATCH))
                     i = regdecomp(&preg, -1, buf, j);
-                else if (!(cret = setjmp(state.gotcha)))
-                {
+                else if (!(cret = setjmp(state.gotcha))) {
                     alarm(HUNG);
                     i = regdecomp(&preg, -1, buf, j);
                     alarm(0);
                 }
-                if (!cret)
-                {
+                if (!cret) {
                     catchfree(&preg,
                               flags,
                               tabs,
@@ -2200,10 +2067,8 @@ main(int argc, char **argv)
                               skip,
                               level,
                               test);
-                    if (i > j)
-                    {
-                        if (i != (strlen(ans) + 1))
-                        {
+                    if (i > j) {
+                        if (i != (strlen(ans) + 1)) {
                             report(
                             "failed", fun, re, s, nstr, msg, flags, test);
                             printf(
@@ -2212,9 +2077,7 @@ main(int argc, char **argv)
                             j,
                             i);
                         }
-                    }
-                    else if (strcmp(buf, ans))
-                    {
+                    } else if (strcmp(buf, ans)) {
                         report("failed", fun, re, s, nstr, msg, flags, test);
                         quote(ans, -1, test | TEST_DELIMIT);
                         printf(" expected, ");
@@ -2225,26 +2088,19 @@ main(int argc, char **argv)
                 }
             }
 #endif
-            if (!cret)
-            {
-                if (!(flags & REG_NOSUB) && nsub < 0 && *ans == '(')
-                {
+            if (!cret) {
+                if (!(flags & REG_NOSUB) && nsub < 0 && *ans == '(') {
                     for (p = ans; *p; p++)
                         if (*p == '(')
                             nsub++;
                         else if (*p == '{')
                             nsub--;
-                    if (nsub >= 0)
-                    {
-                        if (test & TEST_IGNORE_OVER)
-                        {
+                    if (nsub >= 0) {
+                        if (test & TEST_IGNORE_OVER) {
                             if (nmatch > nsub)
                                 nmatch = nsub + 1;
-                        }
-                        else if (nsub != preg.re_nsub)
-                        {
-                            if (nsub > preg.re_nsub)
-                            {
+                        } else if (nsub != preg.re_nsub) {
+                            if (nsub > preg.re_nsub) {
                                 if (test
                                     & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL
                                        | TEST_PASS | TEST_QUERY | TEST_SUMMARY
@@ -2262,8 +2118,7 @@ main(int argc, char **argv)
                                                    skip,
                                                    level,
                                                    test | TEST_DELIMIT);
-                                else
-                                {
+                                else {
                                     report("re_nsub incorrect",
                                            fun,
                                            re,
@@ -2278,15 +2133,13 @@ main(int argc, char **argv)
                                     preg.re_nsub);
                                     state.errors++;
                                 }
-                            }
-                            else
+                            } else
                                 nsub = preg.re_nsub;
                         }
                     }
                 }
                 if (!(test & (TEST_DECOMP | TEST_SUB)) && *ans && *ans != '('
-                    && !streq(ans, "OK") && !streq(ans, "NOMATCH"))
-                {
+                    && !streq(ans, "OK") && !streq(ans, "NOMATCH")) {
                     if (test
                         & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_PASS
                            | TEST_QUERY | TEST_SUMMARY | TEST_VERIFY))
@@ -2303,8 +2156,7 @@ main(int argc, char **argv)
                                        skip,
                                        level,
                                        test | TEST_DELIMIT);
-                    else if (!(test & TEST_LENIENT))
-                    {
+                    else if (!(test & TEST_LENIENT)) {
                         report("failed", fun, re, NiL, -1, msg, flags, test);
                         printf("%s expected, OK returned\n", ans);
                     }
@@ -2325,14 +2177,11 @@ main(int argc, char **argv)
                               test);
                     continue;
                 }
-            }
-            else
-            {
+            } else {
                 if (test & TEST_LENIENT)
                     /* we'll let it go this time */;
                 else if (!*ans || ans[0] == '('
-                         || cret == REG_BADPAT && streq(ans, "NOMATCH"))
-                {
+                         || cret == REG_BADPAT && streq(ans, "NOMATCH")) {
                     got = 0;
                     for (i = 1; i < elementsof(codes); i++)
                         if (cret == codes[i].code)
@@ -2353,25 +2202,20 @@ main(int argc, char **argv)
                                        skip,
                                        level,
                                        test | TEST_DELIMIT);
-                    else
-                    {
+                    else {
                         report("failed", fun, re, NiL, -1, msg, flags, test);
                         printf("%s returned: ", codes[got].name);
                         error(&preg, cret);
                     }
-                }
-                else
-                {
+                } else {
                     expected = got = 0;
-                    for (i = 1; i < elementsof(codes); i++)
-                    {
+                    for (i = 1; i < elementsof(codes); i++) {
                         if (streq(ans, codes[i].name))
                             expected = i;
                         if (cret == codes[i].code)
                             got = i;
                     }
-                    if (!expected)
-                    {
+                    if (!expected) {
                         if (test
                             & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL
                                | TEST_PASS | TEST_QUERY | TEST_SUMMARY
@@ -2389,8 +2233,7 @@ main(int argc, char **argv)
                                            skip,
                                            level,
                                            test | TEST_DELIMIT);
-                        else
-                        {
+                        else {
                             report("failed: invalid error code",
                                    NiL,
                                    re,
@@ -2403,10 +2246,8 @@ main(int argc, char **argv)
                                    ans,
                                    codes[got].name);
                         }
-                    }
-                    else if (cret != codes[expected].code
-                             && cret != REG_BADPAT)
-                    {
+                    } else if (cret != codes[expected].code
+                               && cret != REG_BADPAT) {
                         if (test
                             & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL
                                | TEST_PASS | TEST_QUERY | TEST_SUMMARY
@@ -2426,8 +2267,7 @@ main(int argc, char **argv)
                                            test | TEST_DELIMIT);
                         else if (test & TEST_IGNORE_ERROR)
                             state.ignored++;
-                        else
-                        {
+                        else {
                             report("should fail and did",
                                    fun,
                                    re,
@@ -2460,43 +2300,35 @@ main(int argc, char **argv)
                 match[i] = state.NOMATCH;
 
 #if _REG_nexec
-            if (nexec >= 0)
-            {
+            if (nexec >= 0) {
                 eret = regnexec(&preg, s, nexec, nmatch, match, eflags);
                 s[nexec] = 0;
-            }
-            else
+            } else
 #endif
             {
                 if (!(test & TEST_CATCH))
                     eret = regexec(&preg, s, nmatch, match, eflags);
-                else if (!(eret = setjmp(state.gotcha)))
-                {
+                else if (!(eret = setjmp(state.gotcha))) {
                     alarm(HUNG);
                     eret = regexec(&preg, s, nmatch, match, eflags);
                     alarm(0);
                 }
             }
 #if _REG_subcomp
-            if ((test & TEST_SUB) && !eret)
-            {
+            if ((test & TEST_SUB) && !eret) {
                 fun = "regsubexec";
                 if (!(test & TEST_CATCH))
                     eret = regsubexec(&preg, s, nmatch, match);
-                else if (!(eret = setjmp(state.gotcha)))
-                {
+                else if (!(eret = setjmp(state.gotcha))) {
                     alarm(HUNG);
                     eret = regsubexec(&preg, s, nmatch, match);
                     alarm(0);
                 }
             }
 #endif
-            if (flags & REG_NOSUB)
-            {
-                if (eret)
-                {
-                    if (eret != REG_NOMATCH || !streq(ans, "NOMATCH"))
-                    {
+            if (flags & REG_NOSUB) {
+                if (eret) {
+                    if (eret != REG_NOMATCH || !streq(ans, "NOMATCH")) {
                         if (test
                             & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL
                                | TEST_PASS | TEST_QUERY | TEST_SUMMARY
@@ -2514,8 +2346,7 @@ main(int argc, char **argv)
                                            skip,
                                            level,
                                            test | TEST_DELIMIT);
-                        else
-                        {
+                        else {
                             report("REG_NOSUB failed",
                                    fun,
                                    re,
@@ -2527,9 +2358,7 @@ main(int argc, char **argv)
                             error(&preg, eret);
                         }
                     }
-                }
-                else if (streq(ans, "NOMATCH"))
-                {
+                } else if (streq(ans, "NOMATCH")) {
                     if (test
                         & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_PASS
                            | TEST_QUERY | TEST_SUMMARY | TEST_VERIFY))
@@ -2546,8 +2375,7 @@ main(int argc, char **argv)
                                        skip,
                                        level,
                                        test | TEST_DELIMIT);
-                    else
-                    {
+                    else {
                         report("should fail and didn't",
                                fun,
                                re,
@@ -2559,11 +2387,8 @@ main(int argc, char **argv)
                         error(&preg, eret);
                     }
                 }
-            }
-            else if (eret)
-            {
-                if (eret != REG_NOMATCH || !streq(ans, "NOMATCH"))
-                {
+            } else if (eret) {
+                if (eret != REG_NOMATCH || !streq(ans, "NOMATCH")) {
                     if (test
                         & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_PASS
                            | TEST_QUERY | TEST_SUMMARY | TEST_VERIFY))
@@ -2580,8 +2405,7 @@ main(int argc, char **argv)
                                        skip,
                                        level,
                                        test | TEST_DELIMIT);
-                    else
-                    {
+                    else {
                         report("failed", fun, re, s, nstr, msg, flags, test);
                         if (eret != REG_NOMATCH)
                             error(&preg, eret);
@@ -2591,9 +2415,7 @@ main(int argc, char **argv)
                             printf("\n");
                     }
                 }
-            }
-            else if (streq(ans, "NOMATCH"))
-            {
+            } else if (streq(ans, "NOMATCH")) {
                 if (test
                     & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_PASS
                        | TEST_QUERY | TEST_SUMMARY | TEST_VERIFY))
@@ -2610,8 +2432,7 @@ main(int argc, char **argv)
                                    skip,
                                    level,
                                    test | TEST_DELIMIT);
-                else
-                {
+                else {
                     report("should fail and didn't",
                            fun,
                            re,
@@ -2624,11 +2445,9 @@ main(int argc, char **argv)
                 }
             }
 #if _REG_subcomp
-            else if (test & TEST_SUB)
-            {
+            else if (test & TEST_SUB) {
                 p = preg.re_sub->re_buf;
-                if (strcmp(p, ans))
-                {
+                if (strcmp(p, ans)) {
                     report("failed", fun, re, s, nstr, msg, flags, test);
                     quote(ans, -1, test | TEST_DELIMIT);
                     printf(" expected, ");
@@ -2637,10 +2456,8 @@ main(int argc, char **argv)
                 }
             }
 #endif
-            else if (!*ans)
-            {
-                if (match[0].rm_so != state.NOMATCH.rm_so)
-                {
+            else if (!*ans) {
+                if (match[0].rm_so != state.NOMATCH.rm_so) {
                     if (test
                         & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_PASS
                            | TEST_QUERY | TEST_SUMMARY | TEST_VERIFY))
@@ -2657,8 +2474,7 @@ main(int argc, char **argv)
                                        skip,
                                        level,
                                        test);
-                    else
-                    {
+                    else {
                         report("failed: no match but match array assigned",
                                NiL,
                                re,
@@ -2670,13 +2486,10 @@ main(int argc, char **argv)
                         matchprint(match, nmatch, nsub, NiL, test);
                     }
                 }
-            }
-            else if (matchcheck(
-                     match, nmatch, nsub, ans, re, s, nstr, flags, test))
-            {
+            } else if (matchcheck(
+                       match, nmatch, nsub, ans, re, s, nstr, flags, test)) {
 #if _REG_nexec
-                if (nexec < 0 && !nonexec)
-                {
+                if (nexec < 0 && !nonexec) {
                     nexec = nstr >= 0 ? nstr : strlen(s);
                     s[nexec] = '\n';
                     testno++;
@@ -2684,8 +2497,7 @@ main(int argc, char **argv)
                 }
 #endif
                 if (!(test & (TEST_DECOMP | TEST_SUB | TEST_VERIFY))
-                    && !nonosub)
-                {
+                    && !nonosub) {
                     if (catchfree(&preg,
                                   flags,
                                   tabs,
@@ -2719,10 +2531,9 @@ main(int argc, char **argv)
                                    skip,
                                    level,
                                    test | TEST_OK);
-            }
-            else if (test
-                     & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_PASS
-                        | TEST_QUERY | TEST_SUMMARY | TEST_VERIFY))
+            } else if (test
+                       & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_PASS
+                          | TEST_QUERY | TEST_SUMMARY | TEST_VERIFY))
                 skip = extract(tabs,
                                line,
                                re,
@@ -2765,8 +2576,7 @@ main(int argc, char **argv)
             state.unspecified,
             state.signals);
         else if (!(test
-                   & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_PASS)))
-        {
+                   & (TEST_ACTUAL | TEST_BASELINE | TEST_FAIL | TEST_PASS))) {
             printf("TEST\t%s", unit);
             if (subunit)
                 printf(" %-.*s", subunitlen, subunit);

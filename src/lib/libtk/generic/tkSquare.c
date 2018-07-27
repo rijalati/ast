@@ -180,8 +180,7 @@ char **argv;           /* Argument strings. */
     Square *squarePtr;
     Tk_Window tkwin;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -191,8 +190,7 @@ char **argv;           /* Argument strings. */
     }
 
     tkwin = Tk_CreateWindowFromPath(interp, main, argv[1], ( char * )NULL);
-    if (tkwin == NULL)
-    {
+    if (tkwin == NULL) {
         return TCL_ERROR;
     }
     Tk_SetClass(tkwin, "Square");
@@ -225,8 +223,7 @@ char **argv;           /* Argument strings. */
                           ExposureMask | StructureNotifyMask,
                           SquareEventProc,
                           ( ClientData )squarePtr);
-    if (SquareConfigure(interp, squarePtr, argc - 2, argv + 2, 0) != TCL_OK)
-    {
+    if (SquareConfigure(interp, squarePtr, argc - 2, argv + 2, 0) != TCL_OK) {
         Tk_DestroyWindow(squarePtr->tkwin);
         return TCL_ERROR;
     }
@@ -264,8 +261,7 @@ char **argv;           /* Argument strings. */
     size_t length;
     char c;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -277,10 +273,8 @@ char **argv;           /* Argument strings. */
     c = argv[1][0];
     length = strlen(argv[1]);
     if ((c == 'c') && (strncmp(argv[1], "cget", length) == 0)
-        && (length >= 2))
-    {
-        if (argc != 3)
-        {
+        && (length >= 2)) {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -294,38 +288,28 @@ char **argv;           /* Argument strings. */
                                    ( char * )squarePtr,
                                    argv[2],
                                    0);
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
-             && (length >= 2))
-    {
-        if (argc == 2)
-        {
+    } else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
+               && (length >= 2)) {
+        if (argc == 2) {
             result = Tk_ConfigureInfo(interp,
                                       squarePtr->tkwin,
                                       configSpecs,
                                       ( char * )squarePtr,
                                       ( char * )NULL,
                                       0);
-        }
-        else if (argc == 3)
-        {
+        } else if (argc == 3) {
             result = Tk_ConfigureInfo(interp,
                                       squarePtr->tkwin,
                                       configSpecs,
                                       ( char * )squarePtr,
                                       argv[2],
                                       0);
-        }
-        else
-        {
+        } else {
             result = SquareConfigure(
             interp, squarePtr, argc - 2, argv + 2, TK_CONFIG_ARGV_ONLY);
         }
-    }
-    else if ((c == 'p') && (strncmp(argv[1], "position", length) == 0))
-    {
-        if ((argc != 2) && (argc != 4))
-        {
+    } else if ((c == 'p') && (strncmp(argv[1], "position", length) == 0)) {
+        if ((argc != 2) && (argc != 4)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -333,24 +317,19 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (argc == 4)
-        {
+        if (argc == 4) {
             if ((Tk_GetPixels(interp, squarePtr->tkwin, argv[2], &squarePtr->x)
                  != TCL_OK)
                 || (Tk_GetPixels(
                     interp, squarePtr->tkwin, argv[3], &squarePtr->y)
-                    != TCL_OK))
-            {
+                    != TCL_OK)) {
                 goto error;
             }
             KeepInWindow(squarePtr);
         }
         sprintf(interp->result, "%d %d", squarePtr->x, squarePtr->y);
-    }
-    else if ((c == 's') && (strncmp(argv[1], "size", length) == 0))
-    {
-        if ((argc != 2) && (argc != 3))
-        {
+    } else if ((c == 's') && (strncmp(argv[1], "size", length) == 0)) {
+        if ((argc != 2) && (argc != 3)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -358,16 +337,14 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (argc == 3)
-        {
+        if (argc == 3) {
             int i;
 
-            if (Tk_GetPixels(interp, squarePtr->tkwin, argv[2], &i) != TCL_OK)
-            {
+            if (Tk_GetPixels(interp, squarePtr->tkwin, argv[2], &i)
+                != TCL_OK) {
                 goto error;
             }
-            if ((i <= 0) || (i > 100))
-            {
+            if ((i <= 0) || (i > 100)) {
                 Tcl_AppendResult(
                 interp, "bad size \"", argv[2], "\"", ( char * )NULL);
                 goto error;
@@ -376,9 +353,7 @@ char **argv;           /* Argument strings. */
             KeepInWindow(squarePtr);
         }
         sprintf(interp->result, "%d", squarePtr->size);
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "bad option \"",
                          argv[1],
@@ -386,8 +361,7 @@ char **argv;           /* Argument strings. */
                          ( char * )NULL);
         goto error;
     }
-    if (!squarePtr->updatePending)
-    {
+    if (!squarePtr->updatePending) {
         Tcl_DoWhenIdle(SquareDisplay, ( ClientData )squarePtr);
         squarePtr->updatePending = 1;
     }
@@ -435,8 +409,7 @@ int flags;          /* Flags to pass to
                            argv,
                            ( char * )squarePtr,
                            flags)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -447,8 +420,7 @@ int flags;          /* Flags to pass to
 
     Tk_SetWindowBackground(squarePtr->tkwin,
                            Tk_3DBorderColor(squarePtr->bgBorder)->pixel);
-    if ((squarePtr->gc == None) && (squarePtr->doubleBuffer))
-    {
+    if ((squarePtr->gc == None) && (squarePtr->doubleBuffer)) {
         XGCValues gcValues;
         gcValues.function = GXcopy;
         gcValues.graphics_exposures = False;
@@ -463,8 +435,7 @@ int flags;          /* Flags to pass to
 
     Tk_GeometryRequest(squarePtr->tkwin, 200, 150);
     Tk_SetInternalBorder(squarePtr->tkwin, squarePtr->borderWidth);
-    if (!squarePtr->updatePending)
-    {
+    if (!squarePtr->updatePending) {
         Tcl_DoWhenIdle(SquareDisplay, ( ClientData )squarePtr);
         squarePtr->updatePending = 1;
     }
@@ -495,34 +466,25 @@ XEvent *eventPtr;      /* Information about event. */
 {
     Square *squarePtr = ( Square * )clientData;
 
-    if (eventPtr->type == Expose)
-    {
-        if (!squarePtr->updatePending)
-        {
+    if (eventPtr->type == Expose) {
+        if (!squarePtr->updatePending) {
             Tcl_DoWhenIdle(SquareDisplay, ( ClientData )squarePtr);
             squarePtr->updatePending = 1;
         }
-    }
-    else if (eventPtr->type == ConfigureNotify)
-    {
+    } else if (eventPtr->type == ConfigureNotify) {
         KeepInWindow(squarePtr);
-        if (!squarePtr->updatePending)
-        {
+        if (!squarePtr->updatePending) {
             Tcl_DoWhenIdle(SquareDisplay, ( ClientData )squarePtr);
             squarePtr->updatePending = 1;
         }
-    }
-    else if (eventPtr->type == DestroyNotify)
-    {
-        if (squarePtr->tkwin != NULL)
-        {
+    } else if (eventPtr->type == DestroyNotify) {
+        if (squarePtr->tkwin != NULL) {
             squarePtr->tkwin = NULL;
             Tcl_DeleteCommand(
             squarePtr->interp,
             Tcl_GetCommandName(squarePtr->interp, squarePtr->widgetCmd));
         }
-        if (squarePtr->updatePending)
-        {
+        if (squarePtr->updatePending) {
             Tcl_CancelIdleCall(SquareDisplay, ( ClientData )squarePtr);
         }
         Tcl_EventuallyFree(( ClientData )squarePtr, SquareDestroy);
@@ -560,8 +522,7 @@ ClientData clientData; /* Pointer to widget record for widget. */
      * destroys the widget.
      */
 
-    if (tkwin != NULL)
-    {
+    if (tkwin != NULL) {
         squarePtr->tkwin = NULL;
         Tk_DestroyWindow(tkwin);
     }
@@ -594,8 +555,7 @@ ClientData clientData; /* Information about window. */
     Drawable d;
 
     squarePtr->updatePending = 0;
-    if (!Tk_IsMapped(tkwin))
-    {
+    if (!Tk_IsMapped(tkwin)) {
         return;
     }
 
@@ -603,17 +563,14 @@ ClientData clientData; /* Information about window. */
      * Create a pixmap for double-buffering, if necessary.
      */
 
-    if (squarePtr->doubleBuffer)
-    {
+    if (squarePtr->doubleBuffer) {
         pm = Tk_GetPixmap(Tk_Display(tkwin),
                           Tk_WindowId(tkwin),
                           Tk_Width(tkwin),
                           Tk_Height(tkwin),
                           DefaultDepthOfScreen(Tk_Screen(tkwin)));
         d = pm;
-    }
-    else
-    {
+    } else {
         d = Tk_WindowId(tkwin);
     }
 
@@ -649,8 +606,7 @@ ClientData clientData; /* Information about window. */
      * If double-buffered, copy to the screen and release the pixmap.
      */
 
-    if (squarePtr->doubleBuffer)
-    {
+    if (squarePtr->doubleBuffer) {
         XCopyArea(Tk_Display(tkwin),
                   pm,
                   Tk_WindowId(tkwin),
@@ -689,8 +645,7 @@ static void SquareDestroy(memPtr) char *memPtr; /* Info about square widget.
     Square *squarePtr = ( Square * )memPtr;
 
     Tk_FreeOptions(configSpecs, ( char * )squarePtr, squarePtr->display, 0);
-    if (squarePtr->gc != None)
-    {
+    if (squarePtr->gc != None) {
         Tk_FreeGC(squarePtr->display, squarePtr->gc);
     }
     ckfree(( char * )squarePtr);
@@ -719,26 +674,21 @@ static void KeepInWindow(squarePtr) Square *squarePtr; /* Pointer to widget
 {
     int i, bd;
     bd = 0;
-    if (squarePtr->relief != TK_RELIEF_FLAT)
-    {
+    if (squarePtr->relief != TK_RELIEF_FLAT) {
         bd = squarePtr->borderWidth;
     }
     i = (Tk_Width(squarePtr->tkwin) - bd) - (squarePtr->x + squarePtr->size);
-    if (i < 0)
-    {
+    if (i < 0) {
         squarePtr->x += i;
     }
     i = (Tk_Height(squarePtr->tkwin) - bd) - (squarePtr->y + squarePtr->size);
-    if (i < 0)
-    {
+    if (i < 0) {
         squarePtr->y += i;
     }
-    if (squarePtr->x < bd)
-    {
+    if (squarePtr->x < bd) {
         squarePtr->x = bd;
     }
-    if (squarePtr->y < bd)
-    {
+    if (squarePtr->y < bd) {
         squarePtr->y = bd;
     }
 }

@@ -135,16 +135,13 @@ matchto(char *name, int mesg)
         return 0;
     mp = state.msg.list + mesg - 1;
     for (i = 0; i < elementsof(fields); i++)
-        if (t = grab(mp, fields[i], NiL))
-        {
+        if (t = grab(mp, fields[i], NiL)) {
             s = name;
             b = t;
-            while (*t)
-            {
+            while (*t) {
                 if (!*s)
                     return 1;
-                if (lower(*s++) != lower(*t++))
-                {
+                if (lower(*s++) != lower(*t++)) {
                     t = ++b;
                     s = name;
                 }
@@ -175,10 +172,8 @@ matchfield(char *str, int mesg)
     else
         strncopy(state.last.scan, str, sizeof(state.last.scan));
     mp = state.msg.list + mesg - 1;
-    if (state.var.searchheaders && (s = strchr(str, ':')))
-    {
-        if (lower(str[0]) == 't' && lower(str[1]) == 'o' && str[2] == ':')
-        {
+    if (state.var.searchheaders && (s = strchr(str, ':'))) {
+        if (lower(str[0]) == 't' && lower(str[1]) == 'o' && str[2] == ':') {
             for (s += 3; isspace(*s); s++)
                 ;
             return matchto(s, mesg);
@@ -189,21 +184,17 @@ matchfield(char *str, int mesg)
         while (isspace(*s))
             s++;
         str = s;
-    }
-    else
-    {
+    } else {
         s = str;
         t = grab(mp, GSUB, NiL);
     }
     if (!t)
         return 0;
     b = t;
-    while (*t)
-    {
+    while (*t) {
         if (!*s)
             return 1;
-        if (lower(*s++) != lower(*t++))
-        {
+        if (lower(*s++) != lower(*t++)) {
             t = ++b;
             s = str;
         }
@@ -220,8 +211,7 @@ matchsender(char *s, int mesg)
     char *t;
 
     if (*s && (t = grab(state.msg.list + mesg - 1, GREPLY | GCOMPARE, NiL)))
-        do
-        {
+        do {
             if (!*s)
                 return !isalnum(*t);
         } while (lower(*s++) == lower(*t++));
@@ -239,8 +229,7 @@ metamess(int meta, int f)
     struct msg *mp;
 
     c = meta;
-    switch (c)
-    {
+    switch (c) {
     case '^':
         /*
          * First 'good' message left.
@@ -267,8 +256,7 @@ metamess(int meta, int f)
          * Current message.
          */
         m = state.msg.dot - state.msg.list + 1;
-        if ((state.msg.dot->m_flag & (MDELETE | MNONE)) != f)
-        {
+        if ((state.msg.dot->m_flag & (MDELETE | MNONE)) != f) {
             note(0, "%d: inappropriate message", m);
             return -1;
         }
@@ -332,8 +320,7 @@ evalcol(char *s)
     if (!(c = *s))
         return state.colmod;
     for (colp = &coltab[0]; colp->co_char; colp++)
-        if (colp->co_char == c)
-        {
+        if (colp->co_char == c) {
             return neg ? (colp->co_bit << CMNOT) : colp->co_bit;
         }
     return 0;
@@ -387,21 +374,17 @@ markall(char *buf, int f)
     other = 0;
     lone = 0;
     beg = 0;
-    while (tok != TEOL)
-    {
-        switch (tok)
-        {
+    while (tok != TEOL) {
+        switch (tok) {
         case TNUMBER:
         number:
-            if (star)
-            {
+            if (star) {
                 note(0, "No numbers mixed with *");
                 return -1;
             }
             mc++;
             other++;
-            if (beg)
-            {
+            if (beg) {
                 if (check(state.lexnumber, f))
                     return -1;
                 for (i = beg; i <= state.lexnumber; i++)
@@ -417,25 +400,21 @@ markall(char *buf, int f)
                 return -1;
             tok = scan(&bufp);
             regret(tok);
-            if (tok != TDASH)
-            {
+            if (tok != TDASH) {
                 markone(beg);
                 beg = 0;
             }
             break;
 
         case TPLUS:
-            if (beg)
-            {
+            if (beg) {
                 note(0, "Non-numeric second argument");
                 return -1;
             }
             i = valdot;
-            do
-            {
+            do {
                 i++;
-                if (i > state.msg.count)
-                {
+                if (i > state.msg.count) {
                     note(0, "Referencing beyond EOF");
                     return -1;
                 }
@@ -444,15 +423,12 @@ markall(char *buf, int f)
             break;
 
         case TDASH:
-            if (!beg)
-            {
+            if (!beg) {
                 lone = 1;
                 i = valdot;
-                do
-                {
+                do {
                     i--;
-                    if (i <= 0)
-                    {
+                    if (i <= 0) {
                         note(0, "Referencing before 1");
                         return -1;
                     }
@@ -463,23 +439,19 @@ markall(char *buf, int f)
             break;
 
         case TSTRING:
-            if (beg)
-            {
+            if (beg) {
                 note(0, "Non-numeric second argument");
                 return -1;
             }
             other++;
-            if (state.lexstring[0] == ':')
-            {
+            if (state.lexstring[0] == ':') {
                 colresult = evalcol(state.lexstring + 1);
-                if (!colresult)
-                {
+                if (!colresult) {
                     note(0, "\"%s\", unknown : modifier", state.lexstring);
                     return -1;
                 }
                 colmod |= colresult;
-            }
-            else
+            } else
                 *np++ = savestr(state.lexstring);
             break;
 
@@ -492,8 +464,7 @@ markall(char *buf, int f)
             goto number;
 
         case TSTAR:
-            if (other)
-            {
+            if (other) {
                 note(0, "Can't mix \"*\" with anything");
                 return -1;
             }
@@ -505,8 +476,7 @@ markall(char *buf, int f)
         }
         i = tok;
         tok = scan(&bufp);
-        if (!lone && tok == TEOL && i == TDASH)
-        {
+        if (!lone && tok == TEOL && i == TDASH) {
             bufp = "$";
             tok = scan(&bufp);
         }
@@ -514,16 +484,13 @@ markall(char *buf, int f)
     state.colmod = colmod;
     *np = 0;
     mc = 0;
-    if (star)
-    {
+    if (star) {
         for (i = 0; i < state.msg.count; i++)
-            if ((state.msg.list[i].m_flag & (MDELETE | MNONE)) == f)
-            {
+            if ((state.msg.list[i].m_flag & (MDELETE | MNONE)) == f) {
                 markone(i + 1);
                 mc++;
             }
-        if (!mc)
-        {
+        if (!mc) {
             note(0, "No applicable messages");
             return -1;
         }
@@ -546,23 +513,16 @@ markall(char *buf, int f)
      * messages whose senders were not requested.
      */
 
-    if (np > namelist)
-    {
-        for (i = 1; i <= state.msg.count; i++)
-        {
+    if (np > namelist) {
+        for (i = 1; i <= state.msg.count; i++) {
             for (mc = 0, np = &namelist[0]; *np; np++)
-                if (**np == '/')
-                {
-                    if (matchfield(*np + 1, i))
-                    {
+                if (**np == '/') {
+                    if (matchfield(*np + 1, i)) {
                         mc++;
                         break;
                     }
-                }
-                else
-                {
-                    if (matchsender(*np, i))
-                    {
+                } else {
+                    if (matchsender(*np, i)) {
                         mc++;
                         break;
                     }
@@ -577,13 +537,11 @@ markall(char *buf, int f)
 
         mc = 0;
         for (i = 1; i <= state.msg.count; i++)
-            if (state.msg.list[i - 1].m_flag & MMARK)
-            {
+            if (state.msg.list[i - 1].m_flag & MMARK) {
                 mc++;
                 break;
             }
-        if (!mc)
-        {
+        if (!mc) {
             printf("No applicable messages from {%s", namelist[0]);
             for (np = &namelist[1]; *np; np++)
                 printf(", %s", *np);
@@ -597,10 +555,8 @@ markall(char *buf, int f)
      * unmark any messages which do not satisfy the modifiers.
      */
 
-    if (colmod)
-    {
-        for (i = 1; i <= state.msg.count; i++)
-        {
+    if (colmod) {
+        for (i = 1; i <= state.msg.count; i++) {
             struct coltab *colp;
 
             mp = state.msg.list + i - 1;
@@ -614,8 +570,7 @@ markall(char *buf, int f)
         for (mp = state.msg.list; mp < state.msg.list + state.msg.count; mp++)
             if (mp->m_flag & MMARK)
                 break;
-        if (mp >= state.msg.list + state.msg.count)
-        {
+        if (mp >= state.msg.list + state.msg.count) {
             struct coltab *colp;
 
             printf("No messages satisfy");
@@ -643,18 +598,15 @@ getmsglist(char *buf, unsigned long flags)
     struct msg *ip;
     struct msg *mp;
 
-    if (!(ip = state.msg.list) || !state.msg.count)
-    {
-        if (ip)
-        {
+    if (!(ip = state.msg.list) || !state.msg.count) {
+        if (ip) {
             ip->m_index = 0;
             return 0;
         }
         note(0, "No appropriate messages");
         return -1;
     }
-    if (state.folder == FIMAP)
-    {
+    if (state.folder == FIMAP) {
         for (; isspace(*buf); buf++)
             ;
         if (*buf == '(')
@@ -663,8 +615,7 @@ getmsglist(char *buf, unsigned long flags)
     if (markall(buf, flags) < 0)
         return -1;
     for (mp = state.msg.list; mp < state.msg.list + state.msg.count; mp++)
-        if (mp->m_flag & MMARK)
-        {
+        if (mp->m_flag & MMARK) {
             ip->m_index = mp - state.msg.list + 1;
             ip++;
         }
@@ -682,14 +633,12 @@ check(int mesg, int f)
 {
     struct msg *mp;
 
-    if (mesg < 1 || mesg > state.msg.count)
-    {
+    if (mesg < 1 || mesg > state.msg.count) {
         note(0, "%d: invalid message number", mesg);
         return -1;
     }
     mp = state.msg.list + mesg - 1;
-    if ((mp->m_flag & MNONE) || f != MDELETE && (mp->m_flag & MDELETE))
-    {
+    if ((mp->m_flag & MNONE) || f != MDELETE && (mp->m_flag & MDELETE)) {
         note(0, "%d: inappropriate message", mesg);
         return -1;
     }
@@ -703,8 +652,7 @@ check(int mesg, int f)
 int
 addarg(struct argvec *vp, const char *s)
 {
-    if (vp->argp >= &vp->argv[elementsof(vp->argv) - 1])
-    {
+    if (vp->argp >= &vp->argv[elementsof(vp->argv) - 1]) {
         note(0, "Too many arguments; excess discarded");
         return -1;
     }
@@ -730,14 +678,11 @@ getargs(struct argvec *vp, char *s)
     char mac[LINESIZE];
 
     pop = 0;
-    for (;;)
-    {
+    for (;;) {
         while (isspace(*s))
             s++;
-        if (!*s)
-        {
-            if (s = pop)
-            {
+        if (!*s) {
+            if (s = pop) {
                 pop = 0;
                 continue;
             }
@@ -745,12 +690,9 @@ getargs(struct argvec *vp, char *s)
         }
         quote = 0;
         t = buf;
-        for (;;)
-        {
-            if (!(c = *s))
-            {
-                if (pop)
-                {
+        for (;;) {
+            if (!(c = *s)) {
+                if (pop) {
                     s = pop;
                     pop = 0;
                     continue;
@@ -758,38 +700,29 @@ getargs(struct argvec *vp, char *s)
                 break;
             }
             s++;
-            if (!pop)
-            {
+            if (!pop) {
                 if (c == '$' && quote != '\'' && *s == '{'
-                    && (e = strchr(s, '}')))
-                {
+                    && (e = strchr(s, '}'))) {
                     c = *e;
                     *e = 0;
-                    if (*++s == '<')
-                    {
-                        if (fp = fileopen(++s, "Xr"))
-                        {
-                            if ((n = fread(mac, 1, sizeof(mac) - 1, fp)) > 0)
-                            {
+                    if (*++s == '<') {
+                        if (fp = fileopen(++s, "Xr")) {
+                            if ((n = fread(mac, 1, sizeof(mac) - 1, fp))
+                                > 0) {
                                 mac[n] = 0;
                                 s = mac;
-                            }
-                            else
-                            {
+                            } else {
                                 if (n < 0 && !state.sourcing)
                                     note(SYSTEM, "%s", s);
                                 s = 0;
                             }
                             fileclose(fp);
-                        }
-                        else
-                        {
+                        } else {
                             if (!state.sourcing)
                                 note(SYSTEM, "%s", s);
                             s = 0;
                         }
-                    }
-                    else
+                    } else
                         s = varget(s);
                     *e++ = c;
                     if (s)
@@ -797,38 +730,27 @@ getargs(struct argvec *vp, char *s)
                     else
                         s = e;
                     continue;
-                }
-                else if (quote)
-                {
-                    if (c == quote)
-                    {
+                } else if (quote) {
+                    if (c == quote) {
                         quote = 0;
                         continue;
                     }
-                    if (c == '\\')
-                    {
+                    if (c == '\\') {
                         c = chresc(s - 1, &e);
                         s = e;
                     }
-                }
-                else if (c == '"' || c == '\'')
-                {
+                } else if (c == '"' || c == '\'') {
                     quote = c;
                     continue;
-                }
-                else if (isspace(c))
+                } else if (isspace(c))
                     break;
-            }
-            else if (isspace(c))
-            {
-                if (!quote)
-                {
+            } else if (isspace(c)) {
+                if (!quote) {
                     if (!*s || t > buf && *(t - 1) == ' ')
                         continue;
                     c = ' ';
-                }
-                else if (c == '\n' && !*s
-                         || c == '\r' && *s == '\n' && !*(s + 1))
+                } else if (c == '\n' && !*s
+                           || c == '\r' && *s == '\n' && !*(s + 1))
                     continue;
             }
             if (t < &buf[sizeof(buf) - 2])
@@ -863,8 +785,7 @@ scan(char **sp)
     struct lex *lp;
     int quotec;
 
-    if (state.regretp >= 0)
-    {
+    if (state.regretp >= 0) {
         strncopy(state.lexstring,
                  state.string_stack[state.regretp],
                  sizeof(state.lexstring));
@@ -887,8 +808,7 @@ scan(char **sp)
      * so report that.
      */
 
-    if (!c)
-    {
+    if (!c) {
         *sp = --cp;
         return TEOL;
     }
@@ -899,11 +819,9 @@ scan(char **sp)
      * Return TNUMBER when done.
      */
 
-    if (isdigit(c))
-    {
+    if (isdigit(c)) {
         state.lexnumber = 0;
-        while (isdigit(c))
-        {
+        while (isdigit(c)) {
             state.lexnumber = state.lexnumber * 10 + c - '0';
             *cp2++ = c;
             c = *cp++;
@@ -919,8 +837,7 @@ scan(char **sp)
      */
 
     for (lp = &singles[0]; lp->l_char; lp++)
-        if (c == lp->l_char)
-        {
+        if (c == lp->l_char) {
             state.lexstring[0] = c;
             state.lexstring[1] = 0;
             *sp = cp;
@@ -936,15 +853,12 @@ scan(char **sp)
      */
 
     quotec = 0;
-    if (c == '\'' || c == '"')
-    {
+    if (c == '\'' || c == '"') {
         quotec = c;
         c = *cp++;
     }
-    while (c)
-    {
-        if (c == quotec)
-        {
+    while (c) {
+        if (c == quotec) {
             cp++;
             break;
         }
@@ -954,8 +868,7 @@ scan(char **sp)
             *cp2++ = c;
         c = *cp++;
     }
-    if (quotec && !c)
-    {
+    if (quotec && !c) {
         note(0, "Missing %c", quotec);
         return TERROR;
     }

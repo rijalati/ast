@@ -108,8 +108,7 @@ bz__AssertH__fail(int errcode);
 #        if BZ_DEBUG
 #            define AssertD(cond, msg)                                       \
                 {                                                            \
-                    if (!(cond))                                             \
-                    {                                                        \
+                    if (!(cond)) {                                           \
                         fprintf(                                             \
                         stderr,                                              \
                         "\n\nlibbzip2(debug build): internal error\n\t%s\n", \
@@ -180,8 +179,7 @@ extern Int32 rNums[512];
 #    define BZ_RAND_MASK ((s->rNToGo == 1) ? 1 : 0)
 
 #    define BZ_RAND_UPD_MASK                                                 \
-        if (s->rNToGo == 0)                                                  \
-        {                                                                    \
+        if (s->rNToGo == 0) {                                                \
             s->rNToGo = rNums[s->rTPos];                                     \
             s->rTPos++;                                                      \
             if (s->rTPos == 512)                                             \

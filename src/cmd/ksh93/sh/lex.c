@@ -57,8 +57,7 @@ local_iswblank(wchar_t wc)
     static int initialized;
     static wctype_t wt;
 
-    if (!initialized)
-    {
+    if (!initialized) {
         initialized = 1;
         wt = wctype("blank");
     }
@@ -155,8 +154,7 @@ refvar(Lex_t *lp, int type)
     off_t off = (fcseek(0) - (type + 1))
                 - (lp->lexd.first ? lp->lexd.first : fcfirst());
     unsigned long r;
-    if (lp->lexd.first)
-    {
+    if (lp->lexd.first) {
         off = (fcseek(0) - (type + 1)) - lp->lexd.first;
         r = kiaentity(lp,
                       lp->lexd.first + lp->lexd.kiaoff + type,
@@ -168,22 +166,17 @@ refvar(Lex_t *lp, int type)
                       'v',
                       0,
                       "");
-    }
-    else
-    {
+    } else {
         int n, offset = stktell(stkp);
         char *savptr, *begin;
         off = offset + (fcseek(0) - (type + 1)) - fcfirst();
-        if (lp->lexd.kiaoff < offset)
-        {
+        if (lp->lexd.kiaoff < offset) {
             /* variable starts on stak, copy remainder */
             if (off > offset)
                 sfwrite(stkp, fcfirst() + type, off - offset);
             n = stktell(stkp) - lp->lexd.kiaoff;
             begin = stkptr(stkp, lp->lexd.kiaoff);
-        }
-        else
-        {
+        } else {
             /* variable in data buffer */
             begin = fcfirst() + (type + lp->lexd.kiaoff - offset);
             n = off - lp->lexd.kiaoff;
@@ -214,8 +207,7 @@ lex_advance(Sfio_t *iop, const char *buff, int size, void *context)
     Stk_t *stkp = shp->stk;
 #if KSHELL
     /* write to history file and to stderr if necessary */
-    if (iop && !sfstacked(iop))
-    {
+    if (iop && !sfstacked(iop)) {
         if (sh_isstate(shp, SH_HISTORY) && shp->gd->hist_ptr)
             log = shp->gd->hist_ptr->histfp;
         sfwrite(log, ( void * )buff, size);
@@ -225,8 +217,7 @@ lex_advance(Sfio_t *iop, const char *buff, int size, void *context)
 #endif
     if (lp->lexd.nocopy)
         return;
-    if (lp->lexd.dolparen && lp->lexd.docword && lp->lexd.docend)
-    {
+    if (lp->lexd.dolparen && lp->lexd.docword && lp->lexd.docend) {
         int n = size - (lp->lexd.docend - ( char * )buff);
         sfwrite(shp->strbuf, lp->lexd.docend, n);
         lp->lexd.docextra += n;
@@ -235,8 +226,7 @@ lex_advance(Sfio_t *iop, const char *buff, int size, void *context)
         else
             lp->lexd.docend = fcfirst();
     }
-    if (lp->lexd.first)
-    {
+    if (lp->lexd.first) {
         size -= (lp->lexd.first - ( char * )buff);
         buff = lp->lexd.first;
         if (!lp->lexd.noarg)
@@ -245,8 +235,7 @@ lex_advance(Sfio_t *iop, const char *buff, int size, void *context)
         lp->lexd.kiaoff += ARGVAL;
 #endif /* SHOPT_KIA */
     }
-    if (size > 0 && (lp->arg || lp->lexd.noarg))
-    {
+    if (size > 0 && (lp->arg || lp->lexd.noarg)) {
         sfwrite(stkp, buff, size);
         lp->lexd.first = 0;
     }
@@ -278,8 +267,7 @@ lexfill(Lex_t *lp)
     memcpy(lp, &savelex, offsetof(Lex_t, lexd));
     lp->arg = ap;
     lp->aliasok = aok;
-    if (lp->lexd.docword && docextra)
-    {
+    if (lp->lexd.docword && docextra) {
         lp->lexd.docextra = docextra;
         lp->lexd.docend = fcseek(0) - 1;
     }
@@ -292,8 +280,7 @@ lexfill(Lex_t *lp)
 Lex_t *
 sh_lexopen(Lex_t *lp, Shell_t *shp, int mode)
 {
-    if (!lp)
-    {
+    if (!lp) {
         lp = ( Lex_t * )newof(0, Lex_t, 1, 0);
         lp->sh = shp;
         shp->lexsize = sizeof(Lex_t);
@@ -304,8 +291,7 @@ sh_lexopen(Lex_t *lp, Shell_t *shp, int mode)
     lp->lex.reservok = 1;
     if (!sh_isoption(shp, SH_DICTIONARY) && sh_isoption(shp, SH_NOEXEC))
         lp->lexd.warn = 1;
-    if (!mode)
-    {
+    if (!mode) {
         lp->lexd.noarg = lp->lexd.level = lp->lexd.dolparen = lp->lexd.balance
         = 0;
         lp->lexd.nocopy = lp->lexd.docword = lp->lexd.nest = lp->lexd.paren
@@ -330,8 +316,7 @@ sh_lex(Lex_t *lp)
     char tokstr[3];
     int tok = lextoken(lp);
     quoted = macro = split = expand = "";
-    if (tok == 0 && (flag = lp->arg->argflag))
-    {
+    if (tok == 0 && (flag = lp->arg->argflag)) {
         if (flag & ARG_MAC)
             macro = "macro:";
         if (flag & ARG_EXP)
@@ -372,13 +357,11 @@ sh_lex(Lex_t *lp)
 #if SHOPT_MULTIBYTE
     LEN = 1;
 #endif /* SHOPT_MULTIBYTE */
-    if (lp->lexd.paren)
-    {
+    if (lp->lexd.paren) {
         lp->lexd.paren = 0;
         return (lp->token = LPAREN);
     }
-    if (lp->noreserv)
-    {
+    if (lp->noreserv) {
         lp->lex.reservok = 0;
         while ((fcgetc(c)) && c == ' ' || c == '\t' || c == '\n')
             ;
@@ -393,29 +376,21 @@ sh_lex(Lex_t *lp)
     if (lp->comp_assign == 2)
         lp->comp_assign = lp->lex.reservok = 0;
     lp->lexd.arith = (lp->lexd.nest == 1);
-    if (lp->lexd.nest)
-    {
+    if (lp->lexd.nest) {
         pushlevel(lp, lp->lexd.nest, ST_NONE);
         lp->lexd.nest = 0;
         mode = lp->lexd.lex_state;
-    }
-    else if (lp->lexd.docword)
-    {
-        if (fcgetc(c) == '-' || c == '#')
-        {
+    } else if (lp->lexd.docword) {
+        if (fcgetc(c) == '-' || c == '#') {
             lp->lexd.docword++;
             lp->digits = (c == '#' ? 3 : 1);
-        }
-        else if (c == '<')
-        {
+        } else if (c == '<') {
             lp->digits = 2;
             lp->lexd.docword = 0;
-        }
-        else if (c > 0)
+        } else if (c > 0)
             fcseek(-LEN);
     }
-    if (!lp->lexd.dolparen)
-    {
+    if (!lp->lexd.dolparen) {
         lp->arg = 0;
         if (mode != ST_BEGIN)
             lp->lexd.first = fcseek(0);
@@ -424,17 +399,14 @@ sh_lex(Lex_t *lp)
     }
     lp->lastline = lp->sh->inlineno;
     lp->typed = 0;
-    while (1)
-    {
+    while (1) {
         /* skip over characters in the current state */
         state = sh_lexstates[mode];
         while ((n = STATE(state, c)) == 0)
             ;
-        switch (n)
-        {
+        switch (n) {
         case S_BREAK:
-            if (lp->lex.incase > TEST_RE && mode == ST_NORM && c == LPAREN)
-            {
+            if (lp->lex.incase > TEST_RE && mode == ST_NORM && c == LPAREN) {
                 pushlevel(lp, RPAREN, mode);
                 mode = ST_NESTED;
                 continue;
@@ -443,23 +415,18 @@ sh_lex(Lex_t *lp)
             goto breakloop;
         case S_EOF:
             sp = fcfile();
-            if ((n = lexfill(lp)) > 0)
-            {
+            if ((n = lexfill(lp)) > 0) {
                 fcseek(-1);
                 continue;
             }
             /* check for zero byte in file */
-            if (n == 0 && fcfile())
-            {
-                if (shp->readscript)
-                {
+            if (n == 0 && fcfile()) {
+                if (shp->readscript) {
                     char *cp = error_info.id;
                     errno = ENOEXEC;
                     error_info.id = shp->readscript;
                     errormsg(SH_DICT, ERROR_system(ERROR_NOEXEC), e_exec, cp);
-                }
-                else
-                {
+                } else {
                     lp->token = -1;
                     sh_syntax(lp);
                 }
@@ -467,13 +434,10 @@ sh_lex(Lex_t *lp)
             /* end-of-file */
             if (mode == ST_BEGIN)
                 return (lp->token = EOFSYM);
-            if (mode > ST_NORM && lp->lexd.level > 0)
-            {
-                switch (c = endchar(lp))
-                {
+            if (mode > ST_NORM && lp->lexd.level > 0) {
+                switch (c = endchar(lp)) {
                 case '$':
-                    if (mode == ST_LIT)
-                    {
+                    if (mode == ST_LIT) {
                         c = '\'';
                         break;
                     }
@@ -496,8 +460,7 @@ sh_lex(Lex_t *lp)
                     lp->lexd.balance = c;
                     break;
                 }
-                if (sp && !(sfset(sp, 0, 0) & SF_STRING))
-                {
+                if (sp && !(sfset(sp, 0, 0) & SF_STRING)) {
                     lp->lasttok = c;
                     lp->token = EOFSYM;
                     sh_syntax(lp);
@@ -510,12 +473,10 @@ sh_lex(Lex_t *lp)
             lp->lex.reservok = !lp->lex.intest;
             if ((n = lp->lexd.nocopy) && lp->lexd.dolparen)
                 lp->lexd.nocopy--;
-            do
-            {
+            do {
                 while (fcgetc(c) > 0 && c != '\n')
                     ;
-                if (c <= 0 || lp->heredoc)
-                {
+                if (c <= 0 || lp->heredoc) {
                     shp->inlineno++;
                     break;
                 }
@@ -532,13 +493,11 @@ sh_lex(Lex_t *lp)
             /* FALL THRU */
         case S_NLTOK:
             /* check for here-document */
-            if (lp->heredoc)
-            {
+            if (lp->heredoc) {
                 if (!lp->lexd.dolparen)
                     lp->lexd.nocopy++;
                 c = shp->inlineno;
-                if (here_copy(lp, lp->heredoc) <= 0 && lp->lasttok)
-                {
+                if (here_copy(lp, lp->heredoc) <= 0 && lp->lasttok) {
                     lp->lasttok = IODOCSYM;
                     lp->token = EOFSYM;
                     lp->lastline = c;
@@ -557,8 +516,7 @@ sh_lex(Lex_t *lp)
             while (shp->inlineno++, fcget() == '\n')
                 ;
             fcseek(-LEN);
-            if (n == S_NLTOK)
-            {
+            if (n == S_NLTOK) {
                 lp->comp_assign = 0;
                 return (lp->token = '\n');
             }
@@ -566,8 +524,7 @@ sh_lex(Lex_t *lp)
             if (lp->lex.incase <= TEST_RE)
                 continue;
             /* implicit RPAREN for =~ test operator */
-            if (inlevel + 1 == lp->lexd.level)
-            {
+            if (inlevel + 1 == lp->lexd.level) {
                 if (lp->lex.intest)
                     fcseek(-LEN);
                 c = RPAREN;
@@ -576,24 +533,19 @@ sh_lex(Lex_t *lp)
             continue;
         case S_OP:
             /* return operator token */
-            if (c == '<' || c == '>')
-            {
+            if (c == '<' || c == '>') {
                 if (lp->lex.testop2)
                     lp->lex.testop2 = 0;
-                else
-                {
+                else {
                     lp->digits = (c == '>');
                     lp->lex.skipword = 1;
                     lp->aliasok = lp->lex.reservok;
                     if (lp->lex.incase < 2)
                         lp->lex.reservok = 0;
                 }
-            }
-            else
-            {
+            } else {
                 lp->lex.reservok = !lp->lex.intest;
-                if (c == RPAREN)
-                {
+                if (c == RPAREN) {
                     if (!lp->lexd.dolparen)
                         lp->lex.incase = 0;
                     return (lp->token = c);
@@ -602,14 +554,11 @@ sh_lex(Lex_t *lp)
             }
             if (fcgetc(n) > 0)
                 fcseek(-LEN);
-            if (state[n] == S_OP || n == '#')
-            {
-                if (n == c)
-                {
+            if (state[n] == S_OP || n == '#') {
+                if (n == c) {
                     if (c == '<')
                         lp->lexd.docword = 1;
-                    else if (n == LPAREN)
-                    {
+                    else if (n == LPAREN) {
                         if (lp->lex.intest || lp->comp_assign)
                             return (c);
                         lp->lexd.nest = 1;
@@ -619,17 +568,14 @@ sh_lex(Lex_t *lp)
                         return (sh_lex(lp));
                     }
                     c |= SYMREP;
-                }
-                else if (c == '(' || c == ')')
+                } else if (c == '(' || c == ')')
                     return (lp->token = c);
-                else if (c == '&')
-                {
+                else if (c == '&') {
                     if (!sh_isoption(lp->sh, SH_POSIX) && n == '>'
                         && (sh_isoption(lp->sh, SH_BASH)
-                            || sh_isstate(lp->sh, SH_PROFILE)))
-                    {
-                        if (!sh_isoption(lp->sh, SH_BASH) && !lp->nonstandard)
-                        {
+                            || sh_isstate(lp->sh, SH_PROFILE))) {
+                        if (!sh_isoption(lp->sh, SH_BASH)
+                            && !lp->nonstandard) {
                             lp->nonstandard = 1;
                             errormsg(SH_DICT,
                                      ERROR_warn(0),
@@ -638,59 +584,45 @@ sh_lex(Lex_t *lp)
                         }
                         lp->digits = -1;
                         c = '>';
-                    }
-                    else if (n == '|')
+                    } else if (n == '|')
                         c |= SYMPIPE;
                     else
                         n = 0;
-                }
-                else if (n == '&')
+                } else if (n == '&')
                     c |= SYMAMP;
                 else if (c != '<' && c != '>')
                     n = 0;
-                else if (n == LPAREN)
-                {
+                else if (n == LPAREN) {
                     c |= SYMLPAR;
                     lp->lex.reservok = 1;
                     lp->lex.skipword = 0;
-                }
-                else if (n == '|')
+                } else if (n == '|')
                     c |= SYMPIPE;
-                else if (c == '<' && n == '>')
-                {
+                else if (c == '<' && n == '>') {
                     lp->digits = 1;
                     c = IORDWRSYM;
                     fcgetc(n);
-                    if (fcgetc(n) == ';')
-                    {
+                    if (fcgetc(n) == ';') {
                         lp->token = c = IORDWRSYMT;
                         if (lp->inexec)
                             sh_syntax(lp);
-                    }
-                    else if (n > 0)
+                    } else if (n > 0)
                         fcseek(-LEN);
                     n = 0;
-                }
-                else if (n == '#' && (c == '<' || c == '>'))
+                } else if (n == '#' && (c == '<' || c == '>'))
                     c |= SYMSHARP;
-                else if (n == ';' && c == '>')
-                {
+                else if (n == ';' && c == '>') {
                     c |= SYMSEMI;
-                    if (lp->inexec)
-                    {
+                    if (lp->inexec) {
                         lp->token = c;
                         sh_syntax(lp);
                     }
-                }
-                else
+                } else
                     n = 0;
-                if (n)
-                {
+                if (n) {
                     fcseek(1);
                     lp->lex.incase = (c == BREAKCASESYM || c == FALLTHRUSYM);
-                }
-                else
-                {
+                } else {
                     if (lp->lexd.warn && (n = fcpeek(0)) != RPAREN && n != ' '
                         && n != '\t')
                         errormsg(SH_DICT,
@@ -712,19 +644,16 @@ sh_lex(Lex_t *lp)
             fcgetc(n);
             c = 2;
 #if SHOPT_CRNL
-            if (n == '\r')
-            {
+            if (n == '\r') {
                 if (fcgetc(n) == '\n')
                     c = 3;
-                else
-                {
+                else {
                     n = '\r';
                     fcseek(-LEN);
                 }
             }
 #endif /* SHOPT_CRNL */
-            if (n == '\n')
-            {
+            if (n == '\n') {
                 Sfio_t *sp;
                 struct argnod *ap;
                 shp->inlineno++;
@@ -741,8 +670,7 @@ sh_lex(Lex_t *lp)
                 n = stktell(stkp) - c;
                 stkseek(stkp, n);
                 lp->arg = ap;
-                if (n <= ARGVAL)
-                {
+                if (n <= ARGVAL) {
                     mode = 0;
                     lp->lexd.first = 0;
                 }
@@ -764,10 +692,8 @@ sh_lex(Lex_t *lp)
                 lp->lex.reservok *= 2;
             /* FALL THRU */
         case S_TILDE:
-            if (c == '~' && mode == ST_NESTED)
-            {
-                if (endchar(lp) == RBRACE)
-                {
+            if (c == '~' && mode == ST_NESTED) {
+                if (endchar(lp) == RBRACE) {
                     lp->lexd.nested_tilde++;
                     goto tilde;
                 }
@@ -785,18 +711,15 @@ sh_lex(Lex_t *lp)
                 continue;
         tilde:
             fcgetc(n);
-            if (n > 0)
-            {
-                if (c == '~' && n == LPAREN)
-                {
+            if (n > 0) {
+                if (c == '~' && n == LPAREN) {
                     if (lp->lexd.nested_tilde)
                         lp->lexd.nested_tilde++;
                     else if (lp->lex.incase)
                         lp->lex.incase = TEST_RE;
                 }
                 fcseek(-LEN);
-                if (lp->lexd.nested_tilde)
-                {
+                if (lp->lexd.nested_tilde) {
                     lp->lexd.nested_tilde--;
                     continue;
                 }
@@ -807,12 +730,10 @@ sh_lex(Lex_t *lp)
             mode = ST_NORM;
             continue;
         case S_REG:
-            if (mode == ST_BEGIN)
-            {
+            if (mode == ST_BEGIN) {
             do_reg:
                 /* skip new-line joining */
-                if (c == '\\' && fcpeek(0) == '\n')
-                {
+                if (c == '\\' && fcpeek(0) == '\n') {
                     shp->inlineno++;
                     fcseek(1);
                     continue;
@@ -822,8 +743,7 @@ sh_lex(Lex_t *lp)
                     lp->lexd.first = fcseek(0);
                 else if (lp->lexd.docword)
                     lp->lexd.docend = fcseek(0);
-                if (c == '[' && lp->assignok >= SH_ASSIGN)
-                {
+                if (c == '[' && lp->assignok >= SH_ASSIGN) {
                     mode = ST_NAME;
                     continue;
                 }
@@ -834,16 +754,14 @@ sh_lex(Lex_t *lp)
             if (oldmode(lp) == ST_NONE && !lp->lexd.noarg) /*  in ((...)) */
             {
                 if ((c = fcpeek(0)) == LPAREN || c == RPAREN || c == '$'
-                    || c == LBRACE || c == RBRACE || c == '[' || c == ']')
-                {
+                    || c == LBRACE || c == RBRACE || c == '[' || c == ']') {
                     if (fcpeek(1) == '\'')
                         fcseek(2);
                 }
                 continue;
             }
             wordflags |= ARG_QUOTED;
-            if (mode == ST_DOL)
-            {
+            if (mode == ST_DOL) {
                 if (endchar(lp) != '$')
                     goto err;
                 if (oldmode(lp) == ST_QUOTE) /* $' within "" or `` */
@@ -854,8 +772,7 @@ sh_lex(Lex_t *lp)
                     mode = ST_LIT;
                 }
             }
-            if (mode != ST_LIT)
-            {
+            if (mode != ST_LIT) {
                 if (lp->lexd.warn && lp->lex.last_quote
                     && shp->inlineno > lp->lastline && fcpeek(-2) != '$')
                     errormsg(SH_DICT,
@@ -878,8 +795,7 @@ sh_lex(Lex_t *lp)
             break;
         case S_ESC2:
             /* \ inside '' */
-            if (endchar(lp) == '$')
-            {
+            if (endchar(lp) == '$') {
                 fcgetc(n);
                 if (n == '\n')
                     shp->inlineno++;
@@ -901,10 +817,8 @@ sh_lex(Lex_t *lp)
             }
             if (n == S_QUOTE)
                 wordflags |= ARG_QUOTED;
-            if (mode != ST_QUOTE)
-            {
-                if (c != '"' || mode != ST_QNEST)
-                {
+            if (mode != ST_QUOTE) {
+                if (c != '"' || mode != ST_QNEST) {
                     if (lp->lexd.warn && lp->lex.last_quote
                         && shp->inlineno > lp->lastline)
                         errormsg(SH_DICT,
@@ -919,15 +833,12 @@ sh_lex(Lex_t *lp)
                 ingrave ^= (c == '`');
                 mode = ST_QUOTE;
                 continue;
-            }
-            else if ((n = endchar(lp)) == c)
-            {
+            } else if ((n = endchar(lp)) == c) {
                 if (shp->inlineno > lp->lastline)
                     lp->lex.last_quote = c;
                 mode = oldmode(lp);
                 poplevel(lp);
-            }
-            else if (c == '"' && n == RBRACE)
+            } else if (c == '"' && n == RBRACE)
                 mode = ST_QNEST;
             break;
         case S_DOL:
@@ -956,8 +867,7 @@ sh_lex(Lex_t *lp)
         case S_RBRA:
             if ((n = endchar(lp)) == '$')
                 goto err;
-            if (mode != ST_QUOTE || n == RBRACE)
-            {
+            if (mode != ST_QUOTE || n == RBRACE) {
                 mode = oldmode(lp);
                 poplevel(lp);
             }
@@ -978,8 +888,7 @@ sh_lex(Lex_t *lp)
             break;
         case S_DOT:
             /* make sure next character is alpha */
-            if (fcgetc(n) > 0)
-            {
+            if (fcgetc(n) > 0) {
                 if (n == '.')
                     fcgetc(n);
                 if (n > 0)
@@ -987,21 +896,18 @@ sh_lex(Lex_t *lp)
             }
             if (isaletter(n) || n == LBRACT)
                 continue;
-            if (mode == ST_NAME)
-            {
+            if (mode == ST_NAME) {
                 if (n == '=')
                     continue;
                 break;
-            }
-            else if (n == RBRACE)
+            } else if (n == RBRACE)
                 continue;
             if (isastchar(n))
                 continue;
             goto err;
         case S_SPC1:
             wordflags |= ARG_MAC;
-            if (endchar(lp) == RBRACE)
-            {
+            if (endchar(lp) == RBRACE) {
                 setchar(lp, c);
                 continue;
             }
@@ -1011,21 +917,18 @@ sh_lex(Lex_t *lp)
                 goto err;
         case S_SPC2:
 #ifdef SHOPT_BASH
-            if (c == '=' && (lp->lexd.warn || !sh_isoption(shp, SH_BASH)))
-            {
+            if (c == '=' && (lp->lexd.warn || !sh_isoption(shp, SH_BASH))) {
                 lp->token = c;
                 sh_syntax(lp);
             }
 #endif
         case S_DIG:
             wordflags |= ARG_MAC;
-            switch (endchar(lp))
-            {
+            switch (endchar(lp)) {
             case '$':
                 if (n == S_ALP) /* $identifier */
                     mode = ST_DOLNAME;
-                else
-                {
+                else {
                     mode = oldmode(lp);
                     poplevel(lp);
                 }
@@ -1038,15 +941,12 @@ sh_lex(Lex_t *lp)
                 if (c == '#')
                     n = S_ALP;
             case RBRACE:
-                if (n == S_ALP)
-                {
+                if (n == S_ALP) {
                     setchar(lp, RBRACE);
                     if (c == '.')
                         fcseek(-LEN);
                     mode = ST_BRACE;
-                }
-                else
-                {
+                } else {
                     if (fcgetc(c) > 0)
                         fcseek(-LEN);
                     if (state[c] == S_ALP)
@@ -1069,30 +969,25 @@ sh_lex(Lex_t *lp)
             if ((n = endchar(lp)) == '$')
                 goto err;
             if (c == '*'
-                || (n = sh_lexstates[ST_BRACE][c]) != S_MOD1 && n != S_MOD2)
-            {
+                || (n = sh_lexstates[ST_BRACE][c]) != S_MOD1 && n != S_MOD2) {
                 /* see whether inside `...` */
                 mode = oldmode(lp);
                 poplevel(lp);
                 if ((n = endchar(lp)) != '`')
                     goto err;
                 pushlevel(lp, RBRACE, mode);
-            }
-            else
+            } else
                 setchar(lp, RBRACE);
             mode = ST_NESTED;
             continue;
         case S_MOD1:
-            if (oldmode(lp) == ST_QUOTE || oldmode(lp) == ST_NONE)
-            {
+            if (oldmode(lp) == ST_QUOTE || oldmode(lp) == ST_NONE) {
                 /* allow ' inside "${...}" */
-                if (c == ':' && fcgetc(n) > 0)
-                {
+                if (c == ':' && fcgetc(n) > 0) {
                     n = state[n];
                     fcseek(-LEN);
                 }
-                if (n == S_MOD1)
-                {
+                if (n == S_MOD1) {
                     mode = ST_QUOTE;
                     continue;
                 }
@@ -1103,21 +998,16 @@ sh_lex(Lex_t *lp)
             if (lp->kiafile)
                 refvar(lp, 1);
 #endif /* SHOPT_KIA */
-            if (c != ':' && fcgetc(n) > 0)
-            {
+            if (c != ':' && fcgetc(n) > 0) {
                 if (n != c)
                     c = 0;
-                if (!c || (fcgetc(n) > 0))
-                {
+                if (!c || (fcgetc(n) > 0)) {
                     fcseek(-LEN);
-                    if (n == LPAREN)
-                    {
-                        if (c != '%')
-                        {
+                    if (n == LPAREN) {
+                        if (c != '%') {
                             lp->token = n;
                             sh_syntax(lp);
-                        }
-                        else if (lp->lexd.warn)
+                        } else if (lp->lexd.warn)
                             errormsg(SH_DICT,
                                      ERROR_warn(0),
                                      e_lexquote,
@@ -1130,16 +1020,14 @@ sh_lex(Lex_t *lp)
             mode = ST_NESTED;
             continue;
         case S_LBRA:
-            if ((c = endchar(lp)) == '$')
-            {
+            if ((c = endchar(lp)) == '$') {
                 if (fcgetc(c) > 0)
                     fcseek(-LEN);
                 setchar(lp, RBRACE);
                 if (state[c] != S_ERR && c != RBRACE)
                     continue;
                 if ((n = sh_lexstates[ST_BEGIN][c]) == 0 || n == S_OP
-                    || n == S_NLTOK)
-                {
+                    || n == S_NLTOK) {
                     c = LBRACE;
                     goto do_comsub;
                 }
@@ -1150,13 +1038,10 @@ sh_lex(Lex_t *lp)
             n = endchar(lp);
             mode = oldmode(lp);
             poplevel(lp);
-            if (n != '$')
-            {
+            if (n != '$') {
                 lp->token = c;
                 sh_syntax(lp);
-            }
-            else
-            {
+            } else {
                 if (lp->lexd.warn && c != '/'
                     && sh_lexstates[ST_NORM][c] != S_BREAK
                     && (c != '"' || mode == ST_QUOTE))
@@ -1184,26 +1069,22 @@ sh_lex(Lex_t *lp)
             continue;
         case S_POP:
         do_pop:
-            if (c == RBRACE && mode == ST_NESTED && lp->lex.nestedbrace)
-            {
+            if (c == RBRACE && mode == ST_NESTED && lp->lex.nestedbrace) {
                 lp->lex.nestedbrace--;
                 continue;
             }
             if (lp->lexd.level <= inlevel)
                 break;
             if (lp->lexd.level == inlevel + 1 && lp->lex.incase >= TEST_RE
-                && !lp->lex.intest)
-            {
+                && !lp->lex.intest) {
                 fcseek(-LEN);
                 goto breakloop;
             }
             n = endchar(lp);
             if (c == RBRACT && !(n == RBRACT || n == RPAREN))
                 continue;
-            if ((c == RBRACE || c == RPAREN) && n == RPAREN)
-            {
-                if (fcgetc(n) == LPAREN)
-                {
+            if ((c == RBRACE || c == RPAREN) && n == RPAREN) {
+                if (fcgetc(n) == LPAREN) {
                     if (c != RPAREN)
                         fcseek(-LEN);
                     continue;
@@ -1214,15 +1095,13 @@ sh_lex(Lex_t *lp)
             }
             if (c == RBRACE)
                 lp->lexd.nested_tilde = 0;
-            if (c == ';' && n != ';')
-            {
+            if (c == ';' && n != ';') {
                 if (lp->lexd.warn && n == RBRACE)
                     errormsg(
                     SH_DICT, ERROR_warn(0), e_lexusequote, shp->inlineno, c);
                 continue;
             }
-            if (mode == ST_QNEST)
-            {
+            if (mode == ST_QNEST) {
                 if (lp->lexd.warn)
                     errormsg(
                     SH_DICT, ERROR_warn(0), e_lexescape, shp->inlineno, c);
@@ -1236,10 +1115,8 @@ sh_lex(Lex_t *lp)
             if (mode == ST_NAME && (wordflags & ARG_QUOTED))
                 wordflags |= ARG_MAC;
             /* check for ((...)) */
-            if (n == 1 && c == RPAREN)
-            {
-                if (fcgetc(n) == RPAREN)
-                {
+            if (n == 1 && c == RPAREN) {
+                if (fcgetc(n) == RPAREN) {
                     if (mode == ST_NONE && !lp->lexd.dolparen)
                         goto breakloop;
                     lp->lex.reservok = 1;
@@ -1253,8 +1130,7 @@ sh_lex(Lex_t *lp)
                         SH_DICT, ERROR_warn(0), e_lexnested, shp->inlineno);
                     if (!(state = lp->lexd.first))
                         state = fcfirst();
-                    else
-                    {
+                    else {
                         n = state - fcseek(0);
                         fcseek(n);
                     }
@@ -1264,8 +1140,7 @@ sh_lex(Lex_t *lp)
             }
             if (mode == ST_NONE)
                 return (0);
-            if (c != n && lp->lex.incase < TEST_RE)
-            {
+            if (c != n && lp->lex.incase < TEST_RE) {
                 lp->token = c;
                 sh_syntax(lp);
             }
@@ -1274,8 +1149,7 @@ sh_lex(Lex_t *lp)
             continue;
         case S_EQ:
             assignment = lp->assignok;
-            if (!assignment)
-            {
+            if (!assignment) {
                 fcgetc(c);
                 fcseek(-LEN);
                 if (c == '(')
@@ -1283,8 +1157,7 @@ sh_lex(Lex_t *lp)
             }
             /* FALL THRU */
         case S_COLON:
-            if (assignment)
-            {
+            if (assignment) {
                 if (fcgetc(c) == '~')
                     wordflags |= ARG_MAC;
                 else if (c != LPAREN && assignment == SH_COMPASSIGN)
@@ -1294,12 +1167,10 @@ sh_lex(Lex_t *lp)
             }
             break;
         case S_LABEL:
-            if (lp->lex.reservok && !lp->lex.incase)
-            {
+            if (lp->lex.reservok && !lp->lex.incase) {
                 c = fcget();
                 fcseek(-LEN);
-                if (state[c] == S_BREAK)
-                {
+                if (state[c] == S_BREAK) {
                     assignment = -1;
                     goto breakloop;
                 }
@@ -1309,11 +1180,9 @@ sh_lex(Lex_t *lp)
             /* check for possible subscript */
             if ((n = endchar(lp)) == RBRACT || n == RPAREN
                 || (mode == ST_BRACE) || (oldmode(lp) == ST_NONE)
-                || (mode == ST_NAME && (lp->assignok || lp->lexd.level)))
-            {
+                || (mode == ST_NAME && (lp->assignok || lp->lexd.level))) {
                 fcgetc(n);
-                if (n > 0 && n == ']')
-                {
+                if (n > 0 && n == ']') {
                     if (mode == ST_NAME)
                         errormsg(SH_DICT,
                                  ERROR_exit(SYNBAD),
@@ -1323,8 +1192,7 @@ sh_lex(Lex_t *lp)
                                  "empty subscript");
                     if (!epatchar || epatchar == '%')
                         continue;
-                }
-                else
+                } else
                     fcseek(-LEN);
                 pushlevel(lp, RBRACT, mode);
                 wordflags |= ARG_QUOTED;
@@ -1333,13 +1201,10 @@ sh_lex(Lex_t *lp)
             }
             wordflags |= ARG_EXP;
             break;
-        case S_BRACE:
-        {
+        case S_BRACE: {
             int isfirst;
-            if (lp->lexd.dolparen)
-            {
-                if (mode == ST_BEGIN && (lp->lex.reservok || lp->comsub))
-                {
+            if (lp->lexd.dolparen) {
+                if (mode == ST_BEGIN && (lp->lex.reservok || lp->comsub)) {
                     if (lp->comsub)
                         return (lp->token = c);
                     fcgetc(n);
@@ -1351,14 +1216,10 @@ sh_lex(Lex_t *lp)
                         return (lp->token = c);
                 }
                 break;
-            }
-            else if (mode == ST_NESTED && endchar(lp) == RBRACE)
-            {
+            } else if (mode == ST_NESTED && endchar(lp) == RBRACE) {
                 lp->lex.nestedbrace++;
                 continue;
-            }
-            else if (mode == ST_BEGIN)
-            {
+            } else if (mode == ST_BEGIN) {
                 if (lp->comsub && c == RBRACE)
                     return (lp->token = c);
                 goto do_reg;
@@ -1377,8 +1238,7 @@ sh_lex(Lex_t *lp)
                 break;
             if (sh_isoption(lp->sh, SH_BRACEEXPAND) && c == LBRACE
                 && !assignment && state[n] != S_BREAK && !lp->lex.incase
-                && !lp->lex.intest && !lp->lex.skipword)
-            {
+                && !lp->lex.intest && !lp->lex.skipword) {
                 wordflags |= ARG_EXP;
             }
             if (c == RBRACE && n == LPAREN)
@@ -1390,11 +1250,9 @@ sh_lex(Lex_t *lp)
             /* FALL THRU */
         case S_EPAT:
         epat:
-            if (fcgetc(n) == LPAREN && c != '[')
-            {
+            if (fcgetc(n) == LPAREN && c != '[') {
                 epatchar = c;
-                if (lp->lex.incase == TEST_RE)
-                {
+                if (lp->lex.incase == TEST_RE) {
                     lp->lex.incase++;
                     pushlevel(lp, RPAREN, ST_NORM);
                     mode = ST_NESTED;
@@ -1420,13 +1278,11 @@ sh_lex(Lex_t *lp)
             return (0);
     }
 breakloop:
-    if (lp->lexd.nocopy)
-    {
+    if (lp->lexd.nocopy) {
         lp->lexd.balance = 0;
         return (0);
     }
-    if (lp->lexd.dolparen)
-    {
+    if (lp->lexd.dolparen) {
         lp->lexd.balance = 0;
         if (lp->lexd.docword)
             nested_here(lp);
@@ -1441,8 +1297,7 @@ breakloop:
     if (n > 0)
         sfwrite(stkp, state, n);
     /* add balancing character if necessary */
-    if (lp->lexd.balance)
-    {
+    if (lp->lexd.balance) {
         sfputc(stkp, lp->lexd.balance);
         lp->lexd.balance = 0;
     }
@@ -1451,12 +1306,10 @@ breakloop:
     state = stkptr(stkp, ARGVAL);
     n = stktell(stkp) - ARGVAL;
     lp->lexd.first = 0;
-    if (n == 1)
-    {
+    if (n == 1) {
         /* check for numbered redirection */
         n = state[0];
-        if (!lp->lex.intest && (c == '<' || c == '>') && isadigit(n))
-        {
+        if (!lp->lex.intest && (c == '<' || c == '>') && isadigit(n)) {
             c = sh_lex(lp);
             lp->digits = (n - '0');
             return (c);
@@ -1470,23 +1323,18 @@ breakloop:
         else
             c = (wordflags & ARG_EXP);
         n = 1;
-    }
-    else if (n > 2 && state[0] == '{' && state[n - 1] == '}'
-             && !lp->lex.intest && !lp->lex.incase && (c == '<' || c == '>')
-             && sh_isoption(lp->sh, SH_BRACEEXPAND))
-    {
-        if (!strchr(state, ','))
-        {
+    } else if (n > 2 && state[0] == '{' && state[n - 1] == '}'
+               && !lp->lex.intest && !lp->lex.incase && (c == '<' || c == '>')
+               && sh_isoption(lp->sh, SH_BRACEEXPAND)) {
+        if (!strchr(state, ',')) {
             stkseek(stkp, stktell(stkp) - 1);
             lp->arg = ( struct argnod * )stkfreeze(stkp, 1);
             return (lp->token = IOVNAME);
         }
         c = wordflags;
-    }
-    else
+    } else
         c = wordflags;
-    if (assignment < 0)
-    {
+    if (assignment < 0) {
         stkseek(stkp, stktell(stkp) - 1);
         lp->arg = ( struct argnod * )stkfreeze(stkp, 1);
         lp->lex.reservok = 1;
@@ -1496,33 +1344,27 @@ breakloop:
         c &= ~ARG_EXP;
     if ((c & ARG_EXP) && (c & ARG_QUOTED))
         c |= ARG_MAC;
-    if (mode == ST_NONE)
-    {
+    if (mode == ST_NONE) {
         /* eliminate trailing )) */
         stkseek(stkp, stktell(stkp) - 2);
     }
-    if (c & ARG_MESSAGE)
-    {
+    if (c & ARG_MESSAGE) {
         if (sh_isoption(lp->sh, SH_DICTIONARY))
             lp->arg = sh_endword(shp, 2);
         c |= ARG_MAC;
     }
-    if (c == 0 || (c & (ARG_MAC | ARG_EXP | ARG_MESSAGE)))
-    {
+    if (c == 0 || (c & (ARG_MAC | ARG_EXP | ARG_MESSAGE))) {
         lp->arg = ( struct argnod * )stkfreeze(stkp, 1);
         lp->arg->argflag = (c ? c : ARG_RAW);
-    }
-    else if (mode == ST_NONE)
+    } else if (mode == ST_NONE)
         lp->arg = sh_endword(shp, -1);
     else
         lp->arg = sh_endword(shp, 0);
     state = lp->arg->argval;
     lp->comp_assign = assignment;
-    if (assignment)
-    {
+    if (assignment) {
         lp->arg->argflag |= ARG_ASSIGN;
-        if (sh_isoption(shp, SH_NOEXEC))
-        {
+        if (sh_isoption(shp, SH_NOEXEC)) {
             char *cp = strchr(state, '=');
             if (cp && memcmp(++cp, "$((", 3) == 0)
                 errormsg(SH_DICT,
@@ -1534,34 +1376,26 @@ breakloop:
                          cp + 3,
                          state);
         }
-    }
-    else if (!lp->lex.skipword)
+    } else if (!lp->lex.skipword)
         lp->assignok = 0;
     lp->arg->argchn.cp = 0;
     lp->arg->argnxt.ap = 0;
     if (mode == ST_NONE)
         return (lp->token = EXPRSYM);
-    if (lp->lex.intest)
-    {
-        if (lp->lex.testop1)
-        {
+    if (lp->lex.intest) {
+        if (lp->lex.testop1) {
             lp->lex.testop1 = 0;
             if (n == 2 && state[0] == '-' && state[2] == 0
-                && strchr(test_opchars, state[1]))
-            {
+                && strchr(test_opchars, state[1])) {
                 if (lp->lexd.warn && state[1] == 'a')
                     errormsg(
                     SH_DICT, ERROR_warn(0), e_lexobsolete2, shp->inlineno);
                 lp->digits = state[1];
                 lp->token = TESTUNOP;
-            }
-            else if (n == 1 && state[0] == '!' && state[1] == 0)
-            {
+            } else if (n == 1 && state[0] == '!' && state[1] == 0) {
                 lp->lex.testop1 = 1;
                 lp->token = '!';
-            }
-            else
-            {
+            } else {
                 lp->lex.testop2 = 1;
                 lp->token = 0;
             }
@@ -1569,8 +1403,7 @@ breakloop:
         }
         lp->lex.incase = 0;
         c = sh_lookup(state, shtab_testops);
-        switch (c)
-        {
+        switch (c) {
         case TEST_END:
             lp->lex.testop2 = lp->lex.intest = 0;
             lp->lex.reservok = 1;
@@ -1583,8 +1416,7 @@ breakloop:
                 SH_DICT, ERROR_warn(0), e_lexobsolete3, shp->inlineno);
             /* FALL THRU */
         default:
-            if (lp->lex.testop2)
-            {
+            if (lp->lex.testop2) {
                 if (lp->lexd.warn && (c & TEST_ARITH))
                     errormsg(SH_DICT,
                              ERROR_warn(0),
@@ -1607,53 +1439,42 @@ breakloop:
             return (lp->token = 0);
         }
     }
-    if (lp->lex.reservok /* && !lp->lex.incase*/ && n <= 2)
-    {
+    if (lp->lex.reservok /* && !lp->lex.incase*/ && n <= 2) {
         /* check for {, }, ! */
         c = state[0];
-        if (n == 1 && (c == '{' || c == '}' || c == '!'))
-        {
+        if (n == 1 && (c == '{' || c == '}' || c == '!')) {
             if (lp->lexd.warn && c == '{' && lp->lex.incase == 2)
                 errormsg(
                 SH_DICT, ERROR_warn(0), e_lexobsolete6, shp->inlineno);
             if (lp->lex.incase == 1 && c == RBRACE)
                 lp->lex.incase = 0;
             return (lp->token = c);
-        }
-        else if (!lp->lex.incase && c == LBRACT && state[1] == LBRACT)
-        {
+        } else if (!lp->lex.incase && c == LBRACT && state[1] == LBRACT) {
             lp->lex.intest = lp->lex.testop1 = 1;
             lp->lex.testop2 = lp->lex.reservok = 0;
             return (lp->token = BTESTSYM);
         }
     }
     c = 0;
-    if (!lp->lex.skipword)
-    {
+    if (!lp->lex.skipword) {
         if (n > 1 && lp->lex.reservok == 1 && mode == ST_NAME
-            && (c = sh_lookup(state, shtab_reserved)))
-        {
-            if (lp->lex.incase)
-            {
+            && (c = sh_lookup(state, shtab_reserved))) {
+            if (lp->lex.incase) {
                 if (lp->lex.incase > 1)
                     lp->lex.incase = 1;
                 else if (c == ESACSYM)
                     lp->lex.incase = 0;
                 else
                     c = 0;
-            }
-            else if (c == FORSYM || c == CASESYM || c == SELECTSYM
-                     || c == FUNCTSYM || c == NSPACESYM)
-            {
+            } else if (c == FORSYM || c == CASESYM || c == SELECTSYM
+                       || c == FUNCTSYM || c == NSPACESYM) {
                 lp->lex.skipword = 1;
                 lp->lex.incase = 2 * (c == CASESYM);
-            }
-            else
+            } else
                 lp->lex.skipword = 0;
             if (c == INSYM)
                 lp->lex.reservok = 0;
-            else if (c == TIMESYM)
-            {
+            else if (c == TIMESYM) {
                 /* yech - POSIX requires time -p */
                 while (fcgetc(n) == ' ' || n == '\t')
                     ;
@@ -1664,8 +1485,7 @@ breakloop:
             }
             return (lp->token = c);
         }
-        if (!(wordflags & ARG_QUOTED) && (lp->lex.reservok || lp->aliasok))
-        {
+        if (!(wordflags & ARG_QUOTED) && (lp->lex.reservok || lp->aliasok)) {
             /* check for aliases */
             Namval_t *np;
             if (!lp->lex.incase && !assignment && fcpeek(0) != LPAREN
@@ -1676,8 +1496,7 @@ breakloop:
                 && (!sh_isstate(lp->sh, SH_NOALIAS)
                     || nv_isattr(np, NV_NOFREE))
 #endif /* KSHELL */
-                && (state = nv_getval(np)))
-            {
+                && (state = nv_getval(np))) {
                 setupalias(lp, state, np);
                 nv_onattr(np, NV_NOEXPAND);
                 lp->lex.reservok = 1;
@@ -1719,13 +1538,10 @@ comsub(Lex_t *lp, int endtok)
     n = sh_lex(lp);
     if (off < 0)
         *cp = c;
-    if (n == endtok || off < 0)
-    {
-        if (endtok == LPAREN && lp->lexd.paren)
-        {
+    if (n == endtok || off < 0) {
+        if (endtok == LPAREN && lp->lexd.paren) {
 
-            if (first == lp->lexd.first)
-            {
+            if (first == lp->lexd.first) {
                 n = cp + 1 - ( char * )fcseek(0);
                 fcseek(n);
             }
@@ -1733,22 +1549,18 @@ comsub(Lex_t *lp, int endtok)
             lp->lexd.paren = 0;
             fcgetc(c);
         }
-        while (1)
-        {
+        while (1) {
             /* look for case and esac */
             n = 0;
-            while (1)
-            {
+            while (1) {
                 fcgetc(c);
                 /* skip leading white space */
                 if (n == 0 && !sh_lexstates[ST_BEGIN][c])
                     continue;
                 if (n == 4)
                     break;
-                if (sh_lexstates[ST_NAME][c])
-                {
-                    if (c == ' ' || c == '\t')
-                    {
+                if (sh_lexstates[ST_NAME][c]) {
+                    if (c == ' ' || c == '\t') {
                         n = 0;
                         continue;
                     }
@@ -1756,8 +1568,7 @@ comsub(Lex_t *lp, int endtok)
                 }
                 word[n++] = c;
             }
-            if (sh_lexstates[ST_NAME][c] == S_BREAK)
-            {
+            if (sh_lexstates[ST_NAME][c] == S_BREAK) {
                 if (memcmp(word, "case", 4) == 0)
                     lp->lex.incase = 1;
                 else if (memcmp(word, "esac", 4) == 0)
@@ -1769,11 +1580,9 @@ comsub(Lex_t *lp, int endtok)
             if (c == RBRACE && lp->lex.incase)
                 lp->lex.incase = 0;
             c = sh_lex(lp);
-            switch (c)
-            {
+            switch (c) {
             case LBRACE:
-                if (endtok == LBRACE && !lp->lex.incase)
-                {
+                if (endtok == LBRACE && !lp->lex.incase) {
                     lp->comsub = 0;
                     count++;
                 }
@@ -1862,8 +1671,7 @@ nested_here(Lex_t *lp)
     iop = newof(0, struct ionod, 1, lp->lexd.docextra + n + ARGVAL);
     iop->iolst = lp->heredoc;
     stkseek(stkp, ARGVAL);
-    if (lp->lexd.docextra)
-    {
+    if (lp->lexd.docextra) {
         sfseek(lp->sh->strbuf, ( Sfoff_t )0, SEEK_SET);
         sfmove(lp->sh->strbuf, stkp, lp->lexd.docextra, -1);
         sfseek(lp->sh->strbuf, ( Sfoff_t )0, SEEK_SET);
@@ -1902,15 +1710,13 @@ sh_lexskip(Lex_t *lp, int close, int copy, int state)
         lp->lexd.nocopy++;
     sh_lex(lp);
     lp->lexd.noarg = 0;
-    if (copy)
-    {
+    if (copy) {
         fcnotify(0, lp);
         if (!(cp = lp->lexd.first))
             cp = fcfirst();
         if ((copy = fcseek(0) - cp) > 0)
             sfwrite(lp->sh->stk, cp, copy);
-    }
-    else
+    } else
         lp->lexd.nocopy--;
 }
 
@@ -1921,10 +1727,8 @@ _sfwrite(Sfio_t *sp, const Void_t *buff, size_t n)
     const char *cp = ( const char * )buff, *next = cp, *ep = cp + n;
     int m = 0, k;
     while (next = ( const char * )memchr(next, '\r', ep - next))
-        if (*++next == '\n')
-        {
-            if (k = next - cp - 1)
-            {
+        if (*++next == '\n') {
+            if (k = next - cp - 1) {
                 if ((k = sfwrite(sp, cp, k)) < 0)
                     return (m > 0 ? m : -1);
                 m += k;
@@ -1953,8 +1757,7 @@ here_copy(Lex_t *lp, struct ionod *iop)
     char *bufp, *cp;
     Sfio_t *sp = lp->sh->heredocs, *funlog;
     int stripcol = 0, stripflg, nsave, special = 0;
-    if (funlog = lp->sh->funlog)
-    {
+    if (funlog = lp->sh->funlog) {
         if (fcfill() > 0)
             fcseek(-LEN);
         lp->sh->funlog = 0;
@@ -1965,23 +1768,19 @@ here_copy(Lex_t *lp, struct ionod *iop)
     iop->iosize = 0;
     iop->iodelim = iop->ioname;
     /* check for and strip quoted characters in delimiter string */
-    if (stripflg = iop->iofile & IOSTRIP)
-    {
+    if (stripflg = iop->iofile & IOSTRIP) {
         while (*iop->iodelim == '\t')
             iop->iodelim++;
         /* skip over leading tabs in document */
-        if (iop->iofile & IOLSEEK)
-        {
+        if (iop->iofile & IOLSEEK) {
             iop->iofile &= ~IOLSEEK;
-            while (fcgetc(c) == '\t' || c == ' ')
-            {
+            while (fcgetc(c) == '\t' || c == ' ') {
                 if (c == ' ')
                     stripcol++;
                 else
                     stripcol += 8 - stripcol % 8;
             }
-        }
-        else
+        } else
             while (fcgetc(c) == '\t')
                 ;
         if (c > 0)
@@ -1993,16 +1792,12 @@ here_copy(Lex_t *lp, struct ionod *iop)
         state = sh_lexstates[ST_QUOTE];
     bufp = fcseek(0);
     n = S_NL;
-    while (1)
-    {
-        if (n != S_NL)
-        {
+    while (1) {
+        if (n != S_NL) {
             /* skip over regular characters */
 #if SHOPT_MULTIBYTE
-            do
-            {
-                if (fcleft() < MB_LEN_MAX && mbsize(fcseek(0)) < 0)
-                {
+            do {
+                if (fcleft() < MB_LEN_MAX && mbsize(fcseek(0)) < 0) {
                     n = S_EOF;
                     LEN = -fcleft();
                     break;
@@ -2012,14 +1807,12 @@ here_copy(Lex_t *lp, struct ionod *iop)
 
             while ((n = STATE(state, c)) == 0);
         }
-        if (n == S_EOF || !(c = fcget()))
-        {
+        if (n == S_EOF || !(c = fcget())) {
             if (LEN < 0)
                 c = fclast() - bufp;
             else
                 c = (fcseek(0) - 1) - bufp;
-            if (!lp->lexd.dolparen && c)
-            {
+            if (!lp->lexd.dolparen && c) {
                 if (n == S_ESC)
                     c--;
                 if (!lp->lexd.dolparen && (c = sfwrite(sp, bufp, c)) > 0)
@@ -2028,54 +1821,44 @@ here_copy(Lex_t *lp, struct ionod *iop)
 #if SHOPT_MULTIBYTE
             if (LEN == 0)
                 LEN = 1;
-            if (LEN < 0)
-            {
+            if (LEN < 0) {
                 n = LEN;
                 c = fcmbget(&LEN);
                 LEN += n;
-            }
-            else
+            } else
 #endif /* SHOPT_MULTIBYTE */
                 c = lexfill(lp);
             if (c < 0)
                 break;
-            if (n == S_ESC)
-            {
+            if (n == S_ESC) {
 #if SHOPT_CRNL
                 if (c == '\r' && (c = fcget()) != NL)
                     fcseek(-LEN);
 #endif /* SHOPT_CRNL */
                 if (c == NL)
                     fcseek(1);
-                else if (!lp->lexd.dolparen)
-                {
+                else if (!lp->lexd.dolparen) {
                     iop->iosize++;
                     sfputc(sp, '\\');
                 }
             }
             bufp = fcseek(-LEN);
-        }
-        else
+        } else
             fcseek(-LEN);
-        switch (n)
-        {
+        switch (n) {
         case S_NL:
             lp->sh->inlineno++;
-            if ((stripcol && c == ' ') || (stripflg && c == '\t'))
-            {
-                if (!lp->lexd.dolparen)
-                {
+            if ((stripcol && c == ' ') || (stripflg && c == '\t')) {
+                if (!lp->lexd.dolparen) {
                     /* write out line */
                     n = fcseek(0) - bufp;
                     if ((n = sfwrite(sp, bufp, n)) > 0)
                         iop->iosize += n;
                 }
                 /* skip over tabs */
-                if (stripcol)
-                {
+                if (stripcol) {
                     int col = 0;
-                    do
-                    {
+                    do {
                         fcgetc(c);
                         if (c == ' ')
                             col++;
@@ -2084,8 +1867,7 @@ here_copy(Lex_t *lp, struct ionod *iop)
                         if (col > stripcol)
                             break;
                     } while (c == ' ' || c == '\t');
-                }
-                else
+                } else
                     while (c == '\t')
                         fcgetc(c);
                 if (c <= 0)
@@ -2096,25 +1878,20 @@ here_copy(Lex_t *lp, struct ionod *iop)
                 break;
             cp = fcseek(0);
             nsave = n = 0;
-            while (1)
-            {
-                if (!(c = fcget()))
-                {
-                    if (!lp->lexd.dolparen && (c = cp - bufp))
-                    {
+            while (1) {
+                if (!(c = fcget())) {
+                    if (!lp->lexd.dolparen && (c = cp - bufp)) {
                         if ((c = sfwrite(sp, cp = bufp, c)) > 0)
                             iop->iosize += c;
                     }
                     nsave = n;
-                    if ((c = lexfill(lp)) <= 0)
-                    {
+                    if ((c = lexfill(lp)) <= 0) {
                         c = iop->iodelim[n] == 0;
                         goto done;
                     }
                 }
 #if SHOPT_CRNL
-                if (c == '\r' && (c = fcget()) != NL)
-                {
+                if (c == '\r' && (c = fcget()) != NL) {
                     if (c)
                         fcseek(-LEN);
                     c = '\r';
@@ -2122,10 +1899,8 @@ here_copy(Lex_t *lp, struct ionod *iop)
 #endif /* SHOPT_CRNL */
                 if (c == NL)
                     lp->sh->inlineno++;
-                if (iop->iodelim[n] == 0 && (c == NL || c == RPAREN))
-                {
-                    if (!lp->lexd.dolparen && (n = cp - bufp))
-                    {
+                if (iop->iodelim[n] == 0 && (c == NL || c == RPAREN)) {
+                    if (!lp->lexd.dolparen && (n = cp - bufp)) {
                         if ((n = sfwrite(sp, bufp, n)) > 0)
                             iop->iosize += n;
                     }
@@ -2134,16 +1909,14 @@ here_copy(Lex_t *lp, struct ionod *iop)
                         fcseek(-LEN);
                     goto done;
                 }
-                if (iop->iodelim[n++] != c)
-                {
+                if (iop->iodelim[n++] != c) {
                     /*
                      * The match for delimiter failed.
                      * nsave>0 only when a buffer boundary
                      * was crossed while checking the
                      * delimiter
                      */
-                    if (!lp->lexd.dolparen && nsave > 0)
-                    {
+                    if (!lp->lexd.dolparen && nsave > 0) {
                         if ((n = sfwrite(sp, iop->iodelim, nsave)) > 0)
                             iop->iosize += n;
                         bufp = fcfirst();
@@ -2157,32 +1930,27 @@ here_copy(Lex_t *lp, struct ionod *iop)
         case S_ESC:
             n = 1;
 #if SHOPT_CRNL
-            if (c == '\r')
-            {
+            if (c == '\r') {
                 fcseek(1);
                 if (c = fcget())
                     fcseek(-LEN);
                 if (c == NL)
                     n = 2;
-                else
-                {
+                else {
                     special++;
                     break;
                 }
             }
 #endif /* SHOPT_CRNL */
-            if (c == NL)
-            {
+            if (c == NL) {
                 /* new-line joining */
                 lp->sh->inlineno++;
-                if (!lp->lexd.dolparen && (n = (fcseek(0) - bufp) - n) >= 0)
-                {
+                if (!lp->lexd.dolparen && (n = (fcseek(0) - bufp) - n) >= 0) {
                     if (n && (n = sfwrite(sp, bufp, n)) > 0)
                         iop->iosize += n;
                     bufp = fcseek(0) + 1;
                 }
-            }
-            else
+            } else
                 special++;
             fcget();
             break;
@@ -2216,8 +1984,7 @@ fmttoken(Lex_t *lp, int sym, char *tok)
         return (lp->arg ? lp->arg->argval : "?");
     if (lp->lex.intest && lp->arg && *lp->arg->argval)
         return (lp->arg->argval);
-    if (sym & SYMRES)
-    {
+    if (sym & SYMRES) {
         const Shtable_t *tp = shtab_reserved;
         while (tp->sh_number && tp->sh_number != sym)
             tp++;
@@ -2230,10 +1997,8 @@ fmttoken(Lex_t *lp, int sym, char *tok)
     tok[0] = sym;
     if (sym & SYMREP)
         tok[n++] = sym;
-    else
-    {
-        switch (sym & SYMMASK)
-        {
+    else {
+        switch (sym & SYMMASK) {
         case SYMAMP:
             sym = '&';
             break;
@@ -2276,16 +2041,14 @@ sh_syntax(Lex_t *lp)
     int tok = lp->token;
     char tokbuf[3];
     Sfio_t *sp;
-    if ((tok == EOFSYM) && lp->lasttok)
-    {
+    if ((tok == EOFSYM) && lp->lasttok) {
         tok = lp->lasttok;
         cp = sh_translate(e_unmatched);
-    }
-    else
+    } else
         lp->lastline = shp->inlineno;
     tokstr = fmttoken(lp, tok, tokbuf);
-    if ((sp = fcfile()) || (shp->infd >= 0 && (sp = shp->sftable[shp->infd])))
-    {
+    if ((sp = fcfile())
+        || (shp->infd >= 0 && (sp = shp->sftable[shp->infd]))) {
         /* clear out any pending input */
         Sfio_t *top;
         while (fcget() > 0)
@@ -2293,8 +2056,7 @@ sh_syntax(Lex_t *lp)
         fcclose();
         while (top = sfstack(sp, SF_POPSTACK))
             sfclose(top);
-    }
-    else
+    } else
         fcclose();
     shp->inlineno = lp->inlineno;
     shp->st.firstline = lp->firstline;
@@ -2347,13 +2109,10 @@ sh_endword(Shell_t *shp, int mode)
     sfputc(stkp, 0);
     sp = stkptr(stkp, ARGVAL);
 #if SHOPT_MULTIBYTE
-    if (mbwide())
-    {
-        do
-        {
+    if (mbwide()) {
+        do {
             int len;
-            switch (len = mbsize(sp))
-            {
+            switch (len = mbsize(sp)) {
             case -1: /* illegal multi-byte char */
             case 0:
             case 1:
@@ -2372,35 +2131,28 @@ sh_endword(Shell_t *shp, int mode)
                 sp += len;
             }
         } while (n == 0);
-    }
-    else
+    } else
 #endif /* SHOPT_MULTIBYTE */
         while ((n = state[*sp++]) == 0)
             ;
     dp = sp;
     if (mode < 0)
         inquote = 1;
-    while (1)
-    {
-        switch (n)
-        {
+    while (1) {
+        switch (n) {
         case S_EOF:
             stkseek(stkp, dp - stkptr(stkp, 0));
-            if (mode <= 0)
-            {
+            if (mode <= 0) {
                 argp = ( struct argnod * )stkfreeze(stkp, 0);
                 argp->argflag = ARG_RAW | ARG_QUOTED;
             }
             return (argp);
         case S_LIT:
-            if (!(inquote & 1))
-            {
+            if (!(inquote & 1)) {
                 inlit = !inlit;
-                if (mode == 0 || (mode < 0 && bracket))
-                {
+                if (mode == 0 || (mode < 0 && bracket)) {
                     dp--;
-                    if (ep)
-                    {
+                    if (ep) {
                         *dp = 0;
                         stresc(ep);
                         dp = ep + strlen(ep);
@@ -2412,16 +2164,13 @@ sh_endword(Shell_t *shp, int mode)
         case S_QUOTE:
             if (mode < 0 && !bracket)
                 break;
-            if (!inlit)
-            {
+            if (!inlit) {
                 if (mode <= 0)
                     dp--;
                 inquote = inquote ^ 1;
-                if (ep)
-                {
+                if (ep) {
                     char *msg;
-                    if (mode == 2)
-                    {
+                    if (mode == 2) {
                         sfprintf(sfstdout, "%.*s\n", dp - ep, ep);
                         ep = 0;
                         break;
@@ -2438,8 +2187,7 @@ sh_endword(Shell_t *shp, int mode)
 #endif
                     n = strlen(msg);
                     dp = ep + n;
-                    if (sp - dp <= 1)
-                    {
+                    if (sp - dp <= 1) {
                         sp = stack_shift(stkp, sp, dp);
                         dp = sp - 1;
                         ep = dp - n;
@@ -2453,22 +2201,19 @@ sh_endword(Shell_t *shp, int mode)
         case S_DOL: /* check for $'...'  and $"..." */
             if (inlit)
                 break;
-            if (*sp == LPAREN || *sp == LBRACE)
-            {
+            if (*sp == LPAREN || *sp == LBRACE) {
                 inquote <<= 1;
                 break;
             }
             if (inquote & 1)
                 break;
-            if (*sp == '\'' || *sp == '"')
-            {
+            if (*sp == '\'' || *sp == '"') {
                 if (*sp == '"')
                     inquote |= 1;
                 else
                     inlit = 1;
                 sp++;
-                if ((mode == 0 || (mode < 0 && bracket)) || (inquote & 1))
-                {
+                if ((mode == 0 || (mode < 0 && bracket)) || (inquote & 1)) {
                     if (mode == 2)
                         ep = dp++;
                     else if (mode == 1)
@@ -2483,12 +2228,9 @@ sh_endword(Shell_t *shp, int mode)
             if (*sp == '\r' && sp[1] == '\n')
                 sp++;
 #endif /* SHOPT_CRNL */
-            if (inlit || mode > 0)
-            {
-                if (mode < 0)
-                {
-                    if (dp >= sp)
-                    {
+            if (inlit || mode > 0) {
+                if (mode < 0) {
+                    if (dp >= sp) {
                         sp = stack_shift(stkp, sp, dp + 1);
                         dp = sp - 2;
                     }
@@ -2503,8 +2245,8 @@ sh_endword(Shell_t *shp, int mode)
             if (!(inquote & 1) && sh_lexstates[ST_NORM][n] == 0)
                 break;
 #endif /* SHOPT_DOS */
-            if (!(inquote & 1) || (sh_lexstates[ST_QUOTE][n] && n != RBRACE))
-            {
+            if (!(inquote & 1)
+                || (sh_lexstates[ST_QUOTE][n] && n != RBRACE)) {
                 if (n == '\n')
                     dp--;
                 else
@@ -2515,20 +2257,16 @@ sh_endword(Shell_t *shp, int mode)
         case S_POP:
             if (sp[-1] != RBRACT)
                 break;
-            if (!inlit && !(inquote & 1))
-            {
+            if (!inlit && !(inquote & 1)) {
                 inquote >>= 1;
                 if (xp)
                     dp = sh_checkid(xp, dp);
                 xp = 0;
                 if (--bracket <= 0 && mode < 0)
                     inquote = 1;
-            }
-            else if ((inlit || inquote) && mode < 0)
-            {
+            } else if ((inlit || inquote) && mode < 0) {
                 dp[-1] = '\\';
-                if (dp >= sp)
-                {
+                if (dp >= sp) {
                     sp = stack_shift(stkp, sp, dp);
                     dp = sp - 1;
                 }
@@ -2538,31 +2276,24 @@ sh_endword(Shell_t *shp, int mode)
         case S_BRACT:
             if (dp[-2] == '.')
                 xp = dp;
-            if (mode < 0)
-            {
-                if (inlit || (bracket && inquote))
-                {
+            if (mode < 0) {
+                if (inlit || (bracket && inquote)) {
                     dp[-1] = '\\';
-                    if (dp >= sp)
-                    {
+                    if (dp >= sp) {
                         sp = stack_shift(stkp, sp, dp);
                         dp = sp - 1;
                     }
                     *dp++ = '[';
-                }
-                else if (bracket++ == 0)
+                } else if (bracket++ == 0)
                     inquote = 0;
             }
             break;
         }
 #if SHOPT_MULTIBYTE
-        if (mbwide())
-        {
-            do
-            {
+        if (mbwide()) {
+            do {
                 int len;
-                switch (len = mbsize(sp))
-                {
+                switch (len = mbsize(sp)) {
                 case -1: /* illegal multi-byte char */
                 case 0:
                 case 1:
@@ -2582,8 +2313,7 @@ sh_endword(Shell_t *shp, int mode)
                     n = state['a'];
                 }
             } while (n == 0);
-        }
-        else
+        } else
 #endif /* SHOPT_MULTIBYTE */
             while ((n = state[ *dp++ = *sp++]) == 0)
                 ;
@@ -2625,20 +2355,16 @@ alias_exceptf(Sfio_t *iop, int type, Sfdisc_t *handle)
         return (0);
     lp = ap->lp;
     np = ap->np;
-    if (type != SF_READ)
-    {
-        if (type == SF_CLOSING)
-        {
+    if (type != SF_READ) {
+        if (type == SF_CLOSING) {
             Sfdisc_t *dp = sfdisc(iop, SF_POPDISC);
             if (dp != handle)
                 sfdisc(iop, dp);
-        }
-        else if (type == SF_DPOP || type == SF_FINAL)
+        } else if (type == SF_DPOP || type == SF_FINAL)
             free(( void * )ap);
         goto done;
     }
-    if (ap->nextc)
-    {
+    if (ap->nextc) {
         /* if last character is a blank, then next work can be alias */
         int c = fcpeek(-1);
         if (isblank(c))
@@ -2663,11 +2389,9 @@ setupalias(Lex_t *lp, const char *string, Namval_t *np)
     ap->disc = alias_disc;
     ap->lp = lp;
     ap->buf[1] = 0;
-    if (ap->np = np)
-    {
+    if (ap->np = np) {
 #if SHOPT_KIA
-        if (lp->kiafile)
-        {
+        if (lp->kiafile) {
             unsigned long r;
             r = kiaentity(
             lp, nv_name(np), -1, 'p', 0, 0, lp->current, 'a', 0, "");
@@ -2681,8 +2405,7 @@ setupalias(Lex_t *lp, const char *string, Namval_t *np)
 #endif /* SHOPT_KIA */
         if ((ap->nextc = fcget()) == 0)
             ap->nextc = ' ';
-    }
-    else
+    } else
         ap->nextc = 0;
     iop = sfopen(NIL(Sfio_t *), ( char * )string, "s");
     sfdisc(iop, &ap->disc);

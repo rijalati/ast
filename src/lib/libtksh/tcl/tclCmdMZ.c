@@ -71,16 +71,14 @@ char **argv;        /* Argument strings. */
 {
     char *dirName;
 
-    if (argc != 1)
-    {
+    if (argc != 1) {
         Tcl_AppendResult(
         interp, "wrong # args: should be \"", argv[0], "\"", ( char * )NULL);
         return TCL_ERROR;
     }
 
     dirName = TclGetCwd(interp);
-    if (dirName == NULL)
-    {
+    if (dirName == NULL) {
         return TCL_ERROR;
     }
     interp->result = dirName;
@@ -119,8 +117,7 @@ char **argv;        /* Argument strings. */
     int i;
     Tcl_DString stringDString, patternDString;
 
-    if (argc < 3)
-    {
+    if (argc < 3) {
     wrongNumArgs:
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
@@ -132,24 +129,16 @@ char **argv;        /* Argument strings. */
     }
     argPtr = argv + 1;
     argc--;
-    while ((argc > 0) && (argPtr[0][0] == '-'))
-    {
-        if (strcmp(argPtr[0], "-indices") == 0)
-        {
+    while ((argc > 0) && (argPtr[0][0] == '-')) {
+        if (strcmp(argPtr[0], "-indices") == 0) {
             indices = 1;
-        }
-        else if (strcmp(argPtr[0], "-nocase") == 0)
-        {
+        } else if (strcmp(argPtr[0], "-nocase") == 0) {
             noCase = 1;
-        }
-        else if (strcmp(argPtr[0], "--") == 0)
-        {
+        } else if (strcmp(argPtr[0], "--") == 0) {
             argPtr++;
             argc--;
             break;
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp,
                              "bad switch \"",
                              argPtr[0],
@@ -160,8 +149,7 @@ char **argv;        /* Argument strings. */
         argPtr++;
         argc--;
     }
-    if (argc < 2)
-    {
+    if (argc < 2) {
         goto wrongNumArgs;
     }
 
@@ -170,56 +158,44 @@ char **argv;        /* Argument strings. */
      * perform the matching operation.
      */
 
-    if (noCase)
-    {
+    if (noCase) {
         char *p;
 
         Tcl_DStringInit(&patternDString);
         Tcl_DStringAppend(&patternDString, argPtr[0], -1);
         pattern = Tcl_DStringValue(&patternDString);
-        for (p = pattern; *p != 0; p++)
-        {
-            if (isupper(UCHAR(*p)))
-            {
+        for (p = pattern; *p != 0; p++) {
+            if (isupper(UCHAR(*p))) {
                 *p = ( char )tolower(UCHAR(*p));
             }
         }
         Tcl_DStringInit(&stringDString);
         Tcl_DStringAppend(&stringDString, argPtr[1], -1);
         string = Tcl_DStringValue(&stringDString);
-        for (p = string; *p != 0; p++)
-        {
-            if (isupper(UCHAR(*p)))
-            {
+        for (p = string; *p != 0; p++) {
+            if (isupper(UCHAR(*p))) {
                 *p = ( char )tolower(UCHAR(*p));
             }
         }
-    }
-    else
-    {
+    } else {
         pattern = argPtr[0];
         string = argPtr[1];
     }
     regExpr = Tcl_RegExpCompile(interp, pattern);
-    if (regExpr != NULL)
-    {
+    if (regExpr != NULL) {
         match = Tcl_RegExpExec(interp, regExpr, string, string);
     }
-    if (noCase)
-    {
+    if (noCase) {
         Tcl_DStringFree(&stringDString);
         Tcl_DStringFree(&patternDString);
     }
-    if (regExpr == NULL)
-    {
+    if (regExpr == NULL) {
         return TCL_ERROR;
     }
-    if (match < 0)
-    {
+    if (match < 0) {
         return TCL_ERROR;
     }
-    if (!match)
-    {
+    if (!match) {
         interp->result = "0";
         return TCL_OK;
     }
@@ -230,34 +206,24 @@ char **argv;        /* Argument strings. */
      */
 
     argc -= 2;
-    for (i = 0; i < argc; i++)
-    {
+    for (i = 0; i < argc; i++) {
         char *result, info[50];
 
         Tcl_RegExpRange(regExpr, i, &start, &end);
-        if (start == NULL)
-        {
-            if (indices)
-            {
+        if (start == NULL) {
+            if (indices) {
                 result = Tcl_SetVar(interp, argPtr[i + 2], "-1 -1", 0);
-            }
-            else
-            {
+            } else {
                 result = Tcl_SetVar(interp, argPtr[i + 2], "", 0);
             }
-        }
-        else
-        {
-            if (indices)
-            {
+        } else {
+            if (indices) {
                 sprintf(info,
                         "%d %d",
                         ( int )(start - string),
                         ( int )(end - string - 1));
                 result = Tcl_SetVar(interp, argPtr[i + 2], info, 0);
-            }
-            else
-            {
+            } else {
                 char savedChar, *first, *last;
 
                 first = argPtr[1] + (start - string);
@@ -268,8 +234,7 @@ char **argv;        /* Argument strings. */
                 *last = savedChar;
             }
         }
-        if (result == NULL)
-        {
+        if (result == NULL) {
             Tcl_AppendResult(interp,
                              "couldn't set variable \"",
                              argPtr[i + 2],
@@ -313,8 +278,7 @@ char **argv;        /* Argument strings. */
     char *src, c;
     Tcl_DString stringDString, patternDString;
 
-    if (argc < 5)
-    {
+    if (argc < 5) {
     wrongNumArgs:
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
@@ -325,24 +289,16 @@ char **argv;        /* Argument strings. */
     }
     argPtr = argv + 1;
     argc--;
-    while (argPtr[0][0] == '-')
-    {
-        if (strcmp(argPtr[0], "-nocase") == 0)
-        {
+    while (argPtr[0][0] == '-') {
+        if (strcmp(argPtr[0], "-nocase") == 0) {
             noCase = 1;
-        }
-        else if (strcmp(argPtr[0], "-all") == 0)
-        {
+        } else if (strcmp(argPtr[0], "-all") == 0) {
             all = 1;
-        }
-        else if (strcmp(argPtr[0], "--") == 0)
-        {
+        } else if (strcmp(argPtr[0], "--") == 0) {
             argPtr++;
             argc--;
             break;
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp,
                              "bad switch \"",
                              argPtr[0],
@@ -353,8 +309,7 @@ char **argv;        /* Argument strings. */
         argPtr++;
         argc--;
     }
-    if (argc != 4)
-    {
+    if (argc != 4) {
         goto wrongNumArgs;
     }
 
@@ -362,37 +317,29 @@ char **argv;        /* Argument strings. */
      * Convert the string and pattern to lower case, if desired.
      */
 
-    if (noCase)
-    {
+    if (noCase) {
         Tcl_DStringInit(&patternDString);
         Tcl_DStringAppend(&patternDString, argPtr[0], -1);
         pattern = Tcl_DStringValue(&patternDString);
-        for (p = pattern; *p != 0; p++)
-        {
-            if (isupper(UCHAR(*p)))
-            {
+        for (p = pattern; *p != 0; p++) {
+            if (isupper(UCHAR(*p))) {
                 *p = ( char )tolower(UCHAR(*p));
             }
         }
         Tcl_DStringInit(&stringDString);
         Tcl_DStringAppend(&stringDString, argPtr[1], -1);
         string = Tcl_DStringValue(&stringDString);
-        for (p = string; *p != 0; p++)
-        {
-            if (isupper(UCHAR(*p)))
-            {
+        for (p = string; *p != 0; p++) {
+            if (isupper(UCHAR(*p))) {
                 *p = ( char )tolower(UCHAR(*p));
             }
         }
-    }
-    else
-    {
+    } else {
         pattern = argPtr[0];
         string = argPtr[1];
     }
     regExpr = Tcl_RegExpCompile(interp, pattern);
-    if (regExpr == NULL)
-    {
+    if (regExpr == NULL) {
         code = TCL_ERROR;
         goto done;
     }
@@ -406,16 +353,13 @@ char **argv;        /* Argument strings. */
 
     flags = 0;
     numMatches = 0;
-    for (p = string; *p != 0;)
-    {
+    for (p = string; *p != 0;) {
         match = Tcl_RegExpExec(interp, regExpr, p, string);
-        if (match < 0)
-        {
+        if (match < 0) {
             code = TCL_ERROR;
             goto done;
         }
-        if (!match)
-        {
+        if (!match) {
             break;
         }
         numMatches += 1;
@@ -433,8 +377,7 @@ char **argv;        /* Argument strings. */
         = Tcl_SetVar(interp, argPtr[3], argPtr[1] + (p - string), flags);
         *src = c;
         flags = TCL_APPEND_VALUE;
-        if (newValue == NULL)
-        {
+        if (newValue == NULL) {
         cantSet:
             Tcl_AppendResult(interp,
                              "couldn't set variable \"",
@@ -452,61 +395,46 @@ char **argv;        /* Argument strings. */
          * subSpec to reduce the number of calls to Tcl_SetVar.
          */
 
-        for (src = firstChar = argPtr[2], c = *src; c != 0; src++, c = *src)
-        {
+        for (src = firstChar = argPtr[2], c = *src; c != 0; src++, c = *src) {
             int index;
 
-            if (c == '&')
-            {
+            if (c == '&') {
                 index = 0;
-            }
-            else if (c == '\\')
-            {
+            } else if (c == '\\') {
                 c = src[1];
-                if ((c >= '0') && (c <= '9'))
-                {
+                if ((c >= '0') && (c <= '9')) {
                     index = c - '0';
-                }
-                else if ((c == '\\') || (c == '&'))
-                {
+                } else if ((c == '\\') || (c == '&')) {
                     *src = c;
                     src[1] = 0;
                     newValue = Tcl_SetVar(
                     interp, argPtr[3], firstChar, TCL_APPEND_VALUE);
                     *src = '\\';
                     src[1] = c;
-                    if (newValue == NULL)
-                    {
+                    if (newValue == NULL) {
                         goto cantSet;
                     }
                     firstChar = src + 2;
                     src++;
                     continue;
-                }
-                else
-                {
+                } else {
                     continue;
                 }
-            }
-            else
-            {
+            } else {
                 continue;
             }
-            if (firstChar != src)
-            {
+            if (firstChar != src) {
                 c = *src;
                 *src = 0;
                 newValue
                 = Tcl_SetVar(interp, argPtr[3], firstChar, TCL_APPEND_VALUE);
                 *src = c;
-                if (newValue == NULL)
-                {
+                if (newValue == NULL) {
                     goto cantSet;
                 }
             }
             Tcl_RegExpRange(regExpr, index, &subStart, &subEnd);
-            if ((subStart != NULL) && (subEnd != NULL))
-            {
+            if ((subStart != NULL) && (subEnd != NULL)) {
                 char *first, *last, saved;
 
                 first = argPtr[1] + (subStart - string);
@@ -516,27 +444,22 @@ char **argv;        /* Argument strings. */
                 newValue
                 = Tcl_SetVar(interp, argPtr[3], first, TCL_APPEND_VALUE);
                 *last = saved;
-                if (newValue == NULL)
-                {
+                if (newValue == NULL) {
                     goto cantSet;
                 }
             }
-            if (*src == '\\')
-            {
+            if (*src == '\\') {
                 src++;
             }
             firstChar = src + 1;
         }
-        if (firstChar != src)
-        {
+        if (firstChar != src) {
             if (Tcl_SetVar(interp, argPtr[3], firstChar, TCL_APPEND_VALUE)
-                == NULL)
-            {
+                == NULL) {
                 goto cantSet;
             }
         }
-        if (end == p)
-        {
+        if (end == p) {
             char tmp[2];
 
             /*
@@ -547,18 +470,14 @@ char **argv;        /* Argument strings. */
             tmp[0] = argPtr[1][p - string];
             tmp[1] = 0;
             newValue = Tcl_SetVar(interp, argPtr[3], tmp, flags);
-            if (newValue == NULL)
-            {
+            if (newValue == NULL) {
                 goto cantSet;
             }
             p = end + 1;
-        }
-        else
-        {
+        } else {
             p = end;
         }
-        if (!all)
-        {
+        if (!all) {
             break;
         }
     }
@@ -568,11 +487,9 @@ char **argv;        /* Argument strings. */
      * result variable.
      */
 
-    if ((*p != 0) || (numMatches == 0))
-    {
+    if ((*p != 0) || (numMatches == 0)) {
         if (Tcl_SetVar(interp, argPtr[3], argPtr[1] + (p - string), flags)
-            == NULL)
-        {
+            == NULL) {
             goto cantSet;
         }
     }
@@ -580,8 +497,7 @@ char **argv;        /* Argument strings. */
     code = TCL_OK;
 
 done:
-    if (noCase)
-    {
+    if (noCase) {
         Tcl_DStringFree(&stringDString);
         Tcl_DStringFree(&patternDString);
     }
@@ -617,8 +533,7 @@ char **argv;        /* Argument strings. */
     int new;
     char *srcName, *dstName;
 
-    if (argc != 3)
-    {
+    if (argc != 3) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -626,10 +541,8 @@ char **argv;        /* Argument strings. */
                          ( char * )NULL);
         return TCL_ERROR;
     }
-    if (argv[2][0] == '\0')
-    {
-        if (Tcl_DeleteCommand(interp, argv[1]) != 0)
-        {
+    if (argv[2][0] == '\0') {
+        if (Tcl_DeleteCommand(interp, argv[1]) != 0) {
             Tcl_AppendResult(interp,
                              "can't delete \"",
                              argv[1],
@@ -643,8 +556,7 @@ char **argv;        /* Argument strings. */
     srcName = argv[1];
     dstName = argv[2];
     hPtr = Tcl_FindHashEntry(&iPtr->commandTable, dstName);
-    if (hPtr != NULL)
-    {
+    if (hPtr != NULL) {
         Tcl_AppendResult(interp,
                          "can't rename to \"",
                          argv[2],
@@ -660,19 +572,16 @@ char **argv;        /* Argument strings. */
      * structure.  This code should eventually become unnecessary.
      */
 
-    if ((srcName[0] == 't') && (strcmp(srcName, "tkerror") == 0))
-    {
+    if ((srcName[0] == 't') && (strcmp(srcName, "tkerror") == 0)) {
         srcName = "bgerror";
     }
     dstName = argv[2];
-    if ((dstName[0] == 't') && (strcmp(dstName, "tkerror") == 0))
-    {
+    if ((dstName[0] == 't') && (strcmp(dstName, "tkerror") == 0)) {
         dstName = "bgerror";
     }
 
     hPtr = Tcl_FindHashEntry(&iPtr->commandTable, srcName);
-    if (hPtr == NULL)
-    {
+    if (hPtr == NULL) {
         Tcl_AppendResult(interp,
                          "can't rename \"",
                          argv[1],
@@ -688,8 +597,7 @@ char **argv;        /* Argument strings. */
 
     if (TclPreventAliasLoop(
         interp, interp, dstName, cmdPtr->proc, cmdPtr->clientData)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -704,8 +612,7 @@ char **argv;        /* Argument strings. */
      * code above, it should eventually be removed.
      */
 
-    if ((dstName[0] == 'b') && (strcmp(dstName, "bgerror") == 0))
-    {
+    if ((dstName[0] == 'b') && (strcmp(dstName, "bgerror") == 0)) {
         /*
          * The destination command is "bgerror";  create a "tkerror"
          * command that shares the same Command structure.
@@ -714,8 +621,7 @@ char **argv;        /* Argument strings. */
         hPtr = Tcl_CreateHashEntry(&iPtr->commandTable, "tkerror", &new);
         Tcl_SetHashValue(hPtr, cmdPtr);
     }
-    if ((srcName[0] == 'b') && (strcmp(srcName, "bgerror") == 0))
-    {
+    if ((srcName[0] == 'b') && (strcmp(srcName, "bgerror") == 0)) {
         /*
          * The source command is "bgerror":  delete the hash table
          * entry for "tkerror" if it exists.
@@ -753,44 +659,29 @@ char **argv;        /* Argument strings. */
     Interp *iPtr = ( Interp * )interp;
     int c, code;
 
-    if (iPtr->errorInfo != NULL)
-    {
+    if (iPtr->errorInfo != NULL) {
         ckfree(iPtr->errorInfo);
         iPtr->errorInfo = NULL;
     }
-    if (iPtr->errorCode != NULL)
-    {
+    if (iPtr->errorCode != NULL) {
         ckfree(iPtr->errorCode);
         iPtr->errorCode = NULL;
     }
     code = TCL_OK;
-    for (argv++, argc--; argc > 1; argv += 2, argc -= 2)
-    {
-        if (strcmp(argv[0], "-code") == 0)
-        {
+    for (argv++, argc--; argc > 1; argv += 2, argc -= 2) {
+        if (strcmp(argv[0], "-code") == 0) {
             c = argv[1][0];
-            if ((c == 'o') && (strcmp(argv[1], "ok") == 0))
-            {
+            if ((c == 'o') && (strcmp(argv[1], "ok") == 0)) {
                 code = TCL_OK;
-            }
-            else if ((c == 'e') && (strcmp(argv[1], "error") == 0))
-            {
+            } else if ((c == 'e') && (strcmp(argv[1], "error") == 0)) {
                 code = TCL_ERROR;
-            }
-            else if ((c == 'r') && (strcmp(argv[1], "return") == 0))
-            {
+            } else if ((c == 'r') && (strcmp(argv[1], "return") == 0)) {
                 code = TCL_RETURN;
-            }
-            else if ((c == 'b') && (strcmp(argv[1], "break") == 0))
-            {
+            } else if ((c == 'b') && (strcmp(argv[1], "break") == 0)) {
                 code = TCL_BREAK;
-            }
-            else if ((c == 'c') && (strcmp(argv[1], "continue") == 0))
-            {
+            } else if ((c == 'c') && (strcmp(argv[1], "continue") == 0)) {
                 code = TCL_CONTINUE;
-            }
-            else if (Tcl_GetInt(interp, argv[1], &code) != TCL_OK)
-            {
+            } else if (Tcl_GetInt(interp, argv[1], &code) != TCL_OK) {
                 Tcl_ResetResult(interp);
                 Tcl_AppendResult(interp,
                                  "bad completion code \"",
@@ -800,21 +691,15 @@ char **argv;        /* Argument strings. */
                                  ( char * )NULL);
                 return TCL_ERROR;
             }
-        }
-        else if (strcmp(argv[0], "-errorinfo") == 0)
-        {
+        } else if (strcmp(argv[0], "-errorinfo") == 0) {
             iPtr->errorInfo
             = ( char * )ckalloc(( unsigned )(strlen(argv[1]) + 1));
             strcpy(iPtr->errorInfo, argv[1]);
-        }
-        else if (strcmp(argv[0], "-errorcode") == 0)
-        {
+        } else if (strcmp(argv[0], "-errorcode") == 0) {
             iPtr->errorCode
             = ( char * )ckalloc(( unsigned )(strlen(argv[1]) + 1));
             strcpy(iPtr->errorCode, argv[1]);
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp,
                              "bad option \"",
                              argv[0],
@@ -823,8 +708,7 @@ char **argv;        /* Argument strings. */
             return TCL_ERROR;
         }
     }
-    if (argc == 1)
-    {
+    if (argc == 1) {
         Tcl_SetResult(interp, argv[0], TCL_VOLATILE);
     }
     iPtr->returnCode = code;
@@ -888,8 +772,7 @@ char **argv;        /* Argument strings. */
     char copyBuf[STATIC_SIZE], *fmtCopy;
     char *dst;
 
-    if (argc < 3)
-    {
+    if (argc < 3) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -910,69 +793,55 @@ char **argv;        /* Argument strings. */
     code = TCL_OK;
     results = NULL;
     length = strlen(argv[2]) * 2 + 1;
-    if (length < STATIC_SIZE)
-    {
+    if (length < STATIC_SIZE) {
         fmtCopy = copyBuf;
-    }
-    else
-    {
+    } else {
         fmtCopy = ( char * )ckalloc(( unsigned )length);
     }
     dst = fmtCopy;
-    for (fmt = argv[2]; *fmt != 0; fmt++)
-    {
+    for (fmt = argv[2]; *fmt != 0; fmt++) {
         *dst = *fmt;
         dst++;
-        if (*fmt != '%')
-        {
+        if (*fmt != '%') {
             continue;
         }
         fmt++;
-        if (*fmt == '%')
-        {
+        if (*fmt == '%') {
             *dst = *fmt;
             dst++;
             continue;
         }
-        if (*fmt == '*')
-        {
+        if (*fmt == '*') {
             suppress = 1;
             *dst = *fmt;
             dst++;
             fmt++;
-        }
-        else
-        {
+        } else {
             suppress = 0;
         }
         widthSpecified = 0;
-        while (isdigit(UCHAR(*fmt)))
-        {
+        while (isdigit(UCHAR(*fmt))) {
             widthSpecified = 1;
             *dst = *fmt;
             dst++;
             fmt++;
         }
-        if ((*fmt == 'l') || (*fmt == 'h') || (*fmt == 'L'))
-        {
+        if ((*fmt == 'l') || (*fmt == 'h') || (*fmt == 'L')) {
             fmt++;
         }
         *dst = *fmt;
         dst++;
-        if (suppress)
-        {
+        if (suppress) {
             continue;
         }
-        if (numFields == MAX_FIELDS)
-        {
+        if (numFields == MAX_FIELDS) {
             interp->result = "too many fields to scan";
             code = TCL_ERROR;
             goto done;
         }
         curField = &fields[numFields];
         numFields++;
-        switch (*fmt)
-        {
+        switch (*fmt) {
         case 'd':
         case 'i':
         case 'o':
@@ -992,8 +861,7 @@ char **argv;        /* Argument strings. */
             break;
 
         case 'c':
-            if (widthSpecified)
-            {
+            if (widthSpecified) {
                 interp->result
                 = "field width may not be specified in %c conversion";
                 code = TCL_ERROR;
@@ -1016,11 +884,9 @@ char **argv;        /* Argument strings. */
         case '[':
             curField->fmt = 's';
             curField->size = strlen(argv[1]) + 1;
-            do
-            {
+            do {
                 fmt++;
-                if (*fmt == 0)
-                {
+                if (*fmt == 0) {
                     interp->result = "unmatched [ in format string";
                     code = TCL_ERROR;
                     goto done;
@@ -1041,8 +907,7 @@ char **argv;        /* Argument strings. */
     }
     *dst = 0;
 
-    if (numFields != (argc - 3))
-    {
+    if (numFields != (argc - 3)) {
         interp->result
         = "different numbers of variable names and field specifiers";
         code = TCL_ERROR;
@@ -1055,8 +920,7 @@ char **argv;        /* Argument strings. */
 
     results = ( char * )ckalloc(( unsigned )totalSize);
     for (i = 0, totalSize = 0, curField = fields; i < numFields;
-         i++, curField++)
-    {
+         i++, curField++) {
         curField->location = results + totalSize;
         totalSize += curField->size;
     }
@@ -1067,8 +931,7 @@ char **argv;        /* Argument strings. */
      * complaining.
      */
 
-    for (; i < MAX_FIELDS; i++, curField++)
-    {
+    for (; i < MAX_FIELDS; i++, curField++) {
         curField->location = NULL;
     }
 
@@ -1103,20 +966,16 @@ char **argv;        /* Argument strings. */
      * Step 4:
      */
 
-    if (numScanned < numFields)
-    {
+    if (numScanned < numFields) {
         numFields = numScanned;
     }
-    for (i = 0, curField = fields; i < numFields; i++, curField++)
-    {
-        switch (curField->fmt)
-        {
+    for (i = 0, curField = fields; i < numFields; i++, curField++) {
+        switch (curField->fmt) {
             char string[TCL_DOUBLE_SPACE];
 
         case 'd':
             sprintf(string, "%d", *(( int * )curField->location));
-            if (Tcl_SetVar(interp, argv[i + 3], string, 0) == NULL)
-            {
+            if (Tcl_SetVar(interp, argv[i + 3], string, 0) == NULL) {
             storeError:
                 Tcl_AppendResult(interp,
                                  "couldn't set variable \"",
@@ -1130,24 +989,21 @@ char **argv;        /* Argument strings. */
 
         case 'u':
             sprintf(string, "%u", *(( int * )curField->location));
-            if (Tcl_SetVar(interp, argv[i + 3], string, 0) == NULL)
-            {
+            if (Tcl_SetVar(interp, argv[i + 3], string, 0) == NULL) {
                 goto storeError;
             }
             break;
 
         case 'c':
             sprintf(string, "%d", *(( char * )curField->location) & 0xff);
-            if (Tcl_SetVar(interp, argv[i + 3], string, 0) == NULL)
-            {
+            if (Tcl_SetVar(interp, argv[i + 3], string, 0) == NULL) {
                 goto storeError;
             }
             break;
 
         case 's':
             if (Tcl_SetVar(interp, argv[i + 3], curField->location, 0)
-                == NULL)
-            {
+                == NULL) {
                 goto storeError;
             }
             break;
@@ -1155,8 +1011,7 @@ char **argv;        /* Argument strings. */
         case 'f':
             Tcl_PrintDouble(
             interp, *(( double * )curField->location), string);
-            if (Tcl_SetVar(interp, argv[i + 3], string, 0) == NULL)
-            {
+            if (Tcl_SetVar(interp, argv[i + 3], string, 0) == NULL) {
                 goto storeError;
             }
             break;
@@ -1164,12 +1019,10 @@ char **argv;        /* Argument strings. */
     }
     sprintf(interp->result, "%d", numScanned);
 done:
-    if (results != NULL)
-    {
+    if (results != NULL) {
         ckfree(results);
     }
-    if (fmtCopy != copyBuf)
-    {
+    if (fmtCopy != copyBuf) {
         ckfree(fmtCopy);
     }
     return code;
@@ -1198,8 +1051,7 @@ Tcl_Interp *interp; /* Current interpreter. */
 int argc;           /* Number of arguments. */
 char **argv;        /* Argument strings. */
 {
-    if (argc != 2)
-    {
+    if (argc != 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -1237,16 +1089,11 @@ char **argv;        /* Argument strings. */
     char *p, *p2;
     char *elementStart;
 
-    if (argc == 2)
-    {
+    if (argc == 2) {
         splitChars = " \n\t\r";
-    }
-    else if (argc == 3)
-    {
+    } else if (argc == 3) {
         splitChars = argv[2];
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -1259,12 +1106,10 @@ char **argv;        /* Argument strings. */
      * Handle the special case of splitting on every character.
      */
 
-    if (*splitChars == 0)
-    {
+    if (*splitChars == 0) {
         char string[2];
         string[1] = 0;
-        for (p = argv[1]; *p != 0; p++)
-        {
+        for (p = argv[1]; *p != 0; p++) {
             string[0] = *p;
             Tcl_AppendElement(interp, string);
         }
@@ -1276,13 +1121,10 @@ char **argv;        /* Argument strings. */
      * Discard instances of the split characters.
      */
 
-    for (p = elementStart = argv[1]; *p != 0; p++)
-    {
+    for (p = elementStart = argv[1]; *p != 0; p++) {
         char c = *p;
-        for (p2 = splitChars; *p2 != 0; p2++)
-        {
-            if (*p2 == c)
-            {
+        for (p2 = splitChars; *p2 != 0; p2++) {
+            if (*p2 == c) {
                 *p = 0;
                 Tcl_AppendElement(interp, elementStart);
                 *p = c;
@@ -1291,8 +1133,7 @@ char **argv;        /* Argument strings. */
             }
         }
     }
-    if (p != argv[1])
-    {
+    if (p != argv[1]) {
         Tcl_AppendElement(interp, elementStart);
     }
     return TCL_OK;
@@ -1326,8 +1167,7 @@ char **argv;        /* Argument strings. */
     int match, c, first;
     int left = 0, right = 0;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -1337,10 +1177,8 @@ char **argv;        /* Argument strings. */
     }
     c = argv[1][0];
     length = strlen(argv[1]);
-    if ((c == 'c') && (strncmp(argv[1], "compare", length) == 0))
-    {
-        if (argc != 4)
-        {
+    if ((c == 'c') && (strncmp(argv[1], "compare", length) == 0)) {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1349,24 +1187,16 @@ char **argv;        /* Argument strings. */
             return TCL_ERROR;
         }
         match = strcmp(argv[2], argv[3]);
-        if (match > 0)
-        {
+        if (match > 0) {
             interp->result = "1";
-        }
-        else if (match < 0)
-        {
+        } else if (match < 0) {
             interp->result = "-1";
-        }
-        else
-        {
+        } else {
             interp->result = "0";
         }
         return TCL_OK;
-    }
-    else if ((c == 'f') && (strncmp(argv[1], "first", length) == 0))
-    {
-        if (argc != 4)
-        {
+    } else if ((c == 'f') && (strncmp(argv[1], "first", length) == 0)) {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1380,30 +1210,23 @@ char **argv;        /* Argument strings. */
         match = -1;
         c = *argv[2];
         length = strlen(argv[2]);
-        for (p = argv[3]; *p != 0; p++)
-        {
-            if (*p != c)
-            {
+        for (p = argv[3]; *p != 0; p++) {
+            if (*p != c) {
                 continue;
             }
-            if (strncmp(argv[2], p, length) == 0)
-            {
+            if (strncmp(argv[2], p, length) == 0) {
                 match = p - argv[3];
-                if (first)
-                {
+                if (first) {
                     break;
                 }
             }
         }
         sprintf(interp->result, "%d", match);
         return TCL_OK;
-    }
-    else if ((c == 'i') && (strncmp(argv[1], "index", length) == 0))
-    {
+    } else if ((c == 'i') && (strncmp(argv[1], "index", length) == 0)) {
         int index;
 
-        if (argc != 4)
-        {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1411,22 +1234,17 @@ char **argv;        /* Argument strings. */
                              ( char * )NULL);
             return TCL_ERROR;
         }
-        if (Tcl_GetInt(interp, argv[3], &index) != TCL_OK)
-        {
+        if (Tcl_GetInt(interp, argv[3], &index) != TCL_OK) {
             return TCL_ERROR;
         }
-        if ((index >= 0) && (index < ( int )strlen(argv[2])))
-        {
+        if ((index >= 0) && (index < ( int )strlen(argv[2]))) {
             interp->result[0] = argv[2][index];
             interp->result[1] = 0;
         }
         return TCL_OK;
-    }
-    else if ((c == 'l') && (strncmp(argv[1], "last", length) == 0)
-             && (length >= 2))
-    {
-        if (argc != 4)
-        {
+    } else if ((c == 'l') && (strncmp(argv[1], "last", length) == 0)
+               && (length >= 2)) {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1436,12 +1254,9 @@ char **argv;        /* Argument strings. */
         }
         first = 0;
         goto firstLast;
-    }
-    else if ((c == 'l') && (strncmp(argv[1], "length", length) == 0)
-             && (length >= 2))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 'l') && (strncmp(argv[1], "length", length) == 0)
+               && (length >= 2)) {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1451,11 +1266,8 @@ char **argv;        /* Argument strings. */
         }
         sprintf(interp->result, "%d", strlen(argv[2]));
         return TCL_OK;
-    }
-    else if ((c == 'm') && (strncmp(argv[1], "match", length) == 0))
-    {
-        if (argc != 4)
-        {
+    } else if ((c == 'm') && (strncmp(argv[1], "match", length) == 0)) {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1463,22 +1275,16 @@ char **argv;        /* Argument strings. */
                              ( char * )NULL);
             return TCL_ERROR;
         }
-        if (Tcl_StringMatch(argv[3], argv[2]) != 0)
-        {
+        if (Tcl_StringMatch(argv[3], argv[2]) != 0) {
             interp->result = "1";
-        }
-        else
-        {
+        } else {
             interp->result = "0";
         }
         return TCL_OK;
-    }
-    else if ((c == 'r') && (strncmp(argv[1], "range", length) == 0))
-    {
+    } else if ((c == 'r') && (strncmp(argv[1], "range", length) == 0)) {
         int first, last, stringLength;
 
-        if (argc != 5)
-        {
+        if (argc != 5) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1488,14 +1294,10 @@ char **argv;        /* Argument strings. */
         }
         stringLength = strlen(argv[2]);
         if ((*argv[3] == 'e')
-            && (strncmp(argv[3], "end", strlen(argv[3])) == 0))
-        {
+            && (strncmp(argv[3], "end", strlen(argv[3])) == 0)) {
             first = stringLength - 1;
-        }
-        else
-        {
-            if (Tcl_GetInt(interp, argv[3], &first) != TCL_OK)
-            {
+        } else {
+            if (Tcl_GetInt(interp, argv[3], &first) != TCL_OK) {
                 Tcl_ResetResult(interp);
                 Tcl_AppendResult(interp,
                                  "expected integer or \"end\" but got \"",
@@ -1506,14 +1308,10 @@ char **argv;        /* Argument strings. */
             }
         }
         if ((*argv[4] == 'e')
-            && (strncmp(argv[4], "end", strlen(argv[4])) == 0))
-        {
+            && (strncmp(argv[4], "end", strlen(argv[4])) == 0)) {
             last = stringLength - 1;
-        }
-        else
-        {
-            if (Tcl_GetInt(interp, argv[4], &last) != TCL_OK)
-            {
+        } else {
+            if (Tcl_GetInt(interp, argv[4], &last) != TCL_OK) {
                 Tcl_ResetResult(interp);
                 Tcl_AppendResult(interp,
                                  "expected integer or \"end\" but got \"",
@@ -1523,16 +1321,13 @@ char **argv;        /* Argument strings. */
                 return TCL_ERROR;
             }
         }
-        if (first < 0)
-        {
+        if (first < 0) {
             first = 0;
         }
-        if (last >= stringLength)
-        {
+        if (last >= stringLength) {
             last = stringLength - 1;
         }
-        if (last >= first)
-        {
+        if (last >= first) {
             char saved, *p;
 
             p = argv[2] + last + 1;
@@ -1542,14 +1337,11 @@ char **argv;        /* Argument strings. */
             *p = saved;
         }
         return TCL_OK;
-    }
-    else if ((c == 't') && (strncmp(argv[1], "tolower", length) == 0)
-             && (length >= 3))
-    {
+    } else if ((c == 't') && (strncmp(argv[1], "tolower", length) == 0)
+               && (length >= 3)) {
         char *p;
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1558,22 +1350,17 @@ char **argv;        /* Argument strings. */
             return TCL_ERROR;
         }
         Tcl_SetResult(interp, argv[2], TCL_VOLATILE);
-        for (p = interp->result; *p != 0; p++)
-        {
-            if (isupper(UCHAR(*p)))
-            {
+        for (p = interp->result; *p != 0; p++) {
+            if (isupper(UCHAR(*p))) {
                 *p = ( char )tolower(UCHAR(*p));
             }
         }
         return TCL_OK;
-    }
-    else if ((c == 't') && (strncmp(argv[1], "toupper", length) == 0)
-             && (length >= 3))
-    {
+    } else if ((c == 't') && (strncmp(argv[1], "toupper", length) == 0)
+               && (length >= 3)) {
         char *p;
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1582,34 +1369,25 @@ char **argv;        /* Argument strings. */
             return TCL_ERROR;
         }
         Tcl_SetResult(interp, argv[2], TCL_VOLATILE);
-        for (p = interp->result; *p != 0; p++)
-        {
-            if (islower(UCHAR(*p)))
-            {
+        for (p = interp->result; *p != 0; p++) {
+            if (islower(UCHAR(*p))) {
                 *p = ( char )toupper(UCHAR(*p));
             }
         }
         return TCL_OK;
-    }
-    else if ((c == 't') && (strncmp(argv[1], "trim", length) == 0)
-             && (length == 4))
-    {
+    } else if ((c == 't') && (strncmp(argv[1], "trim", length) == 0)
+               && (length == 4)) {
         char *trimChars;
         char *p, *checkPtr;
 
         left = right = 1;
 
     trim:
-        if (argc == 4)
-        {
+        if (argc == 4) {
             trimChars = argv[3];
-        }
-        else if (argc == 3)
-        {
+        } else if (argc == 3) {
             trimChars = " \t\n\r";
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1620,14 +1398,10 @@ char **argv;        /* Argument strings. */
             return TCL_ERROR;
         }
         p = argv[2];
-        if (left)
-        {
-            for (c = *p; c != 0; p++, c = *p)
-            {
-                for (checkPtr = trimChars; *checkPtr != c; checkPtr++)
-                {
-                    if (*checkPtr == 0)
-                    {
+        if (left) {
+            for (c = *p; c != 0; p++, c = *p) {
+                for (checkPtr = trimChars; *checkPtr != c; checkPtr++) {
+                    if (*checkPtr == 0) {
                         goto doneLeft;
                     }
                 }
@@ -1635,18 +1409,14 @@ char **argv;        /* Argument strings. */
         }
     doneLeft:
         Tcl_SetResult(interp, p, TCL_VOLATILE);
-        if (right)
-        {
+        if (right) {
             char *donePtr;
 
             p = interp->result + strlen(interp->result) - 1;
             donePtr = &interp->result[-1];
-            for (c = *p; p != donePtr; p--, c = *p)
-            {
-                for (checkPtr = trimChars; *checkPtr != c; checkPtr++)
-                {
-                    if (*checkPtr == 0)
-                    {
+            for (c = *p; p != donePtr; p--, c = *p) {
+                for (checkPtr = trimChars; *checkPtr != c; checkPtr++) {
+                    if (*checkPtr == 0) {
                         goto doneRight;
                     }
                 }
@@ -1655,29 +1425,22 @@ char **argv;        /* Argument strings. */
             p[1] = 0;
         }
         return TCL_OK;
-    }
-    else if ((c == 't') && (strncmp(argv[1], "trimleft", length) == 0)
-             && (length > 4))
-    {
+    } else if ((c == 't') && (strncmp(argv[1], "trimleft", length) == 0)
+               && (length > 4)) {
         left = 1;
         argv[1] = "trimleft";
         goto trim;
-    }
-    else if ((c == 't') && (strncmp(argv[1], "trimright", length) == 0)
-             && (length > 4))
-    {
+    } else if ((c == 't') && (strncmp(argv[1], "trimright", length) == 0)
+               && (length > 4)) {
         right = 1;
         argv[1] = "trimright";
         goto trim;
-    }
-    else if ((c == 'w') && (strncmp(argv[1], "wordend", length) == 0)
-             && (length > 4))
-    {
+    } else if ((c == 'w') && (strncmp(argv[1], "wordend", length) == 0)
+               && (length > 4)) {
         int length, index, cur;
         char *string;
 
-        if (argc != 4)
-        {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1688,44 +1451,35 @@ char **argv;        /* Argument strings. */
             return TCL_ERROR;
         }
         string = argv[2];
-        if (Tcl_GetInt(interp, argv[3], &index) != TCL_OK)
-        {
+        if (Tcl_GetInt(interp, argv[3], &index) != TCL_OK) {
             return TCL_ERROR;
         }
         length = strlen(argv[2]);
-        if (index < 0)
-        {
+        if (index < 0) {
             index = 0;
         }
-        if (index >= length)
-        {
+        if (index >= length) {
             cur = length;
             goto wordendDone;
         }
-        for (cur = index; cur < length; cur++)
-        {
+        for (cur = index; cur < length; cur++) {
             c = UCHAR(string[cur]);
-            if (!isalnum(c) && (c != '_'))
-            {
+            if (!isalnum(c) && (c != '_')) {
                 break;
             }
         }
-        if (cur == index)
-        {
+        if (cur == index) {
             cur = index + 1;
         }
     wordendDone:
         sprintf(interp->result, "%d", cur);
         return TCL_OK;
-    }
-    else if ((c == 'w') && (strncmp(argv[1], "wordstart", length) == 0)
-             && (length > 4))
-    {
+    } else if ((c == 'w') && (strncmp(argv[1], "wordstart", length) == 0)
+               && (length > 4)) {
         int length, index, cur;
         char *string;
 
-        if (argc != 4)
-        {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1736,38 +1490,30 @@ char **argv;        /* Argument strings. */
             return TCL_ERROR;
         }
         string = argv[2];
-        if (Tcl_GetInt(interp, argv[3], &index) != TCL_OK)
-        {
+        if (Tcl_GetInt(interp, argv[3], &index) != TCL_OK) {
             return TCL_ERROR;
         }
         length = strlen(argv[2]);
-        if (index >= length)
-        {
+        if (index >= length) {
             index = length - 1;
         }
-        if (index <= 0)
-        {
+        if (index <= 0) {
             cur = 0;
             goto wordstartDone;
         }
-        for (cur = index; cur >= 0; cur--)
-        {
+        for (cur = index; cur >= 0; cur--) {
             c = UCHAR(string[cur]);
-            if (!isalnum(c) && (c != '_'))
-            {
+            if (!isalnum(c) && (c != '_')) {
                 break;
             }
         }
-        if (cur != index)
-        {
+        if (cur != index) {
             cur += 1;
         }
     wordstartDone:
         sprintf(interp->result, "%d", cur);
         return TCL_OK;
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(
         interp,
         "bad option \"",
@@ -1817,16 +1563,13 @@ char **argv;        /* Argument strings. */
      */
 
     doVars = doCmds = doBackslashes = 1;
-    for (i = 1; i < (argc - 1); i++)
-    {
+    for (i = 1; i < (argc - 1); i++) {
         p = argv[i];
-        if (*p != '-')
-        {
+        if (*p != '-') {
             break;
         }
         length = strlen(p);
-        if (length < 4)
-        {
+        if (length < 4) {
         badSwitch:
             Tcl_AppendResult(interp,
                              "bad switch \"",
@@ -1836,25 +1579,19 @@ char **argv;        /* Argument strings. */
                              ( char * )NULL);
             return TCL_ERROR;
         }
-        if ((p[3] == 'b') && (strncmp(p, "-nobackslashes", length) == 0))
-        {
+        if ((p[3] == 'b') && (strncmp(p, "-nobackslashes", length) == 0)) {
             doBackslashes = 0;
-        }
-        else if ((p[3] == 'c') && (strncmp(p, "-nocommands", length) == 0))
-        {
+        } else if ((p[3] == 'c')
+                   && (strncmp(p, "-nocommands", length) == 0)) {
             doCmds = 0;
-        }
-        else if ((p[3] == 'v') && (strncmp(p, "-novariables", length) == 0))
-        {
+        } else if ((p[3] == 'v')
+                   && (strncmp(p, "-novariables", length) == 0)) {
             doVars = 0;
-        }
-        else
-        {
+        } else {
             goto badSwitch;
         }
     }
-    if (i != (argc - 1))
-    {
+    if (i != (argc - 1)) {
         Tcl_AppendResult(
         interp,
         "wrong # args: should be \"",
@@ -1871,70 +1608,54 @@ char **argv;        /* Argument strings. */
 
     Tcl_DStringInit(&result);
     old = p = argv[i];
-    while (*p != 0)
-    {
-        switch (*p)
-        {
+    while (*p != 0) {
+        switch (*p) {
         case '\\':
-            if (doBackslashes)
-            {
-                if (p != old)
-                {
+            if (doBackslashes) {
+                if (p != old) {
                     Tcl_DStringAppend(&result, old, p - old);
                 }
                 c = Tcl_Backslash(p, &count);
                 Tcl_DStringAppend(&result, &c, 1);
                 p += count;
                 old = p;
-            }
-            else
-            {
+            } else {
                 p++;
             }
             break;
 
         case '$':
-            if (doVars)
-            {
-                if (p != old)
-                {
+            if (doVars) {
+                if (p != old) {
                     Tcl_DStringAppend(&result, old, p - old);
                 }
                 value = Tcl_ParseVar(interp, p, &p);
-                if (value == NULL)
-                {
+                if (value == NULL) {
                     Tcl_DStringFree(&result);
                     return TCL_ERROR;
                 }
                 Tcl_DStringAppend(&result, value, -1);
                 old = p;
-            }
-            else
-            {
+            } else {
                 p++;
             }
             break;
 
         case '[':
-            if (doCmds)
-            {
-                if (p != old)
-                {
+            if (doCmds) {
+                if (p != old) {
                     Tcl_DStringAppend(&result, old, p - old);
                 }
                 iPtr->evalFlags = TCL_BRACKET_TERM;
                 code = Tcl_Eval(interp, p + 1);
-                if (code == TCL_ERROR)
-                {
+                if (code == TCL_ERROR) {
                     Tcl_DStringFree(&result);
                     return code;
                 }
                 old = p = iPtr->termPtr + 1;
                 Tcl_DStringAppend(&result, iPtr->result, -1);
                 Tcl_ResetResult(interp);
-            }
-            else
-            {
+            } else {
                 p++;
             }
             break;
@@ -1944,8 +1665,7 @@ char **argv;        /* Argument strings. */
             break;
         }
     }
-    if (p != old)
-    {
+    if (p != old) {
         Tcl_DStringAppend(&result, old, p - old);
     }
     Tcl_DStringResult(interp, &result);
@@ -1987,28 +1707,18 @@ char **argv;        /* Argument strings. */
     switchArgc = argc - 1;
     switchArgv = argv + 1;
     mode = EXACT;
-    while ((switchArgc > 0) && (*switchArgv[0] == '-'))
-    {
-        if (strcmp(*switchArgv, "-exact") == 0)
-        {
+    while ((switchArgc > 0) && (*switchArgv[0] == '-')) {
+        if (strcmp(*switchArgv, "-exact") == 0) {
             mode = EXACT;
-        }
-        else if (strcmp(*switchArgv, "-glob") == 0)
-        {
+        } else if (strcmp(*switchArgv, "-glob") == 0) {
             mode = GLOB;
-        }
-        else if (strcmp(*switchArgv, "-regexp") == 0)
-        {
+        } else if (strcmp(*switchArgv, "-regexp") == 0) {
             mode = REGEXP;
-        }
-        else if (strcmp(*switchArgv, "--") == 0)
-        {
+        } else if (strcmp(*switchArgv, "--") == 0) {
             switchArgc--;
             switchArgv++;
             break;
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp,
                              "bad option \"",
                              switchArgv[0],
@@ -2019,8 +1729,7 @@ char **argv;        /* Argument strings. */
         switchArgc--;
         switchArgv++;
     }
-    if (switchArgc < 2)
-    {
+    if (switchArgc < 2) {
         Tcl_AppendResult(
         interp,
         "wrong # args: should be \"",
@@ -2039,20 +1748,16 @@ char **argv;        /* Argument strings. */
      */
 
     splitArgs = 0;
-    if (switchArgc == 1)
-    {
+    if (switchArgc == 1) {
         code = Tcl_SplitList(interp, switchArgv[0], &switchArgc, &switchArgv);
-        if (code != TCL_OK)
-        {
+        if (code != TCL_OK) {
             return code;
         }
         splitArgs = 1;
     }
 
-    for (i = 0; i < switchArgc; i += 2)
-    {
-        if (i == (switchArgc - 1))
-        {
+    for (i = 0; i < switchArgc; i += 2) {
+        if (i == (switchArgc - 1)) {
             interp->result = "extra switch pattern with no body";
             code = TCL_ERROR;
             goto cleanup;
@@ -2064,14 +1769,10 @@ char **argv;        /* Argument strings. */
 
         matched = 0;
         if ((*switchArgv[i] == 'd') && (i == switchArgc - 2)
-            && (strcmp(switchArgv[i], "default") == 0))
-        {
+            && (strcmp(switchArgv[i], "default") == 0)) {
             matched = 1;
-        }
-        else
-        {
-            switch (mode)
-            {
+        } else {
+            switch (mode) {
             case EXACT:
                 matched = (strcmp(string, switchArgv[i]) == 0);
                 break;
@@ -2080,16 +1781,14 @@ char **argv;        /* Argument strings. */
                 break;
             case REGEXP:
                 matched = Tcl_RegExpMatch(interp, string, switchArgv[i]);
-                if (matched < 0)
-                {
+                if (matched < 0) {
                     code = TCL_ERROR;
                     goto cleanup;
                 }
                 break;
             }
         }
-        if (!matched)
-        {
+        if (!matched) {
             continue;
         }
 
@@ -2098,10 +1797,8 @@ char **argv;        /* Argument strings. */
          * that are "-".
          */
 
-        for (body = i + 1;; body += 2)
-        {
-            if (body >= switchArgc)
-            {
+        for (body = i + 1;; body += 2) {
+            if (body >= switchArgc) {
                 Tcl_AppendResult(interp,
                                  "no body specified for pattern \"",
                                  switchArgv[i],
@@ -2110,14 +1807,12 @@ char **argv;        /* Argument strings. */
                 code = TCL_ERROR;
                 goto cleanup;
             }
-            if ((switchArgv[body][0] != '-') || (switchArgv[body][1] != 0))
-            {
+            if ((switchArgv[body][0] != '-') || (switchArgv[body][1] != 0)) {
                 break;
             }
         }
         code = Tcl_Eval(interp, switchArgv[body]);
-        if (code == TCL_ERROR)
-        {
+        if (code == TCL_ERROR) {
             char msg[100];
             sprintf(msg,
                     "\n    (\"%.50s\" arm line %d)",
@@ -2135,8 +1830,7 @@ char **argv;        /* Argument strings. */
     code = TCL_OK;
 
 cleanup:
-    if (splitArgs)
-    {
+    if (splitArgs) {
         ckfree(( char * )switchArgv);
     }
     return code;
@@ -2169,19 +1863,13 @@ char **argv;        /* Argument strings. */
     double timePer;
     Tcl_Time start, stop;
 
-    if (argc == 2)
-    {
+    if (argc == 2) {
         count = 1;
-    }
-    else if (argc == 3)
-    {
-        if (Tcl_GetInt(interp, argv[2], &count) != TCL_OK)
-        {
+    } else if (argc == 3) {
+        if (Tcl_GetInt(interp, argv[2], &count) != TCL_OK) {
             return TCL_ERROR;
         }
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -2190,13 +1878,10 @@ char **argv;        /* Argument strings. */
         return TCL_ERROR;
     }
     TclpGetTime(&start);
-    for (i = count; i > 0; i--)
-    {
+    for (i = count; i > 0; i--) {
         result = Tcl_Eval(interp, argv[1]);
-        if (result != TCL_OK)
-        {
-            if (result == TCL_ERROR)
-            {
+        if (result != TCL_OK) {
+            if (result == TCL_ERROR) {
                 char msg[60];
                 sprintf(
                 msg, "\n    (\"time\" body line %d)", interp->errorLine);
@@ -2240,8 +1925,7 @@ char **argv;        /* Argument strings. */
     int c;
     size_t length;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "too few args: should be \"",
                          argv[0],
@@ -2252,14 +1936,12 @@ char **argv;        /* Argument strings. */
     c = argv[1][1];
     length = strlen(argv[1]);
     if ((c == 'a') && (strncmp(argv[1], "variable", length) == 0)
-        && (length >= 2))
-    {
+        && (length >= 2)) {
         char *p;
         int flags, length;
         TraceVarInfo *tvarPtr;
 
-        if (argc != 5)
-        {
+        if (argc != 5) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -2269,27 +1951,18 @@ char **argv;        /* Argument strings. */
         }
 
         flags = 0;
-        for (p = argv[3]; *p != 0; p++)
-        {
-            if (*p == 'r')
-            {
+        for (p = argv[3]; *p != 0; p++) {
+            if (*p == 'r') {
                 flags |= TCL_TRACE_READS;
-            }
-            else if (*p == 'w')
-            {
+            } else if (*p == 'w') {
                 flags |= TCL_TRACE_WRITES;
-            }
-            else if (*p == 'u')
-            {
+            } else if (*p == 'u') {
                 flags |= TCL_TRACE_UNSETS;
-            }
-            else
-            {
+            } else {
                 goto badOps;
             }
         }
-        if (flags == 0)
-        {
+        if (flags == 0) {
             goto badOps;
         }
 
@@ -2304,22 +1977,19 @@ char **argv;        /* Argument strings. */
         strcpy(tvarPtr->command, argv[4]);
         if (Tcl_TraceVar(
             interp, argv[2], flags, TraceVarProc, ( ClientData )tvarPtr)
-            != TCL_OK)
-        {
+            != TCL_OK) {
             ckfree(( char * )tvarPtr);
             return TCL_ERROR;
         }
-    }
-    else if ((c == 'd')
-             && (strncmp(argv[1], "vdelete", length) && (length >= 2)) == 0)
-    {
+    } else if ((c == 'd')
+               && (strncmp(argv[1], "vdelete", length) && (length >= 2))
+                  == 0) {
         char *p;
         int flags, length;
         TraceVarInfo *tvarPtr;
         ClientData clientData;
 
-        if (argc != 5)
-        {
+        if (argc != 5) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -2329,27 +1999,18 @@ char **argv;        /* Argument strings. */
         }
 
         flags = 0;
-        for (p = argv[3]; *p != 0; p++)
-        {
-            if (*p == 'r')
-            {
+        for (p = argv[3]; *p != 0; p++) {
+            if (*p == 'r') {
                 flags |= TCL_TRACE_READS;
-            }
-            else if (*p == 'w')
-            {
+            } else if (*p == 'w') {
                 flags |= TCL_TRACE_WRITES;
-            }
-            else if (*p == 'u')
-            {
+            } else if (*p == 'u') {
                 flags |= TCL_TRACE_UNSETS;
-            }
-            else
-            {
+            } else {
                 goto badOps;
             }
         }
-        if (flags == 0)
-        {
+        if (flags == 0) {
             goto badOps;
         }
 
@@ -2363,35 +2024,30 @@ char **argv;        /* Argument strings. */
         clientData = 0;
         while ((clientData = Tcl_VarTraceInfo(
                 interp, argv[2], 0, TraceVarProc, clientData))
-               != 0)
-        {
+               != 0) {
             tvarPtr = ( TraceVarInfo * )clientData;
             if ((tvarPtr->length == length) && (tvarPtr->flags == flags)
-                && (strncmp(argv[4], tvarPtr->command, ( size_t )length) == 0))
-            {
+                && (strncmp(argv[4], tvarPtr->command, ( size_t )length)
+                    == 0)) {
                 Tcl_UntraceVar(interp,
                                argv[2],
                                flags | TCL_TRACE_UNSETS,
                                TraceVarProc,
                                clientData);
-                if (tvarPtr->errMsg != NULL)
-                {
+                if (tvarPtr->errMsg != NULL) {
                     ckfree(tvarPtr->errMsg);
                 }
                 ckfree(( char * )tvarPtr);
                 break;
             }
         }
-    }
-    else if ((c == 'i') && (strncmp(argv[1], "vinfo", length) == 0)
-             && (length >= 2))
-    {
+    } else if ((c == 'i') && (strncmp(argv[1], "vinfo", length) == 0)
+               && (length >= 2)) {
         ClientData clientData;
         char ops[4], *p;
         char *prefix = "{";
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -2402,22 +2058,18 @@ char **argv;        /* Argument strings. */
         clientData = 0;
         while ((clientData = Tcl_VarTraceInfo(
                 interp, argv[2], 0, TraceVarProc, clientData))
-               != 0)
-        {
+               != 0) {
             TraceVarInfo *tvarPtr = ( TraceVarInfo * )clientData;
             p = ops;
-            if (tvarPtr->flags & TCL_TRACE_READS)
-            {
+            if (tvarPtr->flags & TCL_TRACE_READS) {
                 *p = 'r';
                 p++;
             }
-            if (tvarPtr->flags & TCL_TRACE_WRITES)
-            {
+            if (tvarPtr->flags & TCL_TRACE_WRITES) {
                 *p = 'w';
                 p++;
             }
-            if (tvarPtr->flags & TCL_TRACE_UNSETS)
-            {
+            if (tvarPtr->flags & TCL_TRACE_UNSETS) {
                 *p = 'u';
                 p++;
             }
@@ -2428,9 +2080,7 @@ char **argv;        /* Argument strings. */
             Tcl_AppendResult(interp, "}", ( char * )NULL);
             prefix = " {";
         }
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "bad option \"",
                          argv[1],
@@ -2484,13 +2134,11 @@ int flags;             /* OR-ed bits giving operation and other
     Tcl_DString cmd;
 
     result = NULL;
-    if (tvarPtr->errMsg != NULL)
-    {
+    if (tvarPtr->errMsg != NULL) {
         ckfree(tvarPtr->errMsg);
         tvarPtr->errMsg = NULL;
     }
-    if ((tvarPtr->flags & flags) && !(flags & TCL_INTERP_DESTROYED))
-    {
+    if ((tvarPtr->flags & flags) && !(flags & TCL_INTERP_DESTROYED)) {
 
         /*
          * Generate a command to execute by appending list elements
@@ -2499,24 +2147,18 @@ int flags;             /* OR-ed bits giving operation and other
          * and the terminating null.
          */
 
-        if (name2 == NULL)
-        {
+        if (name2 == NULL) {
             name2 = "";
         }
         Tcl_DStringInit(&cmd);
         Tcl_DStringAppend(&cmd, tvarPtr->command, tvarPtr->length);
         Tcl_DStringAppendElement(&cmd, name1);
         Tcl_DStringAppendElement(&cmd, name2);
-        if (flags & TCL_TRACE_READS)
-        {
+        if (flags & TCL_TRACE_READS) {
             Tcl_DStringAppend(&cmd, " r", 2);
-        }
-        else if (flags & TCL_TRACE_WRITES)
-        {
+        } else if (flags & TCL_TRACE_WRITES) {
             Tcl_DStringAppend(&cmd, " w", 2);
-        }
-        else if (flags & TCL_TRACE_UNSETS)
-        {
+        } else if (flags & TCL_TRACE_UNSETS) {
             Tcl_DStringAppend(&cmd, " u", 2);
         }
 
@@ -2525,23 +2167,19 @@ int flags;             /* OR-ed bits giving operation and other
          * result from the interpreter used for the command.
          */
 
-        if (interp->freeProc == 0)
-        {
+        if (interp->freeProc == 0) {
             dummy.freeProc = ( Tcl_FreeProc * )0;
             dummy.result = "";
             Tcl_SetResult(
             ( Tcl_Interp * )&dummy, interp->result, TCL_VOLATILE);
-        }
-        else
-        {
+        } else {
             dummy.freeProc = interp->freeProc;
             dummy.result = interp->result;
             interp->freeProc = ( Tcl_FreeProc * )0;
         }
         code = Tcl_Eval(interp, Tcl_DStringValue(&cmd));
         Tcl_DStringFree(&cmd);
-        if (code != TCL_OK)
-        {
+        if (code != TCL_OK) {
             tvarPtr->errMsg
             = ( char * )ckalloc(( unsigned )(strlen(interp->result) + 1));
             strcpy(tvarPtr->errMsg, interp->result);
@@ -2552,11 +2190,9 @@ int flags;             /* OR-ed bits giving operation and other
                       dummy.result,
                       (dummy.freeProc == 0) ? TCL_VOLATILE : dummy.freeProc);
     }
-    if (flags & TCL_TRACE_DESTROYED)
-    {
+    if (flags & TCL_TRACE_DESTROYED) {
         result = NULL;
-        if (tvarPtr->errMsg != NULL)
-        {
+        if (tvarPtr->errMsg != NULL) {
             ckfree(tvarPtr->errMsg);
         }
         ckfree(( char * )tvarPtr);
@@ -2589,8 +2225,7 @@ char **argv;        /* Argument strings. */
 {
     int result, value;
 
-    if (argc != 3)
-    {
+    if (argc != 3) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -2599,22 +2234,17 @@ char **argv;        /* Argument strings. */
         return TCL_ERROR;
     }
 
-    while (1)
-    {
+    while (1) {
         result = Tcl_ExprBoolean(interp, argv[1], &value);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             return result;
         }
-        if (!value)
-        {
+        if (!value) {
             break;
         }
         result = Tcl_Eval(interp, argv[2]);
-        if ((result != TCL_OK) && (result != TCL_CONTINUE))
-        {
-            if (result == TCL_ERROR)
-            {
+        if ((result != TCL_OK) && (result != TCL_CONTINUE)) {
+            if (result == TCL_ERROR) {
                 char msg[60];
                 sprintf(
                 msg, "\n    (\"while\" body line %d)", interp->errorLine);
@@ -2623,12 +2253,10 @@ char **argv;        /* Argument strings. */
             break;
         }
     }
-    if (result == TCL_BREAK)
-    {
+    if (result == TCL_BREAK) {
         result = TCL_OK;
     }
-    if (result == TCL_OK)
-    {
+    if (result == TCL_OK) {
         Tcl_ResetResult(interp);
     }
     return result;

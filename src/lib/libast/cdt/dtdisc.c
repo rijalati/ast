@@ -39,17 +39,13 @@ size_t size;    /* size to obtain		*/
 Dtdisc_t *disc; /* discipline			*/
 #endif
 {
-    if (addr)
-    {
-        if (size == 0)
-        {
+    if (addr) {
+        if (size == 0) {
             free(addr);
             return NIL(Void_t *);
-        }
-        else
+        } else
             return realloc(addr, size);
-    }
-    else
+    } else
         return size > 0 ? malloc(size) : NIL(Void_t *);
 }
 

@@ -43,35 +43,27 @@ Sfoff_t size;
 
     SFLOCK(f, 0);
 
-    if (f->flags & SF_STRING)
-    {
+    if (f->flags & SF_STRING) {
         SFSTRSIZE(f);
 
-        if (f->extent >= size)
-        {
-            if ((f->flags & SF_MALLOC) && (f->next - f->data) <= size)
-            {
+        if (f->extent >= size) {
+            if ((f->flags & SF_MALLOC) && (f->next - f->data) <= size) {
                 size_t s = ((( size_t )size + 1023) / 1024) * 1024;
                 Void_t *d;
-                if (s < f->size && (d = realloc(f->data, s)))
-                {
+                if (s < f->size && (d = realloc(f->data, s))) {
                     f->data = d;
                     f->size = s;
                     f->extent = s;
                 }
             }
             memclear(( char * )(f->data + size), ( int )(f->extent - size));
-        }
-        else
-        {
+        } else {
             if (SFSK(f, size, SEEK_SET, f->disc) != size)
                 SFMTXRETURN(f, -1);
             memclear(( char * )(f->data + f->extent),
                      ( int )(size - f->extent));
         }
-    }
-    else
-    {
+    } else {
         if (f->next > f->data)
             SFSYNC(f);
 #if _lib_ftruncate

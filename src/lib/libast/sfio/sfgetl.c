@@ -44,21 +44,17 @@ Sflong_t sfgetl(f) Sfio_t *f;
         SFMTXRETURN(f, (Sflong_t)(-1));
     SFLOCK(f, 0);
 
-    for (v = 0;;)
-    {
-        if (SFRPEEK(f, s, p) <= 0)
-        {
+    for (v = 0;;) {
+        if (SFRPEEK(f, s, p) <= 0) {
             f->flags |= SF_ERROR;
             v = (Sflong_t)(-1);
             goto done;
         }
-        for (ends = s + p; s < ends;)
-        {
+        for (ends = s + p; s < ends;) {
             c = *s++;
             if (c & SF_MORE)
                 v = (( Sfulong_t )v << SF_UBITS) | SFUVALUE(c);
-            else
-            { /* special translation for this byte */
+            else { /* special translation for this byte */
                 v = (( Sfulong_t )v << SF_SBITS) | SFSVALUE(c);
                 f->next = s;
                 v = (c & SF_SIGN) ? -v - 1 : v;

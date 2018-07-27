@@ -47,23 +47,18 @@ static int line_sfputr(int line, Sfio_t* sp, const char* buf, int op)
 #endif
 
 #define SYNC()                                                               \
-    do                                                                       \
-    {                                                                        \
-        if (line > prev && line > directive)                                 \
-        {                                                                    \
+    do {                                                                     \
+        if (line > prev && line > directive) {                               \
             if (sfsprintf(buf,                                               \
                           sizeof(buf),                                       \
                           "\n#%s %d\n",                                      \
                           sync <= 0 ? "line" : "",                           \
                           line + 1)                                          \
-                <= line - prev)                                              \
-            {                                                                \
+                <= line - prev) {                                            \
                 sfputr(op, buf, -1);                                         \
                 prev = line;                                                 \
-            }                                                                \
-            else                                                             \
-                while (prev < line)                                          \
-                {                                                            \
+            } else                                                           \
+                while (prev < line) {                                        \
                     prev++;                                                  \
                     sfputc(op, '\n');                                        \
                 }                                                            \
@@ -72,8 +67,7 @@ static int line_sfputr(int line, Sfio_t* sp, const char* buf, int op)
     } while (0)
 
 #define DATA(c)                                                              \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         SYNC();                                                              \
         data = 1;                                                            \
         sfputc(op, c);                                                       \
@@ -92,10 +86,8 @@ token(Sfio_t *ip)
     static char buf[1024];
 
     s = buf;
-    for (;;)
-    {
-        switch (c = sfgetc(ip))
-        {
+    for (;;) {
+        switch (c = sfgetc(ip)) {
         case EOF:
             if (s > buf)
                 break;
@@ -106,15 +98,12 @@ token(Sfio_t *ip)
             sfungetc(ip, c);
             break;
         default:
-            if (isspace(c))
-            {
-                if (s > buf)
-                {
+            if (isspace(c)) {
+                if (s > buf) {
                     sfungetc(ip, c);
                     break;
                 }
-            }
-            else if (s < &buf[sizeof(buf) - 1])
+            } else if (s < &buf[sizeof(buf) - 1])
                 *s++ = c;
             continue;
         }
@@ -147,14 +136,12 @@ nocomment(Sfio_t *ip, Sfio_t *op)
     char buf[PATH_MAX];
 
     count = sftell(op);
-    for (;;)
-    {
+    for (;;) {
     next:
         p = c;
         c = sfgetc(ip);
     check:
-        switch (c)
-        {
+        switch (c) {
         case EOF:
             if (line != prev)
                 sfputc(op, '\n');
@@ -165,8 +152,7 @@ nocomment(Sfio_t *ip, Sfio_t *op)
             goto done;
         case '\\':
             DATA(c);
-            switch (c = sfgetc(ip))
-            {
+            switch (c = sfgetc(ip)) {
             case EOF:
                 goto done;
             case '\n':
@@ -187,8 +173,7 @@ nocomment(Sfio_t *ip, Sfio_t *op)
             /*FALLTHROUGH*/
         case ' ':
             if (data)
-                switch (p)
-                {
+                switch (p) {
                 case ' ':
                 case '\n':
                 case '(':
@@ -207,15 +192,13 @@ nocomment(Sfio_t *ip, Sfio_t *op)
                 case '*':
                     break;
                 case ')':
-                    if (directive == line && formals)
-                    {
+                    if (directive == line && formals) {
                         formals = 0;
                         sfputc(op, ' ');
                     }
                     break;
                 default:
-                    switch (c = sfgetc(ip))
-                    {
+                    switch (c = sfgetc(ip)) {
                     case '\n':
                     case ')':
                     case '[':
@@ -233,8 +216,7 @@ nocomment(Sfio_t *ip, Sfio_t *op)
                     case '?':
                         break;
                     case '(':
-                        if (directive == line && formals)
-                        {
+                        if (directive == line && formals) {
                             formals = 0;
                             sfputc(op, ' ');
                         }
@@ -265,36 +247,27 @@ nocomment(Sfio_t *ip, Sfio_t *op)
             SYNC();
             directive = line;
             formals = 1;
-            if (sync >= 0 && !data)
-            {
-                if (s = token(ip))
-                {
-                    if (isdigit(*s))
-                    {
+            if (sync >= 0 && !data) {
+                if (s = token(ip)) {
+                    if (isdigit(*s)) {
                         sync = 1;
                         directive = 0;
                         line = strtol(s, NiL, 10);
-                        if (s = sfgetr(ip, '\n', 1))
-                        {
+                        if (s = sfgetr(ip, '\n', 1)) {
                             while (isspace(*s))
                                 s++;
-                            if (*s == '"')
-                            {
+                            if (*s == '"') {
                                 sfprintf(op, "# %d %s\n", line, s);
                                 prev = line;
                             }
                         }
                         break;
                     }
-                    if (!sync)
-                    {
-                        if (!pp && line <= 24 && streq(s, "pragma"))
-                        {
-                            if ((s = token(ip)) && streq(s, "prototyped"))
-                            {
+                    if (!sync) {
+                        if (!pp && line <= 24 && streq(s, "pragma")) {
+                            if ((s = token(ip)) && streq(s, "prototyped")) {
                                 sync = -1;
-                                if (c = sffileno(ip))
-                                {
+                                if (c = sffileno(ip)) {
                                     n = dup(0);
                                     close(0);
                                     dup(c);
@@ -303,8 +276,7 @@ nocomment(Sfio_t *ip, Sfio_t *op)
                                 sfsync(ip);
                                 if (pp = sfpopen(NiL, "proto -fns", "r"))
                                     ip = pp;
-                                if (c)
-                                {
+                                if (c) {
                                     close(0);
                                     dup(n);
                                 }
@@ -324,8 +296,7 @@ nocomment(Sfio_t *ip, Sfio_t *op)
                     DATA('#');
                     sfputr(op, s, -1);
                     c = 0;
-                }
-                else
+                } else
                     sync = -1;
             }
             if (c)
@@ -334,19 +305,16 @@ nocomment(Sfio_t *ip, Sfio_t *op)
                 data = 1;
             break;
         case '/':
-            switch (c = sfgetc(ip))
-            {
+            switch (c = sfgetc(ip)) {
             case EOF:
                 goto done;
             case '/':
                 for (;;)
-                    switch (p = c, c = sfgetc(ip))
-                    {
+                    switch (p = c, c = sfgetc(ip)) {
                     case EOF:
                         goto done;
                     case '\n':
-                        if (p == '\\')
-                        {
+                        if (p == '\\') {
                             sfputc(op, p);
                             sfputc(op, c);
                             prev = ++line;
@@ -359,8 +327,7 @@ nocomment(Sfio_t *ip, Sfio_t *op)
                 break;
             case '*':
                 for (;;)
-                    switch (p = c, c = sfgetc(ip))
-                    {
+                    switch (p = c, c = sfgetc(ip)) {
                     case EOF:
                         goto done;
                     case '\n':
@@ -368,10 +335,8 @@ nocomment(Sfio_t *ip, Sfio_t *op)
                         line++;
                         break;
                     case '*':
-                        for (;;)
-                        {
-                            switch (c = sfgetc(ip))
-                            {
+                        for (;;) {
+                            switch (c = sfgetc(ip)) {
                             case EOF:
                                 goto done;
                             case '\n':
@@ -399,16 +364,13 @@ nocomment(Sfio_t *ip, Sfio_t *op)
         case '\'':
             DATA(c);
             quote = c;
-            for (;;)
-            {
-                switch (c = sfgetc(ip))
-                {
+            for (;;) {
+                switch (c = sfgetc(ip)) {
                 case EOF:
                     goto done;
                 case '\\':
                     sfputc(op, c);
-                    switch (c = sfgetc(ip))
-                    {
+                    switch (c = sfgetc(ip)) {
                     case EOF:
                         goto done;
                     case '\n':
@@ -419,8 +381,7 @@ nocomment(Sfio_t *ip, Sfio_t *op)
                     break;
                 case '"':
                 case '\'':
-                    if (c == quote)
-                    {
+                    if (c == quote) {
                         sfputc(op, c);
                         goto next;
                     }

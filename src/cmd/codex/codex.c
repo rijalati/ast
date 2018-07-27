@@ -127,16 +127,13 @@ checkdata(Sfio_t *sp)
     unsigned char *e;
     Codexdata_t data;
 
-    if (codexdata(sp, &data) > 0)
-    {
-        if (data.buf)
-        {
+    if (codexdata(sp, &data) > 0) {
+        if (data.buf) {
             for (e = (u = ( unsigned char * )data.buf) + data.size; u < e;
                  u++)
                 sfprintf(sfstderr, "%02x", *u);
             sfprintf(sfstderr, "\n");
-        }
-        else
+        } else
             sfprintf(
             sfstderr, "%0*I*x\n", data.size * 2, sizeof(data.num), data.num);
     }
@@ -171,10 +168,8 @@ main(int argc, char **argv)
     decode = encode = 0;
     identify = 0;
     op = sfstdout;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'd':
             flags |= CODEX_DECODE;
             decode = opt_info.arg;
@@ -186,8 +181,7 @@ main(int argc, char **argv)
         case 'f':
             if (!(ip = sfopen(NiL, opt_info.arg, "rb")))
                 error(ERROR_SYSTEM | 3, "%s: cannot read", opt_info.arg);
-            else if (!(s = sfgetr(ip, '\n', 1)))
-            {
+            else if (!(s = sfgetr(ip, '\n', 1))) {
                 sfclose(ip);
                 error(ERROR_SYSTEM | 3, "%s: read error", opt_info.arg);
             }
@@ -224,49 +218,39 @@ main(int argc, char **argv)
     argv += opt_info.index;
     if (error_info.errors || !identify && *argv && *(argv + 1))
         error(ERROR_usage(2), "%s", optusage(NiL));
-    if (identify)
-    {
+    if (identify) {
         if (!(codexdisc.identify = sfstropen()))
             error(ERROR_SYSTEM | 3, "out of space");
         if (s = *argv)
             argv++;
         identify = !!*argv;
-        do
-        {
-            if (!s || streq(s, "-"))
-            {
+        do {
+            if (!s || streq(s, "-")) {
                 s = "/dev/stdin";
                 ip = sfstdin;
-            }
-            else if (!(ip = sfopen(NiL, s, "rb")))
-            {
+            } else if (!(ip = sfopen(NiL, s, "rb"))) {
                 error(ERROR_SYSTEM | 2, "%s: cannot open", s);
                 continue;
             }
-            if (codex(ip, 0, CODEX_DECODE, &codexdisc, NiL) >= 0)
-            {
+            if (codex(ip, 0, CODEX_DECODE, &codexdisc, NiL) >= 0) {
                 if (identify)
                     sfprintf(sfstdout, "%s: ", s);
                 sfputr(sfstdout, sfstruse(codexdisc.identify), '\n');
                 codexpop(ip, 0);
             }
         } while (s = *argv++);
-    }
-    else
-    {
+    } else {
         ip = sfstdin;
         if ((s = *argv) && !(ip = sfopen(NiL, s, "rb")))
             error(ERROR_SYSTEM | 2, "%s: cannot open", s);
-        else
-        {
+        else {
             if ((!(flags & CODEX_DECODE)
                  || codex(ip, decode, CODEX_DECODE, &codexdisc, NiL) >= 0)
                 && (!(flags & CODEX_ENCODE)
-                    || codex(op, encode, CODEX_ENCODE, &codexdisc, NiL) >= 0))
-            {
+                    || codex(op, encode, CODEX_ENCODE, &codexdisc, NiL)
+                       >= 0)) {
                 if (sfmove(ip, op, SF_UNBOUND, -1) < 0 || !sfeof(ip)
-                    || sferror(ip))
-                {
+                    || sferror(ip)) {
                     if (s)
                         error(ERROR_SYSTEM | 2, "%s: read error", s);
                     else

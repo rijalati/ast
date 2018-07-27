@@ -35,24 +35,19 @@ coquote(Sfio_t *sp, const char *s, int type)
 
     if (type && (!state.type || !*state.type))
         type = 0;
-    while (c = *s++)
-    {
+    while (c = *s++) {
         sfputc(sp, c);
-        if (c == '\'')
-        {
+        if (c == '\'') {
             sfputc(sp, '\\');
             sfputc(sp, '\'');
             sfputc(sp, '\'');
-        }
-        else if (type && c == '/' && *s == *state.type)
-        {
+        } else if (type && c == '/' && *s == *state.type) {
             const char *x = s;
             char *t = state.type;
 
             while (*t && *t++ == *x)
                 x++;
-            if (!*t && *x == '/')
-            {
+            if (!*t && *x == '/') {
                 s = x;
                 sfprintf(sp, "'$%s'", CO_ENV_TYPE);
             }

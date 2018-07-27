@@ -65,8 +65,7 @@ pssopen(Pssdisc_t *disc)
                 ? _pss_ps
                 : _pss_method;
     while (pss->meth->initf && (*pss->meth->initf)(pss) <= 0)
-        if (pss->meth == _pss_ps || !(pss->meth = _pss_ps))
-        {
+        if (pss->meth == _pss_ps || !(pss->meth = _pss_ps)) {
             vmclose(vm);
             return 0;
         }
@@ -114,12 +113,10 @@ pssread(Pss_t *pss, Pss_id_t pid)
     unsigned long x;
     int i;
 
-    for (;;)
-    {
+    for (;;) {
         if ((*pss->meth->readf)(pss, pid) <= 0)
             return 0;
-        if (!pss->ent && !(pss->ent = vmnewof(pss->vm, 0, Pssent_t, 1, 0)))
-        {
+        if (!pss->ent && !(pss->ent = vmnewof(pss->vm, 0, Pssent_t, 1, 0))) {
             if (pss->disc->errorf)
                 (*pss->disc->errorf)(
                 pss, pss->disc, ERROR_SYSTEM | 2, "out of space");
@@ -128,8 +125,7 @@ pssread(Pss_t *pss, Pss_id_t pid)
         pe = pss->ent;
         if ((i = (*pss->meth->partf)(pss, pe)) < 0)
             return 0;
-        if (!i)
-        {
+        if (!i) {
             memset(pe, 0, sizeof(*pe));
             pe->pid = pss->pid;
             goto next;
@@ -138,19 +134,16 @@ pssread(Pss_t *pss, Pss_id_t pid)
             pe->pss = PSS_EXPLICIT;
         else if (flags & PSS_ALL)
             pe->pss = PSS_MATCHED;
-        else
-        {
+        else {
             if (flags
                 & (PSS_ATTACHED | PSS_DETACHED | PSS_LEADER | PSS_NOLEADER
-                   | PSS_TTY | PSS_UID))
-            {
+                   | PSS_TTY | PSS_UID)) {
                 if ((flags & PSS_TTY)
                     && pe->tty != TTYMAP(pss, pss->disc->tty))
                     goto next;
                 if ((flags & PSS_UID) && pe->uid != pss->disc->uid)
                     goto next;
-                switch (flags & (PSS_ATTACHED | PSS_DETACHED))
-                {
+                switch (flags & (PSS_ATTACHED | PSS_DETACHED)) {
                 case PSS_ATTACHED:
                     if (pe->tty == PSS_NODEV)
                         goto next;
@@ -160,8 +153,7 @@ pssread(Pss_t *pss, Pss_id_t pid)
                         goto next;
                     break;
                 }
-                switch (flags & (PSS_LEADER | PSS_NOLEADER))
-                {
+                switch (flags & (PSS_LEADER | PSS_NOLEADER)) {
                 case PSS_LEADER:
                     if ((fields & PSS_sid) && pe->pid != pe->sid)
                         goto next;
@@ -177,12 +169,9 @@ pssread(Pss_t *pss, Pss_id_t pid)
                 }
                 pe->pss = PSS_MATCHED;
             }
-            if (mp = pss->disc->match)
-            {
-                do
-                {
-                    switch (mp->field)
-                    {
+            if (mp = pss->disc->match) {
+                do {
+                    switch (mp->field) {
                     case PSS_gid:
                         x = pe->gid;
                         break;
@@ -225,8 +214,7 @@ pssread(Pss_t *pss, Pss_id_t pid)
         }
         break;
     next:
-        if (flags & PSS_UNMATCHED)
-        {
+        if (flags & PSS_UNMATCHED) {
             pe->pss = 0;
             break;
         }
@@ -235,8 +223,7 @@ pssread(Pss_t *pss, Pss_id_t pid)
     }
     if (pss->meth->fullf && (*pss->meth->fullf)(pss, pe) <= 0)
         return 0;
-    if (pe->pid <= 1 && pe->ppid > 1)
-    {
+    if (pe->pid <= 1 && pe->ppid > 1) {
         pe->ppid = 0;
         if (pe->pid == 0)
             pe->args = pe->command = "sched";
@@ -274,10 +261,8 @@ pssttyadd(Pss_t *pss, const char *name, Pss_dev_t dev)
 {
     Tty_t *tty;
 
-    if (!dtmatch(pss->ttybyname, name))
-    {
-        if (!(tty = vmnewof(pss->vm, 0, Tty_t, 1, strlen(name))))
-        {
+    if (!dtmatch(pss->ttybyname, name)) {
+        if (!(tty = vmnewof(pss->vm, 0, Tty_t, 1, strlen(name)))) {
             if (pss->disc->errorf)
                 (*pss->disc->errorf)(
                 pss, pss->disc, ERROR_SYSTEM | 2, "out of space");
@@ -309,8 +294,7 @@ ttyscan(Pss_t *pss)
 
     pss->ttyscan = 1;
     strcpy(path, "/dev");
-    if (!(dir = opendir(path)))
-    {
+    if (!(dir = opendir(path))) {
         if (pss->disc->errorf)
             (*pss->disc->errorf)(
             pss, pss->disc, ERROR_SYSTEM | 2, "%s: cannot read", path);
@@ -318,10 +302,8 @@ ttyscan(Pss_t *pss)
     }
     path[4] = '/';
     name = base = path + 5;
-    for (;;)
-    {
-        while (ent = readdir(dir))
-        {
+    for (;;) {
+        while (ent = readdir(dir)) {
             if (D_NAMLEN(ent) + (base - path) + 1 > sizeof(path))
                 continue;
             if (!sub
@@ -332,25 +314,20 @@ ttyscan(Pss_t *pss)
             strcpy(base, ent->d_name);
             if (stat(path, &st))
                 continue;
-            if (!S_ISCHR(st.st_mode))
-            {
+            if (!S_ISCHR(st.st_mode)) {
                 if (sub || !S_ISDIR(st.st_mode))
                     continue;
                 sub = dir;
-                if (dir = opendir(path))
-                {
+                if (dir = opendir(path)) {
                     base = path + strlen(path);
                     *base++ = '/';
-                }
-                else
-                {
+                } else {
                     dir = sub;
                     sub = 0;
                 }
                 continue;
             }
-            if (pssttyadd(pss, name, st.st_rdev))
-            {
+            if (pssttyadd(pss, name, st.st_rdev)) {
                 closedir(dir);
                 return;
             }
@@ -383,15 +360,12 @@ pssttydev(Pss_t *pss, const char *name)
         return (*pss->meth->ttydevf)(pss, s);
     if (tty = ( Tty_t * )dtmatch(pss->ttybyname, s))
         return tty->dev;
-    if (stat(s, &st))
-    {
+    if (stat(s, &st)) {
         sfsprintf(pss->buf, sizeof(pss->buf), "/dev/%s", name);
         s = ( const char * )pss->buf;
-        if (stat(s, &st))
-        {
+        if (stat(s, &st)) {
             sfsprintf(pss->buf, sizeof(pss->buf), "/dev/tty%s", name);
-            if (stat(s, &st))
-            {
+            if (stat(s, &st)) {
                 if (pss->disc->errorf)
                     (*pss->disc->errorf)(
                     pss, pss->disc, ERROR_SYSTEM | 2, "%s: unknown tty", name);

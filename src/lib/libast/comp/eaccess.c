@@ -65,8 +65,7 @@ eaccess(const char *path, int flags)
     static gid_t rgid;
     static gid_t egid;
 
-    if (!init)
-    {
+    if (!init) {
         ruid = getuid();
         euid = geteuid();
         rgid = getgid();
@@ -78,24 +77,19 @@ eaccess(const char *path, int flags)
     if (stat(path, &st))
         return -1;
     mode = 0;
-    if (euid == 0)
-    {
+    if (euid == 0) {
         if (!S_ISREG(st.st_mode) || !(flags & X_OK)
             || (st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)))
             return 0;
         goto nope;
-    }
-    else if (euid == st.st_uid)
-    {
+    } else if (euid == st.st_uid) {
         if (flags & R_OK)
             mode |= S_IRUSR;
         if (flags & W_OK)
             mode |= S_IWUSR;
         if (flags & X_OK)
             mode |= S_IXUSR;
-    }
-    else if (egid == st.st_gid)
-    {
+    } else if (egid == st.st_gid) {
 #        if _lib_getgroups
     setgroup:
 #        endif
@@ -105,19 +99,15 @@ eaccess(const char *path, int flags)
             mode |= S_IWGRP;
         if (flags & X_OK)
             mode |= S_IXGRP;
-    }
-    else
-    {
+    } else {
 #        if _lib_getgroups
         int n;
 
         static int ngroups = -2;
         static gid_t *groups;
 
-        if (ngroups == -2)
-        {
-            if ((ngroups = getgroups(0, ( gid_t * )0)) <= 0)
-            {
+        if (ngroups == -2) {
+            if ((ngroups = getgroups(0, ( gid_t * )0)) <= 0) {
 #            if defined(NGROUPS_MAX)
                 ngroups = NGROUPS_MAX;
 #            elif defined(_SC_NGROUPS_MAX)

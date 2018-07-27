@@ -38,8 +38,7 @@ reclen(Recfmt_t f, const void *b, size_t n)
     size_t h;
     size_t z;
 
-    switch (RECTYPE(f))
-    {
+    switch (RECTYPE(f)) {
     case REC_delimited:
         if (e = ( unsigned char * )memchr(s, REC_D_DELIMITER(f), n))
             return e - s + 1;

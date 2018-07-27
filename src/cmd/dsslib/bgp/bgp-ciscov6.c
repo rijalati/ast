@@ -54,10 +54,8 @@ ciscov6ident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
     v = 0;
     s = ( char * )buf;
     e = s + n;
-    for (;;)
-    {
-        for (;;)
-        {
+    for (;;) {
+        for (;;) {
             if (s >= e)
                 return 0;
             c = *s++;
@@ -65,8 +63,7 @@ ciscov6ident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
                 break;
         }
         f = s - 1;
-        for (;;)
-        {
+        for (;;) {
             if (s >= e)
                 return 0;
             if (*s++ == '\n')
@@ -75,8 +72,8 @@ ciscov6ident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
         if (!isascii(*f) && (s - f) > 256)
             return 0;
         v++;
-        if (strneq(f, magic[m], strlen(magic[m])) && ++m >= elementsof(magic))
-        {
+        if (strneq(f, magic[m], strlen(magic[m]))
+            && ++m >= elementsof(magic)) {
             file->caller = v;
             break;
         }
@@ -94,15 +91,14 @@ ciscov6open(Dssfile_t *file, Dssdisc_t *disc)
     char *v = file->caller;
     Ciscov6state_t *state;
 
-    if (!(state = vmnewof(file->dss->vm, 0, Ciscov6state_t, 1, 0)))
-    {
+    if (!(state = vmnewof(file->dss->vm, 0, Ciscov6state_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
     }
     file->data = state;
-    if ((file->flags & (DSS_FILE_WRITE | DSS_FILE_APPEND)) == DSS_FILE_WRITE)
-    {
+    if ((file->flags & (DSS_FILE_WRITE | DSS_FILE_APPEND))
+        == DSS_FILE_WRITE) {
         sfprintf(
         file->io,
         "Codes: C - Connected, L - Local, S - Static, R - RIP, B - BGP\n\
@@ -133,13 +129,11 @@ ciscov6read(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     char *t;
 
     rp = &state->route;
-    while (s = state->line)
-    {
+    while (s = state->line) {
         t = s;
         while (*s && *s != '\n' && *s != ' ' && *s != '\t')
             s++;
-        switch (*t)
-        {
+        switch (*t) {
         case 'B':
             rp->set = 0;
             rp->attr = BGP_valid;
@@ -147,19 +141,16 @@ ciscov6read(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             rp->origin = BGP_ORIGIN_incomplete;
             o = 0;
             p = 0;
-            for (;;)
-            {
+            for (;;) {
                 while (*s == ' ' || *s == '\t')
                     s++;
-                if (*s && *s != '\n')
-                {
+                if (*s && *s != '\n') {
                     t = s;
                     while (*s && *s != '\n' && *s != ' ' && *s != '\t')
                         s++;
                     while (*s == ' ' || *s == '\t')
                         s++;
-                    switch (p)
-                    {
+                    switch (p) {
                     case 0:
                         if (!strtoip6(
                             t, NiL, rp->prefixv6, rp->prefixv6 + IP6BITS))

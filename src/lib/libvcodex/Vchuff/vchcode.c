@@ -50,32 +50,24 @@ int encode;
 
     esc1 = cmax + 1;
     esc2 = cmax + 2;
-    if (encode)
-    {
-        for (k = 0; k < nsym; k = n)
-        {
+    if (encode) {
+        for (k = 0; k < nsym; k = n) {
             d = clen[k];
             for (n = k + 1; n < nsym; ++n)
                 if (clen[n] != d)
                     break;
-            if ((r = n - k) >= 3)
-            {
+            if ((r = n - k) >= 3) {
                 vcioinit(&io, rl, 8 * sizeof(ssize_t));
                 vcioput2(&io, r - 3, esc1, esc2);
                 rl = vcionext(&io);
                 *rl++ = d;
-            }
-            else
+            } else
                 for (r = k; r < n; ++r)
                     *rl++ = clen[r];
         }
-    }
-    else
-    {
-        for (k = 0; k < nsym && rl < endr;)
-        {
-            if ((d = *rl++) == esc1 || d == esc2)
-            {
+    } else {
+        for (k = 0; k < nsym && rl < endr;) {
+            if ((d = *rl++) == esc1 || d == esc2) {
                 vcioinit(&io, rl - 1, (endr - rl) + 1);
                 r = vcioget2(&io, esc1, esc2) + 3;
                 rl = vcionext(&io);
@@ -83,8 +75,7 @@ int encode;
                     clen[k++] = d;
                 if (r > 0)
                     return -1;
-            }
-            else if (d <= cmax)
+            } else if (d <= cmax)
                 clen[k++] = d;
             else
                 return -1;
@@ -128,8 +119,7 @@ size_t dtsz;    /* buffer size (need >= 256)	*/
     cs = cs < 2 ? 1 : cs < 4 ? 2 : cs < 8 ? 3 : cs < 16 ? 4 : cs < 32 ? 5 : 6;
 
     /* run-length-encode the code table in the alphabet [0...maxs+2] */
-    if ((nl = rlcode(nsym, clen, maxs, len, nl, 1)) < 0)
-    {
+    if ((nl = rlcode(nsym, clen, maxs, len, nl, 1)) < 0) {
         free(len);
         return -1;
     }
@@ -139,8 +129,7 @@ size_t dtsz;    /* buffer size (need >= 256)	*/
     DEBUG_PRINT(2, "Runlength=%d\n", nl);
 
     vciosetb(&io, b, n, VC_ENCODE);
-    for (k = 0; k < nl; ++k)
-    {
+    for (k = 0; k < nl; ++k) {
         if ((n + cs) > VC_BITSIZE)
             vcioflsb(&io, b, n);
         vcioaddb(&io, b, n, ((( Vcbit_t )len[k]) << (VC_BITSIZE - cs)), cs);
@@ -185,16 +174,14 @@ size_t dtsz;    /* size of above data buffer		*/
     ** and buggy version used vcioputc() and could not handle values >= 256.
     ** The below loop tries to detect and handle those old cases.
     */
-    for (i = 0; i < 2; i += 1)
-    {
+    for (i = 0; i < 2; i += 1) {
         vcioinit(&io, data, dtsz);
         if (i == 0) /* try the current coding first */
         {
             if ((nl = vciogetu(&io)) > nsym
                 || nl < 0 /* nl is a signed int */)
                 continue; /* restart to do the below case */
-        }
-        else /* must be the old buggy coding noted above */
+        } else            /* must be the old buggy coding noted above */
         {
             if ((nl = vciogetc(&io)) == 0)
                 nl = 256; /* fix a simple byte wrap-around value */
@@ -210,8 +197,7 @@ size_t dtsz;    /* size of above data buffer		*/
         vcioendb(&io, b, n, VC_DECODE);
 
         /* now see if clen[] can be reconstructed */
-        if (rlcode(nsym, clen, maxs, len, nl, 0) >= 0)
-        {
+        if (rlcode(nsym, clen, maxs, len, nl, 0) >= 0) {
             free(len);
             return vciosize(&io);
         }

@@ -247,8 +247,7 @@ ClientData *clientDataPtr; /* Store manager's token for image here;
     masterPtr->maskFileString = NULL;
     masterPtr->maskDataString = NULL;
     masterPtr->instancePtr = NULL;
-    if (ImgBmapConfigureMaster(masterPtr, argc, argv, 0) != TCL_OK)
-    {
+    if (ImgBmapConfigureMaster(masterPtr, argc, argv, 0) != TCL_OK) {
         ImgBmapDelete(( ClientData )masterPtr);
         return TCL_ERROR;
     }
@@ -294,8 +293,7 @@ int flags;               /* Flags to pass to Tk_ConfigureWidget,
                            argv,
                            ( char * )masterPtr,
                            flags)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -304,13 +302,11 @@ int flags;               /* Flags to pass to Tk_ConfigureWidget,
      * the bitmap and mask have the same dimensions.
      */
 
-    if (masterPtr->data != NULL)
-    {
+    if (masterPtr->data != NULL) {
         ckfree(masterPtr->data);
         masterPtr->data = NULL;
     }
-    if ((masterPtr->fileString != NULL) || (masterPtr->dataString != NULL))
-    {
+    if ((masterPtr->fileString != NULL) || (masterPtr->dataString != NULL)) {
         masterPtr->data = TkGetBitmapData(masterPtr->interp,
                                           masterPtr->dataString,
                                           masterPtr->fileString,
@@ -318,21 +314,17 @@ int flags;               /* Flags to pass to Tk_ConfigureWidget,
                                           &masterPtr->height,
                                           &dummy1,
                                           &dummy2);
-        if (masterPtr->data == NULL)
-        {
+        if (masterPtr->data == NULL) {
             return TCL_ERROR;
         }
     }
-    if (masterPtr->maskData != NULL)
-    {
+    if (masterPtr->maskData != NULL) {
         ckfree(masterPtr->maskData);
         masterPtr->maskData = NULL;
     }
     if ((masterPtr->maskFileString != NULL)
-        || (masterPtr->maskDataString != NULL))
-    {
-        if (masterPtr->data == NULL)
-        {
+        || (masterPtr->maskDataString != NULL)) {
+        if (masterPtr->data == NULL) {
             masterPtr->interp->result = "can't have mask without bitmap";
             return TCL_ERROR;
         }
@@ -343,13 +335,11 @@ int flags;               /* Flags to pass to Tk_ConfigureWidget,
                                               &maskHeight,
                                               &dummy1,
                                               &dummy2);
-        if (masterPtr->maskData == NULL)
-        {
+        if (masterPtr->maskData == NULL) {
             return TCL_ERROR;
         }
         if ((maskWidth != masterPtr->width)
-            || (maskHeight != masterPtr->height))
-        {
+            || (maskHeight != masterPtr->height)) {
             ckfree(masterPtr->maskData);
             masterPtr->maskData = NULL;
             masterPtr->interp->result
@@ -365,8 +355,7 @@ int flags;               /* Flags to pass to Tk_ConfigureWidget,
      */
 
     for (instancePtr = masterPtr->instancePtr; instancePtr != NULL;
-         instancePtr = instancePtr->nextPtr)
-    {
+         instancePtr = instancePtr->nextPtr) {
         ImgBmapConfigureInstance(instancePtr);
     }
     Tk_ImageChanged(masterPtr->tkMaster,
@@ -413,44 +402,35 @@ BitmapInstance *instancePtr; /* Instance to reconfigure. */
      * form into an internal form appropriate for instancePtr.
      */
 
-    if (*masterPtr->bgUid != 0)
-    {
+    if (*masterPtr->bgUid != 0) {
         colorPtr = Tk_GetColor(
         masterPtr->interp, instancePtr->tkwin, masterPtr->bgUid);
-        if (colorPtr == NULL)
-        {
+        if (colorPtr == NULL) {
             goto error;
         }
-    }
-    else
-    {
+    } else {
         colorPtr = NULL;
     }
-    if (instancePtr->bg != NULL)
-    {
+    if (instancePtr->bg != NULL) {
         Tk_FreeColor(instancePtr->bg);
     }
     instancePtr->bg = colorPtr;
 
     colorPtr
     = Tk_GetColor(masterPtr->interp, instancePtr->tkwin, masterPtr->fgUid);
-    if (colorPtr == NULL)
-    {
+    if (colorPtr == NULL) {
         goto error;
     }
-    if (instancePtr->fg != NULL)
-    {
+    if (instancePtr->fg != NULL) {
         Tk_FreeColor(instancePtr->fg);
     }
     instancePtr->fg = colorPtr;
 
-    if (instancePtr->bitmap != None)
-    {
+    if (instancePtr->bitmap != None) {
         Tk_FreePixmap(Tk_Display(instancePtr->tkwin), instancePtr->bitmap);
         instancePtr->bitmap = None;
     }
-    if (masterPtr->data != NULL)
-    {
+    if (masterPtr->data != NULL) {
         instancePtr->bitmap = XCreateBitmapFromData(
         Tk_Display(instancePtr->tkwin),
         RootWindowOfScreen(Tk_Screen(instancePtr->tkwin)),
@@ -459,13 +439,11 @@ BitmapInstance *instancePtr; /* Instance to reconfigure. */
         ( unsigned )masterPtr->height);
     }
 
-    if (instancePtr->mask != None)
-    {
+    if (instancePtr->mask != None) {
         Tk_FreePixmap(Tk_Display(instancePtr->tkwin), instancePtr->mask);
         instancePtr->mask = None;
     }
-    if (masterPtr->maskData != NULL)
-    {
+    if (masterPtr->maskData != NULL) {
         instancePtr->mask = XCreateBitmapFromData(
         Tk_Display(instancePtr->tkwin),
         RootWindowOfScreen(Tk_Screen(instancePtr->tkwin)),
@@ -474,34 +452,26 @@ BitmapInstance *instancePtr; /* Instance to reconfigure. */
         ( unsigned )masterPtr->height);
     }
 
-    if (masterPtr->data != NULL)
-    {
+    if (masterPtr->data != NULL) {
         gcValues.foreground = instancePtr->fg->pixel;
         gcValues.graphics_exposures = False;
         mask = GCForeground | GCGraphicsExposures;
-        if (instancePtr->bg != NULL)
-        {
+        if (instancePtr->bg != NULL) {
             gcValues.background = instancePtr->bg->pixel;
             mask |= GCBackground;
-            if (instancePtr->mask != None)
-            {
+            if (instancePtr->mask != None) {
                 gcValues.clip_mask = instancePtr->mask;
                 mask |= GCClipMask;
             }
-        }
-        else
-        {
+        } else {
             gcValues.clip_mask = instancePtr->bitmap;
             mask |= GCClipMask;
         }
         gc = Tk_GetGC(instancePtr->tkwin, mask, &gcValues);
-    }
-    else
-    {
+    } else {
         gc = None;
     }
-    if (instancePtr->gc != None)
-    {
+    if (instancePtr->gc != None) {
         Tk_FreeGC(Tk_Display(instancePtr->tkwin), instancePtr->gc);
     }
     instancePtr->gc = gc;
@@ -514,8 +484,7 @@ error:
      * the error.
      */
 
-    if (instancePtr->gc != None)
-    {
+    if (instancePtr->gc != None) {
         Tk_FreeGC(Tk_Display(instancePtr->tkwin), instancePtr->gc);
     }
     instancePtr->gc = None;
@@ -572,17 +541,14 @@ int *hotXPtr, *hotYPtr;    /* Position of hot spot or -1,-1. */
     Tcl_DString buffer;
 
     pi.string = string;
-    if (string == NULL)
-    {
+    if (string == NULL) {
         expandedFileName = Tcl_TranslateFileName(interp, fileName, &buffer);
-        if (expandedFileName == NULL)
-        {
+        if (expandedFileName == NULL) {
             return NULL;
         }
         pi.f = fopen(expandedFileName, "r");
         Tcl_DStringFree(&buffer);
-        if (pi.f == NULL)
-        {
+        if (pi.f == NULL) {
             Tcl_AppendResult(interp,
                              "couldn't read bitmap file \"",
                              fileName,
@@ -591,9 +557,7 @@ int *hotXPtr, *hotYPtr;    /* Position of hot spot or -1,-1. */
                              ( char * )NULL);
             return NULL;
         }
-    }
-    else
-    {
+    } else {
         pi.f = NULL;
     }
 
@@ -618,80 +582,56 @@ int *hotXPtr, *hotYPtr;    /* Position of hot spot or -1,-1. */
     height = 0;
     hotX = -1;
     hotY = -1;
-    while (1)
-    {
-        if (NextBitmapWord(&pi) != TCL_OK)
-        {
+    while (1) {
+        if (NextBitmapWord(&pi) != TCL_OK) {
             goto error;
         }
         if ((pi.wordLength >= 6) && (pi.word[pi.wordLength - 6] == '_')
-            && (strcmp(pi.word + pi.wordLength - 6, "_width") == 0))
-        {
-            if (NextBitmapWord(&pi) != TCL_OK)
-            {
+            && (strcmp(pi.word + pi.wordLength - 6, "_width") == 0)) {
+            if (NextBitmapWord(&pi) != TCL_OK) {
                 goto error;
             }
             width = strtol(pi.word, &end, 0);
-            if ((end == pi.word) || (*end != 0))
-            {
+            if ((end == pi.word) || (*end != 0)) {
                 goto error;
             }
-        }
-        else if ((pi.wordLength >= 7) && (pi.word[pi.wordLength - 7] == '_')
-                 && (strcmp(pi.word + pi.wordLength - 7, "_height") == 0))
-        {
-            if (NextBitmapWord(&pi) != TCL_OK)
-            {
+        } else if ((pi.wordLength >= 7) && (pi.word[pi.wordLength - 7] == '_')
+                   && (strcmp(pi.word + pi.wordLength - 7, "_height") == 0)) {
+            if (NextBitmapWord(&pi) != TCL_OK) {
                 goto error;
             }
             height = strtol(pi.word, &end, 0);
-            if ((end == pi.word) || (*end != 0))
-            {
+            if ((end == pi.word) || (*end != 0)) {
                 goto error;
             }
-        }
-        else if ((pi.wordLength >= 6) && (pi.word[pi.wordLength - 6] == '_')
-                 && (strcmp(pi.word + pi.wordLength - 6, "_x_hot") == 0))
-        {
-            if (NextBitmapWord(&pi) != TCL_OK)
-            {
+        } else if ((pi.wordLength >= 6) && (pi.word[pi.wordLength - 6] == '_')
+                   && (strcmp(pi.word + pi.wordLength - 6, "_x_hot") == 0)) {
+            if (NextBitmapWord(&pi) != TCL_OK) {
                 goto error;
             }
             hotX = strtol(pi.word, &end, 0);
-            if ((end == pi.word) || (*end != 0))
-            {
+            if ((end == pi.word) || (*end != 0)) {
                 goto error;
             }
-        }
-        else if ((pi.wordLength >= 6) && (pi.word[pi.wordLength - 6] == '_')
-                 && (strcmp(pi.word + pi.wordLength - 6, "_y_hot") == 0))
-        {
-            if (NextBitmapWord(&pi) != TCL_OK)
-            {
+        } else if ((pi.wordLength >= 6) && (pi.word[pi.wordLength - 6] == '_')
+                   && (strcmp(pi.word + pi.wordLength - 6, "_y_hot") == 0)) {
+            if (NextBitmapWord(&pi) != TCL_OK) {
                 goto error;
             }
             hotY = strtol(pi.word, &end, 0);
-            if ((end == pi.word) || (*end != 0))
-            {
+            if ((end == pi.word) || (*end != 0)) {
                 goto error;
             }
-        }
-        else if ((pi.word[0] == 'c') && (strcmp(pi.word, "char") == 0))
-        {
-            while (1)
-            {
-                if (NextBitmapWord(&pi) != TCL_OK)
-                {
+        } else if ((pi.word[0] == 'c') && (strcmp(pi.word, "char") == 0)) {
+            while (1) {
+                if (NextBitmapWord(&pi) != TCL_OK) {
                     goto error;
                 }
-                if ((pi.word[0] == '{') && (pi.word[1] == 0))
-                {
+                if ((pi.word[0] == '{') && (pi.word[1] == 0)) {
                     goto getData;
                 }
             }
-        }
-        else if ((pi.word[0] == '{') && (pi.word[1] == 0))
-        {
+        } else if ((pi.word[0] == '{') && (pi.word[1] == 0)) {
             Tcl_AppendResult(interp,
                              "format error in bitmap data; ",
                              "looks like it's an obsolete X10 bitmap file",
@@ -706,21 +646,17 @@ int *hotXPtr, *hotYPtr;    /* Position of hot spot or -1,-1. */
      */
 
 getData:
-    if ((width <= 0) || (height <= 0))
-    {
+    if ((width <= 0) || (height <= 0)) {
         goto error;
     }
     numBytes = ((width + 7) / 8) * height;
     data = ( char * )ckalloc(( unsigned )numBytes);
-    for (p = data; numBytes > 0; p++, numBytes--)
-    {
-        if (NextBitmapWord(&pi) != TCL_OK)
-        {
+    for (p = data; numBytes > 0; p++, numBytes--) {
+        if (NextBitmapWord(&pi) != TCL_OK) {
             goto error;
         }
         *p = strtol(pi.word, &end, 0);
-        if (end == pi.word)
-        {
+        if (end == pi.word) {
             goto error;
         }
     }
@@ -729,8 +665,7 @@ getData:
      * All done.  Clean up and return.
      */
 
-    if (pi.f != NULL)
-    {
+    if (pi.f != NULL) {
         fclose(pi.f);
     }
     *widthPtr = width;
@@ -742,12 +677,10 @@ getData:
 error:
     interp->result = "format error in bitmap data";
 errorCleanup:
-    if (data != NULL)
-    {
+    if (data != NULL) {
         ckfree(data);
     }
-    if (pi.f != NULL)
-    {
+    if (pi.f != NULL) {
         fclose(pi.f);
     }
     return NULL;
@@ -781,53 +714,41 @@ parseInfoPtr) ParseInfo *parseInfoPtr; /* Describes what we're reading
 
     parseInfoPtr->wordLength = 0;
     dst = parseInfoPtr->word;
-    if (parseInfoPtr->string != NULL)
-    {
+    if (parseInfoPtr->string != NULL) {
         for (src = parseInfoPtr->string;
              isspace(UCHAR(*src)) || (*src == ',');
-             src++)
-        {
-            if (*src == 0)
-            {
+             src++) {
+            if (*src == 0) {
                 return TCL_ERROR;
             }
         }
-        for (; !isspace(UCHAR(*src)) && (*src != ',') && (*src != 0); src++)
-        {
+        for (; !isspace(UCHAR(*src)) && (*src != ',') && (*src != 0); src++) {
             *dst = *src;
             dst++;
             parseInfoPtr->wordLength++;
-            if (parseInfoPtr->wordLength > MAX_WORD_LENGTH)
-            {
+            if (parseInfoPtr->wordLength > MAX_WORD_LENGTH) {
                 return TCL_ERROR;
             }
         }
         parseInfoPtr->string = src;
-    }
-    else
-    {
+    } else {
         for (c = getc(parseInfoPtr->f); isspace(UCHAR(c)) || (c == ',');
-             c = getc(parseInfoPtr->f))
-        {
-            if (c == EOF)
-            {
+             c = getc(parseInfoPtr->f)) {
+            if (c == EOF) {
                 return TCL_ERROR;
             }
         }
         for (; !isspace(UCHAR(c)) && (c != ',') && (c != EOF);
-             c = getc(parseInfoPtr->f))
-        {
+             c = getc(parseInfoPtr->f)) {
             *dst = c;
             dst++;
             parseInfoPtr->wordLength++;
-            if (parseInfoPtr->wordLength > MAX_WORD_LENGTH)
-            {
+            if (parseInfoPtr->wordLength > MAX_WORD_LENGTH) {
                 return TCL_ERROR;
             }
         }
     }
-    if (parseInfoPtr->wordLength == 0)
-    {
+    if (parseInfoPtr->wordLength == 0) {
         return TCL_ERROR;
     }
     parseInfoPtr->word[parseInfoPtr->wordLength] = 0;
@@ -862,8 +783,7 @@ char **argv;           /* Argument strings. */
     int c, code;
     size_t length;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         sprintf(interp->result,
                 "wrong # args: should be \"%.50s option ?arg arg ...?\"",
                 argv[0]);
@@ -872,10 +792,8 @@ char **argv;           /* Argument strings. */
     c = argv[1][0];
     length = strlen(argv[1]);
     if ((c == 'c') && (strncmp(argv[1], "cget", length) == 0)
-        && (length >= 2))
-    {
-        if (argc != 3)
-        {
+        && (length >= 2)) {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -889,37 +807,28 @@ char **argv;           /* Argument strings. */
                                  ( char * )masterPtr,
                                  argv[2],
                                  0);
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
-             && (length >= 2))
-    {
-        if (argc == 2)
-        {
+    } else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
+               && (length >= 2)) {
+        if (argc == 2) {
             code = Tk_ConfigureInfo(interp,
                                     Tk_MainWindow(interp),
                                     configSpecs,
                                     ( char * )masterPtr,
                                     ( char * )NULL,
                                     0);
-        }
-        else if (argc == 3)
-        {
+        } else if (argc == 3) {
             code = Tk_ConfigureInfo(interp,
                                     Tk_MainWindow(interp),
                                     configSpecs,
                                     ( char * )masterPtr,
                                     argv[2],
                                     0);
-        }
-        else
-        {
+        } else {
             code = ImgBmapConfigureMaster(
             masterPtr, argc - 2, argv + 2, TK_CONFIG_ARGV_ONLY);
         }
         return code;
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "bad option \"",
                          argv[1],
@@ -963,10 +872,8 @@ ClientData masterData; /* Pointer to our master structure for the
      */
 
     for (instancePtr = masterPtr->instancePtr; instancePtr != NULL;
-         instancePtr = instancePtr->nextPtr)
-    {
-        if (instancePtr->tkwin == tkwin)
-        {
+         instancePtr = instancePtr->nextPtr) {
+        if (instancePtr->tkwin == tkwin) {
             instancePtr->refCount++;
             return ( ClientData )instancePtr;
         }
@@ -994,8 +901,7 @@ ClientData masterData; /* Pointer to our master structure for the
      * If this is the first instance, must set the size of the image.
      */
 
-    if (instancePtr->nextPtr == NULL)
-    {
+    if (instancePtr->nextPtr == NULL) {
         Tk_ImageChanged(
         masterPtr->tkMaster, 0, 0, 0, 0, masterPtr->width, masterPtr->height);
     }
@@ -1046,8 +952,7 @@ int drawableX, drawableY; /* Coordinates within drawable that
      * while creating the image instance so it can't be displayed.
      */
 
-    if (instancePtr->gc == None)
-    {
+    if (instancePtr->gc == None) {
         return;
     }
 
@@ -1059,8 +964,7 @@ int drawableX, drawableY; /* Coordinates within drawable that
      */
 
     masking = (instancePtr->mask != None) || (instancePtr->bg == NULL);
-    if (masking)
-    {
+    if (masking) {
         XSetClipOrigin(
         display, instancePtr->gc, drawableX - imageX, drawableY - imageY);
     }
@@ -1075,8 +979,7 @@ int drawableX, drawableY; /* Coordinates within drawable that
                drawableX,
                drawableY,
                1);
-    if (masking)
-    {
+    if (masking) {
         XSetClipOrigin(display, instancePtr->gc, 0, 0);
     }
 }
@@ -1107,8 +1010,7 @@ Display *display;      /* Display containing window that used image. */
     BitmapInstance *prevPtr;
 
     instancePtr->refCount--;
-    if (instancePtr->refCount > 0)
-    {
+    if (instancePtr->refCount > 0) {
         return;
     }
 
@@ -1117,36 +1019,27 @@ Display *display;      /* Display containing window that used image. */
      * the instance structure.
      */
 
-    if (instancePtr->fg != NULL)
-    {
+    if (instancePtr->fg != NULL) {
         Tk_FreeColor(instancePtr->fg);
     }
-    if (instancePtr->bg != NULL)
-    {
+    if (instancePtr->bg != NULL) {
         Tk_FreeColor(instancePtr->bg);
     }
-    if (instancePtr->bitmap != None)
-    {
+    if (instancePtr->bitmap != None) {
         Tk_FreePixmap(display, instancePtr->bitmap);
     }
-    if (instancePtr->mask != None)
-    {
+    if (instancePtr->mask != None) {
         Tk_FreePixmap(display, instancePtr->mask);
     }
-    if (instancePtr->gc != None)
-    {
+    if (instancePtr->gc != None) {
         Tk_FreeGC(display, instancePtr->gc);
     }
-    if (instancePtr->masterPtr->instancePtr == instancePtr)
-    {
+    if (instancePtr->masterPtr->instancePtr == instancePtr) {
         instancePtr->masterPtr->instancePtr = instancePtr->nextPtr;
-    }
-    else
-    {
+    } else {
         for (prevPtr = instancePtr->masterPtr->instancePtr;
              prevPtr->nextPtr != instancePtr;
-             prevPtr = prevPtr->nextPtr)
-        {
+             prevPtr = prevPtr->nextPtr) {
             /* Empty loop body */
         }
         prevPtr->nextPtr = instancePtr->nextPtr;
@@ -1177,23 +1070,19 @@ ClientData masterData; /* Pointer to BitmapMaster structure for
 {
     BitmapMaster *masterPtr = ( BitmapMaster * )masterData;
 
-    if (masterPtr->instancePtr != NULL)
-    {
+    if (masterPtr->instancePtr != NULL) {
         panic("tried to delete bitmap image when instances still exist");
     }
     masterPtr->tkMaster = NULL;
-    if (masterPtr->imageCmd != NULL)
-    {
+    if (masterPtr->imageCmd != NULL) {
         Tcl_DeleteCommand(
         masterPtr->interp,
         Tcl_GetCommandName(masterPtr->interp, masterPtr->imageCmd));
     }
-    if (masterPtr->data != NULL)
-    {
+    if (masterPtr->data != NULL) {
         ckfree(masterPtr->data);
     }
-    if (masterPtr->maskData != NULL)
-    {
+    if (masterPtr->maskData != NULL) {
         ckfree(masterPtr->maskData);
     }
     Tk_FreeOptions(configSpecs, ( char * )masterPtr, ( Display * )NULL, 0);
@@ -1224,8 +1113,7 @@ ClientData clientData; /* Pointer to BitmapMaster structure for
     BitmapMaster *masterPtr = ( BitmapMaster * )clientData;
 
     masterPtr->imageCmd = NULL;
-    if (masterPtr->tkMaster != NULL)
-    {
+    if (masterPtr->tkMaster != NULL) {
         Tk_DeleteImage(masterPtr->interp,
                        Tk_NameOfImage(masterPtr->tkMaster));
     }

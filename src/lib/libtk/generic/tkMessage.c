@@ -319,8 +319,7 @@ char **argv;           /* Argument strings. */
     Tk_Window new;
     Tk_Window tkwin = ( Tk_Window )clientData;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -330,8 +329,7 @@ char **argv;           /* Argument strings. */
     }
 
     new = Tk_CreateWindowFromPath(interp, tkwin, argv[1], ( char * )NULL);
-    if (new == NULL)
-    {
+    if (new == NULL) {
         return TCL_ERROR;
     }
 
@@ -375,8 +373,7 @@ char **argv;           /* Argument strings. */
                           | FocusChangeMask,
                           MessageEventProc,
                           ( ClientData )msgPtr);
-    if (ConfigureMessage(interp, msgPtr, argc - 2, argv + 2, 0) != TCL_OK)
-    {
+    if (ConfigureMessage(interp, msgPtr, argc - 2, argv + 2, 0) != TCL_OK) {
         goto error;
     }
 
@@ -416,8 +413,7 @@ char **argv;           /* Argument strings. */
     size_t length;
     int c;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -428,10 +424,8 @@ char **argv;           /* Argument strings. */
     c = argv[1][0];
     length = strlen(argv[1]);
     if ((c == 'c') && (strncmp(argv[1], "cget", length) == 0)
-        && (length >= 2))
-    {
-        if (argc != 3)
-        {
+        && (length >= 2)) {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -441,32 +435,23 @@ char **argv;           /* Argument strings. */
         }
         return Tk_ConfigureValue(
         interp, msgPtr->tkwin, configSpecs, ( char * )msgPtr, argv[2], 0);
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
-             && (length >= 2))
-    {
-        if (argc == 2)
-        {
+    } else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
+               && (length >= 2)) {
+        if (argc == 2) {
             return Tk_ConfigureInfo(interp,
                                     msgPtr->tkwin,
                                     configSpecs,
                                     ( char * )msgPtr,
                                     ( char * )NULL,
                                     0);
-        }
-        else if (argc == 3)
-        {
+        } else if (argc == 3) {
             return Tk_ConfigureInfo(
             interp, msgPtr->tkwin, configSpecs, ( char * )msgPtr, argv[2], 0);
-        }
-        else
-        {
+        } else {
             return ConfigureMessage(
             interp, msgPtr, argc - 2, argv + 2, TK_CONFIG_ARGV_ONLY);
         }
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "bad option \"",
                          argv[1],
@@ -505,16 +490,14 @@ static void DestroyMessage(memPtr) char *memPtr; /* Info about message widget.
      * stuff.
      */
 
-    if (msgPtr->textVarName != NULL)
-    {
+    if (msgPtr->textVarName != NULL) {
         Tcl_UntraceVar(msgPtr->interp,
                        msgPtr->textVarName,
                        TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
                        MessageTextVarProc,
                        ( ClientData )msgPtr);
     }
-    if (msgPtr->textGC != None)
-    {
+    if (msgPtr->textGC != None) {
         Tk_FreeGC(msgPtr->display, msgPtr->textGC);
     }
     Tk_FreeOptions(configSpecs, ( char * )msgPtr, msgPtr->display, 0);
@@ -557,8 +540,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * Eliminate any existing trace on a variable monitored by the message.
      */
 
-    if (msgPtr->textVarName != NULL)
-    {
+    if (msgPtr->textVarName != NULL) {
         Tcl_UntraceVar(interp,
                        msgPtr->textVarName,
                        TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
@@ -568,8 +550,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 
     if (Tk_ConfigureWidget(
         interp, msgPtr->tkwin, configSpecs, argc, argv, ( char * )msgPtr, flags)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -579,20 +560,15 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * exist, and fetch its current value.
      */
 
-    if (msgPtr->textVarName != NULL)
-    {
+    if (msgPtr->textVarName != NULL) {
         char *value;
 
         value = Tcl_GetVar(interp, msgPtr->textVarName, TCL_GLOBAL_ONLY);
-        if (value == NULL)
-        {
+        if (value == NULL) {
             Tcl_SetVar(
             interp, msgPtr->textVarName, msgPtr->string, TCL_GLOBAL_ONLY);
-        }
-        else
-        {
-            if (msgPtr->string != NULL)
-            {
+        } else {
+            if (msgPtr->string != NULL) {
                 ckfree(msgPtr->string);
             }
             msgPtr->string
@@ -616,27 +592,23 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 
     Tk_SetBackgroundFromBorder(msgPtr->tkwin, msgPtr->border);
 
-    if (msgPtr->highlightWidth < 0)
-    {
+    if (msgPtr->highlightWidth < 0) {
         msgPtr->highlightWidth = 0;
     }
 
     gcValues.font = msgPtr->fontPtr->fid;
     gcValues.foreground = msgPtr->fgColorPtr->pixel;
     newGC = Tk_GetGC(msgPtr->tkwin, GCForeground | GCFont, &gcValues);
-    if (msgPtr->textGC != None)
-    {
+    if (msgPtr->textGC != None) {
         Tk_FreeGC(msgPtr->display, msgPtr->textGC);
     }
     msgPtr->textGC = newGC;
 
-    if (msgPtr->padX == -1)
-    {
+    if (msgPtr->padX == -1) {
         msgPtr->padX = msgPtr->fontPtr->ascent / 2;
     }
 
-    if (msgPtr->padY == -1)
-    {
+    if (msgPtr->padY == -1) {
         msgPtr->padY = msgPtr->fontPtr->ascent / 4;
     }
 
@@ -647,8 +619,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 
     ComputeMessageGeometry(msgPtr);
     if ((msgPtr->tkwin != NULL) && Tk_IsMapped(msgPtr->tkwin)
-        && !(msgPtr->flags & REDRAW_PENDING))
-    {
+        && !(msgPtr->flags & REDRAW_PENDING)) {
         Tcl_DoWhenIdle(DisplayMessage, ( ClientData )msgPtr);
         msgPtr->flags |= REDRAW_PENDING;
     }
@@ -690,8 +661,7 @@ msgPtr) Message *msgPtr; /* Information about window. */
      */
 
     aspect = msgPtr->aspect / 10;
-    if (aspect < 5)
-    {
+    if (aspect < 5) {
         aspect = 5;
     }
     lowerBound = msgPtr->aspect - aspect;
@@ -706,23 +676,17 @@ msgPtr) Message *msgPtr; /* Information about window. */
      * width then just use that.
      */
 
-    if (msgPtr->width > 0)
-    {
+    if (msgPtr->width > 0) {
         width = msgPtr->width;
         inc = 0;
-    }
-    else
-    {
+    } else {
         width = WidthOfScreen(Tk_Screen(msgPtr->tkwin)) / 2;
         inc = width / 2;
     }
-    for (;; inc /= 2)
-    {
+    for (;; inc /= 2) {
         maxWidth = 0;
-        for (numLines = 1, p = msgPtr->string;; numLines++)
-        {
-            if (*p == '\n')
-            {
+        for (numLines = 1, p = msgPtr->string;; numLines++) {
+            if (*p == '\n') {
                 p++;
                 continue;
             }
@@ -734,12 +698,10 @@ msgPtr) Message *msgPtr; /* Information about window. */
                                 0,
                                 TK_WHOLE_WORDS | TK_AT_LEAST_ONE,
                                 &thisWidth);
-            if (thisWidth > maxWidth)
-            {
+            if (thisWidth > maxWidth) {
                 maxWidth = thisWidth;
             }
-            if (*p == 0)
-            {
+            if (*p == 0) {
                 break;
             }
 
@@ -748,10 +710,8 @@ msgPtr) Message *msgPtr; /* Information about window. */
              * they follow a user-requested newline.
              */
 
-            while (isspace(UCHAR(*p)))
-            {
-                if (*p == '\n')
-                {
+            while (isspace(UCHAR(*p))) {
+                if (*p == '\n') {
                     p++;
                     break;
                 }
@@ -762,22 +722,16 @@ msgPtr) Message *msgPtr; /* Information about window. */
         height
         = numLines * (msgPtr->fontPtr->ascent + msgPtr->fontPtr->descent)
           + 2 * msgPtr->inset + 2 * msgPtr->padY;
-        if (inc <= 2)
-        {
+        if (inc <= 2) {
             break;
         }
         aspect
         = (100 * (maxWidth + 2 * msgPtr->inset + 2 * msgPtr->padX)) / height;
-        if (aspect < lowerBound)
-        {
+        if (aspect < lowerBound) {
             width += inc;
-        }
-        else if (aspect > upperBound)
-        {
+        } else if (aspect > upperBound) {
             width -= inc;
-        }
-        else
-        {
+        } else {
             break;
         }
     }
@@ -814,8 +768,7 @@ ClientData clientData; /* Information about window. */
     int x, y, lineLength, numChars, charsLeft;
 
     msgPtr->flags &= ~REDRAW_PENDING;
-    if ((msgPtr->tkwin == NULL) || !Tk_IsMapped(tkwin))
-    {
+    if ((msgPtr->tkwin == NULL) || !Tk_IsMapped(tkwin)) {
         return;
     }
     Tk_Fill3DRectangle(tkwin,
@@ -833,8 +786,7 @@ ClientData clientData; /* Information about window. */
      * and anchor option.
      */
 
-    switch (msgPtr->anchor)
-    {
+    switch (msgPtr->anchor) {
     case TK_ANCHOR_NW:
     case TK_ANCHOR_N:
     case TK_ANCHOR_NE:
@@ -860,10 +812,8 @@ ClientData clientData; /* Information about window. */
      */
 
     for (p = msgPtr->string, charsLeft = msgPtr->numChars; *p != 0;
-         y += msgPtr->fontPtr->ascent + msgPtr->fontPtr->descent)
-    {
-        if (*p == '\n')
-        {
+         y += msgPtr->fontPtr->ascent + msgPtr->fontPtr->descent) {
+        if (*p == '\n') {
             p++;
             charsLeft--;
             continue;
@@ -876,8 +826,7 @@ ClientData clientData; /* Information about window. */
                                   0,
                                   TK_WHOLE_WORDS | TK_AT_LEAST_ONE,
                                   &lineLength);
-        switch (msgPtr->anchor)
-        {
+        switch (msgPtr->anchor) {
         case TK_ANCHOR_NW:
         case TK_ANCHOR_W:
         case TK_ANCHOR_SW:
@@ -893,12 +842,9 @@ ClientData clientData; /* Information about window. */
                 - msgPtr->lineLength;
             break;
         }
-        if (msgPtr->justify == TK_JUSTIFY_CENTER)
-        {
+        if (msgPtr->justify == TK_JUSTIFY_CENTER) {
             x += (msgPtr->lineLength - lineLength) / 2;
-        }
-        else if (msgPtr->justify == TK_JUSTIFY_RIGHT)
-        {
+        } else if (msgPtr->justify == TK_JUSTIFY_RIGHT) {
             x += msgPtr->lineLength - lineLength;
         }
         TkDisplayChars(msgPtr->display,
@@ -919,11 +865,9 @@ ClientData clientData; /* Information about window. */
          * a user-requested newline.
          */
 
-        while (isspace(UCHAR(*p)))
-        {
+        while (isspace(UCHAR(*p))) {
             charsLeft--;
-            if (*p == '\n')
-            {
+            if (*p == '\n') {
                 p++;
                 break;
             }
@@ -931,8 +875,7 @@ ClientData clientData; /* Information about window. */
         }
     }
 
-    if (msgPtr->relief != TK_RELIEF_FLAT)
-    {
+    if (msgPtr->relief != TK_RELIEF_FLAT) {
         Tk_Draw3DRectangle(tkwin,
                            Tk_WindowId(tkwin),
                            msgPtr->border,
@@ -943,16 +886,12 @@ ClientData clientData; /* Information about window. */
                            msgPtr->borderWidth,
                            msgPtr->relief);
     }
-    if (msgPtr->highlightWidth != 0)
-    {
+    if (msgPtr->highlightWidth != 0) {
         GC gc;
 
-        if (msgPtr->flags & GOT_FOCUS)
-        {
+        if (msgPtr->flags & GOT_FOCUS) {
             gc = Tk_GCForColor(msgPtr->highlightColorPtr, Tk_WindowId(tkwin));
-        }
-        else
-        {
+        } else {
             gc
             = Tk_GCForColor(msgPtr->highlightBgColorPtr, Tk_WindowId(tkwin));
         }
@@ -986,43 +925,30 @@ XEvent *eventPtr;      /* Information about event. */
     Message *msgPtr = ( Message * )clientData;
 
     if (((eventPtr->type == Expose) && (eventPtr->xexpose.count == 0))
-        || (eventPtr->type == ConfigureNotify))
-    {
+        || (eventPtr->type == ConfigureNotify)) {
         goto redraw;
-    }
-    else if (eventPtr->type == DestroyNotify)
-    {
-        if (msgPtr->tkwin != NULL)
-        {
+    } else if (eventPtr->type == DestroyNotify) {
+        if (msgPtr->tkwin != NULL) {
             msgPtr->tkwin = NULL;
             Tcl_DeleteCommand(
             msgPtr->interp,
             Tcl_GetCommandName(msgPtr->interp, msgPtr->widgetCmd));
         }
-        if (msgPtr->flags & REDRAW_PENDING)
-        {
+        if (msgPtr->flags & REDRAW_PENDING) {
             Tcl_CancelIdleCall(DisplayMessage, ( ClientData )msgPtr);
         }
         Tcl_EventuallyFree(( ClientData )msgPtr, DestroyMessage);
-    }
-    else if (eventPtr->type == FocusIn)
-    {
-        if (eventPtr->xfocus.detail != NotifyInferior)
-        {
+    } else if (eventPtr->type == FocusIn) {
+        if (eventPtr->xfocus.detail != NotifyInferior) {
             msgPtr->flags |= GOT_FOCUS;
-            if (msgPtr->highlightWidth > 0)
-            {
+            if (msgPtr->highlightWidth > 0) {
                 goto redraw;
             }
         }
-    }
-    else if (eventPtr->type == FocusOut)
-    {
-        if (eventPtr->xfocus.detail != NotifyInferior)
-        {
+    } else if (eventPtr->type == FocusOut) {
+        if (eventPtr->xfocus.detail != NotifyInferior) {
             msgPtr->flags &= ~GOT_FOCUS;
-            if (msgPtr->highlightWidth > 0)
-            {
+            if (msgPtr->highlightWidth > 0) {
                 goto redraw;
             }
         }
@@ -1030,8 +956,7 @@ XEvent *eventPtr;      /* Information about event. */
     return;
 
 redraw:
-    if ((msgPtr->tkwin != NULL) && !(msgPtr->flags & REDRAW_PENDING))
-    {
+    if ((msgPtr->tkwin != NULL) && !(msgPtr->flags & REDRAW_PENDING)) {
         Tcl_DoWhenIdle(DisplayMessage, ( ClientData )msgPtr);
         msgPtr->flags |= REDRAW_PENDING;
     }
@@ -1068,8 +993,7 @@ ClientData clientData; /* Pointer to widget record for widget. */
      * destroys the widget.
      */
 
-    if (tkwin != NULL)
-    {
+    if (tkwin != NULL) {
         msgPtr->tkwin = NULL;
         Tk_DestroyWindow(tkwin);
     }
@@ -1109,10 +1033,9 @@ int flags;             /* Information about what happened. */
      * the whole interpreter is going away.
      */
 
-    if (flags & TCL_TRACE_UNSETS)
-    {
-        if ((flags & TCL_TRACE_DESTROYED) && !(flags & TCL_INTERP_DESTROYED))
-        {
+    if (flags & TCL_TRACE_UNSETS) {
+        if ((flags & TCL_TRACE_DESTROYED)
+            && !(flags & TCL_INTERP_DESTROYED)) {
             Tcl_SetVar(
             interp, msgPtr->textVarName, msgPtr->string, TCL_GLOBAL_ONLY);
             Tcl_TraceVar(interp,
@@ -1126,12 +1049,10 @@ int flags;             /* Information about what happened. */
     }
 
     value = Tcl_GetVar(interp, msgPtr->textVarName, TCL_GLOBAL_ONLY);
-    if (value == NULL)
-    {
+    if (value == NULL) {
         value = "";
     }
-    if (msgPtr->string != NULL)
-    {
+    if (msgPtr->string != NULL) {
         ckfree(msgPtr->string);
     }
     msgPtr->numChars = strlen(value);
@@ -1140,8 +1061,7 @@ int flags;             /* Information about what happened. */
     ComputeMessageGeometry(msgPtr);
 
     if ((msgPtr->tkwin != NULL) && Tk_IsMapped(msgPtr->tkwin)
-        && !(msgPtr->flags & REDRAW_PENDING))
-    {
+        && !(msgPtr->flags & REDRAW_PENDING)) {
         Tcl_DoWhenIdle(DisplayMessage, ( ClientData )msgPtr);
         msgPtr->flags |= REDRAW_PENDING;
     }

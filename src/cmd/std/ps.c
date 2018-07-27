@@ -440,8 +440,7 @@ optinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
     int i;
 
     if (streq(s, "formats"))
-        for (i = 1; i < elementsof(keys); i++)
-        {
+        for (i = 1; i < elementsof(keys); i++) {
             sfprintf(sp, "[+%s?", keys[i].name);
             if (keys[i].head)
                 sfprintf(
@@ -491,10 +490,8 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
 
     if (!fp->t_str)
         return 0;
-    if (!(kp = ( Key_t * )dtmatch(state.keys, fp->t_str)))
-    {
-        if (*fp->t_str != '$')
-        {
+    if (!(kp = ( Key_t * )dtmatch(state.keys, fp->t_str))) {
+        if (*fp->t_str != '$') {
             error(3, "%s: unknown format key", fp->t_str);
             return 0;
         }
@@ -508,39 +505,30 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
     }
     if (!kp->head && (state.pss->meth->fields & keys[kp->index].field))
         kp = &keys[kp->index];
-    if (kp->macro && !kp->disable)
-    {
+    if (kp->macro && !kp->disable) {
         kp->disable = 1;
         sfkeyprintf(state.mac, handle, kp->macro, key, NiL);
         if (!(s = sfstruse(state.mac)))
             error(ERROR_SYSTEM | 3, "out of space");
         kp->disable = 0;
-    }
-    else if (!pp)
-    {
-        if (!(state.pss->meth->fields & kp->field))
-        {
+    } else if (!pp) {
+        if (!(state.pss->meth->fields & kp->field)) {
             error(1, "%s: not available on this system", kp->name);
             return -1;
         }
         state.pssdisc.fields |= kp->field;
-        if (fp->flags & SFFMT_ALTER)
-        {
-            if (kp->maxval)
-            {
+        if (fp->flags & SFFMT_ALTER) {
+            if (kp->maxval) {
                 for (i = 1; kp->maxval /= 10; i++)
                     ;
-                if (kp->width < 0)
-                {
+                if (kp->width < 0) {
                     i = -i;
                     if (kp->width > i)
                         kp->width = i;
-                }
-                else if (kp->width < i)
+                } else if (kp->width < i)
                     kp->width = i;
             }
-            if ((fp->width = kp->width) < 0)
-            {
+            if ((fp->width = kp->width) < 0) {
                 fp->width = -fp->width;
                 fp->flags |= SFFMT_LEFT;
             }
@@ -552,16 +540,12 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
         fp->fmt = 's';
         *ps = arg && (arg = ( const char * )strdup(arg)) ? ( char * )arg
                                                          : kp->head;
-    }
-    else
-    {
-        if ((fp->flags & SFFMT_ALTER) && (fp->width = kp->width) < 0)
-        {
+    } else {
+        if ((fp->flags & SFFMT_ALTER) && (fp->width = kp->width) < 0) {
             fp->width = -fp->width;
             fp->flags |= SFFMT_LEFT;
         }
-        switch (kp->index)
-        {
+        switch (kp->index) {
         case KEY_addr:
             if (pp->ps->state == PSS_ZOMBIE)
                 goto zombie;
@@ -580,8 +564,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
         branch:
             if (!s)
                 s = "<defunct>";
-            if ((j = pp->level) > 0)
-            {
+            if ((j = pp->level) > 0) {
                 for (i = 0, j--; i < j; i++)
                     sfputr(state.wrk, state.branch[i] ? " |  " : "    ", -1);
                 sfputr(state.wrk, " \\_ ", -1);
@@ -608,8 +591,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
             n = pp->ps->flags & PSS_FLAGS;
             goto number;
         case KEY_group:
-            if (fp->fmt == 's')
-            {
+            if (fp->fmt == 's') {
                 s = fmtgid(pp->ps->gid);
                 break;
             }
@@ -658,14 +640,12 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
         case KEY_start:
             if (pp->ps->state == PSS_ZOMBIE)
                 goto zombie;
-            if (fp->fmt == 's')
-            {
+            if (fp->fmt == 's') {
                 u = pp->ps->start;
                 s = fmttime((state.now - u) >= (24 * 60 * 60) ? "%y-%m-%d"
                                                               : "%H:%M:%S",
                             u);
-            }
-            else
+            } else
                 n = pp->ps->start;
             break;
         case KEY_state:
@@ -685,24 +665,20 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
             if (pp->ps->state == PSS_ZOMBIE)
                 goto zombie;
             s = pssttyname(state.pss, pp->ps);
-            if (kp->prec && (i = strlen(s) - kp->prec) > 0)
-            {
-                if (s[0] == 'p' && s[1] == 't')
-                {
+            if (kp->prec && (i = strlen(s) - kp->prec) > 0) {
+                if (s[0] == 'p' && s[1] == 't') {
                     if (s[2] == 'y')
                         s += 3;
                     else
                         s += 2;
-                }
-                else if (s[0] == 't' && s[1] == 't' && s[2] == 'y')
+                } else if (s[0] == 't' && s[1] == 't' && s[2] == 'y')
                     s += 3;
                 else
                     s += i;
             }
             break;
         case KEY_user:
-            if (fp->fmt == 's')
-            {
+            if (fp->fmt == 's') {
                 s = pp->user;
                 break;
             }
@@ -726,8 +702,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
                 error(ERROR_SYSTEM | 3, "out of space");
             break;
         number:
-            if (state.hex)
-            {
+            if (state.hex) {
                 fp->fmt = 'x';
                 if (!kp->hex)
                     fp->flags |= SFFMT_ZERO;
@@ -759,16 +734,13 @@ ps(Ps_t *pp)
     char sbuf[2];
 
     pp->shown = 1;
-    if (state.format)
-    {
+    if (state.format) {
         sfkeyprintf(sfstdout, pp, state.format, key, NiL);
         return;
     }
     pr = pp->ps;
-    for (kp = state.fields; kp; kp = kp->next)
-    {
-        switch (kp->index)
-        {
+    for (kp = state.fields; kp; kp = kp->next) {
+        switch (kp->index) {
         case KEY_addr:
             if (pr->state == PSS_ZOMBIE)
                 goto zombie;
@@ -787,8 +759,7 @@ ps(Ps_t *pp)
         branch:
             if (!s)
                 s = "<defunct>";
-            if ((j = pp->level) > 0)
-            {
+            if ((j = pp->level) > 0) {
                 for (i = 0, j--; i < j; i++)
                     sfputr(sfstdout, state.branch[i] ? " |  " : "    ", -1);
                 sfputr(sfstdout, " \\_ ", -1);
@@ -872,16 +843,13 @@ ps(Ps_t *pp)
             if (pr->state == PSS_ZOMBIE)
                 goto zombie;
             s = pssttyname(state.pss, pr);
-            if (kp->prec && (i = strlen(s) - kp->prec) > 0)
-            {
-                if (s[0] == 'p' && s[1] == 't')
-                {
+            if (kp->prec && (i = strlen(s) - kp->prec) > 0) {
+                if (s[0] == 'p' && s[1] == 't') {
                     if (s[2] == 'y')
                         s += 3;
                     else
                         s += 2;
-                }
-                else if (s[0] == 't' && s[1] == 't' && s[2] == 'y')
+                } else if (s[0] == 't' && s[1] == 't' && s[2] == 'y')
                     s += 3;
                 else
                     s += i;
@@ -915,8 +883,7 @@ ps(Ps_t *pp)
             error(ERROR_SYSTEM | 3, "out of space");
         goto string;
     number:
-        if (!state.hex || !kp->hex)
-        {
+        if (!state.hex || !kp->hex) {
             sfprintf(sfstdout, "%*ld%s", kp->width, n, kp->sep);
             continue;
         }
@@ -939,16 +906,14 @@ ps(Ps_t *pp)
 static void
 kids(Ps_t *pp, int level)
 {
-    if (state.tree)
-    {
+    if (state.tree) {
         pp->level = level;
         ps(pp);
         if (level > 0)
             state.branch[level - 1] = pp->sibling != 0;
         if (level < elementsof(state.branch) - 1)
             level++;
-    }
-    else
+    } else
         ps(pp);
     for (pp = pp->children; pp; pp = pp->sibling)
         kids(pp, level);
@@ -966,8 +931,7 @@ list(void)
     Ps_t *zp;
     Ps_t *rp;
 
-    if (state.children || state.parents)
-    {
+    if (state.children || state.parents) {
         /*
          * list the child/parent branches of selected processes
          */
@@ -975,11 +939,9 @@ list(void)
         if (state.parents)
             for (pp = ( Ps_t * )dtfirst(state.byorder); pp;
                  pp = ( Ps_t * )dtnext(state.byorder, pp))
-                if (pp->ps->pss & (PSS_EXPLICIT | PSS_MATCHED))
-                {
+                if (pp->ps->pss & (PSS_EXPLICIT | PSS_MATCHED)) {
                     xp = pp;
-                    do
-                    {
+                    do {
                         xp->ps->pss |= PSS_PARENT;
                     } while (
                     (xp = ( Ps_t * )dtmatch(state.bypid, &xp->ps->ppid))
@@ -989,19 +951,15 @@ list(void)
             for (pp = ( Ps_t * )dtfirst(state.byorder); pp;
                  pp = ( Ps_t * )dtnext(state.byorder, pp))
                 if (!(pp->ps->pss & (PSS_EXPLICIT | PSS_MATCHED | PSS_PARENT))
-                    && !pp->seen)
-                {
+                    && !pp->seen) {
                     xp = pp;
-                    do
-                    {
+                    do {
                         xp->seen = 1;
                         if (xp->ps->pss
-                            & (PSS_ANCESTOR | PSS_EXPLICIT | PSS_MATCHED))
-                        {
+                            & (PSS_ANCESTOR | PSS_EXPLICIT | PSS_MATCHED)) {
                             xp->ps->pss |= PSS_ANCESTOR;
                             xp = pp;
-                            do
-                            {
+                            do {
                                 xp->ps->pss |= PSS_PARENT;
                             } while ((xp = ( Ps_t * )dtmatch(state.bypid,
                                                              &xp->ps->ppid))
@@ -1015,37 +973,31 @@ list(void)
         rp = zp = 0;
         for (pp = ( Ps_t * )dtfirst(state.byorder); pp;
              pp = ( Ps_t * )dtnext(state.byorder, pp))
-            if (pp->ps->pss)
-            {
+            if (pp->ps->pss) {
                 if (pp->ps->ppid != pp->ps->pid
                     && (xp = ( Ps_t * )dtmatch(state.bypid, &pp->ps->ppid))
                     && (xp->ps->pss
-                        & (PSS_EXPLICIT | PSS_MATCHED | PSS_PARENT)))
-                {
+                        & (PSS_EXPLICIT | PSS_MATCHED | PSS_PARENT))) {
                     xp->ps->pss |= PSS_CHILD;
                     if (xp->lastchild)
                         xp->lastchild = xp->lastchild->sibling = pp;
                     else
                         xp->children = xp->lastchild = pp;
-                }
-                else if (zp)
+                } else if (zp)
                     zp = zp->root = pp;
                 else
                     rp = zp = pp;
             }
         for (pp = rp; pp; pp = pp->root)
             kids(pp, 0);
-    }
-    else
-    {
+    } else {
         /*
          * list by order
          */
 
         for (pp = ( Ps_t * )dtfirst(state.byorder); pp;
              pp = ( Ps_t * )dtnext(state.byorder, pp))
-            if (!pp->shown)
-            {
+            if (!pp->shown) {
                 pp->shown = 1;
                 pp->level = 0;
                 ps(pp);
@@ -1063,24 +1015,20 @@ head(void)
     int n;
     Key_t *kp;
 
-    if (state.fields)
-    {
+    if (state.fields) {
         while (state.fields->skip)
             state.fields = state.fields->next;
         kp = state.fields;
-        while (kp->next)
-        {
+        while (kp->next) {
             if (!kp->next->skip)
                 kp = kp->next;
-            else if (!(kp->next = kp->next->next))
-            {
+            else if (!(kp->next = kp->next->next)) {
                 state.lastfield = kp;
                 break;
             }
         }
         n = 0;
-        for (kp = state.fields; kp; kp = kp->next)
-        {
+        for (kp = state.fields; kp; kp = kp->next) {
             if ((kp->prec = kp->width) < 0)
                 kp->prec = -kp->prec;
             if (*kp->head)
@@ -1091,15 +1039,12 @@ head(void)
             kp->width = 0;
         if (kp->index == KEY_cmd)
             kp->prec = 80;
-        if (n && state.heading)
-        {
+        if (n && state.heading) {
             for (kp = state.fields; kp; kp = kp->next)
                 sfprintf(sfstdout, "%*s%s", kp->width, kp->head, kp->sep);
             sfputc(sfstdout, '\n');
         }
-    }
-    else
-    {
+    } else {
         sfkeyprintf(
         state.heading ? sfstdout : state.wrk, NiL, state.format, key, NiL);
         sfstrseek(state.wrk, 0, SEEK_SET);
@@ -1152,10 +1097,8 @@ addpid(Pssent_t *pe, char *s)
     Pss_id_t pid;
     long n;
 
-    do
-    {
-        if (s)
-        {
+    do {
+        if (s) {
             for (; isspace(*s) || *s == ','; s++)
                 ;
             for (t = s; *s && !isspace(*s) && *s != ','; s++)
@@ -1166,23 +1109,20 @@ addpid(Pssent_t *pe, char *s)
                 break;
             errno = 0;
             n = strtol(t, &e, 0);
-            if (errno || n <= 0 || n > PID_MAX || *e)
-            {
+            if (errno || n <= 0 || n > PID_MAX || *e) {
                 error(2, "%s: invalid pid", t);
                 continue;
             }
             pid = n;
             pe = pssread(state.pss, pid);
         }
-        if (pe)
-        {
+        if (pe) {
             if (!(pp = state.pp) && !(state.pp = pp = newof(0, Ps_t, 1, 0)))
                 error(ERROR_SYSTEM | 3, "out of space");
             pp->user = fmtuid(pe->uid);
             pp->pid = pe->pid;
             pp->ps = pe;
-            if (!dtsearch(state.byorder, pp))
-            {
+            if (!dtsearch(state.byorder, pp)) {
                 if (!(pp->ps = psssave(state.pss, pe)))
                     break;
                 dtinsert(state.byorder, pp);
@@ -1212,16 +1152,14 @@ addid(char *s, int index, int (*getid)(const char *))
         error(3, "%s: cannot match on this field", keys[index].name);
     for (mp = state.pssdisc.match; mp && mp->field != field; mp = mp->next)
         ;
-    if (!mp)
-    {
+    if (!mp) {
         if (!(mp = newof(0, Pssmatch_t, 1, 0)))
             error(ERROR_SYSTEM | 3, "out of space");
         mp->next = state.pssdisc.match;
         mp->field = field;
         state.pssdisc.match = mp;
     }
-    do
-    {
+    do {
         for (; isspace(*s) || *s == ','; s++)
             ;
         for (t = s; *s && !isspace(*s) && *s != ','; s++)
@@ -1232,17 +1170,13 @@ addid(char *s, int index, int (*getid)(const char *))
         (t = state.buf)[c] = 0;
         if (!*t)
             break;
-        if (isdigit(*t))
-        {
+        if (isdigit(*t)) {
             n = strtol(t, &e, 10);
-            if (*e)
-            {
+            if (*e) {
                 error(1, "%s: invalid %s", t, keys[index].name);
                 continue;
             }
-        }
-        else if (!getid || (n = (*getid)(t)) < 0)
-        {
+        } else if (!getid || (n = (*getid)(t)) < 0) {
             error(1, "%s: invalid %s", t, keys[index].name);
             continue;
         }
@@ -1269,11 +1203,9 @@ addkey(const char *k, int ignore)
     char *e;
     int w;
 
-    if (streq(s, "?"))
-    {
+    if (streq(s, "?")) {
         sfprintf(sfstdout, "%-8s %-8s %s\n", "KEY", "HEADING", "DESCRIPTION");
-        for (kp = keys + 1; kp < keys + elementsof(keys); kp++)
-        {
+        for (kp = keys + 1; kp < keys + elementsof(keys); kp++) {
             ap = kp->head ? kp : (keys + kp->index);
             sfprintf(sfstdout,
                      "%-8s %-8s %s%s%s\n",
@@ -1287,8 +1219,7 @@ addkey(const char *k, int ignore)
         }
         exit(0);
     }
-    do
-    {
+    do {
         for (; isspace(*s) || *s == ','; s++)
             ;
         for (t = s; *s && !isspace(*s) && *s != ',' && *s != '=' && *s != ':'
@@ -1301,15 +1232,12 @@ addkey(const char *k, int ignore)
         (t = state.buf)[c] = 0;
         if (!*t)
             break;
-        if (*s == ':' || *s == '+')
-        {
+        if (*s == ':' || *s == '+') {
             c = ( int )strtol(s + 1, &e, 10);
             s = e;
-        }
-        else
+        } else
             c = 0;
-        if (!(kp = ( Key_t * )dtmatch(state.keys, t)))
-        {
+        if (!(kp = ( Key_t * )dtmatch(state.keys, t))) {
             error(2, "%s: unknown format key", t);
             continue;
         }
@@ -1325,8 +1253,7 @@ addkey(const char *k, int ignore)
          * adjust the width field
          */
 
-        if (*s == '=')
-        {
+        if (*s == '=') {
             for (t = ++s; *s && !isspace(*s) && *s != ','; s++)
                 ;
             w = s - t;
@@ -1337,11 +1264,9 @@ addkey(const char *k, int ignore)
                 w = c;
             if (w > kp->width)
                 kp->width = w;
-        }
-        else if (c >= strlen(kp->head))
+        } else if (c >= strlen(kp->head))
             kp->width = c;
-        if (!(state.pss->meth->fields & kp->field))
-        {
+        if (!(state.pss->meth->fields & kp->field)) {
             if (!ignore)
                 error(1, "%s: not available on this system", kp->name);
             continue;
@@ -1353,8 +1278,7 @@ addkey(const char *k, int ignore)
          * shell aliases work with least suprise
          */
 
-        if (!kp->already)
-        {
+        if (!kp->already) {
             kp->already = keys[kp->cancel].already = keys[kp->cancel].skip
             = 1;
             if (state.lastfield)
@@ -1362,8 +1286,7 @@ addkey(const char *k, int ignore)
             else
                 state.fields = state.lastfield = kp;
             kp->sep = space;
-            if (kp->maxval)
-            {
+            if (kp->maxval) {
                 for (c = 1; kp->maxval /= 10; c++)
                     ;
                 if (c >= kp->width)
@@ -1404,8 +1327,7 @@ poppids(void)
 
     flags = state.pssdisc.flags;
     state.pssdisc.flags |= PSS_VERBOSE;
-    while (p = state.pids)
-    {
+    while (p = state.pids) {
         state.pids = p->next;
         if (i = p->argc)
             while (--i >= 0)
@@ -1464,18 +1386,15 @@ main(int argc, char **argv)
      * open the ps stream
      */
 
-    if (!(state.pss = pssopen(&state.pssdisc)) || !state.pss->meth->fields)
-    {
+    if (!(state.pss = pssopen(&state.pssdisc)) || !state.pss->meth->fields) {
         s = "/bin/ps";
-        if (!streq(argv[0], s) && !eaccess(s, X_OK))
-        {
+        if (!streq(argv[0], s) && !eaccess(s, X_OK)) {
             argv[0] = s;
             error(1, "falling back to %s", s);
             execv(s, argv);
             exit(EXIT_NOTFOUND);
         }
-        if (!state.pss)
-        {
+        if (!state.pss) {
             state.pssdisc.flags |= PSS_VERBOSE;
             pssopen(&state.pssdisc);
         }
@@ -1498,10 +1417,8 @@ main(int argc, char **argv)
      */
 
     n = 0;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             state.pssdisc.flags |= PSS_ATTACHED | PSS_NOLEADER;
             continue;
@@ -1569,13 +1486,11 @@ main(int argc, char **argv)
         case 'D':
             if (s = strchr(opt_info.arg, '='))
                 *s++ = 0;
-            if (*opt_info.arg == 'n' && *(opt_info.arg + 1) == 'o')
-            {
+            if (*opt_info.arg == 'n' && *(opt_info.arg + 1) == 'o') {
                 opt_info.arg += 2;
                 s = 0;
             }
-            if (!(kp = ( Key_t * )dtmatch(state.keys, opt_info.arg)))
-            {
+            if (!(kp = ( Key_t * )dtmatch(state.keys, opt_info.arg))) {
                 if (!s)
                     continue;
                 if (!(kp = newof(0, Key_t, 1, strlen(opt_info.arg) + 1)))
@@ -1627,14 +1542,11 @@ main(int argc, char **argv)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
     if (n)
         state.tree = 0;
-    if (sfstrtell(fmt))
-    {
+    if (sfstrtell(fmt)) {
         sfputc(fmt, '\n');
         if (!(state.format = sfstruse(fmt)))
             error(ERROR_SYSTEM | 3, "out of space");
-    }
-    else
-    {
+    } else {
         sfclose(fmt);
         fmt = 0;
         if (!state.fields)
@@ -1648,20 +1560,17 @@ main(int argc, char **argv)
 
     if (*argv)
         pushpids(argv, argc);
-    if (state.children || state.parents || !state.pids)
-    {
+    if (state.children || state.parents || !state.pids) {
         if (state.children || state.parents)
             state.pssdisc.flags |= PSS_UNMATCHED;
         if (!state.pids && !state.pssdisc.match
             && !(state.pssdisc.flags
                  & (PSS_ALL | PSS_ATTACHED | PSS_DETACHED | PSS_LEADER
-                    | PSS_NOLEADER)))
-        {
+                    | PSS_NOLEADER))) {
             state.pssdisc.flags |= PSS_UID;
             state.pssdisc.uid = geteuid();
             for (n = 0; n <= 2; n++)
-                if (isatty(n) && !fstat(n, &st))
-                {
+                if (isatty(n) && !fstat(n, &st)) {
                     state.pssdisc.flags |= PSS_TTY;
                     state.pssdisc.tty = st.st_rdev;
                     break;
@@ -1674,8 +1583,7 @@ main(int argc, char **argv)
             for (pp = ( Ps_t * )dtfirst(state.byorder); pp;
                  pp = ( Ps_t * )dtnext(state.byorder, pp))
                 dtinsert(state.bypid, pp);
-    }
-    else
+    } else
         poppids();
 
     /*

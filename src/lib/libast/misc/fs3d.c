@@ -70,10 +70,8 @@ fs3d(int op)
         cur = FS3D_LIMIT(( int )strtol(v + sizeof(off) + 1, NiL, 0));
     else
         cur = FS3D_OFF;
-    if (cur != op)
-    {
-        switch (FS3D_op(op))
-        {
+    if (cur != op) {
+        switch (FS3D_op(op)) {
         case FS3D_OP_OFF:
             v = off;
             break;

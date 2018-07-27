@@ -74,20 +74,17 @@ int n_copy;   /* length of match	*/
 
         best = copy;
         k_type = K_SELF;
-        if ((d = c_addr - copy) < best)
-        {
+        if ((d = c_addr - copy) < best) {
             best = d;
             k_type = K_HERE;
         }
-        for (n = 0; n < K_RTYPE; ++n)
-        {
+        for (n = 0; n < K_RTYPE; ++n) {
             if ((d = copy - tab->recent[n]) < 0 || d >= best)
                 continue;
             best = d;
             k_type = K_RECENT + n;
         }
-        if (best >= I_MORE && tab->quick[n = copy % K_QSIZE] == copy)
-        {
+        if (best >= I_MORE && tab->quick[n = copy % K_QSIZE] == copy) {
             for (d = K_QTYPE - 1; d > 0; --d)
                 if (n >= (d << VD_BITS))
                     break;
@@ -103,21 +100,17 @@ int n_copy;   /* length of match	*/
         K_UPDATE(tab->quick, tab->recent, tab->rhere, copy);
 
         /* see if mergable to last ADD instruction */
-        if (MERGABLE(n_add, n_copy, k_type))
-        { /**/
+        if (MERGABLE(n_add, n_copy, k_type)) { /**/
             DBTOTAL(N_merge, 1);
             i_add = K_TPUT(k_type) | A_TPUT(n_add) | C_TPUT(n_copy);
-        }
-        else
-        {
+        } else {
             i_copy = K_PUT(k_type);
             if (C_ISLOCAL(n_copy))
                 i_copy |= C_LPUT(n_copy);
         }
     }
 
-    if (n_add > 0)
-    { /**/
+    if (n_add > 0) { /**/
         DBTOTAL(N_add, 1);
         DBTOTAL(S_add, n_add);
         DBMAX(M_add, n_add);
@@ -131,8 +124,7 @@ int n_copy;   /* length of match	*/
         STRWRITE(tab, begs, n_add);
     }
 
-    if (n_copy > 0)
-    {
+    if (n_copy > 0) {
         if (!MERGABLE(n_add, n_copy, k_type))
             STRPUTC(tab, i_copy);
 
@@ -175,8 +167,7 @@ static int vdfold(tab) Table_t *tab;
     bestm = -1;
     len = M_MIN - 1;
     HINIT(key, s, n);
-    for (;;)
-    {
+    for (;;) {
         for (;;) /* search for the longest match */
         {
             if ((m = hash[key & size]) < 0)
@@ -190,8 +181,7 @@ static int vdfold(tab) Table_t *tab;
 
             head = len - (M_MIN - 1); /* header before the match */
             heade = s + head;
-            for (;;)
-            {
+            for (;;) {
                 if ((n = m) < head)
                     goto next;
                 sm = tar + n;
@@ -233,8 +223,7 @@ static int vdfold(tab) Table_t *tab;
         }
 
     endsearch:
-        if (bestm >= 0)
-        {
+        if (bestm >= 0) {
             if (vdputinst(tab, add, s, bestm, len) < 0)
                 return -1;
 
@@ -246,9 +235,7 @@ static int vdfold(tab) Table_t *tab;
             len = M_MIN - 1;
             add = NIL(uchar *);
             bestm = -1;
-        }
-        else
-        {
+        } else {
             if (!add)
                 add = s;
             ss = s;
@@ -264,8 +251,7 @@ static int vdfold(tab) Table_t *tab;
                 n = key & size;
                 if ((m = hash[n]) < 0)
                     link[curm] = curm;
-                else
-                {
+                else {
                     link[curm] = link[m];
                     link[m] = curm;
                 }

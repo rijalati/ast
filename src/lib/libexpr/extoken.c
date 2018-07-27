@@ -45,8 +45,7 @@ trace(Expr_t *ex, int lev, char *op, int c)
     char buf[16];
 
     t = "";
-    switch (c)
-    {
+    switch (c) {
     case 0:
         s = " EOF";
         break;
@@ -182,8 +181,7 @@ trace(Expr_t *ex, int lev, char *op, int c)
         s = " while";
         break;
     default:
-        if (c < 0177)
-        {
+        if (c < 0177) {
             s = buf;
             *s++ = c;
             *s = 0;
@@ -230,50 +228,38 @@ lex(Expr_t *ex)
 {
     int c;
 
-    for (;;)
-    {
+    for (;;) {
         if (c = ex->input->peek)
             ex->input->peek = 0;
-        else if (ex->input->pp)
-        {
-            if (!(c = *ex->input->pp++))
-            {
+        else if (ex->input->pp) {
+            if (!(c = *ex->input->pp++)) {
                 ex->input->pp = 0;
                 continue;
             }
-        }
-        else if (ex->input->sp)
-        {
-            if (!(c = *ex->input->sp++))
-            {
+        } else if (ex->input->sp) {
+            if (!(c = *ex->input->sp++)) {
                 if (!expop(ex))
                     continue;
                 else
                     trace(ex, -1, "expop sp FAIL", 0);
                 ex->input->sp--;
             }
-        }
-        else if (ex->input->fp)
-        {
-            if ((c = sfgetc(ex->input->fp)) == EOF)
-            {
+        } else if (ex->input->fp) {
+            if ((c = sfgetc(ex->input->fp)) == EOF) {
                 if (!expop(ex))
                     continue;
                 else
                     trace(ex, -1, "expop fp FAIL", 0);
                 c = 0;
-            }
-            else if ((ex->disc->flags & EX_INTERACTIVE) && c == '\n'
-                     && ex->input->next && !ex->input->next->next
-                     && ex->input->nesting <= 0)
-            {
+            } else if ((ex->disc->flags & EX_INTERACTIVE) && c == '\n'
+                       && ex->input->next && !ex->input->next->next
+                       && ex->input->nesting <= 0) {
                 error_info.line++;
                 expop(ex);
                 trace(ex, -1, "expop sp FORCE", 0);
                 c = 0;
             }
-        }
-        else
+        } else
             c = 0;
         if (c == '\n')
             setcontext(ex);
@@ -302,17 +288,14 @@ extoken(Expr_t *ex)
         return 0;
 again:
     for (;;)
-        switch (c = lex(ex))
-        {
+        switch (c = lex(ex)) {
         case 0:
             goto eof;
         case '/':
-            switch (q = lex(ex))
-            {
+            switch (q = lex(ex)) {
             case '*':
                 for (;;)
-                    switch (lex(ex))
-                    {
+                    switch (lex(ex)) {
                     case '\n':
                         if (error_info.line)
                             error_info.line++;
@@ -320,8 +303,7 @@ again:
                             error_info.line = 2;
                         continue;
                     case '*':
-                        switch (lex(ex))
-                        {
+                        switch (lex(ex)) {
                         case 0:
                             goto eof;
                         case '\n':
@@ -380,21 +362,18 @@ again:
             exlval.op = c;
             if (q == '=')
                 c = '=';
-            else if (q == '%' && c == '%')
-            {
+            else if (q == '%' && c == '%') {
                 if (ex->input->fp)
                     ex->more = ( const char * )ex->input->fp;
                 else
                     ex->more = ex->input->sp;
                 goto eof;
-            }
-            else
+            } else
                 exunlex(ex, q);
             return c;
         case '&':
         case '|':
-            if ((q = lex(ex)) == '=')
-            {
+            if ((q = lex(ex)) == '=') {
                 exlval.op = c;
                 return '=';
             }
@@ -405,8 +384,7 @@ again:
             return exlval.op = c;
         case '<':
         case '>':
-            if ((q = lex(ex)) == c)
-            {
+            if ((q = lex(ex)) == c) {
                 exlval.op = c = c == '<' ? LS : RS;
                 if ((q = lex(ex)) == '=')
                     c = '=';
@@ -420,8 +398,7 @@ again:
             q = lex(ex);
         relational:
             if (q == '=')
-                switch (c)
-                {
+                switch (c) {
                 case '<':
                     c = LE;
                     break;
@@ -439,15 +416,12 @@ again:
                 exunlex(ex, q);
             return exlval.op = c;
         case '#':
-            if (!ex->linewrap && !(ex->disc->flags & EX_PURE))
-            {
+            if (!ex->linewrap && !(ex->disc->flags & EX_PURE)) {
                 s = ex->linep - 1;
                 while (s > ex->line && isspace(*(s - 1)))
                     s--;
-                if (s == ex->line)
-                {
-                    switch (extoken(ex))
-                    {
+                if (s == ex->line) {
+                    switch (extoken(ex)) {
                     case DYNAMIC:
                     case ID:
                     case NAME:
@@ -457,17 +431,14 @@ again:
                         s = "";
                         break;
                     }
-                    if (streq(s, "include"))
-                    {
+                    if (streq(s, "include")) {
                         if (extoken(ex) != STRING)
                             exerror("#%s: string argument expected", s);
-                        else if (!expush(ex, exlval.string, 1, NiL, NiL))
-                        {
+                        else if (!expush(ex, exlval.string, 1, NiL, NiL)) {
                             setcontext(ex);
                             goto again;
                         }
-                    }
-                    else
+                    } else
                         exerror("unknown directive");
                 }
             }
@@ -477,20 +448,16 @@ again:
             q = c;
             sfstrseek(ex->tmp, 0, SEEK_SET);
             ex->input->nesting++;
-            while ((c = lex(ex)) != q)
-            {
-                if (c == '\\')
-                {
+            while ((c = lex(ex)) != q) {
+                if (c == '\\') {
                     sfputc(ex->tmp, c);
                     c = lex(ex);
                 }
-                if (!c)
-                {
+                if (!c) {
                     exerror("unterminated %c string", q);
                     goto eof;
                 }
-                if (c == '\n')
-                {
+                if (c == '\n') {
                     if (error_info.line)
                         error_info.line++;
                     else
@@ -500,8 +467,7 @@ again:
             }
             ex->input->nesting--;
             s = exstash(ex->tmp, NiL);
-            if (q == '"' || (ex->disc->flags & EX_CHARSTRING))
-            {
+            if (q == '"' || (ex->disc->flags & EX_CHARSTRING)) {
                 if (!(exlval.string = vmstrdup(ex->vm, s)))
                     goto eof;
                 stresc(exlval.string);
@@ -510,8 +476,7 @@ again:
             exlval.integer = chrtoi(s);
             return INTEGER;
         case '.':
-            if (isdigit(c = lex(ex)))
-            {
+            if (isdigit(c = lex(ex))) {
                 sfstrseek(ex->tmp, 0, SEEK_SET);
                 sfputc(ex->tmp, '0');
                 sfputc(ex->tmp, '.');
@@ -533,14 +498,11 @@ again:
             sfputc(ex->tmp, c);
             q = INTEGER;
             b = 0;
-            if ((c = lex(ex)) == 'x' || c == 'X')
-            {
+            if ((c = lex(ex)) == 'x' || c == 'X') {
                 b = 16;
                 sfputc(ex->tmp, c);
-                for (;;)
-                {
-                    switch (c = lex(ex))
-                    {
+                for (;;) {
+                    switch (c = lex(ex)) {
                     case '0':
                     case '1':
                     case '2':
@@ -568,44 +530,33 @@ again:
                     }
                     break;
                 }
-            }
-            else
-            {
-                while (isdigit(c))
-                {
+            } else {
+                while (isdigit(c)) {
                     sfputc(ex->tmp, c);
                     c = lex(ex);
                 }
-                if (c == '#')
-                {
+                if (c == '#') {
                     s = exstash(ex->tmp, NiL);
                     b = strtol(s, NiL, 10);
-                    do
-                    {
+                    do {
                         sfputc(ex->tmp, c);
                     } while (isalnum(c = lex(ex)));
-                }
-                else
-                {
-                    if (c == '.')
-                    {
+                } else {
+                    if (c == '.') {
                     floating:
                         q = FLOATING;
                         sfputc(ex->tmp, c);
                         while (isdigit(c = lex(ex)))
                             sfputc(ex->tmp, c);
                     }
-                    if (c == 'e' || c == 'E')
-                    {
+                    if (c == 'e' || c == 'E') {
                         q = FLOATING;
                         sfputc(ex->tmp, c);
-                        if ((c = lex(ex)) == '-' || c == '+')
-                        {
+                        if ((c = lex(ex)) == '-' || c == '+') {
                             sfputc(ex->tmp, c);
                             c = lex(ex);
                         }
-                        while (isdigit(c))
-                        {
+                        while (isdigit(c)) {
                             sfputc(ex->tmp, c);
                             c = lex(ex);
                         }
@@ -615,32 +566,26 @@ again:
             s = exstash(ex->tmp, NiL);
             if (q == FLOATING)
                 exlval.floating = strtod(s, &e);
-            else
-            {
-                if (c == 'u' || c == 'U')
-                {
+            else {
+                if (c == 'u' || c == 'U') {
                     q = UNSIGNED;
                     c = lex(ex);
                     exlval.integer = strtoull(s, &e, b);
-                }
-                else
+                } else
                     exlval.integer = strtoll(s, &e, b);
-                if (*e)
-                {
+                if (*e) {
                     *--e = 1;
                     exlval.integer *= strton(e, &e, NiL, 0);
                 }
             }
             exunlex(ex, c);
-            if (*e || isalpha(c) || c == '_' || c == '$')
-            {
+            if (*e || isalpha(c) || c == '_' || c == '$') {
                 exerror("%s: invalid numeric constant", s);
                 goto eof;
             }
             return q;
         default:
-            if (isalpha(c) || c == '_' || c == '$')
-            {
+            if (isalpha(c) || c == '_' || c == '$') {
                 sfstrseek(ex->tmp, 0, SEEK_SET);
                 sfputc(ex->tmp, c);
                 while (isalnum(c = lex(ex)) || c == '_' || c == '$')
@@ -651,11 +596,9 @@ again:
                 exlval.id = ( Exid_t * )dtmatch(ex->symbols, s);
                 if (v)
                     dtview(ex->symbols, v);
-                if (!exlval.id)
-                {
-                    if (!(exlval.id
-                          = newof(0, Exid_t, 1, strlen(s) - EX_NAMELEN + 1)))
-                    {
+                if (!exlval.id) {
+                    if (!(exlval.id = newof(
+                          0, Exid_t, 1, strlen(s) - EX_NAMELEN + 1))) {
                         exnospace();
                         goto eof;
                     }
@@ -678,18 +621,15 @@ again:
                  * lexical analyzer state controlled by the grammar
                  */
 
-                switch (exlval.id->lex)
-                {
+                switch (exlval.id->lex) {
                 case DECLARE:
-                    if (exlval.id->index == CHAR)
-                    {
+                    if (exlval.id->index == CHAR) {
                         /*
                          * `char*' === `string'
                          * the * must immediately follow char
                          */
 
-                        if (c == '*')
-                        {
+                        if (c == '*') {
                             lex(ex);
                             exlval.id = id_string;
                         }
@@ -724,20 +664,15 @@ again:
                         n = 0;
                         po = 0;
                         t = 0;
-                        for (c = t = lex(ex);; c = lex(ex))
-                        {
-                            switch (c)
-                            {
+                        for (c = t = lex(ex);; c = lex(ex)) {
+                            switch (c) {
                             case 0:
                                 goto eof;
                             case '/':
-                                switch (q = lex(ex))
-                                {
+                                switch (q = lex(ex)) {
                                 case '*':
-                                    for (;;)
-                                    {
-                                        switch (lex(ex))
-                                        {
+                                    for (;;) {
+                                        switch (lex(ex)) {
                                         case '\n':
                                             if (error_info.line)
                                                 error_info.line++;
@@ -745,8 +680,7 @@ again:
                                                 error_info.line = 2;
                                             continue;
                                         case '*':
-                                            switch (lex(ex))
-                                            {
+                                            switch (lex(ex)) {
                                             case 0:
                                                 goto eof;
                                             case '\n':
@@ -807,10 +741,8 @@ again:
                             case '{':
                             case '[':
                                 b = 0;
-                                if (!po)
-                                {
-                                    switch (po = c)
-                                    {
+                                if (!po) {
+                                    switch (po = c) {
                                     case '(':
                                         pc = ')';
                                         break;
@@ -822,8 +754,7 @@ again:
                                         break;
                                     }
                                     n++;
-                                }
-                                else if (c == po)
+                                } else if (c == po)
                                     n++;
                                 sfputc(ex->tmp, c);
                                 continue;
@@ -831,14 +762,12 @@ again:
                             case '}':
                             case ']':
                                 b = 0;
-                                if (!po)
-                                {
+                                if (!po) {
                                     exunlex(ex, c);
                                     break;
                                 }
                                 sfputc(ex->tmp, c);
-                                if (c == pc && --n <= 0)
-                                {
+                                if (c == pc && --n <= 0) {
                                     if (t == po)
                                         break;
                                     po = 0;
@@ -856,20 +785,16 @@ again:
                                 sfputc(ex->tmp, c);
                                 ex->input->nesting++;
                                 q = c;
-                                while ((c = lex(ex)) != q)
-                                {
-                                    if (c == '\\')
-                                    {
+                                while ((c = lex(ex)) != q) {
+                                    if (c == '\\') {
                                         sfputc(ex->tmp, c);
                                         c = lex(ex);
                                     }
-                                    if (!c)
-                                    {
+                                    if (!c) {
                                         exerror("unterminated %c string", q);
                                         goto eof;
                                     }
-                                    if (c == '\n')
-                                    {
+                                    if (c == '\n') {
                                         if (error_info.line)
                                             error_info.line++;
                                         else

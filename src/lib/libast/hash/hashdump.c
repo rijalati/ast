@@ -67,31 +67,25 @@ dumpbucket(Hash_table_t *tab, int flags)
 
     NoP(flags);
     sx = tab->table + tab->size;
-    for (sp = tab->table; sp < sx; sp++)
-    {
+    for (sp = tab->table; sp < sx; sp++) {
         n = 0;
         for (b = *sp; b; b = b->next)
             if (!(b->hash & HASH_DELETED)
                 && (!(tab->flags & HASH_VALUE) || b->value))
                 n++;
-        if (n)
-        {
+        if (n) {
             sfprintf(sfstderr, "%5d %2d :", sp - tab->table, n);
             for (b = *sp; b; b = b->next)
                 if (!(b->hash & HASH_DELETED)
-                    && (!(tab->flags & HASH_VALUE) || b->value))
-                {
-                    if (n = tab->root->namesize)
-                    {
+                    && (!(tab->flags & HASH_VALUE) || b->value)) {
+                    if (n = tab->root->namesize) {
                         sfprintf(sfstderr, " 0x");
                         s = ( unsigned char * )hashname(b);
                         while (n-- > 0)
                             sfprintf(sfstderr, "%02x", *s++);
-                    }
-                    else
+                    } else
                         sfprintf(sfstderr, " %s", hashname(b));
-                    if (b->hash & HASH_FLAGS)
-                    {
+                    if (b->hash & HASH_FLAGS) {
                         sfprintf(sfstderr, "|");
                         if (b->hash & HASH_HIDES)
                             sfprintf(sfstderr, "hides|");
@@ -123,8 +117,7 @@ dumptable(Hash_table_t *tab, int flags)
 
     sfprintf(
     sfstderr, "        name:        %s", tab->name ? tab->name : "*no name*");
-    if (scope = tab->scope)
-    {
+    if (scope = tab->scope) {
         level = 1;
         while (scope = scope->scope)
             level++;

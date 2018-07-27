@@ -128,14 +128,12 @@ char *name;                               /* Name to turn into atom. */
     int new;
 
     dispPtr = (( TkWindow * )tkwin)->dispPtr;
-    if (!dispPtr->atomInit)
-    {
+    if (!dispPtr->atomInit) {
         AtomInit(dispPtr);
     }
 
     hPtr = Tcl_CreateHashEntry(&dispPtr->nameTable, name, &new);
-    if (new)
-    {
+    if (new) {
         Tcl_HashEntry *hPtr2;
         Atom atom;
 
@@ -179,14 +177,12 @@ Atom atom; /* Atom whose name is wanted. */
     Tcl_HashEntry *hPtr;
 
     dispPtr = (( TkWindow * )tkwin)->dispPtr;
-    if (!dispPtr->atomInit)
-    {
+    if (!dispPtr->atomInit) {
         AtomInit(dispPtr);
     }
 
     hPtr = Tcl_FindHashEntry(&dispPtr->atomTable, ( char * )atom);
-    if (hPtr == NULL)
-    {
+    if (hPtr == NULL) {
         char *name;
         Tk_ErrorHandler handler;
         int new, mustFree;
@@ -199,16 +195,14 @@ Atom atom; /* Atom whose name is wanted. */
                                         ( ClientData )NULL);
         name = XGetAtomName(dispPtr->display, atom);
         mustFree = 1;
-        if (name == NULL)
-        {
+        if (name == NULL) {
             name = "?bad atom?";
             mustFree = 0;
         }
         Tk_DeleteErrorHandler(handler);
         hPtr = Tcl_CreateHashEntry(&dispPtr->nameTable, ( char * )name, &new);
         Tcl_SetHashValue(hPtr, atom);
-        if (mustFree)
-        {
+        if (mustFree) {
             XFree(name);
         }
         name = Tcl_GetHashKey(&dispPtr->nameTable, hPtr);
@@ -243,11 +237,9 @@ static void AtomInit(dispPtr) TkDisplay *dispPtr; /* Display to initialize. */
     Tcl_InitHashTable(&dispPtr->nameTable, TCL_STRING_KEYS);
     Tcl_InitHashTable(&dispPtr->atomTable, TCL_ONE_WORD_KEYS);
 
-    for (atom = 1; atom <= XA_LAST_PREDEFINED; atom++)
-    {
+    for (atom = 1; atom <= XA_LAST_PREDEFINED; atom++) {
         hPtr = Tcl_FindHashEntry(&dispPtr->atomTable, ( char * )atom);
-        if (hPtr == NULL)
-        {
+        if (hPtr == NULL) {
             char *name;
             int new;
 

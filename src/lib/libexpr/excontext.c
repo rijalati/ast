@@ -40,16 +40,14 @@ excontext(Expr_t *p, char *buf, int n)
     char *e;
 
     s = buf;
-    if (p->linep > p->line || p->linewrap)
-    {
+    if (p->linep > p->line || p->linewrap) {
         e = buf + n - 5;
-        if (p->linewrap)
-        {
+        if (p->linewrap) {
             t = p->linep + 1;
             while (t < &p->line[sizeof(p->line)] && isspace(*t))
                 t++;
-            if ((n = (sizeof(p->line) - (t - (p->linep + 1))) - (e - s)) > 0)
-            {
+            if ((n = (sizeof(p->line) - (t - (p->linep + 1))) - (e - s))
+                > 0) {
                 if (n > &p->line[sizeof(p->line)] - t)
                     t = &p->line[sizeof(p->line)];
                 else

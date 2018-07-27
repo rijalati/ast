@@ -31,15 +31,13 @@ sum_open(Codex_t *p, char *const args[], Codexnum_t flags)
     if (args[2])
         while (*s && *s++ != '-')
             ;
-    if (!(sum = sumopen(s)))
-    {
+    if (!(sum = sumopen(s))) {
         if (p->disc->errorf)
             (*p->disc->errorf)(
             NiL, p->disc, 2, "%s: unknown method", args[0]);
         return -1;
     }
-    if (!(state = newof(0, State_t, 1, 0)))
-    {
+    if (!(state = newof(0, State_t, 1, 0))) {
         if (p->disc->errorf)
             (*p->disc->errorf)(NiL, p->disc, 2, "out of space");
         return -1;

@@ -81,8 +81,7 @@ init(void)
      * bias the local host so it can generate more work
      */
 
-    if (state.home->idle)
-    {
+    if (state.home->idle) {
         state.home->idle = 0;
         if (!(state.home->flags & SETBIAS))
             state.home->bias *= 4;
@@ -103,22 +102,18 @@ main(int argc, char **argv)
     init();
     while ((s = sfgetr(sfstdin, '\n', 0)) && sfvalue(sfstdin) > 1)
         switch (s[sfvalue(sfstdin) - 1] = 0,
-                op = *s == ':' ? (s++, *s++) : '?')
-        {
+                op = *s == ':' ? (s++, *s++) : '?') {
         case '#':
             break;
         case '?':
         case ':':
             attributes(s, &attr, NiL);
             sp = state.shell;
-            do
-            {
-                if (match(sp, &attr, 0))
-                {
+            do {
+                if (match(sp, &attr, 0)) {
                     if (op == '?')
                         sfputr(sfstdout, sp->name, '\n');
-                    else
-                    {
+                    else {
                         sfputr(sfstdout, sp->name, '\t');
                         sfputr(sfstdout, sp->misc, '\n');
                     }

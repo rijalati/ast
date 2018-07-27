@@ -39,20 +39,16 @@ utf32stowcs(wchar_t *wchar, uint32_t *utf32, size_t n)
     size_t i;
     Mbstate_t q;
 
-    if (ast.locale.set & AST_LC_utf8)
-    {
+    if (ast.locale.set & AST_LC_utf8) {
         char tmp[UTF8_LEN_MAX + 1];
 
         mbinit(&q);
-        for (i = 0; i < n; i++)
-        {
+        for (i = 0; i < n; i++) {
             if (mbconv(tmp, utf32[i], &q) < 0)
                 break;
             wchar[i] = utf32[i];
         }
-    }
-    else
-    {
+    } else {
         char *inbuf;
         char *outbuf;
         size_t inbytesleft;
@@ -66,8 +62,7 @@ utf32stowcs(wchar_t *wchar, uint32_t *utf32, size_t n)
         if (ast.mb_uc2wc == 0)
             return -1;
         ( void )iconv(ast.mb_wc2uc, NiL, NiL, NiL, NiL);
-        if (n == 1)
-        {
+        if (n == 1) {
             char tmp_in[UTF8_LEN_MAX + 1];
             char tmp_out[16];
 
@@ -88,16 +83,13 @@ utf32stowcs(wchar_t *wchar, uint32_t *utf32, size_t n)
                 < 0
                 || inbytesleft)
                 return -1;
-            if (!mbwide())
-            {
+            if (!mbwide()) {
                 wchar[0] = *( unsigned char * )tmp_out;
 #if CC_NATIVE == CC_ASCII
                 if (utf32[0] > 0x7f && wchar[0] < 0x7f)
                     return -1;
 #endif
-            }
-            else
-            {
+            } else {
                 inbuf = tmp_out;
                 mbinit(&q);
                 ( void )mbchar(wchar, inbuf, outbuf - tmp_out, &q);
@@ -105,9 +97,7 @@ utf32stowcs(wchar_t *wchar, uint32_t *utf32, size_t n)
                     return -1;
             }
             i = 1;
-        }
-        else
-        {
+        } else {
             char *inbuf_start;
             char *outbuf_start;
             int oerrno;
@@ -133,8 +123,7 @@ utf32stowcs(wchar_t *wchar, uint32_t *utf32, size_t n)
                 < 0)
                 return -1;
             inbuf = outbuf;
-            if (mbwide())
-            {
+            if (mbwide()) {
                 ssize_t len;
 
                 mbinit(&q);
@@ -142,8 +131,7 @@ utf32stowcs(wchar_t *wchar, uint32_t *utf32, size_t n)
                     if (mbchar(&wchar[i], outbuf, inbuf - outbuf, &q),
                         mberrno(&q))
                         break;
-            }
-            else
+            } else
                 for (outbuf = outbuf_start; i < n && outbuf < inbuf; i++)
                     wchar[i] = *( unsigned char * )outbuf++;
             oerrno = errno;

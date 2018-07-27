@@ -90,8 +90,7 @@ Cs_id_t *id;
 int clone;
 char **args;
 {
-    if (CST->logfd)
-    {
+    if (CST->logfd) {
         sfprintf(CST->logfd,
                  "\n-- connect( fd=%d hid=%s pid=%d uid=%d gid=%d )\n",
                  fd,
@@ -109,8 +108,7 @@ char **args;
 static int svc_done(handle, sig) void *handle;
 int sig;
 {
-    if (CST->logfd)
-    {
+    if (CST->logfd) {
         sfprintf(CST->logfd, "-- svc_done( %d )\n", sig);
         sfsync(CST->logfd);
     }
@@ -149,19 +147,16 @@ int fd;
     if ((n = csread(fd, msg, sizeof(msgbuf), CS_LINE)) <= 0)
         return -1;
     msg[n - 1] = '\0';
-    if (CST->logfd)
-    {
+    if (CST->logfd) {
         time_t t;
 
         t = cs.time;
         ( void )tmform(ret, "%i", &t);
         sfprintf(CST->logfd, "[%s]\n%s\n", ret, msg);
     }
-    while ((argc = tokscan(msg, &msg, " %v ", argv, elementsof(argv))) > 0)
-    {
+    while ((argc = tokscan(msg, &msg, " %v ", argv, elementsof(argv))) > 0) {
         n = sizeof(ret);
-        switch (argv[0][0])
-        {
+        switch (argv[0][0]) {
         case 'c':
             n = IfsConnect(ret, n, uid, argc, argv);
             break;
@@ -187,8 +182,7 @@ int fd;
             n = IfsMount(ret, n, uid, argc, argv);
             break;
         case 'o':
-            switch (argv[0][1])
-            {
+            switch (argv[0][1]) {
             case 'p':
                 n = IfsReal(ret, n, uid, argc, argv);
                 break;
@@ -205,19 +199,14 @@ int fd;
             break;
         case 'r':
             ptr = (argc < 2 ? "/tmp/jvcs.log" : argv[1]);
-            if (CST->logfd)
-            {
+            if (CST->logfd) {
                 sfclose(CST->logfd);
                 n = sfsprintf(
                 ret, n, "I stop log %s (%d)\n", CST->logfile, CST->logfd);
                 CST->logfd = 0;
-            }
-            else if ((CST->logfd = sfopen(NULL, ptr, "a")) == NULL)
-            {
+            } else if ((CST->logfd = sfopen(NULL, ptr, "a")) == NULL) {
                 n = sfsprintf(ret, n, "E cannot open %s\n", ptr);
-            }
-            else
-            {
+            } else {
                 CST->logfile = strdup(ptr);
                 sfprintf(CST->logfd, "\n");
                 n = sfsprintf(ret, n, "I record %s\n", ptr);
@@ -243,8 +232,7 @@ int fd;
         if (write(fd, ret, n) != n || *argv[0] == 'q')
             return -1;
     }
-    if (CST->logfd)
-    {
+    if (CST->logfd) {
         if (ret[n - 1] == '\n')
             ret[n - 1] = '\0';
         sfprintf(CST->logfd, "\t%s\n", ret);

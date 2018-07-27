@@ -32,8 +32,7 @@ ptvcopy(Ptv_t *a)
     Ptv_t *b;
     Ptvprefix_t *ap;
 
-    if (b = ptvopen(a->disc, 0))
-    {
+    if (b = ptvopen(a->disc, 0)) {
         b->entries = a->entries;
         for (ap = ( Ptvprefix_t * )dtfirst(a->dict); ap;
              ap = ( Ptvprefix_t * )dtnext(a->dict, ap))

@@ -191,8 +191,7 @@ _END_EXTERNS_
 #define K_TPUT(k) (((k) + K_MERGE) << S_BITS)
 
 #define MEMCPY(to, from, n)                                                  \
-    switch (n)                                                               \
-    {                                                                        \
+    switch (n) {                                                             \
     default:                                                                 \
         memcpy(( Void_t * )to, ( Void_t * )from, ( size_t )n);               \
         to += n;                                                             \
@@ -285,8 +284,7 @@ typedef struct _vdio_s
 #define STRGETU(tab, u)                                                      \
     {                                                                        \
         reg int c;                                                           \
-        for (u = 0;;)                                                        \
-        {                                                                    \
+        for (u = 0;;) {                                                      \
             c = *(tab)->delta++;                                             \
             u = (u << I_SHIFT) | (c & (I_MORE - 1));                         \
             if (!(c & I_MORE))                                               \

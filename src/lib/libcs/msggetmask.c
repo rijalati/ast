@@ -43,16 +43,14 @@ msggetmask(char *buf, int n, unsigned long mask)
         return 0;
     if (b = buf)
         e = b + n;
-    for (n0 = n1 = 0, m = 1; m <= MSG_STD; m++)
-    {
+    for (n0 = n1 = 0, m = 1; m <= MSG_STD; m++) {
         n = strlen(msgname(m)) + 1;
         if (mask & MSG_MASK(m))
             n1 += n;
         else
             n0 += n;
     }
-    if (n = (n1 > n0))
-    {
+    if (n = (n1 > n0)) {
         n0++;
         if (!b)
             return n0;
@@ -60,17 +58,14 @@ msggetmask(char *buf, int n, unsigned long mask)
         if (b >= e)
             return n0;
         *b++ = '!';
-    }
-    else if (!b)
+    } else if (!b)
         return n1;
     else
         n0 = -n1;
     for (m = 1; m <= MSG_STD; m++)
-        if ((mask & MSG_MASK(m)) == 0 == n)
-        {
+        if ((mask & MSG_MASK(m)) == 0 == n) {
             s = msg_info.name[m];
-            while (n1 = *s++)
-            {
+            while (n1 = *s++) {
                 if (b >= e)
                     return n0;
                 *b++ = n1;

@@ -51,8 +51,7 @@ tmxtouch(const char *path, Time_t at, Time_t mt, Time_t ct, int flags)
         ap = TV_TOUCH_RETAIN;
     else if (!at && !(flags & PATH_TOUCH_VERBATIM))
         ap = 0;
-    else
-    {
+    else {
         av.tv_sec = tmxsec(at);
         av.tv_nsec = tmxnsec(at);
         ap = &av;
@@ -61,8 +60,7 @@ tmxtouch(const char *path, Time_t at, Time_t mt, Time_t ct, int flags)
         mp = TV_TOUCH_RETAIN;
     else if (!mt && !(flags & PATH_TOUCH_VERBATIM))
         mp = 0;
-    else
-    {
+    else {
         mv.tv_sec = tmxsec(mt);
         mv.tv_nsec = tmxnsec(mt);
         mp = &mv;
@@ -71,8 +69,7 @@ tmxtouch(const char *path, Time_t at, Time_t mt, Time_t ct, int flags)
         cp = TV_TOUCH_RETAIN;
     else if (!ct && !(flags & PATH_TOUCH_VERBATIM))
         cp = 0;
-    else
-    {
+    else {
         cv.tv_sec = tmxsec(ct);
         cv.tv_nsec = tmxnsec(ct);
         cp = &cv;

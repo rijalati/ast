@@ -61,8 +61,7 @@ static char ST[] = "*";
 static void
 syntax(Jcl_t *jcl, int level, char *token, char *expected, char *type)
 {
-    if (jcl->disc->errorf && (level > 1 || (jcl->flags & JCL_WARN)))
-    {
+    if (jcl->disc->errorf && (level > 1 || (jcl->flags & JCL_WARN))) {
         if (expected)
             (*jcl->disc->errorf)(NiL,
                                  jcl->disc,
@@ -89,8 +88,7 @@ syntax(Jcl_t *jcl, int level, char *token, char *expected, char *type)
 static int
 push(Jcl_t *jcl, char *s)
 {
-    if (jcl->pushed >= elementsof(jcl->push))
-    {
+    if (jcl->pushed >= elementsof(jcl->push)) {
         if (jcl->disc->errorf)
             (*jcl->disc->errorf)(
             NiL, jcl->disc, 2, "%s: too much pushback", s);
@@ -109,13 +107,10 @@ push(Jcl_t *jcl, char *s)
 static void
 xel(Jcl_t *jcl, char *tok)
 {
-    if (tok)
-    {
+    if (tok) {
         jcl->peekpeek = jcl->peek;
         jcl->peek = tok;
-    }
-    else
-    {
+    } else {
         jcl->data = strcpy(jcl->card, jcl->record ? jcl->record : null);
         jcl->peek = jcl->peekpeek = 0;
         jcl->last = 0;
@@ -132,20 +127,16 @@ card(Jcl_t *jcl)
     char *s;
     size_t n;
 
-    for (;;)
-    {
-        if (s = jcl->peekcard)
-        {
+    for (;;) {
+        if (s = jcl->peekcard) {
             jcl->peekcard = 0;
             break;
         }
         if (!jcl->sp)
             break;
-        if (s = sfgetr(jcl->sp, '\n', 1))
-        {
+        if (s = sfgetr(jcl->sp, '\n', 1)) {
             error_info.line++;
-            if (!jcl->canon && (n = sfvalue(jcl->sp)) > 1)
-            {
+            if (!jcl->canon && (n = sfvalue(jcl->sp)) > 1) {
                 if (s[n - 1] == '\r')
                     s[n - 1] = 0;
                 if (n > CARD)
@@ -179,17 +170,12 @@ autoexpand(Jcl_t *jcl, char *s, Sfio_t *sp)
     tp = 0;
     o = sfstrtell(jcl->vp);
     sfputr(jcl->vp, JCL_AUTO, -1);
-    for (;;)
-    {
-        if (!(c = *s++) || c == '.')
-        {
+    for (;;) {
+        if (!(c = *s++) || c == '.') {
             s--;
             break;
-        }
-        else if (c == '%' && *s == '%')
-        {
-            if (*++s == '.')
-            {
+        } else if (c == '%' && *s == '%') {
+            if (*++s == '.') {
                 s++;
                 break;
             }
@@ -202,11 +188,9 @@ autoexpand(Jcl_t *jcl, char *s, Sfio_t *sp)
                 break;
             sfputr(jcl->vp, t, -1);
             *t = 0;
-        }
-        else if (ID(c))
+        } else if (ID(c))
             sfputc(jcl->vp, c);
-        else
-        {
+        else {
             s--;
             break;
         }
@@ -215,8 +199,7 @@ autoexpand(Jcl_t *jcl, char *s, Sfio_t *sp)
     t = sfstrseek(jcl->vp, o, SEEK_SET);
     if (jcl->flags & JCL_PARAMETERIZE)
         sfprintf(sp, "${%s}", t);
-    else
-    {
+    else {
         if (jcl->flags & JCL_LISTAUTOEDITS)
             uniq(t + sizeof(JCL_AUTO) - 1, NiL, 0, jcl->disc);
         if (v = lookup(jcl, t, NiL, 0, DEFAULT | MUST))
@@ -224,8 +207,7 @@ autoexpand(Jcl_t *jcl, char *s, Sfio_t *sp)
         else
             sfprintf(sp, "%%%%%s.", t);
     }
-    if (tp)
-    {
+    if (tp) {
         sfputr(sp, sfstrbase(tp), -1);
         sfstrclose(tp);
     }
@@ -247,25 +229,18 @@ autotoken(Jcl_t *jcl, char *s, char **r, int set)
     while (*s == ' ')
         s++;
     for (t = s; *s; s++)
-        if (*s == ' ')
-        {
+        if (*s == ' ') {
             *s++ = 0;
             break;
-        }
-        else if (*s == '%' && *(s + 1) == '%')
-        {
-            if (set)
-            {
+        } else if (*s == '%' && *(s + 1) == '%') {
+            if (set) {
                 set = 0;
                 s++;
-            }
-            else
-            {
+            } else {
                 if (s - t)
                     sfwrite(jcl->tp, t, s - t);
                 s = autoexpand(jcl, s + 2, jcl->tp);
-                if (*s != '.')
-                {
+                if (*s != '.') {
                     sfputc(jcl->tp, 0);
                     t = fmtbuf(sfstrtell(jcl->tp) - o);
                     strcpy(t, sfstrseek(jcl->tp, o, SEEK_SET));
@@ -300,10 +275,8 @@ autonumber(Jcl_t *jcl, char *s, long *r)
 }
 
 #define NOOPERAND()                                                          \
-    do                                                                       \
-    {                                                                        \
-        if (p)                                                               \
-        {                                                                    \
+    do {                                                                     \
+        if (p) {                                                             \
             p = sfstrseek(jcl->tp, o, SEEK_SET);                             \
             if (jcl->disc->errorf)                                           \
                 (*jcl->disc->errorf)(                                        \
@@ -317,15 +290,11 @@ autonumber(Jcl_t *jcl, char *s, long *r)
     } while (0)
 
 #define OPERAND()                                                            \
-    do                                                                       \
-    {                                                                        \
-        if (p)                                                               \
-        {                                                                    \
+    do {                                                                     \
+        if (p) {                                                             \
             p = 0;                                                           \
             t = sfstrseek(jcl->tp, o, SEEK_SET);                             \
-        }                                                                    \
-        else                                                                 \
-        {                                                                    \
+        } else {                                                             \
             t = "";                                                          \
             if (jcl->disc->errorf)                                           \
                 (*jcl->disc->errorf)(                                        \
@@ -356,31 +325,25 @@ autoeval(Jcl_t *jcl, char *s, char **r)
 
     o = sfstrtell(jcl->tp);
     p = 0;
-    for (;;)
-    {
+    for (;;) {
         while (*s == ' ')
             s++;
         if (!*s)
             break;
-        if (*s == '%' && *(s + 1) == '%')
-        {
+        if (*s == '%' && *(s + 1) == '%') {
             b = s += 2;
-            if (*s == '$')
-            {
+            if (*s == '$') {
                 s++;
                 y = 1;
-            }
-            else
+            } else
                 y = 0;
             for (f = s; ID(*s); s++)
                 ;
             if (*s)
                 *s++ = 0;
-            switch (*f)
-            {
+            switch (*f) {
             case 'C':
-                if (streq(f, "CALCDATE") || streq(f, "CALCDTE"))
-                {
+                if (streq(f, "CALCDATE") || streq(f, "CALCDTE")) {
                     NOOPERAND();
                     s = autotoken(jcl, s, &t, 0);
                     s = autonumber(jcl, s, &i);
@@ -401,8 +364,7 @@ autoeval(Jcl_t *jcl, char *s, char **r)
                 }
                 break;
             case 'G':
-                if (streq(f, "GREG"))
-                {
+                if (streq(f, "GREG")) {
                     NOOPERAND();
                     s = autotoken(jcl, s, &t, 0);
                     x = tmscan(t, &e, y ? "%Y%j" : "%y%j", &v, NiL, 0);
@@ -419,8 +381,7 @@ autoeval(Jcl_t *jcl, char *s, char **r)
                 }
                 break;
             case 'J':
-                if (streq(f, "JULIAN"))
-                {
+                if (streq(f, "JULIAN")) {
                     NOOPERAND();
                     s = autotoken(jcl, s, &t, 0);
                     x = tmscan(t, &e, y ? "%Y%m%d" : "%y%m%d", &v, NiL, 0);
@@ -437,8 +398,7 @@ autoeval(Jcl_t *jcl, char *s, char **r)
                 }
                 break;
             case 'L':
-                if (streq(f, "LEAP"))
-                {
+                if (streq(f, "LEAP")) {
                     NOOPERAND();
                     s = autotoken(jcl, s, &t, 0);
                     x = tmscan(t, &e, y ? "%Y%m%d" : "%y%m%d", &v, NiL, 0);
@@ -458,8 +418,7 @@ autoeval(Jcl_t *jcl, char *s, char **r)
                 }
                 break;
             case 'M':
-                if (streq(f, "MINUS"))
-                {
+                if (streq(f, "MINUS")) {
                     NOOPERAND();
                     autonumber(jcl, t, &i);
                     s = autonumber(jcl, s, &j);
@@ -468,8 +427,7 @@ autoeval(Jcl_t *jcl, char *s, char **r)
                 }
                 break;
             case 'P':
-                if (streq(f, "PLUS"))
-                {
+                if (streq(f, "PLUS")) {
                     OPERAND();
                     autonumber(jcl, t, &i);
                     s = autonumber(jcl, s, &j);
@@ -478,8 +436,7 @@ autoeval(Jcl_t *jcl, char *s, char **r)
                 }
                 break;
             case 'S':
-                if (streq(f, "SUBSTR"))
-                {
+                if (streq(f, "SUBSTR")) {
                     NOOPERAND();
                     s = autotoken(jcl, s, &t, 0);
                     s = autonumber(jcl, s, &i);
@@ -493,13 +450,10 @@ autoeval(Jcl_t *jcl, char *s, char **r)
                 }
                 break;
             case 'W':
-                if (streq(f, "WCALC"))
-                {
+                if (streq(f, "WCALC")) {
                     NOOPERAND();
                     goto notyet;
-                }
-                else if (streq(f, "WEEK#"))
-                {
+                } else if (streq(f, "WEEK#")) {
                     NOOPERAND();
                     s = autotoken(jcl, s, &t, 0);
                     x = tmscan(t, &e, y ? "%Y%m%d" : "%y%m%d", &v, NiL, 0);
@@ -513,9 +467,7 @@ autoeval(Jcl_t *jcl, char *s, char **r)
                         t);
                     sfputr(jcl->tp, fmttime("%W", x), -1);
                     goto done;
-                }
-                else if (streq(f, "WEEKDAY"))
-                {
+                } else if (streq(f, "WEEKDAY")) {
                     NOOPERAND();
                     s = autotoken(jcl, s, &t, 0);
                     x = tmscan(t, &e, y ? "%Y%m%d" : "%y%m%d", &v, NiL, 0);
@@ -535,9 +487,7 @@ autoeval(Jcl_t *jcl, char *s, char **r)
             if (p)
                 sfputc(jcl->tp, ' ');
             s = autoexpand(jcl, b, jcl->tp);
-        }
-        else
-        {
+        } else {
             if (p)
                 sfputc(jcl->tp, ' ');
             s = autotoken(jcl, s, &p, 0);
@@ -586,42 +536,32 @@ lex(Jcl_t *jcl)
     long line;
 #endif
 
-    if (s = jcl->peek)
-    {
+    if (s = jcl->peek) {
         jcl->peek = jcl->peekpeek;
         jcl->peekpeek = 0;
         goto token;
     }
 again:
-    while (*jcl->data == 0)
-    {
-        if (jcl->pushed)
-        {
+    while (*jcl->data == 0) {
+        if (jcl->pushed) {
             memcpy(&jcl->data, &jcl->push[--jcl->pushed], sizeof(Push_t));
-            if (jcl->last == END)
-            {
+            if (jcl->last == END) {
                 s = END;
                 goto token;
             }
-        }
-        else if (jcl->data != null)
-        {
+        } else if (jcl->data != null) {
             jcl->data = null;
             s = END;
             goto token;
-        }
-        else
-        {
+        } else {
             a = 0;
             e = 0;
             j = 0;
             n = 0;
             q = 0;
             x = 0;
-            for (;;)
-            {
-                if (!(s = card(jcl)))
-                {
+            for (;;) {
+                if (!(s = card(jcl))) {
                     if (x && jcl->disc->errorf)
                         (*jcl->disc->errorf)(
                         NiL, jcl->disc, 2, "unexpected EOF in continuation");
@@ -631,27 +571,24 @@ again:
                 if (!sfstrtell(jcl->cp))
                     line = error_info.line;
                 if (*s == '/'
-                    && (*(s + 1) == '*' || *(s + 1) == '/' && *(s + 2) == '*'))
-                {
+                    && (*(s + 1) == '*'
+                        || *(s + 1) == '/' && *(s + 2) == '*')) {
                     if (*++s == '/')
                         s++;
                     if (*s == '*')
                         s++;
                     while (*s == ' ')
                         s++;
-                    if (*s == '%' && *(s + 1) == '%')
-                    {
+                    if (*s == '%' && *(s + 1) == '%') {
                         for (t = s += 2; *s && *s != ' '; s++)
                             ;
                         if (*s)
                             for (*s++ = 0; *s == ' '; s++)
                                 ;
-                        if (streq(t, "SET") && *s == '%' && *(s + 1) == '%')
-                        {
+                        if (streq(t, "SET") && *s == '%' && *(s + 1) == '%') {
                             for (s = autotoken(jcl, s, &v, 1); *s == ' '; s++)
                                 ;
-                            if (*s == '=')
-                            {
+                            if (*s == '=') {
                                 while (*++s == ' ')
                                     ;
                                 s = autoeval(jcl, s, &w);
@@ -671,8 +608,7 @@ again:
                         break;
                     continue;
                 }
-                if (*s != '/' || *(s + 1) != '/')
-                {
+                if (*s != '/' || *(s + 1) != '/') {
                     if (jcl->disc->errorf)
                         (*jcl->disc->errorf)(
                         NiL,
@@ -685,38 +621,30 @@ again:
                 }
                 m = sfvalue(jcl->sp) > CARD && !isspace(s[CARD - 1])
                     && !jcl->canon;
-                if (x)
-                {
-                    if (*(s += 2))
-                    {
-                        if (!isspace(*s))
-                        {
+                if (x) {
+                    if (*(s += 2)) {
+                        if (!isspace(*s)) {
                             jcl->peekcard = s - 2;
                             break;
                         }
                         while (isspace(*++s))
                             ;
                     }
-                    if (x < 1)
-                    {
+                    if (x < 1) {
                         if (m)
                             continue;
                         break;
                     }
-                    if (*s == 0)
-                    {
+                    if (*s == 0) {
                         x = 0;
                         continue;
                     }
                 }
                 p = 0;
-                for (;;)
-                {
-                    switch (c = *s++)
-                    {
+                for (;;) {
+                    switch (c = *s++) {
                     case 0:
-                        if (p)
-                        {
+                        if (p) {
                             s = p;
                             p = 0;
                             continue;
@@ -729,8 +657,7 @@ again:
                             s += 2;
                         sfputc(jcl->cp, c);
                         if (!q)
-                            switch (j)
-                            {
+                            switch (j) {
                             case CMD_DD:
                                 if (*(s - 2) == 'P' && *(s - 3) == 'M'
                                     && *(s - 4) == 'A' && !ID(*(s - 5))
@@ -755,16 +682,13 @@ again:
                             }
                         continue;
                     case '\'':
-                        if (!p)
-                        {
+                        if (!p) {
                             if (!q)
                                 q = e ? -1 : 1;
-                            else if (*s == '\'')
-                            {
+                            else if (*s == '\'') {
                                 s++;
                                 sfputc(jcl->cp, c);
-                            }
-                            else
+                            } else
                                 q = 0;
                         }
                         sfputc(jcl->cp, c);
@@ -772,31 +696,26 @@ again:
                     case '&':
                         if (p)
                             sfputc(jcl->cp, c);
-                        else if (*s == '&')
-                        {
+                        else if (*s == '&') {
                             s++;
                             if (q > 0)
                                 sfputc(jcl->cp, c);
                             sfputc(jcl->cp, c);
-                        }
-                        else if (!ID(*s))
+                        } else if (!ID(*s))
                             sfputc(jcl->cp, c);
-                        else
-                        {
+                        else {
                             for (t = s; ID(*s); s++)
                                 ;
                             c = *s;
                             *s = 0;
                             v = lookup(jcl, t, NiL, 0, MUST);
                             *s = c;
-                            if (v)
-                            {
+                            if (v) {
                                 if (c == '.')
                                     s++;
                                 p = s;
                                 s = v;
-                            }
-                            else
+                            } else
                                 for (t--; t < s; t++)
                                     sfputc(jcl->cp, *t);
                         }
@@ -804,19 +723,16 @@ again:
                     case '%':
                         if (p || *s != '%' || *(s + 1) == '#')
                             sfputc(jcl->cp, c);
-                        else
-                        {
+                        else {
                             p = autotoken(jcl, s - 1, &v, 0);
                             s = v;
                         }
                         continue;
                     default:
-                        if (!q)
-                        {
+                        if (!q) {
                             if (e && !ID(c))
                                 e = 0;
-                            if (isspace(c))
-                            {
+                            if (isspace(c)) {
                                 if ((x = sfstrtell(jcl->cp))
                                     && *(t = sfstrbase(jcl->cp) + x - 1)
                                        == ' ')
@@ -828,8 +744,7 @@ again:
                                  * { CMD_DD IF } don't follow the norm
                                  */
 
-                                if (a == 2)
-                                {
+                                if (a == 2) {
                                     /*
                                      * a DD may override/augment DD in another
                                      * procedures so variable expansion must
@@ -838,16 +753,14 @@ again:
                                      */
 
                                     if (*t == 'D' && *(t - 1) == 'D'
-                                        && *(t - 2) == ' ')
-                                    {
+                                        && *(t - 2) == ' ') {
                                         j = CMD_DD;
                                         if (memchr(sfstrbase(jcl->cp), '.', x))
                                             p = null;
-                                    }
-                                    else if (*t == 'C' && *(t - 1) == 'E'
-                                             && *(t - 2) == 'X'
-                                             && *(t - 3) == 'E'
-                                             && *(t - 4) == ' ')
+                                    } else if (*t == 'C' && *(t - 1) == 'E'
+                                               && *(t - 2) == 'X'
+                                               && *(t - 3) == 'E'
+                                               && *(t - 4) == ' ')
                                         j = CMD_EXEC;
                                     else if (*t == 'F' && *(t - 1) == 'I'
                                              && *(t - 2) == ' ')
@@ -863,21 +776,18 @@ again:
                 }
                 if (q)
                     x = 1;
-                else
-                {
+                else {
                     t = sfstrbase(jcl->cp);
                     for (s = sfstrseek(jcl->cp, 0, SEEK_CUR);
                          s > t && *(s - 1) == ' ';
                          s--)
                         ;
                     sfstrseek(jcl->cp, s - t, SEEK_SET);
-                    if (a < 2 || s == t || *(s - 1) != ',')
-                    {
+                    if (a < 2 || s == t || *(s - 1) != ',') {
                         if (!m)
                             break;
                         x = -1;
-                    }
-                    else
+                    } else
                         x = 1;
                 }
             }
@@ -892,21 +802,17 @@ again:
     s = jcl->data;
     n = 0;
     q = 0;
-    for (;;)
-    {
-        switch (*jcl->data++)
-        {
+    for (;;) {
+        switch (*jcl->data++) {
         case 0:
             jcl->data--;
-            if (q)
-            {
+            if (q) {
                 if (jcl->disc->errorf)
                     (*jcl->disc->errorf)(
                     NiL, jcl->disc, 2, "unbalanced '...'");
                 return 0;
             }
-            if (n)
-            {
+            if (n) {
                 if (jcl->disc->errorf)
                     (*jcl->disc->errorf)(
                     NiL, jcl->disc, 2, "unbalanced (...)");
@@ -914,18 +820,14 @@ again:
             }
             goto token;
         case '/':
-            if (s == jcl->card)
-            {
-                if (*jcl->data == '/')
-                {
+            if (s == jcl->card) {
+                if (*jcl->data == '/') {
                     jcl->data++;
-                    if (*jcl->data == '*')
-                    {
+                    if (*jcl->data == '*') {
                         jcl->data = null;
                         goto again;
                     }
-                    if (*jcl->data == ' ' || *jcl->data == 0)
-                    {
+                    if (*jcl->data == ' ' || *jcl->data == 0) {
                         xel(jcl, null);
                         if (*jcl->data == ' ')
                             jcl->data++;
@@ -934,37 +836,29 @@ again:
                     }
                     s = SS;
                     goto token;
-                }
-                else if (*jcl->data == '*')
-                {
+                } else if (*jcl->data == '*') {
                     jcl->data = null;
                     goto again;
                 }
             }
             continue;
         case '=':
-            if (!n && !q && jcl->last != EQ)
-            {
+            if (!n && !q && jcl->last != EQ) {
                 if (*jcl->data == '\'' && *(jcl->data + 1) == '\''
                     && (*(jcl->data + 2) == ',' || isspace(*(jcl->data + 2))
-                        || *(jcl->data + 2) == 0))
-                {
+                        || *(jcl->data + 2) == 0)) {
                     *(jcl->data - 1) = 0;
                     jcl->data += 2;
                     xel(jcl, null);
-                    if ((jcl->data - s) == 3)
-                    {
+                    if ((jcl->data - s) == 3) {
                         s = EQ;
                         goto token;
                     }
-                }
-                else
-                {
+                } else {
                     if (*jcl->data == ',' || *jcl->data == ' '
                         || *jcl->data == 0)
                         xel(jcl, null);
-                    if ((jcl->data - s) == 1)
-                    {
+                    if ((jcl->data - s) == 1) {
                         s = EQ;
                         goto token;
                     }
@@ -975,8 +869,8 @@ again:
             continue;
         case '*':
             if (!n && !q && (jcl->data - s) == 1
-                && (*jcl->data == ',' || *jcl->data == ' ' || *jcl->data == 0))
-            {
+                && (*jcl->data == ',' || *jcl->data == ' '
+                    || *jcl->data == 0)) {
                 s = ST;
                 goto token;
             }
@@ -986,8 +880,7 @@ again:
                 n++;
             continue;
         case ')':
-            if (!q)
-            {
+            if (!q) {
                 if (n > 0)
                     n--;
                 else if (jcl->pushed && *jcl->data == 0)
@@ -995,8 +888,7 @@ again:
             }
             continue;
         case ',':
-            if (!n && !q)
-            {
+            if (!n && !q) {
                 if ((jcl->data - s) > 1)
                     break;
                 s = jcl->data;
@@ -1058,30 +950,21 @@ cond(Jcl_t *jcl, char *b, char **p)
 
     s = b;
     y = 0;
-    for (;;)
-    {
-        if (*s == '(')
-        {
+    for (;;) {
+        if (*s == '(') {
             if (!(x = cond(jcl, s + 1, &e)))
                 return 0;
             s = e;
-        }
-        else if (!(x = vmnewof(jcl->vs, NiL, Jclcond_t, 1, 0)))
-        {
+        } else if (!(x = vmnewof(jcl->vs, NiL, Jclcond_t, 1, 0))) {
             nospace(jcl, NiL);
             return 0;
-        }
-        else
-        {
+        } else {
             x->code = ( short )strtol(s, &e, 10);
-            if (*e == ',')
-            {
+            if (*e == ',') {
                 s = e + 2;
-                switch (*(e + 1))
-                {
+                switch (*(e + 1)) {
                 case 'E':
-                    switch (*s)
-                    {
+                    switch (*s) {
                     case 'Q':
                         x->op = JCL_COND_EQ;
                         break;
@@ -1090,8 +973,7 @@ cond(Jcl_t *jcl, char *b, char **p)
                     }
                     break;
                 case 'G':
-                    switch (*s)
-                    {
+                    switch (*s) {
                     case 'E':
                         x->op = JCL_COND_GE;
                         break;
@@ -1103,8 +985,7 @@ cond(Jcl_t *jcl, char *b, char **p)
                     }
                     break;
                 case 'L':
-                    switch (*s)
-                    {
+                    switch (*s) {
                     case 'E':
                         x->op = JCL_COND_LE;
                         break;
@@ -1116,8 +997,7 @@ cond(Jcl_t *jcl, char *b, char **p)
                     }
                     break;
                 case 'N':
-                    switch (*s)
-                    {
+                    switch (*s) {
                     case 'E':
                         x->op = JCL_COND_NE;
                         break;
@@ -1128,20 +1008,16 @@ cond(Jcl_t *jcl, char *b, char **p)
                 default:
                     goto bad;
                 }
-                if (*++s == ',')
-                {
+                if (*++s == ',') {
                     for (t = ++s; *s && *s != ',' && *s != ')'; s++)
                         ;
-                    if (!(x->step = vmnewof(jcl->vs, 0, char, s - t, 1)))
-                    {
+                    if (!(x->step = vmnewof(jcl->vs, 0, char, s - t, 1))) {
                         nospace(jcl, NiL);
                         return 0;
                     }
                     memcpy(x->step, t, s - t);
                 }
-            }
-            else
-            {
+            } else {
                 for (t = s; *s && *s != ',' && *s != ')'; s++)
                     ;
                 if ((s - t) != 4)
@@ -1160,8 +1036,7 @@ cond(Jcl_t *jcl, char *b, char **p)
             y = x;
         if (*s == 0)
             break;
-        if (*s == ')')
-        {
+        if (*s == ')') {
             s++;
             break;
         }
@@ -1195,8 +1070,7 @@ arg(Jcl_t *jcl, char **p)
         return 0;
     else if ((val = lex(jcl)) == EQ)
         val = lex(jcl);
-    else
-    {
+    else {
         xel(jcl, val);
         val = 0;
     }
@@ -1221,41 +1095,33 @@ jclparm(char **p)
     char *b;
 
     s = *p;
-    if (*s == '(')
-    {
+    if (*s == '(') {
         s++;
         x = -1;
-    }
-    else
+    } else
         x = '\'';
     q = 0;
     n = 0;
     for (b = t = s; *s; s++)
         if (*s == x)
             q = !q;
-        else if (!q)
-        {
+        else if (!q) {
             if (*s == '(')
                 n++;
-            else if (*s == ')')
-            {
+            else if (*s == ')') {
                 if (--n < 0)
                     break;
-            }
-            else if (!n && *s == ',')
+            } else if (!n && *s == ',')
                 break;
             *t++ = *s;
         }
-    if (*s)
-    {
+    if (*s) {
         empty = *s == ',';
         *s++ = 0;
-    }
-    else
+    } else
         empty = 0;
     *p = s;
-    if (*b == ' ')
-    {
+    if (*b == ' ') {
         s = b;
         for (s = b; *++s == ' ';)
             ;
@@ -1292,76 +1158,56 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
     int d2;
     int change;
 
-    if (!step->name && !jcl->lastdd && !DDLIB(name))
-    {
+    if (!step->name && !jcl->lastdd && !DDLIB(name)) {
         if (jcl->disc->errorf && (jcl->flags & JCL_WARN))
             (*jcl->disc->errorf)(
             NiL, jcl->disc, 1, "//%s DD appears before EXEC", name);
         return -1;
     }
     change = 0;
-    if (*name)
-    {
-        if (dd = ( Jcldd_t * )dtmatch(step->dd, name))
-        {
+    if (*name) {
+        if (dd = ( Jcldd_t * )dtmatch(step->dd, name)) {
             jcl->lastdd = dd;
             change = 1;
-        }
-        else if (!(dd = vmnewof(jcl->vs, NiL, Jcldd_t, 1, 0)))
-        {
+        } else if (!(dd = vmnewof(jcl->vs, NiL, Jcldd_t, 1, 0))) {
             nospace(jcl, NiL);
             return -1;
-        }
-        else if (!(dd->name = stash(jcl, jcl->vs, name, 0)))
+        } else if (!(dd->name = stash(jcl, jcl->vs, name, 0)))
             return -1;
-        else if (tok = strchr(dd->name, '.'))
-        {
+        else if (tok = strchr(dd->name, '.')) {
             dd->reference = tok - dd->name;
             dd->flags |= JCL_DD_REFERENCE;
-        }
-        else if (streq(name, "SYSIN"))
-        {
+        } else if (streq(name, "SYSIN")) {
             dd->flags |= JCL_DD_SYSIN;
             if (!dd->disp[0])
                 dd->disp[0] = JCL_DISP_OLD;
-        }
-        else if (streq(name, "SYSOUT"))
-        {
+        } else if (streq(name, "SYSOUT")) {
             dd->flags |= JCL_DD_SYSOUT;
             if (!dd->disp[0])
                 dd->disp[0] = JCL_DISP_NEW;
-        }
-        else if (streq(name, "SYSERR"))
-        {
+        } else if (streq(name, "SYSERR")) {
             dd->flags |= JCL_DD_SYSERR;
             if (!dd->disp[0])
                 dd->disp[0] = JCL_DISP_NEW;
-        }
-        else if (DDLIB(name))
+        } else if (DDLIB(name))
             dd->flags |= JCL_DD_INCLUDE;
-    }
-    else if (!(dd = jcl->lastdd))
-    {
+    } else if (!(dd = jcl->lastdd)) {
         syntax(jcl, 2, name, "NAME", NiL);
         return -1;
     }
     d0 = '/';
     d1 = '/';
     d2 = '*';
-    while (tok = arg(jcl, &val))
-    {
+    while (tok = arg(jcl, &val)) {
         if (val
             && (val[0] == '*' && val[1] == '.'
-                || val[0] == '(' && val[1] == '*' && val[2] == '.'))
-        {
+                || val[0] == '(' && val[1] == '*' && val[2] == '.')) {
             op = val;
             if (*op == '(')
                 op++;
             op += 2;
-            if (streq(tok, "OUTPUT"))
-            {
-                for (;;)
-                {
+            if (streq(tok, "OUTPUT")) {
+                for (;;) {
                     if (*op == '*')
                         op++;
                     if (*op == '.')
@@ -1370,8 +1216,7 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
                         ;
                     if (n = *op)
                         *op = 0;
-                    if (*val)
-                    {
+                    if (*val) {
                         sfprintf(jcl->tp, "%s.%s", step->name, val);
                         if (!(s = sfstruse(jcl->tp)))
                             nospace(jcl, NiL);
@@ -1379,19 +1224,17 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
                               = ( Jcloutput_t * )dtmatch(jcl->output, s)))
                             output
                             = ( Jcloutput_t * )dtmatch(jcl->output, val);
-                        if (output)
-                        {
+                        if (output) {
                             if (!(out
-                                  = vmnewof(jcl->vs, NiL, Jclout_t, 1, 0)))
-                            {
+                                  = vmnewof(jcl->vs, NiL, Jclout_t, 1, 0))) {
                                 nospace(jcl, NiL);
                                 return -1;
                             }
                             out->output = output;
                             out->next = dd->out;
                             dd->out = out;
-                        }
-                        else if (jcl->disc->errorf && (jcl->flags & JCL_WARN))
+                        } else if (jcl->disc->errorf
+                                   && (jcl->flags & JCL_WARN))
                             (*jcl->disc->errorf)(
                             NiL, jcl->disc, 1, "%s: OUTPUT not defined", val);
                     }
@@ -1405,11 +1248,9 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
             }
             for (val = op; *op && *op != '.'; op++)
                 ;
-            if (*op)
-            {
+            if (*op) {
                 *op = 0;
-                if (!streq(val, step->name))
-                {
+                if (!streq(val, step->name)) {
                     if (jcl->disc->errorf)
                         (*jcl->disc->errorf)(
                         NiL,
@@ -1430,42 +1271,33 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
             pd = ( Jcldd_t * )dtmatch(step->dd, val);
             if (op)
                 *op = ')';
-            if (!pd)
-            {
+            if (!pd) {
                 if (jcl->disc->errorf && (jcl->flags & JCL_WARN))
                     (*jcl->disc->errorf)(
                     NiL, jcl->disc, 1, "%s: DD not defined", val);
                 continue;
             }
-        }
-        else
+        } else
             pd = 0;
         if (val && (streq(tok, "DSN") || streq(tok, "DSNAME"))
             || !val
                && (streq(tok, "DUMMY") && (val = dummy)
                    && (dd->flags |= JCL_DD_DUMMY)
-                   || !jcl->pushed && tok != ST && (val = tok)))
-        {
-            if (dd->flags & JCL_DD_DUMMY)
-            {
+                   || !jcl->pushed && tok != ST && (val = tok))) {
+            if (dd->flags & JCL_DD_DUMMY) {
                 dd->path = ( char * )dummy;
                 dd->cat = dd->last = 0;
-            }
-            else
-            {
+            } else {
                 if (pd)
                     name = pd->path;
                 else if (!(name = stash(jcl, jcl->vs, jclpath(jcl, val), 1)))
                     return -1;
                 if (!dd->path || change)
                     dd->path = name;
-                else if (!(cat = vmnewof(jcl->vs, NiL, Jclcat_t, 1, 0)))
-                {
+                else if (!(cat = vmnewof(jcl->vs, NiL, Jclcat_t, 1, 0))) {
                     nospace(jcl, NiL);
                     return -1;
-                }
-                else
-                {
+                } else {
                     cat->path = name;
                     if (dd->last)
                         dd->last->next = cat;
@@ -1474,53 +1306,38 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
                     dd->last = cat;
                 }
             }
-        }
-        else if (val)
-        {
-            if (streq(tok, "AVGREC"))
-            {
-                if (!(dd->recfm & (JCL_RECFM_F | JCL_RECFM_V)))
-                {
-                    if (pd && (pd->recfm & (JCL_RECFM_F | JCL_RECFM_V)))
-                    {
+        } else if (val) {
+            if (streq(tok, "AVGREC")) {
+                if (!(dd->recfm & (JCL_RECFM_F | JCL_RECFM_V))) {
+                    if (pd && (pd->recfm & (JCL_RECFM_F | JCL_RECFM_V))) {
                         dd->recfm = pd->recfm;
                         dd->lrecl = pd->lrecl;
                     }
 #if _2005_06_10__NOT_RELIABLE_
-                    else if (n = pd ? pd->space : dd->space)
-                    {
+                    else if (n = pd ? pd->space : dd->space) {
                         dd->lrecl = n;
                         dd->recfm |= JCL_RECFM_F;
                     }
 #endif
                 }
-            }
-            else if (streq(tok, "DCB"))
-            {
-                if (pd)
-                {
+            } else if (streq(tok, "DCB")) {
+                if (pd) {
                     memcpy(dd->disp, pd->disp, sizeof(dd->disp));
                     dd->lrecl = pd->lrecl;
                     dd->recfm = pd->recfm;
-                }
-                else if (push(jcl, val + (*val == '(')))
+                } else if (push(jcl, val + (*val == '(')))
                     return -1;
-            }
-            else if (streq(tok, "DDNAME"))
-            {
+            } else if (streq(tok, "DDNAME")) {
                 dd->flags |= JCL_DD_ALIAS;
                 dd->path = stash(
                 jcl,
                 jcl->vs,
                 pd ? ((pd->flags & JCL_DD_ALIAS) ? pd->path : pd->name) : val,
                 0);
-            }
-            else if (streq(tok, "DISP"))
-            {
+            } else if (streq(tok, "DISP")) {
                 if (pd)
                     memcpy(dd->disp, pd->disp, sizeof(dd->disp));
-                else if (tok = jclparm(&val))
-                {
+                else if (tok = jclparm(&val)) {
                     if (streq(tok, "NEW"))
                         dd->disp[0] = JCL_DISP_NEW;
                     else if (streq(tok, "OLD"))
@@ -1535,8 +1352,7 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
                         NiL, jcl->disc, 1, "%s: unknown DISP", tok);
                     for (i = 1;
                          i < elementsof(dd->disp) && (tok = jclparm(&val));
-                         i++)
-                    {
+                         i++) {
                         if (streq(tok, "DELETE"))
                             dd->disp[i] = JCL_DISP_DELETE;
                         else if (streq(tok, "KEEP"))
@@ -1553,28 +1369,21 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
                             NiL, jcl->disc, 1, "%s: unknown DISP", tok);
                     }
                 }
-            }
-            else if (streq(tok, "DLM"))
-            {
+            } else if (streq(tok, "DLM")) {
                 d0 = 0;
                 if (d1 = val[0])
                     d2 = val[1];
                 else
                     d2 = 0;
-            }
-            else if (streq(tok, "LRECL"))
+            } else if (streq(tok, "LRECL"))
                 dd->lrecl = pd ? pd->lrecl : ( int )strtol(val, NiL, 10);
-            else if (streq(tok, "RECFM"))
-            {
+            else if (streq(tok, "RECFM")) {
                 if (pd)
                     dd->recfm = pd->recfm;
-                else
-                {
+                else {
                     dd->recfm = 0;
-                    for (;;)
-                    {
-                        switch (*val++)
-                        {
+                    for (;;) {
+                        switch (*val++) {
                         case 0:
                             break;
                         case 'A':
@@ -1613,19 +1422,13 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
                         break;
                     }
                 }
-            }
-            else if (streq(tok, "SPACE"))
-            {
-                if (pd)
-                {
+            } else if (streq(tok, "SPACE")) {
+                if (pd) {
                     dd->flags |= pd->flags & JCL_DD_DIR;
                     dd->space = pd->space;
-                }
-                else
-                    for (n = 0;;)
-                    {
-                        switch (*val++)
-                        {
+                } else
+                    for (n = 0;;) {
+                        switch (*val++) {
                         case 0:
                             break;
                         case '(':
@@ -1636,8 +1439,7 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
                             i++;
                             continue;
                         case ')':
-                            if (n == 2)
-                            {
+                            if (n == 2) {
                                 if (i == 2)
                                     dd->flags |= JCL_DD_DIR;
                                 break;
@@ -1650,17 +1452,12 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
                         }
                         break;
                     }
-            }
-            else if (streq(tok, "SUBSYS"))
-            {
+            } else if (streq(tok, "SUBSYS")) {
                 if (*val == '(' && push(jcl, val + 1))
                     return -1;
             }
-        }
-        else if (tok == ST)
-        {
-            while (tok = card(jcl))
-            {
+        } else if (tok == ST) {
+            while (tok = card(jcl)) {
                 if (tok[0] == d1 && tok[1] == d2
                     || tok[0] == d0 && tok[1] == d1 && tok[2] == d2)
                     break;
@@ -1685,14 +1482,12 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
     if ((dd->flags & JCL_DD_INCLUDE) && dd->path
         && jclinclude(jcl, dd->path, JCL_PROC, NiL))
         return -1;
-    if (dd->reference)
-    {
+    if (dd->reference) {
         if (dd->card)
             sfputr(jcl->tp, dd->card, -1);
         val = jcl->record;
         if (val[0] == '/' && val[1] == '/' && val[2] != ' '
-            && (op = strchr(val, '.')))
-        {
+            && (op = strchr(val, '.'))) {
             val = op + 1;
             sfputc(jcl->tp, '/');
             sfputc(jcl->tp, '/');
@@ -1700,19 +1495,15 @@ DD(Jcl_t *jcl, Jclstep_t *step, char *name)
         sfputr(jcl->tp, val, '\n');
         if (!(s = sfstruse(jcl->tp)))
             nospace(jcl, NiL);
-        if (!(dd->card = stash(jcl, jcl->vs, s, 0)))
-        {
+        if (!(dd->card = stash(jcl, jcl->vs, s, 0))) {
             nospace(jcl, NiL);
             return -1;
         }
-    }
-    else if (dd != jcl->lastdd && (dd->path || dd->here))
-    {
+    } else if (dd != jcl->lastdd && (dd->path || dd->here)) {
         if ((jcl->flags & JCL_MARKLENGTH) && dd->path && !dd->recfm
             && !dd->lrecl)
             marked(dd->path, dd, jcl->disc);
-    }
-    else if (!(dd->flags & JCL_DD_ALIAS))
+    } else if (!(dd->flags & JCL_DD_ALIAS))
         return 0;
     jcl->lastdd = dd;
     dtinsert(step->dd, dd);
@@ -1731,33 +1522,27 @@ OUTPUT(Jcl_t *jcl, Jclstep_t *step, char *name)
     char *tok;
     char *val;
 
-    if (!*name)
-    {
+    if (!*name) {
         syntax(jcl, 2, NiL, "NAME", NiL);
         return -1;
     }
-    if (step->name)
-    {
+    if (step->name) {
         sfprintf(jcl->tp, "%s.%s", step->name, name);
         if (!(name = sfstruse(jcl->tp)))
             nospace(jcl, NiL);
     }
-    if (output = ( Jcloutput_t * )dtmatch(jcl->output, name))
-    {
+    if (output = ( Jcloutput_t * )dtmatch(jcl->output, name)) {
         if (jcl->disc->errorf)
             (*jcl->disc->errorf)(
             NiL, jcl->disc, 2, "%s: OUTPUT alread defined", name);
         return 0;
     }
-    if (!(output = vmnewof(jcl->vs, NiL, Jcloutput_t, 1, 0)))
-    {
+    if (!(output = vmnewof(jcl->vs, NiL, Jcloutput_t, 1, 0))) {
         nospace(jcl, NiL);
         return 0;
-    }
-    else if (!(output->name = stash(jcl, jcl->vs, name, 0)))
+    } else if (!(output->name = stash(jcl, jcl->vs, name, 0)))
         return 0;
-    while (tok = arg(jcl, &val))
-    {
+    while (tok = arg(jcl, &val)) {
         sfprintf(jcl->tp, ",%s", tok);
         if (val)
             sfprintf(jcl->tp, "=%s", val);
@@ -1795,61 +1580,46 @@ operand(Jcl_t *jcl, char *s, char **e)
         s++;
     if ((n = *s == '!') && *++s == ' ')
         s++;
-    if (*s == '(')
-    {
+    if (*s == '(') {
         if ((rc = eval(jcl, s + 1, e, 99)) < 0)
             return rc;
         s = *e;
         while (*s == ' ')
             s++;
-        if (*s++ != ')')
-        {
+        if (*s++ != ')') {
             if (jcl->disc->errorf)
                 (*jcl->disc->errorf)(NiL, jcl->disc, 2, "unbalanced (...)");
             return -1;
         }
-    }
-    else if (isdigit(*s))
-    {
+    } else if (isdigit(*s)) {
         rc = ( int )strtol(s, e, 10);
         s = *e;
-    }
-    else if (*s == 0 || *s == ')')
+    } else if (*s == 0 || *s == ')')
         rc = 0;
-    else
-    {
+    else {
         v = 0;
         for (t = s; ID(*s) || *s == '.' && (v = s); s++)
             ;
-        if (v)
-        {
+        if (v) {
             *v = 0;
             p = ( Rc_t * )dtmatch(jcl->rcs, t);
             *v = '.';
-            if (p)
-            {
+            if (p) {
                 run = 1;
-                if (p->rc < 0)
-                {
+                if (p->rc < 0) {
                     abend = 1;
                     rc = 0;
-                }
-                else
-                {
+                } else {
                     abend = 0;
                     rc = p->rc;
                 }
-            }
-            else
-            {
+            } else {
                 abend = 0;
                 rc = 0;
                 run = 0;
             }
             t = v + 1;
-        }
-        else
-        {
+        } else {
             abend = jcl->abend;
             rc = jcl->rc;
             run = 1;
@@ -1874,15 +1644,12 @@ operand(Jcl_t *jcl, char *s, char **e)
         else if (*t == 'U' && (s - t) == 4
                  && (rc = ( int )strtol(t + 1, e, 16), !*e))
             /*OK*/;
-        else if (!streq(t, "RC"))
-        {
-            if (c)
-            {
+        else if (!streq(t, "RC")) {
+            if (c) {
                 u = s;
                 while (*++u == ' ')
                     ;
-                if (*u == '=' || *u == '!' && *(u + 1) == '=')
-                {
+                if (*u == '=' || *u == '!' && *(u + 1) == '=') {
                     if (n = *u == '!')
                         u++;
                     while (*++u == ' ')
@@ -1936,14 +1703,12 @@ eval(Jcl_t *jcl, char *s, char **e, int prec)
     if ((a = operand(jcl, s, e)) < 0)
         return -1;
     s = *e;
-    for (;;)
-    {
+    for (;;) {
         if (*s == 0 || *s == ')')
             break;
         op = 0;
         t = s;
-        switch (*s++)
-        {
+        switch (*s++) {
         case 'A':
             if (*s++ == 'N' && *s++ == 'D')
                 op = JCL_COND_AND;
@@ -1953,8 +1718,7 @@ eval(Jcl_t *jcl, char *s, char **e, int prec)
                 op = JCL_COND_EQ;
             break;
         case 'G':
-            switch (*s)
-            {
+            switch (*s) {
             case 'E':
                 op = JCL_COND_GE;
                 s++;
@@ -1966,8 +1730,7 @@ eval(Jcl_t *jcl, char *s, char **e, int prec)
             }
             break;
         case 'L':
-            switch (*s)
-            {
+            switch (*s) {
             case 'E':
                 op = JCL_COND_LE;
                 s++;
@@ -1993,21 +1756,17 @@ eval(Jcl_t *jcl, char *s, char **e, int prec)
             op = JCL_COND_EQ;
             break;
         case '>':
-            if (*s == '=')
-            {
+            if (*s == '=') {
                 op = JCL_COND_GE;
                 s++;
-            }
-            else
+            } else
                 op = JCL_COND_GT;
             break;
         case '<':
-            if (*s == '=')
-            {
+            if (*s == '=') {
                 op = JCL_COND_LE;
                 s++;
-            }
-            else
+            } else
                 op = JCL_COND_LT;
             break;
         case '!':
@@ -2018,8 +1777,7 @@ eval(Jcl_t *jcl, char *s, char **e, int prec)
             op = JCL_COND_OR;
             break;
         }
-        if (!op || isupper(*t) && ID(*s))
-        {
+        if (!op || isupper(*t) && ID(*s)) {
             if (jcl->disc->errorf)
                 (*jcl->disc->errorf)(NiL,
                                      jcl->disc,
@@ -2028,8 +1786,7 @@ eval(Jcl_t *jcl, char *s, char **e, int prec)
                                      t);
             return -1;
         }
-        if (op > prec)
-        {
+        if (op > prec) {
             s = t;
             break;
         }
@@ -2037,8 +1794,7 @@ eval(Jcl_t *jcl, char *s, char **e, int prec)
             return -1;
         s = *e;
         o = a;
-        switch (op)
-        {
+        switch (op) {
         case JCL_COND_AND:
             a = a && b;
             break;
@@ -2088,13 +1844,11 @@ IF(Jcl_t *jcl)
     int r;
 
     while (s = lex(jcl))
-        if (s == END)
-        {
+        if (s == END) {
             if (jcl->disc->errorf)
                 (*jcl->disc->errorf)(NiL, jcl->disc, 2, "THEN expected");
             return -1;
-        }
-        else if (streq(s, "THEN"))
+        } else if (streq(s, "THEN"))
             break;
         else
             sfputr(jcl->tp, s, ' ');
@@ -2103,8 +1857,7 @@ IF(Jcl_t *jcl)
         nospace(jcl, NiL);
     if ((r = eval(jcl, s, &e, 99)) < 0)
         return r;
-    if (*e)
-    {
+    if (*e) {
         if (jcl->disc->errorf)
             (*jcl->disc->errorf)(
             NiL, jcl->disc, 2, "%s: invalid IF expression", e);
@@ -2132,39 +1885,30 @@ parse(Jcl_t *jcl, Jclstep_t *step)
     char *v;
     int i;
 
-    while (tok = lex(jcl))
-    {
-        if (tok != SS)
-        {
+    while (tok = lex(jcl)) {
+        if (tok != SS) {
             syntax(jcl, 2, tok, SS, NiL);
             return -1;
         }
-        if (!(name = lex(jcl)))
-        {
+        if (!(name = lex(jcl))) {
             syntax(jcl, 2, NiL, "NAME", NiL);
             return -1;
         }
-        if (!(op = lex(jcl)))
-        {
+        if (!(op = lex(jcl))) {
             syntax(jcl, 2, NiL, "OP", NiL);
             return -1;
         }
         if (!*op)
             /*NOP*/;
-        else if (streq(op, "DD"))
-        {
+        else if (streq(op, "DD")) {
             if (DD(jcl, step, name))
                 return -1;
-        }
-        else if (streq(op, "ELSE"))
-        {
-            if (step->name || jcl->vs == jcl->vm)
-            {
+        } else if (streq(op, "ELSE")) {
+            if (step->name || jcl->vs == jcl->vm) {
                 xel(jcl, NiL);
                 break;
             }
-            if (!jcl->ie)
-            {
+            if (!jcl->ie) {
                 if (jcl->disc->errorf)
                     (*jcl->disc->errorf)(NiL, jcl->disc, 2, "no IF for ELSE");
                 return -1;
@@ -2175,76 +1919,56 @@ parse(Jcl_t *jcl, Jclstep_t *step)
                 jcl->ie->flags |= IE_KEEP;
             while (arg(jcl, &val))
                 ;
-        }
-        else if (streq(op, "ENDIF"))
-        {
-            if (!jcl->ie)
-            {
+        } else if (streq(op, "ENDIF")) {
+            if (!jcl->ie) {
                 if (jcl->disc->errorf)
                     (*jcl->disc->errorf)(
                     NiL, jcl->disc, 2, "no IF for ENDIF");
                 return -1;
             }
-            if (step->name || jcl->vs == jcl->vm)
-            {
+            if (step->name || jcl->vs == jcl->vm) {
                 xel(jcl, NiL);
                 break;
             }
             jcl->ie = jcl->ie->prev;
             while (arg(jcl, &val))
                 ;
-        }
-        else if (streq(op, "EXEC"))
-        {
-            if (step->name || jcl->vs == jcl->vm)
-            {
+        } else if (streq(op, "EXEC")) {
+            if (step->name || jcl->vs == jcl->vm) {
                 xel(jcl, NiL);
                 break;
             }
             if (!(step->name = stash(jcl, jcl->vs, name, 0)))
                 return -1;
-            while (tok = arg(jcl, &val))
-            {
+            while (tok = arg(jcl, &val)) {
                 if (val
                     && (streq(tok, "PGM") && (step->flags |= JCL_PGM)
                         || streq(tok, "PROC"))
-                    || !val && !step->command && (val = tok))
-                {
+                    || !val && !step->command && (val = tok)) {
                     if (!(step->command = stash(jcl, jcl->vs, val, 0)))
                         return -1;
                     if (!(step->flags & JCL_PGM))
                         step->flags |= JCL_PROC;
-                }
-                else if (val)
-                {
-                    if (streq(tok, "COND"))
-                    {
+                } else if (val) {
+                    if (streq(tok, "COND")) {
                         if (*val && !(step->cond = cond(jcl, val, NiL)))
                             return -1;
-                    }
-                    else if (streq(tok, "PARM"))
-                    {
+                    } else if (streq(tok, "PARM")) {
                         if (*val
                             && !(step->parm = stash(jcl, jcl->vs, val, 0)))
                             return -1;
-                    }
-                    else if (!jclsym(jcl, tok, val, 0))
+                    } else if (!jclsym(jcl, tok, val, 0))
                         return -1;
                 }
             }
-        }
-        else if (streq(op, "IF"))
-        {
-            if (step->name || jcl->vs == jcl->vm)
-            {
+        } else if (streq(op, "IF")) {
+            if (step->name || jcl->vs == jcl->vm) {
                 xel(jcl, NiL);
                 break;
             }
             if (!jcl->ie && !(ie = jcl->iefree)
-                || jcl->ie && !(ie = jcl->ie->next))
-            {
-                if (!(ie = vmnewof(jcl->vm, 0, Ie_t, 1, 0)))
-                {
+                || jcl->ie && !(ie = jcl->ie->next)) {
+                if (!(ie = vmnewof(jcl->vm, 0, Ie_t, 1, 0))) {
                     nospace(jcl, 0);
                     return -1;
                 }
@@ -2261,59 +1985,42 @@ parse(Jcl_t *jcl, Jclstep_t *step)
             = ie->prev && (ie->prev->flags & (IE_KEEP | IE_SKIP)) != IE_KEEP
               ? IE_SKIP
               : i ? IE_KEEP : 0;
-        }
-        else if (streq(op, "INCLUDE"))
-        {
+        } else if (streq(op, "INCLUDE")) {
             while (tok = arg(jcl, &val))
                 if (val && streq(tok, "MEMBER")
                     && (!(tok = jclfind(jcl, val, JCL_PROC, 2, &sp))
                         || jclpush(jcl, sp, tok, 0)))
                     return -1;
-        }
-        else if (streq(op, "JCLLIB"))
-        {
+        } else if (streq(op, "JCLLIB")) {
             while (tok = arg(jcl, &val))
                 if (val && streq(tok, "ORDER"))
                     while (tok = jclparm(&val))
                         if (jclinclude(jcl, tok, JCL_PROC, NiL))
                             return -1;
-        }
-        else if (streq(op, "JOB"))
-        {
+        } else if (streq(op, "JOB")) {
             if (!(jcl->name = stash(jcl, jcl->vm, name, 0)))
                 return -1;
             while (tok = arg(jcl, &val))
-                if (val)
-                {
-                    if (streq(tok, "COND"))
-                    {
+                if (val) {
+                    if (streq(tok, "COND")) {
                         if (*val && !(jcl->cond = cond(jcl, val, NiL)))
                             return -1;
-                    }
-                    else if (!lookup(jcl, tok, val, 0, DEFAULT))
+                    } else if (!lookup(jcl, tok, val, 0, DEFAULT))
                         return -1;
                 }
-        }
-        else if (streq(op, "OUTPUT"))
-        {
+        } else if (streq(op, "OUTPUT")) {
             if (OUTPUT(jcl, step, name))
                 return -1;
-        }
-        else if (streq(op, "PEND"))
-        {
+        } else if (streq(op, "PEND")) {
             /*HERE check for PROC on line 1, check that this is last? */
-        }
-        else if ((i = streq(op, "PROC") ? DEFAULT : 0) || streq(op, "SET"))
-        {
-            if (i && jcl->name)
-            {
+        } else if ((i = streq(op, "PROC") ? DEFAULT : 0)
+                   || streq(op, "SET")) {
+            if (i && jcl->name) {
                 sfprintf(jcl->vp, "(PROC)%s", name);
                 sfputr(jcl->tp, jcl->record, '\n');
-                while (tok = card(jcl))
-                {
+                while (tok = card(jcl)) {
                     if (sfvalue(jcl->sp) > 10 && tok[0] == '/'
-                        && tok[1] == '/' && tok[2] != '*')
-                    {
+                        && tok[1] == '/' && tok[2] != '*') {
                         for (val = tok + 2; isspace(*val); val++)
                             ;
                         if (strneq(val, "PEND", 4)
@@ -2326,27 +2033,21 @@ parse(Jcl_t *jcl, Jclstep_t *step)
                     nospace(jcl, NiL);
                 if (!lookup(jcl, v, t, 0, 0))
                     return -1;
-            }
-            else
-            {
+            } else {
                 if (i && !(jcl->name = stash(jcl, jcl->vm, name, 0)))
                     return -1;
                 while (tok = arg(jcl, &val))
-                    if (val)
-                    {
-                        if (*tok == '?' && *(tok + strlen(tok) - 1) == '?')
-                        {
+                    if (val) {
+                        if (*tok == '?' && *(tok + strlen(tok) - 1) == '?') {
                             if (streq(tok + 1, "ABEND?"))
                                 jcl->abend = ( int )strtol(val, NiL, 0);
                             else if (streq(tok + 1, "RC?"))
                                 jcl->rc = ( int )strtol(val, NiL, 0);
-                        }
-                        else if (!lookup(jcl, tok, val, 0, i))
+                        } else if (!lookup(jcl, tok, val, 0, i))
                             return -1;
                     }
             }
-        }
-        else
+        } else
             syntax(jcl, 1, op, NiL, "OP");
         eat(jcl);
     }
@@ -2370,11 +2071,9 @@ jclstep(Jcl_t *jcl)
     int i;
 
     errno = 0;
-    for (;;)
-    {
+    for (;;) {
         step = jcl->step;
-        if (jcl->vs != jcl->vm)
-        {
+        if (jcl->vs != jcl->vm) {
             vmclear(jcl->vs);
             dtclear(jcl->ss);
         }
@@ -2398,12 +2097,10 @@ jclstep(Jcl_t *jcl)
                      dd = ( Jcldd_t * )dtnext(scope->step->dd, dd))
                     if (dd->reference
                         && strneq(dd->name, step->name, dd->reference)
-                        && dd->name[dd->reference] == '.')
-                    {
+                        && dd->name[dd->reference] == '.') {
                         if (!jcl->dp && !(jcl->dp = sfstropen())
                             || sfstrbuf(
-                               jcl->dp, dd->card, strlen(dd->card), 0))
-                        {
+                               jcl->dp, dd->card, strlen(dd->card), 0)) {
                             nospace(jcl, 0);
                             return 0;
                         }
@@ -2426,10 +2123,8 @@ jclstep(Jcl_t *jcl)
             for (dd = ( Jcldd_t * )dtfirst(step->dd); dd;
                  dd = ( Jcldd_t * )dtnext(step->dd, dd))
                 if (dd->path && (dd->recfm & (JCL_RECFM_F | JCL_RECFM_V))
-                    && dd->lrecl && !(dd->flags & JCL_DD_DIR))
-                {
-                    if (!streq(dd->path, dummy))
-                    {
+                    && dd->lrecl && !(dd->flags & JCL_DD_DIR)) {
+                    if (!streq(dd->path, dummy)) {
                         dd->path
                         = mark(dd->path, dd->recfm, dd->lrecl, jcl->disc);
                         dd->flags |= JCL_DD_MARKED;
@@ -2456,10 +2151,8 @@ jcleval(Jcl_t *jcl, Jclcond_t *cond, int code)
 {
     if (!cond)
         return !code;
-    while (cond)
-    {
-        switch (cond->op)
-        {
+    while (cond) {
+        switch (cond->op) {
         case JCL_COND_ONLY:
             if (jcl->failed)
                 return 0;
@@ -2512,12 +2205,9 @@ jclrc(Jcl_t *jcl, Jclstep_t *step, int rc)
         rc -= 128;
     else if (rc > 256 && rc < 320)
         rc -= 256;
-    if (step && step->name)
-    {
-        if (!(rp = ( Rc_t * )dtmatch(jcl->rcs, step->name)))
-        {
-            if (!(rp = vmnewof(jcl->vm, 0, Rc_t, 1, strlen(step->name))))
-            {
+    if (step && step->name) {
+        if (!(rp = ( Rc_t * )dtmatch(jcl->rcs, step->name))) {
+            if (!(rp = vmnewof(jcl->vm, 0, Rc_t, 1, strlen(step->name)))) {
                 nospace(jcl, NiL);
                 return -1;
             }
@@ -2529,8 +2219,7 @@ jclrc(Jcl_t *jcl, Jclstep_t *step, int rc)
         if (!jcl)
             return rp->rc;
     }
-    if (jcl)
-    {
+    if (jcl) {
         if (rc < 0)
             jcl->abend++;
         if (rc < 0 && jcl->rc > rc || rc > 0 && jcl->rc < rc)

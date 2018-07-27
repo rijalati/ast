@@ -79,8 +79,7 @@ int *runb;     /* the run byte if any	*/
     /* construct list of elements with non-zero weights */
     notz = 0;
     max = min = freq[c = 0];
-    for (k = 0, f = tree; k < nsym; ++k, ++f, ++c)
-    {
+    for (k = 0, f = tree; k < nsym; ++k, ++f, ++c) {
         size[c] = 0;
 
         f->next = f->link = NIL(Vchtree_t *);
@@ -113,21 +112,20 @@ int *runb;     /* the run byte if any	*/
 
     /* build linked list sorted by frequencies */
     vcqsort(sort, notz, sizeof(Vchtree_t *), huffcmp, 0);
-    for (f = sort[k = 0]; f != NIL(Vchtree_t *); f = f->next)
-    {
+    for (f = sort[k = 0]; f != NIL(Vchtree_t *); f = f->next) {
         f->link = f; /* nodes in each subtree are kept in a circular list */
         f->next = (k += 1) < notz ? sort[k] : NIL(Vchtree_t *);
     }
 
     /* linear-time construction of a Huffman tree */
-    for (head = tail = NIL(Vchtree_t *), list = sort[0];;)
-    { /* The invariant (I) needed at this point is this:
-      ** 0. The lists "list" and "head" are sorted by frequency.
-      ** 1. list and list->next are not NULL;
-      ** 2. head == NULL or head->freq >= list->next->freq
-      ** 3. tail == NULL or list->freq+list->next->freq >= tail->freq.
-      ** Then, list and list->next can be merged into a subtree.
-      */
+    for (head = tail = NIL(Vchtree_t *), list = sort[0];
+         ;) { /* The invariant (I) needed at this point is this:
+              ** 0. The lists "list" and "head" are sorted by frequency.
+              ** 1. list and list->next are not NULL;
+              ** 2. head == NULL or head->freq >= list->next->freq
+              ** 3. tail == NULL or list->freq+list->next->freq >= tail->freq.
+              ** Then, list and list->next can be merged into a subtree.
+              */
         f = list;
         s = list->next;
         list = s->next;
@@ -149,8 +147,7 @@ int *runb;     /* the run byte if any	*/
         tail = head ? (tail->next = f) : (head = f);
         tail->next = NIL(Vchtree_t *);
 
-        if (list)
-        {
+        if (list) {
             if (list->next && list->next->freq <= head->freq)
                 continue; /* invariant (I) satisfied, merge them */
 
@@ -164,22 +161,17 @@ int *runb;     /* the run byte if any	*/
             ** Now observe that tail->freq <= 2*head->freq and
             ** tail->freq <= 2*list->freq. This gives I.3 in all cases.
             */
-            if (p)
-            {
+            if (p) {
                 p->next = list;
                 list = head;
-            }
-            else
-            {
+            } else {
                 f = head->next;
                 head->next = list->next;
                 list->next = head;
             }
             if (!(head = f))
                 tail = NIL(Vchtree_t *);
-        }
-        else
-        {
+        } else {
             if ((list = head)->next == NIL(Vchtree_t *))
                 break; /* tree completed */
             head = tail = NIL(Vchtree_t *);
@@ -187,14 +179,12 @@ int *runb;     /* the run byte if any	*/
     }
 
     /* turn circular list into forward list, then compute final depths */
-    for (s = NIL(Vchtree_t *), f = list->link; f != list; f = p)
-    {
+    for (s = NIL(Vchtree_t *), f = list->link; f != list; f = p) {
         p = f->link;
         f->link = s;
         s = f;
     }
-    for (c = 0; s; s = s->link)
-    {
+    for (c = 0; s; s = s->link) {
         if ((size[s - tree] += size[s->next - tree]) > c)
             c = size[s - tree];
         /**/ DEBUG_ASSERT(size[s - tree] > 0 && size[s - tree] <= 32);

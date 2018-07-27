@@ -55,7 +55,6 @@ Vcdisc_t *disc;
     {
         vc->disc = disc;
         return old ? old : disc;
-    }
-    else
+    } else
         return disc;
 }

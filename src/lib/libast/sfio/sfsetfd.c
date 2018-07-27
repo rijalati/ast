@@ -71,36 +71,27 @@ int newfd;
     if (f->flags & SF_STRING)
         SFMTXRETURN(f, -1);
 
-    if ((f->mode & SF_INIT) && f->file < 0)
-    { /* restoring file descriptor after a previous freeze */
+    if ((f->mode & SF_INIT) && f->file < 0) { /* restoring file descriptor
+                                                 after a previous freeze */
         if (newfd < 0)
             SFMTXRETURN(f, -1);
-    }
-    else
-    { /* change file descriptor */
+    } else { /* change file descriptor */
         if ((f->mode & SF_RDWR) != f->mode && _sfmode(f, 0, 0) < 0)
             SFMTXRETURN(f, -1);
         SFLOCK(f, 0);
 
         oldfd = f->file;
-        if (oldfd >= 0)
-        {
-            if (newfd >= 0)
-            {
-                if ((newfd = _sfdup(oldfd, newfd)) < 0)
-                {
+        if (oldfd >= 0) {
+            if (newfd >= 0) {
+                if ((newfd = _sfdup(oldfd, newfd)) < 0) {
                     SFOPEN(f, 0);
                     SFMTXRETURN(f, -1);
                 }
                 CLOSE(oldfd);
-            }
-            else
-            { /* sync stream if necessary */
+            } else { /* sync stream if necessary */
                 if (((f->mode & SF_WRITE) && f->next > f->data)
-                    || (f->mode & SF_READ) || f->disc == _Sfudisc)
-                {
-                    if (SFSYNC(f) < 0)
-                    {
+                    || (f->mode & SF_READ) || f->disc == _Sfudisc) {
+                    if (SFSYNC(f) < 0) {
                         SFOPEN(f, 0);
                         SFMTXRETURN(f, -1);
                     }
@@ -108,15 +99,13 @@ int newfd;
 
                 if (((f->mode & SF_WRITE) && f->next > f->data)
                     || ((f->mode & SF_READ) && f->extent < 0
-                        && f->next < f->endb))
-                {
+                        && f->next < f->endb)) {
                     SFOPEN(f, 0);
                     SFMTXRETURN(f, -1);
                 }
 
 #if _mmap_worthy
-                if ((f->bits & SF_MMAP) && f->data)
-                {
+                if ((f->bits & SF_MMAP) && f->data) {
                     SFMUNMAP(f, f->data, f->endb - f->data);
                     f->data = NIL(uchar *);
                 }

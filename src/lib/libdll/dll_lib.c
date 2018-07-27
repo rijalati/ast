@@ -52,8 +52,7 @@ dllnames(const char *id, const char *name, Dllnames_t *names)
     if (strneq(name, id, n)
         && (streq(name + n, "_s") || streq(name + n, "_t")))
         return 0;
-    if (!names)
-    {
+    if (!names) {
         s = fmtbuf(sizeof(Dllnames_t *) + sizeof(names) - 1);
         if (n = (s - ( char * )0) % sizeof(names))
             s += sizeof(names) - n;
@@ -81,8 +80,7 @@ dllnames(const char *id, const char *name, Dllnames_t *names)
      * determine the optional type
      */
 
-    if (t = strrchr(s, ':'))
-    {
+    if (t = strrchr(s, ':')) {
         names->name = b;
         while (b < e && s < t)
             *b++ = *s++;
@@ -91,9 +89,7 @@ dllnames(const char *id, const char *name, Dllnames_t *names)
         while (b < e && *++t)
             *b++ = *t;
         *b++ = 0;
-    }
-    else
-    {
+    } else {
         names->name = ( char * )name;
         names->type = 0;
     }
@@ -129,8 +125,7 @@ dll_lib(Dllnames_t *names,
      */
 
     for (lib = loaded; lib; lib = lib->next)
-        if (streq(names->base, lib->base))
-        {
+        if (streq(names->base, lib->base)) {
             libf = lib->libf;
             goto init;
         }
@@ -156,8 +151,7 @@ dll_lib(Dllnames_t *names,
                                  RTLD_LAZY,
                                  names->path,
                                  names->data + sizeof(names->data)
-                                 - names->path))))
-    {
+                                 - names->path)))) {
         if (dllerrorf)
             (*dllerrorf)(NiL, disc, 2, "%s: library not found", names->name);
         else
@@ -175,8 +169,7 @@ dll_lib(Dllnames_t *names,
      */
 
     sfsprintf(sym, sizeof(sym), "%s_lib", names->id);
-    if (!(libf = ( Dll_lib_f )dlllook(dll, sym)))
-    {
+    if (!(libf = ( Dll_lib_f )dlllook(dll, sym))) {
         if (dllerrorf)
             (*dllerrorf)(
             NiL,
@@ -201,9 +194,10 @@ dll_lib(Dllnames_t *names,
      * add to the loaded list
      */
 
-    if (lib = newof(
-        0, Dll_lib_t, 1, (n = strlen(names->base)) + strlen(names->path) + 1))
-    {
+    if (lib = newof(0,
+                    Dll_lib_t,
+                    1,
+                    (n = strlen(names->base)) + strlen(names->path) + 1)) {
         lib->libf = libf;
         strcpy(lib->base, names->base);
         strcpy(lib->path = lib->base + n + 1, names->path);

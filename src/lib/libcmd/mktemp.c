@@ -83,10 +83,8 @@ b_mktemp(int argc, char **argv, Shbltin_t *context)
     char path[PATH_MAX];
 
     cmdinit(argc, argv, context, ERROR_CATALOG, ERROR_NOTIFY);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'd':
             directory = 1;
             continue;
@@ -128,31 +126,25 @@ b_mktemp(int argc, char **argv, Shbltin_t *context)
     argv += opt_info.index;
     if (error_info.errors || (pfx = *argv) && *++argv && *(argv + 1))
         error(ERROR_usage(2), "%s", optusage(NiL));
-    if (!pfx)
-    {
+    if (!pfx) {
         pfx = "tmp";
         if (dir && !*dir)
             dir = 0;
     }
-    if (*argv)
-    {
+    if (*argv) {
         dir = *argv;
-        if (*pfx == '/')
-        {
+        if (*pfx == '/') {
             fdp = 0;
             list = 0;
         }
-    }
-    else if (t = strrchr(pfx, '/'))
-    {
+    } else if (t = strrchr(pfx, '/')) {
         i = ++t - pfx;
         dir = fmtbuf(i);
         memcpy(dir, pfx, i);
         dir[i] = 0;
         pfx = t;
     }
-    if (directory)
-    {
+    if (directory) {
         i = strlen(pfx);
         t = pfx;
         pfx = fmtbuf(i + 2);
@@ -160,8 +152,7 @@ b_mktemp(int argc, char **argv, Shbltin_t *context)
         pfx[i] = '/';
         pfx[i + 1] = 0;
     }
-    if (fdp)
-    {
+    if (fdp) {
         mask = umask(0);
         if (!mode)
             mode = (fdp ? (S_IRUSR | S_IWUSR) : S_IRWXU) & ~mask;
@@ -169,14 +160,12 @@ b_mktemp(int argc, char **argv, Shbltin_t *context)
             mode |= S_IXUSR;
         umask(~mode & (S_IRWXU | S_IRWXG | S_IRWXO));
     }
-    if (pathtemp(path, sizeof(path), dir, pfx, fdp))
-    {
+    if (pathtemp(path, sizeof(path), dir, pfx, fdp)) {
         if (fdp)
             close(*fdp);
         if (list)
             sfputr(sfstdout, path, '\n');
-    }
-    else if (quiet)
+    } else if (quiet)
         error_info.errors++;
     else
         error(ERROR_SYSTEM | 2, "cannot create temporary path");

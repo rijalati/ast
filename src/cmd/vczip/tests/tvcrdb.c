@@ -84,8 +84,7 @@ MAIN()
     Vcodex_t *envc, *devc, *encd, *decd, *entbl, *detbl, *enbwt, *debwt;
 
     /* generate a random set of records */
-    for (k = 0, r = 0; r < N_RECORDS; ++r)
-    { /* fill in fields 0 and 1 */
+    for (k = 0, r = 0; r < N_RECORDS; ++r) { /* fill in fields 0 and 1 */
         e = trandom() % (sizeof(Field01) / sizeof(Field01[0]));
         n = LENGTH(Field01[e].len1);
         memcpy(Data + k, Field01[e].str1, n);
@@ -160,8 +159,7 @@ MAIN()
     info.recn = tbl->recn;
     if (!(tst = vcrdparse(&info, 0, 0, 0)))
         terror("vcrdparse(): Can't open test table");
-    for (k = 0; k < tbl->fldn; ++k)
-    {
+    for (k = 0; k < tbl->fldn; ++k) {
         if ((r = vcrdextract(tbl, k, buff[k], sizeof(buff[0]), VCRD_FIELD))
             <= 0)
             terror("vcrdextract(): failed on field %d", k);
@@ -211,8 +209,7 @@ MAIN()
         terror("vcrdextract(): extracted data were bad after transformation");
 
     /* test internal field transformation */
-    for (k = 0; k < tbl->fldn; ++k)
-    {
+    for (k = 0; k < tbl->fldn; ++k) {
         if ((r = vcrdextract(tbl, k, buff[0], sizeof(buff[0]), VCRD_RECORD))
             <= 0)
             terror("Cannot extract field 1");

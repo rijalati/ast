@@ -94,13 +94,11 @@ memory(Dt_t *dt, Void_t *addr, size_t size, Dtdisc_t *disc)
 
     size
     = ((size + sizeof(Void_t *) - 1) / sizeof(Void_t *)) * sizeof(Void_t *);
-    if (size <= dc->size)
-    {
+    if (size <= dc->size) {
         addr = ( Void_t * )dc->addr;
         dc->addr += size;
         dc->size -= size;
-    }
-    else
+    } else
         terror("Out of shared memory");
 
     asocasint(&dc->lock, 1, 0); /* release exclusive use */
@@ -116,14 +114,12 @@ sigchild(int sig)
     char *st, buf[128];
 
     pid = wait(&status);
-    if (WIFSIGNALED(status))
-    {
+    if (WIFSIGNALED(status)) {
         int sig = WTERMSIG(status);
         sprintf(
         buf, "signal %s", sig == 8 ? "fpe" : sig == 11 ? "segv" : "whatever");
         st = buf;
-    }
-    else if (WCOREDUMP(status))
+    } else if (WCOREDUMP(status))
         st = "coredump";
     else
         st = "normal";
@@ -148,8 +144,7 @@ workload(Dt_t *dt, Proc_t *proc, int p)
     while (asogetint(&State->insert)
            != N_PROC) /* wait until all processes are set */
         usleep(100);
-    for (k = 0; k < proc->objn; ++k)
-    {
+    for (k = 0; k < proc->objn; ++k) {
         if (k && k % PROGRESS == 0)
             tinfo("\tProcess %d(%d): insertion passing %d", p, pid, k);
 
@@ -168,8 +163,7 @@ workload(Dt_t *dt, Proc_t *proc, int p)
 
         if (k > SEARCH) /* search a few elements known to be inserted */
         {
-            for (s = 0; s < SEARCH; ++s)
-            {
+            for (s = 0; s < SEARCH; ++s) {
                 ssize_t r = random() % k;
                 or = proc->obj + r;
                 os = dtsearch(dt, or);
@@ -195,8 +189,7 @@ workload(Dt_t *dt, Proc_t *proc, int p)
     while (asogetint(&State->delete)
            != N_PROC) /* wait until all processes are set */
         usleep(100);
-    for (k = 0; k < proc->objn; ++k)
-    {
+    for (k = 0; k < proc->objn; ++k) {
         if (k && k % PROGRESS == 0)
             tinfo("\tProcess %d(%d): deletion passing %d", p, pid, k);
 
@@ -204,10 +197,8 @@ workload(Dt_t *dt, Proc_t *proc, int p)
             proc->obj[k].flag |= DELETE;
         Dcount += 1;
 
-        if (k > SEARCH)
-        {
-            for (s = 0; s < SEARCH; ++s)
-            {
+        if (k > SEARCH) {
+            for (s = 0; s < SEARCH; ++s) {
                 ssize_t r = random() % k;
                 or = proc->obj + r;
                 if (dtsearch(dt, or))
@@ -252,8 +243,7 @@ tmain()
     memset(State, 0, sizeof(State_t));
 
     /* construct the objects to be inserted */
-    for (k = 0; k < N_OBJ; ++k)
-    {
+    for (k = 0; k < N_OBJ; ++k) {
         Obj[k].flag = 0;
         sprintf(Obj[k].str, FORMAT, k);
     }
@@ -262,8 +252,7 @@ tmain()
     objn = N_OBJ / N_PROC;
     Proc[0].obj = &Obj[0];
     Proc[0].objn = objn;
-    for (k = 1; k < N_PROC; ++k)
-    {
+    for (k = 1; k < N_PROC; ++k) {
         Proc[k].obj = Proc[k - 1].obj + Proc[k - 1].objn;
         Proc[k].objn = k < (N_PROC - 1) ? objn : N_OBJ - (k * objn);
     }
@@ -288,14 +277,12 @@ tmain()
     workload(dt, Proc, 0);
 #else
     signal(SIGCHLD, sigchild);
-    for (k = 0; k < N_PROC; ++k)
-    {
+    for (k = 0; k < N_PROC; ++k) {
         if ((pid[k] = fork()) < 0)
             terror("Can't create child process");
         else if (pid[k] > 0) /* parent */
             tinfo("Just launched process %d (pid=%d)", k, pid[k]);
-        else
-        {
+        else {
             Pnum = k + 1;
             signal(SIGCHLD, SIG_IGN);
             workload(dt, Proc + k, k);

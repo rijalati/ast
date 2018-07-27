@@ -38,14 +38,12 @@ errorv(const char *id, int level, va_list ap)
 
     if (level < 0)
         flags = 0;
-    else
-    {
+    else {
         flags = level & ~ERROR_LEVEL;
         level &= ERROR_LEVEL;
     }
     a = va_arg(ap, char *);
-    if (level && ((s = error_info.id) || (s = ( char * )id)))
-    {
+    if (level && ((s = error_info.id) || (s = ( char * )id))) {
         if (!(flags & ERROR_USAGE))
             sfprintf(sfstderr, "%s: ", s);
         else if (strcmp(a, "%s"))
@@ -55,21 +53,16 @@ errorv(const char *id, int level, va_list ap)
         /*nop*/;
     else if (level < 0)
         sfprintf(sfstderr, "debug%d: ", level);
-    else if (level)
-    {
-        if (level == ERROR_WARNING)
-        {
+    else if (level) {
+        if (level == ERROR_WARNING) {
             sfprintf(sfstderr, "warning: ");
             error_info.warnings++;
-        }
-        else
-        {
+        } else {
             error_info.errors++;
             if (level == ERROR_PANIC)
                 sfprintf(sfstderr, "panic: ");
         }
-        if (error_info.line)
-        {
+        if (error_info.line) {
             if (error_info.file && *error_info.file)
                 sfprintf(sfstderr, "\"%s\", ", error_info.file);
             sfprintf(sfstderr, "line %d: ", error_info.line);

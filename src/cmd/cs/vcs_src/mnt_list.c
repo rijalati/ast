@@ -45,12 +45,10 @@ char **argv;
 
     opt_info.index = 1;
     while (n = optget(argv, "s:[server] "))
-        switch (n)
-        {
+        switch (n) {
         case 's':
             s = opt_info.arg;
-            if ((fd = csopen(s, CS_OPEN_READ)) < 0)
-            {
+            if ((fd = csopen(s, CS_OPEN_READ)) < 0) {
                 printf("cannot connect cs server %s\n", s);
                 return (-1);
             }
@@ -65,37 +63,29 @@ char **argv;
     argc -= opt_info.index;
     argv += opt_info.index;
 
-    if (argc == 0)
-    {
+    if (argc == 0) {
         seq = -1;
-        do
-        {
+        do {
             if (seq == -1)
                 sfsprintf(buf, sizeof(buf), "m -0\n");
             else
                 sfsprintf(buf, sizeof(buf), "m %d\n", seq);
             if (vcs_write(buf) <= 0 || vcs_read(reply, 1024) <= 0)
                 return (-1);
-            if (seq == -1)
-            {
-                if ((s = strstr(reply, "ok 0 ")) == NULL)
-                {
+            if (seq == -1) {
+                if ((s = strstr(reply, "ok 0 ")) == NULL) {
                     printf("%s", buf);
                     return (-1);
                 }
                 s += 5;
                 len = ( int )strtol(s, ( char ** )0, 0);
-            }
-            else
+            } else
                 printmtmsg(reply);
             seq++;
         } while (seq < len);
         return (0);
-    }
-    else
-    {
-        while (argc > 0)
-        {
+    } else {
+        while (argc > 0) {
             mpoint = *argv;
             sfsprintf(buf, sizeof(buf), "m %s\n", mpoint);
             if (vcs_write(buf) > 0 && vcs_read(reply, 1024) > 0)

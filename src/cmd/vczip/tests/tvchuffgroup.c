@@ -29,8 +29,7 @@ MAIN()
 
     /* generate random data */
     c = 'a';
-    for (endd = (d = data) + sizeof(data); d < endd;)
-    {
+    for (endd = (d = data) + sizeof(data); d < endd;) {
         for (k = 0; k < 64 && d < endd; ++k, ++d)
             *d = c + (random() % 2);
         if ((c += 2) > 'h')

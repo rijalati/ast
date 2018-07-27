@@ -56,8 +56,7 @@ realaddr(Cs_t *state, const char *name)
     messagef((state->id, NiL, -8, "realaddr(%s) call", name));
     state->flags &= ~CS_ADDR_NUMERIC;
     s = name;
-    if (streq(s, CS_HOST_LOCAL))
-    {
+    if (streq(s, CS_HOST_LOCAL)) {
         messagef((state->id,
                   NiL,
                   -8,
@@ -74,38 +73,31 @@ realaddr(Cs_t *state, const char *name)
      * check for 0xX.X.X.X or n.n.n.n
      */
 
-    if (*s == '0' && *(s + 1) == 'x')
-    {
+    if (*s == '0' && *(s + 1) == 'x') {
         s += 2;
         r = 16;
-    }
-    else
+    } else
         r = 0;
     addr.l = 0;
     n = 0;
-    do
-    {
+    do {
         addr.c[n] = strtol(s, ( char ** )&t, r) & 0xff;
         if (t == s)
             break;
         s = t;
     } while (++n < 4 && *s && *s++ == '.');
-    if (!*s && n == 4)
-    {
+    if (!*s && n == 4) {
         if (!addr.l
             || addr.c[0] == 127 && addr.c[1] == 0 && addr.c[2] == 0
-               && addr.c[3] <= 1)
-        {
+               && addr.c[3] <= 1) {
             addr.l = csaddr(state, NiL);
-            if (local == CS_LOCAL)
-            {
+            if (local == CS_LOCAL) {
                 addr.c[0] = 127;
                 addr.c[1] = 0;
                 addr.c[2] = 0;
                 addr.c[3] = 1;
                 local = addr.l;
-            }
-            else
+            } else
                 addr.l = local;
         }
         state->flags |= CS_ADDR_NUMERIC;
@@ -139,8 +131,7 @@ realaddr(Cs_t *state, const char *name)
              : 0;
 #    endif
     if (addr.c[0] == 127 && addr.c[1] == 0 && addr.c[2] == 0
-        && addr.c[3] <= 1)
-    {
+        && addr.c[3] <= 1) {
         if (local == CS_LOCAL)
             local = addr.l;
         else
@@ -184,8 +175,7 @@ csaddr(Cs_t *state, const char *aname)
     char *user;
 
     messagef((state->id, NiL, -8, "addr(%s) call", name));
-    if (!local)
-    {
+    if (!local) {
 #if CS_LIB_SOCKET
         if (!state->db)
             state->db = -1;
@@ -194,24 +184,20 @@ csaddr(Cs_t *state, const char *aname)
         if (addr = realaddr(state, csname(state, 0)))
             local = addr;
     }
-    if (!name)
-    {
+    if (!name) {
         addr = local;
         goto ok;
     }
-    if (s = strchr(name, '@'))
-    {
+    if (s = strchr(name, '@')) {
         userlen = s - name;
         user = name;
         name = s + 1;
     }
     if (strneq(name, CS_HOST_SHARE, sizeof(CS_HOST_SHARE) - 1))
-        switch (name[sizeof(CS_HOST_SHARE) - 1])
-        {
+        switch (name[sizeof(CS_HOST_SHARE) - 1]) {
         case 0:
             flags |= CS_ADDR_SHARE;
-            if (sp = csinfo(state, name, NiL))
-            {
+            if (sp = csinfo(state, name, NiL)) {
                 while (name = sfgetr(sp, '\n', 1))
                     if (addr = realaddr(state, name))
                         goto ok;
@@ -229,8 +215,7 @@ csaddr(Cs_t *state, const char *aname)
     if (addr = realaddr(state, name))
         goto ok;
     if ((flags & CS_ADDR_SHARE) && !(state->flags & CS_ADDR_NUMERIC)
-        && (s = strchr(name, '.')))
-    {
+        && (s = strchr(name, '.'))) {
         char *sb;
         char *se;
         char *sx;
@@ -244,17 +229,12 @@ csaddr(Cs_t *state, const char *aname)
         sb = s;
         se = 0;
         t = name;
-        while (*t && s < sx)
-        {
-            if (s - sb >= CS_MNT_MAX)
-            {
-                if (se)
-                {
+        while (*t && s < sx) {
+            if (s - sb >= CS_MNT_MAX) {
+                if (se) {
                     s = se - 1;
                     t = te;
-                }
-                else
-                {
+                } else {
                     if (s >= sx)
                         break;
                     if (*t == '.')
@@ -264,26 +244,21 @@ csaddr(Cs_t *state, const char *aname)
                 sb = s;
                 se = 0;
             }
-            if ((*s++ = *t++) == '.')
-            {
+            if ((*s++ = *t++) == '.') {
                 se = s;
                 te = t;
             }
         }
         *s = 0;
-        if (sp = csinfo(state, state->temp, NiL))
-        {
-            while (t = sfgetr(sp, '\n', 1))
-            {
+        if (sp = csinfo(state, state->temp, NiL)) {
+            while (t = sfgetr(sp, '\n', 1)) {
                 if (s = strchr(t, '@'))
                     s++;
                 else
                     s = t;
-                if (addr = realaddr(state, s))
-                {
+                if (addr = realaddr(state, s)) {
                     name = s;
-                    if (!userlen && s != t)
-                    {
+                    if (!userlen && s != t) {
                         userlen = s - t - 1;
                         user = t;
                     }
@@ -295,15 +270,13 @@ csaddr(Cs_t *state, const char *aname)
         }
         sfsprintf(
         state->temp, sizeof(state->temp), "%s.%s", CS_HOST_GATEWAY, name);
-        if (addr = realaddr(state, state->temp))
-        {
+        if (addr = realaddr(state, state->temp)) {
             name = state->temp;
             goto ok;
         }
         sfsprintf(
         state->temp, sizeof(state->temp), "%-.*s.%s", dot, name, name);
-        if (addr = realaddr(state, state->temp))
-        {
+        if (addr = realaddr(state, state->temp)) {
             name = state->temp;
             goto ok;
         }
@@ -313,15 +286,11 @@ csaddr(Cs_t *state, const char *aname)
 ok:
     if (state->flags & CS_ADDR_NUMERIC)
         flags &= ~CS_ADDR_SHARE;
-    if (addr == local)
-    {
+    if (addr == local) {
         flags |= CS_ADDR_LOCAL;
         name = csname(state, 0);
-    }
-    else if (!(state->flags & CS_ADDR_NUMERIC))
-    {
-        if (s = strchr(name, '.'))
-        {
+    } else if (!(state->flags & CS_ADDR_NUMERIC)) {
+        if (s = strchr(name, '.')) {
             sfsprintf(
             state->temp, sizeof(state->temp), "%-.*s", s - name, name);
             if (realaddr(state, state->temp) == addr)
@@ -339,8 +308,7 @@ ok:
      */
 
     strncpy(state->host, name, sizeof(state->host) - 1);
-    if (userlen)
-    {
+    if (userlen) {
         if (userlen >= sizeof(state->user))
             userlen = sizeof(state->user) - 1;
         strncpy(state->user, user, userlen);

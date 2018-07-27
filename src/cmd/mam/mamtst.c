@@ -69,8 +69,7 @@ main(int argc, char **argv)
     NoP(argc);
     error_info.id = "mamtst";
     while (c = optget(argv, "d#[debug]"))
-        switch (c)
-        {
+        switch (c) {
         case 'd':
             error_info.trace = -opt_info.num;
             break;

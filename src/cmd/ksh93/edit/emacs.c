@@ -199,8 +199,7 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
     char prompt[PRSIZE];
     genchar Screen[MAXLINE];
     memset(Screen, 0, sizeof(Screen));
-    if (!ep)
-    {
+    if (!ep) {
         ep = ed->e_emacs = newof(0, Emacs_t, 1, 0);
         ep->ed = ed;
         ep->prevdirection = 1;
@@ -209,8 +208,7 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
     Prompt = prompt;
     ep->screen = Screen;
     ep->lastdraw = FINAL;
-    if (tty_raw(ERRIO, 0) < 0)
-    {
+    if (tty_raw(ERRIO, 0) < 0) {
         return (reedit ? reedit : ed_read(context, fd, buff, scend, 0));
     }
     raw = 1;
@@ -223,8 +221,7 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
     if (reedit)
         ed_internal(buff, out);
 #endif /* SHOPT_MULTIBYTE */
-    if (!kstack)
-    {
+    if (!kstack) {
         kstack = ( genchar * )malloc(CHARSIZE * MAXLINE);
         kstack[0] = '\0';
     }
@@ -244,17 +241,14 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
     ep->in_mult = hloff; /* save pos in last command */
 #endif                   /* ESH_NFIRST */
     i = sigsetjmp(env, 0);
-    if (i != 0)
-    {
-        if (ep->ed->e_multiline)
-        {
+    if (i != 0) {
+        if (ep->ed->e_multiline) {
             cur = eol;
             draw(ep, FINAL);
             ed_flush(ep->ed);
         }
         tty_cooked(ERRIO);
-        if (i == UEOF)
-        {
+        if (i == UEOF) {
             return (0); /* EOF */
         }
         return (-1); /* some other error */
@@ -267,15 +261,13 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
     draw(ep, reedit ? REFRESH : FIRST);
     adjust = -1;
     backslash = 0;
-    if (ep->CntrlO)
-    {
+    if (ep->CntrlO) {
 #ifdef ESH_NFIRST
         ed_ungetchar(ep->ed, cntl('N'));
 #else
         location = hist_locate(
         shgd->hist_ptr, location.hist_command, location.hist_line, 1);
-        if (location.hist_command < histlines)
-        {
+        if (location.hist_command < histlines) {
             hline = location.hist_command;
             hloff = location.hist_line;
             hist_copy(( char * )kstack, MAXLINE, hline, hloff);
@@ -287,14 +279,11 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
 #endif     /* ESH_NFIRST */
     }
     ep->CntrlO = 0;
-    while ((c = ed_getchar(ep->ed, 0)) != (-1))
-    {
-        if (backslash)
-        {
+    while ((c = ed_getchar(ep->ed, 0)) != (-1)) {
+        if (backslash) {
             backslash = 0;
             if (c == usrerase || c == usrkill
-                || (!print(c) && (c != '\r' && c != '\n')))
-            {
+                || (!print(c) && (c != '\r' && c != '\n'))) {
                 /* accept a backslashed character */
                 cur--;
                 out[cur++] = c;
@@ -303,20 +292,13 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
                 continue;
             }
         }
-        if (c == usrkill)
-        {
+        if (c == usrkill) {
             c = KILLCHAR;
-        }
-        else if (c == usrerase)
-        {
+        } else if (c == usrerase) {
             c = ERASECHAR;
-        }
-        else if (c == usrlnext)
-        {
+        } else if (c == usrlnext) {
             c = LNEXTCHAR;
-        }
-        else if ((c == usreof) && (eol == 0))
-        {
+        } else if ((c == usreof) && (eol == 0)) {
             c = EOFCHAR;
         }
 #ifdef ESH_KAPPEND
@@ -330,8 +312,7 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
         i = cur;
         if (c != '\t' && c != ESC && !isdigit(c))
             ep->ed->e_tabcount = 0;
-        switch (c)
-        {
+        switch (c) {
         case LNEXTCHAR:
             c = ed_getchar(ep->ed, 2);
             goto do_default_processing;
@@ -354,22 +335,17 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
             continue;
 #endif /* u370 */
         case '\t':
-            if ((cur > 0 || ep->ed->e_tabcount) && ep->ed->sh->nextprompt)
-            {
-                if (ep->ed->e_tabcount == 0)
-                {
+            if ((cur > 0 || ep->ed->e_tabcount) && ep->ed->sh->nextprompt) {
+                if (ep->ed->e_tabcount == 0) {
                     ep->ed->e_tabcount = 1;
                     ed_ungetchar(ep->ed, ESC);
                     goto do_escape;
-                }
-                else if (ep->ed->e_tabcount == 1)
-                {
+                } else if (ep->ed->e_tabcount == 1) {
                     ed_ungetchar(ep->ed, '=');
                     goto do_escape;
                 }
                 ep->ed->e_tabcount = 0;
-            }
-            else
+            } else
                 ep->ed->e_tabcount = 1;
         do_default_processing:
         default:
@@ -385,11 +361,9 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
             out[cur++] = c;
             draw(ep, APPEND);
             continue;
-        case cntl('Y'):
-        {
+        case cntl('Y'): {
             c = genlen(kstack);
-            if ((c + eol) > scend)
-            {
+            if ((c + eol) > scend) {
                 beep();
                 continue;
             }
@@ -420,16 +394,14 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
                 c = genlen(kstack) + CHARSIZE; /* include '\0' */
                 while (c--)                    /* copy stuff */
                     kptr[c] = kstack[c];
-            }
-            else
+            } else
                 *kptr = 0; /* this is end of data */
             killing = 2;   /* we are killing */
             i -= count;
             eol -= count;
             genncpy(kstack, out + i, cur - i);
 #else
-            while ((count--) && (i > 0))
-            {
+            while ((count--) && (i > 0)) {
                 i--;
                 eol--;
             }
@@ -447,8 +419,7 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
                 ep->mark = eol;
             if (ep->mark == i)
                 continue;
-            if (ep->mark > i)
-            {
+            if (ep->mark > i) {
                 adjust = ep->mark - i;
                 ed_ungetchar(ep->ed, cntl('D'));
                 continue;
@@ -467,12 +438,10 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
 #else
             kptr = kstack;
 #endif /* ESH_KAPPEND */
-            while ((count--) && (eol > 0) && (i < eol))
-            {
+            while ((count--) && (eol > 0) && (i < eol)) {
                 *kptr++ = out[i];
                 eol--;
-                while (1)
-                {
+                while (1) {
                     if ((out[i] = out[(i + 1)]) == 0)
                         break;
                     i++;
@@ -482,13 +451,10 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
             *kptr = '\0';
             goto update;
         case cntl('C'):
-        case cntl('F'):
-        {
+        case cntl('F'): {
             int cntlC = (c == cntl('C'));
-            while (count-- && eol > i)
-            {
-                if (cntlC)
-                {
+            while (count-- && eol > i) {
+                if (cntlC) {
                     c = out[i];
 #if SHOPT_MULTIBYTE
                     if ((c & ~STRIP) == 0 && islower(c))
@@ -506,22 +472,19 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
         }
         case cntl(']'):
             c = ed_getchar(ep->ed, 1);
-            if ((count == 0) || (count > eol))
-            {
+            if ((count == 0) || (count > eol)) {
                 beep();
                 continue;
             }
             if (out[i])
                 i++;
-            while (i < eol)
-            {
+            while (i < eol) {
                 if (out[i] == c && --count == 0)
                     goto update;
                 i++;
             }
             i = 0;
-            while (i < cur)
-            {
+            while (i < cur) {
                 if (out[i] == c && --count == 0)
                     break;
                 i++;
@@ -540,14 +503,11 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
         case cntl('T'):
             if ((sh_isoption(ep->ed->sh, SH_EMACS)) && (eol != i))
                 i++;
-            if (i >= 2)
-            {
+            if (i >= 2) {
                 c = out[i - 1];
                 out[i - 1] = out[i - 2];
                 out[i - 2] = c;
-            }
-            else
-            {
+            } else {
                 if (sh_isoption(ep->ed->sh, SH_EMACS))
                     i--;
                 beep();
@@ -567,8 +527,7 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
             cur = 0;
             oadjust = -1;
         case cntl('K'):
-            if (oadjust >= 0)
-            {
+            if (oadjust >= 0) {
 #ifdef ESH_KAPPEND
                 killing = 2; /* set killing signal */
 #endif
@@ -590,23 +549,19 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
 #endif /* ESH_KAPPEND */
             out[i] = 0;
             draw(ep, UPDATE);
-            if (c == KILLCHAR)
-            {
-                if (ep->terminal == PAPER)
-                {
+            if (c == KILLCHAR) {
+                if (ep->terminal == PAPER) {
                     putchar(ep->ed, '\n');
                     putstring(ep, Prompt);
                 }
                 c = ed_getchar(ep->ed, 0);
-                if (c != usrkill)
-                {
+                if (c != usrkill) {
                     ed_ungetchar(ep->ed, c);
                     continue;
                 }
                 if (ep->terminal == PAPER)
                     ep->terminal = CRT;
-                else
-                {
+                else {
                     ep->terminal = PAPER;
                     putchar(ep->ed, '\n');
                     putstring(ep, Prompt);
@@ -628,10 +583,8 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
             goto drawline;
         case cntl('P'):
 #if SHOPT_EDPREDICT
-            if (ep->ed->hlist)
-            {
-                if (ep->ed->hoff == 0)
-                {
+            if (ep->ed->hlist) {
+                if (ep->ed->hoff == 0) {
                     beep();
                     continue;
                 }
@@ -641,8 +594,7 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
 #endif /* SHOPT_EDPREDICT */
             if (count <= hloff)
                 hloff -= count;
-            else
-            {
+            else {
                 hline -= count - hloff;
                 hloff = 0;
             }
@@ -668,10 +620,8 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
             goto process;
         case cntl('N'):
 #if SHOPT_EDPREDICT
-            if (ep->ed->hlist)
-            {
-                if (ep->ed->hoff >= ep->ed->hmax)
-                {
+            if (ep->ed->hlist) {
+                if (ep->ed->hoff >= ep->ed->hmax) {
                     beep();
                     continue;
                 }
@@ -687,8 +637,7 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
             hloff = location.hist_line;
 #endif /* ESH_NFIRST */
             location = hist_locate(shgd->hist_ptr, hline, hloff, count);
-            if (location.hist_command > histlines)
-            {
+            if (location.hist_command > histlines) {
                 beep();
 #ifdef ESH_NFIRST
                 location.hist_command = histlines;
@@ -720,21 +669,18 @@ ed_emacsread(void *context, int fd, char *buff, int scend, int reedit)
 
 process:
 
-    if (c == (-1))
-    {
+    if (c == (-1)) {
         lookahead = 0;
         beep();
         *out = '\0';
     }
     draw(ep, FINAL);
     tty_cooked(ERRIO);
-    if (ed->e_nlist)
-    {
+    if (ed->e_nlist) {
         ed->e_nlist = 0;
         stakset(ed->e_stkptr, ed->e_stkoff);
     }
-    if (c == '\n')
-    {
+    if (c == '\n') {
         out[eol++] = '\n';
         out[eol] = '\0';
         ed_crlf(ep->ed);
@@ -790,14 +736,12 @@ escape(Emacs_t *ep, genchar *out, int count)
     int digit, ch;
     digit = 0;
     value = 0;
-    while ((i = ed_getchar(ep->ed, 0)), isdigit(i))
-    {
+    while ((i = ed_getchar(ep->ed, 0)), isdigit(i)) {
         value *= 10;
         value += (i - '0');
         digit = 1;
     }
-    if (digit)
-    {
+    if (digit) {
         ed_ungetchar(ep->ed, i);
 #ifdef ESH_KAPPEND
         ++killing; /* don't modify killing signal */
@@ -807,8 +751,7 @@ escape(Emacs_t *ep, genchar *out, int count)
     value = count;
     if (value < 0)
         value = 1;
-    switch (ch = i)
-    {
+    switch (ch = i) {
     case cntl('V'):
         show_info(ep, fmtident(e_version));
         return (-1);
@@ -833,21 +776,17 @@ escape(Emacs_t *ep, genchar *out, int count)
     case 'l': /* M-l == lower-case */
     case 'd':
     case 'c':
-    case 'f':
-    {
+    case 'f': {
         i = cur;
-        while (value-- && i < eol)
-        {
+        while (value-- && i < eol) {
             while ((out[i]) && (!isword(i)))
                 i++;
             while ((out[i]) && (isword(i)))
                 i++;
         }
-        if (ch == 'l')
-        {
+        if (ch == 'l') {
             value = i - cur;
-            while (value-- > 0)
-            {
+            while (value-- > 0) {
                 i = out[cur];
 #if SHOPT_MULTIBYTE
                 if ((i & ~STRIP) == 0 && isupper(i))
@@ -866,15 +805,11 @@ escape(Emacs_t *ep, genchar *out, int count)
 
         else if (ch == 'f')
             goto update;
-        else if (ch == 'c')
-        {
+        else if (ch == 'c') {
             ed_ungetchar(ep->ed, cntl('C'));
             return (i - cur);
-        }
-        else
-        {
-            if (i - cur)
-            {
+        } else {
+            if (i - cur) {
                 ed_ungetchar(ep->ed, cntl('D'));
 #ifdef ESH_KAPPEND
                 ++killing; /* keep killing signal */
@@ -890,11 +825,9 @@ escape(Emacs_t *ep, genchar *out, int count)
     case 'b':
     case DELETE:
     case '\b':
-    case 'h':
-    {
+    case 'h': {
         i = cur;
-        while (value-- && i > 0)
-        {
+        while (value-- && i > 0) {
             i--;
             while ((i > 0) && (!isword(i)))
                 i--;
@@ -903,8 +836,7 @@ escape(Emacs_t *ep, genchar *out, int count)
         }
         if (ch == 'b')
             goto update;
-        else
-        {
+        else {
             ed_ungetchar(ep->ed, usrerase);
 #ifdef ESH_KAPPEND
             ++killing;
@@ -916,13 +848,10 @@ escape(Emacs_t *ep, genchar *out, int count)
     case '>':
         ed_ungetchar(ep->ed, cntl('N'));
 #ifdef ESH_NFIRST
-        if (ep->in_mult)
-        {
+        if (ep->in_mult) {
             location.hist_command = histlines;
             location.hist_line = ep->in_mult - 1;
-        }
-        else
-        {
+        } else {
             location.hist_command = histlines - 1;
             location.hist_line = 0;
         }
@@ -949,26 +878,22 @@ escape(Emacs_t *ep, genchar *out, int count)
         ed_ungetchar(ep->ed, cntl('A'));
         return (-1);
     case '_':
-    case '.':
-    {
+    case '.': {
         genchar name[MAXLINE];
         char buf[MAXLINE];
         char *ptr;
         ptr = hist_word(buf, MAXLINE, (count ? count : -1));
-        if (ptr == 0)
-        {
+        if (ptr == 0) {
             beep();
             break;
         }
-        if ((eol - cur) >= sizeof(name))
-        {
+        if ((eol - cur) >= sizeof(name)) {
             beep();
             return (-1);
         }
         ep->mark = cur;
         gencpy(name, &out[cur]);
-        while (*ptr)
-        {
+        while (*ptr) {
             out[cur++] = *ptr++;
             eol++;
         }
@@ -981,8 +906,7 @@ escape(Emacs_t *ep, genchar *out, int count)
 #    if SHOPT_EDPREDICT
     case '\n':
     case '\t':
-        if (!ep->ed->hlist)
-        {
+        if (!ep->ed->hlist) {
             beep();
             break;
         }
@@ -992,13 +916,11 @@ escape(Emacs_t *ep, genchar *out, int count)
     /* file name expansion */
     case cntl('['): /* filename completion */
 #    if SHOPT_EDPREDICT
-        if (ep->ed->hlist)
-        {
+        if (ep->ed->hlist) {
             value += ep->ed->hoff;
             if (value > ep->ed->nhlist)
                 beep();
-            else
-            {
+            else {
                 value = histlines - ep->ed->hlist[value - 1]->index;
                 ed_histlist(ep->ed, 0);
                 ed_ungetchar(ep->ed, cntl('P'));
@@ -1013,31 +935,24 @@ escape(Emacs_t *ep, genchar *out, int count)
         ch = i;
         if (i == '\\' && ep->mark > 0 && out[ep->mark - 1] == '/')
             i = '=';
-        if (ed_expand(ep->ed, ( char * )out, &cur, &eol, ch, count) < 0)
-        {
-            if (ep->ed->e_tabcount == 1)
-            {
+        if (ed_expand(ep->ed, ( char * )out, &cur, &eol, ch, count) < 0) {
+            if (ep->ed->e_tabcount == 1) {
                 ep->ed->e_tabcount = 2;
                 ed_ungetchar(ep->ed, cntl('\t'));
                 return (-1);
             }
             beep();
-        }
-        else if (i == '=' || (i == '\\' && out[cur - 1] == '/'))
-        {
+        } else if (i == '=' || (i == '\\' && out[cur - 1] == '/')) {
             draw(ep, REFRESH);
             if (count > 0 || i == '\\')
                 ep->ed->e_tabcount = 0;
-            else
-            {
+            else {
                 i = ed_getchar(ep->ed, 0);
                 ed_ungetchar(ep->ed, i);
                 if (isdigit(i))
                     ed_ungetchar(ep->ed, ESC);
             }
-        }
-        else
-        {
+        } else {
             if (i == '\\' && cur > ep->mark
                 && (out[cur - 1] == '/' || out[cur - 1] == ' '))
                 ep->ed->e_tabcount = 0;
@@ -1049,23 +964,20 @@ escape(Emacs_t *ep, genchar *out, int count)
     case cntl(']'): /* feature not in book */
     {
         int c = ed_getchar(ep->ed, 1);
-        if ((value == 0) || (value > eol))
-        {
+        if ((value == 0) || (value > eol)) {
             beep();
             return (-1);
         }
         i = cur;
         if (i > 0)
             i--;
-        while (i >= 0)
-        {
+        while (i >= 0) {
             if (out[i] == c && --value == 0)
                 goto update;
             i--;
         }
         i = eol;
-        while (i > cur)
-        {
+        while (i > cur) {
             if (out[i] == c && --value == 0)
                 break;
             i--;
@@ -1084,8 +996,7 @@ escape(Emacs_t *ep, genchar *out, int count)
 #    endif
     case 'O': /* after running top <ESC>O instead of <ESC>[ */
     case '[': /* feature not in book */
-        switch (i = ed_getchar(ep->ed, 1))
-        {
+        switch (i = ed_getchar(ep->ed, 1)) {
         case 'A':
 #    if SHOPT_EDPREDICT
             if (!ep->ed->hlist && cur > 0 && eol == cur
@@ -1095,8 +1006,7 @@ escape(Emacs_t *ep, genchar *out, int count)
                 && (cur < (SEARCHSIZE - 2) || ep->prevdirection == -2))
 #    endif /* SHOPT_EDPREDICT */
             {
-                if (ep->lastdraw == APPEND && ep->prevdirection != -2)
-                {
+                if (ep->lastdraw == APPEND && ep->prevdirection != -2) {
                     out[cur] = 0;
                     gencpy(( genchar * )lstring + 1, out);
 #    if SHOPT_MULTIBYTE
@@ -1105,8 +1015,7 @@ escape(Emacs_t *ep, genchar *out, int count)
                     *lstring = '^';
                     ep->prevdirection = -2;
                 }
-                if (*lstring)
-                {
+                if (*lstring) {
                     ed_ungetchar(ep->ed, '\r');
                     ed_ungetchar(ep->ed, cntl('R'));
                     return (-1);
@@ -1167,8 +1076,7 @@ xcommands(Emacs_t *ep, int count)
 {
     int i = ed_getchar(ep->ed, 0);
     NOT_USED(count);
-    switch (i)
-    {
+    switch (i) {
     case cntl('X'): /* exchange dot and mark */
         if (ep->mark > eol)
             ep->mark = eol;
@@ -1183,8 +1091,7 @@ xcommands(Emacs_t *ep, int count)
     case cntl('E'): /* invoke emacs on current command */
         if (ed_fulledit(ep->ed) == -1)
             beep();
-        else
-        {
+        else {
 #        if SHOPT_MULTIBYTE
             ed_internal(( char * )drawbuff, drawbuff);
 #        endif /* SHOPT_MULTIBYTE */
@@ -1201,18 +1108,16 @@ xcommands(Emacs_t *ep, int count)
 
         strcpy(hbuf, "Current command ");
         strcat(hbuf, itos(hline));
-        if (hloff)
-        {
+        if (hloff) {
             strcat(hbuf, " (line ");
             strcat(hbuf, itos(hloff + 1));
             strcat(hbuf, ")");
         }
-        if ((hline != location.hist_command) || (hloff != location.hist_line))
-        {
+        if ((hline != location.hist_command)
+            || (hloff != location.hist_line)) {
             strcat(hbuf, "; Previous command ");
             strcat(hbuf, itos(location.hist_command));
-            if (location.hist_line)
-            {
+            if (location.hist_line) {
                 strcat(hbuf, " (line ");
                 strcat(hbuf, itos(location.hist_line + 1));
                 strcat(hbuf, ")");
@@ -1270,29 +1175,23 @@ search(Emacs_t *ep, genchar *out, int direction)
     sl = 2;
     cur = sl;
     draw(ep, UPDATE);
-    while ((i = ed_getchar(ep->ed, 1)) && (i != '\r') && (i != '\n'))
-    {
-        if (i == usrerase || i == DELETE || i == '\b' || i == ERASECHAR)
-        {
-            if (sl > 2)
-            {
+    while ((i = ed_getchar(ep->ed, 1)) && (i != '\r') && (i != '\n')) {
+        if (i == usrerase || i == DELETE || i == '\b' || i == ERASECHAR) {
+            if (sl > 2) {
                 string[--sl] = '\0';
                 cur = sl;
                 draw(ep, UPDATE);
-            }
-            else
+            } else
                 goto restore;
             continue;
         }
         if (i == ep->ed->e_intr)
             goto restore;
-        if (i == usrkill)
-        {
+        if (i == usrkill) {
             beep();
             goto restore;
         }
-        if (i == '\\')
-        {
+        if (i == '\\') {
             string[sl++] = '\\';
             string[sl] = '\0';
             cur = sl;
@@ -1309,29 +1208,24 @@ search(Emacs_t *ep, genchar *out, int direction)
 
     if (ep->prevdirection == -2 && i != 2 || direction != 1)
         ep->prevdirection = -1;
-    if (direction < 1)
-    {
+    if (direction < 1) {
         ep->prevdirection = -ep->prevdirection;
         direction = 1;
-    }
-    else
+    } else
         direction = -1;
-    if (i != 2)
-    {
+    if (i != 2) {
 #if SHOPT_MULTIBYTE
         ed_external(string, ( char * )string);
 #endif /* SHOPT_MULTIBYTE */
         strncpy(lstring, (( char * )string) + 2, SEARCHSIZE);
         lstring[SEARCHSIZE - 1] = 0;
         ep->prevdirection = direction;
-    }
-    else
+    } else
         direction = ep->prevdirection;
     location
     = hist_find(shgd->hist_ptr, ( char * )lstring, hline, 1, direction);
     i = location.hist_command;
-    if (i > 0)
-    {
+    if (i > 0) {
         hline = i;
 #ifdef ESH_NFIRST
         hloff = location.hist_line
@@ -1345,8 +1239,7 @@ search(Emacs_t *ep, genchar *out, int direction)
 #endif /* SHOPT_MULTIBYTE */
         return;
     }
-    if (i < 0)
-    {
+    if (i < 0) {
         beep();
 #ifdef ESH_NFIRST
         location.hist_command = hline;
@@ -1390,14 +1283,12 @@ draw(Emacs_t *ep, Draw_t option)
     longline = NORMAL;
     ep->lastdraw = option;
 
-    if (option == FIRST || option == REFRESH)
-    {
+    if (option == FIRST || option == REFRESH) {
         ep->overflow = NORMAL;
         ep->cursor = ep->screen;
         ep->offset = 0;
         ep->cr_ok = crallowed;
-        if (option == FIRST)
-        {
+        if (option == FIRST) {
             ep->scvalid = 1;
             return;
         }
@@ -1409,8 +1300,7 @@ draw(Emacs_t *ep, Draw_t option)
      Do not update screen if pending characters
     **********************/
 
-    if ((lookahead) && (option != FINAL))
-    {
+    if ((lookahead) && (option != FINAL)) {
 
         ep->scvalid = 0; /* Screen is out of date, APPEND will not work */
 
@@ -1427,14 +1317,11 @@ draw(Emacs_t *ep, Draw_t option)
 
     i = cur ? *(logcursor - 1) : 0; /* last character inserted */
 #if SHOPT_EDPREDICT
-    if (option == FINAL)
-    {
+    if (option == FINAL) {
         if (ep->ed->hlist)
             ed_histlist(ep->ed, 0);
-    }
-    else if ((option == UPDATE || option == APPEND) && drawbuff[0] == '#'
-             && cur > 1 && cur == eol && drawbuff[cur - 1] != '*')
-    {
+    } else if ((option == UPDATE || option == APPEND) && drawbuff[0] == '#'
+               && cur > 1 && cur == eol && drawbuff[cur - 1] != '*') {
         int n;
         drawbuff[cur + 1] = 0;
 #    if SHOPT_MULTIBYTE
@@ -1444,20 +1331,17 @@ draw(Emacs_t *ep, Draw_t option)
 #    if SHOPT_MULTIBYTE
         ed_internal(( char * )drawbuff, drawbuff);
 #    endif /*SHOPT_MULTIBYTE */
-        if (ep->ed->hlist)
-        {
+        if (ep->ed->hlist) {
             ed_histlist(ep->ed, n);
             putstring(ep, Prompt);
             ed_setcursor(ep->ed, ep->screen, 0, ep->cursor - ep->screen, 0);
-        }
-        else
+        } else
             ed_ringbell();
     }
 #endif /* SHOPT_EDPREDICT */
 
     if ((option == APPEND) && (ep->scvalid) && (*logcursor == '\0')
-        && print(i) && ((ep->cursor - ep->screen) < (w_size - 1)))
-    {
+        && print(i) && ((ep->cursor - ep->screen) < (w_size - 1))) {
         putchar(ep->ed, i);
         *ep->cursor++ = i;
         *ep->cursor = '\0';
@@ -1479,8 +1363,7 @@ draw(Emacs_t *ep, Draw_t option)
 
     i = ncursor - nscreen;
 
-    if ((ep->offset && i <= ep->offset) || (i >= (ep->offset + w_size)))
-    {
+    if ((ep->offset && i <= ep->offset) || (i >= (ep->offset + w_size))) {
         /* Center the cursor on the screen */
         ep->offset = i - (w_size >> 1);
         if (--ep->offset < 0)
@@ -1498,21 +1381,17 @@ draw(Emacs_t *ep, Draw_t option)
 
     i = w_size;
 
-    while (i-- > 0)
-    {
+    while (i-- > 0) {
 
-        if (*nptr == '\0')
-        {
+        if (*nptr == '\0') {
             *(nptr + 1) = '\0';
             *nptr = ' ';
         }
-        if (*sptr == '\0')
-        {
+        if (*sptr == '\0') {
             *(sptr + 1) = '\0';
             *sptr = ' ';
         }
-        if (*nptr == *sptr)
-        {
+        if (*nptr == *sptr) {
             nptr++;
             sptr++;
             continue;
@@ -1520,8 +1399,7 @@ draw(Emacs_t *ep, Draw_t option)
         setcursor(ep, sptr - ep->screen, *nptr);
         *sptr++ = *nptr++;
 #if SHOPT_MULTIBYTE
-        while (*nptr == MARKER)
-        {
+        while (*nptr == MARKER) {
             if (*sptr == '\0')
                 *(sptr + 1) = '\0';
             *sptr++ = *nptr++;
@@ -1541,23 +1419,19 @@ draw(Emacs_t *ep, Draw_t option)
 
     ********************/
 
-    if (nscend >= &nscreen[ep->offset + w_size])
-    {
+    if (nscend >= &nscreen[ep->offset + w_size]) {
         if (ep->offset > 0)
             longline = BOTH;
         else
             longline = UPPER;
-    }
-    else
-    {
+    } else {
         if (ep->offset > 0)
             longline = LOWER;
     }
 
     /* Update screen overflow indicator if need be */
 
-    if (longline != ep->overflow)
-    {
+    if (longline != ep->overflow) {
         setcursor(ep, w_size, longline);
         ep->overflow = longline;
     }
@@ -1580,8 +1454,7 @@ setcursor(Emacs_t *ep, int newp, int c)
 {
     int oldp = ep->cursor - ep->screen;
     newp = ed_setcursor(ep->ed, ep->screen, oldp, newp, 0);
-    if (c)
-    {
+    if (c) {
         putchar(ep->ed, c);
         newp++;
     }

@@ -54,17 +54,14 @@ fmtmatch(const char *as)
     if (a = *s == '^')
         s++;
     e = 0;
-    for (;;)
-    {
-        switch (c = *s++)
-        {
+    for (;;) {
+        switch (c = *s++) {
         case 0:
             break;
         case '\\':
             if (!(c = *s++))
                 return 0;
-            switch (*s)
-            {
+            switch (*s) {
             case '*':
             case '+':
             case '?':
@@ -76,8 +73,7 @@ fmtmatch(const char *as)
                 break;
             case '|':
             case '&':
-                if (c == '(')
-                {
+                if (c == '(') {
                     *t++ = c;
                     c = *s++;
                     goto logical;
@@ -95,31 +91,25 @@ fmtmatch(const char *as)
         case '[':
             x = t;
             *t++ = c;
-            if ((c = *s++) == '^')
-            {
+            if ((c = *s++) == '^') {
                 *t++ = '!';
                 c = *s++;
-            }
-            else if (c == '!')
-            {
+            } else if (c == '!') {
                 *t++ = '\\';
                 *t++ = c;
                 c = *s++;
             }
-            for (;;)
-            {
+            for (;;) {
                 if (!(*t++ = c))
                     return 0;
                 if (c == '\\')
                     *t++ = c;
-                if ((c = *s++) == ']')
-                {
+                if ((c = *s++) == ']') {
                     *t++ = c;
                     break;
                 }
             }
-            switch (*s)
-            {
+            switch (*s) {
             case '*':
             case '+':
             case '?':
@@ -136,11 +126,9 @@ fmtmatch(const char *as)
             if (p >= &stack[elementsof(stack)])
                 return 0;
             *p++ = t;
-            if (*s == '?')
-            {
+            if (*s == '?') {
                 s++;
-                if (*s == 'K' && *(s + 1) == ')')
-                {
+                if (*s == 'K' && *(s + 1) == ')') {
                     s += 2;
                     p--;
                     while (*t = *s)
@@ -148,8 +136,7 @@ fmtmatch(const char *as)
                     continue;
                 }
                 *t++ = '~';
-            }
-            else
+            } else
                 *t++ = '@';
             *t++ = '(';
             continue;
@@ -158,8 +145,7 @@ fmtmatch(const char *as)
                 return 0;
             p--;
             *t++ = c;
-            switch (*s)
-            {
+            switch (*s) {
             case 0:
                 break;
             case '*':
@@ -167,8 +153,7 @@ fmtmatch(const char *as)
             case '?':
             case '!':
                 **p = *s++;
-                if (*s == '?')
-                {
+                if (*s == '?') {
                     s++;
                     x = *p + 1;
                     for (y = ++t; y > x; y--)
@@ -188,8 +173,7 @@ fmtmatch(const char *as)
                     *y = *(y - n);
                 for (x = *p; s < z; *x++ = *s++)
                     ;
-                if (*s == '?')
-                {
+                if (*s == '?') {
                     s++;
                     *x++ = '-';
                 }
@@ -199,8 +183,7 @@ fmtmatch(const char *as)
             }
             break;
         case '.':
-            switch (*s)
-            {
+            switch (*s) {
             case 0:
                 *t++ = '?';
                 break;
@@ -234,16 +217,14 @@ fmtmatch(const char *as)
             if (t == b || n == '(' || n == '|')
                 return 0;
             *(t - 1) = c;
-            if (c == '{')
-            {
+            if (c == '{') {
                 for (z = s; *z != '}'; z++)
                     if (!*z)
                         return 0;
                 for (; s <= z; *t++ = *s++)
                     ;
             }
-            if (*s == '?')
-            {
+            if (*s == '?') {
                 s++;
                 *t++ = '-';
             }
@@ -258,8 +239,7 @@ fmtmatch(const char *as)
         logical:
             if (!*s || *s == ')')
                 return 0;
-            if (p == stack && b == buf + 3)
-            {
+            if (p == stack && b == buf + 3) {
                 *--b = '(';
                 *--b = '@';
             }

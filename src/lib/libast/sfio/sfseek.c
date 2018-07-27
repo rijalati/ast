@@ -35,16 +35,14 @@ Sfoff_t p;
 #endif
 {
 #if _mmap_worthy
-    if ((f->bits & SF_MMAP) && f->data)
-    {
+    if ((f->bits & SF_MMAP) && f->data) {
         SFMUNMAP(f, f->data, f->endb - f->data);
         f->data = NIL(uchar *);
     }
 #endif
     f->next = f->endr = f->endw = f->data;
     f->endb = (f->mode & SF_WRITE) ? f->data + f->size : f->data;
-    if ((f->here = p) < 0)
-    {
+    if ((f->here = p) < 0) {
         f->extent = -1;
         f->here = 0;
     }
@@ -70,15 +68,13 @@ int type;                             /* 0: from org, 1: from here, 2: from end 
 
     hardseek = (type | f->flags) & (SF_SHARE | SF_PUBLIC);
 
-    if (hardseek && f->mode == (SF_READ | SF_SYNCED))
-    {
+    if (hardseek && f->mode == (SF_READ | SF_SYNCED)) {
         newpos(f, f->here);
         f->mode = SF_READ;
     }
 
     /* set and initialize the stream to a definite mode */
-    if (( int )SFMODE(f, local) != (mode = f->mode & SF_RDWR))
-    {
+    if (( int )SFMODE(f, local) != (mode = f->mode & SF_RDWR)) {
         int flags = f->flags;
 
         if (hardseek & SF_PUBLIC) /* seek ptr must follow file descriptor */
@@ -96,14 +92,12 @@ int type;                             /* 0: from org, 1: from here, 2: from end 
 
     /* Xopen-compliant */
     if ((type &= (SEEK_SET | SEEK_CUR | SEEK_END)) != SEEK_SET
-        && type != SEEK_CUR && type != SEEK_END)
-    {
+        && type != SEEK_CUR && type != SEEK_END) {
         errno = EINVAL;
         SFMTXRETURN(f, (Sfoff_t)(-1));
     }
 
-    if (f->extent < 0)
-    { /* let system call set errno */
+    if (f->extent < 0) { /* let system call set errno */
         ( void )SFSK(f, ( Sfoff_t )0, SEEK_CUR, f->disc);
         SFMTXRETURN(f, (Sfoff_t)(-1));
     }
@@ -118,8 +112,7 @@ int type;                             /* 0: from org, 1: from here, 2: from end 
     /* clear error and eof bits */
     f->flags &= ~(SF_EOF | SF_ERROR);
 
-    while (f->flags & SF_STRING)
-    {
+    while (f->flags & SF_STRING) {
         SFSTRSIZE(f);
 
         if (type == SEEK_CUR)
@@ -129,8 +122,7 @@ int type;                             /* 0: from org, 1: from here, 2: from end 
         else
             r = p;
 
-        if (r >= 0 && r <= f->size)
-        {
+        if (r >= 0 && r <= f->size) {
             p = r;
             f->next = f->data + p;
             f->here = p;
@@ -141,44 +133,35 @@ int type;                             /* 0: from org, 1: from here, 2: from end 
         }
 
         /* check exception handler, note that this may pop stream */
-        if (SFSK(f, r, SEEK_SET, f->disc) != r)
-        {
+        if (SFSK(f, r, SEEK_SET, f->disc) != r) {
             p = -1;
             goto done;
-        }
-        else if (!(f->flags & SF_STRING))
-        {
+        } else if (!(f->flags & SF_STRING)) {
             p = r;
             goto done;
         }
     }
 
-    if (f->mode & SF_WRITE)
-    { /* see if we can avoid flushing buffer */
-        if (!hardseek && type < SEEK_END && !(f->flags & SF_APPENDWR))
-        {
+    if (f->mode & SF_WRITE) { /* see if we can avoid flushing buffer */
+        if (!hardseek && type < SEEK_END && !(f->flags & SF_APPENDWR)) {
             s = f->here + (f->next - f->data);
             r = p + (type == SEEK_SET ? 0 : s);
-            if (r == s)
-            {
+            if (r == s) {
                 p = r;
                 goto done;
             }
         }
 
-        if (f->next > f->data && SFSYNC(f) < 0)
-        {
+        if (f->next > f->data && SFSYNC(f) < 0) {
             p = -1;
             goto done;
         }
     }
 
-    if (type == SEEK_END || (f->mode & SF_WRITE))
-    {
+    if (type == SEEK_END || (f->mode & SF_WRITE)) {
         if ((hardseek & SF_PUBLIC) || type == SEEK_END)
             p = SFSK(f, p, type, f->disc);
-        else
-        {
+        else {
             r = p + (type == SEEK_CUR ? f->here : 0);
             p
             = (hardseek || r != f->here) ? SFSK(f, r, SEEK_SET, f->disc) : r;
@@ -192,27 +175,20 @@ int type;                             /* 0: from org, 1: from here, 2: from end 
     /* if get here, must be a read stream */
     s = f->here - (f->endb - f->next);
     r = p + (type == SEEK_CUR ? s : 0);
-    if (r <= f->here && r >= (f->here - (f->endb - f->data)))
-    {
-        if ((hardseek || (type == SEEK_CUR && p == 0)))
-        {
+    if (r <= f->here && r >= (f->here - (f->endb - f->data))) {
+        if ((hardseek || (type == SEEK_CUR && p == 0))) {
             if ((s = SFSK(f, ( Sfoff_t )0, SEEK_CUR, f->disc)) == f->here
                 || (s >= 0 && !(hardseek & SF_PUBLIC)
                     && (s = SFSK(f, f->here, SEEK_SET, f->disc)) == f->here))
                 goto near_done;
-            else if (s < 0)
-            {
+            else if (s < 0) {
                 p = -1;
                 goto done;
-            }
-            else
-            {
+            } else {
                 newpos(f, s);
                 hardseek = 0;
             }
-        }
-        else
-        {
+        } else {
         near_done:
             f->next = f->endb - (f->here - r);
             p = r;
@@ -225,15 +201,13 @@ int type;                             /* 0: from org, 1: from here, 2: from end 
         goto done;
 
 #if _mmap_worthy
-    if (f->bits & SF_MMAP)
-    { /* if mmap is not great, stop mmaping if moving around too much */
+    if (f->bits & SF_MMAP) { /* if mmap is not great, stop mmaping if moving
+                                around too much */
 #    if _mmap_worthy < 2
-        if ((f->next - f->data) < ((f->endb - f->data) / 4))
-        {
+        if ((f->next - f->data) < ((f->endb - f->data) / 4)) {
             SFSETBUF(f, ( Void_t * )f->tiny, ( size_t )SF_UNBOUND);
             hardseek = 1; /* this forces a hard seek below */
-        }
-        else
+        } else
 #    endif
         { /* for mmap, f->here can be virtual except for hardseek */
             newpos(f, p);
@@ -243,8 +217,7 @@ int type;                             /* 0: from org, 1: from here, 2: from end 
     }
 #endif
 
-    if (f->endb > f->next)
-    { /* reduce wastage in future buffer fillings */
+    if (f->endb > f->next) { /* reduce wastage in future buffer fillings */
         f->iosz = (f->next - f->data) + (f->endb - f->next) / 2;
         f->iosz = ((f->iosz + f->blksz - 1) / f->blksz) * f->blksz;
     }
@@ -256,16 +229,14 @@ int type;                             /* 0: from org, 1: from here, 2: from end 
 
     /* small backseeks often come in bunches, so seek back as far as possible
      */
-    if (p < f->lpos && f->size > f->blksz && (p + f->blksz) > s)
-    {
+    if (p < f->lpos && f->size > f->blksz && (p + f->blksz) > s) {
         if ((r = s - f->size) < 0)
             r = 0;
     }
     /* try to align buffer to block boundary to enhance I/O speed */
     else if (f->blksz > 0 && f->size >= 2 * f->blksz)
         r = p - (p % f->blksz);
-    else
-    {
+    else {
         r = p;
 
         /* seeking around and wasting data, be conservative */
@@ -274,8 +245,7 @@ int type;                             /* 0: from org, 1: from here, 2: from end 
     }
 
     if ((hardseek || r != f->here)
-        && (f->here = SFSK(f, r, SEEK_SET, f->disc)) != r)
-    {
+        && (f->here = SFSK(f, r, SEEK_SET, f->disc)) != r) {
         if (r < p) /* now try to just get to p */
             f->here = SFSK(f, p, SEEK_SET, f->disc);
         if (f->here != p)

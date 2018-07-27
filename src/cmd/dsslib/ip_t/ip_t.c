@@ -111,8 +111,7 @@ addrv4_internal(Cx_t *cx,
     char *e;
     Ptaddr_t addr;
 
-    if (strtoip4(buf, &e, &addr, NiL))
-    {
+    if (strtoip4(buf, &e, &addr, NiL)) {
         if (disc->errorf && !(cx->flags & CX_QUIET))
             (*disc->errorf)(
             cx, disc, 1, "%-.*s: invalid ipv4 address", size, buf);
@@ -138,29 +137,24 @@ addrv6_external(Cx_t *cx,
     int i;
 
     pp = ( unsigned char * )value->buffer.data;
-    if (!(s = ( char * )CXDETAILS(details, format, type, 0)))
-    {
+    if (!(s = ( char * )CXDETAILS(details, format, type, 0))) {
         s = pp ? fmtip6(pp, -1) : "(nil)";
         n = strlen(s);
         if ((n + 1) > size)
             return n + 1;
         memcpy(buf, s, n + 1);
-    }
-    else if (s[0] == 'C' && s[1] == 0)
-    {
+    } else if (s[0] == 'C' && s[1] == 0) {
         n = 80;
         if (size < n)
             return n;
         s = buf;
-        for (i = 0; i < IP6BITS; i++)
-        {
+        for (i = 0; i < IP6BITS; i++) {
             if (i)
                 *s++ = ',';
             s += sfsprintf(s, 6, "0x%02x", pp ? pp[i] : 0);
         }
         *s = 0;
-    }
-    else
+    } else
         n = -1;
     return n;
 }
@@ -180,8 +174,7 @@ addrv6_internal(Cx_t *cx,
     unsigned char *ap;
     unsigned char addr[IP6ADDR];
 
-    if (strtoip6(buf, &e, addr, NiL))
-    {
+    if (strtoip6(buf, &e, addr, NiL)) {
         if (disc->errorf && !(cx->flags & CX_QUIET))
             (*disc->errorf)(
             cx, disc, 1, "%-.*s: invalid ipv6 address", size, buf);
@@ -189,8 +182,7 @@ addrv6_internal(Cx_t *cx,
     }
     if (!vm)
         vm = Vmregion;
-    if (!(ap = vmnewof(vm, 0, unsigned char, IP6ADDR, 0)))
-    {
+    if (!(ap = vmnewof(vm, 0, unsigned char, IP6ADDR, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -214,8 +206,7 @@ addr_external(Cx_t *cx,
     char *s;
     ssize_t n;
 
-    if (!value->buffer.data || !value->buffer.size)
-    {
+    if (!value->buffer.data || !value->buffer.size) {
         s = fmtip4(( Ptaddr_t )0, -1);
         n = strlen(s);
         if ((n + 1) > size)
@@ -245,19 +236,16 @@ addr_internal(Cx_t *cx,
     unsigned char addrv6[IP6ADDR];
 
     if (!strtoip4(buf, &e, &addrv4, NiL)
-        && (e >= (( char * )buf + size) || !isalnum(*e) && *e != '.'))
-    {
+        && (e >= (( char * )buf + size) || !isalnum(*e) && *e != '.')) {
         ret->value.number = addrv4;
         ret->type = IPV4ADDR_T;
         return e - ( char * )buf;
     }
     if (!strtoip6(buf, &e, addrv6, NiL)
-        && (e >= (( char * )buf + size) || !isalnum(*e) && *e != '.'))
-    {
+        && (e >= (( char * )buf + size) || !isalnum(*e) && *e != '.')) {
         if (!vm)
             vm = Vmregion;
-        if (!(ap = vmnewof(vm, 0, unsigned char, IP6ADDR, 0)))
-        {
+        if (!(ap = vmnewof(vm, 0, unsigned char, IP6ADDR, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
@@ -342,13 +330,11 @@ as32_internal(Cx_t *cx,
     unsigned long as;
 
     as = ( unsigned int )strtoul(buf, &e, 10);
-    if (*e == '.')
-    {
+    if (*e == '.') {
         as <<= 16;
         as += ( unsigned int )strtoul(e, &e, 10);
     }
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf && !(cx->flags & CX_QUIET))
             (*disc->errorf)(
             cx, disc, 1, "%-.*s: invalid as32 number", size, buf);
@@ -419,8 +405,7 @@ aspath_internal(Cx_t *cx,
         b++;
     while (b < e && isdigit(*b))
         b++;
-    if (b < e && *b == '.')
-    {
+    if (b < e && *b == '.') {
         ret->type = AS32PATH_T;
         itl4internal(cx, &ret->value, 0, 1, 1, buf, size, vm, disc);
     }
@@ -444,8 +429,7 @@ aspath_match_comp(Cx_t *cx,
 {
     Path_match_t *pm;
 
-    if (!cxisstring(pat))
-    {
+    if (!cxisstring(pat)) {
         if (disc->errorf)
             (*disc->errorf)(NiL,
                             disc,
@@ -456,8 +440,7 @@ aspath_match_comp(Cx_t *cx,
                             sub->name);
         return 0;
     }
-    if (!(pm = newof(0, Path_match_t, 1, strlen(val->string.data))))
-    {
+    if (!(pm = newof(0, Path_match_t, 1, strlen(val->string.data)))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
@@ -476,19 +459,15 @@ aspath_match_exec(Cx_t *cx,
     Path_match_t *pm = ( Path_match_t * )data;
     Ire_t *ire;
 
-    if (type->externalf == as32path_external)
-    {
-        if (!(ire = pm->ire32))
-        {
+    if (type->externalf == as32path_external) {
+        if (!(ire = pm->ire32)) {
             iredisc.version = IRE_VERSION;
             iredisc.errorf = disc->errorf;
             if (!(ire = irecomp(pm->pat, 4, 0, 1, 1, &iredisc)))
                 return -2;
             pm->ire32 = ire;
         }
-    }
-    else if (!(ire = pm->ire16))
-    {
+    } else if (!(ire = pm->ire16)) {
         iredisc.version = IRE_VERSION;
         iredisc.errorf = disc->errorf;
         if (!(ire = irecomp(pm->pat, 2, 0, 1, 1, &iredisc)))
@@ -546,8 +525,7 @@ cluster_match_comp(Cx_t *cx,
                    Cxvalue_t *val,
                    Cxdisc_t *disc)
 {
-    if (!cxisstring(pat))
-    {
+    if (!cxisstring(pat)) {
         if (disc->errorf)
             (*disc->errorf)(NiL,
                             disc,
@@ -602,8 +580,7 @@ community_match_comp(Cx_t *cx,
                      Cxvalue_t *val,
                      Cxdisc_t *disc)
 {
-    if (!cxisstring(pat))
-    {
+    if (!cxisstring(pat)) {
         if (disc->errorf)
             (*disc->errorf)(NiL,
                             disc,
@@ -658,8 +635,7 @@ extended_match_comp(Cx_t *cx,
                     Cxvalue_t *val,
                     Cxdisc_t *disc)
 {
-    if (!cxisstring(pat))
-    {
+    if (!cxisstring(pat)) {
         if (disc->errorf)
             (*disc->errorf)(NiL,
                             disc,
@@ -714,8 +690,7 @@ identifier_match_comp(Cx_t *cx,
                       Cxvalue_t *val,
                       Cxdisc_t *disc)
 {
-    if (!cxisstring(pat))
-    {
+    if (!cxisstring(pat)) {
         if (disc->errorf)
             (*disc->errorf)(NiL,
                             disc,
@@ -770,8 +745,7 @@ labels_match_comp(Cx_t *cx,
                   Cxvalue_t *val,
                   Cxdisc_t *disc)
 {
-    if (!cxisstring(pat))
-    {
+    if (!cxisstring(pat)) {
         if (disc->errorf)
             (*disc->errorf)(NiL,
                             disc,
@@ -826,8 +800,7 @@ values_match_comp(Cx_t *cx,
                   Cxvalue_t *val,
                   Cxdisc_t *disc)
 {
-    if (!cxisstring(pat))
-    {
+    if (!cxisstring(pat)) {
         if (disc->errorf)
             (*disc->errorf)(NiL,
                             disc,
@@ -883,8 +856,7 @@ prefixv4_internal(Cx_t *cx,
     Ptaddr_t addr;
     unsigned char bits;
 
-    if (strtoip4(buf, &e, &addr, &bits))
-    {
+    if (strtoip4(buf, &e, &addr, &bits)) {
         if (disc->errorf && !(cx->flags & CX_QUIET))
             (*disc->errorf)(
             cx, disc, 1, "%-.*s: invalid ipv4 prefix", size, buf);
@@ -910,29 +882,24 @@ prefixv6_external(Cx_t *cx,
     int i;
 
     pp = ( unsigned char * )value->buffer.data;
-    if (!(s = ( char * )CXDETAILS(details, format, type, 0)))
-    {
+    if (!(s = ( char * )CXDETAILS(details, format, type, 0))) {
         s = pp ? fmtip6(pp, pp[IP6BITS]) : "(nil)";
         n = strlen(s);
         if ((n + 1) > size)
             return n + 1;
         memcpy(buf, s, n + 1);
-    }
-    else if (s[0] == 'C' && s[1] == 0)
-    {
+    } else if (s[0] == 'C' && s[1] == 0) {
         n = 84;
         if (size < n)
             return n;
         s = buf;
-        for (i = 0; i <= IP6BITS; i++)
-        {
+        for (i = 0; i <= IP6BITS; i++) {
             if (i)
                 *s++ = ',';
             s += sfsprintf(s, 6, "0x%02x", pp ? pp[i] : 0);
         }
         *s = 0;
-    }
-    else
+    } else
         n = -1;
     return n;
 }
@@ -952,8 +919,7 @@ prefixv6_internal(Cx_t *cx,
     unsigned char *pp;
     unsigned char prefix[IP6PREFIX];
 
-    if (strtoip6(buf, &e, prefix, prefix + IP6BITS))
-    {
+    if (strtoip6(buf, &e, prefix, prefix + IP6BITS)) {
         if (disc->errorf && !(cx->flags & CX_QUIET))
             (*disc->errorf)(
             cx, disc, 1, "%-.*s: invalid ipv6 address", size, buf);
@@ -961,8 +927,7 @@ prefixv6_internal(Cx_t *cx,
     }
     if (!vm)
         vm = Vmregion;
-    if (!(pp = vmnewof(vm, 0, unsigned char, IP6PREFIX, 0)))
-    {
+    if (!(pp = vmnewof(vm, 0, unsigned char, IP6PREFIX, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -1005,19 +970,16 @@ prefix_internal(Cx_t *cx,
     unsigned char bits;
 
     if (!strtoip4(buf, &e, &prefixv4, &bits)
-        && (e >= (( char * )buf + size) || !*e || isspace(*e)))
-    {
+        && (e >= (( char * )buf + size) || !*e || isspace(*e))) {
         ret->value.number = PREFIX(prefixv4, bits);
         ret->type = IPV4PREFIX_T;
         return e - ( char * )buf;
     }
     if (!strtoip6(buf, &e, prefixv6, prefixv6 + IP6BITS)
-        && (e >= (( char * )buf + size) || !*e || isspace(*e)))
-    {
+        && (e >= (( char * )buf + size) || !*e || isspace(*e))) {
         if (!vm)
             vm = Vmregion;
-        if (!(pp = vmnewof(vm, 0, unsigned char, IP6PREFIX, 0)))
-        {
+        if (!(pp = vmnewof(vm, 0, unsigned char, IP6PREFIX, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
@@ -1197,38 +1159,28 @@ ptload(int str, Cxvalue_t *val, Ptdisc_t *ptdisc, Cxdisc_t *disc)
 
     if (!(pt = ptopen(ptdisc)))
         return 0;
-    if (!str)
-    {
+    if (!str) {
         addr = PREFIX_ADDR(val->number);
         bits = PREFIX_BITS(val->number);
-        if (!ptinsert(pt, PTMIN(addr, bits), PTMAX(addr, bits)))
-        {
+        if (!ptinsert(pt, PTMIN(addr, bits), PTMAX(addr, bits))) {
             ptclose(pt);
             return 0;
         }
-    }
-    else if (*(s = val->string.data) != '<')
-    {
-        while (!strtoip4(s, &t, &addr, &bits))
-        {
-            if (!ptinsert(pt, PTMIN(addr, bits), PTMAX(addr, bits)))
-            {
+    } else if (*(s = val->string.data) != '<') {
+        while (!strtoip4(s, &t, &addr, &bits)) {
+            if (!ptinsert(pt, PTMIN(addr, bits), PTMAX(addr, bits))) {
                 ptclose(pt);
                 return 0;
             }
             s = t;
         }
-    }
-    else if ((meth = dssmeth("bgp", disc))
-             && (dss = dssopen(0, 0, disc, meth)))
-    {
-        if (ip = dssfopen(dss, s + 1, NiL, DSS_FILE_READ, NiL))
-        {
+    } else if ((meth = dssmeth("bgp", disc))
+               && (dss = dssopen(0, 0, disc, meth))) {
+        if (ip = dssfopen(dss, s + 1, NiL, DSS_FILE_READ, NiL)) {
             while (rp = ( Bgproute_t * )dssfread(ip))
                 if (!ptinsert(pt,
                               PTMIN(rp->addr.v4, rp->bits),
-                              PTMAX(rp->addr.v4, rp->bits)))
-                {
+                              PTMAX(rp->addr.v4, rp->bits))) {
                     dssfclose(ip);
                     ptclose(pt);
                     return 0;
@@ -1261,37 +1213,28 @@ ptvload(int str, Cxvalue_t *val, Ptdisc_t *ptdisc, Cxdisc_t *disc)
 
     if (!(ptv = ptvopen(ptdisc, 16)))
         return 0;
-    if (!str)
-    {
+    if (!str) {
         pp = ( unsigned char * )val->buffer.data;
         if (!ptvinsert(ptv,
                        ptvmin(ptv->size, ptv->r[0], pp, pp[IP6BITS]),
-                       ptvmax(ptv->size, ptv->r[1], pp, pp[IP6BITS])))
-        {
+                       ptvmax(ptv->size, ptv->r[1], pp, pp[IP6BITS]))) {
             ptvclose(ptv);
             return 0;
         }
-    }
-    else if (*(s = val->buffer.data) != '<')
-    {
-        while (!strtoip6(s, &t, prefix, prefix + IP6BITS))
-        {
+    } else if (*(s = val->buffer.data) != '<') {
+        while (!strtoip6(s, &t, prefix, prefix + IP6BITS)) {
             if (!ptvinsert(
                 ptv,
                 ptvmin(ptv->size, ptv->r[0], prefix, prefix[IP6BITS]),
-                ptvmax(ptv->size, ptv->r[1], prefix, prefix[IP6BITS])))
-            {
+                ptvmax(ptv->size, ptv->r[1], prefix, prefix[IP6BITS]))) {
                 ptvclose(ptv);
                 return 0;
             }
             s = t;
         }
-    }
-    else if ((meth = dssmeth("bgp", disc))
-             && (dss = dssopen(0, 0, disc, meth)))
-    {
-        if (ip = dssfopen(dss, s + 1, NiL, DSS_FILE_READ, NiL))
-        {
+    } else if ((meth = dssmeth("bgp", disc))
+               && (dss = dssopen(0, 0, disc, meth))) {
+        if (ip = dssfopen(dss, s + 1, NiL, DSS_FILE_READ, NiL)) {
             while (rp = ( Bgproute_t * )dssfread(ip))
                 if (!ptvinsert(ptv,
                                ptvmin(ptv->size,
@@ -1301,8 +1244,7 @@ ptvload(int str, Cxvalue_t *val, Ptdisc_t *ptdisc, Cxdisc_t *disc)
                                ptvmax(ptv->size,
                                       ptv->r[1],
                                       rp->prefixv6,
-                                      rp->prefixv6[IP6BITS])))
-                {
+                                      rp->prefixv6[IP6BITS]))) {
                     dssfclose(ip);
                     ptvclose(ptv);
                     return 0;
@@ -1334,8 +1276,7 @@ prefix_match_comp(Cx_t *cx,
 {
     Prefix_match_t *pm;
 
-    if (!cxisstring(pat))
-    {
+    if (!cxisstring(pat)) {
         if (disc->errorf)
             (*disc->errorf)(NiL,
                             disc,
@@ -1346,8 +1287,7 @@ prefix_match_comp(Cx_t *cx,
                             sub->name);
         return 0;
     }
-    if (!(pm = newof(0, Prefix_match_t, 1, strlen(val->string.data))))
-    {
+    if (!(pm = newof(0, Prefix_match_t, 1, strlen(val->string.data)))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
@@ -1368,10 +1308,8 @@ prefix_match_exec(Cx_t *cx,
     Prefix_match_t *pm = ( Prefix_match_t * )data;
 
     if (type->externalf == addrv6_external
-        || type->externalf == prefixv6_external)
-    {
-        if (!pm->ptv)
-        {
+        || type->externalf == prefixv6_external) {
+        if (!pm->ptv) {
             ptvinit(&pm->ptdisc);
             pm->ptdisc.errorf = disc->errorf;
             pm->prefix = type->externalf == prefixv6_external;
@@ -1380,8 +1318,7 @@ prefix_match_exec(Cx_t *cx,
         }
         return ptvmatch(pm->ptv, ( Ptvaddr_t )val->buffer.data) != 0;
     }
-    if (!pm->pt)
-    {
+    if (!pm->pt) {
         ptinit(&pm->ptdisc);
         pm->ptdisc.errorf = disc->errorf;
         pm->prefix = type->externalf == prefixv6_external;

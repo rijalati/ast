@@ -40,10 +40,8 @@ portbind(Cs_t *state, const char *type, unsigned long addr, unsigned int port)
     int fd;
     struct tcpuser tcp;
 
-    if (streq(type, "udp"))
-    {
-        if (!addr)
-        {
+    if (streq(type, "udp")) {
+        if (!addr) {
             if ((fd = udp_datagram(port)) < 0)
                 messagef(
                 (state->id, NiL, -1, "bind: %s: udp_datagram error", type));
@@ -55,11 +53,8 @@ portbind(Cs_t *state, const char *type, unsigned long addr, unsigned int port)
             messagef(
             (state->id, NiL, -1, "bind: %s: udp_connect error", type));
         return fd;
-    }
-    else if (streq(type, "tcp"))
-    {
-        if ((fd = tcp_sock()) < 0)
-        {
+    } else if (streq(type, "tcp")) {
+        if ((fd = tcp_sock()) < 0) {
             messagef((state->id, NiL, -1, "bind: %s: tcp_sock error", type));
             return -1;
         }
@@ -67,8 +62,7 @@ portbind(Cs_t *state, const char *type, unsigned long addr, unsigned int port)
         tcp.fport = port;
         if (addr != CS_LOCAL)
             tcp.faddr = addr;
-        if (addr ? !tcp_connect(fd, &tcp) : !tcp_listen(fd, &tcp))
-        {
+        if (addr ? !tcp_connect(fd, &tcp) : !tcp_listen(fd, &tcp)) {
             state->addr = tcp.laddr;
             state->port = tcp.lport;
             return fd;
@@ -96,13 +90,11 @@ portbind(Cs_t *state, const char *type, unsigned long addr, unsigned int port)
         sock = SOCK_STREAM;
     else if (streq(type, "udp"))
         sock = SOCK_DGRAM;
-    else
-    {
+    else {
         messagef((state->id, NiL, -1, "bind: %s: invalid type", type));
         return -1;
     }
-    if ((fd = socket(AF_INET, sock, 0)) < 0)
-    {
+    if ((fd = socket(AF_INET, sock, 0)) < 0) {
         messagef(
         (state->id, NiL, -1, "bind: %s: AF_INET socket error", type));
         return -1;
@@ -114,16 +106,14 @@ portbind(Cs_t *state, const char *type, unsigned long addr, unsigned int port)
     state->addr = addr;
     state->port = port;
     nam.sin_port = htons(port);
-    if (addr)
-    {
+    if (addr) {
 #        if defined(O_NONBLOCK) || defined(FNDELAY)
         int fl;
 #        endif
 #        if defined(IPPROTO_TCP) && defined(TCP_NODELAY)
         int sl;
 #        endif
-        if (state->flags & CS_ADDR_NOW)
-        {
+        if (state->flags & CS_ADDR_NOW) {
 #        if defined(O_NONBLOCK) || defined(FNDELAY)
             if ((fl = fcntl(fd, F_GETFL, 0)) != -1)
 #            if defined(FNDELAY)
@@ -133,8 +123,7 @@ portbind(Cs_t *state, const char *type, unsigned long addr, unsigned int port)
 #            endif
 #        endif
 #        if defined(IPPROTO_TCP) && defined(TCP_NODELAY)
-            if (sock == SOCK_STREAM)
-            {
+            if (sock == SOCK_STREAM) {
                 sl = 1;
                 setsockopt(
                 fd, IPPROTO_TCP, TCP_NODELAY, ( const char * )&sl, sizeof(sl));
@@ -146,17 +135,14 @@ portbind(Cs_t *state, const char *type, unsigned long addr, unsigned int port)
 #        ifdef EINPROGRESS
             || errno == EINPROGRESS
 #        endif
-        )
-        {
-            if (!r && (state->flags & CS_ADDR_NOW))
-            {
+        ) {
+            if (!r && (state->flags & CS_ADDR_NOW)) {
 #        if defined(O_NONBLOCK) || defined(FNDELAY)
                 if (fl != -1)
                     fcntl(fd, F_SETFL, fl);
 #        endif
 #        if defined(IPPROTO_TCP) && defined(TCP_NODELAY)
-                if (sock == SOCK_STREAM)
-                {
+                if (sock == SOCK_STREAM) {
                     sl = 0;
                     setsockopt(fd,
                                IPPROTO_TCP,
@@ -173,12 +159,9 @@ portbind(Cs_t *state, const char *type, unsigned long addr, unsigned int port)
         messagef((state->id, NiL, -1, "bind: %s: connect error", type));
         if (errno == EADDRNOTAVAIL || errno == ECONNREFUSED)
             errno = ENOENT;
-    }
-    else
-    {
+    } else {
 #        ifdef SO_REUSEADDR
-        if (state->port != CS_PORT_NORMAL)
-        {
+        if (state->port != CS_PORT_NORMAL) {
             int n = 1;
 
             setsockopt(
@@ -186,15 +169,12 @@ portbind(Cs_t *state, const char *type, unsigned long addr, unsigned int port)
         }
 #        endif
         if (!bind(fd, ( struct sockaddr * )&nam, sizeof(nam))
-            && (sock != SOCK_STREAM || !listen(fd, 32)))
-        {
+            && (sock != SOCK_STREAM || !listen(fd, 32))) {
             if (!getsockname(fd, ( struct sockaddr * )&nam, &namlen)
-                && namlen == sizeof(nam))
-            {
+                && namlen == sizeof(nam)) {
                 state->addr = nam.sin_addr.s_addr;
                 state->port = ntohs(( unsigned short )nam.sin_port);
-            }
-            else
+            } else
                 messagef(
                 (state->id, NiL, -1, "bind: %s: getsockname error", type));
             return fd;
@@ -246,12 +226,10 @@ csbind(Cs_t *state,
               clone));
     if (port == CS_PORT_INVALID)
         return -1;
-    if (port == CS_PORT_RESERVED)
-    {
+    if (port == CS_PORT_RESERVED) {
         static unsigned int last = IPPORT_RESERVED;
 
-        if (addr)
-        {
+        if (addr) {
             errno = EROFS;
             messagef((state->id,
                       NiL,
@@ -261,12 +239,10 @@ csbind(Cs_t *state,
             return -1;
         }
         port = last;
-        do
-        {
+        do {
             if (--last <= IPPORT_RESERVED / 2)
                 port = IPPORT_RESERVED - 1;
-            if (last == port)
-            {
+            if (last == port) {
                 errno = ENOSPC;
                 messagef(
                 (state->id, NiL, -1, "bind: no more reserved ports"));
@@ -279,15 +255,13 @@ csbind(Cs_t *state,
         (state->id, NiL, -1, "bind: reserved port allocation error"));
         return -1;
     }
-    if (port == CS_PORT_NORMAL && addr)
-    {
+    if (port == CS_PORT_NORMAL && addr) {
         errno = EROFS;
         return -1;
     }
     if ((fd = portbind(state, type, addr, port)) < 0)
         return -1;
-    if (clone)
-    {
+    if (clone) {
         int n;
         char buf[16];
 

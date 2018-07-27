@@ -56,10 +56,8 @@ acceptf(Css_t *css, Cssfd_t *fp, Csid_t *ip, char **av, Cssdisc_t *disc)
     fp->data = con;
     con->id = *ip;
     con->args = 0;
-    if ((ap = av) && (sp = sfstropen()))
-    {
-        while (s = *ap++)
-        {
+    if ((ap = av) && (sp = sfstropen())) {
+        while (s = *ap++) {
             if (ap > av + 1)
                 sfputc(sp, ' ');
             sfputr(sp, s, -1);
@@ -76,11 +74,9 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
     Connection_t *con;
     int n;
 
-    switch (fp->status)
-    {
+    switch (fp->status) {
     case CS_POLL_CLOSE:
-        if (con = ( Connection_t * )fp->data)
-        {
+        if (con = ( Connection_t * )fp->data) {
             if (con->args)
                 free(con->args);
             free(con);
@@ -92,8 +88,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
             return -1;
         dat[--n] = 0;
         if (isalpha(dat[0]) && (dat[1] == 0 || isdigit(dat[1])))
-            switch (dat[0])
-            {
+            switch (dat[0]) {
             case 'd':
                 error_info.trace = -( int )strtol(dat + 1, NiL, 0);
                 n = sfsprintf(
@@ -134,8 +129,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
 static int
 exceptf(Css_t *css, unsigned long op, unsigned long arg, Cssdisc_t *disc)
 {
-    switch (op)
-    {
+    switch (op) {
     case CSS_INTERRUPT:
         error(ERROR_SYSTEM | 3, "%s: interrupt exit", fmtsignal(arg));
         return 0;

@@ -260,8 +260,7 @@ optinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
     int i;
 
     if (streq(s, "formats"))
-        for (i = 1; i < elementsof(keys); i++)
-        {
+        for (i = 1; i < elementsof(keys); i++) {
             sfprintf(sp,
                      "[+%s?%s The title string ",
                      keys[i].name,
@@ -301,8 +300,7 @@ scale(int m, unsigned long w, unsigned long p)
 {
     Sfulong_t n;
 
-    if (state.scale)
-    {
+    if (state.scale) {
         n = w;
         n *= state.block;
         return fmtscale(n, state.scale);
@@ -332,10 +330,8 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
 
     if (!fp->t_str)
         return 0;
-    if (!(kp = ( Key_t * )dtmatch(state.keys, fp->t_str)))
-    {
-        if (*fp->t_str != '$')
-        {
+    if (!(kp = ( Key_t * )dtmatch(state.keys, fp->t_str))) {
+        if (*fp->t_str != '$') {
             error(3, "%s: unknown format key", fp->t_str);
             return 0;
         }
@@ -347,34 +343,27 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
         kp->disable = 1;
         dtinsert(state.keys, kp);
     }
-    if (kp->macro && !kp->disable)
-    {
+    if (kp->macro && !kp->disable) {
         kp->disable = 1;
         sfkeyprintf(state.mac, handle, kp->macro, key, NiL);
         if (!(*ps = sfstruse(state.mac)))
             error(ERROR_SYSTEM | 3, "out of space");
         kp->disable = 0;
-    }
-    else if (!df)
-    {
+    } else if (!df) {
         if (fp->base >= 0)
             fp->base = -1;
         s = kp->heading;
-        if (fp->flags & SFFMT_ALTER)
-        {
+        if (fp->flags & SFFMT_ALTER) {
             if (!kp->width)
                 kp->width = keys[KEY_blocks].width;
-            if ((fp->width = kp->width) < 0)
-            {
+            if ((fp->width = kp->width) < 0) {
                 fp->width = -fp->width;
                 fp->flags |= SFFMT_LEFT;
             }
             fp->precis = fp->width;
         }
-        if (fp->width > 0 && fp->width < strlen(kp->heading))
-        {
-            if (fp->width < kp->abbrev)
-            {
+        if (fp->width > 0 && fp->width < strlen(kp->heading)) {
+            if (fp->width < kp->abbrev) {
                 fp->width = kp->abbrev;
                 if (fp->precis >= 0 && fp->precis < fp->width)
                     fp->precis = fp->width;
@@ -388,16 +377,12 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
             kp->width = -kp->width;
         fp->fmt = 's';
         *ps = s;
-    }
-    else
-    {
-        if ((fp->flags & SFFMT_ALTER) && (fp->width = kp->width) < 0)
-        {
+    } else {
+        if ((fp->flags & SFFMT_ALTER) && (fp->width = kp->width) < 0) {
             fp->width = -fp->width;
             fp->flags |= SFFMT_LEFT;
         }
-        switch (kp->index)
-        {
+        switch (kp->index) {
         case KEY_available:
             s = (df->total || df->ttotal)
                 ? scale(df->fraction, df->avail, df->tavail)
@@ -477,13 +462,10 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
         default:
             return 0;
         }
-        if (s)
-        {
-            if (fp->base >= 0)
-            {
+        if (s) {
+            if (fp->base >= 0) {
                 fp->base = -1;
-                if (!state.posix && strlen(s) >= fp->width)
-                {
+                if (!state.posix && strlen(s) >= fp->width) {
                     sfprintf(state.tmp,
                              "%s%-*.*s",
                              s,
@@ -495,8 +477,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
                 }
             }
             *ps = s;
-        }
-        else
+        } else
             *pn = n;
     }
     return 1;
@@ -527,8 +508,7 @@ status(const char *path, struct statvfs *vfs)
     r = statvfs(path, vfs);
     alarm(0);
     signal(SIGALRM, SIG_DFL);
-    if (r)
-    {
+    if (r) {
         if (state.timeout)
             error(ERROR_SYSTEM | 2, "%s: filesystem stat timed out", path);
         else
@@ -548,15 +528,11 @@ entry(Df_t *df, const char *format)
     int s;
 
     if ((!state.type || strmatch(df->mnt->type, state.type))
-        && (!state.local || !(df->mnt->flags & MNT_REMOTE)))
-    {
-        if (REALITY(df->vfs.f_blocks) == 0)
-        {
+        && (!state.local || !(df->mnt->flags & MNT_REMOTE))) {
+        if (REALITY(df->vfs.f_blocks) == 0) {
             df->total = df->avail = df->used = 0;
             df->percent = 0;
-        }
-        else
-        {
+        } else {
             /*
              * NOTE: on some systems vfs.f_* are unsigned,
              *	 and on others signed negative values
@@ -579,21 +555,16 @@ entry(Df_t *df, const char *format)
         df->ttotal = df->tavail = df->tused = 0;
         if (state.scale)
             state.block = F_FRSIZE(&df->vfs);
-        else if (state.block)
-        {
+        else if (state.block) {
             b = F_FRSIZE(&df->vfs);
-            if (b > state.block)
-            {
+            if (b > state.block) {
                 s = b / state.block;
                 df->total *= s;
                 df->avail *= s;
                 df->used *= s;
-            }
-            else if (b < state.block)
-            {
+            } else if (b < state.block) {
                 s = state.block / b;
-                if (df->fraction = s / 10)
-                {
+                if (df->fraction = s / 10) {
                     df->ttotal = (df->total / df->fraction) % 10;
                     df->tavail = (df->avail / df->fraction) % 10;
                     df->tused = (df->used / df->fraction) % 10;
@@ -675,23 +646,19 @@ main(int argc, char **argv)
      * grab the options
      */
 
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'b':
             state.block = 512;
             continue;
         case 'D':
             if (s = strchr(opt_info.arg, '='))
                 *s++ = 0;
-            if (*opt_info.arg == 'n' && *(opt_info.arg + 1) == 'o')
-            {
+            if (*opt_info.arg == 'n' && *(opt_info.arg + 1) == 'o') {
                 opt_info.arg += 2;
                 s = 0;
             }
-            if (!(kp = ( Key_t * )dtmatch(state.keys, opt_info.arg)))
-            {
+            if (!(kp = ( Key_t * )dtmatch(state.keys, opt_info.arg))) {
                 if (!s)
                     continue;
                 if (!(kp = newof(0, Key_t, 1, strlen(opt_info.arg) + 1)))
@@ -773,49 +740,37 @@ main(int argc, char **argv)
     stresc(format);
     if (state.posix < 0)
         state.posix = !!conformance(0, 0);
-    if (state.block < 0)
-    {
+    if (state.block < 0) {
         if (state.posix)
             state.block = 512;
-        else
-        {
+        else {
             state.block = 1024 * 1024;
             if (!state.scale)
                 state.scale = 1024;
         }
     }
     s = 0;
-    if (state.scale)
-    {
+    if (state.scale) {
         n = 5;
         s = "Size";
-    }
-    else if (state.block <= 512)
-    {
+    } else if (state.block <= 512) {
         n = 10;
         if (!state.block)
             s = "blocks";
-    }
-    else if (state.block <= 1024)
-    {
+    } else if (state.block <= 1024) {
         n = 8;
         if (state.block == 1024)
             s = "Kbytes";
-    }
-    else if (state.block <= 1024 * 1024)
-    {
+    } else if (state.block <= 1024 * 1024) {
         n = 6;
         if (state.block == 1024 * 1024)
             s = "Mbytes";
-    }
-    else if (state.block <= 1024 * 1024 * 1024)
-    {
+    } else if (state.block <= 1024 * 1024 * 1024) {
         n = 6;
         if (state.block == 1024 * 1024 * 1024)
             s = "Gbytes";
     }
-    if (!s)
-    {
+    if (!s) {
         sfprintf(state.mac, "%d-blocks", state.block);
         if (!(s = strdup(sfstruse(state.mac))))
             error(ERROR_SYSTEM | 3, "out of space [heading]");
@@ -827,8 +782,7 @@ main(int argc, char **argv)
     if (state.sync)
         sync();
 #endif
-    if (!(mp = mntopen(NiL, "r")))
-    {
+    if (!(mp = mntopen(NiL, "r"))) {
         error(ERROR_SYSTEM | (argc > 0 ? 1 : 3), "cannot access mount table");
         sfkeyprintf(head ? sfstdout : state.tmp, NiL, format, key, NiL);
         sfstrseek(state.tmp, 0, SEEK_SET);
@@ -839,34 +793,27 @@ main(int argc, char **argv)
         while (mnt.fs = *argv++)
             if (!status(mnt.fs, &df.vfs))
                 entry(&df, format);
-    }
-    else
-    {
+    } else {
         sfkeyprintf(head ? sfstdout : state.tmp, NiL, format, key, NiL);
         sfstrseek(state.tmp, 0, SEEK_SET);
-        if (argc)
-        {
+        if (argc) {
             rem = argc;
             if (!(dev = newof(0, dev_t, argc, 0)))
                 error(ERROR_SYSTEM | 3, "out of space [dev_t]");
             for (n = 0; n < argc; n++)
-                if (stat(argv[n], &st))
-                {
+                if (stat(argv[n], &st)) {
                     error(ERROR_SYSTEM | 2, "%s: cannot stat", argv[n]);
                     argv[n] = 0;
                     rem--;
-                }
-                else
+                } else
                     dev[n] =
 #if _mem_st_rdev_stat
                     S_ISBLK(st.st_mode) ? st.st_rdev :
 #endif
                                         st.st_dev;
-        }
-        else
+        } else
             rem = 0;
-        if (rem && (match = newof(0, int, n, 0)))
-        {
+        if (rem && (match = newof(0, int, n, 0))) {
             /*
              * scan the mount table (up to 3x) for prefix matches
              * to avoid the more expensive stat() and statvfs()
@@ -887,11 +834,9 @@ main(int argc, char **argv)
                 for (n = 0; n < argc; n++)
                     if (match[n] && (i = strlen(df.mnt->dir)) == match[n]
                         && strneq(argv[n], df.mnt->dir, i)
-                        && (argv[n][i] == '/' || !argv[n][i]))
-                    {
+                        && (argv[n][i] == '/' || !argv[n][i])) {
                         argv[n][match[n]] = 0;
-                        if (!status(argv[n], &df.vfs))
-                        {
+                        if (!status(argv[n], &df.vfs)) {
                             entry(&df, format);
                             argv[n] = 0;
                             match[n] = 0;
@@ -900,17 +845,14 @@ main(int argc, char **argv)
                         }
                     }
             free(match);
-            if (rem)
-            {
+            if (rem) {
                 mntclose(mp);
                 if (!(mp = mntopen(NiL, "r")))
                     error(ERROR_SYSTEM | 3, "cannot reopen mount table");
             }
         }
-        while ((!argc || rem) && (df.mnt = mntread(mp)))
-        {
-            if (stat(df.mnt->dir, &st))
-            {
+        while ((!argc || rem) && (df.mnt = mntread(mp))) {
+            if (stat(df.mnt->dir, &st)) {
                 if (errno != ENOENT && errno != ENOTDIR)
                     error(state.verbose, "%s: cannot stat", df.mnt->dir);
                 continue;
@@ -919,11 +861,9 @@ main(int argc, char **argv)
             mntdev = (!rem || *df.mnt->fs != '/' || stat(df.mnt->fs, &st))
                      ? dirdev
                      : st.st_dev;
-            if (rem)
-            {
+            if (rem) {
                 for (n = 0; n < argc; n++)
-                    if (argv[n] && (dev[n] == dirdev || dev[n] == mntdev))
-                    {
+                    if (argv[n] && (dev[n] == dirdev || dev[n] == mntdev)) {
                         argv[n] = 0;
                         rem--;
                         break;
@@ -933,11 +873,9 @@ main(int argc, char **argv)
             }
             if (!status(df.mnt->dir, &df.vfs) || !status(df.mnt->fs, &df.vfs))
                 entry(&df, format);
-            if (rem)
-            {
+            if (rem) {
                 while (++n < argc)
-                    if (dev[n] == dirdev || dev[n] == mntdev)
-                    {
+                    if (dev[n] == dirdev || dev[n] == mntdev) {
                         argv[n] = 0;
                         rem--;
                     }
@@ -946,8 +884,7 @@ main(int argc, char **argv)
             }
         }
         mntclose(mp);
-        if (argc > 0)
-        {
+        if (argc > 0) {
             df.mnt = &mnt;
             memset(&mnt, 0, sizeof(mnt));
             for (n = 0; n < argc; n++)

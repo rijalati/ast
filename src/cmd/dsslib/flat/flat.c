@@ -321,85 +321,63 @@ flatget(Record_t *r, int index)
     if (index >= r->nfields)
         return &nullret;
     w = &r->fields[index];
-    if (w->serial != r->serial)
-    {
+    if (w->serial != r->serial) {
         w->serial = r->serial;
         if (w->field->structure.level > 1
-            && !((( Field_t * )w->field->structure.parent))->structref)
-        {
+            && !((( Field_t * )w->field->structure.parent))->structref) {
             b = (( Field_t * )w->field->structure.parent)->record;
-            if (b->serial != r->serial)
-            {
+            if (b->serial != r->serial) {
                 b->serial = r->serial;
                 b->index = b->offset;
                 if (!(v = flatget(r, w->field->structure.parent->index)))
                     goto empty;
-                if (b->buf = b->cur = v->value.string.data)
-                {
+                if (b->buf = b->cur = v->value.string.data) {
                     b->siz = v->value.string.size;
                     r = b;
                 }
-            }
-            else if (b->buf)
+            } else if (b->buf)
                 r = b;
         }
-        if (r->index <= index && r->index < r->kfields)
-        {
+        if (r->index <= index && r->index < r->kfields) {
             s = ( unsigned char * )r->cur;
             e = ( unsigned char * )r->buf + r->siz;
-            if (index < r->kfields)
-            {
+            if (index < r->kfields) {
                 y = w;
                 if (w->field->structref)
                     y--;
-            }
-            else
-            {
+            } else {
                 y = &r->fields[r->kfields - 1];
                 sfstrseek(r->table->oob, 0, SEEK_SET);
             }
-            for (p = &r->fields[r->index]; p <= y; p++)
-            {
+            for (p = &r->fields[r->index]; p <= y; p++) {
                 f = p->field;
                 d = f->physical.format.delimiter;
-                if (d >= 0)
-                {
-                    if (f->width)
-                    {
+                if (d >= 0) {
+                    if (f->width) {
                         if (cxeval(r->cx, f->width, r->record, &a) < 0)
                             goto empty;
                         n = a.value.number;
-                    }
-                    else if (f->physical.format.escape < 0
-                             && f->physical.format.quotebegin < 0)
-                    {
+                    } else if (f->physical.format.escape < 0
+                               && f->physical.format.quotebegin < 0) {
                         for (t = s; t < e && *t != d; t++)
                             ;
                         n = t - s;
                         t++;
-                    }
-                    else
-                    {
+                    } else {
                         q = f->physical.format.quotebegin;
                         x = f->physical.format.escape;
-                        if ((s + 1) >= e || *s != q)
-                        {
+                        if ((s + 1) >= e || *s != q) {
                             n = 1;
                             if (f->physical.format.flags & CX_QUOTEALL)
                                 q = -1;
-                        }
-                        else
-                        {
+                        } else {
                             s++;
                             n = 0;
                             q = f->physical.format.quoteend;
                         }
-                        for (u = t = s; t < e; t++)
-                        {
-                            if ((c = *t) == x)
-                            {
-                                if (++t >= e)
-                                {
+                        for (u = t = s; t < e; t++) {
+                            if ((c = *t) == x) {
+                                if (++t >= e) {
                                     if (r->dss->disc->errorf)
                                         (*r->dss->disc->errorf)(
                                         r->dss,
@@ -412,30 +390,23 @@ flatget(Record_t *r, int index)
                                     goto empty;
                                 }
                                 c = *t;
-                            }
-                            else if (n)
-                            {
+                            } else if (n) {
                                 if (c == d || c == flat->terminator)
                                     break;
-                                if (c == q)
-                                {
+                                if (c == q) {
                                     n = 0;
                                     q = f->physical.format.quoteend;
                                     continue;
                                 }
-                            }
-                            else if (c == q)
-                            {
-                                if (x >= 0 || (t + 1) >= e || *(t + 1) != c)
-                                {
+                            } else if (c == q) {
+                                if (x >= 0 || (t + 1) >= e || *(t + 1) != c) {
                                     n = 1;
                                     q = f->physical.format.quotebegin;
                                     continue;
                                 }
                                 t++;
                             }
-                            if (u < t)
-                            {
+                            if (u < t) {
                                 /*
                                  * modify a copy of the input record image
                                  */
@@ -445,8 +416,7 @@ flatget(Record_t *r, int index)
                                                     0,
                                                     unsigned char,
                                                     r->siz,
-                                                    0)))
-                                {
+                                                    0))) {
                                     r->copy = r->serial;
                                     memcpy(h, r->buf, r->siz);
                                     r->cur = ( char * )h + (r->cur - r->buf);
@@ -460,8 +430,7 @@ flatget(Record_t *r, int index)
                             }
                             u++;
                         }
-                        if (!n)
-                        {
+                        if (!n) {
                             if (r->dss->disc->errorf)
                                 (*r->dss->disc->errorf)(
                                 r->dss,
@@ -481,16 +450,12 @@ flatget(Record_t *r, int index)
                     if (f->physical.format.flags & CX_MULTIPLE)
                         while (t < e && *t == d)
                             t++;
-                }
-                else
-                {
-                    if (f->width)
-                    {
+                } else {
+                    if (f->width) {
                         if (cxeval(r->cx, f->width, r->record, &a) < 0)
                             goto empty;
                         n = a.value.number;
-                    }
-                    else if (f->physical.format.flags & CX_VARIABLE)
+                    } else if (f->physical.format.flags & CX_VARIABLE)
                         n = e - s;
                     else
                         n = f->physical.format.width;
@@ -504,18 +469,14 @@ flatget(Record_t *r, int index)
             if (w->field->structref)
                 goto empty;
             r->cur = ( char * )s;
-        }
-        else if (w->field->structref)
+        } else if (w->field->structref)
             goto empty;
-        if (w->field->keyed)
-        {
-            if (w->keyed != r->serial)
-            {
+        if (w->field->keyed) {
+            if (w->keyed != r->serial) {
                 d = w->field->physical.format.delimiter; /*HERE verify*/
                 s = ( unsigned char * )r->cur;
                 e = ( unsigned char * )r->buf + r->siz - 1;
-                while (s < e)
-                {
+                while (s < e) {
                     if ((u = s) < e
                         && (r->table->id[*( unsigned char * )s] & 1))
                         for (s++;
@@ -523,8 +484,7 @@ flatget(Record_t *r, int index)
                              s++)
                             ;
                     t = s;
-                    for (;;)
-                    {
+                    for (;;) {
                         for (; s < e && *s != d; s++)
                             ;
                         if (r->table->span < 0)
@@ -533,8 +493,7 @@ flatget(Record_t *r, int index)
                             ;
                         if (h >= e)
                             break;
-                        if (r->table->id[*( unsigned char * )h] & 1)
-                        {
+                        if (r->table->id[*( unsigned char * )h] & 1) {
                             for (g = h++;
                                  h < e && r->table->id[*( unsigned char * )h];
                                  h++)
@@ -546,20 +505,16 @@ flatget(Record_t *r, int index)
                         }
                         s = h;
                     }
-                    if (t > u && s > t)
-                    {
-                        if (k = ( Key_t * )dtmatch(r->table->dict, u))
-                        {
+                    if (t > u && s > t) {
+                        if (k = ( Key_t * )dtmatch(r->table->dict, u)) {
                             while (t < s && isspace(*++t))
                                 ;
                             for (u = s++; u > t && isspace(*(u - 1)); u--)
                                 ;
-                            do
-                            {
+                            do {
                                 if (!k->expr
                                     || cxeval(r->cx, k->expr, r->record, &a)
-                                       > 0)
-                                {
+                                       > 0) {
                                     p = &r->fields[k->field->variable.index];
                                     p->off = t - ( unsigned char * )r->buf;
                                     p->siz = u - t;
@@ -570,9 +525,9 @@ flatget(Record_t *r, int index)
                             if (p == w)
                                 break;
                             continue;
-                        }
-                        else if (s > (t + 1) && (r->dss->flags & DSS_VERBOSE)
-                                 && r->dss->disc->errorf)
+                        } else if (s > (t + 1)
+                                   && (r->dss->flags & DSS_VERBOSE)
+                                   && r->dss->disc->errorf)
                             (*r->dss->disc->errorf)(
                             r->dss,
                             r->dss->disc,
@@ -589,10 +544,8 @@ flatget(Record_t *r, int index)
                     sfwrite(r->table->oob, u, t - u);
                 }
                 r->cur = ( char * )s;
-                if (w->keyed != r->serial)
-                {
-                    if (w->field->keyed > 1)
-                    {
+                if (w->keyed != r->serial) {
+                    if (w->field->keyed > 1) {
                         w->off = 0;
                         w->siz = sfstrtell(r->table->oob);
                         s = ( unsigned char * )sfstrbase(r->table->oob);
@@ -604,14 +557,12 @@ flatget(Record_t *r, int index)
         }
         s = ( unsigned char * )r->buf + w->off;
     found:
-        if (w->field->width)
-        {
+        if (w->field->width) {
             if (cxeval(r->cx, w->field->width, r->record, &a) < 0)
                 goto empty;
             n = a.value.number;
             if (w->field->physical.format.width
-                && n > w->field->physical.format.width)
-            {
+                && n > w->field->physical.format.width) {
                 if (r->dss->disc->errorf)
                     (*r->dss->disc->errorf)(
                     r->dss,
@@ -624,19 +575,15 @@ flatget(Record_t *r, int index)
                     n,
                     w->field->physical.format.width);
                 w->siz = w->field->physical.format.width;
-            }
-            else
-            {
+            } else {
                 w->siz = n;
                 if (!flat->fixed)
                     r->cur = ( char * )s + w->siz;
                 else if (flat->sufficient && w->field->physical.format.width)
                     r->cur = ( char * )s + w->field->physical.format.width;
-                else
-                {
+                else {
                     r->cur = ( char * )s + w->siz;
-                    for (y = w; y < &r->fields[r->nfields - 1]; y++)
-                    {
+                    for (y = w; y < &r->fields[r->nfields - 1]; y++) {
                         n = y->off + y->siz;
                         (++y)->off = n;
                         if (y->field->width)
@@ -644,8 +591,7 @@ flatget(Record_t *r, int index)
                     }
                 }
             }
-        }
-        else if (w->field->physical.format.flags & CX_VARIABLE)
+        } else if (w->field->physical.format.flags & CX_VARIABLE)
             w->siz = r->siz - w->off;
         if (m = w->field->map)
             s = ( unsigned char * )ccmapcpy(
@@ -660,24 +606,20 @@ flatget(Record_t *r, int index)
                                                   w->siz,
                                                   r->cx->rm,
                                                   r->cx->disc)
-            < 0)
-        {
+            < 0) {
         empty:
             w->ret.type = w->field->variable.type;
-            if (cxisstring(w->ret.type))
-            {
+            if (cxisstring(w->ret.type)) {
                 w->ret.value.string.data = "";
                 w->ret.value.string.size = 0;
-            }
-            else
+            } else
                 w->ret.value.number = 0;
         }
         if (w->ret.type->generic)
             for (x = 0; w->ret.type->generic[x]; x++)
                 if (w->ret.type->generic[x]->base == w->field->physical.type
                     || w->ret.type->generic[x]->base
-                       == w->field->physical.type->base)
-                {
+                       == w->field->physical.type->base) {
                     w->ret.type = w->ret.type->generic[x];
                     break;
                 }
@@ -696,12 +638,10 @@ flatgetbinary(Record_t *r, int index)
     char *s;
 
     w->ret.type = w->field->variable.type;
-    if (w->serial != r->serial)
-    {
+    if (w->serial != r->serial) {
         w->serial = r->serial;
-        switch (
-        FW(w->field->physical.format.flags, w->field->physical.format.width))
-        {
+        switch (FW(w->field->physical.format.flags,
+                   w->field->physical.format.width)) {
         case FW(CX_UNSIGNED | CX_INTEGER, 1):
             w->ret.value.number = *( uint8_t * )(r->buf + w->off);
             break;
@@ -784,16 +724,14 @@ flatident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
 
     if (!flat->magic)
         return 1;
-    if (flat->magic->version)
-    {
+    if (flat->magic->version) {
         if (n < sizeof(Magicid_t))
             return 0;
         magicid = ( Magicid_t * )buf;
         magic = MAGICID;
         if ((swap = swapop(&magic, &magicid->magic, sizeof(magic))) < 0)
             return 0;
-        if (swap)
-        {
+        if (swap) {
             swapmem(
             swap, &magicid->size, &magicid->size, sizeof(magicid->size));
             swapmem(swap,
@@ -812,8 +750,7 @@ flatident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
         while (s < e)
             if (*s++)
                 return 0;
-        if (flat->fixed && magicid->size != flat->fixed)
-        {
+        if (flat->fixed && magicid->size != flat->fixed) {
             if (disc->errorf)
                 (*disc->errorf)(
                 NiL,
@@ -825,8 +762,7 @@ flatident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
                 flat->fixed);
             return -1;
         }
-        if (magicid->version > flat->magic->version)
-        {
+        if (magicid->version > flat->magic->version) {
             if (disc->errorf)
                 (*disc->errorf)(
                 NiL,
@@ -847,25 +783,19 @@ flatident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
     }
     if (n < flat->magic->size)
         return 0;
-    if (flat->magic->string)
-    {
-        if (!memcmp(buf, flat->magic->string, flat->magic->length))
-        {
+    if (flat->magic->string) {
+        if (!memcmp(buf, flat->magic->string, flat->magic->length)) {
             file->skip = flat->magic->size;
             return 1;
         }
-    }
-    else
-    {
+    } else {
         num = flat->magic->number;
         i = flat->magic->length;
-        while (i-- > 0)
-        {
+        while (i-- > 0) {
             tmp[i] = num & 0xff;
             num >>= 8;
         }
-        if ((swap = swapop(tmp, buf, flat->magic->length)) >= 0)
-        {
+        if ((swap = swapop(tmp, buf, flat->magic->length)) >= 0) {
             if (flat->magic->swap == SWAP_native)
                 file->ident = swap;
             else if (flat->magic->swap >= 0)
@@ -900,8 +830,7 @@ size_get(Dssfile_t *file, Size_t *z, Dssdisc_t *disc)
     if (!(b = ( char * )sfreserve(file->io, z->reserve, z->add != 0)))
         return sfvalue(file->io);
     s = b + z->offset;
-    switch (z->type)
-    {
+    switch (z->type) {
     case 'a':
         n = strntoul(s, z->width, NiL, z->base);
         break;
@@ -945,8 +874,7 @@ size_put(Dssfile_t *file, ssize_t n, Size_t *z, Dssdisc_t *disc)
     s = z->buf;
     memset(s, 0, z->reserve);
     s += z->offset;
-    switch (z->type)
-    {
+    switch (z->type) {
     case 'a':
         sfsprintf(s, z->width, "%u", n);
         break;
@@ -988,41 +916,35 @@ flatread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     Field_t *f;
     Field_t *p;
 
-    for (;;)
-    {
-        if (!++r->serial)
-        {
+    for (;;) {
+        if (!++r->serial) {
             r->serial = 1;
             r->copy = 0;
             for (i = 0; i < r->nfields; i++)
                 r->fields[i].serial = r->fields[i].keyed = 0;
-            if (flat->fixed && flat->terminator >= 0 && !flat->truncate.field)
-            {
+            if (flat->fixed && flat->terminator >= 0
+                && !flat->truncate.field) {
                 /*
                  * if the first record doesn't have a terminator
                  * then we ignore the terminator for all records;
                  * only string fields are checked
                  */
 
-                if (s = ( char * )sfreserve(file->io, flat->fixed, SF_LOCKR))
-                {
+                if (s
+                    = ( char * )sfreserve(file->io, flat->fixed, SF_LOCKR)) {
                     if ((j = sfvalue(file->io)) > flat->fixed)
                         j = flat->fixed + 1;
                     f = flat->fields;
                     m = f->physical.format.width;
-                    for (k = 0;; k++)
-                    {
-                        if (k >= j)
-                        {
+                    for (k = 0;; k++) {
+                        if (k >= j) {
                             flat->terminator = -1;
                             break;
                         }
-                        if (k >= m)
-                        {
+                        if (k >= m) {
                             if (f = f->next)
                                 m += f->physical.format.width;
-                            else
-                            {
+                            else {
                                 if (s[k] != flat->terminator)
                                     flat->terminator = -1;
                                 break;
@@ -1033,32 +955,26 @@ flatread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                             break;
                     }
                     sfread(file->io, s, 0);
-                }
-                else
+                } else
                     flat->terminator = -1;
-                if (flat->terminator >= 0)
-                {
+                if (flat->terminator >= 0) {
                     flat->variable = 0;
                     flat->truncate.index = flat->nfields;
                     if (!(flat->truncate.field
-                          = newof(0, size_t, flat->fixed, 0)))
-                    {
+                          = newof(0, size_t, flat->fixed, 0))) {
                         if (disc->errorf)
                             (*disc->errorf)(
                             NiL, disc, ERROR_SYSTEM | 2, "out of space");
                         return -1;
                     }
                     k = 0;
-                    for (f = flat->fields; f; f = f->next)
-                    {
+                    for (f = flat->fields; f; f = f->next) {
                         f->truncate = f->physical.format.width;
                         m = k + f->physical.format.width;
                         while (k < m)
                             flat->truncate.field[k++] = f->variable.index;
                     }
-                }
-                else
-                {
+                } else {
                     flat->sufficient = 1;
                     if (disc->errorf && !(file->dss->flags & DSS_QUIET))
                         (*disc->errorf)(NiL,
@@ -1078,24 +994,19 @@ flatread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
               flat->delimiter,
               flat->fixed,
               flat->record ? flat->record->fixed : 0);
-        if (flat->terminator >= 0)
-        {
-            if (flat->continuator >= 0)
-            {
+        if (flat->terminator >= 0) {
+            if (flat->continuator >= 0) {
                 if (!(s = sfgetr(file->io, flat->terminator, 0)))
                     break;
                 i = sfvalue(file->io);
-                if (i > 1 && *(s + i - 2) == flat->continuator)
-                {
-                    for (;;)
-                    {
+                if (i > 1 && *(s + i - 2) == flat->continuator) {
+                    for (;;) {
                         s[i - 2] = flat->delimiter;
                         sfwrite(flat->buf, s, i - 1);
                         if (!(s = sfgetr(file->io, flat->terminator, 0)))
                             goto eof;
                         i = sfvalue(file->io);
-                        if (i < 2 || *(s + i - 2) != flat->continuator)
-                        {
+                        if (i < 2 || *(s + i - 2) != flat->continuator) {
                             sfwrite(flat->buf, s, i);
                             break;
                         }
@@ -1103,19 +1014,15 @@ flatread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                     i = sfstrtell(flat->buf);
                     s = sfstrseek(flat->buf, 0, SEEK_SET);
                 }
-            }
-            else
-            {
+            } else {
                 if (!(s = sfgetr(file->io, flat->terminator, 0)))
                     break;
                 i = sfvalue(file->io);
             }
-            if (flat->fixed)
-            {
+            if (flat->fixed) {
                 if (flat->sufficient = flat->fixed == (i - 1))
                     k = r->nfields;
-                else if (!flat->truncate.field)
-                {
+                else if (!flat->truncate.field) {
                     if (disc->errorf)
                         (*disc->errorf)(
                         NiL,
@@ -1125,9 +1032,7 @@ flatread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                         cxlocation(r->cx, record),
                         i);
                     continue;
-                }
-                else if (i <= flat->fixed)
-                {
+                } else if (i <= flat->fixed) {
                     f = r->fields[flat->truncate.field[i - 1]].field;
                     f->physical.format.width
                     = i - r->fields[f->variable.index].off - 1;
@@ -1135,8 +1040,7 @@ flatread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                     while (p = p->next)
                         p->physical.format.width = 0;
                     k = f->variable.index;
-                }
-                else
+                } else
                     k = r->nfields;
                 for (j = flat->truncate.index; j < k; j++)
                     r->fields[j].field->physical.format.width
@@ -1144,9 +1048,7 @@ flatread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 flat->truncate.index = k;
             }
             r->index = 0;
-        }
-        else if (i = flat->fixed)
-        {
+        } else if (i = flat->fixed) {
             if (flat->record && (i = size_get(file, flat->record, disc)) <= 0)
                 break;
             error(-1, "AHA:flat#%d size=%d", __LINE__, i);
@@ -1155,9 +1057,7 @@ flatread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                     || !(s
                          = ( char * )sfreserve(file->io, i, flat->variable))))
                 break;
-        }
-        else
-        {
+        } else {
             if (disc->errorf)
                 (*disc->errorf)(
                 NiL,
@@ -1171,13 +1071,11 @@ flatread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         r->siz = i;
         r->record = record;
         record->data = flat->current = r;
-        if (flat->force)
-        {
+        if (flat->force) {
             for (j = 0; j < r->nfields; j++)
                 if (!r->fields[j].field->structref)
                     (*flat->getf)(r, j);
-            if (flat->variable)
-            {
+            if (flat->variable) {
                 i = r->fields[r->nfields - 1].off
                     + r->fields[r->nfields - 1].siz;
                 sfread(file->io, s, i);
@@ -1220,8 +1118,7 @@ flatwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     if (r == flat->current)
         return sfwrite(file->io, r->image, r->siz) == r->siz ? 0 : -1;
     io = flat->record ? flat->buf : file->io;
-    for (i = 0; i < r->nfields; i++)
-    {
+    for (i = 0; i < r->nfields; i++) {
         f = r->fields[i].field;
         v = (*f->flatgetf)(r, i);
         while ((n = (*f->physical.type->externalf)(r->cx,
@@ -1232,11 +1129,9 @@ flatwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                                                    flat->valbuf,
                                                    flat->valsiz,
                                                    r->cx->disc))
-               > flat->valsiz)
-        {
+               > flat->valsiz) {
             n = roundof(n, 32);
-            if (!(flat->valbuf = newof(flat->valbuf, char, n, 0)))
-            {
+            if (!(flat->valbuf = newof(flat->valbuf, char, n, 0))) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -1246,73 +1141,58 @@ flatwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         }
         if (n < 0)
             return -1;
-        else if (n > 0)
-        {
+        else if (n > 0) {
             if ((f->physical.format.flags & (CX_STRING | CX_BUFFER))
                 && f->physical.format.delimiter >= 0
                 && (f->physical.format.escape >= 0
-                    || f->physical.format.quotebegin >= 0))
-            {
-                if (f->physical.format.flags & CX_QUOTEALL)
-                {
+                    || f->physical.format.quotebegin >= 0)) {
+                if (f->physical.format.flags & CX_QUOTEALL) {
                     q = 1;
                     sfputc(io, f->physical.format.quotebegin);
-                }
-                else
+                } else
                     q = 0;
                 for (e = (s = b = ( unsigned char * )flat->valbuf) + n; s < e;
                      s++)
                     if (*s == f->physical.format.delimiter
                         || *s == f->physical.format.escape
                         || *s == f->physical.format.quotebegin
-                        || *s == f->physical.format.quoteend)
-                    {
-                        if (f->physical.format.escape >= 0)
-                        {
+                        || *s == f->physical.format.quoteend) {
+                        if (f->physical.format.escape >= 0) {
                             sfwrite(io, b, s - b);
                             sfputc(io, f->physical.format.escape);
                             sfputc(io, *s);
-                        }
-                        else if (*s == f->physical.format.delimiter)
-                        {
+                        } else if (*s == f->physical.format.delimiter) {
                             if (q)
                                 continue;
                             q = 1;
                             sfwrite(io, b, s - b);
                             sfputc(io, f->physical.format.quotebegin);
                             sfputc(io, *s);
-                        }
-                        else
-                        {
+                        } else {
                             sfwrite(io, b, s - b + 1);
                             sfputc(io, *s);
-                            if (!q)
-                            {
+                            if (!q) {
                                 q = 1;
                                 sfputc(io, *s);
                             }
                         }
                         b = s + 1;
                     }
-                if (q && !(f->physical.format.flags & CX_QUOTEALL))
-                {
+                if (q && !(f->physical.format.flags & CX_QUOTEALL)) {
                     q = 0;
                     sfputc(io, f->physical.format.quoteend);
                 }
                 sfwrite(io, b, s - b);
                 if (q)
                     sfputc(io, f->physical.format.quoteend);
-            }
-            else
+            } else
                 sfwrite(io, flat->valbuf, n);
-        }
-        else if (flat->emptyspace && f->physical.format.delimiter >= 0)
+        } else if (flat->emptyspace && f->physical.format.delimiter >= 0)
             sfputc(io, ' ');
         if (f->physical.format.delimiter >= 0)
             sfputc(io, f->physical.format.delimiter);
     }
-    if (flat->record)
-    {
+    if (flat->record) {
         n = sfstrtell(io);
         sfstrseek(io, 0, SEEK_SET);
         if (size_put(file, n, flat->record, disc)
@@ -1334,30 +1214,22 @@ skip(Dssfile_t *file, const char *section, Section_t *s, Dssdisc_t *disc)
     char *u;
     int code;
 
-    for (; s; s = s->next)
-    {
+    for (; s; s = s->next) {
         i = s->count;
-        do
-        {
-            if (s->delimiter >= 0)
-            {
+        do {
+            if (s->delimiter >= 0) {
                 if (!(t = sfgetr(file->io, s->delimiter, 0)))
                     goto eof;
-            }
-            else if (s->size > 0)
-            {
+            } else if (s->size > 0) {
                 if (!(t = sfreserve(file->io, s->size, 0)))
                     goto eof;
-            }
-            else
+            } else
                 break;
             if (s->re
-                && (code = regnexec(s->re, t, sfvalue(file->io), 0, NiL, 0)))
-            {
-                if (code != REG_NOMATCH)
-                {
-                    if (disc->errorf)
-                    {
+                && (code
+                    = regnexec(s->re, t, sfvalue(file->io), 0, NiL, 0))) {
+                if (code != REG_NOMATCH) {
+                    if (disc->errorf) {
                         char buf[256];
 
                         regerror(code, s->re, buf, sizeof(buf));
@@ -1414,8 +1286,7 @@ tabinit(Flat_t *flat, Dssdisc_t *disc)
 {
     Table_t *t;
 
-    if (!(t = newof(0, Table_t, 1, 0)) || !(t->oob = sfstropen()))
-    {
+    if (!(t = newof(0, Table_t, 1, 0)) || !(t->oob = sfstropen())) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
@@ -1423,8 +1294,7 @@ tabinit(Flat_t *flat, Dssdisc_t *disc)
     t->disc.link = offsetof(Key_t, link);
     t->disc.key = offsetof(Key_t, name);
     t->disc.comparf = keycmp;
-    if (!(t->dict = dtopen(&t->disc, Dtoset)))
-    {
+    if (!(t->dict = dtopen(&t->disc, Dtoset))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
@@ -1458,11 +1328,9 @@ tabcomp(Flat_t *flat, Table_t *tab, Dssdisc_t *disc)
     Key_t *q;
     int i;
 
-    if (!tab->identified)
-    {
+    if (!tab->identified) {
         tab->identified = 1;
-        for (i = 0; i <= UCHAR_MAX; i++)
-        {
+        for (i = 0; i <= UCHAR_MAX; i++) {
             if (isalpha(i) || i == '_')
                 tab->id[i] |= 3;
             else if (isdigit(i) || i == '-' || i == '.' || i == ',')
@@ -1471,11 +1339,9 @@ tabcomp(Flat_t *flat, Table_t *tab, Dssdisc_t *disc)
     }
     for (k = ( Key_t * )dtfirst(tab->dict); k;
          k = ( Key_t * )dtnext(tab->dict, k))
-        for (q = k; q; q = q->next)
-        {
+        for (q = k; q; q = q->next) {
             if (q->qualification
-                && !(q->expr = keycomp(flat, q->qualification, disc)))
-            {
+                && !(q->expr = keycomp(flat, q->qualification, disc))) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL,
@@ -1526,8 +1392,7 @@ recinit(Flat_t *flat,
                       0,
                       Record_t,
                       1,
-                      (level == 1 ? n * sizeof(Member_t) : 0))))
-    {
+                      (level == 1 ? n * sizeof(Member_t) : 0)))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
@@ -1538,8 +1403,7 @@ recinit(Flat_t *flat,
     r->serial--;
     r->nfields = n + i;
     r->kfields = n + i + 1;
-    if (t && !t->qualified)
-    {
+    if (t && !t->qualified) {
         t->qualified = 1;
         for (k = ( Key_t * )dtfirst(t->dict); k;
              k = ( Key_t * )dtnext(t->dict, k))
@@ -1551,32 +1415,25 @@ recinit(Flat_t *flat,
                 k->name);
     }
     off = 0;
-    for (f = fields; f; f = f->next, i++)
-    {
+    for (f = fields; f; f = f->next, i++) {
         if (f->structure.members && !f->record
             && !(f->record
                  = recinit(flat, file, r, f->table, f->next, 0, i + 1, disc)))
             return 0;
-        if (f->structure.level == level)
-        {
+        if (f->structure.level == level) {
             if (f->keyed && r->kfields == (r->nfields + 1))
                 r->kfields = i;
         }
-        if (level == 1)
-        {
+        if (level == 1) {
             r->fields[i].field = f;
-            if (flat->fixed)
-            {
-                if (flat->truncate.fixed)
-                {
-                    if (off > flat->fixed)
-                    {
+            if (flat->fixed) {
+                if (flat->truncate.fixed) {
+                    if (off > flat->fixed) {
                         off = flat->fixed;
                         f->physical.format.width = 0;
                         f->physical.format.delimiter = -1;
-                    }
-                    else if ((off + f->physical.format.width) >= flat->fixed)
-                    {
+                    } else if ((off + f->physical.format.width)
+                               >= flat->fixed) {
                         f->physical.format.width = flat->fixed - off;
                         f->physical.format.delimiter = -1;
                     }
@@ -1611,8 +1468,7 @@ flatfopen(Dssfile_t *file, Dssdisc_t *disc)
     Flat_t *flat = ( Flat_t * )file->dss->meth->data;
     size_t i;
 
-    if (file->flags & DSS_FILE_READ)
-    {
+    if (file->flags & DSS_FILE_READ) {
 #if 0
 		if (file->ident)
 			goto noswap;
@@ -1627,8 +1483,7 @@ flatfopen(Dssfile_t *file, Dssdisc_t *disc)
 				sfsetbuf(file->io, s, i);
 		}
 #endif
-        if (file->skip && !sfreserve(file->io, file->skip, -1))
-        {
+        if (file->skip && !sfreserve(file->io, file->skip, -1)) {
             if (disc->errorf)
                 (*disc->errorf)(NiL,
                                 disc,
@@ -1649,12 +1504,10 @@ flatfopen(Dssfile_t *file, Dssdisc_t *disc)
                                                    0,
                                                    disc)))
         return -1;
-    if ((file->flags & DSS_FILE_WRITE) && flat->magic)
-    {
+    if ((file->flags & DSS_FILE_WRITE) && flat->magic) {
         if (flat->swap > 0)
             goto noswap;
-        if (flat->magic->version)
-        {
+        if (flat->magic->version) {
             Magicid_t magicid;
 
             memset(&magicid, 0, sizeof(Magicid_t));
@@ -1665,8 +1518,7 @@ flatfopen(Dssfile_t *file, Dssdisc_t *disc)
                 magicid.type, flat->magic->string, sizeof(magicid.type));
             magicid.version = flat->magic->version;
             magicid.size = i = flat->fixed ? flat->fixed : sizeof(magicid);
-            if (flat->magic->swap > 0)
-            {
+            if (flat->magic->swap > 0) {
                 swapmem(flat->magic->swap,
                         &magicid.magic,
                         &magicid.magic,
@@ -1682,13 +1534,10 @@ flatfopen(Dssfile_t *file, Dssdisc_t *disc)
             }
             sfwrite(file->io, &magicid, sizeof(magicid));
             i -= sizeof(magicid);
-        }
-        else
-        {
+        } else {
             if (flat->magic->string)
                 sfwrite(file->io, flat->magic->string, flat->magic->length);
-            else
-            {
+            else {
                 union
                 {
                     uint8_t u1;
@@ -1700,8 +1549,7 @@ flatfopen(Dssfile_t *file, Dssdisc_t *disc)
                     char buf[sizeof(intmax_t)];
                 } num;
 
-                switch (flat->magic->length)
-                {
+                switch (flat->magic->length) {
                 case 1:
                     num.u1 = flat->magic->number;
                     break;
@@ -1726,8 +1574,7 @@ flatfopen(Dssfile_t *file, Dssdisc_t *disc)
         }
         while (i-- > 0)
             sfputc(file->io, 0);
-        if (sferror(file->io))
-        {
+        if (sferror(file->io)) {
             if (disc->errorf)
                 (*disc->errorf)(NiL,
                                 disc,
@@ -1818,8 +1665,7 @@ flat_field_name_dat(Tag_t *tag,
 {
     Flat_t *flat = ( Flat_t * )disc;
 
-    if (!(flat->lastfield->variable.name = ( const char * )strdup(data)))
-    {
+    if (!(flat->lastfield->variable.name = ( const char * )strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -1836,8 +1682,7 @@ flat_field_description_dat(Tag_t *tag,
     Flat_t *flat = ( Flat_t * )disc;
 
     if (!(flat->lastfield->variable.description
-          = ( const char * )strdup(data)))
-    {
+          = ( const char * )strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -1853,8 +1698,7 @@ flat_field_details_dat(Tag_t *tag,
 {
     Flat_t *flat = ( Flat_t * )disc;
 
-    if (!(flat->format->details = strdup(data)))
-    {
+    if (!(flat->format->details = strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -1895,8 +1739,7 @@ flat_field_type_dat(Tag_t *tag,
     ( void )cxattr(NiL, data, &s, flat->format, NiL);
     if (!*s)
         t = ( Cxtype_t * )"number";
-    else if (!(t = ( Cxtype_t * )strdup(s)))
-    {
+    else if (!(t = ( Cxtype_t * )strdup(s))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -1904,13 +1747,10 @@ flat_field_type_dat(Tag_t *tag,
     if (flat->format->flags & CX_FLOAT)
         flat->format->flags
         &= ~(CX_STRING | CX_BUFFER | CX_UNSIGNED | CX_INTEGER);
-    else if (flat->format->flags & CX_UNSIGNED)
-    {
+    else if (flat->format->flags & CX_UNSIGNED) {
         flat->format->flags &= ~(CX_STRING | CX_BUFFER);
         flat->format->flags |= CX_UNSIGNED | CX_INTEGER;
-    }
-    else if (!(flat->format->flags & (CX_STRING | CX_BUFFER | CX_INTEGER)))
-    {
+    } else if (!(flat->format->flags & (CX_STRING | CX_BUFFER | CX_INTEGER))) {
         if (streq(s, "string"))
             flat->format->flags |= CX_STRING;
         else if (streq(s, "buffer"))
@@ -2014,8 +1854,7 @@ flat_field_fixedpoint_dat(Tag_t *tag,
     char *e;
 
     flat->format->fixedpoint = strtoul(data, &e, 0);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -2032,18 +1871,14 @@ flat_field_width_dat(Tag_t *tag,
     Flat_t *flat = ( Flat_t * )disc;
     char *e;
 
-    if (isdigit(*data))
-    {
+    if (isdigit(*data)) {
         flat->format->width = strtoul(data, &e, 0);
-        if (*e)
-        {
+        if (*e) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
             return -1;
         }
-    }
-    else if (!(flat->lastfield->width = ( Cxexpr_t * )strdup(data)))
-    {
+    } else if (!(flat->lastfield->width = ( Cxexpr_t * )strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -2061,8 +1896,7 @@ flat_field_remainder_dat(Tag_t *tag,
     char *e;
 
     flat->format->width = strtoul(data, &e, 0);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -2093,8 +1927,7 @@ flat_field_base_dat(Tag_t *tag,
     char *e;
 
     flat->format->base = strtoul(data, &e, 0);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -2110,8 +1943,7 @@ flat_field_codeset_dat(Tag_t *tag,
 {
     Flat_t *flat = ( Flat_t * )disc;
 
-    if ((flat->format->code = ccmapid(data)) < 0)
-    {
+    if ((flat->format->code = ccmapid(data)) < 0) {
         if (disc->errorf)
             (*disc->errorf)(NiL,
                             disc,
@@ -2144,18 +1976,14 @@ flat_array_size_dat(Tag_t *tag,
     Flat_t *flat = ( Flat_t * )disc;
     char *e;
 
-    if (isdigit(*data))
-    {
+    if (isdigit(*data)) {
         flat->array->size = strtoul(data, &e, 0);
-        if (*e)
-        {
+        if (*e) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
             return -1;
         }
-    }
-    else if (!(flat->array->variable = ( Cxvariable_t * )strdup(data)))
-    {
+    } else if (!(flat->array->variable = ( Cxvariable_t * )strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -2196,11 +2024,10 @@ flat_array_physical_beg(Tag_t *tag,
 {
     Flat_t *flat = ( Flat_t * )disc;
 
-    if (name)
-    {
+    if (name) {
         if (!flat->lastfield->physical.array
-            && !(flat->lastfield->physical.array = newof(0, Cxarray_t, 1, 0)))
-        {
+            && !(flat->lastfield->physical.array
+                 = newof(0, Cxarray_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return 0;
@@ -2224,11 +2051,10 @@ flat_array_beg(Tag_t *tag, Tagframe_t *fp, const char *name, Tagdisc_t *disc)
 {
     Flat_t *flat = ( Flat_t * )disc;
 
-    if (name)
-    {
+    if (name) {
         if (!flat->lastfield->variable.array
-            && !(flat->lastfield->variable.array = newof(0, Cxarray_t, 1, 0)))
-        {
+            && !(flat->lastfield->variable.array
+                 = newof(0, Cxarray_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return 0;
@@ -2246,8 +2072,7 @@ addkey(const char *data, Tagdisc_t *disc)
     Key_t *old;
     Dt_t *dict;
 
-    if (!(key = newof(0, Key_t, 1, strlen(data))))
-    {
+    if (!(key = newof(0, Key_t, 1, strlen(data)))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
@@ -2256,12 +2081,10 @@ addkey(const char *data, Tagdisc_t *disc)
     key->field = flat->lastfield;
     if (streq(key->name, "*"))
         flat->lastfield->keyed = 2;
-    else
-    {
+    else {
         flat->lastfield->keyed = 1;
         dict = (( Field_t * )flat->lastfield->structure.parent)->table->dict;
-        if (old = ( Key_t * )dtmatch(dict, key->name))
-        {
+        if (old = ( Key_t * )dtmatch(dict, key->name)) {
             if (!old->qualification)
                 error(
                 1,
@@ -2284,8 +2107,7 @@ flat_field_key_name_dat(Tag_t *tag,
 {
     Key_t *key;
 
-    if (fp->prev->data)
-    {
+    if (fp->prev->data) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: key name already specified", data);
@@ -2305,14 +2127,12 @@ flat_field_key_qualification_dat(Tag_t *tag,
 {
     Key_t *key;
 
-    if (!(key = ( Key_t * )fp->prev->data))
-    {
+    if (!(key = ( Key_t * )fp->prev->data)) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "key must be named");
         return -1;
     }
-    if (!(key->qualification = strdup(data)))
-    {
+    if (!(key->qualification = strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -2330,15 +2150,11 @@ identifiers(Table_t *tab, const char *s, int flags, Tagdisc_t *disc)
     regclass_t f;
     char m;
 
-    while (c = *s++)
-    {
-        if (*s == '[')
-        {
-            switch (*(s + 1))
-            {
+    while (c = *s++) {
+        if (*s == '[') {
+            switch (*(s + 1)) {
             case ':':
-                if (f = regclass(s + 1, &e))
-                {
+                if (f = regclass(s + 1, &e)) {
                     s = ( const char * )e;
                     for (c = 0; c <= UCHAR_MAX; c++)
                         if ((*f)(c))
@@ -2351,8 +2167,7 @@ identifiers(Table_t *tab, const char *s, int flags, Tagdisc_t *disc)
                 return -1;
             case '.':
             case '=':
-                if (regcollate(s, &e, &m, 1, NiL) == 1)
-                {
+                if (regcollate(s, &e, &m, 1, NiL) == 1) {
                     s = ( const char * )e;
                     tab->id[m] |= flags;
                     continue;
@@ -2364,8 +2179,7 @@ identifiers(Table_t *tab, const char *s, int flags, Tagdisc_t *disc)
             }
         }
         tab->id[c] |= flags;
-        if (*s == '-' && (d = *(s + 1)))
-        {
+        if (*s == '-' && (d = *(s + 1))) {
             s += 2;
             if (c == 'A' && d == 'Z')
                 t = "BCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -2373,8 +2187,7 @@ identifiers(Table_t *tab, const char *s, int flags, Tagdisc_t *disc)
                 t = "bcdefghijklmnopqrstuvwxyz";
             else if (c == '0' && d == '9')
                 t = "123456789";
-            else
-            {
+            else {
                 while (++c <= d)
                     tab->id[c] |= flags;
                 continue;
@@ -2701,26 +2514,20 @@ flat_field_beg(Tag_t *tag, Tagframe_t *fp, const char *name, Tagdisc_t *disc)
     Field_t *p;
     Field_t *t;
 
-    if (name)
-    {
-        if (!(f = newof(0, Field_t, 1, 0)))
-        {
+    if (name) {
+        if (!(f = newof(0, Field_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return 0;
         }
         f->variable.structure = &f->structure;
-        if (p = fp->data)
-        {
+        if (p = fp->data) {
             f->structure.parent = p->structure.parent;
             f->structure.level = p->structure.level;
             (( Field_t * )fp->tail)->structure.next = &f->variable;
-        }
-        else
-        {
+        } else {
             fp->data = f;
-            if (p = ( Field_t * )fp->prev->data)
-            {
+            if (p = ( Field_t * )fp->prev->data) {
                 f->structure.parent = &p->variable;
                 f->structure.level = p->structure.level + 1;
                 if (t = ( Field_t * )fp->prev->head)
@@ -2728,9 +2535,7 @@ flat_field_beg(Tag_t *tag, Tagframe_t *fp, const char *name, Tagdisc_t *disc)
                 else
                     p->structure.members = &f->variable;
                 fp->prev->head = f;
-            }
-            else
-            {
+            } else {
                 f->structure.level = 1;
                 f->structure.parent = &flat->root.variable;
             }
@@ -2762,8 +2567,7 @@ flat_field_end(Tag_t *tag, Tagframe_t *fp, Tagdisc_t *disc)
 {
     Flat_t *flat = ( Flat_t * )disc;
 
-    if (flat->lastfield && !flat->lastfield->variable.name)
-    {
+    if (flat->lastfield && !flat->lastfield->variable.name) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "field name must be specified");
         return -1;
@@ -2777,8 +2581,7 @@ flat_size_type_dat(Tag_t *tag,
                    const char *data,
                    Tagdisc_t *disc)
 {
-    switch ((( Size_t * )fp->prev->data)->type = *data)
-    {
+    switch ((( Size_t * )fp->prev->data)->type = *data) {
     case 'a':
     case 'b':
     case 'd':
@@ -2804,8 +2607,7 @@ flat_size_width_dat(Tag_t *tag,
     char *e;
 
     (( Size_t * )fp->prev->data)->width = strtoul(data, &e, 0);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -2822,8 +2624,7 @@ flat_size_size_dat(Tag_t *tag,
     char *e;
 
     (( Size_t * )fp->prev->data)->size = strtoul(data, &e, 0);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -2842,8 +2643,7 @@ flat_size_fixed_dat(Tag_t *tag,
     char *e;
 
     (( Size_t * )fp->prev->data)->fixed = strtoul(data, &e, 0);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -2860,8 +2660,7 @@ flat_size_offset_dat(Tag_t *tag,
     char *e;
 
     (( Size_t * )fp->prev->data)->offset = strtoul(data, &e, 0);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -2878,8 +2677,7 @@ flat_size_base_dat(Tag_t *tag,
     char *e;
 
     (( Size_t * )fp->prev->data)->base = strtoul(data, &e, 0);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -2941,10 +2739,8 @@ flat_size_beg(Tag_t *tag, Tagframe_t *fp, const char *name, Tagdisc_t *disc)
     Flat_t *flat = ( Flat_t * )disc;
     Size_t *z;
 
-    if (name)
-    {
-        if (!(z = newof(0, Size_t, 1, 0)))
-        {
+    if (name) {
+        if (!(z = newof(0, Size_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return 0;
@@ -2968,20 +2764,17 @@ flat_size_end(Tag_t *tag, Tagframe_t *fp, Tagdisc_t *disc)
     if (z->size < (z->offset + z->width))
         z->size = z->offset + z->width;
     z->reserve = z->fixed;
-    if (z->size)
-    {
+    if (z->size) {
         z->fixed = 0;
         if (z->reserve < z->size)
             z->reserve = z->size;
     }
-    if (!(z->buf = newof(0, char, z->reserve, 0)))
-    {
+    if (!(z->buf = newof(0, char, z->reserve, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
     }
-    if (z->type == 'e')
-    {
+    if (z->type == 'e') {
         if (!flat->e2a)
             flat->e2a = ccmap(CC_EBCDIC_O, CC_ASCII);
     }
@@ -2998,8 +2791,7 @@ flat_section_count_dat(Tag_t *tag,
     char *e;
 
     flat->section->count = strtoul(data, &e, 0);
-    if (*e && (*e != '*' || *(e + 1)))
-    {
+    if (*e && (*e != '*' || *(e + 1))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -3028,16 +2820,14 @@ flat_section_pattern_dat(Tag_t *tag,
     Flat_t *flat = ( Flat_t * )disc;
     int code;
 
-    if (!(flat->section->re = newof(0, regex_t, 1, 0)))
-    {
+    if (!(flat->section->re = newof(0, regex_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
     }
-    if (code = regcomp(flat->section->re, data, REG_AUGMENTED | REG_LENIENT))
-    {
-        if (disc->errorf)
-        {
+    if (code
+        = regcomp(flat->section->re, data, REG_AUGMENTED | REG_LENIENT)) {
+        if (disc->errorf) {
             char buf[256];
 
             regerror(code, flat->section->re, buf, sizeof(buf));
@@ -3063,8 +2853,7 @@ flat_section_size_dat(Tag_t *tag,
     char *e;
 
     flat->section->size = strtoul(data, &e, 0);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -3106,10 +2895,8 @@ flat_header_beg(Tag_t *tag, Tagframe_t *fp, const char *name, Tagdisc_t *disc)
     Flat_t *flat = ( Flat_t * )disc;
     Section_t *s;
 
-    if (name)
-    {
-        if (!(s = newof(0, Section_t, 1, 0)))
-        {
+    if (name) {
+        if (!(s = newof(0, Section_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return 0;
@@ -3131,10 +2918,8 @@ flat_trailer_beg(Tag_t *tag, Tagframe_t *fp, const char *name, Tagdisc_t *disc)
     Flat_t *flat = ( Flat_t * )disc;
     Section_t *s;
 
-    if (name)
-    {
-        if (!(s = newof(0, Section_t, 1, 0)))
-        {
+    if (name) {
+        if (!(s = newof(0, Section_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return 0;
@@ -3155,8 +2940,7 @@ flat_name_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 {
     Flat_t *flat = ( Flat_t * )disc;
 
-    if (!(flat->meth.name = strdup(data)))
-    {
+    if (!(flat->meth.name = strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -3169,8 +2953,7 @@ flat_print_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 {
     Flat_t *flat = ( Flat_t * )disc;
 
-    if (!(flat->meth.print = strdup(data)))
-    {
+    if (!(flat->meth.print = strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -3186,8 +2969,7 @@ flat_description_dat(Tag_t *tag,
 {
     Flat_t *flat = ( Flat_t * )disc;
 
-    if (!(flat->meth.description = ( const char * )strdup(data)))
-    {
+    if (!(flat->meth.description = ( const char * )strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -3201,8 +2983,7 @@ flat_library_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
     Flat_t *flat = ( Flat_t * )disc;
     Library_t *p;
 
-    if (!(p = newof(0, Library_t, 1, strlen(data))))
-    {
+    if (!(p = newof(0, Library_t, 1, strlen(data)))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -3223,8 +3004,7 @@ flat_magic_string_dat(Tag_t *tag,
 {
     Flat_t *flat = ( Flat_t * )disc;
 
-    if (!(flat->magic->string = ( const char * )strdup(data)))
-    {
+    if (!(flat->magic->string = ( const char * )strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -3244,8 +3024,7 @@ flat_magic_number_dat(Tag_t *tag,
     char *e;
 
     flat->magic->number = strtoul(data, &e, 0);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -3263,8 +3042,7 @@ flat_magic_size_dat(Tag_t *tag,
     char *e;
 
     flat->magic->size = strtoul(data, &e, 0);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -3288,16 +3066,13 @@ flat_magic_swap_dat(Tag_t *tag,
 
     for (v = flat_swap_val; v < &flat_swap_val[elementsof(flat_swap_val)];
          v++)
-        if (!strcasecmp(data, v->name))
-        {
+        if (!strcasecmp(data, v->name)) {
             flat->magic->swap = v->value;
             break;
         }
-    if (v >= &flat_swap_val[elementsof(flat_swap_val)])
-    {
+    if (v >= &flat_swap_val[elementsof(flat_swap_val)]) {
         flat->magic->swap = strtoul(data, &e, 0);
-        if (*e)
-        {
+        if (*e) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
             return -1;
@@ -3318,8 +3093,7 @@ flat_magic_version_dat(Tag_t *tag,
     char *e;
 
     flat->magic->version = strtoul(data, &e, 0);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -3376,8 +3150,7 @@ flat_magic_beg(Tag_t *tag, Tagframe_t *fp, const char *name, Tagdisc_t *disc)
 {
     Flat_t *flat = ( Flat_t * )disc;
 
-    if (!(flat->magic = newof(0, Magic_t, 1, 0)))
-    {
+    if (!(flat->magic = newof(0, Magic_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
@@ -3391,14 +3164,12 @@ flat_magic_end(Tag_t *tag, Tagframe_t *fp, Tagdisc_t *disc)
 {
     Flat_t *flat = ( Flat_t * )disc;
 
-    if (flat->magic)
-    {
+    if (flat->magic) {
         if (!flat->magic->length)
             flat->magic->length = 4;
         if (!flat->magic->size)
             flat->magic->size = flat->magic->length;
-        if (flat->magic->size < flat->magic->length)
-        {
+        if (flat->magic->size < flat->magic->length) {
             if (disc->errorf)
                 (*disc->errorf)(NiL,
                                 disc,
@@ -3411,8 +3182,7 @@ flat_magic_end(Tag_t *tag, Tagframe_t *fp, Tagdisc_t *disc)
         }
         if (!flat->magic->string
             && (flat->magic->length > 4
-                || (flat->magic->length & (flat->magic->length - 1))))
-        {
+                || (flat->magic->length & (flat->magic->length - 1)))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL,
                                 disc,
@@ -3438,16 +3208,13 @@ flat_physical_swap_dat(Tag_t *tag,
 
     for (v = flat_swap_val; v < &flat_swap_val[elementsof(flat_swap_val)];
          v++)
-        if (!strcasecmp(data, v->name))
-        {
+        if (!strcasecmp(data, v->name)) {
             flat->swap = v->value;
             break;
         }
-    if (v >= &flat_swap_val[elementsof(flat_swap_val)])
-    {
+    if (v >= &flat_swap_val[elementsof(flat_swap_val)]) {
         flat->swap = strtoul(data, &e, 0);
-        if (*e)
-        {
+        if (*e) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
             return -1;
@@ -3466,8 +3233,7 @@ flat_compress_dat(Tag_t *tag,
 {
     Flat_t *flat = ( Flat_t * )disc;
 
-    if (!(flat->meth.compress = strdup(data)))
-    {
+    if (!(flat->meth.compress = strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -3573,8 +3339,7 @@ flat_physical_codeset_dat(Tag_t *tag,
 {
     Flat_t *flat = ( Flat_t * )disc;
 
-    if ((flat->code = ccmapid(data)) < 0)
-    {
+    if ((flat->code = ccmapid(data)) < 0) {
         if (disc->errorf)
             (*disc->errorf)(NiL,
                             disc,
@@ -3880,19 +3645,16 @@ defaults(Cxtype_t *type, Cxformat_t *format, int binary, Dssdisc_t *disc)
     else if ((type->format.flags & CX_BINARY)
              && (format->flags & (CX_INTEGER | CX_FLOAT)))
         format->flags |= CX_BINARY;
-    if (!type->internalf || !type->externalf)
-    {
+    if (!type->internalf || !type->externalf) {
         if (cxisvoid(type))
             base = state->type_void;
         else if (cxisstring(type))
             base = state->type_string;
         else if (cxisbuffer(type))
             base = state->type_buffer;
-        else
-        {
+        else {
             base = state->type_number;
-            if (!(format->flags & CX_FLOAT))
-            {
+            if (!(format->flags & CX_FLOAT)) {
                 s = details;
                 *s++ = '%';
                 if (format->fill > 0)
@@ -3902,11 +3664,9 @@ defaults(Cxtype_t *type, Cxformat_t *format, int binary, Dssdisc_t *disc)
                     s, &details[sizeof(details)] - s, "%d", format->width);
                 *s++ = 'l';
                 *s++ = 'l';
-                switch (format->base)
-                {
+                switch (format->base) {
                 default:
-                    if (format->base < 64)
-                    {
+                    if (format->base < 64) {
                         *s++ = '.';
                         *s++ = '.';
                         s += sfsprintf(
@@ -3962,8 +3722,7 @@ flatmeth(const char *name,
     int fixed;
     char path[PATH_MAX];
 
-    if (!(flat = newof(0, Flat_t, 1, 0)))
-    {
+    if (!(flat = newof(0, Flat_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
@@ -3981,8 +3740,7 @@ flatmeth(const char *name,
     flat->delimiter = flat->escape = flat->quotebegin = flat->quoteend
     = flat->terminator = flat->continuator = -1;
     sp = 0;
-    if (options)
-    {
+    if (options) {
         if (!(sp = sfstropen()))
             goto drop;
         sfprintf(sp, "%s", usage);
@@ -3994,10 +3752,8 @@ flatmeth(const char *name,
         sfclose(sp);
         sp = 0;
         s = sfstruse(meth->cx->buf);
-        for (;;)
-        {
-            switch (optstr(options, s))
-            {
+        for (;;) {
+            switch (optstr(options, s)) {
             case 'b':
                 flat->binary = opt_info.num;
                 continue;
@@ -4028,8 +3784,7 @@ flatmeth(const char *name,
             break;
         }
     }
-    if (schema && *schema)
-    {
+    if (schema && *schema) {
         if (!(sp
               = dssfind(schema, NiL, DSS_VERBOSE, path, sizeof(path), disc)))
             return 0;
@@ -4048,12 +3803,11 @@ flatmeth(const char *name,
     for (i = 0; i < elementsof(local_callouts); i++)
         if (cxaddcallout(flat->meth.cx, &local_callouts[i], disc))
             return 0;
-    for (f = flat->fields; f; f = f->next)
-    {
+    for (f = flat->fields; f; f = f->next) {
         if (cxaddvariable(flat->meth.cx, &f->variable, disc))
             return 0;
-        if ((s = ( char * )f->width) && !(f->width = keycomp(flat, s, disc)))
-        {
+        if ((s = ( char * )f->width)
+            && !(f->width = keycomp(flat, s, disc))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL,
                                 disc,
@@ -4065,8 +3819,7 @@ flatmeth(const char *name,
         }
         if (f->variable.array && (s = ( char * )f->variable.array->variable)
             && !(f->variable.array->variable
-                 = ( Cxvariable_t * )dtmatch(flat->meth.cx->variables, s)))
-        {
+                 = ( Cxvariable_t * )dtmatch(flat->meth.cx->variables, s))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL,
                                 disc,
@@ -4079,8 +3832,7 @@ flatmeth(const char *name,
         defaults(f->variable.type, &f->variable.format, 0, disc);
         if (!(s = ( char * )f->physical.type))
             f->physical.type = f->variable.type;
-        else if (!(f->physical.type = cxtype(flat->meth.cx, s, disc)))
-        {
+        else if (!(f->physical.type = cxtype(flat->meth.cx, s, disc))) {
             if (disc->errorf)
                 (*disc->errorf)(
                 NiL, disc, 2, "%s: %s: unknown type", f->variable.name, s);
@@ -4095,12 +3847,10 @@ flatmeth(const char *name,
             |= f->variable.format.flags
                & (CX_BINARY | CX_UNSIGNED | CX_INTEGER | CX_FLOAT | CX_STRING
                   | CX_BUFFER | CX_NUL);
-        if (f->physical.format.flags & CX_BINARY)
-        {
+        if (f->physical.format.flags & CX_BINARY) {
             if (!f->variable.format.width && f->physical.type)
                 f->variable.format.width = f->physical.type->format.width;
-        }
-        else if (!f->physical.format.map)
+        } else if (!f->physical.format.map)
             f->physical.format.map = f->variable.format.map;
         if (f->physical.format.flags & CX_BUFFER)
             f->variable.format.flags |= CX_BUFFER;
@@ -4110,23 +3860,19 @@ flatmeth(const char *name,
     if (flat->terminator < 0)
         flat->continuator = -1;
     if ((flat->continuator >= 0 || flat->record)
-        && !(flat->buf = sfstropen()))
-    {
+        && !(flat->buf = sfstropen())) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
     }
     errors = 0;
     fixed = 1;
-    for (f = flat->fields; f; f = f->next)
-    {
+    for (f = flat->fields; f; f = f->next) {
         if (!(f->physical.format.flags & (CX_BINARY | CX_STRING | CX_BUFFER)))
             flat->binary = 0;
         if (f->physical.format.delimiter < 0 && !f->physical.format.width
-            && !f->width && !f->keyed)
-        {
-            if (f->structure.members)
-            {
+            && !f->width && !f->keyed) {
+            if (f->structure.members) {
                 f->structref = 1;
                 continue;
             }
@@ -4138,9 +3884,7 @@ flatmeth(const char *name,
                 2,
                 "%s: a field delimiter or size must be specified",
                 f->variable.name);
-        }
-        else if (f->structure.members)
-        {
+        } else if (f->structure.members) {
 #if 0
 			if (f->physical.format.width || f->width)
 				/*OK*/;
@@ -4149,21 +3893,18 @@ flatmeth(const char *name,
 #endif
             continue;
         }
-        if (!f->variable.type)
-        {
+        if (!f->variable.type) {
             f->variable.type = ( Cxtype_t * )"string";
             f->variable.format.flags |= CX_STRING;
         }
         if (f->physical.format.delimiter == flat->terminator
             && f != flat->lastfield)
             flat->terminator = -1;
-        if (f->physical.format.width)
-        {
+        if (f->physical.format.width) {
             flat->fixed += f->physical.format.width;
             if (f->width)
                 flat->variable = SF_LOCKR;
-        }
-        else
+        } else
             fixed = 0;
         if (f->physical.format.quotebegin >= 0
             && f->physical.format.quoteend < 0)
@@ -4174,27 +3915,21 @@ flatmeth(const char *name,
     }
     if (errors)
         return 0;
-    if (flat->block)
-    {
+    if (flat->block) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "blocked data not supported yet");
         return 0;
     }
-    if (flat->record)
-    {
-        if (flat->record->fixed && flat->fixed > flat->record->reserve)
-        {
+    if (flat->record) {
+        if (flat->record->fixed && flat->fixed > flat->record->reserve) {
             flat->truncate.fixed = 1;
             n = flat->record->reserve;
-            for (f = flat->fields; f; f = f->next)
-            {
-                if (f->width && f->physical.format.width)
-                {
+            for (f = flat->fields; f; f = f->next) {
+                if (f->width && f->physical.format.width) {
                     g = f;
                     while (g = g->next)
                         n -= g->physical.format.width;
-                    if (n > 0)
-                    {
+                    if (n > 0) {
                         if (disc->errorf)
                             (*disc->errorf)(
                             NiL,
@@ -4217,9 +3952,7 @@ flatmeth(const char *name,
         flat->fixed = flat->record->reserve;
         if (!flat->record->width)
             flat->record->width = flat->record->size;
-    }
-    else if (!fixed)
-    {
+    } else if (!fixed) {
         flat->fixed = 0;
         flat->binary = 0;
     }
@@ -4256,12 +3989,9 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
     int n;
     char tmp[2];
 
-    if (flat)
-    {
-        if (flat->prototype)
-        {
-            for (f = flat->fields; f; f = f->next)
-            {
+    if (flat) {
+        if (flat->prototype) {
+            for (f = flat->fields; f; f = f->next) {
                 if ((n = f->variable.format.delimiter) < 0
                     && (n = f->physical.format.delimiter) < 0)
                     n = f->next ? '|' : '\n';
@@ -4271,11 +4001,9 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
                          n);
             }
         }
-        switch (flat->list)
-        {
+        switch (flat->list) {
         case 'h':
-            if (!(a = newof(0, char, 3 * (strlen(flat->meth.name) + 1), 0)))
-            {
+            if (!(a = newof(0, char, 3 * (strlen(flat->meth.name) + 1), 0))) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     dss, disc, ERROR_SYSTEM | 2, "out of space");
@@ -4353,8 +4081,7 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
             sfprintf(sfstdout, "\n");
             sfprintf(sfstdout, "static %s_record_t*	_%s_record_;\n", t, p);
             sfprintf(sfstdout, "\n");
-            for (f = flat->fields; f; f = f->next)
-            {
+            for (f = flat->fields; f; f = f->next) {
                 if (f->structure.members)
                     continue;
                 n = sfprintf(sfstdout, "#define %s_%s", p, f->variable.name);
@@ -4364,24 +4091,19 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
                               p,
                               p,
                               f->variable.index);
-                if (f->variable.format.flags & (CX_BUFFER | CX_STRING))
-                {
+                if (f->variable.format.flags & (CX_BUFFER | CX_STRING)) {
                     a = (f->variable.format.flags & CX_STRING) ? "string"
                                                                : "buffer";
                     n += sfprintf(sfstdout, "%s.data)", a);
-                }
-                else
+                } else
                     n += sfprintf(sfstdout, "number)");
                 offset += m * f->physical.format.width;
-                if (f->variable.description)
-                {
+                if (f->variable.description) {
                     tabs(sfstdout, n, 64);
                     sfprintf(sfstdout, "/* %s */\n", f->variable.description);
-                }
-                else
+                } else
                     sfputc(sfstdout, '\n');
-                if (f->variable.format.flags & (CX_BUFFER | CX_STRING))
-                {
+                if (f->variable.format.flags & (CX_BUFFER | CX_STRING)) {
                     n = sfprintf(
                     sfstdout, "#define %s_%s_size", p, f->variable.name);
                     tabs(sfstdout, n, 32);
@@ -4396,8 +4118,7 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
             }
             break;
         case 'o':
-            if (!flat->fixed)
-            {
+            if (!flat->fixed) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL,
@@ -4409,30 +4130,24 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
             /* HERE: under construction */
             offset = 0;
             pad = 0;
-            for (f = flat->fields; f; f = f->next)
-            {
-                if (f->structure.members)
-                {
+            for (f = flat->fields; f; f = f->next) {
+                if (f->structure.members) {
                     f->structure.size = offset;
                     continue;
                 }
                 a = p = s = "";
                 m = 1;
                 n = 0;
-                if (f->variable.array)
-                {
-                    if (f->variable.array->size)
-                    {
+                if (f->variable.array) {
+                    if (f->variable.array->size) {
                         m = f->variable.array->size;
                         a = sfprints("[%d]", f->variable.array->size);
-                    }
-                    else
+                    } else
                         p = "*";
                 }
                 if (!f->structure.level)
                     f->variable.structure = 0;
-                if (f->variable.format.flags & CX_BUFFER)
-                {
+                if (f->variable.format.flags & CX_BUFFER) {
                     n += sfprintf(sfstdout,
                                   "struct _%s_%s_buf_s",
                                   flat->basemeth->name,
@@ -4440,10 +4155,8 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
                     n = tabs(sfstdout, n, 24);
                     n
                     += sfprintf(sfstdout, "%s%s%s;", p, f->variable.name, a);
-                }
-                else if ((f->variable.format.flags & CX_STRING)
-                         || !(f->physical.format.flags & CX_BINARY))
-                {
+                } else if ((f->variable.format.flags & CX_STRING)
+                           || !(f->physical.format.flags & CX_BINARY)) {
                     n += sfprintf(sfstdout, "char");
                     n = tabs(sfstdout, n, 24);
                     n += sfprintf(sfstdout, "%s%s%s", p, f->variable.name, a);
@@ -4452,13 +4165,10 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
                         sfstdout, "[%u];", f->physical.format.width);
                     else
                         n += sfprintf(sfstdout, ";");
-                }
-                else
-                {
+                } else {
                     if (f->variable.format.flags & CX_FLOAT)
                         n += sfprintf(sfstdout, "_ast_flt");
-                    else
-                    {
+                    else {
                         if ((f->variable.format.flags & CX_UNSIGNED)
                             || !streq(( char * )f->variable.type, "number"))
                             n += sfprintf(sfstdout, "unsigned ");
@@ -4469,8 +4179,7 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
                     n
                     += sfprintf(sfstdout, "%s%s%s;", p, f->variable.name, a);
                     if ((offset % f->physical.format.width)
-                        && !cxisvoid(f->variable.type))
-                    {
+                        && !cxisvoid(f->variable.type)) {
                         s = "(MISALIGNED) ";
                         if (disc->errorf)
                             (*disc->errorf)(
@@ -4485,8 +4194,7 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
                 }
                 offset += m * f->physical.format.width;
                 sfputc(sfstdout, '\n');
-                if (f->physical.format.delimiter >= 0)
-                {
+                if (f->physical.format.delimiter >= 0) {
                     n = sfprintf(sfstdout, "char");
                     n = tabs(sfstdout, n, 24);
                     n += sfprintf(sfstdout, "_delimiter_%d;", ++pad);
@@ -4496,40 +4204,34 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
                     tmp[1] = 0;
                     sfprintf(sfstdout, "/* delimiter '%s' */\n", fmtesc(tmp));
                 }
-                if (!f->structure.next)
-                {
+                if (!f->structure.next) {
                     v = &f->variable;
                     if (v->structure)
                         while (!v->structure->next
-                               && (v = v->structure->parent) && v->structure)
-                        {
+                               && (v = v->structure->parent)
+                               && v->structure) {
                             v->structure->size = offset - v->structure->size;
-                            if (v->array)
-                            {
-                                if (v->array->size)
-                                {
+                            if (v->array) {
+                                if (v->array->size) {
                                     offset += (v->array->size - 1)
                                               * v->structure->size;
                                     sfprintf(sfstdout,
                                              "} %s[%d]",
                                              v->name,
                                              v->array->size);
-                                }
-                                else
+                                } else
                                     sfprintf(sfstdout, "} *%s", v->name);
                                 if (v->array->variable)
                                     sfprintf(sfstdout,
                                              " /*%s*/",
                                              v->array->variable->name);
                                 sfprintf(sfstdout, ";\n");
-                            }
-                            else
+                            } else
                                 sfprintf(sfstdout, "} %s;\n", v->name);
                         }
                 }
             }
-            if (flat->binary && (fixed = offset % 8))
-            {
+            if (flat->binary && (fixed = offset % 8)) {
                 fixed = 8 - fixed;
                 if (disc->errorf)
                     (*disc->errorf)(NiL,
@@ -4544,8 +4246,7 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
             sfstdout, "%s\t%lu\t%u\t%u\tstruct\n", ".", offset, 0, 0);
             break;
         case 's':
-            if (!flat->fixed)
-            {
+            if (!flat->fixed) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL,
@@ -4555,8 +4256,7 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
                 return -1;
             }
             for (f = flat->fields; f; f = f->next)
-                if (f->variable.format.flags & CX_BUFFER)
-                {
+                if (f->variable.format.flags & CX_BUFFER) {
                     sfprintf(sfstdout, "/* buffer field info */\n");
                     sfprintf(sfstdout,
                              "struct _%s_%s_buf_s\n",
@@ -4585,10 +4285,8 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
             sfprintf(sfstdout, "{\n");
             offset = 0;
             pad = 0;
-            for (f = flat->fields; f; f = f->next)
-            {
-                if (f->structure.members)
-                {
+            for (f = flat->fields; f; f = f->next) {
+                if (f->structure.members) {
                     f->structure.size = offset;
                     sfprintf(sfstdout, "struct\n{\n");
                     continue;
@@ -4596,22 +4294,18 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
                 a = p = s = "";
                 m = 1;
                 n = 0;
-                if (f->variable.array)
-                {
-                    if (f->variable.array->size)
-                    {
+                if (f->variable.array) {
+                    if (f->variable.array->size) {
                         m = f->variable.array->size;
                         a = sfprints("[%d]", f->variable.array->size);
-                    }
-                    else
+                    } else
                         p = "*";
                 }
                 if (f->structure.level)
                     n += sfprintf(sfstdout, "/*%02d*/", f->structure.level);
                 else
                     f->variable.structure = 0;
-                if (f->variable.format.flags & CX_BUFFER)
-                {
+                if (f->variable.format.flags & CX_BUFFER) {
                     n += sfprintf(sfstdout,
                                   "struct _%s_%s_buf_s",
                                   flat->basemeth->name,
@@ -4619,10 +4313,8 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
                     n = tabs(sfstdout, n, 24);
                     n
                     += sfprintf(sfstdout, "%s%s%s;", p, f->variable.name, a);
-                }
-                else if ((f->variable.format.flags & CX_STRING)
-                         || !(f->physical.format.flags & CX_BINARY))
-                {
+                } else if ((f->variable.format.flags & CX_STRING)
+                           || !(f->physical.format.flags & CX_BINARY)) {
                     n += sfprintf(sfstdout, "char");
                     n = tabs(sfstdout, n, 24);
                     n += sfprintf(sfstdout, "%s%s%s", p, f->variable.name, a);
@@ -4631,13 +4323,10 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
                         sfstdout, "[%u];", f->physical.format.width);
                     else
                         n += sfprintf(sfstdout, ";");
-                }
-                else
-                {
+                } else {
                     if (f->variable.format.flags & CX_FLOAT)
                         n += sfprintf(sfstdout, "_ast_flt");
-                    else
-                    {
+                    else {
                         if ((f->variable.format.flags & CX_UNSIGNED)
                             || !streq(( char * )f->variable.type, "number"))
                             n += sfprintf(sfstdout, "unsigned ");
@@ -4648,8 +4337,7 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
                     n
                     += sfprintf(sfstdout, "%s%s%s;", p, f->variable.name, a);
                     if ((offset % f->physical.format.width)
-                        && !cxisvoid(f->variable.type))
-                    {
+                        && !cxisvoid(f->variable.type)) {
                         s = "(MISALIGNED) ";
                         if (disc->errorf)
                             (*disc->errorf)(
@@ -4663,19 +4351,16 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
                     }
                 }
                 offset += m * f->physical.format.width;
-                if (*s || f->variable.description)
-                {
+                if (*s || f->variable.description) {
                     tabs(sfstdout, n, 40);
                     sfprintf(sfstdout,
                              "/* %s%s */\n",
                              s,
                              f->variable.description ? f->variable.description
                                                      : "");
-                }
-                else
+                } else
                     sfputc(sfstdout, '\n');
-                if (f->physical.format.delimiter >= 0)
-                {
+                if (f->physical.format.delimiter >= 0) {
                     n = sfprintf(sfstdout, "char");
                     n = tabs(sfstdout, n, 24);
                     n += sfprintf(sfstdout, "_delimiter_%d;", ++pad);
@@ -4685,41 +4370,35 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
                     tmp[1] = 0;
                     sfprintf(sfstdout, "/* delimiter '%s' */\n", fmtesc(tmp));
                 }
-                if (!f->structure.next)
-                {
+                if (!f->structure.next) {
                     v = &f->variable;
                     if (v->structure)
                         while (!v->structure->next
-                               && (v = v->structure->parent) && v->structure)
-                        {
+                               && (v = v->structure->parent)
+                               && v->structure) {
                             v->structure->size = offset - v->structure->size;
-                            if (v->array)
-                            {
-                                if (v->array->size)
-                                {
+                            if (v->array) {
+                                if (v->array->size) {
                                     offset += (v->array->size - 1)
                                               * v->structure->size;
                                     sfprintf(sfstdout,
                                              "} %s[%d]",
                                              v->name,
                                              v->array->size);
-                                }
-                                else
+                                } else
                                     sfprintf(sfstdout, "} *%s", v->name);
                                 if (v->array->variable)
                                     sfprintf(sfstdout,
                                              " /*%s*/",
                                              v->array->variable->name);
                                 sfprintf(sfstdout, ";\n");
-                            }
-                            else
+                            } else
                                 sfprintf(sfstdout, "} %s;\n", v->name);
                         }
                 }
             }
             sfprintf(sfstdout, "};\n");
-            if (flat->binary && (fixed = offset % 8))
-            {
+            if (flat->binary && (fixed = offset % 8)) {
                 fixed = 8 - fixed;
                 sfprintf(sfstdout,
                          "/* struct has %u unused pad byte%s */\n",
@@ -4744,11 +4423,9 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
         if (flat->list || flat->prototype)
             exit(0);
         flat->getf = flatget;
-        if (flat->binary && flat->fixed && !(flat->test & 0x0010))
-        {
+        if (flat->binary && flat->fixed && !(flat->test & 0x0010)) {
             offset = 0;
-            for (f = flat->fields; f; f = f->next)
-            {
+            for (f = flat->fields; f; f = f->next) {
                 if ((f->variable.format.flags & CX_BINARY)
                     && ((offset % f->physical.format.width)
                         || (f->physical.format.width
@@ -4764,8 +4441,7 @@ flatopen(Dss_t *dss, Dssdisc_t *disc)
         if (flat->record || (flat->fixed % 8))
             flat->getf = flatget;
         flat->valsiz = 64;
-        if (!(flat->valbuf = newof(0, char, flat->valsiz, 0)))
-        {
+        if (!(flat->valbuf = newof(0, char, flat->valsiz, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(dss, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
@@ -4824,8 +4500,7 @@ flattenget(Flatten_t *flatten, Cxvariable_t *var, void *data)
     Cxinstruction_t x;
     Cxreference_t *ref;
 
-    if (ref = var->reference)
-    {
+    if (ref = var->reference) {
         x.data.variable = ref->variable;
         if ((*flatten->cx->getf)(flatten->cx,
                                  &x,
@@ -4835,8 +4510,7 @@ flattenget(Flatten_t *flatten, Cxvariable_t *var, void *data)
                                  data,
                                  flatten->cx->disc))
             return &nullval;
-        while (ref = ref->next)
-        {
+        while (ref = ref->next) {
             x.data.variable = ref->variable;
             if ((*ref->member->getf)(flatten->cx,
                                      &x,
@@ -4847,9 +4521,7 @@ flattenget(Flatten_t *flatten, Cxvariable_t *var, void *data)
                                      flatten->cx->disc))
                 return &nullval;
         }
-    }
-    else
-    {
+    } else {
         x.data.variable = var;
         if ((*flatten->cx->getf)(flatten->cx,
                                  &x,
@@ -4886,8 +4558,7 @@ flattennum2str(Flatten_t *flatten, Cxvariable_t *var, void *data)
 {
     Cxvalue_t *val;
 
-    if ((val = flattenget(flatten, var, data)) != &nullval)
-    {
+    if ((val = flattenget(flatten, var, data)) != &nullval) {
         if (cxnum2str(flatten->cx,
                       &var->format,
                       ( Cxinteger_t )val->number,
@@ -4908,8 +4579,7 @@ flattenstr2num(Flatten_t *flatten, Cxvariable_t *var, void *data)
     Cxvalue_t *val;
     Cxunsigned_t u;
 
-    if ((val = flattenget(flatten, var, data)) != &nullval)
-    {
+    if ((val = flattenget(flatten, var, data)) != &nullval) {
         if (cxstr2num(
             flatten->cx, &var->format, val->string.data, val->string.size, &u))
             return &nullval;
@@ -4947,10 +4617,8 @@ flatten_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     int offset;
     int fixed;
 
-    for (;;)
-    {
-        switch (optget(argv, flatten_usage))
-        {
+    for (;;) {
+        switch (optget(argv, flatten_usage)) {
         case 'e':
             emptyspace = 1;
             continue;
@@ -4969,15 +4637,13 @@ flatten_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     if (error_info.errors > errors)
         return -1;
     argv += opt_info.index;
-    if (!(schema = *argv++) || *argv)
-    {
+    if (!(schema = *argv++) || *argv) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_USAGE | 4, "%s", optusage(NiL));
         return -1;
     }
     if (!(vm = vmopen(Vmdcheap, Vmlast, 0))
-        || !(flatten = vmnewof(vm, 0, Flatten_t, 1, 0)))
-    {
+        || !(flatten = vmnewof(vm, 0, Flatten_t, 1, 0))) {
         if (vm)
             vmclose(vm);
         if (disc->errorf)
@@ -4991,8 +4657,7 @@ flatten_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     flatten->vm = vm;
     flatten->emptyspace = emptyspace;
     if (!(meth = dssmeth(schema, disc))
-        || !(flatten->dss = dssopen(0, 0, disc, meth)))
-    {
+        || !(flatten->dss = dssopen(0, 0, disc, meth))) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: cannot open conversion method", schema);
@@ -5004,8 +4669,7 @@ flatten_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                                            CX_GET,
                                            flatten->cx->state->type_void,
                                            flatten->cx->state->type_void,
-                                           flatten->cx->disc)))
-    {
+                                           flatten->cx->disc))) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 3, "cx CX_GET callout must be defined");
@@ -5015,21 +4679,18 @@ flatten_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     flatten->flat = ( Flat_t * )flatten->dss->meth->data;
     offset = 0;
     fixed = flatten->flat->fixed;
-    for (f = flatten->flat->fields; f; f = f->next)
-    {
+    for (f = flatten->flat->fields; f; f = f->next) {
         f->flattengetf = flattenget;
         if (!(g = ( Field_t * )dtmatch(cx->variables, f->variable.name))
             && f->structure.parent
             && (g = ( Field_t * )dtmatch(cx->variables,
-                                         f->structure.parent->name)))
-        {
+                                         f->structure.parent->name))) {
             if (cxisnumber(f->variable.type) && cxisstring(g->variable.type))
                 f->flattengetf = flattensize;
             else if (!cxisstring(f->variable.type))
                 g = 0;
         }
-        if (!(f->flatten = ( Cxvariable_t * )g))
-        {
+        if (!(f->flatten = ( Cxvariable_t * )g)) {
             f->flattengetf = flattennull;
             if (!cxisvoid(f->variable.type) && disc->errorf)
                 (*disc->errorf)(NiL,
@@ -5038,9 +4699,7 @@ flatten_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                                 "%s: field not in source record -- default "
                                 "value will be output",
                                 f->variable.name);
-        }
-        else if (f->flatten->format.map)
-        {
+        } else if (f->flatten->format.map) {
             if (cxisnumber(f->variable.type) && cxisstring(f->flatten->type))
                 f->flattengetf = flattenstr2num;
             else if (cxisstring(f->variable.type)
@@ -5051,8 +4710,7 @@ flatten_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
             && g->physical.format.code == CC_NATIVE)
             f->pam = ccmap(g->physical.format.code, f->physical.format.code);
         if (fixed && (f->variable.format.flags & CX_BINARY)
-            && (offset % f->physical.format.width))
-        {
+            && (offset % f->physical.format.width)) {
             if (disc->errorf)
                 (*disc->errorf)(NiL,
                                 disc,
@@ -5065,8 +4723,7 @@ flatten_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         }
         offset += f->physical.format.width;
     }
-    if (flatten->flat->binary && (offset %= 8))
-    {
+    if (flatten->flat->binary && (offset %= 8)) {
         offset = 8 - offset;
         if (disc->errorf)
             (*disc->errorf)(NiL,
@@ -5111,8 +4768,7 @@ flatten_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     int q;
 
     io = flatten->flat->record ? flatten->flat->buf : flatten->file->io;
-    for (f = flatten->flat->fields; f; f = f->next)
-    {
+    for (f = flatten->flat->fields; f; f = f->next) {
         v = (*f->flattengetf)(flatten, f->flatten, data);
         while ((n = (*f->physical.type->externalf)(flatten->cx,
                                                    f->physical.type,
@@ -5122,12 +4778,10 @@ flatten_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                                                    flatten->flat->valbuf,
                                                    flatten->flat->valsiz,
                                                    disc))
-               > flatten->flat->valsiz)
-        {
+               > flatten->flat->valsiz) {
             n = roundof(n, 32);
             if (!(flatten->flat->valbuf
-                  = newof(flatten->flat->valbuf, char, n, 0)))
-            {
+                  = newof(flatten->flat->valbuf, char, n, 0))) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -5137,22 +4791,18 @@ flatten_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         }
         if (n < 0)
             return -1;
-        else if (n > 0)
-        {
+        else if (n > 0) {
             if (f->pam)
                 ccmapcpy(
                 f->pam, flatten->flat->valbuf, flatten->flat->valbuf, n);
             if ((f->physical.format.flags & (CX_STRING | CX_BUFFER))
                 && f->physical.format.delimiter >= 0
                 && (f->physical.format.escape >= 0
-                    || f->physical.format.quotebegin >= 0))
-            {
-                if (f->physical.format.flags & CX_QUOTEALL)
-                {
+                    || f->physical.format.quotebegin >= 0)) {
+                if (f->physical.format.flags & CX_QUOTEALL) {
                     q = 1;
                     sfputc(io, f->physical.format.quotebegin);
-                }
-                else
+                } else
                     q = 0;
                 for (e
                      = (s = b = ( unsigned char * )flatten->flat->valbuf) + n;
@@ -5161,54 +4811,43 @@ flatten_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                     if (*s == f->physical.format.delimiter
                         || *s == f->physical.format.escape
                         || *s == f->physical.format.quotebegin
-                        || *s == f->physical.format.quoteend)
-                    {
-                        if (f->physical.format.escape >= 0)
-                        {
+                        || *s == f->physical.format.quoteend) {
+                        if (f->physical.format.escape >= 0) {
                             sfwrite(io, b, s - b);
                             sfputc(io, f->physical.format.escape);
                             sfputc(io, *s);
-                        }
-                        else if (*s == f->physical.format.delimiter)
-                        {
+                        } else if (*s == f->physical.format.delimiter) {
                             if (q)
                                 continue;
                             q = 1;
                             sfwrite(io, b, s - b);
                             sfputc(io, f->physical.format.quotebegin);
                             sfputc(io, *s);
-                        }
-                        else
-                        {
+                        } else {
                             sfwrite(io, b, s - b + 1);
                             sfputc(io, *s);
-                            if (!q)
-                            {
+                            if (!q) {
                                 q = 1;
                                 sfputc(io, *s);
                             }
                         }
                         b = s + 1;
                     }
-                if (q && !(f->physical.format.flags & CX_QUOTEALL))
-                {
+                if (q && !(f->physical.format.flags & CX_QUOTEALL)) {
                     q = 0;
                     sfputc(io, f->physical.format.quoteend);
                 }
                 sfwrite(io, b, s - b);
                 if (q)
                     sfputc(io, f->physical.format.quoteend);
-            }
-            else
+            } else
                 sfwrite(io, flatten->flat->valbuf, n);
-        }
-        else if (flatten->emptyspace && f->physical.format.delimiter >= 0)
+        } else if (flatten->emptyspace && f->physical.format.delimiter >= 0)
             sfputc(io, ' ');
         if (f->physical.format.delimiter >= 0)
             sfputc(io, f->physical.format.delimiter);
     }
-    if (flatten->flat->record)
-    {
+    if (flatten->flat->record) {
         n = sfstrtell(io);
         sfstrseek(io, 0, SEEK_SET);
         if (size_put(flatten->file, n, flatten->flat->record, disc)

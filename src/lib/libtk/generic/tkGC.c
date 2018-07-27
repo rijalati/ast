@@ -105,8 +105,7 @@ XGCValues *valuePtr;
     int new;
     Drawable d, freeDrawable;
 
-    if (!initialized)
-    {
+    if (!initialized) {
         GCInit();
     }
 
@@ -122,188 +121,119 @@ XGCValues *valuePtr;
      * for this request (exact matches only, sorry).
      */
 
-    if (valueMask & GCFunction)
-    {
+    if (valueMask & GCFunction) {
         valueKey.values.function = valuePtr->function;
-    }
-    else
-    {
+    } else {
         valueKey.values.function = GXcopy;
     }
-    if (valueMask & GCPlaneMask)
-    {
+    if (valueMask & GCPlaneMask) {
         valueKey.values.plane_mask = valuePtr->plane_mask;
-    }
-    else
-    {
+    } else {
         valueKey.values.plane_mask = ( unsigned )~0;
     }
-    if (valueMask & GCForeground)
-    {
+    if (valueMask & GCForeground) {
         valueKey.values.foreground = valuePtr->foreground;
-    }
-    else
-    {
+    } else {
         valueKey.values.foreground = 0;
     }
-    if (valueMask & GCBackground)
-    {
+    if (valueMask & GCBackground) {
         valueKey.values.background = valuePtr->background;
-    }
-    else
-    {
+    } else {
         valueKey.values.background = 1;
     }
-    if (valueMask & GCLineWidth)
-    {
+    if (valueMask & GCLineWidth) {
         valueKey.values.line_width = valuePtr->line_width;
-    }
-    else
-    {
+    } else {
         valueKey.values.line_width = 0;
     }
-    if (valueMask & GCLineStyle)
-    {
+    if (valueMask & GCLineStyle) {
         valueKey.values.line_style = valuePtr->line_style;
-    }
-    else
-    {
+    } else {
         valueKey.values.line_style = LineSolid;
     }
-    if (valueMask & GCCapStyle)
-    {
+    if (valueMask & GCCapStyle) {
         valueKey.values.cap_style = valuePtr->cap_style;
-    }
-    else
-    {
+    } else {
         valueKey.values.cap_style = CapButt;
     }
-    if (valueMask & GCJoinStyle)
-    {
+    if (valueMask & GCJoinStyle) {
         valueKey.values.join_style = valuePtr->join_style;
-    }
-    else
-    {
+    } else {
         valueKey.values.join_style = JoinMiter;
     }
-    if (valueMask & GCFillStyle)
-    {
+    if (valueMask & GCFillStyle) {
         valueKey.values.fill_style = valuePtr->fill_style;
-    }
-    else
-    {
+    } else {
         valueKey.values.fill_style = FillSolid;
     }
-    if (valueMask & GCFillRule)
-    {
+    if (valueMask & GCFillRule) {
         valueKey.values.fill_rule = valuePtr->fill_rule;
-    }
-    else
-    {
+    } else {
         valueKey.values.fill_rule = EvenOddRule;
     }
-    if (valueMask & GCArcMode)
-    {
+    if (valueMask & GCArcMode) {
         valueKey.values.arc_mode = valuePtr->arc_mode;
-    }
-    else
-    {
+    } else {
         valueKey.values.arc_mode = ArcPieSlice;
     }
-    if (valueMask & GCTile)
-    {
+    if (valueMask & GCTile) {
         valueKey.values.tile = valuePtr->tile;
-    }
-    else
-    {
+    } else {
         valueKey.values.tile = None;
     }
-    if (valueMask & GCStipple)
-    {
+    if (valueMask & GCStipple) {
         valueKey.values.stipple = valuePtr->stipple;
-    }
-    else
-    {
+    } else {
         valueKey.values.stipple = None;
     }
-    if (valueMask & GCTileStipXOrigin)
-    {
+    if (valueMask & GCTileStipXOrigin) {
         valueKey.values.ts_x_origin = valuePtr->ts_x_origin;
-    }
-    else
-    {
+    } else {
         valueKey.values.ts_x_origin = 0;
     }
-    if (valueMask & GCTileStipYOrigin)
-    {
+    if (valueMask & GCTileStipYOrigin) {
         valueKey.values.ts_y_origin = valuePtr->ts_y_origin;
-    }
-    else
-    {
+    } else {
         valueKey.values.ts_y_origin = 0;
     }
-    if (valueMask & GCFont)
-    {
+    if (valueMask & GCFont) {
         valueKey.values.font = valuePtr->font;
-    }
-    else
-    {
+    } else {
         valueKey.values.font = None;
     }
-    if (valueMask & GCSubwindowMode)
-    {
+    if (valueMask & GCSubwindowMode) {
         valueKey.values.subwindow_mode = valuePtr->subwindow_mode;
-    }
-    else
-    {
+    } else {
         valueKey.values.subwindow_mode = ClipByChildren;
     }
-    if (valueMask & GCGraphicsExposures)
-    {
+    if (valueMask & GCGraphicsExposures) {
         valueKey.values.graphics_exposures = valuePtr->graphics_exposures;
-    }
-    else
-    {
+    } else {
         valueKey.values.graphics_exposures = True;
     }
-    if (valueMask & GCClipXOrigin)
-    {
+    if (valueMask & GCClipXOrigin) {
         valueKey.values.clip_x_origin = valuePtr->clip_x_origin;
-    }
-    else
-    {
+    } else {
         valueKey.values.clip_x_origin = 0;
     }
-    if (valueMask & GCClipYOrigin)
-    {
+    if (valueMask & GCClipYOrigin) {
         valueKey.values.clip_y_origin = valuePtr->clip_y_origin;
-    }
-    else
-    {
+    } else {
         valueKey.values.clip_y_origin = 0;
     }
-    if (valueMask & GCClipMask)
-    {
+    if (valueMask & GCClipMask) {
         valueKey.values.clip_mask = valuePtr->clip_mask;
-    }
-    else
-    {
+    } else {
         valueKey.values.clip_mask = None;
     }
-    if (valueMask & GCDashOffset)
-    {
+    if (valueMask & GCDashOffset) {
         valueKey.values.dash_offset = valuePtr->dash_offset;
-    }
-    else
-    {
+    } else {
         valueKey.values.dash_offset = 0;
     }
-    if (valueMask & GCDashList)
-    {
+    if (valueMask & GCDashList) {
         valueKey.values.dashes = valuePtr->dashes;
-    }
-    else
-    {
+    } else {
         valueKey.values.dashes = 4;
     }
     valueKey.display = Tk_Display(tkwin);
@@ -311,8 +241,7 @@ XGCValues *valuePtr;
     valueKey.depth = Tk_Depth(tkwin);
     valueHashPtr
     = Tcl_CreateHashEntry(&valueTable, ( char * )&valueKey, &new);
-    if (!new)
-    {
+    if (!new) {
         gcPtr = ( TkGC * )Tcl_GetHashValue(valueHashPtr);
         gcPtr->refCount++;
         return gcPtr->gc;
@@ -332,17 +261,12 @@ XGCValues *valuePtr;
      */
 
     freeDrawable = None;
-    if (Tk_WindowId(tkwin) != None)
-    {
+    if (Tk_WindowId(tkwin) != None) {
         d = Tk_WindowId(tkwin);
-    }
-    else if (valueKey.depth
-             == DefaultDepth(valueKey.display, valueKey.screenNum))
-    {
+    } else if (valueKey.depth
+               == DefaultDepth(valueKey.display, valueKey.screenNum)) {
         d = RootWindow(valueKey.display, valueKey.screenNum);
-    }
-    else
-    {
+    } else {
         d = Tk_GetPixmap(valueKey.display,
                          RootWindow(valueKey.display, valueKey.screenNum),
                          1,
@@ -358,14 +282,12 @@ XGCValues *valuePtr;
     idKey.display = valueKey.display;
     idKey.gc = gcPtr->gc;
     idHashPtr = Tcl_CreateHashEntry(&idTable, ( char * )&idKey, &new);
-    if (!new)
-    {
+    if (!new) {
         panic("GC already registered in Tk_GetGC");
     }
     Tcl_SetHashValue(valueHashPtr, gcPtr);
     Tcl_SetHashValue(idHashPtr, gcPtr);
-    if (freeDrawable != None)
-    {
+    if (freeDrawable != None) {
         Tk_FreePixmap(valueKey.display, freeDrawable);
     }
 
@@ -398,22 +320,19 @@ GC gc;                               /* Graphics context to be released. */
     Tcl_HashEntry *idHashPtr;
     TkGC *gcPtr;
 
-    if (!initialized)
-    {
+    if (!initialized) {
         panic("Tk_FreeGC called before Tk_GetGC");
     }
 
     idKey.display = display;
     idKey.gc = gc;
     idHashPtr = Tcl_FindHashEntry(&idTable, ( char * )&idKey);
-    if (idHashPtr == NULL)
-    {
+    if (idHashPtr == NULL) {
         panic("Tk_FreeGC received unknown gc argument");
     }
     gcPtr = ( TkGC * )Tcl_GetHashValue(idHashPtr);
     gcPtr->refCount--;
-    if (gcPtr->refCount == 0)
-    {
+    if (gcPtr->refCount == 0) {
         Tk_FreeXId(gcPtr->display, ( XID )XGContextFromGC(gcPtr->gc));
         XFreeGC(gcPtr->display, gcPtr->gc);
         Tcl_DeleteHashEntry(gcPtr->valueHashPtr);

@@ -35,8 +35,7 @@ void
 convert(Archive_t *ap, int section, int from, int to)
 {
     if (ap->convert[section].on
-        = (ap->convert[section].f2t = ccmap(from, to)) != 0)
-    {
+        = (ap->convert[section].f2t = ccmap(from, to)) != 0) {
         ap->convert[section].t2f = ccmap(to, from);
         ap->convert[section].f2a = ccmap(from, CC_ASCII);
         ap->convert[section].t2a = ccmap(to, CC_ASCII);
@@ -86,14 +85,11 @@ portable(Archive_t *ap, const char *s)
     unsigned char *m;
     int c;
 
-    if (!ap->convert[SECTION_CONTROL].on)
-    {
+    if (!ap->convert[SECTION_CONTROL].on) {
         while (c = *u++)
             if (c > 0177)
                 return 0;
-    }
-    else
-    {
+    } else {
         m = ap->convert[SECTION_CONTROL].f2t;
         while (c = m[*u++])
             if (c > 0177)

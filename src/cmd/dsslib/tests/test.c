@@ -44,8 +44,7 @@ even_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     int errors;
 
     errors = error_info.errors;
-    if (!(state = vmnewof(cx->vm, 0, State_t, 1, 0)))
-    {
+    if (!(state = vmnewof(cx->vm, 0, State_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -54,10 +53,8 @@ even_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     sfprintf(
     cx->buf, "%s%s", strchr(dss_lib_test.description, '['), even_usage);
     s = sfstruse(cx->buf);
-    for (;;)
-    {
-        switch (optget(( char ** )data, s))
-        {
+    for (;;) {
+        switch (optget(( char ** )data, s)) {
         case '?':
             if (disc->errorf)
                 (*disc->errorf)(
@@ -85,8 +82,7 @@ even_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
     State_t *state = ( State_t * )expr->data;
 
-    if (!(expr->queried & 1))
-    {
+    if (!(expr->queried & 1)) {
         state->selected++;
         sfprintf(
         sfstdout, "even_sel %I*u\n", sizeof(expr->queried), expr->queried);
@@ -136,8 +132,7 @@ odd_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     int errors;
 
     errors = error_info.errors;
-    if (!(state = vmnewof(cx->vm, 0, State_t, 1, 0)))
-    {
+    if (!(state = vmnewof(cx->vm, 0, State_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -146,10 +141,8 @@ odd_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     sfprintf(
     cx->buf, "%s%s", strchr(dss_lib_test.description, '['), odd_usage);
     s = sfstruse(cx->buf);
-    for (;;)
-    {
-        switch (optget(( char ** )data, s))
-        {
+    for (;;) {
+        switch (optget(( char ** )data, s)) {
         case '?':
             if (disc->errorf)
                 (*disc->errorf)(
@@ -177,8 +170,7 @@ odd_sel(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 {
     State_t *state = ( State_t * )expr->data;
 
-    if (expr->queried & 1)
-    {
+    if (expr->queried & 1) {
         state->selected++;
         sfprintf(
         sfstdout, "odd_sel %I*u\n", sizeof(expr->queried), expr->queried);

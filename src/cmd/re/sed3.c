@@ -32,8 +32,7 @@ recomp(Text *rebuf, Text *t, int sub)
     int n;
     if (!(c = *t->w) || c == '\n' || !(n = *(t->w + 1)) || n == '\n')
         syntax("unterminated regular expression");
-    else if (c != n)
-    {
+    else if (c != n) {
         assure(rebuf, sizeof(regex_t));
         if (code = regcomp(( regex_t * )rebuf->w,
                            ( char * )t->w,
@@ -41,8 +40,7 @@ recomp(Text *rebuf, Text *t, int sub)
                            | ((reflags & REG_LENIENT) ? 0 : REG_ESCAPE)))
             badre(( regex_t * )rebuf->w, code);
         t->w += (( regex_t * )rebuf->w)->re_npat;
-        if (!sub && *t->w == 'I')
-        {
+        if (!sub && *t->w == 'I') {
             if (!(reflags & REG_ICASE)
                 && (code = regcomp(
                     ( regex_t * )rebuf->w,
@@ -54,13 +52,10 @@ recomp(Text *rebuf, Text *t, int sub)
         }
         lastre = rebuf->w - rebuf->s;
         rebuf->w += sizeof(regex_t);
-    }
-    else if (rebuf->w == rebuf->s)
+    } else if (rebuf->w == rebuf->s)
         syntax("no previous regular expression");
-    else
-    {
-        if (sub)
-        {
+    else {
+        if (sub) {
             assure(rebuf, sizeof(regex_t));
             if (code = regdup(readdr(lastre), ( regex_t * )rebuf->w))
                 badre(( regex_t * )rebuf->w, code);
@@ -75,8 +70,7 @@ recomp(Text *rebuf, Text *t, int sub)
 void
 reerror(regex_t *re, int code)
 {
-    if (code && code != REG_NOMATCH)
-    {
+    if (code && code != REG_NOMATCH) {
         char buf[UCHAR_MAX + 1];
         regerror(code, re, buf, sizeof(buf));
         error(3, "regular expression execution error: %s", buf);
@@ -111,8 +105,7 @@ substitute(regex_t *re, Text *data)
                matches,
                0))
         return 0;
-    if (c = regsubexec(re, ( char * )data->s, elementsof(matches), matches))
-    {
+    if (c = regsubexec(re, ( char * )data->s, elementsof(matches), matches)) {
         reerror(re, c);
         return 0;
     }

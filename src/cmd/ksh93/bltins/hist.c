@@ -62,8 +62,7 @@ b_hist(int argc, char *argv[], Shbltin_t *context)
         errormsg(SH_DICT, ERROR_system(1), e_histopen);
     hp = shp->gd->hist_ptr;
     while ((flag = optget(argv, sh_opthist)))
-        switch (flag)
-        {
+        switch (flag) {
         case 'e':
             edit = opt_info.arg;
             break;
@@ -85,8 +84,7 @@ b_hist(int argc, char *argv[], Shbltin_t *context)
             break;
 #endif
         case 'N':
-            if (indx <= 0)
-            {
+            if (indx <= 0) {
                 if ((flag = hist_max(hp) - opt_info.num - 1) < 0)
                     flag = 1;
                 range[++indx] = flag;
@@ -103,12 +101,10 @@ b_hist(int argc, char *argv[], Shbltin_t *context)
         errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
     argv += (opt_info.index - 1);
 #if SHOPT_HISTEXPAND
-    if (pflag)
-    {
+    if (pflag) {
         hist_cancel(hp);
         pflag = 0;
-        while (arg = argv[1])
-        {
+        while (arg = argv[1]) {
             flag = hist_expand(arg, &replace);
             if (!(flag & HIST_ERROR))
                 sfputr(sfstdout, replace, '\n');
@@ -122,23 +118,18 @@ b_hist(int argc, char *argv[], Shbltin_t *context)
     }
 #endif
     flag = indx;
-    while (flag < 1 && (arg = argv[1]))
-    {
+    while (flag < 1 && (arg = argv[1])) {
         /* look for old=new argument */
-        if (!replace && strchr(arg + 1, '='))
-        {
+        if (!replace && strchr(arg + 1, '=')) {
             replace = arg;
             argv++;
             continue;
-        }
-        else if (isdigit(*arg) || *arg == '-')
-        {
+        } else if (isdigit(*arg) || *arg == '-') {
             /* see if completely numeric */
             do
                 arg++;
             while (isdigit(*arg));
-            if (*arg == 0)
-            {
+            if (*arg == 0) {
                 arg = argv[1];
                 range[++flag] = ( int )strtol(arg, ( char ** )0, 10);
                 if (*arg == '-')
@@ -153,16 +144,13 @@ b_hist(int argc, char *argv[], Shbltin_t *context)
             errormsg(SH_DICT, ERROR_exit(1), e_found, argv[1]);
         argv++;
     }
-    if (flag < 0)
-    {
+    if (flag < 0) {
         /* set default starting range */
-        if (lflag)
-        {
+        if (lflag) {
             flag = hist_max(hp) - 16;
             if (flag < 1)
                 flag = 1;
-        }
-        else
+        } else
             flag = hist_max(hp) - 2;
         range[0] = flag;
         flag = 0;
@@ -185,13 +173,10 @@ b_hist(int argc, char *argv[], Shbltin_t *context)
     flag = rflag > 0;
     if (range[1 - flag] < range[flag])
         incr = -1;
-    if (lflag)
-    {
+    if (lflag) {
         outfile = sfstdout;
         arg = "\n\t";
-    }
-    else
-    {
+    } else {
         if (!(fname = pathtmp(NIL(char *), 0, 0, NIL(int *))))
             errormsg(SH_DICT, ERROR_exit(1), e_create, "");
         if ((fdo
@@ -202,8 +187,7 @@ b_hist(int argc, char *argv[], Shbltin_t *context)
         arg = "\n";
         nflag++;
     }
-    while (1)
-    {
+    while (1) {
         if (nflag == 0)
             sfprintf(outfile, "%d\t", range[flag]);
         else if (lflag)
@@ -225,14 +209,12 @@ b_hist(int argc, char *argv[], Shbltin_t *context)
     hist_eof(hp);
     arg = edit;
     if (!arg && !(arg = nv_getval(sh_scoped(shp, HISTEDIT)))
-        && !(arg = nv_getval(sh_scoped(shp, FCEDNOD))))
-    {
+        && !(arg = nv_getval(sh_scoped(shp, FCEDNOD)))) {
         arg = ( char * )e_defedit;
         if (*arg != '/')
             errormsg(SH_DICT, ERROR_exit(1), "ed not found set FCEDIT");
     }
-    if (*arg != '-')
-    {
+    if (*arg != '-') {
         char *com[3];
         com[0] = arg;
         com[1] = fname;
@@ -250,8 +232,7 @@ b_hist(int argc, char *argv[], Shbltin_t *context)
     sh_onstate(shp, SH_VERBOSE); /* echo lines as read */
     if (replace)
         hist_subst(shp, error_info.id, fdo, replace);
-    else if (error_info.errors == 0)
-    {
+    else if (error_info.errors == 0) {
         char buff[IOBSIZE + 1];
         Sfio_t *iop = sfnew(NIL(Sfio_t *), buff, IOBSIZE, fdo, SF_READ);
         /* read in and run the command */
@@ -259,9 +240,7 @@ b_hist(int argc, char *argv[], Shbltin_t *context)
             errormsg(SH_DICT, ERROR_exit(1), e_toodeep, "history");
         sh_eval(shp, iop, 1);
         shp->hist_depth--;
-    }
-    else
-    {
+    } else {
         sh_close(fdo);
         if (!sh_isoption(shp, SH_VERBOSE))
             sh_offstate(shp, SH_VERBOSE);

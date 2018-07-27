@@ -40,8 +40,8 @@ huffputhdr(Huff_t *hp, Sfio_t *outfile)
     /* output magic number */
     sfputc(fp, HUFFMAG1);
     sfputc(fp, HUFFMAG2);
-    if (sizeof(Sfoff_t) > 4 && hp->insize >= (( Sfoff_t )1) << (4 * CHAR_BIT))
-    {
+    if (sizeof(Sfoff_t) > 4
+        && hp->insize >= (( Sfoff_t )1) << (4 * CHAR_BIT)) {
         sfputc(fp, hp->insize >> (7 * CHAR_BIT));
         sfputc(fp, hp->insize >> (6 * CHAR_BIT));
         sfputc(fp, hp->insize >> (5 * CHAR_BIT));

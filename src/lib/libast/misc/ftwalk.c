@@ -76,9 +76,8 @@ ftwalk(const char *path,
     if (children = flags & FTW_CHILDREN)
         flags |= FTS_SEEDOT;
     state.comparf = comparf;
-    if (!(f
-          = fts_open(( char *const * )path, flags, comparf ? ftscompare : 0)))
-    {
+    if (!(f = fts_open(
+          ( char *const * )path, flags, comparf ? ftscompare : 0))) {
         if (!path
             || !(flags & FTS_ONEPATH)
                && !(path = ( const char * )(*(( char ** )path))))
@@ -97,12 +96,10 @@ ftwalk(const char *path,
         return rv;
     }
     rv = 0;
-    if (children && (e = fts_children(f, 0)))
-    {
+    if (children && (e = fts_children(f, 0))) {
         nd = 0;
         for (x = e; x; x = x->link)
-            if (x->info & FTS_DD)
-            {
+            if (x->info & FTS_DD) {
                 x->statb = *x->fts_statp;
                 x->info &= ~FTS_DD;
                 dd[nd++] = x;
@@ -118,20 +115,17 @@ ftwalk(const char *path,
             if (!(x->info & FTS_D))
                 x->status = FTS_SKIP;
     }
-    while (!rv && (e = fts_read(f)))
-    {
+    while (!rv && (e = fts_read(f))) {
         oi = e->info;
         os = e->status;
         ns = e->status = e->path == e->fts_accpath ? FTW_PATH : FTW_NAME;
         nd = 0;
-        switch (e->info)
-        {
+        switch (e->info) {
         case FTS_D:
         case FTS_DNX:
             if (children)
                 for (x = fts_children(f, 0); x; x = x->link)
-                    if (x->info & FTS_DD)
-                    {
+                    if (x->info & FTS_DD) {
                         x->statb = *x->fts_statp;
                         x->info &= ~FTS_DD;
                         dd[nd++] = x;

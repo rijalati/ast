@@ -42,15 +42,11 @@ fmtbuf(size_t n)
     char *cur;
     char *tst;
 
-    do
-    {
+    do {
         cur = nxt;
-        if (n > (&buf[sizeof(buf)] - cur))
-        {
-            if (n > sizeof(buf))
-            {
-                if (n > bigsiz)
-                {
+        if (n > (&buf[sizeof(buf)] - cur)) {
+            if (n > sizeof(buf)) {
+                if (n > bigsiz) {
                     bigsiz = roundof(n, 8 * 1024);
                     if (!(big = oldof(big, char, bigsiz, 0)))
                         return 0;
@@ -58,8 +54,7 @@ fmtbuf(size_t n)
                 return big;
             }
             tst = buf;
-        }
-        else
+        } else
             tst = cur;
     } while (asocasptr(&nxt, cur, tst + n) != cur);
     return tst;

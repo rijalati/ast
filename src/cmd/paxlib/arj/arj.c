@@ -86,16 +86,14 @@ arj_getprologue(Pax_t *pax,
     codexinit(&ar->codexdisc, pax->errorf);
     r = -1;
     if (!(ar->sum = codexnull())
-        || codex(ar->sum, SUM, CODEX_DECODE, &ar->codexdisc, NiL) <= 0)
-    {
+        || codex(ar->sum, SUM, CODEX_DECODE, &ar->codexdisc, NiL) <= 0) {
         ar->sum = 0;
         goto bad;
     }
     sfwrite(ar->sum, buf + 4, n);
     codexdata(ar->sum, &sum);
     checksum = swapget(3, buf + 4 + n, 4);
-    if (checksum != sum.num)
-    {
+    if (checksum != sum.num) {
         r = 0;
         goto bad;
     }
@@ -123,8 +121,7 @@ arj_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
     uint32_t checksum;
     Codexdata_t sum;
 
-    for (;;)
-    {
+    for (;;) {
         if (!(buf = ( unsigned char * )paxget(pax, ap, -4, NiL))
             || !(n = swapget(3, buf + 2, 2)))
             return 0;
@@ -142,8 +139,7 @@ arj_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
         dostime = swapget(3, buf + 8, 4);
         f->st->st_size = swapget(3, buf + 12, 4);
         f->uncompressed = swapget(3, buf + 16, 4);
-        switch (ar->index = buf[5])
-        {
+        switch (ar->index = buf[5]) {
         case 0:
             sfsprintf(ar->method, sizeof(ar->method), "copy|%s", SUM);
             break;
@@ -172,15 +168,13 @@ arj_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
         f->linkpath = 0;
         f->st->st_dev = 0;
         f->st->st_ino = 0;
-        if (ar->system != 3)
-        {
+        if (ar->system != 3) {
             if (mode & 0x10)
                 mode = X_IFDIR | X_IRUSR | X_IWUSR | X_IXUSR | X_IRGRP
                        | X_IWGRP | X_IXGRP | X_IROTH | X_IWOTH | X_IXOTH;
             else if (mode & 0x01)
                 mode = X_IFREG | X_IRUSR | X_IRGRP | X_IROTH;
-            else
-            {
+            else {
                 mode = X_IFREG | X_IRUSR | X_IWUSR | X_IRGRP | X_IWGRP
                        | X_IROTH | X_IWOTH;
                 if ((s = strrchr(f->name, '.'))
@@ -227,8 +221,7 @@ arj_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
     r = -1;
     if (fd < 0)
         r = 1;
-    else if (sp = paxpart(pax, ap, f->st->st_size))
-    {
+    else if (sp = paxpart(pax, ap, f->st->st_size)) {
         if (!*ar->method
             || (pop
                 = codex(sp, ar->method, CODEX_DECODE, &ar->codexdisc, NiL))
@@ -240,18 +233,13 @@ arj_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
                            ap->name,
                            f->name,
                            ar->index);
-        else
-        {
-            for (;;)
-            {
-                if ((n = sfread(sp, pax->buf, sizeof(pax->buf))) < 0)
-                {
+        else {
+            for (;;) {
+                if ((n = sfread(sp, pax->buf, sizeof(pax->buf))) < 0) {
                     (*pax->errorf)(
                     NiL, pax, 2, "%s: %s: unexpected EOF", ap->name, f->name);
                     break;
-                }
-                else if (n == 0)
-                {
+                } else if (n == 0) {
                     if (codexdata(sp, &sum) <= 0)
                         (*pax->errorf)(NiL,
                                        pax,
@@ -269,8 +257,7 @@ arj_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
             codexpop(sp, pop);
         }
     }
-    if (paxseek(pax, ap, pos, SEEK_SET, 0) != pos)
-    {
+    if (paxseek(pax, ap, pos, SEEK_SET, 0) != pos) {
         (*pax->errorf)(NiL,
                        pax,
                        2,

@@ -47,15 +47,12 @@ subold(Sfio_t *dp,
     regflags_t f;
 
     f = flags &= (REG_SUB_LOWER | REG_SUB_UPPER);
-    for (;;)
-    {
-        switch (c = *sp++)
-        {
+    for (;;) {
+        switch (c = *sp++) {
         case 0:
             return 0;
         case '~':
-            if (!sre || *sp != '(')
-            {
+            if (!sre || *sp != '(') {
                 sfputc(dp, c);
                 continue;
             }
@@ -63,30 +60,26 @@ subold(Sfio_t *dp,
             sp++;
             break;
         case '\\':
-            if (sre)
-            {
+            if (sre) {
                 sfputc(dp, chresc(sp - 1, &s));
                 sp = ( const char * )s;
                 continue;
             }
-            if (*sp == '&')
-            {
+            if (*sp == '&') {
                 c = *sp++;
                 sfputc(dp, c);
                 continue;
             }
             break;
         case '&':
-            if (sre)
-            {
+            if (sre) {
                 sfputc(dp, c);
                 continue;
             }
             sp--;
             break;
         default:
-            switch (flags)
-            {
+            switch (flags) {
             case REG_SUB_UPPER:
                 if (islower(c))
                     c = toupper(c);
@@ -105,8 +98,7 @@ subold(Sfio_t *dp,
             sfputc(dp, c);
             continue;
         }
-        switch (c = *sp++)
-        {
+        switch (c = *sp++) {
         case 0:
             sp--;
             continue;
@@ -129,13 +121,11 @@ subold(Sfio_t *dp,
                     c = c * 10 + *sp++ - '0';
             break;
         case 'l':
-            if (sre && *sp != ')')
-            {
+            if (sre && *sp != ')') {
                 c = -1;
                 break;
             }
-            if (c = *sp)
-            {
+            if (c = *sp) {
                 sp++;
                 if (isupper(c))
                     c = tolower(c);
@@ -143,17 +133,14 @@ subold(Sfio_t *dp,
             }
             continue;
         case 'u':
-            if (sre)
-            {
-                if (*sp != ')')
-                {
+            if (sre) {
+                if (*sp != ')') {
                     c = -1;
                     break;
                 }
                 sp++;
             }
-            if (c = *sp)
-            {
+            if (c = *sp) {
                 sp++;
                 if (islower(c))
                     c = toupper(c);
@@ -161,10 +148,8 @@ subold(Sfio_t *dp,
             }
             continue;
         case 'E':
-            if (sre)
-            {
-                if (*sp != ')')
-                {
+            if (sre) {
+                if (*sp != ')') {
                     c = -1;
                     break;
                 }
@@ -173,10 +158,8 @@ subold(Sfio_t *dp,
             flags = f;
             continue;
         case 'L':
-            if (sre)
-            {
-                if (*sp != ')')
-                {
+            if (sre) {
+                if (*sp != ')') {
                     c = -1;
                     break;
                 }
@@ -186,10 +169,8 @@ subold(Sfio_t *dp,
             flags = REG_SUB_LOWER;
             continue;
         case 'U':
-            if (sre)
-            {
-                if (*sp != ')')
-                {
+            if (sre) {
+                if (*sp != ')') {
                     c = -1;
                     break;
                 }
@@ -199,8 +180,7 @@ subold(Sfio_t *dp,
             flags = REG_SUB_UPPER;
             continue;
         default:
-            if (!sre)
-            {
+            if (!sre) {
                 sfputc(dp, chresc(sp - 2, &s));
                 sp = ( const char * )s;
                 continue;
@@ -209,10 +189,8 @@ subold(Sfio_t *dp,
             c = -1;
             break;
         }
-        if (sre)
-        {
-            if (c < 0 || *sp != ')')
-            {
+        if (sre) {
+            if (c < 0 || *sp != ')') {
                 for (; b < sp; b++)
                     sfputc(dp, *b);
                 continue;
@@ -223,11 +201,9 @@ subold(Sfio_t *dp,
             return REG_ESUBREG;
         s = ( char * )op + match[c].rm_so;
         e = ( char * )op + match[c].rm_eo;
-        while (s < e)
-        {
+        while (s < e) {
             c = *s++;
-            switch (flags)
-            {
+            switch (flags) {
             case REG_SUB_UPPER:
                 if (islower(c))
                     c = toupper(c);
@@ -270,12 +246,10 @@ regsub(const regex_t *p,
     m = (flags >> 16) & 0x3fff;
     sre = !!(p->env->flags & REG_SHELL);
     r = 0;
-    do
-    {
+    do {
         if (--m > 0)
             sfwrite(dp, op, match->rm_eo);
-        else
-        {
+        else {
             sfwrite(dp, op, match->rm_so);
             if (r = subold(dp, op, sp, nmatch, match, flags, sre))
                 return fatal(p->env->disc, r, NiL);

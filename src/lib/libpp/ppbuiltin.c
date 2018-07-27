@@ -57,26 +57,21 @@ ppbuiltin(void)
     token = pp.token;
     p = pp.token = pp.tmpbuf;
     *(a = pp.args) = 0;
-    if ((c = pplex()) != T_ID)
-    {
+    if ((c = pplex()) != T_ID) {
         error(2, "%s: #(<identifier>...) expected", p);
         *p = 0;
     }
-    switch (op = ( int )hashget(pp.strtab, p))
-    {
+    switch (op = ( int )hashget(pp.strtab, p)) {
     case V_DEFAULT:
         n = 0;
         p = pp.token = pp.valbuf;
-        if ((c = pplex()) == ',')
-        {
+        if ((c = pplex()) == ',') {
             op = -1;
             c = pplex();
         }
         pp.state &= ~NOSPACE;
-        for (;;)
-        {
-            if (!c)
-            {
+        for (;;) {
+            if (!c) {
                 error(2, "%s in #(...) argument", pptokchr(c));
                 break;
             }
@@ -98,14 +93,11 @@ ppbuiltin(void)
         p = pp.valbuf;
         if ((c = pplex()) == ')')
             *p = '1';
-        else
-        {
+        else {
             *p = '0';
             n = 0;
-            for (;;)
-            {
-                if (!c)
-                {
+            for (;;) {
+                if (!c) {
                     error(2, "%s in #(...) argument", pptokchr(c));
                     break;
                 }
@@ -124,13 +116,11 @@ ppbuiltin(void)
         n = 0;
         pp.token = pp.valbuf;
         if ((c = pplex()) != T_ID || !(sym = ppsymref(pp.symtab, pp.token))
-            || !sym->macro || sym->macro->arity != 1 || (c = pplex()) != ',')
-        {
+            || !sym->macro || sym->macro->arity != 1
+            || (c = pplex()) != ',') {
             error(2, "#(%s <macro(x)>, ...) expected", p);
-            for (;;)
-            {
-                if (!c)
-                {
+            for (;;) {
+                if (!c) {
                     error(2, "%s in #(...) argument", pptokchr(c));
                     break;
                 }
@@ -141,24 +131,20 @@ ppbuiltin(void)
                 c = pplex();
             }
             *pp.valbuf = 0;
-        }
-        else
-            while (c != ')')
-            {
+        } else
+            while (c != ')') {
                 p = pp.token;
                 if (pp.token > pp.valbuf)
                     *pp.token++ = ' ';
                 STRCOPY(pp.token, sym->name, a);
                 *pp.token++ = '(';
-                if (!c || !(c = pplex()))
-                {
+                if (!c || !(c = pplex())) {
                     pp.token = p;
                     error(2, "%s in #(...) argument", pptokchr(c));
                     break;
                 }
                 pp.state &= ~NOSPACE;
-                while (c)
-                {
+                while (c) {
                     if (c == '(')
                         n++;
                     else if (c == ')' && !n--)
@@ -177,10 +163,8 @@ ppbuiltin(void)
         break;
     default:
         pp.token = token;
-        while (c != ')')
-        {
-            if (!c)
-            {
+        while (c != ')') {
+            if (!c) {
                 error(2, "%s in #(...) argument", pptokchr(c));
                 break;
             }
@@ -188,14 +172,12 @@ ppbuiltin(void)
                 strcpy(a, pp.token);
         }
         pp.state = number;
-        switch (op)
-        {
+        switch (op) {
         case V_ARGC:
             c = -1;
             for (in = pp.in; in; in = in->prev)
                 if ((in->type == IN_MACRO || in->type == IN_MULTILINE)
-                    && (in->symbol->flags & SYM_FUNCTION))
-                {
+                    && (in->symbol->flags & SYM_FUNCTION)) {
                     c = *(( unsigned char * )(pp.macp->arg[0] - 2));
                     break;
                 }
@@ -205,8 +187,7 @@ ppbuiltin(void)
             p = (a = strrchr(error_info.file, '/')) ? a + 1 : error_info.file;
             break;
         case V_DATE:
-            if (!(p = pp.date))
-            {
+            if (!(p = pp.date)) {
                 time_t tm;
 
                 time(&tm);
@@ -242,8 +223,7 @@ ppbuiltin(void)
             p[1] = 0;
             break;
         case V_TIME:
-            if (!(p = pp.time))
-            {
+            if (!(p = pp.time)) {
                 time_t tm;
 
                 time(&tm);
@@ -276,20 +256,17 @@ ppbuiltin(void)
                 : "";
             break;
         case V__PRAGMA:
-            if ((c = pplex()) == '(')
-            {
+            if ((c = pplex()) == '(') {
                 number = pp.state;
                 pp.state |= NOSPACE | STRIP;
                 c = pplex();
                 pp.state = number;
-                if (c == T_STRING || c == T_WSTRING)
-                {
+                if (c == T_STRING || c == T_WSTRING) {
                     if (!(sp = sfstropen()))
                         error(3, "temporary buffer allocation error");
                     sfprintf(sp, "#%s %s\n", dirname(PRAGMA), pp.token);
                     a = sfstruse(sp);
-                    if ((c = pplex()) == ')')
-                    {
+                    if ((c = pplex()) == ')') {
                         pp.state |= NEWLINE;
                         PUSH_BUFFER(p, a, 1);
                     }
@@ -314,58 +291,42 @@ ppbuiltin(void)
             a = pp.outp;
             p = pp.outb;
             op = 0;
-            while (c = BACK(a, p))
-            {
-                if (c == '"' || c == '\'')
-                {
+            while (c = BACK(a, p)) {
+                if (c == '"' || c == '\'') {
                     op = 0;
                     while ((n = BACK(a, p)) && n != c || PEEK(a, p) == '\\')
                         ;
-                }
-                else if (c == '\n')
-                {
+                } else if (c == '\n') {
                     token = a;
                     while (c = BACK(a, p))
-                        if (c == '\n')
-                        {
+                        if (c == '\n') {
                             a = token;
                             break;
-                        }
-                        else if (c == '#' && PEEK(a, p) == '\n')
+                        } else if (c == '#' && PEEK(a, p) == '\n')
                             break;
-                }
-                else if (c == ' ')
+                } else if (c == ' ')
                     /*ignore*/;
                 else if (c == '{') /* '}' */
                     op = 1;
-                else if (op == 1)
-                {
-                    if (c == ')')
-                    {
+                else if (op == 1) {
+                    if (c == ')') {
                         op = 2;
                         n = 1;
-                    }
-                    else
+                    } else
                         op = 0;
-                }
-                else if (op == 2)
-                {
+                } else if (op == 2) {
                     if (c == ')')
                         n++;
                     else if (c == '(' && !--n)
                         op = 3;
-                }
-                else if (op == 3)
-                {
-                    if (ppisidig(c))
-                    {
+                } else if (op == 3) {
+                    if (ppisidig(c)) {
                         for (t = p, token = a, onumber = number;
                              ppisidig(PEEK(a, p)) && a >= p;
                              BACK(a, p))
                             ;
                         p = pp.valbuf + 1;
-                        if (a > token)
-                        {
+                        if (a > token) {
                             for (; a < pp.outbuf + 2 * PPBUFSIZ; *p++ = *a++)
                                 ;
                             a = pp.outbuf;
@@ -375,15 +336,13 @@ ppbuiltin(void)
                         *p = 0;
                         p = pp.valbuf + 1;
                         if (streq(p, "for") || streq(p, "if")
-                            || streq(p, "switch") || streq(p, "while"))
-                        {
+                            || streq(p, "switch") || streq(p, "while")) {
                             op = 0;
                             p = t;
                             number = onumber;
                             continue;
                         }
-                    }
-                    else
+                    } else
                         op = 0;
                     break;
                 }
@@ -402,17 +361,14 @@ ppbuiltin(void)
         }
         break;
     }
-    if (strchr(p, MARK))
-    {
+    if (strchr(p, MARK)) {
         a = pp.tmpbuf;
         strcpy(a, p);
         c = p != pp.valbuf;
         p = pp.valbuf + c;
-        for (;;)
-        {
+        for (;;) {
             if (p < pp.valbuf + MAXTOKEN - 2)
-                switch (*p++ = *a++)
-                {
+                switch (*p++ = *a++) {
                 case 0:
                     break;
                 case MARK:
@@ -427,12 +383,10 @@ ppbuiltin(void)
     }
     if (p == pp.valbuf)
         PUSH_STRING(p);
-    else
-    {
+    else {
         if (p == pp.valbuf + 1)
             *pp.valbuf = '"';
-        else
-        {
+        else {
             if (strlen(p) > MAXTOKEN - 2)
                 error(1, "%-.16s: builtin value truncated", p);
             sfsprintf(pp.valbuf, MAXTOKEN, "\"%-.*s", MAXTOKEN - 2, p);

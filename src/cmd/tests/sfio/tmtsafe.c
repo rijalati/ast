@@ -48,10 +48,8 @@ void *writesmall(arg) void *arg;
     int n;
 
     s = Str[integralof(arg)];
-    for (n = 0; n < N_STR; ++n)
-    {
-        if (sfputr(Sf, s, '\n') != 10)
-        {
+    for (n = 0; n < N_STR; ++n) {
+        if (sfputr(Sf, s, '\n') != 10) {
             if (Inverted)
                 tsuccess("sfputr failed as expected");
             else
@@ -113,43 +111,37 @@ do_inverted: /* get back to here when trying to make things fail */
     /* spin threads writing small chunks */
     Sf = sfopen(NIL(Sfio_t *), tstfile("sf", 0), Inverted ? "w+" : "mw+");
 
-    for (i = 0; i < 26; ++i)
-    {
+    for (i = 0; i < 26; ++i) {
         if (!(thread[i] = vtopen(0, 0)))
             terror("Creating thread handle[%d]", i);
         if (vtrun(thread[i], writesmall, ( Void_t * )i) < 0)
             terror("Running thread [%d]", i);
     }
 
-    for (i = 0; i < 26; ++i)
-    {
+    for (i = 0; i < 26; ++i) {
         count[i] = 0;
         vtwait(thread[i]);
     }
 
-    if (sfseek(Sf, ( Sfoff_t )0, SEEK_SET) != ( Sfoff_t )0)
-    {
+    if (sfseek(Sf, ( Sfoff_t )0, SEEK_SET) != ( Sfoff_t )0) {
         if (Inverted)
             tsuccess("Rewinding failed as expected");
         else
             terror("Rewinding");
     }
 
-    for (n = 0;; ++n)
-    {
+    for (n = 0;; ++n) {
         if (!(s = sfgetr(Sf, '\n', 1)))
             break;
 
         i = s[0] - 'a';
-        if (i < 0 || i >= 26 || sfvalue(Sf) != 10)
-        {
+        if (i < 0 || i >= 26 || sfvalue(Sf) != 10) {
             if (Inverted)
                 tsuccess("Bad data as expected");
             else
                 terror("Bad data s='%s' n=%d", s, n);
         }
-        if (strcmp(s, Str[i]) != 0)
-        {
+        if (strcmp(s, Str[i]) != 0) {
             if (Inverted)
                 tsuccess("Bad str as expected");
             else
@@ -160,10 +152,8 @@ do_inverted: /* get back to here when trying to make things fail */
         count[i] += 1;
     }
 
-    for (i = 0; i < 26; ++i)
-    {
-        if (count[i] != N_STR)
-        {
+    for (i = 0; i < 26; ++i) {
+        if (count[i] != N_STR) {
             if (Inverted)
                 tsuccess("Bad count as expected");
             else
@@ -174,8 +164,7 @@ do_inverted: /* get back to here when trying to make things fail */
     /* spin threads with one writing a big chunk */
     Sf = sfopen(Sf, tstfile("sf", 0), Inverted ? "w+" : "mw+");
 
-    for (i = 0; i < 25; ++i)
-    {
+    for (i = 0; i < 25; ++i) {
         if (!(thread[i] = vtopen(0, 0)))
             terror("Creating thread %d", i);
         if (vtrun(thread[i], writesmall, ( void * )i) < 0)
@@ -187,35 +176,30 @@ do_inverted: /* get back to here when trying to make things fail */
     if (vtrun(thread[i], writebig, ( void * )i) < 0)
         terror("Running big thread z");
 
-    for (i = 0; i < 26; ++i)
-    {
+    for (i = 0; i < 26; ++i) {
         count[i] = 0;
         vtwait(thread[i]);
     }
 
-    if (sfseek(Sf, ( Sfoff_t )0, SEEK_SET) != ( Sfoff_t )0)
-    {
+    if (sfseek(Sf, ( Sfoff_t )0, SEEK_SET) != ( Sfoff_t )0) {
         if (Inverted)
             tsuccess("Rewinding failed as expected");
         else
             terror("Rewinding");
     }
 
-    for (n = 0;; ++n)
-    {
+    for (n = 0;; ++n) {
         if (!(s = sfgetr(Sf, '\n', 1)))
             break;
 
         i = s[0] - 'a';
-        if (i < 0 || i >= 26 || sfvalue(Sf) != 10)
-        {
+        if (i < 0 || i >= 26 || sfvalue(Sf) != 10) {
             if (Inverted)
                 tsuccess("Bad data as expected");
             else
                 terror("Bad data s='%s' n=%d", s, n);
         }
-        if (strcmp(s, Str[i]) != 0)
-        {
+        if (strcmp(s, Str[i]) != 0) {
             if (Inverted)
                 tsuccess("Bad str as expected");
             else
@@ -226,17 +210,14 @@ do_inverted: /* get back to here when trying to make things fail */
 
         if (i == 25) /* the 'z' */
         {
-            for (k = 1; k < N_STR; ++k, ++n)
-            {
-                if (!(s = sfgetr(Sf, '\n', 1)))
-                {
+            for (k = 1; k < N_STR; ++k, ++n) {
+                if (!(s = sfgetr(Sf, '\n', 1))) {
                     if (Inverted)
                         tsuccess("Premature eof as expected");
                     else
                         terror("Premature eof n=%d", n);
                 }
-                if (strcmp(s, Str[25]) != 0)
-                {
+                if (strcmp(s, Str[25]) != 0) {
                     if (Inverted)
                         tsuccess("Bad str as expected");
                     else
@@ -247,10 +228,8 @@ do_inverted: /* get back to here when trying to make things fail */
         }
     }
 
-    for (i = 0; i < 26; ++i)
-    {
-        if (count[i] != N_STR)
-        {
+    for (i = 0; i < 26; ++i) {
+        if (count[i] != N_STR) {
             if (Inverted)
                 tsuccess("Bad count as expected");
             else
@@ -258,12 +237,10 @@ do_inverted: /* get back to here when trying to make things fail */
         }
     }
 
-    if (!Inverted)
-    {
+    if (!Inverted) {
         Inverted = 1;
         goto do_inverted;
-    }
-    else
+    } else
         tmesg("\tUnsafe streams work ok on this platform!\n");
 
     texit(0);

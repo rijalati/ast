@@ -116,8 +116,7 @@ ssize_t cdsz;
 
     /* parse old header into list of transforms */
     vcioinit(&io, *datap, dtsz);
-    for (n = 0; n < elementsof(meth) && vciomore(&io) > 0; ++n)
-    {
+    for (n = 0; n < elementsof(meth) && vciomore(&io) > 0; ++n) {
         id = vciogetc(&io);
         for (k = 0; k < elementsof(Map); ++k)
             if (Map[k].mtid == id)
@@ -126,8 +125,7 @@ ssize_t cdsz;
             return dtsz;          /* must be new header format */
 
         if (!Map[k].meth
-            && !(Map[k].meth = vcgetmeth(( char * )Map[k].name, 1)))
-        {
+            && !(Map[k].meth = vcgetmeth(( char * )Map[k].name, 1))) {
             Map[k].mtid = -1;
             return dtsz;
         }
@@ -147,8 +145,7 @@ ssize_t cdsz;
 
     /* construct new header in reverse order */
     vcioinit(&io, code, cdsz);
-    for (n -= 1; n >= 0; --n)
-    { /* get and write out the method id string */
+    for (n -= 1; n >= 0; --n) { /* get and write out the method id string */
         if (!(dt = ( unsigned char * )vcgetident(
               meth[n].meth, ( char * )buf, sizeof(buf))))
             return -1; /* error, no id string for method? */
@@ -163,18 +160,15 @@ ssize_t cdsz;
 
         if (sz == 0)
             vcioputu(&io, 0);
-        else if (meth[n].meth == Vcrle || meth[n].meth == Vcmtf)
-        {
+        else if (meth[n].meth == Vcrle || meth[n].meth == Vcmtf) {
             if (*dt == 0) /* coding rle.0 or mtf.0 */
             {
                 vcstrcode("0", ( char * )buf, sizeof(buf));
                 vcioputu(&io, 1);
                 vcioputc(&io, buf[0]);
-            }
-            else
+            } else
                 vcioputu(&io, 0);
-        }
-        else /* let us pray for the right coding! */
+        } else /* let us pray for the right coding! */
         {
             vcioputu(&io, sz);
             vcioputs(&io, dt, sz);
@@ -213,8 +207,7 @@ ssize_t cdsz;   /* size of code buffer	*/
         return -1;
     vcioputs(&io, ident, cdsz);
 
-    if (indi & VCD_CODETABLE)
-    {
+    if (indi & VCD_CODETABLE) {
         if ((cdsz = vciogetu(iodt)) < 0)
             return -1;
 
@@ -225,9 +218,7 @@ ssize_t cdsz;   /* size of code buffer	*/
         if (vciomore(&io) < cdsz)
             return -1;
         vciomove(iodt, &io, cdsz);
-    }
-    else
-    {
+    } else {
         if (vciomore(&io) <= 0)
             return -1;
         vcioputu(&io, 0);
@@ -271,8 +262,7 @@ static int putheader(sfdc) Sfdc_t *sfdc;
     vcioputc(sfdc->io, 0);
 
     /* output data encoding the methods used */
-    if (!(sfdc->sfdt->type & VCSF_VCDIFF))
-    {
+    if (!(sfdc->sfdt->type & VCSF_VCDIFF)) {
         vcioputu(sfdc->io, sz);
         vcioputs(sfdc->io, code, sz);
     }
@@ -319,18 +309,14 @@ Sfdisc_t *disc;
 {
     ssize_t sz, n;
 
-    if ((sz = sfdc->endb - sfdc->code) <= 0)
-    {
+    if ((sz = sfdc->endb - sfdc->code) <= 0) {
         sfdc->endb = sfdc->code = sfdc->base;
         sz = 0;
-    }
-    else if (sfdc->code > sfdc->base)
-    {
+    } else if (sfdc->code > sfdc->base) {
         memcpy(sfdc->base, sfdc->code, sz);
         sfdc->endb = (sfdc->code = sfdc->base) + sz;
     }
-    for (; sz < sfdc->bssz; sz += n, sfdc->endb += n)
-    {
+    for (; sz < sfdc->bssz; sz += n, sfdc->endb += n) {
         if (!disc) /* plain read if no discipline set yet */
             n = sfread(f, sfdc->endb, sfdc->bssz - sz);
         else
@@ -394,17 +380,14 @@ size_t dtsz;
     end = buf + x - 1;
     vcioinit(&io, data, dtsz);
     id = buf;
-    while (vciomore(&io) > 0)
-    {
-        if (id > buf)
-        {
+    while (vciomore(&io) > 0) {
+        if (id > buf) {
             if (id >= end && extend(&id, &buf, &end, 1))
                 return -1;
             *id++ = VC_METHSEP;
         }
         mt = ( char * )vcionext(&io);
-        for (sz = vciomore(&io), k = 0; k < sz; ++k)
-        {
+        for (sz = vciomore(&io), k = 0; k < sz; ++k) {
             if (id >= end && extend(&id, &buf, &end, 1))
                 return -1;
             if (mt[k] == 0)
@@ -418,16 +401,14 @@ size_t dtsz;
         /* get the initialization data, if any */
         if ((sz = ( ssize_t )vciogetu(&io)) < 0 || sz > vciomore(&io))
             return -1;
-        if (sz)
-        {
+        if (sz) {
             dt = ( unsigned char * )vcionext(&io);
             vcioskip(&io, sz);
             k - 2 * sz + 1;
             if ((id + k) >= end && extend(&id, &buf, &end, k))
                 return -1;
             *id++ = '=';
-            for (k = 0; k < sz; k++)
-            {
+            for (k = 0; k < sz; k++) {
                 x = dt[k];
                 *id++ = hex[(x >> 4) & 0xf];
                 *id++ = hex[x & 0xf];
@@ -457,8 +438,7 @@ int optional;
 
     if (optional)
         identify = -1;
-    if (identify)
-    { /* verify header magic -- ignore if no magic */
+    if (identify) { /* verify header magic -- ignore if no magic */
         if (!(code = sfreserve(f, 4, SF_LOCKR)))
             return 0;
         memcpy(cdbuf, code, 4);
@@ -469,8 +449,7 @@ int optional;
             return 0;
     }
 
-    for (loop = 0;; ++loop)
-    {
+    for (loop = 0;; ++loop) {
         /* buffer was too small for header data */
         if (loop > 0 && (sfdc->endb - sfdc->base) >= sfdc->bssz
             && makebuf(sfdc, sfdc->bssz + VCSF_BUFMIN) < 0)
@@ -478,8 +457,7 @@ int optional;
 
         /* read header data as necessary */
         sz = sfdc->endb - sfdc->code;
-        if (loop > 0 || sz <= 0)
-        {
+        if (loop > 0 || sz <= 0) {
             if (fillbuf(sfdc, f, sfdc->vc ? &sfdc->disc : NIL(Sfdisc_t *))
                 <= 0
                 || (sz = sfdc->endb - sfdc->code) <= 0)
@@ -499,8 +477,7 @@ int optional;
                 && head != VC_HEADER3 /* normal Vcodex header */))
             return identify ? 0 : VCSFERROR(sfdc, "Unknown header data");
 
-        if ((indi = vciogetc(&io)) & VC_EXTRAHEADER)
-        {
+        if ((indi = vciogetc(&io)) & VC_EXTRAHEADER) {
             if ((sz = vciogetu(&io)) < 0) /* skip app-specific data */
                 continue;
             vcioskip(&io, sz);
@@ -514,8 +491,7 @@ int optional;
                 continue;
             else
                 code = cdbuf;
-        }
-        else /* Vcodex encoding */
+        } else /* Vcodex encoding */
         {
             if ((cdsz = vciogetu(&io)) < 0)
                 continue;
@@ -541,8 +517,7 @@ int optional;
                         : VCSFERROR(sfdc, "Failure in obtaining header data");
     else if (identify > 0)
         return ident(sfdc, code, cdsz);
-    else
-    {
+    else {
         if (sfdc->vc)
             vcclose(sfdc->vc);
         if (!(sfdc->vc = vcrestore(code, cdsz)))
@@ -578,8 +553,7 @@ size_t dtsz;
     sfdc->code = NIL(Vcchar_t *);
     sfdc->cdsz = 0;
 
-    for (size = 0, dosz = dtsz, dt = data; size < dtsz;)
-    { /* control data */
+    for (size = 0, dosz = dtsz, dt = data; size < dtsz;) { /* control data */
         ctrl = 0;
         sfdc->vcdc.data = NIL(Void_t *);
         sfdc->vcdc.size = 0;
@@ -588,11 +562,9 @@ size_t dtsz;
         wm = NIL(Vcwmatch_t *);
         if (sfdc->vcw)
             wm = vcwapply(sfdc->vcw, dt, dosz, sfdc->pos);
-        if (wm)
-        { /**/
+        if (wm) { /**/
             DEBUG_ASSERT(wm->msize <= dosz);
-            if (wm->wsize > 0 && wm->wpos >= 0)
-            {
+            if (wm->wsize > 0 && wm->wpos >= 0) {
                 sfdc->vcdc.data = wm->wdata;
                 sfdc->vcdc.size = wm->wsize;
             }
@@ -610,24 +582,20 @@ size_t dtsz;
 
         vcbuffer(sfdc->vc, NIL(Vcchar_t *), -1, -1); /* free buffers */
         if ((cdsz = vcapply(sfdc->vc, dt, dosz, &code)) <= 0
-            || (sz = vcundone(sfdc->vc)) >= dosz)
-        {
+            || (sz = vcundone(sfdc->vc)) >= dosz) {
             if (cdsz < 0)
                 VCSFERROR(sfdc, "Error in transforming data");
             ctrl = VC_RAW; /* coder failed, output raw data */
             code = dt;
             cdsz = dosz;
-        }
-        else
-        {
+        } else {
             dosz -= (sz > 0 ? sz : 0); /* true processed amount */
             if (sfdc->vcw) /* tell window matcher compressed result */
                 vcwfeedback(sfdc->vcw, cdsz);
         }
 
         vcioputc(&io, ctrl);
-        if (ctrl & (VCD_SOURCEFILE | VCD_TARGETFILE))
-        {
+        if (ctrl & (VCD_SOURCEFILE | VCD_TARGETFILE)) {
             vcioputu(&io, wm->wsize);
             vcioputu(&io, wm->wpos);
         }
@@ -653,8 +621,7 @@ size_t dtsz;
         dt += dosz;
         size += dosz;
 
-        if ((dosz = dtsz - size) > 0)
-        {
+        if ((dosz = dtsz - size) > 0) {
             if (wm && wm->more) /* more subwindows to do */
                 continue;
             else /* need fresh data */
@@ -698,18 +665,15 @@ Sfdisc_t *disc; /* discipline structure		*/
     if (!(sfdc->flags & VC_DECODE))
         return VCSFERROR(sfdc, "Handle not created for decoding data");
 
-    for (sz = 0, dt = ( Vcchar_t * )buf; sz < n; sz += r, dt += r)
-    { /* copy already decoded data */
-        if ((r = sfdc->endd - sfdc->next) > 0)
-        {
+    for (sz = 0, dt = ( Vcchar_t * )buf; sz < n;
+         sz += r, dt += r) { /* copy already decoded data */
+        if ((r = sfdc->endd - sfdc->next) > 0) {
             r = r > (n - sz) ? (n - sz) : r;
             memcpy(dt, sfdc->next, r);
             sfdc->next += r;
-        }
-        else /* need to decode a new batch of data */
+        } else /* need to decode a new batch of data */
         {
-            if ((d = (sfdc->endb - sfdc->code)) < 2 * sizeof(size_t))
-            {
+            if ((d = (sfdc->endb - sfdc->code)) < 2 * sizeof(size_t)) {
                 if (fillbuf(sfdc, f, disc) <= 0)
                     break;
                 d = sfdc->endb - sfdc->code;
@@ -727,13 +691,11 @@ Sfdisc_t *disc; /* discipline structure		*/
             if ((ctrl & VCD_TARGETFILE) && sz > 0)
                 break;
 
-            if (ctrl & (VCD_SOURCEFILE | VCD_TARGETFILE))
-            {
+            if (ctrl & (VCD_SOURCEFILE | VCD_TARGETFILE)) {
                 if (!sfdc->vcw || (d = ( ssize_t )vciogetu(&io)) < 0
                     || (pos = ( Sfoff_t )vciogetu(&io)) < 0
                     || !(wm = vcwapply(
-                         sfdc->vcw, TYPECAST(Void_t *, ctrl), d, pos)))
-                {
+                         sfdc->vcw, TYPECAST(Void_t *, ctrl), d, pos))) {
                     VCSFERROR(
                     sfdc,
                     "Error in obtaining source window data while decoding");
@@ -741,8 +703,7 @@ Sfdisc_t *disc; /* discipline structure		*/
                 }
                 sfdc->vcdc.data = wm->wdata;
                 sfdc->vcdc.size = wm->wsize;
-            }
-            else if (ctrl == VC_EOF) /* a new decoding context */
+            } else if (ctrl == VC_EOF) /* a new decoding context */
             {
                 sfdc->code = vcionext(&io);
                 if (vciomore(&io) > 0 && *sfdc->code == VC_EOF)
@@ -751,9 +712,7 @@ Sfdisc_t *disc; /* discipline structure		*/
                     break;
                 else
                     continue;
-            }
-            else if (ctrl != 0 && ctrl != VC_RAW && ctrl != VC_INDEX)
-            {
+            } else if (ctrl != 0 && ctrl != VC_RAW && ctrl != VC_INDEX) {
                 VCSFERROR(sfdc, "Data stream appeared to be corrupted");
                 BREAK;
             }
@@ -762,21 +721,17 @@ Sfdisc_t *disc; /* discipline structure		*/
                 vcdisc(sfdc->vc, &sfdc->vcdc);
 
             /* size of coded data */
-            if (vciomore(&io) == 1 && vciopeek(&io) == 0200)
-            {
+            if (vciomore(&io) == 1 && vciopeek(&io) == 0200) {
                 vciogetc(&io);
                 d = 0;
                 ctrl = VC_RAW;
-            }
-            else if ((d = vciogetu(&io)) <= 0)
-            {
+            } else if ((d = vciogetu(&io)) <= 0) {
                 VCSFERROR(sfdc, "Error in getting size of coded data");
                 BREAK;
             }
 
             /* make sure all the data is available */
-            if ((vcionext(&io) + d) > sfdc->endb)
-            {
+            if ((vcionext(&io) + d) > sfdc->endb) {
                 sfdc->code = vcionext(&io);
                 if ((m = d + VCSF_SLACK) > sfdc->bssz && makebuf(sfdc, m) < 0)
                     return VCSFERROR(sfdc, "decode buffer allocation error");
@@ -789,22 +744,16 @@ Sfdisc_t *disc; /* discipline structure		*/
 
             /* decode data */
             sfdc->code = vcionext(&io);
-            if (ctrl == VC_RAW)
-            {
+            if (ctrl == VC_RAW) {
                 text = sfdc->code;
                 m = d;
-            }
-            else if (ctrl == VC_INDEX)
-            { /* skip index data */
+            } else if (ctrl == VC_INDEX) { /* skip index data */
                 sfdc->code += d;
                 /* nothing placed in output -- loop again */
                 continue;
-            }
-            else
-            {
+            } else {
                 vcbuffer(sfdc->vc, NIL(Vcchar_t *), -1, -1);
-                if ((m = vcapply(sfdc->vc, sfdc->code, d, &text)) <= 0)
-                {
+                if ((m = vcapply(sfdc->vc, sfdc->code, d, &text)) <= 0) {
                     VCSFERROR(sfdc, "Failure in decoding data");
                     BREAK;
                 }
@@ -840,23 +789,18 @@ Sfdisc_t *disc; /* discipline structure		*/
     if (!(sfdc->flags & VC_ENCODE))
         return VCSFERROR(sfdc, "Handle was not created to encode data");
 
-    for (sz = 0, dt = ( Vcchar_t * )buf; sz < n; sz += w, dt += w)
-    {
-        if (buf == ( Void_t * )sfdc->data)
-        { /* final flush */
+    for (sz = 0, dt = ( Vcchar_t * )buf; sz < n; sz += w, dt += w) {
+        if (buf == ( Void_t * )sfdc->data) { /* final flush */
             w = sfdc->next - sfdc->data;
             sfdc->next = sfdc->data;
 
-            if ((w = encode(sfdc, sfdc->data, w)) < 0)
-            {
+            if ((w = encode(sfdc, sfdc->data, w)) < 0) {
                 VCSFERROR(sfdc, "Error encoding data");
                 break;
-            }
-            else
+            } else
                 sz += w;
 
-            if (sfwr(f, sfdc->code, sfdc->cdsz, disc) != sfdc->cdsz)
-            {
+            if (sfwr(f, sfdc->code, sfdc->cdsz, disc) != sfdc->cdsz) {
                 VCSFERROR(sfdc, "Error writing encoded data");
                 break;
             }
@@ -865,21 +809,17 @@ Sfdisc_t *disc; /* discipline structure		*/
             {
                 w = 0;    /* so for(;;) won't add to sz, dt */
                 continue; /* back to flushing */
-            }
-            else
+            } else
                 break;
         }
 
-        if ((w = sfdc->endd - sfdc->next) == 0)
-        { /* flush a full buffer */
+        if ((w = sfdc->endd - sfdc->next) == 0) { /* flush a full buffer */
             sfdc->next = sfdc->data;
-            if ((w = encode(sfdc, sfdc->data, sfdc->dtsz)) < 0)
-            {
+            if ((w = encode(sfdc, sfdc->data, sfdc->dtsz)) < 0) {
                 VCSFERROR(sfdc, "Error in encoding data");
                 break;
             }
-            if (sfwr(f, sfdc->code, sfdc->cdsz, disc) != sfdc->cdsz)
-            {
+            if (sfwr(f, sfdc->code, sfdc->cdsz, disc) != sfdc->cdsz) {
                 VCSFERROR(sfdc, "Error in writing encoded data");
                 break;
             }
@@ -888,20 +828,16 @@ Sfdisc_t *disc; /* discipline structure		*/
         }
 
         /* process data directly if buffer is empty and data is large */
-        if (w == sfdc->dtsz && (n - sz) >= w)
-        {
-            if ((w = encode(sfdc, dt, n - sz)) < 0)
-            {
+        if (w == sfdc->dtsz && (n - sz) >= w) {
+            if ((w = encode(sfdc, dt, n - sz)) < 0) {
                 VCSFERROR(sfdc, "Error in encoding");
                 break;
             }
-            if (sfwr(f, sfdc->code, sfdc->cdsz, disc) != sfdc->cdsz)
-            {
+            if (sfwr(f, sfdc->code, sfdc->cdsz, disc) != sfdc->cdsz) {
                 VCSFERROR(sfdc, "Error in writing data");
                 break;
             }
-        }
-        else /* accumulating data into buffer */
+        } else /* accumulating data into buffer */
         {
             w = w > (n - sz) ? (n - sz) : w;
             memcpy(sfdc->next, dt, w);
@@ -941,8 +877,7 @@ Sfdisc_t *disc;
     ssize_t wz;
     Sfdc_t *sfdc = ( Sfdc_t * )disc;
 
-    switch (type)
-    {
+    switch (type) {
     case VCSF_DISC: /* get the discipline */
         if (data)
             *(( Sfdc_t ** )data) = sfdc;
@@ -951,14 +886,11 @@ Sfdisc_t *disc;
     case SF_DPOP:
     case SF_CLOSING:
     case SF_ATEXIT:
-        if (sfdc->flags & VC_ENCODE)
-        {
-            if ((sz = sfdc->next - sfdc->data) > 0)
-            {
+        if (sfdc->flags & VC_ENCODE) {
+            if ((sz = sfdc->next - sfdc->data) > 0) {
 #if _SFIO_H == 1 /* Sfio: this will wind up calling vcsfdcwrite() */
                 sfset(f, SF_IOCHECK, 0);
-                if ((wz = sfwr(f, sfdc->data, sz, disc)) < sz)
-                {
+                if ((wz = sfwr(f, sfdc->data, sz, disc)) < sz) {
                     error(1,
                           "AHA#%d sz=%I*d wz=%I*d",
                           __LINE__,
@@ -977,8 +909,7 @@ Sfdisc_t *disc;
                 sfdc->next = sfdc->data;
             }
 
-            if (type == SF_CLOSING || type == SF_ATEXIT)
-            {
+            if (type == SF_CLOSING || type == SF_ATEXIT) {
                 Vcio_t io;
 
                 /* back to plain text mode */
@@ -987,8 +918,7 @@ Sfdisc_t *disc;
                 sfdc->flags &= ~VCSF_KEEPSFDC;
 
                 vcioinit(&io, sfdc->base, sfdc->bssz);
-                if (!(sfdc->flags & VCSF_DONEHEAD))
-                {
+                if (!(sfdc->flags & VCSF_DONEHEAD)) {
                     sfdc->io = &io;
                     if (putheader(sfdc) < 0)
                         return VCSFERROR(sfdc, "Error writing header");
@@ -999,8 +929,7 @@ Sfdisc_t *disc;
 
                 sz = vciosize(&io); /* output to stream */
                 if (sz > 0
-                    && (wz = sfwr(f, sfdc->base, sz, NIL(Sfdisc_t *))) < sz)
-                {
+                    && (wz = sfwr(f, sfdc->base, sz, NIL(Sfdisc_t *))) < sz) {
                     error(1,
                           "AHA#%d sz=%I*d wz=%I*d",
                           __LINE__,
@@ -1014,8 +943,7 @@ Sfdisc_t *disc;
         }
 
         if (!(sfdc->flags & VCSF_KEEPSFDC)
-            && (type == SF_CLOSING || type == SF_DPOP))
-        {
+            && (type == SF_CLOSING || type == SF_DPOP)) {
             if (sfdc->vc)
                 vcclose(sfdc->vc);
             if (sfdc->vcwdc.srcf)
@@ -1064,8 +992,7 @@ Vcwmethod_t **vcwmt;                         /* return windowing method	*/
     else if (*spec == 'm' || *spec == 'M') /* megabyte */
         wsize *= 1024 * 1024;
 
-    if (vcwmt)
-    {
+    if (vcwmt) {
         while (*spec && *spec != VC_ARGSEP)
             spec += 1;
         if (*spec == VC_ARGSEP)
@@ -1092,15 +1019,12 @@ int type;                                    /* VC_ENCODE or VC_DECODE or 0	*/
     Vcsfdata_t dflt; /* default decoding data	*/
     int optional;
 
-    if (type & VC_OPTIONAL)
-    {
+    if (type & VC_OPTIONAL) {
         type &= ~VC_OPTIONAL;
         optional = 1;
-    }
-    else
+    } else
         optional = 0;
-    if (!sfdt && type)
-    {
+    if (!sfdt && type) {
         sfdt = &dflt; /* assuming coded header data */
         memset(sfdt, 0, sizeof(Vcsfdata_t));
     }
@@ -1114,22 +1038,19 @@ int type;                                    /* VC_ENCODE or VC_DECODE or 0	*/
     {
         sfdt->type &= ~VCSF_PLAIN;
         trans = "delta";
-    }
-    else
+    } else
         trans = sfdt->trans;
 
         /* local error processing function */
 #define errorsfio(s)                                                         \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         if (sfdt->errorf)                                                    \
             (*sfdt->errorf)(s);                                              \
         goto error;                                                          \
     } while (0)
 
     if (!(sfdc = ( Sfdc_t * )calloc(
-          1, sizeof(Sfdc_t) + (sfdt == &dflt ? sizeof(dflt) : 0))))
-    {
+          1, sizeof(Sfdc_t) + (sfdt == &dflt ? sizeof(dflt) : 0)))) {
         if (!type)
             sfdt->type = -1;
         errorsfio("Out of memory for transformation structure");
@@ -1143,8 +1064,7 @@ int type;                                    /* VC_ENCODE or VC_DECODE or 0	*/
 #endif
 
     sfdc->sf = sf; /* stream to do IO on */
-    if (sfdt == &dflt)
-    {
+    if (sfdt == &dflt) {
         sfdt = ( Vcsfdata_t * )(sfdc + 1);
         *sfdt = dflt;
     }
@@ -1152,14 +1072,13 @@ int type;                                    /* VC_ENCODE or VC_DECODE or 0	*/
 
     wsize = getwindow(sfdt->window, &wmeth);
 
-    if ((sfdc->flags = type) == VC_ENCODE)
-    { /* creat handle for transformation */
+    if ((sfdc->flags = type)
+        == VC_ENCODE) { /* creat handle for transformation */
         if (!trans || !(sfdc->vc = vcmake(trans, VC_ENCODE)))
             errorsfio("Ill-defined transformation for encoding.");
 
         /* create windowing handle if needed */
-        if ((sfdc->vc->meth->type & VC_MTSOURCE) && sfdt->source)
-        {
+        if ((sfdc->vc->meth->type & VC_MTSOURCE) && sfdt->source) {
             if (!(sfdc->vcwdc.srcf = sfopen(0, sfdt->source, "rb")))
                 errorsfio("Non-existing or unreadable source file.");
             sfdc->vcw = vcwopen(&sfdc->vcwdc, wmeth);
@@ -1181,15 +1100,13 @@ int type;                                    /* VC_ENCODE or VC_DECODE or 0	*/
         sfdc->bssz = VCSFDTSZ(sfdc->dtsz);
         if (!(sfdc->base = ( Vcchar_t * )malloc(sfdc->bssz)))
             errorsfio("Out of memory for output buffer");
-    }
-    else /* VC_DECODE */
-    {    /* make output buffer */
+    } else /* VC_DECODE */
+    {      /* make output buffer */
         if ((sfdc->bssz = wsize) <= 0)
             sfdc->bssz = VCSF_BUFSIZE;
         else if (sfdc->bssz < VCSF_BUFMIN)
             sfdc->bssz = VCSF_BUFMIN;
-        if (!(sfdc->base = ( Vcchar_t * )malloc(sfdc->bssz)))
-        {
+        if (!(sfdc->base = ( Vcchar_t * )malloc(sfdc->bssz))) {
             if (!type)
                 sfdt->type = -1;
             errorsfio("Out of memory for output buffer");
@@ -1197,29 +1114,23 @@ int type;                                    /* VC_ENCODE or VC_DECODE or 0	*/
         sfdc->code = sfdc->endb = sfdc->base;
 
         /* reconstruct handle to decode data */
-        if (sfdt->type & VCSF_PLAIN)
-        {
+        if (sfdt->type & VCSF_PLAIN) {
             if (!trans)
                 errorsfio("No transform	specified for decoding.");
             if (!(sfdc->vc = vcmake(trans, VC_DECODE)))
                 errorsfio("Ill-defined transformation for decoding.");
-        }
-        else
-        {
+        } else {
             int encoded;
             if (!type)
                 sfdt->type |= VCSF_TRANS;
-            if ((encoded = getheader(sfdc, sf, 1, !type, optional)) <= 0)
-            {
-                if (!type || optional)
-                {
+            if ((encoded = getheader(sfdc, sf, 1, !type, optional)) <= 0) {
+                if (!type || optional) {
                     sfdt->type = 0;
                     return NIL(Vcsfio_t *);
                 }
                 errorsfio("Badly encoded data, decoding not possible.");
             }
-            if (!type)
-            {
+            if (!type) {
                 free(sfdc->base);
                 free(sfdc);
                 sfdt->type = 1;
@@ -1228,8 +1139,7 @@ int type;                                    /* VC_ENCODE or VC_DECODE or 0	*/
         }
 
         /* construct window handle to get data for delta-decoding */
-        if ((sfdc->vc->meth->type & VC_MTSOURCE) && sfdt->source)
-        {
+        if ((sfdc->vc->meth->type & VC_MTSOURCE) && sfdt->source) {
             if (!(sfdc->vcwdc.srcf = sfopen(0, sfdt->source, "rb")))
                 errorsfio("Non-existing or unreadable source file.");
             if (!(sfdc->vcw = vcwopen(&sfdc->vcwdc, NIL(Vcwmethod_t *))))
@@ -1249,8 +1159,7 @@ int type;                                    /* VC_ENCODE or VC_DECODE or 0	*/
 #endif
 
 error:
-    if (sfdc)
-    {
+    if (sfdc) {
         if (sfdc->vc)
             vcclose(sfdc->vc);
         if (sfdc->vcwdc.srcf)
@@ -1304,9 +1213,7 @@ ssize_t n; /* <0: remove, 0: find, >0: buffer size	*/
         if (!(r = ( Rsrv_t * )calloc(1, sizeof(Rsrv_t))))
             return NIL(Rsrv_t *);
         r->f = f;
-    }
-    else
-    {
+    } else {
         if (p) /* remove from list */
             p->next = r->next;
         else
@@ -1326,12 +1233,10 @@ ssize_t n; /* <0: remove, 0: find, >0: buffer size	*/
         if (r->data)
             free(r->data);
         r->size = r->dtsz = 0;
-        if (!(r->data = malloc(n)))
-        {
+        if (!(r->data = malloc(n))) {
             free(r);
             return NIL(Rsrv_t *);
-        }
-        else
+        } else
             r->size = n;
     }
 
@@ -1398,8 +1303,7 @@ int type;
         return NIL(char *);
     if (!fgets(r->data, 1024, f))
         return NIL(char *);
-    if (type > 0)
-    {
+    if (type > 0) {
         nl = strlen(r->data);
         (( char * )r->data)[nl - 1] = 0;
     }

@@ -212,24 +212,20 @@ list(Ftw_t *ftw)
 
     static Sfio_t *sp;
 
-    if (ftw->level > 0)
-    {
-        if (ftw->level > elementsof(label))
-        {
+    if (ftw->level > 0) {
+        if (ftw->level > elementsof(label)) {
             ftw->status = FTW_SKIP;
             mode
             = ftw->statb.st_mode
               & (S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-            if (strmatch(ftw->name, "*-*-*-*"))
-            {
+            if (strmatch(ftw->name, "*-*-*-*")) {
                 s = qual_buf;
                 *s++ = '/';
                 t = strrchr(ftw->name, '-');
                 while (s < &qual_buf[sizeof(qual_buf) - 1] && (*s++ = *++t))
                     ;
                 *s = 0;
-            }
-            else
+            } else
                 qual_buf[0] = 0;
             if (!streq(label[1], "share"))
                 mode |= (S_ISVTX | S_IXOTH);
@@ -242,8 +238,7 @@ list(Ftw_t *ftw)
             *s = CS_MNT_PROCESS;
             if (pathgetlink(
                 p, proc_buf + PROC_OFF, sizeof(proc_buf) - PROC_OFF)
-                <= 0)
-            {
+                <= 0) {
                 /*
                  * check for old single char cs mounts
                  */
@@ -251,8 +246,7 @@ list(Ftw_t *ftw)
                 *(s + 1) = 0;
                 if (pathgetlink(
                     p, proc_buf + PROC_OFF, sizeof(proc_buf) - PROC_OFF)
-                    <= 0)
-                {
+                    <= 0) {
                     *s = CS_MNT_STREAM;
                     remove(p);
                     *(s + 1) = CS_MNT_TAIL[0];
@@ -263,31 +257,25 @@ list(Ftw_t *ftw)
             proc = proc_buf;
             if (strncmp(proc + PROC_OFF, "/n/", 3))
                 u = proc + PROC_OFF;
-            else
-            {
+            else {
                 t = proc + PROC_OFF + 3;
-                if (u = strchr(t, '/'))
-                {
+                if (u = strchr(t, '/')) {
                     *u = 0;
-                    if (strcmp(t, state.local))
-                    {
+                    if (strcmp(t, state.local)) {
                         *u = '/';
                         u = 0;
-                    }
-                    else
+                    } else
                         *u = '/';
                 }
             }
             if (u && (n = strtol(u + 6, NiL, 10)) && kill(n, 0)
-                && errno == ESRCH)
-            {
+                && errno == ESRCH) {
                 remove(p);
                 *s = CS_MNT_STREAM;
                 remove(p);
                 return 0;
             }
-            if (state.list & LIST_SERVICE)
-            {
+            if (state.list & LIST_SERVICE) {
                 *s = CS_MNT_STREAM;
                 if (pathgetlink(p, port_buf, sizeof(port_buf)) > 0
                     && (port = strrchr(port_buf, '/')))
@@ -313,22 +301,16 @@ list(Ftw_t *ftw)
                          label[2],
                          qual_buf,
                          proc);
-            }
-            else
-            {
+            } else {
                 n = sfprintf(
                 sfstdout, "/dev/%s/%s/%s", label[0], label[1], label[2]);
-                if (!(mode & S_IROTH))
-                {
-                    if (!(mode & S_IRGRP))
-                    {
+                if (!(mode & S_IROTH)) {
+                    if (!(mode & S_IRGRP)) {
                         n += sfprintf(sfstdout, "/user");
                         if (ftw->statb.st_uid != geteuid())
                             n += sfprintf(
                             sfstdout, "=%s", fmtuid(ftw->statb.st_uid));
-                    }
-                    else
-                    {
+                    } else {
                         n += sfprintf(sfstdout, "/group");
                         if (ftw->statb.st_gid != getegid())
                             n += sfprintf(
@@ -337,8 +319,7 @@ list(Ftw_t *ftw)
                 }
                 if (*ftw->name == '-')
                     n += sfprintf(sfstdout, "/trust");
-                else
-                {
+                else {
                     sfsprintf(port_buf,
                               sizeof(port_buf) - 1,
                               "%s/%s/%s/%s%s",
@@ -360,34 +341,28 @@ list(Ftw_t *ftw)
                     n += sfprintf(sfstdout, "%s", qual_buf);
                 if (u && streq(label[1], "share"))
                     n += sfprintf(sfstdout, "/local");
-                if (*label[0] == 't')
-                {
+                if (*label[0] == 't') {
                     *s = CS_MNT_AUTH;
                     if (access(p, F_OK))
                         n += sfprintf(sfstdout, "/other");
                 }
-                if (state.list &= ~LIST)
-                {
+                if (state.list &= ~LIST) {
                     if ((state.list ^ (state.list >> 1))
                         == (state.list | (state.list >> 1)))
                         while (n++ < SERVICE_COLS)
                             sfputc(sfstdout, ' ');
-                    if (state.list & LIST_PROCESS)
-                    {
+                    if (state.list & LIST_PROCESS) {
                         *(s - 1) = 0;
                         sfprintf(sfstdout, " %s", u ? u : proc + PROC_OFF);
                     }
-                    if (state.list & LIST_MOUNT)
-                    {
+                    if (state.list & LIST_MOUNT) {
                         *(s - 1) = 0;
                         sfprintf(sfstdout, " %s", p);
                     }
                 }
                 sfprintf(sfstdout, "\n");
             }
-        }
-        else
-        {
+        } else {
             s = ftw->name;
             if (ftw->level == 2 && streq(s, "share") && streq(s, state.local))
                 s = "local";
@@ -410,8 +385,7 @@ msgcat(Sfio_t *sp, int flags, unsigned long call, unsigned long terse)
 
     if (flags & MSG_LIST_CONTINUOUS)
         sfset(sfstdout, SF_LINE, 1);
-    for (;;)
-    {
+    for (;;) {
         while ((n = msgrecv(sffileno(sp), &msg)) > 0)
             if (MSG_MASK(msg.call) & call)
                 msglist(sfstdout, &msg, flags, terse);
@@ -452,10 +426,8 @@ main(int argc, char **argv)
     setlocale(LC_ALL, "");
     error_info.id = "cs";
     debug(systrace(0));
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             attr = opt_info.arg;
             continue;
@@ -509,10 +481,8 @@ main(int argc, char **argv)
         case 'O':
             remote = 1;
             host = opt_info.arg;
-            for (;;)
-            {
-                switch (*host++)
-                {
+            for (;;) {
+                switch (*host++) {
                 case 0:
                     break;
                 case CS_REMOTE_OPEN_AGENT:
@@ -554,8 +524,7 @@ main(int argc, char **argv)
     argv += opt_info.index;
     if (error_info.errors)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
-    if (msg & MSG_LIST)
-    {
+    if (msg & MSG_LIST) {
         if (!(path = *argv++))
             sp = sfstdin;
         else if (*argv)
@@ -564,13 +533,11 @@ main(int argc, char **argv)
             error(ERROR_SYSTEM | 3, "%s: cannot read", path);
         return msgcat(sp, msg, call, terse) != 0;
     }
-    if (translate)
-    {
+    if (translate) {
         if (*argv)
             while (host = *argv++)
                 address(host);
-        else
-        {
+        else {
             sfopen(sfstdin, NiL, "rt");
             while (host = sfgetr(sfstdin, '\n', 1))
                 address(host);
@@ -578,17 +545,14 @@ main(int argc, char **argv)
         return 0;
     }
     state.local = csname(0);
-    if ((path = *argv++) && path[0] == '-' && !path[1])
-    {
+    if ((path = *argv++) && path[0] == '-' && !path[1]) {
         path = *argv++;
         initiate |= CS_OPEN_TEST;
     }
-    if (remote)
-    {
+    if (remote) {
         if (!path)
             return 1;
-        if (initiate & CS_OPEN_AGENT)
-        {
+        if (initiate & CS_OPEN_AGENT) {
             char *s = path;
             char *t = tmp;
             int n = 0;
@@ -598,8 +562,7 @@ main(int argc, char **argv)
              */
 
             while (*t++ = *s)
-                switch (*s++)
-                {
+                switch (*s++) {
                 case '/':
                     while (*s == '/')
                         s++;
@@ -615,28 +578,21 @@ main(int argc, char **argv)
         }
         if ((fd = csopen(path, initiate)) < 0)
             return 1;
-        if (initiate & CS_OPEN_AGENT)
-        {
+        if (initiate & CS_OPEN_AGENT) {
             *cs.control = CS_MNT_AUTH;
             remote = !access(cs.mount, F_OK);
             sfprintf(sfstdout, "%s%s\n", cspath(fd, 0), remote ? ".A" : "");
-            if (remote)
-            {
+            if (remote) {
                 close(fd);
                 sfsync(sfstdout);
                 if (csauth(-1, cs.mount, NiL))
                     return 1;
             }
         }
-    }
-    else if (sig)
-    {
-        if (path)
-        {
-            do
-            {
-                if ((fd = csopen(path, CS_OPEN_TEST)) < 0)
-                {
+    } else if (sig) {
+        if (path) {
+            do {
+                if ((fd = csopen(path, CS_OPEN_TEST)) < 0) {
                     error(
                     ERROR_SYSTEM | 2, "%s: cannot open connect stream", path);
                     continue;
@@ -644,11 +600,9 @@ main(int argc, char **argv)
                 close(fd);
                 if (cs.flags & CS_ADDR_REMOTE)
                     host = cs.host;
-                else
-                {
+                else {
                     *cs.control = CS_MNT_PROCESS;
-                    if (pathgetlink(cs.mount, buf, sizeof(buf)) <= 0)
-                    {
+                    if (pathgetlink(cs.mount, buf, sizeof(buf)) <= 0) {
                         error(ERROR_SYSTEM | 2,
                               "%s: cannot get service process mount",
                               path);
@@ -657,8 +611,7 @@ main(int argc, char **argv)
                     if (tokscan(buf, NiL, "/proc/%s", &proc) == 1)
                         host = 0;
                     else if (tokscan(buf, NiL, "/n/%s/proc/%s", &host, &proc)
-                             != 2)
-                    {
+                             != 2) {
                         error(2,
                               "%s: %s: invalid service process mount",
                               path,
@@ -668,12 +621,10 @@ main(int argc, char **argv)
                 }
                 sfsprintf(tmp, sizeof(tmp), "-%s", sig);
                 ap = av;
-                if (host && !streq(host, state.local))
-                {
+                if (host && !streq(host, state.local)) {
                     *ap++ = CS_REMOTE_SHELL;
                     *ap++ = host;
-                    if (*cs.user)
-                    {
+                    if (*cs.user) {
                         *ap++ = "-l";
                         *ap++ = cs.user;
                     }
@@ -695,9 +646,7 @@ main(int argc, char **argv)
                           host);
             } while (path = *argv++);
         }
-    }
-    else if (state.list & LIST)
-    {
+    } else if (state.list & LIST) {
         if (path)
             error(1, "%s: argument not expected", path);
         ap = av;
@@ -707,53 +656,39 @@ main(int argc, char **argv)
             *ap++ = tmp;
         *ap = 0;
         ftwalk(( char * )av, list, FTW_MULTIPLE | FTW_PHYSICAL, order);
-    }
-    else if (attr)
-    {
-        if (!path)
-        {
+    } else if (attr) {
+        if (!path) {
             while (proc = csattr(NiL, attr))
                 sfputr(sfstdout, proc, '\n');
-        }
-        else
-        {
+        } else {
             n = *argv != 0;
             hostenv = streq(attr, "-");
             terse = streq(attr, "name");
-            do
-            {
-                if (proc = csattr(path, attr))
-                {
+            do {
+                if (proc = csattr(path, attr)) {
                     if (hostenv)
                         sfputr(sfstdout, "name", '=');
                     if (!terse && (hostenv || n))
                         sfputr(sfstdout, path, ' ');
                     sfputr(sfstdout, proc, '\n');
-                }
-                else if (streq(path, CS_HOST_SHARE)
-                         && (sp = csinfo(path, NiL)))
-                {
+                } else if (streq(path, CS_HOST_SHARE)
+                           && (sp = csinfo(path, NiL))) {
                     while (path = sfgetr(sp, '\n', 1))
-                        if (proc = csattr(path, attr))
-                        {
+                        if (proc = csattr(path, attr)) {
                             if (hostenv)
                                 sfputr(sfstdout, "name", '=');
                             if (!terse)
                                 sfputr(sfstdout, path, ' ');
                             sfputr(sfstdout, proc, '\n');
-                        }
-                        else
+                        } else
                             error(2, "%s: no host info", path);
                     sfclose(sp);
-                }
-                else
+                } else
                     error(2, "%s: no host info", path);
             } while (path = *argv++);
         }
         return 0;
-    }
-    else if (hostenv)
-    {
+    } else if (hostenv) {
         if (!path || streq(path, "local"))
             path = state.local;
         proc = csattr(path, "type");
@@ -764,30 +699,23 @@ main(int argc, char **argv)
                  CO_ENV_TYPE,
                  proc ? proc : "unknown");
         return 0;
-    }
-    else if (path)
-    {
+    } else if (path) {
         if ((fd = csopen(path, initiate)) < 0)
             error(ERROR_SYSTEM | 3, "%s: cannot open connect stream", path);
-        if (state.list & LIST_MOUNT)
-        {
+        if (state.list & LIST_MOUNT) {
             if (*argv)
                 error(1, "%s: argument not expected", path);
             if (cs.flags & CS_ADDR_REMOTE)
                 error(1, "%s: remote connect stream", path);
-            else
-            {
+            else {
                 *(cs.control - 1) = 0;
                 sfputr(sfstdout, cs.mount, '\n');
             }
-        }
-        else if (interactive)
+        } else if (interactive)
             return csclient(fd, path, "cs> ", NiL, clientflags)
                    || error_info.errors;
-        else
-        {
-            if (*argv)
-            {
+        else {
+            if (*argv) {
                 close(0);
                 close(1);
                 if (dup(fd) != 0 || dup(fd) != 1)
@@ -807,8 +735,7 @@ main(int argc, char **argv)
             }
             sfprintf(sfstdout, "%s\n", cspath(fd, 0));
         }
-    }
-    else if (interactive)
+    } else if (interactive)
         error(3, "connect stream argument expected");
     else
         sfprintf(sfstdout, "%s\n", cspath(0, 0));

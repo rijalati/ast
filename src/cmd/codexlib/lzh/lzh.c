@@ -119,8 +119,7 @@ fill(State_t *state)
                   state->buf,
                   sizeof(state->buf),
                   &state->codex->sfdisc))
-        <= 0)
-    {
+        <= 0) {
         state->eof = 1;
         return 0;
     }
@@ -141,14 +140,12 @@ fill(State_t *state)
 static int
 getbits(State_t *state, int n, int peek)
 {
-    while (state->bitcount < n)
-    {
+    while (state->bitcount < n) {
         state->bitbuf <<= 8;
         state->bitbuf |= GETCHAR(state);
         state->bitcount += 8;
     }
-    if (peek)
-    {
+    if (peek) {
         state->eof = 0;
         return PEEKBITS(state, n);
     }
@@ -183,8 +180,7 @@ make_table(State_t *state,
 
     /* initialize */
 
-    for (i = 1; i <= 16; i++)
-    {
+    for (i = 1; i <= 16; i++) {
         count[i] = 0;
         weight[i] = 1 << (16 - i);
     }
@@ -197,13 +193,11 @@ make_table(State_t *state,
     /* calculate first code */
 
     total = 0;
-    for (i = 1; i <= 16; i++)
-    {
+    for (i = 1; i <= 16; i++) {
         start[i] = total;
         total += weight[i] * count[i];
     }
-    if (total)
-    {
+    if (total) {
         if (state->codex->disc->errorf)
             (*state->codex->disc->errorf)(NiL,
                                           state->codex->disc,
@@ -216,8 +210,7 @@ make_table(State_t *state,
     /* shift data for make table. */
 
     m = 16 - tablebits;
-    for (i = 1; i <= tablebits; i++)
-    {
+    for (i = 1; i <= tablebits; i++) {
         start[i] >>= m;
         weight[i] >>= m;
     }
@@ -232,17 +225,14 @@ make_table(State_t *state,
 
     /* create table and tree */
 
-    for (j = 0; j < nchar; j++)
-    {
+    for (j = 0; j < nchar; j++) {
         k = bitlen[j];
         if (k == 0)
             continue;
         i = start[k];
         l = i + weight[k];
-        if (k <= tablebits)
-        {
-            if (l > tablesize)
-            {
+        if (k <= tablebits) {
+            if (l > tablesize) {
                 if (state->codex->disc->errorf)
                     (*state->codex->disc->errorf)(
                     NiL,
@@ -257,9 +247,7 @@ make_table(State_t *state,
 
             while (i < l)
                 table[i++] = j;
-        }
-        else
-        {
+        } else {
             /* code not in table */
 
             p = &table[i >> m];
@@ -268,10 +256,8 @@ make_table(State_t *state,
 
             /* make tree (n length) */
 
-            while (--n >= 0)
-            {
-                if (*p == 0)
-                {
+            while (--n >= 0) {
+                if (*p == 0) {
                     state->right[available] = state->left[available] = 0;
                     *p = available++;
                 }
@@ -297,8 +283,7 @@ make_table(State_t *state,
     start[1] = 0;
     for (i = 1; i <= 16; i++)
         start[i + 1] = start[i] + (count[i] << (16 - i));
-    if (start[17] != (ushort)(( unsigned )1 << 16))
-    {
+    if (start[17] != (ushort)(( unsigned )1 << 16)) {
         if (state->codex->disc->errorf)
             (*state->codex->disc->errorf)(NiL,
                                           state->codex->disc,
@@ -309,20 +294,17 @@ make_table(State_t *state,
     }
 
     jutbits = 16 - tablebits;
-    for (i = 1; i <= tablebits; i++)
-    {
+    for (i = 1; i <= tablebits; i++) {
         start[i] >>= jutbits;
         weight[i] = ( unsigned )1 << (tablebits - i);
     }
-    while (i <= 16)
-    {
+    while (i <= 16) {
         weight[i] = ( unsigned )1 << (16 - i);
         i++;
     }
 
     i = start[tablebits + 1] >> jutbits;
-    if (i != (ushort)(( unsigned )1 << 16))
-    {
+    if (i != (ushort)(( unsigned )1 << 16)) {
         k = 1 << tablebits;
         while (i != k)
             table[i++] = 0;
@@ -330,15 +312,12 @@ make_table(State_t *state,
 
     avail = nchar;
     mask = ( unsigned )1 << (15 - tablebits);
-    for (ch = 0; ch < nchar; ch++)
-    {
+    for (ch = 0; ch < nchar; ch++) {
         if ((len = bitlen[ch]) == 0)
             continue;
         nextcode = start[len] + weight[len];
-        if (len <= tablebits)
-        {
-            if (nextcode > tablesize)
-            {
+        if (len <= tablebits) {
+            if (nextcode > tablesize) {
                 if (state->codex->disc->errorf)
                     (*state->codex->disc->errorf)(
                     NiL,
@@ -350,16 +329,12 @@ make_table(State_t *state,
             }
             for (i = start[len]; i < nextcode; i++)
                 table[i] = ch;
-        }
-        else
-        {
+        } else {
             k = start[len];
             p = &table[k >> jutbits];
             i = len - tablebits;
-            while (i != 0)
-            {
-                if (*p == 0)
-                {
+            while (i != 0) {
+                if (*p == 0) {
                     state->right[avail] = state->left[avail] = 0;
                     *p = avail++;
                 }
@@ -385,25 +360,20 @@ get_p_len(State_t *state, int k, int nbit, int i_special)
     int c;
     int n;
 
-    if (!(n = GETBITS(state, nbit)))
-    {
+    if (!(n = GETBITS(state, nbit))) {
         c = GETBITS(state, nbit);
         for (i = 0; i < elementsof(state->p_table); i++)
             state->p_table[i] = c;
         for (i = 0; i < k; i++)
             state->p_len[i] = 0;
-    }
-    else
-    {
+    } else {
         i = 0;
-        while (i < n)
-        {
+        while (i < n) {
             if ((c = GETBITS(state, 3)) == 7)
                 while (GETBITS(state, 1))
                     c++;
             state->p_len[i++] = c;
-            if (i == i_special)
-            {
+            if (i == i_special) {
                 c = GETBITS(state, 2);
                 while (--c >= 0)
                     state->p_len[i++] = 0;
@@ -433,26 +403,21 @@ get_c_len(State_t *state)
     n = GETBITS(state, CBIT);
     if (state->eof)
         return -1;
-    if (n == 0)
-    {
+    if (n == 0) {
         c = GETBITS(state, CBIT);
         for (i = 0; i < elementsof(state->c_table); i++)
             state->c_table[i] = c;
         for (i = 0; i < elementsof(state->c_len); i++)
             state->c_len[i] = 0;
-    }
-    else
-    {
+    } else {
         i = 0;
-        while (i < n)
-        {
+        while (i < n) {
             b = PEEKBITS(state, 16);
             c = state->p_table[b >> 8];
             while (c >= NT)
                 c = ((b <<= 1) & 0x100) ? state->right[c] : state->left[c];
             SKIPBITS(state, state->p_len[c]);
-            if (c <= 2)
-            {
+            if (c <= 2) {
                 if (c == 0)
                     c = 1;
                 else if (c == 1)
@@ -461,8 +426,7 @@ get_c_len(State_t *state)
                     c = GETBITS(state, CBIT) + 20;
                 while (--c >= 0)
                     state->c_len[i++] = 0;
-            }
-            else
+            } else
                 state->c_len[i++] = c - 2;
         }
         while (i < NC)
@@ -490,10 +454,8 @@ reconst(State_t *state, int start, int end)
     ui4 g;
 
     b = 0;
-    for (i = j = start; i < end; i++)
-    {
-        if ((k = state->child[i]) < 0)
-        {
+    for (i = j = start; i < end; i++) {
+        if ((k = state->child[i]) < 0) {
             state->freq[j] = (state->freq[i] + 1) / 2;
             state->child[j] = k;
             j++;
@@ -504,10 +466,8 @@ reconst(State_t *state, int start, int end)
     j--;
     i = end - 1;
     l = end - 2;
-    while (i >= start)
-    {
-        while (i >= l)
-        {
+    while (i >= start) {
+        while (i >= l) {
             state->freq[i] = state->freq[j];
             state->child[i] = state->child[j];
             i--;
@@ -516,8 +476,7 @@ reconst(State_t *state, int start, int end)
         f = state->freq[l] + state->freq[l + 1];
         for (k = start; f < state->freq[k]; k++)
             ;
-        while (j >= k)
-        {
+        while (j >= k) {
             state->freq[i] = state->freq[j];
             state->child[i] = state->child[j];
             i--;
@@ -529,16 +488,14 @@ reconst(State_t *state, int start, int end)
         l -= 2;
     }
     f = 0;
-    for (i = start; i < end; i++)
-    {
+    for (i = start; i < end; i++) {
         if ((j = state->child[i]) < 0)
             state->node[~j] = i;
         else
             state->parent[j] = state->parent[j - 1] = i;
         if ((g = state->freq[i]) == f)
             state->block[i] = b;
-        else
-        {
+        else {
             state->edge[b = state->block[i] = state->stock[state->avail++]]
             = i;
             f = g;
@@ -555,8 +512,7 @@ swap_inc(State_t *state, int p)
     int s;
 
     b = state->block[p];
-    if ((q = state->edge[b]) != p)
-    {
+    if ((q = state->edge[b]) != p) {
         r = state->child[p];
         s = state->child[q];
         state->child[p] = s;
@@ -570,11 +526,8 @@ swap_inc(State_t *state, int p)
         else
             state->node[~s] = p;
         p = q;
-    }
-    else if (b != state->block[p + 1])
-    {
-        if (++state->freq[p] == state->freq[p - 1])
-        {
+    } else if (b != state->block[p + 1]) {
+        if (++state->freq[p] == state->freq[p - 1]) {
             state->stock[--state->avail] = b;
             state->block[p] = state->block[p - 1];
         }
@@ -597,8 +550,7 @@ update_c(State_t *state, int p)
         reconst(state, 0, state->n_max * 2 - 1);
     state->freq[ROOT_C]++;
     q = state->node[p];
-    do
-    {
+    do {
         q = swap_inc(state, q);
     } while (q != ROOT_C);
 }
@@ -608,15 +560,13 @@ update_p(State_t *state, int p)
 {
     int q;
 
-    if (state->total_p == 0x8000)
-    {
+    if (state->total_p == 0x8000) {
         reconst(state, ROOT_P, state->most_p + 1);
         state->total_p = state->freq[ROOT_P];
         state->freq[ROOT_P] = 0xffff;
     }
     q = state->node[p + N_CHAR];
-    while (q != ROOT_P)
-    {
+    while (q != ROOT_P) {
         q = swap_inc(state, q);
     }
     state->total_p++;
@@ -636,8 +586,7 @@ make_new_node(State_t *state, int p)
     state->freq[r] = state->freq[state->most_p];
     state->freq[q] = 0;
     state->block[r] = state->block[state->most_p];
-    if (state->most_p == ROOT_P)
-    {
+    if (state->most_p == ROOT_P) {
         state->freq[ROOT_P] = 0xffff;
         state->edge[state->block[ROOT_P]]++;
     }
@@ -658,10 +607,8 @@ ready_made(State_t *state, ui1 *tbl)
     j = *tbl++;
     weight = 1 << (16 - j);
     code = 0;
-    for (i = 0; i < state->snp; i++)
-    {
-        while (*tbl == i)
-        {
+    for (i = 0; i < state->snp; i++) {
+        while (*tbl == i) {
             j++;
             tbl++;
             weight >>= 1;
@@ -678,15 +625,13 @@ read_tree_c(State_t *state)
     int c;
 
     i = 0;
-    while (i < N1)
-    {
+    while (i < N1) {
         if (GETBITS(state, 1))
             state->c_len[i] = GETBITS(state, LENFIELD) + 1;
         else
             state->c_len[i] = 0;
         if (++i == 3 && state->c_len[0] == 1 && state->c_len[1] == 1
-            && state->c_len[2] == 1)
-        {
+            && state->c_len[2] == 1) {
             c = GETBITS(state, CBIT);
             for (i = 0; i < N1; i++)
                 state->c_len[i] = 0;
@@ -706,12 +651,10 @@ read_tree_p(State_t *state)
     int c;
 
     i = 0;
-    while (i < SNP)
-    {
+    while (i < SNP) {
         state->p_len[i] = GETBITS(state, LENFIELD);
         if (++i == 3 && state->p_len[0] == 1 && state->p_len[1] == 1
-            && state->p_len[2] == 1)
-        {
+            && state->p_len[2] == 1) {
             c = GETBITS(state, WINBIT_MAX - 6);
             for (i = 0; i < SNP; i++)
                 state->c_len[i] = 0;
@@ -735,13 +678,11 @@ set_c_d0(State_t *state, ui4 n_max, ui4 maxmatch, ui4 snp)
     state->n1 = (state->n_max >= 256 + state->maxmatch - THRESHOLD + 1)
                 ? 512
                 : state->n_max - 1;
-    for (i = 0; i < TREESIZE_C; i++)
-    {
+    for (i = 0; i < TREESIZE_C; i++) {
         state->stock[i] = i;
         state->block[i] = 0;
     }
-    for (i = 0, j = state->n_max * 2 - 2; i < state->n_max; i++, j--)
-    {
+    for (i = 0, j = state->n_max * 2 - 2; i < state->n_max; i++, j--) {
         state->freq[j] = 1;
         state->child[j] = ~i;
         state->node[i] = j;
@@ -750,8 +691,7 @@ set_c_d0(State_t *state, ui4 n_max, ui4 maxmatch, ui4 snp)
     state->avail = 2;
     state->edge[1] = state->n_max - 1;
     i = state->n_max * 2 - 2;
-    while (j >= 0)
-    {
+    while (j >= 0) {
         f = state->freq[j] = state->freq[i] + state->freq[i - 1];
         state->child[j] = i;
         state->parent[i] = state->parent[i - 1] = j;
@@ -813,8 +753,7 @@ decode_p_d0(State_t *state)
 {
     int c;
 
-    while (state->count > state->nextcount)
-    {
+    while (state->count > state->nextcount) {
         make_new_node(state, ( int )(state->nextcount / 64));
         if ((state->nextcount += 64) >= state->window)
             state->nextcount = 0xffffffff;
@@ -888,8 +827,7 @@ decode_c_s0(State_t *state)
     }
     state->blocksize--;
     j = state->c_table[GETBITS(state, 4)];
-    while (j >= N1)
-    {
+    while (j >= N1) {
         if (GETBITS(state, 1))
             j = state->right[j];
         else
@@ -912,10 +850,8 @@ decode_p_s0(State_t *state)
     int j;
 
     j = state->p_table[GETBITS(state, 8)];
-    if (j >= state->snp)
-    {
-        do
-        {
+    if (j >= state->snp) {
+        do {
             if (GETBITS(state, 1))
                 j = state->right[j];
             else
@@ -928,13 +864,10 @@ decode_p_s0(State_t *state)
 static int
 init_c_s1(State_t *state)
 {
-    if (state->window <= (14 * 1024))
-    {
+    if (state->window <= (14 * 1024)) {
         state->snp = 14;
         state->pbit = 4;
-    }
-    else
-    {
+    } else {
         state->snp = 16;
         state->pbit = 5;
     }
@@ -1034,15 +967,13 @@ decode_c_s3(State_t *state)
 {
     int c;
 
-    if (state->flagcnt == 0)
-    {
+    if (state->flagcnt == 0) {
         state->flagcnt = 8;
         state->flag = GETCHAR(state);
     }
     state->flagcnt--;
     c = GETCHAR(state);
-    if ((state->flag & 1) == 0)
-    {
+    if ((state->flag & 1) == 0) {
         state->matchpos = c;
         c = GETCHAR(state);
         state->matchpos += (c & 0xf0) << 4;
@@ -1082,8 +1013,7 @@ lzh_decoder(char *s, int p, Codexdisc_t *disc)
     int i;
     int n;
 
-    if (!(n = *s++))
-    {
+    if (!(n = *s++)) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "decoder name expected");
         return -1;
@@ -1092,8 +1022,7 @@ lzh_decoder(char *s, int p, Codexdisc_t *disc)
         i = 0;
     else if (n == 's')
         i = 2 * N_D;
-    else
-    {
+    else {
         if (disc->errorf)
             (*disc->errorf)(NiL,
                             disc,
@@ -1103,8 +1032,7 @@ lzh_decoder(char *s, int p, Codexdisc_t *disc)
         return -1;
     }
     i += 2 * ( int )strtol(s, &s, 10);
-    if (i < 0 || i >= (elementsof(decoders) / 2))
-    {
+    if (i < 0 || i >= (elementsof(decoders) / 2)) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%c%d: unknown decoder name", n, i);
         return -1;
@@ -1136,13 +1064,11 @@ lzh_options(Codexmeth_t *meth, Sfio_t *sp)
     int i;
     int j;
 
-    for (i = 0; i < elementsof(arc); i++)
-    {
+    for (i = 0; i < elementsof(arc); i++) {
         sfprintf(sp, "[+%s?Equivalent to \b", arc[i][0]);
         if (!arc[i][1])
             sfprintf(sp, "copy");
-        else
-        {
+        else {
             sfprintf(sp, "lzh");
             for (j = 1; j < elementsof(arc[i]) && arc[i][j]; j++)
                 sfprintf(sp, "-%s", arc[i][j]);
@@ -1164,39 +1090,32 @@ lzh_open(Codex_t *p, char *const args[], Codexnum_t flags)
 
     name = args[0];
     args += 2;
-    if (!args[0])
-    {
+    if (!args[0]) {
         if (p->disc->errorf)
             (*p->disc->errorf)(
             NiL, p->disc, 2, "%s: method parameter expected", name);
         return -1;
     }
-    if (!args[1])
-    {
-        for (i = 0;; i++)
-        {
-            if (i >= elementsof(arc))
-            {
+    if (!args[1]) {
+        for (i = 0;; i++) {
+            if (i >= elementsof(arc)) {
                 if (p->disc->errorf)
                     (*p->disc->errorf)(
                     NiL, p->disc, 2, "%s: unknown method", name);
                 return 0;
             }
-            if (streq(args[0], arc[i][0]))
-            {
+            if (streq(args[0], arc[i][0])) {
                 args = arc[i] + 1;
                 break;
             }
         }
-        if (!args[0])
-        {
+        if (!args[0]) {
             p->meth = 0;
             return 0;
         }
     }
     if ((w = strton(args[0], &s, NiL, 0)) < WINDOW_MIN || w > WINDOW_MAX
-        || *s)
-    {
+        || *s) {
         if (p->disc->errorf)
             (*p->disc->errorf)(NiL,
                                p->disc,
@@ -1207,8 +1126,7 @@ lzh_open(Codex_t *p, char *const args[], Codexnum_t flags)
                                WINDOW_MAX);
         return -1;
     }
-    if (!args[1])
-    {
+    if (!args[1]) {
         if (p->disc->errorf)
             (*p->disc->errorf)(
             NiL, p->disc, 2, "%s: at least one coder must be specified", name);
@@ -1217,8 +1135,7 @@ lzh_open(Codex_t *p, char *const args[], Codexnum_t flags)
     if ((i = lzh_decoder(args[1], 0, p->disc)) < 0
         || (j = lzh_decoder(args[2] ? args[2] : args[1], 1, p->disc)) < 0)
         return -1;
-    if (!(state = newof(0, State_t, 1, w - 1)))
-    {
+    if (!(state = newof(0, State_t, 1, w - 1))) {
         if (p->disc->errorf)
             (*p->disc->errorf)(NiL, p->disc, 2, "out of space");
         return -1;
@@ -1259,8 +1176,7 @@ lzh_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
 
     if (n == 0 || state->eof)
         return 0;
-    while (state->cpylen)
-    {
+    while (state->cpylen) {
         *s++ = state->text[state->loc++] = state->text[state->cpy++];
         if (state->loc >= state->window)
             state->loc = 0;
@@ -1270,36 +1186,30 @@ lzh_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
         if (s >= e)
             return s - ( char * )buf;
     }
-    for (;;)
-    {
+    for (;;) {
         c = (*state->decode_c)(state);
         if (c < 0)
             break;
-        else if (c <= UCHAR_MAX)
-        {
+        else if (c <= UCHAR_MAX) {
             state->count++;
             *s++ = state->text[state->loc++] = c;
             if (state->loc >= state->window)
                 state->loc = 0;
             if (s >= e)
                 break;
-        }
-        else
-        {
+        } else {
             j = c - state->offset;
             i = state->loc - (*state->decode_p)( state )-1;
             if (i < 0)
                 i += state->window;
             state->count += j;
-            while (j--)
-            {
+            while (j--) {
                 *s++ = state->text[state->loc++] = state->text[i++];
                 if (i >= state->window)
                     i = 0;
                 if (state->loc >= state->window)
                     state->loc = 0;
-                if (s >= e)
-                {
+                if (s >= e) {
                     if (state->cpylen = j)
                         state->cpy = i;
                     return s - ( char * )buf;

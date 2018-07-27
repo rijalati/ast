@@ -78,24 +78,21 @@ regrexec_20120528(const regex_t *p,
     leftlen = e->re.bm.left + exactlen;
     rightlen = exactlen + e->re.bm.right;
     index = leftlen++;
-    for (;;)
-    {
+    for (;;) {
         while (index < mid)
             index += skip[buf[index]];
         if (index < HIT)
             goto impossible;
         index -= HIT;
         m = mask[n = exactlen - 1][buf[index]];
-        do
-        {
+        do {
             if (!n--)
                 goto possible;
         } while (m &= mask[n][buf[--index]]);
         if ((index += fail[n + 1]) < len)
             continue;
     impossible:
-        if (inv)
-        {
+        if (inv) {
             l = r = buf + len;
             goto invert;
         }
@@ -104,8 +101,7 @@ regrexec_20120528(const regex_t *p,
     possible:
         r = (l = buf + index) + exactlen;
         while (l > beg)
-            if (*--l == sep)
-            {
+            if (*--l == sep) {
                 l++;
                 break;
             }
@@ -117,37 +113,30 @@ regrexec_20120528(const regex_t *p,
             goto spanned;
         if (complete
             || (env->rex = ((r - l) > 128) ? e : e->next)
-               && !(n
-                    = regnexec(p, ( char * )l, r - l, nmatch, match, flags)))
-        {
-            if (inv)
-            {
+               && !(n = regnexec(
+                    p, ( char * )l, r - l, nmatch, match, flags))) {
+            if (inv) {
             invert:
                 x = beg;
-                while (beg < l)
-                {
+                while (beg < l) {
                     while (x < l && *x != sep)
                         x++;
                     if (n = (*record)(handle, ( char * )beg, x - beg))
                         goto done;
                     beg = ++x;
                 }
-            }
-            else if (n = (*record)(handle, ( char * )l, r - l))
+            } else if (n = (*record)(handle, ( char * )l, r - l))
                 goto done;
-            if ((index = (r - buf) + leftlen) >= len)
-            {
+            if ((index = (r - buf) + leftlen) >= len) {
                 n = (inv && (++r - buf) < len)
                     ? (*record)(handle, ( char * )r, (buf + len) - r)
                     : 0;
                 goto done;
             }
             beg = r + 1;
-        }
-        else if (n != REG_NOMATCH)
+        } else if (n != REG_NOMATCH)
             goto done;
-        else
-        {
+        else {
         spanned:
             if ((index += exactlen) >= mid)
                 goto impossible;
@@ -182,8 +171,7 @@ regrexec(const regex_t *p,
          void *handle,
          regrecord_t record)
 {
-    if (oldmatch)
-    {
+    if (oldmatch) {
         regmatch_t *match;
         ssize_t i;
         int r;
@@ -192,8 +180,7 @@ regrexec(const regex_t *p,
             return -1;
         if (!(r = regrexec_20120528(
               p, s, len, nmatch, match, flags, sep, handle, record)))
-            for (i = 0; i < nmatch; i++)
-            {
+            for (i = 0; i < nmatch; i++) {
                 oldmatch[i].rm_so = match[i].rm_so;
                 oldmatch[i].rm_eo = match[i].rm_eo;
             }

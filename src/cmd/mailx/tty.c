@@ -246,8 +246,7 @@ ttyquery(int rfd, int wfd, const char *label)
     tty.c_cc[VMIN] = 1;
     tty.c_lflag &= ~(ICANON | ECHO | ECHOK | ISIG);
     tcsetattr(rfd, TCSADRAIN, &tty);
-    if ((r = read(rfd, &c, 1)) == 1)
-    {
+    if ((r = read(rfd, &c, 1)) == 1) {
         if (c == old.c_cc[VEOF])
             r = -1;
         else if (c == old.c_cc[VINTR])
@@ -260,8 +259,7 @@ ttyquery(int rfd, int wfd, const char *label)
             r = c;
     }
     tcsetattr(rfd, TCSADRAIN, &old);
-    if (n)
-    {
+    if (n) {
         write(wfd, "\r", 1);
         while (n-- > 0)
             write(wfd, " ", 1);
@@ -295,22 +293,17 @@ ttyedit(int rfd, int wfd, const char *label, char *buf, size_t size)
     tty.c_cc[VMIN] = 1;
     tty.c_lflag &= ~(ICANON | ECHO | ECHOK | ISIG);
     tcsetattr(rfd, TCSADRAIN, &tty);
-    for (;;)
-    {
+    for (;;) {
         if ((r = read(rfd, &c, 1)) <= 0)
             break;
-        if (c == old.c_cc[VERASE])
-        {
+        if (c == old.c_cc[VERASE]) {
             if (last == 0)
                 write(wfd, "\a", 1);
-            else
-            {
+            else {
                 write(wfd, "\b \b", 3);
                 last--;
             }
-        }
-        else if (c == old.c_cc[VKILL])
-        {
+        } else if (c == old.c_cc[VKILL]) {
             memset(buf, '\b', last);
             write(wfd, buf, last);
             memset(buf, ' ', last);
@@ -318,35 +311,24 @@ ttyedit(int rfd, int wfd, const char *label, char *buf, size_t size)
             memset(buf, '\b', last);
             write(wfd, buf, last);
             last = 0;
-        }
-        else if (c == old.c_cc[VEOF])
-        {
+        } else if (c == old.c_cc[VEOF]) {
             r = last;
             break;
-        }
-        else if (c == old.c_cc[VINTR])
-        {
+        } else if (c == old.c_cc[VINTR]) {
             r = -(SIGINT + 1);
             break;
-        }
-        else if (c == old.c_cc[VQUIT])
-        {
+        } else if (c == old.c_cc[VQUIT]) {
             r = -(SIGQUIT + 1);
             break;
-        }
-        else if (last > size)
-        {
+        } else if (last > size) {
             r = -1;
             break;
-        }
-        else
-        {
+        } else {
             if (c == '\r')
                 c = '\n';
             buf[last++] = c;
             write(wfd, &buf[last - 1], 1);
-            if (c == '\n')
-            {
+            if (c == '\n') {
                 r = --last;
                 break;
             }
@@ -380,12 +362,10 @@ grabedit(struct header *hp, unsigned long type)
         signal(SIGQUIT, SIG_DFL);
     r = 0;
     for (lp = state.hdrtab; lp->name; lp++)
-        if (type & lp->type)
-        {
+        if (type & lp->type) {
             if (!(s = detract(hp, lp->type)))
                 s = "";
-            if (strlen(s) >= sizeof(buf))
-            {
+            if (strlen(s) >= sizeof(buf)) {
                 note(0, "%sfield too long to edit", lp->name);
                 continue;
             }

@@ -64,11 +64,9 @@ int options;
     pid_t real_pid;
 
     real_pid = ( pid_t )pid;
-    while (1)
-    {
+    while (1) {
         result = ( int )waitpid(real_pid, statPtr, options);
-        if ((result != -1) || (errno != EINTR))
-        {
+        if ((result != -1) || (errno != EINTR)) {
             return result;
         }
     }
@@ -94,8 +92,7 @@ int options;
 /* ARGSUSED */
 static void FreeCurrentDir(clientData) ClientData clientData; /* Not used. */
 {
-    if (currentDir != ( char * )NULL)
-    {
+    if (currentDir != ( char * )NULL) {
         ckfree(currentDir);
         currentDir = ( char * )NULL;
     }
@@ -123,8 +120,7 @@ static void FreeCurrentDir(clientData) ClientData clientData; /* Not used. */
 static void FreeExecutableName(clientData) ClientData clientData; /* Not used.
                                                                    */
 {
-    if (tclExecutableName != ( char * )NULL)
-    {
+    if (tclExecutableName != ( char * )NULL) {
         ckfree(tclExecutableName);
         tclExecutableName = ( char * )NULL;
     }
@@ -153,15 +149,12 @@ int TclChdir(interp, dirName) Tcl_Interp *interp; /* If non NULL, used for
                                                      error reporting. */
 char *dirName; /* Path to new working directory. */
 {
-    if (currentDir != NULL)
-    {
+    if (currentDir != NULL) {
         ckfree(currentDir);
         currentDir = NULL;
     }
-    if (chdir(dirName) != 0)
-    {
-        if (interp != NULL)
-        {
+    if (chdir(dirName) != 0) {
+        if (interp != NULL) {
             Tcl_AppendResult(interp,
                              "couldn't change working directory to \"",
                              dirName,
@@ -201,23 +194,16 @@ char *TclGetCwd(interp) Tcl_Interp *interp; /* If non NULL, used for error
 {
     char buffer[MAXPATHLEN + 1];
 
-    if (currentDir == NULL)
-    {
-        if (!currentDirExitHandlerSet)
-        {
+    if (currentDir == NULL) {
+        if (!currentDirExitHandlerSet) {
             currentDirExitHandlerSet = 1;
             Tcl_CreateExitHandler(FreeCurrentDir, ( ClientData )NULL);
         }
-        if (getcwd(buffer, MAXPATHLEN + 1) == NULL)
-        {
-            if (interp != NULL)
-            {
-                if (errno == ERANGE)
-                {
+        if (getcwd(buffer, MAXPATHLEN + 1) == NULL) {
+            if (interp != NULL) {
+                if (errno == ERANGE) {
                     interp->result = "working directory name is too long";
-                }
-                else
-                {
+                } else {
                     Tcl_AppendResult(interp,
                                      "error getting working directory name: ",
                                      Tcl_PosixError(interp),
@@ -256,8 +242,7 @@ int mode;                               /* In what mode to open the file? */
 
     fd = open(
     fname, mode, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-    if (fd != -1)
-    {
+    if (fd != -1) {
         fcntl(fd, F_SETFD, FD_CLOEXEC);
         return Tcl_GetFile(( ClientData )fd, TCL_UNIX_FD);
     }
@@ -287,8 +272,7 @@ int TclCloseFile(file) Tcl_File file; /* The file to close. */
     int result;
 
     fd = ( int )Tcl_GetFileInfo(file, &type);
-    if (type != TCL_UNIX_FD)
-    {
+    if (type != TCL_UNIX_FD) {
         panic("Tcl_CloseFile: unexpected file type");
     }
 
@@ -296,8 +280,7 @@ int TclCloseFile(file) Tcl_File file; /* The file to close. */
      * Refuse to close the fds for stdin, stdout and stderr.
      */
 
-    if ((fd == 0) || (fd == 1) || (fd == 2))
-    {
+    if ((fd == 0) || (fd == 1) || (fd == 2)) {
         return 0;
     }
 
@@ -335,8 +318,7 @@ int toRead;                            /* Number of characters to read. */
     int type, fd;
 
     fd = ( int )Tcl_GetFileInfo(file, &type);
-    if (type != TCL_UNIX_FD)
-    {
+    if (type != TCL_UNIX_FD) {
         panic("Tcl_ReadFile: unexpected file type");
     }
 
@@ -371,8 +353,7 @@ int toWrite;                             /* Number of characters to write. */
     int type, fd;
 
     fd = ( int )Tcl_GetFileInfo(file, &type);
-    if (type != TCL_UNIX_FD)
-    {
+    if (type != TCL_UNIX_FD) {
         panic("Tcl_WriteFile: unexpected file type");
     }
     return write(fd, buf, ( size_t )toWrite);
@@ -404,8 +385,7 @@ int whence; /* And from where to seek? */
     int type, fd;
 
     fd = ( int )Tcl_GetFileInfo(file, &type);
-    if (type != TCL_UNIX_FD)
-    {
+    if (type != TCL_UNIX_FD) {
         panic("Tcl_SeekFile: unexpected file type");
     }
 
@@ -451,17 +431,12 @@ Tcl_DString *namePtr; /* If non-NULL, pointer to initialized
     file = TclOpenFile(fileName, O_RDWR | O_CREAT | O_TRUNC);
     unlink(fileName);
 
-    if ((file != NULL) && (length > 0))
-    {
+    if ((file != NULL) && (length > 0)) {
         int fd = ( int )Tcl_GetFileInfo(file, NULL);
-        while (1)
-        {
-            if (write(fd, contents, length) != -1)
-            {
+        while (1) {
+            if (write(fd, contents, length) != -1) {
                 break;
-            }
-            else if (errno != EINTR)
-            {
+            } else if (errno != EINTR) {
                 close(fd);
                 Tcl_FreeFile(file);
                 return NULL;
@@ -470,8 +445,7 @@ Tcl_DString *namePtr; /* If non-NULL, pointer to initialized
         lseek(fd, 0, SEEK_SET);
     }
 #ifndef TKSH_V5
-    if (namePtr != NULL)
-    {
+    if (namePtr != NULL) {
         Tcl_DStringAppend(namePtr, fileName, -1);
     }
 #endif
@@ -505,17 +479,14 @@ void Tcl_FindExecutable(argv0) char *argv0; /* The value of the application's
     int length;
 
     Tcl_DStringInit(&buffer);
-    if (tclExecutableName != NULL)
-    {
+    if (tclExecutableName != NULL) {
         ckfree(tclExecutableName);
         tclExecutableName = NULL;
     }
 
     name = argv0;
-    for (p = name; *p != 0; p++)
-    {
-        if (*p == '/')
-        {
+    for (p = name; *p != 0; p++) {
+        if (*p == '/') {
             /*
              * The name contains a slash, so use the name directly
              * without doing a path search.
@@ -526,8 +497,7 @@ void Tcl_FindExecutable(argv0) char *argv0; /* The value of the application's
     }
 
     p = getenv("PATH");
-    if (p == NULL)
-    {
+    if (p == NULL) {
         /*
          * There's no PATH environment variable; use the default that
          * is used by sh.
@@ -542,29 +512,23 @@ void Tcl_FindExecutable(argv0) char *argv0; /* The value of the application's
      * name.
      */
 
-    while (*p != 0)
-    {
-        while (isspace(UCHAR(*p)))
-        {
+    while (*p != 0) {
+        while (isspace(UCHAR(*p))) {
             p++;
         }
         name = p;
-        while ((*p != ':') && (*p != 0))
-        {
+        while ((*p != ':') && (*p != 0)) {
             p++;
         }
         Tcl_DStringSetLength(&buffer, 0);
-        if (p != name)
-        {
+        if (p != name) {
             Tcl_DStringAppend(&buffer, name, p - name);
-            if (p[-1] != '/')
-            {
+            if (p[-1] != '/') {
                 Tcl_DStringAppend(&buffer, "/", 1);
             }
         }
         Tcl_DStringAppend(&buffer, argv0, -1);
-        if (access(Tcl_DStringValue(&buffer), X_OK) == 0)
-        {
+        if (access(Tcl_DStringValue(&buffer), X_OK) == 0) {
             name = Tcl_DStringValue(&buffer);
             goto gotName;
         }
@@ -577,8 +541,7 @@ void Tcl_FindExecutable(argv0) char *argv0; /* The value of the application's
      */
 
 gotName:
-    if (name[0] == '/')
-    {
+    if (name[0] == '/') {
         tclExecutableName = ( char * )ckalloc(( unsigned )(strlen(name) + 1));
         strcpy(tclExecutableName, name);
         goto done;
@@ -590,13 +553,11 @@ gotName:
      * the current working directory.
      */
 
-    if ((name[0] == '.') && (name[1] == '/'))
-    {
+    if ((name[0] == '.') && (name[1] == '/')) {
         name += 2;
     }
     cwd = TclGetCwd(( Tcl_Interp * )NULL);
-    if (cwd == NULL)
-    {
+    if (cwd == NULL) {
         tclExecutableName = NULL;
         goto done;
     }
@@ -610,8 +571,7 @@ gotName:
 done:
     Tcl_DStringFree(&buffer);
 
-    if (!executableNameExitHandlerSet)
-    {
+    if (!executableNameExitHandlerSet) {
         executableNameExitHandlerSet = 1;
         Tcl_CreateExitHandler(FreeExecutableName, ( ClientData )NULL);
     }
@@ -647,8 +607,7 @@ Tcl_DString *bufferPtr; /* May be used to hold result.  Must not hold
     struct passwd *pwPtr;
 
     pwPtr = getpwnam(name);
-    if (pwPtr == NULL)
-    {
+    if (pwPtr == NULL) {
         endpwent();
         return NULL;
     }

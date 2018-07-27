@@ -339,8 +339,7 @@ ClientData clientData; /* Arbitrary data to pass to proc. */
 {
     FileHandler *filePtr;
 
-    if (!fileEventSourceCreated)
-    {
+    if (!fileEventSourceCreated) {
         fileEventSourceCreated = 1;
         Tcl_CreateEventSource(
         FileHandlerSetupProc, FileHandlerCheckProc, ( ClientData )NULL);
@@ -354,15 +353,12 @@ ClientData clientData; /* Arbitrary data to pass to proc. */
      */
 
     for (filePtr = firstFileHandlerPtr; filePtr != NULL;
-         filePtr = filePtr->nextPtr)
-    {
-        if (filePtr->file == file)
-        {
+         filePtr = filePtr->nextPtr) {
+        if (filePtr->file == file) {
             break;
         }
     }
-    if (filePtr == NULL)
-    {
+    if (filePtr == NULL) {
         filePtr = ( FileHandler * )ckalloc(sizeof(FileHandler));
         filePtr->file = file;
         filePtr->nextPtr = firstFileHandlerPtr;
@@ -410,14 +406,11 @@ void Tcl_DeleteFileHandler(file) Tcl_File file; /* Stream id for which to
      */
 
     for (prevPtr = NULL, filePtr = firstFileHandlerPtr;;
-         prevPtr = filePtr, filePtr = filePtr->nextPtr)
-    {
-        if (filePtr == NULL)
-        {
+         prevPtr = filePtr, filePtr = filePtr->nextPtr) {
+        if (filePtr == NULL) {
             return;
         }
-        if (filePtr->file == file)
-        {
+        if (filePtr->file == file) {
             break;
         }
     }
@@ -426,12 +419,9 @@ void Tcl_DeleteFileHandler(file) Tcl_File file; /* Stream id for which to
      * Clean up information in the callback record.
      */
 
-    if (prevPtr == NULL)
-    {
+    if (prevPtr == NULL) {
         firstFileHandlerPtr = filePtr->nextPtr;
-    }
-    else
-    {
+    } else {
         prevPtr->nextPtr = filePtr->nextPtr;
     }
     ckfree(( char * )filePtr);
@@ -489,15 +479,12 @@ int flags; /* Flags passed to Tk_DoOneEvent:
 {
     FileHandler *filePtr;
 
-    if (!(flags & TCL_FILE_EVENTS))
-    {
+    if (!(flags & TCL_FILE_EVENTS)) {
         return;
     }
     for (filePtr = firstFileHandlerPtr; filePtr != NULL;
-         filePtr = filePtr->nextPtr)
-    {
-        if (filePtr->mask != 0)
-        {
+         filePtr = filePtr->nextPtr) {
+        if (filePtr->mask != 0) {
             Tcl_WatchFile(filePtr->file, filePtr->mask);
         }
     }
@@ -532,18 +519,14 @@ int flags; /* Flags passed to Tk_DoOneEvent:
     FileHandler *filePtr;
     FileHandlerEvent *fileEvPtr;
 
-    if (!(flags & TCL_FILE_EVENTS))
-    {
+    if (!(flags & TCL_FILE_EVENTS)) {
         return;
     }
     for (filePtr = firstFileHandlerPtr; filePtr != NULL;
-         filePtr = filePtr->nextPtr)
-    {
-        if (filePtr->mask != 0)
-        {
+         filePtr = filePtr->nextPtr) {
+        if (filePtr->mask != 0) {
             filePtr->readyMask = Tcl_FileReady(filePtr->file, filePtr->mask);
-            if (filePtr->readyMask != 0)
-            {
+            if (filePtr->readyMask != 0) {
                 fileEvPtr
                 = ( FileHandlerEvent * )ckalloc(sizeof(FileHandlerEvent));
                 fileEvPtr->header.proc = FileHandlerEventProc;
@@ -585,8 +568,7 @@ int flags; /* Flags that indicate what events to
     FileHandlerEvent *fileEvPtr = ( FileHandlerEvent * )evPtr;
     int mask;
 
-    if (!(flags & TCL_FILE_EVENTS))
-    {
+    if (!(flags & TCL_FILE_EVENTS)) {
         return 0;
     }
 
@@ -598,10 +580,8 @@ int flags; /* Flags that indicate what events to
      */
 
     for (filePtr = firstFileHandlerPtr; filePtr != NULL;
-         filePtr = filePtr->nextPtr)
-    {
-        if (filePtr->file != fileEvPtr->file)
-        {
+         filePtr = filePtr->nextPtr) {
+        if (filePtr->file != fileEvPtr->file) {
             continue;
         }
 
@@ -619,8 +599,7 @@ int flags; /* Flags that indicate what events to
 
         mask = filePtr->readyMask & filePtr->mask;
         filePtr->readyMask = 0;
-        if (mask != 0)
-        {
+        if (mask != 0) {
             (*filePtr->proc)(filePtr->clientData, mask);
         }
         break;
@@ -658,8 +637,7 @@ ClientData clientData;        /* Arbitrary data to pass to proc. */
     TimerHandler *timerHandlerPtr, *tPtr2, *prevPtr;
     static int id = 0;
 
-    if (!timerEventSourceCreated)
-    {
+    if (!timerEventSourceCreated) {
         timerEventSourceCreated = 1;
         Tcl_CreateEventSource(
         TimerHandlerSetupProc, TimerHandlerCheckProc, ( ClientData )NULL);
@@ -675,8 +653,7 @@ ClientData clientData;        /* Arbitrary data to pass to proc. */
     TclpGetTime(&timerHandlerPtr->time);
     timerHandlerPtr->time.sec += milliseconds / 1000;
     timerHandlerPtr->time.usec += (milliseconds % 1000) * 1000;
-    if (timerHandlerPtr->time.usec >= 1000000)
-    {
+    if (timerHandlerPtr->time.usec >= 1000000) {
         timerHandlerPtr->time.usec -= 1000000;
         timerHandlerPtr->time.sec += 1;
     }
@@ -696,22 +673,17 @@ ClientData clientData;        /* Arbitrary data to pass to proc. */
      */
 
     for (tPtr2 = firstTimerHandlerPtr, prevPtr = NULL; tPtr2 != NULL;
-         prevPtr = tPtr2, tPtr2 = tPtr2->nextPtr)
-    {
+         prevPtr = tPtr2, tPtr2 = tPtr2->nextPtr) {
         if ((tPtr2->time.sec > timerHandlerPtr->time.sec)
             || ((tPtr2->time.sec == timerHandlerPtr->time.sec)
-                && (tPtr2->time.usec > timerHandlerPtr->time.usec)))
-        {
+                && (tPtr2->time.usec > timerHandlerPtr->time.usec))) {
             break;
         }
     }
     timerHandlerPtr->nextPtr = tPtr2;
-    if (prevPtr == NULL)
-    {
+    if (prevPtr == NULL) {
         firstTimerHandlerPtr = timerHandlerPtr;
-    }
-    else
-    {
+    } else {
         prevPtr->nextPtr = timerHandlerPtr;
     }
     return timerHandlerPtr->token;
@@ -745,18 +717,13 @@ Tcl_TimerToken token; /* Result previously returned by
     for (timerHandlerPtr = firstTimerHandlerPtr, prevPtr = NULL;
          timerHandlerPtr != NULL;
          prevPtr = timerHandlerPtr,
-        timerHandlerPtr = timerHandlerPtr->nextPtr)
-    {
-        if (timerHandlerPtr->token != token)
-        {
+        timerHandlerPtr = timerHandlerPtr->nextPtr) {
+        if (timerHandlerPtr->token != token) {
             continue;
         }
-        if (prevPtr == NULL)
-        {
+        if (prevPtr == NULL) {
             firstTimerHandlerPtr = timerHandlerPtr->nextPtr;
-        }
-        else
-        {
+        } else {
             prevPtr->nextPtr = timerHandlerPtr->nextPtr;
         }
         ckfree(( char * )timerHandlerPtr);
@@ -792,8 +759,7 @@ ClientData clientData;        /* Arbitrary data to pass to proc. */
 {
     TimerHandler *timerHandlerPtr;
 
-    if (!timerEventSourceCreated)
-    {
+    if (!timerEventSourceCreated) {
         timerEventSourceCreated = 1;
         Tcl_CreateEventSource(
         TimerHandlerSetupProc, TimerHandlerCheckProc, ( ClientData )NULL);
@@ -810,8 +776,7 @@ ClientData clientData;        /* Arbitrary data to pass to proc. */
     TclpGetTime(&timerHandlerPtr->time);
     timerHandlerPtr->time.sec += milliseconds / 1000;
     timerHandlerPtr->time.usec += (milliseconds % 1000) * 1000;
-    if (timerHandlerPtr->time.usec >= 1000000)
-    {
+    if (timerHandlerPtr->time.usec >= 1000000) {
         timerHandlerPtr->time.usec -= 1000000;
         timerHandlerPtr->time.sec += 1;
     }
@@ -853,8 +818,7 @@ ClientData clientData; /* Arbitrary data to pass to proc. */
     timerHandlerPtr = firstModalHandlerPtr;
     firstModalHandlerPtr = timerHandlerPtr->nextPtr;
     if ((timerHandlerPtr->proc != proc)
-        || (timerHandlerPtr->clientData != clientData))
-    {
+        || (timerHandlerPtr->clientData != clientData)) {
         panic("Tcl_DeleteModalTimeout found timeout stack corrupted");
     }
     ckfree(( char * )timerHandlerPtr);
@@ -894,42 +858,33 @@ int flags; /* Flags passed to Tk_DoOneEvent:
      */
 
     timerHandlerPtr = firstTimerHandlerPtr;
-    if (!(flags & TCL_TIMER_EVENTS))
-    {
+    if (!(flags & TCL_TIMER_EVENTS)) {
         timerHandlerPtr = NULL;
     }
-    if (timerHandlerPtr != NULL)
-    {
+    if (timerHandlerPtr != NULL) {
         tPtr2 = firstModalHandlerPtr;
-        if (tPtr2 != NULL)
-        {
+        if (tPtr2 != NULL) {
             if ((timerHandlerPtr->time.sec > tPtr2->time.sec)
                 || ((timerHandlerPtr->time.sec == tPtr2->time.sec)
-                    && (timerHandlerPtr->time.usec > tPtr2->time.usec)))
-            {
+                    && (timerHandlerPtr->time.usec > tPtr2->time.usec))) {
                 timerHandlerPtr = tPtr2;
             }
         }
-    }
-    else
-    {
+    } else {
         timerHandlerPtr = firstModalHandlerPtr;
     }
-    if (timerHandlerPtr == NULL)
-    {
+    if (timerHandlerPtr == NULL) {
         return;
     }
 
     TclpGetTime(&blockTime);
     blockTime.sec = timerHandlerPtr->time.sec - blockTime.sec;
     blockTime.usec = timerHandlerPtr->time.usec - blockTime.usec;
-    if (blockTime.usec < 0)
-    {
+    if (blockTime.usec < 0) {
         blockTime.sec -= 1;
         blockTime.usec += 1000000;
     }
-    if (blockTime.sec < 0)
-    {
+    if (blockTime.sec < 0) {
         blockTime.sec = 0;
         blockTime.usec = 0;
     }
@@ -971,33 +926,27 @@ int flags; /* Flags passed to Tk_DoOneEvent:
     triggered = 0;
     gotTime = 0;
     timerHandlerPtr = firstTimerHandlerPtr;
-    if ((flags & TCL_TIMER_EVENTS) && (timerHandlerPtr != NULL))
-    {
+    if ((flags & TCL_TIMER_EVENTS) && (timerHandlerPtr != NULL)) {
         TclpGetTime(&curTime);
         gotTime = 1;
         if ((timerHandlerPtr->time.sec < curTime.sec)
             || ((timerHandlerPtr->time.sec == curTime.sec)
-                && (timerHandlerPtr->time.usec <= curTime.usec)))
-        {
+                && (timerHandlerPtr->time.usec <= curTime.usec))) {
             triggered = 1;
         }
     }
     timerHandlerPtr = firstModalHandlerPtr;
-    if (timerHandlerPtr != NULL)
-    {
-        if (!gotTime)
-        {
+    if (timerHandlerPtr != NULL) {
+        if (!gotTime) {
             TclpGetTime(&curTime);
         }
         if ((timerHandlerPtr->time.sec < curTime.sec)
             || ((timerHandlerPtr->time.sec == curTime.sec)
-                && (timerHandlerPtr->time.usec <= curTime.usec)))
-        {
+                && (timerHandlerPtr->time.usec <= curTime.usec))) {
             triggered = 1;
         }
     }
-    if (triggered)
-    {
+    if (triggered) {
         timerEvPtr = ( TimerEvent * )ckalloc(sizeof(TimerEvent));
         timerEvPtr->header.proc = TimerHandlerEventProc;
         timerEvPtr->time.sec = curTime.sec;
@@ -1067,12 +1016,10 @@ int flags; /* Flags that indicate what events to
      */
 
     timerHandlerPtr = firstModalHandlerPtr;
-    if (firstModalHandlerPtr != NULL)
-    {
+    if (firstModalHandlerPtr != NULL) {
         if ((timerHandlerPtr->time.sec < timerEvPtr->time.sec)
             || ((timerHandlerPtr->time.sec == timerEvPtr->time.sec)
-                && (timerHandlerPtr->time.usec <= timerEvPtr->time.usec)))
-        {
+                && (timerHandlerPtr->time.usec <= timerEvPtr->time.usec))) {
             (*timerHandlerPtr->proc)(timerHandlerPtr->clientData);
         }
     }
@@ -1081,22 +1028,18 @@ int flags; /* Flags that indicate what events to
      * Invoke any normal timers that have fired.
      */
 
-    if (!(flags & TCL_TIMER_EVENTS))
-    {
+    if (!(flags & TCL_TIMER_EVENTS)) {
         return 1;
     }
 
-    while (1)
-    {
+    while (1) {
         timerHandlerPtr = firstTimerHandlerPtr;
-        if (timerHandlerPtr == NULL)
-        {
+        if (timerHandlerPtr == NULL) {
             break;
         }
         if ((timerHandlerPtr->time.sec > timerEvPtr->time.sec)
             || ((timerHandlerPtr->time.sec == timerEvPtr->time.sec)
-                && (timerHandlerPtr->time.usec >= timerEvPtr->time.usec)))
-        {
+                && (timerHandlerPtr->time.usec >= timerEvPtr->time.usec))) {
             break;
         }
 
@@ -1142,12 +1085,9 @@ ClientData clientData; /* Arbitrary value to pass to proc. */
     idlePtr->clientData = clientData;
     idlePtr->generation = idleGeneration;
     idlePtr->nextPtr = NULL;
-    if (lastIdlePtr == NULL)
-    {
+    if (lastIdlePtr == NULL) {
         idleList = idlePtr;
-    }
-    else
-    {
+    } else {
         lastIdlePtr->nextPtr = idlePtr;
     }
     lastIdlePtr = idlePtr;
@@ -1179,23 +1119,18 @@ ClientData clientData; /* Arbitrary value to pass to proc. */
     IdleHandler *nextPtr;
 
     for (prevPtr = NULL, idlePtr = idleList; idlePtr != NULL;
-         prevPtr = idlePtr, idlePtr = idlePtr->nextPtr)
-    {
-        while ((idlePtr->proc == proc) && (idlePtr->clientData == clientData))
-        {
+         prevPtr = idlePtr, idlePtr = idlePtr->nextPtr) {
+        while ((idlePtr->proc == proc)
+               && (idlePtr->clientData == clientData)) {
             nextPtr = idlePtr->nextPtr;
             ckfree(( char * )idlePtr);
             idlePtr = nextPtr;
-            if (prevPtr == NULL)
-            {
+            if (prevPtr == NULL) {
                 idleList = idlePtr;
-            }
-            else
-            {
+            } else {
                 prevPtr->nextPtr = idlePtr;
             }
-            if (idlePtr == NULL)
-            {
+            if (idlePtr == NULL) {
                 lastIdlePtr = prevPtr;
                 return;
             }
@@ -1250,8 +1185,7 @@ TclServiceIdle()
     int oldGeneration;
     int foundIdle;
 
-    if (idleList == NULL)
-    {
+    if (idleList == NULL) {
         return 0;
     }
 
@@ -1280,11 +1214,9 @@ TclServiceIdle()
 
     for (idlePtr = idleList;
          ((idlePtr != NULL) && ((oldGeneration - idlePtr->generation) >= 0));
-         idlePtr = idleList)
-    {
+         idlePtr = idleList) {
         idleList = idlePtr->nextPtr;
-        if (idleList == NULL)
-        {
+        if (idleList == NULL) {
             lastIdlePtr = NULL;
         }
         foundIdle = 1;
@@ -1338,15 +1270,13 @@ void Tcl_BackgroundError(interp) Tcl_Interp *interp; /* Interpreter in which
     = ( char * )ckalloc(( unsigned )(strlen(interp->result) + 1));
     strcpy(errPtr->errorMsg, interp->result);
     varValue = Tcl_GetVar(interp, "errorInfo", TCL_GLOBAL_ONLY);
-    if (varValue == NULL)
-    {
+    if (varValue == NULL) {
         varValue = errPtr->errorMsg;
     }
     errPtr->errorInfo = ( char * )ckalloc(( unsigned )(strlen(varValue) + 1));
     strcpy(errPtr->errorInfo, varValue);
     varValue = Tcl_GetVar(interp, "errorCode", TCL_GLOBAL_ONLY);
-    if (varValue == NULL)
-    {
+    if (varValue == NULL) {
         varValue = "";
     }
     errPtr->errorCode = ( char * )ckalloc(( unsigned )(strlen(varValue) + 1));
@@ -1355,8 +1285,7 @@ void Tcl_BackgroundError(interp) Tcl_Interp *interp; /* Interpreter in which
 
     assocPtr = ( ErrAssocData * )Tcl_GetAssocData(
     interp, "tclBgError", ( Tcl_InterpDeleteProc ** )NULL);
-    if (assocPtr == NULL)
-    {
+    if (assocPtr == NULL) {
 
         /*
          * This is the first time a background error has occurred in
@@ -1370,13 +1299,10 @@ void Tcl_BackgroundError(interp) Tcl_Interp *interp; /* Interpreter in which
         Tcl_SetAssocData(
         interp, "tclBgError", BgErrorDeleteProc, ( ClientData )assocPtr);
     }
-    if (assocPtr->firstBgPtr == NULL)
-    {
+    if (assocPtr->firstBgPtr == NULL) {
         assocPtr->firstBgPtr = errPtr;
         Tcl_DoWhenIdle(HandleBgErrors, ( ClientData )assocPtr);
-    }
-    else
-    {
+    } else {
         assocPtr->lastBgPtr->nextPtr = errPtr;
     }
     assocPtr->lastBgPtr = errPtr;
@@ -1411,11 +1337,9 @@ ClientData clientData; /* Pointer to ErrAssocData structure. */
     ErrAssocData *assocPtr = ( ErrAssocData * )clientData;
     Tcl_Channel errChannel;
 
-    while (assocPtr->firstBgPtr != NULL)
-    {
+    while (assocPtr->firstBgPtr != NULL) {
         interp = assocPtr->firstBgPtr->interp;
-        if (interp == NULL)
-        {
+        if (interp == NULL) {
             goto doneWithReport;
         }
 
@@ -1444,8 +1368,7 @@ ClientData clientData; /* Pointer to ErrAssocData structure. */
         Tcl_Preserve(( ClientData )interp);
         code = Tcl_GlobalEval(interp, command);
         ckfree(command);
-        if (code == TCL_ERROR)
-        {
+        if (code == TCL_ERROR) {
 
             /*
              * We have to get the error output channel at the latest possible
@@ -1453,19 +1376,15 @@ ClientData clientData; /* Pointer to ErrAssocData structure. */
              */
 
             errChannel = Tcl_GetStdChannel(TCL_STDERR);
-            if (errChannel != ( Tcl_Channel )NULL)
-            {
+            if (errChannel != ( Tcl_Channel )NULL) {
                 if (strcmp(interp->result,
                            "\"bgerror\" is an invalid command name or "
                            "ambiguous abbreviation")
-                    == 0)
-                {
+                    == 0) {
                     Tcl_Write(
                     errChannel, assocPtr->firstBgPtr->errorInfo, -1);
                     Tcl_Write(errChannel, "\n", -1);
-                }
-                else
-                {
+                } else {
                     Tcl_Write(errChannel,
                               "bgerror failed to handle background error.\n",
                               -1);
@@ -1478,9 +1397,7 @@ ClientData clientData; /* Pointer to ErrAssocData structure. */
                 }
                 Tcl_Flush(errChannel);
             }
-        }
-        else if (code == TCL_BREAK)
-        {
+        } else if (code == TCL_BREAK) {
 
             /*
              * Break means cancel any remaining error reports for this
@@ -1488,10 +1405,8 @@ ClientData clientData; /* Pointer to ErrAssocData structure. */
              */
 
             for (errPtr = assocPtr->firstBgPtr; errPtr != NULL;
-                 errPtr = errPtr->nextPtr)
-            {
-                if (errPtr->interp == interp)
-                {
+                 errPtr = errPtr->nextPtr) {
+                if (errPtr->interp == interp) {
                     errPtr->interp = NULL;
                 }
             }
@@ -1541,8 +1456,7 @@ Tcl_Interp *interp;    /* Interpreter being deleted. */
     ErrAssocData *assocPtr = ( ErrAssocData * )clientData;
     BgError *errPtr;
 
-    while (assocPtr->firstBgPtr != NULL)
-    {
+    while (assocPtr->firstBgPtr != NULL) {
         errPtr = assocPtr->firstBgPtr;
         assocPtr->firstBgPtr = errPtr->nextPtr;
         ckfree(errPtr->errorMsg);
@@ -1612,16 +1526,11 @@ ClientData clientData; /* Arbitrary value to pass to proc. */
     ExitHandler *exitPtr, *prevPtr;
 
     for (prevPtr = NULL, exitPtr = firstExitPtr; exitPtr != NULL;
-         prevPtr = exitPtr, exitPtr = exitPtr->nextPtr)
-    {
-        if ((exitPtr->proc == proc) && (exitPtr->clientData == clientData))
-        {
-            if (prevPtr == NULL)
-            {
+         prevPtr = exitPtr, exitPtr = exitPtr->nextPtr) {
+        if ((exitPtr->proc == proc) && (exitPtr->clientData == clientData)) {
+            if (prevPtr == NULL) {
                 firstExitPtr = exitPtr->nextPtr;
-            }
-            else
-            {
+            } else {
                 prevPtr->nextPtr = exitPtr->nextPtr;
             }
             ckfree(( char * )exitPtr);
@@ -1654,8 +1563,7 @@ void Tcl_Exit(status) int status; /* Exit status for application;  typically
     ExitHandler *exitPtr;
 
     tclInExit = 1;
-    for (exitPtr = firstExitPtr; exitPtr != NULL; exitPtr = firstExitPtr)
-    {
+    for (exitPtr = firstExitPtr; exitPtr != NULL; exitPtr = firstExitPtr) {
         /*
          * Be careful to remove the handler from the list before invoking
          * its callback.  This protects us against double-freeing if the
@@ -1667,8 +1575,7 @@ void Tcl_Exit(status) int status; /* Exit status for application;  typically
         ckfree(( char * )exitPtr);
     }
 #ifdef TCL_MEM_DEBUG
-    if (tclMemDumpFileName != NULL)
-    {
+    if (tclMemDumpFileName != NULL) {
         Tcl_DumpActiveMemory(tclMemDumpFileName);
     }
 #endif
@@ -1741,8 +1648,7 @@ char **argv;           /* Argument strings. */
     Tcl_CmdInfo cmdInfo;
     size_t length;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -1758,8 +1664,7 @@ char **argv;           /* Argument strings. */
      * future.
      */
 
-    if (assocPtr == NULL)
-    {
+    if (assocPtr == NULL) {
         assocPtr = ( AfterAssocData * )ckalloc(sizeof(AfterAssocData));
         assocPtr->interp = interp;
         assocPtr->firstAfterPtr = NULL;
@@ -1777,31 +1682,24 @@ char **argv;           /* Argument strings. */
      */
 
     length = strlen(argv[1]);
-    if (isdigit(UCHAR(argv[1][0])))
-    {
-        if (Tcl_GetInt(interp, argv[1], &ms) != TCL_OK)
-        {
+    if (isdigit(UCHAR(argv[1][0]))) {
+        if (Tcl_GetInt(interp, argv[1], &ms) != TCL_OK) {
             return TCL_ERROR;
         }
-        if (ms < 0)
-        {
+        if (ms < 0) {
             ms = 0;
         }
-        if (argc == 2)
-        {
+        if (argc == 2) {
             Tcl_Sleep(ms);
             return TCL_OK;
         }
         afterPtr = ( AfterInfo * )ckalloc(( unsigned )(sizeof(AfterInfo)));
         afterPtr->assocPtr = assocPtr;
-        if (argc == 3)
-        {
+        if (argc == 3) {
             afterPtr->command
             = ( char * )ckalloc(( unsigned )(strlen(argv[2]) + 1));
             strcpy(afterPtr->command, argv[2]);
-        }
-        else
-        {
+        } else {
             afterPtr->command = Tcl_Concat(argc - 2, argv + 2);
         }
         afterPtr->interpType = (( Interp * )interp)->interpType;
@@ -1812,13 +1710,10 @@ char **argv;           /* Argument strings. */
         afterPtr->nextPtr = assocPtr->firstAfterPtr;
         assocPtr->firstAfterPtr = afterPtr;
         sprintf(interp->result, "after#%d", afterPtr->id);
-    }
-    else if (strncmp(argv[1], "cancel", length) == 0)
-    {
+    } else if (strncmp(argv[1], "cancel", length) == 0) {
         char *arg;
 
-        if (argc < 3)
-        {
+        if (argc < 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1826,47 +1721,33 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             return TCL_ERROR;
         }
-        if (argc == 3)
-        {
+        if (argc == 3) {
             arg = argv[2];
-        }
-        else
-        {
+        } else {
             arg = Tcl_Concat(argc - 2, argv + 2);
         }
         for (afterPtr = assocPtr->firstAfterPtr; afterPtr != NULL;
-             afterPtr = afterPtr->nextPtr)
-        {
-            if (strcmp(afterPtr->command, arg) == 0)
-            {
+             afterPtr = afterPtr->nextPtr) {
+            if (strcmp(afterPtr->command, arg) == 0) {
                 break;
             }
         }
-        if (afterPtr == NULL)
-        {
+        if (afterPtr == NULL) {
             afterPtr = GetAfterEvent(assocPtr, arg);
         }
-        if (arg != argv[2])
-        {
+        if (arg != argv[2]) {
             ckfree(arg);
         }
-        if (afterPtr != NULL)
-        {
-            if (afterPtr->token != NULL)
-            {
+        if (afterPtr != NULL) {
+            if (afterPtr->token != NULL) {
                 Tcl_DeleteTimerHandler(afterPtr->token);
-            }
-            else
-            {
+            } else {
                 Tcl_CancelIdleCall(AfterProc, ( ClientData )afterPtr);
             }
             FreeAfterPtr(afterPtr);
         }
-    }
-    else if ((strncmp(argv[1], "idle", length) == 0) && (length >= 2))
-    {
-        if (argc < 3)
-        {
+    } else if ((strncmp(argv[1], "idle", length) == 0) && (length >= 2)) {
+        if (argc < 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1876,14 +1757,11 @@ char **argv;           /* Argument strings. */
         }
         afterPtr = ( AfterInfo * )ckalloc(( unsigned )(sizeof(AfterInfo)));
         afterPtr->assocPtr = assocPtr;
-        if (argc == 3)
-        {
+        if (argc == 3) {
             afterPtr->command
             = ( char * )ckalloc(( unsigned )(strlen(argv[2]) + 1));
             strcpy(afterPtr->command, argv[2]);
-        }
-        else
-        {
+        } else {
             afterPtr->command = Tcl_Concat(argc - 2, argv + 2);
         }
         afterPtr->interpType = (( Interp * )interp)->interpType;
@@ -1894,26 +1772,20 @@ char **argv;           /* Argument strings. */
         assocPtr->firstAfterPtr = afterPtr;
         Tcl_DoWhenIdle(AfterProc, ( ClientData )afterPtr);
         sprintf(interp->result, "after#%d", afterPtr->id);
-    }
-    else if ((strncmp(argv[1], "info", length) == 0) && (length >= 2))
-    {
-        if (argc == 2)
-        {
+    } else if ((strncmp(argv[1], "info", length) == 0) && (length >= 2)) {
+        if (argc == 2) {
             char buffer[30];
 
             for (afterPtr = assocPtr->firstAfterPtr; afterPtr != NULL;
-                 afterPtr = afterPtr->nextPtr)
-            {
-                if (assocPtr->interp == interp)
-                {
+                 afterPtr = afterPtr->nextPtr) {
+                if (assocPtr->interp == interp) {
                     sprintf(buffer, "after#%d", afterPtr->id);
                     Tcl_AppendElement(interp, buffer);
                 }
             }
             return TCL_OK;
         }
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1922,8 +1794,7 @@ char **argv;           /* Argument strings. */
             return TCL_ERROR;
         }
         afterPtr = GetAfterEvent(assocPtr, argv[2]);
-        if (afterPtr == NULL)
-        {
+        if (afterPtr == NULL) {
             Tcl_AppendResult(
             interp, "event \"", argv[2], "\" doesn't exist", ( char * )NULL);
             return TCL_ERROR;
@@ -1931,9 +1802,7 @@ char **argv;           /* Argument strings. */
         Tcl_AppendElement(interp, afterPtr->command);
         Tcl_AppendElement(interp,
                           (afterPtr->token == NULL) ? "idle" : "timer");
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "bad argument \"",
                          argv[1],
@@ -1973,21 +1842,17 @@ char *string;             /* Textual identifier for after event, such
     int id;
     char *end;
 
-    if (strncmp(string, "after#", 6) != 0)
-    {
+    if (strncmp(string, "after#", 6) != 0) {
         return NULL;
     }
     string += 6;
     id = strtoul(string, &end, 10);
-    if ((end == string) || (*end != 0))
-    {
+    if ((end == string) || (*end != 0)) {
         return NULL;
     }
     for (afterPtr = assocPtr->firstAfterPtr; afterPtr != NULL;
-         afterPtr = afterPtr->nextPtr)
-    {
-        if (afterPtr->id == id)
-        {
+         afterPtr = afterPtr->nextPtr) {
+        if (afterPtr->id == id) {
             return afterPtr;
         }
     }
@@ -2029,15 +1894,11 @@ static void AfterProc(clientData) ClientData clientData; /* Describes command
      * could cause a core dump.
      */
 
-    if (assocPtr->firstAfterPtr == afterPtr)
-    {
+    if (assocPtr->firstAfterPtr == afterPtr) {
         assocPtr->firstAfterPtr = afterPtr->nextPtr;
-    }
-    else
-    {
+    } else {
         for (prevPtr = assocPtr->firstAfterPtr; prevPtr->nextPtr != afterPtr;
-             prevPtr = prevPtr->nextPtr)
-        {
+             prevPtr = prevPtr->nextPtr) {
             /* Empty loop body. */
         }
         prevPtr->nextPtr = afterPtr->nextPtr;
@@ -2050,8 +1911,7 @@ static void AfterProc(clientData) ClientData clientData; /* Describes command
     interp = assocPtr->interp;
     Tcl_Preserve(( ClientData )interp);
     result = Tksh_GlobalEval(interp, afterPtr->command, afterPtr->interpType);
-    if (result != TCL_OK)
-    {
+    if (result != TCL_OK) {
         Tcl_AddErrorInfo(interp, "\n    (\"after\" script)");
         Tcl_BackgroundError(interp);
     }
@@ -2090,15 +1950,11 @@ static void FreeAfterPtr(afterPtr) AfterInfo *afterPtr; /* Command to be
     AfterInfo *prevPtr;
     AfterAssocData *assocPtr = afterPtr->assocPtr;
 
-    if (assocPtr->firstAfterPtr == afterPtr)
-    {
+    if (assocPtr->firstAfterPtr == afterPtr) {
         assocPtr->firstAfterPtr = afterPtr->nextPtr;
-    }
-    else
-    {
+    } else {
         for (prevPtr = assocPtr->firstAfterPtr; prevPtr->nextPtr != afterPtr;
-             prevPtr = prevPtr->nextPtr)
-        {
+             prevPtr = prevPtr->nextPtr) {
             /* Empty loop body. */
         }
         prevPtr->nextPtr = afterPtr->nextPtr;
@@ -2133,16 +1989,12 @@ Tcl_Interp *interp;    /* Interpreter that is being deleted. */
     AfterAssocData *assocPtr = ( AfterAssocData * )clientData;
     AfterInfo *afterPtr;
 
-    while (assocPtr->firstAfterPtr != NULL)
-    {
+    while (assocPtr->firstAfterPtr != NULL) {
         afterPtr = assocPtr->firstAfterPtr;
         assocPtr->firstAfterPtr = afterPtr->nextPtr;
-        if (afterPtr->token != NULL)
-        {
+        if (afterPtr->token != NULL) {
             Tcl_DeleteTimerHandler(afterPtr->token);
-        }
-        else
-        {
+        } else {
             Tcl_CancelIdleCall(AfterProc, ( ClientData )afterPtr);
         }
         ckfree(afterPtr->command);
@@ -2177,8 +2029,7 @@ char **argv;           /* Argument strings. */
 {
     int done, foundEvent;
 
-    if (argc != 2)
-    {
+    if (argc != 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -2191,14 +2042,12 @@ char **argv;           /* Argument strings. */
                      TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
                      VwaitVarProc,
                      ( ClientData )&done)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     };
     done = 0;
     foundEvent = 1;
-    while (!done && foundEvent)
-    {
+    while (!done && foundEvent) {
         foundEvent = Tcl_DoOneEvent(0);
     }
     Tcl_UntraceVar(interp,
@@ -2213,8 +2062,7 @@ char **argv;           /* Argument strings. */
      */
 
     Tcl_ResetResult(interp);
-    if (!foundEvent)
-    {
+    if (!foundEvent) {
         Tcl_AppendResult(interp,
                          "can't wait for variable \"",
                          argv[1],
@@ -2266,14 +2114,10 @@ char **argv;           /* Argument strings. */
     int flags = 0; /* Initialization needed only to stop
                     * compiler warnings. */
 
-    if (argc == 1)
-    {
+    if (argc == 1) {
         flags = TCL_ALL_EVENTS | TCL_DONT_WAIT;
-    }
-    else if (argc == 2)
-    {
-        if (strncmp(argv[1], "idletasks", strlen(argv[1])) != 0)
-        {
+    } else if (argc == 2) {
+        if (strncmp(argv[1], "idletasks", strlen(argv[1])) != 0) {
             Tcl_AppendResult(interp,
                              "bad option \"",
                              argv[1],
@@ -2282,9 +2126,7 @@ char **argv;           /* Argument strings. */
             return TCL_ERROR;
         }
         flags = TCL_IDLE_EVENTS | TCL_DONT_WAIT;
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -2293,8 +2135,7 @@ char **argv;           /* Argument strings. */
         return TCL_ERROR;
     }
 
-    while (Tcl_DoOneEvent(flags) != 0)
-    {
+    while (Tcl_DoOneEvent(flags) != 0) {
         /* Empty loop body */
     }
 
@@ -2350,13 +2191,11 @@ int timeout; /* Maximum amount of time to wait for one
      * we give up.
      */
 
-    if (timeout > 0)
-    {
+    if (timeout > 0) {
         TclpGetTime(&now);
         abortTime.sec = now.sec + timeout / 1000;
         abortTime.usec = now.usec + (timeout % 1000) * 1000;
-        if (abortTime.usec >= 1000000)
-        {
+        if (abortTime.usec >= 1000000) {
             abortTime.usec -= 1000000;
             abortTime.sec += 1;
         }
@@ -2367,48 +2206,37 @@ int timeout; /* Maximum amount of time to wait for one
      * file to become ready or a timeout to occur.
      */
 
-    while (1)
-    {
+    while (1) {
         Tcl_WatchFile(file, mask);
-        if (timeout > 0)
-        {
+        if (timeout > 0) {
             blockTime.sec = abortTime.sec - now.sec;
             blockTime.usec = abortTime.usec - now.usec;
-            if (blockTime.usec < 0)
-            {
+            if (blockTime.usec < 0) {
                 blockTime.sec -= 1;
                 blockTime.usec += 1000000;
             }
-            if (blockTime.sec < 0)
-            {
+            if (blockTime.sec < 0) {
                 blockTime.sec = 0;
                 blockTime.usec = 0;
             }
             Tcl_WaitForEvent(&blockTime);
-        }
-        else if (timeout == 0)
-        {
+        } else if (timeout == 0) {
             blockTime.sec = 0;
             blockTime.usec = 0;
             Tcl_WaitForEvent(&blockTime);
-        }
-        else
-        {
+        } else {
             Tcl_WaitForEvent(( Tcl_Time * )NULL);
         }
         present = Tcl_FileReady(file, mask);
-        if (present != 0)
-        {
+        if (present != 0) {
             break;
         }
-        if (timeout == 0)
-        {
+        if (timeout == 0) {
             break;
         }
         TclpGetTime(&now);
         if ((abortTime.sec < now.sec)
-            || ((abortTime.sec == now.sec) && (abortTime.usec <= now.usec)))
-        {
+            || ((abortTime.sec == now.sec) && (abortTime.usec <= now.usec))) {
             break;
         }
     }

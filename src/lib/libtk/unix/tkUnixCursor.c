@@ -156,16 +156,13 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
     Pixmap mask = None;
     Display *display = Tk_Display(tkwin);
 
-    if (Tcl_SplitList(interp, string, &argc, &argv) != TCL_OK)
-    {
+    if (Tcl_SplitList(interp, string, &argc, &argv) != TCL_OK) {
         return NULL;
     }
-    if (argc == 0)
-    {
+    if (argc == 0) {
         goto badString;
     }
-    if (argv[0][0] != '@')
-    {
+    if (argv[0][0] != '@') {
         XColor fg, bg;
         unsigned int maskIndex;
         struct CursorName *namePtr;
@@ -179,32 +176,24 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
          * is stolen from the XCreateFontCursor Xlib procedure.
          */
 
-        if (argc > 3)
-        {
+        if (argc > 3) {
             goto badString;
         }
-        for (namePtr = cursorNames;; namePtr++)
-        {
-            if (namePtr->name == NULL)
-            {
+        for (namePtr = cursorNames;; namePtr++) {
+            if (namePtr->name == NULL) {
                 goto badString;
             }
             if ((namePtr->name[0] == argv[0][0])
-                && (strcmp(namePtr->name, argv[0]) == 0))
-            {
+                && (strcmp(namePtr->name, argv[0]) == 0)) {
                 break;
             }
         }
         maskIndex = namePtr->shape + 1;
-        if (argc == 1)
-        {
+        if (argc == 1) {
             fg.red = fg.green = fg.blue = 0;
             bg.red = bg.green = bg.blue = 65535;
-        }
-        else
-        {
-            if (XParseColor(display, Tk_Colormap(tkwin), argv[1], &fg) == 0)
-            {
+        } else {
+            if (XParseColor(display, Tk_Colormap(tkwin), argv[1], &fg) == 0) {
                 Tcl_AppendResult(interp,
                                  "invalid color name \"",
                                  argv[1],
@@ -212,16 +201,12 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
                                  ( char * )NULL);
                 goto cleanup;
             }
-            if (argc == 2)
-            {
+            if (argc == 2) {
                 bg.red = bg.green = bg.blue = 0;
                 maskIndex = namePtr->shape;
-            }
-            else
-            {
+            } else {
                 if (XParseColor(display, Tk_Colormap(tkwin), argv[2], &bg)
-                    == 0)
-                {
+                    == 0) {
                     Tcl_AppendResult(interp,
                                      "invalid color name \"",
                                      argv[2],
@@ -232,11 +217,9 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
             }
         }
         dispPtr = (( TkWindow * )tkwin)->dispPtr;
-        if (dispPtr->cursorFont == None)
-        {
+        if (dispPtr->cursorFont == None) {
             dispPtr->cursorFont = XLoadFont(display, CURSORFONT);
-            if (dispPtr->cursorFont == None)
-            {
+            if (dispPtr->cursorFont == None) {
                 interp->result = "couldn't load cursor font";
                 goto cleanup;
             }
@@ -248,9 +231,7 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
                                     maskIndex,
                                     &fg,
                                     &bg);
-    }
-    else
-    {
+    } else {
         int width, height, maskWidth, maskHeight;
         int xHot, yHot, dummy1, dummy2;
         XColor fg, bg;
@@ -261,8 +242,7 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
          * four (source mask fg bg).
          */
 
-        if ((argc != 2) && (argc != 4))
-        {
+        if ((argc != 2) && (argc != 4)) {
             goto badString;
         }
         if (XReadBitmapFile(display,
@@ -273,8 +253,7 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
                             &source,
                             &xHot,
                             &yHot)
-            != BitmapSuccess)
-        {
+            != BitmapSuccess) {
             Tcl_AppendResult(interp,
                              "cleanup reading bitmap file \"",
                              &argv[0][1],
@@ -282,8 +261,7 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
                              ( char * )NULL);
             goto cleanup;
         }
-        if ((xHot < 0) || (yHot < 0) || (xHot >= width) || (yHot >= height))
-        {
+        if ((xHot < 0) || (yHot < 0) || (xHot >= width) || (yHot >= height)) {
             Tcl_AppendResult(interp,
                              "bad hot spot in bitmap file \"",
                              &argv[0][1],
@@ -291,10 +269,8 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
                              ( char * )NULL);
             goto cleanup;
         }
-        if (argc == 2)
-        {
-            if (XParseColor(display, Tk_Colormap(tkwin), argv[1], &fg) == 0)
-            {
+        if (argc == 2) {
+            if (XParseColor(display, Tk_Colormap(tkwin), argv[1], &fg) == 0) {
                 Tcl_AppendResult(interp,
                                  "invalid color name \"",
                                  argv[1],
@@ -309,9 +285,7 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
                                          &fg,
                                          ( unsigned )xHot,
                                          ( unsigned )yHot);
-        }
-        else
-        {
+        } else {
             if (XReadBitmapFile(display,
                                 RootWindowOfScreen(Tk_Screen(tkwin)),
                                 argv[1],
@@ -320,8 +294,7 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
                                 &mask,
                                 &dummy1,
                                 &dummy2)
-                != BitmapSuccess)
-            {
+                != BitmapSuccess) {
                 Tcl_AppendResult(interp,
                                  "cleanup reading bitmap file \"",
                                  argv[1],
@@ -329,14 +302,12 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
                                  ( char * )NULL);
                 goto cleanup;
             }
-            if ((maskWidth != width) && (maskHeight != height))
-            {
+            if ((maskWidth != width) && (maskHeight != height)) {
                 interp->result
                 = "source and mask bitmaps have different sizes";
                 goto cleanup;
             }
-            if (XParseColor(display, Tk_Colormap(tkwin), argv[2], &fg) == 0)
-            {
+            if (XParseColor(display, Tk_Colormap(tkwin), argv[2], &fg) == 0) {
                 Tcl_AppendResult(interp,
                                  "invalid color name \"",
                                  argv[2],
@@ -344,8 +315,7 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
                                  ( char * )NULL);
                 goto cleanup;
             }
-            if (XParseColor(display, Tk_Colormap(tkwin), argv[3], &bg) == 0)
-            {
+            if (XParseColor(display, Tk_Colormap(tkwin), argv[3], &bg) == 0) {
                 Tcl_AppendResult(interp,
                                  "invalid color name \"",
                                  argv[3],
@@ -363,24 +333,20 @@ Tk_Uid string;      /* Description of cursor.  See manual entry
         }
     }
 
-    if (cursor != None)
-    {
+    if (cursor != None) {
         cursorPtr = ( TkUnixCursor * )ckalloc(sizeof(TkUnixCursor));
         cursorPtr->info.cursor = ( Tk_Cursor )cursor;
         cursorPtr->display = display;
     }
 
 cleanup:
-    if (argv != NULL)
-    {
+    if (argv != NULL) {
         ckfree(( char * )argv);
     }
-    if (source != None)
-    {
+    if (source != None) {
         Tk_FreePixmap(display, source);
     }
-    if (mask != None)
-    {
+    if (mask != None) {
         Tk_FreePixmap(display, mask);
     }
     return ( TkCursor * )cursorPtr;
@@ -450,8 +416,7 @@ XColor bgColor;           /* Background color for cursor. */
     Tk_FreePixmap(display, sourcePixmap);
     Tk_FreePixmap(display, maskPixmap);
 
-    if (cursor != None)
-    {
+    if (cursor != None) {
         cursorPtr = ( TkUnixCursor * )ckalloc(sizeof(TkUnixCursor));
         cursorPtr->info.cursor = ( Tk_Cursor )cursor;
         cursorPtr->display = display;

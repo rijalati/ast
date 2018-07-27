@@ -61,19 +61,15 @@ utf8towc(wchar_t *wp, const char *str, size_t n)
 
     if (!sp || !n)
         goto nul;
-    if ((m = utf8tab[*sp]) > 0)
-    {
+    if ((m = utf8tab[*sp]) > 0) {
         if (m > n)
             return ( size_t )-2;
-        if (wp)
-        {
+        if (wp) {
             if (m == 1)
                 *wp = *sp;
-            else
-            {
+            else {
                 w = *sp & ((1 << (8 - m)) - 1);
-                for (i = m - 1; i > 0; i--)
-                {
+                for (i = m - 1; i > 0; i--) {
                     c = *++sp;
                     if ((c & 0xc0) != 0x80)
                         goto invalid;
@@ -86,8 +82,7 @@ utf8towc(wchar_t *wp, const char *str, size_t n)
         }
         return m;
     }
-    if (!*sp)
-    {
+    if (!*sp) {
     nul:
         if (wp)
             *wp = 0;
@@ -118,8 +113,7 @@ utf8toutf32v(uint32_t *up, const char *str)
 {
     unsigned char *s = ( unsigned char * )str;
 
-    switch (utf8tab[*s])
-    {
+    switch (utf8tab[*s]) {
     case 1:
         *up = s[0];
         return 1;

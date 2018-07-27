@@ -33,8 +33,7 @@ tmain()
     int i, k, fd;
     char buf[128 * 1024], rbuf[1024], *sp;
 
-    if (argc > 1)
-    {
+    if (argc > 1) {
         if (sfwrite(sfstdout, argv[1], strlen(argv[1])) != strlen(argv[1]))
             terror("Can't write to stdout");
         sfsync(sfstdout);
@@ -69,8 +68,7 @@ tmain()
 
     /* construct a bunch of lines and out put to f */
     sp = buf;
-    for (k = 0; k < sizeof(buf) / 10; ++k)
-    {
+    for (k = 0; k < sizeof(buf) / 10; ++k) {
         for (i = 0; i < 9; ++i)
             *sp++ = '0' + i;
         *sp++ = '\n';

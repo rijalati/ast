@@ -262,18 +262,15 @@ rd1 = -4.99999999999640086151350330820e-001,
 extern double erf(x) double x;
 {
     double R, S, P, Q, ax, s, y, z, r, fabs(), exp();
-    if (!finite(x))
-    { /* erf(nan)=nan */
+    if (!finite(x)) { /* erf(nan)=nan */
         if (isnan(x))
             return (x);
         return (x > 0 ? one : -one); /* erf(+/-inf)= +/-1 */
     }
     if ((ax = x) < 0)
         ax = -ax;
-    if (ax < .84375)
-    {
-        if (ax < 3.7e-09)
-        {
+    if (ax < .84375) {
+        if (ax < 3.7e-09) {
             if (ax < 1.0e-308)
                 return 0.125 * (8.0 * x + p0t8 * x); /*avoid underflow */
             return x + p0 * x;
@@ -299,8 +296,7 @@ extern double erf(x) double x;
                                                 + y * (p9 + y * p10)))))))));
         return x + x * (p0 + r);
     }
-    if (ax < 1.25)
-    { /* 0.84375 <= |x| < 1.25 */
+    if (ax < 1.25) { /* 0.84375 <= |x| < 1.25 */
         s = fabs(x) - one;
         P
         = pa0
@@ -315,8 +311,7 @@ extern double erf(x) double x;
         else
             return (-c - P / Q);
     }
-    if (ax >= 6.0)
-    { /* inf>|x|>=6 */
+    if (ax >= 6.0) { /* inf>|x|>=6 */
         if (x >= 0.0)
             return (one - tiny);
         else
@@ -325,8 +320,7 @@ extern double erf(x) double x;
     /* 1.25 <= |x| < 6 */
     z = -ax * ax;
     s = -one / z;
-    if (ax < 2.0)
-    {
+    if (ax < 2.0) {
         R
         = rc0
           + s
@@ -348,9 +342,7 @@ extern double erf(x) double x;
                                                   + s
                                                     * (rc9 + s * rc10)))))))));
         S = one + s * (sc1 + s * (sc2 + s * sc3));
-    }
-    else
-    {
+    } else {
         R
         = rb0
           + s
@@ -385,8 +377,7 @@ extern double erf(x) double x;
 extern double erfc(x) double x;
 {
     double R, S, P, Q, s, ax, y, z, r, fabs(), __exp__D();
-    if (!finite(x))
-    {
+    if (!finite(x)) {
         if (isnan(x)) /* erfc(NaN) = NaN */
             return (x);
         else if (x > 0) /* erfc(+-inf)=0,2 */
@@ -396,8 +387,7 @@ extern double erfc(x) double x;
     }
     if ((ax = x) < 0)
         ax = -ax;
-    if (ax < .84375)
-    {                                     /* |x|<0.84375 */
+    if (ax < .84375) {                    /* |x|<0.84375 */
         if (ax < 1.38777878078144568e-17) /* |x|<2**-56 */
             return one - x;
         y = x * x;
@@ -419,19 +409,15 @@ extern double erfc(x) double x;
                                            + y
                                              * (p8
                                                 + y * (p9 + y * p10)))))))));
-        if (ax < .0625)
-        { /* |x|<2**-4 */
+        if (ax < .0625) { /* |x|<2**-4 */
             return (one - (x + x * (p0 + r)));
-        }
-        else
-        {
+        } else {
             r = x * (p0 + r);
             r += (x - half);
             return (half - r);
         }
     }
-    if (ax < 1.25)
-    { /* 0.84375 <= |x| < 1.25 */
+    if (ax < 1.25) { /* 0.84375 <= |x| < 1.25 */
         s = ax - one;
         P
         = pa0
@@ -441,13 +427,10 @@ extern double erfc(x) double x;
         = one
           + s
             * (qa1 + s * (qa2 + s * (qa3 + s * (qa4 + s * (qa5 + s * qa6)))));
-        if (x >= 0)
-        {
+        if (x >= 0) {
             z = one - c;
             return z - P / Q;
-        }
-        else
-        {
+        } else {
             z = c + P / Q;
             return one + z;
         }
@@ -463,8 +446,7 @@ extern double erfc(x) double x;
     y *= (ax + z);
     z *= -z;            /* Here z + y = -x^2 */
     s = one / (-z - y); /* 1/(x*x) */
-    if (ax >= 4)
-    { /* 6 <= ax */
+    if (ax >= 4) {      /* 6 <= ax */
         R
         = s
           * (rd1
@@ -493,9 +475,7 @@ extern double erfc(x) double x;
                                                                     + s
                                                                       * rd13))))))))))));
         y += rd0;
-    }
-    else if (ax >= 2)
-    {
+    } else if (ax >= 2) {
         R
         = rb0
           + s
@@ -519,9 +499,7 @@ extern double erfc(x) double x;
         S = one + s * (sb1 + s * (sb2 + s * sb3));
         y += R / S;
         R = -.5 * s;
-    }
-    else
-    {
+    } else {
         R
         = rc0
           + s

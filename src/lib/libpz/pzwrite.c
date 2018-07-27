@@ -44,8 +44,7 @@ pzwrite(Pz_t *pz, Sfio_t *op, const void *buf, size_t n)
     ssize_t r;
     Sfio_t *tmp;
 
-    if (!(pz->flags & PZ_WRITE))
-    {
+    if (!(pz->flags & PZ_WRITE)) {
         if (pz->disc->errorf)
             (*pz->disc->errorf)(pz,
                                 pz->disc,
@@ -58,10 +57,8 @@ pzwrite(Pz_t *pz, Sfio_t *op, const void *buf, size_t n)
         return 0;
     if (pzheadwrite(pz, op))
         return -1;
-    if (pz->flags & PZ_NOPZIP)
-    {
-        if ((r = sfwrite(op, buf, n)) < 0)
-        {
+    if (pz->flags & PZ_NOPZIP) {
+        if ((r = sfwrite(op, buf, n)) < 0) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(
                 pz, pz->disc, 2, "%s: write error", pz->path);
@@ -70,11 +67,9 @@ pzwrite(Pz_t *pz, Sfio_t *op, const void *buf, size_t n)
         return r;
     }
     pp = pz->part;
-    if (pz->flags & PZ_SORT)
-    {
+    if (pz->flags & PZ_SORT) {
         pz->ws.bp = pz->buf;
-        if (!pz->sort.order)
-        {
+        if (!pz->sort.order) {
             k = sizeof(Dtlink_t) + roundof(pp->row, sizeof(Dtlink_t));
             pz->sort.freedisc.link = offsetof(Pzelt_t, link);
             pz->sort.orderdisc.link = offsetof(Pzelt_t, link);
@@ -86,16 +81,14 @@ pzwrite(Pz_t *pz, Sfio_t *op, const void *buf, size_t n)
                 || !(pz->sort.free
                      = dtnew(pz->vm, &pz->sort.freedisc, Dtlist)))
                 return pznospace(pz);
-            for (i = 0; i < pp->col; i++)
-            {
+            for (i = 0; i < pp->col; i++) {
                 dtinsert(pz->sort.free, elt);
                 elt = ( Pzelt_t * )(( char * )elt + k);
             }
         }
         bp = ( unsigned char * )buf;
         k = n;
-        if (pz->ws.sz)
-        {
+        if (pz->ws.sz) {
             x = pz->ws.sz;
             if (x > n)
                 x = n;
@@ -108,14 +101,12 @@ pzwrite(Pz_t *pz, Sfio_t *op, const void *buf, size_t n)
                 dtinsert(pz->sort.order, pz->ws.se);
         }
         x = pp->row;
-        while (k > 0)
-        {
+        while (k > 0) {
             while (!(elt = ( Pzelt_t * )dtfirst(pz->sort.free)))
                 if (pzsync(pz))
                     return -1;
             dtdelete(pz->sort.free, elt);
-            if (k < x)
-            {
+            if (k < x) {
                 memcpy(elt->buf, bp, k);
                 pz->ws.sp = elt->buf + k;
                 pz->ws.sz = x - k;
@@ -129,8 +120,7 @@ pzwrite(Pz_t *pz, Sfio_t *op, const void *buf, size_t n)
         }
         return n;
     }
-    if (pz->ws.pc || n < pp->row)
-    {
+    if (pz->ws.pc || n < pp->row) {
         if (!pz->ws.pb
             && !(pz->ws.pb = vmnewof(pz->vm, 0, unsigned char, pp->row, 0)))
             return -1;
@@ -145,13 +135,11 @@ pzwrite(Pz_t *pz, Sfio_t *op, const void *buf, size_t n)
             return -1;
         if (!(n -= x))
             return x;
-    }
-    else
+    } else
         x = 0;
     bp = ( unsigned char * )buf + x;
     be = bp + n;
-    if (k = n % pp->row)
-    {
+    if (k = n % pp->row) {
         if (!pz->ws.pb
             && !(pz->ws.pb = vmnewof(pz->vm, 0, unsigned char, pp->row, 0)))
             return -1;
@@ -164,10 +152,8 @@ pzwrite(Pz_t *pz, Sfio_t *op, const void *buf, size_t n)
     pat = pz->pat;
     tmp = pz->tmp;
     low = pp->low;
-    while (bp < be)
-    {
-        if (!pz->ws.bp)
-        {
+    while (bp < be) {
+        if (!pz->ws.bp) {
             /*
              * initialize for a new window
              */
@@ -195,11 +181,9 @@ pzwrite(Pz_t *pz, Sfio_t *op, const void *buf, size_t n)
         k = pz->ws.row + (be - bp) / pp->row;
         if (k > pp->col)
             k = pp->col;
-        while (pz->ws.row < k)
-        {
+        while (pz->ws.row < k) {
             for (j = 0; j < pp->row; j++)
-                if (pat[j] != bp[j] && low[j])
-                {
+                if (pat[j] != bp[j] && low[j]) {
                     if (pz->ws.vp >= pz->ws.ve)
                         goto dump;
                     sfputu(tmp, pz->ws.rep);
@@ -207,8 +191,7 @@ pzwrite(Pz_t *pz, Sfio_t *op, const void *buf, size_t n)
                     *pz->ws.vp++ = pat[j] = bp[j];
                     pz->ws.rep = 0;
                     while (++j < pp->row)
-                        if (pat[j] != bp[j] && low[j])
-                        {
+                        if (pat[j] != bp[j] && low[j]) {
                             sfputu(tmp, j + 1);
                             *pz->ws.vp++ = pat[j] = bp[j];
                         }

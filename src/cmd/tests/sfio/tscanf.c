@@ -184,14 +184,12 @@ tmain()
     if (!(sf = sftmp(8 * 1024)))
         terror("Opening temp file");
 
-    for (k = 2; k <= 64; ++k)
-    {
+    for (k = 2; k <= 64; ++k) {
         sfseek(sf, ( Sfoff_t )0, 0);
         for (i = 0; i < 1000; ++i)
             sfprintf(sf, "%#..*d\n", k, i);
         sfseek(sf, ( Sfoff_t )0, 0);
-        for (i = 0; i < 1000; ++i)
-        {
+        for (i = 0; i < 1000; ++i) {
             if (sfscanf(sf, "%i", &j) != 1)
                 terror("Scanf failed");
             if (i != j)

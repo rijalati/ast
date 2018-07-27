@@ -44,15 +44,12 @@ grfold(Grnode_t *list, Grnode_t *fold)
 
     /* move all non-reduced edges to 'fold' */
     oedge = iedge = NIL(Gredge_t *);
-    for (nd = list; nd; nd = nd->link)
-    {
+    for (nd = list; nd; nd = nd->link) {
         ed = nd->oedge;
         nd->oedge = NIL(Gredge_t *);
-        for (; ed; ed = enext)
-        {
+        for (; ed; ed = enext) {
             enext = ed->onext;
-            if (grfind(ed->head) != fold)
-            {
+            if (grfind(ed->head) != fold) {
                 ed->onext = oedge;
                 oedge = ed;
             }
@@ -60,11 +57,9 @@ grfold(Grnode_t *list, Grnode_t *fold)
 
         ed = nd->iedge;
         nd->iedge = NIL(Gredge_t *);
-        for (; ed; ed = enext)
-        {
+        for (; ed; ed = enext) {
             enext = ed->inext;
-            if (grfind(ed->tail) != fold)
-            {
+            if (grfind(ed->tail) != fold) {
                 ed->inext = iedge;
                 iedge = ed;
             }

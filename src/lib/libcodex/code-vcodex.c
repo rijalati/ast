@@ -118,8 +118,7 @@ hdrvcdx(Vcchar_t **datap, ssize_t dtsz, Vcchar_t *code, ssize_t cdsz)
 
     /* parse old header into list of transforms */
     vcioinit(&io, *datap, dtsz);
-    for (n = 0; n < elementsof(meth) && vciomore(&io) > 0; ++n)
-    {
+    for (n = 0; n < elementsof(meth) && vciomore(&io) > 0; ++n) {
         id = vciogetc(&io);
         for (k = 0; k < elementsof(old); ++k)
             if (old[k].mtid == id)
@@ -128,8 +127,7 @@ hdrvcdx(Vcchar_t **datap, ssize_t dtsz, Vcchar_t *code, ssize_t cdsz)
             return dtsz;          /* must be new header format */
 
         if (!old[k].meth
-            && !(old[k].meth = vcgetmeth(( char * )old[k].name, 1)))
-        {
+            && !(old[k].meth = vcgetmeth(( char * )old[k].name, 1))) {
             old[k].mtid = -1;
             return dtsz;
         }
@@ -149,8 +147,7 @@ hdrvcdx(Vcchar_t **datap, ssize_t dtsz, Vcchar_t *code, ssize_t cdsz)
 
     /* construct new header in reverse order */
     vcioinit(&io, code, cdsz);
-    for (n -= 1; n >= 0; --n)
-    { /* get and write out the method id string */
+    for (n -= 1; n >= 0; --n) { /* get and write out the method id string */
         if (!(dt = ( unsigned char * )vcgetident(
               meth[n].meth, ( char * )buf, sizeof(buf))))
             return -1; /* error, no id string for method? */
@@ -165,18 +162,15 @@ hdrvcdx(Vcchar_t **datap, ssize_t dtsz, Vcchar_t *code, ssize_t cdsz)
 
         if (sz == 0)
             vcioputu(&io, 0);
-        else if (meth[n].meth == Vcrle || meth[n].meth == Vcmtf)
-        {
+        else if (meth[n].meth == Vcrle || meth[n].meth == Vcmtf) {
             if (*dt == 0) /* coding rle.0 or mtf.0 */
             {
                 vcstrcode("0", ( char * )buf, sizeof(buf));
                 vcioputu(&io, 1);
                 vcioputc(&io, buf[0]);
-            }
-            else
+            } else
                 vcioputu(&io, 0);
-        }
-        else /* let us pray for the right coding! */
+        } else /* let us pray for the right coding! */
         {
             vcioputu(&io, sz);
             vcioputs(&io, dt, sz);
@@ -208,8 +202,7 @@ hdrvcdiff(Vcio_t *iodt, int indi, Vcchar_t *code, ssize_t cdsz)
         return -1;
     vcioputs(&io, ident, cdsz);
 
-    if (indi & VCD_CODETABLE)
-    {
+    if (indi & VCD_CODETABLE) {
         if ((cdsz = vciogetu(iodt)) < 0)
             return -1;
 
@@ -220,9 +213,7 @@ hdrvcdiff(Vcio_t *iodt, int indi, Vcchar_t *code, ssize_t cdsz)
         if (vciomore(&io) < cdsz)
             return -1;
         vciomove(iodt, &io, cdsz);
-    }
-    else
-    {
+    } else {
         if (vciomore(&io) <= 0)
             return -1;
         vcioputu(&io, 0);
@@ -262,8 +253,7 @@ putheader(State_t *state)
     vcioputc(state->io, 0);
 
     /* output data encoding the methods used */
-    if (!(state->flags & VCSF_VCDIFF))
-    {
+    if (!(state->flags & VCSF_VCDIFF)) {
         vcioputu(state->io, sz);
         vcioputs(state->io, code, sz);
     }
@@ -299,18 +289,14 @@ fillbuf(State_t *state, Sfio_t *f, Sfdisc_t *disc)
 {
     ssize_t sz, n;
 
-    if ((sz = state->endb - state->code) <= 0)
-    {
+    if ((sz = state->endb - state->code) <= 0) {
         state->endb = state->code = state->base;
         sz = 0;
-    }
-    else if (state->code > state->base)
-    {
+    } else if (state->code > state->base) {
         memcpy(state->base, state->code, sz);
         state->endb = (state->code = state->base) + sz;
     }
-    for (; sz < state->bssz; sz += n, state->endb += n)
-    {
+    for (; sz < state->bssz; sz += n, state->endb += n) {
         if (!disc) /* plain read if no discipline set yet */
             n = sfread(f, state->endb, state->bssz - sz);
         else
@@ -365,37 +351,30 @@ ident(State_t *state, const Void_t *data, size_t dtsz, char *buf, size_t bfsz)
     vcioinit(&io, data, dtsz);
     id = buf;
     map = CCMAP(CC_ASCII, CC_NATIVE);
-    while (vciomore(&io) > 0)
-    {
-        if (id > buf)
-        {
+    while (vciomore(&io) > 0) {
+        if (id > buf) {
             if (id >= end && (bfsz || extend(&id, &buf, &end, 1)))
                 return -1;
             *id++ = '^';
         }
         mt = ( char * )vcionext(&io);
         sz = vciomore(&io);
-        if (sz >= 2 && mt[1] == 0)
-        { /* obsolete index */
+        if (sz >= 2 && mt[1] == 0) { /* obsolete index */
             x = mt[0];
             k = 2;
             name = "UNKNOWN";
             for (i = 0; i < elementsof(old); ++i)
-                if (old[i].mtid == x)
-                {
+                if (old[i].mtid == x) {
                     name = old[i].name;
                     break;
                 }
-            while (i = *name++)
-            {
+            while (i = *name++) {
                 if (id >= end && (bfsz || extend(&id, &buf, &end, 1)))
                     return -1;
                 *id++ = i;
             }
-        }
-        else
-            for (k = 0; k < sz; ++k)
-            {
+        } else
+            for (k = 0; k < sz; ++k) {
                 if (id >= end && (bfsz || extend(&id, &buf, &end, 1)))
                     return -1;
                 if (mt[k] == 0)
@@ -409,16 +388,14 @@ ident(State_t *state, const Void_t *data, size_t dtsz, char *buf, size_t bfsz)
         /* get the initialization data, if any */
         if ((sz = ( ssize_t )vciogetu(&io)) < 0 || sz > vciomore(&io))
             return -1;
-        if (sz)
-        {
+        if (sz) {
             dt = ( unsigned char * )vcionext(&io);
             vcioskip(&io, sz);
             k - 2 * sz + 1;
             if ((id + k) >= end && (bfsz || extend(&id, &buf, &end, k)))
                 return -1;
             *id++ = '=';
-            for (k = 0; k < sz; k++)
-            {
+            for (k = 0; k < sz; k++) {
                 x = dt[k];
                 *id++ = hex[(x >> 4) & 0xf];
                 *id++ = hex[x & 0xf];
@@ -446,8 +423,7 @@ getheader(State_t *state,
 
     if (optional)
         identify = -1;
-    if (identify)
-    { /* verify header magic -- ignore if no magic */
+    if (identify) { /* verify header magic -- ignore if no magic */
         if (!(code = sfreserve(f, 4, SF_LOCKR)))
             return 0;
         memcpy(cdbuf, code, 4);
@@ -458,8 +434,7 @@ getheader(State_t *state,
             return 0;
     }
 
-    for (loop = 0;; ++loop)
-    {
+    for (loop = 0;; ++loop) {
         /* buffer was too small for header data */
         if (loop > 0 && (state->endb - state->base) >= state->bssz
             && makebuf(state, state->bssz + VCSF_BUFMIN) < 0)
@@ -467,8 +442,7 @@ getheader(State_t *state,
 
         /* read header data as necessary */
         sz = state->endb - state->code;
-        if (loop > 0 || sz <= 0)
-        {
+        if (loop > 0 || sz <= 0) {
             if (fillbuf(state, f, state->vc ? disc : NIL(Sfdisc_t *)) <= 0
                 || (sz = state->endb - state->code) <= 0)
                 return identify
@@ -487,8 +461,7 @@ getheader(State_t *state,
                 && head != VC_HEADER3 /* normal Vcodex header */))
             return identify ? 0 : VCSFERROR(state, "unknown header data");
 
-        if ((indi = vciogetc(&io)) & VC_EXTRAHEADER)
-        {
+        if ((indi = vciogetc(&io)) & VC_EXTRAHEADER) {
             if ((sz = vciogetu(&io)) < 0) /* skip app-specific data */
                 continue;
             vcioskip(&io, sz);
@@ -502,8 +475,7 @@ getheader(State_t *state,
                 continue;
             else
                 code = cdbuf;
-        }
-        else /* Vcodex encoding */
+        } else /* Vcodex encoding */
         {
             if ((cdsz = vciogetu(&io)) < 0)
                 continue;
@@ -528,8 +500,7 @@ getheader(State_t *state,
         return identify ? 0 : VCSFERROR(state, "cannot read header data");
     else if (identify > 0)
         return ident(state, code, cdsz, NiL, 0);
-    else
-    {
+    else {
         if (state->vc)
             vcclose(state->vc);
         if (!(state->vc = vcrestore(code, cdsz)))
@@ -559,8 +530,7 @@ encode(State_t *state, Vcchar_t *data, size_t dtsz)
     state->code = NIL(Vcchar_t *);
     state->cdsz = 0;
 
-    for (size = 0, dosz = dtsz, dt = data; size < dtsz;)
-    { /* control data */
+    for (size = 0, dosz = dtsz, dt = data; size < dtsz;) { /* control data */
         ctrl = 0;
         state->vcdc.data = NIL(Void_t *);
         state->vcdc.size = 0;
@@ -569,11 +539,9 @@ encode(State_t *state, Vcchar_t *data, size_t dtsz)
         wm = NIL(Vcwmatch_t *);
         if (state->vcw)
             wm = vcwapply(state->vcw, dt, dosz, state->pos);
-        if (wm)
-        { /**/
+        if (wm) { /**/
             DEBUG_ASSERT(wm->msize <= dosz);
-            if (wm->wsize > 0 && wm->wpos >= 0)
-            {
+            if (wm->wsize > 0 && wm->wpos >= 0) {
                 state->vcdc.data = wm->wdata;
                 state->vcdc.size = wm->wsize;
             }
@@ -591,24 +559,20 @@ encode(State_t *state, Vcchar_t *data, size_t dtsz)
 
         vcbuffer(state->vc, NIL(Vcchar_t *), -1, -1); /* free buffers */
         if ((cdsz = vcapply(state->vc, dt, dosz, &code)) <= 0
-            || (sz = vcundone(state->vc)) >= dosz)
-        {
+            || (sz = vcundone(state->vc)) >= dosz) {
             if (cdsz < 0)
                 return VCSFERROR(state, "data transform failed");
             ctrl = VC_RAW; /* coder failed, output raw data */
             code = dt;
             cdsz = dosz;
-        }
-        else
-        {
+        } else {
             dosz -= (sz > 0 ? sz : 0); /* true processed amount */
             if (state->vcw) /* tell window matcher compressed result */
                 vcwfeedback(state->vcw, cdsz);
         }
 
         vcioputc(&io, ctrl);
-        if (ctrl & (VCD_SOURCEFILE | VCD_TARGETFILE))
-        {
+        if (ctrl & (VCD_SOURCEFILE | VCD_TARGETFILE)) {
             vcioputu(&io, wm->wsize);
             vcioputu(&io, wm->wpos);
         }
@@ -634,8 +598,7 @@ encode(State_t *state, Vcchar_t *data, size_t dtsz)
         dt += dosz;
         size += dosz;
 
-        if ((dosz = dtsz - size) > 0)
-        {
+        if ((dosz = dtsz - size) > 0) {
             if (wm && wm->more) /* more subwindows to do */
                 continue;
             else /* need fresh data */
@@ -669,11 +632,9 @@ vcodex_ident(Codexmeth_t *meth,
     Vcio_t io;
 
     if (headsize >= 6 && h[0] == VC_HEADER0 && h[1] == VC_HEADER1
-        && h[2] == VC_HEADER2 && (h[3] == 0 || h[3] == VC_HEADER3))
-    {
+        && h[2] == VC_HEADER2 && (h[3] == 0 || h[3] == VC_HEADER3)) {
         vcioinit(&io, h + 4, headsize - 4);
-        if (vciogetc(&io) & VC_EXTRAHEADER)
-        {
+        if (vciogetc(&io) & VC_EXTRAHEADER) {
             if ((n = vciogetu(&io)) < 0)
                 return 0;
             vcioskip(&io, n);
@@ -697,15 +658,13 @@ vcodex_done(Codex_t *p)
     Vcio_t io;
 
     r = 0;
-    if ((p->flags & VCSF_OPEN) && !(r = vcodex_sync(p)))
-    {
+    if ((p->flags & VCSF_OPEN) && !(r = vcodex_sync(p))) {
         /* back to plain text mode */
         state->flags |= VCSF_KEEPSFDC;
         sfdisc(p->sp, NIL(Sfdisc_t *));
         state->flags &= ~VCSF_KEEPSFDC;
         vcioinit(&io, state->base, state->bssz);
-        if (!(state->flags & VCSF_DONEHEAD))
-        {
+        if (!(state->flags & VCSF_DONEHEAD)) {
             state->io = &io;
             if (putheader(state) < 0)
                 r = VCSFERROR(state, "Error writing header");
@@ -750,15 +709,12 @@ vcodex_option(Codex_t *p,
 
     if (isdigit(*s))
         v = strton(s, &e, NiL, 0);
-    else
-    {
+    else {
         e = ( char * )s;
-        if (e[0] == 'n' && e[1] == 'o')
-        {
+        if (e[0] == 'n' && e[1] == 'o') {
             e += 2;
             v = 0;
-        }
-        else
+        } else
             v = 1;
     }
     for (x = e; b = *x++;)
@@ -766,39 +722,28 @@ vcodex_option(Codex_t *p,
             break;
     if (!b)
         x = 0;
-    if (!*e)
-    {
+    if (!*e) {
         if (!*wsize)
             *wsize = v;
-    }
-    else if (streq(e, "plain"))
-    {
+    } else if (streq(e, "plain")) {
         if (v)
             *vflags |= VCSF_PLAIN;
         else
             *vflags &= ~VCSF_PLAIN;
-    }
-    else if (streq(e, "source"))
-    {
+    } else if (streq(e, "source")) {
         if (!x)
             goto badarg;
         *source = x;
-    }
-    else if (streq(e, "vcdiff"))
-    {
+    } else if (streq(e, "vcdiff")) {
         if (v)
             *vflags |= VCSF_VCDIFF;
         else
             *vflags &= ~VCSF_VCDIFF;
-    }
-    else if (w = vcwgetmeth(e))
-    {
+    } else if (w = vcwgetmeth(e)) {
         while (b = *e++)
-            if (b == '.' || b == '=')
-            {
+            if (b == '.' || b == '=') {
                 v = strton(e, &e, NiL, 0);
-                if (*e)
-                {
+                if (*e) {
                     if (p->disc->errorf)
                         (*p->disc->errorf)(
                         NiL, p->disc, 2, "%s: %s: invalid window size", x, e);
@@ -806,15 +751,12 @@ vcodex_option(Codex_t *p,
                 }
                 break;
             }
-        if (!wmeth)
-        {
+        if (!wmeth) {
             *wmeth = w;
             if (v > 1 && !*wsize)
                 *wsize = v;
         }
-    }
-    else
-    {
+    } else {
     badarg:
         if (p->disc->errorf)
             (*p->disc->errorf)(
@@ -871,8 +813,7 @@ vcodex_open(Codex_t *p, char *const args[], Codexnum_t flags)
     while (s = args[i++])
         if (vcodex_option(p, s, &wmeth, &wsize, &vflags, &source))
             return -1;
-    if (!(state = newof(0, State_t, 1, 0)))
-    {
+    if (!(state = newof(0, State_t, 1, 0))) {
         if (p->disc->errorf)
             (*p->disc->errorf)(NiL, p->disc, 2, "out of space");
         goto bad;
@@ -883,11 +824,9 @@ vcodex_open(Codex_t *p, char *const args[], Codexnum_t flags)
     transform = args[1];
     if (streq(transform, "vcodex"))
         transform = 0;
-    if (flags & CODEX_ENCODE)
-    {
+    if (flags & CODEX_ENCODE) {
         /* create handle for transformation */
-        if (!transform || !(state->vc = vcmake(transform, VC_ENCODE)))
-        {
+        if (!transform || !(state->vc = vcmake(transform, VC_ENCODE))) {
             if (p->disc->errorf)
                 (*p->disc->errorf)(
                 NiL, p->disc, 2, "%s: invalid encode transform", transform);
@@ -895,18 +834,15 @@ vcodex_open(Codex_t *p, char *const args[], Codexnum_t flags)
         }
 
         /* create windowing handle if needed */
-        if ((state->vc->meth->type & VC_MTSOURCE) && source)
-        {
-            if (!(state->vcwdc.srcf = sfopen(NiL, source, "rb")))
-            {
+        if ((state->vc->meth->type & VC_MTSOURCE) && source) {
+            if (!(state->vcwdc.srcf = sfopen(NiL, source, "rb"))) {
                 VCSFERROR(state, "Non-existing or unreadable source file.");
                 goto bad;
             }
             if (!wmeth)
                 wmeth = Vcwprefix;
             state->vcw = vcwopen(&state->vcwdc, wmeth);
-            if (!state->vcw)
-            {
+            if (!state->vcw) {
                 VCSFERROR(state, "Windowing not possible");
                 goto bad;
             }
@@ -914,8 +850,7 @@ vcodex_open(Codex_t *p, char *const args[], Codexnum_t flags)
 
         /* if no expicit window size then pick min nonzero window size from
          * all coders */
-        if (!wsize)
-        {
+        if (!wsize) {
             wsize = VCSF_WSIZE;
             for (vc = state->vc; vc; vc = vc->coder)
                 if (vc->meth->window && wsize > vc->meth->window)
@@ -924,8 +859,7 @@ vcodex_open(Codex_t *p, char *const args[], Codexnum_t flags)
 
         /* buffer to accumulate data before encoding */
         state->dtsz = wsize;
-        if (!(state->data = ( Vcchar_t * )malloc(state->dtsz)))
-        {
+        if (!(state->data = ( Vcchar_t * )malloc(state->dtsz))) {
             VCSFERROR(state, "Out of memory for data buffer");
             goto bad;
         }
@@ -934,20 +868,17 @@ vcodex_open(Codex_t *p, char *const args[], Codexnum_t flags)
 
         /* buffer for the encoder to output results */
         state->bssz = VCSFDTSZ(state->dtsz);
-        if (!(state->base = ( Vcchar_t * )malloc(state->bssz)))
-        {
+        if (!(state->base = ( Vcchar_t * )malloc(state->bssz))) {
             VCSFERROR(state, "Out of memory for output buffer");
             goto bad;
         }
-    }
-    else /* VC_DECODE */
-    {    /* make output buffer */
+    } else /* VC_DECODE */
+    {      /* make output buffer */
         if ((state->bssz = wsize) <= 0)
             state->bssz = VCSF_BUFSIZE;
         else if (state->bssz < VCSF_BUFMIN)
             state->bssz = VCSF_BUFMIN;
-        if (!(state->base = ( Vcchar_t * )malloc(state->bssz)))
-        {
+        if (!(state->base = ( Vcchar_t * )malloc(state->bssz))) {
             if (!(flags & CODEX_DECODE))
                 state->flags = -1;
             VCSFERROR(state, "Out of memory for output buffer");
@@ -956,18 +887,14 @@ vcodex_open(Codex_t *p, char *const args[], Codexnum_t flags)
         state->code = state->endb = state->base;
 
         /* reconstruct handle to decode data */
-        if (state->flags & VCSF_PLAIN)
-        {
+        if (state->flags & VCSF_PLAIN) {
             if (!transform)
                 VCSFERROR(state, "No transform specified for decoding.");
-            if (!(state->vc = vcmake(transform, VC_DECODE)))
-            {
+            if (!(state->vc = vcmake(transform, VC_DECODE))) {
                 VCSFERROR(state, "Ill-defined transformation for decoding.");
                 goto bad;
             }
-        }
-        else
-        {
+        } else {
             int encoded;
             if (!flags)
                 state->flags |= VCSF_TRANS;
@@ -977,10 +904,8 @@ vcodex_open(Codex_t *p, char *const args[], Codexnum_t flags)
                                      !(flags & CODEX_DECODE),
                                      !(state->flags & VCSF_PLAIN),
                                      NiL))
-                <= 0)
-            {
-                if (!(flags & CODEX_DECODE) || !(state->flags & VCSF_PLAIN))
-                {
+                <= 0) {
+                if (!(flags & CODEX_DECODE) || !(state->flags & VCSF_PLAIN)) {
                     state->flags = 0;
                     return 0;
                 }
@@ -988,23 +913,19 @@ vcodex_open(Codex_t *p, char *const args[], Codexnum_t flags)
                           "Badly encoded data, decoding not possible.");
                 goto bad;
             }
-            if (!(flags & CODEX_DECODE))
-            {
+            if (!(flags & CODEX_DECODE)) {
                 vcodex_done(p);
                 return 0;
             }
         }
 
         /* construct window handle to get data for delta-decoding */
-        if ((state->vc->meth->type & VC_MTSOURCE) && source)
-        {
-            if (!(state->vcwdc.srcf = sfopen(NiL, source, "rb")))
-            {
+        if ((state->vc->meth->type & VC_MTSOURCE) && source) {
+            if (!(state->vcwdc.srcf = sfopen(NiL, source, "rb"))) {
                 VCSFERROR(state, "Non-existing or unreadable source file.");
                 goto bad;
             }
-            if (!(state->vcw = vcwopen(&state->vcwdc, NIL(Vcwmethod_t *))))
-            {
+            if (!(state->vcw = vcwopen(&state->vcwdc, NIL(Vcwmethod_t *)))) {
                 VCSFERROR(state, "Windowing not possible");
                 goto bad;
             }
@@ -1040,18 +961,15 @@ vcodex_read(Sfio_t *f, Void_t *buf, size_t n, Sfdisc_t *disc)
     if (!(state->flags & VC_DECODE))
         return VCSFERROR(state, "decode handle create failed");
 
-    for (sz = 0, dt = ( Vcchar_t * )buf; sz < n; sz += r, dt += r)
-    { /* copy already decoded data */
-        if ((r = state->endd - state->next) > 0)
-        {
+    for (sz = 0, dt = ( Vcchar_t * )buf; sz < n;
+         sz += r, dt += r) { /* copy already decoded data */
+        if ((r = state->endd - state->next) > 0) {
             r = r > (n - sz) ? (n - sz) : r;
             memcpy(dt, state->next, r);
             state->next += r;
-        }
-        else /* need to decode a new batch of data */
+        } else /* need to decode a new batch of data */
         {
-            if ((d = (state->endb - state->code)) < 2 * sizeof(size_t))
-            {
+            if ((d = (state->endb - state->code)) < 2 * sizeof(size_t)) {
                 if (fillbuf(state, f, disc) <= 0)
                     break;
                 d = state->endb - state->code;
@@ -1069,21 +987,18 @@ vcodex_read(Sfio_t *f, Void_t *buf, size_t n, Sfdisc_t *disc)
             if ((ctrl & VCD_TARGETFILE) && sz > 0)
                 break;
 
-            if (ctrl & (VCD_SOURCEFILE | VCD_TARGETFILE))
-            {
+            if (ctrl & (VCD_SOURCEFILE | VCD_TARGETFILE)) {
                 if (!state->vcw || (d = ( ssize_t )vciogetu(&io)) < 0
                     || (pos = ( Sfoff_t )vciogetu(&io)) < 0
                     || !(wm = vcwapply(
-                         state->vcw, TYPECAST(Void_t *, ctrl), d, pos)))
-                {
+                         state->vcw, TYPECAST(Void_t *, ctrl), d, pos))) {
                     VCSFERROR(state,
                               "source window read failed during decode");
                     BREAK;
                 }
                 state->vcdc.data = wm->wdata;
                 state->vcdc.size = wm->wsize;
-            }
-            else if (ctrl == VC_EOF) /* a new decoding context */
+            } else if (ctrl == VC_EOF) /* a new decoding context */
             {
                 state->code = vcionext(&io);
                 if (vciomore(&io) > 0 && *state->code == VC_EOF)
@@ -1092,9 +1007,7 @@ vcodex_read(Sfio_t *f, Void_t *buf, size_t n, Sfdisc_t *disc)
                     break;
                 else
                     continue;
-            }
-            else if (ctrl != 0 && ctrl != VC_RAW)
-            {
+            } else if (ctrl != 0 && ctrl != VC_RAW) {
                 VCSFERROR(state, "data stream corrupt");
                 BREAK;
             }
@@ -1103,21 +1016,17 @@ vcodex_read(Sfio_t *f, Void_t *buf, size_t n, Sfdisc_t *disc)
                 vcdisc(state->vc, &state->vcdc);
 
             /* size of coded data */
-            if (vciomore(&io) == 1 && vciopeek(&io) == 0200)
-            {
+            if (vciomore(&io) == 1 && vciopeek(&io) == 0200) {
                 vciogetc(&io);
                 d = 0;
                 ctrl = VC_RAW;
-            }
-            else if ((d = vciogetu(&io)) <= 0)
-            {
+            } else if ((d = vciogetu(&io)) <= 0) {
                 VCSFERROR(state, "coded data size read failed");
                 BREAK;
             }
 
             /* make sure all the data is available */
-            if ((vcionext(&io) + d) > state->endb)
-            {
+            if ((vcionext(&io) + d) > state->endb) {
                 state->code = vcionext(&io);
                 if ((m = d + VCSF_SLACK) > state->bssz
                     && makebuf(state, m) < 0)
@@ -1131,16 +1040,12 @@ vcodex_read(Sfio_t *f, Void_t *buf, size_t n, Sfdisc_t *disc)
 
             /* decode data */
             state->code = vcionext(&io);
-            if (ctrl == VC_RAW)
-            {
+            if (ctrl == VC_RAW) {
                 text = state->code;
                 m = d;
-            }
-            else
-            {
+            } else {
                 vcbuffer(state->vc, NIL(Vcchar_t *), -1, -1);
-                if ((m = vcapply(state->vc, state->code, d, &text)) <= 0)
-                {
+                if ((m = vcapply(state->vc, state->code, d, &text)) <= 0) {
                     VCSFERROR(state, "decode failed");
                     BREAK;
                 }
@@ -1168,23 +1073,18 @@ vcodex_write(Sfio_t *f, const Void_t *buf, size_t n, Sfdisc_t *disc)
     if (!(state->flags & VC_ENCODE))
         return VCSFERROR(state, "encode handle create failed");
 
-    for (sz = 0, dt = ( Vcchar_t * )buf; sz < n; sz += w, dt += w)
-    {
-        if (buf == ( Void_t * )state->data)
-        { /* final flush */
+    for (sz = 0, dt = ( Vcchar_t * )buf; sz < n; sz += w, dt += w) {
+        if (buf == ( Void_t * )state->data) { /* final flush */
             w = state->next - state->data;
             state->next = state->data;
 
-            if ((w = encode(state, state->data, w)) < 0)
-            {
+            if ((w = encode(state, state->data, w)) < 0) {
                 VCSFERROR(state, "data encode failed");
                 break;
-            }
-            else
+            } else
                 sz += w;
 
-            if (sfwr(f, state->code, state->cdsz, disc) != state->cdsz)
-            {
+            if (sfwr(f, state->code, state->cdsz, disc) != state->cdsz) {
                 VCSFERROR(state, "encoded data write failed");
                 break;
             }
@@ -1193,21 +1093,17 @@ vcodex_write(Sfio_t *f, const Void_t *buf, size_t n, Sfdisc_t *disc)
             {
                 w = 0;    /* so for(;;) won't add to sz, dt */
                 continue; /* back to flushing */
-            }
-            else
+            } else
                 break;
         }
 
-        if ((w = state->endd - state->next) == 0)
-        { /* flush a full buffer */
+        if ((w = state->endd - state->next) == 0) { /* flush a full buffer */
             state->next = state->data;
-            if ((w = encode(state, state->data, state->dtsz)) < 0)
-            {
+            if ((w = encode(state, state->data, state->dtsz)) < 0) {
                 VCSFERROR(state, "data encode failed");
                 break;
             }
-            if (sfwr(f, state->code, state->cdsz, disc) != state->cdsz)
-            {
+            if (sfwr(f, state->code, state->cdsz, disc) != state->cdsz) {
                 VCSFERROR(state, "encoded data write failed");
                 break;
             }
@@ -1216,20 +1112,16 @@ vcodex_write(Sfio_t *f, const Void_t *buf, size_t n, Sfdisc_t *disc)
         }
 
         /* process data directly if buffer is empty and data is large */
-        if (w == state->dtsz && (n - sz) >= w)
-        {
-            if ((w = encode(state, dt, w)) < 0)
-            {
+        if (w == state->dtsz && (n - sz) >= w) {
+            if ((w = encode(state, dt, w)) < 0) {
                 VCSFERROR(state, "encode failed");
                 break;
             }
-            if (sfwr(f, state->code, state->cdsz, disc) != state->cdsz)
-            {
+            if (sfwr(f, state->code, state->cdsz, disc) != state->cdsz) {
                 VCSFERROR(state, "write failed");
                 break;
             }
-        }
-        else /* accumulating data into buffer */
+        } else /* accumulating data into buffer */
         {
             w = w > (n - sz) ? (n - sz) : w;
             memcpy(state->next, dt, w);

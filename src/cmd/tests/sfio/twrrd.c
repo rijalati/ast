@@ -42,8 +42,7 @@ tmain()
     sfsetbuf(fp, NIL(char *), 0);
     sfsetbuf(fp, NIL(char *), ( size_t )SF_UNBOUND);
 
-    for (i = 0; i < 256; ++i)
-    {
+    for (i = 0; i < 256; ++i) {
         if (sfread(fp, rbuf, sizeof(rbuf)) != sizeof(rbuf))
             terror("Reading");
 

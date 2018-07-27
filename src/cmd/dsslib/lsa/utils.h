@@ -121,20 +121,14 @@ extern "C"
 /* Extracts a variable from a network ordered buffer of given data_type */
 #define EXTRACT_DATA_TYPE_FROM_NO_BUFF(                                      \
 data_type, void_ptr, byte_index, var, bytes_left)                            \
-    do                                                                       \
-    {                                                                        \
-        if (sizeof(data_type) == sizeof(uint32_t))                           \
-        {                                                                    \
+    do {                                                                     \
+        if (sizeof(data_type) == sizeof(uint32_t)) {                         \
             (var) = EXTRACT_NO_32BITS(( const uint8_t * )(void_ptr)          \
                                       + (byte_index));                       \
-        }                                                                    \
-        else if (sizeof(data_type) == sizeof(uint16_t))                      \
-        {                                                                    \
+        } else if (sizeof(data_type) == sizeof(uint16_t)) {                  \
             (var) = EXTRACT_NO_16BITS(( const uint8_t * )(void_ptr)          \
                                       + (byte_index));                       \
-        }                                                                    \
-        else                                                                 \
-        {                                                                    \
+        } else {                                                             \
             (var) = (void_ptr)[(byte_index)];                                \
         }                                                                    \
         (void_ptr) += sizeof(data_type);                                     \
@@ -144,29 +138,19 @@ data_type, void_ptr, byte_index, var, bytes_left)                            \
 /* Extracts a variable from a network ordered buffer of given len */
 #define EXTRACT_LEN_BYTES_FROM_NO_BUFF(                                      \
 len, void_ptr, byte_index, var, bytes_left)                                  \
-    do                                                                       \
-    {                                                                        \
-        if ((len) == 4)                                                      \
-        {                                                                    \
+    do {                                                                     \
+        if ((len) == 4) {                                                    \
             (var) = EXTRACT_NO_32BITS(( const uint8_t * )(void_ptr)          \
                                       + (byte_index));                       \
-        }                                                                    \
-        else if ((len) == 3)                                                 \
-        {                                                                    \
+        } else if ((len) == 3) {                                             \
             (var) = EXTRACT_NO_24BITS(( const uint8_t * )(void_ptr)          \
                                       + (byte_index));                       \
-        }                                                                    \
-        else if ((len) == 2)                                                 \
-        {                                                                    \
+        } else if ((len) == 2) {                                             \
             (var) = EXTRACT_NO_16BITS(( const uint8_t * )(void_ptr)          \
                                       + (byte_index));                       \
-        }                                                                    \
-        else if ((len) == 1)                                                 \
-        {                                                                    \
+        } else if ((len) == 1) {                                             \
             (var) = (void_ptr)[(byte_index)];                                \
-        }                                                                    \
-        else                                                                 \
-        {                                                                    \
+        } else {                                                             \
             ASSERT(0);                                                       \
         }                                                                    \
         (void_ptr) += len;                                                   \
@@ -176,22 +160,16 @@ len, void_ptr, byte_index, var, bytes_left)                                  \
 /* Storing a variable of a given data_type into a network ordered buffer */
 #define STORE_DATA_TYPE_INTO_NO_BUFF(                                        \
 data_type, void_ptr, byte_index, var, bytes_left)                            \
-    do                                                                       \
-    {                                                                        \
-        if (sizeof(data_type) == sizeof(uint32_t))                           \
-        {                                                                    \
+    do {                                                                     \
+        if (sizeof(data_type) == sizeof(uint32_t)) {                         \
             (void_ptr)[byte_index] = (( var )&0xff000000) >> 24;             \
             (void_ptr)[byte_index + 1] = (( var )&0x00ff0000) >> 16;         \
             (void_ptr)[byte_index + 2] = (( var )&0x0000ff00) >> 8;          \
             (void_ptr)[byte_index + 3] = (( var )&0x000000ff);               \
-        }                                                                    \
-        else if (sizeof(data_type) == sizeof(uint16_t))                      \
-        {                                                                    \
+        } else if (sizeof(data_type) == sizeof(uint16_t)) {                  \
             (void_ptr)[byte_index] = (( var )&0xff00) >> 8;                  \
             (void_ptr)[byte_index + 1] = (( var )&0x00ff);                   \
-        }                                                                    \
-        else                                                                 \
-        {                                                                    \
+        } else {                                                             \
             (void_ptr)[byte_index] = (var);                                  \
         }                                                                    \
         (void_ptr) += sizeof(data_type);                                     \
@@ -202,32 +180,22 @@ data_type, void_ptr, byte_index, var, bytes_left)                            \
  */
 #define STORE_LEN_BYTES_INTO_NO_BUFF(                                        \
 len, void_ptr, byte_index, var, bytes_left)                                  \
-    do                                                                       \
-    {                                                                        \
-        if ((len) == 4)                                                      \
-        {                                                                    \
+    do {                                                                     \
+        if ((len) == 4) {                                                    \
             (void_ptr)[byte_index] = (( var )&0xff000000) >> 24;             \
             (void_ptr)[byte_index + 1] = (( var )&0x00ff0000) >> 16;         \
             (void_ptr)[byte_index + 2] = (( var )&0x0000ff00) >> 8;          \
             (void_ptr)[byte_index + 3] = (( var )&0x000000ff);               \
-        }                                                                    \
-        else if ((len) == 3)                                                 \
-        {                                                                    \
+        } else if ((len) == 3) {                                             \
             (void_ptr)[byte_index] = (( var )&0xff00) >> 16;                 \
             (void_ptr)[byte_index + 1] = (( var )&0x00ff) >> 8;              \
             (void_ptr)[byte_index + 2] = (( var )&0x00ff);                   \
-        }                                                                    \
-        else if ((len) == 2)                                                 \
-        {                                                                    \
+        } else if ((len) == 2) {                                             \
             (void_ptr)[byte_index] = (( var )&0xff00) >> 8;                  \
             (void_ptr)[byte_index + 1] = (( var )&0x00ff);                   \
-        }                                                                    \
-        else if ((len) == 1)                                                 \
-        {                                                                    \
+        } else if ((len) == 1) {                                             \
             (void_ptr)[byte_index] = (var);                                  \
-        }                                                                    \
-        else                                                                 \
-        {                                                                    \
+        } else {                                                             \
             ASSERT(0);                                                       \
         }                                                                    \
         (void_ptr) += (len);                                                 \

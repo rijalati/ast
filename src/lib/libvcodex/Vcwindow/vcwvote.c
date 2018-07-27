@@ -85,8 +85,7 @@ Sfoff_t l, r;  /* interval to search		*/
         return 1.;
 
     if ((dif = vcwngmatch(&mtch, dfreq, size, data, dtsz, 0, NGRAMMATCH))
-        < fr->bestd)
-    {
+        < fr->bestd) {
         fr->bestd = dif;
         wm->type = VCD_SOURCEFILE;
         wm->wpos = l + mtch;
@@ -110,8 +109,7 @@ size_t size;   /* size of data			*/
     Freq_t *fr = ( Freq_t * )vcw->mtdata;
 
     max = fr->srcf->size - size;
-    for (i = 0; i < fr->srcf->nidx;)
-    {
+    for (i = 0; i < fr->srcf->nidx;) {
         pos = (( Sfoff_t )fr->srcf->idx[i]) * (( Sfoff_t )NG_SIZE);
         if ((l = pos - IDXITVL) < 0)
             l = 0;
@@ -119,8 +117,7 @@ size_t size;   /* size of data			*/
             r = max;
 
         /* glom together all overlapping intervals */
-        for (i = i + 1; i < fr->srcf->nidx; ++i)
-        {
+        for (i = i + 1; i < fr->srcf->nidx; ++i) {
             pos = (( Sfoff_t )fr->srcf->idx[i]) * (( Sfoff_t )NG_SIZE);
             if (pos - IDXITVL >= r)
                 break;
@@ -172,8 +169,7 @@ Sfoff_t here;  /* current location		*/
 
     if (sfseek(fr->tarf, pos, 0) != pos)
         goto f_err;
-    if (!(data = sfreserve(fr->tarf, dtsz, 0)))
-    {
+    if (!(data = sfreserve(fr->tarf, dtsz, 0))) {
         sfseek(fr->tarf, cpos, 0);
 
     f_err: /* will never try searching target file again */
@@ -183,8 +179,7 @@ Sfoff_t here;  /* current location		*/
     }
 
     dif = vcwngmatch(&mtch, dfreq, size, data, dtsz, 0, NGRAMMATCH);
-    if (dif < fr->bestd)
-    {
+    if (dif < fr->bestd) {
         fr->bestd = dif;
         wm->type = VCD_TARGETFILE;
         wm->wpos = pos + mtch;
@@ -246,8 +241,7 @@ Sfoff_t here; /* current target position	*/
         wm->type = 0;
 
 done:
-    if (wm->type == 0)
-    {
+    if (wm->type == 0) {
         if (!fr->srcf)
             return NIL(Vcwmatch_t *);
 
@@ -259,14 +253,11 @@ done:
         wm->wsize = dtsz;
     }
 
-    if (wm->type == VCD_SOURCEFILE)
-    {
+    if (wm->type == VCD_SOURCEFILE) {
         fr->dtsz = dtsz;
         fr->next = wm->wpos + dtsz;
         high = fr->srcf->size;
-    }
-    else
-    {
+    } else {
         fr->star += 1; /* success at using target data */
         high = here;
     }
@@ -275,8 +266,7 @@ done:
     wm->wsize += 2 * VCWEXTRA(dtsz);
     if ((wm->wpos -= VCWEXTRA(dtsz)) < 0)
         wm->wpos = 0;
-    if ((wm->wpos + wm->wsize) > high && (wm->wpos = high - wm->wsize) < 0)
-    {
+    if ((wm->wpos + wm->wsize) > high && (wm->wpos = high - wm->wsize) < 0) {
         wm->wpos = 0;
         wm->wsize = ( ssize_t )high;
     }
@@ -311,8 +301,7 @@ int type;
 {
     Freq_t *fr;
 
-    switch (type)
-    {
+    switch (type) {
     case VCW_OPENING:
         if (!(fr = ( Freq_t * )calloc(1, sizeof(Freq_t))))
             return -1;
@@ -328,8 +317,7 @@ int type;
         else
             fr->tarf = NIL(Sfio_t *);
 
-        if (!fr->srcf && !fr->tarf)
-        {
+        if (!fr->srcf && !fr->tarf) {
             free(fr);
             return -1;
         }
@@ -343,8 +331,7 @@ int type;
         break;
 
     case VCW_CLOSING:
-        if ((fr = ( Freq_t * )vcw->mtdata))
-        {
+        if ((fr = ( Freq_t * )vcw->mtdata)) {
             if (fr->srcf)
                 vcwfclose(fr->srcf);
             free(fr);

@@ -401,8 +401,7 @@ log(x) double x;
 
     m = logb(x);
     g = ldexp(x, -m);
-    if (_IEEE && m == -1022)
-    {
+    if (_IEEE && m == -1022) {
         j = logb(g), m += j;
         g = ldexp(g, -j);
     }
@@ -464,8 +463,7 @@ __log__D(x) double x;
 
     m = ( int )logb(x);
     g = ldexp(x, -m);
-    if (_IEEE && m == -1022)
-    {
+    if (_IEEE && m == -1022) {
         j = ( int )logb(g), m += j;
         g = ldexp(g, -j);
     }

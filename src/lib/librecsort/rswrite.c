@@ -26,20 +26,16 @@
 */
 
 #define NOTIFY(rs, r, rsrv, endrsrv, cur, out, n)                            \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         tmp.data = r->data;                                                  \
         tmp.datalen = r->datalen;                                            \
-        for (;;)                                                             \
-        {                                                                    \
-            for (;;)                                                         \
-            {                                                                \
+        for (;;) {                                                           \
+            for (;;) {                                                       \
                 out.data = cur;                                              \
                 out.datalen = n = endrsrv - cur;                             \
                 if ((c = rsnotify(rs, RS_WRITE, r, &out, rs->disc)) < 0)     \
                     return -1;                                               \
-                if (c == RS_DELETE)                                          \
-                {                                                            \
+                if (c == RS_DELETE) {                                        \
                     out.datalen = 0;                                         \
                     break;                                                   \
                 }                                                            \
@@ -58,13 +54,11 @@
 #define RESERVE(rs, f, rsrv, endrsrv, cur, w)                                \
     {                                                                        \
         reg ssize_t rw;                                                      \
-        if ((endrsrv - cur) < w)                                             \
-        {                                                                    \
+        if ((endrsrv - cur) < w) {                                           \
             if (rsrv && sfwrite(f, rsrv, cur - rsrv) != cur - rsrv)          \
                 return -1;                                                   \
             rw = w < RS_RESERVE ? RS_RESERVE : ((w / 1024) + 1) * 1024;      \
-            if (!(rsrv = ( uchar * )sfreserve(f, rw, SF_LOCKR)))             \
-            {                                                                \
+            if (!(rsrv = ( uchar * )sfreserve(f, rw, SF_LOCKR))) {           \
                 if ((rw = sfvalue(f)) < w)                                   \
                     rw = w;                                                  \
                 if (!(rsrv = ( uchar * )sfreserve(f, rw, SF_LOCKR)))         \
@@ -107,14 +101,12 @@ int type;                          /* RS_TEXT 		*/
 			return -1;
 	}
 #endif
-    if (GETLOCAL(rs, local))
-    {
+    if (GETLOCAL(rs, local)) {
         rsrv = rs->rsrv;
         endrsrv = rs->endrsrv;
         cur = rs->cur;
         r = rs->sorted;
-    }
-    else /* external call */
+    } else /* external call */
     {
         rsrv = cur = endrsrv = NIL(uchar *);
         if (!(r = rslist(rs)))
@@ -137,20 +129,16 @@ int type;                          /* RS_TEXT 		*/
     if (type & RS_OTEXT) /* write in plain text */
     {
         u = (rs->events & RS_WRITE) != 0;
-        if ((rs->type & RS_UNIQ) && (rs->events & RS_SUMMARY))
-        {
-            for (; r; r = r->right)
-            {
-                if (r->equal)
-                {
+        if ((rs->type & RS_UNIQ) && (rs->events & RS_SUMMARY)) {
+            for (; r; r = r->right) {
+                if (r->equal) {
                     tmp.data = r->data;
                     tmp.datalen = r->datalen;
                     if ((c = RSNOTIFY(rs, RS_SUMMARY, r, 0, rs->disc)) < 0)
                         return -1;
                     if (c == RS_DELETE)
                         continue;
-                    if (c == RS_INSERT)
-                    {
+                    if (c == RS_INSERT) {
                         usr = *r;
                         usr.data = tmp.data;
                         usr.datalen = tmp.datalen;
@@ -165,13 +153,9 @@ int type;                          /* RS_TEXT 		*/
                 else
                     WRITE(rs, cur, r->data, w, d);
             }
-        }
-        else if (local || (rs->type & RS_UNIQ))
-        {
-            if (head >= 0)
-            {
-                for (; r; r = r->right)
-                {
+        } else if (local || (rs->type & RS_UNIQ)) {
+            if (head >= 0) {
+                for (; r; r = r->right) {
                     w = r->datalen;
                     RESERVE(rs, f, rsrv, endrsrv, cur, w);
                     if (u)
@@ -179,12 +163,9 @@ int type;                          /* RS_TEXT 		*/
                     else
                         WRITE(rs, cur, r->data, w, d);
                 }
-            }
-            else
-            {
+            } else {
                 w = r->datalen;
-                for (; r; r = r->right)
-                {
+                for (; r; r = r->right) {
                     RESERVE(rs, f, rsrv, endrsrv, cur, w);
                     if (u)
                         NOTIFY(rs, r, rsrv, endrsrv, cur, out, n);
@@ -192,21 +173,16 @@ int type;                          /* RS_TEXT 		*/
                         WRITE(rs, cur, r->data, w, d);
                 }
             }
-        }
-        else
-        {
-            if (head >= 0)
-            {
-                for (; r; r = r->right)
-                {
+        } else {
+            if (head >= 0) {
+                for (; r; r = r->right) {
                     w = r->datalen;
                     RESERVE(rs, f, rsrv, endrsrv, cur, w);
                     if (u)
                         NOTIFY(rs, r, rsrv, endrsrv, cur, out, n);
                     else
                         WRITE(rs, cur, r->data, w, d);
-                    for (e = r->equal; e; e = e->right)
-                    {
+                    for (e = r->equal; e; e = e->right) {
                         w = e->datalen;
                         RESERVE(rs, f, rsrv, endrsrv, cur, w);
                         if (u)
@@ -215,19 +191,15 @@ int type;                          /* RS_TEXT 		*/
                             WRITE(rs, cur, e->data, w, d);
                     }
                 }
-            }
-            else
-            {
+            } else {
                 w = r->datalen;
-                for (; r; r = r->right)
-                {
+                for (; r; r = r->right) {
                     RESERVE(rs, f, rsrv, endrsrv, cur, w);
                     if (u)
                         NOTIFY(rs, r, rsrv, endrsrv, cur, out, n);
                     else
                         WRITE(rs, cur, r->data, w, d);
-                    for (e = r->equal; e; e = e->right)
-                    {
+                    for (e = r->equal; e; e = e->right) {
                         RESERVE(rs, f, rsrv, endrsrv, cur, w);
                         if (u)
                             NOTIFY(rs, e, rsrv, endrsrv, cur, out, n);
@@ -237,40 +209,31 @@ int type;                          /* RS_TEXT 		*/
                 }
             }
         }
-    }
-    else if (local)
-    {
+    } else if (local) {
         n = ( ssize_t )r->order; /* chain size already calculated */
         if (n > 0 && (rs->type & RS_DATA))
             n = -n;
         goto write_size;
-    }
-    else if (rs->type & RS_UNIQ)
-    { /* count and write chain size */
+    } else if (rs->type & RS_UNIQ) { /* count and write chain size */
         for (n = 0, e = r; e; e = e->right)
             n += 1;
         n = -n;
     write_size:
-        if (n != 0)
-        {
+        if (n != 0) {
             RESERVE(rs, f, rsrv, endrsrv, cur, sizeof(ssize_t));
             WRITE(rs, cur, ( uchar * )(&n), sizeof(ssize_t), d);
         }
 
-        if ((rs->type & RS_UNIQ) && (rs->events & RS_SUMMARY))
-        {
-            for (; r; r = r->right)
-            {
-                if (r->equal)
-                {
+        if ((rs->type & RS_UNIQ) && (rs->events & RS_SUMMARY)) {
+            for (; r; r = r->right) {
+                if (r->equal) {
                     tmp.data = r->data;
                     tmp.datalen = r->datalen;
                     if ((c = RSNOTIFY(rs, RS_SUMMARY, r, 0, rs->disc)) < 0)
                         return -1;
                     if (c == RS_DELETE)
                         continue;
-                    if (c == RS_INSERT)
-                    {
+                    if (c == RS_INSERT) {
                         usr = *r;
                         usr.data = tmp.data;
                         usr.datalen = tmp.datalen;
@@ -284,40 +247,28 @@ int type;                          /* RS_TEXT 		*/
                     WRITE(rs, cur, ( uchar * )(&n), sizeof(ssize_t), d);
                 WRITE(rs, cur, r->data, n, d);
             }
-        }
-        else if (head >= 0)
-        {
-            for (; r; r = r->right)
-            {
+        } else if (head >= 0) {
+            for (; r; r = r->right) {
                 w = (n = r->datalen) + head;
                 RESERVE(rs, f, rsrv, endrsrv, cur, w);
                 if (head)
                     WRITE(rs, cur, ( uchar * )(&n), sizeof(ssize_t), d);
                 WRITE(rs, cur, r->data, n, d);
             }
-        }
-        else
-        {
+        } else {
             w = r->datalen;
-            for (; r; r = r->right)
-            {
+            for (; r; r = r->right) {
                 RESERVE(rs, f, rsrv, endrsrv, cur, w);
                 WRITE(rs, cur, r->data, w, d);
             }
         }
-    }
-    else
-    {
-        while (r)
-        {
-            if ((e = r->equal))
-            {
+    } else {
+        while (r) {
+            if ((e = r->equal)) {
                 for (w = 2, e = e->right; e; e = e->right)
                     w += 1;
                 n = (rs->type & RS_DATA) ? -w : w;
-            }
-            else
-            {
+            } else {
                 for (w = 1, e = r->right; e && !e->equal; e = e->right)
                     w += 1;
                 n = -w;
@@ -337,22 +288,17 @@ int type;                          /* RS_TEXT 		*/
             else
                 r = e;
 
-            if (head >= 0)
-            {
-                for (; o != e; o = o->right)
-                {
+            if (head >= 0) {
+                for (; o != e; o = o->right) {
                     w = (n = o->datalen) + head;
                     RESERVE(rs, f, rsrv, endrsrv, cur, w);
                     if (head)
                         WRITE(rs, cur, ( uchar * )(&n), sizeof(ssize_t), d);
                     WRITE(rs, cur, o->data, n, d);
                 }
-            }
-            else
-            {
+            } else {
                 w = o->datalen;
-                for (; o != e; o = o->right)
-                {
+                for (; o != e; o = o->right) {
                     RESERVE(rs, f, rsrv, endrsrv, cur, w);
                     WRITE(rs, cur, o->data, w, d);
                 }
@@ -360,14 +306,11 @@ int type;                          /* RS_TEXT 		*/
         }
     }
 
-    if (local)
-    {
+    if (local) {
         rs->rsrv = rsrv;
         rs->endrsrv = endrsrv;
         rs->cur = cur;
-    }
-    else
-    {
+    } else {
         if (rsrv)
             sfwrite(f, rsrv, cur - rsrv);
         rsclear(rs);

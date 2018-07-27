@@ -90,8 +90,7 @@ _ast_catopen(const char *name, int flag)
              setlocale(LC_MESSAGES, 0));
 #endif
     if ((s = mcfind(NiL, name, LC_MESSAGES, flag, path, sizeof(path)))
-        && (ip = sfopen(NiL, s, "r")))
-    {
+        && (ip = sfopen(NiL, s, "r"))) {
 #if DEBUG_trace
         sfprintf(sfstderr, "AHA#%d:%s %s\n", __LINE__, __FILE__, s);
 #endif
@@ -101,8 +100,7 @@ _ast_catopen(const char *name, int flag)
             return ( _ast_nl_catd )mc;
     }
 #if _lib_catopen
-    if (strcmp(setlocale(LC_MESSAGES, NiL), "debug"))
-    {
+    if (strcmp(setlocale(LC_MESSAGES, NiL), "debug")) {
         Cc_t *cc;
         nl_catd d;
 
@@ -111,26 +109,21 @@ _ast_catopen(const char *name, int flag)
          */
 
         if (s && (d = catopen(s, flag)) != (nl_catd)(-1)
-            || !(s = 0) && (d = catopen(name, flag)) != (nl_catd)(-1))
-        {
-            if (!(cc = newof(0, Cc_t, 1, 0)))
-            {
+            || !(s = 0) && (d = catopen(name, flag)) != (nl_catd)(-1)) {
+            if (!(cc = newof(0, Cc_t, 1, 0))) {
                 catclose(d);
                 return (_ast_nl_catd)(-1);
             }
             cc->cat = d;
             if ((s || *name == '/')
-                && (ast.locale.set & (1 << AST_LC_MESSAGES)))
-            {
+                && (ast.locale.set & (1 << AST_LC_MESSAGES))) {
                 if ((cc->cvt = iconv_open("", "utf")) == (iconv_t)(-1)
-                    || !(cc->tmp = sfstropen()))
-                {
+                    || !(cc->tmp = sfstropen())) {
                     catclose(d);
                     free(cc);
                     return (_ast_nl_catd)(-1);
                 }
-            }
-            else
+            } else
                 cc->cvt = (iconv_t)(-1);
 #    if DEBUG_trace
             sfprintf(sfstderr,
@@ -159,14 +152,12 @@ _ast_catgets(_ast_nl_catd cat, int set, int num, const char *msg)
     if (cat == (_ast_nl_catd)(-1))
         return ( char * )msg;
 #if _lib_catopen
-    if (!(( Cc_t * )cat)->set)
-    {
+    if (!(( Cc_t * )cat)->set) {
         char *s;
         size_t n;
 
         msg = ( char * )catgets((( Cc_t * )cat)->cat, set, num, msg);
-        if ((( Cc_t * )cat)->cvt != (iconv_t)(-1))
-        {
+        if ((( Cc_t * )cat)->cvt != (iconv_t)(-1)) {
             s = ( char * )msg;
             n = strlen(s);
             iconv_write(
@@ -186,8 +177,7 @@ _ast_catclose(_ast_nl_catd cat)
     if (cat == (_ast_nl_catd)(-1))
         return -1;
 #if _lib_catopen
-    if (!(( Cc_t * )cat)->set)
-    {
+    if (!(( Cc_t * )cat)->set) {
         if ((( Cc_t * )cat)->cvt != (iconv_t)(-1))
             iconv_close((( Cc_t * )cat)->cvt);
         if ((( Cc_t * )cat)->tmp)

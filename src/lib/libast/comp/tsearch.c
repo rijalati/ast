@@ -126,8 +126,7 @@ int (*comparf)();
     /* dangerous to set comparf on each call but that's tsearch */
     Treedisc.comparf = comparf;
 
-    if (!(o = ( Tree_t * )dtmatch(dt, key)))
-    {
+    if (!(o = ( Tree_t * )dtmatch(dt, key))) {
         if (!(o = ( Tree_t * )malloc(sizeof(Tree_t))))
             return NIL(Void_t *);
         o->key = ( Void_t * )key;
@@ -194,8 +193,7 @@ int (*comparf)();
     obj.key = ( Void_t * )key;
     dtdelete(dt, &obj);
 
-    if (!(o = dtfinger(dt)))
-    {
+    if (!(o = dtfinger(dt))) {
         dtclose(dt);
         *rootp = NIL(Void_t *);
     }
@@ -220,8 +218,7 @@ int level;
 {
     if (!obj->lchild && !obj->rchild)
         (*action)(( Void_t * )obj, leaf, level);
-    else
-    {
+    else {
         (*action)(( Void_t * )obj, preorder, level);
         if (obj->lchild)
             _twalk(( Tree_t * )obj->lchild, action, level + 1);

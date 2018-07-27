@@ -105,8 +105,7 @@ tmain()
         terror("Can't open file to read3");
     sfset(f, SF_SHARE | SF_PUBLIC, 1);
 
-    for (n = 0; n < 256; ++n)
-    {
+    for (n = 0; n < 256; ++n) {
         if (!(s = sfreserve(f, sizeof(buf), 0)))
             terror("Can't reserve buffer1");
         for (i = 0; i < sizeof(buf); ++i)
@@ -114,8 +113,7 @@ tmain()
                 terror("Bad data1");
     }
 
-    for (n = 0; n < 256; ++n)
-    {
+    for (n = 0; n < 256; ++n) {
         if (!(s = sfreserve(f, sizeof(buf), 0)))
             terror("Can't reserve buffer2");
         for (i = 0; i < sizeof(buf); ++i)

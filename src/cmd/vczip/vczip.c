@@ -156,11 +156,9 @@ optmethod(Void_t *obj, char *name, char *desc, Void_t *handle)
 
     sfprintf(sp, "[+%s?", name);
     optesc(sp, desc, 0);
-    if (mt->args)
-    {
+    if (mt->args) {
         sfprintf(sp, " The arguments are:]{");
-        for (i = 0; mt->args[i].desc; i++)
-        {
+        for (i = 0; mt->args[i].desc; i++) {
             sfprintf(sp, "[+%s?", mt->args[i].name ? mt->args[i].name : "-");
             if (mt->args[i].desc)
                 optesc(sp, mt->args[i].desc, 0);
@@ -168,16 +166,13 @@ optmethod(Void_t *obj, char *name, char *desc, Void_t *handle)
             if (!mt->args[i].name)
                 break;
         }
-    }
-    else
+    } else
         sfputc(sp, ']');
-    if (mt->about)
-    {
+    if (mt->about) {
         if (!mt->args)
             sfputc(sp, '{');
         sfprintf(sp, "%s}", mt->about);
-    }
-    else if (mt->args)
+    } else if (mt->args)
         sfputc(sp, '}');
     return 0;
 }
@@ -225,12 +220,10 @@ optinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
     const char *p;
     int c;
 
-    switch (*s)
-    {
+    switch (*s) {
     case 'c':
         /* codex methods */
-        for (meth = codexlist(NiL); meth; meth = codexlist(meth))
-        {
+        for (meth = codexlist(NiL); meth; meth = codexlist(meth)) {
             sfprintf(sp, "[+%s\b (codex", meth->name);
             if (meth->identf)
                 sfprintf(sp, ",ident");
@@ -239,15 +232,13 @@ optinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
             sfputc(sp, ')');
             sfputc(sp, '?');
             p = meth->description;
-            while (c = *p++)
-            {
+            while (c = *p++) {
                 if (c == ']')
                     sfputc(sp, c);
                 sfputc(sp, c);
             }
             sfputc(sp, ']');
-            if ((p = meth->options) || meth->optionsf)
-            {
+            if ((p = meth->options) || meth->optionsf) {
                 sfprintf(sp, "{\n");
                 if (meth->optionsf)
                     (*meth->optionsf)(meth, sp);
@@ -308,20 +299,16 @@ apply(int action,
      * set up the sfio input stream
      */
 
-    if (!input || streq(input, "-") || streq(input, devstdin))
-    {
+    if (!input || streq(input, "-") || streq(input, devstdin)) {
         input = ( char * )devstdin;
         ip = sfstdin, sfopen(ip, NiL, "rb");
         flags |= VC_cat;
-    }
-    else if (!(ip = sfopen(NiL, input, "rb")))
-    {
+    } else if (!(ip = sfopen(NiL, input, "rb"))) {
         error(ERROR_SYSTEM | 2, "%s: cannot read", input);
         return 0;
     }
     sfset(ip, SF_SHARE, 0);
-    if (fstat(sffileno(ip), &si))
-    {
+    if (fstat(sffileno(ip), &si)) {
         error(ERROR_SYSTEM | 2, "%s: cannot stat", input);
         goto nope;
     }
@@ -330,21 +317,17 @@ apply(int action,
      * set up the sfio output stream
      */
 
-    if (!output && !(flags & VC_cat))
-    {
+    if (!output && !(flags & VC_cat)) {
         if (!transform && vcgetfname(input, &transform, &suffix))
             transform = command;
-        if (transform && vcgetsuff(transform, &suffix))
-        {
+        if (transform && vcgetsuff(transform, &suffix)) {
             suffix = sx;
             sx[0] = transform[0];
             sx[1] = 'z';
             sx[2] = 0;
         }
-        if (suffix)
-        {
-            if (!(pp = sfstropen()))
-            {
+        if (suffix) {
+            if (!(pp = sfstropen())) {
                 error(ERROR_SYSTEM | 2, "%s: out of space", input);
                 goto nope;
             }
@@ -352,16 +335,13 @@ apply(int action,
                 sfprintf(pp, "%s.%s", input, suffix);
             else if ((s = strrchr(input, '.')) && !strcmp(s + 1, suffix))
                 sfwrite(pp, input, s - input);
-            else
-            {
+            else {
                 error(2, "%s: unknown suffix -- ignored", input);
                 goto nope;
             }
             output = sfstruse(pp);
             flags |= VC_remove;
-        }
-        else
-        {
+        } else {
             error(2,
                   "%s: unknown suffix for method %s -- ignored",
                   input,
@@ -369,19 +349,16 @@ apply(int action,
             goto nope;
         }
         if (!stat(output, &so) && si.st_dev == so.st_dev
-            && si.st_ino == so.st_ino)
-        {
+            && si.st_ino == so.st_ino) {
             error(ERROR_SYSTEM | 2, "%s: identical to %s", output, input);
             goto nope;
         }
-        if (!(op = sfopen(NiL, output, "wb")))
-        {
+        if (!(op = sfopen(NiL, output, "wb"))) {
             error(ERROR_SYSTEM | 2, "%s: cannot write", output);
             goto nope;
         }
     }
-    if (!output || streq(output, "-") || streq(output, devstdout))
-    {
+    if (!output || streq(output, "-") || streq(output, devstdout)) {
         output = ( char * )devstdout;
         op = sfstdout, sfopen(op, NiL, "wb");
     }
@@ -391,16 +368,12 @@ apply(int action,
      * check codex sfio discipline
      */
 
-    if (action == VC_ENCODE)
-    {
-        if (codex(op, transform, CODEX_ENCODE, codexdisc, NiL) < 0)
-        {
+    if (action == VC_ENCODE) {
+        if (codex(op, transform, CODEX_ENCODE, codexdisc, NiL) < 0) {
             error(2, "%s: cannot push output stream discipline", output);
             goto bad;
         }
-    }
-    else if (codex(ip, transform, CODEX_DECODE, codexdisc, NiL) < 0)
-    {
+    } else if (codex(ip, transform, CODEX_DECODE, codexdisc, NiL) < 0) {
         error(2, "%s: cannot push input stream discipline", input);
         goto bad;
     }
@@ -409,13 +382,10 @@ apply(int action,
      * copy from sfstdin to sfstdout
      */
 
-    if (action)
-    {
+    if (action) {
         if (buf)
-            for (;;)
-            {
-                if ((n = sfread(ip, buf, bufsize)) <= 0)
-                {
+            for (;;) {
+                if ((n = sfread(ip, buf, bufsize)) <= 0) {
                     if (n < 0)
                         error(ERROR_SYSTEM | 2, "%s: read error", input);
                     break;
@@ -423,27 +393,23 @@ apply(int action,
                 if (sfwrite(op, buf, n) < 0)
                     break;
             }
-        else
-        {
+        else {
             sfmove(ip, op, SF_UNBOUND, -1);
             if (!sfeof(ip))
                 error(ERROR_SYSTEM | 2, "%s: read error", input);
         }
         if (sferror(op) || sfsync(op))
             error(ERROR_SYSTEM | 2, "%s: write error", output);
-        else if (codexdata(action == VC_ENCODE ? op : ip, &data) > 0)
-        {
+        else if (codexdata(action == VC_ENCODE ? op : ip, &data) > 0) {
             unsigned char *u;
             unsigned char *e;
 
-            if (data.buf)
-            {
+            if (data.buf) {
                 for (e = (u = ( unsigned char * )data.buf) + data.size; u < e;
                      u++)
                     sfprintf(sfstderr, "%02x", *u);
                 sfprintf(sfstderr, "\n");
-            }
-            else
+            } else
                 sfprintf(sfstderr,
                          "%0*I*x\n",
                          data.size * 2,
@@ -451,8 +417,7 @@ apply(int action,
                          data.num);
         }
         codexpop(action == VC_ENCODE ? op : ip, 0);
-    }
-    else
+    } else
         sfprintf(sfstdout, "\n");
     r = 1;
     goto done;
@@ -466,8 +431,7 @@ done:
         sfclose(ip);
     if (op && op != sfstdout)
         sfclose(op);
-    if (r > 0 && (flags & VC_remove))
-    {
+    if (r > 0 && (flags & VC_remove)) {
         if (chmod(output, si.st_mode))
             error(ERROR_SYSTEM | 1, "%s: cannot set file mode", output);
         if (tmxtouch(
@@ -507,27 +471,21 @@ main(int argc, char **argv)
     action = VC_ENCODE;
     while (transform < &command[sizeof(command) - 1] && (c = *s++)
            && isalnum(c) && (c = tolower(c)))
-        if (c == 'a' && tolower(*s) == 't' && !*(s + 1))
-        {
+        if (c == 'a' && tolower(*s) == 't' && !*(s + 1)) {
             action = VC_DECODE;
             flags |= VC_cat;
             s = "zip";
-        }
-        else if (c == 'u' && tolower(*s) == 'n')
-        {
+        } else if (c == 'u' && tolower(*s) == 'n') {
             action = VC_DECODE;
             s++;
-        }
-        else
+        } else
             *transform++ = c;
     *transform = 0;
     transform = 0;
     codexinit(&codexdisc, errorf);
     optinit(&optdisc, optinfo);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'b':
             bufsize = ( size_t )opt_info.number;
             continue;
@@ -582,8 +540,7 @@ main(int argc, char **argv)
         output);
     if (output && (flags & VC_cat))
         error(3, "--output=%s: invalid --cat is specified", output);
-    while (bufsize > 0)
-    {
+    while (bufsize > 0) {
         if (buf = malloc(bufsize))
             break;
         bufsize /= 2;

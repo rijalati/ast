@@ -80,8 +80,7 @@ p_tree(const Shnode_t *t)
         return (sfputl(outfile, -1));
     if (sfputl(outfile, t->tre.tretyp) < 0)
         return (-1);
-    switch (t->tre.tretyp & COMMSK)
-    {
+    switch (t->tre.tretyp & COMMSK) {
     case TTIME:
     case TPAR:
         return (p_tree(t->par.partre));
@@ -101,13 +100,10 @@ p_tree(const Shnode_t *t)
             return (-1);
         return (p_tree(t->if_.eltre));
     case TWH:
-        if (t->wh.whinc)
-        {
+        if (t->wh.whinc) {
             if (p_tree(( Shnode_t * )(t->wh.whinc)) < 0)
                 return (-1);
-        }
-        else
-        {
+        } else {
             if (sfputl(outfile, -1) < 0)
                 return (-1);
         }
@@ -152,8 +148,7 @@ p_tree(const Shnode_t *t)
             return (-1);
         if ((t->tre.tretyp & TPAREN) == TPAREN)
             return (p_tree(t->lst.lstlef));
-        else
-        {
+        else {
             if (p_arg(&(t->lst.lstlef->arg)) < 0)
                 return (-1);
             if ((t->tre.tretyp & TBINARY))
@@ -169,32 +164,26 @@ p_arg(const struct argnod *arg)
 {
     ssize_t n;
     struct fornod *fp;
-    while (arg)
-    {
+    while (arg) {
         if ((n = strlen(arg->argval))
             || (arg->argflag
                 & ~(ARG_APPEND | ARG_MESSAGE | ARG_QUOTED | ARG_ARRAY)))
             fp = 0;
-        else
-        {
+        else {
             fp = ( struct fornod * )arg->argchn.ap;
             n = strlen(fp->fornam) + 1;
         }
         sfputu(outfile, n + 1);
-        if (fp)
-        {
+        if (fp) {
             sfputc(outfile, 0);
             outstring(outfile, fp->fornam, n - 1);
-        }
-        else
+        } else
             outstring(outfile, arg->argval, n);
         sfputc(outfile, arg->argflag);
-        if (fp)
-        {
+        if (fp) {
             sfputu(outfile, fp->fortyp);
             p_tree(fp->fortre);
-        }
-        else if (n == 0 && (arg->argflag & ARG_EXP) && arg->argchn.ap)
+        } else if (n == 0 && (arg->argflag & ARG_EXP) && arg->argchn.ap)
             p_tree(( Shnode_t * )arg->argchn.ap);
         arg = arg->argnxt.ap;
     }
@@ -204,21 +193,18 @@ p_arg(const struct argnod *arg)
 static int
 p_redirect(const struct ionod *iop)
 {
-    while (iop)
-    {
+    while (iop) {
         if (iop->iovname)
             sfputl(outfile, iop->iofile | IOVNM);
         else
             sfputl(outfile, iop->iofile);
         p_string(iop->ioname);
-        if (iop->iodelim)
-        {
+        if (iop->iodelim) {
             p_string(iop->iodelim);
             sfputl(outfile, iop->iosize);
             sfseek(sh.heredocs, iop->iooffset, SEEK_SET);
             sfmove(sh.heredocs, outfile, iop->iosize, -1);
-        }
-        else
+        } else
             sfputu(outfile, 0);
         if (iop->iovname)
             p_string(iop->iovname);
@@ -260,8 +246,7 @@ p_comlist(const struct dolnod *dol)
 static int
 p_switch(const struct regnod *reg)
 {
-    while (reg)
-    {
+    while (reg) {
         sfputl(outfile, reg->regflag);
         p_arg(reg->regptr);
         p_tree(reg->regcom);

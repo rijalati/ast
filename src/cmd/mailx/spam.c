@@ -155,18 +155,14 @@ set_spamtest(struct var *vp, const char *value)
     long test;
 
     s = ( char * )value;
-    if (!isdigit(*s))
-    {
+    if (!isdigit(*s)) {
         test = *(( long * )vp->variable);
-        do
-        {
+        do {
             for (t = s; *t && *t != ',' && *t != '|'; t++)
                 ;
             if (n = t - s)
-                for (p = spamtest;; p++)
-                {
-                    if (p >= &spamtest[elementsof(spamtest)])
-                    {
+                for (p = spamtest;; p++) {
+                    if (p >= &spamtest[elementsof(spamtest)]) {
                         if (!strncasecmp(s, "clear", n))
                             test = 0;
                         else if (!strncasecmp(s, "default", n))
@@ -179,8 +175,7 @@ set_spamtest(struct var *vp, const char *value)
                                  vp->name);
                         break;
                     }
-                    if (!strncasecmp(s, p->name, n))
-                    {
+                    if (!strncasecmp(s, p->name, n)) {
                         test |= p->type;
                         break;
                     }
@@ -207,20 +202,17 @@ addrmatch(const char *a, const char *b)
     int host;
 
     ap = ( char * )a;
-    for (;;)
-    {
+    for (;;) {
         while (isspace(*ap))
             ap++;
         if (ae = strchr(ap, ','))
             *ae = 0;
         ap = skin(ap, GDISPLAY | GCOMPARE);
         bp = ( char * )b;
-        for (;;)
-        {
+        for (;;) {
             while (isspace(*bp))
                 bp++;
-            if (be = strchr(bp, ','))
-            {
+            if (be = strchr(bp, ',')) {
                 *be = 0;
                 many = 1;
             }
@@ -230,10 +222,8 @@ addrmatch(const char *a, const char *b)
             if (host = *bp == '@' && (tp = strchr(ap, '@')))
                 ap = tp + 1;
             bp++;
-            for (;;)
-            {
-                if (!strcasecmp(ap, bp))
-                {
+            for (;;) {
+                if (!strcasecmp(ap, bp)) {
                     if (ae)
                         *ae = ',';
                     if (be)
@@ -273,35 +263,30 @@ hostmatch(const char *a, const char *b)
     int local = 1;
 
     ap = ( char * )a;
-    for (;;)
-    {
+    for (;;) {
         if (ae = strchr(ap, ','))
             *ae = 0;
         if ((ad = strchr(ap, '.')) && !strchr(++ad, '.'))
             ad = 0;
         bp = ( char * )b;
-        for (;;)
-        {
+        for (;;) {
             while (isspace(*bp))
                 bp++;
             if (be = strchr(bp, ','))
                 *be = 0;
             if (strchr(bp, ' '))
                 local = 0;
-            else if (bp = strchr(bp, '@'))
-            {
+            else if (bp = strchr(bp, '@')) {
                 local = 0;
                 bp++;
                 if (TRACING('x'))
                     note(0, "spam: host check  `%s'  `%s'", ap, bp);
                 if (!strcasecmp(ap, bp))
                     goto hit;
-                if (ad)
-                {
+                if (ad) {
                     if (!strcasecmp(ad, bp))
                         goto hit;
-                    while (bp = strchr(bp, '.'))
-                    {
+                    while (bp = strchr(bp, '.')) {
                         bp++;
                         if (!strcasecmp(ad, bp))
                             goto hit;
@@ -344,8 +329,7 @@ wordmatch(const char *a, const char *b)
     int l;
 
     bb = ( char * )b;
-    for (;;)
-    {
+    for (;;) {
         while (isspace(*bb))
             bb++;
         if (!(be = strchr(bb, ',')))
@@ -353,31 +337,22 @@ wordmatch(const char *a, const char *b)
         l = *bb;
         u = toupper(l);
         ab = ap = ( char * )a;
-        do
-        {
-            if ((*ap == l || *ap == u) && (ap == ab || !isalnum(*(ap - 1))))
-            {
+        do {
+            if ((*ap == l || *ap == u) && (ap == ab || !isalnum(*(ap - 1)))) {
                 am = ap;
                 bm = bb;
-                for (;;)
-                {
-                    if (bm >= be && !isalpha(*am))
-                    {
+                for (;;) {
+                    if (bm >= be && !isalpha(*am)) {
                         if (TRACING('x'))
                             note(0, "spam: word match `%-.*s'", bm - bb, bb);
                         return 1;
-                    }
-                    else if (*am == *bm || *am == toupper(*bm))
-                    {
+                    } else if (*am == *bm || *am == toupper(*bm)) {
                         am++;
                         bm++;
-                    }
-                    else if (!isalnum(*am) && !isspace(*am))
-                    {
+                    } else if (!isalnum(*am) && !isspace(*am)) {
                         if (!*am++)
                             break;
-                    }
-                    else
+                    } else
                         break;
                 }
             }
@@ -406,22 +381,19 @@ usermatch(const char *a, const char *b, int to)
     if (!*a || !*b)
         return 0;
     ap = ( char * )a;
-    while (*ap)
-    {
+    while (*ap) {
         while (isspace(*ap))
             ap++;
         if (ae = strchr(ap, ','))
             *ae = 0;
-        if (strchr(ap, ' '))
-        {
+        if (strchr(ap, ' ')) {
             if (ae)
                 *ae = ',';
             return 1;
         }
         ad = strchr(ap, '@');
         bp = ( char * )b;
-        for (;;)
-        {
+        for (;;) {
             while (isspace(*bp))
                 bp++;
             if (be = strchr(bp, ','))
@@ -430,35 +402,29 @@ usermatch(const char *a, const char *b, int to)
                 note(0, "spam: user match  `%s'  `%s'", ap, bp);
             if (*bp == 0)
                 /* skip */;
-            else if (*bp == '@')
-            {
+            else if (*bp == '@') {
                 bp++;
                 for (td = ad; td; td = strchr(td, '.'))
                     if (!strcasecmp(++td, bp))
                         goto hit;
-            }
-            else if (!strcasecmp(ap, bp))
+            } else if (!strcasecmp(ap, bp))
                 goto hit;
-            else if (ad)
-            {
+            else if (ad) {
                 *ad = 0;
-                if (to && !strcasecmp(ap, state.var.user))
-                {
+                if (to && !strcasecmp(ap, state.var.user)) {
                     *ad = '@';
                     if (TRACING('x'))
                         note(
                         0, "spam: user addr check `%s' suspect domain", ap);
                     goto hit;
                 }
-                if (!strcasecmp(ap, bp) || strchr(ap, '!'))
-                {
+                if (!strcasecmp(ap, bp) || strchr(ap, '!')) {
                     *ad = '@';
                     goto hit;
                 }
                 *ad = '@';
             }
-            if (!be)
-            {
+            if (!be) {
                 if (ae)
                     *ae = ',';
                 break;
@@ -490,8 +456,7 @@ insider(char *s, char *e, int f, char *d1, int n1, char *d2, int n2)
 
     if (!e)
         e = s + strlen(s);
-    do
-    {
+    do {
         n = e - ++s;
         if (n == n1 && strneq(s, d1, n1) || n == n2 && strneq(s, d2, n2))
             return 1;
@@ -525,15 +490,13 @@ spammed(struct msg *mp)
     struct parse pp;
 
     if (!(to = grab(mp, GTO | GCOMPARE | GDISPLAY | GLAST | GUSER, NiL))
-        || !*to)
-    {
+        || !*to) {
         if (TRACING('x'))
             note(0, "spam: To: header missing");
         return 1;
     }
     test = 0;
-    if (t = grab(mp, GSENDER | GCOMPARE | GDISPLAY, NiL))
-    {
+    if (t = grab(mp, GSENDER | GCOMPARE | GDISPLAY, NiL)) {
         if (TRACING('x'))
             note(0, "spam: sender `%s'", t);
         if (addrmatch(t, state.var.user)
@@ -543,53 +506,41 @@ spammed(struct msg *mp)
             || state.var.spamfrom && usermatch(t, state.var.spamfrom, 0))
             test |= SPAM_from_spam;
     }
-    if (headset(&pp, mp, NiL, NiL, NiL, GFROM))
-    {
+    if (headset(&pp, mp, NiL, NiL, NiL, GFROM)) {
         d = state.var.spamdelay;
         q = 0;
         ok = no = fromours = me = 0;
-        if (state.var.domain)
-        {
+        if (state.var.domain) {
             ours = strlen(state.var.domain);
             if ((domain2 = strchr(state.var.domain, '.'))
                 && strchr(domain2 + 1, '.'))
                 ours2 = strlen(++domain2);
-            else
-            {
+            else {
                 domain2 = 0;
                 ours2 = 0;
             }
-        }
-        else
-        {
+        } else {
             ours = ours2 = 0;
             domain2 = 0;
         }
         if (TRACING('z'))
             note(0, "spam: ours: %s %s", state.var.domain, domain2);
-        while (headget(&pp))
-        {
+        while (headget(&pp)) {
             t = pp.name;
             if (TRACING('h'))
                 note(0, "spam: head: %s: %s", t, pp.data);
             if ((*t == 'X' || *t == 'x') && *(t + 1) == '-')
                 t += 2;
-            if (*t == 'A' || *t == 'a')
-            {
-                if (!strcasecmp(t, "Ad") || !strcasecmp(t, "Advertisement"))
-                {
+            if (*t == 'A' || *t == 'a') {
+                if (!strcasecmp(t, "Ad") || !strcasecmp(t, "Advertisement")) {
                     if (TRACING('x'))
                         note(0, "spam: advertisement header");
                     test |= SPAM_advertisement;
-                }
-                else if (!strcasecmp(t, "Authentication-Warning"))
-                {
+                } else if (!strcasecmp(t, "Authentication-Warning")) {
                     test |= SPAM_authentication_warning;
-                    if (t = strrchr(pp.data, ' '))
-                    {
+                    if (t = strrchr(pp.data, ' ')) {
                         *t++ = 0;
-                        if (streq(t, "-f"))
-                        {
+                        if (streq(t, "-f")) {
                             if ((t = strrchr(pp.data, ' '))
                                 && streq(t + 1, "using") && !(*t = 0)
                                 && (t = strrchr(pp.data, ' '))
@@ -601,24 +552,18 @@ spammed(struct msg *mp)
                                            domain2,
                                            ours2))
                                 test |= SPAM_authentication_outsider;
-                        }
-                        else if (streq(t, "protocol"))
+                        } else if (streq(t, "protocol"))
                             test |= SPAM_authentication_protocol;
                     }
                 }
-            }
-            else if (*t == 'C' || *t == 'c')
-            {
-                if (!strcasecmp(t, "Cc"))
-                {
+            } else if (*t == 'C' || *t == 'c') {
+                if (!strcasecmp(t, "Cc")) {
                     t = skin(pp.data, GDISPLAY | GCOMPARE | GFROM);
                     if (TRACING('x'))
                         note(0, "spam: cc `%s'", t);
                     if (addrmatch(state.var.user, t))
                         me = 1;
-                }
-                else if (!strcasecmp(t, "Content-Type"))
-                {
+                } else if (!strcasecmp(t, "Content-Type")) {
                     t = skin(pp.data, GDISPLAY | GCOMPARE | GFROM);
                     if (TRACING('x'))
                         note(0, "spam: content-type `%s'", t);
@@ -627,11 +572,8 @@ spammed(struct msg *mp)
                     else if (!strncasecmp(t, "multipart/related", 17))
                         test |= SPAM_content_multipart_related;
                 }
-            }
-            else if (*t == 'F' || *t == 'f')
-            {
-                if (!strcasecmp(t, "From"))
-                {
+            } else if (*t == 'F' || *t == 'f') {
+                if (!strcasecmp(t, "From")) {
                     t = skin(pp.data, GDISPLAY | GCOMPARE | GFROM);
                     if (s = strchr(t, ' '))
                         *s = 0;
@@ -654,74 +596,55 @@ spammed(struct msg *mp)
                                            domain2,
                                            ours2);
                 }
-            }
-            else if (*t == 'M' || *t == 'm')
-            {
-                if (!strcasecmp(t, "Message-Id"))
-                {
+            } else if (*t == 'M' || *t == 'm') {
+                if (!strcasecmp(t, "Message-Id")) {
                     t = skin(pp.data, GDISPLAY | GCOMPARE | GFROM);
                     if (TRACING('x'))
                         note(0, "spam: message-id `%s'", t);
                     if (!*t)
                         test |= SPAM_message_id_spam;
-                }
-                else if (!strcasecmp(t, "Mime-Autoconverted"))
-                {
+                } else if (!strcasecmp(t, "Mime-Autoconverted")) {
                     if (TRACING('x'))
                         note(0, "spam: mime autoconverted");
                     test |= SPAM_mime_autoconverted;
                 }
-            }
-            else if (*t == 'R' || *t == 'r')
-            {
-                if (!strcasecmp(t, "Received"))
-                {
-                    for (t = pp.data; *t; t++)
-                    {
-                        if (*t == 'u')
-                        {
+            } else if (*t == 'R' || *t == 'r') {
+                if (!strcasecmp(t, "Received")) {
+                    for (t = pp.data; *t; t++) {
+                        if (*t == 'u') {
                             if ((t == pp.data || *(t - 1) == '('
                                  || *(t - 1) == ' ')
-                                && strneq(t, "unknown ", 8))
-                            {
+                                && strneq(t, "unknown ", 8)) {
                                 if (TRACING('x'))
                                     note(0, "spam: unknown host name");
                                 test |= SPAM_received_unknown;
                             }
-                        }
-                        else if (*t == 'f'
-                                 && (t == pp.data || *(t - 1) == ' '))
-                        {
-                            if (strneq(t, "forged", 6))
-                            {
+                        } else if (*t == 'f'
+                                   && (t == pp.data || *(t - 1) == ' ')) {
+                            if (strneq(t, "forged", 6)) {
                                 if (TRACING('x'))
                                     note(0, "spam: forged");
                                 test |= SPAM_received_forged;
-                            }
-                            else if (ours && strneq(t, "from ", 5))
-                            {
+                            } else if (ours && strneq(t, "from ", 5)) {
                                 n = 0;
                                 s = t;
                                 for (s = t + 5; *s == ' '; s++)
                                     ;
-                                while (e = strchr(s, ' '))
-                                {
+                                while (e = strchr(s, ' ')) {
                                     if (insider(s,
                                                 e,
                                                 0,
                                                 state.var.domain,
                                                 ours,
                                                 domain2,
-                                                ours2))
-                                    {
+                                                ours2)) {
                                         n = 1;
                                         break;
                                     }
                                     if (!(s = strchr(e + 1, '.')))
                                         break;
                                 }
-                                if (!n)
-                                {
+                                if (!n) {
                                     ours = 0;
                                     if (TRACING('x'))
                                         note(
@@ -731,17 +654,14 @@ spammed(struct msg *mp)
                         }
                     }
 #if _PACKAGE_ast
-                    if (!ours && d && (s = strrchr(pp.data, ';')))
-                    {
+                    if (!ours && d && (s = strrchr(pp.data, ';'))) {
                         while (*++s && isspace(*s))
                             ;
-                        if (*s)
-                        {
+                        if (*s) {
                             x = tmdate(s, NiL, NiL);
                             if (q == 0)
                                 q = x;
-                            else if (((q > x) ? (q - x) : (x - q)) > d)
-                            {
+                            else if (((q > x) ? (q - x) : (x - q)) > d) {
                                 if (TRACING('x'))
                                     note(0,
                                          "spam: delay %ld",
@@ -753,51 +673,38 @@ spammed(struct msg *mp)
                     }
 #endif
                 }
-            }
-            else if (*t == 'S' || *t == 's')
-            {
-                if (!strcasecmp(t, "Spam-Flag"))
-                {
+            } else if (*t == 'S' || *t == 's') {
+                if (!strcasecmp(t, "Spam-Flag")) {
                     t = pp.data;
-                    if (*t == 'Y' || *t == 'y' || *t == '1')
-                    {
+                    if (*t == 'Y' || *t == 'y' || *t == '1') {
                         if (TRACING('x'))
                             note(0, "spam: external spam check hit");
                         test |= SPAM_external_spam;
                     }
-                }
-                else if (!strcasecmp(t, "Subject"))
-                {
+                } else if (!strcasecmp(t, "Subject")) {
                     s = pp.data;
                     while (n = *s++)
-                        if (n != ' ' && n != '\t' && isspace(n))
-                        {
+                        if (n != ' ' && n != '\t' && isspace(n)) {
                             test |= SPAM_subject_spam;
                             break;
                         }
-                    if (!(test & SPAM_subject_spam) && state.var.spamsub)
-                    {
+                    if (!(test & SPAM_subject_spam) && state.var.spamsub) {
                         if (wordmatch(strlower(pp.data), state.var.spamsub))
                             test |= SPAM_subject_spam;
                     }
                 }
-            }
-            else if (*t == 'T' || *t == 't')
-            {
-                if (!strcasecmp(t, "To"))
-                {
+            } else if (*t == 'T' || *t == 't') {
+                if (!strcasecmp(t, "To")) {
                     for (t = pp.data; t = strchr(t, ':'); *t = ',')
                         ;
                     s = pp.data;
-                    do
-                    {
+                    do {
                         if (e = strchr(s, ','))
                             *e++ = 0;
                         t = skin(s, GDISPLAY | GCOMPARE);
                         if (TRACING('x'))
                             note(0, "spam: to `%s'", t);
-                        if (*t == 0)
-                        {
+                        if (*t == 0) {
                             test |= SPAM_to_spam;
                             break;
                         }
@@ -806,17 +713,14 @@ spammed(struct msg *mp)
                         else if (state.var.spamtook
                                  && usermatch(t,
                                               state.var.spamtook,
-                                              state.var.local != 0))
-                        {
+                                              state.var.local != 0)) {
                             if (TRACING('x'))
                                 note(0, "spam: spamtook `%s'", t);
                             ok++;
-                        }
-                        else if (state.var.spamto
-                                 && usermatch(t,
-                                              state.var.spamto,
-                                              state.var.local != 0))
-                        {
+                        } else if (state.var.spamto
+                                   && usermatch(t,
+                                                state.var.spamto,
+                                                state.var.local != 0)) {
                             if (TRACING('x'))
                                 note(0, "spam: spamto `%s'", t);
                             no++;
@@ -827,16 +731,14 @@ spammed(struct msg *mp)
         }
         if (fromours > 0 && !ours)
             test |= SPAM_from_forged;
-        if (TRACING('t') || TRACING('x'))
-        {
+        if (TRACING('t') || TRACING('x')) {
             const struct lab *p;
             char buf[1024];
 
             s = buf;
             e = s + sizeof(buf) - 1;
             for (p = spamtest; p < &spamtest[elementsof(spamtest)]; p++)
-                if (test & p->type)
-                {
+                if (test & p->type) {
                     for (t = ( char * )p->name; *t && s < e; *s++ = *t++)
                         ;
                     if (s < e)
@@ -856,27 +758,23 @@ spammed(struct msg *mp)
         if (test & state.var.spamtest)
             return 1;
     }
-    if (state.var.local)
-    {
+    if (state.var.local) {
         local = state.var.local;
         state.var.local = 0;
-        if (!(s = grab(mp, GTO | GCOMPARE | GDISPLAY | GLAST | GUSER, NiL)))
-        {
+        if (!(s = grab(mp, GTO | GCOMPARE | GDISPLAY | GLAST | GUSER, NiL))) {
             if (TRACING('x'))
                 note(0, "spam: To: header missing");
             state.var.local = local;
             return 1;
         }
-        if (hostmatch(local, s))
-        {
+        if (hostmatch(local, s)) {
             if (TRACING('y'))
                 note(0, "spam: host ok#%d `%s' `%s'", __LINE__, local, s);
             state.var.local = local;
             return 0;
         }
         if ((s = grab(mp, GCC | GCOMPARE | GDISPLAY, NiL))
-            && hostmatch(local, s))
-        {
+            && hostmatch(local, s)) {
             if (TRACING('y'))
                 note(0, "spam: host ok#%d `%s' `%s'", __LINE__, local, s);
             state.var.local = local;

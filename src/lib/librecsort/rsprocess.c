@@ -82,8 +82,7 @@ ssize_t s_data;                                  /* data size		*/
     if ((c_max = rs->c_max) <= 0)
         c_max = s_data;
 
-    if ((rs->type & RS_SORTED))
-    {
+    if ((rs->type & RS_SORTED)) {
         if (rs->sorted)
             return -1;
         rs->type &= ~RS_SORTED;
@@ -100,21 +99,19 @@ ssize_t s_data;                                  /* data size		*/
     {
         if (key <= 0)
             key = mbcoll() ? 64 : 4;
-    }
-    else if (dsamelen) /* embedded key with fixed length */
+    } else if (dsamelen) /* embedded key with fixed length */
     {
         datalen = d;
         if (keylen <= 0)
             keylen += datalen - key;
     }
 
-    for (s_process = 0;;)
-    {
+    for (s_process = 0;;) {
         if ((s_loop = s_data) > c_max && !single) /* max amount per loop */
             s_loop = c_max;
 
-        if ((rs->c_size += s_loop) > c_max && (r = (*rs->meth->listf)(rs)))
-        { /* start a new sorted chain */
+        if ((rs->c_size += s_loop) > c_max
+            && (r = (*rs->meth->listf)(rs))) { /* start a new sorted chain */
             Rsobj_t **list;
             list
             = ( Rsobj_t ** )vmresize(rs->vm,
@@ -134,8 +131,7 @@ ssize_t s_data;                                  /* data size		*/
 
         if (!defkeyf && dsamelen) /* fast loop for a common case */
         {
-            while (s_loop >= datalen)
-            {
+            while (s_loop >= datalen) {
                 if (!RSALLOC(rs, r))
                     return -1;
                 r->data = data;
@@ -143,8 +139,7 @@ ssize_t s_data;                                  /* data size		*/
                 r->key = r->data + key;
                 r->keylen = keylen;
 
-                if (rs->events & RS_READ)
-                {
+                if (rs->events & RS_READ) {
                     if ((n
                          = rsnotify(rs,
                                     RS_READ,
@@ -155,13 +150,11 @@ ssize_t s_data;                                  /* data size		*/
                                     rs->disc))
                         < 0)
                         return -1;
-                    if (n == RS_DELETE)
-                    {
+                    if (n == RS_DELETE) {
                         RSFREE(rs, r);
                         goto delete_key;
                     }
-                    if (r->data != data)
-                    {
+                    if (r->data != data) {
                         if (!(endd = ( uchar * )vmalloc(rs->vm, r->datalen))
                             || !(r->data = ( uchar * )memcpy(
                                  endd, r->data, r->datalen)))
@@ -181,8 +174,7 @@ ssize_t s_data;                                  /* data size		*/
             goto next_loop;
         }
 
-        do
-        {
+        do {
             if (single)
                 datalen = s_data;
             else if (dsamelen) /* fixed length records */
@@ -212,18 +204,15 @@ ssize_t s_data;                                  /* data size		*/
             r->data = data;
             r->datalen = datalen;
 
-            for (;;)
-            {
+            for (;;) {
                 if (!defkeyf) /* key is part of data */
                 {
                     r->key = r->data + key;
                     if ((r->keylen = keylen) <= 0)
                         r->keylen += r->datalen - key;
-                }
-                else /* key must be constructed separately */
-                {    /* make sure there is enough space */
-                    if (s_key < (k = key * r->datalen))
-                    {
+                } else /* key must be constructed separately */
+                {      /* make sure there is enough space */
+                    if (s_key < (k = key * r->datalen)) {
                         if (k < RS_RESERVE && rs->meth->type != RS_MTVERIFY)
                             k = RS_RESERVE;
 
@@ -238,8 +227,7 @@ ssize_t s_data;                                  /* data size		*/
                                 m_key = NIL(uchar *);
                             }
                         }
-                        if (!m_key)
-                        {
+                        if (!m_key) {
                             if (!(m_key = ( uchar * )vmalloc(rs->vm, k)))
                                 return -1;
                             c_key = m_key;
@@ -254,13 +242,12 @@ ssize_t s_data;                                  /* data size		*/
                     r->key = c_key;
                     r->keylen = k;
 
-                    if (rs->meth->type == RS_MTVERIFY)
-                    { /* each key is allocated separately */
+                    if (rs->meth->type
+                        == RS_MTVERIFY) { /* each key is allocated separately
+                                           */
                         s_key = 0;
                         m_key = c_key = NIL(uchar *);
-                    }
-                    else
-                    {
+                    } else {
                         c_key += k;
                         s_key -= k;
                     }
@@ -276,10 +263,8 @@ ssize_t s_data;                                  /* data size		*/
                                   rs->disc))
                     < 0)
                     return -1;
-                if (n == RS_DELETE)
-                {
-                    if (defkeyf && c_key)
-                    {
+                if (n == RS_DELETE) {
+                    if (defkeyf && c_key) {
                         c_key -= k;
                         s_key += k;
                     }
@@ -307,8 +292,7 @@ ssize_t s_data;                                  /* data size		*/
             break;
     }
 
-    if (rs->meth->type == RS_MTVERIFY)
-    {
+    if (rs->meth->type == RS_MTVERIFY) {
         (*rs->meth->listf)(rs);
         rs->c_size = 0;
     }

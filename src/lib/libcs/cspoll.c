@@ -59,13 +59,11 @@ cspoll(Cs_t *state, Cspoll_t *fds, int num, int ms)
     struct timeval *tp;
     struct timeval tv;
 
-    if (ms >= 0)
-    {
+    if (ms >= 0) {
         tv.tv_sec = ms / 1000;
         tv.tv_usec = (ms % 1000) * 1000;
         tp = &tv;
-    }
-    else
+    } else
         tp = 0;
     FD_ZERO(ep);
 #    endif
@@ -73,22 +71,18 @@ cspoll(Cs_t *state, Cspoll_t *fds, int num, int ms)
     FD_ZERO(wp);
     events = width = 0;
     for (mp = (pp = fds) + num; pp < mp; pp++)
-        if (pp->fd >= 0)
-        {
+        if (pp->fd >= 0) {
             if (pp->fd > width)
                 width = pp->fd;
-            if (pp->events & CS_POLL_READ)
-            {
+            if (pp->events & CS_POLL_READ) {
                 events |= CS_POLL_READ;
                 FD_SET(pp->fd, rp);
             }
-            if (pp->events & CS_POLL_WRITE)
-            {
+            if (pp->events & CS_POLL_WRITE) {
                 events |= CS_POLL_WRITE;
                 FD_SET(pp->fd, wp);
             }
-            if (pp->events & CS_POLL_CONTROL)
-            {
+            if (pp->events & CS_POLL_CONTROL) {
                 events |= CS_POLL_CONTROL;
 #    if CS_LIB_SOCKET
                 FD_SET(pp->fd, ep);
@@ -123,13 +117,10 @@ cspoll(Cs_t *state, Cspoll_t *fds, int num, int ms)
     if (num < 0)
         messagef((state->id, NiL, -1, "poll: select error"));
     else
-        for (num = 0, pp = fds; pp < mp; pp++)
-        {
+        for (num = 0, pp = fds; pp < mp; pp++) {
             pp->status = 0;
-            if (pp->fd >= 0)
-            {
-                if (rp && FD_ISSET(pp->fd, rp))
-                {
+            if (pp->fd >= 0) {
+                if (rp && FD_ISSET(pp->fd, rp)) {
 #    if CS_LIB_V10
                     long n;
 
@@ -148,8 +139,7 @@ cspoll(Cs_t *state, Cspoll_t *fds, int num, int ms)
                 if (ep && FD_ISSET(pp->fd, ep))
                     pp->status |= CS_POLL_CONTROL;
 #    endif
-                if (pp->status)
-                {
+                if (pp->status) {
                     pp->status
                     |= pp->events
                        & (CS_POLL_AUTH | CS_POLL_CONNECT | CS_POLL_USER);
@@ -172,24 +162,20 @@ cspoll(Cs_t *state, Cspoll_t *fds, int num, int ms)
 #        endif
     if (n < 0)
         messagef((state->id, NiL, -1, "poll: poll error"));
-    else if (n > 0)
-    {
+    else if (n > 0) {
         int i;
 #        ifdef RS_HIPRI
         struct strbuf buf;
 
         buf.maxlen = 0;
 #        endif
-        for (mp = (pp = fds) + num, i = n; pp < mp; pp++)
-        {
-            if (pp->status)
-            {
+        for (mp = (pp = fds) + num, i = n; pp < mp; pp++) {
+            if (pp->status) {
                 pp->status
                 |= pp->events
                    & (CS_POLL_AUTH | CS_POLL_CONNECT | CS_POLL_USER);
 #        ifdef RS_HIPRI
-                if (pp->status & CS_POLL_CONTROL)
-                {
+                if (pp->status & CS_POLL_CONTROL) {
                     int f = RS_HIPRI;
 
                     if (getmsg(pp->fd, NiL, &buf, &f))

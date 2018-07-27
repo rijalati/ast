@@ -80,8 +80,7 @@ rofs(const char *path)
     struct statvfs vfs;
     struct stat st;
 
-    if (!statvfs(path, &vfs))
-    {
+    if (!statvfs(path, &vfs)) {
 #    if defined(ST_RDONLY)
         if (vfs.f_flag & ST_RDONLY)
             return 1;
@@ -141,10 +140,8 @@ pathprobe_20100601(const char *lang,
     struct stat st;
     struct stat ps;
 
-    if (*proc != '/')
-    {
-        if (p = strchr(proc, ' '))
-        {
+    if (*proc != '/') {
+        if (p = strchr(proc, ' ')) {
             strncopy(buf, proc, p - proc + 1);
             proc = buf;
         }
@@ -154,14 +151,12 @@ pathprobe_20100601(const char *lang,
                               cmd,
                               sizeof(cmd))))
             proc = ( char * )aproc;
-        else if (p)
-        {
+        else if (p) {
             n = strlen(proc);
             strncopy(proc + n, p, PATH_MAX - n - 1);
         }
     }
-    if (!path)
-    {
+    if (!path) {
         path = buf;
         pathsize = sizeof(buf);
     }
@@ -170,8 +165,7 @@ pathprobe_20100601(const char *lang,
     k = lib + sfsprintf(lib, x - lib, "lib/%s/", probe);
     p = k + sfsprintf(k, x - k, "%s/%s/", lang, tool);
     pathkey(lang, tool, proc, key, sizeof(key), attr, attrsize);
-    if (op >= -2)
-    {
+    if (op >= -2) {
         strncopy(p, key, x - p);
         if (pathpath(lib, "", PATH_ABSOLUTE, path, pathsize)
             && !stat(path, &st) && (st.st_mode & S_IWUSR))
@@ -181,12 +175,10 @@ pathprobe_20100601(const char *lang,
     if (!pathpath(lib, "", PATH_ABSOLUTE | PATH_EXECUTE, path, pathsize)
         || stat(path, &ps))
         return 0;
-    for (;;)
-    {
+    for (;;) {
         ptime = ps.st_mtime;
         n = strlen(path);
-        if (n < (PATH_MAX - 5))
-        {
+        if (n < (PATH_MAX - 5)) {
             strcpy(path + n, ".ini");
             if (!stat(path, &st) && st.st_size
                 && ptime < ( unsigned long )st.st_mtime)
@@ -208,14 +200,13 @@ pathprobe_20100601(const char *lang,
 
         sfsprintf(exe, sizeof(exe), "lib/%s/%s", probe, probe);
         dirs = pathbin();
-        for (;;)
-        {
+        for (;;) {
             if (!(dir = dirs))
                 return 0;
             dirs = pathcat(dir, ':', "..", exe, path, pathsize);
             pathcanon(path, pathsize, 0);
-            if (*path == '/' && pathexists(path, PATH_REGULAR | PATH_EXECUTE))
-            {
+            if (*path == '/'
+                && pathexists(path, PATH_REGULAR | PATH_EXECUTE)) {
                 pathcat(dir, ':', "..", lib, path, pathsize);
                 pathcanon(path, pathsize, 0);
                 if (*path == '/'
@@ -230,8 +221,7 @@ pathprobe_20100601(const char *lang,
     x = nx;
     strcpy(exe, path);
     if (op >= -1
-        && (!(st.st_mode & S_ISUID) && ps.st_uid != geteuid() || rofs(path)))
-    {
+        && (!(st.st_mode & S_ISUID) && ps.st_uid != geteuid() || rofs(path))) {
         if (!(p = getenv("HOME")))
             return 0;
         p = path
@@ -239,26 +229,21 @@ pathprobe_20100601(const char *lang,
     }
     strncopy(p, k, x - p);
     force = 0;
-    if (op >= 0 && !stat(path, &st))
-    {
+    if (op >= 0 && !stat(path, &st)) {
         if (ptime <= ( unsigned long )st.st_mtime
-            || ptime <= ( unsigned long )st.st_ctime)
-        {
+            || ptime <= ( unsigned long )st.st_ctime) {
             /*
              * verify (<sep><name><sep><option><sep><value>)* header
              */
 
-            if (sp = sfopen(NiL, path, "r"))
-            {
-                if (x = sfgetr(sp, '\n', 1))
-                {
+            if (sp = sfopen(NiL, path, "r")) {
+                if (x = sfgetr(sp, '\n', 1)) {
                     while (*x && *x != ' ')
                         x++;
                     while (*x == ' ')
                         x++;
                     if (n = *x++)
-                        for (;;)
-                        {
+                        for (;;) {
                             for (k = x; *x && *x != n; x++)
                                 ;
                             if (!*x)
@@ -274,8 +259,7 @@ pathprobe_20100601(const char *lang,
                             if (!*x)
                                 break;
                             *x++ = 0;
-                            if (streq(k, "VERSION"))
-                            {
+                            if (streq(k, "VERSION")) {
                                 ap = arg;
                                 *ap++ = proc;
                                 *ap++ = p;
@@ -283,19 +267,16 @@ pathprobe_20100601(const char *lang,
                                 ops[0] = PROC_FD_DUP(1, 2, 0);
                                 ops[1] = 0;
                                 if (pp = procopen(
-                                    proc, arg, NiL, ops, PROC_READ))
-                                {
+                                    proc, arg, NiL, ops, PROC_READ)) {
                                     if ((v = x - e) >= sizeof(ver))
                                         v = sizeof(ver) - 1;
                                     k = p = ver;
-                                    for (;;)
-                                    {
-                                        if (k >= p)
-                                        {
+                                    for (;;) {
+                                        if (k >= p) {
                                             if (v <= 0)
                                                 break;
-                                            if ((r = read(pp->rfd, k, v)) < 0)
-                                            {
+                                            if ((r = read(pp->rfd, k, v))
+                                                < 0) {
                                                 if (errno == EINTR)
                                                     continue;
                                                 break;
@@ -312,8 +293,7 @@ pathprobe_20100601(const char *lang,
                                         k++;
                                     }
                                     *k = 0;
-                                    if (strcmp(ver, e))
-                                    {
+                                    if (strcmp(ver, e)) {
                                         force = 1;
                                         error(
                                         0,
@@ -334,8 +314,7 @@ pathprobe_20100601(const char *lang,
             if (!force)
                 op = -1;
         }
-        if (op >= 0 && (st.st_mode & S_IWUSR))
-        {
+        if (op >= 0 && (st.st_mode & S_IWUSR)) {
             if (op == 0)
                 error(0,
                       "%s probe information for %s language processor %s "
@@ -347,8 +326,7 @@ pathprobe_20100601(const char *lang,
             force = 0;
         }
     }
-    if (op >= 0)
-    {
+    if (op >= 0) {
         ap = arg;
         *ap++ = exe;
         if (force)

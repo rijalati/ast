@@ -191,8 +191,7 @@ _END_EXTERNS_
 #define K_TPUT(k) (((k) + K_MERGE) << S_BITS)
 
 #define MEMCPY(to, from, n)                                                  \
-    switch (n)                                                               \
-    {                                                                        \
+    switch (n) {                                                             \
     default:                                                                 \
         memcpy(( Void_t * )to, ( Void_t * )from, ( size_t )n);               \
         to += n;                                                             \

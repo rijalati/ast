@@ -60,8 +60,7 @@ ppcall(struct ppsymbol *sym, int tok)
 
     ret = -1;
     sym->flags |= SYM_NOTICED;
-    if (mac = sym->macro)
-    {
+    if (mac = sym->macro) {
         count(macro);
         if ((sym->flags & SYM_PREDICATE)
             && (pp.state & (CONDITIONAL | WARN)) == (CONDITIONAL | WARN))
@@ -83,16 +82,15 @@ ppcall(struct ppsymbol *sym, int tok)
 #endif
                 goto disable;
             }
-        if ((sym->flags & SYM_PREDEFINED) && !(pp.mode & (HOSTED | INACTIVE)))
-        {
+        if ((sym->flags & SYM_PREDEFINED)
+            && !(pp.mode & (HOSTED | INACTIVE))) {
 #if COMPATIBLE
             if (*sym->name != '_' && !(pp.state & COMPATIBILITY))
 #else
             if (*sym->name != '_')
 #endif
             {
-                if (pp.state & STRICT)
-                {
+                if (pp.state & STRICT) {
                     error(1,
                           "%s: obsolete predefined symbol expansion disabled",
                           sym->name);
@@ -102,9 +100,8 @@ ppcall(struct ppsymbol *sym, int tok)
                       "%s: obsolete predefined symbol expanded%s",
                       sym->name,
                       (pp.state & DIRECTIVE) ? "" : " outside of directive");
-            }
-            else if (!(pp.state & DIRECTIVE) && mac->value
-                     && (ppisdig(*mac->value) || *mac->value == '#'))
+            } else if (!(pp.state & DIRECTIVE) && mac->value
+                       && (ppisdig(*mac->value) || *mac->value == '#'))
                 error(1,
                       "%s: predefined symbol expanded outside of directive",
                       sym->name);
@@ -116,8 +113,7 @@ ppcall(struct ppsymbol *sym, int tok)
                          error_info.line,
                          (pp.state & CONDITIONAL) ? REF_IF : REF_NORMAL,
                          0L);
-        if (tp = mac->tuple)
-        {
+        if (tp = mac->tuple) {
             old_state = pp.state;
             pp.state |= DEFINITION | NOSPACE;
             old_token = pp.token;
@@ -126,30 +122,21 @@ ppcall(struct ppsymbol *sym, int tok)
             q = p + MAXTOKEN;
             *pp.token++ = ' ';
             old_hidden = pp.hidden;
-            while (c = pplex())
-            {
-                if (c == '\n')
-                {
+            while (c = pplex()) {
+                if (c == '\n') {
                     pp.hidden++;
                     pp.state |= HIDDEN | NEWLINE;
                     old_state |= HIDDEN | NEWLINE;
                     error_info.line++;
-                }
-                else if (c == '#')
-                {
+                } else if (c == '#') {
                     ungetchr(c);
                     break;
-                }
-                else
-                {
-                    for (;;)
-                    {
-                        if (streq(pp.token, tp->token))
-                        {
+                } else {
+                    for (;;) {
+                        if (streq(pp.token, tp->token)) {
                             if (!(tp = tp->match))
                                 break;
-                            if (!tp->nomatch)
-                            {
+                            if (!tp->nomatch) {
                                 free(p);
                                 pp.state = old_state;
                                 pp.token = old_token;
@@ -157,18 +144,15 @@ ppcall(struct ppsymbol *sym, int tok)
                                 ret = 1;
                                 goto disable;
                             }
-                        }
-                        else if (!(tp = tp->nomatch))
+                        } else if (!(tp = tp->nomatch))
                             break;
                     }
-                    if (!tp)
-                    {
+                    if (!tp) {
                         pp.token = pp.toknxt;
                         break;
                     }
                 }
-                if ((pp.token = pp.toknxt) > q)
-                {
+                if ((pp.token = pp.toknxt) > q) {
                     c = pp.token - p;
                     p = newof(p, char, n += MAXTOKEN, 0);
                     q = p + n - MAXTOKEN;
@@ -192,8 +176,7 @@ ppcall(struct ppsymbol *sym, int tok)
             if (!mac->value)
                 goto disable;
         }
-        if (sym->flags & SYM_FUNCTION)
-        {
+        if (sym->flags & SYM_FUNCTION) {
             /*
              * a quick and dirty '(' peek to avoid possibly
              * inappropriate ungetchr()'s below
@@ -212,22 +195,18 @@ ppcall(struct ppsymbol *sym, int tok)
             old_hidden = pp.hidden;
             old_state = pp.state;
             pp.state |= DEFINITION | FILEPOP | NOSPACE;
-            while ((c = pplex()) == '\n')
-            {
+            while ((c = pplex()) == '\n') {
                 pp.hidden++;
                 pp.state |= HIDDEN | NEWLINE;
                 old_state |= HIDDEN | NEWLINE;
                 error_info.line++;
             }
-            if (c != '(')
-            {
+            if (c != '(') {
                 pp.state = old_state;
                 if (old_next)
                     pp.in->nextchr = old_next;
-                else
-                {
-                    if (c)
-                    {
+                else {
+                    if (c) {
                         p = pp.toknxt;
                         while (p > pp.token)
                             ungetchr(*--p);
@@ -240,8 +219,7 @@ ppcall(struct ppsymbol *sym, int tok)
                         if (c == T_ID && !(pp.state & HIDDEN))
                             ungetchr(' ');
                     }
-                    if (pp.hidden != old_hidden)
-                    {
+                    if (pp.hidden != old_hidden) {
                         ungetchr('\n');
                         error_info.line--;
                         if (pp.hidden && !--pp.hidden)
@@ -273,13 +251,11 @@ ppcall(struct ppsymbol *sym, int tok)
             last_file = error_info.file;
             mp->line = error_info.line;
 #if MACKEYARGS
-            if (pp.option & KEYARGS)
-            {
+            if (pp.option & KEYARGS) {
                 for (c = 0; c < mac->arity; c++)
                     mp->arg[c] = mac->args.key[c].value + 1;
                 mp->arg[0]++;
-            }
-            else
+            } else
 #endif
             {
                 *++p = ' ';
@@ -287,11 +263,9 @@ ppcall(struct ppsymbol *sym, int tok)
             }
 #if MACKEYARGS
         keyarg:
-            if (pp.option & KEYARGS)
-            {
+            if (pp.option & KEYARGS) {
                 pp.state |= NOSPACE;
-                switch (pplex())
-                {
+                switch (pplex()) {
                 case T_ID:
                     break;
                 case ')': /* no actual key args */
@@ -318,23 +292,19 @@ ppcall(struct ppsymbol *sym, int tok)
                 pp.token = mp->arg[c] = ++p;
             }
 #endif
-            for (;;)
-            {
+            for (;;) {
                 if ((pp.mactop = pp.token = p) >= pp.maxmac)
                     error(
                     3, "%s: too many nested function-like macros", sym->name);
-                switch (pplex())
-                {
+                switch (pplex()) {
                 case '(':
                     n++;
                     break;
                 case ')':
-                    if (!n--)
-                    {
+                    if (!n--) {
                         if (p > mp->arg[c] && *(p - 1) == ' ')
                             p--;
-                        if (p > mp->arg[c] && *(p - 1) == '\\')
-                        {
+                        if (p > mp->arg[c] && *(p - 1) == '\\') {
                             for (q = mp->arg[c]; q < p; q++)
                                 if (*q == '\\')
                                     q++;
@@ -352,8 +322,7 @@ ppcall(struct ppsymbol *sym, int tok)
                     if (!n
                         && (m++,
                             (c < mac->arity - 1
-                             || !(sym->flags & SYM_VARIADIC))))
-                    {
+                             || !(sym->flags & SYM_VARIADIC)))) {
                         if (p > mp->arg[c] && *(p - 1) == ' ')
                             p--;
                         *p++ = 0;
@@ -362,8 +331,7 @@ ppcall(struct ppsymbol *sym, int tok)
                         else
                             mp->arg[c][-1] = 0;
 #if MACKEYARGS
-                        if (pp.option & KEYARGS)
-                        {
+                        if (pp.option & KEYARGS) {
                             pp.token = p + 1;
                             goto keyarg;
                         }
@@ -387,8 +355,7 @@ ppcall(struct ppsymbol *sym, int tok)
                     else
                         for (kp = pp.in; kp && kp != old_in; kp = kp->prev)
                             ;
-                    if (!kp)
-                    {
+                    if (!kp) {
                         error(
 #if COMPATIBLE
                         (pp.state & COMPATIBILITY) ? 3 :
@@ -411,13 +378,11 @@ ppcall(struct ppsymbol *sym, int tok)
                     continue;
                 }
                 p = pp.toknxt;
-                if (error_info.line != last_line)
-                {
+                if (error_info.line != last_line) {
                     SETLINE(p, error_info.line);
                     last_line = error_info.line;
                 }
-                if (error_info.file != last_file)
-                {
+                if (error_info.file != last_file) {
                     SETFILE(p, error_info.file);
                     last_file = error_info.file;
                 }
@@ -426,8 +391,7 @@ ppcall(struct ppsymbol *sym, int tok)
             if (pp.state & NOEXPAND)
                 mp->arg[c][-1] = 0;
             pp.token = old_token;
-            if (pp.in != old_in)
-            {
+            if (pp.in != old_in) {
                 for (kp = pp.in; kp && kp != old_in; kp = kp->prev)
                     ;
                 if (kp)
@@ -444,8 +408,7 @@ ppcall(struct ppsymbol *sym, int tok)
                 if (p > mp->arg[0] && ++m || (sym->flags & SYM_VARIADIC))
                     c++;
                 if (c != (n = mac->arity) && (c > 0 || n > 1)
-                    && !(sym->flags & SYM_EMPTY))
-                {
+                    && !(sym->flags & SYM_EMPTY)) {
                     if (!(sym->flags & SYM_VARIADIC))
                         error(1,
                               "%s: %d actual argument%s expected",
@@ -475,15 +438,12 @@ ppcall(struct ppsymbol *sym, int tok)
             nextframe(mp, p);
             count(function);
         }
-        if (!tok && (sym->flags & SYM_NOEXPAND))
-        {
+        if (!tok && (sym->flags & SYM_NOEXPAND)) {
             if (sym->flags & SYM_FUNCTION)
                 popframe(mp);
             ret = !mac->size;
-        }
-        else if (!(pp.state & HEADER) || (pp.option & HEADEREXPANDALL)
-                 || pp.in->type != IN_COPY)
-        {
+        } else if (!(pp.state & HEADER) || (pp.option & HEADEREXPANDALL)
+                   || pp.in->type != IN_COPY) {
             if (sym->flags & SYM_MULTILINE)
                 PUSH_MULTILINE(sym);
             else
@@ -494,8 +454,7 @@ ppcall(struct ppsymbol *sym, int tok)
 disable:
     if (ret < 0 && sym->hidden && !(pp.mode & EXPOSE) && !(pp.state & HEADER)
         && (pp.in->type == IN_FILE || pp.in->type == IN_MACRO
-            || pp.in->type == IN_EXPAND))
-    {
+            || pp.in->type == IN_EXPAND)) {
         struct ppinstk *inp;
 
         for (inp = pp.in; inp->type != IN_FILE && inp->prev; inp = inp->prev)

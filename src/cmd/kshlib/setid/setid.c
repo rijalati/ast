@@ -66,10 +66,8 @@ b_setid(int argc, char **argv, Shbltin_t *context)
 
     cmdinit(argc, argv, context, ERROR_CATALOG, ERROR_NOTIFY);
     rg = eg = ru = eu = "-";
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'g':
             rg = opt_info.arg;
             if ((rgid = strgid(rg)) < 0)
@@ -100,8 +98,7 @@ b_setid(int argc, char **argv, Shbltin_t *context)
         break;
     }
     argv += opt_info.index;
-    if (error_info.errors || *argv)
-    {
+    if (error_info.errors || *argv) {
         error(ERROR_USAGE | 2, "%s", optusage(NiL));
         return 2;
     }

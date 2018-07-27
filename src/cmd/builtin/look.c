@@ -73,15 +73,12 @@ extract(const char *cp, char *buff, int len)
     char *ep = bp + len;
     int n;
 
-    while (n = *cp++)
-    {
-        if (n == '\n')
-        {
+    while (n = *cp++) {
+        if (n == '\n') {
             *bp = 0;
             break;
         }
-        if (isalnum(n) || isspace(n))
-        {
+        if (isalnum(n) || isspace(n)) {
             *bp++ = n;
             if (bp >= ep)
                 break;
@@ -105,16 +102,14 @@ look(Sfio_t *fp, char *prefix, char *maxprefix, int flags)
     int (*compare)(const char *, const char *, size_t);
 
     compare = (flags & F_FLAG) ? strncasecmp : strncmp;
-    if (flags & D_FLAG)
-    {
+    if (flags & D_FLAG) {
         cp = dp = prefix;
         while (n = *cp++)
             if (isalnum(n) || isspace(n))
                 *dp++ = n;
         *dp = 0;
         len = strlen(prefix);
-        if (maxprefix)
-        {
+        if (maxprefix) {
             cp = dp = maxprefix;
             while (n = *cp++)
                 if (isalnum(n) || isspace(n))
@@ -122,12 +117,10 @@ look(Sfio_t *fp, char *prefix, char *maxprefix, int flags)
             *dp = 0;
             if ((n = strlen(maxprefix)) < len)
                 n = len;
-        }
-        else
+        } else
             n = len;
         buff = ( void * )malloc(n + 1);
-    }
-    else
+    } else
         n = len = strlen(prefix);
     if (maxprefix && (*compare)(prefix, maxprefix, n) > 0)
         return 1;
@@ -135,20 +128,17 @@ look(Sfio_t *fp, char *prefix, char *maxprefix, int flags)
         while (sfgetr(fp, '\n', 0) && sfvalue(fp) > 1)
             ;
     if ((low = sfseek(fp, ( Sfoff_t )0, SEEK_CUR)) < 0
-        || (high = sfseek(fp, ( Sfoff_t )0, SEEK_END)) <= 0)
-    {
+        || (high = sfseek(fp, ( Sfoff_t )0, SEEK_END)) <= 0) {
         found = 0;
         n = 0;
-        while (cp = sfgetr(fp, '\n', 0))
-        {
+        while (cp = sfgetr(fp, '\n', 0)) {
             n = (*compare)(prefix, EXTRACT(flags, cp, buff, len), len);
             if (n <= 0)
                 break;
         }
         if (!cp)
             return 1;
-        if (maxprefix)
-        {
+        if (maxprefix) {
             prefix = maxprefix;
             len = strlen(prefix);
             if (n
@@ -157,8 +147,7 @@ look(Sfio_t *fp, char *prefix, char *maxprefix, int flags)
                 n = 0;
         }
         found = !n;
-        while (!n)
-        {
+        while (!n) {
             sfprintf(sfstdout, "%.*s", sfvalue(fp), cp);
             if (!(cp = sfgetr(fp, '\n', 0)))
                 break;
@@ -166,11 +155,8 @@ look(Sfio_t *fp, char *prefix, char *maxprefix, int flags)
             if (maxprefix && n > 0)
                 n = 0;
         }
-    }
-    else
-    {
-        while ((high - low) > (len + CLOSE))
-        {
+    } else {
+        while ((high - low) > (len + CLOSE)) {
             mid = (low + high) / 2;
             sfseek(fp, mid, SEEK_SET);
             sfgetr(fp, '\n', 0);
@@ -179,15 +165,13 @@ look(Sfio_t *fp, char *prefix, char *maxprefix, int flags)
                 break;
             if (!(cp = sfgetr(fp, '\n', 0)))
                 low = mid;
-            else
-            {
+            else {
                 n = (*compare)(prefix, EXTRACT(flags, cp, buff, len), len);
                 if (n < 0)
                     high = mid - len;
                 else if (n > 0)
                     low = mid;
-                else
-                {
+                else {
                     if ((mid += sfvalue(fp)) >= high)
                         break;
                     high = mid;
@@ -195,8 +179,7 @@ look(Sfio_t *fp, char *prefix, char *maxprefix, int flags)
             }
         }
         sfseek(fp, low, SEEK_SET);
-        while (low <= high)
-        {
+        while (low <= high) {
             if (!(cp = sfgetr(fp, '\n', 0)))
                 return 1;
             n = (*compare)(prefix, EXTRACT(flags, cp, buff, len), len);
@@ -204,8 +187,7 @@ look(Sfio_t *fp, char *prefix, char *maxprefix, int flags)
                 break;
             low += sfvalue(fp);
         }
-        if (maxprefix)
-        {
+        if (maxprefix) {
             prefix = maxprefix;
             len = strlen(prefix);
             if (n
@@ -214,8 +196,7 @@ look(Sfio_t *fp, char *prefix, char *maxprefix, int flags)
                 n = 0;
         }
         found = !n;
-        while (!n)
-        {
+        while (!n) {
             sfprintf(sfstdout, "%.*s", sfvalue(fp), cp);
             if (!(cp = sfgetr(fp, '\n', 0)))
                 break;
@@ -243,10 +224,8 @@ b_look(int argc, char **argv, Shbltin_t *context)
     = { DICT_FILE, "/usr/share/dict/words", "/usr/lib/dict/words" };
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'd':
             flags |= D_FLAG;
             continue;
@@ -268,26 +247,20 @@ b_look(int argc, char **argv, Shbltin_t *context)
     argv += opt_info.index;
     if (error_info.errors || !(bp = *argv++))
         error(ERROR_usage(2), "%s", optusage(NiL));
-    if (file = *argv)
-    {
+    if (file = *argv) {
         argv++;
-        if (streq(file, "-") && (ep = *argv))
-        {
+        if (streq(file, "-") && (ep = *argv)) {
             argv++;
-            if (streq(ep, "-"))
-            {
+            if (streq(ep, "-")) {
                 file = ep;
                 ep = 0;
-            }
-            else if (file = *argv)
+            } else if (file = *argv)
                 argv++;
         }
     }
-    if (!file)
-    {
+    if (!file) {
         for (n = 0; n < elementsof(dict); n++)
-            if (!eaccess(dict[n], R_OK))
-            {
+            if (!eaccess(dict[n], R_OK)) {
                 file = ( char * )dict[n];
                 break;
             }
@@ -296,13 +269,11 @@ b_look(int argc, char **argv, Shbltin_t *context)
         flags |= (D_FLAG | F_FLAG);
     }
     n = 0;
-    do
-    {
+    do {
         if (streq(file, "-") || streq(file, "/dev/stdin")
             || streq(file, "/dev/fd/0"))
             fp = sfstdin;
-        else if (!(fp = sfopen(NiL, file, "r")))
-        {
+        else if (!(fp = sfopen(NiL, file, "r"))) {
             error(ERROR_system(0), "%s: cannot open", file);
             continue;
         }

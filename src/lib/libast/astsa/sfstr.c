@@ -51,12 +51,10 @@ sfclose(Sfio_t *f)
     Sfstr_t *p;
     int r;
 
-    if (VALID(p, f))
-    {
+    if (VALID(p, f)) {
         p->nxt = 0;
         r = 0;
-    }
-    else
+    } else
         r = fclose(f);
     return r;
 }
@@ -100,14 +98,12 @@ sfputc(Sfio_t *f, int c)
     Sfstr_t *p;
     int r;
 
-    if (VALID(p, f))
-    {
+    if (VALID(p, f)) {
         if (p->nxt >= p->end && extend(p, 1))
             return -1;
         *p->nxt++ = c;
         r = 1;
-    }
-    else
+    } else
         r = fputc(c, f);
     return r;
 }
@@ -120,8 +116,7 @@ sfputr(Sfio_t *f, const char *buf, int sep)
     int n;
 
     n = strlen(buf);
-    if (VALID(p, f))
-    {
+    if (VALID(p, f)) {
         r = n + (sep >= 0);
         if (r > (p->end - p->nxt) && extend(p, r))
             return -1;
@@ -129,9 +124,7 @@ sfputr(Sfio_t *f, const char *buf, int sep)
         p->nxt += n;
         if (sep >= 0)
             *p->nxt++ = sep;
-    }
-    else
-    {
+    } else {
         r = fwrite(buf, 1, n, f);
         if (sep >= 0 && fputc(sep, f) != EOF)
             r++;
@@ -155,10 +148,8 @@ sfstropen(void)
     Sfstr_t *p;
 
     for (p = &strs[0]; p < &strs[elementsof(strs)]; p++)
-        if (!p->nxt)
-        {
-            if (!p->beg)
-            {
+        if (!p->nxt) {
+            if (!p->beg) {
                 if (!(p->beg = malloc(STR)))
                     break;
                 p->end = p->beg + STR;
@@ -222,8 +213,7 @@ sfstruse(Sfio_t *f)
 {
     Sfstr_t *p;
 
-    if (VALID(p, f) && (p->nxt < p->end || !extend(p, 1)))
-    {
+    if (VALID(p, f) && (p->nxt < p->end || !extend(p, 1))) {
         *p->nxt = 0;
         return p->nxt = p->beg;
     }
@@ -235,14 +225,12 @@ sfwrite(Sfio_t *f, void *buf, int n)
 {
     Sfstr_t *p;
 
-    if (VALID(p, f))
-    {
+    if (VALID(p, f)) {
         if (n > (p->end - p->nxt) && extend(p, n))
             return -1;
         memcpy(p->nxt, buf, n);
         p->nxt += n;
-    }
-    else
+    } else
         n = fwrite(buf, 1, n, f);
     return n;
 }

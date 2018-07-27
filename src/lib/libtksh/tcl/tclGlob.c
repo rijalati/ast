@@ -82,16 +82,12 @@ char *rem;          /* Path to glob-expand. */
      * otherwise "glob foo.c" would return "./foo.c".
      */
 
-    if (*dir == '\0')
-    {
+    if (*dir == '\0') {
         dirName = ".";
-    }
-    else
-    {
+    } else {
         dirName = dir;
     }
-    if ((stat(dirName, &statBuf) != 0) || !S_ISDIR(statBuf.st_mode))
-    {
+    if ((stat(dirName, &statBuf) != 0) || !S_ISDIR(statBuf.st_mode)) {
         return TCL_OK;
     }
     Tcl_DStringInit(&newName);
@@ -103,23 +99,18 @@ char *rem;          /* Path to glob-expand. */
 
     gotSpecial = 0;
     openBrace = closeBrace = NULL;
-    for (p = rem;; p++)
-    {
+    for (p = rem;; p++) {
         c = *p;
-        if ((c == '\0') || ((openBrace == NULL) && (c == '/')))
-        {
+        if ((c == '\0') || ((openBrace == NULL) && (c == '/'))) {
             break;
         }
-        if ((c == '{') && (openBrace == NULL))
-        {
+        if ((c == '{') && (openBrace == NULL)) {
             openBrace = p;
         }
-        if ((c == '}') && (openBrace != NULL) && (closeBrace == NULL))
-        {
+        if ((c == '}') && (openBrace != NULL) && (closeBrace == NULL)) {
             closeBrace = p;
         }
-        if ((c == '*') || (c == '[') || (c == '\\') || (c == '?'))
-        {
+        if ((c == '*') || (c == '[') || (c == '\\') || (c == '?')) {
             gotSpecial = 1;
         }
     }
@@ -132,12 +123,10 @@ char *rem;          /* Path to glob-expand. */
      * one here, and the others will be handled in recursive calls.
      */
 
-    if (openBrace != NULL)
-    {
+    if (openBrace != NULL) {
         char *element;
 
-        if (closeBrace == NULL)
-        {
+        if (closeBrace == NULL) {
             Tcl_ResetResult(interp);
             interp->result = "unmatched open-brace in file name";
             result = TCL_ERROR;
@@ -145,18 +134,15 @@ char *rem;          /* Path to glob-expand. */
         }
         Tcl_DStringAppend(&newName, rem, openBrace - rem);
         baseLength = newName.length;
-        for (p = openBrace; *p != '}';)
-        {
+        for (p = openBrace; *p != '}';) {
             element = p + 1;
-            for (p = element; ((*p != '}') && (*p != ',')); p++)
-            {
+            for (p = element; ((*p != '}') && (*p != ',')); p++) {
                 /* Empty loop body. */
             }
             Tcl_DStringAppend(&newName, element, p - element);
             Tcl_DStringAppend(&newName, closeBrace + 1, -1);
             result = DoGlob(interp, dir, newName.string);
-            if (result != TCL_OK)
-            {
+            if (result != TCL_OK) {
                 goto done;
             }
             newName.length = baseLength;
@@ -170,8 +156,7 @@ char *rem;          /* Path to glob-expand. */
      */
 
     Tcl_DStringAppend(&newName, dir, -1);
-    if ((dir[0] != 0) && (newName.string[newName.length - 1] != '/'))
-    {
+    if ((dir[0] != 0) && (newName.string[newName.length - 1] != '/')) {
         Tcl_DStringAppend(&newName, "/", 1);
     }
     baseLength = newName.length;
@@ -181,15 +166,13 @@ char *rem;          /* Path to glob-expand. */
      * the directory to find all the matching names.
      */
 
-    if (gotSpecial)
-    {
+    if (gotSpecial) {
         DIR *d;
         struct dirent *entryPtr;
         char savedChar;
 
         d = opendir(dirName);
-        if (d == NULL)
-        {
+        if (d == NULL) {
             Tcl_ResetResult(interp);
             Tcl_AppendResult(interp,
                              "couldn't read directory \"",
@@ -209,11 +192,9 @@ char *rem;          /* Path to glob-expand. */
         savedChar = *p;
         *p = 0;
 
-        while (1)
-        {
+        while (1) {
             entryPtr = readdir(d);
-            if (entryPtr == NULL)
-            {
+            if (entryPtr == NULL) {
                 break;
             }
 
@@ -222,23 +203,17 @@ char *rem;          /* Path to glob-expand. */
              * present in the pattern.
              */
 
-            if ((*entryPtr->d_name == '.') && (*rem != '.'))
-            {
+            if ((*entryPtr->d_name == '.') && (*rem != '.')) {
                 continue;
             }
-            if (Tcl_StringMatch(entryPtr->d_name, rem))
-            {
+            if (Tcl_StringMatch(entryPtr->d_name, rem)) {
                 newName.length = baseLength;
                 Tcl_DStringAppend(&newName, entryPtr->d_name, -1);
-                if (savedChar == 0)
-                {
+                if (savedChar == 0) {
                     Tcl_AppendElement(interp, newName.string);
-                }
-                else
-                {
+                } else {
                     result = DoGlob(interp, newName.string, p + 1);
-                    if (result != TCL_OK)
-                    {
+                    if (result != TCL_OK) {
                         break;
                     }
                 }
@@ -256,8 +231,7 @@ char *rem;          /* Path to glob-expand. */
      */
 
     Tcl_DStringAppend(&newName, rem, p - rem);
-    if (*p != 0)
-    {
+    if (*p != 0) {
         result = DoGlob(interp, newName.string, p + 1);
         goto done;
     }
@@ -269,12 +243,10 @@ char *rem;          /* Path to glob-expand. */
      */
 
     name = newName.string;
-    if (*name == 0)
-    {
+    if (*name == 0) {
         name = ".";
     }
-    if (access(name, F_OK) != 0)
-    {
+    if (access(name, F_OK) != 0) {
         goto done;
     }
     Tcl_AppendElement(interp, name);
@@ -322,16 +294,13 @@ Tcl_DString *bufferPtr; /* May be used to hold result.  Must not hold
     char *p;
 
     Tcl_DStringInit(bufferPtr);
-    if (name[0] != '~')
-    {
+    if (name[0] != '~') {
         return name;
     }
 
-    if ((name[1] == '/') || (name[1] == '\0'))
-    {
+    if ((name[1] == '/') || (name[1] == '\0')) {
         dir = getenv("HOME");
-        if (dir == NULL)
-        {
+        if (dir == NULL) {
             Tcl_ResetResult(interp);
             Tcl_AppendResult(interp,
                              "couldn't find HOME environment ",
@@ -343,19 +312,15 @@ Tcl_DString *bufferPtr; /* May be used to hold result.  Must not hold
         }
         Tcl_DStringAppend(bufferPtr, dir, -1);
         Tcl_DStringAppend(bufferPtr, name + 1, -1);
-    }
-    else
-    {
+    } else {
         struct passwd *pwPtr;
 
-        for (p = &name[1]; (*p != 0) && (*p != '/'); p++)
-        {
+        for (p = &name[1]; (*p != 0) && (*p != '/'); p++) {
             /* Null body;  just find end of name. */
         }
         Tcl_DStringAppend(bufferPtr, name + 1, p - (name + 1));
         pwPtr = getpwnam(bufferPtr->string);
-        if (pwPtr == NULL)
-        {
+        if (pwPtr == NULL) {
             endpwent();
             Tcl_ResetResult(interp);
             Tcl_AppendResult(interp,
@@ -399,8 +364,7 @@ char **argv;        /* Argument strings. */
 {
     int i, result, noComplain, firstArg;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
     notEnoughArgs:
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
@@ -411,19 +375,13 @@ char **argv;        /* Argument strings. */
     }
     noComplain = 0;
     for (firstArg = 1; (firstArg < argc) && (argv[firstArg][0] == '-');
-         firstArg++)
-    {
-        if (strcmp(argv[firstArg], "-nocomplain") == 0)
-        {
+         firstArg++) {
+        if (strcmp(argv[firstArg], "-nocomplain") == 0) {
             noComplain = 1;
-        }
-        else if (strcmp(argv[firstArg], "--") == 0)
-        {
+        } else if (strcmp(argv[firstArg], "--") == 0) {
             firstArg++;
             break;
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp,
                              "bad switch \"",
                              argv[firstArg],
@@ -432,65 +390,50 @@ char **argv;        /* Argument strings. */
             return TCL_ERROR;
         }
     }
-    if (firstArg >= argc)
-    {
+    if (firstArg >= argc) {
         goto notEnoughArgs;
     }
 
-    for (i = firstArg; i < argc; i++)
-    {
+    for (i = firstArg; i < argc; i++) {
         char *thisName;
         Tcl_DString buffer;
 
         thisName = Tcl_TildeSubst(interp, argv[i], &buffer);
-        if (thisName == NULL)
-        {
-            if (noComplain)
-            {
+        if (thisName == NULL) {
+            if (noComplain) {
                 Tcl_ResetResult(interp);
                 continue;
-            }
-            else
-            {
+            } else {
                 return TCL_ERROR;
             }
         }
-        if (*thisName == '/')
-        {
-            if (thisName[1] == '/')
-            {
+        if (*thisName == '/') {
+            if (thisName[1] == '/') {
                 /*
                  * This is a special hack for systems like those from Apollo
                  * where there is a super-root at "//":  need to treat the
                  * double-slash as a single name.
                  */
                 result = DoGlob(interp, "//", thisName + 2);
-            }
-            else
-            {
+            } else {
                 result = DoGlob(interp, "/", thisName + 1);
             }
-        }
-        else
-        {
+        } else {
             result = DoGlob(interp, "", thisName);
         }
         Tcl_DStringFree(&buffer);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             return result;
         }
     }
-    if ((*interp->result == 0) && !noComplain)
-    {
+    if ((*interp->result == 0) && !noComplain) {
         char *sep = "";
 
         Tcl_AppendResult(interp,
                          "no files matched glob pattern",
                          (argc == 2) ? " \"" : "s \"",
                          ( char * )NULL);
-        for (i = firstArg; i < argc; i++)
-        {
+        for (i = firstArg; i < argc; i++) {
             Tcl_AppendResult(interp, sep, argv[i], ( char * )NULL);
             sep = " ";
         }

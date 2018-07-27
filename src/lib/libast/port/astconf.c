@@ -79,8 +79,7 @@ static const char id[]
 #define DEFAULT(o)                                                           \
     ((state.std || !dynamic[o].ast) ? dynamic[o].std : dynamic[o].ast)
 #define INITIALIZE()                                                         \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         if (!state.data)                                                     \
             synthesize(NiL, NiL, NiL);                                       \
     } while (0)
@@ -303,18 +302,13 @@ ast_pathconf(const char *path, int op, int *err)
     int olderrno;
 
     olderrno = errno;
-    if (!pathdev(AT_FDCWD, path, buf, sizeof(buf), PATH_DEV, &dev))
-    {
+    if (!pathdev(AT_FDCWD, path, buf, sizeof(buf), PATH_DEV, &dev)) {
         errno = 0;
         v = pathconf(path, op);
-    }
-    else if (dev.fd < 0)
-    {
+    } else if (dev.fd < 0) {
         errno = 0;
         v = pathconf(buf, op);
-    }
-    else
-    {
+    } else {
 #    if _lib_fpathconf
         errno = 0;
         v = fpathconf(dev.fd, op);
@@ -368,17 +362,14 @@ synthesize(Feature_t *fp, const char *path, const char *value)
               fp,
               state.synthesizing ? " SYNTHESIZING" : "");
 #endif
-    if (state.synthesizing)
-    {
-        if (fp && fp->op < 0 && value && *value)
-        {
+    if (state.synthesizing) {
+        if (fp && fp->op < 0 && value && *value) {
             n = strlen(value);
             goto ok;
         }
         return null;
     }
-    if (!state.data)
-    {
+    if (!state.data) {
         char *se;
         char *de;
         char *ve;
@@ -399,8 +390,7 @@ synthesize(Feature_t *fp, const char *path, const char *value)
             strcpy(state.data, s);
         ve = state.data;
         state.synthesizing = 1;
-        for (;;)
-        {
+        for (;;) {
             for (s = ve; isspace(*s); s++)
                 ;
             for (d = s; *d && !isspace(*d); d++)
@@ -432,8 +422,7 @@ synthesize(Feature_t *fp, const char *path, const char *value)
     }
     if (!fp)
         return state.data;
-    if (!state.last)
-    {
+    if (!state.last) {
         if (!value)
             return 0;
         n = strlen(value);
@@ -442,16 +431,13 @@ synthesize(Feature_t *fp, const char *path, const char *value)
     s = ( char * )fp->name;
     n = fp->length;
     d = state.data;
-    for (;;)
-    {
+    for (;;) {
         while (isspace(*d))
             d++;
         if (!*d)
             break;
-        if (strneq(d, s, n) && isspace(d[n]))
-        {
-            if (!value)
-            {
+        if (strneq(d, s, n) && isspace(d[n])) {
+            if (!value) {
                 for (d += n + 1; *d && !isspace(*d); d++)
                     ;
                 for (; isspace(*d); d++)
@@ -494,10 +480,8 @@ synthesize(Feature_t *fp, const char *path, const char *value)
         for (; *d && !isspace(*d); d++)
             ;
     }
-    if (!value)
-    {
-        if (!fp->op)
-        {
+    if (!value) {
+        if (!fp->op) {
             if (fp->flags & CONF_ALLOC)
                 fp->value[0] = 0;
             else
@@ -510,8 +494,7 @@ synthesize(Feature_t *fp, const char *path, const char *value)
     if (!path || !path[0] || path[0] == '/' && !path[1])
         path = "-";
     n += strlen(path) + strlen(value) + 3;
-    if (d + n >= state.last)
-    {
+    if (d + n >= state.last) {
         int c;
         int i;
 
@@ -549,8 +532,7 @@ ok:
         n = 0;
     if (!(fp->value = newof(fp->value, char, n, 1)))
         fp->value = null;
-    else
-    {
+    else {
         fp->flags |= CONF_ALLOC;
         memcpy(fp->value, value, n);
         fp->value[n] = 0;
@@ -587,8 +569,7 @@ initialize(Feature_t *fp,
           fp,
           state.synthesizing ? " SYNTHESIZING" : "");
 #endif
-    switch (fp->op)
-    {
+    switch (fp->op) {
     case OP_architecture:
         ok = 1;
         break;
@@ -608,8 +589,7 @@ initialize(Feature_t *fp,
         ok = streq(_UNIV_DEFAULT, DEFAULT(OP_universe));
         /*FALLTHROUGH...*/
     default:
-        if (p = getenv("PATH"))
-        {
+        if (p = getenv("PATH")) {
             int r = 1;
             char *d = p;
             Sfio_t *tmp;
@@ -618,24 +598,19 @@ initialize(Feature_t *fp,
             error(
             -6, "astconf initialize name=%s ok=%d PATH=%s", fp->name, ok, p);
 #endif
-            if (tmp = sfstropen())
-            {
-                for (;;)
-                {
-                    switch (*p++)
-                    {
+            if (tmp = sfstropen()) {
+                for (;;) {
+                    switch (*p++) {
                     case 0:
                         break;
                     case ':':
-                        if (command && fp->op != OP_universe)
-                        {
-                            if (r = p - d - 1)
-                            {
+                        if (command && fp->op != OP_universe) {
+                            if (r = p - d - 1) {
                                 sfwrite(tmp, d, r);
                                 sfputc(tmp, '/');
                                 sfputr(tmp, command, 0);
-                                if ((d = sfstruse(tmp)) && !eaccess(d, X_OK))
-                                {
+                                if ((d = sfstruse(tmp))
+                                    && !eaccess(d, X_OK)) {
                                     ok = 1;
                                     if (fp->op != OP_universe)
                                         break;
@@ -646,17 +621,15 @@ initialize(Feature_t *fp,
                         r = 1;
                         continue;
                     case '/':
-                        if (r)
-                        {
+                        if (r) {
                             r = 0;
-                            if (fp->op == OP_universe)
-                            {
+                            if (fp->op == OP_universe) {
                                 if (p[0] == 'u' && p[1] == 's' && p[2] == 'r'
                                     && p[3] == '/')
                                     for (p += 4; *p == '/'; p++)
                                         ;
-                                if (p[0] == 'b' && p[1] == 'i' && p[2] == 'n')
-                                {
+                                if (p[0] == 'b' && p[1] == 'i'
+                                    && p[2] == 'n') {
                                     for (p += 3; *p == '/'; p++)
                                         ;
                                     if (!*p || *p == ':')
@@ -664,15 +637,12 @@ initialize(Feature_t *fp,
                                 }
                             }
                         }
-                        if (fp->op == OP_universe)
-                        {
-                            if (strneq(p, "xpg", 3) || strneq(p, "5bin", 4))
-                            {
+                        if (fp->op == OP_universe) {
+                            if (strneq(p, "xpg", 3) || strneq(p, "5bin", 4)) {
                                 ok = 1;
                                 break;
                             }
-                            if (strneq(p, "bsd", 3) || strneq(p, "ucb", 3))
-                            {
+                            if (strneq(p, "bsd", 3) || strneq(p, "ucb", 3)) {
                                 ok = 0;
                                 break;
                             }
@@ -685,8 +655,7 @@ initialize(Feature_t *fp,
                     break;
                 }
                 sfclose(tmp);
-            }
-            else
+            } else
                 ok = 1;
         }
         break;
@@ -738,20 +707,16 @@ format(Feature_t *fp,
         fp->flags &= ~CONF_GLOBAL;
     else if (fp->flags & CONF_GLOBAL)
         return fp->value;
-    switch (fp->op)
-    {
+    switch (fp->op) {
 
     case OP_architecture:
 #if _UWIN && (_X86_ || _X64_)
-        if (!stat("/", &st))
-        {
-            if (st.st_ino == 64)
-            {
+        if (!stat("/", &st)) {
+            if (st.st_ino == 64) {
                 fp->value = "x64";
                 break;
             }
-            if (st.st_ino == 32)
-            {
+            if (st.st_ino == 32) {
                 fp->value = "x86";
                 break;
             }
@@ -797,8 +762,7 @@ format(Feature_t *fp,
               fp->ast,
               fp->value);
 #endif
-        if (!state.std && value == fp->std)
-        {
+        if (!state.std && value == fp->std) {
             state.std = 1;
             for (sp = state.features; sp; sp = sp->next)
                 if (sp->std && sp->op && sp->op != OP_conformance)
@@ -844,8 +808,7 @@ format(Feature_t *fp,
         s = fp->value;
         e = s + sizeof(fp->value) - 1;
         for (n = 'a', b = 1; n <= 'z'; n++, b <<= 1)
-            if (v & b)
-            {
+            if (v & b) {
                 *s++ = n;
                 if (s >= e)
                     break;
@@ -871,12 +834,10 @@ format(Feature_t *fp,
 #else
 #    ifdef UNIV_MAX
         n = 0;
-        if (value)
-        {
+        if (value) {
             while (n < univ_max && !streq(value, univ_name[n]))
                 n++;
-            if (n >= univ_max)
-            {
+            if (n >= univ_max) {
                 if (conferror)
                     (*conferror)(&state,
                                  &state,
@@ -898,26 +859,21 @@ format(Feature_t *fp,
             n = 1;
         strcpy(fp->value, univ_name[n - 1]);
 #    else
-        if (value && streq(path, "="))
-        {
-            if (state.synthesizing)
-            {
+        if (value && streq(path, "=")) {
+            if (state.synthesizing) {
                 if (!(fp->flags & CONF_ALLOC))
                     fp->value = 0;
                 n = strlen(value);
                 if (!(fp->value = newof(fp->value, char, n, 1)))
                     fp->value = null;
-                else
-                {
+                else {
                     fp->flags |= CONF_ALLOC;
                     memcpy(fp->value, value, n);
                     fp->value[n] = 0;
                 }
-            }
-            else
+            } else
                 synthesize(fp, path, value);
-        }
-        else
+        } else
             initialize(fp, path, "echo", DEFAULT(OP_universe), "ucb");
 #    endif
 #endif
@@ -966,15 +922,13 @@ feature(Feature_t *fp,
           fp,
           state.synthesizing ? " SYNTHESIZING" : "");
 #endif
-    if (!fp)
-    {
+    if (!fp) {
         if (!value)
             return 0;
         if (state.notify && !(*state.notify)(name, path, value))
             return 0;
         n = strlen(name);
-        if (!(fp = newof(0, Feature_t, 1, n + 1)))
-        {
+        if (!(fp = newof(0, Feature_t, 1, n + 1))) {
             if (conferror)
                 (*conferror)(&state, &state, 2, "%s: out of space", name);
             return 0;
@@ -986,11 +940,8 @@ feature(Feature_t *fp,
         fp->std = &null[0];
         fp->next = state.features;
         state.features = fp;
-    }
-    else if (value)
-    {
-        if (fp->flags & CONF_READONLY)
-        {
+    } else if (value) {
+        if (fp->flags & CONF_READONLY) {
             if (conferror)
                 (*conferror)(
                 &state, &state, 2, "%s: cannot set readonly symbol", fp->name);
@@ -999,8 +950,7 @@ feature(Feature_t *fp,
         if (state.notify && !streq(fp->value, value)
             && !(*state.notify)(name, path, value))
             return 0;
-    }
-    else
+    } else
         state.recent = fp;
     return format(fp, path, value, flags, conferror);
 }
@@ -1034,22 +984,17 @@ again:
             && ((c = name[p->length] == '_' || name[p->length] == '('
                      || name[p->length] == '#')
                 || (v = isdigit(name[p->length])
-                        && name[p->length + 1] == '_')))
-        {
-            if (p->call < 0)
-            {
+                        && name[p->length + 1] == '_'))) {
+            if (p->call < 0) {
                 if (look->standard >= 0)
                     break;
                 look->standard = p->standard;
-            }
-            else
-            {
+            } else {
                 if (look->call >= 0)
                     break;
                 look->call = p->call;
             }
-            if (name[p->length] == '(' || name[p->length] == '#')
-            {
+            if (name[p->length] == '(' || name[p->length] == '#') {
                 look->conf = &num;
                 strlcpy(( char * )num.name, name, sizeof(num.name));
                 num.call = p->call;
@@ -1062,8 +1007,7 @@ again:
                 return 1;
             }
             name += p->length + c;
-            if (look->section < 0 && !c && v)
-            {
+            if (look->section < 0 && !c && v) {
                 look->section = name[0] - '0';
                 name += 2;
             }
@@ -1086,19 +1030,16 @@ again:
           conf_elements);
 #endif
     c = *(( unsigned char * )name);
-    while (lo <= hi)
-    {
+    while (lo <= hi) {
         mid = lo + (hi - lo) / 2;
 #if DEBUG_astconf
         error(-7, "astconf lookup name=%s mid=%s", name, mid->name);
 #endif
         if (!(v = c - *(( unsigned char * )mid->name))
-            && !(v = strcmp(name, mid->name)))
-        {
+            && !(v = strcmp(name, mid->name))) {
             hi = mid;
             lo = ( Conf_t * )conf;
-            do
-            {
+            do {
                 if ((look->standard < 0 || look->standard == mid->standard)
                     && (look->section < 0 || look->section == mid->section)
                     && (look->call < 0 || look->call == mid->call))
@@ -1106,16 +1047,14 @@ again:
             } while (mid-- > lo && streq(mid->name, look->name));
             mid = hi;
             hi = lo + conf_elements - 1;
-            while (++mid < hi && streq(mid->name, look->name))
-            {
+            while (++mid < hi && streq(mid->name, look->name)) {
                 if ((look->standard < 0 || look->standard == mid->standard)
                     && (look->section < 0 || look->section == mid->section)
                     && (look->call < 0 || look->call == mid->call))
                     goto found;
             }
             break;
-        }
-        else if (v > 0)
+        } else if (v > 0)
             lo = mid + 1;
         else
             hi = mid - 1;
@@ -1152,8 +1091,7 @@ fmtlower(const char *s)
     char *b;
 
     b = t = fmtbuf(strlen(s) + 1);
-    while (c = *s++)
-    {
+    while (c = *s++) {
         if (isupper(c))
             c = tolower(c);
         *t++ = c;
@@ -1229,25 +1167,20 @@ print(Sfio_t *sp,
     (p->flags & CONF_UNDERSCORE) ? "UNDERSCORE|" : "");
 #endif
     flags |= CONF_LIMIT_DEF | CONF_MINMAX_DEF;
-    if (conferror && name)
-    {
+    if (conferror && name) {
         if ((p->flags & CONF_PREFIX_ONLY) && look->standard < 0)
             goto bad;
-        if (!(flags & CONF_MINMAX) || !(p->flags & CONF_MINMAX))
-        {
-            switch (p->call)
-            {
+        if (!(flags & CONF_MINMAX) || !(p->flags & CONF_MINMAX)) {
+            switch (p->call) {
             case CONF_pathconf:
-                if (path == root)
-                {
+                if (path == root) {
                     (*conferror)(
                     &state, &state, 2, "%s: path expected", name);
                     goto bad;
                 }
                 break;
             default:
-                if (path != root)
-                {
+                if (path != root) {
                     (*conferror)(
                     &state, &state, 2, "%s: path not expected", name);
                     goto bad;
@@ -1258,11 +1191,8 @@ print(Sfio_t *sp,
             if (p->flags & CONF_DEFER_CALL)
                 goto bad;
 #endif
-        }
-        else
-        {
-            if (path != root)
-            {
+        } else {
+            if (path != root) {
                 (*conferror)(
                 &state, &state, 2, "%s: path not expected", name);
                 goto bad;
@@ -1284,23 +1214,18 @@ print(Sfio_t *sp,
     switch (
     i = (p->op < 0 || (flags & CONF_MINMAX) && (p->flags & CONF_MINMAX_DEF))
         ? 0
-        : p->call)
-    {
+        : p->call) {
     case CONF_confstr:
         call = "confstr";
 #if _lib_confstr
-        if (!(v = confstr(p->op, buf, sizeof(buf))))
-        {
+        if (!(v = confstr(p->op, buf, sizeof(buf)))) {
             defined = 0;
             v = -1;
             errno = EINVAL;
-        }
-        else if (v > 0)
-        {
+        } else if (v > 0) {
             buf[sizeof(buf) - 1] = 0;
             s = ( const char * )buf;
-        }
-        else
+        } else
             defined = 0;
         break;
 #else
@@ -1328,12 +1253,10 @@ print(Sfio_t *sp,
     case CONF_sysinfo:
         call = "sysinfo";
 #if _lib_sysinfo
-        if ((v = sysinfo(p->op, buf, sizeof(buf))) >= 0)
-        {
+        if ((v = sysinfo(p->op, buf, sizeof(buf))) >= 0) {
             buf[sizeof(buf) - 1] = 0;
             s = ( const char * )buf;
-        }
-        else
+        } else
             defined = 0;
         break;
 #else
@@ -1347,11 +1270,9 @@ print(Sfio_t *sp,
         break;
     case 0:
         call = 0;
-        if (p->standard == CONF_AST)
-        {
+        if (p->standard == CONF_AST) {
             if (streq(p->name, "RELEASE")
-                && (i = open("/proc/version", O_RDONLY | O_CLOEXEC)) >= 0)
-            {
+                && (i = open("/proc/version", O_RDONLY | O_CLOEXEC)) >= 0) {
                 n = read(i, buf, sizeof(buf) - 1);
                 close(i);
                 if (n > 0 && buf[n - 1] == '\n')
@@ -1359,44 +1280,36 @@ print(Sfio_t *sp,
                 if (n > 0 && buf[n - 1] == '\r')
                     n--;
                 buf[n] = 0;
-                if (buf[0])
-                {
+                if (buf[0]) {
                     v = 0;
                     s = buf;
                     break;
                 }
             }
         }
-        if (p->flags & CONF_MINMAX_DEF)
-        {
+        if (p->flags & CONF_MINMAX_DEF) {
             if (!((p->flags & CONF_LIMIT_DEF)))
                 flags |= CONF_MINMAX;
             listflags &= ~ASTCONF_system;
         }
     predef:
-        if (look->standard == CONF_AST)
-        {
-            if (streq(p->name, "VERSION"))
-            {
+        if (look->standard == CONF_AST) {
+            if (streq(p->name, "VERSION")) {
                 v = ast.version;
                 break;
             }
         }
-        if (flags & CONF_MINMAX)
-        {
+        if (flags & CONF_MINMAX) {
             if ((p->flags & CONF_MINMAX_DEF)
                 && (!(listflags & ASTCONF_system)
-                    || !(p->flags & CONF_DEFER_MM)))
-            {
+                    || !(p->flags & CONF_DEFER_MM))) {
                 v = p->minmax.number;
                 s = p->minmax.string;
                 break;
             }
-        }
-        else if ((p->flags & CONF_LIMIT_DEF)
-                 && (!(listflags & ASTCONF_system)
-                     || !(p->flags & CONF_DEFER_CALL)))
-        {
+        } else if ((p->flags & CONF_LIMIT_DEF)
+                   && (!(listflags & ASTCONF_system)
+                       || !(p->flags & CONF_DEFER_CALL))) {
             v = p->limit.number;
             s = p->limit.string;
             break;
@@ -1407,22 +1320,16 @@ print(Sfio_t *sp,
         defined = 0;
         break;
     }
-    if (!defined)
-    {
-        if (!errno)
-        {
+    if (!defined) {
+        if (!errno) {
             if ((p->flags & CONF_FEATURE)
                 || !(p->flags & (CONF_LIMIT | CONF_MINMAX)))
                 flags &= ~(CONF_LIMIT_DEF | CONF_MINMAX_DEF);
-        }
-        else if (flags & CONF_PREFIXED)
+        } else if (flags & CONF_PREFIXED)
             flags &= ~(CONF_LIMIT_DEF | CONF_MINMAX_DEF);
-        else if (errno != EINVAL || !i)
-        {
-            if (!sp)
-            {
-                if (conferror)
-                {
+        else if (errno != EINVAL || !i) {
+            if (!sp) {
+                if (conferror) {
                     if (call)
                         (*conferror)(&state,
                                      &state,
@@ -1435,9 +1342,7 @@ print(Sfio_t *sp,
                         &state, &state, 2, "%s: unknown name", p->name);
                 }
                 goto bad;
-            }
-            else
-            {
+            } else {
                 flags &= ~(CONF_LIMIT_DEF | CONF_MINMAX_DEF);
                 flags |= CONF_ERROR;
             }
@@ -1449,8 +1354,7 @@ print(Sfio_t *sp,
         goto bad;
     if ((drop = !sp) && !(sp = sfstropen()))
         goto bad;
-    if (listflags & ASTCONF_table)
-    {
+    if (listflags & ASTCONF_table) {
         f = flg;
         if (p->flags & CONF_DEFER_CALL)
             *f++ = 'C';
@@ -1487,8 +1391,7 @@ print(Sfio_t *sp,
                  prefix[p->call + CONF_call].name,
                  p->op,
                  flg);
-        if (p->flags & CONF_LIMIT_DEF)
-        {
+        if (p->flags & CONF_LIMIT_DEF) {
             if (p->limit.string)
                 sfprintf(sp,
                          "L[%s] ",
@@ -1503,8 +1406,7 @@ print(Sfio_t *sp,
                 sfprintf(
                 sp, "L[%I*d] ", sizeof(p->limit.number), p->limit.number);
         }
-        if (p->flags & CONF_MINMAX_DEF)
-        {
+        if (p->flags & CONF_MINMAX_DEF) {
             if (p->minmax.string)
                 sfprintf(sp,
                          "M[%s] ",
@@ -1521,8 +1423,7 @@ print(Sfio_t *sp,
         }
         if (flags & CONF_ERROR)
             sfprintf(sp, "error");
-        else if (defined)
-        {
+        else if (defined) {
             if (s)
                 sfprintf(sp,
                          "%s",
@@ -1535,18 +1436,13 @@ print(Sfio_t *sp,
                 sfprintf(sp, "%I*u", sizeof(v), v);
         }
         sfprintf(sp, "\n");
-    }
-    else
-    {
-        if (!(flags & CONF_PREFIXED) || (listflags & ASTCONF_base))
-        {
-            if (!name)
-            {
+    } else {
+        if (!(flags & CONF_PREFIXED) || (listflags & ASTCONF_base)) {
+            if (!name) {
                 if ((p->flags & (CONF_PREFIXED | CONF_STRING))
                     == (CONF_PREFIXED | CONF_STRING)
                     && (!(listflags & ASTCONF_base)
-                        || p->standard != CONF_POSIX))
-                {
+                        || p->standard != CONF_POSIX)) {
                     if ((p->flags & CONF_UNDERSCORE)
                         && !(listflags & ASTCONF_base))
                         sfprintf(sp, "_");
@@ -1566,8 +1462,7 @@ print(Sfio_t *sp,
             }
             if (flags & CONF_ERROR)
                 sfprintf(sp, "error");
-            else if (defined)
-            {
+            else if (defined) {
                 if (s)
                     sfprintf(sp,
                              "%s",
@@ -1578,15 +1473,13 @@ print(Sfio_t *sp,
                     sfprintf(sp, "%I*d", sizeof(v), v);
                 else
                     sfprintf(sp, "%I*u", sizeof(v), v);
-            }
-            else
+            } else
                 sfprintf(sp, "undefined");
             if (!name)
                 sfprintf(sp, "\n");
         }
         if (!name && !(listflags & ASTCONF_base) && !(p->flags & CONF_STRING)
-            && (p->flags & (CONF_FEATURE | CONF_MINMAX)))
-        {
+            && (p->flags & (CONF_FEATURE | CONF_MINMAX))) {
             if (p->flags & CONF_UNDERSCORE)
                 sfprintf(sp, "_");
             sfprintf(sp,
@@ -1600,8 +1493,7 @@ print(Sfio_t *sp,
                      "_%s=",
                      (listflags & ASTCONF_lower) ? fmtlower(p->name)
                                                  : p->name);
-            if (!defined && !name && (p->flags & CONF_MINMAX_DEF))
-            {
+            if (!defined && !name && (p->flags & CONF_MINMAX_DEF)) {
                 defined = 1;
                 v = p->minmax.number;
             }
@@ -1614,8 +1506,7 @@ print(Sfio_t *sp,
             sfprintf(sp, "\n");
         }
     }
-    if (drop)
-    {
+    if (drop) {
         if (call = sfstruse(sp))
             call = buffer(call);
         else
@@ -1651,10 +1542,8 @@ nativeconf(Proc_t **pp, const char *operand)
     cmd[2] = 0;
     ops[0] = PROC_FD_DUP(open("/dev/null", O_WRONLY, 0), 2, PROC_FD_CHILD);
     ops[1] = 0;
-    if (*pp = procopen(_pth_getconf, cmd, environ, ops, PROC_READ))
-    {
-        if (sp = sfnew(NiL, NiL, SF_UNBOUND, (*pp)->rfd, SF_READ))
-        {
+    if (*pp = procopen(_pth_getconf, cmd, environ, ops, PROC_READ)) {
+        if (sp = sfnew(NiL, NiL, SF_UNBOUND, (*pp)->rfd, SF_READ)) {
             sfdisc(sp, SF_POPDISC);
             return sp;
         }
@@ -1697,22 +1586,17 @@ astgetconf(const char *name,
     Sfio_t *tmp;
 
 #if __OBSOLETE__ < 20080101
-    if (pointerof(flags) == ( void * )errorf)
-    {
+    if (pointerof(flags) == ( void * )errorf) {
         conferror = errorf;
         flags = ASTCONF_error;
-    }
-    else if (conferror && conferror != errorf)
+    } else if (conferror && conferror != errorf)
         conferror = 0;
 #endif
-    if (!name)
-    {
+    if (!name) {
         if (path)
             return null;
-        if (!(name = value))
-        {
-            if (state.data)
-            {
+        if (!(name = value)) {
+            if (state.data) {
                 Ast_confdisc_f notify;
 
 #if _HUH20000515 /* doesn't work for shell builtins */
@@ -1734,10 +1618,8 @@ astgetconf(const char *name,
     if (state.recent && streq(name, state.recent->name)
         && (s = format(state.recent, path, value, flags, conferror)))
         return s;
-    if (lookup(&look, name, flags))
-    {
-        if (value)
-        {
+    if (lookup(&look, name, flags)) {
+        if (value) {
         ro:
             errno = EINVAL;
             if (conferror)
@@ -1746,17 +1628,13 @@ astgetconf(const char *name,
         }
         return print(NiL, &look, name, path, flags, conferror);
     }
-    if ((n = strlen(name)) > 3 && n < (ALT + 3))
-    {
-        if (streq(name + n - 3, "DEV"))
-        {
-            if (tmp = sfstropen())
-            {
+    if ((n = strlen(name)) > 3 && n < (ALT + 3)) {
+        if (streq(name + n - 3, "DEV")) {
+            if (tmp = sfstropen()) {
                 sfprintf(tmp, "/dev/");
                 for (s = ( char * )name; s < ( char * )name + n - 3; s++)
                     sfputc(tmp, isupper(*s) ? tolower(*s) : *s);
-                if ((s = sfstruse(tmp)) && !access(s, F_OK))
-                {
+                if ((s = sfstruse(tmp)) && !access(s, F_OK)) {
                     if (value)
                         goto ro;
                     s = buffer(s);
@@ -1765,9 +1643,7 @@ astgetconf(const char *name,
                 }
                 sfclose(tmp);
             }
-        }
-        else if (streq(name + n - 3, "DIR"))
-        {
+        } else if (streq(name + n - 3, "DIR")) {
             Lookup_t altlook;
             char altname[ALT];
 
@@ -1775,10 +1651,8 @@ astgetconf(const char *name,
 
             strcpy(altname, name);
             altname[n - 3] = 0;
-            if (lookup(&altlook, altname, flags))
-            {
-                if (value)
-                {
+            if (lookup(&altlook, altname, flags)) {
+                if (value) {
                     errno = EINVAL;
                     if (conferror)
                         (*conferror)(
@@ -1790,13 +1664,10 @@ astgetconf(const char *name,
             for (s = altname; *s; s++)
                 if (isupper(*s))
                     *s = tolower(*s);
-            if (tmp = sfstropen())
-            {
-                for (n = 0; n < elementsof(dirs); n++)
-                {
+            if (tmp = sfstropen()) {
+                for (n = 0; n < elementsof(dirs); n++) {
                     sfprintf(tmp, "%s/%s/.", dirs[n], altname);
-                    if ((s = sfstruse(tmp)) && !access(s, F_OK))
-                    {
+                    if ((s = sfstruse(tmp)) && !access(s, F_OK)) {
                         if (value)
                             goto ro;
                         s = buffer(s);
@@ -1877,8 +1748,7 @@ astconflist(Sfio_t *sp, const char *path, int flags, const char *pattern)
     INITIALIZE();
     if (!path)
         path = root;
-    else if (access(path, F_OK))
-    {
+    else if (access(path, F_OK)) {
         errorf(&state, &state, 2, "%s: not found", path);
         return;
     }
@@ -1891,8 +1761,7 @@ astconflist(Sfio_t *sp, const char *path, int flags, const char *pattern)
     if (!(flags
           & (ASTCONF_matchcall | ASTCONF_matchname | ASTCONF_matchstandard)))
         pattern = 0;
-    if (pattern)
-    {
+    if (pattern) {
         memset(&redisc, 0, sizeof(redisc));
         redisc.re_version = REG_VERSION;
         redisc.re_errorf = ( regerror_t )errorf;
@@ -1902,30 +1771,22 @@ astconflist(Sfio_t *sp, const char *path, int flags, const char *pattern)
                     REG_DISCIPLINE | REG_EXTENDED | REG_LENIENT | REG_NULL))
             return;
     }
-    if (flags & ASTCONF_read)
-    {
+    if (flags & ASTCONF_read) {
         for (look.conf = ( Conf_t * )conf;
              look.conf < ( Conf_t * )&conf[conf_elements];
-             look.conf++)
-        {
-            if (pattern)
-            {
-                if (flags & ASTCONF_matchcall)
-                {
+             look.conf++) {
+            if (pattern) {
+                if (flags & ASTCONF_matchcall) {
                     if (regexec(&re,
                                 prefix[look.conf->call + CONF_call].name,
                                 0,
                                 NiL,
                                 0))
                         continue;
-                }
-                else if (flags & ASTCONF_matchname)
-                {
+                } else if (flags & ASTCONF_matchname) {
                     if (regexec(&re, look.conf->name, 0, NiL, 0))
                         continue;
-                }
-                else if (flags & ASTCONF_matchstandard)
-                {
+                } else if (flags & ASTCONF_matchstandard) {
                     if (regexec(
                         &re, prefix[look.conf->standard].name, 0, NiL, 0))
                         continue;
@@ -1936,20 +1797,16 @@ astconflist(Sfio_t *sp, const char *path, int flags, const char *pattern)
             print(sp, &look, NiL, path, flags, errorf);
         }
 #ifdef _pth_getconf_a
-        if (pp = nativeconf(&proc, _pth_getconf_a))
-        {
+        if (pp = nativeconf(&proc, _pth_getconf_a)) {
             call = "GC";
-            while (f = sfgetr(pp, '\n', 1))
-            {
+            while (f = sfgetr(pp, '\n', 1)) {
                 for (s = f; *s && *s != '=' && *s != ':' && !isspace(*s); s++)
                     ;
                 if (*s)
                     for (*s++ = 0; isspace(*s); s++)
                         ;
-                if (!lookup(&look, f, flags))
-                {
-                    if (flags & ASTCONF_table)
-                    {
+                if (!lookup(&look, f, flags)) {
+                    if (flags & ASTCONF_table) {
                         if (look.standard < 0)
                             look.standard = 0;
                         if (look.section < 1)
@@ -1965,8 +1822,7 @@ astconflist(Sfio_t *sp, const char *path, int flags, const char *pattern)
                                  0,
                                  "N",
                                  s);
-                    }
-                    else if (flags & ASTCONF_parse)
+                    } else if (flags & ASTCONF_parse)
                         sfprintf(sp, "%s %s - %s\n", state.id, f, s);
                     else
                         sfprintf(
@@ -1983,33 +1839,24 @@ astconflist(Sfio_t *sp, const char *path, int flags, const char *pattern)
         }
 #endif
     }
-    if (flags & ASTCONF_write)
-    {
+    if (flags & ASTCONF_write) {
         call = "AC";
-        for (fp = state.features; fp; fp = fp->next)
-        {
-            if (pattern)
-            {
-                if (flags & ASTCONF_matchcall)
-                {
+        for (fp = state.features; fp; fp = fp->next) {
+            if (pattern) {
+                if (flags & ASTCONF_matchcall) {
                     if (regexec(&re, call, 0, NiL, 0))
                         continue;
-                }
-                else if (flags & ASTCONF_matchname)
-                {
+                } else if (flags & ASTCONF_matchname) {
                     if (regexec(&re, fp->name, 0, NiL, 0))
                         continue;
-                }
-                else if (flags & ASTCONF_matchstandard)
-                {
+                } else if (flags & ASTCONF_matchstandard) {
                     if (regexec(&re, prefix[fp->standard].name, 0, NiL, 0))
                         continue;
                 }
             }
             if (!(s = feature(fp, 0, path, NiL, 0, 0)) || !*s)
                 s = "0";
-            if (flags & ASTCONF_table)
-            {
+            if (flags & ASTCONF_table) {
                 f = flg;
                 if (fp->flags & CONF_ALLOC)
                     *f++ = 'A';
@@ -2029,8 +1876,7 @@ astconflist(Sfio_t *sp, const char *path, int flags, const char *pattern)
                          0,
                          flg,
                          s);
-            }
-            else if (flags & ASTCONF_parse)
+            } else if (flags & ASTCONF_parse)
                 sfprintf(sp,
                          "%s %s - %s\n",
                          state.id,

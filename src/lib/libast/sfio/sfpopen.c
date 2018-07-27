@@ -54,8 +54,7 @@ static void execute(argcmd) char *argcmd;
     if (!(interp = getenv("SHELL")) || !interp[0])
         interp = "/bin/sh";
 
-    if (strcmp(interp, "/bin/sh") != 0 && strcmp(interp, "/bin/ksh") != 0)
-    {
+    if (strcmp(interp, "/bin/sh") != 0 && strcmp(interp, "/bin/ksh") != 0) {
         if (access(interp, X_OK) == 0)
             goto do_interp;
         else
@@ -73,8 +72,7 @@ static void execute(argcmd) char *argcmd;
     strcpy(cmd, argcmd);
     if (!(argv = ( char ** )malloc(16 * sizeof(char *))))
         goto do_interp;
-    for (n = 0, s = cmd;;)
-    {
+    for (n = 0, s = cmd;;) {
         while (isspace(s[0]))
             s += 1;
         if (s[0] == 0)
@@ -109,17 +107,13 @@ static void execute(argcmd) char *argcmd;
             goto do_interp;
 
     if (cmd[0] == '/' || (cmd[0] == '.' && cmd[1] == '/')
-        || (cmd[0] == '.' && cmd[1] == '.' && cmd[2] == '/'))
-    {
+        || (cmd[0] == '.' && cmd[1] == '.' && cmd[2] == '/')) {
         if (access(cmd, X_OK) != 0)
             goto do_interp;
         else
             execv(cmd, argv);
-    }
-    else
-    {
-        for (p = Path; *p; ++p)
-        {
+    } else {
+        for (p = Path; *p; ++p) {
             s = sfprints("%s/%s", *p, cmd);
             if (access(s, X_OK) == 0)
                 execv(s, argv);
@@ -157,12 +151,10 @@ char *mode;    /* mode of the stream */
         return 0;
     sflags = _sftype(mode, NIL(int *), NIL(int *), NIL(int *));
 
-    if (f == ( Sfio_t * )(-1))
-    { /* stdio compatibility mode */
+    if (f == ( Sfio_t * )(-1)) { /* stdio compatibility mode */
         f = NIL(Sfio_t *);
         pflags = 1;
-    }
-    else
+    } else
         pflags = 0;
 
     flags = 0;
@@ -182,8 +174,7 @@ char *mode;    /* mode of the stream */
                     (sflags & SF_READ) ? proc->rfd : proc->wfd,
                     sflags | ((sflags & SF_RDWR) ? 0 : SF_READ)))
         || _sfpopen(f, (sflags & SF_READ) ? proc->wfd : -1, proc->pid, pflags)
-           < 0)
-    {
+           < 0) {
         if (f)
             sfclose(f);
         procclose(proc);
@@ -197,8 +188,7 @@ char *mode;    /* mode of the stream */
     Sfio_t sf;
 
     /* set shell meta characters */
-    if (Meta[0] == 0)
-    {
+    if (Meta[0] == 0) {
         reg char *s;
         Meta[0] = 1;
         for (s = "!@#$%&*(){}[]:;<>~`'|\"\\"; *s; ++s)
@@ -214,34 +204,27 @@ char *mode;    /* mode of the stream */
 
     /* make pipes */
     parent[0] = parent[1] = child[0] = child[1] = -1;
-    if (sflags & SF_RDWR)
-    {
+    if (sflags & SF_RDWR) {
         if (syspipef(parent) < 0)
             goto error;
         if ((sflags & SF_RDWR) == SF_RDWR && syspipef(child) < 0)
             goto error;
     }
 
-    switch ((pid = fork()))
-    {
+    switch ((pid = fork())) {
     default: /* in parent process */
-        if (sflags & SF_READ)
-        {
+        if (sflags & SF_READ) {
             pkeep = READ;
             ckeep = WRITE;
-        }
-        else
-        {
+        } else {
             pkeep = WRITE;
             ckeep = READ;
         }
 
-        if (f == ( Sfio_t * )(-1))
-        { /* stdio compatibility mode */
+        if (f == ( Sfio_t * )(-1)) { /* stdio compatibility mode */
             f = NIL(Sfio_t *);
             stdio = 1;
-        }
-        else
+        } else
             stdio = 0;
 
         /* make the streams */
@@ -251,12 +234,10 @@ char *mode;    /* mode of the stream */
                         parent[pkeep],
                         sflags | ((sflags & SF_RDWR) ? 0 : SF_READ))))
             goto error;
-        if (sflags & SF_RDWR)
-        {
+        if (sflags & SF_RDWR) {
             CLOSE(parent[!pkeep]);
             SETCLOEXEC(parent[pkeep]);
-            if ((sflags & SF_RDWR) == SF_RDWR)
-            {
+            if ((sflags & SF_RDWR) == SF_RDWR) {
                 CLOSE(child[!ckeep]);
                 SETCLOEXEC(child[ckeep]);
             }
@@ -264,8 +245,7 @@ char *mode;    /* mode of the stream */
 
         /* save process info */
         fd = (sflags & SF_RDWR) == SF_RDWR ? child[ckeep] : -1;
-        if (_sfpopen(f, fd, pid, stdio) < 0)
-        {
+        if (_sfpopen(f, fd, pid, stdio) < 0) {
             ( void )sfclose(f);
             goto error;
         }
@@ -274,20 +254,16 @@ char *mode;    /* mode of the stream */
 
     case 0: /* in child process */
         /* determine what to keep */
-        if (sflags & SF_READ)
-        {
+        if (sflags & SF_READ) {
             pkeep = WRITE;
             ckeep = READ;
-        }
-        else
-        {
+        } else {
             pkeep = READ;
             ckeep = WRITE;
         }
 
         /* zap fd that we don't need */
-        if (sflags & SF_RDWR)
-        {
+        if (sflags & SF_RDWR) {
             CLOSE(parent[!pkeep]);
             if ((sflags & SF_RDWR) == SF_RDWR)
                 CLOSE(child[!ckeep]);
@@ -301,17 +277,14 @@ char *mode;    /* mode of the stream */
             if ((child[ckeep] = sysdupf(pkeep)) < 0)
                 _exit(EXIT_NOTFOUND);
 
-        if (sflags & SF_RDWR)
-        {
-            if (parent[pkeep] != pkeep)
-            {
+        if (sflags & SF_RDWR) {
+            if (parent[pkeep] != pkeep) {
                 sf.file = parent[pkeep];
                 CLOSE(pkeep);
                 if (sfsetfd(&sf, pkeep) != pkeep)
                     _exit(EXIT_NOTFOUND);
             }
-            if ((sflags & SF_RDWR) == SF_RDWR && child[ckeep] != ckeep)
-            {
+            if ((sflags & SF_RDWR) == SF_RDWR && child[ckeep] != ckeep) {
                 sf.file = child[ckeep];
                 CLOSE(ckeep);
                 if (sfsetfd(&sf, ckeep) != ckeep)
@@ -324,13 +297,11 @@ char *mode;    /* mode of the stream */
 
     case -1: /* error */
     error:
-        if (parent[0] >= 0)
-        {
+        if (parent[0] >= 0) {
             CLOSE(parent[0]);
             CLOSE(parent[1]);
         }
-        if (child[0] >= 0)
-        {
+        if (child[0] >= 0) {
             CLOSE(child[0]);
             CLOSE(child[1]);
         }

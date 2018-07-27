@@ -34,10 +34,8 @@ strvcmp(const char *a, const char *b)
     unsigned long na;
     unsigned long nb;
 
-    for (;;)
-    {
-        if (isdigit(*a) && isdigit(*b))
-        {
+    for (;;) {
+        if (isdigit(*a) && isdigit(*b)) {
             na = nb = 0;
             while (isdigit(*a))
                 na = na * 10 + *a++ - '0';
@@ -47,13 +45,11 @@ strvcmp(const char *a, const char *b)
                 return -1;
             if (na > nb)
                 return 1;
-        }
-        else if (*a != *b)
+        } else if (*a != *b)
             break;
         else if (!*a)
             return 0;
-        else
-        {
+        else {
             a++;
             b++;
         }

@@ -92,24 +92,21 @@ fmtip6(const unsigned char *addr, int bits)
 
     s = b = fmtbuf(44);
     r[m = z = 0] = 0;
-    if (a[0] == 0x20 && a[1] == 0x02 && (a[2] || a[3] || a[4] || a[5]))
-    {
+    if (a[0] == 0x20 && a[1] == 0x02 && (a[2] || a[3] || a[4] || a[5])) {
         z = 6;
         s = dec(s, "2002:", a[2]);
         s = dec(s, ".", a[3]);
         s = dec(s, ".", a[4]);
         s = dec(s, ".", a[5]);
     }
-    for (i = z; i < n; i += 2)
-    {
+    for (i = z; i < n; i += 2) {
         for (k = i; i < n - 1 && !a[i] && !a[i + 1]; i += 2)
             ;
         if ((r[k] = i - k) > r[m] || r[k] == r[m] && i >= (n - 1))
             m = k;
     }
     if (!m)
-        switch (r[m])
-        {
+        switch (r[m]) {
         case 0:
             m = -1;
             break;
@@ -125,8 +122,7 @@ fmtip6(const unsigned char *addr, int bits)
             n = 0;
             break;
         case 10:
-            if (a[10] == 0xFF && a[11] == 0xFF)
-            {
+            if (a[10] == 0xFF && a[11] == 0xFF) {
                 s = dec(s, "::FFFF:", a[12]);
                 s = dec(s, ".", a[13]);
                 s = dec(s, ".", a[14]);
@@ -135,34 +131,27 @@ fmtip6(const unsigned char *addr, int bits)
             }
             break;
         }
-    for (i = z; i < n; i++)
-    {
-        if (i == m)
-        {
+    for (i = z; i < n; i++) {
+        if (i == m) {
             *s++ = ':';
             *s++ = ':';
-            if ((i += r[m]) >= n)
-            {
+            if ((i += r[m]) >= n) {
                 z = 1;
                 break;
             }
             z = 0;
-        }
-        else if (i && !(i & 1))
-        {
+        } else if (i && !(i & 1)) {
             if (z)
                 z = 0;
             else
                 *s++ = '0';
             *s++ = ':';
         }
-        if ((k = (a[i] >> 4) & 0xf) || z)
-        {
+        if ((k = (a[i] >> 4) & 0xf) || z) {
             z = 1;
             *s++ = dig[k];
         }
-        if ((k = a[i] & 0xf) || z)
-        {
+        if ((k = a[i] & 0xf) || z) {
             z = 1;
             *s++ = dig[k];
         }

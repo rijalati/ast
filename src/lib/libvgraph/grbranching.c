@@ -48,8 +48,7 @@ static int Fd = 2;
 static int
 predge(Gredge_t *ed)
 {
-    if (!ed)
-    {
+    if (!ed) {
         PRINT(Fd, "Null edge\n", 0);
         return 0;
     }
@@ -66,8 +65,7 @@ predge(Gredge_t *ed)
 static int
 prlink(Gredge_t *e)
 {
-    for (; e; e = e->link)
-    {
+    for (; e; e = e->link) {
         PRINT(Fd, "\t", 0);
         predge(e);
     }
@@ -76,8 +74,7 @@ prlink(Gredge_t *e)
 static int
 prinext(Gredge_t *e)
 {
-    for (; e; e = e->inext)
-    {
+    for (; e; e = e->inext) {
         PRINT(Fd, "\t", 0);
         predge(e);
     }
@@ -86,8 +83,7 @@ prinext(Gredge_t *e)
 static int
 pronext(Gredge_t *e)
 {
-    for (; e; e = e->onext)
-    {
+    for (; e; e = e->onext) {
         PRINT(Fd, "\t", 0);
         predge(e);
     }
@@ -96,8 +92,7 @@ pronext(Gredge_t *e)
 static int
 prnode(Grnode_t *nd)
 {
-    if (!nd)
-    {
+    if (!nd) {
         PRINT(Fd, "Null node\n", 0);
         return 0;
     }
@@ -129,13 +124,11 @@ prgraph(Graph_t *gr)
     Grnode_t *nd;
     Gredge_t *ed;
     for (nd = ( Grnode_t * )dtflatten(gr->nodes); nd;
-         nd = ( Grnode_t * )dtlink(gr->nodes, nd))
-    {
+         nd = ( Grnode_t * )dtlink(gr->nodes, nd)) {
         if (nd != grfind(nd))
             continue;
         prnode(nd);
-        for (ed = nd->iedge; ed; ed = ed->inext)
-        {
+        for (ed = nd->iedge; ed; ed = ed->inext) {
             PRINT(Fd, "\t", 0);
             predge(ed);
         }
@@ -152,8 +145,7 @@ grbranching(Graph_t *gr)
     ssize_t w;
 
     for (w = 0, n = ( Grnode_t * )dtflatten(gr->nodes); n;
-         w += 1, n = ( Grnode_t * )dtlink(gr->nodes, n))
-    {
+         w += 1, n = ( Grnode_t * )dtlink(gr->nodes, n)) {
         n->link = n->fold = n; /* union structures: link kept as-is, fold does
                                   path-compression */
         n->oedge = NIL(Gredge_t *); /* wipe the out-edges */
@@ -161,18 +153,15 @@ grbranching(Graph_t *gr)
 
         /* compute heaviest weight ec and move it to front */
         for (ep = en = NIL(Gredge_t *), ec = e = n->iedge; e;
-             en = e, e = e->inext)
-        {
+             en = e, e = e->inext) {
             e->link = NIL(Gredge_t *);
             BREDGE(e)->edge = e; /* at start, representing self */
-            if ((BREDGE(e)->wadj = BREDGE(e)->wght) > BREDGE(ec)->wadj)
-            {
+            if ((BREDGE(e)->wadj = BREDGE(e)->wght) > BREDGE(ec)->wadj) {
                 ec = e;
                 ep = en;
             }
         }
-        if (ep)
-        {
+        if (ep) {
             ep->inext = ec->inext;
             ec->inext = n->iedge;
             n->iedge = ec;
@@ -188,8 +177,7 @@ grbranching(Graph_t *gr)
 
     /* search and collapse cycles */
     for (n = ( Grnode_t * )dtflatten(gr->nodes); n;
-         n = ( Grnode_t * )dtlink(gr->nodes, n))
-    {
+         n = ( Grnode_t * )dtlink(gr->nodes, n)) {
         nc = grfind(n);
         if (BRNODE(nc)->mark) /* already searched */
             continue;
@@ -212,8 +200,7 @@ grbranching(Graph_t *gr)
             }
 
             /* potential cycle, check that out and also compute min edge */
-            for (emin = NIL(Gredge_t *), ec = path; ec; ec = ec->link)
-            {
+            for (emin = NIL(Gredge_t *), ec = path; ec; ec = ec->link) {
                 if (!emin || BREDGE(ec)->wadj < BREDGE(emin)->wadj)
                     emin = ec;
                 if (grfind(ec->head) == nc) /* end of cycle */
@@ -235,15 +222,13 @@ grbranching(Graph_t *gr)
 
             /* make list of incoming edges and adjust their weights */
             en = NIL(Gredge_t *);
-            for (ec = cl->cycl; ec; ec = ec->link)
-            {
+            for (ec = cl->cycl; ec; ec = ec->link) {
                 BREDGE(ec)->root
                 = grfind(ec->head); /* save node union structure */
 
                 w = BREDGE(ec)->wadj - BREDGE(emin)->wadj;
                 for (ep = NIL(Gredge_t *), e = grfind(ec->head)->iedge; e;
-                     e = e->inext)
-                {
+                     e = e->inext) {
                     BREDGE(e)->wadj -= w;
                     if (!e->inext) /* last of list */
                         ep = e;
@@ -254,8 +239,7 @@ grbranching(Graph_t *gr)
             }
 
             /* collapsing cycle onto nc */
-            for (ec = cl->cycl; ec; ec = ec->link)
-            {
+            for (ec = cl->cycl; ec; ec = ec->link) {
                 if (grfind(ec->head) == nc)
                     continue;
                 grfind(ec->head)->link = nc; /* union history kept as-is */
@@ -264,19 +248,16 @@ grbranching(Graph_t *gr)
             nc->fold = nc->link = nc;
 
             /* make new edge list, keep heaviest edge in front */
-            for (e = en; e; e = en)
-            {
+            for (e = en; e; e = en) {
                 en = e->inext;
                 if (BREDGE(e)->wadj <= 0
                     || grfind(e->head) == grfind(e->tail))
                     continue;
-                if (!nc->iedge || BREDGE(nc->iedge)->wadj <= BREDGE(e)->wadj)
-                {
+                if (!nc->iedge
+                    || BREDGE(nc->iedge)->wadj <= BREDGE(e)->wadj) {
                     e->inext = nc->iedge;
                     nc->iedge = e;
-                }
-                else
-                {
+                } else {
                     e->inext = nc->iedge->inext;
                     nc->iedge->inext = e;
                 }
@@ -292,8 +273,7 @@ grbranching(Graph_t *gr)
     /* move the remaining branching edges to their real nodes */
     path = NIL(Gredge_t *);
     for (n = ( Grnode_t * )dtflatten(gr->nodes); n;
-         n = ( Grnode_t * )dtlink(gr->nodes, n))
-    {
+         n = ( Grnode_t * )dtlink(gr->nodes, n)) {
         if (!(e = n->iedge))
             continue;
         e->link = path;
@@ -303,15 +283,14 @@ grbranching(Graph_t *gr)
         ec->head->iedge = ec;
 
     /* unroll collapsed cycles in reverse order to construct branching */
-    for (cl -= 1; cl >= clist; --cl)
-    { /* restore the union structure to just before this cycle collapsed */
+    for (cl -= 1; cl >= clist; --cl) { /* restore the union structure to just
+                                          before this cycle collapsed */
         for (ec = cl->cycl; ec; ec = ec->link)
             BREDGE(ec)->root->link = BREDGE(ec)->root;
 
         if ((en = cl->entr))
             en = BREDGE(en)->edge;
-        for (ec = cl->cycl; ec; ec = ec->link)
-        {
+        for (ec = cl->cycl; ec; ec = ec->link) {
             if (en && GRLINK(ec->head) == GRLINK(en->head))
                 BREDGE(ec)->edge = en;
             else
@@ -327,8 +306,7 @@ grbranching(Graph_t *gr)
 
     w = 0; /* construct the external branching representation */
     for (n = ( Grnode_t * )dtflatten(gr->nodes); n;
-         n = ( Grnode_t * )dtlink(gr->nodes, n))
-    {
+         n = ( Grnode_t * )dtlink(gr->nodes, n)) {
         if (!(e = n->iedge))
             continue;
         e->inext = NIL(Gredge_t *);
@@ -357,21 +335,16 @@ gredgesort(Gredge_t *list)
     equl->link = NIL(Gredge_t *);
     wght = BREDGE(equl)->wght; /* partition list by this weight */
     more = less = NIL(Gredge_t *);
-    for (; list; list = link)
-    {
+    for (; list; list = link) {
         link = list->link;
 
-        if ((w = BREDGE(list)->wght) > wght)
-        {
+        if ((w = BREDGE(list)->wght) > wght) {
             list->link = more;
             more = list;
-        }
-        else if (w == wght)
-        {
+        } else if (w == wght) {
             list->link = equl;
             equl = list;
-        }
-        else /* if(w < wght) */
+        } else /* if(w < wght) */
         {
             list->link = less;
             less = list;
@@ -389,8 +362,7 @@ gredgesort(Gredge_t *list)
         for (link = list; link->link;)
             link = link->link;
         link->link = equl; /* link to the equals */
-    }
-    else
+    } else
         list = equl; /* no heavier ones than this */
 
     for (link = equl; link->link;)
@@ -410,10 +382,8 @@ grbrgreedy(Graph_t *gr)
 
     list = NIL(Gredge_t *); /* link all edges into a big list */
     for (n = ( Grnode_t * )dtflatten(gr->nodes); n;
-         n = ( Grnode_t * )dtlink(gr->nodes, n))
-    {
-        for (e = n->oedge; e; e = e->onext)
-        {
+         n = ( Grnode_t * )dtlink(gr->nodes, n)) {
+        for (e = n->oedge; e; e = e->onext) {
             e->link = list;
             list = e;
         }
@@ -422,8 +392,7 @@ grbrgreedy(Graph_t *gr)
     list = gredgesort(list); /* sort in reverse order by weights */
 
     wght = 0;
-    for (e = list; e; e = e->link)
-    {
+    for (e = list; e; e = e->link) {
         if (e->head == e->tail) /* self-loop cannot be a branching edge */
             continue;
         if (e->head->iedge) /* node already got an incoming edge */
@@ -474,8 +443,7 @@ brdata(Gralgo_t *algo, int type, Grdata_t *data)
     if (algo != Grbranching)
         return NIL(Grdata_t *);
 
-    switch (type)
-    {
+    switch (type) {
     default:
         return NIL(Grdata_t *);
 
@@ -511,22 +479,19 @@ main(int argc, char **argv)
     char buf[1024];
     int type = 0;
 
-    if (argc > 1 && strcmp(argv[1], "-l") == 0)
-    {
+    if (argc > 1 && strcmp(argv[1], "-l") == 0) {
         type = -1;
         argc--;
         argv++;
     }
-    if (argc > 1 && strcmp(argv[1], "-r") == 0)
-    {
+    if (argc > 1 && strcmp(argv[1], "-r") == 0) {
         type = 1;
         argc--;
         argv++;
     }
 
     gr = gropen(0, 0);
-    while (fgets(buf, sizeof(buf), stdin))
-    {
+    while (fgets(buf, sizeof(buf), stdin)) {
         if (buf[0] == '#')
             continue;
         if (sscanf(buf, "%d,%d,%d", &t, &h, &w) != 3)

@@ -65,11 +65,9 @@ opendir(const char *path)
 #    else
                           newof(0, DIR, 1, 0)
 #    endif
-          ))
-    {
+          )) {
         close(fd);
-        if (dirp)
-        {
+        if (dirp) {
             if (!freedirp)
                 freedirp = dirp;
             else
@@ -89,8 +87,7 @@ opendir(const char *path)
 void
 closedir(DIR *dirp)
 {
-    if (dirp)
-    {
+    if (dirp) {
         close(dirp->dd_fd);
         if (!freedirp)
             freedirp = dirp;

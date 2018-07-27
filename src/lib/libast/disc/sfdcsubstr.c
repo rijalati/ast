@@ -69,8 +69,7 @@ int type;
     here = su->here + su->offset;
     if (sfsk(f, here, SEEK_SET, disc) != here)
         io = 0;
-    else
-    {
+    else {
         if (type == SF_WRITE)
             io = sfwr(f, buf, n, disc);
         else
@@ -126,8 +125,7 @@ Sfdisc_t *disc;
 
     su = ( Subfile_t * )disc;
 
-    switch (type)
-    {
+    switch (type) {
     case SEEK_SET:
         here = 0;
         break;
@@ -137,8 +135,7 @@ Sfdisc_t *disc;
     case SEEK_END:
         if (su->extent >= 0)
             here = su->extent;
-        else
-        {
+        else {
             parent = sfsk(f, ( Sfoff_t )0, SEEK_CUR, disc);
             if ((here = sfsk(f, ( Sfoff_t )0, SEEK_END, disc)) < 0)
                 return -1;
@@ -203,8 +200,7 @@ Sfoff_t extent; /* desired size */
                         parent->flags)))
         return 0;
 
-    if (!(su = ( Subfile_t * )malloc(sizeof(Subfile_t))))
-    {
+    if (!(su = ( Subfile_t * )malloc(sizeof(Subfile_t)))) {
         if (sp != f)
             sfclose(sp);
         return 0;
@@ -219,8 +215,7 @@ Sfoff_t extent; /* desired size */
     su->offset = offset;
     su->extent = extent;
 
-    if (sfdisc(sp, ( Sfdisc_t * )su) != ( Sfdisc_t * )su)
-    {
+    if (sfdisc(sp, ( Sfdisc_t * )su) != ( Sfdisc_t * )su) {
         free(su);
         if (sp != f)
             sfclose(sp);

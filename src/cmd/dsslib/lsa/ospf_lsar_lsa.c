@@ -133,10 +133,8 @@ identf_lsar_lsa_file(Dssfile_t *fp, void *data, size_t size, Dssdisc_t *disc)
      * Check the first record.
      * Make sure that the record contains an annotated LSU packet.
      */
-    if (size < sizeof(mrt_hdr_t))
-    {
-        if (disc->errorf && (fp->dss->flags & DSS_DEBUG))
-        {
+    if (size < sizeof(mrt_hdr_t)) {
+        if (disc->errorf && (fp->dss->flags & DSS_DEBUG)) {
             (*disc->errorf)(
             NULL,
             disc,
@@ -146,10 +144,8 @@ identf_lsar_lsa_file(Dssfile_t *fp, void *data, size_t size, Dssdisc_t *disc)
         return 0;
     }
     mrt_hdr = ( mrt_hdr_t * )data;
-    if (ntohs(mrt_hdr->type) != MRT_TYPE_PROTO_OSPFv2)
-    {
-        if (disc->errorf && (fp->dss->flags & DSS_DEBUG))
-        {
+    if (ntohs(mrt_hdr->type) != MRT_TYPE_PROTO_OSPFv2) {
+        if (disc->errorf && (fp->dss->flags & DSS_DEBUG)) {
             (*disc->errorf)(NULL,
                             disc,
                             2,
@@ -161,10 +157,8 @@ identf_lsar_lsa_file(Dssfile_t *fp, void *data, size_t size, Dssdisc_t *disc)
         }
         return 0;
     }
-    if (ntohs(mrt_hdr->sub_type) != MRT_SUBTYPE_OSPF_ANNOTATED_LSU)
-    {
-        if (disc->errorf && (fp->dss->flags & DSS_DEBUG))
-        {
+    if (ntohs(mrt_hdr->sub_type) != MRT_SUBTYPE_OSPF_ANNOTATED_LSU) {
+        if (disc->errorf && (fp->dss->flags & DSS_DEBUG)) {
             (*disc->errorf)(
             NULL,
             disc,
@@ -200,11 +194,8 @@ open_lsar_lsa_file(Dssfile_t *fp, Dssdisc_t *disc)
 #if 0
 	sfprintf(sfstderr, "open_lsar_lsa_file() file: %s\n", fp->path);
 #endif
-    if (fp->flags & DSS_FILE_WRITE)
-    {
-    }
-    else
-    {
+    if (fp->flags & DSS_FILE_WRITE) {
+    } else {
 
         /* Create 'lsar_lsa_state_t' object and store it in 'fp->data'. */
         MD_CALLOC(fp->data, void *, 1, sizeof(lsar_lsa_state_t));
@@ -238,14 +229,12 @@ close_lsar_lsa_file(Dssfile_t *fp, Dssdisc_t *disc)
 	sfprintf(sfstderr, "close_lsar_lsa_file() file: %s\n", fp->path);
 #endif
     state_p = ( lsar_lsa_state_t * )(fp->data);
-    if (!state_p)
-    {
+    if (!state_p) {
         return -1;
     }
 
     /* Free space allocated to store LSU packet inside fp->data. */
-    if (state_p->lsu_pkt_p)
-    {
+    if (state_p->lsu_pkt_p) {
         MD_FREE(state_p->lsu_pkt_p);
     }
 
@@ -284,29 +273,25 @@ read_lsar_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
     lsa_can_p = &(state_p->lsa_can);
 
     /* First check if we need to read a new MRT record from file. */
-    while (!(state_p->valid_rec))
-    {
+    while (!(state_p->valid_rec)) {
 
         /* First read the 'mrt_hdr_t'. */
         size = sizeof(mrt_hdr_t);
-        if (sfread(fp->io, &(state_p->mrt_hdr), size) != size)
-        {
+        if (sfread(fp->io, &(state_p->mrt_hdr), size) != size) {
             return 0;
         }
 
         /* Make sure that the record contains an annotated LSU packet */
         if ((ntohs(state_p->mrt_hdr.type) != MRT_TYPE_PROTO_OSPFv2)
             || (ntohs(state_p->mrt_hdr.sub_type)
-                != MRT_SUBTYPE_OSPF_ANNOTATED_LSU))
-        {
+                != MRT_SUBTYPE_OSPF_ANNOTATED_LSU)) {
             sfprintf(sfstderr, "Not an LS Update pkt in file %s\n", fp->path);
             return -1;
         }
 
         /* Read the 'ospf_lsar_lsu_hdr_t'. */
         size = sizeof(ospf_lsar_lsu_hdr_t);
-        if (sfread(fp->io, &(state_p->lsar_lsu_hdr), size) != size)
-        {
+        if (sfread(fp->io, &(state_p->lsar_lsu_hdr), size) != size) {
             sfprintf(sfstderr, "File %s has a truncated record\n", fp->path);
             return -1;
         }
@@ -315,8 +300,7 @@ read_lsar_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
         state_p->lsu_pkt_len
         = ntohl(state_p->lsar_lsu_hdr.len)
           - (sizeof(mrt_hdr_t) + sizeof(ospf_lsar_lsu_hdr_t));
-        if ((state_p->lsu_pkt_len) > (state_p->lsu_pkt_max_len))
-        {
+        if ((state_p->lsu_pkt_len) > (state_p->lsu_pkt_max_len)) {
 
             /*
              * Not enough space in 'state_p->lsu_pkt_p' to store
@@ -331,8 +315,7 @@ read_lsar_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
 
         } /* End of if */
         size = state_p->lsu_pkt_len;
-        if (sfread(fp->io, state_p->lsu_pkt_p, size) < size)
-        {
+        if (sfread(fp->io, state_p->lsu_pkt_p, size) < size) {
             sfprintf(sfstderr, "File %s has a truncated record\n", fp->path);
             return -1;
         }
@@ -341,8 +324,7 @@ read_lsar_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
         state_p->valid_rec = TRUE;
         lsu_pkt_p = ( ospf_lsu_pkt_t * )(state_p->lsu_pkt_p);
         state_p->no_lsas = NTOH_LSU_NO_LSAS(lsu_pkt_p->pkt_lsu_no_lsas);
-        if ((state_p->no_lsas) <= 0)
-        {
+        if ((state_p->no_lsas) <= 0) {
 
             /* Wierd case - LSU w/o any LSAs in it. */
             sfprintf(sfstderr, "LSU w/o any LSAs in it\n");
@@ -391,8 +373,7 @@ read_lsar_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
 			 lsa_can_p->lsa_len);
 #endif
     instp = ((( uint8_t * )lsap) + (lsa_can_p->lsa_len));
-    switch (*instp)
-    {
+    switch (*instp) {
     case STAT_NEW_LSA:
         lsa_can_p->lsa_inst_type = LSA_INST_NEW;
         break;
@@ -430,8 +411,7 @@ read_lsar_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
         break;
     } /* End of switch */
     lsa_can_p->lsa_attr = 0;
-    if ((state_p->lsu_group) > 0)
-    {
+    if ((state_p->lsu_group) > 0) {
         BIT_SET(lsa_can_p->lsa_attr, LSA_LSU_GROUP);
     }
     memcpy(&(lsa_can_p->lsu_auth),
@@ -453,8 +433,7 @@ read_lsar_lsa_rec(Dssfile_t *fp, Dssrecord_t *rp, Dssdisc_t *disc)
     state_p->lsap
     = ( ospf_lsa_t * )((( uint8_t * )lsap) + (lsa_can_p->lsa_len)
                        + sizeof(uint32_t));
-    if ((state_p->no_lsas_processed) >= (state_p->no_lsas))
-    {
+    if ((state_p->no_lsas_processed) >= (state_p->no_lsas)) {
         init_lsar_state_rec(state_p);
     }
 
@@ -471,12 +450,9 @@ init_lsar_state_rec(lsar_lsa_state_t *state_p)
 
     ASSERT(state_p);
     lsu_group = state_p->lsu_group;
-    if (lsu_group > 0)
-    {
+    if (lsu_group > 0) {
         lsu_group = 0;
-    }
-    else
-    {
+    } else {
         lsu_group = 1;
     }
     state_p->valid_rec = FALSE;
@@ -486,8 +462,7 @@ init_lsar_state_rec(lsar_lsa_state_t *state_p)
     state_p->lsap = NULL;
     memset(&(state_p->mrt_hdr), 0, sizeof(mrt_hdr_t));
     memset(&(state_p->lsar_lsu_hdr), 0, sizeof(ospf_lsar_lsu_hdr_t));
-    if (state_p->lsu_pkt_p)
-    {
+    if (state_p->lsu_pkt_p) {
         memset(state_p->lsu_pkt_p, 0, state_p->lsu_pkt_max_len);
     }
     state_p->lsu_pkt_len = 0;

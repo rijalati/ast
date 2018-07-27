@@ -26,8 +26,7 @@ tmain()
     int n;
     void(*handler) _ARG_(( int ));
 
-    if (argc > 1)
-    {
+    if (argc > 1) {
         sfmove(sfstdin, sfstdout, (Sfoff_t)(-1), -1);
         return 0;
     }
@@ -55,11 +54,9 @@ tmain()
     sleep(1);
 
     endos = os + strlen(os);
-    while (s = sfgetr(f, '\n', 0))
-    {
+    while (s = sfgetr(f, '\n', 0)) {
         n = sfvalue(f);
-        if (strncmp(s, os, n) != 0)
-        {
+        if (strncmp(s, os, n) != 0) {
             s[n - 1] = os[n - 1] = 0;
             terror("Input=%s, Expect=%s", s, os);
         }

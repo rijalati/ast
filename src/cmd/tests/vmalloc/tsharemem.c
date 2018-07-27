@@ -59,8 +59,7 @@ working(char *store, char *typeascii, char *pnumascii, ssize_t size)
         || !(vm = vmopen(dc, Vmbest, 0)))
         terror("Process %d[pid=%d]: can't open allocation region", pnum, pid);
 
-    for (k = f = 0; k < N_ALLOC; ++k)
-    {
+    for (k = f = 0; k < N_ALLOC; ++k) {
         if (!(Piece[k].addr = vmalloc(vm, Piece[k].size)))
             terror("Process %d[pid=%d]: vmalloc failed", pnum, pid);
         else
@@ -76,8 +75,7 @@ working(char *store, char *typeascii, char *pnumascii, ssize_t size)
 
             if (Piece[f].addr && vmfree(vm, Piece[f].addr) < 0)
                 terror("Process %d[pid=%d]: vmfree failed", pnum, pid);
-            else
-            {
+            else {
                 n_free += 1;
                 Piece[f].free = 0;
                 Piece[f].addr = ( Void_t * )0;
@@ -142,19 +140,16 @@ tmain()
 
     size = 0;   /* make up list of pieces for allocation */
     srandom(0); /* make it easier to debug */
-    for (k = 0; k < N_ALLOC; ++k)
-    {
+    for (k = 0; k < N_ALLOC; ++k) {
         Piece[k].size = (random() % M_SIZE) + 1;
         size += Piece[k].size + 16; /* add slop for malloc header */
     }
     for (f = 0; f < N_FREE;) /* set up what should be freed */
     {
-        for (k = 0; k < N_ALLOC; ++k)
-        {
+        for (k = 0; k < N_ALLOC; ++k) {
             if (Piece[k].free == 1)
                 continue;
-            else if (random() % (N_ALLOC / N_FREE) == 0)
-            {
+            else if (random() % (N_ALLOC / N_FREE) == 0) {
                 Piece[k].free = 1;
                 if ((f += 1) >= N_FREE)
                     break;
@@ -172,16 +167,13 @@ tmain()
 
         tresource(-1, 0);
 
-        if (type < 0)
-        {
+        if (type < 0) {
             tinfo("Testing mmap shared memory");
             store = tstfile("map", -1);
             unlink(store);
             if ((dc = vmdcshare(store, -1, size, -1)))
                 vm = vmopen(dc, Vmbest, 0);
-        }
-        else
-        {
+        } else {
             tinfo("Testing shm shared memory");
             store = tstfile("shm", -1);
             unlink(store);
@@ -195,8 +187,7 @@ tmain()
         for (k = 0; k < N_PROC; ++k)
             proc[k] = makeprocess(argv[0], store, type, k);
 
-        for (f = 0; f < N_PROC; ++f)
-        {
+        for (f = 0; f < N_PROC; ++f) {
             if ((pid = wait(0)) <= 0)
                 terror("wait failed");
             for (k = 0; k < N_PROC; ++k)

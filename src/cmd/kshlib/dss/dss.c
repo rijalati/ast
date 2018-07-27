@@ -147,10 +147,8 @@ query(int argc, char *argv[], Shbltin_t *bp)
     size_t savesize;
     while (pp && pp->index != n)
         pp = pp->next;
-    if (!pp || argv[1])
-    {
-        if (!pp)
-        {
+    if (!pp || argv[1]) {
+        if (!pp) {
             if (!(qp = cxquery(cx, dp->hdr.names[n], cx->disc)))
                 errormsg(
                 SH_DICT, ERROR_exit(1), "%s: load method %s", argv[0]);
@@ -163,8 +161,7 @@ query(int argc, char *argv[], Shbltin_t *bp)
         }
         if (pp->expr.query && qp->end)
             (*qp->end)(cx, &pp->expr, ( void * )0, cx->disc);
-        if (argc == 2 && strcmp(argv[1], "end") == 0)
-        {
+        if (argc == 2 && strcmp(argv[1], "end") == 0) {
             struct query *xp, **ppp = &dp->qp;
             while ((xp = *ppp) && xp != pp)
                 ppp = &xp->next;
@@ -175,10 +172,8 @@ query(int argc, char *argv[], Shbltin_t *bp)
         }
         pp->expr.query = pp->query;
         pp->expr.op = sfstdout;
-        if (qp->beg)
-        {
-            if ((*qp->beg)(cx, &pp->expr, ( void * )argv, cx->disc))
-            {
+        if (qp->beg) {
+            if ((*qp->beg)(cx, &pp->expr, ( void * )argv, cx->disc)) {
                 pp->expr.query = 0;
                 return (2);
             }
@@ -191,8 +186,7 @@ query(int argc, char *argv[], Shbltin_t *bp)
     savesize = data->size;
     data->data = bp->vnode->nvalue;
     data->size = nv_size(bp->vnode);
-    if (qp->sel)
-    {
+    if (qp->sel) {
         if ((n = (*qp->sel)(cx, &pp->expr, data, cx->disc)) <= 0)
             return (n < 0 ? 2 : 1);
     }
@@ -207,8 +201,7 @@ static char *
 getbuf(size_t len)
 {
     static char *buf;
-    if (buflen < len)
-    {
+    if (buflen < len) {
         if (buflen == 0)
             buf = ( char * )malloc(len);
         else
@@ -221,12 +214,10 @@ getbuf(size_t len)
 static void
 check_numeric(Namval_t *np, Cxtype_t *tp, Cxstate_t *sp)
 {
-    if (cxisnumber(tp))
-    {
+    if (cxisnumber(tp)) {
         nv_onattr(np, NV_LDOUBLE | NV_EXPNOTE);
         nv_setsize(np, 10);
-    }
-    else if (cxisbuffer(tp))
+    } else if (cxisbuffer(tp))
         nv_onattr(np, NV_BINARY);
 }
 
@@ -267,8 +258,7 @@ get_child_common(Namval_t *np, Namfun_t *fp, Cxoperand_t *op)
     Cxtype_t *tp = pp->type;
     Cxvariable_t *vp = vnode(np);
     Cxinstruction_t in;
-    if (nv_isattr(pp->hdr.np, NV_INTEGER))
-    {
+    if (nv_isattr(pp->hdr.np, NV_INTEGER)) {
         in.data.variable = vp;
         op->type = vp->type;
         op->value.number = nv_getnum(pp->hdr.np);
@@ -285,10 +275,8 @@ get_child(Namval_t *np, Namfun_t *fp)
     Cxvariable_t *vp = vnode(np);
     Cxoperand_t op;
     Cxvalue_t *val;
-    if (val = get_child_common(np, fp, &op))
-    {
-        if (cxisnumber(vp->type))
-        {
+    if (val = get_child_common(np, fp, &op)) {
+        if (cxisnumber(vp->type)) {
             long l = nv_size(np) + 8;
             char *sp = getbuf(l);
             sfsprintf(sp, l, "%.*Lg\0", nv_size(np), val->number);
@@ -311,32 +299,27 @@ get_mchild(Namval_t *np, Namfun_t *fp)
     Dssrecord_t *rp, rec;
     if (!dp->hdr.np->nvalue)
         return (0);
-    if (dp->sp && dp->sp->rp)
-    {
+    if (dp->sp && dp->sp->rp) {
         rp = dp->sp->rp;
         savedata = rp->data;
         savesize = rp->size;
-    }
-    else
+    } else
         memset(rp = &rec, 0, sizeof(rec));
     rp->data = dp->hdr.np->nvalue;
     rp->size = nv_size(dp->hdr.np);
-    if (nv_isattr(np, NV_BINARY) && !nv_isattr(np, NV_RAW))
-    {
+    if (nv_isattr(np, NV_BINARY) && !nv_isattr(np, NV_RAW)) {
         if (cxcast(dp->cx, &ret, vp, dp->state->type_buffer, rp, ( char * )0)
-            == 0)
-        {
+            == 0) {
             nv_setsize(np, ret.value.buffer.size);
             value = ret.value.buffer.data;
         }
-    }
-    else if (cxcast(dp->cx, &ret, vp, dp->state->type_string, rp, ( char * )0)
-             == 0)
+    } else if (cxcast(
+               dp->cx, &ret, vp, dp->state->type_string, rp, ( char * )0)
+               == 0)
         value = ret.value.string.data;
     else
         value = nv_name(np);
-    if (savedata)
-    {
+    if (savedata) {
         rp->data = savedata;
         rp->size = savesize;
     }
@@ -350,13 +333,11 @@ nget_child(Namval_t *np, Namfun_t *fp)
     Cxoperand_t op;
     Cxvalue_t *val;
     op.type = 0;
-    if (val = get_child_common(np, fp, &op))
-    {
+    if (val = get_child_common(np, fp, &op)) {
         Sfdouble_t ld;
         if (cxisnumber(vp->type))
             return (val->number);
-        else
-        {
+        else {
             ld = sh_strnum(val->string.data, ( char ** )0, 1);
             return (ld);
         }
@@ -425,8 +406,7 @@ name_child(Namval_t *np, Namfun_t *fp)
     size_t l, len;
     cp = nv_name(dp->hdr.np);
     len = (l = strlen(cp)) + strlen(name) + 2;
-    if (dp->namelen < len)
-    {
+    if (dp->namelen < len) {
         if (dp->namelen == 0)
             dp->name = ( char * )malloc(len);
         else
@@ -468,8 +448,7 @@ node(Cxvariable_t *vp, struct parent *dp)
 {
     Namval_t *mp, *np = 0;
     Namfun_t *fp, *nfp = 0;
-    if (!dp->hdr.nodes)
-    {
+    if (!dp->hdr.nodes) {
         struct type *tp;
         struct parent *pp;
         if (!(dp->hdr.nodes = ( char * )calloc(dp->hdr.numnodes, NV_MINSZ)))
@@ -495,21 +474,18 @@ node(Cxvariable_t *vp, struct parent *dp)
     if (!vp)
         return (np ? np : nv_namptr(dp->hdr.nodes, 0));
     np = nv_namptr(dp->hdr.nodes, vp->header.index + 1);
-    if (!np->nvname)
-    {
+    if (!np->nvname) {
         nv_disc(np, &dp->hdr.childfun.fun, NV_FIRST);
         nv_onattr(np, NV_MINIMAL);
         check_numeric(np, vp->type, dp->state);
         if (!dp->dss && vp->type->base && (mp = typenode(vp->type->name, 0))
-            && (fp = nv_hasdisc(mp, &type_disc)))
-        {
+            && (fp = nv_hasdisc(mp, &type_disc))) {
             int size = fp->dsize;
             if (size == 0 || (!fp->disc || (size = fp->disc->dsize) == 0))
                 size = sizeof(Namfun_t);
             if (fp->disc && fp->disc->clonef)
                 nfp = (*fp->disc->clonef)(np, mp, 0, fp);
-            else if (nfp = malloc(size))
-            {
+            else if (nfp = malloc(size)) {
                 memcpy(( void * )nfp, ( void * )fp, size);
                 nfp->nofree &= ~1;
             }
@@ -549,14 +525,11 @@ static void
 pushtype(Namval_t *np, Cxtype_t *tt, Namfun_t *fp)
 {
     Namval_t *mp;
-    for (; tt->base; tt = tt->base)
-    {
-        if (tt->member)
-        {
+    for (; tt->base; tt = tt->base) {
+        if (tt->member) {
             Namfun_t *nfp;
             mp = typenode(tt->name, 0);
-            if (!fp->next && np != fp->type)
-            {
+            if (!fp->next && np != fp->type) {
                 fp = nv_disc(np, fp, NV_CLONE);
             }
             nfp = nv_hasdisc(mp, &parent_disc);
@@ -585,8 +558,7 @@ create_parent(Namval_t *np, const char *name, int flag, Namfun_t *fp)
         last++;
     if (c)
         *last = 0;
-    if (strcmp(name, NV_DATA) == 0)
-    {
+    if (strcmp(name, NV_DATA) == 0) {
         np = node(( Cxvariable_t * )0, dp);
         if (c)
             *last = c;
@@ -596,15 +568,12 @@ create_parent(Namval_t *np, const char *name, int flag, Namfun_t *fp)
     vp = ( Cxvariable_t * )dtmatch(dict, name);
     if (c)
         *last = c;
-    if (vp)
-    {
+    if (vp) {
         np = node(vp, dp);
         fp->last = last;
-        if (c == '.')
-        {
+        if (c == '.') {
             Namfun_t *rp = np->nvfun;
-            if (rp == &dp->hdr.childfun.fun)
-            {
+            if (rp == &dp->hdr.childfun.fun) {
                 fp = nv_disc(np, np->nvfun, NV_CLONE);
                 pushtype(np, vp->type, fp);
             }
@@ -625,8 +594,7 @@ dss_unset(Namval_t *np, struct parent *dp)
 {
     if (dp->namelen)
         free(( void * )dp->name);
-    if (!dp->hdr.np)
-    {
+    if (!dp->hdr.np) {
         if (dp->dss)
             dssclose(dp->dss);
         else
@@ -644,17 +612,14 @@ put_parent(Namval_t *np, const char *val, int flag, Namfun_t *fp)
 {
     struct parent *pp = ( struct parent * )fp;
     Namval_t *nq;
-    if (!val)
-    {
+    if (!val) {
         nv_putv(np, val, flag, fp);
         dss_unset(np, pp);
-    }
-    else if (nq = nv_open(
-             val, sh.var_tree, NV_VARNAME | NV_ARRAY | NV_NOADD | NV_NOFAIL))
-    {
+    } else if (nq = nv_open(val,
+                            sh.var_tree,
+                            NV_VARNAME | NV_ARRAY | NV_NOADD | NV_NOFAIL)) {
         Namfun_t *pp;
-        if ((pp = nv_hasdisc(nq, fp->disc)) && pp->type == fp->type)
-        {
+        if ((pp = nv_hasdisc(nq, fp->disc)) && pp->type == fp->type) {
             nv_unset(np);
             nv_clone(nq, np, 0);
             return;
@@ -669,11 +634,9 @@ put_parent(Namval_t *np, const char *val, int flag, Namfun_t *fp)
 static int
 dss_except(Sfio_t *iop, int event, void *data, Sfdisc_t *fp)
 {
-    if (event == SF_CLOSING)
-    {
+    if (event == SF_CLOSING) {
         struct dssfile *sp = ( struct dssfile * )fp;
-        if (sp && sp->np)
-        {
+        if (sp && sp->np) {
             Namfun_t *nfp;
             for (nfp = sp->np->nvfun; nfp && !nfp->disc && !nfp->disc->readf;
                  nfp = nfp->next)
@@ -698,13 +661,11 @@ read_parent(Namval_t *np, Sfio_t *iop, int delim, Namfun_t *fp)
     struct dssfile *sp;
     if (!iop)
         sp = dp->sp;
-    else if (sfraise(iop, DSS_EVENT, ( void * )&sp) == 0)
-    {
+    else if (sfraise(iop, DSS_EVENT, ( void * )&sp) == 0) {
         sp = ( struct dssfile * )calloc(1, sizeof(struct dssfile));
         sp->np = np;
-        if (!(
-            (sp->fp = dssfopen(dp->dss, ( char * )0, iop, DSS_FILE_READ, 0))))
-        {
+        if (!((sp->fp
+               = dssfopen(dp->dss, ( char * )0, iop, DSS_FILE_READ, 0)))) {
             errormsg(
             SH_DICT, ERROR_exit(1), "%d: invalid dss format", sffileno(iop));
             return (1);
@@ -712,24 +673,21 @@ read_parent(Namval_t *np, Sfio_t *iop, int delim, Namfun_t *fp)
         sp->disc.exceptf = dss_except;
         sfdisc(iop, &sp->disc);
     }
-    if (sp && sp->rp)
-    {
+    if (sp && sp->rp) {
         if (!iop)
             mp = np;
         else if (sp->np != np)
             mp = sp->mp ? sp->mp : sp->np;
         else
             mp = sp->mp;
-        if (mp && mp->nvalue == sp->rp->data)
-        {
+        if (mp && mp->nvalue == sp->rp->data) {
             char *bp = ( char * )malloc(sp->rp->size);
             mp->nvalue = memcpy(bp, sp->rp->data, sp->rp->size);
             nv_offattr(mp, NV_NOFREE);
         }
     }
     dp->sp = 0;
-    if (iop)
-    {
+    if (iop) {
         int flags = nv_isattr(np, ~NV_RDONLY) | NV_NOFREE | NV_NODISC;
         Namarr_t *ap = nv_arrayptr(np);
         dp->sp = sp;
@@ -737,12 +695,10 @@ read_parent(Namval_t *np, Sfio_t *iop, int delim, Namfun_t *fp)
         sp->mp = 0;
         if (!(sp->rp = dssfread(sp->fp)))
             return (1);
-        if (ap)
-        {
+        if (ap) {
             (*ap->hdr.disc->putval)(np, sp->rp->data, flags, &ap->hdr);
             np = sp->mp = nv_opensub(np);
-        }
-        else
+        } else
             nv_putval(np, sp->rp->data, flags);
         nv_setsize(np, sp->rp->size);
         nv_onattr(np, NV_BINARY);
@@ -755,13 +711,11 @@ write_parent(Namval_t *np, Sfio_t *iop, int delim, Namfun_t *fp)
 {
     struct parent *dp = ( struct parent * )fp;
     struct dssfile *sp;
-    if (sfraise(iop, DSS_EVENT, ( void * )&sp) == 0)
-    {
+    if (sfraise(iop, DSS_EVENT, ( void * )&sp) == 0) {
         sp = ( struct dssfile * )calloc(1, sizeof(struct dssfile));
         sp->np = np;
         if (!((sp->fp
-               = dssfopen(dp->dss, ( char * )0, iop, DSS_FILE_WRITE, 0))))
-        {
+               = dssfopen(dp->dss, ( char * )0, iop, DSS_FILE_WRITE, 0)))) {
             errormsg(SH_DICT,
                      ERROR_exit(1),
                      "%d: cannot open for dss write",
@@ -783,25 +737,19 @@ next_parent(Namval_t *np, Dt_t *root, Namfun_t *fp)
 {
     struct parent *dp = ( struct parent * )fp;
     Cxvariable_t *vp = 0;
-    if (root && (np != nv_namptr(dp->hdr.nodes, 0)))
-    {
+    if (root && (np != nv_namptr(dp->hdr.nodes, 0))) {
         if ((fp = nv_hasdisc(np, &mchild_disc))
             || (fp = nv_hasdisc(np, &child_disc)))
             dp = ( struct parent * )(( Namchld_t * )fp)->ptype;
     }
     if (!fp)
         return (0);
-    do
-    {
-        if (root)
-        {
-            if (np == nv_namptr(dp->hdr.nodes, 0))
-            {
+    do {
+        if (root) {
+            if (np == nv_namptr(dp->hdr.nodes, 0)) {
                 root = dp->dict;
                 vp = ( Cxvariable_t * )dtfirst(root);
-            }
-            else
-            {
+            } else {
                 if (!vp)
                     vp = vnode(np);
                 vp = ( Cxvariable_t * )dtnext(dp->dict, vp);
@@ -811,9 +759,7 @@ if(vp)
 sfprintf(sfstderr,"%x: next=%s index=%d np=%x\n",vp,vp->name,vp->header.index,np);
 else sfprintf(sfstderr,"vp==NULL\n");
 #endif
-        }
-        else
-        {
+        } else {
             np = node(vp, dp);
             return (np);
 #if 0
@@ -853,14 +799,12 @@ get_parent(Namval_t *np, Namfun_t *fp)
 #endif
     char *cp;
 #if 1
-    if (size > 0)
-    {
+    if (size > 0) {
         size_t m, n = (4 * size) / 3 + size / 45 + 8;
         m = base64encode(
         data, size, ( void ** )0, cp = getbuf(n), n, ( void ** )0);
 #else
-    if (rp && rp->size > 0)
-    {
+    if (rp && rp->size > 0) {
         size_t m, n = (4 * rp->size) / 3 + rp->size / 45 + 8;
         m = base64encode(
         rp->data, rp->size, ( void ** )0, cp = getbuf(n), n, ( void ** )0);
@@ -901,9 +845,9 @@ put_type(Namval_t *np, const char *val, int flag, Namfun_t *fp)
     Cxoperand_t cop;
     Namval_t *nq;
     if (val
-        && (nq = nv_open(
-            val, sh.var_tree, NV_VARNAME | NV_ARRAY | NV_NOADD | NV_NOFAIL)))
-    {
+        && (nq = nv_open(val,
+                         sh.var_tree,
+                         NV_VARNAME | NV_ARRAY | NV_NOADD | NV_NOFAIL))) {
         Namfun_t *pp;
         if ((pp = nv_hasdisc(nq, fp->disc)) && pp->type == fp->type)
 
@@ -914,8 +858,7 @@ put_type(Namval_t *np, const char *val, int flag, Namfun_t *fp)
         }
     }
     if (val && !(flag & NV_INTEGER) && tp->type->internalf
-        && !cxisstring(tp->type))
-    {
+        && !cxisstring(tp->type)) {
         size_t size = strlen(val);
         cop.type = tp->type;
         if ((*tp->type->internalf)(
@@ -928,28 +871,22 @@ put_type(Namval_t *np, const char *val, int flag, Namfun_t *fp)
                      tp->type->name);
         if (cxisnumber(cop.type))
             nv_putv(np, ( char * )&cop.value.number, flag | NV_LDOUBLE, fp);
-        else
-        {
+        else {
             nv_setsize(np, cop.value.buffer.size);
             nv_putv(
             np, ( char * )cop.value.buffer.data, NV_RAW | NV_BINARY, fp);
         }
-    }
-    else
+    } else
         nv_putv(np, val, flag, fp);
-    if (!val)
-    {
+    if (!val) {
         nv_disc(np, fp, NV_POP);
         if (fp->nofree & ~1)
             free(( void * )fp);
-        else
-        {
+        else {
             Namval_t *mp;
             int i;
-            for (i = 0; i < sizeof(tp->bltins) / sizeof(Namval_t *); i++)
-            {
-                if (mp = tp->bltins[i])
-                {
+            for (i = 0; i < sizeof(tp->bltins) / sizeof(Namval_t *); i++) {
+                if (mp = tp->bltins[i]) {
                     Shell_t *shp = sh_getinterp();
                     dtdelete(shp->bltin_tree, mp);
                     free(( void * )mp);
@@ -974,8 +911,7 @@ get_type(Namval_t *np, Namfun_t *fp)
         return (nv_getv(np, fp));
     if (nv_isattr(np, NV_INTEGER))
         cval.number = nv_getn(np, fp);
-    else
-    {
+    else {
         nv_onattr(np, NV_RAW);
         cval.string.data = nv_getv(np, fp);
         nv_offattr(np, NV_RAW);
@@ -990,8 +926,7 @@ get_type(Namval_t *np, Namfun_t *fp)
         mp = node(( Cxvariable_t * )0, dp);
     if (!(format = nv_getval(mp)) && vp)
         format = vp->format.details;
-    for (i = 0; i < 2; i++)
-    {
+    for (i = 0; i < 2; i++) {
         n = (*tp->type->externalf)(
         tp->cx, tp->type, format, NiL, &cval, buf, buflen, &Dssdisc);
         if (n < buflen)
@@ -1010,8 +945,7 @@ clone_type(Namval_t *np, Namval_t *mp, int flags, Namfun_t *fp)
     struct type *tp = ( struct type * )fp;
     if (!fp->next)
         pushtype(np, tp->type, fp);
-    if (fp->next)
-    {
+    if (fp->next) {
         struct type *dp = newof(( struct type * )0, struct type, 1, 0);
         *dp = *tp;
         dp->fun.nofree &= ~0;
@@ -1026,8 +960,7 @@ next_type(Namval_t *np, Dt_t *root, Namfun_t *fp)
 {
     struct type *tp = ( struct type * )fp;
     Namfun_t *fpn = fp->next;
-    if (!root && (!fpn || fpn->disc != &parent_disc))
-    {
+    if (!root && (!fpn || fpn->disc != &parent_disc)) {
         pushtype(np, tp->type, fp);
         if (fp->next == fpn)
             return (&(( struct type * )fp)->details);
@@ -1043,33 +976,27 @@ setdisc_type(Namval_t *np, const char *event, Namval_t *action, Namfun_t *fp)
     struct type *tp = ( struct type * )fp;
     int n = -1;
     const char *name = event ? event : ( const char * )action;
-    if (name)
-    {
+    if (name) {
         if (strcmp(name, "match") == 0 && tp->type->match)
             n = 0;
     }
-    if (!event)
-    {
+    if (!event) {
         if (!action && tp->type->match)
             return ("match");
         n = -1;
     }
     if (n < 0)
         return (nv_setdisc(np, event, action, fp));
-    if (action == np)
-    {
+    if (action == np) {
         /* clone the discipline for variable specific function */
-        if ((fp->nofree & 1) && fp->type != np)
-        {
+        if ((fp->nofree & 1) && fp->type != np) {
             tp = ( struct type * )nv_disc(np, fp, NV_CLONE);
             fp->nofree &= ~1;
         }
         action = tp->bltins[n];
-    }
-    else if (action)
+    } else if (action)
         tp->bltins[n] = action;
-    else
-    {
+    else {
         action = tp->bltins[n];
         tp->bltins[n] = 0;
     }
@@ -1080,22 +1007,19 @@ static Namval_t *
 create_type(Namval_t *np, const char *name, int flag, Namfun_t *fp)
 {
     struct type *tp = ( struct type * )fp;
-    if (!fp->next)
-    {
+    if (!fp->next) {
         pushtype(np, tp->type, fp);
         fp = nv_hasdisc(np, fp->disc);
     }
     while (fp = fp->next)
-        if (fp->disc && fp->disc->createf)
-        {
+        if (fp->disc && fp->disc->createf) {
             if (np = (*fp->disc->createf)(np, name, flag, fp))
                 tp->fun.last = fp->last;
             return (np);
         }
     if (memcmp(name, NV_DATA, sizeof(NV_DATA) - 1) == 0
         && (name[sizeof(NV_DATA) - 1] == 0
-            || strchr("+=[", name[sizeof(NV_DATA) - 1])))
-    {
+            || strchr("+=[", name[sizeof(NV_DATA) - 1]))) {
         tp->fun.last = ( char * )name + sizeof(NV_DATA) - 1;
         return (&tp->details);
     }
@@ -1151,8 +1075,7 @@ mktype(Namval_t *np, Cxtype_t *tp, Cx_t *cx)
     pp->fun.disc = &type_disc;
     pp->type = tp;
     pp->cx = cx;
-    if (tp->format.details)
-    {
+    if (tp->format.details) {
         Namval_t *mp = &pp->details;
         nv_setvtree(np);
         mp->nvname = NV_DATA;
@@ -1167,8 +1090,7 @@ mktype(Namval_t *np, Cxtype_t *tp, Cx_t *cx)
     optdisc.dss.header = ( Cxheader_t * )tp;
     optdisc.np = np;
     nv_addtype(np, sh_opttype, &optdisc.dss.optdisc, sizeof(optdisc));
-    while (tp = tp->base)
-    {
+    while (tp = tp->base) {
         if (tp->base && !typenode(tp->name, 0))
             create_dss(( Namval_t * )0, tp->name, 0, ( Namfun_t * )0);
     }
@@ -1194,8 +1116,7 @@ create_dss(Namval_t *np, const char *name, int flag, Namfun_t *fp)
     if (fp && !(cp = strchr(name, '.')))
         fp->last = ( char * )name + strlen(name);
     mp = typenode(name, 0);
-    if (cp)
-    {
+    if (cp) {
         Namfun_t *fq;
         *cp = '.';
         if (!mp)
@@ -1210,15 +1131,12 @@ create_dss(Namval_t *np, const char *name, int flag, Namfun_t *fp)
     }
     if (mp)
         return (mp);
-    if (meth = dssmeth(name, &Dssdisc))
-    {
+    if (meth = dssmeth(name, &Dssdisc)) {
         if (!(dss = dssopen(0, 0, &Dssdisc, meth)))
             errormsg(SH_DICT, ERROR_exit(1), "dssopen failed");
         cx = dss->cx;
         sp = cx->state;
-    }
-    else
-    {
+    } else {
         Dssstate_t *state = dssstate(&Dssdisc);
         if (!state || !(tp = dtmatch(state->cx->types, name)))
             errormsg(SH_DICT, ERROR_exit(1), "%s: unknown dss type", name);
@@ -1228,18 +1146,15 @@ create_dss(Namval_t *np, const char *name, int flag, Namfun_t *fp)
     mp = typenode(name, NV_ADD);
     if (dss)
         dict = dss->cx->variables;
-    else
-    {
+    else {
         check_numeric(mp, tp, sp);
-        if (!tp->member || !(dict = tp->member->members))
-        {
+        if (!tp->member || !(dict = tp->member->members)) {
             mktype(mp, tp, cx);
             return (mp);
         }
     }
     for (n = 0, vp = ( Cxvariable_t * )dtfirst(dict); vp;
-         vp = ( Cxvariable_t * )dtnext(dict, vp))
-    {
+         vp = ( Cxvariable_t * )dtnext(dict, vp)) {
         Namval_t *qp;
         if (strcmp(vp->name, "dss") == 0)
             continue;
@@ -1251,14 +1166,12 @@ sfprintf(sfstderr,"tname=%s name=%s n=%d index=%d\n",name,vp->name,n,vp->header.
         if (vp->type == sp->type_number || vp->type == sp->type_string
             || vp->type == sp->type_buffer)
             continue;
-        if (!(qp = typenode(vp->type->name, 0)))
-        {
-            if (!vp->type->member && (qp = typenode(vp->type->name, NV_ADD)))
-            {
+        if (!(qp = typenode(vp->type->name, 0))) {
+            if (!vp->type->member
+                && (qp = typenode(vp->type->name, NV_ADD))) {
                 mktype(qp, vp->type, cx);
                 check_numeric(qp, vp->type, sp);
-            }
-            else if (vp->type->member)
+            } else if (vp->type->member)
                 qp = create_dss(np, vp->name, flag, fp);
         }
     }
@@ -1285,8 +1198,7 @@ sfprintf(sfstderr,"tname=%s name=%s n=%d index=%d\n",name,vp->name,n,vp->header.
 	nv_disc(mp, &dp->parentfun,NV_FIRST);
 #endif
     nv_setvtree(mp);
-    if (dss)
-    {
+    if (dss) {
         int i, n = (( struct dsstype * )fp)->nnames;
         dp->hdr.names = (( struct dsstype * )fp)->names;
         nv_adddisc(mp, ( const char ** )dp->hdr.names, 0);
@@ -1358,8 +1270,7 @@ listdss(int argc, char *argv[], Shbltin_t *bp)
     Cxtype_t *tp;
     NOT_USED(argc);
     while ((n = optget(argv, optlist)))
-        switch (n)
-        {
+        switch (n) {
         case 'm':
         case 'l':
         case 't':
@@ -1382,8 +1293,7 @@ listdss(int argc, char *argv[], Shbltin_t *bp)
         flags = fval('m') | fval('l') | fval('q') | fval('t');
     n = flags & (flags - 1);
     argv = ( char ** )listnames;
-    while (name = *argv++)
-    {
+    while (name = *argv++) {
         if (fval('t') && *name == 't')
             dict = sp->types;
         else if (fval('l') && *name == 'l')
@@ -1395,8 +1305,7 @@ listdss(int argc, char *argv[], Shbltin_t *bp)
         else
             continue;
         for (tp = ( Cxtype_t * )dtfirst(dict); tp;
-             tp = ( Cxtype_t * )dtnext(dict, tp))
-        {
+             tp = ( Cxtype_t * )dtnext(dict, tp)) {
             if (n)
                 sfprintf(sfstdout, "%s\t", name);
             sfputr(sfstdout, tp->name, delim);
@@ -1431,8 +1340,7 @@ loadlib(int argc, char *argv[], Shbltin_t *bp)
     int n;
     NOT_USED(argc);
     while ((n = optget(argv, optload)))
-        switch (n)
-        {
+        switch (n) {
         case ':':
             errormsg(SH_DICT, 2, "%s", opt_info.arg);
         case '?':
@@ -1451,8 +1359,7 @@ loadlib(int argc, char *argv[], Shbltin_t *bp)
 static Cxvalue_t *
 getvalue(Namval_t *np, Namfun_t *fp, Cxoperand_t *valp)
 {
-    if (fp && fp->disc == &child_disc)
-    {
+    if (fp && fp->disc == &child_disc) {
         Namchld_t *pp = ( Namchld_t * )fp;
         struct parent *dp = ( struct parent * )pp->ptype;
         Cxvariable_t *vp = vnode(np);
@@ -1462,13 +1369,10 @@ getvalue(Namval_t *np, Namfun_t *fp, Cxoperand_t *valp)
 #else
         cxcast(dp->cx, valp, vp, vp->type, dp->hdr.data, ( char * )0);
 #endif
-    }
-    else
-    {
+    } else {
         if (nv_isattr(np, NV_INTEGER))
             valp->value.number = nv_getnum(np);
-        else
-        {
+        else {
             valp->value.string.data = nv_getval(np);
             valp->value.string.size = nv_size(np);
             if (!valp->value.string.size)
@@ -1512,8 +1416,7 @@ match(int argc, char *argv[], Shbltin_t *bp)
     char *cp;
     void *comp;
     int n, flag = 0;
-    if (comp = bp->data)
-    {
+    if (comp = bp->data) {
         if (!(bp->flags & SH_END_OPTIM))
             goto exec;
         (*mp->freef)(tp->cx, comp, &Dssdisc);
@@ -1526,8 +1429,7 @@ match(int argc, char *argv[], Shbltin_t *bp)
     disc.optdisc.infof = dssoptinfo;
     opt_info.disc = &disc.optdisc;
     while ((n = optget(argv, optmatch)))
-        switch (n)
-        {
+        switch (n) {
         case 'v':
             flag = 'v';
             break;
@@ -1542,27 +1444,22 @@ match(int argc, char *argv[], Shbltin_t *bp)
     argv += opt_info.index;
     if (error_info.errors || !(cp = *argv))
         errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
-    if (flag)
-    {
+    if (flag) {
         if (!(np = nv_open(*argv,
                            (( Shell_t * )bp->shp)->var_tree,
                            NV_NOADD | NV_VARNAME | NV_NOASSIGN)))
             errormsg(SH_DICT, ERROR_exit(3), "%s: variable not set", *argv);
         if ((fp = nv_hasdisc(np, &mchild_disc))
-            || (fp = nv_hasdisc(np, &child_disc)))
-        {
+            || (fp = nv_hasdisc(np, &child_disc))) {
             Namval_t *mp = (*fp->disc->typef)(np, fp);
             if (mp)
                 tptr = (( struct type * )(mp->nvfun))->type;
             if (!tptr)
                 fp = 0;
-        }
-        else if (fp = nv_hasdisc(np, &type_disc))
+        } else if (fp = nv_hasdisc(np, &type_disc))
             tptr = (( struct type * )fp)->type;
         valp = getvalue(np, fp, &cval);
-    }
-    else
-    {
+    } else {
         valp->string.data = cp;
         valp->string.size = strlen(cp);
     }
@@ -1610,18 +1507,15 @@ lib_init(int flag, void *context)
     nv_unset(rp);
     nv_putval(rp, nv_name(np), NV_NOFREE);
     nv_setref(rp, shp->var_tree, NV_VARNAME | NV_NOREF);
-    for (level = 0; level < 2; level++)
-    {
+    for (level = 0; level < 2; level++) {
         char *cp;
         n = 0;
         for (lib = dsslib(NiL, DSS_VERBOSE, &Dssdisc); lib;
-             lib = ( Dsslib_t * )dtnext(state->cx->libraries, lib))
-        {
+             lib = ( Dsslib_t * )dtnext(state->cx->libraries, lib)) {
             int m;
             if (!lib->queries)
                 continue;
-            for (i = 0; name = lib->queries[i].name; i++)
-            {
+            for (i = 0; name = lib->queries[i].name; i++) {
                 if (strcmp(name, "null") == 0)
                     continue;
                 if (strcmp(name, "return") == 0)
@@ -1629,19 +1523,15 @@ lib_init(int flag, void *context)
                 if (strcmp(name, "print") == 0)
                     continue;
                 m = strlen(name) + 1;
-                if (level == 0)
-                {
+                if (level == 0) {
                     n++;
                     len += m;
-                }
-                else
-                {
+                } else {
                     av[n++] = memcpy(cp, name, m);
                     cp += m;
                 }
             }
-            if (level == 0)
-            {
+            if (level == 0) {
                 av = ( char ** )malloc((n + 1) * sizeof(char *) + len);
                 cp = ( char * )&av[n + 1];
             }

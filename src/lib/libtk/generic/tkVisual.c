@@ -117,8 +117,7 @@ Colormap *colormapPtr; /* If non-NULL, then a suitable
      */
 
     c = string[0];
-    if (c == '.')
-    {
+    if (c == '.') {
         /*
          * The string must be a window name.  If the window is on the
          * same screen as tkwin, then just use its visual.  Otherwise
@@ -127,16 +126,13 @@ Colormap *colormapPtr; /* If non-NULL, then a suitable
          */
 
         tkwin2 = Tk_NameToWindow(interp, string, tkwin);
-        if (tkwin2 == NULL)
-        {
+        if (tkwin2 == NULL) {
             return NULL;
         }
         visual = Tk_Visual(tkwin2);
-        if (Tk_Screen(tkwin) == Tk_Screen(tkwin2))
-        {
+        if (Tk_Screen(tkwin) == Tk_Screen(tkwin2)) {
             *depthPtr = Tk_Depth(tkwin2);
-            if (colormapPtr != NULL)
-            {
+            if (colormapPtr != NULL) {
                 /*
                  * Use the colormap from the other window too (but be sure
                  * to increment its reference count if it's one of the ones
@@ -145,10 +141,8 @@ Colormap *colormapPtr; /* If non-NULL, then a suitable
 
                 *colormapPtr = Tk_Colormap(tkwin2);
                 for (cmapPtr = dispPtr->cmapPtr; cmapPtr != NULL;
-                     cmapPtr = cmapPtr->nextPtr)
-                {
-                    if (cmapPtr->colormap == *colormapPtr)
-                    {
+                     cmapPtr = cmapPtr->nextPtr) {
+                    if (cmapPtr->colormap == *colormapPtr) {
                         cmapPtr->refCount += 1;
                         break;
                     }
@@ -166,32 +160,26 @@ Colormap *colormapPtr; /* If non-NULL, then a suitable
         mask = VisualDepthMask | VisualClassMask | VisualRedMaskMask
                | VisualGreenMaskMask | VisualBlueMaskMask
                | VisualColormapSizeMask | VisualBitsPerRGBMask;
-    }
-    else if ((c == 0)
-             || ((c == 'd') && (string[1] != 0)
-                 && (strncmp(string, "default", strlen(string)) == 0)))
-    {
+    } else if ((c == 0)
+               || ((c == 'd') && (string[1] != 0)
+                   && (strncmp(string, "default", strlen(string)) == 0))) {
         /*
          * Use the default visual for the window's screen.
          */
 
-        if (colormapPtr != NULL)
-        {
+        if (colormapPtr != NULL) {
             *colormapPtr = DefaultColormapOfScreen(Tk_Screen(tkwin));
         }
         *depthPtr = DefaultDepthOfScreen(Tk_Screen(tkwin));
         return DefaultVisualOfScreen(Tk_Screen(tkwin));
-    }
-    else if (isdigit(UCHAR(c)))
-    {
+    } else if (isdigit(UCHAR(c))) {
         int visualId;
 
         /*
          * This is a visual ID.
          */
 
-        if (Tcl_GetInt(interp, string, &visualId) == TCL_ERROR)
-        {
+        if (Tcl_GetInt(interp, string, &visualId) == TCL_ERROR) {
             Tcl_ResetResult(interp);
             Tcl_AppendResult(interp,
                              "bad X identifier for visual: ",
@@ -202,67 +190,51 @@ Colormap *colormapPtr; /* If non-NULL, then a suitable
         }
         template.visualid = visualId;
         mask = VisualIDMask;
-    }
-    else
-    {
+    } else {
         /*
          * Parse the string into a class name (or "best") optionally
          * followed by whitespace and a depth.
          */
 
-        for (p = string; *p != 0; p++)
-        {
-            if (isspace(UCHAR(*p)) || isdigit(UCHAR(*p)))
-            {
+        for (p = string; *p != 0; p++) {
+            if (isspace(UCHAR(*p)) || isdigit(UCHAR(*p))) {
                 break;
             }
         }
         length = p - string;
         template.class = -1;
-        for (dictPtr = visualNames; dictPtr->name != NULL; dictPtr++)
-        {
+        for (dictPtr = visualNames; dictPtr->name != NULL; dictPtr++) {
             if ((dictPtr->name[0] == c) && (length >= dictPtr->minLength)
-                && (strncmp(string, dictPtr->name, ( size_t )length) == 0))
-            {
+                && (strncmp(string, dictPtr->name, ( size_t )length) == 0)) {
                 template.class = dictPtr->class;
                 break;
             }
         }
-        if (template.class == -1)
-        {
+        if (template.class == -1) {
             Tcl_AppendResult(interp,
                              "unknown or ambiguous visual name \"",
                              string,
                              "\": class must be ",
                              ( char * )NULL);
-            for (dictPtr = visualNames; dictPtr->name != NULL; dictPtr++)
-            {
+            for (dictPtr = visualNames; dictPtr->name != NULL; dictPtr++) {
                 Tcl_AppendResult(interp, dictPtr->name, ", ", ( char * )NULL);
             }
             Tcl_AppendResult(interp, "or default", ( char * )NULL);
             return NULL;
         }
-        while (isspace(UCHAR(*p)))
-        {
+        while (isspace(UCHAR(*p))) {
             p++;
         }
-        if (*p == 0)
-        {
+        if (*p == 0) {
             template.depth = 10000;
-        }
-        else
-        {
-            if (Tcl_GetInt(interp, p, &template.depth) != TCL_OK)
-            {
+        } else {
+            if (Tcl_GetInt(interp, p, &template.depth) != TCL_OK) {
                 return NULL;
             }
         }
-        if (c == 'b')
-        {
+        if (c == 'b') {
             mask = 0;
-        }
-        else
-        {
+        } else {
             mask = VisualClassMask;
         }
     }
@@ -276,8 +248,7 @@ Colormap *colormapPtr; /* If non-NULL, then a suitable
     mask |= VisualScreenMask;
     visInfoList
     = XGetVisualInfo(Tk_Display(tkwin), mask, &template, &numVisuals);
-    if (visInfoList == NULL)
-    {
+    if (visInfoList == NULL) {
         interp->result = "couldn't find an appropriate visual";
         return NULL;
     }
@@ -299,10 +270,8 @@ Colormap *colormapPtr; /* If non-NULL, then a suitable
 
     bestPrio = 0;
     bestPtr = NULL;
-    for (i = 0; i < numVisuals; i++)
-    {
-        switch (visInfoList[i].class)
-        {
+    for (i = 0; i < numVisuals; i++) {
+        switch (visInfoList[i].class) {
         case DirectColor:
             prio = 5;
             break;
@@ -325,32 +294,23 @@ Colormap *colormapPtr; /* If non-NULL, then a suitable
             prio = 0;
             break;
         }
-        if (visInfoList[i].visual == DefaultVisualOfScreen(Tk_Screen(tkwin)))
-        {
+        if (visInfoList[i].visual
+            == DefaultVisualOfScreen(Tk_Screen(tkwin))) {
             prio++;
         }
-        if (bestPtr == NULL)
-        {
+        if (bestPtr == NULL) {
             goto newBest;
         }
-        if (visInfoList[i].depth < bestPtr->depth)
-        {
-            if (visInfoList[i].depth >= template.depth)
-            {
+        if (visInfoList[i].depth < bestPtr->depth) {
+            if (visInfoList[i].depth >= template.depth) {
                 goto newBest;
             }
-        }
-        else if (visInfoList[i].depth > bestPtr->depth)
-        {
-            if (bestPtr->depth < template.depth)
-            {
+        } else if (visInfoList[i].depth > bestPtr->depth) {
+            if (bestPtr->depth < template.depth) {
                 goto newBest;
             }
-        }
-        else
-        {
-            if (prio > bestPrio)
-            {
+        } else {
+            if (prio > bestPrio) {
                 goto newBest;
             }
         }
@@ -372,19 +332,13 @@ Colormap *colormapPtr; /* If non-NULL, then a suitable
      * colormap.
      */
 
-    if (colormapPtr != NULL)
-    {
-        if (visual == DefaultVisualOfScreen(Tk_Screen(tkwin)))
-        {
+    if (colormapPtr != NULL) {
+        if (visual == DefaultVisualOfScreen(Tk_Screen(tkwin))) {
             *colormapPtr = DefaultColormapOfScreen(Tk_Screen(tkwin));
-        }
-        else
-        {
+        } else {
             for (cmapPtr = dispPtr->cmapPtr; cmapPtr != NULL;
-                 cmapPtr = cmapPtr->nextPtr)
-            {
-                if (cmapPtr->shareable && (cmapPtr->visual == visual))
-                {
+                 cmapPtr = cmapPtr->nextPtr) {
+                if (cmapPtr->shareable && (cmapPtr->visual == visual)) {
                     *colormapPtr = cmapPtr->colormap;
                     cmapPtr->refCount += 1;
                     goto done;
@@ -449,8 +403,7 @@ char *string;    /* String that identifies colormap:
      * Allocate a new colormap, if that's what is wanted.
      */
 
-    if (strcmp(string, "new") == 0)
-    {
+    if (strcmp(string, "new") == 0) {
         cmapPtr = ( TkColormap * )ckalloc(sizeof(TkColormap));
         cmapPtr->colormap
         = XCreateColormap(Tk_Display(tkwin),
@@ -472,12 +425,10 @@ char *string;    /* String that identifies colormap:
      */
 
     other = Tk_NameToWindow(interp, string, tkwin);
-    if (other == NULL)
-    {
+    if (other == NULL) {
         return None;
     }
-    if (Tk_Screen(other) != Tk_Screen(tkwin))
-    {
+    if (Tk_Screen(other) != Tk_Screen(tkwin)) {
         Tcl_AppendResult(interp,
                          "can't use colormap for ",
                          string,
@@ -485,8 +436,7 @@ char *string;    /* String that identifies colormap:
                          ( char * )NULL);
         return None;
     }
-    if (Tk_Visual(other) != Tk_Visual(tkwin))
-    {
+    if (Tk_Visual(other) != Tk_Visual(tkwin)) {
         Tcl_AppendResult(interp,
                          "can't use colormap for ",
                          string,
@@ -502,10 +452,8 @@ char *string;    /* String that identifies colormap:
      */
 
     for (cmapPtr = dispPtr->cmapPtr; cmapPtr != NULL;
-         cmapPtr = cmapPtr->nextPtr)
-    {
-        if (cmapPtr->colormap == colormap)
-        {
+         cmapPtr = cmapPtr->nextPtr) {
+        if (cmapPtr->colormap == colormap) {
             cmapPtr->refCount += 1;
         }
     }
@@ -549,25 +497,18 @@ Colormap colormap; /* Colormap that is no longer needed.
      */
 
     dispPtr = TkGetDisplay(display);
-    if (dispPtr == NULL)
-    {
+    if (dispPtr == NULL) {
         panic("unknown display passed to Tk_FreeColormap");
     }
     for (prevPtr = NULL, cmapPtr = dispPtr->cmapPtr; cmapPtr != NULL;
-         prevPtr = cmapPtr, cmapPtr = cmapPtr->nextPtr)
-    {
-        if (cmapPtr->colormap == colormap)
-        {
+         prevPtr = cmapPtr, cmapPtr = cmapPtr->nextPtr) {
+        if (cmapPtr->colormap == colormap) {
             cmapPtr->refCount -= 1;
-            if (cmapPtr->refCount == 0)
-            {
+            if (cmapPtr->refCount == 0) {
                 XFreeColormap(display, colormap);
-                if (prevPtr == NULL)
-                {
+                if (prevPtr == NULL) {
                     dispPtr->cmapPtr = cmapPtr->nextPtr;
-                }
-                else
-                {
+                } else {
                     prevPtr->nextPtr = cmapPtr->nextPtr;
                 }
                 ckfree(( char * )cmapPtr);
@@ -615,15 +556,12 @@ Colormap colormap; /* Colormap that should be
      */
 
     dispPtr = TkGetDisplay(display);
-    if (dispPtr == NULL)
-    {
+    if (dispPtr == NULL) {
         panic("unknown display passed to Tk_PreserveColormap");
     }
     for (cmapPtr = dispPtr->cmapPtr; cmapPtr != NULL;
-         cmapPtr, cmapPtr = cmapPtr->nextPtr)
-    {
-        if (cmapPtr->colormap == colormap)
-        {
+         cmapPtr, cmapPtr = cmapPtr->nextPtr) {
+        if (cmapPtr->colormap == colormap) {
             cmapPtr->refCount += 1;
             return;
         }

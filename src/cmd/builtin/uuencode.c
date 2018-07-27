@@ -63,8 +63,7 @@ optinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
 {
     Uumeth_t *mp;
 
-    switch (*s)
-    {
+    switch (*s) {
     case 'm':
         for (mp = uumeth(NiL); mp->name; mp++)
             sfprintf(sp, "[+%s|%s]", mp->name, mp->alias);
@@ -101,10 +100,8 @@ main(int argc, char **argv)
     epath = ipath = opath = 0;
     ip = sfstdin;
     op = sfstdout;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'b':
         case 'm':
         case 'q':
@@ -127,8 +124,7 @@ main(int argc, char **argv)
             continue;
         case 'x':
             encoding = opt_info.arg;
-            if (streq(encoding, "?"))
-            {
+            if (streq(encoding, "?")) {
                 uulist(sfstdout);
                 exit(0);
             }
@@ -143,8 +139,7 @@ main(int argc, char **argv)
         break;
     }
     argv += opt_info.index;
-    if ((epath = *argv) && *++argv)
-    {
+    if ((epath = *argv) && *++argv) {
         ipath = epath;
         epath = *argv++;
     }
@@ -152,8 +147,7 @@ main(int argc, char **argv)
         error(ERROR_usage(2), "%s", optusage(NiL));
     if (!(meth = uumeth(encoding)))
         error(ERROR_exit(1), "%s: unknown method", encoding);
-    if (uu = uuopen(&disc, meth))
-    {
+    if (uu = uuopen(&disc, meth)) {
         if (!ipath)
             ip = sfstdin;
         else if (!(ip = sfopen(NiL, ipath, "rt")))

@@ -185,19 +185,15 @@ main(int argc, char **argv)
         s = *argv;
     else if (t = strchr(++s, '_'))
         s = t + 1;
-    if (*s == 'b')
-    {
+    if (*s == 'b') {
         error_info.id = "batch";
         *(queue = que) = *s;
         op |= MAIL;
         date = "now";
-    }
-    else
+    } else
         error_info.id = "at";
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             op |= ACCESS;
             continue;
@@ -278,8 +274,7 @@ main(int argc, char **argv)
         sfprintf(sp, "%c%s ", AT_QUEUE, queue);
     switch (op
             & (ACCESS | INFO | LIST | LOG | QUIT | REMOVE | STATUS | TRACE
-               | UPDATE | USER | VERSION))
-    {
+               | UPDATE | USER | VERSION)) {
     case ACCESS:
         sfputc(sp, AT_ACCESS);
         break;
@@ -328,16 +323,14 @@ main(int argc, char **argv)
             sfputc(sp, AT_MAIL);
         skip = sfstrtell(sp) + 1;
         sfprintf(sp, "%c00000 %s ", AT_JOB, s);
-        if (date || *argv)
-        {
+        if (date || *argv) {
             if (!(tp = sfstropen()))
                 error(ERROR_SYSTEM | 3, "out of space [time]");
             sfputr(tp, "+0 ", -1);
             if (date)
                 sfputr(tp, date, -1);
             else
-                for (s = *argv;;)
-                {
+                for (s = *argv;;) {
                     for (n = ' '; c = *s++; n = c)
                         if (!isspace(c) || n != (c = ' '))
                             sfputc(tp, c);
@@ -350,22 +343,19 @@ main(int argc, char **argv)
                 error(ERROR_SYSTEM | 3, "out of space");
             s += 3;
             if (strneq(s, "cron ", n = 5) || strneq(s, "each ", n = 5)
-                || strneq(s, "every ", n = 6) || strneq(s, "repeat ", n = 7))
-            {
+                || strneq(s, "every ", n = 6)
+                || strneq(s, "repeat ", n = 7)) {
                 every = s + n;
                 t = s;
                 *t++ = '+';
                 *t++ = '0';
                 while (*t != ' ')
                     *t++ = ' ';
-                if (*++t == '+' && isdigit(*(t + 1)))
-                {
+                if (*++t == '+' && isdigit(*(t + 1))) {
                     interval = strtol(t, NiL, 0);
                     while (*t && *t != ' ')
                         *t++ = ' ';
-                }
-                else if (isdigit(*t))
-                {
+                } else if (isdigit(*t)) {
                     interval = strtol(t, &e, 0);
                     if (!isalpha(*e))
                         interval = 1;
@@ -382,8 +372,7 @@ main(int argc, char **argv)
                 start = tmdate(s - 3, &t, &now);
             if (*t)
                 error(3, "%s: invalid time specification", s);
-            if (s = label)
-            {
+            if (s = label) {
                 sfputc(sp, AT_LABEL);
                 while ((c = *s++) && !isspace(c))
                     if (isalnum(c))
@@ -396,28 +385,22 @@ main(int argc, char **argv)
         }
         break;
     }
-    if (op & JOB)
-    {
+    if (op & JOB) {
         if (!(s = coinit(CO_EXPORT | CO_SERVER)))
             error(ERROR_SYSTEM | 3, "cannot generate initialization script");
         sfprintf(sp, "\n%s\n", s);
         s = sfstrbase(sp);
         sfsprintf(s + skip, 6, "%05lu ", sfstrtell(sp) - 7);
         s[skip + 5] = ' ';
-        if (s = *argv++)
-        {
+        if (s = *argv++) {
             sfprintf(sp, "%s", s);
             while (s = *argv++)
                 sfprintf(sp, " %s", s);
-        }
-        else
+        } else
             sfmove(sfstdin, sp, SF_UNBOUND, -1);
         sfputc(sp, '\n');
-    }
-    else
-    {
-        if (s = *argv++)
-        {
+    } else {
+        if (s = *argv++) {
             if (streq(s, "-") && !*argv)
                 s = "*";
             sfprintf(sp, " %s", s);
@@ -431,8 +414,7 @@ main(int argc, char **argv)
         error(ERROR_SYSTEM | 3, "out of space");
     sfsprintf(s, 7, "#%05d\n", n - 7);
     s[6] = '\n';
-    if (op & EXEC)
-    {
+    if (op & EXEC) {
         if ((op = csopen(&cs, service, 0)) < 0)
             error(ERROR_SYSTEM | 3, "%s: cannot open service", service);
         if (cswrite(&cs, op, s, n) != n)
@@ -442,11 +424,8 @@ main(int argc, char **argv)
                 error(ERROR_SYSTEM | 3, "write error");
         if (n < 0)
             error(ERROR_SYSTEM | 3, "%s: service read error", service);
-    }
-    else
-    {
-        if (op & JOB)
-        {
+    } else {
+        if (op & JOB) {
             sfprintf(
             sfstdout, "submit job to run on %s", fmttime(NiL, start));
             if (every)

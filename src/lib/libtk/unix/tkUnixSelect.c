@@ -131,13 +131,11 @@ ClientData clientData; /* Arbitrary value to pass to proc. */
      */
 
     retr.interp = interp;
-    if (dispPtr->clipWindow == NULL)
-    {
+    if (dispPtr->clipWindow == NULL) {
         int result;
 
         result = TkClipInit(interp, dispPtr);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             return result;
         }
     }
@@ -175,8 +173,7 @@ ClientData clientData; /* Arbitrary value to pass to proc. */
 
     retr.timeout
     = Tcl_CreateTimerHandler(1000, SelTimeoutProc, ( ClientData )&retr);
-    while (retr.result == -1)
-    {
+    while (retr.result == -1) {
         Tcl_DoOneEvent(0);
     }
     Tcl_DeleteTimerHandler(retr.timeout);
@@ -186,19 +183,14 @@ ClientData clientData; /* Arbitrary value to pass to proc. */
      * in progress.
      */
 
-    if (pendingRetrievals == &retr)
-    {
+    if (pendingRetrievals == &retr) {
         pendingRetrievals = retr.nextPtr;
-    }
-    else
-    {
+    } else {
         TkSelRetrievalInfo *retrPtr;
 
         for (retrPtr = pendingRetrievals; retrPtr != NULL;
-             retrPtr = retrPtr->nextPtr)
-        {
-            if (retrPtr->nextPtr == &retr)
-            {
+             retrPtr = retrPtr->nextPtr) {
+            if (retrPtr->nextPtr == &retr) {
                 retrPtr->nextPtr = retr.nextPtr;
                 break;
             }
@@ -247,46 +239,36 @@ void TkSelPropProc(eventPtr) XEvent *eventPtr; /* X PropertyChange event. */
      * data to the property.
      */
 
-    if (eventPtr->xproperty.state != PropertyDelete)
-    {
+    if (eventPtr->xproperty.state != PropertyDelete) {
         return;
     }
-    for (incrPtr = pendingIncrs; incrPtr != NULL; incrPtr = incrPtr->nextPtr)
-    {
-        if (incrPtr->reqWindow != eventPtr->xproperty.window)
-        {
+    for (incrPtr = pendingIncrs; incrPtr != NULL;
+         incrPtr = incrPtr->nextPtr) {
+        if (incrPtr->reqWindow != eventPtr->xproperty.window) {
             continue;
         }
-        for (i = 0; i < incrPtr->numConversions; i++)
-        {
+        for (i = 0; i < incrPtr->numConversions; i++) {
             if ((eventPtr->xproperty.atom != incrPtr->multAtoms[2 * i + 1])
-                || (incrPtr->offsets[i] == -1))
-            {
+                || (incrPtr->offsets[i] == -1)) {
                 continue;
             }
             target = incrPtr->multAtoms[2 * i];
             incrPtr->idleTime = 0;
             for (selPtr = incrPtr->winPtr->selHandlerList;;
-                 selPtr = selPtr->nextPtr)
-            {
-                if (selPtr == NULL)
-                {
+                 selPtr = selPtr->nextPtr) {
+                if (selPtr == NULL) {
                     incrPtr->multAtoms[2 * i + 1] = None;
                     incrPtr->offsets[i] = -1;
                     incrPtr->numIncrs--;
                     return;
                 }
                 if ((selPtr->target == target)
-                    && (selPtr->selection == incrPtr->selection))
-                {
+                    && (selPtr->selection == incrPtr->selection)) {
                     formatType = selPtr->format;
-                    if (incrPtr->offsets[i] == -2)
-                    {
+                    if (incrPtr->offsets[i] == -2) {
                         numItems = 0;
                         (( char * )buffer)[0] = 0;
-                    }
-                    else
-                    {
+                    } else {
                         TkSelInProgress ip;
                         ip.selPtr = selPtr;
                         ip.nextPtr = pendingPtr;
@@ -296,51 +278,37 @@ void TkSelPropProc(eventPtr) XEvent *eventPtr; /* X PropertyChange event. */
                                                    ( char * )buffer,
                                                    TK_SEL_BYTES_AT_ONCE);
                         pendingPtr = ip.nextPtr;
-                        if (ip.selPtr == NULL)
-                        {
+                        if (ip.selPtr == NULL) {
                             /*
                              * The selection handler deleted itself.
                              */
 
                             return;
                         }
-                        if (numItems > TK_SEL_BYTES_AT_ONCE)
-                        {
+                        if (numItems > TK_SEL_BYTES_AT_ONCE) {
                             panic(
                             "selection handler returned too many bytes");
-                        }
-                        else
-                        {
-                            if (numItems < 0)
-                            {
+                        } else {
+                            if (numItems < 0) {
                                 numItems = 0;
                             }
                         }
                         (( char * )buffer)[numItems] = '\0';
                     }
-                    if (numItems < TK_SEL_BYTES_AT_ONCE)
-                    {
-                        if (numItems <= 0)
-                        {
+                    if (numItems < TK_SEL_BYTES_AT_ONCE) {
+                        if (numItems <= 0) {
                             incrPtr->offsets[i] = -1;
                             incrPtr->numIncrs--;
-                        }
-                        else
-                        {
+                        } else {
                             incrPtr->offsets[i] = -2;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         incrPtr->offsets[i] += numItems;
                     }
-                    if (formatType == XA_STRING)
-                    {
+                    if (formatType == XA_STRING) {
                         propPtr = ( char * )buffer;
                         format = 8;
-                    }
-                    else
-                    {
+                    } else {
                         propPtr
                         = ( char * )SelCvtToX(( char * )buffer,
                                               formatType,
@@ -364,8 +332,7 @@ void TkSelPropProc(eventPtr) XEvent *eventPtr; /* X PropertyChange event. */
                                     ( unsigned char * )propPtr,
                                     numItems);
                     Tk_DeleteErrorHandler(errorHandler);
-                    if (propPtr != ( char * )buffer)
-                    {
+                    if (propPtr != ( char * )buffer) {
                         ckfree(propPtr);
                     }
                     return;
@@ -408,8 +375,7 @@ XEvent *eventPtr; /* X event:  either SelectionClear,
      * Case #1: SelectionClear events.
      */
 
-    if (eventPtr->type == SelectionClear)
-    {
+    if (eventPtr->type == SelectionClear) {
         TkSelClearSelection(tkwin, eventPtr);
     }
 
@@ -418,31 +384,25 @@ XEvent *eventPtr; /* X event:  either SelectionClear,
      * to handle the incoming selection.
      */
 
-    if (eventPtr->type == SelectionNotify)
-    {
+    if (eventPtr->type == SelectionNotify) {
         TkSelRetrievalInfo *retrPtr;
         char *propInfo;
         Atom type;
         int format, result;
         unsigned long numItems, bytesAfter;
 
-        for (retrPtr = pendingRetrievals;; retrPtr = retrPtr->nextPtr)
-        {
-            if (retrPtr == NULL)
-            {
+        for (retrPtr = pendingRetrievals;; retrPtr = retrPtr->nextPtr) {
+            if (retrPtr == NULL) {
                 return;
             }
             if ((retrPtr->winPtr == winPtr)
                 && (retrPtr->selection == eventPtr->xselection.selection)
                 && (retrPtr->target == eventPtr->xselection.target)
-                && (retrPtr->result == -1))
-            {
-                if (retrPtr->property == eventPtr->xselection.property)
-                {
+                && (retrPtr->result == -1)) {
+                if (retrPtr->property == eventPtr->xselection.property) {
                     break;
                 }
-                if (eventPtr->xselection.property == None)
-                {
+                if (eventPtr->xselection.property == None) {
                     Tcl_SetResult(
                     retrPtr->interp, ( char * )NULL, TCL_STATIC);
                     Tcl_AppendResult(
@@ -471,12 +431,10 @@ XEvent *eventPtr; /* X event:  either SelectionClear,
                                     &numItems,
                                     &bytesAfter,
                                     ( unsigned char ** )&propInfo);
-        if ((result != Success) || (type == None))
-        {
+        if ((result != Success) || (type == None)) {
             return;
         }
-        if (bytesAfter != 0)
-        {
+        if (bytesAfter != 0) {
             Tcl_SetResult(
             retrPtr->interp, "selection property too large", TCL_STATIC);
             retrPtr->result = TCL_ERROR;
@@ -484,10 +442,8 @@ XEvent *eventPtr; /* X event:  either SelectionClear,
             return;
         }
         if ((type == XA_STRING) || (type == dispPtr->textAtom)
-            || (type == dispPtr->compoundTextAtom))
-        {
-            if (format != 8)
-            {
+            || (type == dispPtr->compoundTextAtom)) {
+            if (format != 8) {
                 sprintf(
                 retrPtr->interp->result,
                 "bad format for string selection: wanted \"8\", got \"%d\"",
@@ -500,9 +456,7 @@ XEvent *eventPtr; /* X event:  either SelectionClear,
             retrPtr->result
             = (*retrPtr->proc)(retrPtr->clientData, interp, propInfo);
             Tcl_Release(( ClientData )interp);
-        }
-        else if (type == dispPtr->incrAtom)
-        {
+        } else if (type == dispPtr->incrAtom) {
 
             /*
              * It's a !?#@!?!! INCR-style reception.  Arrange to receive
@@ -516,19 +470,15 @@ XEvent *eventPtr; /* X event:  either SelectionClear,
             tkwin, PropertyChangeMask, SelRcvIncrProc, ( ClientData )retrPtr);
             XDeleteProperty(
             Tk_Display(tkwin), Tk_WindowId(tkwin), retrPtr->property);
-            while (retrPtr->result == -1)
-            {
+            while (retrPtr->result == -1) {
                 Tcl_DoOneEvent(0);
             }
             Tk_DeleteEventHandler(
             tkwin, PropertyChangeMask, SelRcvIncrProc, ( ClientData )retrPtr);
-        }
-        else
-        {
+        } else {
             char *string;
 
-            if (format != 32)
-            {
+            if (format != 32) {
                 sprintf(retrPtr->interp->result,
                         "bad format for selection: wanted \"32\", got \"%d\"",
                         format);
@@ -553,8 +503,7 @@ XEvent *eventPtr; /* X event:  either SelectionClear,
      * do the dirty work.
      */
 
-    if (eventPtr->type == SelectionRequest)
-    {
+    if (eventPtr->type == SelectionRequest) {
         ConvertSelection(winPtr, &eventPtr->xselectionrequest);
         return;
     }
@@ -592,13 +541,11 @@ SelTimeoutProc(clientData) ClientData clientData; /* Information about
      * from the other side.
      */
 
-    if (retrPtr->result != -1)
-    {
+    if (retrPtr->result != -1) {
         return;
     }
     retrPtr->idleTime++;
-    if (retrPtr->idleTime >= 5)
-    {
+    if (retrPtr->idleTime >= 5) {
 
         /*
          * Use a careful procedure to store the error message, because
@@ -609,9 +556,7 @@ SelTimeoutProc(clientData) ClientData clientData; /* Information about
         Tcl_SetResult(
         retrPtr->interp, "selection owner didn't respond", TCL_STATIC);
         retrPtr->result = TCL_ERROR;
-    }
-    else
-    {
+    } else {
         retrPtr->timeout
         = Tcl_CreateTimerHandler(1000, SelTimeoutProc, ( ClientData )retrPtr);
     }
@@ -672,20 +617,17 @@ XSelectionRequestEvent *eventPtr;
     reply.selection = eventPtr->selection;
     reply.target = eventPtr->target;
     reply.property = eventPtr->property;
-    if (reply.property == None)
-    {
+    if (reply.property == None) {
         reply.property = reply.target;
     }
     reply.time = eventPtr->time;
 
     for (infoPtr = winPtr->dispPtr->selectionInfoPtr; infoPtr != NULL;
-         infoPtr = infoPtr->nextPtr)
-    {
+         infoPtr = infoPtr->nextPtr) {
         if (infoPtr->selection == eventPtr->selection)
             break;
     }
-    if (infoPtr == NULL)
-    {
+    if (infoPtr == NULL) {
         goto refuse;
     }
     winPtr = ( TkWindow * )infoPtr->owner;
@@ -698,24 +640,20 @@ XSelectionRequestEvent *eventPtr;
 
     incr.winPtr = winPtr;
     incr.selection = eventPtr->selection;
-    if (eventPtr->target != winPtr->dispPtr->multipleAtom)
-    {
+    if (eventPtr->target != winPtr->dispPtr->multipleAtom) {
         multiple = 0;
         singleInfo[0] = reply.target;
         singleInfo[1] = reply.property;
         incr.multAtoms = singleInfo;
         incr.numConversions = 1;
-    }
-    else
-    {
+    } else {
         Atom type;
         int format, result;
         unsigned long bytesAfter;
 
         multiple = 1;
         incr.multAtoms = NULL;
-        if (eventPtr->property == None)
-        {
+        if (eventPtr->property == None) {
             goto refuse;
         }
         result = XGetWindowProperty(eventPtr->display,
@@ -731,10 +669,8 @@ XSelectionRequestEvent *eventPtr;
                                     &bytesAfter,
                                     ( unsigned char ** )&incr.multAtoms);
         if ((result != Success) || (bytesAfter != 0) || (format != 32)
-            || (type == None))
-        {
-            if (incr.multAtoms != NULL)
-            {
+            || (type == None)) {
+            if (incr.multAtoms != NULL) {
                 XFree(( char * )incr.multAtoms);
             }
             goto refuse;
@@ -752,8 +688,7 @@ XSelectionRequestEvent *eventPtr;
     incr.offsets
     = ( int * )ckalloc(( unsigned )(incr.numConversions * sizeof(int)));
     incr.numIncrs = 0;
-    for (i = 0; i < incr.numConversions; i++)
-    {
+    for (i = 0; i < incr.numConversions; i++) {
         Atom target, property, type;
         long buffer[TK_SEL_WORDS_AT_ONCE];
         TkSelHandler *selPtr;
@@ -765,17 +700,14 @@ XSelectionRequestEvent *eventPtr;
         incr.offsets[i] = -1;
 
         for (selPtr = winPtr->selHandlerList; selPtr != NULL;
-             selPtr = selPtr->nextPtr)
-        {
+             selPtr = selPtr->nextPtr) {
             if ((selPtr->target == target)
-                && (selPtr->selection == eventPtr->selection))
-            {
+                && (selPtr->selection == eventPtr->selection)) {
                 break;
             }
         }
 
-        if (selPtr == NULL)
-        {
+        if (selPtr == NULL) {
             /*
              * Nobody seems to know about this kind of request.  If
              * it's of a sort that we can handle without any help, do
@@ -784,14 +716,11 @@ XSelectionRequestEvent *eventPtr;
 
             numItems = TkSelDefaultSelection(
             infoPtr, target, ( char * )buffer, TK_SEL_BYTES_AT_ONCE, &type);
-            if (numItems < 0)
-            {
+            if (numItems < 0) {
                 incr.multAtoms[2 * i + 1] = None;
                 continue;
             }
-        }
-        else
-        {
+        } else {
             ip.selPtr = selPtr;
             ip.nextPtr = pendingPtr;
             pendingPtr = &ip;
@@ -799,13 +728,11 @@ XSelectionRequestEvent *eventPtr;
             numItems = (*selPtr->proc)(
             selPtr->clientData, 0, ( char * )buffer, TK_SEL_BYTES_AT_ONCE);
             pendingPtr = ip.nextPtr;
-            if ((ip.selPtr == NULL) || (numItems < 0))
-            {
+            if ((ip.selPtr == NULL) || (numItems < 0)) {
                 incr.multAtoms[2 * i + 1] = None;
                 continue;
             }
-            if (numItems > TK_SEL_BYTES_AT_ONCE)
-            {
+            if (numItems > TK_SEL_BYTES_AT_ONCE) {
                 panic("selection handler returned too many bytes");
             }
             (( char * )buffer)[numItems] = '\0';
@@ -815,8 +742,7 @@ XSelectionRequestEvent *eventPtr;
          * Got the selection;  store it back on the requestor's property.
          */
 
-        if (numItems == TK_SEL_BYTES_AT_ONCE)
-        {
+        if (numItems == TK_SEL_BYTES_AT_ONCE) {
             /*
              * Selection is too big to send at once;  start an
              * INCR-mode transfer.
@@ -825,8 +751,7 @@ XSelectionRequestEvent *eventPtr;
             incr.numIncrs++;
             type = winPtr->dispPtr->incrAtom;
             buffer[0] = SelectionSize(selPtr);
-            if (buffer[0] == 0)
-            {
+            if (buffer[0] == 0) {
                 incr.multAtoms[2 * i + 1] = None;
                 continue;
             }
@@ -834,14 +759,10 @@ XSelectionRequestEvent *eventPtr;
             propPtr = ( char * )buffer;
             format = 32;
             incr.offsets[i] = 0;
-        }
-        else if (type == XA_STRING)
-        {
+        } else if (type == XA_STRING) {
             propPtr = ( char * )buffer;
             format = 8;
-        }
-        else
-        {
+        } else {
             propPtr = ( char * )SelCvtToX(
             ( char * )buffer, type, ( Tk_Window )winPtr, &numItems);
             format = 32;
@@ -854,8 +775,7 @@ XSelectionRequestEvent *eventPtr;
                         PropModeReplace,
                         ( unsigned char * )propPtr,
                         numItems);
-        if (propPtr != ( char * )buffer)
-        {
+        if (propPtr != ( char * )buffer) {
             ckfree(propPtr);
         }
     }
@@ -867,8 +787,7 @@ XSelectionRequestEvent *eventPtr;
      * mode).
      */
 
-    if (incr.numIncrs > 0)
-    {
+    if (incr.numIncrs > 0) {
         XSelectInput(reply.display, reply.requestor, PropertyChangeMask);
         incr.timeout
         = Tcl_CreateTimerHandler(1000, IncrTimeoutProc, ( ClientData )&incr);
@@ -878,8 +797,7 @@ XSelectionRequestEvent *eventPtr;
         incr.nextPtr = pendingIncrs;
         pendingIncrs = &incr;
     }
-    if (multiple)
-    {
+    if (multiple) {
         XChangeProperty(reply.display,
                         reply.requestor,
                         reply.property,
@@ -888,9 +806,7 @@ XSelectionRequestEvent *eventPtr;
                         PropModeReplace,
                         ( unsigned char * )incr.multAtoms,
                         ( int )incr.numConversions * 2);
-    }
-    else
-    {
+    } else {
 
         /*
          * Not a MULTIPLE request.  The first property in "multAtoms"
@@ -908,12 +824,10 @@ XSelectionRequestEvent *eventPtr;
      * of uncompleted INCR transfers drops to zero.
      */
 
-    if (incr.numIncrs > 0)
-    {
+    if (incr.numIncrs > 0) {
         IncrInfo *incrPtr2;
 
-        while (incr.numIncrs > 0)
-        {
+        while (incr.numIncrs > 0) {
             Tcl_DoOneEvent(0);
         }
         Tcl_DeleteTimerHandler(incr.timeout);
@@ -921,17 +835,12 @@ XSelectionRequestEvent *eventPtr;
         winPtr->display, -1, -1, -1, ( int (*)() )NULL, ( ClientData )NULL);
         XSelectInput(reply.display, reply.requestor, 0L);
         Tk_DeleteErrorHandler(errorHandler);
-        if (pendingIncrs == &incr)
-        {
+        if (pendingIncrs == &incr) {
             pendingIncrs = incr.nextPtr;
-        }
-        else
-        {
+        } else {
             for (incrPtr2 = pendingIncrs; incrPtr2 != NULL;
-                 incrPtr2 = incrPtr2->nextPtr)
-            {
-                if (incrPtr2->nextPtr == &incr)
-                {
+                 incrPtr2 = incrPtr2->nextPtr) {
+                if (incrPtr2->nextPtr == &incr) {
                     incrPtr2->nextPtr = incr.nextPtr;
                     break;
                 }
@@ -944,8 +853,7 @@ XSelectionRequestEvent *eventPtr;
      */
 
     ckfree(( char * )incr.offsets);
-    if (multiple)
-    {
+    if (multiple) {
         XFree(( char * )incr.multAtoms);
     }
     return;
@@ -996,8 +904,7 @@ XEvent *eventPtr;      /* X PropertyChange event. */
 
     if ((eventPtr->xproperty.atom != retrPtr->property)
         || (eventPtr->xproperty.state != PropertyNewValue)
-        || (retrPtr->result != -1))
-    {
+        || (retrPtr->result != -1)) {
         return;
     }
     propInfo = NULL;
@@ -1013,27 +920,21 @@ XEvent *eventPtr;      /* X PropertyChange event. */
                                 &numItems,
                                 &bytesAfter,
                                 ( unsigned char ** )&propInfo);
-    if ((result != Success) || (type == None))
-    {
+    if ((result != Success) || (type == None)) {
         return;
     }
-    if (bytesAfter != 0)
-    {
+    if (bytesAfter != 0) {
         Tcl_SetResult(
         retrPtr->interp, "selection property too large", TCL_STATIC);
         retrPtr->result = TCL_ERROR;
         goto done;
     }
-    if (numItems == 0)
-    {
+    if (numItems == 0) {
         retrPtr->result = TCL_OK;
-    }
-    else if ((type == XA_STRING)
-             || (type == retrPtr->winPtr->dispPtr->textAtom)
-             || (type == retrPtr->winPtr->dispPtr->compoundTextAtom))
-    {
-        if (format != 8)
-        {
+    } else if ((type == XA_STRING)
+               || (type == retrPtr->winPtr->dispPtr->textAtom)
+               || (type == retrPtr->winPtr->dispPtr->compoundTextAtom)) {
+        if (format != 8) {
             Tcl_SetResult(retrPtr->interp, ( char * )NULL, TCL_STATIC);
             sprintf(
             retrPtr->interp->result,
@@ -1046,17 +947,13 @@ XEvent *eventPtr;      /* X PropertyChange event. */
         Tcl_Preserve(( ClientData )interp);
         result = (*retrPtr->proc)(retrPtr->clientData, interp, propInfo);
         Tcl_Release(( ClientData )interp);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             retrPtr->result = result;
         }
-    }
-    else
-    {
+    } else {
         char *string;
 
-        if (format != 32)
-        {
+        if (format != 32) {
             Tcl_SetResult(retrPtr->interp, ( char * )NULL, TCL_STATIC);
             sprintf(retrPtr->interp->result,
                     "bad format for selection: wanted \"32\", got \"%d\"",
@@ -1072,8 +969,7 @@ XEvent *eventPtr;      /* X PropertyChange event. */
         Tcl_Preserve(( ClientData )interp);
         result = (*retrPtr->proc)(retrPtr->clientData, interp, string);
         Tcl_Release(( ClientData )interp);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             retrPtr->result = result;
         }
         ckfree(string);
@@ -1116,12 +1012,10 @@ TkSelHandler *selPtr; /* Information about how to retrieve
     ip.selPtr = selPtr;
     ip.nextPtr = pendingPtr;
     pendingPtr = &ip;
-    do
-    {
+    do {
         chunkSize = (*selPtr->proc)(
         selPtr->clientData, size, ( char * )buffer, TK_SEL_BYTES_AT_ONCE);
-        if (ip.selPtr == NULL)
-        {
+        if (ip.selPtr == NULL) {
             size = 0;
             break;
         }
@@ -1159,12 +1053,9 @@ ClientData clientData; /* Information about INCR-mode
     IncrInfo *incrPtr = ( IncrInfo * )clientData;
 
     incrPtr->idleTime++;
-    if (incrPtr->idleTime >= 5)
-    {
+    if (incrPtr->idleTime >= 5) {
         incrPtr->numIncrs = 0;
-    }
-    else
-    {
+    } else {
         incrPtr->timeout = Tcl_CreateTimerHandler(
         1000, IncrTimeoutProc, ( ClientData )incrPtr);
     }
@@ -1223,10 +1114,8 @@ int *numLongsPtr; /* Number of 32-bit words contained in the
      */
 
     numFields = 1;
-    for (p = string; *p != 0; p++)
-    {
-        if (isspace(UCHAR(*p)))
-        {
+    for (p = string; *p != 0; p++) {
+        if (isspace(UCHAR(*p))) {
             numFields++;
         }
     }
@@ -1237,36 +1126,28 @@ int *numLongsPtr; /* Number of 32-bit words contained in the
      */
 
     for (longPtr = propPtr, *numLongsPtr = 0, p = string;;
-         longPtr++, (*numLongsPtr)++)
-    {
-        while (isspace(UCHAR(*p)))
-        {
+         longPtr++, (*numLongsPtr)++) {
+        while (isspace(UCHAR(*p))) {
             p++;
         }
-        if (*p == 0)
-        {
+        if (*p == 0) {
             break;
         }
         field = p;
-        while ((*p != 0) && !isspace(UCHAR(*p)))
-        {
+        while ((*p != 0) && !isspace(UCHAR(*p))) {
             p++;
         }
-        if (type == XA_ATOM)
-        {
+        if (type == XA_ATOM) {
             int length;
 
             length = p - field;
-            if (length > MAX_ATOM_NAME_LENGTH)
-            {
+            if (length > MAX_ATOM_NAME_LENGTH) {
                 length = MAX_ATOM_NAME_LENGTH;
             }
             strncpy(atomName, field, ( unsigned )length);
             atomName[length] = 0;
             *longPtr = ( long )Tk_InternAtom(tkwin, atomName);
-        }
-        else
-        {
+        } else {
             char *dummy;
 
             *longPtr = strtol(field, &dummy, 0);
@@ -1322,24 +1203,18 @@ Tk_Window tkwin; /* Window to use for atom conversion. */
     atomName = ""; /* Not needed, but eliminates compiler warning. */
     result = ( char * )ckalloc(( unsigned )resultSpace);
     *result = '\0';
-    for (; numValues > 0; propPtr++, numValues--)
-    {
-        if (type == XA_ATOM)
-        {
+    for (; numValues > 0; propPtr++, numValues--) {
+        if (type == XA_ATOM) {
             atomName = Tk_GetAtomName(tkwin, ( Atom )*propPtr);
             fieldSize = strlen(atomName) + 1;
-        }
-        else
-        {
+        } else {
             fieldSize = 12;
         }
-        if (curSize + fieldSize >= resultSpace)
-        {
+        if (curSize + fieldSize >= resultSpace) {
             char *newResult;
 
             resultSpace *= 2;
-            if (curSize + fieldSize >= resultSpace)
-            {
+            if (curSize + fieldSize >= resultSpace) {
                 resultSpace = curSize + fieldSize + 1;
             }
             newResult = ( char * )ckalloc(( unsigned )resultSpace);
@@ -1347,17 +1222,13 @@ Tk_Window tkwin; /* Window to use for atom conversion. */
             ckfree(result);
             result = newResult;
         }
-        if (curSize != 0)
-        {
+        if (curSize != 0) {
             result[curSize] = ' ';
             curSize++;
         }
-        if (type == XA_ATOM)
-        {
+        if (type == XA_ATOM) {
             strcpy(result + curSize, atomName);
-        }
-        else
-        {
+        } else {
             sprintf(result + curSize, "0x%x", ( unsigned int )*propPtr);
         }
         curSize += strlen(result + curSize);

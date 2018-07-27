@@ -59,15 +59,13 @@ csauth(Cs_t *state, int fd, const char *path, const char *arg)
     static int auth = -1;
 
     messagef((state->id, NiL, -8, "auth(%d,%s,%s) call", fd, path, arg));
-    if (!path)
-    {
+    if (!path) {
         if (fd < 0)
             goto sorry;
         if (!getauth(fd, n))
             goto ok;
         n = sfsprintf(buf, sizeof(buf), "%d\n", CS_KEY_SEND);
-        if (cswrite(state, fd, buf, n) != n)
-        {
+        if (cswrite(state, fd, buf, n) != n) {
             messagef((state->id,
                       NiL,
                       -1,
@@ -76,41 +74,35 @@ csauth(Cs_t *state, int fd, const char *path, const char *arg)
                       buf));
             goto sorry;
         }
-        if ((n = csread(state, fd, buf, sizeof(buf), CS_LINE)) <= 1)
-        {
+        if ((n = csread(state, fd, buf, sizeof(buf), CS_LINE)) <= 1) {
             messagef((state->id, NiL, -1, "auth: KEY_SEND read error"));
             goto sorry;
         }
         buf[n - 1] = 0;
         path = ( const char * )buf;
     }
-    if (stat(path, &st))
-    {
+    if (stat(path, &st)) {
         if (errno == ENOENT)
             goto ok;
         messagef((state->id, NiL, -1, "auth: %s: stat error", path));
         return -1;
     }
-    if (fd < 0)
-    {
+    if (fd < 0) {
         /*
          * the remote side of remote authentication
          */
 
         fd = 0;
         wfd = 1;
-    }
-    else
+    } else
         wfd = fd;
     m = getpid();
     s = tmp
         + sfsprintf(
           tmp, sizeof(tmp) - 1, "%lu %d", ( unsigned long )st.st_mtime, m);
-    if ((t = ( char * )arg) && !(st.st_mode & S_IXOTH))
-    {
+    if ((t = ( char * )arg) && !(st.st_mode & S_IXOTH)) {
         b = tmp + sizeof(tmp) - 1;
-        if (s < b)
-        {
+        if (s < b) {
             *s++ = ' ';
             while (s < b && *t)
                 if ((*s++ = *t++) == '/' && *t == '#' && *++t != '#')
@@ -119,19 +111,16 @@ csauth(Cs_t *state, int fd, const char *path, const char *arg)
     }
     *s++ = '\n';
     n = s - tmp;
-    if (cswrite(state, wfd, tmp, n) != n)
-    {
+    if (cswrite(state, wfd, tmp, n) != n) {
         messagef(
         (state->id, NiL, -1, "auth: `%-.*s': key write error", n - 1, tmp));
         goto sorry;
     }
-    if (csread(state, fd, num, sizeof(num), CS_LINE) <= 0)
-    {
+    if (csread(state, fd, num, sizeof(num), CS_LINE) <= 0) {
         messagef((state->id, NiL, -1, "auth: key read error"));
         goto sorry;
     }
-    if (*num != '\n')
-    {
+    if (*num != '\n') {
         n = 0;
         if (state->addr == csaddr(state, NiL))
             b = tmp
@@ -140,8 +129,7 @@ csauth(Cs_t *state, int fd, const char *path, const char *arg)
                             "%s/AUTH.%05d.",
                             csvar(state, CS_VAR_LOCAL, 0),
                             m);
-        else
-        {
+        else {
             s = ( char * )path + strlen(path);
             while (s > ( char * )path)
                 if (*--s == '/' && ++n >= 4)
@@ -152,13 +140,11 @@ csauth(Cs_t *state, int fd, const char *path, const char *arg)
                 + sfsprintf(
                   tmp, sizeof(tmp), "%-.*s/AUTH.%05d.", s - path, path, m);
         }
-        if (s = strrchr(tmp, '/'))
-        {
+        if (s = strrchr(tmp, '/')) {
             *s = 0;
             if (eaccess(tmp, X_OK)
                 && (mkdir(tmp, S_IRWXU | S_IRWXG | S_IRWXO)
-                    || chmod(tmp, S_ISVTX | S_IRWXU | S_IRWXG | S_IRWXO)))
-            {
+                    || chmod(tmp, S_ISVTX | S_IRWXU | S_IRWXG | S_IRWXO))) {
                 messagef((state->id,
                           NiL,
                           -1,
@@ -174,12 +160,10 @@ csauth(Cs_t *state, int fd, const char *path, const char *arg)
         if (auth < 0)
             auth = ( unsigned int )CSTOSS(m, 0) % AUTH_BASE;
         n = auth;
-        for (;;)
-        {
+        for (;;) {
             if (++auth >= AUTH_BASE)
                 auth = 0;
-            if (auth == n)
-            {
+            if (auth == n) {
                 messagef((state->id,
                           NiL,
                           -1,
@@ -196,31 +180,26 @@ csauth(Cs_t *state, int fd, const char *path, const char *arg)
                 break;
         }
         key = tmp;
-        if (tokscan(num, NiL, "%lu %lu", &t1, &t2) != 2)
-        {
+        if (tokscan(num, NiL, "%lu %lu", &t1, &t2) != 2) {
             messagef(
             (state->id, NiL, -1, "auth: `%s': challenge syntax error", num));
             goto sorry;
         }
         if (cschallenge(state, tmp, &t1, &t2))
             goto sorry;
-        if (chmod(tmp,
-                  S_ISUID | S_ISGID | S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH))
-        {
+        if (chmod(
+            tmp, S_ISUID | S_ISGID | S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) {
             messagef(
             (state->id, NiL, -1, "auth: %s: challenge chmod error", tmp));
             goto sorry;
         }
         t = s;
-        if (arg)
-        {
+        if (arg) {
             b = tmp + sizeof(tmp) - 1;
-            if (s < b)
-            {
+            if (s < b) {
                 *s++ = ' ';
                 while (s < b && *arg)
-                    if ((*s++ = *arg++) == '/' && *arg == '#')
-                    {
+                    if ((*s++ = *arg++) == '/' && *arg == '#') {
                         arg++;
                         *(s - 1) = ' ';
                     }
@@ -229,19 +208,16 @@ csauth(Cs_t *state, int fd, const char *path, const char *arg)
         *s++ = '\n';
         n = cswrite(state, wfd, tmp, s - tmp);
         *t = 0;
-        if (n != s - tmp)
-        {
+        if (n != s - tmp) {
             messagef(
             (state->id, NiL, -1, "auth: `%s': ack write error", tmp));
             goto sorry;
         }
-        if (csread(state, fd, num, 1, CS_LINE) != 1)
-        {
+        if (csread(state, fd, num, 1, CS_LINE) != 1) {
             messagef((state->id, NiL, -1, "auth: ack read error"));
             goto sorry;
         }
-        if (remove(tmp))
-        {
+        if (remove(tmp)) {
             messagef(
             (state->id, NiL, -1, "auth: %s: challenge remove error", tmp));
             goto sorry;
@@ -272,14 +248,12 @@ cschallenge(Cs_t *state,
     struct stat st;
 
     if (touch(
-        path, (time_t)(v1 ? *v1 : cs.time), (time_t)(v2 ? *v2 : cs.time), 0))
-    {
+        path, (time_t)(v1 ? *v1 : cs.time), (time_t)(v2 ? *v2 : cs.time), 0)) {
         messagef(
         (state->id, NiL, -1, "auth: %s: challenge touch error", path));
         return -1;
     }
-    if (stat(path, &st))
-    {
+    if (stat(path, &st)) {
         messagef(
         (state->id, NiL, -1, "auth: %s: challenge stat error", path));
         return -1;

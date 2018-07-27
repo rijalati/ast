@@ -45,13 +45,10 @@ tag_t *tp;
 
     dp = head;
     prev_posn = &head;
-    while (dp != NULL)
-    {
-        if (!marker && R_ISMARKER(dp->tag))
-        {
+    while (dp != NULL) {
+        if (!marker && R_ISMARKER(dp->tag)) {
             if ((dp->tag->stat.st_ctime < tp->stat.st_ctime)
-                && markermatch(dp->tag->version, tp->version))
-            {
+                && markermatch(dp->tag->version, tp->version)) {
                 *prev_posn = dp->next;
                 ndp = dp->next;
                 free(( char * )dp->tag);
@@ -60,11 +57,9 @@ tag_t *tp;
                 continue;
             }
         }
-        if ((result = strcmp(dp->tag->version, tp->version)) == 0)
-        {
+        if ((result = strcmp(dp->tag->version, tp->version)) == 0) {
             /* check if the minor key (domain) is the same */
-            if (dp->tag->domain == tp->domain)
-            {
+            if (dp->tag->domain == tp->domain) {
                 if (dp->tag->stat.st_ctime > tp->stat.st_ctime)
                     return (head);
                 ntp = ( tag_t * )malloc(tp->length);
@@ -75,9 +70,7 @@ tag_t *tp;
                     dp->link = strdup(link);
                 return (head);
             }
-        }
-        else if (result > 0)
-        {
+        } else if (result > 0) {
             ndp = ( rdirent_t * )malloc(sizeof(rdirent_t));
             ntp = ( tag_t * )malloc(tp->length);
             memcpy(( char * )ntp, ( char * )tp, tp->length);
@@ -130,18 +123,14 @@ attr_t *ap;
      */
     dp = head;
     prev_posn = &head;
-    while (dp != NULL)
-    {
-        if (R_ISMARKER(dp->tag) && dp->tag->stat.st_mtime < now)
-        {
+    while (dp != NULL) {
+        if (R_ISMARKER(dp->tag) && dp->tag->stat.st_mtime < now) {
             *prev_posn = dp->next;
             ndp = dp->next;
             free(( char * )dp->tag);
             free(( char * )dp);
             dp = ndp;
-        }
-        else
-        {
+        } else {
             prev_posn = &(dp->next);
             dp = dp->next;
         }

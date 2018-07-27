@@ -47,8 +47,7 @@ dss_field_name_dat(Tag_t *tag,
 {
     Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
 
-    if (fp->prev->data)
-    {
+    if (fp->prev->data) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: only one <NAME> expected", tagcontext(tag, fp));
@@ -69,8 +68,7 @@ dss_field_map_dat(Tag_t *tag,
     Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
     Cxmap_t *map;
 
-    if (!fp->prev->data)
-    {
+    if (!fp->prev->data) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: <NAME> expected", tagcontext(tag, fp));
@@ -91,15 +89,13 @@ dss_field_con_dat(Tag_t *tag,
     Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
     Cxconstraint_t *con;
 
-    if (!fp->prev->data)
-    {
+    if (!fp->prev->data) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: <NAME> expected", tagcontext(tag, fp));
         return -1;
     }
-    if (!(con = cxconstraint(NiL, data, state->disc)))
-    {
+    if (!(con = cxconstraint(NiL, data, state->disc))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: constraint not defined", data);
         return -1;
@@ -137,8 +133,7 @@ dss_field_beg(Tag_t *tag, Tagframe_t *fp, const char *name, Tagdisc_t *disc)
 static int
 dss_field_end(Tag_t *tag, Tagframe_t *fp, Tagdisc_t *disc)
 {
-    if (!fp->data)
-    {
+    if (!fp->data) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: <NAME> expected", tagcontext(tag, fp));
@@ -152,8 +147,7 @@ dss_compress_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 {
     Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
 
-    if (!(state->meth->compress = strdup(data)))
-    {
+    if (!(state->meth->compress = strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -166,8 +160,7 @@ dss_print_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 {
     Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
 
-    if (!(state->meth->print = strdup(data)))
-    {
+    if (!(state->meth->print = strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -247,8 +240,7 @@ map_part_item_name_dat(Tag_t *tag,
                        Tagdisc_t *disc)
 {
     if (!((( Cxitem_t * )fp->prev->data)->name
-          = ( const char * )strdup(data)))
-    {
+          = ( const char * )strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -265,8 +257,7 @@ map_part_item_mask_dat(Tag_t *tag,
     char *e;
 
     (( Cxitem_t * )fp->prev->data)->mask = strtoul(data, &e, 0);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -284,8 +275,7 @@ map_part_item_value_dat(Tag_t *tag,
     char *e;
     Cxoperand_t r;
 
-    if (r.type = (( Cxpart_t * )fp->prev->prev->data)->type)
-    {
+    if (r.type = (( Cxpart_t * )fp->prev->prev->data)->type) {
         if ((*r.type->internalf)(state->meth->cx,
                                  r.type,
                                  NiL,
@@ -298,18 +288,14 @@ map_part_item_value_dat(Tag_t *tag,
             < 0)
             return -1;
         (( Cxitem_t * )fp->prev->data)->value = ( Cxinteger_t )r.value.number;
-    }
-    else if (isdigit(*data) || *data == '-' || *data == '+')
-    {
+    } else if (isdigit(*data) || *data == '-' || *data == '+') {
         (( Cxitem_t * )fp->prev->data)->value = strtoll(data, &e, 0);
-        if (*e)
-        {
+        if (*e) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
             return -1;
         }
-    }
-    else
+    } else
         (( Cxitem_t * )fp->prev->data)->value = *data;
     return 0;
 }
@@ -325,8 +311,7 @@ map_part_item_bit_dat(Tag_t *tag,
     (( Cxitem_t * )fp->prev->data)->mask
     = (( Cxitem_t * )fp->prev->data)->value
     = (( Cxunsigned_t )1) << strtoul(data, &e, 0);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -384,10 +369,8 @@ map_part_item_beg(Tag_t *tag,
                   const char *name,
                   Tagdisc_t *disc)
 {
-    if (name)
-    {
-        if (!(fp->data = newof(0, Cxitem_t, 1, 0)))
-        {
+    if (name) {
+        if (!(fp->data = newof(0, Cxitem_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return 0;
@@ -411,21 +394,18 @@ map_part_type_dat(Tag_t *tag,
     Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
     Cxtype_t *type;
 
-    if (!(type = cxtype(state->meth->cx, data, state->disc)))
-    {
+    if (!(type = cxtype(state->meth->cx, data, state->disc))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: unknown type", data);
         return -1;
     }
-    if (!cxisnumber(type))
-    {
+    if (!cxisnumber(type)) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: map values must be numeric", data);
         return -1;
     }
-    if (!type->internalf)
-    {
+    if (!type->internalf) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: cannot convert string to map value type", data);
@@ -444,8 +424,7 @@ map_part_shift_dat(Tag_t *tag,
     char *e;
 
     (( Cxpart_t * )fp->prev->data)->shift = strtoul(data, &e, 0);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -462,8 +441,7 @@ map_part_mask_dat(Tag_t *tag,
     char *e;
 
     (( Cxpart_t * )fp->prev->data)->mask = strtoul(data, &e, 0);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -483,18 +461,13 @@ map_part_edit_dat(Tag_t *tag,
 
     if (!(edit = cxedit(NiL, data, state->disc)))
         return -1;
-    if (fp->tag->name[0] == 'n' || fp->tag->name[0] == 'N')
-    {
+    if (fp->tag->name[0] == 'n' || fp->tag->name[0] == 'N') {
         edit->next = part->num2str;
         part->num2str = edit;
-    }
-    else if (fp->tag->name[3] == 'n' || fp->tag->name[3] == 'N')
-    {
+    } else if (fp->tag->name[3] == 'n' || fp->tag->name[3] == 'N') {
         edit->next = part->str2num;
         part->str2num = edit;
-    }
-    else
-    {
+    } else {
         edit->next = part->edit;
         part->edit = edit;
     }
@@ -553,10 +526,8 @@ static Tags_t tags_map_part[]
 static Tags_t *
 map_part_beg(Tag_t *tag, Tagframe_t *fp, const char *name, Tagdisc_t *disc)
 {
-    if (name)
-    {
-        if (!(fp->data = newof(0, Cxpart_t, 1, 0)))
-        {
+    if (name) {
+        if (!(fp->data = newof(0, Cxpart_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return 0;
@@ -579,11 +550,9 @@ map_name_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
     Cxmap_t *ref;
 
     map = ( Cxmap_t * )fp->prev->data;
-    if (ref = cxmap(NiL, data, state->disc))
-    {
+    if (ref = cxmap(NiL, data, state->disc)) {
         if (map->description || map->shift || map->mask || map->part
-            || map->map)
-        {
+            || map->map) {
             if (disc->errorf)
                 (*disc->errorf)(
                 NiL,
@@ -594,9 +563,7 @@ map_name_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
             return -1;
         }
         fp->prev->data = map = ref;
-    }
-    else if (!(map->name = ( const char * )strdup(data)))
-    {
+    } else if (!(map->name = ( const char * )strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -611,8 +578,7 @@ map_description_dat(Tag_t *tag,
                     Tagdisc_t *disc)
 {
     if (!((( Cxmap_t * )fp->prev->data)->description
-          = ( const char * )strdup(data)))
-    {
+          = ( const char * )strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -626,8 +592,7 @@ map_shift_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
     char *e;
 
     (( Cxmap_t * )fp->prev->data)->shift = strtoul(data, &e, 0);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -641,8 +606,7 @@ map_mask_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
     char *e;
 
     (( Cxmap_t * )fp->prev->data)->mask = strtoul(data, &e, 0);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -662,8 +626,7 @@ map_ignorecase_dat(Tag_t *tag,
         (( Cxmap_t * )fp->prev->data)->header.flags |= CX_IGNORECASE;
     else
         (( Cxmap_t * )fp->prev->data)->header.flags &= ~CX_IGNORECASE;
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
@@ -728,8 +691,7 @@ static Tags_t tags_map[] = { "NAME",
 Tags_t *
 dss_map_beg(Tag_t *tag, Tagframe_t *fp, const char *name, Tagdisc_t *disc)
 {
-    if (name && !(fp->data = newof(0, Cxmap_t, 1, 0)))
-    {
+    if (name && !(fp->data = newof(0, Cxmap_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
@@ -747,10 +709,8 @@ dss_map_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
     Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
     Cxmap_t *map;
 
-    if (!(map = cxmap(NiL, data, state->disc)))
-    {
-        if (disc->errorf)
-        {
+    if (!(map = cxmap(NiL, data, state->disc))) {
+        if (disc->errorf) {
             (*disc->errorf)(NiL, disc, 2, "%s: map not defined", data);
             return -1;
         }
@@ -770,8 +730,8 @@ dss_map_end(Tag_t *tag, Tagframe_t *fp, Tagdisc_t *disc)
     Cxmap_t *map = ( Cxmap_t * )fp->data;
     Cxmap_t *tmp;
 
-    while (map->map && !map->shift && !map->mask && !map->part && !map->name)
-    {
+    while (map->map && !map->shift && !map->mask && !map->part
+           && !map->name) {
         tmp = map;
         map = map->map;
         free(tmp);
@@ -788,8 +748,7 @@ constraint_def(Tag_t *tag, Tagframe_t *fp, Tagdisc_t *disc)
     Cxconstraint_t *con;
 
     if (!(con = ( Cxconstraint_t * )fp->prev->data)
-        && !(fp->prev->data = con = newof(0, Cxconstraint_t, 1, 0)))
-    {
+        && !(fp->prev->data = con = newof(0, Cxconstraint_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
@@ -808,8 +767,7 @@ constraint_name_dat(Tag_t *tag,
 
     if (!(con = constraint_def(tag, fp, disc)))
         return -1;
-    if (con->name)
-    {
+    if (con->name) {
         if (disc->errorf)
             (*disc->errorf)(NiL,
                             disc,
@@ -818,8 +776,7 @@ constraint_name_dat(Tag_t *tag,
                             tagcontext(tag, fp));
         return -1;
     }
-    if (!(con->name = strdup(data)))
-    {
+    if (!(con->name = strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -837,8 +794,7 @@ constraint_expression_dat(Tag_t *tag,
 
     if (!(con = constraint_def(tag, fp, disc)))
         return -1;
-    if (!(con->expression = strdup(data)))
-    {
+    if (!(con->expression = strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -858,8 +814,7 @@ constraint_match_dat(Tag_t *tag,
 
     if (!(con = constraint_def(tag, fp, disc)))
         return -1;
-    if (!(con->re = newof(0, regex_t, 1, sizeof(regdisc_t) + strlen(data))))
-    {
+    if (!(con->re = newof(0, regex_t, 1, sizeof(regdisc_t) + strlen(data)))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -885,14 +840,12 @@ constraint_max_dat(Tag_t *tag,
     if (!(con = constraint_def(tag, fp, disc)))
         return -1;
     n = strtod(data, &e);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
     }
-    if (!(con->max = newof(0, Cxvalue_t, 1, 0)))
-    {
+    if (!(con->max = newof(0, Cxvalue_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -914,14 +867,12 @@ constraint_min_dat(Tag_t *tag,
     if (!(con = constraint_def(tag, fp, disc)))
         return -1;
     n = strtod(data, &e);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
     }
-    if (!(con->min = newof(0, Cxvalue_t, 1, 0)))
-    {
+    if (!(con->min = newof(0, Cxvalue_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -943,14 +894,12 @@ constraint_def_dat(Tag_t *tag,
     if (!(con = constraint_def(tag, fp, disc)))
         return -1;
     n = strtod(data, &e);
-    if (*e)
-    {
+    if (*e) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "%s: invalid number", data);
         return -1;
     }
-    if (!(con->def = newof(0, Cxvalue_t, 1, 0)))
-    {
+    if (!(con->def = newof(0, Cxvalue_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -1012,19 +961,16 @@ method_end(Tag_t *tag, Tagframe_t *fp, Tagdisc_t *disc)
     char *name = ( char * )fp->data;
     Dssmeth_t *meth;
 
-    if (!name)
-    {
+    if (!name) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: method name expected", tagcontext(tag, fp));
         return -1;
     }
-    if (!streq(name, state->meth->name))
-    {
+    if (!streq(name, state->meth->name)) {
         sfseek(tagsync(tag), ( Sfoff_t )0, SEEK_END);
         if (!(meth = dssmeth(sfprints("%s:%s", name, error_info.file),
-                             state->disc)))
-        {
+                             state->disc))) {
             free(name);
             return -1;
         }
@@ -1055,8 +1001,7 @@ dss_con_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 {
     Dsstagdisc_t *state = ( Dsstagdisc_t * )disc;
 
-    if (fp->data)
-    {
+    if (fp->data) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: reference not expected", tagcontext(tag, fp));

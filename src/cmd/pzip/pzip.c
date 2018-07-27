@@ -218,10 +218,8 @@ main(int argc, char **argv)
     disc.errorf = errorf;
     if (!(dp = sfstropen()))
         error(ERROR_SYSTEM | 3, "out of space");
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             flags |= PZ_APPEND;
             continue;
@@ -326,13 +324,11 @@ main(int argc, char **argv)
     if (sftell(dp) && !(disc.options = strdup(sfstruse(dp))))
         error(ERROR_SYSTEM | 3, "out of space");
     sfclose(dp);
-    if (flags & PZ_SPLIT)
-    {
+    if (flags & PZ_SPLIT) {
         flags &= ~PZ_WRITE;
         flags |= PZ_READ;
     }
-    if (push)
-    {
+    if (push) {
         if (*argv)
             error(
             3,
@@ -345,21 +341,17 @@ main(int argc, char **argv)
             error(ERROR_SYSTEM | 3, "sfdcpzip io error");
         return 0;
     }
-    if (method)
-    {
+    if (method) {
         flags |= PZ_NOGZIP;
         if ((*method)((flags & PZ_WRITE) ? sfstdout : sfstdin, 0) < 0)
             error(3, "compression method discipline push error");
     }
-    if (bufsize)
-    {
+    if (bufsize) {
         sfset(sfstdout, SF_SHARE | SF_LINE, 0);
         sfsetbuf(sfstdout, NiL, bufsize);
     }
-    if (pz = pzopen(&disc, *argv, flags))
-    {
-        if (testwrite && (flags & PZ_WRITE))
-        {
+    if (pz = pzopen(&disc, *argv, flags)) {
+        if (testwrite && (flags & PZ_WRITE)) {
             unsigned char *buf;
             size_t n;
             ssize_t r;

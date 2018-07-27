@@ -23,8 +23,7 @@ tmain()
 {
     Sfio_t *f;
 
-    if (argc > 1)
-    {
+    if (argc > 1) {
         if (sfopen(sfstdin, argv[1], "r") != sfstdin)
             terror("Can't reopen stdin");
         sfmove(sfstdin, sfstdout, (Sfoff_t)(-1), -1);

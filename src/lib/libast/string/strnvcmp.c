@@ -38,18 +38,14 @@ strnvcmp(const char *a, const char *b, size_t n)
 
     ae = a + n;
     be = b + n;
-    for (;;)
-    {
-        if (a >= ae)
-        {
+    for (;;) {
+        if (a >= ae) {
             if (b >= be)
                 return 0;
             return 1;
-        }
-        else if (b >= be)
+        } else if (b >= be)
             return -1;
-        if (isdigit(*a) && isdigit(*b))
-        {
+        if (isdigit(*a) && isdigit(*b)) {
             na = nb = 0;
             while (a < ae && isdigit(*a))
                 na = na * 10 + *a++ - '0';
@@ -59,13 +55,11 @@ strnvcmp(const char *a, const char *b, size_t n)
                 return -1;
             if (na > nb)
                 return 1;
-        }
-        else if (*a != *b)
+        } else if (*a != *b)
             break;
         else if (!*a)
             return 0;
-        else
-        {
+        else {
             a++;
             b++;
         }

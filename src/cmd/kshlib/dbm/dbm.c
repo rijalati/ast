@@ -68,15 +68,12 @@ b_dbm_open(int argc, char **argv, Shbltin_t *context)
 
     cmdinit(argc, argv, context, ERROR_CATALOG, ERROR_NOTIFY);
 #if _use_ndbm
-    if (state.dbm)
-    {
+    if (state.dbm) {
         dbm_close(state.dbm);
         state.dbm = 0;
     }
-    for (;;)
-    {
-        switch (optget(argv, dbm_open_usage))
-        {
+    for (;;) {
+        switch (optget(argv, dbm_open_usage)) {
         case 'e':
             flags |= DB_EXCLUSIVE;
             continue;
@@ -96,13 +93,11 @@ b_dbm_open(int argc, char **argv, Shbltin_t *context)
         break;
     }
     argv += opt_info.index;
-    if (error_info.errors || !*argv || *(argv + 1))
-    {
+    if (error_info.errors || !*argv || *(argv + 1)) {
         error(ERROR_USAGE | 2, "%s", optusage(NiL));
         return 1;
     }
-    switch (flags & (DB_READ | DB_WRITE))
-    {
+    switch (flags & (DB_READ | DB_WRITE)) {
     case DB_READ:
         flags = O_RDONLY;
         break;
@@ -120,8 +115,7 @@ b_dbm_open(int argc, char **argv, Shbltin_t *context)
         && !(state.dbm = dbm_open(*argv,
                                   flags,
                                   S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP
-                                  | S_IROTH | S_IWOTH)))
-    {
+                                  | S_IROTH | S_IWOTH))) {
         error(ERROR_SYSTEM | 3, "%s: cannot open db", *argv);
         return 1;
     }
@@ -148,10 +142,8 @@ b_dbm_close(int argc, char **argv, Shbltin_t *context)
 {
     cmdinit(argc, argv, context, ERROR_CATALOG, ERROR_NOTIFY);
 #if _use_ndbm
-    for (;;)
-    {
-        switch (optget(argv, dbm_close_usage))
-        {
+    for (;;) {
+        switch (optget(argv, dbm_close_usage)) {
         case '?':
             error(ERROR_USAGE | 4, "%s", opt_info.arg);
             break;
@@ -162,15 +154,12 @@ b_dbm_close(int argc, char **argv, Shbltin_t *context)
         break;
     }
     argv += opt_info.index;
-    if (error_info.errors || *argv)
-    {
+    if (error_info.errors || *argv) {
         error(ERROR_USAGE | 2, "%s", optusage(NiL));
         return 1;
     }
-    if (!error_info.errors)
-    {
-        if (!state.dbm)
-        {
+    if (!error_info.errors) {
+        if (!state.dbm) {
             error(ERROR_SYSTEM | 2, "db not open");
             return 1;
         }
@@ -210,10 +199,8 @@ b_dbm_get(int argc, char **argv, Shbltin_t *context)
 
     cmdinit(argc, argv, context, ERROR_CATALOG, ERROR_NOTIFY);
 #if _use_ndbm
-    for (;;)
-    {
-        switch (optget(argv, dbm_get_usage))
-        {
+    for (;;) {
+        switch (optget(argv, dbm_get_usage)) {
         case '?':
             error(ERROR_USAGE | 4, "%s", opt_info.arg);
             break;
@@ -224,39 +211,31 @@ b_dbm_get(int argc, char **argv, Shbltin_t *context)
         break;
     }
     argv += opt_info.index;
-    if (error_info.errors || (key.dptr = *argv++) && *argv)
-    {
+    if (error_info.errors || (key.dptr = *argv++) && *argv) {
         error(ERROR_USAGE | 2, "%s", optusage(NiL));
         return 2;
     }
     r = 0;
-    if (!state.dbm)
-    {
+    if (!state.dbm) {
         error(ERROR_SYSTEM | 2, "db not open");
         r = 2;
-    }
-    else if (key.dptr)
-    {
+    } else if (key.dptr) {
         key.dsize = strlen(key.dptr) + 1;
         val = dbm_fetch(state.dbm, key);
         if (val.dptr)
             sfputr(sfstdout, val.dptr, '\n');
         else
             r = 1;
-    }
-    else
-    {
+    } else {
         if (state.scanning)
             val = dbm_nextkey(state.dbm);
-        else
-        {
+        else {
             state.scanning = 1;
             val = dbm_firstkey(state.dbm);
         }
         if (val.dptr)
             sfputr(sfstdout, val.dptr, '\n');
-        else
-        {
+        else {
             state.scanning = 0;
             r = 1;
         }
@@ -295,10 +274,8 @@ b_dbm_set(int argc, char **argv, Shbltin_t *context)
 
     cmdinit(argc, argv, context, ERROR_CATALOG, ERROR_NOTIFY);
 #if _use_ndbm
-    for (;;)
-    {
-        switch (optget(argv, dbm_set_usage))
-        {
+    for (;;) {
+        switch (optget(argv, dbm_set_usage)) {
         case '?':
             error(ERROR_USAGE | 4, "%s", opt_info.arg);
             break;
@@ -310,38 +287,29 @@ b_dbm_set(int argc, char **argv, Shbltin_t *context)
     }
     argv += opt_info.index;
     if (error_info.errors
-        || (key.dptr = *argv++) && (val.dptr = *argv++) && *argv)
-    {
+        || (key.dptr = *argv++) && (val.dptr = *argv++) && *argv) {
         error(ERROR_USAGE | 2, "%s", optusage(NiL));
         return 1;
     }
-    if (!error_info.errors)
-    {
-        if (!state.dbm)
-        {
+    if (!error_info.errors) {
+        if (!state.dbm) {
             error(ERROR_SYSTEM | 2, "db not open");
             return 1;
         }
         if (!key.dptr)
             state.scanning = 0;
-        else
-        {
+        else {
             key.dsize = strlen(key.dptr) + 1;
-            if (!val.dptr)
-            {
-                if (dbm_delete(state.dbm, key) < 0)
-                {
+            if (!val.dptr) {
+                if (dbm_delete(state.dbm, key) < 0) {
                     error(ERROR_SYSTEM | 2, "db key delete error");
                     return 1;
                 }
-            }
-            else
-            {
+            } else {
                 val.dsize = strlen(val.dptr) + 1;
                 if ((n = dbm_store(state.dbm, key, val, DBM_INSERT)) < 0
                     || n > 0
-                       && dbm_store(state.dbm, key, val, DBM_REPLACE) < 0)
-                {
+                       && dbm_store(state.dbm, key, val, DBM_REPLACE) < 0) {
                     error(ERROR_SYSTEM | 2, "db write error");
                     return 1;
                 }

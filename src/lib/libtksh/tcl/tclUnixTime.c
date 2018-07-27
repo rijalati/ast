@@ -158,8 +158,7 @@ int TclpGetTimeZone(currentTime) unsigned long currentTime;
     int timeZone;
 
     timeZone = timeDataPtr->tm_tzadj / 60;
-    if (timeDataPtr->tm_isdst)
-    {
+    if (timeDataPtr->tm_isdst) {
         timeZone += 60;
     }
 
@@ -173,8 +172,7 @@ int TclpGetTimeZone(currentTime) unsigned long currentTime;
     int timeZone;
 
     timeZone = -(timeDataPtr->tm_gmtoff / 60);
-    if (timeDataPtr->tm_isdst)
-    {
+    if (timeDataPtr->tm_isdst) {
         timeZone += 60;
     }
 
@@ -192,8 +190,7 @@ int TclpGetTimeZone(currentTime) unsigned long currentTime;
     static int setTZ = 0;
     int timeZone;
 
-    if (!setTZ)
-    {
+    if (!setTZ) {
         tzset();
         setTZ = 1;
     }
@@ -216,8 +213,7 @@ int TclpGetTimeZone(currentTime) unsigned long currentTime;
 
     gettimeofday(&tv, &tz);
     timeZone = tz.tz_minuteswest;
-    if (tz.tz_dsttime)
-    {
+    if (tz.tz_dsttime) {
         timeZone += 60;
     }
 

@@ -193,8 +193,7 @@ char **argv;        /* Arguments describing rectangle. */
 {
     BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          Tk_PathName(Tk_CanvasTkwin(canvas)),
@@ -220,14 +219,13 @@ char **argv;        /* Arguments describing rectangle. */
      */
 
     if ((Tk_CanvasGetCoord(interp, canvas, argv[0], &bmapPtr->x) != TCL_OK)
-        || (Tk_CanvasGetCoord(interp, canvas, argv[1], &bmapPtr->y) != TCL_OK))
-    {
+        || (Tk_CanvasGetCoord(interp, canvas, argv[1], &bmapPtr->y)
+            != TCL_OK)) {
         return TCL_ERROR;
     }
 
     if (ConfigureBitmap(interp, canvas, itemPtr, argc - 2, argv + 2, 0)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         DeleteBitmap(canvas, itemPtr, Tk_Display(Tk_CanvasTkwin(canvas)));
         return TCL_ERROR;
     }
@@ -265,24 +263,18 @@ char **argv;        /* Array of coordinates: x1, y1,
     BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
     char x[TCL_DOUBLE_SPACE], y[TCL_DOUBLE_SPACE];
 
-    if (argc == 0)
-    {
+    if (argc == 0) {
         Tcl_PrintDouble(interp, bmapPtr->x, x);
         Tcl_PrintDouble(interp, bmapPtr->y, y);
         Tcl_AppendResult(interp, x, " ", y, ( char * )NULL);
-    }
-    else if (argc == 2)
-    {
+    } else if (argc == 2) {
         if ((Tk_CanvasGetCoord(interp, canvas, argv[0], &bmapPtr->x) != TCL_OK)
             || (Tk_CanvasGetCoord(interp, canvas, argv[1], &bmapPtr->y)
-                != TCL_OK))
-        {
+                != TCL_OK)) {
             return TCL_ERROR;
         }
         ComputeBitmapBbox(canvas, bmapPtr);
-    }
-    else
-    {
+    } else {
         sprintf(
         interp->result, "wrong # coordinates: expected 0 or 2, got %d", argc);
         return TCL_ERROR;
@@ -325,8 +317,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
     tkwin = Tk_CanvasTkwin(canvas);
     if (Tk_ConfigureWidget(
         interp, tkwin, configSpecs, argc, argv, ( char * )bmapPtr, flags)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -337,19 +328,15 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 
     gcValues.foreground = bmapPtr->fgColor->pixel;
     mask = GCForeground;
-    if (bmapPtr->bgColor != NULL)
-    {
+    if (bmapPtr->bgColor != NULL) {
         gcValues.background = bmapPtr->bgColor->pixel;
         mask |= GCBackground;
-    }
-    else
-    {
+    } else {
         gcValues.clip_mask = bmapPtr->bitmap;
         mask |= GCClipMask;
     }
     newGC = Tk_GetGC(tkwin, mask, &gcValues);
-    if (bmapPtr->gc != None)
-    {
+    if (bmapPtr->gc != None) {
         Tk_FreeGC(Tk_Display(tkwin), bmapPtr->gc);
     }
     bmapPtr->gc = newGC;
@@ -385,20 +372,16 @@ Display *display; /* Display containing window for
 {
     BitmapItem *bmapPtr = ( BitmapItem * )itemPtr;
 
-    if (bmapPtr->bitmap != None)
-    {
+    if (bmapPtr->bitmap != None) {
         Tk_FreeBitmap(display, bmapPtr->bitmap);
     }
-    if (bmapPtr->fgColor != NULL)
-    {
+    if (bmapPtr->fgColor != NULL) {
         Tk_FreeColor(bmapPtr->fgColor);
     }
-    if (bmapPtr->bgColor != NULL)
-    {
+    if (bmapPtr->bgColor != NULL) {
         Tk_FreeColor(bmapPtr->bgColor);
     }
-    if (bmapPtr->gc != NULL)
-    {
+    if (bmapPtr->gc != NULL) {
         Tk_FreeGC(display, bmapPtr->gc);
     }
 }
@@ -436,8 +419,7 @@ BitmapItem *bmapPtr; /* Item whose bbox is to be
     x = bmapPtr->x + ((bmapPtr->x >= 0) ? 0.5 : -0.5);
     y = bmapPtr->y + ((bmapPtr->y >= 0) ? 0.5 : -0.5);
 
-    if (bmapPtr->bitmap == None)
-    {
+    if (bmapPtr->bitmap == None) {
         bmapPtr->header.x1 = bmapPtr->header.x2 = x;
         bmapPtr->header.y1 = bmapPtr->header.y2 = y;
         return;
@@ -449,8 +431,7 @@ BitmapItem *bmapPtr; /* Item whose bbox is to be
 
     Tk_SizeOfBitmap(
     Tk_Display(Tk_CanvasTkwin(canvas)), bmapPtr->bitmap, &width, &height);
-    switch (bmapPtr->anchor)
-    {
+    switch (bmapPtr->anchor) {
     case TK_ANCHOR_N:
         x -= width / 2;
         break;
@@ -531,39 +512,26 @@ int x, y, width, height; /* Describes region of canvas that
      * redisplay.
      */
 
-    if (bmapPtr->bitmap != None)
-    {
-        if (x > bmapPtr->header.x1)
-        {
+    if (bmapPtr->bitmap != None) {
+        if (x > bmapPtr->header.x1) {
             bmapX = x - bmapPtr->header.x1;
             bmapWidth = bmapPtr->header.x2 - x;
-        }
-        else
-        {
+        } else {
             bmapX = 0;
-            if ((x + width) < bmapPtr->header.x2)
-            {
+            if ((x + width) < bmapPtr->header.x2) {
                 bmapWidth = x + width - bmapPtr->header.x1;
-            }
-            else
-            {
+            } else {
                 bmapWidth = bmapPtr->header.x2 - bmapPtr->header.x1;
             }
         }
-        if (y > bmapPtr->header.y1)
-        {
+        if (y > bmapPtr->header.y1) {
             bmapY = y - bmapPtr->header.y1;
             bmapHeight = bmapPtr->header.y2 - y;
-        }
-        else
-        {
+        } else {
             bmapY = 0;
-            if ((y + height) < bmapPtr->header.y2)
-            {
+            if ((y + height) < bmapPtr->header.y2) {
                 bmapHeight = y + height - bmapPtr->header.y1;
-            }
-            else
-            {
+            } else {
                 bmapHeight = bmapPtr->header.y2 - bmapPtr->header.y1;
             }
         }
@@ -635,29 +603,19 @@ double *coordPtr; /* Pointer to x and y coordinates. */
      * Point is outside rectangle.
      */
 
-    if (coordPtr[0] < x1)
-    {
+    if (coordPtr[0] < x1) {
         xDiff = x1 - coordPtr[0];
-    }
-    else if (coordPtr[0] > x2)
-    {
+    } else if (coordPtr[0] > x2) {
         xDiff = coordPtr[0] - x2;
-    }
-    else
-    {
+    } else {
         xDiff = 0;
     }
 
-    if (coordPtr[1] < y1)
-    {
+    if (coordPtr[1] < y1) {
         yDiff = y1 - coordPtr[1];
-    }
-    else if (coordPtr[1] > y2)
-    {
+    } else if (coordPtr[1] > y2) {
         yDiff = coordPtr[1] - y2;
-    }
-    else
-    {
+    } else {
         yDiff = 0;
     }
 
@@ -698,15 +656,13 @@ double *rectPtr;  /* Pointer to array of four coordinates
     if ((rectPtr[2] <= bmapPtr->header.x1)
         || (rectPtr[0] >= bmapPtr->header.x2)
         || (rectPtr[3] <= bmapPtr->header.y1)
-        || (rectPtr[1] >= bmapPtr->header.y2))
-    {
+        || (rectPtr[1] >= bmapPtr->header.y2)) {
         return -1;
     }
     if ((rectPtr[0] <= bmapPtr->header.x1)
         && (rectPtr[1] <= bmapPtr->header.y1)
         && (rectPtr[2] >= bmapPtr->header.x2)
-        && (rectPtr[3] >= bmapPtr->header.y2))
-    {
+        && (rectPtr[3] >= bmapPtr->header.y2)) {
         return 1;
     }
     return 0;
@@ -815,8 +771,7 @@ int prepass;        /* 1 means this is a prepass to
     int curRow;
     char buffer[200];
 
-    if (bmapPtr->bitmap == None)
-    {
+    if (bmapPtr->bitmap == None) {
         return TCL_OK;
     }
 
@@ -829,8 +784,7 @@ int prepass;        /* 1 means this is a prepass to
     y = Tk_CanvasPsY(canvas, bmapPtr->y);
     Tk_SizeOfBitmap(
     Tk_Display(Tk_CanvasTkwin(canvas)), bmapPtr->bitmap, &width, &height);
-    switch (bmapPtr->anchor)
-    {
+    switch (bmapPtr->anchor) {
     case TK_ANCHOR_NW:
         y -= height;
         break;
@@ -867,8 +821,7 @@ int prepass;        /* 1 means this is a prepass to
      * Color the background, if there is one.
      */
 
-    if (bmapPtr->bgColor != NULL)
-    {
+    if (bmapPtr->bgColor != NULL) {
         sprintf(buffer,
                 "%.15g %.15g moveto %d 0 rlineto 0 %d rlineto %d %s\n",
                 x,
@@ -878,8 +831,7 @@ int prepass;        /* 1 means this is a prepass to
                 -width,
                 "0 rlineto closepath");
         Tcl_AppendResult(interp, buffer, ( char * )NULL);
-        if (Tk_CanvasPsColor(interp, canvas, bmapPtr->bgColor) != TCL_OK)
-        {
+        if (Tk_CanvasPsColor(interp, canvas, bmapPtr->bgColor) != TCL_OK) {
             return TCL_ERROR;
         }
         Tcl_AppendResult(interp, "fill\n", ( char * )NULL);
@@ -892,14 +844,11 @@ int prepass;        /* 1 means this is a prepass to
      * can't handle single strings longer than 64 KBytes long.
      */
 
-    if (bmapPtr->fgColor != NULL)
-    {
-        if (Tk_CanvasPsColor(interp, canvas, bmapPtr->fgColor) != TCL_OK)
-        {
+    if (bmapPtr->fgColor != NULL) {
+        if (Tk_CanvasPsColor(interp, canvas, bmapPtr->fgColor) != TCL_OK) {
             return TCL_ERROR;
         }
-        if (width > 60000)
-        {
+        if (width > 60000) {
             Tcl_ResetResult(interp);
             Tcl_AppendResult(interp,
                              "can't generate Postscript",
@@ -908,17 +857,14 @@ int prepass;        /* 1 means this is a prepass to
             return TCL_ERROR;
         }
         rowsAtOnce = 60000 / width;
-        if (rowsAtOnce < 1)
-        {
+        if (rowsAtOnce < 1) {
             rowsAtOnce = 1;
         }
         sprintf(buffer, "%.15g %.15g translate\n", x, y + height);
         Tcl_AppendResult(interp, buffer, ( char * )NULL);
-        for (curRow = 0; curRow < height; curRow += rowsAtOnce)
-        {
+        for (curRow = 0; curRow < height; curRow += rowsAtOnce) {
             rowsThisTime = rowsAtOnce;
-            if (rowsThisTime > (height - curRow))
-            {
+            if (rowsThisTime > (height - curRow)) {
                 rowsThisTime = height - curRow;
             }
             sprintf(buffer,
@@ -929,8 +875,7 @@ int prepass;        /* 1 means this is a prepass to
             Tcl_AppendResult(interp, buffer, ( char * )NULL);
             if (Tk_CanvasPsBitmap(
                 interp, canvas, bmapPtr->bitmap, 0, curRow, width, rowsThisTime)
-                != TCL_OK)
-            {
+                != TCL_OK) {
                 return TCL_ERROR;
             }
             Tcl_AppendResult(interp, "\n} imagemask\n", ( char * )NULL);

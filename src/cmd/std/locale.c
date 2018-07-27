@@ -592,21 +592,17 @@ list_locale(Sfio_t *sp, Keyword_t *key, Lc_t *lc, unsigned int flags)
     for (i = 0; i < elementsof(types); i++)
         if (flags & types[i])
             n++;
-    if (!n)
-    {
+    if (!n) {
         n++;
         flags |= LC_abbreviated;
     }
     n = n == 1;
-    if (key)
-    {
-        if (flags & LC_indent)
-        {
+    if (key) {
+        if (flags & LC_indent) {
             sfputc(sp, '\t');
             n = 0;
         }
-        if (flags & (LC_category | LC_keyword))
-        {
+        if (flags & (LC_category | LC_keyword)) {
             sfprintf(sp, "%s=", key->name);
             n = 0;
         }
@@ -614,8 +610,7 @@ list_locale(Sfio_t *sp, Keyword_t *key, Lc_t *lc, unsigned int flags)
     fmt = n ? "%s%s" : "%s\"%s\"";
     sep = "";
     for (i = 0; i < elementsof(types); i++)
-        if (flags & types[i])
-        {
+        if (flags & types[i]) {
             lccanon(lc, types[i], buf, sizeof(buf));
             if (n && streq(buf, "-"))
                 return;
@@ -652,37 +647,31 @@ value(Sfio_t *sp, const char *s, unsigned int flags)
     int u;
 
     state.output = 1;
-    if ((flags & (LC_quote | LC_proper | LC_upper)) == LC_quote)
-    {
+    if ((flags & (LC_quote | LC_proper | LC_upper)) == LC_quote) {
         sfprintf(sp, "%s", fmtquote(s, "\"", "\"", strlen(s), FMT_ALWAYS));
         return;
     }
     if (flags & LC_quote)
         sfputc(sp, '"');
     if (flags & LC_upper)
-        while (c = *s++)
-        {
+        while (c = *s++) {
             if (islower(c))
                 c = toupper(c);
             sfputc(sp, c);
         }
-    else if (flags & LC_proper)
-    {
+    else if (flags & LC_proper) {
         u = 1;
-        while (c = *s++)
-        {
+        while (c = *s++) {
             if (!isalnum(c))
                 u = 1;
-            else
-            {
+            else {
                 if (u && islower(c))
                     c = toupper(c);
                 u = 0;
             }
             sfputc(sp, c);
         }
-    }
-    else
+    } else
         sfprintf(sp, "%s", s);
     if (flags & LC_quote)
         sfputc(sp, '"');
@@ -704,22 +693,17 @@ string(Sfio_t *sp, Keyword_t *key, char **v, int n, unsigned int flags)
         sfprintf(sp, "%s=", key->name);
     if ((flags & LC_keyword) || n != 1)
         flags |= LC_quote;
-    if (n)
-    {
+    if (n) {
         value(sp, *v, flags);
         flags |= LC_quote;
         e = v + n - 1;
-        while (v++ < e)
-        {
+        while (v++ < e) {
             sfputc(sp, ';');
             value(sp, *v, flags);
         }
-    }
-    else if (v && (a = *(( Lc_attribute_list_t ** )v)))
-    {
+    } else if (v && (a = *(( Lc_attribute_list_t ** )v))) {
         value(sp, a->attribute->name, flags);
-        while (a = a->next)
-        {
+        while (a = a->next) {
             sfputc(sp, ';');
             value(sp, a->attribute->name, flags);
         }
@@ -739,8 +723,7 @@ extract(Sfio_t *sp, Keyword_t *key, void *data, unsigned int flags)
     char **v;
     Lc_t *lc;
 
-    switch (key->type)
-    {
+    switch (key->type) {
     case C:
         if (key->offset >= 0)
             i = *(( char * )data + key->offset);
@@ -759,8 +742,7 @@ extract(Sfio_t *sp, Keyword_t *key, void *data, unsigned int flags)
         break;
     case N:
 #if _lib_nl_langinfo
-        if (key->offset >= 0)
-        {
+        if (key->offset >= 0) {
             s = nl_langinfo(key->offset);
 
 #    if _num__NL_PAPER_HEIGHT
@@ -772,28 +754,23 @@ extract(Sfio_t *sp, Keyword_t *key, void *data, unsigned int flags)
              * values -- botch botch botch
              */
 
-            if ((( unsigned int )s) < 8196)
-            {
+            if ((( unsigned int )s) < 8196) {
                 static char xxx[32];
 
                 sfsprintf(xxx, sizeof(xxx), "%d", ( unsigned int )s);
                 s = xxx;
             }
 #    endif
-        }
-        else
+        } else
 #endif
             s = "";
         string(sp, key, &s, 1, flags);
         break;
     case S:
-        if (key->offset >= 0)
-        {
+        if (key->offset >= 0) {
             v = ( char ** )(( char * )data + key->offset);
             i = key->elements;
-        }
-        else
-        {
+        } else {
             s = "";
             v = &s;
             i = 1;
@@ -803,22 +780,16 @@ extract(Sfio_t *sp, Keyword_t *key, void *data, unsigned int flags)
     case X:
         lc = ( Lc_t * )lcinfo(state.categories[key->index].external)->lc;
         i = 1;
-        if (key->offset == CV_language && lc->language)
-        {
+        if (key->offset == CV_language && lc->language) {
             s = ( char * )lc->language->name;
             flags |= LC_proper;
-        }
-        else if (key->offset == CV_territory && lc->territory)
-        {
+        } else if (key->offset == CV_territory && lc->territory) {
             s = ( char * )lc->territory->name;
             flags |= LC_proper;
-        }
-        else if (key->offset == CV_attributes && lc->attributes)
-        {
+        } else if (key->offset == CV_attributes && lc->attributes) {
             s = ( char * )lc->attributes;
             i = 0;
-        }
-        else
+        } else
             s = "";
         string(sp, key, &s, i, flags);
         break;
@@ -842,8 +813,7 @@ list_all(Sfio_t *sp, Lc_t *lc, unsigned long flags)
         sfprintf(sp, "LC_ALL\n");
     if (flags & LC_indent)
         sfputc(sp, '\t');
-    if (flags & LC_keyword)
-    {
+    if (flags & LC_keyword) {
         flags |= LC_quote;
         sfprintf(sp, "locale=");
     }
@@ -869,15 +839,13 @@ list_keyword(Sfio_t *sp, Keyword_t *key, char *value, unsigned int flags)
 
     if ((flags & LC_category) && key->index != AST_LC_ALL)
         sfprintf(sp, "%s\n", state.categories[key->index].name);
-    switch (key->index)
-    {
+    switch (key->index) {
     case AST_LC_COLLATE:
         s = mbcoll() ? "strcoll" : "strcmp";
         string(sp, key, &s, 1, flags);
         break;
     case AST_LC_CTYPE:
-        switch (key->offset)
-        {
+        switch (key->offset) {
         case CV_charset:
             s = ( char * )lcinfo(LC_CTYPE)->lc->charset->code;
             string(sp, key, &s, 1, flags | LC_upper);
@@ -907,37 +875,29 @@ list_keyword(Sfio_t *sp, Keyword_t *key, char *value, unsigned int flags)
         extract(sp, key, tmlocale(), flags);
         break;
     case AST_LC_ALL:
-        if (value)
-        {
+        if (value) {
             if (streq(value, "-"))
                 value = 0;
             if (!setlocale(key->offset, value))
                 error(1, "%s: invalid locale", value);
             state.conv = 0;
-        }
-        else
-        {
-            if (key->type == AST_LC_ALL)
-            {
+        } else {
+            if (key->type == AST_LC_ALL) {
                 state.all = 1;
-                if ((flags & (LC_defined | LC_recursive)) == LC_defined)
-                {
+                if ((flags & (LC_defined | LC_recursive)) == LC_defined) {
                     scan(sp, key, flags | LC_recursive);
                     break;
                 }
                 i = 1;
                 n = AST_LC_COUNT - 1;
-            }
-            else
+            } else
                 i = n = key->type;
             if (state.all)
                 list_all(sp, NiL, flags);
-            for (; i <= n; i++)
-            {
+            for (; i <= n; i++) {
                 f = flags;
                 for (j = 0; j < elementsof(keywords); j++)
-                    if (keywords[j].index == i)
-                    {
+                    if (keywords[j].index == i) {
                         list_keyword(sp, &keywords[j], NiL, f);
                         f &= ~LC_category;
                     }
@@ -948,8 +908,7 @@ list_keyword(Sfio_t *sp, Keyword_t *key, char *value, unsigned int flags)
         state.output = 1;
         if (!value)
             error(2, "%s: value expected", key->name);
-        else
-        {
+        else {
             if (streq(value, "-"))
                 value = 0;
             list_locale(sfstdout, key, lcmake(value), flags);
@@ -967,10 +926,8 @@ scan(Sfio_t *sp, Keyword_t *key, unsigned long flags)
 {
     Lc_t *lc = 0;
 
-    while (lc = lcscan(lc))
-    {
-        switch (flags & (LC_defined | LC_undefined))
-        {
+    while (lc = lcscan(lc)) {
+        switch (flags & (LC_defined | LC_undefined)) {
         case LC_defined:
             if (!lc->index && !setlocale(LC_MONETARY, lc->name))
                 continue;
@@ -1012,10 +969,8 @@ main(int argc, char **argv)
     collate = 0;
     composite = 0;
     transform = 0;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             flags |= LC_defined;
             continue;
@@ -1066,32 +1021,24 @@ main(int argc, char **argv)
     if (error_info.errors)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
     argv += opt_info.index;
-    if (collate)
-    {
-        while (name = *argv++)
-        {
+    if (collate) {
+        while (name = *argv++) {
             sfprintf(sfstdout, "%s", name);
             sfsprintf(col, sizeof(col), ".%s.]", name);
-            if ((i = regcollate(col, NiL, buf, sizeof(buf), NiL)) < 0)
-            {
+            if ((i = regcollate(col, NiL, buf, sizeof(buf), NiL)) < 0) {
                 sfprintf(sfstdout, "\tERROR\n");
                 continue;
             }
-            if (!(collate = mbxfrm(col, buf, sizeof(col))))
-            {
-                if (i > 1)
-                {
+            if (!(collate = mbxfrm(col, buf, sizeof(col)))) {
+                if (i > 1) {
                     sfprintf(sfstdout, "\tINVALID\n");
                     continue;
                 }
                 collate = i;
                 memcpy(col, buf, i);
-            }
-            else if (i > 1)
-            {
+            } else if (i > 1) {
                 buf[1] = 0;
-                if (mbxfrm(dip, buf, sizeof(dip)) < collate)
-                {
+                if (mbxfrm(dip, buf, sizeof(dip)) < collate) {
                     sfprintf(sfstdout, "\tUNDEFINED\n");
                     continue;
                 }
@@ -1102,15 +1049,12 @@ main(int argc, char **argv)
         }
         return error_info.errors != 0;
     }
-    if (composite)
-    {
+    if (composite) {
         sfprintf(sfstdout, "%s\n", setlocale(LC_ALL, NiL));
         return error_info.errors != 0;
     }
-    if (transform)
-    {
-        while (name = *argv++)
-        {
+    if (transform) {
+        while (name = *argv++) {
             sfprintf(sfstdout, "%s", name);
             collate = mbxfrm(col, name, sizeof(col));
             for (i = 0, j = '\t'; i < collate; i++, j = ' ')
@@ -1120,25 +1064,21 @@ main(int argc, char **argv)
         return error_info.errors != 0;
     }
     state.categories = lccategories();
-    if (!*argv)
-    {
-        if (flags & (LC_undefined | LC_defined))
-        {
+    if (!*argv) {
+        if (flags & (LC_undefined | LC_defined)) {
             if (!(flags
                   & (LC_abbreviated | LC_qualified | LC_local | LC_verbose)))
                 flags |= LC_abbreviated;
             return scan(sfstdout, NiL, flags);
         }
-        if (!flags)
-        {
+        if (!flags) {
             name = "LANG";
             sfprintf(sfstdout, "%s=", name);
             if (!(s = getenv("LANG")))
                 s = "POSIX";
             sfprintf(sfstdout, "%s\n", fmtquote(s, "'", NiL, strlen(s), 0));
             value = getenv(state.categories[AST_LC_ALL].name);
-            for (i = 1; i < AST_LC_COUNT; i++)
-            {
+            for (i = 1; i < AST_LC_COUNT; i++) {
                 s = setlocale(state.categories[i].external, NiL);
                 sfprintf(sfstdout,
                          "%s=%s\n",
@@ -1152,8 +1092,7 @@ main(int argc, char **argv)
                                   : 0));
             }
             sfprintf(sfstdout, "%s=", state.categories[0].name);
-            if (value)
-            {
+            if (value) {
                 s = setlocale(state.categories[0].external, NiL);
                 sfprintf(
                 sfstdout, "%s", fmtquote(s, "\"", "\"", strlen(s), 0));
@@ -1169,8 +1108,7 @@ main(int argc, char **argv)
         error(3, "out of space [dictionary]");
     for (i = 0; i < elementsof(keywords); i++)
         dtinsert(state.dict, keywords + i);
-    for (i = 0; i < AST_LC_COUNT; i++)
-    {
+    for (i = 0; i < AST_LC_COUNT; i++) {
         if (!(key = newof(0, Keyword_t, 1, 0)))
             error(3, "out of space [keyword]");
         key->name = state.categories[i].name;
@@ -1179,16 +1117,13 @@ main(int argc, char **argv)
         key->offset = state.categories[i].external;
         dtinsert(state.dict, key);
     }
-    while (name = *argv++)
-    {
+    while (name = *argv++) {
         if (value = strchr(name, '='))
             *value++ = 0;
-        if (!(key = ( Keyword_t * )dtmatch(state.dict, name)))
-        {
+        if (!(key = ( Keyword_t * )dtmatch(state.dict, name))) {
             if (name[0] == 'L' && name[1] == 'C' && name[2] == '_')
                 error(2, "%s: unknown category", name);
-            else if (oargv[0][0] != '/')
-            {
+            else if (oargv[0][0] != '/') {
                 char *cmd[3];
 
                 cmd[0] = ( char * )defer;
@@ -1196,11 +1131,9 @@ main(int argc, char **argv)
                 cmd[2] = 0;
                 procrun(defer, cmd, 0);
                 state.output = 1;
-            }
-            else
+            } else
                 error(2, "%s: unknown keyword", name);
-        }
-        else
+        } else
             list_keyword(sfstdout, key, value, flags);
     }
     if (!error_info.errors && !state.output)

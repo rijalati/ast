@@ -93,14 +93,13 @@ getfmt(Sfio_t *sp, void *vp, Sffmt_t *dp)
     Cxoperand_t ret;
 
     if (ap->expr && cxeval(fp->cx, ap->expr, fp->data, &ret) < 0
-        || cxcast(fp->cx, &ret, ap->variable, ap->cast, fp->data, ap->details))
-    {
+        || cxcast(
+           fp->cx, &ret, ap->variable, ap->cast, fp->data, ap->details)) {
         fp->errors++;
         return -1;
     }
     fp->fmt.flags |= SFFMT_VALUE;
-    switch (ap->type)
-    {
+    switch (ap->type) {
     case DSS_FORMAT_char:
         fp->fmt.size = sizeof(int);
         if (ret.value.number < 1)
@@ -185,8 +184,7 @@ dssprintf(Dss_t *dss,
 
     if (!cx)
         cx = dss->cx;
-    if (!format)
-    {
+    if (!format) {
         Cxvariable_t *vp;
         unsigned char *p;
         unsigned char *e;
@@ -198,19 +196,16 @@ dssprintf(Dss_t *dss,
          * {print --all} : all fields with non-default values
          */
 
-        if (!(q = dss->meth->cx->width))
-        {
+        if (!(q = dss->meth->cx->width)) {
             if (!cx->getf
-                && !(cx->getf = cxcallout(cx, CX_GET, 0, 0, cx->disc)))
-            {
+                && !(cx->getf = cxcallout(cx, CX_GET, 0, 0, cx->disc))) {
                 if (cx->disc->errorf)
                     (*cx->disc->errorf)(
                     NiL, cx->disc, 3, "cx CX_GET callout must be defined");
                 return 0;
             }
             n = q = 0;
-            if (dss->meth->cx->fields)
-            {
+            if (dss->meth->cx->fields) {
                 for (vp = ( Cxvariable_t * )dtfirst(dss->meth->cx->fields);
                      vp;
                      vp = ( Cxvariable_t * )dtnext(dss->meth->cx->fields, vp),
@@ -218,9 +213,7 @@ dssprintf(Dss_t *dss,
                     if (!(vp->header.flags & CX_DEPRECATED)
                         && q < (l = strlen(vp->name)))
                         q = l;
-            }
-            else if (dss->meth->data)
-            {
+            } else if (dss->meth->data) {
                 for (vp = ( Cxvariable_t * )dss->meth->data; vp->name;
                      vp++, n++)
                     if (!(vp->header.flags & CX_DEPRECATED)
@@ -231,32 +224,25 @@ dssprintf(Dss_t *dss,
         }
         n = 0;
         if (sp
-            && (vp
-                = dss->meth->cx->fields
-                  ? ( Cxvariable_t * )dtfirst(dss->meth->cx->fields)
-                  : dss->meth->data ? ( Cxvariable_t * )dss->meth->data : 0))
-        {
-            for (;;)
-            {
-                if (dss->meth->cx->fields)
-                {
+            && (vp = dss->meth->cx->fields
+                     ? ( Cxvariable_t * )dtfirst(dss->meth->cx->fields)
+                     : dss->meth->data ? ( Cxvariable_t * )dss->meth->data
+                                       : 0)) {
+            for (;;) {
+                if (dss->meth->cx->fields) {
                     if (!vp)
                         break;
-                }
-                else if (!vp->name)
+                } else if (!vp->name)
                     break;
-                if (!vp->type->generic && !(vp->header.flags & CX_DEPRECATED))
-                {
+                if (!vp->type->generic
+                    && !(vp->header.flags & CX_DEPRECATED)) {
                     x.data.variable = vp;
-                    if (!(*cx->getf)(cx, &x, &r, &a, NiL, record, cx->disc))
-                    {
-                        switch (cxrepresentation(vp->type))
-                        {
+                    if (!(*cx->getf)(cx, &x, &r, &a, NiL, record, cx->disc)) {
+                        switch (cxrepresentation(vp->type)) {
                         case CX_buffer:
                             if (!(p = ( unsigned char * )r.value.buffer.data))
                                 goto next;
-                            if (r.value.buffer.size)
-                            {
+                            if (r.value.buffer.size) {
                                 e = p + r.value.buffer.size;
                                 while (p < e && !*p)
                                     p++;
@@ -300,8 +286,7 @@ dssprintf(Dss_t *dss,
     for (fp = dss->print; fp && fp->oformat != ( char * )format;
          fp = fp->next)
         ;
-    if (!fp)
-    {
+    if (!fp) {
         char *s;
         char *t;
         char *d;
@@ -320,13 +305,10 @@ dssprintf(Dss_t *dss,
         n = 0;
         q = 0;
         w = 0;
-        for (;;)
-        {
-            switch (*s++)
-            {
+        for (;;) {
+            switch (*s++) {
             case 0:
-                if (q)
-                {
+                if (q) {
                     if (dss->disc->errorf)
                         (*dss->disc->errorf)(
                         NiL, dss->disc, 2, "%s: format character omitted", f);
@@ -334,21 +316,17 @@ dssprintf(Dss_t *dss,
                 }
                 break;
             case '%':
-                if (*s != '%')
-                {
+                if (*s != '%') {
                     q = 1;
                     n++;
                     f = s - 1;
                 }
                 continue;
             case '(':
-                if (q == 1)
-                {
+                if (q == 1) {
                     q++;
-                    for (;;)
-                    {
-                        switch (*s++)
-                        {
+                    for (;;) {
+                        switch (*s++) {
                         case 0:
                             s--;
                             break;
@@ -370,8 +348,7 @@ dssprintf(Dss_t *dss,
                         }
                         break;
                     }
-                    if (d)
-                    {
+                    if (d) {
                         l += s - d + 1;
                         d = 0;
                     }
@@ -399,8 +376,7 @@ dssprintf(Dss_t *dss,
                            Format_t,
                            1,
                            (n - 1) * sizeof(Arg_t) + strlen(format) + 2 * n
-                           + l + 2)))
-        {
+                           + l + 2))) {
             if (dss->disc->errorf)
                 (*dss->disc->errorf)(
                 NiL, dss->disc, ERROR_SYSTEM | 2, "out of space");
@@ -416,10 +392,8 @@ dssprintf(Dss_t *dss,
         q = 0;
         d = 0;
         l = 0;
-        for (;;)
-        {
-            switch (*t++ = *s++)
-            {
+        for (;;) {
+            switch (*t++ = *s++) {
             case 0:
                 *(t - 1) = '\n';
                 *t = 0;
@@ -431,16 +405,13 @@ dssprintf(Dss_t *dss,
                     q = 1;
                 continue;
             case '(':
-                if (q == 1)
-                {
+                if (q == 1) {
                     q++;
                     t--;
                     x = 0;
                     v = s;
-                    for (;;)
-                    {
-                        switch (*s++)
-                        {
+                    for (;;) {
+                        switch (*s++) {
                         case 0:
                             if (dss->disc->errorf)
                                 (*dss->disc->errorf)(NiL,
@@ -480,10 +451,8 @@ dssprintf(Dss_t *dss,
                     if (d)
                         *(d - 1) = 0;
                     *(s - 1) = 0;
-                    if (*v)
-                    {
-                        if (x)
-                        {
+                    if (*v) {
+                        if (x) {
                             void *pop;
 
                             if (!(pop = cxpush(
@@ -493,9 +462,7 @@ dssprintf(Dss_t *dss,
                             cxpop(cx, pop);
                             if (!ap->expr)
                                 return -1;
-                        }
-                        else if (cx->referencef)
-                        {
+                        } else if (cx->referencef) {
                             Cxoperand_t a;
                             Cxoperand_t b;
                             Cxoperand_t r;
@@ -508,21 +475,17 @@ dssprintf(Dss_t *dss,
                                 cx, NiL, &r, &b, &a, NiL, cx->disc))
                                 return -1;
                             ap->variable = r.value.variable;
-                        }
-                        else if (!(ap->variable
-                                   = cxvariable(cx, v, NiL, cx->disc)))
+                        } else if (!(ap->variable
+                                     = cxvariable(cx, v, NiL, cx->disc)))
                             return -1;
-                    }
-                    else if (d)
-                    {
+                    } else if (d) {
                         w = d;
                         d = 0;
                     }
                 }
                 continue;
             case 'c':
-                if (q == 1)
-                {
+                if (q == 1) {
                     ap->type = DSS_FORMAT_char;
                     ap->cast = cx->state->type_number;
                     goto set;
@@ -532,20 +495,17 @@ dssprintf(Dss_t *dss,
             case 'o':
             case 'u':
             case 'x':
-                if (q == 1)
-                {
+                if (q == 1) {
                     if (l > 1
                         || ap->variable
                            && (ap->variable->format.width == 8
-                               || ap->variable->type->format.width == 8))
-                    {
+                               || ap->variable->type->format.width == 8)) {
                         n = *(t - 1);
                         *(t - 1) = 'l';
                         *t++ = 'l';
                         *t++ = n;
                         ap->type = DSS_FORMAT_long;
-                    }
-                    else
+                    } else
                         ap->type = DSS_FORMAT_int;
                     ap->cast = cx->state->type_number;
                     goto set;
@@ -554,8 +514,7 @@ dssprintf(Dss_t *dss,
             case 'e':
             case 'f':
             case 'g':
-                if (q == 1)
-                {
+                if (q == 1) {
                     ap->type = DSS_FORMAT_float;
                     ap->cast = cx->state->type_number;
                     goto set;
@@ -566,29 +525,24 @@ dssprintf(Dss_t *dss,
                     t--;
                 continue;
             case 'l':
-                if (q == 1)
-                {
+                if (q == 1) {
                     t--;
                     l++;
                 }
                 continue;
             case 's':
-                if (q == 1)
-                {
+                if (q == 1) {
                     ap->type = DSS_FORMAT_string;
                     ap->cast = cx->state->type_string;
                 set:
-                    if (w)
-                    {
+                    if (w) {
                         details[*(s - 1) - 'a'] = w;
                         w = 0;
                         fp->nformat = t = s;
                         continue;
                     }
-                    if (!ap->variable && !ap->expr)
-                    {
-                        if (dss->disc->errorf)
-                        {
+                    if (!ap->variable && !ap->expr) {
+                        if (dss->disc->errorf) {
                             *t = 0;
                             (*dss->disc->errorf)(
                             NiL,
@@ -602,126 +556,91 @@ dssprintf(Dss_t *dss,
                     l = 0;
                     q = 0;
                     if (d || (d = details[*(s - 1) - 'a'])
-                        || (d = cx->state->type_string->format.details))
-                    {
+                        || (d = cx->state->type_string->format.details)) {
                         ap->fmt = FMT_ALWAYS | FMT_ESCAPED;
-                        while (*d)
-                        {
+                        while (*d) {
                             o = 0;
                             v = d;
                             while (*d)
-                                if (*d++ == ':')
-                                {
+                                if (*d++ == ':') {
                                     *(o = d - 1) = 0;
                                     break;
                                 }
-                            if (strneq(v, "edit=", 5))
-                            {
+                            if (strneq(v, "edit=", 5)) {
                                 if (o)
                                     *o = ':';
-                                if (ap->edit = cxedit(cx, v + 5, dss->disc))
-                                {
+                                if (ap->edit = cxedit(cx, v + 5, dss->disc)) {
                                     d = v + 5 + ap->edit->re.re_npat;
                                     if (d == o)
                                         d++;
                                 }
-                            }
-                            else if (strneq(v, "endquote=", 8))
-                            {
+                            } else if (strneq(v, "endquote=", 8)) {
                                 ap->qe = v += 8;
                                 while (*f++ = *v++)
                                     ;
-                            }
-                            else if (streq(v, "expand"))
-                            {
+                            } else if (streq(v, "expand")) {
                                 ap->fmt
                                 |= FMT_EXP_CHAR | FMT_EXP_LINE | FMT_EXP_WIDE;
                                 continue;
-                            }
-                            else if (strneq(v, "expand=", 7))
-                            {
+                            } else if (strneq(v, "expand=", 7)) {
                                 v += 7;
-                                while (*v)
-                                {
-                                    if (*v == '|' || *v == ',')
-                                    {
+                                while (*v) {
+                                    if (*v == '|' || *v == ',') {
                                         v++;
                                         continue;
                                     }
-                                    if (strneq(v, "all", 3))
-                                    {
+                                    if (strneq(v, "all", 3)) {
                                         ap->fmt |= FMT_EXP_CHAR | FMT_EXP_LINE
                                                    | FMT_EXP_WIDE;
                                         break;
-                                    }
-                                    else if (strneq(v, "char", 4))
-                                    {
+                                    } else if (strneq(v, "char", 4)) {
                                         v += 4;
                                         ap->fmt |= FMT_EXP_CHAR;
-                                    }
-                                    else if (strneq(v, "line", 4))
-                                    {
+                                    } else if (strneq(v, "line", 4)) {
                                         v += 4;
                                         ap->fmt |= FMT_EXP_LINE;
-                                    }
-                                    else if (strneq(v, "nocr", 4))
-                                    {
+                                    } else if (strneq(v, "nocr", 4)) {
                                         v += 4;
                                         ap->fmt |= FMT_EXP_NOCR;
-                                    }
-                                    else if (strneq(v, "nonl", 4))
-                                    {
+                                    } else if (strneq(v, "nonl", 4)) {
                                         v += 4;
                                         ap->fmt |= FMT_EXP_NONL;
-                                    }
-                                    else if (strneq(v, "wide", 4))
-                                    {
+                                    } else if (strneq(v, "wide", 4)) {
                                         v += 4;
                                         ap->fmt |= FMT_EXP_WIDE;
-                                    }
-                                    else
+                                    } else
                                         while (*v && *v != '|' && *v != ',')
                                             v++;
                                 }
                                 continue;
-                            }
-                            else if (streq(v, "escape"))
+                            } else if (streq(v, "escape"))
                                 ap->fmt &= ~FMT_ESCAPED;
                             else if (strneq(v, "opt", 3))
                                 ap->fmt &= ~FMT_ALWAYS;
                             else if (streq(v, "quote")
-                                     || strneq(v, "quote=", 6))
-                            {
-                                if (v[5])
-                                {
+                                     || strneq(v, "quote=", 6)) {
+                                if (v[5]) {
                                     ap->qb = v += 6;
                                     while (*f++ = *v++)
                                         ;
-                                }
-                                else
+                                } else
                                     ap->qb = "\"";
                                 if (!ap->qe)
                                     ap->qe = ap->qb;
-                            }
-                            else if (streq(v, "shell")
-                                     || strneq(v, "shell=", 6))
-                            {
+                            } else if (streq(v, "shell")
+                                       || strneq(v, "shell=", 6)) {
                                 ap->fmt |= FMT_SHELL;
-                                if (v[5])
-                                {
+                                if (v[5]) {
                                     ap->qb = v += 6;
                                     while (*f++ = *v++)
                                         ;
-                                }
-                                else
+                                } else
                                     ap->qb = "$'";
                                 if (!ap->qe)
                                     ap->qe = "'";
-                            }
-                            else if (streq(v, "wide"))
+                            } else if (streq(v, "wide"))
                                 ap->fmt |= FMT_WIDE;
-                            else
-                            {
+                            else {
                                 if (*d)
                                     *(d - 1) = ':';
                                 d = v;
@@ -744,8 +663,7 @@ dssprintf(Dss_t *dss,
                 }
                 continue;
             case 'L':
-                if (q == 1)
-                {
+                if (q == 1) {
                     t--;
                     l += 2;
                 }

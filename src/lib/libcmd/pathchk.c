@@ -109,19 +109,15 @@ pathchk(char *path, int mode)
     long r, name_max, path_max;
     char buf[2];
 
-    if (!*path)
-    {
+    if (!*path) {
         if (mode & PATH)
             error(2, "path is empty");
         return -1;
     }
-    if (mode & COMPONENTS)
-    {
+    if (mode & COMPONENTS) {
         name_max = _POSIX_NAME_MAX;
         path_max = _POSIX_PATH_MAX;
-    }
-    else
-    {
+    } else {
         char tmp[2];
         name_max = path_max = 0;
         tmp[0] = (*cp == '/' ? '/' : '.');
@@ -130,22 +126,17 @@ pathchk(char *path, int mode)
             name_max = r;
         if ((r = mypathconf(tmp, 1)) > _POSIX_PATH_MAX)
             path_max = r;
-        if (*cp != '/')
-        {
-            if (name_max == 0 || path_max == 0)
-            {
+        if (*cp != '/') {
+            if (name_max == 0 || path_max == 0) {
                 if (!(cpold = getcwd(( char * )0, 0)) && errno == EINVAL
                     && (cpold = newof(0, char, PATH_MAX, 0))
-                    && !getcwd(cpold, PATH_MAX))
-                {
+                    && !getcwd(cpold, PATH_MAX)) {
                     free(cpold);
                     cpold = 0;
                 }
-                if (cpold)
-                {
+                if (cpold) {
                     cp = cpold + strlen(cpold);
-                    while (name_max == 0 || path_max == 0)
-                    {
+                    while (name_max == 0 || path_max == 0) {
                         if (cp > cpold)
                             while (--cp > cpold && *cp == '/')
                                 ;
@@ -156,8 +147,7 @@ pathchk(char *path, int mode)
                         if (path_max == 0
                             && (r = mypathconf(cpold, 1)) > _POSIX_PATH_MAX)
                             path_max = r;
-                        if (--cp == cpold)
-                        {
+                        if (--cp == cpold) {
                             free(cpold);
                             break;
                         }
@@ -174,8 +164,7 @@ pathchk(char *path, int mode)
             name_max = _POSIX_NAME_MAX;
         if (path_max == 0)
             path_max = _POSIX_PATH_MAX;
-        while (*(cpold = cp))
-        {
+        while (*(cpold = cp)) {
             while ((c = *cp++) && c != '/')
                 ;
             if ((cp - cpold) > name_max)
@@ -193,8 +182,7 @@ pathchk(char *path, int mode)
             else if (errno == EINVAL)
                 continue;
 #ifdef ENAMETOOLONG
-            else if (errno == ENAMETOOLONG)
-            {
+            else if (errno == ENAMETOOLONG) {
                 error(2, "%s: pathname too long", path);
                 return -1;
             }
@@ -203,10 +191,8 @@ pathchk(char *path, int mode)
                 break;
         }
     }
-    while (*(cpold = cp))
-    {
-        if ((mode & PATH) && *cp == '-')
-        {
+    while (*(cpold = cp)) {
+        if ((mode & PATH) && *cp == '-') {
             error(2,
                   "%s: path component begins with '-'",
                   path,
@@ -214,8 +200,7 @@ pathchk(char *path, int mode)
             return -1;
         }
         while ((c = *cp++) && c != '/')
-            if ((mode & COMPONENTS) && !isport(c))
-            {
+            if ((mode & COMPONENTS) && !isport(c)) {
                 buf[0] = c;
                 buf[1] = 0;
                 error(2,
@@ -231,8 +216,7 @@ pathchk(char *path, int mode)
         while (*cp == '/')
             cp++;
     }
-    if ((cp - path) >= path_max)
-    {
+    if ((cp - path) >= path_max) {
         error(2, "%s: pathname too long", path);
         return -1;
     }
@@ -249,10 +233,8 @@ b_pathchk(int argc, char **argv, Shbltin_t *context)
     char *s;
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             mode |= COMPONENTS | PATH;
             continue;

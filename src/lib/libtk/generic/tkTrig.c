@@ -59,46 +59,35 @@ double pointPtr[2]; /* Points to coords for point. */
      * horizontal edges, and other edges.
      */
 
-    if (end1Ptr[0] == end2Ptr[0])
-    {
+    if (end1Ptr[0] == end2Ptr[0]) {
 
         /*
          * Vertical edge.
          */
 
         x = end1Ptr[0];
-        if (end1Ptr[1] >= end2Ptr[1])
-        {
+        if (end1Ptr[1] >= end2Ptr[1]) {
             y = MIN(end1Ptr[1], pointPtr[1]);
             y = MAX(y, end2Ptr[1]);
-        }
-        else
-        {
+        } else {
             y = MIN(end2Ptr[1], pointPtr[1]);
             y = MAX(y, end1Ptr[1]);
         }
-    }
-    else if (end1Ptr[1] == end2Ptr[1])
-    {
+    } else if (end1Ptr[1] == end2Ptr[1]) {
 
         /*
          * Horizontal edge.
          */
 
         y = end1Ptr[1];
-        if (end1Ptr[0] >= end2Ptr[0])
-        {
+        if (end1Ptr[0] >= end2Ptr[0]) {
             x = MIN(end1Ptr[0], pointPtr[0]);
             x = MAX(x, end2Ptr[0]);
-        }
-        else
-        {
+        } else {
             x = MIN(end2Ptr[0], pointPtr[0]);
             x = MAX(x, end1Ptr[0]);
         }
-    }
-    else
-    {
+    } else {
         double m1, b1, m2, b2;
 
         /*
@@ -114,28 +103,19 @@ double pointPtr[2]; /* Points to coords for point. */
         b2 = pointPtr[1] - m2 * pointPtr[0];
         x = (b2 - b1) / (m1 - m2);
         y = m1 * x + b1;
-        if (end1Ptr[0] > end2Ptr[0])
-        {
-            if (x > end1Ptr[0])
-            {
+        if (end1Ptr[0] > end2Ptr[0]) {
+            if (x > end1Ptr[0]) {
                 x = end1Ptr[0];
                 y = end1Ptr[1];
-            }
-            else if (x < end2Ptr[0])
-            {
+            } else if (x < end2Ptr[0]) {
                 x = end2Ptr[0];
                 y = end2Ptr[1];
             }
-        }
-        else
-        {
-            if (x > end2Ptr[0])
-            {
+        } else {
+            if (x > end2Ptr[0]) {
                 x = end2Ptr[0];
                 y = end2Ptr[1];
-            }
-            else if (x < end1Ptr[0])
-            {
+            } else if (x < end1Ptr[0]) {
                 x = end1Ptr[0];
                 y = end1Ptr[1];
             }
@@ -190,12 +170,10 @@ double rectPtr[4]; /* Points to coords for rectangle, in the
               && (end1Ptr[1] >= rectPtr[1]) && (end1Ptr[1] <= rectPtr[3]);
     inside2 = (end2Ptr[0] >= rectPtr[0]) && (end2Ptr[0] <= rectPtr[2])
               && (end2Ptr[1] >= rectPtr[1]) && (end2Ptr[1] <= rectPtr[3]);
-    if (inside1 != inside2)
-    {
+    if (inside1 != inside2) {
         return 0;
     }
-    if (inside1 & inside2)
-    {
+    if (inside1 & inside2) {
         return 1;
     }
 
@@ -206,32 +184,25 @@ double rectPtr[4]; /* Points to coords for rectangle, in the
      * separately.
      */
 
-    if (end1Ptr[0] == end2Ptr[0])
-    {
+    if (end1Ptr[0] == end2Ptr[0]) {
         /*
          * Vertical line.
          */
 
         if (((end1Ptr[1] >= rectPtr[1]) ^ (end2Ptr[1] >= rectPtr[1]))
-            && (end1Ptr[0] >= rectPtr[0]) && (end1Ptr[0] <= rectPtr[2]))
-        {
+            && (end1Ptr[0] >= rectPtr[0]) && (end1Ptr[0] <= rectPtr[2])) {
             return 0;
         }
-    }
-    else if (end1Ptr[1] == end2Ptr[1])
-    {
+    } else if (end1Ptr[1] == end2Ptr[1]) {
         /*
          * Horizontal line.
          */
 
         if (((end1Ptr[0] >= rectPtr[0]) ^ (end2Ptr[0] >= rectPtr[0]))
-            && (end1Ptr[1] >= rectPtr[1]) && (end1Ptr[1] <= rectPtr[3]))
-        {
+            && (end1Ptr[1] >= rectPtr[1]) && (end1Ptr[1] <= rectPtr[3])) {
             return 0;
         }
-    }
-    else
-    {
+    } else {
         double m, x, y, low, high;
 
         /*
@@ -241,13 +212,10 @@ double rectPtr[4]; /* Points to coords for rectangle, in the
          */
 
         m = (end2Ptr[1] - end1Ptr[1]) / (end2Ptr[0] - end1Ptr[0]);
-        if (end1Ptr[0] < end2Ptr[0])
-        {
+        if (end1Ptr[0] < end2Ptr[0]) {
             low = end1Ptr[0];
             high = end2Ptr[0];
-        }
-        else
-        {
+        } else {
             low = end2Ptr[0];
             high = end1Ptr[0];
         }
@@ -258,8 +226,7 @@ double rectPtr[4]; /* Points to coords for rectangle, in the
 
         y = end1Ptr[1] + (rectPtr[0] - end1Ptr[0]) * m;
         if ((rectPtr[0] >= low) && (rectPtr[0] <= high) && (y >= rectPtr[1])
-            && (y <= rectPtr[3]))
-        {
+            && (y <= rectPtr[3])) {
             return 0;
         }
 
@@ -269,8 +236,7 @@ double rectPtr[4]; /* Points to coords for rectangle, in the
 
         y += (rectPtr[2] - rectPtr[0]) * m;
         if ((y >= rectPtr[1]) && (y <= rectPtr[3]) && (rectPtr[2] >= low)
-            && (rectPtr[2] <= high))
-        {
+            && (rectPtr[2] <= high)) {
             return 0;
         }
 
@@ -278,20 +244,16 @@ double rectPtr[4]; /* Points to coords for rectangle, in the
          * Bottom edge.
          */
 
-        if (end1Ptr[1] < end2Ptr[1])
-        {
+        if (end1Ptr[1] < end2Ptr[1]) {
             low = end1Ptr[1];
             high = end2Ptr[1];
-        }
-        else
-        {
+        } else {
             low = end2Ptr[1];
             high = end1Ptr[1];
         }
         x = end1Ptr[0] + (rectPtr[1] - end1Ptr[1]) / m;
         if ((x >= rectPtr[0]) && (x <= rectPtr[2]) && (rectPtr[1] >= low)
-            && (rectPtr[1] <= high))
-        {
+            && (rectPtr[1] <= high)) {
             return 0;
         }
 
@@ -301,8 +263,7 @@ double rectPtr[4]; /* Points to coords for rectangle, in the
 
         x += (rectPtr[3] - rectPtr[1]) / m;
         if ((x >= rectPtr[0]) && (x <= rectPtr[2]) && (rectPtr[3] >= low)
-            && (rectPtr[3] <= high))
-        {
+            && (rectPtr[3] <= high)) {
             return 0;
         }
     }
@@ -362,8 +323,7 @@ double *rectPtr;           /* Rectangular area to check against. */
     inside = -1;
 
     if ((coordPtr[0] >= rectPtr[0]) && (coordPtr[0] <= rectPtr[2])
-        && (coordPtr[1] >= rectPtr[1]) && (coordPtr[1] <= rectPtr[3]))
-    {
+        && (coordPtr[1] >= rectPtr[1]) && (coordPtr[1] <= rectPtr[3])) {
         inside = 1;
     }
 
@@ -375,8 +335,7 @@ double *rectPtr;           /* Rectangular area to check against. */
      */
 
     changedMiterToBevel = 0;
-    for (count = numPoints; count >= 2; count--, coordPtr += 2)
-    {
+    for (count = numPoints; count >= 2; count--, coordPtr += 2) {
 
         /*
          * If rounding is done around the first point of the edge
@@ -385,14 +344,12 @@ double *rectPtr;           /* Rectangular area to check against. */
          */
 
         if (((capStyle == CapRound) && (count == numPoints))
-            || ((joinStyle == JoinRound) && (count != numPoints)))
-        {
+            || ((joinStyle == JoinRound) && (count != numPoints))) {
             poly[0] = coordPtr[0] - radius;
             poly[1] = coordPtr[1] - radius;
             poly[2] = coordPtr[0] + radius;
             poly[3] = coordPtr[1] + radius;
-            if (TkOvalToArea(poly, rectPtr) != inside)
-            {
+            if (TkOvalToArea(poly, rectPtr) != inside) {
                 return 0;
             }
         }
@@ -403,24 +360,19 @@ double *rectPtr;           /* Rectangular area to check against. */
          * and two points for the last point of the edge.
          */
 
-        if (count == numPoints)
-        {
+        if (count == numPoints) {
             TkGetButtPoints(coordPtr + 2,
                             coordPtr,
                             width,
                             capStyle == CapProjecting,
                             poly,
                             poly + 2);
-        }
-        else if ((joinStyle == JoinMiter) && !changedMiterToBevel)
-        {
+        } else if ((joinStyle == JoinMiter) && !changedMiterToBevel) {
             poly[0] = poly[6];
             poly[1] = poly[7];
             poly[2] = poly[4];
             poly[3] = poly[5];
-        }
-        else
-        {
+        } else {
             TkGetButtPoints(coordPtr + 2, coordPtr, width, 0, poly, poly + 2);
 
             /*
@@ -430,50 +382,41 @@ double *rectPtr;           /* Rectangular area to check against. */
              * the wedges that fill the beveled joint.
              */
 
-            if ((joinStyle == JoinBevel) || changedMiterToBevel)
-            {
+            if ((joinStyle == JoinBevel) || changedMiterToBevel) {
                 poly[8] = poly[0];
                 poly[9] = poly[1];
-                if (TkPolygonToArea(poly, 5, rectPtr) != inside)
-                {
+                if (TkPolygonToArea(poly, 5, rectPtr) != inside) {
                     return 0;
                 }
                 changedMiterToBevel = 0;
             }
         }
-        if (count == 2)
-        {
+        if (count == 2) {
             TkGetButtPoints(coordPtr,
                             coordPtr + 2,
                             width,
                             capStyle == CapProjecting,
                             poly + 4,
                             poly + 6);
-        }
-        else if (joinStyle == JoinMiter)
-        {
+        } else if (joinStyle == JoinMiter) {
             if (TkGetMiterPoints(coordPtr,
                                  coordPtr + 2,
                                  coordPtr + 4,
                                  ( double )width,
                                  poly + 4,
                                  poly + 6)
-                == 0)
-            {
+                == 0) {
                 changedMiterToBevel = 1;
                 TkGetButtPoints(
                 coordPtr, coordPtr + 2, width, 0, poly + 4, poly + 6);
             }
-        }
-        else
-        {
+        } else {
             TkGetButtPoints(
             coordPtr, coordPtr + 2, width, 0, poly + 4, poly + 6);
         }
         poly[8] = poly[0];
         poly[9] = poly[1];
-        if (TkPolygonToArea(poly, 5, rectPtr) != inside)
-        {
+        if (TkPolygonToArea(poly, 5, rectPtr) != inside) {
             return 0;
         }
     }
@@ -483,14 +426,12 @@ double *rectPtr;           /* Rectangular area to check against. */
      * of the line.
      */
 
-    if (capStyle == CapRound)
-    {
+    if (capStyle == CapRound) {
         poly[0] = coordPtr[0] - radius;
         poly[1] = coordPtr[1] - radius;
         poly[2] = coordPtr[0] + radius;
         poly[3] = coordPtr[1] + radius;
-        if (TkOvalToArea(poly, rectPtr) != inside)
-        {
+        if (TkOvalToArea(poly, rectPtr) != inside) {
             return 0;
         }
     }
@@ -545,8 +486,7 @@ double *pointPtr; /* Points to coords for point. */
     bestDist = 1.0e36;
     intersections = 0;
 
-    for (count = numPoints, pPtr = polyPtr; count > 1; count--, pPtr += 2)
-    {
+    for (count = numPoints, pPtr = polyPtr; count > 1; count--, pPtr += 2) {
         double x, y, dist;
 
         /*
@@ -556,56 +496,43 @@ double *pointPtr; /* Points to coords for point. */
          * other edges.
          */
 
-        if (pPtr[2] == pPtr[0])
-        {
+        if (pPtr[2] == pPtr[0]) {
 
             /*
              * Vertical edge.
              */
 
             x = pPtr[0];
-            if (pPtr[1] >= pPtr[3])
-            {
+            if (pPtr[1] >= pPtr[3]) {
                 y = MIN(pPtr[1], pointPtr[1]);
                 y = MAX(y, pPtr[3]);
-            }
-            else
-            {
+            } else {
                 y = MIN(pPtr[3], pointPtr[1]);
                 y = MAX(y, pPtr[1]);
             }
-        }
-        else if (pPtr[3] == pPtr[1])
-        {
+        } else if (pPtr[3] == pPtr[1]) {
 
             /*
              * Horizontal edge.
              */
 
             y = pPtr[1];
-            if (pPtr[0] >= pPtr[2])
-            {
+            if (pPtr[0] >= pPtr[2]) {
                 x = MIN(pPtr[0], pointPtr[0]);
                 x = MAX(x, pPtr[2]);
                 if ((pointPtr[1] < y) && (pointPtr[0] < pPtr[0])
-                    && (pointPtr[0] >= pPtr[2]))
-                {
+                    && (pointPtr[0] >= pPtr[2])) {
                     intersections++;
                 }
-            }
-            else
-            {
+            } else {
                 x = MIN(pPtr[2], pointPtr[0]);
                 x = MAX(x, pPtr[0]);
                 if ((pointPtr[1] < y) && (pointPtr[0] < pPtr[2])
-                    && (pointPtr[0] >= pPtr[0]))
-                {
+                    && (pointPtr[0] >= pPtr[0])) {
                     intersections++;
                 }
             }
-        }
-        else
-        {
+        } else {
             double m1, b1, m2, b2;
             int lower; /* Non-zero means point below line. */
 
@@ -622,36 +549,26 @@ double *pointPtr; /* Points to coords for point. */
             b2 = pointPtr[1] - m2 * pointPtr[0];
             x = (b2 - b1) / (m1 - m2);
             y = m1 * x + b1;
-            if (pPtr[0] > pPtr[2])
-            {
-                if (x > pPtr[0])
-                {
+            if (pPtr[0] > pPtr[2]) {
+                if (x > pPtr[0]) {
                     x = pPtr[0];
                     y = pPtr[1];
-                }
-                else if (x < pPtr[2])
-                {
+                } else if (x < pPtr[2]) {
                     x = pPtr[2];
                     y = pPtr[3];
                 }
-            }
-            else
-            {
-                if (x > pPtr[2])
-                {
+            } else {
+                if (x > pPtr[2]) {
                     x = pPtr[2];
                     y = pPtr[3];
-                }
-                else if (x < pPtr[0])
-                {
+                } else if (x < pPtr[0]) {
                     x = pPtr[0];
                     y = pPtr[1];
                 }
             }
             lower = (m1 * pointPtr[0] + b1) > pointPtr[1];
             if (lower && (pointPtr[0] >= MIN(pPtr[0], pPtr[2]))
-                && (pointPtr[0] < MAX(pPtr[0], pPtr[2])))
-            {
+                && (pointPtr[0] < MAX(pPtr[0], pPtr[2]))) {
                 intersections++;
             }
         }
@@ -662,8 +579,7 @@ double *pointPtr; /* Points to coords for point. */
          */
 
         dist = hypot(pointPtr[0] - x, pointPtr[1] - y);
-        if (dist < bestDist)
-        {
+        if (dist < bestDist) {
             bestDist = dist;
         }
     }
@@ -673,8 +589,7 @@ double *pointPtr; /* Points to coords for point. */
      * is odd, the point is inside the polygon.
      */
 
-    if (intersections & 0x1)
-    {
+    if (intersections & 0x1) {
         return 0.0;
     }
     return bestDist;
@@ -722,15 +637,12 @@ double *rectPtr; /* Points to coords for rectangle, in the
      */
 
     state = TkLineToArea(polyPtr, polyPtr + 2, rectPtr);
-    if (state == 0)
-    {
+    if (state == 0) {
         return 0;
     }
     for (pPtr = polyPtr + 2, count = numPoints - 1; count >= 2;
-         pPtr += 2, count--)
-    {
-        if (TkLineToArea(pPtr, pPtr + 2, rectPtr) != state)
-        {
+         pPtr += 2, count--) {
+        if (TkLineToArea(pPtr, pPtr + 2, rectPtr) != state) {
             return 0;
         }
     }
@@ -742,12 +654,10 @@ double *rectPtr; /* Points to coords for rectangle, in the
      * Call TkPolygonToPoint to figure this out.
      */
 
-    if (state == 1)
-    {
+    if (state == 1) {
         return 1;
     }
-    if (TkPolygonToPoint(polyPtr, numPoints, rectPtr) == 0.0)
-    {
+    if (TkPolygonToPoint(polyPtr, numPoints, rectPtr) == 0.0) {
         return 0;
     }
     return -1;
@@ -817,8 +727,7 @@ double pointPtr[2]; /* Coordinates of point. */
      * distance when the oval is eccentric.
      */
 
-    if (scaledDistance > 1.0)
-    {
+    if (scaledDistance > 1.0) {
         return (distToCenter / scaledDistance) * (scaledDistance - 1.0);
     }
 
@@ -830,17 +739,13 @@ double pointPtr[2]; /* Coordinates of point. */
      * to see if the point is within the width of the outline.
      */
 
-    if (filled)
-    {
+    if (filled) {
         return 0.0;
     }
-    if (scaledDistance > 1E-10)
-    {
+    if (scaledDistance > 1E-10) {
         distToOutline
         = (distToCenter / scaledDistance) * (1.0 - scaledDistance) - width;
-    }
-    else
-    {
+    } else {
         /*
          * Avoid dividing by a very small number (it could cause an
          * arithmetic overflow).  This problem occurs if the point is
@@ -849,18 +754,14 @@ double pointPtr[2]; /* Coordinates of point. */
 
         xDiam = ovalPtr[2] - ovalPtr[0];
         yDiam = ovalPtr[3] - ovalPtr[1];
-        if (xDiam < yDiam)
-        {
+        if (xDiam < yDiam) {
             distToOutline = (xDiam - width) / 2;
-        }
-        else
-        {
+        } else {
             distToOutline = (yDiam - width) / 2;
         }
     }
 
-    if (distToOutline < 0.0)
-    {
+    if (distToOutline < 0.0) {
         return 0.0;
     }
     return distToOutline;
@@ -904,13 +805,11 @@ double *rectPtr; /* Points to coords for rectangle, in the
      */
 
     if ((rectPtr[0] <= ovalPtr[0]) && (rectPtr[2] >= ovalPtr[2])
-        && (rectPtr[1] <= ovalPtr[1]) && (rectPtr[3] >= ovalPtr[3]))
-    {
+        && (rectPtr[1] <= ovalPtr[1]) && (rectPtr[3] >= ovalPtr[3])) {
         return 1;
     }
     if ((rectPtr[2] < ovalPtr[0]) || (rectPtr[0] > ovalPtr[2])
-        || (rectPtr[3] < ovalPtr[1]) || (rectPtr[1] > ovalPtr[3]))
-    {
+        || (rectPtr[3] < ovalPtr[1]) || (rectPtr[1] > ovalPtr[3])) {
         return -1;
     }
 
@@ -928,11 +827,9 @@ double *rectPtr; /* Points to coords for rectangle, in the
     radY = (ovalPtr[3] - ovalPtr[1]) / 2;
 
     deltaY = rectPtr[1] - centerY;
-    if (deltaY < 0.0)
-    {
+    if (deltaY < 0.0) {
         deltaY = centerY - rectPtr[3];
-        if (deltaY < 0.0)
-        {
+        if (deltaY < 0.0) {
             deltaY = 0;
         }
     }
@@ -945,8 +842,7 @@ double *rectPtr; /* Points to coords for rectangle, in the
 
     deltaX = (rectPtr[0] - centerX) / radX;
     deltaX *= deltaX;
-    if ((deltaX + deltaY) <= 1.0)
-    {
+    if ((deltaX + deltaY) <= 1.0) {
         return 0;
     }
 
@@ -956,17 +852,14 @@ double *rectPtr; /* Points to coords for rectangle, in the
 
     deltaX = (rectPtr[2] - centerX) / radX;
     deltaX *= deltaX;
-    if ((deltaX + deltaY) <= 1.0)
-    {
+    if ((deltaX + deltaY) <= 1.0) {
         return 0;
     }
 
     deltaX = rectPtr[0] - centerX;
-    if (deltaX < 0.0)
-    {
+    if (deltaX < 0.0) {
         deltaX = centerX - rectPtr[2];
-        if (deltaX < 0.0)
-        {
+        if (deltaX < 0.0) {
             deltaX = 0;
         }
     }
@@ -979,8 +872,7 @@ double *rectPtr; /* Points to coords for rectangle, in the
 
     deltaY = (rectPtr[1] - centerY) / radY;
     deltaY *= deltaY;
-    if ((deltaX + deltaY) < 1.0)
-    {
+    if ((deltaX + deltaY) < 1.0) {
         return 0;
     }
 
@@ -990,8 +882,7 @@ double *rectPtr; /* Points to coords for rectangle, in the
 
     deltaY = (rectPtr[3] - centerY) / radY;
     deltaY *= deltaY;
-    if ((deltaX + deltaY) < 1.0)
-    {
+    if ((deltaX + deltaY) < 1.0) {
         return 0;
     }
 
@@ -1025,21 +916,17 @@ double *pointPtr; /* Address of two doubles giving
     int tmp;
 
     tmp = pointPtr[0] + 0.5;
-    if (tmp < itemPtr->x1)
-    {
+    if (tmp < itemPtr->x1) {
         itemPtr->x1 = tmp;
     }
-    if (tmp > itemPtr->x2)
-    {
+    if (tmp > itemPtr->x2) {
         itemPtr->x2 = tmp;
     }
     tmp = pointPtr[1] + 0.5;
-    if (tmp < itemPtr->y1)
-    {
+    if (tmp < itemPtr->y1) {
         itemPtr->y1 = tmp;
     }
-    if (tmp > itemPtr->y2)
-    {
+    if (tmp > itemPtr->y2) {
         itemPtr->y2 = tmp;
     }
 }
@@ -1078,8 +965,7 @@ XPoint *xPointPtr; /* Where to put new points. */
     int i;
     double u, u2, u3, t, t2, t3;
 
-    for (i = 1; i <= numSteps; i++, xPointPtr++)
-    {
+    for (i = 1; i <= numSteps; i++, xPointPtr++) {
         t = (( double )i) / (( double )numSteps);
         t2 = t * t;
         t3 = t2 * t;
@@ -1131,8 +1017,7 @@ double *coordPtr;                               /* Where to put new points. */
     int i;
     double u, u2, u3, t, t2, t3;
 
-    for (i = 1; i <= numSteps; i++, coordPtr += 2)
-    {
+    for (i = 1; i <= numSteps; i++, coordPtr += 2) {
         t = (( double )i) / (( double )numSteps);
         t2 = t * t;
         t3 = t2 * t;
@@ -1205,8 +1090,7 @@ double dblPoints[]; /* Array of points to fill in as
 
     outputPoints = 0;
     if ((pointPtr[0] == pointPtr[numCoords - 2])
-        && (pointPtr[1] == pointPtr[numCoords - 1]))
-    {
+        && (pointPtr[1] == pointPtr[numCoords - 1])) {
         closed = 1;
         control[0] = 0.5 * pointPtr[numCoords - 4] + 0.5 * pointPtr[0];
         control[1] = 0.5 * pointPtr[numCoords - 3] + 0.5 * pointPtr[1];
@@ -1216,33 +1100,27 @@ double dblPoints[]; /* Array of points to fill in as
         control[5] = 0.833 * pointPtr[1] + 0.167 * pointPtr[3];
         control[6] = 0.5 * pointPtr[0] + 0.5 * pointPtr[2];
         control[7] = 0.5 * pointPtr[1] + 0.5 * pointPtr[3];
-        if (xPoints != NULL)
-        {
+        if (xPoints != NULL) {
             Tk_CanvasDrawableCoords(
             canvas, control[0], control[1], &xPoints->x, &xPoints->y);
             TkBezierScreenPoints(canvas, control, numSteps, xPoints + 1);
             xPoints += numSteps + 1;
         }
-        if (dblPoints != NULL)
-        {
+        if (dblPoints != NULL) {
             dblPoints[0] = control[0];
             dblPoints[1] = control[1];
             TkBezierPoints(control, numSteps, dblPoints + 2);
             dblPoints += 2 * (numSteps + 1);
         }
         outputPoints += numSteps + 1;
-    }
-    else
-    {
+    } else {
         closed = 0;
-        if (xPoints != NULL)
-        {
+        if (xPoints != NULL) {
             Tk_CanvasDrawableCoords(
             canvas, pointPtr[0], pointPtr[1], &xPoints->x, &xPoints->y);
             xPoints += 1;
         }
-        if (dblPoints != NULL)
-        {
+        if (dblPoints != NULL) {
             dblPoints[0] = pointPtr[0];
             dblPoints[1] = pointPtr[1];
             dblPoints += 2;
@@ -1250,23 +1128,19 @@ double dblPoints[]; /* Array of points to fill in as
         outputPoints += 1;
     }
 
-    for (i = 2; i < numPoints; i++, pointPtr += 2)
-    {
+    for (i = 2; i < numPoints; i++, pointPtr += 2) {
         /*
          * Set up the first two control points.  This is done
          * differently for the first spline of an open curve
          * than for other cases.
          */
 
-        if ((i == 2) && !closed)
-        {
+        if ((i == 2) && !closed) {
             control[0] = pointPtr[0];
             control[1] = pointPtr[1];
             control[2] = 0.333 * pointPtr[0] + 0.667 * pointPtr[2];
             control[3] = 0.333 * pointPtr[1] + 0.667 * pointPtr[3];
-        }
-        else
-        {
+        } else {
             control[0] = 0.5 * pointPtr[0] + 0.5 * pointPtr[2];
             control[1] = 0.5 * pointPtr[1] + 0.5 * pointPtr[3];
             control[2] = 0.167 * pointPtr[0] + 0.833 * pointPtr[2];
@@ -1279,15 +1153,12 @@ double dblPoints[]; /* Array of points to fill in as
          * than for other cases.
          */
 
-        if ((i == (numPoints - 1)) && !closed)
-        {
+        if ((i == (numPoints - 1)) && !closed) {
             control[4] = .667 * pointPtr[2] + .333 * pointPtr[4];
             control[5] = .667 * pointPtr[3] + .333 * pointPtr[5];
             control[6] = pointPtr[4];
             control[7] = pointPtr[5];
-        }
-        else
-        {
+        } else {
             control[4] = .833 * pointPtr[2] + .167 * pointPtr[4];
             control[5] = .833 * pointPtr[3] + .167 * pointPtr[5];
             control[6] = 0.5 * pointPtr[2] + 0.5 * pointPtr[4];
@@ -1302,16 +1173,14 @@ double dblPoints[]; /* Array of points to fill in as
          */
 
         if (((pointPtr[0] == pointPtr[2]) && (pointPtr[1] == pointPtr[3]))
-            || ((pointPtr[2] == pointPtr[4]) && (pointPtr[3] == pointPtr[5])))
-        {
-            if (xPoints != NULL)
-            {
+            || ((pointPtr[2] == pointPtr[4])
+                && (pointPtr[3] == pointPtr[5]))) {
+            if (xPoints != NULL) {
                 Tk_CanvasDrawableCoords(
                 canvas, control[6], control[7], &xPoints[0].x, &xPoints[0].y);
                 xPoints++;
             }
-            if (dblPoints != NULL)
-            {
+            if (dblPoints != NULL) {
                 dblPoints[0] = control[6];
                 dblPoints[1] = control[7];
                 dblPoints += 2;
@@ -1325,13 +1194,11 @@ double dblPoints[]; /* Array of points to fill in as
          */
 
 
-        if (xPoints != NULL)
-        {
+        if (xPoints != NULL) {
             TkBezierScreenPoints(canvas, control, numSteps, xPoints);
             xPoints += numSteps;
         }
-        if (dblPoints != NULL)
-        {
+        if (dblPoints != NULL) {
             TkBezierPoints(control, numSteps, dblPoints);
             dblPoints += 2 * numSteps;
         }
@@ -1379,8 +1246,7 @@ int numPoints;      /* Number of points at pointPtr. */
      */
 
     if ((pointPtr[0] == pointPtr[numCoords - 2])
-        && (pointPtr[1] == pointPtr[numCoords - 1]))
-    {
+        && (pointPtr[1] == pointPtr[numCoords - 1])) {
         closed = 1;
         control[0] = 0.5 * pointPtr[numCoords - 4] + 0.5 * pointPtr[0];
         control[1] = 0.5 * pointPtr[numCoords - 3] + 0.5 * pointPtr[1];
@@ -1401,9 +1267,7 @@ int numPoints;      /* Number of points at pointPtr. */
         Tk_CanvasPsY(canvas, control[5]),
         control[6],
         Tk_CanvasPsY(canvas, control[7]));
-    }
-    else
-    {
+    } else {
         closed = 0;
         control[6] = pointPtr[0];
         control[7] = pointPtr[1];
@@ -1419,8 +1283,7 @@ int numPoints;      /* Number of points at pointPtr. */
      * a curve section for each vertex in the linear path.
      */
 
-    for (i = numPoints - 2, pointPtr += 2; i > 0; i--, pointPtr += 2)
-    {
+    for (i = numPoints - 2, pointPtr += 2; i > 0; i--, pointPtr += 2) {
         control[2] = 0.333 * control[6] + 0.667 * pointPtr[0];
         control[3] = 0.333 * control[7] + 0.667 * pointPtr[1];
 
@@ -1430,13 +1293,10 @@ int numPoints;      /* Number of points at pointPtr. */
          * than for other cases.
          */
 
-        if ((i == 1) && !closed)
-        {
+        if ((i == 1) && !closed) {
             control[6] = pointPtr[2];
             control[7] = pointPtr[3];
-        }
-        else
-        {
+        } else {
             control[6] = 0.5 * pointPtr[0] + 0.5 * pointPtr[2];
             control[7] = 0.5 * pointPtr[1] + 0.5 * pointPtr[3];
         }
@@ -1507,46 +1367,31 @@ double m2[];  /* Points to place to put "right" vertex
                             * box). */
     static float elevenDegrees = (11.0 * 2.0 * PI) / 360.0;
 
-    if (p2[1] == p1[1])
-    {
+    if (p2[1] == p1[1]) {
         theta1 = (p2[0] < p1[0]) ? 0 : PI;
-    }
-    else if (p2[0] == p1[0])
-    {
+    } else if (p2[0] == p1[0]) {
         theta1 = (p2[1] < p1[1]) ? PI / 2.0 : -PI / 2.0;
-    }
-    else
-    {
+    } else {
         theta1 = atan2(p1[1] - p2[1], p1[0] - p2[0]);
     }
-    if (p3[1] == p2[1])
-    {
+    if (p3[1] == p2[1]) {
         theta2 = (p3[0] > p2[0]) ? 0 : PI;
-    }
-    else if (p3[0] == p2[0])
-    {
+    } else if (p3[0] == p2[0]) {
         theta2 = (p3[1] > p2[1]) ? PI / 2.0 : -PI / 2.0;
-    }
-    else
-    {
+    } else {
         theta2 = atan2(p3[1] - p2[1], p3[0] - p2[0]);
     }
     theta = theta1 - theta2;
-    if (theta > PI)
-    {
+    if (theta > PI) {
         theta -= 2 * PI;
-    }
-    else if (theta < -PI)
-    {
+    } else if (theta < -PI) {
         theta += 2 * PI;
     }
-    if ((theta < elevenDegrees) && (theta > -elevenDegrees))
-    {
+    if ((theta < elevenDegrees) && (theta > -elevenDegrees)) {
         return 0;
     }
     dist = 0.5 * width / sin(0.5 * theta);
-    if (dist < 0.0)
-    {
+    if (dist < 0.0) {
         dist = -dist;
     }
 
@@ -1556,8 +1401,7 @@ double m2[];  /* Points to place to put "right" vertex
      */
 
     theta3 = (theta1 + theta2) / 2.0;
-    if (sin(theta3 - (theta1 + PI)) < 0.0)
-    {
+    if (sin(theta3 - (theta1 + PI)) < 0.0) {
         theta3 += PI;
     }
     deltaX = dist * cos(theta3);
@@ -1628,21 +1472,17 @@ double m2[];  /* Points to place to put "right" result
 
     width *= 0.5;
     length = hypot(p2[0] - p1[0], p2[1] - p1[1]);
-    if (length == 0.0)
-    {
+    if (length == 0.0) {
         m1[0] = m2[0] = p2[0];
         m1[1] = m2[1] = p2[1];
-    }
-    else
-    {
+    } else {
         deltaX = -width * (p2[1] - p1[1]) / length;
         deltaY = width * (p2[0] - p1[0]) / length;
         m1[0] = p2[0] + deltaX;
         m2[0] = p2[0] - deltaX;
         m1[1] = p2[1] + deltaY;
         m2[1] = p2[1] - deltaY;
-        if (project)
-        {
+        if (project) {
             m1[0] += deltaY;
             m2[0] += deltaY;
             m1[1] -= deltaX;

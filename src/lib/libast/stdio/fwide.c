@@ -28,13 +28,10 @@ fwide(Sfio_t *f, int mode)
 {
     STDIO_INT(f, "fwide", int, ( Sfio_t *, int ), (f, mode))
 
-    if (mode > 0)
-    {
+    if (mode > 0) {
         f->bits &= ~SF_MB;
         f->bits |= SF_WC;
-    }
-    else if (mode < 0)
-    {
+    } else if (mode < 0) {
         f->bits &= ~SF_WC;
         f->bits |= SF_MB;
     }
@@ -42,8 +39,7 @@ fwide(Sfio_t *f, int mode)
         return -1;
     if (f->bits & SF_WC)
         return 1;
-    if ((f->flags & SF_SYNCED) || f->next > f->data)
-    {
+    if ((f->flags & SF_SYNCED) || f->next > f->data) {
         f->bits |= SF_MB;
         return -1;
     }

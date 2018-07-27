@@ -60,19 +60,16 @@ pathrepl_20100601(char *path,
         return (path + strlen(path));
     if (!size)
         size = strlen(path) + 1;
-    for (;;)
-    {
+    for (;;) {
         while (*path && *path++ != '/')
             ;
         if (!*path)
             break;
-        if (*path == *m)
-        {
+        if (*path == *m) {
             t = path;
             while (*m && *m++ == *path)
                 path++;
-            if (!*m && *path == '/')
-            {
+            if (!*m && *path == '/') {
                 char *p;
 
                 p = t;
@@ -82,8 +79,7 @@ pathrepl_20100601(char *path,
                 if (p < path)
                     while (*p++ = *path++)
                         ;
-                else if (*r && p >= path)
-                {
+                else if (*r && p >= path) {
                     char *u;
 
                     t = path + strlen(path);
@@ -92,8 +88,7 @@ pathrepl_20100601(char *path,
                         *u-- = *t--;
                     while (*r)
                         *p++ = *r++;
-                }
-                else
+                } else
                     p += strlen(p) + 1;
                 return (p - 1);
             }

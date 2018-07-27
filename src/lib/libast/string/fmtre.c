@@ -59,18 +59,15 @@ fmtre(const char *as)
         *t++ = '^';
     else
         s++;
-    for (;;)
-    {
-        switch (c = *s++)
-        {
+    for (;;) {
+        switch (c = *s++) {
         case 0:
             break;
         case '\\':
             if (!(c = *s++) || c == '{' || c == '}')
                 return 0;
             *t++ = '\\';
-            if ((*t++ = c) == '(' && *s == '|')
-            {
+            if ((*t++ = c) == '(' && *s == '|') {
                 *t++ = *s++;
                 goto logical;
             }
@@ -78,27 +75,21 @@ fmtre(const char *as)
         case '[':
             *t++ = c;
             n = 0;
-            if ((c = *s++) == '!')
-            {
+            if ((c = *s++) == '!') {
                 *t++ = '^';
                 c = *s++;
-            }
-            else if (c == '^')
-            {
-                if ((c = *s++) == ']')
-                {
+            } else if (c == '^') {
+                if ((c = *s++) == ']') {
                     *(t - 1) = '\\';
                     *t++ = '^';
                     continue;
                 }
                 n = '^';
             }
-            for (;;)
-            {
+            for (;;) {
                 if (!(*t++ = c))
                     return 0;
-                if ((c = *s++) == ']')
-                {
+                if ((c = *s++) == ']') {
                     if (n)
                         *t++ = n;
                     *t++ = c;
@@ -109,8 +100,7 @@ fmtre(const char *as)
         case '{':
             for (x = s; *x && *x != '}'; x++)
                 ;
-            if (*x++ && (*x == '(' || *x == '-' && *(x + 1) == '('))
-            {
+            if (*x++ && (*x == '(' || *x == '-' && *(x + 1) == '(')) {
                 if (p >= &stack[elementsof(stack)])
                     return 0;
                 p->beg = s - 1;
@@ -120,13 +110,11 @@ fmtre(const char *as)
                     s++;
                 p++;
                 *t++ = *s++;
-            }
-            else
+            } else
                 *t++ = c;
             continue;
         case '*':
-            if (!*s)
-            {
+            if (!*s) {
                 end = 0;
                 break;
             }
@@ -136,15 +124,12 @@ fmtre(const char *as)
         case '@':
         case '!':
         case '~':
-            if (*s == '(' || c != '~' && *s == '-' && *(s + 1) == '(')
-            {
+            if (*s == '(' || c != '~' && *s == '-' && *(s + 1) == '(') {
                 if (p >= &stack[elementsof(stack)])
                     return 0;
                 p->beg = s - 1;
-                if (c == '~')
-                {
-                    if (*(s + 1) == 'E' && *(s + 2) == ')')
-                    {
+                if (c == '~') {
+                    if (*(s + 1) == 'E' && *(s + 2) == ')') {
                         for (s += 3; *t = *s; t++, s++)
                             ;
                         continue;
@@ -153,20 +138,15 @@ fmtre(const char *as)
                     p->min = 0;
                     *t++ = *s++;
                     *t++ = '?';
-                }
-                else
-                {
+                } else {
                     p->len = c != '@';
                     if (p->min = *s == '-')
                         s++;
                     *t++ = *s++;
                 }
                 p++;
-            }
-            else
-            {
-                switch (c)
-                {
+            } else {
+                switch (c) {
                 case '*':
                     *t++ = '.';
                     break;

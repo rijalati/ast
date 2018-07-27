@@ -64,8 +64,7 @@ MAIN()
     tmesg("\tTable: size=%d, ", sizeof(Mt));
     tmesg("ncols=%d\n", plan->ncols);
     tmesg("\tTranform plan:\n");
-    for (n = 0; n < plan->ncols; ++n)
-    {
+    for (n = 0; n < plan->ncols; ++n) {
         tmesg("\t\t%2d: ", plan->trans[n].index);
         tmesg("%2d ", plan->trans[n].pred1);
         tmesg("%2d\n", plan->trans[n].pred2);

@@ -92,22 +92,17 @@ setopt(void *handle, const void *p, int n, const char *v)
     char **a;
 
     NoP(v);
-    if (p)
-    {
-        if (n)
-        {
+    if (p) {
+        if (n) {
             co->flags |= (( Namval_t * )p)->value;
             if ((( Namval_t * )p)->value == CO_SERVICE && v
-                && (cs = vmnewof(co->vm, 0, Coservice_t, 1, 2 * strlen(v))))
-            {
+                && (cs = vmnewof(co->vm, 0, Coservice_t, 1, 2 * strlen(v)))) {
                 a = cs->argv;
                 *a++ = s = cs->path = cs->name = ( char * )(cs + 1);
                 while (*s = *v++)
-                    if (*s++ == ':')
-                    {
+                    if (*s++ == ':') {
                         *(s - 1) = 0;
-                        if (*v == '-')
-                        {
+                        if (*v == '-') {
                             v++;
                             if (*v == '-')
                                 v++;
@@ -119,8 +114,7 @@ setopt(void *handle, const void *p, int n, const char *v)
                         else if (strneq(v, "db=", 3))
                             cs->db = s + 3;
                         else if (a < &cs->argv[elementsof(cs->argv) - 2] && *v
-                                 && *v != ':')
-                        {
+                                 && *v != ':') {
                             *a++ = s;
                             *s++ = '-';
                             *s++ = '-';
@@ -132,8 +126,7 @@ setopt(void *handle, const void *p, int n, const char *v)
                 cs->next = co->service;
                 co->service = cs;
             }
-        }
-        else
+        } else
             co->mask |= (( Namval_t * )p)->value;
     }
     return 0;
@@ -167,8 +160,7 @@ coopen(const char *path, int flags, const char *attributes)
     if ((flags & CO_ANY) && (co = state.coshells))
         return co;
     if (!(vm = vmopen(Vmdcheap, Vmbest, 0))
-        || !(co = vmnewof(vm, 0, Coshell_t, 1, 0)))
-    {
+        || !(co = vmnewof(vm, 0, Coshell_t, 1, 0))) {
         if (vm)
             vmclose(vm);
         errormsg(state.lib, ERROR_LIBRARY | 2, "out of space");
@@ -180,23 +172,18 @@ coopen(const char *path, int flags, const char *attributes)
     if (attributes)
         stropt(attributes, options, sizeof(*options), setopt, co);
     co->flags |= ((flags | CO_DEVFD) & ~co->mask);
-    if (co->flags & CO_SEPARATE)
-    {
+    if (co->flags & CO_SEPARATE) {
         co->flags &= ~CO_SEPARATE;
         co->mode |= CO_MODE_SEPARATE;
     }
     co->flags |= CO_INIT;
-    if (co->mode & CO_MODE_SEPARATE)
-    {
+    if (co->mode & CO_MODE_SEPARATE) {
         flags = 0;
         proc = 0;
-    }
-    else
-    {
+    } else {
         for (i = 0; i < elementsof(pio); i++)
             pio[i] = -1;
-        if (pipe(&pio[0]) < 0 || pipe(&pio[2]) < 0)
-        {
+        if (pipe(&pio[0]) < 0 || pipe(&pio[2]) < 0) {
             errormsg(state.lib,
                      ERROR_LIBRARY | ERROR_SYSTEM | 2,
                      "cannot allocate pipes");
@@ -204,15 +191,13 @@ coopen(const char *path, int flags, const char *attributes)
         }
         if (flags & CO_SHELL)
             for (i = 0; i < elementsof(pio); i++)
-                if (pio[i] < 10 && (n = fcntl(pio[i], F_DUPFD, 10)) >= 0)
-                {
+                if (pio[i] < 10 && (n = fcntl(pio[i], F_DUPFD, 10)) >= 0) {
                     close(pio[i]);
                     pio[i] = n;
                 }
         co->cmdfd = pio[1];
         co->gsmfd = pio[3];
-        if (!(co->msgfp = sfnew(NiL, NiL, 256, pio[2], SF_READ)))
-        {
+        if (!(co->msgfp = sfnew(NiL, NiL, 256, pio[2], SF_READ))) {
             errormsg(state.lib,
                      ERROR_LIBRARY | ERROR_SYSTEM | 2,
                      "cannot allocate message stream");
@@ -230,10 +215,8 @@ coopen(const char *path, int flags, const char *attributes)
     sh[0] = ( char * )path;
     sh[1] = getenv(CO_ENV_SHELL);
     for (i = 0; i < elementsof(sh); i++)
-        if ((s = sh[i]) && *s && (s = strdup(s)))
-        {
-            if ((n = tokscan(s, NiL, " %v ", av, elementsof(av) - 1)) > 0)
-            {
+        if ((s = sh[i]) && *s && (s = strdup(s))) {
+            if ((n = tokscan(s, NiL, " %v ", av, elementsof(av) - 1)) > 0) {
                 if (t = strrchr(s = av[0], '/'))
                     av[0] = t + 1;
                 if (flags || (co->flags & CO_DEVFD) && strmatch(s, "*ksh*"))
@@ -251,13 +234,11 @@ coopen(const char *path, int flags, const char *attributes)
                                    ops,
                                    (co->flags & (CO_SHELL | CO_ORPHAN))
                                    ? (PROC_ORPHAN | PROC_DAEMON | PROC_IGNORE)
-                                   : (PROC_DAEMON | PROC_IGNORE))))
-                {
+                                   : (PROC_DAEMON | PROC_IGNORE)))) {
                     if (!state.sh)
                         state.sh = strdup(s);
                     free(s);
-                    if (proc)
-                    {
+                    if (proc) {
                         co->pid = proc->pid;
                         procfree(proc);
                     }
@@ -266,26 +247,22 @@ coopen(const char *path, int flags, const char *attributes)
             }
             free(s);
         }
-    if (i >= elementsof(sh))
-    {
+    if (i >= elementsof(sh)) {
         errormsg(
         state.lib, ERROR_LIBRARY | ERROR_SYSTEM | 2, "cannot execute");
         goto bad;
     }
-    if (!(co->mode & CO_MODE_SEPARATE))
-    {
+    if (!(co->mode & CO_MODE_SEPARATE)) {
         /*
          * send the shell identification sequence
          */
 
-        if (!(sp = sfstropen()))
-        {
+        if (!(sp = sfstropen())) {
             errormsg(state.lib, ERROR_LIBRARY | 2, "out of buffer space");
             goto bad;
         }
         sfprintf(sp, "#%05d\n%s='", 0, CO_ENV_ATTRIBUTES);
-        if (t = getenv(CO_ENV_ATTRIBUTES))
-        {
+        if (t = getenv(CO_ENV_ATTRIBUTES)) {
             coquote(sp, t, 0);
             if (attributes)
                 sfprintf(sp, ",");
@@ -305,8 +282,7 @@ coopen(const char *path, int flags, const char *attributes)
         sfprintf(sp, "#%05d\n", i - 7);
         i = write(co->cmdfd, sfstrbase(sp), i) != i;
         sfstrclose(sp);
-        if (i)
-        {
+        if (i) {
             errormsg(state.lib,
                      ERROR_LIBRARY | ERROR_SYSTEM | 2,
                      "cannot write initialization message");
@@ -315,8 +291,7 @@ coopen(const char *path, int flags, const char *attributes)
         state.current = co;
         handler = signal(SIGALRM, hung);
         i = alarm(30);
-        if (!(s = sfgetr(co->msgfp, '\n', 1)))
-        {
+        if (!(s = sfgetr(co->msgfp, '\n', 1))) {
             if (errno == EINTR)
                 errormsg(state.lib,
                          ERROR_LIBRARY | ERROR_SYSTEM | 2,
@@ -332,8 +307,7 @@ coopen(const char *path, int flags, const char *attributes)
                      co->index,
                      state.sh,
                      s);
-        switch (*s)
-        {
+        switch (*s) {
         case 'o':
             co->flags |= CO_OSH;
             /*FALLTHROUGH*/
@@ -348,8 +322,7 @@ coopen(const char *path, int flags, const char *attributes)
         case 's':
             co->flags |= CO_SERVER;
             co->pid = 0;
-            for (;;)
-            {
+            for (;;) {
                 if (t = strchr(s, ','))
                     *t = 0;
                 if (streq(s, CO_OPT_ACK))
@@ -366,11 +339,9 @@ coopen(const char *path, int flags, const char *attributes)
         default:
             goto nope;
         }
-        if (s)
-        {
+        if (s) {
             if (!(cj = coexec(co, s, 0, NiL, NiL, NiL))
-                || cowait(co, cj, -1) != cj)
-            {
+                || cowait(co, cj, -1) != cj) {
                 errormsg(state.lib,
                          ERROR_LIBRARY | ERROR_SYSTEM | 2,
                          "initialization message exec error");
@@ -386,8 +357,7 @@ coopen(const char *path, int flags, const char *attributes)
     fcntl(pio[2], F_SETFD, FD_CLOEXEC);
     co->next = state.coshells;
     state.coshells = co;
-    if (!(co->flags & CO_SHELL))
-    {
+    if (!(co->flags & CO_SHELL)) {
 #ifdef SIGCONT
 #    ifdef SIGTSTP
         signal(SIGTSTP, stop);
@@ -399,8 +369,7 @@ coopen(const char *path, int flags, const char *attributes)
         signal(SIGTTOU, stop);
 #    endif
 #endif
-        if (!state.init)
-        {
+        if (!state.init) {
             state.init = 1;
             atexit(clean);
         }
@@ -408,8 +377,7 @@ coopen(const char *path, int flags, const char *attributes)
     return co;
 bad:
     n = errno;
-    if (co->msgfp)
-    {
+    if (co->msgfp) {
         sfclose(co->msgfp);
         pio[2] = -1;
     }

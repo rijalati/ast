@@ -52,10 +52,8 @@ vecargs(char **vec, int *argcp, char ***argvp)
 
     if (!vec)
         return (-1);
-    if ((num = ( char ** )(*(vec - 1)) - vec) > 0)
-    {
-        if (!(argv = newof(0, char *, num + *argcp + 1, 0)))
-        {
+    if ((num = ( char ** )(*(vec - 1)) - vec) > 0) {
+        if (!(argv = newof(0, char *, num + *argcp + 1, 0))) {
             vecfree(vec, 0);
             return (-1);
         }
@@ -63,8 +61,7 @@ vecargs(char **vec, int *argcp, char ***argvp)
         *argvp = argv;
         *argv++ = *oargv++;
         ovec = vec;
-        while (s = *argv = *vec++)
-        {
+        while (s = *argv = *vec++) {
             while (isspace(*s))
                 s++;
             if (*s)
@@ -74,8 +71,7 @@ vecargs(char **vec, int *argcp, char ***argvp)
         while (*argv = *oargv++)
             argv++;
         *argcp = argv - *argvp;
-    }
-    else
+    } else
         vecfree(vec, 0);
     return (0);
 }

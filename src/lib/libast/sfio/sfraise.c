@@ -39,13 +39,11 @@ Void_t *data;                                /* associated data	*/
     int n, rv;
 
     rv = 0;
-    for (p = &_Sfpool; p; p = next)
-    {
+    for (p = &_Sfpool; p; p = next) {
         for (next = p->next; next; next = next->next)
             if (next->n_sf > 0)
                 break;
-        for (n = 0; n < p->n_sf; ++n)
-        {
+        for (n = 0; n < p->n_sf; ++n) {
             f = p->sf[n];
             if (sfraise(f, type, data) < 0)
                 rv -= 1;
@@ -82,22 +80,19 @@ Void_t *data;                                /* associated data	*/
         SFMTXRETURN(f, -1);
     SFLOCK(f, local);
 
-    for (disc = f->disc; disc;)
-    {
+    for (disc = f->disc; disc;) {
         next = disc->disc;
         if (type == SF_FINAL)
             f->disc = next;
 
-        if (disc->exceptf)
-        {
+        if (disc->exceptf) {
             SFOPEN(f, 0);
             if ((rv = (*disc->exceptf)(f, type, data, disc)) != 0)
                 SFMTXRETURN(f, rv);
             SFLOCK(f, 0);
         }
 
-        if ((disc = next))
-        { /* make sure that "next" hasn't been popped */
+        if ((disc = next)) { /* make sure that "next" hasn't been popped */
             for (d = f->disc; d; d = d->disc)
                 if (d == disc)
                     break;

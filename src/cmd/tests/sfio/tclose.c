@@ -53,8 +53,7 @@ tmain()
         int i, n, rv;
 
         n = atoi(argv[1]);
-        for (i = 0; i < n; ++i)
-        {
+        for (i = 0; i < n; ++i) {
             if (!(s = sfgetr(sfstdin, '\n', 1)))
                 terror("Failed to read from stdin");
             if ((rv = sfputr(sfstdout, s, '\n')) != sfvalue(sfstdin))
@@ -101,8 +100,8 @@ tmain()
         terror("Write exception did not get raised");
 
     signal(SIGPIPE, SIG_DFL);
-    if ((w = sfpopen(NIL(Sfio_t *), sfprints("%s %d", argv[0], N_STR), "w+")))
-    {
+    if ((w
+         = sfpopen(NIL(Sfio_t *), sfprints("%s %d", argv[0], N_STR), "w+"))) {
         int i;
 
         if ((handler = signal(SIGPIPE, SIG_IGN)) == SIG_DFL

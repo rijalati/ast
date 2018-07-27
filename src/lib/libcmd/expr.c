@@ -181,11 +181,9 @@ getnode(State_t *state, Node_t *np)
     if (!(cp = *state->arglist++))
         error(ERROR_exit(2), "argument expected");
     if (!state->standard)
-        switch (cp[0])
-        {
+        switch (cp[0]) {
         case 'i':
-            if (cp[1] == 'n' && !strcmp(cp, "index"))
-            {
+            if (cp[1] == 'n' && !strcmp(cp, "index")) {
                 if (!(cp = *state->arglist++))
                     error(ERROR_exit(2), "string argument expected");
                 if (!(ep = *state->arglist++))
@@ -196,8 +194,7 @@ getnode(State_t *state, Node_t *np)
             }
             break;
         case 'l':
-            if (cp[1] == 'e' && !strcmp(cp, "length"))
-            {
+            if (cp[1] == 'e' && !strcmp(cp, "length")) {
                 if (!(cp = *state->arglist++))
                     error(ERROR_exit(2), "string argument expected");
                 np->num = strlen(cp);
@@ -206,8 +203,7 @@ getnode(State_t *state, Node_t *np)
             }
             break;
         case 'm':
-            if (cp[1] == 'a' && !strcmp(cp, "match"))
-            {
+            if (cp[1] == 'a' && !strcmp(cp, "match")) {
                 if (!(np->str = *state->arglist++))
                     error(ERROR_exit(2), "pattern argument expected");
                 np->type = T_STR;
@@ -220,8 +216,7 @@ getnode(State_t *state, Node_t *np)
                 error(ERROR_exit(2), "string argument expected");
             break;
         case 's':
-            if (cp[1] == 'u' && !strcmp(cp, "substr"))
-            {
+            if (cp[1] == 'u' && !strcmp(cp, "substr")) {
                 if (!(sp = *state->arglist++))
                     error(ERROR_exit(2), "string argument expected");
                 if (!(cp = *state->arglist++))
@@ -237,8 +232,7 @@ getnode(State_t *state, Node_t *np)
                 k = strlen(sp);
                 if (i < 0 || i >= k || j < 0)
                     sp = "";
-                else
-                {
+                else {
                     sp += i;
                     k -= i;
                     if (j < k)
@@ -250,18 +244,14 @@ getnode(State_t *state, Node_t *np)
             }
             break;
         }
-    if (*cp == '(' && cp[1] == 0)
-    {
+    if (*cp == '(' && cp[1] == 0) {
         tok = expr_or(state, np);
         if (tok != ')')
             error(ERROR_exit(2), "closing parenthesis missing");
-    }
-    else
-    {
+    } else {
         np->type = T_STR;
         np->str = cp;
-        if (*cp)
-        {
+        if (*cp) {
             np->num = strtol(np->str, &ep, 10);
             if (!*ep)
                 np->type |= T_NUM;
@@ -283,8 +273,7 @@ expr_cond(State_t *state, Node_t *np)
 {
     int tok = getnode(state, np);
 
-    while (tok == ':')
-    {
+    while (tok == ':') {
         regex_t re;
         regmatch_t match[2];
         int n;
@@ -299,29 +288,22 @@ expr_cond(State_t *state, Node_t *np)
         np->type = T_NUM;
         if (n = regcomp(&re, rp.str, REG_LEFT | REG_LENIENT))
             regfatal(&re, ERROR_exit(2), n);
-        if (!(n = regexec(&re, cp, elementsof(match), match, 0)))
-        {
-            if (re.re_nsub > 0)
-            {
+        if (!(n = regexec(&re, cp, elementsof(match), match, 0))) {
+            if (re.re_nsub > 0) {
                 np->type = T_STR;
-                if (match[1].rm_so >= 0)
-                {
+                if (match[1].rm_so >= 0) {
                     np->str = cp + match[1].rm_so;
                     np->str[match[1].rm_eo - match[1].rm_so] = 0;
                     np->num = strtol(np->str, &cp, 10);
                     if (cp != np->str && *cp == 0)
                         np->type |= T_NUM;
-                }
-                else
+                } else
                     np->str = "";
-            }
-            else
+            } else
                 np->num = match[0].rm_eo - match[0].rm_so;
-        }
-        else if (n != REG_NOMATCH)
+        } else if (n != REG_NOMATCH)
             regfatal(&re, ERROR_exit(2), n);
-        else if (re.re_nsub)
-        {
+        else if (re.re_nsub) {
             np->str = "";
             np->type = T_STR;
         }
@@ -335,8 +317,7 @@ expr_mult(State_t *state, Node_t *np)
 {
     int tok = expr_cond(state, np);
 
-    while ((tok & ~T_OP) == T_MULT)
-    {
+    while ((tok & ~T_OP) == T_MULT) {
         Node_t rp;
         int op = (tok & T_OP);
         tok = expr_cond(state, &rp);
@@ -344,8 +325,7 @@ expr_mult(State_t *state, Node_t *np)
             error(ERROR_exit(2), "non-numeric argument");
         if (op && rp.num == 0)
             error(ERROR_exit(2), "division by zero");
-        switch (op)
-        {
+        switch (op) {
         case 0:
             np->num *= rp.num;
             break;
@@ -365,8 +345,7 @@ expr_add(State_t *state, Node_t *np)
 {
     int tok = expr_mult(state, np);
 
-    while ((tok & ~T_OP) == T_ADD)
-    {
+    while ((tok & ~T_OP) == T_ADD) {
         Node_t rp;
         int op = (tok & T_OP);
         tok = expr_mult(state, &rp);
@@ -386,8 +365,7 @@ expr_cmp(State_t *state, Node_t *np)
 {
     int tok = expr_add(state, np);
 
-    while ((tok & ~T_OP) == T_CMP)
-    {
+    while ((tok & ~T_OP) == T_CMP) {
         Node_t rp;
         char *left, *right;
         char buff1[36], buff2[36];
@@ -395,8 +373,7 @@ expr_cmp(State_t *state, Node_t *np)
         tok = expr_add(state, &rp);
         if (numeric(&rp) && numeric(np))
             op |= 010;
-        else
-        {
+        else {
             if (np->type & T_STR)
                 left = np->str;
             else
@@ -406,8 +383,7 @@ expr_cmp(State_t *state, Node_t *np)
             else
                 sfsprintf(right = buff2, sizeof(buff2), "%d", rp.num);
         }
-        switch (op)
-        {
+        switch (op) {
         case 0:
             np->num = streq(left, right);
             break;
@@ -454,12 +430,10 @@ static int
 expr_and(State_t *state, Node_t *np)
 {
     int tok = expr_cmp(state, np);
-    while (tok == '&')
-    {
+    while (tok == '&') {
         Node_t rp;
         tok = expr_cmp(state, &rp);
-        if ((numeric(&rp) && rp.num == 0) || *rp.str == 0)
-        {
+        if ((numeric(&rp) && rp.num == 0) || *rp.str == 0) {
             np->num = 0;
             np->type = T_NUM;
         }
@@ -471,8 +445,7 @@ static int
 expr_or(State_t *state, Node_t *np)
 {
     int tok = expr_and(state, np);
-    while (tok == '|')
-    {
+    while (tok == '|') {
         Node_t rp;
         tok = expr_and(state, &rp);
         if ((numeric(np) && np->num == 0) || *np->str == 0)
@@ -496,8 +469,7 @@ b_expr(int argc, char **argv, Shbltin_t *context)
 	else
 #endif
     {
-        while (n = optget(argv, usage))
-        {
+        while (n = optget(argv, usage)) {
             /*
              * NOTE: this loop ignores all but literal -- and -?
              *	 out of kindness for obsolescent usage
@@ -517,12 +489,10 @@ b_expr(int argc, char **argv, Shbltin_t *context)
     }
     if (expr_or(&state, &node))
         error(ERROR_exit(2), "syntax error");
-    if (node.type & T_STR)
-    {
+    if (node.type & T_STR) {
         if (*node.str)
             sfprintf(sfstdout, "%s\n", node.str);
-    }
-    else
+    } else
         sfprintf(sfstdout, "%d\n", node.num);
     return numeric(&node) ? node.num == 0 : *node.str == 0;
 }

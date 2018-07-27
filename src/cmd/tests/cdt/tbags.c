@@ -66,19 +66,15 @@ tmain()
     long i, k, mid, n_mid, n_obj, meth;
 
     /* construct repetitive objects */
-    for (i = 0; i < N_OBJ; i += R_OBJ)
-    {
-        for (k = 0; k < R_OBJ; ++k)
-        {
+    for (i = 0; i < N_OBJ; i += R_OBJ) {
+        for (k = 0; k < R_OBJ; ++k) {
             Obj[i + k].key = i;
             Obj[i + k].ord = k;
         }
     }
 
-    for (meth = 0; meth < 4; ++meth)
-    {
-        switch (meth)
-        {
+    for (meth = 0; meth < 4; ++meth) {
+        switch (meth) {
         case 0:
             name = "Dtobag";
             if (!(dt = dtopen(&Disc, Dtobag)))
@@ -108,8 +104,7 @@ tmain()
 
         /* add all objects into dictionary */
         for (k = 0; k < R_OBJ; ++k)
-            for (i = 0; i < N_OBJ / R_OBJ; ++i)
-            {
+            for (i = 0; i < N_OBJ / R_OBJ; ++i) {
                 obj = Obj + i * R_OBJ + k;
                 o = (meth == 3 || i % 2 == 0) ? dtappend(dt, obj)
                                               : dtinsert(dt, obj);
@@ -143,8 +138,7 @@ tmain()
 
             n_obj = 0; /* test ordering */
             for (p = NIL(Obj_t *), o = dtfirst(dt); o;
-                 p = o, o = dtnext(dt, o))
-            {
+                 p = o, o = dtnext(dt, o)) {
                 n_obj += 1;
                 if (p && p->ord > o->ord)
                     terror("%s: objects not ordered correctly p=%d > o=%d",
@@ -159,8 +153,7 @@ tmain()
         if (meth == 0) /* testing ordering properties of Dtobag */
         {
             n_obj = 0; /* test atmost/next */
-            for (o = dtatmost(dt, &proto); o; o = dtnext(dt, o))
-            {
+            for (o = dtatmost(dt, &proto); o; o = dtnext(dt, o)) {
                 if (o->key == mid)
                     n_obj += 1;
                 else
@@ -173,8 +166,7 @@ tmain()
                        R_OBJ);
 
             n_obj = 0; /* test atleast/prev */
-            for (o = dtatleast(dt, &proto); o; o = dtprev(dt, o))
-            {
+            for (o = dtatleast(dt, &proto); o; o = dtprev(dt, o)) {
                 if (o->key == mid)
                     n_obj += 1;
                 else
@@ -188,8 +180,7 @@ tmain()
 
             n_obj = 0; /* test linear order */
             for (p = NIL(Obj_t *), o = dtfirst(dt); o;
-                 p = o, o = dtnext(dt, o))
-            {
+                 p = o, o = dtnext(dt, o)) {
                 n_obj += 1;
                 if (p && p->key > o->key)
                     terror("%s: objects not ordered correctly p=%d > o=%d",
@@ -202,8 +193,7 @@ tmain()
         }
 
         n_mid = n_obj = 0; /* walk forward and count objects */
-        for (o = dtfirst(dt); o; o = dtnext(dt, o))
-        {
+        for (o = dtfirst(dt); o; o = dtnext(dt, o)) {
             n_obj += 1;
             if (o->key == mid)
                 n_mid += 1;
@@ -214,8 +204,7 @@ tmain()
             terror("%s: Walk forward n_mid=%d != %d", name, n_mid, R_OBJ);
 
         n_mid = n_obj = 0; /* walk backward and count objects */
-        for (o = dtlast(dt); o; o = dtprev(dt, o))
-        {
+        for (o = dtlast(dt); o; o = dtprev(dt, o)) {
             n_obj += 1;
             if (o->key == mid)
                 n_mid += 1;
@@ -226,8 +215,7 @@ tmain()
             terror("%s: Walk backward n_mid=%d != %d", name, n_mid, R_OBJ);
 
         n_mid = n_obj = 0; /* walk flattened list and count objects */
-        for (o = ( Obj_t * )dtflatten(dt); o; o = ( Obj_t * )dtlink(dt, o))
-        {
+        for (o = ( Obj_t * )dtflatten(dt); o; o = ( Obj_t * )dtlink(dt, o)) {
             n_obj += 1;
             if (o->key == mid)
                 n_mid += 1;
@@ -240,8 +228,7 @@ tmain()
             "%s: Walk flattened list n_mid=%d != %d", name, n_mid, R_OBJ);
 
         n_mid = 0; /* delete a bunch of objects */
-        for (i = 0; i < N_OBJ - 1; i += R_OBJ)
-        {
+        for (i = 0; i < N_OBJ - 1; i += R_OBJ) {
             obj
             = Obj + i + R_OBJ / 2; /* use the one in the middle of group */
 

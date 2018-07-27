@@ -53,40 +53,31 @@ vecload(char *buf)
 
     vec = 0;
     n = (*buf == '#') ? -1 : 0;
-    for (s = buf;; s++)
-    {
-        if (*s == '\n')
-        {
+    for (s = buf;; s++) {
+        if (*s == '\n') {
             if (s > buf && *(s - 1) == '\\')
                 *(s - 1) = *s = ' ';
-            else
-            {
+            else {
                 *s = 0;
-                if (*(s + 1) != '#')
-                {
+                if (*(s + 1) != '#') {
                     n++;
                     if (!*(s + 1))
                         break;
                 }
             }
-        }
-        else if (!*s)
-        {
+        } else if (!*s) {
             n++;
             break;
         }
     }
     if (n < 0)
         n = 0;
-    if (p = newof(0, char *, n + 3, 0))
-    {
+    if (p = newof(0, char *, n + 3, 0)) {
         *p++ = s = buf;
         vec = ++p;
         if (n > 0)
-            for (;;)
-            {
-                if (*s != '#')
-                {
+            for (;;) {
+                if (*s != '#') {
                     *p++ = s;
                     if (--n <= 0)
                         break;

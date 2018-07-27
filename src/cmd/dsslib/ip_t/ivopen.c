@@ -37,8 +37,7 @@ ivopen(Ivdisc_t *disc, Ivmeth_t *meth, int size, const char *options)
     iv->r1 = iv->unit + size;
     iv->r2 = iv->r1 + size;
     iv->size = size;
-    if (meth->eventf && (*meth->eventf)(iv, IV_OPEN, ( void * )options) < 0)
-    {
+    if (meth->eventf && (*meth->eventf)(iv, IV_OPEN, ( void * )options) < 0) {
         free(iv);
         return 0;
     }

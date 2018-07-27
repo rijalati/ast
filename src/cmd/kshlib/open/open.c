@@ -58,27 +58,21 @@ put_time(Namval_t *np, const char *val, int flag, Namfun_t *nfp)
 {
     struct dctime *dp = ( struct dctime * )nfp;
     char *last;
-    if (val)
-    {
+    if (val) {
         int32_t t;
-        if (flag & NV_INTEGER)
-        {
+        if (flag & NV_INTEGER) {
             if (flag & NV_LONG)
                 t = *( Sfdouble_t * )val;
             else
                 t = *( double * )val;
-        }
-        else
-        {
+        } else {
             t = tmdate(val, &last, ( time_t * )0);
             if (*last)
                 errormsg(
                 SH_DICT, ERROR_exit(1), "%s: invalid date/time string", val);
         }
         nv_putv(np, ( char * )&t, NV_INTEGER, nfp);
-    }
-    else
-    {
+    } else {
         nv_unset(dp->format);
         free(( void * )dp->format);
         nv_putv(np, val, flag, nfp);
@@ -128,27 +122,22 @@ get_mode(Namval_t *np, Namfun_t *nfp)
 static void
 put_mode(Namval_t *np, const char *val, int flag, Namfun_t *nfp)
 {
-    if (val)
-    {
+    if (val) {
         int32_t mode;
         char *last;
-        if (flag & NV_INTEGER)
-        {
+        if (flag & NV_INTEGER) {
             if (flag & NV_LONG)
                 mode = *( Sfdouble_t * )val;
             else
                 mode = *( double * )val;
-        }
-        else
-        {
+        } else {
             mode = strperm(val, &last, 0);
             if (*last)
                 errormsg(
                 SH_DICT, ERROR_exit(1), "%s: invalid mode string", val);
         }
         nv_putv(np, ( char * )&mode, NV_INTEGER, nfp);
-    }
-    else
+    } else
         nv_putv(np, val, flag, nfp);
 }
 
@@ -191,14 +180,12 @@ sh_findfield(Shfield_t *ftable, int nelem, const char *name)
     Shfield_t *fp = ftable;
     int i, n;
     const char *cp;
-    for (cp = name; *cp; cp++)
-    {
+    for (cp = name; *cp; cp++) {
         if (*cp == '.')
             break;
     }
     n = cp - name;
-    for (i = 0; i < nelem; i++, fp++)
-    {
+    for (i = 0; i < nelem; i++, fp++) {
         if (memcmp(fp->name, name, n) == 0 && fp->name[n] == 0)
             return (fp);
     }
@@ -249,8 +236,7 @@ fieldcreate(Namval_t *np, const char *name, int flags, Namfun_t *nfp)
     Namval_t *nq, **nodes = ( Namval_t ** )(dcp + 1);
     int n = fp - sp->fields;
     int len = strlen(fp->name);
-    if (!(nq = nodes[n]))
-    {
+    if (!(nq = nodes[n])) {
         nodes[n] = nq = sh_newnode(fp, np);
         nfp->last = "";
     }
@@ -265,23 +251,19 @@ genvalue(Sfio_t *out, Shclass_t *sp, int indent, Namval_t *npar)
     Shfield_t *fp = sp->fields;
     Namval_t *np, **nodes = ( Namval_t ** )(sp + 1);
     int i, isarray;
-    if (out)
-    {
+    if (out) {
         sfwrite(out, "(\n", 2);
         indent++;
     }
-    for (i = 0; i < sp->nelem; i++, fp++)
-    {
+    for (i = 0; i < sp->nelem; i++, fp++) {
 #if 0
 		/* handle recursive case */
 #endif
         if (!(np = nodes[i]) && out)
             np = sh_newnode(fp, npar);
-        if (np)
-        {
+        if (np) {
             isarray = 0;
-            if (nv_isattr(np, NV_ARRAY))
-            {
+            if (nv_isattr(np, NV_ARRAY)) {
                 isarray = 1;
                 if (array_elem(nv_arrayptr(np)) == 0)
                     isarray = 2;
@@ -290,18 +272,15 @@ genvalue(Sfio_t *out, Shclass_t *sp, int indent, Namval_t *npar)
             }
             sfnputc(out, '\t', indent);
             sfputr(out, fp->name, (isarray == 2 ? '\n' : '='));
-            if (isarray)
-            {
+            if (isarray) {
                 if (isarray == 2)
                     continue;
                 sfwrite(out, "(\n", 2);
                 sfnputc(out, '\t', ++indent);
             }
-            while (1)
-            {
+            while (1) {
                 char *fmtq;
-                if (isarray)
-                {
+                if (isarray) {
                     sfprintf(out, "[%s]", sh_fmtq(nv_getsub(np)));
                     sfputc(out, '=');
                 }
@@ -312,15 +291,13 @@ genvalue(Sfio_t *out, Shclass_t *sp, int indent, Namval_t *npar)
                     break;
                 sfnputc(out, '\t', indent);
             }
-            if (isarray)
-            {
+            if (isarray) {
                 sfnputc(out, '\t', --indent);
                 sfwrite(out, ")\n", 2);
             }
         }
     }
-    if (out)
-    {
+    if (out) {
         if (indent > 1)
             sfnputc(out, '\t', indent - 1);
         sfputc(out, ')');
@@ -359,8 +336,7 @@ static void
 put_classval(Namval_t *np, const char *val, int flag, Namfun_t *nfp)
 {
     walk_class(np, 1, ( struct dcclass * )nfp);
-    if (nfp = nv_stack(np, ( Namfun_t * )0))
-    {
+    if (nfp = nv_stack(np, ( Namfun_t * )0)) {
         free(( void * )nfp);
         if (np->nvalue && !nv_isattr(np, NV_NOFREE))
             free(( void * )np->nvalue);
@@ -499,8 +475,7 @@ b_open(int argc, char *argv[], Shbltin_t *context)
     long flags = 0;
     int fd = -1;
     while (n = optget(argv, sh_optopen))
-        switch (n)
-        {
+        switch (n) {
         case 'r':
         case 'i':
         case 'w':
@@ -538,21 +513,16 @@ b_open(int argc, char *argv[], Shbltin_t *context)
     argv += opt_info.index;
     if (argc != 2)
         errormsg(SH_DICT, ERROR_usage(2), optusage(( char * )0));
-    if (!(flags & (letterbit('r') | letterbit('w'))))
-    {
+    if (!(flags & (letterbit('r') | letterbit('w')))) {
         if (stat(argv[1], &statb) < 0)
             errormsg(SH_DICT, ERROR_system(1), "%s: open failed", argv[1]);
-    }
-    else
-    {
-        if (flags & letterbit('r'))
-        {
+    } else {
+        if (flags & letterbit('r')) {
             if (flags & letterbit('w'))
                 oflag |= O_RDWR;
             else
                 oflag |= O_RDONLY;
-        }
-        else if (flags & letterbit('w'))
+        } else if (flags & letterbit('w'))
             oflag |= O_WRONLY;
         fd = open(argv[1], oflag, mode);
         if (fd < 0)

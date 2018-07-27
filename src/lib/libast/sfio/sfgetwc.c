@@ -47,18 +47,13 @@ int sfgetwc(f) Sfio_t *f;
 
     SFLOCK(f, 0);
 
-    if (SFRPEEK(f, s, n) <= 0)
-    {
+    if (SFRPEEK(f, s, n) <= 0) {
         f->flags |= SF_ERROR;
         c = -1;
-    }
-    else if (!mbwide())
-    {
+    } else if (!mbwide()) {
         c = *s++;
         f->next = s;
-    }
-    else
-    {
+    } else {
         wchar_t w;
         SFMBDCLP(q)
 
@@ -66,15 +61,12 @@ int sfgetwc(f) Sfio_t *f;
         c = mbchar(&w, s, n, q);
         if (!mberrno(q))
             f->next = s;
-        else if (n < (m = mbmax()))
-        {
+        else if (n < (m = mbmax())) {
             for (i = 0; i < n; i++)
                 buf[i] = *s++;
-            for (;;)
-            {
+            for (;;) {
                 f->next = s;
-                if (SFRPEEK(f, s, n) <= 0)
-                {
+                if (SFRPEEK(f, s, n) <= 0) {
                     f->flags |= SF_ERROR;
                     break;
                 }
@@ -85,13 +77,11 @@ int sfgetwc(f) Sfio_t *f;
                 e = buf + i;
                 b = buf;
                 c = mbchar(&w, b, n, q);
-                if (!mberrno(q))
-                {
+                if (!mberrno(q)) {
                     f->next = s - (e - b);
                     break;
                 }
-                if (i >= m || mberrno(q) == EILSEQ)
-                {
+                if (i >= m || mberrno(q) == EILSEQ) {
                     f->flags |= SF_ERROR;
                     break;
                 }

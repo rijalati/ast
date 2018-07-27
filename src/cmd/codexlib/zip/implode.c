@@ -187,8 +187,7 @@ static ush cpdist8[]
 #define MASK_BITS(n) (((( ulg )1) << (n)) - 1)
 #define NEEDBITS(p, n)                                                       \
     {                                                                        \
-        while ((p)->bit_len < (n))                                           \
-        {                                                                    \
+        while ((p)->bit_len < (n)) {                                         \
             (p)->bit_buf |= (( ulg )NEXTBYTE(p)) << (p)->bit_len;            \
             (p)->bit_len += 8;                                               \
         }                                                                    \
@@ -212,8 +211,7 @@ fill(State_t *state)
                   state->buf,
                   sizeof(state->buf),
                   &state->codex->sfdisc))
-        <= 0)
-    {
+        <= 0) {
         state->eof = 1;
         return 0;
     }
@@ -237,14 +235,12 @@ get_tree(State_t *state,
     /* get bit lengths */
     i = NEXTBYTE(state) + 1; /* length/count pairs to read */
     k = 0;                   /* next code */
-    do
-    {
+    do {
         b = ((j = NEXTBYTE(state)) & 0xf) + 1; /* bits in code (1..16) */
         j = ((j & 0xf0) >> 4) + 1; /* codes with those bits (1..16) */
         if (k + j > n)
             return 4; /* don't overflow l[] */
-        do
-        {
+        do {
             l[k++] = b;
         } while (--j);
     } while (--i);
@@ -290,8 +286,7 @@ explode_lit8(State_t *state, char *buff, size_t size)
             NEEDBITS(state, ( ulg )bb); /* get coded literal */
             t = tb + IGETBITS(state, bb);
             e = t->e;
-            while (e > 16)
-            {
+            while (e > 16) {
                 if (e == 99)
                     return -1;
                 DUMPBITS(state, t->b);
@@ -304,15 +299,13 @@ explode_lit8(State_t *state, char *buff, size_t size)
             buff[j++] = state->slide[w++] = ( uch )t->v.n;
             if (w == WSIZE)
                 w = u = 0;
-            if (j == size)
-            {
+            if (j == size) {
                 state->u = u;
                 state->w = w;
                 state->s = s;
                 return size;
             }
-        }
-        else /* else distance/length */
+        } else /* else distance/length */
         {
             DUMPBITS(state, 1);
             NEEDBITS(state, 7); /* get distance low bits */
@@ -321,8 +314,7 @@ explode_lit8(State_t *state, char *buff, size_t size)
             NEEDBITS(state, ( ulg )bd); /* get coded distance high bits */
             t = td + IGETBITS(state, bd);
             e = t->e;
-            while (e > 16)
-            {
+            while (e > 16) {
                 if (e == 99)
                     return -1;
                 DUMPBITS(state, t->b);
@@ -336,8 +328,7 @@ explode_lit8(State_t *state, char *buff, size_t size)
             NEEDBITS(state, ( ulg )bl); /* get coded length */
             t = tl + IGETBITS(state, bl);
             e = t->e;
-            while (e > 16)
-            {
+            while (e > 16) {
                 if (e == 99)
                     return -1;
                 DUMPBITS(state, t->b);
@@ -357,24 +348,20 @@ explode_lit8(State_t *state, char *buff, size_t size)
 
             /* do the copy */
             s -= n;
-            while (n > 0 && j < size)
-            {
+            while (n > 0 && j < size) {
                 n--;
                 d &= WSIZE - 1;
                 w &= WSIZE - 1;
-                if (u && w <= d)
-                {
+                if (u && w <= d) {
                     buff[j++] = 0;
                     w++;
                     d++;
-                }
-                else
+                } else
                     buff[j++] = state->slide[w++] = state->slide[d++];
                 if (w == WSIZE)
                     w = u = 0;
             }
-            if (j == size)
-            {
+            if (j == size) {
                 state->u = u;
                 state->n = n;
                 state->d = d;
@@ -431,8 +418,7 @@ explode_lit4(State_t *state, char *buff, size_t size)
             NEEDBITS(state, ( ulg )bb); /* get coded literal */
             t = tb + IGETBITS(state, bb);
             e = t->e;
-            while (e > 16)
-            {
+            while (e > 16) {
                 if (e == 99)
                     return -1;
                 DUMPBITS(state, t->b);
@@ -444,15 +430,13 @@ explode_lit4(State_t *state, char *buff, size_t size)
             buff[j++] = state->slide[w++] = ( uch )t->v.n;
             if (w == WSIZE)
                 w = u = 0;
-            if (j == size)
-            {
+            if (j == size) {
                 state->u = u;
                 state->w = w;
                 state->s = s;
                 return size;
             }
-        }
-        else /* else distance/length */
+        } else /* else distance/length */
         {
             DUMPBITS(state, 1);
             NEEDBITS(state, 6); /* get distance low bits */
@@ -461,8 +445,7 @@ explode_lit4(State_t *state, char *buff, size_t size)
             NEEDBITS(state, ( ulg )bd); /* get coded distance high bits */
             t = td + IGETBITS(state, bd);
             e = t->e;
-            while (e > 16)
-            {
+            while (e > 16) {
                 if (e == 99)
                     return -1;
                 DUMPBITS(state, t->b);
@@ -476,8 +459,7 @@ explode_lit4(State_t *state, char *buff, size_t size)
             NEEDBITS(state, ( ulg )bl); /* get coded length */
             t = tl + IGETBITS(state, bl);
             e = t->e;
-            while (e > 16)
-            {
+            while (e > 16) {
                 if (e == 99)
                     return -1;
                 DUMPBITS(state, t->b);
@@ -497,24 +479,20 @@ explode_lit4(State_t *state, char *buff, size_t size)
 
             /* do the copy */
             s -= n;
-            while (n > 0 && j < size)
-            {
+            while (n > 0 && j < size) {
                 n--;
                 d &= WSIZE - 1;
                 w &= WSIZE - 1;
-                if (u && w <= d)
-                {
+                if (u && w <= d) {
                     buff[j++] = 0;
                     w++;
                     d++;
-                }
-                else
+                } else
                     buff[j++] = state->slide[w++] = state->slide[d++];
                 if (w == WSIZE)
                     w = u = 0;
             }
-            if (j == size)
-            {
+            if (j == size) {
                 state->u = u;
                 state->n = n;
                 state->d = d;
@@ -573,15 +551,13 @@ explode_nolit8(State_t *state, char *buff, size_t size)
             DUMPBITS(state, 8);
             if (w == WSIZE)
                 w = u = 0;
-            if (j == size)
-            {
+            if (j == size) {
                 state->u = u;
                 state->w = w;
                 state->s = s;
                 return size;
             }
-        }
-        else /* else distance/length */
+        } else /* else distance/length */
         {
             DUMPBITS(state, 1);
             NEEDBITS(state, 7); /* get distance low bits */
@@ -590,8 +566,7 @@ explode_nolit8(State_t *state, char *buff, size_t size)
             NEEDBITS(state, ( ulg )bd); /* get coded distance high bits */
             t = td + IGETBITS(state, bd);
             e = t->e;
-            while (e > 16)
-            {
+            while (e > 16) {
                 if (e == 99)
                     return -1;
                 DUMPBITS(state, t->b);
@@ -605,8 +580,7 @@ explode_nolit8(State_t *state, char *buff, size_t size)
             NEEDBITS(state, ( ulg )bl); /* get coded length */
             t = tl + IGETBITS(state, bl);
             e = t->e;
-            while (e > 16)
-            {
+            while (e > 16) {
                 if (e == 99)
                     return -1;
                 DUMPBITS(state, t->b);
@@ -626,24 +600,20 @@ explode_nolit8(State_t *state, char *buff, size_t size)
 
             /* do the copy */
             s -= n;
-            while (n > 0 && j < size)
-            {
+            while (n > 0 && j < size) {
                 n--;
                 d &= WSIZE - 1;
                 w &= WSIZE - 1;
-                if (u && w <= d)
-                {
+                if (u && w <= d) {
                     buff[j++] = 0;
                     w++;
                     d++;
-                }
-                else
+                } else
                     buff[j++] = state->slide[w++] = state->slide[d++];
                 if (w == WSIZE)
                     w = u = 0;
             }
-            if (j == size)
-            {
+            if (j == size) {
                 state->u = u;
                 state->n = n;
                 state->d = d;
@@ -700,15 +670,13 @@ explode_nolit4(State_t *state, char *buff, size_t size)
             DUMPBITS(state, 8);
             if (w == WSIZE)
                 w = u = 0;
-            if (j == size)
-            {
+            if (j == size) {
                 state->u = u;
                 state->w = w;
                 state->s = s;
                 return size;
             }
-        }
-        else /* else distance/length */
+        } else /* else distance/length */
         {
             DUMPBITS(state, 1);
             NEEDBITS(state, 6); /* get distance low bits */
@@ -717,8 +685,7 @@ explode_nolit4(State_t *state, char *buff, size_t size)
             NEEDBITS(state, ( ulg )bd); /* get coded distance high bits */
             t = td + IGETBITS(state, bd);
             e = t->e;
-            while (e > 16)
-            {
+            while (e > 16) {
                 if (e == 99)
                     return -1;
                 DUMPBITS(state, t->b);
@@ -732,8 +699,7 @@ explode_nolit4(State_t *state, char *buff, size_t size)
             NEEDBITS(state, ( ulg )bl); /* get coded length */
             t = tl + IGETBITS(state, bl);
             e = t->e;
-            while (e > 16)
-            {
+            while (e > 16) {
                 if (e == 99)
                     return -1;
                 DUMPBITS(state, t->b);
@@ -753,24 +719,20 @@ explode_nolit4(State_t *state, char *buff, size_t size)
 
             /* do the copy */
             s -= n;
-            while (n > 0 && j < size)
-            {
+            while (n > 0 && j < size) {
                 n--;
                 d &= WSIZE - 1;
                 w &= WSIZE - 1;
-                if (u && w <= d)
-                {
+                if (u && w <= d) {
                     buff[j++] = 0;
                     w++;
                     d++;
-                }
-                else
+                } else
                     buff[j++] = state->slide[w++] = state->slide[d++];
                 if (w == WSIZE)
                     w = u = 0;
             }
-            if (j == size)
-            {
+            if (j == size) {
                 state->u = u;
                 state->n = n;
                 state->d = d;
@@ -797,14 +759,12 @@ implode_open(Codex_t *p, char *const args[], Codexnum_t flags)
 
     if (!(vm = vmopen(Vmdcheap, Vmbest, 0)))
         return -1;
-    if (!(state = newof(0, State_t, 1, 0)))
-    {
+    if (!(state = newof(0, State_t, 1, 0))) {
         vmclose(vm);
         return -1;
     }
     for (a = args; *a; a++)
-        switch (**a)
-        {
+        switch (**a) {
         case 'l':
             state->method |= EXPLODE_LIT;
             break;
@@ -812,8 +772,7 @@ implode_open(Codex_t *p, char *const args[], Codexnum_t flags)
             state->method |= EXPLODE_BIG;
             break;
         }
-    switch (state->method)
-    {
+    switch (state->method) {
     case 0:
         state->explodef = explode_nolit4;
         break;
@@ -865,8 +824,7 @@ implode_init(Codex_t *p)
     state->bd = (state->s > 200000L ? 8 : 7);
 
     /* With literal tree--minimum match length is 3 */
-    if (state->method & EXPLODE_LIT)
-    {
+    if (state->method & EXPLODE_LIT) {
         state->bb = 9; /* base table size for literals */
         if (get_tree(state, state->l, 256) != 0)
             return -1;
@@ -887,8 +845,7 @@ implode_init(Codex_t *p)
         if (get_tree(state, state->l, 64) != 0)
             return -1;
 
-        if (state->method & EXPLODE_BIG)
-        {
+        if (state->method & EXPLODE_BIG) {
             if (huff(state->l,
                      64,
                      0,
@@ -899,9 +856,7 @@ implode_init(Codex_t *p)
                      state->vm)
                 != 0)
                 return -1;
-        }
-        else
-        {
+        } else {
             if (huff(state->l,
                      64,
                      0,
@@ -913,9 +868,7 @@ implode_init(Codex_t *p)
                 != 0)
                 return -1;
         }
-    }
-    else
-    {
+    } else {
         if (get_tree(state, state->l, 64) != 0)
             return -1;
 
@@ -927,8 +880,7 @@ implode_init(Codex_t *p)
         if (get_tree(state, state->l, 64) != 0)
             return -1;
 
-        if (state->method & EXPLODE_BIG)
-        {
+        if (state->method & EXPLODE_BIG) {
             if (huff(state->l,
                      64,
                      0,
@@ -939,9 +891,7 @@ implode_init(Codex_t *p)
                      state->vm)
                 != 0)
                 return -1;
-        }
-        else
-        {
+        } else {
             if (huff(state->l,
                      64,
                      0,
@@ -976,8 +926,7 @@ implode_read(Sfio_t *sp, void *buff, size_t size, Sfdisc_t *disc)
         return size;
 
     j = 0;
-    while (j < size)
-    {
+    while (j < size) {
         if (state->n > 0) /* do the copy */
         {
             ulg u, n, w, d;
@@ -986,18 +935,15 @@ implode_read(Sfio_t *sp, void *buff, size_t size, Sfdisc_t *disc)
             n = state->n;
             d = state->d;
             w = state->w;
-            while (n > 0 && j < size)
-            {
+            while (n > 0 && j < size) {
                 n--;
                 d &= WSIZE - 1;
                 w &= WSIZE - 1;
-                if (u && w <= d)
-                {
+                if (u && w <= d) {
                     (( char * )buff)[j++] = 0;
                     w++;
                     d++;
-                }
-                else
+                } else
                     (( char * )buff)[j++] = state->slide[w++]
                     = state->slide[d++];
                 if (w == WSIZE)

@@ -187,10 +187,8 @@ b_chmod(int argc, char **argv, Shbltin_t *context)
      *	 to allow `chmod -x etc' to fall through
      */
 
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'c':
             notify = 1;
             continue;
@@ -241,8 +239,7 @@ b_chmod(int argc, char **argv, Shbltin_t *context)
     argv += opt_info.index;
     if (error_info.errors || !*argv || !amode && !*(argv + 1))
         error(ERROR_usage(2), "%s", optusage(NiL));
-    if (chlink)
-    {
+    if (chlink) {
         flags &= ~FTS_META;
         flags |= FTS_PHYSICAL;
         logical = 0;
@@ -253,36 +250,30 @@ b_chmod(int argc, char **argv, Shbltin_t *context)
         ignore = umask(0);
     if (amode)
         amode = 0;
-    else
-    {
+    else {
         amode = *argv++;
         mode = strperm(amode, &last, 0);
-        if (*last)
-        {
+        if (*last) {
             if (ignore)
                 umask(ignore);
             error(ERROR_exit(1), "%s: invalid mode", amode);
         }
     }
-    if (!(fts = fts_open(argv, flags, NiL)))
-    {
+    if (!(fts = fts_open(argv, flags, NiL))) {
         if (ignore)
             umask(ignore);
         error(ERROR_system(1), "%s: not found", *argv);
     }
     while (!sh_checksig(context) && (ent = fts_read(fts)))
-        switch (ent->fts_info)
-        {
+        switch (ent->fts_info) {
         case FTS_SL:
         case FTS_SLNONE:
-            if (chlink)
-            {
+            if (chlink) {
 #if _lib_lchmod
                 chmodf = lchmod;
                 goto commit;
 #else
-                if (!force)
-                {
+                if (!force) {
                     errno = ENOSYS;
                     error(ERROR_system(0),
                           "%s: cannot change symlink mode",
@@ -300,8 +291,7 @@ b_chmod(int argc, char **argv, Shbltin_t *context)
 #endif
             if (amode)
                 mode = strperm(amode, &last, ent->fts_statp->st_mode);
-            if (show || (*chmodf)(ent->fts_accpath, mode) >= 0)
-            {
+            if (show || (*chmodf)(ent->fts_accpath, mode) >= 0) {
                 if (notify == 2
                     || notify == 1
                        && (mode & S_IPERM)
@@ -311,8 +301,7 @@ b_chmod(int argc, char **argv, Shbltin_t *context)
                              ent->fts_path,
                              mode,
                              fmtmode(mode, 1) + 1);
-            }
-            else if (!force)
+            } else if (!force)
                 error(
                 ERROR_system(0), "%s: cannot change mode", ent->fts_path);
             break;

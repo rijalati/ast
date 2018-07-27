@@ -119,17 +119,14 @@ svc_read(void *handle, int fd)
     if ((n = csfrom(fd, m = state->msg, sizeof(state->msg) - 1, &addr)) <= 0)
         return (-1);
     m[n] = 0;
-    do
-    {
+    do {
         if (!(e = strchr(m, '\n')))
             return (-1);
         n = ++e - m;
-        if ((pid = strtol(m, NiL, 0)) <= 1)
-        {
+        if ((pid = strtol(m, NiL, 0)) <= 1) {
             for (s = m; *s && (*s < '0' || *s > '9'); s++)
                 ;
-            switch (*m)
-            {
+            switch (*m) {
             case 'd':
                 if ((c = strtol(s, NiL, 0)) >= DECAY_MIN && c <= DECAY_MAX)
                     state->decay = c;
@@ -147,10 +144,8 @@ svc_read(void *handle, int fd)
                               state->active,
                               state->decay,
                               state->expire);
-                if (pos = hashscan(state->pids, 0))
-                {
-                    while (pp = ( Pid_t * )hashnext(pos))
-                    {
+                if (pos = hashscan(state->pids, 0)) {
+                    while (pp = ( Pid_t * )hashnext(pos)) {
                         n += sfsprintf(m + n,
                                        sizeof(state->buf) - n,
                                        "%6d %ld",
@@ -177,8 +172,7 @@ svc_read(void *handle, int fd)
                               getpid());
                 break;
             default:
-                if (*m < '0' || *m > '9')
-                {
+                if (*m < '0' || *m > '9') {
                     if (n > 0)
                         m[n - 1] = 0;
                     n = sfsprintf(state->buf,
@@ -190,52 +184,41 @@ svc_read(void *handle, int fd)
                 break;
             }
             csto(fd, m, n, &addr);
-        }
-        else if (pp = ( Pid_t * )hashlook(
-                 state->pids, ( char * )&pid, HASH_LOOKUP, NiL))
-        {
-            if (kill(pid, 0) && errno == ESRCH)
-            {
+        } else if (pp = ( Pid_t * )hashlook(
+                   state->pids, ( char * )&pid, HASH_LOOKUP, NiL)) {
+            if (kill(pid, 0) && errno == ESRCH) {
                 csto(fd, m, n, &addr);
                 np = pp->notify;
-                while (np)
-                {
+                while (np) {
                     csto(fd, m, n, &np->addr);
                     pn = np;
                     np = np->next;
                     free(pn);
                 }
                 hashlook(state->pids, NiL, HASH_DELETE, NiL);
-                if (!--state->active)
-                {
+                if (!--state->active) {
                     state->dormant = 1;
                     cswakeup(CS_SVC_DORMANT * 1000L);
                 }
-            }
-            else if (np = newof(0, Notify_t, 1, 0))
-            {
+            } else if (np = newof(0, Notify_t, 1, 0)) {
                 np->addr = addr;
                 np->next = pp->notify;
                 pp->notify = np;
             }
-        }
-        else if (kill(pid, 0) && errno == ESRCH)
+        } else if (kill(pid, 0) && errno == ESRCH)
             csto(fd, m, n, &addr);
         else if (pp
                  = ( Pid_t * )hashlook(state->pids,
                                        NiL,
                                        HASH_CREATE | HASH_SIZE(sizeof(Pid_t)),
-                                       NiL))
-        {
+                                       NiL)) {
             pp->pid = pid;
-            if (np = newof(0, Notify_t, 1, 0))
-            {
+            if (np = newof(0, Notify_t, 1, 0)) {
                 np->addr = addr;
                 np->next = pp->notify;
                 pp->notify = np;
                 pp->expire = cs.time + (pp->decay = state->expire);
-                if (!state->active++)
-                {
+                if (!state->active++) {
                     state->dormant = 0;
                     cswakeup(pp->decay * 1000L);
                 }
@@ -263,19 +246,14 @@ svc_timeout(void *handle)
     if (state->dormant)
         exit(0);
     wakeup = ~0;
-    if (pos = hashscan(state->pids, 0))
-    {
-        while (pp = ( Pid_t * )hashnext(pos))
-        {
-            if (pp->expire <= cs.time)
-            {
-                if (kill(pp->pid, 0) && errno == ESRCH)
-                {
+    if (pos = hashscan(state->pids, 0)) {
+        while (pp = ( Pid_t * )hashnext(pos)) {
+            if (pp->expire <= cs.time) {
+                if (kill(pp->pid, 0) && errno == ESRCH) {
                     n = sfsprintf(
                     state->msg, sizeof(state->msg), "%u\n", pp->pid);
                     np = pp->notify;
-                    while (np)
-                    {
+                    while (np) {
                         csto(0, state->msg, n, &np->addr);
                         pn = np;
                         np = np->next;
@@ -295,12 +273,10 @@ svc_timeout(void *handle)
         }
         hashdone(pos);
     }
-    if (wakeup == ~0)
-    {
+    if (wakeup == ~0) {
         state->dormant = 1;
         wakeup = CS_SVC_DORMANT;
-    }
-    else
+    } else
         wakeup -= cs.time;
     cswakeup(wakeup * 1000L);
     return (0);

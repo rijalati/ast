@@ -39,8 +39,7 @@ swapput(int op, void *b, int n, intmax_t v)
 {
     char *p = ( char * )b + n;
 
-    while (p > ( char * )b)
-    {
+    while (p > ( char * )b) {
         *--p = v;
         v >>= CHAR_BIT;
     }

@@ -88,22 +88,18 @@ int mode;        /* type of region		*/
     addr = NIL(Vmuchar_t *);
     size = 0;
 
-    if (disc->exceptf)
-    {
+    if (disc->exceptf) {
         if ((rv = (*disc->exceptf)(vmp, VM_OPEN, ( Void_t * )(&addr), disc))
-            < 0)
-        {
+            < 0) {
             if (initheap)
                 write(
                 9, "vmalloc: panic: heap initialization error #1\n", 45);
             return NIL(Vmalloc_t *);
-        }
-        else if (rv == 0) /* normal case of region opening */
+        } else if (rv == 0) /* normal case of region opening */
         {
             if (addr) /* Vmalloc_t will be kept along with Vmdata_t */
                 mode |= VM_MEMORYF;
-        }
-        else if (rv > 0) /* region opened before and now being restored */
+        } else if (rv > 0) /* region opened before and now being restored */
         {
             if (!(vd
                   = ( Vmdata_t * )addr)) /* addr should point to Vmdata_t */
@@ -121,8 +117,7 @@ int mode;        /* type of region		*/
     }
 
     /* construct the Vmdata_t structure */
-    if (!vd)
-    { /* amount to round to when getting raw memory via discipline */
+    if (!vd) { /* amount to round to when getting raw memory via discipline */
         incr
         = disc->round <= 0 ? _Vmpagesize : ROUND(disc->round, _Vmpagesize);
 
@@ -132,8 +127,7 @@ int mode;        /* type of region		*/
         vdsz
         = 0; /* get actual size of Vmdata_t including method specific data */
         if (!meth->eventf || (*meth->eventf)(vmp, VM_OPEN, &vdsz) < 0
-            || vdsz <= 0)
-        {
+            || vdsz <= 0) {
             if (initheap)
                 write(
                 9, "vmalloc: panic: heap initialization error #3\n", 45);
@@ -150,8 +144,7 @@ int mode;        /* type of region		*/
         size = ROUND(size, incr); /**/
         DEBUG_ASSERT(size % MEM_ALIGN == 0);
         if (!(base = ( Vmuchar_t * )(*disc->memoryf)(
-              vmp, NIL(Void_t *), 0, size, disc)))
-        {
+              vmp, NIL(Void_t *), 0, size, disc))) {
             if (initheap)
                 write(
                 9, "vmalloc: panic: heap initialization error #4\n", 45);
@@ -191,8 +184,7 @@ int mode;        /* type of region		*/
     /* now make the region handle */
     if (vmo)
         vm = vmp;
-    else
-    {
+    else {
         if (initheap)
             vm = Vmheap;
         else if (vd->mode
@@ -218,12 +210,10 @@ int mode;        /* type of region		*/
     if (disc->exceptf) /* signaling to application that vmopen succeeded */
         ( void )(*disc->exceptf)(vm, VM_ENDOPEN, NIL(Void_t *), disc);
 
-    if (vmo)
-    {
+    if (vmo) {
         *vmo = *vm;
         vm = vmo;
-    }
-    else if (vm != Vmheap) /* locklessly adding vm to list of regions */
+    } else if (vm != Vmheap) /* locklessly adding vm to list of regions */
     {
         Vmhold_t *vh, *cvh;
 
@@ -233,18 +223,15 @@ int mode;        /* type of region		*/
                 break;
         if (!vh) /* need a new slot */
         {
-            if (!(vh = vmalloc(Vmheap, sizeof(Vmhold_t))))
-            {
+            if (!(vh = vmalloc(Vmheap, sizeof(Vmhold_t)))) {
                 vmclose(vm);
                 if (initheap)
                     write(
                     9, "vmalloc: panic: heap initialization error #6\n", 45);
                 return NIL(Vmalloc_t *);
-            }
-            else
+            } else
                 vh->vm = vm;
-            for (;;)
-            {
+            for (;;) {
                 vh->next = cvh = _Vmhold;
                 if (asocasptr(&_Vmhold, cvh, vh) == cvh)
                     break;

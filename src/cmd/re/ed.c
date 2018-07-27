@@ -98,8 +98,7 @@ static const char usage[]
 #define errorf fatalf
 #define splice splicef
 #define trap()                                                               \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         if (ed.caught)                                                       \
             handle();                                                        \
     } while (0)
@@ -206,23 +205,19 @@ quit(int);
 static void
 eat(void)
 {
-    if (ed.global)
-    {
+    if (ed.global) {
         if (!*ed.global++)
             ed.global = 0;
         ed.lastc = '\n';
-    }
-    else
+    } else
         ed.input = 0;
 }
 
 static void
 reset(int level)
 {
-    if (level >= 2)
-    {
-        if (ed.iop)
-        {
+    if (level >= 2) {
+        if (ed.iop) {
             sfclose(ed.iop);
             ed.iop = 0;
             error_info.file = 0;
@@ -267,12 +262,10 @@ static void
 interrupt(int sig)
 {
     signal(sig, interrupt);
-    if (ed.initialized)
-    {
+    if (ed.initialized) {
         if (!ed.caught)
             ed.caught = sig;
-    }
-    else if (!ed.pending)
+    } else if (!ed.pending)
         ed.pending = sig;
 }
 
@@ -281,22 +274,18 @@ getchr(void)
 {
     int n;
 
-    if (ed.lastc = ed.peekc)
-    {
+    if (ed.lastc = ed.peekc) {
         ed.peekc = 0;
         return ed.lastc;
     }
-    if (ed.global)
-    {
+    if (ed.global) {
         if (ed.lastc = *ed.global++)
             return ed.lastc;
         ed.global = 0;
         return EOF;
     }
-    if (!ed.input)
-    {
-        if (!(ed.input = sfgetr(sfstdin, '\n', 1)))
-        {
+    if (!ed.input) {
+        if (!(ed.input = sfgetr(sfstdin, '\n', 1))) {
             trap();
             return EOF;
         }
@@ -306,8 +295,7 @@ getchr(void)
         ed.spend
         = (n >= 0 && ed.input[n] == '\\') ? (ed.input + n) : ( char * )0;
     }
-    if (!(ed.lastc = *ed.input++))
-    {
+    if (!(ed.lastc = *ed.input++)) {
         ed.input = 0;
         ed.lastc = '\n';
     }
@@ -320,24 +308,19 @@ splice(void)
     char *s;
     int n;
 
-    if (ed.spend)
-    {
+    if (ed.spend) {
         if (!ed.spl && !(ed.spl = sfstropen()))
             error(ERROR_SYSTEM | 3, "cannot initialize splice buffer");
         sfwrite(ed.spl, ed.spbeg, ed.spend - ed.spbeg);
         ed.spend = 0;
         sfputc(ed.spl, '\n');
-        while (s = sfgetr(sfstdin, '\n', 1))
-        {
+        while (s = sfgetr(sfstdin, '\n', 1)) {
             if ((n = sfvalue(sfstdin) - 1) > 0 && s[n - 1] == '\r')
                 n--;
-            if (n > 0 && s[n - 1] == '\\')
-            {
+            if (n > 0 && s[n - 1] == '\\') {
                 sfwrite(ed.spl, s, n - 1);
                 sfputc(ed.spl, '\n');
-            }
-            else
-            {
+            } else {
                 sfwrite(ed.spl, s, n);
                 break;
             }
@@ -351,8 +334,7 @@ splice(void)
 static char *
 input(int n)
 {
-    if (ed.peekc)
-    {
+    if (ed.peekc) {
         ed.peekc = 0;
         n--;
     }
@@ -400,8 +382,7 @@ init(void)
             signal(signals[c], SIG_IGN);
     for (ss = ( Sfio_t ** )&ed.buffer;
          ss < ( Sfio_t ** )((( char * )&ed.buffer) + sizeof(ed.buffer));
-         ss++)
-    {
+         ss++) {
         if (!(*ss = sfstropen()))
             error(ERROR_SYSTEM | 3, "cannot initialize internal buffer");
         sfputc(*ss, 0);
@@ -420,15 +401,12 @@ getrec(Sfio_t *sp, int delimiter, int flags)
 
     sfstrseek(sp, 0, SEEK_SET);
     glob = ed.global;
-    while ((c = getchr()) != delimiter)
-    {
-        if (c == '\n')
-        {
+    while ((c = getchr()) != delimiter) {
+        if (c == '\n') {
             ed.peekc = c;
             break;
         }
-        if (c == EOF)
-        {
+        if (c == EOF) {
             if (glob)
                 ed.peekc = (flags & REC_LINE) ? 0 : c;
             else if (delimiter != '\n' || (flags & (REC_LINE | REC_SPLICE)))
@@ -460,33 +438,28 @@ putrec(char *s)
     int n;
     char *t;
 
-    if ((ed.print & REG_SUB_LIST) && (t = fmtesc(s)))
-    {
+    if ((ed.print & REG_SUB_LIST) && (t = fmtesc(s))) {
         s = t;
         n = strlen(s);
-        while (n > BREAK_LINE)
-        {
+        while (n > BREAK_LINE) {
             n -= BREAK_LINE;
             sfprintf(ed.msg, "%-*.*s\\\n", BREAK_LINE, BREAK_LINE, s);
             s += BREAK_LINE;
         }
         sfprintf(ed.msg, "%s$\n", s);
-    }
-    else
+    } else
         sfputr(ed.msg, s, '\n');
 }
 
 static void
 modify(void)
 {
-    if (!ed.evented)
-    {
+    if (!ed.evented) {
         ed.evented = ed.modified = 1;
         ed.event++;
         ed.undo.dot = ed.dot - ed.zero;
         ed.undo.dol = ed.dol - ed.zero;
-        if (ed.marked)
-        {
+        if (ed.marked) {
             int c;
 
             for (c = 0; c < elementsof(ed.marks); c++)
@@ -510,8 +483,7 @@ undo(void)
     a1 = ed.zero;
     a3 = ed.zero + ed.all;
     while (++a1 < a3)
-        if (a1->event == event)
-        {
+        if (a1->event == event) {
             c = 1;
             t = a1->offset;
             a1->offset = a1->undo;
@@ -520,8 +492,7 @@ undo(void)
     if (!c)
         error(2, "nothing to undo");
     if (ed.marked)
-        for (c = 0; c < elementsof(ed.marks); c++)
-        {
+        for (c = 0; c < elementsof(ed.marks); c++) {
             t = ed.marks[c];
             ed.marks[c] = ed.undo.marks[c];
             ed.undo.marks[c] = t;
@@ -575,8 +546,7 @@ replace(Line_t *a1, char *s)
     off_t off;
 
     off = lineput(s);
-    if (a1->offset & LINE_MARKED)
-    {
+    if (a1->offset & LINE_MARKED) {
         off_t *mp;
 
         a1->offset &= ~LINE_GLOBAL;
@@ -614,16 +584,14 @@ getfile(void)
     int n;
     int m;
 
-    if (!(s = sfgetr(ed.iop, '\n', 1)))
-    {
+    if (!(s = sfgetr(ed.iop, '\n', 1))) {
         if (!(s = sfgetr(ed.iop, '\n', -1)))
             return 0;
         ed.warn_newline = 1;
     }
     if ((n = sfvalue(ed.iop)) > 0 && s[n - 1] == '\r')
         s[--n] = 0;
-    if ((m = strlen(s)) < n)
-    {
+    if ((m = strlen(s)) < n) {
         char *t;
         char *u;
         char *x;
@@ -677,8 +645,7 @@ print(void)
 
     nonzero();
     a1 = ed.addr1;
-    do
-    {
+    do {
         if (ed.print & REG_SUB_NUMBER)
             sfprintf(ed.msg, "%d\t", a1 - ed.zero);
         putrec(lineget((a1++)->offset));
@@ -707,31 +674,24 @@ compile(void)
     int c;
 
     s = input(0);
-    if (*s)
-    {
-        if (*(s + 1))
-        {
+    if (*s) {
+        if (*(s + 1)) {
             if (*s == *(s + 1))
                 input(2);
-            else
-            {
-                if (ed.compiled)
-                {
+            else {
+                if (ed.compiled) {
                     ed.compiled = 0;
                     regfree(&ed.re);
                 }
-                if (c = regcomp(&ed.re, s, ed.reflags))
-                {
+                if (c = regcomp(&ed.re, s, ed.reflags)) {
                     regfatal(&ed.re, 2, c);
                     eat();
-                }
-                else
+                } else
                     input(ed.re.re_npat);
                 ed.compiled = 1;
                 return;
             }
-        }
-        else
+        } else
             input(1);
     }
     if (!ed.compiled)
@@ -749,14 +709,12 @@ execute(Line_t *addr, regflags_t flags)
         s = CUR();
     else if (addr == ed.zero)
         return 0;
-    else
-    {
+    else {
         s = lineget(addr->offset);
         SET(s, 0);
     }
     if (c = regexec(
-        &ed.re, s, elementsof(ed.match), ed.match, ed.reflags | flags))
-    {
+        &ed.re, s, elementsof(ed.match), ed.match, ed.reflags | flags)) {
         if (c != REG_NOMATCH)
             regfatal(&ed.re, 2, c);
         return 0;
@@ -778,21 +736,17 @@ address(void)
     sign = 1;
     opcnt = 0;
     a = ed.dot;
-    do
-    {
+    do {
         do
             c = getchr();
         while (isspace(c) && c != '\n');
-        if (c >= '0' && c <= '9')
-        {
+        if (c >= '0' && c <= '9') {
             ed.peekc = c;
             if (!opcnt)
                 a = ed.zero;
             a += sign * getnum();
-        }
-        else
-            switch (c)
-            {
+        } else
+            switch (c) {
 
             case '$':
                 a = ed.dol;
@@ -807,8 +761,7 @@ address(void)
                     || c >= elementsof(ed.marks) || opcnt)
                     error(2, "invalid mark");
                 a = ed.marked && ed.marks[c] != LINE_NONE ? ed.zero : ed.dol;
-                do
-                {
+                do {
                     if (++a > ed.dol)
                         error(2, "undefined mark referenced");
                 } while (ed.marks[c] != (a->offset & ~LINE_GLOBAL));
@@ -821,8 +774,7 @@ address(void)
                 input(-1);
                 compile();
                 b = a;
-                for (;;)
-                {
+                for (;;) {
                     a += sign;
                     if (a <= ed.zero)
                         a = ed.dol;
@@ -836,14 +788,12 @@ address(void)
                 break;
 
             default:
-                if (nextopand == opcnt)
-                {
+                if (nextopand == opcnt) {
                     a += sign;
                     if (a < ed.zero || ed.dol < a)
                         continue; /* error? */
                 }
-                if (c != '+' && c != '-' && c != '^')
-                {
+                if (c != '+' && c != '-' && c != '^') {
                     ed.peekc = c;
                     if (!opcnt)
                         a = 0;
@@ -865,8 +815,7 @@ address(void)
 static void
 setwide(void)
 {
-    if (!ed.given)
-    {
+    if (!ed.given) {
         ed.addr1 = ed.zero + (ed.dol > ed.zero);
         ed.addr2 = ed.dol;
     }
@@ -885,8 +834,7 @@ newline(void)
     int warned = 0;
 
     for (;;)
-        switch (getchr())
-        {
+        switch (getchr()) {
 
         case EOF:
         case '\n':
@@ -905,8 +853,7 @@ newline(void)
             continue;
 
         default:
-            if (!warned)
-            {
+            if (!warned) {
                 warned = 1;
                 error(2, "extra characters at end of command");
             }
@@ -926,10 +873,8 @@ exfile(void)
     if (sfclose(ed.iop))
         error(ERROR_SYSTEM | 1, "io error");
     ed.iop = 0;
-    if (ed.verbose)
-    {
-        if (ed.help)
-        {
+    if (ed.verbose) {
+        if (ed.help) {
             sfprintf(ed.msg,
                      "\"%s\" %lu line%s, %lu character%s",
                      error_info.file,
@@ -937,29 +882,24 @@ exfile(void)
                      plural(ed.lines),
                      ed.bytes,
                      plural(ed.bytes));
-            if (ed.warn_null)
-            {
+            if (ed.warn_null) {
                 sfprintf(
                 ed.msg, ", %lu null%s", ed.warn_null, plural(ed.warn_null));
                 ed.warn_null = 0;
             }
-            if (ed.warn_newline)
-            {
+            if (ed.warn_newline) {
                 sfprintf(ed.msg, ", newline appended");
                 ed.warn_newline = 0;
             }
             sfputc(ed.msg, '\n');
-        }
-        else
+        } else
             sfprintf(ed.msg, "%d\n", ed.bytes);
     }
-    if (ed.warn_null || ed.warn_newline)
-    {
+    if (ed.warn_null || ed.warn_newline) {
         char *sep = "";
 
         sfstrseek(ed.buffer.line, 0, SEEK_SET);
-        if (ed.warn_null)
-        {
+        if (ed.warn_null) {
             sfprintf(ed.buffer.line,
                      "%d null character%s ignored",
                      ed.warn_null,
@@ -967,8 +907,7 @@ exfile(void)
             ed.warn_null = 0;
             sep = ", ";
         }
-        if (ed.warn_newline)
-        {
+        if (ed.warn_newline) {
             sfprintf(ed.buffer.line, "%snewline appended to last line", sep);
             ed.warn_newline = 0;
         }
@@ -988,8 +927,7 @@ putfile(void)
     ed.bytes = 0;
     ed.lines = 0;
     a1 = ed.addr1;
-    do
-    {
+    do {
         if ((n = sfputr(ed.iop, lineget((a1++)->offset), '\n')) < 0)
             error(ERROR_SYSTEM | 2, "write error");
         ed.bytes += n;
@@ -1002,18 +940,15 @@ putfile(void)
 static void
 quit(int code)
 {
-    if (ed.tmpfile)
-    {
+    if (ed.tmpfile) {
         remove(ed.tmpfile);
         ed.tmpfile = 0;
     }
-    if (ed.verbose && ed.modified && ed.dol != ed.zero)
-    {
+    if (ed.verbose && ed.modified && ed.dol != ed.zero) {
         ed.modified = 0;
         error(2, "file changed but not written");
     }
-    if (ed.caught == SIGQUIT)
-    {
+    if (ed.caught == SIGQUIT) {
         signal(ed.caught, SIG_DFL);
         kill(0, ed.caught);
     }
@@ -1028,8 +963,7 @@ handle(void)
     char *b;
     mode_t mask;
 
-    if (ed.caught == SIGINT)
-    {
+    if (ed.caught == SIGINT) {
         ed.caught = 0;
         ed.lastc = '\n';
         sfputc(ed.msg, '\n');
@@ -1037,15 +971,13 @@ handle(void)
     }
     for (c = 0; c < elementsof(signals); c++)
         signal(signals[c], SIG_IGN);
-    if (ed.dol > ed.zero)
-    {
+    if (ed.dol > ed.zero) {
         ed.addr1 = ed.zero + 1;
         ed.addr2 = ed.dol;
         mask = umask(S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
         b = "ed.hup";
         if (!(ed.iop = sfopen(NiL, b, "w")) && !ed.restricted
-            && (s = getenv("HOME")))
-        {
+            && (s = getenv("HOME"))) {
             sfstrseek(ed.buffer.line, 0, SEEK_SET);
             sfprintf(ed.buffer.line, "%s/%s", s, b);
             if (!(b = sfstruse(ed.buffer.line)))
@@ -1055,8 +987,7 @@ handle(void)
         umask(mask);
         if (!ed.iop)
             error(ERROR_SYSTEM | 1, "%s: cannot save changes", b);
-        else
-        {
+        else {
             error_info.file = b;
             putfile();
         }
@@ -1077,18 +1008,15 @@ append(char *(*f)( void ), Line_t *a, Line_t **r)
 
     added = 0;
     ed.dot = a;
-    while (s = (*f)())
-    {
+    while (s = (*f)()) {
         trap();
-        if ((ed.dol - ed.zero) + 1 >= ed.all)
-        {
+        if ((ed.dol - ed.zero) + 1 >= ed.all) {
             unsigned long dot_off = ed.dot - ed.zero;
             unsigned long dol_off = ed.dol - ed.zero;
             unsigned long r_off = r ? *r - ed.zero : 0;
 
             ed.all += BLOCK_LINE;
-            if (!(ed.zero = newof(ed.zero, Line_t, ed.all, 0)))
-            {
+            if (!(ed.zero = newof(ed.zero, Line_t, ed.all, 0))) {
                 error(ERROR_SYSTEM | 1, "no space [zero]");
                 ed.caught = SIGHUP;
                 trap();
@@ -1103,8 +1031,7 @@ append(char *(*f)( void ), Line_t *a, Line_t **r)
         a1 = ++ed.dol;
         a2 = a1 + 1;
         a3 = ++ed.dot;
-        while (a1 > a3)
-        {
+        while (a1 > a3) {
             (--a2)->event = ed.event;
             a2->undo = a2->offset;
             a2->offset = (--a1)->offset;
@@ -1121,8 +1048,7 @@ append(char *(*f)( void ), Line_t *a, Line_t **r)
 static void
 add(int i)
 {
-    if (i && (ed.given || ed.dol > ed.zero))
-    {
+    if (i && (ed.given || ed.dol > ed.zero)) {
         ed.addr1--;
         ed.addr2--;
     }
@@ -1137,8 +1063,7 @@ page(void)
     int direction;
     int n;
 
-    switch (direction = getchr())
-    {
+    switch (direction = getchr()) {
 
     case '-':
     case '.':
@@ -1157,8 +1082,7 @@ page(void)
         ed.page.print = ed.print;
     else
         ed.print = ed.page.print;
-    switch (direction)
-    {
+    switch (direction) {
 
     case '-':
         ed.addr1 = ed.addr2 - ed.page.size + 1;
@@ -1190,14 +1114,12 @@ rdelete(Line_t *a1, Line_t *a2)
     a3 = ed.dol;
     ed.dol -= ++a2 - a1;
     ed.dot = a1 > ed.dol ? ed.dol : a1;
-    do
-    {
+    do {
         a1->undo = a1->offset;
         a1->event = ed.event;
         (a1++)->offset = (a2++)->offset;
     } while (a2 <= a3);
-    while (a1 <= a3)
-    {
+    while (a1 <= a3) {
         a1->undo = a1->offset;
         (a1++)->event = ed.event;
     }
@@ -1215,23 +1137,19 @@ gdelete(void)
         if (a1 >= a3)
             return;
     modify();
-    for (a2 = a1 + 1; a2 <= a3;)
-    {
+    for (a2 = a1 + 1; a2 <= a3;) {
         a1->event = ed.event;
         a1->undo = a1->offset;
-        if (a2->offset & LINE_GLOBAL)
-        {
+        if (a2->offset & LINE_GLOBAL) {
             a2++;
             ed.dot = a1;
-        }
-        else
+        } else
             (a1++)->offset = (a2++)->offset;
     }
     ed.dol = a1 - 1;
     if (ed.dot > ed.dol)
         ed.dot = ed.dol;
-    while (a1 <= a3)
-    {
+    while (a1 <= a3) {
         a1->undo = a1->offset;
         (a1++)->event = ed.event;
     }
@@ -1247,34 +1165,28 @@ shell(void)
     if (ed.given)
         squeeze(ed.dol > ed.zero);
     s = getrec(ed.buffer.line, '\n', 0);
-    if (s[0] == '!' && !s[1])
-    {
+    if (s[0] == '!' && !s[1]) {
         if (!*sfstrbase(ed.buffer.shell))
             error(2, "no saved shell command");
         f = sfstrbase(ed.buffer.file);
-    }
-    else if (!s[0])
+    } else if (!s[0])
         error(2, "empty shell command");
     else
         SWP(ed.buffer.shell, ed.buffer.line);
     s = sfstrbase(ed.buffer.shell);
     sfstrseek(ed.buffer.line, 0, SEEK_SET);
     sfputc(ed.buffer.line, '!');
-    while (c = *s++)
-    {
-        if (c == '\\')
-        {
+    while (c = *s++) {
+        if (c == '\\') {
             if (*s != '%')
                 sfputc(ed.buffer.line, c);
             sfputc(ed.buffer.line, *s++);
-        }
-        else if (c == '%')
+        } else if (c == '%')
             sfputr(ed.buffer.line, f = sfstrbase(ed.buffer.file), -1);
         else
             sfputc(ed.buffer.line, c);
     }
-    if (ed.given)
-    {
+    if (ed.given) {
         if (!ed.tmpfile
             && !(ed.tmpfile = pathtemp(NiL, 0, NiL, error_info.id, NiL)))
             error(ERROR_SYSTEM | 2, "cannot generate temp file name");
@@ -1297,9 +1209,7 @@ shell(void)
         append(getfile, ed.dot, NiL);
         exfile();
         remove(ed.tmpfile);
-    }
-    else
-    {
+    } else {
         if (!(s = sfstruse(ed.buffer.line)))
             error(ERROR_SYSTEM | 3, "out of space");
         s++;
@@ -1307,8 +1217,7 @@ shell(void)
             putrec(s);
         if (!(ed.iop = sfpopen(NiL, s, "")))
             error(ERROR_SYSTEM | 2, "%s: cannot execute shell command", s);
-        if (sfclose(ed.iop))
-        {
+        if (sfclose(ed.iop)) {
             ed.iop = 0;
             error(ERROR_SYSTEM | 2, "%s: shell command exit error", s);
         }
@@ -1322,8 +1231,7 @@ edit(void)
 {
     off_t *mp;
 
-    if (ed.tmp)
-    {
+    if (ed.tmp) {
         sfclose(ed.tmp);
         ed.tmp = 0;
     }
@@ -1335,8 +1243,7 @@ edit(void)
     ed.marked = 0;
     ed.event++;
     ed.dot = ed.dol = ed.zero;
-    if (!ed.initialized)
-    {
+    if (!ed.initialized) {
         ed.initialized = 1;
         if (ed.pending)
             ed.caught = ed.pending;
@@ -1352,35 +1259,28 @@ filename(int c)
     ed.bytes = 0;
     ed.lines = 0;
     p = getrec(ed.buffer.line, '\n', REC_LINE);
-    if (*p)
-    {
+    if (*p) {
         if (!isspace(*p))
             error(2, "no space after command");
         for (p++; isspace(*p); p++)
             ;
         if (!*p)
             error(2, "file name expected");
-        if (c != 'f')
-        {
-            if (*p == '!')
-            {
+        if (c != 'f') {
+            if (*p == '!') {
                 p++;
                 sh = 1;
-            }
-            else if (*p == '\\' && *(p + 1) == '!')
+            } else if (*p == '\\' && *(p + 1) == '!')
                 p++;
         }
-        if (ed.restricted)
-        {
+        if (ed.restricted) {
             char *s = p;
 
             if (sh)
                 p--;
             else
-                for (;;)
-                {
-                    switch (*s++)
-                    {
+                for (;;) {
+                    switch (*s++) {
                     case 0:
                         break;
                     case '/':
@@ -1396,36 +1296,29 @@ filename(int c)
             if (sh)
                 error(2, "%s: restricted file name", p);
         }
-        if (!sh && (!*sfstrbase(ed.buffer.file) || c == 'e' || c == 'f'))
-        {
+        if (!sh && (!*sfstrbase(ed.buffer.file) || c == 'e' || c == 'f')) {
             sfstrseek(ed.buffer.file, 0, SEEK_SET);
             sfputr(ed.buffer.file, p, 0);
         }
         if (c == 'f')
             return;
-    }
-    else if (c == 'f')
+    } else if (c == 'f')
         return;
     else if (!*(p = sfstrbase(ed.buffer.file)))
         error(2, "file name expected");
-    if (c == 'e')
-    {
+    if (c == 'e') {
         edit();
         ed.addr2 = ed.zero;
     }
-    if (sh)
-    {
+    if (sh) {
         if (!(ed.iop = sfpopen(NiL, p, (c == 'e' || c == 'r') ? "r" : "w")))
             error(ERROR_SYSTEM | 2, "%s: cannot execute shell command", p);
         p--;
-    }
-    else if (c == 'e' || c == 'r')
-    {
+    } else if (c == 'e' || c == 'r') {
         if (!(ed.iop = sfopen(NiL, p, "r")))
             error(ERROR_SYSTEM | 2, "%s: cannot read", p);
-    }
-    else if ((c != 'W' || !(ed.iop = sfopen(NiL, p, "a")))
-             && !(ed.iop = sfopen(NiL, p, "w")))
+    } else if ((c != 'W' || !(ed.iop = sfopen(NiL, p, "a")))
+               && !(ed.iop = sfopen(NiL, p, "w")))
         error(ERROR_SYSTEM | 2, "%s: cannot write", p);
     error_info.file = p;
 }
@@ -1444,14 +1337,12 @@ global(int sense, int query)
     compile();
     if (query)
         newline();
-    else
-    {
+    else {
         s = getrec(ed.buffer.global, '\n', REC_SPLICE | REC_TERMINATE);
         if (s[0] == '\n' && !s[1])
             sfputr(ed.buffer.global, "p\n", 0);
     }
-    for (a1 = ed.zero; a1 <= ed.dol; a1++)
-    {
+    for (a1 = ed.zero; a1 <= ed.dol; a1++) {
         a1->offset &= ~LINE_GLOBAL;
         if (a1 >= ed.addr1 && a1 <= ed.addr2 && execute(a1, 0) == sense)
             a1->offset |= LINE_GLOBAL;
@@ -1461,35 +1352,27 @@ global(int sense, int query)
 
     if (!query && s[0] == 'd' && s[1] == '\n' && !s[2])
         gdelete();
-    else
-    {
-        for (a1 = ed.zero; a1 <= ed.dol; a1++)
-        {
-            if (a1->offset & LINE_GLOBAL)
-            {
+    else {
+        for (a1 = ed.zero; a1 <= ed.dol; a1++) {
+            if (a1->offset & LINE_GLOBAL) {
                 a1->offset &= ~LINE_GLOBAL;
                 ed.dot = a1;
-                if (query)
-                {
+                if (query) {
                     putrec(lineget(a1->offset));
                     if ((c = getchr()) == EOF)
                         break;
                     else if (c == '\n')
                         continue;
-                    else if (c == '&')
-                    {
+                    else if (c == '&') {
                         newline();
                         if (!*(ed.global = sfstrbase(ed.buffer.query)))
                             error(2, "no saved command");
-                    }
-                    else
-                    {
+                    } else {
                         ed.peekc = c;
                         ed.global
                         = getrec(ed.buffer.query, '\n', REC_TERMINATE);
                     }
-                }
-                else
+                } else
                     ed.global = s;
                 commands();
                 a1 = ed.zero;
@@ -1529,8 +1412,7 @@ substitute(int inglob)
     splice();
     if (n = regsubcomp(&ed.re, input(0), submap, n, 0))
         regfatal(&ed.re, 2, n);
-    else
-    {
+    else {
         if (!(ed.re.re_sub->re_flags & REG_SUB_FULL))
             ed.re.re_sub->re_flags |= REG_SUB_PRINT;
         if ((n = *input(ed.re.re_npat)) && n != '\r' && n != '\n')
@@ -1538,20 +1420,16 @@ substitute(int inglob)
         ed.print = ed.re.re_sub->re_flags;
     }
     eat();
-    for (a1 = ed.addr1; a1 <= ed.addr2; a1++)
-    {
-        if (execute(a1, 0))
-        {
-            if (!regsubexec(&ed.re, CUR(), elementsof(ed.match), ed.match))
-            {
+    for (a1 = ed.addr1; a1 <= ed.addr2; a1++) {
+        if (execute(a1, 0)) {
+            if (!regsubexec(&ed.re, CUR(), elementsof(ed.match), ed.match)) {
                 inglob = 1;
                 s = ed.re.re_sub->re_buf;
                 SET(s, ed.re.re_sub->re_len);
                 if (e = strchr(s, '\n'))
                     *e++ = 0;
                 replace(a1, s);
-                if (e)
-                {
+                if (e) {
                     ed.linebreak = e;
                     a1 = append(getbreak, a1, &ed.addr2);
                 }
@@ -1567,8 +1445,7 @@ static void
 reverse(Line_t *a1, Line_t *a2)
 {
     modify();
-    while (--a2 > a1)
-    {
+    while (--a2 > a1) {
         a1->event = a2->event = ed.event;
         a2->undo = a2->offset;
         a2->offset = a1->undo = a1->offset;
@@ -1589,40 +1466,33 @@ move(int cflag)
     if (!(adt = address()))
         error(2, "invalid move destination");
     newline();
-    if (cflag)
-    {
+    if (cflag) {
         ad1_off = ed.dol - ed.zero + 1;
         adt_off = adt - ed.zero;
         append(getcopy, ed.dol, NiL);
         ad1 = ed.zero + ad1_off;
         ad2 = ed.dol;
         adt = ed.zero + adt_off;
-    }
-    else
-    {
+    } else {
         ad2 = ed.addr2;
         for (ad1 = ed.addr1; ad1 <= ad2; ad1++)
             ad1->offset &= ~LINE_GLOBAL;
         ad1 = ed.addr1;
     }
     ad2++;
-    if (adt < ad1)
-    {
+    if (adt < ad1) {
         ed.dot = adt + (ad2 - ad1);
         if (++adt == ad1)
             return;
         reverse(adt, ad1);
         reverse(ad1, ad2);
         reverse(adt, ad2);
-    }
-    else if (adt >= ad2)
-    {
+    } else if (adt >= ad2) {
         ed.dot = adt++;
         reverse(ad1, ad2);
         reverse(ad2, adt);
         reverse(ad1, adt);
-    }
-    else
+    } else
         error(2, "move would do nothing");
 }
 
@@ -1635,34 +1505,27 @@ commands(void)
     char *s;
     int lastsep;
 
-    for (;;)
-    {
+    for (;;) {
         trap();
-        if (ed.print & (REG_SUB_LIST | REG_SUB_NUMBER | REG_SUB_PRINT))
-        {
+        if (ed.print & (REG_SUB_LIST | REG_SUB_NUMBER | REG_SUB_PRINT)) {
             ed.addr1 = ed.addr2 = ed.dot;
             print();
         }
-        if (!ed.global)
-        {
+        if (!ed.global) {
             ed.evented = 0;
             if (ed.prompt > 0)
                 sfputr(ed.msg, sfstrbase(ed.buffer.prompt), -1);
         }
-        if ((c = getchr()) == ',' || c == ';')
-        {
+        if ((c = getchr()) == ',' || c == ';') {
             ed.given = 1;
             ed.addr1 = (lastsep = c) == ',' ? ed.zero + 1 : ed.dot;
             a1 = ed.dol;
             c = getchr();
-        }
-        else
-        {
+        } else {
             ed.addr1 = 0;
             ed.peekc = c;
             c = '\n';
-            for (;;)
-            {
+            for (;;) {
                 lastsep = c;
                 a1 = address();
                 c = getchr();
@@ -1670,8 +1533,7 @@ commands(void)
                     break;
                 if (lastsep == ',')
                     error(2, "invalid address");
-                if (!a1)
-                {
+                if (!a1) {
                     a1 = ed.zero + 1;
                     if (a1 > ed.dol)
                         a1--;
@@ -1683,17 +1545,14 @@ commands(void)
             if (lastsep != '\n' && !a1)
                 a1 = ed.dol;
         }
-        if (!(ed.addr2 = a1))
-        {
+        if (!(ed.addr2 = a1)) {
             ed.given = 0;
             ed.addr2 = ed.dot;
-        }
-        else
+        } else
             ed.given = 1;
         if (!ed.addr1)
             ed.addr1 = ed.addr2;
-        switch (c)
-        {
+        switch (c) {
 
         case 'a':
             add(0);
@@ -1718,8 +1577,7 @@ commands(void)
             /*FALLTHROUGH*/
         case 'e':
             setnoaddr();
-            if (ed.verbose && ed.modified)
-            {
+            if (ed.verbose && ed.modified) {
                 ed.modified = 0;
                 error(2, "modified data not written");
             }
@@ -1791,8 +1649,7 @@ commands(void)
             continue;
 
         case '\n':
-            if (!a1)
-            {
+            if (!a1) {
                 a1 = ed.dot + 1;
                 ed.addr2 = a1;
                 ed.addr1 = a1;
@@ -1813,8 +1670,7 @@ commands(void)
         case 'P':
             setnoaddr();
             s = getrec(ed.buffer.line, '\n', 0);
-            if (*s || !(ed.prompt = -ed.prompt) && (s = "*"))
-            {
+            if (*s || !(ed.prompt = -ed.prompt) && (s = "*")) {
                 sfstrseek(ed.buffer.prompt, 0, SEEK_SET);
                 sfputr(ed.buffer.prompt, s, 0);
                 ed.prompt = 1;
@@ -1876,8 +1732,7 @@ commands(void)
         case 'w':
             setwide();
             squeeze(ed.dol > ed.zero);
-            if ((n = getchr()) != 'q' && n != 'Q')
-            {
+            if ((n = getchr()) != 'q' && n != 'Q') {
                 ed.peekc = n;
                 n = 0;
             }
@@ -1935,12 +1790,9 @@ main(int argc, char **argv)
     error_info.id = s;
     error_info.write = helpwrite;
     init();
-    for (;;)
-    {
-        for (;;)
-        {
-            switch (optget(argv, usage))
-            {
+    for (;;) {
+        for (;;) {
+            switch (optget(argv, usage)) {
 
             case 'O':
                 ed.reflags |= REG_LENIENT;
@@ -1993,8 +1845,7 @@ main(int argc, char **argv)
             break;
         ed.verbose = 0;
     }
-    if (*argv)
-    {
+    if (*argv) {
         if (*(argv + 1))
             error(ERROR_USAGE | 4, "%s", optusage(NiL));
         sfprintf(ed.buffer.global, "e %s", *argv);

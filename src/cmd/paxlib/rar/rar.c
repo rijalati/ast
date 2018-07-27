@@ -71,8 +71,7 @@ rar_getprologue(Pax_t *pax,
         || buf[3] != 0x21 || buf[4] != 0x1a || buf[5] != 0x07
         || buf[6] != 0x00)
         return 0;
-    if (!(ar = newof(0, Ar_t, 1, 0)))
-    {
+    if (!(ar = newof(0, Ar_t, 1, 0))) {
         if (ar)
             free(ar);
         return paxnospace(pax);
@@ -83,8 +82,7 @@ rar_getprologue(Pax_t *pax,
     codexinit(&ar->codexdisc, pax->errorf);
     ar->codexdisc.passphrase = pax->passphrase;
     if (!(ar->sum = codexnull())
-        || codex(ar->sum, SUM, CODEX_ENCODE, &ar->codexdisc, NiL) <= 0)
-    {
+        || codex(ar->sum, SUM, CODEX_ENCODE, &ar->codexdisc, NiL) <= 0) {
         ar->sum = 0;
         rar_done(pax, ap);
         return -1;
@@ -110,8 +108,7 @@ rar_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
     Codexdata_t sum;
 
     msg = 0;
-    for (;;)
-    {
+    for (;;) {
         if (!(buf = ( unsigned char * )paxget(pax, ap, -7, NiL)))
             return 0;
         checksum = swapget(3, buf + 0, 2);
@@ -125,14 +122,12 @@ rar_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
             continue;
         sfsync(ar->sum);
         sfwrite(ar->sum, buf + 2, 5);
-        if (!(buf = ( unsigned char * )paxget(pax, ap, size, NiL)))
-        {
+        if (!(buf = ( unsigned char * )paxget(pax, ap, size, NiL))) {
             msg = "unexpected EOF";
             break;
         }
         data = (flags & 0x8000) ? swapget(3, buf + 0, 4) : 0;
-        if (type != 0x74)
-        {
+        if (type != 0x74) {
             if (data && paxseek(pax, ap, data, SEEK_CUR, 0) < 0)
                 break;
             continue;
@@ -142,8 +137,7 @@ rar_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
         if (paxchecksum(pax, ap, NiL, checksum, sum.num & 0xffff))
             return -1;
         f->uncompressed = swapget(3, buf + 4, 4);
-        if (flags & 0x0100)
-        {
+        if (flags & 0x0100) {
             data += swapget(3, buf + 25, 4) << 32;
             f->uncompressed += swapget(3, buf + 29, 4);
         }
@@ -178,15 +172,13 @@ rar_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
         f->st->st_dev = 0;
         f->st->st_ino = 0;
         i = swapget(3, buf + 21, 4);
-        if (buf[8] <= 2)
-        {
+        if (buf[8] <= 2) {
             if (i & 0x10)
                 i = X_IFDIR | X_IRUSR | X_IWUSR | X_IXUSR | X_IRGRP | X_IWGRP
                     | X_IXGRP | X_IROTH | X_IWOTH | X_IXOTH;
             else if (i & 0x01)
                 i = X_IFREG | X_IRUSR | X_IRGRP | X_IROTH;
-            else
-            {
+            else {
                 i = X_IFREG | X_IRUSR | X_IWUSR | X_IRGRP | X_IWGRP | X_IROTH
                     | X_IWOTH;
                 if ((s = strrchr(f->name, '.'))
@@ -196,13 +188,11 @@ rar_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
                     i |= X_IXUSR | X_IXGRP | X_IXOTH;
             }
         }
-        if ((flags & 0x00e0) == 0x00e0 && (i & X_IFMT) != X_IFDIR)
-        {
+        if ((flags & 0x00e0) == 0x00e0 && (i & X_IFMT) != X_IFDIR) {
             i = X_IFDIR | (i & ~X_IFMT) | X_IRUSR | X_IWUSR | X_IXUSR;
             if (i & (X_IROTH | X_IWOTH))
                 i |= X_IROTH | X_IXOTH;
-            else
-            {
+            else {
                 i &= ~(X_IROTH | X_IXOTH);
                 if (i & (X_IRGRP | X_IWGRP))
                     i |= X_IRGRP | X_IXGRP;
@@ -246,8 +236,7 @@ rar_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
     r = -1;
     if (fd < 0 && !ar->solid)
         r = 1;
-    else if (sp = paxpart(pax, ap, f->st->st_size))
-    {
+    else if (sp = paxpart(pax, ap, f->st->st_size)) {
         if ((pop = codex(sp, ar->method, CODEX_DECODE, &ar->codexdisc, NiL))
             < 0)
             (*pax->errorf)(NiL,
@@ -257,18 +246,13 @@ rar_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
                            ap->name,
                            f->name,
                            ar->method);
-        else
-        {
-            for (;;)
-            {
-                if ((n = sfread(sp, pax->buf, sizeof(pax->buf))) < 0)
-                {
+        else {
+            for (;;) {
+                if ((n = sfread(sp, pax->buf, sizeof(pax->buf))) < 0) {
                     (*pax->errorf)(
                     NiL, pax, 2, "%s: %s: unexpected EOF", ap->name, f->name);
                     break;
-                }
-                else if (n == 0)
-                {
+                } else if (n == 0) {
                     if (codexdata(sp, &sum) <= 0)
                         (*pax->errorf)(NiL,
                                        pax,
@@ -286,8 +270,7 @@ rar_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
             codexpop(sp, pop);
         }
     }
-    if (paxseek(pax, ap, pos, SEEK_SET, 0) != pos)
-    {
+    if (paxseek(pax, ap, pos, SEEK_SET, 0) != pos) {
         (*pax->errorf)(NiL,
                        pax,
                        2,

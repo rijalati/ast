@@ -62,10 +62,8 @@ b_rmdir(int argc, char **argv, Shbltin_t *context)
     int sflag = 0;
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'e':
             eflag = 1;
             continue;
@@ -89,23 +87,19 @@ b_rmdir(int argc, char **argv, Shbltin_t *context)
         error(ERROR_usage(2), "%s", optusage(NiL));
     if (!pflag)
         sflag = 0;
-    while (dir = *argv++)
-    {
+    while (dir = *argv++) {
         end = dir;
         if (pflag)
             end += strlen(dir);
         n = 0;
-        for (;;)
-        {
-            if (rmdir(dir) < 0)
-            {
+        for (;;) {
+            if (rmdir(dir) < 0) {
                 if (!eflag
                     || errno != EEXIST
 #ifdef ENOTEMPTY
                        && errno != ENOTEMPTY
 #endif
-                )
-                {
+                ) {
                     if (sflag)
                         error_info.errors++;
                     else

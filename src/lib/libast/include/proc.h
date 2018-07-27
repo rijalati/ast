@@ -39,9 +39,10 @@
 #    define PROC_FOREGROUND (1 << 14) /* system(3) setup			*/
 #    define PROC_GID (1 << 5)         /* setgid(getgid())			*/
 #    define PROC_IGNORE (1 << 6)      /* ignore parent pipe errors		*/
-#    define PROC_IGNOREPATH (1 << 16) /* procrun() intercept to ignore path  \
-                                       */
-#    define PROC_ORPHAN (1 << 18)     /* create orphaned process		*/
+#    define PROC_IGNOREPATH                                                  \
+        (1 << 16)                 /* procrun() intercept to ignore path      \
+                                   */
+#    define PROC_ORPHAN (1 << 18) /* create orphaned process		*/
 #    define PROC_OVERLAY                                                     \
         (1 << 7)                   /* overlay current process if possible    \
                                     */

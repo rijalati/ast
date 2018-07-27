@@ -33,15 +33,11 @@ tksh_command(int argc, char *argv[], Shbltin_t *context)
     interp->interpType = oldInterpType;
     /* TkshSetListMode(oldListMode); */
 
-    if (interp->interpType != INTERP_TCL)
-    {
-        if (result == TCL_ERROR)
-        {
+    if (interp->interpType != INTERP_TCL) {
+        if (result == TCL_ERROR) {
             fprintf(stderr, "%s\n", commandData->interp->result);
             sh.exitval = 1;
-        }
-        else
-        {
+        } else {
 #if 0
 			if (commandData->interp->result &&
 			   (*commandData->interp->result) &&
@@ -79,8 +75,8 @@ Tcl_CreateCommand(Tcl_Interp *interp,
     if ((( Interp * )interp)->flags & DELETED)
         return ( Tcl_Command )NULL;
 
-    if ((commandData = ( TkshCommandData * )malloc(sizeof(TkshCommandData))))
-    {
+    if ((commandData
+         = ( TkshCommandData * )malloc(sizeof(TkshCommandData)))) {
         commandData->info.clientData = clientData;
         commandData->info.deleteData = clientData;
         commandData->info.deleteProc = deleteProc;
@@ -133,13 +129,10 @@ Tcl_DeleteCommand(Tcl_Interp *interp, char *cmdName)
     Namval_t *namval;
     TkshCommandData *commandData;
 
-    if ((namval = nv_open(cmdName, sh.fun_tree, NV_NOADD)))
-    {
-        if (namval->nvalue == ( void * )tksh_command)
-        {
+    if ((namval = nv_open(cmdName, sh.fun_tree, NV_NOADD))) {
+        if (namval->nvalue == ( void * )tksh_command) {
             commandData = ( TkshCommandData * )namval->nvfun;
-            if (commandData && commandData->info.deleteProc)
-            {
+            if (commandData && commandData->info.deleteProc) {
                 commandData->info.deleteProc(commandData->info.deleteData);
                 if (commandData->commandType & COMMAND_ACTIVE)
                     commandData->commandType &= (~COMMAND_ACTIVE);
@@ -162,13 +155,11 @@ Tcl_GetCommandInfo(Tcl_Interp *interp, char *cmdName, Tcl_CmdInfo *infoPtr)
     Namval_t *namval;
     TkshCommandData *commandData = NULL;
 
-    if ((namval = nv_open(cmdName, sh.fun_tree, NV_NOADD)))
-    {
+    if ((namval = nv_open(cmdName, sh.fun_tree, NV_NOADD))) {
         commandData = ( TkshCommandData * )namval->nvfun;
         if (( void * )namval->nvalue == ( void * )tksh_command)
             *infoPtr = commandData->info;
-        else
-        {
+        else {
             infoPtr->clientData = ( ClientData )commandData;
             infoPtr->proc = ( Tcl_CmdProc * )namval->nvalue;
             infoPtr->deleteData = ( ClientData )namval->nvalue;
@@ -186,8 +177,7 @@ Tcl_SetCommandInfo(Tcl_Interp *interp, char *cmdName, Tcl_CmdInfo *infoPtr)
     Namval_t *namval;
     TkshCommandData *commandData;
 
-    if ((namval = nv_open(cmdName, sh.fun_tree, NV_NOADD)))
-    {
+    if ((namval = nv_open(cmdName, sh.fun_tree, NV_NOADD))) {
         commandData = ( TkshCommandData * )namval->nvfun;
         commandData->info = *infoPtr;
         nv_close(namval);
@@ -202,8 +192,7 @@ Tksh_SetCommandType(Tcl_Interp *interp, char *cmdName, int tp)
     Namval_t *namval;
     TkshCommandData *commandData;
 
-    if ((namval = nv_open(cmdName, sh.fun_tree, NV_NOADD)))
-    {
+    if ((namval = nv_open(cmdName, sh.fun_tree, NV_NOADD))) {
         commandData = ( TkshCommandData * )namval->nvfun;
         commandData->commandType &= (~INTERP_MASK);
         commandData->commandType |= tp;
@@ -246,17 +235,14 @@ Tksh_Eval(Tcl_Interp *interp, char *command, int flag)
     dprintf2(
     ("-- Tksh Eval --\n%s\n---------\n", flag ? "--FILE--" : command));
 
-    if (flag)
-    {
+    if (flag) {
         char *cmd;
         f = sfopen(NIL(Sfio_t *), command, "r");
         cmd = fileToString(f);
         result = sh_trap(cmd, 0);
         free(cmd);
         sfclose(f);
-    }
-    else
-    {
+    } else {
         result = sh_trap(command, 0);
     }
 
@@ -284,14 +270,12 @@ Tcl_Eval(Tcl_Interp *interp, char *cmd)
      * can be specified in the script explicitly select a parser.
      */
 
-    if (iPtr->interpType == INTERP_TCL)
-    {
+    if (iPtr->interpType == INTERP_TCL) {
         if (strncmp(cmd, "#!ksh\n", 6) != 0)
             result = Tcl_TclEval(interp, cmd);
         else
             result = Tksh_Eval(interp, cmd + 6, 0);
-    }
-    else /* oldInterp is INTERP_KSH */
+    } else /* oldInterp is INTERP_KSH */
     {
         if (strncmp(cmd, "#!tcl\n", 6) == 0)
             result = Tcl_TclEval(interp, cmd + 6);
@@ -310,16 +294,13 @@ Tcl_TclEvalFile(Tcl_Interp *interp, char *fileName)
     char *cmdBuffer, *oldScriptFile;
     int result, oldInterpType, oldListMode;
 
-    if (fileName)
-    {
+    if (fileName) {
         oldScriptFile = iPtr->scriptFile;
         iPtr->scriptFile = fileName;
         script = sfopen(NIL(Sfio_t *), fileName, "r");
         if (!script)
             return TCL_ERROR;
-    }
-    else
-    {
+    } else {
         fileName = "stdin";
         script = sfstdin;
         oldScriptFile = NIL(char *);
@@ -333,12 +314,9 @@ Tcl_TclEvalFile(Tcl_Interp *interp, char *fileName)
     free(cmdBuffer);
     iPtr->interpType = oldInterpType;
     TkshSetListMode(oldListMode);
-    if (result == TCL_RETURN)
-    {
+    if (result == TCL_RETURN) {
         result = TclUpdateReturnInfo(( Interp * )interp);
-    }
-    else if (result == TCL_ERROR)
-    {
+    } else if (result == TCL_ERROR) {
         char msg[200];
 
         /*
@@ -349,8 +327,7 @@ Tcl_TclEvalFile(Tcl_Interp *interp, char *fileName)
         msg, "\n    (file \"%.150s\" line %d)", fileName, interp->errorLine);
         Tcl_AddErrorInfo(interp, msg);
     }
-    if (oldScriptFile)
-    {
+    if (oldScriptFile) {
         sfclose(script);
         iPtr->scriptFile = oldScriptFile;
     }
@@ -391,8 +368,7 @@ Tcl_GlobalEval(Tcl_Interp *interp, char *cmd)
     int result, jmpval;
     Hashtab_t *oldscope = sh.var_tree;
 
-    if (hashscope(sh.var_tree))
-    {
+    if (hashscope(sh.var_tree)) {
         oldscope = sh.var_tree;
         sh.var_tree = hashscope(sh.var_tree);
     }
@@ -428,8 +404,7 @@ Tksh_GlobalEval(Tcl_Interp *interp, char *cmd, int interpType)
     if (!globalframe)
         globalframe = sh_getscope(0, 0);
     oldframe = sh_setscope(globalframe);
-    switch (interpType)
-    {
+    switch (interpType) {
     case INTERP_TCL:
         result = Tcl_TclEval(interp, cmd);
         break;
@@ -454,15 +429,13 @@ Tcl_RecordAndEval(Tcl_Interp *interp, char *script, int flags)
     int hist_state;
     int result = TCL_OK;
 
-    if (flags == 0)
-    {
+    if (flags == 0) {
         hist_state = sh_isoption(SH_HISTORY);
         sh_onoption(SH_HISTORY);
         result = Tcl_Eval(interp, script);
         if (!hist_state)
             sh_offoption(SH_HISTORY);
-    }
-    else /* TCL_NO_EVAL */
+    } else /* TCL_NO_EVAL */
     {
         char *args[4];
         args[0] = "print";

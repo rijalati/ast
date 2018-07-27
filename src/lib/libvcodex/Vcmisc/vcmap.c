@@ -481,8 +481,7 @@ Void_t **out;
     {
         for (o = output, enddt = dt + sz; dt < enddt;)
             *o++ = map[*dt++];
-    }
-    else /* identity mapping */
+    } else /* identity mapping */
     {
         if (!vcm->inplace)
             memcpy(output, dt, sz);
@@ -491,8 +490,7 @@ Void_t **out;
     if ((vc->flags & VC_DECODE) && vc->coder)
         vcbuffer(vc, dt - sz, -1, -1);
 
-    if (vc->flags & VC_ENCODE)
-    {
+    if (vc->flags & VC_ENCODE) {
         dt = output;
         if (vcrecode(vc, &output, &sz, 0, 0) < 0)
             return -1;
@@ -518,32 +516,25 @@ Void_t *params;
     char *data;
     Vcmtarg_t *arg;
 
-    if (type == VC_OPENING)
-    {
+    if (type == VC_OPENING) {
         if (!(vcm = ( Vcmap_t * )calloc(1, sizeof(Vcmap_t))))
             return -1;
         vcsetmtdata(vc, vcm);
         goto vc_setarg;
-    }
-    else if (type == VC_SETMTARG)
-    {
+    } else if (type == VC_SETMTARG) {
         if (!(vcm = vcgetmtdata(vc, Vcmap_t *)))
             return -1;
     vc_setarg:
-        for (data = ( char * )params; data;)
-        {
+        for (data = ( char * )params; data;) {
             data = vcgetmtarg(data, 0, 0, _Mapargs, &arg);
-            if (arg)
-            {
+            if (arg) {
                 if (arg->data != MAP_INPLACE)
                     vcm->map = arg->data;
                 else if (vc->flags & VC_ENCODE)
                     vcm->inplace = 1;
             }
         }
-    }
-    else if (type == VC_CLOSING)
-    {
+    } else if (type == VC_CLOSING) {
         if ((vcm = vcgetmtdata(vc, Vcmap_t *)))
             free(vcm);
         vcsetmtdata(vc, NIL(Vcmap_t *));

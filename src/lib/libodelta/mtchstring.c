@@ -31,8 +31,7 @@ static void
 freemem(long *n_index, char ***index)
 {
     int i;
-    if (n_index && index)
-    {
+    if (n_index && index) {
         for (i = 0; i < ALPHA; ++i)
             if (n_index[i] > 0)
                 free(index[i]);
@@ -53,8 +52,7 @@ domatch(char *src, char *endsrc, char *tar, char *endtar, long n_match)
             break;
 
     /* got an improvement, match as many more as we can */
-    if (sp == src)
-    {
+    if (sp == src) {
         sp = src + n_match + 1;
         tp = tar + n_match + 1;
         for (; sp < endsrc && tp < endtar; ++sp, ++tp)
@@ -78,8 +76,7 @@ mtchstring(char *src, long n_src, char *tar, long n_tar, char **match)
     static int Alloced = 0;
 
     /* free old inverted indices if necessary */
-    if (src != Cursrc)
-    {
+    if (src != Cursrc) {
         if (Alloced)
             freemem(N_index, Index);
         Alloced = 0;
@@ -94,44 +91,35 @@ mtchstring(char *src, long n_src, char *tar, long n_tar, char **match)
     endtar = tar + n_tar;
 
     /* build new index structure */
-    if (src != Cursrc)
-    {
+    if (src != Cursrc) {
         Cursrc = src;
         Alloced = 1;
-        if (N_index = ( long * )malloc(ALPHA * sizeof(long)))
-        {
+        if (N_index = ( long * )malloc(ALPHA * sizeof(long))) {
             char *sp;
 
             memzero(N_index, ALPHA * sizeof(long));
-            if (!(Index = ( char *** )malloc(ALPHA * sizeof(char **))))
-            {
+            if (!(Index = ( char *** )malloc(ALPHA * sizeof(char **)))) {
                 free(N_index);
                 N_index = 0;
                 Alloced = 0;
-            }
-            else
-                for (sp = src; sp < endsrc; ++sp)
-                {
+            } else
+                for (sp = src; sp < endsrc; ++sp) {
                     i = ( int )(*(( unsigned char * )(sp)));
                     ind = Index[i];
                     n_ind = N_index[i];
 
                     /* make sure we have space */
-                    if ((n_ind % ALPHA) == 0)
-                    {
+                    if ((n_ind % ALPHA) == 0) {
                         ind = n_ind == 0
                               ? ( char ** )malloc(ALPHA * sizeof(char *))
                               : ( char ** )realloc(
                                 ind, (n_ind + ALPHA) * sizeof(char *));
                         Index[i] = ind;
                     }
-                    if (ind)
-                    {
+                    if (ind) {
                         ind[n_ind] = sp;
                         N_index[i] += 1;
-                    }
-                    else
-                    {
+                    } else {
                         freemem(N_index, Index);
                         N_index = 0;
                         Index = 0;
@@ -147,24 +135,20 @@ mtchstring(char *src, long n_src, char *tar, long n_tar, char **match)
     ind = Alloced ? Index[i] : ( char ** )0;
     n_ind = Alloced ? N_index[i] : -1;
     n_match = 0;
-    while (1)
-    {
+    while (1) {
         long m;
 
-        if (ind)
-        {
+        if (ind) {
             src = n_ind > 0 ? *ind++ : endsrc;
             n_ind -= 1;
-        }
-        else
+        } else
             for (; src + n_match < endsrc; ++src)
                 if (*src == *tar)
                     break;
         if (src + n_match >= endsrc)
             break;
 
-        if ((m = domatch(src, endsrc, tar, endtar, n_match)) > n_match)
-        {
+        if ((m = domatch(src, endsrc, tar, endtar, n_match)) > n_match) {
             n_match = m;
             *match = src;
             if (tar + n_match >= endtar)

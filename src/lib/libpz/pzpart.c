@@ -115,17 +115,14 @@ range(Pz_t *pz, Pzpart_t *pp, char *s, char **p, int *beg, int *end)
         ;
     if (*s == '-')
         n = 0;
-    else
-    {
+    else {
         n = ( int )strtol(s, &e, 10);
-        if (s == e)
-        {
+        if (s == e) {
             if (p)
                 *p = e;
             return 0;
         }
-        if (pp && n >= pp->row)
-        {
+        if (pp && n >= pp->row) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(pz,
                                     pz->disc,
@@ -138,29 +135,22 @@ range(Pz_t *pz, Pzpart_t *pp, char *s, char **p, int *beg, int *end)
         for (s = e; isspace(*s); s++)
             ;
     }
-    if (*s == '-')
-    {
-        if (!*++s || isspace(*s) || *s == ',')
-        {
+    if (*s == '-') {
+        if (!*++s || isspace(*s) || *s == ',') {
             e = s;
             m = (pp ? pp->row : INT_MAX) - 1;
-        }
-        else
-        {
+        } else {
             m = ( int )strtol(s, &e, 10);
-            if (m < n || pp && m >= pp->row)
-            {
+            if (m < n || pp && m >= pp->row) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(
                     pz, pz->disc, 2, "invalid column range %d-%d", n, m);
                 return -1;
             }
         }
-    }
-    else
+    } else
         m = n;
-    if (p)
-    {
+    if (p) {
         for (s = e; isspace(*s) || *s == ','; s++)
             ;
         *p = s;
@@ -185,15 +175,13 @@ value(Pz_t *pz, char *s, char **p)
 
     for (; isspace(*s); s++)
         ;
-    if (!(q = *s++) || ((v = chresc(s, &e)), s == e))
-    {
+    if (!(q = *s++) || ((v = chresc(s, &e)), s == e)) {
         if (pz->disc->errorf)
             (*pz->disc->errorf)(pz, pz->disc, 2, "value expected");
         return -1;
     }
     s = e;
-    if (*s++ != q)
-    {
+    if (*s++ != q) {
         if (pz->disc->errorf)
             (*pz->disc->errorf)(
             pz, pz->disc, 2, "unbalanced %c quote in value", q);
@@ -214,16 +202,14 @@ fixed(Pz_t *pz, Pzpart_t *pp, int n, int m, int k)
     int i;
     int v;
 
-    if (!pp->value)
-    {
+    if (!pp->value) {
         if (!(pp->value = vmnewof(pz->vm, 0, int, pp->row, 0)))
             return pznospace(pz);
         for (i = 0; i < pp->row; i++)
             pp->value[i] = -1;
     }
     v = k < 0 ? ' ' : k;
-    for (; n <= m; n++)
-    {
+    for (; n <= m; n++) {
         if (pp->value[n] < 0)
             pp->nfix++;
         else if (k < 0)
@@ -246,10 +232,8 @@ pzpartmap(Pz_t *pz, Pzpart_t *pp)
 
     k = 0;
     for (i = 0; i < pp->ngrp; i++)
-        for (j = 0; j < pp->grp[i]; j++)
-        {
-            if (k >= pp->nmap)
-            {
+        for (j = 0; j < pp->grp[i]; j++) {
+            if (k >= pp->nmap) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(
                     pz, pz->disc, 2, "%s: invalid group", pz->path);
@@ -258,8 +242,7 @@ pzpartmap(Pz_t *pz, Pzpart_t *pp)
             pp->lab[k] = i;
             pp->inc[k++] = pp->grp[i];
         }
-    if (k != pp->nmap)
-    {
+    if (k != pp->nmap) {
         if (pz->disc->errorf)
             (*pz->disc->errorf)(
             pz, pz->disc, 2, "%s: invalid group", pz->path);
@@ -293,21 +276,17 @@ pzpartinit(Pz_t *pz, Pzpart_t *pp, const char *name)
     size_t n;
 
     m = 0;
-    if (!(pz->flags & PZ_FORCE) || (pz->flags & PZ_SPLIT))
-    {
-        if (!pp->row)
-        {
+    if (!(pz->flags & PZ_FORCE) || (pz->flags & PZ_SPLIT)) {
+        if (!pp->row) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(
                 pz, pz->disc, 2, "%s: partition header corrupted", pz->path);
             return -1;
         }
-        if (!pp->name)
-        {
+        if (!pp->name) {
             if (!name)
                 sfprintf(pz->tmp, "%s:%d:%d", PZ_PART_SUF, pp->row, pp->nmap);
-            else
-            {
+            else {
                 if (s = strrchr(name, '/'))
                     name = ( const char * )s + 1;
                 if ((s = strrchr(name, '.')) && streq(s + 1, PZ_PART_SUF))
@@ -319,8 +298,7 @@ pzpartinit(Pz_t *pz, Pzpart_t *pp, const char *name)
             if (!(s = sfstruse(pz->tmp)) || !(pp->name = vmstrdup(pz->vm, s)))
                 return -1;
         }
-        if (!pp->nmap)
-        {
+        if (!pp->nmap) {
             pp->nmap = pp->row;
             if (!(pp->map = vmnewof(
                   pz->vm, pp->map, size_t, VECTOR(pz, pp, pp->nmap), 0)))
@@ -328,8 +306,7 @@ pzpartinit(Pz_t *pz, Pzpart_t *pp, const char *name)
             for (i = 0; i < pp->nmap; i++)
                 pp->map[i] = i;
         }
-        if (!pp->ngrp)
-        {
+        if (!pp->ngrp) {
             pp->ngrp = 1;
             if (!(pp->grp = vmnewof(
                   pz->vm, pp->grp, size_t, VECTOR(pz, pp, pp->ngrp), 0)))
@@ -343,8 +320,7 @@ pzpartinit(Pz_t *pz, Pzpart_t *pp, const char *name)
             || !(pp->inc = vmnewof(pz->vm, 0, size_t, k, 0))
             || !(pp->lab = vmnewof(pz->vm, 0, size_t, k, 0)))
             return pznospace(pz);
-        if (pp->nfix)
-        {
+        if (pp->nfix) {
             if (!(pp->fix
                   = vmnewof(pz->vm, 0, size_t, VECTOR(pz, pp, pp->nfix), 0)))
                 return pznospace(pz);
@@ -363,8 +339,7 @@ pzpartinit(Pz_t *pz, Pzpart_t *pp, const char *name)
          * allocate the global tables
          */
 
-        if (pp->row > pz->mrow)
-        {
+        if (pp->row > pz->mrow) {
             m = pz->mrow = roundof(pp->row, 1024);
             n = ((pz->win / 8 / m) + 8) * m;
             if (!(pz->val = vmnewof(pz->vm, pz->val, unsigned char, n, 0))
@@ -372,8 +347,7 @@ pzpartinit(Pz_t *pz, Pzpart_t *pp, const char *name)
                 return pznospace(pz);
         }
     }
-    if (pz->win > pz->mwin)
-    {
+    if (pz->win > pz->mwin) {
         if (pz->disc->errorf)
             (*pz->disc->errorf)(pz,
                                 pz->disc,
@@ -411,8 +385,7 @@ pzpartinit(Pz_t *pz, Pzpart_t *pp, const char *name)
         return -1;
     if (pp->flags & PZ_VARIABLE)
         return 0;
-    if (pp->nfix != n)
-    {
+    if (pp->nfix != n) {
         if (!(pp->fix = vmnewof(
               pz->vm, pp->fix, size_t, VECTOR(pz, pp, pp->nfix), 0)))
             return pznospace(pz);
@@ -426,15 +399,12 @@ pzpartinit(Pz_t *pz, Pzpart_t *pp, const char *name)
      * no dictionary if there's only one part
      */
 
-    if (pz->mainpart)
-    {
-        if (!pz->partdict)
-        {
+    if (pz->mainpart) {
+        if (!pz->partdict) {
             pz->partdisc.key = offsetof(Pzpart_t, name);
             pz->partdisc.size = -1;
             pz->partdisc.link = offsetof(Pzpart_t, link);
-            if (!(pz->partdict = dtopen(&pz->partdisc, Dtoset)))
-            {
+            if (!(pz->partdict = dtopen(&pz->partdisc, Dtoset))) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(
                     pz, pz->disc, 2, "partition dictionary open error");
@@ -443,9 +413,7 @@ pzpartinit(Pz_t *pz, Pzpart_t *pp, const char *name)
             dtinsert(pz->partdict, pz->mainpart);
         }
         dtinsert(pz->partdict, pp);
-    }
-    else
-    {
+    } else {
         pz->mainpart = pp;
         if ((pz->flags & (PZ_DUMP | PZ_VERBOSE)) && !(pz->flags & PZ_SPLIT))
             pzheadprint(pz, sfstderr, 0);
@@ -476,14 +444,12 @@ pzoptions(Pz_t *pz, Pzpart_t *pp, char *options, int must)
 
     optget(NiL, usage);
     skip = 0;
-    for (;;)
-    {
+    for (;;) {
         for (; isspace(*s) || *s == ','; s++)
             ;
         if (!*s)
             break;
-        switch (range(pz, pp, s, &e, &n, &x))
-        {
+        switch (range(pz, pp, s, &e, &n, &x)) {
         case -1:
             return -1;
         case 1:
@@ -499,8 +465,7 @@ pzoptions(Pz_t *pz, Pzpart_t *pp, char *options, int must)
         }
         b = s;
         opt_info.offset = 0;
-        switch (optstr(s, NiL))
-        {
+        switch (optstr(s, NiL)) {
         case 0:
             break;
         case '#':
@@ -522,8 +487,7 @@ pzoptions(Pz_t *pz, Pzpart_t *pp, char *options, int must)
              *	 1	consumed
              */
 
-            if (pz->disc->eventf)
-            {
+            if (pz->disc->eventf) {
                 opp = pz->part;
                 pz->part = pp;
                 x = (*pz->disc->eventf)(
@@ -531,14 +495,11 @@ pzoptions(Pz_t *pz, Pzpart_t *pp, char *options, int must)
                 pz->part = opp;
                 if (x < 0)
                     return -1;
-            }
-            else
+            } else
                 x = 0;
-            if (!x)
-            {
+            if (!x) {
                 x = 2;
-                switch (optstr(NiL, usage))
-                {
+                switch (optstr(NiL, usage)) {
                 case 'a':
                     if (opt_info.num)
                         pz->flags |= PZ_APPEND;
@@ -574,15 +535,14 @@ pzoptions(Pz_t *pz, Pzpart_t *pp, char *options, int must)
                     break;
                 case 'i':
                     if (pz->pin
-                        && (sp = pzfind(pz, opt_info.arg, PZ_PART_SUF, "r")))
-                    {
+                        && (sp
+                            = pzfind(pz, opt_info.arg, PZ_PART_SUF, "r"))) {
                         sfstack(pz->pin, sp);
                         return 0;
                     }
                     break;
                 case 'l':
-                    if (!pz->pin || !sfstacked(pz->pin))
-                    {
+                    if (!pz->pin || !sfstacked(pz->pin)) {
                         if (i = pz->options == options)
                             pz->options = 0;
                         r = pzlib(pz, opt_info.arg, 0);
@@ -603,24 +563,19 @@ pzoptions(Pz_t *pz, Pzpart_t *pp, char *options, int must)
                     pz->partname = vmstrdup(pz->vm, opt_info.arg);
                     break;
                 case 'X':
-                    if (pz->prefix.count = strton(opt_info.arg, &e, NiL, 0))
-                    {
+                    if (pz->prefix.count = strton(opt_info.arg, &e, NiL, 0)) {
                         pz->prefix.terminator = -1;
                         if (*e == 'x' || *e == 'X' || *e == '*' || *e == '-')
                             e++;
                         if (*e == 'l' || *e == 'L')
                             pz->prefix.terminator = '\n';
-                        else
-                        {
-                            if (*e == '"' || *e == '\'')
-                            {
+                        else {
+                            if (*e == '"' || *e == '\'') {
                                 pz->prefix.terminator = chresc(e + 1, &e);
                                 for (s = e; *s && !isspace(*s) && *s != ',';
                                      s++)
                                     ;
-                            }
-                            else if (*e)
-                            {
+                            } else if (*e) {
                                 pz->prefix.count = 0;
                                 if (pz->disc->errorf)
                                     (*pz->disc->errorf)(
@@ -632,8 +587,7 @@ pzoptions(Pz_t *pz, Pzpart_t *pp, char *options, int must)
                                 return -1;
                             }
                         }
-                    }
-                    else if (e > opt_info.arg)
+                    } else if (e > opt_info.arg)
                         pz->prefix.skip = 1;
                     break;
                 case 'O':
@@ -658,13 +612,11 @@ pzoptions(Pz_t *pz, Pzpart_t *pp, char *options, int must)
                     pz->row = opt_info.num;
                     break;
                 case 'S':
-                    if (opt_info.num)
-                    {
+                    if (opt_info.num) {
                         pz->flags |= PZ_FORCE | PZ_SPLIT | PZ_SECTION;
                         if (opt_info.arg)
                             pz->split.match = vmstrdup(pz->vm, opt_info.arg);
-                    }
-                    else
+                    } else
                         pz->flags &= ~PZ_SPLIT;
                     break;
                 case 's':
@@ -686,8 +638,7 @@ pzoptions(Pz_t *pz, Pzpart_t *pp, char *options, int must)
                     error(ERROR_USAGE | 4, "%s", opt_info.arg);
                     return -1;
                 case ':':
-                    if (must && !(pz->flags & PZ_PUSHED))
-                    {
+                    if (must && !(pz->flags & PZ_PUSHED)) {
                         if (pz->disc->errorf)
                             (*pz->disc->errorf)(
                             pz, pz->disc, 2, "%s", opt_info.arg);
@@ -703,10 +654,8 @@ pzoptions(Pz_t *pz, Pzpart_t *pp, char *options, int must)
              * clear so they are not processed again
              */
 
-            if (must >= 0 && (x > 1 || x && must))
-            {
-                if (pz->det)
-                {
+            if (must >= 0 && (x > 1 || x && must)) {
+                if (pz->det) {
                     if (sfstrtell(pz->det))
                         sfputc(pz->det, ' ');
                     sfwrite(pz->det, b, s - b);
@@ -761,52 +710,43 @@ pzpartition(Pz_t *pz, const char *partition)
     Vmalloc_t *vm;
     char buf[PATH_MAX];
 
-    if (pz->disc->errorf)
-    {
+    if (pz->disc->errorf) {
         file = error_info.file;
         line = error_info.line;
     }
     sp = 0;
     vm = 0;
-    if (!(s = ( char * )partition))
-    {
+    if (!(s = ( char * )partition)) {
         if (pz->disc->errorf)
             (*pz->disc->errorf)(pz, pz->disc, 2, "partition file omitted");
         goto bad;
     }
-    if (s[0] == '/' && s[i = strlen(s) - 1] == '/')
-    {
+    if (s[0] == '/' && s[i = strlen(s) - 1] == '/') {
         if (streq(s, "/") || streq(s, "//") || streq(s, "/gzip/"))
             n = sfsprintf(buf, sizeof(buf), "nopzip\n1\n0-0\n");
-        else
-        {
+        else {
             n = ( int )strtol(s + 1, &e, 10);
             if (e[0] == '/' && !e[1])
                 n = sfsprintf(buf, sizeof(buf), "%d\n0-%d\n", n, n - 1);
-            else
-            {
+            else {
                 n = sfsprintf(buf, sizeof(buf), "%.*s\n", i - 1, s + 1);
                 for (s = buf; *s; s++)
                     if (isspace(*s) || *s == ',')
                         *s = '\n';
             }
         }
-        if (!(sp = sfstropen()) || sfstrbuf(sp, buf, n, 0))
-        {
+        if (!(sp = sfstropen()) || sfstrbuf(sp, buf, n, 0)) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(
                 pz, pz->disc, 2, "%s: string stream open error", s);
             goto bad;
         }
-    }
-    else
-    {
+    } else {
         /*
          * consume url-ish options
          */
 
-        if ((e = strchr(s, '?')) || (e = strchr(s, '#')))
-        {
+        if ((e = strchr(s, '?')) || (e = strchr(s, '#'))) {
             if (!(t = vmoldof(pz->vm, 0, char, e - s, 1)))
                 goto bad;
             memcpy(t, s, e - s);
@@ -819,13 +759,11 @@ pzpartition(Pz_t *pz, const char *partition)
         if (!(sp = pzfind(pz, s, PZ_PART_SUF, "r")))
             goto bad;
     }
-    if (pz->disc->errorf)
-    {
+    if (pz->disc->errorf) {
         error_info.file = s;
         error_info.line = 0;
     }
-    if (!(vm = vmopen(Vmdcheap, Vmlast, 0)))
-    {
+    if (!(vm = vmopen(Vmdcheap, Vmlast, 0))) {
         if (pz->disc->errorf)
             (*pz->disc->errorf)(
             pz,
@@ -838,13 +776,10 @@ pzpartition(Pz_t *pz, const char *partition)
     pp = 0;
     s = "";
     pz->pin = sp;
-    do
-    {
+    do {
         vmclear(vm);
-        do
-        {
-            if (*s != '"' && !(s = partline(pz, sp)))
-            {
+        do {
+            if (*s != '"' && !(s = partline(pz, sp))) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(
                     pz, pz->disc, 2, "invalid partition file");
@@ -852,10 +787,8 @@ pzpartition(Pz_t *pz, const char *partition)
             }
             for (; isspace(*s); s++)
                 ;
-            if (*s == '"')
-            {
-                if (np)
-                {
+            if (*s == '"') {
+                if (np) {
                     if (pz->disc->errorf)
                         (*pz->disc->errorf)(
                         pz, pz->disc, 2, "%s: partition already named", np);
@@ -863,8 +796,7 @@ pzpartition(Pz_t *pz, const char *partition)
                 }
                 for (e = ++s; *s && *s != '"'; s++)
                     ;
-                if (!*s)
-                {
+                if (!*s) {
                     if (pz->disc->errorf)
                         (*pz->disc->errorf)(
                         pz, pz->disc, 2, "unbalanced \" in partition name");
@@ -876,17 +808,14 @@ pzpartition(Pz_t *pz, const char *partition)
                 for (; isspace(*s); s++)
                     ;
             }
-            if (isalpha(*s))
-            {
+            if (isalpha(*s)) {
                 if (pzoptions(pz, pp, s, 1))
                     goto bad;
                 s = "";
             }
         } while (!(n = strtol(s, &t, 10)));
-        if (*t == '@')
-        {
-            switch (m = strtol(t + 1, &t, 10))
-            {
+        if (*t == '@') {
+            switch (m = strtol(t + 1, &t, 10)) {
             case 1:
                 m = 0;
                 break;
@@ -912,22 +841,17 @@ pzpartition(Pz_t *pz, const char *partition)
             }
             n |= (m << 14);
             f = PZ_VARIABLE;
-        }
-        else
+        } else
             f = 0;
-        if (pz->flags & PZ_ROWONLY)
-        {
-            if (!np || !pz->partname || streq(np, pz->partname))
-            {
+        if (pz->flags & PZ_ROWONLY) {
+            if (!np || !pz->partname || streq(np, pz->partname)) {
                 vmclose(vm);
                 pz->row = n;
                 return 0;
             }
             np = 0;
-            do
-            {
-                if (!(s = partline(pz, sp)))
-                {
+            do {
+                if (!(s = partline(pz, sp))) {
                     if (pz->disc->errorf)
                         (*pz->disc->errorf)(pz,
                                             pz->disc,
@@ -945,8 +869,7 @@ pzpartition(Pz_t *pz, const char *partition)
             goto nope;
         pp->row = n;
         pp->flags = f;
-        if (np)
-        {
+        if (np) {
             pp->name = np;
             np = 0;
         }
@@ -961,30 +884,25 @@ pzpartition(Pz_t *pz, const char *partition)
             ;
         if (*s != '-')
             s = partline(pz, sp);
-        for (; s; s = partline(pz, sp))
-        {
+        for (; s; s = partline(pz, sp)) {
             for (; isspace(*s); s++)
                 ;
             if (*s == '"')
                 break;
-            else if (isalpha(*s))
-            {
+            else if (isalpha(*s)) {
                 if (pzoptions(pz, pp, s, 1))
                     goto bad;
                 continue;
             }
             gi = 0;
-            for (;;)
-            {
-                if (range(pz, pp, s, &e, &n, &x) <= 0)
-                {
+            for (;;) {
+                if (range(pz, pp, s, &e, &n, &x) <= 0) {
                     if (*e && *e != '#')
                         goto bad;
                     break;
                 }
                 s = e;
-                if (*s == '=')
-                {
+                if (*s == '=') {
                     if ((k = value(pz, ++s, &e)) < 0)
                         return -1;
                     s = e;
@@ -992,18 +910,15 @@ pzpartition(Pz_t *pz, const char *partition)
                         goto bad;
                     continue;
                 }
-                if (cp >= ce)
-                {
+                if (cp >= ce) {
                     if (pz->disc->errorf)
                         (*pz->disc->errorf)(
                         pz, pz->disc, 2, "too many columns");
                     goto bad;
                 }
                 for (; n <= x; n++)
-                    if (!pp->value || pp->value[n] < 0)
-                    {
-                        if (hv[n])
-                        {
+                    if (!pp->value || pp->value[n] < 0) {
+                        if (hv[n]) {
                             if (pz->disc->errorf)
                                 (*pz->disc->errorf)(
                                 pz,
@@ -1020,10 +935,8 @@ pzpartition(Pz_t *pz, const char *partition)
                         gi = 1;
                     }
             }
-            if (gi)
-            {
-                if (cp >= ce)
-                {
+            if (gi) {
+                if (cp >= ce) {
                     if (pz->disc->errorf)
                         (*pz->disc->errorf)(
                         pz, pz->disc, 2, "too many columns");
@@ -1033,8 +946,7 @@ pzpartition(Pz_t *pz, const char *partition)
                 g += gi;
             }
         }
-        if (cp >= ce)
-        {
+        if (cp >= ce) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(pz, pz->disc, 2, "too many columns");
             goto bad;
@@ -1058,10 +970,8 @@ pzpartition(Pz_t *pz, const char *partition)
         g = 0;
         k = 0;
         while ((i = *cp++) >= 0)
-            do
-            {
-                if (g != gv[m])
-                {
+            do {
+                if (g != gv[m]) {
                     pp->grp[g] = k;
                     g = gv[m];
                     k = 0;
@@ -1078,10 +988,8 @@ pzpartition(Pz_t *pz, const char *partition)
     sp = 0;
     vmclose(vm);
     vm = 0;
-    if (pz->partname)
-    {
-        if (!(pp = pzpartget(pz, pz->partname)))
-        {
+    if (pz->partname) {
+        if (!(pp = pzpartget(pz, pz->partname))) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(
                 pz, pz->disc, 2, "%s: partition not found", pz->partname);
@@ -1090,8 +998,7 @@ pzpartition(Pz_t *pz, const char *partition)
         pz->flags |= PZ_MAINONLY;
         pz->part = pz->mainpart = pp;
     }
-    if (pz->disc->errorf)
-    {
+    if (pz->disc->errorf) {
         error_info.file = file;
         error_info.line = line;
     }
@@ -1105,8 +1012,7 @@ bad:
         sfclose(sp);
     if (vm)
         vmclose(vm);
-    if (pz->disc->errorf)
-    {
+    if (pz->disc->errorf) {
         error_info.file = file;
         error_info.line = line;
     }
@@ -1127,8 +1033,7 @@ array(Pz_t *pz, Pzpart_t *pp, size_t **pv, size_t *pn, size_t check)
     n = sfgetu(pz->io);
     if (check && n > check)
         return -1;
-    if (pv)
-    {
+    if (pv) {
         if (!n)
             v = 0;
         else if (!(v = vmnewof(pz->vm, *pv, size_t, VECTOR(pz, pp, n), 0)))
@@ -1136,17 +1041,14 @@ array(Pz_t *pz, Pzpart_t *pp, size_t **pv, size_t *pn, size_t check)
         *pv = v;
         if (pn)
             *pn = n;
-        while (n--)
-        {
+        while (n--) {
             m = sfgetu(pz->io);
             if (check && m >= check)
                 return -1;
             *v++ = m;
         }
-    }
-    else
-        while (n--)
-        {
+    } else
+        while (n--) {
             m = sfgetu(pz->io);
             if (check && m >= check)
                 return -1;
@@ -1164,23 +1066,20 @@ buffer(Pz_t *pz, Pzpart_t *pp, char **pv, size_t *pn)
     size_t n;
     char *v;
 
-    if (!(n = sfgetu(pz->io)))
-    {
+    if (!(n = sfgetu(pz->io))) {
         if (pz->disc->errorf)
             (*pz->disc->errorf)(
             pz, pz->disc, 2, "%s: partition header corrupted", pz->path);
         return -1;
     }
-    if (pv)
-    {
+    if (pv) {
         if (!(v = vmnewof(pz->vm, *pv, char, n, 0)))
             return pznospace(pz);
         *pv = v;
         if (pn)
             *pn = n;
         sfread(pz->io, v, n);
-    }
-    else
+    } else
         sfseek(pz->io, ( Sflong_t )n, SEEK_CUR);
     return 0;
 }
@@ -1196,8 +1095,7 @@ pzpartread(Pz_t *pz)
     int i;
     Pzpart_t *po;
 
-    if (pz->major > 1)
-    {
+    if (pz->major > 1) {
         if (!(i = sfgetc(pz->io)))
             return 0;
         if (i == EOF)
@@ -1206,17 +1104,14 @@ pzpartread(Pz_t *pz)
     }
     if (!(pp = vmnewof(pz->vm, 0, Pzpart_t, 1, 0)))
         return pznospace(pz);
-    if (pz->major == 1)
-    {
+    if (pz->major == 1) {
         pp->row = sfgetu(pz->io);
         pp->col = sfgetu(pz->io);
         pz->win = sfgetu(pz->io);
     }
     po = 0;
-    for (;;)
-    {
-        switch (i = sfgetc(pz->io))
-        {
+    for (;;) {
+        switch (i = sfgetc(pz->io)) {
         case EOF:
             goto bad;
         case 0:
@@ -1229,8 +1124,7 @@ pzpartread(Pz_t *pz)
         case PZ_HDR_fix:
             if (array(pz, pp, &pp->fix, &pp->nfix, pp->row))
                 goto bad;
-            if (!pp->value)
-            {
+            if (!pp->value) {
                 if (!(pp->value = vmnewof(pz->vm, 0, int, pp->row, 0)))
                     return pznospace(pz);
                 for (i = 0; i < pp->row; i++)
@@ -1256,8 +1150,7 @@ pzpartread(Pz_t *pz)
             pz->prefix.terminator = -1;
             continue;
         case PZ_HDR_part:
-            if (pp->row)
-            {
+            if (pp->row) {
                 if (!po && pzpartinit(pz, pp, NiL))
                     return -1;
                 if (pp = pz->freepart)
@@ -1270,10 +1163,8 @@ pzpartread(Pz_t *pz)
             pp->col = sfgetu(pz->io);
             if (pz->partdict
                 && (po = ( Pzpart_t * )dtsearch(pz->partdict, pp))
-                || (po = pz->mainpart) && streq(pp->name, po->name))
-            {
-                if (pp->row != po->row || pp->col != po->col)
-                {
+                || (po = pz->mainpart) && streq(pp->name, po->name)) {
+                if (pp->row != po->row || pp->col != po->col) {
                     if (pz->disc->errorf)
                         (*pz->disc->errorf)(
                         pz,
@@ -1282,18 +1173,15 @@ pzpartread(Pz_t *pz)
                         "%s: %s: partition redefinition ignored",
                         pz->path,
                         pp->name);
-                }
-                else if (pz->flags & PZ_DUMP)
+                } else if (pz->flags & PZ_DUMP)
                     sfprintf(
                     sfstderr, "\n# %s benign redefinition\n", pp->name);
                 vmfree(pz->vm, pp->name);
                 pz->freepart = pp;
                 pp->name = 0;
                 pp = po;
-                for (;;)
-                {
-                    switch (i = sfgetc(pz->io))
-                    {
+                for (;;) {
+                    switch (i = sfgetc(pz->io)) {
                     case EOF:
                         break;
                     case 0:
@@ -1311,8 +1199,7 @@ pzpartread(Pz_t *pz)
                     }
                     break;
                 }
-            }
-            else
+            } else
                 po = 0;
             continue;
         case PZ_HDR_split:
@@ -1351,26 +1238,19 @@ pzpartwrite(Pz_t *pz, Sfio_t *op)
     size_t m;
     int all;
 
-    if (pz->flags & PZ_MAINONLY)
-    {
+    if (pz->flags & PZ_MAINONLY) {
         pz->flags &= ~PZ_MAINONLY;
         all = 0;
         pp = pz->mainpart;
-    }
-    else if (pz->partdict)
-    {
+    } else if (pz->partdict) {
         all = 1;
         pp = ( Pzpart_t * )dtfirst(pz->partdict);
-    }
-    else
-    {
+    } else {
         all = 0;
         pp = pz->part;
     }
-    while (pp)
-    {
-        if ((pp->flags & (PZ_UPDATE | PZ_HEAD)) == PZ_UPDATE)
-        {
+    while (pp) {
+        if ((pp->flags & (PZ_UPDATE | PZ_HEAD)) == PZ_UPDATE) {
             pp->flags |= PZ_HEAD;
             sfputc(op, PZ_HDR_part);
             m = strlen(pp->name) + 1;
@@ -1378,8 +1258,7 @@ pzpartwrite(Pz_t *pz, Sfio_t *op)
             sfwrite(op, pp->name, m);
             sfputu(op, pp->row);
             sfputu(op, pp->col);
-            if (pp->nmap != pp->row || pp->ngrp != 1)
-            {
+            if (pp->nmap != pp->row || pp->ngrp != 1) {
                 sfputc(op, PZ_HDR_map);
                 sfputu(op, pp->nmap);
                 for (i = 0; i < pp->nmap; i++)
@@ -1389,16 +1268,14 @@ pzpartwrite(Pz_t *pz, Sfio_t *op)
                 for (i = 0; i < pp->ngrp; i++)
                     sfputu(op, pp->grp[i]);
             }
-            if (pp->nfix)
-            {
+            if (pp->nfix) {
                 sfputc(op, PZ_HDR_fix);
                 sfputu(op, pp->nfix);
                 for (i = 0; i < pp->nfix; i++)
                     sfputu(op, pp->fix[i]);
             }
             if ((pz->split.flags & (PZ_SPLIT_DEFLATE | PZ_SPLIT_HEADER))
-                == PZ_SPLIT_DEFLATE)
-            {
+                == PZ_SPLIT_DEFLATE) {
                 pz->split.flags |= PZ_SPLIT_HEADER;
                 sfputc(op, PZ_HDR_split);
                 sfputu(op, 0);
@@ -1432,20 +1309,17 @@ pzpartprint(Pz_t *pz, Pzpart_t *pp, Sfio_t *op)
              pp->row,
              sizeof(pp->nmap),
              pp->nmap);
-    if (pp->nfix)
-    {
+    if (pp->nfix) {
         sfprintf(op, "\n");
         esc[1] = 0;
-        for (i = 0; i < pp->nfix; i++)
-        {
+        for (i = 0; i < pp->nfix; i++) {
             for (j = i + 1;
                  j < pp->nfix && pp->fix[j] == pp->fix[j - 1] + 1
                  && pp->value[pp->fix[j]] == pp->value[pp->fix[j - 1]];
                  j++)
                 ;
             sfprintf(op, "%I*u", sizeof(pp->fix[i]), pp->fix[i]);
-            if (j > (i + 2))
-            {
+            if (j > (i + 2)) {
                 i = j - 1;
                 sfprintf(op, "-%I*u", sizeof(pp->fix[i]), pp->fix[i]);
             }
@@ -1455,22 +1329,18 @@ pzpartprint(Pz_t *pz, Pzpart_t *pp, Sfio_t *op)
         }
     }
     g = -1;
-    for (i = 0; i < pp->nmap; i++)
-    {
-        if (g != pp->lab[i])
-        {
+    for (i = 0; i < pp->nmap; i++) {
+        if (g != pp->lab[i]) {
             g = pp->lab[i];
             sfprintf(op, "\n");
-        }
-        else
+        } else
             sfprintf(op, " ");
         for (j = i + 1; j < pp->nmap && pp->map[j] == pp->map[j - 1] + 1
                         && pp->lab[j] == g;
              j++)
             ;
         sfprintf(op, "%I*u", sizeof(pp->map[i]), pp->map[i]);
-        if (j > (i + 2))
-        {
+        if (j > (i + 2)) {
             i = j - 1;
             sfprintf(op, "-%I*u", sizeof(pp->map[i]), pp->map[i]);
         }

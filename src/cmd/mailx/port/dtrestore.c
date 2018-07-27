@@ -92,8 +92,7 @@ reg Dtlink_t *list;
         if (!type)
             return -1;
         list = dt->data->here;
-    }
-    else /* restoring an extracted list of elements */
+    } else /* restoring an extracted list of elements */
     {
         if (dt->data->size != 0)
             return -1;
@@ -101,34 +100,28 @@ reg Dtlink_t *list;
     }
     dt->data->type &= ~DT_FLATTEN;
 
-    if (dt->data->type & DT_HASH)
-    {
+    if (dt->data->type & DT_HASH) {
         dt->data->here = NIL(Dtlink_t *);
         if (type) /* restoring a flattened dictionary */
         {
             eslot = (slot = dt->data->htab) + dt->data->ntab;
-            for (; slot < eslot; ++slot)
-            {
+            for (; slot < eslot; ++slot) {
                 if (!(t = *slot))
                     continue;
                 *slot = list;
                 list = t->right;
                 t->right = NIL(Dtlink_t *);
             }
-        }
-        else /* restoring an extracted list of elements */
+        } else /* restoring an extracted list of elements */
         {
             dt->data->size = 0;
-            while (list)
-            {
+            while (list) {
                 t = list->right;
                 (*searchf)(dt, ( Void_t * )list, DT_RENEW);
                 list = t;
             }
         }
-    }
-    else
-    {
+    } else {
         if (dt->data->type & DT_TREE)
             dt->data->here = list;
         else /*if(dt->data->type&(DT_LIST|DT_STACK|DT_QUEUE))*/

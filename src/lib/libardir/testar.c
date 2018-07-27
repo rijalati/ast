@@ -30,27 +30,22 @@ main(int argc, char **argv)
     char *file;
 
     touch = 0;
-    while (file = *++argv)
-    {
+    while (file = *++argv) {
         if (!strcmp(file, "-t") && *(argv + 1))
             touch = strtol(*++argv, NiL, 0);
-        else if (dir = ardiropen(file, NiL, touch ? ARDIR_UPDATE : 0))
-        {
+        else if (dir = ardiropen(file, NiL, touch ? ARDIR_UPDATE : 0)) {
             sfprintf(sfstdout,
                      "%s: type=%s truncate=%d%s\n",
                      file,
                      dir->meth->name,
                      dir->truncate,
                      (dir->flags & ARDIR_RANLIB) ? " ranlib" : "");
-            while (ent = ardirnext(dir))
-            {
-                if (touch)
-                {
+            while (ent = ardirnext(dir)) {
+                if (touch) {
                     ent->mtime = touch;
                     ardirchange(dir, ent);
                     sfprintf(sfstdout, "touch %s\n", ent->name);
-                }
-                else
+                } else
                     sfprintf(sfstdout,
                              "%s %8u %8u %8llu %8llu %s %s\n",
                              fmtmode(ent->mode, 1),
@@ -63,8 +58,7 @@ main(int argc, char **argv)
             }
             if (ardirclose(dir))
                 error(2, "%s: archive read error", file);
-        }
-        else
+        } else
             error(ERROR_SYSTEM | 2, "%s: not an archive", file);
     }
     return 0;

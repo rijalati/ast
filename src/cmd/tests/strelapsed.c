@@ -35,16 +35,13 @@ main(int argc, char **argv)
     unsigned long t;
     int n;
 
-    while (s = *++argv)
-    {
+    while (s = *++argv) {
         n = ( int )strtol(s, &e, 0);
-        if (*e)
-        {
+        if (*e) {
             sfprintf(sfstderr, "%s: number expected", s);
             break;
         }
-        if (!(s = *++argv))
-        {
+        if (!(s = *++argv)) {
             sfprintf(sfstderr, "elapsed time expression expected");
             break;
         }

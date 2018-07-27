@@ -34,8 +34,7 @@ ptvsubset(Ptv_t *a, Ptv_t *b)
 
     ap = ( Ptvprefix_t * )dtfirst(a->dict);
     bp = ( Ptvprefix_t * )dtfirst(b->dict);
-    while (ap)
-    {
+    while (ap) {
         if (!bp || fvcmp(a->size, ap->max, bp->min) < 0
             || fvcmp(a->size, ap->min, bp->min) < 0)
             return 0;
@@ -43,8 +42,7 @@ ptvsubset(Ptv_t *a, Ptv_t *b)
             ap = ( Ptvprefix_t * )dtnext(a->dict, ap);
         else if (fvcmp(a->size, ap->max, bp->max) > 0)
             bp = ( Ptvprefix_t * )dtnext(b->dict, bp);
-        else
-        {
+        else {
             ap = ( Ptvprefix_t * )dtnext(a->dict, ap);
             bp = ( Ptvprefix_t * )dtnext(b->dict, bp);
         }

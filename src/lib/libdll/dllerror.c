@@ -37,14 +37,12 @@ dllerror(int retain)
 {
     char *s;
 
-    if (state.error)
-    {
+    if (state.error) {
         state.error = retain;
         return state.errorbuf;
     }
     s = dlerror();
-    if (retain)
-    {
+    if (retain) {
         state.error = retain;
         sfsprintf(state.errorbuf, sizeof(state.errorbuf), "%s", s);
     }

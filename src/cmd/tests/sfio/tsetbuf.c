@@ -59,8 +59,7 @@ tmain()
     sfwrite(f, s, 0);
 
 #define NEXTFD 12
-    if ((fd + NEXTFD) < (sizeof(fdv) / sizeof(fdv[0])))
-    {
+    if ((fd + NEXTFD) < (sizeof(fdv) / sizeof(fdv[0]))) {
         struct stat st;
         int i;
         for (i = 0; i < fd + NEXTFD; ++i)
@@ -68,8 +67,7 @@ tmain()
     }
     if ((n = sfsetfd(f, fd + NEXTFD)) != fd + NEXTFD)
         terror("Try to set file descriptor to %d but get %d", fd + NEXTFD, n);
-    if ((fd + NEXTFD) < (sizeof(fdv) / sizeof(fdv[0])))
-    {
+    if ((fd + NEXTFD) < (sizeof(fdv) / sizeof(fdv[0]))) {
         struct stat st;
         int i;
         for (i = 0; i < fd + NEXTFD; ++i)

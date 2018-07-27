@@ -158,8 +158,7 @@ Tk_Uid name;        /* Name of font (in form suitable for
     TkFont *fontPtr;
     XFontStruct *fontStructPtr;
 
-    if (!initialized)
-    {
+    if (!initialized) {
         FontInit();
     }
 
@@ -171,8 +170,7 @@ Tk_Uid name;        /* Name of font (in form suitable for
     nameKey.name = name;
     nameKey.display = Tk_Display(tkwin);
     nameHashPtr = Tcl_CreateHashEntry(&nameTable, ( char * )&nameKey, &new);
-    if (!new)
-    {
+    if (!new) {
         fontPtr = ( TkFont * )Tcl_GetHashValue(nameHashPtr);
         fontPtr->refCount++;
         return fontPtr->fontStructPtr;
@@ -184,8 +182,7 @@ Tk_Uid name;        /* Name of font (in form suitable for
      */
 
     fontStructPtr = XLoadQueryFont(nameKey.display, name);
-    if (fontStructPtr == NULL)
-    {
+    if (fontStructPtr == NULL) {
         Tcl_DeleteHashEntry(nameHashPtr);
         Tcl_AppendResult(
         interp, "font \"", name, "\" doesn't exist", ( char * )NULL);
@@ -200,8 +197,7 @@ Tk_Uid name;        /* Name of font (in form suitable for
     fontPtr->nameHashPtr = nameHashPtr;
     fontHashPtr
     = Tcl_CreateHashEntry(&fontTable, ( char * )fontStructPtr, &new);
-    if (!new)
-    {
+    if (!new) {
         panic("XFontStruct already registered in Tk_GetFontStruct");
     }
     Tcl_SetHashValue(nameHashPtr, fontPtr);
@@ -238,15 +234,13 @@ XFontStruct *fontStructPtr; /* Font whose name is desired. */
     void *ptr;
     static char string[20];
 
-    if (!initialized)
-    {
+    if (!initialized) {
     printid:
         sprintf(string, "font id 0x%x", ( unsigned int )fontStructPtr->fid);
         return string;
     }
     fontHashPtr = Tcl_FindHashEntry(&fontTable, ( char * )fontStructPtr);
-    if (fontHashPtr == NULL)
-    {
+    if (fontHashPtr == NULL) {
         goto printid;
     }
     fontPtr = ( TkFont * )Tcl_GetHashValue(fontHashPtr);
@@ -279,20 +273,17 @@ XFontStruct *fontStructPtr; /* Font to be released. */
     Tcl_HashEntry *fontHashPtr;
     TkFont *fontPtr;
 
-    if (!initialized)
-    {
+    if (!initialized) {
         panic("Tk_FreeFontStruct called before Tk_GetFontStruct");
     }
 
     fontHashPtr = Tcl_FindHashEntry(&fontTable, ( char * )fontStructPtr);
-    if (fontHashPtr == NULL)
-    {
+    if (fontHashPtr == NULL) {
         panic("Tk_FreeFontStruct received unknown font argument");
     }
     fontPtr = ( TkFont * )Tcl_GetHashValue(fontHashPtr);
     fontPtr->refCount--;
-    if (fontPtr->refCount == 0)
-    {
+    if (fontPtr->refCount == 0) {
         /*
          * We really should call Tk_FreeXId below to release the font's
          * resource identifier, but this seems to cause problems on
@@ -307,12 +298,10 @@ XFontStruct *fontStructPtr; /* Font to be released. */
         XFreeFont(fontPtr->display, fontPtr->fontStructPtr);
         Tcl_DeleteHashEntry(fontPtr->nameHashPtr);
         Tcl_DeleteHashEntry(fontHashPtr);
-        if (fontPtr->types != NULL)
-        {
+        if (fontPtr->types != NULL) {
             ckfree(fontPtr->types);
         }
-        if (fontPtr->widths != NULL)
-        {
+        if (fontPtr->widths != NULL) {
             ckfree(( char * )fontPtr->widths);
         }
         ckfree(( char * )fontPtr);
@@ -375,8 +364,7 @@ static void SetFontMetrics(fontPtr) TkFont *fontPtr; /* Font structure in
 
     fontPtr->types = ( char * )ckalloc(256);
     fontPtr->widths = ( unsigned char * )ckalloc(256);
-    for (i = 0; i < 256; i++)
-    {
+    for (i = 0; i < 256; i++) {
         fontPtr->types[i] = REPLACE;
     }
 
@@ -386,20 +374,15 @@ static void SetFontMetrics(fontPtr) TkFont *fontPtr; /* Font structure in
      * information.
      */
 
-    for (i = 0; i < 256; i++)
-    {
+    for (i = 0; i < 256; i++) {
         if ((i == 0177) || (i < fontStructPtr->min_char_or_byte2)
-            || (i > fontStructPtr->max_char_or_byte2))
-        {
+            || (i > fontStructPtr->max_char_or_byte2)) {
             continue;
         }
         fontPtr->types[i] = NORMAL;
-        if (fontStructPtr->per_char == NULL)
-        {
+        if (fontStructPtr->per_char == NULL) {
             fontPtr->widths[i] = fontStructPtr->min_bounds.width;
-        }
-        else
-        {
+        } else {
             fontPtr->widths[i]
             = fontStructPtr->per_char[i - fontStructPtr->min_char_or_byte2]
               .width;
@@ -414,37 +397,27 @@ static void SetFontMetrics(fontPtr) TkFont *fontPtr; /* Font structure in
      */
 
     replaceOK = 1;
-    for (p = hexChars; *p != 0; p++)
-    {
-        if (fontPtr->types[*p] != NORMAL)
-        {
+    for (p = hexChars; *p != 0; p++) {
+        if (fontPtr->types[*p] != NORMAL) {
             replaceOK = 0;
             break;
         }
     }
-    for (i = 0; i < 256; i++)
-    {
-        if (fontPtr->types[i] != REPLACE)
-        {
+    for (i = 0; i < 256; i++) {
+        if (fontPtr->types[i] != REPLACE) {
             continue;
         }
-        if (replaceOK)
-        {
-            if ((i < sizeof(mapChars)) && (mapChars[i] != 0))
-            {
+        if (replaceOK) {
+            if ((i < sizeof(mapChars)) && (mapChars[i] != 0)) {
                 fontPtr->widths[i]
                 = fontPtr->widths['\\'] + fontPtr->widths[mapChars[i]];
-            }
-            else
-            {
+            } else {
                 fontPtr->widths[i]
                 = fontPtr->widths['\\'] + fontPtr->widths['x']
                   + fontPtr->widths[hexChars[i & 0xf]]
                   + fontPtr->widths[hexChars[(i >> 4) & 0xf]];
             }
-        }
-        else
-        {
+        } else {
             fontPtr->types[i] = SKIP;
             fontPtr->widths[i] = 0;
         }
@@ -457,12 +430,9 @@ static void SetFontMetrics(fontPtr) TkFont *fontPtr; /* Font structure in
     fontPtr->types['\n'] = NEWLINE;
     fontPtr->types['\t'] = TAB;
     fontPtr->widths['\t'] = 0;
-    if (fontPtr->types['0'] == NORMAL)
-    {
+    if (fontPtr->types['0'] == NORMAL) {
         fontPtr->tabWidth = 8 * fontPtr->widths['0'];
-    }
-    else
-    {
+    } else {
         fontPtr->tabWidth = 8 * fontStructPtr->max_bounds.width;
     }
 
@@ -471,8 +441,7 @@ static void SetFontMetrics(fontPtr) TkFont *fontPtr; /* Font structure in
      * information to set a reasonable tab width).
      */
 
-    if (fontPtr->tabWidth == 0)
-    {
+    if (fontPtr->tabWidth == 0) {
         fontPtr->tabWidth = 1;
     }
 }
@@ -551,31 +520,25 @@ int *nextXPtr;              /* Return x-position of terminating
      * font metrics exist.
      */
 
-    if (lastFontStructPtr == fontStructPtr)
-    {
+    if (lastFontStructPtr == fontStructPtr) {
         fontPtr = lastFontPtr;
-    }
-    else
-    {
+    } else {
         Tcl_HashEntry *fontHashPtr;
 
-        if (!initialized)
-        {
+        if (!initialized) {
         badArg:
             panic("TkMeasureChars received unknown font argument");
         }
 
         fontHashPtr = Tcl_FindHashEntry(&fontTable, ( char * )fontStructPtr);
-        if (fontHashPtr == NULL)
-        {
+        if (fontHashPtr == NULL) {
             goto badArg;
         }
         fontPtr = ( TkFont * )Tcl_GetHashValue(fontHashPtr);
         lastFontStructPtr = fontPtr->fontStructPtr;
         lastFontPtr = fontPtr;
     }
-    if (fontPtr->types == NULL)
-    {
+    if (fontPtr->types == NULL) {
         SetFontMetrics(fontPtr);
     }
 
@@ -587,51 +550,34 @@ int *nextXPtr;              /* Return x-position of terminating
     newX = curX = startX;
     termX = 0; /* Not needed, but eliminates compiler warning. */
     term = source;
-    for (p = source, c = *p & 0xff; maxChars > 0; p++, maxChars--)
-    {
+    for (p = source, c = *p & 0xff; maxChars > 0; p++, maxChars--) {
         type = fontPtr->types[c];
-        if ((type == NORMAL) || (type == REPLACE))
-        {
+        if ((type == NORMAL) || (type == REPLACE)) {
             newX += fontPtr->widths[c];
-        }
-        else if (type == TAB)
-        {
-            if (!(flags & TK_IGNORE_TABS))
-            {
+        } else if (type == TAB) {
+            if (!(flags & TK_IGNORE_TABS)) {
                 newX += fontPtr->tabWidth;
                 rem = (newX - tabOrigin) % fontPtr->tabWidth;
-                if (rem < 0)
-                {
+                if (rem < 0) {
                     rem += fontPtr->tabWidth;
                 }
                 newX -= rem;
             }
-        }
-        else if (type == NEWLINE)
-        {
-            if (flags & TK_NEWLINES_NOT_SPECIAL)
-            {
+        } else if (type == NEWLINE) {
+            if (flags & TK_NEWLINES_NOT_SPECIAL) {
                 newX += fontPtr->widths[c];
-            }
-            else
-            {
+            } else {
                 break;
             }
-        }
-        else if (type != SKIP)
-        {
+        } else if (type != SKIP) {
             panic("Unknown type %d in TkMeasureChars", type);
         }
-        if (newX > maxX)
-        {
+        if (newX > maxX) {
             break;
         }
-        if (maxChars > 1)
-        {
+        if (maxChars > 1) {
             c = p[1] & 0xff;
-        }
-        else
-        {
+        } else {
             /*
              * Can't look at next character: it could be in uninitialized
              * memory.
@@ -639,8 +585,7 @@ int *nextXPtr;              /* Return x-position of terminating
 
             c = 0;
         }
-        if (isspace(UCHAR(c)) || (c == 0))
-        {
+        if (isspace(UCHAR(c)) || (c == 0)) {
             term = p + 1;
             termX = newX;
         }
@@ -652,24 +597,19 @@ int *nextXPtr;              /* Return x-position of terminating
      * span.  Use the flags to figure out what to return.
      */
 
-    if ((flags & TK_PARTIAL_OK) && (curX < maxX))
-    {
+    if ((flags & TK_PARTIAL_OK) && (curX < maxX)) {
         curX = newX;
         p++;
     }
     if ((flags & TK_AT_LEAST_ONE) && (term == source) && (maxChars > 0)
-        && !isspace(UCHAR(*term)))
-    {
+        && !isspace(UCHAR(*term))) {
         term = p;
         termX = curX;
-        if (term == source)
-        {
+        if (term == source) {
             term++;
             termX = newX;
         }
-    }
-    else if ((maxChars == 0) || !(flags & TK_WHOLE_WORDS))
-    {
+    } else if ((maxChars == 0) || !(flags & TK_WHOLE_WORDS)) {
         term = p;
         termX = curX;
     }
@@ -738,31 +678,25 @@ int flags;                  /* Flags to control display.  Only
      * font metrics exist.
      */
 
-    if (lastFontStructPtr == fontStructPtr)
-    {
+    if (lastFontStructPtr == fontStructPtr) {
         fontPtr = lastFontPtr;
-    }
-    else
-    {
+    } else {
         Tcl_HashEntry *fontHashPtr;
 
-        if (!initialized)
-        {
+        if (!initialized) {
         badArg:
             panic("TkDisplayChars received unknown font argument");
         }
 
         fontHashPtr = Tcl_FindHashEntry(&fontTable, ( char * )fontStructPtr);
-        if (fontHashPtr == NULL)
-        {
+        if (fontHashPtr == NULL) {
             goto badArg;
         }
         fontPtr = ( TkFont * )Tcl_GetHashValue(fontHashPtr);
         lastFontStructPtr = fontPtr->fontStructPtr;
         lastFontPtr = fontPtr;
     }
-    if (fontPtr->types == NULL)
-    {
+    if (fontPtr->types == NULL) {
         SetFontMetrics(fontPtr);
     }
 
@@ -774,46 +708,35 @@ int flags;                  /* Flags to control display.  Only
 
     startX = curX = x;
     start = string;
-    for (p = string; numChars > 0; numChars--, p++)
-    {
+    for (p = string; numChars > 0; numChars--, p++) {
         c = *p & 0xff;
         type = fontPtr->types[c];
-        if (type == NORMAL)
-        {
+        if (type == NORMAL) {
             curX += fontPtr->widths[c];
             continue;
         }
-        if (p != start)
-        {
+        if (p != start) {
             XDrawString(display, drawable, gc, startX, y, start, p - start);
             startX = curX;
         }
-        if (type == TAB)
-        {
-            if (!(flags & TK_IGNORE_TABS))
-            {
+        if (type == TAB) {
+            if (!(flags & TK_IGNORE_TABS)) {
                 curX += fontPtr->tabWidth;
                 rem = (curX - tabOrigin) % fontPtr->tabWidth;
-                if (rem < 0)
-                {
+                if (rem < 0) {
                     rem += fontPtr->tabWidth;
                 }
                 curX -= rem;
             }
-        }
-        else if (type == REPLACE
-                 || (type == NEWLINE && flags & TK_NEWLINES_NOT_SPECIAL))
-        {
-            if ((c < sizeof(mapChars)) && (mapChars[c] != 0))
-            {
+        } else if (type == REPLACE
+                   || (type == NEWLINE && flags & TK_NEWLINES_NOT_SPECIAL)) {
+            if ((c < sizeof(mapChars)) && (mapChars[c] != 0)) {
                 replace[0] = '\\';
                 replace[1] = mapChars[c];
                 XDrawString(display, drawable, gc, startX, y, replace, 2);
                 curX
                 += fontPtr->widths[replace[0]] + fontPtr->widths[replace[1]];
-            }
-            else
-            {
+            } else {
                 replace[0] = '\\';
                 replace[1] = 'x';
                 replace[2] = hexChars[(c >> 4) & 0xf];
@@ -824,14 +747,10 @@ int flags;                  /* Flags to control display.  Only
                         + fontPtr->widths[replace[2]]
                         + fontPtr->widths[replace[3]];
             }
-        }
-        else if (type == NEWLINE)
-        {
+        } else if (type == NEWLINE) {
             y += fontStructPtr->ascent + fontStructPtr->descent;
             curX = x;
-        }
-        else if (type != SKIP)
-        {
+        } else if (type != SKIP) {
             panic("Unknown type %d in TkDisplayChars", type);
         }
         startX = curX;
@@ -843,8 +762,7 @@ int flags;                  /* Flags to control display.  Only
      * to display.
      */
 
-    if (p != start)
-    {
+    if (p != start) {
         XDrawString(display, drawable, gc, startX, y, start, p - start);
     }
 }
@@ -904,20 +822,14 @@ int lastChar;               /* Index of last character to underline. */
      * properties if they exist.
      */
 
-    if (XGetFontProperty(fontStructPtr, XA_UNDERLINE_POSITION, &value))
-    {
+    if (XGetFontProperty(fontStructPtr, XA_UNDERLINE_POSITION, &value)) {
         yUnder = y + value;
-    }
-    else
-    {
+    } else {
         yUnder = y + fontStructPtr->max_bounds.descent / 2;
     }
-    if (XGetFontProperty(fontStructPtr, XA_UNDERLINE_THICKNESS, &value))
-    {
+    if (XGetFontProperty(fontStructPtr, XA_UNDERLINE_THICKNESS, &value)) {
         height = value;
-    }
-    else
-    {
+    } else {
         height = 2;
     }
 
@@ -990,13 +902,11 @@ int *heightPtr;             /* Store height of string here. */
     int thisWidth, maxWidth, numLines;
     char *p;
 
-    if (wrapLength <= 0)
-    {
+    if (wrapLength <= 0) {
         wrapLength = INT_MAX;
     }
     maxWidth = 0;
-    for (numLines = 1, p = string; (p - string) < numChars; numLines++)
-    {
+    for (numLines = 1, p = string; (p - string) < numChars; numLines++) {
         p += TkMeasureChars(fontStructPtr,
                             p,
                             numChars - (p - string),
@@ -1005,12 +915,10 @@ int *heightPtr;             /* Store height of string here. */
                             0,
                             TK_WHOLE_WORDS | TK_AT_LEAST_ONE,
                             &thisWidth);
-        if (thisWidth > maxWidth)
-        {
+        if (thisWidth > maxWidth) {
             maxWidth = thisWidth;
         }
-        if (*p == 0)
-        {
+        if (*p == 0) {
             break;
         }
 
@@ -1019,8 +927,7 @@ int *heightPtr;             /* Store height of string here. */
          * space character then skip it.
          */
 
-        if (isspace(UCHAR(*p)))
-        {
+        if (isspace(UCHAR(*p))) {
             p++;
         }
     }
@@ -1087,8 +994,7 @@ GC gc;                      /* Graphics context to use for drawing text. */
      */
 
     y += fontStructPtr->ascent;
-    for (p = string; numChars > 0;)
-    {
+    for (p = string; numChars > 0;) {
         charsThisLine = TkMeasureChars(fontStructPtr,
                                        p,
                                        numChars,
@@ -1097,16 +1003,11 @@ GC gc;                      /* Graphics context to use for drawing text. */
                                        0,
                                        TK_WHOLE_WORDS | TK_AT_LEAST_ONE,
                                        &lengthThisLine);
-        if (justify == TK_JUSTIFY_LEFT)
-        {
+        if (justify == TK_JUSTIFY_LEFT) {
             xThisLine = x;
-        }
-        else if (justify == TK_JUSTIFY_CENTER)
-        {
+        } else if (justify == TK_JUSTIFY_CENTER) {
             xThisLine = x + (length - lengthThisLine) / 2;
-        }
-        else
-        {
+        } else {
             xThisLine = x + (length - lengthThisLine);
         }
         TkDisplayChars(display,
@@ -1119,8 +1020,7 @@ GC gc;                      /* Graphics context to use for drawing text. */
                        y,
                        xThisLine,
                        0);
-        if ((underline >= 0) && (underline < charsThisLine))
-        {
+        if ((underline >= 0) && (underline < charsThisLine)) {
             TkUnderlineChars(display,
                              drawable,
                              gc,
@@ -1142,8 +1042,7 @@ GC gc;                      /* Graphics context to use for drawing text. */
          * If the character that didn't fit was a space character, skip it.
          */
 
-        if (isspace(UCHAR(*p)))
-        {
+        if (isspace(UCHAR(*p))) {
             p++;
             numChars--;
             underline--;

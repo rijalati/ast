@@ -41,10 +41,8 @@
 
 #if DEBUG
 #    define DEBUGSOURCE(n, r, p)                                             \
-        do                                                                   \
-        {                                                                    \
-            if (error_info.trace <= -14)                                     \
-            {                                                                \
+        do {                                                                 \
+            if (error_info.trace <= -14) {                                   \
                 List_t *q;                                                   \
                 message((-14, "  [%d] %s", n, (r)->name));                   \
                 for (q = p; q; q = q->next)                                  \
@@ -79,8 +77,7 @@ file_hash(const char *s)
     unsigned int h = 0;
     unsigned int c;
 
-    while (c = *p++)
-    {
+    while (c = *p++) {
         if (isupper(c))
             c = tolower(c);
         HASHPART(h, c);
@@ -96,19 +93,15 @@ rule_compare(const char *s, const char *t)
     int x;
 
     x = (*s == '.') ? 0 : -1;
-    while (c = *s++)
-    {
-        if (!x)
-        {
+    while (c = *s++) {
+        if (!x) {
             if (c == '%')
                 x = (*(s - 2) == '.') ? 1 : -1;
             else if (c != '.' && !isupper(c))
                 x = -1;
         }
-        if ((d = *t++) != c)
-        {
-            if (x > 0)
-            {
+        if ((d = *t++) != c) {
+            if (x > 0) {
                 if (isupper(c))
                     c = tolower(c);
                 else if (isupper(d))
@@ -131,10 +124,8 @@ rule_hash(const char *s)
     int x;
 
     x = (*s == '.') ? 0 : -1;
-    while (c = *p++)
-    {
-        if (!x)
-        {
+    while (c = *p++) {
+        if (!x) {
             if (c == '%')
                 x = (*(p - 2) == '.') ? 1 : -1;
             else if (c != '.' && !isupper(c))
@@ -208,8 +199,7 @@ unique(Rule_t *r)
     Fileid_t id;
     Stat_t st;
 
-    if (rstat(r->name, &st, 0))
-    {
+    if (rstat(r->name, &st, 0)) {
         r->time = 0;
         return 0;
     }
@@ -217,8 +207,7 @@ unique(Rule_t *r)
     id.ino = st.st_ino;
     if ((d = getdir(&id)) && state.alias
         && d->directory == (S_ISDIR(st.st_mode) != 0)
-        && (!state.mam.statix || S_ISDIR(st.st_mode)))
-    {
+        && (!state.mam.statix || S_ISDIR(st.st_mode))) {
         /*
          * internal.unbind causes directory rescan
          */
@@ -233,8 +222,7 @@ unique(Rule_t *r)
          * but we bias the choice towards shorter pathnames
          */
 
-        if (!x->uname && strlen(r->name) < strlen(x->name))
-        {
+        if (!x->uname && strlen(r->name) < strlen(x->name)) {
             Rule_t *t;
 
             t = r;
@@ -291,10 +279,8 @@ addfile(Dir_t *d, char *name, Time_t date)
      * all have the same file.dir value
      */
 
-    if ((n = getfile(name)) && n->dir == d)
-    {
-        if (d->archive)
-        {
+    if ((n = getfile(name)) && n->dir == d) {
+        if (d->archive) {
             if (n->time < date)
                 n->time = date;
 #if DEBUG
@@ -321,11 +307,9 @@ addfile(Dir_t *d, char *name, Time_t date)
     f->time = date;
     putfile(0, f);
 #if _WINIX
-    if (!d->archive && (s = strchr(name, '.')))
-    {
+    if (!d->archive && (s = strchr(name, '.'))) {
         s++;
-        if (streq(s, "exe") || streq(s, "EXE"))
-        {
+        if (streq(s, "exe") || streq(s, "EXE")) {
             *--s = 0;
             addfile(d, name, date);
             *s = '.';
@@ -355,11 +339,9 @@ newfile(Rule_t *r, char *dir, Time_t date)
     sfputc(tmp, '/');
     edit(tmp, r->name, dir ? dir : KEEP, KEEP, KEEP);
     s = (nam = sfstruse(tmp)) + 1;
-    do
-    {
+    do {
         *s = 0;
-        if ((z = getrule(nam)) && (z->dynamic & D_entries))
-        {
+        if ((z = getrule(nam)) && (z->dynamic & D_entries)) {
             if (t = strchr(s + 1, '/'))
                 *t = 0;
 
@@ -367,13 +349,10 @@ newfile(Rule_t *r, char *dir, Time_t date)
              * sequential scan is OK since this is uncommon
              */
 
-            if (pos = hashscan(table.dir, 0))
-            {
-                while (hashnext(pos))
-                {
+            if (pos = hashscan(table.dir, 0)) {
+                while (hashnext(pos)) {
                     d = ( Dir_t * )pos->bucket->value;
-                    if (d->name == z->name)
-                    {
+                    if (d->name == z->name) {
                         addfile(d, s + 1, date);
                         break;
                     }
@@ -414,20 +393,16 @@ dirscan(Rule_t *r)
         r->name = maprule(r->name, r);
     r->dynamic |= D_scanned;
     r->dynamic &= ~D_entries;
-    if (!(r->property & P_state))
-    {
-        if (d = unique(r))
-        {
+    if (!(r->property & P_state)) {
+        if (d = unique(r)) {
             s = r->name;
-            if (d->directory && (dirp = opendir(s)))
-            {
+            if (d->directory && (dirp = opendir(s))) {
                 debug((-5, "scan directory %s", s));
                 while (entry = readdir(dirp))
                     if (!FIGNORE(entry->d_name))
                         addfile(d, entry->d_name, NOTIME);
                 r->dynamic |= D_entries;
-                if (!(r->dynamic & D_bound) && !stat(s, &st))
-                {
+                if (!(r->dynamic & D_bound) && !stat(s, &st)) {
                     r->dynamic |= D_bound;
                     r->time = tmxgetmtime(&st);
                     if (!r->view
@@ -442,8 +417,7 @@ dirscan(Rule_t *r)
                 return;
             }
             debug((-5, "dirscan(%s) failed", s));
-        }
-        else if (r->time)
+        } else if (r->time)
             r->dynamic |= D_entries;
     }
 }
@@ -491,11 +465,9 @@ glob_diropen(glob_t *gp, const char *path)
     gs->root = 0;
     dir = path;
     if (*path == '/')
-        for (i = 0; i <= state.maxview; i++)
-        {
+        for (i = 0; i <= state.maxview; i++) {
             if (!strncmp(path, state.view[i].root, n = state.view[i].rootlen)
-                && (!*(path + n) || *(path + n) == '/'))
-            {
+                && (!*(path + n) || *(path + n) == '/')) {
                 if (!*(path += n + 1))
                     path = internal.dot->name;
                 gs->view = i;
@@ -507,15 +479,13 @@ glob_diropen(glob_t *gp, const char *path)
     if (gs->dirp = opendir(dir))
         return ( void * )gs;
     if (*path != '/')
-        while (gs->view++ < state.maxview)
-        {
+        while (gs->view++ < state.maxview) {
             if (*gs->name == '/')
                 sfprintf(internal.nam, "%s", gs->name);
             else if (gs->root)
                 sfprintf(
                 internal.nam, "%s/%s", state.view[gs->view].root, gs->name);
-            else
-            {
+            else {
                 if (*state.view[gs->view].path != '/')
                     sfprintf(internal.nam, "%s/", internal.pwd);
                 sfprintf(
@@ -539,10 +509,8 @@ glob_dirnext(glob_t *gp, void *handle)
     Dirent_t *dp;
     char *s;
 
-    for (;;)
-    {
-        if (dp = readdir(gs->dirp))
-        {
+    for (;;) {
+        if (dp = readdir(gs->dirp)) {
             if (FIGNORE(dp->d_name))
                 continue;
             HACKSPACE(dp->d_name, s);
@@ -560,15 +528,13 @@ glob_dirnext(glob_t *gp, void *handle)
         gs->dirp = 0;
         if (*gs->name == '/')
             return 0;
-        do
-        {
+        do {
             if (gs->view++ >= state.maxview)
                 return 0;
             if (gs->root)
                 sfprintf(
                 internal.nam, "%s/%s", state.view[gs->view].root, gs->name);
-            else
-            {
+            else {
                 if (*state.view[gs->view].path != '/')
                     sfprintf(internal.nam, "%s/", internal.pwd);
                 sfprintf(
@@ -606,28 +572,23 @@ glob_type(glob_t *gp, const char *path, int flags)
     Stat_t st;
 
     i = 0;
-    if ((*gp->gl_stat)(path, &st))
-    {
+    if ((*gp->gl_stat)(path, &st)) {
         root = 0;
         if (*path == '/')
-            for (i = 0; i <= state.maxview; i++)
-            {
+            for (i = 0; i <= state.maxview; i++) {
                 if (!strncmp(
                     path, state.view[i].root, n = state.view[i].rootlen)
-                    && (!*(path + n) || *(path + n) == '/'))
-                {
+                    && (!*(path + n) || *(path + n) == '/')) {
                     if (!*(path += n + 1))
                         path = internal.dot->name;
                     root = 1;
                     break;
                 }
             }
-        for (i = 0; i <= state.maxview; i++)
-        {
+        for (i = 0; i <= state.maxview; i++) {
             if (root)
                 sfprintf(internal.nam, "%s/%s", state.view[i].root, path);
-            else
-            {
+            else {
                 if (*state.view[i].path != '/')
                     sfprintf(internal.nam, "%s/", internal.pwd);
                 sfprintf(internal.nam, "%s/%s", state.view[i].path, path);
@@ -668,33 +629,28 @@ globv(glob_t *gp, char *s)
     static char *nope[1];
 
     f = GLOB_AUGMENTED | GLOB_DISC | GLOB_STARSTAR;
-    if (!gp)
-    {
+    if (!gp) {
         gp = &gl;
         f |= GLOB_STACK;
     }
     memset(gp, 0, sizeof(gl));
     gp->gl_intr = &state.caught;
     gp->gl_stat = pathstat;
-    if (state.maxview && !state.fsview)
-    {
+    if (state.maxview && !state.fsview) {
         gp->gl_handle = ( void * )&gs;
         gp->gl_diropen = glob_diropen;
         gp->gl_dirnext = glob_dirnext;
         gp->gl_dirclose = glob_dirclose;
         gp->gl_type = glob_type;
     }
-    if (i = glob(s, f, 0, gp))
-    {
+    if (i = glob(s, f, 0, gp)) {
         if (i != GLOB_NOMATCH && !trap())
             error(2, "glob() internal error %d", i);
         return nope;
     }
-    if (state.maxview && !state.fsview)
-    {
+    if (state.maxview && !state.fsview) {
         for (i = 0, p = 0, x = q = gp->gl_pathv; *q; q++)
-            if (!p || !streq(*q, *p))
-            {
+            if (!p || !streq(*q, *p)) {
                 *x++ = *q;
                 p = q;
             }
@@ -720,16 +676,14 @@ bindalias(Rule_t *r, Rule_t *x, char *path, Rule_t *d, int force)
     Rule_t *z;
     Rule_t *a[3];
 
-    if (x->dynamic & D_alias)
-    {
+    if (x->dynamic & D_alias) {
         a[na++] = x;
         x = makerule(x->name);
         if (x == r || (x->dynamic & D_alias))
             return r;
     }
     if (!force && !((r->dynamic | x->dynamic) & D_bound) && !d
-        && !strchr(x->name, '/'))
-    {
+        && !strchr(x->name, '/')) {
         debug((-5,
                "%s alias %s delayed until one or the other is bound",
                x->name,
@@ -753,12 +707,10 @@ bindalias(Rule_t *r, Rule_t *x, char *path, Rule_t *d, int force)
     merge(r, x, MERGE_ALL | MERGE_BOUND);
     if (!(state.questionable & 0x00001000))
         x->attribute |= r->attribute;
-    if (x->uname && !streq(x->name, path) && !streq(x->uname, path))
-    {
+    if (x->uname && !streq(x->name, path) && !streq(x->uname, path)) {
         putrule(x->name, 0);
         z = makerule(path);
-        if (z->dynamic & D_alias)
-        {
+        if (z->dynamic & D_alias) {
             a[na++] = z;
             z = makerule(z->name);
 #if DEBUG
@@ -767,8 +719,7 @@ bindalias(Rule_t *r, Rule_t *x, char *path, Rule_t *d, int force)
                 PANIC, "multiple alias from %s to %s", z->name, x->name);
 #endif
         }
-        if (z != x && z != r)
-        {
+        if (z != x && z != r) {
 #if DEBUG
             if (state.test & 0x00000040)
                 error(2,
@@ -783,13 +734,10 @@ bindalias(Rule_t *r, Rule_t *x, char *path, Rule_t *d, int force)
             x = z;
         }
     }
-    if (x->dynamic & D_bound)
-    {
+    if (x->dynamic & D_bound) {
         r->time = x->time;
         r->view = x->view;
-    }
-    else
-    {
+    } else {
         x->dynamic |= D_bound;
         x->dynamic &= ~D_member;
         x->time = r->time;
@@ -798,57 +746,45 @@ bindalias(Rule_t *r, Rule_t *x, char *path, Rule_t *d, int force)
     }
     s = r->uname = r->name;
     r->name = x->name;
-    if (d)
-    {
+    if (d) {
         if (state.fsview && strchr(s, '/') && strchr(r->name, '/')
-            && !streq(s, r->name))
-        {
+            && !streq(s, r->name)) {
             debug((-5, "%s and %s are bound in %s", s, r->name, d->name));
             putbound(s, d->name);
             putbound(r->name, d->name);
-        }
-        else if (s[0] == '.' && s[1] == '.' && s[2] == '/'
-                 && ((n = strlen(r->name)) < (i = strlen(s))
-                     || r->name[n - i - 1] != '/'
-                     || !streq(s, r->name + n - i)))
+        } else if (s[0] == '.' && s[1] == '.' && s[2] == '/'
+                   && ((n = strlen(r->name)) < (i = strlen(s))
+                       || r->name[n - i - 1] != '/'
+                       || !streq(s, r->name + n - i)))
             putbound(s, d->name);
     }
-    if (!(state.questionable & 0x00002000))
-    {
+    if (!(state.questionable & 0x00002000)) {
         if ((!x->uname
              || x->uname[0] != '.' && x->uname[1] != '.' && x->uname[2] != '/')
             && ((s = getbound(x->name))
-                || x->uname && (s = getbound(x->uname))))
-        {
+                || x->uname && (s = getbound(x->uname)))) {
             debug((-5, "%s rebind %s => %s", r->name, getbound(r->name), s));
             putbound(r->name, s);
-        }
-        else if ((!r->uname
-                  || r->uname[0] != '.' && r->uname[1] != '.'
-                     && r->uname[2] != '/')
-                 && ((s = getbound(r->name))
-                     || r->uname && (s = getbound(r->uname))))
-        {
+        } else if ((!r->uname
+                    || r->uname[0] != '.' && r->uname[1] != '.'
+                       && r->uname[2] != '/')
+                   && ((s = getbound(r->name))
+                       || r->uname && (s = getbound(r->uname)))) {
             debug((-5, "%s rebind %s => %s", x->name, getbound(x->name), s));
             putbound(x->name, s);
-        }
-        else if (r->uname && (n = strlen(r->name)) > (i = strlen(r->uname))
-                 && r->name[n -= i + 1] == '/')
-        {
+        } else if (r->uname && (n = strlen(r->name)) > (i = strlen(r->uname))
+                   && r->name[n -= i + 1] == '/') {
             r->name[n] = 0;
             s = (z = getrule(r->name)) ? z->name : strdup(r->name);
             r->name[n] = '/';
             debug((-5, "%s and %s are bound in %s", r->name, r->uname, s));
             putbound(r->name, s);
             putbound(r->uname, s);
-        }
-        else
-        {
+        } else {
             debug((-5, "no rebind for %s or %s", unbound(r), unbound(x)));
             s = 0;
         }
-        for (i = 0; i < na; i++)
-        {
+        for (i = 0; i < na; i++) {
             if (s)
                 putbound(a[i]->name, s);
             x->attribute |= a[i]->attribute;
@@ -882,11 +818,9 @@ localrule(Rule_t *r, int force)
     if (!r->view)
         return 0;
     if (!strncmp(
-        r->name, state.view[r->view].path, state.view[r->view].pathlen))
-    {
+        r->name, state.view[r->view].path, state.view[r->view].pathlen)) {
         s = r->name + state.view[r->view].pathlen;
-        switch (*s++)
-        {
+        switch (*s++) {
         case 0:
             return internal.dot;
         case '/':
@@ -894,8 +828,7 @@ localrule(Rule_t *r, int force)
                 x = makerule(s);
             if (x && (x->dynamic & D_alias))
                 x = makerule(x->name);
-            if (x && !x->view && (x != r || force))
-            {
+            if (x && !x->view && (x != r || force)) {
                 merge(r, x, MERGE_ATTR | MERGE_FORCE);
                 x->uname = r->uname;
                 x->time = r->time;
@@ -911,13 +844,11 @@ localrule(Rule_t *r, int force)
     while (*s && *s == *v++)
         if (*s++ == '/')
             p = s;
-    if (p)
-    {
+    if (p) {
         s = internal.pwd;
         v--;
         while (s = strchr(s, '/'))
-            if (!strcmp(++s, v))
-            {
+            if (!strcmp(++s, v)) {
                 tmp = sfstropen();
                 *--s = 0;
                 sfprintf(tmp, "%s/%s", internal.pwd, p);
@@ -928,8 +859,7 @@ localrule(Rule_t *r, int force)
                 if (x && (x->dynamic & D_alias))
                     x = makerule(x->name);
                 sfstrclose(tmp);
-                if (x && !x->view && (force || x != r))
-                {
+                if (x && !x->view && (force || x != r)) {
                     merge(r, x, MERGE_ATTR);
                     if (!x->uname)
                         x->uname = r->uname;
@@ -982,17 +912,14 @@ bindfile(Rule_t *r, char *name, int flags)
     static Dir_t tmp_dir;
     static File_t tmp_file = { 0, &tmp_dir, NOTIME };
 
-    if (r || (r = getrule(name)))
-    {
+    if (r || (r = getrule(name))) {
         if ((r->property & P_state)
             || (r->property & P_virtual) && !(flags & BIND_FORCE))
             return 0;
-        if (r->dynamic & D_alias)
-        {
+        if (r->dynamic & D_alias) {
             a = r;
             r = makerule(unbound(r));
-            if (r == a)
-            {
+            if (r == a) {
                 error(1, "%s: alias loop", r->name);
                 r->dynamic &= ~D_alias;
             }
@@ -1004,8 +931,7 @@ bindfile(Rule_t *r, char *name, int flags)
     }
     buf = sfstropen();
     tmp = sfstropen();
-    for (;;)
-    {
+    for (;;) {
         found = 0;
         view = 0;
         od = 0;
@@ -1025,27 +951,21 @@ bindfile(Rule_t *r, char *name, int flags)
             sfputr(buf, name, 0);
             s = sfstrseek(buf, 0, SEEK_SET);
             canon(s);
-            if (!rstat(s, &st, 0))
-            {
+            if (!rstat(s, &st, 0)) {
                 tm = tmxgetmtime(&st);
                 f = 0;
                 found = 1;
-            }
-            else if (state.maxview && !state.fsview)
-                for (i = 0; i <= state.maxview; i++)
-                {
+            } else if (state.maxview && !state.fsview)
+                for (i = 0; i <= state.maxview; i++) {
                     if (!strncmp(
                         s, state.view[i].root, n = state.view[i].rootlen)
-                        && (!*(s + n) || *(s + n) == '/'))
-                    {
+                        && (!*(s + n) || *(s + n) == '/')) {
                         if (!*(s += n + 1))
                             s = internal.dot->name;
-                        for (i = 0; i <= state.maxview; i++)
-                        {
+                        for (i = 0; i <= state.maxview; i++) {
                             sfprintf(
                             internal.nam, "%s/%s", state.view[i].root, s);
-                            if (!rstat(b = sfstruse(internal.nam), &st, 0))
-                            {
+                            if (!rstat(b = sfstruse(internal.nam), &st, 0)) {
                                 sfputr(buf, b, 0);
                                 tm = tmxgetmtime(&st);
                                 f = 0;
@@ -1071,8 +991,7 @@ bindfile(Rule_t *r, char *name, int flags)
         dir = sfstruse(tmp);
         if (*dir)
             base = name + strlen(dir) + 1;
-        else
-        {
+        else {
             dir = 0;
             base = name;
         }
@@ -1089,23 +1008,19 @@ bindfile(Rule_t *r, char *name, int flags)
                  base));
 #endif
         ndirs = 0;
-        if (!(flags & BIND_DOT))
-        {
+        if (!(flags & BIND_DOT)) {
             if (!r)
                 a = associate(internal.source_p, NiL, name, NiL);
             else if (name == r->name)
                 a = associate(internal.source_p, r, NiL, NiL);
             else
                 a = 0;
-            if (!a || !(a->property & P_force))
-            {
-                if ((x = internal.source) != a)
-                {
+            if (!a || !(a->property & P_force)) {
+                if ((x = internal.source) != a) {
                     if (!(x->dynamic & D_cached))
                         x = source(x);
                     if ((p = x->prereqs)
-                        && (p->rule != internal.dot || (p = p->next)))
-                    {
+                        && (p->rule != internal.dot || (p = p->next))) {
                         DEBUGSOURCE(ndirs, x, p);
                         dirs[ndirs++] = p;
                     }
@@ -1113,38 +1028,32 @@ bindfile(Rule_t *r, char *name, int flags)
                 if ((flags & BIND_MAKEFILE)
                     && (x = catrule(
                         internal.source->name, external.source, NiL, 0))
-                    && x != a)
-                {
+                    && x != a) {
                     if (!(x->dynamic & D_cached))
                         x = source(x);
                     if ((p = x->prereqs)
-                        && (p->rule != internal.dot || (p = p->next)))
-                    {
+                        && (p->rule != internal.dot || (p = p->next))) {
                         DEBUGSOURCE(ndirs, x, p);
                         dirs[ndirs++] = p;
                     }
                 }
                 edit(buf, name, DELETE, internal.source->name, KEEP);
                 if ((z = getrule(sfstruse(buf))) && z != x
-                    && z != internal.source && z != internal.source_p)
-                {
+                    && z != internal.source && z != internal.source_p) {
                     if (!(z->dynamic & D_cached))
                         z = source(z);
                     if ((p = z->prereqs)
-                        && (p->rule != internal.dot || (p = p->next)))
-                    {
+                        && (p->rule != internal.dot || (p = p->next))) {
                         DEBUGSOURCE(ndirs, z, p);
                         dirs[ndirs++] = p;
                     }
                 }
             }
-            if (a)
-            {
+            if (a) {
                 if (!(a->dynamic & D_cached))
                     a = source(a);
                 if ((p = a->prereqs)
-                    && (p->rule != internal.dot || (p = p->next)))
-                {
+                    && (p->rule != internal.dot || (p = p->next))) {
                     DEBUGSOURCE(ndirs, a, p);
                     dirs[ndirs++] = p;
                 }
@@ -1175,44 +1084,37 @@ bindfile(Rule_t *r, char *name, int flags)
 
         if (r && r->active
             && (r->active->parent->target->property & P_archive)
-            && !(r->dynamic & D_membertoo))
-        {
+            && !(r->dynamic & D_membertoo)) {
             Dir_t *ar;
 
             i = 0;
             for (f = files; f; f = f->next)
                 if (r->active->parent->target->name == f->dir->name
-                    && f->dir->archive)
-                {
+                    && f->dir->archive) {
                     i = 1;
                     if (r->dynamic & D_member)
                         error(1,
                               "%s is duplicated within %s",
                               r->name,
                               r->active->parent->target->name);
-                    if (f->time >= r->time)
-                    {
+                    if (f->time >= r->time) {
                         r->dynamic |= D_member;
                         r->time = f->time;
                     }
                 }
             if (!i && (ar = getar(r->active->parent->target->name))
-                && (i = ar->truncate) && strlen(base) > i)
-            {
+                && (i = ar->truncate) && strlen(base) > i) {
                 c = base[i];
                 base[i] = 0;
-                for (f = getfile(base); f; f = f->next)
-                {
+                for (f = getfile(base); f; f = f->next) {
                     if (r->active->parent->target->name == f->dir->name
-                        && f->dir->archive)
-                    {
+                        && f->dir->archive) {
                         if (r->dynamic & D_member)
                             error(1,
                                   "%s is duplicated within %s",
                                   r->name,
                                   r->active->parent->target->name);
-                        if (f->time >= r->time)
-                        {
+                        if (f->time >= r->time) {
                             r->dynamic |= D_member;
                             r->time = f->time;
                         }
@@ -1227,52 +1129,41 @@ bindfile(Rule_t *r, char *name, int flags)
          */
 
         view = state.maxview;
-        for (i = ndirs; i-- > 0;)
-        {
-            for (p = dirs[i]; p; p = p->next)
-            {
+        for (i = ndirs; i-- > 0;) {
+            for (p = dirs[i]; p; p = p->next) {
                 d = p->rule;
-                if (!(d->mark & M_directory))
-                {
+                if (!(d->mark & M_directory)) {
                     /*UNDENT*/
                     d->mark |= M_directory;
                     c = (s = dir)
                         && (s[0] != '.' || s[1] != '.'
                             || s[2] != '/' && s[2] != 0);
-                    if (c && (d->property & P_terminal))
-                    {
+                    if (c && (d->property & P_terminal)) {
                         if (state.test & 0x00000008)
                             error(2, "prune: %s + %s TERM", d->name, s);
                         continue;
                     }
-                    if (!(d->dynamic & D_scanned))
-                    {
+                    if (!(d->dynamic & D_scanned)) {
                         dirscan(d);
                         files = getfile(base);
                     }
                     od = d;
-                    if (s)
-                    {
-                        if (c)
-                        {
+                    if (s) {
+                        if (c) {
                             if (s = strchr(s, '/'))
                                 *s = 0;
                             z = catrule(d->name, "/", dir, -1);
-                            if (z->dynamic & (D_entries | D_scanned))
-                            {
+                            if (z->dynamic & (D_entries | D_scanned)) {
                                 if (s)
                                     *s = '/';
                                 if (!(z->dynamic & D_entries))
                                     continue;
-                            }
-                            else
-                            {
+                            } else {
                                 for (f = getfile(dir), b = d->name; f;
                                      f = f->next)
                                     if (f->dir->name == b)
                                         break;
-                                if (!f && !(z->uname))
-                                {
+                                if (!f && !(z->uname)) {
                                     z->dynamic |= D_scanned;
                                     z->dynamic &= ~D_entries;
                                     if (s)
@@ -1284,8 +1175,7 @@ bindfile(Rule_t *r, char *name, int flags)
                                               dir);
                                     continue;
                                 }
-                                if (s)
-                                {
+                                if (s) {
                                     *s = '/';
                                     z->dynamic |= D_entries;
                                 }
@@ -1294,20 +1184,18 @@ bindfile(Rule_t *r, char *name, int flags)
                                 d = catrule(d->name, "/", dir, -1);
                             else
                                 d = z;
-                        }
-                        else if (!(state.questionable & 0x00000080))
+                        } else if (!(state.questionable & 0x00000080))
                             d = catrule(d->name, "/", dir, -1);
                         else
                             for (;;)
-                                if (*s++ != '.' || *s++ != '.' || *s++ != '/')
-                                {
+                                if (*s++ != '.' || *s++ != '.'
+                                    || *s++ != '/') {
                                     d = *(s - 1)
                                         ? catrule(d->name, "/", dir, -1)
                                         : makerule(dir);
                                     break;
                                 }
-                        if (!(d->dynamic & D_scanned))
-                        {
+                        if (!(d->dynamic & D_scanned)) {
                             d->view = od->view;
                             dirscan(d);
                             files = getfile(base);
@@ -1321,8 +1209,7 @@ bindfile(Rule_t *r, char *name, int flags)
                                     && (name[2] == 0 || name[2] == '/'
                                         || state.fsview && name[2] == '.'
                                            && (name[3] == 0
-                                               || name[3] == '/'))))
-                    {
+                                               || name[3] == '/')))) {
                         tmp_dir.name = d->name;
                         ofiles = files;
                         files = &tmp_file;
@@ -1330,13 +1217,10 @@ bindfile(Rule_t *r, char *name, int flags)
 #if DEBUG
                     message((-11, "bindfile(%s): dir=%s", name, d->name));
 #endif
-                    if (d->view <= view)
-                    {
-                        for (f = files; f; f = f->next)
-                        {
+                    if (d->view <= view) {
+                        for (f = files; f; f = f->next) {
                             s = f->dir->name;
-                            if (s == d->name && !f->dir->archive)
-                            {
+                            if (s == d->name && !f->dir->archive) {
                                 if (s == internal.dot->name)
                                     sfputr(buf, base, -1);
                                 else
@@ -1345,12 +1229,10 @@ bindfile(Rule_t *r, char *name, int flags)
                                 s = sfstruse(buf);
                                 canon(s);
                                 st.st_mode = 0;
-                                if (tm == NOTIME)
-                                {
+                                if (tm == NOTIME) {
                                     x = 0;
                                     if (state.believe
-                                        && d->view >= (state.believe - 1))
-                                    {
+                                        && d->view >= (state.believe - 1)) {
                                         if (!r)
                                             r = makerule(name);
                                         r->view = d->view;
@@ -1358,8 +1240,7 @@ bindfile(Rule_t *r, char *name, int flags)
                                         x = staterule(RULE, r, NiL, 0);
                                         r->mark &= ~M_bind;
                                     }
-                                    if (x)
-                                    {
+                                    if (x) {
                                         view = d->view;
                                         tm = x->time;
                                         message(
@@ -1368,22 +1249,17 @@ bindfile(Rule_t *r, char *name, int flags)
                                          r->name,
                                          timestr(tm),
                                          view));
-                                    }
-                                    else if (rstat(s, &st, 0))
+                                    } else if (rstat(s, &st, 0))
                                         tm = 0;
-                                    else
-                                    {
+                                    else {
                                         tm = tmxgetmtime(&st);
                                         view
                                         = state.fsview ? iview(&st) : d->view;
                                     }
-                                }
-                                else
+                                } else
                                     view = d->view;
-                                if (tm)
-                                {
-                                    if (!(flags & BIND_DOT) || !view)
-                                    {
+                                if (tm) {
+                                    if (!(flags & BIND_DOT) || !view) {
                                         if (view && state.fsview
                                             && state.expandview)
                                             mount(s,
@@ -1396,14 +1272,12 @@ bindfile(Rule_t *r, char *name, int flags)
                                     }
                                     if (d->view > view)
                                         break;
-                                }
-                                else if (errno == ENODEV)
+                                } else if (errno == ENODEV)
                                     view = d->view;
                             }
                         }
                     }
-                    if (ofiles)
-                    {
+                    if (ofiles) {
                         files = ofiles;
                         ofiles = 0;
                     }
@@ -1422,8 +1296,7 @@ bindfile(Rule_t *r, char *name, int flags)
                 p->rule->mark &= ~M_directory;
         if (!found && r && (name == r->name || reassoc)
             && (a = associate(internal.bind_p, r, NiL, NiL))
-            && (b = call(a, name)) && (s = getarg(&b, NiL)))
-        {
+            && (b = call(a, name)) && (s = getarg(&b, NiL))) {
             char *t;
 
             /*
@@ -1434,15 +1307,12 @@ bindfile(Rule_t *r, char *name, int flags)
              *		name = value, time = time(time)
              */
 
-            if (streq(s, "-") || streq(s, "+"))
-            {
+            if (streq(s, "-") || streq(s, "+")) {
                 n = *s;
                 s = getarg(&b, NiL);
-            }
-            else
+            } else
                 n = 0;
-            if (s && !streq(s, name))
-            {
+            if (s && !streq(s, name)) {
                 t = n ? getarg(&b, NiL) : ( char * )0;
                 message((-3,
                          "%s name=%s n='%c' s=%s t=%s",
@@ -1452,22 +1322,17 @@ bindfile(Rule_t *r, char *name, int flags)
                          s,
                          t));
                 a = getrule(s);
-                if (n == '+')
-                {
+                if (n == '+') {
                     st.st_mode = 0;
                     tmxsetmtime(&st, OLDTIME);
                     sfputr(buf, s, 0);
-                }
-                else
-                {
+                } else {
                     if (t)
                         st.st_mode = 0;
-                    else if (rstat(s, &st, 0))
-                    {
+                    else if (rstat(s, &st, 0)) {
                         if (!a
                             || !(a->dynamic & D_bound)
-                               && !(a->property & P_target))
-                        {
+                               && !(a->property & P_target)) {
                             if (allocated)
                                 free(name);
                             else
@@ -1476,41 +1341,31 @@ bindfile(Rule_t *r, char *name, int flags)
                             name = strdup(s);
                             continue;
                         }
-                        if (!(a->dynamic & D_bound))
-                        {
+                        if (!(a->dynamic & D_bound)) {
                             st.st_mode = 0;
                             tmxsetmtime(&st, 0);
-                        }
-                        else if (!a->time)
-                        {
+                        } else if (!a->time) {
                             st.st_mode = 0;
                             tm = CURTIME;
                             tmxsetmtime(&st, tm);
-                        }
-                        else
-                        {
+                        } else {
                             st.st_mode = !(a->dynamic & D_regular);
                             tmxsetmtime(&st, a->time);
                         }
                     }
-                    if (n == '-' || *b)
-                    {
-                        if (*s)
-                        {
+                    if (n == '-' || *b) {
+                        if (*s) {
                             x = makerule(s);
                             if (!(state.questionable & 0x00000004) && r != x
                                 && !r->time && !x->time
-                                && !(r->property & P_virtual))
-                            {
+                                && !(r->property & P_virtual)) {
                                 r->property |= P_virtual;
                                 return bind(r);
                             }
                             putbound(name, x->name);
                         }
                         sfputr(buf, name, 0);
-                    }
-                    else
-                    {
+                    } else {
                         aliased = 1;
                         sfputr(buf, s, 0);
                         s = sfstrseek(buf, 0, SEEK_SET);
@@ -1528,31 +1383,24 @@ bindfile(Rule_t *r, char *name, int flags)
                 view = a ? a->view : state.maxview + 1;
                 od = 0;
                 found = 1;
-            }
-            else
+            } else
                 message((
                 -3, "%s name=%s n='%c' s=%s", a->name, name, n ? n : ' ', s));
         }
         break;
     }
     if (!found && state.targetcontext && r && name != r->name
-        && (x = getrule(base)) && (x->dynamic & D_context))
-    {
-        for (i = ndirs; i-- > 0;)
-        {
-            for (p = dirs[i]; p; p = p->next)
-            {
+        && (x = getrule(base)) && (x->dynamic & D_context)) {
+        for (i = ndirs; i-- > 0;) {
+            for (p = dirs[i]; p; p = p->next) {
                 d = p->rule;
-                if (!(d->mark & M_directory))
-                {
+                if (!(d->mark & M_directory)) {
                     d->mark |= M_directory;
-                    if (d->name != internal.dot->name)
-                    {
+                    if (d->name != internal.dot->name) {
                         sfprintf(buf, "%s/%s", d->name, base);
                         s = sfstruse(buf);
                         canon(s);
-                        if ((x = getrule(s)) && (x->property & P_target))
-                        {
+                        if ((x = getrule(s)) && (x->property & P_target)) {
                             found = 1;
                             st.st_mode = 0;
                             view = 0;
@@ -1572,8 +1420,7 @@ bindfile(Rule_t *r, char *name, int flags)
             for (p = dirs[i]; p; p = p->next)
                 p->rule->mark &= ~M_directory;
     }
-    if (found)
-    {
+    if (found) {
         /*
          * the file exists with:
          *
@@ -1601,42 +1448,35 @@ bindfile(Rule_t *r, char *name, int flags)
             r = makerule(name);
         if (internal.openfile)
             internal.openfile = r->name;
-        if (!(r->dynamic & D_member) || tm > r->time)
-        {
-            if (r->dynamic & D_member)
-            {
+        if (!(r->dynamic & D_member) || tm > r->time) {
+            if (r->dynamic & D_member) {
                 r->dynamic &= ~D_member;
                 r->dynamic |= D_membertoo;
             }
             r->time = tm;
-            if (!(r->dynamic & D_entries))
-            {
+            if (!(r->dynamic & D_entries)) {
                 if (S_ISREG(st.st_mode) || !st.st_mode)
                     r->dynamic |= D_regular;
                 if (!(r->dynamic & D_source) || (r->property & P_target))
                     r->view = view;
             }
-            if (!r->view && *b == '/')
-            {
+            if (!r->view && *b == '/') {
                 if (strncmp(b, internal.pwd, internal.pwdlen)
-                    || *(b + internal.pwdlen) != '/')
-                {
+                    || *(b + internal.pwdlen) != '/') {
                     if ((state.questionable & 0x00000800)
                         || !(r->property & P_target))
                         r->dynamic |= D_global;
-                }
-                else if ((r->dynamic & D_regular)
-                         && (x = getrule(b + internal.pwdlen + 1)) && x != r)
+                } else if ((r->dynamic & D_regular)
+                           && (x = getrule(b + internal.pwdlen + 1))
+                           && x != r)
                     r = bindalias(r, x, b + internal.pwdlen + 1, od, reassoc);
             }
             if (!(r->dynamic & D_global))
                 r->preview = r->view;
-            if (x = getrule(b))
-            {
+            if (x = getrule(b)) {
                 if (x->dynamic & D_alias)
                     x = makerule(x->name);
-                else if (x == r && (r->property & P_terminal))
-                {
+                else if (x == r && (r->property & P_terminal)) {
                     putrule(b, 0);
                     x = 0;
                 }
@@ -1644,22 +1484,17 @@ bindfile(Rule_t *r, char *name, int flags)
             if (!(state.questionable & 0x00001000) && aliased && !x
                 && !streq(name, r->name))
                 x = makerule(name);
-            if (x && x != r)
-            {
+            if (x && x != r) {
                 if (internal.openfile && st.st_mode)
                     internal.openfile = x->name;
-                if (r->property & x->property & P_target)
-                {
+                if (r->property & x->property & P_target) {
                     message(
                     (-2, "%s not aliased to %s", unbound(r), unbound(x)));
                     if (!(state.questionable & 0x00000040))
                         found = 0;
-                }
-                else if (r->dynamic & D_regular)
+                } else if (r->dynamic & D_regular)
                     r = bindalias(r, x, b, od, reassoc);
-            }
-            else
-            {
+            } else {
                 /*
                  * bind the rule to file name in b
                  * saving the unbound name
@@ -1669,8 +1504,7 @@ bindfile(Rule_t *r, char *name, int flags)
                 r->name = maprule(b, r);
                 if (internal.openfile && st.st_mode)
                     internal.openfile = r->name;
-                if (r->name != s)
-                {
+                if (r->name != s) {
                     r->uname = s;
                     if (od
                         && (s != name || state.mam.statix
@@ -1684,13 +1518,10 @@ bindfile(Rule_t *r, char *name, int flags)
                 r->view = r->preview = view;
             if ((r->dynamic & D_regular) && r->view && (x = localrule(r, 0)))
                 merge(x, r, MERGE_ALL | MERGE_BOUND);
-        }
-        else if (!state.accept && !view)
+        } else if (!state.accept && !view)
             r->view
             = r->active ? r->active->parent->target->view : state.maxview;
-    }
-    else if (!r)
-    {
+    } else if (!r) {
         if (!(flags & BIND_RULE))
             goto done;
         r = makerule(name);
@@ -1706,8 +1537,7 @@ bindfile(Rule_t *r, char *name, int flags)
      * archive binding and final checks
      */
 
-    if (found)
-    {
+    if (found) {
         if (r->scan == SCAN_IGNORE)
             r->dynamic |= D_scanned;
         else if ((r->property & (P_archive | P_target))
@@ -1724,9 +1554,7 @@ bindfile(Rule_t *r, char *name, int flags)
             while (s = strchr(s, '/'))
                 if ((a = getrule(++s)) && !(a->dynamic & D_bound))
                     bindfile(a, NiL, 0);
-    }
-    else if (!(r->dynamic & D_member))
-    {
+    } else if (!(r->dynamic & D_member)) {
         r->time
         = ((r->property & P_dontcare) || !(flags & BIND_FORCE)) ? 0 : CURTIME;
         if (r->property & P_dontcare)
@@ -1751,8 +1579,7 @@ bindattribute(Rule_t *r)
     Rule_t *z;
 
     r->dynamic |= D_bound;
-    if (x = associate(internal.attribute_p, r, NiL, NiL))
-    {
+    if (x = associate(internal.attribute_p, r, NiL, NiL)) {
         merge(x, r, MERGE_ASSOC | MERGE_ATTR);
         *x->name = ATTRCLEAR;
         if (z = getrule(x->name))
@@ -1776,15 +1603,13 @@ bind(Rule_t *r)
         r = makerule(r->name);
     if (r->dynamic & D_bound)
         return r;
-    switch (r->property & (P_state | P_virtual))
-    {
+    switch (r->property & (P_state | P_virtual)) {
     case 0:
         if (b = bindfile(r, NiL, 0))
             return b;
         break;
     case P_state:
-        if (b = bindstate(r, NiL))
-        {
+        if (b = bindstate(r, NiL)) {
             if (state.mam.regress && (r->property & P_statevar))
                 dumpregress(state.mam.out, "bind", r->name, r->statedata);
             return b;
@@ -1810,15 +1635,13 @@ rebind(Rule_t *r, int op)
     char *t;
     Rule_t *x;
 
-    if (!(r->property & P_state))
-    {
+    if (!(r->property & P_state)) {
         if (r->uname)
             oldname(r);
         r->dynamic &= ~(D_bound | D_entries | D_member | D_scanned);
         if (op > 0)
             r->dynamic |= D_bound;
-        else
-        {
+        else {
             newfile(r, NiL, NOTIME);
             if ((t = strchr(r->name, '/')) && (x = getrule(t + 1))
                 && (x = bindfile(x, NiL, 0)))
@@ -1828,21 +1651,16 @@ rebind(Rule_t *r, int op)
         }
         if (op >= 0)
             r->dynamic |= D_triggered;
-        if (!state.exec)
-        {
+        if (!state.exec) {
             r->time = CURTIME;
             r->status = EXISTS;
-        }
-        else if (op >= 0)
-        {
+        } else if (op >= 0) {
             statetime(r, !op);
             r->status
             = r->time ? EXISTS
                       : (op || (r->property & P_dontcare)) ? IGNORE : FAILED;
         }
-    }
-    else if (r->property & P_statevar)
-    {
+    } else if (r->property & P_statevar) {
         if (op <= 0)
             r->dynamic &= ~D_bound;
         if (!(r->dynamic & D_bound) && !(r = bindstate(r, NiL)))
@@ -1869,8 +1687,8 @@ unbind(const char *s, char *v, void *h)
     Rule_t *r = ( Rule_t * )v;
 
     if (!s || !h && (r->mark & M_mark)
-        || h && (r->dynamic & D_alias) && (makerule(r->name)->mark & M_mark))
-    {
+        || h && (r->dynamic & D_alias)
+           && (makerule(r->name)->mark & M_mark)) {
         message((-2,
                  "unbind(%s)%s%s",
                  r->name,
@@ -1879,21 +1697,16 @@ unbind(const char *s, char *v, void *h)
         r->mark &= ~M_mark;
         if (r->property & P_metarule)
             r->uname = 0;
-        else
-        {
+        else {
             int u = 0;
 
-            if (!(r->property & P_state))
-            {
+            if (!(r->property & P_state)) {
                 newfile(r, NiL, NOTIME);
-                if (r->uname)
-                {
+                if (r->uname) {
                     oldname(r);
                     u = 1;
                 }
-            }
-            else if (r->property & P_staterule)
-            {
+            } else if (r->property & P_staterule) {
                 error(2, "%s: cannot unbind staterules", r->name);
                 return 0;
             }
@@ -1903,8 +1716,7 @@ unbind(const char *s, char *v, void *h)
             r->scan = 0;
             r->status = NOTYET;
             r->time = 0;
-            if (u || !(r->dynamic & D_source) || (r->property & P_target))
-            {
+            if (u || !(r->dynamic & D_source) || (r->property & P_target)) {
                 r->preview = 0;
                 r->view = 0;
             }
@@ -1928,21 +1740,17 @@ absolute(List_t *z, char *s, Sfio_t *tmp)
 
     if (state.questionable & 0x00000004)
         return z;
-    for (i = 0; i < state.maxview; i++)
-    {
+    for (i = 0; i < state.maxview; i++) {
         if (!strncmp(s, state.view[i].root, n = state.view[i].rootlen)
-            && (!*(s + n) || *(s + n) == '/'))
-        {
+            && (!*(s + n) || *(s + n) == '/')) {
             s += n;
             j = i;
-            while (++j <= state.maxview)
-            {
+            while (++j <= state.maxview) {
                 sfprintf(tmp, "%s%s", state.view[j].root, s);
                 t = sfstruse(tmp);
                 if (!(x = getrule(t)))
                     x = makerule(t);
-                if (!(x->mark & M_directory))
-                {
+                if (!(x->mark & M_directory)) {
                     x->mark |= M_directory;
                     z = z->next = cons(x, NiL);
                 }
@@ -1964,8 +1772,7 @@ source(Rule_t *r)
 
     if (state.compile > COMPILED)
         return r;
-    if (state.compile < COMPILED)
-    {
+    if (state.compile < COMPILED) {
         x = r;
         r = catrule(x->name, internal.internal->name, NiL, 1);
 #if _HUH_2001_10_31
@@ -1978,8 +1785,7 @@ source(Rule_t *r)
     r->dynamic |= D_cached;
     if (r->dynamic & D_dynamic)
         dynamic(r);
-    if (state.maxview && !state.fsview)
-    {
+    if (state.maxview && !state.fsview) {
         char *s;
         char *t;
         List_t *p;
@@ -2017,83 +1823,67 @@ source(Rule_t *r)
         tmp = sfstropen();
         z = &lst;
         z->next = 0;
-        if (state.strictview)
-        {
+        if (state.strictview) {
             /*
              * this follows 3d fs semantics
              */
 
-            for (p = r->prereqs; p; p = p->next)
-            {
-                if (*(t = unbound(p->rule)) == '/')
-                {
+            for (p = r->prereqs; p; p = p->next) {
+                if (*(t = unbound(p->rule)) == '/') {
                     sfputr(tmp, t, -1);
                     t = sfstruse(tmp);
                     pathcanon(t, 0, 0);
                     if (!(x = getrule(t)))
                         x = makerule(t);
-                    if (!(x->mark & M_directory))
-                    {
+                    if (!(x->mark & M_directory)) {
                         x->mark |= M_directory;
                         z = z->next = cons(x, NiL);
                     }
                     if (*(t = unbound(x)) == '/')
                         z = absolute(z, t, tmp);
-                }
-                else if (!p->rule->view)
-                {
+                } else if (!p->rule->view) {
                     dot = (*t == '.' && !*(t + 1));
-                    for (view = 0; view <= state.maxview; view++)
-                    {
+                    for (view = 0; view <= state.maxview; view++) {
 #if BINDINDEX
                         s = state.view[view].path->name;
 #else
                         s = state.view[view].path;
 #endif
-                        if (dot || *s != '.' || *(s + 1))
-                        {
+                        if (dot || *s != '.' || *(s + 1)) {
                             if (dot)
                                 sfputr(tmp, s, -1);
                             else
                                 sfprintf(tmp, "%s/%s", s, t);
-                        }
-                        else
+                        } else
                             sfputr(tmp, t, -1);
                         s = sfstruse(tmp);
                         pathcanon(s, 0, 0);
                         x = makerule(s);
-                        if (!(x->dynamic & D_source))
-                        {
+                        if (!(x->dynamic & D_source)) {
                             x->dynamic |= D_source;
                             if (x->view < view)
                                 x->view = view;
                         }
-                        if (!(x->mark & M_directory))
-                        {
+                        if (!(x->mark & M_directory)) {
                             x->mark |= M_directory;
                             z = z->next = cons(x, NiL);
                         }
                     }
                 }
             }
-        }
-        else
-        {
+        } else {
             List_t *q;
             int dotted = 0;
 
             q = r->prereqs;
-            do
-            {
-                for (view = 0; view <= state.maxview; view++)
-                {
+            do {
+                for (view = 0; view <= state.maxview; view++) {
 #if BINDINDEX
                     s = state.view[view].path->name;
 #else
                     s = state.view[view].path;
 #endif
-                    if ((dot = (*s == '.' && !*(s + 1))) && !dotted)
-                    {
+                    if ((dot = (*s == '.' && !*(s + 1))) && !dotted) {
                         dotted = 1;
 #if BINDINDEX
                         z = z->next = cons(state.view[view].path, NiL);
@@ -2101,21 +1891,16 @@ source(Rule_t *r)
                         z = z->next = cons(makerule(s), NiL);
 #endif
                     }
-                    for (p = q; p; p = p->next)
-                    {
-                        if (*(t = unbound(p->rule)) == '/')
-                        {
+                    for (p = q; p; p = p->next) {
+                        if (*(t = unbound(p->rule)) == '/') {
                             z = absolute(z, t, tmp);
                             break;
                         }
                         if (!p->rule->view
                             || (p->rule->property & P_target)
-                               && !strchr(t, '/'))
-                        {
-                            if (*t == '.' && !*(t + 1))
-                            {
-                                if (!dotted)
-                                {
+                               && !strchr(t, '/')) {
+                            if (*t == '.' && !*(t + 1)) {
+                                if (!dotted) {
                                     dotted = 1;
                                     sfputr(tmp, t, -1);
                                     t = sfstruse(tmp);
@@ -2125,9 +1910,7 @@ source(Rule_t *r)
                                 if (dot)
                                     continue;
                                 sfputr(tmp, s, -1);
-                            }
-                            else
-                            {
+                            } else {
                                 if (dot)
                                     sfputr(tmp, t, -1);
                                 else
@@ -2136,29 +1919,25 @@ source(Rule_t *r)
                             t = sfstruse(tmp);
                             pathcanon(t, 0, 0);
                             x = makerule(t);
-                            if (!(x->dynamic & D_source))
-                            {
+                            if (!(x->dynamic & D_source)) {
                                 x->dynamic |= D_source;
                                 if (x->view < view)
                                     x->view = view;
                             }
-                            if (!(x->mark & M_directory))
-                            {
+                            if (!(x->mark & M_directory)) {
                                 x->mark |= M_directory;
                                 z = z->next = cons(x, NiL);
                             }
                         }
                     }
                 }
-                for (; p && *(t = unbound(p->rule)) == '/'; p = p->next)
-                {
+                for (; p && *(t = unbound(p->rule)) == '/'; p = p->next) {
                     sfputr(tmp, t, -1);
                     t = sfstruse(tmp);
                     pathcanon(t, 0, 0);
                     if (!(x = getrule(t)))
                         x = makerule(t);
-                    if (!(x->mark & M_directory))
-                    {
+                    if (!(x->mark & M_directory)) {
                         x->mark |= M_directory;
                         z = z->next = cons(x, NiL);
                     }
@@ -2185,15 +1964,12 @@ char *
 pathname(char *s, Rule_t *r)
 {
     if ((r->dynamic & D_bound) && !(r->property & (P_state | P_virtual))
-        && *r->name != '/')
-    {
-        if (!state.logical && r->view && !(r->dynamic & D_bindindex))
-        {
+        && *r->name != '/') {
+        if (!state.logical && r->view && !(r->dynamic & D_bindindex)) {
             s = stpcpy(s, state.view[r->view].path);
             *s++ = '/';
         }
-        if (r->source && !(r->dynamic & D_bindindex))
-        {
+        if (r->source && !(r->dynamic & D_bindindex)) {
             s = stpcpy(s, state.source[r->source].path);
             *s++ = '/';
         }
@@ -2214,16 +1990,14 @@ localview(Rule_t *r)
 
     if (r->dynamic & D_alias)
         r = makerule(unbound(r));
-    if (state.context && !(r->property & (P_state | P_virtual)))
-    {
+    if (state.context && !(r->property & (P_state | P_virtual))) {
         char *s = r->name;
 
         if (*s == '/' || iscontext(s))
             return s;
         sfprintf(state.context, "%c%s%c", MARK_CONTEXT, s, MARK_CONTEXT);
         x = makerule(sfstruse(state.context));
-        if (!(x->dynamic & D_alias))
-        {
+        if (!(x->dynamic & D_alias)) {
             x->property |= P_internal;
             x->dynamic |= D_alias;
             x->uname = x->name;
@@ -2235,10 +2009,8 @@ localview(Rule_t *r)
         return r->name;
     if (x = localrule(r, 1))
         return x->name;
-    if (r->view && r->uname)
-    {
-        if (state.mam.statix)
-        {
+    if (r->view && r->uname) {
+        if (state.mam.statix) {
             if (*r->name != '/')
                 return r->name;
             for (i = 1; i <= state.maxview; i++)

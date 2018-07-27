@@ -29,17 +29,14 @@
 int
 codexcmp(const char *s, const char *t)
 {
-    for (;;)
-    {
-        if (!*s)
-        {
+    for (;;) {
+        if (!*s) {
             if (!*t || *t == '-' || *t == '+' || *t == '<' || *t == '>'
                 || *t == '|' || *t == '^')
                 return 0;
             break;
         }
-        if (!*t)
-        {
+        if (!*t) {
             if (*s == '-' || *s == '+' || *s == '<' || *s == '>' || *s == '|'
                 || *s == '^')
                 return 0;

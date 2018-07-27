@@ -50,8 +50,7 @@ apply(Archive_t *ap, File_t *f, Filter_t *fp)
 
     if (state.filter.line <= 0)
         arg = f->path;
-    else if (!*(arg = state.filter.command))
-    {
+    else if (!*(arg = state.filter.command)) {
         if ((rfd = open(f->st->st_size ? f->path : "/dev/null",
                         O_RDONLY | O_BINARY))
             < 0)
@@ -61,14 +60,12 @@ apply(Archive_t *ap, File_t *f, Filter_t *fp)
     message((-4, "filter: %s %s", fp->command, f->path));
     if ((wfd = open(
          state.tmp.file, O_CREAT | O_TRUNC | O_WRONLY | O_BINARY, S_IRUSR))
-        < 0)
-    {
+        < 0) {
         error(
         2, "%s: cannot create filter temporary %s", f->path, state.tmp.file);
         return -1;
     }
-    if ((rfd = open(state.tmp.file, O_RDONLY | O_BINARY)) < 0)
-    {
+    if ((rfd = open(state.tmp.file, O_RDONLY | O_BINARY)) < 0) {
         error(
         2, "%s: cannot open filter temporary %s", f->path, state.tmp.file);
         close(wfd);
@@ -85,8 +82,7 @@ apply(Archive_t *ap, File_t *f, Filter_t *fp)
     if (ap->format->checksum)
         f->checksum = 0;
     f->st->st_size = 0;
-    if (streq(*fp->argv, "nocomment"))
-    {
+    if (streq(*fp->argv, "nocomment")) {
         int errors = error_info.errors;
         off_t count;
         Sfio_t *ip;
@@ -96,41 +92,34 @@ apply(Archive_t *ap, File_t *f, Filter_t *fp)
             && (op = sfnew(NiL, NiL, SF_UNBOUND, wfd, SF_WRITE))
             && (count = nocomment(ip, op)) < 0)
             error(2, "%s: %s: filter error", f->path, *fp->argv);
-        if (ip)
-        {
+        if (ip) {
             sfclose(ip);
             if (op)
                 sfclose(op);
             else
                 error(2, "%s: cannot redirect filter", f->path);
-        }
-        else
+        } else
             error(2, "%s: cannot read", f->path);
-        if (errors != error_info.errors)
-        {
+        if (errors != error_info.errors) {
             close(rfd);
             close(wfd);
             return -1;
         }
         f->st->st_size = count;
-    }
-    else
-    {
+    } else {
         Proc_t *proc;
 
         *fp->patharg = arg;
-        if (!(proc = procopen(*fp->argv, fp->argv, NiL, NiL, PROC_READ)))
-        {
+        if (!(proc = procopen(*fp->argv, fp->argv, NiL, NiL, PROC_READ))) {
             error(2, "%s: cannot execute filter %s", f->path, *fp->argv);
             close(rfd);
             close(wfd);
             return -1;
         }
         holeinit(wfd);
-        while ((n = read(proc->rfd, state.tmp.buffer, state.buffersize)) > 0)
-        {
-            if (holewrite(wfd, state.tmp.buffer, n) != n)
-            {
+        while ((n = read(proc->rfd, state.tmp.buffer, state.buffersize))
+               > 0) {
+            if (holewrite(wfd, state.tmp.buffer, n) != n) {
                 error(2, "%s: filter write error", f->path);
                 break;
             }
@@ -170,16 +159,14 @@ openin(Archive_t *ap, File_t *f)
                          O_RDONLY | O_BINARY))
              < 0)
         error(ERROR_SYSTEM | 2, "%s: cannot read", f->path);
-    else if (ap->format->checksum)
-    {
+    else if (ap->format->checksum) {
         f->checksum = 0;
         if (lseek(rfd, ( off_t )0, SEEK_SET) != 0)
             error(ERROR_SYSTEM | 1,
                   "%s: %s checksum seek error",
                   f->path,
                   ap->format->name);
-        else
-        {
+        else {
             while ((n = read(rfd, state.tmp.buffer, state.buffersize)) > 0)
                 f->checksum = (*ap->format->checksum)(
                 &state, ap, f, state.tmp.buffer, n, f->checksum);
@@ -217,12 +204,9 @@ missdir(Archive_t *ap, File_t *f)
 
     s = f->name;
     pathcanon(s, 0, 0);
-    if (t = strchr(*s == '/' ? s + 1 : s, '/'))
-    {
-        if (!state.mkdir)
-        {
-            if (!state.warnmkdir)
-            {
+    if (t = strchr(*s == '/' ? s + 1 : s, '/')) {
+        if (!state.mkdir) {
+            if (!state.warnmkdir) {
                 state.warnmkdir = 1;
                 error(1,
                       "omit the --nomkdir option to create intermediate "
@@ -232,11 +216,9 @@ missdir(Archive_t *ap, File_t *f)
         }
         st = 0;
         sp = &st0;
-        do
-        {
+        do {
             *t = 0;
-            if (stat(s, sp))
-            {
+            if (stat(s, sp)) {
                 *t = '/';
                 break;
             }
@@ -244,19 +226,16 @@ missdir(Archive_t *ap, File_t *f)
             st = sp;
             sp = (sp == &st0) ? &st1 : &st0;
         } while (t = strchr(t + 1, '/'));
-        if (t)
-        {
+        if (t) {
             if (!st && stat(".", st = &st0))
                 error(ERROR_SYSTEM | 3, "%s: cannot stat .", s);
             pp = f->perm;
             f->perm = st->st_mode & state.modemask;
             sp = f->st;
             f->st = st;
-            do
-            {
+            do {
                 *t = 0;
-                if (mkdir(s, f->perm))
-                {
+                if (mkdir(s, f->perm)) {
                     error(ERROR_SYSTEM | 2, "%s: cannot create directory", s);
                     *t = '/';
                     f->perm = pp;
@@ -298,16 +277,12 @@ openout(Archive_t *ap, File_t *f)
      *	 combination with state.update win over beauty
      */
 
-    if (f->ro)
-    {
+    if (f->ro) {
         f->name = "PAX-INTERNAL-ERROR";
         f->skip = 1;
         exists = 0;
-    }
-    else if (exists = !(*state.statf)(f->name, &st))
-    {
-        if (!state.clobber && !S_ISDIR(st.st_mode))
-        {
+    } else if (exists = !(*state.statf)(f->name, &st)) {
+        if (!state.clobber && !S_ISDIR(st.st_mode)) {
             error(1, "%s: already exists -- not overwritten", f->name);
             return -1;
         }
@@ -315,9 +290,7 @@ openout(Archive_t *ap, File_t *f)
         = f->perm != (st.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO))
           && (state.modekeep || state.update || S_ISDIR(st.st_mode));
         st.st_mode = modex(st.st_mode);
-    }
-    else
-    {
+    } else {
         typedef struct View
         {
             struct View *next;
@@ -334,26 +307,20 @@ openout(Archive_t *ap, File_t *f)
         static View_t *view;
         static char *offset;
 
-        if (state.update && !offset)
-        {
-            if (s = getenv("VPATH"))
-            {
+        if (state.update && !offset) {
+            if (s = getenv("VPATH")) {
                 if (!(s = strdup(s)))
                     nospace();
-                do
-                {
+                do {
                     if (e = strchr(s, ':'))
                         *e++ = 0;
                     if (!(vp = newof(0, View_t, 1, 0)))
                         nospace();
                     vp->root = s;
-                    if (stat(s, &st))
-                    {
+                    if (stat(s, &st)) {
                         vp->dev = 0;
                         vp->ino = 0;
-                    }
-                    else
-                    {
+                    } else {
                         vp->dev = st.st_dev;
                         vp->ino = st.st_ino;
                     }
@@ -364,19 +331,16 @@ openout(Archive_t *ap, File_t *f)
                 } while (s = e);
                 s = state.pwd;
                 e = 0;
-                for (;;)
-                {
+                for (;;) {
                     if (stat(s, &st))
                         error(
                         ERROR_SYSTEM | 3, "%s: cannot stat pwd component", s);
                     for (vp = view; vp; vp = vp->next)
-                        if (vp->ino == st.st_ino && vp->dev == st.st_dev)
-                        {
+                        if (vp->ino == st.st_ino && vp->dev == st.st_dev) {
                             offset = e ? e + 1 : ".";
                             tp = view;
                             view = vp->next;
-                            while (tp && tp != view)
-                            {
+                            while (tp && tp != view) {
                                 vp = tp;
                                 tp = tp->next;
                                 free(vp);
@@ -403,8 +367,7 @@ openout(Archive_t *ap, File_t *f)
         st.st_mode = 0;
         st.st_mtime = 0;
         if (*f->name != '/')
-            for (vp = view; vp; vp = vp->next)
-            {
+            for (vp = view; vp; vp = vp->next) {
                 sfsprintf(state.tmp.buffer,
                           state.tmp.buffersize - 1,
                           "%s/%s/%s",
@@ -416,14 +379,11 @@ openout(Archive_t *ap, File_t *f)
             }
         f->restoremode = state.modekeep || state.update;
     }
-    if (f->delta.op == DELTA_delete)
-    {
+    if (f->delta.op == DELTA_delete) {
         if (exists)
-            switch (X_ITYPE(st.st_mode))
-            {
+            switch (X_ITYPE(st.st_mode)) {
             case X_IFDIR:
-                if (!f->ro)
-                {
+                if (!f->ro) {
                     if (rmdir(f->name))
                         error(ERROR_SYSTEM | 2,
                               "%s: cannot remove directory",
@@ -442,30 +402,24 @@ openout(Archive_t *ap, File_t *f)
             }
         return -1;
     }
-    if (state.operation == (IN | OUT))
-    {
+    if (state.operation == (IN | OUT)) {
         if (exists && f->st->st_ino == st.st_ino
-            && f->st->st_dev == st.st_dev)
-        {
+            && f->st->st_dev == st.st_dev) {
             error(2, "attempt to pass %s to self", f->name);
             return -1;
         }
         if (state.linkf && f->type != X_IFDIR
-            && (state.linkf == pathsetlink || f->st->st_dev == state.dev))
-        {
+            && (state.linkf == pathsetlink || f->st->st_dev == state.dev)) {
             if (exists)
                 remove(f->name);
-            if ((*state.linkf)(f->path, f->name))
-            {
-                if (!exists && missdir(ap, f))
-                {
+            if ((*state.linkf)(f->path, f->name)) {
+                if (!exists && missdir(ap, f)) {
                     error(ERROR_SYSTEM | 2,
                           "%s: cannot create intermediate directories",
                           f->name);
                     return -1;
                 }
-                if (exists || (*state.linkf)(f->path, f->name))
-                {
+                if (exists || (*state.linkf)(f->path, f->name)) {
                     error(ERROR_SYSTEM | 2,
                           "%s: cannot link to %s",
                           f->path,
@@ -477,25 +431,21 @@ openout(Archive_t *ap, File_t *f)
             return -2;
         }
     }
-    switch (f->type)
-    {
+    switch (f->type) {
     case X_IFDIR:
         if (!(ap->format->flags & KEEPSIZE))
             f->st->st_size = 0;
         if (f->ro)
             return -1;
-        if (exists && X_ITYPE(st.st_mode) != X_IFDIR)
-        {
-            if (remove(f->name))
-            {
+        if (exists && X_ITYPE(st.st_mode) != X_IFDIR) {
+            if (remove(f->name)) {
                 error(ERROR_SYSTEM | 2, "cannot remove current %s", f->name);
                 return -1;
             }
             exists = 0;
         }
         if (!exists && mkdir(f->name, f->perm)
-            && (missdir(ap, f) || mkdir(f->name, f->perm)))
-        {
+            && (missdir(ap, f) || mkdir(f->name, f->perm))) {
             error(ERROR_SYSTEM | 2, "%s: cannot create directory", f->name);
             return -1;
         }
@@ -504,13 +454,10 @@ openout(Archive_t *ap, File_t *f)
         if (!exists || f->restoremode
             || state.update
                && ((c = tvcmp(tvmtime(&t1, f->st), tvmtime(&t2, &st))) > 0
-                   || state.update == OPT_different && c))
-        {
+                   || state.update == OPT_different && c)) {
             listentry(f);
             fd = -1;
-        }
-        else
-        {
+        } else {
             ap->updated = updated;
             if (state.update)
                 fd = -1;
@@ -523,27 +470,22 @@ openout(Archive_t *ap, File_t *f)
             return -1;
         if (!*f->linkpath)
             return -2;
-        if (streq(f->name, f->linkpath))
-        {
+        if (streq(f->name, f->linkpath)) {
             error(1, "%s: symbolic link loops to self", f->name);
             return -1;
         }
-        if (exists && remove(f->name))
-        {
+        if (exists && remove(f->name)) {
             error(ERROR_SYSTEM | 2, "cannot remove current %s", f->name);
             return -1;
         }
-        if (pathsetlink(f->linkpath, f->name))
-        {
-            if (!exists && missdir(ap, f))
-            {
+        if (pathsetlink(f->linkpath, f->name)) {
+            if (!exists && missdir(ap, f)) {
                 error(ERROR_SYSTEM | 2,
                       "%s: cannot create intermediate directories",
                       f->name);
                 return -1;
             }
-            if (exists || pathsetlink(f->linkpath, f->name))
-            {
+            if (exists || pathsetlink(f->linkpath, f->name)) {
                 error(ERROR_SYSTEM | 2,
                       "%s: cannot symlink to %s",
                       f->name,
@@ -574,25 +516,20 @@ openout(Archive_t *ap, File_t *f)
     }
     if (!addlink(ap, f))
         return -1;
-    switch (f->type)
-    {
+    switch (f->type) {
     case X_IFIFO:
-        if (exists && remove(f->name))
-        {
+        if (exists && remove(f->name)) {
             error(ERROR_SYSTEM | 2, "cannot remove current %s", f->name);
             return -1;
         }
-        if (mkfifo(f->name, f->st->st_mode & S_IPERM))
-        {
-            if (errno == EPERM)
-            {
+        if (mkfifo(f->name, f->st->st_mode & S_IPERM)) {
+            if (errno == EPERM) {
             nofifo:
                 error(
                 ERROR_SYSTEM | 2, "%s: cannot create fifo file", f->name);
                 return -1;
             }
-            if (!exists && missdir(ap, f))
-            {
+            if (!exists && missdir(ap, f)) {
                 error(ERROR_SYSTEM | 2,
                       "%s: cannot create intermediate directories",
                       f->name);
@@ -608,15 +545,12 @@ openout(Archive_t *ap, File_t *f)
         /*FALLTHROUGH*/
     case X_IFBLK:
     case X_IFCHR:
-        if (exists && remove(f->name))
-        {
+        if (exists && remove(f->name)) {
             error(ERROR_SYSTEM | 2, "cannot remove current %s", f->name);
             return -1;
         }
-        if (mknod(f->name, f->st->st_mode, idevice(f->st)))
-        {
-            if (errno == EPERM)
-            {
+        if (mknod(f->name, f->st->st_mode, idevice(f->st))) {
+            if (errno == EPERM) {
             nospecial:
                 error(ERROR_SYSTEM | 2,
                       "%s: cannot create %s special file",
@@ -624,8 +558,7 @@ openout(Archive_t *ap, File_t *f)
                       (f->type == X_IFBLK) ? "block" : "character");
                 return -1;
             }
-            if (!exists && missdir(ap, f))
-            {
+            if (!exists && missdir(ap, f)) {
                 error(ERROR_SYSTEM | 2,
                       "%s: cannot create intermediate directories",
                       f->name);
@@ -645,8 +578,7 @@ openout(Archive_t *ap, File_t *f)
     case X_IFREG:
         if (f->ro)
             return dup(1);
-        if (state.intermediate)
-        {
+        if (state.intermediate) {
             char *d;
             char *e;
             int n;
@@ -660,16 +592,14 @@ openout(Archive_t *ap, File_t *f)
              * thanks to the amazing dr. ek
              */
 
-            if (missdir(ap, f))
-            {
+            if (missdir(ap, f)) {
                 error(ERROR_SYSTEM | 2,
                       "%s: cannot create intermediate directories",
                       f->name);
                 return -1;
             }
             d = (e = strrchr(f->name, '/')) ? f->name : ".";
-            for (n = 0;; n++)
-            {
+            for (n = 0;; n++) {
                 if (e)
                     *e = 0;
                 f->intermediate = pathtemp(
@@ -678,13 +608,11 @@ openout(Archive_t *ap, File_t *f)
                     *e = '/';
                 message(
                 (-4, "%s: intermediate %s", f->name, f->intermediate));
-                if (f->intermediate)
-                {
+                if (f->intermediate) {
                     ap->errors = error_info.errors;
                     return ifd;
                 }
-                if (n)
-                {
+                if (n) {
                     error(ERROR_SYSTEM | 2,
                           "%s: cannot create intermediate name",
                           f->name);
@@ -713,40 +641,29 @@ openout(Archive_t *ap, File_t *f)
             perm &= ~(S_ISUID | S_ISGID | S_ISVTX);
         while (
         (fd = open(f->name, O_CREAT | O_TRUNC | O_WRONLY | O_BINARY, perm))
-        < 0)
-        {
+        < 0) {
         again:
-            if (!(exists & 0007))
-            {
-                if (missdir(ap, f))
-                {
+            if (!(exists & 0007)) {
+                if (missdir(ap, f)) {
                     error(ERROR_SYSTEM | 2,
                           "%s: cannot create intermediate directories",
                           f->name);
                     return -1;
                 }
                 exists |= 0002;
-            }
-            else if (!(exists & 0700))
-            {
-                if (chmod(f->name, perm | S_IWUSR))
-                {
+            } else if (!(exists & 0700)) {
+                if (chmod(f->name, perm | S_IWUSR)) {
                     exists |= 0100;
                     goto again;
                 }
                 exists |= 0200;
-            }
-            else if (!(exists & 0070))
-            {
-                if (remove(f->name))
-                {
+            } else if (!(exists & 0070)) {
+                if (remove(f->name)) {
                     exists |= 0010;
                     goto again;
                 }
                 exists ^= 0620;
-            }
-            else
-            {
+            } else {
                 error(ERROR_SYSTEM | 2,
                       "%s: cannot create%s%s",
                       f->name,
@@ -782,8 +699,7 @@ closein(Archive_t *ap, File_t *f, int fd)
     r = 0;
     if (close(fd))
         r = -1;
-    if (state.resetacctime && f->type != X_IFLNK && !f->skip)
-    {
+    if (state.resetacctime && f->type != X_IFLNK && !f->skip) {
         Tv_t av;
         Tv_t mv;
 
@@ -809,11 +725,9 @@ closeout(Archive_t *ap, File_t *f, int fd)
         r = -1;
     if (close(fd))
         r = -1;
-    if (s = f->intermediate)
-    {
+    if (s = f->intermediate) {
         f->intermediate = 0;
-        if (ap->errors != error_info.errors)
-        {
+        if (ap->errors != error_info.errors) {
             if (remove(s))
                 error(ERROR_SYSTEM | 2,
                       "%s: cannot remove intermediate file %s",
@@ -821,16 +735,14 @@ closeout(Archive_t *ap, File_t *f, int fd)
                       s);
             return -1;
         }
-        if (rename(s, f->name) && (remove(f->name) || rename(s, f->name)))
-        {
+        if (rename(s, f->name) && (remove(f->name) || rename(s, f->name))) {
             error(ERROR_SYSTEM | 2,
                   "%s: cannot rename from intermediate file %s",
                   f->name,
                   s);
             return -1;
         }
-        if (chmod(f->name, f->perm))
-        {
+        if (chmod(f->name, f->perm)) {
             error(ERROR_SYSTEM | 1,
                   "%s: cannot change mode to %s",
                   f->name,
@@ -854,8 +766,7 @@ getfile(Archive_t *ap, File_t *f, Ftw_t *ftw)
 
     name = ftw->path;
     message((-4, "getfile(%s)", name));
-    switch (ftw->info)
-    {
+    switch (ftw->info) {
     case FTW_NS:
         error(2, "%s: not found", name);
         return 0;
@@ -868,13 +779,10 @@ getfile(Archive_t *ap, File_t *f, Ftw_t *ftw)
     case FTW_DP:
         if (!state.descend)
             ftw->status = FTW_SKIP;
-        else if (ftw->info == FTW_DNX)
-        {
+        else if (ftw->info == FTW_DNX) {
             error(2, "%s: cannot search directory", name);
             ftw->status = FTW_SKIP;
-        }
-        else if (!state.files)
-        {
+        } else if (!state.files) {
             /*
              * stdin files most likely come from tw/find with
              * directory descendents already included; in posix
@@ -888,8 +796,7 @@ getfile(Archive_t *ap, File_t *f, Ftw_t *ftw)
             name[n] = '/';
             if (!state.peekfile || !strncmp(state.peekfile, name, n))
                 while (state.peekfile = sfgetr(sfstdin, '\n', 1))
-                    if (strncmp(state.peekfile, name, n))
-                    {
+                    if (strncmp(state.peekfile, name, n)) {
                         state.peeklen = sfvalue(sfstdin) - 1;
                         break;
                     }
@@ -914,13 +821,11 @@ getfile(Archive_t *ap, File_t *f, Ftw_t *ftw)
     f->uidname = 0;
     f->gidname = 0;
     f->link = 0;
-    if ((f->type = X_ITYPE(f->st->st_mode)) == X_IFLNK)
-    {
+    if ((f->type = X_ITYPE(f->st->st_mode)) == X_IFLNK) {
         f->linkpathsize = f->st->st_size + 1;
         f->linkpath = stash(&ap->stash.link, NiL, f->linkpathsize);
         if (pathgetlink(f->path, f->linkpath, f->linkpathsize)
-            != f->st->st_size)
-        {
+            != f->st->st_size) {
             error(2, "%s: cannot read symbolic link", f->path);
             ftw->status = FTW_SKIP;
             return 0;
@@ -929,15 +834,12 @@ getfile(Archive_t *ap, File_t *f, Ftw_t *ftw)
         pathcanon(f->linkpath, 0, 0);
         if (!(state.ftwflags & FTW_PHYSICAL))
             f->linkpath = map(ap, f->linkpath);
-        if (streq(f->path, f->linkpath))
-        {
+        if (streq(f->path, f->linkpath)) {
             error(2, "%s: symbolic link loops to self", f->path);
             ftw->status = FTW_SKIP;
             return 0;
         }
-    }
-    else
-    {
+    } else {
         f->linktype = NOLINK;
         f->linkpath = 0;
         f->linkpathsize = 0;
@@ -945,8 +847,7 @@ getfile(Archive_t *ap, File_t *f, Ftw_t *ftw)
     f->ro = ropath(f->name);
     if (!validout(ap, f))
         return 0;
-    if (!(state.operation & IN) && f->type != X_IFDIR)
-    {
+    if (!(state.operation & IN) && f->type != X_IFDIR) {
         if (!addlink(ap, f) && !state.header.linkdata)
             f->st->st_size = 0;
         message((-4,
@@ -960,14 +861,12 @@ getfile(Archive_t *ap, File_t *f, Ftw_t *ftw)
     f->longname = 0;
     f->longlink = 0;
     f->skip = 0;
-    if (state.mode)
-    {
+    if (state.mode) {
         f->st->st_mode = strperm(state.mode, &e, f->st->st_mode);
         if (*e)
             error(2, "%s: invalid mode expression", state.mode);
     }
-    if (state.mtime)
-    {
+    if (state.mtime) {
         f->st->st_mtime = tmdate(state.mtime, &e, NiL);
         if (*e)
             error(2, "%s: invalid mtime", state.mtime);
@@ -992,8 +891,7 @@ validout(Archive_t *ap, File_t *f)
 {
     if (f->ro)
         return 0;
-    switch (f->type)
-    {
+    switch (f->type) {
     case X_IFBLK:
     case X_IFCHR:
         f->st->st_size = 0;
@@ -1029,17 +927,13 @@ addlink(Archive_t *ap, File_t *f)
     id.dev = f->st->st_dev;
     id.ino = f->st->st_ino;
     if (!ap->delta)
-        switch (state.operation)
-        {
+        switch (state.operation) {
         case IN:
             us = id.dev;
-            if (us > state.devcnt)
-            {
+            if (us > state.devcnt) {
                 state.devcnt = us;
                 state.inocnt = id.ino;
-            }
-            else if (us == state.devcnt)
-            {
+            } else if (us == state.devcnt) {
                 us = id.ino;
                 if (us > state.inocnt)
                     state.inocnt = us;
@@ -1050,8 +944,7 @@ addlink(Archive_t *ap, File_t *f)
                 break;
             /*FALLTHROUGH*/
         case OUT:
-            if (!++state.inocnt)
-            {
+            if (!++state.inocnt) {
                 if (!++state.devcnt)
                     goto toomany;
                 state.inocnt = 1;
@@ -1062,24 +955,18 @@ addlink(Archive_t *ap, File_t *f)
         }
     if (f->type == X_IFDIR)
         return 0;
-    if (ap->format->flags & NOHARDLINKS)
-    {
+    if (ap->format->flags & NOHARDLINKS) {
         if (state.operation == IN || f->st->st_nlink <= 1)
             return 1;
-    }
-    else if ((ap->format->flags & LINKTYPE) && state.operation == IN)
-    {
+    } else if ((ap->format->flags & LINKTYPE) && state.operation == IN) {
         if (f->linktype == NOLINK)
             return 1;
         f->linkpath = map(ap, f->linkpath);
         goto linked;
-    }
-    else if (f->st->st_nlink <= 1)
+    } else if (f->st->st_nlink <= 1)
         return 1;
-    if (p = ( Link_t * )hashget(state.linktab, ( char * )&id))
-    {
-        if (ap->format->flags & NOHARDLINKS)
-        {
+    if (p = ( Link_t * )hashget(state.linktab, ( char * )&id)) {
+        if (ap->format->flags & NOHARDLINKS) {
             error(1,
                   "%s: hard link information lost in %s format",
                   f->name,
@@ -1099,37 +986,30 @@ addlink(Archive_t *ap, File_t *f)
         if (ap->format->event
             && (ap->format->events & PAX_EVENT_BUG_19951031))
             (*ap->format->event)(&state, ap, f, NiL, PAX_EVENT_BUG_19951031);
-        if (streq(f->name, f->linkpath))
-        {
+        if (streq(f->name, f->linkpath)) {
             error(2, "%s: hard link loops to self", f->name);
             return 0;
         }
-        if (!state.list)
-        {
+        if (!state.list) {
             s = f->linkpath;
-            if (access(s, F_OK))
-            {
+            if (access(s, F_OK)) {
                 f->skip = 1;
                 error(2, "%s must exist for hard link %s", s, f->name);
                 return 0;
             }
             remove(f->name);
-            if (state.operation == IN && *s != '/')
-            {
+            if (state.operation == IN && *s != '/') {
                 strcpy(state.pwd + state.pwdlen, s);
                 s = state.pwd;
             }
-            if (link(s, f->name))
-            {
-                if (missdir(ap, f))
-                {
+            if (link(s, f->name)) {
+                if (missdir(ap, f)) {
                     error(ERROR_SYSTEM | 2,
                           "%s: cannot create intermediate directories",
                           f->name);
                     return 0;
                 }
-                if (link(s, f->name))
-                {
+                if (link(s, f->name)) {
                     error(ERROR_SYSTEM | 2,
                           "%s: cannot link to %s",
                           f->linkpath,
@@ -1152,8 +1032,7 @@ addlink(Archive_t *ap, File_t *f)
     hashput(state.linktab, NiL, p);
     return -1;
 toomany:
-    if (!state.warnlinknum)
-    {
+    if (!state.warnlinknum) {
         state.warnlinknum = 1;
         error(1, "too many hard links -- some links may become copies");
     }
@@ -1182,10 +1061,8 @@ setidnames(File_t *f)
 {
     int id;
 
-    if (f->uidname)
-    {
-        if ((id = struid(f->uidname)) < 0)
-        {
+    if (f->uidname) {
+        if ((id = struid(f->uidname)) < 0) {
             if (id == -1 && state.owner)
                 error(1, "%s: invalid user name", f->uidname);
             f->uidname = 0;
@@ -1193,10 +1070,8 @@ setidnames(File_t *f)
         }
         f->st->st_uid = id;
     }
-    if (f->gidname)
-    {
-        if ((id = strgid(f->gidname)) < 0)
-        {
+    if (f->gidname) {
+        if ((id = strgid(f->gidname)) < 0) {
             if (id == -1 && state.owner)
                 error(1, "%s: invalid group name", f->gidname);
             f->gidname = 0;
@@ -1256,8 +1131,7 @@ initfile(Archive_t *ap, File_t *f, struct stat *st, char *name, int mode)
     memzero(f, sizeof(*f));
     f->st = st;
     memzero(f->st, sizeof(*f->st));
-    if (name)
-    {
+    if (name) {
         f->id = f->name = f->path = name;
         f->namesize = strlen(name) + 1;
     }
@@ -1278,20 +1152,15 @@ setfile(Archive_t *ap, File_t *f)
 
     if (f->skip || f->extended)
         return;
-    switch (f->type)
-    {
+    switch (f->type) {
     case X_IFLNK:
         updated = 0;
 #if _lib_lchown
-        if (state.owner)
-        {
-            if (state.flags & SETIDS)
-            {
+        if (state.owner) {
+            if (state.flags & SETIDS) {
                 post.uid = state.setuid;
                 post.gid = state.setgid;
-            }
-            else
-            {
+            } else {
                 post.uid = f->st->st_uid;
                 post.gid = f->st->st_gid;
             }
@@ -1301,8 +1170,7 @@ setfile(Archive_t *ap, File_t *f)
         }
 #endif
 #if _lib_lchmod
-        if (f->restoremode)
-        {
+        if (f->restoremode) {
             int m;
             struct stat st;
 
@@ -1311,15 +1179,13 @@ setfile(Archive_t *ap, File_t *f)
             else if ((f->perm ^ st.st_mode) & state.modemask
                      & (S_ISUID | S_ISGID | S_ISVTX | S_IRUSR | S_IWUSR
                         | S_IXUSR | S_IRGRP | S_IWGRP | S_IXGRP | S_IROTH
-                        | S_IWOTH | S_IXOTH))
-            {
+                        | S_IWOTH | S_IXOTH)) {
                 if (lchmod(f->name, f->perm & state.modemask))
                     error(1,
                           "%s: cannot chmod to %s",
                           f->name,
                           fmtmode(f->perm & state.modemask, 0) + 1);
-                else if (m = f->perm & (S_ISUID | S_ISGID | S_ISVTX))
-                {
+                else if (m = f->perm & (S_ISUID | S_ISGID | S_ISVTX)) {
                     if (lstat(f->name, &st))
                         error(1, "%s: not found", f->name);
                     else if (m
@@ -1334,8 +1200,7 @@ setfile(Archive_t *ap, File_t *f)
         return;
     case X_IFDIR:
         if (f->restoremode || state.acctime || state.modtime || state.owner
-            || (f->perm & S_IRWXU) != S_IRWXU)
-        {
+            || (f->perm & S_IRWXU) != S_IRWXU) {
             if (!(p = newof(0, Post_t, 1, 0)))
                 error(3, "not enough space for file restoration info");
             tvgetatime(&p->atime, f->st);
@@ -1343,16 +1208,14 @@ setfile(Archive_t *ap, File_t *f)
             p->uid = f->st->st_uid;
             p->gid = f->st->st_gid;
             p->mode = f->perm;
-            if ((f->perm & S_IRWXU) != S_IRWXU)
-            {
+            if ((f->perm & S_IRWXU) != S_IRWXU) {
                 p->restoremode = 1;
                 if (chmod(f->name, f->perm | S_IRWXU))
                     error(1,
                           "%s: cannot chmod to %s",
                           f->name,
                           fmtmode(f->st->st_mode | X_IRWXU, 1) + 1);
-            }
-            else
+            } else
                 p->restoremode = f->restoremode;
             hashput(state.restore, f->name, p);
             ap->updated++;
@@ -1398,25 +1261,21 @@ restore(const char *name, char *ap, void *handle)
     NoP(handle);
     if (!*name)
         return 0;
-    if (state.owner)
-    {
-        if (state.flags & SETIDS)
-        {
+    if (state.owner) {
+        if (state.flags & SETIDS) {
             p->uid = state.setuid;
             p->gid = state.setgid;
         }
         if (chown(name, p->uid, p->gid) < 0)
             error(1, "%s: cannot chown to (%d,%d)", name, p->uid, p->gid);
     }
-    if (p->restoremode)
-    {
+    if (p->restoremode) {
         if (chmod(name, p->mode & state.modemask))
             error(1,
                   "%s: cannot chmod to %s",
                   name,
                   fmtmode(p->mode & state.modemask, 0) + 1);
-        else if (m = p->mode & (S_ISUID | S_ISGID | S_ISVTX))
-        {
+        else if (m = p->mode & (S_ISUID | S_ISGID | S_ISVTX)) {
             if (stat(name, &st))
                 error(1, "%s: not found", name);
             else if (m ^= (st.st_mode & (S_ISUID | S_ISGID | S_ISVTX)))
@@ -1441,20 +1300,17 @@ prune(Archive_t *ap, File_t *f, struct stat *st)
     int c;
 
     if (state.operation != (IN | OUT) && state.update == OPT_update
-        && !streq(f->name, f->path))
-    {
+        && !streq(f->name, f->path)) {
         if ((*state.statf)(f->path, &so))
             return 0;
         st = &so;
     }
-    if (st->st_mode == f->st->st_mode)
-    {
+    if (st->st_mode == f->st->st_mode) {
         if (ap->delta && !tvcmp(tvmtime(&t1, f->st), tvmtime(&t2, st)))
             return 1;
         if (state.update
             && (!(c = tvcmp(tvmtime(&t1, f->st), tvmtime(&t2, st)))
-                || state.update != OPT_different && c < 0))
-        {
+                || state.update != OPT_different && c < 0)) {
             if (state.exact)
                 state.pattern->matched = 0;
             return 1;
@@ -1485,17 +1341,13 @@ holewrite(int fd, void *buf, size_t siz)
         b = t;
     else
 #endif
-        while (t < e)
-        {
+        while (t < e) {
             s = t;
             if ((t += HOLE_MIN) > e)
                 t = e;
-            if (!*s && !*(t - 1) && !memcmp(s, hole, t - s))
-            {
-                if (b)
-                {
-                    if (state.hole)
-                    {
+            if (!*s && !*(t - 1) && !memcmp(s, hole, t - s)) {
+                if (b) {
+                    if (state.hole) {
                         if (lseek(fd, state.hole, SEEK_CUR) < state.hole)
                             return -1;
                         state.hole = 0;
@@ -1507,14 +1359,11 @@ holewrite(int fd, void *buf, size_t siz)
                 }
                 state.hole += t - s;
                 n += t - s;
-            }
-            else if (!b)
+            } else if (!b)
                 b = s;
         }
-    if (b)
-    {
-        if (state.hole)
-        {
+    if (b) {
+        if (state.hole) {
             if (lseek(fd, state.hole, SEEK_CUR) < state.hole)
                 return -1;
             state.hole = 0;
@@ -1560,8 +1409,7 @@ seekable(Archive_t *ap)
     z = 0;
     s = ap->io->buffer + ap->io->unread;
     m = ap->io->last - s;
-    do
-    {
+    do {
         if (write(wfd, s, m) != m)
             error(ERROR_SYSTEM | 3,
                   "%s: seekable temporary %s write error",

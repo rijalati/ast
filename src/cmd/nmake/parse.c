@@ -76,29 +76,25 @@
 #define CON_set (11 << 10)     /* set options			*/
 
 #define PUSHLOCAL(p)                                                         \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         for (p = pp->local; p; p = p->next)                                  \
             if (!(p->newv.property & V_scope))                               \
                 p->bucket->value = ( char * )p->oldv;                        \
     } while (0)
 #define POPLOCAL(p)                                                          \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         for (p = pp->local; p; p = p->next)                                  \
             if (!(p->newv.property & V_scope))                               \
                 p->bucket->value = ( char * )&p->newv;                       \
     } while (0)
 
 #define freelocal(x)                                                         \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         x->next = freelocals;                                                \
         freelocals = x;                                                      \
     } while (0)
 #define newlocal(x)                                                          \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         if (x = freelocals)                                                  \
             freelocals = x->next;                                            \
         else                                                                 \
@@ -206,25 +202,20 @@ unparse(int level)
 
     if (pp >= &parsestack[elementsof(parsestack)])
         pp = &parsestack[elementsof(parsestack) - 1];
-    while (pp > &parsestack[level])
-    {
-        if ((r = getrule(pp->name)) && r->active)
-        {
+    while (pp > &parsestack[level]) {
+        if ((r = getrule(pp->name)) && r->active) {
             r->active = r->active->previous;
             if (r->status == UPDATE)
                 r->status = EXISTS;
         }
-        if (pp->fp)
-        {
+        if (pp->fp) {
             if (pp->fp != sfstdin)
                 sfclose(pp->fp);
             sfstrclose(pp->ip);
         }
-        if (lcl = pp->local)
-        {
+        if (lcl = pp->local) {
             pp->local = 0;
-            while (lcl)
-            {
+            while (lcl) {
                 lcl->bucket->value = ( char * )lcl->oldv;
                 olcl = lcl;
                 lcl = lcl->next;
@@ -232,16 +223,12 @@ unparse(int level)
             }
         }
         for (cp = pp->cp; cp > pp->block; cp--)
-            if (cp->flags & CON_for)
-            {
-                if (cp->loop.f.vec)
-                {
+            if (cp->flags & CON_for) {
+                if (cp->loop.f.vec) {
                     sfstrclose(cp->loop.f.vec);
                     sfstrclose(cp->loop.f.tmp);
                 }
-            }
-            else if (cp->flags & CON_while)
-            {
+            } else if (cp->flags & CON_while) {
                 if (pp->cp->loop.w.free)
                     free(pp->cp->loop.w.test);
             }
@@ -266,22 +253,18 @@ declare(char *t, int line, long flags)
 
     if (d = strchr(t, '='))
         *d = 0;
-    if (!(v = getvar(t)))
-    {
+    if (!(v = getvar(t))) {
         for (s = t; *s; s++)
             if (istype(*s, C_TERMINAL))
                 error(3, "%s: invalid local variable name", t);
         v = setvar(t, null, 0);
-    }
-    else if (!(flags & V_scope))
-    {
+    } else if (!(flags & V_scope)) {
         /*
          * check for duplicate declarations
          */
 
         for (p = pp->local; p; p = p->next)
-            if (v->name == p->newv.name)
-            {
+            if (v->name == p->newv.name) {
                 if (d)
                     *d++ = '=';
                 else if (line && p->line == line)
@@ -301,8 +284,7 @@ declare(char *t, int line, long flags)
     p->newv.property &= ~(V_readonly | V_scope);
     p->newv.property
     |= (v->property & (V_auxiliary | V_scan)) | (flags & V_scope);
-    if (!p->newv.value || (p->newv.property & V_import))
-    {
+    if (!p->newv.value || (p->newv.property & V_import)) {
         p->newv.value = newof(0, char, MINVALUE + 1, 0);
         p->newv.length = MINVALUE;
         p->newv.property &= ~V_import;
@@ -311,12 +293,10 @@ declare(char *t, int line, long flags)
     p->bucket = hashlast(table.var);
     p->bucket->value = ( char * )&p->newv;
     p->line = line;
-    if (d)
-    {
+    if (d) {
         *d++ = '=';
         setvar(v->name, d, 0);
-    }
-    else if (flags & V_append)
+    } else if (flags & V_append)
         setvar(v->name, v->value, 0);
     else
         *p->newv.value = 0;
@@ -346,8 +326,7 @@ local(Sfio_t *xp, char *v)
     Sfio_t *ap = 0;
 
     for (cp = pp->cp; cp > pp->block; cp--)
-        if (cp->flags & (CON_for | CON_while))
-        {
+        if (cp->flags & (CON_for | CON_while)) {
             for (p = pp->local; p; p = p->next)
                 p->line = 0;
             break;
@@ -360,17 +339,13 @@ local(Sfio_t *xp, char *v)
     v = sfstrseek(xp, top, SEEK_SET);
     if (t)
         *t = '\n';
-    while (t = getarg(&v, NiL))
-    {
-        if (!ap && *t == '-')
-        {
+    while (t = getarg(&v, NiL)) {
+        if (!ap && *t == '-') {
             ap = sfstropen();
             if (!argc)
                 argc = 1;
             argn = strtol(t + 1, NiL, 0);
-        }
-        else if (!ap && *t == '(')
-        {
+        } else if (!ap && *t == '(') {
             ap = sfstropen();
             argv = t + strlen(t) - 1;
             if (*argv != ')')
@@ -380,19 +355,16 @@ local(Sfio_t *xp, char *v)
             argc = 1;
             argn = 0;
             formal = getarg(&argv, NiL);
-        }
-        else
-        {
-            if (argv)
-            {
+        } else {
+            if (argv) {
                 if (!formal)
                     error(3,
                           "%s: only %d actual argument%s expected",
                           t,
                           argc - 1,
                           argc == 2 ? null : "s");
-                if ((a = getarg(&argv, NiL)) && !optional && streq(a, "..."))
-                {
+                if ((a = getarg(&argv, NiL)) && !optional
+                    && streq(a, "...")) {
                     optional = 1;
                     if (*v)
                         *(v - 1) = ' ';
@@ -403,35 +375,28 @@ local(Sfio_t *xp, char *v)
                 sfprintf(ap, "%s=%s", formal, t);
                 t = sfstruse(ap);
                 formal = a;
-            }
-            else if (argc)
-            {
+            } else if (argc) {
                 sfprintf(ap, "%d=%s", argc++, t);
                 t = sfstruse(ap);
             }
             declare(t, error_info.line, 0);
         }
     }
-    if (argc)
-    {
-        if (formal)
-        {
-            if (!optional)
-            {
+    if (argc) {
+        if (formal) {
+            if (!optional) {
                 a = getarg(&argv, NiL);
                 if (!a || !streq(a, "..."))
                     error(
                     3, "%s: actual argument expected", formal, argc - 1);
             }
-            while (formal)
-            {
+            while (formal) {
                 declare(formal, error_info.line, 0);
                 formal = getarg(&argv, NiL);
             }
         }
         pp->argc = argc - 1;
-        while (argc <= argn)
-        {
+        while (argc <= argn) {
             sfprintf(ap, "%d", argc++);
             declare(sfstruse(ap), error_info.line, 0);
         }
@@ -468,10 +433,8 @@ iterate(void)
 
     if (!(v->property & V_import) && v->value && strlen(p) <= v->length)
         strcpy(v->value, p);
-    else
-    {
-        if (v->property & V_free)
-        {
+    else {
+        if (v->property & V_free) {
             v->property &= ~V_free;
             free(v->value);
         }
@@ -498,37 +461,31 @@ directive(char *s)
 
     while (isspace(*++s))
         ;
-    if (isdigit(*s))
-    {
+    if (isdigit(*s)) {
         n = 0;
         while (isdigit(*s))
             n = n * 10 + *s++ - '0';
         error_info.line = n - 1;
         while (isspace(*s))
             s++;
-        if (*s++ == '"')
-        {
+        if (*s++ == '"') {
             if (!file)
                 file = sfstropen();
             while (*s && *s != '"')
                 sfputc(file, *s++);
             t = sfstruse(file);
-            if (*s == '"')
-            {
+            if (*s == '"') {
                 if (!*t)
                     error_info.file = pp->name;
-                else
-                {
+                else {
                     pathcanon(error_info.file = t, 0, 0);
                     state.init++;
                     r = makerule(t);
                     state.init--;
-                    if (!r->time && !(r->property & P_dontcare))
-                    {
+                    if (!r->time && !(r->property & P_dontcare)) {
                         if (stat(t, &st))
                             r->property |= P_dontcare;
-                        else
-                        {
+                        else {
                             r->time = tmxgetmtime(&st);
                             compref(r, COMP_INCLUDE);
                         }
@@ -536,9 +493,7 @@ directive(char *s)
                 }
             }
         }
-    }
-    else
-    {
+    } else {
         for (t = s; *s && !isspace(*s); s++)
             ;
         if (*s)
@@ -549,8 +504,7 @@ directive(char *s)
                  && strmatch(t,
                              "assert|define|elif|else|endif|endmac|error|if|"
                              "ifdef|ifndef|include|line|macdef|pragma|"
-                             "unassert|undef|warning"))
-        {
+                             "unassert|undef|warning")) {
             state.preprocess = 1;
             punt(0);
         }
@@ -583,40 +537,30 @@ readline(int lead)
     Sfio_t *sps[2];
 
     trap();
-    if (s = pp->pushback)
-    {
+    if (s = pp->pushback) {
         pp->pushback = 0;
-        if (pp->fp)
-        {
+        if (pp->fp) {
             if (lead > 0 && (t = sfstrseek(pp->ip, 0, SEEK_CUR) - 1) > s
-                && *(t - 1) == '\\')
-            {
+                && *(t - 1) == '\\') {
                 sfstrseek(pp->ip, -2, SEEK_CUR);
                 line = s - sfstrbase(pp->ip);
                 goto pushback;
             }
             return s;
-        }
-        else if (t = pp->bp = strchr(s, '\n'))
-        {
+        } else if (t = pp->bp = strchr(s, '\n')) {
             if (lead > 0 && t > s && *(t - 1) == '\\')
                 *(t - 1) = *t = ' ';
-            else
-            {
+            else {
                 pp->newline = 1;
                 *pp->bp = 0;
                 return s;
             }
-        }
-        else
+        } else
             return s;
-    }
-    else
+    } else
         s = pp->bp;
-    if (pp->fp)
-    {
-        if (s = pp->stashget)
-        {
+    if (pp->fp) {
+        if (s = pp->stashget) {
             *s++ = '\n';
             if (t = strchr(s, '\n'))
                 *(pp->stashget = t) = 0;
@@ -624,17 +568,14 @@ readline(int lead)
                 pp->stashget = 0;
             return s;
         }
-        if (pp->stashput)
-        {
+        if (pp->stashput) {
             sfstrseek(pp->ip, -1, SEEK_CUR);
             sfputc(pp->ip, '\n');
-        }
-        else
+        } else
             sfstrseek(pp->ip, 0, SEEK_SET);
         line = sfstrtell(pp->ip);
     pushback:
-        do
-        {
+        do {
             trap();
             if (r = getrule(external.makeprompt))
                 maketop(r, P_dontcare | P_foreground, NiL);
@@ -655,10 +596,8 @@ readline(int lead)
         } while (sps[0] != pp->fp && (n <= 1 || sps[1] != pp->fp));
         here = pp->checkhere = 0;
         n = q = 0;
-        for (;;)
-        {
-            switch (c = sfgetc(pp->fp))
-            {
+        for (;;) {
+            switch (c = sfgetc(pp->fp)) {
             case EOF:
             eof:
                 if (q == COMMENT)
@@ -671,15 +610,13 @@ readline(int lead)
                           start);
                 else if (sfstrtell(pp->ip) > line)
                     error(lead > 0 ? 2 : 1, "file does not end with newline");
-                if (sfstrtell(pp->ip) > line)
-                {
+                if (sfstrtell(pp->ip) > line) {
                     sfputc(pp->ip, 0);
                     return sfstrbase(pp->ip) + line;
                 }
                 return 0;
             case '\r':
-                if ((c = sfgetc(pp->fp)) != '\n')
-                {
+                if ((c = sfgetc(pp->fp)) != '\n') {
                     if (c != EOF)
                         sfungetc(pp->fp, c);
                     c = '\r';
@@ -689,8 +626,7 @@ readline(int lead)
             case '\n':
             newline:
                 error_info.line++;
-                if (!q || q == COMMENT)
-                {
+                if (!q || q == COMMENT) {
                     t = sfstrseek(pp->ip, 0, SEEK_CUR);
                     s = sfstrbase(pp->ip) + line;
                     while (t > s && (*(t - 1) == ' ' || *(t - 1) == '\t'))
@@ -698,8 +634,7 @@ readline(int lead)
                     sfstrseek(pp->ip, t - sfstrbase(pp->ip), SEEK_SET);
                     sfputc(pp->ip, 0);
                     s = sfstrbase(pp->ip) + line;
-                    if (*s == COMMENT)
-                    {
+                    if (*s == COMMENT) {
                         directive(s);
                         *s = 0;
                         sfstrseek(pp->ip, line + 1, SEEK_SET);
@@ -710,14 +645,12 @@ readline(int lead)
                     error(ERROR_PROMPT, PS2);
                 break;
             case '\\':
-                switch (c = sfgetc(pp->fp))
-                {
+                switch (c = sfgetc(pp->fp)) {
                 case EOF:
                     sfputc(pp->ip, '\\');
                     goto eof;
                 case '\r':
-                    if ((c = sfgetc(pp->fp)) != '\n')
-                    {
+                    if ((c = sfgetc(pp->fp)) != '\n') {
                         if (c != EOF)
                             sfungetc(pp->fp, c);
                         sfputc(pp->ip, '\\');
@@ -726,8 +659,7 @@ readline(int lead)
                     }
                     /*FALLTHROUGH*/
                 case '\n':
-                    if (lead > 0)
-                    {
+                    if (lead > 0) {
                         error_info.line++;
                         if (pp->prompt)
                             error(ERROR_PROMPT, PS2);
@@ -746,8 +678,7 @@ readline(int lead)
             case '\'':
                 if (c == q)
                     q = 0;
-                else if (!q)
-                {
+                else if (!q) {
                     q = c;
                     start = error_info.line;
                 }
@@ -756,8 +687,7 @@ readline(int lead)
                 if (!q
                     && (sfstrtell(pp->ip) == line
                         || isspace(*(sfstrseek(pp->ip, 0, SEEK_CUR) - 1))))
-                    switch (c = sfgetc(pp->fp))
-                    {
+                    switch (c = sfgetc(pp->fp)) {
                     case EOF:
                         sfputc(pp->ip, '/');
                         goto eof;
@@ -765,8 +695,7 @@ readline(int lead)
                         start = ++error_info.line;
                     mid:
                         for (;;)
-                            switch (sfgetc(pp->fp))
-                            {
+                            switch (sfgetc(pp->fp)) {
                             case EOF:
                             comeof:
                                 error(
@@ -782,8 +711,7 @@ readline(int lead)
                                 break;
                             case '/':
                                 for (;;)
-                                    switch (c = sfgetc(pp->fp))
-                                    {
+                                    switch (c = sfgetc(pp->fp)) {
                                     case EOF:
                                         goto comeof;
                                     case '*':
@@ -801,8 +729,7 @@ readline(int lead)
                                     }
                             case '*':
                                 for (;;)
-                                    switch (c = sfgetc(pp->fp))
-                                    {
+                                    switch (c = sfgetc(pp->fp)) {
                                     case EOF:
                                         goto comeof;
                                     case '*':
@@ -828,13 +755,11 @@ readline(int lead)
                 if (!q && (q = c) && sfstrtell(pp->ip) > line
                     && isspace(*(sfstrseek(pp->ip, 0, SEEK_CUR) - 1)))
                     for (;;)
-                        switch (sfgetc(pp->fp))
-                        {
+                        switch (sfgetc(pp->fp)) {
                         case EOF:
                             goto eof;
                         case '\\':
-                            switch (sfgetc(pp->fp))
-                            {
+                            switch (sfgetc(pp->fp)) {
                             case EOF:
                                 goto eof;
                             case '\\':
@@ -868,8 +793,7 @@ readline(int lead)
                 break;
             case '<':
                 if (!q && !n && !pp->checkhere
-                    && (m = sfstrtell(pp->ip) - line))
-                {
+                    && (m = sfstrtell(pp->ip) - line)) {
                     if (m == here)
                         pp->checkhere = 1;
                     else
@@ -879,19 +803,14 @@ readline(int lead)
             }
             sfputc(pp->ip, c);
         }
-    }
-    else if (s)
-    {
+    } else if (s) {
         error_info.line++;
-        if (pp->newline)
-        {
+        if (pp->newline) {
             pp->newline = 0;
             *s++ = '\n';
         }
-        if (f = strchr(s, '\n'))
-        {
-            if (lead > 0 && f > s && *(f - 1) == '\\')
-            {
+        if (f = strchr(s, '\n')) {
+            if (lead > 0 && f > s && *(f - 1) == '\\') {
                 /*
                  * NOTE: `\\n' are permanently eliminated *each pass*
                  *	 line counts are preserved by adding newlines
@@ -900,42 +819,33 @@ readline(int lead)
 
                 n = 1;
                 t = f - 1;
-                for (;;)
-                {
-                    if (!(c = *++f))
-                    {
+                for (;;) {
+                    if (!(c = *++f)) {
                         f = 0;
                         *t = 0;
                         break;
-                    }
-                    else if (c != '\n')
+                    } else if (c != '\n')
                         *t++ = c;
-                    else if (*(f - 1) != '\\')
-                    {
+                    else if (*(f - 1) != '\\') {
                         f = t + 1;
-                        while (n--)
-                        {
+                        while (n--) {
                             *t++ = ' ';
                             *t++ = '\n';
                         }
                         break;
-                    }
-                    else
-                    {
+                    } else {
                         n++;
                         t--;
                     }
                 }
             }
         }
-        if (pp->bp = f)
-        {
+        if (pp->bp = f) {
             *f = 0;
             pp->newline = 1;
         }
         return s;
-    }
-    else
+    } else
         return 0;
 }
 
@@ -963,8 +873,7 @@ getline(Sfio_t *sp, int lead, int term)
     Control_t *cp;
     Namval_t *nv;
 
-    if (pp->here && !lead)
-    {
+    if (pp->here && !lead) {
         t = pp->here;
         pp->here = 0;
         while ((s = sfgetr(pp->fp, '\n', 1)) && !streq(s, t))
@@ -975,50 +884,39 @@ getline(Sfio_t *sp, int lead, int term)
         return sfstrtell(sp) != 0;
     }
 again:
-    while (s = lin = readline(lead))
-    {
+    while (s = lin = readline(lead)) {
         indent = 0;
         if (lead > 0 && !(pp->cp->flags & CON_skip))
             pp->indent = SHRT_MAX;
-        while (indent <= pp->indent)
-        {
-            if (*s == '\t')
-            {
+        while (indent <= pp->indent) {
+            if (*s == '\t') {
                 s++;
                 indent += state.tabstops - indent % state.tabstops;
-            }
-            else if (*s == ' ')
-            {
+            } else if (*s == ' ') {
                 static int warned;
 
                 for (t = s; isspace(*t); t++)
                     ;
                 if (!*t)
                     goto again;
-                if (!warned)
-                {
+                if (!warned) {
                     error(1, "<space> indentation may be non-portable");
                     warned = 1;
                 }
-                while (*s == ' ')
-                {
+                while (*s == ' ') {
                     s++;
                     indent++;
                 }
-            }
-            else
+            } else
                 break;
         }
-        if (lead > 0 && indent <= pp->indent && (c = *s))
-        {
+        if (lead > 0 && indent <= pp->indent && (c = *s)) {
             pp->indent = indent;
             if (c == 'b' || c == 'c' || c == 'e' || c == 'f' || c == 'i'
-                || c == 'l' || c == 'p' || c == 'r' || c == 's' || c == 'w')
-            {
+                || c == 'l' || c == 'p' || c == 'r' || c == 's' || c == 'w') {
                 for (t = s; istype(*t, C_VARIABLE2); t++)
                     ;
-                if (istype(c = *t, C_SEP))
-                {
+                if (istype(c = *t, C_SEP)) {
                     *t = 0;
                     i = (nv = ( Namval_t * )strsearch(controls,
                                                       elementsof(controls),
@@ -1032,15 +930,13 @@ again:
                         ;
                     c = pp->cp->flags;
                     /*UNDENT*/
-                    if (i)
-                    {
+                    if (i) {
                         debug((-7,
                                "%s:%d:test: `%s'",
                                error_info.file,
                                error_info.line,
                                s));
-                        switch (i)
-                        {
+                        switch (i) {
 
                         case CON_if:
                             if (++pp->cp >= &constack[elementsof(constack)])
@@ -1058,8 +954,7 @@ again:
                             if (!(c & CON_if))
                                 error(3, "no matching if for else");
                             if (*t != 'i' || *(t + 1) != 'f'
-                                || !isspace(*(t + 2)))
-                            {
+                                || !isspace(*(t + 2))) {
                                 if (c & CON_else)
                                     error(1, "only one else per if");
                                 if (*t)
@@ -1068,8 +963,7 @@ again:
                                 pp->cp->flags |= CON_else;
                                 if (c & CON_kept)
                                     pp->cp->flags |= CON_skip;
-                                else
-                                {
+                                else {
                                     pp->cp->flags |= CON_kept;
                                     pp->cp->flags &= ~CON_skip;
                                 }
@@ -1087,8 +981,7 @@ again:
                                 error(1, "elif after else");
                             if ((c & CON_kept) || !expr(sp, t))
                                 pp->cp->flags |= CON_skip;
-                            else
-                            {
+                            else {
                                 pp->cp->flags |= CON_kept;
                                 pp->cp->flags &= ~CON_skip;
                             }
@@ -1103,41 +996,33 @@ again:
                                 pp->eval--;
                             else if (!(c & CON_skip)
                                      || (c & (CON_for | CON_while))
-                                        && !(c & CON_kept))
-                            {
+                                        && !(c & CON_kept)) {
                                 pp->cp->flags &= ~(CON_kept | CON_skip);
                                 if ((c & CON_while)
                                     && expr(sp, pp->cp->loop.w.test)
-                                    || (c & CON_for) && iterate())
-                                {
-                                    if (pp->newline)
-                                    {
+                                    || (c & CON_for) && iterate()) {
+                                    if (pp->newline) {
                                         pp->newline = 0;
                                         *pp->bp = '\n';
                                     }
-                                    if (pp->fp)
-                                    {
+                                    if (pp->fp) {
                                         if (pp->stashget)
                                             *pp->stashget = '\n';
                                         pp->stashget = sfstrbase(pp->ip)
                                                        + pp->cp->body.offset;
-                                    }
-                                    else
+                                    } else
                                         pp->bp = pp->cp->body.buffer;
                                     error_info.line = pp->cp->line;
                                     continue;
                                 }
                             }
-                            if (c & CON_for)
-                            {
-                                if (pp->cp->loop.f.vec)
-                                {
+                            if (c & CON_for) {
+                                if (pp->cp->loop.f.vec) {
                                     sfstrclose(pp->cp->loop.f.vec);
                                     sfstrclose(pp->cp->loop.f.tmp);
                                 }
                             }
-                            if (c & CON_while)
-                            {
+                            if (c & CON_while) {
                                 if (pp->cp->loop.w.free)
                                     free(pp->cp->loop.w.test);
                             }
@@ -1153,8 +1038,7 @@ again:
                             pp->cp->loop.f.vec = 0;
                             if (c & CON_skip)
                                 pp->cp->flags |= CON_kept | CON_skip;
-                            else
-                            {
+                            else {
                                 Sfio_t *tp;
 
                                 pp->cp->loop.f.tmp = tp = sfstropen();
@@ -1166,18 +1050,14 @@ again:
                                 do
                                     putptr(tp, t = getarg(&tok, NiL));
                                 while (t);
-                                if (*(pp->cp->loop.f.args
-                                      = ( char ** )sfstrseek(tp, 0, SEEK_SET)))
-                                {
+                                if (*(pp->cp->loop.f.args = ( char ** )
+                                      sfstrseek(tp, 0, SEEK_SET))) {
                                     pp->cp->loop.f.var = setvar(s, null, 0);
                                     if (!iterate())
                                         pp->cp->flags |= CON_kept | CON_skip;
-                                    else
-                                    {
-                                        if (pp->fp)
-                                        {
-                                            if (!pp->stashput)
-                                            {
+                                    else {
+                                        if (pp->fp) {
+                                            if (!pp->stashput) {
                                                 pp->stashput = 1;
                                                 pp->cp->flags |= CON_stash;
                                                 sfstrseek(
@@ -1189,16 +1069,14 @@ again:
                                               ? (pp->stashget
                                                  - sfstrbase(pp->ip))
                                               : (sfstrtell(pp->ip) - 1);
-                                        }
-                                        else if (!pp->bp)
+                                        } else if (!pp->bp)
                                             error(3,
                                                   "for loop body expected");
                                         else
                                             pp->cp->body.buffer = pp->bp + 1;
                                         pp->cp->line = error_info.line;
                                     }
-                                }
-                                else
+                                } else
                                     pp->cp->flags |= CON_kept | CON_skip;
                             }
                             continue;
@@ -1210,13 +1088,10 @@ again:
                             pp->cp->loop.w.free = 0;
                             if ((c & CON_skip) || !expr(sp, t))
                                 pp->cp->flags |= CON_kept | CON_skip;
-                            else
-                            {
+                            else {
                                 pp->cp->loop.w.test = t;
-                                if (pp->fp)
-                                {
-                                    if (!pp->stashput)
-                                    {
+                                if (pp->fp) {
+                                    if (!pp->stashput) {
                                         pp->stashput = 1;
                                         pp->cp->flags |= CON_stash;
                                         sfstrseek(pp->ip, 0, SEEK_SET);
@@ -1228,8 +1103,7 @@ again:
                                     = pp->stashget
                                       ? (pp->stashget - sfstrbase(pp->ip))
                                       : (sfstrtell(pp->ip) - 1);
-                                }
-                                else if (!pp->bp)
+                                } else if (!pp->bp)
                                     error(3, "while loop body expected");
                                 else
                                     pp->cp->body.buffer = pp->bp + 1;
@@ -1239,17 +1113,14 @@ again:
 
                         case CON_break:
                         case CON_continue:
-                            if (!(pp->cp->flags & CON_skip))
-                            {
+                            if (!(pp->cp->flags & CON_skip)) {
                                 c = *t ? expr(sp, t) : 1;
-                                for (cp = pp->cp; cp > pp->block; cp--)
-                                {
+                                for (cp = pp->cp; cp > pp->block; cp--) {
                                     if (cp <= pp->block)
                                         error(3, "%s outside of loop", s);
                                     cp->flags |= CON_skip | CON_kept;
                                     if ((cp->flags & (CON_for | CON_while))
-                                        && --c <= 0)
-                                    {
+                                        && --c <= 0) {
                                         if (i == CON_continue)
                                             cp->flags &= ~CON_kept;
                                         break;
@@ -1259,11 +1130,9 @@ again:
                             continue;
 
                         case CON_return:
-                            if (!(pp->cp->flags & CON_skip))
-                            {
+                            if (!(pp->cp->flags & CON_skip)) {
                                 if (state.frame->target->property
-                                    & P_functional)
-                                {
+                                    & P_functional) {
                                     n = sfstrtell(sp);
                                     expand(sp, t);
                                     s = sfstrbase(sp) + n;
@@ -1280,38 +1149,29 @@ again:
                                            "%s returns `%s'",
                                            state.frame->target->name,
                                            sfstrseek(sp, 0, SEEK_CUR)));
-                                }
-                                else if (*t)
-                                {
+                                } else if (*t) {
                                     if ((tm = timenum(t, &e)) != TMX_NOTIME
-                                        && *e)
-                                    {
+                                        && *e) {
                                         if ((n = expr(sp, t)) == -1)
                                             tm = TMX_NOTIME;
                                         else
                                             tm = tmxsns(n, 0);
                                     }
-                                    if (tm == TMX_NOTIME)
-                                    {
+                                    if (tm == TMX_NOTIME) {
                                         pp->status = FAILED;
                                         debug((-5, "return fail"));
-                                    }
-                                    else if (tm)
-                                    {
+                                    } else if (tm) {
                                         pp->status = TOUCH;
                                         internal.internal->time = tm;
                                         debug(
                                         (-5,
                                          "return [%s]",
                                          timestr(internal.internal->time)));
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         pp->status = EXISTS;
                                         debug((-5, "return no update"));
                                     }
-                                }
-                                else
+                                } else
                                     debug((-5, "return normal"));
                                 for (cp = pp->cp; cp >= pp->block; cp--)
                                     cp->flags |= CON_skip | CON_kept;
@@ -1342,8 +1202,7 @@ again:
                             continue;
 
                         case CON_error:
-                            if (!(pp->cp->flags & CON_skip))
-                            {
+                            if (!(pp->cp->flags & CON_skip)) {
                                 n = sfstrtell(sp);
                                 expand(sp, t);
                                 sfputc(sp, 0);
@@ -1360,8 +1219,7 @@ again:
                             continue;
 
                         case CON_exit:
-                            if (!(pp->cp->flags & CON_skip))
-                            {
+                            if (!(pp->cp->flags & CON_skip)) {
                                 n = sfstrtell(sp);
                                 expand(sp, t);
                                 sfputc(sp, 0);
@@ -1373,8 +1231,7 @@ again:
 
                         case CON_print:
                         case CON_read:
-                            if (!(pp->cp->flags & CON_skip))
-                            {
+                            if (!(pp->cp->flags & CON_skip)) {
                                 int d;
                                 int m;
                                 int x;
@@ -1390,24 +1247,20 @@ again:
                                 n = '\n';
                                 /*UNDENT...*/
 
-                                for (;;)
-                                {
+                                for (;;) {
                                     for (t = a; *t == ' '; t++)
                                         ;
                                     if ((x = *t) != '-' && x != '+')
                                         break;
                                     a = t;
                                     t = getarg(&a, NiL) + 1;
-                                    if (*(t - 1) == *t && !*(t + 1))
-                                    {
+                                    if (*(t - 1) == *t && !*(t + 1)) {
                                         for (t = a; *t == ' '; t++)
                                             ;
                                         break;
                                     }
-                                    for (;;)
-                                    {
-                                        switch (m = *t++)
-                                        {
+                                    for (;;) {
+                                        switch (m = *t++) {
                                         case 0:
                                             break;
                                         case 'f':
@@ -1421,16 +1274,15 @@ again:
                                         case 'i':
                                         case 'o':
                                         case 'p':
-                                            if (!*t && !(t = getarg(&a, NiL)))
-                                            {
+                                            if (!*t
+                                                && !(t = getarg(&a, NiL))) {
                                                 error(
                                                 3,
                                                 "-%c: file argument expected",
                                                 m);
                                                 t = "-";
                                             }
-                                            if (state.io[d])
-                                            {
+                                            if (state.io[d]) {
                                                 if (state.io[d] != sfstdin
                                                     && state.io[d] != sfstdout
                                                     && state.io[d]
@@ -1439,8 +1291,7 @@ again:
                                                 state.io[d] = 0;
                                             }
                                             if (!streq(t, "-"))
-                                                switch (m)
-                                                {
+                                                switch (m) {
                                                 case 'i':
                                                     if (!(state.io[d]
                                                           = sfopen(NiL,
@@ -1479,8 +1330,7 @@ again:
                                                     break;
                                                 }
                                             if (!state.io[d])
-                                                switch (d)
-                                                {
+                                                switch (d) {
                                                 case 0:
                                                     state.io[d] = sfstdin;
                                                     break;
@@ -1502,8 +1352,7 @@ again:
                                                 error(
                                                 3,
                                                 "-u: unit argument expected");
-                                            switch (c = *t++)
-                                            {
+                                            switch (c = *t++) {
                                             case 'm':
                                                 if ((state.io[d = elementsof(
                                                                   state.io)
@@ -1544,36 +1393,29 @@ again:
                                 }
 
                                 /*...INDENT*/
-                                if (i == CON_print)
-                                {
+                                if (i == CON_print) {
                                     if (state.io[d]
                                         && (sfset(state.io[d], 0, 0)
-                                            & SF_WRITE))
-                                    {
+                                            & SF_WRITE)) {
                                         if (f)
                                             strprintf(
                                             state.io[d], f, t, 0, n);
                                         else
                                             sfputr(state.io[d], t, n);
-                                    }
-                                    else if (*t || n != -1)
+                                    } else if (*t || n != -1)
                                         error(
                                         2, "unit %d not open for writing", d);
-                                }
-                                else if (n != -1 || *t)
-                                {
+                                } else if (n != -1 || *t) {
                                     if (state.io[d]
                                         && (sfset(state.io[d], 0, 0)
-                                            & SF_READ))
-                                    {
+                                            & SF_READ)) {
                                         if (!*(a = t)
                                             || !(t = getarg(&a, NiL))
                                             || getarg(&a, NiL))
                                             error(
                                             2,
                                             "one variable argument expected");
-                                        else
-                                        {
+                                        else {
                                             if (f)
                                                 error(1,
                                                       "read format ignored");
@@ -1583,8 +1425,7 @@ again:
                                                 f = null;
                                             setvar(t, f, 0);
                                         }
-                                    }
-                                    else
+                                    } else
                                         error(
                                         2, "unit %d not open for reading", d);
                                 }
@@ -1592,8 +1433,7 @@ again:
                             continue;
 
                         case CON_set:
-                            if (!(pp->cp->flags & CON_skip))
-                            {
+                            if (!(pp->cp->flags & CON_skip)) {
                                 n = sfstrtell(sp);
                                 expand(sp, t);
                                 sfputc(sp, 0);
@@ -1615,16 +1455,12 @@ again:
             debug(
             (-7, "%s:%d:data: `%s'", error_info.file, error_info.line, s));
 #endif
-        if (!(pp->cp->flags & CON_skip))
-        {
+        if (!(pp->cp->flags & CON_skip)) {
             for (t = s; isspace(*t); t++)
                 ;
-            if (*t)
-            {
-                if (!lead && indent <= pp->indent)
-                {
-                    if (pp->newline)
-                    {
+            if (*t) {
+                if (!lead && indent <= pp->indent) {
+                    if (pp->newline) {
                         pp->newline = 0;
                         *pp->bp = '\n';
                     }
@@ -1632,13 +1468,11 @@ again:
                     return 0;
                 }
                 break;
-            }
-            else if (!lead && pp->fp == sfstdin)
+            } else if (!lead && pp->fp == sfstdin)
                 return 0;
             else if (pp->splice == error_info.line)
                 break;
-            else if (!lead)
-            {
+            else if (!lead) {
                 sfputr(sp, s, term);
                 return 1;
             }
@@ -1646,8 +1480,7 @@ again:
     }
     if (!s)
         return 0;
-    switch (i = pp->eval)
-    {
+    switch (i = pp->eval) {
     case 0:
         sfputr(sp, s, term);
         break;
@@ -1655,14 +1488,12 @@ again:
         expand(sp, s);
         sfputc(sp, term);
         break;
-    default:
-    {
+    default: {
         Sfio_t *tp;
         Sfio_t *xp;
 
         tp = sfstropen();
-        for (;;)
-        {
+        for (;;) {
             xp = (i & 1) ? sp : tp;
             expand(xp, s);
             if (--i <= 0)
@@ -1671,8 +1502,7 @@ again:
         }
         sfstrclose(tp);
         sfputc(sp, term);
-    }
-    break;
+    } break;
     }
     return 1;
 }
@@ -1726,52 +1556,39 @@ statement(Sfio_t *sp, char **lhs, Rule_t **opr, char **rhs, char **act)
         return op;
     *opr = 0;
     b = s = sfstrbase(sp);
-    while (c = *s++)
-    {
-        if (c == '\\')
-        {
+    while (c = *s++) {
+        if (c == '\\') {
             if (*s)
                 s++;
-        }
-        else if (c == quote)
+        } else if (c == quote)
             quote = 0;
         else if (c == '"' || c == '\'')
             quote = c;
-        else if (!quote)
-        {
-            if (brace)
-            {
+        else if (!quote) {
+            if (brace) {
                 if (c == '{')
                     nest++;
-                else if (c == '}' && !--nest)
-                {
+                else if (c == '}' && !--nest) {
                     for (p = s; isspace(*p); p++)
                         ;
-                    if (*p || brace > b && *(brace - 1) == '$')
-                    {
+                    if (*p || brace > b && *(brace - 1) == '$') {
                         brace = 0;
                         continue;
                     }
                     ecarb = s - 1;
                 }
-            }
-            else if (c == '(')
+            } else if (c == '(')
                 paren++;
             else if (c == ')' && !paren--)
                 error(3, "to many )'s");
-            else if (!paren)
-            {
-                if (c == '{')
-                {
+            else if (!paren) {
+                if (c == '{') {
                     brace = s - 1;
                     nest++;
-                }
-                else if (c == '}')
+                } else if (c == '}')
                     error(3, "unbalanced {...}");
-                else if (c == ':')
-                {
-                    if (item < 2 && *s == '=')
-                    {
+                else if (c == ':') {
+                    if (item < 2 && *s == '=') {
                         t = s + 1;
                         op = OP_ASSIGN | OP_EXPAND;
                         break;
@@ -1780,13 +1597,11 @@ statement(Sfio_t *sp, char **lhs, Rule_t **opr, char **rhs, char **act)
                     if (istype(*t, C_ID1))
                         while (istype(*++t, C_ID2))
                             ;
-                    if (*t++ == ':')
-                    {
+                    if (*t++ == ':') {
                         c = *t;
                         *t = 0;
                         if (!(*opr = getrule(s - 1))
-                            || !((*opr)->property & P_operator))
-                        {
+                            || !((*opr)->property & P_operator)) {
                             Sfio_t *tmp;
 
                             tmp = sfstropen();
@@ -1797,8 +1612,7 @@ statement(Sfio_t *sp, char **lhs, Rule_t **opr, char **rhs, char **act)
                             sfstruse(tmp), COMP_INCLUDE | COMP_DONTCARE, NiL);
                             sfstrclose(tmp);
                             if (!op || !(*opr = getrule(s - 1))
-                                || !((*opr)->property & P_operator))
-                            {
+                                || !((*opr)->property & P_operator)) {
                                 *opr = internal.op;
                                 error(1, "operator %s not defined", s - 1);
                             }
@@ -1812,40 +1626,28 @@ statement(Sfio_t *sp, char **lhs, Rule_t **opr, char **rhs, char **act)
                     t = s;
                     op = OP_ASSERT | OP_ACTION | OP_EXPAND;
                     break;
-                }
-                else if (item < 2)
-                {
-                    if (isspace(c))
-                    {
+                } else if (item < 2) {
+                    if (isspace(c)) {
                         item++;
                         while (isspace(*s))
                             s++;
                         if ((c = *s) != ':' && c != '+' && c != '&'
                             && c != '=')
                             item++;
-                    }
-                    else if (c == '+')
-                    {
-                        if (*s == '=')
-                        {
+                    } else if (c == '+') {
+                        if (*s == '=') {
                             t = s + 1;
                             op = OP_ASSIGN | OP_APPEND | OP_EXPAND;
                             break;
                         }
-                    }
-                    else if (c == '&')
-                    {
-                        if (*s == '=')
-                        {
+                    } else if (c == '&') {
+                        if (*s == '=') {
                             t = s + 1;
                             op = OP_ASSIGN | OP_EXPAND | OP_AUXILIARY;
                             break;
                         }
-                    }
-                    else if (c == '=')
-                    {
-                        if (*s == '=')
-                        {
+                    } else if (c == '=') {
+                        if (*s == '=') {
                             t = s + 1;
                             op = OP_ASSIGN | OP_STATE;
                             break;
@@ -1865,10 +1667,8 @@ statement(Sfio_t *sp, char **lhs, Rule_t **opr, char **rhs, char **act)
               "%d closing )%s missing from line",
               paren,
               paren == 1 ? null : "'s");
-    if (op)
-    {
-        if (op & OP_EXPAND)
-        {
+    if (op) {
+        if (op & OP_EXPAND) {
             Sfio_t *tmp;
 
             tmp = sfstropen();
@@ -1886,8 +1686,7 @@ statement(Sfio_t *sp, char **lhs, Rule_t **opr, char **rhs, char **act)
             sfstrclose(tmp);
             s = t = sfstrbase(sp) + rhs_pos;
             p = sfstrseek(sp, 0, SEEK_CUR) - 1;
-        }
-        else
+        } else
             p = t + strlen(t);
         while (p > t && isspace(*(p - 1)))
             p--;
@@ -1899,9 +1698,7 @@ statement(Sfio_t *sp, char **lhs, Rule_t **opr, char **rhs, char **act)
         for (s--; s > t && isspace(*(s - 1)); s--)
             ;
         *s = 0;
-    }
-    else
-    {
+    } else {
         op = OP_EMPTY;
         p = s - 1;
         s = sfstrbase(sp);
@@ -1909,60 +1706,48 @@ statement(Sfio_t *sp, char **lhs, Rule_t **opr, char **rhs, char **act)
             p--;
         *p = 0;
     }
-    if (brace)
-    {
+    if (brace) {
         for (t = brace; t > s && isspace(*(t - 1)); t--)
             ;
         *t = 0;
-        if (ecarb)
-        {
+        if (ecarb) {
             *ecarb = 0;
             nest = 0;
         }
         if (p > ++brace)
             *p++ = '\n';
-        for (;;)
-        {
-            if (!*brace)
-            {
+        for (;;) {
+            if (!*brace) {
                 *brace = ' ';
                 *(brace + 1) = 0;
                 break;
-            }
-            else if (!isspace(*brace) || *brace == '\n')
+            } else if (!isspace(*brace) || *brace == '\n')
                 break;
             brace++;
         }
         act_pos = brace - sfstrbase(sp);
         sfstrseek(sp, p - sfstrbase(sp), SEEK_SET);
         quote = 0;
-        while (nest)
-        {
+        while (nest) {
             lin_pos = sfstrtell(sp);
-            if (!getline(sp, -1, '\n'))
-            {
+            if (!getline(sp, -1, '\n')) {
                 error(2, "unbalanced {...} action");
                 break;
             }
             s = sfstrbase(sp) + lin_pos;
             t = sfstrseek(sp, 0, SEEK_CUR);
-            while (s < t)
-            {
-                if ((c = *s++) == '\\')
-                {
+            while (s < t) {
+                if ((c = *s++) == '\\') {
                     if (s < t)
                         s++;
-                }
-                else if (c == quote)
+                } else if (c == quote)
                     quote = 0;
                 else if (c == '"' || c == '\'')
                     quote = c;
-                else if (!quote)
-                {
+                else if (!quote) {
                     if (c == '{')
                         nest++;
-                    else if (c == '}' && !--nest)
-                    {
+                    else if (c == '}' && !--nest) {
                         p = s - 1;
                         while (s < t && isspace(*s))
                             s++;
@@ -1979,17 +1764,12 @@ statement(Sfio_t *sp, char **lhs, Rule_t **opr, char **rhs, char **act)
                 }
             }
         }
-    }
-    else if (op & OP_ACTION)
-    {
-        if (pp->checkhere)
-        {
+    } else if (op & OP_ACTION) {
+        if (pp->checkhere) {
             t = b = sfstrbase(sp) + rhs_pos;
             nest = quote = 0;
-            for (;;)
-            {
-                switch (*t++)
-                {
+            for (;;) {
+                switch (*t++) {
                 case 0:
                     break;
                 case '"':
@@ -2012,17 +1792,14 @@ statement(Sfio_t *sp, char **lhs, Rule_t **opr, char **rhs, char **act)
                         nest--;
                     continue;
                 case '<':
-                    if (!nest && !quote && *t == '<')
-                    {
+                    if (!nest && !quote && *t == '<') {
                         s = t - 1;
                         while (isspace(*++t))
                             ;
-                        if (*t)
-                        {
+                        if (*t) {
                             p = t;
                             while (*++t)
-                                if (isspace(*t))
-                                {
+                                if (isspace(*t)) {
                                     *t = 0;
                                     break;
                                 }
@@ -2048,15 +1825,12 @@ statement(Sfio_t *sp, char **lhs, Rule_t **opr, char **rhs, char **act)
             ;
         t = sfstrbase(sp) + act_pos;
         s = sfstrseek(sp, 0, SEEK_CUR);
-        for (;;)
-        {
-            if (s <= t)
-            {
+        for (;;) {
+            if (s <= t) {
                 act_pos = -1;
                 break;
             }
-            if (*--s != '\n')
-            {
+            if (*--s != '\n') {
                 *(s + 1) = 0;
                 break;
             }
@@ -2093,23 +1867,19 @@ fds(int details)
     if ((open_max = ( int )strtol(astconf("OPEN_MAX", NiL, NiL), NiL, 0))
         <= 0)
         open_max = OPEN_MAX;
-    for (i = 0; i <= open_max; i++)
-    {
-        if (fstat(i, &st))
-        {
+    for (i = 0; i <= open_max; i++) {
+        if (fstat(i, &st)) {
             /* not open */
             continue;
         }
-        if (!details)
-        {
+        if (!details) {
             sfprintf(sfstdout, "%d\n", i);
             continue;
         }
         if ((flags = fcntl(i, F_GETFL, ( char * )0)) == -1)
             m = "--";
         else
-            switch (flags & (O_RDONLY | O_WRONLY | O_RDWR))
-            {
+            switch (flags & (O_RDONLY | O_WRONLY | O_RDWR)) {
             case O_RDONLY:
                 m = "r-";
                 break;
@@ -2124,8 +1894,7 @@ fds(int details)
                 break;
             }
         x = (fcntl(i, F_GETFD, ( char * )0) > 0) ? "x" : "-";
-        if (isatty(i) && (s = ttyname(i)))
-        {
+        if (isatty(i) && (s = ttyname(i))) {
             sfprintf(
             sfstdout, "%02d %s%s %s %s\n", i, m, x, fmtmode(st.st_mode, 0), s);
             continue;
@@ -2133,8 +1902,7 @@ fds(int details)
 #    if defined(S_IFSOCK) && 0
         addrlen = sizeof(addr);
         memset(&addr, 0, addrlen);
-        if (!getsockname(i, ( struct sockaddr * )&addr, ( void * )&addrlen))
-        {
+        if (!getsockname(i, ( struct sockaddr * )&addr, ( void * )&addrlen)) {
             type = 0;
             prot = 0;
 #        ifdef SO_TYPE
@@ -2152,11 +1920,9 @@ fds(int details)
             if (!st.st_mode)
                 st.st_mode = S_IFSOCK | S_IRUSR | S_IWUSR;
             s = 0;
-            switch (type)
-            {
+            switch (type) {
             case SOCK_DGRAM:
-                switch (addr.sin_family)
-                {
+                switch (addr.sin_family) {
                 case AF_INET:
 #        ifdef AF_INET6
                 case AF_INET6:
@@ -2166,8 +1932,7 @@ fds(int details)
                 }
                 break;
             case SOCK_STREAM:
-                switch (addr.sin_family)
-                {
+                switch (addr.sin_family) {
                 case AF_INET:
 #        ifdef AF_INET6
                 case AF_INET6:
@@ -2197,8 +1962,7 @@ fds(int details)
                 break;
 #        endif
             }
-            if (!s)
-            {
+            if (!s) {
                 for (type = 0; family[type].name
                                && family[type].value != addr.sin_family;
                      type++)
@@ -2214,13 +1978,10 @@ fds(int details)
                 port = ntohs(addr.sin_port);
             else
 #        endif
-            if (addr.sin_family == AF_INET)
-            {
+            if (addr.sin_family == AF_INET) {
                 a = inet_ntoa(addr.sin_addr);
                 port = ntohs(addr.sin_port);
-            }
-            else
-            {
+            } else {
                 a = fam;
                 e = (b = ( unsigned char * )&addr) + addrlen;
                 while (b < e && a < &fam[sizeof(fam) - 1])
@@ -2290,8 +2051,7 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
         int op;      /* assertion op		*/
     } * att, clr, set;
 
-    if (opr)
-    {
+    if (opr) {
         debug((-6,
                "operator: lhs=`%s' %s rhs=`%s' act=`%-.1024s'",
                lhs,
@@ -2304,8 +2064,7 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
     if (internal.assert_p->prereqs
         && (opr = associate(internal.assert_p, NiL, lhs, NiL)) && opr->prereqs
         && (opr = opr->prereqs->rule) && (opr->property & P_operator)
-        && !opr->uname)
-    {
+        && !opr->uname) {
         s = opr->uname = opr->name;
         opr->name = lhs;
         apply(opr, lhs, rhs, act, CO_ALWAYS | CO_LOCAL | CO_URGENT);
@@ -2320,16 +2079,13 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
      * special check for internal.query
      */
 
-    if (getrule(lhs) == internal.query)
-    {
+    if (getrule(lhs) == internal.query) {
         c = 0;
         if (!(s = getarg(&rhs, NiL)))
             interpreter(NiL);
         else if (*s == '-' && !*(s + 1))
-            while (s = getarg(&rhs, NiL))
-            {
-                if (streq(s, "blocked"))
-                {
+            while (s = getarg(&rhs, NiL)) {
+                if (streq(s, "blocked")) {
 #if DEBUG
                     c = 1;
                     error(0, null);
@@ -2337,28 +2093,20 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
 #else
                     error(2, "%s: implemented in DEBUG==1 version", s);
 #endif
-                }
-                else if (streq(s, "buckets"))
-                {
+                } else if (streq(s, "buckets")) {
                     c = 0;
                     hashdump(NiL, HASH_BUCKET);
-                }
-                else if (streq(s, "fds"))
-                {
+                } else if (streq(s, "fds")) {
 #if DEBUG
                     fds(1);
                     c = 0;
 #else
                     error(2, "%s: implemented in DEBUG==1 version", s);
 #endif
-                }
-                else if (streq(s, "hash"))
-                {
+                } else if (streq(s, "hash")) {
                     c = 0;
                     hashdump(NiL, 0);
-                }
-                else if (streq(s, "jobs"))
-                {
+                } else if (streq(s, "jobs")) {
 #if DEBUG
                     c = 1;
                     error(0, null);
@@ -2366,11 +2114,8 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
 #else
                     error(2, "%s: implemented in DEBUG==1 version", s);
 #endif
-                }
-                else if (streq(s, "nametype"))
-                {
-                    while (s = getarg(&rhs, NiL))
-                    {
+                } else if (streq(s, "nametype")) {
+                    while (s = getarg(&rhs, NiL)) {
                         n = nametype(s, NiL);
                         sfprintf(sfstdout, "%16s", s);
                         for (i = 0; i < elementsof(nametypes); i++)
@@ -2379,22 +2124,17 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
                         sfputc(sfstdout, '\n');
                     }
                     break;
-                }
-                else if (streq(s, "rules"))
-                {
+                } else if (streq(s, "rules")) {
                     c = 1;
                     state.ruledump = 1;
                     dump(sfstderr, 0);
                     state.ruledump = 0;
-                }
-                else if (streq(s, "stack"))
-                {
+                } else if (streq(s, "stack")) {
                     Parseinfo_t *sp = pp;
                     Local_t *lp;
 
                     c = 1;
-                    while (--sp > &parsestack[0])
-                    {
+                    while (--sp > &parsestack[0]) {
                         sfprintf(sfstderr, "\n%s:\n", sp->name);
                         for (lp = sp->local; lp; lp = lp->next)
                             sfprintf(sfstderr,
@@ -2403,18 +2143,13 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
                                      lp->newv.value,
                                      lp->oldv->value);
                     }
-                }
-                else if (streq(s, "variables"))
-                {
+                } else if (streq(s, "variables")) {
                     c = 1;
                     state.vardump = 1;
                     dump(sfstderr, 0);
                     state.vardump = 0;
-                }
-                else if (streq(s, "view"))
-                {
-                    if (state.maxview)
-                    {
+                } else if (streq(s, "view")) {
+                    if (state.maxview) {
                         sfprintf(sfstderr, "\n");
                         for (c = 0; c <= state.maxview; c++)
                             sfprintf(sfstderr,
@@ -2424,8 +2159,7 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
                                      state.view[c].path);
                         c = 1;
                     }
-                }
-                else
+                } else
                     error(1,
                           "%s: options are "
                           "{blocked,buckets,hash,jobs,nametype,rules,stack,"
@@ -2433,15 +2167,12 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
                           s);
             }
         else
-            while (s)
-            {
-                if (r = getrule(s))
-                {
+            while (s) {
+                if (r = getrule(s)) {
                     c = 1;
                     dumprule(sfstderr, r);
                 }
-                if (v = getvar(s))
-                {
+                if (v = getvar(s)) {
                     c = 1;
                     sfprintf(sfstderr, "\n");
                     dumpvar(sfstderr, v);
@@ -2466,25 +2197,21 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
     if (!*rhs)
         set.op |= A_target;
     p = q = 0;
-    while (s = getarg(&rhs, &set.op))
-    {
+    while (s = getarg(&rhs, &set.op)) {
         /*
          * <ATTRNAME><attribute> names (and sets) the attribute
          * <ATTRSET><attribute> sets the attribute
          * <ATTRCLEAR><attribute> clears the attribute
          */
 
-        if (((c = *s) == ATTRSET || c == ATTRCLEAR) && *(s + 1))
-        {
+        if (((c = *s) == ATTRSET || c == ATTRCLEAR) && *(s + 1)) {
             *s = ATTRNAME;
             r = getrule(s);
             *s = c;
             if (!r)
                 r = getrule(s + 1);
-            if (!r || !(r->property & P_attribute))
-            {
-                if (r)
-                {
+            if (!r || !(r->property & P_attribute)) {
+                if (r) {
                     Flags_t m = 0;
 
                     /*
@@ -2500,14 +2227,11 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
                         m = D_regular;
                     else if (r == internal.scanned)
                         m = D_scanned;
-                    if (m)
-                    {
-                        if (c == ATTRCLEAR)
-                        {
+                    if (m) {
+                        if (c == ATTRCLEAR) {
                             set.op |= A_negate;
                             att = &clr;
-                        }
-                        else
+                        } else
                             att = &set;
                         att->rule.dynamic |= m;
                         continue;
@@ -2515,17 +2239,13 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
                 }
                 r = makerule(s);
             }
-        }
-        else
+        } else
             r = makerule(s);
-        if (r->property & P_attribute)
-        {
-            if (c == ATTRCLEAR)
-            {
+        if (r->property & P_attribute) {
+            if (c == ATTRCLEAR) {
                 set.op |= A_negate;
                 att = &clr;
-            }
-            else
+            } else
                 att = &set;
 
             /*
@@ -2563,8 +2283,7 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
                 att->rule.property |= P_readonly;
             else if (r == internal.scan)
                 att->op |= A_scan;
-            else if (r == internal.semaphore)
-            {
+            else if (r == internal.semaphore) {
                 if (att->rule.semaphore < UCHAR_MAX)
                     att->rule.semaphore++;
                 else
@@ -2572,8 +2291,7 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
                           "%s: maximum semaphore count is %d",
                           r->name,
                           UCHAR_MAX - 1);
-            }
-            else if (r == internal.state)
+            } else if (r == internal.state)
                 att->rule.property |= P_state;
             else if (r == internal.target)
                 att->rule.property |= P_target;
@@ -2586,21 +2304,16 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
 
             else
                 merge(r, &att->rule, MERGE_ATTR | MERGE_FORCE);
-        }
-        else
-        {
-            if ((set.op & (A_metarule | A_special)) == A_metarule || !*s)
-            {
+        } else {
+            if ((set.op & (A_metarule | A_special)) == A_metarule || !*s) {
                 if (!x)
                     x = r;
                 else if (!*s)
                     error(
                     1,
                     "multiple prerequisite patterns in metarule assertion");
-                else
-                {
-                    while (c = *s++)
-                    {
+                else {
+                    while (c = *s++) {
                         if (c == '%')
                             sfputr(internal.tmp, "$(%)", -1);
                         else
@@ -2608,14 +2321,11 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
                     }
                     r = makerule(sfstruse(internal.tmp));
                 }
-            }
-            else if (set.op & A_scope)
-            {
+            } else if (set.op & A_scope) {
                 r->dynamic |= D_scope;
                 set.rule.dynamic |= D_hasscope;
                 if (state.user <= 1 && state.reading && state.makefile
-                    && (s = strchr(r->name, '=')) && *(s + 1) == '=')
-                {
+                    && (s = strchr(r->name, '=')) && *(s + 1) == '=') {
                     *s = 0;
                     if (nametype(r->name, NiL) & NAME_identifier)
                         setvar(r->name, NiL, V_scan);
@@ -2647,46 +2357,37 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
      */
 
     name = getarg(&lhs, &set.op);
-    while (name)
-    {
+    while (name) {
         r = makerule(name);
-        if (joint)
-        {
-            if (streq(r->name, "-"))
-            {
+        if (joint) {
+            if (streq(r->name, "-")) {
                 jointproperty |= P_dontcare;
                 name = getarg(&lhs, &set.op);
                 continue;
             }
-            if (joint == internal.joint)
-            {
+            if (joint == internal.joint) {
                 joint = catrule(internal.joint->name, ".", name, 1);
                 joint->property |= P_joint | P_readonly | P_virtual;
                 jointail = joint->prereqs = cons(r, NiL);
-            }
-            else
+            } else
                 jointail = jointail->next = cons(r, NiL);
             r->property |= jointproperty;
         }
-        if ((set.op & (A_metarule | A_special)) == A_metarule)
-        {
+        if ((set.op & (A_metarule | A_special)) == A_metarule) {
             Rule_t *in;
             Rule_t *out;
 
             in = 0;
-            if (*name == ATTRNAME)
-            {
+            if (*name == ATTRNAME) {
                 for (s = name + 1; istype(*s, C_ID1 | C_ID2); s++)
                     ;
-                if (*s == ATTRNAME && s > (name + 1) && (c = *++s))
-                {
+                if (*s == ATTRNAME && s > (name + 1) && (c = *++s)) {
                     *s = 0;
                     in = getrule(name);
                     *s = c;
                 }
             }
-            if (in)
-            {
+            if (in) {
                 /*
                  * pattern association rule
                  */
@@ -2699,25 +2400,20 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
                           ((set.op & A_insert) || *(s + strlen(s) - 1) != '%')
                           ? PREREQ_INSERT
                           : PREREQ_APPEND);
-                if (set.op & A_negate)
-                {
+                if (set.op & A_negate) {
                     *name = ATTRCLEAR;
                     merge(
                     &clr.rule, makerule(name), MERGE_ATTR | MERGE_FORCE);
                     *name = ATTRNAME;
                 }
                 name = getarg(&lhs, &set.op);
-            }
-            else
-            {
+            } else {
                 /*
                  * metarule assertion
                  */
 
-                for (p = prereqs, prereqs = q = 0; p; q = p, p = p->next)
-                {
-                    if (p->rule == x)
-                    {
+                for (p = prereqs, prereqs = q = 0; p; q = p, p = p->next) {
+                    if (p->rule == x) {
                         /*
                          * rhs pattern
                          */
@@ -2725,8 +2421,7 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
                         in = p->rule;
                         if (q)
                             q->next = p->next;
-                    }
-                    else if (!prereqs)
+                    } else if (!prereqs)
                         prereqs = p;
                 }
                 c = ((set.op & A_clear) && !prereqs && !*act) ? PREREQ_DELETE
@@ -2737,18 +2432,14 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
                  * update the metarule intermediate prerequisite graph
                  */
 
-                if (in)
-                {
+                if (in) {
                     r = metarule(in->name, r->name, 1);
-                    if (out)
-                    {
+                    if (out) {
                         metaclose(in, out, c);
-                        if (name = getarg(&lhs, &set.op))
-                        {
+                        if (name = getarg(&lhs, &set.op)) {
                             addprereq(
                             metainfo('S', in->name, out->name, 1), out, c);
-                            do
-                            {
+                            do {
                                 x = makerule(name);
                                 addprereq(
                                 metainfo('P', in->name, x->name, 1), out, c);
@@ -2757,8 +2448,7 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
                                 metaclose(in, x, c);
                             } while (name = getarg(&lhs, &set.op));
                         }
-                    }
-                    else
+                    } else
                         addprereq(
                         metainfo((set.rule.property & P_terminal) ? 'T' : 'N',
                                  NiL,
@@ -2766,67 +2456,54 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
                                  1),
                         in,
                         c);
-                }
-                else
-                {
+                } else {
                     if (out && c != PREREQ_DELETE)
                         addprereq(internal.metarule, out, PREREQ_LENGTH);
                     name = getarg(&lhs, &set.op);
                 }
             }
-        }
-        else
-        {
+        } else {
             name = getarg(&lhs, &set.op);
             if (!internal.main->prereqs && !state.global
                 && !(set.rule.property & P_operator) && !(set.op & A_special)
-                && !special(r) && !special(&set.rule))
-            {
+                && !special(r) && !special(&set.rule)) {
                 internal.main->prereqs = cons(r, NiL);
                 internal.main->dynamic &= ~D_compiled;
             }
         }
         if ((r->property & P_readonly)
-            || (r->property & P_staterule) && !istype(*(r->name + 1), C_ID1))
-        {
+            || (r->property & P_staterule)
+               && !istype(*(r->name + 1), C_ID1)) {
             if (r == internal.readonly)
                 continue; /* drop this in 2000 */
-            if (pp->fp != sfstdin)
-            {
+            if (pp->fp != sfstdin) {
                 error(2,
                       "%s: %s atom cannot appear as target",
                       r->name,
                       (r->property & P_readonly) ? "readonly" : "staterule");
                 continue;
-            }
-            else if (r->property & P_readonly)
+            } else if (r->property & P_readonly)
                 error(1, "%s: modifying readonly atom", r->name);
         }
         if (!((r->property | set.rule.property) & P_immediate)
-            && (r->status == UPDATE || r->status == MAKING))
-        {
-            if (*act || (set.op & A_null))
-            {
+            && (r->status == UPDATE || r->status == MAKING)) {
+            if (*act || (set.op & A_null)) {
                 error(2, "%s: cannot reset active target action", r->name);
                 continue;
             }
-            if (set.op & (A_clear | A_copy | A_delete | A_insert))
-            {
+            if (set.op & (A_clear | A_copy | A_delete | A_insert)) {
                 error(
                 2, "%s: cannot reorder active target prerequisites", r->name);
                 continue;
             }
             isactive = 1;
-        }
-        else
+        } else
             isactive = 0;
-        if (set.op & (A_clear | A_copy))
-        {
+        if (set.op & (A_clear | A_copy)) {
             int dynamic;
             int property;
 
-            if (r->property & P_attribute)
-            {
+            if (r->property & P_attribute) {
                 error(2, "%s: atom cannot be cleared", r->name);
                 continue;
             }
@@ -2840,10 +2517,8 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
                                               : staterule(RULE, r, NiL, 0))
                 || r->prereqs != x->prereqs)
                 freelist(r->prereqs);
-            if (set.op & A_copy)
-            {
-                if (!prereqs || prereqs->next)
-                {
+            if (set.op & A_copy) {
+                if (!prereqs || prereqs->next) {
                     error(2, "%s: 1-1 copy only", r->name);
                     continue;
                 }
@@ -2864,8 +2539,7 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
             if (r->property & P_state)
                 state.savestate = 1;
         }
-        if (set.op & A_delete)
-        {
+        if (set.op & A_delete) {
             for (p = prereqs; p; p = p->next)
                 addprereq(r, p->rule, PREREQ_DELETE);
             negate(&set.rule, r);
@@ -2874,17 +2548,14 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
         }
         if (set.op & A_null)
             r->action = null;
-        if (prereqs)
-        {
+        if (prereqs) {
             p = name ? listcopy(prereqs) : prereqs;
             if ((set.op & A_insert)
                 && (r->property & (P_joint | P_target))
                    == (P_joint | P_target))
                 r->prereqs->next = append(p, r->prereqs->next);
-            else
-            {
-                if (isactive && (set.rule.dynamic & D_dynamic))
-                {
+            else {
+                if (isactive && (set.rule.dynamic & D_dynamic)) {
                     r->dynamic |= D_dynamic;
                     q = r->prereqs;
                     r->prereqs = p;
@@ -2904,8 +2575,7 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
          * check action
          */
 
-        if (*act)
-        {
+        if (*act) {
             if (!(s = r->action) || !streq(act, s))
                 r->action = strdup(act); /* XXX: possible leak */
             if (s && r->action != s && !state.user
@@ -2931,8 +2601,7 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
             r->dynamic |= D_dynamic;
         if (((set.rule.property | clr.rule.property) & P_functional)
             && !(r->property & P_state)
-            && ((v = getvar(r->name)) || (v = setvar(r->name, null, 0))))
-        {
+            && ((v = getvar(r->name)) || (v = setvar(r->name, null, 0)))) {
             if (set.rule.property & P_functional)
                 v->property |= V_functional;
             else
@@ -2940,8 +2609,7 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
         }
         if (set.rule.property & P_immediate)
             r->property |= (P_ignore | P_immediate);
-        if (set.rule.property & P_operator)
-        {
+        if (set.rule.property & P_operator) {
             s = r->name;
             if (*s == ':' && istype(*++s, C_ID1))
                 while (istype(*++s, C_ID2))
@@ -2956,8 +2624,7 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
         if (set.rule.semaphore)
             r->semaphore = set.rule.semaphore + 1;
         if ((set.rule.property & P_target)
-            && !((clr.rule.property | r->property) & P_target))
-        {
+            && !((clr.rule.property | r->property) & P_target)) {
             r->property |= P_target;
             if (state.targetcontext && (s = strrchr(r->name, '/')))
                 makerule(s + 1)->dynamic |= D_context;
@@ -2970,19 +2637,16 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
          * user controlled dynamic staterule attributes
          */
 
-        if ((set.rule.dynamic | clr.rule.dynamic) & ~D_dynamic)
-        {
+        if ((set.rule.dynamic | clr.rule.dynamic) & ~D_dynamic) {
             r->dynamic |= (set.rule.dynamic & ~D_dynamic);
             r->dynamic &= ~(clr.rule.dynamic & ~D_dynamic);
-            if (x = staterule(RULE, r, NiL, 0))
-            {
+            if (x = staterule(RULE, r, NiL, 0)) {
                 x->dynamic |= (set.rule.dynamic & ~D_dynamic);
                 x->dynamic &= ~(clr.rule.dynamic & ~D_dynamic);
                 if (clr.rule.dynamic & D_scanned)
                     x->property |= P_force;
             }
-            if (x = staterule(PREREQS, r, NiL, 0))
-            {
+            if (x = staterule(PREREQS, r, NiL, 0)) {
                 x->dynamic |= (set.rule.dynamic & ~D_dynamic);
                 x->dynamic &= ~(clr.rule.dynamic & ~D_dynamic);
                 if (clr.rule.dynamic & D_scanned)
@@ -2994,30 +2658,25 @@ assertion(char *lhs, Rule_t *opr, char *rhs, char *act, int op)
          * these are done after attributes have been assigned
          */
 
-        if ((set.rule.property & P_attribute) && !(r->property & P_attribute))
-        {
+        if ((set.rule.property & P_attribute)
+            && !(r->property & P_attribute)) {
             r->property |= P_attribute;
-            if (!(r->property & P_use))
-            {
-                if (internal.attribute->attribute << 1)
-                {
+            if (!(r->property & P_use)) {
+                if (internal.attribute->attribute << 1) {
                     r->dynamic |= D_index;
                     r->attribute = internal.attribute->attribute;
                     internal.attribute->attribute <<= 1;
                     addprereq(internal.attribute, r, PREREQ_APPEND);
-                }
-                else
+                } else
                     error(1, "%s: too many named attributes", r->name);
             }
         }
         if (joint)
             r->prereqs = cons(joint, r->prereqs);
-        if ((set.op & A_scan) && !r->scan)
-        {
+        if ((set.op & A_scan) && !r->scan) {
             if (internal.scan->scan == SCAN_MAX)
                 error(1, "%s: too many scan strategies", r->name);
-            else
-            {
+            else {
                 r->dynamic |= D_index;
                 r->property |= P_attribute;
                 r->scan = internal.scan->scan++;
@@ -3052,8 +2711,8 @@ assignment(char *lhs, int op, char *rhs)
 
     if (internal.assign_p->prereqs
         && (r = associate(internal.assign_p, NiL, lhs, NiL)) && r->prereqs
-        && (r = r->prereqs->rule) && (r->property & P_operator) && !r->uname)
-    {
+        && (r = r->prereqs->rule) && (r->property & P_operator)
+        && !r->uname) {
         s = r->uname = r->name;
         r->name = (op & OP_APPEND)
                   ? "+="
@@ -3071,8 +2730,7 @@ assignment(char *lhs, int op, char *rhs)
            rhs));
     if (!(s = getarg(&lhs, NiL)))
         error(1, "variable name missing in assignment");
-    else
-    {
+    else {
         if (getarg(&lhs, NiL))
             error(1, "only one variable per assignment");
         n = 0;
@@ -3082,14 +2740,12 @@ assignment(char *lhs, int op, char *rhs)
             n |= V_auxiliary;
         if (op & OP_STATE)
             n |= V_scan;
-        if (pp->scoped)
-        {
+        if (pp->scoped) {
             declare(s, NiL, n | V_scope);
             v = setvar(s, rhs, n);
             if (state.localview
                 && (!(r = staterule(VAR, NiL, s, 0))
-                    || !(r->property & P_parameter)))
-            {
+                    || !(r->property & P_parameter))) {
                 Sfio_t *tmp;
 
                 tmp = sfstropen();
@@ -3097,8 +2753,7 @@ assignment(char *lhs, int op, char *rhs)
                 localvar(NiL, v, sfstruse(tmp), V_local_D);
                 sfstrclose(tmp);
             }
-        }
-        else
+        } else
             setvar(s, rhs, n);
     }
 }
@@ -3121,15 +2776,13 @@ rules(char *s)
     s = sfstruse(internal.tmp);
     if (!(t = getarg(&s, NiL)))
         t = null;
-    if (state.rules)
-    {
+    if (state.rules) {
         edit(internal.nam, t, DELETE, KEEP, DELETE);
         edit(internal.wrk, state.rules, DELETE, KEEP, DELETE);
         if (strcmp(sfstruse(internal.nam), sfstruse(internal.wrk)))
             error(
             3, "%s: incompatible with current base rules %s", t, state.rules);
-    }
-    else if (t == null)
+    } else if (t == null)
         state.rules = null;
     else
         state.rules = makerule(t)->name;
@@ -3163,8 +2816,7 @@ poplocal(void *pos)
     Local_t *t;
 
     p = ( Local_t * )pos;
-    while (pp->local != p)
-    {
+    while (pp->local != p) {
         pp->local->bucket->value = ( char * )pp->local->oldv;
         t = pp->local;
         pp->local = pp->local->next;
@@ -3192,8 +2844,7 @@ nextarg(char *s, char **p, char **end, long *val)
     char buf[10];
     long n;
 
-    if ((c = *s) && c != MARK_QUOTE && c != '"')
-    {
+    if ((c = *s) && c != MARK_QUOTE && c != '"') {
         if (!istype(*s, C_VARIABLE1))
             error(3, "argument expected in expression [%s]", s);
         for (var = s++; istype(*s, C_VARIABLE2); s++)
@@ -3201,8 +2852,7 @@ nextarg(char *s, char **p, char **end, long *val)
         varend = s;
         while (isspace(*s))
             s++;
-        if (*s != '=' || *(s + 1) == '=')
-        {
+        if (*s != '=' || *(s + 1) == '=') {
             c = *varend;
             *varend = 0;
             arg = getval(var, VAL_PRIMARY | VAL_AUXILIARY);
@@ -3213,21 +2863,18 @@ nextarg(char *s, char **p, char **end, long *val)
              * determine if in string or numeric context
              */
 
-            if ((*s == '!' || *s == '=') && *(s + 1) == '=')
-            {
+            if ((*s == '!' || *s == '=') && *(s + 1) == '=') {
                 s++;
                 while (isspace(*++s))
                     ;
-                if (*s == MARK_QUOTE)
-                {
+                if (*s == MARK_QUOTE) {
                     *end = s;
                     return arg;
                 }
             }
             if (!*arg)
                 *val = 0;
-            else
-            {
+            else {
                 *val = strtol(arg, &s, 0);
                 if (*s)
                     *val = 1;
@@ -3236,20 +2883,16 @@ nextarg(char *s, char **p, char **end, long *val)
         }
         while (isspace(*++s))
             ;
-    }
-    else
+    } else
         var = 0;
-    if ((c = *s) == MARK_QUOTE)
-    {
+    if ((c = *s) == MARK_QUOTE) {
         for (arg = ++s; *s && *s != c; s++)
             ;
         *end = s;
         if (*s)
             while (isspace(*++s))
                 ;
-    }
-    else if (c == '"')
-    {
+    } else if (c == '"') {
         for (arg = ++s; *s && *s != c; s++)
             if (*s == '\\' && *(s + 1))
                 s++;
@@ -3257,21 +2900,16 @@ nextarg(char *s, char **p, char **end, long *val)
         if (*s)
             while (isspace(*++s))
                 ;
-    }
-    else if (var)
-    {
+    } else if (var) {
         sfsprintf(
         arg = buf, sizeof(buf), "%ld", *val = strexpr(s, &s, makeexpr, NiL));
         end = 0;
-    }
-    else
+    } else
         error(3, "string argument expected in expression");
-    if (var)
-    {
+    if (var) {
         c = *varend;
         *varend = 0;
-        if (end)
-        {
+        if (end) {
             n = **end;
             **end = 0;
 
@@ -3331,57 +2969,44 @@ makeexpr(const char *cs, char **p, void *handle)
         error(3, "%s in expression", *p);
     else if (!(s1 = nextarg(s, &s, &e1, &n)))
         /* n == expression value */;
-    else
-    {
-        if ((c = *s) == ')')
-        {
+    else {
+        if ((c = *s) == ')') {
             paren = s;
             e2 = s;
             while (isspace(*++s))
                 ;
-        }
-        else
+        } else
             paren = 0;
         if (!(c = *s)
             || c != '<' && c != '>'
-               && (*(s + 1) != '=' || c != '!' && c != '='))
-        {
+               && (*(s + 1) != '=' || c != '!' && c != '=')) {
             n = e1 > s1;
             if (paren)
                 s = paren;
-        }
-        else
-        {
+        } else {
             q = *++s != '=';
             while (isspace(*++s))
                 ;
             if (!(s2 = nextarg(s, &s, &e2, &n)))
                 n = 0;
-            else
-            {
+            else {
                 c1 = *e1;
                 *e1 = 0;
                 c2 = *e2;
                 *e2 = 0;
-                if (state.context)
-                {
-                    if (*s1 == MARK_CONTEXT && *(e1 - 1) == MARK_CONTEXT)
-                    {
+                if (state.context) {
+                    if (*s1 == MARK_CONTEXT && *(e1 - 1) == MARK_CONTEXT) {
                         *(e1 - 1) = 0;
                         m1 = 1;
-                    }
-                    else
+                    } else
                         m1 = 0;
-                    if (*s2 == MARK_CONTEXT && *(e2 - 1) == MARK_CONTEXT)
-                    {
+                    if (*s2 == MARK_CONTEXT && *(e2 - 1) == MARK_CONTEXT) {
                         *(e2 - 1) = 0;
                         m2 = 1;
-                    }
-                    else
+                    } else
                         m2 = 0;
                 }
-                switch (c)
-                {
+                switch (c) {
                 case '>':
                     n = strcoll(s1, s2) >= q;
                     break;
@@ -3395,8 +3020,7 @@ makeexpr(const char *cs, char **p, void *handle)
                     n = strmatch(s1, s2);
                     break;
                 }
-                if (state.context)
-                {
+                if (state.context) {
                     if (m1)
                         *(e1 - 1) = MARK_CONTEXT;
                     if (m2)
@@ -3406,8 +3030,7 @@ makeexpr(const char *cs, char **p, void *handle)
                 *e2 = c2;
             }
         }
-        if (paren)
-        {
+        if (paren) {
             if (!*s)
                 s--;
             *s = ')';
@@ -3437,8 +3060,7 @@ expr(Sfio_t *xp, char *s)
     t = s;
     p = 0;
     for (;;)
-        switch (*t++)
-        {
+        switch (*t++) {
         case '(':
             if (p)
                 p++;
@@ -3448,8 +3070,7 @@ expr(Sfio_t *xp, char *s)
                 p--;
             break;
         case '"':
-            if (p <= 1)
-            {
+            if (p <= 1) {
                 p = !p;
                 if (v < &restore[elementsof(restore)])
                     *(*v++ = t - 1) = MARK_QUOTE;
@@ -3511,14 +3132,12 @@ interpreter(char *msg)
     state.frame = frame.target->active = &frame;
     state.keepgoing |= 2;
     resume = state.resume;
-    if (setjmp(state.resume.label))
-    {
+    if (setjmp(state.resume.label)) {
         unparse(level);
         state.hold = 0;
         state.frame = frame.target->active = &frame;
         sfclrlock(sfstdin);
-    }
-    else
+    } else
         state.interpreter++;
     parse(sfstdin, NiL, "query", NiL);
     state.interpreter--;
@@ -3553,8 +3172,7 @@ parse(Sfio_t *fp, char *bp, char *name, Sfio_t *scoped)
 
     if (pp->newline)
         *pp->bp = '\n';
-    else if (!pp->fp && pp->bp && !*pp->bp)
-    {
+    else if (!pp->fp && pp->bp && !*pp->bp) {
         error(1, "parse: early pop");
         return 0;
     }
@@ -3574,16 +3192,13 @@ parse(Sfio_t *fp, char *bp, char *name, Sfio_t *scoped)
      * push the parse stack
      */
 
-    if (pp->fp = fp)
-    {
+    if (pp->fp = fp) {
         pp->ip = sfstropen();
         pp->prompt
         = fp == sfstdin && isatty(sffileno(fp)) && isatty(sffileno(sfstderr));
         if (fp == sfstdin)
             sfdcslow(fp);
-    }
-    else
-    {
+    } else {
         pp->bp = bp;
         pp->prompt = 0;
     }
@@ -3609,15 +3224,13 @@ parse(Sfio_t *fp, char *bp, char *name, Sfio_t *scoped)
      */
 
     buf = sfstropen();
-    for (;;)
-    {
+    for (;;) {
         op = statement(buf, &lhs, &opr, &rhs, &act);
         if (trap() && !op)
             continue;
         if (!op)
             break;
-        switch (op & OP_STATEMENT)
-        {
+        switch (op & OP_STATEMENT) {
 
         case OP_ASSERT:
             assertion(lhs, opr, rhs, act, 0);
@@ -3628,11 +3241,9 @@ parse(Sfio_t *fp, char *bp, char *name, Sfio_t *scoped)
             break;
 
         case OP_EMPTY:
-            if (*lhs || *act)
-            {
+            if (*lhs || *act) {
                 tmp = sfstropen();
-                if (*lhs)
-                {
+                if (*lhs) {
                     expand(tmp, lhs);
                     rhs = lhs = sfstruse(tmp);
                     sfputc(internal.nam, '.');
@@ -3642,21 +3253,16 @@ parse(Sfio_t *fp, char *bp, char *name, Sfio_t *scoped)
                                            : isupper(op) ? tolower(op) : op);
                     rhs--;
                     alt = sfstruse(internal.nam);
-                }
-                else
-                {
+                } else {
                     sfputr(tmp, internal.always->name, -1);
                     rhs = lhs = alt = sfstruse(tmp);
                 }
                 if (!(opr = getrule(alt))
                     || !(opr->property
-                         & (P_attribute | P_functional | P_immediate)))
-                {
-                    if (pp->fp == sfstdin)
-                    {
+                         & (P_attribute | P_functional | P_immediate))) {
+                    if (pp->fp == sfstdin) {
                         if ((op = *++alt) == 'P'
-                            && (!*(alt + 1) || !strcmp(alt, "PRINT")))
-                        {
+                            && (!*(alt + 1) || !strcmp(alt, "PRINT"))) {
                             while (isspace(*rhs))
                                 rhs++;
                             sfputr(sfstdout, rhs, '\n');
@@ -3664,36 +3270,28 @@ parse(Sfio_t *fp, char *bp, char *name, Sfio_t *scoped)
                             break;
                         }
                         if (op == 'Q'
-                            && (!*(alt + 1) || !strcmp(alt, "QUIT")))
-                        {
+                            && (!*(alt + 1) || !strcmp(alt, "QUIT"))) {
                             if (*rhs)
                                 finish(strtol(rhs, NiL, 0));
                             sfstrclose(tmp);
                             goto quit;
                         }
-                    }
-                    else if (!*act)
+                    } else if (!*act)
                         error(3, "no operator on line");
-                    if (*act)
-                    {
-                        if (*rhs)
-                        {
+                    if (*act) {
+                        if (*rhs) {
                             *rhs++ = 0;
                             while (isspace(*rhs))
                                 rhs++;
                         }
                         opr = 0;
-                    }
-                    else
-                    {
+                    } else {
                         opr = internal.query;
                         rhs = lhs;
                     }
                 }
-                if (opr)
-                {
-                    if (opr->property & P_functional)
-                    {
+                if (opr) {
+                    if (opr->property & P_functional) {
                         while (isspace(*rhs))
                             rhs++;
                         maketop(opr, 0, rhs);
@@ -3704,8 +3302,7 @@ parse(Sfio_t *fp, char *bp, char *name, Sfio_t *scoped)
                     alt = sfstruse(internal.nam);
                     if (opr->property & P_immediate)
                         lhs = alt;
-                    else
-                    {
+                    else {
                         lhs = rhs;
                         rhs = alt;
                     }
@@ -3737,16 +3334,12 @@ quit:
         sfstrclose(pp->ip);
     else if (pp->newline)
         *pp->bp = '\n';
-    if (scoped)
-    {
+    if (scoped) {
         (pp - 1)->local = pp->local;
         pp->local = 0;
-    }
-    else if (lcl = pp->local)
-    {
+    } else if (lcl = pp->local) {
         pp->local = 0;
-        while (lcl)
-        {
+        while (lcl) {
             lcl->bucket->value = ( char * )lcl->oldv;
             olcl = lcl;
             lcl = lcl->next;

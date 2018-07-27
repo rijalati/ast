@@ -87,11 +87,9 @@ Dtlink_t *dtflatten(dt) Dt_t *dt;
         return dt->data->here;
 
     list = last = NIL(Dtlink_t *);
-    if (dt->data->type & DT_HASH)
-    {
+    if (dt->data->type & DT_HASH) {
         eslot = (slot = dt->data->htab) + dt->data->ntab;
-        for (; slot < eslot; ++slot)
-        {
+        for (; slot < eslot; ++slot) {
             if (!(t = *slot))
                 continue;
             if (last)
@@ -102,18 +100,15 @@ Dtlink_t *dtflatten(dt) Dt_t *dt;
                 last = t;
             *slot = last;
         }
-    }
-    else if (dt->data->type & DT_TREE) /* eliminate left children */
+    } else if (dt->data->type & DT_TREE) /* eliminate left children */
     {
-        for (r = dt->data->here; r;)
-        {
+        for (r = dt->data->here; r;) {
             while ((t = r->left))
                 RROTATE(r, t);
             last = last ? (last->right = r) : (list = r);
             r = last->right;
         }
-    }
-    else if (dt->data->type & (DT_LIST | DT_STACK | DT_QUEUE))
+    } else if (dt->data->type & (DT_LIST | DT_STACK | DT_QUEUE))
         list = dt->data->head;
 
     dt->data->here = list;

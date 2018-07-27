@@ -61,8 +61,7 @@ opaqueident(Dssfile_t *file, void *buf, size_t size, Dssdisc_t *disc)
 
     if (size < opaque->magic.size)
         return 0;
-    if (opaque->magic.magic)
-    {
+    if (opaque->magic.magic) {
         if (magic->magic != opaque->magic.magic)
             return 0;
         if (magic->size != opaque->magic.size)
@@ -86,8 +85,7 @@ static int
 opaquefopen(Dssfile_t *file, Dssdisc_t *disc)
 {
     file->data = &(( Opaque_t * )file->dss->meth->data)->magic.size;
-    if (file->skip && !sfreserve(file->io, file->skip, 0))
-    {
+    if (file->skip && !sfreserve(file->io, file->skip, 0)) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "header read error");
         return -1;
@@ -165,23 +163,19 @@ opaquemeth(const char *name,
     Opaque_t *opaque;
     char *s;
 
-    if (!(opaque = newof(0, Opaque_t, 1, 0)))
-    {
+    if (!(opaque = newof(0, Opaque_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, 2, "out of space");
         return 0;
     }
     opaque->meth = *meth;
     opaque->meth.data = opaque;
-    if (options)
-    {
+    if (options) {
         if (dssoptlib(meth->cx->buf, &dss_lib_opaque, usage, disc))
             goto drop;
         s = sfstruse(meth->cx->buf);
-        for (;;)
-        {
-            switch (optstr(options, s))
-            {
+        for (;;) {
+            switch (optstr(options, s)) {
             case 'n':
                 opaque->magic.magic = MAGICID;
                 strncopy(
@@ -212,8 +206,7 @@ opaquemeth(const char *name,
             break;
         }
     }
-    if (!opaque->magic.size)
-    {
+    if (!opaque->magic.size) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, ERROR_SYSTEM | 2, "data size must be specified");

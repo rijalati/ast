@@ -168,12 +168,10 @@ flush(Deflate_t *dp, size_t w, Sfio_t *op)
     i = 0;
     for (ip = ( Id_t * )dtfirst(dp->ids); ip;
          ip = ( Id_t * )dtnext(dp->ids, ip))
-        if (n = sfstrtell(ip->sp))
-        {
+        if (n = sfstrtell(ip->sp)) {
             i++;
             ip->windows++;
-            if (n >= use && (!ip->row || (n / ip->row) > 16))
-            {
+            if (n >= use && (!ip->row || (n / ip->row) > 16)) {
                 if (!ip->used++ && !ip->part && !streq(ip->name, "0")
                     && dp->pz->disc->errorf
                     && (dp->pz->flags & (PZ_SUMMARY | PZ_VERBOSE | PZ_DUMP)))
@@ -185,11 +183,9 @@ flush(Deflate_t *dp, size_t w, Sfio_t *op)
                     ip->name);
                 if (ip->use = !(dp->pz->flags & PZ_NOPZIP) && ip->part)
                     ip->part->flags |= PZ_UPDATE;
-            }
-            else
+            } else
                 ip->use = 0;
-        }
-        else if (ip->part)
+        } else if (ip->part)
             ip->part->flags &= ~PZ_UPDATE;
 
     /*
@@ -207,8 +203,7 @@ flush(Deflate_t *dp, size_t w, Sfio_t *op)
     sfputu(op, i);
     for (ip = ( Id_t * )dtfirst(dp->sqs); ip;
          ip = ( Id_t * )dtnext(dp->sqs, ip))
-        if (n = sfstrtell(ip->sp))
-        {
+        if (n = sfstrtell(ip->sp)) {
             sfputu(op, ip->row);
             sfputu(op, ip->use);
             sfputu(op, n);
@@ -228,8 +223,7 @@ flush(Deflate_t *dp, size_t w, Sfio_t *op)
                                         n,
                                         ip->windows == 1 ? "  NEW" : "");
         }
-    if (sferror(op))
-    {
+    if (sferror(op)) {
         if (dp->pz->disc->errorf)
             (*dp->pz->disc->errorf)(dp->pz,
                                     dp->pz->disc,
@@ -247,8 +241,7 @@ flush(Deflate_t *dp, size_t w, Sfio_t *op)
     io = dp->pz->io;
     for (ip = ( Id_t * )dtfirst(dp->sqs); ip;
          ip = ( Id_t * )dtnext(dp->sqs, ip))
-        if (ip->use && (n = sfstrtell(ip->sp)))
-        {
+        if (ip->use && (n = sfstrtell(ip->sp))) {
             error_info.file = ip->name;
             error_info.line = n;
             sfstrseek(ip->sp, 0, SEEK_SET);
@@ -267,11 +260,9 @@ flush(Deflate_t *dp, size_t w, Sfio_t *op)
 
     for (ip = ( Id_t * )dtfirst(dp->sqs); ip;
          ip = ( Id_t * )dtnext(dp->sqs, ip))
-        if (n = sfstrtell(ip->sp))
-        {
+        if (n = sfstrtell(ip->sp)) {
             sfstrseek(ip->sp, 0, SEEK_SET);
-            if (sfwrite(op, sfstrbase(ip->sp), n) != n || sferror(op))
-            {
+            if (sfwrite(op, sfstrbase(ip->sp), n) != n || sferror(op)) {
                 error_info.file = ip->name;
                 error_info.line = n;
                 if (dp->pz->disc->errorf)
@@ -294,8 +285,7 @@ flush(Deflate_t *dp, size_t w, Sfio_t *op)
     sfputu(dp->xp, 0);
     n = sfstrtell(dp->xp);
     sfstrseek(dp->xp, 0, SEEK_SET);
-    if (sfwrite(op, sfstrbase(dp->xp), n) != n)
-    {
+    if (sfwrite(op, sfstrbase(dp->xp), n) != n) {
         if (dp->pz->disc->errorf)
             (*dp->pz->disc->errorf)(dp->pz,
                                     dp->pz->disc,
@@ -308,8 +298,7 @@ flush(Deflate_t *dp, size_t w, Sfio_t *op)
      * done with this window
      */
 
-    if (sferror(op))
-    {
+    if (sferror(op)) {
         if (dp->pz->disc->errorf)
             (*dp->pz->disc->errorf)(
             dp->pz, dp->pz->disc, ERROR_SYSTEM | 2, "write error");
@@ -381,8 +370,7 @@ deflate(Pz_t *pz, Sfio_t *op)
 
     if (pzheadwrite(def.pz, op))
         goto bad;
-    if (sferror(op))
-    {
+    if (sferror(op)) {
         if (pz->disc->errorf)
             (*pz->disc->errorf)(
             pz, pz->disc, ERROR_SYSTEM | 2, "magic write error");
@@ -401,20 +389,16 @@ deflate(Pz_t *pz, Sfio_t *op)
     m = pz->win - 8;
     error_info.file = ( char * )pz->path;
     error_info.line = 0;
-    while (rp = (*pz->disc->splitf)(pz, pz->io, pz->disc))
-    {
-        if (rp->record)
-        {
+    while (rp = (*pz->disc->splitf)(pz, pz->io, pz->disc)) {
+        if (rp->record) {
             z = rp->record;
             error_info.line++;
             pz->count.records++;
-        }
-        else
+        } else
             z = rp->size;
         if (!rp->size)
             continue;
-        if ((index.offset + z) > m)
-        {
+        if ((index.offset + z) > m) {
             if (flush(&def, index.offset, op))
                 goto bad;
             if (indexf)
@@ -426,8 +410,7 @@ deflate(Pz_t *pz, Sfio_t *op)
             && (*indexf)(pz, &index, rp->data, pz->disc) < 0)
             goto bad;
         index.offset += rp->size;
-        if (!(ip = ( Id_t * )dtmatch(def.ids, &rp->id)))
-        {
+        if (!(ip = ( Id_t * )dtmatch(def.ids, &rp->id))) {
             if (pz->disc->namef)
                 s = (*pz->disc->namef)(pz, rp->id, pz->disc);
             else
@@ -437,8 +420,7 @@ deflate(Pz_t *pz, Sfio_t *op)
             if (ip->id = rp->id)
                 ip->row = rp->size;
             ip->name = strcpy(( char * )(ip + 1), s);
-            if (!(ip->sp = sfstropen()))
-            {
+            if (!(ip->sp = sfstropen())) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(pz,
                                         pz->disc,
@@ -459,8 +441,7 @@ deflate(Pz_t *pz, Sfio_t *op)
                                     sizeof(ip->row),
                                     ip->row);
             dtinsert(def.ids, ip);
-        }
-        else if (!ip->id)
+        } else if (!ip->id)
             ip->total += rp->size;
         else if (pz->disc->errorf && ip->row != rp->size
                  && (ip->row % rp->size))
@@ -473,22 +454,19 @@ deflate(Pz_t *pz, Sfio_t *op)
                                 rp->size,
                                 sizeof(ip->row),
                                 ip->row);
-        if (!ip->seq)
-        {
+        if (!ip->seq) {
             ip->seq = ++def.seq;
             dtinsert(def.sqs, ip);
         }
         sfputu(def.xp, ip->seq);
-        if (!ip->id)
-        {
+        if (!ip->id) {
             o = sfstrtell(ip->sp);
             sfputu(ip->sp, rp->size);
             o = sfstrtell(ip->sp) - o;
             index.offset += o;
             extra += o;
         }
-        if (sfwrite(ip->sp, rp->data, rp->size) != rp->size)
-        {
+        if (sfwrite(ip->sp, rp->data, rp->size) != rp->size) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(pz,
                                     pz->disc,
@@ -502,8 +480,7 @@ deflate(Pz_t *pz, Sfio_t *op)
         ip->modules++;
         pz->count.modules++;
     }
-    if (index.offset)
-    {
+    if (index.offset) {
         if (flush(&def, index.offset, op))
             goto bad;
         pz->count.uncompressed += index.offset - extra;
@@ -515,15 +492,13 @@ deflate(Pz_t *pz, Sfio_t *op)
      */
 
     sfputu(op, 0);
-    if (sferror(op))
-    {
+    if (sferror(op)) {
         if (pz->disc->errorf)
             (*pz->disc->errorf)(
             pz, pz->disc, ERROR_SYSTEM | 2, "write error");
         goto bad;
     }
-    if ((pz->flags & PZ_DUMP) && pz->disc->errorf)
-    {
+    if ((pz->flags & PZ_DUMP) && pz->disc->errorf) {
         (*pz->disc->errorf)(pz, pz->disc, 0, "totals");
         for (ip = ( Id_t * )dtfirst(def.ids); ip;
              ip = ( Id_t * )dtnext(def.ids, ip))
@@ -610,8 +585,7 @@ inflate(Pz_t *pz, Sfio_t *op)
      * w <= pz->win guaranteed
      */
 
-    while ((w = sfgetu(pz->io)) && w <= pz->win)
-    {
+    while ((w = sfgetu(pz->io)) && w <= pz->win) {
         if ((pz->flags & (PZ_DUMP | PZ_VERBOSE)) && pz->disc->errorf)
             (*pz->disc->errorf)(pz, pz->disc, 0, "window %I*u", sizeof(w), w);
 
@@ -627,8 +601,7 @@ inflate(Pz_t *pz, Sfio_t *op)
          */
 
         parts = sfgetu(pz->io);
-        if (parts > tabsiz)
-        {
+        if (parts > tabsiz) {
             n = roundof(parts, 64);
             if (!(tab = newof(tab, Id_t *, n, 0)))
                 goto nospace;
@@ -641,14 +614,12 @@ inflate(Pz_t *pz, Sfio_t *op)
 
         u = 0;
         s = win;
-        for (i = 0; i < parts; i++)
-        {
+        for (i = 0; i < parts; i++) {
             row = sfgetu(pz->io);
             use = sfgetu(pz->io);
             m = sfgetu(pz->io);
             id = sfgetr(pz->io, 0, 0);
-            if (!(ip = ( Id_t * )dtmatch(ids, id)))
-            {
+            if (!(ip = ( Id_t * )dtmatch(ids, id))) {
                 if (!(ip = newof(0, Id_t, 1, sfvalue(pz->io))))
                     goto nospace;
                 ip->name = strcpy(( char * )(ip + 1), id);
@@ -670,8 +641,7 @@ inflate(Pz_t *pz, Sfio_t *op)
             ip->use = use;
             ip->used++;
             tab[i] = ip;
-            if (m >= pz->win || ip->row && m % ip->row)
-            {
+            if (m >= pz->win || ip->row && m % ip->row) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(
                     pz,
@@ -684,12 +654,10 @@ inflate(Pz_t *pz, Sfio_t *op)
                 goto bad;
             }
             ip->size = m;
-            if (ip->use)
-            {
+            if (ip->use) {
                 ip->bp = s;
                 s += m;
-            }
-            else
+            } else
                 u += m;
             if ((pz->flags & PZ_DUMP) && pz->disc->errorf)
                 (*pz->disc->errorf)(pz,
@@ -713,8 +681,7 @@ inflate(Pz_t *pz, Sfio_t *op)
          */
 
         for (i = 0; i < parts; i++)
-            if (tab[i]->use)
-            {
+            if (tab[i]->use) {
                 sfstrbuf(state.buf, tab[i]->bp, tab[i]->size, 0);
                 if (!pzpartset(pz, tab[i]->part))
                     goto bad;
@@ -727,8 +694,7 @@ inflate(Pz_t *pz, Sfio_t *op)
          * and set up the table buffer pointers
          */
 
-        if (sfread(pz->io, s, u) != u)
-        {
+        if (sfread(pz->io, s, u) != u) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(
                 pz,
@@ -740,8 +706,7 @@ inflate(Pz_t *pz, Sfio_t *op)
             goto bad;
         }
         for (i = 0; i < parts; i++)
-            if (!tab[i]->use)
-            {
+            if (!tab[i]->use) {
                 tab[i]->bp = s;
                 s += tab[i]->size;
             }
@@ -750,10 +715,8 @@ inflate(Pz_t *pz, Sfio_t *op)
          * read the record table indices and reconstruct the records
          */
 
-        while (m = sfgetu(pz->io))
-        {
-            if (m > parts)
-            {
+        while (m = sfgetu(pz->io)) {
+            if (m > parts) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(
                     pz,
@@ -768,8 +731,7 @@ inflate(Pz_t *pz, Sfio_t *op)
             }
             ip = tab[m - 1];
             p = ( unsigned char * )ip->bp;
-            if (!(n = ip->row) && ((n = *p++) & SF_MORE))
-            {
+            if (!(n = ip->row) && ((n = *p++) & SF_MORE)) {
                 n &= (SF_MORE - 1);
                 while ((i = *p++) & SF_MORE)
                     n = (n << SF_UBITS) | (i & (SF_MORE - 1));
@@ -780,8 +742,7 @@ inflate(Pz_t *pz, Sfio_t *op)
 				memcpy(s, p, n);
 			else
 #endif
-            if (sfwrite(op, p, n) != n)
-            {
+            if (sfwrite(op, p, n) != n) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(pz,
                                         pz->disc,
@@ -794,8 +755,7 @@ inflate(Pz_t *pz, Sfio_t *op)
             ip->bp = ( char * )p + n;
         }
     }
-    if (w || sfgetc(pz->io) != EOF)
-    {
+    if (w || sfgetc(pz->io) != EOF) {
         if (pz->disc->errorf)
             (*pz->disc->errorf)(pz,
                                 pz->disc,
@@ -805,8 +765,7 @@ inflate(Pz_t *pz, Sfio_t *op)
                                 sftell(pz->io));
         goto bad;
     }
-    if (sferror(op))
-    {
+    if (sferror(op)) {
         if (pz->disc->errorf)
             (*pz->disc->errorf)(
             pz, pz->disc, ERROR_SYSTEM | 2, "write error");
@@ -866,8 +825,7 @@ pzssplit(Pz_t *pz)
     Dt_t *ids;
     char num[16];
 
-    if (!pz->disc->splitf)
-    {
+    if (!pz->disc->splitf) {
         if (pz->disc->errorf)
             (*pz->disc->errorf)(pz,
                                 pz->disc,
@@ -896,15 +854,12 @@ pzssplit(Pz_t *pz)
 
     error_info.file = ( char * )pz->path;
     error_info.line = 0;
-    while (rp = (*pz->disc->splitf)(pz, pz->io, pz->disc))
-    {
-        if (rp->record)
-        {
+    while (rp = (*pz->disc->splitf)(pz, pz->io, pz->disc)) {
+        if (rp->record) {
             error_info.line++;
             pz->count.records++;
         }
-        if (!(ip = ( Id_t * )dtmatch(ids, &rp->id)))
-        {
+        if (!(ip = ( Id_t * )dtmatch(ids, &rp->id))) {
             if (pz->disc->namef)
                 s = (*pz->disc->namef)(pz, rp->id, pz->disc);
             else
@@ -914,11 +869,9 @@ pzssplit(Pz_t *pz)
             if (ip->id = rp->id)
                 ip->row = rp->size;
             ip->name = strcpy(( char * )(ip + 1), s);
-            if (!pz->split.match || strmatch(ip->name, pz->split.match))
-            {
+            if (!pz->split.match || strmatch(ip->name, pz->split.match)) {
                 if (!(ip->sp = sfopen(
-                      NiL, ip->name, (pz->flags & PZ_APPEND) ? "a" : "w")))
-                {
+                      NiL, ip->name, (pz->flags & PZ_APPEND) ? "a" : "w"))) {
                     if (pz->disc->errorf)
                         (*pz->disc->errorf)(pz,
                                             pz->disc,
@@ -938,8 +891,7 @@ pzssplit(Pz_t *pz)
                                     ip->name,
                                     sizeof(ip->row),
                                     ip->row);
-        }
-        else if (!ip->id)
+        } else if (!ip->id)
             ip->total += rp->size;
         else if (pz->disc->errorf && ip->row != rp->size && rp->size
                  && (ip->row % rp->size))
@@ -952,12 +904,9 @@ pzssplit(Pz_t *pz)
                                 rp->size,
                                 sizeof(ip->row),
                                 ip->row);
-        if (ip->sp)
-        {
-            if (ip->count < window)
-            {
-                if (sfwrite(ip->sp, rp->data, rp->size) != rp->size)
-                {
+        if (ip->sp) {
+            if (ip->count < window) {
+                if (sfwrite(ip->sp, rp->data, rp->size) != rp->size) {
                     if (pz->disc->errorf)
                         (*pz->disc->errorf)(pz,
                                             pz->disc,
@@ -974,8 +923,7 @@ pzssplit(Pz_t *pz)
             pz->count.modules++;
         }
     }
-    if ((pz->flags & PZ_DUMP) && pz->disc->errorf)
-    {
+    if ((pz->flags & PZ_DUMP) && pz->disc->errorf) {
         (*pz->disc->errorf)(pz, pz->disc, 0, "totals");
         for (ip = ( Id_t * )dtfirst(ids); ip; ip = ( Id_t * )dtnext(ids, ip))
             if (ip->sp)
@@ -999,8 +947,7 @@ pzssplit(Pz_t *pz)
                 ip->used && !ip->part ? "  GENERATE PARTITION" : "");
     }
     for (ip = ( Id_t * )dtfirst(ids); ip; ip = ( Id_t * )dtnext(ids, ip))
-        if (ip->sp && sfclose(ip->sp))
-        {
+        if (ip->sp && sfclose(ip->sp)) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(
                 pz, pz->disc, ERROR_SYSTEM | 2, "%s: write error", ip->name);

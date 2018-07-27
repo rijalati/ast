@@ -48,10 +48,8 @@ int type; /* walk streams with all given flags	*/
     if (sfstderr->mode & SF_INIT)
         _sfmode(sfstderr, (sfstderr->mode & SF_RDWR), 0);
 
-    for (rv = 0, p = &_Sfpool; p; p = p->next)
-    {
-        for (n = 0; n < p->n_sf;)
-        {
+    for (rv = 0, p = &_Sfpool; p; p = p->next) {
+        for (n = 0; n < p->n_sf;) {
             f = p->sf[n];
 
             if (type != 0 && (f->_flags & type) != type)

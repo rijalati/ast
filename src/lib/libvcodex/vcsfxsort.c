@@ -54,8 +54,7 @@ chktodo(Vcsfx_t *sfx, Vcinx_t lo, Vcinx_t hi)
 {
     static int Dblev = -1;
 
-    if (Dblev < 0)
-    {
+    if (Dblev < 0) {
         char *db = getenv("VCDEBUG");
         Dblev = !db ? 0 : db[0] - '0';
     }
@@ -114,8 +113,7 @@ cmpsfx(Vcsfx_t *sfx, Vcinx_t p, Vcinx_t s)
 
     p = sfx->nstr - p;
     s = sfx->nstr - s;
-    for (n = p < s ? p : s, k = 0; k < n; ++k)
-    {
+    for (n = p < s ? p : s, k = 0; k < n; ++k) {
         if ((v = ps[k] - ss[k]) == 0)
             continue;
         if (v > 0)
@@ -230,8 +228,7 @@ Vcinx_t *grp;
     for (ends = (s = sfx->str) + sfx->nstr - 1, i = *s; s < ends; i = j)
         grp[(i << 8) + (j = *++s)] += 1;
 
-    for (n = 0, g = grp, i = 0; i < 256; ++i)
-    {
+    for (n = 0, g = grp, i = 0; i < 256; ++i) {
         for (j = 0; j < 256; ++j, ++g)
             *g = (n += *g); /* next area to be allocated */
         if (i == *ends)     /* sort the last suffix now */
@@ -242,14 +239,12 @@ Vcinx_t *grp;
     }
 
     for (n = 0, ends = (s = sfx->str) + sfx->nstr - 1, i = *s; s < ends;
-         i = j)
-    {
+         i = j) {
         v = (i << 8) + (j = *++s);
         inv[n++] = grp[v] - 1; /* rank is highest position of group */
     }
     for (n = 0, ends = (s = sfx->str) + sfx->nstr - 1, i = *s; s < ends;
-         i = j)
-    {
+         i = j) {
         v = (i << 8) + (j = *++s);
         idx[grp[v] -= 1] = n++; /* put suffix into its bucket */
     }
@@ -295,13 +290,11 @@ q_sort:
         for (l = min + 1; l <= max; ++l) /* insert *l into [0,l-1] */
         {
             pi = *l;
-            for (r = l - 1; r >= min; --r)
-            {
+            for (r = l - 1; r >= min; --r) {
                 le = inv + (pi + hdr);
                 re = inv + (*r + hdr); /**/
                 DEBUG_ASSERT(le != re);
-                while ((k = *le - *re) == 0)
-                {
+                while ((k = *le - *re) == 0) {
                     le += 2;
                     re += 2;
                 }
@@ -317,8 +310,7 @@ q_sort:
     }
 
     /* approximating a median-of-9 as a pivot */
-    for (k = 0; k < 3; ++k)
-    {
+    for (k = 0; k < 3; ++k) {
         ln = inv[min[VCRAND() % sz] + hdr];
         mn = inv[min[VCRAND() % sz] + hdr];
         rn = inv[min[VCRAND() % sz] + hdr];
@@ -327,24 +319,20 @@ q_sort:
     pi = MEDIAN(c[0], c[1], c[2]);
 
     /* partition into three parts: <pi, ==pi, >pi */
-    for (le = (l = min) - 1, re = (r = max) + 1; l <= r;)
-    {
-        for (; l <= r; ++l)
-        {
+    for (le = (l = min) - 1, re = (r = max) + 1; l <= r;) {
+        for (; l <= r; ++l) {
             if ((k = inv[*l + hdr] - pi) > 0)
                 break;
             else if (k == 0 && (le += 1) < l)
                 SWAP(*le, *l, mn);
         }
-        for (; r >= l; --r)
-        {
+        for (; r >= l; --r) {
             if ((k = inv[*r + hdr] - pi) < 0)
                 break;
             else if (k == 0 && (re -= 1) > r)
                 SWAP(*re, *r, mn);
         }
-        if (l < r)
-        {
+        if (l < r) {
             SWAP(*l, *r, mn);
             l += 1;
             r -= 1;
@@ -387,8 +375,7 @@ q_sort:
 
         max = le - 1; /* tail recursion */
         goto q_sort;
-    }
-    else if (mn >= ln && mn >= rn) /* middle part has max size */
+    } else if (mn >= ln && mn >= rn) /* middle part has max size */
     {
         if (ln > 0) /* sort the left part */
         {
@@ -416,12 +403,10 @@ q_sort:
         rn = hdr / 2; /* see if periodic with period hdr/2 */
         rn = (inv[*le + rn] == pi || inv[*re + rn] == pi) ? rn : 0;
 
-        if (rn > 0)
-        {
+        if (rn > 0) {
             min = le;
             max = re; /* compute bounds for copying positions */
-            for (l = le; l <= re; ++l)
-            {
+            for (l = le; l <= re; ++l) {
                 if ((r = idx + inv[*l + rn]) < min)
                     min = r;
                 else if (r > max)
@@ -443,8 +428,7 @@ q_sort:
             rn = r <= max ? 0 : rn;
         }
 
-        if (rn > 0)
-        { /**/
+        if (rn > 0) { /**/
             DEBUG_DECLARE(Vcinx_t, n_sz = re - le + 1)
             DEBUG_DECLARE(Vcinx_t, n_cp = 0)
             /**/ DEBUG_COUNT(Gn);
@@ -455,8 +439,7 @@ q_sort:
             /**/ DEBUG_ASSERT(chkbounds(sfx, min, max, le, re));
 
             for (l = min; l < le; ++l) /* copy-sort from the left side */
-                if (inv[k = *l - rn] == pi)
-                {
+                if (inv[k = *l - rn] == pi) {
                     *le = k;
                     inv[k] = le - idx;
                     le += 1; /**/
@@ -464,8 +447,7 @@ q_sort:
                 }
 
             for (r = max; r > re; --r) /* copy-sort from the right side */
-                if (inv[k = *r - rn] == pi)
-                {
+                if (inv[k = *r - rn] == pi) {
                     *re = k;
                     inv[k] = re - idx;
                     re -= 1; /**/
@@ -474,15 +456,13 @@ q_sort:
 
             /**/ DEBUG_ASSERT(n_cp == n_sz);
             /**/ DEBUG_ASSERT(chkone2one(sfx->idx, sfx->nstr));
-        }
-        else /* tail recursion */
+        } else /* tail recursion */
         {
             min = le;
             max = re;
             goto q_sort;
         }
-    }
-    else /* if(rn >= ln && rn >= mn) - right part has max size */
+    } else /* if(rn >= ln && rn >= mn) - right part has max size */
     {
         if (ln > 0) /* sort the left part */
         {
@@ -525,8 +505,7 @@ Vcinx_t *grp; /* bounds of xy-groups	*/
         return;
 
     /* set boundary of groups to be copy-sorted */
-    for (k = 0, x = 0; x < 256; ++x)
-    {
+    for (k = 0, x = 0; x < 256; ++x) {
         l = GMIN(grp, x, y);
         r = GMAX(grp, x, y, endc);
         if (l < r && l < (r = inv[idx[l]]))
@@ -546,15 +525,13 @@ Vcinx_t *grp; /* bounds of xy-groups	*/
     /**/ DEBUG_COUNT(Cn);
     DEBUG_TALLY(1, Cz, omax - omin + 1);
     for (l = omin; l < pmin[y]; ++l)
-        if ((k = idx[l] - 1) >= 0 && (i = *(xy = pmin + str[k])) >= 0)
-        {
+        if ((k = idx[l] - 1) >= 0 && (i = *(xy = pmin + str[k])) >= 0) {
             *xy += 1;
             idx[i] = k;
             inv[k] = i;
         }
     for (r = omax; r > pmax[y]; --r)
-        if ((k = idx[r] - 1) >= 0 && (i = *(xy = pmax + str[k])) >= 0)
-        {
+        if ((k = idx[r] - 1) >= 0 && (i = *(xy = pmax + str[k])) >= 0) {
             *xy -= 1;
             idx[i] = k;
             inv[k] = i;
@@ -585,8 +562,7 @@ int dir;                                     /* itoh-tanaka sort dir	*/
     /* construct graph of relations between xy-groups */
     if (!(gr = gropen(NIL(Grdisc_t *), GR_DIRECTED)))
         goto done;
-    for (y = 0; y < 256; ++y)
-    {
+    for (y = 0; y < 256; ++y) {
         if (y == x || (dir > 0 && y < x) || (dir < 0 && y > x))
             continue;
         if ((l = GMIN(grp, x, y)) >= (r = GMAX(grp, x, y, endc)))
@@ -596,8 +572,7 @@ int dir;                                     /* itoh-tanaka sort dir	*/
 
         if (!(hd = grnode(gr, TYPECAST(Void_t *, y), 1)))
             goto done;
-        for (k = 0; k < 3; ++k)
-        {
+        for (k = 0; k < 3; ++k) {
             if ((i = idx[l + VCRAND() % r] + 2) >= nstr - 1 || str[i] != x)
                 continue;
             if ((z = str[i + 1]) == x || (dir > 0 && z < x)
@@ -615,8 +590,7 @@ int dir;                                     /* itoh-tanaka sort dir	*/
     /* now sort xy-groups in their top-sort order */
     hd = tl = NIL(Grnode_t *); /* first build the list of root nodes */
     for (nd = ( Grnode_t * )dtfirst(gr->nodes); nd;
-         nd = ( Grnode_t * )dtnext(gr->nodes, nd))
-    {
+         nd = ( Grnode_t * )dtnext(gr->nodes, nd)) {
         if (!nd->iedge) /* no incoming edge, hence a root */
         {
             if (!hd)
@@ -659,8 +633,7 @@ ssize_t nstr;                                /* length of string	*/
     Vcsfx_t *sfx;       /* suffix array structure	*/
     int error = 1;
 
-    if (!(str = ( Vcchar_t * )astr) || nstr <= 0)
-    {
+    if (!(str = ( Vcchar_t * )astr) || nstr <= 0) {
         str = NIL(Vcchar_t *);
         nstr = 0;
     }
@@ -688,8 +661,7 @@ ssize_t nstr;                                /* length of string	*/
 
         c = d = 0;
         for (x = 0; x < 256; ++x)
-            for (y = 0; y < 256; ++y)
-            {
+            for (y = 0; y < 256; ++y) {
                 if (x == y
                     || (l = GMIN(grp, x, y)) >= (r = GMAX(grp, x, y, endc)))
                     continue;
@@ -700,8 +672,7 @@ ssize_t nstr;                                /* length of string	*/
             }
         d = c <= d ? 1 : -1; /* sort direction */
 
-        for (x = d > 0 ? 0 : 255; x >= 0 && x <= 255; x += d)
-        {
+        for (x = d > 0 ? 0 : 255; x >= 0 && x <= 255; x += d) {
             if (grp[x << 8] > (grp[(x << 8) + 256] - 1))
                 continue;
             if (sfxosort(sfx, x, grp, d) < 0)
@@ -721,14 +692,12 @@ ssize_t nstr;                                /* length of string	*/
 
         if (!(gr = gropen(NIL(Grdisc_t *), GR_DIRECTED)))
             goto ob_err;
-        for (x = 0; x < 256; ++x)
-        {
+        for (x = 0; x < 256; ++x) {
             if (grp[x << 8] > (grp[(x << 8) + 256] - 1))
                 continue;
             if (!(hd = grnode(gr, TYPECAST(Void_t *, x), 1)))
                 goto ob_err;
-            for (y = 0; y < 256; ++y)
-            {
+            for (y = 0; y < 256; ++y) {
                 if (x == y
                     || (l = GMIN(grp, x, y)) >= (r = GMAX(grp, x, y, endc)))
                     continue;
@@ -744,8 +713,7 @@ ssize_t nstr;                                /* length of string	*/
 
         hd = tl = NIL(Grnode_t *); /* first build the list of root nodes */
         for (nd = ( Grnode_t * )dtfirst(gr->nodes); nd;
-             nd = ( Grnode_t * )dtnext(gr->nodes, nd))
-        {
+             nd = ( Grnode_t * )dtnext(gr->nodes, nd)) {
             if (!nd->iedge) /* no incoming edge, hence a root */
             {
                 if (!hd)
@@ -780,8 +748,7 @@ ssize_t nstr;                                /* length of string	*/
     /**/ DEBUG_ASSERT(chkone2one(sfx->idx, sfx->nstr));
     /**/ DEBUG_ASSERT(chkinverse(sfx->idx, sfx->inv, sfx->nstr));
 
-    if (error)
-    {
+    if (error) {
         free(sfx);
         sfx = NIL(Vcsfx_t *);
     }

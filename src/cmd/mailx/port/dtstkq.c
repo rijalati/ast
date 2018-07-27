@@ -88,8 +88,7 @@ reg int type;
     reg Dtdisc_t *disc = dt->disc;
     reg Dtlink_t *r, *t;
 
-    if (type & DT_DELETE)
-    { /* always happens at head of list */
+    if (type & DT_DELETE) { /* always happens at head of list */
         t = dt->data->head;
         if (!t || (obj && obj != OBJ(t, disc)))
             return NIL(Void_t *);
@@ -107,17 +106,13 @@ reg int type;
         return obj;
     }
 
-    if (!obj)
-    {
+    if (!obj) {
         if (!(r = dt->data->head)
             || !(type & (DT_CLEAR | DT_FIRST | DT_LAST)))
             return NIL(Void_t *);
-        else if (type & DT_CLEAR)
-        {
-            if (disc->freef || disc->link < 0)
-            {
-                do
-                {
+        else if (type & DT_CLEAR) {
+            if (disc->freef || disc->link < 0) {
+                do {
                     t = r->right;
                     if (disc->freef)
                         (*disc->freef)(dt, OBJ(r, disc), disc);
@@ -128,8 +123,7 @@ reg int type;
             dt->data->head = dt->data->here = NIL(Dtlink_t *);
             dt->data->size = 0;
             return NIL(Void_t *);
-        }
-        else /* either first or last elt */
+        } else /* either first or last elt */
         {
             if (type & DT_LAST)
                 r = r->left;
@@ -142,36 +136,30 @@ reg int type;
     {
         if (disc->makef && !(obj = (*disc->makef)(dt, obj, disc)))
             return NIL(Void_t *);
-        if (disc->link < 0)
-        {
+        if (disc->link < 0) {
             t = ( Dtlink_t * )(*dt->memoryf)(
             dt, NIL(Void_t *), sizeof(Dthold_t), disc);
-            if (!t)
-            {
+            if (!t) {
                 if (disc->freef && disc->makef)
                     (*disc->freef)(dt, obj, disc);
                 return NIL(Void_t *);
-            }
-            else
+            } else
                 (( Dthold_t * )t)->obj = obj;
-        }
-        else
+        } else
             t = ELT(obj, disc);
 
-        if (!(r = dt->data->head))
-        {
+        if (!(r = dt->data->head)) {
             dt->data->head = t;
             t->right = NIL(Dtlink_t *);
             t->left = t;
-        }
-        else if (dt->data->type & DT_STACK) /* stack: add to start of list */
+        } else if (dt->data->type
+                   & DT_STACK) /* stack: add to start of list */
         {
             t->right = r;
             t->left = r->left;
             r->left = t;
             dt->data->head = t;
-        }
-        else /*if(dt->data->type&DT_QUEUE)*/ /* queue: add to end of list */
+        } else /*if(dt->data->type&DT_QUEUE)*/ /* queue: add to end of list */
         {
             r = r->left;
             r->right = t;
@@ -185,11 +173,9 @@ reg int type;
     }
 
     /* DT_MATCH|DT_SEARCH|DT_NEXT|DT_PREV: see if it exists */
-    if (!(t = dt->data->here) || OBJ(t, disc) != obj)
-    {
+    if (!(t = dt->data->here) || OBJ(t, disc) != obj) {
         reg char *k, *key = KEY(obj, disc);
-        for (t = dt->data->head; t; t = t->right)
-        {
+        for (t = dt->data->head; t; t = t->right) {
             k = ( char * )OBJ(t, disc);
             k = KEY(( Void_t * )k, disc);
             if (CMP(dt, key, k, disc) == 0)
@@ -203,8 +189,7 @@ reg int type;
         t = t->right;
     else if (type & DT_PREV)
         t = t == dt->data->head ? NIL(Dtlink_t *) : t->left;
-    else if (type & (DT_SEARCH | DT_MATCH))
-    {
+    else if (type & (DT_SEARCH | DT_MATCH)) {
         if (t != dt->data->head) /* move to head of list */
         {
             t->left->right = t->right;
@@ -215,8 +200,7 @@ reg int type;
             dt->data->head->left = t;
             dt->data->head = t;
         }
-    }
-    else
+    } else
         t = NIL(Dtlink_t *);
 
     dt->data->here = t;

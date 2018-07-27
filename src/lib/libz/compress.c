@@ -49,8 +49,7 @@ int level;
         return err;
 
     err = deflate(&stream, Z_FINISH);
-    if (err != Z_STREAM_END)
-    {
+    if (err != Z_STREAM_END) {
         deflateEnd(&stream);
         return err == Z_OK ? Z_BUF_ERROR : err;
     }

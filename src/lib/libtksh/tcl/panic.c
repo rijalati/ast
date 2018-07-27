@@ -99,13 +99,10 @@ char *arg1, *arg2, *arg3; /* Additional arguments (variable in number)
                            * to pass to fprintf. */
 char *arg4, *arg5, *arg6, *arg7, *arg8;
 {
-    if (panicProc != NULL)
-    {
+    if (panicProc != NULL) {
         ( void )(*panicProc)(
         format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
-    }
-    else
-    {
+    } else {
         ( void )fprintf(
         stderr, format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
         ( void )fprintf(stderr, "\n");

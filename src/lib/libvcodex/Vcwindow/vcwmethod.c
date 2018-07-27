@@ -46,8 +46,7 @@ Vcwmethod_t *vcwgetmeth(name) char *name;
     if (!name)
         return NIL(Vcwmethod_t *);
 
-    for (i = 0; _Vcwmethods[i]; ++i)
-    {
+    for (i = 0; _Vcwmethods[i]; ++i) {
         for (k = 0; name[k] && _Vcwmethods[i]->name[k]; ++k)
             if (name[k] != _Vcwmethods[i]->name[k])
                 break;
@@ -73,8 +72,7 @@ Void_t *disc;
     if (!walkf)
         return -1;
 
-    for (i = 0; _Vcwmethods[i]; ++i)
-    {
+    for (i = 0; _Vcwmethods[i]; ++i) {
         rv = (*walkf)(( Void_t * )_Vcwmethods[i],
                       _Vcwmethods[i]->name,
                       _Vcwmethods[i]->desc,

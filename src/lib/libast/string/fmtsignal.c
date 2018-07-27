@@ -37,23 +37,18 @@ fmtsignal(int sig)
     char *buf;
     int z;
 
-    if (sig >= 0)
-    {
+    if (sig >= 0) {
         if (sig <= sig_info.sigmax)
             buf = sig_info.text[sig];
-        else
-        {
+        else {
             buf = fmtbuf(z = 20);
             sfsprintf(buf, z, "Signal %d", sig);
         }
-    }
-    else
-    {
+    } else {
         sig = -sig;
         if (sig <= sig_info.sigmax)
             buf = sig_info.name[sig];
-        else
-        {
+        else {
             buf = fmtbuf(z = 20);
             sfsprintf(buf, z, "%d", sig);
         }

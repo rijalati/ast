@@ -42,8 +42,7 @@ strncasecmp(const char *a, const char *b, size_t n)
     int d;
 
     e = a + n;
-    for (;;)
-    {
+    for (;;) {
         if (a >= e)
             return 0;
         ac = *a++;

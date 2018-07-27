@@ -37,18 +37,15 @@ procclose(Proc_t *p)
     int flags = 0;
     int status = -1;
 
-    if (p)
-    {
+    if (p) {
         if (p->rfd >= 0)
             close(p->rfd);
         if (p->wfd >= 0 && p->wfd != p->rfd)
             close(p->wfd);
         if (p->flags & PROC_ORPHAN)
             status = 0;
-        else
-        {
-            if (p->flags & PROC_ZOMBIE)
-            {
+        else {
+            if (p->flags & PROC_ZOMBIE) {
                 /*
                  * process may leave a zombie behind
                  * give it a chance to do that but
@@ -67,8 +64,7 @@ procclose(Proc_t *p)
                 status = 0;
             if (!(p->flags & PROC_FOREGROUND))
                 sigcritical(0);
-            else
-            {
+            else {
                 if (p->sigint != SIG_IGN)
                     signal(SIGINT, p->sigint);
                 if (p->sigquit != SIG_IGN)
@@ -92,8 +88,7 @@ procclose(Proc_t *p)
                                            : EXIT_CODE(WEXITSTATUS(status));
         }
         procfree(p);
-    }
-    else
+    } else
         status = errno == ENOENT ? EXIT_NOTFOUND : EXIT_NOEXEC;
     return status;
 }

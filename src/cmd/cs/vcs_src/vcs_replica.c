@@ -64,8 +64,7 @@ Sfio_t *sf;
         rf = path;
 
 
-    while ((rca = readdir(dir)))
-    {
+    while ((rca = readdir(dir))) {
         /*
          * skip all entries staring with ``.''
          */
@@ -81,16 +80,14 @@ Sfio_t *sf;
             continue;
 
         sfsprintf(s, e - s, "/%s/%s", rca->d_name, rf);
-        if ((fd = sfopen(NULL, dirbuf, "w")))
-        {
+        if ((fd = sfopen(NULL, dirbuf, "w"))) {
             sfseek(sf, 0L, 0);
             sfmove(sf, fd, -1, -1);
             sfclose(fd);
             cnt++;
         }
     }
-    if (cnt)
-    {
+    if (cnt) {
         /* send message to the server */
     }
 
@@ -127,8 +124,7 @@ tag_t *tp;
         rf = path;
 
 
-    while ((rca = readdir(dir)))
-    {
+    while ((rca = readdir(dir))) {
         /*
          * skip all entries staring with ``.''
          */
@@ -143,11 +139,9 @@ tag_t *tp;
         if (stat(dirbuf, &st) || !S_ISDIR(st.st_mode))
             continue;
         sfsprintf(s, e - s, "/%s/%s.%d", rca->d_name, rf, cs.time);
-        if ((fd = sfopen(NULL, dirbuf, "a")))
-        {
+        if ((fd = sfopen(NULL, dirbuf, "a"))) {
             sfwrite(fd, ( char * )tp, tp->length);
-            if (df)
-            {
+            if (df) {
                 sfseek(df, 0L, 0);
                 sfmove(df, fd, -1, -1);
             }
@@ -155,8 +149,7 @@ tag_t *tp;
             cnt++;
         }
     }
-    if (cnt)
-    {
+    if (cnt) {
         /* send message to the server */
     }
 

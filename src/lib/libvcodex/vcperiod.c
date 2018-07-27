@@ -44,16 +44,14 @@ ssize_t dtsz;
     /* sfx is the indices of substrings sorted in lex order */
     if (!(lcp = ( Vcinx_t * )calloc(1, sz * sizeof(Vcinx_t))))
         return -1;
-    if (!(sfx = vcsfxsort(data, ( size_t )sz)))
-    {
+    if (!(sfx = vcsfxsort(data, ( size_t )sz))) {
         free(lcp);
         return -1;
     }
 
     /* lcp[] keeps lengths of longest common prefixes between adj elts in sfx
      */
-    for (dt = ( Vcchar_t * )data, p = 0, i = 0; i < sz; ++i)
-    {
+    for (dt = ( Vcchar_t * )data, p = 0, i = 0; i < sz; ++i) {
         if (sfx->inv[i] == 0)
             continue;
         k = sfx->idx[sfx->inv[i] - 1];
@@ -68,17 +66,14 @@ ssize_t dtsz;
     dist = sfx->inv;
     memset(dist, 0, sz * sizeof(Vcinx_t));
     maxs = 4 * vclogi(sz); /* bound search to save time */
-    for (i = 0; i < sz; ++i)
-    {
-        for (m = 0, s = maxs, k = i + 1; k < sz && s >= 0; ++k, --s)
-        {
+    for (i = 0; i < sz; ++i) {
+        for (m = 0, s = maxs, k = i + 1; k < sz && s >= 0; ++k, --s) {
             if (lcp[k] == 0)
                 break;
             if ((m = sfx->idx[k] - sfx->idx[i]) > 0) /* match distance */
                 break;
         }
-        for (n = 0, s = maxs, p = i - 1; p >= 0 && s >= 0; --p, --s)
-        {
+        for (n = 0, s = maxs, p = i - 1; p >= 0 && s >= 0; --p, --s) {
             if (lcp[p] == 0)
                 break;
             if ((n = sfx->idx[p] - sfx->idx[i]) > 0) /* match distance */
@@ -113,8 +108,7 @@ ssize_t dtsz;
 
     period = 0;            /* elect best period */
     maxs = 2 * vclogi(sz); /* a candidate period must have many repeats */
-    for (p = NEIGHBOR; 2 * p < sz; ++p)
-    {
+    for (p = NEIGHBOR; 2 * p < sz; ++p) {
         if (!peak[p] || dist[p] < dist[period] / 8)
             continue;
 
@@ -127,11 +121,9 @@ ssize_t dtsz;
 
         if (period == 0)
             period = p;
-        else
-        {
+        else {
             m = n = 0; /* count repeats for period and p */
-            for (k = 2; k * p < sz; ++k)
-            {
+            for (k = 2; k * p < sz; ++k) {
                 m += dist[k * period];
                 n += dist[k * p];
             }
@@ -143,8 +135,7 @@ ssize_t dtsz;
     if (period
         == 0) /* pick early peak unless something else dramatically better */
     {
-        for (p = NEIGHBOR; 2 * p < sz; ++p)
-        {
+        for (p = NEIGHBOR; 2 * p < sz; ++p) {
             if (!peak[p] || dist[p] < maxs || dist[p] <= dist[period])
                 continue;
             else if (period == 0)

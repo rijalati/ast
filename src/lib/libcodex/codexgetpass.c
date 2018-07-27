@@ -42,8 +42,7 @@ codexgetpass(const char *prompt, void *buf, size_t n)
 
     if (rp = sfopen(NiL, "/dev/tty", "r+"))
         wp = rp;
-    else
-    {
+    else {
         rp = sfstdin;
         wp = sfstderr;
     }
@@ -53,8 +52,7 @@ codexgetpass(const char *prompt, void *buf, size_t n)
     tty.c_lflag &= ~(ECHO | ECHONL);
     tcsetattr(sffileno(rp), TCSANOW, &tty);
     tty.c_lflag = flags;
-    if (prompt)
-    {
+    if (prompt) {
         sfprintf(wp, "%s", prompt);
         sfsync(wp);
     }

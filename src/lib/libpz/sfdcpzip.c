@@ -55,21 +55,18 @@ sfpzexcept(Sfio_t *sp, int op, void *val, Sfdisc_t *dp)
     int r;
 
     NoP(sp);
-    switch (op)
-    {
+    switch (op) {
     case SF_ATEXIT:
         sfdisc(sp, SF_POPDISC);
         return 0;
     case SF_CLOSING:
     case SF_DPOP:
     case SF_FINAL:
-        if (pz->pz)
-        {
+        if (pz->pz) {
             pz->pz->flags &= ~PZ_STREAM;
             r = pzclose(pz->pz);
             pz->pz = 0;
-        }
-        else
+        } else
             r = 0;
         if (op != SF_CLOSING)
             free(dp);
@@ -128,20 +125,15 @@ sfdcpzip(Sfio_t *sp, const char *path, unsigned long flags, Pzdisc_t *disc)
     Sfpzip_t *pz;
     Pz_t *oz;
 
-    if (flags & PZ_HANDLE)
-    {
+    if (flags & PZ_HANDLE) {
         oz = ( Pz_t * )sp;
         sp = oz->io;
-    }
-    else
+    } else
         oz = 0;
-    if (sfset(sp, 0, 0) & SF_WRITE)
-    {
+    if (sfset(sp, 0, 0) & SF_WRITE) {
         if (flags & PZ_STAT)
             return -1;
-    }
-    else if (!(flags & PZ_FORCE))
-    {
+    } else if (!(flags & PZ_FORCE)) {
         unsigned char *s;
         int r;
         int m1;
@@ -163,19 +155,15 @@ sfdcpzip(Sfio_t *sp, const char *path, unsigned long flags, Pzdisc_t *disc)
         sfread(sp, s, 0);
         if (flags & PZ_STAT)
             return r;
-        if (!r)
-        {
-            if (!(flags & PZ_NOGZIP))
-            {
-                if (m1 == GZ_MAGIC_1)
-                {
+        if (!r) {
+            if (!(flags & PZ_NOGZIP)) {
+                if (m1 == GZ_MAGIC_1) {
                     if (m2 == GZ_MAGIC_2)
                         r = sfdcgzip(sp, (flags & PZ_CRC) ? 0 : SFGZ_NOCRC);
                     else if (m2 == LZ_MAGIC_2)
                         r = sfdclzw(sp, 0);
-                }
-                else if (m1 == 'B' && m2 == 'Z' && s[2] == 'h' && s[3] >= '1'
-                         && s[3] <= '9')
+                } else if (m1 == 'B' && m2 == 'Z' && s[2] == 'h'
+                           && s[3] >= '1' && s[3] <= '9')
                     r = sfdcbzip(sp, 0);
             }
             return r;
@@ -188,8 +176,7 @@ sfdcpzip(Sfio_t *sp, const char *path, unsigned long flags, Pzdisc_t *disc)
                      sffileno(sp),
                      (sfset(sp, 0, 0) & (SF_READ | SF_WRITE)))))
         return -1;
-    if (!(pz = newof(0, Sfpzip_t, 1, 0)))
-    {
+    if (!(pz = newof(0, Sfpzip_t, 1, 0))) {
         io->_file = -1;
         sfclose(io);
         return -1;
@@ -200,8 +187,7 @@ sfdcpzip(Sfio_t *sp, const char *path, unsigned long flags, Pzdisc_t *disc)
              | ((sfset(sp, 0, 0) & SF_READ) ? PZ_READ : PZ_WRITE);
     if (oz && (oz->flags & PZ_WRITE))
         flags |= PZ_DELAY;
-    if (disc)
-    {
+    if (disc) {
         pz->disc.errorf = disc->errorf;
         pz->disc.window = disc->window;
         pz->disc.options = disc->options;
@@ -210,8 +196,7 @@ sfdcpzip(Sfio_t *sp, const char *path, unsigned long flags, Pzdisc_t *disc)
             flags |= PZ_ACCEPT;
     }
     if (!(pz->pz = pzopen(&pz->disc, ( char * )io, flags))
-        || (sp->_file = open("/dev/null", 0)) < 0)
-    {
+        || (sp->_file = open("/dev/null", 0)) < 0) {
         io->_file = -1;
         sfclose(io);
         free(pz);
@@ -220,16 +205,13 @@ sfdcpzip(Sfio_t *sp, const char *path, unsigned long flags, Pzdisc_t *disc)
     if (path)
         pz->pz->path = path;
     pz->sfdisc.exceptf = sfpzexcept;
-    if (flags & PZ_WRITE)
-    {
+    if (flags & PZ_WRITE) {
         pz->sfdisc.writef = sfpzwrite;
         pz->io = io;
-    }
-    else
+    } else
         pz->sfdisc.readf = sfpzread;
     sfset(sp, SF_SHARE | SF_PUBLIC, 0);
-    if (sfdisc(sp, &pz->sfdisc) != &pz->sfdisc)
-    {
+    if (sfdisc(sp, &pz->sfdisc) != &pz->sfdisc) {
         close(sp->_file);
         sp->_file = io->_file;
         sfseek(sp, sftell(io), SEEK_SET);

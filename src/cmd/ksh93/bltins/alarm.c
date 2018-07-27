@@ -61,13 +61,10 @@ static void *
 time_add(struct tevent *item, void *list)
 {
     struct tevent *tp = ( struct tevent * )list;
-    if (!tp || item->milli < tp->milli)
-    {
+    if (!tp || item->milli < tp->milli) {
         item->next = tp;
         list = ( void * )item;
-    }
-    else
-    {
+    } else {
         while (tp->next && item->milli > tp->next->milli)
             tp = tp->next;
         item->next = tp->next;
@@ -88,8 +85,7 @@ time_delete(struct tevent *item, void *list)
     struct tevent *tp = ( struct tevent * )list;
     if (item == tp)
         list = ( void * )tp->next;
-    else
-    {
+    else {
         while (tp && tp->next != item)
             tp = tp->next;
         if (tp)
@@ -118,18 +114,13 @@ static void
 print_alarms(void *list)
 {
     struct tevent *tp = ( struct tevent * )list;
-    while (tp)
-    {
-        if (tp->timeout)
-        {
+    while (tp) {
+        if (tp->timeout) {
             char *name = nv_name(tp->node);
-            if (tp->flags & R_FLAG)
-            {
+            if (tp->flags & R_FLAG) {
                 double d = tp->milli;
                 sfprintf(sfstdout, e_alrm1, name, d / 1000.);
-            }
-            else
-            {
+            } else {
                 Time_t num = nv_getnum(tp->node), now = getnow();
                 sfprintf(sfstdout, e_alrm2, name, ( double )num - now);
             }
@@ -159,18 +150,14 @@ sh_timetraps(Shell_t *shp)
     char ifstable[256];
     Fcin_t savefc;
     shp->trapnote &= ~SH_SIGALRM;
-    while (1)
-    {
+    while (1) {
         shp->sigflag[SIGALRM] &= ~SH_SIGALRM;
         tptop = ( struct tevent * )shp->st.timetrap;
-        for (tp = tptop; tp; tp = tpnext)
-        {
+        for (tp = tptop; tp; tp = tpnext) {
             tpnext = tp->next;
-            if (tp->flags & L_FLAG)
-            {
+            if (tp->flags & L_FLAG) {
                 tp->flags &= ~L_FLAG;
-                if (tp->action)
-                {
+                if (tp->action) {
                     fcsave(&savefc);
                     memcpy(ifstable, shp->ifstable, sizeof(ifstable));
                     sh_fun(shp, tp->action, tp->node, ( char ** )0);
@@ -178,8 +165,7 @@ sh_timetraps(Shell_t *shp)
                     memcpy(shp->ifstable, ifstable, sizeof(ifstable));
                 }
                 tp->flags &= ~L_FLAG;
-                if (!tp->flags)
-                {
+                if (!tp->flags) {
                     nv_unset(tp->node);
                     nv_close(tp->node);
                 }
@@ -200,8 +186,7 @@ setdisc(Namval_t *np, const char *event, Namval_t *action, Namfun_t *fp)
     struct tevent *tp = ( struct tevent * )fp;
     if (!event)
         return (action ? "" : ( char * )ALARM);
-    if (strcmp(event, ALARM) != 0)
-    {
+    if (strcmp(event, ALARM) != 0) {
         /* try the next level */
         return (nv_setdisc(np, event, action, fp));
     }
@@ -222,21 +207,16 @@ putval(Namval_t *np, const char *val, int flag, Namfun_t *fp)
     double d, x;
     Shell_t *shp = tp->sh;
     char *cp, *pp;
-    if (val)
-    {
+    if (val) {
         Time_t now = getnow();
         char *last;
-        if (*val == '+')
-        {
+        if (*val == '+') {
             d = strtod(val + 1, &last);
             x = d + now;
             nv_putv(np, val, flag, fp);
-        }
-        else
-        {
+        } else {
             d = strtod(val, &last);
-            if (*last)
-            {
+            if (*last) {
                 if (pp = sfprints("exact %s", val))
                     d = tmxdate(pp, &last, TMX_NOW);
                 if (*last && (pp = sfprints("p%s", val)))
@@ -252,9 +232,7 @@ putval(Namval_t *np, const char *val, int flag, Namfun_t *fp)
             shp->st.timetrap = time_delete(tp, shp->st.timetrap);
         if (tp->milli > 0)
             shp->st.timetrap = time_add(tp, shp->st.timetrap);
-    }
-    else
-    {
+    } else {
         tp = ( struct tevent * )nv_stack(np, ( Namfun_t * )0);
         shp->st.timetrap = time_delete(tp, shp->st.timetrap);
         if (tp->action)
@@ -276,8 +254,7 @@ b_alarm(int argc, char *argv[], Shbltin_t *context)
     struct tevent *tp;
     Shell_t *shp = context->shp;
     while (n = optget(argv, sh_optalarm))
-        switch (n)
-        {
+        switch (n) {
         case 'r':
             rflag = R_FLAG;
             break;
@@ -292,8 +269,7 @@ b_alarm(int argc, char *argv[], Shbltin_t *context)
     argv += opt_info.index;
     if (error_info.errors)
         errormsg(SH_DICT, ERROR_usage(2), optusage(( char * )0));
-    if (argc == 0)
-    {
+    if (argc == 0) {
         print_alarms(shp->st.timetrap);
         return (0);
     }

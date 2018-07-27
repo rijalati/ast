@@ -69,15 +69,13 @@ crc_open(const Method_t *method, const char *name)
     Crcnum_t polynomial;
     Crcnum_t x;
 
-    if (sum = newof(0, Crc_t, 1, 0))
-    {
+    if (sum = newof(0, Crc_t, 1, 0)) {
         sum->method = ( Method_t * )method;
         sum->name = name;
     }
     polynomial = 0xedb88320;
     s = name;
-    while (*(t = s))
-    {
+    while (*(t = s)) {
         for (t = s, v = 0; *s && *s != '-'; s++)
             if (*s == '=' && !v)
                 v = s;
@@ -90,8 +88,7 @@ crc_open(const Method_t *method, const char *name)
             sum->init = v ? strtoul(v + 1, NiL, 0) : ~sum->init;
         else if (strneq(t, "rotate", i))
             sum->rotate = 1;
-        else if (strneq(t, "size", i))
-        {
+        else if (strneq(t, "size", i)) {
             sum->addsize = 1;
             if (v)
                 sum->xorsize = strtoul(v + 1, NiL, 0);
@@ -99,8 +96,7 @@ crc_open(const Method_t *method, const char *name)
         if (*s == '-')
             s++;
     }
-    if (sum->rotate)
-    {
+    if (sum->rotate) {
         Crcnum_t t;
         Crcnum_t p[8];
 
@@ -108,23 +104,18 @@ crc_open(const Method_t *method, const char *name)
         for (i = 1; i < 8; i++)
             p[i]
             = (p[i - 1] << 1) ^ ((p[i - 1] & 0x80000000) ? polynomial : 0);
-        for (i = 0; i < elementsof(sum->tab); i++)
-        {
+        for (i = 0; i < elementsof(sum->tab); i++) {
             t = 0;
             x = i;
-            for (j = 0; j < 8; j++)
-            {
+            for (j = 0; j < 8; j++) {
                 if (x & 1)
                     t ^= p[j];
                 x >>= 1;
             }
             sum->tab[i] = t;
         }
-    }
-    else
-    {
-        for (i = 0; i < elementsof(sum->tab); i++)
-        {
+    } else {
+        for (i = 0; i < elementsof(sum->tab); i++) {
             x = i;
             for (j = 0; j < 8; j++)
                 x = (x >> 1) ^ ((x & 1) ? polynomial : 0);
@@ -171,18 +162,15 @@ crc_done(Sum_t *p)
     int j;
 
     c = sum->sum;
-    if (sum->addsize)
-    {
+    if (sum->addsize) {
         n = sum->size ^ sum->xorsize;
         if (sum->rotate)
-            while (n)
-            {
+            while (n) {
                 CRCROTATE(sum, c, n);
                 n >>= 8;
             }
         else
-            for (i = 0, j = 32; i < 4; i++)
-            {
+            for (i = 0, j = 32; i < 4; i++) {
                 j -= 8;
                 CRC(sum, c, n >> j);
             }

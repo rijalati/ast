@@ -50,8 +50,7 @@ cokilljob(Coshell_t *co, Cojob_t *cj, int sig)
                  sig);
     if (cj->pid < 0)
         return 0;
-    if (cj->pid == 0)
-    {
+    if (cj->pid == 0) {
         if (cj->service)
             co->svc_running--;
         else
@@ -60,8 +59,7 @@ cokilljob(Coshell_t *co, Cojob_t *cj, int sig)
         cj->status = EXIT_TERM(sig);
         return 0;
     }
-    if (sig == SIGKILL)
-    {
+    if (sig == SIGKILL) {
         co->running--;
         cj->pid = CO_PID_ZOMBIE;
         cj->status = EXIT_TERM(sig);
@@ -80,8 +78,7 @@ cokillshell(Coshell_t *co, Cojob_t *cj, int sig)
 {
     int n;
 
-    if (sig && (co->flags & CO_SERVER))
-    {
+    if (sig && (co->flags & CO_SERVER)) {
         char buf[CO_BUFSIZ];
 
         n = sfsprintf(
@@ -104,15 +101,13 @@ cokill(Coshell_t *co, Cojob_t *cj, int sig)
     int any;
     int n;
 
-    if (cj)
-    {
+    if (cj) {
         if (!co)
             co = cj->coshell;
         else if (co != cj->coshell)
             return -1;
         any = 0;
-    }
-    else if (co)
+    } else if (co)
         any = 0;
     else if (!(co = state.coshells))
         return -1;
@@ -126,8 +121,7 @@ cokill(Coshell_t *co, Cojob_t *cj, int sig)
                  co ? co->pid : 0,
                  cj ? cj->pid : 0,
                  sig);
-    switch (sig)
-    {
+    switch (sig) {
     case SIGINT:
         sig = SIGTERM;
         break;
@@ -138,8 +132,7 @@ cokill(Coshell_t *co, Cojob_t *cj, int sig)
 #endif
     }
     n = 0;
-    do
-    {
+    do {
         if (!cj || !cj->service)
             cowait(co, ( Cojob_t * )co, 0);
         n |= cokillshell(co, cj, sig);

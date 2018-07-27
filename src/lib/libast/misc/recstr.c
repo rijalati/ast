@@ -49,14 +49,12 @@ recstr(const char *s, char **e)
 
     while (*s == ' ' || *s == '\t' || *s == ',')
         s++;
-    switch (*s)
-    {
+    switch (*s) {
     case 'd':
     case 'D':
         if (!*++s)
             n = '\n';
-        else
-        {
+        else {
             if (*s == '0' && (*(s + 1) == 'x' || *(s + 1) == 'X'))
                 n = ( int )strtol(s, &t, 0);
             else
@@ -83,8 +81,7 @@ recstr(const char *s, char **e)
     case '8':
     case '9':
         n = strton(s, &t, NiL, 0);
-        if (n > 0 && t > ( char * )s)
-        {
+        if (n > 0 && t > ( char * )s) {
             if (e)
                 *e = t;
             return REC_F_TYPE(n);
@@ -96,16 +93,12 @@ recstr(const char *s, char **e)
             ;
         for (t = ( char * )s; *t && *t != ' ' && *t != '\t' && *t != ','; t++)
             ;
-        if ((t - s) == 4)
-        {
-            if (strneq(s, "data", 4))
-            {
+        if ((t - s) == 4) {
+            if (strneq(s, "data", 4)) {
                 if (e)
                     *e = t;
                 return REC_M_TYPE(REC_M_data);
-            }
-            else if (strneq(s, "path", 4))
-            {
+            } else if (strneq(s, "path", 4)) {
                 if (e)
                     *e = t;
                 return REC_M_TYPE(REC_M_path);
@@ -140,10 +133,8 @@ recstr(const char *s, char **e)
         a[4] = 0;
         a[5] = 1;
         n = 0;
-        for (;;)
-        {
-            switch (*++s)
-            {
+        for (;;) {
+            switch (*++s) {
             case 0:
                 break;
             case 'm':

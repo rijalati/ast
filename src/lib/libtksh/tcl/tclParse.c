@@ -468,8 +468,7 @@ int *readPtr; /* Fill in with number of characters read
 
     count = 2;
 
-    switch (*p)
-    {
+    switch (*p) {
         /*
          * Note: in the conversions below, use absolute values (e.g.,
          * 0xa) rather than symbolic values (e.g. \n) that get converted
@@ -500,22 +499,18 @@ int *readPtr; /* Fill in with number of characters read
         result = 0xb;
         break;
     case 'x':
-        if (isxdigit(UCHAR(p[1])))
-        {
+        if (isxdigit(UCHAR(p[1]))) {
             char *end;
 
             result = ( char )strtoul(p + 1, &end, 16);
             count = end - src;
-        }
-        else
-        {
+        } else {
             count = 2;
             result = 'x';
         }
         break;
     case '\n':
-        do
-        {
+        do {
             p++;
         } while ((*p == ' ') || (*p == '\t'));
         result = ' ';
@@ -526,19 +521,16 @@ int *readPtr; /* Fill in with number of characters read
         count = 1;
         break;
     default:
-        if (isdigit(UCHAR(*p)))
-        {
+        if (isdigit(UCHAR(*p))) {
             result = ( char )(*p - '0');
             p++;
-            if (!isdigit(UCHAR(*p)))
-            {
+            if (!isdigit(UCHAR(*p))) {
                 break;
             }
             count = 3;
             result = ( char )((result << 3) + (*p - '0'));
             p++;
-            if (!isdigit(UCHAR(*p)))
-            {
+            if (!isdigit(UCHAR(*p))) {
                 break;
             }
             count = 4;
@@ -550,8 +542,7 @@ int *readPtr; /* Fill in with number of characters read
         break;
     }
 
-    if (readPtr != NULL)
-    {
+    if (readPtr != NULL) {
         *readPtr = count;
     }
     return result;
@@ -606,10 +597,8 @@ ParseValue *pvPtr;  /* Information about where to place
     src = string;
     dst = pvPtr->next;
 
-    while (1)
-    {
-        if (dst == pvPtr->end)
-        {
+    while (1) {
+        if (dst == pvPtr->end) {
             /*
              * Target buffer space is about to run out.  Make more space.
              */
@@ -621,34 +610,27 @@ ParseValue *pvPtr;  /* Information about where to place
 
         c = *src;
         src++;
-        if (c == termChar)
-        {
+        if (c == termChar) {
             *dst = '\0';
             pvPtr->next = dst;
             *termPtr = src;
             return TCL_OK;
-        }
-        else if (CHAR_TYPE(c) == TCL_NORMAL)
-        {
+        } else if (CHAR_TYPE(c) == TCL_NORMAL) {
         copy:
             *dst = c;
             dst++;
             continue;
-        }
-        else if (c == '$')
-        {
+        } else if (c == '$') {
             int length;
             char *value;
 
             value = Tcl_ParseVar(interp, src - 1, termPtr);
-            if (value == NULL)
-            {
+            if (value == NULL) {
                 return TCL_ERROR;
             }
             src = *termPtr;
             length = strlen(value);
-            if ((pvPtr->end - dst) <= length)
-            {
+            if ((pvPtr->end - dst) <= length) {
                 pvPtr->next = dst;
                 (*pvPtr->expandProc)(pvPtr, length);
                 dst = pvPtr->next;
@@ -656,23 +638,18 @@ ParseValue *pvPtr;  /* Information about where to place
             strcpy(dst, value);
             dst += length;
             continue;
-        }
-        else if (c == '[')
-        {
+        } else if (c == '[') {
             int result;
 
             pvPtr->next = dst;
             result = TclParseNestedCmd(interp, src, flags, termPtr, pvPtr);
-            if (result != TCL_OK)
-            {
+            if (result != TCL_OK) {
                 return result;
             }
             src = *termPtr;
             dst = pvPtr->next;
             continue;
-        }
-        else if (c == '\\')
-        {
+        } else if (c == '\\') {
             int numRead;
 
             src--;
@@ -680,16 +657,12 @@ ParseValue *pvPtr;  /* Information about where to place
             dst++;
             src += numRead;
             continue;
-        }
-        else if (c == '\0')
-        {
+        } else if (c == '\0') {
             Tcl_ResetResult(interp);
             sprintf(interp->result, "missing %c", termChar);
             *termPtr = string - 1;
             return TCL_ERROR;
-        }
-        else
-        {
+        } else {
             goto copy;
         }
     }
@@ -739,15 +712,13 @@ ParseValue *pvPtr;  /* Information about where to place
     iPtr->evalFlags = flags | TCL_BRACKET_TERM;
     result = Tcl_Eval(interp, string);
     *termPtr = iPtr->termPtr;
-    if (result != TCL_OK)
-    {
+    if (result != TCL_OK) {
         /*
          * The increment below results in slightly cleaner message in
          * the errorInfo variable (the close-bracket will appear).
          */
 
-        if (**termPtr == ']')
-        {
+        if (**termPtr == ']') {
             *termPtr += 1;
         }
         return result;
@@ -755,8 +726,7 @@ ParseValue *pvPtr;  /* Information about where to place
     (*termPtr) += 1;
     length = strlen(iPtr->result);
     shortfall = length + 1 - (pvPtr->end - pvPtr->next);
-    if (shortfall > 0)
-    {
+    if (shortfall > 0) {
         (*pvPtr->expandProc)(pvPtr, shortfall);
     }
     strcpy(pvPtr->next, iPtr->result);
@@ -816,12 +786,10 @@ ParseValue *pvPtr;  /* Information about where to place
      * when the matching close-brace is found.
      */
 
-    while (1)
-    {
+    while (1) {
         c = *src;
         src++;
-        if (dst == end)
-        {
+        if (dst == end) {
             pvPtr->next = dst;
             (*pvPtr->expandProc)(pvPtr, 20);
             dst = pvPtr->next;
@@ -829,25 +797,17 @@ ParseValue *pvPtr;  /* Information about where to place
         }
         *dst = c;
         dst++;
-        if (CHAR_TYPE(c) == TCL_NORMAL)
-        {
+        if (CHAR_TYPE(c) == TCL_NORMAL) {
             continue;
-        }
-        else if (c == '{')
-        {
+        } else if (c == '{') {
             level++;
-        }
-        else if (c == '}')
-        {
+        } else if (c == '}') {
             level--;
-            if (level == 0)
-            {
+            if (level == 0) {
                 dst--; /* Don't copy the last close brace. */
                 break;
             }
-        }
-        else if (c == '\\')
-        {
+        } else if (c == '\\') {
             int count;
 
             /*
@@ -856,18 +816,13 @@ ParseValue *pvPtr;  /* Information about where to place
              * anywhere in a command, such as the middle of an expression.
              */
 
-            if (*src == '\n')
-            {
+            if (*src == '\n') {
                 dst[-1] = Tcl_Backslash(src - 1, &count);
                 src += count - 1;
-            }
-            else
-            {
+            } else {
                 ( void )Tcl_Backslash(src - 1, &count);
-                while (count > 1)
-                {
-                    if (dst == end)
-                    {
+                while (count > 1) {
+                    if (dst == end) {
                         pvPtr->next = dst;
                         (*pvPtr->expandProc)(pvPtr, 20);
                         dst = pvPtr->next;
@@ -879,9 +834,7 @@ ParseValue *pvPtr;  /* Information about where to place
                     count--;
                 }
             }
-        }
-        else if (c == '\0')
-        {
+        } else if (c == '\0') {
             Tcl_SetResult(interp, "missing close-brace", TCL_STATIC);
             *termPtr = string - 1;
             return TCL_ERROR;
@@ -961,8 +914,7 @@ ParseValue *pvPtr;  /* Information about where to place
     src = string;
     oldBuffer = pvPtr->buffer;
     dst = pvPtr->next;
-    for (argc = 0; argc < maxWords; argc++)
-    {
+    for (argc = 0; argc < maxWords; argc++) {
         argv[argc] = dst;
 
         /*
@@ -972,8 +924,7 @@ ParseValue *pvPtr;  /* Information about where to place
     skipSpace:
         c = *src;
         type = CHAR_TYPE(c);
-        while (type == TCL_SPACE)
-        {
+        while (type == TCL_SPACE) {
             src++;
             c = *src;
             type = CHAR_TYPE(c);
@@ -983,13 +934,10 @@ ParseValue *pvPtr;  /* Information about where to place
          * Handle the normal case (i.e. no leading double-quote or brace).
          */
 
-        if (type == TCL_NORMAL)
-        {
+        if (type == TCL_NORMAL) {
         normalArg:
-            while (1)
-            {
-                if (dst == pvPtr->end)
-                {
+            while (1) {
+                if (dst == pvPtr->end) {
                     /*
                      * Target buffer space is about to run out.  Make
                      * more space.
@@ -1000,42 +948,32 @@ ParseValue *pvPtr;  /* Information about where to place
                     dst = pvPtr->next;
                 }
 
-                if (type == TCL_NORMAL)
-                {
+                if (type == TCL_NORMAL) {
                 copy:
                     *dst = c;
                     dst++;
                     src++;
-                }
-                else if (type == TCL_SPACE)
-                {
+                } else if (type == TCL_SPACE) {
                     goto wordEnd;
-                }
-                else if (type == TCL_DOLLAR)
-                {
+                } else if (type == TCL_DOLLAR) {
                     int length;
                     char *value;
 
                     value = Tcl_ParseVar(interp, src, termPtr);
-                    if (value == NULL)
-                    {
+                    if (value == NULL) {
                         return TCL_ERROR;
                     }
                     src = *termPtr;
                     length = strlen(value);
-                    if ((pvPtr->end - dst) <= length)
-                    {
+                    if ((pvPtr->end - dst) <= length) {
                         pvPtr->next = dst;
                         (*pvPtr->expandProc)(pvPtr, length);
                         dst = pvPtr->next;
                     }
                     strcpy(dst, value);
                     dst += length;
-                }
-                else if (type == TCL_COMMAND_END)
-                {
-                    if ((c == ']') && !(flags & TCL_BRACKET_TERM))
-                    {
+                } else if (type == TCL_COMMAND_END) {
+                    if ((c == ']') && !(flags & TCL_BRACKET_TERM)) {
                         goto copy;
                     }
 
@@ -1046,21 +984,16 @@ ParseValue *pvPtr;  /* Information about where to place
                      */
 
                     goto wordEnd;
-                }
-                else if (type == TCL_OPEN_BRACKET)
-                {
+                } else if (type == TCL_OPEN_BRACKET) {
                     pvPtr->next = dst;
                     result = TclParseNestedCmd(
                     interp, src + 1, flags, termPtr, pvPtr);
-                    if (result != TCL_OK)
-                    {
+                    if (result != TCL_OK) {
                         return result;
                     }
                     src = *termPtr;
                     dst = pvPtr->next;
-                }
-                else if (type == TCL_BACKSLASH)
-                {
+                } else if (type == TCL_BACKSLASH) {
                     int numRead;
 
                     *dst = Tcl_Backslash(src, &numRead);
@@ -1072,44 +1005,33 @@ ParseValue *pvPtr;  /* Information about where to place
                      * began.
                      */
 
-                    if (src[1] == '\n')
-                    {
+                    if (src[1] == '\n') {
                         src += numRead;
                         goto wordEnd;
                     }
                     src += numRead;
                     dst++;
-                }
-                else
-                {
+                } else {
                     goto copy;
                 }
                 c = *src;
                 type = CHAR_TYPE(c);
             }
-        }
-        else
-        {
+        } else {
 
             /*
              * Check for the end of the command.
              */
 
-            if (type == TCL_COMMAND_END)
-            {
-                if (flags & TCL_BRACKET_TERM)
-                {
-                    if (c == '\0')
-                    {
+            if (type == TCL_COMMAND_END) {
+                if (flags & TCL_BRACKET_TERM) {
+                    if (c == '\0') {
                         Tcl_SetResult(
                         interp, "missing close-bracket", TCL_STATIC);
                         return TCL_ERROR;
                     }
-                }
-                else
-                {
-                    if (c == ']')
-                    {
+                } else {
+                    if (c == ']') {
                         goto normalArg;
                     }
                 }
@@ -1122,17 +1044,12 @@ ParseValue *pvPtr;  /* Information about where to place
              */
 
             pvPtr->next = dst;
-            if (type == TCL_QUOTE)
-            {
+            if (type == TCL_QUOTE) {
                 result
                 = TclParseQuotes(interp, src + 1, '"', flags, termPtr, pvPtr);
-            }
-            else if (type == TCL_OPEN_BRACE)
-            {
+            } else if (type == TCL_OPEN_BRACE) {
                 result = TclParseBraces(interp, src + 1, termPtr, pvPtr);
-            }
-            else if ((type == TCL_BACKSLASH) && (src[1] == '\n'))
-            {
+            } else if ((type == TCL_BACKSLASH) && (src[1] == '\n')) {
                 /*
                  * This code is needed so that a backslash-newline at the
                  * very beginning of a word is treated as part of the white
@@ -1141,13 +1058,10 @@ ParseValue *pvPtr;  /* Information about where to place
 
                 src += 2;
                 goto skipSpace;
-            }
-            else
-            {
+            } else {
                 goto normalArg;
             }
-            if (result != TCL_OK)
-            {
+            if (result != TCL_OK) {
                 return result;
             }
 
@@ -1157,27 +1071,20 @@ ParseValue *pvPtr;  /* Information about where to place
              */
 
             c = **termPtr;
-            if ((c == '\\') && ((*termPtr)[1] == '\n'))
-            {
+            if ((c == '\\') && ((*termPtr)[1] == '\n')) {
                 /*
                  * Line is continued on next line;  the backslash-newline
                  * sequence turns into space, which is OK.  No need to do
                  * anything here.
                  */
-            }
-            else
-            {
+            } else {
                 type = CHAR_TYPE(c);
-                if ((type != TCL_SPACE) && (type != TCL_COMMAND_END))
-                {
-                    if (*src == '"')
-                    {
+                if ((type != TCL_SPACE) && (type != TCL_COMMAND_END)) {
+                    if (*src == '"') {
                         Tcl_SetResult(interp,
                                       "extra characters after close-quote",
                                       TCL_STATIC);
-                    }
-                    else
-                    {
+                    } else {
                         Tcl_SetResult(interp,
                                       "extra characters after close-brace",
                                       TCL_STATIC);
@@ -1198,12 +1105,10 @@ ParseValue *pvPtr;  /* Information about where to place
     wordEnd:
         *dst = '\0';
         dst++;
-        if (oldBuffer != pvPtr->buffer)
-        {
+        if (oldBuffer != pvPtr->buffer) {
             int i;
 
-            for (i = 0; i <= argc; i++)
-            {
+            for (i = 0; i <= argc; i++) {
                 argv[i] = pvPtr->buffer + (argv[i] - oldBuffer);
             }
             oldBuffer = pvPtr->buffer;
@@ -1256,12 +1161,9 @@ int needed;        /* Minimum amount of additional space
      */
 
     newSpace = (pvPtr->end - pvPtr->buffer) + 1;
-    if (newSpace < needed)
-    {
+    if (newSpace < needed) {
         newSpace += needed;
-    }
-    else
-    {
+    } else {
         newSpace += newSpace;
     }
     new = ( char * )ckalloc(( unsigned )newSpace);
@@ -1275,8 +1177,7 @@ int needed;        /* Minimum amount of additional space
            ( VOID * )pvPtr->buffer,
            (size_t)(pvPtr->next - pvPtr->buffer));
     pvPtr->next = new + (pvPtr->next - pvPtr->buffer);
-    if (pvPtr->clientData != 0)
-    {
+    if (pvPtr->clientData != 0) {
         ckfree(pvPtr->buffer);
     }
     pvPtr->buffer = new;
@@ -1316,8 +1217,7 @@ int *semiPtr; /* Set to 1 if word ends with a command-
     char *p;
     int count;
 
-    if (semiPtr != NULL)
-    {
+    if (semiPtr != NULL) {
         *semiPtr = 0;
     }
 
@@ -1327,16 +1227,12 @@ int *semiPtr; /* Set to 1 if word ends with a command-
      * command).
      */
 
-    for (p = start;; p++)
-    {
-        if (isspace(UCHAR(*p)))
-        {
+    for (p = start;; p++) {
+        if (isspace(UCHAR(*p))) {
             continue;
         }
-        if ((p[0] == '\\') && (p[1] == '\n'))
-        {
-            if (p[2] == 0)
-            {
+        if ((p[0] == '\\') && (p[1] == '\n')) {
+            if (p[2] == 0) {
                 return p + 2;
             }
             continue;
@@ -1348,36 +1244,25 @@ int *semiPtr; /* Set to 1 if word ends with a command-
      * Handle words beginning with a double-quote or a brace.
      */
 
-    if (*p == '"')
-    {
+    if (*p == '"') {
         p = QuoteEnd(p + 1, '"');
-        if (*p == 0)
-        {
+        if (*p == 0) {
             return p;
         }
         p++;
-    }
-    else if (*p == '{')
-    {
+    } else if (*p == '{') {
         int braces = 1;
-        while (braces != 0)
-        {
+        while (braces != 0) {
             p++;
-            while (*p == '\\')
-            {
+            while (*p == '\\') {
                 ( void )Tcl_Backslash(p, &count);
                 p += count;
             }
-            if (*p == '}')
-            {
+            if (*p == '}') {
                 braces--;
-            }
-            else if (*p == '{')
-            {
+            } else if (*p == '{') {
                 braces++;
-            }
-            else if (*p == 0)
-            {
+            } else if (*p == 0) {
                 return p;
             }
         }
@@ -1392,21 +1277,15 @@ int *semiPtr; /* Set to 1 if word ends with a command-
      * for here the garbage is treated as part of the word.
      */
 
-    while (1)
-    {
-        if (*p == '[')
-        {
+    while (1) {
+        if (*p == '[') {
             p = ScriptEnd(p + 1, 1);
-            if (*p == 0)
-            {
+            if (*p == 0) {
                 return p;
             }
             p++;
-        }
-        else if (*p == '\\')
-        {
-            if (p[1] == '\n')
-            {
+        } else if (*p == '\\') {
+            if (p[1] == '\n') {
                 /*
                  * Backslash-newline:  it maps to a space character
                  * that is a word separator, so the word ends just before
@@ -1417,40 +1296,27 @@ int *semiPtr; /* Set to 1 if word ends with a command-
             }
             ( void )Tcl_Backslash(p, &count);
             p += count;
-        }
-        else if (*p == '$')
-        {
+        } else if (*p == '$') {
             p = VarNameEnd(p);
-            if (*p == 0)
-            {
+            if (*p == 0) {
                 return p;
             }
             p++;
-        }
-        else if (*p == ';')
-        {
+        } else if (*p == ';') {
             /*
              * Include the semi-colon in the word that is returned.
              */
 
-            if (semiPtr != NULL)
-            {
+            if (semiPtr != NULL) {
                 *semiPtr = 1;
             }
             return p;
-        }
-        else if (isspace(UCHAR(*p)))
-        {
+        } else if (isspace(UCHAR(*p))) {
             return p - 1;
-        }
-        else if ((*p == ']') && nested)
-        {
+        } else if ((*p == ']') && nested) {
             return p - 1;
-        }
-        else if (*p == 0)
-        {
-            if (nested)
-            {
+        } else if (*p == 0) {
+            if (nested) {
                 /*
                  * Nested commands can't end because of the end of the
                  * string.
@@ -1458,9 +1324,7 @@ int *semiPtr; /* Set to 1 if word ends with a command-
                 return p;
             }
             return p - 1;
-        }
-        else
-        {
+        } else {
             p++;
         }
     }
@@ -1497,40 +1361,27 @@ int term; /* This character will terminate the
     char *p = string;
     int count;
 
-    while (*p != term)
-    {
-        if (*p == '\\')
-        {
+    while (*p != term) {
+        if (*p == '\\') {
             ( void )Tcl_Backslash(p, &count);
             p += count;
-        }
-        else if (*p == '[')
-        {
-            for (p++; *p != ']'; p++)
-            {
+        } else if (*p == '[') {
+            for (p++; *p != ']'; p++) {
                 p = TclWordEnd(p, 1, ( int * )NULL);
-                if (*p == 0)
-                {
+                if (*p == 0) {
                     return p;
                 }
             }
             p++;
-        }
-        else if (*p == '$')
-        {
+        } else if (*p == '$') {
             p = VarNameEnd(p);
-            if (*p == 0)
-            {
+            if (*p == 0) {
                 return p;
             }
             p++;
-        }
-        else if (*p == 0)
-        {
+        } else if (*p == 0) {
             return p;
-        }
-        else
-        {
+        } else {
             p++;
         }
     }
@@ -1562,20 +1413,16 @@ static char *VarNameEnd(string) char *string; /* Pointer to dollar-sign
 {
     char *p = string + 1;
 
-    if (*p == '{')
-    {
-        for (p++; (*p != '}') && (*p != 0); p++)
-        {
+    if (*p == '{') {
+        for (p++; (*p != '}') && (*p != 0); p++) {
             /* Empty loop body. */
         }
         return p;
     }
-    while (isalnum(UCHAR(*p)) || (*p == '_'))
-    {
+    while (isalnum(UCHAR(*p)) || (*p == '_')) {
         p++;
     }
-    if ((*p == '(') && (p != string + 1))
-    {
+    if ((*p == '(') && (p != string + 1)) {
         return QuoteEnd(p + 1, ')');
     }
     return p - 1;
@@ -1611,58 +1458,43 @@ int nested; /* Zero means this is a top-level command.
     int commentOK = 1;
     int length;
 
-    while (1)
-    {
-        while (isspace(UCHAR(*p)))
-        {
-            if (*p == '\n')
-            {
+    while (1) {
+        while (isspace(UCHAR(*p))) {
+            if (*p == '\n') {
                 commentOK = 1;
             }
             p++;
         }
-        if ((*p == '#') && commentOK)
-        {
-            do
-            {
-                if (*p == '\\')
-                {
+        if ((*p == '#') && commentOK) {
+            do {
+                if (*p == '\\') {
                     /*
                      * If the script ends with backslash-newline, then
                      * this command isn't complete.
                      */
 
-                    if ((p[1] == '\n') && (p[2] == 0))
-                    {
+                    if ((p[1] == '\n') && (p[2] == 0)) {
                         return p + 2;
                     }
                     Tcl_Backslash(p, &length);
                     p += length;
-                }
-                else
-                {
+                } else {
                     p++;
                 }
             } while ((*p != 0) && (*p != '\n'));
             continue;
         }
         p = TclWordEnd(p, nested, &commentOK);
-        if (*p == 0)
-        {
+        if (*p == 0) {
             return p;
         }
         p++;
-        if (nested)
-        {
-            if (*p == ']')
-            {
+        if (nested) {
+            if (*p == ']') {
                 return p;
             }
-        }
-        else
-        {
-            if (*p == 0)
-            {
+        } else {
+            if (*p == 0) {
                 return p - 1;
             }
         }
@@ -1724,18 +1556,14 @@ char **termPtr;     /* If non-NULL, points to word to fill
 
     name2 = NULL;
     string++;
-    if (*string == '{')
-    {
+    if (*string == '{') {
         string++;
         name1 = string;
-        while (*string != '}')
-        {
-            if (*string == 0)
-            {
+        while (*string != '}') {
+            if (*string == 0) {
                 Tcl_SetResult(
                 interp, "missing close-brace for variable name", TCL_STATIC);
-                if (termPtr != 0)
-                {
+                if (termPtr != 0) {
                     *termPtr = string;
                 }
                 return NULL;
@@ -1744,25 +1572,19 @@ char **termPtr;     /* If non-NULL, points to word to fill
         }
         name1End = string;
         string++;
-    }
-    else
-    {
+    } else {
         name1 = string;
-        while (isalnum(UCHAR(*string)) || (*string == '_'))
-        {
+        while (isalnum(UCHAR(*string)) || (*string == '_')) {
             string++;
         }
-        if (string == name1)
-        {
-            if (termPtr != 0)
-            {
+        if (string == name1) {
+            if (termPtr != 0) {
                 *termPtr = string;
             }
             return "$";
         }
         name1End = string;
-        if (*string == '(')
-        {
+        if (*string == '(') {
             char *end;
 
             /*
@@ -1775,14 +1597,12 @@ char **termPtr;     /* If non-NULL, points to word to fill
             pv.expandProc = TclExpandParseValue;
             pv.clientData = ( ClientData )NULL;
             if (TclParseQuotes(interp, string + 1, ')', 0, &end, &pv)
-                != TCL_OK)
-            {
+                != TCL_OK) {
                 char msg[200];
                 int length;
 
                 length = string - name1;
-                if (length > 100)
-                {
+                if (length > 100) {
                     length = 100;
                 }
                 sprintf(msg,
@@ -1792,8 +1612,7 @@ char **termPtr;     /* If non-NULL, points to word to fill
                 Tcl_AddErrorInfo(interp, msg);
                 result = NULL;
                 name2 = pv.buffer;
-                if (termPtr != 0)
-                {
+                if (termPtr != 0) {
                     *termPtr = end;
                 }
                 goto done;
@@ -1803,13 +1622,11 @@ char **termPtr;     /* If non-NULL, points to word to fill
             name2 = pv.buffer;
         }
     }
-    if (termPtr != 0)
-    {
+    if (termPtr != 0) {
         *termPtr = string;
     }
 
-    if ((( Interp * )interp)->noEval)
-    {
+    if ((( Interp * )interp)->noEval) {
         return "";
     }
     c = *name1End;
@@ -1818,8 +1635,7 @@ char **termPtr;     /* If non-NULL, points to word to fill
     *name1End = c;
 
 done:
-    if ((name2 != NULL) && (pv.buffer != copyStorage))
-    {
+    if ((name2 != NULL) && (pv.buffer != copyStorage)) {
         ckfree(pv.buffer);
     }
     return result;
@@ -1847,8 +1663,7 @@ int Tcl_CommandComplete(cmd) char *cmd; /* Command to check. */
 {
     char *p;
 
-    if (*cmd == 0)
-    {
+    if (*cmd == 0) {
         return 1;
     }
     p = ScriptEnd(cmd, 0);

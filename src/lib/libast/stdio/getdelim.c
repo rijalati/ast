@@ -50,19 +50,15 @@ getdelim(char **sp, size_t *np, int delim, Sfio_t *f)
 
     SFLOCK(f, 0);
 
-    if (!(s = ( uchar * )(*sp)) || (n = *np) < 0)
-    {
+    if (!(s = ( uchar * )(*sp)) || (n = *np) < 0) {
         s = NIL(uchar *);
         n = 0;
     }
-    for (m = 0;;)
-    { /* read new data */
-        if ((p = f->endb - (ps = f->next)) <= 0)
-        {
+    for (m = 0;;) { /* read new data */
+        if ((p = f->endb - (ps = f->next)) <= 0) {
             f->getr = delim;
             f->mode |= SF_RC;
-            if (SFRPEEK(f, ps, p) <= 0)
-            {
+            if (SFRPEEK(f, ps, p) <= 0) {
                 m = -1;
                 break;
             }
@@ -70,8 +66,7 @@ getdelim(char **sp, size_t *np, int delim, Sfio_t *f)
 
         for (k = 0; k < p; ++k) /* find the delimiter */
         {
-            if (ps[k] == delim)
-            {
+            if (ps[k] == delim) {
                 k += 1; /* include delim in copying */
                 break;
             }
@@ -80,8 +75,7 @@ getdelim(char **sp, size_t *np, int delim, Sfio_t *f)
         if ((m + k + 1) >= n) /* make sure there is space */
         {
             n = ((m + k + 15) / 8) * 8;
-            if (!(s = ( uchar * )realloc(s, n)))
-            {
+            if (!(s = ( uchar * )realloc(s, n))) {
                 *sp = 0;
                 *np = 0;
                 m = -1;
@@ -95,8 +89,7 @@ getdelim(char **sp, size_t *np, int delim, Sfio_t *f)
         m += k;
         f->next = ps + k; /* skip copied data in buffer */
 
-        if (s[m - 1] == delim)
-        {
+        if (s[m - 1] == delim) {
             s[m] = 0; /* 0-terminated */
             break;
         }

@@ -108,8 +108,7 @@
         {                                                                    \
             reg uchar *k = obj->key;                                         \
             reg ulong h = 0;                                                 \
-            switch (obj->keylen)                                             \
-            {                                                                \
+            switch (obj->keylen) {                                           \
             default:                                                         \
                 h = (( ulong )k[7]);                                         \
             case 7:                                                          \
@@ -135,8 +134,7 @@
         {                                                                    \
             reg uchar *k = obj->key;                                         \
             reg ulong h = 0;                                                 \
-            switch (obj->keylen)                                             \
-            {                                                                \
+            switch (obj->keylen) {                                           \
             default:                                                         \
                 h = k[3];                                                    \
             case 3:                                                          \
@@ -155,30 +153,25 @@
     {                                                                        \
         if ((one)->order != (two)->order)                                    \
             cmp = (one)->order < (two)->order ? -1 : 1;                      \
-        else                                                                 \
-        {                                                                    \
+        else {                                                               \
             reg uchar *ok, *tk;                                              \
             reg ssize_t l, d;                                                \
             ok = (one)->key + SIZEOF_LONG;                                   \
             tk = (two)->key + SIZEOF_LONG;                                   \
             if ((d = (l = (one)->keylen) - (two)->keylen) > 0)               \
                 l -= d;                                                      \
-            for (l -= SIZEOF_LONG;;)                                         \
-            {                                                                \
-                if (l-- <= 0)                                                \
-                {                                                            \
+            for (l -= SIZEOF_LONG;;) {                                       \
+                if (l-- <= 0) {                                              \
                     cmp = d;                                                 \
                     break;                                                   \
-                }                                                            \
-                else if ((cmp = *ok++ - *tk++))                              \
+                } else if ((cmp = *ok++ - *tk++))                            \
                     break;                                                   \
             }                                                                \
         }                                                                    \
     }
 
 #define MEMCPY(to, fr, n)                                                    \
-    switch (n)                                                               \
-    {                                                                        \
+    switch (n) {                                                             \
     default:                                                                 \
         memcpy(to, fr, n);                                                   \
         to += n;                                                             \
@@ -205,12 +198,9 @@
 /* merging equivalent records */
 #define EQUAL(r, o, t)                                                       \
     {                                                                        \
-        if ((t = r->equal))                                                  \
-        {                                                                    \
+        if ((t = r->equal)) {                                                \
             t->left = (t->left->right = o);                                  \
-        }                                                                    \
-        else                                                                 \
-        {                                                                    \
+        } else {                                                             \
             r->equal = (o->left = o);                                        \
         }                                                                    \
     }

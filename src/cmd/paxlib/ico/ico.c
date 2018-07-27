@@ -110,8 +110,7 @@ ico_getprologue(Pax_t *pax,
     umask(ico->mode = umask(0));
     ico->mode = X_IFREG | (0666 & ~ico->mode);
     ico->entries = m;
-    if (paxread(pax, ap, ico->dir, n, n, 0) <= 0)
-    {
+    if (paxread(pax, ap, ico->dir, n, n, 0) <= 0) {
         free(ico);
         return 0;
     }
@@ -130,8 +129,7 @@ ico_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
     size_t offset;
     size_t size;
 
-    if (ap->entry > ico->entries)
-    {
+    if (ap->entry > ico->entries) {
         ap->io->eof = 1;
         return 0;
     }
@@ -203,8 +201,7 @@ ico_putprologue(Pax_t *pax, Paxarchive_t *ap, int append)
     Ico_t *ico = ( Ico_t * )ap->data;
     unsigned char hdr[ICO_HEADER];
 
-    if (!ico)
-    {
+    if (!ico) {
         if (!(ico = newof(0, Ico_t, 1, 0)) || !(ico->head = sfstropen())
             || !(ico->data = sftmp(64 * 1024)))
             return paxnospace(pax);
@@ -239,37 +236,30 @@ ico_putdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
         return paxnospace(pax);
     d = 1;
     z = f->st->st_size;
-    do
-    {
+    do {
         if ((n = sizeof(pax->buf)) > z)
             n = z;
-        if ((n = sfread(sp, pax->buf, n)) <= 0)
-        {
+        if ((n = sfread(sp, pax->buf, n)) <= 0) {
             if (pax->errorf)
                 (*pax->errorf)(
                 NiL, pax, 2, "%s: %s: read error", ap->name, f->name);
             return -1;
         }
         p = ( unsigned char * )pax->buf;
-        if (d)
-        {
-            if (n < ICO_HEADER + ICO_DIRECTORY)
-            {
+        if (d) {
+            if (n < ICO_HEADER + ICO_DIRECTORY) {
                 if (pax->errorf)
                     (*pax->errorf)(
                     NiL, pax, 2, "%s: %s: read error", ap->name, f->name);
                 return -1;
             }
             if (swapget(3, p + 0, 2) == ICO_MAGIC
-                && swapget(3, p + 2, 2) == ICO_TYPE)
-            {
+                && swapget(3, p + 2, 2) == ICO_TYPE) {
                 sfwrite(ico->head, p + ICO_HEADER, ICO_DIRECTORY);
                 p += ICO_HEADER + ICO_DIRECTORY;
                 n -= ICO_HEADER + ICO_DIRECTORY;
                 z -= ICO_HEADER + ICO_DIRECTORY;
-            }
-            else if (!memcmp(p, "\x89PNG\x0d\x0a\x1a\x0a", 8))
-            {
+            } else if (!memcmp(p, "\x89PNG\x0d\x0a\x1a\x0a", 8)) {
                 dir[0] = (d = swapget(0, p + 16, 4)) < 256 ? d : 0;
                 dir[1] = (d = swapget(0, p + 20, 4)) < 256 ? d : 0;
                 dir[2] = ICO_PNG_COLORS;
@@ -279,9 +269,7 @@ ico_putdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
                 swapput(3, dir + 8, 2, f->st->st_size);
                 swapput(3, dir + 12, 2, 0);
                 sfwrite(ico->head, dir, ICO_DIRECTORY);
-            }
-            else
-            {
+            } else {
                 if (pax->errorf)
                     (*pax->errorf)(NiL,
                                    pax,
@@ -295,8 +283,7 @@ ico_putdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
         }
         sfwrite(ico->data, p, n);
     } while (z -= n);
-    if (sfclose(sp))
-    {
+    if (sfclose(sp)) {
         if (pax->errorf)
             (*pax->errorf)(
             NiL, pax, 2, "%s: %s: write error", ap->name, f->name);
@@ -319,8 +306,7 @@ ico_putepilogue(Pax_t *pax, Paxarchive_t *ap)
     swapput(3, p + 4, 2, ap->entry);
     p += ICO_HEADER;
     size = offset = ICO_HEADER + ap->entries * ICO_DIRECTORY;
-    for (i = 0; i < ap->entry; i++)
-    {
+    for (i = 0; i < ap->entry; i++) {
         swapput(3, p + 12, 4, offset);
         offset += swapget(3, p + 8, 4);
         p += ICO_DIRECTORY;
@@ -329,8 +315,7 @@ ico_putepilogue(Pax_t *pax, Paxarchive_t *ap)
     sfseek(ico->data, 0, SEEK_SET);
     while ((i = sfread(ico->data, pax->buf, sizeof(pax->buf))) > 0)
         paxwrite(pax, ap, pax->buf, i);
-    if (i < 0)
-    {
+    if (i < 0) {
         if (pax->errorf)
             (*pax->errorf)(NiL, pax, 2, "%s: write error", ap->name);
         return -1;

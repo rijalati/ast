@@ -53,17 +53,13 @@ Void_t *params;
     Vcmtarg_t *arg;
     char *data, val[1024];
 
-    if (!(lz4 = vcgetmtdata(vc, Lz4_t *)))
-    {
+    if (!(lz4 = vcgetmtdata(vc, Lz4_t *))) {
         return -1;
     }
-    for (data = ( char * )params; data;)
-    {
+    for (data = ( char * )params; data;) {
         data = vcgetmtarg(data, val, sizeof(val), _Lz4args, &arg);
-        if (arg)
-        {
-            switch (TYPECAST(int, arg->data))
-            {
+        if (arg) {
+            switch (TYPECAST(int, arg->data)) {
             case LZ4_CLEVEL:
                 lz4->clevel = vcatoi(val);
                 break;
@@ -86,8 +82,7 @@ Void_t *params;
     /*
      * Construct the Lz4_t to hold the parameters
      */
-    if (!(lz4 = ( Lz4_t * )calloc(1, sizeof(Lz4_t))))
-    {
+    if (!(lz4 = ( Lz4_t * )calloc(1, sizeof(Lz4_t)))) {
         return -1;
     }
     lz4->clevel = 0;
@@ -105,8 +100,7 @@ Void_t *params;
 {
     Lz4_t *lz4;
 
-    if (!(lz4 = vcgetmtdata(vc, Lz4_t *)))
-    {
+    if (!(lz4 = vcgetmtdata(vc, Lz4_t *))) {
         return -1;
     }
     free(lz4);
@@ -129,13 +123,11 @@ Void_t **out;
     ssize_t s;
     int os;
 
-    if (!(lz4 = vcgetmtdata(vc, Lz4_t *)))
-    {
+    if (!(lz4 = vcgetmtdata(vc, Lz4_t *))) {
         return -1;
     }
 
-    if (dtsz == 0)
-    {
+    if (dtsz == 0) {
         return 0;
     }
 
@@ -160,8 +152,7 @@ Void_t **out;
      * Determine which LZ4 compression method to use, based on the compression
      * level parameter
      */
-    switch (lz4->clevel)
-    {
+    switch (lz4->clevel) {
     case 0:
     default:
         os = LZ4_compress_limitedOutput(
@@ -174,17 +165,14 @@ Void_t **out;
         break;
     }
 
-    if (os <= 0 || os >= dtsz)
-    {
+    if (os <= 0 || os >= dtsz) {
         /*
          * The compression was no smaller, so signal the caller that they
          * should write this as a RAW block by returning a negative size.
          */
         vcbuffer(vc, output, -1, -1);
         return 0;
-    }
-    else
-    {
+    } else {
         /*
          * Note that the buffer has been written to for another os bytes
          */
@@ -213,8 +201,7 @@ Void_t **out;
         /*
          * Set the output buffer
          */
-        if (out)
-        {
+        if (out) {
             *out = output;
         }
         return s;
@@ -236,8 +223,7 @@ Void_t **out; /* return decoded data	*/
     ssize_t sz;
     int dsz;
 
-    if (dtsz == 0)
-    {
+    if (dtsz == 0) {
         return 0;
     }
     data = ( Vcchar_t * )orig;
@@ -272,8 +258,7 @@ Void_t **out; /* return decoded data	*/
      */
     if ((dsz = LZ4_uncompress_unknownOutputSize(
          ( char * )vcionext(&io), ( char * )output, vciomore(&io), sz))
-        < 0)
-    {
+        < 0) {
         vcbuffer(vc, output, -1, -1);
         return -1;
     }
@@ -302,8 +287,7 @@ int type;
 Void_t *params;
 #endif
 {
-    switch (type)
-    {
+    switch (type) {
     case VC_OPENING:
         return _lz4_opening(vc, params);
     case VC_SETMTARG:

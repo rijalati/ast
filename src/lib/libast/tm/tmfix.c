@@ -56,8 +56,7 @@ tmfix(Tm_t *tm)
      */
 
     if (w = !tm->tm_sec && !tm->tm_min && !tm->tm_mday && !tm->tm_year
-            && !tm->tm_yday && !tm->tm_isdst)
-    {
+            && !tm->tm_yday && !tm->tm_isdst) {
         tm->tm_year = 99;
         tm->tm_mday = 2;
     }
@@ -66,95 +65,72 @@ tmfix(Tm_t *tm)
      * adjust from shortest to longest units
      */
 
-    if ((n = tm->tm_nsec) < 0)
-    {
+    if ((n = tm->tm_nsec) < 0) {
         tm->tm_sec -= (TMX_RESOLUTION - n) / TMX_RESOLUTION;
         tm->tm_nsec = TMX_RESOLUTION - (-n) % TMX_RESOLUTION;
-    }
-    else if (n >= TMX_RESOLUTION)
-    {
+    } else if (n >= TMX_RESOLUTION) {
         tm->tm_sec += n / TMX_RESOLUTION;
         tm->tm_nsec %= TMX_RESOLUTION;
     }
-    if ((n = tm->tm_sec) < 0)
-    {
+    if ((n = tm->tm_sec) < 0) {
         tm->tm_min -= (60 - n) / 60;
         tm->tm_sec = 60 - (-n) % 60;
-    }
-    else if (n > (59 + TM_MAXLEAP))
-    {
+    } else if (n > (59 + TM_MAXLEAP)) {
         tm->tm_min += n / 60;
         tm->tm_sec %= 60;
     }
-    if ((n = tm->tm_min) < 0)
-    {
+    if ((n = tm->tm_min) < 0) {
         tm->tm_hour -= (60 - n) / 60;
         n = tm->tm_min = 60 - (-n) % 60;
     }
-    if (n > 59)
-    {
+    if (n > 59) {
         tm->tm_hour += n / 60;
         tm->tm_min %= 60;
     }
-    if ((n = tm->tm_hour) < 0)
-    {
+    if ((n = tm->tm_hour) < 0) {
         tm->tm_mday -= (23 - n) / 24;
         tm->tm_hour = 24 - (-n) % 24;
-    }
-    else if (n >= 24)
-    {
+    } else if (n >= 24) {
         tm->tm_mday += n / 24;
         tm->tm_hour %= 24;
     }
-    if (tm->tm_mon >= 12)
-    {
+    if (tm->tm_mon >= 12) {
         tm->tm_year += tm->tm_mon / 12;
         tm->tm_mon %= 12;
-    }
-    else if (tm->tm_mon < 0)
-    {
+    } else if (tm->tm_mon < 0) {
         tm->tm_year--;
-        if ((tm->tm_mon += 12) < 0)
-        {
+        if ((tm->tm_mon += 12) < 0) {
             tm->tm_year += tm->tm_mon / 12;
             tm->tm_mon = (-tm->tm_mon) % 12;
         }
     }
-    while (tm->tm_mday < -365)
-    {
+    while (tm->tm_mday < -365) {
         tm->tm_year--;
         tm->tm_mday += 365 + LEAP(tm);
     }
-    while (tm->tm_mday > 365)
-    {
+    while (tm->tm_mday > 365) {
         tm->tm_mday -= 365 + LEAP(tm);
         tm->tm_year++;
     }
-    while (tm->tm_mday < 1)
-    {
-        if (--tm->tm_mon < 0)
-        {
+    while (tm->tm_mday < 1) {
+        if (--tm->tm_mon < 0) {
             tm->tm_mon = 11;
             tm->tm_year--;
         }
         tm->tm_mday += DAYS(tm);
     }
-    while (tm->tm_mday > (n = DAYS(tm)))
-    {
+    while (tm->tm_mday > (n = DAYS(tm))) {
         tm->tm_mday -= n;
-        if (++tm->tm_mon > 11)
-        {
+        if (++tm->tm_mon > 11) {
             tm->tm_mon = 0;
             tm->tm_year++;
         }
     }
-    if (w)
-    {
+    if (w) {
         w = tm->tm_wday;
         t = tmtime(tm, TM_LOCALZONE);
         p = tmmake(&t);
-        if (w = (w - p->tm_wday))
-        {
+        if (w = (w - p->tm_wday)) {
             if (w < 0)
                 w += 7;
             tm->tm_wday += w;

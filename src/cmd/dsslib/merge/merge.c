@@ -84,8 +84,8 @@ ordercmp(Dt_t *dict, void *a, void *b, Dtdisc_t *disc)
     int r;
 
     for (k = 0, kp = state->keys; k < state->nkeys; k++, kp = kp->next)
-        if (cxisstring(kp->variable->type) || cxisbuffer(kp->variable->type))
-        {
+        if (cxisstring(kp->variable->type)
+            || cxisbuffer(kp->variable->type)) {
             az = ap->data[k].value.buffer.size;
             bz = bp->data[k].value.buffer.size;
             if (r = memcmp(ap->data[k].value.buffer.data,
@@ -96,8 +96,7 @@ ordercmp(Dt_t *dict, void *a, void *b, Dtdisc_t *disc)
                 return -kp->sense;
             if (az > bz)
                 return kp->sense;
-        }
-        else if (ap->data[k].value.number < bp->data[k].value.number)
+        } else if (ap->data[k].value.number < bp->data[k].value.number)
             return -kp->sense;
         else if (ap->data[k].value.number > bp->data[k].value.number)
             return kp->sense;
@@ -117,10 +116,8 @@ enter(Dss_t *dss, State_t *state, File_t *file)
 
     if (file->record)
         dtdelete(state->order, file);
-    if (file->record = dssfread(file->file))
-    {
-        for (k = 0, kp = state->keys; k < state->nkeys; k++, kp = kp->next)
-        {
+    if (file->record = dssfread(file->file)) {
+        for (k = 0, kp = state->keys; k < state->nkeys; k++, kp = kp->next) {
             x.data.variable = kp->variable;
             if ((*state->getf)(state->cx,
                                &x,
@@ -158,8 +155,7 @@ merge_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     Key_t *keys;
     Vmalloc_t *vm;
 
-    if (!(vm = vmopen(Vmdcheap, Vmbest, 0)))
-    {
+    if (!(vm = vmopen(Vmdcheap, Vmbest, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -170,16 +166,13 @@ merge_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     sfprintf(
     cx->buf, "%s%s", strchr(dss_lib_merge.description, '['), merge_usage);
     u = sfstruse(cx->buf);
-    for (;;)
-    {
-        switch (i = optget(argv, u))
-        {
+    for (;;) {
+        switch (i = optget(argv, u)) {
         case 'k':
         case 'r':
             if (!(variable = cxvariable(cx, opt_info.arg, NiL, disc)))
                 goto bad;
-            if (!(key = vmnewof(vm, 0, Key_t, 1, 0)))
-            {
+            if (!(key = vmnewof(vm, 0, Key_t, 1, 0))) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -215,8 +208,7 @@ merge_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     for (v = argv; *v; v++)
         ;
     n = v - argv;
-    if (files)
-    {
+    if (files) {
         for (v = files; *v; v++)
             ;
         n += v - files;
@@ -224,8 +216,7 @@ merge_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     if (!n)
         n = 1;
     if (!(state = vmnewof(vm, 0, State_t, 1, (n - 1) * sizeof(File_t)))
-        || !(operands = vmnewof(vm, 0, Cxoperand_t, n * k, 0)))
-    {
+        || !(operands = vmnewof(vm, 0, Cxoperand_t, n * k, 0))) {
         if (cx->disc->errorf)
             (*cx->disc->errorf)(
             NiL, cx->disc, ERROR_SYSTEM | 2, "out of space");
@@ -233,8 +224,7 @@ merge_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     }
     state->cx = cx;
     if (!(state->getf = cxcallout(
-          cx, CX_GET, cx->state->type_void, cx->state->type_void, cx->disc)))
-    {
+          cx, CX_GET, cx->state->type_void, cx->state->type_void, cx->disc))) {
         if (cx->disc->errorf)
             (*cx->disc->errorf)(NiL, cx->disc, 2, "CX_GET callout required");
         goto bad;
@@ -242,14 +232,12 @@ merge_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     state->nfiles = n;
     state->nkeys = k;
     state->keys = keys;
-    for (n = 0; n < state->nfiles; n++)
-    {
+    for (n = 0; n < state->nfiles; n++) {
         state->files[n].data = operands;
         operands += k;
     }
     state->orderdisc.comparf = ordercmp;
-    if (!(state->order = dtnew(vm, &state->orderdisc, Dtoset)))
-    {
+    if (!(state->order = dtnew(vm, &state->orderdisc, Dtoset))) {
         if (cx->disc->errorf)
             (*cx->disc->errorf)(
             NiL, cx->disc, ERROR_SYSTEM | 2, "out of space");
@@ -258,22 +246,19 @@ merge_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     n = 0;
     if (path = *argv)
         argv++;
-    else if (files)
-    {
+    else if (files) {
         argv = files;
         files = 0;
         if (path = *argv)
             argv++;
     }
-    for (;;)
-    {
+    for (;;) {
         if (!(state->files[n].file
               = dssfopen(dss, path, NiL, DSS_FILE_READ, NiL)))
             goto drop;
         enter(dss, state, &state->files[n]);
         n++;
-        if (!(path = *argv++))
-        {
+        if (!(path = *argv++)) {
             if (!files)
                 break;
             argv = files;
@@ -285,8 +270,7 @@ merge_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     expr = expr->pass;
     if (dssbeg(dss, expr))
         goto drop;
-    while (file = ( File_t * )dtfirst(state->order))
-    {
+    while (file = ( File_t * )dtfirst(state->order)) {
         if (dsseval(dss, expr, file->record) < 0)
             goto drop;
         enter(dss, state, file);

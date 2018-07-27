@@ -42,22 +42,18 @@
 #    include "ptv.h"
 
 #    define PTVSCAN(t, b, s)                                                 \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             Ptvprefix_t *_pt_p;                                              \
             unsigned int b;                                                  \
             fvset((t)->size, (t)->r[1], 1);                                  \
             for (_pt_p = ( Ptvprefix_t * )dtfirst((t)->dict); _pt_p;         \
-                 _pt_p = ( Ptvprefix_t * )dtnext((t)->dict, _pt_p))          \
-            {                                                                \
+                 _pt_p = ( Ptvprefix_t * )dtnext((t)->dict, _pt_p)) {        \
                 fvcpy((t)->size, (t)->r[2], _pt_p->min);                     \
-                do                                                           \
-                {                                                            \
+                do {                                                         \
                     fvcpy((t)->size, (t)->r[0], (t)->r[2]);                  \
                     fvset((t)->size, (t)->r[3], 1);                          \
                     b = (t)->size * 8;                                       \
-                    for (;;)                                                 \
-                    {                                                        \
+                    for (;;) {                                               \
                         if (fvcmp((t)->size, (t)->r[3], (t)->r[1]) < 0)      \
                             break;                                           \
                         if (fvodd((t)->size, (t)->r[0]))                     \

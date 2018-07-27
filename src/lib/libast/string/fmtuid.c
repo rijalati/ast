@@ -68,31 +68,25 @@ fmtuid(int uid)
     static Dt_t *dict;
     static Dtdisc_t disc;
 
-    if (!dict)
-    {
+    if (!dict) {
         disc.key = offsetof(Id_t, id);
         disc.size = sizeof(int);
         dict = dtopen(&disc, Dtset);
-    }
-    else if (ip = ( Id_t * )dtmatch(dict, &uid))
+    } else if (ip = ( Id_t * )dtmatch(dict, &uid))
         return ip->name;
-    if (pw = getpwuid(uid))
-    {
+    if (pw = getpwuid(uid)) {
         name = pw->pw_name;
 #if _WINIX
         if (streq(name, "Administrator"))
             name = "root";
 #endif
-    }
-    else if (uid == 0)
+    } else if (uid == 0)
         name = "root";
-    else
-    {
+    else {
         name = fmtbuf(z = sizeof(uid) * 3 + 1);
         sfsprintf(name, z, "%I*d", sizeof(uid), uid);
     }
-    if (dict && (ip = newof(0, Id_t, 1, strlen(name))))
-    {
+    if (dict && (ip = newof(0, Id_t, 1, strlen(name)))) {
         ip->id = uid;
         strcpy(ip->name, name);
         dtinsert(dict, ip);

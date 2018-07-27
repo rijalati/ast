@@ -72,8 +72,7 @@ Sfio_t *sp;
 {
     int n;
 
-    if (rs->events & RS_FILE_CLOSE)
-    {
+    if (rs->events & RS_FILE_CLOSE) {
         if ((n = rsnotify(rs, RS_FILE_CLOSE, sp, ( Void_t * )0, rs->disc))
             < 0)
             return -1;

@@ -65,8 +65,7 @@ visit(Node_t *x)
     List_t *p;
     int cycle = 0;
 
-    switch (x->state)
-    {
+    switch (x->state) {
     case NODE_CYCLE:
         error(1, "cycle in data");
         cycle = 1;
@@ -74,8 +73,7 @@ visit(Node_t *x)
     case NODE_INIT:
         x->state = NODE_CYCLE;
         for (p = x->prereqs; p; p = p->next)
-            if (visit(p->node))
-            {
+            if (visit(p->node)) {
                 cycle = 1;
                 error(2, " %s", hashname(( Hash_bucket_t * )x));
                 break;
@@ -101,10 +99,8 @@ tsort(Sfio_t *ip)
 
     if (!(tab = hashalloc(NiL, HASH_set, HASH_ALLOCATE, 0)))
         error(ERROR_exit(1), "out of space [hash table]");
-    while (s = sfgetr(ip, '\n', 1))
-    {
-        do
-        {
+    while (s = sfgetr(ip, '\n', 1)) {
+        do {
             while (*s == ' ' || *s == '\t')
                 s++;
             if (*s == 0)
@@ -115,10 +111,8 @@ tsort(Sfio_t *ip)
             if (!(x = ( Node_t * )hashlook(
                   tab, b, HASH_CREATE | HASH_SIZE(sizeof(Node_t)), 0)))
                 error(ERROR_exit(1), "out of space [hash entry]");
-            if (head)
-            {
-                if (head != x)
-                {
+            if (head) {
+                if (head != x) {
                     if (!(p = newof(0, List_t, 1, 0)))
                         error(ERROR_exit(1), "out of space [hash list]");
                     p->node = head;
@@ -126,8 +120,7 @@ tsort(Sfio_t *ip)
                     x->prereqs = p;
                 }
                 head = 0;
-            }
-            else
+            } else
                 head = x;
         } while (c);
     }
@@ -135,13 +128,11 @@ tsort(Sfio_t *ip)
         error(ERROR_warn(1), "last line incomplete");
     if (head)
         error(ERROR_exit(1), "odd data");
-    if (pos = hashscan(tab, 0))
-    {
+    if (pos = hashscan(tab, 0)) {
         while (hashnext(pos))
             visit(( Node_t * )pos->bucket);
         hashdone(pos);
-    }
-    else
+    } else
         error(ERROR_exit(1), "hash error");
     hashfree(tab);
 }
@@ -153,10 +144,8 @@ main(int argc, char **argv)
 
     NoP(argc);
     error_info.id = "tsort";
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case ':':
             error(2, "%s", opt_info.arg);
             break;

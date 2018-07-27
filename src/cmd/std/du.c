@@ -102,13 +102,10 @@ mark(Dt_t *dict, Hit_t *key, FTSENT *ent)
 
     static int warned;
 
-    if (hit = newof(0, Hit_t, 1, 0))
-    {
+    if (hit = newof(0, Hit_t, 1, 0)) {
         *hit = *key;
         dtinsert(dict, hit);
-    }
-    else if (!warned)
-    {
+    } else if (!warned) {
         warned = 1;
         error(1, "%s: file id dictionary out of space", ent->fts_path);
     }
@@ -145,10 +142,8 @@ main(int argc, char **argv)
     error_info.id = "du";
     blocksize = 0;
     flags = FTS_PHYSICAL | FTS_NOSEEDOTDIR;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             all = 1;
             continue;
@@ -222,28 +217,21 @@ main(int argc, char **argv)
     dirs = logical || multiple;
     if (!(fts = fts_open(argv, flags, NiL)))
         error(ERROR_system(1), "%s: not found", argv[1]);
-    while (ent = fts_read(fts))
-    {
-        if (ent->fts_info != FTS_DP)
-        {
-            if (multiple && !ent->fts_level)
-            {
-                if (s = strrchr(ent->fts_path, '/'))
-                {
+    while (ent = fts_read(fts)) {
+        if (ent->fts_info != FTS_DP) {
+            if (multiple && !ent->fts_level) {
+                if (s = strrchr(ent->fts_path, '/')) {
                     *s = 0;
                     d = ent->fts_path;
-                }
-                else
+                } else
                     d = "..";
-                if (stat(d, &st))
-                {
+                if (stat(d, &st)) {
                     error(ERROR_SYSTEM | 2, "%s: cannot stat", d);
                     continue;
                 }
                 hit.id.dev = st.st_dev;
                 hit.id.ino = st.st_ino;
-                if (dtsearch(dict, &hit))
-                {
+                if (dtsearch(dict, &hit)) {
                     fts_set(NiL, ent, FTS_SKIP);
                     continue;
                 }
@@ -252,16 +240,14 @@ main(int argc, char **argv)
             }
             hit.id.dev = ent->fts_statp->st_dev;
             hit.id.ino = ent->fts_statp->st_ino;
-            if (dirs && dtsearch(dict, &hit))
-            {
+            if (dirs && dtsearch(dict, &hit)) {
                 fts_set(NiL, ent, FTS_SKIP);
                 continue;
             }
         }
         list = !summary;
         n = 0;
-        switch (ent->fts_info)
-        {
+        switch (ent->fts_info) {
         case FTS_NS:
             if (!silent)
                 error(ERROR_SYSTEM | 2, "%s: not found", ent->fts_path);
@@ -289,15 +275,13 @@ main(int argc, char **argv)
             fts_set(NiL, ent, FTS_SKIP);
             break;
         case FTS_DP:
-            if (ent->fts_pointer)
-            {
+            if (ent->fts_pointer) {
                 n = *( Count_t * )ent->fts_pointer;
                 free(ent->fts_pointer);
             }
             break;
         case FTS_SL:
-            if (logical)
-            {
+            if (logical) {
                 fts_set(NiL, ent, FTS_FOLLOW);
                 continue;
             }
@@ -314,8 +298,7 @@ main(int argc, char **argv)
         n += b;
         if (ent->fts_parent->fts_pointer)
             *( Count_t * )ent->fts_parent->fts_pointer += n;
-        if (!total && (list || ent->fts_level <= 0))
-        {
+        if (!total && (list || ent->fts_level <= 0)) {
             if (scale)
                 sfprintf(sfstdout,
                          "%s\t%s\n",
@@ -329,8 +312,7 @@ main(int argc, char **argv)
                          ent->fts_path);
         }
     }
-    if (total)
-    {
+    if (total) {
         if (scale)
             sfprintf(sfstdout, "%s\n", fmtscale(count * blocksize, scale));
         else

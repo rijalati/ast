@@ -29,8 +29,7 @@ tmain()
     if (!(vm = vmopen(Vmdcheap, Vmbest, 0)))
         terror("Can't open a region");
 
-    for (i = 0; i < 10; i += 2)
-    {
+    for (i = 0; i < 10; i += 2) {
         addr[i] = vmalloc(vm, 88);
         if (((( Vmulong_t )addr[i]) % ALIGN) != 0)
             terror("Unaligned addr");
@@ -40,8 +39,7 @@ tmain()
             terror("Unaligned addr");
     }
 
-    for (i = 0; i < 10; i += 2)
-    {
+    for (i = 0; i < 10; i += 2) {
         if ((tv = vmregion(addr[i])) != vm)
             terror("Wrong region");
         if ((tv = vmregion(addr[i + 1])) != Vmheap)

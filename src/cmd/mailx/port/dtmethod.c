@@ -103,8 +103,7 @@ Dtmethod_t *meth;
     list = dtflatten(dt);
     if (dt->data->type & DT_LIST)
         dt->data->head = NIL(Dtlink_t *);
-    else if (dt->data->type & DT_HASH)
-    {
+    else if (dt->data->type & DT_HASH) {
         if (dt->data->ntab > 0)
             (*dt->memoryf)(dt, ( Void_t * )dt->data->htab, 0, disc);
         dt->data->ntab = 0;
@@ -121,8 +120,8 @@ Dtmethod_t *meth;
     if (dt->searchf == oldmeth->searchf)
         dt->searchf = searchf;
 
-    if ((meth->type & DT_HASH) && nhash > 0)
-    { /* set hash table to proper size */
+    if ((meth->type & DT_HASH)
+        && nhash > 0) { /* set hash table to proper size */
         for (n = HSLOT; HLOAD(n) < nhash;)
             n = HRESIZE(n);
         slot = ( Dtlink_t ** )(*dt->memoryf)(
@@ -137,11 +136,9 @@ Dtmethod_t *meth;
 
     /* reinsert */
     n = meth->type & DT_HASH;
-    while (list)
-    {
+    while (list) {
         t = list->right;
-        if (n)
-        {
+        if (n) {
             reg char *key = ( char * )OBJ(list, disc);
             key = KEY(( Void_t * )key, disc);
             list->hash = HASH(dt, key, disc);

@@ -172,13 +172,11 @@ outline(Sfio_t *out, struct utmpx *up, State_t *sp)
     char *date = ctime(&t);
     char line[sizeof(up->ut_line) + 6];
     int r = 0;
-    if (sp->flags & (FLAG_T | FLAG_U))
-    {
+    if (sp->flags & (FLAG_T | FLAG_U)) {
         sfsprintf(line, sizeof(line), "/dev/%s\0", up->ut_line);
         r = stat(line, &statb);
     }
-    if (sp->flags & FLAG_T)
-    {
+    if (sp->flags & FLAG_T) {
         int state = '?';
         if (r >= 0)
             state = (statb.st_mode & S_IWOTH) ? '+' : '-';
@@ -192,8 +190,7 @@ outline(Sfio_t *out, struct utmpx *up, State_t *sp)
                  sp->siz_line,
                  up->ut_line,
                  date + 4);
-    }
-    else
+    } else
         sfprintf(out,
                  "%-*.*s %-*.*s %.12s ",
                  sp->siz_user,
@@ -203,19 +200,16 @@ outline(Sfio_t *out, struct utmpx *up, State_t *sp)
                  sp->siz_line,
                  up->ut_line,
                  date + 4);
-    if (sp->flags & FLAG_U)
-    {
+    if (sp->flags & FLAG_U) {
         time_t t = time(0) - 30;
         sfsprintf(line, sizeof(line), "/dev/%s\0", up->ut_line);
-        if (r >= 0 && statb.st_atime < t)
-        {
+        if (r >= 0 && statb.st_atime < t) {
             t = (t - (up->ut_time + 30)) / 60;
             if (t > 24 * 60)
                 sfprintf(out, " old  ");
             else
                 sfprintf(out, "%.2d:%.2d ", t / 60, t % 60);
-        }
-        else
+        } else
             sfprintf(out, "  .   ");
     }
 #if _mem_ut_host_utmp || _mem_ut_host_utmpx
@@ -250,8 +244,7 @@ who(Sfio_t *in, Sfio_t *out, int flags)
     if ((state.flags & FLAG_M)
         && ((line = ttyname(0)) || (line = ttyname(2))))
         line += 5;
-    if (state.flags & FLAG_H)
-    {
+    if (state.flags & FLAG_H) {
         char *t = "";
         if (state.flags & FLAG_T)
             t = "MESG";
@@ -281,19 +274,16 @@ who(Sfio_t *in, Sfio_t *out, int flags)
                      "LOGIN-TIME",
                      "FROM");
     }
-    while (sfread(in, &ut, sizeof(struct utmpx)) > 0)
-    {
+    while (sfread(in, &ut, sizeof(struct utmpx)) > 0) {
         if (skip(ut))
             continue;
         if (line && strcmp(line, ut.ut_line))
             continue;
-        if (state.flags & FLAG_Q)
-        {
+        if (state.flags & FLAG_Q) {
             if (count)
                 sfputc(out, ' ');
             sfprintf(out, "%s", ut.ut_user);
-        }
-        else
+        } else
             outline(out, &ut, &state);
         count++;
     }
@@ -310,8 +300,7 @@ b_who(int argc, char **argv, Shbltin_t *context)
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
     while (n = optget(argv, usage))
-        switch (n)
-        {
+        switch (n) {
         case 'm':
             flags |= FLAG_M;
             break;
@@ -340,8 +329,7 @@ b_who(int argc, char **argv, Shbltin_t *context)
         }
     argv += opt_info.index;
     argc -= opt_info.index;
-    if (argc == 2)
-    {
+    if (argc == 2) {
         flags |= FLAG_M;
         argc = 0;
     }

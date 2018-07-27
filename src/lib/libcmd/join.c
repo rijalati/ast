@@ -192,8 +192,7 @@ init(void)
     Join_t *jp;
     int i;
 
-    if (jp = newof(0, Join_t, 1, 0))
-    {
+    if (jp = newof(0, Join_t, 1, 0)) {
         if (jp->mb = mbwide())
             for (i = 0x80; i <= 0xff; i++)
                 jp->state[i] = S_WIDE;
@@ -202,8 +201,7 @@ init(void)
         jp->delim = -1;
         jp->nullfield = 0;
         if (!(jp->file[0].fields = newof(0, Field_t, NFIELD + 1, 0))
-            || !(jp->file[1].fields = newof(0, Field_t, NFIELD + 1, 0)))
-        {
+            || !(jp->file[1].fields = newof(0, Field_t, NFIELD + 1, 0))) {
             done(jp);
             return 0;
         }
@@ -227,21 +225,18 @@ getolist(Join_t *jp, const char *first, char **arglist)
 
     outptr = jp->outlist = newof(0, int, NFIELD + 1, 0);
     outmax = outptr + NFIELD;
-    while (c = *cp++)
-    {
+    while (c = *cp++) {
         if (c == ' ' || c == '\t' || c == ',')
             continue;
         str = ( char * )--cp;
         if (*cp == '0'
-            && ((c = cp[1]) == 0 || c == ' ' || c == '\t' || c == ','))
-        {
+            && ((c = cp[1]) == 0 || c == ' ' || c == '\t' || c == ',')) {
             str++;
             c = JOINFIELD;
             goto skip;
         }
         if (cp[1] != '.' || (*cp != '1' && *cp != '2')
-            || (c = strtol(cp + 2, &str, 10)) <= 0)
-        {
+            || (c = strtol(cp + 2, &str, 10)) <= 0) {
             error(2, "%s: invalid field list", first);
             break;
         }
@@ -250,8 +245,7 @@ getolist(Join_t *jp, const char *first, char **arglist)
         if (*cp == '2')
             c |= 1;
     skip:
-        if (outptr >= outmax)
-        {
+        if (outptr >= outmax) {
             jp->outlist = newof(jp->outlist, int, 2 * nfield + 1, 0);
             outptr = jp->outlist + nfield;
             nfield *= 2;
@@ -261,12 +255,9 @@ getolist(Join_t *jp, const char *first, char **arglist)
         cp = str;
     }
     /* need to accept obsolescent command syntax */
-    while (cp = *argv)
-    {
-        if (cp[1] != '.' || (*cp != '1' && *cp != '2'))
-        {
-            if (*cp == '0' && cp[1] == 0)
-            {
+    while (cp = *argv) {
+        if (cp[1] != '.' || (*cp != '1' && *cp != '2')) {
+            if (*cp == '0' && cp[1] == 0) {
                 c = JOINFIELD;
                 goto skip2;
             }
@@ -281,8 +272,7 @@ getolist(Join_t *jp, const char *first, char **arglist)
         if (*cp == '2')
             c |= 1;
     skip2:
-        if (outptr >= outmax)
-        {
+        if (outptr >= outmax) {
             jp->outlist = newof(jp->outlist, int, 2 * nfield + 1, 0);
             outptr = jp->outlist + nfield;
             nfield *= 2;
@@ -315,8 +305,7 @@ getrec(Join_t *jp, int index, int discard)
         sfraise(fp->iop, SFSK_DISCARD, NiL);
     fp->spaces = 0;
     fp->hit = 0;
-    if (!(cp = sfgetr(fp->iop, '\n', 0)))
-    {
+    if (!(cp = sfgetr(fp->iop, '\n', 0))) {
         jp->outmode &= ~(1 << index);
         return 0;
     }
@@ -328,12 +317,10 @@ getrec(Join_t *jp, int index, int discard)
         cp += fp->reclen;
         field->end = cp - 1;
         field++;
-    }
-    else
+    } else
         do /* separate into fields */
         {
-            if (field >= fieldmax)
-            {
+            if (field >= fieldmax) {
                 n = 2 * fp->maxfields;
                 fp->fields = newof(fp->fields, Field_t, n + 1, 0);
                 field = fp->fields + fp->maxfields;
@@ -341,17 +328,14 @@ getrec(Join_t *jp, int index, int discard)
                 fieldmax = fp->fields + n;
             }
             field->beg = cp;
-            if (jp->delim == -1)
-            {
-                switch (sp[*( unsigned char * )cp])
-                {
+            if (jp->delim == -1) {
+                switch (sp[*( unsigned char * )cp]) {
                 case S_SPACE:
                     cp++;
                     break;
                 case S_WIDE:
                     tp = cp;
-                    if (iswspace(mbchar(&w, tp, MB_LEN_MAX, &jp->q)))
-                    {
+                    if (iswspace(mbchar(&w, tp, MB_LEN_MAX, &jp->q))) {
                         cp = tp;
                         break;
                     }
@@ -361,16 +345,13 @@ getrec(Join_t *jp, int index, int discard)
                 }
                 fp->spaces = 1;
                 if (jp->mb)
-                    for (;;)
-                    {
-                        switch (sp[*( unsigned char * )cp++])
-                        {
+                    for (;;) {
+                        switch (sp[*( unsigned char * )cp++]) {
                         case S_SPACE:
                             continue;
                         case S_WIDE:
                             tp = cp - 1;
-                            if (iswspace(mbchar(&w, tp, MB_LEN_MAX, &jp->q)))
-                            {
+                            if (iswspace(mbchar(&w, tp, MB_LEN_MAX, &jp->q))) {
                                 cp = tp;
                                 continue;
                             }
@@ -384,25 +365,20 @@ getrec(Join_t *jp, int index, int discard)
                 cp--;
             }
         next:
-            if (jp->mb)
-            {
-                for (;;)
-                {
+            if (jp->mb) {
+                for (;;) {
                     tp = cp;
-                    switch (n = sp[*( unsigned char * )cp++])
-                    {
+                    switch (n = sp[*( unsigned char * )cp++]) {
                     case 0:
                         continue;
                     case S_WIDE:
                         cp--;
                         n = mbchar(&w, cp, MB_LEN_MAX, &jp->q);
-                        if (n == jp->delim)
-                        {
+                        if (n == jp->delim) {
                             n = S_DELIM;
                             break;
                         }
-                        if (jp->delim == -1 && iswspace(n))
-                        {
+                        if (jp->delim == -1 && iswspace(n)) {
                             n = S_SPACE;
                             break;
                         }
@@ -411,9 +387,7 @@ getrec(Join_t *jp, int index, int discard)
                     break;
                 }
                 field->end = tp;
-            }
-            else
-            {
+            } else {
                 while (!(n = sp[*( unsigned char * )cp++]))
                     ;
                 field->end = cp - 1;
@@ -421,23 +395,18 @@ getrec(Join_t *jp, int index, int discard)
             field++;
         } while (n != S_NL);
     fp->nfields = field - fp->fields;
-    if ((n = fp->field) < fp->nfields)
-    {
+    if ((n = fp->field) < fp->nfields) {
         cp = fp->fields[n].beg;
         /* eliminate leading spaces */
-        if (fp->spaces)
-        {
+        if (fp->spaces) {
             if (jp->mb)
-                for (;;)
-                {
-                    switch (sp[*( unsigned char * )cp++])
-                    {
+                for (;;) {
+                    switch (sp[*( unsigned char * )cp++]) {
                     case S_SPACE:
                         continue;
                     case S_WIDE:
                         tp = cp - 1;
-                        if (iswspace(mbchar(&w, tp, MB_LEN_MAX, &jp->q)))
-                        {
+                        if (iswspace(mbchar(&w, tp, MB_LEN_MAX, &jp->q))) {
                             cp = tp;
                             continue;
                         }
@@ -485,31 +454,24 @@ outfield(Join_t *jp, int index, int n, int last)
     char *tp;
     wchar_t w;
 
-    if (n < fp->nfields)
-    {
+    if (n < fp->nfields) {
         cp = fp->fields[n].beg;
         cpmax = fp->fields[n].end + 1;
-    }
-    else
+    } else
         cp = 0;
-    if ((n = jp->delim) == -1)
-    {
-        if (cp && fp->spaces)
-        {
+    if ((n = jp->delim) == -1) {
+        if (cp && fp->spaces) {
             unsigned char *sp = jp->state;
 
             /*eliminate leading spaces */
             if (jp->mb)
-                for (;;)
-                {
-                    switch (sp[*( unsigned char * )cp++])
-                    {
+                for (;;) {
+                    switch (sp[*( unsigned char * )cp++]) {
                     case S_SPACE:
                         continue;
                     case S_WIDE:
                         tp = cp - 1;
-                        if (iswspace(mbchar(&w, tp, MB_LEN_MAX, &jp->q)))
-                        {
+                        if (iswspace(mbchar(&w, tp, MB_LEN_MAX, &jp->q))) {
                             cp = tp;
                             continue;
                         }
@@ -523,8 +485,7 @@ outfield(Join_t *jp, int index, int n, int last)
             cp--;
         }
         n = ' ';
-    }
-    else if (jp->delimstr)
+    } else if (jp->delimstr)
         n = -1;
     if (last)
         n = '\n';
@@ -532,27 +493,20 @@ outfield(Join_t *jp, int index, int n, int last)
         size = cpmax - cp;
     else
         size = 0;
-    if (n == -1)
-    {
-        if (size <= 1)
-        {
+    if (n == -1) {
+        if (size <= 1) {
             if (jp->nullfield && sfputr(iop, jp->nullfield, -1) < 0)
                 return -1;
-        }
-        else if (sfwrite(iop, cp, size) < 0)
+        } else if (sfwrite(iop, cp, size) < 0)
             return -1;
         if (sfwrite(iop, jp->delimstr, jp->delimlen) < 0)
             return -1;
-    }
-    else if (size <= 1)
-    {
+    } else if (size <= 1) {
         if (!jp->nullfield)
             sfputc(iop, n);
         else if (sfputr(iop, jp->nullfield, n) < 0)
             return -1;
-    }
-    else
-    {
+    } else {
         last = cp[size - 1];
         cp[size - 1] = n;
         if (sfwrite(iop, cp, size) < 0)
@@ -584,17 +538,12 @@ outrec(Join_t *jp, int mode)
         return 0;
     if (mode > 0 && jp->file[1].hit++)
         return 0;
-    if (out = jp->outlist)
-    {
-        while ((n = *out++) >= 0)
-        {
-            if (n == JOINFIELD)
-            {
+    if (out = jp->outlist) {
+        while ((n = *out++) >= 0) {
+            if (n == JOINFIELD) {
                 i = mode >= 0;
                 j = jp->file[i].field;
-            }
-            else
-            {
+            } else {
                 i = n & 1;
                 j = (mode < 0 && i || mode > 0 && !i) ? jp->file[i].nfields
                                                       : n >> 2;
@@ -607,35 +556,29 @@ outrec(Join_t *jp, int mode)
     k = jp->file[0].nfields;
     if (mode >= 0)
         k += jp->file[1].nfields - 1;
-    for (i = 0; i < 2; i++)
-    {
+    for (i = 0; i < 2; i++) {
         fp = &jp->file[i];
-        if (mode > 0 && i == 0)
-        {
+        if (mode > 0 && i == 0) {
             k -= (fp->nfields - 1);
             continue;
         }
         n = fp->field;
-        if (mode || i == 0)
-        {
+        if (mode || i == 0) {
             /* output join field first */
             if (outfield(jp, i, n, !--k) < 0)
                 return -1;
             if (!k)
                 return 0;
-            for (j = 0; j < n; j++)
-            {
+            for (j = 0; j < n; j++) {
                 if (outfield(jp, i, j, !--k) < 0)
                     return -1;
                 if (!k)
                     return 0;
             }
             j = n + 1;
-        }
-        else
+        } else
             j = 0;
-        for (; j < fp->nfields; j++)
-        {
+        for (; j < fp->nfields; j++) {
             if (j != n && outfield(jp, i, j, !--k) < 0)
                 return -1;
             if (!k)
@@ -676,13 +619,11 @@ join(Join_t *jp)
     Sfoff_t lo = -1;
     Sfoff_t hi = -1;
 
-    if ((cp1 = getrec(jp, 0, 0)) && (cp2 = getrec(jp, 1, 0)) || (cp2 = 0))
-    {
+    if ((cp1 = getrec(jp, 0, 0)) && (cp2 = getrec(jp, 1, 0)) || (cp2 = 0)) {
         n1 = jp->file[0].fieldlen;
         n2 = jp->file[1].fieldlen;
         same = 0;
-        for (;;)
-        {
+        for (;;) {
             n = n1 < n2 ? n1 : n2;
 #if DEBUG_TRACE
             if (!n && !(cmp = n1 < n2 ? -1 : (n1 > n2))
@@ -711,10 +652,8 @@ join(Join_t *jp)
                    && !(cmp = n1 - n2))
 #endif
             {
-                if (!(jp->outmode & C_COMMON))
-                {
-                    if (cp1 = getrec(jp, 0, 1))
-                    {
+                if (!(jp->outmode & C_COMMON)) {
+                    if (cp1 = getrec(jp, 0, 1)) {
                         n1 = jp->file[0].fieldlen;
                         same = 1;
                         continue;
@@ -725,47 +664,37 @@ join(Join_t *jp)
                                ( Sfoff_t )-jp->file[0].reclen,
                                SEEK_CUR)
                         < 0
-                        || !(cp1 = getrec(jp, 0, 0)))
-                    {
+                        || !(cp1 = getrec(jp, 0, 0))) {
                         error(
                         ERROR_SYSTEM | 2, "%s: seek error", jp->file[0].name);
                         return -1;
                     }
-                }
-                else if (outrec(jp, 0) < 0)
+                } else if (outrec(jp, 0) < 0)
                     return -1;
-                else if (lo < 0 && (jp->outmode & C_COMMON))
-                {
+                else if (lo < 0 && (jp->outmode & C_COMMON)) {
                     if ((lo = sfseek(jp->file[1].iop, ( Sfoff_t )0, SEEK_CUR))
-                        < 0)
-                    {
+                        < 0) {
                         error(
                         ERROR_SYSTEM | 2, "%s: seek error", jp->file[1].name);
                         return -1;
                     }
                     lo -= jp->file[1].reclen;
                 }
-                if (cp2 = getrec(jp, 1, lo < 0))
-                {
+                if (cp2 = getrec(jp, 1, lo < 0)) {
                     n2 = jp->file[1].fieldlen;
                     continue;
                 }
 #if DEBUG_TRACE
                 sfprintf(sfstdout, "[2#%d:0,%lld,%lld]", __LINE__, lo, hi);
 #endif
-            }
-            else if (cmp > 0)
-            {
-                if (same)
-                {
+            } else if (cmp > 0) {
+                if (same) {
                     same = 0;
                 next:
-                    if (n2 > jp->samesize)
-                    {
+                    if (n2 > jp->samesize) {
                         jp->samesize = roundof(n2, 16);
                         if (!(jp->same
-                              = newof(jp->same, char, jp->samesize, 0)))
-                        {
+                              = newof(jp->same, char, jp->samesize, 0))) {
                             error(ERROR_SYSTEM | 2, "out of space");
                             return -1;
                         }
@@ -779,43 +708,35 @@ join(Join_t *jp)
                         goto next;
                     continue;
                 }
-                if (hi >= 0)
-                {
-                    if (sfseek(jp->file[1].iop, hi, SEEK_SET) != hi)
-                    {
+                if (hi >= 0) {
+                    if (sfseek(jp->file[1].iop, hi, SEEK_SET) != hi) {
                         error(
                         ERROR_SYSTEM | 2, "%s: seek error", jp->file[1].name);
                         return -1;
                     }
                     hi = -1;
-                }
-                else if ((jp->outmode & C_FILE2) && outrec(jp, 1) < 0)
+                } else if ((jp->outmode & C_FILE2) && outrec(jp, 1) < 0)
                     return -1;
                 lo = -1;
-                if (cp2 = getrec(jp, 1, 1))
-                {
+                if (cp2 = getrec(jp, 1, 1)) {
                     n2 = jp->file[1].fieldlen;
                     continue;
                 }
 #if DEBUG_TRACE
                 sfprintf(sfstdout, "[2#%d:0,%lld,%lld]", __LINE__, lo, hi);
 #endif
-            }
-            else if (same)
-            {
+            } else if (same) {
                 same = 0;
                 if (!(cp1 = getrec(jp, 0, 0)))
                     break;
                 n1 = jp->file[0].fieldlen;
                 continue;
             }
-            if (lo >= 0)
-            {
+            if (lo >= 0) {
                 if ((hi = sfseek(jp->file[1].iop, ( Sfoff_t )0, SEEK_CUR)) < 0
                     || (hi -= jp->file[1].reclen) < 0
                     || sfseek(jp->file[1].iop, lo, SEEK_SET) != lo
-                    || !(cp2 = getrec(jp, 1, 0)))
-                {
+                    || !(cp2 = getrec(jp, 1, 0))) {
                     error(
                     ERROR_SYSTEM | 2, "%s: seek error", jp->file[1].name);
                     return -1;
@@ -824,8 +745,7 @@ join(Join_t *jp)
                 lo = -1;
                 if (jp->file[1].discard)
                     sfseek(jp->file[1].iop, ( Sfoff_t )-1, SEEK_SET);
-            }
-            else if (!cp2)
+            } else if (!cp2)
                 break;
             else if ((jp->outmode & C_FILE1) && outrec(jp, -1) < 0)
                 return -1;
@@ -845,11 +765,9 @@ join(Join_t *jp)
              hi,
              (jp->outmode & C_COMMON) ? ",COMMON" : "");
 #endif
-    if (cp2)
-    {
+    if (cp2) {
         if (hi >= 0 && sfseek(jp->file[1].iop, ( Sfoff_t )0, SEEK_CUR) < hi
-            && sfseek(jp->file[1].iop, hi, SEEK_SET) != hi)
-        {
+            && sfseek(jp->file[1].iop, hi, SEEK_SET) != hi) {
             error(ERROR_SYSTEM | 2, "%s: seek error", jp->file[1].name);
             return -1;
         }
@@ -863,9 +781,7 @@ join(Join_t *jp)
               : getrec(jp, 1, 0);
         cmp = 1;
         n = 1;
-    }
-    else
-    {
+    } else {
         cmp = -1;
         n = 0;
     }
@@ -881,16 +797,14 @@ join(Join_t *jp)
              jp->outmode,
              (jp->outmode & C_COMMON) ? ",COMMON" : "");
 #endif
-    if (!cp1 || !(jp->outmode & (1 << n)))
-    {
+    if (!cp1 || !(jp->outmode & (1 << n))) {
         if (cp1 && jp->file[n].iop == sfstdin)
             sfseek(sfstdin, ( Sfoff_t )0, SEEK_END);
         return 0;
     }
     if (outrec(jp, cmp) < 0)
         return -1;
-    do
-    {
+    do {
         if (!getrec(jp, n, 1))
             return 0;
     } while (outrec(jp, cmp) >= 0);
@@ -914,44 +828,35 @@ b_join(int argc, char **argv, Shbltin_t *context)
     if (!(jp = init()))
         error(ERROR_system(1), "out of space");
     jp->context = context;
-    for (;;)
-    {
-        switch (n = optget(argv, usage))
-        {
+    for (;;) {
+        switch (n = optget(argv, usage)) {
         case 'j':
             /*
              * check for obsolete "-j1 field" and "-j2 field"
              */
 
-            if (opt_info.offset == 0)
-            {
+            if (opt_info.offset == 0) {
                 cp = argv[opt_info.index - 1];
                 for (n = strlen(cp) - 1; n > 0 && cp[n] != 'j'; n--)
                     ;
                 n = cp[n] == 'j';
-            }
-            else
+            } else
                 n = 0;
-            if (n)
-            {
+            if (n) {
                 if (opt_info.num != 1 && opt_info.num != 2)
                     error(2, "-jfileno field: fileno must be 1 or 2");
                 n = '0' + opt_info.num;
-                if (!(cp = argv[opt_info.index]))
-                {
+                if (!(cp = argv[opt_info.index])) {
                     argc = 0;
                     break;
                 }
                 opt_info.num = strtol(cp, &e, 10);
-                if (*e)
-                {
+                if (*e) {
                     argc = 0;
                     break;
                 }
                 opt_info.index++;
-            }
-            else
-            {
+            } else {
                 jp->file[0].field = ( int )(opt_info.num - 1);
                 n = '2';
             }
@@ -980,13 +885,11 @@ b_join(int argc, char **argv, Shbltin_t *context)
             continue;
         case 't':
             jp->state[' '] = jp->state['\t'] = 0;
-            if (jp->mb)
-            {
+            if (jp->mb) {
                 cp = opt_info.arg;
                 mbinit(&q);
                 jp->delim = mbchar(&w, cp, MB_LEN_MAX, &q);
-                if (!mberrno(&q))
-                {
+                if (!mberrno(&q)) {
                     jp->delimlen = cp - opt_info.arg;
                     jp->delimstr = opt_info.arg;
                     continue;
@@ -1014,60 +917,48 @@ b_join(int argc, char **argv, Shbltin_t *context)
     }
     argv += opt_info.index;
     argc -= opt_info.index;
-    if (error_info.errors || argc != 2)
-    {
+    if (error_info.errors || argc != 2) {
         done(jp);
         error(ERROR_usage(2), "%s", optusage(NiL));
     }
     jp->ooutmode = jp->outmode;
     jp->file[0].name = cp = *argv++;
-    if (streq(cp, "-"))
-    {
-        if (sfseek(sfstdin, ( Sfoff_t )0, SEEK_CUR) < 0)
-        {
+    if (streq(cp, "-")) {
+        if (sfseek(sfstdin, ( Sfoff_t )0, SEEK_CUR) < 0) {
             if (sfdcseekable(sfstdin))
                 error(ERROR_warn(0), "%s: seek may fail", cp);
             else
                 jp->file[0].discard = 1;
         }
         jp->file[0].iop = sfstdin;
-    }
-    else if (!(jp->file[0].iop = sfopen(NiL, cp, "r")))
-    {
+    } else if (!(jp->file[0].iop = sfopen(NiL, cp, "r"))) {
         done(jp);
         error(ERROR_system(1), "%s: cannot open", cp);
     }
     jp->file[1].name = cp = *argv;
-    if (streq(cp, "-"))
-    {
-        if (sfseek(sfstdin, ( Sfoff_t )0, SEEK_CUR) < 0)
-        {
+    if (streq(cp, "-")) {
+        if (sfseek(sfstdin, ( Sfoff_t )0, SEEK_CUR) < 0) {
             if (sfdcseekable(sfstdin))
                 error(ERROR_warn(0), "%s: seek may fail", cp);
             else
                 jp->file[1].discard = 1;
         }
         jp->file[1].iop = sfstdin;
-    }
-    else if (!(jp->file[1].iop = sfopen(NiL, cp, "r")))
-    {
+    } else if (!(jp->file[1].iop = sfopen(NiL, cp, "r"))) {
         done(jp);
         error(ERROR_system(1), "%s: cannot open", cp);
     }
-    if (jp->buffered)
-    {
+    if (jp->buffered) {
         sfsetbuf(jp->file[0].iop, jp->file[0].iop, SF_UNBOUND);
         sfsetbuf(jp->file[1].iop, jp->file[1].iop, SF_UNBOUND);
     }
     jp->outfile = sfstdout;
     if (!jp->outlist)
         jp->nullfield = 0;
-    if (join(jp) < 0)
-    {
+    if (join(jp) < 0) {
         done(jp);
         error(ERROR_system(1), "write error");
-    }
-    else if (jp->file[0].iop == sfstdin || jp->file[1].iop == sfstdin)
+    } else if (jp->file[0].iop == sfstdin || jp->file[1].iop == sfstdin)
         sfseek(sfstdin, ( Sfoff_t )0, SEEK_END);
     done(jp);
     return error_info.errors;

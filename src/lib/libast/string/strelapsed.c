@@ -46,17 +46,14 @@ strelapsed(const char *s, char **e, int n)
     int m;
     const char *last;
 
-    for (;;)
-    {
+    for (;;) {
         while (isspace(*s) || *s == '_')
             s++;
         if (!*(last = s))
             break;
-        if (z)
-        {
+        if (z) {
             z = 0;
-            if (*s == '0' && (!(c = *(s + 1)) || isspace(c) || c == '_'))
-            {
+            if (*s == '0' && (!(c = *(s + 1)) || isspace(c) || c == '_')) {
                 last = s + 1;
                 break;
             }
@@ -68,8 +65,7 @@ strelapsed(const char *s, char **e, int n)
         if (c == '.')
             for (m = n; (c = *s++) >= '0' && c <= '9';)
                 f += (m /= 10) * (c - '0');
-        if (c == '%')
-        {
+        if (c == '%') {
             t = ~t;
             last = s;
             break;
@@ -79,15 +75,12 @@ strelapsed(const char *s, char **e, int n)
         if (!p)
             while (isspace(c) || c == '_')
                 c = *s++;
-        switch (c)
-        {
+        switch (c) {
         case 'S':
-            if (*s == 'E' || *s == 'e')
-            {
+            if (*s == 'E' || *s == 'e') {
                 v += f;
                 f = 0;
-            }
-            else
+            } else
                 v *= 20 * 12 * 4 * 7 * 24 * 60 * 60;
             break;
         case 'y':
@@ -123,8 +116,7 @@ strelapsed(const char *s, char **e, int n)
                 v *= 60;
             break;
         case 's':
-            if (*s == 'c')
-            {
+            if (*s == 'c') {
                 v *= 20 * 12 * 4 * 7 * 24 * 60 * 60;
                 break;
             }
@@ -136,8 +128,7 @@ strelapsed(const char *s, char **e, int n)
             v += f;
             break;
         default:
-            if (p)
-            {
+            if (p) {
                 last = s - 1;
                 t += v + f;
             }

@@ -110,8 +110,7 @@ irenum(const char *s, char **e)
     char *p;
 
     n = strton(s, &p, NiL, 0);
-    for (;;)
-    {
+    for (;;) {
         s = ( char * )p;
         if (*s != '.')
             break;
@@ -143,8 +142,7 @@ irecomp(const char *pattern,
     Re_t *re;
     Re_t *pe;
 
-    switch (element)
-    {
+    switch (element) {
     case 1:
     case 2:
     case 4:
@@ -158,20 +156,17 @@ irecomp(const char *pattern,
                             element);
         return 0;
     }
-    if (tuple <= 0)
-    {
+    if (tuple <= 0) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, ERROR_SYSTEM | 2, "%d: tuple size must > 0", tuple);
         return 0;
     }
-    if (disc->resizef)
-    {
+    if (disc->resizef) {
         if (!disc->resizehandle)
             disc->resizehandle = (*disc->resizef)(NiL, NiL, 0);
         if (!(ire = ( Ire_t * )(*disc->resizef)(
-              disc->resizehandle, NiL, sizeof(Ire_t))))
-        {
+              disc->resizehandle, NiL, sizeof(Ire_t)))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             if (disc->resizehandle)
@@ -179,15 +174,11 @@ irecomp(const char *pattern,
             return 0;
         }
         vm = 0;
-    }
-    else if (!(vm = vmopen(Vmdcheap, Vmlast, 0)))
-    {
+    } else if (!(vm = vmopen(Vmdcheap, Vmlast, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
-    }
-    else if (!(ire = vmnewof(vm, 0, Ire_t, 1, 0)))
-    {
+    } else if (!(ire = vmnewof(vm, 0, Ire_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         vmclose(vm);
@@ -202,32 +193,25 @@ irecomp(const char *pattern,
     s = ( char * )pattern;
     pe = 0;
     mem = 0;
-    for (;;)
-    {
+    for (;;) {
         if (++mem > tuple)
             mem = 1;
         if (!(re = irenewof(ire, 0, Re_t, 1, 0)))
             goto nospace;
-        for (;;)
-        {
-            switch (*s++)
-            {
+        for (;;) {
+            switch (*s++) {
             case 0:
-                if (mem != 1)
-                {
+                if (mem != 1) {
                     s--;
                     goto append;
                 }
-                if (!ire->left)
-                {
+                if (!ire->left) {
                     pe = 0;
                     mem = 0;
-                    for (re = ire->re; re; re = re->next)
-                    {
+                    for (re = ire->re; re; re = re->next) {
                         if (re->lo)
                             break;
-                        if (++mem == tuple)
-                        {
+                        if (++mem == tuple) {
                             mem = 0;
                             pe = re;
                         }
@@ -235,8 +219,7 @@ irecomp(const char *pattern,
                     if (pe)
                         ire->re = pe;
                 }
-                switch (element)
-                {
+                switch (element) {
                 case 1:
                     ire->execf = ( Ireexec_f )ireexec1;
                     ire->group = 0xff;
@@ -264,8 +247,7 @@ for (re = ire->re; re; re = re->next)
             case '_':
             case ',':
             case '/':
-                if (mem != 1)
-                {
+                if (mem != 1) {
                     s--;
                     goto append;
                 }
@@ -302,10 +284,8 @@ for (re = ire->re; re; re = re->next)
                 break;
             case '[':
                 m = 1;
-                for (;;)
-                {
-                    switch (*s++)
-                    {
+                for (;;) {
+                    switch (*s++) {
                     case 0:
                         goto syntax;
                     case ' ':
@@ -331,8 +311,7 @@ for (re = ire->re; re; re = re->next)
                     case '7':
                     case '8':
                     case '9':
-                        if (re->n >= m)
-                        {
+                        if (re->n >= m) {
                             if (m == 1)
                                 m = 8;
                             else
@@ -363,10 +342,8 @@ for (re = ire->re; re; re = re->next)
             }
             break;
         }
-        for (;;)
-        {
-            switch (*s++)
-            {
+        for (;;) {
+            switch (*s++) {
             case '*':
                 re->lo = 0;
                 re->hi = 0;
@@ -380,13 +357,11 @@ for (re = ire->re; re; re = re->next)
                 re->lo = ( int )irenum(s, &e);
                 for (s = e; *s == ' ' || *s == '\t'; s++)
                     ;
-                if (*s == ',')
-                {
+                if (*s == ',') {
                     re->hi = ( int )irenum(s + 1, &e);
                     for (s = e; *s == ' ' || *s == '\t'; s++)
                         ;
-                }
-                else
+                } else
                     re->hi = re->lo;
                 if (*s != '}' || re->lo > re->hi && re->hi)
                     goto syntax;
@@ -405,16 +380,14 @@ for (re = ire->re; re; re = re->next)
             ire->re = re;
         pe = re;
         ire->must += re->lo;
-        if (*s == ':')
-        {
+        if (*s == ':') {
             if (mem >= tuple)
                 goto syntax;
             s++;
             if (*s != ' ' && *s != '\t')
                 continue;
         }
-        if (mem < tuple)
-        {
+        if (mem < tuple) {
             mem++;
             if (!(re = irenewof(ire, 0, Re_t, 1, 0)))
                 goto nospace;

@@ -69,9 +69,7 @@ size_t align;       /* alignment			*/
     {
         type = 0;
         oldaddr = NIL(Vmuchar_t *);
-    }
-    else
-    {
+    } else {
         type = vd->mode & VM_METHODS;
         VMFLF(vm, file, line, func);
     }
@@ -103,10 +101,8 @@ size_t align;       /* alignment			*/
         bufp = (*_Vmstrcpy)(bufp, "u", ':');
 
     comma = 0;
-    if (file && file[0] && line > 0)
-    {
-        if ((bufp + strlen(file) + SLOP) >= endbuf)
-        {
+    if (file && file[0] && line > 0) {
+        if ((bufp + strlen(file) + SLOP) >= endbuf) {
             char *f;
             for (f = bufp + strlen(file); f > file; --f)
                 if (f[-1] == '/' || f[-1] == '\\')
@@ -117,8 +113,7 @@ size_t align;       /* alignment			*/
         bufp = (*_Vmstrcpy)(bufp, "file", '=');
         n = endbuf - bufp - SLOP - 3;
         m = strlen(file);
-        if (m > n)
-        {
+        if (m > n) {
             file += (m - n);
             bufp = (*_Vmstrcpy)(bufp, "..", '.');
         }
@@ -127,8 +122,7 @@ size_t align;       /* alignment			*/
         bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(( Vmulong_t )line, 1), 0);
         comma = 1;
     }
-    if (func)
-    {
+    if (func) {
         if (comma)
             *bufp++ = ',';
         bufp = (*_Vmstrcpy)(bufp, "func", '=');
@@ -139,16 +133,14 @@ size_t align;       /* alignment			*/
 #    endif
         comma = 1;
     }
-    if (threadid)
-    {
+    if (threadid) {
         if (comma)
             *bufp++ = ',';
         bufp = (*_Vmstrcpy)(bufp, "tid", '=');
         bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(( Vmulong_t )threadid, 1), 0);
         comma = 1;
     }
-    if (Pid >= 0)
-    {
+    if (Pid >= 0) {
         if (comma)
             *bufp++ = ',';
         bufp = (*_Vmstrcpy)(bufp, "pid", '=');
@@ -178,14 +170,12 @@ long n2;
 
     bufp = buf;
     bufp = (*_Vmstrcpy)(bufp, "vmalloc", ':');
-    if (s1)
-    {
+    if (s1) {
         bufp = (*_Vmstrcpy)(bufp, s1, ':');
         if (n1)
             bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(n1, 1), ':');
     }
-    if (s2)
-    {
+    if (s2) {
         bufp = (*_Vmstrcpy)(bufp, s2, ':');
         bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(n2, 0), ':');
     }

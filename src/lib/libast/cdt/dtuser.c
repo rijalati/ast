@@ -47,8 +47,7 @@ dtuserdata(Dt_t *dt, Void_t *data, int set)
     if (set == 0) /* just return current value */
         return asogetptr(&dt->data->user.data);
     else
-        while (1)
-        {
+        while (1) {
             Void_t *current = dt->data->user.data;
             if (asocasptr(&dt->data->user.data, current, data) == current)
                 return current;

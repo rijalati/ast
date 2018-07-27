@@ -43,8 +43,7 @@ memmove(void *to, const void *from, size_t n)
         do
             *out++ = *in++;
         while (--n > 0);
-    else
-    {
+    else {
         out += n;
         in += n;
         do

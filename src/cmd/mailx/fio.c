@@ -85,8 +85,7 @@ newmsg(off_t offset)
     struct msg *mp;
     unsigned long dot;
 
-    if (state.msg.count >= state.msg.size)
-    {
+    if (state.msg.count >= state.msg.size) {
         dot = state.msg.dot - state.msg.list;
         state.msg.size += 256;
         if (!(state.msg.list
@@ -125,8 +124,7 @@ setptr(FILE *ibuf, off_t offset)
     off_t zoff;
     char buf[LINESIZE];
 
-    if (roff = offset)
-    {
+    if (roff = offset) {
         /* Seek into the file to get to the new messages */
         fseek(ibuf, offset, SEEK_SET);
         /*
@@ -137,28 +135,23 @@ setptr(FILE *ibuf, off_t offset)
          */
         fseek(state.msg.op, ( off_t )0, SEEK_END);
         offset = ftell(state.msg.op);
-    }
-    else
+    } else
         state.msg.count = 0;
     state.folder = FFILE;
     maybe = 1;
     inhead = 0;
     mp = 0;
     count = 0;
-    for (;;)
-    {
+    for (;;) {
         cp = buf;
-        if (state.var.headfake)
-        {
+        if (state.var.headfake) {
             state.var.headfake = 0;
             strcopy(cp, "From bozo@bigtop Wed Feb 29 00:00:00 2012\r\n");
-        }
-        else if (!fgets(cp, LINESIZE, ibuf))
+        } else if (!fgets(cp, LINESIZE, ibuf))
             break;
         prevcount = count;
         count = strlen(cp);
-        if (count == 0 && (zoff = ftell(ibuf)) > roff)
-        {
+        if (count == 0 && (zoff = ftell(ibuf)) > roff) {
             if ((count = zoff - roff) > LINESIZE)
                 count = LINESIZE;
             for (cp2 = cp + count; cp < cp2 && *cp == 0; cp++)
@@ -170,9 +163,8 @@ setptr(FILE *ibuf, off_t offset)
                      count == 1 ? "" : "s",
                      ( Sflong_t )roff);
             count = cp2 - cp;
-        }
-        else if (count >= 2 && cp[count - 1] == '\n' && cp[count - 2] == '\r')
-        {
+        } else if (count >= 2 && cp[count - 1] == '\n'
+                   && cp[count - 2] == '\r') {
             cp[count - 2] = '\n';
             count--;
         }
@@ -188,34 +180,26 @@ setptr(FILE *ibuf, off_t offset)
                 if (count >= xp->length && cp[0] == xp->beg
                     && cp[xp->length / 2] == xp->mid
                     && cp[xp->length - 1] == xp->end
-                    && !memcmp(cp, xp->string, xp->length))
-                {
+                    && !memcmp(cp, xp->string, xp->length)) {
                     if (TRACING('x'))
                         note(0, "spam: body match `%s'", xp->string);
                     msgflags(mp, MSCAN | MSPAM, 0);
                     break;
                 }
-        if (maybe && ishead(cp, inhead || prevcount != 1))
-        {
+        if (maybe && ishead(cp, inhead || prevcount != 1)) {
             mp = newmsg(offset);
             inhead = 1;
-        }
-        else if (maybe = !cp[0])
+        } else if (maybe = !cp[0])
             inhead = 0;
-        else if (inhead)
-        {
-            for (cp2 = "status";; cp++)
-            {
-                if ((c = *cp2++) == 0)
-                {
+        else if (inhead) {
+            for (cp2 = "status";; cp++) {
+                if ((c = *cp2++) == 0) {
                     while (isspace(*cp++))
                         ;
                     if (cp[-1] != ':')
                         break;
-                    for (;;)
-                    {
-                        switch (*cp++)
-                        {
+                    for (;;) {
+                        switch (*cp++) {
                         case 0:
                             break;
                         case 'O':
@@ -245,8 +229,7 @@ setptr(FILE *ibuf, off_t offset)
         }
         roff += count;
         offset += count;
-        if (mp)
-        {
+        if (mp) {
             mp->m_size += count;
             mp->m_lines++;
         }
@@ -290,15 +273,11 @@ mhgetcontext(struct mhcontext *xp, const char *name, int next)
     xp->type = 0;
     xp->dot = xp->next = 0;
     i = strlen(name);
-    for (n = 0; n < elementsof(mh_context); n++)
-    {
+    for (n = 0; n < elementsof(mh_context); n++) {
         sfprintf(state.path.temp, "%s/%s", name, mh_context[n]);
-        if (fp = fileopen(struse(state.path.temp), "r"))
-        {
-            while (s = fgets(buf, sizeof(buf), fp))
-            {
-                if (!strncasecmp(s, "mhcurmsg=", 9))
-                {
+        if (fp = fileopen(struse(state.path.temp), "r")) {
+            while (s = fgets(buf, sizeof(buf), fp)) {
+                if (!strncasecmp(s, "mhcurmsg=", 9)) {
                     xp->dot = strtol(s + 9, &e, 10);
                     for (s = e; isspace(*s); s++)
                         ;
@@ -309,16 +288,12 @@ mhgetcontext(struct mhcontext *xp, const char *name, int next)
                         next = 0;
                     xp->type = n + 1;
                     break;
-                }
-                else if (!strncasecmp(s, "cur:", 4))
-                {
+                } else if (!strncasecmp(s, "cur:", 4)) {
                     xp->dot = strtol(s + 4, NiL, 10);
                     xp->type = n + 1;
                     break;
-                }
-                else if (!strncasecmp(s, "atr-cur-", 8)
-                         && !strncmp(s += 8, name, i) && *(s += i) == ':')
-                {
+                } else if (!strncasecmp(s, "atr-cur-", 8)
+                           && !strncmp(s += 8, name, i) && *(s += i) == ':') {
                     xp->dot = strtol(s + 1, NiL, 10);
                     xp->type = n + 1;
                     break;
@@ -330,10 +305,8 @@ mhgetcontext(struct mhcontext *xp, const char *name, int next)
     if (next
         && (fts = fts_open(( char ** )name,
                            FTS_ONEPATH | FTS_NOCHDIR | FTS_NOPOSTORDER,
-                           dirmax)))
-    {
-        while (ent = fts_read(fts))
-        {
+                           dirmax))) {
+        while (ent = fts_read(fts)) {
             xp->next = strtol(ent->fts_name, &e, 10) + 1;
             if (!*e)
                 break;
@@ -358,24 +331,18 @@ mhputcontext(struct mhcontext *xp, const char *name)
 {
     FILE *fp;
 
-    if (xp->type == 1)
-    {
-        if (xp->dot != xp->old.dot || xp->next != xp->old.next)
-        {
+    if (xp->type == 1) {
+        if (xp->dot != xp->old.dot || xp->next != xp->old.next) {
             sfprintf(
             state.path.temp, "%s/%s", name, mh_context[xp->type - 1]);
-            if (fp = fileopen(struse(state.path.temp), "Ew"))
-            {
+            if (fp = fileopen(struse(state.path.temp), "Ew")) {
                 fprintf(
                 fp, "MhCurmsg=%ld MhLastmsg=%ld\n", xp->dot, xp->next - 1);
                 fileclose(fp);
             }
         }
-    }
-    else if (xp->type)
-    {
-        if (xp->dot != xp->old.dot)
-        {
+    } else if (xp->type) {
+        if (xp->dot != xp->old.dot) {
             note(0, "%s: don't know how to update context yet", name);
         }
     }
@@ -410,8 +377,7 @@ mh_setptr(char *name, int isedit)
 
     if (!(fts = fts_open(( char ** )name,
                          FTS_ONEPATH | FTS_NOCHDIR | FTS_NOPOSTORDER,
-                         dircmp)))
-    {
+                         dircmp))) {
         note(SYSTEM, "%s", name);
         return -1;
     }
@@ -423,17 +389,13 @@ mh_setptr(char *name, int isedit)
     state.msg.active = 0;
     next = 0;
     mp = 0;
-    while (ent = fts_read(fts))
-    {
+    while (ent = fts_read(fts)) {
         index = strtol(ent->fts_name, &e, 10);
-        if (!*e)
-        {
+        if (!*e) {
             next = index;
             if ((ent->fts_info & FTS_F)
-                && (fp = fileopen(ent->fts_accpath, "Er")))
-            {
-                for (;;)
-                {
+                && (fp = fileopen(ent->fts_accpath, "Er"))) {
+                for (;;) {
                     mp = newmsg(0);
                     if (state.msg.count >= index)
                         break;
@@ -441,21 +403,16 @@ mh_setptr(char *name, int isedit)
                 }
                 mp->m_size = ent->fts_statp->st_size;
                 status = 0;
-                while (s = fgets(buf, sizeof(buf), fp))
-                {
+                while (s = fgets(buf, sizeof(buf), fp)) {
                     mp->m_lines++;
-                    if (!status)
-                    {
+                    if (!status) {
                         n = strlen(s);
                         if (n <= 1)
                             status = 1;
-                        else if (!strncasecmp(s, "status:", 7))
-                        {
+                        else if (!strncasecmp(s, "status:", 7)) {
                             status = 1;
-                            for (s += 7;;)
-                            {
-                                switch (*s++)
-                                {
+                            for (s += 7;;) {
+                                switch (*s++) {
                                 case 0:
                                     break;
                                 case 'O':
@@ -476,11 +433,9 @@ mh_setptr(char *name, int isedit)
                     }
                 }
                 fileclose(fp);
-            }
-            else
+            } else
                 fts_set(NiL, ent, FTS_SKIP);
-        }
-        else if (ent->fts_level > 0)
+        } else if (ent->fts_level > 0)
             fts_set(NiL, ent, FTS_SKIP);
     }
     fts_close(fts);
@@ -492,8 +447,7 @@ mh_setptr(char *name, int isedit)
     if (state.msg.mh.dot > 0 && state.msg.mh.dot <= state.msg.count)
         state.msg.context = state.msg.list + state.msg.mh.dot - 1;
     state.msg.mh.next = next + 1;
-    if (!state.msg.list)
-    {
+    if (!state.msg.list) {
         newmsg(0);
         state.msg.count = 0;
     }
@@ -516,8 +470,7 @@ putline(FILE *obuf, char *buf)
     int x;
 
     x = 1;
-    if (strneq(buf, "From ", 5))
-    {
+    if (strneq(buf, "From ", 5)) {
         if (putc('>', obuf) == EOF)
             return -1;
         x++;
@@ -542,8 +495,7 @@ readline(FILE *ibuf, char *buf, int size)
     if (!fgets(buf, size, ibuf))
         return -1;
     n = strlen(buf);
-    if (n > 0 && buf[n - 1] == '\n')
-    {
+    if (n > 0 && buf[n - 1] == '\n') {
         buf[--n] = 0;
         if (n > 0 && buf[n - 1] == '\r')
             buf[--n] = 0;
@@ -561,22 +513,16 @@ setinput(struct msg *mp)
     FILE *fp;
     off_t offset;
 
-    if (state.folder == FIMAP)
-    {
+    if (state.folder == FIMAP) {
         fp = imap_setinput(mp);
         offset = 0;
-    }
-    else if (state.folder == FFILE || (mp->m_flag & MODIFY))
-    {
+    } else if (state.folder == FFILE || (mp->m_flag & MODIFY)) {
         if (state.msg.op)
             fflush(state.msg.op);
         fp = state.msg.ip;
         offset = blockposition(mp->m_block, mp->m_offset);
-    }
-    else
-    {
-        if (state.msg.active != mp)
-        {
+    } else {
+        if (state.msg.active != mp) {
             state.msg.active = mp;
             if (state.msg.ap)
                 fileclose(state.msg.ap);
@@ -593,11 +539,9 @@ setinput(struct msg *mp)
     }
     if (fseek(fp, offset, SEEK_SET) < 0)
         note(PANIC | SYSTEM, "Temporary file seek");
-    if (!(mp->m_flag & MSCAN))
-    {
+    if (!(mp->m_flag & MSCAN)) {
         msgflags(mp, MSCAN, 0);
-        if (state.var.spam && !(mp->m_flag & MSPAM))
-        {
+        if (state.var.spam && !(mp->m_flag & MSPAM)) {
             if (spammed(mp))
                 msgflags(mp, MSPAM, 0);
             if (fseek(fp, offset, SEEK_SET) < 0)
@@ -613,8 +557,7 @@ setinput(struct msg *mp)
 int
 rm(char *name)
 {
-    if (!isreg(name))
-    {
+    if (!isreg(name)) {
         errno = EFTYPE;
         return -1;
     }
@@ -681,8 +624,7 @@ expand(char *name, int verify)
      * This way, we make no recursive expansion.
      */
 again:
-    switch (name[0])
-    {
+    switch (name[0]) {
     case '%':
         if (!*++name)
             name = state.var.user;
@@ -692,8 +634,7 @@ again:
     case '#':
         if (name[1])
             break;
-        if (!state.path.prev[0])
-        {
+        if (!state.path.prev[0]) {
             note(0, "No previous file");
             return 0;
         }
@@ -703,15 +644,12 @@ again:
             name = state.var.mbox;
         break;
     }
-    if (name[0] == '+' && getfolder(cmd, sizeof(cmd)) >= 0)
-    {
+    if (name[0] == '+' && getfolder(cmd, sizeof(cmd)) >= 0) {
         sfsprintf(buf, sizeof(buf), "%s/%s", cmd, name + 1);
         name = buf;
     }
-    if (name[0] == '~' && (name[1] == '/' || name[1] == 0))
-    {
-        if (name == buf)
-        {
+    if (name[0] == '~' && (name[1] == '/' || name[1] == 0)) {
+        if (name == buf) {
             strncopy(cmd, name, sizeof(cmd));
             name = cmd;
         }
@@ -726,33 +664,27 @@ again:
         return 0;
     n = fread(buf, 1, sizeof(buf), fp);
     note(DEBUG, "expand: n=%d \"%-*.s\"", n, n, buf);
-    if (fileclose(fp))
-    {
+    if (fileclose(fp)) {
         note(0, "\"%s\": expansion failed", name);
         return 0;
     }
-    if (n < 0)
-    {
+    if (n < 0) {
         note(SYSTEM, "%s: read error", name);
         return 0;
     }
-    if (n >= sizeof(buf))
-    {
+    if (n >= sizeof(buf)) {
         note(0, "\"%s\": expansion buffer overflow", name);
         n = sizeof(buf) - 1;
     }
     while (n > 0 && isspace(buf[n - 1]))
         n--;
     buf[n] = 0;
-    if (verify)
-    {
-        if (!n)
-        {
+    if (verify) {
+        if (!n) {
             note(0, "\"%s\": no match", name);
             return 0;
         }
-        if (strchr(buf, ' ') && access(buf, F_OK))
-        {
+        if (strchr(buf, ' ') && access(buf, F_OK)) {
             note(0, "\"%s\": ambiguous (%s)", name, buf);
             return 0;
         }
@@ -812,11 +744,9 @@ moreout(Sfio_t *fp, const void *buf, size_t n, Sfdisc_t *dp)
     b = ( char * )buf;
     s = b;
     e = s + n;
-    if (state.more.match)
-    {
+    if (state.more.match) {
     match:
-        for (r = state.more.pattern[0];; s++)
-        {
+        for (r = state.more.pattern[0];; s++) {
             if (s >= e)
                 return n;
             if (*s == '\n')
@@ -829,10 +759,8 @@ moreout(Sfio_t *fp, const void *buf, size_t n, Sfdisc_t *dp)
         w += b - ( char * )buf;
         state.more.match = 0;
     }
-    while (s < e)
-    {
-        switch (*s++)
-        {
+    while (s < e) {
+        switch (*s++) {
         case '\t':
             state.more.col = ((state.more.col + 8) & ~7) - 1;
             /*FALLTHROUGH*/
@@ -856,13 +784,10 @@ moreout(Sfio_t *fp, const void *buf, size_t n, Sfdisc_t *dp)
         w += sfwr(fp, b, s - b, dp);
         b = s;
         r = ttyquery(0, 1, *state.var.more ? state.var.more : "[More]");
-        if (r == '/' || r == 'n')
-        {
-            if (r == '/')
-            {
+        if (r == '/' || r == 'n') {
+            if (r == '/') {
                 sfwr(fp, "/", 1, dp);
-                if (fgets(state.more.tmp, sizeof(state.more.tmp), stdin))
-                {
+                if (fgets(state.more.tmp, sizeof(state.more.tmp), stdin)) {
                     if ((m = strlen(state.more.tmp)) > 1
                         && state.more.tmp[m - 1] == '\n')
                         state.more.tmp[m - 1] = 0;
@@ -872,15 +797,13 @@ moreout(Sfio_t *fp, const void *buf, size_t n, Sfdisc_t *dp)
                                  sizeof(state.more.pattern));
                 }
             }
-            if (state.more.match = strlen(state.more.pattern))
-            {
+            if (state.more.match = strlen(state.more.pattern)) {
                 state.more.row = 1;
                 state.more.col = 1;
                 goto match;
             }
         }
-        switch (r)
-        {
+        switch (r) {
         case '\n':
         case '\r':
             state.more.row--;
@@ -909,15 +832,11 @@ void
 set_more(struct var *vp, const char *value)
 {
 #if MORE_DISCIPLINE
-    if (state.var.interactive && !state.var.coprocess)
-    {
-        if (value)
-        {
-            if (!state.more.discipline)
-            {
+    if (state.var.interactive && !state.var.coprocess) {
+        if (value) {
+            if (!state.more.discipline) {
                 state.more.discipline = 1;
-                if (!state.more.init)
-                {
+                if (!state.more.init) {
                     state.more.init = 1;
                     state.more.disc.readf = morein;
                     state.more.disc.writef = moreout;
@@ -925,9 +844,7 @@ set_more(struct var *vp, const char *value)
                 sfdisc(sfstdin, &state.more.disc);
                 sfdisc(sfstdout, &state.more.disc);
             }
-        }
-        else if (state.more.discipline)
-        {
+        } else if (state.more.discipline) {
             state.more.discipline = 0;
             sfdisc(sfstdin, NiL);
             sfdisc(sfstdout, NiL);
@@ -936,8 +853,7 @@ set_more(struct var *vp, const char *value)
     }
 #else
     if (value && state.var.interactive && !state.var.coprocess
-        && !state.more.init)
-    {
+        && !state.more.init) {
         state.more.init = 1;
         note(0, "Recompile mailx with sfio to enable \"%s\"", vp->name);
     }

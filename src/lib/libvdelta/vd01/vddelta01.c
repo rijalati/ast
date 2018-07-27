@@ -80,20 +80,17 @@ int n_copy;     /* length of match	*/
 
         best = copy = match - tab->base;
         k_type = K_SELF;
-        if ((d = c_addr - copy) < best)
-        {
+        if ((d = c_addr - copy) < best) {
             best = d;
             k_type = K_HERE;
         }
-        for (n = 0; n < K_RTYPE; ++n)
-        {
+        for (n = 0; n < K_RTYPE; ++n) {
             if ((d = copy - tab->recent[n]) < 0 || d >= best)
                 continue;
             best = d;
             k_type = K_RECENT + n;
         }
-        if (best >= I_MORE && tab->quick[n = copy % K_QSIZE] == copy)
-        {
+        if (best >= I_MORE && tab->quick[n = copy % K_QSIZE] == copy) {
             for (d = K_QTYPE - 1; d > 0; --d)
                 if (n >= (d << VD_BITS))
                     break;
@@ -109,21 +106,17 @@ int n_copy;     /* length of match	*/
         K_UPDATE(tab->quick, tab->recent, tab->rhere, copy);
 
         /* see if mergable to last ADD instruction */
-        if (MERGABLE(n_add, n_copy, k_type))
-        { /**/
+        if (MERGABLE(n_add, n_copy, k_type)) { /**/
             DBTOTAL(N_merge, 1);
             i_add = K_TPUT(k_type) | A_TPUT(n_add) | C_TPUT(n_copy);
-        }
-        else
-        {
+        } else {
             i_copy = K_PUT(k_type);
             if (C_ISLOCAL(n_copy))
                 i_copy |= C_LPUT(n_copy);
         }
     }
 
-    if (n_add > 0)
-    { /**/
+    if (n_add > 0) { /**/
         DBTOTAL(N_add, 1);
         DBTOTAL(S_add, n_add);
         DBMAX(M_add, n_add);
@@ -140,8 +133,7 @@ int n_copy;     /* length of match	*/
             return -1;
     }
 
-    if (n_copy > 0)
-    {
+    if (n_copy > 0) {
         if (!MERGABLE(n_add, n_copy, k_type)
             && VDPUTC(( Vdio_t * )tab, i_copy) < 0)
             return -1;
@@ -150,19 +142,14 @@ int n_copy;     /* length of match	*/
             && (*_Vdputu)(( Vdio_t * )tab, ( ulong )C_PUT(n_copy)) < 0)
             return -1;
 
-        if (k_type >= K_QUICK && k_type < (K_QUICK + K_QTYPE))
-        {
+        if (k_type >= K_QUICK && k_type < (K_QUICK + K_QTYPE)) {
             if (VDPUTC(( Vdio_t * )tab, ( uchar )best) < 0)
                 return -1;
-        }
-        else
-        {
+        } else {
             if ((*_Vdputu)(( Vdio_t * )tab, ( ulong )best) < 0)
                 return -1;
         }
-    }
-    else
-    {
+    } else {
         if ((*_Vdflsbuf)(( Vdio_t * )tab) < 0)
             return -1;
     }
@@ -189,15 +176,12 @@ int output;
     reg uchar *src = tab->src, *tar = tab->tar;
     reg Match_t *base = tab->base, **table = tab->table;
 
-    if (!output)
-    {
+    if (!output) {
         if (tab->n_src < M_MIN)
             return 0;
         endfold = (s = src) + tab->n_src;
         curm = base;
-    }
-    else
-    {
+    } else {
         endfold = (s = tar) + tab->n_tar;
         curm = base + n_src;
         if (tab->n_tar < M_MIN)
@@ -208,8 +192,7 @@ int output;
     bestm = NIL(Match_t *);
     len = M_MIN - 1;
     HINIT(key, s, n);
-    for (;;)
-    {
+    for (;;) {
         for (;;) /* search for the longest match */
         {
             if (!(m = table[key & size]))
@@ -218,8 +201,7 @@ int output;
 
             if (bestm) /* skip over past elements */
             {
-                for (;;)
-                {
+                for (;;) {
                     if (m >= bestm + len)
                         break;
                     if ((m = m->next) == list)
@@ -229,16 +211,12 @@ int output;
 
             head = len - (M_MIN - 1); /* header before the match */
             heade = s + head;
-            for (;;)
-            {
-                if ((n = m - base) < n_src)
-                {
+            for (;;) {
+                if ((n = m - base) < n_src) {
                     if (n < head)
                         goto next;
                     sm = src + n;
-                }
-                else
-                {
+                } else {
                     if ((n -= n_src) < head)
                         goto next;
                     sm = tar + n;
@@ -284,8 +262,7 @@ int output;
         }
 
     endsearch:
-        if (bestm)
-        {
+        if (bestm) {
             if (output && vdputinst(tab, add, s, bestm, len) < 0)
                 return -1;
 
@@ -300,9 +277,7 @@ int output;
             len = M_MIN - 1;
             add = NIL(uchar *);
             bestm = NIL(Match_t *);
-        }
-        else
-        {
+        } else {
             if (!add)
                 add = s;
             ss = s;
@@ -318,8 +293,7 @@ int output;
                 n = key & size;
                 if (!(m = table[n]))
                     curm->next = curm;
-                else
-                {
+                else {
                     curm->next = m->next;
                     m->next = curm;
                 }
@@ -392,8 +366,7 @@ long window;                               /* amount to process each time	*/
         window = n_src;
 
     /* try to allocate working space */
-    while (window > 0)
-    { /* space for the target string */
+    while (window > 0) { /* space for the target string */
         size = (n_tar == 0 || target->data) ? 0 : ( int )window;
         if (( long )size > n_tar)
             size = ( int )n_tar;
@@ -437,18 +410,15 @@ long window;                               /* amount to process each time	*/
         break;
 
     reduce_window:
-        if (tab.tar)
-        {
+        if (tab.tar) {
             free(( Void_t * )tab.tar);
             tab.tar = NIL(uchar *);
         }
-        if (tab.src)
-        {
+        if (tab.src) {
             free(( Void_t * )tab.src);
             tab.src = NIL(uchar *);
         }
-        if (tab.base)
-        {
+        if (tab.base) {
             free(( Void_t * )tab.base);
             tab.base = NIL(Match_t *);
         }
@@ -469,14 +439,12 @@ long window;                               /* amount to process each time	*/
         goto done;
 
     /* do one window at a time */
-    while (n < n_tar)
-    {                   /* prepare the source string */
+    while (n < n_tar) { /* prepare the source string */
         if (n_src <= 0) /* data compression */
         {
             if (n <= 0)
                 tab.n_src = 0;
-            else
-            {
+            else {
                 size = ( int )HEADER(window);
                 if (target->data)
                     tab.src = tab.tar + tab.n_tar - size;
@@ -486,19 +454,16 @@ long window;                               /* amount to process each time	*/
                            size);
                 tab.n_src = size;
             }
-        }
-        else /* data differencing */
+        } else /* data differencing */
         {
-            if (n < n_src)
-            {
+            if (n < n_src) {
                 if (n + window > n_src)
                     p = n_src - window;
                 else
                     p = n;
                 if (source->data)
                     tab.src = ( uchar * )source->data + p;
-                else
-                {
+                else {
                     size
                     = (*source->readf)(tab.src, ( int )window, p, source);
                     if (( long )size != window)
@@ -514,8 +479,7 @@ long window;                               /* amount to process each time	*/
         tab.n_tar = size;
         if (target->data)
             tab.tar = ( uchar * )target->data + n;
-        else
-        {
+        else {
             size = (*target->readf)(tab.tar, size, ( long )n, target);
             if (( long )size != tab.n_tar)
                 goto done;

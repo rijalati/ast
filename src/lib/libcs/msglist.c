@@ -47,14 +47,11 @@ buffer(Sfio_t *sp, char *s, int n)
     se = s + n;
     PUT(' ');
     PUT('"');
-    while (s < se)
-    {
+    while (s < se) {
         c = *(( unsigned char * )s++);
-        if (iscntrl(c) || !isprint(c) || c == '"')
-        {
+        if (iscntrl(c) || !isprint(c) || c == '"') {
             PUT('\\');
-            switch (c)
-            {
+            switch (c) {
             case CC_bel:
                 c = 'a';
                 break;
@@ -117,16 +114,14 @@ msglist(Sfio_t *sp, Msg_call_t *msg, int flags, unsigned long terse)
     char **vp;
 
     r = 0;
-    if (flags & (MSG_LIST_ID | MSG_LIST_STAMP))
-    {
+    if (flags & (MSG_LIST_ID | MSG_LIST_STAMP)) {
         r += sfprintf(sp, "[");
         if (flags & MSG_LIST_ID)
             r += sfprintf(sp,
                           " %5d %5d",
                           MSG_CHANNEL_USR(msg->channel),
                           MSG_CHANNEL_SYS(msg->channel));
-        if (flags & MSG_LIST_STAMP)
-        {
+        if (flags & MSG_LIST_STAMP) {
             if ((( unsigned long )msg->stamp) <= USHRT_MAX)
                 r += sfprintf(sp, " %lu", msg->stamp);
             else
@@ -138,10 +133,8 @@ msglist(Sfio_t *sp, Msg_call_t *msg, int flags, unsigned long terse)
     r += sfprintf(sp, "%s (", msgname(msg->call));
     ap = msg->argv;
     at = msg->call >> MSG_ARG_CALL;
-    for (;;)
-    {
-        switch ((at >>= MSG_ARG_TYPE) & ((1 << MSG_ARG_TYPE) - 1))
-        {
+    for (;;) {
+        switch ((at >>= MSG_ARG_TYPE) & ((1 << MSG_ARG_TYPE) - 1)) {
         case MSG_ARG_array:
             n = (ap++)->number;
             np = (ap++)->array;
@@ -166,16 +159,13 @@ msglist(Sfio_t *sp, Msg_call_t *msg, int flags, unsigned long terse)
                 r += buffer(sp, p, (ap)->number);
             continue;
         case MSG_ARG_output:
-            if ((msg->call & MSG_VALUE) && !(MSG_MASK(msg->call) & terse))
-            {
-                switch (MSG_CALL(msg->call))
-                {
+            if ((msg->call & MSG_VALUE) && !(MSG_MASK(msg->call) & terse)) {
+                switch (MSG_CALL(msg->call)) {
                 case MSG_CALL(MSG_getdents):
                     dp = ( struct dirent * )(ap++)->pointer;
                     de = ( struct dirent * )(( char * )dp + msg->ret.number);
                     r += sfprintf(sp, " [");
-                    while (dp < de)
-                    {
+                    while (dp < de) {
 #if _mem_d_fileno_dirent
                         r += sfprintf(sp, " %lu", dp->d_fileno);
 #endif
@@ -192,8 +182,7 @@ msglist(Sfio_t *sp, Msg_call_t *msg, int flags, unsigned long terse)
                     break;
                 case MSG_CALL(MSG_pipe):
                     ip = (ap++)->file;
-                    for (i = 0; i < 2; i++)
-                    {
+                    for (i = 0; i < 2; i++) {
                         r += sfprintf(sp, " %lu", ip->fid[0]);
                         for (n = 1; n < sizeof(*ip) / sizeof(ip->fid[0]); n++)
                             r += sfprintf(sp,
@@ -275,8 +264,7 @@ msglist(Sfio_t *sp, Msg_call_t *msg, int flags, unsigned long terse)
             vp = (ap++)->vector;
             if (MSG_MASK(msg->call) & terse)
                 r += sfprintf(sp, " %p", vp);
-            else
-            {
+            else {
                 r += sfprintf(sp, " [");
                 while (p = *vp++)
                     r += buffer(sp, p, strlen(p));
@@ -288,8 +276,7 @@ msglist(Sfio_t *sp, Msg_call_t *msg, int flags, unsigned long terse)
     }
     r += sfprintf(sp, " )");
     if (msg->call & MSG_VALUE)
-        switch (MSG_ARG(msg->call, 0))
-        {
+        switch (MSG_ARG(msg->call, 0)) {
         case 0:
             break;
         case MSG_ARG_file:

@@ -124,22 +124,18 @@ junk(State_t *state, Rsobj_t *r)
 
     n = state->junksize;
     z = state->junkcount;
-    if (r)
-    {
+    if (r) {
         b = r->data;
         if (n > r->datalen)
             n = r->datalen;
-        for (r = r->equal; r; r = r->right)
-        {
+        for (r = r->equal; r; r = r->right) {
             s = b;
             t = r->data;
             for (i = 0; i < n; i++)
                 if (s[i] != t[i])
                     z[i]++;
         }
-    }
-    else
-    {
+    } else {
         for (f = state->ss->sum; f; f = f->next)
             for (i = f->offset - 1, k = f->offset + f->size; i < k; i++)
                 z[i] = 0;
@@ -164,8 +160,7 @@ dfsort(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
     int hit;
     int c;
 
-    switch (op)
-    {
+    switch (op) {
     case RS_OPEN:
         if ((rs->type & RS_IGNORE)
             && (disc->events & (RS_SUMMARY | RS_WRITE)))
@@ -192,8 +187,7 @@ dfsort(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
             c = CALLOUT(ss, ss->doneexit, NiL, NiL);
         return ssclose(ss) ? -1 : c;
     case RS_READ:
-        if (ss->skip)
-        {
+        if (ss->skip) {
             ss->skip--;
             return RS_DELETE;
         }
@@ -213,8 +207,7 @@ dfsort(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
             return c;
         if (ss->stop)
             ss->stop--;
-        if (ss->in)
-        {
+        if (ss->in) {
             if ((size = sscopy(ss,
                                &state->in,
                                ( char * )rp->data,
@@ -226,8 +219,7 @@ dfsort(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
             rp->data = ( unsigned char * )state->tmp;
             rp->datalen = size;
         }
-        if (ss->copy)
-        {
+        if (ss->copy) {
             if (fp->group && fp->group->io
                 && sswrite(ss, fp, ( char * )rp->data, rp->datalen) < 0)
                 return -1;
@@ -255,16 +247,14 @@ dfsort(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
         return c;
     case RS_WRITE:
         ep = ( Rsobj_t * )data;
-        if (!ss->writeexit)
-        {
+        if (!ss->writeexit) {
             if (state->dups && (rp = ep->equal))
                 do
                     state->dupcount++;
                 while (rp = rp->right);
             c = RS_ACCEPT;
-        }
-        else if ((c = CALLOUT(ss, ss->writeexit, ep, NiL)) < 0
-                 || c == RS_DELETE)
+        } else if ((c = CALLOUT(ss, ss->writeexit, ep, NiL)) < 0
+                   || c == RS_DELETE)
             return c;
         rp = ( Rsobj_t * )arg;
         fp = ss->file;
@@ -278,8 +268,7 @@ dfsort(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
                                 rp->datalen))
                  < 0)
             return -1;
-        if (size > rp->datalen || ss->copy || !fp->next)
-        {
+        if (size > rp->datalen || ss->copy || !fp->next) {
             rp->datalen = size;
             return c;
         }
@@ -291,17 +280,14 @@ dfsort(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
     hit = 0;
     save = 0;
     while (fp = fp->next)
-        if (fp->group)
-        {
+        if (fp->group) {
             if (!fp->expr
                 || (sseval(ss, fp->expr, ( char * )rp->data, rp->datalen) > 0)
-                   != fp->omit)
-            {
+                   != fp->omit) {
                 hit = 1;
                 if (sswrite(ss, fp, ( char * )rp->data, rp->datalen) < 0)
                     return -1;
-            }
-            else if (fp->save)
+            } else if (fp->save)
                 save = fp;
         }
     if (save && !hit
@@ -334,25 +320,21 @@ checkmark(Ss_t *ss, char **v, Ssdisc_t *ssdisc)
 
     for (b = v; *b; b++)
         ;
-    if (n = b - v)
-    {
+    if (n = b - v) {
         if (!(sp = newof(0, Suf_t, n, 0)))
             goto bad;
-        for (i = 0; i < n; i++)
-        {
+        for (i = 0; i < n; i++) {
             if (s = strrchr(v[i], '/'))
                 s++;
             else
                 s = v[i];
-            if (!strchr(s, '%'))
-            {
+            if (!strchr(s, '%')) {
                 sp[i].base = s;
                 sp[i].suff = strrchr(s, '.');
             }
         }
         i = 0;
-        for (;;)
-        {
+        for (;;) {
             while (i < n && !sp[i].base)
                 i++;
             if (i >= n)
@@ -361,8 +343,7 @@ checkmark(Ss_t *ss, char **v, Ssdisc_t *ssdisc)
                 dp = opendir(".");
             else if (sp[i].base == v[i] + 1)
                 dp = opendir("/");
-            else
-            {
+            else {
                 *(sp[i].base - 1) = 0;
                 dp = opendir(v[i]);
                 *(sp[i].base - 1) = '/';
@@ -370,19 +351,16 @@ checkmark(Ss_t *ss, char **v, Ssdisc_t *ssdisc)
             k = sp[i].base - v[i];
             if (dp)
                 while (ep = readdir(dp))
-                    if (s = strchr(ep->d_name, '%'))
-                    {
+                    if (s = strchr(ep->d_name, '%')) {
                         m = s - ep->d_name;
                         z = strrchr(s, '.');
-                        for (j = i; j < n; j++)
-                        {
+                        for (j = i; j < n; j++) {
                             if (sp[j].base && (sp[j].base - v[j]) == k
                                 && (!k || !memcmp(v[i], v[j], k))
                                 && !memcmp(ep->d_name, sp[j].base, m)
                                 && (!sp[j].suff
                                     || (sp[j].suff - sp[j].base) < m
-                                    || z && !strcmp(z, sp[j].suff)))
-                            {
+                                    || z && !strcmp(z, sp[j].suff))) {
                                 if (v[j] == sp[j].base)
                                     t = ep->d_name;
                                 else
@@ -390,8 +368,7 @@ checkmark(Ss_t *ss, char **v, Ssdisc_t *ssdisc)
                                                  sp[j].base - v[j],
                                                  v[j],
                                                  ep->d_name);
-                                if (!(t = strdup(t)))
-                                {
+                                if (!(t = strdup(t))) {
                                     closedir(dp);
                                     goto bad;
                                 }
@@ -438,8 +415,7 @@ rs_disc(Rskey_t *key, const char *options)
     unsigned long events;
     Ssdisc_t *ssdisc;
 
-    if (!(ssdisc = newof(0, Ssdisc_t, 1, 0)))
-    {
+    if (!(ssdisc = newof(0, Ssdisc_t, 1, 0))) {
         if (key->keydisc->errorf)
             (*key->keydisc->errorf)(
             NiL, key->keydisc, ERROR_SYSTEM | 2, "out of space");
@@ -452,17 +428,13 @@ rs_disc(Rskey_t *key, const char *options)
     junk = 0;
     list = 0;
     ss = 0;
-    if (options)
-    {
-        for (;;)
-        {
-            switch (optstr(options, usage))
-            {
+    if (options) {
+        for (;;) {
+            switch (optstr(options, usage)) {
             case 0:
                 break;
             case 'C':
-                if ((ssdisc->code = ccmapid(opt_info.arg)) < 0)
-                {
+                if ((ssdisc->code = ccmapid(opt_info.arg)) < 0) {
                     if (ssdisc->errorf)
                         (*ssdisc->errorf)(NiL,
                                           ssdisc,
@@ -490,8 +462,7 @@ rs_disc(Rskey_t *key, const char *options)
                     goto drop;
                 continue;
             case 'R':
-                if (opt_info.num != key->fixed && key->fixed)
-                {
+                if (opt_info.num != key->fixed && key->fixed) {
                     if (ssdisc->errorf)
                         (*ssdisc->errorf)(
                         NiL,
@@ -518,23 +489,19 @@ rs_disc(Rskey_t *key, const char *options)
         goto drop;
     if (!ss->file->group->name)
         ss->file->group->name = key->output;
-    if (ss->merge)
-    {
+    if (ss->merge) {
         key->merge = 1;
-        if (!key->input[0] && (u = getenv("DDIN")))
-        {
+        if (!key->input[0] && (u = getenv("DDIN"))) {
             s = u;
             n = 1;
             m = 0;
-            for (;;)
-            {
+            for (;;) {
                 while (*s == ' ')
                     s++;
                 if (!(t = strchr(s, ' ')))
                     t = s + strlen(s);
                 if (strneq(s, SS_DD_IN, sizeof(SS_DD_IN) - 1)
-                    && (p = getenv(sfprints("%-.*s", t - s, s))))
-                {
+                    && (p = getenv(sfprints("%-.*s", t - s, s)))) {
                     n++;
                     m += strlen(p) + 1;
                 }
@@ -542,8 +509,7 @@ rs_disc(Rskey_t *key, const char *options)
                     break;
                 s = t + 1;
             }
-            if (!(v = vmnewof(ss->vm, 0, char *, n, m)))
-            {
+            if (!(v = vmnewof(ss->vm, 0, char *, n, m))) {
                 if (ssdisc->errorf)
                     (*ssdisc->errorf)(
                     NiL, ssdisc, ERROR_SYSTEM | 2, "out of space");
@@ -552,15 +518,13 @@ rs_disc(Rskey_t *key, const char *options)
             s = u;
             u = ( char * )(v + n);
             n = 0;
-            for (;;)
-            {
+            for (;;) {
                 while (*s == ' ')
                     s++;
                 if (!(t = strchr(s, ' ')))
                     t = s + strlen(s);
                 if (strneq(s, SS_DD_IN, sizeof(SS_DD_IN) - 1)
-                    && (p = getenv(sfprints("%-.*s", t - s, s))))
-                {
+                    && (p = getenv(sfprints("%-.*s", t - s, s)))) {
                     v[n++] = u;
                     u = stpcpy(u, p) + 1;
                 }
@@ -574,34 +538,28 @@ rs_disc(Rskey_t *key, const char *options)
     }
     if (checkmark(ss, key->input, ssdisc))
         goto drop;
-    if (key->input[0] && strmatch(key->input[0], SS_MARKED))
-    {
+    if (key->input[0] && strmatch(key->input[0], SS_MARKED)) {
         ss->mark = 1;
         if ((s = strrchr(key->input[0], '%')) && (s = strchr(s, '.')))
             ss->suffix = s;
     }
     if (ss->size)
         ss->format = REC_F_TYPE(ss->size);
-    else if (key->fixed)
-    {
+    else if (key->fixed) {
         ss->size = key->fixed;
         ss->format = REC_F_TYPE(ss->size);
-    }
-    else
-    {
+    } else {
         p = 0;
         ss->format = REC_N_TYPE();
         for (v = key->input; s = *v; v++)
-            if ((t = strrchr(s, '%')) && !strchr(t, '/'))
-            {
+            if ((t = strrchr(s, '%')) && !strchr(t, '/')) {
                 ss->mark = 1;
                 f = recstr(t + 1, &u);
                 if (f != ss->format && p
                     && (RECTYPE(f) != REC_variable
                         || RECTYPE(ss->format) != REC_variable
                         || REC_V_ATTRIBUTES(f)
-                           != REC_V_ATTRIBUTES(ss->format)))
-                {
+                           != REC_V_ATTRIBUTES(ss->format))) {
                     if (ssdisc->errorf)
                         (*ssdisc->errorf)(
                         NiL,
@@ -627,22 +585,18 @@ rs_disc(Rskey_t *key, const char *options)
         ss->suffix = "";
     if ((n = ssio(ss, list)) < 0)
         goto drop;
-    if (ss->mark)
-    {
+    if (ss->mark) {
         if (ss->file->format == REC_N_TYPE())
             ss->file->format = ss->format;
-        if (s = key->output)
-        {
-            if ((t = strrchr(s, '%')) && !strchr(t, '/'))
-            {
+        if (s = key->output) {
+            if ((t = strrchr(s, '%')) && !strchr(t, '/')) {
                 f = recstr(t + 1, NiL);
                 if (ss->file->format != REC_N_TYPE() && f != ss->file->format
                     && !ss->in && !ss->file->out
                     && (RECTYPE(f) != REC_variable
                         || RECTYPE(ss->file->format) != REC_variable
                         || REC_V_ATTRIBUTES(f)
-                           != REC_V_ATTRIBUTES(ss->file->format)))
-                {
+                           != REC_V_ATTRIBUTES(ss->file->format))) {
                     if (ssdisc->errorf)
                         (*ssdisc->errorf)(
                         NiL,
@@ -655,18 +609,15 @@ rs_disc(Rskey_t *key, const char *options)
                         fmtrec(ss->file->format, 0));
                     goto drop;
                 }
-            }
-            else if (ss->file->format != REC_N_TYPE()
-                     && !strmatch(s, "/dev/*"))
-            {
+            } else if (ss->file->format != REC_N_TYPE()
+                       && !strmatch(s, "/dev/*")) {
                 if ((t = strrchr(s, '.')) && strmatch(t, SS_SUFFIX))
                     s = sfprints(
                     "%-.*s%%%s%s", t - s, s, fmtrec(ss->format, 1), t);
                 else
                     s = sfprints(
                     "%s%%%s%s", s, fmtrec(ss->format, 1), ss->suffix);
-                if (!(key->output = vmstrdup(ss->vm, s)))
-                {
+                if (!(key->output = vmstrdup(ss->vm, s))) {
                     if (ss->disc->errorf)
                         (*ss->disc->errorf)(
                         NiL, ss->disc, ERROR_SYSTEM | 2, "out of space");
@@ -675,8 +626,7 @@ rs_disc(Rskey_t *key, const char *options)
             }
         }
     }
-    if (ss->copy && !ss->expr && !ss->file->out && !ss->file->next)
-    {
+    if (ss->copy && !ss->expr && !ss->file->out && !ss->file->next) {
         key->type |= RS_CAT;
         key->merge = 0;
         key->meth = Rscopy;
@@ -689,32 +639,26 @@ rs_disc(Rskey_t *key, const char *options)
     if (ss->file->out || n && !ss->copy || ss->writeexit
         || ss->file->format != ss->format)
         events |= RS_WRITE;
-    if (list)
-    {
+    if (list) {
         sslist(ss, sfstdout);
         exit(0);
     }
-    if (!(state = vmnewof(ss->vm, 0, State_t, 1, ss->insize)))
-    {
+    if (!(state = vmnewof(ss->vm, 0, State_t, 1, ss->insize))) {
         if (ssdisc->errorf)
             (*ssdisc->errorf)(NiL, ssdisc, ERROR_SYSTEM | 2, "out of space");
         goto drop;
     }
-    if (ss->in)
-    {
+    if (ss->in) {
         state->in.out = ss->in;
         state->in.size = ss->insize;
     }
-    if (ss->sum || ss->uniq)
-    {
+    if (ss->sum || ss->uniq) {
         key->type |= RS_UNIQ;
         if (ss->sum)
             events |= RS_SUMMARY;
-    }
-    else if (state->dups = dups)
+    } else if (state->dups = dups)
         events |= RS_WRITE;
-    switch (ss->stable)
-    {
+    switch (ss->stable) {
     case 'N':
         key->type |= RS_DATA;
         break;
@@ -724,8 +668,7 @@ rs_disc(Rskey_t *key, const char *options)
     }
     if (!ss->type)
         ss->type = 'F';
-    switch (ss->type)
-    {
+    switch (ss->type) {
     case 'D':
         break;
     case 'F':
@@ -740,20 +683,17 @@ rs_disc(Rskey_t *key, const char *options)
     for (dp = ss->sort; dp; dp = dp->next)
         if ((s = sskey(ss, dp)) && rskey(key, s, 0))
             goto drop;
-    if (junk)
-    {
+    if (junk) {
         if (!(state->junksize = ss->size))
             state->junksize = 64;
         if (!(state->junkcount
-              = vmnewof(ss->vm, 0, Sfulong_t, state->junksize, 0)))
-        {
+              = vmnewof(ss->vm, 0, Sfulong_t, state->junksize, 0))) {
             if (ssdisc->errorf)
                 (*ssdisc->errorf)(
                 NiL, ssdisc, ERROR_SYSTEM | 2, "out of space");
             goto drop;
         }
-        if (!(state->junk = sfopen(NiL, junk, "w")))
-        {
+        if (!(state->junk = sfopen(NiL, junk, "w"))) {
             if (ssdisc->errorf)
                 (*ssdisc->errorf)(
                 NiL, ssdisc, ERROR_SYSTEM | 2, "%s: cannot write", junk);

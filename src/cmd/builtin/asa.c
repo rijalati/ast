@@ -64,8 +64,7 @@ asa(Sfio_t *in, Sfio_t *out, int reclen)
 {
     char *cp;
     int n, c = 0;
-    while (1)
-    {
+    while (1) {
         if (reclen > 0)
             cp = sfreserve(in, n = reclen, -1);
         else
@@ -77,16 +76,14 @@ asa(Sfio_t *in, Sfio_t *out, int reclen)
         else
             while (--n > 0 && cp[n] == ' ')
                 ;
-        switch (*cp)
-        {
+        switch (*cp) {
         case '\n':
             break;
         case '0':
             sfputc(out, '\n');
             break;
         case '1':
-            if (c)
-            {
+            if (c) {
                 sfputc(out, c);
                 c = '\f';
             }
@@ -115,8 +112,7 @@ b_asa(int argc, char **argv, Shbltin_t *context)
 
     cmdinit(argc, argv, ( void * )0, ( const char * )0, 0);
     while (n = optget(argv, usage))
-        switch (n)
-        {
+        switch (n) {
         case 'r':
             reclen = opt_info.num;
             break;
@@ -132,12 +128,10 @@ b_asa(int argc, char **argv, Shbltin_t *context)
         error(ERROR_usage(2), "%s", optusage(( char * )0));
     if (cp = *argv)
         argv++;
-    do
-    {
+    do {
         if (!cp || streq(cp, "-"))
             fp = sfstdin;
-        else if (!(fp = sfopen(NiL, cp, "r")))
-        {
+        else if (!(fp = sfopen(NiL, cp, "r"))) {
             error(ERROR_system(0), "%s: cannot open", cp);
             error_info.errors = 1;
             continue;

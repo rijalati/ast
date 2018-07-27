@@ -65,8 +65,7 @@ initiate(Cs_t *state, const char *svc, char *cmd)
     av[0] = cmd;
     av[1] = ( char * )svc;
     av[2] = 0;
-    if ((pid = spawnveg(av[0], av, environ, 0)) == -1)
-    {
+    if ((pid = spawnveg(av[0], av, environ, 0)) == -1) {
         messagef(
         (state->id, NiL, -1, "local: %s: cannot initiate %s", svc, cmd));
         return -1;
@@ -74,8 +73,7 @@ initiate(Cs_t *state, const char *svc, char *cmd)
     while ((n = waitpid(pid, NiL, 0)) == -1 && errno == EINTR)
         ;
 #ifdef SIGCHLD
-    if (fun != SIG_DFL)
-    {
+    if (fun != SIG_DFL) {
         signal(SIGCHLD, fun);
         if (fun != SIG_IGN)
             while (--children > 0)
@@ -115,8 +113,7 @@ cslocal(Cs_t *state, const char *path)
      */
 
     p = ( char * )path;
-    if (strncmp(p, DEVLOCAL, sizeof(DEVLOCAL) - 1))
-    {
+    if (strncmp(p, DEVLOCAL, sizeof(DEVLOCAL) - 1)) {
         messagef(
         (state->id, NiL, -1, "local: %s: %s* expected", path, DEVLOCAL));
         goto sorry;
@@ -124,8 +121,7 @@ cslocal(Cs_t *state, const char *path)
     p += sizeof(DEVLOCAL) - 1;
     for (t = p; *t && *t != '/'; t++)
         ;
-    if (!streq(t + 1, "user"))
-    {
+    if (!streq(t + 1, "user")) {
         messagef(
         (state->id, NiL, -1, "local: %s: %s*/user expected", path, DEVLOCAL));
         goto sorry;
@@ -144,13 +140,11 @@ cslocal(Cs_t *state, const char *path)
     for (p = CS_SVC_SUFFIX; *s++ = *p++;)
         ;
     p = pathbin();
-    for (;;)
-    {
+    for (;;) {
         p = pathcat(p, ':', "../lib/cs/fdp", cmd, exe, PATH_MAX + 1);
         if (!eaccess(exe, X_OK) && !stat(exe, &st))
             break;
-        if (!p)
-        {
+        if (!p) {
             messagef((state->id,
                       NiL,
                       -1,
@@ -175,8 +169,7 @@ cslocal(Cs_t *state, const char *path)
 #if CS_LIB_STREAM || CS_LIB_V10
 
     for (n = 0; (fd = open(tmp, O_RDWR)) < 0; n++)
-        if (n || errno == EACCES)
-        {
+        if (n || errno == EACCES) {
             messagef((state->id,
                       NiL,
                       -1,
@@ -184,9 +177,7 @@ cslocal(Cs_t *state, const char *path)
                       path,
                       tmp));
             return -1;
-        }
-        else if (initiate(state, path, exe) < 0)
-        {
+        } else if (initiate(state, path, exe) < 0) {
             messagef((state->id,
                       NiL,
                       -1,
@@ -219,16 +210,13 @@ cslocal(Cs_t *state, const char *path)
         namlen = sizeof(nam.sun_family) + strlen(tmp);
         n = 0;
         fd = -1;
-        for (;;)
-        {
-            if (fd < 0 && (fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
-            {
+        for (;;) {
+            if (fd < 0 && (fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
                 messagef((
                 state->id, NiL, -1, "local: %s: AF_UNIX socket error", path));
                 return -1;
             }
-            if (!connect(fd, ( struct sockaddr * )&nam, namlen))
-            {
+            if (!connect(fd, ( struct sockaddr * )&nam, namlen)) {
 #        if CS_LIB_SOCKET_RIGHTS
                 if (read(fd, cmd, 1) != 1)
                     messagef((state->id,
@@ -249,14 +237,12 @@ cslocal(Cs_t *state, const char *path)
                 close(fd);
                 fd = -1;
 #        endif
-            }
-            else
+            } else
                 messagef(
                 (state->id, NiL, -1, "local: %s: connect error", path));
             if (errno != EACCES)
                 errno = ENOENT;
-            if (n || errno == EACCES || initiate(state, path, exe) < 0)
-            {
+            if (n || errno == EACCES || initiate(state, path, exe) < 0) {
                 if (fd >= 0)
                     close(fd);
                 return -1;

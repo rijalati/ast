@@ -211,28 +211,22 @@ int type;      /* operation being done		*/
     bufp = (*_Vmstrcpy)(bufp, "region", '=');
     bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(VMLONG(vm), 0), ':');
 
-    if (data)
-    {
+    if (data) {
         bufp = (*_Vmstrcpy)(bufp, "block", '=');
         bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(VMLONG(data), 0), ':');
     }
 
-    if (!data)
-    {
+    if (!data) {
         if (where == DB_ALLOC)
             bufp = (*_Vmstrcpy)(bufp, "failed to get memory", ':');
         else
             bufp = (*_Vmstrcpy)(bufp, "locked region", ':');
-    }
-    else if (type == DB_FREE || type == DB_RESIZE)
-    {
+    } else if (type == DB_FREE || type == DB_RESIZE) {
         if (where == 0)
             bufp = (*_Vmstrcpy)(bufp, "outside region", ':');
         else
             bufp = (*_Vmstrcpy)(bufp, "not currently allocated", ':');
-    }
-    else if (type == DB_WATCH)
-    {
+    } else if (type == DB_WATCH) {
         bufp = (*_Vmstrcpy)(bufp, "size", '=');
         bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(DBSIZE(data), -1), ':');
         if (where == DB_ALLOC)
@@ -243,13 +237,10 @@ int type;      /* operation being done		*/
             bufp = (*_Vmstrcpy)(bufp, "being resized", ':');
         else if (where == DB_RESIZED)
             bufp = (*_Vmstrcpy)(bufp, "just resized", ':');
-    }
-    else if (type == DB_CHECK)
-    {
+    } else if (type == DB_CHECK) {
         bufp = (*_Vmstrcpy)(bufp, "bad byte at", '=');
         bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(VMLONG(where), -1), ':');
-        if ((s = DBFILE(data)) && (bufp + strlen(s) + SLOP) < endbuf)
-        {
+        if ((s = DBFILE(data)) && (bufp + strlen(s) + SLOP) < endbuf) {
             bufp = (*_Vmstrcpy)(bufp, "allocated at", '=');
             bufp = (*_Vmstrcpy)(bufp, s, ',');
             bufp
@@ -258,8 +249,8 @@ int type;      /* operation being done		*/
     }
 
     /* location where offending call originates from */
-    if (file && file[0] && line > 0 && (bufp + strlen(file) + SLOP) < endbuf)
-    {
+    if (file && file[0] && line > 0
+        && (bufp + strlen(file) + SLOP) < endbuf) {
         bufp = (*_Vmstrcpy)(bufp, "detected at", '=');
         bufp = (*_Vmstrcpy)(bufp, file, ',');
         bufp = (*_Vmstrcpy)(bufp, (*_Vmitoa)(VMLONG(line), -1), ',');
@@ -292,10 +283,8 @@ int type;
 {
     int n;
 
-    for (n = Dbnwatch; n >= 0; --n)
-    {
-        if (Dbwatch[n] == data)
-        {
+    for (n = Dbnwatch; n >= 0; --n) {
+        if (Dbwatch[n] == data) {
             dbwarn(vm, data, type, file, line, func, DB_WATCH);
             return;
         }
@@ -323,24 +312,20 @@ int line;    /* and line number			*/
     /* find the file structure */
     if (!file || !file[0])
         db = NIL(Dbfile_t *);
-    else
-    {
+    else {
         for (last = NIL(Dbfile_t *), db = Dbfile; db;
              last = db, db = db->next)
             if (strcmp(db->file, file) == 0)
                 break;
-        if (!db)
-        {
+        if (!db) {
             db
             = ( Dbfile_t * )vmalloc(Vmheap, sizeof(Dbfile_t) + strlen(file));
-            if (db)
-            {
+            if (db) {
                 (*_Vmstrcpy)(db->file, file, 0);
                 db->next = Dbfile;
                 Dbfile = db->next;
             }
-        }
-        else if (last) /* move-to-front heuristic */
+        } else if (last) /* move-to-front heuristic */
         {
             last->next = db->next;
             db->next = Dbfile;
@@ -387,8 +372,7 @@ int local;
 
     sz = ROUND(size, MEM_ALIGN) + DB_EXTRA;
     sz = sz >= sizeof(Body_t) ? sz : sizeof(Body_t);
-    if (!(data = ( Vmuchar_t * )KPVALLOC(vm, sz, (*(Vmbest->allocf)))))
-    {
+    if (!(data = ( Vmuchar_t * )KPVALLOC(vm, sz, (*(Vmbest->allocf))))) {
         dbwarn(vm, NIL(Vmuchar_t *), DB_ALLOC, file, line, func, DB_ALLOC);
         goto done;
     }
@@ -396,8 +380,7 @@ int local;
     data = DB2DEBUG(data);
     dbsetinfo(data, size, file, line);
 
-    if (_Vmtrace)
-    {
+    if (_Vmtrace) {
         vm->file = file;
         vm->line = line;
         vm->func = func;
@@ -434,13 +417,13 @@ int local;
     if (!data)
         return 0;
 
-    if (asocasint(&vm->data->dlck, 0, KEY_DEBUG))
-    { /* prepend to delayed free list -- handled by another free() that gets
-         the lock */
+    if (asocasint(&vm->data->dlck,
+                  0,
+                  KEY_DEBUG)) { /* prepend to delayed free list -- handled by
+                                   another free() that gets the lock */
         asospindecl();
         item = ( Free_t * )data;
-        for (asospininit();; asospinnext())
-        {
+        for (asospininit();; asospinnext()) {
             item->next = list = vm->data->delay;
             if (asocasptr(&vm->data->delay, list, item) == ( void * )list)
                 break;
@@ -449,14 +432,12 @@ int local;
     }
 
     list = 0;
-    for (;;)
-    { /* check to see if memory is from vm */
+    for (;;) { /* check to see if memory is from vm */
         for (seg = vm->data->seg; seg; seg = seg->next)
             if (( Vmuchar_t * )data >= seg->base
                 && ( Vmuchar_t * )data < seg->base + seg->size)
                 break;
-        if (!seg || DBMARK(data) != DB_MARK)
-        {
+        if (!seg || DBMARK(data) != DB_MARK) {
             dbwarn(vm, data, seg ? 1 : 0, file, line, func, DB_FREE);
             goto done;
         }
@@ -467,8 +448,7 @@ int local;
         if (Dbnwatch > 0)
             dbwatch(vm, data, file, line, func, DB_FREE);
 
-        if (_Vmtrace)
-        {
+        if (_Vmtrace) {
             vm->file = file;
             vm->line = line;
             vm->func = func;
@@ -516,15 +496,13 @@ int local;
     Vmuchar_t *data = NIL(Vmuchar_t *);
     VMFLF(vm, file, line, func);
 
-    if (!addr)
-    {
+    if (!addr) {
         data = ( Vmuchar_t * )dballoc(vm, size, local);
         if (data && (type & VM_RSZERO))
             memset(( Void_t * )data, 0, size);
         return data;
     }
-    if (size == 0)
-    {
+    if (size == 0) {
         ( void )dbfree(vm, addr, local);
         return NIL(Void_t *);
     }
@@ -536,8 +514,7 @@ int local;
         if (( Vmuchar_t * )addr >= seg->base
             && ( Vmuchar_t * )addr < seg->base + seg->size)
             break;
-    if (!seg || DBMARK(addr) != DB_MARK)
-    {
+    if (!seg || DBMARK(addr) != DB_MARK) {
         dbwarn(vm, addr, seg ? 1 : 0, file, line, func, DB_RESIZE);
         goto done;
     }
@@ -563,14 +540,11 @@ int local;
     {
         dbwarn(vm, NIL(Vmuchar_t *), DB_ALLOC, file, line, func, DB_RESIZE);
         dbsetinfo(( Vmuchar_t * )addr, oldsize, oldfile, oldline);
-    }
-    else
-    {
+    } else {
         data = DB2DEBUG(data);
         dbsetinfo(data, size, file, line);
 
-        if (_Vmtrace)
-        {
+        if (_Vmtrace) {
             vm->file = file;
             vm->line = line;
             (*_Vmtrace)(vm, ( Vmuchar_t * )addr, data, size, 0);
@@ -579,11 +553,9 @@ int local;
             dbwatch(vm, data, file, line, func, DB_RESIZED);
     }
 
-    if (data && (type & VM_RSZERO) && size > oldsize)
-    {
+    if (data && (type & VM_RSZERO) && size > oldsize) {
         Vmuchar_t *dt = data + oldsize, *ed = data + size;
-        do
-        {
+        do {
             *dt++ = 0;
         } while (dt < ed);
     }
@@ -606,29 +578,24 @@ int vmdbcheck(vm) Vmalloc_t *vm;
     int rv;
 
     /* check the meta-data of this region */
-    if (vm->data->mode & (VM_MTDEBUG | VM_MTBEST))
-    {
+    if (vm->data->mode & (VM_MTDEBUG | VM_MTBEST)) {
         if ((*vm->meth.eventf)(vm, VM_CHECKARENA, NIL(Void_t *)) < 0)
             return -1;
         if (!(vm->data->mode & VM_MTDEBUG))
             return 0;
-    }
-    else
+    } else
         return -1;
 
     rv = 0;
-    for (seg = vm->data->seg; seg; seg = seg->next)
-    {
+    for (seg = vm->data->seg; seg; seg = seg->next) {
         sgb = ( Block_t * )SEGDATA(seg);
-        for (; sgb < seg->endb; sgb = NEXT(sgb))
-        {
+        for (; sgb < seg->endb; sgb = NEXT(sgb)) {
             if (!(SIZE(sgb) & BUSY))
                 continue;
 
             bp = ( Block_t * )DATA(sgb);
             endbp = ENDB(sgb);
-            for (; bp < endbp; bp = NEXT(bp))
-            {
+            for (; bp < endbp; bp = NEXT(bp)) {
                 Vmuchar_t *data, *begp, *endp;
 
                 if (!(SIZE(bp) & BUSY)) /* not a busy block */
@@ -650,8 +617,7 @@ int vmdbcheck(vm) Vmalloc_t *vm;
                         goto set_bad;
 
                 DBTAIL(data, begp, endp);
-                for (; begp < endp; ++begp)
-                {
+                for (; begp < endp; ++begp) {
                     if (*begp == DB_MAGIC)
                         continue;
                 set_bad:
@@ -682,15 +648,13 @@ Void_t *vmdbwatch(addr) Void_t *addr; /* address to insert	*/
     out = NIL(Void_t *);
     if (!addr)
         Dbnwatch = 0;
-    else
-    {
+    else {
         for (n = Dbnwatch - 1; n >= 0; --n)
             if (Dbwatch[n] == addr)
                 break;
         if (n < 0) /* insert */
         {
-            if (Dbnwatch == S_WATCH)
-            { /* delete left-most */
+            if (Dbnwatch == S_WATCH) { /* delete left-most */
                 out = Dbwatch[0];
                 Dbnwatch -= 1;
                 for (n = 0; n < Dbnwatch; ++n)
@@ -728,13 +692,12 @@ int local;
     if ((sz = ROUND(size, MEM_ALIGN) + DB_EXTRA) < sizeof(Body_t))
         sz = sizeof(Body_t);
 
-    if ((data = ( Vmuchar_t * )KPVALIGN(vm, sz, align, (*(Vmbest->alignf)))))
-    {
+    if ((data
+         = ( Vmuchar_t * )KPVALIGN(vm, sz, align, (*(Vmbest->alignf))))) {
         data += DB_HEAD;
         dbsetinfo(data, size, file, line);
 
-        if (_Vmtrace)
-        {
+        if (_Vmtrace) {
             vm->file = file;
             vm->line = line;
             vm->func = func;
@@ -773,13 +736,11 @@ ssize_t vmdbstat(vm) Vmalloc_t *vm;
     ssize_t n;
     Vmstat_t st;
 
-    if (vmstat(vm, &st) >= 0)
-    {
+    if (vmstat(vm, &st) >= 0) {
         n = strlen(st.mesg);
         write(Dbfd, st.mesg, n);
         return n;
-    }
-    else
+    } else
         return -1;
 }
 

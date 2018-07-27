@@ -45,8 +45,7 @@ freerule(struct rule *r)
     struct list *x;
 
     x = r->prereqs;
-    while (p = x)
-    {
+    while (p = x) {
         x = p->next;
         free(p);
     }
@@ -83,8 +82,7 @@ getproc(struct mam *mp, long pid)
                                   free,
                                   HASH_name,
                                   "mam-variables",
-                                  0)))
-    {
+                                  0))) {
         errorf(mp, mp, 2, "out of space");
         return (0);
     }
@@ -107,8 +105,7 @@ mamalloc(void)
     if (!(mp = newof(0, struct mam, 1, 0)))
         return (0);
     mp->id = lib;
-    if (!(mp->main = getproc(mp, 0)))
-    {
+    if (!(mp->main = getproc(mp, 0))) {
         mamfree(mp);
         return (0);
     }
@@ -122,12 +119,10 @@ mamalloc(void)
 void
 mamfree(struct mam *mp)
 {
-    if (mp)
-    {
+    if (mp) {
         struct proc *pp;
 
-        while (pp = mp->procs)
-        {
+        while (pp = mp->procs) {
             mp->procs = pp->next;
             if (pp->rules)
                 hashfree(pp->rules);
@@ -176,8 +171,7 @@ attributes(struct proc *pp, struct rule *r, char *s)
     char *arg;
     struct list **p = 0;
 
-    while (tokscan(s, &s, " %s ", &arg) == 1)
-    {
+    while (tokscan(s, &s, " %s ", &arg) == 1) {
         if (streq(arg, "archive"))
             r->attributes |= A_archive;
         else if (streq(arg, "dontcare"))
@@ -218,8 +212,7 @@ mamscan(struct mam *mp, const char *file)
 
     if (!file)
         input = sfstdin;
-    else if (!(input = sfopen(NiL, file, "r")))
-    {
+    else if (!(input = sfopen(NiL, file, "r"))) {
         errorf(mp, mp, 2, "%s: cannot read", file);
         return (-1);
     }
@@ -230,53 +223,40 @@ mamscan(struct mam *mp, const char *file)
     error_info.file = ( char * )file;
     oline = error_info.line;
     error_info.line = 0;
-    while (s = sfgetr(input, '\n', 1))
-    {
+    while (s = sfgetr(input, '\n', 1)) {
         error_info.line++;
         if (tokscan(s, &s, " %s ", &op) != 1)
             continue;
-        if (isdigit(*op))
-        {
+        if (isdigit(*op)) {
             if (!(pp = getproc(mp, strtol(op, NiL, 10))))
                 return (-1);
             if (tokscan(s, &s, " %s ", &op) != 1)
                 continue;
-        }
-        else
+        } else
             pp = mp->main;
-        if (!pp->bp)
-        {
+        if (!pp->bp) {
             errorf(mp, mp, 1, "%s: process %d is finished", op, pp->pid);
             continue;
         }
-        if (streq(op, "note"))
-        {
+        if (streq(op, "note")) {
             /* comment */;
-        }
-        else if (streq(op, "setv"))
-        {
+        } else if (streq(op, "setv")) {
             tokscan(s, &val, " %s ", &arg);
             while (isspace(*val))
                 val++;
             mamvar(pp, arg, strdup(val));
-        }
-        else if ((n = streq(op, "make")) || streq(op, "prev"))
-        {
+        } else if ((n = streq(op, "make")) || streq(op, "prev")) {
             tokscan(s, &s, " %s ", &arg);
             if (n)
                 r = mamrule(pp, arg);
-            else if (!(r = getrule(pp, arg)) && !(r = alias(pp, arg)))
-            {
+            else if (!(r = getrule(pp, arg)) && !(r = alias(pp, arg))) {
                 errorf(mp, mp, 1, "%s: reference to undefined rule", arg);
                 continue;
             }
             mamprereq(pp, pp->fp->rule, r, attributes(pp, r, s));
-            if (n)
-            {
-                if (!pp->fp->next)
-                {
-                    if (!(pp->fp->next = newof(0, struct frame, 1, 0)))
-                    {
+            if (n) {
+                if (!pp->fp->next) {
+                    if (!(pp->fp->next = newof(0, struct frame, 1, 0))) {
                         errorf(mp, mp, 2, "out of space");
                         return (-1);
                     }
@@ -285,22 +265,17 @@ mamscan(struct mam *mp, const char *file)
                 pp->fp = pp->fp->next;
                 pp->fp->rule = r;
             }
-        }
-        else if (streq(op, "exec"))
-        {
+        } else if (streq(op, "exec")) {
             tokscan(s, &s, " %s ", &arg);
-            if (streq(arg, "-"))
-            {
+            if (streq(arg, "-")) {
                 if (!pp->fp->prev)
                     goto missing;
                 r = pp->fp->rule;
-            }
-            else
+            } else
                 r = mamrule(pp, arg);
             while (isspace(*s))
                 s++;
-            if (!(a = newof(0, struct block, 1, 0)))
-            {
+            if (!(a = newof(0, struct block, 1, 0))) {
                 errorf(mp, mp, 2, "out of space");
                 return (-1);
             }
@@ -310,9 +285,7 @@ mamscan(struct mam *mp, const char *file)
             else
                 r->action = a;
             r->atail = a;
-        }
-        else if (streq(op, "done"))
-        {
+        } else if (streq(op, "done")) {
             if (!pp->fp->prev)
                 goto missing;
             tokscan(s, &s, " %s ", &arg);
@@ -321,46 +294,34 @@ mamscan(struct mam *mp, const char *file)
                 mp, mp, 1, "%s: %s %s expected", arg, op, pp->fp->rule->name);
             attributes(pp, pp->fp->rule, s);
             pp->fp = pp->fp->prev;
-        }
-        else if (streq(op, "bind"))
-        {
+        } else if (streq(op, "bind")) {
             tokscan(s, NiL, " %s %lu %s ", &arg, &t, &val);
-            if (!(r = getrule(pp, arg)) && !(r = alias(pp, arg)))
-            {
+            if (!(r = getrule(pp, arg)) && !(r = alias(pp, arg))) {
                 errorf(mp, mp, 1, "%s: reference to undefined rule", arg);
                 continue;
             }
             if (val)
                 r->bound = strdup(val);
             r->time = t;
-        }
-        else if (streq(op, "code"))
-        {
+        } else if (streq(op, "code")) {
             tokscan(s, NiL, " %s %d ", &arg, &n);
-            if (!(r = getrule(pp, arg)) && !(r = alias(pp, arg)))
-            {
+            if (!(r = getrule(pp, arg)) && !(r = alias(pp, arg))) {
                 errorf(mp, mp, 1, "%s: reference to undefined rule", arg);
                 continue;
             }
             r->status = n;
-        }
-        else if (streq(op, "info"))
-        {
+        } else if (streq(op, "info")) {
             tokscan(s, &s, " %s ", &arg);
-            if (streq(arg, "mam"))
-            {
+            if (streq(arg, "mam")) {
                 tokscan(s, NiL, " %s ", &arg);
                 if (mp->version)
                     free(mp->version);
                 mp->version = strdup(arg);
-            }
-            else if (streq(arg, "start"))
-            {
+            } else if (streq(arg, "start")) {
                 tokscan(s, NiL, " %lu %d ", &pp->start, &n);
                 if (!pp->pid)
                     pp->pid = n;
-                else if (pp->parent = getproc(mp, n))
-                {
+                else if (pp->parent = getproc(mp, n)) {
                     struct proc *ppp = pp->parent;
 
                     if (!ppp->child)
@@ -370,34 +331,25 @@ mamscan(struct mam *mp, const char *file)
                     else
                         ppp->child->stail = ppp->child->stail->sibling = pp;
                 }
-            }
-            else if (streq(arg, "finish"))
-            {
+            } else if (streq(arg, "finish")) {
                 struct frame *fp;
 
                 tokscan(s, NiL, " %lu %d ", &pp->finish, &pp->status);
                 if (pp->fp != pp->bp)
                     errorf(mp, mp, 1, "%s: not enough done ops", arg);
-                while (fp = pp->bp)
-                {
+                while (fp = pp->bp) {
                     pp->bp = fp->next;
                     free(fp);
                 }
-            }
-            else if (streq(arg, "pwd"))
-            {
+            } else if (streq(arg, "pwd")) {
                 tokscan(s, NiL, " %s ", &val);
                 pp->pwd = strdup(val);
-            }
-            else if (streq(arg, "view"))
-            {
+            } else if (streq(arg, "view")) {
                 tokscan(s, NiL, " %s ", &val);
                 pp->view = strdup(val);
-            }
-            else
+            } else
                 errorf(mp, mp, 1, "%s: unknown %s attribute", arg, op);
-        }
-        else
+        } else
             errorf(mp, mp, 1, "%s: unknown op ignored", op);
         continue;
     missing:
@@ -436,8 +388,7 @@ mamvar(struct proc *pp, const char *name, const char *value)
 {
     struct var *v;
 
-    if (!(v = getvar(pp, name)))
-    {
+    if (!(v = getvar(pp, name))) {
         if (!(v = newof(0, struct var, 1, 0)))
             return (0);
         v->name = putvar(pp, 0, v);
@@ -457,18 +408,14 @@ mamprereq(struct proc *pp, struct rule *r, struct rule *x, struct list **p)
     struct list *q;
 
     NoP(pp);
-    if (x != r)
-    {
+    if (x != r) {
         if (!p)
             p = &r->prereqs;
-        if (q = *p)
-        {
-            while (q)
-            {
+        if (q = *p) {
+            while (q) {
                 if (x == q->rule)
                     break;
-                if (!q->next)
-                {
+                if (!q->next) {
                     if (!(q->next = newof(0, struct list, 1, 0)))
                         return;
                     q->next->rule = x;
@@ -476,8 +423,7 @@ mamprereq(struct proc *pp, struct rule *r, struct rule *x, struct list **p)
                 }
                 q = q->next;
             }
-        }
-        else if (!(*p = newof(0, struct list, 1, 0)))
+        } else if (!(*p = newof(0, struct list, 1, 0)))
             return;
         else
             (*p)->rule = x;

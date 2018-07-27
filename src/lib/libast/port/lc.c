@@ -104,8 +104,7 @@ Lc_t *locales[]
 int
 lcindex(int category, int min)
 {
-    switch (category)
-    {
+    switch (category) {
     case LC_ALL:
         return min ? -1 : AST_LC_ALL;
     case LC_ADDRESS:
@@ -177,11 +176,9 @@ match(const char *s, const char *p, int minimum, int standard)
     int z;
 
     z = 0;
-    do
-    {
+    do {
         t = s;
-        if (standard)
-        {
+        if (standard) {
             if (isdigit(*t))
                 while (*p && !isdigit(*p))
                     p++;
@@ -189,20 +186,16 @@ match(const char *s, const char *p, int minimum, int standard)
                 while (*t && !isdigit(*t))
                     t++;
         }
-        if (*p)
-        {
+        if (*p) {
             w = 0;
             x = p;
-            while (*p && *p != '|')
-            {
+            while (*p && *p != '|') {
                 if (!*t || *t == ',')
                     break;
                 else if (*t == *p)
                     /*ok*/;
-                else if (*t == '-')
-                {
-                    if (standard && isdigit(*p))
-                    {
+                else if (*t == '-') {
+                    if (standard && isdigit(*p)) {
                         t++;
                         continue;
                     }
@@ -210,11 +203,8 @@ match(const char *s, const char *p, int minimum, int standard)
                         p++;
                     if (!*p)
                         break;
-                }
-                else if (*p == '-')
-                {
-                    if (standard && isdigit(*t))
-                    {
+                } else if (*p == '-') {
+                    if (standard && isdigit(*t)) {
                         p++;
                         continue;
                     }
@@ -223,8 +213,7 @@ match(const char *s, const char *p, int minimum, int standard)
                         t++;
                     if (!*t)
                         break;
-                }
-                else
+                } else
                     break;
                 t++;
                 p++;
@@ -278,73 +267,55 @@ canonical(const Lc_language_t *lp,
         flags |= LC_abbreviated;
     s = buf;
     e = &buf[siz - 3];
-    if (lp)
-    {
-        if (lp->flags & (LC_debug | LC_default))
-        {
+    if (lp) {
+        if (lp->flags & (LC_debug | LC_default)) {
             for (t = lp->code; s < e && (*s = *t++); s++)
                 ;
             *s++ = 0;
             return s - buf;
         }
-        if (flags & LC_verbose)
-        {
+        if (flags & LC_verbose) {
             u = 1;
             t = lp->name;
-            while (s < e && (c = *t++))
-            {
-                if (u)
-                {
+            while (s < e && (c = *t++)) {
+                if (u) {
                     u = 0;
                     c = toupper(c);
-                }
-                else if (!isalnum(c))
+                } else if (!isalnum(c))
                     u = 1;
                 *s++ = c;
             }
-        }
-        else
+        } else
             for (t = lp->code; s < e && (*s = *t++); s++)
                 ;
     }
-    if (s < e)
-    {
-        if (tp && tp != &lc_territories[0])
-        {
+    if (s < e) {
+        if (tp && tp != &lc_territories[0]) {
             r = 0;
-            if (lp)
-            {
+            if (lp) {
                 if ((flags & (LC_abbreviated | LC_default))
                     && streq(lp->code, tp->code))
                     r = s;
                 *s++ = '_';
             }
-            if (flags & LC_verbose)
-            {
+            if (flags & LC_verbose) {
                 u = 1;
                 t = tp->name;
-                while (s < e && (c = *t++) && c != '|')
-                {
-                    if (u)
-                    {
+                while (s < e && (c = *t++) && c != '|') {
+                    if (u) {
                         u = 0;
                         c = toupper(c);
-                    }
-                    else if (!isalnum(c))
+                    } else if (!isalnum(c))
                         u = 1;
                     *s++ = c;
                 }
-            }
-            else
+            } else
                 for (t = tp->code; s < e && (*s = toupper(*t++)); s++)
                     ;
-            if (r)
-            {
+            if (r) {
                 *s = 0;
-                if ((p = setlocale(LC_MESSAGES, 0)) && (p = strdup(p)))
-                {
-                    if (!setlocale(LC_MESSAGES, buf))
-                    {
+                if ((p = setlocale(LC_MESSAGES, 0)) && (p = strdup(p))) {
+                    if (!setlocale(LC_MESSAGES, buf)) {
                         *r = 0;
                         if (!setlocale(LC_MESSAGES, buf))
                             *r = '_';
@@ -356,16 +327,14 @@ canonical(const Lc_language_t *lp,
         }
         if (lp
             && (!(flags & (LC_abbreviated | LC_default)) || cp != lp->charset)
-            && s < e)
-        {
+            && s < e) {
             *s++ = '.';
             t = cp->code;
             if (streq(cp->code, "utf8") && (t = _locale_utf8_str))
                 for (; s < e && (c = *t++); s++)
                     *s = c;
             else
-                for (t = cp->code; s < e && (c = *t++); s++)
-                {
+                for (t = cp->code; s < e && (c = *t++); s++) {
                     if (islower(c))
                         c = toupper(c);
                     *s = c;
@@ -373,8 +342,7 @@ canonical(const Lc_language_t *lp,
         }
         for (c = '@'; ap && s < e; ap = ap->next)
             if (!(flags & (LC_abbreviated | LC_default | LC_verbose))
-                || !(ap->attribute->flags & LC_default))
-            {
+                || !(ap->attribute->flags & LC_default)) {
                 *s++ = c;
                 c = ',';
                 for (t = ap->attribute->name; s < e && (*s = *t++); s++)
@@ -393,8 +361,8 @@ size_t
 lccanon(Lc_t *lc, unsigned long flags, char *buf, size_t siz)
 {
     if ((flags & LC_local)
-        && (!lc->language || !(lc->language->flags & (LC_debug | LC_default))))
-    {
+        && (!lc->language
+            || !(lc->language->flags & (LC_debug | LC_default)))) {
 #if _WINIX
         char lang[64];
         char code[64];
@@ -404,8 +372,7 @@ lccanon(Lc_t *lc, unsigned long flags, char *buf, size_t siz)
             && GetLocaleInfo(
                lc->index, LOCALE_SENGLANGUAGE, lang, sizeof(lang))
             && GetLocaleInfo(
-               lc->index, LOCALE_SENGCOUNTRY, ctry, sizeof(ctry)))
-        {
+               lc->index, LOCALE_SENGCOUNTRY, ctry, sizeof(ctry))) {
             if (!GetLocaleInfo(
                 lc->index, LOCALE_IDEFAULTANSICODEPAGE, code, sizeof(code)))
                 code[0] = 0;
@@ -467,8 +434,7 @@ lcmake(const char *name)
         if (!strcasecmp(t, lc->code) || !strcasecmp(t, lc->name))
             return lc;
     for (mp = lc_maps; mp->code; mp++)
-        if (streq(t, mp->code))
-        {
+        if (streq(t, mp->code)) {
             lp = mp->language;
             tp = mp->territory;
             cp = mp->charset;
@@ -484,10 +450,8 @@ lcmake(const char *name)
     e = &buf[sizeof(buf) - 2];
     a = 0;
     n = 0;
-    while (s < e && (c = *t++))
-    {
-        if (isspace(c) || (c == '(' || c == '-' && *t == '-') && ++n)
-        {
+    while (s < e && (c = *t++)) {
+        if (isspace(c) || (c == '(' || c == '-' && *t == '-') && ++n) {
             while (
             (c = *t++)
             && (isspace(c) || (c == '-' || c == '(' || c == ')') && ++n))
@@ -495,11 +459,9 @@ lcmake(const char *name)
                     break;
             if (isalnum(c) && !n)
                 *s++ = '-';
-            else
-            {
+            else {
                 n = 0;
-                if (!a)
-                {
+                if (!a) {
                     a = t - 1;
                     while (c && c != '_' && c != '.' && c != '@')
                         c = *t++;
@@ -508,42 +470,31 @@ lcmake(const char *name)
                 }
             }
         }
-        if (c == '_' && !territory_name)
-        {
+        if (c == '_' && !territory_name) {
             *s++ = 0;
             territory_name = s;
-        }
-        else if (c == '.' && !charset_name)
-        {
+        } else if (c == '.' && !charset_name) {
             *s++ = 0;
             charset_name = s;
-        }
-        else if (c == '@' && !attributes_name)
-        {
+        } else if (c == '@' && !attributes_name) {
             *s++ = 0;
             attributes_name = s;
-        }
-        else
-        {
+        } else {
             if (isupper(c))
                 c = tolower(c);
             *s++ = c;
         }
     }
-    if ((t = a) && s < e)
-    {
+    if ((t = a) && s < e) {
         if (attributes_name)
             *s++ = ',';
-        else
-        {
+        else {
             *s++ = 0;
             attributes_name = s;
         }
-        while (s < e && (c = *t++))
-        {
+        while (s < e && (c = *t++)) {
             if (isspace(c)
-                || (c == '(' || c == ')' || c == '-' && *t == '-') && ++n)
-            {
+                || (c == '(' || c == ')' || c == '-' && *t == '-') && ++n) {
                 while (
                 (c = *t++)
                 && (isspace(c) || (c == '-' || c == '(' || c == ')') && ++n))
@@ -586,14 +537,12 @@ lcmake(const char *name)
     if (n == 2)
         for (lp = lc_languages; lp->code && !streq(s, lp->code); lp++)
             ;
-    else if (n == 3)
-    {
+    else if (n == 3) {
         for (lp = lc_languages;
              lp->code && (!lp->alternates || !match(s, lp->alternates, n, 0));
              lp++)
             ;
-        if (!lp->code)
-        {
+        if (!lp->code) {
             c = s[2];
             s[2] = 0;
             for (lp = lc_languages; lp->code && !streq(s, lp->code); lp++)
@@ -602,30 +551,24 @@ lcmake(const char *name)
             if (lp->code)
                 n = 1;
         }
-    }
-    else if (streq(s, "c") || streq(s, "posix"))
+    } else if (streq(s, "c") || streq(s, "posix"))
         lp = &lc_languages[0];
     else
         lp = 0;
-    if (!lp || !lp->code)
-    {
+    if (!lp || !lp->code) {
         for (lp = lc_languages; lp->code && !match(s, lp->name, 0, 0); lp++)
             ;
-        if (!lp || !lp->code)
-        {
-            if (!territory_name)
-            {
+        if (!lp || !lp->code) {
+            if (!territory_name) {
                 if (n == 2)
                     for (tp = lc_territories; tp->code && !streq(s, tp->code);
                          tp++)
                         ;
-                else
-                {
+                else {
                     z = 0;
                     tpb = 0;
                     for (tp = lc_territories; tp->name; tp++)
-                        if ((i = match(s, tp->name, 3, 0)) > z)
-                        {
+                        if ((i = match(s, tp->name, 3, 0)) > z) {
                             tpb = tp;
                             if ((z = i) == n)
                                 break;
@@ -636,8 +579,7 @@ lcmake(const char *name)
                 if (tp->code)
                     lp = tp->languages[0];
             }
-            if (!lp || !lp->code)
-            {
+            if (!lp || !lp->code) {
                 /*
                  * name not in the tables so let
                  * _ast_setlocale() and/or setlocale()
@@ -655,8 +597,7 @@ lcmake(const char *name)
                 cp = &lc_charsets[0];
                 if (charset_name)
                     for (ppa = lc_charsets; ppa->code; ppa++)
-                        if (match_charset(charset_name, ppa))
-                        {
+                        if (match_charset(charset_name, ppa)) {
                             cp = ppa;
                             break;
                         }
@@ -671,17 +612,13 @@ lcmake(const char *name)
      * territory
      */
 
-    if (!tp || !tp->code)
-    {
-        if (!(s = territory_name))
-        {
+    if (!tp || !tp->code) {
+        if (!(s = territory_name)) {
             n = 0;
             primary = 0;
             for (tp = lc_territories; tp->code; tp++)
-                if (tp->languages[0] == lp)
-                {
-                    if (tp->flags & LC_primary)
-                    {
+                if (tp->languages[0] == lp) {
+                    if (tp->flags & LC_primary) {
                         n = 1;
                         primary = tp;
                         break;
@@ -693,16 +630,12 @@ lcmake(const char *name)
                 tp = primary;
             s = ( char * )lp->code;
         }
-        if (!tp || !tp->code)
-        {
+        if (!tp || !tp->code) {
             n = strlen(s);
-            if (n == 2)
-            {
+            if (n == 2) {
                 for (tp = lc_territories; tp->code; tp++)
-                    if (streq(s, tp->code))
-                    {
-                        if (lp != &lc_languages[0])
-                        {
+                    if (streq(s, tp->code)) {
+                        if (lp != &lc_languages[0]) {
                             for (i = 0; i < elementsof(tp->languages)
                                         && lp != tp->languages[i];
                                  i++)
@@ -712,12 +645,9 @@ lcmake(const char *name)
                         }
                         break;
                     }
-            }
-            else
-            {
+            } else {
                 for (tp = lc_territories; tp->code; tp++)
-                    if (match(s, tp->name, 3, 0))
-                    {
+                    if (match(s, tp->name, 3, 0)) {
                         for (i = 0; i < elementsof(tp->languages)
                                     && lp != tp->languages[i];
                              i++)
@@ -735,30 +665,24 @@ lcmake(const char *name)
      * attributes -- done here to catch misplaced charset references
      */
 
-    if (s = attributes_name)
-    {
-        do
-        {
+    if (s = attributes_name) {
+        do {
             for (w = s; *s && *s != ','; s++)
                 ;
             c = *s;
             *s = 0;
             if (!(cp = lp->charset) || !match_charset(w, cp))
                 for (cp = lc_charsets; cp->code; cp++)
-                    if (match_charset(w, cp))
-                    {
+                    if (match_charset(w, cp)) {
                         ppa = cp;
                         break;
                     }
-            if (!cp->code)
-            {
+            if (!cp->code) {
                 for (i = 0; i < elementsof(lp->attributes)
                             && (ap = lp->attributes[i]);
                      i++)
-                    if (match(w, ap->name, 5, 0))
-                    {
-                        if (ai = newof(0, Lc_attribute_list_t, 1, 0))
-                        {
+                    if (match(w, ap->name, 5, 0)) {
+                        if (ai = newof(0, Lc_attribute_list_t, 1, 0)) {
                             ai->attribute = ap;
                             ai->next = al;
                             al = ai;
@@ -766,11 +690,11 @@ lcmake(const char *name)
                         break;
                     }
                 if (i >= elementsof(lp->attributes)
-                    && (ap = newof(0,
-                                   Lc_attribute_t,
-                                   1,
-                                   sizeof(Lc_attribute_list_t) + s - w + 1)))
-                {
+                    && (ap
+                        = newof(0,
+                                Lc_attribute_t,
+                                1,
+                                sizeof(Lc_attribute_list_t) + s - w + 1))) {
                     ai = ( Lc_attribute_list_t * )(ap + 1);
                     strcpy(( char * )((( Lc_attribute_t * )ap)->name
                                       = ( const char * )(ai + 1)),
@@ -820,10 +744,8 @@ override:
     local[1].size = strlen(local[1].name);
     i = -1;
     for (c = 0; c < elementsof(local); ++c)
-        if (strneq(name, local[c].name, local[c].size))
-        {
-            switch (name[local[c].size])
-            {
+        if (strneq(name, local[c].name, local[c].size)) {
+            switch (name[local[c].size]) {
             case '.':
             case '_':
             case 0:
@@ -837,13 +759,11 @@ override:
         return 0;
     strcpy(( char * )(lc->name = ( const char * )(lc + 1)), name);
     lc->code = lc->name + n;
-    if (i >= 0)
-    {
+    if (i >= 0) {
         lc->flags |= LC_local;
         strcpy(( char * )lc->code, local[!i].name);
         strcpy(( char * )lc->code + local[!i].size, name + local[i].size);
-    }
-    else
+    } else
         strcpy(( char * )lc->code, s);
     lc->language = lp ? lp : &lc_languages[0];
     lc->territory = tp ? tp : &lc_territories[0];
@@ -857,8 +777,7 @@ override:
     n = SUBLANG_DEFAULT;
     if (tp)
         for (i = 0; i < elementsof(tp->languages); i++)
-            if (lp == tp->languages[i])
-            {
+            if (lp == tp->languages[i]) {
                 n = tp->indices[i];
                 break;
             }
@@ -904,8 +823,7 @@ lcscan(Lc_t *lc)
 {
     Lc_scan_t *ls;
 
-    if (!(ls = ( Lc_scan_t * )lc))
-    {
+    if (!(ls = ( Lc_scan_t * )lc)) {
         if (!(ls = newof(0, Lc_scan_t, 1, 0)))
             return 0;
         ls->lc.code = ls->lc.name = ls->buf;
@@ -914,29 +832,25 @@ lcscan(Lc_t *lc)
         ls->attribute = elementsof(ls->lc.language->attributes);
     }
     if (++ls->attribute >= elementsof(ls->lc.language->attributes)
-        || !(ls->list.attribute = ls->lc.language->attributes[ls->attribute]))
-    {
+        || !(ls->list.attribute
+             = ls->lc.language->attributes[ls->attribute])) {
         if (++ls->language >= elementsof(ls->lc.territory->languages)
-            || !(ls->lc.language = ls->lc.territory->languages[ls->language]))
-        {
-            if (!lc_territories[++ls->territory].code)
-            {
+            || !(ls->lc.language
+                 = ls->lc.territory->languages[ls->language])) {
+            if (!lc_territories[++ls->territory].code) {
                 free(ls);
                 return 0;
             }
             ls->lc.territory = &lc_territories[ls->territory];
             ls->lc.language = ls->lc.territory->languages[ls->language = 0];
         }
-        if (ls->lc.language)
-        {
+        if (ls->lc.language) {
             ls->lc.charset = ls->lc.language->charset
                              ? ls->lc.language->charset
                              : &lc_charsets[0];
             ls->list.attribute
             = ls->lc.language->attributes[ls->attribute = 0];
-        }
-        else
-        {
+        } else {
             ls->lc.charset = &lc_charsets[0];
             ls->list.attribute = 0;
         }
@@ -946,8 +860,7 @@ lcscan(Lc_t *lc)
 #if _WINIX
     if (!ls->lc.language || !ls->lc.language->index)
         ls->lc.index = 0;
-    else
-    {
+    else {
         if ((!ls->list.attribute
              || !(ls->lc.index = ls->list.attribute->index))
             && (!ls->lc.territory

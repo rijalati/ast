@@ -545,8 +545,9 @@ main()
 #    if _npt_strtoll && !_map_libc && !_std_strtol
     printf("#ifndef _ISOC99_SOURCE\n");
 #    endif
-    printf("extern _ast_intmax_t		strtoll(const char*, char**, "
-           "int);\n");
+    printf(
+    "extern _ast_intmax_t		strtoll(const char*, char**, "
+    "int);\n");
 #    if _npt_strtoll && !_map_libc && !_std_strtol
     printf("#endif\n");
 #    endif
@@ -575,8 +576,7 @@ main()
 
         printf("\n");
         t = map;
-        do
-        {
+        do {
             for (s = t; *t && *t != ' '; t++)
                 ;
             printf("#define %-.*s	_ast_%-.*s\n", t - s, s, t - s, s);

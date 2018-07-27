@@ -1,8 +1,7 @@
 #include <nval.h>
 
 #define nv_getvalue(np, val)                                                 \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         int a = nv_isattr((np), NV_NODISC);                                  \
         nv_onattr((np), NV_NODISC);                                          \
         (val) = nv_getval(np);                                               \
@@ -11,8 +10,7 @@
     } while (0)
 
 #define nv_putvalue(np, val, f)                                              \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         int a = nv_isattr((np), NV_NODISC);                                  \
         nv_onattr((np), NV_NODISC);                                          \
         nv_putval((np), val, f);                                             \
@@ -22,8 +20,7 @@
 
 #if 0
 #    define nv_stopdisc(np)                                                  \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             Namfun_t *nf = ( Namfun_t * )malloc(sizeof(Namfun_t));           \
             nf->disc = &tksh_trace_stop;                                     \
             nv_stack(np, nf);                                                \
@@ -36,8 +33,7 @@
 #endif
 
 #define ov_return(msg)                                                       \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         errmsg = (msg);                                                      \
         goto scalar;                                                         \
     } while (0)

@@ -59,17 +59,14 @@
 #endif
 
 #define CVT(a, b, c, m, t)                                                   \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         if (c)                                                               \
-            switch ((a)->convert[SECTION(a)].on)                             \
-            {                                                                \
+            switch ((a)->convert[SECTION(a)].on) {                           \
             case 1:                                                          \
                 if (state.forceconvert || SECTION(a) != SECTION_DATA         \
                     || TEXT(b, c, t))                                        \
                     (a)->convert[SECTION(a)].on = 2;                         \
-                else                                                         \
-                {                                                            \
+                else {                                                       \
                     (a)->convert[SECTION(a)].on = 0;                         \
                     break;                                                   \
                 }                                                            \
@@ -115,8 +112,7 @@ text(unsigned char *map, unsigned char *b, ssize_t n)
     if (n > 256)
         n = 256;
     e = b + n;
-    while (b < e)
-    {
+    while (b < e) {
         c = *b++;
         c = ccmapchr(map, c);
         if (!ascii_text[c])
@@ -328,21 +324,17 @@ bskip(Archive_t *ap)
 #    endif
 #endif
 
-    if (ap->io->mode != O_RDONLY)
-    {
+    if (ap->io->mode != O_RDONLY) {
         ap->io->next = ap->io->last = ap->io->buffer + ap->io->unread;
         ap->io->eof = 0;
     }
-    while (skip)
-    {
+    while (skip) {
 #ifdef MTIOCTOP
 #    ifdef MTEOM
-        if (skip < 0 && mteom)
-        {
+        if (skip < 0 && mteom) {
             mt.mt_op = MTEOM;
             mt.mt_count = 1;
-            if (ioctl(ap->io->fd, MTIOCTOP, &mt) >= 0)
-            {
+            if (ioctl(ap->io->fd, MTIOCTOP, &mt) >= 0) {
                 if (ap->io->mode != O_RDONLY)
                     ap->io->eof = 1;
                 break;
@@ -351,17 +343,14 @@ bskip(Archive_t *ap)
         }
 #    endif
 #    ifdef MTFSF
-        if (mtfsf)
-        {
+        if (mtfsf) {
             mt.mt_op = MTFSF;
             mt.mt_count = 1;
-            if (ioctl(ap->io->fd, MTIOCTOP, &mt) >= 0)
-            {
+            if (ioctl(ap->io->fd, MTIOCTOP, &mt) >= 0) {
                 skip--;
                 continue;
             }
-            if (errno != ENOTTY)
-            {
+            if (errno != ENOTTY) {
                 if (ap->io->mode != O_RDONLY)
                     ap->io->eof = 1;
                 break;
@@ -373,8 +362,7 @@ bskip(Archive_t *ap)
         while ((c = read(ap->io->fd, state.tmp.buffer, state.tmp.buffersize))
                > 0)
             ;
-        if (c < 0)
-        {
+        if (c < 0) {
             if (ap->io->mode != O_RDONLY)
                 ap->io->eof = 1;
             break;
@@ -398,12 +386,10 @@ bfill(Archive_t *ap, int must)
         return -1;
     if (ap->io->skip)
         ap->io->skip = bskip(ap);
-    while ((c = read(ap->io->fd, ap->io->last, ap->io->buffersize)) <= 0)
-    {
+    while ((c = read(ap->io->fd, ap->io->last, ap->io->buffersize)) <= 0) {
         if (must)
             newio(ap, c, 0);
-        else
-        {
+        else {
             ap->io->eof = 1;
             return -1;
         }
@@ -423,18 +409,15 @@ bfill(Archive_t *ap, int must)
 static void
 chunk(Archive_t *ap, char *t, char *f, size_t n, char *o)
 {
-    if (ap->sum > 0)
-    {
+    if (ap->sum > 0) {
         if (ap->flags & SUM)
             FNVSUM(ap->memsum, f, n);
-        else
-        {
+        else {
             ap->memsum = memsum(f, n, ap->memsum);
             ap->old.memsum = omemsum(f, n, ap->old.memsum);
         }
     }
-    if (o)
-    {
+    if (o) {
         if (t != f)
             memcpy(t, f, n);
         CONVERT(ap, t, n);
@@ -472,24 +455,19 @@ bread(Archive_t *ap, void *ob, off_t n, off_t m, int must)
         m = n;
     b = s;
     r = m;
-    if (ap->io->blocked)
-    {
+    if (ap->io->blocked) {
         if (!s)
             b = s = state.tmp.buffer;
         while ((c = read(ap->io->fd,
                          s,
                          r > ap->io->buffersize ? ap->io->buffersize : r))
-               <= 0)
-        {
+               <= 0) {
             if (must)
                 newio(ap, c, 0);
-            else if (ap->io->empty)
-            {
+            else if (ap->io->empty) {
                 ap->io->eof = 1;
                 return -1;
-            }
-            else
-            {
+            } else {
                 if (c < 0)
                     ap->io->eof = 1;
                 else
@@ -501,14 +479,10 @@ bread(Archive_t *ap, void *ob, off_t n, off_t m, int must)
         chunk(ap, s, s, c, ob);
         s += c;
         r -= c;
-    }
-    else
-        for (;;)
-        {
-            if ((c = ap->io->last - ap->io->next) < r)
-            {
-                if (c > 0)
-                {
+    } else
+        for (;;) {
+            if ((c = ap->io->last - ap->io->next) < r) {
+                if (c > 0) {
                     if (ob)
                         memcpy(s, ap->io->next, c);
                     chunk(ap, s, ap->io->next, c, ob);
@@ -518,16 +492,13 @@ bread(Archive_t *ap, void *ob, off_t n, off_t m, int must)
                 ap->io->next = ap->io->last = ap->io->buffer + ap->io->unread;
                 if (!ob && ap->sum <= 0 && ap->io->seekable
                     && (z = r / BUFFERSIZE)
-                    && lseek(ap->io->fd, z *= BUFFERSIZE, SEEK_CUR) >= 0)
-                {
+                    && lseek(ap->io->fd, z *= BUFFERSIZE, SEEK_CUR) >= 0) {
                     s += z;
                     r -= z;
                 }
                 if (bfill(ap, must) < 0)
                     break;
-            }
-            else
-            {
+            } else {
                 chunk(ap, s, ap->io->next, r, ob);
                 ap->io->next += r;
                 s += r;
@@ -536,10 +507,8 @@ bread(Archive_t *ap, void *ob, off_t n, off_t m, int must)
             }
         }
     ap->io->count += (r = m - r);
-    if (r < n)
-    {
-        if (ob && r)
-        {
+    if (r < n) {
+        if (ob && r) {
             bunread(ap, b, r);
             return 0;
         }
@@ -580,8 +549,7 @@ bunread(Archive_t *ap, void *b, int n)
     ap->io->count -= n;
     if (ap->io->next == (ap->io->buffer + ap->io->unread))
         ap->io->last = ap->io->next + n;
-    else if ((ap->io->next -= n) < ap->io->buffer + ap->io->unread)
-    {
+    else if ((ap->io->next -= n) < ap->io->buffer + ap->io->unread) {
         if (ap->io->next < ap->io->buffer)
             error(PANIC, "bunread(%s,%d): too much pushback", ap->name, n);
         if (b)
@@ -613,23 +581,18 @@ bget(Archive_t *ap, off_t n, off_t *p)
     size_t m;
     int must;
 
-    if ((ap->io->mode & O_ACCMODE) == O_WRONLY)
-    {
+    if ((ap->io->mode & O_ACCMODE) == O_WRONLY) {
         if (p)
             *p = ap->io->last - ap->io->next;
         return ap->io->next;
     }
-    if (n < 0)
-    {
+    if (n < 0) {
         n = -n;
         must = 0;
-    }
-    else if (n > 0)
+    } else if (n > 0)
         must = 1;
-    else
-    {
-        if (!ap->io->eof && ap->io->seekable)
-        {
+    else {
+        if (!ap->io->eof && ap->io->seekable) {
             if (ap->io->last > ap->io->next)
                 n = ap->io->last - ap->io->next;
             else if ((n = ap->io->size - (ap->io->offset + ap->io->count))
@@ -642,8 +605,7 @@ bget(Archive_t *ap, off_t n, off_t *p)
             *p = n;
         return n ? ap->io->next : ( char * )0;
     }
-    if (n > ap->io->buffersize)
-    {
+    if (n > ap->io->buffersize) {
         i = ap->io->next - ap->io->buffer;
         j = ap->io->last - ap->io->buffer;
         m = roundof(n, PAX_DEFBUFFER * PAX_BLOCK);
@@ -658,8 +620,7 @@ bget(Archive_t *ap, off_t n, off_t *p)
         if (!(b = newof(ap->io->buffer, char, 2 * m, ap->io->unread)))
             error(3, "%s: cannot reallocate buffer", ap->name);
         ap->io->buffersize = m;
-        if (b != ap->io->buffer)
-        {
+        if (b != ap->io->buffer) {
             ap->io->buffer = b;
             ap->io->next = b + i;
             ap->io->last = b + j;
@@ -669,19 +630,15 @@ bget(Archive_t *ap, off_t n, off_t *p)
         *p = n;
     b = ap->io->next;
     ap->io->next += n;
-    while (ap->io->next > ap->io->last)
-    {
+    while (ap->io->next > ap->io->last) {
         if (ap->io->last
-            > ap->io->buffer + ap->io->unread + ap->io->buffersize)
-        {
+            > ap->io->buffer + ap->io->unread + ap->io->buffersize) {
             i = ap->io->last - b;
             j = roundof(i, IOALIGN) - i;
             t = ap->io->next = ap->io->buffer + ap->io->unread + j;
             ap->io->last = t + i;
-            if (m = b - t)
-            {
-                while (i > m)
-                {
+            if (m = b - t) {
+                while (i > m) {
                     message((-8,
                              "bget(%s,%I*d,%d) overlapping memcpy n=%I*d "
                              "i=%d m=%d next=%p last=%p",
@@ -761,22 +718,19 @@ backup(Archive_t *ap)
 
     if (ap->format->backup)
         (*ap->format->backup)(&state, ap);
-    else
-    {
+    else {
         message((-7,
                  "backup(%s) old %s new %s",
                  ap->name,
                  bstatus(&state.backup),
                  bstatus(ap->io)));
-        if (ap->io->fill == state.backup.fill)
-        {
+        if (ap->io->fill == state.backup.fill) {
             /*
              * same buffer window
              */
 
             m = ap->io->last - (ap->io->buffer + ap->io->unread);
-            if ((n = lseek(ap->io->fd, -m, SEEK_CUR)) == -1)
-            {
+            if ((n = lseek(ap->io->fd, -m, SEEK_CUR)) == -1) {
 #ifdef MTIOCTOP
                 mt.mt_op = MTBSR;
                 mt.mt_count = 1;
@@ -795,8 +749,7 @@ backup(Archive_t *ap)
                      n));
             ap->io->count = state.backup.count;
             ap->io->next = state.backup.next;
-        }
-        else
+        } else
             error(PANIC,
                   "%s: backup over intervening hard read not implemented yet",
                   ap->name);
@@ -820,8 +773,7 @@ bflushin(Archive_t *ap, int hard)
 {
     ap->io->count += ap->io->last - ap->io->next;
     ap->io->next = ap->io->last = ap->io->buffer + ap->io->unread;
-    if (hard && !ap->io->eof)
-    {
+    if (hard && !ap->io->eof) {
         while (read(ap->io->fd, ap->io->next, ap->io->buffersize) > 0)
             ;
         ap->io->eof = 1;
@@ -840,31 +792,24 @@ bseek(Archive_t *ap, off_t pos, int op, int hard)
 
     message(
     (-8, "bseek(%s,%I*d,%d,%d)", ap->name, sizeof(pos), pos, op, hard));
-    if (hard)
-    {
+    if (hard) {
         if (op == SEEK_CUR)
             return -1;
-    }
-    else
-    {
+    } else {
         l = ap->io->next - (ap->io->buffer + ap->io->unread);
         u = ap->io->last - ap->io->next;
-        if (op == SEEK_CUR)
-        {
+        if (op == SEEK_CUR) {
             if ((pos + ap->io->count) < 0)
                 return -1;
-            if (-pos <= l && pos <= u)
-            {
+            if (-pos <= l && pos <= u) {
                 ap->io->next += pos;
                 return ap->io->count += pos;
             }
             pos += ap->io->count;
             op = SEEK_SET;
-        }
-        else if (op != SEEK_SET || pos < 0)
+        } else if (op != SEEK_SET || pos < 0)
             return -1;
-        else if (-pos <= (l + ap->io->count) && pos <= (u + ap->io->count))
-        {
+        else if (-pos <= (l + ap->io->count) && pos <= (u + ap->io->count)) {
             ap->io->next += (pos - ap->io->count);
             return ap->io->count = pos;
         }
@@ -892,17 +837,14 @@ bflushout(Archive_t *ap)
     int n;
     int c;
 
-    if (n = ap->io->next - (ap->io->buffer + ap->io->unread))
-    {
+    if (n = ap->io->next - (ap->io->buffer + ap->io->unread)) {
         ap->io->next = ap->io->buffer + ap->io->unread;
-        while ((c = write(ap->io->fd, ap->io->next, n)) != n)
-        {
+        while ((c = write(ap->io->fd, ap->io->next, n)) != n) {
             message(
             (-8, "write(%s,%d): %s", ap->name, c, show(ap->io->next, c)));
             if (c <= 0)
                 newio(ap, c, n);
-            else
-            {
+            else {
                 ap->io->next += c;
                 n -= c;
             }
@@ -924,8 +866,7 @@ bwrite(Archive_t *ap, void *ab, off_t n)
     long c;
     long an;
 
-    if (!ap->raw)
-    {
+    if (!ap->raw) {
         CONVERT(ap, b, n);
         an = ap->convert[SECTION(ap)].on ? n : 0;
         if (ap->sum > 0)
@@ -935,14 +876,12 @@ bwrite(Archive_t *ap, void *ab, off_t n)
     }
     if (ap->io->skip)
         ap->io->skip = bskip(ap);
-    if (state.maxout && ap->io->count >= state.maxout)
-    {
+    if (state.maxout && ap->io->count >= state.maxout) {
         bflushout(ap);
         newio(ap, 0, 0);
     }
     ap->io->count += n;
-    if (ap->io->blocked)
-    {
+    if (ap->io->blocked) {
 #if DEBUG
         if (n > 0)
             message((-7,
@@ -962,10 +901,8 @@ bwrite(Archive_t *ap, void *ab, off_t n)
                      sizeof(ap->io->count),
                      ap->io->count + n));
 #endif
-        while ((c = write(ap->io->fd, b, n)) != n)
-        {
-            if (n <= 0)
-            {
+        while ((c = write(ap->io->fd, b, n)) != n) {
+            if (n <= 0) {
 #ifdef MTIOCTOP
                 {
                     struct mtop mt;
@@ -985,9 +922,7 @@ bwrite(Archive_t *ap, void *ab, off_t n)
             else
                 break;
         }
-    }
-    else
-    {
+    } else {
 #if DEBUG
         if (n > 0)
             message((-7,
@@ -1007,26 +942,21 @@ bwrite(Archive_t *ap, void *ab, off_t n)
                      sizeof(ap->io->count),
                      ap->io->count + n));
 #endif
-        for (;;)
-        {
+        for (;;) {
             if ((c = ap->io->buffer + ap->io->unread + state.blocksize
                      - ap->io->next)
-                <= n)
-            {
-                if (c)
-                {
+                <= n) {
+                if (c) {
                     memcpy(ap->io->next, b, c);
                     n -= c;
                     b += c;
                 }
                 ap->io->next = ap->io->buffer + ap->io->unread;
                 while ((c = write(ap->io->fd, ap->io->next, state.blocksize))
-                       != state.blocksize)
-                {
+                       != state.blocksize) {
                     if (c <= 0)
                         newio(ap, c, n);
-                    else
-                    {
+                    else {
                         memcpy(state.tmp.buffer,
                                ap->io->buffer + ap->io->unread + c,
                                state.blocksize - c);
@@ -1043,9 +973,7 @@ bwrite(Archive_t *ap, void *ab, off_t n)
                          ap->name,
                          c,
                          show(ap->io->buffer + ap->io->unread, c)));
-            }
-            else
-            {
+            } else {
                 memcpy(ap->io->next, b, n);
                 ap->io->next += n;
                 break;
@@ -1079,8 +1007,7 @@ bput(Archive_t *ap, off_t n)
     if (state.checksum.sum && SECTION(ap) == SECTION_DATA)
         sumblock(state.checksum.sum, ap->io->next, n);
     if ((ap->io->next += n)
-        > ap->io->buffer + ap->io->unread + state.blocksize)
-    {
+        > ap->io->buffer + ap->io->unread + state.blocksize) {
         n = (ap->io->next - (ap->io->buffer + ap->io->unread))
             - state.blocksize;
         ap->io->count -= n;
@@ -1130,8 +1057,7 @@ static int
 devpath(Ftw_t *ftw)
 {
     if (ftw->info == FTW_F && ftw->statb.st_rdev == dev.st->st_rdev
-        && S_ISCHR(ftw->statb.st_mode) == S_ISCHR(dev.st->st_mode))
-    {
+        && S_ISCHR(ftw->statb.st_mode) == S_ISCHR(dev.st->st_mode)) {
         message((-1, "device name is %s", ftw->path));
         dev.path = strdup(ftw->path);
         return 1;
@@ -1148,8 +1074,7 @@ interactive(void)
 {
     int fd;
 
-    if (!state.rtty)
-    {
+    if (!state.rtty) {
         fd = dup(2);
         if (!(state.rtty = sfopen(NiL, "/dev/tty", "r"))
             || !(state.wtty = sfopen(NiL, "/dev/tty", "w")))
@@ -1185,8 +1110,7 @@ newio(Archive_t *ap, int c, int n)
 
     if (!ap->part)
         ap->part++;
-    if (ap->io->mode != O_RDONLY)
-    {
+    if (ap->io->mode != O_RDONLY) {
         rw = "write";
         io = "output";
         ap->io->offset += ap->io->count - n;
@@ -1195,9 +1119,7 @@ newio(Archive_t *ap, int c, int n)
         if (ap->format->putepilogue
             && (*ap->format->putepilogue)(&state, ap) < 0)
             return;
-    }
-    else
-    {
+    } else {
         rw = "read";
         io = "input";
         z = ap->io->offset + ap->io->count;
@@ -1205,16 +1127,14 @@ newio(Archive_t *ap, int c, int n)
     if (fstat(ap->io->fd, &st) < 0)
         error(ERROR_SYSTEM | 3, "%s: cannot stat %s", ap->name, io);
     errno = oerrno;
-    switch (X_ITYPE(modex(st.st_mode)))
-    {
+    switch (X_ITYPE(modex(st.st_mode))) {
     case X_IFBLK:
     case X_IFCHR:
         file = 0;
         break;
     default:
         if (ap->io->mode != O_RDONLY)
-            switch (c < 0 ? errno : 0)
-            {
+            switch (c < 0 ? errno : 0) {
             case 0:
 #ifdef EFBIG
             case EFBIG:
@@ -1237,8 +1157,7 @@ newio(Archive_t *ap, int c, int n)
         break;
     }
     i = (eomprompt && *eomprompt == '!' && !*(eomprompt + 1)) ? 3 : 1;
-    switch (c < 0 ? errno : 0)
-    {
+    switch (c < 0 ? errno : 0) {
     case 0:
     case ENOSPC:
     case ENXIO:
@@ -1252,8 +1171,7 @@ newio(Archive_t *ap, int c, int n)
         error(1, "%s: no %s on part %d", ap->name, io, ap->part--);
     else
         ap->total = z;
-    if (!file && (ap->name == definput || ap->name == defoutput))
-    {
+    if (!file && (ap->name == definput || ap->name == defoutput)) {
         dev.path = 0;
         dev.st = &st;
         ftwalk("/dev", devpath, 0, NiL);
@@ -1264,16 +1182,14 @@ newio(Archive_t *ap, int c, int n)
         file = 0;
     if (file && ap->name != definput && ap->name != defoutput
         && strmatch(ap->name, "*.+([0-9])") && (s = strrchr(ap->name, '.'))
-        && ( int )strtol(++s, NiL, 10) == ap->part)
-    {
+        && ( int )strtol(++s, NiL, 10) == ap->part) {
         /*
          * the parts will be ap->name in sequence
          * the first part realloc the name with
          * enough sequence space
          */
 
-        if (ap->part == 1)
-        {
+        if (ap->part == 1) {
             c = s - ap->name;
             if (!(t = newof(0, char, s - ap->name, 16)))
                 nospace();
@@ -1290,10 +1206,8 @@ newio(Archive_t *ap, int c, int n)
     }
     if (state.test & 0000040)
         file = 0;
-    else if (file || ap->name == definput || ap->name == defoutput)
-    {
-        for (;;)
-        {
+    else if (file || ap->name == definput || ap->name == defoutput) {
+        for (;;) {
             interactive();
             sfputc(state.wtty, CC_bel);
             sfprintf(state.wtty,
@@ -1301,13 +1215,11 @@ newio(Archive_t *ap, int c, int n)
                      ap->part + 1,
                      io,
                      file ? file : "device");
-            if (!(s = sfgetr(state.rtty, '\n', 1)))
-            {
+            if (!(s = sfgetr(state.rtty, '\n', 1))) {
                 sfputc(state.wtty, '\n');
                 finish(2);
             }
-            if (*s)
-            {
+            if (*s) {
                 if (!file)
                     break;
                 if ((ap->io->fd = open(s,
@@ -1321,12 +1233,9 @@ newio(Archive_t *ap, int c, int n)
         }
         ap->name = strdup(s);
     }
-    if (!file)
-    {
-        for (;;)
-        {
-            if (eomprompt && *eomprompt == '!')
-            {
+    if (!file) {
+        for (;;) {
+            if (eomprompt && *eomprompt == '!') {
 
                 if (!cp && !(cp = sfstropen()))
                     nospace();
@@ -1337,9 +1246,7 @@ newio(Archive_t *ap, int c, int n)
                     nospace();
                 s = (pp = sfpopen(pp, s, "r")) ? sfgetr(pp, '\n', 1)
                                                : ( char * )0;
-            }
-            else
-            {
+            } else {
                 interactive();
                 sfputc(state.wtty, CC_bel);
                 if (eomprompt)
@@ -1349,33 +1256,27 @@ newio(Archive_t *ap, int c, int n)
             }
             if (!s)
                 finish(2);
-            if (*s == '!')
-            {
+            if (*s == '!') {
                 static char *last;
 
-                if (*++s)
-                {
+                if (*++s) {
                     if (last)
                         free(last);
                     last = strdup(s);
-                }
-                else
+                } else
                     s = last;
                 if (!s)
                     error(1, "no previous command");
                 else if (n = system(s))
                     error(1, "exit status %d", n);
-            }
-            else if (file = *s ? s : ap->name)
-            {
+            } else if (file = *s ? s : ap->name) {
                 if ((ap->io->fd = open(file,
                                        ap->io->mode | O_BINARY,
                                        S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP
                                        | S_IROTH | S_IWOTH))
                     >= 0)
                     break;
-                if (!strchr(file, '/'))
-                {
+                if (!strchr(file, '/')) {
                     oerrno = errno;
                     file = strtape(file, &t);
                     if (!*t
@@ -1389,8 +1290,7 @@ newio(Archive_t *ap, int c, int n)
                 }
                 error(
                 ERROR_SYSTEM | 1, "cannot %s %s", rw, *s ? s : ap->name);
-            }
-            else
+            } else
                 error(1, "pathname required");
         }
         if (ap->name != file)
@@ -1407,8 +1307,7 @@ newio(Archive_t *ap, int c, int n)
               ap->part,
               io,
               ap->name);
-    }
-    else
+    } else
         ap->part++;
     if (ap->format->putprologue)
         (*ap->format->putprologue)(&state, ap, 0);

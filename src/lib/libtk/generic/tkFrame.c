@@ -327,8 +327,7 @@ char *appName;         /* Should only be non-NULL if clientData is
     Colormap colormap;
     Visual *visual;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -346,31 +345,24 @@ char *appName;         /* Should only be non-NULL if clientData is
 
     className = colormapName = screenName = visualName = NULL;
     colormap = None;
-    for (i = 2; i < argc; i += 2)
-    {
+    for (i = 2; i < argc; i += 2) {
         arg = argv[i];
         length = strlen(arg);
-        if (length < 2)
-        {
+        if (length < 2) {
             continue;
         }
         c = arg[1];
         if ((c == 'c') && (strncmp(arg, "-class", strlen(arg)) == 0)
-            && (length >= 3))
-        {
+            && (length >= 3)) {
             className = argv[i + 1];
-        }
-        else if ((c == 'c') && (strncmp(arg, "-colormap", strlen(arg)) == 0))
-        {
+        } else if ((c == 'c')
+                   && (strncmp(arg, "-colormap", strlen(arg)) == 0)) {
             colormapName = argv[i + 1];
-        }
-        else if ((c == 's') && toplevel
-                 && (strncmp(arg, "-screen", strlen(arg)) == 0))
-        {
+        } else if ((c == 's') && toplevel
+                   && (strncmp(arg, "-screen", strlen(arg)) == 0)) {
             screenName = argv[i + 1];
-        }
-        else if ((c == 'v') && (strncmp(arg, "-visual", strlen(arg)) == 0))
-        {
+        } else if ((c == 'v')
+                   && (strncmp(arg, "-visual", strlen(arg)) == 0)) {
             visualName = argv[i + 1];
         }
     }
@@ -382,66 +374,52 @@ char *appName;         /* Should only be non-NULL if clientData is
      * the database, yet we can't do that until the window is created.
      */
 
-    if (screenName == NULL)
-    {
+    if (screenName == NULL) {
         screenName = (toplevel) ? "" : NULL;
     }
-    if (tkwin != NULL)
-    {
+    if (tkwin != NULL) {
         new = Tk_CreateWindowFromPath(interp, tkwin, argv[1], screenName);
-    }
-    else
-    {
+    } else {
         /*
          * We were called from Tk_Init;  create a new application.
          */
 
-        if (appName == NULL)
-        {
+        if (appName == NULL) {
             panic("TkCreateFrame didn't get application name");
         }
         new = TkCreateMainWindow(interp, screenName, appName);
     }
-    if (new == NULL)
-    {
+    if (new == NULL) {
         goto error;
     }
-    if (className == NULL)
-    {
+    if (className == NULL) {
         className = Tk_GetOption(new, "class", "Class");
-        if (className == NULL)
-        {
+        if (className == NULL) {
             className = (toplevel) ? "Toplevel" : "Frame";
         }
     }
     Tk_SetClass(new, className);
-    if (visualName == NULL)
-    {
+    if (visualName == NULL) {
         visualName = Tk_GetOption(new, "visual", "Visual");
     }
-    if (colormapName == NULL)
-    {
+    if (colormapName == NULL) {
         colormapName = Tk_GetOption(new, "colormap", "Colormap");
     }
-    if (visualName != NULL)
-    {
+    if (visualName != NULL) {
         visual = Tk_GetVisual(interp,
                               new,
                               visualName,
                               &depth,
                               (colormapName == NULL) ? &colormap
                                                      : ( Colormap * )NULL);
-        if (visual == NULL)
-        {
+        if (visual == NULL) {
             goto error;
         }
         Tk_SetWindowVisual(new, visual, depth, colormap);
     }
-    if (colormapName != NULL)
-    {
+    if (colormapName != NULL) {
         colormap = Tk_GetColormap(interp, new, colormapName);
-        if (colormap == None)
-        {
+        if (colormap == None) {
             goto error;
         }
         Tk_SetWindowColormap(new, colormap);
@@ -453,8 +431,7 @@ char *appName;         /* Should only be non-NULL if clientData is
      * doesn't request a size for itself.
      */
 
-    if (toplevel)
-    {
+    if (toplevel) {
         Tk_GeometryRequest(new, 200, 200);
     }
 
@@ -495,20 +472,17 @@ char *appName;         /* Should only be non-NULL if clientData is
                           | FocusChangeMask,
                           FrameEventProc,
                           ( ClientData )framePtr);
-    if (ConfigureFrame(interp, framePtr, argc - 2, argv + 2, 0) != TCL_OK)
-    {
+    if (ConfigureFrame(interp, framePtr, argc - 2, argv + 2, 0) != TCL_OK) {
         goto error;
     }
-    if (toplevel)
-    {
+    if (toplevel) {
         Tcl_DoWhenIdle(MapFrame, ( ClientData )framePtr);
     }
     interp->result = Tk_PathName(new);
     return TCL_OK;
 
 error:
-    if (new != NULL)
-    {
+    if (new != NULL) {
         Tk_DestroyWindow(new);
     }
     return TCL_ERROR;
@@ -543,8 +517,7 @@ char **argv;           /* Argument strings. */
     size_t length;
     int c, i;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -556,10 +529,8 @@ char **argv;           /* Argument strings. */
     c = argv[1][0];
     length = strlen(argv[1]);
     if ((c == 'c') && (strncmp(argv[1], "cget", length) == 0)
-        && (length >= 2))
-    {
-        if (argc != 3)
-        {
+        && (length >= 2)) {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -574,40 +545,31 @@ char **argv;           /* Argument strings. */
                                    ( char * )framePtr,
                                    argv[2],
                                    framePtr->mask);
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
-             && (length >= 2))
-    {
-        if (argc == 2)
-        {
+    } else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
+               && (length >= 2)) {
+        if (argc == 2) {
             result = Tk_ConfigureInfo(interp,
                                       framePtr->tkwin,
                                       configSpecs,
                                       ( char * )framePtr,
                                       ( char * )NULL,
                                       framePtr->mask);
-        }
-        else if (argc == 3)
-        {
+        } else if (argc == 3) {
             result = Tk_ConfigureInfo(interp,
                                       framePtr->tkwin,
                                       configSpecs,
                                       ( char * )framePtr,
                                       argv[2],
                                       framePtr->mask);
-        }
-        else
-        {
+        } else {
             /*
              * Don't allow the options -class, -newcmap, -screen,
              * or -visual to be changed.
              */
 
-            for (i = 2; i < argc; i++)
-            {
+            for (i = 2; i < argc; i++) {
                 length = strlen(argv[i]);
-                if (length < 2)
-                {
+                if (length < 2) {
                     continue;
                 }
                 c = argv[i][1];
@@ -618,8 +580,7 @@ char **argv;           /* Argument strings. */
                     || ((c == 's') && (framePtr->mask == TOPLEVEL)
                         && (strncmp(argv[i], "-screen", length) == 0))
                     || ((c == 'v') && (framePtr->mask == TOPLEVEL)
-                        && (strncmp(argv[i], "-visual", length) == 0)))
-                {
+                        && (strncmp(argv[i], "-visual", length) == 0))) {
                     Tcl_AppendResult(interp,
                                      "can't modify ",
                                      argv[i],
@@ -632,9 +593,7 @@ char **argv;           /* Argument strings. */
             result = ConfigureFrame(
             interp, framePtr, argc - 2, argv + 2, TK_CONFIG_ARGV_ONLY);
         }
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "bad option \"",
                          argv[1],
@@ -672,8 +631,7 @@ static void DestroyFrame(memPtr) char *memPtr; /* Info about frame widget. */
 
     Tk_FreeOptions(
     configSpecs, ( char * )framePtr, framePtr->display, framePtr->mask);
-    if (framePtr->colormap != None)
-    {
+    if (framePtr->colormap != None) {
         Tk_FreeColormap(framePtr->display, framePtr->colormap);
     }
     ckfree(( char * )framePtr);
@@ -715,31 +673,25 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
                            argv,
                            ( char * )framePtr,
                            flags | framePtr->mask)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
 
-    if (framePtr->border != NULL)
-    {
+    if (framePtr->border != NULL) {
         Tk_SetBackgroundFromBorder(framePtr->tkwin, framePtr->border);
     }
-    if (framePtr->highlightWidth < 0)
-    {
+    if (framePtr->highlightWidth < 0) {
         framePtr->highlightWidth = 0;
     }
     Tk_SetInternalBorder(framePtr->tkwin,
                          framePtr->borderWidth + framePtr->highlightWidth);
-    if ((framePtr->width > 0) || (framePtr->height > 0))
-    {
+    if ((framePtr->width > 0) || (framePtr->height > 0)) {
         Tk_GeometryRequest(
         framePtr->tkwin, framePtr->width, framePtr->height);
     }
 
-    if (Tk_IsMapped(framePtr->tkwin))
-    {
-        if (!(framePtr->flags & REDRAW_PENDING))
-        {
+    if (Tk_IsMapped(framePtr->tkwin)) {
+        if (!(framePtr->flags & REDRAW_PENDING)) {
             Tcl_DoWhenIdle(DisplayFrame, ( ClientData )framePtr);
         }
         framePtr->flags |= REDRAW_PENDING;
@@ -772,13 +724,11 @@ ClientData clientData; /* Information about widget. */
     GC gc;
 
     framePtr->flags &= ~REDRAW_PENDING;
-    if ((framePtr->tkwin == NULL) || !Tk_IsMapped(tkwin))
-    {
+    if ((framePtr->tkwin == NULL) || !Tk_IsMapped(tkwin)) {
         return;
     }
 
-    if (framePtr->border != NULL)
-    {
+    if (framePtr->border != NULL) {
         Tk_Fill3DRectangle(tkwin,
                            Tk_WindowId(tkwin),
                            framePtr->border,
@@ -789,15 +739,11 @@ ClientData clientData; /* Information about widget. */
                            framePtr->borderWidth,
                            framePtr->relief);
     }
-    if (framePtr->highlightWidth != 0)
-    {
-        if (framePtr->flags & GOT_FOCUS)
-        {
+    if (framePtr->highlightWidth != 0) {
+        if (framePtr->flags & GOT_FOCUS) {
             gc
             = Tk_GCForColor(framePtr->highlightColorPtr, Tk_WindowId(tkwin));
-        }
-        else
-        {
+        } else {
             gc = Tk_GCForColor(framePtr->highlightBgColorPtr,
                                Tk_WindowId(tkwin));
         }
@@ -832,44 +778,31 @@ XEvent *eventPtr;      /* Information about event. */
     Frame *framePtr = ( Frame * )clientData;
 
     if (((eventPtr->type == Expose) && (eventPtr->xexpose.count == 0))
-        || (eventPtr->type == ConfigureNotify))
-    {
+        || (eventPtr->type == ConfigureNotify)) {
         goto redraw;
-    }
-    else if (eventPtr->type == DestroyNotify)
-    {
-        if (framePtr->tkwin != NULL)
-        {
+    } else if (eventPtr->type == DestroyNotify) {
+        if (framePtr->tkwin != NULL) {
             framePtr->tkwin = NULL;
             Tcl_DeleteCommand(
             framePtr->interp,
             Tcl_GetCommandName(framePtr->interp, framePtr->widgetCmd));
         }
-        if (framePtr->flags & REDRAW_PENDING)
-        {
+        if (framePtr->flags & REDRAW_PENDING) {
             Tcl_CancelIdleCall(DisplayFrame, ( ClientData )framePtr);
         }
         Tcl_CancelIdleCall(MapFrame, ( ClientData )framePtr);
         Tcl_EventuallyFree(( ClientData )framePtr, DestroyFrame);
-    }
-    else if (eventPtr->type == FocusIn)
-    {
-        if (eventPtr->xfocus.detail != NotifyInferior)
-        {
+    } else if (eventPtr->type == FocusIn) {
+        if (eventPtr->xfocus.detail != NotifyInferior) {
             framePtr->flags |= GOT_FOCUS;
-            if (framePtr->highlightWidth > 0)
-            {
+            if (framePtr->highlightWidth > 0) {
                 goto redraw;
             }
         }
-    }
-    else if (eventPtr->type == FocusOut)
-    {
-        if (eventPtr->xfocus.detail != NotifyInferior)
-        {
+    } else if (eventPtr->type == FocusOut) {
+        if (eventPtr->xfocus.detail != NotifyInferior) {
             framePtr->flags &= ~GOT_FOCUS;
-            if (framePtr->highlightWidth > 0)
-            {
+            if (framePtr->highlightWidth > 0) {
                 goto redraw;
             }
         }
@@ -877,8 +810,7 @@ XEvent *eventPtr;      /* Information about event. */
     return;
 
 redraw:
-    if ((framePtr->tkwin != NULL) && !(framePtr->flags & REDRAW_PENDING))
-    {
+    if ((framePtr->tkwin != NULL) && !(framePtr->flags & REDRAW_PENDING)) {
         Tcl_DoWhenIdle(DisplayFrame, ( ClientData )framePtr);
         framePtr->flags |= REDRAW_PENDING;
     }
@@ -915,8 +847,7 @@ ClientData clientData; /* Pointer to widget record for widget. */
      * destroys the widget.
      */
 
-    if (tkwin != NULL)
-    {
+    if (tkwin != NULL) {
         framePtr->tkwin = NULL;
         Tk_DestroyWindow(tkwin);
     }
@@ -952,10 +883,8 @@ static void MapFrame(clientData) ClientData clientData; /* Pointer to frame
      */
 
     Tcl_Preserve(( ClientData )framePtr);
-    while (1)
-    {
-        if (Tcl_DoOneEvent(TCL_IDLE_EVENTS) == 0)
-        {
+    while (1) {
+        if (Tcl_DoOneEvent(TCL_IDLE_EVENTS) == 0) {
             break;
         }
 
@@ -964,8 +893,7 @@ static void MapFrame(clientData) ClientData clientData; /* Pointer to frame
          * and quit if the window has been destroyed.
          */
 
-        if (framePtr->tkwin == NULL)
-        {
+        if (framePtr->tkwin == NULL) {
             Tcl_Release(( ClientData )framePtr);
             return;
         }

@@ -56,8 +56,7 @@ _reg_iswblank(wint_t wc)
     static int initialized;
     static wctype_t wt;
 
-    if (!initialized)
-    {
+    if (!initialized) {
         initialized = 1;
         wt = wctype("blank");
     }
@@ -333,11 +332,9 @@ regclass(const char *s, char **e)
             goto found;
     xp = zp = 0;
     lc = ( Ctype_t * )setlocale(LC_CTYPE, NiL);
-    for (cp = ctype; cp < &ctype[elementsof(ctype)]; cp++)
-    {
+    for (cp = ctype; cp < &ctype[elementsof(ctype)]; cp++) {
 #if _lib_wctype
-        if (!zp)
-        {
+        if (!zp) {
             if (!cp->size)
                 zp = cp;
             else if (!xp && cp->next && cp->next != lc)
@@ -349,26 +346,22 @@ regclass(const char *s, char **e)
             goto found;
     }
 #if _lib_wctype
-    if (!(cp = zp))
-    {
+    if (!(cp = zp)) {
         if (!(cp = xp))
             return 0;
         cp->size = 0;
-        if (!streq(cp->name, s))
-        {
+        if (!streq(cp->name, s)) {
             free(( char * )cp->name);
             cp->name = 0;
         }
     }
-    if (!cp->name)
-    {
+    if (!cp->name) {
         if (!(cp->name = ( const char * )memdup(s, n + 1)))
             return 0;
         *(( char * )cp->name + n) = 0;
     }
     /* mvs.390 needs the (char*) cast -- barf */
-    if (!(cp->wtype = wctype(( char * )cp->name)))
-    {
+    if (!(cp->wtype = wctype(( char * )cp->name))) {
         free(( char * )cp->name);
         cp->name = 0;
         return 0;
@@ -395,8 +388,7 @@ regaddclass(const char *name, regclass_t fun)
 
     n = strlen(name);
     for (cp = ctypes; cp; cp = cp->next)
-        if (cp->size == n && strneq(name, cp->name, n))
-        {
+        if (cp->size == n && strneq(name, cp->name, n)) {
             cp->ctype = fun;
             return 0;
         }
@@ -417,8 +409,7 @@ regaddclass(const char *name, regclass_t fun)
 regclass_t
 classfun(int type)
 {
-    switch (type)
-    {
+    switch (type) {
     case T_ALNUM:
         return Isword;
     case T_ALNUM_NOT:

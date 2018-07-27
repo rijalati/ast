@@ -42,8 +42,7 @@ FUNC *initfunc;
     struct agent_item *newitem;
 
     newitem = ( struct agent_item * )MallocZero(sizeof(*newitem));
-    if (newitem != NULL)
-    {
+    if (newitem != NULL) {
         newitem->next = AgentTable;
         newitem->name = strdup(name);
         (*initfunc)(newitem);
@@ -61,13 +60,11 @@ struct agent_item *AgentSearch(name) char *name;
 {
     struct agent_item *item;
 
-    if (name != NULL)
-    {
+    if (name != NULL) {
         if (*name == 'p')
             name++;
         item = AgentTable;
-        while (item != NULL)
-        {
+        while (item != NULL) {
             if (strcmp(name, item->name) == 0)
                 return item;
             item = item->next;
@@ -131,15 +128,13 @@ struct mount_list *MountListSearch(uid) int uid;
     struct mount_list *ml;
 
     ml = MountListTable;
-    while (ml != NULL)
-    {
+    while (ml != NULL) {
         if (ml->uid == uid)
             return ml;
         ml = ml->next;
     }
     ml = ( struct mount_list * )MallocZero(sizeof(*ml));
-    if (ml != NULL)
-    {
+    if (ml != NULL) {
         ml->next = MountListTable;
         ml->uid = uid;
         MountListTable = ml;
@@ -192,16 +187,14 @@ char *option;
     /* url format:  "proto:/user:pass@host:port/remote-path" */
     /* split proto & user:pass@host:port, and remote-path */
     strncpy(proto, url, sizeof(proto));
-    if ((host = strchr(proto, '/')) == NULL || host[-1] != ':')
-    {
+    if ((host = strchr(proto, '/')) == NULL || host[-1] != ':') {
         return NULL;
     }
     host[-1] = '\0';
     *host++ = '\0';
 
     /* check to protocol */
-    if (AgentSearch(proto) == NULL)
-    {
+    if (AgentSearch(proto) == NULL) {
         return NULL;
     }
 
@@ -211,22 +204,17 @@ char *option;
     mi->proto = strdup(proto);
 
     /* split the remote-path */
-    if ((ptr = strchr(host, '/')) != NULL)
-    {
+    if ((ptr = strchr(host, '/')) != NULL) {
         mi->rpath = strdup(ptr);
         *ptr = '\0';
-    }
-    else
-    {
+    } else {
         mi->rpath = strdup("");
     }
 
     /* split "user:pass" & "host:port" */
-    if ((ptr = strchr(host, '@')) != NULL)
-    {
+    if ((ptr = strchr(host, '@')) != NULL) {
         *ptr++ = '\0';
-        if ((pass = strchr(host, ':')) != NULL)
-        {
+        if ((pass = strchr(host, ':')) != NULL) {
             *pass++ = '\0';
             mi->passlen = strlen(pass) + 1;
             mi->pass = SecurityDataAccess(0, pass, mi->passlen);
@@ -236,8 +224,7 @@ char *option;
     }
 
     /* parse the host & port number */
-    if ((ptr = strchr(host, ':')) != NULL)
-    {
+    if ((ptr = strchr(host, ':')) != NULL) {
         *ptr++ = '\0';
         mi->port = ( int )strtol(ptr, ( char ** )0, 0);
     }
@@ -270,19 +257,14 @@ char *lpath;
     struct server_info srv;
 
     mi = ml->mitem;
-    if (strcmp(mi->lpath, lpath) == 0)
-    {
+    if (strcmp(mi->lpath, lpath) == 0) {
         /* remove the first mount information in mount list */
         ml->mitem = mi->next;
-    }
-    else
-    {
-        while (1)
-        {
+    } else {
+        while (1) {
             last = mi;
             mi = mi->next;
-            if (mi == NULL)
-            {
+            if (mi == NULL) {
                 /* lpath is not exists in mount list */
                 return -1;
             }
@@ -296,8 +278,7 @@ char *lpath;
     /* run disconnect before destroy */
     srv.mitem = mi;
     srv.agent = AgentSearch(mi->proto);
-    if (srv.agent != NULL)
-    {
+    if (srv.agent != NULL) {
         (*(srv.agent->disconnect))(&srv);
     }
 
@@ -323,12 +304,10 @@ char *lpath;
 
     /* matching "(...):/(...)" */
     ptr = lpath;
-    for (;;)
-    {
+    for (;;) {
         if (!(ptr = strchr(ptr, ':')))
             return -1;
-        if (ptr[1] == '/')
-        {
+        if (ptr[1] == '/') {
             if (ptr[2])
                 break;
             return -1;
@@ -337,8 +316,7 @@ char *lpath;
     }
     urlend = strchr(ptr + 2, '/');
     while (*ptr != '/')
-        if (ptr-- <= lpath)
-        {
+        if (ptr-- <= lpath) {
             /* not match with "(...)/proto:/(....)" */
             return -1;
         }
@@ -366,8 +344,7 @@ char *lpath, *rpath;
 
     len = strlen(lpath);
     ch = lpath[len - 1];
-    switch (ch)
-    {
+    switch (ch) {
     case '*':
         if (len >= 4 && strncmp(&lpath[len - 4], "/*.*", 4) == 0)
             len -= 4;
@@ -386,20 +363,16 @@ char *lpath, *rpath;
     lpath[len] = '\0';
 
     mi = ml->mitem;
-    while (1)
-    {
-        if (mi == NULL && AgentAutoMount(ml, lpath) == 0)
-        {
+    while (1) {
+        if (mi == NULL && AgentAutoMount(ml, lpath) == 0) {
             mi = ml->mitem;
         }
         if (mi == NULL)
             break;
         len = strlen(mi->lpath);
         if (strncmp(lpath, mi->lpath, len) == 0
-            && (lpath[len] == '/' || lpath[len] == '\0'))
-        {
-            if ((n = strlen(mi->rpath)) > 0)
-            {
+            && (lpath[len] == '/' || lpath[len] == '\0')) {
+            if ((n = strlen(mi->rpath)) > 0) {
                 strcpy(rpath, mi->rpath);
             }
             strncpy(rpath + n, lpath + len, STRLEN - n);
@@ -425,8 +398,7 @@ int size;
         += sfsprintf(buf, end - buf, mi->pass ? "%s:*@" : "%s@", mi->user);
     buf += sfsprintf(
     buf, end - buf, mi->port ? "%s:%d" : "%s", mi->host, mi->port);
-    if (rpath)
-    {
+    if (rpath) {
         if (*rpath == '~')
             *buf++ = '/';
         sfsprintf(buf, end - buf, "%s", rpath);
@@ -444,43 +416,30 @@ char *lpath;
 
     n = sizeof(csusrmsg);
     item = ml->mitem;
-    if (lpath == NULL || *lpath == '-')
-    {
+    if (lpath == NULL || *lpath == '-') {
         num = 0;
-        while (item != NULL)
-        {
+        while (item != NULL) {
             num++;
             item = item->next;
         }
         sfsprintf(csusrmsg, n, "0 %d entry(ies)", num);
-    }
-    else if (*lpath != '/')
-    {
+    } else if (*lpath != '/') {
         num = ( int )strtol(lpath, ( char ** )0, 0);
-        while (num > 0 && item != NULL)
-        {
+        while (num > 0 && item != NULL) {
             num--;
             item = item->next;
         }
-        if (item == NULL)
-        {
+        if (item == NULL) {
             sfsprintf(csusrmsg, n, "1 unknown %s", lpath);
-        }
-        else
-        {
+        } else {
             ag_make_remote(item, item->rpath, buf, sizeof(buf));
             sfsprintf(csusrmsg, n, "0 %s %s", buf, item->lpath);
         }
-    }
-    else
-    {
+    } else {
         item = ag_find_mount(ml, lpath, rpath);
-        if (item == NULL)
-        {
+        if (item == NULL) {
             sfsprintf(csusrmsg, n, "1 unknown %s", lpath);
-        }
-        else
-        {
+        } else {
             ag_make_remote(item, rpath, buf, sizeof(buf));
             sfsprintf(csusrmsg, n, "0 %s %s", buf, lpath);
         }
@@ -497,14 +456,12 @@ char *proxy;
     struct mount_item *mitem;
 
     IfsAbortFlag = 0;
-    if (argc < 2)
-    {
+    if (argc < 2) {
         cserrno = E_ARGUMENT;
         return -1;
     }
     ml = MountListSearch(uid);
-    if ((mitem = ag_find_mount(ml, argv[1], srv->rpath)) == NULL)
-    {
+    if ((mitem = ag_find_mount(ml, argv[1], srv->rpath)) == NULL) {
         strncpy(csusrmsg, argv[1], sizeof(csusrmsg));
         cserrno = E_MOUNT;
         return -1;
@@ -513,25 +470,21 @@ char *proxy;
     srv->lpath = argv[1];
     srv->flags = 0;
     srv->proxy = proxy;
-    if (mitem->proto[0] == 'p')
-    { /* using proxy to connect socket */
+    if (mitem->proto[0] == 'p') { /* using proxy to connect socket */
         srv->flags |= IFS_PROXY;
     }
-    if ((srv->agent = AgentSearch(mitem->proto)) == NULL)
-    {
+    if ((srv->agent = AgentSearch(mitem->proto)) == NULL) {
         strncpy(csusrmsg, mitem->proto, sizeof(csusrmsg));
         cserrno = E_PROTOCOL;
         return -1;
     }
-    if (mitem->host == NULL)
-    {
+    if (mitem->host == NULL) {
         cserrno = E_GETHOST;
         return -1;
     }
 
 #ifdef DEBUG
-    if (1)
-    {
+    if (1) {
         int flog;
         char remote[STRLEN];
         char buf[STRLEN];
@@ -553,8 +506,7 @@ cserrmsg()
 {
     char *msg;
 
-    switch (cserrno)
-    {
+    switch (cserrno) {
     case E_NIL:
         msg = "nil";
         break;
@@ -601,13 +553,10 @@ int rcode;
 {
     int len;
 
-    if (rcode < 0)
-    {
+    if (rcode < 0) {
         len = sfsprintf(
         buf, bsize, "E %d %s %s\n", cserrno, cserrmsg(), csusrmsg);
-    }
-    else
-    {
+    } else {
         len = sfsprintf(buf, bsize, "I %d ok %s\n", E_NIL, csusrmsg);
     }
     logit(buf);
@@ -624,12 +573,9 @@ unsigned long expire;
     char buf[STRLEN];
     unsigned long mtime;
 
-    if (stat(fpath, &st))
-    {
+    if (stat(fpath, &st)) {
         return 0; /* no such file */
-    }
-    else if (S_ISDIR(st.st_mode))
-    {
+    } else if (S_ISDIR(st.st_mode)) {
         strcpy(buf, fpath);
         strcat(buf, "/._dir");
         if (lstat(buf, &st))
@@ -656,23 +602,15 @@ char *argv[];
 
     ml = MountListSearch(uid);
     n = sizeof(csusrmsg);
-    if (argc < 3)
-    {
+    if (argc < 3) {
         ag_showmount(ml, argc < 2 ? NULL : argv[1]);
-    }
-    else if (*argv[1] == '-')
-    {
-        if (AgentUnmount(ml, argv[2]))
-        {
+    } else if (*argv[1] == '-') {
+        if (AgentUnmount(ml, argv[2])) {
             sfsprintf(csusrmsg, n, "1 error %s", argv[1]);
-        }
-        else
-        {
+        } else {
             sfsprintf(csusrmsg, n, "0 unmount %s", argv[1]);
         }
-    }
-    else
-    {
+    } else {
         option = (argc < 4 ? NULL : argv[3]);
         if ((mi = AgentMount(ml, argv[1], argv[2], option)) == NULL)
             return csputmsg(ret, retsize, -1);
@@ -759,16 +697,14 @@ char *argv[];
     struct server_info srv;
     char buf[PATH_MAX];
 
-    if (argc < 3)
-    {
+    if (argc < 3) {
         cserrno = E_ARGUMENT;
         return sfsprintf(ret, retsize, "%s\n", argc < 2 ? "" : argv[1]);
     }
     physical = argv[1];
     expire = 86400;
     proxy = 0;
-    for (n = 3; n < argc; n++)
-    {
+    for (n = 3; n < argc; n++) {
         if (strneq(argv[n], "expire=", 7))
             expire = strelapsed(argv[n] + 7, NiL, 1);
         else if (strneq(argv[n], "physical=", 9))
@@ -786,12 +722,9 @@ char *argv[];
     argv[2] = 0;
     sfsprintf(ret, retsize, "\ncmd> %s %s\n", argv[0], buf);
     logit(ret);
-    if (ag_parsepath(&srv, uid, 2, argv, proxy))
-    {
+    if (ag_parsepath(&srv, uid, 2, argv, proxy)) {
         n = -1; /* unmounted path */
-    }
-    else
-    {
+    } else {
         physical = strdup(srv.lpath);
         if (IfsCacheValid(physical, expire) || !(*srv.agent->getfile)(&srv))
             n = 0; /* file validated */
@@ -814,8 +747,7 @@ char *argv[];
     struct server_info srv;
     char *src, *dst;
 
-    if (argc > 2)
-    {
+    if (argc > 2) {
         src = argv[1];
         dst = argv[2];
         CopyFile(src, dst);

@@ -66,12 +66,10 @@ regerror(int code, const regex_t *p, char *buf, size_t size)
         s = reg_error[code];
     else
         s = ( const char * )"unknown error";
-    if (size)
-    {
+    if (size) {
         strlcpy(buf, s, size);
         buf[size - 1] = 0;
-    }
-    else
+    } else
         buf = ( char * )s;
     return strlen(buf) + 1;
 }
@@ -83,8 +81,7 @@ regerror(int code, const regex_t *p, char *buf, size_t size)
 int
 fatal(regdisc_t *disc, int code, const char *pattern)
 {
-    if (disc->re_errorf)
-    {
+    if (disc->re_errorf) {
         if (pattern)
             (*disc->re_errorf)(NiL,
                                disc,

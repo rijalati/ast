@@ -35,8 +35,7 @@ MAIN()
     int i;
 
     vcqsort(ilist, sizeof(ilist) / sizeof(int), sizeof(int), intcmp, 0);
-    for (i = 0; i < sizeof(ilist) / sizeof(int); ++i)
-    {
+    for (i = 0; i < sizeof(ilist) / sizeof(int); ++i) {
         if (ilist[i] != isort[i])
             terror("vcqsort() failed");
     }

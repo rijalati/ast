@@ -60,14 +60,12 @@ prng_open(const Method_t *method, const char *name)
     const char *v;
     int i;
 
-    if (sum = newof(0, Prng_t, 1, 0))
-    {
+    if (sum = newof(0, Prng_t, 1, 0)) {
         sum->method = ( Method_t * )method;
         sum->name = name;
     }
     s = name;
-    while (*(t = s))
-    {
+    while (*(t = s)) {
         for (t = s, v = 0; *s && *s != '-'; s++)
             if (*s == '=' && !v)
                 v = s;
@@ -81,8 +79,7 @@ prng_open(const Method_t *method, const char *name)
         if (*s == '-')
             s++;
     }
-    if (!sum->mpy)
-    {
+    if (!sum->mpy) {
         sum->mpy = FNV_MULT;
         if (!sum->init)
             sum->init = FNV_INIT;

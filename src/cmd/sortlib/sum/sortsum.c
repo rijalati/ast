@@ -136,8 +136,7 @@ typedef struct State_s
 } State_t;
 
 #define ASSURE(s, b, z)                                                      \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         if (((b)->siz < (z)) && assure(s, b, z))                             \
             return -1;                                                       \
     } while (0)
@@ -145,12 +144,10 @@ typedef struct State_s
 static int
 assure(State_t *state, Buffer_t *b, size_t z)
 {
-    if (b->siz < z)
-    {
+    if (b->siz < z) {
         b->siz = roundof(z, 32);
         if (!(b->buf
-              = vmnewof(state->dss->vm, b->buf, unsigned char, b->siz, 0)))
-        {
+              = vmnewof(state->dss->vm, b->buf, unsigned char, b->siz, 0))) {
             error(ERROR_SYSTEM | 3,
                   "out of space extending to %I*u",
                   sizeof(b->siz),
@@ -195,87 +192,67 @@ record(State_t *state, Rsobj_t *r, int op)
     if (!*tab)
         tab = 0;
     del = state->delim;
-    for (sum = state->sum; sum; sum = sum->next)
-    {
-        while (beg < sum->beg.field)
-        {
+    for (sum = state->sum; sum; sum = sum->next) {
+        while (beg < sum->beg.field) {
         tab1:
             while (s < e)
-                if (del[*s++])
-                {
-                    if (tab)
-                    {
+                if (del[*s++]) {
+                    if (tab) {
                         for (c = 0; (s + c) < e; c++)
-                            if (!tab[c])
-                            {
+                            if (!tab[c]) {
                                 s += c;
                                 break;
-                            }
-                            else if (tab[c] != s[c])
+                            } else if (tab[c] != s[c])
                                 goto tab1;
-                    }
-                    else if (t == ' ')
+                    } else if (t == ' ')
                         while (s < e && del[*s])
                             s++;
                     break;
                 }
             end = ++beg;
         }
-        if (sum->beg.index < (e - s))
-        {
+        if (sum->beg.index < (e - s)) {
             a = s + sum->beg.index;
-            while (end < sum->end.field)
-            {
+            while (end < sum->end.field) {
             tab2:
                 while (s < e)
-                    if (del[*s++])
-                    {
-                        if (tab)
-                        {
+                    if (del[*s++]) {
+                        if (tab) {
                             for (c = 0; (s + c) < e; c++)
-                                if (!tab[c])
-                                {
+                                if (!tab[c]) {
                                     s += c;
                                     break;
-                                }
-                                else if (tab[c] != s[c])
+                                } else if (tab[c] != s[c])
                                     goto tab2;
-                        }
-                        else if (t == ' ')
+                        } else if (t == ' ')
                             while (s < e && del[*s])
                                 s++;
                         break;
                     }
                 end++;
             }
-            if (!sum->end.index)
-            {
+            if (!sum->end.index) {
             tab3:
                 while (s < e)
-                    if (del[*s++])
-                    {
-                        if (tab)
-                        {
+                    if (del[*s++]) {
+                        if (tab) {
                             for (c = 0; (s + c) < e; c++)
                                 if (!tab[c])
                                     break;
                                 else if (tab[c] != s[c])
                                     goto tab3;
-                        }
-                        else if (t == ' ')
+                        } else if (t == ' ')
                             while (s < e && del[*s])
                                 s++;
                         s--;
                         break;
                     }
                 z = s;
-            }
-            else if (sum->end.index <= (e - s))
+            } else if (sum->end.index <= (e - s))
                 z = s + sum->end.index;
             else
                 z = a;
-        }
-        else
+        } else
             a = z = s;
         w = z - a;
         if (!sum->width)
@@ -285,16 +262,14 @@ record(State_t *state, Rsobj_t *r, int op)
               : (!(sum->format.flags & CX_FLOAT) || sum->end.index || w >= 8)
                 ? 0
                 : 8;
-        if (map = sum->map)
-        {
+        if (map = sum->map) {
             ASSURE(state, &state->tmp, w + 2);
             for (x = state->tmp.buf; a < z; *a++ = map[*x++])
                 ;
             map = sum->pam;
             x = state->tmp.buf;
             a -= w;
-        }
-        else
+        } else
             x = a;
         if (sum->op == 'v'
             || (*sum->type->internalf)(cx,
@@ -308,23 +283,18 @@ record(State_t *state, Rsobj_t *r, int op)
                                        cx->disc)
                < 0)
             v.value.number = 0;
-        else if (state->regress && (sum->format.flags & CX_FLOAT))
-        {
+        else if (state->regress && (sum->format.flags & CX_FLOAT)) {
             n = v.value.number * 1000.0;
             n /= 10;
             v.value.number = n;
         }
-        if (op < 0)
-        {
+        if (op < 0) {
             sum->value = v.value.number;
             sum->count = 1;
-        }
-        else
-        {
+        } else {
             if (count != 1)
                 v.value.number *= count;
-            switch (sum->op)
-            {
+            switch (sum->op) {
             case 'a':
                 sum->value += v.value.number;
                 sum->count += count;
@@ -344,11 +314,9 @@ record(State_t *state, Rsobj_t *r, int op)
                 sum->value += v.value.number;
                 break;
             }
-            if (op > 0)
-            {
+            if (op > 0) {
                 v.value.number = sum->value;
-                switch (sum->op)
-                {
+                switch (sum->op) {
                 case 'a':
                     v.value.number /= sum->count;
                     break;
@@ -358,8 +326,7 @@ record(State_t *state, Rsobj_t *r, int op)
                     continue;
                 }
                 n = (RECTYPE(state->fmt) == REC_fixed || w < 7) ? 7 : w;
-                for (;;)
-                {
+                for (;;) {
                     y = n + 1;
                     ASSURE(state, &state->tmp, y);
                     if ((n = (*sum->type->externalf)(cx,
@@ -370,8 +337,7 @@ record(State_t *state, Rsobj_t *r, int op)
                                                      ( char * )state->tmp.buf,
                                                      y,
                                                      cx->disc))
-                        < 0)
-                    {
+                        < 0) {
                         error(2,
                               "%s value %I*g conversion error",
                               sum->type->name,
@@ -382,10 +348,8 @@ record(State_t *state, Rsobj_t *r, int op)
                     if (n < y)
                         break;
                 }
-                if (n > w)
-                {
-                    if (sum->end.index || RECTYPE(state->fmt) == REC_fixed)
-                    {
+                if (n > w) {
+                    if (sum->end.index || RECTYPE(state->fmt) == REC_fixed) {
                         error(2,
                               "%s value %I*g width exceeds %d",
                               sum->type->name,
@@ -408,10 +372,8 @@ record(State_t *state, Rsobj_t *r, int op)
                     e
                     = s + r->datalen - (RECTYPE(state->fmt) == REC_delimited);
                 }
-                if (map)
-                {
-                    if (n < w)
-                    {
+                if (map) {
+                    if (n < w) {
                         c = (sum->type->format.flags & CX_BINARY) ? 0
                                                                   : map[' '];
                         while (n++ < w)
@@ -419,11 +381,8 @@ record(State_t *state, Rsobj_t *r, int op)
                     }
                     for (x = state->tmp.buf; a < z; *a++ = map[*x++])
                         ;
-                }
-                else
-                {
-                    if (n < w)
-                    {
+                } else {
+                    if (n < w) {
                         c = (sum->type->format.flags & CX_BINARY) ? 0 : ' ';
                         while (n++ < w)
                             *a++ = c;
@@ -444,8 +403,7 @@ summary(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
     Rsobj_t *r;
     Rsobj_t *q;
 
-    switch (op)
-    {
+    switch (op) {
     case RS_POP:
         dssclose(state->dss);
         break;
@@ -494,12 +452,9 @@ rs_disc(Rskey_t *key, const char *options)
     if (!dssload("num_t", dss->disc))
         goto drop;
     debug = 0;
-    if (options)
-    {
-        for (;;)
-        {
-            switch (optstr(options, usage))
-            {
+    if (options) {
+        for (;;) {
+            switch (optstr(options, usage)) {
             case 0:
                 break;
             case 'd':
@@ -512,8 +467,7 @@ rs_disc(Rskey_t *key, const char *options)
             case 'o':
                 def = 0;
                 s = opt_info.arg;
-                for (;;)
-                {
+                for (;;) {
                     while (*s == ':' || isspace(*s))
                         s++;
                     if (!*s)
@@ -521,38 +475,28 @@ rs_disc(Rskey_t *key, const char *options)
                     if (!(sum = vmnewof(dss->vm, 0, Summary_t, 1, 0)))
                         error(ERROR_SYSTEM | 3, "out of space");
                     sum->beg.field = -1;
-                    if (def)
-                    {
+                    if (def) {
                         sum->type = def->type;
                         sum->format = def->format;
                         sum->op = def->op;
                         sum->set = def->set;
-                    }
-                    else
+                    } else
                         sum->format.code = key->code;
                     def = sum;
                     b = s;
                     tok = 0;
                     /*UNDENT...*/
-                    for (;;)
-                    {
-                        if (*s == '.' || isdigit(*s))
-                        {
+                    for (;;) {
+                        if (*s == '.' || isdigit(*s)) {
                             pos = 0;
-                            while (*s == '.' || isdigit(*s))
-                            {
-                                if (!pos)
-                                {
+                            while (*s == '.' || isdigit(*s)) {
+                                if (!pos) {
                                     pos = &sum->beg;
                                     loc = "begin";
-                                }
-                                else if (pos == &sum->beg)
-                                {
+                                } else if (pos == &sum->beg) {
                                     pos = &sum->end;
                                     loc = "end";
-                                }
-                                else
-                                {
+                                } else {
                                     error(
                                     2,
                                     "%s: invalid summary field position",
@@ -565,8 +509,7 @@ rs_disc(Rskey_t *key, const char *options)
                                     for (n = 0; *s >= '0' && *s <= '9';
                                          n = n * 10 + (*s++ - '0'))
                                         ;
-                                if ((pos->field = n - 1) < 0)
-                                {
+                                if ((pos->field = n - 1) < 0) {
                                     error(
                                     2,
                                     "%d: invalid summary field %s position",
@@ -574,14 +517,12 @@ rs_disc(Rskey_t *key, const char *options)
                                     loc);
                                     goto drop;
                                 }
-                                switch (*s)
-                                {
+                                switch (*s) {
                                 case '.':
                                     for (n = 0; *++s >= '0' && *s <= '9';
                                          n = n * 10 + (*s - '0'))
                                         ;
-                                    if ((pos->index = n - 1) < 0)
-                                    {
+                                    if ((pos->index = n - 1) < 0) {
                                         error(
                                         2,
                                         "%d: invalid summary field %s offset",
@@ -589,16 +530,14 @@ rs_disc(Rskey_t *key, const char *options)
                                         loc);
                                         goto drop;
                                     }
-                                    if (*s == '.')
-                                    {
+                                    if (*s == '.') {
                                         n = 0;
                                         if (pos == &sum->beg)
                                             for (n = 0;
                                                  *++s >= '0' && *s <= '9';
                                                  n = n * 10 + (*s - '0'))
                                                 ;
-                                        if (n <= 0)
-                                        {
+                                        if (n <= 0) {
                                             error(2,
                                                   "%d: invalid summary field "
                                                   "%s size",
@@ -612,8 +551,7 @@ rs_disc(Rskey_t *key, const char *options)
                                     break;
                                 case 'C':
                                     s++;
-                                    switch (*s++)
-                                    {
+                                    switch (*s++) {
                                     case 'a':
                                         n = CC_ASCII;
                                         break;
@@ -634,8 +572,7 @@ rs_disc(Rskey_t *key, const char *options)
                                         2, "%s: invalid code set", s - 1);
                                         goto drop;
                                     }
-                                    switch (*s++)
-                                    {
+                                    switch (*s++) {
                                     case 'a':
                                         n = CCOP(n, CC_ASCII);
                                         break;
@@ -660,8 +597,7 @@ rs_disc(Rskey_t *key, const char *options)
                                         sum->format.code = n;
                                     break;
                                 default:
-                                    if (isalpha(*s))
-                                    {
+                                    if (isalpha(*s)) {
                                         error(
                                         2,
                                         "%s: invalid summary field attribute",
@@ -673,11 +609,9 @@ rs_disc(Rskey_t *key, const char *options)
                             }
                             break;
                         }
-                        switch (tok)
-                        {
+                        switch (tok) {
                         case 0:
-                            switch (sum->op = *s++)
-                            {
+                            switch (sum->op = *s++) {
                             case 'a':
                             case 'c':
                                 break;
@@ -698,8 +632,7 @@ rs_disc(Rskey_t *key, const char *options)
                                 t = s - 1;
                                 while (isalnum(*s))
                                     s++;
-                                if (*s != ':' || !*++s)
-                                {
+                                if (*s != ':' || !*++s) {
                                     error(2,
                                           "%s: summary field character value "
                                           "expected",
@@ -720,8 +653,7 @@ rs_disc(Rskey_t *key, const char *options)
                             break;
                         case 1:
                             if (type = cxattr(
-                                dss->cx, s, &t, &sum->format, dss->cx->disc))
-                            {
+                                dss->cx, s, &t, &sum->format, dss->cx->disc)) {
                                 s = t;
                                 sum->type = type;
                                 sum->width = sum->format.width;
@@ -740,8 +672,7 @@ rs_disc(Rskey_t *key, const char *options)
                             break;
                     }
                     /*...INDENT*/
-                    if (sum->beg.field < 0)
-                    {
+                    if (sum->beg.field < 0) {
                         error(2, "%s: field position expected", b);
                         goto drop;
                     }
@@ -777,30 +708,25 @@ rs_disc(Rskey_t *key, const char *options)
     key->type &= ~RS_DATA;
     key->type |= RS_UNIQ;
     state->fmt = key->disc->data;
-    if (!*key->tab || *key->tab == ' ')
-    {
+    if (!*key->tab || *key->tab == ' ') {
         state->tab = ( unsigned char * )" ";
         for (n = 0; n < elementsof(state->delim); n++)
             if (isspace(n))
                 state->delim[n] = 1;
-    }
-    else
+    } else
         state->delim[*(state->tab = key->tab)] = 1;
     state->disc.eventf = summary;
     state->disc.events = RS_SUMMARY | RS_POP;
     for (sum = state->sum; sum; sum = sum->next)
-        if (sum->format.code)
-        {
-            if (!CCCONVERT(sum->format.code))
-            {
+        if (sum->format.code) {
+            if (!CCCONVERT(sum->format.code)) {
                 if (sum->format.code == CC_NATIVE
                     || (sum->type->format.flags & CX_BINARY))
                     sum->format.code = 0;
                 else
                     sum->format.code = CCOP(sum->format.code, CC_NATIVE);
             }
-            if (sum->format.code)
-            {
+            if (sum->format.code) {
                 sum->map
                 = ccmap(CCIN(sum->format.code), CCOUT(sum->format.code));
                 sum->pam
@@ -808,8 +734,7 @@ rs_disc(Rskey_t *key, const char *options)
             }
         }
     if (debug || key->verbose)
-        for (n = 1, sum = state->sum; sum; n++, sum = sum->next)
-        {
+        for (n = 1, sum = state->sum; sum; n++, sum = sum->next) {
             sfprintf(sfstderr, "op %d ", n);
             if (sum->beg.field == sum->end.field)
                 sfprintf(sfstderr,
@@ -831,12 +756,10 @@ rs_disc(Rskey_t *key, const char *options)
                          CCOUT(sum->format.code));
             else
                 sfprintf(sfstderr, "      ");
-            if (sum->op == 'v')
-            {
+            if (sum->op == 'v') {
                 chr = sum->set;
                 sfprintf(sfstderr, "'%s'", fmtquote(&chr, NiL, "'", 1, 0));
-            }
-            else
+            } else
                 sfprintf(sfstderr, "%s", sum->type->name);
             sfprintf(sfstderr, "\n");
         }

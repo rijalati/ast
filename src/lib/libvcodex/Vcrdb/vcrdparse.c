@@ -48,21 +48,18 @@ int type;         /* VCRD_FIELD if field-oriented	*/
     if (!info)
         return NIL(Vcrdtable_t *);
 
-    if (!(orig = data) || dtsz <= 0)
-    {
+    if (!(orig = data) || dtsz <= 0) {
         dtsz = 0;
         fldn = info->fldn; /* fldn&recn must be given if no data to parse */
         recn = info->recn;
-    }
-    else if (type & VCRD_FIELD) /* field-oriented data, recn&fldn&flen all
-                                   needed */
+    } else if (type & VCRD_FIELD) /* field-oriented data, recn&fldn&flen all
+                                     needed */
     {
         if ((recn = info->recn) <= 0 || (fldn = info->fldn) <= 0
             || !info->flen)
             return NIL(Vcrdtable_t *);
 
-        for (enddt = data + dtsz, f = 0; f < fldn; ++f)
-        {
+        for (enddt = data + dtsz, f = 0; f < fldn; ++f) {
             if (data >= enddt)
                 return NIL(Vcrdtable_t *);
             if ((z = info->flen[f]) > 0) /* fixed-length field */
@@ -71,8 +68,7 @@ int type;         /* VCRD_FIELD if field-oriented	*/
             {
                 if (info->fsep < 0 || info->rsep < 0)
                     return NIL(Vcrdtable_t *);
-                for (r = 0; r < recn; ++r)
-                {
+                for (r = 0; r < recn; ++r) {
                     for (; data < enddt; ++data)
                         if (*data == info->fsep || *data == info->rsep)
                             break;
@@ -81,15 +77,11 @@ int type;         /* VCRD_FIELD if field-oriented	*/
                 }
             }
         }
-    }
-    else /* record-oriented data, fldn & recn can be learned */
+    } else /* record-oriented data, fldn & recn can be learned */
     {
-        for (enddt = data + dtsz, fldn = recn = 0;;)
-        {
-            for (f = 0, dt = data;;)
-            {
-                if (info->fldn > 0 && info->flen && (z = info->flen[f]) > 0)
-                {
+        for (enddt = data + dtsz, fldn = recn = 0;;) {
+            for (f = 0, dt = data;;) {
+                if (info->fldn > 0 && info->flen && (z = info->flen[f]) > 0) {
                     if ((dt += z) > enddt) /* fixed length field */
                     {
                         f = -1; /* incomplete last record */
@@ -97,8 +89,7 @@ int type;         /* VCRD_FIELD if field-oriented	*/
                     }
                     if ((f += 1) == info->fldn)
                         break;
-                }
-                else /* must have valid fsep and rsep to work here */
+                } else /* must have valid fsep and rsep to work here */
                 {
                     if (info->fsep < 0 || info->rsep < 0)
                         return NIL(Vcrdtable_t *);
@@ -106,13 +97,10 @@ int type;         /* VCRD_FIELD if field-oriented	*/
                     for (; dt < enddt; ++dt)
                         if (*dt == info->fsep || *dt == info->rsep)
                             break;
-                    if (dt >= enddt)
-                    {
+                    if (dt >= enddt) {
                         f = -1; /* incomplete last record */
                         break;
-                    }
-                    else
-                    {
+                    } else {
                         f += 1;
                         dt += 1; /* start at next element */
                     }
@@ -120,16 +108,13 @@ int type;         /* VCRD_FIELD if field-oriented	*/
                     if (info->fldn <= 0) /* learning fldn */
                     {
                         if (dt[-1] == info->rsep)
-                            break; /* record ended */
-                    }
-                    else if (f == info->fldn) /* last field in record */
+                            break;              /* record ended */
+                    } else if (f == info->fldn) /* last field in record */
                     {
                         if (dt[-1] != info->rsep)
                             f = -1; /* ill-formed record */
                         break;
-                    }
-                    else if (dt[-1] != info->fsep)
-                    {
+                    } else if (dt[-1] != info->fsep) {
                         f = -1; /* ill-formed record */
                         break;
                     }
@@ -165,8 +150,7 @@ int type;         /* VCRD_FIELD if field-oriented	*/
     tbl->fld = ( Vcrdfield_t * )(tbl + 1);
     rcrd = ( Vcrdrecord_t * )(tbl->fld + fldn);
     vect = ( ssize_t * )(rcrd + fldn * recn);
-    for (f = 0; f < fldn; ++f, rcrd += recn, vect += recn)
-    {
+    for (f = 0; f < fldn; ++f, rcrd += recn, vect += recn) {
         tbl->fld[f].rcrd = rcrd;
         tbl->fld[f].vect = vect;
     }
@@ -177,23 +161,19 @@ int type;         /* VCRD_FIELD if field-oriented	*/
 
     if (type & VCRD_FIELD) /* parse field-oriented data into the table. */
     {
-        for (enddt = (data = orig) + dtsz, f = 0; f < fldn; ++f)
-        {
+        for (enddt = (data = orig) + dtsz, f = 0; f < fldn; ++f) {
             if ((z = info->flen[f]) > 0) /* fixed-length */
             {
-                for (maxz = 0, r = 0; r < recn; ++r)
-                {
+                for (maxz = 0, r = 0; r < recn; ++r) {
                     tbl->fld[f].rcrd[r].data = data;
                     tbl->fld[f].rcrd[r].dtsz = z;
                     if (z > maxz)
                         maxz = z;
                     data += z;
                 }
-            }
-            else /* if(z <= 0): delineated field */
+            } else /* if(z <= 0): delineated field */
             {
-                for (maxz = 0, r = 0; r < recn; ++r)
-                {
+                for (maxz = 0, r = 0; r < recn; ++r) {
                     for (dt = data; dt < enddt; ++dt)
                         if (*dt == info->fsep || *dt == info->rsep)
                             break;
@@ -208,13 +188,10 @@ int type;         /* VCRD_FIELD if field-oriented	*/
 
             tbl->fld[f].maxz = maxz;
         }
-    }
-    else /* record-oriented data */
+    } else /* record-oriented data */
     {
-        for (enddt = (data = orig) + dtsz, r = 0; r < recn; ++r)
-        {
-            for (f = 0; f < fldn; ++f)
-            {
+        for (enddt = (data = orig) + dtsz, r = 0; r < recn; ++r) {
+            for (f = 0; f < fldn; ++f) {
                 tbl->fld[f].rcrd[r].data = data;
 
                 if (info->fldn > 0 && (z = info->flen[f]) > 0)
@@ -280,8 +257,7 @@ ssize_t dtsz;   /* data size		*/
     {
         if (recn * flen > dtsz)
             return -1;
-        for (r = 0; r < recn; ++r)
-        {
+        for (r = 0; r < recn; ++r) {
             rcrd[r].data = data;
             rcrd[r].dtsz = flen;
 
@@ -289,14 +265,12 @@ ssize_t dtsz;   /* data size		*/
         }
         tbl->fld[f].maxz = flen;
         tbl->fld[f].type |= VCRD_FIXED;
-    }
-    else /* if(flen <= 0): separator-terminated field */
+    } else /* if(flen <= 0): separator-terminated field */
     {
         if (fsep < 0 || rsep < 0)
             return -1;
 
-        for (r = 0; r < recn; ++r)
-        {
+        for (r = 0; r < recn; ++r) {
             for (dt = data; dt < enddt; ++dt)
                 if (*dt == fsep || *dt == rsep)
                     break;
@@ -304,8 +278,7 @@ ssize_t dtsz;   /* data size		*/
                 return -1;
         }
 
-        for (maxz = 0, r = 0; r < recn; ++r)
-        {
+        for (maxz = 0, r = 0; r < recn; ++r) {
             for (dt = data; dt < enddt; ++dt)
                 if (*dt == fsep || *dt == rsep)
                     break;
@@ -339,15 +312,12 @@ int *type;        /* conversion type	*/
 {
     int f, byte, dign, ty;
 
-    for (f = 0, ty = VCRD_DOT;; ++f)
-    {
+    for (f = 0, ty = VCRD_DOT;; ++f) {
         if (f >= MAXDOT) /* restrict conversion to this */
             return -1;
 
-        for (byte = 0, dign = 0;; ++dt)
-        {
-            if (*dt == info->fsep || *dt == info->rsep)
-            {
+        for (byte = 0, dign = 0;; ++dt) {
+            if (*dt == info->fsep || *dt == info->rsep) {
                 if (dign == 0) /* no conversion done */
                     return -1;
 
@@ -360,9 +330,7 @@ int *type;        /* conversion type	*/
 
                 *type = ty;   /* return the format (dot or dot|slash) */
                 return f + 1; /* return number of converted bytes */
-            }
-            else if (*dt == info->dot || *dt == info->slash)
-            {
+            } else if (*dt == info->dot || *dt == info->slash) {
                 if (dign == 0) /* no conversion */
                     return -1;
                 if (ty & VCRD_SLASH) /* this must have been last */
@@ -377,11 +345,9 @@ int *type;        /* conversion type	*/
 
                 dt += 1; /* move to next conversion */
                 break;
-            }
-            else if (*dt < info->digit[0] || *dt > info->digit[9])
+            } else if (*dt < info->digit[0] || *dt > info->digit[9])
                 return -1; /* not a number */
-            else
-            {
+            else {
                 if (byte == 0 && dign > 0) /* no leading zero allowed */
                     return -1;
 
@@ -422,27 +388,21 @@ int type;                                            /* DOT, SLASH, etc.	*/
     if (sz <= 0 || sz > MAXDOT)
         return -1;
 
-    for (z = 0;;)
-    { /* convert a byte into a sequence of digits */
-        if ((b = *dt++) >= 100)
-        {
+    for (z = 0;;) { /* convert a byte into a sequence of digits */
+        if ((b = *dt++) >= 100) {
             if ((z += 1) > cvsz)
                 return -1;
             *cvdt++ = info->digit[b / 100];
             b %= 100;
             goto do_2;
-        }
-        else if (b >= 10)
-        {
+        } else if (b >= 10) {
         do_2:
             if ((z += 1) > cvsz)
                 return -1;
             *cvdt++ = info->digit[b / 10];
             b %= 10;
             goto do_1;
-        }
-        else
-        {
+        } else {
         do_1:
             if ((z += 1) > cvsz)
                 return -1;
@@ -456,8 +416,7 @@ int type;                                            /* DOT, SLASH, etc.	*/
         {
             *cvdt++ = ( Vcchar_t )flde;
             return z;
-        }
-        else if (sz == 1 && (type & VCRD_SLASH)) /* n.n.../n notation */
+        } else if (sz == 1 && (type & VCRD_SLASH)) /* n.n.../n notation */
             *cvdt++ = info->slash;
         else
             *cvdt++ = info->dot;
@@ -510,15 +469,13 @@ int type;                                            /* 1/0: encode/decode	*/
             free(tbl->fld[f].data);
         tbl->fld[f].data = data; /* save this to free on closing table */
         tbl->fld[f].type = type | VCRD_FIXED; /* field is now fixed length */
-        for (r = 0; r < tbl->recn; ++r)
-        {
+        for (r = 0; r < tbl->recn; ++r) {
             rcrd[r].data = data;
             data += z;
             rcrd[r].dtsz = z;
         }
         tbl->fld[f].maxz = z;
-    }
-    else /* decoding */
+    } else /* decoding */
     {
         if (!(attrs & (VCRD_DOT | VCRD_SLASH))
             || !(tbl->fld[f].type & VCRD_FIXED))
@@ -529,8 +486,7 @@ int type;                                            /* 1/0: encode/decode	*/
         cvsz = dtsz = 0;
         type = (tbl->fld[f].type | attrs) & (VCRD_DOT | VCRD_SLASH);
         flde = f < (tbl->fldn - 1) ? info->fsep : info->rsep;
-        for (r = 0; r < tbl->recn; ++r)
-        {
+        for (r = 0; r < tbl->recn; ++r) {
             z = byte2text(tbl->info,
                           rcrd[r].data,
                           rcrd[r].dtsz,
@@ -544,8 +500,7 @@ int type;                                            /* 1/0: encode/decode	*/
                     free(data);
                 return -1;
             }
-            if ((cvsz + z) > dtsz)
-            {
+            if ((cvsz + z) > dtsz) {
                 dtsz += (dtsz - cvsz) + z; /* get a rounded and big buffer */
                 dtsz = ((dtsz + MAXBUF - 1) / MAXBUF) * MAXBUF;
                 if (!(data = ( Vcchar_t * )realloc(data, dtsz)))
@@ -560,8 +515,7 @@ int type;                                            /* 1/0: encode/decode	*/
         if (tbl->fld[f].data)
             free(tbl->fld[f].data);
         tbl->fld[f].data = data;
-        for (z = 0, r = 0; r < tbl->recn; ++r)
-        {
+        for (z = 0, r = 0; r < tbl->recn; ++r) {
             rcrd[r].data = data;
             data += rcrd[r].dtsz;
             if (rcrd[r].dtsz > z)
@@ -593,10 +547,8 @@ ssize_t f;                                           /* field index	*/
 
     /* fix each record by its end character - note that this is irreversible
      */
-    if (tbl->fld[f].type & VCRD_FIXED)
-    {
-        for (r = 0, maxz = 0; r < tbl->recn; ++r)
-        {
+    if (tbl->fld[f].type & VCRD_FIXED) {
+        for (r = 0, maxz = 0; r < tbl->recn; ++r) {
             if ((z = rcrd[r].dtsz) != tbl->fld[f].maxz)
                 break; /* really bad here but not our problem */
 
@@ -616,8 +568,7 @@ ssize_t f;                                           /* field index	*/
         {
             tbl->fld[f].type &= ~VCRD_FIXED;
             tbl->fld[f].maxz = maxz;
-        }
-        else /* cannot turn this field into variable length */
+        } else /* cannot turn this field into variable length */
         {
             for (maxz = tbl->fld[f].maxz; r >= 0; --r)
                 rcrd[r].dtsz = maxz;
@@ -644,20 +595,16 @@ int type;  /* 1: on, 0: off	*/
     if (!tbl)
         return -1;
 
-    if (f >= 0)
-    {
+    if (f >= 0) {
         if (f >= tbl->fldn)
             return -1;
         endf = f + 1;
-    }
-    else
-    {
+    } else {
         f = 0;
         endf = tbl->fldn;
     }
 
-    for (; f < endf; ++f)
-    {
+    for (; f < endf; ++f) {
         if (attrs & VCRD_DOT) /* this should be done before VCRD_PAD */
         {
             if (tbl->info->dot < 0 || tbl->info->slash < 0)
@@ -667,8 +614,7 @@ int type;  /* 1: on, 0: off	*/
             attrs &= ~VCRD_PAD; /* don't monkey with this */
         }
 
-        if (attrs & VCRD_PAD)
-        {
+        if (attrs & VCRD_PAD) {
             if (fldvariable(tbl, f) < 0)
                 return -1;
             if (type) /* on variable mode + padding */
@@ -691,8 +637,7 @@ void vcrdclose(tbl) Vcrdtable_t *tbl;
 {
     ssize_t f;
 
-    if (tbl)
-    {
+    if (tbl) {
         if (tbl->fldn > 0 && tbl->fld) /* free any field data */
             for (f = 0; f < tbl->fldn; ++f)
                 if (tbl->fld[f].data)
@@ -766,22 +711,17 @@ int type;       /* VCRD_FIELD/VCRD_RECORD	*/
             return -1;
         endf = fldi + 1;
         type |= VCRD_FIELD | VCRD_PAD;
-    }
-    else
-    {
+    } else {
         fldi = 0;
         endf = tbl->fldn;
     }
-    for (f = fldi; f < endf; ++f)
-    {
+    for (f = fldi; f < endf; ++f) {
         if (fld[f].type & (VCRD_FIXED | VCRD_PAD))
             sz += tbl->recn * fld[f].maxz;
-        else
-        {
+        else {
             rcrd = fld[f].rcrd;
             prev = f > 0 ? fld[f - 1].rcrd : NIL(Vcrdrecord_t *);
-            for (r = 0; r < tbl->recn; ++r)
-            {
+            for (r = 0; r < tbl->recn; ++r) {
                 if (!(type & VCRD_PAD) && prev
                     && rcrd[r].data[0] == info->rsep
                     && prev[r].data[prev[r].dtsz - 1] == info->rsep)
@@ -801,10 +741,8 @@ int type;       /* VCRD_FIELD/VCRD_RECORD	*/
     if (type
         & VCRD_FIELD) /* note that field-oriented format implies VCRD_PAD */
     {
-        for (f = fldi; f < endf; ++f)
-        {
-            for (rcrd = fld[f].rcrd, r = 0; r < tbl->recn; ++r)
-            {
+        for (f = fldi; f < endf; ++f) {
+            for (rcrd = fld[f].rcrd, r = 0; r < tbl->recn; ++r) {
                 memcpy(data, rcrd[r].data, (dtsz = rcrd[r].dtsz));
                 data += dtsz;
                 if (fld[f].type
@@ -813,14 +751,11 @@ int type;       /* VCRD_FIELD/VCRD_RECORD	*/
                         *data++ = fsep;
             }
         }
-    }
-    else /* record-oriented output */
+    } else /* record-oriented output */
     {
-        for (r = 0; r < tbl->recn; ++r)
-        {
+        for (r = 0; r < tbl->recn; ++r) {
             endf = (type & VCRD_PAD) ? tbl->fldn : fldend(tbl, r);
-            for (f = 0; f < endf; ++f)
-            {
+            for (f = 0; f < endf; ++f) {
                 if (!(type & VCRD_PAD) && f > 0
                     && fld[f].rcrd[r].data[0] == info->rsep
                     && fld[f - 1].rcrd[r].data[fld[f - 1].rcrd[r].dtsz - 1]

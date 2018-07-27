@@ -212,8 +212,7 @@ char **argv;        /* Arguments describing rectangle. */
 {
     WindowItem *winItemPtr = ( WindowItem * )itemPtr;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          Tk_PathName(Tk_CanvasTkwin(canvas)),
@@ -240,14 +239,12 @@ char **argv;        /* Arguments describing rectangle. */
 
     if ((Tk_CanvasGetCoord(interp, canvas, argv[0], &winItemPtr->x) != TCL_OK)
         || (Tk_CanvasGetCoord(interp, canvas, argv[1], &winItemPtr->y)
-            != TCL_OK))
-    {
+            != TCL_OK)) {
         return TCL_ERROR;
     }
 
     if (ConfigureWinItem(interp, canvas, itemPtr, argc - 2, argv + 2, 0)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         DeleteWinItem(canvas, itemPtr, Tk_Display(Tk_CanvasTkwin(canvas)));
         return TCL_ERROR;
     }
@@ -285,25 +282,19 @@ char **argv;        /* Array of coordinates: x1, y1,
     WindowItem *winItemPtr = ( WindowItem * )itemPtr;
     char x[TCL_DOUBLE_SPACE], y[TCL_DOUBLE_SPACE];
 
-    if (argc == 0)
-    {
+    if (argc == 0) {
         Tcl_PrintDouble(interp, winItemPtr->x, x);
         Tcl_PrintDouble(interp, winItemPtr->y, y);
         Tcl_AppendResult(interp, x, " ", y, ( char * )NULL);
-    }
-    else if (argc == 2)
-    {
+    } else if (argc == 2) {
         if ((Tk_CanvasGetCoord(interp, canvas, argv[0], &winItemPtr->x)
              != TCL_OK)
             || (Tk_CanvasGetCoord(interp, canvas, argv[1], &winItemPtr->y)
-                != TCL_OK))
-        {
+                != TCL_OK)) {
             return TCL_ERROR;
         }
         ComputeWindowBbox(canvas, winItemPtr);
-    }
-    else
-    {
+    } else {
         sprintf(
         interp->result, "wrong # coordinates: expected 0 or 2, got %d", argc);
         return TCL_ERROR;
@@ -350,8 +341,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
                            argv,
                            ( char * )winItemPtr,
                            flags)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -359,10 +349,8 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * A few of the options require additional processing.
      */
 
-    if (oldWindow != winItemPtr->tkwin)
-    {
-        if (oldWindow != NULL)
-        {
+    if (oldWindow != winItemPtr->tkwin) {
+        if (oldWindow != NULL) {
             Tk_DeleteEventHandler(oldWindow,
                                   StructureNotifyMask,
                                   WinItemStructureProc,
@@ -372,8 +360,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
             Tk_UnmaintainGeometry(oldWindow, canvasTkwin);
             Tk_UnmapWindow(oldWindow);
         }
-        if (winItemPtr->tkwin != NULL)
-        {
+        if (winItemPtr->tkwin != NULL) {
             Tk_Window ancestor, parent;
 
             /*
@@ -384,14 +371,11 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
              */
 
             parent = Tk_Parent(winItemPtr->tkwin);
-            for (ancestor = canvasTkwin;; ancestor = Tk_Parent(ancestor))
-            {
-                if (ancestor == parent)
-                {
+            for (ancestor = canvasTkwin;; ancestor = Tk_Parent(ancestor)) {
+                if (ancestor == parent) {
                     break;
                 }
-                if ((( Tk_FakeWin * )(ancestor))->flags & TK_TOP_LEVEL)
-                {
+                if ((( Tk_FakeWin * )(ancestor))->flags & TK_TOP_LEVEL) {
                 badWindow:
                     Tcl_AppendResult(interp,
                                      "can't use ",
@@ -402,12 +386,10 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
                     return TCL_ERROR;
                 }
             }
-            if ((( Tk_FakeWin * )(winItemPtr->tkwin))->flags & TK_TOP_LEVEL)
-            {
+            if ((( Tk_FakeWin * )(winItemPtr->tkwin))->flags & TK_TOP_LEVEL) {
                 goto badWindow;
             }
-            if (winItemPtr->tkwin == canvasTkwin)
-            {
+            if (winItemPtr->tkwin == canvasTkwin) {
                 goto badWindow;
             }
             Tk_CreateEventHandler(winItemPtr->tkwin,
@@ -451,16 +433,14 @@ Display *display; /* Display containing window for
     WindowItem *winItemPtr = ( WindowItem * )itemPtr;
     Tk_Window canvasTkwin = Tk_CanvasTkwin(canvas);
 
-    if (winItemPtr->tkwin != NULL)
-    {
+    if (winItemPtr->tkwin != NULL) {
         Tk_DeleteEventHandler(winItemPtr->tkwin,
                               StructureNotifyMask,
                               WinItemStructureProc,
                               ( ClientData )winItemPtr);
         Tk_ManageGeometry(
         winItemPtr->tkwin, ( Tk_GeomMgr * )NULL, ( ClientData )NULL);
-        if (canvasTkwin != Tk_Parent(winItemPtr->tkwin))
-        {
+        if (canvasTkwin != Tk_Parent(winItemPtr->tkwin)) {
             Tk_UnmaintainGeometry(winItemPtr->tkwin, canvasTkwin);
         }
         Tk_UnmapWindow(winItemPtr->tkwin);
@@ -498,8 +478,7 @@ WindowItem *winItemPtr; /* Item whose bbox is to be
     x = winItemPtr->x + ((winItemPtr->x >= 0) ? 0.5 : -0.5);
     y = winItemPtr->y + ((winItemPtr->y >= 0) ? 0.5 : -0.5);
 
-    if (winItemPtr->tkwin == NULL)
-    {
+    if (winItemPtr->tkwin == NULL) {
         winItemPtr->header.x1 = winItemPtr->header.x2 = x;
         winItemPtr->header.y1 = winItemPtr->header.y2 = y;
         return;
@@ -510,20 +489,16 @@ WindowItem *winItemPtr; /* Item whose bbox is to be
      */
 
     width = winItemPtr->width;
-    if (width <= 0)
-    {
+    if (width <= 0) {
         width = Tk_ReqWidth(winItemPtr->tkwin);
-        if (width <= 0)
-        {
+        if (width <= 0) {
             width = 1;
         }
     }
     height = winItemPtr->height;
-    if (height <= 0)
-    {
+    if (height <= 0) {
         height = Tk_ReqHeight(winItemPtr->tkwin);
-        if (height <= 0)
-        {
+        if (height <= 0) {
             height = 1;
         }
     }
@@ -532,8 +507,7 @@ WindowItem *winItemPtr; /* Item whose bbox is to be
      * Compute location of window, using anchor information.
      */
 
-    switch (winItemPtr->anchor)
-    {
+    switch (winItemPtr->anchor) {
     case TK_ANCHOR_N:
         x -= width / 2;
         break;
@@ -622,8 +596,7 @@ int regionX, regionY, regionWidth, regionHeight;
     short x, y;
     Tk_Window canvasTkwin = Tk_CanvasTkwin(canvas);
 
-    if (winItemPtr->tkwin == NULL)
-    {
+    if (winItemPtr->tkwin == NULL) {
         return;
     }
 
@@ -640,18 +613,14 @@ int regionX, regionY, regionWidth, regionHeight;
      * on whether the canvas is the window's parent).
      */
 
-    if (canvasTkwin == Tk_Parent(winItemPtr->tkwin))
-    {
+    if (canvasTkwin == Tk_Parent(winItemPtr->tkwin)) {
         if ((x != Tk_X(winItemPtr->tkwin)) || (y != Tk_Y(winItemPtr->tkwin))
             || (width != Tk_Width(winItemPtr->tkwin))
-            || (height != Tk_Height(winItemPtr->tkwin)))
-        {
+            || (height != Tk_Height(winItemPtr->tkwin))) {
             Tk_MoveResizeWindow(winItemPtr->tkwin, x, y, width, height);
         }
         Tk_MapWindow(winItemPtr->tkwin);
-    }
-    else
-    {
+    } else {
         Tk_MaintainGeometry(
         winItemPtr->tkwin, canvasTkwin, x, y, width, height);
     }
@@ -696,29 +665,19 @@ double *pointPtr; /* Pointer to x and y coordinates. */
      * Point is outside rectangle.
      */
 
-    if (pointPtr[0] < x1)
-    {
+    if (pointPtr[0] < x1) {
         xDiff = x1 - pointPtr[0];
-    }
-    else if (pointPtr[0] >= x2)
-    {
+    } else if (pointPtr[0] >= x2) {
         xDiff = pointPtr[0] + 1 - x2;
-    }
-    else
-    {
+    } else {
         xDiff = 0;
     }
 
-    if (pointPtr[1] < y1)
-    {
+    if (pointPtr[1] < y1) {
         yDiff = y1 - pointPtr[1];
-    }
-    else if (pointPtr[1] >= y2)
-    {
+    } else if (pointPtr[1] >= y2) {
         yDiff = pointPtr[1] + 1 - y2;
-    }
-    else
-    {
+    } else {
         yDiff = 0;
     }
 
@@ -758,15 +717,13 @@ double *rectPtr;  /* Pointer to array of four coordinates
     if ((rectPtr[2] <= winItemPtr->header.x1)
         || (rectPtr[0] >= winItemPtr->header.x2)
         || (rectPtr[3] <= winItemPtr->header.y1)
-        || (rectPtr[1] >= winItemPtr->header.y2))
-    {
+        || (rectPtr[1] >= winItemPtr->header.y2)) {
         return -1;
     }
     if ((rectPtr[0] <= winItemPtr->header.x1)
         && (rectPtr[1] <= winItemPtr->header.y1)
         && (rectPtr[2] >= winItemPtr->header.x2)
-        && (rectPtr[3] >= winItemPtr->header.y2))
-    {
+        && (rectPtr[3] >= winItemPtr->header.y2)) {
         return 1;
     }
     return 0;
@@ -804,12 +761,10 @@ double scaleY;           /* Amount to scale in Y direction. */
 
     winItemPtr->x = originX + scaleX * (winItemPtr->x - originX);
     winItemPtr->y = originY + scaleY * (winItemPtr->y - originY);
-    if (winItemPtr->width > 0)
-    {
+    if (winItemPtr->width > 0) {
         winItemPtr->width = scaleX * winItemPtr->width;
     }
-    if (winItemPtr->height > 0)
-    {
+    if (winItemPtr->height > 0) {
         winItemPtr->height = scaleY * winItemPtr->height;
     }
     ComputeWindowBbox(canvas, winItemPtr);
@@ -873,8 +828,7 @@ XEvent *eventPtr;      /* Describes what just happened. */
 {
     WindowItem *winItemPtr = ( WindowItem * )clientData;
 
-    if (eventPtr->type == DestroyNotify)
-    {
+    if (eventPtr->type == DestroyNotify) {
         winItemPtr->tkwin = NULL;
     }
 }
@@ -945,8 +899,7 @@ Tk_Window tkwin;       /* Tk's handle for the slave window. */
                           StructureNotifyMask,
                           WinItemStructureProc,
                           ( ClientData )winItemPtr);
-    if (canvasTkwin != Tk_Parent(winItemPtr->tkwin))
-    {
+    if (canvasTkwin != Tk_Parent(winItemPtr->tkwin)) {
         Tk_UnmaintainGeometry(winItemPtr->tkwin, canvasTkwin);
     }
     Tk_UnmapWindow(winItemPtr->tkwin);

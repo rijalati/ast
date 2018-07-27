@@ -224,8 +224,7 @@ char **argv;        /* Arguments describing polygon. */
     PolygonItem *polyPtr = ( PolygonItem * )itemPtr;
     int i;
 
-    if (argc < 6)
-    {
+    if (argc < 6) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          Tk_PathName(Tk_CanvasTkwin(canvas)),
@@ -259,22 +258,18 @@ char **argv;        /* Arguments describing polygon. */
      * start with a digit or a minus sign followed by a digit.
      */
 
-    for (i = 4; i < (argc - 1); i += 2)
-    {
+    for (i = 4; i < (argc - 1); i += 2) {
         if ((!isdigit(UCHAR(argv[i][0])))
-            && ((argv[i][0] != '-') || (!isdigit(UCHAR(argv[i][1])))))
-        {
+            && ((argv[i][0] != '-') || (!isdigit(UCHAR(argv[i][1]))))) {
             break;
         }
     }
-    if (PolygonCoords(interp, canvas, itemPtr, i, argv) != TCL_OK)
-    {
+    if (PolygonCoords(interp, canvas, itemPtr, i, argv) != TCL_OK) {
         goto error;
     }
 
     if (ConfigurePolygon(interp, canvas, itemPtr, argc - i, argv + i, 0)
-        == TCL_OK)
-    {
+        == TCL_OK) {
         return TCL_OK;
     }
 
@@ -315,36 +310,26 @@ char **argv;        /* Array of coordinates: x1, y1,
     char buffer[TCL_DOUBLE_SPACE];
     int i, numPoints;
 
-    if (argc == 0)
-    {
-        for (i = 0; i < 2 * polyPtr->numPoints; i++)
-        {
+    if (argc == 0) {
+        for (i = 0; i < 2 * polyPtr->numPoints; i++) {
             Tcl_PrintDouble(interp, polyPtr->coordPtr[i], buffer);
             Tcl_AppendElement(interp, buffer);
         }
-    }
-    else if (argc < 6)
-    {
+    } else if (argc < 6) {
         Tcl_AppendResult(
         interp,
         "too few coordinates for polygon: must have at least 6",
         ( char * )NULL);
         return TCL_ERROR;
-    }
-    else if (argc & 1)
-    {
+    } else if (argc & 1) {
         Tcl_AppendResult(interp,
                          "odd number of coordinates specified for polygon",
                          ( char * )NULL);
         return TCL_ERROR;
-    }
-    else
-    {
+    } else {
         numPoints = argc / 2;
-        if (polyPtr->pointsAllocated <= numPoints)
-        {
-            if (polyPtr->coordPtr != NULL)
-            {
+        if (polyPtr->pointsAllocated <= numPoints) {
+            if (polyPtr->coordPtr != NULL) {
                 ckfree(( char * )polyPtr->coordPtr);
             }
 
@@ -357,12 +342,10 @@ char **argv;        /* Array of coordinates: x1, y1,
             = ( double * )ckalloc(( unsigned )(sizeof(double) * (argc + 2)));
             polyPtr->pointsAllocated = numPoints + 1;
         }
-        for (i = argc - 1; i >= 0; i--)
-        {
+        for (i = argc - 1; i >= 0; i--) {
             if (Tk_CanvasGetCoord(
                 interp, canvas, argv[i], &polyPtr->coordPtr[i])
-                != TCL_OK)
-            {
+                != TCL_OK) {
                 return TCL_ERROR;
             }
         }
@@ -373,8 +356,7 @@ char **argv;        /* Array of coordinates: x1, y1,
          */
 
         if ((polyPtr->coordPtr[argc - 2] != polyPtr->coordPtr[0])
-            || (polyPtr->coordPtr[argc - 1] != polyPtr->coordPtr[1]))
-        {
+            || (polyPtr->coordPtr[argc - 1] != polyPtr->coordPtr[1])) {
             polyPtr->numPoints++;
             polyPtr->coordPtr[argc] = polyPtr->coordPtr[0];
             polyPtr->coordPtr[argc + 1] = polyPtr->coordPtr[1];
@@ -420,8 +402,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
     tkwin = Tk_CanvasTkwin(canvas);
     if (Tk_ConfigureWidget(
         interp, tkwin, configSpecs, argc, argv, ( char * )polyPtr, flags)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -430,16 +411,12 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * graphics contexts.
      */
 
-    if (polyPtr->width < 1)
-    {
+    if (polyPtr->width < 1) {
         polyPtr->width = 1;
     }
-    if (polyPtr->outlineColor == NULL)
-    {
+    if (polyPtr->outlineColor == NULL) {
         newGC = None;
-    }
-    else
-    {
+    } else {
         gcValues.foreground = polyPtr->outlineColor->pixel;
         gcValues.line_width = polyPtr->width;
         gcValues.cap_style = CapRound;
@@ -447,30 +424,24 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
         mask = GCForeground | GCLineWidth | GCCapStyle | GCJoinStyle;
         newGC = Tk_GetGC(tkwin, mask, &gcValues);
     }
-    if (polyPtr->outlineGC != None)
-    {
+    if (polyPtr->outlineGC != None) {
         Tk_FreeGC(Tk_Display(tkwin), polyPtr->outlineGC);
     }
     polyPtr->outlineGC = newGC;
 
-    if (polyPtr->fillColor == NULL)
-    {
+    if (polyPtr->fillColor == NULL) {
         newGC = None;
-    }
-    else
-    {
+    } else {
         gcValues.foreground = polyPtr->fillColor->pixel;
         mask = GCForeground;
-        if (polyPtr->fillStipple != None)
-        {
+        if (polyPtr->fillStipple != None) {
             gcValues.stipple = polyPtr->fillStipple;
             gcValues.fill_style = FillStippled;
             mask |= GCStipple | GCFillStyle;
         }
         newGC = Tk_GetGC(tkwin, mask, &gcValues);
     }
-    if (polyPtr->fillGC != None)
-    {
+    if (polyPtr->fillGC != None) {
         Tk_FreeGC(Tk_Display(tkwin), polyPtr->fillGC);
     }
     polyPtr->fillGC = newGC;
@@ -479,12 +450,9 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * Keep spline parameters within reasonable limits.
      */
 
-    if (polyPtr->splineSteps < 1)
-    {
+    if (polyPtr->splineSteps < 1) {
         polyPtr->splineSteps = 1;
-    }
-    else if (polyPtr->splineSteps > 100)
-    {
+    } else if (polyPtr->splineSteps > 100) {
         polyPtr->splineSteps = 100;
     }
 
@@ -519,28 +487,22 @@ Display *display; /* Display containing window for
 {
     PolygonItem *polyPtr = ( PolygonItem * )itemPtr;
 
-    if (polyPtr->coordPtr != NULL)
-    {
+    if (polyPtr->coordPtr != NULL) {
         ckfree(( char * )polyPtr->coordPtr);
     }
-    if (polyPtr->fillColor != NULL)
-    {
+    if (polyPtr->fillColor != NULL) {
         Tk_FreeColor(polyPtr->fillColor);
     }
-    if (polyPtr->fillStipple != None)
-    {
+    if (polyPtr->fillStipple != None) {
         Tk_FreeBitmap(display, polyPtr->fillStipple);
     }
-    if (polyPtr->outlineColor != NULL)
-    {
+    if (polyPtr->outlineColor != NULL) {
         Tk_FreeColor(polyPtr->outlineColor);
     }
-    if (polyPtr->outlineGC != None)
-    {
+    if (polyPtr->outlineGC != None) {
         Tk_FreeGC(display, polyPtr->outlineGC);
     }
-    if (polyPtr->fillGC != None)
-    {
+    if (polyPtr->fillGC != None) {
         Tk_FreeGC(display, polyPtr->fillGC);
     }
 }
@@ -577,8 +539,7 @@ PolygonItem *polyPtr; /* Item whose bbox is to be
     polyPtr->header.y1 = polyPtr->header.y2 = coordPtr[1];
 
     for (i = 1, coordPtr = polyPtr->coordPtr + 2; i < polyPtr->numPoints;
-         i++, coordPtr += 2)
-    {
+         i++, coordPtr += 2) {
         TkIncludePoint(( Tk_Item * )polyPtr, coordPtr);
     }
 
@@ -640,18 +601,15 @@ GC outlineGC;      /* If not None, use this to draw an
      * in this case, dynamically allocate an array.
      */
 
-    if (numPoints <= MAX_STATIC_POINTS)
-    {
+    if (numPoints <= MAX_STATIC_POINTS) {
         pointPtr = staticPoints;
-    }
-    else
-    {
+    } else {
         pointPtr
         = ( XPoint * )ckalloc(( unsigned )(numPoints * sizeof(XPoint)));
     }
 
-    for (i = 0, pPtr = pointPtr; i < numPoints; i += 1, coordPtr += 2, pPtr++)
-    {
+    for (i = 0, pPtr = pointPtr; i < numPoints;
+         i += 1, coordPtr += 2, pPtr++) {
         Tk_CanvasDrawableCoords(
         canvas, coordPtr[0], coordPtr[1], &pPtr->x, &pPtr->y);
     }
@@ -661,18 +619,15 @@ GC outlineGC;      /* If not None, use this to draw an
      * allocated.
      */
 
-    if (gc != None)
-    {
+    if (gc != None) {
         XFillPolygon(
         display, drawable, gc, pointPtr, numPoints, Complex, CoordModeOrigin);
     }
-    if (outlineGC != None)
-    {
+    if (outlineGC != None) {
         XDrawLines(
         display, drawable, outlineGC, pointPtr, numPoints, CoordModeOrigin);
     }
-    if (pointPtr != staticPoints)
-    {
+    if (pointPtr != staticPoints) {
         ckfree(( char * )pointPtr);
     }
 }
@@ -707,8 +662,7 @@ int x, y, width, height; /* Describes region of canvas that
 {
     PolygonItem *polyPtr = ( PolygonItem * )itemPtr;
 
-    if ((polyPtr->fillGC == None) && (polyPtr->outlineGC == None))
-    {
+    if ((polyPtr->fillGC == None) && (polyPtr->outlineGC == None)) {
         return;
     }
 
@@ -718,13 +672,11 @@ int x, y, width, height; /* Describes region of canvas that
      * read-only.
      */
 
-    if ((polyPtr->fillStipple != None) && (polyPtr->fillGC != None))
-    {
+    if ((polyPtr->fillStipple != None) && (polyPtr->fillGC != None)) {
         Tk_CanvasSetStippleOrigin(canvas, polyPtr->fillGC);
     }
 
-    if (!polyPtr->smooth)
-    {
+    if (!polyPtr->smooth) {
         TkFillPolygon(canvas,
                       polyPtr->coordPtr,
                       polyPtr->numPoints,
@@ -732,9 +684,7 @@ int x, y, width, height; /* Describes region of canvas that
                       drawable,
                       polyPtr->fillGC,
                       polyPtr->outlineGC);
-    }
-    else
-    {
+    } else {
         int numPoints;
         XPoint staticPoints[MAX_STATIC_POINTS];
         XPoint *pointPtr;
@@ -745,12 +695,9 @@ int x, y, width, height; /* Describes region of canvas that
          */
 
         numPoints = 1 + polyPtr->numPoints * polyPtr->splineSteps;
-        if (numPoints <= MAX_STATIC_POINTS)
-        {
+        if (numPoints <= MAX_STATIC_POINTS) {
             pointPtr = staticPoints;
-        }
-        else
-        {
+        } else {
             pointPtr
             = ( XPoint * )ckalloc(( unsigned )(numPoints * sizeof(XPoint)));
         }
@@ -760,8 +707,7 @@ int x, y, width, height; /* Describes region of canvas that
                                       polyPtr->splineSteps,
                                       pointPtr,
                                       ( double * )NULL);
-        if (polyPtr->fillGC != None)
-        {
+        if (polyPtr->fillGC != None) {
             XFillPolygon(display,
                          drawable,
                          polyPtr->fillGC,
@@ -770,8 +716,7 @@ int x, y, width, height; /* Describes region of canvas that
                          Complex,
                          CoordModeOrigin);
         }
-        if (polyPtr->outlineGC != None)
-        {
+        if (polyPtr->outlineGC != None) {
             XDrawLines(display,
                        drawable,
                        polyPtr->outlineGC,
@@ -779,13 +724,11 @@ int x, y, width, height; /* Describes region of canvas that
                        numPoints,
                        CoordModeOrigin);
         }
-        if (pointPtr != staticPoints)
-        {
+        if (pointPtr != staticPoints) {
             ckfree(( char * )pointPtr);
         }
     }
-    if ((polyPtr->fillStipple != None) && (polyPtr->fillGC != None))
-    {
+    if ((polyPtr->fillStipple != None) && (polyPtr->fillGC != None)) {
         XSetTSOrigin(display, polyPtr->fillGC, 0, 0);
     }
 }
@@ -823,25 +766,19 @@ double *pointPtr; /* Pointer to x and y coordinates. */
     double staticSpace[2 * MAX_STATIC_POINTS];
     int numPoints;
 
-    if (!polyPtr->smooth)
-    {
+    if (!polyPtr->smooth) {
         distance
         = TkPolygonToPoint(polyPtr->coordPtr, polyPtr->numPoints, pointPtr);
-    }
-    else
-    {
+    } else {
         /*
          * Smoothed polygon.  Generate a new set of points and use them
          * for comparison.
          */
 
         numPoints = 1 + polyPtr->numPoints * polyPtr->splineSteps;
-        if (numPoints <= MAX_STATIC_POINTS)
-        {
+        if (numPoints <= MAX_STATIC_POINTS) {
             coordPtr = staticSpace;
-        }
-        else
-        {
+        } else {
             coordPtr = ( double * )ckalloc(
             ( unsigned )(2 * numPoints * sizeof(double)));
         }
@@ -852,16 +789,13 @@ double *pointPtr; /* Pointer to x and y coordinates. */
                                       ( XPoint * )NULL,
                                       coordPtr);
         distance = TkPolygonToPoint(coordPtr, numPoints, pointPtr);
-        if (coordPtr != staticSpace)
-        {
+        if (coordPtr != staticSpace) {
             ckfree(( char * )coordPtr);
         }
     }
-    if (polyPtr->outlineColor != NULL)
-    {
+    if (polyPtr->outlineColor != NULL) {
         distance -= polyPtr->width / 2.0;
-        if (distance < 0)
-        {
+        if (distance < 0) {
             distance = 0;
         }
     }
@@ -907,15 +841,11 @@ double *rectPtr;  /* Pointer to array of four coordinates
      * against which to do the check.
      */
 
-    if (polyPtr->smooth)
-    {
+    if (polyPtr->smooth) {
         numPoints = 1 + polyPtr->numPoints * polyPtr->splineSteps;
-        if (numPoints <= MAX_STATIC_POINTS)
-        {
+        if (numPoints <= MAX_STATIC_POINTS) {
             coordPtr = staticSpace;
-        }
-        else
-        {
+        } else {
             coordPtr = ( double * )ckalloc(
             ( unsigned )(2 * numPoints * sizeof(double)));
         }
@@ -925,24 +855,19 @@ double *rectPtr;  /* Pointer to array of four coordinates
                                       polyPtr->splineSteps,
                                       ( XPoint * )NULL,
                                       coordPtr);
-    }
-    else
-    {
+    } else {
         numPoints = polyPtr->numPoints;
         coordPtr = polyPtr->coordPtr;
     }
 
-    if (polyPtr->width <= 1)
-    {
+    if (polyPtr->width <= 1) {
         /*
          * The outline of the polygon doesn't stick out, so we can
          * do a simple check.
          */
 
         result = TkPolygonToArea(coordPtr, numPoints, rectPtr);
-    }
-    else
-    {
+    } else {
         /*
          * The polygon has a wide outline, so the check is more complicated.
          * First, check the line segments to see if they overlap the area.
@@ -954,8 +879,7 @@ double *rectPtr;  /* Pointer to array of four coordinates
                                        CapRound,
                                        JoinRound,
                                        rectPtr);
-        if (result >= 0)
-        {
+        if (result >= 0) {
             goto done;
         }
 
@@ -972,19 +896,15 @@ double *rectPtr;  /* Pointer to array of four coordinates
         rect2[1] = rectPtr[1] - halfWidth;
         rect2[2] = rectPtr[2] + halfWidth;
         rect2[3] = rectPtr[3] + halfWidth;
-        if (TkPolygonToArea(coordPtr, numPoints, rect2) == -1)
-        {
+        if (TkPolygonToArea(coordPtr, numPoints, rect2) == -1) {
             result = -1;
-        }
-        else
-        {
+        } else {
             result = 0;
         }
     }
 
 done:
-    if ((coordPtr != staticSpace) && (coordPtr != polyPtr->coordPtr))
-    {
+    if ((coordPtr != staticSpace) && (coordPtr != polyPtr->coordPtr)) {
         ckfree(( char * )coordPtr);
     }
     return result;
@@ -1022,8 +942,7 @@ double scaleY;           /* Amount to scale in Y direction. */
     int i;
 
     for (i = 0, coordPtr = polyPtr->coordPtr; i < polyPtr->numPoints;
-         i++, coordPtr += 2)
-    {
+         i++, coordPtr += 2) {
         *coordPtr = originX + scaleX * (*coordPtr - originX);
         coordPtr[1] = originY + scaleY * (coordPtr[1] - originY);
     }
@@ -1060,8 +979,7 @@ double deltaX, deltaY; /* Amount by which item is to be
     int i;
 
     for (i = 0, coordPtr = polyPtr->coordPtr; i < polyPtr->numPoints;
-         i++, coordPtr += 2)
-    {
+         i++, coordPtr += 2) {
         *coordPtr += deltaX;
         coordPtr[1] += deltaY;
     }
@@ -1106,37 +1024,27 @@ int prepass;        /* 1 means this is a prepass to
      * Fill the area of the polygon.
      */
 
-    if (polyPtr->fillColor != NULL)
-    {
-        if (!polyPtr->smooth)
-        {
+    if (polyPtr->fillColor != NULL) {
+        if (!polyPtr->smooth) {
             Tk_CanvasPsPath(
             interp, canvas, polyPtr->coordPtr, polyPtr->numPoints);
-        }
-        else
-        {
+        } else {
             TkMakeBezierPostscript(
             interp, canvas, polyPtr->coordPtr, polyPtr->numPoints);
         }
-        if (Tk_CanvasPsColor(interp, canvas, polyPtr->fillColor) != TCL_OK)
-        {
+        if (Tk_CanvasPsColor(interp, canvas, polyPtr->fillColor) != TCL_OK) {
             return TCL_ERROR;
         }
-        if (polyPtr->fillStipple != None)
-        {
+        if (polyPtr->fillStipple != None) {
             Tcl_AppendResult(interp, "eoclip ", ( char * )NULL);
             if (Tk_CanvasPsStipple(interp, canvas, polyPtr->fillStipple)
-                != TCL_OK)
-            {
+                != TCL_OK) {
                 return TCL_ERROR;
             }
-            if (polyPtr->outlineColor != NULL)
-            {
+            if (polyPtr->outlineColor != NULL) {
                 Tcl_AppendResult(interp, "grestore gsave\n", ( char * )NULL);
             }
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp, "eofill\n", ( char * )NULL);
         }
     }
@@ -1145,15 +1053,11 @@ int prepass;        /* 1 means this is a prepass to
      * Now draw the outline, if there is one.
      */
 
-    if (polyPtr->outlineColor != NULL)
-    {
-        if (!polyPtr->smooth)
-        {
+    if (polyPtr->outlineColor != NULL) {
+        if (!polyPtr->smooth) {
             Tk_CanvasPsPath(
             interp, canvas, polyPtr->coordPtr, polyPtr->numPoints);
-        }
-        else
-        {
+        } else {
             TkMakeBezierPostscript(
             interp, canvas, polyPtr->coordPtr, polyPtr->numPoints);
         }
@@ -1161,8 +1065,8 @@ int prepass;        /* 1 means this is a prepass to
         sprintf(string, "%d setlinewidth\n", polyPtr->width);
         Tcl_AppendResult(
         interp, string, "1 setlinecap\n1 setlinejoin\n", ( char * )NULL);
-        if (Tk_CanvasPsColor(interp, canvas, polyPtr->outlineColor) != TCL_OK)
-        {
+        if (Tk_CanvasPsColor(interp, canvas, polyPtr->outlineColor)
+            != TCL_OK) {
             return TCL_ERROR;
         }
         Tcl_AppendResult(interp, "stroke\n", ( char * )NULL);

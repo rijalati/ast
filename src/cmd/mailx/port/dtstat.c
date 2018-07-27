@@ -105,15 +105,13 @@ reg int *count;
     reg Dtlink_t *t;
     reg int n, h;
 
-    for (h = data->ntab - 1; h >= 0; --h)
-    {
+    for (h = data->ntab - 1; h >= 0; --h) {
         n = 0;
         for (t = data->htab[h]; t; t = t->right)
             n += 1;
         if (count)
             count[n] += 1;
-        else if (n > 0)
-        {
+        else if (n > 0) {
             ds->dt_n += 1;
             if (n > ds->dt_max)
                 ds->dt_max = n;
@@ -143,11 +141,9 @@ int all;
     if (!all)
         return 0;
 
-    if (dt->data->type & DT_HASH)
-    {
+    if (dt->data->type & DT_HASH) {
         dthstat(dt->data, ds, NIL(int *));
-        if (ds->dt_max + 1 > Size)
-        {
+        if (ds->dt_max + 1 > Size) {
             if (Size > 0)
                 free(Count);
             if (!(Count = ( int * )malloc((ds->dt_max + 1) * sizeof(int))))
@@ -157,14 +153,10 @@ int all;
         for (i = ds->dt_max; i >= 0; --i)
             Count[i] = 0;
         dthstat(dt->data, ds, Count);
-    }
-    else if (dt->data->type & DT_TREE)
-    {
-        if (dt->data->here)
-        {
+    } else if (dt->data->type & DT_TREE) {
+        if (dt->data->here) {
             dttstat(ds, dt->data->here, 0, NIL(int *));
-            if (ds->dt_n + 1 > Size)
-            {
+            if (ds->dt_n + 1 > Size) {
                 if (Size > 0)
                     free(Count);
                 if (!(Count = ( int * )malloc((ds->dt_n + 1) * sizeof(int))))

@@ -42,43 +42,35 @@ msgindex(const char *name)
 again:
     lo = msg_info.name;
     hi = msg_info.name + MSG_STD;
-    while (lo <= hi)
-    {
+    while (lo <= hi) {
         mid = lo + (hi - lo) / 2;
         n = ( unsigned char * )name;
         m = ( unsigned char * )*mid;
-        for (;;)
-        {
-            if (!*m)
-            {
+        for (;;) {
+            if (!*m) {
                 if (!isalnum(*n))
                     return mid - msg_info.name;
                 return 0;
             }
-            if ((v = *n++ - *m++) > 0)
-            {
+            if ((v = *n++ - *m++) > 0) {
                 lo = mid + 1;
                 break;
             }
-            if (v < 0)
-            {
+            if (v < 0) {
                 hi = mid - 1;
                 break;
             }
         }
     }
-    if (name[0] == 'f')
-    {
+    if (name[0] == 'f') {
         name++;
         goto again;
     }
-    if (name[0] == 'i' && name[1] == 'p' && name[2] == 'c')
-    {
+    if (name[0] == 'i' && name[1] == 'p' && name[2] == 'c') {
         name += 3;
         goto again;
     }
-    if (name[0] == 's' && name[1] == 'y' && name[2] == 'm')
-    {
+    if (name[0] == 's' && name[1] == 'y' && name[2] == 'm') {
         name += 3;
         goto again;
     }

@@ -53,18 +53,15 @@ strstr(const char *s1, const char *s2)
     const char *t1;
     const char *t2;
 
-    if (s2)
-    {
+    if (s2) {
         if (!*s2)
             return ( char * )s1;
         c2 = *s2++;
         while (c1 = *s1++)
-            if (c1 == c2)
-            {
+            if (c1 == c2) {
                 t1 = s1;
                 t2 = s2;
-                do
-                {
+                do {
                     if (!*t2)
                         return ( char * )s1 - 1;
                 } while (*t1++ == *t2++);

@@ -28,8 +28,7 @@
 #include "make.h"
 
 #define PREVIEW(r, x)                                                        \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         if (r->preview > x->preview                                          \
             && (r->scan && r->scan == x->scan                                \
                 || !r->scan && !((r->property | x->property) & P_virtual)))  \
@@ -53,8 +52,7 @@ makescan(Rule_t *r, Time_t *tm)
 
     message((-2, "check scan prerequisites"));
     q = scan(r, &tevent);
-    for (p = q; p; p = p->next)
-    {
+    for (p = q; p; p = p->next) {
         s = p->rule;
         if (!s->scan && (u = staterule(RULE, bind(s), NiL, 0)) && u->scan)
             s->scan = u->scan;
@@ -82,11 +80,9 @@ globalprereqs(Rule_t *r, Rule_t *g)
     List_t *pos = 0;
 
     while (x = associate(g, r, NiL, &pos))
-        if (p = x->prereqs)
-        {
+        if (p = x->prereqs) {
             for (q = t = 0; p; p = p->next)
-                if (p->rule != r)
-                {
+                if (p->rule != r) {
                     newlist(u);
                     if (t)
                         t->next = u;
@@ -94,8 +90,7 @@ globalprereqs(Rule_t *r, Rule_t *g)
                         q = u;
                     (t = u)->rule = p->rule;
                 }
-            if (q)
-            {
+            if (q) {
                 t->next = 0;
                 r->prereqs = g == internal.insert_p ? append(q, r->prereqs)
                                                     : append(r->prereqs, q);
@@ -117,13 +112,10 @@ unalias(Rule_t *r, Rule_t *a, char *name)
     Frame_t *oframe;
 
     message((-3, "unalias(%s) -> %s", a->name, name));
-    if (a == r)
-    {
+    if (a == r) {
         a->uname = name;
         a->dynamic |= D_alias;
-    }
-    else
-    {
+    } else {
         oframe = a->active;
         a->active = r->active;
         r->active = r->active->previous;
@@ -156,61 +148,48 @@ update(Rule_t *r, Rule_t *a, char *arg)
     char *s;
 
     errors = 0;
-    if (state.override)
-    {
+    if (state.override) {
         /*
          * save explicit target generation for non-override runs
          */
 
         if (r == a && r->time
             && (!(r->property & P_target)
-                || !(r->property & (P_archive | P_command | P_make))))
-        {
+                || !(r->property & (P_archive | P_command | P_make)))) {
             r->time = CURTIME;
             r->dynamic |= D_triggered;
-            if (r->dynamic & D_member)
-            {
+            if (r->dynamic & D_member) {
                 r->dynamic &= ~D_member;
                 r->dynamic |= D_membertoo;
             }
             return errors;
         }
     }
-    for (p = joint(r); p; p = p->next)
-    {
+    for (p = joint(r); p; p = p->next) {
         u = p->rule;
         if (u->dynamic & D_alias)
             u = makerule(u->name);
-        if (u->dynamic & D_member)
-        {
+        if (u->dynamic & D_member) {
             u->dynamic &= ~D_member;
             u->dynamic |= D_membertoo;
         }
         if (!state.override && u->action)
             a = u;
-        if (!(u->property & P_state))
-        {
-            if (u->uname)
-            {
-                if (u->view)
-                {
+        if (!(u->property & P_state)) {
+            if (u->uname) {
+                if (u->view) {
                     u->view = 0;
                     if (u->active && !state.mam.statix)
                         u->active->original = u->name;
                 }
                 oldname(u);
-            }
-            else if (u->view)
-            {
+            } else if (u->view) {
                 if (r == a)
                     u->view = 0;
-                else if (state.fsview)
-                {
+                else if (state.fsview) {
                     u->view = 0;
-                    if (u->active && !state.mam.statix)
-                    {
-                        if (state.expandview)
-                        {
+                    if (u->active && !state.mam.statix) {
+                        if (state.expandview) {
                             mount(u->name,
                                   sfstrbase(internal.tmp),
                                   FS3D_GET | FS3D_VIEW
@@ -218,13 +197,10 @@ update(Rule_t *r, Rule_t *a, char *arg)
                                   NiL);
                             u->active->original
                             = makerule(sfstrbase(internal.tmp))->name;
-                        }
-                        else
+                        } else
                             u->active->original = u->name;
                     }
-                }
-                else
-                {
+                } else {
                     int n;
 
                     /*
@@ -235,11 +211,9 @@ update(Rule_t *r, Rule_t *a, char *arg)
 
                     n = 0;
                     s = u->name;
-                    while (s = strchr(s, '/'))
-                    {
+                    while (s = strchr(s, '/')) {
                         n++;
-                        if (getrule(++s) == u)
-                        {
+                        if (getrule(++s) == u) {
                             message((-1,
                                      "local binding %s recovered from %s",
                                      s,
@@ -251,8 +225,7 @@ update(Rule_t *r, Rule_t *a, char *arg)
                             break;
                         }
                     }
-                    if (!s)
-                    {
+                    if (!s) {
                         if (!n)
                             u->view = 0;
                         else if (!(u->property & P_dontcare))
@@ -266,14 +239,11 @@ update(Rule_t *r, Rule_t *a, char *arg)
         }
     }
     if ((r->property & P_attribute)
-        || (r->property & P_functional) && !(r->active->stem = arg))
-    {
+        || (r->property & P_functional) && !(r->active->stem = arg)) {
         if (!state.accept && !(r->property & P_accept))
             r->dynamic |= D_triggered;
         statetime(r, 1);
-    }
-    else
-    {
+    } else {
         r->action = a->action;
         trigger(r, a, a->action, CO_LOCALSTACK);
     }
@@ -304,8 +274,7 @@ maketop(Rule_t *r, int p, char *arg)
 
 #if _HUH_2004_06_20
     if ((p & (P_force | P_repeat)) == (P_force | P_repeat)
-        && (r->property & (P_functional | P_make)) == P_make)
-    {
+        && (r->property & (P_functional | P_make)) == P_make) {
         Rule_t *a;
 
         a = catrule(internal.internal->name, ".%%", r->name, 1);
@@ -364,13 +333,11 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
     *ttarget = 0;
     if (state.expandall)
         return errors;
-    if (r == internal.query)
-    {
+    if (r == internal.query) {
         interpreter(NiL);
         return errors;
     }
-    if (r->property & P_use)
-    {
+    if (r->property & P_use) {
         /*
          * r->use rules modify the parent
          */
@@ -378,24 +345,21 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
         r1 = state.frame->target;
         if (!(r->property & P_metarule) && r1->action && !state.override)
             return errors;
-        if (r->status == NOTYET)
-        {
+        if (r->status == NOTYET) {
             /*
              * check if the action changed
              */
 
             r0 = staterule(RULE, r, NiL, 1);
             if (r->action && (!r0->action || !streq(r->action, r0->action))
-                || !r->action && r0->action)
-            {
+                || !r->action && r0->action) {
                 reason((1, "%s action changed [#1]", r->name));
                 r0->action = r->action;
                 r0->time = ((r1->property & P_accept) || state.accept)
                            ? OLDTIME
                            : CURTIME;
                 state.savestate = 1;
-            }
-            else if ((r1->property & P_accept) || state.accept)
+            } else if ((r1->property & P_accept) || state.accept)
                 r0->time = OLDTIME;
             r->time = r0->time;
             r->status = EXISTS;
@@ -418,8 +382,7 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
          */
 
         q = listcopy(r->prereqs);
-        if (r->dynamic & D_dynamic)
-        {
+        if (r->dynamic & D_dynamic) {
             fp = r->active;
             r->active = state.frame;
             dynamic(r);
@@ -430,33 +393,27 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
         r->prereqs = q;
         r1->prereqs = append(r1->prereqs, p);
         if (r->property & P_metarule)
-            for (; p; p = p->next)
-            {
+            for (; p; p = p->next) {
                 r2 = p->rule;
                 if (r2->dynamic & D_scope)
                     r1->dynamic |= D_hasscope;
                 else if ((r2->property & (P_make | P_local | P_use))
-                         == (P_make | P_local))
-                {
+                         == (P_make | P_local)) {
                     r2->property |= P_virtual;
                     r1->dynamic |= D_hasscope;
                     errors += make(r2, &t, NiL, 0);
                     if (tevent < t)
                         tevent = t;
-                }
-                else if ((r2->property & (P_after | P_use)) == P_after)
-                {
+                } else if ((r2->property & (P_after | P_use)) == P_after) {
                     r1->dynamic |= D_hasafter;
                     if ((r2->property & (P_make | P_foreground))
                         == (P_make | P_foreground))
                         r1->dynamic |= D_hasmake;
-                }
-                else if ((r2->property & (P_before | P_use)) == P_before)
+                } else if ((r2->property & (P_before | P_use)) == P_before)
                     r1->dynamic |= D_hasbefore;
                 else if (r2->semaphore)
                     r1->dynamic |= D_hassemaphore;
-                else if ((r2->property & (P_joint | P_target)) != P_joint)
-                {
+                else if ((r2->property & (P_joint | P_target)) != P_joint) {
                     errors += make(r2, &t, NiL, 0);
                     if (tevent < t)
                         tevent = t;
@@ -472,14 +429,12 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
             r1->action = r->action;
         if ((r->property & P_dontcare) && !state.unwind)
             state.unwind = error_info.indent;
-        if (!(r->property & P_ignore))
-        {
+        if (!(r->property & P_ignore)) {
             *ttarget = tevent;
             PREVIEW(r1, r);
         }
         return errors;
-    }
-    else if (r->semaphore)
+    } else if (r->semaphore)
         return complete(r, NiL, ttarget, 0);
 
     /*
@@ -498,24 +453,18 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
     parent = frame.parent->target;
     frame.previous = r->active;
     r->active = &frame;
-    for (;;)
-    {
-        if (r->status != NOTYET)
-        {
-            if (!(r->property & P_repeat))
-            {
+    for (;;) {
+        if (r->status != NOTYET) {
+            if (!(r->property & P_repeat)) {
                 tevent = r->time;
                 r0 = 0;
-                if (!(r->property & P_state))
-                {
+                if (!(r->property & P_state)) {
                     if (mam = mamout(r))
                         pop = mampush(mam, r, flags);
-                    if (r->scan && !(r->dynamic & D_scanned) && state.scan)
-                    {
+                    if (r->scan && !(r->dynamic & D_scanned) && state.scan) {
                         if (r->status == MAKING)
                             complete(r, NiL, NiL, 0);
-                        if (r->status == EXISTS)
-                        {
+                        if (r->status == EXISTS) {
                             otime = r->time;
                             r0 = staterule(RULE, r, NiL, 1);
                             if (r0->time)
@@ -527,15 +476,13 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                                 r->time = otime;
                         }
                     }
-                    if (mam && pop)
-                    {
+                    if (mam && pop) {
                         if (state.mam.statix)
                             r->dynamic |= D_built;
                         mampop(mam, r, P_virtual);
                     }
                 }
-                if (!(r->property & P_ignore))
-                {
+                if (!(r->property & P_ignore)) {
                     if (r->dynamic & D_aliaschanged)
                         tevent = CURTIME;
                     else if (!(r->dynamic & D_triggered)
@@ -548,8 +495,7 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                 }
                 message((-1, "time(%s) = %s", r->name, timestr(tevent)));
                 r->active = frame.previous;
-                if (state.unwind == error_info.indent)
-                {
+                if (state.unwind == error_info.indent) {
                     state.unwind = 0;
                     errors = 0;
                 }
@@ -564,8 +510,7 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
         otime = r->time;
         if ((r1 = bind(r)) == r)
             break;
-        if ((r->property & P_target) && !(r1->property & P_target))
-        {
+        if ((r->property & P_target) && !(r1->property & P_target)) {
             r->dynamic &= ~D_alias;
             break;
         }
@@ -587,21 +532,17 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
     frame.prereqs = r->prereqs;
     if ((r->property & (P_joint | P_target)) == (P_joint | P_target))
         for (p = r->prereqs->rule->prereqs; p; p = p->next)
-            if ((r1 = p->rule) != r)
-            {
+            if ((r1 = p->rule) != r) {
                 fp = r1->active;
                 r1->active = r->active;
                 bind(r1);
                 r1->active = fp;
-                if (r1->status == NOTYET)
-                {
+                if (r1->status == NOTYET) {
                     r0 = staterule(RULE, r1, NiL, 1);
-                    if (!statetimeq(r1, r0) || !r0->event)
-                    {
+                    if (!statetimeq(r1, r0) || !r0->event) {
                         if ((r1->property & P_dontcare) && !r1->time)
                             r1->event = r0->event;
-                        else
-                        {
+                        else {
                             reason((1,
                                     "%s joint sibling %s is out of date",
                                     r->name,
@@ -629,8 +570,7 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                     | D_hassemaphore | D_triggered);
     r->status = UPDATE;
     message((-1, "time(%s) = %s", r->name, timestr(r->time)));
-    if (mam = mamout(r))
-    {
+    if (mam = mamout(r)) {
         pop = mampush(mam, r, flags);
         if (state.mam.statix)
             r->dynamic |= D_built;
@@ -658,47 +598,37 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
 
     must = 0;
     tevent = 0;
-    if (r->property & P_state)
-    {
+    if (r->property & P_state) {
         r0 = 0;
-        if (r->time != otime)
-        {
+        if (r->time != otime) {
             otime = r->time;
             must = r->must = 1;
             tevent = CURTIME;
         }
-    }
-    else
-    {
+    } else {
         otime = r->time;
         must = 0;
         r0 = staterule(RULE, r, NiL, 1);
-        if (!(r->property & P_virtual))
-        {
+        if (!(r->property & P_virtual)) {
             if (!state.intermediate && !r->time && r0->time && r0->event
                 && (r0->dynamic & D_built) && !(parent->property & P_state)
                 && (r2 = staterule(RULE, parent, NiL, 0))
-                && (r2->dynamic & D_built))
-            {
+                && (r2->dynamic & D_built)) {
                 message(
                 (-1, "pretending intermediate target %s exists", r->name));
                 must = 1;
                 otime = r->time = r0->time;
                 r->dynamic |= D_intermediate;
                 r->must++;
-            }
-            else if (!statetimeq(r, r0) || !r0->event
-                     || (r->dynamic & D_aliaschanged))
-            {
-                if (!(r->property & P_accept) && !state.accept)
-                {
+            } else if (!statetimeq(r, r0) || !r0->event
+                       || (r->dynamic & D_aliaschanged)) {
+                if (!(r->property & P_accept) && !state.accept) {
                     if (r->dynamic & D_aliaschanged)
                         reason((1,
                                 "%s [%s] binds to a different file",
                                 r->name,
                                 timestr(r->time)));
-                    else
-                    {
+                    else {
                         if (r->time && r->time < r0->time
                             && (r->dynamic & D_regular))
                             error(1,
@@ -727,31 +657,25 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                     r->must++;
                     state.savestate = 1;
                 }
-                if ((r->dynamic & (D_alias | D_bound)) == (D_alias | D_bound))
-                {
+                if ((r->dynamic & (D_alias | D_bound))
+                    == (D_alias | D_bound)) {
                     s = r->uname;
                     r->uname = 0;
                     r1 = staterule(RULE, r, NiL, 0);
                     r->uname = s;
-                    if (r1 && r1 != r0 && r1->time)
-                    {
+                    if (r1 && r1 != r0 && r1->time) {
                         r0->time = r1->time;
                         r0->event = r1->event;
-                    }
-                    else
-                    {
+                    } else {
                         r0->time = r->time;
                         r0->property |= P_force;
                     }
-                }
-                else
-                {
+                } else {
                     r0->time = r->time;
                     r0->property |= P_force;
                 }
             }
-            if ((r->property & P_accept) || state.accept)
-            {
+            if ((r->property & P_accept) || state.accept) {
                 if (r->time < r0->event
                     && (r1 = staterule(PREREQS, r, NiL, 0))
                     && r1->time >= r0->event)
@@ -763,8 +687,7 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                 else
                     r0->event = r->time;
                 state.savestate = 1;
-            }
-            else
+            } else
                 r->time = r0->event;
         }
     }
@@ -783,35 +706,29 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
     message((-2, "check explicit prerequisites"));
     explicit = 0;
     p = r->prereqs;
-    while (p)
-    {
+    while (p) {
         r1 = p->rule;
         if (r1->mark & M_bind)
             r1->mark &= ~M_bind;
         else if (r1->dynamic & D_scope)
             r->dynamic |= D_hasscope;
         else if ((r1->property & (P_make | P_local | P_use))
-                 == (P_make | P_local))
-        {
+                 == (P_make | P_local)) {
             r1->property |= P_virtual;
             r->dynamic |= D_hasscope;
             errors += make(r1, &t, NiL, 0);
             if (tevent < t)
                 tevent = t;
-        }
-        else if ((r1->property & (P_after | P_use)) == P_after)
-        {
+        } else if ((r1->property & (P_after | P_use)) == P_after) {
             r->dynamic |= D_hasafter;
             if ((r1->property & (P_make | P_foreground))
                 == (P_make | P_foreground))
                 r->dynamic |= D_hasmake;
-        }
-        else if ((r1->property & (P_before | P_use)) == P_before)
+        } else if ((r1->property & (P_before | P_use)) == P_before)
             r->dynamic |= D_hasbefore;
         else if (r1->semaphore)
             r->dynamic |= D_hassemaphore;
-        else if ((r1->property & (P_joint | P_target)) != P_joint)
-        {
+        else if ((r1->property & (P_joint | P_target)) != P_joint) {
             explicit = 1;
             errors += make(r1, &t, NiL, 0);
             if (tevent < t)
@@ -819,15 +736,13 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
             if (r->time < t || (r1->dynamic & D_same))
                 r->must++;
             if ((r2 = associate(internal.require_p, r1, NiL, NiL))
-                && (v = call(r2, unbound(r1))))
-            {
+                && (v = call(r2, unbound(r1)))) {
                 if (r->prereqs == r->active->prereqs)
                     for (p = r->prereqs = listcopy(r->prereqs); p->rule != r1;
                          p = p->next)
                         ;
                 q = 0;
-                while (s = getarg(&v, NiL))
-                {
+                while (s = getarg(&v, NiL)) {
                     if ((r2 = makerule(s)) == r1)
                         r1->mark |= M_bind;
                     if (streq(r2->name, "-"))
@@ -837,8 +752,7 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                     else
                         (q = p)->rule = r2;
                 }
-                if (q && !(state.questionable & 0x00020000))
-                {
+                if (q && !(state.questionable & 0x00020000)) {
                     unsigned long u = 0;
                     unsigned long n = 0;
 
@@ -851,19 +765,16 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                      */
 
                     for (q = r->prereqs; q; q = q->next)
-                        if (!(q->rule->property & P_virtual))
-                        {
+                        if (!(q->rule->property & P_virtual)) {
                             n++;
-                            if (!(q->rule->mark & M_mark))
-                            {
+                            if (!(q->rule->mark & M_mark)) {
                                 q->rule->mark |= M_mark;
                                 u++;
                             }
                         }
                     if (u < 4)
                         u = 4;
-                    if (n > (u * u) / 2)
-                    {
+                    if (n > (u * u) / 2) {
                         for (q = r->prereqs; q; q = q->next)
                             if (!(q->rule->property & P_virtual)
                                 && (q->rule->mark & M_mark))
@@ -872,8 +783,7 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                                 q->rule->mark |= M_generate;
                         for (q = p; q; q = q->next)
                             if (!q->next
-                                || !(q->next->rule->mark & M_generate))
-                            {
+                                || !(q->next->rule->mark & M_generate)) {
                                 p = q;
                                 message(
                                 (-2,
@@ -900,12 +810,10 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
     if (!errors
         && !(r->property
              & (P_attribute | P_functional | P_operator | P_state | P_virtual))
-        && ((r->property & P_implicit) || !r->action && !explicit))
-    {
+        && ((r->property & P_implicit) || !r->action && !explicit)) {
         message((-2, "check metarule prerequisites"));
 #if DEBUG
-        if (!r->active)
-        {
+        if (!r->active) {
             dumprule(sfstderr, r);
             error(PANIC, "%s: active=0", r->name);
         }
@@ -918,11 +826,9 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                 || !(r->property & P_implicit))
             && strchr(unbound(r), '/') && !strchr(r4->name, '/'))
             r2 = 0;
-        if (r2)
-        {
+        if (r2) {
             r1 = r4;
-            if (state.mam.out && !mam)
-            {
+            if (state.mam.out && !mam) {
                 mam = state.mam.out;
                 pop = mampush(mam, r, flags);
             }
@@ -942,14 +848,11 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
              * primary metarule match
              */
 
-            if ((r1->property & P_accept) && r->must == 1 && r0 && r0->time)
-            {
+            if ((r1->property & P_accept) && r->must == 1 && r0 && r0->time) {
                 tevent = 0;
                 r->must = 0;
                 must = 0;
-            }
-            else if (!r0 || !r0->time)
-            {
+            } else if (!r0 || !r0->time) {
                 tevent = CURTIME;
                 r->must++;
                 must = 1;
@@ -959,19 +862,16 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
              * check the implicit source prerequisite
              */
 
-            if (!(errors += make(r2, &t, NiL, 0)))
-            {
+            if (!(errors += make(r2, &t, NiL, 0))) {
                 if (tevent < t)
                     tevent = t;
                 if (r->time < t || (r2->dynamic & D_same))
                     r->must++;
-                if (r1->property & P_after)
-                {
+                if (r1->property & P_after) {
                     r2->property |= P_after;
                     r->dynamic |= D_hasafter;
                 }
-                if (r1->property & P_before)
-                {
+                if (r1->property & P_before) {
                     r2->property |= P_before;
                     r->dynamic |= D_hasbefore;
                 }
@@ -980,8 +880,7 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                  * check joint metarule targets
                  */
 
-                if (r4 = metainfo('S', r1->name, NiL, 0))
-                {
+                if (r4 = metainfo('S', r1->name, NiL, 0)) {
                     Rule_t *joint;
                     Rule_t *x;
                     Rule_t *r5;
@@ -993,21 +892,18 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                     sfprintf(tmp, "%s.%s", internal.joint->name, unbound(r2));
                     joint = makerule(sfstruse(tmp));
                     joint->property |= P_joint | P_readonly | P_virtual;
-                    for (p = r4->prereqs; p; p = p->next)
-                    {
+                    for (p = r4->prereqs; p; p = p->next) {
                         metaexpand(tmp, stem, p->rule->name);
                         s = sfstruse(tmp);
                         x = makerule(s);
                         if (x->property & P_joint)
                             x->prereqs->rule = joint;
-                        else
-                        {
+                        else {
                             x->property |= P_joint | P_target;
                             x->prereqs = cons(joint, x->prereqs);
                         }
                         joint->prereqs = append(joint->prereqs, cons(x, NiL));
-                        if (x != r)
-                        {
+                        if (x != r) {
                             message((-1, "make(%s)", s));
                             error_info.indent++;
 
@@ -1019,15 +915,12 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                                                            : ( Time_t )0;
                             if (!(r5 = staterule(RULE, r4, s, 0)))
                                 i = state.accept;
-                            else if (t)
-                            {
+                            else if (t) {
                                 r5->dynamic |= D_built;
                                 i = state.accept || statetimeq(r4, r5);
-                            }
-                            else
+                            } else
                                 i = !r5->time;
-                            if (!i)
-                            {
+                            if (!i) {
                                 tevent = CURTIME;
                                 reason(
                                 (1,
@@ -1038,14 +931,12 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                             }
                             x->status = r->status;
                             message((-1, "time(%s) = %s", s, timestr(t)));
-                            if (state.unwind == error_info.indent)
-                            {
+                            if (state.unwind == error_info.indent) {
                                 state.unwind = 0;
                                 errors = 0;
                             }
                             error_info.indent--;
-                            if (!x->active || x->active->parent != oframe)
-                            {
+                            if (!x->active || x->active->parent != oframe) {
                                 fp = newof(0, Frame_t, 1, 0);
                                 fp->target = x;
                                 fp->parent = oframe;
@@ -1064,8 +955,7 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                  */
 
                 errors += make(r1, &t, NiL, 0);
-                if (!errors)
-                {
+                if (!errors) {
                     /*UNDENT*/
                     if (tevent < t)
                         tevent = t;
@@ -1078,13 +968,11 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
 
                     if ((r->property & P_implicit) && r->action
                         && r->action == r->active->action
-                        && (!r0->action || !streq(r0->action, r->action)))
-                    {
+                        && (!r0->action || !streq(r0->action, r->action))) {
                         reason((1, "%s action changed [#2]", r->name));
                         r0->action = r->action;
                         state.savestate = 1;
-                        if (!(r->property & P_accept) && !state.accept)
-                        {
+                        if (!(r->property & P_accept) && !state.accept) {
                             tevent = CURTIME;
                             r->must++;
                         }
@@ -1092,8 +980,7 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                     if ((state.questionable & 0x00000010)
                         && r->view > r->preview && !(r->property & P_accept)
                         && (!(r4 = staterule(PREREQS, r, NiL, 0))
-                            || !r4->time))
-                    {
+                            || !r4->time)) {
                         reason((1,
                                 "%s view %d must be in view %d",
                                 r->name,
@@ -1114,8 +1001,7 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                                || r4->time < tevent)
                         || (r->property & P_force)
                         || prereqchange(r, r->prereqs, r0, r0->prereqs)
-                        || state.force)
-                    {
+                        || state.force) {
                         if (state.touch)
                             r->time = CURTIME;
 
@@ -1123,8 +1009,7 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                          * trigger the action
                          */
 
-                        if (r3)
-                        {
+                        if (r3) {
                             r = unalias(r, r3, r3name);
                             if (r0)
                                 r0 = staterule(RULE, r, NiL, 1);
@@ -1135,9 +1020,7 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                     /*INDENT*/
                 }
             }
-        }
-        else if (!errors && (r->property & P_implicit) && !state.override)
-        {
+        } else if (!errors && (r->property & P_implicit) && !state.override) {
             errors++;
             r->status = FAILED;
             parentage(internal.tmp, r, " : ");
@@ -1146,46 +1029,35 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                   sfstruse(internal.tmp));
             state.errors++;
         }
-    }
-    else
+    } else
         r2 = 0;
 
     /*
      * determine the update rule if no metarule applied
      */
 
-    if (r2)
-    {
+    if (r2) {
         r1 = 0;
         r0->dynamic |= D_built;
-    }
-    else if (r->action)
-    {
+    } else if (r->action) {
         r1 = r;
-        if (r0)
-        {
+        if (r0) {
             if (r->action == r->active->action
-                && (!r0->action || !streq(r0->action, r->action)))
-            {
+                && (!r0->action || !streq(r0->action, r->action))) {
                 reason((1, "%s action changed [#3]", r->name));
                 r0->action = r->action;
                 state.savestate = 1;
-                if (!(r->property & P_accept) && !state.accept)
-                {
+                if (!(r->property & P_accept) && !state.accept) {
                     tevent = CURTIME;
                     r->must++;
                 }
             }
             r0->dynamic |= D_built;
         }
-    }
-    else
-    {
+    } else {
         r1 = 0;
-        if (r0)
-        {
-            if (r0->action)
-            {
+        if (r0) {
+            if (r0->action) {
                 reason((1, "%s action changed [#4]", r->name));
                 r0->action = 0;
                 state.savestate = 1;
@@ -1205,23 +1077,19 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                 r->time = 0;
         }
     }
-    if (r1)
-    {
+    if (r1) {
         if ((state.questionable & 0x00000010) && r->view > r->preview
             && !(r->property & P_accept)
-            && (!(r4 = staterule(PREREQS, r, NiL, 0)) || !r4->time))
-        {
+            && (!(r4 = staterule(PREREQS, r, NiL, 0)) || !r4->time)) {
             reason((
             1, "%s view %d must be in view %d", r->name, r->view, r->preview));
             must = 1;
             tevent = CURTIME;
             r->must++;
-        }
-        else if ((r->property
-                  & (P_attribute | P_functional | P_ignore | P_target))
-                 == P_target
-                 && (state.force || r0 && !r0->time))
-        {
+        } else if ((r->property
+                    & (P_attribute | P_functional | P_ignore | P_target))
+                   == P_target
+                   && (state.force || r0 && !r0->time)) {
             /*
              * this takes care of non-file targets
              */
@@ -1246,8 +1114,7 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
              must ? " must" : null));
     if (errors && !(state.questionable & 0x00800000))
         r->status = FAILED;
-    else
-    {
+    else {
         if (!errors && !(r->dynamic & D_triggered) && r->status == UPDATE
             && (r1 && must
                 || r->time < tevent
@@ -1257,30 +1124,21 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                 || !r2
                    && ((r->property & P_force)
                        || r0 && (r->prereqs || r->action)
-                          && prereqchange(r, r->prereqs, r0, r0->prereqs))))
-        {
-            if (r1)
-            {
-                if (r3)
-                {
+                          && prereqchange(r, r->prereqs, r0, r0->prereqs)))) {
+            if (r1) {
+                if (r3) {
                     r = unalias(r, r3, r3name);
                     if (r0)
                         r0 = staterule(RULE, r, NiL, 1);
                 }
                 errors += update(r, r1, arg);
-            }
-            else if (r->property & P_dontcare)
-            {
+            } else if (r->property & P_dontcare) {
                 statetime(r, 0);
                 tevent = 0;
-            }
-            else if (!(r->property & (P_state | P_virtual)))
-            {
+            } else if (!(r->property & (P_state | P_virtual))) {
                 if (!(r->property & (P_target | P_terminal)) || r2
-                    || (r->property & P_terminal) && !r->time)
-                {
-                    if (r->status == UPDATE)
-                    {
+                    || (r->property & P_terminal) && !r->time) {
+                    if (r->status == UPDATE) {
                         /*
                          * the attribute test handles rules in
                          * make object files that have since
@@ -1290,14 +1148,11 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                         if ((r->property & P_attribute)
                             || (r1
                                 = associate(internal.dontcare_p, r, NiL, NiL))
-                               && call(r1, r->name))
-                        {
+                               && call(r1, r->name)) {
                             r->status = IGNORE;
                             statetime(r, 0);
                             tevent = 0;
-                        }
-                        else
-                        {
+                        } else {
                             errors++;
                             r->status = FAILED;
                             parentage(internal.tmp, r, " : ");
@@ -1307,9 +1162,7 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
                             state.errors++;
                         }
                     }
-                }
-                else if (state.exec || state.mam.statix)
-                {
+                } else if (state.exec || state.mam.statix) {
                     statetime(r, 0);
                     if (!(r->property & P_terminal))
                         tevent = 0;
@@ -1319,14 +1172,11 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
         if (!(r->dynamic & D_triggered))
             trigger(r, NiL, NiL, 0);
     }
-    if (r->property & P_statevar)
-    {
-        if (state.targetview >= 0)
-        {
+    if (r->property & P_statevar) {
+        if (state.targetview >= 0) {
             if (!tstbit(r->checked[RULE], state.targetview))
                 staterule(RULE, r, NiL, 1);
-            if (!tstbit(r->checked[CONSISTENT], state.targetview))
-            {
+            if (!tstbit(r->checked[CONSISTENT], state.targetview)) {
                 reason((1,
                         "%s inconsistent with view %s",
                         r->name,
@@ -1336,29 +1186,21 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
         }
         if (!state.accept && !(r->property & P_accept) && r->time < tevent)
             r->time = tevent;
-    }
-    else if (!(r->property & P_state))
-    {
-        if (!(r->property & P_archive) && r->scan && state.scan)
-        {
+    } else if (!(r->property & P_state)) {
+        if (!(r->property & P_archive) && r->scan && state.scan) {
             if (r->status == MAKING)
                 complete(r, NiL, NiL, 0);
-            if (r->status == UPDATE || r->status == EXISTS)
-            {
+            if (r->status == UPDATE || r->status == EXISTS) {
                 tevent = r->time;
                 errors += makescan(r, &t);
                 if (tevent < t)
                     tevent = t;
             }
-        }
-        else
-        {
+        } else {
             if (r->property & P_parameter)
                 tevent = OLDTIME;
-            if (r0 && ((r0->dynamic & D_built) || !r0->scan))
-            {
-                if (r0->prereqs != r->prereqs)
-                {
+            if (r0 && ((r0->dynamic & D_built) || !r0->scan)) {
+                if (r0->prereqs != r->prereqs) {
 #if _HUH_1992_09_30 /* this test is insufficient */
                     if ((r->property & (P_joint | P_target))
                         != (P_joint | P_target))
@@ -1373,16 +1215,14 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
         if (r0
             && (r->property & (P_joint | P_target)) == (P_joint | P_target))
             for (p = r->prereqs->rule->prereqs; p; p = p->next)
-                if (p->rule != r)
-                {
+                if (p->rule != r) {
                     r1 = staterule(RULE, p->rule, NiL, 1);
                     r1->prereqs = r0->prereqs;
                     r1->attribute = r0->attribute;
                     r1->scan = r0->scan;
                     r1->action = r0->action;
                 }
-        if (r->time < tevent || (r->property & (P_attribute | P_parameter)))
-        {
+        if (r->time < tevent || (r->property & (P_attribute | P_parameter))) {
             r->time = tevent;
             if (!r0)
                 r0 = staterule(RULE, r, NiL, 1);
@@ -1391,15 +1231,13 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
     }
     if (r->status == FAILED)
         errors++;
-    if (r->property & P_state)
-    {
+    if (r->property & P_state) {
         if (r->time != otime)
             state.savestate = 1;
-    }
-    else if (state.force && (!(r->property & P_dontcare) || r->action || r2))
+    } else if (state.force
+               && (!(r->property & P_dontcare) || r->action || r2))
         r->time = CURTIME;
-    if (r0 && (r->dynamic & D_triggered) && (r->property & P_make))
-    {
+    if (r0 && (r->dynamic & D_triggered) && (r->property & P_make)) {
         r0->time = r0->event = r->time;
         state.savestate = 1;
     }
@@ -1408,11 +1246,9 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
      * restore and return
      */
 
-    for (p = joint(r); p; p = p->next)
-    {
+    for (p = joint(r); p; p = p->next) {
         r1 = p->rule;
-        if (fp = r1->active)
-        {
+        if (fp = r1->active) {
             if ((r1->property & P_state) && fp->prereqs)
                 fp->prereqs->next = 0;
             r1->action = fp->action;
@@ -1420,33 +1256,29 @@ make(Rule_t *r, Time_t *ttarget, char *arg, Flags_t flags)
             if (fp != &frame)
                 free(fp);
         }
-        if (r1 != r)
-        {
+        if (r1 != r) {
             r1->time = r->time;
             r1->status = r->status;
         }
     }
     state.targetview = otargetview;
     state.frame = oframe;
-    if (state.unwind == error_info.indent)
-    {
+    if (state.unwind == error_info.indent) {
         state.unwind = 0;
         errors = 0;
     }
     error_info.indent--;
-    if (!(r->property & P_ignore))
-    {
+    if (!(r->property & P_ignore)) {
         t = r->time;
-        if (parent->scan == SCAN_IGNORE)
-        {
+        if (parent->scan == SCAN_IGNORE) {
             if (!(r->dynamic & D_triggered) && !r->must)
                 t = r0 ? r0->time : otime;
-        }
-        else if ((parent->property & P_archive) && (r->dynamic & D_regular)
-                 && (parent->dynamic & D_entries) && !(r->dynamic & D_member)
-                 && !(r->property
-                      & (P_archive | P_command | P_dontcare | P_ignore
-                         | P_state | P_virtual)))
+        } else if ((parent->property & P_archive) && (r->dynamic & D_regular)
+                   && (parent->dynamic & D_entries)
+                   && !(r->dynamic & D_member)
+                   && !(r->property
+                        & (P_archive | P_command | P_dontcare | P_ignore
+                           | P_state | P_virtual)))
             t = CURTIME;
         *ttarget = t;
         PREVIEW(parent, r);
@@ -1470,8 +1302,7 @@ makebefore(Rule_t *r)
 
     errors = 0;
     if ((r->dynamic & (D_hasbefore | D_triggered))
-        == (D_hasbefore | D_triggered))
-    {
+        == (D_hasbefore | D_triggered)) {
         r->dynamic &= ~D_hasbefore;
         message((-2, "check explicit before `prerequisites'"));
         for (p = r->prereqs; p; p = p->next)
@@ -1494,8 +1325,7 @@ makeafter(Rule_t *r, Flags_t property)
 
     errors = 0;
     if ((r->dynamic & (D_hasafter | D_triggered))
-        == (D_hasafter | D_triggered))
-    {
+        == (D_hasafter | D_triggered)) {
         statetime(r, -1);
         r->dynamic &= ~(D_hasafter | D_hasmake);
         message((-2,

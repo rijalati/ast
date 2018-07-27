@@ -124,13 +124,11 @@ tagcontext(Tag_t *tag, Tagframe_t *fp)
     if (!tag->tmp && !(tag->tmp = sfstropen()))
         return "<?>";
     fp->next = 0;
-    while (fp->prev)
-    {
+    while (fp->prev) {
         fp->prev->next = fp;
         fp = fp->prev;
     }
-    do
-    {
+    do {
         sfprintf(tag->tmp, "<%s>", fp->tag->name);
     } while (fp = fp->next);
     if (!(s = sfstruse(tag->tmp)))
@@ -147,13 +145,11 @@ except(Sfio_t *sp, int op, void *val, Sfdisc_t *dp)
 {
     Include_t *ip = ( Include_t * )dp;
 
-    switch (op)
-    {
+    switch (op) {
     case SF_CLOSING:
     case SF_DPOP:
     case SF_FINAL:
-        if (op != SF_CLOSING)
-        {
+        if (op != SF_CLOSING) {
             error_info.line = ip->line;
             error_info.file = ip->file;
             free(dp);
@@ -185,15 +181,13 @@ push(Tag_t *tag, char *s, Tagdisc_t *disc)
         else if (!isspace(*s))
             break;
     *(s + 1) = 0;
-    if (!*file)
-    {
+    if (!*file) {
         if (tag->disc->errorf)
             (*tag->disc->errorf)(
             NiL, tag->disc, ERROR_SYSTEM | 2, "include file name omitted");
         return -1;
     }
-    if (!(path = pathfind(file, disc->id, NiL, tmp, sizeof(tmp))))
-    {
+    if (!(path = pathfind(file, disc->id, NiL, tmp, sizeof(tmp)))) {
         if (tag->disc->errorf)
             (*tag->disc->errorf)(NiL,
                                  tag->disc,
@@ -202,8 +196,7 @@ push(Tag_t *tag, char *s, Tagdisc_t *disc)
                                  file);
         return -1;
     }
-    if (!(sp = sfopen(NiL, path, "r")))
-    {
+    if (!(sp = sfopen(NiL, path, "r"))) {
         if (tag->disc->errorf)
             (*tag->disc->errorf)(NiL,
                                  tag->disc,
@@ -212,8 +205,7 @@ push(Tag_t *tag, char *s, Tagdisc_t *disc)
                                  path);
         return -1;
     }
-    if (!(ip = newof(0, Include_t, 1, strlen(path))))
-    {
+    if (!(ip = newof(0, Include_t, 1, strlen(path)))) {
         if (tag->disc->errorf)
             (*tag->disc->errorf)(
             NiL, tag->disc, ERROR_SYSTEM | 2, "out of space");
@@ -226,8 +218,7 @@ push(Tag_t *tag, char *s, Tagdisc_t *disc)
     error_info.line = 0;
     error_info.file = ip->path;
     ip->disc.exceptf = except;
-    if (!(sp = sfstack(tag->ip, sp)) || !sfdisc(sp, &ip->disc))
-    {
+    if (!(sp = sfstack(tag->ip, sp)) || !sfdisc(sp, &ip->disc)) {
         if (tag->disc->errorf)
             (*tag->disc->errorf)(NiL,
                                  tag->disc,
@@ -250,8 +241,7 @@ include(Tag_t *tag, Tagframe_t *fp, Tags_t *cp, Tags_t *tags, Tagdisc_t *disc)
 {
     char *s;
 
-    if (!(s = sfgetr(tag->ip, '\n', 1)))
-    {
+    if (!(s = sfgetr(tag->ip, '\n', 1))) {
         if (disc->errorf)
             (*disc->errorf)(tag, disc, 2, "<%s>: unexpected EOF", cp->name);
         return -1;
@@ -270,10 +260,8 @@ incline(Tag_t *tag, Tagframe_t *fp, int *inc, Tagdisc_t *disc)
     char *s;
 
     *inc = 0;
-    for (;;)
-    {
-        if (!(s = sfgetr(tag->ip, '\n', 1)))
-        {
+    for (;;) {
+        if (!(s = sfgetr(tag->ip, '\n', 1))) {
             if (disc->errorf)
                 (*disc->errorf)(
                 tag, disc, 2, "%s: unexpected EOF", tagcontext(tag, fp));
@@ -284,8 +272,7 @@ incline(Tag_t *tag, Tagframe_t *fp, int *inc, Tagdisc_t *disc)
             s++;
         if (*s != '<')
             return s;
-        if (strncmp(s, "<#INCLUDE#>", 11))
-        {
+        if (strncmp(s, "<#INCLUDE#>", 11)) {
             if (disc->errorf)
                 (*disc->errorf)(NiL,
                                 disc,
@@ -321,8 +308,7 @@ table(Tag_t *tag, Tagframe_t *fp, Tags_t *cp, Tags_t *tags, Tagdisc_t *disc)
 
     ret = -1;
     col = 0;
-    if (sfgetr(tag->ip, '\n', 1))
-    {
+    if (sfgetr(tag->ip, '\n', 1)) {
         error_info.line++;
         memset(&frame, 0, sizeof(frame));
         frame.prev = fp;
@@ -333,8 +319,7 @@ table(Tag_t *tag, Tagframe_t *fp, Tags_t *cp, Tags_t *tags, Tagdisc_t *disc)
         end = 0;
         for (b = s; isalnum(*b); b++)
             ;
-        if (!(del = *b))
-        {
+        if (!(del = *b)) {
             if (disc->errorf)
                 (*disc->errorf)(NiL,
                                 disc,
@@ -345,12 +330,10 @@ table(Tag_t *tag, Tagframe_t *fp, Tags_t *cp, Tags_t *tags, Tagdisc_t *disc)
         }
         if (b == s)
             s++;
-        while (*s)
-        {
+        while (*s) {
             for (b = s; *s && *s != del; s++)
                 ;
-            if (!(p = newof(0, Column_t, 1, s - b)))
-            {
+            if (!(p = newof(0, Column_t, 1, s - b))) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -361,8 +344,7 @@ table(Tag_t *tag, Tagframe_t *fp, Tags_t *cp, Tags_t *tags, Tagdisc_t *disc)
             strcpy(p->name, b);
             for (tp = tags; tp->name && !streq(b, tp->name); tp++)
                 ;
-            if (!tp->name)
-            {
+            if (!tp->name) {
                 if (disc->errorf)
                     (*disc->errorf)(tag,
                                     disc,
@@ -378,12 +360,10 @@ table(Tag_t *tag, Tagframe_t *fp, Tags_t *cp, Tags_t *tags, Tagdisc_t *disc)
             else
                 col = end = p;
         }
-        do
-        {
+        do {
             if (!(s = incline(tag, fp, &inc, disc)))
                 goto done;
-            if (!*s)
-            {
+            if (!*s) {
                 if (!(s = sfgetr(tag->ip, '\n', 1)))
                     goto done;
                 break;
@@ -391,25 +371,20 @@ table(Tag_t *tag, Tagframe_t *fp, Tags_t *cp, Tags_t *tags, Tagdisc_t *disc)
         } while (!inc);
         frame.tag = tp;
         sep = 0;
-        do
-        {
-            if (!*s)
-            {
+        do {
+            if (!*s) {
                 ret = 0;
                 goto done;
             }
-            if (sep)
-            {
+            if (sep) {
                 if (fp->tag->endf && !(*fp->tag->endf)(tag, fp, disc))
                     return -1;
                 if (fp->tag->begf
                     && !(*fp->tag->begf)(tag, fp, fp->tag->name, disc))
                     return -1;
-            }
-            else
+            } else
                 sep = 1;
-            for (p = col; p && *s; p = p->next)
-            {
+            for (p = col; p && *s; p = p->next) {
                 for (b = s; *s && *s != del; s++)
                     ;
                 if (*s)
@@ -423,8 +398,7 @@ table(Tag_t *tag, Tagframe_t *fp, Tags_t *cp, Tags_t *tags, Tagdisc_t *disc)
                 if (p->tag->endf && (*p->tag->endf)(tag, &frame, disc))
                     goto done;
             }
-            if (p)
-            {
+            if (p) {
                 frame.tag = cp;
                 if (disc->errorf)
                     (*disc->errorf)(tag,
@@ -434,8 +408,7 @@ table(Tag_t *tag, Tagframe_t *fp, Tags_t *cp, Tags_t *tags, Tagdisc_t *disc)
                                     tagcontext(tag, &frame));
                 goto done;
             }
-            if (*s)
-            {
+            if (*s) {
                 frame.tag = cp;
                 if (disc->errorf)
                     (*disc->errorf)(tag,
@@ -449,8 +422,7 @@ table(Tag_t *tag, Tagframe_t *fp, Tags_t *cp, Tags_t *tags, Tagdisc_t *disc)
         } while (s = sfgetr(tag->ip, '\n', 1));
     }
 done:
-    while (end = col)
-    {
+    while (end = col) {
         col = end->next;
         free(end);
     }
@@ -491,19 +463,15 @@ tagparse(Tag_t *tag, Tagframe_t *fp, Tags_t *tags, Tagdisc_t *disc)
     keep_first = keep_last = 0;
     if (fp)
         fp->attr = 0;
-    for (;;)
-    {
-        switch (c = sfgetc(tag->ip))
-        {
+    for (;;) {
+        switch (c = sfgetc(tag->ip)) {
         case EOF:
             break;
         case '<':
             if (item == '&')
                 item = 0;
-            if (!item)
-            {
-                if (fp && fp->tag->datf && (back = sfstrtell(tag->op)))
-                {
+            if (!item) {
+                if (fp && fp->tag->datf && (back = sfstrtell(tag->op))) {
                     if (!(s = sfstruse(tag->op)))
                         goto nospace;
                     u = s + keep_last;
@@ -522,8 +490,7 @@ tagparse(Tag_t *tag, Tagframe_t *fp, Tags_t *tags, Tagdisc_t *disc)
                         && (*fp->tag->datf)(tag, fp, s, disc))
                         return -1;
                     back = 0;
-                }
-                else
+                } else
                     sfstrseek(tag->op, 0, SEEK_SET);
                 if (fp)
                     fp->attr = 0;
@@ -531,31 +498,26 @@ tagparse(Tag_t *tag, Tagframe_t *fp, Tags_t *tags, Tagdisc_t *disc)
                 item = c;
                 attrs = 0;
                 quote = 0;
-                if ((c = sfgetc(tag->ip)) != EOF)
-                {
+                if ((c = sfgetc(tag->ip)) != EOF) {
                     sfungetc(tag->ip, c);
                     if (c == '!')
                         quote |= COMMENT;
                 }
-            }
-            else
+            } else
                 sfputc(tag->op, c);
             continue;
         case '>':
-            if (item == '<' && !(quote & STRING))
-            {
+            if (item == '<' && !(quote & STRING)) {
                 item = 0;
                 if (!(s = sfstruse(tag->op)))
                     goto nospace;
                 if (quote & COMMENT)
                     quote ^= COMMENT;
-                else if (*s == '/')
-                {
+                else if (*s == '/') {
                     s++;
                     if (!fp)
                         return -1;
-                    if (*s && strcasecmp(s, fp->tag->name))
-                    {
+                    if (*s && strcasecmp(s, fp->tag->name)) {
                         if (disc->errorf)
                             (*disc->errorf)(tag,
                                             disc,
@@ -566,9 +528,7 @@ tagparse(Tag_t *tag, Tagframe_t *fp, Tags_t *tags, Tagdisc_t *disc)
                     }
                     fp = 0;
                     break;
-                }
-                else if (!tags)
-                {
+                } else if (!tags) {
                     if (disc->errorf)
                         (*disc->errorf)(tag,
                                         disc,
@@ -576,19 +536,15 @@ tagparse(Tag_t *tag, Tagframe_t *fp, Tags_t *tags, Tagdisc_t *disc)
                                         "%s: invalid input",
                                         tagcontext(tag, fp));
                     return -1;
-                }
-                else
-                {
+                } else {
                     for (tp = tags; tp->name; tp++)
                         if (!strcasecmp(s, tp->name))
                             break;
-                    if (!tp->name)
-                    {
+                    if (!tp->name) {
                         for (tp = builtin; tp->name; tp++)
                             if (!strcasecmp(s, tp->name))
                                 break;
-                        if (!tp->name)
-                        {
+                        if (!tp->name) {
                             if (disc->errorf)
                                 (*disc->errorf)(tag,
                                                 disc,
@@ -609,42 +565,32 @@ tagparse(Tag_t *tag, Tagframe_t *fp, Tags_t *tags, Tagdisc_t *disc)
                         np = 0;
                     else if (!(np = (*tp->begf)(tag, &frame, s, disc)))
                         return -1;
-                    else if (attrs)
-                    {
+                    else if (attrs) {
                         /*UNDENT...*/
                         s = sfstrbase(tag->op) + attrs;
-                        while (*(t = s))
-                        {
+                        while (*(t = s)) {
                             while (*s && !isspace(*s) && *s != '=')
                                 s++;
-                            if (*s == '=')
-                            {
+                            if (*s == '=') {
                                 *s++ = 0;
                                 u = v = s;
                                 c = 0;
-                                while (*s)
-                                {
-                                    if (*s == c)
-                                    {
+                                while (*s) {
+                                    if (*s == c) {
                                         c = 0;
                                         s++;
-                                    }
-                                    else if (c)
+                                    } else if (c)
                                         *u++ = *s++;
                                     else if (*s == '"')
                                         c = *s++;
-                                    else if (isspace(*s))
-                                    {
+                                    else if (isspace(*s)) {
                                         *s++ = 0;
                                         break;
-                                    }
-                                    else
+                                    } else
                                         *u++ = *s++;
                                 }
                                 *u = 0;
-                            }
-                            else
-                            {
+                            } else {
                                 v = "1";
                                 if (*s)
                                     *s++ = 0;
@@ -652,8 +598,7 @@ tagparse(Tag_t *tag, Tagframe_t *fp, Tags_t *tags, Tagdisc_t *disc)
                             for (vp = np; vp->name; vp++)
                                 if (!strcasecmp(t, vp->name))
                                     break;
-                            if (!vp->name)
-                            {
+                            if (!vp->name) {
                                 if (disc->errorf)
                                     (*disc->errorf)(tag,
                                                     disc,
@@ -677,14 +622,12 @@ tagparse(Tag_t *tag, Tagframe_t *fp, Tags_t *tags, Tagdisc_t *disc)
                         }
                         /*...INDENT*/
                     }
-                    if (disc->errorf && error_info.trace <= -3)
-                    {
+                    if (disc->errorf && error_info.trace <= -3) {
                         error_info.indent++;
                         (*disc->errorf)(tag, disc, -3, "%s", frame.tag->name);
                     }
                     c = tagparse(tag, &frame, np, disc);
-                    if (disc->errorf && error_info.trace <= -3)
-                    {
+                    if (disc->errorf && error_info.trace <= -3) {
                         (*disc->errorf)(
                         tag, disc, -3, "/%s", frame.tag->name);
                         error_info.indent--;
@@ -694,8 +637,7 @@ tagparse(Tag_t *tag, Tagframe_t *fp, Tags_t *tags, Tagdisc_t *disc)
                     if (tp->endf && (*tp->endf)(tag, &frame, disc))
                         return -1;
                 }
-            }
-            else
+            } else
                 sfputc(tag->op, c);
             continue;
         case '"':
@@ -704,23 +646,20 @@ tagparse(Tag_t *tag, Tagframe_t *fp, Tags_t *tags, Tagdisc_t *disc)
             sfputc(tag->op, c);
             continue;
         case '&':
-            if (!item)
-            {
+            if (!item) {
                 item = c;
                 back = sfstrtell(tag->op);
             }
             sfputc(tag->op, c);
             continue;
         case ';':
-            if (item == '&')
-            {
+            if (item == '&') {
                 item = 0;
                 sfputc(tag->op, 0);
                 s = sfstrseek(tag->op, back, SEEK_SET) + 1;
                 if (*s == '#')
                     c = ( int )strtol(s + 1, NiL, 10) & 0377;
-                else
-                {
+                else {
                     if (fp)
                         fp->attr |= TAG_ATTR_conv;
                     if (streq(s, "alert"))
@@ -751,8 +690,7 @@ tagparse(Tag_t *tag, Tagframe_t *fp, Tags_t *tags, Tagdisc_t *disc)
                         c = '\t';
                     else if (streq(s, "vtab"))
                         c = CC_vt;
-                    else
-                    {
+                    else {
                         if (disc->errorf)
                             (*disc->errorf)(
                             tag, disc, 2, "&%s;: unknown entity", s);
@@ -764,8 +702,7 @@ tagparse(Tag_t *tag, Tagframe_t *fp, Tags_t *tags, Tagdisc_t *disc)
                 if (!keep_first)
                     keep_first = keep_last;
                 continue;
-            }
-            else
+            } else
                 sfputc(tag->op, c);
             continue;
         case '\n':
@@ -777,8 +714,7 @@ tagparse(Tag_t *tag, Tagframe_t *fp, Tags_t *tags, Tagdisc_t *disc)
         case '=':
             if (item == '&')
                 item = 0;
-            if (item == '<' && !attrs)
-            {
+            if (item == '<' && !attrs) {
                 attrs = sfstrtell(tag->op) + 1;
                 c = 0;
             }
@@ -789,15 +725,13 @@ tagparse(Tag_t *tag, Tagframe_t *fp, Tags_t *tags, Tagdisc_t *disc)
         }
         break;
     }
-    if (item)
-    {
+    if (item) {
         if (disc->errorf)
             (*disc->errorf)(
             tag, disc, 2, "%s: unexpected EOF", tagcontext(tag, fp));
         return -1;
     }
-    if (fp)
-    {
+    if (fp) {
         if (disc->errorf)
             (*disc->errorf)(
             tag, disc, 2, "%s: no closing tag", tagcontext(tag, fp));
@@ -822,8 +756,7 @@ tagopen(Sfio_t *ip, const char *file, int line, Tags_t *tags, Tagdisc_t *disc)
     int oline;
     int r;
 
-    if (!(tag = newof(0, Tag_t, 1, 0)) || !(tag->op = sfstropen()))
-    {
+    if (!(tag = newof(0, Tag_t, 1, 0)) || !(tag->op = sfstropen())) {
         if (tag)
             free(tag);
         if (disc->errorf)
@@ -839,8 +772,7 @@ tagopen(Sfio_t *ip, const char *file, int line, Tags_t *tags, Tagdisc_t *disc)
     r = tagparse(tag, NiL, tags, disc);
     error_info.file = ofile;
     error_info.line = oline;
-    if (r)
-    {
+    if (r) {
         tagclose(tag);
         return 0;
     }
@@ -894,32 +826,25 @@ scan(Tag_t *tag,
     Tagframe_t *tp;
     Tagframe_t frame;
 
-    while (tags->name)
-    {
+    while (tags->name) {
         memset(&frame, 0, sizeof(frame));
         frame.level = (frame.prev = fp) ? (fp->level + 1) : 0;
         frame.tag = tags;
         f = 0;
-        if (tags->begf)
-        {
+        if (tags->begf) {
             for (tp = fp; tp; tp = tp->prev)
-                if (tp->tag->begf == tags->begf)
-                {
+                if (tp->tag->begf == tags->begf) {
                     f |= TAG_SCAN_rec | TAG_SCAN_rep;
                     break;
                 }
-            if (!f)
-            {
+            if (!f) {
                 for (hp = tag->hits; hp; hp = hp->next)
-                    if (hp->begf == tags->begf)
-                    {
+                    if (hp->begf == tags->begf) {
                         f |= TAG_SCAN_rep;
                         break;
                     }
-                if (!f)
-                {
-                    if (!(hp = newof(0, Hit_t, 1, 0)))
-                    {
+                if (!f) {
+                    if (!(hp = newof(0, Hit_t, 1, 0))) {
                         if (disc->errorf)
                             (*disc->errorf)(
                             NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -932,16 +857,14 @@ scan(Tag_t *tag,
             }
         }
         if (!f && tags->begf
-            && (nest = (*tags->begf)(tag, &frame, NiL, disc)))
-        {
+            && (nest = (*tags->begf)(tag, &frame, NiL, disc))) {
             if (r = (*visit)(tag, &frame, handle, TAG_SCAN_beg, disc))
                 return r;
             if (r = scan(tag, &frame, visit, handle, nest, disc))
                 return r;
             if (r = (*visit)(tag, &frame, handle, TAG_SCAN_end, disc))
                 return r;
-        }
-        else if (r = (*visit)(tag, &frame, handle, f, disc))
+        } else if (r = (*visit)(tag, &frame, handle, f, disc))
             return r;
         tags++;
     }
@@ -960,15 +883,13 @@ tagscan(Tags_t *tags, Tagscan_f visit, void *handle, Tagdisc_t *disc)
     Hit_t *np;
     int r;
 
-    if (!(tag = newof(0, Tag_t, 1, 0)))
-    {
+    if (!(tag = newof(0, Tag_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
     }
     r = scan(tag, NiL, visit, handle, tags, disc);
-    for (hp = tag->hits; hp; hp = np)
-    {
+    for (hp = tag->hits; hp; hp = np) {
         np = hp->next;
         free(hp);
     }
@@ -989,14 +910,12 @@ usage(Tag_t *tag,
 {
     Sfio_t *op = ( Sfio_t * )handle;
 
-    if (flags & TAG_SCAN_end)
-    {
+    if (flags & TAG_SCAN_end) {
         sfprintf(op, "}\n");
         return 0;
     }
     sfprintf(op, "[+%s", fp->tag->name);
-    if (fp->tag->description)
-    {
+    if (fp->tag->description) {
         sfputc(op, '?');
         if (optesc(op, fp->tag->description, 0))
             return -1;

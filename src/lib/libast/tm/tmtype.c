@@ -47,8 +47,7 @@ tmtype(const char *s, char **e)
 
     tmset(tm_info.zone);
     zp = tm_info.local;
-    do
-    {
+    do {
         if ((t = zp->type) && tmword(s, e, t, NiL, 0))
             return (zp);
         if (zp == tm_info.local)

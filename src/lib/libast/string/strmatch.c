@@ -91,23 +91,18 @@ strngrpmatch(const char *b,
      * 0 and empty patterns are special
      */
 
-    if (!p || !b)
-    {
+    if (!p || !b) {
         if (!p && !b)
             regcache(NiL, 0, NiL);
         return 0;
     }
-    if (!*p)
-    {
-        if (sub && n > 0)
-        {
-            if (flags & STR_INT)
-            {
+    if (!*p) {
+        if (sub && n > 0) {
+            if (flags & STR_INT) {
                 int *subi = ( int * )sub;
 
                 subi[0] = subi[1] = 0;
-            }
-            else
+            } else
                 sub[0] = sub[1] = 0;
         }
         return *b == 0;
@@ -119,8 +114,7 @@ strngrpmatch(const char *b,
 
     if (flags & REG_ADVANCE)
         reflags = flags & ~REG_ADVANCE;
-    else
-    {
+    else {
         reflags = REG_SHELL | REG_AUGMENTED;
         if (!(flags & STR_MAXIMAL))
             reflags |= REG_MINIMAL;
@@ -137,8 +131,7 @@ strngrpmatch(const char *b,
         reflags |= REG_NOSUB;
     if (!(re = regcache(p, reflags, NiL)))
         return 0;
-    if (n > matchstate.nmatch)
-    {
+    if (n > matchstate.nmatch) {
         if (!(matchstate.match = newof(matchstate.match, regmatch_t, n, 0)))
             return 0;
         matchstate.nmatch = n;
@@ -155,22 +148,17 @@ strngrpmatch(const char *b,
     if (!sub || n <= 0)
         return 1;
     i = re->re_nsub;
-    if (flags & STR_INT)
-    {
+    if (flags & STR_INT) {
         int *subi = ( int * )sub;
         int *endi = subi + n * 2;
 
-        for (n = 0; subi < endi && n <= i; n++)
-        {
+        for (n = 0; subi < endi && n <= i; n++) {
             *subi++ = matchstate.match[n].rm_so;
             *subi++ = matchstate.match[n].rm_eo;
         }
-    }
-    else
-    {
+    } else {
         end = sub + n * 2;
-        for (n = 0; sub < end && n <= i; n++)
-        {
+        for (n = 0; sub < end && n <= i; n++) {
             *sub++ = matchstate.match[n].rm_so;
             *sub++ = matchstate.match[n].rm_eo;
         }

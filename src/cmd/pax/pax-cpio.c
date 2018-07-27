@@ -105,8 +105,7 @@ getxops(Archive_t *ap, File_t *f)
     int c;
 
     if (f->namesize > (c = strlen(f->name) + 1))
-        for (p = f->name + c; c = *p++;)
-        {
+        for (p = f->name + c; c = *p++;) {
             for (s = p; *p; p++)
                 ;
             p++;
@@ -118,8 +117,7 @@ getxops(Archive_t *ap, File_t *f)
                      ap->entry,
                      c,
                      s));
-            switch (c)
-            {
+            switch (c) {
             case 'd':
                 IDEVICE(f->st, strtol(s, NiL, 16));
                 break;
@@ -156,8 +154,7 @@ setxops(Archive_t *ap, File_t *f)
     Cpio_t *cpio = ( Cpio_t * )ap->data;
     int n;
 
-    if (n = cpio->ops - cpio->opsbuf)
-    {
+    if (n = cpio->ops - cpio->opsbuf) {
         n++;
         *cpio->ops++ = 0;
         if ((f->namesize += n) > CPIO_NAMESIZE)
@@ -194,8 +191,7 @@ addxopstr(Archive_t *ap, int op, char *s)
     char *p = cpio->ops;
     char *e = cpio->opsbuf + sizeof(cpio->opsbuf) - 3;
 
-    if (p < e)
-    {
+    if (p < e) {
         *p++ = op;
         while (*s && p < e)
             *p++ = *s++;
@@ -228,13 +224,10 @@ init(Archive_t *ap)
 {
     Cpio_t *cpio;
 
-    if (ap->data)
-    {
+    if (ap->data) {
         cpio = ( Cpio_t * )ap->data;
         memset(cpio, 0, sizeof(*cpio));
-    }
-    else
-    {
+    } else {
         if (!(cpio = newof(0, Cpio_t, 1, 0)))
             nospace();
         ap->data = cpio;
@@ -270,8 +263,7 @@ cpio_common(Pax_t *pax, Archive_t *ap, File_t *f, int align, int header)
     f->linkpath = 0;
     f->uidname = 0;
     f->gidname = 0;
-    switch (ap->format->variant)
-    {
+    switch (ap->format->variant) {
     case BINARY:
         align = BINARY_ALIGN;
         header = BINARY_HEADER;
@@ -285,8 +277,7 @@ cpio_common(Pax_t *pax, Archive_t *ap, File_t *f, int align, int header)
         align = 0;
         break;
     }
-    if (align)
-    {
+    if (align) {
         if (header = (header + f->namesize) % align)
             align -= header;
         else
@@ -294,8 +285,7 @@ cpio_common(Pax_t *pax, Archive_t *ap, File_t *f, int align, int header)
     }
     f->name = paxstash(pax, &ap->stash.head, NiL, f->namesize + align);
     paxread(pax, ap, f->name, ( off_t )0, (off_t)(f->namesize + align), 1);
-    if (f->name[f->namesize - 1])
-    {
+    if (f->name[f->namesize - 1]) {
         paxunread(pax, ap, &f->name[f->namesize - 1], 1);
         f->name[f->namesize - 1] = 0;
         error(state.keepgoing ? 1 : 3,
@@ -307,16 +297,14 @@ cpio_common(Pax_t *pax, Archive_t *ap, File_t *f, int align, int header)
 #if CPIO_EXTENDED
     getxops(ap, f);
 #endif
-    if (streq(f->name, CPIO_TRAILER))
-    {
+    if (streq(f->name, CPIO_TRAILER)) {
         (( Cpio_t * )ap->data)->trailer++;
         getdeltaheader(ap, f);
         if (ap->delta)
             setinfo(ap, f);
         return 0;
     }
-    switch (f->type = X_ITYPE(f->st->st_mode))
-    {
+    switch (f->type = X_ITYPE(f->st->st_mode)) {
     case X_IFBLK:
     case X_IFCHR:
     case X_IFDIR:
@@ -336,19 +324,16 @@ cpio_common(Pax_t *pax, Archive_t *ap, File_t *f, int align, int header)
     }
     f->st->st_mode &= X_IPERM;
     f->st->st_mode |= f->type;
-    switch (f->type)
-    {
+    switch (f->type) {
     case X_IFLNK:
         f->linkpath = paxstash(pax, &ap->stash.link, NiL, f->st->st_size);
         f->linktype = SOFTLINK;
         s = f->linkpath;
-        while (paxread(pax, ap, s, ( off_t )1, ( off_t )1, 1) > 0)
-        {
+        while (paxread(pax, ap, s, ( off_t )1, ( off_t )1, 1) > 0) {
             f->st->st_size--;
             if (!*s++)
                 break;
-            if (!f->st->st_size)
-            {
+            if (!f->st->st_size) {
                 *s = 0;
                 break;
             }
@@ -364,8 +349,7 @@ cpio_common(Pax_t *pax, Archive_t *ap, File_t *f, int align, int header)
 static int
 cpio_done(Pax_t *pax, Archive_t *ap)
 {
-    if (ap->data)
-    {
+    if (ap->data) {
         free(ap->data);
         ap->data = 0;
     }
@@ -397,8 +381,7 @@ cpio_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
                     sizeof(lst.size),
                     &lst.size)
            == 11
-        && f->magic == CPIO_MAGIC)
-    {
+        && f->magic == CPIO_MAGIC) {
         f->st->st_dev = lst.dev;
         f->st->st_ino = lst.ino;
         f->st->st_mode = lst.mode;
@@ -419,8 +402,7 @@ cpio_getepilogue(Pax_t *pax, Archive_t *ap)
 {
     Cpio_t *cpio = ( Cpio_t * )ap->data;
 
-    if (!cpio->trailer)
-    {
+    if (!cpio->trailer) {
         error(2,
               "%s: %s format corrupt -- epilogue (%s) not found",
               ap->name,
@@ -443,8 +425,7 @@ cpio_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
     if (state.complete)
         complete(ap, f, CPIO_HEADER + f->namesize);
 #if CPIO_EXTENDED
-    if (!f->skip && !state.strict)
-    {
+    if (!f->skip && !state.strict) {
         getidnames(f);
         addxopstr(ap, 'U', f->uidname);
         addxopstr(ap, 'G', f->gidname);
@@ -459,8 +440,7 @@ cpio_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
         if (f->st->st_size > 0x7fffffff)
             addxopnum(ap, 's', ( Sflong_t )f->st->st_size);
         setxops(ap, f);
-    }
-    else
+    } else
 #endif
     {
         if (CPIO_TRUNCATE(idevice(f->st)) != idevice(f->st))
@@ -492,8 +472,7 @@ cpio_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
 #else
     paxwrite(pax, ap, f->name, f->namesize);
 #endif
-    if (f->type == X_IFLNK)
-    {
+    if (f->type == X_IFLNK) {
         if (streq(f->name, f->linkpath))
             error(1, "%s: symbolic link loops to self", f->name);
         paxwrite(pax, ap, f->linkpath, f->linkpathsize);
@@ -525,8 +504,7 @@ cpio_event(Pax_t *pax,
 {
     off_t n;
 
-    switch (event)
-    {
+    switch (event) {
     case PAX_EVENT_BUG_19951031:
         /*
          * compensate for a pre 19951031 pax bug
@@ -540,18 +518,15 @@ cpio_event(Pax_t *pax,
                        ( off_t )0,
                        n = f->st->st_size + 6,
                        0)
-               > 0)
-        {
+               > 0) {
             paxunread(pax, ap, state.tmp.buffer, n);
             state.tmp.buffer[6] = 0;
             state.tmp.buffer[n] = 0;
             if (strtol(state.tmp.buffer, NiL, 8) == CPIO_MAGIC
                 && strtol(state.tmp.buffer + f->st->st_size, NiL, 8)
-                   != CPIO_MAGIC)
-            {
+                   != CPIO_MAGIC) {
                 f->st->st_size = 0;
-                if (!ap->warnlinkhead)
-                {
+                if (!ap->warnlinkhead) {
                     ap->warnlinkhead = 1;
                     error(
                     1,
@@ -612,8 +587,7 @@ asc_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
                     &f->namesize,
                     &lst.checksum)
            == 14
-        && f->magic == ASC_MAGIC)
-    {
+        && f->magic == ASC_MAGIC) {
         f->checksum = lst.checksum;
         f->st->st_dev = makedev(lst.dev_major, lst.dev_minor);
         f->st->st_ino = lst.ino;
@@ -710,8 +684,7 @@ aschk_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
                     &f->namesize,
                     &lst.checksum)
            == 14
-        && f->magic == ASCHK_MAGIC)
-    {
+        && f->magic == ASCHK_MAGIC) {
         f->checksum = lst.checksum;
         f->st->st_dev = makedev(lst.dev_major, lst.dev_minor);
         f->st->st_ino = lst.ino;
@@ -755,13 +728,10 @@ binary_long(unsigned short *s)
     Integral_t u;
 
     u.l = 1;
-    if (u.c[0])
-    {
+    if (u.c[0]) {
         u.s[0] = s[1];
         u.s[1] = s[0];
-    }
-    else
-    {
+    } else {
         u.s[0] = s[0];
         u.s[1] = s[1];
     }
@@ -778,14 +748,11 @@ binary_short(unsigned short *s, long n)
     Integral_t u;
 
     u.l = 1;
-    if (u.c[0])
-    {
+    if (u.c[0]) {
         u.l = n;
         s[0] = u.s[1];
         s[1] = u.s[0];
-    }
-    else
-    {
+    } else {
         u.l = n;
         s[0] = u.s[0];
         s[1] = u.s[1];
@@ -803,8 +770,7 @@ binary_getprologue(Pax_t *pax,
     short magic = CPIO_MAGIC;
     int swap;
 
-    if (size >= BINARY_HEADER && (swap = swapop(&magic, buf, 2)) >= 0)
-    {
+    if (size >= BINARY_HEADER && (swap = swapop(&magic, buf, 2)) >= 0) {
         ap->swap = swap;
         return init(ap);
     }
@@ -820,14 +786,12 @@ binary_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
         pax, ap, &hdr, ( off_t )BINARY_HEADER, ( off_t )BINARY_HEADER, 0)
         <= 0)
         return 0;
-    if (ap->swap)
-    {
+    if (ap->swap) {
         memcpy(state.tmp.buffer, &hdr, BINARY_HEADER);
         swapmem(ap->swap, &hdr, &hdr, BINARY_HEADER);
     }
     f->magic = hdr.magic;
-    if (f->magic == CPIO_MAGIC)
-    {
+    if (f->magic == CPIO_MAGIC) {
         f->namesize = hdr.namesize;
         f->st->st_dev = hdr.dev;
         f->st->st_ino = hdr.ino;
@@ -871,8 +835,7 @@ binary_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
     if (n = (BINARY_HEADER + f->namesize) % BINARY_ALIGN)
         while (n++ < BINARY_ALIGN)
             paxwrite(pax, ap, "", 1);
-    if (f->type == X_IFLNK)
-    {
+    if (f->type == X_IFLNK) {
         if (streq(f->name, f->linkpath))
             error(1, "%s: symbolic link loops to self", f->name);
         paxwrite(pax, ap, f->linkpath, f->linkpathsize);
@@ -884,8 +847,7 @@ binary_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
 static int
 binary_validate(Pax_t *pax, Archive_t *ap, File_t *f)
 {
-    if (f->namesize > (CPIO_NAMESIZE + 1))
-    {
+    if (f->namesize > (CPIO_NAMESIZE + 1)) {
         error(2, "%s: file name too long", f->name);
         return 0;
     }

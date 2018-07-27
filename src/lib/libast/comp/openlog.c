@@ -39,15 +39,13 @@ openlog(const char *ident, int flags, int facility)
 {
     int n;
 
-    if (ident)
-    {
+    if (ident) {
         n = strlen(ident);
         if (n >= sizeof(log.ident))
             n = sizeof(log.ident) - 1;
         memcpy(log.ident, ident, n);
         log.ident[n] = 0;
-    }
-    else
+    } else
         log.ident[0] = 0;
     log.facility = facility;
     log.flags = flags;

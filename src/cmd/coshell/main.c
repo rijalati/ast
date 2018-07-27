@@ -171,8 +171,7 @@ init(void *handle, int fdmax)
      * bias the local host so it can generate more work
      */
 
-    if (!state.indirect.con && state.home->idle)
-    {
+    if (!state.indirect.con && state.home->idle) {
         state.home->idle = 0;
         if (!(state.home->flags & SETBIAS))
             state.home->bias *= 4;
@@ -182,11 +181,9 @@ init(void *handle, int fdmax)
      * get the shell path
      */
 
-    if (!(s = state.sh))
-    {
+    if (!(s = state.sh)) {
         s = state.buf;
-        for (n = 0;;)
-        {
+        for (n = 0;;) {
             if (pathpath(coshell[n],
                          NiL,
                          PATH_ABSOLUTE | PATH_REGULAR | PATH_EXECUTE,
@@ -242,16 +239,14 @@ user(void *handle, int fd, Cs_id_t *id, int clone, char **argv)
     NoP(id);
     NoP(clone);
     NoP(argv);
-    if (state.indirect.con)
-    {
+    if (state.indirect.con) {
         state.con[fd].type = INIT;
         state.con[fd].info.user.fds[0] = fd;
         state.con[fd].info.user.fds[1] = -1;
         state.con[fd].info.user.fds[2] = -1;
         if (cswrite(fd, "#00000\n", 7) != 7)
             return (-1);
-    }
-    else
+    } else
         state.con[fd].type = IDENT;
     state.con[fd].info.user.flags = USER_IDENT;
     state.con[fd].info.user.home = 0;
@@ -302,8 +297,7 @@ service(void *handle, int fd)
     char cmd[256];
 
     NoP(handle);
-    switch (state.con[fd].type)
-    {
+    switch (state.con[fd].type) {
     case ANON:
     case SHELL:
 #ifdef O_NONBLOCK
@@ -317,8 +311,7 @@ service(void *handle, int fd)
             && fcntl(fd, F_SETFL, state.con[fd].flags) < 0)
             state.con[fd].flags = -1;
 #endif
-        if (n <= 0)
-        {
+        if (n <= 0) {
 #ifdef O_NONBLOCK
             if (n < 0 && errno == EAGAIN)
                 state.con[fd].error++;
@@ -334,8 +327,7 @@ service(void *handle, int fd)
          */
 
         sp = state.con[fd].info.shell;
-        do
-        {
+        do {
             if (x = strchr(s, '\n'))
                 *x++ = 0;
             while (isspace(*s))
@@ -356,8 +348,7 @@ service(void *handle, int fd)
              * now interpret the message
              */
 
-            switch (i)
-            {
+            switch (i) {
             case 'j':
                 /*
                  * <s> is the job pid
@@ -369,8 +360,7 @@ service(void *handle, int fd)
                 jp->pid = ( int )strtol(s, NiL, 0);
                 if (i == WARP)
                     goto nuke;
-                if (jp->cmd)
-                {
+                if (jp->cmd) {
                     free(jp->cmd);
                     jp->cmd = 0;
                     state.jobwait--;
@@ -381,10 +371,8 @@ service(void *handle, int fd)
                  * <s> is the name of the anonymous shell and its pid
                  */
 
-                if (!sp && (sp = search(GET, s, NiL, NiL)))
-                {
-                    if (sp->fd < 0)
-                    {
+                if (!sp && (sp = search(GET, s, NiL, NiL))) {
+                    if (sp->fd < 0) {
                         /*
                          * nuke the zombie that kicked this shell
                          */
@@ -402,9 +390,7 @@ service(void *handle, int fd)
                         sp->open++;
                         state.shellwait--;
                         state.shells++;
-                    }
-                    else
-                    {
+                    } else {
                         sp = 0;
                         drop(fd);
                     }
@@ -429,8 +415,7 @@ service(void *handle, int fd)
                     break;
                 jp->status = strtol(s, &t, 10);
                 jp->sig = 0;
-                for (;;)
-                {
+                for (;;) {
                     if (t <= s)
                         break;
                     for (s = t; isalpha(*s) || isspace(*s); s++)
@@ -442,18 +427,14 @@ service(void *handle, int fd)
                         ;
                     jp->sys += strelapsed(s, &t, CO_QUANT);
                 }
-                if (jp->pid == START)
-                {
-                    if (jp->cmd)
-                    {
+                if (jp->pid == START) {
+                    if (jp->cmd) {
                         free(jp->cmd);
                         jp->cmd = 0;
                         state.jobwait--;
                     }
                     jp->pid = WARP;
-                }
-                else
-                {
+                } else {
                 nuke:
                     /*
                      * nuke the zombies
@@ -477,8 +458,7 @@ service(void *handle, int fd)
                      = ( int )strtol(s + 7, NiL, 10),
                      &st))
             drop(fd);
-        else
-        {
+        else {
             state.con[fd].type = PASS;
             state.con[fd].info.pass.job = jp->pid ? jp : 0;
             state.con[fd].info.pass.serialize
@@ -492,16 +472,12 @@ service(void *handle, int fd)
             errno = EBADF;
         else if (cswrite(fd, "#00000\n", 7) != 7) /* error */
             ;
-        else
-        {
-            if (i == 3)
-            {
+        else {
+            if (i == 3) {
                 close(fds[0]);
                 fds[0] = n = fd;
                 state.con[n].info.user.flags = 0;
-            }
-            else
-            {
+            } else {
                 drop(fd);
                 csfd(n = fds[0], CS_POLL_READ);
                 fds[0] = fds[3];
@@ -514,8 +490,7 @@ service(void *handle, int fd)
             state.con[fds[2]].type = UERR;
             state.con[n].type = INIT;
             state.con[n].info.user.pid = id.pid;
-            for (i = 0; i < elementsof(state.con[n].info.user.fds); i++)
-            {
+            for (i = 0; i < elementsof(state.con[n].info.user.fds); i++) {
                 fcntl(fds[i], F_SETFD, FD_CLOEXEC);
                 state.con[n].info.user.fds[i] = fds[i];
             }
@@ -531,30 +506,24 @@ service(void *handle, int fd)
         if (csread(fd, s = cmd, 7, CS_EXACT) != 7 || s[0] != '#'
             || (i = ( int )strtol(s + 1, NiL, 10))
                && (i < 0 || i > state.buflen
-                   || csread(fd, state.buf, i, CS_EXACT) != i))
-        {
+                   || csread(fd, state.buf, i, CS_EXACT) != i)) {
             drop(fd);
             break;
         }
         state.con[fd].info.user.attr.label[0] = 0;
         x = 0;
-        if (i)
-        {
+        if (i) {
             s = state.buf;
             s[i] = 0;
-            while (e = strchr(s, '\n'))
-            {
+            while (e = strchr(s, '\n')) {
                 *e++ = 0;
                 if (strneq(s, CO_ENV_ATTRIBUTES, sizeof(CO_ENV_ATTRIBUTES) - 1)
-                    && s[sizeof(CO_ENV_ATTRIBUTES) - 1] == '=')
-                {
+                    && s[sizeof(CO_ENV_ATTRIBUTES) - 1] == '=') {
                     x = s + sizeof(CO_ENV_ATTRIBUTES);
-                    if (*x == '\'')
-                    {
+                    if (*x == '\'') {
                         i = 1;
                         s = t = ++x;
-                        while (*s = *t++)
-                        {
+                        while (*s = *t++) {
                             if (*s == '\'')
                                 i = !i;
                             else if (i || *s != '\\')
@@ -563,9 +532,7 @@ service(void *handle, int fd)
                                 break;
                         }
                     }
-                }
-                else if (state.indirect.con)
-                {
+                } else if (state.indirect.con) {
                     if (streq(s, CO_OPT_COMMAND))
                         state.con[fd].info.user.flags &= ~USER_IDENT;
                     else if (streq(s, CO_OPT_DUP))
@@ -586,8 +553,7 @@ service(void *handle, int fd)
         }
         if (state.indirect.con
             && (state.con[fd].info.user.flags & (USER_IDENT | USER_INIT))
-               == USER_IDENT)
-        {
+               == USER_IDENT) {
             state.con[fd].info.user.flags |= USER_INIT;
             break;
         }
@@ -595,20 +561,16 @@ service(void *handle, int fd)
             state.con[fd].info.user.expr = strdup(x);
         attributes(x, &state.con[fd].info.user.attr, NiL);
         state.con[fd].info.user.attr.set &= ~SETLABEL;
-        if (state.indirect.con)
-        {
+        if (state.indirect.con) {
             if (!state.con[fd].info.user.pump
                 || (state.con[fd].info.user.fds[1]
                     = csopen(state.con[fd].info.user.pump, 0))
                    < 0
                 || cswrite(state.con[fd].info.user.fds[1], "#00001\n", 7)
-                   != 7)
-            {
+                   != 7) {
                 drop(fd);
                 break;
-            }
-            else
-            {
+            } else {
                 nonblocking(state.con[fd].info.user.fds[1]);
                 state.con[state.con[fd].info.user.fds[1]].type = UOUT;
             }
@@ -619,23 +581,18 @@ service(void *handle, int fd)
                       = csopen(state.con[fd].info.user.pump, 0))
                      < 0
                      || cswrite(state.con[fd].info.user.fds[2], "#00002\n", 7)
-                        != 7)
-            {
+                        != 7) {
                 drop(fd);
                 break;
-            }
-            else
+            } else
                 state.con[state.con[fd].info.user.fds[2]].type = UERR;
-        }
-        else if (!fstat(state.con[fd].info.user.fds[1], &st)
-                 && !fstat(state.con[fd].info.user.fds[2], &ts)
-                 && st.st_ino == ts.st_ino && st.st_dev == ts.st_dev)
-        {
+        } else if (!fstat(state.con[fd].info.user.fds[1], &st)
+                   && !fstat(state.con[fd].info.user.fds[2], &ts)
+                   && st.st_ino == ts.st_ino && st.st_dev == ts.st_dev) {
             drop(state.con[fd].info.user.fds[2]);
             state.con[fd].info.user.fds[2] = state.con[fd].info.user.fds[1];
         }
-        if (state.con[fd].info.user.flags & USER_IDENT)
-        {
+        if (state.con[fd].info.user.flags & USER_IDENT) {
             s = state.buf;
             s += sfsprintf(s,
                            state.buflen - (s - state.buf),
@@ -647,8 +604,7 @@ service(void *handle, int fd)
                 s, state.buflen - (s - state.buf), ",%s", CO_OPT_INDIRECT);
             s += sfsprintf(s, state.buflen - (s - state.buf), "\n");
             i = s - state.buf;
-            if (cswrite(state.con[fd].info.user.fds[0], state.buf, i) != i)
-            {
+            if (cswrite(state.con[fd].info.user.fds[0], state.buf, i) != i) {
                 drop(fd);
                 break;
             }
@@ -659,35 +615,29 @@ service(void *handle, int fd)
         state.users++;
         break;
     case MESG:
-        if (csrecv(fd, &id, fds, 1) == 1)
-        {
+        if (csrecv(fd, &id, fds, 1) == 1) {
             i = fds[0];
             n = strlen(corinit);
-            if (cswrite(i, corinit, n) == n)
-            {
+            if (cswrite(i, corinit, n) == n) {
                 state.con[i].type = ANON;
                 state.con[i].info.shell = 0;
 #ifdef O_NONBLOCK
                 state.con[i].flags = fcntl(fd, F_GETFL, 0);
 #endif
                 csfd(i, CS_POLL_READ);
-            }
-            else
+            } else
                 close(i);
         }
         break;
     case PASS:
         if ((i = read(fd, state.buf, state.buflen)) <= 0)
             drop(fd);
-        else
-        {
-            if (state.identify)
-            {
+        else {
+            if (state.identify) {
                 n = state.con[fd].info.pass.fd;
                 jp = state.con[fd].info.pass.job;
                 if (state.con[n].info.ident.shell != jp->shell
-                    || state.con[n].info.ident.pid != jp->pid)
-                {
+                    || state.con[n].info.ident.pid != jp->pid) {
                     state.con[n].info.ident.shell = jp->shell;
                     state.con[n].info.ident.pid = jp->pid;
                     sfprintf(state.string, "%s", jp->shell->name);
@@ -703,19 +653,16 @@ service(void *handle, int fd)
                     cswrite(state.con[fd].info.pass.fd, cmd, n);
                 }
             }
-            if (state.con[fd].info.pass.serialize)
-            {
+            if (state.con[fd].info.pass.serialize) {
                 if (sfwrite(state.con[fd].info.pass.serialize, state.buf, i)
                     != i)
                     drop(fd);
-            }
-            else if (cswrite(state.con[fd].info.pass.fd, state.buf, i) != i)
+            } else if (cswrite(state.con[fd].info.pass.fd, state.buf, i) != i)
                 drop(fd);
         }
         break;
     case PUMP:
-        if (csrecv(fd, &id, fds, 1) == 1)
-        {
+        if (csrecv(fd, &id, fds, 1) == 1) {
             i = fds[0];
             state.con[i].type = DEST;
             csfd(i, CS_POLL_READ);
@@ -728,19 +675,16 @@ service(void *handle, int fd)
         break;
     case USER:
         if (csread(fd, cmd, 7, CS_EXACT) != 7 || cmd[0] != '#'
-            || (n = ( int )strtol(cmd + 1, NiL, 10)) <= 0)
-        {
+            || (n = ( int )strtol(cmd + 1, NiL, 10)) <= 0) {
             drop(fd);
             break;
         }
-        if (n > state.buflen)
-        {
+        if (n > state.buflen) {
             state.buflen = roundof(n, CHUNK);
             if (!(state.buf = newof(state.buf, char, state.buflen, 0)))
                 error(3, "out of space [buf]");
         }
-        if (csread(fd, state.buf, n, CS_EXACT) != n)
-        {
+        if (csread(fd, state.buf, n, CS_EXACT) != n) {
             drop(fd);
             break;
         }
@@ -749,8 +693,7 @@ service(void *handle, int fd)
         n = error_info.errors;
         if (!(state.home = state.con[fd].info.user.home))
             state.home = state.shell;
-        switch (i = *state.buf)
-        {
+        switch (i = *state.buf) {
         case 'e':
         case 'E':
             shellexec(NiL, state.buf, fd);
@@ -760,12 +703,10 @@ service(void *handle, int fd)
         case 'K':
             if (tokscan(state.buf, NiL, "%s %d %d ", NiL, &n1, &n2) != 3)
                 error_info.errors++;
-            else
-            {
+            else {
                 message((-1, "kill state.con=%d rid=%d sig=%d", fd, n1, n2));
                 for (jp = state.job; jp <= state.jobmax; jp++)
-                    if (jp->fd == fd && jp->pid && (!n1 || jp->rid == n1))
-                    {
+                    if (jp->fd == fd && jp->pid && (!n1 || jp->rid == n1)) {
                         jobkill(jp, n2);
                         if (n1)
                             break;
@@ -789,8 +730,7 @@ service(void *handle, int fd)
             break;
         }
         state.home = state.shell;
-        if (isupper(i))
-        {
+        if (isupper(i)) {
             n = sfsprintf(
             state.buf, state.buflen, "a 1 %d\n", error_info.errors != n);
             cswrite(state.con[fd].info.user.fds[0], state.buf, n);
@@ -846,8 +786,7 @@ pump(void *handle, int fd)
 
     if ((n = read(fd, s, state.buflen)) <= 0)
         goto drop;
-    if (!(pd = *pass))
-    {
+    if (!(pd = *pass)) {
         if ((n -= 7) < 0 || s[0] != '#'
             || (pd = ( int )strtol(s + 1, NiL, 10)) < 1 || pd > 2)
             goto drop;
@@ -861,8 +800,7 @@ pump(void *handle, int fd)
 drop:
     if (fd == state.indirect.cmd)
         exit(0);
-    if (fd = *pass)
-    {
+    if (fd = *pass) {
         close(fd);
         *pass = 0;
     }
@@ -905,10 +843,8 @@ main(int argc, char **argv)
      */
 
     while ((s = argv[opt_info.index + 1]) && s[0] == '-'
-           && (s[1] == '-' || s[1] == '?'))
-    {
-        switch (optget(argv, usage))
-        {
+           && (s[1] == '-' || s[1] == '?')) {
+        switch (optget(argv, usage)) {
         case ':':
             error(2, "%s", opt_info.arg);
             break;
@@ -929,8 +865,7 @@ main(int argc, char **argv)
     if (*argv && (s = *++argv) && strmatch(s, "/dev/(fdp|tcp)/*"))
         argv++;
     else if (!(t = getenv(CO_ENV_SHELL))
-             || tokscan(t, NiL, " %s %s ", NiL, &s) != 2)
-    {
+             || tokscan(t, NiL, " %s %s ", NiL, &s) != 2) {
         if ((fd = csopen(t = "/dev/fdp", 0)) >= 0)
             close(fd);
         else
@@ -947,11 +882,9 @@ main(int argc, char **argv)
      * check for alternate stdin
      */
 
-    if ((s = *argv) && strneq(s, "/dev/fd/", 8))
-    {
+    if ((s = *argv) && strneq(s, "/dev/fd/", 8)) {
         argv++;
-        if (i = ( int )strtol(s + 8, NiL, 0))
-        {
+        if (i = ( int )strtol(s + 8, NiL, 0)) {
             close(0);
             if (dup(i))
                 error(ERROR_SYSTEM | 3, "%s: cannot open", s);
@@ -964,12 +897,10 @@ main(int argc, char **argv)
      * SERVER	the server (+*)
      */
 
-    if ((s = strrchr(*opt_info.argv, '.')) && streq(s + 1, CS_SVC_SUFFIX))
-    {
+    if ((s = strrchr(*opt_info.argv, '.')) && streq(s + 1, CS_SVC_SUFFIX)) {
         n = SERVER;
         argv--;
-    }
-    else if (!(s = *argv))
+    } else if (!(s = *argv))
         n = DEFER;
     else if (s[0] == '+' && !s[1])
         n = SERVER;
@@ -978,10 +909,8 @@ main(int argc, char **argv)
     else
         error(ERROR_USAGE | 4,
               "[connect-stream] [-hjqQs[aelpst]] [-r host [cmd]] | + [info]");
-    if (n != SERVER)
-    {
-        if ((fd = csopen(state.service, CS_OPEN_TEST)) < 0)
-        {
+    if (n != SERVER) {
+        if ((fd = csopen(state.service, CS_OPEN_TEST)) < 0) {
             if (errno == ENOENT)
                 error(3, "%s: server not running", state.service);
             else
@@ -989,8 +918,7 @@ main(int argc, char **argv)
                       "%s: cannot open connect stream",
                       state.service);
         }
-        if (!state.indirect.con)
-        {
+        if (!state.indirect.con) {
             for (i = 0; i < elementsof(fds); i++)
                 fds[i] = i;
             if (n == COMMAND)
@@ -1006,18 +934,15 @@ main(int argc, char **argv)
         if ((state.indirect.con || !cssend(fd, fds, i))
             && csread(fd, s, 7, CS_EXACT) == 7 && s[0] == '#'
             && !(errno = ( int )strtol(s + 1, NiL, 10)))
-            do
-            {
-                if (state.indirect.con)
-                {
+            do {
+                if (state.indirect.con) {
                     if ((pfd = csopen(t = "/dev/tcp/local/normal/slave",
                                       CS_OPEN_CREATE))
                         < 0)
                         error(ERROR_SYSTEM | 3,
                               "%s: cannot create pump connect stream",
                               t);
-                }
-                else if (n != COMMAND)
+                } else if (n != COMMAND)
                     exit(0);
                 s += 7;
                 s += sfsprintf(s,
@@ -1028,8 +953,7 @@ main(int argc, char **argv)
                 if ((t = getenv(CO_ENV_ATTRIBUTES)) && *t)
                     s
                     += sfsprintf(s, state.buflen - (s - state.buf), ",%s", t);
-                if (state.indirect.con)
-                {
+                if (state.indirect.con) {
                     struct stat st;
                     struct stat ts;
 
@@ -1044,15 +968,13 @@ main(int argc, char **argv)
                                    CO_OPT_HOME,
                                    csname(0));
                     if (!fstat(1, &st) && !fstat(2, &ts)
-                        && st.st_ino == ts.st_ino && st.st_dev == ts.st_dev)
-                    {
+                        && st.st_ino == ts.st_ino && st.st_dev == ts.st_dev) {
                         s += sfsprintf(s,
                                        state.buflen - (s - state.buf),
                                        "\n%s",
                                        CO_OPT_DUP);
                         d = 1;
-                    }
-                    else
+                    } else
                         d = 2;
                     if (n == COMMAND)
                         s += sfsprintf(s,
@@ -1066,10 +988,8 @@ main(int argc, char **argv)
                 sfsprintf(s, 7, "#%05d\n", i - 7);
                 if (cswrite(fd, s, i) != i)
                     break;
-                if (n == COMMAND)
-                {
-                    if (state.indirect.con)
-                    {
+                if (n == COMMAND) {
+                    if (state.indirect.con) {
                         for (; d > 0 && csrecv(pfd, NiL, fds, 1) == 1
                                && csread(fds[0], s, 7, CS_EXACT) == 7
                                && s[0] == '#';

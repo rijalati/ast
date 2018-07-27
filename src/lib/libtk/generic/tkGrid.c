@@ -298,12 +298,10 @@ char **argv;           /* Argument strings. */
 
     if ((argc >= 2)
         && ((argv[1][0] == '.') || (argv[1][0] == REL_SKIP)
-            || (argv[1][0] == REL_VERT)))
-    {
+            || (argv[1][0] == REL_VERT))) {
         return ConfigureSlaves(interp, tkwin, argc - 1, argv + 1);
     }
-    if (argc < 3)
-    {
+    if (argc < 3) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -314,8 +312,7 @@ char **argv;           /* Argument strings. */
     c = argv[1][0];
     length = strlen(argv[1]);
 
-    if ((c == 'b') && (strncmp(argv[1], "bbox", length) == 0))
-    {
+    if ((c == 'b') && (strncmp(argv[1], "bbox", length) == 0)) {
         Tk_Window master;
         int row, column;   /* origin for bounding box */
         int row2, column2; /* end of bounding box */
@@ -323,8 +320,7 @@ char **argv;           /* Argument strings. */
         int x = 0, y = 0;  /* starting pixels for this bounding box */
         int width, height; /* size of the bounding box */
 
-        if (argc != 3 && argc != 5 && argc != 7)
-        {
+        if (argc != 3 && argc != 5 && argc != 7) {
             Tcl_AppendResult(interp,
                              "wrong number of arguments: ",
                              "must be \"",
@@ -335,41 +331,33 @@ char **argv;           /* Argument strings. */
         }
 
         master = Tk_NameToWindow(interp, argv[2], tkwin);
-        if (master == NULL)
-        {
+        if (master == NULL) {
             return TCL_ERROR;
         }
         masterPtr = GetGrid(master);
 
-        if (argc >= 5)
-        {
-            if (Tcl_GetInt(interp, argv[3], &column) != TCL_OK)
-            {
+        if (argc >= 5) {
+            if (Tcl_GetInt(interp, argv[3], &column) != TCL_OK) {
                 return TCL_ERROR;
             }
-            if (Tcl_GetInt(interp, argv[4], &row) != TCL_OK)
-            {
+            if (Tcl_GetInt(interp, argv[4], &row) != TCL_OK) {
                 return TCL_ERROR;
             }
             column2 = column;
             row2 = row;
         }
 
-        if (argc == 7)
-        {
-            if (Tcl_GetInt(interp, argv[5], &column2) != TCL_OK)
-            {
+        if (argc == 7) {
+            if (Tcl_GetInt(interp, argv[5], &column2) != TCL_OK) {
                 return TCL_ERROR;
             }
-            if (Tcl_GetInt(interp, argv[6], &row2) != TCL_OK)
-            {
+            if (Tcl_GetInt(interp, argv[6], &row2) != TCL_OK) {
                 return TCL_ERROR;
             }
         }
 
         gridPtr = masterPtr->masterDataPtr;
-        if (gridPtr == NULL)
-        {
+        if (gridPtr == NULL) {
             sprintf(interp->result, "%d %d %d %d", 0, 0, 0, 0);
             return (TCL_OK);
         }
@@ -378,70 +366,50 @@ char **argv;           /* Argument strings. */
         endX = MAX(gridPtr->columnEnd, gridPtr->columnMax);
         endY = MAX(gridPtr->rowEnd, gridPtr->rowMax);
 
-        if (endX == 0 || endY == 0)
-        {
+        if (endX == 0 || endY == 0) {
             sprintf(interp->result, "%d %d %d %d", 0, 0, 0, 0);
             return (TCL_OK);
         }
-        if (argc == 3)
-        {
+        if (argc == 3) {
             row = column = 0;
             row2 = endY;
             column2 = endX;
         }
 
-        if (column > column2)
-        {
+        if (column > column2) {
             int temp = column;
             column = column2, column2 = temp;
         }
-        if (row > row2)
-        {
+        if (row > row2) {
             int temp = row;
             row = row2, row2 = temp;
         }
 
-        if (column > 0 && column < endX)
-        {
+        if (column > 0 && column < endX) {
             x = gridPtr->columnPtr[column - 1].offset;
-        }
-        else if (column > 0)
-        {
+        } else if (column > 0) {
             x = gridPtr->columnPtr[endX - 1].offset;
         }
 
-        if (row > 0 && row < endY)
-        {
+        if (row > 0 && row < endY) {
             y = gridPtr->rowPtr[row - 1].offset;
-        }
-        else if (row > 0)
-        {
+        } else if (row > 0) {
             y = gridPtr->rowPtr[endY - 1].offset;
         }
 
-        if (column2 < 0)
-        {
+        if (column2 < 0) {
             width = 0;
-        }
-        else if (column2 >= endX)
-        {
+        } else if (column2 >= endX) {
             width = gridPtr->columnPtr[endX - 1].offset - x;
-        }
-        else
-        {
+        } else {
             width = gridPtr->columnPtr[column2].offset - x;
         }
 
-        if (row2 < 0)
-        {
+        if (row2 < 0) {
             height = 0;
-        }
-        else if (row2 >= endY)
-        {
+        } else if (row2 >= endY) {
             height = gridPtr->rowPtr[endY - 1].offset - y;
-        }
-        else
-        {
+        } else {
             height = gridPtr->rowPtr[row2].offset - y;
         }
 
@@ -451,11 +419,8 @@ char **argv;           /* Argument strings. */
                 y + gridPtr->startY,
                 width,
                 height);
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0))
-    {
-        if (argv[2][0] != '.')
-        {
+    } else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)) {
+        if (argv[2][0] != '.') {
             Tcl_AppendResult(interp,
                              "bad argument \"",
                              argv[2],
@@ -464,31 +429,25 @@ char **argv;           /* Argument strings. */
             return TCL_ERROR;
         }
         return ConfigureSlaves(interp, tkwin, argc - 2, argv + 2);
-    }
-    else if (((c == 'f') && (strncmp(argv[1], "forget", length) == 0))
-             || ((c == 'r') && (strncmp(argv[1], "remove", length) == 0)))
-    {
+    } else if (((c == 'f') && (strncmp(argv[1], "forget", length) == 0))
+               || ((c == 'r') && (strncmp(argv[1], "remove", length) == 0))) {
         Tk_Window slave;
         Gridder *slavePtr;
         int i;
 
-        for (i = 2; i < argc; i++)
-        {
+        for (i = 2; i < argc; i++) {
             slave = Tk_NameToWindow(interp, argv[i], tkwin);
-            if (slave == NULL)
-            {
+            if (slave == NULL) {
                 return TCL_ERROR;
             }
             slavePtr = GetGrid(slave);
-            if (slavePtr->masterPtr != NULL)
-            {
+            if (slavePtr->masterPtr != NULL) {
 
                 /*
                  * For "forget", reset all the settings to their defaults
                  */
 
-                if (c == 'f')
-                {
+                if (c == 'f') {
                     slavePtr->column = slavePtr->row = -1;
                     slavePtr->numCols = 1;
                     slavePtr->numRows = 1;
@@ -504,15 +463,12 @@ char **argv;           /* Argument strings. */
                 Tk_UnmapWindow(slavePtr->tkwin);
             }
         }
-    }
-    else if ((c == 'i') && (strncmp(argv[1], "info", length) == 0))
-    {
+    } else if ((c == 'i') && (strncmp(argv[1], "info", length) == 0)) {
         Gridder *slavePtr;
         Tk_Window slave;
         char buffer[70];
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -521,13 +477,11 @@ char **argv;           /* Argument strings. */
             return TCL_ERROR;
         }
         slave = Tk_NameToWindow(interp, argv[2], tkwin);
-        if (slave == NULL)
-        {
+        if (slave == NULL) {
             return TCL_ERROR;
         }
         slavePtr = GetGrid(slave);
-        if (slavePtr->masterPtr == NULL)
-        {
+        if (slavePtr->masterPtr == NULL) {
             interp->result[0] = '\0';
             return TCL_OK;
         }
@@ -550,17 +504,14 @@ char **argv;           /* Argument strings. */
         Tcl_AppendResult(interp, buffer, ( char * )NULL);
         StickyToString(slavePtr->sticky, buffer);
         Tcl_AppendResult(interp, " -sticky ", buffer, ( char * )NULL);
-    }
-    else if ((c == 'l') && (strncmp(argv[1], "location", length) == 0))
-    {
+    } else if ((c == 'l') && (strncmp(argv[1], "location", length) == 0)) {
         Tk_Window master;
         SlotInfo *slotPtr;
         int x, y;       /* Offset in pixels, from edge of parent. */
         int i, j;       /* Corresponding column and row indeces. */
         int endX, endY; /* end of grid */
 
-        if (argc != 5)
-        {
+        if (argc != 5) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -570,23 +521,19 @@ char **argv;           /* Argument strings. */
         }
 
         master = Tk_NameToWindow(interp, argv[2], tkwin);
-        if (master == NULL)
-        {
+        if (master == NULL) {
             return TCL_ERROR;
         }
 
-        if (Tk_GetPixels(interp, master, argv[3], &x) != TCL_OK)
-        {
+        if (Tk_GetPixels(interp, master, argv[3], &x) != TCL_OK) {
             return TCL_ERROR;
         }
-        if (Tk_GetPixels(interp, master, argv[4], &y) != TCL_OK)
-        {
+        if (Tk_GetPixels(interp, master, argv[4], &y) != TCL_OK) {
             return TCL_ERROR;
         }
 
         masterPtr = GetGrid(master);
-        if (masterPtr->masterDataPtr == NULL)
-        {
+        if (masterPtr->masterDataPtr == NULL) {
             sprintf(interp->result, "%d %d", -1, -1);
             return TCL_OK;
         }
@@ -598,8 +545,7 @@ char **argv;           /* Argument strings. */
          * the pipeline, but its as close as its easy to get.
          */
 
-        while (masterPtr->flags & REQUESTED_RELAYOUT)
-        {
+        while (masterPtr->flags & REQUESTED_RELAYOUT) {
             Tk_CancelIdleCall(ArrangeGrid, ( ClientData )masterPtr);
             ArrangeGrid(( ClientData )masterPtr);
         }
@@ -608,42 +554,31 @@ char **argv;           /* Argument strings. */
         endY = MAX(gridPtr->rowEnd, gridPtr->rowMax);
 
         slotPtr = masterPtr->masterDataPtr->columnPtr;
-        if (x < masterPtr->masterDataPtr->startX)
-        {
+        if (x < masterPtr->masterDataPtr->startX) {
             i = -1;
-        }
-        else
-        {
+        } else {
             x -= masterPtr->masterDataPtr->startX;
-            for (i = 0; slotPtr[i].offset < x && i < endX; i++)
-            {
+            for (i = 0; slotPtr[i].offset < x && i < endX; i++) {
                 /* null body */
             }
         }
 
         slotPtr = masterPtr->masterDataPtr->rowPtr;
-        if (y < masterPtr->masterDataPtr->startY)
-        {
+        if (y < masterPtr->masterDataPtr->startY) {
             j = -1;
-        }
-        else
-        {
+        } else {
             y -= masterPtr->masterDataPtr->startY;
-            for (j = 0; slotPtr[j].offset < y && j < endY; j++)
-            {
+            for (j = 0; slotPtr[j].offset < y && j < endY; j++) {
                 /* null body */
             }
         }
 
         sprintf(interp->result, "%d %d", i, j);
-    }
-    else if ((c == 'p') && (strncmp(argv[1], "propagate", length) == 0))
-    {
+    } else if ((c == 'p') && (strncmp(argv[1], "propagate", length) == 0)) {
         Tk_Window master;
         int propagate;
 
-        if (argc > 4)
-        {
+        if (argc > 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -652,22 +587,18 @@ char **argv;           /* Argument strings. */
             return TCL_ERROR;
         }
         master = Tk_NameToWindow(interp, argv[2], tkwin);
-        if (master == NULL)
-        {
+        if (master == NULL) {
             return TCL_ERROR;
         }
         masterPtr = GetGrid(master);
-        if (argc == 3)
-        {
+        if (argc == 3) {
             interp->result = (masterPtr->flags & DONT_PROPAGATE) ? "0" : "1";
             return TCL_OK;
         }
-        if (Tcl_GetBoolean(interp, argv[3], &propagate) != TCL_OK)
-        {
+        if (Tcl_GetBoolean(interp, argv[3], &propagate) != TCL_OK) {
             return TCL_ERROR;
         }
-        if ((!propagate) ^ (masterPtr->flags & DONT_PROPAGATE))
-        {
+        if ((!propagate) ^ (masterPtr->flags & DONT_PROPAGATE)) {
             masterPtr->flags ^= DONT_PROPAGATE;
 
             /*
@@ -675,24 +606,19 @@ char **argv;           /* Argument strings. */
              * propagate upwards to the master's master.
              */
 
-            if (masterPtr->abortPtr != NULL)
-            {
+            if (masterPtr->abortPtr != NULL) {
                 *masterPtr->abortPtr = 1;
             }
-            if (!(masterPtr->flags & REQUESTED_RELAYOUT))
-            {
+            if (!(masterPtr->flags & REQUESTED_RELAYOUT)) {
                 masterPtr->flags |= REQUESTED_RELAYOUT;
                 Tcl_DoWhenIdle(ArrangeGrid, ( ClientData )masterPtr);
             }
         }
-    }
-    else if ((c == 's') && (strncmp(argv[1], "size", length) == 0)
-             && (length > 1))
-    {
+    } else if ((c == 's') && (strncmp(argv[1], "size", length) == 0)
+               && (length > 1)) {
         Tk_Window master;
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -701,36 +627,29 @@ char **argv;           /* Argument strings. */
             return TCL_ERROR;
         }
         master = Tk_NameToWindow(interp, argv[2], tkwin);
-        if (master == NULL)
-        {
+        if (master == NULL) {
             return TCL_ERROR;
         }
         masterPtr = GetGrid(master);
 
-        if (masterPtr->masterDataPtr != NULL)
-        {
+        if (masterPtr->masterDataPtr != NULL) {
             SetGridSize(masterPtr);
             gridPtr = masterPtr->masterDataPtr;
             sprintf(interp->result,
                     "%d %d",
                     MAX(gridPtr->columnEnd, gridPtr->columnMax),
                     MAX(gridPtr->rowEnd, gridPtr->rowMax));
-        }
-        else
-        {
+        } else {
             sprintf(interp->result, "%d %d", 0, 0);
         }
-    }
-    else if ((c == 's') && (strncmp(argv[1], "slaves", length) == 0)
-             && (length > 1))
-    {
+    } else if ((c == 's') && (strncmp(argv[1], "slaves", length) == 0)
+               && (length > 1)) {
         Tk_Window master;
         Gridder *slavePtr;
         int i, value;
         int row = -1, column = -1;
 
-        if ((argc < 3) || ((argc % 2) == 0))
-        {
+        if ((argc < 3) || ((argc % 2) == 0)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -739,11 +658,9 @@ char **argv;           /* Argument strings. */
             return TCL_ERROR;
         }
 
-        for (i = 3; i < argc; i += 2)
-        {
+        for (i = 3; i < argc; i += 2) {
             length = strlen(argv[i]);
-            if ((*argv[i] != '-') || (length < 2))
-            {
+            if ((*argv[i] != '-') || (length < 2)) {
                 Tcl_AppendResult(interp,
                                  "invalid args: should be \"",
                                  argv[0],
@@ -751,28 +668,21 @@ char **argv;           /* Argument strings. */
                                  ( char * )NULL);
                 return TCL_ERROR;
             }
-            if (Tcl_GetInt(interp, argv[i + 1], &value) != TCL_OK)
-            {
+            if (Tcl_GetInt(interp, argv[i + 1], &value) != TCL_OK) {
                 return TCL_ERROR;
             }
-            if (value < 0)
-            {
+            if (value < 0) {
                 Tcl_AppendResult(interp,
                                  argv[i],
                                  " is an invalid value: should NOT be < 0",
                                  ( char * )NULL);
                 return TCL_ERROR;
             }
-            if (strncmp(argv[i], "-column", length) == 0)
-            {
+            if (strncmp(argv[i], "-column", length) == 0) {
                 column = value;
-            }
-            else if (strncmp(argv[i], "-row", length) == 0)
-            {
+            } else if (strncmp(argv[i], "-row", length) == 0) {
                 row = value;
-            }
-            else
-            {
+            } else {
                 Tcl_AppendResult(interp,
                                  argv[i],
                                  " is an invalid option: should be \"",
@@ -782,25 +692,21 @@ char **argv;           /* Argument strings. */
             }
         }
         master = Tk_NameToWindow(interp, argv[2], tkwin);
-        if (master == NULL)
-        {
+        if (master == NULL) {
             return TCL_ERROR;
         }
         masterPtr = GetGrid(master);
 
         for (slavePtr = masterPtr->slavePtr; slavePtr != NULL;
-             slavePtr = slavePtr->nextPtr)
-        {
+             slavePtr = slavePtr->nextPtr) {
             if (column >= 0
                 && (slavePtr->column > column
-                    || slavePtr->column + slavePtr->numCols - 1 < column))
-            {
+                    || slavePtr->column + slavePtr->numCols - 1 < column)) {
                 continue;
             }
             if (row >= 0
                 && (slavePtr->row > row
-                    || slavePtr->row + slavePtr->numRows - 1 < row))
-            {
+                    || slavePtr->row + slavePtr->numRows - 1 < row)) {
                 continue;
             }
             Tcl_AppendElement(interp, Tk_PathName(slavePtr->tkwin));
@@ -814,12 +720,12 @@ char **argv;           /* Argument strings. */
          *  grid rowconfigure <master> <index> -option
          *  grid rowconfigure <master> <index> -option value -option value.
          */
-    }
-    else if (((c == 'c') && (strncmp(argv[1], "columnconfigure", length) == 0)
-              && (length >= 3))
-             || ((c == 'r') && (strncmp(argv[1], "rowconfigure", length) == 0)
-                 && (length >= 2)))
-    {
+    } else if (((c == 'c')
+                && (strncmp(argv[1], "columnconfigure", length) == 0)
+                && (length >= 3))
+               || ((c == 'r')
+                   && (strncmp(argv[1], "rowconfigure", length) == 0)
+                   && (length >= 2))) {
         Tk_Window master;
         SlotInfo *slotPtr = NULL;
         int slot;      /* the column or row number */
@@ -830,8 +736,7 @@ char **argv;           /* Argument strings. */
         int ok;        /* temporary TCL result code */
         int i;
 
-        if (((argc % 2 != 0) && (argc > 6)) || (argc < 4))
-        {
+        if (((argc % 2 != 0) && (argc > 6)) || (argc < 4)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -843,13 +748,11 @@ char **argv;           /* Argument strings. */
         }
 
         master = Tk_NameToWindow(interp, argv[2], tkwin);
-        if (master == NULL)
-        {
+        if (master == NULL) {
             return TCL_ERROR;
         }
 
-        if (Tcl_GetInt(interp, argv[3], &slot) != TCL_OK)
-        {
+        if (Tcl_GetInt(interp, argv[3], &slot) != TCL_OK) {
             return TCL_ERROR;
         }
 
@@ -858,8 +761,7 @@ char **argv;           /* Argument strings. */
         checkOnly = ((argc == 4) || (argc == 5));
 
         ok = CheckSlotData(masterPtr, slot, slotType, checkOnly);
-        if ((ok != TCL_OK) && (argc != 4))
-        {
+        if ((ok != TCL_OK) && (argc != 4)) {
             Tcl_AppendResult(interp,
                              argv[0],
                              " ",
@@ -869,9 +771,7 @@ char **argv;           /* Argument strings. */
                              "\" is out of range",
                              ( char * )NULL);
             return TCL_ERROR;
-        }
-        else if (ok == TCL_OK)
-        {
+        } else if (ok == TCL_OK) {
             slotPtr = (slotType == COLUMN)
                       ? masterPtr->masterDataPtr->columnPtr
                       : masterPtr->masterDataPtr->rowPtr;
@@ -882,17 +782,14 @@ char **argv;           /* Argument strings. */
          * request is out of range, return all 0's.
          */
 
-        if ((argc == 4) && (ok == TCL_OK))
-        {
+        if ((argc == 4) && (ok == TCL_OK)) {
             sprintf(interp->result,
                     "-minsize %d -pad %d -weight %d",
                     slotPtr[slot].minSize,
                     slotPtr[slot].pad,
                     slotPtr[slot].weight);
             return (TCL_OK);
-        }
-        else if (argc == 4)
-        {
+        } else if (argc == 4) {
             sprintf(
             interp->result, "-minsize %d -pad %d -weight %d", 0, 0, 0);
             return (TCL_OK);
@@ -904,11 +801,9 @@ char **argv;           /* Argument strings. */
          * value is returned.
          */
 
-        for (i = 4; i < argc; i += 2)
-        {
+        for (i = 4; i < argc; i += 2) {
             length = strlen(argv[i]);
-            if ((*argv[i] != '-') || length < 2)
-            {
+            if ((*argv[i] != '-') || length < 2) {
                 Tcl_AppendResult(interp,
                                  "invalid arg \"",
                                  argv[i],
@@ -916,74 +811,48 @@ char **argv;           /* Argument strings. */
                                  ( char * )NULL);
                 return TCL_ERROR;
             }
-            if (strncmp(argv[i], "-minsize", length) == 0)
-            {
-                if (argc == 5)
-                {
+            if (strncmp(argv[i], "-minsize", length) == 0) {
+                if (argc == 5) {
                     sprintf(interp->result, "%d", slotPtr[slot].minSize);
-                }
-                else if (Tk_GetPixels(interp, master, argv[i + 1], &size)
-                         != TCL_OK)
-                {
+                } else if (Tk_GetPixels(interp, master, argv[i + 1], &size)
+                           != TCL_OK) {
                     return TCL_ERROR;
-                }
-                else
-                {
+                } else {
                     slotPtr[slot].minSize = size;
                 }
-            }
-            else if (strncmp(argv[i], "-weight", length) == 0)
-            {
+            } else if (strncmp(argv[i], "-weight", length) == 0) {
                 int wt;
-                if (argc == 5)
-                {
+                if (argc == 5) {
                     sprintf(interp->result, "%d", slotPtr[slot].weight);
-                }
-                else if (Tcl_GetInt(interp, argv[i + 1], &wt) != TCL_OK)
-                {
+                } else if (Tcl_GetInt(interp, argv[i + 1], &wt) != TCL_OK) {
                     return TCL_ERROR;
-                }
-                else if (wt < 0)
-                {
+                } else if (wt < 0) {
                     Tcl_AppendResult(interp,
                                      "invalid arg \"",
                                      argv[i],
                                      "\": should be non-negative",
                                      ( char * )NULL);
                     return TCL_ERROR;
-                }
-                else
-                {
+                } else {
                     slotPtr[slot].weight = wt;
                 }
-            }
-            else if (strncmp(argv[i], "-pad", length) == 0)
-            {
-                if (argc == 5)
-                {
+            } else if (strncmp(argv[i], "-pad", length) == 0) {
+                if (argc == 5) {
                     sprintf(interp->result, "%d", slotPtr[slot].pad);
-                }
-                else if (Tk_GetPixels(interp, master, argv[i + 1], &size)
-                         != TCL_OK)
-                {
+                } else if (Tk_GetPixels(interp, master, argv[i + 1], &size)
+                           != TCL_OK) {
                     return TCL_ERROR;
-                }
-                else if (size < 0)
-                {
+                } else if (size < 0) {
                     Tcl_AppendResult(interp,
                                      "invalid arg \"",
                                      argv[i],
                                      "\": should be non-negative",
                                      ( char * )NULL);
                     return TCL_ERROR;
-                }
-                else
-                {
+                } else {
                     slotPtr[slot].pad = size;
                 }
-            }
-            else
-            {
+            } else {
                 Tcl_AppendResult(interp,
                                  "invalid arg \"",
                                  argv[i],
@@ -998,44 +867,34 @@ char **argv;           /* Argument strings. */
          * and check for constraint shrinkage.
          */
 
-        if (argc != 5)
-        {
-            if (slotType == ROW)
-            {
+        if (argc != 5) {
+            if (slotType == ROW) {
                 int last = masterPtr->masterDataPtr->rowMax - 1;
                 while (last >= 0 && slotPtr[last].weight == 0
                        && slotPtr[last].pad == 0
-                       && slotPtr[last].minSize == 0)
-                {
+                       && slotPtr[last].minSize == 0) {
                     last--;
                 }
                 masterPtr->masterDataPtr->rowMax = last + 1;
-            }
-            else
-            {
+            } else {
                 int last = masterPtr->masterDataPtr->columnMax - 1;
                 while (last >= 0 && slotPtr[last].weight == 0
                        && slotPtr[last].pad == 0
-                       && slotPtr[last].minSize == 0)
-                {
+                       && slotPtr[last].minSize == 0) {
                     last--;
                 }
                 masterPtr->masterDataPtr->columnMax = last + 1;
             }
 
-            if (masterPtr->abortPtr != NULL)
-            {
+            if (masterPtr->abortPtr != NULL) {
                 *masterPtr->abortPtr = 1;
             }
-            if (!(masterPtr->flags & REQUESTED_RELAYOUT))
-            {
+            if (!(masterPtr->flags & REQUESTED_RELAYOUT)) {
                 masterPtr->flags |= REQUESTED_RELAYOUT;
                 Tcl_DoWhenIdle(ArrangeGrid, ( ClientData )masterPtr);
             }
         }
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(
         interp,
         "bad option \"",
@@ -1077,8 +936,7 @@ Tk_Window tkwin; /* Other Tk-related information
     Gridder *gridPtr = ( Gridder * )clientData;
 
     gridPtr = gridPtr->masterPtr;
-    if (!(gridPtr->flags & REQUESTED_RELAYOUT))
-    {
+    if (!(gridPtr->flags & REQUESTED_RELAYOUT)) {
         gridPtr->flags |= REQUESTED_RELAYOUT;
         Tcl_DoWhenIdle(ArrangeGrid, ( ClientData )gridPtr);
     }
@@ -1108,8 +966,7 @@ Tk_Window tkwin;       /* Tk's handle for the slave window. */
 {
     Gridder *slavePtr = ( Gridder * )clientData;
 
-    if (slavePtr->masterPtr->tkwin != Tk_Parent(slavePtr->tkwin))
-    {
+    if (slavePtr->masterPtr->tkwin != Tk_Parent(slavePtr->tkwin)) {
         Tk_UnmaintainGeometry(slavePtr->tkwin, slavePtr->masterPtr->tkwin);
     }
     Unlink(slavePtr);
@@ -1157,8 +1014,7 @@ SlotInfo *slotPtr; /* Pointer to slot array. */
      * The layout is already the correct size; all done.
      */
 
-    if (diff == 0)
-    {
+    if (diff == 0) {
         return (0);
     }
 
@@ -1167,13 +1023,11 @@ SlotInfo *slotPtr; /* Pointer to slot array. */
      * there is extra space, else clip on the bottom/right.
      */
 
-    for (slot = 0; slot < slots; slot++)
-    {
+    for (slot = 0; slot < slots; slot++) {
         totalWeight += slotPtr[slot].weight;
     }
 
-    if (totalWeight == 0)
-    {
+    if (totalWeight == 0) {
         return (diff > 0 ? diff / 2 : 0);
     }
 
@@ -1182,10 +1036,8 @@ SlotInfo *slotPtr; /* Pointer to slot array. */
      * cumulatively to prevent round-off error accumulation.
      */
 
-    if (diff > 0)
-    {
-        for (weight = slot = 0; slot < slots; slot++)
-        {
+    if (diff > 0) {
+        for (weight = slot = 0; slot < slots; slot++) {
             weight += slotPtr[slot].weight;
             slotPtr[slot].offset += diff * weight / totalWeight;
         }
@@ -1197,18 +1049,12 @@ SlotInfo *slotPtr; /* Pointer to slot array. */
      * minimum possible size by looking at the slot minSizes.
      */
 
-    for (slot = 0; slot < slots; slot++)
-    {
-        if (slotPtr[slot].weight > 0)
-        {
+    for (slot = 0; slot < slots; slot++) {
+        if (slotPtr[slot].weight > 0) {
             minSize += slotPtr[slot].minSize;
-        }
-        else if (slot > 0)
-        {
+        } else if (slot > 0) {
             minSize += slotPtr[slot].offset - slotPtr[slot - 1].offset;
-        }
-        else
-        {
+        } else {
             minSize += slotPtr[slot].offset;
         }
     }
@@ -1219,21 +1065,14 @@ SlotInfo *slotPtr; /* Pointer to slot array. */
      * bottom/right.
      */
 
-    if (size <= minSize)
-    {
+    if (size <= minSize) {
         int offset = 0;
-        for (slot = 0; slot < slots; slot++)
-        {
-            if (slotPtr[slot].weight > 0)
-            {
+        for (slot = 0; slot < slots; slot++) {
+            if (slotPtr[slot].weight > 0) {
                 offset += slotPtr[slot].minSize;
-            }
-            else if (slot > 0)
-            {
+            } else if (slot > 0) {
                 offset += slotPtr[slot].offset - slotPtr[slot - 1].offset;
-            }
-            else
-            {
+            } else {
                 offset += slotPtr[slot].offset;
             }
             slotPtr[slot].offset = offset;
@@ -1246,30 +1085,24 @@ SlotInfo *slotPtr; /* Pointer to slot array. */
      * get renormalized anytime a slot shrinks to its minimum size.
      */
 
-    while (diff < 0)
-    {
+    while (diff < 0) {
 
         /*
          * Find the total weight for the shrinkable slots.
          */
 
-        for (totalWeight = slot = 0; slot < slots; slot++)
-        {
+        for (totalWeight = slot = 0; slot < slots; slot++) {
             int current = (slot == 0)
                           ? slotPtr[slot].offset
                           : slotPtr[slot].offset - slotPtr[slot - 1].offset;
-            if (current > slotPtr[slot].minSize)
-            {
+            if (current > slotPtr[slot].minSize) {
                 totalWeight += slotPtr[slot].weight;
                 slotPtr[slot].temp = slotPtr[slot].weight;
-            }
-            else
-            {
+            } else {
                 slotPtr[slot].temp = 0;
             }
         }
-        if (totalWeight == 0)
-        {
+        if (totalWeight == 0) {
             break;
         }
 
@@ -1278,13 +1111,11 @@ SlotInfo *slotPtr; /* Pointer to slot array. */
          */
 
         newDiff = diff;
-        for (weight = slot = 0; slot < slots; slot++)
-        {
+        for (weight = slot = 0; slot < slots; slot++) {
             int current; /* current size of this slot */
             int maxDiff; /* max diff that would cause
                           * this slot to equal its minsize */
-            if (slotPtr[slot].temp == 0)
-            {
+            if (slotPtr[slot].temp == 0) {
                 continue;
             }
             weight += slotPtr[slot].temp;
@@ -1293,8 +1124,7 @@ SlotInfo *slotPtr; /* Pointer to slot array. */
                       : slotPtr[slot].offset - slotPtr[slot - 1].offset;
             maxDiff = totalWeight * (slotPtr[slot].minSize - current)
                       / slotPtr[slot].temp;
-            if (maxDiff > newDiff)
-            {
+            if (maxDiff > newDiff) {
                 newDiff = maxDiff;
             }
         }
@@ -1303,8 +1133,7 @@ SlotInfo *slotPtr; /* Pointer to slot array. */
          * Now distribute the space.
          */
 
-        for (weight = slot = 0; slot < slots; slot++)
-        {
+        for (weight = slot = 0; slot < slots; slot++) {
             weight += slotPtr[slot].temp;
             slotPtr[slot].offset += newDiff * weight / totalWeight;
         }
@@ -1347,33 +1176,27 @@ int *heightPtr;    /* Height of the cavity (in pixels). */
     *yPtr += slavePtr->padY / 2;
     *heightPtr -= slavePtr->padY;
 
-    if (*widthPtr > (Tk_ReqWidth(slavePtr->tkwin) + slavePtr->iPadX))
-    {
+    if (*widthPtr > (Tk_ReqWidth(slavePtr->tkwin) + slavePtr->iPadX)) {
         diffx = *widthPtr - (Tk_ReqWidth(slavePtr->tkwin) + slavePtr->iPadX);
         *widthPtr = Tk_ReqWidth(slavePtr->tkwin) + slavePtr->iPadX;
     }
 
-    if (*heightPtr > (Tk_ReqHeight(slavePtr->tkwin) + slavePtr->iPadY))
-    {
+    if (*heightPtr > (Tk_ReqHeight(slavePtr->tkwin) + slavePtr->iPadY)) {
         diffy
         = *heightPtr - (Tk_ReqHeight(slavePtr->tkwin) + slavePtr->iPadY);
         *heightPtr = Tk_ReqHeight(slavePtr->tkwin) + slavePtr->iPadY;
     }
 
-    if (sticky & STICK_EAST && sticky & STICK_WEST)
-    {
+    if (sticky & STICK_EAST && sticky & STICK_WEST) {
         *widthPtr += diffx;
     }
-    if (sticky & STICK_NORTH && sticky & STICK_SOUTH)
-    {
+    if (sticky & STICK_NORTH && sticky & STICK_SOUTH) {
         *heightPtr += diffy;
     }
-    if (!(sticky & STICK_WEST))
-    {
+    if (!(sticky & STICK_WEST)) {
         *xPtr += (sticky & STICK_EAST) ? diffx : diffx / 2;
     }
-    if (!(sticky & STICK_NORTH))
-    {
+    if (!(sticky & STICK_NORTH)) {
         *yPtr += (sticky & STICK_SOUTH) ? diffy : diffy / 2;
     }
 }
@@ -1418,13 +1241,11 @@ ClientData clientData; /* Structure describing parent whose slaves
      * manager can take over.
      */
 
-    if (masterPtr->slavePtr == NULL)
-    {
+    if (masterPtr->slavePtr == NULL) {
         return;
     }
 
-    if (masterPtr->masterDataPtr == NULL)
-    {
+    if (masterPtr->masterDataPtr == NULL) {
         return;
     }
 
@@ -1434,8 +1255,7 @@ ClientData clientData; /* Structure describing parent whose slaves
      * can be aborted if necessary.
      */
 
-    if (masterPtr->abortPtr != NULL)
-    {
+    if (masterPtr->abortPtr != NULL) {
         *masterPtr->abortPtr = 1;
     }
     masterPtr->abortPtr = &abort;
@@ -1454,11 +1274,9 @@ ClientData clientData; /* Structure describing parent whose slaves
 
     if (((width != Tk_ReqWidth(masterPtr->tkwin))
          || (height != Tk_ReqHeight(masterPtr->tkwin)))
-        && !(masterPtr->flags & DONT_PROPAGATE))
-    {
+        && !(masterPtr->flags & DONT_PROPAGATE)) {
         Tk_GeometryRequest(masterPtr->tkwin, width, height);
-        if (width > 1 && height > 1)
-        {
+        if (width > 1 && height > 1) {
             masterPtr->flags |= REQUESTED_RELAYOUT;
             Tcl_DoWhenIdle(ArrangeGrid, ( ClientData )masterPtr);
         }
@@ -1495,8 +1313,7 @@ ClientData clientData; /* Structure describing parent whose slaves
      */
 
     for (slavePtr = masterPtr->slavePtr; slavePtr != NULL && !abort;
-         slavePtr = slavePtr->nextPtr)
-    {
+         slavePtr = slavePtr->nextPtr) {
         int x, y;          /* top left coordinate */
         int width, height; /* slot or slave size */
         int col = slavePtr->column;
@@ -1519,23 +1336,17 @@ ClientData clientData; /* Structure describing parent whose slaves
          * do this here.  Otherwise let Tk_MaintainGeometry do the work.
          */
 
-        if (masterPtr->tkwin == Tk_Parent(slavePtr->tkwin))
-        {
-            if ((width <= 0) || (height <= 0))
-            {
+        if (masterPtr->tkwin == Tk_Parent(slavePtr->tkwin)) {
+            if ((width <= 0) || (height <= 0)) {
                 Tk_UnmapWindow(slavePtr->tkwin);
-            }
-            else
-            {
+            } else {
                 if ((x != Tk_X(slavePtr->tkwin))
                     || (y != Tk_Y(slavePtr->tkwin))
                     || (width != Tk_Width(slavePtr->tkwin))
-                    || (height != Tk_Height(slavePtr->tkwin)))
-                {
+                    || (height != Tk_Height(slavePtr->tkwin))) {
                     Tk_MoveResizeWindow(slavePtr->tkwin, x, y, width, height);
                 }
-                if (abort)
-                {
+                if (abort) {
                     break;
                 }
 
@@ -1544,21 +1355,15 @@ ClientData clientData; /* Structure describing parent whose slaves
                  * until the master gets mapped later.
                  */
 
-                if (Tk_IsMapped(masterPtr->tkwin))
-                {
+                if (Tk_IsMapped(masterPtr->tkwin)) {
                     Tk_MapWindow(slavePtr->tkwin);
                 }
             }
-        }
-        else
-        {
-            if ((width <= 0) || (height <= 0))
-            {
+        } else {
+            if ((width <= 0) || (height <= 0)) {
                 Tk_UnmaintainGeometry(slavePtr->tkwin, masterPtr->tkwin);
                 Tk_UnmapWindow(slavePtr->tkwin);
-            }
-            else
-            {
+            } else {
                 Tk_MaintainGeometry(
                 slavePtr->tkwin, masterPtr->tkwin, x, y, width, height);
             }
@@ -1623,14 +1428,11 @@ int maxOffset;      /* The actual maximum size of this layout
 
     GridLayout layoutData[TYPICAL_SIZE + 1];
 
-    if (slotType == COLUMN)
-    {
+    if (slotType == COLUMN) {
         constraintCount = masterPtr->masterDataPtr->columnMax;
         slotCount = masterPtr->masterDataPtr->columnEnd;
         slotPtr = masterPtr->masterDataPtr->columnPtr;
-    }
-    else
-    {
+    } else {
         constraintCount = masterPtr->masterDataPtr->rowMax;
         slotCount = masterPtr->masterDataPtr->rowEnd;
         slotPtr = masterPtr->masterDataPtr->rowPtr;
@@ -1641,13 +1443,10 @@ int maxOffset;      /* The actual maximum size of this layout
      */
 
     gridCount = MAX(constraintCount, slotCount);
-    if (gridCount >= TYPICAL_SIZE)
-    {
+    if (gridCount >= TYPICAL_SIZE) {
         layoutPtr
         = ( GridLayout * )ckalloc(sizeof(GridLayout) * (1 + gridCount));
-    }
-    else
-    {
+    } else {
         layoutPtr = layoutData;
     }
 
@@ -1669,15 +1468,13 @@ int maxOffset;      /* The actual maximum size of this layout
      * and initialize the rest of the fields.
      */
 
-    for (slot = 0; slot < constraintCount; slot++)
-    {
+    for (slot = 0; slot < constraintCount; slot++) {
         layoutPtr[slot].minSize = slotPtr[slot].minSize;
         layoutPtr[slot].weight = slotPtr[slot].weight;
         layoutPtr[slot].pad = slotPtr[slot].pad;
         layoutPtr[slot].binNextPtr = NULL;
     }
-    for (; slot < gridCount; slot++)
-    {
+    for (; slot < gridCount; slot++) {
         layoutPtr[slot].minSize = 0;
         layoutPtr[slot].weight = 0;
         layoutPtr[slot].pad = 0;
@@ -1697,25 +1494,19 @@ int maxOffset;      /* The actual maximum size of this layout
      * sizes at each slot boundary, without the need to re-sort the slaves.
      */
 
-    switch (slotType)
-    {
+    switch (slotType) {
     case COLUMN:
         for (slavePtr = masterPtr->slavePtr; slavePtr != NULL;
-             slavePtr = slavePtr->nextPtr)
-        {
+             slavePtr = slavePtr->nextPtr) {
             int rightEdge = slavePtr->column + slavePtr->numCols - 1;
             slavePtr->size = Tk_ReqWidth(slavePtr->tkwin) + slavePtr->padX
                              + slavePtr->iPadX + slavePtr->doubleBw;
-            if (slavePtr->numCols > 1)
-            {
+            if (slavePtr->numCols > 1) {
                 slavePtr->binNextPtr = layoutPtr[rightEdge].binNextPtr;
                 layoutPtr[rightEdge].binNextPtr = slavePtr;
-            }
-            else
-            {
+            } else {
                 int size = slavePtr->size + layoutPtr[rightEdge].pad;
-                if (size > layoutPtr[rightEdge].minSize)
-                {
+                if (size > layoutPtr[rightEdge].minSize) {
                     layoutPtr[rightEdge].minSize = size;
                 }
             }
@@ -1723,21 +1514,16 @@ int maxOffset;      /* The actual maximum size of this layout
         break;
     case ROW:
         for (slavePtr = masterPtr->slavePtr; slavePtr != NULL;
-             slavePtr = slavePtr->nextPtr)
-        {
+             slavePtr = slavePtr->nextPtr) {
             int rightEdge = slavePtr->row + slavePtr->numRows - 1;
             slavePtr->size = Tk_ReqHeight(slavePtr->tkwin) + slavePtr->padY
                              + slavePtr->iPadY + slavePtr->doubleBw;
-            if (slavePtr->numRows > 1)
-            {
+            if (slavePtr->numRows > 1) {
                 slavePtr->binNextPtr = layoutPtr[rightEdge].binNextPtr;
                 layoutPtr[rightEdge].binNextPtr = slavePtr;
-            }
-            else
-            {
+            } else {
                 int size = slavePtr->size + layoutPtr[rightEdge].pad;
-                if (size > layoutPtr[rightEdge].minSize)
-                {
+                if (size > layoutPtr[rightEdge].minSize) {
                     layoutPtr[rightEdge].minSize = size;
                 }
             }
@@ -1751,17 +1537,14 @@ int maxOffset;      /* The actual maximum size of this layout
      * that would fit all of the slaves.  This determines the minimum
      */
 
-    for (offset = slot = 0; slot < gridCount; slot++)
-    {
+    for (offset = slot = 0; slot < gridCount; slot++) {
         layoutPtr[slot].minOffset = layoutPtr[slot].minSize + offset;
         for (slavePtr = layoutPtr[slot].binNextPtr; slavePtr != NULL;
-             slavePtr = slavePtr->binNextPtr)
-        {
+             slavePtr = slavePtr->binNextPtr) {
             int span
             = (slotType == COLUMN) ? slavePtr->numCols : slavePtr->numRows;
             int required = slavePtr->size + layoutPtr[slot - span].minOffset;
-            if (required > layoutPtr[slot].minOffset)
-            {
+            if (required > layoutPtr[slot].minOffset) {
                 layoutPtr[slot].minOffset = required;
             }
         }
@@ -1775,8 +1558,7 @@ int maxOffset;      /* The actual maximum size of this layout
      */
 
     requiredSize = offset;
-    if (maxOffset > offset)
-    {
+    if (maxOffset > offset) {
         offset = maxOffset;
     }
 
@@ -1788,32 +1570,25 @@ int maxOffset;      /* The actual maximum size of this layout
      * they will be reduced as required.
      */
 
-    for (slot = 0; slot < gridCount; slot++)
-    {
+    for (slot = 0; slot < gridCount; slot++) {
         layoutPtr[slot].maxOffset = offset;
     }
-    for (slot = gridCount - 1; slot > 0;)
-    {
+    for (slot = gridCount - 1; slot > 0;) {
         for (slavePtr = layoutPtr[slot].binNextPtr; slavePtr != NULL;
-             slavePtr = slavePtr->binNextPtr)
-        {
+             slavePtr = slavePtr->binNextPtr) {
             int span
             = (slotType == COLUMN) ? slavePtr->numCols : slavePtr->numRows;
             int require = offset - slavePtr->size;
             int startSlot = slot - span;
-            if (startSlot >= 0 && require < layoutPtr[startSlot].maxOffset)
-            {
+            if (startSlot >= 0 && require < layoutPtr[startSlot].maxOffset) {
                 layoutPtr[startSlot].maxOffset = require;
             }
         }
         offset -= layoutPtr[slot].minSize;
         slot--;
-        if (layoutPtr[slot].maxOffset < offset)
-        {
+        if (layoutPtr[slot].maxOffset < offset) {
             offset = layoutPtr[slot].maxOffset;
-        }
-        else
-        {
+        } else {
             layoutPtr[slot].maxOffset = offset;
         }
     }
@@ -1829,8 +1604,7 @@ int maxOffset;      /* The actual maximum size of this layout
      * its range of possible values fixed at a single value.
      */
 
-    for (start = 0; start < gridCount;)
-    {
+    for (start = 0; start < gridCount;) {
         int totalWeight = 0; /* Sum of the weights for all of the
                               * slots in this span. */
         int need = 0;        /* The minimum space needed to layout
@@ -1847,16 +1621,13 @@ int maxOffset;      /* The actual maximum size of this layout
          * slot boundaries have a range of possible positions.
          */
 
-        if (layoutPtr[start].minOffset == layoutPtr[start].maxOffset)
-        {
+        if (layoutPtr[start].minOffset == layoutPtr[start].maxOffset) {
             start++;
             continue;
         }
 
-        for (end = start + 1; end < gridCount; end++)
-        {
-            if (layoutPtr[end].minOffset == layoutPtr[end].maxOffset)
-            {
+        for (end = start + 1; end < gridCount; end++) {
+            if (layoutPtr[end].minOffset == layoutPtr[end].maxOffset) {
                 break;
             }
         }
@@ -1867,8 +1638,7 @@ int maxOffset;      /* The actual maximum size of this layout
          * use.
          */
 
-        for (slot = start; slot <= end; slot++)
-        {
+        for (slot = start; slot <= end; slot++) {
             totalWeight += layoutPtr[slot].weight;
             need += layoutPtr[slot].minSize;
         }
@@ -1879,8 +1649,7 @@ int maxOffset;      /* The actual maximum size of this layout
          * extra space evenly.
          */
 
-        if (totalWeight == 0)
-        {
+        if (totalWeight == 0) {
             noWeights++;
             totalWeight = end - start + 1;
         }
@@ -1898,13 +1667,11 @@ int maxOffset;      /* The actual maximum size of this layout
          * roundoff errors.
          */
 
-        for (weight = 0, slot = start; slot < end; slot++)
-        {
+        for (weight = 0, slot = start; slot < end; slot++) {
             int diff = layoutPtr[slot].maxOffset - layoutPtr[slot].minOffset;
             weight += noWeights ? 1 : layoutPtr[slot].weight;
             if ((noWeights || layoutPtr[slot].weight > 0)
-                && (diff * totalWeight / weight) < (have - need))
-            {
+                && (diff * totalWeight / weight) < (have - need)) {
                 have = diff * totalWeight / weight + need;
             }
         }
@@ -1914,8 +1681,7 @@ int maxOffset;      /* The actual maximum size of this layout
          * adjusting the minSizes and minOffsets.
          */
 
-        for (weight = 0, slot = start; slot < end; slot++)
-        {
+        for (weight = 0, slot = start; slot < end; slot++) {
             weight += noWeights ? 1 : layoutPtr[slot].weight;
             layoutPtr[slot].minOffset
             += ( int )(( double )(have - need) * weight / totalWeight + 0.5);
@@ -1931,8 +1697,7 @@ int maxOffset;      /* The actual maximum size of this layout
          * to propagate the new space allocation.
          */
 
-        for (slot = end; slot > start; slot--)
-        {
+        for (slot = end; slot > start; slot--) {
             layoutPtr[slot - 1].maxOffset
             = layoutPtr[slot].maxOffset - layoutPtr[slot].minSize;
         }
@@ -1945,14 +1710,12 @@ int maxOffset;      /* The actual maximum size of this layout
      * layout information back into the master.
      */
 
-    for (slot = 0; slot < gridCount; slot++)
-    {
+    for (slot = 0; slot < gridCount; slot++) {
         slotPtr[slot].offset = layoutPtr[slot].minOffset;
     }
 
     --layoutPtr;
-    if (layoutPtr != layoutData)
-    {
+    if (layoutPtr != layoutData) {
         ckfree(( char * )layoutPtr);
     }
     return requiredSize;
@@ -1987,8 +1750,7 @@ static Gridder *GetGrid(tkwin) Tk_Window tkwin; /* Token for window for which
     Tcl_HashEntry *hPtr;
     int new;
 
-    if (!initialized)
-    {
+    if (!initialized) {
         initialized = 1;
         Tcl_InitHashTable(&gridHashTable, TCL_ONE_WORD_KEYS);
     }
@@ -1999,8 +1761,7 @@ static Gridder *GetGrid(tkwin) Tk_Window tkwin; /* Token for window for which
      */
 
     hPtr = Tcl_CreateHashEntry(&gridHashTable, ( char * )tkwin, &new);
-    if (!new)
-    {
+    if (!new) {
         return ( Gridder * )Tcl_GetHashValue(hPtr);
     }
     gridPtr = ( Gridder * )ckalloc(sizeof(Gridder));
@@ -2055,8 +1816,7 @@ static void SetGridSize(masterPtr) Gridder *masterPtr; /* The geometry master
     int maxX = 0, maxY = 0;
 
     for (slavePtr = masterPtr->slavePtr; slavePtr != NULL;
-         slavePtr = slavePtr->nextPtr)
-    {
+         slavePtr = slavePtr->nextPtr) {
         maxX = MAX(maxX, slavePtr->numCols + slavePtr->column);
         maxY = MAX(maxY, slavePtr->numRows + slavePtr->row);
     }
@@ -2099,13 +1859,11 @@ int checkOnly;      /* don't allocate new space if true */
      * If slot is out of bounds, return immediately.
      */
 
-    if (slot < 0 || slot >= MAX_ELEMENT)
-    {
+    if (slot < 0 || slot >= MAX_ELEMENT) {
         return TCL_ERROR;
     }
 
-    if (checkOnly == CHECK_ONLY && (masterPtr->masterDataPtr == NULL))
-    {
+    if (checkOnly == CHECK_ONLY && (masterPtr->masterDataPtr == NULL)) {
         return TCL_ERROR;
     }
 
@@ -2118,16 +1876,12 @@ int checkOnly;      /* don't allocate new space if true */
     InitMasterData(masterPtr);
     end = (slotType == ROW) ? masterPtr->masterDataPtr->rowMax
                             : masterPtr->masterDataPtr->columnMax;
-    if (checkOnly == CHECK_ONLY)
-    {
+    if (checkOnly == CHECK_ONLY) {
         return (end < slot) ? TCL_ERROR : TCL_OK;
-    }
-    else
-    {
+    } else {
         last = (slotType == ROW) ? masterPtr->masterDataPtr->rowSpace
                                  : masterPtr->masterDataPtr->columnSpace;
-        if (last < slot)
-        {
+        if (last < slot) {
             size_t size = sizeof(SlotInfo) * (slot + PREALLOC);
             SlotInfo *new = ( SlotInfo * )ckalloc(size);
             SlotInfo *old = (slotType == ROW)
@@ -2138,25 +1892,18 @@ int checkOnly;      /* don't allocate new space if true */
                    0,
                    (sizeof(SlotInfo) * (PREALLOC + slot - last)));
             ckfree(( char * )old);
-            if (slotType == ROW)
-            {
+            if (slotType == ROW) {
                 masterPtr->masterDataPtr->rowPtr = new;
                 masterPtr->masterDataPtr->rowSpace = slot + PREALLOC;
-            }
-            else
-            {
+            } else {
                 masterPtr->masterDataPtr->columnPtr = new;
                 masterPtr->masterDataPtr->columnSpace = slot + PREALLOC;
             }
         }
-        if (slot >= end && checkOnly != CHECK_SPACE)
-        {
-            if (slotType == ROW)
-            {
+        if (slot >= end && checkOnly != CHECK_SPACE) {
+            if (slotType == ROW) {
                 masterPtr->masterDataPtr->rowMax = slot + 1;
-            }
-            else
-            {
+            } else {
                 masterPtr->masterDataPtr->columnMax = slot + 1;
             }
         }
@@ -2186,8 +1933,7 @@ int checkOnly;      /* don't allocate new space if true */
 static void InitMasterData(masterPtr) Gridder *masterPtr;
 {
     size_t size;
-    if (masterPtr->masterDataPtr == NULL)
-    {
+    if (masterPtr->masterDataPtr == NULL) {
         GridMaster *gridPtr = masterPtr->masterDataPtr
         = ( GridMaster * )ckalloc(sizeof(GridMaster));
         size = sizeof(SlotInfo) * TYPICAL_SIZE;
@@ -2231,44 +1977,35 @@ static void Unlink(slavePtr) Gridder *slavePtr; /* Window to unlink. */
     GridMaster *gridPtr; /* pointer to grid data */
 
     masterPtr = slavePtr->masterPtr;
-    if (masterPtr == NULL)
-    {
+    if (masterPtr == NULL) {
         return;
     }
 
     gridPtr = masterPtr->masterDataPtr;
-    if (masterPtr->slavePtr == slavePtr)
-    {
+    if (masterPtr->slavePtr == slavePtr) {
         masterPtr->slavePtr = slavePtr->nextPtr;
-    }
-    else
-    {
-        for (slavePtr2 = masterPtr->slavePtr;; slavePtr2 = slavePtr2->nextPtr)
-        {
-            if (slavePtr2 == NULL)
-            {
+    } else {
+        for (slavePtr2 = masterPtr->slavePtr;;
+             slavePtr2 = slavePtr2->nextPtr) {
+            if (slavePtr2 == NULL) {
                 panic("Unlink couldn't find previous window");
             }
-            if (slavePtr2->nextPtr == slavePtr)
-            {
+            if (slavePtr2->nextPtr == slavePtr) {
                 slavePtr2->nextPtr = slavePtr->nextPtr;
                 break;
             }
         }
     }
-    if (!(masterPtr->flags & REQUESTED_RELAYOUT))
-    {
+    if (!(masterPtr->flags & REQUESTED_RELAYOUT)) {
         masterPtr->flags |= REQUESTED_RELAYOUT;
         Tcl_DoWhenIdle(ArrangeGrid, ( ClientData )masterPtr);
     }
-    if (masterPtr->abortPtr != NULL)
-    {
+    if (masterPtr->abortPtr != NULL) {
         *masterPtr->abortPtr = 1;
     }
 
     if (slavePtr->numCols + slavePtr->column == gridPtr->columnMax
-        || slavePtr->numRows + slavePtr->row == gridPtr->rowMax)
-    {
+        || slavePtr->numRows + slavePtr->row == gridPtr->rowMax) {
     }
     slavePtr->masterPtr = NULL;
 }
@@ -2298,14 +2035,11 @@ static void DestroyGrid(memPtr) char *memPtr; /* Info about window that is now
 {
     Gridder *gridPtr = ( Gridder * )memPtr;
 
-    if (gridPtr->masterDataPtr != NULL)
-    {
-        if (gridPtr->masterDataPtr->rowPtr != NULL)
-        {
+    if (gridPtr->masterDataPtr != NULL) {
+        if (gridPtr->masterDataPtr->rowPtr != NULL) {
             ckfree(( char * )gridPtr->masterDataPtr->rowPtr);
         }
-        if (gridPtr->masterDataPtr->columnPtr != NULL)
-        {
+        if (gridPtr->masterDataPtr->columnPtr != NULL) {
             ckfree(( char * )gridPtr->masterDataPtr->columnPtr);
         }
         ckfree(( char * )gridPtr->masterDataPtr);
@@ -2339,36 +2073,29 @@ XEvent *eventPtr;      /* Describes what just happened. */
 {
     Gridder *gridPtr = ( Gridder * )clientData;
 
-    if (eventPtr->type == ConfigureNotify)
-    {
-        if (!(gridPtr->flags & REQUESTED_RELAYOUT))
-        {
+    if (eventPtr->type == ConfigureNotify) {
+        if (!(gridPtr->flags & REQUESTED_RELAYOUT)) {
             gridPtr->flags |= REQUESTED_RELAYOUT;
             Tcl_DoWhenIdle(ArrangeGrid, ( ClientData )gridPtr);
         }
-        if (gridPtr->doubleBw != 2 * Tk_Changes(gridPtr->tkwin)->border_width)
-        {
+        if (gridPtr->doubleBw
+            != 2 * Tk_Changes(gridPtr->tkwin)->border_width) {
             if ((gridPtr->masterPtr != NULL)
-                && !(gridPtr->masterPtr->flags & REQUESTED_RELAYOUT))
-            {
+                && !(gridPtr->masterPtr->flags & REQUESTED_RELAYOUT)) {
                 gridPtr->doubleBw
                 = 2 * Tk_Changes(gridPtr->tkwin)->border_width;
                 gridPtr->masterPtr->flags |= REQUESTED_RELAYOUT;
                 Tcl_DoWhenIdle(ArrangeGrid, ( ClientData )gridPtr->masterPtr);
             }
         }
-    }
-    else if (eventPtr->type == DestroyNotify)
-    {
+    } else if (eventPtr->type == DestroyNotify) {
         Gridder *gridPtr2, *nextPtr;
 
-        if (gridPtr->masterPtr != NULL)
-        {
+        if (gridPtr->masterPtr != NULL) {
             Unlink(gridPtr);
         }
         for (gridPtr2 = gridPtr->slavePtr; gridPtr2 != NULL;
-             gridPtr2 = nextPtr)
-        {
+             gridPtr2 = nextPtr) {
             Tk_UnmapWindow(gridPtr2->tkwin);
             gridPtr2->masterPtr = NULL;
             nextPtr = gridPtr2->nextPtr;
@@ -2376,28 +2103,21 @@ XEvent *eventPtr;      /* Describes what just happened. */
         }
         Tcl_DeleteHashEntry(
         Tcl_FindHashEntry(&gridHashTable, ( char * )gridPtr->tkwin));
-        if (gridPtr->flags & REQUESTED_RELAYOUT)
-        {
+        if (gridPtr->flags & REQUESTED_RELAYOUT) {
             Tk_CancelIdleCall(ArrangeGrid, ( ClientData )gridPtr);
         }
         gridPtr->tkwin = NULL;
         Tk_EventuallyFree(( ClientData )gridPtr, DestroyGrid);
-    }
-    else if (eventPtr->type == MapNotify)
-    {
-        if (!(gridPtr->flags & REQUESTED_RELAYOUT))
-        {
+    } else if (eventPtr->type == MapNotify) {
+        if (!(gridPtr->flags & REQUESTED_RELAYOUT)) {
             gridPtr->flags |= REQUESTED_RELAYOUT;
             Tcl_DoWhenIdle(ArrangeGrid, ( ClientData )gridPtr);
         }
-    }
-    else if (eventPtr->type == UnmapNotify)
-    {
+    } else if (eventPtr->type == UnmapNotify) {
         Gridder *gridPtr2;
 
         for (gridPtr2 = gridPtr->slavePtr; gridPtr2 != NULL;
-             gridPtr2 = gridPtr2->nextPtr)
-        {
+             gridPtr2 = gridPtr2->nextPtr) {
             Tk_UnmapWindow(gridPtr2->tkwin);
         }
     }
@@ -2450,21 +2170,17 @@ char *argv[];       /* Argument strings:  contains one or more
      * Count the number of windows, or window short-cuts.
      */
 
-    for (numWindows = i = 0; i < argc; i++)
-    {
+    for (numWindows = i = 0; i < argc; i++) {
         char firstChar = *argv[i];
-        if (firstChar == '.')
-        {
+        if (firstChar == '.') {
             numWindows++;
             continue;
         }
         length = strlen(argv[i]);
-        if (length > 1 && firstChar == '-')
-        {
+        if (length > 1 && firstChar == '-') {
             break;
         }
-        if (length > 1)
-        {
+        if (length > 1) {
             Tcl_AppendResult(interp,
                              "unexpected parameter, \"",
                              argv[i],
@@ -2476,8 +2192,7 @@ char *argv[];       /* Argument strings:  contains one or more
 
         if (firstChar == REL_HORIZ
             && (numWindows == 0 || *argv[i - 1] == REL_SKIP
-                || *argv[i - 1] == REL_VERT))
-        {
+                || *argv[i - 1] == REL_VERT)) {
             Tcl_AppendResult(interp,
                              "Must specify window before shortcut '-'.",
                              ( char * )NULL);
@@ -2485,8 +2200,7 @@ char *argv[];       /* Argument strings:  contains one or more
         }
 
         if (firstChar == REL_VERT || firstChar == REL_SKIP
-            || firstChar == REL_HORIZ)
-        {
+            || firstChar == REL_HORIZ) {
             continue;
         }
 
@@ -2499,8 +2213,7 @@ char *argv[];       /* Argument strings:  contains one or more
     }
     numWindows = i;
 
-    if ((argc - numWindows) & 1)
-    {
+    if ((argc - numWindows) & 1) {
         Tcl_AppendResult(
         interp, "extra option or", " option with no value", ( char * )NULL);
         return TCL_ERROR;
@@ -2518,8 +2231,7 @@ char *argv[];       /* Argument strings:  contains one or more
      */
 
     masterPtr = NULL;
-    for (j = 0; j < numWindows; j++)
-    {
+    for (j = 0; j < numWindows; j++) {
         char firstChar = *argv[j];
 
         /*
@@ -2527,31 +2239,26 @@ char *argv[];       /* Argument strings:  contains one or more
          * as part of its preceeding slave.
          */
 
-        if (firstChar == REL_VERT || firstChar == REL_SKIP)
-        {
+        if (firstChar == REL_VERT || firstChar == REL_SKIP) {
             defaultColumn++;
             continue;
         }
-        if (firstChar == REL_HORIZ)
-        {
+        if (firstChar == REL_HORIZ) {
             continue;
         }
 
         for (defaultColumnSpan = 1;
              j + defaultColumnSpan < numWindows
              && *argv[j + defaultColumnSpan] == REL_HORIZ;
-             defaultColumnSpan++)
-        {
+             defaultColumnSpan++) {
             /* null body */
         }
 
         slave = Tk_NameToWindow(interp, argv[j], tkwin);
-        if (slave == NULL)
-        {
+        if (slave == NULL) {
             return TCL_ERROR;
         }
-        if (Tk_IsTopLevel(slave))
-        {
+        if (Tk_IsTopLevel(slave)) {
             Tcl_AppendResult(interp,
                              "can't manage \"",
                              argv[j],
@@ -2576,13 +2283,11 @@ char *argv[];       /* Argument strings:  contains one or more
          * about keeping track of the old state.
          */
 
-        for (i = numWindows; i < argc; i += 2)
-        {
+        for (i = numWindows; i < argc; i += 2) {
             length = strlen(argv[i]);
             c = argv[i][1];
 
-            if (length < 2)
-            {
+            if (length < 2) {
                 Tcl_AppendResult(
                 interp,
                 "unknown or ambiguous option \"",
@@ -2593,11 +2298,9 @@ char *argv[];       /* Argument strings:  contains one or more
                 ( char * )NULL);
                 return TCL_ERROR;
             }
-            if ((c == 'c') && (strcmp(argv[i], "-column") == 0))
-            {
+            if ((c == 'c') && (strcmp(argv[i], "-column") == 0)) {
                 if (Tcl_GetInt(interp, argv[i + 1], &tmp) != TCL_OK
-                    || tmp < 0)
-                {
+                    || tmp < 0) {
                     Tcl_ResetResult(interp);
                     Tcl_AppendResult(interp,
                                      "bad column value \"",
@@ -2607,12 +2310,9 @@ char *argv[];       /* Argument strings:  contains one or more
                     return TCL_ERROR;
                 }
                 slavePtr->column = tmp;
-            }
-            else if ((c == 'c') && (strcmp(argv[i], "-columnspan") == 0))
-            {
+            } else if ((c == 'c') && (strcmp(argv[i], "-columnspan") == 0)) {
                 if (Tcl_GetInt(interp, argv[i + 1], &tmp) != TCL_OK
-                    || tmp <= 0)
-                {
+                    || tmp <= 0) {
                     Tcl_ResetResult(interp);
                     Tcl_AppendResult(interp,
                                      "bad columnspan value \"",
@@ -2622,28 +2322,21 @@ char *argv[];       /* Argument strings:  contains one or more
                     return TCL_ERROR;
                 }
                 slavePtr->numCols = tmp;
-            }
-            else if ((c == 'i') && (strcmp(argv[i], "-in") == 0))
-            {
+            } else if ((c == 'i') && (strcmp(argv[i], "-in") == 0)) {
                 other = Tk_NameToWindow(interp, argv[i + 1], tkwin);
-                if (other == NULL)
-                {
+                if (other == NULL) {
                     return TCL_ERROR;
                 }
-                if (other == slave)
-                {
+                if (other == slave) {
                     sprintf(interp->result,
                             "Window can't be managed in itself");
                     return TCL_ERROR;
                 }
                 masterPtr = GetGrid(other);
                 InitMasterData(masterPtr);
-            }
-            else if ((c == 'i') && (strcmp(argv[i], "-ipadx") == 0))
-            {
+            } else if ((c == 'i') && (strcmp(argv[i], "-ipadx") == 0)) {
                 if ((Tk_GetPixels(interp, slave, argv[i + 1], &tmp) != TCL_OK)
-                    || (tmp < 0))
-                {
+                    || (tmp < 0)) {
                     Tcl_ResetResult(interp);
                     Tcl_AppendResult(interp,
                                      "bad ipadx value \"",
@@ -2653,12 +2346,9 @@ char *argv[];       /* Argument strings:  contains one or more
                     return TCL_ERROR;
                 }
                 slavePtr->iPadX = tmp * 2;
-            }
-            else if ((c == 'i') && (strcmp(argv[i], "-ipady") == 0))
-            {
+            } else if ((c == 'i') && (strcmp(argv[i], "-ipady") == 0)) {
                 if ((Tk_GetPixels(interp, slave, argv[i + 1], &tmp) != TCL_OK)
-                    || (tmp < 0))
-                {
+                    || (tmp < 0)) {
                     Tcl_ResetResult(interp);
                     Tcl_AppendResult(interp,
                                      "bad ipady value \"",
@@ -2668,12 +2358,9 @@ char *argv[];       /* Argument strings:  contains one or more
                     return TCL_ERROR;
                 }
                 slavePtr->iPadY = tmp * 2;
-            }
-            else if ((c == 'p') && (strcmp(argv[i], "-padx") == 0))
-            {
+            } else if ((c == 'p') && (strcmp(argv[i], "-padx") == 0)) {
                 if ((Tk_GetPixels(interp, slave, argv[i + 1], &tmp) != TCL_OK)
-                    || (tmp < 0))
-                {
+                    || (tmp < 0)) {
                     Tcl_ResetResult(interp);
                     Tcl_AppendResult(interp,
                                      "bad padx value \"",
@@ -2683,12 +2370,9 @@ char *argv[];       /* Argument strings:  contains one or more
                     return TCL_ERROR;
                 }
                 slavePtr->padX = tmp * 2;
-            }
-            else if ((c == 'p') && (strcmp(argv[i], "-pady") == 0))
-            {
+            } else if ((c == 'p') && (strcmp(argv[i], "-pady") == 0)) {
                 if ((Tk_GetPixels(interp, slave, argv[i + 1], &tmp) != TCL_OK)
-                    || (tmp < 0))
-                {
+                    || (tmp < 0)) {
                     Tcl_ResetResult(interp);
                     Tcl_AppendResult(interp,
                                      "bad pady value \"",
@@ -2698,12 +2382,9 @@ char *argv[];       /* Argument strings:  contains one or more
                     return TCL_ERROR;
                 }
                 slavePtr->padY = tmp * 2;
-            }
-            else if ((c == 'r') && (strcmp(argv[i], "-row") == 0))
-            {
+            } else if ((c == 'r') && (strcmp(argv[i], "-row") == 0)) {
                 if (Tcl_GetInt(interp, argv[i + 1], &tmp) != TCL_OK
-                    || tmp < 0)
-                {
+                    || tmp < 0) {
                     Tcl_ResetResult(interp);
                     Tcl_AppendResult(interp,
                                      "bad grid value \"",
@@ -2713,12 +2394,9 @@ char *argv[];       /* Argument strings:  contains one or more
                     return TCL_ERROR;
                 }
                 slavePtr->row = tmp;
-            }
-            else if ((c == 'r') && (strcmp(argv[i], "-rowspan") == 0))
-            {
+            } else if ((c == 'r') && (strcmp(argv[i], "-rowspan") == 0)) {
                 if ((Tcl_GetInt(interp, argv[i + 1], &tmp) != TCL_OK)
-                    || tmp <= 0)
-                {
+                    || tmp <= 0) {
                     Tcl_ResetResult(interp);
                     Tcl_AppendResult(interp,
                                      "bad rowspan value \"",
@@ -2728,12 +2406,9 @@ char *argv[];       /* Argument strings:  contains one or more
                     return TCL_ERROR;
                 }
                 slavePtr->numRows = tmp;
-            }
-            else if ((c == 's') && strcmp(argv[i], "-sticky") == 0)
-            {
+            } else if ((c == 's') && strcmp(argv[i], "-sticky") == 0) {
                 int sticky = StringToSticky(argv[i + 1]);
-                if (sticky == -1)
-                {
+                if (sticky == -1) {
                     Tcl_AppendResult(
                     interp,
                     "bad stickyness value \"",
@@ -2743,9 +2418,7 @@ char *argv[];       /* Argument strings:  contains one or more
                     return TCL_ERROR;
                 }
                 slavePtr->sticky = sticky;
-            }
-            else
-            {
+            } else {
                 Tcl_AppendResult(
                 interp,
                 "unknown or ambiguous option \"",
@@ -2765,25 +2438,21 @@ char *argv[];       /* Argument strings:  contains one or more
          *  3)   the parent of the first slave.
          */
 
-        if (masterPtr == NULL)
-        {
+        if (masterPtr == NULL) {
             masterPtr = slavePtr->masterPtr;
         }
         parent = Tk_Parent(slave);
-        if (masterPtr == NULL)
-        {
+        if (masterPtr == NULL) {
             masterPtr = GetGrid(parent);
             InitMasterData(masterPtr);
         }
 
-        if (slavePtr->masterPtr != NULL && slavePtr->masterPtr != masterPtr)
-        {
+        if (slavePtr->masterPtr != NULL && slavePtr->masterPtr != masterPtr) {
             Unlink(slavePtr);
             slavePtr->masterPtr = NULL;
         }
 
-        if (slavePtr->masterPtr == NULL)
-        {
+        if (slavePtr->masterPtr == NULL) {
             Gridder *tempPtr = masterPtr->slavePtr;
             slavePtr->masterPtr = masterPtr;
             masterPtr->slavePtr = slavePtr;
@@ -2796,14 +2465,11 @@ char *argv[];       /* Argument strings:  contains one or more
          * aren't the same.
          */
 
-        for (ancestor = masterPtr->tkwin;; ancestor = Tk_Parent(ancestor))
-        {
-            if (ancestor == parent)
-            {
+        for (ancestor = masterPtr->tkwin;; ancestor = Tk_Parent(ancestor)) {
+            if (ancestor == parent) {
                 break;
             }
-            if (Tk_IsTopLevel(ancestor))
-            {
+            if (Tk_IsTopLevel(ancestor)) {
                 Tcl_AppendResult(interp,
                                  "can't put ",
                                  argv[j],
@@ -2819,8 +2485,7 @@ char *argv[];       /* Argument strings:  contains one or more
          * Try to make sure our master isn't managed by us.
          */
 
-        if (masterPtr->masterPtr == slavePtr)
-        {
+        if (masterPtr->masterPtr == slavePtr) {
             Tcl_AppendResult(interp,
                              "can't put ",
                              argv[j],
@@ -2838,19 +2503,14 @@ char *argv[];       /* Argument strings:  contains one or more
          * Assign default position information.
          */
 
-        if (slavePtr->column == -1)
-        {
+        if (slavePtr->column == -1) {
             slavePtr->column = defaultColumn;
         }
         slavePtr->numCols += defaultColumnSpan - 1;
-        if (slavePtr->row == -1)
-        {
-            if (masterPtr->masterDataPtr == NULL)
-            {
+        if (slavePtr->row == -1) {
+            if (masterPtr->masterDataPtr == NULL) {
                 slavePtr->row = 0;
-            }
-            else
-            {
+            } else {
                 slavePtr->row = masterPtr->masterDataPtr->rowEnd;
             }
         }
@@ -2862,12 +2522,10 @@ char *argv[];       /* Argument strings:  contains one or more
          * idle moment.
          */
 
-        if (masterPtr->abortPtr != NULL)
-        {
+        if (masterPtr->abortPtr != NULL) {
             *masterPtr->abortPtr = 1;
         }
-        if (!(masterPtr->flags & REQUESTED_RELAYOUT))
-        {
+        if (!(masterPtr->flags & REQUESTED_RELAYOUT)) {
             masterPtr->flags |= REQUESTED_RELAYOUT;
             Tcl_DoWhenIdle(ArrangeGrid, ( ClientData )masterPtr);
         }
@@ -2876,23 +2534,19 @@ char *argv[];       /* Argument strings:  contains one or more
     /* Now look for all the "^"'s. */
 
     lastWindow = NULL;
-    for (j = 0; j < numWindows; j++)
-    {
+    for (j = 0; j < numWindows; j++) {
         struct Gridder *otherPtr;
         int match;               /* found a match for the ^ */
         int lastRow, lastColumn; /* implied end of table */
 
-        if (*argv[j] == '.')
-        {
+        if (*argv[j] == '.') {
             lastWindow = argv[j];
         }
-        if (*argv[j] != REL_VERT)
-        {
+        if (*argv[j] != REL_VERT) {
             continue;
         }
 
-        if (masterPtr == NULL)
-        {
+        if (masterPtr == NULL) {
             Tcl_AppendResult(
             interp, "can't use '^', cant find master", ( char * )NULL);
             return TCL_ERROR;
@@ -2900,8 +2554,7 @@ char *argv[];       /* Argument strings:  contains one or more
 
         for (width = 1;
              width + j < numWindows && *argv[j + width] == REL_VERT;
-             width++)
-        {
+             width++) {
             /* Null Body */
         }
 
@@ -2909,21 +2562,15 @@ char *argv[];       /* Argument strings:  contains one or more
          * Find the implied grid location of the ^
          */
 
-        if (lastWindow == NULL)
-        {
-            if (masterPtr->masterDataPtr != NULL)
-            {
+        if (lastWindow == NULL) {
+            if (masterPtr->masterDataPtr != NULL) {
                 SetGridSize(masterPtr);
                 lastRow = masterPtr->masterDataPtr->rowEnd - 1;
-            }
-            else
-            {
+            } else {
                 lastRow = 0;
             }
             lastColumn = 0;
-        }
-        else
-        {
+        } else {
             other = Tk_NameToWindow(interp, lastWindow, tkwin);
             otherPtr = GetGrid(other);
             lastRow = otherPtr->row;
@@ -2931,19 +2578,16 @@ char *argv[];       /* Argument strings:  contains one or more
         }
 
         for (match = 0, slavePtr = masterPtr->slavePtr; slavePtr != NULL;
-             slavePtr = slavePtr->nextPtr)
-        {
+             slavePtr = slavePtr->nextPtr) {
 
             if (slavePtr->numCols == width && slavePtr->column == lastColumn
-                && slavePtr->row + slavePtr->numRows == lastRow)
-            {
+                && slavePtr->row + slavePtr->numRows == lastRow) {
                 slavePtr->numRows++;
                 match++;
             }
             lastWindow = Tk_PathName(slavePtr->tkwin);
         }
-        if (!match)
-        {
+        if (!match) {
             Tcl_AppendResult(
             interp, "can't find slave to extend with \"^\".", ( char * )NULL);
             return TCL_ERROR;
@@ -2951,8 +2595,7 @@ char *argv[];       /* Argument strings:  contains one or more
         j += width - 1;
     }
 
-    if (masterPtr == NULL)
-    {
+    if (masterPtr == NULL) {
         Tcl_AppendResult(
         interp, "can't determine master window", ( char * )NULL);
         return TCL_ERROR;
@@ -2982,28 +2625,21 @@ static void StickyToString(flags, result) int flags; /* the sticky flags */
 char *result; /* where to put the result */
 {
     int count = 0;
-    if (flags & STICK_NORTH)
-    {
+    if (flags & STICK_NORTH) {
         result[count++] = 'n';
     }
-    if (flags & STICK_EAST)
-    {
+    if (flags & STICK_EAST) {
         result[count++] = 'e';
     }
-    if (flags & STICK_SOUTH)
-    {
+    if (flags & STICK_SOUTH) {
         result[count++] = 's';
     }
-    if (flags & STICK_WEST)
-    {
+    if (flags & STICK_WEST) {
         result[count++] = 'w';
     }
-    if (count)
-    {
+    if (count) {
         result[count] = '\0';
-    }
-    else
-    {
+    } else {
         sprintf(result, "{}");
     }
 }
@@ -3031,10 +2667,8 @@ static int StringToSticky(string) char *string;
     int sticky = 0;
     char c;
 
-    while ((c = *string++) != '\0')
-    {
-        switch (c)
-        {
+    while ((c = *string++) != '\0') {
+        switch (c) {
         case 'n':
         case 'N':
             sticky |= STICK_NORTH;

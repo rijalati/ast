@@ -84,12 +84,10 @@ signal(int sig, Sig_handler_t fun)
     unsigned int flags;
 #    endif
 
-    if (sig < 0)
-    {
+    if (sig < 0) {
         sig = -sig;
         unblock = 0;
-    }
-    else
+    } else
         unblock = fun == SIG_DFL;
 #    ifdef SIGNO_MASK
     flags = sig & ~SIGNO_MASK;
@@ -98,8 +96,7 @@ signal(int sig, Sig_handler_t fun)
     memzero(&na, sizeof(na));
     na.sa_handler = fun;
 #    if defined(SA_INTERRUPT) || defined(SA_RESTART)
-    switch (sig)
-    {
+    switch (sig) {
 #        if defined(SIGIO) || defined(SIGTSTP) || defined(SIGTTIN)           \
         || defined(SIGTTOU)
 #            if defined(SIGIO)

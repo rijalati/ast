@@ -84,8 +84,7 @@ expr(Expr_t *ex, int precedence)
 
     while (c = getchr(ex), isspace(c))
         ;
-    switch (c)
-    {
+    switch (c) {
     case 0:
         ungetchr(ex);
         if (!precedence)
@@ -109,10 +108,8 @@ expr(Expr_t *ex, int precedence)
         operand = 0;
         break;
     }
-    for (;;)
-    {
-        switch (c = getchr(ex))
-        {
+    for (;;) {
+        switch (c = getchr(ex)) {
         case 0:
             goto done;
         case ')':
@@ -121,8 +118,7 @@ expr(Expr_t *ex, int precedence)
             goto done;
         case '(':
             n = expr(ex, 1);
-            if (getchr(ex) != ')')
-            {
+            if (getchr(ex) != ')') {
                 ungetchr(ex);
                 error(ex, "closing ) expected");
             }
@@ -134,43 +130,34 @@ expr(Expr_t *ex, int precedence)
         case '?':
             if (precedence > 1)
                 goto done;
-            if (peekchr(ex) == ':')
-            {
+            if (peekchr(ex) == ':') {
                 getchr(ex);
                 x = expr(ex, 2);
                 if (!n)
                     n = x;
-            }
-            else
-            {
+            } else {
                 x = expr(ex, 2);
-                if (getchr(ex) != ':')
-                {
+                if (getchr(ex) != ':') {
                     ungetchr(ex);
                     error(ex, ": expected for ? operator");
                 }
-                if (n)
-                {
+                if (n) {
                     n = x;
                     expr(ex, 2);
-                }
-                else
+                } else
                     n = expr(ex, 2);
             }
             break;
         case ':':
             goto done;
         case '|':
-            if (peekchr(ex) == '|')
-            {
+            if (peekchr(ex) == '|') {
                 if (precedence > 2)
                     goto done;
                 getchr(ex);
                 x = expr(ex, 3);
                 n = n || x;
-            }
-            else
-            {
+            } else {
                 if (precedence > 4)
                     goto done;
                 x = expr(ex, 5);
@@ -184,16 +171,13 @@ expr(Expr_t *ex, int precedence)
             n ^= x;
             break;
         case '&':
-            if (peekchr(ex) == '&')
-            {
+            if (peekchr(ex) == '&') {
                 if (precedence > 3)
                     goto done;
                 getchr(ex);
                 x = expr(ex, 4);
                 n = n && x;
-            }
-            else
-            {
+            } else {
                 if (precedence > 6)
                     goto done;
                 x = expr(ex, 7);
@@ -215,8 +199,7 @@ expr(Expr_t *ex, int precedence)
             break;
         case '<':
         case '>':
-            if (peekchr(ex) == c)
-            {
+            if (peekchr(ex) == c) {
                 if (precedence > 9)
                     goto done;
                 getchr(ex);
@@ -225,22 +208,17 @@ expr(Expr_t *ex, int precedence)
                     n <<= x;
                 else
                     n >>= x;
-            }
-            else
-            {
+            } else {
                 if (precedence > 8)
                     goto done;
-                if (peekchr(ex) == '=')
-                {
+                if (peekchr(ex) == '=') {
                     getchr(ex);
                     x = expr(ex, 9);
                     if (c == '<')
                         n = n <= x;
                     else
                         n = n >= x;
-                }
-                else
-                {
+                } else {
                     x = expr(ex, 9);
                     if (c == '<')
                         n = n < x;
@@ -326,8 +304,7 @@ strexpr(const char *s,
     n = expr(&ex, 0);
     if (peekchr(&ex) == ':')
         seterror(&ex, "invalid use of :");
-    if (ex.errmsg)
-    {
+    if (ex.errmsg) {
         if (convert)
             (*convert)(NiL, &ex.errmsg, handle);
         ex.nextchr = ex.errchr;

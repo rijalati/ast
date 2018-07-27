@@ -84,8 +84,7 @@ _stdfun(Sfio_t *, Funvec_t *);
                 static Funvec_t _v = { n };                                  \
                 if ((_i = _stdfun(p, &_v)) < 0)                              \
                     return;                                                  \
-                else if (_i > 0)                                             \
-                {                                                            \
+                else if (_i > 0) {                                           \
                     (( _s_f )_v.vec[_i]) a;                                  \
                     return;                                                  \
                 }                                                            \
@@ -100,8 +99,7 @@ _stdfun(Sfio_t *, Funvec_t *);
 #    endif
 
 #    define FWIDE(f, r)                                                      \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             if (fwide(f, 0) < 0)                                             \
                 return r;                                                    \
             f->bits |= SF_WC;                                                \

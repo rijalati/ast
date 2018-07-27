@@ -143,8 +143,7 @@ typedef struct _dtlib_s
          ? asolock(&(dt)->data->lock, 1, ASO_UNLOCK)                         \
          : 0)
 #    define DTRETURN(ob, rv)                                                 \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             (ob) = (rv);                                                     \
             goto dt_return;                                                  \
         } while (0)

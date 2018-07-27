@@ -194,8 +194,7 @@ tcleanup()
 #ifndef DEBUG
     int i;
     for (i = 0; i < sizeof(Tstfile) / sizeof(Tstfile[0]); ++i)
-        if (Tstfile[i][0])
-        {
+        if (Tstfile[i][0]) {
             unlink(Tstfile[i]);
             Tstfile[i][0] = 0;
         }
@@ -236,8 +235,7 @@ va_list args;
 
     s = buf;
     n = 0;
-    if (line >= 0)
-    {
+    if (line >= 0) {
 #if _SFIO_H
         sfsprintf(s, sizeof(buf), "\tLine=%d: ", line);
 #else
@@ -251,10 +249,8 @@ va_list args;
     vsprintf(s, form, args);
 #endif
 
-    if ((n = strlen(buf)) > 0)
-    {
-        if (buf[n - 1] != '\n')
-        {
+    if ((n = strlen(buf)) > 0) {
+        if (buf[n - 1] != '\n') {
             buf[n] = '\n';
             n += 1;
         }
@@ -280,8 +276,7 @@ void tsterror(va_alist) va_dcl
     form = va_arg(args, char *);
 #endif
 
-    if (form)
-    {
+    if (form) {
 #if _SFIO_H
         sfsprintf(
         failform, sizeof(failform), "FAILED %s [errno=%d]", form, errno);
@@ -293,8 +288,7 @@ void tsterror(va_alist) va_dcl
 
     va_end(args);
 
-    if (Tstchild)
-    {
+    if (Tstchild) {
         signal(SIGTERM, SIG_IGN);
         kill(0, SIGTERM);
     }
@@ -408,8 +402,7 @@ asoerror(int type, const char *mesg)
 
     if (hit & (1 << type))
         tsterror(0);
-    else
-    {
+    else {
         hit |= (1 << type);
         tsterror("aso error %d: %s", type, mesg);
     }
@@ -427,8 +420,7 @@ int nproc;
     int code = 2, n, status, reaped = 0, ignore = 0;
     pid_t pid, parent = getpid();
 
-    if (nproc < 0)
-    {
+    if (nproc < 0) {
         nproc = -nproc;
         ignore = 1;
     }
@@ -436,14 +428,10 @@ int nproc;
             parent,
             nproc,
             nproc == 1 ? "" : "ren");
-    while ((pid = wait(&status)) > 0)
-    {
-        if (proc)
-        {
-            for (n = 0; n < nproc; n++)
-            {
-                if (proc[n] == pid)
-                {
+    while ((pid = wait(&status)) > 0) {
+        if (proc) {
+            for (n = 0; n < nproc; n++) {
+                if (proc[n] == pid) {
                     tstinfo("Parent[pid=%d]: process %d[pid=%d] status=%d",
                             parent,
                             n,
@@ -464,8 +452,7 @@ int nproc;
         else if (code > 1)
             code = 0;
     }
-    if (reaped != nproc && !ignore)
-    {
+    if (reaped != nproc && !ignore) {
         tsterror("Parent[pid=%d]: expected %d process%s, got %d",
                  parent,
                  nproc,
@@ -486,8 +473,7 @@ int n;
 {
     static int Setatexit = 0;
 
-    if (!Setatexit)
-    {
+    if (!Setatexit) {
         Setatexit = 1;
         atexit(tcleanup);
     }
@@ -501,8 +487,7 @@ int n;
 
     pfx = (pfx && pfx[0]) ? pfx : "tmp";
 
-    if (!Tstfile[n][0])
-    {
+    if (!Tstfile[n][0]) {
 #ifdef DEBUG
 #    if _SFIO_H
         sfsprintf(Tstfile[n],
@@ -518,8 +503,7 @@ int n;
 #else
         static int pid;
         static char *tmp;
-        if (!tmp)
-        {
+        if (!tmp) {
             if (!(tmp = ( char * )getenv("TMPDIR")) || access(tmp, 0) != 0)
                 tmp = "/tmp";
             pid = ( int )getpid() % 10000;
@@ -558,8 +542,7 @@ asointr(int sig)
     else
         signal(use = SIGTERM, SIG_IGN);
     kill(0, use);
-    switch (sig)
-    {
+    switch (sig) {
     case SIGALRM:
         write(2, "\tFAILED due to timeout\n", 23);
         break;
@@ -587,8 +570,7 @@ tstintr()
     signal(SIGTERM, asointr);
     signal(SIGBUS, asointr);
     signal(SIGSEGV, asointr);
-    if (Tsttimeout)
-    {
+    if (Tsttimeout) {
         signal(SIGALRM, asointr);
         alarm(Tsttimeout * 60);
     }
@@ -677,17 +659,14 @@ static Void_t *tstshared(n) size_t n;
     Void_t *p;
     int z;
 
-    if ((z = open("/dev/zero", O_RDWR)) >= 0)
-    {
+    if ((z = open("/dev/zero", O_RDWR)) >= 0) {
         p = mmap(0, n, PROT_READ | PROT_WRITE, MAP_SHARED, z, 0);
-        if (!p || p == ( Void_t * )(-1))
-        {
+        if (!p || p == ( Void_t * )(-1)) {
             p = 0;
             close(z);
         }
     }
-    if (!p)
-    {
+    if (!p) {
 #ifdef MAP_ANONYMOUS
         p = mmap(
         0, n, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1, 0);

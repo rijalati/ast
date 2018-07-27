@@ -46,20 +46,17 @@ main(int argc, char **argv)
     char buf[1024];
 
     id = "mamstate";
-    if (!(s = *++argv))
-    {
+    if (!(s = *++argv)) {
         fprintf(stderr, "%s: reference file argument expected\n", id);
         return 1;
     }
-    if (stat(s, &st))
-    {
+    if (stat(s, &st)) {
         fprintf(stderr, "%s: %s: cannot stat\n", id, s);
         return 1;
     }
     ref = ( unsigned long )st.st_mtime;
     if (s = *++argv)
-        do
-        {
+        do {
             if (!stat(s, &st))
                 printf("%s %ld\n", s, ( unsigned long )st.st_mtime - ref);
         } while (s = *++argv);

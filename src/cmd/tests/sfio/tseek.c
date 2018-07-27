@@ -67,8 +67,7 @@ tmain()
         terror("Bad file length");
     if (sftell(f) != (i * n))
         terror("sftell");
-    for (; i > 0; --i)
-    {
+    for (; i > 0; --i) {
         sfseek(f, (Sfoff_t)(-i * n), 2);
         if (!(ss = sfgetr(f, '\n', 1)))
             terror("sfgetr");
@@ -145,8 +144,7 @@ tmain()
         terror("Opening test file to read");
     sfdisc(f, &Disc);
     sfsetbuf(f, NIL(Void_t *), 8192);
-    for (i = 0; i < 8192; ++i)
-    {
+    for (i = 0; i < 8192; ++i) {
         sfseek(f, (Sfoff_t)(i * 10), 0);
         if (!(s = sfgetr(f, '\n', SF_STRING)))
             terror("Reading data");

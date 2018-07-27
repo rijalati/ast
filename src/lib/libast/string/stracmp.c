@@ -49,8 +49,7 @@ stracmp(const char *aa, const char *ab)
         return strcmp(aa, ab);
     a = ( unsigned char * )aa;
     b = ( unsigned char * )ab;
-    for (;;)
-    {
+    for (;;) {
         c = m[*a++];
         if (d = c - m[*b++])
             return d;

@@ -69,8 +69,7 @@ onstdpath(const char *name)
 {
     const char *cp = std_path, *sp;
     if (cp)
-        while (*cp)
-        {
+        while (*cp) {
             for (sp = name; *sp && (*cp == *sp); sp++, cp++)
                 ;
             if (*sp == 0 && (*cp == 0 || *cp == ':'))
@@ -86,18 +85,15 @@ int
 path_xattr(Shell_t *shp, const char *path, char *rpath)
 {
     char resolvedpath[PATH_MAX + 1];
-    if (shp->gd->user && *shp->gd->user)
-    {
+    if (shp->gd->user && *shp->gd->user) {
         execattr_t *pf;
         if (!rpath)
             rpath = resolvedpath;
         if (!realpath(path, resolvedpath))
             return -1;
         if (pf
-            = getexecuser(shp->gd->user, KV_COMMAND, resolvedpath, GET_ONE))
-        {
-            if (!pf->attr || pf->attr->length == 0)
-            {
+            = getexecuser(shp->gd->user, KV_COMMAND, resolvedpath, GET_ONE)) {
+            if (!pf->attr || pf->attr->length == 0) {
                 free_execattr(pf);
                 return (0);
             }
@@ -121,14 +117,12 @@ path_pfexecve(Shell_t *shp,
     char resolvedpath[PATH_MAX + 1];
     pid_t pid;
 #endif /*SHOPT_PFSH */
-    if (shp->vex->cur)
-    {
+    if (shp->vex->cur) {
         spawnvex_apply(shp->vex, 0, 0);
         spawnvex_apply(shp->vexp, 0, SPAWN_RESET);
     }
 #if SHOPT_PFSH
-    if (spawn)
-    {
+    if (spawn) {
         while ((pid = vfork()) < 0)
             _sh_fork(shp, pid, 0, ( int * )0);
         if (pid)
@@ -161,15 +155,13 @@ _spawnveg(Shell_t *shp,
 {
     pid_t pid;
 #ifdef SIGTSTP
-    if (job.jobcontrol)
-    {
+    if (job.jobcontrol) {
         signal(SIGTTIN, SIG_DFL);
         signal(SIGTTOU, SIG_DFL);
     }
 #endif /* SIGTSTP */
 
-    while (1)
-    {
+    while (1) {
         sh_stats(STAT_SPAWN);
 #ifdef SPAWN_cwd
         {
@@ -188,8 +180,7 @@ _spawnveg(Shell_t *shp,
             break;
     }
 #ifdef SIGTSTP
-    if (job.jobcontrol)
-    {
+    if (job.jobcontrol) {
         signal(SIGTTIN, SIG_IGN);
         signal(SIGTTOU, SIG_IGN);
     }
@@ -229,52 +220,42 @@ path_xargs(Shell_t *shp,
     if (!spawn)
         job_clear(shp);
     shp->exitval = 0;
-    while (av < avlast)
-    {
+    while (av < avlast) {
         for (xv = av, left = size; left > 0 && av < avlast;)
             left -= strlen(*av++) + 1;
         /* leave at least two for last */
         if (left < 0 && (avlast - av) < 2)
             av--;
-        if (xv == &argv[shp->xargmin])
-        {
+        if (xv == &argv[shp->xargmin]) {
             n = nlast * sizeof(char *);
             saveargs = ( char ** )malloc(n);
             memcpy(( void * )saveargs, ( void * )av, n);
             memcpy(( void * )av, ( void * )avlast, n);
-        }
-        else
-        {
+        } else {
             for (n = shp->xargmin; xv < av; xv++)
                 argv[n++] = *xv;
             for (xv = avlast; cp = *xv; xv++)
                 argv[n++] = cp;
             argv[n] = 0;
         }
-        if (saveargs || av < avlast || (exitval && !spawn))
-        {
+        if (saveargs || av < avlast || (exitval && !spawn)) {
             if ((pid = _spawnveg(shp, path, argv, envp, 0)) < 0)
                 return (-1);
             job_post(shp, pid, 0);
             job_wait(pid);
             if (shp->exitval > exitval)
                 exitval = shp->exitval;
-            if (saveargs)
-            {
+            if (saveargs) {
                 memcpy(( void * )av, saveargs, n);
                 free(( void * )saveargs);
                 saveargs = 0;
             }
-        }
-        else if (spawn && !sh_isoption(shp, SH_PFSH))
-        {
+        } else if (spawn && !sh_isoption(shp, SH_PFSH)) {
             shp->xargexit = exitval;
             if (saveargs)
                 free(( void * )saveargs);
             return (_spawnveg(shp, path, argv, envp, spawn >> 1));
-        }
-        else
-        {
+        } else {
             if (saveargs)
                 free(( void * )saveargs);
             return (path_pfexecve(shp, path, argv, envp, spawn));
@@ -298,11 +279,9 @@ path_pwd(Shell_t *shp, int flag)
     int count = 0;
     if (shp->pwd)
         return (( char * )shp->pwd);
-    while (1)
-    {
+    while (1) {
         /* try from lowest to highest */
-        switch (count++)
-        {
+        switch (count++) {
         case 0:
             cp = nv_getval(PWDNOD);
             break;
@@ -312,10 +291,8 @@ path_pwd(Shell_t *shp, int flag)
         case 2:
             cp = "/";
             break;
-        case 3:
-        {
-            if (cp = getcwd(NIL(char *), 0))
-            {
+        case 3: {
+            if (cp = getcwd(NIL(char *), 0)) {
                 nv_offattr(PWDNOD, NV_NOFREE);
                 _nv_unset(PWDNOD, 0);
                 PWDNOD->nvalue.cp = cp;
@@ -327,8 +304,7 @@ path_pwd(Shell_t *shp, int flag)
         if (cp && *cp == '/' && test_inode(cp, e_dot))
             break;
     }
-    if (count > 1)
-    {
+    if (count > 1) {
         nv_offattr(PWDNOD, NV_NOFREE);
         nv_putval(PWDNOD, cp, NV_RDONLY);
     }
@@ -345,11 +321,9 @@ void
 path_delete(Pathcomp_t *first)
 {
     Pathcomp_t *pp = first, *old = 0, *ppnext;
-    while (pp)
-    {
+    while (pp) {
         ppnext = pp->next;
-        if (--pp->refcount <= 0)
-        {
+        if (--pp->refcount <= 0) {
             if (pp->lib)
                 free(( void * )pp->lib);
             if (pp->bbuf)
@@ -359,8 +333,7 @@ path_delete(Pathcomp_t *first)
             free(( void * )pp);
             if (old)
                 old->next = ppnext;
-        }
-        else
+        } else
             old = pp;
         pp = ppnext;
     }
@@ -383,12 +356,10 @@ path_lib(Shell_t *shp, Pathcomp_t *pp, char *path)
     r = stat(path, &statb);
     if (last)
         *last = '/';
-    if (r >= 0)
-    {
+    if (r >= 0) {
         Pathcomp_t pcomp;
         char save[8];
-        for (; pp; pp = pp->next)
-        {
+        for (; pp; pp = pp->next) {
             if (!pp->dev && !pp->ino)
                 path_checkdup(shp, pp);
             if (pp->ino == statb.st_ino && pp->dev == statb.st_dev
@@ -457,18 +428,15 @@ path_checkdup(Shell_t *shp, Pathcomp_t *pp)
         flag = PATH_STD_DIR;
     first = (pp->flags & PATH_CDPATH) ? ( Pathcomp_t * )shp->cdpathlist
                                       : path_get(shp, "");
-    for (oldpp = first; oldpp && oldpp != pp; oldpp = oldpp->next)
-    {
+    for (oldpp = first; oldpp && oldpp != pp; oldpp = oldpp->next) {
         if (pp->ino == oldpp->ino && pp->dev == oldpp->dev
-            && pp->mtime == oldpp->mtime)
-        {
+            && pp->mtime == oldpp->mtime) {
             flag |= PATH_SKIP;
             break;
         }
     }
     pp->flags |= flag;
-    if (((pp->flags & (PATH_PATH | PATH_SKIP)) == PATH_PATH))
-    {
+    if (((pp->flags & (PATH_PATH | PATH_SKIP)) == PATH_PATH)) {
         int offset = stktell(shp->stk);
         sfputr(shp->stk, name, -1);
         path_chkpaths(shp, first, 0, pp, offset);
@@ -488,10 +456,8 @@ path_nextcomp(Shell_t *shp, Pathcomp_t *pp, const char *name, Pathcomp_t *last)
     stkseek(shp->stk, PATH_OFFSET);
     if (*name == '/')
         pp = 0;
-    else
-    {
-        for (; pp && pp != last; pp = ppnext)
-        {
+    else {
+        for (; pp && pp != last; pp = ppnext) {
             ppnext = pp->next;
             if (!pp->dev && !pp->ino)
                 path_checkdup(shp, pp);
@@ -503,10 +469,8 @@ path_nextcomp(Shell_t *shp, Pathcomp_t *pp, const char *name, Pathcomp_t *last)
         if (!pp) /* this should not happen */
             pp = last;
     }
-    if (pp && (pp->name[0] != '.' || pp->name[1]))
-    {
-        if (*pp->name != '/')
-        {
+    if (pp && (pp->name[0] != '.' || pp->name[1])) {
+        if (*pp->name != '/') {
             sfputr(shp->stk, path_pwd(shp, 1), -1);
             if (*stkptr(shp->stk, stktell(shp->stk) - 1) != '/')
                 sfputc(shp->stk, '/');
@@ -516,8 +480,7 @@ path_nextcomp(Shell_t *shp, Pathcomp_t *pp, const char *name, Pathcomp_t *last)
             sfputc(shp->stk, '/');
     }
     sfputr(shp->stk, name, 0);
-    while (pp && pp != last && (pp = pp->next))
-    {
+    while (pp && pp != last && (pp = pp->next)) {
         if (!(pp->flags & PATH_SKIP))
             return (pp);
     }
@@ -539,19 +502,15 @@ path_init(Shell_t *shp)
     Pathcomp_t *pp;
     if (!std_path && !(std_path = astconf("PATH", NIL(char *), NIL(char *))))
         std_path = e_defpath;
-    if (val = sh_scoped(shp, (PATHNOD))->nvalue.cp)
-    {
+    if (val = sh_scoped(shp, (PATHNOD))->nvalue.cp) {
         shp->pathlist = pp = ( void * )path_addpath(
         shp, ( Pathcomp_t * )shp->pathlist, val, PATH_PATH);
-    }
-    else
-    {
+    } else {
         if (!(pp = ( Pathcomp_t * )shp->defpathlist))
             pp = defpath_init(shp);
         shp->pathlist = ( void * )path_dup(pp);
     }
-    if (val = sh_scoped(shp, (FPATHNOD))->nvalue.cp)
-    {
+    if (val = sh_scoped(shp, (FPATHNOD))->nvalue.cp) {
         pp = ( void * )path_addpath(
         shp, ( Pathcomp_t * )shp->pathlist, val, PATH_FPATH);
     }
@@ -566,15 +525,13 @@ path_get(Shell_t *shp, const char *name)
     Pathcomp_t *pp = 0;
     if (*name && strchr(name, '/'))
         return (0);
-    if (!sh_isstate(shp, SH_DEFPATH))
-    {
+    if (!sh_isstate(shp, SH_DEFPATH)) {
         if (!shp->pathlist)
             path_init(shp);
         pp = ( Pathcomp_t * )shp->pathlist;
     }
     if (!pp && (!(sh_scoped(shp, PATHNOD)->nvalue.cp))
-        || sh_isstate(shp, SH_DEFPATH))
-    {
+        || sh_isstate(shp, SH_DEFPATH)) {
         if (!(pp = ( Pathcomp_t * )shp->defpathlist))
             pp = defpath_init(shp);
     }
@@ -592,13 +549,11 @@ path_opentype(Shell_t *shp, const char *name, Pathcomp_t *pp, int fun)
     Pathcomp_t *oldpp;
     if (!pp && !shp->pathlist)
         path_init(shp);
-    if (!fun && strchr(name, '/'))
-    {
+    if (!fun && strchr(name, '/')) {
         if (sh_isoption(shp, SH_RESTRICTED))
             errormsg(SH_DICT, ERROR_exit(1), e_restricted, name);
     }
-    do
-    {
+    do {
         pp = path_nextcomp(shp, oldpp = pp, name, 0);
         while (oldpp && (oldpp->flags & PATH_SKIP))
             oldpp = oldpp->next;
@@ -607,10 +562,8 @@ path_opentype(Shell_t *shp, const char *name, Pathcomp_t *pp, int fun)
         if ((fd = sh_open(path_relative(shp, stkptr(shp->stk, PATH_OFFSET)),
                           O_RDONLY | O_cloexec,
                           0))
-            >= 0)
-        {
-            if (fstat(fd, &statb) < 0 || S_ISDIR(statb.st_mode))
-            {
+            >= 0) {
+            if (fstat(fd, &statb) < 0 || S_ISDIR(statb.st_mode)) {
                 errno = EISDIR;
                 sh_close(fd);
                 fd = -1;
@@ -618,14 +571,12 @@ path_opentype(Shell_t *shp, const char *name, Pathcomp_t *pp, int fun)
         }
     } while (fd < 0 && pp);
 
-    if (fd >= 0)
-    {
+    if (fd >= 0) {
         if (!sh_iovalidfd(shp, fd))
             abort();
     }
 
-    if (fd >= 0 && (fd = sh_iomovefd(shp, fd)) > 0)
-    {
+    if (fd >= 0 && (fd = sh_iomovefd(shp, fd)) > 0) {
         fcntl(fd, F_SETFD, FD_CLOEXEC);
         shp->fdstatus[fd] |= IOCLEX;
     }
@@ -660,14 +611,12 @@ path_fullname(Shell_t *shp, const char *name)
 {
     size_t len = strlen(name) + 1, dirlen = 0;
     char *path, *pwd;
-    if (*name != '/')
-    {
+    if (*name != '/') {
         pwd = path_pwd(shp, 1);
         dirlen = strlen(pwd) + 1;
     }
     path = ( char * )malloc(len + dirlen);
-    if (dirlen)
-    {
+    if (dirlen) {
         memcpy(( void * )path, ( void * )pwd, dirlen);
         path[dirlen - 1] = '/';
     }
@@ -687,20 +636,16 @@ funload(Shell_t *shp, int fno, const char *name)
     struct Ufunction *rp, *rpfirst;
     int savestates = sh_getstate(shp), oldload = shp->funload;
     pname = path_fullname(shp, stkptr(shp->stk, PATH_OFFSET));
-    if (shp->fpathdict && (rp = dtmatch(shp->fpathdict, ( void * )pname)))
-    {
+    if (shp->fpathdict && (rp = dtmatch(shp->fpathdict, ( void * )pname))) {
         Dt_t *funtree = sh_subfuntree(shp, 1);
-        while (1)
-        {
+        while (1) {
             rpfirst = dtprev(shp->fpathdict, rp);
             if (!rpfirst || strcmp(pname, rpfirst->fname))
                 break;
             rp = rpfirst;
         }
-        do
-        {
-            if ((np = dtsearch(funtree, rp->np)) && is_afunction(np))
-            {
+        do {
+            if ((np = dtsearch(funtree, rp->np)) && is_afunction(np)) {
                 if (np->nvalue.rp)
                     np->nvalue.rp->fdict = 0;
                 nv_delete(np, funtree, NV_NOFREE);
@@ -757,12 +702,10 @@ path_search(Shell_t *shp, const char *name, Pathcomp_t **oldpp, int flag)
     Namval_t *np;
     int fno;
     Pathcomp_t *pp = 0;
-    if (name && strchr(name, '/'))
-    {
+    if (name && strchr(name, '/')) {
         stkseek(shp->stk, PATH_OFFSET);
         sfputr(shp->stk, name, -1);
-        if (canexecute(shp, stkptr(shp->stk, PATH_OFFSET), 0) < 0)
-        {
+        if (canexecute(shp, stkptr(shp->stk, PATH_OFFSET), 0) < 0) {
             *stkptr(shp->stk, PATH_OFFSET) = 0;
             return (false);
         }
@@ -773,19 +716,15 @@ path_search(Shell_t *shp, const char *name, Pathcomp_t **oldpp, int flag)
         sfputr(shp->stk, name, 0);
         return (false);
     }
-    if (sh_isstate(shp, SH_DEFPATH))
-    {
+    if (sh_isstate(shp, SH_DEFPATH)) {
         if (!shp->defpathlist)
             defpath_init(shp);
-    }
-    else if (!shp->pathlist)
+    } else if (!shp->pathlist)
         path_init(shp);
-    if (flag)
-    {
+    if (flag) {
         if (!(flag & 1) && (np = nv_search(name, shp->track_tree, 0))
             && !nv_isattr(np, NV_NOALIAS)
-            && (pp = ( Pathcomp_t * )np->nvalue.cp))
-        {
+            && (pp = ( Pathcomp_t * )np->nvalue.cp)) {
             stkseek(shp->stk, PATH_OFFSET);
             path_nextcomp(shp, pp, name, pp);
             if (oldpp)
@@ -801,16 +740,13 @@ path_search(Shell_t *shp, const char *name, Pathcomp_t **oldpp, int flag)
         if (!pp)
             *stkptr(shp->stk, PATH_OFFSET) = 0;
     }
-    if (flag == 0 || !pp || (pp->flags & PATH_FPATH))
-    {
+    if (flag == 0 || !pp || (pp->flags & PATH_FPATH)) {
         if (!pp)
             pp
             = sh_isstate(shp, SH_DEFPATH) ? shp->defpathlist : shp->pathlist;
         if (pp && strmatch(name, e_alphanum)
-            && (fno = path_opentype(shp, name, pp, 1)) >= 0)
-        {
-            if (flag == 2)
-            {
+            && (fno = path_opentype(shp, name, pp, 1)) >= 0) {
+            if (flag == 2) {
                 sh_close(fno);
                 return (true);
             }
@@ -819,9 +755,8 @@ path_search(Shell_t *shp, const char *name, Pathcomp_t **oldpp, int flag)
         }
         *stkptr(shp->stk, PATH_OFFSET) = 0;
         return (false);
-    }
-    else if (pp && !sh_isstate(shp, SH_DEFPATH) && *name != '/' && flag < 3)
-    {
+    } else if (pp && !sh_isstate(shp, SH_DEFPATH) && *name != '/'
+               && flag < 3) {
         if (np = nv_search(name, shp->track_tree, NV_ADD))
             path_alias(np, pp);
     }
@@ -836,8 +771,7 @@ pwdinfpath(void)
     int n;
     if (!pwd || !fpath)
         return (false);
-    while (*fpath)
-    {
+    while (*fpath) {
         for (n = 0; pwd[n] && pwd[n] == fpath[n]; n++)
             ;
         if (fpath[n] == ':' || fpath[n] == 0)
@@ -865,18 +799,15 @@ path_absolute(Shell_t *shp, const char *name, Pathcomp_t *pp)
     if (!pp && !(pp = path_get(shp, "")))
         return (0);
     shp->path_err = 0;
-    while (1)
-    {
+    while (1) {
         sh_sigcheck(shp);
         shp->bltin_dir = 0;
-        while (oldpp = pp)
-        {
+        while (oldpp = pp) {
             pp = path_nextcomp(shp, pp, name, 0);
             if (!(oldpp->flags & PATH_SKIP))
                 break;
         }
-        if (!oldpp)
-        {
+        if (!oldpp) {
             shp->path_err = ENOENT;
             return (0);
         }
@@ -884,8 +815,7 @@ path_absolute(Shell_t *shp, const char *name, Pathcomp_t *pp)
         if (!isfun && *oldpp->name == '.' && oldpp->name[1] == 0
             && pwdinfpath())
             isfun = 1;
-        if (!isfun && !sh_isoption(shp, SH_RESTRICTED))
-        {
+        if (!isfun && !sh_isoption(shp, SH_RESTRICTED)) {
             char *bp;
 #if SHOPT_DYNAMIC
             Shbltin_f addr;
@@ -896,19 +826,17 @@ path_absolute(Shell_t *shp, const char *name, Pathcomp_t *pp)
                     stkptr(shp->stk, PATH_OFFSET), shp->bltin_tree, 0))
                 && !nv_isattr(np, BLT_DISABLE))
                 return (oldpp);
-            if ((oldpp->flags & PATH_BIN) && (bp = strrchr(oldpp->name, '/')))
-            {
+            if ((oldpp->flags & PATH_BIN)
+                && (bp = strrchr(oldpp->name, '/'))) {
                 bp = stkptr(shp->stk, PATH_OFFSET + bp - oldpp->name);
-                if (!(np = nv_search(bp, shp->bltin_tree, 0)))
-                {
+                if (!(np = nv_search(bp, shp->bltin_tree, 0))) {
                     char save[4];
                     memcpy(save, bp -= 4, 4);
                     memcpy(bp, "/usr", 4);
                     np = nv_search(bp, shp->bltin_tree, 0);
                     memcpy(bp, save, 4);
                 }
-                if (np)
-                {
+                if (np) {
                     addr = ( Shbltin_f )np->nvalue.bfp;
                     if (np = sh_addbuiltin(
                         shp, stkptr(shp->stk, PATH_OFFSET), addr, NiL))
@@ -922,25 +850,20 @@ path_absolute(Shell_t *shp, const char *name, Pathcomp_t *pp)
             if ((addr = sh_getlib(shp, stkptr(shp->stk, n), oldpp))
                 && (np = sh_addbuiltin(
                     shp, stkptr(shp->stk, PATH_OFFSET), addr, NiL))
-                && nv_isattr(np, NV_BLTINOPT))
-            {
+                && nv_isattr(np, NV_BLTINOPT)) {
                 shp->bltin_dir = 0;
                 return (oldpp);
             }
             stkseek(shp->stk, n);
-            while (bp = oldpp->blib)
-            {
+            while (bp = oldpp->blib) {
                 char *fp;
                 void *dll;
                 int m;
-                if (fp = strchr(bp, ':'))
-                {
+                if (fp = strchr(bp, ':')) {
                     *fp++ = 0;
                     oldpp->blib = fp;
                     fp = 0;
-                }
-                else
-                {
+                } else {
                     fp = oldpp->bbuf;
                     oldpp->blib = oldpp->bbuf = 0;
                 }
@@ -961,8 +884,7 @@ path_absolute(Shell_t *shp, const char *name, Pathcomp_t *pp)
                                                     stkptr(shp->stk, n)))
                     && (np = sh_addbuiltin(
                         shp, stkptr(shp->stk, PATH_OFFSET), addr, NiL))
-                    && nv_isattr(np, NV_BLTINOPT))
-                {
+                    && nv_isattr(np, NV_BLTINOPT)) {
                 found:
                     if (fp)
                         free(fp);
@@ -994,12 +916,10 @@ path_absolute(Shell_t *shp, const char *name, Pathcomp_t *pp)
                      * libcmd::b_head
                      */
 
-                    if (libcmd && !dlllook(dll, "b_pids"))
-                    {
+                    if (libcmd && !dlllook(dll, "b_pids")) {
                         dlclose(dll);
                         dll = 0;
-                    }
-                    else
+                    } else
                         sh_addlib(shp, dll, stkptr(shp->stk, m), oldpp);
                 }
 #    endif
@@ -1009,8 +929,7 @@ path_absolute(Shell_t *shp, const char *name, Pathcomp_t *pp)
                           shp, stkptr(shp->stk, PATH_OFFSET), NiL, NiL))
                         || np->nvalue.bfp != ( Nambfp_f )addr)
                     && (np = sh_addbuiltin(
-                        shp, stkptr(shp->stk, PATH_OFFSET), addr, NiL)))
-                {
+                        shp, stkptr(shp->stk, PATH_OFFSET), addr, NiL))) {
                     np->nvenv = dll;
                     goto found;
                 }
@@ -1027,8 +946,7 @@ path_absolute(Shell_t *shp, const char *name, Pathcomp_t *pp)
         shp->bltin_dir = 0;
         sh_stats(STAT_PATHS);
         f = canexecute(shp, stkptr(shp->stk, PATH_OFFSET), isfun);
-        if (isfun && f >= 0 && (cp = strrchr(name, '.')))
-        {
+        if (isfun && f >= 0 && (cp = strrchr(name, '.'))) {
             *cp = 0;
             if (nv_open(name,
                         sh_subfuntree(shp, 1),
@@ -1036,8 +954,7 @@ path_absolute(Shell_t *shp, const char *name, Pathcomp_t *pp)
                 f = -1;
             *cp = '.';
         }
-        if (isfun && f >= 0)
-        {
+        if (isfun && f >= 0) {
             nv_onattr(nv_open(name,
                               sh_subfuntree(shp, 1),
                               NV_NOARRAY | NV_IDENT | NV_NOSCOPE),
@@ -1046,16 +963,13 @@ path_absolute(Shell_t *shp, const char *name, Pathcomp_t *pp)
             sh_close(f);
             f = -1;
             return (0);
-        }
-        else if (f >= 0 && (oldpp->flags & PATH_STD_DIR))
-        {
+        } else if (f >= 0 && (oldpp->flags & PATH_STD_DIR)) {
             int n = stktell(shp->stk);
             sfputr(shp->stk, "/bin/", -1);
             sfputr(shp->stk, name, 0);
             np = nv_search(stkptr(shp->stk, n), shp->bltin_tree, 0);
             stkseek(shp->stk, n);
-            if (np)
-            {
+            if (np) {
                 n = np->nvflag;
                 np = sh_addbuiltin(shp,
                                    stkptr(shp->stk, PATH_OFFSET),
@@ -1069,8 +983,7 @@ path_absolute(Shell_t *shp, const char *name, Pathcomp_t *pp)
         if (errno != ENOENT)
             noexec = errno;
     }
-    if (f < 0)
-    {
+    if (f < 0) {
         shp->path_err = (noexec ? noexec : ENOENT);
         return (0);
     }
@@ -1099,35 +1012,29 @@ canexecute(Shell_t *shp, char *path, int isfun)
     struct stat statb;
     int fd = 0;
     path = path_relative(shp, path);
-    if (isfun)
-    {
+    if (isfun) {
         if ((fd = open(path, O_RDONLY | O_cloexec, 0)) < 0
             || fstat(fd, &statb) < 0)
             goto err;
-    }
-    else if (stat(path, &statb) < 0)
-    {
+    } else if (stat(path, &statb) < 0) {
 #if _WINIX
         /* check for .exe or .bat suffix */
         char *cp;
         if (errno == ENOENT
             && (!(cp = strrchr(path, '.')) || strlen(cp) > 4
-                || strchr(cp, '/')))
-        {
+                || strchr(cp, '/'))) {
             int offset = stktell(shp->stk) - 1;
             stkseek(shp->stk, offset);
             sfputr(shp->stk, ".bat", -1);
             path = stkptr(shp->stk, PATH_OFFSET);
-            if (stat(path, &statb) < 0)
-            {
+            if (stat(path, &statb) < 0) {
                 if (errno != ENOENT)
                     goto err;
                 memcpy(stkptr(shp->stk, offset), ".sh", 4);
                 if (stat(path, &statb) < 0)
                     goto err;
             }
-        }
-        else
+        } else
 #endif /* _WINIX */
             goto err;
     }
@@ -1155,17 +1062,14 @@ path_relative(Shell_t *shp, const char *file)
     /* can't relpath when shp->pwd not set */
     if (!(pwd = shp->pwd))
         return (( char * )fp);
-    while (*pwd == *fp)
-    {
+    while (*pwd == *fp) {
         if (*pwd++ == 0)
             return (( char * )e_dot);
         fp++;
     }
-    if (*pwd == 0 && *fp == '/')
-    {
+    if (*pwd == 0 && *fp == '/') {
         /* //@// exposed here and in b_pwd() -- rats */
-        do
-        {
+        do {
             if (fp[0] == '/' && fp[1] == '/' && fp[2] == '@' && fp[3] == '/'
                 && fp[4] == '/')
                 return (( char * )file);
@@ -1186,14 +1090,12 @@ path_exec(Shell_t *shp, const char *arg0, char *argv[], struct argnod *local)
     int slash = 0;
     sh_setlist(shp, local, NV_EXPORT | NV_IDENT | NV_ASSIGN, 0);
     envp = sh_envgen(shp);
-    if (strchr(arg0, '/'))
-    {
+    if (strchr(arg0, '/')) {
         slash = 1;
         /* name containing / not allowed for restricted shell */
         if (sh_isoption(shp, SH_RESTRICTED))
             errormsg(SH_DICT, ERROR_exit(1), e_restricted, arg0);
-    }
-    else
+    } else
         pp = path_get(shp, arg0);
     shp->path_err = ENOENT;
     sfsync(NIL(Sfio_t *));
@@ -1202,15 +1104,12 @@ path_exec(Shell_t *shp, const char *arg0, char *argv[], struct argnod *local)
     while (pp && (pp->flags & PATH_SKIP))
         pp = pp->next;
     if (pp || slash)
-        do
-        {
+        do {
             sh_sigcheck(shp);
-            if (libpath = pp)
-            {
+            if (libpath = pp) {
                 pp = path_nextcomp(shp, pp, arg0, 0);
                 opath = stkfreeze(shp->stk, 1) + PATH_OFFSET;
-            }
-            else
+            } else
                 opath = arg0;
             path_spawn(shp, opath, argv, envp, libpath, 0);
             while (pp && (pp->flags & PATH_FPATH))
@@ -1235,23 +1134,19 @@ vexexec(void *ptr, uintmax_t fd1, uintmax_t fd2)
     char **argv = ( char ** )ep->argv;
     if (fd2 != ENOEXEC)
         return (( int )fd2);
-    if (ep->flags & SPAWN_FORK)
-    {
+    if (ep->flags & SPAWN_FORK) {
         if (ep->msgfd >= 0)
             close(ep->msgfd);
         spawnvex_apply(ep->vex, 0, SPAWN_RESET);
-        if (!shp->subshell)
-        {
+        if (!shp->subshell) {
             exscript(
             ( Shell_t * )ep->handle, ( char * )ep->path, argv, ep->envv);
             return (ENOEXEC);
         }
-    }
-    else if (!(ep->flags & SPAWN_EXEC))
+    } else if (!(ep->flags & SPAWN_EXEC))
         return (ENOEXEC);
     fd = open(ep->path, O_RDONLY);
-    if (fd >= 0)
-    {
+    if (fd >= 0) {
         struct stat statb;
         sfprintf(shp->strbuf, "/dev/fd/%d", fd);
         if (stat(devfd = sfstruse(shp->strbuf), &statb) >= 0)
@@ -1282,8 +1177,7 @@ path_spawn(Shell_t *shp,
     size_t r;
     pid_t pid = -1;
 #ifdef SPAWN_cwd
-    if (spawn > 1)
-    {
+    if (spawn > 1) {
         spawnvex_add(shp->vex, SPAWN_pgrp, spawn >> 1, 0, 0);
     }
     spawnvex_add(shp->vex, SPAWN_noexec, 0, vexexec, ( void * )shp);
@@ -1299,21 +1193,18 @@ path_spawn(Shell_t *shp,
     np = nv_search(argv[0], shp->track_tree, 0);
     while (libpath && !libpath->lib)
         libpath = libpath->next;
-    if (libpath && (!np || nv_size(np) > 0))
-    {
+    if (libpath && (!np || nv_size(np) > 0)) {
         /* check for symlink and use symlink name */
         char buff[PATH_MAX + 1];
         char save[PATH_MAX + 1];
         stkseek(shp->stk, PATH_OFFSET);
         sfputr(shp->stk, opath, -1);
         path = stkptr(shp->stk, PATH_OFFSET);
-        while ((n = readlink(path, buff, PATH_MAX)) > 0)
-        {
+        while ((n = readlink(path, buff, PATH_MAX)) > 0) {
             buff[n] = 0;
             n = PATH_OFFSET;
             r = 0;
-            if ((v = strrchr(path, '/')) && *buff != '/')
-            {
+            if ((v = strrchr(path, '/')) && *buff != '/') {
                 if (buff[0] == '.' && buff[1] == '.'
                     && (r = strlen(path) + 1) <= PATH_MAX)
                     memcpy(save, path, r);
@@ -1325,11 +1216,9 @@ path_spawn(Shell_t *shp,
             sfputr(shp->stk, buff, 0);
             n = stktell(shp->stk);
             path = stkptr(shp->stk, PATH_OFFSET);
-            if (v && buff[0] == '.' && buff[1] == '.')
-            {
+            if (v && buff[0] == '.' && buff[1] == '.') {
                 pathcanon(path, n - PATH_OFFSET, 0);
-                if (r && access(path, X_OK))
-                {
+                if (r && access(path, X_OK)) {
                     memcpy(path, save, r);
                     break;
                 }
@@ -1340,34 +1229,29 @@ path_spawn(Shell_t *shp,
         stkseek(shp->stk, 0);
     }
 #endif
-    if (libenv && (v = strchr(libenv, '=')))
-    {
+    if (libenv && (v = strchr(libenv, '='))) {
         n = v - libenv;
         *v = 0;
         np = nv_open(libenv, shp->var_tree, 0);
         *v = '=';
         s = nv_getval(np);
         sfputr(shp->stk, libenv, -1);
-        if (s)
-        {
+        if (s) {
             sfputc(shp->stk, ':');
             sfputr(shp->stk, s, -1);
         }
         v = stkfreeze(shp->stk, 1);
         r = 1;
         xp = envp + 1;
-        while (s = *xp++)
-        {
-            if (strneq(s, v, n) && s[n] == '=')
-            {
+        while (s = *xp++) {
+            if (strneq(s, v, n) && s[n] == '=') {
                 xval = *--xp;
                 *xp = v;
                 r = 0;
                 break;
             }
         }
-        if (r)
-        {
+        if (r) {
             *envp-- = v;
             xp = 0;
         }
@@ -1381,8 +1265,7 @@ path_spawn(Shell_t *shp,
     sh_sigcheck(shp);
     path = path_relative(shp, opath);
 #ifdef SHELLMAGIC
-    if (*path != '/' && path != opath)
-    {
+    if (*path != '/' && path != opath) {
         /*
          * The following code because execv(foo,) and execv(./foo,)
          * may not yield the same results
@@ -1401,8 +1284,7 @@ path_spawn(Shell_t *shp,
     if (xp)
         *xp = xval;
 #ifdef SHELLMAGIC
-    if (*path == '.' && path != opath)
-    {
+    if (*path == '.' && path != opath) {
         free(path);
         path = path_relative(shp, opath);
     }
@@ -1410,27 +1292,23 @@ path_spawn(Shell_t *shp,
     if (pid > 0)
         return (pid);
 retry:
-    switch (shp->path_err = errno)
-    {
+    switch (shp->path_err = errno) {
     case ENOEXEC:
 #if SHOPT_SUID_EXEC
     case EPERM:
         /* some systems return EPERM if setuid bit is on */
 #endif
         errno = ENOEXEC;
-        if (spawn)
-        {
+        if (spawn) {
 #ifdef _lib_fork
             if (shp->subshell)
                 return (-1);
-            do
-            {
+            do {
                 if ((pid = fork()) > 0)
                     return (pid);
             } while (_sh_fork(shp, pid, 0, ( int * )0) < 0);
 #    ifdef SPAWN_cwd
-            if (shp->vex)
-            {
+            if (shp->vex) {
                 spawnvex_apply(shp->vex, 0, 0);
 #        if 0
 				spawnvex_apply(shp->vexp,0,SPAWN_RESET);
@@ -1443,11 +1321,9 @@ retry:
 #endif
         }
         exscript(shp, path, argv, envp);
-    case EACCES:
-    {
+    case EACCES: {
         struct stat statb;
-        if (stat(path, &statb) >= 0)
-        {
+        if (stat(path, &statb) >= 0) {
             if (S_ISDIR(statb.st_mode))
                 errno = EISDIR;
 #ifdef S_ISSOCK
@@ -1473,8 +1349,7 @@ retry:
 #endif /* EMLINK */
         return (-1);
     case E2BIG:
-        if (shp->xargmin)
-        {
+        if (shp->xargmin) {
             pid = path_xargs(shp, opath, &argv[0], envp, spawn);
             if (pid < 0)
                 goto retry;
@@ -1523,19 +1398,16 @@ exscript(Shell_t *shp, char *path, char *argv[], char *const *envp)
         char *savet = 0;
         struct stat statb;
         int err = 0;
-        if ((n = open(path, O_RDONLY | O_cloexec, 0)) >= 0)
-        {
+        if ((n = open(path, O_RDONLY | O_cloexec, 0)) >= 0) {
             /* move <n> if n=0,1,2 */
             n = sh_iomovefd(shp, n);
             if (fstat(n, &statb) >= 0
                 && !(statb.st_mode & (S_ISUID | S_ISGID)))
                 goto openok;
             sh_close(n);
-        }
-        else
+        } else
             err = errno;
-        if ((euserid = geteuid()) != shp->gd->userid)
-        {
+        if ((euserid = geteuid()) != shp->gd->userid) {
             strncpy(
             name + 9, fmtbase(( long )getpid(), 10, 0), sizeof(name) - 10);
             /* create a suid open file with owner equal effective uid */
@@ -1548,8 +1420,7 @@ exscript(Shell_t *shp, char *path, char *argv[], char *const *envp)
             /* make sure that file has right owner */
             if (fstat(n, &statb) < 0 || statb.st_uid != euserid)
                 goto fail;
-            if (n != 10)
-            {
+            if (n != 10) {
                 sh_close(10);
                 fcntl(n, F_dupfd_cloexec, 10);
                 sh_close(n);
@@ -1558,8 +1429,7 @@ exscript(Shell_t *shp, char *path, char *argv[], char *const *envp)
         }
         savet = *--argv;
         *argv = path;
-        if (err == EACCES && sh_access(e_suidexec, X_OK) < 0)
-        {
+        if (err == EACCES && sh_access(e_suidexec, X_OK) < 0) {
             errno = EACCES;
             return;
         }
@@ -1589,8 +1459,7 @@ exscript(Shell_t *shp, char *path, char *argv[], char *const *envp)
     shp->readscript = error_info.id;
     /* close history file if name has changed */
     if (shp->gd->hist_ptr && (path = nv_getval(HISTFILE))
-        && strcmp(path, shp->gd->hist_ptr->histname))
-    {
+        && strcmp(path, shp->gd->hist_ptr->histname)) {
         hist_close(shp->gd->hist_ptr);
         (HISTCUR)->nvalue.lp = 0;
     }
@@ -1636,8 +1505,7 @@ sh_accsusp(void)
 void
 sh_accbegin(const char *cmdname)
 {
-    if (SHACCT)
-    {
+    if (SHACCT) {
         sabuf.ac_btime = time(NIL(time_t *));
         before = times(&buffer);
         sabuf.ac_uid = getuid();
@@ -1657,8 +1525,7 @@ sh_accend(void)
     int fd;
     clock_t after;
 
-    if (shaccton)
-    {
+    if (shaccton) {
         after = times(&buffer);
         sabuf.ac_utime = compress(buffer.tms_utime + buffer.tms_cutime);
         sabuf.ac_stime = compress(buffer.tms_stime + buffer.tms_cstime);
@@ -1678,17 +1545,14 @@ compress(time_t t)
 {
     int exp = 0, rund = 0;
 
-    while (t >= 8192)
-    {
+    while (t >= 8192) {
         exp++;
         rund = t & 04;
         t >>= 3;
     }
-    if (rund)
-    {
+    if (rund) {
         t++;
-        if (t >= 8192)
-        {
+        if (t >= 8192) {
             t >>= 3;
             exp++;
         }
@@ -1712,8 +1576,7 @@ path_addcomp(Shell_t *shp,
     Pathcomp_t *pp, *oldpp;
     int offset = stktell(shp->stk);
     size_t len;
-    if (!(flag & PATH_BFPATH))
-    {
+    if (!(flag & PATH_BFPATH)) {
         const char *cp = name;
         while (*cp && *cp != ':')
             sfputc(shp->stk, *cp++);
@@ -1721,13 +1584,10 @@ path_addcomp(Shell_t *shp,
         sfputc(shp->stk, 0);
         stkseek(shp->stk, offset);
         name = ( const char * )stkptr(shp->stk, offset);
-    }
-    else
+    } else
         len = strlen(name);
-    for (pp = first; pp; pp = pp->next)
-    {
-        if (len == pp->len && memcmp(name, pp->name, len) == 0)
-        {
+    for (pp = first; pp; pp = pp->next) {
+        if (len == pp->len && memcmp(name, pp->name, len) == 0) {
             pp->flags |= flag;
             return (first);
         }
@@ -1745,8 +1605,7 @@ path_addcomp(Shell_t *shp,
     else
         first = pp;
     pp->flags = flag;
-    if (strcmp(name, SH_CMDLIB_DIR) == 0)
-    {
+    if (strcmp(name, SH_CMDLIB_DIR) == 0) {
         pp->dev = 1;
         pp->flags |= PATH_BUILTIN_LIB;
         pp->blib = pp->bbuf = malloc(sizeof(LIBCMD));
@@ -1763,8 +1622,7 @@ bool
 path_cmdlib(Shell_t *shp, const char *dir, bool on)
 {
     Pathcomp_t *pp;
-    for (pp = shp->pathlist; pp; pp = pp->next)
-    {
+    for (pp = shp->pathlist; pp; pp = pp->next) {
         if (strcmp(pp->name, dir))
             continue;
         if (on)
@@ -1794,8 +1652,7 @@ path_chkpaths(Shell_t *shp,
     if (pp->len == 1 && *stkptr(shp->stk, offset) == '/')
         stkseek(shp->stk, offset);
     sfputr(shp->stk, "/.paths", -1);
-    if ((fd = open(stkptr(shp->stk, offset), O_RDONLY | O_cloexec)) >= 0)
-    {
+    if ((fd = open(stkptr(shp->stk, offset), O_RDONLY | O_cloexec)) >= 0) {
         fstat(fd, &statb);
         n = statb.st_size;
         stkseek(shp->stk, offset + pp->len + n + 2);
@@ -1804,27 +1661,22 @@ path_chkpaths(Shell_t *shp,
         n = read(fd, cp = sp, n);
         sp[n] = 0;
         close(fd);
-        for (ep = 0; n--; cp++)
-        {
-            if (*cp == '=')
-            {
+        for (ep = 0; n--; cp++) {
+            if (*cp == '=') {
                 ep = cp + 1;
                 continue;
-            }
-            else if (*cp != '\r' && *cp != '\n')
+            } else if (*cp != '\r' && *cp != '\n')
                 continue;
-            if (*sp == '#' || sp == cp)
-            {
+            if (*sp == '#' || sp == cp) {
                 sp = cp + 1;
                 continue;
             }
             *cp = 0;
             m = ep ? (ep - sp) : 0;
             if (m == 0
-                || m == 6 && memcmp(( void * )sp, ( void * )"FPATH=", m) == 0)
-            {
-                if (first)
-                {
+                || m == 6
+                   && memcmp(( void * )sp, ( void * )"FPATH=", m) == 0) {
+                if (first) {
                     char *ptr = stkptr(shp->stk, offset + pp->len + 1);
                     if (ep)
                         strcpy(ptr, ep);
@@ -1834,19 +1686,16 @@ path_chkpaths(Shell_t *shp,
                                  stkptr(shp->stk, offset),
                                  PATH_FPATH | PATH_BFPATH);
                 }
-            }
-            else if (m == 11
-                     && memcmp(( void * )sp, ( void * )"PLUGIN_LIB=", m) == 0)
-            {
+            } else if (m == 11
+                       && memcmp(( void * )sp, ( void * )"PLUGIN_LIB=", m)
+                          == 0) {
                 if (pp->bbuf)
                     free(pp->bbuf);
                 pp->blib = pp->bbuf = strdup(ep);
-            }
-            else if (m == 4
-                     && memcmp(( void * )sp, ( void * )"BIN=1", m) == 0)
+            } else if (m == 4
+                       && memcmp(( void * )sp, ( void * )"BIN=1", m) == 0)
                 pp->flags |= PATH_BIN;
-            else if (m)
-            {
+            else if (m) {
                 size_t z;
                 pp->lib = ( char * )malloc(z = cp - sp + pp->len + 2);
                 memcpy(( void * )pp->lib, ( void * )sp, m);
@@ -1855,8 +1704,7 @@ path_chkpaths(Shell_t *shp,
                 pp->lib[k = m + pp->len] = '/';
                 strcpy(( void * )&pp->lib[k + 1], ep);
                 pathcanon(&pp->lib[m], z, 0);
-                if (!first)
-                {
+                if (!first) {
                     stkseek(shp->stk, 0);
                     sfputr(shp->stk, pp->lib, -1);
                     free(( void * )pp->lib);
@@ -1881,25 +1729,20 @@ path_addpath(Shell_t *shp, Pathcomp_t *first, const char *path, int type)
 
     if (!path && type != PATH_PATH)
         return (first);
-    if (type != PATH_FPATH)
-    {
+    if (type != PATH_FPATH) {
         old = first;
         first = 0;
     }
     if (offset)
         savptr = stkfreeze(shp->stk, 0);
     if (path)
-        while (*(cp = path))
-        {
-            if (*cp == ':')
-            {
+        while (*(cp = path)) {
+            if (*cp == ':') {
                 if (type != PATH_FPATH)
                     first = path_addcomp(shp, first, old, ".", type);
                 while (*++path == ':')
                     ;
-            }
-            else
-            {
+            } else {
                 int c;
                 while (*path && *path != ':')
                     path++;
@@ -1911,10 +1754,8 @@ path_addpath(Shell_t *shp, Pathcomp_t *first, const char *path, int type)
                     path--;
             }
         }
-    if (old)
-    {
-        if (!first && !path)
-        {
+    if (old) {
+        if (!first && !path) {
             Pathcomp_t *pp = ( Pathcomp_t * )shp->defpathlist;
             if (!pp)
                 pp = defpath_init(shp);
@@ -1939,8 +1780,7 @@ Pathcomp_t *
 path_dup(Pathcomp_t *first)
 {
     Pathcomp_t *pp = first;
-    while (pp)
-    {
+    while (pp) {
         pp->refcount++;
         pp = pp->next;
     }
@@ -1955,20 +1795,17 @@ path_newdir(Shell_t *shp, Pathcomp_t *first)
 {
     Pathcomp_t *pp = first, *next, *pq;
     struct stat statb;
-    for (pp = first; pp; pp = pp->next)
-    {
+    for (pp = first; pp; pp = pp->next) {
         pp->flags &= ~PATH_SKIP;
         if (*pp->name == '/')
             continue;
         /* delete .paths component */
-        if ((next = pp->next) && (next->flags & PATH_BFPATH))
-        {
+        if ((next = pp->next) && (next->flags & PATH_BFPATH)) {
             pp->next = next->next;
             if (--next->refcount <= 0)
                 free(( void * )next);
         }
-        if (stat(pp->name, &statb) < 0 || !S_ISDIR(statb.st_mode))
-        {
+        if (stat(pp->name, &statb) < 0 || !S_ISDIR(statb.st_mode)) {
             pp->dev = 0;
             pp->ino = 0;
             continue;
@@ -1976,18 +1813,15 @@ path_newdir(Shell_t *shp, Pathcomp_t *first)
         pp->dev = statb.st_dev;
         pp->ino = statb.st_ino;
         pp->mtime = statb.st_mtime;
-        for (pq = first; pq != pp; pq = pq->next)
-        {
+        for (pq = first; pq != pp; pq = pq->next) {
             if (pp->ino == pq->ino && pp->dev == pq->dev)
                 pp->flags |= PATH_SKIP;
         }
-        for (pq = pp; pq = pq->next;)
-        {
+        for (pq = pp; pq = pq->next;) {
             if (pp->ino == pq->ino && pp->dev == pq->dev)
                 pq->flags |= PATH_SKIP;
         }
-        if ((pp->flags & (PATH_PATH | PATH_SKIP)) == PATH_PATH)
-        {
+        if ((pp->flags & (PATH_PATH | PATH_SKIP)) == PATH_PATH) {
             /* try to insert .paths component */
             int offset = stktell(shp->stk);
             sfputr(shp->stk, pp->name, -1);
@@ -2010,34 +1844,28 @@ path_unsetfpath(Shell_t *shp)
 {
     Pathcomp_t *first = ( Pathcomp_t * )shp->pathlist;
     Pathcomp_t *pp = first, *old = 0;
-    if (shp->fpathdict)
-    {
+    if (shp->fpathdict) {
         struct Ufunction *rp, *rpnext;
         for (rp = ( struct Ufunction * )dtfirst(shp->fpathdict); rp;
-             rp = rpnext)
-        {
+             rp = rpnext) {
             rpnext = ( struct Ufunction * )dtnext(shp->fpathdict, rp);
             if (rp->fdict)
                 nv_delete(rp->np, rp->fdict, NV_NOFREE);
             rp->fdict = 0;
         }
     }
-    while (pp)
-    {
-        if ((pp->flags & PATH_FPATH) && !(pp->flags & PATH_BFPATH))
-        {
+    while (pp) {
+        if ((pp->flags & PATH_FPATH) && !(pp->flags & PATH_BFPATH)) {
             if (pp->flags & PATH_PATH)
                 pp->flags &= ~PATH_FPATH;
-            else
-            {
+            else {
                 Pathcomp_t *ppsave = pp;
                 if (old)
                     old->next = pp->next;
                 else
                     first = pp->next;
                 pp = pp->next;
-                if (--ppsave->refcount <= 0)
-                {
+                if (--ppsave->refcount <= 0) {
                     if (ppsave->lib)
                         free(( void * )ppsave->lib);
                     free(( void * )ppsave);
@@ -2055,8 +1883,7 @@ Pathcomp_t *
 path_dirfind(Pathcomp_t *first, const char *name, int c)
 {
     Pathcomp_t *pp = first;
-    while (pp)
-    {
+    while (pp) {
         if (memcmp(name, pp->name, pp->len) == 0 && name[pp->len] == c)
             return (pp);
         pp = pp->next;
@@ -2084,8 +1911,7 @@ talias_get(Namval_t *np, Namfun_t *nvp)
 static void
 talias_put(Namval_t *np, const char *val, int flags, Namfun_t *fp)
 {
-    if (!val && np->nvalue.cp)
-    {
+    if (!val && np->nvalue.cp) {
         Pathcomp_t *pp = ( Pathcomp_t * )np->nvalue.cp;
         if (--pp->refcount <= 0)
             free(( void * )pp);
@@ -2102,8 +1928,7 @@ static Namfun_t talias_init = { &talias_disc, 1 };
 void
 path_alias(Namval_t *np, Pathcomp_t *pp)
 {
-    if (pp)
-    {
+    if (pp) {
         Shell_t *shp = sh_ptr(np);
         struct stat statb;
         char *sp;
@@ -2118,7 +1943,6 @@ path_alias(Namval_t *np, Pathcomp_t *pp)
             nv_setsize(np, statb.st_size + 1);
         else
             nv_setsize(np, 0);
-    }
-    else
+    } else
         _nv_unset(np, 0);
 }

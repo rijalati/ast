@@ -143,12 +143,10 @@ int format;  /* conversion format		*/
     *sign = *decpt = 0;
 
 #if !_ast_fltmax_double
-    if (format & SFFMT_LDOUBLE)
-    {
+    if (format & SFFMT_LDOUBLE) {
         Sfdouble_t f = *( Sfdouble_t * )vp;
 
-        if (isnanl(f))
-        {
+        if (isnanl(f)) {
 #    if _lib_signbit
             if (signbit(f))
 #    else
@@ -158,8 +156,7 @@ int format;  /* conversion format		*/
             return SF_NAN;
         }
 #    if _lib_isinf
-        if (n = isinf(f))
-        {
+        if (n = isinf(f)) {
 #        if _lib_signbit
             if (signbit(f))
 #        else
@@ -188,8 +185,7 @@ int format;  /* conversion format		*/
             *sign = 1;
         }
 #        if _lib_fpclassify
-        switch (fpclassify(f))
-        {
+        switch (fpclassify(f)) {
         case FP_INFINITE:
             return SF_INF;
         case FP_NAN:
@@ -214,8 +210,7 @@ int format;  /* conversion format		*/
         if (f > LDBL_MAX)
             return SF_INF;
 
-        if (format & SFFMT_AFORMAT)
-        {
+        if (format & SFFMT_AFORMAT) {
             Sfdouble_t g;
             b = sp = buf;
             ep = (format & SFFMT_UPPER) ? ux : lx;
@@ -227,12 +222,10 @@ int format;  /* conversion format		*/
             *decpt = x;
             f = ldexpl(g, 8 * sizeof(m) - 3);
 
-            for (;;)
-            {
+            for (;;) {
                 m = f;
                 x = 8 * sizeof(m);
-                while ((x -= 4) >= 0)
-                {
+                while ((x -= 4) >= 0) {
                     *sp++ = ep[(m >> x) & 0xf];
                     if (sp >= endsp)
                         goto around;
@@ -243,33 +236,27 @@ int format;  /* conversion format		*/
         }
 
         n = 0;
-        if (f >= ( Sfdouble_t )CVT_LDBL_MAXINT)
-        { /* scale to a small enough number to fit an int */
+        if (f >= ( Sfdouble_t )CVT_LDBL_MAXINT) { /* scale to a small enough
+                                                     number to fit an int */
             v = SF_MAXEXP10 - 1;
-            do
-            {
+            do {
                 if (f < _Sfpos10[v])
                     v -= 1;
-                else
-                {
+                else {
                     f *= _Sfneg10[v];
                     if ((n += (1 << v)) >= SF_IDIGITS)
                         return SF_INF;
                 }
             } while (f >= ( Sfdouble_t )CVT_LDBL_MAXINT);
-        }
-        else if (f > 0.0 && f < 0.1)
-        { /* scale to avoid excessive multiply by 10 below */
+        } else if (f > 0.0 && f < 0.1) { /* scale to avoid excessive multiply
+                                            by 10 below */
             v = SF_MAXEXP10 - 1;
-            do
-            {
-                if (f <= _Sfneg10[v])
-                {
+            do {
+                if (f <= _Sfneg10[v]) {
                     f *= _Sfpos10[v];
                     if ((n += (1 << v)) >= SF_IDIGITS)
                         return SF_INF;
-                }
-                else if (--v < 0)
+                } else if (--v < 0)
                     break;
             } while (f < 0.1);
             n = -n;
@@ -277,8 +264,7 @@ int format;  /* conversion format		*/
         *decpt = ( int )n;
 
         b = sp = buf + SF_INTPART;
-        if ((v = ( CVT_LDBL_INT )f) != 0)
-        { /* translate the integer part */
+        if ((v = ( CVT_LDBL_INT )f) != 0) { /* translate the integer part */
             f -= ( Sfdouble_t )v;
 
             sfucvt(v, sp, n, ep, CVT_LDBL_INT, unsigned CVT_LDBL_INT);
@@ -288,14 +274,12 @@ int format;  /* conversion format		*/
                 return SF_INF;
             b = sp;
             sp = buf + SF_INTPART;
-        }
-        else
+        } else
             n = 0;
 
         /* remaining number of digits to compute; add 1 for later rounding */
         n = (((format & SFFMT_EFORMAT) || *decpt <= 0) ? 1 : *decpt + 1) - n;
-        if (n_digit > 0)
-        {
+        if (n_digit > 0) {
 #    if 0
 			static int	dig = 0;
 			
@@ -314,50 +298,38 @@ int format;  /* conversion format		*/
             ep = endsp;
         if (sp > ep)
             sp = ep;
-        else
-        {
-            if ((format & SFFMT_EFORMAT) && *decpt == 0 && f > 0.)
-            {
+        else {
+            if ((format & SFFMT_EFORMAT) && *decpt == 0 && f > 0.) {
                 Sfdouble_t d;
-                while (( long )(d = f * 10.) == 0)
-                {
+                while (( long )(d = f * 10.) == 0) {
                     f = d;
                     *decpt -= 1;
                 }
             }
 
-            while (sp < ep)
-            { /* generate fractional digits */
-                if (f <= 0.)
-                { /* fill with 0's */
-                    do
-                    {
+            while (sp < ep) {  /* generate fractional digits */
+                if (f <= 0.) { /* fill with 0's */
+                    do {
                         *sp++ = '0';
                     } while (sp < ep);
                     goto done;
-                }
-                else if ((n = ( long )(f *= 10.)) < 10)
-                {
+                } else if ((n = ( long )(f *= 10.)) < 10) {
                     *sp++ = '0' + n;
                     f -= n;
-                }
-                else /* n == 10 */
+                } else /* n == 10 */
                 {
-                    do
-                    {
+                    do {
                         *sp++ = '9';
                     } while (sp < ep);
                 }
             }
         }
-    }
-    else
+    } else
 #endif
     {
         double f = *( double * )vp;
 
-        if (isnan(f))
-        {
+        if (isnan(f)) {
 #if _lib_signbit
             if (signbit(f))
 #else
@@ -367,8 +339,7 @@ int format;  /* conversion format		*/
             return SF_NAN;
         }
 #if _lib_isinf
-        if (n = isinf(f))
-        {
+        if (n = isinf(f)) {
 #    if _lib_signbit
             if (signbit(f))
 #    else
@@ -393,8 +364,7 @@ int format;  /* conversion format		*/
             *sign = 1;
         }
 #    if _lib_fpclassify
-        switch (fpclassify(f))
-        {
+        switch (fpclassify(f)) {
         case FP_INFINITE:
             return SF_INF;
         case FP_NAN:
@@ -419,8 +389,7 @@ int format;  /* conversion format		*/
         if (f > DBL_MAX)
             return SF_INF;
 
-        if (format & SFFMT_AFORMAT)
-        {
+        if (format & SFFMT_AFORMAT) {
             double g;
             b = sp = buf;
             ep = (format & SFFMT_UPPER) ? ux : lx;
@@ -432,12 +401,10 @@ int format;  /* conversion format		*/
             *decpt = x;
             f = ldexp(g, 8 * sizeof(m) - 3);
 
-            for (;;)
-            {
+            for (;;) {
                 m = f;
                 x = 8 * sizeof(m);
-                while ((x -= 4) >= 0)
-                {
+                while ((x -= 4) >= 0) {
                     *sp++ = ep[(m >> x) & 0xf];
                     if (sp >= endsp)
                         goto around;
@@ -447,33 +414,27 @@ int format;  /* conversion format		*/
             }
         }
         n = 0;
-        if (f >= ( double )CVT_DBL_MAXINT)
-        { /* scale to a small enough number to fit an int */
+        if (f >= ( double )CVT_DBL_MAXINT) { /* scale to a small enough number
+                                                to fit an int */
             v = SF_MAXEXP10 - 1;
-            do
-            {
+            do {
                 if (f < _Sfpos10[v])
                     v -= 1;
-                else
-                {
+                else {
                     f *= _Sfneg10[v];
                     if ((n += (1 << v)) >= SF_IDIGITS)
                         return SF_INF;
                 }
             } while (f >= ( double )CVT_DBL_MAXINT);
-        }
-        else if (f > 0.0 && f < 1e-8)
-        { /* scale to avoid excessive multiply by 10 below */
+        } else if (f > 0.0 && f < 1e-8) { /* scale to avoid excessive multiply
+                                             by 10 below */
             v = SF_MAXEXP10 - 1;
-            do
-            {
-                if (f <= _Sfneg10[v])
-                {
+            do {
+                if (f <= _Sfneg10[v]) {
                     f *= _Sfpos10[v];
                     if ((n += (1 << v)) >= SF_IDIGITS)
                         return SF_INF;
-                }
-                else if (--v < 0)
+                } else if (--v < 0)
                     break;
             } while (f < 0.1);
             n = -n;
@@ -481,8 +442,7 @@ int format;  /* conversion format		*/
         *decpt = ( int )n;
 
         b = sp = buf + SF_INTPART;
-        if ((v = ( CVT_DBL_INT )f) != 0)
-        { /* translate the integer part */
+        if ((v = ( CVT_DBL_INT )f) != 0) { /* translate the integer part */
             f -= ( double )v;
 
             sfucvt(v, sp, n, ep, CVT_DBL_INT, unsigned CVT_DBL_INT);
@@ -492,14 +452,12 @@ int format;  /* conversion format		*/
                 return SF_INF;
             b = sp;
             sp = buf + SF_INTPART;
-        }
-        else
+        } else
             n = 0;
 
         /* remaining number of digits to compute; add 1 for later rounding */
         n = (((format & SFFMT_EFORMAT) || *decpt <= 0) ? 1 : *decpt + 1) - n;
-        if (n_digit > 0)
-        {
+        if (n_digit > 0) {
 #if 0
 			static int	dig = 0;
 			
@@ -518,37 +476,27 @@ int format;  /* conversion format		*/
             ep = endsp;
         if (sp > ep)
             sp = ep;
-        else
-        {
-            if ((format & SFFMT_EFORMAT) && *decpt == 0 && f > 0.)
-            {
+        else {
+            if ((format & SFFMT_EFORMAT) && *decpt == 0 && f > 0.) {
                 reg double d;
-                while (( long )(d = f * 10.) == 0)
-                {
+                while (( long )(d = f * 10.) == 0) {
                     f = d;
                     *decpt -= 1;
                 }
             }
 
-            while (sp < ep)
-            { /* generate fractional digits */
-                if (f <= 0.)
-                { /* fill with 0's */
-                    do
-                    {
+            while (sp < ep) {  /* generate fractional digits */
+                if (f <= 0.) { /* fill with 0's */
+                    do {
                         *sp++ = '0';
                     } while (sp < ep);
                     goto done;
-                }
-                else if ((n = ( long )(f *= 10.)) < 10)
-                {
+                } else if ((n = ( long )(f *= 10.)) < 10) {
                     *sp++ = ( char )('0' + n);
                     f -= n;
-                }
-                else /* n == 10 */
+                } else /* n == 10 */
                 {
-                    do
-                    {
+                    do {
                         *sp++ = '9';
                     } while (sp < ep);
                     break;
@@ -559,20 +507,17 @@ int format;  /* conversion format		*/
 
     if (ep <= b)
         ep = b + 1;
-    else if (ep < endsp)
-    { /* round the last digit */
+    else if (ep < endsp) { /* round the last digit */
         *--sp += 5;
-        while (*sp > '9')
-        {
+        while (*sp > '9') {
             *sp = '0';
             if (sp > b)
                 *--sp += 1;
-            else
-            { /* next power of 10 */
+            else { /* next power of 10 */
                 *sp = '1';
                 *decpt += 1;
-                if (!(format & SFFMT_EFORMAT))
-                { /* add one more 0 for %f precision */
+                if (!(format & SFFMT_EFORMAT)) { /* add one more 0 for %f
+                                                    precision */
                     if (ep - sp > 1)
                         ep[-1] = '0';
                     ep += 1;
@@ -587,18 +532,14 @@ done:
         *len = ep - b;
     return b;
 around:
-    if (((m >> x) & 0xf) >= 8)
-    {
+    if (((m >> x) & 0xf) >= 8) {
         t = sp - 1;
-        for (;;)
-        {
-            if (--t <= b)
-            {
+        for (;;) {
+            if (--t <= b) {
                 (*decpt)++;
                 break;
             }
-            switch (*t)
-            {
+            switch (*t) {
             case 'f':
             case 'F':
                 *t = '0';

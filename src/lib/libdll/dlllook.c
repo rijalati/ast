@@ -37,8 +37,7 @@ dlllook(void *dll, const char *name)
     void *addr;
     char buf[256];
 
-    if (!(addr = dlsym(dll, name)) && strlen(name) < (sizeof(buf) - 2))
-    {
+    if (!(addr = dlsym(dll, name)) && strlen(name) < (sizeof(buf) - 2)) {
         buf[0] = '_';
         strcpy(buf + 1, name);
         name = ( const char * )buf;

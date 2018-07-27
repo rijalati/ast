@@ -53,12 +53,10 @@ tvgettime(Tv_t *tv)
     static time_t s;
     static uint32_t n;
 
-    if ((tv->tv_sec = time(NiL)) != s)
-    {
+    if ((tv->tv_sec = time(NiL)) != s) {
         s = tv->tv_sec;
         n = 0;
-    }
-    else
+    } else
         n += 1000;
     tv->tv_nsec = n;
 

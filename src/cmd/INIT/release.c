@@ -126,8 +126,7 @@ string(char *s, char *tab, int num, int siz, char **e)
         buf[i] = isupper(s[i]) ? tolower(s[i]) : s[i];
     for (i = 0; i < num; i += siz)
         for (j = 0; j < siz && buf[j] == tab[j + i]; j++)
-            if (j == (siz - 1))
-            {
+            if (j == (siz - 1)) {
                 *e = s + siz;
                 return i / siz + 1;
             }
@@ -142,13 +141,11 @@ date(char *s, char **e)
     unsigned long m;
     unsigned long d;
 
-    if (isdigit(*s))
-    {
+    if (isdigit(*s)) {
         y = number(s, &t);
         if (*t != '-')
             return 0;
-        switch (t - s)
-        {
+        switch (t - s) {
         case 2:
             y += 1900;
             if (y <= 1969)
@@ -167,9 +164,7 @@ date(char *s, char **e)
             return 0;
         if ((t - s) != 2 || d < 1 || d > 31)
             return 0;
-    }
-    else
-    {
+    } else {
         if (string(s, day, elementsof(day), 3, &t))
             s = t;
         if (!(m = string(s, mon, elementsof(mon), 3, &t)))
@@ -177,15 +172,13 @@ date(char *s, char **e)
         if (!(d = number(t, &s)))
             return 0;
         for (y = 1969; *s; s++)
-            if ((y = number(s, &t)) && (t - s) == 4)
-            {
+            if ((y = number(s, &t)) && (t - s) == 4) {
                 if (y < 1969)
                     return 0;
                 break;
             }
     }
-    if (e)
-    {
+    if (e) {
         while (isspace(*t))
             t++;
         *e = t;
@@ -213,13 +206,10 @@ main(int argc, char **argv)
     lo = hi = 0;
 #if _PACKAGE_ast
     error_info.id = "release";
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'f':
-            if (!(lo = date(opt_info.arg, &e)) || *e)
-            {
+            if (!(lo = date(opt_info.arg, &e)) || *e) {
                 error(2, "%s: invalid from date [%s]", opt_info.arg, e);
                 return 1;
             }
@@ -228,8 +218,7 @@ main(int argc, char **argv)
             mk = opt_info.num + 1;
             continue;
         case 't':
-            if (!(hi = date(opt_info.arg, &e)) || *e)
-            {
+            if (!(hi = date(opt_info.arg, &e)) || *e) {
                 error(2, "%s: invalid to date [%s]", opt_info.arg, e);
                 return 1;
             }
@@ -250,39 +239,31 @@ main(int argc, char **argv)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
     argv += opt_info.index;
 #else
-    while ((s = *++argv) && *s == '-' && *(s + 1))
-    {
-        if (*(s + 1) == '-')
-        {
-            if (!*(s + 2))
-            {
+    while ((s = *++argv) && *s == '-' && *(s + 1)) {
+        if (*(s + 1) == '-') {
+            if (!*(s + 2)) {
                 argv++;
                 break;
             }
             usage();
             break;
         }
-        for (;;)
-        {
-            switch (i = *++s)
-            {
+        for (;;) {
+            switch (i = *++s) {
             case 0:
                 break;
             case 'f':
             case 't':
-                if (!*(v = ++s) && !(v = *++argv))
-                {
+                if (!*(v = ++s) && !(v = *++argv)) {
                     s = "??";
                     continue;
                 }
-                if (!(t = date(v, &e)) || *e)
-                {
+                if (!(t = date(v, &e)) || *e) {
                     fprintf(
                     stderr, "release: -%c%s: invalid date [%s]\n", i, s, e);
                     return 1;
                 }
-                switch (i)
-                {
+                switch (i) {
                 case 'f':
                     lo = t;
                     break;
@@ -292,14 +273,12 @@ main(int argc, char **argv)
                 }
                 break;
             case 'r':
-                if (!*(v = ++s) && !(v = *++argv))
-                {
+                if (!*(v = ++s) && !(v = *++argv)) {
                     s = "??";
                     continue;
                 }
                 mk = number(v, &e) + 1;
-                if (*e)
-                {
+                if (*e) {
                     fprintf(stderr, "release: -%c%s: invalid count\n", i, s);
                     return 1;
                 }
@@ -318,36 +297,27 @@ main(int argc, char **argv)
         }
     }
 #endif
-    do
-    {
-        if (!(p = *argv++) || !*p || *p == '-' && !*(p + 1))
-        {
+    do {
+        if (!(p = *argv++) || !*p || *p == '-' && !*(p + 1)) {
             argv--;
             p = "";
             f = stdin;
-        }
-        else if (!(f = fopen(p, "r")))
-        {
+        } else if (!(f = fopen(p, "r"))) {
             fprintf(stderr, "release: %s: cannot read", p);
             return 1;
         }
-        while (s = fgets(buf, sizeof(buf), f))
-        {
-            if (t = date(s, &e))
-            {
+        while (s = fgets(buf, sizeof(buf), f)) {
+            if (t = date(s, &e)) {
                 if (mk && e[0] == '-' && e[1] == '-' && e[2] == '-' && !--mk)
                     break;
                 if (t < lo)
                     break;
                 if (hi && t > hi)
                     continue;
-                if (p)
-                {
-                    if (*p)
-                    {
+                if (p) {
+                    if (*p) {
                         for (u = v = p; *p; p++)
-                            if (*p == '/')
-                            {
+                            if (*p == '/') {
                                 v = u;
                                 u = p + 1;
                             }

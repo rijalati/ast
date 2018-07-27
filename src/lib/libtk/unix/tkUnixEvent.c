@@ -51,17 +51,15 @@ int flags; /* Flags passed to Tk_DoOneEvent:
     TkDisplay *dispPtr;
     static Tcl_Time dontBlock = { 0, 0 };
 
-    if (!(flags & TCL_WINDOW_EVENTS))
-    {
+    if (!(flags & TCL_WINDOW_EVENTS)) {
         return;
     }
 
-    for (dispPtr = tkDisplayList; dispPtr != NULL; dispPtr = dispPtr->nextPtr)
-    {
+    for (dispPtr = tkDisplayList; dispPtr != NULL;
+         dispPtr = dispPtr->nextPtr) {
         Tcl_File handle;
         XFlush(dispPtr->display);
-        if (XQLength(dispPtr->display) > 0)
-        {
+        if (XQLength(dispPtr->display) > 0) {
             Tcl_SetMaxBlockTime(&dontBlock);
         }
         handle = Tcl_GetFile(( ClientData )ConnectionNumber(dispPtr->display),
@@ -100,13 +98,12 @@ int flags; /* Flags passed to Tk_DoOneEvent:
     XEvent event;
     int numFound;
 
-    if (!(flags & TCL_WINDOW_EVENTS))
-    {
+    if (!(flags & TCL_WINDOW_EVENTS)) {
         return;
     }
 
-    for (dispPtr = tkDisplayList; dispPtr != NULL; dispPtr = dispPtr->nextPtr)
-    {
+    for (dispPtr = tkDisplayList; dispPtr != NULL;
+         dispPtr = dispPtr->nextPtr) {
         Tcl_File handle;
         /*
          * Note: we should not need to do a flush of the output queues before
@@ -115,11 +112,9 @@ int flags; /* Flags passed to Tk_DoOneEvent:
 
         handle = Tcl_GetFile(( ClientData )ConnectionNumber(dispPtr->display),
                              TCL_UNIX_FD);
-        if (Tcl_FileReady(handle, TCL_READABLE) != 0)
-        {
+        if (Tcl_FileReady(handle, TCL_READABLE) != 0) {
             numFound = XEventsQueued(dispPtr->display, QueuedAfterReading);
-            if (numFound == 0)
-            {
+            if (numFound == 0) {
 
                 /*
                  * Things are very tricky if there aren't any events readable
@@ -151,9 +146,7 @@ int flags; /* Flags passed to Tk_DoOneEvent:
                 XFlush(dispPtr->display);
                 ( void )signal(SIGPIPE, oldHandler);
             }
-        }
-        else
-        {
+        } else {
             numFound = XQLength(dispPtr->display);
         }
 
@@ -161,8 +154,7 @@ int flags; /* Flags passed to Tk_DoOneEvent:
          * Transfer events from the X event queue to the Tk event queue.
          */
 
-        while (numFound > 0)
-        {
+        while (numFound > 0) {
             XNextEvent(dispPtr->display, &event);
             Tk_QueueWindowEvent(&event, TCL_QUEUE_TAIL);
             numFound--;
@@ -192,8 +184,7 @@ TkCreateXEventSource()
 {
     static int initialized = 0;
 
-    if (!initialized)
-    {
+    if (!initialized) {
         Tcl_CreateEventSource(
         DisplaySetupProc, DisplayCheckProc, ( ClientData )NULL);
         initialized = 1;

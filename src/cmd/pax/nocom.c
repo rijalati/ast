@@ -56,10 +56,8 @@ main(int argc, char **argv)
 
     NoP(argc);
     error_info.id = "nocom";
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case '?':
             error(ERROR_USAGE | 4, "%s", opt_info.arg);
             break;
@@ -72,18 +70,14 @@ main(int argc, char **argv)
     argv += opt_info.index;
     if (error_info.errors)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
-    if (!*argv)
-    {
+    if (!*argv) {
         if (nocomment(sfstdin, sfstdout) < 0)
             error(ERROR_SYSTEM | 2, "write error");
-    }
-    else
-        while (s = *argv++)
-        {
+    } else
+        while (s = *argv++) {
             if (!(sp = sfopen(NiL, s, "r")))
                 error(ERROR_SYSTEM | 2, "%s: cannot read", s);
-            else
-            {
+            else {
                 if (nocomment(sp, sfstdout) < 0)
                     error(ERROR_SYSTEM | 2, "%s: write error", s);
                 sfclose(sp);

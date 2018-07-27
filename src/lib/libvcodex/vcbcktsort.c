@@ -52,8 +52,7 @@ ssize_t *bckt;  /* [256] buckets	*/
     {
         for (p = 0; p < n; ++p)
             bckt[data[list[p]]] += 1;
-    }
-    else /* unsorted permutation was the identity */
+    } else /* unsorted permutation was the identity */
     {
         for (p = 0; p < n; ++p)
             bckt[data[p]] += 1;
@@ -71,8 +70,7 @@ ssize_t *bckt;  /* [256] buckets	*/
     {
         for (p = 0; p < n; ++p)
             indx[bckt[data[list[p]]]++] = list[p];
-    }
-    else /* sorting all indices */
+    } else /* sorting all indices */
     {
         for (p = 0; p < n; ++p)
             indx[bckt[data[p]]++] = p;

@@ -41,10 +41,8 @@ readdir(DIR *dirp)
 {
     struct dirent *dp;
 
-    for (;;)
-    {
-        if (dirp->dd_loc >= dirp->dd_size)
-        {
+    for (;;) {
+        if (dirp->dd_loc >= dirp->dd_size) {
             if (dirp->dd_size < 0)
                 return (0);
             dirp->dd_loc = 0;

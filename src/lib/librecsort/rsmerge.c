@@ -51,12 +51,9 @@ typedef struct _merge_s
 
 #define APPEND(rs, obj, t)                                                   \
     {                                                                        \
-        if ((t = rs->sorted))                                                \
-        {                                                                    \
+        if ((t = rs->sorted)) {                                              \
             t->left->right = (obj);                                          \
-        }                                                                    \
-        else                                                                 \
-        {                                                                    \
+        } else {                                                             \
             rs->sorted = t = (obj);                                          \
         }                                                                    \
         t->left = (obj);                                                     \
@@ -68,28 +65,22 @@ typedef struct _merge_s
 #define MGRESERVE(mg, rsrv, endrsrv, cur, r, action)                         \
     {                                                                        \
         reg ssize_t rr;                                                      \
-        if ((cur + r) > endrsrv)                                             \
-        {                                                                    \
-            if (rsrv && sfread(mg->f, rsrv, cur - rsrv) != cur - rsrv)       \
-            {                                                                \
+        if ((cur + r) > endrsrv) {                                           \
+            if (rsrv && sfread(mg->f, rsrv, cur - rsrv) != cur - rsrv) {     \
                 MGSETEOF(mg);                                                \
                 action;                                                      \
             }                                                                \
             rsrv = endrsrv = cur = NIL(uchar *);                             \
             rr = r <= RS_RESERVE ? RS_RESERVE : ((r / 1024) + 1) * 1024;     \
-            if (!(rsrv = ( uchar * )sfreserve(mg->f, rr, SF_LOCKR)))         \
-            {                                                                \
-                if ((rr = sfvalue(mg->f)) < r)                               \
-                {                                                            \
-                    if (rr <= 0)                                             \
-                    {                                                        \
+            if (!(rsrv = ( uchar * )sfreserve(mg->f, rr, SF_LOCKR))) {       \
+                if ((rr = sfvalue(mg->f)) < r) {                             \
+                    if (rr <= 0) {                                           \
                         MGSETEOF(mg);                                        \
                         action;                                              \
                     }                                                        \
                     rr = r;                                                  \
                 }                                                            \
-                if (!(rsrv = ( uchar * )sfreserve(mg->f, rr, SF_LOCKR)))     \
-                {                                                            \
+                if (!(rsrv = ( uchar * )sfreserve(mg->f, rr, SF_LOCKR))) {   \
                     MGSETEOF(mg);                                            \
                     action;                                                  \
                 }                                                            \
@@ -99,23 +90,18 @@ typedef struct _merge_s
     }
 
 #define RSRESERVE(rs, rsrv, endrsrv, cur, w, action)                         \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         reg ssize_t rw;                                                      \
-        if ((endrsrv - cur) < w)                                             \
-        {                                                                    \
-            if (rsrv && sfwrite(rs->f, rsrv, cur - rsrv) != cur - rsrv)      \
-            {                                                                \
+        if ((endrsrv - cur) < w) {                                           \
+            if (rsrv && sfwrite(rs->f, rsrv, cur - rsrv) != cur - rsrv) {    \
                 action;                                                      \
             }                                                                \
             rsrv = endrsrv = cur = NIL(uchar *);                             \
             rw = w <= RS_RESERVE ? RS_RESERVE : ((w / 1024) + 1) * 1024;     \
-            if (!(rsrv = ( uchar * )sfreserve(rs->f, rw, SF_LOCKR)))         \
-            {                                                                \
+            if (!(rsrv = ( uchar * )sfreserve(rs->f, rw, SF_LOCKR))) {       \
                 if ((rw = sfvalue(rs->f)) < w)                               \
                     rw = w;                                                  \
-                if (!(rsrv = ( uchar * )sfreserve(rs->f, rw, SF_LOCKR)))     \
-                {                                                            \
+                if (!(rsrv = ( uchar * )sfreserve(rs->f, rw, SF_LOCKR))) {   \
                     action;                                                  \
                 }                                                            \
             }                                                                \
@@ -125,8 +111,7 @@ typedef struct _merge_s
 
 #define RSSYNC(rs)                                                           \
     {                                                                        \
-        if (rs->rsrv)                                                        \
-        {                                                                    \
+        if (rs->rsrv) {                                                      \
             sfwrite(rs->f, rs->rsrv, rs->cur - rs->rsrv);                    \
             rs->rsrv = rs->cur = rs->endrsrv = NIL(uchar *);                 \
         }                                                                    \
@@ -143,8 +128,7 @@ static int mgflush(rs) reg Rs_t *rs;
     reg Rsobj_t *r;
     reg ssize_t n;
 
-    if ((r = rs->sorted))
-    {
+    if ((r = rs->sorted)) {
         r->left->right = NIL(Rsobj_t *);
         if (!(rs->type & RS_OTEXT)) /* need to write the count */
         {
@@ -185,8 +169,7 @@ Merge_t *mg;
         return -1;
 
     /* release key memory */
-    if (defkeyf)
-    {
+    if (defkeyf) {
         vmclear(mg->vm);
         m_key = c_key = NIL(uchar *);
         s_key = 0;
@@ -203,13 +186,10 @@ Merge_t *mg;
 
     datalen = rsc = rs->disc->data;
 
-    if (type & RS_ITEXT)
-    {
-        if (type & RS_DSAMELEN)
-        {
+    if (type & RS_ITEXT) {
+        if (type & RS_DSAMELEN) {
             MGRESERVE(mg, rsrv, endrsrv, cur, datalen, return -1);
-        }
-        else
+        } else
             for (s = RS_RESERVE, o = 0;
                  ;) /* make sure we have at least 1 record */
             {
@@ -222,23 +202,18 @@ Merge_t *mg;
                         return -1;
                     if (datalen <= x)
                         break;
-                }
-                else
+                } else
 #endif
-                if ((t = ( uchar * )memchr(cur, rsc, x)))
-                {
+                if ((t = ( uchar * )memchr(cur, rsc, x))) {
                     datalen = (t - cur) + 1;
                     break;
                 }
                 if (MGISEOF(mg))
                     return -1;
-                else if (o == x)
-                {
+                else if (o == x) {
                     datalen = x;
                     break;
-                }
-                else
-                {
+                } else {
                     o = x;
                     s += RS_RESERVE;
                     continue;
@@ -248,24 +223,20 @@ Merge_t *mg;
                     return -1;
                 MGCLREOF(mg);
             }
-    }
-    else
-    {
+    } else {
         if (mg->match == 0) /* get group size */
         {
             MGRESERVE(mg, rsrv, endrsrv, cur, sizeof(ssize_t), return -1);
             t = ( uchar * )(&mg->match);
             MEMCPY(t, cur, sizeof(ssize_t));
-            if (mg->match == 0)
-            {
+            if (mg->match == 0) {
                 MGSETEOF(mg);
                 return -1;
             }
         }
 
         /* define length of next record */
-        if (!(type & RS_DSAMELEN))
-        {
+        if (!(type & RS_DSAMELEN)) {
             MGRESERVE(mg, rsrv, endrsrv, cur, sizeof(ssize_t), return -1);
 #if _PACKAGE_ast
             if (rsc & ~0xff) /* Recfmt_t record descriptor */
@@ -276,8 +247,7 @@ Merge_t *mg;
                 t = ( uchar * )(&datalen);
                 MEMCPY(t, cur, sizeof(ssize_t));
             }
-            if (datalen < 0)
-            {
+            if (datalen < 0) {
                 MGSETEOF(mg);
                 return -1;
             }
@@ -291,12 +261,10 @@ Merge_t *mg;
     n = mg->match < 0 ? 1 : -1;
 
     /* fast loop for a common case */
-    if (!defkeyf && (type & RS_DSAMELEN) && !(type & RS_ITEXT))
-    {
+    if (!defkeyf && (type & RS_DSAMELEN) && !(type & RS_ITEXT)) {
         if (keylen <= 0)
             keylen += datalen - key;
-        for (;;)
-        {
+        for (;;) {
             obj->equal = NIL(Rsobj_t *);
             obj->data = cur;
             obj->datalen = datalen;
@@ -313,28 +281,23 @@ Merge_t *mg;
         }
     }
 
-    for (;;)
-    {
+    for (;;) {
         obj->equal = NIL(Rsobj_t *);
         obj->data = cur;
         cur += datalen;
         obj->datalen = datalen;
 
-        if (defkeyf)
-        {
-            if ((s = key * datalen) > s_key)
-            {
+        if (defkeyf) {
+            if ((s = key * datalen) > s_key) {
                 s = ((s + RS_RESERVE - 1) / RS_RESERVE) * RS_RESERVE;
-                if (m_key && !vmresize(mg->vm, m_key, (c_key - m_key) + s, 0))
-                {
+                if (m_key
+                    && !vmresize(mg->vm, m_key, (c_key - m_key) + s, 0)) {
                     vmresize(mg->vm, m_key, c_key - m_key, 0);
                     m_key = c_key = NIL(uchar *);
                     s_key = 0;
                 }
-                if (!m_key)
-                {
-                    if (!(m_key = ( uchar * )vmalloc(mg->vm, s)))
-                    {
+                if (!m_key) {
+                    if (!(m_key = ( uchar * )vmalloc(mg->vm, s))) {
                         MGSETEOF(mg);
                         return -1;
                     }
@@ -344,8 +307,7 @@ Merge_t *mg;
             }
 
             s = (*defkeyf)(rs, obj->data, datalen, c_key, s_key, rs->disc);
-            if (s < 0)
-            {
+            if (s < 0) {
                 MGSETEOF(mg);
                 return -1;
             }
@@ -354,9 +316,7 @@ Merge_t *mg;
             obj->keylen = s;
             c_key += s;
             s_key -= s;
-        }
-        else
-        {
+        } else {
             obj->key = obj->data + key;
             if ((obj->keylen = keylen) <= 0)
                 obj->keylen += datalen - key;
@@ -365,44 +325,34 @@ Merge_t *mg;
         OBJHEAD(obj); /* set up obj->order for quick comparison */
         obj += 1;
 
-        if (type & RS_ITEXT)
-        {
+        if (type & RS_ITEXT) {
             if (obj >= endobj)
                 goto done;
-            if (type & RS_DSAMELEN)
-            {
+            if (type & RS_DSAMELEN) {
                 if ((cur + datalen) > endrsrv)
                     goto done;
-            }
-            else
-            {
+            } else {
 #if _PACKAGE_ast
                 if (rsc & ~0xff) /* Recfmt_t record descriptor */
                 {
                     if ((datalen = reclen(rsc, cur, endrsrv - cur)) < 0
                         || datalen > (endrsrv - cur))
                         goto done;
-                }
-                else
+                } else
 #endif
                 if (!(t = ( uchar * )memchr(cur, rsc, endrsrv - cur)))
                     goto done;
                 else
                     datalen = (t - cur) + 1;
             }
-        }
-        else
-        {
+        } else {
             if ((mg->match += n) >= 0 || obj >= endobj)
                 goto done;
 
-            if (type & RS_DSAMELEN)
-            {
+            if (type & RS_DSAMELEN) {
                 if ((cur + datalen) > endrsrv)
                     goto done;
-            }
-            else
-            {
+            } else {
                 if (cur + sizeof(ssize_t) > endrsrv)
                     goto done;
 #if _PACKAGE_ast
@@ -414,13 +364,11 @@ Merge_t *mg;
                     t = ( uchar * )(&datalen);
                     MEMCPY(t, cur, sizeof(ssize_t));
                 }
-                if (datalen < 0)
-                {
+                if (datalen < 0) {
                     MGSETEOF(mg);
                     return -1;
                 }
-                if ((cur + datalen) > endrsrv)
-                {
+                if ((cur + datalen) > endrsrv) {
 #if _PACKAGE_ast
                     if (!(rsc & ~0xff))
 #endif
@@ -485,8 +433,7 @@ int pos; /* stream position for resolving equal records	*/
     mg->vm = NIL(Vmalloc_t *);
     if (rs->disc->defkeyf
         && (!(vmdisc = vmdcderive(Vmheap, RS_RESERVE, 0))
-            || !(mg->vm = vmopen(&vmdisc, Vmlast, 0))))
-    {
+            || !(mg->vm = vmopen(&vmdisc, Vmlast, 0)))) {
         vmfree(Vmheap, mg);
         return NIL(Merge_t *);
     }
@@ -504,8 +451,7 @@ int pos; /* stream position for resolving equal records	*/
     sfset(f, (SF_WRITE | SF_SHARE | SF_PUBLIC), 0);
 
     /* get a decent size buffer to work with */
-    if ((mg->flags & SF_MALLOC) && !(mg->flags & SF_STRING))
-    {
+    if ((mg->flags & SF_MALLOC) && !(mg->flags & SF_STRING)) {
         ssize_t round;
         if ((round = rs->c_max) > 0)
             round /= 4;
@@ -513,8 +459,7 @@ int pos; /* stream position for resolving equal records	*/
     }
 
     /* fill first cache */
-    if (mgrefresh(rs, mg) < 0)
-    {
+    if (mgrefresh(rs, mg) < 0) {
         mgclose(rs, mg);
         return NIL(Merge_t *);
     }
@@ -530,10 +475,8 @@ int pos; /* stream position for resolving equal records	*/
                                    : (reverse ? -1 : 1))
 #define MGMEMCMP(o1, o2, len, cmp, reverse)                                  \
     {                                                                        \
-        for (; len > 0; len -= 8)                                            \
-        {                                                                    \
-            switch (len)                                                     \
-            {                                                                \
+        for (; len > 0; len -= 8) {                                          \
+            switch (len) {                                                   \
             default:                                                         \
                 if ((cmp = *o1++ - *o2++))                                   \
                     return reverse ? -cmp : cmp;                             \
@@ -594,8 +537,7 @@ int reverse;
         MGMEMCMP(o, t, l, c, reverse);
 
         return reverse ? -d : d;
-    }
-    else
+    } else
         return 0;
 }
 
@@ -620,10 +562,8 @@ Merge_t *mg;
     obj = mg->obj + mg->cpos;
     r = (l = list) + n;
 
-    if (n > 4)
-    {
-        while (l != r)
-        {
+    if (n > 4) {
+        while (l != r) {
             m = l + (r - l) / 2;
             o = (*m)->obj + (*m)->cpos;
             if ((cmp = MGCOMPARE(rs, o, obj, reverse)) == 0)
@@ -633,27 +573,20 @@ Merge_t *mg;
             else
                 r = m;
         }
-    }
-    else
-    {
-        for (r -= 1, cmp = 1; r >= l; --r)
-        {
+    } else {
+        for (r -= 1, cmp = 1; r >= l; --r) {
             o = (*r)->obj + (*r)->cpos;
-            if ((cmp = MGCOMPARE(rs, o, obj, reverse)) > 0)
-            {
+            if ((cmp = MGCOMPARE(rs, o, obj, reverse)) > 0) {
                 l = r + 1;
                 break;
-            }
-            else if (cmp == 0)
-            {
+            } else if (cmp == 0) {
                 l = r;
                 break;
             }
         }
     }
 
-    if (cmp == 0)
-    {
+    if (cmp == 0) {
         for (p = NIL(Merge_t *), h = *l;;)
             if (mg->pos < h->pos || !(p = h, h = h->equi))
                 break;
@@ -662,9 +595,7 @@ Merge_t *mg;
             p->equi = mg;
         else
             *l = mg;
-    }
-    else
-    {
+    } else {
         for (r = list + n; r > l; --r)
             *r = *(r - 1);
         *l = mg;
@@ -708,43 +639,35 @@ ssize_t n;
     rsc = rs->disc->data;
 
     /* easy case, just copy everything over, let Sfio worry about it */
-    if (n < 0 && (rs->type & RS_ITEXT) && !notify)
-    {
-        if (rsrv)
-        {
+    if (n < 0 && (rs->type & RS_ITEXT) && !notify) {
+        if (rsrv) {
             sfwrite(rs->f, rsrv, cur - rsrv);
             rs->rsrv = NIL(uchar *);
         }
-        if (mgrsrv)
-        {
+        if (mgrsrv) {
             sfread(mg->f, mgrsrv, mgcur - mgrsrv);
             mg->rsrv = NIL(uchar *);
         }
         return sfmove(mg->f, rs->f, -1, -1) < 0 ? -1 : 0;
     }
 
-    for (n_obj = n < 0 ? 0 : n;;)
-    {
-        if (n_obj == 0)
-        {
+    for (n_obj = n < 0 ? 0 : n;;) {
+        if (n_obj == 0) {
             if (MGISEOF(mg))
                 break;
             if (rs->type & RS_ITEXT)
                 n_obj = 1;
-            else
-            {
+            else {
                 MGRESERVE(
                 mg, mgrsrv, mgendrsrv, mgcur, sizeof(ssize_t), break);
                 d = ( uchar * )(&n_obj);
                 MEMCPY(d, mgcur, sizeof(ssize_t));
-                if (n_obj == 0)
-                {
+                if (n_obj == 0) {
                     MGSETEOF(mg);
                     break;
                 }
             }
-            if (!(rs->type & RS_OTEXT))
-            {
+            if (!(rs->type & RS_OTEXT)) {
                 RSRESERVE(rs, rsrv, endrsrv, cur, sizeof(ssize_t), goto done);
                 d = ( uchar * )(&n_obj);
                 MEMCPY(cur, d, sizeof(ssize_t));
@@ -754,30 +677,24 @@ ssize_t n;
         if (n_obj < 0)
             n_obj = -n_obj;
 
-        if (rs->type & RS_DSAMELEN)
-        {
+        if (rs->type & RS_DSAMELEN) {
             len = rs->disc->data;
-            if (notify)
-            {
-                for (; n_obj > 0; --n_obj)
-                {
+            if (notify) {
+                for (; n_obj > 0; --n_obj) {
                     MGRESERVE(mg, mgrsrv, mgendrsrv, mgcur, len, break);
                     RSRESERVE(rs, rsrv, endrsrv, cur, len, goto done);
                     obj.data = mgcur;
                     mgcur += len;
                     obj.datalen = len;
-                    do
-                    {
-                        for (;;)
-                        {
+                    do {
+                        for (;;) {
                             out.data = cur;
                             out.datalen = w = endrsrv - cur;
                             if ((c = rsnotify(
                                  rs, RS_WRITE, &obj, &out, rs->disc))
                                 < 0)
                                 goto done;
-                            if (c == RS_DELETE)
-                            {
+                            if (c == RS_DELETE) {
                                 out.datalen = 0;
                                 break;
                             }
@@ -789,16 +706,12 @@ ssize_t n;
                         cur += out.datalen;
                     } while (c == RS_INSERT);
                 }
-            }
-            else
-            {
+            } else {
                 len *= n_obj;
-                for (;;)
-                {
+                for (;;) {
                     if ((r = mgendrsrv - mgcur) > 0)
                         w = len > r ? r : len;
-                    else
-                    {
+                    else {
                         w = len > RS_RESERVE ? RS_RESERVE : len;
                         MGRESERVE(mg, mgrsrv, mgendrsrv, mgcur, w, break);
                     }
@@ -809,11 +722,8 @@ ssize_t n;
                 }
             }
             n_obj = 0;
-        }
-        else if (rs->type & RS_ITEXT)
-        {
-            for (; n_obj > 0; --n_obj)
-            {
+        } else if (rs->type & RS_ITEXT) {
+            for (; n_obj > 0; --n_obj) {
                 uchar *t;
                 ssize_t s, o, x;
                 for (s = RS_RESERVE, o = 0;
@@ -829,28 +739,21 @@ ssize_t n;
                             goto done;
                         if (len <= x)
                             break;
-                    }
-                    else
+                    } else
 #endif
-                    if ((t = ( uchar * )memchr(mgcur, rsc, x)))
-                    {
+                    if ((t = ( uchar * )memchr(mgcur, rsc, x))) {
                         len = (t - cur) + 1;
                         break;
-                    }
-                    else if (o == x)
-                    {
+                    } else if (o == x) {
                         len = x;
                         break;
-                    }
-                    else
-                    {
+                    } else {
                         o = x;
                         s += RS_RESERVE;
                         continue;
                     }
                 last_chunk:
-                    if ((s = sfvalue(mg->f)) <= 0)
-                    {
+                    if ((s = sfvalue(mg->f)) <= 0) {
                         if (!s)
                             ret = 0;
                         MGSETEOF(mg);
@@ -858,31 +761,26 @@ ssize_t n;
                     }
                     MGCLREOF(mg);
                 }
-                if (len <= 0)
-                {
+                if (len <= 0) {
                     ret = 0;
                     MGSETEOF(mg);
                     goto done;
                 }
                 MGRESERVE(mg, mgrsrv, mgendrsrv, mgcur, len, break);
                 RSRESERVE(rs, rsrv, endrsrv, cur, len, goto done);
-                if (notify)
-                {
+                if (notify) {
                     obj.data = mgcur;
                     mgcur += len;
                     obj.datalen = len;
-                    do
-                    {
-                        for (;;)
-                        {
+                    do {
+                        for (;;) {
                             out.data = cur;
                             out.datalen = w = endrsrv - cur;
                             if ((c = rsnotify(
                                  rs, RS_WRITE, &obj, &out, rs->disc))
                                 < 0)
                                 goto done;
-                            if (c == RS_DELETE)
-                            {
+                            if (c == RS_DELETE) {
                                 out.datalen = 0;
                                 break;
                             }
@@ -893,42 +791,34 @@ ssize_t n;
                         }
                         cur += out.datalen;
                     } while (c == RS_INSERT);
-                }
-                else
+                } else
                     MEMCPY(cur, mgcur, len);
             }
         }
 #if _PACKAGE_ast
-        else if (rsc & ~0xff)
-        {
-            for (; n_obj > 0; --n_obj)
-            {
+        else if (rsc & ~0xff) {
+            for (; n_obj > 0; --n_obj) {
                 MGRESERVE(
                 mg, mgrsrv, mgendrsrv, mgcur, sizeof(ssize_t), break);
-                if ((len = reclen(rsc, mgcur, sizeof(ssize_t))) < 0)
-                {
+                if ((len = reclen(rsc, mgcur, sizeof(ssize_t))) < 0) {
                     MGSETEOF(mg);
                     goto done;
                 }
                 MGRESERVE(mg, mgrsrv, mgendrsrv, mgcur, len, break);
                 RSRESERVE(rs, rsrv, endrsrv, cur, len, goto done);
-                if (notify)
-                {
+                if (notify) {
                     obj.data = mgcur;
                     mgcur += len;
                     obj.datalen = len;
-                    do
-                    {
-                        for (;;)
-                        {
+                    do {
+                        for (;;) {
                             out.data = cur;
                             out.datalen = w = endrsrv - cur;
                             if ((c = rsnotify(
                                  rs, RS_WRITE, &obj, &out, rs->disc))
                                 < 0)
                                 goto done;
-                            if (c == RS_DELETE)
-                            {
+                            if (c == RS_DELETE) {
                                 out.datalen = 0;
                                 break;
                             }
@@ -939,16 +829,13 @@ ssize_t n;
                         }
                         cur += out.datalen;
                     } while (c == RS_INSERT);
-                }
-                else
+                } else
                     MEMCPY(cur, mgcur, len);
             }
         }
 #endif
-        else
-        {
-            for (; n_obj > 0; --n_obj)
-            {
+        else {
+            for (; n_obj > 0; --n_obj) {
                 MGRESERVE(
                 mg, mgrsrv, mgendrsrv, mgcur, sizeof(ssize_t), break);
                 d = ( uchar * )(&len);
@@ -957,31 +844,26 @@ ssize_t n;
 
                 if (rs->type & RS_OTEXT)
                     RSRESERVE(rs, rsrv, endrsrv, cur, len, goto done);
-                else
-                {
+                else {
                     w = len + sizeof(ssize_t);
                     RSRESERVE(rs, rsrv, endrsrv, cur, w, goto done);
                     d = ( uchar * )(&len);
                     MEMCPY(cur, d, sizeof(ssize_t));
                 }
 
-                if (notify)
-                {
+                if (notify) {
                     obj.data = mgcur;
                     mgcur += len;
                     obj.datalen = len;
-                    do
-                    {
-                        for (;;)
-                        {
+                    do {
+                        for (;;) {
                             out.data = cur;
                             out.datalen = w = endrsrv - cur;
                             if ((c = rsnotify(
                                  rs, RS_WRITE, &obj, &out, rs->disc))
                                 < 0)
                                 goto done;
-                            if (c == RS_DELETE)
-                            {
+                            if (c == RS_DELETE) {
                                 out.datalen = 0;
                                 break;
                             }
@@ -992,8 +874,7 @@ ssize_t n;
                         }
                         cur += out.datalen;
                     } while (c == RS_INSERT);
-                }
-                else
+                } else
                     MEMCPY(cur, mgcur, len);
             }
         }
@@ -1006,15 +887,13 @@ ssize_t n;
 done:
     if (!(rs->rsrv = rsrv))
         rs->endrsrv = rs->cur = NIL(uchar *);
-    else
-    {
+    else {
         rs->endrsrv = endrsrv;
         rs->cur = cur;
     }
     if (!(mg->rsrv = mgrsrv))
         mg->endrsrv = mg->cur = NIL(uchar *);
-    else
-    {
+    else {
         mg->endrsrv = mgendrsrv;
         mg->cur = mgcur;
     }
@@ -1048,11 +927,9 @@ reg int n;       /* total in equivalence class	*/
         memcpy(o->key, obj->key, obj->keylen);
         o->keylen = obj->keylen;
         o->order = obj->order;
-        for (endobj = mg->obj + mg->cend;;)
-        {
+        for (endobj = mg->obj + mg->cend;;) {
             APPEND(rs, obj, t);
-            if ((obj += 1) >= endobj)
-            {
+            if ((obj += 1) >= endobj) {
                 mg->cpos = mg->cend;
                 if (mgrefresh(rs, mg) < 0)
                     break;
@@ -1064,13 +941,10 @@ reg int n;       /* total in equivalence class	*/
         }
         mg->cpos = obj - mg->obj;
         vmfree(Vmheap, o->data);
-    }
-    else
-    {
+    } else {
         if (rs->sorted)
             mgflush(rs);
-        if (mg->cpos < mg->cend)
-        { /* write out head object with count */
+        if (mg->cpos < mg->cend) { /* write out head object with count */
             obj = mg->obj + mg->cpos;
             obj->order = n;
             obj->right = NIL(Rsobj_t *);
@@ -1102,10 +976,8 @@ int n;
     reg int k;
     reg Merge_t *mg, *e;
 
-    for (k = 0; k <= n; ++k)
-    {
-        for (mg = list[k]; mg; mg = e)
-        {
+    for (k = 0; k <= n; ++k) {
+        for (mg = list[k]; mg; mg = e) {
             e = mg->equi;
             mgclose(rs, mg);
         }
@@ -1160,56 +1032,45 @@ int type;                                    /* RS_ITEXT|RS_OTEXT		*/
         if ((mg = mgopen(rs, files[k], k)))
             n_list = mginsert(rs, list, n_list, mg);
 
-    while (n_list > 0)
-    {
+    while (n_list > 0) {
         mg = list[n_list -= 1];
         if (mg->equi) /* hitting an equi-class across streams */
         {
-            if (uniq)
-            { /* we assume here that mg->f is RS_UNIQ */
+            if (uniq) { /* we assume here that mg->f is RS_UNIQ */
                 obj = mg->obj + mg->cpos;
                 mg->cpos += 1;
-                if (rs->events & RS_SUMMARY)
-                {
-                    for (m = mg->equi; m; m = m->equi)
-                    {
+                if (rs->events & RS_SUMMARY) {
+                    for (m = mg->equi; m; m = m->equi) {
                         o = m->obj + m->cpos;
                         EQUAL(obj, o, t);
                     }
                     obj->equal->left->right = NIL(Rsobj_t *);
                 }
                 APPEND(rs, obj, t);
-                for (;;)
-                {
+                for (;;) {
                     m = mg->equi;
-                    if (mg->cpos >= mg->cend && mgrefresh(rs, mg) < 0)
-                    {
+                    if (mg->cpos >= mg->cend && mgrefresh(rs, mg) < 0) {
                         if (mgclose(rs, mg) < 0)
                             return mgerror(rs, list, n_list - 1);
-                    }
-                    else
+                    } else
                         n_list = mginsert(rs, list, n_list, mg);
                     if (!(mg = m))
                         break;
                     else
                         mg->cpos += 1;
                 }
-            }
-            else /* write out the union of the equi-class */
+            } else /* write out the union of the equi-class */
             {
                 for (k = 0, m = mg; m; m = m->equi)
                     k += m->match > 0 ? m->match + 1 : 1;
                 if (mgwrite(rs, mg, k) < 0)
                     return mgerror(rs, list, n_list);
-                for (;;)
-                {
+                for (;;) {
                     m = mg->equi;
-                    if (mg->cpos >= mg->cend && mgrefresh(rs, mg) < 0)
-                    {
+                    if (mg->cpos >= mg->cend && mgrefresh(rs, mg) < 0) {
                         if (mgclose(rs, mg) < 0)
                             return mgerror(rs, list, n_list - 1);
-                    }
-                    else
+                    } else
                         n_list = mginsert(rs, list, n_list, mg);
                     if (!(mg = m))
                         break;
@@ -1217,44 +1078,32 @@ int type;                                    /* RS_ITEXT|RS_OTEXT		*/
                         return mgerror(rs, list, n_list);
                 }
             }
-        }
-        else if ((k = n_list - 1) >= 0)
-        {
+        } else if ((k = n_list - 1) >= 0) {
             o = list[k]->obj + list[k]->cpos;
             obj = mg->obj + mg->cpos;
-            for (;;)
-            {
-                if (mg->match > 0)
-                {
+            for (;;) {
+                if (mg->match > 0) {
                     if (mgwrite(rs, mg, mg->match + 1) < 0)
                         return mgerror(rs, list, n_list);
-                }
-                else
-                {
-                    for (endobj = mg->obj + mg->cend;;)
-                    {
+                } else {
+                    for (endobj = mg->obj + mg->cend;;) {
                         APPEND(rs, obj, t);
-                        if ((obj += 1) >= endobj)
-                        {
+                        if ((obj += 1) >= endobj) {
                             mg->cpos = mg->cend;
                             break;
-                        }
-                        else if ((r = MGCOMPARE(rs, obj, o, reverse)) >= 0)
-                        {
+                        } else if ((r = MGCOMPARE(rs, obj, o, reverse))
+                                   >= 0) {
                             mg->cpos = obj - mg->obj;
                             goto move_stream;
                         }
                     }
                 }
 
-                if (mgrefresh(rs, mg) < 0)
-                {
+                if (mgrefresh(rs, mg) < 0) {
                     if (mgclose(rs, mg) < 0)
                         return mgerror(rs, list, n_list - 1);
                     break;
-                }
-                else
-                {
+                } else {
                     obj = mg->obj + mg->cpos;
                     if ((r = MGCOMPARE(rs, obj, o, reverse)) < 0)
                         continue;
@@ -1271,32 +1120,25 @@ int type;                                    /* RS_ITEXT|RS_OTEXT		*/
                         p->equi = mg;
                     else
                         list[k] = mg;
-                }
-                else /* new least element */
+                } else /* new least element */
                 {
                     list[n_list] = list[k];
-                    if (k == 0)
-                    {
+                    if (k == 0) {
                         n_list = 2;
                         list[0] = mg;
-                    }
-                    else if (mginsert(rs, list, k, mg) == k)
+                    } else if (mginsert(rs, list, k, mg) == k)
                         list[k] = list[n_list];
                     else
                         n_list += 1;
                 }
                 break;
             }
-        }
-        else /* if(!mg->equi && n_list == 0) */
+        } else /* if(!mg->equi && n_list == 0) */
         {
-            if (mg->match > 0)
-            {
+            if (mg->match > 0) {
                 if (mgwrite(rs, mg, mg->match + 1) < 0)
                     return mgerror(rs, list, n_list);
-            }
-            else if (mg->match < 0 || mg->cpos < mg->cend)
-            {
+            } else if (mg->match < 0 || mg->cpos < mg->cend) {
                 if (mg->cpos >= mg->cend && mgrefresh(rs, mg) < 0)
                     return mgerror(rs, list, n_list);
 

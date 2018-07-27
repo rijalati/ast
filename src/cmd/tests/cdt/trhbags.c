@@ -54,23 +54,19 @@ tmain()
     Obj_t *o, proto;
     long i, k, count, n;
 
-    for (i = 0; i < N_OBJ; i = k)
-    {
-        for (k = i; k < i + R_OBJ && k < N_OBJ; ++k)
-        {
+    for (i = 0; i < N_OBJ; i = k) {
+        for (k = i; k < i + R_OBJ && k < N_OBJ; ++k) {
             Obj[k].key = i;
             Obj[k].ord = k;
         }
     }
 
-    for (k = 0; k < 2; ++k)
-    {
+    for (k = 0; k < 2; ++k) {
         if (!(dt = dtopen(&Disc, k == 0 ? Dtrhbag : Dtobag)))
             terror("Opening dictionary");
         dtcustomize(dt, DT_SHARE, 1); /* turn on sharing */
 
-        for (i = 0; i < N_OBJ; ++i)
-        {
+        for (i = 0; i < N_OBJ; ++i) {
             if (dtinsert(dt, Obj + i) != Obj + i)
                 terror("Insert %d,%d", Obj[i].key, Obj[i].ord);
 

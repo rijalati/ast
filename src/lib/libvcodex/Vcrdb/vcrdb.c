@@ -151,12 +151,10 @@ Void_t **out;
         GOTO(done);
 
     /* open the compressor to compute weights when constructing a plan */
-    if (!rdb->vcw && !(rdb->type & RDB_PLAIN))
-    {
+    if (!rdb->vcw && !(rdb->type & RDB_PLAIN)) {
         if (!(rdb->type & RDB_BWT))
             rdb->vcw = VCRD_MATCH;
-        else
-        {
+        else {
             Vcodex_t *vcw;
             if (!(vcw = vcopen(0, Vchuffman, 0, 0, VC_ENCODE)))
                 GOTO(done);
@@ -180,25 +178,20 @@ Void_t **out;
         }
     }
 
-    if (rc->info.fldn <= 0 && (rc->info.rsep <= 0 || rc->info.fsep <= 0))
-    {
+    if (rc->info.fldn <= 0 && (rc->info.rsep <= 0 || rc->info.fsep <= 0)) {
         Vcrdformat_t *rdf;
         if (!(rdf = vcrdformat(
               ( Vcchar_t * )data, size, rc->info.rsep, rc->algn, 1)))
             GOTO(done);
 
-        if (rdf->fsep > 0 && rdf->rsep > 0)
-        {
+        if (rdf->fsep > 0 && rdf->rsep > 0) {
             rc->info.fsep = rdf->fsep;
             rc->info.rsep = rdf->rsep;
-        }
-        else if (rdf->fldn > 0 && rdf->fldz)
-        {
+        } else if (rdf->fldn > 0 && rdf->fldz) {
             if (rc->info.flen)
                 free(rc->info.flen);
             if ((rc->info.flen
-                 = ( ssize_t * )malloc(rdf->fldn * sizeof(ssize_t))))
-            {
+                 = ( ssize_t * )malloc(rdf->fldn * sizeof(ssize_t)))) {
                 memcpy(rc->info.flen, rdf->fldz, rdf->fldn * sizeof(ssize_t));
                 rc->info.fldn = rdf->fldn;
             }
@@ -210,10 +203,8 @@ Void_t **out;
     }
 
     recz = 0; /* record length if fixed-length records */
-    if (rc->info.fldn > 0 && rc->info.flen)
-    {
-        for (f = 0; f < rc->info.fldn; ++f)
-        {
+    if (rc->info.fldn > 0 && rc->info.flen) {
+        for (f = 0; f < rc->info.fldn; ++f) {
             if (rc->info.flen[f] <= 0) /* field length must be positive */
                 GOTO(done);
             recz += rc->info.flen[f];
@@ -226,8 +217,7 @@ Void_t **out;
     vc->undone -= (size = ( size_t )vcrdsize(tbl));
 
     /* do field conversion as requested */
-    for (f = 0; f < tbl->fldn; ++f)
-    {
+    for (f = 0; f < tbl->fldn; ++f) {
         if (!(tbl->fld[f].type & VCRD_FIXED))
             vcrdattrs(
             tbl, f, VCRD_DOT, 1); /* try to convert IP data into bytes */
@@ -269,8 +259,7 @@ Void_t **out;
     }
 
     cmpz = 0; /* recoding/compressing transformed data */
-    for (f = 0; f < tbl->fldn; ++f)
-    {
+    for (f = 0; f < tbl->fldn; ++f) {
         z
         = (tbl->fld[f].type & (VCRD_FIXED | VCRD_DOT | VCRD_SLASH | VCRD_PAD))
           ? tbl->fld[f].maxz
@@ -294,13 +283,11 @@ Void_t **out;
         if (!(dt = vcbuffer(vc, NIL(Vcchar_t *), z, 0)))
             GOTO(done);
 #if RDB_BDV
-        if (rdb->type & RDB_BDV)
-        {
+        if (rdb->type & RDB_BDV) {
             if (vcrdvector(tbl, f, dt, z, VC_ENCODE) < 0
                 || vcrdsize(tbl) != z)
                 GOTO(done);
-        }
-        else
+        } else
 #endif
         {
             if (vcrdextract(tbl, f, dt, z, VCRD_FIELD) != z)
@@ -314,15 +301,12 @@ Void_t **out;
         {
             rc->fld[f].ctxt = vcinitcontext(vc->coder, rc->fld[f].ctxt);
             if (FLEN(rc, f) > 0 || (rdb->type & RDB_PAD)
-                || (tbl->fld[f].type & VCRD_FIXED))
-            {
+                || (tbl->fld[f].type & VCRD_FIXED)) {
                 vcsetmtarg(vc->coder,
                            "columns",
                            TYPECAST(Void_t *, tbl->fld[f].maxz),
                            2);
-            }
-            else
-            {
+            } else {
                 if (rc->info.rsep >= 0)
                     vcsetmtarg(
                     vc->coder, "rsep", TYPECAST(Void_t *, rc->info.rsep), 1);
@@ -349,18 +333,14 @@ Void_t **out;
             GOTO(done);
         if (vcrdextract(tbl, -1, whdt, whsz, type) != whsz)
             GOTO(done);
-        if (vc->coder)
-        {
+        if (vc->coder) {
             rc->tctxt = vcinitcontext(vc->coder, rc->tctxt);
 
-            if (recz > 0 || (rdb->type & RDB_PAD))
-            {
+            if (recz > 0 || (rdb->type & RDB_PAD)) {
                 for (z = 0, f = 0; f < tbl->fldn; ++f)
                     z += tbl->fld[f].maxz;
                 vcsetmtarg(vc->coder, "columns", TYPECAST(Void_t *, z), 2);
-            }
-            else
-            {
+            } else {
                 if (rc->info.rsep >= 0)
                     vcsetmtarg(
                     vc->coder, "rsep", TYPECAST(Void_t *, rc->info.rsep), 1);
@@ -386,8 +366,7 @@ Void_t **out;
     {
         for (f = 0; f < tbl->fldn; ++f)
             cmpz += vcsizeu(rc->info.flen[f]);
-    }
-    else /* variable fields */
+    } else /* variable fields */
     {
         cmpz += 1 + 1 +     /* fsep and rsep */
                 1 + 1 + 10; /* dot, slash and digits */
@@ -406,8 +385,7 @@ Void_t **out;
     {
         for (f = 0; f < tbl->fldn; ++f)
             vcioputu(&io, rc->info.flen[f]);
-    }
-    else /* variable fields */
+    } else /* variable fields */
     {
         vcioputc(&io, rc->info.rsep);
         vcioputc(&io, rc->info.fsep);
@@ -466,14 +444,11 @@ Void_t **out;
 
     if (vc->coder) /* set state to check for plan redo-ing */
     {
-        if (rc->cmpz == 0 || rc->rawz == 0)
-        {
+        if (rc->cmpz == 0 || rc->rawz == 0) {
             rc->rawz = size;
             rc->cmpz = cmpz;
-        }
-        else if (((( double )cmpz) / size)
-                 > 4 * ((( double )rc->cmpz) / rc->rawz))
-        {
+        } else if (((( double )cmpz) / size)
+                   > 4 * ((( double )rc->cmpz) / rc->rawz)) {
             vcrdfreeplan(rc->plan);
             rc->plan = NIL(Vcrdplan_t *);
             rc->rawz = rc->cmpz = 0;
@@ -512,8 +487,7 @@ Void_t **out;
     if (!data || !vc || !(rc = vcgetcontext(vc, Rdbctxt_t *)))
         GOTO(done);
 
-    if (rc->info.flen)
-    {
+    if (rc->info.flen) {
         free(rc->info.flen);
         rc->info.flen = NIL(ssize_t *);
     }
@@ -529,8 +503,7 @@ Void_t **out;
 
     if ((z = vciogetu(&io)) <= 0) /* # fields */
         GOTO(done);
-    else
-    {
+    else {
         if (z != rc->info.fldn && rc->fld) /* schema has changed */
         {
             if (vc->coder) /* delete contexts in secondary coder */
@@ -552,8 +525,7 @@ Void_t **out;
         GOTO(done);
     if (recz > 0) /* get schema data */
     {
-        for (flen = 0, f = 0; f < rc->info.fldn; ++f)
-        {
+        for (flen = 0, f = 0; f < rc->info.fldn; ++f) {
             if ((z = vciogetu(&io)) <= 0)
                 GOTO(done);
             rc->info.flen[f] = z;
@@ -562,8 +534,7 @@ Void_t **out;
 
         if (flen != recz)
             GOTO(done); /* corrupted */
-    }
-    else /* variable fields */
+    } else              /* variable fields */
     {
         if ((z = vciogetc(&io)) >= 0)
             rc->info.rsep = ( Vcchar_t )z;
@@ -581,8 +552,7 @@ Void_t **out;
             rc->info.slash = ( Vcchar_t )z;
         else
             GOTO(done);
-        for (f = 0; f < 10; ++f)
-        {
+        for (f = 0; f < 10; ++f) {
             if ((z = vciogetc(&io)) >= 0)
                 rc->info.digit[f] = ( Vcchar_t )z;
             else
@@ -607,8 +577,7 @@ Void_t **out;
         GOTO(done);
 
     /* read field data and transforming plan */
-    for (f = 0; f < rc->info.fldn; ++f)
-    { /* read the predictor */
+    for (f = 0; f < rc->info.fldn; ++f) { /* read the predictor */
         if (vciomore(&io) <= 0 || (rc->plan->pred[f] = vciogetu(&io)) < 0
             || rc->plan->pred[f] >= rc->info.fldn)
             GOTO(done);
@@ -626,8 +595,8 @@ Void_t **out;
             && (rc->fld[f].type & RDB_WHOLE) != (rc->fld[0].type & RDB_WHOLE))
             GOTO(done); /* WHOLE should be uniform to all fields */
 
-        if (rc->info.flen[f] == 0)
-        { /* old Vcrdb coding of a converted field of form x.y... */
+        if (rc->info.flen[f]
+            == 0) { /* old Vcrdb coding of a converted field of form x.y... */
             if (flen > 0
                 && (rc->fld[f].type == 0 || rc->fld[f].type == RDB_SLASH))
                 rc->fld[f].type |= RDB_DOT;
@@ -644,13 +613,11 @@ Void_t **out;
 
         dt = vcionext(&io);
         vcioskip(&io, sz);
-        if (vc->coder)
-        {
+        if (vc->coder) {
             rc->fld[f].ctxt = vcinitcontext(vc->coder, rc->fld[f].ctxt);
             if (flen > 0)
                 vcsetmtarg(vc->coder, "columns", TYPECAST(Void_t *, flen), 2);
-            else
-            {
+            else {
                 if (rc->info.rsep >= 0)
                     vcsetmtarg(
                     vc->coder, "rsep", TYPECAST(Void_t *, rc->info.rsep), 1);
@@ -662,12 +629,10 @@ Void_t **out;
         if (vcrecode(vc, &dt, &sz, 0, 0) < 0)
             GOTO(done);
 #if RDB_BDV
-        if (rc->fld[f].type & RDB_BDV)
-        {
+        if (rc->fld[f].type & RDB_BDV) {
             if ((z = vcrdvector(tbl, f, dt, sz, VC_DECODE)) < 0)
                 GOTO(done);
-        }
-        else
+        } else
 #endif
         {
             if ((z = vcrdfield(tbl, f, flen, dt, sz)) != sz)
@@ -675,8 +640,7 @@ Void_t **out;
         }
     }
 
-    if (rc->fld[0].type & RDB_WHOLE)
-    {
+    if (rc->fld[0].type & RDB_WHOLE) {
         if (vciomore(&io) <= 0 || (sz = vciogetu(&io)) < 0)
             GOTO(done);
         if (vciomore(&io) < sz)
@@ -684,17 +648,13 @@ Void_t **out;
         dt = vcionext(&io);
         vcioskip(&io, sz);
 
-        if (vc->coder)
-        {
+        if (vc->coder) {
             rc->tctxt = vcinitcontext(vc->coder, rc->tctxt);
-            if (recz > 0)
-            {
+            if (recz > 0) {
                 for (z = 0, f = 0; f < tbl->fldn; ++f)
                     z += rc->info.flen[f];
                 vcsetmtarg(vc->coder, "columns", TYPECAST(Void_t *, z), 2);
-            }
-            else
-            {
+            } else {
                 if (rc->info.rsep >= 0)
                     vcsetmtarg(
                     vc->coder, "rsep", TYPECAST(Void_t *, rc->info.rsep), 1);
@@ -714,8 +674,7 @@ Void_t **out;
     DEBUG_ASSERT(vciomore(&io) == 0);
 
     /* restore padded fields to their original states */
-    for (f = 0; f < tbl->fldn; ++f)
-    {
+    for (f = 0; f < tbl->fldn; ++f) {
         int type = (rc->fld[f].type & RDB_PAD) ? VCRD_PAD : 0;
         if (type && vcrdattrs(tbl, f, type, 0) < 0)
             GOTO(done);
@@ -726,8 +685,7 @@ Void_t **out;
         GOTO(done);
 
     /* reconstruct coded data of the form dot/slash */
-    for (f = 0; f < tbl->fldn; ++f)
-    {
+    for (f = 0; f < tbl->fldn; ++f) {
         int type = (rc->fld[f].type & RDB_DOT) ? VCRD_DOT : 0;
         type |= (rc->fld[f].type & RDB_SLASH) ? VCRD_SLASH : 0;
         if (type && vcrdattrs(tbl, f, type, 0) < 0)
@@ -771,8 +729,7 @@ Vcchar_t **datap; /* persistent data	*/
     Rdb_t *rdb = vcgetmtdata(vc, Rdb_t *);
 
     /* count arguments that need coding */
-    for (z = 0, arg = &_Rdbargs[0]; arg->name; ++arg)
-    {
+    for (z = 0, arg = &_Rdbargs[0]; arg->name; ++arg) {
         if (!(rdb->type & TYPECAST(int, arg->data))
             || !(TYPECAST(int, arg->data) & RDB_HEADER))
             continue;
@@ -784,8 +741,7 @@ Vcchar_t **datap; /* persistent data	*/
     /* allocate memory for identification data, then build it */
     if (!(ident = ( char * )vcbuffer(vc, NIL(Vcchar_t *), z, 0)))
         return -1;
-    for (k = 0, arg = _Rdbargs; arg->name && k < z; ++arg)
-    {
+    for (k = 0, arg = _Rdbargs; arg->name && k < z; ++arg) {
         if (!(rdb->type & TYPECAST(int, arg->data))
             || !(TYPECAST(int, arg->data) & RDB_HEADER))
             continue;
@@ -818,10 +774,8 @@ static int rdbrestore(mtcd) Vcmtcode_t *mtcd;
         return -1;
 
     /* data[] should be a set of null-terminated strings */
-    for (z = 0; z < dtsz;)
-    {
-        for (arg = _Rdbargs; arg->name; ++arg)
-        {
+    for (z = 0; z < dtsz;) {
+        for (arg = _Rdbargs; arg->name; ++arg) {
             if ((n = strlen(arg->name)) > (dtsz - z))
                 continue;
             if (vcstrcode(( char * )arg->name, id, sizeof(id))
@@ -860,8 +814,7 @@ Void_t *params;
     ssize_t k, fldn, *fldz;
     int argtype;
 
-    if (type == VC_OPENING)
-    {
+    if (type == VC_OPENING) {
         if (!(rdb = calloc(1, sizeof(Rdb_t))))
             return -1;
 
@@ -870,34 +823,26 @@ Void_t *params;
 
         vcsetmtdata(vc, rdb);
         goto vc_setarg;
-    }
-    else if (type == VC_EXTRACT)
-    {
+    } else if (type == VC_EXTRACT) {
         if (!(mtcd = ( Vcmtcode_t * )params))
             return -1;
         if ((mtcd->size = rdbextract(vc, &mtcd->data)) < 0)
             return -1;
         return 1;
-    }
-    else if (type == VC_RESTORE)
-    {
+    } else if (type == VC_RESTORE) {
         if (!(mtcd = ( Vcmtcode_t * )params))
             return -1;
         return rdbrestore(mtcd) < 0 ? -1 : 1;
-    }
-    else if (type == VC_SETMTARG)
-    {
+    } else if (type == VC_SETMTARG) {
     vc_setarg:
         if (!(rc = vcgetcontext(vc, Rdbctxt_t *)))
             return -1;
-        for (data = ( char * )params; data;)
-        {
+        for (data = ( char * )params; data;) {
             data = vcgetmtarg(data, val, sizeof(val), _Rdbargs, &arg);
 
             argtype = TYPECAST(int, arg->data);
             if (argtype == RDB_RSEP || argtype == RDB_FSEP
-                || argtype == RDB_ALIGN || argtype == RDB_SCHEMA)
-            {
+                || argtype == RDB_ALIGN || argtype == RDB_SCHEMA) {
                 if (rc->info.flen)
                     free(rc->info.flen);
                 rc->info.fldn = 0;
@@ -907,8 +852,7 @@ Void_t *params;
                     rc->info.fsep = rc->info.rsep = -1;
             }
 
-            switch (argtype)
-            {
+            switch (argtype) {
             case RDB_RSEP:
                 rc->info.rsep = val[0] ? val[0] : -1;
                 break;
@@ -925,8 +869,7 @@ Void_t *params;
                 if ((fldn = vcstr2list(val, ',', &fldz)) < 0
                     || (fldn > 0 && !fldz))
                     return -1;
-                for (k = 0; k < fldn; ++k)
-                {
+                for (k = 0; k < fldn; ++k) {
                     if (fldz[k] <= 0) /* bas schema definition */
                     {
                         free(fldz);
@@ -971,9 +914,7 @@ Void_t *params;
 #endif
 
         return 0;
-    }
-    else if (type == VC_INITCONTEXT)
-    {
+    } else if (type == VC_INITCONTEXT) {
         if (!params)
             return 0;
 
@@ -993,11 +934,8 @@ Void_t *params;
 
         *(( Rdbctxt_t ** )params) = rc;
         return 1;
-    }
-    else if (type == VC_FREECONTEXT)
-    {
-        if ((rc = ( Rdbctxt_t * )params))
-        {
+    } else if (type == VC_FREECONTEXT) {
+        if ((rc = ( Rdbctxt_t * )params)) {
             if (rc->info.fldn > 0 && rc->info.flen)
                 free(rc->info.flen);
             if (rc->plan)
@@ -1007,19 +945,15 @@ Void_t *params;
             free(rc);
         }
         return 0;
-    }
-    else if (type == VC_CLOSING)
-    {
-        if ((rdb = vcgetmtdata(vc, Rdb_t *)))
-        {
+    } else if (type == VC_CLOSING) {
+        if ((rdb = vcgetmtdata(vc, Rdb_t *))) {
             if (rdb->vcw && rdb->vcw != VCRD_MATCH)
                 vcclose(rdb->vcw);
             free(rdb);
         }
         vcsetmtdata(vc, NIL(Void_t *));
         return 0;
-    }
-    else
+    } else
         return 0;
 }
 

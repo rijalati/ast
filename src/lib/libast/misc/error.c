@@ -119,13 +119,11 @@ setopt(void *a, const void *p, int n, const char *v)
 {
     NoP(a);
     if (p)
-        switch ((( Namval_t * )p)->value)
-        {
+        switch ((( Namval_t * )p)->value) {
         case OPT_BREAK:
         case OPT_CORE:
             if (n)
-                switch (*v)
-                {
+                switch (*v) {
                 case 'e':
                 case 'E':
                     error_state.breakpoint = ERROR_ERROR;
@@ -177,19 +175,15 @@ setopt(void *a, const void *p, int n, const char *v)
         case OPT_MATCH:
             if (error_state.match)
                 regfree(error_state.match);
-            if (n)
-            {
+            if (n) {
                 if ((error_state.match
                      || (error_state.match = newof(0, regex_t, 1, 0)))
                     && regcomp(
-                       error_state.match, v, REG_EXTENDED | REG_LENIENT))
-                {
+                       error_state.match, v, REG_EXTENDED | REG_LENIENT)) {
                     free(error_state.match);
                     error_state.match = 0;
                 }
-            }
-            else if (error_state.match)
-            {
+            } else if (error_state.match) {
                 free(error_state.match);
                 error_state.match = 0;
             }
@@ -197,8 +191,7 @@ setopt(void *a, const void *p, int n, const char *v)
         case OPT_PREFIX:
             if (n)
                 error_state.prefix = strdup(v);
-            else if (error_state.prefix)
-            {
+            else if (error_state.prefix) {
                 free(error_state.prefix);
                 error_state.prefix = 0;
             }
@@ -231,8 +224,7 @@ print(Sfio_t *sp, char *name, char *delim)
 {
     if (mbwide())
         sfputr(sp, name, -1);
-    else
-    {
+    else {
 #if CC_NATIVE != CC_ASCII
         int c;
         unsigned char *n2a;
@@ -244,16 +236,13 @@ print(Sfio_t *sp, char *name, char *delim)
         a2n = ccmap(CC_ASCII, CC_NATIVE);
         aa = n2a['A'];
         as = n2a[' '];
-        while (c = *name++)
-        {
+        while (c = *name++) {
             c = n2a[c];
-            if (c & 0200)
-            {
+            if (c & 0200) {
                 c &= 0177;
                 sfputc(sp, '?');
             }
-            if (c < as)
-            {
+            if (c < as) {
                 c += aa - 1;
                 sfputc(sp, '^');
             }
@@ -263,15 +252,12 @@ print(Sfio_t *sp, char *name, char *delim)
 #else
         int c;
 
-        while (c = *name++)
-        {
-            if (c & 0200)
-            {
+        while (c = *name++) {
+            if (c & 0200) {
                 c &= 0177;
                 sfputc(sp, '?');
             }
-            if (c < ' ')
-            {
+            if (c < ' ') {
                 c += 'A' - 1;
                 sfputc(sp, '^');
             }
@@ -296,12 +282,10 @@ context(Sfio_t *sp, Error_context_t *cp)
 {
     if (cp->context)
         context(sp, CONTEXT(cp->flags, cp->context));
-    if (!(cp->flags & ERROR_SILENT))
-    {
+    if (!(cp->flags & ERROR_SILENT)) {
         if (cp->id)
             print(sp, cp->id, NiL);
-        if (cp->line > ((cp->flags & ERROR_INTERACTIVE) != 0))
-        {
+        if (cp->line > ((cp->flags & ERROR_INTERACTIVE) != 0)) {
             if (cp->file)
                 sfprintf(sp,
                          ": \"%s\", %s %d",
@@ -324,11 +308,10 @@ error_break(void)
 {
     char *s;
 
-    if (error_state.tty || (error_state.tty = sfopen(NiL, "/dev/tty", "r+")))
-    {
+    if (error_state.tty
+        || (error_state.tty = sfopen(NiL, "/dev/tty", "r+"))) {
         sfprintf(error_state.tty, "error breakpoint: ");
-        if (s = sfgetr(error_state.tty, '\n', 1))
-        {
+        if (s = sfgetr(error_state.tty, '\n', 1)) {
             if (streq(s, "q") || streq(s, "quit"))
                 exit(0);
             stropt(s, options, sizeof(*options), setopt, NiL);
@@ -366,46 +349,35 @@ errorv(const char *id, int level, va_list ap)
     struct tms us;
 #endif
 
-    if (!error_info.init)
-    {
+    if (!error_info.init) {
         error_info.init = 1;
         stropt(
         getenv("ERROR_OPTIONS"), options, sizeof(*options), setopt, NiL);
     }
-    if (level > 0)
-    {
+    if (level > 0) {
         flags = level & ~ERROR_LEVEL;
         level &= ERROR_LEVEL;
-    }
-    else
+    } else
         flags = 0;
-    if ((flags & (ERROR_USAGE | ERROR_NOID)) == ERROR_NOID)
-    {
+    if ((flags & (ERROR_USAGE | ERROR_NOID)) == ERROR_NOID) {
         format = ( char * )id;
         id = 0;
-    }
-    else
+    } else
         format = 0;
-    if (id)
-    {
+    if (id) {
         catalog = ( char * )id;
-        if (!*catalog || *catalog == ':')
-        {
+        if (!*catalog || *catalog == ':') {
             catalog = 0;
             library = 0;
-        }
-        else if ((library = strchr(catalog, ':')) && !*++library)
+        } else if ((library = strchr(catalog, ':')) && !*++library)
             library = 0;
-    }
-    else
-    {
+    } else {
         catalog = 0;
         library = 0;
     }
     if (catalog)
         id = 0;
-    else
-    {
+    else {
         id = ( const char * )error_info.id;
         catalog = error_info.catalog;
     }
@@ -414,8 +386,7 @@ errorv(const char *id, int level, va_list ap)
            && !(((error_info.set | error_info.flags) ^ error_info.clear)
                 & ERROR_LIBRARY)
         || level < 0 && error_info.mask
-           && !(error_info.mask & (1 << (-level - 1))))
-    {
+           && !(error_info.mask & (1 << (-level - 1)))) {
         if (level >= ERROR_FATAL)
             (*error_info.exit)(level - 1);
         return;
@@ -427,8 +398,7 @@ errorv(const char *id, int level, va_list ap)
     if (!library)
         flags &= ~ERROR_LIBRARY;
     fd = (flags & ERROR_OUTPUT) ? va_arg(ap, int) : error_info.fd;
-    if (error_info.write)
-    {
+    if (error_info.write) {
         long off;
         char *bas;
 
@@ -438,8 +408,7 @@ errorv(const char *id, int level, va_list ap)
         file = error_info.id;
         if (error_state.prefix)
             sfprintf(stkstd, "%s: ", error_state.prefix);
-        if (flags & ERROR_USAGE)
-        {
+        if (flags & ERROR_USAGE) {
             if (flags & ERROR_NOID)
                 sfprintf(stkstd, "       ");
             else
@@ -447,18 +416,14 @@ errorv(const char *id, int level, va_list ap)
                 stkstd, "%s: ", ERROR_translate(NiL, NiL, ast.id, "Usage"));
             if (file || opt_info.argv && (file = opt_info.argv[0]))
                 print(stkstd, file, " ");
-        }
-        else
-        {
-            if (level && !(flags & ERROR_NOID))
-            {
+        } else {
+            if (level && !(flags & ERROR_NOID)) {
                 if (error_info.context && level > 0)
                     context(stkstd,
                             CONTEXT(error_info.flags, error_info.context));
                 if (file)
                     print(stkstd, file, (flags & ERROR_LIBRARY) ? " " : ": ");
-                if (flags & (ERROR_CATALOG | ERROR_LIBRARY))
-                {
+                if (flags & (ERROR_CATALOG | ERROR_LIBRARY)) {
                     sfprintf(stkstd, "[");
                     if (flags & ERROR_CATALOG)
                         sfprintf(stkstd,
@@ -478,8 +443,7 @@ errorv(const char *id, int level, va_list ap)
                 }
             }
             if (level > 0
-                && error_info.line > ((flags & ERROR_INTERACTIVE) != 0))
-            {
+                && error_info.line > ((flags & ERROR_INTERACTIVE) != 0)) {
                 if (error_info.file && *error_info.file)
                     sfprintf(stkstd, "\"%s\", ", error_info.file);
                 sfprintf(stkstd,
@@ -489,8 +453,7 @@ errorv(const char *id, int level, va_list ap)
             }
         }
 #if !_PACKAGE_astsa
-        if (error_info.time)
-        {
+        if (error_info.time) {
             if ((d = times(&us)) < error_info.time || error_info.time == 1)
                 error_info.time = d;
             sfprintf(stkstd,
@@ -500,8 +463,7 @@ errorv(const char *id, int level, va_list ap)
                      ( unsigned long )us.tms_stime);
         }
 #endif
-        switch (level)
-        {
+        switch (level) {
         case 0:
             flags &= ~ERROR_SYSTEM;
             break;
@@ -514,24 +476,21 @@ errorv(const char *id, int level, va_list ap)
             stkstd, "%s: ", ERROR_translate(NiL, NiL, ast.id, "panic"));
             break;
         default:
-            if (level < 0)
-            {
+            if (level < 0) {
                 s = ERROR_translate(NiL, NiL, ast.id, "debug");
                 if (error_info.trace < -1)
                     sfprintf(
                     stkstd, "%s%d:%s", s, level, level > -10 ? " " : "");
                 else
                     sfprintf(stkstd, "%s: ", s);
-                for (n = 0; n < error_info.indent; n++)
-                {
+                for (n = 0; n < error_info.indent; n++) {
                     sfputc(stkstd, ' ');
                     sfputc(stkstd, ' ');
                 }
             }
             break;
         }
-        if (flags & ERROR_SOURCE)
-        {
+        if (flags & ERROR_SOURCE) {
             /*
              * source ([version], file, line) message
              */
@@ -549,22 +508,19 @@ errorv(const char *id, int level, va_list ap)
             else
                 sfprintf(stkstd, "(\"%s\", %s %d) ", file, s, line);
         }
-        if (format || (format = va_arg(ap, char *)))
-        {
+        if (format || (format = va_arg(ap, char *))) {
             if (!(flags & ERROR_USAGE))
                 format = ERROR_translate(NiL, id, catalog, format);
             sfvprintf(stkstd, format, ap);
         }
-        if (!(flags & ERROR_PROMPT))
-        {
+        if (!(flags & ERROR_PROMPT)) {
             /*
              * level&ERROR_OUTPUT on return means message
              * already output
              */
 
             if ((flags & ERROR_SYSTEM) && errno
-                && errno != error_info.last_errno)
-            {
+                && errno != error_info.last_errno) {
                 sfprintf(stkstd, " [%s]", fmterror(errno));
                 if (error_info.set & ERROR_SYSTEM)
                     errno = 0;
@@ -574,19 +530,16 @@ errorv(const char *id, int level, va_list ap)
                 level = (*error_info.auxilliary)(stkstd, level, flags);
             sfputc(stkstd, '\n');
         }
-        if (level > 0)
-        {
+        if (level > 0) {
             if ((level & ~ERROR_OUTPUT) > 1)
                 error_info.errors++;
             else
                 error_info.warnings++;
         }
-        if (level < 0 || !(level & ERROR_OUTPUT))
-        {
+        if (level < 0 || !(level & ERROR_OUTPUT)) {
             n = stktell(stkstd);
             s = stkptr(stkstd, 0);
-            if (t = memchr(s, '\f', n))
-            {
+            if (t = memchr(s, '\f', n)) {
                 n -= ++t - s;
                 s = t;
             }
@@ -595,30 +548,23 @@ errorv(const char *id, int level, va_list ap)
 #endif
             sfsync(sfstdout);
             sfsync(sfstderr);
-            if (fd == sffileno(sfstderr) && error_info.write == write)
-            {
+            if (fd == sffileno(sfstderr) && error_info.write == write) {
                 sfwrite(sfstderr, s, n);
                 sfsync(sfstderr);
-            }
-            else
+            } else
                 (*error_info.write)(fd, s, n);
-        }
-        else
-        {
+        } else {
             s = 0;
             level &= ERROR_LEVEL;
         }
         stkset(stkstd, bas, off);
-    }
-    else
+    } else
         s = 0;
     if (level >= error_state.breakpoint && error_state.breakpoint
         && (!error_state.match
             || !regexec(error_state.match, s ? s : format, 0, NiL, 0))
-        && (!error_state.count || !--error_state.count))
-    {
-        if (error_info.core)
-        {
+        && (!error_state.count || !--error_state.count)) {
+        if (error_info.core) {
 #ifndef SIGABRT
 #    ifdef SIGQUIT
 #        define SIGABRT SIGQUIT
@@ -635,8 +581,7 @@ errorv(const char *id, int level, va_list ap)
 #else
             abort();
 #endif
-        }
-        else
+        } else
             error_break();
     }
     if (level >= ERROR_FATAL)
@@ -652,21 +597,16 @@ static Error_info_t *freecontext;
 Error_info_t *
 errorctx(Error_info_t *p, int op, int flags)
 {
-    if (op & ERROR_POP)
-    {
+    if (op & ERROR_POP) {
         if (!(_error_infop_ = p->context))
             _error_infop_ = &_error_info_;
-        if (op & ERROR_FREE)
-        {
+        if (op & ERROR_FREE) {
             p->context = freecontext;
             freecontext = p;
         }
         p = _error_infop_;
-    }
-    else
-    {
-        if (!p)
-        {
+    } else {
+        if (!p) {
             if (p = freecontext)
                 freecontext = freecontext->context;
             else if (!(p = newof(0, Error_info_t, 1, 0)))
@@ -675,8 +615,7 @@ errorctx(Error_info_t *p, int op, int flags)
             p->errors = p->flags = p->line = p->warnings = 0;
             p->catalog = p->file = 0;
         }
-        if (op & ERROR_PUSH)
-        {
+        if (op & ERROR_PUSH) {
             p->flags = flags;
             p->context = _error_infop_;
             _error_infop_ = p;

@@ -65,15 +65,13 @@ static int
 drvexcept(Vmalloc_t *vm, int type, Void_t *arg, Vmdisc_t *disc)
 {
     Drvdisc_t *dc = ( Drvdisc_t * )disc;
-    if (type == VM_ENDCLOSE)
-    {
+    if (type == VM_ENDCLOSE) {
         if (dc->type > 0)
             vmfree(Vmheap, disc);
         else if (dc->type == 0)
             vmfree(dc->vm, disc);
         return 0;
-    }
-    else if (type == VM_DISC)
+    } else if (type == VM_DISC)
         return -1;
     else
         return 0;

@@ -119,8 +119,7 @@ c;
     const static double zero = 0.0, one = 1.0, half = 1.0 / 2.0,
                         small = 1.0E-19;
     double z, p, q, xp, xh, w;
-    if (copysign(x, one) > small)
-    {
+    if (copysign(x, one) > small) {
         z = x * x;
         p = z * (p1 + z * p2);
 #    if defined(vax) || defined(tahoe)
@@ -137,8 +136,7 @@ c;
     }
     /* end of |x| > small */
 
-    else
-    {
+    else {
         if (x != zero)
             one + small; /* raise the inexact flag */
         return (copysign(zero, x));

@@ -51,18 +51,15 @@ chrexp(const char *s, char **p, int *m, int flags)
 
     u = w = 0;
     mbtinit(&q);
-    for (;;)
-    {
+    for (;;) {
         b = s;
-        switch (c = mbtchar(&d, s, MB_LEN_MAX, &q))
-        {
+        switch (c = mbtchar(&d, s, MB_LEN_MAX, &q)) {
         case 0:
             s = b;
             break;
         case '\\':
             b = s;
-            switch (c = *s++)
-            {
+            switch (c = *s++) {
             case '0':
             case '1':
             case '2':
@@ -76,8 +73,7 @@ chrexp(const char *s, char **p, int *m, int flags)
                 c -= '0';
                 t = s + 2;
                 while (s < t)
-                    switch (*s)
-                    {
+                    switch (*s) {
                     case '0':
                     case '1':
                     case '2':
@@ -107,11 +103,9 @@ chrexp(const char *s, char **p, int *m, int flags)
             case 'C':
                 if (!(flags & FMT_EXP_CHAR))
                     goto noexpand;
-                if (c = *s)
-                {
+                if (c = *s) {
                     s++;
-                    if (c == '\\')
-                    {
+                    if (c == '\\') {
                         c = chrexp(s - 1, &r, 0, flags);
                         s = ( const char * )r;
                     }
@@ -136,8 +130,7 @@ chrexp(const char *s, char **p, int *m, int flags)
             case 'M':
                 if (!(flags & FMT_EXP_CHAR))
                     goto noexpand;
-                if (*s == '-')
-                {
+                if (*s == '-') {
                     s++;
                     c = CC_esc;
                 }
@@ -187,10 +180,8 @@ chrexp(const char *s, char **p, int *m, int flags)
                 n = 0;
                 c = 0;
                 x = 0;
-                while (!e || !t || s < t)
-                {
-                    switch (*s)
-                    {
+                while (!e || !t || s < t) {
+                    switch (*s) {
                     case 'a':
                     case 'b':
                     case 'c':
@@ -234,16 +225,13 @@ chrexp(const char *s, char **p, int *m, int flags)
                     case '-':
                         if (e)
                             break;
-                        if (*(s + 1) != '}' && *(s + 1) != ']')
-                        {
+                        if (*(s + 1) != '}' && *(s + 1) != ']') {
                             if (!*(s + 1)
                                 || *(s + 2) != '}' && *(s + 2) != ']')
                                 break;
                             x = *( unsigned char * )(s + 1);
                             s += 2;
-                        }
-                        else
-                        {
+                        } else {
                             x = -1;
                             s++;
                         }
@@ -258,19 +246,14 @@ chrexp(const char *s, char **p, int *m, int flags)
                     }
                     break;
                 }
-                if (e)
-                {
-                    if (n < 8 || n == 8 && c >= 0)
-                    {
-                        if (!w)
-                        {
-                            if (n > 2)
-                            {
+                if (e) {
+                    if (n < 8 || n == 8 && c >= 0) {
+                        if (!w) {
+                            if (n > 2) {
                                 if (!(flags & FMT_EXP_WIDE))
                                     goto noexpand;
                                 w = 1;
-                            }
-                            else if (!(flags & FMT_EXP_CHAR))
+                            } else if (!(flags & FMT_EXP_CHAR))
                                 goto noexpand;
                             else
                                 break;
@@ -279,23 +262,19 @@ chrexp(const char *s, char **p, int *m, int flags)
                             w = 0;
                         if (c <= 0x7f)
                             break;
-                        if (u)
-                        {
+                        if (u) {
                             uint32_t i = c;
                             wchar_t o;
 
                             if (!utf32invalid(i)
-                                && utf32stowcs(&o, &i, 1) > 0)
-                            {
+                                && utf32stowcs(&o, &i, 1) > 0) {
                                 c = o;
                                 break;
                             }
-                        }
-                        else if (w || c <= ast.byte_max)
+                        } else if (w || c <= ast.byte_max)
                             break;
                     }
-                    if (x)
-                    {
+                    if (x) {
                         c = x;
                         w = 0;
                         break;

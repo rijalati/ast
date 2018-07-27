@@ -36,8 +36,7 @@ ptequal(Pt_t *a, Pt_t *b)
         return 1;
     ap = ( Ptprefix_t * )dtfirst(a->dict);
     bp = ( Ptprefix_t * )dtfirst(b->dict);
-    while (ap && bp)
-    {
+    while (ap && bp) {
         if (ap->min != bp->min)
             return 0;
         if (ap->max != bp->max)

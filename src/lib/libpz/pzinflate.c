@@ -43,24 +43,18 @@ restore(Pz_t *pz,
     Pzwrite_f writef;
 
     writef = pz->disc->writef;
-    for (;;)
-    {
+    for (;;) {
         PZGETZ(pz, ip, z, i);
-        do
-        {
+        do {
             memcpy(buf, pat, row);
-            for (i = 0; i < m; i++)
-            {
+            for (i = 0; i < m; i++) {
                 buf[map[i]] = *mix[i];
                 mix[i] += inc[i];
             }
-            if (writef)
-            {
+            if (writef) {
                 if ((*writef)(pz, op, buf, pz->disc) < 0)
                     return -1;
-            }
-            else if (sfwrite(op, buf, row) != row)
-            {
+            } else if (sfwrite(op, buf, row) != row) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(
                     pz, pz->disc, ERROR_SYSTEM | 2, "write error");
@@ -68,8 +62,7 @@ restore(Pz_t *pz,
             }
         } while (--z);
         PZGETP(pz, ip, z, i, break);
-        for (;;)
-        {
+        for (;;) {
             pat[z - 1] = *pz->nxt++;
             PZGETP(pz, ip, z, i, break);
         }
@@ -94,8 +87,7 @@ pzinflate(Pz_t *pz, Sfio_t *op)
     ssize_t r;
     Pzwrite_f writef;
 
-    if (!(pz->flags & PZ_READ))
-    {
+    if (!(pz->flags & PZ_READ)) {
         if (pz->disc->errorf)
             (*pz->disc->errorf)(pz,
                                 pz->disc,
@@ -106,17 +98,12 @@ pzinflate(Pz_t *pz, Sfio_t *op)
     }
     if (pz->flags & PZ_SPLIT)
         return pzssplit(pz);
-    if (pz->flags & PZ_FORCE)
-    {
-        if (writef = pz->disc->writef)
-        {
+    if (pz->flags & PZ_FORCE) {
+        if (writef = pz->disc->writef) {
             n = pz->part->row;
-            do
-            {
-                if (!(pat = ( unsigned char * )sfreserve(pz->io, n, 0)))
-                {
-                    if (sfvalue(pz->io))
-                    {
+            do {
+                if (!(pat = ( unsigned char * )sfreserve(pz->io, n, 0))) {
+                    if (sfvalue(pz->io)) {
                         if (pz->disc->errorf)
                             (*pz->disc->errorf)(
                             pz, pz->disc, 2, "%s: data corrupted", pz->path);
@@ -127,16 +114,14 @@ pzinflate(Pz_t *pz, Sfio_t *op)
             } while ((r = (*writef)(pz, op, pat, pz->disc)) >= 0);
             if (r < 0)
                 return -1;
-        }
-        else if (sfmove(pz->io, op, SF_UNBOUND, -1) < 0 || sferror(pz->io))
-        {
+        } else if (sfmove(pz->io, op, SF_UNBOUND, -1) < 0
+                   || sferror(pz->io)) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(
                 pz, pz->disc, 2, "%s: data corrupted", pz->path);
             return -1;
         }
-        if (sfsync(op))
-        {
+        if (sfsync(op)) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(
                 pz, pz->disc, 2, "%s: output write error", pz->path);
@@ -149,12 +134,10 @@ pzinflate(Pz_t *pz, Sfio_t *op)
      * copy the prefix
      */
 
-    if (pz->prefix.count)
-    {
+    if (pz->prefix.count) {
         if (!pz->prefix.skip && pz->prefix.data
             && sfwrite(op, pz->prefix.data, pz->prefix.count)
-               != pz->prefix.count)
-        {
+               != pz->prefix.count) {
             if (pz->disc->errorf)
                 (*pz->disc->errorf)(
                 pz, pz->disc, 2, "%s: output write error", pz->path);
@@ -165,31 +148,26 @@ pzinflate(Pz_t *pz, Sfio_t *op)
     if ((pz->split.flags & (PZ_SPLIT_INFLATE | PZ_SPLIT_PART))
         == PZ_SPLIT_INFLATE)
         i = pzsinflate(pz, op);
-    else
-    {
+    else {
         /*
          * inflate each file
          */
 
-        do
-        {
+        do {
             /*
              * inflate each window
              */
 
             pp = pz->part;
             pat = pz->pat;
-            while (m = sfgetu(pz->io))
-            {
+            while (m = sfgetu(pz->io)) {
                 /*
                  * hi frequency data in pz->buf
                  */
 
-                if (pp->nmap)
-                {
+                if (pp->nmap) {
                     if (m > pz->win || (m % pp->nmap)
-                        || sfread(pz->io, pz->buf, m) != m)
-                    {
+                        || sfread(pz->io, pz->buf, m) != m) {
                         if (pz->disc->errorf)
                             (*pz->disc->errorf)(pz,
                                                 pz->disc,
@@ -202,8 +180,7 @@ pzinflate(Pz_t *pz, Sfio_t *op)
                     m = 0;
                     j = 0;
                     k = 0;
-                    for (i = 0; i < pp->nmap; i++)
-                    {
+                    for (i = 0; i < pp->nmap; i++) {
                         if (i > 0 && pp->lab[i] == pp->lab[i - 1])
                             j++;
                         else
@@ -212,9 +189,7 @@ pzinflate(Pz_t *pz, Sfio_t *op)
                             pp->mix[k++] = pz->buf + j;
                         m += n;
                     }
-                }
-                else if (m != 1)
-                {
+                } else if (m != 1) {
                     if (pz->disc->errorf)
                         (*pz->disc->errorf)(pz,
                                             pz->disc,
@@ -229,8 +204,7 @@ pzinflate(Pz_t *pz, Sfio_t *op)
                  */
 
                 m = sfgetu(pz->io);
-                if (m < pp->row || sfread(pz->io, pat, pp->row) != pp->row)
-                {
+                if (m < pp->row || sfread(pz->io, pat, pp->row) != pp->row) {
                     if (pz->disc->errorf)
                         (*pz->disc->errorf)(pz,
                                             pz->disc,
@@ -240,8 +214,7 @@ pzinflate(Pz_t *pz, Sfio_t *op)
                     return -1;
                 }
                 m -= pp->row;
-                if (sfread(pz->io, pz->nxt = pz->val, m) != m)
-                {
+                if (sfread(pz->io, pz->nxt = pz->val, m) != m) {
                     if (pz->disc->errorf)
                         (*pz->disc->errorf)(pz,
                                             pz->disc,
@@ -268,20 +241,16 @@ pzinflate(Pz_t *pz, Sfio_t *op)
                             pp->inc))
                     return -1;
             }
-            if (!(pz->flags & PZ_SECTION))
-            {
-                if ((k = sfgetc(pz->io)) == PZ_MARK_PART)
-                {
+            if (!(pz->flags & PZ_SECTION)) {
+                if ((k = sfgetc(pz->io)) == PZ_MARK_PART) {
                     if ((m = sfgetu(pz->io)) && !sferror(pz->io)
                         && !sfeof(pz->io)
                         && (pat = ( unsigned char * )sfreserve(pz->io, m, 0)))
                         sfwrite(op, pat, m);
-                }
-                else if (k != EOF)
+                } else if (k != EOF)
                     sfungetc(pz->io, k);
             }
-            if (sferror(op))
-            {
+            if (sferror(op)) {
                 if (pz->disc->errorf)
                     (*pz->disc->errorf)(
                     pz, pz->disc, ERROR_SYSTEM | 2, "write error");
@@ -289,8 +258,7 @@ pzinflate(Pz_t *pz, Sfio_t *op)
             }
         } while ((i = !(pz->flags & PZ_SECTION)) && (i = pzfile(pz)) > 0);
     }
-    if (i >= 0 && !(pz->split.flags & PZ_SPLIT_PART) && sfsync(op))
-    {
+    if (i >= 0 && !(pz->split.flags & PZ_SPLIT_PART) && sfsync(op)) {
         if (pz->disc->errorf)
             (*pz->disc->errorf)(
             pz, pz->disc, ERROR_SYSTEM | 2, "write error");

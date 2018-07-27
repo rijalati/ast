@@ -172,8 +172,7 @@ extern struct jobs job;
 
 #            define job_lock() asoincint(&job.in_critical)
 #            define job_unlock()                                             \
-                do                                                           \
-                {                                                            \
+                do {                                                         \
                     int _sig;                                                \
                     if (asogetint(&job.in_critical) == 1                     \
                         && (_sig = job.savesig) && !vmbusy())                \
@@ -185,11 +184,9 @@ extern struct jobs job;
 
 #            define job_lock() (job.in_critical++)
 #            define job_unlock()                                             \
-                do                                                           \
-                {                                                            \
+                do {                                                         \
                     int _sig;                                                \
-                    if (!--job.in_critical && (_sig = job.savesig))          \
-                    {                                                        \
+                    if (!--job.in_critical && (_sig = job.savesig)) {        \
                         if (!job.in_critical++ && !vmbusy())                 \
                             job_reap(_sig);                                  \
                         job.in_critical--;                                   \

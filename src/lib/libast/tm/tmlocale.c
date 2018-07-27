@@ -51,8 +51,7 @@ static int
 standardized(Lc_info_t *li, char **b)
 {
     if ((li->lc->language->flags & (LC_debug | LC_default))
-        || streq(li->lc->language->code, "en"))
-    {
+        || streq(li->lc->language->code, "en")) {
         b[TM_TIME] = "%H:%M:%S";
         b[TM_DATE] = "%m/%d/%y";
         b[TM_DEFAULT] = "%a %b %e %T %Z %Y";
@@ -95,13 +94,11 @@ fixup(Lc_info_t *li, char **b)
         for (n = 0; n < TM_NFORM; n++)
             if (!*b[n])
                 b[n] = tm_data.format[n];
-    if (strchr(b[TM_UT], '%'))
-    {
+    if (strchr(b[TM_UT], '%')) {
         tm_info.deformat = b[TM_UT];
         for (n = TM_UT; n < TM_DT; n++)
             b[n] = state.null;
-    }
-    else
+    } else
         tm_info.deformat = b[TM_DEFAULT];
     tm_info.format = b;
     if (!(tm_info.deformat = state.format))
@@ -218,16 +215,14 @@ word2posix(char *f, char *w, int alternate)
     int p;
     int n;
 
-    while (*w)
-    {
+    while (*w) {
         p = 0;
         r = w;
         while (*++w == *r)
             ;
         if ((n = w - r) > 3 && alternate)
             n--;
-        switch (*r)
-        {
+        switch (*r) {
         case 'a':
         case 'A':
             if (!strncasecmp(w, "am/pm", 5))
@@ -237,8 +232,7 @@ word2posix(char *f, char *w, int alternate)
             c = 'p';
             break;
         case 'd':
-            switch (n)
-            {
+            switch (n) {
             case 1:
                 p = '-';
                 /*FALLTHROUGH*/
@@ -254,8 +248,7 @@ word2posix(char *f, char *w, int alternate)
             }
             break;
         case 'h':
-            switch (n)
-            {
+            switch (n) {
             case 1:
                 p = '-';
                 /*FALLTHROUGH*/
@@ -265,8 +258,7 @@ word2posix(char *f, char *w, int alternate)
             }
             break;
         case 'H':
-            switch (n)
-            {
+            switch (n) {
             case 1:
                 p = '-';
                 /*FALLTHROUGH*/
@@ -276,8 +268,7 @@ word2posix(char *f, char *w, int alternate)
             }
             break;
         case 'M':
-            switch (n)
-            {
+            switch (n) {
             case 1:
                 p = '-';
                 /*FALLTHROUGH*/
@@ -293,8 +284,7 @@ word2posix(char *f, char *w, int alternate)
             }
             break;
         case 'm':
-            switch (n)
-            {
+            switch (n) {
             case 1:
                 p = '-';
                 /*FALLTHROUGH*/
@@ -304,8 +294,7 @@ word2posix(char *f, char *w, int alternate)
             }
             break;
         case 's':
-            switch (n)
-            {
+            switch (n) {
             case 1:
                 p = '-';
                 /*FALLTHROUGH*/
@@ -315,8 +304,7 @@ word2posix(char *f, char *w, int alternate)
             }
             break;
         case 'y':
-            switch (n)
-            {
+            switch (n) {
             case 1:
                 p = '-';
                 /*FALLTHROUGH*/
@@ -331,15 +319,13 @@ word2posix(char *f, char *w, int alternate)
         case '\'':
             if (n & 1)
                 for (w = r + 1; *w; *f++ = *w++)
-                    if (*w == '\'')
-                    {
+                    if (*w == '\'') {
                         w++;
                         break;
                     }
             continue;
         case '%':
-            while (r < w)
-            {
+            while (r < w) {
                 *f++ = *r++;
                 *f++ = *r++;
             }
@@ -389,15 +375,13 @@ native_lc_time(Lc_info_t *li)
     if (!(b = newof(0, char *, TM_NFORM, n)))
         return;
     s = ( char * )(b + TM_NFORM);
-    for (i = 0; i < elementsof(map); i++)
-    {
+    for (i = 0; i < elementsof(map); i++) {
         if (!(m = GetLocaleInfo(lcid, map[i].native, s, n)))
             goto bad;
         b[map[i].local] = s;
         s += m;
     }
-    if (!standardized(li, b))
-    {
+    if (!standardized(li, b)) {
         /*
          * synthesize TM_TIME format from the ms word template
          */
@@ -544,8 +528,7 @@ native_lc_time(Lc_info_t *li)
     int i;
 
     n = 0;
-    for (i = 0; i < elementsof(map); i++)
-    {
+    for (i = 0; i < elementsof(map); i++) {
         if (!(t = nl_langinfo(map[i].native)))
             t = tm_data.format[map[i].local];
         n += strlen(t) + 1;
@@ -553,8 +536,7 @@ native_lc_time(Lc_info_t *li)
     if (!(b = newof(0, char *, TM_NFORM, n)))
         return;
     s = ( char * )(b + TM_NFORM);
-    for (i = 0; i < elementsof(map); i++)
-    {
+    for (i = 0; i < elementsof(map); i++) {
         b[map[i].local] = s;
         if (!(t = nl_langinfo(map[i].native)))
             t = tm_data.format[map[i].local];
@@ -592,8 +574,7 @@ load(Lc_info_t *li)
     Sfio_t *tp;
     char path[PATH_MAX];
 
-    if (b = ( char ** )li->data)
-    {
+    if (b = ( char ** )li->data) {
         tm_info.format = b;
         if (!(tm_info.deformat = state.format))
             tm_info.deformat = tm_info.format[TM_DEFAULT];
@@ -603,17 +584,13 @@ load(Lc_info_t *li)
     if (!(tm_info.deformat = state.format))
         tm_info.deformat = tm_info.format[TM_DEFAULT];
     if (mcfind(NiL, NiL, LC_TIME, 0, path, sizeof(path))
-        && (sp = sfopen(NiL, path, "r")))
-    {
+        && (sp = sfopen(NiL, path, "r"))) {
         n = sfsize(sp);
         tp = 0;
-        if (u = ( unsigned char * )sfreserve(sp, 3, 1))
-        {
+        if (u = ( unsigned char * )sfreserve(sp, 3, 1)) {
             if (u[0] == 0xef && u[1] == 0xbb && u[2] == 0xbf
-                && (cvt = iconv_open("", "utf")) != (iconv_t)(-1))
-            {
-                if (tp = sfstropen())
-                {
+                && (cvt = iconv_open("", "utf")) != (iconv_t)(-1)) {
+                if (tp = sfstropen()) {
                     sfread(sp, u, 3);
                     n = iconv_move(cvt, sp, tp, SF_UNBOUND, NiL);
                 }
@@ -622,32 +599,27 @@ load(Lc_info_t *li)
             if (!tp)
                 sfread(sp, u, 0);
         }
-        if (b = newof(0, char *, TM_NFORM, n + 2))
-        {
+        if (b = newof(0, char *, TM_NFORM, n + 2)) {
             v = b;
             e = b + TM_NFORM;
             s = ( char * )e;
             if (tp && memcpy(s, sfstrbase(tp), n)
-                || !tp && sfread(sp, s, n) == n)
-            {
+                || !tp && sfread(sp, s, n) == n) {
                 s[n] = '\n';
-                while (v < e)
-                {
+                while (v < e) {
                     *v++ = s;
                     if (!(s = strchr(s, '\n')))
                         break;
                     *s++ = 0;
                 }
                 fixup(li, b);
-            }
-            else
+            } else
                 free(b);
         }
         if (tp)
             sfclose(tp);
         sfclose(sp);
-    }
-    else
+    } else
         native_lc_time(li);
 }
 
@@ -660,8 +632,7 @@ tmlocale(void)
 {
     Lc_info_t *li;
 
-    if (!tm_info.format)
-    {
+    if (!tm_info.format) {
         tm_info.format = tm_data.format;
         if (!tm_info.deformat)
             tm_info.deformat = tm_info.format[TM_DEFAULT];

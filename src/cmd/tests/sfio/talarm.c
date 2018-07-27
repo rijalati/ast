@@ -39,13 +39,10 @@ void alrmhandler(sig) int sig;
         Except = 2;
         signal(sig, alrmhandler);
         alarm(2);
-    }
-    else if (Except == 2)
-    {
+    } else if (Except == 2) {
         twarn("System call was automatically resumed by the OS");
         texit(0);
-    }
-    else
+    } else
         terror("Unexpected Except(%d) state", Except);
 }
 

@@ -39,8 +39,7 @@ internal(Jcl_t *jcl, const char *name)
         return jcl->name;
     else if (streq(name, "USERID"))
         return getlogin();
-    else if (streq(name, "VDATE"))
-    {
+    else if (streq(name, "VDATE")) {
         for (t = s = fmttime("%h%y", time(NiL)); *t; t++)
             if (islower(*t))
                 *t = toupper(*t);
@@ -68,13 +67,11 @@ lookup(Jcl_t *jcl, const char *name, const char *value, int flags, int set)
     int j;
     int f;
 
-    if (!value)
-    {
+    if (!value) {
         if (jcl->step->syms
             && (v = ( Jclsym_t * )dtmatch(jcl->step->syms, name)))
             goto found;
-        for (scope = jcl; scope; scope = scope->scope)
-        {
+        for (scope = jcl; scope; scope = scope->scope) {
             if (scope->scope && scope->scope->step->syms
                 && (v
                     = ( Jclsym_t * )dtmatch(scope->scope->step->syms, name)))
@@ -82,34 +79,27 @@ lookup(Jcl_t *jcl, const char *name, const char *value, int flags, int set)
             if (scope->syms && (v = ( Jclsym_t * )dtmatch(scope->syms, name)))
                 goto found;
         }
-    }
-    else if (!jcl->syms)
+    } else if (!jcl->syms)
         return 0;
     else if ((v = ( Jclsym_t * )dtmatch(jcl->syms, name))
              && (!(flags & (JCL_SYM_EXPORT | JCL_SYM_SET))
-                 || (v->flags & (JCL_SYM_EXPORT | JCL_SYM_SET))))
-    {
+                 || (v->flags & (JCL_SYM_EXPORT | JCL_SYM_SET)))) {
         if (!(set & DEFAULT))
             v->value = stash(jcl, jcl->vm, value, 0);
         goto found;
     }
-    if (!value)
-    {
-        if (strneq(name, JCL_AUTO, sizeof(JCL_AUTO) - 1))
-        {
+    if (!value) {
+        if (strneq(name, JCL_AUTO, sizeof(JCL_AUTO) - 1)) {
             b = ( char * )name + sizeof(JCL_AUTO) - 1;
             if ((s = getenv(name)) || (s = internal(jcl, b)))
                 return s;
             s = b;
-            if (*s == '$')
-            {
+            if (*s == '$') {
                 s++;
                 f = 1;
-            }
-            else
+            } else
                 f = 0;
-            switch (*s)
-            {
+            switch (*s) {
             case 'O':
                 s++;
                 t = jcl->disc->odate;
@@ -122,15 +112,12 @@ lookup(Jcl_t *jcl, const char *name, const char *value, int flags, int set)
                 t = jcl->disc->date;
                 break;
             }
-            if (s[0] == 'J' && s[1] == 'U' && s[2] == 'L')
-            {
+            if (s[0] == 'J' && s[1] == 'U' && s[2] == 'L') {
                 s += 3;
                 j = 1;
-            }
-            else
+            } else
                 j = 0;
-            switch (*s)
-            {
+            switch (*s) {
             case 'C':
                 if (!strcmp(s, "CENT"))
                     return fmttime("%C", t);
@@ -157,15 +144,12 @@ lookup(Jcl_t *jcl, const char *name, const char *value, int flags, int set)
                     return fmttime(f ? "%Y" : "%y", t);
                 break;
             }
-            switch (*b)
-            {
+            switch (*b) {
             case 'B':
-                if (!strncmp(b, "BLANK", 5))
-                {
+                if (!strncmp(b, "BLANK", 5)) {
                     if (!(j = ( int )strtol(b, &s, 10)))
                         j = 1;
-                    if (!*s)
-                    {
+                    if (!*s) {
                         s = fmtbuf(j + 1);
                         memset(s, ' ', j);
                         s[j] = 0;
@@ -190,16 +174,14 @@ lookup(Jcl_t *jcl, const char *name, const char *value, int flags, int set)
                 "%%%%%s operand value or %s environment value expected",
                 b,
                 name);
-        }
-        else if (s = internal(jcl, name))
+        } else if (s = internal(jcl, name))
             return s;
         else if ((set & MUST) && jcl->disc->errorf)
             (*jcl->disc->errorf)(
             NiL, jcl->disc, 1, "&%s: undefined variable", name);
         return 0;
     }
-    if (!(v = vmnewof(jcl->vm, 0, Jclsym_t, 1, strlen(name))))
-    {
+    if (!(v = vmnewof(jcl->vm, 0, Jclsym_t, 1, strlen(name)))) {
         nospace(jcl, NiL);
         return 0;
     }
@@ -208,18 +190,15 @@ lookup(Jcl_t *jcl, const char *name, const char *value, int flags, int set)
         return 0;
     dtinsert(jcl->syms, v);
 found:
-    if (jcl->flags & (JCL_PARAMETERIZE | JCL_LISTVARIABLES))
-    {
+    if (jcl->flags & (JCL_PARAMETERIZE | JCL_LISTVARIABLES)) {
         char *s;
 
         for (s = v->name; isalnum(*s) || *s == '_'; s++)
             ;
-        if (!*s)
-        {
+        if (!*s) {
             if (jcl->flags & JCL_LISTVARIABLES)
                 uniq(v->name, NiL, 0, jcl->disc);
-            if (jcl->flags & JCL_PARAMETERIZE)
-            {
+            if (jcl->flags & JCL_PARAMETERIZE) {
 #if 0
 				if (diff(v->name, v->value))
 					sfprintf(sfstdout, "%s=%s\t# global\n", v->name, fmtquote(v->value, "$'", "'", strlen(v->value), 0));
@@ -252,13 +231,11 @@ stash(Jcl_t *jcl, Vmalloc_t *vm, const char *str, int path)
         nospace(jcl, NiL);
     strcpy(s, str);
     if (path && (*s != '$' || *(s + 1) != '(') && (t = strchr(s, '('))
-        && *(s + n - 1) == ')')
-    {
+        && *(s + n - 1) == ')') {
         strtol(t + 1, &e, 10);
         if (e == (s + n - 1))
             *t = 0;
-        else
-        {
+        else {
             *t = '/';
             *(s + n - 1) = 0;
         }

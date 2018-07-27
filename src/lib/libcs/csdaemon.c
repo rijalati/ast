@@ -65,12 +65,10 @@ csdaemon(Cs_t *state, int fds)
      * generate some children if not scheduled from init
      */
 
-    if (getppid() > 1)
-    {
+    if (getppid() > 1) {
 #if _lib_fork
         if (!(state->flags & CS_DAEMON_SLAVE))
-            switch (fork())
-            {
+            switch (fork()) {
             case -1:
                 return -1;
             case 0:
@@ -99,12 +97,10 @@ csdaemon(Cs_t *state, int fds)
 
     if ((fds & ((1 << 0) | (1 << 1) | (1 << 2)))
         != ((1 << 0) | (1 << 1) | (1 << 2))
-        && (fd = open("/dev/null", O_RDWR)) >= 0)
-    {
+        && (fd = open("/dev/null", O_RDWR)) >= 0) {
         fds |= (1 << fd);
         for (i = 0; i <= 2; i++)
-            if (!(fds & (1 << i)))
-            {
+            if (!(fds & (1 << i))) {
                 close(i);
                 dup(fd);
             }

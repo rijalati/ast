@@ -50,17 +50,14 @@ native(const char *s)
     if (!np && !(np = sfstropen()) || !qp && !(qp = sfstropen()))
         return ( char * )s;
     n = PATH_MAX;
-    do
-    {
+    do {
         m = n;
         n = pathnative(s, sfstrrsrv(np, m), m);
     } while (n > m);
     sfstrseek(np, n, SEEK_CUR);
     s = ( const char * )sfstruse(np);
-    for (;;)
-    {
-        switch (c = *s++)
-        {
+    for (;;) {
+        switch (c = *s++) {
         case 0:
             break;
         case '\\':
@@ -91,8 +88,7 @@ pppush(int t, char *s, char *p, int n)
     PUSH(t, cur);
     cur->line = error_info.line;
     cur->file = error_info.file;
-    switch (t)
-    {
+    switch (t) {
     case IN_FILE:
         if (pp.option & NATIVE)
             s = native(s);
@@ -101,8 +97,7 @@ pppush(int t, char *s, char *p, int n)
         cur->hide = ++pp.hide;
         cur->symbol = 0;
 #if CHECKPOINT
-        if ((pp.mode & (DUMP | INIT)) == DUMP)
-        {
+        if ((pp.mode & (DUMP | INIT)) == DUMP) {
             cur->index = newof(0, struct ppindex, 1, 0);
             if (pp.lastindex)
                 pp.lastindex->next = cur->index;
@@ -120,11 +115,9 @@ pppush(int t, char *s, char *p, int n)
             if (!cur->prev->prev && !(pp.state & COMPILE) && isatty(0))
                 cur->flags |= IN_flush;
 #if ARCHIVE
-        if (pp.member)
-        {
+        if (pp.member) {
             switch (pp.member->archive->type
-                    & (TYPE_BUFFER | TYPE_CHECKPOINT))
-            {
+                    & (TYPE_BUFFER | TYPE_CHECKPOINT)) {
             case 0:
 #    if CHECKPOINT
                 cur->buflen = pp.member->size;
@@ -162,8 +155,7 @@ pppush(int t, char *s, char *p, int n)
             }
             cur->flags |= IN_eof | IN_newline;
             cur->fd = -1;
-        }
-        else
+        } else
 #endif
         {
             if (lseek(cur->fd, 0L, SEEK_END) > 0
@@ -186,14 +178,12 @@ pppush(int t, char *s, char *p, int n)
                        ? PROTO_FORCE
                        : PROTO_PASS)
                     | ((pp.mode & EXTERNALIZE) ? PROTO_EXTERNALIZE : 0)
-                    | ((pp.mode & MARKC) ? PROTO_PLUSPLUS : 0))))
-            {
+                    | ((pp.mode & MARKC) ? PROTO_PLUSPLUS : 0)))) {
                 *(p = cur->buffer - 1) = 0;
                 cur->buffer -= PPBAKSIZ;
                 cur->flags |= IN_prototype;
                 cur->fd = -1;
-            }
-            else
+            } else
 #endif
                 *(p
                   = (cur->buffer = oldof(0, char, 0, PPBUFSIZ + PPBAKSIZ + 1))
@@ -214,15 +204,13 @@ pppush(int t, char *s, char *p, int n)
         cur->control = pp.control;
         *pp.control = 0;
         cur->vendor = pp.vendor;
-        if (cur->type != IN_RESCAN)
-        {
+        if (cur->type != IN_RESCAN) {
             if (cur->type == IN_INIT)
                 pp.mode |= MARKHOSTED;
             error_info.file = s;
             error_info.line = n;
         }
-        if (pp.state & HIDDEN)
-        {
+        if (pp.state & HIDDEN) {
             pp.state &= ~HIDDEN;
             pp.hidden = 0;
             if (!(pp.state & NOTEXT) && pplastout() != '\n')
@@ -233,16 +221,13 @@ pppush(int t, char *s, char *p, int n)
             cur->flags |= IN_hosted;
         else
             cur->flags &= ~IN_hosted;
-        if (pp.mode & (INIT | MARKHOSTED))
-        {
+        if (pp.mode & (INIT | MARKHOSTED)) {
             pp.mode |= HOSTED;
             pp.flags |= PP_hosted;
         }
-        switch (cur->type)
-        {
+        switch (cur->type) {
         case IN_FILE:
-            if (!(pp.mode & (INIT | MARKHOSTED)))
-            {
+            if (!(pp.mode & (INIT | MARKHOSTED))) {
                 pp.mode &= ~HOSTED;
                 pp.flags &= ~PP_hosted;
             }
@@ -257,12 +242,10 @@ pppush(int t, char *s, char *p, int n)
             if (pp.member)
                 ppload(NiL);
 #endif
-            if (pp.mode & MARKC)
-            {
+            if (pp.mode & MARKC) {
                 cur->flags |= IN_c;
                 pp.mode &= ~MARKC;
-                if (!(cur->prev->flags & IN_c))
-                {
+                if (!(cur->prev->flags & IN_c)) {
                     debug((-7,
                            "PUSH in=%s next=%s [%s]",
                            ppinstr(pp.in),
@@ -271,9 +254,7 @@ pppush(int t, char *s, char *p, int n)
                     PUSH_BUFFER("C", "extern \"C\" {\n", 1);
                     return;
                 }
-            }
-            else if (cur->prev->flags & IN_c)
-            {
+            } else if (cur->prev->flags & IN_c) {
                 debug((-7,
                        "PUSH in=%s next=%s [%s]",
                        ppinstr(pp.in),
@@ -332,8 +313,7 @@ ppexpand(char *p)
     struct ppinstk *cur;
 
     debug((-7, "before expand: %s", p));
-    if (ppmactop = pp.mactop)
-    {
+    if (ppmactop = pp.mactop) {
         nextmacp = pp.macp->next;
         nextframe(pp.macp, pp.mactop);
     }
@@ -347,25 +327,20 @@ ppexpand(char *p)
     n = 2 * MAXTOKEN;
     pp.token = p = oldof(0, char, 0, n);
     m = p + MAXTOKEN;
-    for (;;)
-    {
-        if (pplex())
-        {
-            if ((pp.token = pp.toknxt) > m)
-            {
+    for (;;) {
+        if (pplex()) {
+            if ((pp.token = pp.toknxt) > m) {
                 c = pp.token - p;
                 p = newof(p, char, n += MAXTOKEN, 0);
                 m = p + n - MAXTOKEN;
                 pp.token = p + c;
             }
-            if (pp.mode & MARKMACRO)
-            {
+            if (pp.mode & MARKMACRO) {
                 pp.mode &= ~MARKMACRO;
                 *pp.token++ = MARK;
                 *pp.token++ = 'X';
             }
-        }
-        else if (pp.in == cur)
+        } else if (pp.in == cur)
             break;
     }
     *pp.token = 0;
@@ -400,8 +375,8 @@ dump(const char *name, char *v, void *handle)
 
     NoP(name);
     NoP(handle);
-    if ((mac = sym->macro) && !(sym->flags & (SYM_BUILTIN | SYM_PREDEFINED)))
-    {
+    if ((mac = sym->macro)
+        && !(sym->flags & (SYM_BUILTIN | SYM_PREDEFINED))) {
         ppprintf("%s", sym->name);
         ppputchar(0);
         flags = 0;
@@ -418,12 +393,10 @@ dump(const char *name, char *v, void *handle)
         if (sym->flags & SYM_VARIADIC)
             flags |= LOAD_VARIADIC;
         ppputchar(flags);
-        if (sym->flags & SYM_FUNCTION)
-        {
+        if (sym->flags & SYM_FUNCTION) {
             ppprintf("%d", mac->arity);
             ppputchar(0);
-            if (mac->arity)
-            {
+            if (mac->arity) {
                 ppprintf("%s", mac->formals);
                 ppputchar(0);
             }
@@ -471,8 +444,7 @@ ppdump(void)
 
     index_offset = ppoffset();
     ip = pp.firstindex;
-    while (ip)
-    {
+    while (ip) {
         ppprintf("%s", ip->file->name);
         ppputchar(0);
         if (ip->file->guard != INC_CLEAR && ip->file->guard != INC_IGNORE
@@ -532,16 +504,14 @@ ppload(char *s)
     if (!(pp.state & STANDALONE))
         error(3, "checkpoint load in standalone mode only");
 #    if ARCHIVE
-    if (pp.member)
-    {
+    if (pp.member) {
         sp = pp.member->archive->info.sp;
         file_offset = pp.member->offset;
         file_size = pp.member->size;
         if (sfseek(sp, file_offset + 22, SEEK_SET) != file_offset + 22
             || !(s = sfgetr(sp, '\n', 1)))
             error(3, "checkpoint magic error");
-    }
-    else
+    } else
 #    endif
     {
         if (pp.in->type != IN_FILE)
@@ -549,14 +519,11 @@ ppload(char *s)
         if (pp.in->flags & IN_prototype)
             pp.in->fd = pppdrop(pp.in->buffer + PPBAKSIZ);
         file_offset = 0;
-        if (pp.in->fd >= 0)
-        {
+        if (pp.in->fd >= 0) {
             if (!(sp = sfnew(NiL, NiL, SF_UNBOUND, pp.in->fd, SF_READ)))
                 error(3, "checkpoint read error");
             file_size = sfseek(sp, 0L, SEEK_END);
-        }
-        else
-        {
+        } else {
             file_size = pp.in->buflen;
             if (!(sp = sfnew(NiL,
                              pp.in->buffer
@@ -604,8 +571,7 @@ ppload(char *s)
     keep_begin = 0;
     keep_end = 0;
     skip_end = 0;
-    while (*b)
-    {
+    while (*b) {
         fp = ppsetfile(b);
         while (*b++)
             ;
@@ -632,17 +598,14 @@ ppload(char *s)
                     ? "[TEST]"
                     : fp->guard == INC_IGNORE ? "[IGNORE]" : fp->guard->name);
         b = t + 1;
-        if (next_begin >= skip_end)
-        {
-            if (!ppmultiple(fp, INC_TEST))
-            {
+        if (next_begin >= skip_end) {
+            if (!ppmultiple(fp, INC_TEST)) {
                 if (pp.test & 0x0100)
                     error(
                     2, "%s: %s IGNORE", keyname(X_CHECKPOINT), fp->name);
                 if (!keep_begin && skip_end < next_begin)
                     keep_begin = skip_end;
-                if (keep_begin)
-                {
+                if (keep_begin) {
                 flush:
                     if (sfseek(sp, file_offset + keep_begin, SEEK_SET)
                         != file_offset + keep_begin)
@@ -656,8 +619,7 @@ ppload(char *s)
                               next_begin - 1,
                               n,
                               p);
-                    while (n > p)
-                    {
+                    while (n > p) {
                         if (sfread(sp, pp.outp, p) != p)
                             error(3, "checkpoint data read error");
                         PPWRITE(PPBUFSIZ);
@@ -665,8 +627,7 @@ ppload(char *s)
                         n -= p;
                         p = PPBUFSIZ;
                     }
-                    if (n)
-                    {
+                    if (n) {
                         if (sfread(sp, pp.outp, n) != n)
                             error(3, "checkpoint data read error");
                         pp.outp += n;
@@ -677,15 +638,11 @@ ppload(char *s)
                         keep_end = 0;
                 }
                 skip_end = next_end;
-            }
-            else if (!keep_begin)
-            {
-                if (skip_end)
-                {
+            } else if (!keep_begin) {
+                if (skip_end) {
                     keep_begin = skip_end;
                     skip_end = 0;
-                }
-                else
+                } else
                     keep_begin = next_begin;
                 if (keep_end < next_end)
                     keep_end = next_end;
@@ -694,8 +651,7 @@ ppload(char *s)
         if (*g && fp->guard != INC_IGNORE)
             fp->guard = ppsymset(pp.symtab, g);
     }
-    if (keep_end)
-    {
+    if (keep_end) {
         if (!keep_begin)
             keep_begin = skip_end > next_end ? skip_end : next_end;
         next_begin = next_end = keep_end;
@@ -718,8 +674,7 @@ ppload(char *s)
      * read the flags
      */
 
-    while (*s)
-    {
+    while (*s) {
 #    if _options_dumped_
         if (streq(s, "OPTION")) /* ... */
             ;
@@ -733,17 +688,14 @@ ppload(char *s)
      * unpack and enter the definitions
      */
 
-    while (*s)
-    {
+    while (*s) {
         b = s;
         while (*s++)
             ;
         m = *s++;
         sym = ppsymset(pp.symtab, b);
-        if (sym->macro)
-        {
-            if (m & LOAD_FUNCTION)
-            {
+        if (sym->macro) {
+            if (m & LOAD_FUNCTION) {
                 if (*s++ != '0')
                     while (*s++)
                         ;
@@ -758,9 +710,7 @@ ppload(char *s)
                       sym->macro->value);
             while (*s++)
                 ;
-        }
-        else
-        {
+        } else {
             ppfsm(FSM_MACRO, b);
             sym->flags = 0;
             if (m & LOAD_FUNCTION)
@@ -776,15 +726,13 @@ ppload(char *s)
             if (m & LOAD_VARIADIC)
                 sym->flags |= SYM_VARIADIC;
             mac = sym->macro = newof(0, struct ppmacro, 1, 0);
-            if (sym->flags & SYM_FUNCTION)
-            {
+            if (sym->flags & SYM_FUNCTION) {
                 for (n = 0; *s >= '0' && *s <= '9'; n = n * 10 + *s++ - '0')
                     ;
                 if (*s++)
                     error(
                     3, "%-.48: checkpoint macro arity botched", sym->name);
-                if (mac->arity = n)
-                {
+                if (mac->arity = n) {
                     b = s;
                     while (*s++)
                         ;
@@ -807,8 +755,7 @@ ppload(char *s)
      * we are now at EOF
      */
 
-    if (ip)
-    {
+    if (ip) {
         pp.in->fd = -1;
         free(ip);
     }

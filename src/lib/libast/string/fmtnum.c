@@ -41,46 +41,36 @@ fmtnum(unsigned long n, int m)
 
     char suf[2];
 
-    if (m > 1)
-    {
+    if (m > 1) {
         r = n;
         n /= m;
         r -= n;
-    }
-    else
+    } else
         r = 0;
     suf[1] = 0;
     if (n < 1024)
         suf[0] = 0;
-    else if (n < 1024 * 1024)
-    {
+    else if (n < 1024 * 1024) {
         suf[0] = 'k';
         r = ((n % 1024) * 100) / 1024;
         n /= 1024;
-    }
-    else if (n < 1024 * 1024 * 1024)
-    {
+    } else if (n < 1024 * 1024 * 1024) {
         suf[0] = 'm';
         r = ((n % (1024 * 1024)) * 100) / (1024 * 1024);
         n /= 1024 * 1024;
-    }
-    else
-    {
+    } else {
         suf[0] = 'g';
         r = ((n % (1024 * 1024 * 1024)) * 100) / (1024 * 1024 * 1024);
         n /= 1024 * 1024 * 1024;
     }
-    if (r)
-    {
+    if (r) {
         if (n >= 100)
             r = 0;
-        else if (n >= 10)
-        {
+        else if (n >= 10) {
             i = 1;
             if (r >= 10)
                 r /= 10;
-        }
-        else
+        } else
             i = 2;
     }
     buf = fmtbuf(z = 8);

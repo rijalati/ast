@@ -534,23 +534,19 @@ ExpandKey(Aes_t *aes, Vcchar_t *ckey, Vcchar_t *ekey)
     for (i = 0; i < aes->K; ++i)
         ekey[i] = ckey[i];
 
-    for (i = aes->Nk; i < AES_NB * (aes->Nr + 1); i++)
-    {
+    for (i = aes->Nk; i < AES_NB * (aes->Nr + 1); i++) {
         tmp0 = ekey[4 * i - 4];
         tmp1 = ekey[4 * i - 3];
         tmp2 = ekey[4 * i - 2];
         tmp3 = ekey[4 * i - 1];
 
-        if ((i % aes->Nk) == 0)
-        {
+        if ((i % aes->Nk) == 0) {
             tmp4 = tmp3;
             tmp3 = Sbox[tmp0];
             tmp0 = Sbox[tmp1] ^ Rcon[i / aes->Nk];
             tmp1 = Sbox[tmp2];
             tmp2 = Sbox[tmp4];
-        }
-        else if (aes->Nk > 6 && (i % aes->Nk) == 4)
-        {
+        } else if (aes->Nk > 6 && (i % aes->Nk) == 4) {
             tmp0 = Sbox[tmp0];
             tmp1 = Sbox[tmp1];
             tmp2 = Sbox[tmp2];
@@ -577,8 +573,7 @@ AesEncrypt(Aes_t *aes, Vcchar_t *ekey, Vcchar_t *in, Vcchar_t *out)
     DEBUG_ASSERT(AES_STATE == 16);
 
     AddRoundKey(out, ekey);
-    for (r = 1; r < aes->Nr; ++r)
-    {
+    for (r = 1; r < aes->Nr; ++r) {
         MixSubColumns(out);
         AddRoundKey(out, ekey + r * AES_STATE);
     }
@@ -602,8 +597,7 @@ AesDecrypt(Aes_t *aes, const Vcchar_t *ekey, const Vcchar_t *in, Vcchar_t *out)
 
     AddRoundKey(out, ekey + aes->Nr * AES_STATE);
     InvShiftRows(out);
-    for (r = aes->Nr - 1; r > 0; --r)
-    {
+    for (r = aes->Nr - 1; r > 0; --r) {
         AddRoundKey(out, ekey + r * AES_STATE);
         InvMixSubColumns(out);
     }
@@ -629,19 +623,15 @@ aes_init(Vcx_t *xx, Vcxmethod_t *meth, Vcchar_t *key, ssize_t keyz)
     aes->tdsz = aes->pdsz = 0;
 
     /* set key size and number of encrypt/decrypt rounds */
-    if (meth == Vcxaes128)
-    {
+    if (meth == Vcxaes128) {
         aes->K = AES_KEY128;
         aes->Nk = AES_KEY128 / sizeof(Vcuint32_t);
         aes->Nr = 10;
-    }
-    else if (meth == Vcxaes192)
-    {
+    } else if (meth == Vcxaes192) {
         aes->K = AES_KEY192;
         aes->Nk = AES_KEY192 / sizeof(Vcuint32_t);
         aes->Nr = 12;
-    }
-    else /* if(meth == Vcxaes256 || meth == Vcxaessum) */
+    } else /* if(meth == Vcxaes256 || meth == Vcxaessum) */
     {
         aes->K = AES_KEY256;
         aes->Nk = AES_KEY256 / sizeof(Vcuint32_t);
@@ -654,8 +644,7 @@ aes_init(Vcx_t *xx, Vcxmethod_t *meth, Vcchar_t *key, ssize_t keyz)
     {
         xx->keyz = aes->K;
         memset(xx->key, 0, xx->keyz);
-    }
-    else
+    } else
         xx->keyz = -1; /* an error */
 
     if (xx->keyz != aes->K) /* AES key must have a specified length */
@@ -706,8 +695,7 @@ aes_encode(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
         && xx->meth != Vcxaes256 && xx->meth != Vcxaessum)
         return -1;
 
-    if (data && size > 0)
-    {
+    if (data && size > 0) {
         if (aes->tdsz > 0) /* deal with buffered data as appropriate */
         {
             if ((k = AES_BLOCK - aes->tdsz) > size)
@@ -729,14 +717,11 @@ aes_encode(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
         {
             obsz
             = ((aes->pdsz + size + AES_BLOCK - 1) / AES_BLOCK) * AES_BLOCK;
-            if (obsz > aes->obsz)
-            {
-                if (!(aes->obuf = ( Vcchar_t * )realloc(aes->obuf, obsz)))
-                {
+            if (obsz > aes->obsz) {
+                if (!(aes->obuf = ( Vcchar_t * )realloc(aes->obuf, obsz))) {
                     aes->obsz = 0;
                     return -1;
-                }
-                else
+                } else
                     aes->obsz = obsz;
             }
         }
@@ -745,8 +730,7 @@ aes_encode(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
         if (xx->meth != Vcxaessum) /* encrypted buffer != salt */
             obdt = aes->obuf + aes->pdsz;
 
-        for (; size >= AES_BLOCK; size -= AES_BLOCK, data += AES_BLOCK)
-        {
+        for (; size >= AES_BLOCK; size -= AES_BLOCK, data += AES_BLOCK) {
             for (k = 0; k < AES_BLOCK; ++k) /* salt data then encrypt */
                 blk[k] = data[k] ^ salt[k];
             AesEncrypt(aes, aes->ekey, blk, obdt);
@@ -776,8 +760,7 @@ aes_encode(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
         obsz = aes->pdsz + aes->tdsz; /* total message length */
 
         /* make room to encode the message length */
-        if (AES_BLOCK - aes->tdsz < 4)
-        {
+        if (AES_BLOCK - aes->tdsz < 4) {
             for (k = aes->tdsz; k < AES_BLOCK; ++k)
                 aes->todo[k] = 0;
             aes->tdsz = 0;
@@ -799,9 +782,8 @@ aes_encode(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
 
         *out = aes->salt;
         obsz = AES_BLOCK;
-    }
-    else /* encryption */
-    {    /* encode the size of unprocessed data (even if zero) */
+    } else /* encryption */
+    {      /* encode the size of unprocessed data (even if zero) */
         for (k = aes->tdsz; k < AES_BLOCK - 1; ++k)
             aes->todo[k] = 0;
         aes->todo[k] = aes->tdsz; /* keep size of real data */
@@ -845,8 +827,7 @@ aes_decode(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
 
     if (aes->obuf)
         free(aes->obuf);
-    if (!(aes->obuf = ( Vcchar_t * )malloc(size)))
-    {
+    if (!(aes->obuf = ( Vcchar_t * )malloc(size))) {
         aes->obsz = 0;
         return -1;
     }
@@ -854,8 +835,7 @@ aes_decode(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
 
     salt = aes->salt; /* start with internal salt */
     obdt = aes->obuf;
-    for (; size > 0; size -= AES_BLOCK, data += AES_BLOCK)
-    {
+    for (; size > 0; size -= AES_BLOCK, data += AES_BLOCK) {
         AesDecrypt(aes, aes->ekey, data, obdt);
         for (k = 0; k < AES_BLOCK; ++k) /* undo salting */
             obdt[k] ^= salt[k];

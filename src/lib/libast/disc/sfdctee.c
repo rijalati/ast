@@ -95,8 +95,7 @@ Sfio_t *tee;                   /* stream to tee to	*/
     te->tee = tee;
     te->status = 0;
 
-    if (sfdisc(f, ( Sfdisc_t * )te) != ( Sfdisc_t * )te)
-    {
+    if (sfdisc(f, ( Sfdisc_t * )te) != ( Sfdisc_t * )te) {
         free(te);
         return -1;
     }

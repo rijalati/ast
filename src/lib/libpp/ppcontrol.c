@@ -64,22 +64,18 @@ assert(int op, char *pred, char *args)
     struct pplist *q;
 
     if (!args)
-        switch (op)
-        {
+        switch (op) {
         case DEFINE:
             goto mark;
         case UNDEF:
             a = 0;
             goto unmark;
         }
-    if (a = ( struct pplist * )hashget(pp.prdtab, pred))
-    {
+    if (a = ( struct pplist * )hashget(pp.prdtab, pred)) {
         p = 0;
         q = a;
-        while (q)
-        {
-            if (streq(q->value, args))
-            {
+        while (q) {
+            if (streq(q->value, args)) {
                 if (op == DEFINE)
                     return;
                 q = q->next;
@@ -87,15 +83,12 @@ assert(int op, char *pred, char *args)
                     p->next = q;
                 else
                     a = q;
-            }
-            else
-            {
+            } else {
                 p = q;
                 q = q->next;
             }
         }
-        if (op == UNDEF)
-        {
+        if (op == UNDEF) {
         unmark:
             hashput(pp.prdtab, pred, a);
             if (sym = ppsymref(pp.symtab, pred))
@@ -103,8 +96,7 @@ assert(int op, char *pred, char *args)
             return;
         }
     }
-    if (op == DEFINE)
-    {
+    if (op == DEFINE) {
         p = newof(0, struct pplist, 1, 0);
         p->next = a;
         p->value = strdup(args);
@@ -137,11 +129,9 @@ tokop(int op, char *name, char *s, int n, int flags)
         error(2, "%s: option cannot be unset", name);
     else if (!s)
         ppop(op, s, n);
-    else if (flags & TOKOP_STRING)
-    {
+    else if (flags & TOKOP_STRING) {
         PUSH_LINE(s);
-        for (;;)
-        {
+        for (;;) {
             pp.state &= ~NOSPACE;
             c = pplex();
             pp.state |= NOSPACE;
@@ -152,10 +142,8 @@ tokop(int op, char *name, char *s, int n, int flags)
                 op, (flags & TOKOP_DUP) ? strdup(pp.token) : pp.token, n);
         }
         POP_LINE();
-    }
-    else
-        do
-        {
+    } else
+        do {
             while (*s == ' ')
                 s++;
             for (t = s; *t && *t != ' '; t++)
@@ -178,16 +166,14 @@ macsym(int tok)
 {
     struct ppsymbol *sym;
 
-    if (tok != T_ID)
-    {
+    if (tok != T_ID) {
         error(2, "%s: invalid macro name", pptokstr(pp.token, 0));
         return 0;
     }
     sym = pprefmac(pp.token, REF_CREATE);
     if ((sym->flags & SYM_FINAL) && (pp.mode & HOSTED))
         return 0;
-    if (sym->flags & (SYM_ACTIVE | SYM_READONLY))
-    {
+    if (sym->flags & (SYM_ACTIVE | SYM_READONLY)) {
         if (!(pp.option & ALLPOSSIBLE))
             error(2,
                   "%s: macro is %s",
@@ -219,16 +205,13 @@ getline(char *p, char *x, int disable)
     pp.state &= ~(NEWLINE | NOSPACE | STRIP);
     pp.state |= EOF2NL;
     b = p;
-    while ((c = pplex()) != '\n')
-    {
-        if (disable)
-        {
+    while ((c = pplex()) != '\n') {
+        if (disable) {
             if (c == ' ')
                 /*ignore*/;
             else if (disable == 1)
                 disable = (c == T_ID && streq(pp.token, pp.pass)) ? 2 : 0;
-            else
-            {
+            else {
                 disable = 0;
                 if (c == ':')
                     pp.state |= DISABLE;
@@ -236,8 +219,7 @@ getline(char *p, char *x, int disable)
         }
         s = pp.token;
         while (*p = *s++)
-            if (++p >= x)
-            {
+            if (++p >= x) {
                 p = 0;
                 goto done;
             }
@@ -346,8 +328,7 @@ ppcontrol(void)
     if (pp.mode & HOSTED)
         pp.state &= ~NOVERTICAL;
 #endif
-    switch (c = pplex())
-    {
+    switch (c = pplex()) {
     case T_DECIMAL:
     case T_OCTAL:
         if ((pp.state & STRICT) && !(pp.mode & (HOSTED | RELAX)))
@@ -356,44 +337,37 @@ ppcontrol(void)
         directive = INCLUDE;
         goto linesync;
     case T_ID:
-        switch (directive = ( int )hashref(pp.dirtab, pp.token))
-        {
+        switch (directive = ( int )hashref(pp.dirtab, pp.token)) {
         case ELIF:
         else_if:
             if ((pp.option & ALLPOSSIBLE) && !pp.in->prev->prev)
                 goto eatdirective;
-            if (pp.control <= pp.in->control)
-            {
+            if (pp.control <= pp.in->control) {
                 error(
                 2, "no matching #%s for #%s", dirname(IF), dirname(ELIF));
                 goto eatdirective;
             }
             if (pp.control == (pp.in->control + 1))
                 pp.in->flags |= IN_noguard;
-            if (*pp.control & HADELSE)
-            {
+            if (*pp.control & HADELSE) {
                 error(
                 2, "invalid #%s after #%s", dirname(ELIF), dirname(ELSE));
                 *pp.control |= SKIP;
                 goto eatdirective;
             }
-            if (*pp.control & KEPT)
-            {
+            if (*pp.control & KEPT) {
                 *pp.control |= SKIP;
                 goto eatdirective;
             }
-            if (directive == IFDEF || directive == IFNDEF)
-            {
+            if (directive == IFDEF || directive == IFNDEF) {
                 *pp.control &= ~SKIP;
                 goto else_ifdef;
             }
         conditional:
-            if (ppexpr(&i1))
-            {
+            if (ppexpr(&i1)) {
                 *pp.control &= ~SKIP;
                 *pp.control |= KEPT;
-            }
-            else
+            } else
                 *pp.control |= SKIP;
             c = (pp.state & NEWLINE) ? '\n' : ' ';
             goto eatdirective;
@@ -402,8 +376,7 @@ ppcontrol(void)
                 goto eatdirective;
             if ((pp.option & ELSEIF) && (c = pplex()) == T_ID
                 && ((n = ( int )hashref(pp.dirtab, pp.token)) == IF
-                    || n == IFDEF || n == IFNDEF))
-            {
+                    || n == IFDEF || n == IFNDEF)) {
                 error(1,
                       "#%s %s is non-standard -- use #%s",
                       dirname(directive),
@@ -415,17 +388,13 @@ ppcontrol(void)
             if (pp.control <= pp.in->control)
                 error(
                 2, "no matching #%s for #%s", dirname(IF), dirname(ELSE));
-            else
-            {
+            else {
                 if (pp.control == (pp.in->control + 1))
                     pp.in->flags |= IN_noguard;
-                if (!(*pp.control & KEPT))
-                {
+                if (!(*pp.control & KEPT)) {
                     *pp.control &= ~SKIP;
                     *pp.control |= HADELSE | KEPT;
-                }
-                else
-                {
+                } else {
                     if (*pp.control & HADELSE)
                         error(2,
                               "more than one #%s for #%s",
@@ -441,12 +410,10 @@ ppcontrol(void)
             if (pp.control <= pp.in->control)
                 error(
                 2, "no matching #%s for #%s", dirname(IF), dirname(ENDIF));
-            else if (--pp.control == pp.in->control && pp.in->symbol)
-            {
+            else if (--pp.control == pp.in->control && pp.in->symbol) {
                 if (pp.in->flags & IN_endguard)
                     pp.in->flags |= IN_noguard;
-                else
-                {
+                else {
                     pp.in->flags &= ~IN_tokens;
                     pp.in->flags |= IN_endguard;
                 }
@@ -459,32 +426,26 @@ ppcontrol(void)
                 goto eatdirective;
             pushcontrol();
             SETIFBLOCK(pp.control);
-            if (*pp.control & SKIP)
-            {
+            if (*pp.control & SKIP) {
                 *pp.control |= KEPT;
                 goto eatdirective;
             }
             if (directive == IF)
                 goto conditional;
         else_ifdef:
-            if ((c = pplex()) == T_ID)
-            {
+            if ((c = pplex()) == T_ID) {
                 sym = pprefmac(pp.token, REF_IF);
-                if (directive == IFNDEF && pp.control == pp.in->control + 1)
-                {
+                if (directive == IFNDEF && pp.control == pp.in->control + 1) {
                     if (pp.in->flags & (IN_defguard | IN_endguard))
                         pp.in->flags |= IN_noguard;
-                    else
-                    {
+                    else {
                         pp.in->flags |= IN_defguard;
                         if (!(pp.in->flags & IN_tokens))
                             pp.in->symbol
                             = sym ? sym : pprefmac(pp.token, REF_CREATE);
                     }
                 }
-            }
-            else
-            {
+            } else {
                 sym = 0;
                 if (!(pp.mode & HOSTED))
                     error(1, "%s: invalid macro name", pptokstr(pp.token, 0));
@@ -492,8 +453,7 @@ ppcontrol(void)
             *pp.control |= ((sym != 0) == (directive == IFDEF)) ? KEPT : SKIP;
             goto enddirective;
         case INCLUDE:
-            if (*pp.control & SKIP)
-            {
+            if (*pp.control & SKIP) {
                 pp.state |= HEADER;
                 c = pplex();
                 pp.state &= ~HEADER;
@@ -502,8 +462,7 @@ ppcontrol(void)
             pp.state &= ~DISABLE;
             pp.state |= HEADER | STRIP;
             pp.in->flags |= IN_noguard;
-            switch (c = pplex())
-            {
+            switch (c = pplex()) {
             case T_STRING:
                 p = pp.token;
                 do
@@ -514,8 +473,7 @@ ppcontrol(void)
                 /*FALLTHROUGH*/
             case T_HEADER:
             header:
-                if (!*pp.token)
-                {
+                if (!*pp.token) {
                     error(2, "#%s: null file name", dirname(INCLUDE));
                     break;
                 }
@@ -535,8 +493,7 @@ ppcontrol(void)
                     && !(p = pp.hdrbuf = newof(0, char, MAXTOKEN, 0)))
                     error(3, "out of space");
                 pp.state &= ~NOSPACE;
-                while ((c = pplex()) && c != '>')
-                {
+                while ((c = pplex()) && c != '>') {
                     v = p + 1;
                     STRCOPY(p, pp.token, s);
                     if (p == v && *(p - 1) == ' ' && pp.in->type != IN_MACRO)
@@ -554,8 +511,7 @@ ppcontrol(void)
                 goto eatdirective;
             }
             goto enddirective;
-        case 0:
-        {
+        case 0: {
             regmatch_t match[10];
 
             /*UNDENT*/
@@ -568,8 +524,7 @@ ppcontrol(void)
             p6 = getline(p, &pp.valbuf[MAXTOKEN], 0);
             pp.state &= ~HEADER;
             pp.mode &= ~EXPOSE;
-            if (!p6)
-            {
+            if (!p6) {
                 *p0 = 0;
                 error(2, "%s: directive too long", pp.valbuf);
                 c = 0;
@@ -583,34 +538,28 @@ ppcontrol(void)
             var.best = 0;
             n = 0;
             for (map = ( struct map * )pp.maps; map; map = map->next)
-                if (!(i1 = regexec(&map->re, p, elementsof(match), match, 0)))
-                {
-                    if ((c = match[0].rm_eo - match[0].rm_so) > n)
-                    {
+                if (!(i1
+                      = regexec(&map->re, p, elementsof(match), match, 0))) {
+                    if ((c = match[0].rm_eo - match[0].rm_so) > n) {
                         n = c;
                         var.best = map;
                     }
-                }
-                else if (i1 != REG_NOMATCH)
+                } else if (i1 != REG_NOMATCH)
                     regfatal(&map->re, 4, i1);
             c = '\n';
-            if (map = var.best)
-            {
+            if (map = var.best) {
                 if ((pp.state & (STRICT | WARN))
-                    && !(pp.mode & (HOSTED | RELAX)))
-                {
+                    && !(pp.mode & (HOSTED | RELAX))) {
                     *p0 = 0;
                     if (!(pp.state & WARN) || strcmp(p + 1, dirname(PRAGMA)))
                         error(1, "%s: non-standard directive", p);
                     *p0 = i0;
                 }
-                if (!(*pp.control & SKIP))
-                {
+                if (!(*pp.control & SKIP)) {
                     n = 0;
                     for (edit = map->edit; edit; edit = edit->next)
                         if (!(i0 = regexec(
-                              &edit->re, p, elementsof(match), match, 0)))
-                        {
+                              &edit->re, p, elementsof(match), match, 0))) {
                             n++;
                             if (i0 = regsubexec(
                                 &edit->re, p, elementsof(match), match))
@@ -618,11 +567,9 @@ ppcontrol(void)
                             p = edit->re.re_sub->re_buf;
                             if (edit->re.re_sub->re_flags & REG_SUB_STOP)
                                 break;
-                        }
-                        else if (i0 != REG_NOMATCH)
+                        } else if (i0 != REG_NOMATCH)
                             regfatal(&edit->re, 4, i0);
-                    if (n && *p)
-                    {
+                    if (n && *p) {
                         p1 = s = oldof(0, char, 0, strlen(p) + 32);
                         while (*s = *p++)
                             s++;
@@ -638,26 +585,21 @@ ppcontrol(void)
                 goto donedirective;
             }
             if (directive != PRAGMA
-                && (!(*pp.control & SKIP) || !(pp.mode & (HOSTED | RELAX))))
-            {
+                && (!(*pp.control & SKIP) || !(pp.mode & (HOSTED | RELAX)))) {
                 *p0 = 0;
                 error(1, "%s: unknown directive", pptokstr(pp.valbuf, 0));
                 *p0 = i0;
             }
         pass:
             if (!(*pp.control & SKIP) && pp.pragma && !(pp.state & NOTEXT)
-                && (directive == PRAGMA || !(pp.mode & INIT)))
-            {
+                && (directive == PRAGMA || !(pp.mode & INIT))) {
                 *p0 = 0;
                 if (p2)
                     *p2 = 0;
-                if (p4)
-                {
-                    if (p4 == p5)
-                    {
+                if (p4) {
+                    if (p4 == p5) {
                         p5 = strcpy(pp.tmpbuf, p5);
-                        if (p = strchr(p5, MARK))
-                        {
+                        if (p = strchr(p5, MARK)) {
                             s = p;
                             while (*p)
                                 if ((*s++ = *p++) == MARK && *p == MARK)
@@ -668,12 +610,10 @@ ppcontrol(void)
                     *p4 = 0;
                 }
                 if (p = ( char * )memchr(
-                    pp.valbuf + 1, MARK, p6 - pp.valbuf - 1))
-                {
+                    pp.valbuf + 1, MARK, p6 - pp.valbuf - 1)) {
                     s = p;
                     while (p < p6)
-                        switch (*s++ = *p++)
-                        {
+                        switch (*s++ = *p++) {
                         case 0:
                             s = p;
                             break;
@@ -697,8 +637,7 @@ ppcontrol(void)
         }
         if (*pp.control & SKIP)
             goto eatdirective;
-        switch (directive)
-        {
+        switch (directive) {
 #if MACDEF
         case ENDMAC:
             c = pplex();
@@ -716,12 +655,10 @@ ppcontrol(void)
             n2 = error_info.line;
             if ((c = pplex()) == '#' && directive == DEFINE)
                 goto assertion;
-            if (c == '<')
-            {
+            if (c == '<') {
                 n = 1;
                 c = pplex();
-            }
-            else
+            } else
                 n = 0;
             if (!(sym = macsym(c)))
                 goto eatdirective;
@@ -746,21 +683,17 @@ ppcontrol(void)
             mac->value = 0;
             pp.state &= ~NOSPACE;
             pp.state |= DEFINITION | NOEXPAND;
-            switch (c = pplex())
-            {
+            switch (c = pplex()) {
             case '(':
                 sym->flags |= SYM_FUNCTION;
                 pp.state |= NOSPACE;
 #if MACKEYARGS
-                if (pp.option & KEYARGS)
-                {
+                if (pp.option & KEYARGS) {
                     n = 2 * MAXTOKEN;
                     p = mac->formals = oldof(0, char, 0, n);
                     if ((c = pplex()) == T_ID)
-                        for (;;)
-                        {
-                            if (mac->arity < MAXFORMALS)
-                            {
+                        for (;;) {
+                            if (mac->arity < MAXFORMALS) {
                                 if (mac->arity)
                                     p++;
                                 formargs[mac->arity] = p;
@@ -770,14 +703,12 @@ ppcontrol(void)
                                     *p++ = ' ';
                                 *p++ = ' ';
                                 *p = 0;
-                            }
-                            else
+                            } else
                                 error(2,
                                       "%s: formal argument %s ignored",
                                       sym->name,
                                       pp.token);
-                            switch (c = pplex())
-                            {
+                            switch (c = pplex()) {
                             case '=':
                                 c = pplex();
                                 break;
@@ -788,18 +719,15 @@ ppcontrol(void)
                             }
                             pp.state &= ~NOSPACE;
                             p0 = 0;
-                            for (;;)
-                            {
-                                switch (c)
-                                {
+                            for (;;) {
+                                switch (c) {
                                 case '\n':
                                     goto endformals;
                                 case '(':
                                     p0++;
                                     break;
                                 case ')':
-                                    if (!p0--)
-                                    {
+                                    if (!p0--) {
                                         if (p > formvals[mac->arity - 1]
                                             && *(p - 1) == ' ')
                                             *--p = 0;
@@ -807,8 +735,7 @@ ppcontrol(void)
                                     }
                                     break;
                                 case ',':
-                                    if (!p0)
-                                    {
+                                    if (!p0) {
                                         if (p > formvals[mac->arity - 1]
                                             && *(p - 1) == ' ')
                                             *--p = 0;
@@ -825,11 +752,9 @@ ppcontrol(void)
                                 if (p > &mac->formals[n - MAXTOKEN]
                                     && (s = newof(
                                         mac->formals, char, n += MAXTOKEN, 0))
-                                       != mac->formals)
-                                {
+                                       != mac->formals) {
                                     n1 = s - mac->formals;
-                                    for (n = 0; n < mac->arity; n++)
-                                    {
+                                    for (n = 0; n < mac->arity; n++) {
                                         formargs[n] += n1;
                                         formvals[n] += n1;
                                     }
@@ -841,23 +766,20 @@ ppcontrol(void)
                             }
                         nextformal:
                             pp.state |= NOSPACE;
-                            if ((c = pplex()) != T_ID)
-                            {
+                            if ((c = pplex()) != T_ID) {
                                 c = ',';
                                 break;
                             }
                         }
                 endformals: /*NOP*/;
-                }
-                else
+                } else
 #endif
                 {
                     p = mac->formals
                     = oldof(0, char, 0, MAXFORMALS *(MAXID + 1));
                     c = pplex();
 #if COMPATIBLE
-                    if ((pp.state & COMPATIBILITY) && c == ',')
-                    {
+                    if ((pp.state & COMPATIBILITY) && c == ',') {
                         if ((pp.state & WARN) && !(pp.mode & HOSTED))
                             error(1,
                                   "%s: macro formal argument expected",
@@ -866,10 +788,8 @@ ppcontrol(void)
                             ;
                     }
 #endif
-                    for (;;)
-                    {
-                        if (c == T_VARIADIC)
-                        {
+                    for (;;) {
+                        if (c == T_VARIADIC) {
                             if (sym->flags & SYM_VARIADIC)
                                 error(
                                 2,
@@ -878,9 +798,7 @@ ppcontrol(void)
                                 pp.token);
                             sym->flags |= SYM_VARIADIC;
                             v = __va_args__;
-                        }
-                        else if (c == T_ID)
-                        {
+                        } else if (c == T_ID) {
                             v = pp.token;
                             if (sym->flags & SYM_VARIADIC)
                                 error(2,
@@ -893,11 +811,9 @@ ppcontrol(void)
                                       "%s: %s: invalid macro formal argument",
                                       sym->name,
                                       v);
-                        }
-                        else
+                        } else
                             break;
-                        if (mac->arity < MAXFORMALS)
-                        {
+                        if (mac->arity < MAXFORMALS) {
                             for (n = 0; n < mac->arity; n++)
                                 if (streq(formargs[n], v))
                                     error(
@@ -907,18 +823,15 @@ ppcontrol(void)
                                     v);
                             formargs[mac->arity++] = p;
                             STRAPP(p, v, s);
-                        }
-                        else
+                        } else
                             error(2,
                                   "%s: %s: macro formal argument ignored",
                                   sym->name,
                                   v);
-                        if ((c = pplex()) == ',')
-                        {
+                        if ((c = pplex()) == ',') {
                             c = pplex();
 #if COMPATIBLE
-                            if ((pp.state & COMPATIBILITY) && c == ',')
-                            {
+                            if ((pp.state & COMPATIBILITY) && c == ',') {
                                 if ((pp.state & WARN) && !(pp.mode & HOSTED))
                                     error(
                                     1,
@@ -928,11 +841,9 @@ ppcontrol(void)
                                     ;
                             }
 #endif
-                        }
-                        else if (c != T_VARIADIC)
+                        } else if (c != T_VARIADIC)
                             break;
-                        else
-                        {
+                        else {
                             if (sym->flags & SYM_VARIADIC)
                                 error(
                                 2,
@@ -947,21 +858,18 @@ ppcontrol(void)
                     if (mac->arity
                         && (s
                             = newof(mac->formals, char, p - mac->formals, 0))
-                           != mac->formals)
-                    {
+                           != mac->formals) {
                         n1 = s - mac->formals;
                         for (n = 0; n < mac->arity; n++)
                             formargs[n] += n1;
                         mac->formals = s;
                     }
                 }
-                if (!mac->arity)
-                {
+                if (!mac->arity) {
                     free(mac->formals);
                     mac->formals = 0;
                 }
-                switch (c)
-                {
+                switch (c) {
                 case ')':
 #if MACKEYARGS
                     pp.state |= NOEXPAND | NOSPACE;
@@ -973,8 +881,7 @@ ppcontrol(void)
                 default:
                     error(
                     2, "%s: invalid macro formal argument list", sym->name);
-                    if (mac->formals)
-                    {
+                    if (mac->formals) {
                         free(mac->formals);
                         mac->formals = 0;
                         mac->arity = 0;
@@ -1003,8 +910,7 @@ ppcontrol(void)
 #endif
             if ((pp.option & PLUSPLUS)
                 && (pp.state & (COMPATIBILITY | TRANSITION)) != COMPATIBILITY)
-                switch (c)
-                {
+                switch (c) {
                 case '+':
                 case '-':
                 case '&':
@@ -1017,14 +923,11 @@ ppcontrol(void)
                     break;
                 }
             o = 0;
-            for (;;)
-            {
-                switch (c)
-                {
+            for (;;) {
+                switch (c) {
                 case T_ID:
                     for (c = 0; c < mac->arity; c++)
-                        if (streq(formargs[c], pp.token))
-                        {
+                        if (streq(formargs[c], pp.token)) {
 #if COMPATIBLE
                             if (!(pp.state & COMPATIBILITY))
 #endif
@@ -1045,8 +948,7 @@ ppcontrol(void)
                             if ((pp.state & WARN)
                                 && !(pp.mode & (HOSTED | RELAX))
                                 && var.type != TOK_TOKCAT
-                                && !(var.type & TOK_ID))
-                            {
+                                && !(var.type & TOK_ID)) {
                                 s = pp.in->nextchr;
                                 while ((c = *s++) && (c == ' ' || c == '\t'))
                                     ;
@@ -1057,8 +959,7 @@ ppcontrol(void)
                                 else if (c == '=' || ppisidig(c) || c == *s
                                          || *s == '=')
                                     c = 0;
-                                if (o != '.' && o != T_PTRMEM)
-                                {
+                                if (o != '.' && o != T_PTRMEM) {
                                     if ((var.type & TOK_ID) || o == ' '
                                         || ppisseparate(o))
                                         o = 0;
@@ -1087,8 +988,7 @@ ppcontrol(void)
                             goto checkvalue;
                         }
                     if (var.type == TOK_BUILTIN)
-                        switch (( int )hashget(pp.strtab, pp.token))
-                        {
+                        switch (( int )hashget(pp.strtab, pp.token)) {
                         case V_DEFAULT:
                         case V_EMPTY:
                             sym->flags |= SYM_EMPTY;
@@ -1096,8 +996,7 @@ ppcontrol(void)
                         }
                     else if (pp.hiding
                              && (var.symbol = ppsymref(pp.symtab, pp.token))
-                             && var.symbol->hidden)
-                    {
+                             && var.symbol->hidden) {
                         for (var.inp = pp.in;
                              var.inp->type != IN_FILE && var.inp->prev;
                              var.inp = var.inp->prev)
@@ -1120,12 +1019,10 @@ ppcontrol(void)
 #endif
                     pp.state |= NOSPACE;
                     c = pplex();
-                    if (c == '@')
-                    {
+                    if (c == '@') {
                         c = pplex();
                         i4 = 'S';
-                    }
-                    else
+                    } else
                         i4 = 'Q';
                     pp.state &= ~NOSPACE;
                     if (c != T_ID)
@@ -1134,16 +1031,12 @@ ppcontrol(void)
                         for (c = 0; c < mac->arity; c++)
                             if (streq(formargs[c], pp.token))
                                 break;
-                    if (c >= mac->arity)
-                    {
+                    if (c >= mac->arity) {
 #if MACDEF
-                        if (sym->flags & SYM_MULTILINE)
-                        {
-                            if (n3 & NEWLINE)
-                            {
+                        if (sym->flags & SYM_MULTILINE) {
+                            if (n3 & NEWLINE) {
                                 pp.state &= ~NOEXPAND;
-                                switch (( int )hashref(pp.dirtab, pp.token))
-                                {
+                                switch (( int )hashref(pp.dirtab, pp.token)) {
                                 case ENDMAC:
                                     if (!i2--)
                                         goto gotdefinition;
@@ -1157,8 +1050,7 @@ ppcontrol(void)
                                 }
                                 *p++ = '#';
                             }
-                        }
-                        else
+                        } else
 #endif
 #if COMPATIBLE
                         if (pp.state & COMPATIBILITY)
@@ -1166,9 +1058,7 @@ ppcontrol(void)
                         else
 #endif
                             error(2, "# must precede a formal parameter");
-                    }
-                    else
-                    {
+                    } else {
                         if (p > mac->value && ppisidig(*(p - 1))
                             && !(pp.option & PRESERVE))
                             *p++ = ' ';
@@ -1181,8 +1071,7 @@ ppcontrol(void)
                 case T_TOKCAT:
                     if (p <= mac->value)
                         error(2, "%s lhs operand omitted", pp.token);
-                    else
-                    {
+                    else {
                         if (*(p - 1) == ' ')
                             p--;
                         if (var.type == (TOK_FORMAL | TOK_ID))
@@ -1197,13 +1086,10 @@ ppcontrol(void)
                     var.type = TOK_TOKCAT;
                     continue;
                 case '(':
-                    if (*pp.token == '#')
-                    {
+                    if (*pp.token == '#') {
                         var.type = TOK_BUILTIN;
                         n1++;
-                    }
-                    else
-                    {
+                    } else {
                         var.type = 0;
                         if (n1)
                             n1++;
@@ -1224,33 +1110,28 @@ ppcontrol(void)
                     /*UNDENT*/
 
                     if ((sym->flags & SYM_FUNCTION)
-                        && (pp.state & (COMPATIBILITY | TRANSITION)))
-                    {
+                        && (pp.state & (COMPATIBILITY | TRANSITION))) {
                         char *v;
 
                         s = pp.token;
-                        for (;;)
-                        {
+                        for (;;) {
                             if (!*s)
                                 goto checkvalue;
-                            if (ppisid(*s))
-                            {
+                            if (ppisid(*s)) {
                                 v = s;
                                 while (ppisid(*++s))
                                     ;
                                 i1 = *s;
                                 *s = 0;
                                 for (c = 0; c < mac->arity; c++)
-                                    if (streq(formargs[c], v))
-                                    {
+                                    if (streq(formargs[c], v)) {
                                         *p++ = MARK;
                                         *p++ = 'C';
                                         *p++ = c + ARGOFFSET;
                                         if (!(pp.mode & HOSTED)
                                             && (!(pp.state & COMPATIBILITY)
                                                 || (pp.state & WARN)))
-                                            switch (*pp.token)
-                                            {
+                                            switch (*pp.token) {
                                             case '"':
                                                 error(1,
                                                       "use the # operator to "
@@ -1270,8 +1151,7 @@ ppcontrol(void)
                                 STRCOPY2(p, v);
                             quotearg:
                                 *s = i1;
-                            }
-                            else
+                            } else
                                 *p++ = *s++;
                         }
                     }
@@ -1280,10 +1160,8 @@ ppcontrol(void)
                     break;
                 case '\n':
 #if MACDEF
-                    if (sym->flags & SYM_MULTILINE)
-                    {
-                        if (pp.state & EOF2NL)
-                        {
+                    if (sym->flags & SYM_MULTILINE) {
+                        if (pp.state & EOF2NL) {
                             error_info.line++;
                             pp.state |= HIDDEN;
                             pp.hidden++;
@@ -1311,12 +1189,10 @@ ppcontrol(void)
                         *p++ = ' ';
                     goto checkvalue;
                 case '\t':
-                    if (var.type & TOK_ID)
-                    {
+                    if (var.type & TOK_ID) {
                         while ((c = pplex()) == '\t')
                             ;
-                        if (c == T_ID)
-                        {
+                        if (c == T_ID) {
                             if (var.type == (TOK_FORMAL | TOK_ID))
                                 *(p - 2) = 'C';
                             var.type = TOK_TOKCAT;
@@ -1324,8 +1200,7 @@ ppcontrol(void)
                                 error(1,
                                       "use the ## operator to concatenate "
                                       "macro arguments");
-                        }
-                        else
+                        } else
                             var.type = 0;
                         continue;
                     }
@@ -1349,8 +1224,7 @@ ppcontrol(void)
                 o = c;
                 if (p > &mac->value[n - MAXTOKEN]
                     && (s = newof(mac->value, char, n += MAXTOKEN, 0))
-                       != mac->value)
-                {
+                       != mac->value) {
                     c = p - mac->value;
                     mac->value = s;
                     p = mac->value + c;
@@ -1365,8 +1239,7 @@ ppcontrol(void)
                 p--;
             if (p > mac->value && (pp.option & PLUSPLUS)
                 && (pp.state & (COMPATIBILITY | TRANSITION)) != COMPATIBILITY)
-                switch (o)
-                {
+                switch (o) {
                 case '+':
                 case '-':
                 case '&':
@@ -1382,59 +1255,48 @@ ppcontrol(void)
 #if MACKEYARGS
             if (!mac->arity) /* ok */
                 ;
-            else if (pp.option & KEYARGS)
-            {
+            else if (pp.option & KEYARGS) {
                 p0 = mac->formals;
                 mac->formkeys = newof(0, struct ppkeyarg, n, p1 - p0 + 1);
                 s = ( char * )&mac->formkeys[mac->arity];
                 ( void )memcpy(s, p0, p1 - p0 + 1);
                 free(p0);
-                for (n = 0; n < mac->arity; n++)
-                {
+                for (n = 0; n < mac->arity; n++) {
                     mac->formkeys[n].name = s + (formargs[n] - p0);
                     mac->formkeys[n].value = s + (formvals[n] - p0);
                 }
-            }
-            else
+            } else
 #endif
                 for (n = 1; n < mac->arity; n++)
                     *(formargs[n] - 1) = ',';
-            if (old.value)
-            {
+            if (old.value) {
                 if ((i0 & SYM_FUNCTION) != (sym->flags & SYM_FUNCTION)
                     || old.arity != mac->arity
                     || !streq(old.value, mac->value))
                     goto redefined;
-                if (!old.formals)
-                {
+                if (!old.formals) {
                     if (mac->formals)
                         goto redefined;
-                }
-                else if (mac->formals)
-                {
+                } else if (mac->formals) {
 #if MACKEYARGS
-                    if (pp.option & KEYARGS)
-                    {
+                    if (pp.option & KEYARGS) {
                         for (n = 0; n < mac->arity; n++)
                             if (!streq(mac->formkeys[n].name,
                                        old.formkeys[n].name)
                                 || !streq(mac->formkeys[n].value,
                                           old.formkeys[n].value))
                                 goto redefined;
-                    }
-                    else
+                    } else
 #endif
                     if (!streq(mac->formals, old.formals))
                         goto redefined;
                 }
 #if MACKEYARGS
-                if (pp.option & KEYARGS)
-                {
+                if (pp.option & KEYARGS) {
                     if (mac->formkeys)
                         free(mac->formkeys);
                     mac->formkeys = old.formkeys;
-                }
-                else
+                } else
 #endif
                 {
                     if (mac->formals)
@@ -1457,8 +1319,7 @@ ppcontrol(void)
                     if (old.formals)
                         free(old.formals);
                 free(old.value);
-            }
-            else if (!pp.truncate)
+            } else if (!pp.truncate)
                 ppfsm(FSM_MACRO, sym->name);
             mac->value
             = newof(mac->value, char, (mac->size = p - mac->value) + 1, 0);
@@ -1466,42 +1327,33 @@ ppcontrol(void)
                 && !sym->hidden && !(sym->flags & SYM_MULTILINE)
                 && ((pp.option & PREDEFINITIONS) || !(pp.mode & INIT))
                 && ((pp.option & (DEFINITIONS | PREDEFINITIONS))
-                    || !(pp.state & NOTEXT)))
-            {
+                    || !(pp.state & NOTEXT))) {
                 ppsync();
                 ppprintf("#%s %s", dirname(DEFINE), sym->name);
-                if (sym->flags & SYM_FUNCTION)
-                {
+                if (sym->flags & SYM_FUNCTION) {
                     ppputchar('(');
                     if (mac->formals)
                         ppprintf("%s", mac->formals);
                     ppputchar(')');
                 }
-                if ((p = mac->value) && *p)
-                {
+                if ((p = mac->value) && *p) {
                     ppputchar(' ');
                     i0 = 0;
-                    while (n = *p++)
-                    {
-                        if (n != MARK || (n = *p++) == MARK)
-                        {
+                    while (n = *p++) {
+                        if (n != MARK || (n = *p++) == MARK) {
                             ppputchar(n);
                             i0 = ppisid(n);
-                        }
-                        else
-                        {
+                        } else {
                             if (n == 'Q')
                                 ppputchar('#');
-                            else if (i0)
-                            {
+                            else if (i0) {
                                 ppputchar('#');
                                 ppputchar('#');
                             }
                             s = formargs[*p++ - ARGOFFSET];
                             while ((n = *s++) && n != ',')
                                 ppputchar(n);
-                            if (ppisid(*p) || *p == MARK)
-                            {
+                            if (ppisid(*p) || *p == MARK) {
                                 ppputchar('#');
                                 ppputchar('#');
                             }
@@ -1544,13 +1396,11 @@ ppcontrol(void)
                       "#%s #%s: assertions are non-standard",
                       dirname(directive),
                       pptokstr(pp.token, 0));
-            if (c != T_ID)
-            {
+            if (c != T_ID) {
                 error(2, "%s: invalid predicate name", pptokstr(pp.token, 0));
                 goto eatdirective;
             }
-            switch (( int )hashref(pp.strtab, pp.token))
-            {
+            switch (( int )hashref(pp.strtab, pp.token)) {
             case X_DEFINED:
             case X_EXISTS:
             case X_EXISTS_NEXT:
@@ -1562,8 +1412,7 @@ ppcontrol(void)
                 goto eatdirective;
             }
             strcpy(pp.tmpbuf, pp.token);
-            switch (pppredargs())
-            {
+            switch (pppredargs()) {
             case T_ID:
             case T_STRING:
                 assert(directive, pp.tmpbuf, pp.args);
@@ -1582,23 +1431,18 @@ ppcontrol(void)
             tp = mac->tuple;
             if (!tp && !mac->value)
                 ppfsm(FSM_MACRO, sym->name);
-            while ((c = pplex()) && c != '>' && c != '\n')
-            {
+            while ((c = pplex()) && c != '>' && c != '\n') {
                 for (; tp; tp = tp->nomatch)
                     if (streq(tp->token, pp.token))
                         break;
-                if (!tp)
-                {
+                if (!tp) {
                     if (!(tp = newof(0, struct pptuple, 1, strlen(pp.token))))
                         error(3, "out of space");
                     strcpy(tp->token, pp.token);
-                    if (rp)
-                    {
+                    if (rp) {
                         tp->nomatch = rp;
                         rp->nomatch = tp;
-                    }
-                    else
-                    {
+                    } else {
                         tp->nomatch = mac->tuple;
                         mac->tuple = tp;
                     }
@@ -1610,17 +1454,14 @@ ppcontrol(void)
             if (!rp || c != '>')
                 error(
                 2, "%s: > omitted in tuple macro definition", sym->name);
-            else
-            {
+            else {
                 n = 2 * MAXTOKEN;
                 p = v = oldof(0, char, 0, n);
                 while ((c = pplex()) && c != '\n')
-                    if (p > v || c != ' ')
-                    {
+                    if (p > v || c != ' ') {
                         STRCOPY(p, pp.token, s);
                         if (p > &v[n - MAXTOKEN]
-                            && (s = newof(v, char, n += MAXTOKEN, 0)) != v)
-                        {
+                            && (s = newof(v, char, n += MAXTOKEN, 0)) != v) {
                             c = p - v;
                             v = s;
                             p = v + c;
@@ -1643,8 +1484,7 @@ ppcontrol(void)
             pp.state &= ~DISABLE;
             p = pp.tmpbuf;
             while ((c = pplex()) != '\n')
-                if (p + strlen(pp.token) < &pp.tmpbuf[MAXTOKEN])
-                {
+                if (p + strlen(pp.token) < &pp.tmpbuf[MAXTOKEN]) {
                     STRCOPY(p, pp.token, s);
                     pp.state &= ~NOSPACE;
                 }
@@ -1661,8 +1501,7 @@ ppcontrol(void)
                 error(1, "#%s: non-standard directive", pp.token);
             if (!(sym = macsym(c = pplex())))
                 goto eatdirective;
-            if ((c = pplex()) != '=')
-            {
+            if ((c = pplex()) != '=') {
                 error(2, "%s: = expected", sym->name);
                 goto eatdirective;
             }
@@ -1670,8 +1509,7 @@ ppcontrol(void)
                             | SYM_PREDEFINED | SYM_VARIADIC);
             mac = sym->macro;
             mac->arity = 0;
-            if (mac->value)
-            {
+            if (mac->value) {
                 if (!(sym->flags & SYM_REDEFINE) && !sym->hidden)
                     error(1, "%s: redefined", sym->name);
 #if MACKEYARGS
@@ -1682,9 +1520,7 @@ ppcontrol(void)
                     free(mac->formals);
                 mac->formals = 0;
                 n = strlen(mac->value) + 1;
-            }
-            else
-            {
+            } else {
                 ppfsm(FSM_MACRO, sym->name);
                 n = 0;
             }
@@ -1693,8 +1529,7 @@ ppcontrol(void)
                 c = sfsprintf(pp.tmpbuf, MAXTOKEN, "%luU", n1);
             else
                 c = sfsprintf(pp.tmpbuf, MAXTOKEN, "%ld", n1);
-            if (n < ++c)
-            {
+            if (n < ++c) {
                 if (mac->value)
                     free(mac->value);
                 mac->value = oldof(0, char, 0, c);
@@ -1705,13 +1540,11 @@ ppcontrol(void)
             goto benign;
         case LINE:
             pp.state &= ~DISABLE;
-            if ((c = pplex()) == '#')
-            {
+            if ((c = pplex()) == '#') {
                 c = pplex();
                 directive = INCLUDE;
             }
-            if (c != T_DECIMAL && c != T_OCTAL)
-            {
+            if (c != T_DECIMAL && c != T_OCTAL) {
                 error(1, "#%s: line number expected", dirname(LINE));
                 goto eatdirective;
             }
@@ -1723,8 +1556,7 @@ ppcontrol(void)
                 error(1, "#%s: line number should be > 0", dirname(LINE));
             pp.state &= ~DISABLE;
             pp.state |= STRIP;
-            switch (c = pplex())
-            {
+            switch (c = pplex()) {
             case T_STRING:
                 s = error_info.file;
                 if (*(p = pp.token))
@@ -1733,8 +1565,7 @@ ppcontrol(void)
                 error_info.file = fp->name;
                 if (error_info.line == 1)
                     ppmultiple(fp, INC_IGNORE);
-                switch (c = pplex())
-                {
+                switch (c = pplex()) {
                 case '\n':
                     break;
                 case T_DECIMAL:
@@ -1754,12 +1585,9 @@ ppcontrol(void)
                 }
                 if (directive == LINE)
                     pp.in->flags &= ~IN_ignoreline;
-                else if (pp.incref)
-                {
-                    if (error_info.file != s)
-                    {
-                        switch (*pp.token)
-                        {
+                else if (pp.incref) {
+                    if (error_info.file != s) {
+                        switch (*pp.token) {
                         case PP_sync_push:
                             if (pp.insert)
                                 (*pp.incref)(
@@ -1780,23 +1608,20 @@ ppcontrol(void)
                             if (pp.insert)
                                 (*pp.incref)(
                                 s, error_info.file, n, PP_SYNC_INSERT);
-                            else
-                            {
+                            else {
                                 (*pp.incref)(
                                 s, error_info.file, n, PP_SYNC_IGNORE);
                                 error_info.file = s;
                             }
                             break;
                         default:
-                            if (*s)
-                            {
+                            if (*s) {
                                 if (fp == pp.insert)
                                     pp.insert = 0;
                                 else if (error_info.line == 1 && !pp.insert)
                                     (*pp.incref)(
                                     s, error_info.file, n, PP_SYNC_PUSH);
-                                else
-                                {
+                                else {
                                     if (!pp.insert)
                                         pp.insert = ppgetfile(s);
                                     (*pp.incref)(
@@ -1816,12 +1641,10 @@ ppcontrol(void)
             }
             if (directive == LINE && (pp.in->flags & IN_ignoreline))
                 error_info.line = n + 1;
-            else
-            {
+            else {
                 pp.hidden = 0;
                 pp.state &= ~HIDDEN;
-                if (pp.linesync)
-                {
+                if (pp.linesync) {
 #if CATSTRINGS
                     if (pp.state & JOINING)
                         pp.state |= HIDDEN | SYNCLINE;
@@ -1830,8 +1653,7 @@ ppcontrol(void)
                     {
                         s = pp.lineid;
                         n = pp.flags;
-                        if (directive == LINE)
-                        {
+                        if (directive == LINE) {
                             pp.flags &= ~PP_linetype;
                             if (pp.macref)
                                 pp.lineid = dirname(LINE);
@@ -1878,8 +1700,7 @@ ppcontrol(void)
             if (pp.option & PRAGMAEXPAND)
                 pp.state &= ~DISABLE;
             if (!(p6 = getline(
-                  p, &pp.valbuf[MAXTOKEN], !!(pp.option & PRAGMAEXPAND))))
-            {
+                  p, &pp.valbuf[MAXTOKEN], !!(pp.option & PRAGMAEXPAND)))) {
                 *p0 = 0;
                 error(2, "%s: directive too long", pp.valbuf);
                 c = 0;
@@ -1888,36 +1709,29 @@ ppcontrol(void)
             p1 = ++p;
             while (ppisid(*p))
                 p++;
-            if (p == p1)
-            {
+            if (p == p1) {
                 p5 = p;
                 p4 = 0;
                 p3 = 0;
                 p2 = 0;
                 p1 = 0;
-            }
-            else if (*p != ':')
-            {
+            } else if (*p != ':') {
                 p5 = *p ? p + (*p == ' ') : 0;
                 p4 = p;
                 p3 = p1;
                 p2 = 0;
                 p1 = 0;
-            }
-            else
-            {
+            } else {
                 p2 = p++;
                 p3 = p;
                 while (ppisid(*p))
                     p++;
-                if (p == p3)
-                {
+                if (p == p3) {
                     p4 = p1;
                     p3 = 0;
                     p2 = 0;
                     p1 = 0;
-                }
-                else
+                } else
                     p4 = p;
                 p5 = *p4 ? p4 + (*p4 == ' ') : 0;
             }
@@ -1929,15 +1743,13 @@ ppcontrol(void)
             i0 = !p3 || *p3 != 'n' || *(p3 + 1) != 'o';
             if (!p3)
                 goto checkmap;
-            if (p1)
-            {
+            if (p1) {
                 *p2 = 0;
                 n = streq(p1, pp.pass);
                 *p2 = ':';
                 if (!n)
                     goto checkmap;
-            }
-            else
+            } else
                 n = 0;
             i2 = *p4;
             *p4 = 0;
@@ -1947,12 +1759,10 @@ ppcontrol(void)
                     || (i1 = ( int )hashref(pp.strtab, p3)) > X_last_option))
                 i1 = 0;
             if ((pp.state & (COMPATIBILITY | STRICT)) == STRICT
-                && !(pp.mode & (HOSTED | RELAX)))
-            {
+                && !(pp.mode & (HOSTED | RELAX))) {
                 if (pp.optflags[i1] & OPT_GLOBAL)
                     goto donedirective;
-                if (n || (pp.mode & WARN))
-                {
+                if (n || (pp.mode & WARN)) {
                     n = 0;
                     error(1,
                           "#%s: non-standard directive ignored",
@@ -1960,23 +1770,19 @@ ppcontrol(void)
                 }
                 i1 = 0;
             }
-            if (!n)
-            {
-                if (!(pp.optflags[i1] & OPT_GLOBAL))
-                {
+            if (!n) {
+                if (!(pp.optflags[i1] & OPT_GLOBAL)) {
                     *p4 = i2;
                     goto checkmap;
                 }
                 if (!(pp.optflags[i1] & OPT_PASS))
                     n = 1;
-            }
-            else if (!i1)
+            } else if (!i1)
                 error(2, "%s: unknown option", p1);
             else if ((pp.state & STRICT) && !(pp.mode & (HOSTED | RELAX)))
                 error(1, "%s: non-standard option", p1);
             p = p5;
-            switch (i1)
-            {
+            switch (i1) {
             case X_ALLMULTIPLE:
                 ppop(PP_MULTIPLE, i0);
                 break;
@@ -2032,32 +1838,25 @@ ppcontrol(void)
             case X_NOTE:
                 PUSH_LINE(p);
                 /* UNDENT...*/
-                while (c = pplex())
-                {
+                while (c = pplex()) {
                     if (c != T_ID)
                         error(1, "%s: %s: identifier expected", p3, pp.token);
-                    else if (sym = ppsymset(pp.symtab, pp.token))
-                    {
-                        if (i1 == X_NOTE)
-                        {
+                    else if (sym = ppsymset(pp.symtab, pp.token)) {
+                        if (i1 == X_NOTE) {
                             sym->flags &= ~SYM_NOTICED;
                             ppfsm(FSM_MACRO, sym->name);
-                        }
-                        else if (i0)
-                        {
+                        } else if (i0) {
                             if (!sym->hidden
                                 && !(sym->hidden
                                      = newof(0, struct pphide, 1, 0)))
                                 error(3, "out of space");
                             if (!sym->macro)
                                 ppfsm(FSM_MACRO, sym->name);
-                            if (!sym->hidden->level++)
-                            {
+                            if (!sym->hidden->level++) {
                                 pp.hiding++;
                                 if (sym->macro
                                     && !(sym->flags
-                                         & (SYM_ACTIVE | SYM_READONLY)))
-                                {
+                                         & (SYM_ACTIVE | SYM_READONLY))) {
                                     sym->hidden->macro = sym->macro;
                                     sym->macro = 0;
                                     sym->hidden->flags = sym->flags;
@@ -2067,12 +1866,10 @@ ppcontrol(void)
                                          | SYM_REDEFINE | SYM_VARIADIC);
                                 }
                             }
-                        }
-                        else if (sym->hidden)
-                        {
+                        } else if (sym->hidden) {
                             if ((mac = sym->macro)
-                                && !(sym->flags & (SYM_ACTIVE | SYM_READONLY)))
-                            {
+                                && !(sym->flags
+                                     & (SYM_ACTIVE | SYM_READONLY))) {
                                 if (mac->formals)
                                     free(mac->formals);
                                 free(mac->value);
@@ -2083,11 +1880,9 @@ ppcontrol(void)
                                      | SYM_MULTILINE | SYM_PREDEFINED
                                      | SYM_REDEFINE | SYM_VARIADIC);
                             }
-                            if (!--sym->hidden->level)
-                            {
+                            if (!--sym->hidden->level) {
                                 pp.hiding--;
-                                if (sym->hidden->macro)
-                                {
+                                if (sym->hidden->macro) {
                                     sym->macro = sym->hidden->macro;
                                     sym->flags = sym->hidden->flags;
                                 }
@@ -2143,20 +1938,14 @@ ppcontrol(void)
                 ppop(PP_LINETYPE, i0 ? (p ? strtol(p, NiL, 0) : 1) : 0);
                 break;
             case X_MACREF:
-                if (!p)
-                {
-                    if (i0 && !pp.macref)
-                    {
+                if (!p) {
+                    if (i0 && !pp.macref) {
                         ppop(PP_LINETYPE, 1);
                         ppop(PP_MACREF, ppmacref);
-                    }
-                    else
+                    } else
                         error(2, "%s: option cannot be unset", p3);
-                }
-                else if (s = strchr(p, ' '))
-                {
-                    if (pp.macref && (s = strchr(p, ' ')))
-                    {
+                } else if (s = strchr(p, ' ')) {
+                    if (pp.macref && (s = strchr(p, ' '))) {
                         *s++ = 0;
                         c = strtol(s, NiL, 0);
                         var.type = pp.truncate;
@@ -2179,33 +1968,27 @@ ppcontrol(void)
                  * ... ]
                  */
 
-                if (!i0)
-                {
+                if (!i0) {
                     error(2, "%s: option cannot be unset", p3);
                     goto donedirective;
                 }
-                if (!p5)
-                {
+                if (!p5) {
                     error(2, "%s: address argument expected", p3);
                     goto donedirective;
                 }
                 PUSH_LINE(p5);
-                while ((c = pplex()) == T_ID)
-                {
+                while ((c = pplex()) == T_ID) {
                     sfsprintf(pp.tmpbuf, MAXTOKEN, "__%s__", s = pp.token);
-                    if (c = ( int )hashget(pp.dirtab, s))
-                    {
+                    if (c = ( int )hashget(pp.dirtab, s)) {
                         hashput(pp.dirtab, 0, 0);
                         hashput(pp.dirtab, pp.tmpbuf, c);
                     }
-                    if (c = ( int )hashget(pp.strtab, s))
-                    {
+                    if (c = ( int )hashget(pp.strtab, s)) {
                         hashput(pp.strtab, 0, 0);
                         hashput(pp.strtab, pp.tmpbuf, c);
                     }
                 }
-                if (c != T_STRING || !*(s = pp.token))
-                {
+                if (c != T_STRING || !*(s = pp.token)) {
                     if (c)
                         error(2,
                               "%s: %s: address argument expected",
@@ -2224,8 +2007,7 @@ ppcontrol(void)
                                  REG_AUGMENTED | REG_DELIMITED | REG_LENIENT
                                  | REG_NULL))
                     regfatal(&map->re, 4, i0);
-                if (*(s += map->re.re_npat))
-                {
+                if (*(s += map->re.re_npat)) {
                     error(
                     2, "%s: invalid characters after pattern: %s ", p3, s);
                     goto eatmap;
@@ -2236,10 +2018,8 @@ ppcontrol(void)
                  */
 
                 edit = 0;
-                while ((c = pplex()) == T_STRING)
-                {
-                    if (!*(s = pp.token))
-                    {
+                while ((c = pplex()) == T_STRING) {
+                    if (!*(s = pp.token)) {
                         error(2, "%s: substitution argument expected", p3);
                         goto eatmap;
                     }
@@ -2256,8 +2036,7 @@ ppcontrol(void)
                         s += edit->re.re_npat;
                     if (i0)
                         regfatal(&edit->re, 4, i0);
-                    if (*s)
-                    {
+                    if (*s) {
                         error(
                         2,
                         "%s: invalid characters after substitution: %s ",
@@ -2266,8 +2045,7 @@ ppcontrol(void)
                         goto eatmap;
                     }
                 }
-                if (c)
-                {
+                if (c) {
                     error(2,
                           "%s: %s: substitution argument expected",
                           p3,
@@ -2327,8 +2105,7 @@ ppcontrol(void)
                 break;
             case X_PRESERVE:
                 setoption(PRESERVE, i0);
-                if (pp.option & PRESERVE)
-                {
+                if (pp.option & PRESERVE) {
                     setmode(CATLITERAL, 0);
                     ppop(PP_COMPATIBILITY, 1);
                     ppop(PP_TRANSITION, 0);
@@ -2398,14 +2175,11 @@ ppcontrol(void)
                     setmode(CATLITERAL, 0);
                 break;
             case X_SYSTEM_HEADER:
-                if (i0)
-                {
+                if (i0) {
                     pp.mode |= HOSTED;
                     pp.flags |= PP_hosted;
                     pp.in->flags |= IN_hosted;
-                }
-                else
-                {
+                } else {
                     pp.mode &= ~HOSTED;
                     pp.flags &= ~PP_hosted;
                     pp.in->flags &= ~PP_hosted;
@@ -2433,8 +2207,7 @@ ppcontrol(void)
                 break;
             case X_VERSION:
                 if (!(*pp.control & SKIP) && pp.pragma
-                    && !(pp.state & NOTEXT))
-                {
+                    && !(pp.state & NOTEXT)) {
                     sfsprintf(pp.tmpbuf, MAXTOKEN, "\"%s\"", pp.version);
                     (*pp.pragma)(dirname(PRAGMA), pp.pass, p3, pp.tmpbuf, !n);
                     if (pp.linesync && !n)
@@ -2469,15 +2242,13 @@ ppcontrol(void)
         case RENAME:
             if ((pp.state & STRICT) && !(pp.mode & (HOSTED | RELAX)))
                 error(1, "#%s: non-standard directive", pp.token);
-            if ((c = pplex()) != T_ID)
-            {
+            if ((c = pplex()) != T_ID) {
                 error(1, "%s: invalid macro name", pptokstr(pp.token, 0));
                 goto eatdirective;
             }
             if (!(sym = pprefmac(pp.token, REF_DELETE)) || !sym->macro)
                 goto eatdirective;
-            if (sym->flags & (SYM_ACTIVE | SYM_READONLY))
-            {
+            if (sym->flags & (SYM_ACTIVE | SYM_READONLY)) {
                 if (!(pp.option & ALLPOSSIBLE))
                     error(2,
                           "%s: macro is %s",
@@ -2486,16 +2257,13 @@ ppcontrol(void)
                                                       : "active");
                 goto eatdirective;
             }
-            if ((c = pplex()) != T_ID)
-            {
+            if ((c = pplex()) != T_ID) {
                 error(1, "%s: invalid macro name", pptokstr(pp.token, 0));
                 goto eatdirective;
             }
             var.symbol = pprefmac(pp.token, REF_CREATE);
-            if (mac = var.symbol->macro)
-            {
-                if (var.symbol->flags & (SYM_ACTIVE | SYM_READONLY))
-                {
+            if (mac = var.symbol->macro) {
+                if (var.symbol->flags & (SYM_ACTIVE | SYM_READONLY)) {
                     if (!(pp.option & ALLPOSSIBLE))
                         error(2,
                               "%s: macro is %s",
@@ -2520,17 +2288,13 @@ ppcontrol(void)
             sym->macro = 0;
             break;
         case UNDEF:
-            if ((c = pplex()) != T_ID)
-            {
+            if ((c = pplex()) != T_ID) {
                 error(1, "%s: invalid macro name", pptokstr(pp.token, 0));
                 goto eatdirective;
             }
-            if (sym = pprefmac(pp.token, REF_DELETE))
-            {
-                if (mac = sym->macro)
-                {
-                    if (sym->flags & (SYM_ACTIVE | SYM_READONLY))
-                    {
+            if (sym = pprefmac(pp.token, REF_DELETE)) {
+                if (mac = sym->macro) {
+                    if (sym->flags & (SYM_ACTIVE | SYM_READONLY)) {
                         if (!(pp.option & ALLPOSSIBLE))
                             error(2,
                                   "%s: macro is %s",
@@ -2549,8 +2313,7 @@ ppcontrol(void)
                     && !sym->hidden && !(sym->flags & SYM_MULTILINE)
                     && ((pp.option & PREDEFINITIONS) || !(pp.mode & INIT))
                     && ((pp.option & (DEFINITIONS | PREDEFINITIONS))
-                        || !(pp.state & NOTEXT)))
-                {
+                        || !(pp.state & NOTEXT))) {
                     ppsync();
                     ppprintf("#%s %s", dirname(UNDEF), sym->name);
                     emitted = 1;
@@ -2560,8 +2323,7 @@ ppcontrol(void)
                      | SYM_PREDEFINED | SYM_REDEFINE | SYM_VARIADIC);
                 n2 = error_info.line;
                 goto benign;
-            }
-            else
+            } else
                 pprefmac(pp.token, REF_UNDEF);
             break;
 #if DEBUG
@@ -2593,8 +2355,7 @@ enddirective:
                   pptokstr(pp.token, 0));
     }
 eatdirective:
-    if (c != '\n')
-    {
+    if (c != '\n') {
         pp.state |= DISABLE;
         while (pplex() != '\n')
             ;
@@ -2606,16 +2367,13 @@ donedirective:
 #endif
     pp.state &= ~RESTORE;
     pp.mode &= ~RELAX;
-    if (!(*pp.control & SKIP))
-    {
+    if (!(*pp.control & SKIP)) {
         pp.state |= restore;
-        switch (directive)
-        {
+        switch (directive) {
         case LINE:
             return 0;
         case INCLUDE:
-            if (pp.include)
-            {
+            if (pp.include) {
                 error_info.line++;
                 PUSH_FILE(pp.include, n);
                 if (!pp.vendor && (pp.found->type & TYPE_VENDOR))
@@ -2628,8 +2386,7 @@ donedirective:
                              ppgetfile(pp.path)->name,
                              error_info.line,
                              PP_SYNC_IGNORE);
-            else if (pp.linesync && pp.macref)
-            {
+            else if (pp.linesync && pp.macref) {
                 pp.flags |= PP_lineignore;
                 (*pp.linesync)(error_info.line, ppgetfile(pp.path)->name);
             }
@@ -2639,13 +2396,10 @@ donedirective:
             /*FALLTHROUGH*/
         case ENDIF:
             error_info.line++;
-            if (emitted)
-            {
+            if (emitted) {
                 ppputchar('\n');
                 ppcheckout();
-            }
-            else
-            {
+            } else {
                 pp.state |= HIDDEN;
                 pp.hidden++;
             }
@@ -2677,11 +2431,9 @@ ppnest(void)
     op = pp.maxcon - oz + 1;
     nz = oz * 2;
     np = newof(op, long, nz, 0);
-    if (adjust = (np - op))
-    {
+    if (adjust = (np - op)) {
         ip = pp.in;
-        do
-        {
+        do {
             if (ip->control)
                 ip->control += adjust;
         } while (ip = ip->prev);

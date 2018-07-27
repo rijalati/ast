@@ -139,8 +139,7 @@ paxchecksum(Pax_t *pax,
 {
     int z;
 
-    if (expected != value)
-    {
+    if (expected != value) {
         z = ((expected | value) & 0xffff0000) ? 8 : 4;
         (*pax->errorf)(
         NiL,
@@ -203,10 +202,8 @@ paxpart(Pax_t *pax, Paxarchive_t *ap, off_t n)
 
     static int fd = -1;
 
-    if (!(part = ap->partio))
-    {
-        if (!(part = newof(0, Part_t, 1, 0)) || !(part->sp = sfstropen()))
-        {
+    if (!(part = ap->partio)) {
+        if (!(part = newof(0, Part_t, 1, 0)) || !(part->sp = sfstropen())) {
             paxnospace(pax);
             return 0;
         }
@@ -220,8 +217,7 @@ paxpart(Pax_t *pax, Paxarchive_t *ap, off_t n)
         part->sp->_file = fd;
         part->disc.readf = part_read;
         part->disc.writef = part_write;
-        if (sfdisc(part->sp, &part->disc) != &part->disc)
-        {
+        if (sfdisc(part->sp, &part->disc) != &part->disc) {
             sfclose(part->sp);
             free(part);
             return 0;

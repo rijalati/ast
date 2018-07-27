@@ -102,8 +102,7 @@ int flags;
         return NIL(Vctblplan_t *);
 
     /* compute # of columns */
-    if (ncols <= 0)
-    {
+    if (ncols <= 0) {
         for (sz = trsz < COLSZ ? trsz : COLSZ; sz <= trsz; sz *= 2)
             if ((ncols = vcperiod(train, sz)) > 0)
                 break;
@@ -134,8 +133,7 @@ static void clrindex(tbl) Table_t *tbl;
 {
     Tblindex_t *ip, *endip;
 
-    if (tbl->cidx)
-    {
+    if (tbl->cidx) {
         for (endip = (ip = tbl->cidx) + tbl->ncols; ip < endip; ++ip)
             if (ip->idx)
                 free(ip->idx);
@@ -144,8 +142,7 @@ static void clrindex(tbl) Table_t *tbl;
         tbl->cidx = NIL(Tblindex_t *);
     }
 
-    if (tbl->idx)
-    {
+    if (tbl->idx) {
         free(tbl->idx);
         tbl->idx = NIL(ssize_t *);
     }
@@ -182,8 +179,7 @@ ssize_t pred2; /* secondary predecessor index	*/
     ssize_t nrows = tbl->nrows;
 
     /* compute indices sorted by first predictor */
-    if (!(idx = tbl->cidx[pred1].idx))
-    {
+    if (!(idx = tbl->cidx[pred1].idx)) {
         if (!(idx = ( ssize_t * )malloc((nrows + 256) * sizeof(ssize_t))))
             return NIL(ssize_t *);
         tbl->cidx[pred1].idx = idx;
@@ -191,15 +187,13 @@ ssize_t pred2; /* secondary predecessor index	*/
 
         data = tbl->data + pred1 * nrows;
         vcbcktsort(idx, NIL(ssize_t *), nrows, data, bkt);
-    }
-    else
+    } else
         bkt = tbl->cidx[pred1].bkt;
 
     if (pred2 >= 0) /* additionally sort indices by pred2 */
     {
         data = tbl->data + pred2 * nrows;
-        for (p = 0, i = 0; i < 256; ++i)
-        {
+        for (p = 0, i = 0; i < 256; ++i) {
             if (bkt[i] == p)
                 continue;
             vcbcktsort(tbl->idx + p, idx + p, bkt[i] - p, data, bckt);
@@ -255,16 +249,14 @@ re_train: /* recurse to here if necessary to retrain data */
 
     /* compute the transform plan if not done yet */
     if (!plan || plan->ncols <= 1 || plan->ncols != ncols
-        || (!plan->good && size > plan->train))
-    {
+        || (!plan->good && size > plan->train)) {
         plan = tbltrain(data, size, ncols, ctxt->flags);
         trained = TRAINED; /* so we won't retrain again */
         SETPLAN(ctxt, plan);
         /**/ DEBUG_PRINT(2, "\tNcols=%d, just trained\n", plan->ncols);
     }
 
-    if (!plan || (ncols = plan->ncols) <= 0)
-    {
+    if (!plan || (ncols = plan->ncols) <= 0) {
         vc->undone = size;
         return 0;
     }
@@ -293,16 +285,14 @@ re_train: /* recurse to here if necessary to retrain data */
         return -1;
 
     /* transform unpredicted columns first, then unpredicted columns */
-    for (zip = zipdt, np = 0; np < ncols; ++np)
-    {
+    for (zip = zipdt, np = 0; np < ncols; ++np) {
         if (plan->trans[np].pred1 >= 0)
             break;
         dt = tbl->data + plan->trans[np].index * nrows;
         for (endz = zip + nrows; zip < endz;)
             *zip++ = *dt++;
     }
-    for (p = np; p < ncols; ++p)
-    {
+    for (p = np; p < ncols; ++p) {
         if (!(idx
               = getindex(tbl, plan->trans[p].pred1, plan->trans[p].pred2)))
             return -1;
@@ -326,22 +316,18 @@ re_train: /* recurse to here if necessary to retrain data */
     sz += p;
     vcioinit(&io, zipdt, p);
     vcioputu(&io, hdsz);
-    if (hdsz > 0)
-    {
+    if (hdsz > 0) {
         vcioputs(&io, hddt, hdsz);
         vctblencodeplan(plan, NIL(Void_t **)); /* free header memory */
     }
 
     if ((ratio = dtsz / ( float )sz)
-        >= (planratio = plan->dtsz / ( float )plan->cmpsz))
-    {
+        >= (planratio = plan->dtsz / ( float )plan->cmpsz)) {
         plan->dtsz = dtsz;
         plan->cmpsz = sz;
-    }
-    else if (trained != TRAINED && vc->coder && dtsz > ncols * ncols
-             && ((planratio <= 1. && ratio < planratio)
-                 || ratio < .5 * planratio))
-    { /**/
+    } else if (trained != TRAINED && vc->coder && dtsz > ncols * ncols
+               && ((planratio <= 1. && ratio < planratio)
+                   || ratio < .5 * planratio)) { /**/
         DEBUG_PRINT(2, "\tNcols=%d, retraining, ", ncols);
         /**/ DEBUG_PRINT(2, "previous ratio=%.2f, ", planratio);
         /**/ DEBUG_PRINT(2, "current ratio=%.2f\n", ratio);
@@ -393,8 +379,7 @@ Void_t **out;
         return -1;
     dt = vcionext(&io);
     size = vciomore(&io);
-    if (sz > 0)
-    {
+    if (sz > 0) {
         if (!(plan = vctbldecodeplan(dt, sz)))
             return -1;
         SETPLAN(ctxt, plan);
@@ -434,16 +419,14 @@ Void_t **out;
     tbl->data = output;
 
     /* reconstruct the unpredicted columns first, then predicted columns */
-    for (p = 0; p < ncols; ++p)
-    {
+    for (p = 0; p < ncols; ++p) {
         if (plan->trans[p].pred1 >= 0)
             break;
         dt = tbl->data + plan->trans[p].index * nrows;
         for (endz = zip + nrows; zip < endz;)
             *dt++ = *zip++;
     }
-    for (zip = vcionext(&io); p < ncols; ++p)
-    {
+    for (zip = vcionext(&io); p < ncols; ++p) {
         if (!(idx
               = getindex(tbl, plan->trans[p].pred1, plan->trans[p].pred2)))
             return -1;
@@ -481,19 +464,16 @@ Void_t *params;
     Vcmtarg_t *arg;
     Table_t *tbl;
 
-    if (type == VC_OPENING)
-    {
+    if (type == VC_OPENING) {
         if (!(tbl = ( Table_t * )calloc(1, sizeof(Table_t))))
             return -1;
 
-        if (!(tbl->trans = vcopen(0, Vctranspose, "0", 0, VC_ENCODE)))
-        {
+        if (!(tbl->trans = vcopen(0, Vctranspose, "0", 0, VC_ENCODE))) {
             free(tbl);
             return -1;
         }
         if (!(tbl->ctxt
-              = ( Tblctxt_t * )vcinitcontext(vc, NIL(Vccontext_t *))))
-        {
+              = ( Tblctxt_t * )vcinitcontext(vc, NIL(Vccontext_t *)))) {
             vcclose(tbl->trans);
             free(tbl);
             return -1;
@@ -501,17 +481,13 @@ Void_t *params;
 
         vcsetmtdata(vc, tbl);
         goto vc_setarg;
-    }
-    else if (type == VC_SETMTARG)
-    {
+    } else if (type == VC_SETMTARG) {
     vc_setarg:
         if (!(ctxt = vcgetcontext(vc, Tblctxt_t *)))
             return -1;
-        for (data = ( char * )params; data;)
-        {
+        for (data = ( char * )params; data;) {
             data = vcgetmtarg(data, val, sizeof(val), _Tbldata, &arg);
-            switch (TYPECAST(int, arg->data))
-            {
+            switch (TYPECAST(int, arg->data)) {
             case TBL_COLUMNS:
                 ctxt->ncols = ( ssize_t )vcatoi(val);
                 break;
@@ -536,36 +512,26 @@ Void_t *params;
             }
         }
         return 0;
-    }
-    else if (type == VC_INITCONTEXT)
-    {
+    } else if (type == VC_INITCONTEXT) {
         if (!params)
             return 0;
         if (!(ctxt = ( Tblctxt_t * )calloc(1, sizeof(Tblctxt_t))))
             return -1;
         *(( Tblctxt_t ** )params) = ctxt;
         return 1;
-    }
-    else if (type == VC_FREECONTEXT)
-    {
-        if ((ctxt = ( Tblctxt_t * )params))
-        {
+    } else if (type == VC_FREECONTEXT) {
+        if ((ctxt = ( Tblctxt_t * )params)) {
             if (ctxt->plan)
                 vctblfreeplan(ctxt->plan);
             free(ctxt);
         }
         return 0;
-    }
-    else if (type == VC_FREEBUFFER)
-    {
+    } else if (type == VC_FREEBUFFER) {
         if ((tbl = vcgetmtdata(vc, Table_t *)) && tbl->trans)
             vcbuffer(tbl->trans, NIL(Vcchar_t *), -1, -1);
         return 0;
-    }
-    else if (type == VC_CLOSING)
-    {
-        if ((tbl = vcgetmtdata(vc, Table_t *)))
-        {
+    } else if (type == VC_CLOSING) {
+        if ((tbl = vcgetmtdata(vc, Table_t *))) {
             if (tbl->trans)
                 vcclose(tbl->trans);
             clrindex(tbl);
@@ -573,8 +539,7 @@ Void_t *params;
         }
         vcsetmtdata(vc, NIL(Table_t *));
         return 0;
-    }
-    else
+    } else
         return 0;
 }
 

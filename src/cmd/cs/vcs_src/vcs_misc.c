@@ -38,24 +38,19 @@ time_t t;
 
     len = 8;
 
-    for (et = list; et; et = et->next)
-    {
-        if (strncmp(et->tag->version, buf, 8) == 0)
-        {
-            if (strlen(et->tag->version) > 8)
-            {
+    for (et = list; et; et = et->next) {
+        if (strncmp(et->tag->version, buf, 8) == 0) {
+            if (strlen(et->tag->version) > 8) {
                 s = et->tag->version + 9;
                 num = ( int )strtol(s, ( char ** )0, 0);
                 if (num && num > seq)
                     seq = num;
-            }
-            else
+            } else
                 seq = 0;
         }
     }
     seq++;
-    if (seq)
-    {
+    if (seq) {
         s = buf + len;
         sfsprintf(s, sizeof(buf) - len, ":%d", seq);
     }
@@ -100,8 +95,7 @@ char c;
 {
     int i;
 
-    for (i = 0; i < n && *s;)
-    {
+    for (i = 0; i < n && *s;) {
         w[i++] = s;
         while (*s && *s != c)
             s++;
@@ -161,8 +155,7 @@ domaininit()
 #if 0
 	(void) getdomainname(MyDomain, sizeof(MyDomain));
 #else
-    if ((s = csfull(0)) && (s = strchr(s, '.')))
-    {
+    if ((s = csfull(0)) && (s = strchr(s, '.'))) {
         char *t = MyDomain;
         char *e = MyDomain + sizeof(MyDomain) - 1;
 
@@ -172,10 +165,8 @@ domaininit()
     }
 
 #endif
-    for (i = 1; i < NumDomain; i++)
-    {
-        if (strcmp(MyDomain, DomainTbl[i]) == 0)
-        {
+    for (i = 1; i < NumDomain; i++) {
+        if (strcmp(MyDomain, DomainTbl[i]) == 0) {
             MyDomainID = i;
             return;
         }
@@ -201,8 +192,7 @@ int getdomainbyname(s) char *s;
 
     if (!NumDomain)
         domaininit();
-    for (i = 0; i < NumDomain; i++)
-    {
+    for (i = 0; i < NumDomain; i++) {
         if (strcmp(s, DomainTbl[i]) == 0)
             return i;
     }

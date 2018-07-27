@@ -56,8 +56,7 @@ info_init(Pss_t *pss)
     unsigned long a;
 
     mem = "/dev/mem";
-    if ((fd = open(mem, O_RDONLY)) < 0)
-    {
+    if ((fd = open(mem, O_RDONLY)) < 0) {
         if (pss->disc->errorf)
             (*pss->disc->errorf)(
             pss, pss->disc, ERROR_SYSTEM | 2, "%s: cannot read", mem);
@@ -65,24 +64,21 @@ info_init(Pss_t *pss)
     }
     n = info(_I_NPROCTAB);
     a = info(_I_PROCTAB);
-    if (!(state
-          = vmnewof(pss->vm, 0, State_t, 1, (n - 1) * sizeof(struct pentry))))
-    {
+    if (!(state = vmnewof(
+          pss->vm, 0, State_t, 1, (n - 1) * sizeof(struct pentry)))) {
         if (pss->disc->errorf)
             (*pss->disc->errorf)(
             pss, pss->disc, ERROR_SYSTEM | 2, "out of space");
         goto bad;
     }
-    if (lseek(fd, a, SEEK_SET) != a)
-    {
+    if (lseek(fd, a, SEEK_SET) != a) {
         if (pss->disc->errorf)
             (*pss->disc->errorf)(
             pss, pss->disc, ERROR_SYSTEM | 2, "%s: %lu: seek error", mem, a);
         goto bad;
     }
     if (read(fd, state->ps, n * sizeof(state->ps[0]))
-        != n * sizeof(state->ps[0]))
-    {
+        != n * sizeof(state->ps[0])) {
         if (pss->disc->errorf)
             (*pss->disc->errorf)(pss,
                                  pss->disc,
@@ -109,13 +105,11 @@ info_read(Pss_t *pss, Pss_id_t pid)
     State_t *state = ( State_t * )pss->data;
     int count;
 
-    if (pid)
-    {
+    if (pid) {
         for (state->pp = state->ps; state->pp < state->pe; state->pp++)
             if (state->pp->pstate != PRFREE && state->pp->pid == pid)
                 break;
-    }
-    else
+    } else
         while (state->pp < state->pe && state->pp->pstate == PRFREE)
             state->pp++;
     if (state->pp >= state->pe)
@@ -135,8 +129,7 @@ info_part(Pss_t *pss, Pssent_t *pe)
     pe->pgrp = pr->pgroup;
     pe->tty = pr->cdevnum == -1 ? PSS_NODEV : pr->cdevnum;
     pe->uid = pr->uid;
-    switch (( int )(pr->pstate & 0xf))
-    {
+    switch (( int )(pr->pstate & 0xf)) {
     case PRREADY:
         pe->state = 'I';
         break;
@@ -173,13 +166,11 @@ info_full(Pss_t *pss, Pssent_t *pe)
     struct pssentry px;
     struct st_entry st;
 
-    if (pe->state != PSS_ZOMBIE)
-    {
+    if (pe->state != PSS_ZOMBIE) {
         if ((fields & (PSS_sid | PSS_size | PSS_time))
             && lseek(state->mem, ( unsigned long )pr->pss, SEEK_SET)
                == ( unsigned long )pr->pss
-            && read(state->mem, &px, sizeof(px)) == sizeof(px))
-        {
+            && read(state->mem, &px, sizeof(px)) == sizeof(px)) {
             pe->sid = px.sid;
             pe->size = (pr->stack_total + (px.brk - px.data_start)) / 1024;
             pe->time = (px.pss_utime + px.stime) / 5;
@@ -187,8 +178,7 @@ info_full(Pss_t *pss, Pssent_t *pe)
         if ((fields & (PSS_pri))
             && lseek(state->mem, ( unsigned long )pr->i, SEEK_SET)
                == ( unsigned long )pr->i
-            && read(state->mem, &st, sizeof(st)) == sizeof(st))
-        {
+            && read(state->mem, &st, sizeof(st)) == sizeof(st)) {
             pe->pri = st.pprio;
             pe->nice = st.rprio;
         }

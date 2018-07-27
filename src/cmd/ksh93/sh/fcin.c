@@ -46,8 +46,7 @@ fcfopen(Sfio_t *f)
     _Fcin.fcbuff = _Fcin.fcptr;
     _Fcin._fcfile = f;
     fcsave(&save);
-    if (!(buff = ( char * )sfreserve(f, SF_UNBOUND, SF_LOCKR)))
-    {
+    if (!(buff = ( char * )sfreserve(f, SF_UNBOUND, SF_LOCKR))) {
         fcrestore(&save);
         _Fcin.fcchar = 0;
         _Fcin.fcptr = _Fcin.fcbuff = &_Fcin.fcchar;
@@ -81,8 +80,7 @@ fcfill(void)
     int n;
     Sfio_t *f;
     unsigned char *last = _Fcin.fclast, *ptr = _Fcin.fcptr;
-    if (!(f = fcfile()))
-    {
+    if (!(f = fcfile())) {
         /* see whether pointer has passed null byte */
         if (ptr > _Fcin.fcbuff && *--ptr == 0)
             _Fcin.fcptr = ptr;
@@ -90,8 +88,7 @@ fcfill(void)
             _Fcin.fcoff = 0;
         return (0);
     }
-    if (last)
-    {
+    if (last) {
         if (ptr < last && ptr > _Fcin.fcbuff && *(ptr - 1) == 0)
             return (0);
         if (_Fcin.fcchar)
@@ -161,8 +158,7 @@ int
 _fcmbget(short *len)
 {
     int c;
-    switch (*len = mbsize(_Fcin.fcptr))
-    {
+    switch (*len = mbsize(_Fcin.fcptr)) {
     case -1:
         *len = 1;
     /* fall through */

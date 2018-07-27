@@ -65,8 +65,7 @@ cssetdb(Cs_t *state)
     int fd;
     int i;
 
-    if (state->db <= 0 && ++state->db)
-    {
+    if (state->db <= 0 && ++state->db) {
         if ((fd = dup(0)) >= 0)
             close(fd);
         sethostent(1);
@@ -92,10 +91,8 @@ csname(Cs_t *state, unsigned long addr)
 #if CS_LIB_LOCAL
     NoP(addr);
 #else
-    if (addr)
-    {
-        if (addr != CS_LOCAL)
-        {
+    if (addr) {
+        if (addr != CS_LOCAL) {
 #    if CS_LIB_SOCKET
             struct hostent *hp;
             struct in_addr ha;
@@ -111,14 +108,12 @@ csname(Cs_t *state, unsigned long addr)
             if (s = in_host(addr))
 #        endif
             {
-                if (!((state->flags | state->disc->flags) & CS_ADDR_FULL))
-                {
+                if (!((state->flags | state->disc->flags) & CS_ADDR_FULL)) {
                     char *t;
 
                     if ((t = strrchr(s, '.')) && !*(t + 1))
                         *t = 0;
-                    if (t = strchr(s, '.'))
-                    {
+                    if (t = strchr(s, '.')) {
                         strncpy(state->temp, s, sizeof(state->temp) - 1);
                         *(t = state->temp + (t - s)) = 0;
                         s = state->temp;
@@ -139,8 +134,7 @@ csname(Cs_t *state, unsigned long addr)
         }
     }
 #endif
-    if (!state->name[0])
-    {
+    if (!state->name[0]) {
 
 #if _lib_gethostname
 
@@ -165,13 +159,11 @@ csname(Cs_t *state, unsigned long addr)
         int fd;
         int n;
 
-        if ((fd = open("/etc/whoami", O_RDONLY)) >= 0)
-        {
+        if ((fd = open("/etc/whoami", O_RDONLY)) >= 0) {
             if ((n = read(fd, state->full, sizeof(state->full))) > 0)
                 state->full[n - 1] = 0;
             close(fd);
-        }
-        else
+        } else
 
 #    endif
 

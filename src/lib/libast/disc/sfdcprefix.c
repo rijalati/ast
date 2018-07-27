@@ -66,10 +66,8 @@ Sfdisc_t *dp;
     b = ( char * )buf;
     s = b;
     e = s + n;
-    do
-    {
-        if (!(t = memchr(s, '\n', e - s)))
-        {
+    do {
+        if (!(t = memchr(s, '\n', e - s))) {
             skip = 1;
             t = e - 1;
         }
@@ -143,8 +141,7 @@ char *prefix;
         n++;
     pfx->empty = n;
 
-    if (sfdisc(f, &pfx->disc) != &pfx->disc)
-    {
+    if (sfdisc(f, &pfx->disc) != &pfx->disc) {
         free(pfx);
         return -1;
     }

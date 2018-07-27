@@ -40,8 +40,7 @@ MAIN()
 
     if (vcxinit(&xx, Vcxmd5sum, 0, 0) < 0)
         terror("Initializing md5 handle");
-    for (k = 0; Md5[k].str; ++k)
-    {
+    for (k = 0; Md5[k].str; ++k) {
         if ((n
              = vcxencode(&xx, Md5[k].str, strlen(( char * )Md5[k].str), &sum))
             < 0)

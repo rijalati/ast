@@ -74,8 +74,7 @@ ssize_t lev;     /* level in the trie		*/
     if ((p = lev == 0 ? TRIE_TOP : TRIE_SUB) > (m - len))
         p = m - len;
 
-    if ((trie->next + (1 << p)) > trie->trsz)
-    {
+    if ((trie->next + (1 << p)) > trie->trsz) {
         s = trie->next + ((1 << p) < (1 << 8) ? (1 << 8) : (1 << p));
         if (!(node = ( short * )malloc(2 * s * sizeof(short))))
             return -1;
@@ -102,24 +101,20 @@ ssize_t lev;     /* level in the trie		*/
     olen = len;
     len += p;
     msk = (1 << p) - 1;
-    for (k = 0; k < ns;)
-    { /* starting index of this code in the table */
+    for (k = 0; k < ns;) { /* starting index of this code in the table */
         s = (*sort[k] >> (VC_BITSIZE - len)) & msk;
 
         z = clen[m = sort[k] - bits];
         if ((p = len - z) >= 0) /* data nodes */
         {
-            for (e = s + (1 << p); s < e; ++s)
-            {
+            for (e = s + (1 << p); s < e; ++s) {
                 node[s] = m;        /* the byte to be decoded */
                 size[s] = z - olen; /* # bits to consume */
             }
             k += 1;
-        }
-        else /* internal node, find all codes sharing same prefix */
+        } else /* internal node, find all codes sharing same prefix */
         {
-            for (m = k + 1; m < ns; ++m)
-            {
+            for (m = k + 1; m < ns; ++m) {
                 if (len >= clen[sort[m] - bits])
                     break;
                 if (s != ((*sort[m] >> (VC_BITSIZE - len)) & msk))
@@ -178,8 +173,7 @@ Vcbit_t *bits; /* array of code bits		*/
     if (!(sort = ( Vcbit_t ** )malloc(nsym * sizeof(Vcbit_t *))))
         return NIL(Vchtrie_t *);
 
-    if (!(trie = ( Vchtrie_t * )malloc(sizeof(Vchtrie_t))))
-    {
+    if (!(trie = ( Vchtrie_t * )malloc(sizeof(Vchtrie_t)))) {
         free(sort);
         return NIL(Vchtrie_t *);
     }
@@ -210,8 +204,7 @@ vchdeltrie(Vchtrie_t *trie)
 Void_t vchdeltrie(trie) Vchtrie_t *trie;
 #endif
 {
-    if (trie)
-    {
+    if (trie) {
         if (trie->node)
             free(trie->node);
         free(trie);

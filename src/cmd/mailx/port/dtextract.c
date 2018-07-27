@@ -89,8 +89,7 @@ Dtlink_t *dtextract(dt) reg Dt_t *dt;
     {
         list = last = NIL(Dtlink_t *);
         eslot = (slot = dt->data->htab) + dt->data->ntab;
-        for (; slot < eslot; ++slot)
-        {
+        for (; slot < eslot; ++slot) {
             if (!(t = *slot))
                 continue;
             *slot = NIL(Dtlink_t *);
@@ -101,8 +100,7 @@ Dtlink_t *dtextract(dt) reg Dt_t *dt;
             while ((t = last->right))
                 last = t;
         }
-    }
-    else /*if(dt->data->type&(DT_LIST|DT_STACK|DT_QUEUE))*/
+    } else /*if(dt->data->type&(DT_LIST|DT_STACK|DT_QUEUE))*/
     {
         list = dt->data->head;
         dt->data->head = NIL(Dtlink_t *);

@@ -55,15 +55,12 @@ hashscan(Hash_table_t *tab, int flags)
     pos->tab = tab->root->last.table = tab;
     pos->bucket = &empty;
     pos->slot = 0;
-    if (tab->scope && !(flags & HASH_NOSCOPE))
-    {
+    if (tab->scope && !(flags & HASH_NOSCOPE)) {
         pos->flags = HASH_SCOPE;
-        do
-        {
+        do {
             Hash_bucket_t *b;
 
-            if (tab->frozen)
-            {
+            if (tab->frozen) {
                 Hash_bucket_t **sp = tab->table;
                 Hash_bucket_t **sx = tab->table + tab->size;
 
@@ -73,8 +70,7 @@ hashscan(Hash_table_t *tab, int flags)
             }
         } while (tab = tab->scope);
         tab = pos->tab;
-    }
-    else
+    } else
         pos->flags = 0;
     tab->frozen++;
     return (pos);
@@ -92,14 +88,10 @@ hashnext(Hash_position_t *pos)
     if (!pos)
         return (0);
     b = pos->bucket;
-    for (;;)
-    {
-        if (!(b = b->next))
-        {
-            do
-            {
-                if (pos->slot >= pos->tab->size)
-                {
+    for (;;) {
+        if (!(b = b->next)) {
+            do {
+                if (pos->slot >= pos->tab->size) {
                     pos->tab->frozen--;
                     if (!pos->flags || !pos->tab->scope)
                         return (0);
@@ -114,18 +106,15 @@ hashnext(Hash_position_t *pos)
             && (!(pos->tab->flags & HASH_VALUE) || b->value)
             && (!pos->flags || !(b->hash & (HASH_HIDDEN | HASH_HIDES))))
             break;
-        if (b->hash & HASH_HIDES)
-        {
+        if (b->hash & HASH_HIDES) {
             Hash_bucket_t *h = ( Hash_bucket_t * )b->name;
 
-            if (!(h->hash & HASH_HIDDEN))
-            {
+            if (!(h->hash & HASH_HIDDEN)) {
                 h->hash |= HASH_HIDDEN;
                 if (!(b->hash & HASH_DELETED))
                     break;
             }
-        }
-        else
+        } else
             b->hash &= ~HASH_HIDDEN;
     }
     return (pos->tab->root->last.bucket = pos->bucket = b);
@@ -138,8 +127,7 @@ hashnext(Hash_position_t *pos)
 void
 hashdone(Hash_position_t *pos)
 {
-    if (pos)
-    {
+    if (pos) {
         if (pos->tab->frozen)
             pos->tab->frozen--;
         free(pos);

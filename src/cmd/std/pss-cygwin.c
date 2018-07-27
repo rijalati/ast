@@ -102,12 +102,10 @@ cygwin_read(Pss_t *pss, Pss_id_t pid)
 {
     if (pid)
         pss->pid = pid;
-    else
-    {
+    else {
         if (!pss->data)
             pss->pid = 0;
-        else if (!(pss->pid = (( struct external_pinfo * )pss->data)->pid))
-        {
+        else if (!(pss->pid = (( struct external_pinfo * )pss->data)->pid)) {
             pss->data = 0;
             return 0;
         }
@@ -152,18 +150,15 @@ cygwin_full(Pss_t *pss, Pssent_t *pe)
     char *s;
     int i;
 
-    if (pe->state != PSS_ZOMBIE)
-    {
-        if (fields & PSS_args)
-        {
+    if (pe->state != PSS_ZOMBIE) {
+        if (fields & PSS_args) {
             cygwin_conv_to_posix_path(pr->progname, pss->buf);
             s = pss->buf;
             if ((i = strlen(s)) > 4 && !strcasecmp(s + i - 4, ".exe"))
                 *(s + i - 4) = 0;
             pe->args = s;
         }
-        if (fields & PSS_command)
-        {
+        if (fields & PSS_command) {
             cygwin_conv_to_posix_path(pr->progname, pss->buf);
             if (s = strrchr(pss->buf, '/'))
                 s++;

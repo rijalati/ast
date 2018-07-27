@@ -80,11 +80,9 @@ _iblocks(struct stat *st)
     unsigned long t;
 
     t = b = (st->st_size + B_SIZE - 1) / B_SIZE;
-    if ((b -= B_DIRECT) > 0)
-    {
+    if ((b -= B_DIRECT) > 0) {
         t += (b - 1) / B_INDIRECT + 1;
-        if ((b -= B_INDIRECT) > 0)
-        {
+        if ((b -= B_INDIRECT) > 0) {
             t += (b - 1) / (B_INDIRECT * B_INDIRECT) + 1;
             if (b > B_INDIRECT * B_INDIRECT)
                 t++;

@@ -31,8 +31,7 @@ bzip_ident(Codexmeth_t *meth,
     unsigned char *h = ( unsigned char * )head;
 
     if (headsize >= 4 && h[0] == 'B' && h[1] == 'Z' && h[2] == 'h'
-        && (h[3] >= '0' && h[3] <= '9'))
-    {
+        && (h[3] >= '0' && h[3] <= '9')) {
         strncopy(name, meth->name, namesize);
         return 1;
     }
@@ -50,25 +49,19 @@ bzip_open(Codex_t *p, char *const args[], Codexnum_t flags)
     int level = MAXLEVEL;
 
     i = 2;
-    while (s = args[i++])
-    {
+    while (s = args[i++]) {
         if (isdigit(*s))
             v = strton(s, &e, NiL, 0);
-        else
-        {
+        else {
             e = ( char * )s;
-            if (e[0] == 'n' && e[1] == 'o')
-            {
+            if (e[0] == 'n' && e[1] == 'o') {
                 e += 2;
                 v = 0;
-            }
-            else
+            } else
                 v = 1;
         }
-        if (!*e)
-        {
-            if (v < MINLEVEL || v > MAXLEVEL)
-            {
+        if (!*e) {
+            if (v < MINLEVEL || v > MAXLEVEL) {
                 if (p->disc->errorf)
                     (*p->disc->errorf)(
                     NiL,
@@ -81,24 +74,20 @@ bzip_open(Codex_t *p, char *const args[], Codexnum_t flags)
                 return -1;
             }
             level = v;
-        }
-        else
-        {
+        } else {
             if (p->disc->errorf)
                 (*p->disc->errorf)(NiL, p->disc, 2, "%s: unknown option", s);
             return -1;
         }
     }
-    if (!(p->op
-          = sfopen(NiL, "/dev/null", (p->flags & CODEX_DECODE) ? "r" : "w")))
-    {
+    if (!(p->op = sfopen(
+          NiL, "/dev/null", (p->flags & CODEX_DECODE) ? "r" : "w"))) {
         if (p->disc->errorf)
             (*p->disc->errorf)(NiL, p->disc, 2, "cannot swap main stream");
         return -1;
     }
     sfswap(p->op, p->sp);
-    if (!(state = newof(0, State_t, 1, 0)))
-    {
+    if (!(state = newof(0, State_t, 1, 0))) {
         if (p->disc->errorf)
             (*p->disc->errorf)(NiL, p->disc, 2, "out of space");
         return -1;

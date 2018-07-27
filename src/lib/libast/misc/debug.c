@@ -74,77 +74,56 @@ debug_vsprintf(char *buf, size_t siz, const char *format, va_list ap)
     i = 1;
     p = buf;
     e = buf + siz;
-    for (;;)
-    {
-        switch (c = *format++)
-        {
+    for (;;) {
+        switch (c = *format++) {
         case 0:
             goto done;
         case '%':
-            if (*format == '-')
-            {
+            if (*format == '-') {
                 format++;
                 l = 1;
-            }
-            else
+            } else
                 l = 0;
-            if (*format == '0')
-            {
+            if (*format == '0') {
                 format++;
                 f = l ? ' ' : '0';
-            }
-            else
+            } else
                 f = ' ';
-            if ((c = *format) == '*')
-            {
+            if ((c = *format) == '*') {
                 format++;
                 w = va_arg(ap, int);
-            }
-            else
-            {
+            } else {
                 w = 0;
-                while (c >= '0' && c <= '9')
-                {
+                while (c >= '0' && c <= '9') {
                     w = w * 10 + c - '0';
                     c = *++format;
                 }
             }
             x = r = 0;
-            if (c == '.')
-            {
-                if ((c = *++format) == '*')
-                {
+            if (c == '.') {
+                if ((c = *++format) == '*') {
                     format++;
                     x = va_arg(ap, int);
-                }
-                else
-                    while (c >= '0' && c <= '9')
-                    {
+                } else
+                    while (c >= '0' && c <= '9') {
                         x = x * 10 + c - '0';
                         c = *++format;
                     }
-                if (c == '.')
-                {
-                    if ((c = *++format) == '*')
-                    {
+                if (c == '.') {
+                    if ((c = *++format) == '*') {
                         format++;
                         r = va_arg(ap, int);
-                    }
-                    else
-                        while (c >= '0' && c <= '9')
-                        {
+                    } else
+                        while (c >= '0' && c <= '9') {
                             r = r * 10 + c - '0';
                             c = *++format;
                         }
                 }
             }
-            if (c == '(')
-            {
+            if (c == '(') {
                 t = typ;
-                while (c = *++format)
-                {
-                    if (c == ')')
-                    {
+                while (c = *++format) {
+                    if (c == ')') {
                         format++;
                         break;
                     }
@@ -153,19 +132,15 @@ debug_vsprintf(char *buf, size_t siz, const char *format, va_list ap)
                 }
                 *t = 0;
                 t = typ;
-            }
-            else
+            } else
                 t = 0;
             n = 0;
             g = 0;
             b = num;
-            for (;;)
-            {
-                switch (c = *format++)
-                {
+            for (;;) {
+                switch (c = *format++) {
                 case 'I':
-                    if (*format == '*')
-                    {
+                    if (*format == '*') {
                         format++;
                         n = va_arg(ap, int);
                     }
@@ -185,8 +160,7 @@ debug_vsprintf(char *buf, size_t siz, const char *format, va_list ap)
                 }
                 break;
             }
-            switch (c)
-            {
+            switch (c) {
             case 0:
                 break;
             case 'c':
@@ -194,8 +168,7 @@ debug_vsprintf(char *buf, size_t siz, const char *format, va_list ap)
                 break;
             case 'd':
                 n = VASIGNED(ap, n);
-                if (n < 0)
-                {
+                if (n < 0) {
                     g = '-';
                     n = -n;
                 }
@@ -208,8 +181,7 @@ debug_vsprintf(char *buf, size_t siz, const char *format, va_list ap)
                 while (u >>= 3);
                 break;
             case 's':
-                if (!t)
-                {
+                if (!t) {
                     s = va_arg(ap, char *);
                     if (!s)
                         s = "(null)";
@@ -235,40 +207,34 @@ debug_vsprintf(char *buf, size_t siz, const char *format, va_list ap)
 #endif
                 else
                     s = t;
-                if (w || l && x)
-                {
+                if (w || l && x) {
                     if (!l || !x)
                         x = ( int )strlen(s);
                     if (!w)
                         w = x;
                     n = w - x;
-                    if (l)
-                    {
-                        while (w-- > 0)
-                        {
+                    if (l) {
+                        while (w-- > 0) {
                             if (p >= e)
                                 goto done;
                             if (!(*p = *s++))
                                 break;
                             p++;
                         }
-                        while (n-- > 0)
-                        {
+                        while (n-- > 0) {
                             if (p >= e)
                                 goto done;
                             *p++ = f;
                         }
                         continue;
                     }
-                    while (n-- > 0)
-                    {
+                    while (n-- > 0) {
                         if (p >= e)
                             goto done;
                         *p++ = f;
                     }
                 }
-                for (;;)
-                {
+                for (;;) {
                     if (p >= e)
                         goto done;
                     if (!(*p = *s++))
@@ -287,8 +253,7 @@ debug_vsprintf(char *buf, size_t siz, const char *format, va_list ap)
                 break;
             case 'p':
                 v = va_arg(ap, void *);
-                if (u = (uint64_t)(( char * )v - ( char * )0))
-                {
+                if (u = (uint64_t)(( char * )v - ( char * )0)) {
                     if (SIZEOF(v) == 4)
                         u &= 0xffffffff;
                     g = 'x';
@@ -318,64 +283,53 @@ debug_vsprintf(char *buf, size_t siz, const char *format, va_list ap)
                 *p++ = c;
                 continue;
             }
-            if (w)
-            {
+            if (w) {
                 if (g == 'x')
                     w -= 2;
                 else if (g)
                     w -= 1;
                 n = w - (b - num);
-                if (!l)
-                {
-                    if (g && f != ' ')
-                    {
-                        if (g == 'x')
-                        {
+                if (!l) {
+                    if (g && f != ' ') {
+                        if (g == 'x') {
                             if (p >= e)
                                 goto done;
                             *p++ = '0';
                             if (p >= e)
                                 goto done;
                             *p++ = 'x';
-                        }
-                        else if (p >= e)
+                        } else if (p >= e)
                             goto done;
                         else
                             *p++ = g;
                         g = 0;
                     }
-                    while (n-- > 0)
-                    {
+                    while (n-- > 0) {
                         if (p >= e)
                             goto done;
                         *p++ = f;
                     }
                 }
             }
-            if (g == 'x')
-            {
+            if (g == 'x') {
                 if (p >= e)
                     goto done;
                 *p++ = '0';
                 if (p >= e)
                     goto done;
                 *p++ = 'x';
-            }
-            else if (g)
-            {
+            } else if (g) {
                 if (p >= e)
                     goto done;
                 *p++ = g;
             }
-            while (b > num)
-            {
+            while (b > num) {
                 if (p >= e)
                     goto done;
                 *p++ = *--b;
             }
             if (w && l)
-                while (n-- > 0)
-                {
+                while (n-- > 0) {
                     if (p >= e)
                         goto done;
                     *p++ = f;
@@ -385,8 +339,7 @@ debug_vsprintf(char *buf, size_t siz, const char *format, va_list ap)
             if (p >= e)
                 goto done;
             *p++ = c;
-            if (i && *format == ' ')
-            {
+            if (i && *format == ' ') {
                 if ((p + i) < e)
                     for (i = 0; i < indent; i++)
                         *p++ = ' ';
@@ -452,8 +405,7 @@ debug_fatal(const char *file, int line, const char *text)
 #endif
     debug_printf(2, "%s:%d: assertion failed: %s\n", file, line, text);
     if (s = getenv("DEBUG_OPTIONS"))
-        switch (*s)
-        {
+        switch (*s) {
         case 'p':
             pause();
             break;

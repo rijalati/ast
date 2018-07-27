@@ -78,16 +78,14 @@ ssize_t *repn; /* and its frequency		*/
     if (!pdt) /* no prediction, just compute entropy in data */
     {
         memset(freq, 0, sizeof(freq));
-        for (i = 0; i < n; i = k)
-        {
+        for (i = 0; i < n; i = k) {
             for (c = dt[i], k = i + 1; k < n; ++k)
                 if (dt[k] != c)
                     break;
             freq[c] += k - i;
             entropy += 1 + vclog(k - i);
         }
-        if (repc)
-        {
+        if (repc) {
             for (c = 0, i = 1; i < sizeof(freq) / sizeof(freq[0]); ++i)
                 if (freq[i] > freq[c])
                     c = i;
@@ -95,11 +93,8 @@ ssize_t *repn; /* and its frequency		*/
             if (repn)
                 *repn = freq[c];
         }
-    }
-    else
-    {
-        for (pr = pnd->srti, i = 0; i < n; i = k)
-        {
+    } else {
+        for (pr = pnd->srti, i = 0; i < n; i = k) {
             for (c = dt[pr[i]], k = i + 1; k < n; ++k)
                 if (dt[pr[k]] != c)
                     break;
@@ -140,8 +135,7 @@ ssize_t *repn; /* and its frequency		*/
     if (!pdt) /* no predictor */
     {
         memset(freq, 0, sizeof(freq));
-        for (minc = maxc = dt[0], i = 0; i < n; ++i)
-        {
+        for (minc = maxc = dt[0], i = 0; i < n; ++i) {
             freq[c = dt[i]] += 1;
             if (c < minc)
                 minc = c;
@@ -151,10 +145,8 @@ ssize_t *repn; /* and its frequency		*/
 
         if ((c = minc) == maxc) /* code the run-length only */
             entropy += 1 + vclog(n);
-        else
-        {
-            for (e = 0.; minc <= maxc; ++minc)
-            {
+        else {
+            for (e = 0.; minc <= maxc; ++minc) {
                 if (!freq[minc])
                     continue;
                 e += freq[minc] * vclog(freq[minc]);
@@ -168,15 +160,11 @@ ssize_t *repn; /* and its frequency		*/
             *repc = c;
         if (repn)
             *repn = freq[c];
-    }
-    else
-    {
-        for (pr = pnd->srti, i = 0; i < n; i = k)
-        {
+    } else {
+        for (pr = pnd->srti, i = 0; i < n; i = k) {
             memset(freq, 0, sizeof(freq));
             minc = maxc = dt[pr[i]];
-            for (pc = pdt[pr[i]], k = i + 1; k < n; ++k)
-            {
+            for (pc = pdt[pr[i]], k = i + 1; k < n; ++k) {
                 if (pdt[pr[k]] != pc)
                     break;
                 freq[c = dt[pr[k]]] += 1;
@@ -187,8 +175,7 @@ ssize_t *repn; /* and its frequency		*/
             }
             if (minc == maxc)
                 entropy += 1 + vclog(k - i);
-            else
-            {
+            else {
                 for (e = 0.; minc <= maxc; ++minc)
                     if (freq[minc])
                         e += freq[minc] * vclog(freq[minc]);
@@ -220,8 +207,7 @@ Vcchar_t map[256][256]; /* to count runs	*/
     ssize_t i, k;
     double entropy = 0.;
 
-    for (i = 0; i < n; i = k)
-    {
+    for (i = 0; i < n; i = k) {
         map[pd1[i]][pd2[i]] = dt[i];
         for (k = i + 1; k < n; ++k)
             if (map[pd1[k]][pd2[k]] != dt[k])
@@ -244,11 +230,9 @@ Grdisc_t *disc;
 {
     Plnode_t *node = ( Plnode_t * )arg;
 
-    switch (type)
-    {
+    switch (type) {
     case GR_NODE | GR_CLOSING:
-        if (node->srti)
-        {
+        if (node->srti) {
             free(node->srti);
             node->srti = NIL(ssize_t *);
         }
@@ -273,14 +257,12 @@ Dtdisc_t *disc;
     int d;
 
 #define ISROOT(nn) (!(nn)->node.iedge)
-    if (ISROOT(n1) && ISROOT(n2))
-    {
+    if (ISROOT(n1) && ISROOT(n2)) {
         if ((d = n1->repc - n2->repc) != 0)
             return d;
         if ((d = ( int )(n2->repn - n1->repn)) != 0)
             return d;
-    }
-    else if (ISROOT(n1))
+    } else if (ISROOT(n1))
         return -1;
     else if (ISROOT(n2))
         return 1;
@@ -354,8 +336,8 @@ int flags;    /* control flags	*/
     GRDISC(&grdc, sizeof(Plnode_t), 0, 0, plevent);
     if (!(gr = gropen(&grdc, GR_DIRECTED)))
         goto done;
-    for (n = 0; n < ncols; ++n)
-    { /* create the node corresponding to this column */
+    for (n = 0; n < ncols;
+         ++n) { /* create the node corresponding to this column */
         if (!(nd = ( Plnode_t * )grnode(gr, ( Void_t * )n, 1)))
             goto done;
 
@@ -394,8 +376,7 @@ int flags;    /* control flags	*/
                                 nrows,
                                 NIL(int *),
                                 NIL(ssize_t *));
-                if (w > nd->wght)
-                {
+                if (w > nd->wght) {
                     if (!(ed = gredge(
                           gr, &pd->node, &nd->node, ( Void_t * )0, 1)))
                         goto done;
@@ -411,8 +392,7 @@ int flags;    /* control flags	*/
                                 nrows,
                                 NIL(int *),
                                 NIL(ssize_t *));
-                if (w > pd->wght)
-                {
+                if (w > pd->wght) {
                     if (!(ed = gredge(
                           gr, &nd->node, &pd->node, ( Void_t * )0, 1)))
                         goto done;
@@ -440,8 +420,7 @@ int flags;    /* control flags	*/
     n = -1;
     list = tail = NIL(Plnode_t *);
     memset(map, 0, sizeof(map));
-    while ((nd = ( Plnode_t * )dtfirst(dt)))
-    {
+    while ((nd = ( Plnode_t * )dtfirst(dt))) {
         dtdelete(dt, nd); /* top-sort tree nodes */
         for (ed = nd->node.oedge; ed; ed = ed->onext)
             dtinsert(dt, ed->head);
@@ -465,8 +444,7 @@ int flags;    /* control flags	*/
                                           */
             {
                 for (p = -1, pd = list; pd != nd;
-                     pd = ( Plnode_t * )pd->node.link)
-                {
+                     pd = ( Plnode_t * )pd->node.link) {
                     if (pd->repn >= nrows
                         || pd->node.label == ed->tail->label)
                         continue;
@@ -481,8 +459,7 @@ int flags;    /* control flags	*/
                               data + trans[n].index * nrows,
                               nrows,
                               map);
-                    if (w > nd->wadj)
-                    {
+                    if (w > nd->wadj) {
                         nd->wadj = w;
                         p = ( ssize_t )pd->node.label;
                     }
@@ -507,8 +484,7 @@ done:
     if (dt)
         dtclose(dt);
 
-    if (error && pl)
-    {
+    if (error && pl) {
         vctblfreeplan(pl);
         pl = NIL(Vctblplan_t *);
     }
@@ -560,8 +536,7 @@ Void_t **codep; /* to return the coded string	*/
     vcioinit(&io, code, size);
 
     vcioputu(&io, plan->ncols);
-    for (trans = plan->trans, i = 0; i < plan->ncols; ++i)
-    {
+    for (trans = plan->trans, i = 0; i < plan->ncols; ++i) {
         vcioputu(&io, trans[i].index);
         pred = (pred = trans[i].pred1) < 0 ? 0 : pred + 1;
         vcioputu(&io, pred);
@@ -598,8 +573,7 @@ size_t size;
 
     if (!(coder = vcopen(0, Vchuffman, 0, 0, VC_DECODE)))
         return NIL(Vctblplan_t *);
-    if (!(zip = vcopen(0, Vcdelta, 0, coder, VC_DECODE | VC_CLOSECODER)))
-    {
+    if (!(zip = vcopen(0, Vcdelta, 0, coder, VC_DECODE | VC_CLOSECODER))) {
         vcclose(coder);
         return NIL(Vctblplan_t *);
     }
@@ -619,16 +593,14 @@ size_t size;
     plan->trans = trans = ( Vctblcolumn_t * )(plan + 1);
     plan->zip = NIL(Vcodex_t *);
 
-    for (i = 0; i < ncols; ++i)
-    {
+    for (i = 0; i < ncols; ++i) {
         trans[i].index = vciogetu(&io);
         trans[i].pred1 = ( ssize_t )vciogetu(&io) - 1;
         trans[i].pred2 = ( ssize_t )vciogetu(&io) - 1;
 
         if (trans[i].index < 0 || trans[i].index >= ncols
             || trans[i].pred1 < -1 || trans[i].pred1 >= ncols
-            || trans[i].pred2 < -1 || trans[i].pred2 >= ncols)
-        {
+            || trans[i].pred2 < -1 || trans[i].pred2 >= ncols) {
             vctblfreeplan(plan);
             plan = NIL(Vctblplan_t *);
             goto done;
@@ -644,15 +616,13 @@ size_t size;
 
     if (plan) /* open an encoder in case we need to encode data later */
     {
-        if (!(coder = vcopen(0, Vchuffman, 0, 0, VC_ENCODE)))
-        {
+        if (!(coder = vcopen(0, Vchuffman, 0, 0, VC_ENCODE))) {
             vctblfreeplan(plan);
             plan = NIL(Vctblplan_t *);
             goto done;
         }
         if (!(plan->zip
-              = vcopen(0, Vcdelta, 0, coder, VC_ENCODE | VC_CLOSECODER)))
-        {
+              = vcopen(0, Vcdelta, 0, coder, VC_ENCODE | VC_CLOSECODER))) {
             vcclose(coder);
             vctblfreeplan(plan);
             plan = NIL(Vctblplan_t *);

@@ -160,8 +160,7 @@ showplugin(Dsslib_t *lib,
     int i;
     const char *s;
 
-    if (*sep < 0)
-    {
+    if (*sep < 0) {
         if (lib->meth)
             sfprintf(sfstdout,
                      "%s\t--library=%s --method=%s,${style}\n",
@@ -169,8 +168,7 @@ showplugin(Dsslib_t *lib,
                      lib->name,
                      lib->meth->name);
         if (lib->queries)
-            for (i = 0; s = lib->queries[i].name; i++)
-            {
+            for (i = 0; s = lib->queries[i].name; i++) {
                 if (lib->meth && !streq(lib->meth->name, error_info.id))
                     sfprintf(sfstdout, "%s-", lib->meth->name);
                 else if (!streq(lib->name, error_info.id)
@@ -184,9 +182,7 @@ showplugin(Dsslib_t *lib,
                          error_info.id,
                          s);
             }
-    }
-    else
-    {
+    } else {
         if (*sep)
             sfputc(sfstderr, '\n');
         else
@@ -233,10 +229,8 @@ main(int argc, char **argv)
     plugins = 0;
     status = 0;
     test = 0;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             flags |= DSS_APPEND;
             continue;
@@ -310,8 +304,7 @@ main(int argc, char **argv)
     if (error_info.errors)
         return 1;
     argv += opt_info.index;
-    if (plugins)
-    {
+    if (plugins) {
         if (!(tmp = sfstropen()))
             error(ERROR_SYSTEM | 3, "out of space");
         sep = -streq(plugins, "?list");

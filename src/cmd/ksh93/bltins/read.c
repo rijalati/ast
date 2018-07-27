@@ -74,14 +74,11 @@ json2sh(Shell_t *shp, Sfio_t *in, Sfio_t *out)
     size_t here, offset = stktell(shp->stk);
     char *start;
     bool isname, isnull = false;
-    while ((c = sfgetc(in)) > 0)
-    {
+    while ((c = sfgetc(in)) > 0) {
         if (c == '\n')
             line++;
-        if (state == 0)
-        {
-            switch (c)
-            {
+        if (state == 0) {
+            switch (c) {
             case '\t':
             case ' ':
                 if (lastc == ' ' || lastc == '\t')
@@ -108,34 +105,27 @@ json2sh(Shell_t *shp, Sfio_t *in, Sfio_t *out)
             sfputc(out, c);
             if (level == 0)
                 break;
-        }
-        else if (state == 1)
-        {
+        } else if (state == 1) {
             if (c == '"' && lastc != '\\')
                 state = 2;
             else if (state == 1 && !isalnum(c) && c != '_')
                 isname = false;
             sfputc(shp->stk, c);
-        }
-        else if (state == 2)
-        {
+        } else if (state == 2) {
             char *last;
             if (c == ' ' || c == '\t')
                 continue;
-            if (c == ':')
-            {
+            if (c == ':') {
                 int len;
                 while ((c = sfgetc(in)) && isblank(c))
                     ;
                 sfungetc(in, c);
-                if (!strchr("[{,\"", c))
-                {
+                if (!strchr("[{,\"", c)) {
                     if (isdigit(c) || c == '.' || c == '-')
                         sfwrite(out, "float ", 6);
                     else if (c == 't' || c == 'f')
                         sfwrite(out, "bool ", 5);
-                    else if (c == 'n')
-                    {
+                    else if (c == 'n') {
                         char buff[4];
                         isnull = true;
                         sfread(in, buff, 4);
@@ -147,14 +137,11 @@ json2sh(Shell_t *shp, Sfio_t *in, Sfio_t *out)
                 if (isname && !isalpha(*(start + 1)) && c != '_')
                     isname = false;
                 len = here - offset - 2;
-                if (!isname)
-                {
+                if (!isname) {
                     char *sp;
                     sfwrite(out, ".[", 2);
-                    for (sp = start + 1; len-- > 0; sp++)
-                    {
-                        if (*sp == '$')
-                        {
+                    for (sp = start + 1; len-- > 0; sp++) {
+                        if (*sp == '$') {
                             if (sp > start + 1)
                                 sfwrite(out, start, sp - start);
                             sfputc(out, '\\');
@@ -175,12 +162,10 @@ json2sh(Shell_t *shp, Sfio_t *in, Sfio_t *out)
                 if (c == '{')
                     c = ' ';
             }
-            if (c == ',' || c == '\n' || c == '}' || c == ']' || c == '{')
-            {
+            if (c == ',' || c == '\n' || c == '}' || c == ']' || c == '{') {
                 start = stkptr(shp->stk, offset);
                 here = stktell(shp->stk);
-                if (here > 1)
-                {
+                if (here > 1) {
                     *stkptr(shp->stk, here - 1) = 0;
                     stresc(start + 1);
                     sfputr(out, sh_fmtq(start + 1), -1);
@@ -219,14 +204,12 @@ b_read(int argc, char *argv[], Shbltin_t *context)
     void *readfn = 0;
     static char default_prompt[3] = { ESC, ESC };
     rp = ( struct read_save * )(context->data);
-    if (argc == 0)
-    {
+    if (argc == 0) {
         if (rp)
             free(( void * )rp);
         return (0);
     }
-    if (rp)
-    {
+    if (rp) {
         flags = rp->flags;
         timeout = rp->timeout;
         fd = rp->fd;
@@ -237,8 +220,7 @@ b_read(int argc, char *argv[], Shbltin_t *context)
         goto bypass;
     }
     while ((r = optget(argv, sh_optread)))
-        switch (r)
-        {
+        switch (r) {
         case 'A':
             flags |= A_FLAG;
             break;
@@ -251,8 +233,7 @@ b_read(int argc, char *argv[], Shbltin_t *context)
             timeout = sec ? 1000 * sec : 1;
             break;
         case 'd':
-            if (opt_info.arg && *opt_info.arg != '\n')
-            {
+            if (opt_info.arg && *opt_info.arg != '\n') {
                 char *cp = opt_info.arg;
                 flags &= ((1 << D_FLAG + 1) - 1);
                 flags |= (mbchar(cp) << D_FLAG + 1) | (1 << D_FLAG);
@@ -264,8 +245,7 @@ b_read(int argc, char *argv[], Shbltin_t *context)
                    && (!strmatch(opt_info.arg, "+(\\w)")
                        || isdigit(*opt_info.arg)))
                 name = opt_info.arg;
-            else
-            {
+            else {
                 /* for backward compatibility */
                 fd = shp->cpipe[0];
                 argv--;
@@ -293,8 +273,7 @@ b_read(int argc, char *argv[], Shbltin_t *context)
             flags |= SS_FLAG;
             break;
         case 'u':
-            if (opt_info.arg[0] == 'p' && opt_info.arg[1] == 0)
-            {
+            if (opt_info.arg[0] == 'p' && opt_info.arg[1] == 0) {
                 if ((fd = shp->cpipe[0]) <= 0)
                     errormsg(SH_DICT, ERROR_exit(1), e_query);
                 break;
@@ -314,8 +293,8 @@ b_read(int argc, char *argv[], Shbltin_t *context)
             break;
         case ':':
             if (shp->cpipe[0] > 0
-                && strcmp(opt_info.arg, "-p: prompt argument expected") == 0)
-            {
+                && strcmp(opt_info.arg, "-p: prompt argument expected")
+                   == 0) {
                 fd = shp->cpipe[0];
                 break;
             }
@@ -328,10 +307,8 @@ b_read(int argc, char *argv[], Shbltin_t *context)
     argv += opt_info.index;
     if (error_info.errors)
         errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
-    if (method)
-    {
-        for (mindex = 0; methods[mindex].name; mindex++)
-        {
+    if (method) {
+        for (mindex = 0; methods[mindex].name; mindex++) {
             if (strcmp(method, methods[mindex].name) == 0)
                 break;
         }
@@ -352,8 +329,7 @@ b_read(int argc, char *argv[], Shbltin_t *context)
     else
         r = 0;
     if (argc == fixargs
-        && (rp = newof(NIL(struct read_save *), struct read_save, 1, 0)))
-    {
+        && (rp = newof(NIL(struct read_save *), struct read_save, 1, 0))) {
         context->data = ( void * )rp;
         rp->fd = fd;
         rp->flags = flags;
@@ -366,8 +342,7 @@ b_read(int argc, char *argv[], Shbltin_t *context)
     }
 bypass:
     shp->prompt = default_prompt;
-    if (r && (shp->prompt = ( char * )sfreserve(sfstderr, r, SF_LOCKR)))
-    {
+    if (r && (shp->prompt = ( char * )sfreserve(sfstderr, r, SF_LOCKR))) {
         memcpy(shp->prompt, name, r);
         sfwrite(sfstderr, shp->prompt, r - 1);
     }
@@ -378,8 +353,7 @@ bypass:
     r = sh_readline(shp, argv, readfn, fd, flags, len, timeout);
     shp->nextprompt = save_prompt;
     if (r == 0
-        && (r = (sfeof(shp->sftable[fd]) || sferror(shp->sftable[fd]))))
-    {
+        && (r = (sfeof(shp->sftable[fd]) || sferror(shp->sftable[fd])))) {
         if (fd == shp->cpipe[0] && errno != EINTR)
             sh_pclose(shp->cpipe);
     }
@@ -447,8 +421,7 @@ sh_readline(Shell_t *shp,
     if (!(iop = shp->sftable[fd]) && !(iop = sh_iostream(shp, fd, fd)))
         return (1);
     sh_stats(STAT_READS);
-    if (names && (name = *names))
-    {
+    if (names && (name = *names)) {
         Namval_t *mp;
         if (val = strchr(name, '?'))
             *val = 0;
@@ -459,8 +432,7 @@ sh_readline(Shell_t *shp,
             np = mp;
         if ((flags & V_FLAG) && shp->gd->ed_context)
             (( struct edit * )shp->gd->ed_context)->e_default = np;
-        if (flags & A_FLAG)
-        {
+        if (flags & A_FLAG) {
             Namarr_t *ap;
             flags &= ~A_FLAG;
             array_index = 1;
@@ -470,9 +442,7 @@ sh_readline(Shell_t *shp,
             if ((ap = nv_arrayptr(np)) && !ap->fun)
                 ap->nelem--;
             nv_putsub(np, NIL(char *), 0L, 0);
-        }
-        else if (flags & C_FLAG)
-        {
+        } else if (flags & C_FLAG) {
             char *sp = np->nvenv;
             if (strchr(name, '['))
                 nq = np;
@@ -482,14 +452,11 @@ sh_readline(Shell_t *shp,
                 np->nvenv = sp;
             nv_setvtree(np);
             *( void ** )(np->nvfun + 1) = readfn;
-        }
-        else
+        } else
             name = *++names;
         if (val)
             *val = '?';
-    }
-    else
-    {
+    } else {
         name = 0;
         if (dtvnext(shp->var_tree) || shp->namespace)
             np = nv_open(nv_name(REPLYNOD), shp->var_tree, 0);
@@ -502,8 +469,7 @@ sh_readline(Shell_t *shp,
     {
         if ((shp->fdstatus[fd] & IOTTY) && !keytrap)
             tty_raw(sffileno(iop), 1);
-        if (!(flags & (N_FLAG | NN_FLAG)))
-        {
+        if (!(flags & (N_FLAG | NN_FLAG))) {
             delim = (( unsigned )flags) >> (D_FLAG + 1);
             ep->e_nttyparm.c_cc[VEOL] = delim;
             ep->e_nttyparm.c_lflag |= ISIG;
@@ -511,8 +477,7 @@ sh_readline(Shell_t *shp,
         }
     }
     binary = nv_isattr(np, NV_BINARY);
-    if (!binary && !(flags & (N_FLAG | NN_FLAG)))
-    {
+    if (!binary && !(flags & (N_FLAG | NN_FLAG))) {
         Namval_t *mp;
         /* set up state table based on IFS */
         ifs = nv_getval(mp = sh_scoped(shp, IFSNOD));
@@ -522,8 +487,7 @@ sh_readline(Shell_t *shp,
             shp->ifstable['\\'] = S_ESC;
         if (delim > 0)
             shp->ifstable[delim] = S_NL;
-        if (delim != '\n')
-        {
+        if (delim != '\n') {
             if (ifs && strchr(ifs, '\n'))
                 shp->ifstable['\n'] = S_DELIM;
             else
@@ -531,17 +495,14 @@ sh_readline(Shell_t *shp,
             nv_putval(mp, ifs, NV_RDONLY);
         }
         shp->ifstable[0] = S_EOF;
-        if ((flags & SS_FLAG))
-        {
+        if ((flags & SS_FLAG)) {
             shp->ifstable['"'] = S_QUOTE;
             shp->ifstable['\r'] = S_ERR;
         }
     }
     sfclrerr(iop);
-    for (nfp = np->nvfun; nfp; nfp = nfp->next)
-    {
-        if (nfp->disc && nfp->disc->readf)
-        {
+    for (nfp = np->nvfun; nfp; nfp = nfp->next) {
+        if (nfp->disc && nfp->disc->readf) {
             Namval_t *mp;
             if (nq)
                 mp = nq;
@@ -551,22 +512,19 @@ sh_readline(Shell_t *shp,
                 return (c);
         }
     }
-    if (binary && !(flags & (N_FLAG | NN_FLAG)))
-    {
+    if (binary && !(flags & (N_FLAG | NN_FLAG))) {
         flags |= NN_FLAG;
         size = nv_size(np);
     }
     was_write = (sfset(iop, SF_WRITE, 0) & SF_WRITE) != 0;
     if (sffileno(iop) == 0)
         was_share = (sfset(iop, SF_SHARE, shp->redir0 != 2) & SF_SHARE) != 0;
-    if (timeout || (shp->fdstatus[fd] & (IOTTY | IONOSEEK)))
-    {
+    if (timeout || (shp->fdstatus[fd] & (IOTTY | IONOSEEK))) {
         sh_pushcontext(shp, &buff, 1);
         jmpval = sigsetjmp(buff.buff, 0);
         if (jmpval)
             goto done;
-        if (timeout)
-        {
+        if (timeout) {
             struct timeout tmout;
             tmout.shp = shp;
             tmout.iop = iop;
@@ -574,35 +532,27 @@ sh_readline(Shell_t *shp,
             = ( void * )sh_timeradd(timeout, 0, timedout, ( void * )&tmout);
         }
     }
-    if (flags & (N_FLAG | NN_FLAG))
-    {
+    if (flags & (N_FLAG | NN_FLAG)) {
         char buf[256], *var = buf, *cur, *end, *up, *v;
         /* reserved buffer */
-        if ((c = size) >= sizeof(buf))
-        {
+        if ((c = size) >= sizeof(buf)) {
             if (!(var = ( char * )malloc(c + 1)))
                 sh_exit(shp, 1);
             end = var + c;
-        }
-        else
+        } else
             end = var + sizeof(buf) - 1;
         up = cur = var;
         if ((sfset(iop, SF_SHARE, 1) & SF_SHARE) && sffileno(iop) != 0)
             was_share = 1;
-        if (size == 0)
-        {
+        if (size == 0) {
             cp = sfreserve(iop, 0, 0);
             c = 0;
-        }
-        else
-        {
+        } else {
             ssize_t m;
             int f;
-            for (;;)
-            {
+            for (;;) {
                 c = size;
-                if (keytrap)
-                {
+                if (keytrap) {
                     cp = 0;
                     f = 0;
                     m = 0;
@@ -610,45 +560,35 @@ sh_readline(Shell_t *shp,
                         m++;
                     if (m > 0)
                         cp = ( unsigned char * )buf;
-                }
-                else
-                {
+                } else {
                     f = 1;
                     if (cp = sfreserve(iop, c, SF_LOCKR))
                         m = sfvalue(iop);
-                    else if (flags & NN_FLAG)
-                    {
+                    else if (flags & NN_FLAG) {
                         c = size;
                         m = (cp = sfreserve(iop, c, 0)) ? sfvalue(iop) : 0;
                         f = 0;
-                    }
-                    else
-                    {
+                    } else {
                         c = sfvalue(iop);
                         m = (cp = sfreserve(iop, c, SF_LOCKR)) ? sfvalue(iop)
                                                                : 0;
                     }
                 }
                 if (m > 0 && (flags & N_FLAG) && !binary
-                    && (v = memchr(cp, '\n', m)))
-                {
+                    && (v = memchr(cp, '\n', m))) {
                     *v++ = 0;
                     m = v - ( char * )cp;
                 }
                 if ((c = m) > size)
                     c = size;
-                if (c > 0)
-                {
-                    if (c > (end - cur))
-                    {
+                if (c > 0) {
+                    if (c > (end - cur)) {
                         ssize_t cx = cur - var, ux = up - var;
                         m = (end - var) + (c - (end - cur));
-                        if (var == buf)
-                        {
+                        if (var == buf) {
                             v = ( char * )malloc(m + 1);
                             var = memcpy(v, var, cur - var);
-                        }
-                        else
+                        } else
                             var = newof(var, char, m, 1);
                         end = var + m;
                         cur = var + cx;
@@ -660,16 +600,14 @@ sh_readline(Shell_t *shp,
                         sfread(iop, cp, c);
                     cur += c;
 #if SHOPT_MULTIBYTE
-                    if (!binary && mbwide())
-                    {
+                    if (!binary && mbwide()) {
                         int x;
                         int z;
 
                         mbinit();
                         *cur = 0;
                         x = z = 0;
-                        while (up < cur && (z = mbsize(up)) > 0)
-                        {
+                        while (up < cur && (z = mbsize(up)) > 0) {
                             up += z;
                             x++;
                         }
@@ -685,8 +623,7 @@ sh_readline(Shell_t *shp,
                     cur = var;
 #endif
                 *cur = 0;
-                if (c >= size || (flags & N_FLAG) || m == 0)
-                {
+                if (c >= size || (flags & N_FLAG) || m == 0) {
                     if (m)
                         sfclrerr(iop);
                     break;
@@ -696,13 +633,12 @@ sh_readline(Shell_t *shp,
         }
         if (timeslot)
             timerdel(timeslot);
-        if (binary && !((size = nv_size(np)) && nv_isarray(np) && c != size))
-        {
+        if (binary
+            && !((size = nv_size(np)) && nv_isarray(np) && c != size)) {
             int optimize = !np->nvfun || !nv_hasdisc(np, &OPTIMIZE_disc);
             if (optimize && (c == size) && np->nvalue.cp && !nv_isarray(np))
                 memcpy(( char * )np->nvalue.cp, var, c);
-            else
-            {
+            else {
                 Namval_t *mp;
                 if (var == buf)
                     var = memdup(var, c + 1);
@@ -712,33 +648,27 @@ sh_readline(Shell_t *shp,
                     && (mp = ( Namval_t * )np->nvenv))
                     nv_setsize(mp, c);
             }
-        }
-        else
-        {
+        } else {
             nv_putval(np, var, 0);
             if (var != buf)
                 free(( void * )var);
         }
         goto done;
-    }
-    else if (cp = ( unsigned char * )sfgetr(iop, delim, 0))
+    } else if (cp = ( unsigned char * )sfgetr(iop, delim, 0))
         c = sfvalue(iop);
-    else if (cp = ( unsigned char * )sfgetr(iop, delim, -1))
-    {
+    else if (cp = ( unsigned char * )sfgetr(iop, delim, -1)) {
         c = sfvalue(iop) + 1;
         if (!sferror(iop) && sfgetc(iop) >= 0)
             errormsg(SH_DICT, ERROR_exit(1), e_overlimit, "line length");
     }
     if (timeslot)
         timerdel(timeslot);
-    if ((flags & S_FLAG) && !shp->gd->hist_ptr)
-    {
+    if ((flags & S_FLAG) && !shp->gd->hist_ptr) {
         sh_histinit(( void * )shp);
         if (!shp->gd->hist_ptr)
             flags &= ~S_FLAG;
     }
-    if (cp)
-    {
+    if (cp) {
         cpmax = cp + c;
 #if SHOPT_CRNL
         if (delim == '\n' && c >= 2 && cpmax[-2] == '\r')
@@ -758,51 +688,42 @@ sh_readline(Shell_t *shp,
             /* strip trailing delimiters */
             if (cpmax[-1] == '\n')
                 cpmax--;
-            if (cpmax > cp)
-            {
+            if (cpmax > cp) {
                 while ((c = shp->ifstable[*--cpmax]) == S_DELIM
                        || c == S_SPACE)
                     ;
                 cpmax[1] = 0;
-            }
-            else
+            } else
                 *cpmax = 0;
-            if (nv_isattr(np, NV_RDONLY))
-            {
+            if (nv_isattr(np, NV_RDONLY)) {
                 errormsg(SH_DICT, ERROR_warn(0), e_readonly, nv_name(np));
                 jmpval = 1;
-            }
-            else
+            } else
                 nv_putval(np, ( char * )cp - 1, 0);
             goto done;
         }
 #endif /* !SHOPT_MULTIBYTE */
-    }
-    else
+    } else
         c = S_NL;
     shp->nextprompt = 2;
     rel = stktell(shp->stk);
     /* val==0 at the start of a field */
     val = 0;
     del = 0;
-    while (1)
-    {
-        switch (c)
-        {
+    while (1) {
+        switch (c) {
 #if SHOPT_MULTIBYTE
         case S_MBYTE:
             if (val == 0)
                 val = ( char * )(cp - 1);
-            if (sh_strchr(ifs, ( char * )cp - 1, cpmax - cp + 1) >= 0)
-            {
+            if (sh_strchr(ifs, ( char * )cp - 1, cpmax - cp + 1) >= 0) {
                 c = mbsize(( char * )cp - 1);
                 if (name)
                     cp[-1] = 0;
                 if (c > 1)
                     cp += (c - 1);
                 c = S_DELIM;
-            }
-            else
+            } else
                 c = 0;
             continue;
 #endif /*SHOPT_MULTIBYTE */
@@ -812,14 +733,12 @@ sh_readline(Shell_t *shp,
                 c = -1;
             else
                 inquote = !inquote;
-            if (val)
-            {
+            if (val) {
                 sfputr(shp->stk, val, -1);
                 use_stak = 1;
                 *val = 0;
             }
-            if (c == -1)
-            {
+            if (c == -1) {
                 sfputc(shp->stk, '"');
                 c = shp->ifstable[*cp++];
             }
@@ -830,8 +749,7 @@ sh_readline(Shell_t *shp,
                 was_escape = 1;
             else
                 c = 0;
-            if (val)
-            {
+            if (val) {
                 sfputr(shp->stk, val, -1);
                 use_stak = 1;
                 was_escape = 1;
@@ -843,14 +761,12 @@ sh_readline(Shell_t *shp,
             cp++;
         case S_EOF:
             /* check for end of buffer */
-            if (val && *val)
-            {
+            if (val && *val) {
                 sfputr(shp->stk, val, -1);
                 use_stak = 1;
             }
             val = 0;
-            if (cp >= cpmax)
-            {
+            if (cp >= cpmax) {
                 c = S_NL;
                 break;
             }
@@ -861,15 +777,13 @@ sh_readline(Shell_t *shp,
                 c = 0;
             continue;
         case S_NL:
-            if (was_escape)
-            {
+            if (was_escape) {
                 was_escape = 0;
                 if (cp = ( unsigned char * )sfgetr(iop, delim, 0))
                     c = sfvalue(iop);
                 else if (cp = ( unsigned char * )sfgetr(iop, delim, -1))
                     c = sfvalue(iop) + 1;
-                if (cp)
-                {
+                if (cp) {
                     if (flags & S_FLAG)
                         sfwrite(shp->gd->hist_ptr->histfp, ( char * )cp, c);
                     cpmax = cp + c;
@@ -891,15 +805,12 @@ sh_readline(Shell_t *shp,
             if (!val)
                 continue;
 #if SHOPT_MULTIBYTE
-            if (c == S_MBYTE)
-            {
-                if (sh_strchr(ifs, ( char * )cp - 1, cpmax - cp + 1) >= 0)
-                {
+            if (c == S_MBYTE) {
+                if (sh_strchr(ifs, ( char * )cp - 1, cpmax - cp + 1) >= 0) {
                     if ((c = mbsize(( char * )cp - 1)) > 1)
                         cp += (c - 1);
                     c = S_DELIM;
-                }
-                else
+                } else
                     c = 0;
             }
 #endif /* SHOPT_MULTIBYTE */
@@ -910,8 +821,7 @@ sh_readline(Shell_t *shp,
         case S_DELIM:
             if (!del)
                 del = cp - 1;
-            if (name)
-            {
+            if (name) {
                 /* skip over trailing blanks */
                 while ((c = shp->ifstable[*cp++]) == S_SPACE)
                     ;
@@ -920,41 +830,31 @@ sh_readline(Shell_t *shp,
             /* FALL THRU */
 
         case 0:
-            if (val == 0 || was_escape)
-            {
+            if (val == 0 || was_escape) {
                 val = ( char * )(cp - 1);
                 was_escape = 0;
             }
             /* skip over word characters */
             wrd = -1;
-            while (1)
-            {
+            while (1) {
                 while ((c = shp->ifstable[*cp++]) == 0)
                     if (!wrd)
                         wrd = 1;
-                if (inquote)
-                {
-                    if (c == S_QUOTE)
-                    {
-                        if (shp->ifstable[*cp] == S_QUOTE)
-                        {
-                            if (val)
-                            {
+                if (inquote) {
+                    if (c == S_QUOTE) {
+                        if (shp->ifstable[*cp] == S_QUOTE) {
+                            if (val) {
                                 sfwrite(
                                 shp->stk, val, cp - ( unsigned char * )val);
                                 use_stak = 1;
                             }
                             val = ( char * )++cp;
-                        }
-                        else
+                        } else
                             break;
                     }
-                    if (c && c != S_EOF)
-                    {
-                        if (c == S_NL)
-                        {
-                            if (val)
-                            {
+                    if (c && c != S_EOF) {
+                        if (c == S_NL) {
+                            if (val) {
                                 sfwrite(
                                 shp->stk, val, cp - ( unsigned char * )val);
                                 use_stak = 1;
@@ -986,19 +886,16 @@ sh_readline(Shell_t *shp,
         /* assign value and advance to next variable */
         if (!val)
             val = "";
-        if (use_stak)
-        {
+        if (use_stak) {
             sfputr(shp->stk, val, 0);
             val = stkptr(shp->stk, rel);
         }
-        if (!name && *val)
-        {
+        if (!name && *val) {
             /* strip off trailing space delimiters */
             unsigned char *vp = ( unsigned char * )val + strlen(val);
             while (shp->ifstable[*--vp] == S_SPACE)
                 ;
-            if (vp == del)
-            {
+            if (vp == del) {
                 if (vp == ( unsigned char * )val)
                     vp--;
                 else
@@ -1007,53 +904,43 @@ sh_readline(Shell_t *shp,
             }
             vp[1] = 0;
         }
-        if (nv_isattr(np, NV_RDONLY))
-        {
+        if (nv_isattr(np, NV_RDONLY)) {
             errormsg(SH_DICT, ERROR_warn(0), e_readonly, nv_name(np));
             jmpval = 1;
-        }
-        else
+        } else
             nv_putval(np, val, 0);
         val = 0;
         del = 0;
-        if (use_stak)
-        {
+        if (use_stak) {
             stkseek(shp->stk, rel);
             use_stak = 0;
         }
-        if (array_index)
-        {
+        if (array_index) {
             nv_putsub(np, NIL(char *), array_index++, 0);
             if (c != S_NL)
                 continue;
             name = *++names;
         }
-        while (1)
-        {
+        while (1) {
             if (sh_isoption(shp, SH_ALLEXPORT) && !strchr(nv_name(np), '.')
-                && !nv_isattr(np, NV_EXPORT))
-            {
+                && !nv_isattr(np, NV_EXPORT)) {
                 nv_onattr(np, NV_EXPORT);
                 sh_envput(shp, np);
             }
-            if (name)
-            {
+            if (name) {
                 nv_close(np);
                 np = nv_open(name, shp->var_tree, NV_NOASSIGN | NV_VARNAME);
                 name = *++names;
-            }
-            else
+            } else
                 np = 0;
             if (c != S_NL)
                 break;
             if (!np)
                 goto done;
-            if (nv_isattr(np, NV_RDONLY))
-            {
+            if (nv_isattr(np, NV_RDONLY)) {
                 errormsg(SH_DICT, ERROR_warn(0), e_readonly, nv_name(np));
                 jmpval = 1;
-            }
-            else
+            } else
                 nv_putval(np, "", 0);
         }
     }

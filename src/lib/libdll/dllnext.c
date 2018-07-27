@@ -77,32 +77,23 @@ _dll_next(int flags, _DLL_RLD_SYM_TYPE *here)
 
 #    if DEBUG
     if (getenv("DLL_DEBUG")
-        && (vp = ( char * )_rld_new_interface(_RLD_FIRST_PATHNAME)))
-    {
-        do
-        {
-            if (strcmp(vp, "MAIN") && (lp = dllopen(vp, flags)))
-            {
+        && (vp = ( char * )_rld_new_interface(_RLD_FIRST_PATHNAME))) {
+        do {
+            if (strcmp(vp, "MAIN") && (lp = dllopen(vp, flags))) {
                 if (xr = ( Write_f )dlsym(lp, "write"))
                     wr = xr;
             }
         } while (vp = ( char * )_rld_new_interface(_RLD_NEXT_PATHNAME));
     }
 #    endif
-    if (vp = ( char * )_rld_new_interface(_RLD_FIRST_PATHNAME))
-    {
-        do
-        {
-            if (lp = dllopen(strcmp(vp, "MAIN") ? vp : ( char * )0, flags))
-            {
-                if (found)
-                {
+    if (vp = ( char * )_rld_new_interface(_RLD_FIRST_PATHNAME)) {
+        do {
+            if (lp = dllopen(strcmp(vp, "MAIN") ? vp : ( char * )0, flags)) {
+                if (found) {
                     b = e = 0;
                     s = vp;
-                    for (;;)
-                    {
-                        switch (*s++)
-                        {
+                    for (;;) {
+                        switch (*s++) {
                         case 0:
                             break;
                         case '/':
@@ -118,8 +109,7 @@ _dll_next(int flags, _DLL_RLD_SYM_TYPE *here)
                         }
                         break;
                     }
-                    if (b && e)
-                    {
+                    if (b && e) {
                         s = dummy;
                         *s++ = '_';
                         *s++ = '_';
@@ -128,14 +118,12 @@ _dll_next(int flags, _DLL_RLD_SYM_TYPE *here)
                         b = "_dummy";
                         while (*s++ = *b++)
                             ;
-                        if (dlsym(lp, dummy))
-                        {
+                        if (dlsym(lp, dummy)) {
                             dlclose(lp);
                             lp = 0;
                         }
                     }
-                    if (lp)
-                    {
+                    if (lp) {
 #    if DEBUG
                         if (wr)
                             (*wr)(2,
@@ -152,10 +140,8 @@ _dll_next(int flags, _DLL_RLD_SYM_TYPE *here)
                         buf,
                         sfsprintf(buf, sizeof(buf), "dll: skip %s\n", vp));
 #    endif
-                }
-                else if (( _DLL_RLD_SYM_TYPE * )dlsym(lp, _DLL_RLD_SYM_STR)
-                         == here)
-                {
+                } else if (( _DLL_RLD_SYM_TYPE * )dlsym(lp, _DLL_RLD_SYM_STR)
+                           == here) {
 #    if DEBUG
                     if (wr)
                         (*wr)(
@@ -204,26 +190,22 @@ dllnext(int flags)
 #else
     path = next;
 #    if _dll_DYNAMIC
-    for (map = _DYNAMIC.ld_un.ld_1->ld_loaded; map; map = map->lm_next)
-    {
+    for (map = _DYNAMIC.ld_un.ld_1->ld_loaded; map; map = map->lm_next) {
         b = 0;
         s = map->lm_name;
         while (*s)
             if (*s++ == '/')
                 b = s;
         if (b && b[0] == 'l' && b[1] == 'i' && b[2] == 'b' && b[3] == 'c'
-            && b[4] == '.')
-        {
+            && b[4] == '.') {
             path = map->lm_name;
             break;
         }
     }
 #    endif
     ver = path + strlen(path);
-    while (!(dll = dllopen(path, flags)))
-    {
-        do
-        {
+    while (!(dll = dllopen(path, flags))) {
+        do {
             if (ver <= path)
                 return 0;
         } while (*--ver != '.');

@@ -184,8 +184,7 @@ nextchar(Tr_t *tr)
      * tr.count>0 when tr.type==1 string contains x*count
      */
 
-    if (tr->count)
-    {
+    if (tr->count) {
         if (tr->count > 0)
             tr->count--;
         return tr->prev;
@@ -196,17 +195,13 @@ nextchar(Tr_t *tr)
      */
 
 next:
-    if (tr->last >= 0)
-    {
-        while (++tr->prev <= tr->last)
-        {
-            if (tr->isit)
-            {
+    if (tr->last >= 0) {
+        while (++tr->prev <= tr->last) {
+            if (tr->isit) {
                 if (!(*tr->isit)(tr->prev))
                     continue;
             }
-            if (tr->iseq)
-            {
+            if (tr->iseq) {
                 if ((c = mbtconv(buf, tr->prev, &tr->q)) <= 0
                     || regnexec(tr->iseq, buf, c, 0, NiL, 0))
                     continue;
@@ -218,8 +213,7 @@ next:
         }
         if (tr->isit)
             tr->isit = 0;
-        else if (tr->iseq)
-        {
+        else if (tr->iseq) {
             regfree(tr->iseq);
             tr->iseq = 0;
         }
@@ -229,8 +223,7 @@ next:
         mbtinit(&tr->q);
         mbtchar(&w, tr->hold, MB_LEN_MAX, &tr->q);
     }
-    switch (c = mbtchar(&w, tr->next, MB_LEN_MAX, &tr->q))
-    {
+    switch (c = mbtchar(&w, tr->next, MB_LEN_MAX, &tr->q)) {
     case -1:
         c = *(tr->next - 1);
         if (tr->warn)
@@ -247,21 +240,16 @@ next:
         c = chresc(( char * )tr->next - 1, ( char ** )&tr->next);
         break;
     case '[':
-        switch (*tr->next)
-        {
+        switch (*tr->next) {
         case ':':
             f = 0;
-            if (tr->convert)
-            {
+            if (tr->convert) {
                 c = *(tr->next + 1);
-                if (tr->convert == c || tr->type && !tr->position)
-                {
+                if (tr->convert == c || tr->type && !tr->position) {
                     c = *tr->next;
                     goto member;
-                }
-                else if (!strncmp(( char * )tr->next, ":lower:", 7)
-                         || !strncmp(( char * )tr->next, ":upper:", 7))
-                {
+                } else if (!strncmp(( char * )tr->next, ":lower:", 7)
+                           || !strncmp(( char * )tr->next, ":upper:", 7)) {
                     f = tr->isit;
                     tr->convert = c;
                     c = tr->next - tr->base;
@@ -271,8 +259,7 @@ next:
                         return -2;
                 }
             }
-            if (!(tr->isit = regclass(( char * )tr->next, ( char ** )&e)))
-            {
+            if (!(tr->isit = regclass(( char * )tr->next, ( char ** )&e))) {
                 if (f)
                     tr->isit = f;
                 c = ':';
@@ -288,10 +275,8 @@ next:
         case '=':
             if ((q = regcollate(
                  ( char * )tr->next, ( char ** )&e, buf, sizeof(buf), &w))
-                >= 0)
-            {
-                if (*tr->next == '=' && q > 0)
-                {
+                >= 0) {
+                if (*tr->next == '=' && q > 0) {
                     sfsprintf(
                     buf, sizeof(buf), "^[[%-.*s]$", e - tr->next, tr->next);
                     if (c = regcomp(&tr->eqre, buf, REG_EXTENDED))
@@ -308,20 +293,17 @@ next:
             }
             /*FALLTHROUGH*/
         member:
-            if (*(e = tr->next + 1) && *e != ']')
-            {
+            if (*(e = tr->next + 1) && *e != ']') {
                 while (*++e && *e != c && *e != ']')
                     ;
                 if (*e != ']' && *++e == ']')
                     return -2;
             }
         default:
-            if (!tr->level)
-            {
+            if (!tr->level) {
                 tr->level++;
                 c = nextchar(tr);
-                if (tr->type == 1 && *tr->next == '*')
-                {
+                if (tr->type == 1 && *tr->next == '*') {
                     e = tr->next + 1;
                     if (!(tr->count = ( int )strtol(
                           ( char * )tr->next + 1, ( char ** )&tr->next, 0))
@@ -329,8 +311,7 @@ next:
                         tr->count = -1;
                     if (*tr->next++ != ']')
                         return -2;
-                    if (tr->count < 0)
-                    {
+                    if (tr->count < 0) {
                         /*
                          * tr->src chars total
                          * tr->dst chars so far
@@ -345,8 +326,7 @@ next:
                         while (nextchar(&peek) >= 0)
                             peek.dst++;
                         tr->count = tr->src - peek.dst;
-                    }
-                    else if (tr->count > tr->chars)
+                    } else if (tr->count > tr->chars)
                         tr->count = tr->chars;
                     if (!tr->count)
                         goto next;
@@ -358,8 +338,7 @@ next:
         }
         break;
     case '-':
-        if (tr->prev >= 0 && tr->next != tr->hold && *tr->next)
-        {
+        if (tr->prev >= 0 && tr->next != tr->hold && *tr->next) {
             c = tr->prev;
             tr->last = nextchar(tr);
             if (c > tr->last)
@@ -369,8 +348,7 @@ next:
         }
         break;
     case ']':
-        if (tr->level > 0 && tr->next > tr->base + 2)
-        {
+        if (tr->level > 0 && tr->next > tr->base + 2) {
             tr->level--;
             c = nextchar(tr);
         }
@@ -401,8 +379,7 @@ tropen(unsigned char *src,
     m = mbwide() ? 0x110000 : 0x100;
     z = 0x100;
     if (!(tr = newof(0, Tr_t, 1, (m - 1) * sizeof(uint32_t)))
-        || !(set = newof(0, uint32_t, z, 0)))
-    {
+        || !(set = newof(0, uint32_t, z, 0))) {
         if (tr)
             free(tr);
         error(2, "out of space [code]");
@@ -415,8 +392,7 @@ tropen(unsigned char *src,
     error(-1, "AHA#%d m=%d tr=%p set=%p", __LINE__, m, tr, set);
 #endif
     tr->chars = m;
-    switch (flags & (TR_DELETE | TR_SQUEEZE))
-    {
+    switch (flags & (TR_DELETE | TR_SQUEEZE)) {
     case TR_DELETE:
     case TR_SQUEEZE:
     case TR_DELETE | TR_SQUEEZE:
@@ -432,20 +408,16 @@ tropen(unsigned char *src,
     for (n = 0; n < m; n++)
         tr->code[n] = n;
     n = 0;
-    if (src)
-    {
+    if (src) {
         setchar(tr, src, 0);
-        while ((c = nextchar(tr)) >= 0)
-        {
+        while ((c = nextchar(tr)) >= 0) {
             tr->code[c] |= HITBIT;
 #if DEBUG_TRACE
             error(-1, "src %d '%c'", n, c);
 #endif
-            if (n >= z)
-            {
+            if (n >= z) {
                 z *= 2;
-                if (!(set = newof(set, uint32_t, z, 0)))
-                {
+                if (!(set = newof(set, uint32_t, z, 0))) {
                     error(ERROR_SYSTEM | 2, "out of memory");
                     goto big;
                 }
@@ -457,16 +429,12 @@ tropen(unsigned char *src,
         if (c < -1)
             goto bad;
     }
-    if (flags & TR_COMPLEMENT)
-    {
+    if (flags & TR_COMPLEMENT) {
         for (n = c = 0; n < m; n++)
-            if (!(tr->code[n] & HITBIT))
-            {
-                if (c >= z)
-                {
+            if (!(tr->code[n] & HITBIT)) {
+                if (c >= z) {
                     z *= 2;
-                    if (!(set = newof(set, uint32_t, z, 0)))
-                    {
+                    if (!(set = newof(set, uint32_t, z, 0))) {
                         error(ERROR_SYSTEM | 2, "out of memory");
                         goto big;
                     }
@@ -476,21 +444,18 @@ tropen(unsigned char *src,
                     tr->mb = 1;
             }
 #if _lib_wcscmp && _lib_wcsxfrm
-        if (flags & TR_COLLATE)
-        {
+        if (flags & TR_COLLATE) {
             Collate_t *col;
             wchar_t w[2];
 
-            if (!(col = newof(0, Collate_t, c, 0)))
-            {
+            if (!(col = newof(0, Collate_t, c, 0))) {
                 error(
                 ERROR_SYSTEM | 2,
                 "out of space (how about a standard collating sequence api)");
                 goto big;
             }
             w[1] = 0;
-            for (n = 0; n < c; n++)
-            {
+            for (n = 0; n < c; n++) {
                 w[0] = set[n];
                 col[n].chr = set[n];
                 wcsxfrm(col[n].seq, w, sizeof(col[n].seq));
@@ -501,34 +466,27 @@ tropen(unsigned char *src,
         }
 #endif
         tr->src = c;
-    }
-    else
+    } else
         tr->src = n;
     if (tr->convert == '?')
         tr->convert = 0;
     setchar(tr, dst, 1);
-    for (tr->dst = 0; tr->dst < tr->src; tr->dst++)
-    {
+    for (tr->dst = 0; tr->dst < tr->src; tr->dst++) {
         c = set[tr->dst];
         if (flags & TR_DELETE)
             tr->code[c] |= DELBIT;
-        else if (dst)
-        {
-            if ((x = nextchar(tr)) >= 0)
-            {
+        else if (dst) {
+            if ((x = nextchar(tr)) >= 0) {
 #if DEBUG_TRACE
                 error(-1, "dst %d '%c' => '%c'", tr->dst, c, x);
 #endif
                 tr->code[c] = x | squeeze;
                 if (x > 0x7f)
                     tr->mb = 1;
-            }
-            else if (x < -1)
+            } else if (x < -1)
                 goto bad;
-            else if (tr->truncate)
-            {
-                while (tr->dst < tr->src)
-                {
+            else if (tr->truncate) {
+                while (tr->dst < tr->src) {
                     c = set[tr->dst++];
                     tr->code[c] = c | squeeze;
                     if (c > 0x7f)
@@ -536,21 +494,17 @@ tropen(unsigned char *src,
                 }
                 break;
             }
-        }
-        else
-        {
+        } else {
             x = squeeze ? c : 0;
             tr->code[c] = x | squeeze;
             if (x > 0x7f)
                 tr->mb = 1;
         }
     }
-    if ((flags & (TR_DELETE | TR_SQUEEZE)) == (TR_DELETE | TR_SQUEEZE))
-    {
+    if ((flags & (TR_DELETE | TR_SQUEEZE)) == (TR_DELETE | TR_SQUEEZE)) {
         tr->truncate = 1;
         for (tr->dst = 0; (x = nextchar(tr)) >= 0; tr->dst++)
-            if (!(tr->code[x] & DELBIT))
-            {
+            if (!(tr->code[x] & DELBIT)) {
 #if DEBUG_TRACE
                 error(-1, "dst %d '%c'", tr->dst, x);
 #endif
@@ -603,8 +557,7 @@ trcopy(Tr_t *tr, Sfio_t *ip, Sfio_t *op, ssize_t ncopy)
     unsigned char *inbuf = 0;
     unsigned char *outbuf = 0;
 
-    if (tr->mb)
-    {
+    if (tr->mb) {
         unsigned char *pushbuf = 0;
         unsigned char *pushend;
         size_t line;
@@ -622,39 +575,30 @@ trcopy(Tr_t *tr, Sfio_t *ip, Sfio_t *op, ssize_t ncopy)
         if ((m = mbmax()) > (sizeof(side) / 2))
             m = sizeof(side) / 2;
         inp = inend = 0;
-        while (!sh_checksig(tr->context))
-        {
+        while (!sh_checksig(tr->context)) {
             if ((o = inend - inp) <= 0
-                || (mbchar(&w, inp, o, &tr->q), mberrno(&tr->q)))
-            {
+                || (mbchar(&w, inp, o, &tr->q), mberrno(&tr->q))) {
                 if (o >= m || o && mberrno(&tr->q) == EILSEQ)
                     w = -1;
-                else if (pushbuf)
-                {
-                    if (inp >= &side[sizeof(side) / 2])
-                    {
+                else if (pushbuf) {
+                    if (inp >= &side[sizeof(side) / 2]) {
                         inp = pushbuf + (inp - &side[sizeof(side) / 2]);
                         pushbuf = 0;
                         inend = pushend;
                         continue;
                     }
-                    if (eof)
-                    {
+                    if (eof) {
                         if (o <= 0)
                             break;
                         w = -1;
-                    }
-                    else if ((c = &side[sizeof(side)] - inend) <= 0)
+                    } else if ((c = &side[sizeof(side)] - inend) <= 0)
                         w = -1;
                     else if (!(pushbuf = ( unsigned char * )sfreserve(
                                ip, SF_UNBOUND, 0))
-                             || (n = sfvalue(ip)) <= 0)
-                    {
+                             || (n = sfvalue(ip)) <= 0) {
                         eof = 1;
                         w = -1;
-                    }
-                    else
-                    {
+                    } else {
                         pushend = pushbuf + n;
                         if (c > n)
                             c = n;
@@ -662,33 +606,24 @@ trcopy(Tr_t *tr, Sfio_t *ip, Sfio_t *op, ssize_t ncopy)
                         inend += c;
                         continue;
                     }
-                }
-                else if (eof)
-                {
+                } else if (eof) {
                     if (o <= 0)
                         break;
                     w = -1;
-                }
-                else
-                {
-                    if (inp)
-                    {
+                } else {
+                    if (inp) {
                         if (o)
                             memcpy(side, inp, o);
                         mbinit(&tr->q);
-                    }
-                    else
+                    } else
                         o = 0;
                     if (!(inp
                           = ( unsigned char * )sfreserve(ip, SF_UNBOUND, 0))
-                        || (n = sfvalue(ip)) <= 0)
-                    {
+                        || (n = sfvalue(ip)) <= 0) {
                         eof = 1;
                         inp = side;
                         inend = inp + o;
-                    }
-                    else if (o)
-                    {
+                    } else if (o) {
                         pushbuf = inp;
                         pushend = pushbuf + n;
                         inp = side + o;
@@ -698,17 +633,14 @@ trcopy(Tr_t *tr, Sfio_t *ip, Sfio_t *op, ssize_t ncopy)
                             memcpy(inp, pushbuf, c);
                         inend = inp + c;
                         inp = side;
-                    }
-                    else
+                    } else
                         inend = inp + n;
                     continue;
                 }
-                if (w < 0)
-                {
+                if (w < 0) {
                     w = *(inp - 1);
                     sfputc(sfstdout, w);
-                    if (tr->warn && eline != line)
-                    {
+                    if (tr->warn && eline != line) {
                         eline = line;
                         error(
                         2,
@@ -722,22 +654,16 @@ trcopy(Tr_t *tr, Sfio_t *ip, Sfio_t *op, ssize_t ncopy)
             if (w == '\n')
                 line++;
             w = code[w];
-            if (!(w & DELBIT) && w != oldc)
-            {
+            if (!(w & DELBIT) && w != oldc) {
                 sfputwc(sfstdout, w & ~(HITBIT | ONEBIT));
                 oldc = w | ONEBIT;
             }
         }
-    }
-    else
-    {
-        while (nwrite != ncopy && !sh_checksig(tr->context))
-        {
+    } else {
+        while (nwrite != ncopy && !sh_checksig(tr->context)) {
             if (!(inbuf
-                  = ( unsigned char * )sfreserve(ip, SF_UNBOUND, SF_LOCKR)))
-            {
-                if (sfvalue(ip))
-                {
+                  = ( unsigned char * )sfreserve(ip, SF_UNBOUND, SF_LOCKR))) {
+                if (sfvalue(ip)) {
                     error(2, ERROR_SYSTEM | 2, "read error");
                     return -1;
                 }
@@ -750,16 +676,13 @@ trcopy(Tr_t *tr, Sfio_t *ip, Sfio_t *op, ssize_t ncopy)
              * process the next input buffer
              */
 
-            while (inp < inend)
-            {
-                if (outp >= outend)
-                {
+            while (inp < inend) {
+                if (outp >= outend) {
                     /*
                      * write out current buffer
                      */
 
-                    if ((c = outp - outbuf) > 0)
-                    {
+                    if ((c = outp - outbuf) > 0) {
                         if ((nwrite += c) == ncopy)
                             break;
                         sfwrite(op, outbuf, c);
@@ -777,8 +700,7 @@ trcopy(Tr_t *tr, Sfio_t *ip, Sfio_t *op, ssize_t ncopy)
                     outend = (outp = outbuf) + sfvalue(op);
                 }
                 c = code[*inp++];
-                if (!(c & DELBIT) && c != oldc)
-                {
+                if (!(c & DELBIT) && c != oldc) {
                     *outp++ = c;
                     oldc = c | ONEBIT;
                 }
@@ -791,8 +713,7 @@ trcopy(Tr_t *tr, Sfio_t *ip, Sfio_t *op, ssize_t ncopy)
         if (outbuf && (c = outp - outbuf) >= 0)
             sfwrite(op, outbuf, c);
     }
-    if (sfsync(op))
-    {
+    if (sfsync(op)) {
         if (!ERROR_PIPE(errno))
             error(ERROR_SYSTEM | 2, "write error [%d]", c);
         return -1;
@@ -808,10 +729,8 @@ b_tr(int argc, char **argv, Shbltin_t *context)
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
     flags = 0;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'c':
             flags |= TR_COMPLEMENT;
             continue;
@@ -846,8 +765,7 @@ b_tr(int argc, char **argv, Shbltin_t *context)
                     ( unsigned char * )argv[0] ? ( unsigned char * )argv[1]
                                                : ( unsigned char * )0,
                     flags,
-                    context))
-    {
+                    context)) {
         trcopy(tr, sfstdin, sfstdout, SF_UNBOUND);
         trclose(tr);
     }

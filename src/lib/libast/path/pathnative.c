@@ -56,8 +56,7 @@ pathnative(const char *path, char *buf, size_t siz)
 {
     size_t n;
 
-    if (!buf || siz < PATH_MAX)
-    {
+    if (!buf || siz < PATH_MAX) {
         char tmp[PATH_MAX];
 
         cygwin_conv_to_win32_path(path, tmp);
@@ -79,13 +78,11 @@ pathnative(const char *path, char *buf, size_t siz)
     char *s;
     size_t n;
 
-    if (!_fullpath(buf, path, siz))
-    {
+    if (!_fullpath(buf, path, siz)) {
         for (s = buf; *s; s++)
             if (*s == '/')
                 *s = '\\';
-    }
-    else if ((n = strlen(path)) < siz && buf)
+    } else if ((n = strlen(path)) < siz && buf)
         memcpy(buf, path, n + 1);
     return n;
 }

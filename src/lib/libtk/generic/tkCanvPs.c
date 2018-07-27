@@ -275,68 +275,53 @@ char **argv;         /* Argument strings.  Caller has
                                 argv + 2,
                                 ( char * )&psInfo,
                                 TK_CONFIG_ARGV_ONLY);
-    if (result != TCL_OK)
-    {
+    if (result != TCL_OK) {
         goto cleanup;
     }
 
-    if (psInfo.width == -1)
-    {
+    if (psInfo.width == -1) {
         psInfo.width = Tk_Width(canvasPtr->tkwin);
     }
-    if (psInfo.height == -1)
-    {
+    if (psInfo.height == -1) {
         psInfo.height = Tk_Height(canvasPtr->tkwin);
     }
     psInfo.x2 = psInfo.x + psInfo.width;
     psInfo.y2 = psInfo.y + psInfo.height;
 
-    if (psInfo.pageXString != NULL)
-    {
+    if (psInfo.pageXString != NULL) {
         if (GetPostscriptPoints(
             canvasPtr->interp, psInfo.pageXString, &psInfo.pageX)
-            != TCL_OK)
-        {
+            != TCL_OK) {
             goto cleanup;
         }
     }
-    if (psInfo.pageYString != NULL)
-    {
+    if (psInfo.pageYString != NULL) {
         if (GetPostscriptPoints(
             canvasPtr->interp, psInfo.pageYString, &psInfo.pageY)
-            != TCL_OK)
-        {
+            != TCL_OK) {
             goto cleanup;
         }
     }
-    if (psInfo.pageWidthString != NULL)
-    {
+    if (psInfo.pageWidthString != NULL) {
         if (GetPostscriptPoints(
             canvasPtr->interp, psInfo.pageWidthString, &psInfo.scale)
-            != TCL_OK)
-        {
+            != TCL_OK) {
             goto cleanup;
         }
         psInfo.scale /= psInfo.width;
-    }
-    else if (psInfo.pageHeightString != NULL)
-    {
+    } else if (psInfo.pageHeightString != NULL) {
         if (GetPostscriptPoints(
             canvasPtr->interp, psInfo.pageHeightString, &psInfo.scale)
-            != TCL_OK)
-        {
+            != TCL_OK) {
             goto cleanup;
         }
         psInfo.scale /= psInfo.height;
-    }
-    else
-    {
+    } else {
         psInfo.scale
         = (72.0 / 25.4) * WidthMMOfScreen(Tk_Screen(canvasPtr->tkwin));
         psInfo.scale /= WidthOfScreen(Tk_Screen(canvasPtr->tkwin));
     }
-    switch (psInfo.pageAnchor)
-    {
+    switch (psInfo.pageAnchor) {
     case TK_ANCHOR_NW:
     case TK_ANCHOR_W:
     case TK_ANCHOR_SW:
@@ -353,8 +338,7 @@ char **argv;         /* Argument strings.  Caller has
         deltaX = -psInfo.width;
         break;
     }
-    switch (psInfo.pageAnchor)
-    {
+    switch (psInfo.pageAnchor) {
     case TK_ANCHOR_NW:
     case TK_ANCHOR_N:
     case TK_ANCHOR_NE:
@@ -372,27 +356,17 @@ char **argv;         /* Argument strings.  Caller has
         break;
     }
 
-    if (psInfo.colorMode == NULL)
-    {
+    if (psInfo.colorMode == NULL) {
         psInfo.colorLevel = 2;
-    }
-    else
-    {
+    } else {
         length = strlen(psInfo.colorMode);
-        if (strncmp(psInfo.colorMode, "monochrome", length) == 0)
-        {
+        if (strncmp(psInfo.colorMode, "monochrome", length) == 0) {
             psInfo.colorLevel = 0;
-        }
-        else if (strncmp(psInfo.colorMode, "gray", length) == 0)
-        {
+        } else if (strncmp(psInfo.colorMode, "gray", length) == 0) {
             psInfo.colorLevel = 1;
-        }
-        else if (strncmp(psInfo.colorMode, "color", length) == 0)
-        {
+        } else if (strncmp(psInfo.colorMode, "color", length) == 0) {
             psInfo.colorLevel = 2;
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(canvasPtr->interp,
                              "bad color mode \"",
                              psInfo.colorMode,
@@ -403,18 +377,15 @@ char **argv;         /* Argument strings.  Caller has
         }
     }
 
-    if (psInfo.fileName != NULL)
-    {
+    if (psInfo.fileName != NULL) {
         p
         = Tcl_TranslateFileName(canvasPtr->interp, psInfo.fileName, &buffer);
-        if (p == NULL)
-        {
+        if (p == NULL) {
             goto cleanup;
         }
         psInfo.chan = Tcl_OpenFileChannel(canvasPtr->interp, p, "w", 0666);
         Tcl_DStringFree(&buffer);
-        if (psInfo.chan == NULL)
-        {
+        if (psInfo.chan == NULL) {
             goto cleanup;
         }
     }
@@ -431,22 +402,18 @@ char **argv;         /* Argument strings.  Caller has
 
     psInfo.prepass = 1;
     for (itemPtr = canvasPtr->firstItemPtr; itemPtr != NULL;
-         itemPtr = itemPtr->nextPtr)
-    {
+         itemPtr = itemPtr->nextPtr) {
         if ((itemPtr->x1 >= psInfo.x2) || (itemPtr->x2 < psInfo.x)
-            || (itemPtr->y1 >= psInfo.y2) || (itemPtr->y2 < psInfo.y))
-        {
+            || (itemPtr->y1 >= psInfo.y2) || (itemPtr->y2 < psInfo.y)) {
             continue;
         }
-        if (itemPtr->typePtr->postscriptProc == NULL)
-        {
+        if (itemPtr->typePtr->postscriptProc == NULL) {
             continue;
         }
         result = (*itemPtr->typePtr->postscriptProc)(
         canvasPtr->interp, ( Tk_Canvas )canvasPtr, itemPtr, 1);
         Tcl_ResetResult(canvasPtr->interp);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             /*
              * An error just occurred.  Just skip out of this loop.
              * There's no need to report the error now;  it can be
@@ -486,8 +453,7 @@ char **argv;         /* Argument strings.  Caller has
     time(&now);
     Tcl_AppendResult(
     canvasPtr->interp, "%%CreationDate: ", ctime(&now), ( char * )NULL);
-    if (!psInfo.rotate)
-    {
+    if (!psInfo.rotate) {
         sprintf(
         string,
         "%d %d %d %d",
@@ -495,9 +461,7 @@ char **argv;         /* Argument strings.  Caller has
         ( int )(psInfo.pageY + psInfo.scale * deltaY),
         ( int )(psInfo.pageX + psInfo.scale * (deltaX + psInfo.width) + 1.0),
         ( int )(psInfo.pageY + psInfo.scale * (deltaY + psInfo.height) + 1.0));
-    }
-    else
-    {
+    } else {
         sprintf(
         string,
         "%d %d %d %d",
@@ -518,8 +482,7 @@ char **argv;         /* Argument strings.  Caller has
                      ( char * )NULL);
     p = "%%DocumentNeededResources: font ";
     for (hPtr = Tcl_FirstHashEntry(&psInfo.fontTable, &search); hPtr != NULL;
-         hPtr = Tcl_NextHashEntry(&search))
-    {
+         hPtr = Tcl_NextHashEntry(&search)) {
         Tcl_AppendResult(canvasPtr->interp,
                          p,
                          Tcl_GetHashKey(&psInfo.fontTable, hPtr),
@@ -534,12 +497,10 @@ char **argv;         /* Argument strings.  Caller has
      * the Postscript.
      */
 
-    if (TkGetNativeProlog(canvasPtr->interp) != TCL_OK)
-    {
+    if (TkGetNativeProlog(canvasPtr->interp) != TCL_OK) {
         goto cleanup;
     }
-    if (psInfo.chan != NULL)
-    {
+    if (psInfo.chan != NULL) {
         Tcl_Write(psInfo.chan, canvasPtr->interp->result, -1);
         Tcl_ResetResult(canvasPtr->interp);
     }
@@ -554,8 +515,7 @@ char **argv;         /* Argument strings.  Caller has
     Tcl_AppendResult(
     canvasPtr->interp, "%%BeginSetup\n", string, ( char * )NULL);
     for (hPtr = Tcl_FirstHashEntry(&psInfo.fontTable, &search); hPtr != NULL;
-         hPtr = Tcl_NextHashEntry(&search))
-    {
+         hPtr = Tcl_NextHashEntry(&search)) {
         Tcl_AppendResult(canvasPtr->interp,
                          "%%IncludeResource: font ",
                          Tcl_GetHashKey(&psInfo.fontTable, hPtr),
@@ -576,8 +536,7 @@ char **argv;         /* Argument strings.  Caller has
     canvasPtr->interp, "%%Page: 1 1\n", "save\n", ( char * )NULL);
     sprintf(string, "%.1f %.1f translate\n", psInfo.pageX, psInfo.pageY);
     Tcl_AppendResult(canvasPtr->interp, string, ( char * )NULL);
-    if (psInfo.rotate)
-    {
+    if (psInfo.rotate) {
         Tcl_AppendResult(canvasPtr->interp, "90 rotate\n", ( char * )NULL);
     }
     sprintf(string, "%.4g %.4g scale\n", psInfo.scale, psInfo.scale);
@@ -598,8 +557,7 @@ char **argv;         /* Argument strings.  Caller has
                      string,
                      " lineto closepath clip newpath\n",
                      ( char * )NULL);
-    if (psInfo.chan != NULL)
-    {
+    if (psInfo.chan != NULL) {
         Tcl_Write(psInfo.chan, canvasPtr->interp->result, -1);
         Tcl_ResetResult(canvasPtr->interp);
     }
@@ -613,22 +571,18 @@ char **argv;         /* Argument strings.  Caller has
 
     result = TCL_OK;
     for (itemPtr = canvasPtr->firstItemPtr; itemPtr != NULL;
-         itemPtr = itemPtr->nextPtr)
-    {
+         itemPtr = itemPtr->nextPtr) {
         if ((itemPtr->x1 >= psInfo.x2) || (itemPtr->x2 < psInfo.x)
-            || (itemPtr->y1 >= psInfo.y2) || (itemPtr->y2 < psInfo.y))
-        {
+            || (itemPtr->y1 >= psInfo.y2) || (itemPtr->y2 < psInfo.y)) {
             continue;
         }
-        if (itemPtr->typePtr->postscriptProc == NULL)
-        {
+        if (itemPtr->typePtr->postscriptProc == NULL) {
             continue;
         }
         Tcl_AppendResult(canvasPtr->interp, "gsave\n", ( char * )NULL);
         result = (*itemPtr->typePtr->postscriptProc)(
         canvasPtr->interp, ( Tk_Canvas )canvasPtr, itemPtr, 0);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             char msg[100];
 
             sprintf(
@@ -637,8 +591,7 @@ char **argv;         /* Argument strings.  Caller has
             goto cleanup;
         }
         Tcl_AppendResult(canvasPtr->interp, "grestore\n", ( char * )NULL);
-        if (psInfo.chan != NULL)
-        {
+        if (psInfo.chan != NULL) {
             Tcl_Write(psInfo.chan, canvasPtr->interp->result, -1);
             Tcl_ResetResult(canvasPtr->interp);
         }
@@ -655,8 +608,7 @@ char **argv;         /* Argument strings.  Caller has
                      "restore showpage\n\n",
                      "%%Trailer\nend\n%%EOF\n",
                      ( char * )NULL);
-    if (psInfo.chan != NULL)
-    {
+    if (psInfo.chan != NULL) {
         Tcl_Write(psInfo.chan, canvasPtr->interp->result, -1);
         Tcl_ResetResult(canvasPtr->interp);
     }
@@ -666,40 +618,31 @@ char **argv;         /* Argument strings.  Caller has
      */
 
 cleanup:
-    if (psInfo.pageXString != NULL)
-    {
+    if (psInfo.pageXString != NULL) {
         ckfree(psInfo.pageXString);
     }
-    if (psInfo.pageYString != NULL)
-    {
+    if (psInfo.pageYString != NULL) {
         ckfree(psInfo.pageYString);
     }
-    if (psInfo.pageWidthString != NULL)
-    {
+    if (psInfo.pageWidthString != NULL) {
         ckfree(psInfo.pageWidthString);
     }
-    if (psInfo.pageHeightString != NULL)
-    {
+    if (psInfo.pageHeightString != NULL) {
         ckfree(psInfo.pageHeightString);
     }
-    if (psInfo.fontVar != NULL)
-    {
+    if (psInfo.fontVar != NULL) {
         ckfree(psInfo.fontVar);
     }
-    if (psInfo.colorVar != NULL)
-    {
+    if (psInfo.colorVar != NULL) {
         ckfree(psInfo.colorVar);
     }
-    if (psInfo.colorMode != NULL)
-    {
+    if (psInfo.colorMode != NULL) {
         ckfree(psInfo.colorMode);
     }
-    if (psInfo.fileName != NULL)
-    {
+    if (psInfo.fileName != NULL) {
         ckfree(psInfo.fileName);
     }
-    if (psInfo.chan != NULL)
-    {
+    if (psInfo.chan != NULL) {
         Tcl_Close(canvasPtr->interp, psInfo.chan);
     }
     Tcl_DeleteHashTable(&psInfo.fontTable);
@@ -741,8 +684,7 @@ XColor *colorPtr;   /* Information about color. */
     double red, green, blue;
     char string[200];
 
-    if (psInfoPtr->prepass)
-    {
+    if (psInfoPtr->prepass) {
         return TCL_OK;
     }
 
@@ -752,14 +694,12 @@ XColor *colorPtr;   /* Information about color. */
      * are any.
      */
 
-    if (psInfoPtr->colorVar != NULL)
-    {
+    if (psInfoPtr->colorVar != NULL) {
         char *cmdString;
 
         cmdString = Tcl_GetVar2(
         interp, psInfoPtr->colorVar, Tk_NameOfColor(colorPtr), 0);
-        if (cmdString != NULL)
-        {
+        if (cmdString != NULL) {
             Tcl_AppendResult(interp, cmdString, "\n", ( char * )NULL);
             return TCL_OK;
         }
@@ -842,17 +782,14 @@ XFontStruct *fontStructPtr; /* Information about font in which text
      * containing font name and size.  Use this information.
      */
 
-    if (psInfoPtr->fontVar != NULL)
-    {
+    if (psInfoPtr->fontVar != NULL) {
         char *list, **argv;
         int argc;
         double size;
 
         list = Tcl_GetVar2(interp, psInfoPtr->fontVar, name, 0);
-        if (list != NULL)
-        {
-            if (Tcl_SplitList(interp, list, &argc, &argv) != TCL_OK)
-            {
+        if (list != NULL) {
+            if (Tcl_SplitList(interp, list, &argc, &argv) != TCL_OK) {
             badMapEntry:
                 Tcl_ResetResult(interp);
                 Tcl_AppendResult(interp,
@@ -864,13 +801,11 @@ XFontStruct *fontStructPtr; /* Information about font in which text
                                  ( char * )NULL);
                 return TCL_ERROR;
             }
-            if (argc != 2)
-            {
+            if (argc != 2) {
                 goto badMapEntry;
             }
             size = strtod(argv[1], &end);
-            if ((size <= 0) || (*end != 0))
-            {
+            if ((size <= 0) || (*end != 0)) {
                 goto badMapEntry;
             }
             sprintf(pointString, "%.15g", size);
@@ -881,8 +816,7 @@ XFontStruct *fontStructPtr; /* Information about font in which text
                              pointString,
                              " scalefont ",
                              ( char * )NULL);
-            if (strncasecmp(argv[0], "Symbol", 7) != 0)
-            {
+            if (strncasecmp(argv[0], "Symbol", 7) != 0) {
                 Tcl_AppendResult(interp, "ISOEncode ", ( char * )NULL);
             }
             Tcl_AppendResult(interp, "setfont\n", ( char * )NULL);
@@ -899,17 +833,13 @@ XFontStruct *fontStructPtr; /* Information about font in which text
      * of each field in fieldPtrs.
      */
 
-    if (name[0] != '-')
-    {
+    if (name[0] != '-') {
         goto error;
     }
-    for (p = name + 1, i = 0; i < TOTAL_FIELDS; i++)
-    {
+    for (p = name + 1, i = 0; i < TOTAL_FIELDS; i++) {
         fieldPtrs[i] = p;
-        while (*p != '-')
-        {
-            if (*p == 0)
-            {
+        while (*p != '-') {
+            if (*p == 0) {
                 goto error;
             }
             p++;
@@ -929,75 +859,55 @@ XFontStruct *fontStructPtr; /* Information about font in which text
      */
 
     nameSize = fieldPtrs[FAMILY_FIELD + 1] - 1 - fieldPtrs[FAMILY_FIELD];
-    if ((nameSize == 0) || (nameSize > MAX_NAME_SIZE))
-    {
+    if ((nameSize == 0) || (nameSize > MAX_NAME_SIZE)) {
         goto error;
     }
     strncpy(fontName, fieldPtrs[FAMILY_FIELD], ( size_t )nameSize);
-    if (islower(UCHAR(fontName[0])))
-    {
+    if (islower(UCHAR(fontName[0]))) {
         fontName[0] = toupper(UCHAR(fontName[0]));
     }
-    for (p = fontName + 1, i = nameSize - 1; i > 0; p++, i--)
-    {
-        if (isupper(UCHAR(*p)))
-        {
+    for (p = fontName + 1, i = nameSize - 1; i > 0; p++, i--) {
+        if (isupper(UCHAR(*p))) {
             *p = tolower(UCHAR(*p));
         }
     }
     *p = 0;
     weightSize = fieldPtrs[WEIGHT_FIELD + 1] - 1 - fieldPtrs[WEIGHT_FIELD];
-    if (weightSize == 0)
-    {
+    if (weightSize == 0) {
         goto error;
     }
     if (strncasecmp(fieldPtrs[WEIGHT_FIELD], "medium", ( size_t )weightSize)
-        == 0)
-    {
+        == 0) {
         weightString = "";
-    }
-    else if (strncasecmp(fieldPtrs[WEIGHT_FIELD], "bold", ( size_t )weightSize)
-             == 0)
-    {
+    } else if (strncasecmp(
+               fieldPtrs[WEIGHT_FIELD], "bold", ( size_t )weightSize)
+               == 0) {
         weightString = "Bold";
-    }
-    else
-    {
+    } else {
         goto error;
     }
-    if (fieldPtrs[SLANT_FIELD + 1] != (fieldPtrs[SLANT_FIELD] + 2))
-    {
+    if (fieldPtrs[SLANT_FIELD + 1] != (fieldPtrs[SLANT_FIELD] + 2)) {
         goto error;
     }
     c = fieldPtrs[SLANT_FIELD][0];
-    if ((c == 'r') || (c == 'R'))
-    {
+    if ((c == 'r') || (c == 'R')) {
         slantString = "";
         if ((weightString[0] == 0) && (nameSize == 5)
-            && (strncmp(fontName, "Times", 5) == 0))
-        {
+            && (strncmp(fontName, "Times", 5) == 0)) {
             slantString = "Roman";
         }
-    }
-    else if ((c == 'i') || (c == 'I'))
-    {
+    } else if ((c == 'i') || (c == 'I')) {
         slantString = "Italic";
-    }
-    else if ((c == 'o') || (c == 'O'))
-    {
+    } else if ((c == 'o') || (c == 'O')) {
         slantString = "Oblique";
-    }
-    else
-    {
+    } else {
         goto error;
     }
-    if ((weightString[0] != 0) || (slantString[0] != 0))
-    {
+    if ((weightString[0] != 0) || (slantString[0] != 0)) {
         sprintf(p, "-%s%s", weightString, slantString);
     }
     points = strtoul(fieldPtrs[SIZE_FIELD], &end, 0);
-    if (points == 0)
-    {
+    if (points == 0) {
         goto error;
     }
     sprintf(pointString, "%.15g", (( double )points) / 10.0);
@@ -1008,8 +918,7 @@ XFontStruct *fontStructPtr; /* Information about font in which text
                      pointString,
                      " scalefont ",
                      ( char * )NULL);
-    if (strcmp(fontName, "Symbol") != 0)
-    {
+    if (strcmp(fontName, "Symbol") != 0) {
         Tcl_AppendResult(interp, "ISOEncode ", ( char * )NULL);
     }
     Tcl_AppendResult(interp, "setfont\n", ( char * )NULL);
@@ -1068,8 +977,7 @@ int width, height;  /* Height of rectangular region. */
     int dummyX, dummyY;
     unsigned dummyBorderwidth, dummyDepth;
 
-    if (psInfoPtr->prepass)
-    {
+    if (psInfoPtr->prepass) {
         return TCL_OK;
     }
 
@@ -1104,31 +1012,25 @@ int width, height;  /* Height of rectangular region. */
     charsInLine = 0;
     lastX = startX + width - 1;
     lastY = startY + height - 1;
-    for (y = lastY; y >= startY; y--)
-    {
-        for (x = startX; x <= lastX; x++)
-        {
-            if (XGetPixel(imagePtr, x, y))
-            {
+    for (y = lastY; y >= startY; y--) {
+        for (x = startX; x <= lastX; x++) {
+            if (XGetPixel(imagePtr, x, y)) {
                 value |= mask;
             }
             mask >>= 1;
-            if (mask == 0)
-            {
+            if (mask == 0) {
                 sprintf(string, "%02x", value);
                 Tcl_AppendResult(interp, string, ( char * )NULL);
                 mask = 0x80;
                 value = 0;
                 charsInLine += 2;
-                if (charsInLine >= 60)
-                {
+                if (charsInLine >= 60) {
                     Tcl_AppendResult(interp, "\n", ( char * )NULL);
                     charsInLine = 0;
                 }
             }
         }
-        if (mask != 0x80)
-        {
+        if (mask != 0x80) {
             sprintf(string, "%02x", value);
             Tcl_AppendResult(interp, string, ( char * )NULL);
             mask = 0x80;
@@ -1179,8 +1081,7 @@ Pixmap bitmap;      /* Bitmap to use for stippling. */
     int dummyX, dummyY;
     unsigned dummyBorderwidth, dummyDepth;
 
-    if (psInfoPtr->prepass)
-    {
+    if (psInfoPtr->prepass) {
         return TCL_OK;
     }
 
@@ -1205,8 +1106,7 @@ Pixmap bitmap;      /* Bitmap to use for stippling. */
     Tcl_AppendResult(interp, string, ( char * )NULL);
     if (Tk_CanvasPsBitmap(
         interp, ( Tk_Canvas )canvasPtr, bitmap, 0, 0, width, height)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
     Tcl_AppendResult(interp, " StippleFill\n", ( char * )NULL);
@@ -1271,8 +1171,7 @@ int numPoints;      /* Number of points at *coordPtr. */
     TkPostscriptInfo *psInfoPtr = (( TkCanvas * )canvas)->psInfoPtr;
     char buffer[200];
 
-    if (psInfoPtr->prepass)
-    {
+    if (psInfoPtr->prepass) {
         return;
     }
     sprintf(buffer,
@@ -1281,8 +1180,7 @@ int numPoints;      /* Number of points at *coordPtr. */
             Tk_CanvasPsY(canvas, coordPtr[1]));
     Tcl_AppendResult(interp, buffer, ( char * )NULL);
     for (numPoints--, coordPtr += 2; numPoints > 0;
-         numPoints--, coordPtr += 2)
-    {
+         numPoints--, coordPtr += 2) {
         sprintf(buffer,
                 "%.15g %.15g lineto\n",
                 coordPtr[0],
@@ -1321,19 +1219,16 @@ double *doublePtr;  /* Place to store converted result. */
     double d;
 
     d = strtod(string, &end);
-    if (end == string)
-    {
+    if (end == string) {
     error:
         Tcl_AppendResult(
         interp, "bad distance \"", string, "\"", ( char * )NULL);
         return TCL_ERROR;
     }
-    while ((*end != '\0') && isspace(UCHAR(*end)))
-    {
+    while ((*end != '\0') && isspace(UCHAR(*end))) {
         end++;
     }
-    switch (*end)
-    {
+    switch (*end) {
     case 'c':
         d *= 72.0 / 2.54;
         end++;
@@ -1354,12 +1249,10 @@ double *doublePtr;  /* Place to store converted result. */
     default:
         goto error;
     }
-    while ((*end != '\0') && isspace(UCHAR(*end)))
-    {
+    while ((*end != '\0') && isspace(UCHAR(*end))) {
         end++;
     }
-    if (*end != 0)
-    {
+    if (*end != 0) {
         goto error;
     }
     *doublePtr = d;
@@ -1394,8 +1287,7 @@ int TkGetProlog(interp) Tcl_Interp *interp; /* Places the prolog in the
     char *prologBuffer;
 
     libDir = Tcl_GetVar(interp, "tk_library", TCL_GLOBAL_ONLY);
-    if (libDir == NULL)
-    {
+    if (libDir == NULL) {
         Tcl_ResetResult(interp);
         Tcl_AppendResult(interp,
                          "couldn't find library directory: ",
@@ -1416,15 +1308,13 @@ int TkGetProlog(interp) Tcl_Interp *interp; /* Places the prolog in the
      */
 
     chan = Tcl_OpenFileChannel(interp, buffer2.string, "r", 0);
-    if (chan == NULL)
-    {
+    if (chan == NULL) {
         Tcl_DStringFree(&buffer2);
         return TCL_ERROR;
     }
     bufferSize = Tcl_Seek(chan, 0L, SEEK_END);
     ( void )Tcl_Seek(chan, 0L, SEEK_SET);
-    if (bufferSize < 0)
-    {
+    if (bufferSize < 0) {
         Tcl_AppendResult(interp,
                          "error seeking to end of file \"",
                          buffer2.string,
@@ -1438,8 +1328,7 @@ int TkGetProlog(interp) Tcl_Interp *interp; /* Places the prolog in the
     prologBuffer = ( char * )ckalloc(( unsigned )bufferSize + 1);
     bufferSize = Tcl_Read(chan, prologBuffer, bufferSize);
     Tcl_Close(NULL, chan);
-    if (bufferSize < 0)
-    {
+    if (bufferSize < 0) {
         Tcl_AppendResult(interp,
                          "error reading file \"",
                          buffer2.string,

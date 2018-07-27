@@ -212,10 +212,8 @@ b_fds(int argc, char **argv, Shbltin_t *context)
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
     details = 0;
     unit = 1;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'l':
             details = opt_info.num;
             continue;
@@ -241,23 +239,19 @@ b_fds(int argc, char **argv, Shbltin_t *context)
     else if (fstat(unit, &st)
              || !(sp = sfnew(NiL, NiL, SF_UNBOUND, unit, SF_WRITE)))
         error(ERROR_SYSTEM | 3, "%d: cannot write to file descriptor");
-    for (i = 0; i <= open_max; i++)
-    {
-        if (fstat(i, &st))
-        {
+    for (i = 0; i <= open_max; i++) {
+        if (fstat(i, &st)) {
             /* not open */
             continue;
         }
-        if (!details)
-        {
+        if (!details) {
             sfprintf(sp, "%d\n", i);
             continue;
         }
         if ((flags = fcntl(i, F_GETFL, ( char * )0)) == -1)
             m = "--";
         else
-            switch (flags & (O_RDONLY | O_WRONLY | O_RDWR))
-            {
+            switch (flags & (O_RDONLY | O_WRONLY | O_RDWR)) {
             case O_RDONLY:
                 m = "r-";
                 break;
@@ -272,8 +266,7 @@ b_fds(int argc, char **argv, Shbltin_t *context)
                 break;
             }
         x = (fcntl(i, F_GETFD, ( char * )0) > 0) ? "x" : "-";
-        if (isatty(i) && (s = ttyname(i)))
-        {
+        if (isatty(i) && (s = ttyname(i))) {
             sfprintf(
             sp, "%02d %s%s %s %s\n", i, m, x, fmtmode(st.st_mode, 0), s);
             continue;
@@ -281,8 +274,7 @@ b_fds(int argc, char **argv, Shbltin_t *context)
 #ifdef S_IFSOCK
         addrlen = sizeof(addr);
         memset(&addr, 0, addrlen);
-        if (!getsockname(i, ( struct sockaddr * )&addr, ( void * )&addrlen))
-        {
+        if (!getsockname(i, ( struct sockaddr * )&addr, ( void * )&addrlen)) {
             type = 0;
             prot = 0;
 #    ifdef SO_TYPE
@@ -300,11 +292,9 @@ b_fds(int argc, char **argv, Shbltin_t *context)
             if (!st.st_mode)
                 st.st_mode = S_IFSOCK | S_IRUSR | S_IWUSR;
             s = 0;
-            switch (type)
-            {
+            switch (type) {
             case SOCK_DGRAM:
-                switch (addr.sin_family)
-                {
+                switch (addr.sin_family) {
                 case AF_INET:
 #    ifdef AF_INET6
                 case AF_INET6:
@@ -314,8 +304,7 @@ b_fds(int argc, char **argv, Shbltin_t *context)
                 }
                 break;
             case SOCK_STREAM:
-                switch (addr.sin_family)
-                {
+                switch (addr.sin_family) {
                 case AF_INET:
 #    ifdef AF_INET6
                 case AF_INET6:
@@ -345,8 +334,7 @@ b_fds(int argc, char **argv, Shbltin_t *context)
                 break;
 #    endif
             }
-            if (!s)
-            {
+            if (!s) {
                 for (type = 0; family[type].name
                                && family[type].value != addr.sin_family;
                      type++)
@@ -362,13 +350,10 @@ b_fds(int argc, char **argv, Shbltin_t *context)
                 port = ntohs(addr.sin_port);
             else
 #    endif
-            if (addr.sin_family == AF_INET)
-            {
+            if (addr.sin_family == AF_INET) {
                 a = inet_ntoa(addr.sin_addr);
                 port = ntohs(addr.sin_port);
-            }
-            else
-            {
+            } else {
                 a = fam;
                 e = (b = ( unsigned char * )&addr) + addrlen;
                 while (b < e && a < &fam[sizeof(fam) - 1])
@@ -406,8 +391,7 @@ b_fds(int argc, char **argv, Shbltin_t *context)
                  st.st_dev,
                  st.st_ino);
     }
-    if (sp != sfstdout)
-    {
+    if (sp != sfstdout) {
         sfsetfd(sp, -1);
         sfclose(sp);
     }

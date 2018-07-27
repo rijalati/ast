@@ -100,8 +100,7 @@ _mm_severity(void)
 {
     static MM_table_t *severity;
 
-    if (!severity)
-    {
+    if (!severity) {
         char *s;
         MM_table_t *p;
         int n;
@@ -110,26 +109,21 @@ _mm_severity(void)
         MM_table_t *q;
 
         n = 0;
-        if ((s = getenv(MM_SEVERITY_ENV)) && *s)
-        {
+        if ((s = getenv(MM_SEVERITY_ENV)) && *s) {
             e = s;
             c = 0;
-            for (;;)
-            {
-                switch (*s++)
-                {
+            for (;;) {
+                switch (*s++) {
                 case 0:
                     break;
                 case ',':
-                    if (++c > 2)
-                    {
+                    if (++c > 2) {
                         n = 0;
                         break;
                     }
                     continue;
                 case ':':
-                    if (c != 2)
-                    {
+                    if (c != 2) {
                         n = 0;
                         break;
                     }
@@ -145,13 +139,11 @@ _mm_severity(void)
                 n++;
             else
                 n = 0;
-            if (n)
-            {
+            if (n) {
                 for (p = ( MM_table_t * )mm_severity_init; p->name; p++)
                     ;
                 n += p - ( MM_table_t * )mm_severity_init + 1;
-                if (severity = newof(0, MM_table_t, n, s - e))
-                {
+                if (severity = newof(0, MM_table_t, n, s - e)) {
                     s = ( char * )severity + n * sizeof(MM_table_t);
                     strcpy(s, e);
                     p = severity;
@@ -159,15 +151,12 @@ _mm_severity(void)
                         *p++ = *q;
                     p->name = s;
                     c = 0;
-                    for (;;)
-                    {
-                        switch (*s++)
-                        {
+                    for (;;) {
+                        switch (*s++) {
                         case 0:
                             break;
                         case ',':
-                            switch (c++)
-                            {
+                            switch (c++) {
                             case 0:
                                 *(s - 1) = 0;
                                 p->value = strtol(s, NiL, 0);
@@ -199,8 +188,7 @@ _mm_severity(void)
 static char *
 display(const MM_table_t *tab, int value, int mask)
 {
-    while (tab->name)
-    {
+    while (tab->name) {
         if (value == tab->value || mask && (value & tab->value))
             return ( char * )tab->display;
         tab++;
@@ -228,19 +216,16 @@ fmtmsg(long classification,
     Sfio_t *sp;
     char lab[MM_LABEL_1_MAX + MM_LABEL_2_MAX + 3];
 
-    if (!mm.init)
-    {
+    if (!mm.init) {
         mm.init = INIT_VERB;
         if (!(s = getenv(MM_VERB_ENV)))
             mm.mask = MM_default;
         else
-            for (;;)
-            {
+            for (;;) {
                 if (t = strchr(s, ':'))
                     *t = 0;
                 if (!(p = ( MM_table_t * )strlook(
-                      mm_verb, sizeof(MM_table_t), s)))
-                {
+                      mm_verb, sizeof(MM_table_t), s))) {
                     mm.mask = MM_default;
                     if (t)
                         *t = ':';
@@ -258,10 +243,8 @@ fmtmsg(long classification,
     if (!(sp = sfstropen()))
         return MM_NOTOK;
     r = 0;
-    if (s = ( char * )label)
-    {
-        if (t = strchr(s, ':'))
-        {
+    if (s = ( char * )label) {
+        if (t = strchr(s, ':')) {
             if ((n = t - s) > MM_LABEL_1_MAX)
                 n = MM_LABEL_1_MAX;
             sfprintf(sp, "%*.*s:", n, n, s);
@@ -269,45 +252,36 @@ fmtmsg(long classification,
             if ((n = strlen(t)) > MM_LABEL_2_MAX)
                 n = MM_LABEL_2_MAX;
             sfprintf(sp, "%*.*s", n, n, s);
-        }
-        else
-        {
+        } else {
             if ((n = strlen(t)) > MM_LABEL_1_MAX)
                 n = MM_LABEL_1_MAX;
             sfprintf(sp, "%*.*s", n, n, s);
         }
-        if (!(s = sfstruse(sp)))
-        {
+        if (!(s = sfstruse(sp))) {
             sfstrclose(sp);
             return MM_NOTOK;
         }
         strcpy(lab, s);
     }
-    for (;;)
-    {
-        if (classification & MM_CONSOLE)
-        {
+    for (;;) {
+        if (classification & MM_CONSOLE) {
             classification &= ~MM_CONSOLE;
             if (!(mm.init & INIT_CONSOLE))
                 mm.console
                 = open("/dev/console", O_WRONLY | O_APPEND | O_NOCTTY);
-            if (mm.console < 0)
-            {
+            if (mm.console < 0) {
                 r |= MM_NOCON;
                 continue;
             }
             c = MM_NOCON;
             fd = mm.console;
             mask = MM_all;
-        }
-        else if (classification & MM_PRINT)
-        {
+        } else if (classification & MM_PRINT) {
             classification &= ~MM_PRINT;
             c = MM_NOMSG;
             fd = 2;
             mask = mm.mask;
-        }
-        else
+        } else
             break;
         if ((mask & MM_label) && label)
             sfprintf(sp, "%s: ", lab);
@@ -318,23 +292,21 @@ fmtmsg(long classification,
             sfprintf(sp, "%s\n", text);
         else
             sfputc(sp, '\n');
-        if ((mask & MM_action) && action || (mask & MM_tag) && (label || tag))
-        {
+        if ((mask & MM_action) && action
+            || (mask & MM_tag) && (label || tag)) {
             if (fd != mm.console && (n -= 8) > 0)
                 sfprintf(sp, "%*.*s", n, n, "");
             sfprintf(sp, "TO FIX:");
             if ((mask & MM_action) && action)
                 sfprintf(sp, " %s", action);
-            if ((mask & MM_tag) && (label || tag))
-            {
+            if ((mask & MM_tag) && (label || tag)) {
                 sfprintf(sp, "  ");
                 if (!tag || label && !strchr(tag, ':'))
                     sfprintf(sp, "%s%s", lab, tag ? ":" : "");
                 if (tag)
                     sfprintf(sp, "%s", tag);
             }
-            if (mask & (MM_class | MM_source | MM_status))
-            {
+            if (mask & (MM_class | MM_source | MM_status)) {
                 sfputc(sp, ' ');
                 if ((mask & MM_source)
                     && (m = classification & (MM_APPL | MM_UTIL | MM_OPSYS))

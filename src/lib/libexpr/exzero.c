@@ -36,8 +36,7 @@ exzero(int type)
 {
     Extype_t v;
 
-    switch (type)
-    {
+    switch (type) {
     case FLOATING:
         v.floating = 0.0;
         break;

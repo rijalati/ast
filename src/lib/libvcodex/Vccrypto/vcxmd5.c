@@ -51,8 +51,7 @@ md5_int2char(Vcuint32_t *idt, Vcchar_t *cdt, ssize_t csz)
 {
     int i, c;
 
-    for (i = 0, c = 0; c < csz; c += 4, i += 1)
-    {
+    for (i = 0, c = 0; c < csz; c += 4, i += 1) {
         cdt[c + 0] = (Vcchar_t)((idt[i] >> 0) & 0xff);
         cdt[c + 1] = (Vcchar_t)((idt[i] >> 8) & 0xff);
         cdt[c + 2] = (Vcchar_t)((idt[i] >> 16) & 0xff);
@@ -241,8 +240,7 @@ md5_init(Vcx_t *xx, Vcxmethod_t *meth, Vcchar_t *key, ssize_t keyz)
     {
         ssize_t sz = sizeof(md5->obuf) < sizeof(xx->key) ? sizeof(md5->obuf)
                                                          : sizeof(xx->key);
-        if ((xx->keyz = _vcxmakekey(key, keyz, xx->key, sz)) < 0)
-        {
+        if ((xx->keyz = _vcxmakekey(key, keyz, xx->key, sz)) < 0) {
             free(md5);
             return -1;
         }
@@ -306,8 +304,7 @@ md5_digest(Vcx_t *xx, const Void_t *buf, ssize_t size, Vcchar_t **out)
                 md5_transform(md5, data + i);
 
             index = 0;
-        }
-        else
+        } else
             i = 0;
 
         memcpy(

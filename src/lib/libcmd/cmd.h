@@ -120,17 +120,14 @@ main(int argc, char **argv)
     buf[sizeof(buf) - 1] = 0;
     if (t = strchr(buf, '.'))
         *t = 0;
-    for (;;)
-    {
-        if (dll = dlopen(NiL, RTLD_LAZY))
-        {
+    for (;;) {
+        if (dll = dlopen(NiL, RTLD_LAZY)) {
             if (fun = ( Shbltin_f )dlsym(dll, buf + 1))
                 break;
             if (fun = ( Shbltin_f )dlsym(dll, buf))
                 break;
         }
-        if (dll = dllplug(NiL, "cmd", NiL, RTLD_LAZY, NiL, 0))
-        {
+        if (dll = dllplug(NiL, "cmd", NiL, RTLD_LAZY, NiL, 0)) {
             if (fun = ( Shbltin_f )dlsym(dll, buf + 1))
                 break;
             if (fun = ( Shbltin_f )dlsym(dll, buf))
@@ -150,8 +147,7 @@ main(int argc, char **argv)
 #        ifdef _MSC_VER
 #            define CMD_CONTEXT(p) (( Shbltin_t * )(p))
 #            define cmdinit(a, b, c, d, e)                                   \
-                do                                                           \
-                {                                                            \
+                do {                                                         \
                     if (_cmd_init(a, b, c, d, e))                            \
                         return -1;                                           \
                 } while (0)
@@ -162,8 +158,7 @@ main(int argc, char **argv)
                  ? (( Shbltin_t * )(p))                                      \
                  : 0)
 #            define cmdinit(a, b, c, d, e)                                   \
-                do                                                           \
-                {                                                            \
+                do {                                                         \
                     if ((c) && !CMD_CONTEXT(c))                              \
                         c = 0;                                               \
                     if (_cmd_init(a, b, c, d, e))                            \

@@ -60,8 +60,7 @@ fixedident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
         && (swap = swapop(&magic, &mp->magic, sizeof(magic))) >= 0
         && streq(mp->name, MAGIC_NAME)
         && swapget(swap ^ int_swap, &mp->size, sizeof(mp->size))
-           == sizeof(Bgproute_t))
-    {
+           == sizeof(Bgproute_t)) {
         file->skip = sizeof(Bgproute_t);
         file->ident = swap;
         return 1;
@@ -76,26 +75,21 @@ fixedident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
 static int
 fixedopen(Dssfile_t *file, Dssdisc_t *disc)
 {
-    if (file->flags & DSS_FILE_READ)
-    {
-        if (!sfreserve(file->io, file->skip, 0))
-        {
+    if (file->flags & DSS_FILE_READ) {
+        if (!sfreserve(file->io, file->skip, 0)) {
             if (disc->errorf)
                 (*disc->errorf)(
                 NiL, disc, ERROR_SYSTEM | 2, "header read error");
             return -1;
         }
         if (!(file->data
-              = ( void * )vmnewof(file->dss->vm, 0, Fixedstate_t, 1, 0)))
-        {
+              = ( void * )vmnewof(file->dss->vm, 0, Fixedstate_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
         }
         (( Fixedstate_t * )file->data)->swap = file->ident;
-    }
-    else if (!(file->flags & DSS_FILE_APPEND))
-    {
+    } else if (!(file->flags & DSS_FILE_APPEND)) {
         Fixedheader_t hdr;
 
         memset(&hdr, 0, sizeof(hdr));
@@ -119,10 +113,8 @@ fixedread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     Fixedstate_t *state = ( Fixedstate_t * )file->data;
     Bgproute_t *rp;
 
-    if (!(rp = ( Bgproute_t * )sfreserve(file->io, sizeof(*rp), 0)))
-    {
-        if (sfvalue(file->io))
-        {
+    if (!(rp = ( Bgproute_t * )sfreserve(file->io, sizeof(*rp), 0))) {
+        if (sfvalue(file->io)) {
             if (disc->errorf)
                 (*disc->errorf)(NiL,
                                 disc,
@@ -133,16 +125,14 @@ fixedread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         }
         return 0;
     }
-    if (state->swap)
-    {
+    if (state->swap) {
         swapmem(state->swap, rp, rp, ( char * )&rp->path - ( char * )rp);
         if (rp->cluster.size)
             swapmem(state->swap,
                     rp->data + rp->cluster.offset,
                     rp->data + rp->cluster.offset,
                     rp->cluster.size * sizeof(Bgpnum_t));
-        if (state->swap & 1)
-        {
+        if (state->swap & 1) {
             swapmem(state->swap & 1,
                     ( char * )&rp->path,
                     ( char * )&rp->path,
@@ -172,8 +162,7 @@ static int
 fixedwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
 {
     if (sfwrite(file->io, record->data, sizeof(Bgproute_t))
-        != sizeof(Bgproute_t))
-    {
+        != sizeof(Bgproute_t)) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: write error", file->format->name);

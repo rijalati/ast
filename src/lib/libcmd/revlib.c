@@ -40,8 +40,7 @@ rev_line(Sfio_t *in, Sfio_t *out, off_t start)
     int n, nleft = 0;
     char buff[BUFSIZE];
     off_t offset;
-    if (sfseek(in, ( off_t )0, SEEK_CUR) < 0)
-    {
+    if (sfseek(in, ( off_t )0, SEEK_CUR) < 0) {
         Sfio_t *tmp = sftmp(4 * SF_BUFSIZE);
         if (!tmp)
             return (-1);
@@ -55,11 +54,9 @@ rev_line(Sfio_t *in, Sfio_t *out, off_t start)
     if ((offset = sfseek(in, ( off_t )0, SEEK_END)) <= start)
         return (0);
     offset = rounddown(offset, BUFSIZE);
-    while (1)
-    {
+    while (1) {
         n = BUFSIZE;
-        if (offset < start)
-        {
+        if (offset < start) {
             n -= (start - offset);
             offset = start;
         }
@@ -69,30 +66,25 @@ rev_line(Sfio_t *in, Sfio_t *out, off_t start)
         cp = buff + n;
         n = *buff;
         *buff = '\n';
-        while (1)
-        {
+        while (1) {
             cpold = cp;
             if (nleft == 0)
                 cp--;
-            if (cp == buff)
-            {
+            if (cp == buff) {
                 nleft = 1;
                 break;
             }
             while (*--cp != '\n')
                 ;
-            if (cp == buff && n != '\n')
-            {
+            if (cp == buff && n != '\n') {
                 *cp = n;
                 nleft += cpold - cp;
                 break;
-            }
-            else
+            } else
                 cp++;
             if (sfwrite(out, cp, cpold - cp) < 0)
                 return (-1);
-            if (nleft)
-            {
+            if (nleft) {
                 if (nleft == 1)
                     sfputc(out, '\n');
                 else if (sfmove(in, out, nleft, -1) != nleft)
@@ -104,8 +96,7 @@ rev_line(Sfio_t *in, Sfio_t *out, off_t start)
             break;
         offset -= BUFSIZE;
     }
-    if (nleft)
-    {
+    if (nleft) {
         sfseek(in, start, SEEK_SET);
         if (sfmove(in, out, nleft, -1) != nleft)
             return (-1);

@@ -119,8 +119,7 @@ readscript(Text *t, char *s)
 {
     word n;
     Sfio_t *f = aopen(s, 3);
-    for (;;)
-    {
+    for (;;) {
         assure(t, 4);
         n = sfread(f, t->w, t->e - t->w - 3);
         if (n <= 0)
@@ -128,8 +127,7 @@ readscript(Text *t, char *s)
         t->w += n;
     }
     sfclose(f);
-    if (t->w > t->s && t->w[-1] != '\n')
-    {
+    if (t->w > t->s && t->w[-1] != '\n') {
         *t->w++ = '\n';
         error(1, "newline appended to script segment");
     }
@@ -140,12 +138,10 @@ readscript(Text *t, char *s)
 static void
 copyscript(Text *t, const unsigned char *s)
 {
-    do
-    {
+    do {
         assure(t, 2);
     } while (*t->w++ = *s++);
-    if (--t->w > t->s && t->w[-1] != '\n')
-    {
+    if (--t->w > t->s && t->w[-1] != '\n') {
         *t->w++ = '\n';
         *t->w = 0;
     }
@@ -170,15 +166,12 @@ readline(Text *t)
     coda();
     if (qflag || input.iargc <= 0)
         return 0;
-    for (;;)
-    {
-        if (s = sfgetr(input.ifile, '\n', 1))
-        {
+    for (;;) {
+        if (s = sfgetr(input.ifile, '\n', 1)) {
             c = sfvalue(input.ifile);
             break;
         }
-        if (s = sfgetr(input.ifile, '\n', -1))
-        {
+        if (s = sfgetr(input.ifile, '\n', -1)) {
             c = sfvalue(input.ifile) + 1;
             error(1, "newline appended");
             break;
@@ -186,8 +179,7 @@ readline(Text *t)
         error_info.file = 0;
         error_info.line = 0;
         sfclose(input.ifile);
-        do
-        {
+        do {
             if (--input.iargc <= 0)
                 return 0;
         } while (!(input.ifile = aopen(*++input.iargv, 2)));
@@ -207,8 +199,7 @@ ateof(void)
 {
     int c;
 
-    if (input.iargc == 1)
-    {
+    if (input.iargc == 1) {
         if ((c = sfgetc(input.ifile)) != EOF)
             sfungetc(input.ifile, c);
         else
@@ -222,15 +213,11 @@ initinput(int argc, char **argv)
 {
     input.iargc = argc;
     input.iargv = argv;
-    if (input.iargc == 0)
-    {
+    if (input.iargc == 0) {
         input.iargc = 1; /* for ateof() */
         input.ifile = sfstdin;
-    }
-    else
-    {
-        while (!(input.ifile = aopen(*input.iargv, 2)))
-        {
+    } else {
+        while (!(input.ifile = aopen(*input.iargv, 2))) {
             if (--input.iargc <= 0)
                 return 0;
             ++input.iargv;
@@ -276,8 +263,7 @@ main(int argc, char **argv)
         reflags = REG_LENIENT;
     map = ccmap(CC_NATIVE, CC_ASCII);
     while (c = optget(argv, usage))
-        switch (c)
-        {
+        switch (c) {
         case 'A':
         case 'X':
             reflags |= REG_AUGMENTED;
@@ -323,8 +309,7 @@ main(int argc, char **argv)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
     argv += opt_info.index;
     argc -= opt_info.index;
-    if (data.s == 0)
-    {
+    if (data.s == 0) {
         if (!*argv)
             error(3, "no script");
         copyscript(&data, ( unsigned char * )*argv++);
@@ -340,8 +325,7 @@ main(int argc, char **argv)
     if (uflag)
         sfsetbuf(sfstdout, 0, 0);
     if (initinput(argc, argv))
-        for (;;)
-        {
+        for (;;) {
             data.w = data.s;
             if (!readline(&data))
                 break;

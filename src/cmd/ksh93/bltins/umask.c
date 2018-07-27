@@ -45,8 +45,7 @@ b_umask(int argc, char *argv[], Shbltin_t *context)
     bool sflag = false, pflag = false;
     NOT_USED(context);
     while ((argc = optget(argv, sh_optumask)))
-        switch (argc)
-        {
+        switch (argc) {
         case 'p':
             pflag = true;
             break;
@@ -63,35 +62,27 @@ b_umask(int argc, char *argv[], Shbltin_t *context)
     if (error_info.errors)
         errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
     argv += opt_info.index;
-    if (mask = *argv)
-    {
+    if (mask = *argv) {
         int c;
-        if (isdigit(*mask))
-        {
-            while (c = *mask++)
-            {
+        if (isdigit(*mask)) {
+            while (c = *mask++) {
                 if (c >= '0' && c <= '7')
                     flag = (flag << 3) + (c - '0');
                 else
                     errormsg(SH_DICT, ERROR_exit(1), e_number, *argv);
             }
-        }
-        else
-        {
+        } else {
             char *cp = mask;
             flag = umask(0);
             c = strperm(cp, &cp, ~flag & 0777);
-            if (*cp)
-            {
+            if (*cp) {
                 umask(flag);
                 errormsg(SH_DICT, ERROR_exit(1), e_format, mask);
             }
             flag = (~c & 0777);
         }
         umask(flag);
-    }
-    else
-    {
+    } else {
         char *prefix = pflag ? "umask " : "";
         umask(flag = umask(0));
         if (sflag)

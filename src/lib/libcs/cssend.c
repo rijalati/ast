@@ -36,8 +36,7 @@ cssend(Cs_t *state, int fd, int *fds, int n)
     int i;
     struct csfdhdr hdr;
 
-    if (n > 0)
-    {
+    if (n > 0) {
 #    if CS_LIB_STREAM
         struct strbuf dat;
 #    endif
@@ -57,8 +56,7 @@ cssend(Cs_t *state, int fd, int *fds, int n)
             return -1;
         }
         for (i = 0; i < n; i++)
-            if (ioctl(fd, I_SENDFD, FDARG(fds[i])))
-            {
+            if (ioctl(fd, I_SENDFD, FDARG(fds[i]))) {
                 messagef(
                 (state->id, NiL, -1, "send: %d: ioctl I_SENDFD error", fd));
                 return -1;
@@ -88,8 +86,7 @@ cssend(Cs_t *state, int fd, int *fds, int n)
     char tmp[PATH_MAX + 1];
 
     csprotect(&cs);
-    if (n >= elementsof(ctl.fds))
-    {
+    if (n >= elementsof(ctl.fds)) {
         errno = EINVAL;
         return -1;
     }
@@ -101,8 +98,7 @@ cssend(Cs_t *state, int fd, int *fds, int n)
     s = csvar(state, CS_VAR_LOCAL, 0);
     if (eaccess(s, X_OK)
         && (mkdir(s, S_IRWXU | S_IRWXG | S_IRWXO)
-            || chmod(s, S_ISVTX | S_IRWXU | S_IRWXG | S_IRWXO)))
-    {
+            || chmod(s, S_ISVTX | S_IRWXU | S_IRWXG | S_IRWXO))) {
         messagef((state->id,
                   NiL,
                   -1,
@@ -111,15 +107,13 @@ cssend(Cs_t *state, int fd, int *fds, int n)
                   s));
         return -1;
     }
-    if (!(s = pathtemp(tmp, sizeof(tmp), s, "cs", 0)))
-    {
+    if (!(s = pathtemp(tmp, sizeof(tmp), s, "cs", 0))) {
         messagef(
         (state->id, NiL, -1, "send: %d: authentication tmp file error", fd));
         return -1;
     }
     if ((i = open(s, O_WRONLY | O_CREAT | O_TRUNC, CS_AUTH_MODE)) < 0
-        || chmod(s, CS_AUTH_MODE) < 0)
-    {
+        || chmod(s, CS_AUTH_MODE) < 0) {
         messagef((state->id,
                   NiL,
                   -1,
@@ -128,8 +122,7 @@ cssend(Cs_t *state, int fd, int *fds, int n)
                   s));
         return -1;
     }
-    if (remove(s))
-    {
+    if (remove(s)) {
         messagef((state->id,
                   NiL,
                   -1,
@@ -176,8 +169,7 @@ cssend(Cs_t *state, int fd, int *fds, int n)
 #    else
 
     messagef((state->id, NiL, -8, "send(%d,%d) call", fd, n));
-    if (!access(CS_PROC_FD_TST, F_OK))
-    {
+    if (!access(CS_PROC_FD_TST, F_OK)) {
         int i;
         int j;
         char *s;
@@ -197,23 +189,19 @@ cssend(Cs_t *state, int fd, int *fds, int n)
 
         if (hold.fds)
             for (i = 0; i < hold.num; i++)
-                if (hold.fds[i] >= 0)
-                {
+                if (hold.fds[i] >= 0) {
                     close(hold.fds[i]);
                     hold.fds[i] = 0;
                 }
-        if (n > hold.max)
-        {
+        if (n > hold.max) {
             hold.max = roundof(n, 8);
             hold.fds = newof(hold.fds, int, hold.max, 0);
         }
         s = state->temp;
         s += sfsprintf(s, sizeof(state->temp), "%lu %d", getpid(), n);
-        if (hold.fds)
-        {
+        if (hold.fds) {
             hold.num = n;
-            for (i = 0; i < n; i++)
-            {
+            for (i = 0; i < n; i++) {
                 if ((j = hold.fds[i] = dup(fds[i])) < 0)
                     j = fds[i];
                 else
@@ -221,8 +209,7 @@ cssend(Cs_t *state, int fd, int *fds, int n)
                 s += sfsprintf(
                 s, sizeof(state->temp) - (s - state->temp), " %d", j);
             }
-        }
-        else
+        } else
             for (i = 0; i < n; i++)
                 s += sfsprintf(
                 s, sizeof(state->temp) - (s - state->temp), " %d", fds[i]);

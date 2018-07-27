@@ -49,12 +49,10 @@ Sfdouble_t v;
     SFLOCK(f, 0);
 
     /* get the sign of v */
-    if (v < 0.)
-    {
+    if (v < 0.) {
         v = -v;
         n = 1;
-    }
-    else
+    } else
         n = 0;
 
     /* make the magnitude of v < 1 */
@@ -64,8 +62,7 @@ Sfdouble_t v;
         exp = 0;
 
     /* code the sign of v and exp */
-    if ((w = exp) < 0)
-    {
+    if ((w = exp) < 0) {
         n |= 02;
         w = -w;
     }
@@ -78,8 +75,7 @@ Sfdouble_t v;
     w += 1;
 
     s = (ends = &c[0]) + sizeof(c);
-    while (s > ends)
-    { /* get 2^SF_PRECIS precision at a time */
+    while (s > ends) { /* get 2^SF_PRECIS precision at a time */
         n = ( int )(x = ldexpl(v, SF_PRECIS));
         *--s = n | SF_MORE;
         v = x - n;

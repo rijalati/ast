@@ -42,16 +42,14 @@ service(Coshell_t *co, Coservice_t *cs, Cojob_t *cj, int flags, Sfio_t *sp)
     char *s;
     char **a;
 
-    if (flags & CO_DEBUG)
-    {
+    if (flags & CO_DEBUG) {
         for (a = cs->argv; *a; a++)
             sfprintf(sp, " %s", *a);
         if (!(s = costash(sp)))
             goto nospace;
         errormsg(state.lib, ERROR_LIBRARY | 2, "service %s:%s", cs->path, s);
     }
-    if (pipe(fds) < 0)
-    {
+    if (pipe(fds) < 0) {
         errormsg(state.lib,
                  ERROR_LIBRARY | ERROR_SYSTEM | 2,
                  "%s: cannot allocate service pipe",
@@ -60,8 +58,7 @@ service(Coshell_t *co, Coservice_t *cs, Cojob_t *cj, int flags, Sfio_t *sp)
     }
     if (co->flags & CO_SHELL)
         for (i = 0; i < elementsof(fds); i++)
-            if (fds[i] < 10 && (j = fcntl(fds[i], F_DUPFD, 10)) >= 0)
-            {
+            if (fds[i] < 10 && (j = fcntl(fds[i], F_DUPFD, 10)) >= 0) {
                 close(fds[i]);
                 fds[i] = j;
             }
@@ -71,8 +68,7 @@ service(Coshell_t *co, Coservice_t *cs, Cojob_t *cj, int flags, Sfio_t *sp)
     ops[1] = PROC_FD_DUP(co->gsmfd, 1, PROC_FD_CHILD);
     ops[2] = 0;
     if (!(proc = procopen(
-          cs->path, cs->argv, NiL, ops, PROC_DAEMON | PROC_IGNORE)))
-    {
+          cs->path, cs->argv, NiL, ops, PROC_DAEMON | PROC_IGNORE))) {
         errormsg(state.lib,
                  ERROR_LIBRARY | ERROR_SYSTEM | 2,
                  "%s: cannot connect to %s service",
@@ -123,8 +119,7 @@ request(Coshell_t *co,
     ssize_t i;
     Sfio_t *sp;
 
-    if (!(sp = sfstropen()))
-    {
+    if (!(sp = sfstropen())) {
         errormsg(state.lib, ERROR_LIBRARY | 2, "out of space");
         return 0;
     }
@@ -199,8 +194,7 @@ coexec(Coshell_t *co,
         cj->service = 0;
     else if (!(cj = vmnewof(co->vm, 0, Cojob_t, 1, 0)))
         return 0;
-    else
-    {
+    else {
         cj->coshell = co;
         cj->pid = CO_PID_FREE;
         cj->id = ++co->slots;
@@ -220,8 +214,7 @@ coexec(Coshell_t *co,
      * check service intercepts
      */
 
-    for (cs = co->service; cs; cs = cs->next)
-    {
+    for (cs = co->service; cs; cs = cs->next) {
         for (s = cs->name, t = ( char * )action; *s && *s == *t; s++, t++)
             ;
         if (!*s && *t == ' ')
@@ -239,8 +232,7 @@ coexec(Coshell_t *co,
     if (!(sp = sfstropen()))
         return 0;
     n = strlen(action);
-    if (co->flags & CO_SERVER)
-    {
+    if (co->flags & CO_SERVER) {
         /*
          * leave it to server
          */
@@ -258,16 +250,12 @@ coexec(Coshell_t *co,
         else
             sfprintf(sp, " %s", att);
         sfprintf(sp, " (%d:%s) (%d:%s)\n", strlen(env), env, n, action);
-    }
-    else if (co->flags & CO_INIT)
-    {
+    } else if (co->flags & CO_INIT) {
         if (flags & CO_DEBUG)
             sfprintf(sp, "set -x\n");
         sfprintf(
         sp, "%s%s\necho x %d $? >&$%s\n", env, action, cj->id, CO_ENV_MSGFD);
-    }
-    else if (flags & CO_KSH)
-    {
+    } else if (flags & CO_KSH) {
 #if !_lib_fork && defined(_map_spawnve)
         Sfio_t *tp;
 
@@ -287,33 +275,27 @@ coexec(Coshell_t *co,
                  (flags & CO_SILENT) ? "" : "set -x\n");
         if (n > CO_MAXEVAL)
             sfputr(sp, action, -1);
-        else
-        {
+        else {
             coquote(sp, action, 0);
             sfprintf(sp, "\n'");
         }
         sfprintf(sp, "\n} </dev/null");
-        if (out)
-        {
+        if (out) {
             if (*out == '/')
                 sfprintf(sp, " %s%s", red, out);
             else
                 sfprintf(sp, " %s%s/%s", red, state.pwd, out);
-        }
-        else if ((flags & CO_SERIALIZE)
-                 && (cj->out = pathtemp(NiL, 64, NiL, "coo", NiL)))
+        } else if ((flags & CO_SERIALIZE)
+                   && (cj->out = pathtemp(NiL, 64, NiL, "coo", NiL)))
             sfprintf(sp, " >%s", cj->out);
-        if (err)
-        {
+        if (err) {
             if (out && streq(out, err))
                 sfprintf(sp, " 2>&1");
             else if (*err == '/')
                 sfprintf(sp, " 2%s%s", red, err);
             else
                 sfprintf(sp, " 2%s%s/%s", red, state.pwd, err);
-        }
-        else if (flags & CO_SERIALIZE)
-        {
+        } else if (flags & CO_SERIALIZE) {
             if (!out && !fstat(1, &sto) && !fstat(2, &ste)
                 && sto.st_dev == ste.st_dev && sto.st_ino == ste.st_ino)
                 sfprintf(sp, " 2>&1");
@@ -321,8 +303,7 @@ coexec(Coshell_t *co,
                 sfprintf(sp, " 2>%s", cj->err);
         }
 #if !_lib_fork && defined(_map_spawnve)
-        if (sp != tp)
-        {
+        if (sp != tp) {
             sfprintf(tp, "%s -c '", state.sh);
             if (!(s = costash(sp)))
                 return 0;
@@ -333,9 +314,7 @@ coexec(Coshell_t *co,
         }
 #endif
         sfprintf(sp, " &\nprint -u$%s j %d $!\n", CO_ENV_MSGFD, cj->id);
-    }
-    else
-    {
+    } else {
 #if !_lib_fork && defined(_map_spawnve)
         Sfio_t *tp;
 
@@ -344,14 +323,11 @@ coexec(Coshell_t *co,
             sp = tp;
 #endif
         flags |= CO_IGNORE;
-        if (co->mode & CO_MODE_SEPARATE)
-        {
+        if (co->mode & CO_MODE_SEPARATE) {
             flags &= ~CO_SERIALIZE;
             og = '{';
             cg = '}';
-        }
-        else
-        {
+        } else {
             og = '(';
             cg = ')';
         }
@@ -364,40 +340,33 @@ coexec(Coshell_t *co,
                  (flags & CO_SILENT) ? "" : "x");
         if (n > CO_MAXEVAL)
             sfprintf(sp, "%s", action);
-        else
-        {
+        else {
             coquote(sp, action, 0);
             sfprintf(sp, "\n'");
         }
         sfprintf(sp, "\n%c </dev/null", cg);
-        if (out)
-        {
+        if (out) {
             if (*out == '/')
                 sfprintf(sp, " %s%s", red, out);
             else
                 sfprintf(sp, " %s%s/%s", red, state.pwd, out);
-        }
-        else if ((flags & CO_SERIALIZE)
-                 && (cj->out = pathtemp(NiL, 64, NiL, "coo", NiL)))
+        } else if ((flags & CO_SERIALIZE)
+                   && (cj->out = pathtemp(NiL, 64, NiL, "coo", NiL)))
             sfprintf(sp, " >%s", cj->out);
-        if (err)
-        {
+        if (err) {
             if (out && streq(out, err))
                 sfprintf(sp, " 2>&1");
             else if (*err == '/')
                 sfprintf(sp, " 2%s%s", red, err);
             else
                 sfprintf(sp, " 2%s%s/%s", red, state.pwd, err);
-        }
-        else if (flags & CO_SERIALIZE)
-        {
+        } else if (flags & CO_SERIALIZE) {
             if (out)
                 sfprintf(sp, " 2>&1");
             else if (cj->err = pathtemp(NiL, 64, NiL, "coe", NiL))
                 sfprintf(sp, " 2>%s", cj->err);
         }
-        if (!(co->mode & CO_MODE_SEPARATE))
-        {
+        if (!(co->mode & CO_MODE_SEPARATE)) {
             if (flags & CO_OSH)
                 sfprintf(sp,
                          " && echo x %d 0 >&$%s || echo x %d $? >&$%s",
@@ -415,8 +384,7 @@ coexec(Coshell_t *co,
                 CO_ENV_MSGFD);
         }
 #if !_lib_fork && defined(_map_spawnve)
-        if (sp != tp)
-        {
+        if (sp != tp) {
             sfprintf(tp, "%s -c '", state.sh);
             if (!(s = costash(sp)))
                 return 0;
@@ -438,8 +406,7 @@ coexec(Coshell_t *co,
     if (flags & CO_DEBUG)
         errormsg(
         state.lib, ERROR_LIBRARY | 2, "job %d commands:\n\n%s\n", cj->id, s);
-    if (co->mode & CO_MODE_SEPARATE)
-    {
+    if (co->mode & CO_MODE_SEPARATE) {
         sh[0] = state.sh;
         sh[1] = "-c";
         sh[2] = s;
@@ -450,9 +417,7 @@ coexec(Coshell_t *co,
         cj->local = 0;
         co->outstanding++;
         co->total++;
-    }
-    else
-    {
+    } else {
         /*
          * send it off
          */

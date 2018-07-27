@@ -32,8 +32,7 @@ ndfsstatfs(const char *path, struct statvfs *svfsp)
     if (utilisspecialpath(path))
         return -ENOENT;
 
-    if (statvfs(ndfs.par.str, svfsp) == -1)
-    {
+    if (statvfs(ndfs.par.str, svfsp) == -1) {
         log(LOG(0, "ndfsstatfs"), "cannot statfs %s", ndfs.par.str);
         return -errno;
     }
@@ -63,8 +62,7 @@ ndfsmkdir(const char *path, mode_t mode)
         return -ENOENT;
 
 doit:
-    if (mkdir(path, mode) == -1)
-    {
+    if (mkdir(path, mode) == -1) {
         log(LOG(1, "ndfsmkdir"), "cannot create dir %s", path);
         return -errno;
     }
@@ -95,8 +93,7 @@ ndfsrmdir(const char *path)
         return 0;
 
 doit:
-    if (rmdir(path) == -1)
-    {
+    if (rmdir(path) == -1) {
         log(LOG(1, "ndfsrmdir"), "cannot remove dir %s", path);
         return -errno;
     }
@@ -130,8 +127,7 @@ ndfslink(const char *fpath, const char *tpath)
         return -ENOENT;
 
 doit:
-    if (link(fpath, tpath) == -1)
-    {
+    if (link(fpath, tpath) == -1) {
         log(LOG(1, "ndfslink"), "cannot link %s to %s", fpath, tpath);
         return -errno;
     }
@@ -159,8 +155,7 @@ ndfssymlink(const char *fpath, const char *tpath)
         return -errno;
 
 doit:
-    if (symlink(fpath, tpath) == -1)
-    {
+    if (symlink(fpath, tpath) == -1) {
         log(LOG(1, "ndfssymlink"), "cannot symlink %s to %s", fpath, tpath);
         return -errno;
     }
@@ -191,8 +186,7 @@ ndfsunlink(const char *path)
         return 0;
 
 doit:
-    if (unlink(path) == -1)
-    {
+    if (unlink(path) == -1) {
         log(LOG(1, "ndfsunlink"), "cannot unlink %s", path);
         return -errno;
     }
@@ -220,19 +214,14 @@ ndfsreadlink(const char *path, char *buf, size_t bufsiz)
     if (utilisspecialpath(path))
         return -ENOENT;
 
-    if ((n = strlen(path)) >= 3)
-    {
+    if ((n = strlen(path)) >= 3) {
         s = ( char * )path + strlen(path);
         if (s[-1] == '.' && s[-2] == '.' && s[-3] == '.'
-            && (n == 3 || s[-4] == '/'))
-        {
-            if (n == 3)
-            {
+            && (n == 3 || s[-4] == '/')) {
+            if (n == 3) {
                 p1[0] = '.';
                 p1[1] = 0;
-            }
-            else
-            {
+            } else {
                 memcpy(p1, path, n - 4);
                 p1[n - 3] = 0;
             }
@@ -248,8 +237,7 @@ ndfsreadlink(const char *path, char *buf, size_t bufsiz)
     pp = p1;
 
 doit:
-    if (readlink(pp, buf, bufsiz) == -1)
-    {
+    if (readlink(pp, buf, bufsiz) == -1) {
         log(LOG(1, "ndfsreadlink"), "cannot readlink %s", pp);
         return -errno;
     }
@@ -277,8 +265,7 @@ ndfschmod(const char *path, mode_t mode)
         return -ENOENT;
 
 doit:
-    if (chmod(path, mode) == -1)
-    {
+    if (chmod(path, mode) == -1) {
         log(LOG(1, "ndfschmod"), "cannot chmod %s %o", path, mode);
         return -errno;
     }
@@ -312,8 +299,7 @@ ndfsutimens(const char *path, const struct timespec ts[2])
         return -ENOENT;
 
 doit:
-    if (utimensat(AT_FDCWD, path, ts, AT_SYMLINK_NOFOLLOW) == -1)
-    {
+    if (utimensat(AT_FDCWD, path, ts, AT_SYMLINK_NOFOLLOW) == -1) {
         log(LOG(1, "ndfsutimens"),
             "cannot utimensat %s %ld.%ld %ld.%ld",
             path,
@@ -353,8 +339,7 @@ ndfsrename(const char *fpath, const char *tpath)
         return -ENOENT;
 
 doit:
-    if (rename(fpath, tpath) == -1)
-    {
+    if (rename(fpath, tpath) == -1) {
         log(LOG(1, "ndfsrename"), "cannot rename %s to %s", fpath, tpath);
         return -errno;
     }
@@ -385,8 +370,7 @@ ndfsaccess(const char *path, int mask)
     pp = p1;
 
 doit:
-    if (access(pp, mask) == -1)
-    {
+    if (access(pp, mask) == -1) {
         log(LOG(1, "ndfsaccess"), "cannot access %s", pp);
         return -errno;
     }
@@ -411,10 +395,8 @@ ndfsgetattr(const char *path, struct stat *stp)
     if (NDFS_HASFLAG_OFF(pf))
         goto doit;
 
-    if (pt = utilisspecialpath(path))
-    {
-        if (pt == NDFS_SPECIALPATH_OFF)
-        {
+    if (pt = utilisspecialpath(path)) {
+        if (pt == NDFS_SPECIALPATH_OFF) {
             strcpy(p1, path);
             if ((s = strrchr(p1, '/')))
                 *s = 0;
@@ -422,8 +404,7 @@ ndfsgetattr(const char *path, struct stat *stp)
                 p1[0] = '.', p1[1] = 0;
             if (utilensuretopfile(p1) == -1)
                 return -ENOENT;
-            if (lstat(p1, stp) == -1)
-            {
+            if (lstat(p1, stp) == -1) {
                 log(LOG(0, "ndfsgetattr"), "cannot stat %s", p1);
                 return -errno;
             }
@@ -435,26 +416,20 @@ ndfsgetattr(const char *path, struct stat *stp)
         return -ENOENT;
     }
 
-    if ((n = strlen(path)) >= 3)
-    {
+    if ((n = strlen(path)) >= 3) {
         s = ( char * )path + strlen(path);
         if (s[-1] == '.' && s[-2] == '.' && s[-3] == '.'
-            && (n == 3 || s[-4] == '/'))
-        {
-            if (n == 3)
-            {
+            && (n == 3 || s[-4] == '/')) {
+            if (n == 3) {
                 p1[0] = '.';
                 p1[1] = 0;
-            }
-            else
-            {
+            } else {
                 memcpy(p1, path, n - 4);
                 p1[n - 3] = 0;
             }
             if (utilensuretopfile(p1) == -1)
                 return -ENOENT;
-            if (lstat(p1, stp) == -1)
-            {
+            if (lstat(p1, stp) == -1) {
                 log(LOG(0, "ndfsgetattr"), "cannot stat %s", p1);
                 return -errno;
             }
@@ -469,8 +444,7 @@ ndfsgetattr(const char *path, struct stat *stp)
     pp = p1;
 
 doit:
-    if (lstat(pp, stp) == -1)
-    {
+    if (lstat(pp, stp) == -1) {
         log(LOG(1, "ndfsgetattr"), "cannot stat %s", pp);
         return -errno;
     }
@@ -486,8 +460,7 @@ ndfsfgetattr(const char *path, struct stat *stp, struct fuse_file_info *fip)
     log(LOG(2, "ndfsfgetattr"), "getattr %s %d", path, fp->fd);
     SETFSOWNER;
 
-    if (fstat(fp->fd, stp) == -1)
-    {
+    if (fstat(fp->fd, stp) == -1) {
         if (*++path == 0)
             path = ".";
         log(LOG(1, "ndfsfgetattr"), "cannot stat %s/ ld", path, fip->fh);
@@ -524,16 +497,14 @@ ndfsopendir(const char *path, struct fuse_file_info *fip)
     pp = p1;
 
 doit:
-    if (!(fp = vmalloc(ndfs.vm, sizeof(Ndfsfile_t))))
-    {
+    if (!(fp = vmalloc(ndfs.vm, sizeof(Ndfsfile_t)))) {
         log(LOG(0, "ndfsopendir"), "cannot allocate file %s", path);
         return -errno;
     }
     memset(fp, 0, sizeof(Ndfsfile_t));
     fp->type = NDFS_ISDIR;
 
-    if ((fp->fd = open(pp, O_RDONLY)) == -1)
-    {
+    if ((fp->fd = open(pp, O_RDONLY)) == -1) {
         log(LOG(1, "ndfsopendir"), "cannot open %s", pp);
         vmfree(ndfs.vm, fp);
         return -errno;
@@ -569,27 +540,23 @@ ndfsreaddir(const char *path,
     if (utilisspecialpath(path))
         return -ENOENT;
 
-    if (!fp->u.d.inited)
-    {
+    if (!fp->u.d.inited) {
         if (utilgetbottomfile(path, p1) == -1)
             pp = NULL;
         LOCK(ndfs.mutex);
-        if (utilinitdir(fp, ( char * )path, pp) == -1)
-        {
+        if (utilinitdir(fp, ( char * )path, pp) == -1) {
             UNLOCK(ndfs.mutex);
             return -ENOENT;
         }
         UNLOCK(ndfs.mutex);
     }
 
-    if (off < 0 || off > fp->u.d.dirinfopn)
-    {
+    if (off < 0 || off > fp->u.d.dirinfopn) {
         log(LOG(0, "ndfsreaddir"), "bad offset %s %ld", path, off);
         return -ENOENT;
     }
 
-    for (;;)
-    {
+    for (;;) {
         if (off == fp->u.d.dirinfopn)
             break;
         dip = fp->u.d.dirinfops[( int )off];
@@ -612,8 +579,7 @@ ndfsreleasedir(const char *path, struct fuse_file_info *fip)
     log(LOG(2, "ndfsreleasedir"), "releasedir %s %d", path, fp->fd);
     SETFSOWNER;
 
-    if (fp->u.d.inited)
-    {
+    if (fp->u.d.inited) {
         if (utiltermdir(fp) == -1)
             return -ENOENT;
     }
@@ -644,15 +610,13 @@ ndfscreate(const char *path, mode_t mode, struct fuse_file_info *fip)
         return -ENOENT;
 
 doit:
-    if (!(fp = vmalloc(ndfs.vm, sizeof(Ndfsfile_t))))
-    {
+    if (!(fp = vmalloc(ndfs.vm, sizeof(Ndfsfile_t)))) {
         log(LOG(0, "ndfscreate"), "cannot allocate file %s", path);
         return -ENOENT;
     }
     memset(fp, 0, sizeof(Ndfsfile_t));
     fp->type = NDFS_ISREG;
-    if ((fp->fd = open(path, fip->flags, mode)) == -1)
-    {
+    if ((fp->fd = open(path, fip->flags, mode)) == -1) {
         log(LOG(1, "ndfscreate"), "cannot open %s %o", path, mode);
         vmfree(ndfs.vm, fp);
         return -errno;
@@ -678,15 +642,12 @@ ndfsopen(const char *path, struct fuse_file_info *fip)
     if (NDFS_HASFLAG_OFF(pf))
         goto doit;
 
-    if (pt = utilisspecialpath(path))
-    {
-        if (pt == NDFS_SPECIALPATH_OFF)
-        {
+    if (pt = utilisspecialpath(path)) {
+        if (pt == NDFS_SPECIALPATH_OFF) {
             if (utilmkspecialpid(fuse_get_context()->pid, NDFS_FLAG_OFF, 0)
                 == -1)
                 return -ENOENT;
-            if (!(fp = vmalloc(ndfs.vm, sizeof(Ndfsfile_t))))
-            {
+            if (!(fp = vmalloc(ndfs.vm, sizeof(Ndfsfile_t)))) {
                 log(LOG(0, "ndfsopen"), "cannot allocate file %s", path);
                 return -ENOENT;
             }
@@ -700,28 +661,23 @@ ndfsopen(const char *path, struct fuse_file_info *fip)
         return -ENOENT;
     }
 
-    if (fip->flags & (O_WRONLY | O_RDWR))
-    {
+    if (fip->flags & (O_WRONLY | O_RDWR)) {
         if (utilensuretopfile(path) == -1)
             return -ENOENT;
-    }
-    else
-    {
+    } else {
         if (utilgetrealfile(path, p1) == -1)
             return -ENOENT;
         pp = p1;
     }
 
 doit:
-    if (!(fp = vmalloc(ndfs.vm, sizeof(Ndfsfile_t))))
-    {
+    if (!(fp = vmalloc(ndfs.vm, sizeof(Ndfsfile_t)))) {
         log(LOG(0, "ndfsopen"), "cannot allocate file %s", path);
         return -ENOENT;
     }
     memset(fp, 0, sizeof(Ndfsfile_t));
     fp->type = NDFS_ISREG;
-    if ((fp->fd = open(pp, fip->flags)) == -1)
-    {
+    if ((fp->fd = open(pp, fip->flags)) == -1) {
         log(LOG(1, "ndfsopen"), "cannot open %s", pp);
         vmfree(ndfs.vm, fp);
         return -errno;
@@ -739,8 +695,7 @@ ndfsflush(const char *path, struct fuse_file_info *fip)
     log(LOG(2, "ndfsflush"), "flush %s %d", path, fp->fd);
     SETFSOWNER;
 
-    if (fp->fd >= 0 && fcntl(fp->fd, F_GETFL, 0) < 0)
-    {
+    if (fp->fd >= 0 && fcntl(fp->fd, F_GETFL, 0) < 0) {
         if (*++path == 0)
             path = ".";
         log(LOG(1, "ndfsflush"), "cannot flush %s fd=%d", path);
@@ -758,8 +713,7 @@ ndfsrelease(const char *path, struct fuse_file_info *fip)
     log(LOG(2, "ndfsrelease"), "release %s %d", path, fp->fd);
     SETFSOWNER;
 
-    if (close(fp->fd) == -1)
-    {
+    if (close(fp->fd) == -1) {
         if (*++path == 0)
             path = ".";
         log(LOG(1, "ndfsrelease"), "cannot close %s", path);
@@ -829,8 +783,7 @@ ndfstruncate(const char *path, off_t off)
         return -ENOENT;
 
 doit:
-    if (truncate(path, off) == -1)
-    {
+    if (truncate(path, off) == -1) {
         log(LOG(1, "ndfstruncate"), "cannot truncate %s", path);
         return -errno;
     }
@@ -846,8 +799,7 @@ ndfsftruncate(const char *path, off_t off, struct fuse_file_info *fip)
     log(LOG(2, "ndfsftruncate"), "ftruncate %s %d %ld", path, fp->fd, off);
     SETFSOWNER;
 
-    if (ftruncate(fp->fd, off) == -1)
-    {
+    if (ftruncate(fp->fd, off) == -1) {
         if (*++path == 0)
             path = ".";
         log(LOG(1, "ndfsrelease"), "cannot close %s", path);
@@ -865,20 +817,15 @@ ndfsfsync(const char *path, int flag, struct fuse_file_info *fip)
     log(LOG(2, "ndfsync"), "fsync %s %d %d", path, fp->fd, flag);
     SETFSOWNER;
 
-    if (flag)
-    {
-        if (fdatasync(fp->fd) == -1)
-        {
+    if (flag) {
+        if (fdatasync(fp->fd) == -1) {
             if (*++path == 0)
                 path = ".";
             log(LOG(1, "ndfsfsync"), "cannot fdatasync %s", path);
             return -errno;
         }
-    }
-    else
-    {
-        if (fsync(fp->fd) == -1)
-        {
+    } else {
+        if (fsync(fp->fd) == -1) {
             if (*++path == 0)
                 path = ".";
             log(LOG(1, "ndfsfsync"), "cannot fsync %s", path);
@@ -904,8 +851,7 @@ ndfsioctl(const char *path,
     if (*++path == 0)
         path = ".";
 
-    if (ioctl(fp->fd, cmd, arg) == -1)
-    {
+    if (ioctl(fp->fd, cmd, arg) == -1) {
         log(LOG(1, "ndfsioctl"), "cannot ioctl %s", path);
         return -errno;
     }

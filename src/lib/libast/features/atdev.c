@@ -74,8 +74,7 @@ main(int argc, char **argv)
     printf(
     "#define _fd_dir_chmod	%d	/* chmod(%s/old) %s */\n", r, fmt, res[r]);
 #        if _lib_lchmod && _lib_symlink
-    if (r = symlink(dir_old, dir_new) >= 0)
-    {
+    if (r = symlink(dir_old, dir_new) >= 0) {
         r = lchmod(dev_new, S_IRUSR | S_IWUSR | S_IXUSR) >= 0;
         unlink(dir_new);
     }
@@ -88,8 +87,7 @@ main(int argc, char **argv)
     printf(
     "#define _fd_dir_chown	%d	/* chown(%s/old) %s */\n", r, fmt, res[r]);
 #        if _lib_lchown && _lib_symlink
-    if (r = symlink(dir_old, dir_new) >= 0)
-    {
+    if (r = symlink(dir_old, dir_new) >= 0) {
         r = lchown(dev_new, -1, -1) >= 0;
         unlink(dir_new);
     }
@@ -148,8 +146,7 @@ main(int argc, char **argv)
 #    endif
 #    if !_lib_readlinkat
 #        if _lib_symlink && _lib_readlink
-    if (r = symlink(dir_old, dir_new) >= 0)
-    {
+    if (r = symlink(dir_old, dir_new) >= 0) {
         r = readlink(dev_new, tst, sizeof(tst)) > 0;
         unlink(dir_new);
     }

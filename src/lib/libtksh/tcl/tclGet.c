@@ -53,29 +53,21 @@ int *intPtr;        /* Place to store converted result. */
      */
 
     errno = 0;
-    for (p = string; isspace(UCHAR(*p)); p++)
-    {
+    for (p = string; isspace(UCHAR(*p)); p++) {
         /* Empty loop body. */
     }
-    if (*p == '-')
-    {
+    if (*p == '-') {
         p++;
         i = -( int )strtoul(p, &end, 0);
-    }
-    else if (*p == '+')
-    {
+    } else if (*p == '+') {
         p++;
         i = strtoul(p, &end, 0);
-    }
-    else
-    {
+    } else {
         i = strtoul(p, &end, 0);
     }
-    if (end == p)
-    {
+    if (end == p) {
     badInteger:
-        if (interp != ( Tcl_Interp * )NULL)
-        {
+        if (interp != ( Tcl_Interp * )NULL) {
             Tcl_AppendResult(interp,
                              "expected integer but got \"",
                              string,
@@ -84,22 +76,18 @@ int *intPtr;        /* Place to store converted result. */
         }
         return TCL_ERROR;
     }
-    if (errno == ERANGE)
-    {
-        if (interp != ( Tcl_Interp * )NULL)
-        {
+    if (errno == ERANGE) {
+        if (interp != ( Tcl_Interp * )NULL) {
             interp->result = "integer value too large to represent";
             Tcl_SetErrorCode(
             interp, "ARITH", "IOVERFLOW", interp->result, ( char * )NULL);
         }
         return TCL_ERROR;
     }
-    while ((*end != '\0') && isspace(UCHAR(*end)))
-    {
+    while ((*end != '\0') && isspace(UCHAR(*end))) {
         end++;
     }
-    if (*end != 0)
-    {
+    if (*end != 0) {
         goto badInteger;
     }
     *intPtr = i;
@@ -137,11 +125,9 @@ double *doublePtr;  /* Place to store converted result. */
 
     errno = 0;
     d = strtod(string, &end);
-    if (end == string)
-    {
+    if (end == string) {
     badDouble:
-        if (interp != ( Tcl_Interp * )NULL)
-        {
+        if (interp != ( Tcl_Interp * )NULL) {
             Tcl_AppendResult(interp,
                              "expected floating-point number but got \"",
                              string,
@@ -150,20 +136,16 @@ double *doublePtr;  /* Place to store converted result. */
         }
         return TCL_ERROR;
     }
-    if (errno != 0)
-    {
-        if (interp != ( Tcl_Interp * )NULL)
-        {
+    if (errno != 0) {
+        if (interp != ( Tcl_Interp * )NULL) {
             TclExprFloatError(interp, d);
         }
         return TCL_ERROR;
     }
-    while ((*end != 0) && isspace(UCHAR(*end)))
-    {
+    while ((*end != 0) && isspace(UCHAR(*end))) {
         end++;
     }
-    if (*end != 0)
-    {
+    if (*end != 0) {
         goto badDouble;
     }
     *doublePtr = d;
@@ -206,15 +188,12 @@ int *boolPtr;       /* Place to store converted result, which
      * Convert the input string to all lower-case.
      */
 
-    for (i = 0; i < 9; i++)
-    {
+    for (i = 0; i < 9; i++) {
         c = string[i];
-        if (c == 0)
-        {
+        if (c == 0) {
             break;
         }
-        if ((c >= 'A') && (c <= 'Z'))
-        {
+        if ((c >= 'A') && (c <= 'Z')) {
             c += ( char )('a' - 'A');
         }
         lowerCase[i] = c;
@@ -223,50 +202,29 @@ int *boolPtr;       /* Place to store converted result, which
 
     length = strlen(lowerCase);
     c = lowerCase[0];
-    if ((c == '0') && (lowerCase[1] == '\0'))
-    {
+    if ((c == '0') && (lowerCase[1] == '\0')) {
         *boolPtr = 0;
-    }
-    else if ((c == '1') && (lowerCase[1] == '\0'))
-    {
+    } else if ((c == '1') && (lowerCase[1] == '\0')) {
         *boolPtr = 1;
-    }
-    else if ((c == 'y') && (strncmp(lowerCase, "yes", length) == 0))
-    {
+    } else if ((c == 'y') && (strncmp(lowerCase, "yes", length) == 0)) {
         *boolPtr = 1;
-    }
-    else if ((c == 'n') && (strncmp(lowerCase, "no", length) == 0))
-    {
+    } else if ((c == 'n') && (strncmp(lowerCase, "no", length) == 0)) {
         *boolPtr = 0;
-    }
-    else if ((c == 't') && (strncmp(lowerCase, "true", length) == 0))
-    {
+    } else if ((c == 't') && (strncmp(lowerCase, "true", length) == 0)) {
         *boolPtr = 1;
-    }
-    else if ((c == 'f') && (strncmp(lowerCase, "false", length) == 0))
-    {
+    } else if ((c == 'f') && (strncmp(lowerCase, "false", length) == 0)) {
         *boolPtr = 0;
-    }
-    else if ((c == 'o') && (length >= 2))
-    {
-        if (strncmp(lowerCase, "on", length) == 0)
-        {
+    } else if ((c == 'o') && (length >= 2)) {
+        if (strncmp(lowerCase, "on", length) == 0) {
             *boolPtr = 1;
-        }
-        else if (strncmp(lowerCase, "off", length) == 0)
-        {
+        } else if (strncmp(lowerCase, "off", length) == 0) {
             *boolPtr = 0;
-        }
-        else
-        {
+        } else {
             goto badBoolean;
         }
-    }
-    else
-    {
+    } else {
     badBoolean:
-        if (interp != ( Tcl_Interp * )NULL)
-        {
+        if (interp != ( Tcl_Interp * )NULL) {
             Tcl_AppendResult(interp,
                              "expected boolean value but got \"",
                              string,

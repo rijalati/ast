@@ -93,12 +93,10 @@ note(int flags, const char *fmt, ...)
     va_start(ap, fmt);
     if ((flags & DEBUG) && !state.var.debug)
         return;
-    if (flags & (ERROR | PANIC))
-    {
+    if (flags & (ERROR | PANIC)) {
         fp = stderr;
         fflush(stdout);
-    }
-    else
+    } else
         fp = stdout;
     if (state.var.coprocess)
         fprintf(fp, "%s ", state.var.coprocess);
@@ -195,8 +193,7 @@ source(char **arglist)
 
     if (!(fp = fileopen(*arglist, "EXr")))
         return 1;
-    if (state.source.sp >= NOFILE - 1)
-    {
+    if (state.source.sp >= NOFILE - 1) {
         note(0, "Too much \"sourcing\" going on");
         fileclose(fp);
         return 1;
@@ -219,8 +216,7 @@ source(char **arglist)
 int
 unstack(void)
 {
-    if (state.source.sp <= 0)
-    {
+    if (state.source.sp <= 0) {
         note(0, "\"Source\" stack over-pop");
         state.sourcing = 0;
         return 1;
@@ -271,10 +267,8 @@ skip_comment(char *cp)
 {
     int nesting = 1;
 
-    for (; nesting > 0 && *cp; cp++)
-    {
-        switch (*cp)
-        {
+    for (; nesting > 0 && *cp; cp++) {
+        switch (*cp) {
         case '\\':
             if (cp[1])
                 cp++;
@@ -303,18 +297,15 @@ localize(char *host)
 
     hx = strchr(host, '.');
     lp = state.var.local;
-    for (;;)
-    {
+    for (;;) {
         if (le = strchr(lp, ','))
             *le = 0;
-        if (!strcasecmp(lp, host))
-        {
+        if (!strcasecmp(lp, host)) {
             if (le)
                 *le = ',';
             return 0;
         }
-        if (hx && !strcasecmp(lp, hx + 1))
-        {
+        if (hx && !strcasecmp(lp, hx + 1)) {
             *hx = 0;
             if (le)
                 *le = ',';
@@ -350,14 +341,11 @@ normalize(char *addr, unsigned long type, char *buf, size_t size)
         addr++;
     if (!(type & GFROM) && (p = strrchr(addr, ':')))
         addr = p + 1;
-    if ((type & GCOMPARE) && state.var.allnet)
-    {
+    if ((type & GCOMPARE) && state.var.allnet) {
         if (p = strrchr(addr, '!'))
             addr = p + 1;
-        if ((p = strchr(addr, '%')) || (p = strchr(addr, '@')))
-        {
-            if (buf)
-            {
+        if ((p = strchr(addr, '%')) || (p = strchr(addr, '@'))) {
+            if (buf) {
                 if ((n = p - addr) > size)
                     n = size;
                 addr = ( char * )memcpy(buf, addr, n);
@@ -366,35 +354,29 @@ normalize(char *addr, unsigned long type, char *buf, size_t size)
             *p = 0;
             return addr;
         }
-    }
-    else
-    {
+    } else {
         strncopy(user = temp, addr, sizeof(temp));
         uucp = arpa = inet = 0;
         hadarpa = hadinet = 0;
-        if (p = strrchr(user, '!'))
-        {
+        if (p = strrchr(user, '!')) {
             uucp = user;
             *p++ = 0;
             user = p;
             if (p = strrchr(uucp, '!'))
                 p++;
-            if (p && (type & GDISPLAY))
-            {
+            if (p && (type & GDISPLAY)) {
                 uucp = p;
                 p = 0;
             }
             if (p && state.var.local)
                 uucp = localize(p);
         }
-        if (p = strchr(user, '@'))
-        {
+        if (p = strchr(user, '@')) {
             hadinet = 1;
             *p++ = 0;
             inet = state.var.local ? localize(p) : p;
         }
-        if (p = strchr(user, '%'))
-        {
+        if (p = strchr(user, '%')) {
             hadarpa = 1;
             *p++ = 0;
             if (!(type & (GCOMPARE | GDISPLAY)))
@@ -406,31 +388,26 @@ normalize(char *addr, unsigned long type, char *buf, size_t size)
             uucp = 0;
         if (arpa && (hadinet || inet && streq(arpa, inet)))
             arpa = 0;
-        if (type & GDISPLAY)
-        {
+        if (type & GDISPLAY) {
             if (inet)
                 uucp = 0;
-            else if (uucp)
-            {
+            else if (uucp) {
                 inet = uucp;
                 uucp = 0;
             }
         }
         p = norm;
         e = p + sizeof(norm);
-        if (uucp)
-        {
+        if (uucp) {
             p = strncopy(p, uucp, e - p);
             p = strncopy(p, "!", e - p);
         }
         p = strncopy(p, user, e - p);
-        if (arpa)
-        {
+        if (arpa) {
             p = strncopy(p, "%", e - p);
             p = strncopy(p, arpa, e - p);
         }
-        if (inet)
-        {
+        if (inet) {
             p = strncopy(p, "@", e - p);
             p = strncopy(p, inet, e - p);
         }
@@ -464,10 +441,8 @@ skin(char *name, unsigned long type)
     gotlt = 0;
     lastsp = 0;
     bufend = buf;
-    for (cp = name, cp2 = bufend; c = *cp++;)
-    {
-        switch (c)
-        {
+    for (cp = name, cp2 = bufend; c = *cp++;) {
+        switch (c) {
         case '(':
             cp = skip_comment(cp);
             lastsp = 0;
@@ -478,15 +453,13 @@ skin(char *name, unsigned long type)
              * Start of a "quoted-string".
              * Copy it in its entirety.
              */
-            while (c = *cp)
-            {
+            while (c = *cp) {
                 cp++;
                 if (c == '"')
                     break;
                 if (c != '\\')
                     *cp2++ = c;
-                else if (c = *cp)
-                {
+                else if (c = *cp) {
                     *cp2++ = c;
                     cp++;
                 }
@@ -510,17 +483,14 @@ skin(char *name, unsigned long type)
             break;
 
         case '>':
-            if (gotlt)
-            {
+            if (gotlt) {
                 gotlt = 0;
-                while ((c = *cp) && c != ',')
-                {
+                while ((c = *cp) && c != ',') {
                     cp++;
                     if (c == '(')
                         cp = skip_comment(cp);
                     else if (c == '"')
-                        while (c = *cp)
-                        {
+                        while (c = *cp) {
                             cp++;
                             if (c == '"')
                                 break;
@@ -534,14 +504,12 @@ skin(char *name, unsigned long type)
             /* Fall into . . . */
 
         default:
-            if (lastsp)
-            {
+            if (lastsp) {
                 lastsp = 0;
                 *cp2++ = ' ';
             }
             *cp2++ = c;
-            if (c == ',' && !gotlt)
-            {
+            if (c == ',' && !gotlt) {
                 *cp2++ = ' ';
                 for (; *cp == ' '; cp++)
                     ;
@@ -646,8 +614,7 @@ salloc(int size)
     struct strings *sp;
     int index;
 
-    if (state.onstack <= 0)
-    {
+    if (state.onstack <= 0) {
         if (!(t = newof(0, char, size, 0)))
             note(PANIC, "Out of space");
         return t;
@@ -657,8 +624,7 @@ salloc(int size)
     index = 0;
     for (sp = &state.stringdope[0];
          sp < &state.stringdope[elementsof(state.stringdope)];
-         sp++)
-    {
+         sp++) {
         if (!sp->s_topfree && (STRINGSIZE << index) >= size)
             break;
         if (sp->s_nleft >= size)
@@ -667,8 +633,7 @@ salloc(int size)
     }
     if (sp >= &state.stringdope[elementsof(state.stringdope)])
         note(PANIC, "String too large");
-    if (!sp->s_topfree)
-    {
+    if (!sp->s_topfree) {
         index = sp - &state.stringdope[0];
         sp->s_topfree = ( char * )malloc(STRINGSIZE << index);
         if (!sp->s_topfree)
@@ -698,8 +663,7 @@ sreset(void)
     index = 0;
     for (sp = &state.stringdope[0];
          sp < &state.stringdope[elementsof(state.stringdope)];
-         sp++)
-    {
+         sp++) {
         if (!sp->s_topfree)
             continue;
         sp->s_nextfree = sp->s_topfree;
@@ -744,8 +708,7 @@ iscmd(char *s)
         s++;
     if (*s != '!' && *s != '|')
         return 0;
-    do
-    {
+    do {
         if (!*++s)
             return 0;
     } while (isspace(*s));
@@ -761,8 +724,7 @@ msgflags(struct msg *mp, int set, int clr)
 {
     if (state.folder == FIMAP)
         imap_msgflags(mp, set, clr);
-    else
-    {
+    else {
         if (clr)
             mp->m_flag &= ~clr;
         if (set)
@@ -780,10 +742,8 @@ strncopy(char *t, const char *f, size_t n)
 {
     char *e = t + n - 1;
 
-    do
-    {
-        if (t >= e)
-        {
+    do {
+        if (t >= e) {
             *t = 0;
             return t;
         }
@@ -803,17 +763,14 @@ shquote(Sfio_t *sp, char *s)
     int c;
     int q;
 
-    if (*s == '"' && *(s + strlen(s) - 1) == '"')
-    {
+    if (*s == '"' && *(s + strlen(s) - 1) == '"') {
         sfprintf(sp, "\\\"%s\\\"", s);
         return;
     }
     q = 0;
     b = 0;
-    for (t = s;;)
-    {
-        switch (c = *t++)
-        {
+    for (t = s;;) {
+        switch (c = *t++) {
         case 0:
             break;
         case '\n':
@@ -857,24 +814,19 @@ shquote(Sfio_t *sp, char *s)
     }
     if (!q)
         sfputr(sp, s, -1);
-    else if (!(q & 1))
-    {
+    else if (!(q & 1)) {
         if (b)
             sfprintf(sp, "%-.*s'%s'", b - s, s, b);
         else
             sfprintf(sp, "'%s'", s);
-    }
-    else if (!(q & 2))
-    {
+    } else if (!(q & 2)) {
         if (b)
             sfprintf(sp, "%-.*s\"%s\"", b - s, s, b);
         else
             sfprintf(sp, "\"%s\"", s);
-    }
-    else
+    } else
         for (t = s;;)
-            switch (c = *t++)
-            {
+            switch (c = *t++) {
             case 0:
                 return;
             case '\n':

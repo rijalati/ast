@@ -42,8 +42,7 @@ tmain()
     for (i = 0; i < sizeof(wbuf); ++i)
         wbuf[i] = (i % 10) + '0';
 
-    switch (fork())
-    {
+    switch (fork()) {
     case -1:
         terror("fork() failed");
     case 0:
@@ -52,8 +51,7 @@ tmain()
                 terror("Write to pipe failed i=%d", i);
         break;
     default:
-        for (i = 0; i < ITER; ++i)
-        {
+        for (i = 0; i < ITER; ++i) {
             if (sfread(fr, rbuf, sizeof(rbuf)) != sizeof(rbuf))
                 terror("Read from pipe failed i=%d", i);
             for (r = 0, s = rbuf; r < RBUF; r += 1, s += n)

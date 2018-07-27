@@ -79,8 +79,7 @@ main(int argc, char *argv[])
     int n, nflag = 0, vflag = 0, dflag = 0;
     error_info.id = argv[0];
     while (n = optget(argv, usage))
-        switch (n)
-        {
+        switch (n) {
         case 'D':
             dflag = 1;
             break;
@@ -103,26 +102,21 @@ main(int argc, char *argv[])
     argc -= opt_info.index;
     if (error_info.errors || argc > 2)
         errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(( char * )0));
-    if (cp = *argv)
-    {
+    if (cp = *argv) {
         argv++;
         in = sh_pathopen(shp, cp);
-    }
-    else
+    } else
         in = sfstdin;
-    if (cp = *argv)
-    {
+    if (cp = *argv) {
         struct stat statb;
         if (!(out = sfopen(( Sfio_t * )0, cp, "w")))
             errormsg(SH_DICT, ERROR_system(1), "%s: cannot create", cp);
         if (fstat(sffileno(out), &statb) >= 0)
             chmod(cp,
                   (statb.st_mode & ~S_IFMT) | S_IXUSR | S_IXGRP | S_IXOTH);
-    }
-    else
+    } else
         out = sfstdout;
-    if (dflag)
-    {
+    if (dflag) {
         sh_onoption(shp, SH_DICTIONARY);
         sh_onoption(shp, SH_NOEXEC);
     }
@@ -137,37 +131,29 @@ main(int argc, char *argv[])
 #if SHOPT_BRACEPAT
     sh_onoption(shp, SH_BRACEEXPAND);
 #endif
-    while (1)
-    {
+    while (1) {
         stakset(( char * )0, 0);
-        if (t = ( Shnode_t * )sh_parse(shp, in, 0))
-        {
+        if (t = ( Shnode_t * )sh_parse(shp, in, 0)) {
             if ((t->tre.tretyp & (COMMSK | COMSCAN)) == 0 && t->com.comnamp
                 && strcmp(nv_name(( Namval_t * )t->com.comnamp), "alias")
                    == 0)
                 sh_exec(shp, t, 0);
             if (!dflag && sh_tdump(out, t) < 0)
                 errormsg(SH_DICT, ERROR_exit(1), "dump failed");
-        }
-        else if (sfeof(in))
+        } else if (sfeof(in))
             break;
         if (sferror(in))
             errormsg(SH_DICT, ERROR_system(1), "I/O error");
         if (t && ((t->tre.tretyp & COMMSK) == TCOM) && (np = t->com.comnamp)
-            && (cp = nv_name(np)))
-        {
+            && (cp = nv_name(np))) {
             if (strcmp(cp, "exit") == 0)
                 break;
             /* check for exec of a command */
-            if (strcmp(cp, "exec") == 0)
-            {
-                if (t->com.comtyp & COMSCAN)
-                {
+            if (strcmp(cp, "exec") == 0) {
+                if (t->com.comtyp & COMSCAN) {
                     if (t->com.comarg->argnxt.ap)
                         break;
-                }
-                else
-                {
+                } else {
                     struct dolnod *ap = ( struct dolnod * )t->com.comarg;
                     if (ap->dolnum > 1)
                         break;

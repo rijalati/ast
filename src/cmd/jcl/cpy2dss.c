@@ -206,8 +206,7 @@ cpyopen(const char *path, Sfio_t *ip, Cpydisc_t *disc)
     dictdisc.link = offsetof(Cpyfield_t, link);
     if (!(vm = vmopen(Vmdcheap, Vmlast, 0))
         || !(cpy = vmnewof(vm, 0, Cpy_t, 1, 0))
-        || !(cpy->dt = dtnew(vm, &dictdisc, Dtset)))
-    {
+        || !(cpy->dt = dtnew(vm, &dictdisc, Dtset))) {
         if (vm)
             vmclose(vm);
         if (disc->errorf)
@@ -241,22 +240,17 @@ cpylex(Cpy_t *cpy)
     char *s;
     int q;
 
-    if (cpy->item)
-    {
+    if (cpy->item) {
         cpy->item = 0;
         cpy->size = 0;
         return "";
     }
-    for (;;)
-    {
-        switch (*cpy->cp)
-        {
+    for (;;) {
+        switch (*cpy->cp) {
         case '*':
         case '\n':
-            do
-            {
-                if (!(cpy->cp = sfgetr(cpy->ip, '\n', 0)))
-                {
+            do {
+                if (!(cpy->cp = sfgetr(cpy->ip, '\n', 0))) {
                     cpy->cp = empty;
                     return 0;
                 }
@@ -276,10 +270,8 @@ cpylex(Cpy_t *cpy)
     }
     s = cpy->cp;
     q = 0;
-    for (;;)
-    {
-        switch (*cpy->cp++)
-        {
+    for (;;) {
+        switch (*cpy->cp++) {
         case '\n':
             *(cpy->cp - 1) = 0;
             cpy->size = cpy->cp - s - 1;
@@ -295,10 +287,8 @@ cpylex(Cpy_t *cpy)
             q = !q;
             continue;
         case '.':
-            if (!q)
-            {
-                if (cpy->cp > s + 1)
-                {
+            if (!q) {
+                if (cpy->cp > s + 1) {
                     if (isdigit(*cpy->cp)
                         && (isdigit(*(cpy->cp - 2)) || *(cpy->cp - 2) == ')'))
                         continue;
@@ -339,14 +329,12 @@ cpyfield(Cpy_t *cpy)
     int level;
     int width;
 
-    do
-    {
+    do {
         if (!(s = cpylex(cpy)))
             return 0;
     } while (!strncasecmp(s, "SKIP", 4));
     level = ( int )strtol(s, &e, 10);
-    if (*e)
-    {
+    if (*e) {
         if (cpy->disc->errorf)
             (*cpy->disc->errorf)(
             cpy, cpy->disc, 2, "%s: syntax error: level number expected", s);
@@ -354,8 +342,7 @@ cpyfield(Cpy_t *cpy)
     }
     if (!(s = cpylex(cpy)) || !*s)
         return 0;
-    if (!(f = vmnewof(cpy->vm, 0, Cpyfield_t, 1, cpy->size)))
-    {
+    if (!(f = vmnewof(cpy->vm, 0, Cpyfield_t, 1, cpy->size))) {
         if (cpy->disc->errorf)
             (*cpy->disc->errorf)(
             cpy, cpy->disc, ERROR_SYSTEM | 2, "out of space");
@@ -368,8 +355,7 @@ cpyfield(Cpy_t *cpy)
     cpy->last = f;
     f->level = level;
     e = s;
-    while ((p = ( Cpyfield_t * )dtmatch(cpy->dt, e)) && p->dup)
-    {
+    while ((p = ( Cpyfield_t * )dtmatch(cpy->dt, e)) && p->dup) {
         p->dup++;
         e = sfprints("%s_%d", s, p->dup);
     }
@@ -378,25 +364,19 @@ cpyfield(Cpy_t *cpy)
         dtinsert(cpy->dt, f);
     f->dup = 1;
     f->structure = 1;
-    while ((s = cpylex(cpy)) && *s)
-    {
+    while ((s = cpylex(cpy)) && *s) {
     again:
-        if (!strcasecmp(s, "BINARY"))
-        {
+        if (!strcasecmp(s, "BINARY")) {
             f->structure = 0;
             f->flags |= CPY_binary;
-        }
-        else if (!strncasecmp(s, "COMP", 4))
-        {
+        } else if (!strncasecmp(s, "COMP", 4)) {
             f->structure = 0;
             s += !strncasecmp(s, "COMPUTATIONAL", 13) ? 13 : 4;
             if (*s++ != '_')
                 f->comp = 1;
-            else
-            {
+            else {
                 f->comp = ( int )strtol(s, &e, 10);
-                if (*e || f->comp <= 0 || f->comp > 9)
-                {
+                if (*e || f->comp <= 0 || f->comp > 9) {
                     if (cpy->disc->errorf)
                         (*cpy->disc->errorf)(cpy,
                                              cpy->disc,
@@ -408,13 +388,10 @@ cpyfield(Cpy_t *cpy)
                 }
             }
             f->comp = state.comp[f->comp];
-        }
-        else if (!strcasecmp(s, "DEPENDING"))
-        {
+        } else if (!strcasecmp(s, "DEPENDING")) {
             if (!(s = cpylex(cpy)) || !*s)
                 break;
-            if (strcasecmp(s, "ON"))
-            {
+            if (strcasecmp(s, "ON")) {
                 if (cpy->disc->errorf)
                     (*cpy->disc->errorf)(
                     cpy, cpy->disc, 2, "%s: syntax error: ON expected", s);
@@ -422,22 +399,17 @@ cpyfield(Cpy_t *cpy)
             }
             if (!(s = cpylex(cpy)) || !*s)
                 break;
-            if (!(p = ( Cpyfield_t * )dtmatch(cpy->dt, s)))
-            {
-                if (!(p = vmnewof(cpy->vm, 0, Cpyfield_t, 1, cpy->size)))
-                {
+            if (!(p = ( Cpyfield_t * )dtmatch(cpy->dt, s))) {
+                if (!(p = vmnewof(cpy->vm, 0, Cpyfield_t, 1, cpy->size))) {
                     if (cpy->disc->errorf)
                         (*cpy->disc->errorf)(
                         cpy, cpy->disc, ERROR_SYSTEM | 2, "out of space");
                     return 0;
                 }
                 dtinsert(cpy->dt, p);
-            }
-            else if (p->dup > 1)
-            {
+            } else if (p->dup > 1) {
                 s = sfprints("%s_%d", p->name, p->dup);
-                if (!(p = ( Cpyfield_t * )dtmatch(cpy->dt, s)))
-                {
+                if (!(p = ( Cpyfield_t * )dtmatch(cpy->dt, s))) {
                     if (cpy->disc->errorf)
                         (*cpy->disc->errorf)(
                         cpy,
@@ -449,13 +421,10 @@ cpyfield(Cpy_t *cpy)
                 }
             }
             f->dimension = p->name;
-        }
-        else if (!strcasecmp(s, "INDEXED"))
-        {
+        } else if (!strcasecmp(s, "INDEXED")) {
             if (!(s = cpylex(cpy)) || !*s)
                 break;
-            if (strcasecmp(s, "BY"))
-            {
+            if (strcasecmp(s, "BY")) {
                 if (cpy->disc->errorf)
                     (*cpy->disc->errorf)(
                     cpy, cpy->disc, 2, "%s: syntax error: BY expected", s);
@@ -463,16 +432,13 @@ cpyfield(Cpy_t *cpy)
             }
             if (!(s = cpylex(cpy)) || !*s)
                 break;
-        }
-        else if (!strcasecmp(s, "IS"))
+        } else if (!strcasecmp(s, "IS"))
             /*ignore*/;
-        else if (!strcasecmp(s, "OCCURS"))
-        {
+        else if (!strcasecmp(s, "OCCURS")) {
             if (!(s = cpylex(cpy)) || !*s)
                 break;
             f->mindimension = ( int )strtol(s, &e, 10);
-            if (*e)
-            {
+            if (*e) {
                 if (cpy->disc->errorf)
                     (*cpy->disc->errorf)(
                     cpy,
@@ -484,13 +450,11 @@ cpyfield(Cpy_t *cpy)
             }
             if (!(s = cpylex(cpy)) || !*s)
                 break;
-            if (!strcasecmp(s, "TO"))
-            {
+            if (!strcasecmp(s, "TO")) {
                 if (!(s = cpylex(cpy)) || !*s)
                     break;
                 f->maxdimension = ( int )strtol(s, &e, 10);
-                if (*e)
-                {
+                if (*e) {
                     if (cpy->disc->errorf)
                         (*cpy->disc->errorf)(
                         cpy,
@@ -502,27 +466,20 @@ cpyfield(Cpy_t *cpy)
                 }
                 if (!(s = cpylex(cpy)) || !*s)
                     break;
-            }
-            else
+            } else
                 f->maxdimension = f->mindimension;
             if (strcasecmp(s, "TIMES"))
                 goto again;
-        }
-        else if (!strncasecmp(s, "PACKED", 6))
-        {
+        } else if (!strncasecmp(s, "PACKED", 6)) {
             f->structure = 0;
             f->comp = 3;
-        }
-        else if (!strncasecmp(s, "PIC", 3))
-        {
+        } else if (!strncasecmp(s, "PIC", 3)) {
             f->structure = 0;
             if (!(s = cpylex(cpy)) || !*s)
                 break;
             fixedpoint = width = 0;
-            for (;;)
-            {
-                switch (*s++)
-                {
+            for (;;) {
+                switch (*s++) {
                 case 0:
                     break;
                 case 'S':
@@ -551,8 +508,7 @@ cpyfield(Cpy_t *cpy)
                         e++;
                     s = e;
                     f->width += n;
-                    if (fixedpoint)
-                    {
+                    if (fixedpoint) {
                         fixedpoint = 0;
                         f->fixedpoint = n;
                     }
@@ -565,25 +521,19 @@ cpyfield(Cpy_t *cpy)
                 }
                 break;
             }
-            if (width)
-            {
+            if (width) {
                 f->width += width;
                 if (fixedpoint)
                     f->fixedpoint = width;
             }
-        }
-        else if (!strcasecmp(s, "POINTER"))
-        {
+        } else if (!strcasecmp(s, "POINTER")) {
             f->structure = 0;
             f->flags |= CPY_pointer;
             f->width = 4;
             s += 7;
             f->comp = state.comp[5];
-        }
-        else if (!strcasecmp(s, "REDEFINES"))
-        {
-            if (!(s = cpylex(cpy)) || !*s)
-            {
+        } else if (!strcasecmp(s, "REDEFINES")) {
+            if (!(s = cpylex(cpy)) || !*s) {
                 if (cpy->disc->errorf)
                     (*cpy->disc->errorf)(
                     cpy, cpy->disc, 2, "redefined member name expected");
@@ -592,26 +542,22 @@ cpyfield(Cpy_t *cpy)
             e = s;
             while ((p = ( Cpyfield_t * )dtmatch(cpy->dt, e)) && p->dup > 1)
                 e = sfprints("%s_%d", s, p->dup);
-            if (!(f->redefines = p))
-            {
+            if (!(f->redefines = p)) {
                 if (cpy->disc->errorf)
                     (*cpy->disc->errorf)(
                     cpy, cpy->disc, 2, "%s: unknown member", s);
                 return 0;
             }
-        }
-        else if (!strncasecmp(s, "SYNC", 4))
+        } else if (!strncasecmp(s, "SYNC", 4))
             f->flags |= CPY_sync;
         else if (!strcasecmp(s, "USAGE"))
             f->structure = 0;
-        else if (!strncasecmp(s, "VALUE", 5))
-        {
+        else if (!strncasecmp(s, "VALUE", 5)) {
             f->structure = 0;
             while ((s = cpylex(cpy)) && *s)
                 ;
             break;
-        }
-        else if (cpy->disc->errorf)
+        } else if (cpy->disc->errorf)
             (*cpy->disc->errorf)(
             cpy, cpy->disc, 1, "%s: unknown attribute", s);
     }
@@ -621,8 +567,7 @@ cpyfield(Cpy_t *cpy)
 static int
 compwidth(Cpyfield_t *field, int width)
 {
-    switch (field->comp)
-    {
+    switch (field->comp) {
     case 0:
         if (field->fixedpoint)
             width++;
@@ -656,8 +601,7 @@ static char *typename(Cpyfield_t *field)
     else if (field->flags & CPY_binary)
         type = state.endian;
     else
-        switch (field->comp)
-        {
+        switch (field->comp) {
         case 5:
 #if _ast_intswap
             type = "le_t";
@@ -714,15 +658,13 @@ cpy2dss(const char *path,
         return -1;
     memset(indent, ' ', sizeof(indent) - 1);
     indent[sizeof(indent) - 1] = 0;
-    if (field = cpyfield(cpy))
-    {
+    if (field = cpyfield(cpy)) {
         parent = field;
         member = 0;
         offset = field->width;
         i = state.sized && !state.text && state.fixed;
         while (next = cpyfield(cpy))
-            if (i)
-            {
+            if (i) {
                 width = next->width;
                 if (next->flags & CPY_number)
                     width = compwidth(next, width);
@@ -733,18 +675,15 @@ cpy2dss(const char *path,
                     member = next;
                 parent = next;
             }
-        if (i && offset > state.fixed)
-        {
+        if (i && offset > state.fixed) {
             if (!member || !(member = member->next))
                 error(
                 1,
                 "accumulated field sizes %lu exceeds fixed record size %lu",
                 offset,
                 state.fixed);
-            else
-            {
-                if ((n = member->width - (offset - state.fixed)) > 0)
-                {
+            else {
+                if ((n = member->width - (offset - state.fixed)) > 0) {
                     error(1,
                           "%s: maximum variable field size shortened from %d "
                           "to %ld to comply with fixed record size %u",
@@ -757,8 +696,7 @@ cpy2dss(const char *path,
             }
         }
         levels[lev = 0] = 0;
-        switch (state.output)
-        {
+        switch (state.output) {
         case CPY_OFFSETS:
             offset = 0;
             break;
@@ -766,8 +704,7 @@ cpy2dss(const char *path,
             sfprintf(sfstdout, "<METHOD>flat</>\n");
             sfprintf(sfstdout, "<FLAT>\n");
             sfprintf(op, "%s<NAME>%s</>\n", INDENT(lev + 1), field->name);
-            if (state.regress)
-            {
+            if (state.regress) {
                 stamp = 0x42d9e64b;
                 if (path && (delimiter = strrchr(path, '/')))
                     path = ( const char * )delimiter + 1;
@@ -783,11 +720,9 @@ cpy2dss(const char *path,
                      field->name,
                      fmttime("%Y-%m-%d", stamp));
             sfprintf(sfstdout, "%s<LIBRARY>num_t</>\n", INDENT(lev + 1));
-            if (state.record && RECTYPE(state.record) != REC_delimited)
-            {
+            if (state.record && RECTYPE(state.record) != REC_delimited) {
                 sfprintf(sfstdout, "%s<RECORD>\n", INDENT(lev + 1));
-                switch (RECTYPE(state.record))
-                {
+                switch (RECTYPE(state.record)) {
                 case REC_fixed:
                     sfprintf(sfstdout,
                              "%s<FIXED>%I*u</>\n",
@@ -816,18 +751,15 @@ cpy2dss(const char *path,
                 }
                 sfprintf(sfstdout, "%s</>\n", INDENT(lev + 1));
             }
-            if (state.text && (state.escape || state.quotebegin))
-            {
+            if (state.text && (state.escape || state.quotebegin)) {
                 sfprintf(sfstdout, "%s<PHYSICAL>\n", INDENT(lev + 1));
                 if (state.escape)
                     sfprintf(sfstdout,
                              "%s<ESCAPE>%s</>\n",
                              INDENT(lev + 2),
                              state.escape);
-                if (state.quotebegin)
-                {
-                    if (state.quoteend)
-                    {
+                if (state.quotebegin) {
+                    if (state.quoteend) {
                         sfprintf(sfstdout,
                                  "%s<QUOTEBEGIN>%s</>\n",
                                  INDENT(lev + 2),
@@ -836,8 +768,7 @@ cpy2dss(const char *path,
                                  "%s<QUOTEEND>%s</>\n",
                                  INDENT(lev + 2),
                                  state.quoteend);
-                    }
-                    else
+                    } else
                         sfprintf(sfstdout,
                                  "%s<QUOTE>%s</>\n",
                                  INDENT(lev + 2),
@@ -854,35 +785,29 @@ cpy2dss(const char *path,
         structure = 1;
         if (next = field->next)
             levels[++lev] = next->level;
-        while (field = next)
-        {
+        while (field = next) {
             delimiter
             = (next = field->next) ? state.delimiter : state.terminator;
             if (field->level == 88)
                 continue;
-            if (!structure)
-            {
+            if (!structure) {
                 if (state.output == CPY_XML && !skip)
                     sfprintf(op, "%s</>\n", INDENT(lev));
                 for (i = lev; i > 0 && field->level != levels[i]; i--)
                     ;
                 if (i > 0)
-                    while (lev > i)
-                    {
+                    while (lev > i) {
                         lev--;
-                        switch (state.output)
-                        {
+                        switch (state.output) {
                         case CPY_OFFSETS:
                             parent->total = offset - parent->offset;
-                            if (parent->maxdimension)
-                            {
+                            if (parent->maxdimension) {
                                 offset
                                 += parent->total * (parent->maxdimension - 1);
                                 parent->total *= parent->maxdimension;
                             }
                             if (parent->redefines
-                                && parent->redefines->total > parent->total)
-                            {
+                                && parent->redefines->total > parent->total) {
                                 offset
                                 += parent->redefines->total - parent->total;
                                 parent->total = parent->redefines->total;
@@ -897,10 +822,8 @@ cpy2dss(const char *path,
             }
             skip = 0;
             field->parent = parent;
-            if (structure = field->structure)
-            {
-                if (!next)
-                {
+            if (structure = field->structure) {
+                if (!next) {
                     if (disc->errorf)
                         (*disc->errorf)(
                         cpy, disc, 2, "%s: empty struct", field->name);
@@ -908,8 +831,7 @@ cpy2dss(const char *path,
                     return -1;
                 }
                 parent = field;
-                if ((lev + 1) >= elementsof(levels))
-                {
+                if ((lev + 1) >= elementsof(levels)) {
                     if (disc->errorf)
                         (*disc->errorf)(
                         cpy, disc, 2, "%s: nesting too deep", field->name);
@@ -918,16 +840,13 @@ cpy2dss(const char *path,
                 }
                 levels[lev + 1] = next->level;
             }
-            if (state.output == CPY_XML)
-            {
+            if (state.output == CPY_XML) {
                 if (state.sized && state.text && state.variable
-                    && field->parent && (field->flags & CPY_number))
-                {
+                    && field->parent && (field->flags & CPY_number)) {
                     i = strlen(field->parent->name);
                     if (!memcmp(field->parent->name, field->name, i)
                         && strmatch(field->name + i,
-                                    "?(_)(siz|SIZ|LEN|len)*"))
-                    {
+                                    "?(_)(siz|SIZ|LEN|len)*")) {
                         skip = 1;
                         sized = field->level == 49;
                         continue;
@@ -935,22 +854,19 @@ cpy2dss(const char *path,
                 }
                 if (sized)
                     lev--;
-                else
-                {
+                else {
                     sfprintf(op, "%s<FIELD>\n", INDENT(lev));
                     sfprintf(
                     op, "%s<NAME>%s</>\n", INDENT(lev + 1), field->name);
                 }
-                if (field->redefines)
-                {
+                if (field->redefines) {
                     sfprintf(op,
                              "%s<UNION>%s</>\n",
                              INDENT(lev + 1),
                              field->redefines->name);
                     structure = 1;
                 }
-                if (field->dimension || field->maxdimension)
-                {
+                if (field->dimension || field->maxdimension) {
                     sfprintf(op, "%s<ARRAY>\n", INDENT(lev + 1));
                     if (field->dimension)
                         sfprintf(op,
@@ -964,15 +880,12 @@ cpy2dss(const char *path,
                                  field->maxdimension);
                     sfprintf(op, "%s</>\n", INDENT(lev + 1));
                 }
-                if (field->flags & CPY_string)
-                {
+                if (field->flags & CPY_string) {
                     sfprintf(op, "%s<TYPE>string</>\n", INDENT(lev + 1));
                     sfprintf(op, "%s<PHYSICAL>\n", INDENT(lev + 1));
                     sfprintf(
                     op, "%s<CODESET>%s</>\n", INDENT(lev + 2), state.codeset);
-                }
-                else if (field->flags & (CPY_number | CPY_pointer))
-                {
+                } else if (field->flags & (CPY_number | CPY_pointer)) {
                     sfprintf(op, "%s<TYPE>", INDENT(lev + 1));
                     if (!(field->flags & CPY_signed))
                         sfprintf(op, "unsigned ");
@@ -986,14 +899,12 @@ cpy2dss(const char *path,
                     else if (field->flags & CPY_binary)
                         sfprintf(
                         op, "%s<TYPE>%s</>\n", INDENT(lev + 2), state.endian);
-                    else
-                    {
+                    else {
                         field->width = compwidth(field, field->width);
                         if (type = typename(field))
                             sfprintf(
                             op, "%s<TYPE>%s</>\n", INDENT(lev + 2), type);
-                        else
-                        {
+                        else {
                             sfprintf(op,
                                      "%s<CODESET>%s</>\n",
                                      INDENT(lev + 2),
@@ -1012,25 +923,20 @@ cpy2dss(const char *path,
                                  INDENT(lev + 2),
                                  CPY_ALIGN(field->width));
                 }
-                if (field->flags & (CPY_string | CPY_number | CPY_pointer))
-                {
+                if (field->flags & (CPY_string | CPY_number | CPY_pointer)) {
                     if (!state.text)
                         sfprintf(op,
                                  "%s<WIDTH>%d</>\n",
                                  INDENT(lev + 2),
                                  field->width);
-                    if (state.sized && field->parent)
-                    {
-                        if (field->flags & CPY_number)
-                        {
+                    if (state.sized && field->parent) {
+                        if (field->flags & CPY_number) {
                             i = strlen(field->parent->name);
                             if (!memcmp(field->parent->name, field->name, i)
                                 && strmatch(field->name + i,
                                             "?(_)(siz|SIZ|LEN|len)*"))
                                 field->parent->sized = field;
-                        }
-                        else if (field->parent->sized)
-                        {
+                        } else if (field->parent->sized) {
                             sfprintf(op,
                                      "%s<WIDTH>%s</>\n",
                                      INDENT(lev + 2),
@@ -1050,20 +956,16 @@ cpy2dss(const char *path,
                         sfprintf(op, "%s</>\n", INDENT(lev + 1));
                 }
                 sized = 0;
-            }
-            else
-            {
+            } else {
                 if (field->redefines)
                     offset = field->redefines->offset;
                 c = '0';
-                if (field->flags & CPY_number)
-                {
+                if (field->flags & CPY_number) {
                     c += field->comp;
                     field->width = compwidth(field, field->width);
                 }
                 width = field->width;
-                if (field->flags & CPY_sync)
-                {
+                if (field->flags & CPY_sync) {
                     i = CPY_ALIGN(width);
                     if (j = offset & (i - 1))
                         offset += i - j;
@@ -1073,12 +975,10 @@ cpy2dss(const char *path,
                 if (state.output == CPY_BYTEMASK)
                     for (i = 0; i < width; i++)
                         sfputc(op, c);
-                else
-                {
+                else {
                     field->offset = offset;
                     offset += width;
-                    if (field->structure)
-                    {
+                    if (field->structure) {
                         type = "struct";
                         for (member = field->next;
                              member && member->level > field->level;
@@ -1089,13 +989,11 @@ cpy2dss(const char *path,
                                                        : 1);
                         if (field->maxdimension)
                             width *= field->maxdimension;
-                    }
-                    else if (field->flags & CPY_pointer)
+                    } else if (field->flags & CPY_pointer)
                         type = "pointer";
                     else if (field->flags & CPY_string)
                         type = "string";
-                    else if (field->flags & CPY_number)
-                    {
+                    else if (field->flags & CPY_number) {
                         if (state.text || !(type = typename(field)))
                             type = (field->flags & CPY_signed) ? "number"
                                                                : "unsigned";
@@ -1114,21 +1012,17 @@ cpy2dss(const char *path,
             }
             lev += structure;
         }
-        switch (state.output)
-        {
+        switch (state.output) {
         case CPY_OFFSETS:
-            while (levels[lev] > 0 && parent)
-            {
+            while (levels[lev] > 0 && parent) {
                 lev--;
                 parent->total = offset - parent->offset;
-                if (parent->maxdimension)
-                {
+                if (parent->maxdimension) {
                     offset += parent->total * (parent->maxdimension - 1);
                     parent->total *= parent->maxdimension;
                 }
                 if (parent->redefines
-                    && parent->redefines->total > parent->total)
-                {
+                    && parent->redefines->total > parent->total) {
                     offset += parent->redefines->total - parent->total;
                     parent->total = parent->redefines->total;
                 }
@@ -1138,8 +1032,7 @@ cpy2dss(const char *path,
             sfstdout, "%s\t%lu\t%u\t%u\tstruct\n", ".", offset, 0, 0);
             break;
         case CPY_XML:
-            while (levels[lev] > 0)
-            {
+            while (levels[lev] > 0) {
                 sfprintf(op, "%s</>\n", INDENT(lev));
                 lev--;
             }
@@ -1178,10 +1071,8 @@ main(int argc, char **argv)
     for (i = 0; i < elementsof(state.comp); i++)
         state.comp[i] = i;
     cpyinit(&disc, errorf);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'b':
             state.output = CPY_BYTEMASK;
             continue;
@@ -1219,8 +1110,7 @@ main(int argc, char **argv)
             if (*e)
                 error(2, "%s: invalid record format '%s'", opt_info.arg, e);
             else
-                switch (RECTYPE(state.record))
-                {
+                switch (RECTYPE(state.record)) {
                 case REC_delimited:
                     delimiter[0] = REC_D_DELIMITER(state.record);
                     delimiter[1] = 0;
@@ -1272,14 +1162,11 @@ main(int argc, char **argv)
     if (!*argv)
         cpy2dss(NiL, sfstdin, sfstdout, &disc, time(NiL));
     else
-        while (file = *argv++)
-        {
-            if (!stat(file, &st) && (ip = sfopen(NiL, file, "r")))
-            {
+        while (file = *argv++) {
+            if (!stat(file, &st) && (ip = sfopen(NiL, file, "r"))) {
                 cpy2dss(file, ip, sfstdout, &disc, st.st_mtime);
                 sfclose(ip);
-            }
-            else
+            } else
                 error(ERROR_SYSTEM | 2, "%s: cannot read", file);
         }
     return error_info.errors != 0;

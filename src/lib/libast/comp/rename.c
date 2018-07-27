@@ -43,14 +43,12 @@ mvdir(const char *from, const char *to)
     static const char mvdir[] = "/usr/lib/mv_dir";
 
     oerrno = errno;
-    if (!eaccess(mvdir, X_OK))
-    {
+    if (!eaccess(mvdir, X_OK)) {
         argv[0] = mvdir;
         argv[1] = from;
         argv[2] = to;
         argv[3] = 0;
-        if (!procrun(argv[0], argv, 0))
-        {
+        if (!procrun(argv[0], argv, 0)) {
             errno = oerrno;
             return 0;
         }
@@ -68,21 +66,17 @@ rename(const char *from, const char *to)
     int ooerrno;
 
     ooerrno = errno;
-    while (link(from, to))
-    {
+    while (link(from, to)) {
 #    ifdef EPERM
-        if (errno == EPERM)
-        {
+        if (errno == EPERM) {
             errno = ooerrno;
             return mvdir(from, to);
         }
 #    endif
         oerrno = errno;
-        if (unlink(to))
-        {
+        if (unlink(to)) {
 #    ifdef EPERM
-            if (errno == EPERM)
-            {
+            if (errno == EPERM) {
                 errno = ooerrno;
                 return mvdir(from, to);
             }

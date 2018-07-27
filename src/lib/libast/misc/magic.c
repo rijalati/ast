@@ -294,15 +294,13 @@ getdata(Magic_t *mp, long off, int siz)
         return 0;
     if (off + siz <= mp->fbsz)
         return mp->fbuf + off;
-    if (off < mp->xoff || off + siz > mp->xoff + mp->xbsz)
-    {
+    if (off < mp->xoff || off + siz > mp->xoff + mp->xbsz) {
         if (off + siz > mp->fbmx)
             return 0;
         n = (off / (SF_BUFSIZE / 2)) * (SF_BUFSIZE / 2);
         if (sfseek(mp->fp, n, SEEK_SET) != n)
             return 0;
-        if ((mp->xbsz = sfread(mp->fp, mp->xbuf, sizeof(mp->xbuf) - 1)) < 0)
-        {
+        if ((mp->xbsz = sfread(mp->fp, mp->xbuf, sizeof(mp->xbuf) - 1)) < 0) {
             mp->xoff = 0;
             mp->xbsz = 0;
             return 0;
@@ -327,13 +325,10 @@ indirect(const char *cs, char **e, void *handle)
     long n = 0;
     char *p;
 
-    if (s)
-    {
-        if (*s == '@')
-        {
+    if (s) {
+        if (*s == '@') {
             n = *++s == '(' ? strexpr(s, e, indirect, mp) : strtol(s, e, 0);
-            switch (*(s = *e))
-            {
+            switch (*(s = *e)) {
             case 'b':
             case 'B':
                 s++;
@@ -369,8 +364,7 @@ indirect(const char *cs, char **e, void *handle)
             }
         }
         *e = s;
-    }
-    else if ((mp->flags & MAGIC_VERBOSE) && mp->disc->errorf)
+    } else if ((mp->flags & MAGIC_VERBOSE) && mp->disc->errorf)
         (*mp->disc->errorf)(mp, mp->disc, 2, "%s in indirect expression", *e);
     return n;
 }
@@ -384,8 +378,7 @@ regmessage(Magic_t *mp, regex_t *re, int code)
 {
     char buf[128];
 
-    if ((mp->flags & MAGIC_VERBOSE) && mp->disc->errorf)
-    {
+    if ((mp->flags & MAGIC_VERBOSE) && mp->disc->errorf) {
         regerror(code, re, buf, sizeof(buf));
         (*mp->disc->errorf)(mp, mp->disc, 3, "regex: %s", buf);
     }
@@ -408,29 +401,25 @@ vcdecomp(char *b, char *e, unsigned char *m, unsigned char *x)
     map = CCMAP(CC_ASCII, CC_NATIVE);
     a = 0;
     i = 1;
-    for (;;)
-    {
+    for (;;) {
         if (i)
             i = 0;
         else if (b >= e)
             break;
         else
             *b++ = '^';
-        if (m < (x - 1) && !*(m + 1))
-        {
+        if (m < (x - 1) && !*(m + 1)) {
             /*
              * obsolete indices
              */
 
-            if (!a)
-            {
+            if (!a) {
                 a = 1;
                 o = "old, ";
                 while (b < e && (c = *o++))
                     *b++ = c;
             }
-            switch (*m)
-            {
+            switch (*m) {
             case 0:
                 o = "delta";
                 break;
@@ -477,10 +466,8 @@ vcdecomp(char *b, char *e, unsigned char *m, unsigned char *x)
             m += 2;
             while (b < e && (c = *o++))
                 *b++ = c;
-        }
-        else
-            while (b < e && m < x && (c = *m++))
-            {
+        } else
+            while (b < e && m < x && (c = *m++)) {
                 if (map)
                     c = map[c];
                 *b++ = c;
@@ -488,8 +475,7 @@ vcdecomp(char *b, char *e, unsigned char *m, unsigned char *x)
         if (b >= e)
             break;
         n = 0;
-        while (m < x)
-        {
+        while (m < x) {
             n = (n << 7) | (*m & 0x7f);
             if (!(*m++ & 0x80))
                 break;
@@ -533,13 +519,10 @@ ckmagic(Magic_t *mp,
     b = mp->msg[0] = cur = buf;
     mp->mime = mp->cap[0] = 0;
     mp->keep[0] = 0;
-    for (ep = mp->magic; ep; ep = ep->next)
-    {
+    for (ep = mp->magic; ep; ep = ep->next) {
     fun:
-        if (ep->nest == '{')
-        {
-            if (++level >= MAXNEST)
-            {
+        if (ep->nest == '{') {
+            if (++level >= MAXNEST) {
                 call = -1;
                 level = 0;
                 mp->keep[0] = 0;
@@ -551,13 +534,10 @@ ckmagic(Magic_t *mp,
             mp->msg[level] = b;
             mp->cap[level] = mp->mime;
         }
-        switch (ep->cont)
-        {
+        switch (ep->cont) {
         case '#':
-            if (mp->keep[level] && b > cur)
-            {
-                if ((mp->flags & MAGIC_ALL) && b < (end - 3))
-                {
+            if (mp->keep[level] && b > cur) {
+                if ((mp->flags & MAGIC_ALL) && b < (end - 3)) {
                     all = 1;
                     *b++ = '\n';
                     cur = b;
@@ -573,8 +553,7 @@ ckmagic(Magic_t *mp,
                 continue;
             break;
         case '$':
-            if (mp->keep[level] && call < (MAXNEST - 1))
-            {
+            if (mp->keep[level] && call < (MAXNEST - 1)) {
                 mp->ret[++call] = ep;
                 ep = ep->value.lab;
                 goto fun;
@@ -590,8 +569,7 @@ ckmagic(Magic_t *mp,
                 goto checknest;
             /*FALLTHROUGH*/
         default:
-            if (!mp->keep[level])
-            {
+            if (!mp->keep[level]) {
                 b = mp->msg[level];
                 mp->mime = mp->cap[level];
                 goto checknest;
@@ -603,8 +581,7 @@ ckmagic(Magic_t *mp,
         if (!ep->expr)
             num = ep->offset + off;
         else
-            switch (ep->offset)
-            {
+            switch (ep->offset) {
             case 0:
                 num = strexpr(ep->expr, NiL, indirect, mp) + off;
                 break;
@@ -625,25 +602,19 @@ ckmagic(Magic_t *mp,
                 ep->type = toupper(ep->type);
                 break;
             case INFO_gid:
-                if (ep->type == 'e' || ep->type == 'm' || ep->type == 's')
-                {
+                if (ep->type == 'e' || ep->type == 'm' || ep->type == 's') {
                     p = fmtgid(st->st_gid);
                     ep->type = toupper(ep->type);
-                }
-                else
-                {
+                } else {
                     num = st->st_gid;
                     ep->type = 'N';
                 }
                 break;
             case INFO_mode:
-                if (ep->type == 'e' || ep->type == 'm' || ep->type == 's')
-                {
+                if (ep->type == 'e' || ep->type == 'm' || ep->type == 's') {
                     p = fmtmode(st->st_mode, 0);
                     ep->type = toupper(ep->type);
-                }
-                else
-                {
+                } else {
                     num = modex(st->st_mode);
                     ep->type = 'N';
                 }
@@ -653,8 +624,7 @@ ckmagic(Magic_t *mp,
                 ep->type = 'D';
                 break;
             case INFO_name:
-                if (!base)
-                {
+                if (!base) {
                     if (base = strrchr(file, '/'))
                         base++;
                     else
@@ -672,20 +642,16 @@ ckmagic(Magic_t *mp,
                 ep->type = 'N';
                 break;
             case INFO_uid:
-                if (ep->type == 'e' || ep->type == 'm' || ep->type == 's')
-                {
+                if (ep->type == 'e' || ep->type == 'm' || ep->type == 's') {
                     p = fmtuid(st->st_uid);
                     ep->type = toupper(ep->type);
-                }
-                else
-                {
+                } else {
                     num = st->st_uid;
                     ep->type = 'N';
                 }
                 break;
             }
-        switch (ep->type)
-        {
+        switch (ep->type) {
 
         case 'b':
             if (!(p = getdata(mp, num, 1)))
@@ -723,8 +689,7 @@ ckmagic(Magic_t *mp,
             if ((c
                  = regexec(ep->value.sub, p, elementsof(matches), matches, 0))
                 || (c = regsubexec(
-                    ep->value.sub, p, elementsof(matches), matches)))
-            {
+                    ep->value.sub, p, elementsof(matches), matches))) {
                 c = mp->fbsz;
                 if (c >= sizeof(mp->nbuf))
                     c = sizeof(mp->nbuf) - 1;
@@ -734,8 +699,7 @@ ckmagic(Magic_t *mp,
                 if ((c = regexec(
                      ep->value.sub, p, elementsof(matches), matches, 0))
                     || (c = regsubexec(
-                        ep->value.sub, p, elementsof(matches), matches)))
-                {
+                        ep->value.sub, p, elementsof(matches), matches))) {
                     if (c != REG_NOMATCH)
                         regmessage(mp, ep->value.sub, c);
                     goto next;
@@ -763,8 +727,7 @@ ckmagic(Magic_t *mp,
         case 'M':
         case 'S':
         checkstr:
-            for (;;)
-            {
+            for (;;) {
                 if (*ep->value.str == '*' && !*(ep->value.str + 1)
                     && isprint(*p))
                     break;
@@ -794,8 +757,7 @@ ckmagic(Magic_t *mp,
         }
         if (mask = ep->mask)
             num &= mask;
-        switch (ep->op)
-        {
+        switch (ep->op) {
 
         case '=':
         case '@':
@@ -805,29 +767,22 @@ ckmagic(Magic_t *mp,
                 goto next;
             if (!mask)
                 mask = ~mask;
-            if (ep->type == 'h')
-            {
+            if (ep->type == 'h') {
                 if ((num = swapget(mp->swap = 1, p, 2) & mask)
-                    == ep->value.num)
-                {
+                    == ep->value.num) {
                     if (!(mp->swap & (mp->swap + 1)))
                         mp->swap = 7;
                     goto swapped;
                 }
-            }
-            else if (ep->type == 'l')
-            {
+            } else if (ep->type == 'l') {
                 for (c = 1; c < 4; c++)
                     if ((num = swapget(mp->swap = c, p, 4) & mask)
-                        == ep->value.num)
-                    {
+                        == ep->value.num) {
                         if (!(mp->swap & (mp->swap + 1)))
                             mp->swap = 7;
                         goto swapped;
                     }
-            }
-            else if (ep->type == 'q')
-            {
+            } else if (ep->type == 'q') {
                 for (c = 1; c < 8; c++)
                     if ((num = swapget(mp->swap = c, p, 8) & mask)
                         == ep->value.num)
@@ -856,20 +811,15 @@ ckmagic(Magic_t *mp,
             goto next;
 
         case 'l':
-            if (num > 0 && mp->keep[level] && call < (MAXNEST - 1))
-            {
-                if (!ep->value.loop->count)
-                {
+            if (num > 0 && mp->keep[level] && call < (MAXNEST - 1)) {
+                if (!ep->value.loop->count) {
                     ep->value.loop->count = num;
                     ep->value.loop->offset = off;
                     off = ep->value.loop->start;
-                }
-                else if (!--ep->value.loop->count)
-                {
+                } else if (!--ep->value.loop->count) {
                     off = ep->value.loop->offset;
                     goto next;
-                }
-                else
+                } else
                     off += ep->value.loop->size;
                 mp->ret[++call] = ep;
                 ep = ep->value.loop->lab;
@@ -881,13 +831,11 @@ ckmagic(Magic_t *mp,
             c = mp->swap;
             t = ckmagic(mp, file, b + (b > cur), end, st, num);
             mp->swap = c;
-            if (t)
-            {
+            if (t) {
                 if (b > cur && b < end)
                     *b = ' ';
                 b += strlen(b);
-            }
-            else if (ep->cont == '&')
+            } else if (ep->cont == '&')
                 goto next;
             break;
 
@@ -906,21 +854,17 @@ ckmagic(Magic_t *mp,
             *ep->desc = 0;
             *ep->mime = 0;
             gp = 0;
-            while (t = sfgetr(rp, '\n', 1))
-            {
-                if (strneq(t, "Content Type=", 13))
-                {
+            while (t = sfgetr(rp, '\n', 1)) {
+                if (strneq(t, "Content Type=", 13)) {
                     ep->mime
                     = vmnewof(mp->vm, ep->mime, char, sfvalue(rp), 0);
                     strcpy(ep->mime, t + 13);
                     if (gp)
                         break;
-                }
-                else
-                {
+                } else {
                     sfprintf(mp->tmp, "/reg/classes_root/%s", t);
-                    if ((e = sfstruse(mp->tmp)) && (gp = sfopen(NiL, e, "r")))
-                    {
+                    if ((e = sfstruse(mp->tmp))
+                        && (gp = sfopen(NiL, e, "r"))) {
                         ep->desc
                         = vmnewof(mp->vm, ep->desc, char, strlen(t), 1);
                         strcpy(ep->desc, t);
@@ -932,8 +876,7 @@ ckmagic(Magic_t *mp,
             sfclose(rp);
             if (!gp)
                 goto next;
-            if (!*ep->mime)
-            {
+            if (!*ep->mime) {
                 t = T(ep->desc);
                 if (!strncasecmp(t, "microsoft", 9))
                     t += 9;
@@ -948,8 +891,7 @@ ckmagic(Magic_t *mp,
                 *e = 0;
             }
             while (t = sfgetr(gp, '\n', 1))
-                if (*t && !streq(t, "\"\""))
-                {
+                if (*t && !streq(t, "\"\"")) {
                     ep->desc
                     = vmnewof(mp->vm, ep->desc, char, sfvalue(gp), 0);
                     strcpy(ep->desc, t);
@@ -977,16 +919,14 @@ ckmagic(Magic_t *mp,
             if (!(p = getdata(mp, num, 4)))
                 goto next;
             c = 0;
-            do
-            {
+            do {
                 num++;
                 c = (c << 7) | (*p & 0x7f);
             } while (*p++ & 0x80);
             if (!(p = getdata(mp, num, c)))
                 goto next;
             if (mp->keep[level]++ && b > cur && b < (end - 1)
-                && *(b - 1) != ' ')
-            {
+                && *(b - 1) != ' ') {
                 *b++ = ',';
                 *b++ = ' ';
             }
@@ -1005,20 +945,16 @@ ckmagic(Magic_t *mp,
             q++;
         str = 0;
         for (t = q; *t; t++)
-            if (*t == '%' && (c = *(t + 1)))
-            {
+            if (*t == '%' && (c = *(t + 1))) {
                 if (c == '%')
                     t++;
                 else
-                    while (c && c != '%')
-                    {
-                        if (c == 's')
-                        {
+                    while (c && c != '%') {
+                        if (c == 's') {
                             str = 1;
                             break;
-                        }
-                        else if (c == 'c' || c == 'd' || c == 'i' || c == 'u'
-                                 || c == 'x' || c == 'X')
+                        } else if (c == 'c' || c == 'd' || c == 'i'
+                                   || c == 'u' || c == 'x' || c == 'X')
                             goto format;
                         t++;
                         c = *(t + 1);
@@ -1058,17 +994,13 @@ ckmagic(Magic_t *mp,
         if (ep->mime && *ep->mime)
             mp->mime = ep->mime;
     checknest:
-        if (ep->nest == '}')
-        {
-            if (!mp->keep[level])
-            {
+        if (ep->nest == '}') {
+            if (!mp->keep[level]) {
                 b = mp->msg[level];
                 mp->mime = mp->cap[level];
-            }
-            else if (level > 0)
+            } else if (level > 0)
                 mp->keep[level - 1] = mp->keep[level];
-            if (--level < 0)
-            {
+            if (--level < 0) {
                 level = 0;
                 mp->keep[0] = 0;
             }
@@ -1079,8 +1011,7 @@ ckmagic(Magic_t *mp,
             mp->keep[level] = 0;
         goto checknest;
     }
-    if (all && b-- || mp->keep[level] && b > cur)
-    {
+    if (all && b-- || mp->keep[level] && b > cur) {
         *b = 0;
         return buf;
     }
@@ -1157,26 +1088,21 @@ cklang(Magic_t *mp, const char *file, char *buf, char *end, struct stat *st)
     code = 0;
     q = CC_ASCII;
     n = CC_MASK;
-    for (c = 0; c < CC_MAPS; c++)
-    {
+    for (c = 0; c < CC_MAPS; c++) {
         flags ^= CC_text;
-        if ((flags & CC_MASK) < n)
-        {
+        if ((flags & CC_MASK) < n) {
             n = flags & CC_MASK;
             q = c;
         }
         flags >>= CC_BIT;
     }
     flags = n;
-    if (!(flags & (CC_binary | CC_notext)))
-    {
-        if (q != CC_NATIVE)
-        {
+    if (!(flags & (CC_binary | CC_notext))) {
+        if (q != CC_NATIVE) {
             code = q;
             ccmaps(mp->fbuf, mp->fbsz, q, CC_NATIVE);
         }
-        if (b[0] == '#' && b[1] == '!')
-        {
+        if (b[0] == '#' && b[1] == '!') {
             for (b += 2; b < e && isspace(*b); b++)
                 ;
             for (s = ( char * )b; b < e && isprint(*b); b++)
@@ -1184,13 +1110,11 @@ cklang(Magic_t *mp, const char *file, char *buf, char *end, struct stat *st)
             c = *b;
             *b = 0;
             if ((st->st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))
-                || match(s, "/*bin*/*") || !access(s, F_OK))
-            {
+                || match(s, "/*bin*/*") || !access(s, F_OK)) {
                 if (t = strrchr(s, '/'))
                     s = t + 1;
                 for (t = s; *t; t++)
-                    if (isspace(*t))
-                    {
+                    if (isspace(*t)) {
                         *t = 0;
                         break;
                     }
@@ -1199,19 +1123,15 @@ cklang(Magic_t *mp, const char *file, char *buf, char *end, struct stat *st)
                           "application/x-%s",
                           *s ? s : "sh");
                 mp->mime = mp->mbuf;
-                if (match(s, "*sh"))
-                {
+                if (match(s, "*sh")) {
                     t1 = T("command");
                     if (streq(s, "sh"))
                         *s = 0;
-                    else
-                    {
+                    else {
                         *b++ = ' ';
                         *b = 0;
                     }
-                }
-                else
-                {
+                } else {
                     t1 = T("interpreter");
                     *b++ = ' ';
                     *b = 0;
@@ -1229,34 +1149,23 @@ cklang(Magic_t *mp, const char *file, char *buf, char *end, struct stat *st)
         q = 0;
         s = 0;
         t = 0;
-        while (b < e)
-        {
+        while (b < e) {
             c = *b++;
             mp->count[c]++;
-            if (c == q && (q != '*' || *b == '/' && b++))
-            {
+            if (c == q && (q != '*' || *b == '/' && b++)) {
                 mp->multi[q]++;
                 q = 0;
-            }
-            else if (c == '\\')
-            {
+            } else if (c == '\\') {
                 s = 0;
                 b++;
-            }
-            else if (!q)
-            {
-                if (isalpha(c) || c == '_')
-                {
+            } else if (!q) {
+                if (isalpha(c) || c == '_') {
                     if (!s)
                         s = ( char * )b - 1;
-                }
-                else if (!isdigit(c))
-                {
-                    if (s)
-                    {
+                } else if (!isdigit(c)) {
+                    if (s) {
                         if (s > mp->fbuf)
-                            switch (*(s - 1))
-                            {
+                            switch (*(s - 1)) {
                             case ':':
                                 if (*b == ':')
                                     mp->multi[':']++;
@@ -1277,8 +1186,7 @@ cklang(Magic_t *mp, const char *file, char *buf, char *end, struct stat *st)
                                     mp->multi['X']++;
                                 break;
                             }
-                        if (!mp->idtab)
-                        {
+                        if (!mp->idtab) {
                             if (mp->idtab = dtnew(mp->vm, &mp->dtdisc, Dtset))
                                 for (q = 0; q < elementsof(dict); q++)
                                     dtinsert(mp->idtab, &dict[q]);
@@ -1287,8 +1195,7 @@ cklang(Magic_t *mp, const char *file, char *buf, char *end, struct stat *st)
                                 mp, mp->disc, 3, "out of space");
                             q = 0;
                         }
-                        if (mp->idtab)
-                        {
+                        if (mp->idtab) {
                             *(b - 1) = 0;
                             if (ip = ( Info_t * )dtmatch(mp->idtab, s))
                                 mp->identifier[ip->value]++;
@@ -1296,8 +1203,7 @@ cklang(Magic_t *mp, const char *file, char *buf, char *end, struct stat *st)
                         }
                         s = 0;
                     }
-                    switch (c)
-                    {
+                    switch (c) {
                     case '\t':
                         if (b == ( unsigned char * )(mp->fbuf + 1)
                             || *(b - 2) == '\n')
@@ -1347,14 +1253,12 @@ cklang(Magic_t *mp, const char *file, char *buf, char *end, struct stat *st)
                 }
             }
         }
-    }
-    else
+    } else
         while (b < e)
             mp->count[*b++]++;
     base = (t1 = strrchr(file, '/')) ? t1 + 1 : ( char * )file;
     suff = (t1 = strrchr(base, '.')) ? t1 + 1 : "";
-    if (!flags)
-    {
+    if (!flags) {
         if (match(suff, "*sh|bat|cmd"))
             goto id_sh;
         if (match(base, "*@(mkfile)"))
@@ -1380,21 +1284,18 @@ cklang(Magic_t *mp, const char *file, char *buf, char *end, struct stat *st)
         if (match(suff, "asm|s"))
             goto id_asm;
         if ((st->st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))
-            && (!suff || suff != strchr(suff, '.')))
-        {
+            && (!suff || suff != strchr(suff, '.'))) {
         id_sh:
             s = T("command script");
             mp->mime = "application/sh";
             goto qualify;
         }
-        if (strmatch(mp->fbuf, "From * [0-9][0-9]:[0-9][0-9]:[0-9][0-9] *"))
-        {
+        if (strmatch(mp->fbuf, "From * [0-9][0-9]:[0-9][0-9]:[0-9][0-9] *")) {
             s = T("mail message");
             mp->mime = "message/rfc822";
             goto qualify;
         }
-        if (match(base, "*@(mkfile)"))
-        {
+        if (match(base, "*@(mkfile)")) {
         id_mk:
             s = "mkfile";
             mp->mime = "application/mk";
@@ -1402,21 +1303,18 @@ cklang(Magic_t *mp, const char *file, char *buf, char *end, struct stat *st)
         }
         if (match(base, "*@(makefile|.mk)")
             || mp->multi['\t'] >= mp->count[':']
-               && (mp->multi['$'] > 0 || mp->multi[':'] > 0))
-        {
+               && (mp->multi['$'] > 0 || mp->multi[':'] > 0)) {
         id_make:
             s = "makefile";
             mp->mime = "application/make";
             goto qualify;
         }
-        if (mp->multi['.'] >= 3)
-        {
+        if (mp->multi['.'] >= 3) {
             s = T("nroff input");
             mp->mime = "application/x-troff";
             goto qualify;
         }
-        if (mp->multi['X'] >= 3)
-        {
+        if (mp->multi['X'] >= 3) {
             s = T("TeX input");
             mp->mime = "application/x-tex";
             goto qualify;
@@ -1428,20 +1326,17 @@ cklang(Magic_t *mp, const char *file, char *buf, char *end, struct stat *st)
             || mp->fbsz >= SF_BUFSIZE
                && (mp->multi['('] >= mp->multi[')']
                    && mp->multi['{'] >= mp->multi['}']
-                   && mp->multi['['] >= mp->multi[']']))
-        {
+                   && mp->multi['['] >= mp->multi[']'])) {
             c = mp->identifier[ID_INCL1];
             if (c >= 2 && mp->identifier[ID_INCL2] >= c
                 && mp->identifier[ID_INCL3] >= c && mp->count['.'] >= c
                 || mp->identifier[ID_C] >= 5 && mp->count[';'] >= 5
-                || mp->count['='] >= 20 && mp->count[';'] >= 20)
-            {
+                || mp->count['='] >= 20 && mp->count[';'] >= 20) {
             id_c:
                 t1 = "";
                 t2 = "c ";
                 t3 = T("program");
-                switch (*suff)
-                {
+                switch (*suff) {
                 case 'c':
                 case 'C':
                     mp->mime = "application/x-cc";
@@ -1453,8 +1348,7 @@ cklang(Magic_t *mp, const char *file, char *buf, char *end, struct stat *st)
                     break;
                 default:
                     t3 = T("header");
-                    if (mp->identifier[ID_YACC] < 5 || mp->count['%'] < 5)
-                    {
+                    if (mp->identifier[ID_YACC] < 5 || mp->count['%'] < 5) {
                         mp->mime = "application/x-cc";
                         break;
                     }
@@ -1465,8 +1359,7 @@ cklang(Magic_t *mp, const char *file, char *buf, char *end, struct stat *st)
                     mp->mime = "application/x-yacc";
                     break;
                 }
-                if (mp->identifier[ID_CPLUSPLUS] >= 3)
-                {
+                if (mp->identifier[ID_CPLUSPLUS] >= 3) {
                     t2 = "c++ ";
                     mp->mime = "application/x-c++";
                 }
@@ -1479,95 +1372,80 @@ cklang(Magic_t *mp, const char *file, char *buf, char *end, struct stat *st)
             && (mp->fbsz < SF_BUFSIZE
                 && mp->identifier[ID_MAM1] == mp->identifier[ID_MAM2]
                 || mp->fbsz >= SF_BUFSIZE
-                   && mp->identifier[ID_MAM1] >= mp->identifier[ID_MAM2]))
-        {
+                   && mp->identifier[ID_MAM1] >= mp->identifier[ID_MAM2])) {
         id_mam:
             s = T("mam program");
             mp->mime = "application/x-mam";
             goto qualify;
         }
-        if (mp->identifier[ID_FORTRAN] >= 8)
-        {
+        if (mp->identifier[ID_FORTRAN] >= 8) {
         id_fortran:
             s = T("fortran program");
             mp->mime = "application/x-fortran";
             goto qualify;
         }
         if (mp->identifier[ID_HTML] > 0 && mp->count['<'] >= 8
-            && (c = mp->count['<'] - mp->count['>']) >= -2 && c <= 2)
-        {
+            && (c = mp->count['<'] - mp->count['>']) >= -2 && c <= 2) {
         id_html:
             s = T("html input");
             mp->mime = "text/html";
             goto qualify;
         }
         if (mp->identifier[ID_COPYBOOK] > 0 && mp->identifier[ID_COBOL] == 0
-            && (c = mp->count['('] - mp->count[')']) >= -2 && c <= 2)
-        {
+            && (c = mp->count['('] - mp->count[')']) >= -2 && c <= 2) {
         id_copybook:
             s = T("cobol copybook");
             mp->mime = "application/x-cobol";
             goto qualify;
         }
         if (mp->identifier[ID_COBOL] > 0 && mp->identifier[ID_COPYBOOK] > 0
-            && (c = mp->count['('] - mp->count[')']) >= -2 && c <= 2)
-        {
+            && (c = mp->count['('] - mp->count[')']) >= -2 && c <= 2) {
         id_cobol:
             s = T("cobol program");
             mp->mime = "application/x-cobol";
             goto qualify;
         }
         if (mp->identifier[ID_PL1] > 0
-            && (c = mp->count['('] - mp->count[')']) >= -2 && c <= 2)
-        {
+            && (c = mp->count['('] - mp->count[')']) >= -2 && c <= 2) {
         id_pl1:
             s = T("pl1 program");
             mp->mime = "application/x-pl1";
             goto qualify;
         }
         if (mp->count['{'] >= 6 && (c = mp->count['{'] - mp->count['}']) >= -2
-            && c <= 2 && mp->count['\\'] >= mp->count['{'])
-        {
+            && c <= 2 && mp->count['\\'] >= mp->count['{']) {
         id_tex:
             s = T("TeX input");
             mp->mime = "text/tex";
             goto qualify;
         }
-        if (mp->identifier[ID_ASM] >= 4)
-        {
+        if (mp->identifier[ID_ASM] >= 4) {
         id_asm:
             s = T("as program");
             mp->mime = "application/x-as";
             goto qualify;
         }
-        if (ckenglish(mp, pun, badpun))
-        {
+        if (ckenglish(mp, pun, badpun)) {
             s = T("english text");
             mp->mime = "text/plain";
             goto qualify;
         }
-    }
-    else if (streq(base, "core"))
-    {
+    } else if (streq(base, "core")) {
         mp->mime = "x-system/core";
         return T("core dump");
     }
-    if (flags & (CC_binary | CC_notext))
-    {
+    if (flags & (CC_binary | CC_notext)) {
         b = ( unsigned char * )mp->fbuf;
         e = b + mp->fbsz;
         n = 0;
-        for (;;)
-        {
+        for (;;) {
             c = *b++;
             q = 0;
-            while (c & 0x80)
-            {
+            while (c & 0x80) {
                 c <<= 1;
                 q++;
             }
-            switch (q)
-            {
+            switch (q) {
             case 4:
                 if (b < e && (*b++ & 0xc0) != 0x80)
                     break;
@@ -1579,10 +1457,8 @@ cklang(Magic_t *mp, const char *file, char *buf, char *end, struct stat *st)
                     break;
                 n = 1;
             case 0:
-                if (b >= e)
-                {
-                    if (n)
-                    {
+                if (b >= e) {
+                    if (n) {
                         flags &= ~(CC_binary | CC_notext);
                         flags |= CC_utf_8;
                     }
@@ -1593,19 +1469,16 @@ cklang(Magic_t *mp, const char *file, char *buf, char *end, struct stat *st)
             break;
         }
     }
-    if (flags & (CC_binary | CC_notext))
-    {
+    if (flags & (CC_binary | CC_notext)) {
         unsigned long d = 0;
 
-        if ((q = mp->fbsz / UCHAR_MAX) >= 2)
-        {
+        if ((q = mp->fbsz / UCHAR_MAX) >= 2) {
             /*
              * compression/encryption via standard deviation
              */
 
 
-            for (c = 0; c < UCHAR_MAX; c++)
-            {
+            for (c = 0; c < UCHAR_MAX; c++) {
                 pun = mp->count[c] - q;
                 d += pun * pun;
             }
@@ -1638,26 +1511,20 @@ cklang(Magic_t *mp, const char *file, char *buf, char *end, struct stat *st)
                                  : T("text");
 qualify:
     if (!flags && mp->count['\n'] >= mp->count['\r']
-        && mp->count['\n'] <= (mp->count['\r'] + 1) && mp->count['\r'])
-    {
+        && mp->count['\n'] <= (mp->count['\r'] + 1) && mp->count['\r']) {
         t = "dos ";
         mp->mime = "text/dos";
-    }
-    else
+    } else
         t = "";
-    if (code)
-    {
+    if (code) {
         if (code == CC_ASCII)
             sfsprintf(buf, end - buf, "ascii %s%s", t, s);
-        else
-        {
+        else {
             sfsprintf(buf, end - buf, "ebcdic%d %s%s", code - 1, t, s);
             mp->mime = "text/ebcdic";
         }
         s = buf;
-    }
-    else if (*t)
-    {
+    } else if (*t) {
         sfsprintf(buf, end - buf, "%s%s", t, s);
         s = buf;
     }
@@ -1675,15 +1542,12 @@ type(Magic_t *mp, const char *file, struct stat *st, char *buf, char *end)
     char *t;
 
     mp->mime = 0;
-    if (!S_ISREG(st->st_mode))
-    {
-        if (S_ISDIR(st->st_mode))
-        {
+    if (!S_ISREG(st->st_mode)) {
+        if (S_ISDIR(st->st_mode)) {
             mp->mime = "x-system/dir";
             return T("directory");
         }
-        if (S_ISLNK(st->st_mode))
-        {
+        if (S_ISLNK(st->st_mode)) {
             mp->mime = "x-system/lnk";
             s = buf;
             s += sfsprintf(s, end - s, T("symbolic link to "));
@@ -1691,27 +1555,23 @@ type(Magic_t *mp, const char *file, struct stat *st, char *buf, char *end)
                 return T("cannot read symbolic link text");
             return buf;
         }
-        if (S_ISBLK(st->st_mode))
-        {
+        if (S_ISBLK(st->st_mode)) {
             mp->mime = "x-system/blk";
             sfsprintf(buf, PATH_MAX, T("block special (%s)"), fmtdev(st));
             return buf;
         }
-        if (S_ISCHR(st->st_mode))
-        {
+        if (S_ISCHR(st->st_mode)) {
             mp->mime = "x-system/chr";
             sfsprintf(
             buf, end - buf, T("character special (%s)"), fmtdev(st));
             return buf;
         }
-        if (S_ISFIFO(st->st_mode))
-        {
+        if (S_ISFIFO(st->st_mode)) {
             mp->mime = "x-system/fifo";
             return "fifo";
         }
 #ifdef S_ISSOCK
-        if (S_ISSOCK(st->st_mode))
-        {
+        if (S_ISSOCK(st->st_mode)) {
             mp->mime = "x-system/sock";
             return "socket";
         }
@@ -1721,15 +1581,13 @@ type(Magic_t *mp, const char *file, struct stat *st, char *buf, char *end)
         s = T("empty");
     else if (!mp->fp)
         s = T("cannot read");
-    else
-    {
+    else {
         mp->fbsz = sfread(mp->fp, mp->fbuf, sizeof(mp->fbuf) - 1);
         if (mp->fbsz < 0)
             s = fmterror(errno);
         else if (mp->fbsz == 0)
             s = T("empty");
-        else
-        {
+        else {
             mp->fbuf[mp->fbsz] = 0;
             mp->xoff = 0;
             mp->xbsz = 0;
@@ -1739,8 +1597,7 @@ type(Magic_t *mp, const char *file, struct stat *st, char *buf, char *end)
     }
     if (!mp->mime)
         mp->mime = "application/unknown";
-    else if ((t = strchr(mp->mime, '%')) && *(t + 1) == 's' && !*(t + 2))
-    {
+    else if ((t = strchr(mp->mime, '%')) && *(t + 1) == 's' && !*(t + 2)) {
         char *b;
         char *be;
         char *m;
@@ -1751,10 +1608,8 @@ type(Magic_t *mp, const char *file, struct stat *st, char *buf, char *end)
         while (m < me && b < t)
             *m++ = *b++;
         b = t = s;
-        for (;;)
-        {
-            if (!(be = strchr(t, ' ')))
-            {
+        for (;;) {
+            if (!(be = strchr(t, ' '))) {
                 be = b + strlen(b);
                 break;
             }
@@ -1805,8 +1660,7 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
     error_info.file = file;
     error_info.line = 0;
     first = ep = vmnewof(mp->vm, 0, Entry_t, 1, 0);
-    while (p = sfgetr(fp, '\n', 1))
-    {
+    while (p = sfgetr(fp, '\n', 1)) {
         error_info.line++;
         for (; isspace(*p); p++)
             ;
@@ -1815,8 +1669,7 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
          * nesting
          */
 
-        switch (*p)
-        {
+        switch (*p) {
         case 0:
         case '#':
             cont = '#';
@@ -1833,14 +1686,11 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
                 MAXNEST);
             continue;
         case '}':
-            if (!last || lev <= 0)
-            {
+            if (!last || lev <= 0) {
                 if (mp->disc->errorf)
                     (*mp->disc->errorf)(
                     mp, mp->disc, 2, "`%c': invalid nesting", *p);
-            }
-            else if (lev-- == ent)
-            {
+            } else if (lev-- == ent) {
                 ent = 0;
                 ep->cont = ':';
                 ep->offset = ret->offset;
@@ -1851,20 +1701,17 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
                 last = ep;
                 ep = ret->next = vmnewof(mp->vm, 0, Entry_t, 1, 0);
                 ret = 0;
-            }
-            else
+            } else
                 last->nest = *p;
             continue;
         default:
             if (*(p + 1) == '{'
                 || *(p + 1) == '(' && *p != '+' && *p != '>' && *p != '&'
-                   && *p != '|')
-            {
+                   && *p != '|') {
                 n = *p++;
                 if (n >= 'a' && n <= 'z')
                     n -= 'a';
-                else
-                {
+                else {
                     if (mp->disc->errorf)
                         (*mp->disc->errorf)(
                         mp, mp->disc, 2, "%c: invalid function name", n);
@@ -1876,14 +1723,11 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
                                         2,
                                         "%c: function has no return",
                                         ret->offset + 'a');
-                if (*p == '{')
-                {
+                if (*p == '{') {
                     ent = ++lev;
                     ret = ep;
                     ep->desc = "[FUNCTION]";
-                }
-                else
-                {
+                } else {
                     if (*(p + 1) != ')' && mp->disc->errorf)
                         (*mp->disc->errorf)(
                         mp,
@@ -1918,20 +1762,17 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
          */
 
         cont = '$';
-        switch (*p)
-        {
+        switch (*p) {
         case '>':
             old = 1;
-            if (*(p + 1) == *p)
-            {
+            if (*(p + 1) == *p) {
                 /*
                  * old style nesting push
                  */
 
                 p++;
                 old = 2;
-                if (!lev && last)
-                {
+                if (!lev && last) {
                     lev = 1;
                     last->nest = '{';
                     if (last->cont == '>')
@@ -1969,12 +1810,10 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
             ep->cont = (lev > 0) ? '&' : '#';
             break;
         }
-        switch (old)
-        {
+        switch (old) {
         case 1:
             old = 0;
-            if (lev)
-            {
+            if (lev) {
                 /*
                  * old style nesting pop
                  */
@@ -1991,21 +1830,17 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
             old = 1;
             break;
         }
-        if (isdigit(*p))
-        {
+        if (isdigit(*p)) {
             /*
              * absolute offset
              */
 
             ep->offset = strton(p, &next, NiL, 0);
             p2 = next;
-        }
-        else
-        {
+        } else {
             for (p2 = p; *p2 && !isspace(*p2); p2++)
                 ;
-            if (!*p2)
-            {
+            if (!*p2) {
                 if ((mp->flags & MAGIC_VERBOSE) && mp->disc->errorf)
                     (*mp->disc->errorf)(
                     mp, mp->disc, 1, "not enough fields: `%s'", p);
@@ -2021,17 +1856,14 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
             if (isalpha(*p))
                 ep->offset
                 = (ip = ( Info_t * )dtmatch(mp->infotab, p)) ? ip->value : 0;
-            else if (*p == '(' && ep->cont == '>')
-            {
+            else if (*p == '(' && ep->cont == '>') {
                 /*
                  * convert old style indirection to @
                  */
 
                 p = ep->expr + 1;
-                for (;;)
-                {
-                    switch (*p++)
-                    {
+                for (;;) {
+                    switch (*p++) {
                     case 0:
                     case '@':
                     case '(':
@@ -2043,8 +1875,7 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
                     }
                     break;
                 }
-                if (*--p == ')')
-                {
+                if (*--p == ')') {
                     *p = 0;
                     *ep->expr = '@';
                 }
@@ -2054,8 +1885,7 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
             ;
         for (p = p2; *p2 && !isspace(*p2); p2++)
             ;
-        if (!*p2)
-        {
+        if (!*p2) {
             if ((mp->flags & MAGIC_VERBOSE) && mp->disc->errorf)
                 (*mp->disc->errorf)(
                 mp, mp->disc, 1, "not enough fields: `%s'", p);
@@ -2067,24 +1897,20 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
          * type
          */
 
-        if ((*p == 'b' || *p == 'l') && *(p + 1) == 'e')
-        {
+        if ((*p == 'b' || *p == 'l') && *(p + 1) == 'e') {
             ep->swap = ~(*p == 'l' ? 7 : 0);
             p += 2;
         }
-        if (*p == 's')
-        {
+        if (*p == 's') {
             if (*(p + 1) == 'h')
                 ep->type = 'h';
             else
                 ep->type = 's';
-        }
-        else if (*p == 'a')
+        } else if (*p == 'a')
             ep->type = 's';
         else
             ep->type = *p;
-        if (p = strchr(p, '&'))
-        {
+        if (p = strchr(p, '&')) {
             /*
              * old style mask
              */
@@ -2103,8 +1929,7 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
         p = p2;
         if (p2 = strchr(p, '\t'))
             *p2++ = 0;
-        else
-        {
+        else {
             int qe = 0;
             int qn = 0;
 
@@ -2112,10 +1937,8 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
              * assume balanced {}[]()\\""'' field
              */
 
-            for (p2 = p;;)
-            {
-                switch (n = *p2++)
-                {
+            for (p2 = p;;) {
+                switch (n = *p2++) {
                 case 0:
                     break;
                 case '{':
@@ -2168,25 +1991,20 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
         lge = 0;
         if (ep->type == 'e' || ep->type == 'm' || ep->type == 's')
             ep->op = '=';
-        else
-        {
-            if (*p == '&')
-            {
+        else {
+            if (*p == '&') {
                 ep->mask = strton(++p, &next, NiL, 0);
                 p = next;
             }
-            switch (*p)
-            {
+            switch (*p) {
             case '=':
             case '>':
             case '<':
             case '*':
                 ep->op = *p++;
-                if (*p == '=')
-                {
+                if (*p == '=') {
                     p++;
-                    switch (ep->op)
-                    {
+                    switch (ep->op) {
                     case '>':
                         lge = -1;
                         break;
@@ -2213,28 +2031,22 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
                 break;
             }
         }
-        if (ep->op != '*' && !ep->value.num)
-        {
-            if (ep->type == 'e')
-            {
-                if (ep->value.sub = vmnewof(mp->vm, 0, regex_t, 1, 0))
-                {
+        if (ep->op != '*' && !ep->value.num) {
+            if (ep->type == 'e') {
+                if (ep->value.sub = vmnewof(mp->vm, 0, regex_t, 1, 0)) {
                     ep->value.sub->re_disc = &mp->redisc;
                     if (!(n = regcomp(ep->value.sub,
                                       p,
                                       REG_DELIMITED | REG_LENIENT | REG_NULL
-                                      | REG_DISCIPLINE)))
-                    {
+                                      | REG_DISCIPLINE))) {
                         p += ep->value.sub->re_npat;
                         if (!(n = regsubcomp(ep->value.sub, p, NiL, 0, 0)))
                             p += ep->value.sub->re_npat;
                     }
-                    if (n)
-                    {
+                    if (n) {
                         regmessage(mp, ep->value.sub, n);
                         ep->value.sub = 0;
-                    }
-                    else if (*p && mp->disc->errorf)
+                    } else if (*p && mp->disc->errorf)
                         (*mp->disc->errorf)(
                         mp,
                         mp->disc,
@@ -2242,29 +2054,21 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
                         "invalid characters after substitution: %s",
                         p);
                 }
-            }
-            else if (ep->type == 'm')
-            {
+            } else if (ep->type == 'm') {
                 ep->mask = stresc(p) + 1;
                 ep->value.str = vmnewof(mp->vm, 0, char, ep->mask + 1, 0);
                 memcpy(ep->value.str, p, ep->mask);
                 if ((!ep->expr || !ep->offset)
                     && !strmatch(ep->value.str, "\\!\\(*\\)"))
                     ep->value.str[ep->mask - 1] = '*';
-            }
-            else if (ep->type == 's')
-            {
+            } else if (ep->type == 's') {
                 ep->mask = stresc(p);
                 ep->value.str = vmnewof(mp->vm, 0, char, ep->mask, 0);
                 memcpy(ep->value.str, p, ep->mask);
-            }
-            else if (*p == '\'')
-            {
+            } else if (*p == '\'') {
                 stresc(p);
                 ep->value.num = *( unsigned char * )(p + 1) + lge;
-            }
-            else if (strmatch(p, "+([a-z])\\(*\\)"))
-            {
+            } else if (strmatch(p, "+([a-z])\\(*\\)")) {
                 char *t;
 
                 t = p;
@@ -2272,27 +2076,21 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
                 ep->op = *p;
                 while (*p && *p++ != '(')
                     ;
-                switch (ep->op)
-                {
+                switch (ep->op) {
                 case 'l':
                     n = *p++;
-                    if (n < 'a' || n > 'z')
-                    {
+                    if (n < 'a' || n > 'z') {
                         if (mp->disc->errorf)
                             (*mp->disc->errorf)(
                             mp, mp->disc, 2, "%c: invalid function name", n);
-                    }
-                    else if (!fun[n -= 'a'])
-                    {
+                    } else if (!fun[n -= 'a']) {
                         if (mp->disc->errorf)
                             (*mp->disc->errorf)(mp,
                                                 mp->disc,
                                                 2,
                                                 "%c: function not defined",
                                                 n + 'a');
-                    }
-                    else
-                    {
+                    } else {
                         ep->value.loop = vmnewof(mp->vm, 0, Loop_t, 1, 0);
                         ep->value.loop->lab = fun[n];
                         while (*p && *p++ != ',')
@@ -2316,9 +2114,7 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
                         mp, mp->disc, 1, "%-.*s: unknown function", p - t, t);
                     break;
                 }
-            }
-            else
-            {
+            } else {
                 ep->value.num = strton(p, NiL, NiL, 0) + lge;
                 if (ep->op == '@')
                     ep->value.num = swapget(
@@ -2330,27 +2126,22 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
          * file description
          */
 
-        if (p2)
-        {
+        if (p2) {
             for (; isspace(*p2); p2++)
                 ;
-            if (p = strchr(p2, '\t'))
-            {
+            if (p = strchr(p2, '\t')) {
                 /*
                  * check for message catalog index
                  */
 
                 *p++ = 0;
-                if (isalpha(*p2))
-                {
+                if (isalpha(*p2)) {
                     for (p3 = p2; isalnum(*p3); p3++)
                         ;
-                    if (*p3++ == ':')
-                    {
+                    if (*p3++ == ':') {
                         for (; isdigit(*p3); p3++)
                             ;
-                        if (!*p3)
-                        {
+                        if (!*p3) {
                             for (p2 = p; isspace(*p2); p2++)
                                 ;
                             if (p = strchr(p2, '\t'))
@@ -2361,15 +2152,13 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
             }
             stresc(p2);
             ep->desc = vmstrdup(mp->vm, p2);
-            if (p)
-            {
+            if (p) {
                 for (; isspace(*p); p++)
                     ;
                 if (*p)
                     ep->mime = vmstrdup(mp->vm, p);
             }
-        }
-        else
+        } else
             ep->desc = "";
 
         /*
@@ -2379,8 +2168,7 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
         last = ep;
         ep = ep->next = vmnewof(mp->vm, 0, Entry_t, 1, 0);
     }
-    if (last)
-    {
+    if (last) {
         last->next = 0;
         if (mp->magiclast)
             mp->magiclast->next = first;
@@ -2389,8 +2177,7 @@ load(Magic_t *mp, char *file, Sfio_t *fp)
         mp->magiclast = last;
     }
     vmfree(mp->vm, ep);
-    if ((mp->flags & MAGIC_VERBOSE) && mp->disc->errorf)
-    {
+    if ((mp->flags & MAGIC_VERBOSE) && mp->disc->errorf) {
         if (lev < 0)
             (*mp->disc->errorf)(mp, mp->disc, 1, "too many } operators");
         else if (lev > 0)
@@ -2422,17 +2209,14 @@ magicload(Magic_t *mp, const char *file, unsigned long flags)
     mp->flags = mp->disc->flags | flags;
     found = 0;
     if (list = !(s = ( char * )file) || !*s
-               || (*s == '-' || *s == '.') && !*(s + 1))
-    {
+               || (*s == '-' || *s == '.') && !*(s + 1)) {
         if (!(s = getenv(MAGIC_FILE_ENV)) || !*s)
             s = MAGIC_FILE;
     }
-    for (;;)
-    {
+    for (;;) {
         if (!list)
             e = 0;
-        else if (e = strchr(s, ':'))
-        {
+        else if (e = strchr(s, ':')) {
             /*
              * ok, so ~ won't work for the last list element
              * we do it for MAGIC_FILES_ENV anyway
@@ -2440,8 +2224,7 @@ magicload(Magic_t *mp, const char *file, unsigned long flags)
 
             if ((strneq(s, "~/", n = 2) || strneq(s, "$HOME/", n = 6)
                  || strneq(s, "${HOME}/", n = 8))
-                && (t = getenv("HOME")))
-            {
+                && (t = getenv("HOME"))) {
                 sfputr(mp->tmp, t, -1);
                 s += n - 1;
             }
@@ -2451,17 +2234,14 @@ magicload(Magic_t *mp, const char *file, unsigned long flags)
         }
         if (!*s || streq(s, "-"))
             s = MAGIC_FILE;
-        if (!(fp = sfopen(NiL, s, "r")))
-        {
-            if (list)
-            {
+        if (!(fp = sfopen(NiL, s, "r"))) {
+            if (list) {
                 if (!(t = pathpath(s,
                                    "",
                                    PATH_REGULAR | PATH_READ,
                                    mp->fbuf,
                                    sizeof(mp->fbuf)))
-                    && !strchr(s, '/'))
-                {
+                    && !strchr(s, '/')) {
                     strcpy(mp->fbuf, s);
                     sfprintf(mp->tmp, "%s/%s", MAGIC_DIR, mp->fbuf);
                     if (!(s = sfstruse(mp->tmp)))
@@ -2475,9 +2255,7 @@ magicload(Magic_t *mp, const char *file, unsigned long flags)
                 }
                 if (!(fp = sfopen(NiL, t, "r")))
                     goto next;
-            }
-            else
-            {
+            } else {
                 if (mp->disc->errorf)
                     (*mp->disc->errorf)(
                     mp, mp->disc, 3, "%s: cannot open magic file", s);
@@ -2494,10 +2272,8 @@ magicload(Magic_t *mp, const char *file, unsigned long flags)
             break;
         s = e + 1;
     }
-    if (!found)
-    {
-        if (mp->flags & MAGIC_VERBOSE)
-        {
+    if (!found) {
+        if (mp->flags & MAGIC_VERBOSE) {
             if (mp->disc->errorf)
                 (*mp->disc->errorf)(
                 mp, mp->disc, 2, "cannot find magic file");
@@ -2528,8 +2304,7 @@ magicopen(Magicdisc_t *disc)
 
     if (!(vm = vmopen(Vmdcheap, Vmbest, 0)))
         return 0;
-    if (!(mp = vmnewof(vm, 0, Magic_t, 1, 0)))
-    {
+    if (!(mp = vmnewof(vm, 0, Magic_t, 1, 0))) {
         vmclose(vm);
         return 0;
     }
@@ -2552,12 +2327,10 @@ magicopen(Magicdisc_t *disc)
     for (i = 0; i < CC_MAPS; i++)
         map[i] = ccmap(i, CC_ASCII);
     mp->x2n = ccmap(CC_ALIEN, CC_NATIVE);
-    for (n = 0; n <= UCHAR_MAX; n++)
-    {
+    for (n = 0; n <= UCHAR_MAX; n++) {
         f = 0;
         i = CC_MAPS;
-        while (--i >= 0)
-        {
+        while (--i >= 0) {
             c = ccmapchr(map[i], n);
             f = (f << CC_BIT) | CCTYPE(c);
         }
@@ -2599,15 +2372,13 @@ magictype(Magic_t *mp, Sfio_t *fp, const char *file, struct stat *st)
     mp->mime = 0;
     if (!st)
         s = T("cannot stat");
-    else
-    {
+    else {
         if (mp->fp = fp)
             off = sfseek(mp->fp, ( off_t )0, SEEK_CUR);
         s = type(mp, file, st, mp->tbuf, &mp->tbuf[sizeof(mp->tbuf) - 1]);
         if (mp->fp)
             sfseek(mp->fp, off, SEEK_SET);
-        if (!(mp->flags & (MAGIC_MIME | MAGIC_ALL)))
-        {
+        if (!(mp->flags & (MAGIC_MIME | MAGIC_ALL))) {
             if (S_ISREG(st->st_mode) && (st->st_size > 0)
                 && (st->st_size < 128))
                 sfprintf(mp->tmp, "%s ", T("short"));
@@ -2646,8 +2417,7 @@ magiclist(Magic_t *mp, Sfio_t *sp)
 
     mp->flags = mp->disc->flags;
     sfprintf(sp, "cont\toffset\ttype\top\tmask\tvalue\tmime\tdesc\n");
-    while (ep)
-    {
+    while (ep) {
         sfprintf(sp, "%c %c\t", ep->cont, ep->nest);
         if (ep->expr)
             sfprintf(sp, "%s", ep->expr);
@@ -2660,15 +2430,13 @@ magiclist(Magic_t *mp, Sfio_t *sp)
                  ep->type,
                  ep->op,
                  ep->mask);
-        switch (ep->type)
-        {
+        switch (ep->type) {
         case 'm':
         case 's':
             sfputr(sp, fmtesc(ep->value.str), -1);
             break;
         case 'V':
-            switch (ep->op)
-            {
+            switch (ep->op) {
             case 'l':
                 sfprintf(sp,
                          "loop(%d,%d,%d,%d)",
@@ -2691,15 +2459,11 @@ magiclist(Magic_t *mp, Sfio_t *sp)
         }
         sfprintf(
         sp, "\t%s\t%s\n", ep->mime ? ep->mime : "", fmtesc(ep->desc));
-        if (ep->cont == '$' && !ep->value.lab->mask)
-        {
+        if (ep->cont == '$' && !ep->value.lab->mask) {
             rp = ep;
             ep = ep->value.lab;
-        }
-        else
-        {
-            if (ep->cont == ':')
-            {
+        } else {
+            if (ep->cont == ':') {
                 ep = rp;
                 ep->value.lab->mask = 1;
             }

@@ -115,33 +115,23 @@ tvtouch(const char *path,
 
     oerrno = errno;
 #if _lib_utimensat
-    if (!av)
-    {
+    if (!av) {
         ts[0].tv_sec = 0;
         ts[0].tv_nsec = UTIME_NOW;
-    }
-    else if (av == TV_TOUCH_RETAIN)
-    {
+    } else if (av == TV_TOUCH_RETAIN) {
         ts[0].tv_sec = 0;
         ts[0].tv_nsec = UTIME_OMIT;
-    }
-    else
-    {
+    } else {
         ts[0].tv_sec = av->tv_sec;
         ts[0].tv_nsec = NS(av->tv_nsec);
     }
-    if (!mv)
-    {
+    if (!mv) {
         ts[1].tv_sec = 0;
         ts[1].tv_nsec = UTIME_NOW;
-    }
-    else if (mv == TV_TOUCH_RETAIN)
-    {
+    } else if (mv == TV_TOUCH_RETAIN) {
         ts[1].tv_sec = 0;
         ts[1].tv_nsec = UTIME_OMIT;
-    }
-    else
-    {
+    } else {
         ts[1].tv_sec = mv->tv_sec;
         ts[1].tv_nsec = NS(mv->tv_nsec);
     }
@@ -155,8 +145,7 @@ tvtouch(const char *path,
                    : ts,
                    (flags & TV_TOUCH_PHYSICAL) ? AT_SYMLINK_NOFOLLOW : 0))
         return 0;
-    if (errno != ENOSYS)
-    {
+    if (errno != ENOSYS) {
         if (errno != ENOENT || !(flags & TV_TOUCH_CREATE))
             return -1;
         umask(mode = umask(0));
@@ -177,16 +166,14 @@ tvtouch(const char *path,
         return 0;
     }
 #endif
-    if ((av == TV_TOUCH_RETAIN || mv == TV_TOUCH_RETAIN) && stat(path, &st))
-    {
+    if ((av == TV_TOUCH_RETAIN || mv == TV_TOUCH_RETAIN) && stat(path, &st)) {
         errno = oerrno;
         if (av == TV_TOUCH_RETAIN)
             av = 0;
         if (mv == TV_TOUCH_RETAIN)
             mv = 0;
     }
-    if (!av || !mv)
-    {
+    if (!av || !mv) {
         tvgettime(&now);
         if (!av)
             av = ( const Tv_t * )&now;
@@ -194,61 +181,47 @@ tvtouch(const char *path,
             mv = ( const Tv_t * )&now;
     }
 #if _lib_utimets
-    if (av == TV_TOUCH_RETAIN)
-    {
+    if (av == TV_TOUCH_RETAIN) {
         ts[0].tv_sec = st.st_atime;
         ts[0].tv_nsec = ST_ATIME_NSEC_GET(&st);
-    }
-    else
-    {
+    } else {
         ts[0].tv_sec = av->tv_sec;
         ts[0].tv_nsec = NS(av->tv_nsec);
     }
-    if (mv == TV_TOUCH_RETAIN)
-    {
+    if (mv == TV_TOUCH_RETAIN) {
         ts[1].tv_sec = st.st_mtime;
         ts[1].tv_nsec = ST_MTIME_NSEC_GET(&st);
-    }
-    else
-    {
+    } else {
         ts[1].tv_sec = mv->tv_sec;
         ts[1].tv_nsec = NS(mv->tv_nsec);
     }
     if (!utimets(path, ts))
         return 0;
     if (errno != ENOENT && av == ( const Tv_t * )&now
-        && mv == ( const Tv_t * )&now && !utimets(path, NiL))
-    {
+        && mv == ( const Tv_t * )&now && !utimets(path, NiL)) {
         errno = oerrno;
         return 0;
     }
 #else
 #    if _lib_utimes
-    if (av == TV_TOUCH_RETAIN)
-    {
+    if (av == TV_TOUCH_RETAIN) {
         am[0].tv_sec = st.st_atime;
         am[0].tv_usec = ST_ATIME_NSEC_GET(&st) / 1000;
-    }
-    else
-    {
+    } else {
         am[0].tv_sec = av->tv_sec;
         am[0].tv_usec = NS(av->tv_nsec) / 1000;
     }
-    if (mv == TV_TOUCH_RETAIN)
-    {
+    if (mv == TV_TOUCH_RETAIN) {
         am[1].tv_sec = st.st_mtime;
         am[1].tv_usec = ST_MTIME_NSEC_GET(&st) / 1000;
-    }
-    else
-    {
+    } else {
         am[1].tv_sec = mv->tv_sec;
         am[1].tv_usec = NS(mv->tv_nsec) / 1000;
     }
     if (!utimes(path, am))
         return 0;
     if (errno != ENOENT && av == ( const Tv_t * )&now
-        && mv == ( const Tv_t * )&now && !utimes(path, NiL))
-    {
+        && mv == ( const Tv_t * )&now && !utimes(path, NiL)) {
         errno = oerrno;
         return 0;
     }
@@ -260,27 +233,22 @@ tvtouch(const char *path,
         return 0;
 #            if _lib_utime_now
     if (errno != ENOENT && av == ( const Tv_t * )&now
-        && mv == ( const Tv_t * )&now && !utime(path, NiL))
-    {
+        && mv == ( const Tv_t * )&now && !utime(path, NiL)) {
         errno = oerrno;
         return 0;
     }
 #            endif
 #        endif
 #    endif
-    if (!access(path, F_OK))
-    {
-        if (av != ( const Tv_t * )&now || mv != ( const Tv_t * )&now)
-        {
+    if (!access(path, F_OK)) {
+        if (av != ( const Tv_t * )&now || mv != ( const Tv_t * )&now) {
             errno = EINVAL;
             return -1;
         }
-        if ((fd = open(path, O_RDWR | O_CLOEXEC)) >= 0)
-        {
+        if ((fd = open(path, O_RDWR | O_CLOEXEC)) >= 0) {
             char c;
 
-            if (read(fd, &c, 1) == 1)
-            {
+            if (read(fd, &c, 1) == 1) {
                 if (c = (lseek(fd, 0L, 0) == 0L && write(fd, &c, 1) == 1))
                     errno = oerrno;
                 close(fd);

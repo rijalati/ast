@@ -100,18 +100,15 @@ Dtmethod_t *meth;
     dt->nview = 0;
     dt->view = dt->walk = NIL(Dt_t *);
 
-    if (disc->eventf)
-    { /* if this is a shared dictionary, get the shared data */
+    if (disc->eventf) { /* if this is a shared dictionary, get the shared data
+                         */
         data = NIL(Dtdata_t *);
         if ((e = (*disc->eventf)(dt, DT_OPEN, ( Void_t * )(&data), disc))
-            != 0)
-        {
-            if (e < 0 || !data || !(data->type & meth->type))
-            {
+            != 0) {
+            if (e < 0 || !data || !(data->type & meth->type)) {
                 free(( Void_t * )dt);
                 return NIL(Dt_t *);
-            }
-            else
+            } else
                 goto done;
         }
     }
@@ -119,8 +116,7 @@ Dtmethod_t *meth;
     /* allocate sharable data */
     data
     = ( Dtdata_t * )(dt->memoryf)(dt, NIL(Void_t *), sizeof(Dtdata_t), disc);
-    if (!data)
-    {
+    if (!data) {
         free(( Void_t * )dt);
         return NIL(Dt_t *);
     }

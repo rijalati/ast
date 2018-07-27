@@ -37,10 +37,8 @@ vsnprintf(char *s, int n, const char *form, va_list args)
                     SF_WRITE | SF_STRING)))
         return -1;
 
-    if ((rv = sfvprintf(f, form, args)) >= 0)
-    {
-        if (s && n > 0)
-        {
+    if ((rv = sfvprintf(f, form, args)) >= 0) {
+        if (s && n > 0) {
             if ((rv + 1) >= n)
                 n--;
             else

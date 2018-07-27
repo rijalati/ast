@@ -44,8 +44,7 @@ int bitOrder;  /* Desired bit order: LSBFirst or MSBFirst. */
     char *data, *srcPtr, *destPtr;
     int i, j;
 
-    if (image->bits_per_pixel != 1)
-    {
+    if (image->bits_per_pixel != 1) {
         panic("TkAlignImageData: Can't handle image depths greater than 1.");
     }
 
@@ -54,29 +53,21 @@ int bitOrder;  /* Desired bit order: LSBFirst or MSBFirst. */
      */
 
     dataWidth = image->bytes_per_line;
-    if (dataWidth % alignment)
-    {
+    if (dataWidth % alignment) {
         dataWidth += (alignment - (dataWidth % alignment));
     }
 
     data = ckalloc(dataWidth * image->height);
 
     destPtr = data;
-    for (i = 0; i < image->height; i++)
-    {
+    for (i = 0; i < image->height; i++) {
         srcPtr = &image->data[i * image->bytes_per_line];
-        for (j = 0; j < dataWidth; j++)
-        {
-            if (j >= image->bytes_per_line)
-            {
+        for (j = 0; j < dataWidth; j++) {
+            if (j >= image->bytes_per_line) {
                 *destPtr = 0;
-            }
-            else if (image->bitmap_bit_order != bitOrder)
-            {
+            } else if (image->bitmap_bit_order != bitOrder) {
                 *destPtr = xBitReverseTable[( unsigned char )(*(srcPtr++))];
-            }
-            else
-            {
+            } else {
                 *destPtr = *(srcPtr++);
             }
             destPtr++;

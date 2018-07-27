@@ -33,30 +33,25 @@ pppragma(char *directive, char *pass, char *name, char *value, int newline)
     int sep = 0;
 
     ppsync();
-    if (directive)
-    {
+    if (directive) {
         ppprintf("#%s", directive);
         sep = 1;
     }
-    if (pass)
-    {
-        if (sep)
-        {
+    if (pass) {
+        if (sep) {
             sep = 0;
             ppprintf(" ");
         }
         ppprintf("%s:", pass);
     }
-    if (name)
-    {
+    if (name) {
         if (sep)
             ppprintf(" ");
         else
             sep = 1;
         ppprintf("%s", name);
     }
-    if (value)
-    {
+    if (value) {
         if (sep || pass)
             ppprintf(" ");
         ppprintf("%s", value);

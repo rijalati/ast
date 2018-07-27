@@ -160,14 +160,12 @@ getop(Cx_t *cx,
     char *s;
     char *v;
 
-    if (variable->data == ( void * )&variables[0])
-    {
+    if (variable->data == ( void * )&variables[0]) {
         state->op |= variable->index;
         if (variable->format.delimiter <= 0)
             variable->format.delimiter = ':';
         if (a && (s = a->value.string.data))
-            do
-            {
+            do {
                 while (*s == ':')
                     s++;
                 for (v = s; *s && *s != ':'; s++)
@@ -177,14 +175,10 @@ getop(Cx_t *cx,
                 else if (strneq(v, "nodelimiter", 11))
                     variable->format.delimiter = 0;
             } while (*s);
-    }
-    else
-    {
+    } else {
         group = state->group;
-        for (;;)
-        {
-            if (!group)
-            {
+        for (;;) {
+            if (!group) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     cx, disc, 2, "%s: unknown print variable", variable->name);
@@ -219,8 +213,7 @@ getvalue(Cx_t *cx,
     int sep;
 
     if (variable->data == ( void * )&variables[0])
-        switch (variable->index)
-        {
+        switch (variable->index) {
         case STATS_AVERAGE:
             r->value.number
             = print->total->count
@@ -231,8 +224,7 @@ getvalue(Cx_t *cx,
             r->value.number = ( Cxinteger_t )print->total->count;
             break;
         case STATS_DEVIATION:
-            if (print->total->count)
-            {
+            if (print->total->count) {
                 u = print->total->value / ( Cxinteger_t )print->total->count;
                 if ((u = print->total->square
                          + u * (u - 2 * print->total->value))
@@ -241,8 +233,7 @@ getvalue(Cx_t *cx,
                 if (print->total->count > 1)
                     u /= (Cxinteger_t)(print->total->count - 1);
                 r->value.number = sqrt(u);
-            }
-            else
+            } else
                 r->value.number = 0;
             break;
         case STATS_FIELD:
@@ -256,16 +247,14 @@ getvalue(Cx_t *cx,
             sfstrseek(cx->buf, SEEK_SET, 0);
             if (key = print->key)
                 for (sep = 0, group = print->group; group;
-                     group = group->next, key++)
-                {
+                     group = group->next, key++) {
                     if (sep)
                         sfputc(cx->buf, sep);
                     else
                         sep = variable->format.delimiter;
                     if (group->string)
                         s = key->value.string.data;
-                    else
-                    {
+                    else {
                         arg = *key;
                         if (cxcast(cx,
                                    &arg,
@@ -293,14 +282,12 @@ getvalue(Cx_t *cx,
             r->value.number = print->total->value;
             break;
         }
-    else if (key = print->key)
-    {
+    else if (key = print->key) {
         for (group = print->group; group->variable != variable;
              group = group->next, key++)
             ;
         r->value = key->value;
-    }
-    else
+    } else
         memset(&r->value, 0, sizeof(r->value));
     return 0;
 }
@@ -314,10 +301,8 @@ bucketcmp(Dt_t *dt, void *a, void *b, Dtdisc_t *disc)
     Group_t *group;
     int n;
 
-    for (group = state->group; group; group = group->next, ka++, kb++)
-    {
-        if (group->string)
-        {
+    for (group = state->group; group; group = group->next, ka++, kb++) {
+        if (group->string) {
             n = ka->value.string.size < kb->value.string.size
                 ? ka->value.string.size
                 : kb->value.string.size;
@@ -327,8 +312,7 @@ bucketcmp(Dt_t *dt, void *a, void *b, Dtdisc_t *disc)
                 return -1;
             if (ka->value.string.size > kb->value.string.size)
                 return 1;
-        }
-        else if (ka->value.number < kb->value.number)
+        } else if (ka->value.number < kb->value.number)
             return -1;
         else if (ka->value.number > kb->value.number)
             return 1;
@@ -355,8 +339,7 @@ stats_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     Sfio_t *tmp;
 
     if (!(vm = vmopen(Vmdcheap, Vmlast, 0))
-        || !(state = vmnewof(vm, 0, State_t, 1, 0)))
-    {
+        || !(state = vmnewof(vm, 0, State_t, 1, 0))) {
         if (vm)
             vmclose(vm);
         if (disc->errorf)
@@ -365,19 +348,16 @@ stats_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     }
     state->vm = vm;
     state->maxgroups = 100;
-    if (!(state->print = cxopen(0, 0, disc)))
-    {
+    if (!(state->print = cxopen(0, 0, disc))) {
         if (disc->errorf)
             (*disc->errorf)(cx, disc, ERROR_SYSTEM | 2, "out of space");
         goto bad;
     }
-    if (!cxscope(state->print, cx, 0, 0, disc))
-    {
+    if (!cxscope(state->print, cx, 0, 0, disc)) {
         cxclose(state->print);
         goto bad;
     }
-    for (i = 0; i < elementsof(variables); i++)
-    {
+    for (i = 0; i < elementsof(variables); i++) {
         if (cxaddvariable(state->print, &variables[i], disc))
             goto bad;
         variables[i].data = &variables[0];
@@ -385,10 +365,8 @@ stats_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     sfprintf(
     cx->buf, "%s%s", strchr(dss_lib_stats.description, '['), stats_usage);
     s = sfstruse(cx->buf);
-    for (;;)
-    {
-        switch (optget(argv, s))
-        {
+    for (;;) {
+        switch (optget(argv, s)) {
         case 'a':
             state->op |= STATS_AVERAGE;
             continue;
@@ -401,8 +379,7 @@ stats_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         case 'g':
             if (!(variable = cxvariable(cx, opt_info.arg, NiL, disc)))
                 goto bad;
-            if (!(group = vmnewof(vm, 0, Group_t, 1, 0)))
-            {
+            if (!(group = vmnewof(vm, 0, Group_t, 1, 0))) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     cx, disc, ERROR_SYSTEM | 2, "out of space");
@@ -418,8 +395,7 @@ stats_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
             state->groups++;
             continue;
         case 'l':
-            if (!(state->label = vmstrdup(vm, opt_info.arg)))
-            {
+            if (!(state->label = vmstrdup(vm, opt_info.arg))) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     cx, disc, ERROR_SYSTEM | 2, "out of space");
@@ -430,8 +406,7 @@ stats_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
             state->maxgroups = opt_info.num;
             continue;
         case 'p':
-            if (!(state->format = vmstrdup(vm, opt_info.arg)))
-            {
+            if (!(state->format = vmstrdup(vm, opt_info.arg))) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     cx, disc, ERROR_SYSTEM | 2, "out of space");
@@ -445,12 +420,10 @@ stats_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
             state->op |= STATS_SUM;
             continue;
         case '?':
-            if (disc->errorf)
-            {
+            if (disc->errorf) {
                 (*disc->errorf)(
                 cx, disc, ERROR_USAGE | 4, "%s", opt_info.arg);
-            }
-            else
+            } else
                 goto bad;
             continue;
         case ':':
@@ -470,12 +443,9 @@ stats_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     if (all = !*argv)
         variable = 0;
     state->fw = 5;
-    do
-    {
-        if (all)
-        {
-            do
-            {
+    do {
+        if (all) {
+            do {
                 variable
                 = ( Cxvariable_t * )(variable ? dtnext(cx->fields, variable)
                                               : dtfirst(cx->fields));
@@ -484,20 +454,17 @@ stats_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                          || !cxisnumber(variable->type)));
             if (!variable)
                 break;
-        }
-        else if (streq(*argv, "-"))
+        } else if (streq(*argv, "-"))
             continue;
         else if (!(variable = cxvariable(cx, *argv, NiL, disc)))
             goto bad;
-        else if (!cxisnumber(variable->type))
-        {
+        else if (!cxisnumber(variable->type)) {
             if (disc->errorf)
                 (*disc->errorf)(
                 cx, disc, 2, "%s: not a numeric field", variable->name);
             goto bad;
         }
-        if (!(field = vmnewof(vm, 0, Field_t, 1, 0)))
-        {
+        if (!(field = vmnewof(vm, 0, Field_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(cx, disc, ERROR_SYSTEM | 2, "out of space");
             goto bad;
@@ -511,39 +478,32 @@ stats_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         if (state->fw < (i = ( int )strlen(variable->name)))
             state->fw = i;
     } while (all || *++argv);
-    if (!state->fields)
-    {
-        if (all)
-        {
+    if (!state->fields) {
+        if (all) {
             if (disc->errorf)
                 (*disc->errorf)(cx, disc, 2, "no numeric fields");
             goto bad;
         }
         state->fields = 1;
     }
-    if (!(state->total = vmnewof(vm, 0, Total_t, state->fields, 0)))
-    {
+    if (!(state->total = vmnewof(vm, 0, Total_t, state->fields, 0))) {
         if (disc->errorf)
             (*disc->errorf)(cx, disc, ERROR_SYSTEM | 2, "out of space");
         goto bad;
     }
-    if (state->group)
-    {
+    if (state->group) {
         state->bucketdisc.comparf = bucketcmp;
         state->bucketdisc.link = offsetof(Bucket_t, link);
         state->bucketdisc.size = -1;
         state->bucketdisc.key = offsetof(Bucket_t, key);
-        if (!(state->buckets = dtnew(vm, &state->bucketdisc, Dtoset)))
-        {
+        if (!(state->buckets = dtnew(vm, &state->bucketdisc, Dtoset))) {
             if (disc->errorf)
                 (*disc->errorf)(cx, disc, ERROR_SYSTEM | 2, "out of space");
             goto bad;
         }
     }
-    if (state->format)
-    {
-        if (!(tmp = sfstropen()))
-        {
+    if (state->format) {
+        if (!(tmp = sfstropen())) {
             if (disc->errorf)
                 (*disc->errorf)(cx, disc, ERROR_SYSTEM | 2, "out of space");
             goto bad;
@@ -580,12 +540,10 @@ stats_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     int square;
 
     total = state->total;
-    if (state->group)
-    {
+    if (state->group) {
         if (!state->key
             && !(state->key
-                 = vmnewof(state->vm, 0, Cxoperand_t, state->groups, 0)))
-        {
+                 = vmnewof(state->vm, 0, Cxoperand_t, state->groups, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(cx, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
@@ -597,14 +555,12 @@ stats_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                 return -1;
         if (bucket = ( Bucket_t * )dtmatch(state->buckets, state->key))
             total = bucket->total;
-        else if (dtsize(state->buckets) < state->maxgroups)
-        {
+        else if (dtsize(state->buckets) < state->maxgroups) {
             if (!(bucket = vmnewof(state->vm,
                                    0,
                                    Bucket_t,
                                    1,
-                                   (state->fields - 1) * sizeof(Total_t))))
-            {
+                                   (state->fields - 1) * sizeof(Total_t)))) {
                 if (disc->errorf)
                     (*disc->errorf)(
                     cx, disc, ERROR_SYSTEM | 2, "out of space");
@@ -612,12 +568,10 @@ stats_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
             }
             for (group = state->group, key = state->key; group;
                  group = group->next, key++)
-                if (group->string)
-                {
+                if (group->string) {
                     s = key->value.string.data;
                     if (!(key->value.string.data = vmnewof(
-                          state->vm, 0, char, key->value.string.size, 1)))
-                    {
+                          state->vm, 0, char, key->value.string.size, 1))) {
                         if (disc->errorf)
                             (*disc->errorf)(
                             cx, disc, ERROR_SYSTEM | 2, "out of space");
@@ -633,19 +587,16 @@ stats_act(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     }
     if (!state->field)
         total->count++;
-    else
-    {
+    else {
         range = !!(state->op & STATS_RANGE);
         square = !!(state->op & STATS_DEVIATION);
-        for (field = state->field; field; field = field->next)
-        {
+        for (field = state->field; field; field = field->next) {
             if (cxcast(
                 cx, &val, field->variable, cx->state->type_number, data, NiL))
                 return -1;
             total->count++;
             total->value += val.value.number;
-            if (range)
-            {
+            if (range) {
                 if (total->min > val.value.number || total->count == 1)
                     total->min = val.value.number;
                 if (total->max < val.value.number || total->count == 1)
@@ -666,8 +617,7 @@ number(Sfio_t *op, Cxnumber_t n, int fw)
         || ((n >= 0) ? n : -n) >= 1 && n >= FLTMAX_INTMAX_MIN
            && n <= FLTMAX_UINTMAX_MAX && n == ( Cxinteger_t )n)
         sfprintf(op, " %*I*u", fw, sizeof(Cxinteger_t), ( Cxinteger_t )n);
-    else
-    {
+    else {
         if (n >= 0)
             sfputc(op, ' ');
         sfprintf(op, " %1.*I*e", fw - 7, sizeof(n), n);
@@ -690,10 +640,8 @@ list(Cx_t *cx,
     Group_t *group;
     char *s;
 
-    do
-    {
-        if (state->format)
-        {
+    do {
+        if (state->format) {
             record.data = &pr;
             pr.field = field;
             pr.group = state->group;
@@ -703,9 +651,7 @@ list(Cx_t *cx,
             if (dssprintf(DSS(cx), state->print, op, state->format, &record)
                 < 0)
                 return -1;
-        }
-        else
-        {
+        } else {
             if (field)
                 sfprintf(op, "%*s", state->fw, field->variable->name);
             if (state->op & STATS_COUNT)
@@ -715,33 +661,27 @@ list(Cx_t *cx,
                 number(op, total->value, FW);
             if (state->op & STATS_AVERAGE)
                 number(op, u, FW);
-            if (state->op & STATS_DEVIATION)
-            {
+            if (state->op & STATS_DEVIATION) {
                 if ((u = total->square + u * (u - 2 * total->value)) < 0)
                     u = -u;
                 if (total->count > 1)
                     u /= (Cxinteger_t)(total->count - 1);
                 number(op, ( Cxnumber_t )sqrt(u), FW);
             }
-            if (state->op & STATS_RANGE)
-            {
+            if (state->op & STATS_RANGE) {
                 number(op, total->min, FW);
                 number(op, total->max, FW);
             }
-            if (label)
-            {
+            if (label) {
                 sfprintf(op, " %s", label);
                 label = 0;
-            }
-            else if (key)
-            {
-                for (group = state->group; group; group = group->next, key++)
-                {
+            } else if (key) {
+                for (group = state->group; group;
+                     group = group->next, key++) {
                     sfputc(op, ' ');
                     if (group->string)
                         s = key->value.string.data;
-                    else
-                    {
+                    else {
                         arg = *key;
                         if (cxcast(cx,
                                    &arg,
@@ -772,8 +712,7 @@ stats_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
 
     if (state->label)
         sfprintf(expr->op, "%s\n", state->label);
-    if (!state->format)
-    {
+    if (!state->format) {
         if (state->field)
             sfprintf(expr->op, "%*s", state->fw, "FIELD");
         if (state->op & STATS_COUNT)
@@ -787,8 +726,7 @@ stats_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
         if (state->op & STATS_RANGE)
             sfprintf(expr->op, " %*s %*s", FW, "MIN", FW, "MAX");
         if (state->buckets)
-            for (group = state->group; group; group = group->next)
-            {
+            for (group = state->group; group; group = group->next) {
                 group->width = group->variable->format.print
                                ? group->variable->format.print
                                : group->variable->type->format.print
@@ -799,8 +737,7 @@ stats_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
             }
         sfprintf(expr->op, "\n");
     }
-    if (state->buckets)
-    {
+    if (state->buckets) {
         for (bucket = ( Bucket_t * )dtfirst(state->buckets); bucket;
              bucket = ( Bucket_t * )dtnext(state->buckets, bucket))
             if (list(cx,
@@ -820,8 +757,7 @@ stats_end(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
                     state->total,
                     NiL))
             goto bad;
-    }
-    else if (list(cx, state, expr->op, NiL, state->field, state->total, NiL))
+    } else if (list(cx, state, expr->op, NiL, state->field, state->total, NiL))
         goto bad;
     vmclose(state->vm);
     return 0;

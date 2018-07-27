@@ -92,10 +92,8 @@ static Vcalias_t *zipalias(s) char *s;         /* spec of new aliases	*/
     Vcalias_t *al, **list;
     ssize_t n, i, a, b1, e1, b2, e2, b3, e3;
 
-    for (n = s ? strlen(s) : 0; n > 0;)
-    { /* skip starting blanks */
-        while (n > 0 && isspace(*s))
-        {
+    for (n = s ? strlen(s) : 0; n > 0;) { /* skip starting blanks */
+        while (n > 0 && isspace(*s)) {
             s += 1;
             n -= 1;
         }
@@ -110,17 +108,13 @@ static Vcalias_t *zipalias(s) char *s;         /* spec of new aliases	*/
             ;
         for (e1 = i; i < n && isspace(s[i]); ++i)
             ;
-        if (i < n && s[i] == '=')
-        {
+        if (i < n && s[i] == '=') {
             list = &Alias;
             a = 1;
-        }
-        else if (i < n && s[i] == ':')
-        {
+        } else if (i < n && s[i] == ':') {
             list = &Fname;
             a = 0;
-        }
-        else
+        } else
             goto skip_line;
 
         /* token 3 */
@@ -132,8 +126,7 @@ static Vcalias_t *zipalias(s) char *s;         /* spec of new aliases	*/
             ;
 
         /* optional token 2 */
-        if (!a && i < n && s[i] == ':')
-        {
+        if (!a && i < n && s[i] == ':') {
             b2 = b3;
             e2 = e3;
             for (++i; i < n && isspace(s[i]); ++i)
@@ -141,8 +134,7 @@ static Vcalias_t *zipalias(s) char *s;         /* spec of new aliases	*/
             for (b3 = i; i < n && !isspace(s[i]); ++i)
                 ;
             e3 = i;
-        }
-        else
+        } else
             b2 = e2 = 0;
         if (e1 <= b1 || e3 <= b3)
             goto skip_line;
@@ -156,13 +148,11 @@ static Vcalias_t *zipalias(s) char *s;         /* spec of new aliases	*/
         al->value = al->name + e1 - b1 + 1;
         memcpy(al->value, s + b3, e3 - b3);
         al->value[e3 - b3] = 0;
-        if (e2 > b2)
-        {
+        if (e2 > b2) {
             al->suff = al->value + e3 - b3 + 1;
             memcpy(al->suff, s + b2, e2 - b2);
             al->suff[e2 - b2] = 0;
-        }
-        else
+        } else
             al->suff = 0;
         al->next = *list;
         *list = al;
@@ -186,26 +176,22 @@ void vcaddalias(dflt) char **dflt;             /* list of default aliases */
     Sfio_t *sf;
     char *sp, file[PATH_MAX];
 
-    if (!Alias)
-    {
+    if (!Alias) {
 #if _PACKAGE_ast /* AST alias convention */
         if (pathpath(VC_ALIASES, "", PATH_REGULAR, file, sizeof(file))
-            && (sf = sfopen(0, file, "")))
-        {
+            && (sf = sfopen(0, file, ""))) {
             while ((sp = sfgetr(sf, '\n', 1)))
                 zipalias(sp);
             sfclose(sf);
         }
 #endif
         if ((sp = getenv("HOME")) && (z = strlen(sp)) > 0
-            && (z + 1 + strlen(VC_ZIPRC) + 1) <= PATH_MAX)
-        {
+            && (z + 1 + strlen(VC_ZIPRC) + 1) <= PATH_MAX) {
             memcpy(file, sp, z);
             sp[z] = '/';
             strcpy(file + z + 1, VC_ZIPRC);
 
-            if ((sf = sfopen(0, file, "")))
-            {
+            if ((sf = sfopen(0, file, ""))) {
                 while ((sp = sfgetr(sf, '\n', 1)))
                     zipalias(sp);
                 sfclose(sf);
@@ -303,14 +289,11 @@ char **suff;                                   /* suffix pointer address	*/
 
     if (s = strrchr(name, '.'))
         s++;
-    for (al = Fname; al; al = al->next)
-    {
-        if (al->suff && al->name[0] == '.' && al->name[1] == 0)
-        {
+    for (al = Fname; al; al = al->next) {
+        if (al->suff && al->name[0] == '.' && al->name[1] == 0) {
             if (!s || strcmp(s, al->suff))
                 continue;
-        }
-        else if (fnmatch(al->name, name, FNM_PATHNAME))
+        } else if (fnmatch(al->name, name, FNM_PATHNAME))
             continue;
         if (meth)
             *meth = al->value;
@@ -337,8 +320,7 @@ char **suff;                                   /* suffix pointer address	*/
         vcaddalias(NiL);
 
     for (al = Fname; al; al = al->next)
-        if (!strcmp(al->value, meth))
-        {
+        if (!strcmp(al->value, meth)) {
             if (suff)
                 *suff = al->suff;
             return 0;

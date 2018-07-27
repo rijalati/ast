@@ -169,15 +169,13 @@ tailpos(Sfio_t *fp, Sfoff_t number, int delim)
                || FIFO(st.st_mode)
                ? -1
                : 0;
-    if (delim < 0)
-    {
+    if (delim < 0) {
         if ((offset = last - number) < first)
             return first;
         return offset;
     }
     incomplete = 1;
-    for (;;)
-    {
+    for (;;) {
         if ((offset = last - SF_BUFSIZE) < first)
             offset = first;
         sfseek(fp, offset, SEEK_SET);
@@ -185,18 +183,15 @@ tailpos(Sfio_t *fp, Sfoff_t number, int delim)
         if (!(s = sfreserve(fp, n, SF_LOCKR)))
             return -1;
         t = s + n;
-        if (incomplete)
-        {
-            if (t > s && *(t - 1) != delim && number-- <= 0)
-            {
+        if (incomplete) {
+            if (t > s && *(t - 1) != delim && number-- <= 0) {
                 sfread(fp, s, 0);
                 return offset + (t - s);
             }
             incomplete = 0;
         }
         while (t > s)
-            if (*--t == delim && number-- <= 0)
-            {
+            if (*--t == delim && number-- <= 0) {
                 sfread(fp, s, 0);
                 return offset + (t - s) + 1;
             }
@@ -228,18 +223,15 @@ pipetail(Sfio_t *infile, Sfio_t *outfile, Sfoff_t number, int delim)
     out = tmp[0] = sftmp(a);
     tmp[1] = sftmp(a);
     offset[0] = offset[1] = 0;
-    while ((n = sfmove(infile, out, number, delim)) > 0)
-    {
+    while ((n = sfmove(infile, out, number, delim)) > 0) {
         offset[fno] = sftell(out);
-        if ((nleft -= n) <= 0)
-        {
+        if ((nleft -= n) <= 0) {
             out = tmp[fno = !fno];
             sfseek(out, ( Sfoff_t )0, SEEK_SET);
             nleft = number;
         }
     }
-    if (nleft == number)
-    {
+    if (nleft == number) {
         offset[fno] = 0;
         fno = !fno;
     }
@@ -249,15 +241,13 @@ pipetail(Sfio_t *infile, Sfio_t *outfile, Sfoff_t number, int delim)
      * see whether both files are needed
      */
 
-    if (offset[fno])
-    {
+    if (offset[fno]) {
         sfseek(tmp[1], ( Sfoff_t )0, SEEK_SET);
         if ((n = number - nleft) > 0)
             sfmove(tmp[!fno], NiL, n, delim);
         if ((n = offset[!fno] - sftell(tmp[!fno])) > 0)
             sfmove(tmp[!fno], outfile, n, -1);
-    }
-    else
+    } else
         fno = !fno;
     sfmove(tmp[fno], outfile, offset[fno], -1);
     sfclose(tmp[0]);
@@ -276,21 +266,16 @@ init(Tail_t *tp, Sfoff_t number, int delim, int flags, const char **format)
     struct stat st;
 
     tp->fifo = 0;
-    if (tp->sp)
-    {
+    if (tp->sp) {
         offset = 0;
         if (tp->sp == sfstdin)
             tp->sp = 0;
-    }
-    else
+    } else
         offset = 1;
-    if (!tp->name || streq(tp->name, "-"))
-    {
+    if (!tp->name || streq(tp->name, "-")) {
         tp->name = "/dev/stdin";
         tp->sp = sfstdin;
-    }
-    else if (!(tp->sp = sfopen(tp->sp, tp->name, "r")))
-    {
+    } else if (!(tp->sp = sfopen(tp->sp, tp->name, "r"))) {
         error(ERROR_system(0), "%s: cannot open", tp->name);
         return -1;
     }
@@ -302,44 +287,32 @@ init(Tail_t *tp, Sfoff_t number, int delim, int flags, const char **format)
           offset,
           sizeof(number),
           number);
-    if (offset)
-    {
-        if (number < 0 || !number && (flags & POSITIVE))
-        {
+    if (offset) {
+        if (number < 0 || !number && (flags & POSITIVE)) {
             sfset(tp->sp, SF_SHARE, !(flags & FOLLOW));
-            if (number < -1)
-            {
+            if (number < -1) {
                 sfmove(tp->sp, NiL, -number - 1, delim);
                 offset = sfseek(tp->sp, ( Sfoff_t )0, SEEK_CUR);
-            }
-            else
+            } else
                 offset = 0;
-        }
-        else if ((offset = tailpos(tp->sp, number, delim)) >= 0)
+        } else if ((offset = tailpos(tp->sp, number, delim)) >= 0)
             sfseek(tp->sp, offset, SEEK_SET);
-        else if (fstat(sffileno(tp->sp), &st))
-        {
+        else if (fstat(sffileno(tp->sp), &st)) {
             error(ERROR_system(0), "%s: cannot stat", tp->name);
             goto bad;
-        }
-        else if (!FIFO(st.st_mode))
-        {
+        } else if (!FIFO(st.st_mode)) {
             error(
             ERROR_SYSTEM | 2, "%s: cannot position file to tail", tp->name);
             goto bad;
-        }
-        else
-        {
+        } else {
             tp->fifo = 1;
-            if (flags & (HEADERS | VERBOSE))
-            {
+            if (flags & (HEADERS | VERBOSE)) {
                 sfprintf(sfstdout, *format, tp->name);
                 *format = header_fmt;
             }
             op = (flags & REVERSE) ? sftmp(4 * SF_BUFSIZE) : sfstdout;
             pipetail(tp->sp ? tp->sp : sfstdin, op, number, delim);
-            if (flags & REVERSE)
-            {
+            if (flags & REVERSE) {
                 sfseek(op, ( Sfoff_t )0, SEEK_SET);
                 rev_line(op, sfstdout, ( Sfoff_t )0);
                 sfclose(op);
@@ -347,10 +320,8 @@ init(Tail_t *tp, Sfoff_t number, int delim, int flags, const char **format)
         }
     }
     tp->cur = tp->end = offset;
-    if (flags & LOG)
-    {
-        if (fstat(sffileno(tp->sp), &st))
-        {
+    if (flags & LOG) {
+        if (fstat(sffileno(tp->sp), &st)) {
             error(ERROR_system(0), "%s: cannot stat", tp->name);
             goto bad;
         }
@@ -377,13 +348,10 @@ num(const char *s, char **e, int *f, int o)
     int c;
 
     *f &= ~(ERROR | NEGATIVE | POSITIVE);
-    if ((c = *s) == '-')
-    {
+    if ((c = *s) == '-') {
         *f |= NEGATIVE;
         s++;
-    }
-    else if (c == '+')
-    {
+    } else if (c == '+') {
         *f |= POSITIVE;
         s++;
     }
@@ -393,23 +361,18 @@ num(const char *s, char **e, int *f, int o)
     number = strtonll(s, &t, NiL, 0);
     if (t == s)
         number = DEFAULT;
-    if (o && *t)
-    {
+    if (o && *t) {
         number = 0;
         *f |= ERROR;
         error(2, "-%c: %s: invalid numeric argument -- unknown suffix", o, s);
-    }
-    else if (errno)
-    {
+    } else if (errno) {
         *f |= ERROR;
         if (o)
             error(
             2, "-%c: %s: invalid numeric argument -- out of range", o, s);
         else
             error(2, "%s: invalid numeric argument -- out of range", s);
-    }
-    else
-    {
+    } else {
         *f |= COUNT;
         if (t > s && isalpha(*(t - 1)))
             *f &= ~LINES;
@@ -450,16 +413,13 @@ b_tail(int argc, char **argv, Shbltin_t *context)
     Tv_t tv;
 
     cmdinit(argc, argv, context, ERROR_CATALOG, ERROR_NOTIFY);
-    for (;;)
-    {
-        switch (n = optget(argv, usage))
-        {
+    for (;;) {
+        switch (n = optget(argv, usage)) {
         case 0:
             if (!(flags & FOLLOW) && argv[opt_info.index]
                 && (argv[opt_info.index][0] == '-'
                     || argv[opt_info.index][0] == '+')
-                && !argv[opt_info.index][1])
-            {
+                && !argv[opt_info.index][1]) {
                 number = argv[opt_info.index][0] == '-' ? 10 : -10;
                 flags |= LINES;
                 opt_info.index++;
@@ -474,18 +434,14 @@ b_tail(int argc, char **argv, Shbltin_t *context)
             continue;
         case 'c':
             flags &= ~LINES;
-            if (opt_info.arg == argv[opt_info.index - 1])
-            {
+            if (opt_info.arg == argv[opt_info.index - 1]) {
                 strtol(opt_info.arg, &s, 10);
-                if (*s)
-                {
+                if (*s) {
                     opt_info.index--;
                     t = "";
                     goto suffix;
                 }
-            }
-            else if (opt_info.arg && isalpha(*opt_info.arg))
-            {
+            } else if (opt_info.arg && isalpha(*opt_info.arg)) {
                 t = opt_info.arg;
                 goto suffix;
             }
@@ -494,14 +450,12 @@ b_tail(int argc, char **argv, Shbltin_t *context)
             flags |= COUNT;
             if (s = opt_info.arg)
                 number = num(s, &s, &flags, n);
-            else
-            {
+            else {
                 number = DEFAULT;
                 flags &= ~(ERROR | NEGATIVE | POSITIVE);
                 s = "";
             }
-            if (n != 'n' && s && isalpha(*s))
-            {
+            if (n != 'n' && s && isalpha(*s)) {
                 t = s;
                 goto suffix;
             }
@@ -552,8 +506,7 @@ b_tail(int argc, char **argv, Shbltin_t *context)
             continue;
         case ':':
             /* handle old style arguments */
-            if (!(r = argv[opt_info.index]) || !opt_info.offset)
-            {
+            if (!(r = argv[opt_info.index]) || !opt_info.offset) {
                 error(2, "%s", opt_info.arg);
                 break;
             }
@@ -568,10 +521,8 @@ b_tail(int argc, char **argv, Shbltin_t *context)
             if (opt_info.option[0] == '+')
                 number = -number;
         compatibility:
-            for (;;)
-            {
-                switch (*t++)
-                {
+            for (;;) {
+                switch (*t++) {
                 case 0:
                     if (r)
                         opt_info.offset = t - r - 1;
@@ -604,52 +555,44 @@ b_tail(int argc, char **argv, Shbltin_t *context)
         break;
     }
     argv += opt_info.index;
-    if (!*argv)
-    {
+    if (!*argv) {
         flags &= ~HEADERS;
         if (fstat(0, &st))
             error(ERROR_system(0), "/dev/stdin: cannot stat");
         else if (FIFO(st.st_mode))
             flags &= ~FOLLOW;
-    }
-    else if (!*(argv + 1))
+    } else if (!*(argv + 1))
         flags &= ~HEADERS;
     delim = (flags & LINES) ? '\n' : -1;
     if (blocks)
         number *= blocks;
-    if (flags & REVERSE)
-    {
+    if (flags & REVERSE) {
         if (delim < 0)
             error(2, "--reverse requires line mode");
         if (!(flags & COUNT))
             number = -1;
         flags &= ~FOLLOW;
     }
-    if ((flags & (FOLLOW | TIMEOUT)) == TIMEOUT)
-    {
+    if ((flags & (FOLLOW | TIMEOUT)) == TIMEOUT) {
         flags &= ~TIMEOUT;
         timeout = 0;
         error(ERROR_warn(0), "--timeout ignored for --noforever");
     }
-    if ((flags & (LOG | TIMEOUT)) == LOG)
-    {
+    if ((flags & (LOG | TIMEOUT)) == LOG) {
         flags &= ~LOG;
         error(ERROR_warn(0), "--log ignored for --notimeout");
     }
     if (error_info.errors)
         error(ERROR_usage(2), "%s", optusage(NiL));
-    if (flags & FOLLOW)
-    {
+    if (flags & FOLLOW) {
         if (!(fp = ( Tail_t * )stakalloc(argc * sizeof(Tail_t))))
             error(ERROR_system(1), "out of space");
         files = 0;
         s = *argv;
-        do
-        {
+        do {
             fp->name = s;
             fp->sp = 0;
-            if (!init(fp, number, delim, flags, &format))
-            {
+            if (!init(fp, number, delim, flags, &format)) {
                 fp->expire = timeout ? (NOW + timeout + 1) : 0;
                 if (files)
                     pp->next = fp;
@@ -666,23 +609,19 @@ b_tail(int argc, char **argv, Shbltin_t *context)
         n = 1;
         tv.tv_sec = 1;
         tv.tv_nsec = 0;
-        while (fp = files)
-        {
+        while (fp = files) {
             if (n)
                 n = 0;
             else if (sh_checksig(context)
-                     || tvsleep(&tv, NiL) && sh_checksig(context))
-            {
+                     || tvsleep(&tv, NiL) && sh_checksig(context)) {
                 error_info.errors++;
                 break;
             }
             pp = 0;
-            while (fp)
-            {
+            while (fp) {
                 if (fstat(sffileno(fp->sp), &st))
                     error(ERROR_system(0), "%s: cannot stat", fp->name);
-                else if (fp->fifo || fp->end < st.st_size)
-                {
+                else if (fp->fifo || fp->end < st.st_size) {
                     n = 1;
                     if (timeout)
                         fp->expire = NOW + timeout;
@@ -690,48 +629,39 @@ b_tail(int argc, char **argv, Shbltin_t *context)
                     i = 0;
                     if ((s = sfreserve(fp->sp, z, SF_LOCKR))
                         || (z = sfvalue(fp->sp))
-                           && (s = sfreserve(fp->sp, z, SF_LOCKR)) && (i = 1))
-                    {
+                           && (s = sfreserve(fp->sp, z, SF_LOCKR))
+                           && (i = 1)) {
                         z = sfvalue(fp->sp);
                         for (r = s + z; r > s && *(r - 1) != '\n'; r--)
                             ;
-                        if ((w = r - s) || i && (w = z))
-                        {
-                            if ((flags & (HEADERS | VERBOSE)) && hp != fp)
-                            {
+                        if ((w = r - s) || i && (w = z)) {
+                            if ((flags & (HEADERS | VERBOSE)) && hp != fp) {
                                 hp = fp;
                                 sfprintf(sfstdout, format, fp->name);
                                 format = header_fmt;
                             }
                             fp->cur += w;
                             sfwrite(sfstdout, s, w);
-                        }
-                        else
+                        } else
                             w = 0;
                         sfread(fp->sp, s, w);
                         fp->end += w;
                     }
                     goto next;
-                }
-                else if (!timeout || fp->expire > NOW)
+                } else if (!timeout || fp->expire > NOW)
                     goto next;
-                else
-                {
-                    if (flags & LOG)
-                    {
+                else {
+                    if (flags & LOG) {
                         i = 3;
                         while (--i && stat(fp->name, &st))
-                            if (sh_checksig(context))
-                            {
+                            if (sh_checksig(context)) {
                                 error_info.errors++;
                                 goto done;
-                            }
-                            else
+                            } else
                                 tvsleep(&tv, NiL);
                         if (i
                             && (fp->dev != st.st_dev || fp->ino != st.st_ino)
-                            && !init(fp, 0, 0, flags, &format))
-                        {
+                            && !init(fp, 0, 0, flags, &format)) {
                             if (!(flags & SILENT))
                                 error(ERROR_warn(0),
                                       "%s: log file change",
@@ -765,30 +695,22 @@ b_tail(int argc, char **argv, Shbltin_t *context)
         for (fp = files; fp; fp = fp->next)
             if (fp->sp && fp->sp != sfstdin)
                 sfclose(fp->sp);
-    }
-    else
-    {
+    } else {
         if (file = *argv)
             argv++;
-        do
-        {
-            if (!file || streq(file, "-"))
-            {
+        do {
+            if (!file || streq(file, "-")) {
                 file = "/dev/stdin";
                 ip = sfstdin;
-            }
-            else if (!(ip = sfopen(NiL, file, "r")))
-            {
+            } else if (!(ip = sfopen(NiL, file, "r"))) {
                 error(ERROR_system(0), "%s: cannot open", file);
                 continue;
             }
-            if (flags & (HEADERS | VERBOSE))
-            {
+            if (flags & (HEADERS | VERBOSE)) {
                 sfprintf(sfstdout, format, file);
                 format = header_fmt;
             }
-            if (number < 0 || !number && (flags & POSITIVE))
-            {
+            if (number < 0 || !number && (flags & POSITIVE)) {
                 sfset(ip, SF_SHARE, 1);
                 if (number < -1
                     && (moved = sfmove(ip, NiL, -(number + 1), delim)) >= 0
@@ -799,26 +721,19 @@ b_tail(int argc, char **argv, Shbltin_t *context)
                     ip, sfstdout, sfseek(ip, ( Sfoff_t )0, SEEK_CUR));
                 else
                     sfmove(ip, sfstdout, SF_UNBOUND, -1);
-            }
-            else
-            {
+            } else {
                 sfset(ip, SF_SHARE, 0);
-                if ((offset = tailpos(ip, number, delim)) >= 0)
-                {
+                if ((offset = tailpos(ip, number, delim)) >= 0) {
                     if (flags & REVERSE)
                         rev_line(ip, sfstdout, offset);
-                    else
-                    {
+                    else {
                         sfseek(ip, offset, SEEK_SET);
                         sfmove(ip, sfstdout, SF_UNBOUND, -1);
                     }
-                }
-                else
-                {
+                } else {
                     op = (flags & REVERSE) ? sftmp(4 * SF_BUFSIZE) : sfstdout;
                     pipetail(ip, op, number, delim);
-                    if (flags & REVERSE)
-                    {
+                    if (flags & REVERSE) {
                         sfseek(op, ( Sfoff_t )0, SEEK_SET);
                         rev_line(op, sfstdout, ( Sfoff_t )0);
                         sfclose(op);

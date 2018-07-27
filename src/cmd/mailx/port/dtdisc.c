@@ -87,12 +87,10 @@ size_t size;    /* size to obtain		*/
 Dtdisc_t *disc; /* discipline			*/
 #endif
 {
-    if (addr)
-    {
+    if (addr) {
         free(addr);
         return NIL(Void_t *);
-    }
-    else
+    } else
         return size > 0 ? malloc(size) : NIL(Void_t *);
 }
 
@@ -138,12 +136,10 @@ int type;
         || (type & (DT_COMPARF | DT_HASHF)) == (DT_COMPARF | DT_HASHF))
         return old;
 
-    if (dt->data->type & DT_HASH)
-    { /* collect all elements into a list */
+    if (dt->data->type & DT_HASH) { /* collect all elements into a list */
         root = next = NIL(Dtlink_t *);
         for (eslot = (slot = dt->data->htab) + dt->data->ntab; slot < eslot;
-             ++slot)
-        {
+             ++slot) {
             if (!(t = *slot))
                 continue;
             if (next)
@@ -158,8 +154,7 @@ int type;
         /* reinsert them */
         dt->data->size = 0;
         dt->data->here = NIL(Dtlink_t *);
-        while (root)
-        {
+        while (root) {
             next = root->right;
             if (!(type & DT_HASHF)) /* new hash value */
             {
@@ -170,29 +165,23 @@ int type;
             ( void )(*searchf)(dt, ( Void_t * )root, DT_RENEW);
             root = next;
         }
-    }
-    else if (!(type & DT_COMPARF))
-    {
+    } else if (!(type & DT_COMPARF)) {
         dt->data->size = 0;
-        if (dt->data->type & DT_TREE)
-        {
+        if (dt->data->type & DT_TREE) {
             root = dt->data->here;
             dt->data->here = NIL(Dtlink_t *);
-            while (root)
-            {
+            while (root) {
                 while ((t = root->left))
                     RROTATE(root, t);
                 next = root->right;
                 ( void )(*searchf)(dt, ( Void_t * )root, DT_RENEW);
                 root = next;
             }
-        }
-        else /*if(dt->data->type&DT_LIST)*/
+        } else /*if(dt->data->type&DT_LIST)*/
         {
             root = dt->data->head;
             dt->data->head = NIL(Dtlink_t *);
-            while (root)
-            {
+            while (root) {
                 t = root->right;
                 ( void )(*searchf)(dt, ( Void_t * )root, DT_RENEW);
                 root = t;

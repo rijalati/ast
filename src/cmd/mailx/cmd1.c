@@ -103,27 +103,22 @@ printhead(int mesg, int who)
         dispc = 'P';
     else if (mp->m_flag & MSAVE)
         dispc = '*';
-    else if (mp->m_flag & MSPAM)
-    {
+    else if (mp->m_flag & MSPAM) {
         dispc = 'X';
-        if (subjline && state.var.spamsubhead)
-        {
+        if (subjline && state.var.spamsubhead) {
             int c;
             char *s;
             char *t;
             char *u;
 
             s = t = subjline;
-            while (c = *s++)
-            {
-                if (!isalnum(c) && c == *s)
-                {
+            while (c = *s++) {
+                if (!isalnum(c) && c == *s) {
                     while (*s == c)
                         s++;
                     for (u = s; *u && *u != c; u++)
                         ;
-                    if (*u == c && *(u + 1) == c)
-                    {
+                    if (*u == c && *(u + 1) == c) {
                         for (s = u; *s == c; s++)
                             ;
                         if (t == subjline)
@@ -136,24 +131,20 @@ printhead(int mesg, int who)
             }
             *t = 0;
         }
-    }
-    else if (!(mp->m_flag & (MREAD | MNEW)))
+    } else if (!(mp->m_flag & (MREAD | MNEW)))
         dispc = 'U';
     else if ((mp->m_flag & (MREAD | MNEW)) == MNEW)
         dispc = 'N';
     else
         dispc = who ? 'R' : ' ';
-    if (who)
-    {
+    if (who) {
         if (!(name = grab(mp, GSENDER | GDISPLAY, NiL)))
             name = hl.l_from;
         if (!state.var.domain || strchr(name, '@'))
             printf("%c %s\n", dispc, name);
         else
             printf("%c %s@%s\n", dispc, name, state.var.domain);
-    }
-    else
-    {
+    } else {
         name = grab(
         mp,
         (state.var.news
@@ -198,16 +189,13 @@ headers(struct msg *msgvec)
     struct msg *mp;
     int m;
 
-    if (state.var.justfrom)
-    {
+    if (state.var.justfrom) {
         flag = 1;
         mp = state.msg.list;
         if (state.var.justfrom > 0 && state.var.justfrom < state.msg.count)
             mp += state.msg.count - state.var.justfrom;
         m = state.msg.count + 1;
-    }
-    else
-    {
+    } else {
         flag = 0;
         n = msgvec->m_index;
         if ((m = state.var.screen) <= 0 && (m = state.msg.count) <= 0)
@@ -225,8 +213,7 @@ headers(struct msg *msgvec)
             state.msg.dot = mp;
     }
     for (mesg = mp - state.msg.list; mp < state.msg.list + state.msg.count;
-         mp++)
-    {
+         mp++) {
         mesg++;
         if (mp->m_flag & (MDELETE | MNONE))
             continue;
@@ -234,8 +221,7 @@ headers(struct msg *msgvec)
         if (++flag >= m)
             break;
     }
-    if (!flag)
-    {
+    if (!flag) {
         note(0, "No more mail");
         return 1;
     }
@@ -251,13 +237,11 @@ scroll(char *arg)
     int s;
 
     s = state.scroll;
-    switch (*arg)
-    {
+    switch (*arg) {
     case 0:
     case '+':
         s++;
-        if (s * state.var.screen > state.msg.count)
-        {
+        if (s * state.var.screen > state.msg.count) {
             note(0, "On last screenful of messages");
             return 0;
         }
@@ -265,8 +249,7 @@ scroll(char *arg)
         break;
 
     case '-':
-        if (--s < 0)
-        {
+        if (--s < 0) {
             note(0, "On first screenful of messages");
             return 0;
         }
@@ -341,8 +324,7 @@ list(void)
     cmds = state.cmdnum;
     cols = 5;
     rows = (cmds + cols - 1) / cols;
-    for (i = 0; i < rows; i++)
-    {
+    for (i = 0; i < rows; i++) {
         for (j = i; j < cmds; j += rows)
             printf("%-15s", state.cmdtab[j].c_name);
         putchar('\n');
@@ -365,25 +347,20 @@ type1(struct msg *msgvec, Dt_t **ignore, int page, unsigned long flags)
     obuf = stdout;
     if (sig = setjmp(state.jump.sigpipe))
         resume(sig);
-    else
-    {
+    else {
         if (!state.more.discipline && state.var.interactive
-            && (page || state.var.crt))
-        {
+            && (page || state.var.crt)) {
             nlines = 0;
-            if (!page)
-            {
+            if (!page) {
                 for (ip = msgvec; ip->m_index; ip++)
                     nlines += state.msg.list[ip->m_index - 1].m_lines;
             }
-            if (page || nlines > state.var.crt)
-            {
+            if (page || nlines > state.var.crt) {
                 if (!(obuf = pipeopen(state.var.pager, "Jw")))
                     obuf = stdout;
             }
         }
-        for (ip = msgvec; ip->m_index; ip++)
-        {
+        for (ip = msgvec; ip->m_index; ip++) {
             mp = state.msg.dot = state.msg.list + ip->m_index - 1;
             touchmsg(mp);
             if (!state.var.quiet)
@@ -452,8 +429,7 @@ top(struct msg *msgvec)
     FILE *ibuf;
 
     lineb = 1;
-    for (ip = msgvec; ip->m_index; ip++)
-    {
+    for (ip = msgvec; ip->m_index; ip++) {
         mp = state.msg.list + ip->m_index - 1;
         touchmsg(mp);
         state.msg.dot = mp;
@@ -463,8 +439,7 @@ top(struct msg *msgvec)
         c = mp->m_lines;
         if (!lineb)
             printf("\n");
-        for (lines = 0; lines < c && lines <= state.var.toplines; lines++)
-        {
+        for (lines = 0; lines < c && lines <= state.var.toplines; lines++) {
             if (readline(ibuf, linebuf, sizeof(linebuf)) < 0)
                 break;
             puts(linebuf);
@@ -485,8 +460,7 @@ folders(void)
 
     if (state.folder == FIMAP)
         return imap_folders();
-    if (getfolder(dirname, sizeof(dirname)) < 0)
-    {
+    if (getfolder(dirname, sizeof(dirname)) < 0) {
         note(0, "No value set for \"%s\"", state.cmd->c_name);
         return 1;
     }
@@ -513,40 +487,32 @@ cmdpipe(char *str)
     FILE *fp;
 
     fp = 0;
-    if (f = setjmp(state.jump.sigpipe))
-    {
+    if (f = setjmp(state.jump.sigpipe)) {
         resume(f);
         if (fp)
             fileclose(fp);
         return 1;
     }
-    if (!(cmd = snarf(str, &f)))
-    {
+    if (!(cmd = snarf(str, &f))) {
         if (f < 0)
             return 1;
-        if (!(cmd = state.var.cmd))
-        {
+        if (!(cmd = state.var.cmd)) {
             note(0, "\"cmd\" variable not set");
             return 1;
         }
     }
-    if (!f)
-    {
-        if (!(state.msg.list->m_index = first(0, MMNORM)))
-        {
+    if (!f) {
+        if (!(state.msg.list->m_index = first(0, MMNORM))) {
             note(0, "No messages to %s", cmd);
             return 1;
         }
         (state.msg.list + 1)->m_index = 0;
-    }
-    else if (getmsglist(str, 0) < 0)
+    } else if (getmsglist(str, 0) < 0)
         return 1;
-    if (*(s = cmd + strlen(cmd) - 1) == '&')
-    {
+    if (*(s = cmd + strlen(cmd) - 1) == '&') {
         *s = 0;
         mode = "JNw";
-    }
-    else
+    } else
         mode = "Jw";
     if (!(cmd = expand(cmd, 0)))
         return 1;
@@ -554,12 +520,10 @@ cmdpipe(char *str)
         return 1;
     note(0, "Pipe to: \"%s\"", cmd);
     lc = cc = 0;
-    for (ip = state.msg.list; ip->m_index; ip++)
-    {
+    for (ip = state.msg.list; ip->m_index; ip++) {
         mp = state.msg.list + ip->m_index - 1;
         touchmsg(mp);
-        if (copy(mp, fp, NiL, NiL, 0) < 0)
-        {
+        if (copy(mp, fp, NiL, NiL, 0) < 0) {
             note(SYSTEM, "\"%s\"", cmd);
             fileclose(fp);
             return 1;
@@ -583,10 +547,8 @@ quote(FILE *fp, char *s)
 {
     int c;
 
-    for (;;)
-    {
-        switch (c = *s++)
-        {
+    for (;;) {
+        switch (c = *s++) {
         case 0:
             break;
         case '\'':
@@ -632,8 +594,7 @@ blast1(struct msg *msgvec, Dt_t **ignore)
     Dt_t *headers = 0;
     struct parse pp;
 
-    for (ip = msgvec; ip->m_index; ip++)
-    {
+    for (ip = msgvec; ip->m_index; ip++) {
         mp = state.msg.list + ip->m_index - 1;
 
         /*
@@ -650,21 +611,17 @@ blast1(struct msg *msgvec, Dt_t **ignore)
          * Collect the header values.
          */
 
-        if (headset(&pp, mp, NiL, NiL, ignore, 0))
-        {
+        if (headset(&pp, mp, NiL, NiL, ignore, 0)) {
             printf("from='");
             quote(stdout, pp.data);
             printf("'\n");
             next = tmp;
             while (headget(&pp))
-                if (hp = dictsearch(&headers, pp.name, LOOKUP))
-                {
-                    if (!hp->value)
-                    {
+                if (hp = dictsearch(&headers, pp.name, LOOKUP)) {
+                    if (!hp->value) {
                         hp->value = ( void * )next;
                         next += hp->flags + 1;
-                        if (next > &tmp[sizeof(tmp)])
-                        {
+                        if (next > &tmp[sizeof(tmp)]) {
                             note(0, "Too many headers");
                             goto skip;
                         }
@@ -686,10 +643,8 @@ blast1(struct msg *msgvec, Dt_t **ignore)
 
         first = 1;
         printf("text='");
-        while (pp.count > 0 && fgets(pp.buf, sizeof(pp.buf), pp.fp))
-        {
-            if (n = strlen(pp.buf))
-            {
+        while (pp.count > 0 && fgets(pp.buf, sizeof(pp.buf), pp.fp)) {
+            if (n = strlen(pp.buf)) {
                 pp.count -= n;
                 pp.buf[n - 1] = 0;
             }
@@ -736,27 +691,21 @@ capability(char **argv)
         return 0;
     if (!(s = *argv++))
         mimelist(state.part.mime, stdout, NiL);
-    else
-    {
+    else {
         if ((t = s + strlen(s)) > s && *--t == ';')
             *t = 0;
         else
             t = 0;
-        if (!*argv)
-        {
+        if (!*argv) {
             if (t)
                 mimeset(state.part.mime, s, MIME_REPLACE);
             else if (!mimelist(state.part.mime, stdout, s))
                 note(0, "\"%s\": unknown capability", s);
-        }
-        else if (streq(s, "<"))
-        {
+        } else if (streq(s, "<")) {
             while (s = *argv++)
                 if (mimeload(state.part.mime, s, MIME_REPLACE))
                     note(SYSTEM, "%s: mime load error", s);
-        }
-        else
-        {
+        } else {
             sfprintf(state.path.buf, "%s;", s);
             while (s = *argv++)
                 sfprintf(state.path.buf, " %s", s);
@@ -836,16 +785,13 @@ mark1(char *str, int set, int clr)
     int f;
     int no;
 
-    if ((mark = snarf(str, &f)) && isalpha(*mark))
-    {
+    if ((mark = snarf(str, &f)) && isalpha(*mark)) {
         set = clr = 0;
-        do
-        {
+        do {
             if ((next = strchr(mark, ',')) || (next = strchr(mark, '|')))
                 *next++ = 0;
             no = 0;
-            switch (lower(mark[0]))
-            {
+            switch (lower(mark[0])) {
             case 'n':
                 if (lower(mark[1]) == 'o')
                     no = 2;
@@ -861,67 +807,54 @@ mark1(char *str, int set, int clr)
                                                   sizeof(*marks),
                                                   strcasecmp,
                                                   mark,
-                                                  NiL)))
-            {
+                                                  NiL))) {
                 note(0, "%s: unknown mark", mark);
                 return 1;
             }
-            if (no)
-            {
+            if (no) {
                 set |= kp->clear;
                 clr |= kp->set;
-            }
-            else
-            {
+            } else {
                 set |= kp->set;
                 clr |= kp->clear;
             }
         } while (mark = next);
-    }
-    else if (f < 0)
+    } else if (f < 0)
         return 1;
-    else
-    {
+    else {
         if (f)
             *(mark - 1) = ' ';
         else if (mark)
             f = 1;
-        if (!clr)
-        {
+        if (!clr) {
             if (!set)
                 set = MMARK;
             else
                 for (kp = marks; kp < &marks[elementsof(marks)]; kp++)
-                    if (kp->flag & set)
-                    {
+                    if (kp->flag & set) {
                         set |= kp->set;
                         clr |= kp->clear;
                     }
         }
     }
-    if (!f)
-    {
-        if (!state.msg.list || !(state.msg.list->m_index = first(0, MMNORM)))
-        {
+    if (!f) {
+        if (!state.msg.list
+            || !(state.msg.list->m_index = first(0, MMNORM))) {
             note(0, "No messages to %s", state.cmd->c_name);
             return 1;
         }
         (state.msg.list + 1)->m_index = 0;
-    }
-    else if (getmsglist(str, 0) < 0)
+    } else if (getmsglist(str, 0) < 0)
         return 1;
     clr |= MMARK;
-    for (mp = 0, ip = state.msg.list; ip->m_index; ip++)
-    {
+    for (mp = 0, ip = state.msg.list; ip->m_index; ip++) {
         mp = state.msg.list + ip->m_index - 1;
         msgflags(mp, set, clr);
     }
-    if (mp)
-    {
+    if (mp) {
         if (set & MMARK)
             state.msg.dot = mp;
-        else if ((set | clr) & MSPAM)
-        {
+        else if ((set | clr) & MSPAM) {
             state.msg.dot = mp;
             if (f = first(0, MDELETE | MSPAM))
                 state.msg.dot = state.msg.list + f - 1;
@@ -999,21 +932,18 @@ duplicate(char *str)
     int f;
     char *addr[2];
 
-    if (!(addr[0] = snarf(str, &f)))
-    {
+    if (!(addr[0] = snarf(str, &f))) {
         note(0, "Recipent address required");
         return 1;
     }
     if (getmsglist(str, 0) < 0)
         return 1;
-    if (state.var.debug)
-    {
+    if (state.var.debug) {
         note(DEBUG, "%s to \"%s\"", state.cmd->c_name, addr[0]);
         return 0;
     }
     addr[1] = 0;
-    for (ip = state.msg.list; ip->m_index; ip++)
-    {
+    for (ip = state.msg.list; ip->m_index; ip++) {
         mp = state.msg.list + ip->m_index - 1;
         if (sendsmtp(setinput(mp), state.var.smtp, addr, mp->m_size))
             return 1;

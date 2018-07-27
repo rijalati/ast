@@ -123,8 +123,7 @@ tmain()
     if (sfsize(f) != 10010)
         terror("Bad size of file2");
     sfseek(f, ( Sfoff_t )0, 0);
-    for (i = 0; i < 10; ++i)
-    {
+    for (i = 0; i < 10; ++i) {
         if (!(s = sfreserve(f, 1001, 0)))
             terror("Reserve failed2");
         if (s[0] != '0' + i)

@@ -77,15 +77,12 @@ s5r0close(Ardir_t *ar)
 
     if (!ar || !(state = ( State_t * )ar->data))
         r = -1;
-    else
-    {
+    else {
         r = 0;
-        if (state->touch && state->patch >= 0)
-        {
+        if (state->touch && state->patch >= 0) {
             if (lseek(ar->fd, state->patch, SEEK_SET) != state->patch)
                 r = -1;
-            else
-            {
+            else {
                 swapput(0,
                         ( char * )&header.ar_date,
                         sizeof(header.ar_date),
@@ -137,14 +134,12 @@ s5r0next(Ardir_t *ar)
     ssize_t z;
 
     state->current = state->offset;
-    if (lseek(ar->fd, state->offset, SEEK_SET) != state->offset)
-    {
+    if (lseek(ar->fd, state->offset, SEEK_SET) != state->offset) {
         ar->error = errno;
         return 0;
     }
     if (read(ar->fd, ( char * )&state->member, sizeof(state->member))
-        != sizeof(state->member))
-    {
+        != sizeof(state->member)) {
         if ((z = read(ar->fd, ( char * )&state->member, 1)) < 0)
             ar->error = errno;
         else if (z > 0)
@@ -178,8 +173,7 @@ s5r0change(Ardir_t *ar, Ardirent_t *ent)
     off_t o;
 
     o = state->current + offsetof(Member_t, arf_date);
-    if (lseek(ar->fd, o, SEEK_SET) != o)
-    {
+    if (lseek(ar->fd, o, SEEK_SET) != o) {
         ar->error = errno;
         return -1;
     }
@@ -188,8 +182,7 @@ s5r0change(Ardir_t *ar, Ardirent_t *ent)
             sizeof(state->member.arf_date),
             ( intmax_t )ent->mtime);
     if (write(ar->fd, &state->member.arf_date, sizeof(state->member.arf_date))
-        != sizeof(state->member.arf_date))
-    {
+        != sizeof(state->member.arf_date)) {
         ar->error = errno;
         return -1;
     }

@@ -90,8 +90,7 @@ typedef struct Ndfspid_s
 
 #define SETFSOWNER                                                           \
     {                                                                        \
-        if (ndfs.uid == 0)                                                   \
-        {                                                                    \
+        if (ndfs.uid == 0) {                                                 \
             setfsuid(fuse_get_context()->uid);                               \
             setfsgid(fuse_get_context()->gid);                               \
         }                                                                    \

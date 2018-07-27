@@ -46,8 +46,7 @@ int type;
     if (!f)
         return -1;
 
-    if (!f->mutex)
-    {
+    if (!f->mutex) {
         if (f->bits & SF_PRIVATE)
             return 0;
 

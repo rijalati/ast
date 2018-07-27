@@ -55,8 +55,7 @@
                             ? 0                                              \
                             : (p)->st_rdev)
 #                        define IVIEW(p, v)                                  \
-                            do                                               \
-                            {                                                \
+                            do {                                             \
                                 if (!S_ISBLK((p)->st_mode)                   \
                                     && !S_ISCHR((p)->st_mode))               \
                                     (p)->st_rdev = (v);                      \

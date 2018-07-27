@@ -48,8 +48,7 @@ setsid(void)
      * become a new process group leader
      */
 
-    if ((pg = getpid()) == getpgrp())
-    {
+    if ((pg = getpid()) == getpgrp()) {
         errno = EPERM;
         return (-1);
     }
@@ -60,8 +59,7 @@ setsid(void)
      * drop the control tty
      */
 
-    if ((fd = open("/dev/tty", O_RDONLY | O_cloexec)) >= 0)
-    {
+    if ((fd = open("/dev/tty", O_RDONLY | O_cloexec)) >= 0) {
         ioctl(fd, TIOCNOTTY, 0);
         close(fd);
     }
@@ -72,8 +70,7 @@ setsid(void)
      */
 
 #        if _lib_fork && HUH920711 /* some s5's botch this */
-    switch (fork())
-    {
+    switch (fork()) {
     case -1:
         exit(1);
     case 0:

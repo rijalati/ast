@@ -85,23 +85,19 @@ what(const char *file, Sfio_t *ip, Sfio_t *op)
 
     if (intro = !state.match)
         sfprintf(op, "%s:\n", file);
-    if (buf = ( unsigned char * )sfreserve(ip, SF_UNBOUND, 0))
-    {
+    if (buf = ( unsigned char * )sfreserve(ip, SF_UNBOUND, 0)) {
         skip = state.skip;
         if ((mid = sfvalue(ip)) <= (index = 3))
             goto next;
         e = buf + mid;
-        for (;;)
-        {
+        for (;;) {
             while ((index += skip[buf[index]]) < mid)
                 ;
-            if (index < HIT)
-            {
+            if (index < HIT) {
             next:
                 s = state.prev;
                 s[0] = s[1] = s[2] = 0;
-                switch (mid)
-                {
+                switch (mid) {
                 default:
                     s[0] = buf[mid - 3];
                     /*FALLTHROUGH*/
@@ -119,14 +115,12 @@ what(const char *file, Sfio_t *ip, Sfio_t *op)
                 if ((mid = sfvalue(ip)) <= (index = 3))
                     goto next;
                 e = buf + mid;
-                switch (skip[buf[0]])
-                {
+                switch (skip[buf[0]]) {
                 case HIT:
                     if (buf[0] == ')' && s[2] == '#' && s[1] == '('
                         && s[0] == '@'
                         || buf[0] == ':' && s[2] == 'd' && s[1] == 'I'
-                           && s[0] == '$')
-                    {
+                           && s[0] == '$') {
                         index = 0;
                         s = buf + 1;
                         goto hit;
@@ -136,8 +130,7 @@ what(const char *file, Sfio_t *ip, Sfio_t *op)
                     if (buf[1] == ')' && buf[0] == '#' && s[2] == '('
                         && s[1] == '@'
                         || buf[1] == ':' && buf[0] == 'd' && s[2] == 'I'
-                           && s[1] == '$')
-                    {
+                           && s[1] == '$') {
                         index = 1;
                         s = buf + 2;
                         goto hit;
@@ -147,28 +140,23 @@ what(const char *file, Sfio_t *ip, Sfio_t *op)
                     if (buf[2] == ')' && buf[1] == '#' && buf[0] == '('
                         && s[2] == '@'
                         || buf[2] == ':' && buf[1] == 'd' && buf[0] == 'I'
-                           && s[2] == '$')
-                    {
+                           && s[2] == '$') {
                         index = 2;
                         s = buf + 3;
                         goto hit;
                     }
                     break;
                 }
-            }
-            else
-            {
+            } else {
                 index -= HIT;
                 s = buf + index;
                 if (s[0] == ')' && s[-1] == '#' && s[-2] == '('
                     && s[-3] == '@'
                     || s[0] == ':' && s[-1] == 'd' && s[-2] == 'I'
-                       && s[-3] == '$')
-                {
+                       && s[-3] == '$') {
                     s++;
                 hit:
-                    while (s < e)
-                    {
+                    while (s < e) {
                         while (s < e && (*s == ' ' || *s == '\t'))
                             s++;
                         if ((e - s) < 4)
@@ -184,26 +172,20 @@ what(const char *file, Sfio_t *ip, Sfio_t *op)
                     }
                     b = s;
                     t = "\t";
-                    if (!intro)
-                    {
+                    if (!intro) {
                         intro = 1;
                         sfprintf(op, "%s:\n", file);
                     }
-                    for (;;)
-                    {
-                        if (s >= e)
-                        {
+                    for (;;) {
+                        if (s >= e) {
                             sfprintf(op, "%s%-.*s", t, s - b, b);
                             t = "";
                             if (!(buf = ( unsigned char * )sfreserve(
                                   ip, SF_UNBOUND, 0)))
                                 goto list;
                             e = (s = b = buf) + (mid = sfvalue(ip));
-                        }
-                        else
-                        {
-                            switch (*s)
-                            {
+                        } else {
+                            switch (*s) {
                             case 0:
                             case '<':
                             case '>':
@@ -214,8 +196,7 @@ what(const char *file, Sfio_t *ip, Sfio_t *op)
                                 if ((s - b) > 2 && *(s - 1) == '$'
                                     && *(s - 2) == ' ')
                                     s -= 2;
-                                if (s > b || !*t)
-                                {
+                                if (s > b || !*t) {
                                     sfprintf(op, "%s%-.*s\n", t, s - b, b);
                                     state.hit = 1;
                                     if (state.single)
@@ -258,10 +239,8 @@ b_what(int argc, char **argv, Shbltin_t *context)
     state.skip['('] = state.skip['I'] = 2;
     state.skip['#'] = state.skip['d'] = 1;
     state.skip[')'] = state.skip[':'] = HIT;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'm':
             state.match = 1;
             continue;
@@ -282,15 +261,11 @@ b_what(int argc, char **argv, Shbltin_t *context)
         error(ERROR_usage(2), "%s", optusage(NiL));
     if (s = *argv)
         argv++;
-    do
-    {
-        if (!s || streq(s, "-"))
-        {
+    do {
+        if (!s || streq(s, "-")) {
             s = "/dev/stdin";
             sp = sfstdin;
-        }
-        else if (!(sp = sfopen(NiL, s, "r")))
-        {
+        } else if (!(sp = sfopen(NiL, s, "r"))) {
             error(ERROR_system(0), "%s: cannot open", s);
             continue;
         }

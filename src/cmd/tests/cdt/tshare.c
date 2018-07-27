@@ -34,10 +34,8 @@ Void_t *obj;
 Dtdisc_t *disc;
 #endif
 {
-    if (type == DT_OPEN)
-    { /* opening first dictionary */
-        if (obj)
-        {
+    if (type == DT_OPEN) { /* opening first dictionary */
+        if (obj) {
             if (Current == &Space[0])
                 return 0;
             else /* opening a dictionary sharing with some previous one */
@@ -45,18 +43,14 @@ Dtdisc_t *disc;
                 *(( Void_t ** )obj) = ( Void_t * )(&Space[0]);
                 return 1;
             }
-        }
-        else
+        } else
             return 0;
-    }
-    else if (type == DT_CLOSE)
-    {
+    } else if (type == DT_CLOSE) {
         if (Close == 0) /* do not free objects */
             return 1;
         else
             return 0;
-    }
-    else
+    } else
         return 0;
 }
 
@@ -70,15 +64,12 @@ size_t size;
 Dtdisc_t *disc;
 #endif
 {
-    if (!buf)
-    {
+    if (!buf) {
         size = ((size + sizeof(Void_t *) - 1) / sizeof(Void_t *))
                * sizeof(Void_t *);
         buf = ( Void_t * )Current;
         Current += size;
-    }
-    else
-    {
+    } else {
         if (Close > 0)
             Free += 1;
     }

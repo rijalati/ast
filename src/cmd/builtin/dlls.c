@@ -87,10 +87,8 @@ b_dlls(int argc, char **argv, Shbltin_t *context)
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
     flags = 0;
     only = 0;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 0:
             break;
         case 'b':
@@ -121,8 +119,7 @@ b_dlls(int argc, char **argv, Shbltin_t *context)
     if (error_info.errors)
         error(ERROR_usage(2), "%s", optusage(NiL));
     r = 0;
-    if (flags & LIST_INFO)
-    {
+    if (flags & LIST_INFO) {
         if (!(dli = dllinfo()))
             error(2, "cannot determine native dll info");
         sfprintf(sfstdout, "sibling=(%s", dli->sibling[0]);
@@ -134,46 +131,37 @@ b_dlls(int argc, char **argv, Shbltin_t *context)
                  dli->prefix,
                  dli->suffix);
         i = 0;
-        if (dli->flags & DLL_INFO_PREVER)
-        {
+        if (dli->flags & DLL_INFO_PREVER) {
             i = 1;
             sfprintf(sfstdout, "PREVER");
         }
-        if (dli->flags & DLL_INFO_DOTVER)
-        {
+        if (dli->flags & DLL_INFO_DOTVER) {
             if (i)
                 sfputc(sfstdout, '|');
             sfprintf(sfstdout, "DOTVER");
         }
         sfputc(sfstdout, '\n');
-    }
-    else if (!(flags & (LIST_BASE | LIST_PATH)))
+    } else if (!(flags & (LIST_BASE | LIST_PATH)))
         flags |= LIST_BASE | LIST_PATH;
-    if (flags &= (LIST_BASE | LIST_PATH | LIST_LONG))
-    {
+    if (flags &= (LIST_BASE | LIST_PATH | LIST_LONG)) {
         for (i = 0; i < elementsof(arg); i++)
             if (arg[i] = *argv)
                 argv++;
         if (only && !*argv)
             error(ERROR_usage(2), "%s", optusage(NiL));
         r = 1;
-        for (;;)
-        {
-            if (dls = dllsopen(arg[0], arg[1], arg[2]))
-            {
-                while (dle = dllsread(dls))
-                {
+        for (;;) {
+            if (dls = dllsopen(arg[0], arg[1], arg[2])) {
+                while (dle = dllsread(dls)) {
                     r = 0;
-                    if (!only)
-                    {
+                    if (!only) {
                         if (!(flags & LIST_LONG))
                             dll = 0;
                         else if (dll = dlopen(dle->path, RTLD_LAZY))
                             ver = dllversion(dll, NiL);
                         else
                             ver = 0;
-                        switch (flags)
-                        {
+                        switch (flags) {
                         case LIST_BASE:
                             sfprintf(sfstdout, "%s\n", dle->name);
                             break;
@@ -199,12 +187,9 @@ b_dlls(int argc, char **argv, Shbltin_t *context)
                                      dle->path);
                             break;
                         }
-                        if (*(syms = argv))
-                        {
-                            if (dll || (dll = dlopen(dle->path, RTLD_LAZY)))
-                            {
-                                do
-                                {
+                        if (*(syms = argv)) {
+                            if (dll || (dll = dlopen(dle->path, RTLD_LAZY))) {
+                                do {
                                     sfprintf(
                                     sfstdout, "               %14s ", *syms);
                                     if (sym = dlllook(dll, *syms))
@@ -213,23 +198,17 @@ b_dlls(int argc, char **argv, Shbltin_t *context)
                                         sfprintf(sfstdout, "%s\n", dlerror());
                                 } while (*++syms);
                                 dlclose(dll);
-                            }
-                            else
+                            } else
                                 sfprintf(
                                 sfstdout, "               %s\n", dlerror());
                         }
-                    }
-                    else if (dll = dlopen(dle->path, RTLD_LAZY))
-                    {
+                    } else if (dll = dlopen(dle->path, RTLD_LAZY)) {
                         i = 1;
                         for (syms = argv; *syms; syms++)
-                            if (sym = dlllook(dll, *syms))
-                            {
-                                if (i)
-                                {
+                            if (sym = dlllook(dll, *syms)) {
+                                if (i) {
                                     i = 0;
-                                    switch (flags)
-                                    {
+                                    switch (flags) {
                                     case LIST_BASE:
                                         sfprintf(sfstdout, "%s\n", dle->name);
                                         break;

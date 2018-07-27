@@ -42,25 +42,21 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
 
     static char path[PATH_MAX];
 
-    if (fp->status == CS_POLL_READ)
-    {
+    if (fp->status == CS_POLL_READ) {
         if ((n = csread(css->state, fp->fd, path, sizeof(path) - 1, CS_LINE))
             <= 1)
             return -1;
         path[n - 1] = 0;
-        if ((ud = csopen(css->state, path, CS_OPEN_READ)) >= 0)
-        {
+        if ((ud = csopen(css->state, path, CS_OPEN_READ)) >= 0) {
             s = cspath(css->state, ud, 0);
             if (t = strrchr(s, '.'))
                 *t = 0;
             close(ud);
-        }
-        else
+        } else
             s = 0;
         if (s)
             n = strlen(s);
-        else
-        {
+        else {
             s = path;
             n = 0;
         }
@@ -73,8 +69,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
 static int
 exceptf(Css_t *css, unsigned long op, unsigned long arg, Cssdisc_t *disc)
 {
-    switch (op)
-    {
+    switch (op) {
     case CSS_INTERRUPT:
         error(ERROR_SYSTEM | 3, "%s: interrupt exit", fmtsignal(arg));
         return 0;

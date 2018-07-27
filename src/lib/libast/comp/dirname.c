@@ -43,17 +43,14 @@ dirname(char *pathname)
     /* back over non-slash chars */
     for (; last > pathname && *last != '/'; last--)
         ;
-    if (last == pathname)
-    {
+    if (last == pathname) {
         /* all '/' or "" */
         if (*last != '/')
             *last = '.';
         /* preserve // */
         else if (last[1] == '/')
             last++;
-    }
-    else
-    {
+    } else {
         /* back over trailing '/' */
         for (; *last == '/' && last > pathname; last--)
             ;

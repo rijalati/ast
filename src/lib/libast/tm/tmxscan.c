@@ -61,8 +61,7 @@ typedef struct
 #define INDEX(m, x) (((n) >= ((x) - (m))) ? ((n) -= ((x) - (m))) : (n))
 
 #define NUMBER(d, m, x)                                                      \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         n = 0;                                                               \
         u = ( char * )s;                                                     \
         while (s < ( const char * )(u + d) && *s >= '0' && *s <= '9')        \
@@ -84,81 +83,61 @@ gen(Tm_t *tm, Set_t *set)
 
     if (set->year >= 0)
         tm->tm_year = set->year;
-    if (set->mon >= 0)
-    {
+    if (set->mon >= 0) {
         if (set->year < 0 && set->mon < tm->tm_mon)
             tm->tm_year++;
         tm->tm_mon = set->mon;
         if (set->yday < 0 && set->mday < 0)
             tm->tm_mday = set->mday = 1;
     }
-    if (set->week >= 0)
-    {
-        if (set->mon < 0)
-        {
+    if (set->week >= 0) {
+        if (set->mon < 0) {
             tmweek(tm, set->weektype, set->week, set->wday);
             set->wday = -1;
         }
-    }
-    else if (set->yday >= 0)
-    {
-        if (set->mon < 0)
-        {
+    } else if (set->yday >= 0) {
+        if (set->mon < 0) {
             tm->tm_mon = 0;
             tm->tm_mday = set->yday + 1;
         }
-    }
-    else if (set->mday >= 0)
+    } else if (set->mday >= 0)
         tm->tm_mday = set->mday;
-    if (set->hour >= 0)
-    {
+    if (set->hour >= 0) {
         if (set->hour < tm->tm_hour && set->yday < 0 && set->mday < 0
             && set->wday < 0)
             tm->tm_mday++;
         tm->tm_hour = set->hour;
         tm->tm_min = (set->min >= 0) ? set->min : 0;
         tm->tm_sec = (set->sec >= 0) ? set->sec : 0;
-    }
-    else if (set->min >= 0)
-    {
+    } else if (set->min >= 0) {
         tm->tm_min = set->min;
         tm->tm_sec = (set->sec >= 0) ? set->sec : 0;
-    }
-    else if (set->sec >= 0)
+    } else if (set->sec >= 0)
         tm->tm_sec = set->sec;
     if (set->nsec < 1000000000L)
         tm->tm_nsec = set->nsec;
-    if (set->meridian > 0)
-    {
+    if (set->meridian > 0) {
         if (tm->tm_hour < 12)
             tm->tm_hour += 12;
-    }
-    else if (set->meridian == 0)
-    {
+    } else if (set->meridian == 0) {
         if (tm->tm_hour >= 12)
             tm->tm_hour -= 12;
     }
     t = tmxtime(tm, set->zone);
-    if (set->yday >= 0)
-    {
+    if (set->yday >= 0) {
         z = 1;
         tm = tmxtm(tm, t, tm->tm_zone);
         tm->tm_mday += set->yday - tm->tm_yday;
-    }
-    else if (set->wday >= 0)
-    {
+    } else if (set->wday >= 0) {
         z = 1;
         tm = tmxtm(tm, t, tm->tm_zone);
         if ((n = set->wday - tm->tm_wday) < 0)
             n += 7;
         tm->tm_mday += n;
-    }
-    else
+    } else
         z = 0;
-    if (set->nsec < 1000000000L)
-    {
-        if (!z)
-        {
+    if (set->nsec < 1000000000L) {
+        if (!z) {
             z = 1;
             tm = tmxtm(tm, t, tm->tm_zone);
         }
@@ -204,27 +183,19 @@ again:
     CLEAR(set);
     tm = tmxtm(&ts, t, NiL);
     pedantic = (flags & TM_PEDANTIC) != 0;
-    for (;;)
-    {
-        if (!(d = *format++))
-        {
-            if (sp <= &stack[0])
-            {
+    for (;;) {
+        if (!(d = *format++)) {
+            if (sp <= &stack[0]) {
                 format--;
                 break;
             }
             format = ( const char * )*--sp;
-        }
-        else if (!*s)
-        {
+        } else if (!*s) {
             format--;
             break;
-        }
-        else if (d == '%' && (d = *format) && format++ && d != '%')
-        {
+        } else if (d == '%' && (d = *format) && format++ && d != '%') {
         more:
-            switch (d)
-            {
+            switch (d) {
             case 'a':
                 lo = TM_DAY_ABBREV;
                 hi = pedantic ? TM_DAY : TM_TIME;
@@ -276,8 +247,7 @@ again:
                 break;
             case 'E':
             case 'O':
-                if (*format)
-                {
+                if (*format) {
                     d = *format++;
                     goto more;
                 }
@@ -308,8 +278,7 @@ again:
                 set.min = n;
                 continue;
             case 'n':
-                if (pedantic)
-                {
+                if (pedantic) {
                     while (*s == '\n')
                         s++;
                     continue;
@@ -394,18 +363,15 @@ again:
                 continue;
             case 'Z':
             case 'q':
-                if (zp = tmtype(s, &u))
-                {
+                if (zp = tmtype(s, &u)) {
                     s = u;
                     u = zp->type;
-                }
-                else
+                } else
                     u = 0;
                 if (d == 'q')
                     continue;
             case 'z':
-                if ((zp = tmzone(s, &u, u, &m)))
-                {
+                if ((zp = tmzone(s, &u, u, &m))) {
                     s = u;
                     set.zone = zp->west + m;
                     tm_info.date = zp;
@@ -431,8 +397,7 @@ again:
                 goto next;
             *sp++ = ( char * )format;
             format = ( const char * )p;
-        }
-        else if (isspace(d))
+        } else if (isspace(d))
             while (isspace(*s))
                 s++;
         else if (*s != d)
@@ -443,15 +408,13 @@ again:
 next:
     if (sp > &stack[0])
         format = ( const char * )stack[0];
-    if (*format)
-    {
+    if (*format) {
         p = ( char * )format;
         if (!*s && *p == '%' && *(p + 1) == '|')
             format += strlen(format);
         else
             while (*p)
-                if (*p++ == '%' && *p && *p++ == '|' && *p)
-                {
+                if (*p++ == '%' && *p && *p++ == '|' && *p) {
                     format = ( const char * )p;
                     s = b;
                     goto again;
@@ -459,14 +422,12 @@ next:
     }
     t = gen(tm, &set);
 done:
-    if (e)
-    {
+    if (e) {
         while (isspace(*s))
             s++;
         *e = ( char * )s;
     }
-    if (f)
-    {
+    if (f) {
         while (isspace(*format))
             format++;
         *f = ( char * )format;
@@ -498,35 +459,27 @@ tmxscan(const char *s,
     static char **datemask;
 
     tmlocale();
-    if (!format || !*format)
-    {
-        if (!initialized)
-        {
+    if (!format || !*format) {
+        if (!initialized) {
             Sfio_t *sp;
             int n;
             off_t m;
 
             initialized = 1;
-            if ((v = getenv("DATEMSK")) && *v && (sp = sfopen(NiL, v, "r")))
-            {
+            if ((v = getenv("DATEMSK")) && *v && (sp = sfopen(NiL, v, "r"))) {
                 for (n = 1; sfgetr(sp, '\n', 0); n++)
                     ;
                 m = sfseek(sp, 0L, SEEK_CUR);
-                if (p = newof(0, char *, n, m))
-                {
+                if (p = newof(0, char *, n, m)) {
                     sfseek(sp, 0L, SEEK_SET);
                     v = ( char * )(p + n);
-                    if (sfread(sp, v, m) != m)
-                    {
+                    if (sfread(sp, v, m) != m) {
                         free(p);
                         p = 0;
-                    }
-                    else
-                    {
+                    } else {
                         datemask = p;
                         v[m] = 0;
-                        while (*v)
-                        {
+                        while (*v) {
                             *p++ = v;
                             if (!(v = strchr(v, '\n')))
                                 break;
@@ -538,11 +491,9 @@ tmxscan(const char *s,
             }
         }
         if (p = datemask)
-            while (v = *p++)
-            {
+            while (v = *p++) {
                 x = scan(s, &q, v, &r, t, flags);
-                if (!*q && !*r)
-                {
+                if (!*q && !*r) {
                     if (e)
                         *e = q;
                     if (f)

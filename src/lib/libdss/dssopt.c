@@ -43,12 +43,10 @@ optout(Sfio_t *sp,
 
     sfputc(sp, '[');
     sfputc(sp, '+');
-    if (name)
-    {
+    if (name) {
         if (ret)
             sfprintf(sp, "%s ", ret);
-        for (t = name; c = *t++;)
-        {
+        for (t = name; c = *t++;) {
             if (c == ':')
                 sfputc(sp, c);
             sfputc(sp, c);
@@ -56,28 +54,24 @@ optout(Sfio_t *sp,
         if (type && !ret)
             sfputc(sp, ' ');
     }
-    if (type)
-    {
+    if (type) {
         sfprintf(sp, "(%s", type);
         if (map)
             sfprintf(sp, "::::%s", map);
         sfputc(sp, ')');
     }
     sfputc(sp, '?');
-    if (s)
-    {
+    if (s) {
         if (*s == '[')
             sfputr(sp, s + 1, -1);
         else if (optesc(sp, s, 0))
             return -1;
-        if (x)
-        {
+        if (x) {
             sfputc(sp, ' ');
             if (optesc(sp, x, 0))
                 return -1;
         }
-    }
-    else
+    } else
         sfputc(sp, ' ');
     if (!s || *s != '[')
         sfputc(sp, ']');
@@ -123,8 +117,7 @@ opttype(Sfio_t *sp, Cxtype_t *tp, int members)
         x = tp->match->description;
     else
         x = 0;
-    if (tp->format.description)
-    {
+    if (tp->format.description) {
         b = !x ? "" : x[0] == '[' && x[1] == '+' && x[2] == '?' ? (x + 3) : x;
         if (tp->format.details)
             x = sfprints("%s The default value is \b%s\b. %s",
@@ -136,8 +129,7 @@ opttype(Sfio_t *sp, Cxtype_t *tp, int members)
         else
             x = tp->format.description;
     }
-    if (!(d = tp->description) && tp->generic && (tmp = sfstropen()))
-    {
+    if (!(d = tp->description) && tp->generic && (tmp = sfstropen())) {
         sfprintf(tmp, "A generic type that maps to %s", tp->generic[0]->name);
         for (i = 1; tp->generic[i]; i++)
             sfprintf(tmp,
@@ -188,8 +180,7 @@ optmap(Sfio_t *sp, Cxmap_t *map)
         sfprintf(sp, "[+SHIFT=%u]", map->shift);
     if (~map->mask)
         sfprintf(sp, "[+MASK=0x%016llx]", map->mask);
-    if (map->num2str)
-    {
+    if (map->num2str) {
         if ((n = dtsize(map->num2str)) > 16)
             sfprintf(sp, "[+----- %u entries omitted -----]", n);
         else
@@ -199,16 +190,13 @@ optmap(Sfio_t *sp, Cxmap_t *map)
                     sfprintf(sp, "[+%s?0x%016llx]", item->name, item->value);
                 else
                     sfprintf(sp, "[+%s?%llu]", item->name, item->value);
-    }
-    else
-        for (part = map->part; part; part = part->next)
-        {
+    } else
+        for (part = map->part; part; part = part->next) {
             if (part->shift)
                 sfprintf(sp, "[+SHIFT=%u]", part->shift);
             if (~part->mask)
                 sfprintf(sp, "[+MASK=0x%016llx]", part->mask);
-            for (item = part->item; item; item = item->next)
-            {
+            for (item = part->item; item; item = item->next) {
                 if (item->mask == item->value)
                     sfprintf(sp, "[+%s?0x%016llx]", item->name, item->value);
                 else
@@ -242,19 +230,15 @@ dssoptinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
     int head;
     char name[64];
 
-    switch (*s)
-    {
+    switch (*s) {
     case 'd':
-        if (*(s + 1) == 'e' && *(s + 2) == 't')
-        {
+        if (*(s + 1) == 'e' && *(s + 2) == 't') {
             /* details */
             tp = ( Cxtype_t * )(( Dssoptdisc_t * )dp)->header;
             if (tp->format.description
                 && optesc(sp, tp->format.description, 0))
                 return -1;
-        }
-        else
-        {
+        } else {
             /* description */
             sfprintf(sp,
                      "%s",
@@ -273,15 +257,12 @@ dssoptinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
             sfprintf(sp, "unknown - description");
         return 0;
     case 'm':
-        if (*(s + 1) == 'a')
-        {
+        if (*(s + 1) == 'a') {
             /* match */
             tp = ( Cxtype_t * )(( Dssoptdisc_t * )dp)->header;
             if (tp->match && optesc(sp, tp->match->description, 0))
                 return -1;
-        }
-        else
-        {
+        } else {
             /* methods */
             for (lib = dsslib(NiL, DSS_VERBOSE, disc); lib;
                  lib = ( Dsslib_t * )dtnext(state->cx->libraries, lib))
@@ -318,8 +299,7 @@ dssoptinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
         sfputc(sp, '}');
         return 0;
     }
-    if (!(meth = state->meth) && !(meth = state->global))
-    {
+    if (!(meth = state->meth) && !(meth = state->global)) {
         sfprintf(sp,
                  "[+NOTE::?Specify \b--method\b=\amethod\a for a list of "
                  "supported \b%s\b.]",
@@ -328,18 +308,15 @@ dssoptinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
     }
     pos = sfstrtell(sp);
     head = 0;
-    switch (*s)
-    {
+    switch (*s) {
     case 'f':
-        if (*(s + 1) != 'i')
-        {
+        if (*(s + 1) != 'i') {
             /* formats */
             if ((head = !!strchr(s, ' ')) && meth->description
                 && optout(
                    sp, meth->name, NiL, NiL, NiL, meth->description, NiL))
                 return -1;
-            if (meth->formats && dtsize(meth->formats))
-            {
+            if (meth->formats && dtsize(meth->formats)) {
                 if (optout(sp, "----- formats -----", NiL, NiL, NiL, NiL, NiL))
                     return -1;
                 for (format = ( Dssformat_t * )dtfirst(meth->formats); format;
@@ -367,16 +344,13 @@ dssoptinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
                  && optout(
                     sp, meth->name, NiL, NiL, NiL, meth->description, NiL))
             return -1;
-        if (cx = meth->cx)
-        {
+        if (cx = meth->cx) {
             for (tp = ( Cxtype_t * )dtfirst(cx->types); tp;
                  tp = ( Cxtype_t * )dtnext(cx->types, tp))
                 if (all
                     || (tp->base || tp->match)
-                       && (tp->header.flags & CX_REFERENCED))
-                {
-                    if (!head)
-                    {
+                       && (tp->header.flags & CX_REFERENCED)) {
+                    if (!head) {
                         if (optout(sp,
                                    "----- data types -----",
                                    NiL,
@@ -393,10 +367,8 @@ dssoptinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
             head = 0;
             for (mp = ( Cxmap_t * )dtfirst(cx->maps); mp;
                  mp = ( Cxmap_t * )dtnext(cx->maps, mp))
-                if (all || (mp->header.flags & CX_REFERENCED))
-                {
-                    if (!head)
-                    {
+                if (all || (mp->header.flags & CX_REFERENCED)) {
+                    if (!head) {
                         if (optout(sp,
                                    "----- data maps -----",
                                    NiL,
@@ -413,15 +385,12 @@ dssoptinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
                     if (optmap(sp, mp))
                         return -1;
                 }
-            if (all && cx->variables)
-            {
+            if (all && cx->variables) {
                 head = 0;
                 for (vp = ( Cxvariable_t * )dtfirst(cx->variables); vp;
                      vp = ( Cxvariable_t * )dtnext(cx->variables, vp))
-                    if (vp->prototype)
-                    {
-                        if (!head)
-                        {
+                    if (vp->prototype) {
+                        if (!head) {
                             if (optout(sp,
                                        "----- functions -----",
                                        NiL,
@@ -446,10 +415,8 @@ dssoptinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
         head = 0;
         if (!all)
             for (vp = ( Cxvariable_t * )dtfirst(cx->fields); vp;
-                 vp = ( Cxvariable_t * )dtnext(cx->fields, vp))
-            {
-                if (!head)
-                {
+                 vp = ( Cxvariable_t * )dtnext(cx->fields, vp)) {
+                if (!head) {
                     if (optout(
                         sp, "----- data fields -----", NiL, NiL, NiL, NiL, NiL))
                         return -1;
@@ -465,10 +432,8 @@ dssoptinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
                     return -1;
             }
         else if (meth->data)
-            for (vp = ( Cxvariable_t * )meth->data; vp->name; vp++)
-            {
-                if (!head)
-                {
+            for (vp = ( Cxvariable_t * )meth->data; vp->name; vp++) {
+                if (!head) {
                     if (optout(
                         sp, "----- data fields -----", NiL, NiL, NiL, NiL, NiL))
                         return -1;
@@ -508,24 +473,21 @@ dssoptlib(Sfio_t *sp, Dsslib_t *lib, const char *usage, Dssdisc_t *disc)
                 return -1;
     if (dssadd(lib, disc))
         return -1;
-    if (lib->description && (s = strchr(lib->description, '[')))
-    {
+    if (lib->description && (s = strchr(lib->description, '['))) {
         sfprintf(sp,
                  "%s[+PLUGIN?%s - %-.*s]\n",
                  s,
                  lib->name,
                  s - lib->description,
                  lib->description);
-    }
-    else
+    } else
         sfprintf(sp,
                  "[-1ls5Pp0?][+PLUGIN?%s - %s]\n",
                  lib->name,
                  lib->description ? lib->description : "support library");
     if (usage)
         sfprintf(sp, "%s", usage);
-    if (lib->meth)
-    {
+    if (lib->meth) {
         if (!state->meth)
             state->meth = lib->meth;
         if (!usage || strncmp(usage, "[+DESCRIPTION?", 13))
@@ -537,16 +499,14 @@ dssoptlib(Sfio_t *sp, Dsslib_t *lib, const char *usage, Dssdisc_t *disc)
                  "{\fformats and variables\f}\n\n--method=%s[,option...]\n\n",
                  lib->meth->name);
     }
-    if (lib->types)
-    {
+    if (lib->types) {
         sfprintf(sp, "[+TYPES]{\n");
         for (i = 0; lib->types[i].name; i++)
             if (opttype(sp, &lib->types[i], 1))
                 return -1;
         sfprintf(sp, "}\n");
     }
-    if (lib->maps)
-    {
+    if (lib->maps) {
         sfprintf(sp, "[+MAPS]{\n");
         for (i = 0; lib->maps[i]; i++)
             if (optout(sp,
@@ -561,8 +521,7 @@ dssoptlib(Sfio_t *sp, Dsslib_t *lib, const char *usage, Dssdisc_t *disc)
                 return -1;
         sfprintf(sp, "}\n");
     }
-    if (lib->callouts)
-    {
+    if (lib->callouts) {
         sfprintf(sp, "[+CALLOUTS]{\n");
         for (i = 0; lib->callouts[i].callout; i++)
             if (optout(sp,
@@ -577,8 +536,7 @@ dssoptlib(Sfio_t *sp, Dsslib_t *lib, const char *usage, Dssdisc_t *disc)
                 return -1;
         sfprintf(sp, "}\n");
     }
-    if (lib->recodes)
-    {
+    if (lib->recodes) {
         sfprintf(sp, "[+RECODES]{\n");
         for (i = 0; lib->recodes[i].recode; i++)
             if (optout(sp,
@@ -593,8 +551,7 @@ dssoptlib(Sfio_t *sp, Dsslib_t *lib, const char *usage, Dssdisc_t *disc)
                 return -1;
         sfprintf(sp, "}\n");
     }
-    if (lib->queries)
-    {
+    if (lib->queries) {
         sfprintf(sp, "[+QUERIES]{\n");
         for (i = 0; lib->queries[i].name; i++)
             if (optout(sp,
@@ -610,8 +567,7 @@ dssoptlib(Sfio_t *sp, Dsslib_t *lib, const char *usage, Dssdisc_t *disc)
                 return -1;
         sfprintf(sp, "}\n");
     }
-    if (lib->constraints)
-    {
+    if (lib->constraints) {
         sfprintf(sp, "[+CONSTRAINTS]{\n");
         for (i = 0; lib->constraints[i].name; i++)
             if (optout(sp,
@@ -624,8 +580,7 @@ dssoptlib(Sfio_t *sp, Dsslib_t *lib, const char *usage, Dssdisc_t *disc)
                 return -1;
         sfprintf(sp, "}\n");
     }
-    if (lib->edits)
-    {
+    if (lib->edits) {
         sfprintf(sp, "[+EDITS]{\n");
         for (i = 0; lib->edits[i].name; i++)
             if (optout(sp,
@@ -638,8 +593,7 @@ dssoptlib(Sfio_t *sp, Dsslib_t *lib, const char *usage, Dssdisc_t *disc)
                 return -1;
         sfprintf(sp, "}\n");
     }
-    if (lib->functions)
-    {
+    if (lib->functions) {
         sfprintf(sp, "[+FUNCTIONS]{\n");
         for (i = 0; lib->functions[i].name; i++)
             if (optout(sp,

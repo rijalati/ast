@@ -46,8 +46,7 @@ quniq(char **argv, int n)
 
     ao = an = argv;
     ae = ao + n;
-    while (++an < ae)
-    {
+    while (++an < ae) {
         while (streq(*ao, *an))
             if (++an >= ae)
                 return ao - argv + 1;
@@ -148,8 +147,9 @@ help(void)
     H("\n");
     H("    C	set LC_COLLATE and LC_CTYPE to the locale in field 2\n");
     H("    I	set gl_fignore to the pattern in field 2\n");
-    H("    W	workspace file/dir; tab indentation denotes directory "
-      "level\n");
+    H(
+    "    W	workspace file/dir; tab indentation denotes directory "
+    "level\n");
     H("\n");
     H("    {				silent skip if failed until }\n");
     H("    }				end of skip\n");
@@ -333,13 +333,10 @@ quote(char *s)
         printf("NIL");
     else if (!*u)
         printf("NULL");
-    else
-    {
+    else {
         printf("\"");
-        for (;;)
-        {
-            switch (c = *u++)
-            {
+        for (;;) {
+            switch (c = *u++) {
             case 0:
                 break;
                 ;
@@ -383,12 +380,10 @@ report(char *comment, char *pat, char *msg, int flags, int unspecified)
     if (flags & GLOB_STACK)
         printf("STACK: ");
 #endif
-    if (unspecified)
-    {
+    if (unspecified) {
         state.unspecified++;
         printf(" unspecified behavior");
-    }
-    else
+    } else
         state.errors++;
     if (pat)
         quote(pat);
@@ -400,8 +395,7 @@ report(char *comment, char *pat, char *msg, int flags, int unspecified)
 static int
 note(int level, int skip, char *msg)
 {
-    if (!skip)
-    {
+    if (!skip) {
         printf("NOTE\t");
         if (msg)
             printf("%s: ", msg);
@@ -429,12 +423,10 @@ escape(char *s)
 {
     char *t;
 
-    for (t = s; *t = *s; s++, t++)
-    {
+    for (t = s; *t = *s; s++, t++) {
         if (*s != '\\')
             continue;
-        switch (*++s)
-        {
+        switch (*++s) {
 
         case 0:
             *++t = 0;
@@ -472,12 +464,10 @@ sigunblock(int s)
     sigset_t mask;
 
     sigemptyset(&mask);
-    if (s)
-    {
+    if (s) {
         sigaddset(&mask, s);
         op = SIG_UNBLOCK;
-    }
-    else
+    } else
         op = SIG_SETMASK;
     sigprocmask(op, &mask, NiL);
 #else
@@ -493,8 +483,7 @@ gotcha(int sig)
     signal(sig, gotcha);
     alarm(0);
     state.signals++;
-    switch (sig)
-    {
+    switch (sig) {
 
     case SIGALRM:
         state.ret = GLOB_ELOOP;
@@ -525,16 +514,14 @@ getline(void)
     char *e = &buf[sizeof(buf)];
     char *b;
 
-    for (;;)
-    {
+    for (;;) {
         if (!(b = fgets(s, e - s, stdin)))
             return 0;
         state.lineno++;
         s += strlen(s) - 1;
         if (*s != '\n')
             break;
-        if (s == b || *(s - 1) != '\\')
-        {
+        if (s == b || *(s - 1) != '\\') {
             *s = 0;
             break;
         }
@@ -620,10 +607,8 @@ main(int argc, char **argv)
         p++;
     *p = 0;
     while ((p = *++argv) && *p == '-')
-        for (;;)
-        {
-            switch (*++p)
-            {
+        for (;;) {
+            switch (*++p) {
 
             case 0:
                 break;
@@ -657,19 +642,16 @@ main(int argc, char **argv)
     if (p)
         printf(", argument(s) ignored");
     printf("\n");
-    if (elementsof(unsupported) > 1)
-    {
+    if (elementsof(unsupported) > 1) {
         printf("NOTE\tunsupported:");
         got = ' ';
-        for (i = 0; i < elementsof(unsupported) - 1; i++)
-        {
+        for (i = 0; i < elementsof(unsupported) - 1; i++) {
             printf("%c%s", got, unsupported[i]);
             got = ',';
         }
         printf("\n");
     }
-    if (catch)
-    {
+    if (catch) {
         signal(SIGALRM, gotcha);
         signal(SIGBUS, gotcha);
         signal(SIGSEGV, gotcha);
@@ -682,31 +664,26 @@ main(int argc, char **argv)
     work[cwd + 2] = 0;
     ok = 0;
     extra = 0;
-    while (p = buf = getline())
-    {
+    while (p = buf = getline()) {
 
         /* parse: */
 
         if (*p == 0 || *p == '#')
             continue;
-        if (*p == ':')
-        {
+        if (*p == ':') {
             while (*++p == ' ')
                 ;
             printf("NOTE	%s\n", p);
             continue;
         }
-        if (*p == 'W')
-        {
+        if (*p == 'W') {
             while (*++p == '\t')
                 ;
-            if (*p)
-            {
+            if (*p) {
                 i = p - buf;
                 if (i > (cwd + 1) || i >= elementsof(work))
                     bad("invalid workspace depth\n", NiL);
-                if (working)
-                {
+                if (working) {
                     working = 0;
                     cwd = 1;
                     if (chdir("../.."))
@@ -714,12 +691,9 @@ main(int argc, char **argv)
                     else if (verbose)
                         printf("test %-3d chdir ../..\n", state.lineno);
                 }
-                if (i > cwd)
-                {
-                    if (path[0] && access(path, F_OK))
-                    {
-                        if (verbose)
-                        {
+                if (i > cwd) {
+                    if (path[0] && access(path, F_OK)) {
+                        if (verbose) {
                             printf("test %-3d mkdir ", state.lineno);
                             quote(path);
                             printf("\n");
@@ -727,15 +701,10 @@ main(int argc, char **argv)
                         if (mkdir(path, 0755))
                             bad("cannot create work directory\n", path);
                     }
-                }
-                else
-                {
-                    if (access(path, F_OK))
-                    {
-                        if (k)
-                        {
-                            if (verbose)
-                            {
+                } else {
+                    if (access(path, F_OK)) {
+                        if (k) {
+                            if (verbose) {
                                 printf("test %-3d  link ", state.lineno);
                                 quote(path);
                                 printf(" ");
@@ -745,11 +714,8 @@ main(int argc, char **argv)
                             if (symlink(k, path))
                                 bad("cannot create work link\n", path);
                             k = 0;
-                        }
-                        else if (!streq(work[cwd - 1], "."))
-                        {
-                            if (verbose)
-                            {
+                        } else if (!streq(work[cwd - 1], ".")) {
+                            if (verbose) {
                                 printf("test %-3d  file ", state.lineno);
                                 quote(path);
                                 printf("\n");
@@ -764,10 +730,8 @@ main(int argc, char **argv)
                 s = work[cwd];
                 *(s - 1) = '/';
                 k = 0;
-                while (s < pathmax && *p)
-                {
-                    if (*p == '\t')
-                    {
+                while (s < pathmax && *p) {
+                    if (*p == '\t') {
                         k = linkbuf;
                         while (k < &linkbuf[sizeof(linkbuf) - 1]
                                && (*k = *++p))
@@ -783,13 +747,10 @@ main(int argc, char **argv)
             }
             continue;
         }
-        if (work[2])
-        {
+        if (work[2]) {
             if (!streq(work[cwd - 1], ".") && access(path, F_OK))
-                if (k)
-                {
-                    if (verbose)
-                    {
+                if (k) {
+                    if (verbose) {
                         printf("test %-3d  link ", state.lineno);
                         quote(path);
                         printf(" ");
@@ -798,11 +759,8 @@ main(int argc, char **argv)
                     }
                     if (symlink(k, path))
                         bad("cannot create work link\n", path);
-                }
-                else
-                {
-                    if (verbose)
-                    {
+                } else {
+                    if (verbose) {
                         printf("test %-3d  file ", state.lineno);
                         quote(path);
                         printf("\n");
@@ -820,8 +778,7 @@ main(int argc, char **argv)
                 printf("test %-3d chdir ..\n", state.lineno);
             if (chdir(path))
                 bad("cannot chdir\n", path);
-            else if (verbose)
-            {
+            else if (verbose) {
                 printf("test %-3d chdir ", state.lineno);
                 quote(path);
                 printf("\n");
@@ -833,10 +790,8 @@ main(int argc, char **argv)
 #endif
         i = 0;
         field[i++] = p;
-        for (;;)
-        {
-            switch (*p++)
-            {
+        for (;;) {
+            switch (*p++) {
             case 0:
                 p--;
                 goto checkfield;
@@ -868,10 +823,8 @@ main(int argc, char **argv)
 
         flags = 0;
         query = unspecified = kre = sre = 0;
-        for (p = spec; *p; p++)
-        {
-            switch (*p)
-            {
+        for (p = spec; *p; p++) {
+            switch (*p) {
             case 'C':
                 if (!query && !(skip & level))
                     bad("locale query expected\n", NiL);
@@ -880,8 +833,7 @@ main(int argc, char **argv)
                     bad("locale nesting not supported\n", NiL);
                 if (i != 2)
                     bad("locale field expected\n", NiL);
-                if (!(skip & level))
-                {
+                if (!(skip & level)) {
 #if defined(LC_COLLATE) && defined(LC_CTYPE)
                     s = field[1];
                     if (!s || streq(s, "POSIX"))
@@ -891,8 +843,7 @@ main(int argc, char **argv)
                         || !(ans = setlocale(LC_CTYPE, s)) || streq(ans, "C")
                         || streq(ans, "POSIX"))
                         skip = note(level, skip, s);
-                    else
-                    {
+                    else {
                         printf("NOTE	\"%s\" locale\n", s);
                         locale = level;
                     }
@@ -960,13 +911,10 @@ main(int argc, char **argv)
 
             case '{':
                 level <<= 1;
-                if (skip & (level >> 1))
-                {
+                if (skip & (level >> 1)) {
                     skip |= level;
                     flags |= NOTEST;
-                }
-                else
-                {
+                } else {
                     skip &= ~level;
                     query = 1;
                 }
@@ -974,16 +922,13 @@ main(int argc, char **argv)
             case '}':
                 if (level == 1)
                     bad("invalid {...} nesting\n", NiL);
-                else
-                {
+                else {
                     if ((skip & level) && !(skip & (level >> 1)))
                         printf("-%d\n", state.lineno);
 #if defined(LC_COLLATE) && defined(LC_CTYPE)
-                    else if (locale & level)
-                    {
+                    else if (locale & level) {
                         locale = 0;
-                        if (!(skip & level))
-                        {
+                        if (!(skip & level)) {
                             s = "C";
                             setlocale(LC_COLLATE, s);
                             setlocale(LC_CTYPE, s);
@@ -1015,10 +960,8 @@ main(int argc, char **argv)
             escape(ans);
         okre = kre;
         osre = sre;
-        for (m = 0; m < nmodes; m++)
-        {
-            if (modes[m])
-            {
+        for (m = 0; m < nmodes; m++) {
+            if (modes[m]) {
                 if ((flags & modes[m]) == modes[m])
                     continue;
                 flags |= modes[m];
@@ -1031,8 +974,7 @@ main(int argc, char **argv)
 
             /* execute: */
 
-            if (sre)
-            {
+            if (sre) {
                 state.which = "SRE";
                 sre = 0;
 #ifdef GLOB_AUGMENTED
@@ -1040,8 +982,7 @@ main(int argc, char **argv)
 #endif
             }
 #ifdef GLOB_AUGMENTED
-            else if (kre)
-            {
+            else if (kre) {
                 state.which = "KRE";
                 kre = 0;
                 flags |= GLOB_AUGMENTED;
@@ -1049,28 +990,23 @@ main(int argc, char **argv)
 #endif
             else
                 continue;
-            if (!m && !query && verbose)
-            {
+            if (!m && !query && verbose) {
                 printf("test %-3d ", state.lineno);
                 quote(pat);
                 printf("\n");
             }
-            if (!ok || !(flags & GLOB_APPEND))
-            {
-                if (ok)
-                {
+            if (!ok || !(flags & GLOB_APPEND)) {
+                if (ok) {
                     ok = 0;
                     globfree(&gl);
                 }
                 memset(&gl, 0, sizeof(gl));
             }
 #if GLOB_DISC
-            if (fignore[0])
-            {
+            if (fignore[0]) {
                 gl.gl_fignore = ( const char * )fignore;
                 flags |= GLOB_DISC;
-            }
-            else
+            } else
                 gl.gl_fignore = 0;
 #    if GLOB_VERSION >= 20060717L
             if (gl.gl_extra = extra)
@@ -1079,41 +1015,34 @@ main(int argc, char **argv)
 #endif
             if (!query)
                 testno++;
-            if (catch)
-            {
+            if (catch) {
                 if (setjmp(state.gotcha))
                     ret = state.ret;
-                else
-                {
+                else {
                     alarm(LOOPED);
                     ret = glob(pat, flags, 0, &gl);
                     alarm(0);
                 }
-            }
-            else
+            } else
                 ret = glob(pat, flags, 0, &gl);
-            if (ret == 0)
-            {
+            if (ret == 0) {
                 ok = 1;
                 if (!gl.gl_pathc)
                     ret = GLOB_NOMATCH;
             }
             expected = got = 0;
-            for (i = 1; i < elementsof(codes); i++)
-            {
+            for (i = 1; i < elementsof(codes); i++) {
                 if (streq(err, codes[i].name))
                     expected = i;
                 if (ret == codes[i].code)
                     got = i;
             }
-            if (expected != got)
-            {
+            if (expected != got) {
                 if (query)
                     skip = note(level, skip, msg);
                 else if (state.ignore.error)
                     state.ignore.count++;
-                else
-                {
+                else {
                     report("return failed: ", pat, msg, flags, unspecified);
                     printf("%s expected, %s returned",
                            codes[expected].name,
@@ -1124,37 +1053,30 @@ main(int argc, char **argv)
                                gl.gl_pathc == 1 ? "" : "es");
                     printf("\n");
                 }
-            }
-            else if (ret != GLOB_NOMATCH)
-            {
+            } else if (ret != GLOB_NOMATCH) {
 #if GLOB_LIST
-                if (flags & GLOB_LIST)
-                {
+                if (flags & GLOB_LIST) {
                     n = 0;
-                    for (gi = gl.gl_list; gi; gi = gi->gl_next)
-                    {
+                    for (gi = gl.gl_list; gi; gi = gi->gl_next) {
                         if (n >= (elementsof(av) - 1))
                             break;
                         av[n++] = gi->gl_path + extra;
                     }
                     av[n] = 0;
                     v = av;
-                }
-                else
+                } else
 #endif
                 {
                     n = gl.gl_pathc;
                     v = gl.gl_pathv;
                 }
-                if (verbose)
-                {
+                if (verbose) {
                     printf("    ");
                     for (i = 0; i < n; i++)
                         printf(" %s", v[i]);
                     printf("\n");
                 }
-                if (flags & (GLOB_LIST | GLOB_NOSORT))
-                {
+                if (flags & (GLOB_LIST | GLOB_NOSORT)) {
                     qsort(v, n, sizeof(*v), qstrcmp);
                     if ((flags & GLOB_STARSTAR)
                         && !(gl.gl_flags & GLOB_STARSTAR))
@@ -1164,12 +1086,10 @@ main(int argc, char **argv)
                     ans = "";
                 bs = s = ans;
                 bp = p = "";
-                for (i = 0; i < n; i++)
-                {
+                for (i = 0; i < n; i++) {
                     bp = p = v[i];
                     bs = s;
-                    while (*p == *s && *s && *s != ' ')
-                    {
+                    while (*p == *s && *s && *s != ' ') {
                         p++;
                         s++;
                     }
@@ -1178,14 +1098,12 @@ main(int argc, char **argv)
                     while (*s == ' ')
                         s++;
                 }
-                if (*p || *s)
-                {
+                if (*p || *s) {
                     if (!*p && i >= n)
                         bp = 0;
                     if (!*s)
                         bs = s = 0;
-                    else
-                    {
+                    else {
                         while (*s && *s != ' ')
                             s++;
                         if (*s == ' ')

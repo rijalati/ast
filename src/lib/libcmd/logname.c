@@ -53,10 +53,8 @@ b_logname(int argc, char **argv, Shbltin_t *context)
     char *logname;
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case ':':
             error(2, "%s", opt_info.arg);
             continue;

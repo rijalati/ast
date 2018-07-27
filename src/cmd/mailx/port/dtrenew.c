@@ -91,25 +91,20 @@ reg Void_t *obj;
     if (!(e = dt->data->here) || OBJ(e, disc) != obj)
         return NIL(Void_t *);
 
-    if (dt->data->type & DT_TREE)
-    {
+    if (dt->data->type & DT_TREE) {
         if (!(r = e->right))
             dt->data->here = e->left;
-        else
-        {
+        else {
             while (r->left)
                 RROTATE(r, t);
             r->left = e->left;
             dt->data->here = r;
         }
-    }
-    else if (dt->data->type & DT_HASH)
-    {
+    } else if (dt->data->type & DT_HASH) {
         slot = dt->data->htab + HINDEX(dt->data->ntab, e->hash);
         if ((t = *slot) == e)
             *slot = e->right;
-        else
-        {
+        else {
             for (; t->right != e; t = t->right)
                 ;
             t->right = e->right;
@@ -117,38 +112,32 @@ reg Void_t *obj;
         key = KEY(obj, disc);
         e->hash = HASH(dt, key, disc);
         dt->data->here = NIL(Dtlink_t *);
-    }
-    else if (dt->data->type & DT_LIST)
-    { /* set r to elt right before class of e */
+    } else if (dt->data->type
+               & DT_LIST) { /* set r to elt right before class of e */
         r = NIL(Dtlink_t *);
         for (t = dt->data->head->left; t != e->left;
              r = t, t = t->right->left)
             ;
 
-        if (e == (t = r ? r->right : dt->data->head))
-        {
+        if (e == (t = r ? r->right : dt->data->head)) {
             if (r)
                 r->right = e->right;
             else
                 dt->data->head = e->right;
-        }
-        else
-        {
+        } else {
             for (; t->right != e; t = t->right)
                 ;
             t->right = e->right;
 
             /* reset last element pointer */
-            if (e == e->left)
-            {
+            if (e == e->left) {
                 r = r ? r->right : dt->data->head;
                 for (; r != t->right; r = r->right)
                     r->left = t;
             }
         }
         dt->data->here = NIL(Dtlink_t *);
-    }
-    else /* if(dt->data->type&(DT_STACK|DT_QUEUE)) */
+    } else /* if(dt->data->type&(DT_STACK|DT_QUEUE)) */
     {
         dt->data->here = NIL(Dtlink_t *);
         return obj;

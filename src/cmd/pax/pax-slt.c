@@ -110,8 +110,7 @@ getlabel(Pax_t *pax, Archive_t *ap, File_t *f)
     int c;
     int n;
 
-    if (c = slt->peek)
-    {
+    if (c = slt->peek) {
         slt->peek = 0;
         return c;
     }
@@ -122,15 +121,12 @@ getlabel(Pax_t *pax, Archive_t *ap, File_t *f)
         return *slt->last = slt->done = c = 0;
     if (slt->buf[4] == 'V'
         && ((n = getlabnum(slt->buf, 4, 1, 10)) < 1 || n > 3)
-        && (n = getlabnum(slt->buf, 6, 4, 10)) != c)
-    {
-        if ((c = n - c) > 0)
-        {
+        && (n = getlabnum(slt->buf, 6, 4, 10)) != c) {
+        if ((c = n - c) > 0) {
             if (ap->io->blocked
                 || paxread(
                    pax, ap, slt->buf + HDR_SIZE, ( off_t )0, ( off_t )c, 1)
-                   != c)
-            {
+                   != c) {
                 c = HDR_SIZE;
                 error(2,
                       "%s: %-*.*s: variable length label record too short",
@@ -138,11 +134,9 @@ getlabel(Pax_t *pax, Archive_t *ap, File_t *f)
                       c,
                       c,
                       slt->buf);
-            }
-            else
+            } else
                 c = n;
-        }
-        else if (n <= VARHDR_SIZE)
+        } else if (n <= VARHDR_SIZE)
             c = VARHDR_SIZE;
         else
             c = n;
@@ -167,8 +161,7 @@ putlabels(Pax_t *pax, Archive_t *ap, File_t *f, char *type)
     Slt_t *slt = ( Slt_t * )ap->data;
     struct tm *tm;
 
-    switch (*type)
-    {
+    switch (*type) {
     case 'E':
         paxwrite(pax, ap, slt->buf, 0);
         break;
@@ -204,12 +197,10 @@ putlabels(Pax_t *pax, Archive_t *ap, File_t *f, char *type)
               '2');
     paxwrite(pax, ap, slt->buf, HDR_SIZE);
     paxwrite(pax, ap, slt->buf, 0);
-    if (streq(type, "EOV"))
-    {
+    if (streq(type, "EOV")) {
         slt->section++;
         slt->sequence = 0;
-    }
-    else
+    } else
         slt->section = 1;
 }
 
@@ -234,8 +225,7 @@ slt_getprologue(Pax_t *pax,
     if (size < HDR_SIZE)
         return 0;
     memcpy(hdr, buf, HDR_SIZE);
-    if (fp->flags & CONV)
-    {
+    if (fp->flags & CONV) {
         ccmapstr(state.map.e2n, hdr, HDR_SIZE);
         if (!strneq(hdr, key, sizeof(key) - 1))
             return 0;
@@ -243,9 +233,7 @@ slt_getprologue(Pax_t *pax,
         convert(ap, SECTION_CONTROL, CC_NATIVE, CC_EBCDIC);
         if (!ap->convert[0].on)
             convert(ap, SECTION_DATA, CC_NATIVE, CC_EBCDIC);
-    }
-    else
-    {
+    } else {
         ccmapstr(state.map.a2n, hdr, HDR_SIZE);
         if (!strneq(hdr, key, sizeof(key) - 1))
             return 0;
@@ -253,8 +241,7 @@ slt_getprologue(Pax_t *pax,
         if (!ap->convert[0].on)
             convert(ap, SECTION_DATA, CC_NATIVE, CC_ASCII);
     }
-    if (!(slt = newof(0, Slt_t, 1, 0)))
-    {
+    if (!(slt = newof(0, Slt_t, 1, 0))) {
         nospace();
         return -1;
     }
@@ -265,12 +252,10 @@ slt_getprologue(Pax_t *pax,
     getlabstr(hdr, 38, 14, slt->owner);
     paxget(pax, ap, 0, &x);
     ap->io->blocked = !x;
-    if (ap->checkdelta)
-    {
+    if (ap->checkdelta) {
         if (!(lab = getlabel(pax, ap, f)))
             return 0;
-        if (strneq(slt->buf, "UVL1", 4) && strneq(slt->buf + 5, ID, IDLEN))
-        {
+        if (strneq(slt->buf, "UVL1", 4) && strneq(slt->buf + 5, ID, IDLEN)) {
             ap->checkdelta = 0;
             s = slt->buf + 10;
             f->st->st_mtime = getlabnum(slt->buf, 14, 10, 10);
@@ -280,8 +265,7 @@ slt_getprologue(Pax_t *pax,
             if (t = strchr(s, ' '))
                 *t = 0;
             deltaset(ap, s);
-        }
-        else
+        } else
             slt->peek = lab;
     }
     return 1;
@@ -290,8 +274,7 @@ slt_getprologue(Pax_t *pax,
 static int
 slt_done(Pax_t *pax, Archive_t *ap)
 {
-    if (ap->data)
-    {
+    if (ap->data) {
         free(ap->data);
         ap->data = 0;
     }
@@ -324,26 +307,20 @@ again:
     f->uidname = 0;
     f->gidname = 0;
     type = 0;
-    do
-    {
-        if (strneq(slt->buf, "HDR", 3))
-        {
+    do {
+        if (strneq(slt->buf, "HDR", 3)) {
             if (getlabnum(slt->buf, 4, 1, 10) != ++type)
                 error(
                 3, "%s format HDR label out of sequence", ap->format->name);
-            if (type == 1)
-            {
+            if (type == 1) {
                 s = f->name
                 = paxstash(pax, &ap->stash.head, NiL, NAME_SIZE + 3);
-                for (i = 4; i <= NAME_SIZE + 3; i++)
-                {
-                    if (slt->buf[i] == ' ')
-                    {
+                for (i = 4; i <= NAME_SIZE + 3; i++) {
+                    if (slt->buf[i] == ' ') {
                         if (i >= NAME_SIZE + 3 || slt->buf[i + 1] == ' ')
                             break;
                         *s++ = '.';
-                    }
-                    else
+                    } else
                         *s++ = isupper(slt->buf[i]) ? tolower(slt->buf[i])
                                                     : slt->buf[i];
                 }
@@ -361,12 +338,11 @@ again:
                     ap->format = SAVESET;
 #endif
                 f->st->st_mtime = 0;
-                if (n = getlabnum(slt->buf, 43, 2, 10))
-                {
+                if (n = getlabnum(slt->buf, 43, 2, 10)) {
                     if (slt->buf[41] == '0')
                         n += 100;
-                    if ((i = getlabnum(slt->buf, 45, 3, 10)) >= 0 && i <= 365)
-                    {
+                    if ((i = getlabnum(slt->buf, 45, 3, 10)) >= 0
+                        && i <= 365) {
                         f->st->st_mtime = i;
                         while (n-- > 70)
                             f->st->st_mtime
@@ -377,11 +353,8 @@ again:
                 }
                 if (!f->st->st_mtime)
                     f->st->st_mtime = NOW;
-            }
-            else if (type == 2)
-            {
-                switch (f->record.format = slt->buf[4])
-                {
+            } else if (type == 2) {
+                switch (f->record.format = slt->buf[4]) {
                 case 'D': /* decimal variable	*/
                 case 'F': /* fixed length	*/
                 case 'S': /* spanned		*/
@@ -401,9 +374,7 @@ again:
                     f->st->st_size = getlabnum(slt->buf, 16, 10, 10);
                 state.record.offset = getlabnum(slt->buf, 51, 2, 10);
             }
-        }
-        else if (!ap->io->blocked && strneq(slt->buf, "VOL1", 4))
-        {
+        } else if (!ap->io->blocked && strneq(slt->buf, "VOL1", 4)) {
             paxunread(pax, ap, slt->buf, lab);
             if (!(getprologue(ap)))
                 return 0;
@@ -429,16 +400,14 @@ slt_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
 
     if (wfd < 0)
         wfp = 0;
-    else if (!(wfp = sfnew(NiL, NiL, SF_UNBOUND, wfd, SF_WRITE)))
-    {
+    else if (!(wfp = sfnew(NiL, NiL, SF_UNBOUND, wfd, SF_WRITE))) {
         error(2, "%s: cannot write", f->name);
         return -1;
     }
     ap->io->empty = 0;
     nl = state.record.line;
     size = 0;
-    for (;;)
-    {
+    for (;;) {
         if (ap->io->blocked)
             n = paxread(pax,
                         ap,
@@ -448,22 +417,18 @@ slt_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
                         0);
         else if ((m = f->st->st_size - size) <= 0)
             n = 0;
-        else if (wfp)
-        {
+        else if (wfp) {
             if (m > state.buffersize)
                 m = state.buffersize;
             n = paxread(pax, ap, state.tmp.buffer, ( off_t )0, m, 1);
-        }
-        else
+        } else
             n = paxread(pax, ap, NiL, ( off_t )0, m, 1);
         if (n < 0)
             break;
-        if (n == 0)
-        {
+        if (n == 0) {
             k = 1;
             ap->sum--;
-            while (getlabel(pax, ap, f))
-            {
+            while (getlabel(pax, ap, f)) {
                 if (strneq(slt->buf, "EOV1", 4))
                     k = 0;
                 else if (!strneq(slt->buf, "EOF", 3)
@@ -486,28 +451,23 @@ slt_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
                 f->name,
                 n,
                 ap->format->name);
-            if (k)
-            {
+            if (k) {
                 ap->sum++;
                 break;
             }
             f->record.section++;
             f->id = strcpy(state.tmp.buffer, f->id);
             f->name = strcpy(state.tmp.buffer + NAME_SIZE + 1, f->name);
-            for (;;)
-            {
+            for (;;) {
                 newio(ap, 0, 0);
-                if (getprologue(ap))
-                {
+                if (getprologue(ap)) {
                     File_t v;
                     struct stat st;
 
                     v.st = &st;
-                    if (getheader(ap, &v))
-                    {
+                    if (getheader(ap, &v)) {
                         if (streq(f->id, v.id) && streq(f->name, v.name)
-                            && f->record.section == v.record.section)
-                        {
+                            && f->record.section == v.record.section) {
                             f->id = v.id;
                             f->name = v.name;
                             break;
@@ -526,8 +486,7 @@ slt_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
             ap->sum++;
             continue;
         }
-        if (f->record.format == 'V')
-        {
+        if (f->record.format == 'V') {
             if ((k = (( unsigned char * )state.tmp.buffer)[0] << 8
                      | (( unsigned char * )state.tmp.buffer)[1])
                 != n)
@@ -538,15 +497,12 @@ slt_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
                       k,
                       n);
             i = 4;
-        }
-        else
+        } else
             i = 0;
-        while (i < n)
-        {
+        while (i < n) {
             i += state.record.offset;
             if (state.tmp.buffer[i] == '^')
-                switch (f->record.format)
-                {
+                switch (f->record.format) {
                 case 'F':
                     if (slt->ibm)
                         break;
@@ -565,8 +521,7 @@ slt_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
              * get record size
              */
 
-            switch (f->record.format)
-            {
+            switch (f->record.format) {
             case 'D':
                 if (sfsscanf(&state.tmp.buffer[i], "%4d", &k) != 1)
                     k = -1;
@@ -582,8 +537,7 @@ slt_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
                 j = i;
                 break;
             case 'S':
-                switch (state.tmp.buffer[i])
-                {
+                switch (state.tmp.buffer[i]) {
                 case '0':
                 case '3':
                     nl = 1;
@@ -607,8 +561,7 @@ slt_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
                 j = i + 4;
                 break;
             }
-            if (k < 0)
-            {
+            if (k < 0) {
                 error(2,
                       "invalid %s %c record size",
                       ap->format->name,
@@ -619,8 +572,7 @@ slt_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
             if (slt->mapin)
                 ccmapstr(slt->mapin, &state.tmp.buffer[j], m - j);
             if (state.record.line)
-                switch (f->record.format)
-                {
+                switch (f->record.format) {
                 case 'F':
                 case 'U':
                     while (--m >= j && state.tmp.buffer[m] == ' ')
@@ -630,15 +582,12 @@ slt_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
                 }
             k = m - j + nl;
             size += k;
-            if (wfp)
-            {
-                if (nl)
-                {
+            if (wfp) {
+                if (nl) {
                     c = state.tmp.buffer[m];
                     state.tmp.buffer[m] = '\n';
                 }
-                if (sfwrite(wfp, &state.tmp.buffer[j], k) != k)
-                {
+                if (sfwrite(wfp, &state.tmp.buffer[j], k) != k) {
                     error(ERROR_SYSTEM | 1, "%s: write error", f->name);
                     break;
                 }
@@ -656,13 +605,11 @@ slt_getdata(Pax_t *pax, Archive_t *ap, File_t *f, int wfd)
               sizeof(size),
               size);
     f->st->st_size = size;
-    if (wfp)
-    {
+    if (wfp) {
         sfclose(wfp);
         setfile(ap, f);
     }
-    if (n < 0)
-    {
+    if (n < 0) {
         error(
         ERROR_SYSTEM | 3, "%s: %s: archive read error", ap->name, f->name);
         return -1;
@@ -684,8 +631,7 @@ slt_backup(Pax_t *pax, Archive_t *ap)
 
     mt.mt_op = MTBSF;
     mt.mt_count = 1;
-    if (ioctl(ap->io->fd, MTIOCTOP, &mt))
-    {
+    if (ioctl(ap->io->fd, MTIOCTOP, &mt)) {
         error(ERROR_SYSTEM | 3,
               "%s: %s archive seek MTIO error",
               ap->name,
@@ -704,15 +650,13 @@ slt_putprologue(Pax_t *pax, Archive_t *ap, int append)
 {
     Slt_t *slt = ( Slt_t * )ap->data;
 
-    if (!ap->locked && slt->vol)
-    {
+    if (!ap->locked && slt->vol) {
         slt->vol = 0;
         ap->locked = 1;
         putlabels(pax, ap, state.record.file, "HDR");
         ap->locked = 0;
     }
-    if (ap->format->flags & CONV)
-    {
+    if (ap->format->flags & CONV) {
         convert(ap, SECTION_CONTROL, CC_NATIVE, CC_EBCDIC);
         if (!ap->convert[0].on)
             convert(ap, SECTION_DATA, CC_NATIVE, CC_EBCDIC);
@@ -723,14 +667,12 @@ slt_putprologue(Pax_t *pax, Archive_t *ap, int append)
     else
 #endif
         ap->io->blocked = !ap->io->unblocked;
-    if (!slt->owner[0])
-    {
+    if (!slt->owner[0]) {
         strncpy(slt->owner, fmtuid(getuid()), sizeof(slt->owner) - 1);
         slt->owner[sizeof(slt->owner) - 1] = 0;
     }
     strupper(slt->owner);
-    if (!state.volume[0])
-    {
+    if (!state.volume[0]) {
         strncpy(state.volume, slt->owner, sizeof(state.volume) - 1);
         state.volume[sizeof(state.volume) - 1] = 0;
     }
@@ -769,8 +711,7 @@ slt_putprologue(Pax_t *pax, Archive_t *ap, int append)
     "VOL2%-19.19s                                                         ",
     slt->standards);
     paxwrite(pax, ap, slt->buf, HDR_SIZE);
-    if (ap->delta && !(ap->delta->format->flags & PSEUDO))
-    {
+    if (ap->delta && !(ap->delta->format->flags & PSEUDO)) {
         sfsprintf(slt->buf,
                   sizeof(slt->buf),
                   "UVL1 %-6.6s%c%-6.6s%010ld%010ld                           "
@@ -823,11 +764,9 @@ recordout(Pax_t *pax, Archive_t *ap, File_t *f, Sfio_t *fp)
      * file loop
      */
 
-    for (;;)
-    {
+    for (;;) {
         p = blk;
-        switch (state.record.format)
-        {
+        switch (state.record.format) {
         case 'V':
             p += 4;
             break;
@@ -838,11 +777,9 @@ recordout(Pax_t *pax, Archive_t *ap, File_t *f, Sfio_t *fp)
          * block loop
          */
 
-        for (;;)
-        {
+        for (;;) {
             rec = p;
-            switch (state.record.format)
-            {
+            switch (state.record.format) {
             case 'D':
             case 'V':
                 p += 4;
@@ -857,8 +794,7 @@ recordout(Pax_t *pax, Archive_t *ap, File_t *f, Sfio_t *fp)
              * check for partial record from previous block
              */
 
-            if (partial)
-            {
+            if (partial) {
                 memcpy(recdat, f->record.partial, partial);
                 p += partial;
                 partial = 0;
@@ -870,31 +806,22 @@ recordout(Pax_t *pax, Archive_t *ap, File_t *f, Sfio_t *fp)
 
             span &= 01;
             span <<= 1;
-            for (;;)
-            {
-                if (p >= &rec[state.record.size] && state.record.size)
-                {
-                    if (state.record.line)
-                    {
+            for (;;) {
+                if (p >= &rec[state.record.size] && state.record.size) {
+                    if (state.record.line) {
                         truncated++;
                         while ((c = sfgetc(fp)) != EOF && c != '\n')
                             ;
                     }
                     break;
-                }
-                else if (p >= &blk[state.blocksize])
-                {
+                } else if (p >= &blk[state.blocksize]) {
                     if (state.record.format == 'S'
-                        || state.record.format == 'V')
-                    {
-                        if (p > recdat)
-                        {
+                        || state.record.format == 'V') {
+                        if (p > recdat) {
                             span |= 01;
                             break;
                         }
-                    }
-                    else if (partial = p - recdat)
-                    {
+                    } else if (partial = p - recdat) {
                         /*
                          * save partial record for next block
                          */
@@ -907,33 +834,27 @@ recordout(Pax_t *pax, Archive_t *ap, File_t *f, Sfio_t *fp)
                     }
                     p = rec;
                     goto eob;
-                }
-                else if ((c = sfgetc(fp)) == EOF)
-                {
-                    if (p == recdat)
-                    {
+                } else if ((c = sfgetc(fp)) == EOF) {
+                    if (p == recdat) {
                         if (rec == blkdat)
                             goto eof;
                         p = rec;
                         goto eob;
                     }
                     break;
-                }
-                else if (c == '\n' && state.record.line)
+                } else if (c == '\n' && state.record.line)
                     break;
                 else
                     *p++ = c;
             }
-            switch (state.record.format)
-            {
+            switch (state.record.format) {
             case 'D':
                 c = recdat[0];
                 sfsprintf(rec, 4, "%04d", p - rec);
                 recdat[0] = c;
                 break;
             case 'F':
-                if (c != EOF || state.record.pad)
-                {
+                if (c != EOF || state.record.pad) {
                     memset(p, ' ', state.record.size - (p - rec));
                     p = rec + state.record.size;
                 }
@@ -961,12 +882,10 @@ recordout(Pax_t *pax, Archive_t *ap, File_t *f, Sfio_t *fp)
                 break;
         }
     eob:
-        switch (state.record.format)
-        {
+        switch (state.record.format) {
         case 'D':
         case 'S':
-            if (state.record.pad)
-            {
+            if (state.record.pad) {
                 memset(p, '^', state.blocksize - (p - blk));
                 p = blk + state.blocksize;
             }
@@ -1006,18 +925,15 @@ slt_putdata(Pax_t *pax, Archive_t *ap, File_t *f, int rfd)
     if (ap->io->blocked)
         return 0;
     r = 1;
-    if (f->st->st_size > 0)
-    {
-        if (state.record.format == 'F' && !state.record.line)
-        {
+    if (f->st->st_size > 0) {
+        if (state.record.format == 'F' && !state.record.line) {
             /*
              * this is faster than recordout()
              */
 
             ap->record = f;
             c = f->st->st_size;
-            while (c > 0)
-            {
+            while (c > 0) {
                 n = m = c > state.record.size ? state.record.size : c;
 
                 /*
@@ -1027,38 +943,32 @@ slt_putdata(Pax_t *pax, Archive_t *ap, File_t *f, int rfd)
                  *	 reads are filled with 0's
                  */
 
-                if (!r)
-                {
+                if (!r) {
                     if (rfd >= 0)
                         n = read(rfd, state.tmp.buffer, m);
-                    else if (bp = getbuffer(rfd))
-                    {
+                    else if (bp = getbuffer(rfd)) {
                         memcpy(ap->io->next, bp->next, m);
                         bp->next += m;
-                    }
-                    else if (paxread(pax,
-                                     f->ap,
-                                     state.tmp.buffer,
-                                     ( off_t )0,
-                                     ( off_t )m,
-                                     1)
-                             <= 0)
+                    } else if (paxread(pax,
+                                       f->ap,
+                                       state.tmp.buffer,
+                                       ( off_t )0,
+                                       ( off_t )m,
+                                       1)
+                               <= 0)
                         n = -1;
                 }
-                if (n <= 0)
-                {
+                if (n <= 0) {
                     if (n)
                         error(ERROR_SYSTEM | 2, "%s: read error", f->path);
                     else
                         error(2, "%s: file size changed", f->path);
                     memzero(state.tmp.buffer, state.record.size);
                     r = -1;
-                }
-                else
-                {
+                } else {
                     c -= n;
-                    if (n < state.record.size && (c > 0 || state.record.pad))
-                    {
+                    if (n < state.record.size
+                        && (c > 0 || state.record.pad)) {
                         memzero(state.tmp.buffer + n, state.record.size - n);
                         n = state.record.size;
                     }
@@ -1068,16 +978,12 @@ slt_putdata(Pax_t *pax, Archive_t *ap, File_t *f, int rfd)
             ap->record = 0;
             if (rfd >= 0)
                 close(rfd);
-        }
-        else if (rfd < 0)
+        } else if (rfd < 0)
             recordout(pax, ap, f, NiL);
-        else if (!(rfp = sfnew(NiL, NiL, SF_UNBOUND, rfd, SF_READ)))
-        {
+        else if (!(rfp = sfnew(NiL, NiL, SF_UNBOUND, rfd, SF_READ))) {
             error(1, "%s: cannot read", f->path);
             close(rfd);
-        }
-        else
-        {
+        } else {
             recordout(pax, ap, f, rfp);
             sfclose(rfp);
         }
@@ -1097,8 +1003,7 @@ slt_putepilogue(Pax_t *pax, Archive_t *ap)
 {
     Slt_t *slt = ( Slt_t * )ap->data;
 
-    if (!ap->locked)
-    {
+    if (!ap->locked) {
         ap->locked = 1;
         putlabels(pax, ap, state.record.file, "EOV");
         ap->locked = 0;
@@ -1115,23 +1020,19 @@ slt_validate(Pax_t *pax, Archive_t *ap, File_t *f)
     Slt_t *slt = ( Slt_t * )ap->data;
     char *s;
 
-    if (f->type != X_IFREG)
-    {
+    if (f->type != X_IFREG) {
         error(2,
               "%s: only regular files copied in %s format",
               f->path,
               ap->format->name);
         return 0;
     }
-    if (s = strrchr(f->name, '/'))
-    {
+    if (s = strrchr(f->name, '/')) {
         s++;
         error(1, "%s: file name stripped to %s", f->name, s);
-    }
-    else
+    } else
         s = f->name;
-    if (strlen(s) > sizeof(slt->id) - 1)
-    {
+    if (strlen(s) > sizeof(slt->id) - 1) {
         error(2, "%s: file name too long", f->name);
         return 0;
     }
@@ -1177,8 +1078,7 @@ ibm_getprologue(Pax_t *pax,
     int n;
 
     if ((n = slt_getprologue(pax, fp, ap, f, buf, size)) > 0
-        && state.record.charset)
-    {
+        && state.record.charset) {
         slt = ( Slt_t * )ap->data;
         slt->mapin = state.map.e2n;
         slt->mapout = state.map.n2e;

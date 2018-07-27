@@ -44,16 +44,14 @@ Sfdisc_t *disc;
     SFMTXENTER(f, (Sfoff_t)(-1));
 
     GETLOCAL(f, local);
-    if (!local && !(f->bits & SF_DCDOWN))
-    {
+    if (!local && !(f->bits & SF_DCDOWN)) {
         if ((mode = f->mode & SF_RDWR) != ( int )f->mode
             && _sfmode(f, mode, 0) < 0)
             SFMTXRETURN(f, (Sfoff_t)(-1));
         if (SFSYNC(f) < 0)
             SFMTXRETURN(f, (Sfoff_t)(-1));
 #if _mmap_worthy
-        if (f->mode == SF_READ && (f->bits & SF_MMAP) && f->data)
-        {
+        if (f->mode == SF_READ && (f->bits & SF_MMAP) && f->data) {
             SFMUNMAP(f, f->data, f->endb - f->data);
             f->data = NIL(uchar *);
         }
@@ -64,11 +62,9 @@ Sfdisc_t *disc;
     if ((type &= (SEEK_SET | SEEK_CUR | SEEK_END)) > SEEK_END)
         SFMTXRETURN(f, (Sfoff_t)(-1));
 
-    for (;;)
-    {
+    for (;;) {
         dc = disc;
-        if (f->flags & SF_STRING)
-        {
+        if (f->flags & SF_STRING) {
             SFSTRSIZE(f);
             if (type == SEEK_SET)
                 s = ( ssize_t )addr;
@@ -76,16 +72,11 @@ Sfdisc_t *disc;
                 s = (ssize_t)(addr + f->here);
             else
                 s = (ssize_t)(addr + f->extent);
-        }
-        else
-        {
+        } else {
             SFDISC(f, dc, seekf);
-            if (dc && dc->seekf)
-            {
+            if (dc && dc->seekf) {
                 SFDCSK(f, addr, type, dc, p);
-            }
-            else
-            {
+            } else {
                 p = syslseekf(f->file, ( sfoff_t )addr, type);
             }
             if (p >= 0)
@@ -95,8 +86,7 @@ Sfdisc_t *disc;
 
         if (local)
             SETLOCAL(f);
-        switch (_sfexcept(f, SF_SEEK, s, dc))
-        {
+        switch (_sfexcept(f, SF_SEEK, s, dc)) {
         case SF_EDISC:
         case SF_ECONT:
             if (f->flags & SF_STRING)

@@ -51,23 +51,19 @@ qpencode(const void *fb, size_t fz, void **fn, void *tb, size_t tz, void **tn)
     fe = fp + fz;
     tp = ( unsigned char * )tb;
     te = tp + tz;
-    while (fp < fe)
-    {
+    while (fp < fe) {
         if (((c = *fp) != ' ' || !(c = '_'))
-            && (isspace(c) || !isprint(c) || c == '=' || c == '?' || c == '_'))
-        {
+            && (isspace(c) || !isprint(c) || c == '=' || c == '?'
+                || c == '_')) {
             if ((te - tp) < 3)
                 break;
-            if (tb)
-            {
+            if (tb) {
                 *tp++ = '=';
                 *tp++ = hex[c >> 4];
                 *tp++ = hex[c & 0x0f];
-            }
-            else
+            } else
                 tp += 3;
-        }
-        else if ((te - tp) < 1)
+        } else if ((te - tp) < 1)
             break;
         else if (tb)
             *tp++ = c;
@@ -100,19 +96,15 @@ qpdecode(const void *fb, size_t fz, void **fn, void *tb, size_t tz, void **tn)
     fe = fp + fz;
     tp = ( unsigned char * )tb;
     te = tp + tz;
-    while (fp < fe && tp < te)
-    {
-        if ((c = *fp++) == '=')
-        {
-            if ((fe - fp) < 2)
-            {
+    while (fp < fe && tp < te) {
+        if ((c = *fp++) == '=') {
+            if ((fe - fp) < 2) {
                 fp--;
                 break;
             }
             c = _Sfcv36[*fp++] << 4;
             c |= _Sfcv36[*fp++];
-        }
-        else if (c == '_')
+        } else if (c == '_')
             c = ' ';
         *tp++ = c;
     }

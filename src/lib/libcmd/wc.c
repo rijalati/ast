@@ -100,10 +100,8 @@ b_wc(int argc, char **argv, Shbltin_t *context)
     struct stat statb;
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'c':
             mode |= WC_CHARS;
             continue;
@@ -142,8 +140,7 @@ b_wc(int argc, char **argv, Shbltin_t *context)
     argv += opt_info.index;
     if (error_info.errors)
         error(ERROR_usage(2), "%s", optusage(NiL));
-    if (mode & WC_MBYTE)
-    {
+    if (mode & WC_MBYTE) {
         if (mode & WC_CHARS)
             error(2, "-c and -C are mutually exclusive");
         if (!mbwide())
@@ -159,24 +156,20 @@ b_wc(int argc, char **argv, Shbltin_t *context)
     if (cp = *argv)
         argv++;
     n = 0;
-    do
-    {
+    do {
         if (!cp || streq(cp, "-"))
             fp = sfstdin;
-        else if (!(fp = sfopen(NiL, cp, "r")))
-        {
+        else if (!(fp = sfopen(NiL, cp, "r"))) {
             error(ERROR_system(0), "%s: cannot open", cp);
             continue;
         }
         if (cp)
             n++;
         if (!(mode & (WC_WORDS | WC_LINES | WC_MBYTE | WC_INVAL | WC_LONGEST))
-            && fstat(sffileno(fp), &statb) >= 0 && S_ISREG(statb.st_mode))
-        {
+            && fstat(sffileno(fp), &statb) >= 0 && S_ISREG(statb.st_mode)) {
             wp->chars = statb.st_size - lseek(sffileno(fp), 0L, 1);
             lseek(sffileno(fp), 0L, 2);
-        }
-        else
+        } else
             wc_count(wp, fp, cp);
         if (fp != sfstdin)
             sfclose(fp);
@@ -186,8 +179,7 @@ b_wc(int argc, char **argv, Shbltin_t *context)
         tlines += wp->inval;
         printout(wp, cp, mode);
     } while (cp = *argv++);
-    if (n > 1)
-    {
+    if (n > 1) {
         wp->chars = tchars;
         wp->words = twords;
         wp->lines = tlines;

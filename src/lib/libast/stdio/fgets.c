@@ -38,10 +38,8 @@ _stdgets(Sfio_t *f, char *us, int n, int isgets)
     n -= 1;
     is = ( uchar * )us;
 
-    while (n)
-    { /* peek the read buffer for data */
-        if ((p = f->endb - (ps = f->next)) <= 0)
-        {
+    while (n) { /* peek the read buffer for data */
+        if ((p = f->endb - (ps = f->next)) <= 0) {
             f->getr = '\n';
             f->mode |= SF_RC;
             if (SFRPEEK(f, ps, p) <= 0)
@@ -58,21 +56,17 @@ _stdgets(Sfio_t *f, char *us, int n, int isgets)
         is += p;
         ps = f->next + p;
 #else
-        if (!(f->flags & (SF_BOTH | SF_MALLOC)))
-        {
+        if (!(f->flags & (SF_BOTH | SF_MALLOC))) {
             while (p-- && (*is++ = *ps++) != '\n')
                 ;
             p = ps - f->next;
-        }
-        else
-        {
+        } else {
             reg int c = ps[p - 1];
             if (c != '\n')
                 ps[p - 1] = '\n';
             while ((*is++ = *ps++) != '\n')
                 ;
-            if (c != '\n')
-            {
+            if (c != '\n') {
                 f->next[p - 1] = c;
                 if ((ps - f->next) >= p)
                     is[-1] = c;
@@ -90,12 +84,10 @@ _stdgets(Sfio_t *f, char *us, int n, int isgets)
 
     if ((_Sfi = is - (( uchar * )us)) <= 0)
         us = NIL(char *);
-    else if (isgets && is[-1] == '\n')
-    {
+    else if (isgets && is[-1] == '\n') {
         is[-1] = '\0';
         _Sfi -= 1;
-    }
-    else
+    } else
         *is = '\0';
 
     SFOPEN(f, 0);

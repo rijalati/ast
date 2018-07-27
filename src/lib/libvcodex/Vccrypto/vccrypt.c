@@ -29,13 +29,11 @@ ssize_t
 prhex(Vcchar_t *dt, ssize_t sz)
 {
     Vcchar_t hex[1024];
-    if ((sz = vchexcode(dt, sz, hex, sizeof(hex), 1)) > 0)
-    {
+    if ((sz = vchexcode(dt, sz, hex, sizeof(hex), 1)) > 0) {
         write(2, hex, sz);
         write(2, "\n", 1);
         return 0;
-    }
-    else
+    } else
         return sz;
 }
 #endif
@@ -88,12 +86,10 @@ crinit(Vcodex_t *vc, Crypt_t *cr)
             return -1;
     }
 
-    if (vc->disc && vc->disc->data)
-    {
+    if (vc->disc && vc->disc->data) {
         key = ( Vcchar_t * )vc->disc->data;
         keyz = ( ssize_t )vc->disc->size;
-    }
-    else /* invoke Vcxpasskeyf to ask for a key */
+    } else /* invoke Vcxpasskeyf to ask for a key */
     {
         if (Vcxpasskeyf
             && (keyz = (*Vcxpasskeyf)(( char * )buf, sizeof(buf), type)) > 0)
@@ -108,10 +104,8 @@ crinit(Vcodex_t *vc, Crypt_t *cr)
     if (vcxinit(&cr->xx, cr->meth, key, keyz) < 0)
         return -1;
 
-    if (vc->disc && vc->disc->eventf)
-    {
-        if ((*vc->disc->eventf)(vc, VC_DATA, ( Void_t * )2, vc->disc) < 0)
-        {
+    if (vc->disc && vc->disc->eventf) {
+        if ((*vc->disc->eventf)(vc, VC_DATA, ( Void_t * )2, vc->disc) < 0) {
             vcxstop(&cr->xx);
             return -1;
         }
@@ -143,8 +137,7 @@ vcencrypt(Vcodex_t *vc, const Void_t *data, size_t size, Void_t **out)
     if (vcrecode(vc, &dt, &sz, 0, 1) < 0)
         return -1;
 
-    if (vc->undone == size)
-    {
+    if (vc->undone == size) {
         type = VC_RAW; /* encrypting the given raw input data */
         dt = ( Vcchar_t * )data;
         sz = size;
@@ -156,8 +149,7 @@ vcencrypt(Vcodex_t *vc, const Void_t *data, size_t size, Void_t **out)
     if ((sz = vcxencode(&cr->xx, dt, sz, &dt)) <= 0)
         return -1;
 
-    if (out)
-    {
+    if (out) {
         Vcchar_t *cdt;
         if (!(cdt = vcbuffer(vc, NIL(Vcchar_t *), sz + cr->head, 0)))
             return -1;
@@ -191,8 +183,7 @@ vcdecrypt(Vcodex_t *vc, const Void_t *data, size_t size, Void_t **out)
     /* status of raw or processed by a secondary coder */
     if (cr->head <= 0)
         type = 0; /* always pass to a 2ndary coder */
-    else
-    {
+    else {
         type = dt[0];
         dt += cr->head;
         sz -= cr->head;
@@ -253,15 +244,13 @@ cryptheader(Vcodex_t *vc, Vcmtcode_t *mtcd)
 
         mtcd->data = dt;
         mtcd->size = sz;
-    }
-    else /* reconstructing a handle from header code */
+    } else /* reconstructing a handle from header code */
     {
         dt = ( Vcchar_t * )mtcd->data;
         if ((sz = ( ssize_t )mtcd->size - 1) <= 0)
             return -1;
 
-        for (arg = _Cryptargs; arg->name; ++arg)
-        {
+        for (arg = _Cryptargs; arg->name; ++arg) {
             if (!vcstrcode(arg->name, ( char * )buf, sizeof(buf)))
                 return -1;
             if (strncmp(( char * )buf, ( char * )dt, sz) == 0 && buf[sz] == 0)
@@ -289,21 +278,18 @@ cryptevent(Vcodex_t *vc, int type, Void_t *param)
     Vcmtarg_t *arg;
     Crypt_t *cr = NIL(Crypt_t *);
 
-    if (type == VC_OPENING)
-    {
+    if (type == VC_OPENING) {
         if (!(cr = ( Crypt_t * )calloc(1, sizeof(Crypt_t))))
             return -1;
 
         cr->type = CR_AES128 | CR_INIT;
         cr->head = 1;         /* 1 control byte */
         cr->meth = Vcxaes128; /* default encryption method */
-        for (data = ( char * )param; data;)
-        {
+        for (data = ( char * )param; data;) {
             val[0] = 0;
             data = vcgetmtarg(data, val, sizeof(val), _Cryptargs, &arg);
 
-            switch (TYPECAST(int, arg->data))
-            {
+            switch (TYPECAST(int, arg->data)) {
             case CR_AES128:
                 cr->type = CR_AES128 | CR_INIT;
                 cr->meth = Vcxaes128;
@@ -321,20 +307,16 @@ cryptevent(Vcodex_t *vc, int type, Void_t *param)
 
         vcsetmtdata(vc, cr);
         return 0;
-    }
-    else if (type == VC_EXTRACT || type == VC_RESTORE)
+    } else if (type == VC_EXTRACT || type == VC_RESTORE)
         return cryptheader(vc, ( Vcmtcode_t * )param) < 0 ? -1 : 1;
-    else if (type == VC_CLOSING)
-    {
-        if ((cr = vcgetmtdata(vc, Crypt_t *)))
-        {
+    else if (type == VC_CLOSING) {
+        if ((cr = vcgetmtdata(vc, Crypt_t *))) {
             if (!(cr->type & CR_INIT))
                 vcxstop(&cr->xx);
             free(cr);
         }
         return 0;
-    }
-    else
+    } else
         return 0;
 }
 

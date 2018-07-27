@@ -40,8 +40,7 @@ encode(unsigned long n)
     int e;
 
     e = 0;
-    while (n > 03777)
-    {
+    while (n > 03777) {
         n >>= 1;
         e++;
     }
@@ -54,13 +53,10 @@ csnote(Cs_t *state, const char *name, Csstat_t *sp)
     unsigned long idle;
     long up;
 
-    if (sp->up < 0)
-    {
+    if (sp->up < 0) {
         idle = -sp->up;
         up = 0;
-    }
-    else
-    {
+    } else {
         idle = sp->idle;
         up = sp->up;
     }

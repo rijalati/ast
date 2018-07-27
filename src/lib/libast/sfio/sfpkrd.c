@@ -66,12 +66,10 @@ int action;     /* >0: peeking, if rc>=0, get action records,
     t &= ~SOCKET_PEEK;
 #endif
 
-    for (ntry = 0; ntry < 2; ++ntry)
-    {
+    for (ntry = 0; ntry < 2; ++ntry) {
         r = -1;
 #if _stream_peek
-        if ((t & STREAM_PEEK) && (ntry == 1 || tm < 0))
-        {
+        if ((t & STREAM_PEEK) && (ntry == 1 || tm < 0)) {
 #    ifdef __sun
             /*
              * I_PEEK on stdin can hang rsh+ksh on solaris
@@ -104,17 +102,13 @@ int action;     /* >0: peeking, if rc>=0, get action records,
                 pbuf.databuf.buf = buf;
                 pbuf.databuf.len = 0;
 
-                if ((r = ioctl(fd, I_PEEK, &pbuf)) < 0)
-                {
+                if ((r = ioctl(fd, I_PEEK, &pbuf)) < 0) {
                     if (errno == EINTR)
                         return -1;
                     t &= ~STREAM_PEEK;
-                }
-                else
-                {
+                } else {
                     t &= ~SOCKET_PEEK;
-                    if (r > 0 && (r = pbuf.databuf.len) <= 0)
-                    {
+                    if (r > 0 && (r = pbuf.databuf.len) <= 0) {
                         if (action <= 0) /* read past eof */
                             r = sysreadf(fd, buf, 1);
                         return r;
@@ -137,36 +131,29 @@ int action;     /* >0: peeking, if rc>=0, get action records,
         /* block until there is data before peeking again */
         ((t & STREAM_PEEK) && rc >= 0) ||
         /* let select be interrupted instead of recv which autoresumes */
-        (t & SOCKET_PEEK))
-        {
+        (t & SOCKET_PEEK)) {
             r = -2;
 #if _lib_poll
-            if (r == -2)
-            {
+            if (r == -2) {
                 struct pollfd po;
                 po.fd = fd;
                 po.events = POLLIN;
                 po.revents = 0;
 
-                if ((r = SFPOLL(&po, 1, tm)) < 0)
-                {
+                if ((r = SFPOLL(&po, 1, tm)) < 0) {
                     if (errno == EINTR)
                         return -1;
-                    else if (errno == EAGAIN)
-                    {
+                    else if (errno == EAGAIN) {
                         errno = 0;
                         continue;
-                    }
-                    else
+                    } else
                         r = -2;
-                }
-                else
+                } else
                     r = (po.revents & POLLIN) ? 1 : -1;
             }
 #endif /*_lib_poll*/
 #if _lib_select
-            if (r == -2)
-            {
+            if (r == -2) {
 #    if _hpux_threads && vt_threaded
 #        define fd_set int
 #    endif
@@ -176,53 +163,42 @@ int action;     /* >0: peeking, if rc>=0, get action records,
                 FD_SET(fd, &rd);
                 if (tm < 0)
                     tmp = NIL(struct timeval *);
-                else
-                {
+                else {
                     tmp = &tmb;
                     tmb.tv_sec = tm / SECOND;
                     tmb.tv_usec = (tm % SECOND) * SECOND;
                 }
                 r = select(fd + 1, &rd, NIL(fd_set *), NIL(fd_set *), tmp);
-                if (r < 0)
-                {
+                if (r < 0) {
                     if (errno == EINTR)
                         return -1;
-                    else if (errno == EAGAIN)
-                    {
+                    else if (errno == EAGAIN) {
                         errno = 0;
                         continue;
-                    }
-                    else
+                    } else
                         r = -2;
-                }
-                else
+                } else
                     r = FD_ISSET(fd, &rd) ? 1 : -1;
             }
 #endif /*_lib_select*/
-            if (r == -2)
-            {
+            if (r == -2) {
 #if !_lib_poll && !_lib_select /* both poll and select can't be used */
 #    ifdef FIONREAD            /* quick and dirty check for availability */
                 long nsec = tm < 0 ? 0 : (tm + 999) / 1000;
-                while (nsec > 0 && r < 0)
-                {
+                while (nsec > 0 && r < 0) {
                     long avail = -1;
-                    if ((r = ioctl(fd, FIONREAD, &avail)) < 0)
-                    {
+                    if ((r = ioctl(fd, FIONREAD, &avail)) < 0) {
                         if (errno == EINTR)
                             return -1;
-                        else if (errno == EAGAIN)
-                        {
+                        else if (errno == EAGAIN) {
                             errno = 0;
                             continue;
-                        }
-                        else /* ioctl failed completely */
+                        } else /* ioctl failed completely */
                         {
                             r = -2;
                             break;
                         }
-                    }
-                    else
+                    } else
                         r = avail <= 0 ? -1 : ( ssize_t )avail;
 
                     if (r < 0 && nsec-- > 0)
@@ -238,8 +214,7 @@ int action;     /* >0: peeking, if rc>=0, get action records,
                     return sysreadf(fd, buf, n);
                 else
                     r = -1;
-            }
-            else if (tm >= 0) /* timeout exceeded */
+            } else if (tm >= 0) /* timeout exceeded */
                 return -1;
             else
                 r = -1;
@@ -247,8 +222,7 @@ int action;     /* >0: peeking, if rc>=0, get action records,
         }
 
 #if _socket_peek
-        if (t & SOCKET_PEEK)
-        {
+        if (t & SOCKET_PEEK) {
 #    if __MACH__                                                             \
     && __APPLE__ /* check 10.4 recv(MSG_PEEK) bug that consumes pipe data */
             static int recv_peek_pipe;
@@ -287,19 +261,16 @@ int action;     /* >0: peeking, if rc>=0, get action records,
                 close(fds[1]);
             }
 
-            if (recv_peek_pipe < 0)
-            {
+            if (recv_peek_pipe < 0) {
                 struct stat st; /* recv should work on sockets */
-                if (fstat(fd, &st) < 0 || !S_ISSOCK(st.st_mode))
-                {
+                if (fstat(fd, &st) < 0 || !S_ISSOCK(st.st_mode)) {
                     r = -1;
                     t &= ~SOCKET_PEEK;
                 }
             }
 #    endif
             while ((t & SOCKET_PEEK)
-                   && (r = recv(fd, ( char * )buf, n, MSG_PEEK)) < 0)
-            {
+                   && (r = recv(fd, ( char * )buf, n, MSG_PEEK)) < 0) {
                 if (errno == EINTR)
                     return -1;
                 else if (errno == EAGAIN)
@@ -307,8 +278,7 @@ int action;     /* >0: peeking, if rc>=0, get action records,
                 else
                     t &= ~SOCKET_PEEK;
             }
-            if (r >= 0)
-            {
+            if (r >= 0) {
                 t &= ~STREAM_PEEK;
                 if (r > 0)
                     break;
@@ -323,8 +293,7 @@ int action;     /* >0: peeking, if rc>=0, get action records,
 #endif
     }
 
-    if (r < 0)
-    {
+    if (r < 0) {
         if (tm >= 0 || action > 0)
             return -1;
         else /* get here means: tm < 0 && action <= 0 && rc >= 0 */
@@ -332,8 +301,7 @@ int action;     /* >0: peeking, if rc>=0, get action records,
             if ((action = action ? -action : 1) > ( int )n)
                 action = n;
             r = 0;
-            while ((t = sysreadf(fd, buf, action)) > 0)
-            {
+            while ((t = sysreadf(fd, buf, action)) > 0) {
                 r += t;
                 for (endbuf = buf + t; buf < endbuf;)
                     if (*buf++ == rc)
@@ -346,8 +314,7 @@ int action;     /* >0: peeking, if rc>=0, get action records,
     }
 
     /* successful peek, find the record end */
-    if (rc >= 0)
-    {
+    if (rc >= 0) {
         reg char *sp;
 
         t = action == 0 ? 1 : action < 0 ? -action : action;

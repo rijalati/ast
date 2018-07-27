@@ -147,12 +147,10 @@ ccmapid(const char *name)
                         mp->match,
                         sub,
                         elementsof(sub) / 2,
-                        STR_MAXIMAL | STR_LEFT | STR_ICASE))
-        {
+                        STR_MAXIMAL | STR_LEFT | STR_ICASE)) {
             if (!(c = name[sub[1]]))
                 return mp->ccode;
-            if (sub[1] > n && !isalpha(c))
-            {
+            if (sub[1] > n && !isalpha(c)) {
                 n = sub[1];
                 bp = mp;
             }

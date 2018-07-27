@@ -55,10 +55,8 @@ Sfulong_t v;                 /* the unsigned value to be written */
 
     if (n > 8 || SFWPEEK(f, ps, p) < n)
         n = SFWRITE(f, ( Void_t * )s, n); /* write the hard way */
-    else
-    {
-        switch (n)
-        {
+    else {
+        switch (n) {
         case 8:
             *ps++ = *s++;
         case 7:

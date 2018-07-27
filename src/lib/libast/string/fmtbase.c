@@ -37,8 +37,7 @@ fmtbase(intmax_t n, int b, int p)
     char *buf;
     int z;
 
-    if (!p)
-    {
+    if (!p) {
         if (!n)
             return "0";
         if (!b)

@@ -280,8 +280,7 @@ int lock;           /* Non-zero means lock the window server
     unsigned long bytesAfter;
     Atom actualType;
 
-    if (dispPtr->commTkwin == NULL)
-    {
+    if (dispPtr->commTkwin == NULL) {
         SendInit(interp, dispPtr);
     }
 
@@ -291,8 +290,7 @@ int lock;           /* Non-zero means lock the window server
     regPtr->modified = 0;
     regPtr->allocedByX = 1;
 
-    if (lock && !sendDebug)
-    {
+    if (lock && !sendDebug) {
         XGrabServer(dispPtr->display);
         regPtr->locked = 1;
     }
@@ -314,20 +312,16 @@ int lock;           /* Non-zero means lock the window server
                                 &bytesAfter,
                                 ( unsigned char ** )&regPtr->property);
 
-    if (actualType == None)
-    {
+    if (actualType == None) {
         regPtr->propLength = 0;
         regPtr->property = NULL;
-    }
-    else if ((result != Success) || (actualFormat != 8)
-             || (actualType != XA_STRING))
-    {
+    } else if ((result != Success) || (actualFormat != 8)
+               || (actualType != XA_STRING)) {
         /*
          * The property is improperly formed;  delete it.
          */
 
-        if (regPtr->property != NULL)
-        {
+        if (regPtr->property != NULL) {
             XFree(regPtr->property);
             regPtr->propLength = 0;
             regPtr->property = NULL;
@@ -346,8 +340,7 @@ int lock;           /* Non-zero means lock the window server
      */
 
     if ((regPtr->propLength > 0)
-        && (regPtr->property[regPtr->propLength - 1] != 0))
-    {
+        && (regPtr->property[regPtr->propLength - 1] != 0)) {
         regPtr->propLength++;
     }
     return regPtr;
@@ -382,22 +375,17 @@ char *name;           /* Name of an application. */
     Window commWindow;
 
     commWindow = None;
-    for (p = regPtr->property; (p - regPtr->property) < regPtr->propLength;)
-    {
+    for (p = regPtr->property; (p - regPtr->property) < regPtr->propLength;) {
         entry = p;
-        while ((*p != 0) && (!isspace(UCHAR(*p))))
-        {
+        while ((*p != 0) && (!isspace(UCHAR(*p)))) {
             p++;
         }
-        if ((*p != 0) && (strcmp(name, p + 1) == 0))
-        {
-            if (sscanf(entry, "%x", ( unsigned int * )&commWindow) == 1)
-            {
+        if ((*p != 0) && (strcmp(name, p + 1) == 0)) {
+            if (sscanf(entry, "%x", ( unsigned int * )&commWindow) == 1) {
                 return commWindow;
             }
         }
-        while (*p != 0)
-        {
+        while (*p != 0) {
             p++;
         }
         p++;
@@ -432,33 +420,27 @@ char *name;           /* Name of an application. */
     char *p, *entry, *entryName;
     int count;
 
-    for (p = regPtr->property; (p - regPtr->property) < regPtr->propLength;)
-    {
+    for (p = regPtr->property; (p - regPtr->property) < regPtr->propLength;) {
         entry = p;
-        while ((*p != 0) && (!isspace(UCHAR(*p))))
-        {
+        while ((*p != 0) && (!isspace(UCHAR(*p)))) {
             p++;
         }
-        if (*p != 0)
-        {
+        if (*p != 0) {
             p++;
         }
         entryName = p;
-        while (*p != 0)
-        {
+        while (*p != 0) {
             p++;
         }
         p++;
-        if ((strcmp(name, entryName) == 0))
-        {
+        if ((strcmp(name, entryName) == 0)) {
             /*
              * Found the matching entry.  Copy everything after it
              * down on top of it.
              */
 
             count = regPtr->propLength - (p - regPtr->property);
-            if (count > 0)
-            {
+            if (count > 0) {
                 memmove(( VOID * )entry, ( VOID * )p, ( size_t )count);
             }
             regPtr->propLength -= p - entry;
@@ -504,17 +486,13 @@ Window commWindow;    /* X identifier for comm. window of
     newProp = ( char * )ckalloc(( unsigned )(regPtr->propLength + newBytes));
     strcpy(newProp, id);
     strcpy(newProp + idLength, name);
-    if (regPtr->property != NULL)
-    {
+    if (regPtr->property != NULL) {
         memcpy(( VOID * )(newProp + newBytes),
                ( VOID * )regPtr->property,
                regPtr->propLength);
-        if (regPtr->allocedByX)
-        {
+        if (regPtr->allocedByX) {
             XFree(regPtr->property);
-        }
-        else
-        {
+        } else {
             ckfree(regPtr->property);
         }
     }
@@ -548,10 +526,8 @@ static void RegClose(regPtr) NameRegistry *regPtr; /* Pointer to a registry
                                                     * opened with a previous
                                                     * call to RegOpen. */
 {
-    if (regPtr->modified)
-    {
-        if (!regPtr->locked && !sendDebug)
-        {
+    if (regPtr->modified) {
+        if (!regPtr->locked && !sendDebug) {
             panic("The name registry was modified without being locked!");
         }
         XChangeProperty(regPtr->dispPtr->display,
@@ -564,20 +540,15 @@ static void RegClose(regPtr) NameRegistry *regPtr; /* Pointer to a registry
                         ( int )regPtr->propLength);
     }
 
-    if (regPtr->locked)
-    {
+    if (regPtr->locked) {
         XUngrabServer(regPtr->dispPtr->display);
     }
     XFlush(regPtr->dispPtr->display);
 
-    if (regPtr->property != NULL)
-    {
-        if (regPtr->allocedByX)
-        {
+    if (regPtr->property != NULL) {
+        if (regPtr->allocedByX) {
             XFree(regPtr->property);
-        }
-        else
-        {
+        } else {
             ckfree(regPtr->property);
         }
     }
@@ -643,8 +614,7 @@ int oldOK;          /* Non-zero means that we should consider
                                 &bytesAfter,
                                 ( unsigned char ** )&property);
 
-    if ((result == Success) && (actualType == None))
-    {
+    if ((result == Success) && (actualType == None)) {
         XWindowAttributes atts;
 
         /*
@@ -662,40 +632,29 @@ int oldOK;          /* Non-zero means that we should consider
         if (!oldOK
             || !XGetWindowAttributes(dispPtr->display, commWindow, &atts)
             || (atts.width != 1) || (atts.height != 1)
-            || (atts.map_state != IsUnmapped))
-        {
+            || (atts.map_state != IsUnmapped)) {
             result = 0;
-        }
-        else
-        {
+        } else {
             result = 1;
         }
-    }
-    else if ((result == Success) && (actualFormat == 8)
-             && (actualType == XA_STRING))
-    {
+    } else if ((result == Success) && (actualFormat == 8)
+               && (actualType == XA_STRING)) {
         result = 0;
         if (Tcl_SplitList(( Tcl_Interp * )NULL, property, &argc, &argv)
-            == TCL_OK)
-        {
-            for (i = 0; i < argc; i++)
-            {
-                if (strcmp(argv[i], name) == 0)
-                {
+            == TCL_OK) {
+            for (i = 0; i < argc; i++) {
+                if (strcmp(argv[i], name) == 0) {
                     result = 1;
                     break;
                 }
             }
             ckfree(( char * )argv);
         }
-    }
-    else
-    {
+    } else {
         result = 0;
     }
     Tk_DeleteErrorHandler(handler);
-    if (property != NULL)
-    {
+    if (property != NULL) {
         XFree(property);
     }
     return result;
@@ -733,12 +692,10 @@ static int ServerSecure(dispPtr) TkDisplay *dispPtr; /* Display to check. */
 
     secure = 0;
     addrPtr = XListHosts(dispPtr->display, &numHosts, &enabled);
-    if (enabled && (numHosts == 0))
-    {
+    if (enabled && (numHosts == 0)) {
         secure = 1;
     }
-    if (addrPtr != NULL)
-    {
+    if (addrPtr != NULL) {
         XFree(( char * )addrPtr);
     }
     return secure;
@@ -796,8 +753,7 @@ char *name;                                /* The name that will be used to
 
     dispPtr = winPtr->dispPtr;
     interp = winPtr->mainPtr->interp;
-    if (dispPtr->commTkwin == NULL)
-    {
+    if (dispPtr->commTkwin == NULL) {
         SendInit(interp, winPtr->dispPtr);
     }
 
@@ -807,10 +763,8 @@ char *name;                                /* The name that will be used to
      */
 
     regPtr = RegOpen(interp, winPtr->dispPtr, 1);
-    for (riPtr = registry;; riPtr = riPtr->nextPtr)
-    {
-        if (riPtr == NULL)
-        {
+    for (riPtr = registry;; riPtr = riPtr->nextPtr) {
+        if (riPtr == NULL) {
             /*
              * This interpreter isn't currently registered;  create
              * the data structure that will be used to it locally,
@@ -826,8 +780,7 @@ char *name;                                /* The name that will be used to
             interp, "send", Tk_SendCmd, ( ClientData )riPtr, DeleteProc);
             break;
         }
-        if (riPtr->interp == interp)
-        {
+        if (riPtr->interp == interp) {
             /*
              * The interpreter is currently registered;  remove it from
              * the name registry.
@@ -849,12 +802,9 @@ char *name;                                /* The name that will be used to
     actualName = name;
     offset = 0; /* Needed only to avoid "used before
                  * set" compiler warnings. */
-    for (i = 1;; i++)
-    {
-        if (i > 1)
-        {
-            if (i == 2)
-            {
+    for (i = 1;; i++) {
+        if (i > 1) {
+            if (i == 2) {
                 Tcl_DStringInit(&dString);
                 Tcl_DStringAppend(&dString, name, -1);
                 Tcl_DStringAppend(&dString, " #", 2);
@@ -865,8 +815,7 @@ char *name;                                /* The name that will be used to
             sprintf(actualName + offset, "%d", i);
         }
         w = RegFindName(regPtr, actualName);
-        if (w == None)
-        {
+        if (w == None) {
             break;
         }
 
@@ -876,21 +825,17 @@ char *name;                                /* The name that will be used to
          * name from the registry?).
          */
 
-        if (w == Tk_WindowId(dispPtr->commTkwin))
-        {
-            for (riPtr2 = registry; riPtr2 != NULL; riPtr2 = riPtr2->nextPtr)
-            {
+        if (w == Tk_WindowId(dispPtr->commTkwin)) {
+            for (riPtr2 = registry; riPtr2 != NULL;
+                 riPtr2 = riPtr2->nextPtr) {
                 if ((riPtr2->interp != interp)
-                    && (strcmp(riPtr2->name, actualName) == 0))
-                {
+                    && (strcmp(riPtr2->name, actualName) == 0)) {
                     goto nextSuffix;
                 }
             }
             RegDeleteName(regPtr, actualName);
             break;
-        }
-        else if (!ValidateName(winPtr->dispPtr, actualName, w, 1))
-        {
+        } else if (!ValidateName(winPtr->dispPtr, actualName, w, 1)) {
             RegDeleteName(regPtr, actualName);
             break;
         }
@@ -908,8 +853,7 @@ char *name;                                /* The name that will be used to
     RegClose(regPtr);
     riPtr->name = ( char * )ckalloc(( unsigned )(strlen(actualName) + 1));
     strcpy(riPtr->name, actualName);
-    if (actualName != name)
-    {
+    if (actualName != name) {
         Tcl_DStringFree(&dString);
     }
     UpdateCommWindow(dispPtr);
@@ -963,40 +907,30 @@ char **argv;           /* Argument strings. */
 
     async = 0;
     winPtr = ( TkWindow * )Tk_MainWindow(interp);
-    if (winPtr == NULL)
-    {
+    if (winPtr == NULL) {
         return TCL_ERROR;
     }
-    for (i = 1; i < (argc - 1);)
-    {
-        if (argv[i][0] != '-')
-        {
+    for (i = 1; i < (argc - 1);) {
+        if (argv[i][0] != '-') {
             break;
         }
         c = argv[i][1];
         length = strlen(argv[i]);
-        if ((c == 'a') && (strncmp(argv[i], "-async", length) == 0))
-        {
+        if ((c == 'a') && (strncmp(argv[i], "-async", length) == 0)) {
             async = 1;
             i++;
-        }
-        else if ((c == 'd') && (strncmp(argv[i], "-displayof", length) == 0))
-        {
+        } else if ((c == 'd')
+                   && (strncmp(argv[i], "-displayof", length) == 0)) {
             winPtr = ( TkWindow * )Tk_NameToWindow(
             interp, argv[i + 1], ( Tk_Window )winPtr);
-            if (winPtr == NULL)
-            {
+            if (winPtr == NULL) {
                 return TCL_ERROR;
             }
             i += 2;
-        }
-        else if (strcmp(argv[i], "--") == 0)
-        {
+        } else if (strcmp(argv[i], "--") == 0) {
             i++;
             break;
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp,
                              "bad option \"",
                              argv[i],
@@ -1006,8 +940,7 @@ char **argv;           /* Argument strings. */
         }
     }
 
-    if (argc < (i + 2))
-    {
+    if (argc < (i + 2)) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -1019,8 +952,7 @@ char **argv;           /* Argument strings. */
     firstArg = i + 1;
 
     dispPtr = winPtr->dispPtr;
-    if (dispPtr->commTkwin == NULL)
-    {
+    if (dispPtr->commTkwin == NULL) {
         SendInit(interp, winPtr->dispPtr);
     }
 
@@ -1032,36 +964,28 @@ char **argv;           /* Argument strings. */
      * could be the same!
      */
 
-    for (riPtr = registry; riPtr != NULL; riPtr = riPtr->nextPtr)
-    {
+    for (riPtr = registry; riPtr != NULL; riPtr = riPtr->nextPtr) {
         if ((riPtr->dispPtr != dispPtr)
-            || (strcmp(riPtr->name, destName) != 0))
-        {
+            || (strcmp(riPtr->name, destName) != 0)) {
             continue;
         }
         Tcl_Preserve(( ClientData )riPtr);
         localInterp = riPtr->interp;
         Tcl_Preserve(( ClientData )localInterp);
-        if (firstArg == (argc - 1))
-        {
+        if (firstArg == (argc - 1)) {
             result = Tcl_GlobalEval(localInterp, argv[firstArg]);
-        }
-        else
-        {
+        } else {
             Tcl_DStringInit(&request);
             Tcl_DStringAppend(&request, argv[firstArg], -1);
-            for (i = firstArg + 1; i < argc; i++)
-            {
+            for (i = firstArg + 1; i < argc; i++) {
                 Tcl_DStringAppend(&request, " ", 1);
                 Tcl_DStringAppend(&request, argv[i], -1);
             }
             result = Tcl_GlobalEval(localInterp, Tcl_DStringValue(&request));
             Tcl_DStringFree(&request);
         }
-        if (interp != localInterp)
-        {
-            if (result == TCL_ERROR)
-            {
+        if (interp != localInterp) {
+            if (result == TCL_ERROR) {
 
                 /*
                  * An error occurred, so transfer error information from the
@@ -1085,14 +1009,11 @@ char **argv;           /* Argument strings. */
                 localInterp, "errorCode", ( char * )NULL, TCL_GLOBAL_ONLY),
                 TCL_GLOBAL_ONLY);
             }
-            if (localInterp->freeProc != TCL_STATIC)
-            {
+            if (localInterp->freeProc != TCL_STATIC) {
                 interp->result = localInterp->result;
                 interp->freeProc = localInterp->freeProc;
                 localInterp->freeProc = TCL_STATIC;
-            }
-            else
-            {
+            } else {
                 Tcl_SetResult(interp, localInterp->result, TCL_VOLATILE);
             }
             Tcl_ResetResult(localInterp);
@@ -1109,8 +1030,7 @@ char **argv;           /* Argument strings. */
     regPtr = RegOpen(interp, winPtr->dispPtr, 0);
     commWindow = RegFindName(regPtr, destName);
     RegClose(regPtr);
-    if (commWindow == None)
-    {
+    if (commWindow == None) {
         Tcl_AppendResult(
         interp, "no application named \"", destName, "\"", ( char * )NULL);
         return TCL_ERROR;
@@ -1125,8 +1045,7 @@ char **argv;           /* Argument strings. */
     Tcl_DStringInit(&request);
     Tcl_DStringAppend(&request, "\0c\0-n ", 6);
     Tcl_DStringAppend(&request, destName, -1);
-    if (!async)
-    {
+    if (!async) {
         sprintf(buffer,
                 "%x %d",
                 ( unsigned int )Tk_WindowId(dispPtr->commTkwin),
@@ -1136,8 +1055,7 @@ char **argv;           /* Argument strings. */
     }
     Tcl_DStringAppend(&request, "\0-s ", 4);
     Tcl_DStringAppend(&request, argv[firstArg], -1);
-    for (i = firstArg + 1; i < argc; i++)
-    {
+    for (i = firstArg + 1; i < argc; i++) {
         Tcl_DStringAppend(&request, " ", 1);
         Tcl_DStringAppend(&request, argv[i], -1);
     }
@@ -1149,8 +1067,7 @@ char **argv;           /* Argument strings. */
                                 (async) ? ( PendingCommand * )NULL
                                         : &pending);
     Tcl_DStringFree(&request);
-    if (async)
-    {
+    if (async) {
         /*
          * This is an asynchronous send:  return immediately without
          * waiting for a response.
@@ -1190,8 +1107,7 @@ char **argv;           /* Argument strings. */
     prevRestrictProc
     = Tk_RestrictEvents(SendRestrictProc, ( ClientData )NULL, &prevArg);
     Tcl_CreateModalTimeout(1000, TimeoutProc, ( ClientData )&pending);
-    while (!pending.gotResponse)
-    {
+    while (!pending.gotResponse) {
         Tcl_DoOneEvent(TCL_WINDOW_EVENTS);
     }
     Tcl_DeleteModalTimeout(TimeoutProc, ( ClientData )&pending);
@@ -1202,25 +1118,19 @@ char **argv;           /* Argument strings. */
      * and return the result.
      */
 
-    if (pendingCommands == &pending)
-    {
+    if (pendingCommands == &pending) {
         pendingCommands = pending.nextPtr;
-    }
-    else
-    {
+    } else {
         PendingCommand *pcPtr;
 
-        for (pcPtr = pendingCommands; pcPtr != NULL; pcPtr = pcPtr->nextPtr)
-        {
-            if (pcPtr->nextPtr == &pending)
-            {
+        for (pcPtr = pendingCommands; pcPtr != NULL; pcPtr = pcPtr->nextPtr) {
+            if (pcPtr->nextPtr == &pending) {
                 pcPtr->nextPtr = pending.nextPtr;
                 break;
             }
         }
     }
-    if (pending.errorInfo != NULL)
-    {
+    if (pending.errorInfo != NULL) {
         /*
          * Special trick: must clear the interp's result before calling
          * Tcl_AddErrorInfo, since Tcl_AddErrorInfo will store the interp's
@@ -1232,8 +1142,7 @@ char **argv;           /* Argument strings. */
         Tcl_AddErrorInfo(interp, pending.errorInfo);
         ckfree(pending.errorInfo);
     }
-    if (pending.errorCode != NULL)
-    {
+    if (pending.errorCode != NULL) {
         Tcl_SetVar2(interp,
                     "errorCode",
                     ( char * )NULL,
@@ -1284,45 +1193,36 @@ Tk_Window tkwin; /* Window whose display is to be used
      */
 
     regPtr = RegOpen(interp, winPtr->dispPtr, 1);
-    for (p = regPtr->property; (p - regPtr->property) < regPtr->propLength;)
-    {
+    for (p = regPtr->property; (p - regPtr->property) < regPtr->propLength;) {
         entry = p;
-        if (sscanf(p, "%x", ( unsigned int * )&commWindow) != 1)
-        {
+        if (sscanf(p, "%x", ( unsigned int * )&commWindow) != 1) {
             commWindow = None;
         }
-        while ((*p != 0) && (!isspace(UCHAR(*p))))
-        {
+        while ((*p != 0) && (!isspace(UCHAR(*p)))) {
             p++;
         }
-        if (*p != 0)
-        {
+        if (*p != 0) {
             p++;
         }
         entryName = p;
-        while (*p != 0)
-        {
+        while (*p != 0) {
             p++;
         }
         p++;
-        if (ValidateName(winPtr->dispPtr, entryName, commWindow, 1))
-        {
+        if (ValidateName(winPtr->dispPtr, entryName, commWindow, 1)) {
             /*
              * The application still exists; add its name to the result.
              */
 
             Tcl_AppendElement(interp, entryName);
-        }
-        else
-        {
+        } else {
             /*
              * This name is bogus (perhaps the application died without
              * cleaning up its entry in the registry?).  Delete the name.
              */
 
             count = regPtr->propLength - (p - regPtr->property);
-            if (count > 0)
-            {
+            if (count > 0) {
                 memmove(( VOID * )entry, ( VOID * )p, ( size_t )count);
             }
             regPtr->propLength -= p - entry;
@@ -1367,8 +1267,7 @@ TkDisplay *dispPtr; /* Display to initialize. */
 
     dispPtr->commTkwin = Tk_CreateWindow(
     interp, ( Tk_Window )NULL, "_comm", DisplayString(dispPtr->display));
-    if (dispPtr->commTkwin == NULL)
-    {
+    if (dispPtr->commTkwin == NULL) {
         panic("Tk_CreateWindow failed in SendInit!");
     }
     atts.override_redirect = True;
@@ -1428,8 +1327,7 @@ XEvent *eventPtr; /* Information about event. */
     Tcl_Interp *remoteInterp; /* Interp in which to execute the command. */
 
     if ((eventPtr->xproperty.atom != dispPtr->commProperty)
-        || (eventPtr->xproperty.state != PropertyNewValue))
-    {
+        || (eventPtr->xproperty.state != PropertyNewValue)) {
         return;
     }
 
@@ -1457,10 +1355,8 @@ XEvent *eventPtr; /* Information about event. */
      */
 
     if ((result != Success) || (actualType != XA_STRING)
-        || (actualFormat != 8))
-    {
-        if (propInfo != NULL)
-        {
+        || (actualFormat != 8)) {
+        if (propInfo != NULL) {
             XFree(propInfo);
         }
         return;
@@ -1472,8 +1368,7 @@ XEvent *eventPtr; /* Information about event. */
      * single command or result.
      */
 
-    for (p = propInfo; (p - propInfo) < numItems;)
-    {
+    for (p = propInfo; (p - propInfo) < numItems;) {
         /*
          * Ignore leading NULLs; each command or result starts with a
          * NULL so that no matter how badly formed a preceding command
@@ -1481,14 +1376,12 @@ XEvent *eventPtr; /* Information about event. */
          * starting.
          */
 
-        if (*p == 0)
-        {
+        if (*p == 0) {
             p++;
             continue;
         }
 
-        if ((*p == 'c') && (p[1] == 0))
-        {
+        if ((*p == 'c') && (p[1] == 0)) {
             Window commWindow;
             char *interpName, *script, *serial, *end;
             Tcl_DString reply;
@@ -1508,43 +1401,34 @@ XEvent *eventPtr; /* Information about event. */
             commWindow = None;
             serial = "";
             script = NULL;
-            while (((p - propInfo) < numItems) && (*p == '-'))
-            {
-                switch (p[1])
-                {
+            while (((p - propInfo) < numItems) && (*p == '-')) {
+                switch (p[1]) {
                 case 'r':
                     commWindow = ( Window )strtoul(p + 2, &end, 16);
-                    if ((end == p + 2) || (*end != ' '))
-                    {
+                    if ((end == p + 2) || (*end != ' ')) {
                         commWindow = None;
-                    }
-                    else
-                    {
+                    } else {
                         p = serial = end + 1;
                     }
                     break;
                 case 'n':
-                    if (p[2] == ' ')
-                    {
+                    if (p[2] == ' ') {
                         interpName = p + 3;
                     }
                     break;
                 case 's':
-                    if (p[2] == ' ')
-                    {
+                    if (p[2] == ' ') {
                         script = p + 3;
                     }
                     break;
                 }
-                while (*p != 0)
-                {
+                while (*p != 0) {
                     p++;
                 }
                 p++;
             }
 
-            if ((script == NULL) || (interpName == NULL))
-            {
+            if ((script == NULL) || (interpName == NULL)) {
                 continue;
             }
 
@@ -1553,18 +1437,15 @@ XEvent *eventPtr; /* Information about event. */
              * time if we need to return an error.
              */
 
-            if (commWindow != None)
-            {
+            if (commWindow != None) {
                 Tcl_DStringInit(&reply);
                 Tcl_DStringAppend(&reply, "\0r\0-s ", 6);
                 Tcl_DStringAppend(&reply, serial, -1);
                 Tcl_DStringAppend(&reply, "\0-r ", 4);
             }
 
-            if (!ServerSecure(dispPtr))
-            {
-                if (commWindow != None)
-                {
+            if (!ServerSecure(dispPtr)) {
+                if (commWindow != None) {
                     Tcl_DStringAppend(
                     &reply,
                     "X server insecure (must use xauth-style authorization); "
@@ -1579,12 +1460,9 @@ XEvent *eventPtr; /* Information about event. */
              * Locate the application, then execute the script.
              */
 
-            for (riPtr = registry;; riPtr = riPtr->nextPtr)
-            {
-                if (riPtr == NULL)
-                {
-                    if (commWindow != None)
-                    {
+            for (riPtr = registry;; riPtr = riPtr->nextPtr) {
+                if (riPtr == NULL) {
+                    if (commWindow != None) {
                         Tcl_DStringAppend(
                         &reply, "receiver never heard of interpreter \"", -1);
                         Tcl_DStringAppend(&reply, interpName, -1);
@@ -1593,8 +1471,7 @@ XEvent *eventPtr; /* Information about event. */
                     result = TCL_ERROR;
                     goto returnResult;
                 }
-                if (strcmp(riPtr->name, interpName) == 0)
-                {
+                if (strcmp(riPtr->name, interpName) == 0) {
                     break;
                 }
             }
@@ -1617,19 +1494,16 @@ XEvent *eventPtr; /* Information about event. */
              * riPtr->interp field to NULL, hence the check below for NULL.
              */
 
-            if (commWindow != None)
-            {
+            if (commWindow != None) {
                 Tcl_DStringAppend(&reply, remoteInterp->result, -1);
-                if (result == TCL_ERROR)
-                {
+                if (result == TCL_ERROR) {
                     char *varValue;
 
                     varValue = Tcl_GetVar2(remoteInterp,
                                            "errorInfo",
                                            ( char * )NULL,
                                            TCL_GLOBAL_ONLY);
-                    if (varValue != NULL)
-                    {
+                    if (varValue != NULL) {
                         Tcl_DStringAppend(&reply, "\0-i ", 4);
                         Tcl_DStringAppend(&reply, varValue, -1);
                     }
@@ -1637,8 +1511,7 @@ XEvent *eventPtr; /* Information about event. */
                                            "errorCode",
                                            ( char * )NULL,
                                            TCL_GLOBAL_ONLY);
-                    if (varValue != NULL)
-                    {
+                    if (varValue != NULL) {
                         Tcl_DStringAppend(&reply, "\0-e ", 4);
                         Tcl_DStringAppend(&reply, varValue, -1);
                     }
@@ -1655,10 +1528,8 @@ XEvent *eventPtr; /* Information about event. */
              */
 
         returnResult:
-            if (commWindow != None)
-            {
-                if (result != TCL_OK)
-                {
+            if (commWindow != None) {
+                if (result != TCL_OK) {
                     char buffer[20];
 
                     sprintf(buffer, "%d", result);
@@ -1674,9 +1545,7 @@ XEvent *eventPtr; /* Information about event. */
                 XFlush(dispPtr->display);
                 Tcl_DStringFree(&reply);
             }
-        }
-        else if ((*p == 'r') && (p[1] == 0))
-        {
+        } else if ((*p == 'r') && (p[1] == 0)) {
             int serial, code, gotSerial;
             char *errorInfo, *errorCode, *resultString;
             PendingCommand *pcPtr;
@@ -1695,50 +1564,41 @@ XEvent *eventPtr; /* Information about event. */
             errorInfo = NULL;
             errorCode = NULL;
             resultString = "";
-            while (((p - propInfo) < numItems) && (*p == '-'))
-            {
-                switch (p[1])
-                {
+            while (((p - propInfo) < numItems) && (*p == '-')) {
+                switch (p[1]) {
                 case 'c':
-                    if (sscanf(p + 2, " %d", &code) != 1)
-                    {
+                    if (sscanf(p + 2, " %d", &code) != 1) {
                         code = TCL_OK;
                     }
                     break;
                 case 'e':
-                    if (p[2] == ' ')
-                    {
+                    if (p[2] == ' ') {
                         errorCode = p + 3;
                     }
                     break;
                 case 'i':
-                    if (p[2] == ' ')
-                    {
+                    if (p[2] == ' ') {
                         errorInfo = p + 3;
                     }
                     break;
                 case 'r':
-                    if (p[2] == ' ')
-                    {
+                    if (p[2] == ' ') {
                         resultString = p + 3;
                     }
                     break;
                 case 's':
-                    if (sscanf(p + 2, " %d", &serial) == 1)
-                    {
+                    if (sscanf(p + 2, " %d", &serial) == 1) {
                         gotSerial = 1;
                     }
                     break;
                 }
-                while (*p != 0)
-                {
+                while (*p != 0) {
                     p++;
                 }
                 p++;
             }
 
-            if (!gotSerial)
-            {
+            if (!gotSerial) {
                 continue;
             }
 
@@ -1748,29 +1608,23 @@ XEvent *eventPtr; /* Information about event. */
              */
 
             for (pcPtr = pendingCommands; pcPtr != NULL;
-                 pcPtr = pcPtr->nextPtr)
-            {
-                if ((serial != pcPtr->serial) || (pcPtr->result != NULL))
-                {
+                 pcPtr = pcPtr->nextPtr) {
+                if ((serial != pcPtr->serial) || (pcPtr->result != NULL)) {
                     continue;
                 }
                 pcPtr->code = code;
-                if (resultString != NULL)
-                {
+                if (resultString != NULL) {
                     pcPtr->result = ( char * )ckalloc(
                     ( unsigned )(strlen(resultString) + 1));
                     strcpy(pcPtr->result, resultString);
                 }
-                if (code == TCL_ERROR)
-                {
-                    if (errorInfo != NULL)
-                    {
+                if (code == TCL_ERROR) {
+                    if (errorInfo != NULL) {
                         pcPtr->errorInfo = ( char * )ckalloc(
                         ( unsigned )(strlen(errorInfo) + 1));
                         strcpy(pcPtr->errorInfo, errorInfo);
                     }
-                    if (errorCode != NULL)
-                    {
+                    if (errorCode != NULL) {
                         pcPtr->errorCode = ( char * )ckalloc(
                         ( unsigned )(strlen(errorCode) + 1));
                         strcpy(pcPtr->errorCode, errorCode);
@@ -1779,16 +1633,13 @@ XEvent *eventPtr; /* Information about event. */
                 pcPtr->gotResponse = 1;
                 break;
             }
-        }
-        else
-        {
+        } else {
             /*
              * Didn't recognize this thing.  Just skip through the next
              * null character and try again.
              */
 
-            while (*p != 0)
-            {
+            while (*p != 0) {
                 p++;
             }
             p++;
@@ -1860,8 +1711,7 @@ XErrorEvent *errorPtr; /* Information about error. */
     PendingCommand *pendingPtr = ( PendingCommand * )clientData;
     PendingCommand *pcPtr;
 
-    if (pendingPtr == NULL)
-    {
+    if (pendingPtr == NULL) {
         return 0;
     }
 
@@ -1869,10 +1719,8 @@ XErrorEvent *errorPtr; /* Information about error. */
      * Make sure this command is still pending.
      */
 
-    for (pcPtr = pendingCommands; pcPtr != NULL; pcPtr = pcPtr->nextPtr)
-    {
-        if ((pcPtr == pendingPtr) && (pcPtr->result == NULL))
-        {
+    for (pcPtr = pendingCommands; pcPtr != NULL; pcPtr = pcPtr->nextPtr) {
+        if ((pcPtr == pendingPtr) && (pcPtr->result == NULL)) {
             pcPtr->result
             = ( char * )ckalloc(( unsigned )(strlen(pcPtr->target) + 50));
             sprintf(
@@ -1919,33 +1767,25 @@ TimeoutProc(clientData) ClientData clientData; /* Information about command
      * existence of the target application.
      */
 
-    for (pcPtr2 = pendingCommands; pcPtr2 != NULL; pcPtr2 = pcPtr2->nextPtr)
-    {
+    for (pcPtr2 = pendingCommands; pcPtr2 != NULL; pcPtr2 = pcPtr2->nextPtr) {
         char *msg;
-        if ((pcPtr2 != pcPtr) || (pcPtr2->result != NULL))
-        {
+        if ((pcPtr2 != pcPtr) || (pcPtr2->result != NULL)) {
             continue;
         }
         if (!ValidateName(
-            pcPtr2->dispPtr, pcPtr2->target, pcPtr2->commWindow, 0))
-        {
+            pcPtr2->dispPtr, pcPtr2->target, pcPtr2->commWindow, 0)) {
             if (ValidateName(
-                pcPtr2->dispPtr, pcPtr2->target, pcPtr2->commWindow, 1))
-            {
+                pcPtr2->dispPtr, pcPtr2->target, pcPtr2->commWindow, 1)) {
                 msg
                 = "target application died or uses a Tk version before 4.0";
-            }
-            else
-            {
+            } else {
                 msg = "target application died";
             }
             pcPtr2->code = TCL_ERROR;
             pcPtr2->result = ( char * )ckalloc(( unsigned )(strlen(msg) + 1));
             strcpy(pcPtr2->result, msg);
             pcPtr2->gotResponse = 1;
-        }
-        else
-        {
+        } else {
             Tcl_DeleteModalTimeout(TimeoutProc, clientData);
             Tcl_CreateModalTimeout(2000, TimeoutProc, clientData);
         }
@@ -1981,16 +1821,11 @@ DeleteProc(clientData) ClientData clientData; /* Info about registration,
     RegDeleteName(regPtr, riPtr->name);
     RegClose(regPtr);
 
-    if (registry == riPtr)
-    {
+    if (registry == riPtr) {
         registry = riPtr->nextPtr;
-    }
-    else
-    {
-        for (riPtr2 = registry; riPtr2 != NULL; riPtr2 = riPtr2->nextPtr)
-        {
-            if (riPtr2->nextPtr == riPtr)
-            {
+    } else {
+        for (riPtr2 = registry; riPtr2 != NULL; riPtr2 = riPtr2->nextPtr) {
+            if (riPtr2->nextPtr == riPtr) {
                 riPtr2->nextPtr = riPtr->nextPtr;
                 break;
             }
@@ -2028,15 +1863,14 @@ XEvent *eventPtr; /* Event that just arrived. */
 {
     TkDisplay *dispPtr;
 
-    if (eventPtr->type != PropertyNotify)
-    {
+    if (eventPtr->type != PropertyNotify) {
         return TK_DEFER_EVENT;
     }
-    for (dispPtr = tkDisplayList; dispPtr != NULL; dispPtr = dispPtr->nextPtr)
-    {
+    for (dispPtr = tkDisplayList; dispPtr != NULL;
+         dispPtr = dispPtr->nextPtr) {
         if ((eventPtr->xany.display == dispPtr->display)
-            && (eventPtr->xproperty.window == Tk_WindowId(dispPtr->commTkwin)))
-        {
+            && (eventPtr->xproperty.window
+                == Tk_WindowId(dispPtr->commTkwin))) {
             return TK_PROCESS_EVENT;
         }
     }
@@ -2069,8 +1903,7 @@ static void UpdateCommWindow(dispPtr) TkDisplay *dispPtr; /* Display whose
     RegisteredInterp *riPtr;
 
     Tcl_DStringInit(&names);
-    for (riPtr = registry; riPtr != NULL; riPtr = riPtr->nextPtr)
-    {
+    for (riPtr = registry; riPtr != NULL; riPtr = riPtr->nextPtr) {
         Tcl_DStringAppendElement(&names, riPtr->name);
     }
     XChangeProperty(dispPtr->display,

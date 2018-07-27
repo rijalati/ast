@@ -159,8 +159,7 @@ getegid(void)
 {
     if (intercept_rgid == -1)
         intercept_rgid = getgid();
-    if (sh_isregress(REGRESS_egid))
-    {
+    if (sh_isregress(REGRESS_egid)) {
         TRACE(
         egid,
         "getegid",
@@ -176,10 +175,8 @@ setgid(gid_t gid)
 {
     if (intercept_rgid == -1)
         intercept_rgid = getgid();
-    if (sh_isregress(REGRESS_egid))
-    {
-        if (gid != intercept_rgid && gid != intercept_sgid)
-        {
+    if (sh_isregress(REGRESS_egid)) {
+        if (gid != intercept_rgid && gid != intercept_sgid) {
             TRACE(egid, "setgid", ("%s", "EPERM"));
             errno = EPERM;
             return -1;
@@ -190,9 +187,7 @@ setgid(gid_t gid)
         "setgid",
         ("%s",
          intercept_egid == intercept_rgid ? "egid==rgid" : "egid!=rgid"));
-    }
-    else if (gid != intercept_rgid)
-    {
+    } else if (gid != intercept_rgid) {
         errno = EPERM;
         return -1;
     }
@@ -212,8 +207,7 @@ geteuid(void)
 {
     if (intercept_ruid == -1)
         intercept_ruid = getuid();
-    if (sh_isregress(REGRESS_euid))
-    {
+    if (sh_isregress(REGRESS_euid)) {
         TRACE(
         euid,
         "geteuid",
@@ -229,10 +223,8 @@ setuid(uid_t uid)
 {
     if (intercept_ruid == -1)
         intercept_ruid = getuid();
-    if (sh_isregress(REGRESS_euid))
-    {
-        if (uid != intercept_ruid && uid != intercept_suid)
-        {
+    if (sh_isregress(REGRESS_euid)) {
+        if (uid != intercept_ruid && uid != intercept_suid) {
             TRACE(euid, "setuid", ("%s", "EPERM"));
             errno = EPERM;
             return -1;
@@ -243,9 +235,7 @@ setuid(uid_t uid)
         "setuid",
         ("%s",
          intercept_euid == intercept_ruid ? "euid==ruid" : "euid!=ruid"));
-    }
-    else if (uid != intercept_ruid)
-    {
+    } else if (uid != intercept_ruid) {
         errno = EPERM;
         return -1;
     }
@@ -288,10 +278,8 @@ b___regress__(int argc, char **argv, Shbltin_t *context)
     Shell_t *shp = context->shp;
     int n;
 
-    for (;;)
-    {
-        switch (n = optget(argv, usage))
-        {
+    for (;;) {
+        switch (n = optget(argv, usage)) {
         case '?':
             errormsg(SH_DICT, ERROR_usage(2), "%s", opt_info.arg);
             break;
@@ -301,42 +289,34 @@ b___regress__(int argc, char **argv, Shbltin_t *context)
         case 0:
             break;
         default:
-            if (n < -100)
-            {
+            if (n < -100) {
                 n = -(n + 100);
                 if (opt_info.arg || opt_info.number)
                     sh_onregress(n);
                 else
                     sh_offregress(n);
-                switch (n)
-                {
+                switch (n) {
                 case REGRESS_egid:
-                    if (sh_isregress(n))
-                    {
+                    if (sh_isregress(n)) {
                         intercept_egid = intercept_sgid
                         = ( gid_t )opt_info.number;
                         TRACE(egid, argv[0], ("%d", intercept_egid));
-                    }
-                    else
+                    } else
                         TRACE(egid, argv[0], ("%s", "off"));
                     break;
                 case REGRESS_euid:
-                    if (sh_isregress(n))
-                    {
+                    if (sh_isregress(n)) {
                         intercept_euid = intercept_suid
                         = ( uid_t )opt_info.number;
                         TRACE(euid, argv[0], ("%d", intercept_euid));
-                    }
-                    else
+                    } else
                         TRACE(euid, argv[0], ("%s", "off"));
                     break;
                 case REGRESS_p_suid:
-                    if (sh_isregress(n))
-                    {
+                    if (sh_isregress(n)) {
                         intercept_p_suid = ( uid_t )opt_info.number;
                         TRACE(p_suid, argv[0], ("%d", intercept_p_suid));
-                    }
-                    else
+                    } else
                         TRACE(p_suid, argv[0], ("%s", "off"));
                     break;
                 case REGRESS_source:
@@ -344,12 +324,10 @@ b___regress__(int argc, char **argv, Shbltin_t *context)
                     source, argv[0], ("%s", sh_isregress(n) ? "on" : "off"));
                     break;
                 case REGRESS_etc:
-                    if (sh_isregress(n))
-                    {
+                    if (sh_isregress(n)) {
                         intercept_etc = opt_info.arg;
                         TRACE(etc, argv[0], ("%s", intercept_etc));
-                    }
-                    else
+                    } else
                         TRACE(etc, argv[0], ("%s", "off"));
                     break;
                 }

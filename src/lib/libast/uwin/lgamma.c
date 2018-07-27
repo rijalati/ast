@@ -166,20 +166,16 @@ lgamma(double x)
         else
             return (infnan(EDOM));
 
-    if (x > 6 + RIGHT)
-    {
+    if (x > 6 + RIGHT) {
         r = large_lgam(x);
         return (r);
-    }
-    else if (x > 1e-16)
+    } else if (x > 1e-16)
         return (small_lgam(x));
-    else if (x > -1e-16)
-    {
+    else if (x > -1e-16) {
         if (x < 0)
             signgam = -1, x = -x;
         return (-log(x));
-    }
-    else
+    } else
         return (neg_lgam(x));
 }
 
@@ -190,8 +186,7 @@ large_lgam(double x)
     struct Double t, u, v;
     u = __log__D(x);
     u.a -= 1.0;
-    if (x > 1e15)
-    {
+    if (x > 1e15) {
         v.a = x - 0.5;
         TRUNC(v.a);
         v.b = (x - v.a) - 0.5;
@@ -231,15 +226,12 @@ small_lgam(double x)
     struct Double rr;
     x_int = ( int )(x + .5);
     y = x - x_int;
-    if (x_int <= 2 && y > RIGHT)
-    {
+    if (x_int <= 2 && y > RIGHT) {
         t = y - x0;
         y--;
         x_int++;
         goto CONTINUE;
-    }
-    else if (y < -LEFT)
-    {
+    } else if (y < -LEFT) {
         t = y + (1.0 - x0);
     CONTINUE:
         z = t - x0_lo;
@@ -248,8 +240,7 @@ small_lgam(double x)
         r = t * (z * (p / q) - x0_lo);
         t = .5 * t * t;
         z = 1.0;
-        switch (x_int)
-        {
+        switch (x_int) {
         case 6:
             z = (y + 5);
         case 5:
@@ -272,9 +263,7 @@ small_lgam(double x)
             rr.b -= a0_lo;
             return (((r - rr.b) + t) - rr.a);
         }
-    }
-    else
-    {
+    } else {
         p = p0 + y * (p1 + y * (p2 + y * (p3 + y * p4)));
         q
         = q0 + y * (q1 + y * (q2 + y * (q3 + y * (q4 + y * (q5 + y * q6)))));
@@ -288,8 +277,7 @@ small_lgam(double x)
         r = lo * y + z * hi; /* q + r = y*(a0+p/q) */
         q = hi * t;
         z = 1.0;
-        switch (x_int)
-        {
+        switch (x_int) {
         case 6:
             z = (y + 5);
         case 5:
@@ -328,8 +316,7 @@ neg_lgam(double x)
     extern double gamma();
 
     /* avoid destructive cancellation as much as possible */
-    if (x > -170)
-    {
+    if (x > -170) {
         xi = ( int )x;
         if (xi == x)
             if (_IEEE)
@@ -342,8 +329,7 @@ neg_lgam(double x)
         return (log(y));
     }
     z = floor(x + .5);
-    if (z == x)
-    { /* convention: G(-(integer)) -> +Inf */
+    if (z == x) { /* convention: G(-(integer)) -> +Inf */
         if (_IEEE)
             return (one / zero);
         else

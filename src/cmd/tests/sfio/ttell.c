@@ -69,8 +69,7 @@ tmain()
     int i;
 
     alarm(10);
-    if (argc > 1)
-    { /* coprocess only */
+    if (argc > 1) { /* coprocess only */
         while ((s = sfgetr(sfstdin, '\n', 0)))
             sfwrite(sfstdout, s, sfvalue(sfstdin));
         texit(0);
@@ -112,8 +111,7 @@ tmain()
     sfdisc(f, &Disc2);
     sfdisc(f, &Disc3);
 
-    for (i = 0; i < 100; ++i)
-    {
+    for (i = 0; i < 100; ++i) {
         if (sfputr(f, "123456789", '\n') != 10)
             terror("Can't write out strings");
         sfsync(f);
@@ -128,8 +126,7 @@ tmain()
     sfdisc(f, &Disc2);
     sfdisc(f, &Disc3);
 
-    for (i = 0; i < 100; ++i)
-    {
+    for (i = 0; i < 100; ++i) {
         if (!(s = sfgetr(f, '\n', 1)))
             terror("Can't read string");
         if (strcmp(s, "123456789") != 0)
@@ -148,8 +145,7 @@ tmain()
     Disc3.seekf = discseek;
     sfdisc(f, &Disc3);
 
-    for (i = 0; i < 100; ++i)
-    {
+    for (i = 0; i < 100; ++i) {
         if (!(s = sfgetr(f, '\n', 1)))
             terror("Can't read string");
         if (strcmp(s, "123456789") != 0)

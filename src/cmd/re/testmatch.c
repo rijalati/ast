@@ -122,8 +122,9 @@ help(void)
     H("    a	STR_LEFT|STR_RIGHT	implicit ^...$\n");
     H("    i	STR_ICASE		ignore case\n");
     H("    l	STR_LEFT		implicit ^...\n");
-    H("    m	~STR_MAXIMAL		minimal match (default is "
-      "STR_MAXIMAL)\n");
+    H(
+    "    m	~STR_MAXIMAL		minimal match (default is "
+    "STR_MAXIMAL)\n");
     H("    r	STR_RIGHT		implicit ...$\n");
     H("    u	standard unspecified behavior -- errors not counted\n");
     H(
@@ -249,13 +250,10 @@ quote(char *s, int expand)
         printf("NIL");
     else if (!*u)
         printf("NULL");
-    else if (expand)
-    {
+    else if (expand) {
         printf("\"");
-        for (;;)
-        {
-            switch (c = *u++)
-            {
+        for (;;) {
+            switch (c = *u++) {
             case 0:
                 break;
                 ;
@@ -296,8 +294,7 @@ quote(char *s, int expand)
             break;
         }
         printf("\"");
-    }
-    else
+    } else
         printf("%s", s);
 }
 
@@ -314,30 +311,25 @@ report(char *comment,
     if (state.file)
         printf("%s:", state.file);
     printf("%d:", state.lineno);
-    if (re)
-    {
+    if (re) {
         printf(" ");
         quote(re, expand);
-        if (s)
-        {
+        if (s) {
             printf(" versus ");
             quote(s, expand);
         }
     }
-    if (unspecified)
-    {
+    if (unspecified) {
         state.unspecified++;
         printf(" unspecified behavior");
-    }
-    else
+    } else
         state.errors++;
     printf(" %s", state.which);
     if (fun)
         printf(" %s", fun);
     if (comment[strlen(comment) - 1] == '\n')
         printf(" %s", comment);
-    else
-    {
+    else {
         printf(" %s: ", comment);
         if (msg)
             printf("%s: ", msg);
@@ -347,8 +339,7 @@ report(char *comment,
 static int
 note(int level, int skip, char *msg)
 {
-    if (!skip)
-    {
+    if (!skip) {
         printf("NOTE\t");
         if (msg)
             printf("%s: ", msg);
@@ -375,8 +366,7 @@ escape(char *s)
 
     for (t = s; *t = *s; s++, t++)
         if (*s == '\\')
-            switch (*++s)
-            {
+            switch (*++s) {
             case '\\':
                 break;
             case 'a':
@@ -417,10 +407,8 @@ escape(char *s)
                 q = *s == 'u' ? (s + 5) : ( char * )0;
                 c = 0;
                 e = s + 1;
-                while (!e || !q || s < q)
-                {
-                    switch (*++s)
-                    {
+                while (!e || !q || s < q) {
+                    switch (*++s) {
                     case 'a':
                     case 'b':
                     case 'c':
@@ -451,8 +439,7 @@ escape(char *s)
                         continue;
                     case '{':
                     case '[':
-                        if (s != e)
-                        {
+                        if (s != e) {
                             s--;
                             break;
                         }
@@ -484,8 +471,7 @@ escape(char *s)
                 c = *s - '0';
                 q = s + 2;
                 while (s < q)
-                    switch (*++s)
-                    {
+                    switch (*++s) {
                     case '0':
                     case '1':
                     case '2':
@@ -517,8 +503,7 @@ matchprint(ssize_t *match, int nmatch, char *ans)
             && (!state.ignore.position
                 || match[nmatch - 2] >= 0 && match[nmatch - 2] >= 0))
             break;
-    for (i = 0; i < nmatch; i += 2)
-    {
+    for (i = 0; i < nmatch; i += 2) {
         printf("(");
         if (match[i] == -1)
             printf("?");
@@ -552,32 +537,25 @@ matchcheck(int nmatch,
     ssize_t m;
     ssize_t n;
 
-    for (i = 0, p = ans; i < nmatch && *p; i += 2)
-    {
+    for (i = 0, p = ans; i < nmatch && *p; i += 2) {
         if (*p++ != '(')
             bad("improper answer\n", re, s, expand);
-        if (*p == '?')
-        {
+        if (*p == '?') {
             m = -1;
             p++;
-        }
-        else
+        } else
             m = strtol(p, &p, 10);
         if (*p++ != ',')
             bad("improper answer\n", re, s, expand);
-        if (*p == '?')
-        {
+        if (*p == '?') {
             n = -1;
             p++;
-        }
-        else
+        } else
             n = strtol(p, &p, 10);
         if (*p++ != ')')
             bad("improper answer\n", re, s, expand);
-        if (m != match[i] || n != match[i + 1])
-        {
-            if (!query)
-            {
+        if (m != match[i] || n != match[i + 1]) {
+            if (!query) {
                 report("failed: match was",
                        NiL,
                        re,
@@ -591,15 +569,11 @@ matchcheck(int nmatch,
             return 0;
         }
     }
-    for (; i < nmatch; i += 2)
-    {
-        if (match[i] != -2 || match[i + 1] != -2)
-        {
-            if (!query)
-            {
+    for (; i < nmatch; i += 2) {
+        if (match[i] != -2 || match[i + 1] != -2) {
+            if (!query) {
                 if (state.ignore.position
-                    && (match[i] < 0 || match[i + 1] < 0))
-                {
+                    && (match[i] < 0 || match[i + 1] < 0)) {
                     state.ignore.count++;
                     return 0;
                 }
@@ -616,8 +590,7 @@ matchcheck(int nmatch,
             return 0;
         }
     }
-    if (match[nmatch] != -2)
-    {
+    if (match[nmatch] != -2) {
         report("failed: overran match array",
                NiL,
                re,
@@ -639,12 +612,10 @@ sigunblock(int s)
     sigset_t mask;
 
     sigemptyset(&mask);
-    if (s)
-    {
+    if (s) {
         sigaddset(&mask, s);
         op = SIG_UNBLOCK;
-    }
-    else
+    } else
         op = SIG_SETMASK;
     sigprocmask(op, &mask, NiL);
 #else
@@ -674,16 +645,14 @@ getline(FILE *fp)
     char *e = &buf[sizeof(buf)];
     char *b;
 
-    for (;;)
-    {
+    for (;;) {
         if (!(b = fgets(s, e - s, fp)))
             return 0;
         state.lineno++;
         s += strlen(s) - 1;
         if (*s != '\n')
             break;
-        if (s == b || *(s - 1) != '\\')
-        {
+        if (s == b || *(s - 1) != '\\') {
             *s = 0;
             break;
         }
@@ -737,10 +706,8 @@ main(int argc, char **argv)
         p++;
     *p = 0;
     while ((p = *++argv) && *p == '-')
-        for (;;)
-        {
-            switch (*++p)
-            {
+        for (;;) {
+            switch (*++p) {
             case 0:
                 break;
             case 'c':
@@ -763,35 +730,27 @@ main(int argc, char **argv)
             }
             break;
         }
-    if (catch)
-    {
+    if (catch) {
         signal(SIGALRM, gotcha);
         signal(SIGBUS, gotcha);
         signal(SIGSEGV, gotcha);
     }
     if (!*argv)
         argv = filter;
-    while (state.file = *argv++)
-    {
+    while (state.file = *argv++) {
         if (streq(state.file, "-") || streq(state.file, "/dev/stdin")
-            || streq(state.file, "/dev/fd/0"))
-        {
+            || streq(state.file, "/dev/fd/0")) {
             state.file = 0;
             fp = stdin;
-        }
-        else if (!(fp = fopen(state.file, "r")))
-        {
+        } else if (!(fp = fopen(state.file, "r"))) {
             fprintf(stderr, "%s: %s: cannot read\n", unit, state.file);
             return 2;
         }
         printf("TEST\t%s ", unit);
-        if (s = state.file)
-        {
+        if (s = state.file) {
             subunit = p = 0;
-            for (;;)
-            {
-                switch (*s++)
-                {
+            for (;;) {
+                switch (*s++) {
                 case 0:
                     break;
                 case '/':
@@ -815,8 +774,7 @@ main(int argc, char **argv)
                 subunit = 0;
             else
                 printf("%-.*s ", subunitlen, subunit);
-        }
-        else
+        } else
             subunit = 0;
         printf("%s", version);
         if (catch)
@@ -830,15 +788,13 @@ main(int argc, char **argv)
         locale = skip = testno = 0;
         state.ignore.count = state.lineno = state.signals = state.unspecified
         = state.warnings = 0;
-        while (p = getline(fp))
-        {
+        while (p = getline(fp)) {
 
             /* parse: */
 
             if (*p == 0 || *p == '#')
                 continue;
-            if (*p == ':')
-            {
+            if (*p == ':') {
                 while (*++p == ' ')
                     ;
                 printf("NOTE	%s\n", p);
@@ -846,10 +802,8 @@ main(int argc, char **argv)
             }
             i = 0;
             field[i++] = p;
-            for (;;)
-            {
-                switch (*p++)
-                {
+            for (;;) {
+                switch (*p++) {
                 case 0:
                     p--;
                     goto checkfield;
@@ -887,17 +841,14 @@ main(int argc, char **argv)
 #endif
             expand = query = unspecified = kre = sre = 0;
             nmatch = 20;
-            for (p = spec; *p; p++)
-            {
-                if (isdigit(*p))
-                {
+            for (p = spec; *p; p++) {
+                if (isdigit(*p)) {
                     if ((nmatch = 2 * strtol(p, &p, 10)) >= elementsof(match))
                         bad("nmatch too large\n", spec, NiL, 0);
                     p--;
                     continue;
                 }
-                switch (*p)
-                {
+                switch (*p) {
                 case 'A':
                     continue;
                 case 'B':
@@ -917,8 +868,7 @@ main(int argc, char **argv)
                         bad("locale nesting not supported\n", NiL, NiL, 0);
                     if (i != 2)
                         bad("locale field expected\n", NiL, NiL, 0);
-                    if (!(skip & level))
-                    {
+                    if (!(skip & level)) {
 #    if defined(LC_COLLATE) && defined(LC_CTYPE)
                         s = field[1];
                         if (!s || streq(s, "POSIX"))
@@ -928,8 +878,7 @@ main(int argc, char **argv)
                             || !(ans = setlocale(LC_CTYPE, s))
                             || streq(ans, "C") || streq(ans, "POSIX"))
                             skip = note(level, skip, s);
-                        else
-                        {
+                        else {
                             printf("NOTE	\"%s\" locale\n", s);
                             locale = level;
                         }
@@ -1033,13 +982,10 @@ main(int argc, char **argv)
 
                 case '{':
                     level <<= 1;
-                    if (skip & (level >> 1))
-                    {
+                    if (skip & (level >> 1)) {
                         skip |= level;
                         cflags = NOTEST;
-                    }
-                    else
-                    {
+                    } else {
                         skip &= ~level;
                         query = 1;
                     }
@@ -1047,16 +993,13 @@ main(int argc, char **argv)
                 case '}':
                     if (level == 1)
                         bad("invalid {...} nesting\n", NiL, NiL, 0);
-                    else
-                    {
+                    else {
                         if ((skip & level) && !(skip & (level >> 1)))
                             printf("-%d\n", state.lineno);
 #if defined(LC_COLLATE) && defined(LC_CTYPE)
-                        else if (locale & level)
-                        {
+                        else if (locale & level) {
                             locale = 0;
-                            if (!(skip & level))
-                            {
+                            if (!(skip & level)) {
                                 s = "C";
                                 setlocale(LC_COLLATE, s);
                                 setlocale(LC_CTYPE, s);
@@ -1096,17 +1039,13 @@ main(int argc, char **argv)
             if (skip)
                 continue;
 #if NOT_SUPPORTED == 0
-            if (sre)
-            {
+            if (sre) {
                 state.which = "SRE";
                 sre = 0;
-            }
-            else if (kre)
-            {
+            } else if (kre) {
                 state.which = "KRE";
                 kre = 0;
-            }
-            else
+            } else
                 continue;
             if (!query && verbose)
                 printf("test %-3d %s \"%s\" \"%s\"\n",
@@ -1124,47 +1063,37 @@ main(int argc, char **argv)
                 testno++;
             for (i = 0; i < elementsof(match); i++)
                 match[i] = -2;
-            if (catch)
-            {
+            if (catch) {
                 if (setjmp(state.gotcha))
                     eret = state.ret;
-                else
-                {
+                else {
                     alarm(LOOPED);
-                    if (sub)
-                    {
+                    if (sub) {
                         fun = "strgrpmatch";
                         eret = (rmatch = strgrpmatch(
                                 s, re, match, nmatch / 2, eflags))
                                == 0;
                         if (verbose)
                             printf("[%s]", fun);
-                    }
-                    else
-                    {
+                    } else {
                         fun = "strmatch";
                         eret = (rmatch = strmatch(s, re)) == 0;
                     }
                     alarm(0);
                 }
-            }
-            else if (sub)
-            {
+            } else if (sub) {
                 fun = "strgrpmatch";
                 eret
                 = (rmatch = strgrpmatch(s, re, match, nmatch / 2, eflags))
                   == 0;
                 if (verbose)
                     printf("[%s]", fun);
-            }
-            else
-            {
+            } else {
                 fun = "strmatch";
                 eret = (rmatch = strmatch(s, re)) == 0;
             }
 #    if OLD
-            if (eret && streq(s, re))
-            {
+            if (eret && streq(s, re)) {
                 note(level,
                      skip,
                      "old strmatch() does not fall back to literal match on "
@@ -1173,12 +1102,9 @@ main(int argc, char **argv)
                 goto skip;
             }
 #    endif
-            if (!sub)
-            {
-                if (eret)
-                {
-                    if (!streq(ans, "NOMATCH") && *ans != 'E')
-                    {
+            if (!sub) {
+                if (eret) {
+                    if (!streq(ans, "NOMATCH") && *ans != 'E') {
                         if (query)
                             skip = note(level, skip, msg);
                         else
@@ -1196,13 +1122,10 @@ main(int argc, char **argv)
                             printf("OK expected, error %d returned", eret);
                         printf("\n");
                     }
-                }
-                else if (streq(ans, "NOMATCH") || *ans == 'E')
-                {
+                } else if (streq(ans, "NOMATCH") || *ans == 'E') {
                     if (query)
                         skip = note(level, skip, msg);
-                    else
-                    {
+                    else {
                         report("failed",
                                fun,
                                re,
@@ -1215,15 +1138,11 @@ main(int argc, char **argv)
                         printf("\n");
                     }
                 }
-            }
-            else if (eret)
-            {
-                if (!streq(ans, "NOMATCH") && *ans != 'E')
-                {
+            } else if (eret) {
+                if (!streq(ans, "NOMATCH") && *ans != 'E') {
                     if (query)
                         skip = note(level, skip, msg);
-                    else
-                    {
+                    else {
                         report("failed",
                                fun,
                                re,
@@ -1239,13 +1158,10 @@ main(int argc, char **argv)
                         printf("\n");
                     }
                 }
-            }
-            else if (streq(ans, "NOMATCH") || *ans == 'E')
-            {
+            } else if (streq(ans, "NOMATCH") || *ans == 'E') {
                 if (query)
                     skip = note(level, skip, msg);
-                else
-                {
+                else {
                     report("should fail and didn't",
                            fun,
                            re,
@@ -1256,15 +1172,11 @@ main(int argc, char **argv)
                            expand);
                     matchprint(match, nmatch, NiL);
                 }
-            }
-            else if (!*ans)
-            {
-                if (match[0] != -2)
-                {
+            } else if (!*ans) {
+                if (match[0] != -2) {
                     if (query)
                         skip = note(level, skip, msg);
-                    else
-                    {
+                    else {
                         report("failed: no match but match array assigned",
                                NiL,
                                re,
@@ -1276,23 +1188,20 @@ main(int argc, char **argv)
                         matchprint(match, nmatch, NiL);
                     }
                 }
-            }
-            else if (!matchcheck(2 * rmatch,
-                                 match,
-                                 ans,
-                                 re,
-                                 s,
-                                 nmatch,
-                                 query,
-                                 unspecified,
-                                 expand))
-            {
+            } else if (!matchcheck(2 * rmatch,
+                                   match,
+                                   ans,
+                                   re,
+                                   s,
+                                   nmatch,
+                                   query,
+                                   unspecified,
+                                   expand)) {
                 if (eflags ^ (STR_LEFT | STR_RIGHT))
                     continue;
                 sub = 0;
                 goto nosub;
-            }
-            else if (query)
+            } else if (query)
                 skip = note(level, skip, msg);
             goto compile;
 #endif

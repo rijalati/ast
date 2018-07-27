@@ -73,8 +73,7 @@ char *TkGetDefaultScreenName(interp, screenName)
 Tcl_Interp *interp; /* Interp used to find environment variables. */
 char *screenName;   /* Screen name from command line, or NULL. */
 {
-    if ((screenName == NULL) || (screenName[0] == '\0'))
-    {
+    if ((screenName == NULL) || (screenName[0] == '\0')) {
         screenName = Tcl_GetVar2(interp, "env", "DISPLAY", TCL_GLOBAL_ONLY);
     }
     return screenName;

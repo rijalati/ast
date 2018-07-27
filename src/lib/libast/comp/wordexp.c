@@ -47,15 +47,12 @@ sh_unquote(char *string)
         sp++;
     if (c == 0)
         return (sp - string);
-    if ((dp = sp) > string && sp[-1] == '$')
-    {
+    if ((dp = sp) > string && sp[-1] == '$') {
         int n = stresc(sp + 1);
         /* copy all but trailing ' */
         while (--n > 0)
             *dp++ = *++sp;
-    }
-    else
-    {
+    } else {
         while ((c = *++sp) && c != '\'')
             *dp++ = c;
     }
@@ -75,8 +72,7 @@ wordexp(const char *string, wordexp_t *wdarg, int flags)
         savebase = stakfreeze(0);
     if (flags & WRDE_REUSE)
         wordfree(wdarg);
-    else if (!(flags & WRDE_APPEND))
-    {
+    else if (!(flags & WRDE_APPEND)) {
         wdarg->we_wordv = 0;
         wdarg->we_wordc = 0;
     }
@@ -87,64 +83,51 @@ wordexp(const char *string, wordexp_t *wdarg, int flags)
     stakwrite("print -f \"%q\\n\" ", 16);
     if (*cp == '#')
         stakputc('\\');
-    while (c = *cp++)
-    {
+    while (c = *cp++) {
         if (c == '\'' && !quoted)
             literal = !literal;
-        else if (!literal)
-        {
-            if (c == '\\' && (!quoted || strchr("\\\"`\n$", c)))
-            {
+        else if (!literal) {
+            if (c == '\\' && (!quoted || strchr("\\\"`\n$", c))) {
                 stakputc('\\');
                 if (c = *cp)
                     cp++;
                 else
                     c = '\\';
-            }
-            else if (c == '"')
+            } else if (c == '"')
                 quoted = !quoted;
-            else if (c == '`' || (c == '$' && *cp == '('))
-            {
-                if (flags & WRDE_NOCMD)
-                {
+            else if (c == '`' || (c == '$' && *cp == '(')) {
+                if (flags & WRDE_NOCMD) {
                     c = WRDE_CMDSUB;
                     goto err;
                 }
                 /* only the shell can parse the rest */
                 stakputs(cp - 1);
                 break;
-            }
-            else if (!quoted && strchr("|&\n;<>" + ac, c))
-            {
+            } else if (!quoted && strchr("|&\n;<>" + ac, c)) {
                 c = WRDE_BADCHAR;
                 goto err;
-            }
-            else if (c == '(') /* allow | and & inside pattern */
+            } else if (c == '(') /* allow | and & inside pattern */
                 ac = 2;
         }
         stakputc(c);
     }
     stakputc(0);
-    if (!(iop = sfpopen(( Sfio_t * )0, stakptr(0), "r")))
-    {
+    if (!(iop = sfpopen(( Sfio_t * )0, stakptr(0), "r"))) {
         c = WRDE_NOSHELL;
         goto err;
     }
     stakseek(0);
     ac = 0;
-    while ((c = sfgetc(iop)) != EOF)
-    {
+    while ((c = sfgetc(iop)) != EOF) {
         if (c == '\'')
             quoted = !quoted;
-        else if (!quoted && (c == ' ' || c == '\n'))
-        {
+        else if (!quoted && (c == ' ' || c == '\n')) {
             ac++;
             c = 0;
         }
         stakputc(c);
     }
-    if (c = sfclose(iop))
-    {
+    if (c = sfclose(iop)) {
         if (c == 3 || !(flags & WRDE_UNDEF))
             c = WRDE_SYNTAX;
         else
@@ -157,8 +140,7 @@ wordexp(const char *string, wordexp_t *wdarg, int flags)
     if (flags & WRDE_APPEND)
         av = ( char ** )realloc(( void * )&wdarg->we_wordv[-1],
                                 (wdarg->we_wordc + c) * sizeof(char *));
-    else if (av = ( char ** )malloc(c * sizeof(char *)))
-    {
+    else if (av = ( char ** )malloc(c * sizeof(char *))) {
         if (flags & WRDE_DOOFFS)
             memset(( void * )av, 0, (wdarg->we_offs + 1) * sizeof(char *));
         else
@@ -167,8 +149,7 @@ wordexp(const char *string, wordexp_t *wdarg, int flags)
     if (!av)
         return (WRDE_NOSPACE);
     c = staktell();
-    if (!(cp = ( char * )malloc(sizeof(char *) + c)))
-    {
+    if (!(cp = ( char * )malloc(sizeof(char *) + c))) {
         c = WRDE_NOSPACE;
         goto err;
     }
@@ -182,8 +163,7 @@ wordexp(const char *string, wordexp_t *wdarg, int flags)
     if (flags & WRDE_DOOFFS)
         av += wdarg->we_offs;
     memcpy(( void * )cp, stakptr(offset), c);
-    while (ac-- > 0)
-    {
+    while (ac-- > 0) {
         *av++ = cp;
         sh_unquote(cp);
         while (c = *cp++)
@@ -206,11 +186,9 @@ int
 wordfree(wordexp_t *wdarg)
 {
     struct list *arg, *argnext;
-    if (wdarg->we_wordv)
-    {
+    if (wdarg->we_wordv) {
         argnext = ( struct list * )wdarg->we_wordv[-1];
-        while (arg = argnext)
-        {
+        while (arg = argnext) {
             argnext = arg->next;
             free(( void * )arg);
         }

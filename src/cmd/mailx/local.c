@@ -97,24 +97,19 @@ mailbox(const char *user, const char *mail)
 
     if (!user || !*user || !stat(mail, &st) && S_ISREG(st.st_mode))
         return ( char * )mail;
-    if (mail)
-    {
+    if (mail) {
         if (imap_name(mail))
             return ( char * )mail;
-        if (s = strrchr(mail, '/'))
-        {
+        if (s = strrchr(mail, '/')) {
             i = s - ( char * )mail;
             sfprintf(state.path.temp, "%-.*s/.", i, mail);
             if (!access(struse(state.path.temp), F_OK))
                 n = i;
         }
     }
-    if (n == 0)
-    {
-        for (i = 0;; i++)
-        {
-            if (i >= elementsof(dir))
-            {
+    if (n == 0) {
+        for (i = 0;; i++) {
+            if (i >= elementsof(dir)) {
                 i = 0;
                 break;
             }
@@ -155,8 +150,7 @@ username(void)
     if ((!(s = getenv("USER")) || !*s) && (!(s = getenv("LOGIN")) || !*s)
         && (pw = getpwuid(getuid())))
         s = pw->pw_name;
-    if (s)
-    {
+    if (s) {
         if (t = strrchr(s, '/'))
             s = t + 1;
         if (!*s)
@@ -203,8 +197,7 @@ filelock(const char *name, FILE *fp, int set)
     int r;
     sig_t savealrm;
 
-    if (state.var.lock)
-    {
+    if (state.var.lock) {
         state.hung = 0;
         savealrm = signal(SIGALRM, alarmed);
         if (!(r = strtol(state.var.lock, NiL, 10)))
@@ -281,20 +274,16 @@ fmtesc(const char *as)
     static int bufsiz;
 
     c = 4 * (strlen(( char * )s) + 1);
-    if (bufsiz < c)
-    {
+    if (bufsiz < c) {
         bufsiz = ((c + CHUNK - 1) / CHUNK) * CHUNK;
         if (!(buf = newof(buf, char, bufsiz, 0)))
             return 0;
     }
     b = buf;
-    while (c = *s++)
-    {
-        if (iscntrl(c) || !isprint(c))
-        {
+    while (c = *s++) {
+        if (iscntrl(c) || !isprint(c)) {
             *b++ = '\\';
-            switch (c)
-            {
+            switch (c) {
             case '\007':
                 c = 'a';
                 break;
@@ -348,29 +337,23 @@ fmtident(const char *a)
     int i;
 
     i = 0;
-    for (;;)
-    {
+    for (;;) {
         while (isspace(*s))
             s++;
-        if (s[0] == '[')
-        {
+        if (s[0] == '[') {
             while (*++s && *s != '\n')
                 ;
             i |= USAGE;
-        }
-        else if (s[0] == '@' && s[1] == '(' && s[2] == '#' && s[3] == ')')
+        } else if (s[0] == '@' && s[1] == '(' && s[2] == '#' && s[3] == ')')
             s += 4;
         else if (s[0] == '$' && s[1] == 'I' && s[2] == 'd' && s[3] == ':'
-                 && isspace(s[4]))
-        {
+                 && isspace(s[4])) {
             s += 5;
             i |= IDENT;
-        }
-        else
+        } else
             break;
     }
-    if (i)
-    {
+    if (i) {
         i &= IDENT;
         for (t = s; isprint(*t) && *t != '\n'; t++)
             if (i && t[0] == ' ' && t[1] == '$')
@@ -494,10 +477,8 @@ sigcritical(int op)
     static int level;
     static sigset_t mask;
 
-    if (op > 0)
-    {
-        if (!level++)
-        {
+    if (op > 0) {
+        if (!level++) {
             region = op;
             if (op & SIG_REG_SET)
                 level--;
@@ -508,27 +489,21 @@ sigcritical(int op)
             sigprocmask(SIG_BLOCK, &nmask, &mask);
         }
         return level;
-    }
-    else if (op < 0)
-    {
+    } else if (op < 0) {
         sigpending(&nmask);
         for (i = 0; i < elementsof(signals); i++)
-            if (region & signals[i].op)
-            {
+            if (region & signals[i].op) {
                 if (sigismember(&nmask, signals[i].sig))
                     return 1;
             }
         return 0;
-    }
-    else
-    {
+    } else {
         /*
          * a vfork() may have intervened so we
          * allow apparent nesting mismatches
          */
 
-        if (--level < 0)
-        {
+        if (--level < 0) {
             level = 0;
             sigprocmask(SIG_SETMASK, &mask, NiL);
         }
@@ -548,12 +523,10 @@ sigunblock(int sig)
     sigset_t mask;
 
     sigemptyset(&mask);
-    if (sig)
-    {
+    if (sig) {
         sigaddset(&mask, sig);
         op = SIG_UNBLOCK;
-    }
-    else
+    } else
         op = SIG_SETMASK;
     return sigprocmask(op, &mask, NiL);
 }
@@ -568,14 +541,12 @@ spawnvp(const char *cmd, char *const *argv)
     int pid;
 
     sigcritical(1);
-    if ((pid = fork()) < 0)
-    {
+    if ((pid = fork()) < 0) {
         note(SYSTEM, "fork");
         return -1;
     }
     sigcritical(0);
-    if (pid == 0)
-    {
+    if (pid == 0) {
         execvp(cmd, argv);
         note(SYSTEM, "%s", cmd);
         _exit(1);
@@ -595,14 +566,12 @@ chresc(const char *s, char **p)
     const char *q;
     int c;
 
-    switch (c = *s++)
-    {
+    switch (c = *s++) {
     case 0:
         s--;
         break;
     case '\\':
-        switch (c = *s++)
-        {
+        switch (c = *s++) {
         case '0':
         case '1':
         case '2':
@@ -614,8 +583,7 @@ chresc(const char *s, char **p)
             c -= '0';
             q = s + 2;
             while (s < q)
-                switch (*s)
-                {
+                switch (*s) {
                 case '0':
                 case '1':
                 case '2':
@@ -659,8 +627,7 @@ chresc(const char *s, char **p)
             c = 0;
             q = s;
             while (q)
-                switch (*s)
-                {
+                switch (*s) {
                 case 'a':
                 case 'b':
                 case 'c':
@@ -736,10 +703,8 @@ stresc(char *s)
     char *p;
 
     b = t = s;
-    for (;;)
-    {
-        switch (c = *s++)
-        {
+    for (;;) {
+        switch (c = *s++) {
         case '\\':
             c = chresc(s - 1, &p);
             s = p;
@@ -782,35 +747,25 @@ strpsearch(const void *tab,
     int sequential = 0;
 
     c = *(( unsigned char * )name);
-    while (lo <= hi)
-    {
+    while (lo <= hi) {
         mid = lo + (sequential ? 0 : (((hi - lo) / siz) / 2) * siz);
         if (!(v = c - *(s = *(( unsigned char ** )mid)))
-            || *s == '[' && !(v = c - *++s) && (v = 1))
-        {
+            || *s == '[' && !(v = c - *++s) && (v = 1)) {
             t = ( unsigned char * )name;
-            for (;;)
-            {
-                if (!v && *s == '[')
-                {
+            for (;;) {
+                if (!v && *s == '[') {
                     v = 1;
                     s++;
-                }
-                else if (v && *s == ']')
-                {
+                } else if (v && *s == ']') {
                     v = 0;
                     s++;
-                }
-                else if (!isalpha(*t))
-                {
-                    if (v || !*s)
-                    {
+                } else if (!isalpha(*t)) {
+                    if (v || !*s) {
                         if (next)
                             *next = ( char * )t;
                         return ( void * )mid;
                     }
-                    if (!sequential)
-                    {
+                    if (!sequential) {
                         while ((mid -= siz) >= lo
                                && (c == *(s = *(( unsigned char ** )mid))
                                    || *s == '[' && c == *(s + 1)))
@@ -819,20 +774,15 @@ strpsearch(const void *tab,
                     }
                     v = 1;
                     break;
-                }
-                else if (*t != *s)
-                {
+                } else if (*t != *s) {
                     v = *t - *s;
                     break;
-                }
-                else
-                {
+                } else {
                     t++;
                     s++;
                 }
             }
-        }
-        else if (sequential)
+        } else if (sequential)
             break;
         if (v > 0)
             lo = mid + siz;
@@ -867,8 +817,7 @@ strsearch(const void *tab,
     char *mid;
     int v;
 
-    while (lo <= hi)
-    {
+    while (lo <= hi) {
         mid = lo + (((hi - lo) / siz) / 2) * siz;
         if (!(v = context ? (*( Compare_context_f )comparf)(
                             name, *(( char ** )mid), context)
@@ -900,8 +849,7 @@ touch(const char *file, time_t atime, time_t mtime, int force)
     time_t now;
 
     now = time(NiL);
-    if (stat(file, &st))
-    {
+    if (stat(file, &st)) {
         if (!force
             || close(open(file,
                           O_WRONLY | O_CREAT | O_TRUNC | O_BINARY | O_cloexec,
@@ -910,8 +858,7 @@ touch(const char *file, time_t atime, time_t mtime, int force)
             return -1;
         st.st_mtime = st.st_atime = now;
     }
-    if (force >= 0)
-    {
+    if (force >= 0) {
         if (atime == ( time_t )0)
             atime = now;
         else if (atime == (time_t)(-1))

@@ -605,8 +605,7 @@ struct sender
  */
 
 #define setexit()                                                            \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         int x = setjmp(state.jump.sr);                                       \
         if (x)                                                               \
             sigunblock(x);                                                   \

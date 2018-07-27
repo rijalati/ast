@@ -67,14 +67,11 @@ flush(Sfio_t *op)
     Col_t *col;
     size_t n;
 
-    if ((col = state.cols) && sfstrtell(col->sp))
-    {
-        do
-        {
+    if ((col = state.cols) && sfstrtell(col->sp)) {
+        do {
             n = sfstrtell(col->sp);
             if (sfwrite(op, sfstrseek(col->sp, 0, SEEK_SET), n) != n
-                || sfsync(op))
-            {
+                || sfsync(op)) {
                 error(ERROR_SYSTEM | 2, "write error");
                 return -1;
             }
@@ -106,13 +103,10 @@ r2c(const char *file, Sfio_t *ip, Sfio_t *op)
     d = state.delimiter;
     q = state.quote;
     t = state.terminator;
-    while (s = sfgetr(ip, t, 0))
-    {
+    while (s = sfgetr(ip, t, 0)) {
         n = sfvalue(ip);
-        if (w < n)
-        {
-            if (n > state.window)
-            {
+        if (w < n) {
+            if (n > state.window) {
                 error(2, "%s: input record larger than window size", file);
                 return -1;
             }
@@ -121,10 +115,8 @@ r2c(const char *file, Sfio_t *ip, Sfio_t *op)
         }
         w -= n;
         col = state.cols;
-        for (;;)
-        {
-            if (!col)
-            {
+        for (;;) {
+            if (!col) {
                 if (!(col = newof(0, Col_t, 1, 0))
                     || !(col->sp = sfstropen()))
                     error(ERROR_SYSTEM | 3, "out of space [column]");
@@ -134,24 +126,20 @@ r2c(const char *file, Sfio_t *ip, Sfio_t *op)
                     state.last->next = col;
                 state.last = col;
             }
-            if (q && *s == q)
-            {
+            if (q && *s == q) {
                 b = s;
                 e = s + n;
                 while (++b < e)
-                    if (*b == q)
-                    {
+                    if (*b == q) {
                         b++;
                         break;
                     }
                 m = b - s;
-            }
-            else if (e = memchr(s, d, n))
+            } else if (e = memchr(s, d, n))
                 m = e - s + 1;
             else
                 m = n;
-            if (sfwrite(col->sp, s, m) != m)
-            {
+            if (sfwrite(col->sp, s, m) != m) {
                 error(ERROR_SYSTEM | 2, "%s: column write error");
                 return -1;
             }
@@ -162,8 +150,7 @@ r2c(const char *file, Sfio_t *ip, Sfio_t *op)
             col = col->next;
         }
     }
-    if (sfgetr(ip, -1, 0))
-    {
+    if (sfgetr(ip, -1, 0)) {
         error(2, "%s: last record incomplete", file);
         return -1;
     }
@@ -180,12 +167,10 @@ main(int argc, char **argv)
     state.terminator = '\n';
     state.window = 4 * 1024 * 1024;
     state.level = 9;
-    for (;;)
-    {
+    for (;;) {
         switch (optget(argv,
                        "d:[delimiter]l#[compression-level]q:[quote]t:["
-                       "terminator]vw#[window-size]T#[test-mask]"))
-        {
+                       "terminator]vw#[window-size]T#[test-mask]")) {
         case 'd':
             state.delimiter = *opt_info.arg;
             continue;
@@ -225,15 +210,11 @@ main(int argc, char **argv)
     if (!*argv)
         r2c("/dev/stdin", sfstdin, sfstdout);
     else
-        while (file = *argv++)
-        {
-            if (streq(file, "-"))
-            {
+        while (file = *argv++) {
+            if (streq(file, "-")) {
                 file = "/dev/stdin";
                 ip = sfstdin;
-            }
-            else if (!(ip = sfopen(NiL, file, "r")))
-            {
+            } else if (!(ip = sfopen(NiL, file, "r"))) {
                 error(ERROR_SYSTEM | 2, "%s: cannot read", file);
                 continue;
             }

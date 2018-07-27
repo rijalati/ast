@@ -104,8 +104,7 @@ tokread(char *u)
     if (!p->chr)
         return 0;
     s = p->ptr.end;
-    switch (p->flg)
-    {
+    switch (p->flg) {
     case FLG_NEWLINE:
         p->flg = 0;
         return "\n";
@@ -125,8 +124,7 @@ tokread(char *u)
 
     while (*s == ' ' || *s == '\t')
         s++;
-    if (!*s)
-    {
+    if (!*s) {
         p->ptr.end = s;
         p->chr = 0;
         return 0;
@@ -139,21 +137,16 @@ tokread(char *u)
     r = s;
     q = 0;
     for (;;)
-        switch (c = *r++)
-        {
+        switch (c = *r++) {
         case '\n':
-            if (!q)
-            {
-                if (s == (r - 1))
-                {
-                    if (!p->flg)
-                    {
+            if (!q) {
+                if (s == (r - 1)) {
+                    if (!p->flg) {
                         p->ptr.end = r;
                         return "\n";
                     }
                     r++;
-                }
-                else if (!p->flg)
+                } else if (!p->flg)
                     p->flg = FLG_NEWLINE;
             }
             /*FALLTHROUGH*/
@@ -163,13 +156,10 @@ tokread(char *u)
                 break;
             /*FALLTHROUGH*/
         case 0:
-            if (s == --r)
-            {
+            if (s == --r) {
                 p->ptr.end = r;
                 p->chr = 0;
-            }
-            else
-            {
+            } else {
                 p->chr = *(p->ptr.end = r);
                 if (*r)
                     *r = 0;

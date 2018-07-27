@@ -59,8 +59,7 @@ mime_getprologue(Pax_t *pax,
     if (t > s && *(t - 1) == '\r')
         t--;
     n = t - s;
-    if (!(mime = newof(0, Mime_t, 1, n)))
-    {
+    if (!(mime = newof(0, Mime_t, 1, n))) {
         nospace();
         return -1;
     }
@@ -75,8 +74,7 @@ mime_getprologue(Pax_t *pax,
 static int
 mime_done(Pax_t *pax, Archive_t *ap)
 {
-    if (ap->data)
-    {
+    if (ap->data) {
         free(ap->data);
         ap->data = 0;
     }
@@ -103,13 +101,11 @@ mime_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
               "%s: corrupt %s format member header -- separator not found",
               ap->name,
               ap->format->name);
-    else if (*(s += mime->length) == '-' && *(s + 1) == '-')
-    {
+    else if (*(s += mime->length) == '-' && *(s + 1) == '-') {
         while (paxread(pax, ap, s, 1, 1, 1) > 0 && *s != '\n')
             ;
         return 0;
-    }
-    else if (*s == '\n')
+    } else if (*s == '\n')
         paxunread(pax, ap, s + 1, 1);
     else if (*s != '\r' && *(s + 1) != '\n')
         error(
@@ -118,16 +114,14 @@ mime_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
         ap->name,
         ap->format->name);
     f->name = 0;
-    for (;;)
-    {
+    for (;;) {
         for (t = (s = state.tmp.buffer) + state.buffersize - 1; s < t; s++)
             if (paxread(pax, ap, s, 1, 1, 1) <= 0)
                 error(3,
                       "%s: unexpected %s format EOF",
                       ap->name,
                       ap->format->name);
-            else if (*s == '\n')
-            {
+            else if (*s == '\n') {
                 if (s > state.tmp.buffer && *(s - 1) == '\r')
                     s--;
                 *s = 0;
@@ -145,22 +139,19 @@ mime_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
             s = t + 1;
         while (isspace(*s))
             s++;
-        for (;;)
-        {
+        for (;;) {
             for (t = s; *s && *s != ';' && *s != '='; s++)
                 ;
             if (!(n = s - t))
                 break;
-            if (*s == '=')
-            {
+            if (*s == '=') {
                 if (*++s == '"')
                     for (v = ++s; *s && *s != '"'; s++)
                         ;
                 else
                     for (v = s; *s && *s != ';'; s++)
                         ;
-            }
-            else
+            } else
                 v = s;
             m = s - v;
             if (*s)
@@ -172,8 +163,7 @@ mime_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
                 f->name = paxstash(pax, &ap->stash.head, v, m);
         }
     }
-    if (!f->name)
-    {
+    if (!f->name) {
         if (s = strrchr(ap->name, '/'))
             s++;
         else
@@ -186,10 +176,8 @@ mime_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
     f->st->st_size = 0;
     loop = 0;
     b = paxseek(pax, ap, 0, SEEK_CUR, 0);
-    while (s = paxget(pax, ap, 0, &m))
-    {
-        if (m < mime->length)
-        {
+    while (s = paxget(pax, ap, 0, &m)) {
+        if (m < mime->length) {
             if (loop++)
                 error(3,
                       "%s: corrupt %s format member header [too short]",
@@ -201,12 +189,10 @@ mime_getheader(Pax_t *pax, Archive_t *ap, File_t *f)
         }
         v = s;
         for (t = s + m - mime->length; s = memchr(s, '-', t - s); s++)
-            if (!memcmp(s, mime->magic, mime->length))
-            {
+            if (!memcmp(s, mime->magic, mime->length)) {
                 paxseek(pax, ap, b, SEEK_CUR, 0);
                 paxsync(pax, ap, 0);
-                if (s > v && *(s - 1) == '\n')
-                {
+                if (s > v && *(s - 1) == '\n') {
                     mime->fill++;
                     if (s > (v + 1) && *(s - 2) == '\r')
                         mime->fill++;

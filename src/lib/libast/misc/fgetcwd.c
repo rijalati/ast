@@ -101,26 +101,22 @@ fgetcwd(int fd, char *buf, size_t len)
     f = fs3d(f);
     for (n = 0; n < elementsof(env); n++)
         if ((env[n].name && (p = getenv(env[n].name)) || (p = env[n].path))
-            && *p == '/')
-        {
+            && *p == '/') {
             Pathdev_t dev;
 
             if ((!pathdev(AT_FDCWD, p, NiL, 0, PATH_DEV, &dev) || dev.fd < 0)
-                && !stat(p, cur))
-            {
+                && !stat(p, cur)) {
                 env[n].path = p;
                 env[n].dev = cur->st_dev;
                 env[n].ino = cur->st_ino;
-                if (cur->st_ino == par->st_ino && cur->st_dev == par->st_dev)
-                {
+                if (cur->st_ino == par->st_ino
+                    && cur->st_dev == par->st_dev) {
                     namlen = strlen(p);
                     namlen++;
-                    if (buf)
-                    {
+                    if (buf) {
                         if (len < namlen)
                             ERROR(ERANGE);
-                    }
-                    else if (!(buf = newof(0, char, namlen, len)))
+                    } else if (!(buf = newof(0, char, namlen, len)))
                         ERROR(ENOMEM);
                     if (f != FS3D_OFF)
                         fs3d(f);
@@ -128,8 +124,7 @@ fgetcwd(int fd, char *buf, size_t len)
                 }
             }
         }
-    if (!buf)
-    {
+    if (!buf) {
         extra = len;
         len = PATH_MAX;
         if (!(buf = newof(0, char, len, extra)))
@@ -142,8 +137,7 @@ fgetcwd(int fd, char *buf, size_t len)
     if ((dd = fd) != AT_FDCWD && fchdir(dd))
         ERROR(errno);
 #endif
-    for (;;)
-    {
+    for (;;) {
         tmp = cur;
         cur = par;
         par = tmp;
@@ -154,8 +148,7 @@ fgetcwd(int fd, char *buf, size_t len)
             ERROR(errno);
         if (fstat(dd, par))
             ERROR(errno);
-        if (par->st_dev == cur->st_dev && par->st_ino == cur->st_ino)
-        {
+        if (par->st_dev == cur->st_dev && par->st_ino == cur->st_ino) {
             close(dd);
             *--p = '/';
             break;
@@ -168,8 +161,7 @@ fgetcwd(int fd, char *buf, size_t len)
 #else
         if (stat("..", par))
             ERROR(errno);
-        if (par->st_dev == cur->st_dev && par->st_ino == cur->st_ino)
-        {
+        if (par->st_dev == cur->st_dev && par->st_ino == cur->st_ino) {
             *--p = '/';
             break;
         }
@@ -181,11 +173,9 @@ fgetcwd(int fd, char *buf, size_t len)
             ERROR(errno);
 #endif
 #ifdef D_FILENO
-        if (par->st_dev == cur->st_dev)
-        {
+        if (par->st_dev == cur->st_dev) {
             while (entry = readdir(dirp))
-                if (D_FILENO(entry) == cur->st_ino)
-                {
+                if (D_FILENO(entry) == cur->st_ino) {
                     namlen = D_NAMLEN(entry);
                     goto part;
                 }
@@ -197,8 +187,7 @@ fgetcwd(int fd, char *buf, size_t len)
             rewinddir(dirp);
         }
 #endif
-        do
-        {
+        do {
             if (!(entry = readdir(dirp)))
                 ERROR(ENOENT);
         } while (fstatat(fd, entry->d_name, &tstst, AT_SYMLINK_NOFOLLOW)
@@ -208,8 +197,7 @@ fgetcwd(int fd, char *buf, size_t len)
     part:
         if (*p)
             *--p = '/';
-        while ((p -= namlen) <= (buf + 1))
-        {
+        while ((p -= namlen) <= (buf + 1)) {
             x = (buf + len - 1) - (p + namlen);
             s = buf + len;
             if (extra < 0
@@ -219,13 +207,11 @@ fgetcwd(int fd, char *buf, size_t len)
             while (p > buf + len - 1 - x)
                 *--p = *--s;
         }
-        if (n < elementsof(env))
-        {
+        if (n < elementsof(env)) {
             memcpy(p, env[n].path, namlen);
             break;
         }
-        if (namlen == 1 && entry->d_name[0] == '.')
-        {
+        if (namlen == 1 && entry->d_name[0] == '.') {
             p = buf + len - 1;
             *p = 0;
             *--p = '/';
@@ -233,14 +219,12 @@ fgetcwd(int fd, char *buf, size_t len)
         }
         memcpy(p, entry->d_name, namlen);
         for (n = 0; n < elementsof(env); n++)
-            if (env[n].ino == par->st_ino && env[n].dev == par->st_dev)
-            {
+            if (env[n].ino == par->st_ino && env[n].dev == par->st_dev) {
                 namlen = strlen(env[n].path);
                 goto part;
             }
     }
-    if (p != buf)
-    {
+    if (p != buf) {
         s = buf;
         while (*s++ = *p++)
             ;

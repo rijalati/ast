@@ -247,17 +247,14 @@ addre(State_t *state, char *s)
     x = 0;
     r = -1;
     b = s;
-    if (state->label)
-    {
-        if (!(s = strchr(s, ':')))
-        {
+    if (state->label) {
+        if (!(s = strchr(s, ':'))) {
             error(2, "%s: label:pattern expected", b);
             goto done;
         }
         c = s - b;
         s++;
-        if (!(x = vmnewof(state->vm, 0, Item_t, 1, c)))
-        {
+        if (!(x = vmnewof(state->vm, 0, Item_t, 1, c))) {
             error(ERROR_SYSTEM | 2, "out of space (pattern `%s')", b);
             goto done;
         }
@@ -267,21 +264,18 @@ addre(State_t *state, char *s)
     }
     if (sfstrtell(state->tmp))
         sfputc(state->tmp, '\n');
-    if (state->words)
-    {
+    if (state->words) {
         if (!(state->options & REG_AUGMENTED))
             sfputc(state->tmp, '\\');
         sfputc(state->tmp, '<');
     }
     sfputr(state->tmp, s, -1);
-    if (state->words)
-    {
+    if (state->words) {
         if (!(state->options & REG_AUGMENTED))
             sfputc(state->tmp, '\\');
         sfputc(state->tmp, '>');
     }
-    if (x)
-    {
+    if (x) {
         b = (state->options & (REG_AUGMENTED | REG_EXTENDED)) ? "" : "\\";
         sfprintf(state->tmp,
                  "%s(?{%I*o})",
@@ -306,8 +300,7 @@ addstring(State_t *state, List_t *p, char *s)
 {
     Item_t *x;
 
-    if (!(x = vmnewof(state->vm, 0, Item_t, 1, strlen(s))))
-    {
+    if (!(x = vmnewof(state->vm, 0, Item_t, 1, strlen(s)))) {
         error(ERROR_SYSTEM | 2, "out of space (string `%s')", s);
         return -1;
     }
@@ -334,8 +327,7 @@ compile(State_t *state)
     Sfio_t *f;
 
     r = 1;
-    if (!(state->tmp = sfstropen()))
-    {
+    if (!(state->tmp = sfstropen())) {
         error(ERROR_SYSTEM | 2, "out of space");
         goto done;
     }
@@ -347,27 +339,22 @@ compile(State_t *state)
     file = error_info.file;
     line = error_info.line;
     f = 0;
-    for (x = state->files.head; x; x = x->next)
-    {
+    for (x = state->files.head; x; x = x->next) {
         s = x->string;
-        if (!(f = sfopen(NiL, s, "r")))
-        {
+        if (!(f = sfopen(NiL, s, "r"))) {
             error(ERROR_SYSTEM | 2, "%s: cannot open", s);
             r = 2;
             goto done;
         }
         error_info.file = s;
         error_info.line = 0;
-        while (s = ( char * )sfreserve(f, SF_UNBOUND, SF_LOCKR))
-        {
+        while (s = ( char * )sfreserve(f, SF_UNBOUND, SF_LOCKR)) {
             if (!(n = sfvalue(f)))
                 break;
-            if (s[n - 1] != '\n')
-            {
+            if (s[n - 1] != '\n') {
                 for (t = s + n; t > s && *--t != '\n'; t--)
                     ;
-                if (t == s)
-                {
+                if (t == s) {
                     sfread(f, s, 0);
                     break;
                 }
@@ -379,8 +366,7 @@ compile(State_t *state)
             s[n - 1] = '\n';
             sfread(f, s, n);
         }
-        while ((s = sfgetr(f, '\n', 1)) || (s = sfgetr(f, '\n', -1)))
-        {
+        while ((s = sfgetr(f, '\n', 1)) || (s = sfgetr(f, '\n', -1))) {
             error_info.line++;
             if (addre(state, s))
                 goto done;
@@ -390,35 +376,29 @@ compile(State_t *state)
         sfclose(f);
         f = 0;
     }
-    if (!state->any)
-    {
+    if (!state->any) {
         error(2, "no pattern");
         goto done;
     }
     state->any = 0;
-    if (!(s = sfstruse(state->tmp)))
-    {
+    if (!(s = sfstruse(state->tmp))) {
         error(ERROR_SYSTEM | 2, "out of space");
         goto done;
     }
     error(-1, "RE ``%s''", s);
     state->re.re_disc = &state->redisc;
-    if (state->label)
-    {
+    if (state->label) {
         state->redisc.re_compf = labelcomp;
         state->redisc.re_execf = labelexec;
     }
-    if (c = regcomp(&state->re, s, state->options))
-    {
+    if (c = regcomp(&state->re, s, state->options)) {
         regfatal(&state->re, 2, c);
         goto done;
     }
     if (!regrecord(&state->re))
         state->byline = 1;
-    if (!state->label)
-    {
-        if (!(state->hit = vmnewof(state->vm, 0, Item_t, 1, 0)))
-        {
+    if (!state->label) {
+        if (!(state->hit = vmnewof(state->vm, 0, Item_t, 1, 0))) {
             error(ERROR_SYSTEM | 2, "out of space");
             goto done;
         }
@@ -451,14 +431,12 @@ hit(State_t *state,
     state->hit->hits++;
     if (state->query || state->list)
         return -1;
-    if (!state->count)
-    {
+    if (!state->count) {
     another:
         if ((pos = state->pos) && (state->before || state->after)
             && (regnexec(&state->re, s, len, state->posnum, state->pos, 0)
                 == 0)
-               != state->match)
-        {
+               != state->match) {
             if (state->only)
                 return 0;
             pos = 0;
@@ -471,8 +449,7 @@ hit(State_t *state,
             sfprintf(sfstdout, "%s%c", state->hit->string, sep);
         if (!pos)
             sfwrite(sfstdout, s, len + 1);
-        else if (state->only)
-        {
+        else if (state->only) {
             sfwrite(sfstdout,
                     s + state->pos[0].rm_so,
                     state->pos[0].rm_eo - state->pos[0].rm_so);
@@ -481,11 +458,8 @@ hit(State_t *state,
             if ((len -= state->pos[0].rm_eo)
                 && !regnexec(&state->re, s, len, state->posnum, state->pos, 0))
                 goto another;
-        }
-        else
-        {
-            do
-            {
+        } else {
+            do {
                 sfwrite(sfstdout, s, state->pos[0].rm_so);
                 sfwrite(sfstdout, bold, sizeof(bold));
                 sfwrite(sfstdout,
@@ -544,8 +518,7 @@ execute(State_t *state, Sfio_t *input, char *name, Shbltin_t *context)
     error_info.file = name;
     line = error_info.line;
     error_info.line = 0;
-    if (state->before || state->after)
-    {
+    if (state->before || state->after) {
         Context_t *cp;
         Context_line_t *lp;
         char *s;
@@ -554,16 +527,14 @@ execute(State_t *state, Sfio_t *input, char *name, Shbltin_t *context)
         if (!(cp = context_open(
               input, state->before, state->after, list, state)))
             error(3, "context_open() failed");
-        while (lp = context_line(cp))
-        {
+        while (lp = context_line(cp)) {
             if ((result = regnexec(&state->re,
                                    lp->data,
                                    lp->size - 1,
                                    state->posnum,
                                    state->pos,
                                    0))
-                && result != REG_NOMATCH)
-            {
+                && result != REG_NOMATCH) {
                 regfatal(&state->re, 2, result);
                 goto bad;
             }
@@ -571,35 +542,27 @@ execute(State_t *state, Sfio_t *input, char *name, Shbltin_t *context)
                 context_show(cp);
         }
         context_close(cp);
-    }
-    else if (state->byline)
-    {
-        for (;;)
-        {
+    } else if (state->byline) {
+        for (;;) {
             if (sh_checksig(context))
                 goto bad;
             error_info.line++;
             if (s = sfgetr(input, '\n', 0))
                 len = sfvalue(input) - 1;
-            else if (s = sfgetr(input, '\n', -1))
-            {
+            else if (s = sfgetr(input, '\n', -1)) {
                 len = sfvalue(input);
                 s[len] = '\n';
 #if _you_like_the_noise
                 error(1, "newline appended");
 #endif
-            }
-            else if (sferror(input) && errno != EISDIR)
-            {
+            } else if (sferror(input) && errno != EISDIR) {
                 error(ERROR_SYSTEM | 2, "read error");
                 goto bad;
-            }
-            else
+            } else
                 break;
             if ((result
                  = regnexec(&state->re, s, len, state->posnum, state->pos, 0))
-                && result != REG_NOMATCH)
-            {
+                && result != REG_NOMATCH) {
                 regfatal(&state->re, 2, result);
                 goto bad;
             }
@@ -607,33 +570,28 @@ execute(State_t *state, Sfio_t *input, char *name, Shbltin_t *context)
                 && hit(state, name, ':', error_info.line, s, len) < 0)
                 break;
         }
-    }
-    else
-    {
+    } else {
         char *e;
         char *t;
         char *r;
 
         s = e = 0;
-        for (;;)
-        {
+        for (;;) {
             if (sh_checksig(context))
                 goto bad;
-            if (s < e)
-            {
+            if (s < e) {
                 t = state->span;
-                for (;;)
-                {
+                for (;;) {
                     len = 2 * (e - s) + t - state->span + 1;
                     len = roundof(len, SF_BUFSIZE);
-                    if (state->spansize < len)
-                    {
+                    if (state->spansize < len) {
                         state->spansize = len;
                         len = t - state->span;
-                        if (!(
-                            state->span = vmnewof(
-                            state->vm, state->span, char, state->spansize, 0)))
-                        {
+                        if (!(state->span = vmnewof(state->vm,
+                                                    state->span,
+                                                    char,
+                                                    state->spansize,
+                                                    0))) {
                             error(ERROR_SYSTEM | 2,
                                   "%s: line longer than %lu characters",
                                   name,
@@ -646,30 +604,25 @@ execute(State_t *state, Sfio_t *input, char *name, Shbltin_t *context)
                     memcpy(t, s, len);
                     t += len;
                     if (!(s = sfreserve(input, SF_UNBOUND, 0))
-                        || (len = sfvalue(input)) <= 0)
-                    {
+                        || (len = sfvalue(input)) <= 0) {
                         if ((sfvalue(input) || sferror(input))
                             && errno != EISDIR)
                             error(ERROR_SYSTEM | 2, "%s: read error", name);
                         break;
-                    }
-                    else if (!(e = memchr(s, '\n', len)))
+                    } else if (!(e = memchr(s, '\n', len)))
                         e = s + len;
-                    else
-                    {
+                    else {
                         r = s + len;
                         len = (e - s) + t - state->span;
                         len = roundof(len, SF_BUFSIZE);
-                        if (state->spansize < len)
-                        {
+                        if (state->spansize < len) {
                             state->spansize = len;
                             len = t - state->span;
                             if (!(state->span = vmnewof(state->vm,
                                                         state->span,
                                                         char,
                                                         state->spansize,
-                                                        0)))
-                            {
+                                                        0))) {
                                 error(ERROR_SYSTEM | 2,
                                       "%s: line longer than %lu characters",
                                       name,
@@ -697,23 +650,18 @@ execute(State_t *state, Sfio_t *input, char *name, Shbltin_t *context)
                                       state->options,
                                       '\n',
                                       ( void * )state,
-                                      record))
-                {
+                                      record)) {
                     if (result < 0)
                         goto done;
-                    if (result != REG_NOMATCH)
-                    {
+                    if (result != REG_NOMATCH) {
                         regfatal(&state->re, 2, result);
                         goto bad;
                     }
                 }
                 if (!s)
                     break;
-            }
-            else
-            {
-                if (!(s = sfreserve(input, SF_UNBOUND, 0)))
-                {
+            } else {
+                if (!(s = sfreserve(input, SF_UNBOUND, 0))) {
                     if ((sfvalue(input) || sferror(input)) && errno != EISDIR)
                         error(ERROR_SYSTEM | 2, "%s: read error", name);
                     break;
@@ -724,8 +672,7 @@ execute(State_t *state, Sfio_t *input, char *name, Shbltin_t *context)
             }
             t = e;
             while (t > s)
-                if (*--t == '\n')
-                {
+                if (*--t == '\n') {
                     len = t - s;
                     if (!len || t > s && *(t - 1) == '\n')
                         len++;
@@ -737,12 +684,10 @@ execute(State_t *state, Sfio_t *input, char *name, Shbltin_t *context)
                                           state->options,
                                           '\n',
                                           ( void * )state,
-                                          record))
-                    {
+                                          record)) {
                         if (result < 0)
                             goto done;
-                        if (result != REG_NOMATCH)
-                        {
+                        if (result != REG_NOMATCH) {
                             regfatal(&state->re, 2, result);
                             goto bad;
                         }
@@ -756,24 +701,18 @@ done:
     error_info.file = file;
     error_info.line = line;
     x = state->labels.head;
-    do
-    {
-        if (x->hits && state->list >= 0)
-        {
+    do {
+        if (x->hits && state->list >= 0) {
             state->any = 1;
             if (state->query)
                 break;
         }
-        if (!state->query)
-        {
-            if (!state->list)
-            {
-                if (state->count)
-                {
+        if (!state->query) {
+            if (!state->list) {
+                if (state->count) {
                     if (state->count & 2)
                         x->total += x->hits;
-                    else
-                    {
+                    else {
                         if (state->prefix)
                             sfprintf(sfstdout, "%s:", name);
                         if (*x->string)
@@ -782,9 +721,7 @@ done:
                         sfstdout, "%I*u\n", sizeof(x->hits), x->hits);
                     }
                 }
-            }
-            else if ((x->hits != 0) == (state->list > 0))
-            {
+            } else if ((x->hits != 0) == (state->list > 0)) {
                 if (state->list < 0)
                     state->any = 1;
                 if (*x->string)
@@ -819,8 +756,7 @@ grep(char *id, int options, int argc, char **argv, Shbltin_t *context)
     flags
     = fts_flags() | FTS_META | FTS_TOP | FTS_NOPOSTORDER | FTS_NOSEEDOTDIR;
     memset(&state, 0, sizeof(state));
-    if (!(state.vm = vmopen(Vmdcheap, Vmbest, 0)))
-    {
+    if (!(state.vm = vmopen(Vmdcheap, Vmbest, 0))) {
         error(ERROR_SYSTEM | 2, "out of space");
         return 2;
     }
@@ -837,38 +773,31 @@ grep(char *id, int options, int argc, char **argv, Shbltin_t *context)
     h = 0;
     fts = 0;
     while (c = optget(argv, usage))
-        switch (c)
-        {
+        switch (c) {
         case 'A':
-            if (opt_info.arg)
-            {
+            if (opt_info.arg) {
                 state.after = ( int )strtol(opt_info.arg, &s, 0);
                 if (*s)
                     error(3, "%s: invalid after-context line count", s);
-            }
-            else
+            } else
                 state.after = 2;
             break;
         case 'B':
-            if (opt_info.arg)
-            {
+            if (opt_info.arg) {
                 state.before = ( int )strtol(opt_info.arg, &s, 0);
                 if (*s)
                     error(3, "%s: invalid before-context line count", s);
-            }
-            else
+            } else
                 state.before = 2;
             break;
         case 'C':
-            if (opt_info.arg)
-            {
+            if (opt_info.arg) {
                 state.before = ( int )strtol(opt_info.arg, &s, 0);
                 state.after
                 = (*s == ',') ? ( int )strtol(s + 1, &s, 0) : state.before;
                 if (*s)
                     error(3, "%s: invalid context line count", s);
-            }
-            else
+            } else
                 state.before = state.after = 2;
             break;
         case 'E':
@@ -903,21 +832,18 @@ grep(char *id, int options, int argc, char **argv, Shbltin_t *context)
             break;
         case 'T':
             s = opt_info.arg;
-            switch (*s)
-            {
+            switch (*s) {
             case 'b':
             case 'm':
                 c = *s++;
                 state.buffer.size = strton(s, &s, NiL, 1);
                 if (c == 'b'
                     && !(state.buffer.base
-                         = newof(0, char, state.buffer.size, 0)))
-                {
+                         = newof(0, char, state.buffer.size, 0))) {
                     error(ERROR_SYSTEM | 2, "out of space [test buffer]");
                     goto done;
                 }
-                if (*s)
-                {
+                if (*s) {
                     error(2, "%s: invalid characters after test", s);
                     goto done;
                 }
@@ -1024,33 +950,27 @@ grep(char *id, int options, int argc, char **argv, Shbltin_t *context)
         }
     argv += opt_info.index;
     if ((state.options & REG_LITERAL)
-        && (state.options & (REG_AUGMENTED | REG_EXTENDED)))
-    {
+        && (state.options & (REG_AUGMENTED | REG_EXTENDED))) {
         error(2, "-F and -A or -P or -X are incompatible");
         goto done;
     }
-    if ((state.options & REG_LITERAL) && state.words)
-    {
+    if ((state.options & REG_LITERAL) && state.words) {
         error(ERROR_SYSTEM | 2, "-F and -w are incompatible");
         goto done;
     }
-    if (!state.files.head && !state.patterns.head)
-    {
-        if (!argv[0])
-        {
+    if (!state.files.head && !state.patterns.head) {
+        if (!argv[0]) {
             error(2, "no pattern");
             goto done;
         }
         if (addstring(&state, &state.patterns, *argv++))
             goto done;
     }
-    if (!(state.options & (REG_FIRST | REG_NOSUB)))
-    {
+    if (!(state.options & (REG_FIRST | REG_NOSUB))) {
         if (state.count || state.list || state.query
             || (state.options & REG_INVERT))
             state.options |= REG_FIRST | REG_NOSUB;
-        else
-        {
+        else {
             state.pos = state.posvec;
             state.posnum = elementsof(state.posvec);
         }
@@ -1058,8 +978,7 @@ grep(char *id, int options, int argc, char **argv, Shbltin_t *context)
     if (r = compile(&state))
         goto done;
     sfset(sfstdout, SF_LINE, 1);
-    if (!argv[0])
-    {
+    if (!argv[0]) {
         if (state.prefix != 1)
             state.prefix = h ? 1 : 0;
         if (r = execute(&state, sfstdin, h, context))
@@ -1069,18 +988,15 @@ grep(char *id, int options, int argc, char **argv, Shbltin_t *context)
         state.prefix = 0;
     else if (!(flags & FTS_TOP) || argv[1])
         state.prefix = 1;
-    if (!(fts = fts_open(argv, flags, NiL)))
-    {
+    if (!(fts = fts_open(argv, flags, NiL))) {
         error(ERROR_SYSTEM | 2, "%s: not found", argv[0]);
         r = 1;
         goto done;
     }
     while (!sh_checksig(context) && (ent = fts_read(fts)))
-        switch (ent->fts_info)
-        {
+        switch (ent->fts_info) {
         case FTS_F:
-            if (f = sfopen(NiL, ent->fts_accpath, "r"))
-            {
+            if (f = sfopen(NiL, ent->fts_accpath, "r")) {
                 r = execute(&state, f, ent->fts_path, context);
                 sfclose(f);
                 if (r)
@@ -1110,13 +1026,11 @@ grep(char *id, int options, int argc, char **argv, Shbltin_t *context)
             break;
         }
 quit:
-    if ((state.count & 2) && !state.query && !state.list)
-    {
+    if ((state.count & 2) && !state.query && !state.list) {
         Item_t *x;
 
         x = state.labels.head;
-        do
-        {
+        do {
             if (*x->string)
                 sfprintf(sfstdout, "%s:", x->string);
             sfprintf(sfstdout, "%I*u\n", sizeof(x->total), x->total);
@@ -1130,8 +1044,7 @@ done:
     sfset(sfstdout, SF_LINE, 0);
     if (sfsync(sfstdout))
         error(ERROR_SYSTEM | 2, "write error");
-    if (sh_checksig(context))
-    {
+    if (sh_checksig(context)) {
         errno = EINTR;
         r = 2;
     }
@@ -1150,8 +1063,7 @@ b_grep(int argc, char **argv, Shbltin_t *context)
         s++;
     else
         s = argv[0];
-    switch (*s)
-    {
+    switch (*s) {
     case 'e':
     case 'E':
         s = "egrep";

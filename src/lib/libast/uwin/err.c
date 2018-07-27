@@ -49,14 +49,12 @@ _STUB_err()
 static void
 errmsg(int level, int code, const char *fmt, va_list ap)
 {
-    if (!error_info.id)
-    {
+    if (!error_info.id) {
         struct _astdll *dp = _ast_getdll();
         char *s;
         char *t;
 
-        if (s = dp->_ast__argv[0])
-        {
+        if (s = dp->_ast__argv[0]) {
             if (t = strrchr(s, '/'))
                 s = t + 1;
             error_info.id = s;

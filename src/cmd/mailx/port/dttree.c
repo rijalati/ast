@@ -94,17 +94,14 @@ int type;
     UNFLATTEN(dt);
 
     root = dt->data->here;
-    if (!obj)
-    {
+    if (!obj) {
         if (!root || !(type & (DT_CLEAR | DT_FIRST | DT_LAST)))
             return NIL(Void_t *);
 
         if (type & DT_CLEAR) /* delete all objects */
         {
-            if (disc->freef || disc->link < 0)
-            {
-                do
-                {
+            if (disc->freef || disc->link < 0) {
+                do {
                     while ((t = root->left))
                         RROTATE(root, t);
                     t = root->right;
@@ -118,15 +115,12 @@ int type;
             dt->data->size = 0;
             dt->data->here = NIL(Dtlink_t *);
             return NIL(Void_t *);
-        }
-        else /* computing largest/smallest element */
+        } else /* computing largest/smallest element */
         {
-            if (type & DT_LAST)
-            {
+            if (type & DT_LAST) {
                 while ((t = root->right))
                     LROTATE(root, t);
-            }
-            else /* type == DT_FIRST */
+            } else /* type == DT_FIRST */
             {
                 while ((t = root->left))
                     RROTATE(root, t);
@@ -140,10 +134,8 @@ int type;
     /* object and key */
     if (type & DT_MATCH)
         key = ( char * )obj;
-    else
-    {
-        if (type & DT_RENEW)
-        {
+    else {
+        if (type & DT_RENEW) {
             me = ( Dtlink_t * )obj;
             obj = OBJ(me, disc);
         }
@@ -153,8 +145,7 @@ int type;
     /* note that link.right is LEFT tree and link.left is RIGHT tree */
     l = r = &link;
 
-    if (root && obj != OBJ(root, disc))
-    {
+    if (root && obj != OBJ(root, disc)) {
         do /* top-down splaying */
         {
             k = ( char * )OBJ(root, disc);
@@ -163,39 +154,32 @@ int type;
                 break;
             else if (cmp < 0) /* left turn */
             {
-                if ((t = root->left))
-                {
+                if ((t = root->left)) {
                     k = ( char * )OBJ(t, disc);
                     k = KEY(( Void_t * )k, disc);
-                    if ((cmp = CMP(dt, key, k, disc)) <= 0)
-                    {
+                    if ((cmp = CMP(dt, key, k, disc)) <= 0) {
                         RROTATE(root, t);
                         if (cmp == 0)
                             break;
                         t = root->left;
-                    }
-                    else /* left,right */
+                    } else /* left,right */
                     {
                         LLINK(l, t);
                         t = t->right;
                     }
                 }
                 RLINK(r, root);
-            }
-            else /* right turn */
+            } else /* right turn */
             {
-                if ((t = root->right))
-                {
+                if ((t = root->right)) {
                     k = ( char * )OBJ(t, disc);
                     k = KEY(( Void_t * )k, disc);
-                    if ((cmp = CMP(dt, key, k, disc)) >= 0)
-                    {
+                    if ((cmp = CMP(dt, key, k, disc)) >= 0) {
                         LROTATE(root, t);
                         if (cmp == 0)
                             break;
                         t = root->right;
-                    }
-                    else /* right, left */
+                    } else /* right, left */
                     {
                         RLINK(r, t);
                         t = t->left;
@@ -206,15 +190,13 @@ int type;
         } while ((root = t));
     }
 
-    if (root)
-    { /* found it, now isolate it */
+    if (root) { /* found it, now isolate it */
         l->right = root->left;
         r->left = root->right;
 
         if (type & (DT_SEARCH | DT_MATCH))
             ;
-        else if (type & DT_DELETE)
-        {
+        else if (type & DT_DELETE) {
             obj = OBJ(root, disc);
             if (disc->freef)
                 (*disc->freef)(dt, obj, disc);
@@ -223,79 +205,61 @@ int type;
             if ((dt->data->size -= 1) < 0)
                 dt->data->size = -1;
             root = NIL(Dtlink_t *);
-        }
-        else if (type & DT_NEXT) /* looking for immediate successor */
+        } else if (type & DT_NEXT) /* looking for immediate successor */
         {
             root->left = link.right; /* put root to LEFT tree */
             root->right = NIL(Dtlink_t *);
             link.right = root;
             goto dt_next;
-        }
-        else if (type & DT_PREV) /* looking for immediate predecessor */
+        } else if (type & DT_PREV) /* looking for immediate predecessor */
         {
             root->right = link.left; /* put root to RIGHT tree */
             root->left = NIL(Dtlink_t *);
             link.left = root;
             goto dt_prev;
-        }
-        else if (type & DT_RENEW)
-        { /* duplicated elt */
+        } else if (type & DT_RENEW) { /* duplicated elt */
             if (disc->freef)
                 (*disc->freef)(dt, obj, disc);
             if (disc->link < 0)
                 (*dt->memoryf)(dt, ( Void_t * )me, 0, disc);
             root = NIL(Dtlink_t *);
         }
-    }
-    else
-    { /* not found, finish up LEFT and RIGHT trees */
+    } else { /* not found, finish up LEFT and RIGHT trees */
         r->left = NIL(Dtlink_t *);
         l->right = NIL(Dtlink_t *);
 
         if (type & (DT_SEARCH | DT_DELETE | DT_MATCH))
             obj = NIL(Void_t *);
-        else if (type & DT_RENEW)
-        {
+        else if (type & DT_RENEW) {
             root = me;
             dt->data->size += 1;
-        }
-        else if (type & DT_INSERT)
-        {
+        } else if (type & DT_INSERT) {
             if (disc->makef)
                 obj = (*disc->makef)(dt, obj, disc);
-            if (obj)
-            {
-                if (disc->link < 0)
-                {
+            if (obj) {
+                if (disc->link < 0) {
                     root = ( Dtlink_t * )(*dt->memoryf)(
                     dt, NIL(Void_t *), sizeof(Dthold_t), disc);
                     if (root)
                         (( Dthold_t * )root)->obj = obj;
                     else if (disc->makef && disc->freef)
                         (*disc->freef)(dt, obj, disc);
-                }
-                else
+                } else
                     root = ELT(obj, disc);
 
                 if ((dt->data->size += 1) <= 0)
                     dt->data->size = -1;
             }
-        }
-        else if (type & DT_NEXT)
-        {
+        } else if (type & DT_NEXT) {
         dt_next: /* immediate successor is smallest in RIGHT tree */
-            if ((root = link.left))
-            {
+            if ((root = link.left)) {
                 while ((t = root->left))
                     RROTATE(root, t);
                 link.left = root->right;
             }
-        }
-        else if (type & DT_PREV)
-        {
+        } else if (type & DT_PREV) {
         dt_prev: /* immediate predecessor is largest in LEFT tree */
-            if ((root = link.right))
-            {
+            if ((root = link.right)) {
                 while ((t = root->right))
                     LROTATE(root, t);
                 link.right = root->left;
@@ -309,8 +273,8 @@ int type;
         root->right = link.left;
         dt->data->here = root;
         return OBJ(root, disc);
-    }
-    else /* not found, reconstruct tree by hooking LEFT tree to RIGHT tree */
+    } else /* not found, reconstruct tree by hooking LEFT tree to RIGHT tree
+            */
     {
         while ((t = r->left))
             r = t;

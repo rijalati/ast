@@ -48,22 +48,18 @@ fmtscale(Sfulong_t n, int k)
     u = scale;
     if (n < 1000)
         r = 0;
-    else
-    {
+    else {
         m = 0;
-        while (n >= k && *(u + 1))
-        {
+        while (n >= k && *(u + 1)) {
             m = n;
             n /= k;
             u++;
         }
-        if ((r = (10 * (m % k) + (k / 2)) / k) > 9)
-        {
+        if ((r = (10 * (m % k) + (k / 2)) / k) > 9) {
             r = 0;
             n++;
         }
-        if (k == 1024 && n >= 1000)
-        {
+        if (k == 1024 && n >= 1000) {
             n = 1;
             r = 0;
             u++;
@@ -71,14 +67,11 @@ fmtscale(Sfulong_t n, int k)
     }
     buf = fmtbuf(z = 8);
     s = suf;
-    if (u > scale)
-    {
-        if (k == 1024)
-        {
+    if (u > scale) {
+        if (k == 1024) {
             *s++ = *u == 'k' ? 'K' : *u;
             *s++ = 'i';
-        }
-        else
+        } else
             *s++ = *u;
     }
     *s = 0;
@@ -91,8 +84,7 @@ fmtscale(Sfulong_t n, int k)
                   p->decimal >= 0 ? p->decimal : '.',
                   r,
                   suf);
-    else
-    {
+    else {
         if (r >= 5)
             n++;
         sfsprintf(buf, z, "%I*u%s", sizeof(n), n, suf);

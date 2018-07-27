@@ -44,8 +44,7 @@ flatident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
     int d = 0;
 
     while (s < e)
-        switch (*s++)
-        {
+        switch (*s++) {
         case '\n':
             return d == 19;
         case '|':
@@ -80,8 +79,8 @@ static int
 flatopen(Dssfile_t *file, Dssdisc_t *disc)
 {
     if ((file->flags & DSS_FILE_READ)
-        && !(file->data = ( void * )vmnewof(file->dss->vm, 0, State_t, 1, 0)))
-    {
+        && !(file->data
+             = ( void * )vmnewof(file->dss->vm, 0, State_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -101,10 +100,8 @@ flatread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     char *b;
     char *s;
 
-    if (!(a = s = sfgetr(file->io, '\n', 0)))
-    {
-        if (sfvalue(file->io))
-        {
+    if (!(a = s = sfgetr(file->io, '\n', 0))) {
+        if (sfvalue(file->io)) {
             if (disc->errorf)
                 (*disc->errorf)(NiL,
                                 disc,
@@ -178,8 +175,7 @@ flatread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     record->size = sizeof(*rp);
     return 1;
 bad:
-    if (disc->errorf)
-    {
+    if (disc->errorf) {
         if (a < b)
             a = b;
         (*disc->errorf)(NiL,
@@ -228,8 +224,7 @@ flatwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                  rp->src_maskv4,
                  rp->dst_maskv4,
                  rp->flow_sequence)
-        < 0)
-    {
+        < 0) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "%s: write error", file->format->name);

@@ -61,8 +61,7 @@ fill(State_t *state)
 
     state->bp = state->buf + LINE;
     if ((r = sfrd(state->codex->sp, state->bp, BUFFER, &state->codex->sfdisc))
-        <= 0)
-    {
+        <= 0) {
         state->be = state->bp;
         return EOF;
     }
@@ -75,8 +74,7 @@ flush(State_t *state, int c)
 {
     size_t n;
 
-    if (c < 0 && state->col)
-    {
+    if (c < 0 && state->col) {
         state->col = 0;
         PUTCHAR(state, '=');
         PUTCHAR(state, '\n');
@@ -96,14 +94,12 @@ qp_open(Codex_t *p, char *const args[], Codexnum_t flags)
     State_t *state;
     int i;
 
-    if (!(state = newof(0, State_t, 1, 0)))
-    {
+    if (!(state = newof(0, State_t, 1, 0))) {
         if (p->disc->errorf)
             (*p->disc->errorf)(NiL, p->disc, 2, "out of space");
         return -1;
     }
-    if (flags & CODEX_DECODE)
-    {
+    if (flags & CODEX_DECODE) {
         for (i = -1; i < elementsof(state->xeh); i++)
             state->xeh[i] = -1;
         for (i = 0; i < elementsof(hex) - 1; i++)
@@ -125,16 +121,13 @@ qp_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
     int d;
 
     x = 0;
-    while (s < e)
-    {
-        switch (c = GETCHAR(state))
-        {
+    while (s < e) {
+        switch (c = GETCHAR(state)) {
         case '=':
             if ((c = GETCHAR(state)) == '\n')
                 continue;
             if ((d = state->xeh[c]) != EOF
-                && (c = state->xeh[GETCHAR(state)]) != EOF)
-            {
+                && (c = state->xeh[GETCHAR(state)]) != EOF) {
                 c |= (d << 4);
                 x = 0;
                 break;
@@ -143,8 +136,7 @@ qp_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
         case EOF:
             return s - ( char * )buf;
         case '\n':
-            if (x)
-            {
+            if (x) {
                 s = x;
                 x = 0;
             }
@@ -177,24 +169,18 @@ qp_write(Sfio_t *sp, const void *buf, size_t n, Sfdisc_t *disc)
     int col;
 
 again:
-    if (state->pp)
-    {
+    if (state->pp) {
         s = state->prv;
         e = state->pp;
         state->col = 0;
-    }
-    else
-    {
+    } else {
         s = ( unsigned char * )buf;
         e = s + n;
         col = state->col;
     }
-    for (;;)
-    {
-        if (s >= e)
-        {
-            if (state->pp)
-            {
+    for (;;) {
+        if (s >= e) {
+            if (state->pp) {
                 state->pp = 0;
                 state->col = col;
                 goto again;
@@ -202,63 +188,48 @@ again:
             break;
         }
         c = *s++;
-        if (!col++)
-        {
-            if (c == 'F')
-            {
-                if ((e - s) < 4)
-                {
+        if (!col++) {
+            if (c == 'F') {
+                if ((e - s) < 4) {
                     s--;
                     col--;
                     state->pp = state->prv;
                     for (c = 0; c < (e - s); ++c)
                         *state->pp++ = s[c];
                     break;
-                }
-                else if (s[0] == 'r' && s[1] == 'o' && s[2] == 'm'
-                         && s[3] == ' ')
+                } else if (s[0] == 'r' && s[1] == 'o' && s[2] == 'm'
+                           && s[3] == ' ')
                     goto quote;
-            }
-            else if (c == '.')
-            {
-                if ((e - s) < 1)
-                {
+            } else if (c == '.') {
+                if ((e - s) < 1) {
                     s--;
                     col--;
                     state->pp = state->prv;
                     *state->pp++ = c;
                     break;
-                }
-                else if (s[0] == '\r' || s[0] == '\n')
+                } else if (s[0] == '\r' || s[0] == '\n')
                     goto quote;
             }
         }
-        if (c == '\n')
-        {
+        if (c == '\n') {
             col = 0;
             PUTCHAR(state, c);
             continue;
-        }
-        else if (col >= (LINE - 4))
-        {
+        } else if (col >= (LINE - 4)) {
             col = 0;
             PUTCHAR(state, '=');
             PUTCHAR(state, '\n');
         }
-        if (c == ' ' || c == '\t')
-        {
-            if ((e - s) < 1)
-            {
+        if (c == ' ' || c == '\t') {
+            if ((e - s) < 1) {
                 s--;
                 col--;
                 state->pp = state->prv;
                 *state->pp++ = c;
                 break;
-            }
-            else if (s[0] == '\r' || s[0] == '\n')
+            } else if (s[0] == '\r' || s[0] == '\n')
                 goto quote;
-            else
-            {
+            else {
                 if (c == '\t')
                     col |= 7;
                 PUTCHAR(state, c);

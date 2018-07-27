@@ -88,12 +88,10 @@ decode(Sfio_t *ip)
     i = 1;
     if (c != '#' && !isalpha(c))
         goto bad;
-    while ((c = sfgetc(ip)) != EOF && c != ';')
-    {
+    while ((c = sfgetc(ip)) != EOF && c != ';') {
         if (c == '&')
             i = 0;
-        else
-        {
+        else {
             name[i++] = c;
             if (!isalnum(c) && (i > 1 || c != '#')
                 || i >= (elementsof(name) - 1))
@@ -101,10 +99,8 @@ decode(Sfio_t *ip)
         }
     }
     name[i] = 0;
-    if (name[0] == '#')
-    {
-        switch (c = strtol(name + 1, NiL, 10))
-        {
+    if (name[0] == '#') {
+        switch (c = strtol(name + 1, NiL, 10)) {
         case 91:
             c = '[';
             break;
@@ -112,12 +108,9 @@ decode(Sfio_t *ip)
             c = ']';
             break;
         }
-    }
-    else
-    {
+    } else {
         for (i = 0; i < elementsof(codes); i++)
-            if (streq(codes[i].name, name))
-            {
+            if (streq(codes[i].name, name)) {
                 c = codes[i].code;
                 break;
             }
@@ -143,12 +136,10 @@ sfpututf(Sfio_t *op, int w)
         return sfputc(op, w);
     else if (!(w & ~0x7FF))
         sfputc(op, 0xC0 + (w >> 6));
-    else if (!(w & ~0xFFFF))
-    {
+    else if (!(w & ~0xFFFF)) {
         sfputc(op, 0xE0 + (w >> 12));
         sfputc(op, 0x80 + (w >> 6) & 0x3F);
-    }
-    else
+    } else
         return sfputc(op, '?');
     return sfputc(op, 0x80 + (w & 0x3F));
 }
@@ -171,8 +162,7 @@ html2msg(Sfio_t *ip, Sfio_t *op, int flags)
 
 again:
     while ((c = sfgetc(ip)) != EOF)
-        if (c == '<')
-        {
+        if (c == '<') {
             if ((c = sfnext(ip)) == 'O' && (c = sfnext(ip)) == 'L'
                 && isspace(c = sfgetc(ip)) && (c = sfnext(ip)) == 'S'
                 && (c = sfnext(ip)) == 'T' && (c = sfnext(ip)) == 'A'
@@ -189,17 +179,14 @@ again:
     if ((c = sfnext(ip)) != EOF)
         sfungetc(ip, c);
     q = 0;
-    for (;;)
-    {
-        switch (c = sfgetc(ip))
-        {
+    for (;;) {
+        switch (c = sfgetc(ip)) {
         case EOF:
             break;
         case '&':
             c = decode(ip);
             sfpututf(op, c);
-            if (isspace(c))
-            {
+            if (isspace(c)) {
                 while (isspace(c = sfgetc(ip)))
                     ;
                 if (c == EOF)
@@ -208,14 +195,11 @@ again:
             }
             continue;
         case '<':
-            switch (c = sfnext(ip))
-            {
+            switch (c = sfnext(ip)) {
             case '/':
                 if ((c = sfnext(ip)) == 'O' && (c = sfgetc(ip)) == 'L'
-                    && (c = sfnext(ip)) == '>')
-                {
-                    if (q)
-                    {
+                    && (c = sfnext(ip)) == '>') {
+                    if (q) {
                         sfputc(op, q);
                         q = '"';
                     }
@@ -228,15 +212,13 @@ again:
                 break;
             case 'L':
                 if ((c = sfgetc(ip)) == 'I' && (c = sfnext(ip)) == '>'
-                    && isdigit(c = sfnext(ip)))
-                {
+                    && isdigit(c = sfnext(ip))) {
                     if (q)
                         sfputc(op, q);
                     else
                         q = '"';
                     sfputc(op, '\n');
-                    do
-                    {
+                    do {
                         sfputc(op, c);
                     } while (isdigit(c = sfgetc(ip)));
                     if (c == EOF)
@@ -258,10 +240,8 @@ again:
                          && (c = sfgetc(ip)) == 'A' && (c = sfgetc(ip)) == 'S'
                          && (c = sfgetc(ip)) == 'S' && (c = sfnext(ip)) == '='
                          && (c = sfnext(ip)) == '"')
-                    for (;;)
-                    {
-                        switch (c = sfgetc(ip))
-                        {
+                    for (;;) {
+                        switch (c = sfgetc(ip)) {
                         case EOF:
                         case '"':
                             break;
@@ -289,8 +269,7 @@ again:
             sfputc(op, c);
             continue;
         case '\n':
-            if (flags)
-            {
+            if (flags) {
                 sfputc(op, c);
                 continue;
             }
@@ -298,18 +277,14 @@ again:
         case ' ':
         case '\t':
             while ((c = sfgetc(ip)) != EOF)
-                if (c == '&')
-                {
+                if (c == '&') {
                     c = decode(ip);
                     if (!isspace(c))
                         sfputc(op, ' ');
                     sfpututf(op, c);
                     break;
-                }
-                else if (!isspace(c))
-                {
-                    if (c == '<')
-                    {
+                } else if (!isspace(c)) {
+                    if (c == '<') {
                         c = sfgetc(ip);
                         if (c == EOF)
                             break;
@@ -317,9 +292,7 @@ again:
                         sfungetc(ip, '<');
                         if (c != 'L' && c != '/')
                             sfputc(op, ' ');
-                    }
-                    else
-                    {
+                    } else {
                         if (c != EOF)
                             sfungetc(ip, c);
                         sfputc(op, ' ');
@@ -375,15 +348,12 @@ msg2html(Sfio_t *ip, Sfio_t *op, int flags)
     "text massaged for external translation --></HEAD><BODY>\n");
     sfprintf(op, "<OL START=\"550717\">\n");
     p = q = 0;
-    while (s = sfgetr(ip, '\n', 1))
-    {
+    while (s = sfgetr(ip, '\n', 1)) {
         error_info.line++;
         if (flags)
             sfprintf(op, "<P>");
-        else
-        {
-            if (*s == '$')
-            {
+        else {
+            if (*s == '$') {
                 if (p)
                     sfprintf(op, "<P>");
                 else
@@ -405,20 +375,16 @@ msg2html(Sfio_t *ip, Sfio_t *op, int flags)
                 c = *s++;
             if (!c)
                 s--;
-            else if (isspace(*s))
-            {
+            else if (isspace(*s)) {
                 s++;
                 sfprintf(op, "<BR>");
             }
         }
-        for (;;)
-        {
-            switch (c = *s++)
-            {
+        for (;;) {
+            switch (c = *s++) {
             case 0:
                 flags &= ~MSG_SPLICE;
-                if (q)
-                {
+                if (q) {
                     q = 0;
                     sfprintf(op, "\">");
                 }
@@ -440,8 +406,7 @@ msg2html(Sfio_t *ip, Sfio_t *op, int flags)
                 sfprintf(op, "&#093;");
                 continue;
             case '$':
-                if (!q)
-                {
+                if (!q) {
                     q = 1;
                     sfprintf(op, "<P CLASS=\"");
                 }
@@ -451,8 +416,7 @@ msg2html(Sfio_t *ip, Sfio_t *op, int flags)
                 s--;
                 continue;
             case '%':
-                if (!q)
-                {
+                if (!q) {
                     q = 1;
                     sfprintf(op, "<P CLASS=\"");
                 }
@@ -460,10 +424,8 @@ msg2html(Sfio_t *ip, Sfio_t *op, int flags)
                 if (*s == '%')
                     sfputc(op, *s++);
                 else
-                    do
-                    {
-                        if (!(c = *s++) || c == '"')
-                        {
+                    do {
+                        if (!(c = *s++) || c == '"') {
                             s--;
                             break;
                         }
@@ -475,8 +437,7 @@ msg2html(Sfio_t *ip, Sfio_t *op, int flags)
                     sfprintf(op, "&nbsp;");
                 continue;
             case '"':
-                if (!(flags & MSG_RAW))
-                {
+                if (!(flags & MSG_RAW)) {
                     s = "";
                     continue;
                 }
@@ -486,8 +447,7 @@ msg2html(Sfio_t *ip, Sfio_t *op, int flags)
             case '/':
             case '+':
             case '@':
-                if (!q)
-                {
+                if (!q) {
                     q = 1;
                     sfprintf(op, "<P CLASS=\"");
                 }
@@ -499,33 +459,25 @@ msg2html(Sfio_t *ip, Sfio_t *op, int flags)
                     sfprintf(op, "&nbsp;");
                 continue;
             case '\\':
-                if (!(c = *s++))
-                {
+                if (!(c = *s++)) {
                     flags |= MSG_SPLICE;
                     break;
                 }
-                if (c != 'n' && c != 't')
-                {
-                    if (!q)
-                    {
+                if (c != 'n' && c != 't') {
+                    if (!q) {
                         q = 1;
                         sfprintf(op, "<P CLASS=\"");
                     }
                     sfputc(op, '\\');
                     encode(op, c);
-                    if (c == 'b')
-                    {
-                        for (;;)
-                        {
-                            if (!(c = *s++) || c == '"')
-                            {
+                    if (c == 'b') {
+                        for (;;) {
+                            if (!(c = *s++) || c == '"') {
                                 s--;
                                 break;
                             }
-                            if (c == '?')
-                            {
-                                if (*s != '?')
-                                {
+                            if (c == '?') {
+                                if (*s != '?') {
                                     s--;
                                     break;
                                 }
@@ -533,13 +485,11 @@ msg2html(Sfio_t *ip, Sfio_t *op, int flags)
                                 sfputc(op, *s++);
                                 continue;
                             }
-                            if (c == '\\')
-                            {
+                            if (c == '\\') {
                                 if (!*s)
                                     break;
                                 sfputc(op, c);
-                                if (*s == 'a' || *s == 'b' || *s == '0')
-                                {
+                                if (*s == 'a' || *s == 'b' || *s == '0') {
                                     sfputc(op, *s++);
                                     break;
                                 }
@@ -547,9 +497,7 @@ msg2html(Sfio_t *ip, Sfio_t *op, int flags)
                             }
                             encode(op, c);
                         }
-                    }
-                    else if (isdigit(c) && isdigit(*s))
-                    {
+                    } else if (isdigit(c) && isdigit(*s)) {
                         sfputc(op, *s++);
                         if (isdigit(*s))
                             sfputc(op, *s++);
@@ -565,22 +513,18 @@ msg2html(Sfio_t *ip, Sfio_t *op, int flags)
                        || *s == '\\' && (*(s + 1) == 'n' || *(s + 1) == 't')
                           && s++)
                     s++;
-                if (*s == '"')
-                {
-                    if (q)
-                    {
+                if (*s == '"') {
+                    if (q) {
                         q = 0;
                         sfprintf(op, " \">");
-                    }
-                    else
+                    } else
                         sfprintf(op, "<BR>");
                     continue;
                 }
                 c = ' ';
                 /*FALLTHROUGH*/
             default:
-                if (q)
-                {
+                if (q) {
                     q = 0;
                     sfprintf(op, "\">");
                 }
@@ -603,10 +547,8 @@ main(int argc, char **argv)
 
     NoP(argc);
     error_info.id = "msgcvt";
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'h':
             convert = msg2html;
             continue;

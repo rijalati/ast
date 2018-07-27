@@ -93,8 +93,7 @@ varinit(void)
 
     state.version = fmtident(state.version);
     setscreensize();
-    for (vp = state.vartab; vp->name; vp++)
-    {
+    for (vp = state.vartab; vp->name; vp++) {
         if ((vp->flags & E) && (s = getenv(vp->name)) && *s)
             varset(vp->name, s);
         else if (vp->initialize)
@@ -117,15 +116,11 @@ varinit(void)
     if ((s = strchr(state.var.hostname, '.')) && *++s)
         state.var.domain = varkeep(s);
     else
-        for (i = 0; i < sizeof(domains) / sizeof(domains[0]); i++)
-        {
+        for (i = 0; i < sizeof(domains) / sizeof(domains[0]); i++) {
             s = ( char * )domains[i];
-            do
-            {
-                if (fp = fileopen(s, "r"))
-                {
-                    while (s = fgets(buf, sizeof(buf), fp))
-                    {
+            do {
+                if (fp = fileopen(s, "r")) {
+                    while (s = fgets(buf, sizeof(buf), fp)) {
                         while (isspace(*s))
                             s++;
                         if (((c = *s++) == 'd' || c == 'D')
@@ -134,8 +129,7 @@ varinit(void)
                             && ((c = *s++) == 'a' || c == 'A')
                             && ((c = *s++) == 'i' || c == 'M')
                             && ((c = *s++) == 'n' || c == 'N')
-                            && (isspace(c = *s++) || c == ':' || c == '='))
-                        {
+                            && (isspace(c = *s++) || c == ':' || c == '=')) {
                             while (isspace(*s))
                                 s++;
                             t = s;
@@ -145,8 +139,7 @@ varinit(void)
                                 t--;
                             if (*t)
                                 *t = 0;
-                            if (*s)
-                            {
+                            if (*s) {
                                 state.var.domain = varkeep(s);
                                 break;
                             }
@@ -200,10 +193,8 @@ varlist(int all)
     const struct var *vp;
 
     for (vp = state.vartab; vp->name; vp++)
-        if (*vp->variable)
-        {
-            if (all > 0 || !all && !(vp->flags & A))
-            {
+        if (*vp->variable) {
+            if (all > 0 || !all && !(vp->flags & A)) {
                 printf("%16s", vp->name);
                 if (vp->flags & I)
                     printf("=%ld\n", *(( long * )vp->variable));
@@ -212,9 +203,7 @@ varlist(int all)
                 else
                     putchar('\n');
             }
-        }
-        else if (all)
-        {
+        } else if (all) {
             sfprintf(state.path.temp, "no%s", vp->name);
             printf("%16s\n", struse(state.path.temp));
         }
@@ -234,25 +223,20 @@ varset(const char *name, const char *value)
     int m;
 
     note(DEBUG, "set name=%s value=%s", name, value);
-    if (name[0] == '-')
-    {
+    if (name[0] == '-') {
         name += 1;
         value = 0;
-    }
-    else if (name[0] == 'n' && name[1] == 'o')
-    {
+    } else if (name[0] == 'n' && name[1] == 'o') {
         name += 2;
         value = 0;
     }
-    for (;;)
-    {
+    for (;;) {
         if (!(vp = ( struct var * )strsearch(state.vartab,
                                              state.varnum,
                                              sizeof(struct var),
                                              stracmp,
                                              name,
-                                             NiL)))
-        {
+                                             NiL))) {
             if (state.sourcing)
                 return 0;
             note(0, "\"%s\": unknown variable", name);
@@ -262,34 +246,26 @@ varset(const char *name, const char *value)
             break;
         name = ( const char * )vp->help;
     }
-    if ((vp->flags & C) && !state.cmdline)
-    {
+    if ((vp->flags & C) && !state.cmdline) {
         note(0, "\"%s\": can only set variable on command line", name);
         return 1;
     }
-    if ((vp->flags & S) && state.sourcing)
-    {
+    if ((vp->flags & S) && state.sourcing) {
         note(0, "\"%s\": cannot set variable from script", name);
         return 1;
     }
-    if (vp->flags & R)
-    {
+    if (vp->flags & R) {
         note(0, "\"%s\": readonly variable", name);
         return 1;
-    }
-    else if (vp->flags & I)
-    {
+    } else if (vp->flags & I) {
         if (!value)
             *(( long * )vp->variable) = 0;
         else if (isdigit(*value) || *value == '-' || *value == '+')
             *(( long * )vp->variable) = strtol(value, NiL, 0);
-    }
-    else
-    {
-        if (value && (*value || !(vp->flags & N)))
-        {
-            if ((vp->flags & L) && *value && *vp->variable && **vp->variable)
-            {
+    } else {
+        if (value && (*value || !(vp->flags & N))) {
+            if ((vp->flags & L) && *value && *vp->variable
+                && **vp->variable) {
                 if (state.cmdline)
                     return 0;
                 m = strlen(*vp->variable);
@@ -300,11 +276,9 @@ varset(const char *name, const char *value)
                 s[m] = '\n';
                 strcpy(s + m + 1, value);
                 value = ( const char * )s;
-            }
-            else if (value != ( char * )vp->initialize)
+            } else if (value != ( char * )vp->initialize)
                 value = varkeep(value);
-        }
-        else if (vp->flags & D)
+        } else if (vp->flags & D)
             value = vp->initialize;
         else
             value = 0;
@@ -328,15 +302,13 @@ varget(const char *name)
     struct var *vp;
     char *s;
 
-    for (;;)
-    {
+    for (;;) {
         if (!(vp = ( struct var * )strsearch(state.vartab,
                                              state.varnum,
                                              sizeof(struct var),
                                              stracmp,
                                              name,
-                                             NiL)))
-        {
+                                             NiL))) {
             if (s = getenv(name))
                 return s;
             if (!state.sourcing)
@@ -347,8 +319,7 @@ varget(const char *name)
             break;
         name = ( const char * )vp->help;
     }
-    if (vp->flags & I)
-    {
+    if (vp->flags & I) {
         sfsprintf(
         state.number, sizeof(state.number), "%ld", *(( long * )vp->variable));
         return state.number;
@@ -363,8 +334,7 @@ varget(const char *name)
 void
 set_notyet(struct var *vp, const char *value)
 {
-    if (value)
-    {
+    if (value) {
         note(0, "\"%s\": variable not implemented yet", vp->name);
         *vp->variable = 0;
     }
@@ -413,20 +383,16 @@ setheaders(struct var *vp, const char *value)
     flags = GTO;
     p = ( char * )value;
     while (b = wordnext(&p, state.path.path))
-        for (lp = state.hdrtab;; lp++)
-        {
-            if (!(t = lp->name))
-            {
+        for (lp = state.hdrtab;; lp++) {
+            if (!(t = lp->name)) {
                 note(0, "\"%s %s\": unknown header field", vp->name, b);
                 break;
             }
             s = b;
-            if (upper(*s) == *t)
-            {
+            if (upper(*s) == *t) {
                 while (lower(*++s) == *++t)
                     ;
-                if (!*s && *t == ':')
-                {
+                if (!*s && *t == ':') {
                     flags |= lp->type;
                     break;
                 }
@@ -465,8 +431,7 @@ set_asksub(struct var *vp, const char *value)
 void
 set_coprocess(struct var *vp, const char *value)
 {
-    if (value)
-    {
+    if (value) {
         if (!*value)
             state.var.coprocess = varkeep("From @");
         state.var.crt = 0;
@@ -504,8 +469,7 @@ set_editheaders(struct var *vp, const char *value)
 void
 set_justfrom(struct var *vp, const char *value)
 {
-    if (value)
-    {
+    if (value) {
         state.var.justheaders = state.var.justfrom ? "" : ( char * )0;
         state.var.interactive = 0;
         state.var.screen = 0;
@@ -567,8 +531,7 @@ set_news(struct var *vp, const char *value)
 void
 set_pwd(struct var *vp, const char *value)
 {
-    if (value && !*value)
-    {
+    if (value && !*value) {
         if (!getcwd(state.path.pwd[0], sizeof(state.path.pwd[0])))
             strcpy(state.path.pwd[0], ".");
         state.var.pwd = state.path.pwd[0];
@@ -591,8 +554,7 @@ set_sender(struct var *vp, const char *value)
     int d;
     int n;
 
-    if (value && *value)
-    {
+    if (value && *value) {
         if (!(sp = newof(0, struct sender, 1, strlen(value))))
             note(PANIC, "Out of space");
         v = sp->address;
@@ -604,57 +566,44 @@ set_sender(struct var *vp, const char *value)
         ap = &op->sendand;
         n = 1;
         value--;
-        while (c = *value++)
-        {
-            if (c == d)
-            {
+        while (c = *value++) {
+            if (c == d) {
                 *v++ = 0;
-                if (n == 1)
-                {
+                if (n == 1) {
                     n = 2;
                     ap->head = v;
-                }
-                else if (n == 2)
-                {
+                } else if (n == 2) {
                     n = 3;
                     ap->pattern = v;
                     if (!strcasecmp(ap->head, "received"))
                         ap->flags |= GLAST;
-                }
-                else if (!(c = *value++) || *value != d)
+                } else if (!(c = *value++) || *value != d)
                     break;
-                else if (c == '|')
-                {
+                else if (c == '|') {
                     if (!(op->next = newof(0, struct sendor, 1, 0)))
                         note(PANIC, "Out of space");
                     op = op->next;
                     ap = &op->sendand;
                     n = 1;
-                }
-                else if (c == '&')
-                {
+                } else if (c == '&') {
                     if (!(ap->next = newof(0, struct sendand, 1, 0)))
                         note(PANIC, "Out of space");
                     ap = ap->next;
                     n = 1;
-                }
-                else
+                } else
                     break;
-            }
-            else
+            } else
                 *v++ = c;
         }
         if (c)
             note(ERROR,
                  "sender match operand syntax error: '%s' not expected",
                  value - 1);
-        else
-        {
+        else {
             sp->next = state.sender;
             state.sender = sp;
         }
-    }
-    else
+    } else
         state.sender = 0;
 }
 
@@ -677,8 +626,7 @@ set_screen(struct var *vp, const char *value)
 void
 set_sendmail(struct var *vp, const char *value)
 {
-    if (value && !*value)
-    {
+    if (value && !*value) {
         sfprintf(state.path.temp, "%s -oi", _PATH_SENDMAIL);
         state.var.sendmail = varkeep(struse(state.path.temp));
     }
@@ -708,21 +656,18 @@ set_spambody(struct var *vp, const char *value)
     struct linematch *mp;
     struct match *xp;
 
-    if (!(mp = state.bodymatch))
-    {
+    if (!(mp = state.bodymatch)) {
         if (!(mp = newof(0, struct linematch, 1, 0)))
             note(PANIC, "Out of space");
         state.bodymatch = mp;
     }
     s = ( char * )value;
-    for (;;)
-    {
+    for (;;) {
         if (t = strchr(s, '|'))
             n = t - s;
         else
             n = strlen(s);
-        if (n)
-        {
+        if (n) {
             if (mp->minline < n)
                 mp->minline = n;
             if (!(xp = newof(0, struct match, 1, n)))
@@ -804,15 +749,12 @@ drop(Dt_t *dt, void *obj, Dtdisc_t *disc)
     struct list *ap;
     struct list *bp;
 
-    if (np->value)
-    {
+    if (np->value) {
         if (!(np->flags & (GALIAS | GALTERNATE)))
             free(np->value);
-        else
-        {
+        else {
             ap = ( struct list * )np->value;
-            do
-            {
+            do {
                 bp = ap->next;
                 free(ap);
             } while (ap = bp);
@@ -843,8 +785,7 @@ dictsearch(Dt_t **dp, const char *name, int op)
     struct name *xp;
     struct name *object;
 
-    if (!(dt = *dp))
-    {
+    if (!(dt = *dp)) {
         if (!(op & (CREATE | INSERT)))
             return 0;
         if (!(dict = (op & STACK)
@@ -859,26 +800,21 @@ dictsearch(Dt_t **dp, const char *name, int op)
             dict->disc.freef = drop;
         if (!(dt = dtopen(&dict->disc, Dtoset)))
             note(PANIC, "Out of space");
-        if ((op & STACK) && state.onstack > 0)
-        {
+        if ((op & STACK) && state.onstack > 0) {
             dict->next = state.stacked;
             state.stacked = dt;
         }
         *dp = dt;
     }
-    if (op & OBJECT)
-    {
+    if (op & OBJECT) {
         object = ( struct name * )name;
         name = ( const char * )object->name;
-    }
-    else
+    } else
         object = 0;
-    if (!(np = ( struct name * )dtmatch(dt, name)))
-    {
+    if (!(np = ( struct name * )dtmatch(dt, name))) {
         if (!(op & (CREATE | INSERT)))
             return 0;
-        if (!(np = object) || (op & COPY))
-        {
+        if (!(np = object) || (op & COPY)) {
             if (!(xp = (op & STACK)
                        ? ( struct name * )salloc(sizeof(struct name)
                                                  + strlen(name) + 1)
@@ -890,13 +826,10 @@ dictsearch(Dt_t **dp, const char *name, int op)
             np = xp;
         }
         np = ( struct name * )dtinsert(dt, np);
-    }
-    else if (op & DELETE)
-    {
+    } else if (op & DELETE) {
         dtdelete(dt, np);
         np = 0;
-    }
-    else if (op & CREATE)
+    } else if (op & CREATE)
         np = 0;
     return np;
 }
@@ -921,8 +854,7 @@ dictreset(void)
 {
     Dt_t *dt;
 
-    while (dt = state.stacked)
-    {
+    while (dt = state.stacked) {
         state.stacked = (( struct dict * )dt->disc)->next;
         dtclose(dt);
     }

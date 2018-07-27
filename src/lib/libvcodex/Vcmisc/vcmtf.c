@@ -31,8 +31,7 @@ static ssize_t mtf0 _ARG_(( Vcchar_t *, Vcchar_t *, Vcchar_t *, int ));
 #define MTFC(c, p, m, n) /* know byte, need to compute position */           \
     {                                                                        \
         m = mtf[p = 0];                                                      \
-        while (m != c)                                                       \
-        {                                                                    \
+        while (m != c) {                                                     \
             n = mtf[p += 1];                                                 \
             mtf[p] = m;                                                      \
             m = n;                                                           \
@@ -43,8 +42,7 @@ static ssize_t mtf0 _ARG_(( Vcchar_t *, Vcchar_t *, Vcchar_t *, int ));
 #define MTFP(c, p, m, n) /* know position, need to compute byte */           \
     {                                                                        \
         c = mtf[m = 0];                                                      \
-        while (m != p)                                                       \
-        {                                                                    \
+        while (m != p) {                                                     \
             n = mtf[m += 1];                                                 \
             mtf[m] = c;                                                      \
             c = n;                                                           \
@@ -83,8 +81,7 @@ int encoding;     /* !=0 if encoding	*/
     {                                                                        \
         if (succ[predc] == c)                                                \
             wght[predc] += 4;                                                \
-        else if ((wght[predc] >>= 1) <= 0)                                   \
-        {                                                                    \
+        else if ((wght[predc] >>= 1) <= 0) {                                 \
             succ[predc] = c;                                                 \
             wght[predc] = 1;                                                 \
         }                                                                    \
@@ -93,20 +90,15 @@ int encoding;     /* !=0 if encoding	*/
             MTFC(c, p, m, n); /* predicting succ[c] is next */               \
     }
 
-    if (encoding)
-    {
-        for (o = output; dt < enddt; ++dt, ++o)
-        {
+    if (encoding) {
+        for (o = output; dt < enddt; ++dt, ++o) {
             c = *dt;
             MTFC(c, p, m, n);
             *o = p;
             SUCC(c, p, m, n);
         }
-    }
-    else
-    {
-        for (o = output; dt < enddt; ++dt, ++o)
-        {
+    } else {
+        for (o = output; dt < enddt; ++dt, ++o) {
             p = *dt;
             MTFP(c, p, m, n);
             *o = c;
@@ -136,19 +128,14 @@ int encoding;     /* !=0 if encoding	*/
 
     for (p = 0; p < 256; ++p)
         mtf[p] = p;
-    if (encoding)
-    {
-        for (o = output; dt < enddt; ++dt, ++o)
-        {
+    if (encoding) {
+        for (o = output; dt < enddt; ++dt, ++o) {
             c = *dt;
             MTFC(c, p, m, n);
             *o = p;
         }
-    }
-    else
-    {
-        for (o = output; dt < enddt; ++dt, ++o)
-        {
+    } else {
+        for (o = output; dt < enddt; ++dt, ++o) {
             p = *dt;
             MTFP(c, p, m, n);
             *o = c;
@@ -269,8 +256,7 @@ static int mtfrestore(mtcd) Vcmtcode_t *mtcd;
     Vcmtarg_t *arg;
     char *ident, buf[1024];
 
-    for (arg = _Mtfargs; arg->name; ++arg)
-    {
+    for (arg = _Mtfargs; arg->name; ++arg) {
         if (!(ident = vcstrcode(arg->name, buf, sizeof(buf))))
             return -1;
         if (mtcd->size == strlen(ident)
@@ -295,10 +281,9 @@ Void_t *params;
     Vcmtcode_t *mtcd;
     char *data;
 
-    if (type == VC_OPENING)
-    {
-        for (arg = NIL(Vcmtarg_t *), data = ( char * )params; data && *data;)
-        {
+    if (type == VC_OPENING) {
+        for (arg = NIL(Vcmtarg_t *), data = ( char * )params;
+             data && *data;) {
             data = vcgetmtarg(data, 0, 0, _Mtfargs, &arg);
             if (arg && arg->name)
                 break;
@@ -309,17 +294,13 @@ Void_t *params;
                     break;
         vcsetmtdata(vc, arg->data);
         return 0;
-    }
-    else if (type == VC_EXTRACT)
-    {
+    } else if (type == VC_EXTRACT) {
         if (!(mtcd = ( Vcmtcode_t * )params))
             return -1;
         if ((mtcd->size = mtfextract(vc, &mtcd->data)) < 0)
             return -1;
         return 1;
-    }
-    else if (type == VC_RESTORE)
-    {
+    } else if (type == VC_RESTORE) {
         if (!(mtcd = ( Vcmtcode_t * )params))
             return -1;
         return mtfrestore(mtcd) < 0 ? -1 : 1;

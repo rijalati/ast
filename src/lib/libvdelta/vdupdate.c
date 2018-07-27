@@ -71,14 +71,12 @@ static int vdunfold(tab) Utable_t *tab;
     target = tab->target;
     source = tab->source;
 
-    for (t = 0, c_addr = n_src; t < n_tar;)
-    {
+    for (t = 0, c_addr = n_src; t < n_tar;) {
         if ((inst = VDGETC(( Vdio_t * )tab)) < 0)
             return -1;
         k_type = K_GET(inst);
 
-        if (!VD_ISCOPY(k_type))
-        {
+        if (!VD_ISCOPY(k_type)) {
             if (K_ISMERGE(k_type)) /* merge/add instruction	*/
                 size = A_TGET(inst);
             else if (A_ISHERE(inst)) /* locally coded ADD size	*/
@@ -97,10 +95,8 @@ static int vdunfold(tab) Utable_t *tab;
             c_addr += size;
 
             /* copy data from the delta stream to target */
-            for (;;)
-            {
-                if (!tar)
-                {
+            for (;;) {
+                if (!tar) {
                     if (( long )(n = sizeof(tab->data)) > size)
                         n = ( int )size;
                     if ((*_Vdread)(( Vdio_t * )tab, tab->data, n) != n)
@@ -109,9 +105,7 @@ static int vdunfold(tab) Utable_t *tab;
                     ( Void_t * )tab->data, n, tab->t_org + t, target);
                     if (r != n)
                         return -1;
-                }
-                else
-                {
+                } else {
                     n = ( int )size;
                     if ((*_Vdread)(( Vdio_t * )tab, tar + t, n) != n)
                         return -1;
@@ -121,19 +115,15 @@ static int vdunfold(tab) Utable_t *tab;
                     break;
             }
 
-            if (K_ISMERGE(k_type))
-            {
+            if (K_ISMERGE(k_type)) {
                 size = C_TGET(inst);
                 k_type -= K_MERGE;
                 goto do_copy;
             }
-        }
-        else
-        {
+        } else {
             if (C_ISHERE(inst)) /* locally coded COPY size */
                 size = C_LGET(inst);
-            else
-            {
+            else {
                 if ((size = VDGETC(( Vdio_t * )tab)) < 0)
                     return -1;
                 if (size >= I_MORE
@@ -149,8 +139,7 @@ static int vdunfold(tab) Utable_t *tab;
                 return -1;
             if (k_type >= K_QUICK && k_type < (K_QUICK + K_QTYPE))
                 copy = tab->quick[copy + ((k_type - K_QUICK) << VD_BITS)];
-            else
-            {
+            else {
                 if (copy >= I_MORE
                     && (copy = ( long )(*_Vdgetu)(( Vdio_t * )tab, copy)) < 0)
                     return -1;
@@ -167,48 +156,35 @@ static int vdunfold(tab) Utable_t *tab;
             {
                 if ((copy + size) > n_src) /* out of sync */
                     return -1;
-                if (src)
-                {
+                if (src) {
                     n = ( int )size;
                     fr = src + copy;
-                    if (tar)
-                    {
+                    if (tar) {
                         to = tar + t;
                         MEMCPY(to, fr, n);
-                    }
-                    else
-                    {
+                    } else {
                         r = (*target->writef)(
                         ( Void_t * )fr, n, tab->t_org + t, target);
                         if (r != n)
                             return -1;
                     }
                     t += n;
-                }
-                else
-                {
+                } else {
                     reg Vddisc_t *disc;
 
-                    if (tab->compress)
-                    {
+                    if (tab->compress) {
                         copy += tab->t_org - tab->n_src;
                         disc = target;
-                    }
-                    else
-                    {
+                    } else {
                         copy += tab->s_org;
                         disc = source;
                     }
-                    for (;;)
-                    {
-                        if (tar)
-                        {
+                    for (;;) {
+                        if (tar) {
                             n = ( int )size;
                             r = (*disc->readf)(
                             ( Void_t * )(tar + t), n, copy, disc);
-                        }
-                        else
-                        {
+                        } else {
                             n = sizeof(tab->data);
                             if (( long )n > size)
                                 n = ( int )size;
@@ -227,8 +203,7 @@ static int vdunfold(tab) Utable_t *tab;
                         copy += n;
                     }
                 }
-            }
-            else /* copy from target data */
+            } else /* copy from target data */
             {
                 copy -= n_src;
                 if (copy >= t || (copy + size) > n_tar) /* out-of-sync */
@@ -238,8 +213,7 @@ static int vdunfold(tab) Utable_t *tab;
                     reg long s, a;
                     if ((s = t - copy) > size)
                         s = size;
-                    if (tar)
-                    {
+                    if (tar) {
                         to = tar + t;
                         fr = tar + copy;
                         n = ( int )s;
@@ -250,8 +224,7 @@ static int vdunfold(tab) Utable_t *tab;
 
                     /* hard read/write */
                     a = copy;
-                    for (;;)
-                    {
+                    for (;;) {
                         if (( long )(n = sizeof(tab->data)) > s)
                             n = ( int )s;
                         r = (*target->readf)(
@@ -313,8 +286,7 @@ Vddisc_t *delta;                                       /* delta data	*/
     if ((*_Vdread)(&tab.io, magic, n) != n)
         return -1;
     for (r = 0; r < n; ++r)
-        if (data[r] != magic[r])
-        {
+        if (data[r] != magic[r]) {
             data = ( uchar * )(VD_MAGIC_OLD);
             for (r = 0; r < n; ++r)
                 if (data[r] != magic[r])
@@ -335,8 +307,7 @@ Vddisc_t *delta;                                       /* delta data	*/
     /* get true source size */
     if ((t = ( long )(*_Vdgetu)(&tab.io, 0)) < 0)
         return -1;
-    else if (t > 0)
-    {
+    else if (t > 0) {
         if (!source || (!source->data && !source->readf))
             return -1;
         if (source->data && source->size < t)
@@ -360,15 +331,12 @@ Vddisc_t *delta;                                       /* delta data	*/
     if (n > 0 && (tab.tar = ( uchar * )malloc(n * sizeof(uchar))))
         tab.t_alloc = 1;
 
-    if (n_src <= 0)
-    {
+    if (n_src <= 0) {
         if (target->data || window >= ( long )MAXINT || window >= n_tar)
             n = 0;
         else
             n = ( int )HEADER(window);
-    }
-    else
-    {
+    } else {
         n = (!source->data && window < ( long )MAXINT) ? ( int )window : 0;
         if (n > n_src)
             n = n_src;
@@ -378,8 +346,7 @@ Vddisc_t *delta;                                       /* delta data	*/
 
     tar = ( uchar * )target->data;
     src = ( uchar * )(source ? source->data : NIL(Void_t *));
-    for (t = 0; t < n_tar;)
-    {
+    for (t = 0; t < n_tar;) {
         tab.t_org = t; /* current location in target stream */
 
         if (n_src <= 0) /* data compression */
@@ -388,33 +355,26 @@ Vddisc_t *delta;                                       /* delta data	*/
 
             if (t == 0)
                 tab.n_src = 0;
-            else
-            {
+            else {
                 tab.n_src = HEADER(window);
                 p = t - tab.n_src;
                 if (tar)
                     tab.src = tar + p;
-                else if (tab.src)
-                {
+                else if (tab.src) {
                     n = ( int )tab.n_src;
-                    if (tab.tar)
-                    {
+                    if (tab.tar) {
                         data = tab.tar + tab.n_tar - n;
                         memcpy(( Void_t * )tab.src, ( Void_t * )data, n);
-                    }
-                    else
-                    {
+                    } else {
                         r = (*target->readf)(tab.src, n, p, target);
                         if (r != n)
                             goto done;
                     }
                 }
             }
-        }
-        else /* data differencing */
+        } else /* data differencing */
         {
-            if (t < n_src)
-            {
+            if (t < n_src) {
                 if (window >= n_src)
                     p = 0;
                 else if ((t + window) > n_src)
@@ -427,8 +387,7 @@ Vddisc_t *delta;                                       /* delta data	*/
 
                 if (src)
                     tab.src = src + p;
-                else if (tab.src)
-                {
+                else if (tab.src) {
                     n = ( int )tab.n_src;
                     r = (*source->readf)(tab.src, n, p, source);
                     if (r != n)
@@ -445,8 +404,7 @@ Vddisc_t *delta;                                       /* delta data	*/
         K_INIT(tab.quick, tab.recent, tab.rhere);
         if (vdunfold(&tab) < 0)
             goto done;
-        if (!target->data && tab.tar)
-        {
+        if (!target->data && tab.tar) {
             p = (*target->writef)(
             ( Void_t * )tab.tar, ( int )tab.n_tar, t, target);
             if (p != tab.n_tar)

@@ -51,33 +51,27 @@ golly(int argc,
     int c;
     char *t;
 
-    if (!up || optstring != lastoptstring || longopts != lastlongopts)
-    {
+    if (!up || optstring != lastoptstring || longopts != lastlongopts) {
         if (!up && !(up = sfstropen()) || !(t = strdup(optstring)))
             return -1;
         sfprintf(up, "[-1p%d]", flags);
-        for (o = longopts; o->name; o++)
-        {
+        for (o = longopts; o->name; o++) {
             if (o->flag || o->val <= 0 || o->val > UCHAR_MAX
                 || !isalnum(o->val))
                 sfprintf(
                 up, "\n[%d:%s]", UCHAR_MAX + 1 + (o - longopts), o->name);
-            else
-            {
+            else {
                 sfprintf(up, "\n[%c:%s]", o->val, o->name);
-                if (s = strchr(t, o->val))
-                {
+                if (s = strchr(t, o->val)) {
                     *s++ = ' ';
-                    if (*s == ':')
-                    {
+                    if (*s == ':') {
                         *s++ = ' ';
                         if (*s == ':')
                             *s = ' ';
                     }
                 }
             }
-            if (o->has_arg)
-            {
+            if (o->has_arg) {
                 sfputc(up, ':');
                 if (o->has_arg == optional_argument)
                     sfputc(up, '?');
@@ -86,14 +80,11 @@ golly(int argc,
         }
         s = t;
         while (c = *s++)
-            if (c != ' ')
-            {
+            if (c != ' ') {
                 sfprintf(up, "\n[%c]", c);
-                if (*s == ':')
-                {
+                if (*s == ':') {
                     sfputc(up, *s);
-                    if (*++s == ':')
-                    {
+                    if (*++s == ':') {
                         sfputc(up, '?');
                         s++;
                     }
@@ -109,18 +100,13 @@ golly(int argc,
         lastlongopts = longopts;
     }
     opt_info.index = (optind > 1 || optind == lastoptind) ? optind : 0;
-    if (opt_info.index >= argc || !(c = optget(( char ** )argv, usage)))
-    {
+    if (opt_info.index >= argc || !(c = optget(( char ** )argv, usage))) {
         sfstrclose(up);
         up = 0;
         c = -1;
-    }
-    else
-    {
-        if (c == ':' || c == '?')
-        {
-            if (opterr && (!optstring || *optstring != ':'))
-            {
+    } else {
+        if (c == ':' || c == '?') {
+            if (opterr && (!optstring || *optstring != ':')) {
                 if (!error_info.id)
                     error_info.id = argv[0];
                 errormsg(
@@ -130,15 +116,12 @@ golly(int argc,
             c = '?';
         }
         optarg = opt_info.arg;
-        if (c < 0)
-        {
+        if (c < 0) {
             o = longopts - c - UCHAR_MAX - 1;
-            if (o->flag)
-            {
+            if (o->flag) {
                 *o->flag = o->val;
                 c = 0;
-            }
-            else
+            } else
                 c = o->val;
         }
     }

@@ -40,15 +40,13 @@
 #        define debug(x) x
 #        define message(x)                                                   \
             do                                                               \
-                if (error_info.trace < 0)                                    \
-                {                                                            \
+                if (error_info.trace < 0) {                                  \
                     error x;                                                 \
                 }                                                            \
             while (0)
 #        define messagef(x)                                                  \
             do                                                               \
-                if (error_info.trace < 0)                                    \
-                {                                                            \
+                if (error_info.trace < 0) {                                  \
                     errorf x;                                                \
                 }                                                            \
             while (0)
@@ -72,15 +70,13 @@
 #        define DEBUG_BREAK break
 #        define DEBUG_CONTINUE continue
 #        define DEBUG_GOTO(label)                                            \
-            do                                                               \
-            {                                                                \
+            do {                                                             \
                 debug_printf(                                                \
                 2, "%s:%d: goto %s\n", __FILE__, __LINE__, #label);          \
                 goto label;                                                  \
             } while (0)
 #        define DEBUG_RETURN(x)                                              \
-            do                                                               \
-            {                                                                \
+            do {                                                             \
                 debug_printf(                                                \
                 2, "%s:%d: return %s\n", __FILE__, __LINE__, #x);            \
                 return (x);                                                  \

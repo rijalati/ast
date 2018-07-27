@@ -73,8 +73,7 @@ zoo_getprologue(Pax_t *pax,
 
     if (size < 34 || swapget(3, buf + 20, 4) != MAGIC)
         return 0;
-    if (!(ar = newof(0, Ar_t, 1, 0)))
-    {
+    if (!(ar = newof(0, Ar_t, 1, 0))) {
         if (ar)
             free(ar);
         return paxnospace(pax);
@@ -85,8 +84,7 @@ zoo_getprologue(Pax_t *pax,
     ar->majver = buf[32];
     ar->minver = buf[33];
     ap->data = ar;
-    if (ar->head > 34 && size < 42)
-    {
+    if (ar->head > 34 && size < 42) {
         zoo_done(pax, ap);
         return paxcorrupt(pax, ap, NiL, "unexpected EOF");
     }
@@ -113,8 +111,7 @@ zoo_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
     int system;
     char name[14];
 
-    for (;;)
-    {
+    for (;;) {
         if (paxseek(pax, ap, ar->head, SEEK_SET, 1) != ar->head
             || !(buf = paxget(pax, ap, 38, NiL))
             || swapget(3, buf, 4) != MAGIC)
@@ -131,8 +128,7 @@ zoo_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
         f->st->st_size = swapget(3, buf + 24, 4);
         ar->majver = buf[28];
         ar->minver = buf[29];
-        switch (ar->index = buf[5])
-        {
+        switch (ar->index = buf[5]) {
         case 0:
             sfsprintf(ar->method, sizeof(ar->method), "copy|%s", SUM);
             break;
@@ -161,88 +157,70 @@ zoo_getheader(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f)
             != (sizeof(name) - 1))
             break;
         name[sizeof(name) - 1] = 0;
-        if (buf[4] == 2)
-        {
+        if (buf[4] == 2) {
             if (!(buf = paxget(pax, ap, 5, NiL)))
                 break;
             ext = swapget(3, buf + 0, 2);
             doszone = buf[2];
-        }
-        else
-        {
+        } else {
             ext = 0;
             doszone = 127;
         }
-        if (ext > 0)
-        {
+        if (ext > 0) {
             if (!(buf = paxget(pax, ap, 1, NiL)))
                 break;
             extname = buf[0];
-        }
-        else
+        } else
             extname = 0;
-        if (ext > 1)
-        {
+        if (ext > 1) {
             if (!(buf = paxget(pax, ap, 1, NiL)))
                 break;
             extdir = buf[0];
-        }
-        else
+        } else
             extdir = 0;
-        if (n = extdir + extname)
-        {
+        if (n = extdir + extname) {
             if (!extname)
                 n += (i = strlen(name));
             f->name = paxstash(pax, &ap->stash.head, NiL, n + 1);
-            if (!extname)
-            {
+            if (!extname) {
                 memcpy(f->name + extdir, name, i);
                 f->name[extdir + i] = 0;
-            }
-            else if (paxread(pax, ap, f->name + extdir, extname, 0, 1)
-                     != extname)
+            } else if (paxread(pax, ap, f->name + extdir, extname, 0, 1)
+                       != extname)
                 break;
             else
                 f->name[extdir + extname + 1] = 0;
-            if (extdir)
-            {
+            if (extdir) {
                 if (paxread(pax, ap, f->name, extdir, 0, 1) != extdir)
                     break;
                 f->name[extdir - 1] = '/';
             }
-        }
-        else
+        } else
             f->name = paxstash(pax, &ap->stash.head, name, 0);
-        if (ext > n + 2)
-        {
+        if (ext > n + 2) {
             if (!(buf = paxget(pax, ap, 2, NiL)))
                 break;
             system = swapget(3, buf, 2);
-        }
-        else
+        } else
             system = 0;
-        if (ext > n + 4)
-        {
+        if (ext > n + 4) {
             if (!(buf = paxget(pax, ap, 3, NiL)))
                 break;
             mode = (buf[2] << 16) | (buf[1] << 8) | buf[0];
-        }
-        else
+        } else
             mode = 0;
         if (ext > n + 7 && !(buf = paxget(pax, ap, 3, NiL)))
             break;
         f->linkpath = 0;
         f->st->st_dev = 0;
         f->st->st_ino = 0;
-        if (system == 0 || system == 2)
-        {
+        if (system == 0 || system == 2) {
             if (mode & 0x10)
                 mode = X_IFDIR | X_IRUSR | X_IWUSR | X_IXUSR | X_IRGRP
                        | X_IWGRP | X_IXGRP | X_IROTH | X_IWOTH | X_IXOTH;
             else if (mode & 0x01)
                 mode = X_IFREG | X_IRUSR | X_IRGRP | X_IROTH;
-            else
-            {
+            else {
                 mode = X_IFREG | X_IRUSR | X_IWUSR | X_IRGRP | X_IWGRP
                        | X_IROTH | X_IWOTH;
                 if ((s = strrchr(f->name, '.'))
@@ -289,8 +267,7 @@ zoo_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
         return 1;
     if (paxseek(pax, ap, ar->data, SEEK_SET, 0) != ar->data)
         return paxcorrupt(pax, ap, f, "cannot seek to data");
-    if (!*ar->method || ar->majver > 2 || ar->majver == 2 && ar->minver > 1)
-    {
+    if (!*ar->method || ar->majver > 2 || ar->majver == 2 && ar->minver > 1) {
         (*pax->errorf)(
         NiL,
         pax,
@@ -305,8 +282,7 @@ zoo_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
         return -1;
     }
     r = -1;
-    if (sp = paxpart(pax, ap, f->st->st_size))
-    {
+    if (sp = paxpart(pax, ap, f->st->st_size)) {
         if ((pop = codex(sp, ar->method, CODEX_DECODE, &ar->codexdisc, NiL))
             < 0)
             (*pax->errorf)(NiL,
@@ -316,18 +292,13 @@ zoo_getdata(Pax_t *pax, Paxarchive_t *ap, Paxfile_t *f, int fd)
                            ap->name,
                            f->name,
                            ar->method);
-        else
-        {
-            for (;;)
-            {
-                if ((n = sfread(sp, pax->buf, sizeof(pax->buf))) < 0)
-                {
+        else {
+            for (;;) {
+                if ((n = sfread(sp, pax->buf, sizeof(pax->buf))) < 0) {
                     (*pax->errorf)(
                     NiL, pax, 2, "%s: %s: unexpected EOF", ap->name, f->name);
                     break;
-                }
-                else if (n == 0)
-                {
+                } else if (n == 0) {
                     if (codexdata(sp, &sum) <= 0)
                         (*pax->errorf)(NiL,
                                        pax,

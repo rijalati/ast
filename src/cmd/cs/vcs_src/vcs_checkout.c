@@ -39,8 +39,7 @@ version_t *vp;
     fsrc = wtar = rtar = fdel = NULL;
     sbuf = dbuf = tbuf = NULL;
     ap = rp->ap;
-    if (vp->tp == NULL)
-    {
+    if (vp->tp == NULL) {
         vp->tp = tp = ( tag_t * )malloc(sizeof(tag_t));
 
         TOBEGIN(rp->fd);
@@ -51,13 +50,11 @@ version_t *vp;
 
         if (search_tag(rp->fd, ap, vp->version, vp->domain, &tp, G_LINK, &dir))
             return (-1);
-        if ((marker = getmarkerbyfrom(dir, vp->tp->version)))
-        {
+        if ((marker = getmarkerbyfrom(dir, vp->tp->version))) {
             char buf[1024];
             char *s;
             strcpy(buf, marker->version);
-            if ((s = strchr(buf, CHRMARKER)))
-            {
+            if ((s = strchr(buf, CHRMARKER))) {
                 *s = '\0';
                 s++;
             }
@@ -66,8 +63,7 @@ version_t *vp;
                      s,
                      buf));
         }
-    }
-    else
+    } else
         tp = vp->tp;
 
     /* get the base */
@@ -75,15 +71,13 @@ version_t *vp;
     nsrc = ap->basesize;
     if ((sbuf = ( char * )malloc(nsrc)) == NULL
         || sfread(rp->fd, sbuf, nsrc) != nsrc
-        || !(fsrc = sfnew(NULL, sbuf, nsrc, -1, SF_STRING | SF_READ)))
-    {
+        || !(fsrc = sfnew(NULL, sbuf, nsrc, -1, SF_STRING | SF_READ))) {
         rserrno = ERRBASE;
         goto ERR_EXIT;
     }
     ( void )sfseek(fsrc, 0L, 0);
 
-    if (ISBASE(tp))
-    {
+    if (ISBASE(tp)) {
         sfmove(fsrc, vp->fd, -1, -1);
         sfclose(fsrc);
         free(( char * )sbuf);
@@ -97,16 +91,14 @@ version_t *vp;
     if (((dbuf = ( char * )malloc(len)) == NULL)
         || sfseek(rp->fd, tp->del, 0) != tp->del
         || sfread(rp->fd, dbuf, len) != len
-        || !(fdel = sfnew(NULL, dbuf, len, -1, SF_STRING | SF_READ)))
-    {
+        || !(fdel = sfnew(NULL, dbuf, len, -1, SF_STRING | SF_READ))) {
         rserrno = ERRDELTA;
         goto ERR_EXIT;
     }
     /* get sizes */
     ( void )TOBEGIN(fdel);
     if (sfread(fdel, magic, 4) != 4 || sfgetc(fdel) < 0
-        || (nsrc = sfgetu(fdel)) < 0 || (ntar = sfgetu(fdel)) < 0)
-    {
+        || (nsrc = sfgetu(fdel)) < 0 || (ntar = sfgetu(fdel)) < 0) {
         rserrno = ERRDELTA;
         goto ERR_EXIT;
     }
@@ -116,15 +108,13 @@ version_t *vp;
     /* set buffer for target */
     tbuf = ( char * )malloc(ntar);
     if (!(rtar = sfnew(NULL, tbuf, ntar, -1, SF_STRING | SF_READ))
-        || !(wtar = sfnew(NULL, tbuf, ntar, -1, SF_STRING | SF_WRITE)))
-    {
+        || !(wtar = sfnew(NULL, tbuf, ntar, -1, SF_STRING | SF_WRITE))) {
         rserrno = NOMEM;
         goto ERR_EXIT;
     }
 
     /* do the update */
-    if (update(fsrc, fdel, wtar, rtar) < 0)
-    {
+    if (update(fsrc, fdel, wtar, rtar) < 0) {
         rserrno = ERRUPDATE;
         goto ERR_EXIT;
     }

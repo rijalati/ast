@@ -54,8 +54,7 @@ ipmaident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
     e1 = e - sizeof(magic1) + 1;
     e2 = e - sizeof(magic2) + 1;
     e = (e1 > e2) ? e1 : e2;
-    while (s < e)
-    {
+    while (s < e) {
         if (s < e1 && strneq(s, magic1, sizeof(magic1) - 1)
             || s < e2 && strneq(s, magic2, sizeof(magic2) - 1))
             return 1;
@@ -79,22 +78,18 @@ ipmaopen(Dssfile_t *file, Dssdisc_t *disc)
     int q;
 
     if (!(file->data
-          = ( void * )vmnewof(file->dss->vm, 0, Ipmastate_t, 1, 0)))
-    {
+          = ( void * )vmnewof(file->dss->vm, 0, Ipmastate_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
     }
-    if (file->flags & DSS_FILE_READ)
-    {
-        while (s = sfgetr(file->io, '\n', 0))
-        {
+    if (file->flags & DSS_FILE_READ) {
+        while (s = sfgetr(file->io, '\n', 0)) {
             e = s + sfvalue(file->io);
             e1 = e - sizeof(magic1) + 1;
             e2 = e - sizeof(magic2) + 1;
             e = (e1 > e2) ? e1 : e2;
-            while (s < e)
-            {
+            while (s < e) {
                 if (s < e1 && strneq(s, magic1, sizeof(magic1) - 1)
                     || s < e2 && strneq(s, magic2, sizeof(magic2) - 1))
                     break;
@@ -104,10 +99,8 @@ ipmaopen(Dssfile_t *file, Dssdisc_t *disc)
                 break;
         }
         q = 0;
-        for (;;)
-        {
-            switch (c = sfgetc(file->io))
-            {
+        for (;;) {
+            switch (c = sfgetc(file->io)) {
             case EOF:
                 break;
             case '\n':
@@ -123,8 +116,7 @@ ipmaopen(Dssfile_t *file, Dssdisc_t *disc)
             case '7':
             case '8':
             case '9':
-                if (q == 0)
-                {
+                if (q == 0) {
                     sfungetc(file->io, c);
                     break;
                 }
@@ -144,13 +136,10 @@ ipmaopen(Dssfile_t *file, Dssdisc_t *disc)
                     q = c;
                 continue;
             default:
-                if (q == 0)
-                {
+                if (q == 0) {
                     if (!isspace(c))
                         q = '#';
-                }
-                else if (q == '&')
-                {
+                } else if (q == '&') {
                     if (!isalnum(c) && c != '#')
                         q = 0;
                 }
@@ -160,8 +149,7 @@ ipmaopen(Dssfile_t *file, Dssdisc_t *disc)
         }
         (( Ipmastate_t * )file->data)->route.attr = BGP_best;
         (( Ipmastate_t * )file->data)->route.type = BGP_TYPE_table_dump;
-    }
-    else if (!(file->flags & DSS_FILE_APPEND))
+    } else if (!(file->flags & DSS_FILE_APPEND))
         sfprintf(file->io, "%s\n\n", magic1);
     return 0;
 }
@@ -177,31 +165,26 @@ skip(char *s, char *e, int number)
     char *b;
     char *t;
 
-    do
-    {
+    do {
         b = s;
         while (s < e && isspace(*s))
             s++;
-        if (*s == '<')
-        {
+        if (*s == '<') {
             while (s < e && *s++ != '>')
                 ;
             while (s < e && isspace(*s))
                 s++;
         }
-        if (*s == '&')
-        {
+        if (*s == '&') {
             if (*++s == '#' && s < e)
                 s++;
             while (s < e && isalnum(*s))
                 s++;
         }
-        if (s < e && number)
-        {
+        if (s < e && number) {
             if ((isdigit(*s) || (e - s) > 5 && strneq(s, "local", 5))
                 && (isspace(*(s - 1)) || *(s - 1) == '>' || *(s - 1) == ';'
-                    || *(s - 1) == '='))
-            {
+                    || *(s - 1) == '=')) {
                 if (!isdigit(*s))
                     break;
                 for (t = s; t < e && isdigit(*t); t++)
@@ -210,8 +193,7 @@ skip(char *s, char *e, int number)
                     break;
                 s = t;
             }
-            if (*s == '=' && (e - s) > 1 && isdigit(*(s + 1)))
-            {
+            if (*s == '=' && (e - s) > 1 && isdigit(*(s + 1))) {
                 s++;
                 break;
             }
@@ -242,47 +224,39 @@ ipmaread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     Bgpasn_t *ap;
 
     rp = &state->route;
-    for (;;)
-    {
+    for (;;) {
         if (!(s = sfgetr(file->io, '\n', 0)))
             return 0;
         e = s + sfvalue(file->io);
         s = skip(s, e, 0);
         if (s >= e)
             continue;
-        if (isdigit(*s))
-        {
+        if (isdigit(*s)) {
             if (strtoip4(s, &p, &rp->addr.v4, &rp->bits))
                 break;
             s = skip(p, e, 1);
-            if (s >= e || !isalnum(*s))
-            {
+            if (s >= e || !isalnum(*s)) {
                 if ((c = sfgetc(file->io)) == EOF)
                     break;
-                if (!isspace(c))
-                {
+                if (!isspace(c)) {
                     sfungetc(file->io, c);
                     s = e = "";
-                }
-                else if (!(s = sfgetr(file->io, '\n', 0)))
+                } else if (!(s = sfgetr(file->io, '\n', 0)))
                     return 0;
-                else
-                {
+                else {
                     e = s + sfvalue(file->io);
                     s = skip(s, e, 1);
                 }
             }
-        }
-        else if ((e - s) > 6
-                 && (strneq(s, "Prefix", 6) || strneq(s, "Networ", 6)
-                     || strneq(s, "Receiv", 6) || strneq(s, "Advert", 6)))
+        } else if ((e - s) > 6
+                   && (strneq(s, "Prefix", 6) || strneq(s, "Networ", 6)
+                       || strneq(s, "Receiv", 6) || strneq(s, "Advert", 6)))
             continue;
         else
             s = skip(s, e, 1);
         if (s >= e)
             break;
-        if (*(s - 1) == '=')
-        {
+        if (*(s - 1) == '=') {
             if (strtoip4(s, &p, &rp->hop.v4, NiL))
                 break;
             s = skip(s, e, 1);
@@ -293,14 +267,11 @@ ipmaread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         rp->path.offset = i;
         o = 0;
         p = s;
-        do
-        {
+        do {
             for (s = p; *s == ' ' || *s == '\t' || *s == ','; s++)
                 ;
-            if (*s == '{')
-            {
-                if (i >= (n - 2))
-                {
+            if (*s == '{') {
+                if (i >= (n - 2)) {
                     if (disc->errorf && !(file->dss->flags & DSS_QUIET))
                         (*disc->errorf)(
                         NiL,
@@ -314,15 +285,12 @@ ipmaread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 ap[i++] = BGP_SET16;
                 o = i++;
                 p = s + 1;
-            }
-            else if (*s == '}')
+            } else if (*s == '}')
                 s++;
             else if (!isdigit(*s))
                 break;
-            else
-            {
-                if (i >= n)
-                {
+            else {
+                if (i >= n) {
                     if (disc->errorf && !(file->dss->flags & DSS_QUIET))
                         (*disc->errorf)(
                         NiL,
@@ -333,10 +301,8 @@ ipmaread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                         n);
                     break;
                 }
-                if ((ap[i++] = strtol(s, &p, 10)) == BGP_SET16)
-                {
-                    if (i >= (n - 2))
-                    {
+                if ((ap[i++] = strtol(s, &p, 10)) == BGP_SET16) {
+                    if (i >= (n - 2)) {
                         if (disc->errorf && !(file->dss->flags & DSS_QUIET))
                             (*disc->errorf)(
                             NiL,
@@ -383,35 +349,28 @@ ipmawrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     int k;
     Bgpasn_t *ap;
 
-    if (rp->addr.v4 != state->paddr || rp->bits != state->pbits)
-    {
+    if (rp->addr.v4 != state->paddr || rp->bits != state->pbits) {
         state->paddr = rp->addr.v4;
         state->pbits = rp->bits;
         sfprintf(io, "%s\n", fmtip4(rp->addr.v4, rp->bits));
     }
     sfprintf(io, "\tN=%s", fmtip4(rp->hop.v4, -1));
-    if (j = rp->path.size)
-    {
+    if (j = rp->path.size) {
         ap = BGPPATH(rp);
         for (i = 0; i < j; i++)
-            if (ap[i] == BGP_SET16)
-            {
-                if (k = ap[++i])
-                {
+            if (ap[i] == BGP_SET16) {
+                if (k = ap[++i]) {
                     k += i - 1;
                     sfprintf(io, " {%u", ap[++i]);
                     while (i < k)
                         sfprintf(io, ",%u", ap[++i]);
                     sfputc(io, '}');
-                }
-                else
+                } else
                     sfprintf(io, " %u", ap[++i]);
-            }
-            else
+            } else
                 sfprintf(io, " %u", ap[i]);
     }
-    switch (rp->origin)
-    {
+    switch (rp->origin) {
     case BGP_ORIGIN_egp:
         sfprintf(io, " EGP");
         break;
@@ -422,8 +381,7 @@ ipmawrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         sfprintf(io, " Incomplete");
         break;
     }
-    if (sfputc(io, '\n') == EOF)
-    {
+    if (sfputc(io, '\n') == EOF) {
         if (disc->errorf)
             (*disc->errorf)(NiL,
                             disc,

@@ -236,8 +236,7 @@ intercept(Sfio_t *sp, int level, int flags)
         && (r->property & (P_functional | P_target))
            == (P_functional | P_target)
         && !state.compileonly && !state.interrupt && (m = stakptr(0))
-        && (n = staktell()) > 0)
-    {
+        && (n = staktell()) > 0) {
         /*
          * make the error trap
          */
@@ -258,21 +257,17 @@ intercept(Sfio_t *sp, int level, int flags)
          * omitted message means it has been printed
          */
 
-        if (t = call(r, s))
-        {
+        if (t = call(r, s)) {
             i = strtol(t, &e, 0);
-            if (e > t)
-            {
+            if (e > t) {
                 t = e;
                 level = i;
-            }
-            else if (*t == '-')
+            } else if (*t == '-')
                 t++;
             while (isspace(*t))
                 t++;
         }
-        if (!t || !*t)
-        {
+        if (!t || !*t) {
             level |= ERROR_OUTPUT;
             message((-1,
                      "suppressed %s message: `%-.*s'",
@@ -433,17 +428,13 @@ main(int argc, char **argv)
     readenv();
     if (v = getvar(external.nproc))
         state.jobs = ( int )strtol(v->value, NiL, 0);
-    if ((v = getvar(external.pwd)) && !streq(v->value, internal.pwd))
-    {
+    if ((v = getvar(external.pwd)) && !streq(v->value, internal.pwd)) {
         if (!stat(v->value, &st) && !stat(internal.pwd, &ds)
-            && st.st_ino == ds.st_ino && st.st_dev == ds.st_dev)
-        {
+            && st.st_ino == ds.st_ino && st.st_dev == ds.st_dev) {
             free(internal.pwd);
             internal.pwd = strdup(v->value);
             internal.pwdlen = strlen(v->value);
-        }
-        else
-        {
+        } else {
             v->property &= ~V_import;
             v->property |= V_free;
             v->value = strdup(internal.pwd);
@@ -467,8 +458,7 @@ main(int argc, char **argv)
      * check and read the args file
      */
 
-    if (s = colonlist(tmp, external.args, 1, ' '))
-    {
+    if (s = colonlist(tmp, external.args, 1, ' ')) {
         i = fs3d(0);
         tok = tokopen(s, 1);
         while (s = tokread(tok))
@@ -497,8 +487,7 @@ main(int argc, char **argv)
     state.init = 1;
     if (state.base)
         state.readstate = 0;
-    if (state.compileonly)
-    {
+    if (state.compileonly) {
         state.forceread = 1;
         state.virtualdot = 0;
     }
@@ -514,15 +503,12 @@ main(int argc, char **argv)
      * check explicit environment overrides
      */
 
-    if (s = colonlist(tmp, external.import, 1, ' '))
-    {
+    if (s = colonlist(tmp, external.import, 1, ' ')) {
         tok = tokopen(s, 1);
-        while (s = tokread(tok))
-        {
+        while (s = tokread(tok)) {
             if (i = *s == '!')
                 s++;
-            if (v = getvar(s))
-            {
+            if (v = getvar(s)) {
                 if (i)
                     v->property &= ~V_import;
                 else
@@ -542,8 +528,7 @@ main(int argc, char **argv)
      * announce the version
      */
 
-    if (error_info.trace < 0)
-    {
+    if (error_info.trace < 0) {
         errno = 0;
         error(error_info.trace,
               "%s [%d %s]",
@@ -564,12 +549,10 @@ main(int argc, char **argv)
      * check for mam
      */
 
-    if (state.mam.out)
-    {
+    if (state.mam.out) {
         if (!state.mam.statix || *state.mam.label)
             error_info.write = mamerror;
-        if (state.mam.regress || state.regress)
-        {
+        if (state.mam.regress || state.regress) {
             sfprintf(state.mam.out,
                      "%sinfo mam %s %05d\n",
                      state.mam.label,
@@ -578,17 +561,14 @@ main(int argc, char **argv)
             if (state.mam.regress)
                 sfprintf(
                 state.mam.out, "%sinfo start regression\n", state.mam.label);
-        }
-        else
-        {
+        } else {
             sfprintf(state.mam.out,
                      "%sinfo mam %s %05d 1994-07-17 %s\n",
                      state.mam.label,
                      state.mam.type,
                      state.mam.parent,
                      version);
-            if (!state.mam.statix || *state.mam.label)
-            {
+            if (!state.mam.statix || *state.mam.label) {
                 sfprintf(state.mam.out,
                          "%sinfo start %lu\n",
                          state.mam.label,
@@ -637,8 +617,7 @@ main(int argc, char **argv)
      */
 
     compref(NiL, 0);
-    if (p = internal.makefiles->prereqs)
-    {
+    if (p = internal.makefiles->prereqs) {
         p = internal.tmplist->prereqs = listcopy(p);
         for (; p; p = p->next)
             readfile(p->rule->name, COMP_FILE, NiL);
@@ -650,8 +629,7 @@ main(int argc, char **argv)
      * if no explicit makefiles then try external.{convert,files}
      */
 
-    if (!state.makefile)
-    {
+    if (!state.makefile) {
         int sep;
         Sfio_t *exp;
         Sfio_t *imp;
@@ -660,20 +638,16 @@ main(int argc, char **argv)
         imp = sfstropen();
         sep = 0;
         s = 0;
-        if (*(t = getval(external.convert, VAL_PRIMARY)))
-        {
+        if (*(t = getval(external.convert, VAL_PRIMARY))) {
             sfputr(tmp, t, 0);
             sfstrrsrv(tmp, MAXNAME);
             tok = tokopen(sfstrbase(tmp), 0);
-            while (s = tokread(tok))
-            {
+            while (s = tokread(tok)) {
                 if (!exp)
                     exp = sfstropen();
-                if (t = colonlist(exp, s, 0, ' '))
-                {
+                if (t = colonlist(exp, s, 0, ' ')) {
                     t = tokopen(t, 0);
-                    while (s = tokread(t))
-                    {
+                    while (s = tokread(t)) {
                         if (readfile(s, COMP_INCLUDE | COMP_DONTCARE, NiL))
                             break;
                         if (sep)
@@ -692,11 +666,9 @@ main(int argc, char **argv)
             tokclose(tok);
             sfstrseek(tmp, 0, SEEK_SET);
         }
-        if (!s && (s = colonlist(tmp, external.files, 1, ' ')))
-        {
+        if (!s && (s = colonlist(tmp, external.files, 1, ' '))) {
             tok = tokopen(s, 1);
-            while (s = tokread(tok))
-            {
+            while (s = tokread(tok)) {
                 if (readfile(s, COMP_INCLUDE | COMP_DONTCARE, NiL))
                     break;
                 if (sep)
@@ -707,8 +679,7 @@ main(int argc, char **argv)
             }
             tokclose(tok);
         }
-        if (!s)
-        {
+        if (!s) {
             /*
              * this readfile() pulls in the default base rules
              * that might resolve any delayed self-documenting
@@ -739,8 +710,7 @@ main(int argc, char **argv)
      * check for listing of variable and rule definitions
      */
 
-    if (state.list)
-    {
+    if (state.list) {
         dump(sfstdout, 0);
         return 0;
     }
@@ -749,20 +719,17 @@ main(int argc, char **argv)
      * check if makefiles to be compiled
      */
 
-    if (state.compile && !state.virtualdot && state.writeobject)
-    {
+    if (state.compile && !state.virtualdot && state.writeobject) {
         /*
          * make the compinit trap
          */
 
-        if (r = getrule(external.compinit))
-        {
+        if (r = getrule(external.compinit)) {
             state.reading = 1;
             maketop(r, P_dontcare | P_foreground, NiL);
             state.reading = 0;
         }
-        if (state.exec && state.objectfile)
-        {
+        if (state.exec && state.objectfile) {
             message(
             (-2, "compiling makefile input into %s", state.objectfile));
             compile(state.objectfile, NiL);
@@ -772,8 +739,7 @@ main(int argc, char **argv)
          * make the compdone trap
          */
 
-        if (r = getrule(external.compdone))
-        {
+        if (r = getrule(external.compdone)) {
             state.reading = 1;
             maketop(r, P_dontcare | P_foreground, NiL);
             state.reading = 0;
@@ -789,8 +755,7 @@ main(int argc, char **argv)
     compref(NiL, 0);
     sfstrclose(tmp);
     state.compile = COMPILED;
-    if (state.believe)
-    {
+    if (state.believe) {
         if (!state.maxview)
             state.believe = 0;
         else if (state.fsview)
@@ -813,8 +778,7 @@ main(int argc, char **argv)
         dynamic(internal.main);
     internal.args->prereqs = p = 0;
     for (i = args; i < state.argc; i++)
-        if (state.argf[i] & ARG_TARGET)
-        {
+        if (state.argf[i] & ARG_TARGET) {
             List_t *q;
 
             q = cons(makerule(state.argv[i]), NiL);
@@ -842,8 +806,7 @@ main(int argc, char **argv)
      */
 
     for (i = args; i < state.argc; i++)
-        if (state.argf[i] & ARG_SCRIPT)
-        {
+        if (state.argf[i] & ARG_SCRIPT) {
             state.reading = 1;
             parse(NiL, state.argv[i], "command line script", NiL);
             state.reading = 0;
@@ -882,8 +845,7 @@ main(int argc, char **argv)
      */
 
     if (internal.args->prereqs)
-        while (internal.args->prereqs)
-        {
+        while (internal.args->prereqs) {
             /*
              * we explicitly allow internal.args modifications
              */
@@ -920,16 +882,14 @@ finish(int n)
      */
 
     if (!state.hold && (r = internal.error)
-        && (r->property & (P_target | P_functional)) == P_target)
-    {
+        && (r->property & (P_target | P_functional)) == P_target) {
         state.hold = null;
-        if (n && error_info.errors && !state.compileonly && !state.interrupt)
-        {
+        if (n && error_info.errors && !state.compileonly
+            && !state.interrupt) {
             if (r->status == NOTYET)
                 maketop(r, P_dontcare | P_foreground, NiL);
             state.hold = 0;
-            if (r->status == EXISTS)
-            {
+            if (r->status == EXISTS) {
                 r->status = NOTYET;
                 return;
             }
@@ -943,8 +903,7 @@ finish(int n)
     if (getpid() != state.pid)
         _exit(n);
     unparse(0);
-    switch (state.finish)
-    {
+    switch (state.finish) {
 
     case 0:
         /*
@@ -1023,8 +982,7 @@ finish(int n)
          */
 
         state.finish++;
-        if (state.test & 0x00002000)
-        {
+        if (state.test & 0x00002000) {
             Vmstat_t vs;
 
             vmstat(Vmheap, &vs);
@@ -1048,8 +1006,7 @@ finish(int n)
         state.finish++;
         if (state.errors && state.keepgoing && !n)
             n = 1;
-        if (state.mam.out)
-        {
+        if (state.mam.out) {
             if (state.mam.regress)
                 sfprintf(
                 state.mam.out, "%sinfo finish regression\n", state.mam.label);
@@ -1074,8 +1031,7 @@ finish(int n)
                  state.interrupt ? "interrupt" : n ? "error" : "normal"));
         break;
     }
-    if (state.interrupt)
-    {
+    if (state.interrupt) {
         n = 3;
         signal(state.interrupt, SIG_DFL);
         kill(getpid(), state.interrupt);

@@ -413,8 +413,7 @@ main()
     k = 0;
     for (i = 0; map[i].name; i++)
         if ((j = map[i].value) > 0 && j < elementsof(mapindex)
-            && !mapindex[j])
-        {
+            && !mapindex[j]) {
             if (j > k)
                 k = j;
             mapindex[j] = i;
@@ -429,8 +428,7 @@ main()
     if (j >= elementsof(mapindex))
         j = elementsof(mapindex) - 1;
     if (i <= j && i > 0 && i < elementsof(mapindex) && j > 0
-        && j < elementsof(mapindex))
-    {
+        && j < elementsof(mapindex)) {
         if (j > k)
             k = j;
         mapindex[i] = RANGE_MIN | RANGE_RT;
@@ -447,22 +445,19 @@ main()
     for (i = 0; i <= k; i++)
         if (!(j = mapindex[i]))
             printf("	\"%d\",\n", i);
-        else if (j & RANGE_RT)
-        {
+        else if (j & RANGE_RT) {
             if (j & RANGE_MIN)
                 printf("	\"RTMIN\",\n");
             else if (j & RANGE_MAX)
                 printf("	\"RTMAX\",\n");
-            else
-            {
+            else {
                 m = j & RANGE_SIG;
                 if (m > n / 2)
                     printf("	\"RTMAX-%d\",\n", n - m);
                 else
                     printf("	\"RTMIN+%d\",\n", m);
             }
-        }
-        else
+        } else
             printf("	\"%s\",\n", map[j].name);
     printf("	0\n");
     printf("};\n");

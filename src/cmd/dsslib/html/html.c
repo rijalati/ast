@@ -45,8 +45,7 @@ html_ref_F(Cx_t *cx,
     int q;
     char *b;
 
-    if (!(t = vmnewof(cx->em, 0, char, arg->value.string.size, 1)))
-    {
+    if (!(t = vmnewof(cx->em, 0, char, arg->value.string.size, 1))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -57,49 +56,37 @@ html_ref_F(Cx_t *cx,
     q = 0;
     v = 0;
     s = arg->value.string.data;
-    while (c = *s++)
-    {
-        if (!i)
-        {
+    while (c = *s++) {
+        if (!i) {
             if (c == '<')
                 i = 1;
-        }
-        else if (c == '"')
-        {
+        } else if (c == '"') {
             if (!(q = !q))
                 k = 0;
             else if (k && t > b)
                 *t++ = ' ';
-        }
-        else if (!q)
-        {
+        } else if (!q) {
             if (c == '>')
                 i = 0;
             else if (isspace(c))
                 v = 0;
-            else if (c == '=')
-            {
-                if (v)
-                {
+            else if (c == '=') {
+                if (v) {
                     n = s - v - 1;
                     if (n == 4 && !strncasecmp(v, "href", 4)
                         || n == 3 && !strncasecmp(v, "src", 3))
                         k = 1;
                 }
-            }
-            else if (!v)
+            } else if (!v)
                 v = s - 1;
-        }
-        else if (k)
+        } else if (k)
             *t++ = c;
     }
-    if (t > b)
-    {
+    if (t > b) {
         *t = 0;
         ret->value.string.size = t - b;
         ret->value.string.data = b;
-    }
-    else
+    } else
         ret->value = arg->value;
     return 0;
 }

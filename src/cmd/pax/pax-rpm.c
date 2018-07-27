@@ -102,8 +102,7 @@ rpm_getprologue(Pax_t *pax,
              magic.magic,
              magic.major,
              magic.minor));
-    if (magic.major == 1)
-    {
+    if (magic.major == 1) {
         if (size < (sizeof(magic) + sizeof(lead_old)))
             return 0;
         paxread(
@@ -119,15 +118,12 @@ rpm_getprologue(Pax_t *pax,
         if (swap)
             swapmem(swap, &lead_old, &lead_old, sizeof(lead_old));
         if (paxseek(pax, ap, ( off_t )lead_old.archoff, SEEK_SET, 0)
-            != ( off_t )lead_old.archoff)
-        {
+            != ( off_t )lead_old.archoff) {
             error(
             2, "%s: %s embedded archive seek error", ap->name, fp->name);
             return -1;
         }
-    }
-    else if (magic.major)
-    {
+    } else if (magic.major) {
         if (size < (sizeof(magic) + sizeof(lead)))
             return 0;
         paxread(
@@ -152,15 +148,13 @@ rpm_getprologue(Pax_t *pax,
             s = ap->name;
         if (!memcmp(s, state.volume, strlen(state.volume)))
             state.volume[0] = 0;
-        switch (lead.sigtype)
-        {
+        switch (lead.sigtype) {
         case 0:
             num = 0;
             break;
         case 1:
             num = 256;
-            if (paxread(pax, ap, NiL, ( off_t )num, ( off_t )num, 0) <= 0)
-            {
+            if (paxread(pax, ap, NiL, ( off_t )num, ( off_t )num, 0) <= 0) {
                 error(2,
                       "%s: %s format header %ld byte data block expected",
                       ap->name,
@@ -170,16 +164,14 @@ rpm_getprologue(Pax_t *pax,
             }
             break;
         case 5:
-            for (;;)
-            {
+            for (;;) {
                 if (paxread(pax,
                             ap,
                             zip,
                             ( off_t )sizeof(zip),
                             ( off_t )sizeof(zip),
                             0)
-                    <= 0)
-                {
+                    <= 0) {
                     error(2,
                           "%s: %s format header magic expected at offset %ld",
                           ap->name,
@@ -187,16 +179,14 @@ rpm_getprologue(Pax_t *pax,
                           ap->io->offset + ap->io->count);
                     return -1;
                 }
-                if (zip[0] == 0x1f && zip[1] == 0x8b)
-                {
+                if (zip[0] == 0x1f && zip[1] == 0x8b) {
                     paxunread(pax, ap, zip, ( off_t )sizeof(zip));
                     break;
                 }
                 num = (ap->io->count - 2) & 7;
                 message(
                 (-2, "%s: align pad=%ld", ap->name, num ? (8 - num) : num));
-                switch (num)
-                {
+                switch (num) {
                 case 0:
                     paxunread(pax, ap, zip, ( off_t )2);
                     break;
@@ -208,8 +198,7 @@ rpm_getprologue(Pax_t *pax,
                 default:
                     num = 6 - num;
                     if (paxread(pax, ap, NiL, ( off_t )num, ( off_t )num, 0)
-                        <= 0)
-                    {
+                        <= 0) {
                         error(2,
                               "%s: %s format header %ld byte pad expected",
                               ap->name,
@@ -225,8 +214,7 @@ rpm_getprologue(Pax_t *pax,
                             ( off_t )sizeof(verify),
                             ( off_t )sizeof(verify),
                             0)
-                    <= 0)
-                {
+                    <= 0) {
                     error(2,
                           "%s: %s format header magic expected at offset %ld",
                           ap->name,
@@ -235,13 +223,11 @@ rpm_getprologue(Pax_t *pax,
                     return -1;
                 }
                 if ((( unsigned char * )&verify)[0] == 0x1f
-                    && (( unsigned char * )&verify)[1] == 0x8b)
-                {
+                    && (( unsigned char * )&verify)[1] == 0x8b) {
                     paxunread(pax, ap, &verify, ( off_t )sizeof(verify));
                     break;
                 }
-                if (swap)
-                {
+                if (swap) {
                     swapmem(
                     swap, &verify.magic, &verify.magic, sizeof(verify.magic));
                     if (swap & 1)
@@ -257,8 +243,7 @@ rpm_getprologue(Pax_t *pax,
                          verify.major,
                          verify.minor,
                          verify.type));
-                if (verify.magic != RPM_HEAD_MAGIC)
-                {
+                if (verify.magic != RPM_HEAD_MAGIC) {
                     error(2,
                           "%s: invalid %s format signature header magic",
                           ap->name,
@@ -271,8 +256,7 @@ rpm_getprologue(Pax_t *pax,
                             ( off_t )sizeof(head),
                             ( off_t )sizeof(head),
                             0)
-                    <= 0)
-                {
+                    <= 0) {
                     error(2,
                           "%s: %s format signature header expected",
                           ap->name,
@@ -288,8 +272,8 @@ rpm_getprologue(Pax_t *pax,
                          head.entries,
                          head.datalen,
                          num));
-                if (paxread(pax, ap, NiL, ( off_t )num, ( off_t )num, 0) <= 0)
-                {
+                if (paxread(pax, ap, NiL, ( off_t )num, ( off_t )num, 0)
+                    <= 0) {
                     error(2,
                           "%s: %s format header %ld byte data block expected",
                           ap->name,
@@ -310,9 +294,7 @@ rpm_getprologue(Pax_t *pax,
             lead.sigtype);
             return -1;
         }
-    }
-    else
-    {
+    } else {
         error(2,
               "%s: %s format version %d.%d not supported",
               ap->name,
@@ -326,8 +308,7 @@ rpm_getprologue(Pax_t *pax,
     ap->swapio = 0;
     ap->volume--;
     i = state.volume[0];
-    if (getprologue(ap) <= 0)
-    {
+    if (getprologue(ap) <= 0) {
         error(
         2, "%s: %s format embedded archive expected", ap->name, fp->name);
         return -1;

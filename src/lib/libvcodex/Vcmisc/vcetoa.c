@@ -57,8 +57,8 @@ Void_t **out;
     if (!(output = vcbuffer(vc, NIL(Vcchar_t *), sz, 0)))
         return -1;
 
-    for (odt = output, idt = ( Vcchar_t * )data; sz >= 4; idt += rz, sz -= rz)
-    {
+    for (odt = output, idt = ( Vcchar_t * )data; sz >= 4;
+         idt += rz, sz -= rz) {
         if ((rz = GETSIZE(idt)) > sz) /* partial record */
             break;
         if (idt[2] != 0 || idt[3] != 0) /* these bytes are always zero */
@@ -107,8 +107,7 @@ Void_t **out;
     vc->undone = size - (endi - ( Vcchar_t * )data);
 
     endo = odt = output = NIL(Vcchar_t *);
-    for (idt = ( Vcchar_t * )data; idt < endi; idt = dt + 1)
-    {
+    for (idt = ( Vcchar_t * )data; idt < endi; idt = dt + 1) {
         for (dt = idt; dt < endi; ++dt)
             if (*dt == '\n')
                 break;
@@ -156,11 +155,9 @@ Void_t *params;
     Vcmtarg_t *arg;
     char *data, *e2a;
 
-    if (type == VC_OPENING)
-    {
+    if (type == VC_OPENING) {
         e2a = "e2a"; /* get the translation type */
-        for (data = ( char * )params; data;)
-        {
+        for (data = ( char * )params; data;) {
             arg = NIL(Vcmtarg_t *);
             data = vcgetmtarg(data, 0, 0, _Mapargs, &arg);
             if (arg)
@@ -172,9 +169,7 @@ Void_t *params;
             return -1;
 
         vcsetmtdata(vc, map);
-    }
-    else if (type == VC_CLOSING)
-    {
+    } else if (type == VC_CLOSING) {
         if ((map = vcgetmtdata(vc, Vcodex_t *)))
             ( void )vcclose(map);
         vcsetmtdata(vc, NIL(Void_t *));

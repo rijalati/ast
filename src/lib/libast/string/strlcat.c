@@ -55,19 +55,15 @@ strlcat(char *s, const char *t, size_t n)
     size_t m;
     const char *o = t;
 
-    if (m = n)
-    {
-        while (n && *s)
-        {
+    if (m = n) {
+        while (n && *s) {
             n--;
             s++;
         }
         m -= n;
         if (n)
-            do
-            {
-                if (!--n)
-                {
+            do {
+                if (!--n) {
                     *s = 0;
                     break;
                 }

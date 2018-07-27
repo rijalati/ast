@@ -49,8 +49,7 @@ sfgetr(Sfio_t *sp, int c, int z)
     static char *buf;
     static unsigned long siz;
 
-    if (!buf)
-    {
+    if (!buf) {
         siz = CHUNK;
         if (!(buf = newof(0, char, siz, 0)))
             return 0;
@@ -59,23 +58,19 @@ sfgetr(Sfio_t *sp, int c, int z)
         return *buf ? buf : ( char * )0;
     s = buf;
     e = s + siz;
-    for (;;)
-    {
-        if (s >= e)
-        {
+    for (;;) {
+        if (s >= e) {
             siz += CHUNK;
             if (!(buf = newof(buf, char, siz, 0)))
                 return 0;
             s = buf + (siz - CHUNK);
             e = s + siz;
         }
-        if ((c = sfgetc(sp)) == EOF)
-        {
+        if ((c = sfgetc(sp)) == EOF) {
             *s = 0;
             return 0;
         }
-        if (c == '\n')
-        {
+        if (c == '\n') {
             *s = z ? 0 : c;
             break;
         }

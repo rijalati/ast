@@ -42,16 +42,13 @@ strexp(char *s, int flags)
     Mbstate_t q;
 
     b = t = s;
-    while (c = *s++)
-    {
-        if (c == '\\')
-        {
+    while (c = *s++) {
+        if (c == '\\') {
             c = chrexp(s - 1, &e, &w, flags);
             s = e;
             if (c < 0)
                 continue;
-            if (w)
-            {
+            if (w) {
                 mbinit(&q);
                 t += mbconv(t, c, &q);
                 continue;

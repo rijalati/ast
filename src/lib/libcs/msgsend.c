@@ -48,8 +48,7 @@ msgsend(int fd,
     char *b;
     char *e;
 
-    if (call & MSG_ACK)
-    {
+    if (call & MSG_ACK) {
         if ((fd = csbind(&cs, "udp", msg->ack.addr, msg->ack.port, 0L)) < 0)
             return -1;
         ret = ret == -1 ? ~msg->stamp : msg->stamp;
@@ -63,13 +62,11 @@ msgsend(int fd,
     if (ret == -1)
         msgputu(&b, e, err);
     else if (data)
-        switch (MSG_CALL(call))
-        {
+        switch (MSG_CALL(call)) {
         case MSG_getdents:
             dp = ( struct dirent * )data;
             de = ( struct dirent * )(( char * )dp + ret);
-            while (dp < de)
-            {
+            while (dp < de) {
                 i = D_NAMLEN(dp);
                 msgputz(&b, e, dp->d_name, i + 1);
                 msgputu(&b, e, D_FILENO(dp));

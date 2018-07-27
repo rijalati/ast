@@ -136,10 +136,8 @@ extern double log1p(x) double x;
         return (x); /* x is NaN */
 #    endif /* !defined(vax)&&!defined(tahoe) */
 
-    if (finite(x))
-    {
-        if (x > negone)
-        {
+    if (finite(x)) {
+        if (x > negone) {
 
             /* argument reduction */
             if (copysign(x, one) < small)
@@ -147,8 +145,7 @@ extern double log1p(x) double x;
             k = ( int )logb(one + x);
             z = scalb(x, -k);
             t = scalb(one, -k);
-            if (z + t >= sqrt2)
-            {
+            if (z + t >= sqrt2) {
                 k += 1;
                 z *= half;
                 t *= half;
@@ -168,8 +165,7 @@ extern double log1p(x) double x;
         }
         /* end of if (x > negone) */
 
-        else
-        {
+        else {
 #    if defined(vax) || defined(tahoe)
             if (x == negone)
                 return (infnan(-ERANGE)); /* -INF */

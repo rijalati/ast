@@ -66,8 +66,7 @@ sum(Vcodex_t *vc, const Void_t *data, size_t size, Void_t **out)
         type = VC_RAW; /* just output raw data */
         sz = size;
         vc->undone = 0; /* as such, everything is done! */
-    }
-    else /* a subset was processed */
+    } else              /* a subset was processed */
     {
         type = 0;
         size -= vc->undone;
@@ -116,8 +115,7 @@ unsum(Vcodex_t *vc, const Void_t *data, size_t size, Void_t **out)
     /* status if data was raw or processed by a 2ndary coder */
     if (sum->head <= 0)
         type = 0; /* was always processed */
-    else
-    {
+    else {
         type = dt[0];
         dt += sum->head;
         sz -= sum->head;
@@ -189,8 +187,7 @@ sumheader(Vcodex_t *vc, Vcmtcode_t *mtcd)
 
         mtcd->data = dt;
         mtcd->size = sz;
-    }
-    else /* reconstructing a handle from header code */
+    } else /* reconstructing a handle from header code */
     {
         vcioinit(&io, mtcd->data, mtcd->size);
         if ((dgsz = vciogetu(&io)) <= 0) /* digest size */
@@ -201,8 +198,7 @@ sumheader(Vcodex_t *vc, Vcmtcode_t *mtcd)
         vcioskip(&io, sz);
         head = vciogetc(&io); /* number of control bytes */
 
-        for (arg = _Sumargs; arg->name; ++arg)
-        {
+        for (arg = _Sumargs; arg->name; ++arg) {
             if (!vcstrcode(arg->name, ( char * )buf, sizeof(buf)))
                 return -1;
             if (strncmp(( char * )buf, ( char * )dt, sz) == 0 && buf[sz] == 0)
@@ -237,8 +233,7 @@ sumevent(Vcodex_t *vc, int type, Void_t *param)
     ssize_t dgsize;
     Sum_t *sum = NIL(Sum_t *);
 
-    if (type == VC_OPENING)
-    {
+    if (type == VC_OPENING) {
         if (!(sum = ( Sum_t * )calloc(1, sizeof(Sum_t))))
             return -1;
 
@@ -246,12 +241,10 @@ sumevent(Vcodex_t *vc, int type, Void_t *param)
         meth = Vcxcrcsum;
         sum->head = 1; /* 1 control byte for now */
         sum->dgsize = 0;
-        for (data = ( char * )param; data;)
-        {
+        for (data = ( char * )param; data;) {
             val[0] = 0;
             data = vcgetmtarg(data, val, sizeof(val), _Sumargs, &arg);
-            switch (TYPECAST(int, arg->data))
-            {
+            switch (TYPECAST(int, arg->data)) {
             case SUM_AES:
                 sum->type = SUM_AES;
                 meth = Vcxaessum;
@@ -271,8 +264,7 @@ sumevent(Vcodex_t *vc, int type, Void_t *param)
                 break;
             }
         }
-        if ((dgsize = vcxinit(&sum->digest, meth, 0, 0)) <= 0)
-        {
+        if ((dgsize = vcxinit(&sum->digest, meth, 0, 0)) <= 0) {
             free(sum);
             return -1;
         }
@@ -282,19 +274,15 @@ sumevent(Vcodex_t *vc, int type, Void_t *param)
 
         vcsetmtdata(vc, sum);
         return 0;
-    }
-    else if (type == VC_EXTRACT || type == VC_RESTORE)
+    } else if (type == VC_EXTRACT || type == VC_RESTORE)
         return sumheader(vc, ( Vcmtcode_t * )param) < 0 ? -1 : 1;
-    else if (type == VC_CLOSING)
-    {
-        if ((sum = vcgetmtdata(vc, Sum_t *)))
-        {
+    else if (type == VC_CLOSING) {
+        if ((sum = vcgetmtdata(vc, Sum_t *))) {
             vcxstop(&sum->digest);
             free(sum);
         }
         return 0;
-    }
-    else
+    } else
         return 0;
 }
 

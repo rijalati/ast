@@ -42,18 +42,15 @@ exid(Sfio_t *sp, const char *pre, const char *name, const char *pos)
     int c;
 
     sfputr(sp, pre, -1);
-    if ((c = *name++) && c != '=')
-    {
+    if ((c = *name++) && c != '=') {
         if (isdigit(c))
             sfputc(sp, '_');
-        do
-        {
+        do {
             if (!isalnum(c))
                 c = '_';
             sfputc(sp, c);
         } while ((c = *name++) && c != '=');
-    }
-    else
+    } else
         sfputc(sp, '_');
     sfputr(sp, pos, -1);
 }
@@ -79,15 +76,13 @@ putexport(Coshell_t *co, Sfio_t *sp, char *n, int old, int coex, int flags)
      * currently limited to valid identifer env var names
      */
 
-    if (!co->export || !dtmatch(co->export, n))
-    {
+    if (!co->export || !dtmatch(co->export, n)) {
         if (old)
             cvt = 0;
         if ((v = getenv(n)) && *v
             || coex
                && ((flags & CO_EXPORT)
-                   || co->export && dtsize(co->export) > 0))
-        {
+                   || co->export && dtsize(co->export) > 0)) {
             if (!old)
                 sfprintf(sp, "\\\n");
             exid(sp, " ", n, "='");
@@ -95,12 +90,10 @@ putexport(Coshell_t *co, Sfio_t *sp, char *n, int old, int coex, int flags)
                 v = "(*)";
             if (v)
                 coquote(sp, v, cvt);
-            if (coex && !(flags & CO_EXPORT))
-            {
+            if (coex && !(flags & CO_EXPORT)) {
                 v = v ? ":" : "";
                 for (ex = ( Coexport_t * )dtfirst(co->export); ex;
-                     ex = ( Coexport_t * )dtnext(co->export, ex))
-                {
+                     ex = ( Coexport_t * )dtnext(co->export, ex)) {
                     sfprintf(sp, "%s%s", v, ex->name);
                     exid(sp, v, ex->name, "");
                     v = ":";
@@ -142,18 +135,15 @@ coinitialize(Coshell_t *co, int flags)
     if (stat(".", &st))
         return 0;
     if (!state.pwd || st.st_ino != co->init.pwd_ino
-        || st.st_dev != co->init.pwd_dev)
-    {
+        || st.st_dev != co->init.pwd_dev) {
         co->init.pwd_dev = st.st_dev;
         co->init.pwd_ino = st.st_ino;
         if (state.pwd)
             free(state.pwd);
-        if (!(state.pwd = getcwd(NiL, 0)))
-        {
+        if (!(state.pwd = getcwd(NiL, 0))) {
             if (errno != EINVAL || !(state.pwd = newof(0, char, PATH_MAX, 0)))
                 return 0;
-            if (!getcwd(state.pwd, PATH_MAX))
-            {
+            if (!getcwd(state.pwd, PATH_MAX)) {
                 free(state.pwd);
                 state.pwd = 0;
                 return 0;
@@ -168,14 +158,12 @@ coinitialize(Coshell_t *co, int flags)
      */
 
     umask(n = umask(co->init.mask));
-    if (co->init.mask != n)
-    {
+    if (co->init.mask != n) {
         co->init.mask = n;
         if (!(flags & CO_INIT))
             sync = 1;
     }
-    if (!co->init.script || sync)
-    {
+    if (!co->init.script || sync) {
         /*
          * co_export[] vars
          */
@@ -186,20 +174,16 @@ coinitialize(Coshell_t *co, int flags)
         old = !(flags & (CO_KSH | CO_SERVER));
         if (!old)
             sfprintf(sp, "export");
-        if (sync)
-        {
+        if (sync) {
             if (flags & CO_EXPORT)
                 s = "(*)";
-            else
-            {
+            else {
                 for (n = 0; s = co_export[n]; n++)
                     putexport(co, sp, s, old, !n, flags);
                 s = getenv(co_export[0]);
             }
-            if (s)
-            {
-                if (*s == '(')
-                {
+            if (s) {
+                if (*s == '(') {
                     char **ep = environ;
                     char *e;
                     char *v;
@@ -210,24 +194,20 @@ coinitialize(Coshell_t *co, int flags)
                         *v = 0;
                     while (e = *ep++)
                         if ((t = strsubmatch(e, s, 1))
-                            && (*t == '=' || !*t && (t = strchr(e, '='))))
-                        {
+                            && (*t == '=' || !*t && (t = strchr(e, '=')))) {
                             m = ( int )(t - e);
-                            if (!strneq(e, "PATH=", 5) && !strneq(e, "_=", 2))
-                            {
-                                for (n = 0; xs = co_export[n]; n++)
-                                {
+                            if (!strneq(e, "PATH=", 5)
+                                && !strneq(e, "_=", 2)) {
+                                for (n = 0; xs = co_export[n]; n++) {
                                     es = e;
-                                    while (*xs && *es == *xs)
-                                    {
+                                    while (*xs && *es == *xs) {
                                         es++;
                                         xs++;
                                     }
                                     if (*es == '=' && !*xs)
                                         break;
                                 }
-                                if (!xs)
-                                {
+                                if (!xs) {
                                     if (!old)
                                         sfprintf(sp, "\\\n");
                                     exid(sp, " ", e, "='");
@@ -238,15 +218,13 @@ coinitialize(Coshell_t *co, int flags)
                                 }
                             }
                         }
-                    if (v)
-                    {
+                    if (v) {
                         *v++ = ':';
                         s = v;
                     }
                 }
                 if (*s)
-                    for (;;)
-                    {
+                    for (;;) {
                         if (t = strchr(s, ':'))
                             *t = 0;
                         putexport(co, sp, s, old, 0, 0);
@@ -257,8 +235,7 @@ coinitialize(Coshell_t *co, int flags)
             }
             if (co->export)
                 for (ex = ( Coexport_t * )dtfirst(co->export); ex;
-                     ex = ( Coexport_t * )dtnext(co->export, ex))
-                {
+                     ex = ( Coexport_t * )dtnext(co->export, ex)) {
                     if (!old)
                         sfprintf(sp, "\\\n");
                     exid(sp, " ", ex->name, "='");
@@ -277,8 +254,7 @@ coinitialize(Coshell_t *co, int flags)
             sfprintf(sp, "\\\n");
         sfprintf(sp, " PATH='");
         n = PATH_MAX;
-        if (!(t = sfstrrsrv(sp, n)))
-        {
+        if (!(t = sfstrrsrv(sp, n))) {
         bad:
             sfstrclose(sp);
             if (tp)
@@ -296,29 +272,23 @@ coinitialize(Coshell_t *co, int flags)
                         "",
                         PATH_ABSOLUTE | PATH_REGULAR | PATH_EXECUTE,
                         t,
-                        n / 2))
-        {
+                        n / 2)) {
             *strrchr(t, '/') = 0;
             sfputc(sp, ':');
             coquote(sp, t, !old);
             sfputc(sp, ':');
             s = pathbin();
-        }
-        else
-        {
+        } else {
             s = pathbin();
-            if (!(flags & CO_CROSS))
-            {
-                if (!sync && (*s == ':' || *s == '.' && *(s + 1) == ':'))
-                {
+            if (!(flags & CO_CROSS)) {
+                if (!sync && (*s == ':' || *s == '.' && *(s + 1) == ':')) {
                     sfstrseek(sp, 0, SEEK_SET);
                     goto done;
                 }
                 sfputc(sp, ':');
             }
         }
-        for (;;)
-        {
+        for (;;) {
             if (*s == ':')
                 s++;
             else if (*s == '.' && *(s + 1) == ':')
@@ -330,22 +300,17 @@ coinitialize(Coshell_t *co, int flags)
             tp = 0;
         else if (!(tp = sfstropen()))
             goto bad;
-        else
-        {
-            while (n = *s++)
-            {
-                if (n == ':')
-                {
+        else {
+            while (n = *s++) {
+                if (n == ':') {
                     while (*s == ':')
                         s++;
                     if (!*s)
                         break;
-                    if (*s == '.')
-                    {
+                    if (*s == '.') {
                         if (!*(s + 1))
                             break;
-                        if (*(s + 1) == ':')
-                        {
+                        if (*(s + 1) == ':') {
                             s++;
                             continue;
                         }
@@ -363,8 +328,7 @@ coinitialize(Coshell_t *co, int flags)
         if (old)
             sfprintf(sp, "\nexport PATH");
         sfputc(sp, '\n');
-        if (sync)
-        {
+        if (sync) {
             /*
              * VPATH
              */
@@ -373,23 +337,20 @@ coinitialize(Coshell_t *co, int flags)
             sfprintf(sp, "vpath ");
             n = PATH_MAX;
             if (fs3d(FS3D_TEST))
-                for (;;)
-                {
+                for (;;) {
                     if (!(t = sfstrrsrv(sp, n)))
                         goto bad;
                     if ((m = mount(
                          NiL, t, FS3D_GET | FS3D_ALL | FS3D_SIZE(n), NiL))
                         > 0)
                         m = n;
-                    else
-                    {
+                    else {
                         if (!m)
                             sfstrseek(sp, strlen(t), SEEK_CUR);
                         break;
                     }
                 }
-            else
-            {
+            else {
                 m = 0;
                 sfprintf(sp, "- /#option/2d");
             }
@@ -400,8 +361,7 @@ coinitialize(Coshell_t *co, int flags)
             sfprintf(sp, "umask 0%o\ncd '%s'\n", co->init.mask, state.pwd);
         }
     done:
-        if (!(flags & CO_SERVER))
-        {
+        if (!(flags & CO_SERVER)) {
             sfprintf(sp,
                      "%s%s=%05d${!%s-$$}\n",
                      old ? "" : "export ",
@@ -413,15 +373,12 @@ coinitialize(Coshell_t *co, int flags)
         }
         sfputc(sp, 0);
         n = ( int )sfstrtell(sp);
-        if (co->vm)
-        {
+        if (co->vm) {
             if (co->init.script)
                 vmfree(co->vm, co->init.script);
             if (!(co->init.script = vmnewof(co->vm, 0, char, n, 1)))
                 goto bad;
-        }
-        else
-        {
+        } else {
             if (co->init.script)
                 free(co->init.script);
             if (!(co->init.script = newof(0, char, n, 1)))
@@ -429,9 +386,7 @@ coinitialize(Coshell_t *co, int flags)
         }
         memcpy(co->init.script, sfstrbase(sp), n);
         sfstrclose(sp);
-    }
-    else if (!co->init.script)
-    {
+    } else if (!co->init.script) {
         if (co->init.script
             = co->vm ? vmnewof(co->vm, 0, char, 1, 0) : newof(0, char, 1, 0))
             *co->init.script = 0;
@@ -446,8 +401,7 @@ coinitialize(Coshell_t *co, int flags)
 char *
 coinit(int flags)
 {
-    if (!state.generic)
-    {
+    if (!state.generic) {
         if (!(state.generic = newof(0, Coshell_t, 1, 0)))
             return 0;
         state.generic->init.sync = 1;

@@ -46,17 +46,14 @@ getdeltaops(Archive_t *ap, File_t *f)
     s = ap->delta->hdrbuf;
     e = s + sizeof(ap->delta->hdrbuf) - 1;
     n = 0;
-    while (f->st->st_size > 0 && bread(ap, &c, ( off_t )1, ( off_t )1, 1) > 0)
-    {
+    while (f->st->st_size > 0
+           && bread(ap, &c, ( off_t )1, ( off_t )1, 1) > 0) {
         f->st->st_size--;
-        if (c == '\t' || c == '\n')
-        {
-            if (n)
-            {
+        if (c == '\t' || c == '\n') {
+            if (n) {
                 *s = 0;
                 s = ap->delta->hdrbuf;
-                switch (n)
-                {
+                switch (n) {
                 case DELTA_checksum:
                     f->delta.checksum = strtoul(s, NiL, 16);
                     break;
@@ -64,8 +61,7 @@ getdeltaops(Archive_t *ap, File_t *f)
                     f->delta.index = strtol(s, NiL, 0);
                     break;
                 case DELTA_trailer:
-                    if ((n = strtol(s, NiL, 0)) > 0)
-                    {
+                    if ((n = strtol(s, NiL, 0)) > 0) {
                         ap->delta->epilogue = -1;
                         ap->delta->trailer = n;
                         f->st->st_size -= n;
@@ -80,8 +76,7 @@ getdeltaops(Archive_t *ap, File_t *f)
             }
             if (c == '\n')
                 break;
-        }
-        else if (!n)
+        } else if (!n)
             n = c;
         else if (s < e)
             *s++ = c;
@@ -101,39 +96,32 @@ getdeltaheader(Archive_t *ap, File_t *f)
     Sfio_t *sp;
     char c;
 
-    if (!(ap->format->flags & COMPRESSED))
-    {
+    if (!(ap->format->flags & COMPRESSED)) {
         if (ap->delta && ap->delta->format
             && (ap->delta->format->variant == DELTA_94
                 || ap->delta->format->variant == DELTA_IGNORE
-                   && state.delta2delta))
-        {
+                   && state.delta2delta)) {
             ap->delta->index++;
             if (ap->delta->tab && f->name
                 && (f->delta.base
                     = ( Member_t * )hashget(ap->delta->tab, f->name)))
                 f->delta.base->mark = 1;
-            if (!(ap->format->flags & DELTAINFO))
-            {
+            if (!(ap->format->flags & DELTAINFO)) {
                 if (f->st->st_size <= 0
                     || bread(ap, &c, ( off_t )1, ( off_t )1, 1) <= 0)
                     f->delta.op = DELTA_create;
-                else
-                {
+                else {
                     f->st->st_size--;
                     f->delta.op = c;
                     getdeltaops(ap, f);
                     if (f->st->st_size >= 12
                         && (f->delta.op == DELTA_create
-                            || f->delta.op == DELTA_update))
-                    {
+                            || f->delta.op == DELTA_update)) {
                         sum = ap->memsum;
                         s = ap->delta->hdrbuf;
                         n = 12;
-                        if (bread(ap, s, ( off_t )n, ( off_t )n, 1) > 0)
-                        {
-                            if (ap->delta->format->variant == DELTA_88)
-                            {
+                        if (bread(ap, s, ( off_t )n, ( off_t )n, 1) > 0) {
+                            if (ap->delta->format->variant == DELTA_88) {
                                 unsigned char *u = ( unsigned char * )s;
                                 int i;
 
@@ -144,10 +132,11 @@ getdeltaheader(Archive_t *ap, File_t *f)
                                 while (i-- > 0)
                                     f->uncompressed
                                     = f->uncompressed * 256 + *u++;
-                            }
-                            else if (sp = sfnew(
-                                     NiL, s + 4, n, -1, SF_READ | SF_STRING))
-                            {
+                            } else if (sp = sfnew(NiL,
+                                                  s + 4,
+                                                  n,
+                                                  -1,
+                                                  SF_READ | SF_STRING)) {
                                 f->uncompressed = sfgetu(sp);
                                 sfclose(sp);
                             }
@@ -157,8 +146,7 @@ getdeltaheader(Archive_t *ap, File_t *f)
                     }
                 }
             }
-        }
-        else if (state.operation == (IN | OUT))
+        } else if (state.operation == (IN | OUT))
             f->delta.op = DELTA_pass;
     }
 }
@@ -173,25 +161,20 @@ getdeltatrailer(Archive_t *ap, File_t *f)
     long n;
     unsigned long x;
 
-    if (ap->delta && !f->extended)
-    {
-        if (ap->delta->trailer)
-        {
+    if (ap->delta && !f->extended) {
+        if (ap->delta->trailer) {
             f->st->st_size += ap->delta->trailer;
             ap->delta->trailer = 0;
             getdeltaops(ap, f);
         }
-        if (!f->delta.base)
-        {
+        if (!f->delta.base) {
             if (ap->parent && ap->parent != ap && f->delta.op != DELTA_create)
                 error(2,
                       "%s: %s: corrupt archive: not in base archive %s",
                       ap->name,
                       f->name,
                       ap->parent->name);
-        }
-        else
-        {
+        } else {
             x = (ap->format->flags & SUM) ? f->delta.base->info->checksum
                                           : ap->memsum;
             if ((f->delta.checksum ^ x) & 0xffffffff)
@@ -203,8 +186,7 @@ getdeltatrailer(Archive_t *ap, File_t *f)
                       f->delta.checksum & 0xffffffff,
                       x & 0xffffffff);
         }
-        if (n = f->delta.index - ap->delta->index)
-        {
+        if (n = f->delta.index - ap->delta->index) {
             if (n > 0)
                 error(2,
                       "%s: %s: corrupt archive: %d missing file%s",
@@ -235,13 +217,10 @@ setdeltaheader(Archive_t *ap, File_t *f)
     char *s;
     int n;
 
-    if (f->delta.op && ap->delta)
-    {
+    if (f->delta.op && ap->delta) {
         ap->delta->index++;
-        if (ap->format->flags & STANDARD)
-        {
-            switch (f->delta.op)
-            {
+        if (ap->format->flags & STANDARD) {
+            switch (f->delta.op) {
             case DELTA_create:
                 s = "create";
                 break;
@@ -277,9 +256,7 @@ setdeltaheader(Archive_t *ap, File_t *f)
                        &options[OPT_delta_checksum],
                        NiL,
                        f->delta.base->info->checksum & 0xffffffff);
-        }
-        else
-        {
+        } else {
             s = ap->delta->hdrbuf;
             n = sfsprintf(s,
                           sizeof(ap->delta->hdrbuf),
@@ -307,8 +284,8 @@ putdeltaheader(Archive_t *ap, File_t *f)
 {
     int n;
 
-    if (f->delta.op && ap->delta && (n = ap->delta->hdr - ap->delta->hdrbuf))
-    {
+    if (f->delta.op && ap->delta
+        && (n = ap->delta->hdr - ap->delta->hdrbuf)) {
         bwrite(ap, ap->delta->hdrbuf, n);
         n += DELTA_TRAILER;
         f->st->st_size -= n;
@@ -326,10 +303,8 @@ putdeltatrailer(Archive_t *ap, File_t *f)
     char *s;
     int n;
 
-    if (f->delta.op && ap->delta)
-    {
-        if (!(ap->format->flags & STANDARD))
-        {
+    if (f->delta.op && ap->delta) {
+        if (!(ap->format->flags & STANDARD)) {
             ap->sum = 0;
             s = ap->delta->hdrbuf;
             n = sfsprintf(s,
@@ -389,26 +364,20 @@ deltabase(Archive_t *ap)
               "%s: %s: cannot open base archive",
               ap->name,
               bp->name);
-    if (S_ISREG(st.st_mode) && st.st_size > 0)
-    {
+    if (S_ISREG(st.st_mode) && st.st_size > 0) {
         bp->io->seekable = 1;
         bp->io->size = st.st_size;
-    }
-    else
+    } else
         bp->io->seekable = 0;
-    if (st.st_size)
-    {
+    if (st.st_size) {
         fp = bp->expected;
         bp->expected = 0;
-        if (state.ordered)
-        {
+        if (state.ordered) {
             if (!getprologue(bp))
                 error(3, "%s: %s: base archive is empty", ap->name, bp->name);
             bp->sum--;
             bp->checksum = memsum(bp->io->next, bcount(bp), 0L);
-        }
-        else
-        {
+        } else {
             if (!state.append && !state.update
                 && lseek(bp->io->fd, ( off_t )0, SEEK_SET) != 0)
                 error(ERROR_SYSTEM | 3,
@@ -423,8 +392,7 @@ deltabase(Archive_t *ap)
     }
     if (state.append || state.update)
         ap->delta->format = st.st_size ? bp->format : ap->format;
-    else if (!ap->delta->format)
-    {
+    else if (!ap->delta->format) {
         ap->delta->format = getformat(FMT_DELTA, 1);
         ap->delta->compress = !st.st_size;
     }
@@ -444,19 +412,15 @@ deltaverify(Archive_t *ap)
     Hash_position_t *pos;
 
     if (!state.delta.update && !state.list && ap->delta
-        && ap->delta->base != ap && (pos = hashscan(ap->delta->tab, 0)))
-    {
+        && ap->delta->base != ap && (pos = hashscan(ap->delta->tab, 0))) {
         message((-2, "verify untouched base files"));
-        while (hashnext(pos))
-        {
+        while (hashnext(pos)) {
             d = ( Member_t * )pos->bucket->value;
             message((-1, "%s: mark=%d", d->info->name, d->mark));
             if (!d->mark && selectfile(ap, d->info)
-                && (wfd = openout(ap, d->info)) >= 0)
-            {
+                && (wfd = openout(ap, d->info)) >= 0) {
                 ap->entries++;
-                if (!d->uncompressed)
-                {
+                if (!d->uncompressed) {
                     if (!state.ordered
                         && lseek(ap->delta->base->io->fd, d->offset, SEEK_SET)
                            != d->offset)
@@ -464,26 +428,22 @@ deltaverify(Archive_t *ap)
                               "%s: base archive seek error",
                               ap->delta->base->name);
                     holeinit(wfd);
-                    for (c = d->info->st->st_size; c > 0; c -= n)
-                    {
+                    for (c = d->info->st->st_size; c > 0; c -= n) {
                         n = (c > state.buffersize) ? state.buffersize : c;
                         if ((n = state.ordered
                                  ? bread(ap, state.tmp.buffer, n, n, 1)
                                  : read(ap->delta->base->io->fd,
                                         state.tmp.buffer,
                                         n))
-                            <= 0)
-                        {
+                            <= 0) {
                             error(ERROR_SYSTEM | 2,
                                   "%s: %s: read error",
                                   ap->delta->base->name,
                                   d->info->name);
                             break;
-                        }
-                        else
+                        } else
                             ap->io->count += n;
-                        if (holewrite(wfd, state.tmp.buffer, n) != n)
-                        {
+                        if (holewrite(wfd, state.tmp.buffer, n) != n) {
                             error(ERROR_SYSTEM | 2,
                                   "%s: write error",
                                   d->info->name);
@@ -495,8 +455,7 @@ deltaverify(Archive_t *ap)
                     closeout(ap, d->info, wfd);
                     setfile(ap, d->info);
                     listentry(d->info);
-                }
-                else if (state.ordered)
+                } else if (state.ordered)
                     paxdelta(NiL,
                              ap,
                              d->info,
@@ -536,17 +495,14 @@ deltaprefix(Archive_t *ip, Archive_t *op, Member_t *d)
     Member_t *m;
 
     d->mark = 1;
-    if (s = strrchr(d->info->path, '/'))
-    {
+    if (s = strrchr(d->info->path, '/')) {
         *s = 0;
-        if (!(m = ( Member_t * )hashget(ip->delta->tab, d->info->name)))
-        {
+        if (!(m = ( Member_t * )hashget(ip->delta->tab, d->info->name))) {
             if (!(m = newof(0, Member_t, 1, 0)))
                 nospace();
             m->mark = 1;
             hashput(ip->delta->tab, 0, m);
-        }
-        else if (!m->mark)
+        } else if (!m->mark)
             deltaprefix(ip, op, m);
         *s = '/';
     }
@@ -571,20 +527,16 @@ deltaout(Archive_t *ip, Archive_t *op, File_t *f)
             ? ( Member_t * )hashget(op->delta->tab, f->name)
             : ( Member_t * )0)
         d->mark = 1;
-    if (op->delta && (op->delta->format->flags & DELTAIO))
-    {
+    if (op->delta && (op->delta->format->flags & DELTAIO)) {
         if (f->type == X_IFREG && f->linktype == NOLINK
             && (!d || f->st->st_mtime != d->mtime.tv_sec
-                || (f->st->st_mode & X_IPERM) != (d->mode & X_IPERM)))
-        {
-            if (f->ordered)
-            {
+                || (f->st->st_mode & X_IPERM) != (d->mode & X_IPERM))) {
+            if (f->ordered) {
                 f->ordered = 0;
                 fileout(op, f);
                 return;
             }
-            if (d)
-            {
+            if (d) {
                 f->delta.op = DELTA_update;
                 f->st->st_dev = d->dev;
                 f->st->st_ino = d->ino;
@@ -595,8 +547,7 @@ deltaout(Archive_t *ip, Archive_t *op, File_t *f)
                  d->offset,
                  d->size,
                  d->uncompressed));
-                if (state.ordered)
-                {
+                if (state.ordered) {
                     if (!d->uncompressed)
                         paxdelta(ip,
                                  op,
@@ -633,8 +584,7 @@ deltaout(Archive_t *ip, Archive_t *op, File_t *f)
                         DELTA_DEL | DELTA_TEMP | DELTA_OUTPUT,
                         &f->fd,
                         0);
-                }
-                else if (!d->uncompressed)
+                } else if (!d->uncompressed)
                     paxdelta(ip,
                              op,
                              f,
@@ -671,9 +621,7 @@ deltaout(Archive_t *ip, Archive_t *op, File_t *f)
                              DELTA_DEL | DELTA_TEMP | DELTA_OUTPUT,
                              &f->fd,
                              0);
-            }
-            else
-            {
+            } else {
                 f->delta.op = DELTA_create;
                 message((-2, "delta: create: file=%s", f->name));
                 paxdelta(ip,
@@ -687,9 +635,7 @@ deltaout(Archive_t *ip, Archive_t *op, File_t *f)
                          0);
             }
             skip = 0;
-        }
-        else
-        {
+        } else {
             f->delta.op = (d && (f->type == X_IFREG || f->type == X_IFDIR))
                           ? DELTA_update
                           : DELTA_create;
@@ -697,8 +643,7 @@ deltaout(Archive_t *ip, Archive_t *op, File_t *f)
                      "delta: %s: file=%s",
                      f->delta.op == DELTA_update ? "update" : "create",
                      f->name));
-            if (skip)
-            {
+            if (skip) {
                 skip = 0;
                 fileskip(ip, f);
             }
@@ -708,13 +653,11 @@ deltaout(Archive_t *ip, Archive_t *op, File_t *f)
                 f->st->st_mtime = d->mtime.tv_sec;
         }
     }
-    if (!d || !f->delta.same && d->mtime.tv_sec != f->st->st_mtime)
-    {
+    if (!d || !f->delta.same && d->mtime.tv_sec != f->st->st_mtime) {
         char *s;
 
         if (ip && ip->delta && ip->delta->tab && f->name
-            && (s = strrchr(f->name, '/')))
-        {
+            && (s = strrchr(f->name, '/'))) {
             *s = 0;
             if ((d = ( Member_t * )hashget(ip->delta->tab, f->name))
                 && !d->mark)
@@ -722,8 +665,7 @@ deltaout(Archive_t *ip, Archive_t *op, File_t *f)
             *s = '/';
         }
         fileout(op, f);
-    }
-    else if (f->fd >= 0)
+    } else if (f->fd >= 0)
         close(f->fd);
     else if (skip)
         fileskip(ip, f);
@@ -736,11 +678,9 @@ deltaout(Archive_t *ip, Archive_t *op, File_t *f)
 static void
 deltacopy(Archive_t *ip, Archive_t *op, File_t *f)
 {
-    if (f->delta.base)
-    {
+    if (f->delta.base) {
         f->st->st_size = f->delta.base->size;
-        if (f->delta.base->uncompressed)
-        {
+        if (f->delta.base->uncompressed) {
             if (state.ordered)
                 paxdelta(ip,
                          NiL,
@@ -762,14 +702,11 @@ deltacopy(Archive_t *ip, Archive_t *op, File_t *f)
                          DELTA_TAR | DELTA_TEMP | DELTA_OUTPUT,
                          &f->fd,
                          0);
-        }
-        else if (state.ordered)
-        {
+        } else if (state.ordered) {
             f->ap = ip;
             f->fd = -1;
             f->ordered = 1;
-        }
-        else if ((f->fd = dup(ip->delta->base->io->fd)) < 0)
+        } else if ((f->fd = dup(ip->delta->base->io->fd)) < 0)
             error(
             ERROR_SYSTEM | 3, "%s: cannot reopen", ip->delta->base->name);
         else if (lseek(f->fd, f->delta.base->offset, SEEK_SET) < 0)
@@ -791,17 +728,13 @@ deltadelete(Archive_t *ap)
     Member_t *d;
     Hash_position_t *pos;
 
-    if (!state.ordered && ap->delta && ap->delta->tab)
-    {
-        if (pos = hashscan(ap->delta->tab, 0))
-        {
+    if (!state.ordered && ap->delta && ap->delta->tab) {
+        if (pos = hashscan(ap->delta->tab, 0)) {
             message((-2, "copy the base delete entries"));
             f = &ap->file;
-            while (hashnext(pos))
-            {
+            while (hashnext(pos)) {
                 d = ( Member_t * )pos->bucket->value;
-                if (!d->mark && (!d->info || !d->info->ro))
-                {
+                if (!d->mark && (!d->info || !d->info->ro)) {
                     ap->selected++;
                     initfile(ap,
                              f,
@@ -809,15 +742,12 @@ deltadelete(Archive_t *ap)
                              pos->bucket->name,
                              X_IFREG | X_IRUSR | X_IWUSR | X_IRGRP | X_IROTH);
                     f->delta.op = DELTA_delete;
-                    if (d->info && d->info->st)
-                    {
+                    if (d->info && d->info->st) {
                         f->st->st_mode = d->info->st->st_mode;
                         f->st->st_gid = d->info->st->st_gid;
                         f->st->st_uid = d->info->st->st_uid;
                         f->st->st_mtime = d->info->st->st_mtime;
-                    }
-                    else
-                    {
+                    } else {
                         f->st->st_gid = state.uid;
                         f->st->st_uid = state.gid;
                         f->st->st_mtime = NOW;
@@ -854,27 +784,21 @@ deltapass(Archive_t *ip, Archive_t *op)
     deltabase(op);
     putprologue(op, 0);
     f = &ip->file;
-    while (getprologue(ip))
-    {
-        while (getheader(ip, f))
-        {
+    while (getprologue(ip)) {
+        while (getheader(ip, f)) {
             f->fd = -1;
             f->ap = ip;
             if (f->ro)
                 fileskip(ip, f);
-            else if (state.delta2delta)
-            {
+            else if (state.delta2delta) {
                 if (validout(op, f) && selectfile(op, f))
                     fileout(op, f);
                 else
                     fileskip(ip, f);
-            }
-            else
-                switch (f->delta.op)
-                {
+            } else
+                switch (f->delta.op) {
                 case DELTA_create:
-                    if (f->type != X_IFREG || f->linktype != NOLINK)
-                    {
+                    if (f->type != X_IFREG || f->linktype != NOLINK) {
                         f->st->st_size = 0;
                         goto pass;
                     }
@@ -884,8 +808,7 @@ deltapass(Archive_t *ip, Archive_t *op)
                               f->name,
                               __FILE__,
                               __LINE__);
-                    if (validout(op, f) && selectfile(op, f))
-                    {
+                    if (validout(op, f) && selectfile(op, f)) {
                         paxdelta(ip,
                                  op,
                                  f,
@@ -895,8 +818,8 @@ deltapass(Archive_t *ip, Archive_t *op)
                                  ip,
                                  f->st->st_size,
                                  0);
-                        if (op->delta && (op->delta->format->flags & DELTAIO))
-                        {
+                        if (op->delta
+                            && (op->delta->format->flags & DELTAIO)) {
                             f->delta.op = DELTA_create;
                             paxdelta(ip,
                                      op,
@@ -908,19 +831,16 @@ deltapass(Archive_t *ip, Archive_t *op)
                                      DELTA_DEL | DELTA_TEMP | DELTA_OUTPUT,
                                      &f->fd,
                                      0);
-                        }
-                        else
+                        } else
                             f->delta.op = 0;
                         deltaout(ip, op, f);
-                    }
-                    else
+                    } else
                         fileskip(ip, f);
                     break;
                 case DELTA_pass:
-                    if (validout(op, f) && selectfile(op, f))
-                    {
-                        if (ip->delta && (ip->delta->format->flags & DELTAIO))
-                        {
+                    if (validout(op, f) && selectfile(op, f)) {
+                        if (ip->delta
+                            && (ip->delta->format->flags & DELTAIO)) {
                             f->delta.op = DELTA_create;
                             paxdelta(ip,
                                      op,
@@ -931,9 +851,7 @@ deltapass(Archive_t *ip, Archive_t *op)
                                      DELTA_TAR | DELTA_TEMP | DELTA_OUTPUT,
                                      &f->fd,
                                      0);
-                        }
-                        else if (fp = filter(op, f))
-                        {
+                        } else if (fp = filter(op, f)) {
                             int wfd;
 
                             static char *tmp;
@@ -945,8 +863,7 @@ deltapass(Archive_t *ip, Archive_t *op)
                                             O_CREAT | O_TRUNC | O_WRONLY
                                             | O_BINARY,
                                             S_IRUSR))
-                                < 0)
-                            {
+                                < 0) {
                                 error(2,
                                       "%s: cannot create filter temporary %s",
                                       f->path,
@@ -956,19 +873,18 @@ deltapass(Archive_t *ip, Archive_t *op)
                             }
                             holeinit(wfd);
                             for (c = f->st->st_size; c > 0;
-                                 c -= state.buffersize)
-                            {
+                                 c -= state.buffersize) {
                                 n
                                 = c > state.buffersize ? state.buffersize : c;
-                                if (bread(ip, state.tmp.buffer, n, n, 1) <= 0)
-                                {
+                                if (bread(ip, state.tmp.buffer, n, n, 1)
+                                    <= 0) {
                                     error(ERROR_SYSTEM | 2,
                                           "%s: read error",
                                           f->name);
                                     break;
                                 }
-                                if (holewrite(wfd, state.tmp.buffer, n) != n)
-                                {
+                                if (holewrite(wfd, state.tmp.buffer, n)
+                                    != n) {
                                     error(
                                     ERROR_SYSTEM | 2,
                                     "%s: filter temporary write error to %s",
@@ -989,12 +905,10 @@ deltapass(Archive_t *ip, Archive_t *op)
                                       f->path);
                             f->path = p;
                             f->delta.op = 0;
-                        }
-                        else
+                        } else
                             f->delta.op = 0;
                         deltaout(ip, op, f);
-                    }
-                    else
+                    } else
                         fileskip(ip, f);
                     break;
                 case DELTA_delete:
@@ -1016,8 +930,7 @@ deltapass(Archive_t *ip, Archive_t *op)
                               f->name,
                               __FILE__,
                               __LINE__);
-                    if (validout(op, f) && selectfile(op, f))
-                    {
+                    if (validout(op, f) && selectfile(op, f)) {
                         if (state.ordered)
                             paxdelta(ip,
                                      op,
@@ -1046,8 +959,8 @@ deltapass(Archive_t *ip, Archive_t *op)
                                      ip,
                                      f->st->st_size,
                                      0);
-                        if (op->delta && (op->delta->format->flags & DELTAIO))
-                        {
+                        if (op->delta
+                            && (op->delta->format->flags & DELTAIO)) {
                             f->delta.op = DELTA_create;
                             paxdelta(ip,
                                      op,
@@ -1059,12 +972,10 @@ deltapass(Archive_t *ip, Archive_t *op)
                                      DELTA_DEL | DELTA_TEMP | DELTA_OUTPUT,
                                      &f->fd,
                                      0);
-                        }
-                        else
+                        } else
                             f->delta.op = 0;
                         deltaout(ip, op, f);
-                    }
-                    else
+                    } else
                         fileskip(ip, f);
                     break;
                 case DELTA_verify:
@@ -1076,12 +987,10 @@ deltapass(Archive_t *ip, Archive_t *op)
                               __FILE__,
                               __LINE__);
                 pass:
-                    if (validout(op, f) && selectfile(op, f))
-                    {
+                    if (validout(op, f) && selectfile(op, f)) {
                         f->delta.op = 0;
                         deltacopy(ip, op, f);
-                    }
-                    else
+                    } else
                         fileskip(ip, f);
                     break;
                 default:
@@ -1097,21 +1006,17 @@ deltapass(Archive_t *ip, Archive_t *op)
         if (!getepilogue(ip))
             break;
     }
-    if (ip->delta && ip->delta->tab)
-    {
+    if (ip->delta && ip->delta->tab) {
         /*
          * copy the non-empty untouched base hard links first
          */
 
-        if (pos = hashscan(ip->delta->tab, 0))
-        {
+        if (pos = hashscan(ip->delta->tab, 0)) {
             message((-2, "copy non-empty untouched base hard links"));
-            while (hashnext(pos))
-            {
+            while (hashnext(pos)) {
                 d = ( Member_t * )pos->bucket->value;
                 if (!d->mark && d->info->linktype != HARDLINK
-                    && d->info->st->st_size > 0 && selectfile(op, d->info))
-                {
+                    && d->info->st->st_size > 0 && selectfile(op, d->info)) {
                     d->mark = 1;
                     deltacopy(ip, op, d->info);
                 }
@@ -1123,17 +1028,13 @@ deltapass(Archive_t *ip, Archive_t *op)
          * copy the remaining untouched base files and deletes
          */
 
-        if (pos = hashscan(ip->delta->tab, 0))
-        {
+        if (pos = hashscan(ip->delta->tab, 0)) {
             message((-2, "copy remaining untouched base files"));
-            while (hashnext(pos))
-            {
+            while (hashnext(pos)) {
                 d = ( Member_t * )pos->bucket->value;
-                if (!d->mark && selectfile(op, d->info))
-                {
+                if (!d->mark && selectfile(op, d->info)) {
                     d->mark = 1;
-                    if (d->info->linktype == HARDLINK)
-                    {
+                    if (d->info->linktype == HARDLINK) {
                         if (!(h = ( Member_t * )hashget(ip->delta->tab,
                                                         d->info->linkpath)))
                             error(1,
@@ -1142,8 +1043,7 @@ deltapass(Archive_t *ip, Archive_t *op)
                                   d->info->name,
                                   d->info->linkpath);
                         else if (!h->mark
-                                 || h->info->delta.op == DELTA_delete)
-                        {
+                                 || h->info->delta.op == DELTA_delete) {
                             h->info->name = d->info->name;
                             d = h;
                         }
@@ -1174,12 +1074,10 @@ deltaset(Archive_t *ap, char *s)
     dp = 0;
     if ((type = *++s) != TYPE_COMPRESS && type != TYPE_DELTA)
         error(3, "type %c encoding not supported", *s);
-    if (*++s == INFO_SEP)
-    {
+    if (*++s == INFO_SEP) {
         if (t = strchr(++s, INFO_SEP))
             *t++ = 0;
-        if (*s)
-        {
+        if (*s) {
             if (isdigit(*s))
                 s = sfprints("delta%s", s);
             dp = getformat(s, 1);
@@ -1189,12 +1087,10 @@ deltaset(Archive_t *ap, char *s)
          * [<INFO_SEP>[<OP>]<VAL>]* may appear here
          */
 
-        while ((s = t) && *s != INFO_SEP)
-        {
+        while ((s = t) && *s != INFO_SEP) {
             if (t = strchr(s, INFO_SEP))
                 *t++ = 0;
-            switch (*s++)
-            {
+            switch (*s++) {
             case INFO_ORDERED:
                 ap->ordered = 1;
                 break;
@@ -1224,46 +1120,37 @@ deltacheck(Archive_t *ap, File_t *f)
     if (!f
         || !f->st->st_size && !f->st->st_dev && !f->st->st_ino
            && !(f->st->st_mode & (X_IRWXU | X_IRWXG | X_IRWXO))
-           && strmatch(f->name, INFO_MATCH))
-    {
-        if (ap->checkdelta)
-        {
+           && strmatch(f->name, INFO_MATCH)) {
+        if (ap->checkdelta) {
             ap->checkdelta = 0;
-            if (f)
-            {
+            if (f) {
                 s = f->name;
                 size = f->st->st_mtime;
                 checksum
                 = (DELTA_LO(f->st->st_gid) << 16) | DELTA_LO(f->st->st_uid);
                 if (streq(s, "DELTA!!!"))
                     initdelta(ap, getformat("delta88", 1));
-                else if (*s++ == INFO_SEP)
-                {
+                else if (*s++ == INFO_SEP) {
                     if (strneq(s, ID, IDLEN) && (t = strchr(s, INFO_SEP)))
                         deltaset(ap, t);
-                    else
-                    {
+                    else {
                         if (t = strchr(s += 2, INFO_SEP))
                             *t = 0;
                         error(1, "unknown %s header ignored", s);
                         return 0;
                     }
                 }
-            }
-            else if (ap->delta)
-            {
+            } else if (ap->delta) {
                 size = ap->delta->size;
                 checksum = ap->delta->checksum;
             }
-            if (ap->delta && ap->delta->format)
-            {
+            if (ap->delta && ap->delta->format) {
                 if (!ap->delta->compress && ap->parent)
                     error(3,
                           "%s: %s: base archive cannot be a delta",
                           ap->parent->name,
                           ap->name);
-                if (bp = ap->delta->base)
-                {
+                if (bp = ap->delta->base) {
                     if (ap->delta->format->variant == DELTA_88)
                         bp->checksum = bp->old.checksum;
                     message(
@@ -1276,10 +1163,8 @@ deltacheck(Archive_t *ap, File_t *f)
                      bp->size,
                      checksum,
                      bp->checksum));
-                    if (!ap->delta->compress)
-                    {
-                        if (!ap->ordered)
-                        {
+                    if (!ap->delta->compress) {
+                        if (!ap->ordered) {
                             if (state.ordered)
                                 error(
                                 3, "%s: delta archive not ordered", ap->name);
@@ -1303,9 +1188,7 @@ deltacheck(Archive_t *ap, File_t *f)
                                   checksum & 0xffffffff,
                                   bp->checksum & 0xffffffff);
                     }
-                }
-                else if (!ap->delta->compress)
-                {
+                } else if (!ap->delta->compress) {
                     error(state.list ? 1 : 3,
                           "%s: base archive must be specified",
                           ap->name);
@@ -1322,10 +1205,8 @@ deltacheck(Archive_t *ap, File_t *f)
                 "%s: %s: unknown control header treated as regular file",
                 ap->name,
                 f->name);
-        }
-        else if (f && *f->name == INFO_SEP && strneq(f->name + 1, ID, IDLEN)
-                 && *(f->name + IDLEN + 1) == INFO_SEP)
-        {
+        } else if (f && *f->name == INFO_SEP && strneq(f->name + 1, ID, IDLEN)
+                   && *(f->name + IDLEN + 1) == INFO_SEP) {
             getdeltaheader(ap, f);
             setinfo(ap, f);
             return 1;
@@ -1371,11 +1252,9 @@ delread(void *buf, int n, Vdoff_t off, Vddisc_t *vd)
              off,
              sizeof(dp->offset),
              dp->offset));
-    if (diff = off - dp->offset)
-    {
+    if (diff = off - dp->offset) {
         dp->offset = off;
-        if (dp->op & DELTA_BIO)
-        {
+        if (dp->op & DELTA_BIO) {
             if (bseek(dp->bp, diff, SEEK_CUR, 0) < 0)
                 error(PANIC,
                       "BIO seek: have=%I*d need=%I*d",
@@ -1383,12 +1262,9 @@ delread(void *buf, int n, Vdoff_t off, Vddisc_t *vd)
                       dp->offset,
                       sizeof(off),
                       off);
-        }
-        else
-        {
+        } else {
             off += dp->base;
-            if (lseek(dp->fd, off, SEEK_SET) != off)
-            {
+            if (lseek(dp->fd, off, SEEK_SET) != off) {
                 message((-8,
                          "delread: fd=%d n=%d off=%I*d: seek error",
                          dp->fd,
@@ -1401,8 +1277,7 @@ delread(void *buf, int n, Vdoff_t off, Vddisc_t *vd)
     }
     if (n > (dp->vd.size - dp->offset))
         n = dp->vd.size - dp->offset;
-    if (n <= 0)
-    {
+    if (n <= 0) {
         message((-8,
                  "delread: fd=%d n=%d siz=%I*d off=%I*d: seek error",
                  dp->fd,
@@ -1438,17 +1313,14 @@ delwrite(void *buf, int n, Vdoff_t off, Vddisc_t *vd)
              n,
              sizeof(off),
              off));
-    if (dp->op & DELTA_BIO)
-    {
+    if (dp->op & DELTA_BIO) {
         bwrite(dp->bp, buf, n);
         return n;
     }
     if (dp->op & DELTA_HOLE)
         return holewrite(dp->fd, buf, n);
-    if (bp = getbuffer(dp->fd))
-    {
-        if (bp->next + n < bp->past)
-        {
+    if (bp = getbuffer(dp->fd)) {
+        if (bp->next + n < bp->past) {
             memcpy(bp->next, buf, n);
             bp->next += n;
             return n;
@@ -1495,14 +1367,12 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
 	if (ip && ip->delta && !ip->delta->format)
 		ip->delta->format = getformat(FMT_DELTA, 1);
 #else
-    if (ap && ap->delta)
-    {
+    if (ap && ap->delta) {
         if (!ap->delta->format)
             ap->delta->format = getformat(FMT_DELTA, 1);
         fp = ap->delta->format;
     }
-    if (ip && ip->delta)
-    {
+    if (ip && ip->delta) {
         if (!ip->delta->format)
             ip->delta->format = getformat(FMT_DELTA, 1);
         fp = ip->delta->format;
@@ -1513,8 +1383,7 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
         mp = sfstropen();
 #endif
     memzero(data, sizeof(data));
-    while (op)
-    {
+    while (op) {
         dp = &data[op & DELTA_DATA];
         dp->ap = ap && ap->delta ? ap : ip;
 #if DEBUG
@@ -1523,16 +1392,12 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
 #endif
         if (op & DELTA_BIO)
             dp->bp = va_arg(vp, Archive_t *);
-        else if (op & DELTA_FD)
-        {
-            if ((dp->fd = va_arg(vp, int)) == -1)
-            {
+        else if (op & DELTA_FD) {
+            if ((dp->fd = va_arg(vp, int)) == -1) {
                 op &= ~(DELTA_FD | DELTA_FREE);
                 op |= DELTA_BIO;
                 dp->bp = ip ? ip : ap;
-            }
-            else if (bp = getbuffer(dp->fd))
-            {
+            } else if (bp = getbuffer(dp->fd)) {
                 op &= ~(DELTA_FD | DELTA_FREE);
                 op |= DELTA_BUFFER;
                 dp->vd.data = bp->base;
@@ -1542,9 +1407,7 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
             else if (mp)
                 sfprintf(mp, " fd=%d", dp->fd);
 #endif
-        }
-        else if (op & DELTA_TEMP)
-        {
+        } else if (op & DELTA_TEMP) {
             dp->pfd = va_arg(vp, int *);
             op |= DELTA_FD;
             op &= ~DELTA_FREE;
@@ -1552,25 +1415,21 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
             if (mp)
                 sfprintf(mp, " TEMP");
 #endif
-        }
-        else if (op & DELTA_BUFFER)
-        {
+        } else if (op & DELTA_BUFFER) {
             dp->vd.data = va_arg(vp, char *);
 #if DEBUG
             if (mp)
                 sfprintf(mp, " buffer=%p", dp->vd.data);
 #endif
         }
-        if (op & DELTA_OFFSET)
-        {
+        if (op & DELTA_OFFSET) {
             dp->base = va_arg(vp, off_t);
 #if DEBUG
             if (mp)
                 sfprintf(mp, " offset=%I*d", sizeof(dp->base), dp->base);
 #endif
         }
-        if (op & DELTA_SIZE)
-        {
+        if (op & DELTA_SIZE) {
             dp->vd.size = va_arg(vp, off_t);
 #if DEBUG
             if (mp)
@@ -1579,8 +1438,7 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
         }
         if ((op & (DELTA_BIO | DELTA_OUTPUT)) == DELTA_BIO && dp->vd.size > 0
             && dp->vd.size <= state.buffersize
-            && (dp->vd.data = bget(dp->bp, dp->vd.size, NiL)))
-        {
+            && (dp->vd.data = bget(dp->bp, dp->vd.size, NiL))) {
             op &= ~(DELTA_BIO | DELTA_FREE);
             op |= DELTA_BUFFER;
 #if DEBUG
@@ -1588,19 +1446,15 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
                 sfprintf(mp, " buffer=%p", dp->vd.data);
 #endif
         }
-        if (op & (DELTA_BIO | DELTA_FD))
-        {
-            if (op & DELTA_OUTPUT)
-            {
+        if (op & (DELTA_BIO | DELTA_FD)) {
+            if (op & DELTA_OUTPUT) {
                 dp->vd.writef = delwrite;
-                if (!hole && (op & (DELTA_FD | DELTA_TEMP)) == DELTA_FD)
-                {
+                if (!hole && (op & (DELTA_FD | DELTA_TEMP)) == DELTA_FD) {
                     hole = 1;
                     op |= DELTA_HOLE;
                     holeinit(dp->fd);
                 }
-            }
-            else
+            } else
                 dp->vd.readf = delread;
             if ((op & (DELTA_FD | DELTA_TEMP)) == DELTA_FD && dp->base
                 && lseek(dp->fd, dp->base, SEEK_SET) != dp->base)
@@ -1610,8 +1464,7 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
                 sfprintf(mp, " bio=%s", dp->bp->name);
 #endif
         }
-        if (op & DELTA_OUTPUT)
-        {
+        if (op & DELTA_OUTPUT) {
             if (gen)
                 error(PANIC, "paxdelta(): more than one DELTA_OUTPUT");
             gen = dp;
@@ -1637,8 +1490,7 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
 #if 0
 	fp = (gen == &data[DELTA_DEL]) ? ap->delta->format : ip->delta->format;
 #endif
-    if (gen->pfd)
-    {
+    if (gen->pfd) {
         if (!(state.test & 0000020) && fp->variant != DELTA_88
             && (state
                 .buffer[bufferclash
@@ -1649,22 +1501,19 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
                     = newof(0, char, state.delta.buffersize, 0))
                 || (state.delta.buffersize >>= 1)
                    && (state.buffer[state.delta.bufferindex].base
-                       = newof(0, char, state.delta.buffersize, 0))))
-        {
+                       = newof(0, char, state.delta.buffersize, 0)))) {
             gen->fd = setbuffer(state.delta.bufferindex);
             bp = getbuffer(gen->fd);
             bp->next = bp->base;
             bp->past = bp->base + state.delta.buffersize;
-        }
-        else if ((gen->fd = open(state.tmp.file,
-                                 O_CREAT | O_TRUNC | O_WRONLY | O_BINARY,
-                                 S_IRUSR))
-                 < 0)
+        } else if ((gen->fd = open(state.tmp.file,
+                                   O_CREAT | O_TRUNC | O_WRONLY | O_BINARY,
+                                   S_IRUSR))
+                   < 0)
             error(
             3, "%s: cannot create delta temporary file", state.tmp.file);
     }
-    switch (fp->variant)
-    {
+    switch (fp->variant) {
     case DELTA_88:
     case DELTA_PATCH:
         /*
@@ -1676,26 +1525,21 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
         {
             static char *tmp;
 
-            if (gen == &data[DELTA_DEL])
-            {
+            if (gen == &data[DELTA_DEL]) {
                 if (!(data[DELTA_DEL].op & DELTA_FD))
                     error(PANIC,
                           "paxdelta: %s %s must be DELTA_TEMP or DELTA_FD",
                           fp->name,
                           dataname[DELTA_DEL]);
-                for (op = 0; op < elementsof(data); op++)
-                {
+                for (op = 0; op < elementsof(data); op++) {
                     if (op == DELTA_DEL) /*NOP*/
                         ;
-                    else if (!data[op].vd.size)
-                    {
+                    else if (!data[op].vd.size) {
                         data[op].vd.data = state.tmp.buffer;
                         data[op].op &= ~DELTA_FREE;
-                    }
-                    else
+                    } else
                         switch (data[op].op
-                                & (DELTA_BIO | DELTA_FD | DELTA_OUTPUT))
-                        {
+                                & (DELTA_BIO | DELTA_FD | DELTA_OUTPUT)) {
                         case DELTA_BIO:
                             if (!(data[op].vd.data
                                   = malloc(data[op].vd.size)))
@@ -1730,8 +1574,7 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
                             break;
                         }
                 }
-                switch (fp->variant)
-                {
+                switch (fp->variant) {
                 case DELTA_88:
                     n = delta(data[DELTA_SRC].vd.data,
                               data[DELTA_SRC].vd.size,
@@ -1756,27 +1599,21 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
                     n = 0;
                     break;
                 }
-            }
-            else
-            {
+            } else {
                 if (!(data[DELTA_TAR].op & DELTA_FD))
                     error(PANIC,
                           "paxdelta: %s %s must be DELTA_TEMP or DELTA_FD",
                           fp->name,
                           dataname[DELTA_TAR]);
-                for (op = 0; op < elementsof(data); op++)
-                {
+                for (op = 0; op < elementsof(data); op++) {
                     if (op == DELTA_TAR) /*NOP*/
                         ;
-                    else if (!data[op].vd.size)
-                    {
+                    else if (!data[op].vd.size) {
                         data[op].fd = 0;
                         data[op].op &= ~DELTA_FREE;
-                    }
-                    else
+                    } else
                         switch (data[op].op
-                                & (DELTA_BIO | DELTA_BUFFER | DELTA_OUTPUT))
-                        {
+                                & (DELTA_BIO | DELTA_BUFFER | DELTA_OUTPUT)) {
                         case DELTA_BIO:
                             if (!(data[op].vd.data
                                   = malloc(data[op].vd.size)))
@@ -1820,8 +1657,7 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
                                 ERROR_SYSTEM | 1,
                                 "%s: cannot remove delta temporary file",
                                 tmp);
-                            if (data[op].op & DELTA_BUFFER)
-                            {
+                            if (data[op].op & DELTA_BUFFER) {
                                 if (data[op].op & DELTA_FREE)
                                     free(data[op].vd.data);
                                 data[op].vd.data = 0;
@@ -1831,8 +1667,7 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
                             break;
                         }
                 }
-                switch (fp->variant)
-                {
+                switch (fp->variant) {
                 case DELTA_88:
                     n = update(data[DELTA_SRC].fd,
                                data[DELTA_SRC].base,
@@ -1853,23 +1688,20 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
         if (gen != &data[DELTA_DEL] && !data[DELTA_SRC].vd.size
             && !data[DELTA_DEL].vd.size)
             n = 0;
-        else if (gen == &data[DELTA_DEL])
-        {
+        else if (gen == &data[DELTA_DEL]) {
             n = vddelta(( Vddisc_t * )&data[DELTA_SRC],
                         ( Vddisc_t * )&data[DELTA_TAR],
                         ( Vddisc_t * )&data[DELTA_DEL]);
             if (n == 15)
                 f->delta.same = 1;
-        }
-        else
+        } else
             n = vdupdate(( Vddisc_t * )&data[DELTA_SRC],
                          ( Vddisc_t * )&data[DELTA_TAR],
                          ( Vddisc_t * )&data[DELTA_DEL]);
         break;
     }
 #if DEBUG
-    if (mp)
-    {
+    if (mp) {
         message((-5,
                  "%s %s: %s:%s return=%ld",
                  gen == &data[DELTA_DEL] ? "delta" : "update",
@@ -1880,19 +1712,16 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
         sfstrclose(mp);
     }
 #endif
-    if (n < 0)
-    {
+    if (n < 0) {
         error(ERROR_SYSTEM | 2, "%s: delta error", f->name);
         return -1;
     }
     f->uncompressed = f->st->st_size;
     f->st->st_size = n;
-    for (op = 0; op < elementsof(data); op++)
-    {
+    for (op = 0; op < elementsof(data); op++) {
         if (data[op].op & DELTA_HOLE)
             holedone(data[op].fd);
-        switch (data[op].op & (DELTA_BUFFER | DELTA_FD | DELTA_FREE))
-        {
+        switch (data[op].op & (DELTA_BUFFER | DELTA_FD | DELTA_FREE)) {
         case DELTA_BUFFER | DELTA_FREE:
             free(data[op].vd.data);
             break;
@@ -1905,8 +1734,7 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
                 free(data[op].vd.data);
             break;
         }
-        if (data[op].op & DELTA_COUNT)
-        {
+        if (data[op].op & DELTA_COUNT) {
             ap->io->expand += n;
             if (data[op].op & DELTA_OUTPUT)
                 setfile(ap, f);
@@ -1914,15 +1742,11 @@ paxdelta(Archive_t *ip, Archive_t *ap, File_t *f, int op, ...)
         if (data[op].op & DELTA_LIST)
             listentry(f);
     }
-    if (gen->pfd)
-    {
-        if (bp = getbuffer(gen->fd))
-        {
+    if (gen->pfd) {
+        if (bp = getbuffer(gen->fd)) {
             *gen->pfd = gen->fd;
             bp->next = bp->base;
-        }
-        else
-        {
+        } else {
             close(gen->fd);
             if ((*gen->pfd = open(state.tmp.file, O_RDONLY | O_BINARY)) < 0)
                 error(ERROR_SYSTEM | 3,

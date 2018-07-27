@@ -42,8 +42,7 @@ static int Dfd, Tfd;
 static int
 delgetc(void)
 {
-    if (Dnext >= Dend)
-    {
+    if (Dnext >= Dend) {
         int n;
         if ((n = read(Dfd, ( char * )Ddata, BUFSIZE)) <= 0)
             return -1;
@@ -59,8 +58,7 @@ delgetl(int n)
     long lv;
 
     lv = 0;
-    for (; n > 0; --n)
-    {
+    for (; n > 0; --n) {
         int v;
         if ((v = delgetc()) < 0)
             return -1;
@@ -73,8 +71,7 @@ delgetl(int n)
 static int
 filetransfer(int fd, long n)
 {
-    while (n > 0)
-    {
+    while (n > 0) {
         int r;
 
         if (Tnext >= Tend)
@@ -93,8 +90,7 @@ filetransfer(int fd, long n)
 static int
 memtransfer(unsigned char *addr, long n)
 {
-    while (n > 0)
-    {
+    while (n > 0) {
         int r;
 
         if (Tnext >= Tend)
@@ -116,8 +112,7 @@ deltransfer(long n)
     int d;
 
     /* transfer what's already in core */
-    if ((d = Dend - Dnext) > 0)
-    {
+    if ((d = Dend - Dnext) > 0) {
         int w = n <= d ? n : d;
 
         if (w > (Tend - Tnext))
@@ -165,14 +160,12 @@ update(int srcfd, long offset, int delfd, int tarfd)
             return -1;
     }
 
-    while ((i = delgetc()) >= 0)
-    {
+    while ((i = delgetc()) >= 0) {
         long size, addr;
 
         if ((size = delgetl((i >> 3) & 07)) < 0)
             return -1;
-        switch (i & DELTA_TYPE)
-        {
+        switch (i & DELTA_TYPE) {
         default:
             return -1;
         case DELTA_TYPE:
@@ -191,13 +184,10 @@ update(int srcfd, long offset, int delfd, int tarfd)
         case DELTA_MOVE:
             if ((addr = delgetl(i & 07)) < 0)
                 return -1;
-            if (src)
-            {
+            if (src) {
                 if (memtransfer(src + addr, size) < 0)
                     return -1;
-            }
-            else
-            {
+            } else {
                 if (lseek(srcfd, offset + addr, 0) < 0)
                     return -1;
                 if (filetransfer(srcfd, size) < 0)

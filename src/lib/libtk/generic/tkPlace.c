@@ -178,15 +178,13 @@ char **argv;           /* Argument strings. */
      * Initialize, if that hasn't been done yet.
      */
 
-    if (!initialized)
-    {
+    if (!initialized) {
         Tcl_InitHashTable(&masterTable, TCL_ONE_WORD_KEYS);
         Tcl_InitHashTable(&slaveTable, TCL_ONE_WORD_KEYS);
         initialized = 1;
     }
 
-    if (argc < 3)
-    {
+    if (argc < 3) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -201,11 +199,9 @@ char **argv;           /* Argument strings. */
      * Handle special shortcut where window name is first argument.
      */
 
-    if (c == '.')
-    {
+    if (c == '.') {
         tkwin = Tk_NameToWindow(interp, argv[1], ( Tk_Window )clientData);
-        if (tkwin == NULL)
-        {
+        if (tkwin == NULL) {
             return TCL_ERROR;
         }
         slavePtr = FindSlave(tkwin);
@@ -218,14 +214,11 @@ char **argv;           /* Argument strings. */
      */
 
     tkwin = Tk_NameToWindow(interp, argv[2], ( Tk_Window )clientData);
-    if (tkwin == NULL)
-    {
+    if (tkwin == NULL) {
         return TCL_ERROR;
     }
-    if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0))
-    {
-        if (argc < 5)
-        {
+    if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)) {
+        if (argc < 5) {
             Tcl_AppendResult(
             interp,
             "wrong # args: should be \"",
@@ -236,11 +229,8 @@ char **argv;           /* Argument strings. */
         }
         slavePtr = FindSlave(tkwin);
         return ConfigureSlave(interp, slavePtr, argc - 3, argv + 3);
-    }
-    else if ((c == 'f') && (strncmp(argv[1], "forget", length) == 0))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 'f') && (strncmp(argv[1], "forget", length) == 0)) {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -249,14 +239,12 @@ char **argv;           /* Argument strings. */
             return TCL_ERROR;
         }
         hPtr = Tcl_FindHashEntry(&slaveTable, ( char * )tkwin);
-        if (hPtr == NULL)
-        {
+        if (hPtr == NULL) {
             return TCL_OK;
         }
         slavePtr = ( Slave * )Tcl_GetHashValue(hPtr);
         if ((slavePtr->masterPtr != NULL)
-            && (slavePtr->masterPtr->tkwin != Tk_Parent(slavePtr->tkwin)))
-        {
+            && (slavePtr->masterPtr->tkwin != Tk_Parent(slavePtr->tkwin))) {
             Tk_UnmaintainGeometry(slavePtr->tkwin,
                                   slavePtr->masterPtr->tkwin);
         }
@@ -269,13 +257,10 @@ char **argv;           /* Argument strings. */
         Tk_ManageGeometry(tkwin, ( Tk_GeomMgr * )NULL, ( ClientData )NULL);
         Tk_UnmapWindow(tkwin);
         ckfree(( char * )slavePtr);
-    }
-    else if ((c == 'i') && (strncmp(argv[1], "info", length) == 0))
-    {
+    } else if ((c == 'i') && (strncmp(argv[1], "info", length) == 0)) {
         char buffer[50];
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -284,8 +269,7 @@ char **argv;           /* Argument strings. */
             return TCL_ERROR;
         }
         hPtr = Tcl_FindHashEntry(&slaveTable, ( char * )tkwin);
-        if (hPtr == NULL)
-        {
+        if (hPtr == NULL) {
             return TCL_OK;
         }
         slavePtr = ( Slave * )Tcl_GetHashValue(hPtr);
@@ -297,40 +281,28 @@ char **argv;           /* Argument strings. */
         Tcl_AppendResult(interp, buffer, ( char * )NULL);
         sprintf(buffer, " -rely %.4g", slavePtr->relY);
         Tcl_AppendResult(interp, buffer, ( char * )NULL);
-        if (slavePtr->flags & CHILD_WIDTH)
-        {
+        if (slavePtr->flags & CHILD_WIDTH) {
             sprintf(buffer, " -width %d", slavePtr->width);
             Tcl_AppendResult(interp, buffer, ( char * )NULL);
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp, " -width {}", ( char * )NULL);
         }
-        if (slavePtr->flags & CHILD_REL_WIDTH)
-        {
+        if (slavePtr->flags & CHILD_REL_WIDTH) {
             sprintf(buffer, " -relwidth %.4g", slavePtr->relWidth);
             Tcl_AppendResult(interp, buffer, ( char * )NULL);
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp, " -relwidth {}", ( char * )NULL);
         }
-        if (slavePtr->flags & CHILD_HEIGHT)
-        {
+        if (slavePtr->flags & CHILD_HEIGHT) {
             sprintf(buffer, " -height %d", slavePtr->height);
             Tcl_AppendResult(interp, buffer, ( char * )NULL);
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp, " -height {}", ( char * )NULL);
         }
-        if (slavePtr->flags & CHILD_REL_HEIGHT)
-        {
+        if (slavePtr->flags & CHILD_REL_HEIGHT) {
             sprintf(buffer, " -relheight %.4g", slavePtr->relHeight);
             Tcl_AppendResult(interp, buffer, ( char * )NULL);
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp, " -relheight {}", ( char * )NULL);
         }
 
@@ -338,27 +310,20 @@ char **argv;           /* Argument strings. */
                          " -anchor ",
                          Tk_NameOfAnchor(slavePtr->anchor),
                          ( char * )NULL);
-        if (slavePtr->borderMode == BM_OUTSIDE)
-        {
+        if (slavePtr->borderMode == BM_OUTSIDE) {
             Tcl_AppendResult(interp, " -bordermode outside", ( char * )NULL);
-        }
-        else if (slavePtr->borderMode == BM_IGNORE)
-        {
+        } else if (slavePtr->borderMode == BM_IGNORE) {
             Tcl_AppendResult(interp, " -bordermode ignore", ( char * )NULL);
         }
         if ((slavePtr->masterPtr != NULL)
-            && (slavePtr->masterPtr->tkwin != Tk_Parent(slavePtr->tkwin)))
-        {
+            && (slavePtr->masterPtr->tkwin != Tk_Parent(slavePtr->tkwin))) {
             Tcl_AppendResult(interp,
                              " -in ",
                              Tk_PathName(slavePtr->masterPtr->tkwin),
                              ( char * )NULL);
         }
-    }
-    else if ((c == 's') && (strncmp(argv[1], "slaves", length) == 0))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 's') && (strncmp(argv[1], "slaves", length) == 0)) {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -367,19 +332,15 @@ char **argv;           /* Argument strings. */
             return TCL_ERROR;
         }
         hPtr = Tcl_FindHashEntry(&masterTable, ( char * )tkwin);
-        if (hPtr != NULL)
-        {
+        if (hPtr != NULL) {
             Master *masterPtr;
             masterPtr = ( Master * )Tcl_GetHashValue(hPtr);
             for (slavePtr = masterPtr->slavePtr; slavePtr != NULL;
-                 slavePtr = slavePtr->nextPtr)
-            {
+                 slavePtr = slavePtr->nextPtr) {
                 Tcl_AppendElement(interp, Tk_PathName(slavePtr->tkwin));
             }
         }
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "unknown or ambiguous option \"",
                          argv[1],
@@ -414,8 +375,7 @@ static Slave *FindSlave(tkwin) Tk_Window tkwin; /* Token for desired slave. */
     int new;
 
     hPtr = Tcl_CreateHashEntry(&slaveTable, ( char * )tkwin, &new);
-    if (new)
-    {
+    if (new) {
         slavePtr = ( Slave * )ckalloc(sizeof(Slave));
         slavePtr->tkwin = tkwin;
         slavePtr->masterPtr = NULL;
@@ -433,9 +393,7 @@ static Slave *FindSlave(tkwin) Tk_Window tkwin; /* Token for desired slave. */
                               SlaveStructureProc,
                               ( ClientData )slavePtr);
         Tk_ManageGeometry(tkwin, &placerType, ( ClientData )slavePtr);
-    }
-    else
-    {
+    } else {
         slavePtr = ( Slave * )Tcl_GetHashValue(hPtr);
     }
     return slavePtr;
@@ -465,24 +423,17 @@ static void UnlinkSlave(slavePtr) Slave *slavePtr; /* Slave structure to be
     Slave *prevPtr;
 
     masterPtr = slavePtr->masterPtr;
-    if (masterPtr == NULL)
-    {
+    if (masterPtr == NULL) {
         return;
     }
-    if (masterPtr->slavePtr == slavePtr)
-    {
+    if (masterPtr->slavePtr == slavePtr) {
         masterPtr->slavePtr = slavePtr->nextPtr;
-    }
-    else
-    {
-        for (prevPtr = masterPtr->slavePtr;; prevPtr = prevPtr->nextPtr)
-        {
-            if (prevPtr == NULL)
-            {
+    } else {
+        for (prevPtr = masterPtr->slavePtr;; prevPtr = prevPtr->nextPtr) {
+            if (prevPtr == NULL) {
                 panic("UnlinkSlave couldn't find slave to unlink");
             }
-            if (prevPtr->nextPtr == slavePtr)
-            {
+            if (prevPtr->nextPtr == slavePtr) {
                 prevPtr->nextPtr = slavePtr->nextPtr;
                 break;
             }
@@ -516,8 +467,7 @@ static Master *FindMaster(tkwin) Tk_Window tkwin; /* Token for desired master.
     int new;
 
     hPtr = Tcl_CreateHashEntry(&masterTable, ( char * )tkwin, &new);
-    if (new)
-    {
+    if (new) {
         masterPtr = ( Master * )ckalloc(sizeof(Master));
         masterPtr->tkwin = tkwin;
         masterPtr->slavePtr = NULL;
@@ -527,9 +477,7 @@ static Master *FindMaster(tkwin) Tk_Window tkwin; /* Token for desired master.
                               StructureNotifyMask,
                               MasterStructureProc,
                               ( ClientData )masterPtr);
-    }
-    else
-    {
+    } else {
         masterPtr = ( Master * )Tcl_GetHashValue(hPtr);
     }
     return masterPtr;
@@ -567,8 +515,7 @@ char **argv;        /* String values for arguments. */
     double d;
 
     result = TCL_OK;
-    if (Tk_IsTopLevel(slavePtr->tkwin))
-    {
+    if (Tk_IsTopLevel(slavePtr->tkwin)) {
         Tcl_AppendResult(interp,
                          "can't use placer on top-level window \"",
                          Tk_PathName(slavePtr->tkwin),
@@ -576,10 +523,8 @@ char **argv;        /* String values for arguments. */
                          ( char * )NULL);
         return TCL_ERROR;
     }
-    for (; argc > 0; argc -= 2, argv += 2)
-    {
-        if (argc < 2)
-        {
+    for (; argc > 0; argc -= 2, argv += 2) {
+        if (argc < 2) {
             Tcl_AppendResult(interp,
                              "extra option \"",
                              argv[0],
@@ -590,34 +535,25 @@ char **argv;        /* String values for arguments. */
         }
         length = strlen(argv[0]);
         c = argv[0][1];
-        if ((c == 'a') && (strncmp(argv[0], "-anchor", length) == 0))
-        {
-            if (Tk_GetAnchor(interp, argv[1], &slavePtr->anchor) != TCL_OK)
-            {
+        if ((c == 'a') && (strncmp(argv[0], "-anchor", length) == 0)) {
+            if (Tk_GetAnchor(interp, argv[1], &slavePtr->anchor) != TCL_OK) {
                 result = TCL_ERROR;
                 goto done;
             }
-        }
-        else if ((c == 'b') && (strncmp(argv[0], "-bordermode", length) == 0))
-        {
+        } else if ((c == 'b')
+                   && (strncmp(argv[0], "-bordermode", length) == 0)) {
             c = argv[1][0];
             length = strlen(argv[1]);
             if ((c == 'i') && (strncmp(argv[1], "ignore", length) == 0)
-                && (length >= 2))
-            {
+                && (length >= 2)) {
                 slavePtr->borderMode = BM_IGNORE;
-            }
-            else if ((c == 'i') && (strncmp(argv[1], "inside", length) == 0)
-                     && (length >= 2))
-            {
+            } else if ((c == 'i') && (strncmp(argv[1], "inside", length) == 0)
+                       && (length >= 2)) {
                 slavePtr->borderMode = BM_INSIDE;
-            }
-            else if ((c == 'o') && (strncmp(argv[1], "outside", length) == 0))
-            {
+            } else if ((c == 'o')
+                       && (strncmp(argv[1], "outside", length) == 0)) {
                 slavePtr->borderMode = BM_OUTSIDE;
-            }
-            else
-            {
+            } else {
                 Tcl_AppendResult(interp,
                                  "bad border mode \"",
                                  argv[1],
@@ -626,33 +562,24 @@ char **argv;        /* String values for arguments. */
                 result = TCL_ERROR;
                 goto done;
             }
-        }
-        else if ((c == 'h') && (strncmp(argv[0], "-height", length) == 0))
-        {
-            if (argv[1][0] == 0)
-            {
+        } else if ((c == 'h') && (strncmp(argv[0], "-height", length) == 0)) {
+            if (argv[1][0] == 0) {
                 slavePtr->flags &= ~CHILD_HEIGHT;
-            }
-            else
-            {
+            } else {
                 if (Tk_GetPixels(
                     interp, slavePtr->tkwin, argv[1], &slavePtr->height)
-                    != TCL_OK)
-                {
+                    != TCL_OK) {
                     result = TCL_ERROR;
                     goto done;
                 }
                 slavePtr->flags |= CHILD_HEIGHT;
             }
-        }
-        else if ((c == 'i') && (strncmp(argv[0], "-in", length) == 0))
-        {
+        } else if ((c == 'i') && (strncmp(argv[0], "-in", length) == 0)) {
             Tk_Window tkwin;
             Tk_Window ancestor;
 
             tkwin = Tk_NameToWindow(interp, argv[1], slavePtr->tkwin);
-            if (tkwin == NULL)
-            {
+            if (tkwin == NULL) {
                 result = TCL_ERROR;
                 goto done;
             }
@@ -663,14 +590,11 @@ char **argv;        /* String values for arguments. */
              * master and slave aren't the same.
              */
 
-            for (ancestor = tkwin;; ancestor = Tk_Parent(ancestor))
-            {
-                if (ancestor == Tk_Parent(slavePtr->tkwin))
-                {
+            for (ancestor = tkwin;; ancestor = Tk_Parent(ancestor)) {
+                if (ancestor == Tk_Parent(slavePtr->tkwin)) {
                     break;
                 }
-                if (Tk_IsTopLevel(ancestor))
-                {
+                if (Tk_IsTopLevel(ancestor)) {
                     Tcl_AppendResult(interp,
                                      "can't place ",
                                      Tk_PathName(slavePtr->tkwin),
@@ -681,8 +605,7 @@ char **argv;        /* String values for arguments. */
                     goto done;
                 }
             }
-            if (slavePtr->tkwin == tkwin)
-            {
+            if (slavePtr->tkwin == tkwin) {
                 Tcl_AppendResult(interp,
                                  "can't place ",
                                  Tk_PathName(slavePtr->tkwin),
@@ -692,18 +615,14 @@ char **argv;        /* String values for arguments. */
                 goto done;
             }
             if ((slavePtr->masterPtr != NULL)
-                && (slavePtr->masterPtr->tkwin == tkwin))
-            {
+                && (slavePtr->masterPtr->tkwin == tkwin)) {
                 /*
                  * Re-using same old master.  Nothing to do.
                  */
-            }
-            else
-            {
+            } else {
                 if ((slavePtr->masterPtr != NULL)
                     && (slavePtr->masterPtr->tkwin
-                        != Tk_Parent(slavePtr->tkwin)))
-                {
+                        != Tk_Parent(slavePtr->tkwin))) {
                     Tk_UnmaintainGeometry(slavePtr->tkwin,
                                           slavePtr->masterPtr->tkwin);
                 }
@@ -712,101 +631,69 @@ char **argv;        /* String values for arguments. */
                 slavePtr->nextPtr = slavePtr->masterPtr->slavePtr;
                 slavePtr->masterPtr->slavePtr = slavePtr;
             }
-        }
-        else if ((c == 'r') && (strncmp(argv[0], "-relheight", length) == 0)
-                 && (length >= 5))
-        {
-            if (argv[1][0] == 0)
-            {
+        } else if ((c == 'r') && (strncmp(argv[0], "-relheight", length) == 0)
+                   && (length >= 5)) {
+            if (argv[1][0] == 0) {
                 slavePtr->flags &= ~CHILD_REL_HEIGHT;
-            }
-            else
-            {
-                if (Tcl_GetDouble(interp, argv[1], &d) != TCL_OK)
-                {
+            } else {
+                if (Tcl_GetDouble(interp, argv[1], &d) != TCL_OK) {
                     result = TCL_ERROR;
                     goto done;
                 }
                 slavePtr->relHeight = d;
                 slavePtr->flags |= CHILD_REL_HEIGHT;
             }
-        }
-        else if ((c == 'r') && (strncmp(argv[0], "-relwidth", length) == 0)
-                 && (length >= 5))
-        {
-            if (argv[1][0] == 0)
-            {
+        } else if ((c == 'r') && (strncmp(argv[0], "-relwidth", length) == 0)
+                   && (length >= 5)) {
+            if (argv[1][0] == 0) {
                 slavePtr->flags &= ~CHILD_REL_WIDTH;
-            }
-            else
-            {
-                if (Tcl_GetDouble(interp, argv[1], &d) != TCL_OK)
-                {
+            } else {
+                if (Tcl_GetDouble(interp, argv[1], &d) != TCL_OK) {
                     result = TCL_ERROR;
                     goto done;
                 }
                 slavePtr->relWidth = d;
                 slavePtr->flags |= CHILD_REL_WIDTH;
             }
-        }
-        else if ((c == 'r') && (strncmp(argv[0], "-relx", length) == 0)
-                 && (length >= 5))
-        {
-            if (Tcl_GetDouble(interp, argv[1], &d) != TCL_OK)
-            {
+        } else if ((c == 'r') && (strncmp(argv[0], "-relx", length) == 0)
+                   && (length >= 5)) {
+            if (Tcl_GetDouble(interp, argv[1], &d) != TCL_OK) {
                 result = TCL_ERROR;
                 goto done;
             }
             slavePtr->relX = d;
-        }
-        else if ((c == 'r') && (strncmp(argv[0], "-rely", length) == 0)
-                 && (length >= 5))
-        {
-            if (Tcl_GetDouble(interp, argv[1], &d) != TCL_OK)
-            {
+        } else if ((c == 'r') && (strncmp(argv[0], "-rely", length) == 0)
+                   && (length >= 5)) {
+            if (Tcl_GetDouble(interp, argv[1], &d) != TCL_OK) {
                 result = TCL_ERROR;
                 goto done;
             }
             slavePtr->relY = d;
-        }
-        else if ((c == 'w') && (strncmp(argv[0], "-width", length) == 0))
-        {
-            if (argv[1][0] == 0)
-            {
+        } else if ((c == 'w') && (strncmp(argv[0], "-width", length) == 0)) {
+            if (argv[1][0] == 0) {
                 slavePtr->flags &= ~CHILD_WIDTH;
-            }
-            else
-            {
+            } else {
                 if (Tk_GetPixels(
                     interp, slavePtr->tkwin, argv[1], &slavePtr->width)
-                    != TCL_OK)
-                {
+                    != TCL_OK) {
                     result = TCL_ERROR;
                     goto done;
                 }
                 slavePtr->flags |= CHILD_WIDTH;
             }
-        }
-        else if ((c == 'x') && (strncmp(argv[0], "-x", length) == 0))
-        {
+        } else if ((c == 'x') && (strncmp(argv[0], "-x", length) == 0)) {
             if (Tk_GetPixels(interp, slavePtr->tkwin, argv[1], &slavePtr->x)
-                != TCL_OK)
-            {
+                != TCL_OK) {
                 result = TCL_ERROR;
                 goto done;
             }
-        }
-        else if ((c == 'y') && (strncmp(argv[0], "-y", length) == 0))
-        {
+        } else if ((c == 'y') && (strncmp(argv[0], "-y", length) == 0)) {
             if (Tk_GetPixels(interp, slavePtr->tkwin, argv[1], &slavePtr->y)
-                != TCL_OK)
-            {
+                != TCL_OK) {
                 result = TCL_ERROR;
                 goto done;
             }
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(
             interp,
             "unknown or ambiguous option \"",
@@ -827,15 +714,13 @@ char **argv;        /* String values for arguments. */
 
 done:
     masterPtr = slavePtr->masterPtr;
-    if (masterPtr == NULL)
-    {
+    if (masterPtr == NULL) {
         masterPtr = FindMaster(Tk_Parent(slavePtr->tkwin));
         slavePtr->masterPtr = masterPtr;
         slavePtr->nextPtr = masterPtr->slavePtr;
         masterPtr->slavePtr = slavePtr;
     }
-    if (!(masterPtr->flags & PARENT_RECONFIG_PENDING))
-    {
+    if (!(masterPtr->flags & PARENT_RECONFIG_PENDING)) {
         masterPtr->flags |= PARENT_RECONFIG_PENDING;
         Tcl_DoWhenIdle(RecomputePlacement, ( ClientData )masterPtr);
     }
@@ -876,8 +761,7 @@ ClientData clientData; /* Pointer to Master record. */
      */
 
     for (slavePtr = masterPtr->slavePtr; slavePtr != NULL;
-         slavePtr = slavePtr->nextPtr)
-    {
+         slavePtr = slavePtr->nextPtr) {
         /*
          * Step 1: compute size and borderwidth of master, taking into
          * account desired border mode.
@@ -886,12 +770,9 @@ ClientData clientData; /* Pointer to Master record. */
         masterBW = 0;
         masterWidth = Tk_Width(masterPtr->tkwin);
         masterHeight = Tk_Height(masterPtr->tkwin);
-        if (slavePtr->borderMode == BM_INSIDE)
-        {
+        if (slavePtr->borderMode == BM_INSIDE) {
             masterBW = Tk_InternalBorderWidth(masterPtr->tkwin);
-        }
-        else if (slavePtr->borderMode == BM_OUTSIDE)
-        {
+        } else if (slavePtr->borderMode == BM_OUTSIDE) {
             masterBW = -Tk_Changes(masterPtr->tkwin)->border_width;
         }
         masterWidth -= 2 * masterBW;
@@ -906,15 +787,12 @@ ClientData clientData; /* Pointer to Master record. */
         x = x1 + ((x1 > 0) ? 0.5 : -0.5);
         y1 = slavePtr->y + masterBW + (slavePtr->relY * masterHeight);
         y = y1 + ((y1 > 0) ? 0.5 : -0.5);
-        if (slavePtr->flags & (CHILD_WIDTH | CHILD_REL_WIDTH))
-        {
+        if (slavePtr->flags & (CHILD_WIDTH | CHILD_REL_WIDTH)) {
             width = 0;
-            if (slavePtr->flags & CHILD_WIDTH)
-            {
+            if (slavePtr->flags & CHILD_WIDTH) {
                 width += slavePtr->width;
             }
-            if (slavePtr->flags & CHILD_REL_WIDTH)
-            {
+            if (slavePtr->flags & CHILD_REL_WIDTH) {
                 /*
                  * The code below is a bit tricky.  In order to round
                  * correctly when both relX and relWidth are specified,
@@ -927,21 +805,16 @@ ClientData clientData; /* Pointer to Master record. */
                 tmp = x2 + ((x2 > 0) ? 0.5 : -0.5);
                 width += tmp - x;
             }
-        }
-        else
-        {
+        } else {
             width = Tk_ReqWidth(slavePtr->tkwin)
                     + 2 * Tk_Changes(slavePtr->tkwin)->border_width;
         }
-        if (slavePtr->flags & (CHILD_HEIGHT | CHILD_REL_HEIGHT))
-        {
+        if (slavePtr->flags & (CHILD_HEIGHT | CHILD_REL_HEIGHT)) {
             height = 0;
-            if (slavePtr->flags & CHILD_HEIGHT)
-            {
+            if (slavePtr->flags & CHILD_HEIGHT) {
                 height += slavePtr->height;
             }
-            if (slavePtr->flags & CHILD_REL_HEIGHT)
-            {
+            if (slavePtr->flags & CHILD_REL_HEIGHT) {
                 /*
                  * See note above for rounding errors in width computation.
                  */
@@ -950,9 +823,7 @@ ClientData clientData; /* Pointer to Master record. */
                 tmp = y2 + ((y2 > 0) ? 0.5 : -0.5);
                 height += tmp - y;
             }
-        }
-        else
-        {
+        } else {
             height = Tk_ReqHeight(slavePtr->tkwin)
                      + 2 * Tk_Changes(slavePtr->tkwin)->border_width;
         }
@@ -963,8 +834,7 @@ ClientData clientData; /* Pointer to Master record. */
          * adjust for the border mode and master's border.
          */
 
-        switch (slavePtr->anchor)
-        {
+        switch (slavePtr->anchor) {
         case TK_ANCHOR_N:
             x -= width / 2;
             break;
@@ -1005,12 +875,10 @@ ClientData clientData; /* Pointer to Master record. */
 
         width -= 2 * Tk_Changes(slavePtr->tkwin)->border_width;
         height -= 2 * Tk_Changes(slavePtr->tkwin)->border_width;
-        if (width <= 0)
-        {
+        if (width <= 0) {
             width = 1;
         }
-        if (height <= 0)
-        {
+        if (height <= 0) {
             height = 1;
         }
 
@@ -1022,12 +890,10 @@ ClientData clientData; /* Pointer to Master record. */
          * unmap, and move).
          */
 
-        if (masterPtr->tkwin == Tk_Parent(slavePtr->tkwin))
-        {
+        if (masterPtr->tkwin == Tk_Parent(slavePtr->tkwin)) {
             if ((x != Tk_X(slavePtr->tkwin)) || (y != Tk_Y(slavePtr->tkwin))
                 || (width != Tk_Width(slavePtr->tkwin))
-                || (height != Tk_Height(slavePtr->tkwin)))
-            {
+                || (height != Tk_Height(slavePtr->tkwin))) {
                 Tk_MoveResizeWindow(slavePtr->tkwin, x, y, width, height);
             }
 
@@ -1036,20 +902,14 @@ ClientData clientData; /* Pointer to Master record. */
              * will get mapped later, when the master is mapped.
              */
 
-            if (Tk_IsMapped(masterPtr->tkwin))
-            {
+            if (Tk_IsMapped(masterPtr->tkwin)) {
                 Tk_MapWindow(slavePtr->tkwin);
             }
-        }
-        else
-        {
-            if ((width <= 0) || (height <= 0))
-            {
+        } else {
+            if ((width <= 0) || (height <= 0)) {
                 Tk_UnmaintainGeometry(slavePtr->tkwin, masterPtr->tkwin);
                 Tk_UnmapWindow(slavePtr->tkwin);
-            }
-            else
-            {
+            } else {
                 Tk_MaintainGeometry(
                 slavePtr->tkwin, masterPtr->tkwin, x, y, width, height);
             }
@@ -1083,57 +943,45 @@ XEvent *eventPtr;      /* Describes what just happened. */
     Master *masterPtr = ( Master * )clientData;
     Slave *slavePtr, *nextPtr;
 
-    if (eventPtr->type == ConfigureNotify)
-    {
+    if (eventPtr->type == ConfigureNotify) {
         if ((masterPtr->slavePtr != NULL)
-            && !(masterPtr->flags & PARENT_RECONFIG_PENDING))
-        {
+            && !(masterPtr->flags & PARENT_RECONFIG_PENDING)) {
             masterPtr->flags |= PARENT_RECONFIG_PENDING;
             Tcl_DoWhenIdle(RecomputePlacement, ( ClientData )masterPtr);
         }
-    }
-    else if (eventPtr->type == DestroyNotify)
-    {
+    } else if (eventPtr->type == DestroyNotify) {
         for (slavePtr = masterPtr->slavePtr; slavePtr != NULL;
-             slavePtr = nextPtr)
-        {
+             slavePtr = nextPtr) {
             slavePtr->masterPtr = NULL;
             nextPtr = slavePtr->nextPtr;
             slavePtr->nextPtr = NULL;
         }
         Tcl_DeleteHashEntry(
         Tcl_FindHashEntry(&masterTable, ( char * )masterPtr->tkwin));
-        if (masterPtr->flags & PARENT_RECONFIG_PENDING)
-        {
+        if (masterPtr->flags & PARENT_RECONFIG_PENDING) {
             Tcl_CancelIdleCall(RecomputePlacement, ( ClientData )masterPtr);
         }
         masterPtr->tkwin = NULL;
         ckfree(( char * )masterPtr);
-    }
-    else if (eventPtr->type == MapNotify)
-    {
+    } else if (eventPtr->type == MapNotify) {
         /*
          * When a master gets mapped, must redo the geometry computation
          * so that all of its slaves get remapped.
          */
 
         if ((masterPtr->slavePtr != NULL)
-            && !(masterPtr->flags & PARENT_RECONFIG_PENDING))
-        {
+            && !(masterPtr->flags & PARENT_RECONFIG_PENDING)) {
             masterPtr->flags |= PARENT_RECONFIG_PENDING;
             Tcl_DoWhenIdle(RecomputePlacement, ( ClientData )masterPtr);
         }
-    }
-    else if (eventPtr->type == UnmapNotify)
-    {
+    } else if (eventPtr->type == UnmapNotify) {
         /*
          * Unmap all of the slaves when the master gets unmapped,
          * so that they don't keep redisplaying themselves.
          */
 
         for (slavePtr = masterPtr->slavePtr; slavePtr != NULL;
-             slavePtr = slavePtr->nextPtr)
-        {
+             slavePtr = slavePtr->nextPtr) {
             Tk_UnmapWindow(slavePtr->tkwin);
         }
     }
@@ -1163,8 +1011,7 @@ XEvent *eventPtr;      /* Describes what just happened. */
 {
     Slave *slavePtr = ( Slave * )clientData;
 
-    if (eventPtr->type == DestroyNotify)
-    {
+    if (eventPtr->type == DestroyNotify) {
         UnlinkSlave(slavePtr);
         Tcl_DeleteHashEntry(
         Tcl_FindHashEntry(&slaveTable, ( char * )slavePtr->tkwin));
@@ -1200,17 +1047,14 @@ Tk_Window tkwin;       /* Window that changed its desired
     Master *masterPtr;
 
     if (((slavePtr->flags & (CHILD_WIDTH | CHILD_REL_WIDTH)) != 0)
-        && ((slavePtr->flags & (CHILD_HEIGHT | CHILD_REL_HEIGHT)) != 0))
-    {
+        && ((slavePtr->flags & (CHILD_HEIGHT | CHILD_REL_HEIGHT)) != 0)) {
         return;
     }
     masterPtr = slavePtr->masterPtr;
-    if (masterPtr == NULL)
-    {
+    if (masterPtr == NULL) {
         return;
     }
-    if (!(masterPtr->flags & PARENT_RECONFIG_PENDING))
-    {
+    if (!(masterPtr->flags & PARENT_RECONFIG_PENDING)) {
         masterPtr->flags |= PARENT_RECONFIG_PENDING;
         Tcl_DoWhenIdle(RecomputePlacement, ( ClientData )masterPtr);
     }
@@ -1241,8 +1085,7 @@ Tk_Window tkwin;       /* Tk's handle for the slave window. */
 {
     Slave *slavePtr = ( Slave * )clientData;
 
-    if (slavePtr->masterPtr->tkwin != Tk_Parent(slavePtr->tkwin))
-    {
+    if (slavePtr->masterPtr->tkwin != Tk_Parent(slavePtr->tkwin)) {
         Tk_UnmaintainGeometry(slavePtr->tkwin, slavePtr->masterPtr->tkwin);
     }
     Tk_UnmapWindow(tkwin);

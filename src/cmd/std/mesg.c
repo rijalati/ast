@@ -63,8 +63,7 @@ mesg(int mode)
         error(ERROR_exit(1), "cannot find terminal");
     if (stat(tty, &statb) < 0)
         error(ERROR_system(1), "%s: cannot stat", tty);
-    switch (mode)
-    {
+    switch (mode) {
     case 'n':
     case 'y':
         if (mode == 'y')
@@ -87,10 +86,8 @@ main(int argc, char *argv[])
 
     NoP(argc);
     error_info.id = "mesg";
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case ':':
             error(2, "%s", opt_info.arg);
             break;

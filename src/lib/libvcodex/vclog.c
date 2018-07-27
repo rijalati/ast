@@ -188,10 +188,8 @@ main()
     int i, k, lg, cnt;
 
     printf("static unsigned char _Vcpow2[256] = {\n");
-    for (i = 2, k = 0, lg = 0, cnt = 0; i <= 256; i <<= 1, lg += 1)
-    {
-        for (; k < i; ++k)
-        {
+    for (i = 2, k = 0, lg = 0, cnt = 0; i <= 256; i <<= 1, lg += 1) {
+        for (; k < i; ++k) {
             printf(" %d%c", lg, (k < 255 ? ',' : ' '));
             if ((cnt += 1) % 16 == 0)
                 printf("\n");
@@ -200,8 +198,7 @@ main()
     printf("};\n\n");
 
     printf("static double _Vclog2[256] = {\n");
-    for (i = 0, cnt = 0; i < 256; ++i)
-    {
+    for (i = 0, cnt = 0; i < 256; ++i) {
         printf(" %9.7lf%c",
                (i == 0 ? 0 : log(( double )i) / log(2.)),
                (i < 255 ? ',' : ' '));

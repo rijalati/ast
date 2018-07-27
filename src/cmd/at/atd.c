@@ -195,18 +195,14 @@ user(State_t *state, char *name, unsigned long uid)
     static User_t nobody;
 
     if (!(usr = name ? ( User_t * )dtmatch(state->table.user.handle, name)
-                     : ( User_t * )dtmatch(state->table.uid.handle, &uid)))
-    {
-        if (pwd = name ? getpwnam(name) : getpwuid(uid))
-        {
+                     : ( User_t * )dtmatch(state->table.uid.handle, &uid))) {
+        if (pwd = name ? getpwnam(name) : getpwuid(uid)) {
             if (name)
                 uid = pwd->pw_uid;
             else
                 name = pwd->pw_name;
             home = pwd->pw_dir;
-        }
-        else
-        {
+        } else {
             if (!name)
                 sfsprintf(name = buf, sizeof(buf), "%lu", uid);
             home = "/tmp";
@@ -214,14 +210,12 @@ user(State_t *state, char *name, unsigned long uid)
         n = strlen(name);
         if (!(usr = newof(0, User_t, 1, n + strlen(home) + 2)))
             usr = &nobody;
-        else
-        {
+        else {
             usr->uid = uid;
             strcpy(usr->name, name);
             usr->home = strcpy(usr->name + n + 1, home);
             for (n = 0; n < elementsof(state->admin); n++)
-                if (uid == state->admin[n])
-                {
+                if (uid == state->admin[n]) {
                     usr->admin = 1;
                     break;
                 }
@@ -242,18 +236,15 @@ permit(Queue_t *que, User_t *usr)
 {
     Owner_t *own;
 
-    if (!(own = ( Owner_t * )dtmatch(que->owner, &usr)))
-    {
+    if (!(own = ( Owner_t * )dtmatch(que->owner, &usr))) {
         if (que->allow > 0)
             return 0;
-        if (own = newof(0, Owner_t, 1, 0))
-        {
+        if (own = newof(0, Owner_t, 1, 0)) {
             own->allow = 1;
             own->user = usr;
             dtinsert(que->owner, own);
         }
-    }
-    else if (!own->allow)
+    } else if (!own->allow)
         return 0;
     return own;
 }
@@ -285,12 +276,10 @@ queue(State_t *state, char *s)
 
     while (isspace(*s))
         s++;
-    if (*s && *s != '#')
-    {
+    if (*s && *s != '#') {
         if (t = strchr(s, '.'))
             *t++ = 0;
-        if (!(que = ( Queue_t * )dtmatch(state->table.queue.handle, s)))
-        {
+        if (!(que = ( Queue_t * )dtmatch(state->table.queue.handle, s))) {
             if (!(que = newof(0, Queue_t, 1, strlen(s) + 1)))
                 error(ERROR_SYSTEM | 3, "out of space [queue]");
             strcpy(que->name, s);
@@ -310,13 +299,11 @@ queue(State_t *state, char *s)
                   que->name);
         que->allow = -1;
         que->specific = 0;
-        while ((s = t) && *s)
-        {
+        while ((s = t) && *s) {
             n = strtol(s, &t, 10);
             if (t == s)
                 n = 1;
-            switch (*t++)
-            {
+            switch (*t++) {
             case 0:
             case '#':
                 t = 0;
@@ -345,8 +332,7 @@ queue(State_t *state, char *s)
                 que->specific = 1;
                 dtwalk(que->owner, allow, que);
                 s = t;
-                for (;;)
-                {
+                for (;;) {
                     while (isspace(*s))
                         s++;
                     if (*(t = s) == '#')
@@ -358,8 +344,7 @@ queue(State_t *state, char *s)
                     if (!*t)
                         break;
                     usr = user(state, t, 0);
-                    if (!(own = ( Owner_t * )dtmatch(que->owner, &usr)))
-                    {
+                    if (!(own = ( Owner_t * )dtmatch(que->owner, &usr))) {
                         if (!(own = newof(0, Owner_t, 1, 0)))
                             error(ERROR_SYSTEM | 3,
                                   "out of space [queue owner]");
@@ -396,11 +381,9 @@ update(State_t *state)
     if (!(path = sfstruse(state->tmp)))
         error(ERROR_SYSTEM | 3, "out of space");
     pathcanon(path, 0, 0);
-    if (sp = sfopen(NiL, path, "r"))
-    {
+    if (sp = sfopen(NiL, path, "r")) {
         error(0, "scan %s queue list", path);
-        if (fstat(sffileno(sp), &st) || st.st_mtime != state->update)
-        {
+        if (fstat(sffileno(sp), &st) || st.st_mtime != state->update) {
             state->update = st.st_mtime;
             if (que = state->queue)
                 state->queue = 0;
@@ -421,16 +404,14 @@ update(State_t *state)
          que && que->specific;
          que = ( Queue_t * )dtnext(state->table.queue.handle, que))
         ;
-    if (que && !stat(file = AT_CRON_DIR, &st) && S_ISDIR(st.st_mode))
-    {
+    if (que && !stat(file = AT_CRON_DIR, &st) && S_ISDIR(st.st_mode)) {
         sfprintf(state->tmp, "%s/%s/%s", state->pwd, file, AT_ALLOW_FILE);
         if (!(path = sfstruse(state->tmp)))
             error(ERROR_SYSTEM | 3, "out of space");
         pathcanon(path, 0, 0);
         if (sp = sfopen(NiL, path, "r"))
             permit = 1;
-        else
-        {
+        else {
             permit = 0;
             sfprintf(state->tmp, "%s/%s/%s", state->pwd, file, AT_DENY_FILE);
             if (!(path = sfstruse(state->tmp)))
@@ -445,8 +426,7 @@ update(State_t *state)
 
         for (que = ( Queue_t * )dtfirst(state->table.queue.handle); que;
              que = ( Queue_t * )dtnext(state->table.queue.handle, que))
-            if (!que->specific)
-            {
+            if (!que->specific) {
                 que->allow = permit;
                 dtwalk(que->owner, allow, que);
             }
@@ -455,20 +435,16 @@ update(State_t *state)
          * scan and update the access
          */
 
-        if (sp)
-        {
+        if (sp) {
             error(0, "scan %s access list", path);
-            while (s = sfgetr(sp, '\n', 1))
-            {
+            while (s = sfgetr(sp, '\n', 1)) {
                 usr = user(state, s, 0);
                 for (que = ( Queue_t * )dtfirst(state->table.queue.handle);
                      que;
                      que
                      = ( Queue_t * )dtnext(state->table.queue.handle, que))
-                    if (!que->specific)
-                    {
-                        if (!(own = ( Owner_t * )dtmatch(que->owner, &usr)))
-                        {
+                    if (!que->specific) {
+                        if (!(own = ( Owner_t * )dtmatch(que->owner, &usr))) {
                             if (!(own = newof(0, Owner_t, 1, 0)))
                                 error(ERROR_SYSTEM | 3,
                                       "out of space [queue owner]");
@@ -527,25 +503,20 @@ static void
 complete(State_t *state, Job_t *job)
 {
     dtdelete(state->table.job.handle, job);
-    if (job->pid)
-    {
+    if (job->pid) {
         dtdelete(state->table.pid.handle, job);
         job->pid = 0;
     }
-    if (job->owner)
-    {
-        if (job->run)
-        {
+    if (job->owner) {
+        if (job->run) {
             job->owner->running--;
             job->owner->user->running--;
         }
         job->owner->pending--;
         job->owner->user->pending--;
     }
-    if (job->queue)
-    {
-        if (job->run)
-        {
+    if (job->queue) {
+        if (job->run) {
             job->queue->running--;
             state->running--;
         }
@@ -617,13 +588,11 @@ reap(State_t *state, Job_t *job, int status)
           status,
           job->label);
     if (job->repeat && (t = job->start) && (t = tmdate(job->repeat, &e, &t))
-        && !*e)
-    {
+        && !*e) {
         complete(state, job);
         job->start = t;
         submit(state, job);
-    }
-    else
+    } else
         drop(state, job);
     schedule(state);
 }
@@ -643,8 +612,7 @@ schedule(State_t *state)
 
     csstat(state->css->state, NiL, &st);
     for (job = ( Job_t * )dtfirst(state->table.job.handle); job;
-         job = ( Job_t * )dtnext(state->table.job.handle, job))
-    {
+         job = ( Job_t * )dtnext(state->table.job.handle, job)) {
         message(
         (-2,
          "schedule job=%s start=%lu time=%lu queue=%s load=%d.%02d/%d.%02d%s",
@@ -657,10 +625,8 @@ schedule(State_t *state)
          st.load / 100,
          st.load % 100,
          job->run ? " RUNNING" : job->start <= cs.time ? " READY" : ""));
-        if (!job->run)
-        {
-            if (job->start <= cs.time)
-            {
+        if (!job->run) {
+            if (job->start <= cs.time) {
                 que = job->queue;
                 if ((que->nproc <= 0 || que->running < que->nproc)
                     && (que->load <= 0 || st.load < que->load)
@@ -668,10 +634,8 @@ schedule(State_t *state)
                     && (que->peruser <= 0
                         || job->owner->running < que->peruser)
                     && (state->peruser <= 0
-                        || job->owner->running < state->peruser))
-                {
-                    if (job->pid = execute(state, job))
-                    {
+                        || job->owner->running < state->peruser)) {
+                    if (job->pid = execute(state, job)) {
                         job->run = cs.time;
                         job->owner->running++;
                         job->owner->total++;
@@ -690,15 +654,11 @@ schedule(State_t *state)
                               fmtuid(job->owner->user->uid),
                               job->pid,
                               job->label);
-                    }
-                    else if (x > (job->start + que->wait))
+                    } else if (x > (job->start + que->wait))
                         x = job->start + que->wait;
-                }
-                else if (x > (job->start + que->wait))
+                } else if (x > (job->start + que->wait))
                     x = job->start + que->wait;
-            }
-            else
-            {
+            } else {
                 if (x > job->start)
                     x = job->start;
                 break;
@@ -707,8 +667,7 @@ schedule(State_t *state)
     }
     if (x == SMAX)
         state->disc.wakeup = 0;
-    else if (x > cs.time)
-    {
+    else if (x > cs.time) {
         x -= cs.time;
         x = (x >= MSMAX) ? MSMAX : (x * 1000);
         state->disc.wakeup = x;
@@ -725,15 +684,12 @@ exception(Css_t *css, unsigned long op, unsigned long arg, Cssdisc_t *disc)
     pid_t pid;
     Job_t *job;
 
-    switch (op)
-    {
+    switch (op) {
     case CSS_INTERRUPT:
         if (arg != SIGCHLD)
             error(ERROR_SYSTEM | 3, "%s: interrupt exit", fmtsignal(arg));
-        for (;;)
-        {
-            switch (pid = waitpid(-1, &status, WNOHANG))
-            {
+        for (;;) {
+            switch (pid = waitpid(-1, &status, WNOHANG)) {
             case -1:
                 if (errno == EINTR)
                     continue;
@@ -824,8 +780,7 @@ neqv(Sfio_t *sp, const char *name, char *v)
     int c;
 
     sfprintf(sp, " \\\n %s='", name);
-    while (c = *v++)
-    {
+    while (c = *v++) {
         if (c == '\'')
             sfputr(sp, "'\\'", -1);
         sfputc(sp, c);
@@ -862,8 +817,7 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
     usr = user(state, NiL, con->id.uid);
     b = s;
     admin = 0;
-    if (*++s == AT_ADMIN)
-    {
+    if (*++s == AT_ADMIN) {
         s++;
         if (!usr->admin)
             goto denied;
@@ -871,30 +825,25 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
             usr->admin = 1;
         admin = 1;
     }
-    if (*s == AT_QUEUE)
-    {
+    if (*s == AT_QUEUE) {
         t = ++s;
-        if (!(s = strchr(s, ' ')))
-        {
+        if (!(s = strchr(s, ' '))) {
             error(ERROR_OUTPUT | 2, con->fd, "%s: invalid queue name", t);
             return -1;
         }
         *s = 0;
-        if (!(que = ( Queue_t * )dtmatch(state->table.queue.handle, t)))
-        {
+        if (!(que = ( Queue_t * )dtmatch(state->table.queue.handle, t))) {
             error(ERROR_OUTPUT | 2, con->fd, "%s: unknown queue", t);
             return -1;
         }
         *s++ = ' ';
         if (!permit(que, usr))
             goto noqueue;
-    }
-    else
+    } else
         que = 0;
     if (mail = *s == AT_MAIL)
         s++;
-    switch (c = *s++)
-    {
+    switch (c = *s++) {
     case AT_ACCESS:
         if (!que && !permit(que = state->queue, usr))
             goto noqueue;
@@ -928,22 +877,19 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
             que = state->queue;
         if (!(own = permit(que, usr)))
             goto noqueue;
-        if (own->user->pending >= HOG)
-        {
+        if (own->user->pending >= HOG) {
             error(ERROR_OUTPUT | 2, con->fd, "%s: hog", own->user->name);
             return -1;
         }
         skip = strtol(s, &t, 10);
-        if (*t++ != ' ' || !state->init && skip > n)
-        {
+        if (*t++ != ' ' || !state->init && skip > n) {
             error(ERROR_OUTPUT | 2, con->fd, "garbled job message");
             return -1;
         }
         for (s = t; *s && *s != '\n'; s++)
             ;
         h = s + 1;
-        if (!(job = newof(0, Job_t, 1, s - t)))
-        {
+        if (!(job = newof(0, Job_t, 1, s - t))) {
             error(
             ERROR_SYSTEM | ERROR_OUTPUT | 2, con->fd, "out of space [job]");
             return -1;
@@ -963,8 +909,7 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
         job->start = cs.time;
         job->shell = s;
         while (*s)
-            if (*s++ == ' ')
-            {
+            if (*s++ == ' ') {
                 *(s - 1) = 0;
                 break;
             }
@@ -972,10 +917,8 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
         job->queue = que;
         job->owner = own;
         job->mail = mail;
-        while (c = *s++)
-        {
-            switch (c)
-            {
+        while (c = *s++) {
+            switch (c) {
             case AT_LABEL:
                 t = job->label;
                 for (t = job->label; *s && !isspace(*s); s++)
@@ -989,11 +932,9 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
                 s = t;
                 if (*s == ' ')
                     s++;
-                if (*s)
-                {
+                if (*s) {
                     job->repeat = s;
-                    if (*s == '+')
-                    {
+                    if (*s == '+') {
                         while (*++s && !isspace(*s))
                             ;
                         while (isspace(*s))
@@ -1009,33 +950,26 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
         }
         if (state->init && job->repeat)
             job->start = tmdate(job->repeat, NiL, NiL);
-        if (!state->init && !*(t = job->label))
-        {
+        if (!state->init && !*(t = job->label)) {
             m = 0;
             t = b + skip;
-            if (*t == ':')
-            {
+            if (*t == ':') {
                 while (isspace(*++t))
                     ;
-                if (u = strchr(t, ';'))
-                {
+                if (u = strchr(t, ';')) {
                     while (u > t && isspace(*(u - 1)))
                         u--;
                     m = u - t;
                 }
             }
-            if (m)
-            {
+            if (m) {
                 if (m >= sizeof(job->label))
                     m = sizeof(job->label) - 1;
                 memcpy(job->label, t, m);
                 job->label[m] = 0;
-            }
-            else
-            {
+            } else {
                 for (t = b + skip; *t; t++)
-                    if (isalnum(*t))
-                    {
+                    if (isalnum(*t)) {
                         u = t;
                         while (isalnum(*++t))
                             ;
@@ -1048,14 +982,10 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
                     }
                 m = 0;
                 x = -1;
-                while (c = *t++)
-                {
-                    if (isalnum(c))
-                    {
-                        if (x)
-                        {
-                            if (x > 0)
-                            {
+                while (c = *t++) {
+                    if (isalnum(c)) {
+                        if (x) {
+                            if (x > 0) {
                                 w = sfstrtell(state->tmp);
                                 if (++m >= sizeof(job->label))
                                     break;
@@ -1066,8 +996,7 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
                         if (++m >= sizeof(job->label))
                             break;
                         sfputc(state->tmp, c);
-                    }
-                    else if (!x)
+                    } else if (!x)
                         x = 1;
                 }
                 if (m >= sizeof(job->label))
@@ -1078,8 +1007,7 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
             }
         }
         submit(state, job);
-        if (!state->init)
-        {
+        if (!state->init) {
             if (!(sp = sfopen(NiL, job->name, "w")))
                 goto noexec;
             chmod(job->name, AT_JOB_MODE);
@@ -1105,13 +1033,11 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
             sfprintf(sp, "export");
             x = 0;
             for (c = 0; c < elementsof(export); c++)
-                if ((s = getenv(export[c])) && *s)
-                {
+                if ((s = getenv(export[c])) && *s) {
                     neqv(sp, export[c], s);
                     x = 1;
                 }
-            if (que->home)
-            {
+            if (que->home) {
                 b += skip;
                 n -= skip;
                 neqv(sp, "HOME", job->owner->user->home);
@@ -1135,8 +1061,7 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
             sfprintf(sp,
                      "mailx -s \"at job status\" %s < $tmp\n",
                      job->owner->user->name);
-            if (sfclose(sp))
-            {
+            if (sfclose(sp)) {
                 sp = 0;
                 goto noexec;
             }
@@ -1157,15 +1082,13 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
             s = 0;
         m = 0;
         for (job = ( Job_t * )dtfirst(state->table.job.handle); job;
-             job = next)
-        {
+             job = next) {
             next = ( Job_t * )dtnext(state->table.job.handle, job);
             if ((!que || que == job->queue)
                 && (s && strmatch(job->name, s)
                     || !s && (admin || con->id.uid == job->id.uid))
                 && job->owner->allow)
-                switch (c)
-                {
+                switch (c) {
                 case AT_LIST:
                     error(ERROR_OUTPUT | 0,
                           con->fd,
@@ -1192,12 +1115,10 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
                           job->period);
                     break;
                 case AT_REMOVE:
-                    if (con->id.uid == job->id.uid || !con->id.uid)
-                    {
+                    if (con->id.uid == job->id.uid || !con->id.uid) {
                         drop(state, job);
                         m++;
-                    }
-                    else
+                    } else
                         error(ERROR_OUTPUT | 2,
                               con->fd,
                               "%s: only %s can remove this job",
@@ -1206,8 +1127,7 @@ command(State_t *state, Connection_t *con, char *s, int n, char *data)
                     break;
                 }
         }
-        if (s && !m)
-        {
+        if (s && !m) {
             error(
             ERROR_OUTPUT | 0, con->fd, "%s: no matching jobs", s ? s : "*");
             return -1;
@@ -1322,14 +1242,12 @@ commit(void)
 
     static int commiting = 0;
 
-    if (commiting++)
-    {
+    if (commiting++) {
         commiting--;
         return;
     }
     now = NOW;
-    if (!rollover)
-    {
+    if (!rollover) {
         t = stat(AT_LOG_FILE, &st) ? now : st.st_mtime;
         tm = tmmake(&t);
         tm->tm_mon++;
@@ -1339,8 +1257,7 @@ commit(void)
         tm->tm_sec = 0;
         rollover = tmtime(tm, TM_LOCALZONE);
     }
-    if (now >= rollover)
-    {
+    if (now >= rollover) {
         rolled = 1;
         error(0, "log file rollover");
         sfsprintf(buf, sizeof(buf), "%s.old", AT_LOG_FILE);
@@ -1354,8 +1271,7 @@ commit(void)
         tm = tmmake(&t);
         tm->tm_mon++;
         rollover = tmtime(tm, TM_LOCALZONE);
-    }
-    else
+    } else
         rolled = 0;
     if ((fd = open(AT_LOG_FILE,
                    O_CREAT | O_WRONLY | O_APPEND,
@@ -1385,16 +1301,13 @@ stampwrite(int fd, const void *buf, size_t n)
     unsigned long now;
 
     r = 0;
-    if (rollover)
-    {
+    if (rollover) {
         now = NOW;
         if (now >= rollover)
             commit();
-    }
-    else if (!now)
+    } else if (!now)
         now = NOW;
-    if (fd == 2 && (s = fmttime(AT_TIME_FORMAT, now)))
-    {
+    if (fd == 2 && (s = fmttime(AT_TIME_FORMAT, now))) {
         i = strlen(s);
         s[i++] = ' ';
         if ((z = write(fd, s, i)) < 0)
@@ -1403,8 +1316,7 @@ stampwrite(int fd, const void *buf, size_t n)
             r += z;
         for (s = ( char * )buf; s < (( char * )buf + n - 1) && !isspace(*s);
              s++)
-            if (*s == ':')
-            {
+            if (*s == ':') {
                 while (++s < (( char * )buf + n - 1) && isspace(*s))
                     ;
                 n -= s - ( char * )buf;
@@ -1437,23 +1349,19 @@ request(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
         return -1;
     if ((c = csread(
          state->css->state, fp->fd, state->buf, 7, CS_EXACT | CS_RESTART))
-        != 7)
-    {
+        != 7) {
         if (c)
             error(ERROR_OUTPUT | 2, con->fd, "message size read error");
         return -1;
     }
     state->buf[6] = 0;
-    if ((n = strtol(state->buf + 1, &t, 10)) <= 0 || *t)
-    {
+    if ((n = strtol(state->buf + 1, &t, 10)) <= 0 || *t) {
         error(ERROR_OUTPUT | 2, con->fd, "invalid message size");
         return -1;
     }
-    if (n > state->bufsiz)
-    {
+    if (n > state->bufsiz) {
         if (n > INT_MAX || (c = roundof(n, PATH_MAX)) <= 0
-            || !(s = newof(state->buf, char, c, 0)))
-        {
+            || !(s = newof(state->buf, char, c, 0))) {
             error(ERROR_OUTPUT | 2, con->fd, "%ld: message too big", n);
             return -1;
         }
@@ -1462,8 +1370,7 @@ request(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
     }
     if (csread(
         state->css->state, fp->fd, s = state->buf, n, CS_EXACT | CS_RESTART)
-        != n)
-    {
+        != n) {
         error(ERROR_OUTPUT | 2, con->fd, "message body read error");
         return -1;
     }
@@ -1624,18 +1531,13 @@ init(const char *path)
      * resubmit old jobs
      */
 
-    if (dir = opendir("."))
-    {
+    if (dir = opendir(".")) {
         while (ent = readdir(dir))
-            if (lstat(s = ent->d_name, &js))
-            {
+            if (lstat(s = ent->d_name, &js)) {
                 error(0, "cannot stat old job %s", s);
                 remove(s);
-            }
-            else if (!S_ISREG(js.st_mode))
-            {
-                if (!streq(s, ".") && !streq(s, ".."))
-                {
+            } else if (!S_ISREG(js.st_mode)) {
+                if (!streq(s, ".") && !streq(s, "..")) {
                     error(0,
                           "invalid old job %s type %s rejected",
                           s,
@@ -1645,19 +1547,15 @@ init(const char *path)
                     else
                         remove(s);
                 }
-            }
-            else if (sfsscanf(s,
-                              "%..36lu.%..36lu.%..36lu",
-                              &state->con[0].id.uid,
-                              &state->con[0].id.gid,
-                              &cs.time)
-                     != 3)
-            {
+            } else if (sfsscanf(s,
+                                "%..36lu.%..36lu.%..36lu",
+                                &state->con[0].id.uid,
+                                &state->con[0].id.gid,
+                                &cs.time)
+                       != 3) {
                 error(0, "invalid old job %s name rejected", s);
                 remove(s);
-            }
-            else if (!AT_OLD_OK(&hs, &js))
-            {
+            } else if (!AT_OLD_OK(&hs, &js)) {
                 error(
                 0,
                 "invalid old job %s mode %s rejected [dir.uid=%d job.uid=%d]",
@@ -1666,14 +1564,10 @@ init(const char *path)
                 hs.st_uid,
                 js.st_uid);
                 remove(s);
-            }
-            else if (!(sp = sfopen(NiL, s, "r")))
-            {
+            } else if (!(sp = sfopen(NiL, s, "r"))) {
                 error(0, "cannot read old job %s", s);
                 remove(s);
-            }
-            else
-            {
+            } else {
                 if (b = ( char * )sfreserve(sp, SF_UNBOUND, SF_LOCKR))
                     command(state, state->con, b, sfvalue(sp), s);
                 sfclose(sp);
@@ -1707,10 +1601,8 @@ main(int argc, char **argv)
      */
 
     csdaemon(&cs, (1 << 0) | (1 << 1) | (1 << 2));
-    for (;;)
-    {
-        if ((pid = fork()) <= 0)
-        {
+    for (;;) {
+        if ((pid = fork()) <= 0) {
             if (!init(path))
                 csspoll(CS_NEVER, 0);
             return 1;

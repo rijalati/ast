@@ -288,27 +288,21 @@ getedit(char **p, int del)
     Edit_map_t *lo = mid;
     Edit_map_t *hi = mid + elementsof(editmap) - 1;
 
-    while (lo <= hi)
-    {
+    while (lo <= hi) {
         mid = lo + (hi - lo) / 2;
         s = ( unsigned char * )*p;
         t = ( unsigned char * )mid->name;
-        for (;;)
-        {
-            if (!*t && (*s == del || isspace(*s) || !*s))
-            {
+        for (;;) {
+            if (!*t && (*s == del || isspace(*s) || !*s)) {
                 while (isspace(*s))
                     s++;
                 *p = ( char * )s;
                 return mid;
             }
-            if ((v = *s++ - *t++) > 0)
-            {
+            if ((v = *s++ - *t++) > 0) {
                 lo = mid + 1;
                 break;
-            }
-            else if (v < 0)
-            {
+            } else if (v < 0) {
                 hi = mid - 1;
                 break;
             }
@@ -332,12 +326,10 @@ uniq(Sfio_t *xp, char *v, char *w, int sep)
     Stat_t st;
 
     tok = tokopen(w, 1);
-    if (sep & NOT)
-    {
+    if (sep & NOT) {
         tab = hashalloc(table.dir, 0);
         while (s = tokread(tok))
-            if (!stat(s, &st))
-            {
+            if (!stat(s, &st)) {
                 id.dev = st.st_dev;
                 id.ino = st.st_ino;
                 hashput(tab, ( char * )&id, ( char * )tab);
@@ -346,12 +338,10 @@ uniq(Sfio_t *xp, char *v, char *w, int sep)
         sep = 0;
         tok = tokopen(v, 1);
         while (s = tokread(tok))
-            if (!stat(s, &st))
-            {
+            if (!stat(s, &st)) {
                 id.dev = st.st_dev;
                 id.ino = st.st_ino;
-                if (!hashget(tab, ( char * )&id))
-                {
+                if (!hashget(tab, ( char * )&id)) {
                     hashput(tab, ( char * )0, ( char * )tab);
                     if (sep)
                         sfputc(xp, ' ');
@@ -360,9 +350,7 @@ uniq(Sfio_t *xp, char *v, char *w, int sep)
                     sfputr(xp, s, -1);
                 }
             }
-    }
-    else
-    {
+    } else {
         tab = hashalloc(table.rule, 0);
         while (s = tokread(tok))
             hashput(tab, s, ( char * )tab);
@@ -370,8 +358,7 @@ uniq(Sfio_t *xp, char *v, char *w, int sep)
         sep = 0;
         tok = tokopen(v, 1);
         while (s = tokread(tok))
-            if (!hashget(tab, s))
-            {
+            if (!hashget(tab, s)) {
                 hashput(tab, ( char * )0, ( char * )tab);
                 if (sep)
                     sfputc(xp, ' ');
@@ -397,19 +384,15 @@ mark(Sfio_t *xp, Rule_t *r, int m, int c)
 {
     List_t *p;
 
-    if (xp)
-    {
-        if (r->mark & c)
-        {
+    if (xp) {
+        if (r->mark & c) {
             sfputr(xp, r->name, ' ');
             return 1;
         }
-        if (!(r->mark & m))
-        {
+        if (!(r->mark & m)) {
             r->mark |= m | c;
             for (p = r->prereqs; p; p = p->next)
-                if (mark(xp, p->rule, m, c))
-                {
+                if (mark(xp, p->rule, m, c)) {
                     sfputr(xp, r->name, ' ');
                     return 1;
                 }
@@ -418,9 +401,7 @@ mark(Sfio_t *xp, Rule_t *r, int m, int c)
             else
                 sfputr(xp, r->name, ' ');
         }
-    }
-    else if (r->mark & m)
-    {
+    } else if (r->mark & m) {
         r->mark &= ~(m | c);
         for (p = r->prereqs; p; p = p->next)
             mark(xp, p->rule, m, c);
@@ -498,10 +479,8 @@ cross(Sfio_t *xp, char *v, char *w)
     w = sfstruse(tmp);
     sep = 0;
     tok0 = tokopen(w, 0);
-    while (t = tokread(tok0))
-    {
-        if (*t == '/')
-        {
+    while (t = tokread(tok0)) {
+        if (*t == '/') {
             if (sep)
                 sfputc(xp, ' ');
             else
@@ -511,13 +490,10 @@ cross(Sfio_t *xp, char *v, char *w)
             x = sfstrseek(xp, pos, SEEK_SET);
             pos += canon(x) - x;
             sfstrseek(xp, pos, SEEK_SET);
-        }
-        else
-        {
+        } else {
             dot = (*t == '.' && !*(t + 1));
             tok1 = tokopen(v, 1);
-            while (s = tokread(tok1))
-            {
+            while (s = tokread(tok1)) {
                 if (sep)
                     sfputc(xp, ' ');
                 else
@@ -562,8 +538,7 @@ intersect(Sfio_t *xp, char *v, char *w, int sep)
     tmp = sfstropen();
     p = q = 0;
     tok = tokopen(v, 1);
-    while (s = tokread(tok))
-    {
+    while (s = tokread(tok)) {
         canon(s);
         r = makerule(s);
         if (p)
@@ -571,22 +546,19 @@ intersect(Sfio_t *xp, char *v, char *w, int sep)
         else
             p = q = cons(r, NiL);
         s = r->name;
-        if (sep == EQ)
-        {
+        if (sep == EQ) {
             if ((r->dynamic & D_alias)
                 && (!state.context || !iscontext(r->uname))
                 && (r = makerule(s)))
                 p = p->next = cons(r, NiL);
-            if (state.expandview && state.fsview)
-            {
+            if (state.expandview && state.fsview) {
                 if (s[0] == '.' && !s[1])
                     sfputr(tmp, "...", -1);
                 else
                     sfprintf(tmp, "%s/...", s);
                 s = sfstruse(tmp);
-                while (
-                !mount(s, s, FS3D_GET | FS3D_VIEW | FS3D_SIZE(MAXNAME), NiL))
-                {
+                while (!mount(
+                s, s, FS3D_GET | FS3D_VIEW | FS3D_SIZE(MAXNAME), NiL)) {
                     r = makerule(s);
                     p = p->next = cons(r, NiL);
                     strcpy(s + strlen(s), "/...");
@@ -599,18 +571,14 @@ intersect(Sfio_t *xp, char *v, char *w, int sep)
     for (x = q; x; x = x->next)
         x->rule->mark |= M_mark | M_metarule;
     tok = tokopen(sfstruse(tmp), 0);
-    while (s = tokread(tok))
-    {
+    while (s = tokread(tok)) {
         canon(s);
-        if (r = getrule(s))
-        {
+        if (r = getrule(s)) {
             r->mark &= ~M_mark;
-            if (sep == EQ)
-            {
+            if (sep == EQ) {
                 if (!(r->mark & M_metarule) && r->name[0] == '.'
                     && r->name[1] == '.'
-                    && (!r->name[2] || r->name[2] == '/'))
-                {
+                    && (!r->name[2] || r->name[2] == '/')) {
                     r->mark |= M_metarule;
                     if (p)
                         p = p->next = cons(r, NiL);
@@ -618,13 +586,11 @@ intersect(Sfio_t *xp, char *v, char *w, int sep)
                         p = q = cons(r, NiL);
                     internal.dot->mark &= ~M_mark;
                 }
-                if ((r->dynamic & D_alias) && (r = makerule(r->name)))
-                {
+                if ((r->dynamic & D_alias) && (r = makerule(r->name))) {
                     r->mark &= ~M_mark;
                     if (!(r->mark & M_metarule) && r->name[0] == '.'
                         && r->name[1] == '.'
-                        && (!r->name[2] || r->name[2] == '/'))
-                    {
+                        && (!r->name[2] || r->name[2] == '/')) {
                         r->mark |= M_metarule;
                         p = p->next = cons(r, NiL);
                         internal.dot->mark &= ~M_mark;
@@ -635,8 +601,7 @@ intersect(Sfio_t *xp, char *v, char *w, int sep)
     }
     n = 0;
     for (p = q; p; p = p->next)
-        if (!(p->rule->mark & M_mark))
-        {
+        if (!(p->rule->mark & M_mark)) {
             if (n)
                 sfputc(xp, ' ');
             else
@@ -675,13 +640,11 @@ hasprereq(Sfio_t *xp, char *v, char *w)
     tokclose(tok);
     sep = 0;
     tok = tokopen(v, 1);
-    while (s = tokread(tok))
-    {
+    while (s = tokread(tok)) {
         if (r = getrule(s))
             for (p = r->prereqs; p; p = p->next)
                 for (q = x; q; q = q->next)
-                    if (p->rule == q->rule)
-                    {
+                    if (p->rule == q->rule) {
                         if (sep)
                             sfputc(xp, ' ');
                         else
@@ -715,10 +678,8 @@ linebreak(Sfio_t *xp, char *s, char *pfx)
     brk = pos + BREAKLINE;
     a = state.mam.out ? 30 : BREAKARGS;
     tok = tokopen(s, 1);
-    while (s = tokread(tok))
-    {
-        if (pos >= brk || !a--)
-        {
+    while (s = tokread(tok)) {
+        if (pos >= brk || !a--) {
             pos += sfprintf(xp, "\n%s", pfx);
             brk = pos + BREAKLINE;
             a = BREAKARGS;
@@ -747,20 +708,15 @@ listtab(Sfio_t *xp, Hash_table_t *tab, char *pat, int flags)
         && (n = regcomp(&sre,
                         pat,
                         REG_SHELL | REG_AUGMENTED | REG_LENIENT | REG_LEFT
-                        | REG_RIGHT)))
-    {
+                        | REG_RIGHT))) {
         regfatalpat(&sre, 2, n, pat);
         return;
     }
     hit = sfstropen();
-    if (pos = hashscan(tab, 0))
-    {
-        while (hashnext(pos))
-        {
-            if (*pat && (n = regexec(&sre, pos->bucket->name, 0, NiL, 0)))
-            {
-                if (n != REG_NOMATCH)
-                {
+    if (pos = hashscan(tab, 0)) {
+        while (hashnext(pos)) {
+            if (*pat && (n = regexec(&sre, pos->bucket->name, 0, NiL, 0))) {
+                if (n != REG_NOMATCH) {
                     regfatal(&sre, 2, n);
                     break;
                 }
@@ -775,8 +731,7 @@ listtab(Sfio_t *xp, Hash_table_t *tab, char *pat, int flags)
      * sort and fill the output buffer
      */
 
-    if (sfstrtell(hit) > 0)
-    {
+    if (sfstrtell(hit) > 0) {
         n = sfstrtell(hit);
         putptr(hit, 0);
         v = ( char ** )sfstrbase(hit);
@@ -816,8 +771,7 @@ list(Sfio_t *xp, char *s, char *pat, int flags)
         && (n = regcomp(&sre,
                         pat,
                         REG_SHELL | REG_AUGMENTED | REG_LENIENT | REG_LEFT
-                        | REG_RIGHT)))
-    {
+                        | REG_RIGHT))) {
         regfatalpat(&sre, 2, n, pat);
         return;
     }
@@ -830,11 +784,9 @@ list(Sfio_t *xp, char *s, char *pat, int flags)
      */
 
     tok = tokopen(s, 1);
-    while (s = tokread(tok))
-    {
+    while (s = tokread(tok)) {
         r = makerule(s);
-        if (!(r->mark & M_mark))
-        {
+        if (!(r->mark & M_mark)) {
             r->mark |= M_mark;
             if (flags & SORT_force)
                 r->dynamic &= ~D_scanned;
@@ -845,8 +797,7 @@ list(Sfio_t *xp, char *s, char *pat, int flags)
     }
     putptr(vec, 0);
     tokclose(tok);
-    for (v = ( char ** )sfstrbase(vec); r = ( Rule_t * )*v;)
-    {
+    for (v = ( char ** )sfstrbase(vec); r = ( Rule_t * )*v;) {
         r->mark &= ~M_mark;
         *v++ = r->name;
     }
@@ -855,39 +806,29 @@ list(Sfio_t *xp, char *s, char *pat, int flags)
      * scan the file hash for pattern and dir matches
      */
 
-    if (pos = hashscan(table.file, 0))
-    {
-        while (hashnext(pos))
-        {
+    if (pos = hashscan(table.file, 0)) {
+        while (hashnext(pos)) {
             if ((s = pos->bucket->name)[0] != '.'
-                || s[1] && (s[1] != '.' || s[2]))
-            {
+                || s[1] && (s[1] != '.' || s[2])) {
                 f = ( File_t * )pos->bucket->value;
-                if (*pat)
-                {
-                    if (f->dir->ignorecase)
-                    {
+                if (*pat) {
+                    if (f->dir->ignorecase) {
                         re = &ire;
-                        if (!ignorecase)
-                        {
+                        if (!ignorecase) {
                             if (n = regcomp(re,
                                             pat,
                                             REG_SHELL | REG_AUGMENTED
                                             | REG_LENIENT | REG_ICASE
-                                            | REG_LEFT | REG_RIGHT))
-                            {
+                                            | REG_LEFT | REG_RIGHT)) {
                                 regfatalpat(re, 2, n, pat);
                                 break;
                             }
                             ignorecase = 1;
                         }
-                    }
-                    else
+                    } else
                         re = &sre;
-                    if (n = regexec(re, s, 0, NiL, 0))
-                    {
-                        if (n != REG_NOMATCH)
-                        {
+                    if (n = regexec(re, s, 0, NiL, 0)) {
+                        if (n != REG_NOMATCH) {
                             regfatal(re, 2, n);
                             break;
                         }
@@ -896,8 +837,7 @@ list(Sfio_t *xp, char *s, char *pat, int flags)
                 }
                 for (; f; f = f->next)
                     for (v = ( char ** )sfstrbase(vec); s = *v++;)
-                        if (f->dir->name == s)
-                        {
+                        if (f->dir->name == s) {
                             putptr(hit, pos->bucket->name);
                             goto next;
                         }
@@ -911,22 +851,18 @@ list(Sfio_t *xp, char *s, char *pat, int flags)
      * sort and fill the output buffer
      */
 
-    if (sfstrtell(hit) > 0)
-    {
+    if (sfstrtell(hit) > 0) {
         n = sfstrtell(hit);
         putptr(hit, 0);
         v = ( char ** )sfstrbase(hit);
         if (flags & SORT_sort)
             strsort(v, n / sizeof(v), sortcmpf(flags));
-        if (flags & (SORT_first | SORT_qualified))
-        {
-            if (flags & SORT_version)
-            {
+        if (flags & (SORT_first | SORT_qualified)) {
+            if (flags & SORT_version) {
                 for (v = ( char ** )sfstrbase(hit); *v; v++)
                     for (w = ( char ** )sfstrbase(vec); s = *w++;)
                         for (f = getfile(*v); f; f = f->next)
-                            if (f->dir->name == s)
-                            {
+                            if (f->dir->name == s) {
                                 if (flags & SORT_qualified)
                                     sfprintf(xp, " %s/%s", s, *v);
                                 else
@@ -934,14 +870,11 @@ list(Sfio_t *xp, char *s, char *pat, int flags)
                                 if (flags & SORT_first)
                                     goto first;
                             }
-            }
-            else
-            {
+            } else {
                 for (w = ( char ** )sfstrbase(vec); s = *w++;)
                     for (v = ( char ** )sfstrbase(hit); *v; v++)
                         for (f = getfile(*v); f; f = f->next)
-                            if (f->dir->name == s)
-                            {
+                            if (f->dir->name == s) {
                                 if (flags & SORT_qualified)
                                     sfprintf(xp, " %s/%s", s, *v);
                                 else
@@ -951,9 +884,7 @@ list(Sfio_t *xp, char *s, char *pat, int flags)
                             }
             }
         first:;
-        }
-        else
-        {
+        } else {
             sfputr(xp, *v, -1);
             while (*++v)
                 sfprintf(xp, " %s", *v);
@@ -961,8 +892,7 @@ list(Sfio_t *xp, char *s, char *pat, int flags)
     }
     sfstrclose(vec);
     sfstrclose(hit);
-    if (*pat)
-    {
+    if (*pat) {
         regfree(&sre);
         if (ignorecase)
             regfree(&ire);
@@ -990,24 +920,19 @@ sort(Sfio_t *xp, char *s, int flags)
     while (s = tokread(tok))
         putptr(vec, s);
     tokclose(tok);
-    if (n = sfstrtell(vec) / sizeof(s))
-    {
+    if (n = sfstrtell(vec) / sizeof(s)) {
         putptr(vec, 0);
         p = ( char ** )sfstrbase(vec);
-        if (flags & SORT_reverse)
-        {
+        if (flags & SORT_reverse) {
             r = p + n - 1;
             sfputr(xp, *r, -1);
             while (--r >= p)
                 sfprintf(xp, " %s", *r);
-        }
-        else
-        {
+        } else {
             cmp = sortcmpf(flags);
             strsort(( char ** )sfstrbase(vec), n, cmp);
             sfputr(xp, *p, -1);
-            if (!(flags & SORT_first))
-            {
+            if (!(flags & SORT_first)) {
                 flags &= SORT_uniq;
                 while (s = *++p)
                     if (!flags || (*cmp)(s, *(p - 1)))
@@ -1043,12 +968,10 @@ relative(Sfio_t *xp, char *s, char *t)
     pathcanon(v = t = sfstrseek(tmp, pos, SEEK_SET), 0, 0);
     u = s = sfstrbase(tmp);
     while (*s && *s == *t)
-        if (*s++ == '/')
-        {
+        if (*s++ == '/') {
             u = s;
             v = ++t;
-        }
-        else
+        } else
             t++;
     pos = sfstrtell(xp);
     while (*u)
@@ -1069,8 +992,7 @@ relative(Sfio_t *xp, char *s, char *t)
 static int
 sepcmp(int sep, unsigned long a, unsigned long b)
 {
-    switch (sep)
-    {
+    switch (sep) {
     case LT:
         return a < b;
     case LE:
@@ -1099,8 +1021,7 @@ sepcmp(int sep, unsigned long a, unsigned long b)
 static int
 septimecmp(int sep, Time_t a, Time_t b)
 {
-    switch (sep)
-    {
+    switch (sep) {
     case LT:
         return a < b;
     case LE:
@@ -1132,12 +1053,10 @@ native(Sfio_t *xp, const char *s)
     size_t m;
     size_t n;
 
-    if (*s)
-    {
+    if (*s) {
         sfputc(xp, '\'');
         n = PATH_MAX;
-        do
-        {
+        do {
             m = n;
             n = pathnative(s, sfstrrsrv(xp, m), m);
         } while (n > m);
@@ -1186,19 +1105,15 @@ order_descend(Sfio_t *xp,
     here = sfstrtell(xp);
     r->mark &= ~M_MUST;
     r->complink = mark;
-    if (r->prereqs)
-    {
+    if (r->prereqs) {
         if ((flags & (ORDER_all | ORDER_prereqs))
-            == (ORDER_all | ORDER_prereqs))
-        {
-            for (p = r->prereqs; p; p = p->next)
-            {
+            == (ORDER_all | ORDER_prereqs)) {
+            for (p = r->prereqs; p; p = p->next) {
                 if (!(a = ( Rule_t * )hashget(tab, p->rule->name)))
                     a = p->rule;
                 else if (a == r)
                     continue;
-                if (!need)
-                {
+                if (!need) {
                     need = 1;
                     r->mark |= M_LHS;
                     sfprintf(xp, "%s :", r->name);
@@ -1206,14 +1121,12 @@ order_descend(Sfio_t *xp,
                 sfprintf(xp, " %s", a->name);
                 a->mark |= M_RHS;
             }
-            if (need)
-            {
+            if (need) {
                 need = 0;
                 sfprintf(xp, "\n");
             }
         }
-        for (p = r->prereqs; p; p = p->next)
-        {
+        for (p = r->prereqs; p; p = p->next) {
             if (!(a = ( Rule_t * )hashget(tab, p->rule->name)))
                 a = p->rule;
             if (a->mark & M_MUST)
@@ -1223,19 +1136,15 @@ order_descend(Sfio_t *xp,
         }
         freelist(r->prereqs);
         r->prereqs = 0;
-    }
-    else if (flags & ORDER_prereqs)
-    {
+    } else if (flags & ORDER_prereqs) {
         if (!(flags & ORDER_all) || (r->mark & M_RHS))
             return mark;
         r->mark |= M_LHS;
     }
-    if (!(flags & ORDER_prereqs))
-    {
+    if (!(flags & ORDER_prereqs)) {
         if (!(flags & ORDER_all) || (r->mark & M_RHS))
             return mark;
-        if (sfstrtell(xp) != here || mark == need)
-        {
+        if (sfstrtell(xp) != here || mark == need) {
             if (sfstrtell(xp))
                 sfputr(xp, "-", ' ');
             mark++;
@@ -1277,8 +1186,7 @@ order_all(Sfio_t *xp,
     sfprintf(internal.tmp, "%s/*/", d->name);
     v = globv(&gl, sfstruse(internal.tmp));
     flags |= ORDER_directory | ORDER_force;
-    while (t = *v++)
-    {
+    while (t = *v++) {
         t[strlen(t) - 1] = 0;
         order_find(xp, tmp, vec, tab, d->name, t + n, makefiles, skip, flags);
     }
@@ -1305,8 +1213,7 @@ order_scan(Sfio_t *xp,
 
     if (d == internal.dot)
         d->mark |= M_MUST | M_SKIP;
-    else
-    {
+    else {
         if (s = strrchr(d->name, '/'))
             s++;
         else
@@ -1315,8 +1222,7 @@ order_scan(Sfio_t *xp,
             d->mark |= M_MUST;
         else if (flags & ORDER_prereqs)
             d->mark |= M_INIT | M_SKIP;
-        else
-        {
+        else {
             if (sfstrtell(xp))
                 sfputr(xp, "-", ' ');
             sfputr(xp, d->name, ' ');
@@ -1326,18 +1232,15 @@ order_scan(Sfio_t *xp,
     }
     putptr(vec, r);
     putptr(vec, d);
-    if (makefiles && (d->mark & M_MUST) && (sp = rsfopen(r->name)))
-    {
+    if (makefiles && (d->mark & M_MUST) && (sp = rsfopen(r->name))) {
         if (flags & ORDER_implicit)
             order_all(xp, tmp, vec, tab, d, makefiles, skip, flags);
         else
             while (s = sfgetr(sp, '\n', 1))
                 while (*s)
-                    if (*s++ == ':')
-                    {
+                    if (*s++ == ':') {
                         if (strneq(s, ORDER_RECURSE, sizeof(ORDER_RECURSE) - 1)
-                            && *(s += sizeof(ORDER_RECURSE) - 1) == ':')
-                        {
+                            && *(s += sizeof(ORDER_RECURSE) - 1) == ':') {
                             while (*++s && (*s == ' ' || *s == '\t'))
                                 ;
                             if (*s)
@@ -1386,10 +1289,8 @@ order_find(Sfio_t *xp,
     if (dir && streq(dir, internal.dot->name))
         dir = 0;
     tok = tokopen(files, 1);
-    while (s = tokread(tok))
-    {
-        if (skip)
-        {
+    while (s = tokread(tok)) {
+        if (skip) {
             if (t = strrchr(s, '/'))
                 t++;
             else
@@ -1397,54 +1298,42 @@ order_find(Sfio_t *xp,
             if ((*t != '.' || *(t + 1)) && strmatch(t, skip))
                 continue;
         }
-        if (dir)
-        {
+        if (dir) {
             sfprintf(tmp, "%s/%s", dir, s);
             t = sfstruse(tmp);
-        }
-        else if (!(state.questionable & 0x20000000) && !strchr(s, '/')
-                 && (t = strrchr(internal.pwd, '/')) && streq(s, t + 1))
+        } else if (!(state.questionable & 0x20000000) && !strchr(s, '/')
+                   && (t = strrchr(internal.pwd, '/')) && streq(s, t + 1))
             continue;
         else
             t = s;
         if ((flags & ORDER_directory)
             || (flags & (ORDER_force | ORDER_paths)) == ORDER_force
                && (d = bindfile(NiL, t, 0)) && !stat(d->name, &st)
-               && S_ISDIR(st.st_mode))
-        {
+               && S_ISDIR(st.st_mode)) {
             d = makerule(t);
             t = makefiles;
-            while (t)
-            {
+            while (t) {
                 if (dir)
                     sfprintf(tmp, "%s/", dir);
-                if (e = strchr(t, ':'))
-                {
+                if (e = strchr(t, ':')) {
                     sfprintf(tmp, "%s/%-.*s", s, e - t, t);
                     t = e + 1;
-                }
-                else
-                {
+                } else {
                     sfprintf(tmp, "%s/%s", s, t);
                     t = 0;
                 }
-                if (r = bindfile(NiL, e = sfstruse(tmp), 0))
-                {
+                if (r = bindfile(NiL, e = sfstruse(tmp), 0)) {
                     order_scan(
                     xp, tmp, vec, tab, d, r, makefiles, skip, flags);
                     break;
                 }
             }
-        }
-        else if ((flags & ORDER_force) && (r = bindfile(NiL, t, 0)))
-        {
-            if (s = strrchr(t, '/'))
-            {
+        } else if ((flags & ORDER_force) && (r = bindfile(NiL, t, 0))) {
+            if (s = strrchr(t, '/')) {
                 *s = 0;
                 d = makerule(t);
                 *s = '/';
-            }
-            else
+            } else
                 d = internal.dot;
             order_scan(xp, tmp, vec, tab, d, r, makefiles, skip, flags);
         }
@@ -1517,18 +1406,14 @@ order_recurse(Sfio_t *xp,
     putptr(vec, 0);
     v = ( Rule_t ** )sfstrbase(vec);
     qsort(v, mark / sizeof(v) / 2, sizeof(v) * 2, order_cmp);
-    while (r = *v++)
-    {
+    while (r = *v++) {
         d = *v++;
-        if ((d->mark & M_MUST) && (sp = rsfopen(bind(r)->name)))
-        {
+        if ((d->mark & M_MUST) && (sp = rsfopen(bind(r)->name))) {
             z = 0;
-            while (s = sfgetr(sp, '\n', 1))
-            {
+            while (s = sfgetr(sp, '\n', 1)) {
                 j = p = 0;
                 b = s;
-                while (*s)
-                {
+                while (*s) {
                     var = 0;
                     lib = 0;
                     for (k = 1; (i = *s) == ' ' || i == '\t' || i == '\r'
@@ -1555,8 +1440,7 @@ order_recurse(Sfio_t *xp,
                         continue;
                     if (!t[0])
                         k = 0;
-                    else if ((t[0] == '-' || t[0] == '+') && t[1] == 'l')
-                    {
+                    else if ((t[0] == '-' || t[0] == '+') && t[1] == 'l') {
                         a = 0;
                         for (u = t += 2; istype(*u, C_ID1 | C_ID2)
                                          || *u == '-' || *u == '/' && (a = u);
@@ -1565,14 +1449,12 @@ order_recurse(Sfio_t *xp,
                         *u = 0;
                         if (!*t)
                             continue;
-                        if (a)
-                        {
+                        if (a) {
                             if (!z)
                                 for (m = 0, z = d->name + strlen(d->name);
                                      z > d->name;
                                      z--)
-                                    if (*z == '/' && ++m == 2)
-                                    {
+                                    if (*z == '/' && ++m == 2) {
                                         z++;
                                         break;
                                     }
@@ -1586,26 +1468,19 @@ order_recurse(Sfio_t *xp,
                                          a + 1);
                             else
                                 sfprintf(internal.nam, "%s", a + 1);
-                        }
-                        else
+                        } else
                             sfprintf(internal.nam, "lib%s", t);
                         lib = t = sfstruse(internal.nam);
-                    }
-                    else if (p)
-                    {
+                    } else if (p) {
                         if (t[0] == '+' && !t[1])
                             p = 2;
-                        else if (p == 1)
-                        {
-                            if (i == ':' && strneq(s, "order", 5))
-                            {
+                        else if (p == 1) {
+                            if (i == ':' && strneq(s, "order", 5)) {
                                 if (!order)
                                     order = makerule(external.order);
                                 order->prereqs = append(
                                 order->prereqs, cons(makerule(t), NiL));
-                            }
-                            else if (i != ':' || !strneq(s, "command", 7))
-                            {
+                            } else if (i != ':' || !strneq(s, "command", 7)) {
                                 sfprintf(internal.nam, "lib%s", t);
                                 t = sfstruse(internal.nam);
                             }
@@ -1613,15 +1488,12 @@ order_recurse(Sfio_t *xp,
                                 while (*s && !isspace(*s))
                                     s++;
                         }
-                    }
-                    else if (i == ':')
-                    {
+                    } else if (i == ':') {
                         if (j != ':' || !isupper(*t))
                             k = 0;
                         else if ((i = streq(t, ORDER_COMMAND))
                                  || streq(t, ORDER_LIBRARY)
-                                 || streq(t, ORDER_REQUIRE))
-                        {
+                                 || streq(t, ORDER_REQUIRE)) {
                             for (; *b == ' ' || *b == '\t' || *b == '\r'; b++)
                                 ;
                             for (u = b;
@@ -1629,44 +1501,34 @@ order_recurse(Sfio_t *xp,
                                  b++)
                                 ;
                             if (!*b || *b == ':' || *b == ' ' || *b == '\t'
-                                || *b == '\r')
-                            {
+                                || *b == '\r') {
                                 *b = 0;
-                                if (!i)
-                                {
+                                if (!i) {
                                     sfprintf(internal.nam, "lib%s", u);
                                     u = sfstruse(internal.nam);
                                 }
                                 if (!hashget(tab, u))
                                     hashput(tab, u, d);
                             }
-                        }
-                        else if (streq(t, ORDER_PACKAGE))
-                        {
+                        } else if (streq(t, ORDER_PACKAGE)) {
                             p = 1;
                             k = 0;
-                        }
-                        else if (streq(t, ORDER_RECURSE))
-                        {
+                        } else if (streq(t, ORDER_RECURSE)) {
                             p = -1;
                             k = 0;
-                        }
-                        else
+                        } else
                             for (u = t; *u; u++)
                                 if (isupper(*u))
                                     *u = tolower(*u);
-                                else if (!isalnum(*u))
-                                {
+                                else if (!isalnum(*u)) {
                                     k = 0;
                                     break;
                                 }
-                    }
-                    else if (t[0] != 'l' || t[1] != 'i' || t[2] != 'b')
+                    } else if (t[0] != 'l' || t[1] != 'i' || t[2] != 'b')
                         k = 0;
                     else
                         for (u = t + 3; *u; u++)
-                            if (!isalnum(*u))
-                            {
+                            if (!isalnum(*u)) {
                                 k = 0;
                                 break;
                             }
@@ -1675,8 +1537,7 @@ order_recurse(Sfio_t *xp,
                             && (r->mark & M_MUST) && r != d
                             || *t++ == 'l' && *t++ == 'i' && *t++ == 'b' && *t
                                && (r = ( Rule_t * )hashget(tab, t))
-                               && (r->mark & M_MUST) && r != d))
-                    {
+                               && (r->mark & M_MUST) && r != d)) {
                         if (t = strrchr(d->name, '/'))
                             t++;
                         else
@@ -1691,18 +1552,15 @@ order_recurse(Sfio_t *xp,
                             && (u[0] != 'l' || u[1] != 'i' || u[2] != 'b'
                                 || u[3]))
                             addprereq(d, r, PREREQ_APPEND);
-                    }
-                    else if (lib && (r = makerule(lib)) != d)
+                    } else if (lib && (r = makerule(lib)) != d)
                         addprereq(d, r, PREREQ_APPEND);
                     j = i;
                 }
             }
             sfclose(sp);
-            if (s = strrchr(d->name, '/'))
-            {
+            if (s = strrchr(d->name, '/')) {
                 if ((s - d->name) > 3 && *(s - 1) == 'b' && *(s - 2) == 'i'
-                    && *(s - 3) == 'l' && *(s - 4) != '/')
-                {
+                    && *(s - 3) == 'l' && *(s - 4) != '/') {
                     /*
                      * foolib : foo : libfoo
                      */
@@ -1720,20 +1578,17 @@ order_recurse(Sfio_t *xp,
                     if (r != d)
                         addprereq(d, r, PREREQ_APPEND);
                     *(s - 3) = 'l';
-                }
-                else if (((s - d->name) != 3 || *(s - 1) != 'b'
-                          || *(s - 2) != 'i' || *(s - 3) != 'l')
-                         && (*(s + 1) != 'l' || *(s + 2) != 'i'
-                             || *(s + 3) != 'b'))
-                {
+                } else if (((s - d->name) != 3 || *(s - 1) != 'b'
+                            || *(s - 2) != 'i' || *(s - 3) != 'l')
+                           && (*(s + 1) != 'l' || *(s + 2) != 'i'
+                               || *(s + 3) != 'b')) {
                     /*
                      * huh/foobar : lib/libfoo
                      */
 
                     s++;
                     t = s + strlen(s);
-                    while (--t > s)
-                    {
+                    while (--t > s) {
                         sfprintf(internal.nam, "lib/lib%-.*s", t - s, s);
                         if ((r = getrule(sfstruse(internal.nam))) && r != d)
                             addprereq(d, r, PREREQ_APPEND);
@@ -1743,16 +1598,13 @@ order_recurse(Sfio_t *xp,
         }
     }
     mark = 0;
-    if (targets)
-    {
+    if (targets) {
         tok = tokopen(targets, 1);
         while (s = tokread(tok))
             if ((r = ( Rule_t * )hashget(tab, s)) && (r->mark & M_MUST))
                 mark = order_descend(xp, tab, r, mark, flags | ORDER_all);
         tokclose(tok);
-    }
-    else
-    {
+    } else {
         /*
          * favor external.order prereqs if they are in the mix
          */
@@ -1761,27 +1613,23 @@ order_recurse(Sfio_t *xp,
         if (order)
             for (q = order->prereqs; q; q = q->next)
                 if ((r = ( Rule_t * )hashget(tab, unbound(q->rule)))
-                    && (r->mark & M_MUST))
-                {
+                    && (r->mark & M_MUST)) {
                     mark = order_descend(xp, tab, r, mark, flags);
                     if (!(flags & ORDER_prereqs))
                         sfputr(xp, "-", ' ');
                 }
     }
     v = ( Rule_t ** )sfstrbase(vec);
-    while (*v++)
-    {
+    while (*v++) {
         r = *v++;
         if (r->mark & M_MUST)
             mark = order_descend(xp, tab, r, mark, flags);
     }
     e = v - 1;
-    if (flags & ORDER_prereqs)
-    {
+    if (flags & ORDER_prereqs) {
         sfprintf(xp, "all :");
         v = ( Rule_t ** )sfstrbase(vec);
-        while (*v++)
-        {
+        while (*v++) {
             r = *v++;
             if (r->mark & M_INIT)
                 sfprintf(xp, " %s", r->name);
@@ -1789,8 +1637,7 @@ order_recurse(Sfio_t *xp,
     }
     k = 1;
     v = ( Rule_t ** )sfstrbase(vec);
-    while (--e >= v)
-    {
+    while (--e >= v) {
         r = *e;
         if ((flags & ORDER_prereqs)
             && (r->mark & (M_INIT | M_LHS | M_MUST | M_RHS | M_SKIP))
@@ -1799,10 +1646,8 @@ order_recurse(Sfio_t *xp,
         else if (!(state.questionable & 0x40000000)
                  && !(flags & ORDER_prereqs)
                  && (r->mark & (M_INIT | M_LHS | M_MUST | M_RHS | M_SKIP))
-                    == M_RHS)
-        {
-            if (k)
-            {
+                    == M_RHS) {
+            if (k) {
                 k = 0;
                 sfputr(xp, "+", ' ');
             }
@@ -1841,11 +1686,9 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
     Sfio_t *tmp;
 
     n = islower(*op) ? toupper(*op) : *op;
-    if (r = getrule(s))
-    {
+    if (r = getrule(s)) {
         if (r->dynamic & D_alias)
-            switch (n)
-            {
+            switch (n) {
             case 'B':
             case 'D':
             case 'P':
@@ -1857,25 +1700,21 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
             }
         s = r->name;
     }
-    switch (n)
-    {
+    switch (n) {
     case 'A':
     absolute:
         /*
          * construct absolute pathname for s
          */
 
-        if (*s)
-        {
+        if (*s) {
             pos = sfstrtell(xp);
             if (*s == '/')
                 sfputr(xp, s, 0);
-            else if (r && (r->dynamic & D_bound) && r->time)
-            {
+            else if (r && (r->dynamic & D_bound) && r->time) {
                 op = "A";
                 goto view;
-            }
-            else
+            } else
                 sfprintf(xp,
                          "%s/%s%c",
                          state.mam.statix ? internal.dot->name : internal.pwd,
@@ -1891,8 +1730,7 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
          * return physical binding for name
          */
 
-        if (r && (r->dynamic & D_bound))
-        {
+        if (r && (r->dynamic & D_bound)) {
             if ((t = getbound(s)) && (r = getrule(t))
                 && (r->dynamic & D_regular))
                 s = state.localview ? localview(makerule(t)) : t;
@@ -1904,8 +1742,7 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
          * canonicalize path name
          */
 
-        if (*s)
-        {
+        if (*s) {
             pos = sfstrtell(xp);
             sfputr(xp, s, 0);
             s = sfstrseek(xp, pos, SEEK_SET);
@@ -1924,8 +1761,7 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
         if (((state.questionable & 0x10000000) || !(s = r->uname)
              || !(t = strrchr(r->name, '/')) || !streq(t + 1, s))
             && ((t = getbound(r->name))
-                || (s = r->uname) && (t = getbound(s))))
-        {
+                || (s = r->uname) && (t = getbound(s)))) {
             if ((x = getrule(t))
                 && (x->dynamic & (D_entries | D_scanned))
                    == (D_entries | D_scanned)
@@ -1942,12 +1778,11 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
                 ? r->uname
                 : ( char * )0;
             t = state.localview ? localview(x) : x->name;
-            if ((r->dynamic & D_alias) && !(state.questionable & 0x10000000))
-            {
+            if ((r->dynamic & D_alias)
+                && !(state.questionable & 0x10000000)) {
                 sfprintf(internal.nam, "%s/%s", t, r->uname);
                 if (!getrule(sfstruse(internal.nam))
-                    && (e = strrchr(r->name, '/')))
-                {
+                    && (e = strrchr(r->name, '/'))) {
                     *e = 0;
                     x = getrule(r->name);
                     *e = '/';
@@ -1962,13 +1797,11 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
                 return;
             sep = 1;
         }
-        if (s)
-        {
+        if (s) {
             if ((n = strlen(r->name)) > (c = strlen(s)))
-                for (;;)
-                {
-                    if (*(t = r->name + n - c - 1) == '/' && streq(s, t + 1))
-                    {
+                for (;;) {
+                    if (*(t = r->name + n - c - 1) == '/'
+                        && streq(s, t + 1)) {
                         *t = 0;
                         r = makerule(r->name);
                         *t = '/';
@@ -1978,8 +1811,7 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
                         xp, state.localview ? localview(r) : r->name, -1);
                         return;
                     }
-                    if (!(t = strchr(s, '/')))
-                    {
+                    if (!(t = strchr(s, '/'))) {
 #if DEBUG
                         message((-2,
                                  "pathop('%c',%s==%s): cannot find '/'",
@@ -2001,8 +1833,7 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
                          r->uname));
 #endif
         }
-        if (*r->name != '/')
-        {
+        if (*r->name != '/') {
             if (sep)
                 sfputc(xp, ' ');
             sfputc(xp, '.');
@@ -2013,8 +1844,7 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
          * construct a PATH independent executable pathname for s
          */
 
-        if (*s)
-        {
+        if (*s) {
             pos = sfstrtell(xp);
             if (state.mam.statix && r && !(r->property & P_state)
                 && !(r->dynamic & D_alias))
@@ -2022,8 +1852,7 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
             if (*s != '/'
                 && (*s != '.'
                     || *(s + 1) != '/'
-                       && (*(s + 1) != '.' || *(s + 2) != '/')))
-            {
+                       && (*(s + 1) != '.' || *(s + 2) != '/'))) {
                 sfputc(xp, '.');
                 sfputc(xp, '/');
             }
@@ -2037,15 +1866,13 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
         r = bind(r);
         if (!(chop = streq(r->name, ".")))
             sfputr(xp, r->name, -1);
-        if (!(r->dynamic & D_regular))
-        {
+        if (!(r->dynamic & D_regular)) {
             tmp = sfstropen();
             if (chop)
                 sfprintf(tmp, "**");
             else
                 sfprintf(tmp, "%s/**", s);
-            for (p = globv(NiL, sfstruse(tmp)); *p; p++)
-            {
+            for (p = globv(NiL, sfstruse(tmp)); *p; p++) {
                 sfputc(xp, ' ');
                 sfputr(xp, *p, -1);
             }
@@ -2054,8 +1881,7 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
         return;
     case 'G':
         sep = 0;
-        for (p = globv(NiL, s); *p; p++)
-        {
+        for (p = globv(NiL, s); *p; p++) {
             if (sep)
                 sfputc(xp, ' ');
             else
@@ -2074,8 +1900,7 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
         if ((n = strlen(op)) > 5)
             n = 5;
         while (c = *s++)
-            if (istype(c, C_VARIABLE1 | C_VARIABLE2))
-            {
+            if (istype(c, C_VARIABLE1 | C_VARIABLE2)) {
                 if (n++ >= 5)
                     break;
                 sfputc(xp, c);
@@ -2090,8 +1915,7 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
          * or return inode number
          */
 
-        if (*s)
-        {
+        if (*s) {
             Stat_t st1;
 
             if (*++op == '=')
@@ -2108,8 +1932,7 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
         if (!r || !(r->dynamic & D_bound) || !r->time)
             /* ignore */;
         else if (*++op == '*' || *op == '!'
-                 || *op == '=' && (*(op + 1) == '*' || *(op + 1) == '!'))
-        {
+                 || *op == '=' && (*(op + 1) == '*' || *(op + 1) == '!')) {
         view:
             /*
              * if bound then return top and covered view names
@@ -2118,18 +1941,14 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
             if (*op == '=')
                 op++;
             sep = 0;
-            if (!state.maxview)
-            {
+            if (!state.maxview) {
                 r = 0;
                 goto absolute;
-            }
-            else if (state.fsview)
-            {
+            } else if (state.fsview) {
                 sfstrrsrv(internal.nam, MAXNAME + 5);
                 t = sfstruse(internal.nam);
                 strcpy(t, r->name);
-                for (n = *op == 'A';;)
-                {
+                for (n = *op == 'A';;) {
                     if (mount(
                         t, t, FS3D_GET | FS3D_VIEW | FS3D_SIZE(MAXNAME), NiL))
                         break;
@@ -2147,38 +1966,29 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
                     -1);
                     if (*op != '*')
                         break;
-                    if (n > 64)
-                    {
+                    if (n > 64) {
                         error(1, "%s: view loop", t);
                         break;
                     }
                     strcpy(t + strlen(t), "/...");
                 }
-            }
-            else
-            {
+            } else {
                 root = 0;
                 s = r->name;
-                if (n = r->view)
-                {
+                if (n = r->view) {
                     c = state.view[n].rootlen;
                     if (!strncmp(s, state.view[n].root, c)
-                        && (!s[c] || s[c] == '/') && *(s += c))
-                    {
+                        && (!s[c] || s[c] == '/') && *(s += c)) {
                         s++;
                         root = 1;
                     }
-                }
-                else if (*s == '/')
-                {
-                    for (i = 0;; i++)
-                    {
+                } else if (*s == '/') {
+                    for (i = 0;; i++) {
                         if (i > state.maxview)
                             break;
                         if (!strncmp(
                             s, state.view[i].root, n = state.view[i].rootlen)
-                            && (!*(s + n) || *(s + n) == '/'))
-                        {
+                            && (!*(s + n) || *(s + n) == '/')) {
                             if (!*(s += n) || !*++s)
                                 s = internal.dot->name;
                             n = i;
@@ -2187,18 +1997,15 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
                         }
                     }
                 }
-                if (*s == '/')
-                {
+                if (*s == '/') {
                     r = 0;
                     goto absolute;
                 }
-                for (; n <= state.maxview; n++)
-                {
+                for (; n <= state.maxview; n++) {
                     if (root)
                         sfprintf(
                         internal.nam, "%s/%s", state.view[n].root, s);
-                    else
-                    {
+                    else {
                         if (*state.view[n].path != '/')
                             sfprintf(internal.nam, "%s/", internal.pwd);
                         sfprintf(internal.nam, "%s", state.view[n].path);
@@ -2207,8 +2014,7 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
                     }
                     t = sfstruse(internal.nam);
                     pathcanon(t, 0, 0);
-                    if (!stat(t, &st))
-                    {
+                    if (!stat(t, &st)) {
                         if (sep)
                             sfputc(xp, ' ');
                         else
@@ -2219,14 +2025,11 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
                     }
                 }
             }
-            if (*op == 'A' && !sep)
-            {
+            if (*op == 'A' && !sep) {
                 r = 0;
                 goto absolute;
             }
-        }
-        else
-        {
+        } else {
             /*
              * return bound name if bound in view level 0 [n]
              */
@@ -2249,8 +2052,7 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
         if ((t = strchr(op, ',')) || (t = strchr(op, ' ')))
             *t++ = 0;
         if (s = pathprobe(
-            op, t ? t : idname, s, 0, sfstrrsrv(xp, MAXNAME), MAXNAME, NiL, 0))
-        {
+            op, t ? t : idname, s, 0, sfstrrsrv(xp, MAXNAME), MAXNAME, NiL, 0)) {
             sfstrseek(xp, strlen(s), SEEK_CUR);
             makerule(s)->dynamic |= D_built | D_global;
         }
@@ -2267,16 +2069,13 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
          * return bound name if bound in subdirectory in view
          */
 
-        if (r && (r->dynamic & D_bound))
-        {
+        if (r && (r->dynamic & D_bound)) {
             c = 0;
             if (*++op == '=')
                 op++;
-            if (r->view && (!state.fsview || state.expandview))
-            {
+            if (r->view && (!state.fsview || state.expandview)) {
                 n = state.view[r->view].pathlen;
-                if (*op)
-                {
+                if (*op) {
                     for (n = 1; op = strchr(op, '/'); n++, op++)
                         ;
                     for (t = state.view[r->view].path + n;
@@ -2289,11 +2088,8 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
                 if (!strncmp(s, state.view[r->view].path, n)
                     && *(s + n) == '/')
                     c = 1;
-            }
-            else if (!(r->dynamic & D_global))
-            {
-                if (*op)
-                {
+            } else if (!(r->dynamic & D_global)) {
+                if (*op) {
                     sfprintf(internal.nam, "%s/%s", op, s);
                     s = sfstruse(internal.nam);
                     pathcanon(s, 0, 0);
@@ -2319,8 +2115,7 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
     case 'V':
         if (!r || !(r->dynamic & D_bound) || !r->time)
             return;
-        if (*++op)
-        {
+        if (*++op) {
             /*
              * return the top view logical name of s
              */
@@ -2328,21 +2123,16 @@ pathop(Sfio_t *xp, char *s, char *op, int sep)
             s = r->name;
             if (*op == '=')
                 op++;
-            if (strtol(op, &e, 0) || *e)
-            {
+            if (strtol(op, &e, 0) || *e) {
                 error(2, "%s: view %s not supported", s, op);
                 return;
-            }
-            else if (state.maxview && !state.fsview && r->view)
-            {
+            } else if (state.maxview && !state.fsview && r->view) {
                 c = state.view[r->view].pathlen;
                 if (!strncmp(s, state.view[r->view].path, c)
                     && (!s[c] || s[c] == '/') && *(s += c))
                     s++;
             }
-        }
-        else
-        {
+        } else {
             /*
              * return view directory path of s
              */
@@ -2421,16 +2211,14 @@ edit(Sfio_t *xp, char *s, char *dir, char *bas, char *suf)
     q = dir;
     if (q != DELETE && q != KEEP && (!*q || *q == '.' && !*(q + 1)))
         q = DELETE;
-    if (p = strrchr(s, '/'))
-    {
+    if (p = strrchr(s, '/')) {
         if (q == KEEP)
             while (s <= p)
                 sfputc(xp, *s++);
         else
             s = ++p;
     }
-    if (q != DELETE && q != KEEP)
-    {
+    if (q != DELETE && q != KEEP) {
         sfputr(xp, q, -1);
         if (*q && *(sfstrseek(xp, 0, SEEK_CUR) - 1) != '/')
             sfputc(xp, '/');
@@ -2486,8 +2274,7 @@ substitute(Sfio_t *xp, regex_t *re, char *s)
     int n;
     regmatch_t match[10];
 
-    if (*s)
-    {
+    if (*s) {
         if (!(n = regexec(re, s, elementsof(match), match, 0))
             && !(n = regsubexec(re, s, elementsof(match), match)))
             s = re->re_sub->re_buf;
@@ -2507,8 +2294,7 @@ mimetype(Sfio_t *xp, char *file)
     static Magic_t *magic;
     static Magicdisc_t disc;
 
-    if (!magic)
-    {
+    if (!magic) {
         disc.version = MAGIC_VERSION;
         disc.flags = MAGIC_MIME;
         disc.errorf = errorf;
@@ -2518,8 +2304,7 @@ mimetype(Sfio_t *xp, char *file)
     }
     if (rstat(file, &st, 0) || !(sp = rsfopen(file)))
         mime = "error";
-    else
-    {
+    else {
         mime = magictype(magic, sp, file, &st);
         sfclose(sp);
     }
@@ -2560,13 +2345,11 @@ token(Sfio_t *xp, char *s, char *p, int sep)
     dobind = 1;
     dounbind = 0;
     dowait = 1;
-    while (op = *p)
-    {
+    while (op = *p) {
         p++;
         if (islower(op))
             op = toupper(op);
-        switch (op)
-        {
+        switch (op) {
         case 'B':
             dounbind = 1;
             continue;
@@ -2582,8 +2365,7 @@ token(Sfio_t *xp, char *s, char *p, int sep)
     ops = p;
     while (*p && *p++ != '?')
         ;
-    switch (op)
-    {
+    switch (op) {
     case 'N':
     case 'V':
         if ((*s == 0) == ((op == 'V') == !(sep & NOT)))
@@ -2594,8 +2376,7 @@ token(Sfio_t *xp, char *s, char *p, int sep)
             sfputc(xp, '1');
         return;
     case 'Q':
-        switch (*ops)
-        {
+        switch (*ops) {
         case 0:
             tst = !!getrule(s);
             break;
@@ -2608,8 +2389,7 @@ token(Sfio_t *xp, char *s, char *p, int sep)
                        & (NAME_altstate | NAME_staterule | NAME_statevar));
             break;
         case 'S':
-            switch (*(ops + 1))
-            {
+            switch (*(ops + 1)) {
             case 0:
                 tst = NAME_altstate | NAME_staterule | NAME_statevar;
                 break;
@@ -2629,8 +2409,7 @@ token(Sfio_t *xp, char *s, char *p, int sep)
             tst = (!dobind || getrule(s)) && (nametype(s, NiL) & tst);
             break;
         case 'V':
-            switch (*(ops + 1))
-            {
+            switch (*(ops + 1)) {
             case 0:
                 tst = !!getvar(s);
                 break;
@@ -2661,15 +2440,13 @@ token(Sfio_t *xp, char *s, char *p, int sep)
     r = makerule(s);
     if (dounbind)
         unbind(NiL, ( char * )r, NiL);
-    if (dobind)
-    {
+    if (dobind) {
         tst = state.mam.regress && state.user > 1 && !(r->dynamic & D_bound);
         r = bind(r);
         if (tst && !(r->dynamic & D_built))
             sfprintf(
             state.mam.out, "%sbind %s\n", state.mam.label, mamname(r));
-        if (op == 'F' && r->status == MAKING && dowait)
-        {
+        if (op == 'F' && r->status == MAKING && dowait) {
             Frame_t *fp;
 
             /*
@@ -2677,8 +2454,7 @@ token(Sfio_t *xp, char *s, char *p, int sep)
              */
 
             for (fp = state.frame; fp->target != r; fp = fp->parent)
-                if (fp == fp->parent)
-                {
+                if (fp == fp->parent) {
                     complete(r, NiL, NiL, 0);
                     break;
                 }
@@ -2686,10 +2462,8 @@ token(Sfio_t *xp, char *s, char *p, int sep)
     }
     if (*ops == '=')
         ops++;
-    if (!*r->name)
-    {
-        switch (op)
-        {
+    if (!*r->name) {
+        switch (op) {
         case 'Z':
             if (*ops != 'W')
                 break;
@@ -2712,22 +2486,19 @@ token(Sfio_t *xp, char *s, char *p, int sep)
            || (r->dynamic & (D_member | D_membertoo)) == D_member)
           ? 0
           : 'F';
-    switch (op)
-    {
+    switch (op) {
     case 0:
     case '*':
         matched = 1;
         break;
     case 'A':
         if ((r->scan != SCAN_IGNORE || *ops == 'F' || *ops == 'f')
-            && (s = arupdate(r->name)))
-        {
+            && (s = arupdate(r->name))) {
             Frame_t *oframe;
             Frame_t frame;
 
             oframe = state.frame;
-            if (!(state.frame = r->active))
-            {
+            if (!(state.frame = r->active)) {
                 zero(frame);
                 frame.target = r;
                 state.frame = frame.parent = &frame;
@@ -2739,40 +2510,31 @@ token(Sfio_t *xp, char *s, char *p, int sep)
     case 'D':
     case 'E':
         if ((r->property & (P_parameter | P_statevar)) == P_statevar
-            && (v = varstate(r, 0)))
-        {
-            if (*(p = v->value))
-            {
+            && (v = varstate(r, 0))) {
+            if (*(p = v->value)) {
                 tmp = sfstropen();
                 expand(tmp, p);
                 p = sfstruse(tmp);
             }
             if (state.localview > 1)
                 localvar(xp, v, p, op == 'D' ? V_local_D : V_local_E);
-            else if (*p)
-            {
-                if (op == 'D')
-                {
+            else if (*p) {
+                if (op == 'D') {
                     if (*p != '-' || isdigit(*(p + 1)))
                         sfprintf(xp, "-D%s", v->name);
                     else
                         op = 0;
-                    if (*p != '1' || *(p + 1))
-                    {
+                    if (*p != '1' || *(p + 1)) {
                         if (!op)
                             sfputr(xp, p, -1);
-                        else
-                        {
+                        else {
                             sfputc(xp, '=');
                             shquote(xp, p);
                         }
                     }
-                }
-                else
-                {
+                } else {
                     sfprintf(xp, "%s=", v->name);
-                    if (*p)
-                    {
+                    if (*p) {
                         if (*p == '"' || *p == '\'')
                             sfputr(xp, p, -1);
                         else
@@ -2785,27 +2547,24 @@ token(Sfio_t *xp, char *s, char *p, int sep)
         }
         return;
     case 'F':
-        if (!(op = *ops))
-        {
+        if (!(op = *ops)) {
             matched = (tst == 'F');
             break;
         }
         if (islower(op))
             op = toupper(op);
         if (tst == 'F' && op == 'R'
-            && (r->dynamic & (D_bound | D_regular)) == (D_bound | D_regular))
-        {
+            && (r->dynamic & (D_bound | D_regular))
+               == (D_bound | D_regular)) {
             matched = 1;
             break;
         }
         if (tst != 'F'
-            || ((sep & GT) ? pathstat(r->name, &st) : lstat(r->name, &st)))
-        {
+            || ((sep & GT) ? pathstat(r->name, &st) : lstat(r->name, &st))) {
             matched = 0;
             break;
         }
-        switch (op)
-        {
+        switch (op) {
         case 'B':
             matched = S_ISBLK(st.st_mode);
             break;
@@ -2836,8 +2595,7 @@ token(Sfio_t *xp, char *s, char *p, int sep)
         break;
     case 'G':
         if (tst != 'F' && dobind
-            || (r->property & (P_target | P_terminal)) == P_terminal)
-        {
+            || (r->property & (P_target | P_terminal)) == P_terminal) {
             matched = 0;
             break;
         }
@@ -2853,8 +2611,7 @@ token(Sfio_t *xp, char *s, char *p, int sep)
          * files to go undetected
          */
 
-        if (r->property & P_target)
-        {
+        if (r->property & P_target) {
             if (r->action || (r->property & (P_archive | P_command))
                 || !(state.questionable & 0x00004000)
                    && (r->dynamic & D_dynamic))
@@ -2868,8 +2625,7 @@ token(Sfio_t *xp, char *s, char *p, int sep)
         tmp = sfstropen();
         matched = 0;
         f = x ? (x->property & P_implicit) : 0;
-        for (z = internal.metarule->prereqs; z; z = z->next)
-        {
+        for (z = internal.metarule->prereqs; z; z = z->next) {
             char stem[MAXNAME];
 
             if (metamatch(stem, unbound(r), z->rule->name)
@@ -2881,12 +2637,10 @@ token(Sfio_t *xp, char *s, char *p, int sep)
                     if ((x = metarule(q->rule->name, z->rule->name, 0))
                         && (!(r->property & P_terminal)
                             || (x->property & P_terminal))
-                        && !(x->property & f))
-                    {
+                        && !(x->property & f)) {
                         metaexpand(tmp, stem, q->rule->name);
                         if ((x = bindfile(NiL, sfstruse(tmp), 0))
-                            && (x->time || (x->property & P_target)))
-                        {
+                            && (x->time || (x->property & P_target))) {
                             matched = 1;
                             break;
                         }
@@ -2897,10 +2651,8 @@ token(Sfio_t *xp, char *s, char *p, int sep)
     case 'I':
         if (!(sp = sfopen(NiL, r->name, "r")))
             error(2, "%s: cannot read", r->name);
-        else
-        {
-            switch (*ops)
-            {
+        else {
+            switch (*ops) {
             case '-':
             case 'X':
             case 'x':
@@ -2917,8 +2669,7 @@ token(Sfio_t *xp, char *s, char *p, int sep)
             while (p > s && *(p - 1) == '\n')
                 p--;
             sfstrseek(tmp, p - s, SEEK_SET);
-            if (tmp != xp)
-            {
+            if (tmp != xp) {
                 expand(xp, sfstruse(tmp));
                 sfstrclose(tmp);
             }
@@ -2933,10 +2684,8 @@ token(Sfio_t *xp, char *s, char *p, int sep)
         p = "w";
         sep = '\n';
         tst = 1;
-        for (;; ops++)
-        {
-            switch (*ops)
-            {
+        for (;; ops++) {
+            switch (*ops) {
             case '+':
             case 'A':
             case 'a':
@@ -2958,12 +2707,10 @@ token(Sfio_t *xp, char *s, char *p, int sep)
             ops++;
         if (!(sp = sfopen(NiL, r->name, p)))
             error(2, "%s: cannot write", r->name);
-        else
-        {
+        else {
             if (tst)
                 sfputr(sp, ops, sep);
-            else
-            {
+            else {
                 tmp = sfstropen();
                 expand(tmp, ops);
                 if (sep != -1)
@@ -2990,22 +2737,19 @@ token(Sfio_t *xp, char *s, char *p, int sep)
             ops++;
         if (islower(op))
             op = toupper(op);
-        if (force = op == 'F')
-        {
+        if (force = op == 'F') {
             op = *ops++;
             if (*ops == '=')
                 ops++;
             if (islower(op))
                 op = toupper(op);
         }
-        if (!op)
-        {
+        if (!op) {
             matched = (r->property & P_state) != 0;
             break;
         }
         x = 0;
-        switch (op)
-        {
+        switch (op) {
         case 'A':
             if (r->property & P_staterule)
                 x = rulestate(r, force);
@@ -3033,20 +2777,16 @@ token(Sfio_t *xp, char *s, char *p, int sep)
     case 'T':
         if (!*ops)
             tm = state.frame->target->time;
-        else
-        {
+        else {
             tm = strtoull(ops, &s, 10);
             if (*s == '.')
                 tm = tmxsns(tm, strtoull(s, &s, 10));
-            if (*s)
-            {
-                if (x = getrule(ops))
-                {
+            if (*s) {
+                if (x = getrule(ops)) {
                     if (dobind)
                         x = bind(x);
                     tm = x->time;
-                }
-                else
+                } else
                     tm = 0;
             }
         }
@@ -3054,25 +2794,20 @@ token(Sfio_t *xp, char *s, char *p, int sep)
             sfputr(xp, r->name, -1);
         return;
     case 'U':
-        if (r->property & P_staterule)
-        {
+        if (r->property & P_staterule) {
             if (r = rulestate(r, *ops != 'Q'))
                 sfputr(xp, r->name, -1);
-        }
-        else if (r->property & P_statevar)
-        {
+        } else if (r->property & P_statevar) {
             if (v = varstate(r, *ops != 'Q'))
                 sfputr(xp, v->name, -1);
-        }
-        else
+        } else
             sfputr(xp, r->name, -1);
         return;
     case 'Y':
         mimetype(xp, r->name);
         return;
     case 'Z':
-        switch (*ops++)
-        {
+        switch (*ops++) {
         case 'C':
             tm = (x = staterule(PREREQS, r, NiL, 0)) ? x->time : 0;
             break;
@@ -3105,8 +2840,7 @@ token(Sfio_t *xp, char *s, char *p, int sep)
         matched = (op == tst);
         break;
     }
-    if (matched == !(sep & NOT))
-    {
+    if (matched == !(sep & NOT)) {
         if (*p)
             expand(xp, p);
         else
@@ -3142,8 +2876,7 @@ parentage(Sfio_t *xp, Rule_t *r, char *sep)
 {
     if (r->active && active(r, r->active) && r->active->parent
         && !(r->active->parent->target->mark & M_mark)
-        && r->active->parent->parent != r->active->parent)
-    {
+        && r->active->parent->parent != r->active->parent) {
         r->mark |= M_mark;
         parentage(xp, r->active->parent->target, sep);
         r->mark &= ~M_mark;
@@ -3177,37 +2910,29 @@ attribute(Sfio_t *xp, char *s, char *att, int sep)
 
     i = 0;
     r = getrule(s);
-    do
-    {
+    do {
         if (!r)
             z = 0;
-        else if (!(r->dynamic & D_alias))
-        {
+        else if (!(r->dynamic & D_alias)) {
             s = r->name;
             z = 0;
-        }
-        else if (!(z = getrule(r->name)))
+        } else if (!(z = getrule(r->name)))
             break;
         x = associate(internal.attribute_p, r, s, NiL);
-        if (r || (x || (sep & LT)) && (r = makerule(s)))
-        {
+        if (r || (x || (sep & LT)) && (r = makerule(s))) {
             n = r->attribute;
             if (x)
                 n |= x->attribute;
-            if (att)
-            {
-                for (;;)
-                {
+            if (att) {
+                for (;;) {
                     while (isspace(*att))
                         att++;
                     if ((t = strchr(att, c = '|'))
                         || (t = strchr(att, c = ' ')))
                         *t = 0;
-                    if (sep & GT)
-                    {
+                    if (sep & GT) {
                         for (p = r->prereqs; p; p = p->next)
-                            if (strmatch(p->rule->name, att))
-                            {
+                            if (strmatch(p->rule->name, att)) {
                                 if (t)
                                     *t = c;
                                 if (i)
@@ -3217,14 +2942,10 @@ attribute(Sfio_t *xp, char *s, char *att, int sep)
                                 sfputr(xp, s, -1);
                                 goto next;
                             }
-                    }
-                    else if (a = getrule(att))
-                    {
-                        if (sep & LT)
-                        {
+                    } else if (a = getrule(att)) {
+                        if (sep & LT) {
                             if ((y = associate(a, r, s, NiL))
-                                || x && (y = associate(a, x, NiL, NiL)))
-                            {
+                                || x && (y = associate(a, x, NiL, NiL))) {
                                 if (t)
                                     *t = c;
                                 if (i)
@@ -3234,13 +2955,10 @@ attribute(Sfio_t *xp, char *s, char *att, int sep)
                                 sfputr(xp, y->name, -1);
                                 goto next;
                             }
-                        }
-                        else if (hasattribute(r, a, x))
-                        {
+                        } else if (hasattribute(r, a, x)) {
                             if (t)
                                 *t = c;
-                            if (sep == EQ)
-                            {
+                            if (sep == EQ) {
                                 if (i)
                                     sfputc(xp, ' ');
                                 else
@@ -3255,21 +2973,17 @@ attribute(Sfio_t *xp, char *s, char *att, int sep)
                     *t++ = c;
                     att = t;
                 }
-                if (sep & NOT)
-                {
+                if (sep & NOT) {
                     if (i)
                         sfputc(xp, ' ');
                     else
                         i = 1;
                     sfputr(xp, s, -1);
                 }
-            }
-            else
-            {
+            } else {
                 if (n && r != internal.attribute)
                     for (p = internal.attribute->prereqs; p; p = p->next)
-                        if (n & p->rule->attribute)
-                        {
+                        if (n & p->rule->attribute) {
                             if (i)
                                 sfputc(xp, ' ');
                             else
@@ -3278,8 +2992,7 @@ attribute(Sfio_t *xp, char *s, char *att, int sep)
                         }
                 if (r->scan && r != internal.scan)
                     for (p = internal.scan->prereqs; p; p = p->next)
-                        if (p->rule->scan == r->scan)
-                        {
+                        if (p->rule->scan == r->scan) {
                             if (i)
                                 sfputc(xp, ' ');
                             else
@@ -3288,9 +3001,7 @@ attribute(Sfio_t *xp, char *s, char *att, int sep)
                             break;
                         }
             }
-        }
-        else if (att && (sep & NOT))
-        {
+        } else if (att && (sep & NOT)) {
             if (i)
                 sfputc(xp, ' ');
             else
@@ -3315,23 +3026,19 @@ generate(Sfio_t *xp, char *name, char *pat, int sep)
     char *b;
     char stem[MAXNAME];
 
-    if (pat[0] != '%' || pat[1])
-    {
-        if (metamatch(NiL, name, pat))
-        {
+    if (pat[0] != '%' || pat[1]) {
+        if (metamatch(NiL, name, pat)) {
             if (!(sep & NOT))
                 sfputr(xp, name, -1);
             return;
         }
-        if (!strchr(pat, '%'))
-        {
+        if (!strchr(pat, '%')) {
             for (p = internal.metarule->prereqs; p; p = p->next)
                 if (metamatch(stem, pat, p->rule->name)
                     && (x = metainfo('I', p->rule->name, NiL, 0)))
                     for (q = x->prereqs; q; q = q->next)
                         if (metamatch(tmpname, name, q->rule->name)
-                            && streq(stem, tmpname))
-                        {
+                            && streq(stem, tmpname)) {
                             if (!(sep & NOT))
                                 sfputr(xp, name, -1);
                             return;
@@ -3341,28 +3048,22 @@ generate(Sfio_t *xp, char *name, char *pat, int sep)
                     if (metamatch(tmpname, name, p->rule->name)
                         && (streq(tmpname, pat)
                             || (b = strrchr(pat, '/'))
-                               && streq(tmpname, b + 1)))
-                    {
+                               && streq(tmpname, b + 1))) {
                         if (!(sep & NOT))
                             sfputr(xp, name, -1);
                         return;
                     }
-        }
-        else
-        {
+        } else {
             Sfio_t *tp;
             long n;
 
             tp = sfstropen();
             for (p = internal.metarule->prereqs; p; p = p->next)
                 if (metamatch(NiL, p->rule->name, pat)
-                    && (x = metainfo('I', p->rule->name, NiL, 0)))
-                {
+                    && (x = metainfo('I', p->rule->name, NiL, 0))) {
                     for (q = x->prereqs; q; q = q->next)
-                        if (metamatch(stem, name, q->rule->name))
-                        {
-                            if (!(sep & NOT))
-                            {
+                        if (metamatch(stem, name, q->rule->name)) {
+                            if (!(sep & NOT)) {
                                 /*UNDENT...*/
 
                                 Rule_t *y;
@@ -3371,17 +3072,13 @@ generate(Sfio_t *xp, char *name, char *pat, int sep)
                                 long b;
 
                                 if (z = metarule(
-                                    q->rule->name, p->rule->name, 0))
-                                {
-                                    if (!z->uname)
-                                    {
-                                        if (y
-                                            = metainfo('S', z->name, NiL, 0))
-                                        {
+                                    q->rule->name, p->rule->name, 0)) {
+                                    if (!z->uname) {
+                                        if (y = metainfo(
+                                            'S', z->name, NiL, 0)) {
                                             b = sfstrtell(xp);
                                             for (u = y->prereqs; u;
-                                                 u = u->next)
-                                            {
+                                                 u = u->next) {
                                                 n = sfstrtell(xp);
                                                 metaexpand(
                                                 tp, stem, u->rule->name);
@@ -3399,10 +3096,8 @@ generate(Sfio_t *xp, char *name, char *pat, int sep)
                                             sfstrclose(tp);
                                             return;
                                         }
-                                    }
-                                    else if (y = metainfo(
-                                             'O', q->rule->name, NiL, 0))
-                                    {
+                                    } else if (y = metainfo(
+                                               'O', q->rule->name, NiL, 0)) {
                                         for (u = y->prereqs; u; u = u->next)
                                             if (metamatch(
                                                 NiL, u->rule->name, z->uname)
@@ -3410,12 +3105,10 @@ generate(Sfio_t *xp, char *name, char *pat, int sep)
                                                     = metainfo('S',
                                                                q->rule->name,
                                                                u->rule->name,
-                                                               0)))
-                                            {
+                                                               0))) {
                                                 b = sfstrtell(xp);
                                                 for (u = y->prereqs; u;
-                                                     u = u->next)
-                                                {
+                                                     u = u->next) {
                                                     n = sfstrtell(xp);
                                                     metaexpand(
                                                     tp, stem, u->rule->name);
@@ -3448,28 +3141,23 @@ generate(Sfio_t *xp, char *name, char *pat, int sep)
                             sfstrclose(tp);
                             return;
                         }
-                    if (!(state.questionable & 0x00000200))
-                    {
+                    if (!(state.questionable & 0x00000200)) {
                         char *t;
 
                         n = sfstrtell(xp);
                         for (q = x->prereqs; q; q = q->next)
-                            if (q->rule->name != pat)
-                            {
+                            if (q->rule->name != pat) {
                                 generate(tp, name, q->rule->name, sep);
-                                if (sfstrtell(tp))
-                                {
+                                if (sfstrtell(tp)) {
                                     t = sfstruse(tp);
-                                    if (!streq(t, name))
-                                    {
+                                    if (!streq(t, name)) {
                                         if (sfstrtell(xp) != n)
                                             sfputc(xp, ' ');
                                         generate(xp, sfstruse(tp), pat, sep);
                                     }
                                 }
                             }
-                        if (sfstrtell(xp) != n)
-                        {
+                        if (sfstrtell(xp) != n) {
                             sfstrclose(tp);
                             return;
                         }
@@ -3477,12 +3165,9 @@ generate(Sfio_t *xp, char *name, char *pat, int sep)
                 }
             sfstrclose(tp);
         }
-    }
-    else if (x = metainfo('N', NiL, NiL, 0))
-    {
+    } else if (x = metainfo('N', NiL, NiL, 0)) {
         for (p = x->prereqs; p; p = p->next)
-            if (metamatch(tmpname, name, p->rule->name))
-            {
+            if (metamatch(tmpname, name, p->rule->name)) {
                 if (!(sep & NOT))
                     metaexpand(xp, tmpname, p->rule->name);
                 return;
@@ -3504,17 +3189,14 @@ shquote(Sfio_t *xp, char *s)
     int c;
     int q;
 
-    if (*s == '"' && *(s + strlen(s) - 1) == '"')
-    {
+    if (*s == '"' && *(s + strlen(s) - 1) == '"') {
         sfprintf(xp, "\\\"%s\\\"", s);
         return;
     }
     q = 0;
     b = 0;
-    for (t = s;;)
-    {
-        switch (c = *t++)
-        {
+    for (t = s;;) {
+        switch (c = *t++) {
         case 0:
             break;
         case '\n':
@@ -3562,24 +3244,19 @@ shquote(Sfio_t *xp, char *s)
     }
     if (!q)
         sfputr(xp, s, -1);
-    else if (!(q & 1))
-    {
+    else if (!(q & 1)) {
         if (b)
             sfprintf(xp, "%-.*s'%s'", b - s, s, b);
         else
             sfprintf(xp, "'%s'", s);
-    }
-    else if (!(q & 2))
-    {
+    } else if (!(q & 2)) {
         if (b)
             sfprintf(xp, "%-.*s\"%s\"", b - s, s, b);
         else
             sfprintf(xp, "\"%s\"", s);
-    }
-    else
+    } else
         for (t = s;;)
-            switch (c = *t++)
-            {
+            switch (c = *t++) {
             case 0:
                 return;
             case '\n':
@@ -3631,8 +3308,7 @@ editcontext(char *beg, char *cur)
     if (*cur)
         sfprintf(internal.tmp, ">>>%c", *cur);
     sfprintf(internal.tmp, "<<<");
-    if (*cur && *(cur + 1))
-    {
+    if (*cur && *(cur + 1)) {
         n = EDITCONTEXT - n;
         if (n > 0)
             sfprintf(internal.tmp, "%-*.*s", n, n, cur + 1);
@@ -3652,14 +3328,11 @@ expandall(Sfio_t *xp, unsigned long all)
     Hash_position_t *pos;
 
     sep = 0;
-    if (pos = hashscan(table.rule, 0))
-    {
-        while (hashnext(pos))
-        {
+    if (pos = hashscan(table.rule, 0)) {
+        while (hashnext(pos)) {
             r = ( Rule_t * )pos->bucket->value;
             if (pos->bucket->name == r->name && !(r->dynamic & D_alias)
-                && (!all || (r->dynamic & all)))
-            {
+                && (!all || (r->dynamic & all))) {
                 if (sep)
                     sfputc(xp, ' ');
                 else
@@ -3735,23 +3408,18 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
     buf[1] = 0;
     top[1] = 0;
     dir = bas = suf = DELETE;
-    if (exp < 0)
-    {
-        if (state.expandall)
-        {
+    if (exp < 0) {
+        if (state.expandall) {
             error(1, "$(...) recursion disabled");
             return;
         }
         state.expandall = 1;
         all = lla == D_select0 ? D_select1 : D_select0;
-    }
-    else
-    {
+    } else {
         all = 0;
         if (exp)
             expand(xp, v);
-        else
-        {
+        else {
             out = !out;
             xp = buf[out];
             beg = top[out];
@@ -3759,60 +3427,51 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
     }
     eb = ed;
     qual = 0;
-    while (op = *ed++)
-    {
+    while (op = *ed++) {
         if (op == del || isspace(op))
             continue;
-        if (op == '!')
-        {
+        if (op == '!') {
             while (isspace(*ed))
                 ed++;
             if ((op = *ed++) == del)
                 continue;
             qual |= NE;
         }
-        if (islower(op))
-        {
+        if (islower(op)) {
             qual |= ED_LONG;
             ed--;
 #if DEBUG
             if (state.test & 0x00000010)
                 error(2, "edit +++ %-.32s", ed);
 #endif
-            if (map = getedit(&ed, del))
-            {
-                switch (map->cmd.type)
-                {
+            if (map = getedit(&ed, del)) {
+                switch (map->cmd.type) {
                 case ED_COPY:
                     goto copy;
                 case ED_EDIT:
                     qual |= ED_PARTS;
-                    if (!map->cmd.arg || *ed && *ed != del)
-                    {
+                    if (!map->cmd.arg || *ed && *ed != del) {
                         dir = bas = suf = KEEP;
                         *--ed = '=';
                     }
                     goto copy;
                 case ED_OP:
-                    if (map->options)
-                    {
+                    if (map->options) {
                         const Edit_opt_t *opt;
 
                         /*UNDENT...*/
                         val = flags;
-                        if (!*(opt = map->options)->name)
-                        {
+                        if (!*(opt = map->options)->name) {
                             if (opt->cmd.type == ED_QUAL)
                                 qual |= opt->cmd.op;
                             else if (*ed != '-'
                                      || *(ed + 1) == '-'
-                                        && (!*(ed + 2) || isspace(*(ed + 2))))
-                            {
+                                        && (!*(ed + 2)
+                                            || isspace(*(ed + 2)))) {
                                 if (opt->cmd.op)
                                     op = opt->cmd.op;
                                 if (opt->cmd.arg
-                                    && val < &flags[sizeof(flags)])
-                                {
+                                    && val < &flags[sizeof(flags)]) {
                                     *val++ = opt->cmd.arg;
                                     if (opt->cmd.aux
                                         && val < &flags[sizeof(flags)])
@@ -3820,14 +3479,11 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                                 }
                             }
                         }
-                        while (*ed == '-')
-                        {
-                            if ((n = *++ed) == '-' || n == 'o')
-                            {
+                        while (*ed == '-') {
+                            if ((n = *++ed) == '-' || n == 'o') {
                                 if (!*++ed || *ed == del)
                                     break;
-                                if (isspace(*ed))
-                                {
+                                if (isspace(*ed)) {
                                     if (n == '-')
                                         break;
                                     while (isspace(*++ed))
@@ -3839,10 +3495,8 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                                     ;
                                 m = *ed;
                                 *ed = 0;
-                                for (opt = map->options;; opt++)
-                                {
-                                    if (!opt->name)
-                                    {
+                                for (opt = map->options;; opt++) {
+                                    if (!opt->name) {
                                         error(1,
                                               "%s: --%s: unknown edit "
                                               "operator option",
@@ -3850,18 +3504,15 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                                               s);
                                         break;
                                     }
-                                    if (streq(s, opt->name))
-                                    {
+                                    if (streq(s, opt->name)) {
                                         if (opt->cmd.type == ED_QUAL)
                                             qual ^= opt->cmd.op;
-                                        else
-                                        {
+                                        else {
                                             if (opt->cmd.op)
                                                 op = opt->cmd.op;
                                             if (opt->cmd.arg
                                                 && val
-                                                   < &flags[sizeof(flags)])
-                                            {
+                                                   < &flags[sizeof(flags)]) {
                                                 *val++ = opt->cmd.arg;
                                                 if (opt->cmd.aux
                                                     && val
@@ -3873,17 +3524,12 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                                     }
                                 }
                                 *ed = m;
-                            }
-                            else
-                            {
-                                while (n && n != del)
-                                {
+                            } else {
+                                while (n && n != del) {
                                     if (isspace(n))
                                         break;
-                                    for (opt = map->options;; opt++)
-                                    {
-                                        if (!opt->name)
-                                        {
+                                    for (opt = map->options;; opt++) {
+                                        if (!opt->name) {
                                             error(1,
                                                   "%s: -%c: unknown edit "
                                                   "operator option",
@@ -3891,18 +3537,15 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                                                   n);
                                             break;
                                         }
-                                        if (*opt->name == n)
-                                        {
+                                        if (*opt->name == n) {
                                             if (opt->cmd.type == ED_QUAL)
                                                 qual ^= opt->cmd.op;
-                                            else
-                                            {
+                                            else {
                                                 if (opt->cmd.op)
                                                     op = opt->cmd.op;
                                                 if (opt->cmd.arg
-                                                    && val
-                                                       < &flags[sizeof(flags)])
-                                                {
+                                                    && val < &flags[sizeof(
+                                                             flags)]) {
                                                     *val++ = opt->cmd.arg;
                                                     if (opt->cmd.aux
                                                         && val
@@ -3936,8 +3579,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                     qual &= ~(ED_NOBIND | ED_NOWAIT);
                 else if (map->cmd.arg != 'S')
                     qual &= ~(ED_FORCE);
-                if (map->cmd.arg)
-                {
+                if (map->cmd.arg) {
                     if (map->cmd.aux)
                         *--ed = map->cmd.aux;
                     if (qual & ED_FORCE)
@@ -3948,10 +3590,8 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                     *--ed = 'X';
                 if (qual & ED_NOWAIT)
                     *--ed = 'W';
-                if (ed != s)
-                {
-                    if (qual & (NOT | EQ | LT | GT))
-                    {
+                if (ed != s) {
+                    if (qual & (NOT | EQ | LT | GT)) {
                         if (qual & EQ)
                             *--ed = '=';
                         if (qual & GT)
@@ -3960,15 +3600,12 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                             *--ed = '<';
                         if ((qual & (NOT | GT | LT)) == NOT)
                             *--ed = '!';
-                    }
-                    else
+                    } else
                         *--ed = '=';
                 }
             copy:
                 *--ed = map->cmd.op;
-            }
-            else
-            {
+            } else {
                 for (eb = ed; islower(*ed); ed++)
                     ;
                 error(3, "unknown edit operator: %-.*s", ed - eb, eb);
@@ -3987,16 +3624,14 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
          */
 
         expall = op == 'O' && (!*ed || *ed == del);
-        if (op == '@')
-        {
+        if (op == '@') {
             tokenize = 0;
             if (!(op = *ed++) || op == del)
                 error(
                 3, "prefix edit operator only: %s", editcontext(eb, ed));
             if (islower(op))
                 op = toupper(op);
-        }
-        else
+        } else
             tokenize = 1;
         sep = 0;
 
@@ -4004,14 +3639,12 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
          * collect the operands
          */
 
-        if (op == 'C' || op == '/')
-        {
+        if (op == 'C' || op == '/') {
             /*
              * substitute: <delim><old><delim><new><delim>[flags]
              */
 
-            switch (op)
-            {
+            switch (op) {
             case 'C':
                 break;
             case '/':
@@ -4020,22 +3653,19 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                 break;
             }
             s = ed;
-            if (!(n
-                  = regcomp(&re, ed, REG_DELIMITED | REG_LENIENT | REG_NULL)))
-            {
+            if (!(n = regcomp(
+                  &re, ed, REG_DELIMITED | REG_LENIENT | REG_NULL))) {
                 ed += re.re_npat;
                 if (!(n = regsubcomp(&re, ed, submap, 0, 0)))
                     ed += re.re_npat;
             }
-            if (n)
-            {
+            if (n) {
                 regfatalpat(&re, 2, n, s);
                 while (*ed && *ed++ != del)
                     ;
                 continue;
             }
-            if (*ed)
-            {
+            if (*ed) {
                 if (*ed != del)
                     error(1,
                           "invalid character after substitution: %s",
@@ -4045,16 +3675,13 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
             }
             if (*++s == ' ')
                 tokenize = 0;
-        }
-        else if (op == 'Y' || op == '?')
-        {
+        } else if (op == 'Y' || op == '?') {
             /*
              * conditional: <delim><non-null><delim><null><delim>
              */
 
             n = op;
-            switch (op)
-            {
+            switch (op) {
             case 'Y':
                 if (n = *ed)
                     ed++;
@@ -4085,8 +3712,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
             *s = 0;
             old = zer = 0;
             while (*ed && *ed != del && !isspace(*ed))
-                switch (*ed++)
-                {
+                switch (*ed++) {
                 case 'O':
                 case 'o':
                     old = 1;
@@ -4105,32 +3731,24 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                 }
             if (*ed)
                 ed++;
-        }
-        else if (*ed == del || (qual & ED_LONG) && isspace(*ed))
-        {
+        } else if (*ed == del || (qual & ED_LONG) && isspace(*ed)) {
             ed++;
             val = KEEP;
-        }
-        else if (*ed)
-        {
+        } else if (*ed) {
             /*
              * value: [~!<>][=][<val>]
              */
 
-            if (isupper(op))
-            {
-                for (;; ed++)
-                {
-                    switch (*ed)
-                    {
+            if (isupper(op)) {
+                for (;; ed++) {
+                    switch (*ed) {
                     case '=':
                         sep |= EQ;
                         ed++;
                         break;
                     case '-':
                     case '+':
-                        if (!sep)
-                        {
+                        if (!sep) {
                             sep |= EQ;
                             ed++;
                         }
@@ -4163,8 +3781,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                     }
                     break;
                 }
-                if (!sep)
-                {
+                if (!sep) {
                     error(3,
                           "edit operator delimiter omitted: %s",
                           editcontext(eb, ed + 1));
@@ -4172,33 +3789,24 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                 }
             }
             val = ed;
-            for (cnt = n = 0; *ed; ed++)
-            {
-                if (cnt)
-                {
+            for (cnt = n = 0; *ed; ed++) {
+                if (cnt) {
                     if (*ed == cnt)
                         n++;
                     else if (*ed == cntlim && !--n)
                         cnt = 0;
-                }
-                else if (*ed == '(')
-                {
+                } else if (*ed == '(') {
                     cnt = '(';
                     cntlim = ')';
                     n++;
-                }
-                else if (*ed == '[')
-                {
+                } else if (*ed == '[') {
                     cnt = '[';
                     cntlim = ']';
                     n++;
-                }
-                else if (n <= 0)
-                {
+                } else if (n <= 0) {
                     if (*ed == del)
                         break;
-                    if ((qual & ED_LONG) && isspace(*ed))
-                    {
+                    if ((qual & ED_LONG) && isspace(*ed)) {
                         s = ed;
                         while (isspace(*++s))
                             ;
@@ -4211,22 +3819,18 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                 *ed++ = 0;
             if (!*val)
                 val = DELETE;
-        }
-        else
+        } else
             val = KEEP;
-        switch (op)
-        {
+        switch (op) {
         case 'B':
             bas = val;
         parts:
-            if (!(qual & ED_PARTS))
-            {
+            if (!(qual & ED_PARTS)) {
                 /*
                  * B, D and S are grouped before application
                  */
 
-                switch (*ed)
-                {
+                switch (*ed) {
                 case 'B':
                     if (bas == DELETE)
                         continue;
@@ -4271,20 +3875,16 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
          * validate the operator and apply non-tokenizing operators
          */
 
-        if (all && (expall || !tokenize))
-        {
+        if (all && (expall || !tokenize)) {
             expandall(xp, exp < 0 ? 0 : all);
             all = 0;
             state.expandall = 0;
         }
-        if (!all)
-        {
-            if (xp)
-            {
+        if (!all) {
+            if (xp) {
                 sfputc(xp, 0);
                 x = sfstrseek(xp, beg, SEEK_SET);
-            }
-            else
+            } else
                 x = v;
             out = !out;
             if (!(xp = buf[out]))
@@ -4292,8 +3892,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
             beg = top[out];
         }
         ctx = !!state.context;
-        switch (op)
-        {
+        switch (op) {
         case 'A':
         case 'Q':
             if (val == KEEP || val == DELETE)
@@ -4321,8 +3920,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
             if (val == KEEP || val == DELETE)
                 error(
                 3, "edit operator value omitted: %s", editcontext(eb, ed));
-            switch (op)
-            {
+            switch (op) {
             case 'X':
                 cross(xp, x, val);
                 continue;
@@ -4345,8 +3943,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                 sep = EQ;
             if (val == KEEP || val == DELETE)
                 val = null;
-            switch (op)
-            {
+            switch (op) {
             case 'I':
                 intersect(xp, x, val, sep);
                 continue;
@@ -4371,8 +3968,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                 if (sep & HAT)
                     n |= SORT_force;
                 if (x[0] == '<' && x[strlen(x) - 1] == '>')
-                    switch (x[1])
-                    {
+                    switch (x[1]) {
                     case 'F':
                     case 'f':
                         listtab(xp, table.file, val, n);
@@ -4396,8 +3992,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                 if (n = regcomp(&re,
                                 val,
                                 REG_AUGMENTED | REG_LENIENT | REG_NOSUB
-                                | REG_NULL))
-                {
+                                | REG_NULL)) {
                     regfatalpat(&re, 2, n, val);
                     continue;
                 }
@@ -4407,8 +4002,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                     = regcomp(&re,
                               val,
                               REG_SHELL | REG_AUGMENTED | REG_LEFT | REG_RIGHT
-                              | REG_LENIENT | REG_NOSUB | REG_NULL))
-                {
+                              | REG_LENIENT | REG_NOSUB | REG_NULL)) {
                     regfatalpat(&re, 2, n, val);
                     continue;
                 }
@@ -4425,8 +4019,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                 op = *val++;
                 if (!*val || *val == '=' && !*++val)
                     val = 0;
-                switch (op)
-                {
+                switch (op) {
                 case 'O':
                     order_recurse(
                     xp, x, NiL, NiL, val, ORDER_force | ORDER_paths);
@@ -4460,15 +4053,13 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
             }
             break;
         case 'H':
-            if (x == v)
-            {
+            if (x == v) {
                 buf[1] = sfstropen();
                 sfputr(buf[1], x, 0);
                 x = sfstrseek(buf[1], 0, SEEK_SET);
             }
             n = SORT_sort;
-            if (val == DELETE || val == KEEP)
-            {
+            if (val == DELETE || val == KEEP) {
                 if (sep & GT)
                     n |= SORT_invert;
                 if (sep & EQ)
@@ -4477,12 +4068,9 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                     n |= SORT_uniq;
                 if (sep & MAT)
                     n |= SORT_version;
-            }
-            else
-                for (;;)
-                {
-                    switch (*val++)
-                    {
+            } else
+                for (;;) {
+                    switch (*val++) {
                     case 0:
                         break;
                     case 'C':
@@ -4553,63 +4141,50 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
             tok = tokopen(x, 1);
         else if (!(pos = hashscan(table.rule, 0)))
             goto breakloop;
-        for (cnt = 1, ctx_end = 0;; cnt++, ctx_end = 0)
-        {
-            if (!tokenize)
-            {
+        for (cnt = 1, ctx_end = 0;; cnt++, ctx_end = 0) {
+            if (!tokenize) {
                 if (cnt > 1)
                     break;
                 s = x;
-            }
-            else if (all)
-            {
-                for (;;)
-                {
+            } else if (all) {
+                for (;;) {
                     if (!hashnext(pos))
                         goto breakloop;
                     r = ( Rule_t * )pos->bucket->value;
                     if (pos->bucket->name == r->name
                         && !(r->dynamic & D_alias)
-                        && (exp < 0 || (r->dynamic & all)))
-                    {
+                        && (exp < 0 || (r->dynamic & all))) {
                         r->dynamic &= ~all;
                         break;
                     }
                 }
                 s = r->name;
-            }
-            else
-            {
-                if (!(s = tokread(tok)))
-                {
+            } else {
+                if (!(s = tokread(tok))) {
                     if (cnt > 1)
                         break;
                     s = null;
                 }
-                if (*s != '\n' && (cur = sfstrtell(xp)) > arg)
-                {
+                if (*s != '\n' && (cur = sfstrtell(xp)) > arg) {
                     if (!isspace(*(sfstrbase(xp) + cur - 1)))
                         sfputc(xp, ' ');
                     arg = sfstrtell(xp);
                 }
             }
-            if (ctx && iscontextp(s, &ctx_end))
-            {
+            if (ctx && iscontextp(s, &ctx_end)) {
                 s++;
                 *(ctx_end - 1) = 0;
                 sfputc(xp, MARK_CONTEXT);
                 ctx_beg = sfstrtell(xp);
             }
-            switch (op)
-            {
+            switch (op) {
             case 'A':
                 attribute(xp, s, val, sep);
                 break;
             case 'B':
             case 'D':
             case 'S':
-                if (*s)
-                {
+                if (*s) {
                     if (dir == KEEP)
                         cur = sfstrtell(xp);
                     edit(xp, s, dir, bas, suf);
@@ -4622,8 +4197,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                 break;
             case 'F':
 #if !_drop_this_in_3_2
-                switch (*val)
-                {
+                switch (*val) {
                 case 'L':
                     val = "%(lower)s";
                     message(
@@ -4644,8 +4218,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                 strprintf(xp, val, s, 1, -1);
                 break;
             case 'G':
-                if (*val)
-                {
+                if (*val) {
                     char *t;
                     char *v;
 
@@ -4653,8 +4226,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                     while (v = tokread(t))
                         generate(xp, s, v, sep);
                     tokclose(t);
-                }
-                else
+                } else
                     generate(xp, s, val, sep);
                 break;
             case 'M':
@@ -4668,23 +4240,19 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                 if (cntlim < 0)
                     sfstrseek(xp, arg = beg, SEEK_SET);
                 else
-                    switch (sep)
-                    {
+                    switch (sep) {
                     case EQ:
-                        if (!cntlim)
-                        {
+                        if (!cntlim) {
                             if (s == null)
                                 goto breakloop;
                             goto nextloop;
-                        }
-                        else if (cnt < cntlim)
+                        } else if (cnt < cntlim)
                             goto nextloop;
                         else if (cnt > cntlim)
                             goto breakloop;
                         break;
                     case NOT:
-                        if (!cntlim)
-                        {
+                        if (!cntlim) {
                             sfprintf(xp, "%d", strlen(s));
                             goto nextloop;
                         }
@@ -4734,8 +4302,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
 #endif
             }
         nextloop:
-            if (ctx_end)
-            {
+            if (ctx_end) {
                 *ctx_end = MARK_CONTEXT;
                 n = sfstrtell(xp) - ctx_beg;
                 if (!n)
@@ -4743,8 +4310,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                 else if (n > 1
                          && *(s = sfstrbase(xp) + ctx_beg) == MARK_CONTEXT)
                     *(s - 1) = ' ';
-                else
-                {
+                else {
                     sfputc(xp, MARK_CONTEXT);
                     s = sfstrbase(xp) + ctx_beg;
                     x = s + n + 1;
@@ -4753,15 +4319,12 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                         if (*s++ == ' ')
                             for (m++; s < x && *s == ' '; s++)
                                 ;
-                    if (m)
-                    {
+                    if (m) {
                         sfprintf(xp, "%*s", m * 2, null);
                         x = sfstrbase(xp) + ctx_beg + n + 1;
                         s = x + m * 2;
-                        for (;;)
-                        {
-                            if ((*--s = *--x) == ' ')
-                            {
+                        for (;;) {
+                            if ((*--s = *--x) == ' ') {
                                 *s = MARK_CONTEXT;
                                 for (x++; *(x - 1) == ' '; *--s = *--x)
                                     ;
@@ -4773,26 +4336,21 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                     }
                 }
             }
-            if (all && sfstrtell(xp) > beg)
-            {
+            if (all && sfstrtell(xp) > beg) {
                 sfputc(xp, 0);
                 makerule(sfstrseek(xp, beg, SEEK_SET))->dynamic |= lla;
             }
         }
     breakloop:
-        if (ctx_end)
-        {
+        if (ctx_end) {
             *ctx_end = MARK_CONTEXT;
             if (sfstrtell(xp) == ctx_beg)
                 sfstrseek(xp, -1, SEEK_CUR);
         }
-        if (all)
-        {
-            if (pos)
-            {
+        if (all) {
+            if (pos) {
                 hashdone(pos);
-                if (pos = hashscan(table.rule, 0))
-                {
+                if (pos = hashscan(table.rule, 0)) {
                     /*
                      * a poorly understood interaction
                      * between binding/aliasing lets
@@ -4800,8 +4358,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
                      * this loop catches them
                      */
 
-                    while (hashnext(pos))
-                    {
+                    while (hashnext(pos)) {
                         r = ( Rule_t * )pos->bucket->value;
                         r->dynamic &= ~all;
                     }
@@ -4812,12 +4369,9 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
             all = lla;
             lla = n;
             exp++;
-        }
-        else
-        {
+        } else {
             tokclose(tok);
-            if (sfstrtell(xp) == arg)
-            {
+            if (sfstrtell(xp) == arg) {
                 if (op == 'O' && !cntlim)
                     sfprintf(xp, "%d", cnt - 1);
                 else if (arg > beg)
@@ -4829,8 +4383,7 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
          * operator cleanup
          */
 
-        switch (op)
-        {
+        switch (op) {
         case 'B':
         case 'D':
         case 'S':
@@ -4843,13 +4396,10 @@ expandops(Sfio_t *xp, char *v, char *ed, int del, int exp)
             break;
         }
     }
-    if (all)
-    {
+    if (all) {
         expandall(buf[0], exp < 0 ? 0 : all);
         state.expandall = 0;
-    }
-    else
-    {
+    } else {
         if (out)
             sfputr(buf[0], xp ? sfstruse(xp) : v, -1);
         if (buf[1])
@@ -4882,14 +4432,12 @@ expandvars(Sfio_t *xp, char *s, char *ed, int del, int nvars)
 
     static int level;
 
-    if (level++ > 64)
-    {
+    if (level++ > 64) {
         level = 0;
         error(3, "%s: recursive variable definition", s);
     }
 #if DEBUG
-    if (error_info.trace <= -10)
-    {
+    if (error_info.trace <= -10) {
         beg = sfstrtell(xp);
         msg = sfstropen();
     }
@@ -4901,18 +4449,14 @@ expandvars(Sfio_t *xp, char *s, char *ed, int del, int nvars)
 
     exp = 1;
     aux = 0;
-    if (ed)
-    {
-        while (op = *ed)
-        {
+    if (ed) {
+        while (op = *ed) {
             if (op == del || isspace(op))
                 ed++;
-            else if (islower(op))
-            {
+            else if (islower(op)) {
                 t = ed;
                 if ((map = getedit(&ed, del)) && map->cmd.type == ED_QUAL)
-                    switch (map->cmd.op)
-                    {
+                    switch (map->cmd.op) {
                     case ED_AUXILLIARY:
                         exp = 0;
                         aux |= VAL_AUXILIARY;
@@ -4927,16 +4471,12 @@ expandvars(Sfio_t *xp, char *s, char *ed, int del, int nvars)
                     }
                 ed = t;
                 break;
-            }
-            else if (op != 'V')
+            } else if (op != 'V')
                 break;
-            else
-            {
+            else {
                 exp = ign = 0;
-                for (;;)
-                {
-                    switch (*++ed)
-                    {
+                for (;;) {
+                    switch (*++ed) {
                     case 0:
                         break;
                     case 'A':
@@ -4961,8 +4501,7 @@ expandvars(Sfio_t *xp, char *s, char *ed, int del, int nvars)
                         exp = 1;
                         continue;
                     default:
-                        if (*ed == del)
-                        {
+                        if (*ed == del) {
                             ed++;
                             break;
                         }
@@ -4980,60 +4519,47 @@ expandvars(Sfio_t *xp, char *s, char *ed, int del, int nvars)
     }
     if (!(aux & (VAL_PRIMARY | VAL_AUXILIARY)))
         aux |= VAL_PRIMARY | VAL_AUXILIARY;
-    for (;;)
-    {
+    for (;;) {
 #if DEBUG
-        if (msg)
-        {
+        if (msg) {
             sfprintf(msg, "var=%s,ops=%s", s, ed);
             sfstruse(msg);
         }
 #endif
         if ((*s == '"' || *s == MARK_QUOTE) && *(s + 1)
-            && *(t = s + strlen(s) - 1) == *s)
-        {
+            && *(t = s + strlen(s) - 1) == *s) {
             if (!cvt)
                 cvt = sfstropen();
             *t = 0;
             sfputr(cvt, s + 1, 0);
             *t = *s;
             stresc(v = sfstrbase(cvt));
-        }
-        else
-        {
-            if (strchr(s, '$'))
-            {
+        } else {
+            if (strchr(s, '$')) {
                 if (!cvt)
                     cvt = sfstropen();
                 expand(cvt, s);
                 v = sfstruse(cvt);
-            }
-            else
+            } else
                 v = s;
-            if (nvars == 1 && streq(v, "..."))
-            {
+            if (nvars == 1 && streq(v, "...")) {
                 exp = -1;
                 if (!ed)
                     ed = null;
-            }
-            else
+            } else
                 v = getval(v, aux);
         }
         if (state.mam.statix && nvars > 1 && strmatch(v, "${mam_*}")
-            && (!ed || !*ed))
-        {
+            && (!ed || !*ed)) {
             if (!cvt)
                 cvt = sfstropen();
             exp = 0;
-            for (;;)
-            {
-                if (nvars > 1 && strmatch(v, "${mam_*}"))
-                {
+            for (;;) {
+                if (nvars > 1 && strmatch(v, "${mam_*}")) {
                     sfwrite(cvt, v, strlen(v) - 1);
                     sfputc(cvt, '-');
                     exp++;
-                }
-                else
+                } else
                     sfputr(cvt, v, -1);
                 if (--nvars <= 0)
                     break;
@@ -5046,21 +4572,16 @@ expandvars(Sfio_t *xp, char *s, char *ed, int del, int nvars)
             sfputr(xp, sfstruse(cvt), -1);
             break;
         }
-        if (*v || --nvars <= 0)
-        {
-            if (ed)
-            {
+        if (*v || --nvars <= 0) {
+            if (ed) {
                 if (!cvt)
                     cvt = sfstropen();
-                if (v == sfstrbase(internal.val))
-                {
+                if (v == sfstrbase(internal.val)) {
                     tmp = internal.val;
                     if (!val)
                         val = sfstropen();
                     internal.val = val;
-                }
-                else
-                {
+                } else {
                     tmp = 0;
                     if (v == sfstrbase(cvt))
                         v = 0;
@@ -5072,8 +4593,7 @@ expandvars(Sfio_t *xp, char *s, char *ed, int del, int nvars)
                 xp, v ? v : sfstrbase(cvt), sfstrbase(cvt) + pos, del, exp);
                 if (tmp)
                     internal.val = tmp;
-            }
-            else if (*v)
+            } else if (*v)
                 expand(xp, v);
             break;
         }
@@ -5081,8 +4601,7 @@ expandvars(Sfio_t *xp, char *s, char *ed, int del, int nvars)
             ;
     }
 #if DEBUG
-    if (msg)
-    {
+    if (msg) {
         pos = sfstrtell(xp);
         sfputc(xp, 0);
         error(-10,
@@ -5121,32 +4640,25 @@ expand(Sfio_t *xp, char *a)
 
     if (!*a)
         return;
-    if (!(s = strchr(a, '$')))
-    {
+    if (!(s = strchr(a, '$'))) {
         sfputr(xp, a, -1);
         return;
     }
-    if (a == sfstrbase(internal.val) || state.val)
-    {
+    if (a == sfstrbase(internal.val) || state.val) {
         val = internal.val;
         internal.val = sfstropen();
     }
     sfwrite(xp, a, s - a);
     a = s;
-    while (*a)
-    {
+    while (*a) {
         if (*a != '$')
             sfputc(xp, *a++);
-        else if (*++a == '(')
-        {
-            if (isspace(*++a))
-            {
+        else if (*++a == '(') {
+            if (isspace(*++a)) {
                 sfputc(xp, '$');
                 sfputc(xp, '(');
                 sfputc(xp, *a++);
-            }
-            else
-            {
+            } else {
                 var = sfstrtell(xp);
                 ed = 0;
                 nvars = 1;
@@ -5154,48 +4666,34 @@ expand(Sfio_t *xp, char *a)
                 del = ':';
                 q = 0;
                 p = 1;
-                while (c = *a++)
-                {
-                    if (c == '\\' && *a)
-                    {
+                while (c = *a++) {
+                    if (c == '\\' && *a) {
                         sfputc(xp, c);
                         c = *a++;
-                    }
-                    else if (c == '"')
+                    } else if (c == '"')
                         q = !q;
                     else if (q)
                         /* quoted */;
                     else if (c == '(')
                         p++;
-                    else if (c == ')')
-                    {
+                    else if (c == ')') {
                         if (!--p)
                             break;
-                    }
-                    else if (!ed && p == 1)
-                    {
-                        if (c == alt)
-                        {
+                    } else if (!ed && p == 1) {
+                        if (c == alt) {
                             c = 0;
                             nvars++;
-                        }
-                        else if (c == del)
-                        {
+                        } else if (c == del) {
                             alt = c = 0;
                             ed = sfstrtell(xp);
-                        }
-                        else if (c == '`')
-                        {
+                        } else if (c == '`') {
                             alt = c = 0;
                             ed = sfstrtell(xp);
-                            if (!(del = *a++))
-                            {
+                            if (!(del = *a++)) {
                                 ed--;
                                 break;
                             }
-                        }
-                        else if (isspace(c))
-                        {
+                        } else if (isspace(c)) {
                             for (alt = 0; isspace(*a); a++)
                                 ;
                             if (*a == del || *a == '`')
@@ -5206,8 +4704,7 @@ expand(Sfio_t *xp, char *a)
                 }
                 sfputc(xp, 0);
                 s = sfstrseek(xp, var, SEEK_SET);
-                if (q || !c)
-                {
+                if (q || !c) {
                     a--;
                     error(1,
                           "missing %c in %s variable expansion",
@@ -5217,21 +4714,17 @@ expand(Sfio_t *xp, char *a)
                 expandvars(
                 xp, s, ed ? sfstrbase(xp) + ed + 1 : ( char * )0, del, nvars);
             }
-        }
-        else if (*a == '$')
-        {
+        } else if (*a == '$') {
             for (s = a; *s == '$'; s++)
                 ;
             if (*s != '(')
                 sfputc(xp, '$');
             while (a < s)
                 sfputc(xp, *a++);
-        }
-        else
+        } else
             sfputc(xp, '$');
     }
-    if (val)
-    {
+    if (val) {
         sfstrclose(internal.val);
         internal.val = val;
     }

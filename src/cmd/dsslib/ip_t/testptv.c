@@ -64,10 +64,8 @@ main(int argc, char **argv)
     error_info.id = "testptv";
     ptvinit(&ptvdisc);
     ptvdisc.errorf = errorf;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'd':
             dump = 1;
             continue;
@@ -90,8 +88,7 @@ main(int argc, char **argv)
     while (s = sfgetr(sp, '\n', 1))
         if (strtoip6(s, 0, prefix, prefix + IP6BITS))
             error(1, "%s: invalid prefix", s);
-        else
-        {
+        else {
             if (dump)
                 sfprintf(
                 sfstderr,
@@ -103,8 +100,7 @@ main(int argc, char **argv)
             if (!ptvinsert(
                 ptv,
                 ptvmin(ptv->size, ptv->r[0], prefix, prefix[IP6BITS]),
-                ptvmax(ptv->size, ptv->r[1], prefix, prefix[IP6BITS])))
-            {
+                ptvmax(ptv->size, ptv->r[1], prefix, prefix[IP6BITS]))) {
                 error(2, "%s: ptv insertion error", s);
                 break;
             }
@@ -113,8 +109,7 @@ main(int argc, char **argv)
     if (dump)
         ptvdump(ptv, sfstdout);
     file = *argv++;
-    do
-    {
+    do {
         if (!file || streq(file, "-"))
             sp = sfstdin;
         else if (!(sp = sfopen(0, file, "r")))

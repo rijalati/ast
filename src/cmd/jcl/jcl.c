@@ -153,15 +153,13 @@ optset(Jcl_t *jcl, int c, Jcldisc_t *disc)
     time_t *t;
     Map_t *p;
 
-    switch (c)
-    {
+    switch (c) {
     case 'd':
         error_info.trace = -opt_info.number;
         return 1;
     case 'g':
     case 'm':
-        if (!(p = newof(0, Map_t, 1, 0)))
-        {
+        if (!(p = newof(0, Map_t, 1, 0))) {
             error(ERROR_SYSTEM | 2, "out of space");
             return 0;
         }
@@ -183,8 +181,7 @@ optset(Jcl_t *jcl, int c, Jcldisc_t *disc)
         f = JCL_MARKLENGTH;
         break;
     case 'l':
-        switch (opt_info.num)
-        {
+        switch (opt_info.num) {
         case 'a':
             jcl->flags |= JCL_LISTAUTOEDITS;
             break;
@@ -234,8 +231,7 @@ optset(Jcl_t *jcl, int c, Jcldisc_t *disc)
         t = &jcl->disc->odate;
     date:
         *t = tmdate(opt_info.arg, &s, NiL);
-        if (*s)
-        {
+        if (*s) {
             error(2, "%s: %s: invalid date", opt_info.name, opt_info.arg);
             return 0;
         }
@@ -274,8 +270,7 @@ optset(Jcl_t *jcl, int c, Jcldisc_t *disc)
         error(ERROR_USAGE | 4, "%s", opt_info.arg);
         return 0;
     }
-    if ((jcl->roflags & (JCL_MAPPED | f)) != (JCL_MAPPED | f))
-    {
+    if ((jcl->roflags & (JCL_MAPPED | f)) != (JCL_MAPPED | f)) {
         if (!(jcl->roflags & JCL_MAPPED))
             jcl->roflags |= f;
         if (opt_info.number)
@@ -305,8 +300,7 @@ main(int argc, char **argv)
         = jclopen(NiL,
                   NiL,
                   JCL_EXEC | JCL_JOB | JCL_RECURSE | JCL_STANDARD | JCL_SCOPE,
-                  &state.disc))
-    {
+                  &state.disc)) {
         while ((c = optget(argv, usage)) && optset(jcl, c, &state.disc))
             ;
         argv += opt_info.index;
@@ -315,8 +309,7 @@ main(int argc, char **argv)
         while (jclsym(jcl, *argv, NiL, JCL_SYM_READONLY))
             argv++;
         c = 0;
-        while (p = state.map)
-        {
+        while (p = state.map) {
             state.map = state.map->next;
             if (jclmap(jcl, p->arg, &state.disc))
                 return 1;
@@ -325,16 +318,13 @@ main(int argc, char **argv)
         }
         if (!c && jclmap(jcl, NiL, &state.disc))
             return 1;
-        if (state.resolve)
-        {
+        if (state.resolve) {
             while (s = *argv++)
                 if (t = jclpath(jcl, s))
                     sfprintf(sfstdout, "%s\n", t);
                 else
                     error(2, "%s: cannot resolve", s);
-        }
-        else
-        {
+        } else {
             jcl->step->command = *argv;
             while (!jclrun(jcl) && jcl->step->command
                    && (jcl->step->command = *++argv))

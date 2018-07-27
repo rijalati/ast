@@ -82,32 +82,26 @@ settmp(const char *name, int dir)
 {
     int fd;
 
-    if (name)
-    {
+    if (name) {
         if (state.msg.op || state.folder == FMH)
             quit();
         state.readonly = 0;
-        if (dir)
-        {
+        if (dir) {
             if (eaccess(name, W_OK))
                 state.readonly = 1;
-        }
-        else if ((fd = open(name, O_WRONLY | O_BINARY | O_cloexec)) < 0)
+        } else if ((fd = open(name, O_WRONLY | O_BINARY | O_cloexec)) < 0)
             state.readonly = 1;
         else
             close(fd);
-        if (state.msg.ap)
-        {
+        if (state.msg.ap) {
             fileclose(state.msg.ap);
             state.msg.ap = 0;
         }
-        if (state.msg.ip)
-        {
+        if (state.msg.ip) {
             fileclose(state.msg.ip);
             state.msg.ip = 0;
         }
-        if (state.msg.op)
-        {
+        if (state.msg.op) {
             fileclose(state.msg.op);
             state.msg.op = 0;
         }
@@ -115,8 +109,7 @@ settmp(const char *name, int dir)
         if (name != state.path.mail)
             strncopy(state.path.mail, name, sizeof(state.path.mail));
     }
-    if (!dir)
-    {
+    if (!dir) {
         if (!(state.msg.op = fileopen(state.tmp.mesg, "EIw")))
             exit(1);
         if (!(state.msg.ip = fileopen(state.tmp.mesg, "EIr")))
@@ -141,41 +134,35 @@ setfolder(char *name)
     if (!(name = expand(name, 1)))
         return -1;
     state.msg.inbox = 0;
-    if (imap_name(name))
-    {
+    if (imap_name(name)) {
         imap_setptr(name, isedit);
         return 0;
     }
     if (state.folder == FIMAP)
         imap_setptr(( char * )0, 0);
-    if (!(ibuf = fileopen(name, "Rr")))
-    {
+    if (!(ibuf = fileopen(name, "Rr"))) {
         if (state.var.justcheck)
             exit(1);
         if (!isedit && errno == ENOENT)
             goto nomail;
-        if (errno == EISDIR)
-        {
+        if (errno == EISDIR) {
             mh_setptr(name, isedit);
             return 0;
         }
         note(SYSTEM, "%s", name);
         return -1;
     }
-    if (!state.openstat.st_size)
-    {
+    if (!state.openstat.st_size) {
         if (state.var.justcheck)
             exit(1);
         if (isedit)
             note(0, "%s: empty file", name);
-        else
-        {
+        else {
             fileclose(ibuf);
             goto nomail;
         }
     }
-    if (S_ISDIR(state.openstat.st_mode))
-    {
+    if (S_ISDIR(state.openstat.st_mode)) {
         mh_setptr(name, isedit);
         return 0;
     }
@@ -202,13 +189,11 @@ setfolder(char *name)
     fileclose(ibuf);
     relsesigs();
     state.sawcom = 0;
-    if (!state.edit && !state.msg.count)
-    {
+    if (!state.edit && !state.msg.count) {
     nomail:
         if (state.var.justcheck)
             exit(1);
-        if (!state.var.justheaders)
-        {
+        if (!state.var.justheaders) {
             if (strchr(name, '/') || strchr(name, '\\'))
                 note(ERROR, "No mail for %s", who);
             else
@@ -278,8 +263,7 @@ stop(int sig)
 
     kill(getpid(), sig);
     signal(sig, old_action);
-    if (state.stopreset)
-    {
+    if (state.stopreset) {
         state.stopreset = 0;
         reset(sig);
     }
@@ -307,8 +291,7 @@ commands(void)
     int eofloop = 0;
     char linebuf[LINESIZE];
 
-    if (!state.sourcing)
-    {
+    if (!state.sourcing) {
         if (signal(SIGINT, SIG_IGN) != SIG_IGN)
             signal(SIGINT, intr);
         if (signal(SIGHUP, SIG_IGN) != SIG_IGN)
@@ -324,16 +307,14 @@ commands(void)
 #endif
     }
     setexit();
-    for (;;)
-    {
+    for (;;) {
         /*
          * Print the prompt, if needed.  Clear out
          * string space, and flush the output.
          */
         fflush(stdout);
         moretop();
-        if (!state.sourcing && state.var.interactive)
-        {
+        if (!state.sourcing && state.var.interactive) {
             if (state.var.autoinc && incfile() > 0)
                 note(0, "New mail has arrived");
             state.stopreset = 1;
@@ -348,10 +329,8 @@ commands(void)
          * and handle end of file specially.
          */
         n = 0;
-        for (;;)
-        {
-            if (readline(state.input, &linebuf[n], LINESIZE - n) < 0)
-            {
+        for (;;) {
+            if (readline(state.input, &linebuf[n], LINESIZE - n) < 0) {
                 if (!n)
                     n = -1;
                 break;
@@ -364,19 +343,16 @@ commands(void)
             linebuf[n++] = ' ';
         }
         state.stopreset = 0;
-        if (n < 0)
-        {
+        if (n < 0) {
             /* eof */
             if (state.loading)
                 break;
-            if (state.sourcing)
-            {
+            if (state.sourcing) {
                 unstack();
                 continue;
             }
             if (state.var.interactive && state.var.ignoreeof
-                && ++eofloop < 25)
-            {
+                && ++eofloop < 25) {
                 note(0, "Use \"quit\" to quit");
                 continue;
             }
@@ -417,8 +393,7 @@ execute(char *linebuf, int contxt)
      * Look up the command and execute.
      */
 
-    switch (*s)
-    {
+    switch (*s) {
     case '!':
         a = "shell";
         s++;
@@ -438,13 +413,10 @@ execute(char *linebuf, int contxt)
         s++;
         break;
     default:
-        if (isalpha(*s))
-        {
+        if (isalpha(*s)) {
             a = s;
             s = 0;
-        }
-        else
-        {
+        } else {
             if (state.sourcing)
                 return 0;
             a = "next";
@@ -452,8 +424,7 @@ execute(char *linebuf, int contxt)
         break;
     }
     if (!(com = ( struct cmd * )strpsearch(
-          state.cmdtab, state.cmdnum, sizeof(struct cmd), a, &next)))
-    {
+          state.cmdtab, state.cmdnum, sizeof(struct cmd), a, &next))) {
         note(0, "\"%s\": unknown command", a);
         goto out;
     }
@@ -480,48 +451,40 @@ execute(char *linebuf, int contxt)
      * an error.
      */
 
-    if (state.mode == SEND && !(com->c_argtype & M))
-    {
+    if (state.mode == SEND && !(com->c_argtype & M)) {
         note(0, "Cannot execute \"%s\" while sending", com->c_name);
         goto out;
     }
-    if (state.sourcing && (com->c_argtype & I))
-    {
+    if (state.sourcing && (com->c_argtype & I)) {
         note(0, "Cannot execute \"%s\" while sourcing", com->c_name);
         goto out;
     }
-    if (state.readonly && (com->c_argtype & W))
-    {
+    if (state.readonly && (com->c_argtype & W)) {
         note(
         0, "Cannot execute \"%s\" -- message file is read only", com->c_name);
         goto out;
     }
-    if (contxt && (com->c_argtype & R))
-    {
+    if (contxt && (com->c_argtype & R)) {
         note(0, "Cannot recursively invoke \"%s\"", com->c_name);
         goto out;
     }
-    switch (com->c_argtype & LISTMASK)
-    {
+    switch (com->c_argtype & LISTMASK) {
     case MSGLIST:
         /*
          * A message list defaulting to nearest forward
          * legal message.
          */
-        if (!state.msg.list)
-        {
+        if (!state.msg.list) {
             note(0, "Invalid use of \"message list\"");
             break;
         }
         if ((c = getmsglist(s, com->c_msgflag)) < 0)
             break;
-        if (!c)
-        {
+        if (!c) {
             state.msg.list->m_index = first(com->c_msgflag, com->c_msgmask);
             (state.msg.list + 1)->m_index = 0;
         }
-        if (!state.msg.list->m_index)
-        {
+        if (!state.msg.list->m_index) {
             note(0, "No applicable messages");
             break;
         }
@@ -533,8 +496,7 @@ execute(char *linebuf, int contxt)
          * A message list with no defaults, but no error
          * if none exist.
          */
-        if (!state.msg.list)
-        {
+        if (!state.msg.list) {
             note(0, "Invalid use of \"message list\"");
             break;
         }
@@ -558,8 +520,7 @@ execute(char *linebuf, int contxt)
         getargs(&vec, s);
         if ((c = endargs(&vec)) < 0)
             break;
-        if (c < com->c_minargs)
-        {
+        if (c < com->c_minargs) {
             note(0,
                  "%s requires %s %d arg%s",
                  com->c_name,
@@ -568,8 +529,7 @@ execute(char *linebuf, int contxt)
                  com->c_minargs == 1 ? "" : "s");
             break;
         }
-        if (c > com->c_maxargs)
-        {
+        if (c > com->c_maxargs) {
             note(0,
                  "%s takes no more than %d arg%s",
                  com->c_name,
@@ -595,8 +555,7 @@ out:
     /*
      * Exit the current source file on error.
      */
-    if (e)
-    {
+    if (e) {
         if (e < 0 || state.loading)
             return 1;
         if (state.sourcing)
@@ -604,8 +563,7 @@ out:
         return 0;
     }
     if (state.var.autoprint && (com->c_argtype & P))
-        if (!(state.msg.dot->m_flag & (MDELETE | MNONE | MSPAM)))
-        {
+        if (!(state.msg.dot->m_flag & (MDELETE | MNONE | MSPAM))) {
             state.msg.list->m_index = state.msg.dot - state.msg.list + 1;
             (state.msg.list + 1)->m_index = 0;
             type(state.msg.list);
@@ -640,8 +598,7 @@ folderinfo(int msgcount)
         state.msg.context = 0;
     else if (msgcount > 0 && state.msg.dot < state.msg.list + msgcount - 1)
         dot = state.msg.dot;
-    else
-    {
+    else {
         for (mp = state.msg.list + msgcount;
              mp < state.msg.list + state.msg.count;
              mp++)
@@ -657,18 +614,15 @@ folderinfo(int msgcount)
             dot = mp;
         else if (msgcount <= 0 && state.var.recent)
             dot = state.msg.list + state.msg.count - 1;
-        else
-        {
+        else {
             dot = state.msg.list;
             if (!state.msg.count)
                 dot += msgcount - 1;
         }
     }
     d = m = n = s = u = 0;
-    for (mp = state.msg.list; mp < state.msg.list + state.msg.count; mp++)
-    {
-        if (!(mp->m_flag & MNONE))
-        {
+    for (mp = state.msg.list; mp < state.msg.list + state.msg.count; mp++) {
+        if (!(mp->m_flag & MNONE)) {
             m++;
             if (mp->m_flag & MDELETE)
                 d++;
@@ -681,8 +635,7 @@ folderinfo(int msgcount)
         }
     }
     name = state.path.mail;
-    if (getfolder(buf, sizeof(buf)) >= 0)
-    {
+    if (getfolder(buf, sizeof(buf)) >= 0) {
         i = strlen(buf);
         buf[i++] = '/';
         if (!strncmp(state.path.mail, buf, i))
@@ -699,8 +652,7 @@ folderinfo(int msgcount)
         printf(" %d deleted", d);
     if (s > 0)
         printf(" %d saved", s);
-    switch (state.folder)
-    {
+    switch (state.folder) {
     case FIMAP:
         printf(" [imap]");
         break;
@@ -722,12 +674,10 @@ void
 announce()
 {
     state.msg.dot = folderinfo(0);
-    if (state.msg.list)
-    {
+    if (state.msg.list) {
         state.msg.list->m_index = state.msg.dot - state.msg.list + 1;
         (state.msg.list + 1)->m_index = 0;
-        if (state.msg.count > 0 && state.var.header)
-        {
+        if (state.msg.count > 0 && state.var.header) {
             state.startup = 1;
             headers(state.msg.list);
             state.startup = 0;

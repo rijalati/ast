@@ -155,14 +155,12 @@ uname(struct utsname *ut)
     char *sys = 0;
     char *arch = 0;
 
-    if (*hosttype)
-    {
+    if (*hosttype) {
         static char buf[sizeof(hosttype)];
 
         strcpy(buf, hosttype);
         sys = buf;
-        if (arch = strchr(sys, '.'))
-        {
+        if (arch = strchr(sys, '.')) {
             *arch++ = 0;
             if (!*arch)
                 arch = 0;
@@ -234,21 +232,18 @@ uname(struct utsname *ut)
 #endif
 
 #define extra(m)                                                             \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         if (( char * )&ut.m[sizeof(ut.m)] > last)                            \
             last = ( char * )&ut.m[sizeof(ut.m)];                            \
     } while (0)
 
 #define output(f, v, u)                                                      \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         if ((flags & (f))                                                    \
             && (*(v)                                                         \
                 || (flags & (OPT_all | OPT_total)) == OPT_all                \
                    && (( f )&OPT_standard)                                   \
-                || !(flags & (OPT_all | OPT_total))))                        \
-        {                                                                    \
+                || !(flags & (OPT_all | OPT_total)))) {                      \
             if (sep)                                                         \
                 sfputc(sfstdout, ' ');                                       \
             else                                                             \
@@ -275,10 +270,8 @@ b_uname(int argc, char **argv, Shbltin_t *context)
     char buf[257];
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             flags |= OPT_all | ((1L << OPT_ALL) - 1);
             continue;
@@ -339,8 +332,7 @@ b_uname(int argc, char **argv, Shbltin_t *context)
         case ':':
             s = "/usr/bin/uname";
             if (!streq(argv[0], s)
-                && (!eaccess(s, X_OK) || !eaccess(s += 4, X_OK)))
-            {
+                && (!eaccess(s, X_OK) || !eaccess(s += 4, X_OK))) {
                 argv[0] = s;
                 return sh_run(context, argc, argv);
             }
@@ -355,8 +347,7 @@ b_uname(int argc, char **argv, Shbltin_t *context)
     argv += opt_info.index;
     if (error_info.errors || *argv && (flags || sethost) || sethost && flags)
         error(ERROR_usage(2), "%s", optusage(NiL));
-    if (sethost)
-    {
+    if (sethost) {
 #if _lib_sethostname
         if (sethostname(sethost, strlen(sethost) + 1))
 #else
@@ -367,18 +358,15 @@ b_uname(int argc, char **argv, Shbltin_t *context)
 #    endif
 #endif
             error(ERROR_system(1), "%s: cannot set host name", sethost);
-    }
-    else if (list)
+    } else if (list)
         astconflist(sfstdout,
                     NiL,
                     ASTCONF_base | ASTCONF_defined | ASTCONF_lower
                     | ASTCONF_quote | ASTCONF_matchcall,
                     "CS|SI");
-    else if (*argv)
-    {
+    else if (*argv) {
         e = &buf[sizeof(buf) - 1];
-        while (s = *argv++)
-        {
+        while (s = *argv++) {
             t = buf;
             *t++ = 'C';
             *t++ = 'S';
@@ -393,9 +381,7 @@ b_uname(int argc, char **argv, Shbltin_t *context)
                      : *(t = astconf(buf + 3, NiL, NiL)) ? t : "unknown",
                      *argv ? ' ' : '\n');
         }
-    }
-    else
-    {
+    } else {
         s = buf;
         if (!flags)
             flags = OPT_system;
@@ -403,8 +389,7 @@ b_uname(int argc, char **argv, Shbltin_t *context)
         if (uname(&ut) < 0)
             error(ERROR_usage(2), "information unavailable");
         output(OPT_system, ut.sysname, "sysname");
-        if (flags & OPT_nodename)
-        {
+        if (flags & OPT_nodename) {
 #if !_mem_nodeext_utsname && _lib_gethostname
             if (sizeof(ut.nodename) > 9 || gethostname(s, sizeof(buf)))
 #endif
@@ -414,17 +399,14 @@ b_uname(int argc, char **argv, Shbltin_t *context)
         output(OPT_release, ut.release, "release");
         output(OPT_version, ut.version, "version");
         output(OPT_machine, ut.machine, "machine");
-        if (flags & OPT_processor)
-        {
+        if (flags & OPT_processor) {
             if (!*(s = astconf("ARCHITECTURE", NiL, NiL)))
                 s = ut.machine;
             output(OPT_processor, s, "processor");
         }
-        if (flags & OPT_implementation)
-        {
+        if (flags & OPT_implementation) {
             if (!*(s = astconf("PLATFORM", NiL, NiL))
-                && !*(s = astconf("HW_NAME", NiL, NiL)))
-            {
+                && !*(s = astconf("HW_NAME", NiL, NiL))) {
                 if (t = strchr(hosttype, '.'))
                     t++;
                 else
@@ -433,8 +415,7 @@ b_uname(int argc, char **argv, Shbltin_t *context)
             }
             output(OPT_implementation, s, "implementation");
         }
-        if (flags & OPT_operating_system)
-        {
+        if (flags & OPT_operating_system) {
             s = astconf("OPERATING_SYSTEM", NiL, NiL);
             if (!*s)
 #ifdef _UNAME_os_DEFAULT
@@ -444,16 +425,14 @@ b_uname(int argc, char **argv, Shbltin_t *context)
 #endif
             output(OPT_operating_system, s, "operating-system");
         }
-        if (flags & OPT_extended_release)
-        {
+        if (flags & OPT_extended_release) {
             s = astconf("RELEASE", NiL, NiL);
             output(OPT_extended_release, s, "extended-release");
         }
 #if _mem_idnumber_utsname
         output(OPT_hostid, ut.idnumber, "hostid");
 #else
-        if (flags & OPT_hostid)
-        {
+        if (flags & OPT_hostid) {
             if (!*(s = astconf("HW_SERIAL", NiL, NiL)))
 #    if _lib_gethostid
                 sfsprintf(s = buf, sizeof(buf), "%08x", gethostid());
@@ -463,13 +442,11 @@ b_uname(int argc, char **argv, Shbltin_t *context)
             output(OPT_hostid, s, "hostid");
         }
 #endif
-        if (flags & OPT_vendor)
-        {
+        if (flags & OPT_vendor) {
             s = astconf("HW_PROVIDER", NiL, NiL);
             output(OPT_vendor, s, "vendor");
         }
-        if (flags & OPT_domain)
-        {
+        if (flags & OPT_domain) {
             if (!*(s = astconf("SRPC_DOMAIN", NiL, NiL)))
 #if _lib_getdomainname
                 getdomainname(s, sizeof(buf));
@@ -490,8 +467,7 @@ b_uname(int argc, char **argv, Shbltin_t *context)
         s = astconf("BASE", NiL, NiL);
 #endif
         output(OPT_base, s, "base_rel");
-        if (flags & OPT_extra)
-        {
+        if (flags & OPT_extra) {
             char *last = ( char * )&ut;
 
             extra(sysname);
@@ -508,15 +484,11 @@ b_uname(int argc, char **argv, Shbltin_t *context)
 #if _mem_base_rel_utsname
             extra(base_rel);
 #endif
-            if (last < (( char * )(&ut + 1)))
-            {
+            if (last < (( char * )(&ut + 1))) {
                 s = t = last;
-                while (s < ( char * )(&ut + 1))
-                {
-                    if (!(n = *s++))
-                    {
-                        if ((s - t) > 1)
-                        {
+                while (s < ( char * )(&ut + 1)) {
+                    if (!(n = *s++)) {
+                        if ((s - t) > 1) {
                             if (sep)
                                 sfputc(sfstdout, ' ');
                             else
@@ -524,8 +496,7 @@ b_uname(int argc, char **argv, Shbltin_t *context)
                             sfputr(sfstdout, t, -1);
                         }
                         t = s;
-                    }
-                    else if (!isprint(n))
+                    } else if (!isprint(n))
                         break;
                 }
             }

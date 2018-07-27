@@ -85,8 +85,7 @@ mmevent(Dt_t *dt, int type, Void_t *data, Dtdisc_t *disc)
 
     if (!(cdtdt = vmuserdata(mmdc->vm, CDT_DATA, sizeof(Cdtdata_t))))
         terror("Can't get shared memory data");
-    if (type == DT_OPEN)
-    {
+    if (type == DT_OPEN) {
         if (data) /* at the start of a dictionary opening */
         {
             if (!asogetptr(&cdtdt->data)) /* data area not yet constructed */
@@ -96,31 +95,26 @@ mmevent(Dt_t *dt, int type, Void_t *data, Dtdisc_t *disc)
                 *(( Void_t ** )data) = cdtdt->data;
                 return 1;
             }
-        }
-        else
+        } else
             return 0;
-    }
-    else if (type == DT_ENDOPEN) /* at the end of a dictionary opening */
+    } else if (type == DT_ENDOPEN) /* at the end of a dictionary opening */
     {
         if (!asogetptr(&cdtdt->data)) /* save data area for future references
                                        */
         {
             asocasptr(&cdtdt->data, NIL(Void_t *), ( Void_t * )dt->data);
             return asogetptr(&cdtdt->data) == ( Void_t * )dt->data ? 0 : -1;
-        }
-        else
-            return 0; /* data area existed */
-    }
-    else if (type == DT_CLOSE) /* starting to close dictionary */
-        return 1;              /* make sure no objects get deleted */
+        } else
+            return 0;            /* data area existed */
+    } else if (type == DT_CLOSE) /* starting to close dictionary */
+        return 1;                /* make sure no objects get deleted */
     else if (type
              == DT_ENDCLOSE) /* at end of closing, close the memory region */
     {
         vmclose(mmdc->vm);
         mmdc->vm = NIL(Vmalloc_t *);
         return 0; /* all done */
-    }
-    else
+    } else
         return 0;
 }
 
@@ -187,8 +181,7 @@ makeprocess(char *proc, int num)
         terror("Process[num=%d]: Could not fork() a subprocess", num);
     else if (pid > 0) /* return to parent process */
         return pid;
-    else
-    {
+    else {
         sprintf(text, "%d", num);
         i = 0;
         argv[i++] = proc;
@@ -250,14 +243,11 @@ pingpong(char *procnum)
     deldt = num % 2 == 0 ? mapdt : shmdt;
     insdt = num % 2 == 0 ? shmdt : mapdt;
     n_move = 0;
-    for (dir = 1; dir >= -1; dir -= 2)
-    {
-        for (k = dir > 0 ? 0 : N_OBJ - 1; k >= 0 && k < N_OBJ; k += dir)
-        {
+    for (dir = 1; dir >= -1; dir -= 2) {
+        for (k = dir > 0 ? 0 : N_OBJ - 1; k >= 0 && k < N_OBJ; k += dir) {
             obj.dval = k;
             if ((o = dtsearch(deldt, &obj)) && (random() % 2) == 0
-                && dtdelete(deldt, o) == o)
-            {
+                && dtdelete(deldt, o) == o) {
                 dtinsert(insdt, o);
                 n_move += 1;
             }
@@ -284,8 +274,7 @@ tmain()
     Mmdisc_t *mapdc, *shmdc;
     Obj_t *os, *om, obj;
 
-    if (k = tchild())
-    {
+    if (k = tchild()) {
         Mapstore = argv[k++];
         Shmstore = argv[k++];
         return pingpong(argv[k]);
@@ -310,10 +299,8 @@ tmain()
     if (!(shmdc = ( Mmdisc_t * )dtdisc(shmdt, NIL(Dtdisc_t *), 0)))
         terror("Parent[pid=%d]: Can't get discipline for %s", ppid, Shmstore);
 
-    for (k = 0; k < N_OBJ; ++k)
-    {
-        if (random() % 2 == 0)
-        {
+    for (k = 0; k < N_OBJ; ++k) {
+        if (random() % 2 == 0) {
             if (!(om = vmalloc(mapdc->vm, sizeof(Obj_t))))
                 terror("Parent[pid=%d]: vmalloc failed k=%d store=%s",
                        ppid,
@@ -325,9 +312,7 @@ tmain()
                        ppid,
                        k,
                        Mapstore);
-        }
-        else
-        {
+        } else {
             if (!(os = vmalloc(shmdc->vm, sizeof(Obj_t))))
                 terror("Parent[pid=%d]: vmalloc failed k=%d store=%s",
                        ppid,
@@ -360,8 +345,7 @@ tmain()
                N_OBJ,
                k + p);
 
-    for (k = 0; k < N_OBJ; ++k)
-    {
+    for (k = 0; k < N_OBJ; ++k) {
         Obj_t obj, *om, *os;
 
         obj.dval = k;

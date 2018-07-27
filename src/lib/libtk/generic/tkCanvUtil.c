@@ -72,46 +72,30 @@ short *drawableXPtr, *drawableYPtr; /* Screen coordinates are stored
     double tmp;
 
     tmp = x - canvasPtr->drawableXOrigin;
-    if (tmp > 0)
-    {
+    if (tmp > 0) {
         tmp += 0.5;
-    }
-    else
-    {
+    } else {
         tmp -= 0.5;
     }
-    if (tmp > 32767)
-    {
+    if (tmp > 32767) {
         *drawableXPtr = 32767;
-    }
-    else if (tmp < -32768)
-    {
+    } else if (tmp < -32768) {
         *drawableXPtr = -32768;
-    }
-    else
-    {
+    } else {
         *drawableXPtr = tmp;
     }
 
     tmp = y - canvasPtr->drawableYOrigin;
-    if (tmp > 0)
-    {
+    if (tmp > 0) {
         tmp += 0.5;
-    }
-    else
-    {
+    } else {
         tmp -= 0.5;
     }
-    if (tmp > 32767)
-    {
+    if (tmp > 32767) {
         *drawableYPtr = 32767;
-    }
-    else if (tmp < -32768)
-    {
+    } else if (tmp < -32768) {
         *drawableYPtr = -32768;
-    }
-    else
-    {
+    } else {
         *drawableYPtr = tmp;
     }
 }
@@ -147,46 +131,30 @@ short *screenXPtr, *screenYPtr; /* Screen coordinates are stored
     double tmp;
 
     tmp = x - canvasPtr->xOrigin;
-    if (tmp > 0)
-    {
+    if (tmp > 0) {
         tmp += 0.5;
-    }
-    else
-    {
+    } else {
         tmp -= 0.5;
     }
-    if (tmp > 32767)
-    {
+    if (tmp > 32767) {
         *screenXPtr = 32767;
-    }
-    else if (tmp < -32768)
-    {
+    } else if (tmp < -32768) {
         *screenXPtr = -32768;
-    }
-    else
-    {
+    } else {
         *screenXPtr = tmp;
     }
 
     tmp = y - canvasPtr->yOrigin;
-    if (tmp > 0)
-    {
+    if (tmp > 0) {
         tmp += 0.5;
-    }
-    else
-    {
+    } else {
         tmp -= 0.5;
     }
-    if (tmp > 32767)
-    {
+    if (tmp > 32767) {
         *screenYPtr = 32767;
-    }
-    else if (tmp < -32768)
-    {
+    } else if (tmp < -32768) {
         *screenYPtr = -32768;
-    }
-    else
-    {
+    } else {
         *screenYPtr = tmp;
     }
 }
@@ -221,8 +189,7 @@ double *doublePtr;  /* Place to store converted coordinate. */
 {
     TkCanvas *canvasPtr = ( TkCanvas * )canvas;
     if (Tk_GetScreenMM(canvasPtr->interp, canvasPtr->tkwin, string, doublePtr)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
     *doublePtr *= canvasPtr->pixelsPerMM;
@@ -327,8 +294,7 @@ int offset;            /* Offset into item (ignored). */
      * Break the value up into the individual tag names.
      */
 
-    if (Tcl_SplitList(interp, value, &argc, &argv) != TCL_OK)
-    {
+    if (Tcl_SplitList(interp, value, &argc, &argv) != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -337,23 +303,19 @@ int offset;            /* Offset into item (ignored). */
      * tag names.
      */
 
-    if (itemPtr->tagSpace < argc)
-    {
+    if (itemPtr->tagSpace < argc) {
         newPtr = ( Tk_Uid * )ckalloc(( unsigned )(argc * sizeof(Tk_Uid)));
-        for (i = itemPtr->numTags - 1; i >= 0; i--)
-        {
+        for (i = itemPtr->numTags - 1; i >= 0; i--) {
             newPtr[i] = itemPtr->tagPtr[i];
         }
-        if (itemPtr->tagPtr != itemPtr->staticTagSpace)
-        {
+        if (itemPtr->tagPtr != itemPtr->staticTagSpace) {
             ckfree(( char * )itemPtr->tagPtr);
         }
         itemPtr->tagPtr = newPtr;
         itemPtr->tagSpace = argc;
     }
     itemPtr->numTags = argc;
-    for (i = 0; i < argc; i++)
-    {
+    for (i = 0; i < argc; i++) {
         itemPtr->tagPtr[i] = Tk_GetUid(argv[i]);
     }
     ckfree(( char * )argv);
@@ -393,13 +355,11 @@ Tcl_FreeProc **freeProcPtr; /* Pointer to variable to fill in with
 {
     Tk_Item *itemPtr = ( Tk_Item * )widgRec;
 
-    if (itemPtr->numTags == 0)
-    {
+    if (itemPtr->numTags == 0) {
         *freeProcPtr = ( Tcl_FreeProc * )NULL;
         return "";
     }
-    if (itemPtr->numTags == 1)
-    {
+    if (itemPtr->numTags == 1) {
         *freeProcPtr = ( Tcl_FreeProc * )NULL;
         return ( char * )itemPtr->tagPtr[0];
     }

@@ -52,8 +52,7 @@ a64l(const char *str)
     int n = 6;
     int c;
     char *cp;
-    for (n = 0; n < 6; n++)
-    {
+    for (n = 0; n < 6; n++) {
         if ((c = *str++) == 0)
             break;
         if (!(cp = strchr(letter, c)))
@@ -69,8 +68,7 @@ l64a(long l)
     static char buff[7];
     unsigned ul = (( unsigned long )l & 0xffffffff);
     char *cp = buff;
-    while (ul > 0)
-    {
+    while (ul > 0) {
         *cp++ = letter[ul & 077];
         ul >>= 6;
     }

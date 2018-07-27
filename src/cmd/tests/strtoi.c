@@ -107,23 +107,19 @@ main(int argc, char **argv)
     int n;
 #endif
 
-    if (argc <= 1)
-    {
+    if (argc <= 1) {
         printf("%u/%u\n", sizeof(l) * 8, sizeof(ll) * 8);
         return 0;
     }
     decimal = *localeconv()->decimal_point;
-    while (s = *++argv)
-    {
-        if (!strncmp(s, "LC_ALL=", 7))
-        {
+    while (s = *++argv) {
+        if (!strncmp(s, "LC_ALL=", 7)) {
 #if _PACKAGE_ast
             p = s + 7;
 #else
             p = "de_DE";
 #endif
-            if (!setlocale(LC_ALL, p))
-            {
+            if (!setlocale(LC_ALL, p)) {
                 printf("%s failed\n", s);
                 return 0;
             }

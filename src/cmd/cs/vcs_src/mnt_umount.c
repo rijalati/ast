@@ -42,12 +42,10 @@ char **argv;
 
     opt_info.index = 1;
     while (n = optget(argv, "s:[cs_server] [mount-point ...]"))
-        switch (n)
-        {
+        switch (n) {
         case 's':
             s = opt_info.arg;
-            if ((fd = csopen(s, CS_OPEN_READ)) < 0)
-            {
+            if ((fd = csopen(s, CS_OPEN_READ)) < 0) {
                 printf("cannot connect cs server %s\n", s);
                 return (-1);
             }
@@ -63,18 +61,14 @@ char **argv;
     argv += opt_info.index;
     argc -= opt_info.index;
 
-    while (argc > 0)
-    {
+    while (argc > 0) {
         s = *argv;
         sfsprintf(buf, sizeof(buf), "m %s -\n", s);
-        if (vcs_write(buf) > 0 && vcs_read(reply, 1024) > 0)
-        {
-            if (strncmp(reply, "I 0 ok 0", 8) == 0)
-            {
+        if (vcs_write(buf) > 0 && vcs_read(reply, 1024) > 0) {
+            if (strncmp(reply, "I 0 ok 0", 8) == 0) {
                 printf("%s deleted\n", s);
                 ( void )rm_entry(s);
-            }
-            else
+            } else
                 printf(reply);
         }
         argc--;

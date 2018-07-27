@@ -280,9 +280,8 @@ regexp *TclRegComp(exp) char *exp;
     r->reganch = 0;
     r->regmust = NULL;
     r->regmlen = 0;
-    scan = r->program + 1; /* First BRANCH. */
-    if (OP(regnext(scan)) == END)
-    { /* Only one top-level choice. */
+    scan = r->program + 1;          /* First BRANCH. */
+    if (OP(regnext(scan)) == END) { /* Only one top-level choice. */
         scan = OPERAND(scan);
 
         /* Starting-point info. */
@@ -299,14 +298,12 @@ regexp *TclRegComp(exp) char *exp;
          * and avoiding duplication strengthens checking.  Not a
          * strong reason, but sufficient in the absence of others.
          */
-        if (flags & SPSTART)
-        {
+        if (flags & SPSTART) {
             longest = NULL;
             len = 0;
             for (; scan != NULL; scan = regnext(scan))
                 if (OP(scan) == EXACTLY
-                    && (( int )strlen(OPERAND(scan))) >= len)
-                {
+                    && (( int )strlen(OPERAND(scan))) >= len) {
                     longest = OPERAND(scan);
                     len = strlen(OPERAND(scan));
                 }
@@ -340,15 +337,13 @@ struct regcomp_state *rcstate;
     *flagp = HASWIDTH; /* Tentatively. */
 
     /* Make an OPEN node, if parenthesized. */
-    if (paren)
-    {
+    if (paren) {
         if (rcstate->regnpar >= NSUBEXP)
             FAIL("too many ()");
         parno = rcstate->regnpar;
         rcstate->regnpar++;
         ret = regnode(OPEN + parno, rcstate);
-    }
-    else
+    } else
         ret = NULL;
 
     /* Pick up the branches, linking them together. */
@@ -362,8 +357,7 @@ struct regcomp_state *rcstate;
     if (!(flags & HASWIDTH))
         *flagp &= ~HASWIDTH;
     *flagp |= flags & SPSTART;
-    while (*rcstate->regparse == '|')
-    {
+    while (*rcstate->regparse == '|') {
         rcstate->regparse++;
         br = regbranch(&flags, rcstate);
         if (br == NULL)
@@ -383,17 +377,12 @@ struct regcomp_state *rcstate;
         regoptail(br, ender);
 
     /* Check for proper termination. */
-    if (paren && *rcstate->regparse++ != ')')
-    {
+    if (paren && *rcstate->regparse++ != ')') {
         FAIL("unmatched ()");
-    }
-    else if (!paren && *rcstate->regparse != '\0')
-    {
-        if (*rcstate->regparse == ')')
-        {
+    } else if (!paren && *rcstate->regparse != '\0') {
+        if (*rcstate->regparse == ')') {
             FAIL("unmatched ()");
-        }
-        else
+        } else
             FAIL("junk on end"); /* "Can't happen". */
         /* NOTREACHED */
     }
@@ -419,8 +408,7 @@ struct regcomp_state *rcstate;
     ret = regnode(BRANCH, rcstate);
     chain = NULL;
     while (*rcstate->regparse != '\0' && *rcstate->regparse != '|'
-           && *rcstate->regparse != ')')
-    {
+           && *rcstate->regparse != ')') {
         latest = regpiece(&flags, rcstate);
         if (latest == NULL)
             return (NULL);
@@ -459,8 +447,7 @@ struct regcomp_state *rcstate;
         return (NULL);
 
     op = *rcstate->regparse;
-    if (!ISMULT(op))
-    {
+    if (!ISMULT(op)) {
         *flagp = flags;
         return (ret);
     }
@@ -471,28 +458,23 @@ struct regcomp_state *rcstate;
 
     if (op == '*' && (flags & SIMPLE))
         reginsert(STAR, ret, rcstate);
-    else if (op == '*')
-    {
+    else if (op == '*') {
         /* Emit x* as (x&|), where & means "self". */
         reginsert(BRANCH, ret, rcstate);         /* Either x */
         regoptail(ret, regnode(BACK, rcstate));  /* and loop */
         regoptail(ret, ret);                     /* back */
         regtail(ret, regnode(BRANCH, rcstate));  /* or */
         regtail(ret, regnode(NOTHING, rcstate)); /* null. */
-    }
-    else if (op == '+' && (flags & SIMPLE))
+    } else if (op == '+' && (flags & SIMPLE))
         reginsert(PLUS, ret, rcstate);
-    else if (op == '+')
-    {
+    else if (op == '+') {
         /* Emit x+ as x(&|), where & means "self". */
         next = regnode(BRANCH, rcstate); /* Either */
         regtail(ret, next);
         regtail(regnode(BACK, rcstate), ret);    /* loop back */
         regtail(next, regnode(BRANCH, rcstate)); /* or */
         regtail(ret, regnode(NOTHING, rcstate)); /* null. */
-    }
-    else if (op == '?')
-    {
+    } else if (op == '?') {
         /* Emit x? as (x|) */
         reginsert(BRANCH, ret, rcstate);        /* Either x */
         regtail(ret, regnode(BRANCH, rcstate)); /* or */
@@ -523,8 +505,7 @@ struct regcomp_state *rcstate;
 
     *flagp = WORST; /* Tentatively. */
 
-    switch (*rcstate->regparse++)
-    {
+    switch (*rcstate->regparse++) {
     case '^':
         ret = regnode(BOL, rcstate);
         break;
@@ -535,29 +516,23 @@ struct regcomp_state *rcstate;
         ret = regnode(ANY, rcstate);
         *flagp |= HASWIDTH | SIMPLE;
         break;
-    case '[':
-    {
+    case '[': {
         int clss;
         int classend;
 
-        if (*rcstate->regparse == '^')
-        { /* Complement of range. */
+        if (*rcstate->regparse == '^') { /* Complement of range. */
             ret = regnode(ANYBUT, rcstate);
             rcstate->regparse++;
-        }
-        else
+        } else
             ret = regnode(ANYOF, rcstate);
         if (*rcstate->regparse == ']' || *rcstate->regparse == '-')
             regc(*rcstate->regparse++, rcstate);
-        while (*rcstate->regparse != '\0' && *rcstate->regparse != ']')
-        {
-            if (*rcstate->regparse == '-')
-            {
+        while (*rcstate->regparse != '\0' && *rcstate->regparse != ']') {
+            if (*rcstate->regparse == '-') {
                 rcstate->regparse++;
                 if (*rcstate->regparse == ']' || *rcstate->regparse == '\0')
                     regc('-', rcstate);
-                else
-                {
+                else {
                     clss = UCHARAT(rcstate->regparse - 2) + 1;
                     classend = UCHARAT(rcstate->regparse);
                     if (clss > classend + 1)
@@ -566,8 +541,7 @@ struct regcomp_state *rcstate;
                         regc(( char )clss, rcstate);
                     rcstate->regparse++;
                 }
-            }
-            else
+            } else
                 regc(*rcstate->regparse++, rcstate);
         }
         regc('\0', rcstate);
@@ -575,8 +549,7 @@ struct regcomp_state *rcstate;
             FAIL("unmatched []");
         rcstate->regparse++;
         *flagp |= HASWIDTH | SIMPLE;
-    }
-    break;
+    } break;
     case '(':
         ret = reg(1, &flags, rcstate);
         if (ret == NULL)
@@ -603,8 +576,7 @@ struct regcomp_state *rcstate;
         regc('\0', rcstate);
         *flagp |= HASWIDTH | SIMPLE;
         break;
-    default:
-    {
+    default: {
         int len;
         char ender;
 
@@ -619,14 +591,12 @@ struct regcomp_state *rcstate;
         if (len == 1)
             *flagp |= SIMPLE;
         ret = regnode(EXACTLY, rcstate);
-        while (len > 0)
-        {
+        while (len > 0) {
             regc(*rcstate->regparse++, rcstate);
             len--;
         }
         regc('\0', rcstate);
-    }
-    break;
+    } break;
     }
 
     return (ret);
@@ -643,8 +613,7 @@ struct regcomp_state *rcstate;
     char *ptr;
 
     ret = rcstate->regcode;
-    if (ret == &regdummy)
-    {
+    if (ret == &regdummy) {
         rcstate->regsize += 3;
         return (ret);
     }
@@ -683,8 +652,7 @@ struct regcomp_state *rcstate;
     char *dst;
     char *place;
 
-    if (rcstate->regcode == &regdummy)
-    {
+    if (rcstate->regcode == &regdummy) {
         rcstate->regsize += 3;
         return;
     }
@@ -716,8 +684,7 @@ char *val;
 
     /* Find last node. */
     scan = p;
-    for (;;)
-    {
+    for (;;) {
         temp = regnext(scan);
         if (temp == NULL)
             break;
@@ -786,25 +753,21 @@ char *start;
     struct regexec_state *restate = &state;
 
     /* Be paranoid... */
-    if (prog == NULL || string == NULL)
-    {
+    if (prog == NULL || string == NULL) {
         TclRegError("NULL parameter");
         return (0);
     }
 
     /* Check validity of program. */
-    if (UCHARAT(prog->program) != MAGIC)
-    {
+    if (UCHARAT(prog->program) != MAGIC) {
         TclRegError("corrupted program");
         return (0);
     }
 
     /* If there is a "must appear" string, look for it. */
-    if (prog->regmust != NULL)
-    {
+    if (prog->regmust != NULL) {
         s = string;
-        while ((s = strchr(s, prog->regmust[0])) != NULL)
-        {
+        while ((s = strchr(s, prog->regmust[0])) != NULL) {
             if (strncmp(s, prog->regmust, ( size_t )prog->regmlen) == 0)
                 break; /* Found it. */
             s++;
@@ -824,16 +787,14 @@ char *start;
     s = string;
     if (prog->regstart != '\0')
         /* We know what char it must start with. */
-        while ((s = strchr(s, prog->regstart)) != NULL)
-        {
+        while ((s = strchr(s, prog->regstart)) != NULL) {
             if (regtry(prog, s, restate))
                 return (1);
             s++;
         }
     else
         /* We don't -- general case. */
-        do
-        {
+        do {
             if (regtry(prog, s, restate))
                 return (1);
         } while (*s++ != '\0');
@@ -860,18 +821,15 @@ struct regexec_state *restate;
 
     sp = prog->startp;
     ep = prog->endp;
-    for (i = NSUBEXP; i > 0; i--)
-    {
+    for (i = NSUBEXP; i > 0; i--) {
         *sp++ = NULL;
         *ep++ = NULL;
     }
-    if (regmatch(prog->program + 1, restate))
-    {
+    if (regmatch(prog->program + 1, restate)) {
         prog->startp[0] = string;
         prog->endp[0] = restate->reginput;
         return (1);
-    }
-    else
+    } else
         return (0);
 }
 
@@ -897,50 +855,42 @@ struct regexec_state *restate;
     if (scan != NULL && regnarrate)
         fprintf(stderr, "%s(\n", regprop(scan));
 #endif
-    while (scan != NULL)
-    {
+    while (scan != NULL) {
 #ifdef DEBUG
         if (regnarrate)
             fprintf(stderr, "%s...\n", regprop(scan));
 #endif
         next = regnext(scan);
 
-        switch (OP(scan))
-        {
+        switch (OP(scan)) {
         case BOL:
-            if (restate->reginput != restate->regbol)
-            {
+            if (restate->reginput != restate->regbol) {
                 return 0;
             }
             break;
         case EOL:
-            if (*restate->reginput != '\0')
-            {
+            if (*restate->reginput != '\0') {
                 return 0;
             }
             break;
         case ANY:
-            if (*restate->reginput == '\0')
-            {
+            if (*restate->reginput == '\0') {
                 return 0;
             }
             restate->reginput++;
             break;
-        case EXACTLY:
-        {
+        case EXACTLY: {
             int len;
             char *opnd;
 
             opnd = OPERAND(scan);
             /* Inline the first character, for speed. */
-            if (*opnd != *restate->reginput)
-            {
+            if (*opnd != *restate->reginput) {
                 return 0;
             }
             len = strlen(opnd);
             if (len > 1
-                && strncmp(opnd, restate->reginput, ( size_t )len) != 0)
-            {
+                && strncmp(opnd, restate->reginput, ( size_t )len) != 0) {
                 return 0;
             }
             restate->reginput += len;
@@ -948,16 +898,14 @@ struct regexec_state *restate;
         }
         case ANYOF:
             if (*restate->reginput == '\0'
-                || strchr(OPERAND(scan), *restate->reginput) == NULL)
-            {
+                || strchr(OPERAND(scan), *restate->reginput) == NULL) {
                 return 0;
             }
             restate->reginput++;
             break;
         case ANYBUT:
             if (*restate->reginput == '\0'
-                || strchr(OPERAND(scan), *restate->reginput) != NULL)
-            {
+                || strchr(OPERAND(scan), *restate->reginput) != NULL) {
                 return 0;
             }
             restate->reginput++;
@@ -974,8 +922,7 @@ struct regexec_state *restate;
         case OPEN + 6:
         case OPEN + 7:
         case OPEN + 8:
-        case OPEN + 9:
-        {
+        case OPEN + 9: {
             int no;
             char *save;
 
@@ -983,20 +930,16 @@ struct regexec_state *restate;
             no = OP(scan) - OPEN;
             save = restate->reginput;
 
-            if (regmatch(next, restate))
-            {
+            if (regmatch(next, restate)) {
                 /*
                  * Don't set startp if some later invocation of the
                  * same parentheses already has.
                  */
-                if (restate->regstartp[no] == NULL)
-                {
+                if (restate->regstartp[no] == NULL) {
                     restate->regstartp[no] = save;
                 }
                 return 1;
-            }
-            else
-            {
+            } else {
                 return 0;
             }
         }
@@ -1008,8 +951,7 @@ struct regexec_state *restate;
         case CLOSE + 6:
         case CLOSE + 7:
         case CLOSE + 8:
-        case CLOSE + 9:
-        {
+        case CLOSE + 9: {
             int no;
             char *save;
 
@@ -1017,8 +959,7 @@ struct regexec_state *restate;
             no = OP(scan) - CLOSE;
             save = restate->reginput;
 
-            if (regmatch(next, restate))
-            {
+            if (regmatch(next, restate)) {
                 /*
                  * Don't set endp if some later
                  * invocation of the same parentheses
@@ -1027,24 +968,17 @@ struct regexec_state *restate;
                 if (restate->regendp[no] == NULL)
                     restate->regendp[no] = save;
                 return 1;
-            }
-            else
-            {
+            } else {
                 return 0;
             }
         }
-        case BRANCH:
-        {
+        case BRANCH: {
             char *save;
 
-            if (OP(next) != BRANCH)
-            {                         /* No choice. */
+            if (OP(next) != BRANCH) { /* No choice. */
                 next = OPERAND(scan); /* Avoid recursion. */
-            }
-            else
-            {
-                do
-                {
+            } else {
+                do {
                     save = restate->reginput;
                     if (regmatch(OPERAND(scan), restate))
                         return (1);
@@ -1056,8 +990,7 @@ struct regexec_state *restate;
             break;
         }
         case STAR:
-        case PLUS:
-        {
+        case PLUS: {
             char nextch;
             int no;
             char *save;
@@ -1073,8 +1006,7 @@ struct regexec_state *restate;
             min = (OP(scan) == STAR) ? 0 : 1;
             save = restate->reginput;
             no = regrepeat(OPERAND(scan), restate);
-            while (no >= min)
-            {
+            while (no >= min) {
                 /* If it could work, try it. */
                 if (nextch == '\0' || *restate->reginput == nextch)
                     if (regmatch(next, restate))
@@ -1088,12 +1020,9 @@ struct regexec_state *restate;
         case END:
             return (1); /* Success! */
         default:
-            if (OP(scan) > OPEN && OP(scan) < OPEN + NSUBEXP)
-            {
+            if (OP(scan) > OPEN && OP(scan) < OPEN + NSUBEXP) {
                 goto doOpen;
-            }
-            else if (OP(scan) > CLOSE && OP(scan) < CLOSE + NSUBEXP)
-            {
+            } else if (OP(scan) > CLOSE && OP(scan) < CLOSE + NSUBEXP) {
                 goto doClose;
             }
             TclRegError("memory corruption");
@@ -1123,29 +1052,25 @@ struct regexec_state *restate;
 
     scan = restate->reginput;
     opnd = OPERAND(p);
-    switch (OP(p))
-    {
+    switch (OP(p)) {
     case ANY:
         count = strlen(scan);
         scan += count;
         break;
     case EXACTLY:
-        while (*opnd == *scan)
-        {
+        while (*opnd == *scan) {
             count++;
             scan++;
         }
         break;
     case ANYOF:
-        while (*scan != '\0' && strchr(opnd, *scan) != NULL)
-        {
+        while (*scan != '\0' && strchr(opnd, *scan) != NULL) {
             count++;
             scan++;
         }
         break;
     case ANYBUT:
-        while (*scan != '\0' && strchr(opnd, *scan) == NULL)
-        {
+        while (*scan != '\0' && strchr(opnd, *scan) == NULL) {
             count++;
             scan++;
         }
@@ -1196,8 +1121,7 @@ void regdump(r) regexp *r;
 
 
     s = r->program + 1;
-    while (op != END)
-    { /* While that wasn't END last time... */
+    while (op != END) { /* While that wasn't END last time... */
         op = OP(s);
         printf("%2d%s", s - r->program, regprop(s)); /* Where, what. */
         next = regnext(s);
@@ -1206,11 +1130,9 @@ void regdump(r) regexp *r;
         else
             printf("(%d)", (s - r->program) + (next - s));
         s += 3;
-        if (op == ANYOF || op == ANYBUT || op == EXACTLY)
-        {
+        if (op == ANYOF || op == ANYBUT || op == EXACTLY) {
             /* Literal string, where present. */
-            while (*s != '\0')
-            {
+            while (*s != '\0') {
                 putchar(*s);
                 s++;
             }
@@ -1239,8 +1161,7 @@ static char *regprop(op) char *op;
 
     ( void )strcpy(buf, ":");
 
-    switch (OP(op))
-    {
+    switch (OP(op)) {
     case BOL:
         p = "BOL";
         break;
@@ -1302,19 +1223,14 @@ static char *regprop(op) char *op;
         p = "PLUS";
         break;
     default:
-        if (OP(op) > OPEN && OP(op) < OPEN + NSUBEXP)
-        {
+        if (OP(op) > OPEN && OP(op) < OPEN + NSUBEXP) {
             sprintf(buf + strlen(buf), "OPEN%d", OP(op) - OPEN);
             p = NULL;
             break;
-        }
-        else if (OP(op) > CLOSE && OP(op) < CLOSE + NSUBEXP)
-        {
+        } else if (OP(op) > CLOSE && OP(op) < CLOSE + NSUBEXP) {
             sprintf(buf + strlen(buf), "CLOSE%d", OP(op) - CLOSE);
             p = NULL;
-        }
-        else
-        {
+        } else {
             TclRegError("corrupted opcode");
         }
         break;
@@ -1345,8 +1261,7 @@ char *s2;
     int count;
 
     count = 0;
-    for (scan1 = s1; *scan1 != '\0'; scan1++)
-    {
+    for (scan1 = s1; *scan1 != '\0'; scan1++) {
         for (scan2 = s2; *scan2 != '\0';) /* ++ moved down. */
             if (*scan1 == *scan2++)
                 return (count);

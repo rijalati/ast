@@ -46,20 +46,16 @@ Sfulong_t m;
 
     SFLOCK(f, 0);
 
-    for (v = 0;;)
-    {
-        if (SFRPEEK(f, s, p) <= 0)
-        {
+    for (v = 0;;) {
+        if (SFRPEEK(f, s, p) <= 0) {
             f->flags |= SF_ERROR;
             v = (Sfulong_t)(-1);
             goto done;
         }
-        for (ends = s + p; s < ends;)
-        {
+        for (ends = s + p; s < ends;) {
             c = *s++;
             v = (v << SF_BBITS) | SFBVALUE(c);
-            if ((m >>= SF_BBITS) <= 0)
-            {
+            if ((m >>= SF_BBITS) <= 0) {
                 f->next = s;
                 goto done;
             }

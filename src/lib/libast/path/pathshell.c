@@ -61,30 +61,24 @@ pathshell(void)
 
     if ((sh = getenv("SHELL")) && *sh == '/'
         && strmatch(
-           sh, "*/(sh|*[!cC]sh)*([[:digit:]])?(-+([.[:alnum:]]))?(.exe)"))
-    {
-        if (!(ru = getuid()) || !eaccess("/bin", W_OK))
-        {
+           sh, "*/(sh|*[!cC]sh)*([[:digit:]])?(-+([.[:alnum:]]))?(.exe)")) {
+        if (!(ru = getuid()) || !eaccess("/bin", W_OK)) {
             if (stat(sh, &st))
                 goto defshell;
             if (ru != st.st_uid
                 && !strmatch(
                    sh, "?(/usr)?(/local)/?([ls])bin/?([[:lower:]])sh?(.exe)"))
                 goto defshell;
-        }
-        else
-        {
+        } else {
             eu = geteuid();
             rg = getgid();
             eg = getegid();
-            if (ru != eu || rg != eg)
-            {
+            if (ru != eu || rg != eg) {
                 char *s;
                 char dir[PATH_MAX];
 
                 s = sh;
-                for (;;)
-                {
+                for (;;) {
                     if (stat(s, &st))
                         goto defshell;
                     if (ru != eu && st.st_uid == ru)
@@ -106,8 +100,7 @@ pathshell(void)
         return sh;
     }
 defshell:
-    if (!(sh = val))
-    {
+    if (!(sh = val)) {
         if (!*(sh = astconf("SH", NiL, NiL)) || *sh != '/'
             || eaccess(sh, X_OK) || !(sh = strdup(sh)))
             sh = "/bin/sh";

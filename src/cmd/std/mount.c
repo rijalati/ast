@@ -217,21 +217,18 @@ matchset(char *s, int flags)
     char *b;
     Match_t *p;
 
-    if (!state.match)
-    {
+    if (!state.match) {
         state.matchdisc.key = offsetof(Match_t, name);
         state.matchdisc.comparf = matchcmp;
         if (!(state.match = dtopen(&state.matchdisc, Dtoset)))
             error(ERROR_SYSTEM | 3, "out of space [match table]");
     }
-    if (*s == '!')
-    {
+    if (*s == '!') {
         s++;
         flags <<= 1;
     }
     state.matchflags |= flags;
-    for (;;)
-    {
+    for (;;) {
         while (isspace(*s))
             s++;
         for (b = s; (c = *s) && c != ',' && !isspace(c); s++)
@@ -240,8 +237,7 @@ matchset(char *s, int flags)
             break;
         if (c)
             *s = 0;
-        if (!(p = ( Match_t * )dtmatch(state.match, b)))
-        {
+        if (!(p = ( Match_t * )dtmatch(state.match, b))) {
             if (!(p = newof(0, Match_t, 1, s - b)))
                 error(ERROR_SYSTEM | 3, "out of space [match entry]");
             memcpy(p->name, b, s - b);
@@ -268,8 +264,7 @@ matchhost(char *s)
         return 0;
     *t = 0;
     if (!(p = ( Match_t * )dtmatch(state.match, s)))
-        for (u = s; v = strchr(u, '.'); u = v)
-        {
+        for (u = s; v = strchr(u, '.'); u = v) {
             *v = 0;
             p = ( Match_t * )dtmatch(state.match, s);
             *v++ = '.';
@@ -302,15 +297,12 @@ mountop(Mnt_t *mnt, char *options)
     char *s;
     int n;
 
-    if (state.unmount)
-    {
+    if (state.unmount) {
         if (state.fake)
             sfprintf(sfstderr, "umount(%s)\n", mnt->fs);
         else if (umount(mnt->fs, 0))
             error(ERROR_SYSTEM | 2, "%s: cannot unmount", mnt->fs);
-    }
-    else
-    {
+    } else {
         n = (s = options ? options : mnt->options) ? strlen(s) : 0;
         if (state.fake)
             sfprintf(sfstderr,
@@ -350,10 +342,8 @@ main(int argc, char **argv)
     state.matchflags = 0;
     if (!(state.tmp = sfstropen()))
         error(ERROR_SYSTEM | 3, "out of space [tmp string stream]");
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             state.all = 1;
             continue;
@@ -430,8 +420,7 @@ main(int argc, char **argv)
     if (state.unmount && (!s || *argv))
         error(ERROR_SYSTEM | 3, "one argument expected");
     if (!(mp = mntopen(state.mtab, "r"))
-        && (!trydefault || !(mp = mntopen(state.mtab = 0, "r"))))
-    {
+        && (!trydefault || !(mp = mntopen(state.mtab = 0, "r")))) {
         if (state.mtab && !trydefault)
             error(ERROR_SYSTEM | 3, "%s: cannot open fs table", state.mtab);
         else
@@ -440,16 +429,12 @@ main(int argc, char **argv)
     if (sfstrtell(state.tmp)
         && !(state.options = strdup(sfstruse(state.tmp))))
         error(ERROR_SYSTEM | 3, "out of space [option string]");
-    if (!s)
-    {
-        if (state.all || state.match)
-        {
+    if (!s) {
+        if (state.all || state.match) {
             while (mnt = mntread(mp))
                 if (matchhost(mnt->fs) && matchtype(mnt->type))
                     mountop(mnt, state.options);
-        }
-        else if (state.fstabable)
-        {
+        } else if (state.fstabable) {
             while (mnt = mntread(mp))
                 sfprintf(sfstdout,
                          "%s %s %s %s %d %d\n",
@@ -459,9 +444,7 @@ main(int argc, char **argv)
                          mnt->options,
                          mnt->freq,
                          mnt->npass);
-        }
-        else
-        {
+        } else {
             while (mnt = mntread(mp))
                 sfprintf(sfstdout,
                          "%s on %s type %s (%s)\n",
@@ -470,37 +453,28 @@ main(int argc, char **argv)
                          mnt->type,
                          mnt->options);
         }
-    }
-    else if (!*argv)
-    {
-        for (;;)
-        {
-            while (mnt = mntread(mp))
-            {
+    } else if (!*argv) {
+        for (;;) {
+            while (mnt = mntread(mp)) {
                 cmp = ( Cmp_f )strcmp;
                 if (p = mnt->options)
-                    while (*p)
-                    {
+                    while (*p) {
                         if (*p == 'i'
                             && (!memcmp(p, "ic", 2) || !memcmp(p, "icase", 5)
-                                || !memcmp(p, "ignorecase", 10)))
-                        {
+                                || !memcmp(p, "ignorecase", 10))) {
                             cmp = ( Cmp_f )strcasecmp;
                             break;
                         }
                         while (*p && *p++ != ',')
                             ;
                     }
-                if (!(*cmp)(mnt->fs, s) || !(*cmp)(mnt->dir, s))
-                {
+                if (!(*cmp)(mnt->fs, s) || !(*cmp)(mnt->dir, s)) {
                     mountop(mnt, state.options);
                     break;
                 }
             }
-            if (!mnt)
-            {
-                if (trydefault && state.mtab)
-                {
+            if (!mnt) {
+                if (trydefault && state.mtab) {
                     trydefault = 0;
                     mntclose(mp);
                     if (mp = mntopen(NiL, "r"))
@@ -510,17 +484,14 @@ main(int argc, char **argv)
             }
             break;
         }
-    }
-    else if (!*(argv + 1))
-    {
+    } else if (!*(argv + 1)) {
         mnt = &ent;
         memset(mnt, 0, sizeof(*mnt));
         mnt->fs = s;
         mnt->dir = *argv;
         mnt->type = state.type;
         mountop(mnt, state.options);
-    }
-    else
+    } else
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
     mntclose(mp);
     exit(0);

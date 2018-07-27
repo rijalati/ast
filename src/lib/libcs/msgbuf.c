@@ -40,8 +40,7 @@ msggetu(char **buf, char *end)
     v = 0;
     s = ( unsigned char * )*buf;
     e = ( unsigned char * )end;
-    do
-    {
+    do {
         if (s >= e)
             return -1L;
         c = *s++;
@@ -70,8 +69,7 @@ msgputu(char **buf, char *end, unsigned long v)
     n = s - t + 1;
     if ((s = *buf) + n >= end)
         return 0;
-    switch (n)
-    {
+    switch (n) {
     default:
         for (v = n - 7; v-- > 0;)
             *s++ = *t++;
@@ -131,10 +129,8 @@ msgputz(char **buf, char *end, void *data, size_t size)
     if (n > size)
         n = size;
     msgputu(buf, end, n);
-    if (n)
-    {
-        if (n > (end - *buf))
-        {
+    if (n) {
+        if (n > (end - *buf)) {
             n = end - *buf;
             *buf = s;
             msgputu(buf, end, n);

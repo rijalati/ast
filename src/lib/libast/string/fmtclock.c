@@ -37,8 +37,7 @@ fmtclock(Sfulong_t t)
 
     static unsigned int clk_tck;
 
-    if (!clk_tck)
-    {
+    if (!clk_tck) {
 #ifdef CLOCKS_PER_SEC
         clk_tck = CLOCKS_PER_SEC;
 #else

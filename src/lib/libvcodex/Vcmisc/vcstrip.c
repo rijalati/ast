@@ -77,10 +77,8 @@ Void_t **out;
     /* find an appropriate head amount to strip */
     hdt = dt;
     hsz = 0;
-    if (st->type & ST_LINE)
-    {
-        for (z = st->head; z > 0; --z)
-        {
+    if (st->type & ST_LINE) {
+        for (z = st->head; z > 0; --z) {
             for (; dt < edt; ++dt)
                 if (*dt == '\n')
                     break;
@@ -88,9 +86,7 @@ Void_t **out;
                 break;
         }
         hsz = dt - hdt;
-    }
-    else
-    {
+    } else {
         if ((hsz = st->head) > dsz)
             hsz = dsz;
         dt += hsz;
@@ -100,10 +96,8 @@ Void_t **out;
     /* find an appropriate tail amount to strip */
     tdt = edt;
     tsz = 0;
-    if (st->type & ST_LINE)
-    {
-        for (z = st->tail; z > 0; --z)
-        {
+    if (st->type & ST_LINE) {
+        for (z = st->tail; z > 0; --z) {
             if ((tdt -= 1) <= dt)
                 break;
             for (; tdt > dt; --tdt)
@@ -111,9 +105,7 @@ Void_t **out;
                     break;
         }
         tsz = edt - tdt;
-    }
-    else
-    {
+    } else {
         if ((tsz = st->tail) > dsz)
             tsz = dsz;
         tdt -= tsz;
@@ -208,16 +200,13 @@ Void_t *params;
     Vcmtarg_t *arg;
     char *data, val[1024];
 
-    if (type == VC_OPENING)
-    {
+    if (type == VC_OPENING) {
         if (!(st = calloc(1, sizeof(Strip_t))))
             return -1;
 
-        for (data = ( char * )params; data;)
-        {
+        for (data = ( char * )params; data;) {
             data = vcgetmtarg(data, val, sizeof(val), _Stripargs, &arg);
-            switch (TYPECAST(int, arg->data))
-            {
+            switch (TYPECAST(int, arg->data)) {
             case ST_LINE:
                 st->type = ST_LINE;
                 break;
@@ -231,9 +220,7 @@ Void_t *params;
         }
 
         vcsetmtdata(vc, st);
-    }
-    else if (type == VC_CLOSING)
-    {
+    } else if (type == VC_CLOSING) {
         if ((st = vcgetmtdata(vc, Strip_t *)))
             free(st);
 

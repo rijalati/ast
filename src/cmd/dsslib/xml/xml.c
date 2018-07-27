@@ -147,11 +147,10 @@ xmlvar(Cx_t *cx, char *name, const char *type, Cxdisc_t *disc)
 
     if (*name == '.')
         var = cxvariable(cx, name, NiL, disc);
-    else if (!(var = dtmatch(cx->variables, name)))
-    {
+    else if (!(var = dtmatch(cx->variables, name))) {
         n = strlen(name) + 1;
-        if (!(var = vmnewof(cx->vm, 0, Cxvariable_t, 1, sizeof(Value_t) + n)))
-        {
+        if (!(var
+              = vmnewof(cx->vm, 0, Cxvariable_t, 1, sizeof(Value_t) + n))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return 0;
@@ -166,14 +165,12 @@ xmlvar(Cx_t *cx, char *name, const char *type, Cxdisc_t *disc)
         if ((val->number = cxisnumber(var->type))
             && !(val->internalf = var->type->internalf) && var->type->base)
             val->internalf = var->type->base->internalf;
-        if (type)
-        {
+        if (type) {
             if (xml->maxname < ++n)
                 xml->maxname = n;
             n = 0;
             for (s = name; *s; s++)
-                if (*s == '.')
-                {
+                if (*s == '.') {
                     *s = 0;
                     i = !xmlvar(cx, name, NiL, disc);
                     *s = '.';
@@ -183,12 +180,10 @@ xmlvar(Cx_t *cx, char *name, const char *type, Cxdisc_t *disc)
                 }
             if (xml->maxlevel < n)
                 xml->maxlevel = n;
-            if (n && !xml->root && (s = strchr(var->name, '.')))
-            {
+            if (n && !xml->root && (s = strchr(var->name, '.'))) {
                 if (xml->root = vmnewof(cx->vm, 0, char, s - var->name, 1))
                     memcpy(xml->root, var->name, s - var->name);
-                else
-                {
+                else {
                     if (disc->errorf)
                         (*disc->errorf)(
                         NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -222,16 +217,12 @@ refill(Dssfile_t *file, File_t *f, int c, Dssdisc_t *disc)
 {
     size_t n;
 
-    if (f->cur >= f->end)
-    {
-        if (f->rec)
-        {
-            if ((n = f->cur - f->rec + f->prvlen) > f->prvsize)
-            {
+    if (f->cur >= f->end) {
+        if (f->rec) {
+            if ((n = f->cur - f->rec + f->prvlen) > f->prvsize) {
                 f->prvsize = roundof(f->prvsize + n, 1024);
                 if (!(f->prv = vmnewof(
-                      file->vm, f->prv, unsigned char, f->prvsize, 0)))
-                {
+                      file->vm, f->prv, unsigned char, f->prvsize, 0))) {
                     if (disc->errorf)
                         (*disc->errorf)(
                         NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -257,19 +248,17 @@ refill(Dssfile_t *file, File_t *f, int c, Dssdisc_t *disc)
 }
 
 #define REFILL(f, c, r)                                                      \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         if ((c = refill(file, f, c, disc)) < 0)                              \
             r;                                                               \
     } while (0)
 
 #define RESIZE()                                                             \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         o = vp - f->value;                                                   \
         f->maxvalue += 1024;                                                 \
-        if (!(f->value = vmnewof(file->vm, f->value, char, f->maxvalue, 0))) \
-        {                                                                    \
+        if (!(f->value                                                       \
+              = vmnewof(file->vm, f->value, char, f->maxvalue, 0))) {        \
             if (disc->errorf)                                                \
                 (*disc->errorf)(                                             \
                 NiL, disc, ERROR_SYSTEM | 2, "out of space");                \
@@ -306,12 +295,10 @@ xmlread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     ne = f->name + f->maxname;
     np
     = f->level >= f->maxlevel ? ne : f->level ? f->part[f->level] : f->name;
-    for (;;)
-    {
+    for (;;) {
         /* find the next tag */
 
-        for (;;)
-        {
+        for (;;) {
             while (!xml_beg_tag[*f->cur++])
                 ;
             if (*(f->cur - 1))
@@ -323,8 +310,7 @@ xmlread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     tag:
         if (!(c = *f->cur++))
             REFILL(f, c, -1);
-        switch (c)
-        {
+        switch (c) {
         case '/':
             if (f->level)
                 f->level--;
@@ -332,8 +318,7 @@ xmlread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 np = f->part[f->level];
             /*FALLTHROUGH*/
         case '?':
-            for (;;)
-            {
+            for (;;) {
                 while (!xml_end_tag[*f->cur++])
                     ;
                 if (*(f->cur - 1))
@@ -342,20 +327,17 @@ xmlread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 if (o == '>')
                     break;
             }
-            if (c == '/' && f->level == f->prefix)
-            {
+            if (c == '/' && f->level == f->prefix) {
                 record->data = f;
                 file->count = f->record;
                 return 1;
             }
             break;
         default:
-            if (np <= ne && f->level > f->prefix)
-            {
+            if (np <= ne && f->level > f->prefix) {
                 *np = 0;
                 if (v = dtmatch(file->dss->cx->variables,
-                                f->part[f->prefix] + 1))
-                {
+                                f->part[f->prefix] + 1)) {
                     if (f->image && !f->rec)
                         f->rec = f->cur - 1;
                     (( Value_t * )v->data)->record = f->record;
@@ -379,8 +361,7 @@ xmlread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             if (np < ne)
                 *np++ = c;
             q = 0;
-            for (;;)
-            {
+            for (;;) {
                 while (!xml_end_tag[c = *f->cur++])
                     if (np < ne)
                         *np++ = c;
@@ -396,25 +377,20 @@ xmlread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                 else
                     q = c;
             }
-            if (!q && *(np - 1) == '/' || q == '/')
-            {
+            if (!q && *(np - 1) == '/' || q == '/') {
                 /* null tag */
 
                 if (f->level)
                     f->level--;
                 if (f->level <= f->maxlevel)
                     np = f->part[f->level];
-            }
-            else
-            {
+            } else {
                 /* ignore tag name=value attributes -- why did they allow them
                  */
 
-                if (c == ' ')
-                {
+                if (c == ' ') {
                     q = 0;
-                    for (;;)
-                    {
+                    for (;;) {
                         while (!xml_end_att[c = *f->cur++])
                             ;
                         if (!c)
@@ -425,20 +401,16 @@ xmlread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                             break;
                     }
                 }
-                if (np < ne && f->level > f->prefix)
-                {
+                if (np < ne && f->level > f->prefix) {
                     *np = 0;
                     if (v = dtmatch(file->dss->cx->variables,
-                                    f->part[f->prefix] + 1))
-                    {
+                                    f->part[f->prefix] + 1)) {
                         if (f->image && !f->rec)
                             f->rec = f->cur - 1;
                         (( Value_t * )v->data)->record = f->record;
                         (( Value_t * )v->data)->offset = vp - vb;
-                        for (;;)
-                        {
-                            while (!xml_beg_tag[c = *f->cur++])
-                            {
+                        for (;;) {
+                            while (!xml_beg_tag[c = *f->cur++]) {
                                 if (vp >= ve)
                                     RESIZE();
                                 *vp++ = c;
@@ -490,15 +462,13 @@ xmlwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     size_t n;
 
     sfprintf(file->io, "<%s", r->root);
-    if (r->prvlen && sfwrite(file->io, r->prv, r->prvlen) != r->prvlen)
-    {
+    if (r->prvlen && sfwrite(file->io, r->prv, r->prvlen) != r->prvlen) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, ERROR_SYSTEM | 2, "%s: write error", file->path);
         return -1;
     }
-    if ((n = r->cur - r->rec) && sfwrite(file->io, r->rec, n) != n)
-    {
+    if ((n = r->cur - r->rec) && sfwrite(file->io, r->rec, n) != n) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, ERROR_SYSTEM | 2, "%s: write error", file->path);
@@ -528,16 +498,12 @@ xmlfopen(Dssfile_t *file, Dssdisc_t *disc)
 
     if (file->flags & DSS_FILE_WRITE)
         buf = 0;
-    else if (buf = ( unsigned char * )sfreserve(file->io, SF_UNBOUND, 0))
-    {
+    else if (buf = ( unsigned char * )sfreserve(file->io, SF_UNBOUND, 0)) {
         end = buf + sfvalue(file->io) - 1;
-        if (xml->prefix < 0)
-        {
+        if (xml->prefix < 0) {
             xml->image = !!(file->dss->flags & DSS_WRITE);
-            if (file->format->readf == xmlread)
-            {
-                if (!xml->root)
-                {
+            if (file->format->readf == xmlread) {
+                if (!xml->root) {
                     if (disc->errorf)
                         (*disc->errorf)(
                         NiL,
@@ -553,69 +519,56 @@ xmlfopen(Dssfile_t *file, Dssdisc_t *disc)
                 s = buf;
                 n = 0;
                 m = -1;
-                for (;;)
-                {
+                for (;;) {
                     while (!xml_beg_tag[*s++])
                         ;
-                    if (*(s - 1))
-                    {
+                    if (*(s - 1)) {
                         t = s;
                         while (!xml_end_tag[*s++])
                             ;
-                        if (*t == '/')
-                        {
-                            if (m > 0)
-                            {
+                        if (*t == '/') {
+                            if (m > 0) {
                                 m--;
                                 n -= s - t - 2;
                             }
-                        }
-                        else if (*t != '?')
-                        {
+                        } else if (*t != '?') {
                             m++;
                             n += (c = s - t - 1);
                             if (!memcmp(xml->root, t, c) && !*(xml->root + c))
                                 break;
                         }
-                    }
-                    else if (s >= end)
+                    } else if (s >= end)
                         break;
                 }
                 *end = x;
                 xml->prefix = m;
                 xml->maxlevel += m;
                 xml->maxname += n;
-            }
-            else
-            {
+            } else {
                 xml->prefix = 0;
                 xml->maxname += 1024; /*XXX*/
             }
         }
     }
-    if (!(f
-          = vmnewof(file->vm,
-                    0,
-                    File_t,
-                    1,
-                    (xml->maxlevel + 1) * sizeof(char *) + xml->maxname + 1)))
-    {
+    if (!(f = vmnewof(file->vm,
+                      0,
+                      File_t,
+                      1,
+                      (xml->maxlevel + 1) * sizeof(char *) + xml->maxname
+                      + 1))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
     }
     file->data = f;
     f->name = ( char * )(f + 1) + (xml->maxlevel + 1) * sizeof(char *);
-    if (!(file->flags & DSS_FILE_WRITE))
-    {
-        if (buf)
-        {
+    if (!(file->flags & DSS_FILE_WRITE)) {
+        if (buf) {
             f->cur = f->buf = buf;
             f->end = end;
             f->save = *end;
             *end = 0;
-        }
-        else
+        } else
             f->buf = f->cur = f->end = ( unsigned char * )null;
         f->image = xml->image;
         f->prefix = xml->prefix;
@@ -623,8 +576,7 @@ xmlfopen(Dssfile_t *file, Dssdisc_t *disc)
         f->maxname = xml->maxname;
         f->maxvalue = 1024;
         f->root = xml->root;
-        if (!(f->value = vmnewof(file->vm, 0, char, f->maxvalue, 0)))
-        {
+        if (!(f->value = vmnewof(file->vm, 0, char, f->maxvalue, 0))) {
             vmfree(file->vm, f);
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
@@ -707,19 +659,15 @@ jsonread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     ve = f->value + f->maxvalue - 1;
     ne = f->name + f->maxname;
     np = f->level > f->maxlevel ? ne : f->level ? f->part[f->level] : f->name;
-    for (;;)
-    {
+    for (;;) {
     beg:
-        do
-        {
+        do {
             while (!json_beg_tag[c = *f->cur++])
                 ;
             if (!c)
                 REFILL(f, c, goto done);
-            if (c == '}')
-            {
-                if (!f->level)
-                {
+            if (c == '}') {
+                if (!f->level) {
                     record->data = f;
                     file->count = f->record;
                     return 1;
@@ -731,8 +679,7 @@ jsonread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         if (f->image && !f->rec)
             f->rec = f->cur - 1;
     tag:
-        do
-        {
+        do {
             while (json_end_val[c = *f->cur++] == 1)
                 ;
             if (!c)
@@ -747,29 +694,21 @@ jsonread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
             *np++ = '.';
         if (!(q = c == '"') && np < ne)
             *np++ = c;
-        for (;;)
-        {
+        for (;;) {
             while (!json_end_val[c = *f->cur++])
                 if (np < ne)
                     *np++ = c;
             if (!c)
                 REFILL(f, c, goto incomplete);
-            if (c == '"')
-            {
+            if (c == '"') {
                 q = !q;
                 continue;
-            }
-            else if (c == '\\')
-            {
+            } else if (c == '\\') {
                 if (!(c = *f->cur++))
                     REFILL(f, c, goto incomplete);
-            }
-            else if (!q)
-            {
-                if (c == '}')
-                {
-                    if (!f->level)
-                    {
+            } else if (!q) {
+                if (c == '}') {
+                    if (!f->level) {
                         record->data = f;
                         file->count = f->record;
                         return 1;
@@ -777,24 +716,18 @@ jsonread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                     if (--f->level <= f->maxlevel)
                         np = f->part[f->level];
                     break;
-                }
-                else if (c == ':')
-                {
-                    do
-                    {
+                } else if (c == ':') {
+                    do {
                         while (json_end_val[c = *f->cur++] == 1)
                             ;
                         if (!c)
                             REFILL(f, c, goto incomplete);
                     } while (json_end_val[c] == 1);
-                    if (c == '{')
-                    {
-                        if (np <= ne)
-                        {
+                    if (c == '{') {
+                        if (np <= ne) {
                             *np = 0;
                             if (v = dtmatch(file->dss->cx->variables,
-                                            f->part[f->prefix] + 1))
-                            {
+                                            f->part[f->prefix] + 1)) {
                                 (( Value_t * )v->data)->record = f->record;
                                 (( Value_t * )v->data)->offset = vp - vb;
                                 if (vp >= ve)
@@ -810,55 +743,40 @@ jsonread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                     }
                     a = 0;
                     q = 0;
-                    if (np < ne && f->level > f->prefix)
-                    {
+                    if (np < ne && f->level > f->prefix) {
                         *np = 0;
                         if (v = dtmatch(file->dss->cx->variables,
-                                        f->part[f->prefix] + 1))
-                        {
+                                        f->part[f->prefix] + 1)) {
                             (( Value_t * )v->data)->record = f->record;
                             (( Value_t * )v->data)->offset = vp - vb;
                             e = c == 'n';
-                            for (;;)
-                            {
-                                if (c == '"')
-                                {
+                            for (;;) {
+                                if (c == '"') {
                                     q = !q;
                                     goto ignore;
-                                }
-                                else if (c == '\\')
-                                {
+                                } else if (c == '\\') {
                                     if (!(c = *f->cur++))
                                         REFILL(f, c, goto incomplete);
                                     if (c != '\\' && c != '"' && c != ','
-                                        && c != '}')
-                                    {
+                                        && c != '}') {
                                         if (vp >= ve)
                                             RESIZE();
                                         *vp++ = '\\';
                                     }
-                                }
-                                else if (!q)
-                                {
-                                    if (c == '[')
-                                    {
+                                } else if (!q) {
+                                    if (c == '[') {
                                         a++;
                                         goto ignore;
-                                    }
-                                    else if (c == ']')
-                                    {
+                                    } else if (c == ']') {
                                         if (a)
                                             a--;
                                         goto ignore;
-                                    }
-                                    else if (json_end_val[c] == 1)
+                                    } else if (json_end_val[c] == 1)
                                         goto ignore;
                                     else if (a)
                                         /*array*/;
-                                    else if (c == '}')
-                                    {
-                                        if (!f->level)
-                                        {
+                                    else if (c == '}') {
+                                        if (!f->level) {
                                             record->data = f;
                                             file->count = f->record;
                                             return 1;
@@ -866,16 +784,14 @@ jsonread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                                         if (--f->level <= f->maxlevel)
                                             np = f->part[f->level];
                                         break;
-                                    }
-                                    else if (c == ',')
+                                    } else if (c == ',')
                                         break;
                                 }
                                 if (vp >= ve)
                                     RESIZE();
                                 *vp++ = c;
                             ignore:
-                                while (!json_end_val[c = *f->cur++])
-                                {
+                                while (!json_end_val[c = *f->cur++]) {
                                     if (vp >= ve)
                                         RESIZE();
                                     *vp++ = c;
@@ -888,8 +804,7 @@ jsonread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                             (( Value_t * )v->data)->size
                             = vp - (vb + (( Value_t * )v->data)->offset);
                             *vp++ = 0;
-                            if (!f->level)
-                            {
+                            if (!f->level) {
                                 record->data = f;
                                 file->count = f->record;
                                 return 1;
@@ -902,32 +817,24 @@ jsonread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                         }
                     }
                     n = 1;
-                    for (;;)
-                    {
+                    for (;;) {
                         if (c == '"')
                             q = !q;
-                        else if (c == '\\')
-                        {
+                        else if (c == '\\') {
                             if (!(c = *f->cur++))
                                 REFILL(f, c, goto incomplete);
-                        }
-                        else if (!q)
-                        {
+                        } else if (!q) {
                             if (c == '[')
                                 a++;
-                            else if (c == ']')
-                            {
+                            else if (c == ']') {
                                 if (a)
                                     a--;
-                            }
-                            else if (a)
+                            } else if (a)
                                 /*array*/;
                             else if (c == '{')
                                 n++;
-                            else if (c == '}' && !--n)
-                            {
-                                if (!f->level)
-                                {
+                            else if (c == '}' && !--n) {
+                                if (!f->level) {
                                     record->data = f;
                                     file->count = f->record;
                                     return 1;
@@ -935,8 +842,7 @@ jsonread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                                 if (--f->level <= f->maxlevel)
                                     np = f->part[f->level];
                                 break;
-                            }
-                            else if (c == ',' && n == 1)
+                            } else if (c == ',' && n == 1)
                                 break;
                         }
                         while (!json_end_val[c = *f->cur++])
@@ -944,8 +850,7 @@ jsonread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                         if (!c)
                             REFILL(f, c, goto done);
                     }
-                    if (!f->level)
-                    {
+                    if (!f->level) {
                         record->data = f;
                         file->count = f->record;
                         return 1;
@@ -955,8 +860,7 @@ jsonread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                     if (c == ',')
                         goto tag;
                     goto beg;
-                }
-                else if (json_end_val[c] == 1)
+                } else if (json_end_val[c] == 1)
                     continue;
             }
             if (np < ne)
@@ -988,15 +892,13 @@ jsonwrite(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     File_t *r = ( File_t * )record->data;
     size_t n;
 
-    if (r->prvlen && sfwrite(file->io, r->prv, r->prvlen) != r->prvlen)
-    {
+    if (r->prvlen && sfwrite(file->io, r->prv, r->prvlen) != r->prvlen) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, ERROR_SYSTEM | 2, "%s: write error", file->path);
         return -1;
     }
-    if ((n = r->cur - r->rec) && sfwrite(file->io, r->rec, n) != n)
-    {
+    if ((n = r->cur - r->rec) && sfwrite(file->io, r->rec, n) != n) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, ERROR_SYSTEM | 2, "%s: write error", file->path);
@@ -1026,30 +928,26 @@ op_get(Cx_t *cx,
     Value_t *v = ( Value_t * )pc->data.variable->data;
     char *s;
 
-    if (v)
-    {
+    if (v) {
         if (v->record == f->record)
             s = f->value + v->offset;
-        else
-        {
+        else {
             s = ( char * )null;
             v->size = 0;
         }
-        if (!v->internalf)
-        {
+        if (!v->internalf) {
             r->value.string.data = s;
             r->value.string.size = v->size;
-        }
-        else if ((*v->internalf)(cx,
-                                 pc->data.variable->type,
-                                 NiL,
-                                 &pc->data.variable->format,
-                                 r,
-                                 s,
-                                 v->size,
-                                 cx->rm,
-                                 disc)
-                 < 0)
+        } else if ((*v->internalf)(cx,
+                                   pc->data.variable->type,
+                                   NiL,
+                                   &pc->data.variable->format,
+                                   r,
+                                   s,
+                                   v->size,
+                                   cx->rm,
+                                   disc)
+                   < 0)
             return -1;
     }
     return 0;
@@ -1082,8 +980,7 @@ xml_field_name_dat(Tag_t *tag,
 {
     Xml_t *xml = ( Xml_t * )disc;
 
-    if (!(xml->lastfield->name = strdup(data)))
-    {
+    if (!(xml->lastfield->name = strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -1104,8 +1001,7 @@ xml_field_type_dat(Tag_t *tag,
     ( void )cxattr(NiL, data, &s, &xml->lastfield->format, NiL);
     if (!*s)
         s = "number";
-    if (!(xml->lastfield->type = strdup(s)))
-    {
+    if (!(xml->lastfield->type = strdup(s))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -1113,14 +1009,11 @@ xml_field_type_dat(Tag_t *tag,
     if (xml->lastfield->format.flags & CX_FLOAT)
         xml->lastfield->format.flags
         &= ~(CX_STRING | CX_BUFFER | CX_UNSIGNED | CX_INTEGER);
-    else if (xml->lastfield->format.flags & CX_UNSIGNED)
-    {
+    else if (xml->lastfield->format.flags & CX_UNSIGNED) {
         xml->lastfield->format.flags &= ~(CX_STRING | CX_BUFFER);
         xml->lastfield->format.flags |= CX_UNSIGNED | CX_INTEGER;
-    }
-    else if (!(xml->lastfield->format.flags
-               & (CX_STRING | CX_BUFFER | CX_INTEGER)))
-    {
+    } else if (!(xml->lastfield->format.flags
+                 & (CX_STRING | CX_BUFFER | CX_INTEGER))) {
         if (streq(s, "string"))
             xml->lastfield->format.flags |= CX_STRING;
         else if (streq(s, "buffer"))
@@ -1151,8 +1044,7 @@ xml_name_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
 {
     Xml_t *xml = ( Xml_t * )disc;
 
-    if (!(xml->meth.name = strdup(data)))
-    {
+    if (!(xml->meth.name = strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -1168,8 +1060,7 @@ xml_description_dat(Tag_t *tag,
 {
     Xml_t *xml = ( Xml_t * )disc;
 
-    if (!(xml->meth.description = strdup(data)))
-    {
+    if (!(xml->meth.description = strdup(data))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -1183,8 +1074,7 @@ xml_library_dat(Tag_t *tag, Tagframe_t *fp, const char *data, Tagdisc_t *disc)
     Xml_t *xml = ( Xml_t * )disc;
     Library_t *p;
 
-    if (!(p = newof(0, Library_t, 1, strlen(data))))
-    {
+    if (!(p = newof(0, Library_t, 1, strlen(data)))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -1203,10 +1093,8 @@ xml_field_beg(Tag_t *tag, Tagframe_t *fp, const char *name, Tagdisc_t *disc)
     Xml_t *xml = ( Xml_t * )disc;
     Field_t *f;
 
-    if (name)
-    {
-        if (!(f = newof(0, Field_t, 1, 0)))
-        {
+    if (name) {
+        if (!(f = newof(0, Field_t, 1, 0))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return 0;
@@ -1225,8 +1113,7 @@ xml_field_end(Tag_t *tag, Tagframe_t *fp, Tagdisc_t *disc)
 {
     Xml_t *xml = ( Xml_t * )disc;
 
-    if (xml->lastfield && (!xml->lastfield->name || !xml->lastfield->type))
-    {
+    if (xml->lastfield && (!xml->lastfield->name || !xml->lastfield->type)) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "field name and type must be specified");
@@ -1291,8 +1178,7 @@ xmlmeth(const char *name,
     char *s;
     char path[PATH_MAX];
 
-    if (!(xml = newof(0, Xml_t, 1, 0)))
-    {
+    if (!(xml = newof(0, Xml_t, 1, 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
@@ -1306,8 +1192,7 @@ xmlmeth(const char *name,
     xml->dsstagdisc.disc = disc;
     xml->dsstagdisc.meth = meth;
     sp = 0;
-    if (options)
-    {
+    if (options) {
         if (!(sp = sfstropen()))
             goto drop;
         sfprintf(sp, "%s", usage);
@@ -1319,10 +1204,8 @@ xmlmeth(const char *name,
         sfclose(sp);
         sp = 0;
         s = sfstruse(meth->cx->buf);
-        for (;;)
-        {
-            switch (optstr(options, s))
-            {
+        for (;;) {
+            switch (optstr(options, s)) {
             case 'T':
                 xml->test = opt_info.num;
                 continue;
@@ -1339,8 +1222,7 @@ xmlmeth(const char *name,
             break;
         }
     }
-    if (schema && *schema)
-    {
+    if (schema && *schema) {
         if (!(sp
               = dssfind(schema, NiL, DSS_VERBOSE, path, sizeof(path), disc)))
             return 0;
@@ -1376,8 +1258,7 @@ xmlopen(Dss_t *dss, Dssdisc_t *disc)
     Cxvariable_t *v;
     int i;
 
-    if (xml)
-    {
+    if (xml) {
         dss->cx->ctype['.'] |= CX_CTYPE_ALPHA;
         for (i = 0; i < elementsof(local_callouts); i++)
             if (cxaddcallout(dss->cx, &local_callouts[i], disc))
@@ -1415,8 +1296,7 @@ xmlopen(Dss_t *dss, Dssdisc_t *disc)
         json_end_val['\v'] = 1;
 
         xml->prefix = -1;
-        for (f = xml->fields; f; f = g)
-        {
+        for (f = xml->fields; f; f = g) {
             g = f->next;
             if (!(v = xmlvar(dss->cx, f->name, f->type, disc)))
                 return -1;

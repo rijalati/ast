@@ -107,13 +107,10 @@ quote(char *s, int expand)
         sfprintf(sfstdout, "NIL");
     else if (!*u)
         sfprintf(sfstdout, "NULL");
-    else if (expand)
-    {
+    else if (expand) {
         sfprintf(sfstdout, "\"");
-        for (;;)
-        {
-            switch (c = *u++)
-            {
+        for (;;) {
+            switch (c = *u++) {
             case 0:
                 break;
                 ;
@@ -154,8 +151,7 @@ quote(char *s, int expand)
             break;
         }
         sfprintf(sfstdout, "\"");
-    }
-    else
+    } else
         sfprintf(sfstdout, "%s", s);
 }
 
@@ -167,8 +163,7 @@ report(char *comment, char *fun, char *re, char *msg, int expand)
     sfprintf(sfstdout, "%d:", state.lineno);
     if (fun)
         sfprintf(sfstdout, " %s", fun);
-    if (re)
-    {
+    if (re) {
         sfprintf(sfstdout, " ");
         quote(re, expand);
     }
@@ -196,8 +191,7 @@ escape(char *s)
 
     for (t = s; *t = *s; s++, t++)
         if (*s == '\\')
-            switch (*++s)
-            {
+            switch (*++s) {
             case '\\':
                 break;
             case 'a':
@@ -239,10 +233,8 @@ escape(char *s)
                 q = *s == 'u' ? (s + 4) : ( char * )0;
                 c = 0;
                 e = s;
-                while (!e || !q || s < q)
-                {
-                    switch (*s)
-                    {
+                while (!e || !q || s < q) {
+                    switch (*s) {
                     case 'a':
                     case 'b':
                     case 'c':
@@ -303,8 +295,7 @@ escape(char *s)
                 c = *s - '0';
                 q = s + 2;
                 while (s < q)
-                    switch (*++s)
-                    {
+                    switch (*++s) {
                     case '0':
                     case '1':
                     case '2':
@@ -370,10 +361,8 @@ main(int argc, char **argv)
         p++;
     *p = 0;
     while ((p = *++argv) && *p == '-')
-        for (;;)
-        {
-            switch (*++p)
-            {
+        for (;;) {
+            switch (*++p) {
             case 0:
                 break;
             case 'c':
@@ -393,35 +382,27 @@ main(int argc, char **argv)
             }
             break;
         }
-    if (catch)
-    {
+    if (catch) {
         signal(SIGALRM, gotcha);
         signal(SIGBUS, gotcha);
         signal(SIGSEGV, gotcha);
     }
     if (!*argv)
         argv = filter;
-    while (state.file = *argv++)
-    {
+    while (state.file = *argv++) {
         if (streq(state.file, "-") || streq(state.file, "/dev/stdin")
-            || streq(state.file, "/dev/fd/0"))
-        {
+            || streq(state.file, "/dev/fd/0")) {
             state.file = 0;
             fp = sfstdin;
-        }
-        else if (!(fp = sfopen(NiL, state.file, "r")))
-        {
+        } else if (!(fp = sfopen(NiL, state.file, "r"))) {
             sfprintf(sfstderr, "%s: %s: cannot read\n", unit, state.file);
             return 2;
         }
         sfprintf(sfstdout, "TEST\t%s ", unit);
-        if (s = state.file)
-        {
+        if (s = state.file) {
             subunit = p = 0;
-            for (;;)
-            {
-                switch (*s++)
-                {
+            for (;;) {
+                switch (*s++) {
                 case 0:
                     break;
                 case '/':
@@ -445,8 +426,7 @@ main(int argc, char **argv)
                 subunit = 0;
             else
                 sfprintf(sfstdout, "%-.*s ", subunitlen, subunit);
-        }
-        else
+        } else
             subunit = 0;
         sfprintf(sfstdout, "%s", version);
         if (catch)
@@ -456,16 +436,14 @@ main(int argc, char **argv)
         sfprintf(sfstdout, "\n");
         testno = state.errors = state.lineno = state.signals = state.warnings
         = 0;
-        while (p = sfgetr(fp, '\n', 1))
-        {
+        while (p = sfgetr(fp, '\n', 1)) {
             state.lineno++;
 
             /* parse: */
 
             if (*p == 0 || *p == '#')
                 continue;
-            if (*p == ':')
-            {
+            if (*p == ':') {
                 while (*++p == ' ')
                     ;
                 sfprintf(sfstdout, "NOTE	%s\n", p);
@@ -473,10 +451,8 @@ main(int argc, char **argv)
             }
             i = 0;
             field[i++] = p;
-            for (;;)
-            {
-                switch (*p++)
-                {
+            for (;;) {
+                switch (*p++) {
                 case 0:
                     p--;
                     goto checkfield;
@@ -507,10 +483,8 @@ main(int argc, char **argv)
             /* interpret: */
 
             expand = invert = type = 0;
-            for (p = spec; *p; p++)
-            {
-                switch (*p)
-                {
+            for (p = spec; *p; p++) {
+                switch (*p) {
                 case 'E':
                     type = ERE;
                     continue;
@@ -543,19 +517,14 @@ main(int argc, char **argv)
             msg = field[3];
             sfsync(sfstdout);
 
-            for (;;)
-            {
-                if (type == ERE)
-                {
+            for (;;) {
+                if (type == ERE) {
                     fun = "fmtmatch";
                     call = fmtmatch;
-                }
-                else if (type == KRE)
-                {
+                } else if (type == KRE) {
                     fun = "fmtre";
                     call = fmtre;
-                }
-                else
+                } else
                     break;
                 testno++;
                 if (verbose)
@@ -569,14 +538,12 @@ main(int argc, char **argv)
                     s = (*call)(re);
                 else if (setjmp(state.gotcha))
                     s = "SIGNAL";
-                else
-                {
+                else {
                     alarm(LOOPED);
                     s = (*call)(re);
                     alarm(0);
                 }
-                if (!s && ans || s && !ans || s && ans && !streq(s, ans))
-                {
+                if (!s && ans || s && !ans || s && ans && !streq(s, ans)) {
                     report("failed: ", fun, re, msg, expand);
                     quote(ans, expand);
                     sfprintf(sfstdout, " expected, ");

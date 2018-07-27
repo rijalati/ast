@@ -67,8 +67,7 @@ default_getenv(const char *name)
         return 0;
     if (!(c1 = *++name))
         c1 = '=';
-    while (cp = *av++)
-    {
+    while (cp = *av++) {
         if (cp[0] != c0 || cp[1] != c1)
             continue;
         sp = name;
@@ -101,8 +100,7 @@ getenv(const char *name)
 
     static char *(*posix_getenv)(const char *);
 
-    if (!posix_getenv)
-    {
+    if (!posix_getenv) {
         if (dll = GetModuleHandle("posix.dll"))
             posix_getenv
             = ( char *( * )( const char * ))GetProcAddress(dll, "getenv");

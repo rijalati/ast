@@ -60,10 +60,8 @@ print_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     int all = 0;
     int errors = error_info.errors;
 
-    for (;;)
-    {
-        switch (optget(argv, print_usage))
-        {
+    for (;;) {
+        switch (optget(argv, print_usage)) {
         case 'a':
             all = 1;
             continue;
@@ -84,11 +82,9 @@ print_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     argv += opt_info.index;
     if (all)
         expr->data = 0;
-    else if (!(expr->data = *argv++))
-    {
+    else if (!(expr->data = *argv++)) {
         argv--;
-        if (!(expr->data = ( char * )DSS(cx)->meth->print))
-        {
+        if (!(expr->data = ( char * )DSS(cx)->meth->print)) {
             if (disc->errorf)
                 (*disc->errorf)(NiL,
                                 disc,
@@ -98,8 +94,7 @@ print_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
             return -1;
         }
     }
-    if (*argv)
-    {
+    if (*argv) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_USAGE | 4, "%s", optusage(NiL));
         return -1;

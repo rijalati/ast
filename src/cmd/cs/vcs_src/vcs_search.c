@@ -79,8 +79,7 @@ rdirent_t **dir;
     if (r)
         return (r);
 
-    if (R_ISLINK(tp) && (mode & G_LINK))
-    {
+    if (R_ISLINK(tp) && (mode & G_LINK)) {
         if ((tp = gettagbyname(list, tp->version, G_LINK, 0)) == NULL)
             return (-1);
     }
@@ -117,35 +116,29 @@ tag_t **tpp;
     s = buf;
     elist[num = chop(s, elist, MAXDEPTH, ';')] = NULL;
 
-    for (i = 0; i < num; i++)
-    {
+    for (i = 0; i < num; i++) {
         distance = 0;
-        if ((s = strchr(elist[i], '-')) || (s = strchr(elist[i], '+')))
-        {
+        if ((s = strchr(elist[i], '-')) || (s = strchr(elist[i], '+'))) {
             flag = (*s == '+') ? 0 : 1;
             *s = '\0';
             s++;
             distance = ( int )strtol(s, ( char ** )0, 0);
-            if (!sort)
-            {
+            if (!sort) {
                 qsort(( char * )tbl, total, sizeof(rdirent_t *), cmptime);
                 sort++;
             }
         }
-        if ((index = lookup_tag_t(tbl, total, elist[i], domain, 0)) < 0)
-        {
+        if ((index = lookup_tag_t(tbl, total, elist[i], domain, 0)) < 0) {
             if (pattern2time(elist[i], &to) < 0)
                 continue;
-            if (!sort)
-            {
+            if (!sort) {
                 qsort(( char * )tbl, total, sizeof(rdirent_t *), cmptime);
                 sort++;
             }
             if ((index = lookup_tag_time(tbl, total, to, domain, 0)) < 0)
                 continue;
         }
-        if (!distance)
-        {
+        if (!distance) {
             *tpp = tbl[index]->tag;
             return (0);
         }
@@ -153,8 +146,7 @@ tag_t **tpp;
             index += distance;
         else
             index -= distance;
-        if (index >= 0 && index < total)
-        {
+        if (index >= 0 && index < total) {
             *tpp = tbl[index]->tag;
             return (0);
         }
@@ -173,8 +165,7 @@ int first;
 
     r = -1;
 
-    for (i = 0; i < total; i++)
-    {
+    for (i = 0; i < total; i++) {
         if (tbl[i]->tag->stat.st_mtime > to)
             return (r);
         if (domain && tbl[i]->tag->domain != domain)
@@ -218,20 +209,14 @@ int mode;
     else
         v = "LATEST";
 
-    for (sp = NULL, ep = NULL, p = list; p; p = p->next)
-    {
-        if (strcmp(p->tag->version, v) == 0)
-        {
-            if (domain)
-            {
-                if (p->tag->domain == domain)
-                {
+    for (sp = NULL, ep = NULL, p = list; p; p = p->next) {
+        if (strcmp(p->tag->version, v) == 0) {
+            if (domain) {
+                if (p->tag->domain == domain) {
                     tpp = &(p->tag);
                     return (0);
                 }
-            }
-            else
-            {
+            } else {
                 cnt++;
                 if (!sp)
                     ep = sp = p;
@@ -243,37 +228,28 @@ int mode;
     if (mode)
         return (-1);
 
-    switch (cnt)
-    {
+    switch (cnt) {
     case 0:
-        if (strcmp(v, "BASE") == 0)
-        {
+        if (strcmp(v, "BASE") == 0) {
             /* return the base tag */
-            for (p = list; p; p = p->next)
-            {
-                if (ISBASE(p->tag))
-                {
+            for (p = list; p; p = p->next) {
+                if (ISBASE(p->tag)) {
                     tpp = &(p->tag);
                     return (0);
                 }
             }
             message((0, "can find the base"));
             return (-1);
-        }
-        else if (strcmp(v, "LATEST") == 0)
-        {
+        } else if (strcmp(v, "LATEST") == 0) {
             /* return the latest one */
-            for (p = list, mtime = 0L; p; p = p->next)
-            {
-                if (p->tag->stat.st_mtime > mtime)
-                {
+            for (p = list, mtime = 0L; p; p = p->next) {
+                if (p->tag->stat.st_mtime > mtime) {
                     *tpp = p->tag;
                     mtime = p->tag->stat.st_mtime;
                 }
             }
             return (0);
-        }
-        else
+        } else
             return (-1);
     case 1:
         *tpp = sp->tag;
@@ -282,10 +258,8 @@ int mode;
         /*
          *	return the latest one
          */
-        for (p = sp, mtime = 0L; p != ep->next; p = p->next)
-        {
-            if (p->tag->stat.st_mtime > mtime)
-            {
+        for (p = sp, mtime = 0L; p != ep->next; p = p->next) {
+            if (p->tag->stat.st_mtime > mtime) {
                 *tpp = p->tag;
                 mtime = p->tag->stat.st_mtime;
             }
@@ -317,17 +291,12 @@ int mode;
     else
         v = "LATEST";
 
-    for (i = 0; i < total; i++)
-    {
-        if (strcmp(tbl[i]->tag->version, v) == 0)
-        {
-            if (domain)
-            {
+    for (i = 0; i < total; i++) {
+        if (strcmp(tbl[i]->tag->version, v) == 0) {
+            if (domain) {
                 if (tbl[i]->tag->domain == domain)
                     return (i);
-            }
-            else
-            {
+            } else {
                 cnt++;
                 r = i;
             }
@@ -340,17 +309,14 @@ int mode;
     if (cnt)
         return (r);
 
-    if (strcmp(v, "BASE") == 0 || strcmp(v, "base") == 0)
-    {
-        for (i = 0; i < total; i++)
-        {
+    if (strcmp(v, "BASE") == 0 || strcmp(v, "base") == 0) {
+        for (i = 0; i < total; i++) {
             if (ISBASE(tbl[i]->tag))
                 return (i);
         }
         message((0, "can find the base"));
         return (-1);
-    }
-    else if (strcmp(v, "LATEST") == 0 || strcmp(v, "LATEST") == 0)
+    } else if (strcmp(v, "LATEST") == 0 || strcmp(v, "LATEST") == 0)
         return (total - 1);
     else
         return (-1);
@@ -380,49 +346,44 @@ time_t *to;
 
     LINIT();
 
-    if (*pattern == '(')
-    {
-        for (s = buf, pattern++; *pattern && *pattern != ')'; s++, pattern++)
-        {
+    if (*pattern == '(') {
+        for (s = buf, pattern++; *pattern && *pattern != ')';
+             s++, pattern++) {
             *s = *pattern;
             if (*s == '/')
                 flag++;
         }
         *s = '\0';
         s = buf;
-    }
-    else
-    {
+    } else {
         s = pattern;
         if (strchr(s, '/'))
             flag++;
     }
-    if (flag)
-    {
+    if (flag) {
         if ((sfsscanf(s, "%d/%d/%d", &mon, &dd, &yy)) != 3)
             return (-1);
         if (mon <= 12)
             strcpy(month, MONTH[--mon]);
-        else if (dd <= 12)
-        {
+        else if (dd <= 12) {
             strcpy(month, MONTH[--dd]);
             dd = mon;
-        }
-        else
+        } else
             return (-1);
-    }
-    else if ((LINIT(),
-              sfsscanf(s, "%s %d %d %d:%d:%d", month, &dd, &yy, &hh, &mm, &ss)
-              != 6)
-             && (LINIT(),
-                 sfsscanf(s, "%s %d %d:%d:%d", month, &dd, &hh, &mm, &ss) != 5)
-             && (LINIT(),
-                 sfsscanf(s, "%s %d %d %d:%d", month, &dd, &yy, &hh, &mm) != 5)
-             && (LINIT(),
-                 sfsscanf(s, "%s %d %d:%d", month, &dd, &hh, &mm) != 4)
-             && (LINIT(), sfsscanf(s, "%s %d %d", month, &dd, &yy) != 3)
-             && (LINIT(), sfsscanf(s, "%s %d", month, &dd) != 2))
-    {
+    } else if ((LINIT(),
+                sfsscanf(
+                s, "%s %d %d %d:%d:%d", month, &dd, &yy, &hh, &mm, &ss)
+                != 6)
+               && (LINIT(),
+                   sfsscanf(s, "%s %d %d:%d:%d", month, &dd, &hh, &mm, &ss)
+                   != 5)
+               && (LINIT(),
+                   sfsscanf(s, "%s %d %d %d:%d", month, &dd, &yy, &hh, &mm)
+                   != 5)
+               && (LINIT(),
+                   sfsscanf(s, "%s %d %d:%d", month, &dd, &hh, &mm) != 4)
+               && (LINIT(), sfsscanf(s, "%s %d %d", month, &dd, &yy) != 3)
+               && (LINIT(), sfsscanf(s, "%s %d", month, &dd) != 2)) {
         message((5, "can't scan --"));
         return (-1);
     }
@@ -445,8 +406,7 @@ time_t mtime;
 {
     rdirent_t *ep;
 
-    for (ep = list; ep; ep = ep->next)
-    {
+    for (ep = list; ep; ep = ep->next) {
         if (ep->tag->stat.st_mtime == mtime)
             return (ep->tag);
     }
@@ -464,12 +424,9 @@ int level;
         return (NULL);
 
 
-    for (ep = list; ep; ep = ep->next)
-    {
-        if (strcmp(ep->tag->version, name) == 0)
-        {
-            if (R_ISLINK(ep->tag) && (mode & G_LINK))
-            {
+    for (ep = list; ep; ep = ep->next) {
+        if (strcmp(ep->tag->version, name) == 0) {
+            if (R_ISLINK(ep->tag) && (mode & G_LINK)) {
                 return (gettagbyname(list, ep->link, mode, level + 1));
             }
             return (ep->tag);

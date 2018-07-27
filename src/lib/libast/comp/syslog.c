@@ -116,14 +116,11 @@ str2inet(char *s, char *prot, struct sockaddr_in *addr)
     unsigned long a = 0;
     unsigned short p = 0;
 
-    if (!memcmp(s, "local/", 6))
-    {
+    if (!memcmp(s, "local/", 6)) {
         a = INADDR_LOOPBACK;
         n = 4;
         s += 6;
-    }
-    else if (!isdigit(*s))
-    {
+    } else if (!isdigit(*s)) {
         struct hostent *hp;
         char *e = strchr(s, '/');
 
@@ -139,26 +136,22 @@ str2inet(char *s, char *prot, struct sockaddr_in *addr)
         n = 6;
         s = e + 1;
     }
-    for (;;)
-    {
+    for (;;) {
         v = 0;
         while ((c = *s++) >= '0' && c <= '9')
             v = v * 10 + c - '0';
         if (++n <= 4)
             a = (a << 8) | (v & 0xff);
-        else
-        {
+        else {
             if (n <= 5)
                 a = htonl(a);
-            if (c)
-            {
+            if (c) {
                 struct servent *sp;
 
                 if (!(sp = getservbyname(s - 1, prot)))
                     return -1;
                 p = sp->s_port;
-            }
-            else
+            } else
                 p = htons(v);
             break;
         }
@@ -183,8 +176,7 @@ sockopen(const char *path)
     struct sockaddr_in addr;
     char buf[PATH_MAX];
 
-    if (pathgetlink(path, buf, sizeof(buf)) <= 0)
-    {
+    if (pathgetlink(path, buf, sizeof(buf)) <= 0) {
         if (strlen(path) >= sizeof(buf))
             return -1;
         strcpy(buf, path);
@@ -196,8 +188,7 @@ sockopen(const char *path)
         struct stat st;
 
         if ((ul = strlen(buf)) < sizeof(ua.sun_path) && !stat(buf, &st)
-            && S_ISSOCK(st.st_mode))
-        {
+            && S_ISSOCK(st.st_mode)) {
             if ((fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
                 return -1;
             ua.sun_family = AF_UNIX;
@@ -218,8 +209,7 @@ sockopen(const char *path)
     if ((fd = socket(AF_INET, buf[5] == 't' ? SOCK_STREAM : SOCK_DGRAM, 0))
         < 0)
         return -1;
-    if (connect(fd, ( struct sockaddr * )&addr, sizeof(addr)))
-    {
+    if (connect(fd, ( struct sockaddr * )&addr, sizeof(addr))) {
         close(fd);
         return -1;
     }
@@ -244,10 +234,8 @@ sendlog(const char *msg)
     int n;
 
     n = msg ? strlen(msg) : 0;
-    for (;;)
-    {
-        if (log.fd < 0)
-        {
+    for (;;) {
+        if (log.fd < 0) {
             char buf[PATH_MAX];
 
             if (log.attempt >= elementsof(attempt))
@@ -279,8 +267,7 @@ sendlog(const char *msg)
 static int
 extend(Sfio_t *sp, void *vp, Sffmt_t *dp)
 {
-    if (dp->fmt == 'm')
-    {
+    if (dp->fmt == 'm') {
         dp->flags |= SFFMT_VALUE;
         dp->fmt = 's';
         dp->size = -1;
@@ -302,11 +289,9 @@ vsyslog(int priority, const char *format, va_list ap)
         priority |= log.facility;
     if (!(priority & log.mask))
         return;
-    if (sp = sfstropen())
-    {
+    if (sp = sfstropen()) {
         sfputr(sp, fmttime("%b %d %H:%M:%S", time(NiL)), -1);
-        if (log.flags & LOG_LEVEL)
-        {
+        if (log.flags & LOG_LEVEL) {
             if ((c = LOG_SEVERITY(priority)) < elementsof(log_severity))
                 s = ( char * )log_severity[c].name;
             else
@@ -325,14 +310,12 @@ vsyslog(int priority, const char *format, va_list ap)
 #    endif
         if (*log.ident)
             sfprintf(sp, " %s", log.ident);
-        if (log.flags & LOG_PID)
-        {
+        if (log.flags & LOG_PID) {
             if (!*log.ident)
                 sfprintf(sp, " ");
             sfprintf(sp, "[%d]", getpid());
         }
-        if (format)
-        {
+        if (format) {
             sfprintf(sp, ": ");
             memset(&fmt, 0, sizeof(fmt));
             fmt.version = SFIO_VERSION;

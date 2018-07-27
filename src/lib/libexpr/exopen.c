@@ -49,8 +49,7 @@ exopen(Exdisc_t *disc)
                       : vmopen(Vmdcheap, Vmbest, 0)))
         || !(program->ve
              = (debug ? vmopen(Vmdcsbrk, Vmdebug, VM_DBCHECK | VM_DBABORT)
-                      : vmopen(Vmdcheap, Vmbest, 0))))
-    {
+                      : vmopen(Vmdcheap, Vmbest, 0)))) {
         exclose(program, 1);
         return 0;
     }

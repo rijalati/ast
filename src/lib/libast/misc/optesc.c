@@ -37,37 +37,29 @@ optesc(Sfio_t *sp, const char *s, int esc)
     const char *m;
     int c;
 
-    if (*s == '[' && *(s + 1) == '+' && *(s + 2) == '?')
-    {
+    if (*s == '[' && *(s + 1) == '+' && *(s + 2) == '?') {
         c = strlen(s);
-        if (s[c - 1] == ']')
-        {
+        if (s[c - 1] == ']') {
             sfprintf(sp, "%-.*s", c - 4, s + 3);
             return 0;
         }
     }
     if (esc != '?' && esc != ':')
         esc = 0;
-    while (c = *s++)
-    {
-        if (isalnum(c))
-        {
+    while (c = *s++) {
+        if (isalnum(c)) {
             for (m = s - 1; isalnum(*s); s++)
                 ;
             if (isalpha(c) && *s == '(' && isdigit(*(s + 1))
-                && *(s + 2) == ')')
-            {
+                && *(s + 2) == ')') {
                 sfputc(sp, '\b');
                 sfwrite(sp, m, s - m);
                 sfputc(sp, '\b');
                 sfwrite(sp, s, 3);
                 s += 3;
-            }
-            else
+            } else
                 sfwrite(sp, m, s - m);
-        }
-        else if (c == '-' && *s == '-' || c == '<')
-        {
+        } else if (c == '-' && *s == '-' || c == '<') {
             m = s - 1;
             if (c == '-')
                 s++;
@@ -76,17 +68,13 @@ optesc(Sfio_t *sp, const char *s, int esc)
             while (isalnum(*s))
                 s++;
             if (c == '<' && *s == '>' || isspace(*s) || *s == 0 || *s == '='
-                || *s == ':' || *s == ';' || *s == '.' || *s == ',')
-            {
+                || *s == ':' || *s == ';' || *s == '.' || *s == ',') {
                 sfputc(sp, '\b');
                 sfwrite(sp, m, s - m);
                 sfputc(sp, '\b');
-            }
-            else
+            } else
                 sfwrite(sp, m, s - m);
-        }
-        else
-        {
+        } else {
             if (c == ']' || c == esc)
                 sfputc(sp, c);
             sfputc(sp, c);

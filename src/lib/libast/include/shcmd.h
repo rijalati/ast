@@ -110,8 +110,7 @@ struct Shbltin_s
 #                define ERROR_NOTIFY 1
 #            endif
 #            define cmdinit(ac, av, c, cat, flg)                             \
-                do                                                           \
-                {                                                            \
+                do {                                                         \
                     if ((ac) <= 0)                                           \
                         return (0);                                          \
                     (sh_context(c)->notify                                   \

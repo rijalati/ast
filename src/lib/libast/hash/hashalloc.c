@@ -58,8 +58,7 @@ hashalloc(Hash_table_t *ref, ...)
      */
 
     n = va_arg(ap, int);
-    if (!ref && n == HASH_region)
-    {
+    if (!ref && n == HASH_region) {
         region = va_arg(ap, Hash_region_f);
         handle = va_arg(ap, void *);
         n = va_arg(ap, int);
@@ -67,27 +66,21 @@ hashalloc(Hash_table_t *ref, ...)
               handle, NiL, sizeof(Hash_table_t), 0)))
             goto out;
         memset(tab, 0, sizeof(Hash_table_t));
-    }
-    else if (!(tab = newof(0, Hash_table_t, 1, 0)))
+    } else if (!(tab = newof(0, Hash_table_t, 1, 0)))
         goto out;
     tab->bucketsize
     = (sizeof(Hash_header_t) + sizeof(char *) - 1) / sizeof(char *);
-    if (ref)
-    {
+    if (ref) {
         tab->flags = ref->flags & ~HASH_RESET;
         tab->root = ref->root;
         internal = HASH_INTERNAL;
-    }
-    else
-    {
-        if (region)
-        {
+    } else {
+        if (region) {
             if (!(tab->root = ( Hash_root_t * )(*region)(
                   handle, NiL, sizeof(Hash_root_t), 0)))
                 goto out;
             memset(tab->root, 0, sizeof(Hash_root_t));
-        }
-        else if (!(tab->root = newof(0, Hash_root_t, 1, 0)))
+        } else if (!(tab->root = newof(0, Hash_root_t, 1, 0)))
             goto out;
         if (!(tab->root->local = newof(0, Hash_local_t, 1, 0)))
             goto out;
@@ -97,10 +90,8 @@ hashalloc(Hash_table_t *ref, ...)
         internal = 0;
     }
     tab->size = HASHMINSIZE;
-    for (;;)
-    {
-        switch (n)
-        {
+    for (;;) {
+        switch (n) {
         case HASH_alloc:
             if (ref)
                 goto out;
@@ -159,8 +150,7 @@ hashalloc(Hash_table_t *ref, ...)
             tab->flags |= HASH_STATIC;
             break;
         case HASH_va_list:
-            if (vp < &va[elementsof(va)])
-            {
+            if (vp < &va[elementsof(va)]) {
                 va_copy(*vp, ap);
                 vp++;
             }
@@ -176,41 +166,34 @@ hashalloc(Hash_table_t *ref, ...)
 #endif
             break;
         case 0:
-            if (vp > va)
-            {
+            if (vp > va) {
                 vp--;
                 va_copy(ap, *vp);
                 break;
             }
-            if (tab->flags & HASH_SCOPE)
-            {
+            if (tab->flags & HASH_SCOPE) {
                 if (!(tab->scope = ref))
                     goto out;
                 ref->frozen++;
             }
-            if (!tab->table)
-            {
-                if (region)
-                {
+            if (!tab->table) {
+                if (region) {
                     if (!(
                         tab->table = ( Hash_bucket_t ** )(*region)(
                         handle, NiL, sizeof(Hash_bucket_t *) * tab->size, 0)))
                         goto out;
                     memset(
                     tab->table, 0, sizeof(Hash_bucket_t *) * tab->size);
-                }
-                else if (!(tab->table
-                           = newof(0, Hash_bucket_t *, tab->size, 0)))
+                } else if (!(tab->table
+                             = newof(0, Hash_bucket_t *, tab->size, 0)))
                     goto out;
             }
-            if (!ref)
-            {
+            if (!ref) {
                 tab->root->flags = tab->flags & HASH_INTERNAL;
                 tab->root->next = hash_info.list;
                 hash_info.list = tab->root;
             }
-            if (!region)
-            {
+            if (!region) {
                 tab->next = tab->root->references;
                 tab->root->references = tab;
             }

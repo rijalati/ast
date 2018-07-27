@@ -210,8 +210,7 @@ char **argv; /* Argument strings.  Someone else has already
     TkTextTag *tagPtr;
     TkTextIndex first, last, index1, index2;
 
-    if (argc < 3)
-    {
+    if (argc < 3) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -221,14 +220,12 @@ char **argv; /* Argument strings.  Someone else has already
     }
     c = argv[2][0];
     length = strlen(argv[2]);
-    if ((c == 'a') && (strncmp(argv[2], "add", length) == 0))
-    {
+    if ((c == 'a') && (strncmp(argv[2], "add", length) == 0)) {
         fullOption = "add";
         addTag = 1;
 
     addAndRemove:
-        if (argc < 5)
-        {
+        if (argc < 5) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -239,36 +236,26 @@ char **argv; /* Argument strings.  Someone else has already
             return TCL_ERROR;
         }
         tagPtr = TkTextCreateTag(textPtr, argv[3]);
-        for (i = 4; i < argc; i += 2)
-        {
-            if (TkTextGetIndex(interp, textPtr, argv[i], &index1) != TCL_OK)
-            {
+        for (i = 4; i < argc; i += 2) {
+            if (TkTextGetIndex(interp, textPtr, argv[i], &index1) != TCL_OK) {
                 return TCL_ERROR;
             }
-            if (argc > (i + 1))
-            {
+            if (argc > (i + 1)) {
                 if (TkTextGetIndex(interp, textPtr, argv[i + 1], &index2)
-                    != TCL_OK)
-                {
+                    != TCL_OK) {
                     return TCL_ERROR;
                 }
-                if (TkTextIndexCmp(&index1, &index2) >= 0)
-                {
+                if (TkTextIndexCmp(&index1, &index2) >= 0) {
                     return TCL_OK;
                 }
-            }
-            else
-            {
+            } else {
                 index2 = index1;
                 TkTextIndexForwChars(&index2, 1, &index2);
             }
 
-            if (tagPtr->affectsDisplay)
-            {
+            if (tagPtr->affectsDisplay) {
                 TkTextRedrawTag(textPtr, &index1, &index2, tagPtr, !addTag);
-            }
-            else
-            {
+            } else {
                 /*
                  * Still need to trigger enter/leave events on tags that
                  * have changed.
@@ -284,11 +271,9 @@ char **argv; /* Argument strings.  Someone else has already
              * partially-completed selection retrievals.
              */
 
-            if (tagPtr == textPtr->selTagPtr)
-            {
+            if (tagPtr == textPtr->selTagPtr) {
                 if (addTag && textPtr->exportSelection
-                    && !(textPtr->flags & GOT_SELECTION))
-                {
+                    && !(textPtr->flags & GOT_SELECTION)) {
                     Tk_OwnSelection(textPtr->tkwin,
                                     XA_PRIMARY,
                                     TkTextLostSelection,
@@ -298,11 +283,8 @@ char **argv; /* Argument strings.  Someone else has already
                 textPtr->abortSelections = 1;
             }
         }
-    }
-    else if ((c == 'b') && (strncmp(argv[2], "bind", length) == 0))
-    {
-        if ((argc < 4) || (argc > 6))
-        {
+    } else if ((c == 'b') && (strncmp(argv[2], "bind", length) == 0)) {
+        if ((argc < 4) || (argc > 6)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -317,23 +299,19 @@ char **argv; /* Argument strings.  Someone else has already
          * one.
          */
 
-        if (textPtr->bindingTable == NULL)
-        {
+        if (textPtr->bindingTable == NULL) {
             textPtr->bindingTable = Tk_CreateBindingTable(interp);
         }
 
-        if (argc == 6)
-        {
+        if (argc == 6) {
             int append = 0;
             unsigned long mask;
 
-            if (argv[5][0] == 0)
-            {
+            if (argv[5][0] == 0) {
                 return Tk_DeleteBinding(
                 interp, textPtr->bindingTable, ( ClientData )tagPtr, argv[4]);
             }
-            if (argv[5][0] == '+')
-            {
+            if (argv[5][0] == '+') {
                 argv[5]++;
                 append = 1;
             }
@@ -343,8 +321,7 @@ char **argv; /* Argument strings.  Someone else has already
                                     argv[4],
                                     argv[5],
                                     append);
-            if (mask == 0)
-            {
+            if (mask == 0) {
                 return TCL_ERROR;
             }
             if (mask
@@ -353,8 +330,7 @@ char **argv; /* Argument strings.  Someone else has already
                   | Button3MotionMask | Button4MotionMask | Button5MotionMask
                   | ButtonPressMask | ButtonReleaseMask | EnterWindowMask
                   | LeaveWindowMask | KeyPressMask | KeyReleaseMask
-                  | PointerMotionMask))
-            {
+                  | PointerMotionMask)) {
                 Tk_DeleteBinding(
                 interp, textPtr->bindingTable, ( ClientData )tagPtr, argv[4]);
                 Tcl_ResetResult(interp);
@@ -365,30 +341,22 @@ char **argv; /* Argument strings.  Someone else has already
                                  ( char * )NULL);
                 return TCL_ERROR;
             }
-        }
-        else if (argc == 5)
-        {
+        } else if (argc == 5) {
             char *command;
 
             command = Tk_GetBinding(
             interp, textPtr->bindingTable, ( ClientData )tagPtr, argv[4]);
-            if (command == NULL)
-            {
+            if (command == NULL) {
                 return TCL_ERROR;
             }
             interp->result = command;
-        }
-        else
-        {
+        } else {
             Tk_GetAllBindings(
             interp, textPtr->bindingTable, ( ClientData )tagPtr);
         }
-    }
-    else if ((c == 'c') && (strncmp(argv[2], "cget", length) == 0)
-             && (length >= 2))
-    {
-        if (argc != 5)
-        {
+    } else if ((c == 'c') && (strncmp(argv[2], "cget", length) == 0)
+               && (length >= 2)) {
+        if (argc != 5) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -397,18 +365,14 @@ char **argv; /* Argument strings.  Someone else has already
             return TCL_ERROR;
         }
         tagPtr = FindTag(interp, textPtr, argv[3]);
-        if (tagPtr == NULL)
-        {
+        if (tagPtr == NULL) {
             return TCL_ERROR;
         }
         return Tk_ConfigureValue(
         interp, textPtr->tkwin, tagConfigSpecs, ( char * )tagPtr, argv[4], 0);
-    }
-    else if ((c == 'c') && (strncmp(argv[2], "configure", length) == 0)
-             && (length >= 2))
-    {
-        if (argc < 4)
-        {
+    } else if ((c == 'c') && (strncmp(argv[2], "configure", length) == 0)
+               && (length >= 2)) {
+        if (argc < 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -418,26 +382,21 @@ char **argv; /* Argument strings.  Someone else has already
             return TCL_ERROR;
         }
         tagPtr = TkTextCreateTag(textPtr, argv[3]);
-        if (argc == 4)
-        {
+        if (argc == 4) {
             return Tk_ConfigureInfo(interp,
                                     textPtr->tkwin,
                                     tagConfigSpecs,
                                     ( char * )tagPtr,
                                     ( char * )NULL,
                                     0);
-        }
-        else if (argc == 5)
-        {
+        } else if (argc == 5) {
             return Tk_ConfigureInfo(interp,
                                     textPtr->tkwin,
                                     tagConfigSpecs,
                                     ( char * )tagPtr,
                                     argv[4],
                                     0);
-        }
-        else
-        {
+        } else {
             int result;
 
             result = Tk_ConfigureWidget(interp,
@@ -454,164 +413,132 @@ char **argv; /* Argument strings.  Someone else has already
              * of an option from "unspecified").
              */
 
-            if (tagPtr->bdString != NULL)
-            {
+            if (tagPtr->bdString != NULL) {
                 if (Tk_GetPixels(interp,
                                  textPtr->tkwin,
                                  tagPtr->bdString,
                                  &tagPtr->borderWidth)
-                    != TCL_OK)
-                {
+                    != TCL_OK) {
                     return TCL_ERROR;
                 }
-                if (tagPtr->borderWidth < 0)
-                {
+                if (tagPtr->borderWidth < 0) {
                     tagPtr->borderWidth = 0;
                 }
             }
-            if (tagPtr->reliefString != NULL)
-            {
+            if (tagPtr->reliefString != NULL) {
                 if (Tk_GetRelief(interp, tagPtr->reliefString, &tagPtr->relief)
-                    != TCL_OK)
-                {
+                    != TCL_OK) {
                     return TCL_ERROR;
                 }
             }
-            if (tagPtr->justifyString != NULL)
-            {
+            if (tagPtr->justifyString != NULL) {
                 if (Tk_GetJustify(
                     interp, tagPtr->justifyString, &tagPtr->justify)
-                    != TCL_OK)
-                {
+                    != TCL_OK) {
                     return TCL_ERROR;
                 }
             }
-            if (tagPtr->lMargin1String != NULL)
-            {
+            if (tagPtr->lMargin1String != NULL) {
                 if (Tk_GetPixels(interp,
                                  textPtr->tkwin,
                                  tagPtr->lMargin1String,
                                  &tagPtr->lMargin1)
-                    != TCL_OK)
-                {
+                    != TCL_OK) {
                     return TCL_ERROR;
                 }
             }
-            if (tagPtr->lMargin2String != NULL)
-            {
+            if (tagPtr->lMargin2String != NULL) {
                 if (Tk_GetPixels(interp,
                                  textPtr->tkwin,
                                  tagPtr->lMargin2String,
                                  &tagPtr->lMargin2)
-                    != TCL_OK)
-                {
+                    != TCL_OK) {
                     return TCL_ERROR;
                 }
             }
-            if (tagPtr->offsetString != NULL)
-            {
+            if (tagPtr->offsetString != NULL) {
                 if (Tk_GetPixels(interp,
                                  textPtr->tkwin,
                                  tagPtr->offsetString,
                                  &tagPtr->offset)
-                    != TCL_OK)
-                {
+                    != TCL_OK) {
                     return TCL_ERROR;
                 }
             }
-            if (tagPtr->overstrikeString != NULL)
-            {
+            if (tagPtr->overstrikeString != NULL) {
                 if (Tcl_GetBoolean(
                     interp, tagPtr->overstrikeString, &tagPtr->overstrike)
-                    != TCL_OK)
-                {
+                    != TCL_OK) {
                     return TCL_ERROR;
                 }
             }
-            if (tagPtr->rMarginString != NULL)
-            {
+            if (tagPtr->rMarginString != NULL) {
                 if (Tk_GetPixels(interp,
                                  textPtr->tkwin,
                                  tagPtr->rMarginString,
                                  &tagPtr->rMargin)
-                    != TCL_OK)
-                {
+                    != TCL_OK) {
                     return TCL_ERROR;
                 }
             }
-            if (tagPtr->spacing1String != NULL)
-            {
+            if (tagPtr->spacing1String != NULL) {
                 if (Tk_GetPixels(interp,
                                  textPtr->tkwin,
                                  tagPtr->spacing1String,
                                  &tagPtr->spacing1)
-                    != TCL_OK)
-                {
+                    != TCL_OK) {
                     return TCL_ERROR;
                 }
-                if (tagPtr->spacing1 < 0)
-                {
+                if (tagPtr->spacing1 < 0) {
                     tagPtr->spacing1 = 0;
                 }
             }
-            if (tagPtr->spacing2String != NULL)
-            {
+            if (tagPtr->spacing2String != NULL) {
                 if (Tk_GetPixels(interp,
                                  textPtr->tkwin,
                                  tagPtr->spacing2String,
                                  &tagPtr->spacing2)
-                    != TCL_OK)
-                {
+                    != TCL_OK) {
                     return TCL_ERROR;
                 }
-                if (tagPtr->spacing2 < 0)
-                {
+                if (tagPtr->spacing2 < 0) {
                     tagPtr->spacing2 = 0;
                 }
             }
-            if (tagPtr->spacing3String != NULL)
-            {
+            if (tagPtr->spacing3String != NULL) {
                 if (Tk_GetPixels(interp,
                                  textPtr->tkwin,
                                  tagPtr->spacing3String,
                                  &tagPtr->spacing3)
-                    != TCL_OK)
-                {
+                    != TCL_OK) {
                     return TCL_ERROR;
                 }
-                if (tagPtr->spacing3 < 0)
-                {
+                if (tagPtr->spacing3 < 0) {
                     tagPtr->spacing3 = 0;
                 }
             }
-            if (tagPtr->tabArrayPtr != NULL)
-            {
+            if (tagPtr->tabArrayPtr != NULL) {
                 ckfree(( char * )tagPtr->tabArrayPtr);
                 tagPtr->tabArrayPtr = NULL;
             }
-            if (tagPtr->tabString != NULL)
-            {
+            if (tagPtr->tabString != NULL) {
                 tagPtr->tabArrayPtr
                 = TkTextGetTabs(interp, textPtr->tkwin, tagPtr->tabString);
-                if (tagPtr->tabArrayPtr == NULL)
-                {
+                if (tagPtr->tabArrayPtr == NULL) {
                     return TCL_ERROR;
                 }
             }
-            if (tagPtr->underlineString != NULL)
-            {
+            if (tagPtr->underlineString != NULL) {
                 if (Tcl_GetBoolean(
                     interp, tagPtr->underlineString, &tagPtr->underline)
-                    != TCL_OK)
-                {
+                    != TCL_OK) {
                     return TCL_ERROR;
                 }
             }
             if ((tagPtr->wrapMode != NULL)
                 && (tagPtr->wrapMode != tkTextCharUid)
                 && (tagPtr->wrapMode != tkTextNoneUid)
-                && (tagPtr->wrapMode != tkTextWordUid))
-            {
+                && (tagPtr->wrapMode != tkTextWordUid)) {
                 Tcl_AppendResult(interp,
                                  "bad wrap mode \"",
                                  tagPtr->wrapMode,
@@ -629,8 +556,7 @@ char **argv; /* Argument strings.  Someone else has already
              * and hence freed when the tag field was overwritten.
              */
 
-            if (tagPtr == textPtr->selTagPtr)
-            {
+            if (tagPtr == textPtr->selTagPtr) {
                 textPtr->selBorder = tagPtr->border;
                 textPtr->selBdString = tagPtr->bdString;
                 textPtr->selFgColorPtr = tagPtr->fgColor;
@@ -651,21 +577,17 @@ char **argv; /* Argument strings.  Someone else has already
                 || (tagPtr->spacing3String != NULL)
                 || (tagPtr->tabString != NULL)
                 || (tagPtr->underlineString != NULL)
-                || (tagPtr->wrapMode != NULL))
-            {
+                || (tagPtr->wrapMode != NULL)) {
                 tagPtr->affectsDisplay = 1;
             }
             TkTextRedrawTag(
             textPtr, ( TkTextIndex * )NULL, ( TkTextIndex * )NULL, tagPtr, 1);
             return result;
         }
-    }
-    else if ((c == 'd') && (strncmp(argv[2], "delete", length) == 0))
-    {
+    } else if ((c == 'd') && (strncmp(argv[2], "delete", length) == 0)) {
         Tcl_HashEntry *hPtr;
 
-        if (argc < 4)
-        {
+        if (argc < 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -673,20 +595,16 @@ char **argv; /* Argument strings.  Someone else has already
                              ( char * )NULL);
             return TCL_ERROR;
         }
-        for (i = 3; i < argc; i++)
-        {
+        for (i = 3; i < argc; i++) {
             hPtr = Tcl_FindHashEntry(&textPtr->tagTable, argv[i]);
-            if (hPtr == NULL)
-            {
+            if (hPtr == NULL) {
                 continue;
             }
             tagPtr = ( TkTextTag * )Tcl_GetHashValue(hPtr);
-            if (tagPtr == textPtr->selTagPtr)
-            {
+            if (tagPtr == textPtr->selTagPtr) {
                 continue;
             }
-            if (tagPtr->affectsDisplay)
-            {
+            if (tagPtr->affectsDisplay) {
                 TkTextRedrawTag(textPtr,
                                 ( TkTextIndex * )NULL,
                                 ( TkTextIndex * )NULL,
@@ -700,8 +618,7 @@ char **argv; /* Argument strings.  Someone else has already
             tagPtr,
             0);
             Tcl_DeleteHashEntry(hPtr);
-            if (textPtr->bindingTable != NULL)
-            {
+            if (textPtr->bindingTable != NULL) {
                 Tk_DeleteAllBindings(textPtr->bindingTable,
                                      ( ClientData )tagPtr);
             }
@@ -714,14 +631,11 @@ char **argv; /* Argument strings.  Someone else has already
             textPtr->numTags -= 1;
             TkTextFreeTag(textPtr, tagPtr);
         }
-    }
-    else if ((c == 'l') && (strncmp(argv[2], "lower", length) == 0))
-    {
+    } else if ((c == 'l') && (strncmp(argv[2], "lower", length) == 0)) {
         TkTextTag *tagPtr2;
         int prio;
 
-        if ((argc != 4) && (argc != 5))
-        {
+        if ((argc != 4) && (argc != 5)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -730,42 +644,31 @@ char **argv; /* Argument strings.  Someone else has already
             return TCL_ERROR;
         }
         tagPtr = FindTag(interp, textPtr, argv[3]);
-        if (tagPtr == NULL)
-        {
+        if (tagPtr == NULL) {
             return TCL_ERROR;
         }
-        if (argc == 5)
-        {
+        if (argc == 5) {
             tagPtr2 = FindTag(interp, textPtr, argv[4]);
-            if (tagPtr2 == NULL)
-            {
+            if (tagPtr2 == NULL) {
                 return TCL_ERROR;
             }
-            if (tagPtr->priority < tagPtr2->priority)
-            {
+            if (tagPtr->priority < tagPtr2->priority) {
                 prio = tagPtr2->priority - 1;
-            }
-            else
-            {
+            } else {
                 prio = tagPtr2->priority;
             }
-        }
-        else
-        {
+        } else {
             prio = 0;
         }
         ChangeTagPriority(textPtr, tagPtr, prio);
         TkTextRedrawTag(
         textPtr, ( TkTextIndex * )NULL, ( TkTextIndex * )NULL, tagPtr, 1);
-    }
-    else if ((c == 'n') && (strncmp(argv[2], "names", length) == 0)
-             && (length >= 2))
-    {
+    } else if ((c == 'n') && (strncmp(argv[2], "names", length) == 0)
+               && (length >= 2)) {
         TkTextTag **arrayPtr;
         int arraySize;
 
-        if ((argc != 3) && (argc != 4))
-        {
+        if ((argc != 3) && (argc != 4)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -773,8 +676,7 @@ char **argv; /* Argument strings.  Someone else has already
                              ( char * )NULL);
             return TCL_ERROR;
         }
-        if (argc == 3)
-        {
+        if (argc == 3) {
             Tcl_HashSearch search;
             Tcl_HashEntry *hPtr;
 
@@ -783,40 +685,31 @@ char **argv; /* Argument strings.  Someone else has already
             for (i = 0,
                 hPtr = Tcl_FirstHashEntry(&textPtr->tagTable, &search);
                  hPtr != NULL;
-                 i++, hPtr = Tcl_NextHashEntry(&search))
-            {
+                 i++, hPtr = Tcl_NextHashEntry(&search)) {
                 arrayPtr[i] = ( TkTextTag * )Tcl_GetHashValue(hPtr);
             }
             arraySize = textPtr->numTags;
-        }
-        else
-        {
-            if (TkTextGetIndex(interp, textPtr, argv[3], &index1) != TCL_OK)
-            {
+        } else {
+            if (TkTextGetIndex(interp, textPtr, argv[3], &index1) != TCL_OK) {
                 return TCL_ERROR;
             }
             arrayPtr = TkBTreeGetTags(&index1, &arraySize);
-            if (arrayPtr == NULL)
-            {
+            if (arrayPtr == NULL) {
                 return TCL_OK;
             }
         }
         SortTags(arraySize, arrayPtr);
-        for (i = 0; i < arraySize; i++)
-        {
+        for (i = 0; i < arraySize; i++) {
             tagPtr = arrayPtr[i];
             Tcl_AppendElement(interp, tagPtr->name);
         }
         ckfree(( char * )arrayPtr);
-    }
-    else if ((c == 'n') && (strncmp(argv[2], "nextrange", length) == 0)
-             && (length >= 2))
-    {
+    } else if ((c == 'n') && (strncmp(argv[2], "nextrange", length) == 0)
+               && (length >= 2)) {
         TkTextSearch tSearch;
         char position[TK_POS_CHARS];
 
-        if ((argc != 5) && (argc != 6))
-        {
+        if ((argc != 5) && (argc != 6)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -825,22 +718,18 @@ char **argv; /* Argument strings.  Someone else has already
             return TCL_ERROR;
         }
         tagPtr = FindTag(( Tcl_Interp * )NULL, textPtr, argv[3]);
-        if (tagPtr == NULL)
-        {
+        if (tagPtr == NULL) {
             return TCL_OK;
         }
-        if (TkTextGetIndex(interp, textPtr, argv[4], &index1) != TCL_OK)
-        {
+        if (TkTextGetIndex(interp, textPtr, argv[4], &index1) != TCL_OK) {
             return TCL_ERROR;
         }
         TkTextMakeIndex(
         textPtr->tree, TkBTreeNumLines(textPtr->tree), 0, &last);
-        if (argc == 5)
-        {
+        if (argc == 5) {
             index2 = last;
-        }
-        else if (TkTextGetIndex(interp, textPtr, argv[5], &index2) != TCL_OK)
-        {
+        } else if (TkTextGetIndex(interp, textPtr, argv[5], &index2)
+                   != TCL_OK) {
             return TCL_ERROR;
         }
 
@@ -855,8 +744,7 @@ char **argv; /* Argument strings.  Someone else has already
          */
 
         TkBTreeStartSearch(&index1, &last, tagPtr, &tSearch);
-        if (TkBTreeCharTagged(&index1, tagPtr))
-        {
+        if (TkBTreeCharTagged(&index1, tagPtr)) {
             TkTextSegment *segPtr;
             int offset;
 
@@ -868,16 +756,13 @@ char **argv; /* Argument strings.  Someone else has already
 
             for (segPtr = index1.linePtr->segPtr, offset = index1.charIndex;
                  offset >= 0;
-                 offset -= segPtr->size, segPtr = segPtr->nextPtr)
-            {
+                 offset -= segPtr->size, segPtr = segPtr->nextPtr) {
                 if ((offset == 0) && (segPtr->typePtr == &tkTextToggleOnType)
-                    && (segPtr->body.toggle.tagPtr == tagPtr))
-                {
+                    && (segPtr->body.toggle.tagPtr == tagPtr)) {
                     goto gotStart;
                 }
             }
-            if (!TkBTreeNextTag(&tSearch))
-            {
+            if (!TkBTreeNextTag(&tSearch)) {
                 return TCL_OK;
             }
         }
@@ -886,13 +771,11 @@ char **argv; /* Argument strings.  Someone else has already
          * Find the start of the tagged range.
          */
 
-        if (!TkBTreeNextTag(&tSearch))
-        {
+        if (!TkBTreeNextTag(&tSearch)) {
             return TCL_OK;
         }
     gotStart:
-        if (TkTextIndexCmp(&tSearch.curIndex, &index2) >= 0)
-        {
+        if (TkTextIndexCmp(&tSearch.curIndex, &index2) >= 0) {
             return TCL_OK;
         }
         TkTextPrintIndex(&tSearch.curIndex, position);
@@ -900,16 +783,13 @@ char **argv; /* Argument strings.  Someone else has already
         TkBTreeNextTag(&tSearch);
         TkTextPrintIndex(&tSearch.curIndex, position);
         Tcl_AppendElement(interp, position);
-    }
-    else if ((c == 'p') && (strncmp(argv[2], "prevrange", length) == 0)
-             && (length >= 2))
-    {
+    } else if ((c == 'p') && (strncmp(argv[2], "prevrange", length) == 0)
+               && (length >= 2)) {
         TkTextSearch tSearch;
         char position1[TK_POS_CHARS];
         char position2[TK_POS_CHARS];
 
-        if ((argc != 5) && (argc != 6))
-        {
+        if ((argc != 5) && (argc != 6)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -918,20 +798,16 @@ char **argv; /* Argument strings.  Someone else has already
             return TCL_ERROR;
         }
         tagPtr = FindTag(( Tcl_Interp * )NULL, textPtr, argv[3]);
-        if (tagPtr == NULL)
-        {
+        if (tagPtr == NULL) {
             return TCL_OK;
         }
-        if (TkTextGetIndex(interp, textPtr, argv[4], &index1) != TCL_OK)
-        {
+        if (TkTextGetIndex(interp, textPtr, argv[4], &index1) != TCL_OK) {
             return TCL_ERROR;
         }
-        if (argc == 5)
-        {
+        if (argc == 5) {
             TkTextMakeIndex(textPtr->tree, 0, 0, &index2);
-        }
-        else if (TkTextGetIndex(interp, textPtr, argv[5], &index2) != TCL_OK)
-        {
+        } else if (TkTextGetIndex(interp, textPtr, argv[5], &index2)
+                   != TCL_OK) {
             return TCL_ERROR;
         }
 
@@ -944,40 +820,32 @@ char **argv; /* Argument strings.  Someone else has already
 
         TkBTreeStartSearchBack(&index1, &index2, tagPtr, &tSearch);
 
-        if (!TkBTreePrevTag(&tSearch))
-        {
+        if (!TkBTreePrevTag(&tSearch)) {
             return TCL_OK;
         }
-        if (tSearch.segPtr->typePtr == &tkTextToggleOnType)
-        {
+        if (tSearch.segPtr->typePtr == &tkTextToggleOnType) {
             TkTextPrintIndex(&tSearch.curIndex, position1);
             TkTextMakeIndex(
             textPtr->tree, TkBTreeNumLines(textPtr->tree), 0, &last);
             TkBTreeStartSearch(&tSearch.curIndex, &last, tagPtr, &tSearch);
             TkBTreeNextTag(&tSearch);
             TkTextPrintIndex(&tSearch.curIndex, position2);
-        }
-        else
-        {
+        } else {
             TkTextPrintIndex(&tSearch.curIndex, position2);
             TkBTreePrevTag(&tSearch);
-            if (TkTextIndexCmp(&tSearch.curIndex, &index2) < 0)
-            {
+            if (TkTextIndexCmp(&tSearch.curIndex, &index2) < 0) {
                 return TCL_OK;
             }
             TkTextPrintIndex(&tSearch.curIndex, position1);
         }
         Tcl_AppendElement(interp, position1);
         Tcl_AppendElement(interp, position2);
-    }
-    else if ((c == 'r') && (strncmp(argv[2], "raise", length) == 0)
-             && (length >= 3))
-    {
+    } else if ((c == 'r') && (strncmp(argv[2], "raise", length) == 0)
+               && (length >= 3)) {
         TkTextTag *tagPtr2;
         int prio;
 
-        if ((argc != 4) && (argc != 5))
-        {
+        if ((argc != 4) && (argc != 5)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -986,42 +854,31 @@ char **argv; /* Argument strings.  Someone else has already
             return TCL_ERROR;
         }
         tagPtr = FindTag(interp, textPtr, argv[3]);
-        if (tagPtr == NULL)
-        {
+        if (tagPtr == NULL) {
             return TCL_ERROR;
         }
-        if (argc == 5)
-        {
+        if (argc == 5) {
             tagPtr2 = FindTag(interp, textPtr, argv[4]);
-            if (tagPtr2 == NULL)
-            {
+            if (tagPtr2 == NULL) {
                 return TCL_ERROR;
             }
-            if (tagPtr->priority <= tagPtr2->priority)
-            {
+            if (tagPtr->priority <= tagPtr2->priority) {
                 prio = tagPtr2->priority;
-            }
-            else
-            {
+            } else {
                 prio = tagPtr2->priority + 1;
             }
-        }
-        else
-        {
+        } else {
             prio = textPtr->numTags - 1;
         }
         ChangeTagPriority(textPtr, tagPtr, prio);
         TkTextRedrawTag(
         textPtr, ( TkTextIndex * )NULL, ( TkTextIndex * )NULL, tagPtr, 1);
-    }
-    else if ((c == 'r') && (strncmp(argv[2], "ranges", length) == 0)
-             && (length >= 3))
-    {
+    } else if ((c == 'r') && (strncmp(argv[2], "ranges", length) == 0)
+               && (length >= 3)) {
         TkTextSearch tSearch;
         char position[TK_POS_CHARS];
 
-        if (argc != 4)
-        {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -1030,34 +887,27 @@ char **argv; /* Argument strings.  Someone else has already
             return TCL_ERROR;
         }
         tagPtr = FindTag(( Tcl_Interp * )NULL, textPtr, argv[3]);
-        if (tagPtr == NULL)
-        {
+        if (tagPtr == NULL) {
             return TCL_OK;
         }
         TkTextMakeIndex(textPtr->tree, 0, 0, &first);
         TkTextMakeIndex(
         textPtr->tree, TkBTreeNumLines(textPtr->tree), 0, &last);
         TkBTreeStartSearch(&first, &last, tagPtr, &tSearch);
-        if (TkBTreeCharTagged(&first, tagPtr))
-        {
+        if (TkBTreeCharTagged(&first, tagPtr)) {
             TkTextPrintIndex(&first, position);
             Tcl_AppendElement(interp, position);
         }
-        while (TkBTreeNextTag(&tSearch))
-        {
+        while (TkBTreeNextTag(&tSearch)) {
             TkTextPrintIndex(&tSearch.curIndex, position);
             Tcl_AppendElement(interp, position);
         }
-    }
-    else if ((c == 'r') && (strncmp(argv[2], "remove", length) == 0)
-             && (length >= 2))
-    {
+    } else if ((c == 'r') && (strncmp(argv[2], "remove", length) == 0)
+               && (length >= 2)) {
         fullOption = "remove";
         addTag = 0;
         goto addAndRemove;
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(
         interp,
         "bad tag option \"",
@@ -1098,8 +948,7 @@ char *tagName; /* Name of desired tag. */
     int new;
 
     hPtr = Tcl_CreateHashEntry(&textPtr->tagTable, tagName, &new);
-    if (!new)
-    {
+    if (!new) {
         return ( TkTextTag * )Tcl_GetHashValue(hPtr);
     }
 
@@ -1180,12 +1029,10 @@ char *tagName;      /* Name of desired tag. */
     Tcl_HashEntry *hPtr;
 
     hPtr = Tcl_FindHashEntry(&textPtr->tagTable, tagName);
-    if (hPtr != NULL)
-    {
+    if (hPtr != NULL) {
         return ( TkTextTag * )Tcl_GetHashValue(hPtr);
     }
-    if (interp != NULL)
-    {
+    if (interp != NULL) {
         Tcl_AppendResult(interp,
                          "tag \"",
                          tagName,
@@ -1216,80 +1063,61 @@ void TkTextFreeTag(textPtr,
                    tagPtr) TkText *textPtr; /* Info about overall widget. */
 TkTextTag *tagPtr;                          /* Tag being deleted. */
 {
-    if (tagPtr->border != None)
-    {
+    if (tagPtr->border != None) {
         Tk_Free3DBorder(tagPtr->border);
     }
-    if (tagPtr->bdString != NULL)
-    {
+    if (tagPtr->bdString != NULL) {
         ckfree(tagPtr->bdString);
     }
-    if (tagPtr->reliefString != NULL)
-    {
+    if (tagPtr->reliefString != NULL) {
         ckfree(tagPtr->reliefString);
     }
-    if (tagPtr->bgStipple != None)
-    {
+    if (tagPtr->bgStipple != None) {
         Tk_FreeBitmap(textPtr->display, tagPtr->bgStipple);
     }
-    if (tagPtr->fgColor != None)
-    {
+    if (tagPtr->fgColor != None) {
         Tk_FreeColor(tagPtr->fgColor);
     }
-    if (tagPtr->fontPtr != None)
-    {
+    if (tagPtr->fontPtr != None) {
         Tk_FreeFontStruct(tagPtr->fontPtr);
     }
-    if (tagPtr->fgStipple != None)
-    {
+    if (tagPtr->fgStipple != None) {
         Tk_FreeBitmap(textPtr->display, tagPtr->fgStipple);
     }
-    if (tagPtr->justifyString != NULL)
-    {
+    if (tagPtr->justifyString != NULL) {
         ckfree(tagPtr->justifyString);
     }
-    if (tagPtr->lMargin1String != NULL)
-    {
+    if (tagPtr->lMargin1String != NULL) {
         ckfree(tagPtr->lMargin1String);
     }
-    if (tagPtr->lMargin2String != NULL)
-    {
+    if (tagPtr->lMargin2String != NULL) {
         ckfree(tagPtr->lMargin2String);
     }
-    if (tagPtr->offsetString != NULL)
-    {
+    if (tagPtr->offsetString != NULL) {
         ckfree(tagPtr->offsetString);
     }
-    if (tagPtr->overstrikeString != NULL)
-    {
+    if (tagPtr->overstrikeString != NULL) {
         ckfree(tagPtr->overstrikeString);
     }
-    if (tagPtr->rMarginString != NULL)
-    {
+    if (tagPtr->rMarginString != NULL) {
         ckfree(tagPtr->rMarginString);
     }
-    if (tagPtr->spacing1String != NULL)
-    {
+    if (tagPtr->spacing1String != NULL) {
         ckfree(tagPtr->spacing1String);
     }
-    if (tagPtr->spacing2String != NULL)
-    {
+    if (tagPtr->spacing2String != NULL) {
         ckfree(tagPtr->spacing2String);
     }
-    if (tagPtr->spacing3String != NULL)
-    {
+    if (tagPtr->spacing3String != NULL) {
         ckfree(tagPtr->spacing3String);
     }
-    if (tagPtr->tabString != NULL)
-    {
+    if (tagPtr->tabString != NULL) {
         ckfree(tagPtr->tabString);
     }
-    if (tagPtr->tabArrayPtr != NULL)
-    {
+    if (tagPtr->tabArrayPtr != NULL) {
         ckfree(( char * )tagPtr->tabArrayPtr);
     }
-    if (tagPtr->underlineString != NULL)
-    {
+    if (tagPtr->underlineString != NULL) {
         ckfree(tagPtr->underlineString);
     }
     ckfree(( char * )tagPtr);
@@ -1322,20 +1150,15 @@ TkTextTag **tagArrayPtr; /* Pointer to array of pointers. */
     TkTextTag **tagPtrPtr;
     TkTextTag **maxPtrPtr, *tmp;
 
-    if (numTags < 2)
-    {
+    if (numTags < 2) {
         return;
     }
-    if (numTags < 20)
-    {
-        for (i = numTags - 1; i > 0; i--, tagArrayPtr++)
-        {
+    if (numTags < 20) {
+        for (i = numTags - 1; i > 0; i--, tagArrayPtr++) {
             maxPtrPtr = tagPtrPtr = tagArrayPtr;
             prio = tagPtrPtr[0]->priority;
-            for (j = i, tagPtrPtr++; j > 0; j--, tagPtrPtr++)
-            {
-                if (tagPtrPtr[0]->priority < prio)
-                {
+            for (j = i, tagPtrPtr++; j > 0; j--, tagPtrPtr++) {
+                if (tagPtrPtr[0]->priority < prio) {
                     prio = tagPtrPtr[0]->priority;
                     maxPtrPtr = tagPtrPtr;
                 }
@@ -1344,9 +1167,7 @@ TkTextTag **tagArrayPtr; /* Pointer to array of pointers. */
             *maxPtrPtr = *tagArrayPtr;
             *tagArrayPtr = tmp;
         }
-    }
-    else
-    {
+    } else {
         qsort(( VOID * )tagArrayPtr,
               ( unsigned )numTags,
               sizeof(TkTextTag *),
@@ -1417,36 +1238,27 @@ int prio;          /* New priority for tag. */
     Tcl_HashEntry *hPtr;
     Tcl_HashSearch search;
 
-    if (prio < 0)
-    {
+    if (prio < 0) {
         prio = 0;
     }
-    if (prio >= textPtr->numTags)
-    {
+    if (prio >= textPtr->numTags) {
         prio = textPtr->numTags - 1;
     }
-    if (prio == tagPtr->priority)
-    {
+    if (prio == tagPtr->priority) {
         return;
-    }
-    else if (prio < tagPtr->priority)
-    {
+    } else if (prio < tagPtr->priority) {
         low = prio;
         high = tagPtr->priority - 1;
         delta = 1;
-    }
-    else
-    {
+    } else {
         low = tagPtr->priority + 1;
         high = prio;
         delta = -1;
     }
     for (hPtr = Tcl_FirstHashEntry(&textPtr->tagTable, &search); hPtr != NULL;
-         hPtr = Tcl_NextHashEntry(&search))
-    {
+         hPtr = Tcl_NextHashEntry(&search)) {
         tagPtr2 = ( TkTextTag * )Tcl_GetHashValue(hPtr);
-        if ((tagPtr2->priority >= low) && (tagPtr2->priority <= high))
-        {
+        if ((tagPtr2->priority >= low) && (tagPtr2->priority <= high)) {
             tagPtr2->priority += delta;
         }
     }
@@ -1491,16 +1303,12 @@ XEvent *eventPtr; /* Pointer to X event that just
      * character while a button is pressed.
      */
 
-    if (eventPtr->type == ButtonPress)
-    {
+    if (eventPtr->type == ButtonPress) {
         textPtr->flags |= BUTTON_DOWN;
-    }
-    else if (eventPtr->type == ButtonRelease)
-    {
+    } else if (eventPtr->type == ButtonRelease) {
         int mask;
 
-        switch (eventPtr->xbutton.button)
-        {
+        switch (eventPtr->xbutton.button) {
         case Button1:
             mask = Button1Mask;
             break;
@@ -1520,49 +1328,36 @@ XEvent *eventPtr; /* Pointer to X event that just
             mask = 0;
             break;
         }
-        if ((eventPtr->xbutton.state & AnyButtonMask) == mask)
-        {
+        if ((eventPtr->xbutton.state & AnyButtonMask) == mask) {
             textPtr->flags &= ~BUTTON_DOWN;
             repick = 1;
         }
-    }
-    else if ((eventPtr->type == EnterNotify)
-             || (eventPtr->type == LeaveNotify))
-    {
-        if (eventPtr->xcrossing.state & AnyButtonMask)
-        {
+    } else if ((eventPtr->type == EnterNotify)
+               || (eventPtr->type == LeaveNotify)) {
+        if (eventPtr->xcrossing.state & AnyButtonMask) {
             textPtr->flags |= BUTTON_DOWN;
-        }
-        else
-        {
+        } else {
             textPtr->flags &= ~BUTTON_DOWN;
         }
         TkTextPickCurrent(textPtr, eventPtr);
         goto done;
-    }
-    else if (eventPtr->type == MotionNotify)
-    {
-        if (eventPtr->xmotion.state & AnyButtonMask)
-        {
+    } else if (eventPtr->type == MotionNotify) {
+        if (eventPtr->xmotion.state & AnyButtonMask) {
             textPtr->flags |= BUTTON_DOWN;
-        }
-        else
-        {
+        } else {
             textPtr->flags &= ~BUTTON_DOWN;
         }
         TkTextPickCurrent(textPtr, eventPtr);
     }
     if ((textPtr->numCurTags > 0) && (textPtr->bindingTable != NULL)
-        && (textPtr->tkwin != NULL))
-    {
+        && (textPtr->tkwin != NULL)) {
         Tk_BindEvent(textPtr->bindingTable,
                      eventPtr,
                      textPtr->tkwin,
                      textPtr->numCurTags,
                      ( ClientData * )textPtr->curTagArrayPtr);
     }
-    if (repick)
-    {
+    if (repick) {
         unsigned int oldState;
 
         oldState = eventPtr->xbutton.state;
@@ -1623,13 +1418,11 @@ XEvent *eventPtr; /* Event describing location of
      * This implements a form of mouse grabbing.
      */
 
-    if (textPtr->flags & BUTTON_DOWN)
-    {
+    if (textPtr->flags & BUTTON_DOWN) {
         if (((eventPtr->type == EnterNotify)
              || (eventPtr->type == LeaveNotify))
             && ((eventPtr->xcrossing.mode == NotifyGrab)
-                || (eventPtr->xcrossing.mode == NotifyUngrab)))
-        {
+                || (eventPtr->xcrossing.mode == NotifyUngrab))) {
             /*
              * Special case:  the window is being entered or left because
              * of a grab or ungrab.  In this case, repick after all.
@@ -1638,9 +1431,7 @@ XEvent *eventPtr; /* Event describing location of
              */
 
             textPtr->flags &= ~BUTTON_DOWN;
-        }
-        else
-        {
+        } else {
             return;
         }
     }
@@ -1654,11 +1445,9 @@ XEvent *eventPtr; /* Event describing location of
      * handlers when the current character changes.
      */
 
-    if (eventPtr != &textPtr->pickEvent)
-    {
+    if (eventPtr != &textPtr->pickEvent) {
         if ((eventPtr->type == MotionNotify)
-            || (eventPtr->type == ButtonRelease))
-        {
+            || (eventPtr->type == ButtonRelease)) {
             textPtr->pickEvent.xcrossing.type = EnterNotify;
             textPtr->pickEvent.xcrossing.serial = eventPtr->xmotion.serial;
             textPtr->pickEvent.xcrossing.send_event
@@ -1678,9 +1467,7 @@ XEvent *eventPtr; /* Event describing location of
             = eventPtr->xmotion.same_screen;
             textPtr->pickEvent.xcrossing.focus = False;
             textPtr->pickEvent.xcrossing.state = eventPtr->xmotion.state;
-        }
-        else
-        {
+        } else {
             textPtr->pickEvent = *eventPtr;
         }
     }
@@ -1690,17 +1477,14 @@ XEvent *eventPtr; /* Event describing location of
      * tags associated with it.
      */
 
-    if (textPtr->pickEvent.type != LeaveNotify)
-    {
+    if (textPtr->pickEvent.type != LeaveNotify) {
         TkTextPixelIndex(textPtr,
                          textPtr->pickEvent.xcrossing.x,
                          textPtr->pickEvent.xcrossing.y,
                          &index);
         newArrayPtr = TkBTreeGetTags(&index, &numNewTags);
         SortTags(numNewTags, newArrayPtr);
-    }
-    else
-    {
+    } else {
         newArrayPtr = NULL;
         numNewTags = 0;
     }
@@ -1714,17 +1498,13 @@ XEvent *eventPtr; /* Event describing location of
      */
 
     SortTags(textPtr->numCurTags, textPtr->curTagArrayPtr);
-    if (numNewTags > 0)
-    {
+    if (numNewTags > 0) {
         size = numNewTags * sizeof(TkTextTag *);
         copyArrayPtr = ( TkTextTag ** )ckalloc(( unsigned )size);
         memcpy(( VOID * )copyArrayPtr, ( VOID * )newArrayPtr, ( size_t )size);
-        for (i = 0; i < textPtr->numCurTags; i++)
-        {
-            for (j = 0; j < numNewTags; j++)
-            {
-                if (textPtr->curTagArrayPtr[i] == copyArrayPtr[j])
-                {
+        for (i = 0; i < textPtr->numCurTags; i++) {
+            for (j = 0; j < numNewTags; j++) {
+                if (textPtr->curTagArrayPtr[i] == copyArrayPtr[j]) {
                     textPtr->curTagArrayPtr[i] = NULL;
                     copyArrayPtr[j] = NULL;
                     break;
@@ -1747,10 +1527,8 @@ XEvent *eventPtr; /* Event describing location of
     textPtr->numCurTags = numNewTags;
     oldArrayPtr = textPtr->curTagArrayPtr;
     textPtr->curTagArrayPtr = newArrayPtr;
-    if (numOldTags != 0)
-    {
-        if ((textPtr->bindingTable != NULL) && (textPtr->tkwin != NULL))
-        {
+    if (numOldTags != 0) {
+        if ((textPtr->bindingTable != NULL) && (textPtr->tkwin != NULL)) {
             event = textPtr->pickEvent;
             event.type = LeaveNotify;
 
@@ -1782,10 +1560,8 @@ XEvent *eventPtr; /* Event describing location of
                      textPtr->pickEvent.xcrossing.y,
                      &index);
     TkTextSetMark(textPtr, "current", &index);
-    if (numNewTags != 0)
-    {
-        if ((textPtr->bindingTable != NULL) && (textPtr->tkwin != NULL))
-        {
+    if (numNewTags != 0) {
+        if ((textPtr->bindingTable != NULL) && (textPtr->tkwin != NULL)) {
             event = textPtr->pickEvent;
             event.type = EnterNotify;
             event.xcrossing.detail = NotifyAncestor;

@@ -68,8 +68,7 @@ ncsl(Sfio_t *sp)
     data = 0;
 again:
     for (;;)
-        switch (c = sfgetc(sp))
-        {
+        switch (c = sfgetc(sp)) {
         case EOF:
             return (line);
         case ' ':
@@ -78,8 +77,7 @@ again:
             break;
         case '\n':
         newline:
-            if (data)
-            {
+            if (data) {
                 if (data > 0)
                     line++;
                 data = 0;
@@ -88,19 +86,16 @@ again:
         case '/':
             if (data < 0)
                 goto again;
-            switch (c = sfgetc(sp))
-            {
+            switch (c = sfgetc(sp)) {
             case '/':
                 for (;;)
-                    switch (c = sfgetc(sp))
-                    {
+                    switch (c = sfgetc(sp)) {
                     case EOF:
                         goto again;
                     case '\n':
                         goto newline;
                     default:
-                        if (JUNK(c))
-                        {
+                        if (JUNK(c)) {
                             data = -1;
                             goto again;
                         }
@@ -109,22 +104,18 @@ again:
                 break;
             case '*':
                 for (;;)
-                    switch (c = sfgetc(sp))
-                    {
+                    switch (c = sfgetc(sp)) {
                     case EOF:
                     case '*':
-                        for (;;)
-                        {
-                            switch (c = sfgetc(sp))
-                            {
+                        for (;;) {
+                            switch (c = sfgetc(sp)) {
                             case EOF:
                             case '/':
                                 goto again;
                             case '*':
                                 continue;
                             default:
-                                if (JUNK(c))
-                                {
+                                if (JUNK(c)) {
                                     data = -1;
                                     goto again;
                                 }
@@ -134,8 +125,7 @@ again:
                         }
                         break;
                     default:
-                        if (JUNK(c))
-                        {
+                        if (JUNK(c)) {
                             data = -1;
                             goto again;
                         }
@@ -158,8 +148,7 @@ again:
             data = 1;
             quote = c;
             for (;;)
-                switch (c = sfgetc(sp))
-                {
+                switch (c = sfgetc(sp)) {
                 case EOF:
                     goto again;
                 case '"':
@@ -170,8 +159,7 @@ again:
                 case '\n':
                     goto newline;
                 case '\\':
-                    switch (c = sfgetc(sp))
-                    {
+                    switch (c = sfgetc(sp)) {
                     case EOF:
                         goto again;
                     case '\n':
@@ -180,8 +168,7 @@ again:
                     }
                     /*FALLTHROUGH*/
                 default:
-                    if (JUNK(c))
-                    {
+                    if (JUNK(c)) {
                         data = -1;
                         goto again;
                     }
@@ -211,10 +198,8 @@ main(int argc, char **argv)
 
     NoP(argc);
     error_info.id = "ncsl";
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 0:
             break;
         case 's':
@@ -232,15 +217,12 @@ main(int argc, char **argv)
     argv += opt_info.index;
     if (error_info.errors)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
-    if (*argv)
-    {
+    if (*argv) {
         trailer = *(argv + 1) != 0;
-        while (s = *argv++)
-        {
+        while (s = *argv++) {
             if (!(sp = sfopen(NiL, s, "r")))
                 error(2, "%s: cannot open for reading", s);
-            else
-            {
+            else {
                 n = ncsl(sp);
                 sfclose(sp);
                 if (!summary)
@@ -250,8 +232,7 @@ main(int argc, char **argv)
         }
         if (summary || trailer)
             sfprintf(sfstdout, "%lu\n", total);
-    }
-    else
+    } else
         sfprintf(sfstdout, "%d\n", ncsl(sfstdin));
     return error_info.errors != 0;
 }

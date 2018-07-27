@@ -36,13 +36,11 @@ csfrom(Cs_t *state, int fd, void *buf, size_t siz, Csaddr_t *addr)
     ssize_t n;
     struct udpaddr udp;
 
-    if (read(fd, &udp, sizeof(udp)) != sizeof(udp))
-    {
+    if (read(fd, &udp, sizeof(udp)) != sizeof(udp)) {
         messagef((state->id, NiL, -1, "from: %d: udp header read error", fd));
         return -1;
     }
-    if (addr)
-    {
+    if (addr) {
         addr->addr[0] = udp.host;
         addr->addr[1] = udp.port;
         addr->addr[2] = 0;
@@ -72,13 +70,12 @@ csfrom(Cs_t *state, int fd, void *buf, size_t siz, Csaddr_t *addr)
     struct sockaddr_in nam;
 
     len = sizeof(nam);
-    if ((n = recvfrom(fd, buf, siz, 0, ( struct sockaddr * )&nam, &len)) < 0)
-    {
+    if ((n = recvfrom(fd, buf, siz, 0, ( struct sockaddr * )&nam, &len))
+        < 0) {
         messagef((state->id, NiL, -1, "from: %d: recvfrom error", fd));
         return -1;
     }
-    if (addr)
-    {
+    if (addr) {
         addr->addr[0] = ( unsigned long )nam.sin_addr.s_addr;
         addr->addr[1] = ( unsigned long )nam.sin_port;
     }

@@ -41,10 +41,8 @@ strtape(const char *s, char **e)
     static char tapefile[sizeof("/dev/Xrmt/123456789")];
 
     mtrewind[0] = mtrewind[1] = mtbehavior[0] = mtbehavior[1] = 0;
-    for (;;)
-    {
-        switch (*s)
-        {
+    for (;;) {
+        switch (*s) {
         case '0':
         case '1':
         case '2':
@@ -74,8 +72,7 @@ strtape(const char *s, char **e)
     }
     if (e)
         *e = ( char * )s;
-    if (!access("/dev/rmt/.", F_OK))
-    {
+    if (!access("/dev/rmt/.", F_OK)) {
         /*
          * system V
          */
@@ -86,8 +83,7 @@ strtape(const char *s, char **e)
         tapefile, sizeof(tapefile), "/dev/rmt/ctape%c%s", mtunit, mtrewind);
         if (!access(tapefile, F_OK))
             return (tapefile);
-        for (;;)
-        {
+        for (;;) {
             sfsprintf(tapefile,
                       sizeof(tapefile),
                       "/dev/rmt/%c%c%s%s",
@@ -101,24 +97,19 @@ strtape(const char *s, char **e)
                 break;
             mtbehavior[0] = 0;
         }
-    }
-    else if (!access("/dev/nst0", F_OK))
-    {
+    } else if (!access("/dev/nst0", F_OK)) {
         /*
          * linux
          */
 
         sfsprintf(
         tapefile, sizeof(tapefile), "/dev/%sst%c", mtrewind, mtunit);
-    }
-    else if (!access("/dev/nrmt0", F_OK))
-    {
+    } else if (!access("/dev/nrmt0", F_OK)) {
         /*
          * 9th edition
          */
 
-        switch (mtdensity)
-        {
+        switch (mtdensity) {
         case 'l':
             mtunit = '0';
             break;
@@ -131,16 +122,13 @@ strtape(const char *s, char **e)
         }
         sfsprintf(
         tapefile, sizeof(tapefile), "/dev/%srmt%c", mtrewind, mtunit);
-    }
-    else
-    {
+    } else {
         /*
          * BSD
          */
 
         mtunit -= '0';
-        switch (mtdensity)
-        {
+        switch (mtdensity) {
         case 'l':
             break;
         case 'h':
@@ -150,8 +138,7 @@ strtape(const char *s, char **e)
             mtunit |= 010;
             break;
         }
-        switch (mtrewind[0])
-        {
+        switch (mtrewind[0]) {
         case 'n':
             mtunit |= 040;
             break;

@@ -63,10 +63,8 @@ b_tty(int argc, char **argv, Shbltin_t *context)
 #endif
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'l':
             lflag++;
             continue;
@@ -84,15 +82,13 @@ b_tty(int argc, char **argv, Shbltin_t *context)
     }
     if (error_info.errors)
         error(ERROR_usage(2), "%s", optusage(NiL));
-    if (!(tty = ttyname(0)))
-    {
+    if (!(tty = ttyname(0))) {
         tty = ERROR_translate(0, 0, 0, "not a tty");
         error_info.errors++;
     }
     if (!sflag)
         sfputr(sfstdout, tty, '\n');
-    if (lflag)
-    {
+    if (lflag) {
 #if _mac_STWLINE
         if ((n = ioctl(0, STWLINE, 0)) >= 0)
             error(ERROR_OUTPUT, 1, "synchronous line %d", n);

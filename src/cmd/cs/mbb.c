@@ -117,8 +117,8 @@ static char buf[8 * 1024];
 static ssize_t
 data(State_t *state, Connection_t *to, char *s, size_t n, int force)
 {
-    if (!force && n > 1 && state->backlog && ++state->count >= state->backlog)
-    {
+    if (!force && n > 1 && state->backlog
+        && ++state->count >= state->backlog) {
         message((-1, "[%d] %d backlog", __LINE__, to->fp->fd));
         state->count = 0;
         n /= 2;
@@ -139,13 +139,10 @@ note(Css_t *css,
     ssize_t z;
 
     if ((force || to->blocked[log] < 0)
-        && (z = data(state, to, s, n, force)) != n)
-    {
-        if (!force && !state->logged)
-        {
+        && (z = data(state, to, s, n, force)) != n) {
+        if (!force && !state->logged) {
             state->logged = 1;
-            if (!state->logs[log].sp)
-            {
+            if (!state->logs[log].sp) {
                 state->logs[log].name[0] = '0' + log;
                 remove(state->logs[log].name);
                 if (!(state->logs[log].sp
@@ -169,8 +166,7 @@ note(Css_t *css,
                 && !state->logs[!log].sp)
                 state->log = !log;
         }
-        if (to->blocked[log] < 0)
-        {
+        if (to->blocked[log] < 0) {
             message((-1, "[%d] %s: block", __LINE__, state->logs[log].name));
             state->logs[log].blocked++;
         }
@@ -185,16 +181,14 @@ note(Css_t *css,
         cssfd(css, to->fp->fd, CS_POLL_READ | CS_POLL_WRITE);
         return 0;
     }
-    if (to->blocked[log] >= 0)
-    {
+    if (to->blocked[log] >= 0) {
         message((-1,
                  "[%d] %s: %d unblock",
                  __LINE__,
                  state->logs[log].name,
                  to->fp->fd));
         to->blocked[log] = -1;
-        if (!--state->logs[log].blocked)
-        {
+        if (!--state->logs[log].blocked) {
             sfclose(state->logs[log].sp);
             state->logs[log].sp = 0;
             state->logs[log].offset = 0;
@@ -279,13 +273,11 @@ post(Css_t *css,
         error(ERROR_SYSTEM | 3, "out of space");
     m = CHAN_MASK(channel);
     state->logged = 0;
-    if (!to)
-    {
+    if (!to) {
         for (to = state->all; to; to = to->next)
             if ((to->mask & m) && to != from)
                 note(css, to, state->log, s, n, 0, disc);
-    }
-    else if (to->mask & m)
+    } else if (to->mask & m)
         note(css, to, state->log, s, n, 0, disc);
     return 0;
 }
@@ -299,8 +291,7 @@ drop(Css_t *css, Connection_t *con, Cssdisc_t *disc)
 
     pp = 0;
     for (cp = state->all; cp; pp = cp, cp = cp->next)
-        if (cp == con)
-        {
+        if (cp == con) {
             if (pp)
                 pp->next = cp->next;
             else
@@ -346,8 +337,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
     Sfulong_t m;
     Sfulong_t o;
 
-    switch (fp->status)
-    {
+    switch (fp->status) {
     case CS_POLL_CLOSE:
         if (!(con = ( Connection_t * )fp->data))
             return -1;
@@ -357,8 +347,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
         if (!(con = ( Connection_t * )fp->data))
             return -1;
         if ((n = csread(css->state, fp->fd, buf, sizeof(buf) - 1, CS_LINE))
-            <= 0)
-        {
+            <= 0) {
             drop(css, con, disc);
             return -1;
         }
@@ -368,29 +357,24 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
         for (s = buf; isspace(*s); s++)
             ;
         c = ( int )strtol(s, &e, 0);
-        if (CHAN_VALID(c) && e > s)
-        {
+        if (CHAN_VALID(c) && e > s) {
             s = e;
             if (*s == '.')
                 while (isdigit(*++s))
                     ;
             for (; isspace(*s); s++)
                 ;
-            if (c == 0)
-            {
+            if (c == 0) {
                 for (e = s; *s && !isspace(*s); s++)
                     ;
                 if (*s)
                     for (*s++ = 0; isspace(*s); s++)
                         ;
-                switch (*e)
-                {
+                switch (*e) {
                 case 'm':
-                    if (!strcmp(e, "mask"))
-                    {
+                    if (!strcmp(e, "mask")) {
                         o = con->mask;
-                        if (*s)
-                        {
+                        if (*s) {
                             m = strtoull(s, &e, 0);
                             if (e > s)
                                 con->mask = m;
@@ -413,8 +397,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
                         exit(0);
                     break;
                 }
-            }
-            else
+            } else
                 post(css, disc, con, NiL, c, "%s", s);
         }
         return 1;
@@ -433,8 +416,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
 static int
 exceptf(Css_t *css, unsigned long op, unsigned long arg, Cssdisc_t *disc)
 {
-    switch (op)
-    {
+    switch (op) {
     case CSS_INTERRUPT:
         error(ERROR_SYSTEM | 3, "%s: interrupt exit", fmtsignal(arg));
         return 0;
@@ -461,10 +443,8 @@ main(int argc, char **argv)
     state.disc.actionf = actionf;
     state.disc.errorf = errorf;
     state.disc.exceptf = exceptf;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'b':
             state.backlog = opt_info.num;
             continue;

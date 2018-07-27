@@ -51,14 +51,12 @@ Vcwmethod_t *meth; /* window matching method	*/
     vcw->meth = meth;
     vcw->mtdata = NIL(Void_t *);
 
-    if (disc->eventf && (*disc->eventf)(vcw, VCW_OPENING, 0, disc) < 0)
-    {
+    if (disc->eventf && (*disc->eventf)(vcw, VCW_OPENING, 0, disc) < 0) {
         vcwclose(vcw);
         return NIL(Vcwindow_t *);
     }
 
-    if (meth->eventf && (*meth->eventf)(vcw, VCW_OPENING) < 0)
-    {
+    if (meth->eventf && (*meth->eventf)(vcw, VCW_OPENING) < 0) {
         vcwclose(vcw);
         return NIL(Vcwindow_t *);
     }

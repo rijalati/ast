@@ -61,8 +61,7 @@ char *mode;                                    /* mode of the stream */
     if (file && *file == '/')
         cwd = AT_FDCWD;
 #if !defined(sysopenatf)
-    if (cwd != AT_FDCWD)
-    {
+    if (cwd != AT_FDCWD) {
 #    ifdef ENOTDIR
         errno = ENOTDIR;
 #    else
@@ -77,8 +76,7 @@ char *mode;                                    /* mode of the stream */
         return NIL(Sfio_t *);
 
     /* changing the control flags */
-    if (f && !file && !((f->flags | sflags) & SF_STRING))
-    {
+    if (f && !file && !((f->flags | sflags) & SF_STRING)) {
         SFMTXENTER(f, NIL(Sfio_t *));
 
         if (f->mode & SF_INIT) /* stream uninitialized, ok to set flags */
@@ -99,17 +97,15 @@ char *mode;                                    /* mode of the stream */
                 else
                     f->mode = (f->mode & ~SF_READ) | SF_WRITE;
             }
-        }
-        else /* make sure there is no buffered data */
+        } else /* make sure there is no buffered data */
         {
             if (sfsync(f) < 0)
                 SFMTXRETURN(f, NIL(Sfio_t *));
         }
 
-        if (f->file >= 0)
-        {
-            if ((oflags &= (O_TEXT | O_BINARY | O_APPEND)) != 0)
-            { /* set file access control */
+        if (f->file >= 0) {
+            if ((oflags &= (O_TEXT | O_BINARY | O_APPEND))
+                != 0) { /* set file access control */
                 int ctl = sysfcntlf(f->file, F_GETFL, 0);
                 ctl = (ctl & ~(O_TEXT | O_BINARY | O_APPEND)) | oflags;
                 sysfcntlf(f->file, F_SETFL, ctl);
@@ -123,17 +119,14 @@ char *mode;                                    /* mode of the stream */
         SFMTXRETURN(f, f);
     }
 
-    if (sflags & SF_STRING)
-    {
+    if (sflags & SF_STRING) {
         f = sfnew(f,
                   ( char * )file,
                   file ? ( size_t )strlen(( char * )file)
                        : ( size_t )SF_UNBOUND,
                   -1,
                   sflags);
-    }
-    else
-    {
+    } else {
         if (!file)
             return NIL(Sfio_t *);
 
@@ -164,10 +157,8 @@ char *mode;                                    /* mode of the stream */
                    && errno == EINTR)
                 errno = 0;
 #    endif
-        if (fd >= 0)
-        {
-            if ((oflags & (O_CREAT | O_EXCL)) == (O_CREAT | O_EXCL))
-            {
+        if (fd >= 0) {
+            if ((oflags & (O_CREAT | O_EXCL)) == (O_CREAT | O_EXCL)) {
                 CLOSE(fd); /* error: file already exists */
                 return NIL(Sfio_t *);
             }
@@ -179,13 +170,12 @@ char *mode;                                    /* mode of the stream */
                     errno = 0;
                 CLOSE(tf);
             }
-        }
-        else if (oflags & O_CREAT)
-        {
+        } else if (oflags & O_CREAT) {
             while ((fd = syscreatf(file, SF_CREATMODE)) < 0 && errno == EINTR)
                 errno = 0;
-            if ((oflags & O_ACCMODE) != O_WRONLY)
-            { /* the file now exists, reopen it for read/write */
+            if ((oflags & O_ACCMODE)
+                != O_WRONLY) { /* the file now exists, reopen it for
+                                  read/write */
                 CLOSE(fd);
 #    ifdef sysopenatf
                 if (cwd == AT_FDCWD)
@@ -248,8 +238,7 @@ int *uflagp;
     /* construct the open flags */
     sflags = oflags = fflags = uflag = 0;
     while (1)
-        switch (*mode++)
-        {
+        switch (*mode++) {
         case 'a':
             sflags |= SF_WRITE | SF_APPENDWR;
             oflags |= O_WRONLY | O_APPEND | O_CREAT;

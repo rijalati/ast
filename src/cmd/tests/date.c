@@ -80,8 +80,7 @@ normal(char *s)
         sfprintf(sfstdout, "NULL");
     else
         for (;;)
-            switch (c = *u++)
-            {
+            switch (c = *u++) {
             case 0:
                 return;
             case '\n':
@@ -107,35 +106,27 @@ report(char *comment, char *str, char *pat, char *rem, int flags)
 {
     state.errors++;
     sfprintf(sfstdout, "%d:\t", state.lineno);
-    if (str)
-    {
+    if (str) {
         normal(str);
-        if (pat)
-        {
+        if (pat) {
             sfprintf(sfstdout, " vs ");
             normal(pat);
         }
     }
     if (flags & TM_PEDANTIC)
         sfprintf(sfstdout, " PEDANTIC");
-    if (state.sig)
-    {
+    if (state.sig) {
         sfprintf(sfstdout, " %s", fmtsignal(state.sig));
         state.sig = 0;
     }
-    if (rem && *rem)
-    {
-        if (*rem == '\n')
-        {
-            if (comment)
-            {
+    if (rem && *rem) {
+        if (*rem == '\n') {
+            if (comment) {
                 sfprintf(sfstdout, " %s", comment);
                 comment = 0;
             }
             sfprintf(sfstdout, "%s", rem);
-        }
-        else
-        {
+        } else {
             sfprintf(sfstdout, " at ");
             normal(rem);
         }
@@ -164,12 +155,10 @@ escape(char *s)
 {
     char *t;
 
-    for (t = s; *t = *s; s++, t++)
-    {
+    for (t = s; *t = *s; s++, t++) {
         if (*s != '\\')
             continue;
-        switch (*++s)
-        {
+        switch (*++s) {
         case 0:
             *++t = 0;
             break;
@@ -203,12 +192,10 @@ sigunblock(int s)
     sigset_t mask;
 
     sigemptyset(&mask);
-    if (s)
-    {
+    if (s) {
         sigaddset(&mask, s);
         op = SIG_UNBLOCK;
-    }
-    else
+    } else
         op = SIG_SETMASK;
     sigprocmask(op, &mask, NiL);
 #else
@@ -252,10 +239,8 @@ main(int argc, char **argv)
 
     sfprintf(sfstdout, "TEST	tmscan");
     while ((p = *++argv) && *p == '-')
-        for (;;)
-        {
-            switch (*++p)
-            {
+        for (;;) {
+            switch (*++p) {
             case 0:
                 break;
             case 'c':
@@ -275,23 +260,20 @@ main(int argc, char **argv)
     if (p)
         sfprintf(sfstdout, ", argument(s) ignored");
     sfprintf(sfstdout, "\n");
-    if (catch)
-    {
+    if (catch) {
         signal(SIGALRM, gotcha);
         signal(SIGBUS, gotcha);
         signal(SIGSEGV, gotcha);
     }
     t_now = time(NiL);
-    while (p = sfgetr(sfstdin, '\n', 1))
-    {
+    while (p = sfgetr(sfstdin, '\n', 1)) {
         state.lineno++;
 
         /* parse: */
 
         if (*p == 0 || *p == '#')
             continue;
-        if (*p == ':')
-        {
+        if (*p == ':') {
             while (*++p == ' ')
                 ;
             sfprintf(sfstdout, "NOTE	%s\n", p);
@@ -299,10 +281,8 @@ main(int argc, char **argv)
         }
         i = 0;
         field[i++] = p;
-        for (;;)
-        {
-            switch (*p++)
-            {
+        for (;;) {
+            switch (*p++) {
 
             case 0:
                 p--;
@@ -341,29 +321,23 @@ main(int argc, char **argv)
             escape(fmt);
         if (!(ans = field[2]))
             bad("NIL answer", NiL, NiL);
-        if (str)
-        {
-            if (streq(str, "SET"))
-            {
+        if (str) {
+            if (streq(str, "SET")) {
                 if (!fmt)
                     bad("NIL SET variable", NiL, NiL);
-                if (streq(fmt, "NOW"))
-                {
+                if (streq(fmt, "NOW")) {
                     t_now = tmdate(ans, &e, &t_now);
                     if (*e)
                         bad("invalid NOW", ans, NiL);
                     sfprintf(
                     sfstdout, "NOTE	base date is %s\n", fmttime(NiL, t_now));
-                }
-                else
+                } else
                     bad("unknown SET variable", fmt, NiL);
                 continue;
             }
-            if (streq(str, "FMT"))
-            {
+            if (streq(str, "FMT")) {
                 str = 0;
-                if (!fmt)
-                {
+                if (!fmt) {
                     bad("NIL format", NiL, NiL);
                     continue;
                 }
@@ -385,8 +359,7 @@ main(int argc, char **argv)
                      str,
                      fmt,
                      ans);
-        if (!str)
-        {
+        if (!str) {
             testno++;
             s = fmttime(fmt, t_now);
             escape(ans);
@@ -398,28 +371,20 @@ main(int argc, char **argv)
         if (*e)
             report("answer FAILED", e, NiL, NiL, 0);
         s = fmttime("%k", t_ans);
-        if (strcmp(ans, s))
-        {
+        if (strcmp(ans, s)) {
             testno++;
             report("FAILED", s, ans, NiL, 0);
-        }
-        else
-            for (;;)
-            {
+        } else
+            for (;;) {
                 testno++;
                 t_str = tmscan(str, &e, fmt, &f, &t_now, flags);
-                if (*e)
-                {
+                if (*e) {
                     report("subject FAILED", str, fmt, e, flags);
                     break;
-                }
-                else if (*f)
-                {
+                } else if (*f) {
                     report("format FAILED", str, fmt, f, flags);
                     break;
-                }
-                else if (t_str != t_ans)
-                {
+                } else if (t_str != t_ans) {
                     int n;
                     char tmp[128];
 

@@ -38,12 +38,10 @@ ptvcover(Ptv_t *a, Ptv_t *b)
         return 0;
     ap = ( Ptvprefix_t * )dtfirst(a->dict);
     bp = ( Ptvprefix_t * )dtfirst(b->dict);
-    while (ap && bp)
-    {
+    while (ap && bp) {
         if (fvcmp(a->size, ap->min, bp->max) > 0)
             bp = ( Ptvprefix_t * )dtnext(b->dict, bp);
-        else
-        {
+        else {
             if (fvcmp(a->size, ap->max, bp->min) >= 0
                 && !ptvinsert(t, ap->min, ap->max))
                 break;

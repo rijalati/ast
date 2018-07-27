@@ -97,40 +97,31 @@ dllinfo(void)
 
     static Dllinfo_t info;
 
-    if (!info.sibling)
-    {
+    if (!info.sibling) {
         info.sibling = info.sib;
-        if (*(s = astconf("LIBPATH", NiL, NiL)))
-        {
+        if (*(s = astconf("LIBPATH", NiL, NiL))) {
             while (*s == ':' || *s == ',')
                 s++;
-            if (*s)
-            {
+            if (*s) {
                 h = 0;
-                for (;;)
-                {
+                for (;;) {
                     for (d = s; *s && *s != ':' && *s != ','; s++)
                         ;
                     if (!(dn = s - d))
                         d = 0;
-                    if (*s == ':')
-                    {
+                    if (*s == ':') {
                         for (v = ++s; *s && *s != ':' && *s != ','; s++)
                             ;
                         if (!(vn = s - v))
                             v = 0;
-                        if (*s == ':')
-                        {
+                        if (*s == ':') {
                             for (p = ++s; *s && *s != ':' && *s != ','; s++)
                                 ;
                             if (!(pn = s - p))
                                 p = 0;
-                        }
-                        else
+                        } else
                             p = 0;
-                    }
-                    else
-                    {
+                    } else {
                         v = 0;
                         p = 0;
                     }
@@ -146,13 +137,11 @@ dllinfo(void)
                     if (strmatch(h, pat))
                         break;
                 }
-                if (d && dn < sizeof(info.sibbuf))
-                {
+                if (d && dn < sizeof(info.sibbuf)) {
                     memcpy(info.sibbuf, d, dn);
                     info.sibling[0] = info.sibbuf;
                 }
-                if (v && vn < sizeof(info.envbuf))
-                {
+                if (v && vn < sizeof(info.envbuf)) {
                     memcpy(info.envbuf, v, vn);
                     info.env = info.envbuf;
                 }
@@ -188,10 +177,8 @@ vercmp(FTSENT *const *ap, FTSENT *const *bp)
     int m;
     char *e;
 
-    for (;;)
-    {
-        if (isdigit(*a) && isdigit(*b))
-        {
+    for (;;) {
+        if (isdigit(*a) && isdigit(*b)) {
             m = strtol(( char * )a, &e, 10);
             a = ( unsigned char * )e;
             n = strtol(( char * )b, &e, 10);
@@ -228,8 +215,7 @@ dllsopen(const char *lib, const char *name, const char *version)
 
     if (!(vm = vmopen(Vmdcheap, Vmlast, 0)))
         return 0;
-    if (lib && *lib && (*lib != '-' || *(lib + 1)))
-    {
+    if (lib && *lib && (*lib != '-' || *(lib + 1))) {
         /*
          * grab the local part of the library id
          */
@@ -237,52 +223,42 @@ dllsopen(const char *lib, const char *name, const char *version)
         if (s = strrchr(lib, ':'))
             lib = ( const char * )(s + 1);
         i = 2 * sizeof(char **) + strlen(lib) + 5;
-    }
-    else
-    {
+    } else {
         lib = 0;
         i = 0;
     }
     if (version && (!*version || *version == '-' && !*(version + 1)))
         version = 0;
     if (!(scan = vmnewof(vm, 0, Dllscan_t, 1, i))
-        || !(scan->tmp = sfstropen()))
-    {
+        || !(scan->tmp = sfstropen())) {
         vmclose(vm);
         return 0;
     }
     scan->vm = vm;
     info = dllinfo();
     scan->flags = info->flags;
-    if (lib)
-    {
+    if (lib) {
         scan->lib = ( char ** )(scan + 1);
         s = *scan->lib = ( char * )(scan->lib + 2);
         sfsprintf(s, i, "lib/%s", lib);
         if (!version && streq(info->suffix, ".dylib"))
             version = "0.0";
     }
-    if (!name || !*name || *name == '-' && !*(name + 1))
-    {
+    if (!name || !*name || *name == '-' && !*(name + 1)) {
         name = ( const char * )"?*";
         scan->flags |= DLL_MATCH_NAME;
-    }
-    else if (t = strrchr(name, '/'))
-    {
+    } else if (t = strrchr(name, '/')) {
         if (!(scan->pb = vmnewof(vm, 0, char, t - ( char * )name, 2)))
             goto bad;
         memcpy(scan->pb, name, t - ( char * )name);
         name = ( const char * )(t + 1);
     }
-    if (name)
-    {
+    if (name) {
         i = strlen(name);
         j = strlen(info->prefix);
-        if (!j || i > j && strneq(name, info->prefix, j))
-        {
+        if (!j || i > j && strneq(name, info->prefix, j)) {
             k = strlen(info->suffix);
-            if (i > k && streq(name + i - k, info->suffix))
-            {
+            if (i > k && streq(name + i - k, info->suffix)) {
                 i -= j + k;
                 if (!(t = vmnewof(vm, 0, char, i, 1)))
                     goto bad;
@@ -294,8 +270,7 @@ dllsopen(const char *lib, const char *name, const char *version)
         if (!version)
             for (t = ( char * )name; *t; t++)
                 if ((*t == '-' || *t == '.' || *t == '?')
-                    && isdigit(*(t + 1)))
-                {
+                    && isdigit(*(t + 1))) {
                     if (*t != '-')
                         scan->flags |= DLL_MATCH_VERSION;
                     version = t + 1;
@@ -306,8 +281,7 @@ dllsopen(const char *lib, const char *name, const char *version)
                     break;
                 }
     }
-    if (!version)
-    {
+    if (!version) {
         scan->flags |= DLL_MATCH_VERSION;
         sfsprintf(scan->nam,
                   sizeof(scan->nam),
@@ -315,9 +289,7 @@ dllsopen(const char *lib, const char *name, const char *version)
                   info->prefix,
                   name,
                   info->suffix);
-    }
-    else if (scan->flags & DLL_INFO_PREVER)
-    {
+    } else if (scan->flags & DLL_INFO_PREVER) {
         sfprintf(scan->tmp, "%s%s", info->prefix, name);
         for (s = ( char * )version; *s; s++)
             if (isdigit(*s))
@@ -326,8 +298,7 @@ dllsopen(const char *lib, const char *name, const char *version)
         if (!(s = sfstruse(scan->tmp)))
             goto bad;
         sfsprintf(scan->nam, sizeof(scan->nam), "%s", s);
-    }
-    else
+    } else
         sfsprintf(scan->nam,
                   sizeof(scan->nam),
                   "%s%s%s.%s",
@@ -335,14 +306,11 @@ dllsopen(const char *lib, const char *name, const char *version)
                   name,
                   info->suffix,
                   version);
-    if (scan->flags & (DLL_MATCH_NAME | DLL_MATCH_VERSION))
-    {
-        if (scan->flags & DLL_INFO_PREVER)
-        {
+    if (scan->flags & (DLL_MATCH_NAME | DLL_MATCH_VERSION)) {
+        if (scan->flags & DLL_INFO_PREVER) {
             if (!version)
                 version = "*([0-9_])";
-            else
-            {
+            else {
                 t = buf;
                 for (s = ( char * )version; *s; s++)
                     if (isdigit(*s) && t < &buf[sizeof(buf) - 1])
@@ -357,8 +325,7 @@ dllsopen(const char *lib, const char *name, const char *version)
                       name,
                       version,
                       info->suffix);
-        }
-        else if (version)
+        } else if (version)
             sfsprintf(scan->pat,
                       sizeof(scan->pat),
                       "%s%s@(%s([-.])%s%s|%s.%s)",
@@ -369,8 +336,7 @@ dllsopen(const char *lib, const char *name, const char *version)
                       info->suffix,
                       info->suffix,
                       version);
-        else
-        {
+        else {
             version = "*([0-9.])";
             sfsprintf(scan->pat,
                       sizeof(scan->pat),
@@ -429,19 +395,15 @@ dllsread(Dllscan_t *scan)
     if (scan->flags & DLL_MATCH_DONE)
         return 0;
 again:
-    do
-    {
-        while (!scan->ent || !(scan->ent = scan->ent->fts_link))
-        {
-            if (scan->fts)
-            {
+    do {
+        while (!scan->ent || !(scan->ent = scan->ent->fts_link)) {
+            if (scan->fts) {
                 fts_close(scan->fts);
                 scan->fts = 0;
             }
             if (!scan->pb)
                 scan->pb = pathbin();
-            else if (!*scan->sp)
-            {
+            else if (!*scan->sp) {
                 scan->sp = scan->sb;
                 if (!*scan->pe++)
                     return 0;
@@ -461,21 +423,18 @@ again:
                                      scan->pb,
                                      *scan->sp);
             scan->sp++;
-            if (!(scan->flags & DLL_MATCH_NAME))
-            {
+            if (!(scan->flags & DLL_MATCH_NAME)) {
                 sfprintf(scan->tmp, "/%s", scan->nam);
                 if (!(p = sfstruse(scan->tmp)))
                     return 0;
-                if (!eaccess(p, R_OK))
-                {
+                if (!eaccess(p, R_OK)) {
                     b = scan->nam;
                     goto found;
                 }
                 if (errno != ENOENT)
                     continue;
             }
-            if (scan->flags & (DLL_MATCH_NAME | DLL_MATCH_VERSION))
-            {
+            if (scan->flags & (DLL_MATCH_NAME | DLL_MATCH_VERSION)) {
                 sfstrseek(scan->tmp, scan->off, SEEK_SET);
                 if (!(t = sfstruse(scan->tmp)))
                     return 0;
@@ -498,8 +457,7 @@ found:
     b = scan->buf
         + sfsprintf(scan->buf, sizeof(scan->buf), "%s", b + scan->prelen);
     if (!(scan->flags & DLL_INFO_PREVER))
-        while (b > scan->buf)
-        {
+        while (b > scan->buf) {
             if (!isdigit(*(b - 1)) && *(b - 1) != '.')
                 break;
             b--;
@@ -512,32 +470,26 @@ found:
     for (t = b; t > scan->buf; t--)
         if (isdigit(*(t - 1)))
             n = 1;
-        else if (*(t - 1) != m)
-        {
-            if (*(t - 1) == '.' || *(t - 1) == '-' || *(t - 1) == '_')
-            {
+        else if (*(t - 1) != m) {
+            if (*(t - 1) == '.' || *(t - 1) == '-' || *(t - 1) == '_') {
                 n = 1;
-                if (m)
-                {
+                if (m) {
                     m = -1;
                     t--;
                     break;
                 }
                 m = *(t - 1);
-            }
-            else
+            } else
                 break;
         }
-    if (n)
-    {
+    if (n) {
         if (isdigit(t[0]) && isdigit(t[1]) && !isdigit(t[2]))
             n = (t[0] - '0') * 10 + (t[1] - '0');
         else if (isdigit(t[1]) && isdigit(t[2]) && !isdigit(t[3]))
             n = (t[1] - '0') * 10 + (t[2] - '0');
         else
             n = 0;
-        if (n && !(n & (n - 1)))
-        {
+        if (n && !(n & (n - 1))) {
             if (!isdigit(t[0]))
                 t++;
             m = *(t += 2);
@@ -548,10 +500,8 @@ found:
     *b = 0;
     if (!*(b = scan->buf))
         goto again;
-    if (scan->uniq)
-    {
-        if (!scan->dict)
-        {
+    if (scan->uniq) {
+        if (!scan->dict) {
             scan->disc.key = offsetof(Uniq_t, name);
             scan->disc.size = 0;
             scan->disc.link = offsetof(Uniq_t, link);
@@ -565,8 +515,7 @@ found:
             return 0;
         strcpy(u->name, b);
         dtinsert(scan->dict, u);
-    }
-    else if (!(scan->flags & DLL_MATCH_NAME))
+    } else if (!(scan->flags & DLL_MATCH_NAME))
         scan->flags |= DLL_MATCH_DONE;
     else if (!(scan->uniq = vmnewof(scan->vm, 0, Uniq_t, 1, strlen(b))))
         return 0;

@@ -40,8 +40,7 @@ wideexcept(Sfio_t *f, int op, void *val, Sfdisc_t *dp)
 {
     if (sffileno(f) >= 0)
         return -1;
-    switch (op)
-    {
+    switch (op) {
     case SF_ATEXIT:
         sfdisc(f, SF_POPDISC);
         break;
@@ -99,35 +98,27 @@ vfwscanf(Sfio_t *f, const wchar_t *fmt, va_list args)
 
     FWIDE(f, WEOF);
     n = wcstombs(NiL, fmt, 0);
-    if (w = newof(0, Wide_t, 1, n))
-    {
+    if (w = newof(0, Wide_t, 1, n)) {
         d = dup(0);
-        if (t = sfnew(NiL, buf, sizeof(buf), d, SF_READ))
-        {
+        if (t = sfnew(NiL, buf, sizeof(buf), d, SF_READ)) {
             w->sfdisc.exceptf = wideexcept;
             w->sfdisc.readf = wideread;
             w->f = f;
-            if (sfdisc(t, &w->sfdisc) == &w->sfdisc)
-            {
+            if (sfdisc(t, &w->sfdisc) == &w->sfdisc) {
                 wcstombs(w->fmt, fmt, n + 1);
                 v = sfvscanf(t, w->fmt, args);
-            }
-            else
-            {
+            } else {
                 free(w);
                 v = -1;
             }
             sfsetfd(t, -1);
             sfclose(t);
-        }
-        else
-        {
+        } else {
             free(w);
             v = -1;
         }
         close(d);
-    }
-    else
+    } else
         v = -1;
     return v;
 }

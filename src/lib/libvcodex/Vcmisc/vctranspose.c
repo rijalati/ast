@@ -88,10 +88,8 @@ Vcchar_t *flip;
         RETURN(-1);
 
     /* compute record starts and record sizes */
-    for (p = r = z = 0; z < dtsz; ++z)
-    {
-        if (data[z] == rsep)
-        {
+    for (p = r = z = 0; z < dtsz; ++z) {
+        if (data[z] == rsep) {
             fl[r].open = r; /* all slot starting out open */
             fl[r].rpos = p; /* record position */
             p = z + 1;
@@ -100,16 +98,13 @@ Vcchar_t *flip;
     }
 
     /* now flip records */
-    while (fl[r = 0].open < nrows)
-    {
-        do
-        {
+    while (fl[r = 0].open < nrows) {
+        do {
             if ((p = fl[r].open) > r) /* a done record */
             {
                 fl[r].open = p < nrows ? fl[p].open : nrows;
                 r = p;
-            }
-            else /* output one byte from this record */
+            } else /* output one byte from this record */
             {
                 *flip++ = (byte = data[fl[r].rpos]);
                 if (byte == rsep) /* record is done */
@@ -152,16 +147,14 @@ Vcchar_t *flip;
         fl[r].open = r;
 
     /* compute the size of each row */
-    for (r = z = 0; z < dtsz;)
-    {
+    for (r = z = 0; z < dtsz;) {
         while ((p = fl[r].open) > r) /* find row still open */
         {
             fl[r].open = p < nrows ? fl[p].open : nrows;
             r = p;
         }
 
-        if (r < nrows)
-        {
+        if (r < nrows) {
             fl[r].rpos += 1;     /* add to its length */
             if (data[z] == rsep) /* this record is done */
                 fl[r].open = r + 1;
@@ -173,8 +166,7 @@ Vcchar_t *flip;
     }
 
     /* allocate space for each record */
-    for (p = r = 0; r < nrows; ++r)
-    {
+    for (p = r = 0; r < nrows; ++r) {
         fl[r].open = r;
         z = fl[r].rpos; /* save current length */
         fl[r].rpos = p; /* set starting position */
@@ -182,16 +174,14 @@ Vcchar_t *flip;
     }
 
     /* rebuild records */
-    for (r = z = 0; z < dtsz;)
-    {
+    for (r = z = 0; z < dtsz;) {
         while ((p = fl[r].open) > r) /* find row still open */
         {
             fl[r].open = p < nrows ? fl[p].open : nrows;
             r = p;
         }
 
-        if (r < nrows)
-        {
+        if (r < nrows) {
             flip[fl[r].rpos++] = data[z];
             if (data[z] == rsep) /* this record is done */
                 fl[r].open = r + 1;
@@ -223,15 +213,12 @@ Vcchar_t *newtbl;                                /* new transposed table	*/
     Vcchar_t *rdt, *cdt;
 
 #define BLOCK 32 /* transposing small blocks to be cache-friendly */
-    for (r = 0; r < nrows; r += BLOCK)
-    {
+    for (r = 0; r < nrows; r += BLOCK) {
         nr = (nrows - r) < BLOCK ? (nrows - r) : BLOCK;
-        for (c = 0; c < ncols; c += BLOCK)
-        {
+        for (c = 0; c < ncols; c += BLOCK) {
             nc = (ncols - c) < BLOCK ? (ncols - c) : BLOCK;
             rdt = oldtbl + r * ncols + c;
-            for (rr = 0; rr < nr; ++rr, rdt += ncols - nc)
-            {
+            for (rr = 0; rr < nr; ++rr, rdt += ncols - nc) {
                 cdt = newtbl + c * nrows + r + rr;
                 for (cc = 0; cc < nc; ++cc, cdt += nrows)
                     *cdt = *rdt++;
@@ -414,13 +401,10 @@ Void_t **out;
                 break;
         vc->undone = sz - (z + 1); /* exclude the dangling record */
         sz = z + 1;                /* data to be processed */
-    }
-    else
-    {
+    } else {
         if (ncols <= 0 && (ncols = transtrain(data, sz)) <= 0)
             nrows = ncols = 0;
-        else
-        {
+        else {
             nrows = sz / ncols;
             ctxt->ncols = ncols;
         }
@@ -434,12 +418,10 @@ Void_t **out;
     if (!(output = vcbuffer(vc, NIL(Vcchar_t *), sz, z)))
         RETURN(-1);
 
-    if (rsep >= 0)
-    {
+    if (rsep >= 0) {
         if ((nrows = transflip(( Vcchar_t * )data, sz, rsep, output)) < 0)
             RETURN(-1);
-    }
-    else
+    } else
         transfixed(( Vcchar_t * )data, nrows, ncols, output);
 
     dt = output;
@@ -448,8 +430,7 @@ Void_t **out;
     if (dt != output)
         vcbuffer(vc, dt, -1, -1);
 
-    if (trans->type != TR_PLAIN)
-    {
+    if (trans->type != TR_PLAIN) {
         z = vcsizeu(ncols);
         if (ncols <= 0)
             z += 1;
@@ -497,15 +478,12 @@ Void_t **out;
     vcioinit(&io, data, size);
     rsep = -1;
     ncols = nrows = 0;
-    if (trans->type != TR_PLAIN)
-    {
+    if (trans->type != TR_PLAIN) {
         if ((ncols = vciogetu(&io)) < 0)
             RETURN(-1);
         if (ncols == 0)
             rsep = vciogetc(&io);
-    }
-    else
-    {
+    } else {
         if ((rsep = ctxt->rsep) < 0)
             rsep = trans->ctxt->rsep;
         if (rsep < 0)
@@ -556,37 +534,29 @@ Void_t *params;
     char *data, val[1024];
     Vcmtarg_t *arg;
 
-    if (type == VC_OPENING)
-    {
+    if (type == VC_OPENING) {
         if (!(trans = ( Transpose_t * )calloc(1, sizeof(Transpose_t))))
             RETURN(-1);
         if (!(trans->ctxt
-              = ( Transctxt_t * )vcinitcontext(vc, NIL(Vccontext_t *))))
-        {
+              = ( Transctxt_t * )vcinitcontext(vc, NIL(Vccontext_t *)))) {
             free(trans);
             RETURN(-1);
         }
         vcsetmtdata(vc, trans);
         goto vc_setarg;
-    }
-    else if (type == VC_CLOSING)
-    {
+    } else if (type == VC_CLOSING) {
         if ((trans = vcgetmtdata(vc, Transpose_t *)))
             free(trans);
 
         vcsetmtdata(vc, NIL(Transpose_t *));
         return 0;
-    }
-    else if (type == VC_SETMTARG)
-    {
+    } else if (type == VC_SETMTARG) {
     vc_setarg:
         if (!(ctxt = vcgetcontext(vc, Transctxt_t *)))
             RETURN(-1);
-        for (data = ( char * )params; data && *data;)
-        {
+        for (data = ( char * )params; data && *data;) {
             data = vcgetmtarg(data, val, sizeof(val), _Transargs, &arg);
-            switch (TYPECAST(int, arg->data))
-            {
+            switch (TYPECAST(int, arg->data)) {
             case TR_SEPARATOR: /* setting the record separator */
                 ctxt->rsep = val[0];
                 ctxt->ncols = 0;
@@ -604,9 +574,7 @@ Void_t *params;
         }
 
         return 0;
-    }
-    else if (type == VC_INITCONTEXT)
-    {
+    } else if (type == VC_INITCONTEXT) {
         if (!params)
             return 0;
         if (!(ctxt = ( Transctxt_t * )calloc(1, sizeof(Transctxt_t))))
@@ -615,14 +583,11 @@ Void_t *params;
         ctxt->rsep = -1;
         *(( Transctxt_t ** )params) = ctxt;
         return 1;
-    }
-    else if (type == VC_FREECONTEXT)
-    {
+    } else if (type == VC_FREECONTEXT) {
         if ((ctxt = ( Transctxt_t * )params))
             free(ctxt);
         return 0;
-    }
-    else
+    } else
         return 0;
 }
 

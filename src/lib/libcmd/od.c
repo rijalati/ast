@@ -433,16 +433,14 @@ cform(State_t *state, Format_t *fp, Sfio_t *op, unsigned char *u)
     int j;
     char buf[2];
 
-    if (state->mb)
-    {
+    if (state->mb) {
         state->mb--;
         sfputc(op, ' ');
         sfputc(op, '*');
         sfputc(op, '*');
         return;
     }
-    switch (*u)
-    {
+    switch (*u) {
     case 0:
         sfputc(op, ' ');
         sfputc(op, '\\');
@@ -456,8 +454,7 @@ cform(State_t *state, Format_t *fp, Sfio_t *op, unsigned char *u)
     }
     buf[0] = *(v = u);
     if ((w = mbtchar(&w, u, state->eob - u, &state->q)) > 0 && (i = u - v) > 1
-        && !iswprint(w))
-    {
+        && !iswprint(w)) {
         state->mb = i - 1;
         for (j = 3 - mbwidth(w); j > 0; j--)
             sfputc(op, ' ');
@@ -472,15 +469,13 @@ cform(State_t *state, Format_t *fp, Sfio_t *op, unsigned char *u)
      * posix shalls are sometimes an impediment to progress
      */
 
-    if (*s != '\\')
-    {
+    if (*s != '\\') {
         sfputc(op, ' ');
         sfputc(op, ' ');
         sfputc(op, *s);
         return;
     }
-    switch (*(s + 1))
-    {
+    switch (*(s + 1)) {
     case 'a':
     case 'b':
     case 'f':
@@ -518,16 +513,14 @@ Cform(State_t *state, Format_t *fp, Sfio_t *op, unsigned char *u)
     int j;
     char buf[2];
 
-    if (state->mb)
-    {
+    if (state->mb) {
         state->mb--;
         sfputc(op, ' ');
         sfputc(op, '*');
         sfputc(op, '*');
         return;
     }
-    switch (*u)
-    {
+    switch (*u) {
     case 0:
         sfputc(op, ' ');
         sfputc(op, '\\');
@@ -541,8 +534,7 @@ Cform(State_t *state, Format_t *fp, Sfio_t *op, unsigned char *u)
     }
     buf[0] = *(v = u);
     if ((w = mbtchar(&w, u, state->eob - u, &state->q)) > 0 && (i = u - v) > 1
-        && !iswprint(w))
-    {
+        && !iswprint(w)) {
         state->mb = i - 1;
         for (j = 3 - mbwidth(w); j > 0; j--)
             sfputc(op, ' ');
@@ -552,15 +544,13 @@ Cform(State_t *state, Format_t *fp, Sfio_t *op, unsigned char *u)
     }
     buf[1] = 0;
     s = fmtesc(buf);
-    if (*s != '\\')
-    {
+    if (*s != '\\') {
         sfputc(op, ' ');
         sfputc(op, ' ');
         sfputc(op, *s);
         return;
     }
-    if (isdigit(*(s + 1)))
-    {
+    if (isdigit(*(s + 1))) {
         sfputc(op, *++s);
         sfputc(op, *++s);
         sfputc(op, *++s);
@@ -577,8 +567,7 @@ mform(State_t *state, Format_t *fp, Sfio_t *op, unsigned char *u)
     char *s;
     char buf[2];
 
-    switch (buf[0] = ccmapchr(state->map, *u))
-    {
+    switch (buf[0] = ccmapchr(state->map, *u)) {
     case 0:
         sfputc(op, '0');
         sfputc(op, '0');
@@ -590,16 +579,14 @@ mform(State_t *state, Format_t *fp, Sfio_t *op, unsigned char *u)
     }
     buf[1] = 0;
     s = fmtesc(buf);
-    if (*s != '\\')
-    {
+    if (*s != '\\') {
         sfputc(op, ' ');
         sfputc(op, *s);
         return;
     }
     if (isdigit(*(s + 1)))
         sfprintf(op, "%02lx", strtol(s + 1, NiL, 8));
-    else
-    {
+    else {
         sfputc(op, '\\');
         sfputc(op, *(s + 1));
     }
@@ -615,16 +602,14 @@ Oform(State_t *state, Format_t *fp, Sfio_t *op, unsigned char *u)
     int j;
     char buf[2];
 
-    if (state->mb)
-    {
+    if (state->mb) {
         state->mb--;
         sfputc(op, ' ');
         sfputc(op, '*');
         sfputc(op, '*');
         return;
     }
-    switch (*u)
-    {
+    switch (*u) {
     case 0:
         sfputc(op, ' ');
         sfputc(op, '\\');
@@ -638,8 +623,7 @@ Oform(State_t *state, Format_t *fp, Sfio_t *op, unsigned char *u)
     }
     buf[0] = *(v = u);
     if ((w = mbtchar(&w, u, state->eob - u, &state->q)) > 0 && (i = u - v) > 1
-        && !iswprint(w))
-    {
+        && !iswprint(w)) {
         state->mb = i - 1;
         for (j = 3 - mbwidth(w); j > 0; j--)
             sfputc(op, ' ');
@@ -654,15 +638,13 @@ Oform(State_t *state, Format_t *fp, Sfio_t *op, unsigned char *u)
      * posix shalls are sometimes an impediment to progress
      */
 
-    if (*s != '\\')
-    {
+    if (*s != '\\') {
         sfputc(op, ' ');
         sfputc(op, ' ');
         sfputc(op, *s);
         return;
     }
-    switch (*(s + 1))
-    {
+    switch (*(s + 1)) {
     case 'b':
     case 'f':
     case 'n':
@@ -860,21 +842,17 @@ format(State_t *state, char *t)
     char *s;
     char dig[256];
 
-    while (c = *t++)
-    {
+    while (c = *t++) {
         if (isspace(c) || c == ',')
             continue;
         tp = type;
         while (c != tp->name)
-            if (++tp >= &type[elementsof(type)])
-            {
+            if (++tp >= &type[elementsof(type)]) {
                 error(2, "%c: invalid type name", c);
                 return;
             }
-        if (!(zp = tp->size) && !tp->fun)
-        {
-            switch (tp->width[0])
-            {
+        if (!(zp = tp->size) && !tp->fun) {
+            switch (tp->width[0]) {
             case 1:
                 state->printable = 1;
                 break;
@@ -882,51 +860,40 @@ format(State_t *state, char *t)
             continue;
         }
         xp = 0;
-        if (isdigit(*t))
-        {
+        if (isdigit(*t)) {
             c = 0;
             n = ( int )strton(t, &e, NiL, 1);
             t = e;
-        }
-        else
-        {
+        } else {
             c = isupper(*t) ? *t++ : 0;
             n = 0;
         }
-        for (;;)
-        {
-            if (!zp->name)
-            {
-                if (c)
-                {
+        for (;;) {
+            if (!zp->name) {
+                if (c) {
                     error(2, "%c: invalid size for type %c", c, tp->name);
                     return;
                 }
-                if (!(zp = xp) || zp->exponent)
-                {
+                if (!(zp = xp) || zp->exponent) {
                     error(2, "%d: invalid size for type %c", n, tp->name);
                     return;
                 }
                 break;
             }
-            if (n)
-            {
+            if (n) {
                 if (n == zp->size)
                     break;
                 zp++;
                 if (n > (zp - 1)->size && n < zp->size)
                     xp = zp;
-            }
-            else if (c == zp->name)
-            {
+            } else if (c == zp->name) {
                 if (c != *t)
                     break;
                 t++;
                 zp++;
                 if (zp->name)
                     break;
-            }
-            else if (!c && !n && zp->dflt)
+            } else if (!c && !n && zp->dflt)
                 break;
             else
                 zp++;
@@ -934,8 +901,7 @@ format(State_t *state, char *t)
         if (tp->mb && (i = mbmax()) > 1)
             state->mbmax = i;
         i = zp - tp->size;
-        if (!(fp = vmnewof(state->vm, 0, Format_t, 1, 0)))
-        {
+        if (!(fp = vmnewof(state->vm, 0, Format_t, 1, 0))) {
             error(ERROR_system(1), "out of space");
             return;
         }
@@ -949,24 +915,18 @@ format(State_t *state, char *t)
         fp->size.external = n ? n : zp->size;
         if (state->size < fp->size.external)
             state->size = fp->size.external;
-        if (zp->exponent)
-        {
-            if (zp->map == 'a')
-            {
+        if (zp->exponent) {
+            if (zp->map == 'a') {
                 for (m = 0, i = zp->digits; i-- > 0; m = m * 10 + 9)
                     ;
                 prec = sfsprintf(dig, sizeof(dig), "%I*x", sizeof(m), m);
-            }
-            else
+            } else
                 prec = zp->digits;
             base = sfsprintf(dig, sizeof(dig), "%u", zp->exponent);
             fp->width = zp->prefix + prec + base + 2;
-        }
-        else
-        {
+        } else {
             fp->width = tp->width[i = WIDTHINDEX(fp->size.internal)];
-            if (n > 1 && (n & (n - 1)))
-            {
+            if (n > 1 && (n & (n - 1))) {
                 c = (1 << i) - n;
                 n = (1 << i) - (1 << (i - 1));
                 fp->width -= ((fp->width - tp->width[i - 1] + n - 1) / n) * c;
@@ -974,8 +934,7 @@ format(State_t *state, char *t)
             prec = 0;
             base = 0;
         }
-        if (!(fp->fun = tp->fun))
-        {
+        if (!(fp->fun = tp->fun)) {
             e = fp->form;
             *e++ = '%';
             if (s = ( char * )tp->fill)
@@ -996,8 +955,7 @@ format(State_t *state, char *t)
                 while (*e = *s++)
                     e++;
             *e = zp->map ? zp->map : tp->name;
-            if (zp->exponent)
-            {
+            if (zp->exponent) {
 #if _typ_long_double
                 if (fp->size.internal == sizeof(long double))
                     fp->fun = form_long_double;
@@ -1007,10 +965,8 @@ format(State_t *state, char *t)
                     fp->fun = form_double;
                 else
                     fp->fun = form_float;
-            }
-            else if (fp->us)
-                switch (fp->size.internal)
-                {
+            } else if (fp->us)
+                switch (fp->size.internal) {
                 case 1:
                     fp->fun = form_uint8;
                     break;
@@ -1025,8 +981,7 @@ format(State_t *state, char *t)
                     break;
                 }
             else
-                switch (fp->size.internal)
-                {
+                switch (fp->size.internal) {
                 case 1:
                     fp->fun = form_int8;
                     break;
@@ -1050,19 +1005,15 @@ init(State_t *state, char ***p)
     Sfio_t *ip;
     intmax_t offset;
 
-    for (;;)
-    {
+    for (;;) {
         if (**p)
             state->file = *((*p)++);
         else if (state->file)
             return 0;
-        if (!state->file || streq(state->file, "-"))
-        {
+        if (!state->file || streq(state->file, "-")) {
             state->file = "/dev/stdin";
             ip = sfstdin;
-        }
-        else if (!(ip = sfopen(NiL, state->file, "r")))
-        {
+        } else if (!(ip = sfopen(NiL, state->file, "r"))) {
             error(ERROR_system(0), "%s: cannot open", state->file);
             error_info.errors = 1;
             continue;
@@ -1071,30 +1022,22 @@ init(State_t *state, char ***p)
             sfset(ip, SF_SHARE, 0);
         if (state->buffer.size)
             sfsetbuf(ip, state->buffer.base, state->buffer.size);
-        if (state->skip)
-        {
-            if ((offset = sfseek(ip, ( off_t )0, SEEK_END)) > 0)
-            {
-                if (offset <= state->skip)
-                {
+        if (state->skip) {
+            if ((offset = sfseek(ip, ( off_t )0, SEEK_END)) > 0) {
+                if (offset <= state->skip) {
                     state->skip -= offset;
                     state->offset += offset;
                     goto next;
                 }
-                if (sfseek(ip, state->skip, SEEK_SET) != state->skip)
-                {
+                if (sfseek(ip, state->skip, SEEK_SET) != state->skip) {
                     error(ERROR_system(2), "%s: seek error", state->file);
                     goto next;
                 }
                 state->offset += state->skip;
                 state->skip = 0;
-            }
-            else
-            {
-                for (;;)
-                {
-                    if (!(state->peek.data = sfreserve(ip, SF_UNBOUND, 0)))
-                    {
+            } else {
+                for (;;) {
+                    if (!(state->peek.data = sfreserve(ip, SF_UNBOUND, 0))) {
                         if (sfvalue(ip))
                             error(
                             ERROR_system(2), "%s: read error", state->file);
@@ -1103,8 +1046,7 @@ init(State_t *state, char ***p)
                     state->peek.size = sfvalue(ip);
                     if (state->peek.size < state->skip)
                         state->skip -= state->peek.size;
-                    else
-                    {
+                    else {
                         state->peek.data += state->skip;
                         state->peek.size -= state->skip;
                         state->skip = 0;
@@ -1129,13 +1071,10 @@ block(State_t *state, Sfio_t *op, char *bp, char *ep, intmax_t base)
     ssize_t z;
     unsigned long n;
 
-    if (!state->verbose)
-    {
+    if (!state->verbose) {
         if (state->dup.size == (n = ep - bp)
-            && !memcmp(state->dup.data, bp, n))
-        {
-            if (!state->dup.mark)
-            {
+            && !memcmp(state->dup.data, bp, n)) {
+            if (!state->dup.mark) {
                 state->dup.mark = 1;
                 sfprintf(op, "*\n");
             }
@@ -1143,28 +1082,23 @@ block(State_t *state, Sfio_t *op, char *bp, char *ep, intmax_t base)
         }
         state->dup.mark = 0;
     }
-    for (fp = state->form; fp; fp = fp->next)
-    {
-        if (*state->base)
-        {
+    for (fp = state->form; fp; fp = fp->next) {
+        if (*state->base) {
             if (fp == state->form)
                 sfprintf(op, state->base, base);
             else
                 sfprintf(op, "%-*.*s ", BASE_WIDTH, BASE_WIDTH, "");
         }
         u = ( unsigned char * )bp;
-        for (;;)
-        {
+        for (;;) {
             z = fp->per - fp->width;
             while (z-- > 0)
                 sfputc(op, ' ');
             (*fp->fun)(state, fp, op, u);
             if ((u += fp->size.external) < ( unsigned char * )ep)
                 sfputc(op, ' ');
-            else
-            {
-                if (state->printable && fp == state->form)
-                {
+            else {
+                if (state->printable && fp == state->form) {
                     int c;
                     unsigned char *v;
                     wchar_t w;
@@ -1176,24 +1110,18 @@ block(State_t *state, Sfio_t *op, char *bp, char *ep, intmax_t base)
                     if (state->mbmax)
                         for (u = ( unsigned char * )bp;
                              u < ( unsigned char * )ep;
-                             u++)
-                        {
-                            if (state->mbp)
-                            {
+                             u++) {
+                            if (state->mbp) {
                                 state->mbp--;
                                 sfputc(op, '.');
-                            }
-                            else if ((v = u)
-                                     && (w = mbtchar(
-                                         &w, v, state->eob - u, &state->q))
-                                        > 0
-                                     && (c = v - u) > 1 && !iswprint(w))
-                            {
+                            } else if ((v = u)
+                                       && (w = mbtchar(
+                                           &w, v, state->eob - u, &state->q))
+                                          > 0
+                                       && (c = v - u) > 1 && !iswprint(w)) {
                                 sfwrite(op, u, c);
                                 state->mbp = c - 1;
-                            }
-                            else
-                            {
+                            } else {
                                 if ((c = ccmapchr(state->map, *u)) < 040
                                     || c >= 0177)
                                     c = '.';
@@ -1202,8 +1130,7 @@ block(State_t *state, Sfio_t *op, char *bp, char *ep, intmax_t base)
                         }
                     else
                         for (u = ( unsigned char * )bp;
-                             u < ( unsigned char * )ep;)
-                        {
+                             u < ( unsigned char * )ep;) {
                             if ((c = ccmapchr(state->map, *u++)) < 040
                                 || c >= 0177)
                                 c = '.';
@@ -1235,18 +1162,14 @@ od(State_t *state, char **files)
 
     if (!(ip = init(state, &files)))
         return 0;
-    for (;;)
-    {
+    for (;;) {
         if (sh_checksig(state->context))
             goto bad;
-        if (s = state->peek.data)
-        {
+        if (s = state->peek.data) {
             state->peek.data = 0;
             n = state->peek.size;
-        }
-        else
-            for (;;)
-            {
+        } else
+            for (;;) {
                 s = sfreserve(ip, SF_UNBOUND, 0);
                 n = sfvalue(ip);
                 if (s)
@@ -1255,32 +1178,25 @@ od(State_t *state, char **files)
                     error(ERROR_system(2), "%s: read error", state->file);
                 if (ip != sfstdin)
                     sfclose(ip);
-                if (!(ip = init(state, &files)))
-                {
+                if (!(ip = init(state, &files))) {
                     s = 0;
                     n = 0;
                     break;
                 }
             }
         state->eob = ( unsigned char * )s + n;
-        if (state->count)
-        {
-            if (state->total >= state->count)
-            {
+        if (state->count) {
+            if (state->total >= state->count) {
                 s = 0;
                 n = 0;
-            }
-            else if ((state->total += n) > state->count)
+            } else if ((state->total += n) > state->count)
                 n -= state->total - state->count;
         }
-        if (span)
-        {
+        if (span) {
         respan:
-            if (s)
-            {
+            if (s) {
                 m = state->spansize - (span - state->span);
-                if (m > n)
-                {
+                if (m > n) {
                     memcpy(span, s, n);
                     span += n;
                     continue;
@@ -1290,8 +1206,7 @@ od(State_t *state, char **files)
                 s += m;
                 n -= m;
             }
-            if (m = (span - state->span) % state->size)
-            {
+            if (m = (span - state->span) % state->size) {
                 m = state->size - m;
                 while (m--)
                     *span++ = 0;
@@ -1307,8 +1222,7 @@ od(State_t *state, char **files)
                 memcpy(state->dup.data = state->dup.buf,
                        state->span,
                        state->dup.size = m);
-            if ((r = (span - state->span) - m) > 0)
-            {
+            if ((r = (span - state->span) - m) > 0) {
                 span = state->span;
                 x = state->span + m;
                 while (r--)
@@ -1322,16 +1236,12 @@ od(State_t *state, char **files)
         if (!s)
             break;
         x = s + n;
-        if (state->strings)
-        {
+        if (state->strings) {
             state->offset += n;
             n = 0;
-            for (;;)
-            {
-                if (s >= x || (c = *s++) == 0 || c == '\n' || !isprint(c))
-                {
-                    if (n >= state->strings)
-                    {
+            for (;;) {
+                if (s >= x || (c = *s++) == 0 || c == '\n' || !isprint(c)) {
+                    if (n >= state->strings) {
                         if (*state->base
                             && sfprintf(sfstdout,
                                         state->base,
@@ -1344,20 +1254,15 @@ od(State_t *state, char **files)
                     if (s >= x)
                         break;
                     n = 0;
-                }
-                else
+                } else
                     n++;
             }
-        }
-        else
-        {
+        } else {
             e = s + (n / state->block) * state->block;
             if (state->mbmax)
                 e -= state->block + state->mbmax;
-            if (s < e)
-            {
-                do
-                {
+            if (s < e) {
+                do {
                     if (block(
                         state, sfstdout, s, s + state->block, state->offset))
                         goto bad;
@@ -1365,16 +1270,14 @@ od(State_t *state, char **files)
                     state->dup.data = s;
                     state->dup.size = state->block;
                 } while ((s += state->block) < e);
-                if (!state->verbose)
-                {
+                if (!state->verbose) {
                     memcpy(state->dup.buf,
                            state->dup.data,
                            state->dup.size = state->block);
                     state->dup.data = state->dup.buf;
                 }
             }
-            if (n = x - s)
-            {
+            if (n = x - s) {
                 memcpy(state->span, s, n);
                 span = state->span + n;
             }
@@ -1417,8 +1320,7 @@ optinfo(Opt_t *op, Sfio_t *sp, const char *s, Optdisc_t *dp)
     int n;
 
     n = 0;
-    switch (*s)
-    {
+    switch (*s) {
     case 'c':
         for (ic = iconv_list(NiL); ic; ic = iconv_list(ic))
             if (ic->ccode >= 0)
@@ -1453,8 +1355,7 @@ b_od(int argc, char **argv, Shbltin_t *context)
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
     memset(&state, 0, sizeof(state));
-    if (!(state.vm = vmopen(Vmdcheap, Vmlast, 0)))
-    {
+    if (!(state.vm = vmopen(Vmdcheap, Vmlast, 0))) {
         error(ERROR_SYSTEM | 2, "out of space");
         return 1;
     }
@@ -1463,10 +1364,8 @@ b_od(int argc, char **argv, Shbltin_t *context)
     per = 0;
     state.map = ccmap(CC_ASCII, CC_ASCII);
     state.swap = int_swap;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'A':
             *state.base = *opt_info.arg;
             state.style |= NEW;
@@ -1478,8 +1377,7 @@ b_od(int argc, char **argv, Shbltin_t *context)
                 state.swap ^= opt_info.num;
             continue;
         case 'j':
-            if (*opt_info.option == '+')
-            {
+            if (*opt_info.option == '+') {
                 opt_info.index--;
                 break;
             }
@@ -1505,16 +1403,14 @@ b_od(int argc, char **argv, Shbltin_t *context)
             continue;
         case 'T':
             s = opt_info.arg;
-            switch (*s)
-            {
+            switch (*s) {
             case 'b':
             case 'm':
                 n = *s++;
                 state.buffer.size = strton(s, &e, NiL, 1);
                 if (n == 'b'
-                    && !(state.buffer.base
-                         = vmnewof(state.vm, 0, char, state.buffer.size, 0)))
-                {
+                    && !(state.buffer.base = vmnewof(
+                         state.vm, 0, char, state.buffer.size, 0))) {
                     error(ERROR_SYSTEM | 2, "out of space");
                     goto done;
                 }
@@ -1559,8 +1455,7 @@ b_od(int argc, char **argv, Shbltin_t *context)
         case 'x':
         case 'X':
             s = buf;
-            switch (n = opt_info.option[1])
-            {
+            switch (n = opt_info.option[1]) {
             case 'b':
                 *s++ = 'o';
                 *s++ = 'C';
@@ -1587,11 +1482,9 @@ b_od(int argc, char **argv, Shbltin_t *context)
                 n = 'D';
                 break;
             }
-            if (s == buf)
-            {
+            if (s == buf) {
                 if (isupper(n))
-                    switch (*s++ = tolower(n))
-                    {
+                    switch (*s++ = tolower(n)) {
                     case 'f':
                         *s++ = 'D';
                         break;
@@ -1600,8 +1493,7 @@ b_od(int argc, char **argv, Shbltin_t *context)
                         break;
                     }
                 else
-                    switch (*s++ = n)
-                    {
+                    switch (*s++ = n) {
                     case 'd':
                     case 'o':
                     case 's':
@@ -1629,13 +1521,11 @@ b_od(int argc, char **argv, Shbltin_t *context)
         break;
     }
     argv += opt_info.index;
-    if (error_info.errors)
-    {
+    if (error_info.errors) {
         vmclose(state.vm);
         error(ERROR_usage(2), "%s", optusage(NiL));
     }
-    switch (n = *state.base)
-    {
+    switch (n = *state.base) {
     case 'n':
         *state.base = 0;
         break;
@@ -1676,8 +1566,7 @@ b_od(int argc, char **argv, Shbltin_t *context)
         n -= (BASE_WIDTH + 1);
     if (!(n /= (state.width + state.printable * state.size + 1)))
         n = 1;
-    if (state.addr)
-    {
+    if (state.addr) {
         while (n > state.addr)
             state.addr *= 2;
         while (n < state.addr)
@@ -1689,38 +1578,30 @@ b_od(int argc, char **argv, Shbltin_t *context)
         n = per;
     state.block = n * state.size;
     state.spansize = state.block + state.mbmax;
-    if (!(state.span = vmnewof(state.vm, 0, char, state.spansize, 0)))
-    {
+    if (!(state.span = vmnewof(state.vm, 0, char, state.spansize, 0))) {
         error(ERROR_SYSTEM | 2, "out of space");
         goto done;
     }
-    if (!(state.style & NEW) && (s = *argv))
-    {
+    if (!(state.style & NEW) && (s = *argv)) {
         e = "?(+)+([0-9])?(.)?([bkm])?(ll|LL)";
-        if (!*(argv + 1))
-        {
+        if (!*(argv + 1)) {
             if (strmatch(s, e) && *s == '+')
                 argv++;
             else
                 s = 0;
-        }
-        else if (!*(argv + 2))
-        {
+        } else if (!*(argv + 2)) {
             s = *(argv + 1);
             if (strmatch(s, e) && (state.style == OLD || *s == '+'))
                 *(argv + 1) = 0;
             else
                 s = 0;
-        }
-        else
+        } else
             s = 0;
-        if (s)
-        {
+        if (s) {
             state.skip = strtol(s, &e, strchr(s, '.') ? 10 : 8);
             if (*e == '.')
                 e++;
-            switch (*e)
-            {
+            switch (*e) {
             case 'b':
                 state.skip *= 512;
                 break;
@@ -1740,13 +1621,11 @@ b_od(int argc, char **argv, Shbltin_t *context)
 #ifdef SIGFPE
     signal(SIGFPE, SIG_DFL);
 #endif
-    if (state.skip)
-    {
+    if (state.skip) {
         error(2, "cannot skip past available data");
         goto done;
     }
-    if (*state.base && !state.strings)
-    {
+    if (*state.base && !state.strings) {
         *(state.base + strlen(state.base) - 1) = '\n';
         sfprintf(sfstdout, state.base, ( intmax_t )state.offset);
     }

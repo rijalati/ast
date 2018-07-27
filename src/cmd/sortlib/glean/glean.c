@@ -114,11 +114,9 @@ typedef struct State_s
 static int
 save(Vmalloc_t *vm, Data_t *p, void *data, size_t len)
 {
-    if (p->size < len)
-    {
+    if (p->size < len) {
         p->size = roundof(len, 256);
-        if (!(p->data = vmnewof(vm, p->data, char, p->size, 0)))
-        {
+        if (!(p->data = vmnewof(vm, p->data, char, p->size, 0))) {
             error(ERROR_SYSTEM | 2, "out of space [save]");
             return -1;
         }
@@ -176,12 +174,10 @@ glean(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
     int m;
     Data_t t;
 
-    switch (op)
-    {
+    switch (op) {
     case RS_POP:
         if (state->absolute)
-            for (f = state->field; f; f = f->next)
-            {
+            for (f = state->field; f; f = f->next) {
                 if (state->count)
                     sfprintf(sfstdout,
                              "%u/%I*u/%I*u ",
@@ -200,15 +196,13 @@ glean(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
         x.key.len = r->keylen;
         if (state->categories
             && !(p = ( Category_t * )dtsearch(state->categories, &x))
-            || !state->categories && !(p = state->all))
-        {
+            || !state->categories && !(p = state->all)) {
             if (!(p = vmnewof(state->vm,
                               0,
                               Category_t,
                               1,
                               (state->fields - 1) * sizeof(Data_t)
-                              + r->keylen)))
-            {
+                              + r->keylen))) {
                 error(ERROR_SYSTEM | 2, "out of space [category]");
                 return -1;
             }
@@ -241,10 +235,8 @@ glean(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
                                                        : r->datalen,
          r->data));
         m = 0;
-        for (f = state->field; f; f = f->next)
-        {
-            if (f->lim->disc->defkeyf)
-            {
+        for (f = state->field; f; f = f->next) {
+            if (f->lim->disc->defkeyf) {
                 if ((k = f->lim->disc->keylen) <= 0)
                     k = 4;
                 k *= r->datalen;
@@ -260,9 +252,7 @@ glean(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
                     return -1;
                 t.len = state->key.len = k;
                 t.data = state->key.data;
-            }
-            else
-            {
+            } else {
                 t.data = r->data + f->lim->disc->key;
                 if ((k = f->lim->disc->keylen) <= 0)
                     k += r->datalen - f->lim->disc->key;
@@ -276,8 +266,7 @@ glean(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
                      fmtdata(t.data, t.len)));
             if (!p->lim[f->index].data)
                 n = f->mm == 'm' ? -1 : 1;
-            else
-            {
+            else {
                 message(
                 (-1,
                  "glean [%d] %c b:%d:%s:",
@@ -290,30 +279,25 @@ glean(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
                 if (!(n = memcmp(t.data, p->lim[f->index].data, k)))
                     n = t.len - p->lim[f->index].len;
             }
-            if (f->mm == 'm' ? (n < 0) : (n > 0))
-            {
-                if (f->lim->disc->defkeyf)
-                {
+            if (f->mm == 'm' ? (n < 0) : (n > 0)) {
+                if (f->lim->disc->defkeyf) {
                     t = state->key;
                     state->key = p->lim[f->index];
                     p->lim[f->index] = t;
-                }
-                else if (save(state->vm, &p->lim[f->index], t.data, t.len))
+                } else if (save(state->vm, &p->lim[f->index], t.data, t.len))
                     return -1;
                 if (!state->absolute)
                     m = 1;
                 else if (save(state->vm, &f->absolute, r->data, r->datalen))
                     return -1;
-                else
-                {
+                else {
                     f->category = p;
                     f->count = p->count;
                     f->total = state->total;
                 }
             }
         }
-        if (m)
-        {
+        if (m) {
             if (state->count)
                 sfprintf(sfstdout,
                          "%u/%I*u/%I*u ",
@@ -351,12 +335,9 @@ rs_disc(Rskey_t *key, const char *options)
     if ((key->keydisc->flags & RSKEY_KEYS)
         && !(state->categories = dtnew(vm, &state->dtdisc, Dtoset)))
         error(ERROR_SYSTEM | 3, "out of space [dictionary]");
-    if (options)
-    {
-        for (;;)
-        {
-            switch (i = optstr(options, usage))
-            {
+    if (options) {
+        for (;;) {
+            switch (i = optstr(options, usage)) {
             case 0:
                 break;
             case 'a':
@@ -371,8 +352,7 @@ rs_disc(Rskey_t *key, const char *options)
             case 'm':
             case 'M':
                 if (opt_info.assignment == ':' || !(f = state->field)
-                    || f->mm != i)
-                {
+                    || f->mm != i) {
                     if (!(f = vmnewof(vm, 0, Field_t, 1, 0))
                         || !(f->lim = rskeyopen(&state->kydisc, NiL)))
                         error(ERROR_SYSTEM | 3, "out of space");

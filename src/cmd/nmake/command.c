@@ -57,8 +57,7 @@ static char *statusname[] = {
 };
 
 #    define jobstatus()                                                      \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             if (state.test & 0x00001000)                                     \
                 dumpjobs(2, JOB_status);                                     \
             else if (error_info.trace <= CMDTRACE)                           \
@@ -118,18 +117,15 @@ static Jobstate_t jobs;
 static void
 acceptrule(Rule_t *r)
 {
-    if (r->property & P_state)
-    {
+    if (r->property & P_state) {
         if (!state.silent)
             error(0, "touch %s", r->name);
         if (state.exec)
             state.savestate = 1;
         goto done;
     }
-    if (r->property & P_archive)
-    {
-        if (state.exec)
-        {
+    if (r->property & P_archive) {
+        if (state.exec) {
             artouch(r->name, NiL);
             statetime(r, 0);
         }
@@ -138,12 +134,10 @@ acceptrule(Rule_t *r)
         goto done;
     }
     if (r->active && (r->active->parent->target->property & P_archive)
-        && !(r->property & (P_after | P_before | P_use)))
-    {
+        && !(r->property & (P_after | P_before | P_use))) {
         char *t;
 
-        if (t = strrchr(r->name, '/'))
-        {
+        if (t = strrchr(r->name, '/')) {
             if (!r->uname)
                 r->uname = r->name;
             r->name = maprule(t + 1, r);
@@ -155,12 +149,10 @@ acceptrule(Rule_t *r)
         if (!(r->dynamic & D_regular))
             goto done;
     }
-    if (!(r->property & P_virtual))
-    {
+    if (!(r->property & P_virtual)) {
         if (!state.silent)
             error(0, "touch %s", r->name);
-        if (state.exec)
-        {
+        if (state.exec) {
             Stat_t st;
 
             if (stat(r->name, &st)
@@ -205,12 +197,10 @@ apply(Rule_t *r, char *lhs, char *rhs, char *act, Flags_t flags)
     lhs_frame.target = x;
     x->active = &lhs_frame;
     x->property = r->property & (P_make | P_operator);
-    if (x->property & P_operator)
-    {
+    if (x->property & P_operator) {
         x->action = act;
         act = r->action;
-    }
-    else
+    } else
         x->action = r->action;
     x->name = lhs;
     x->statedata = r->name;
@@ -219,10 +209,8 @@ apply(Rule_t *r, char *lhs, char *rhs, char *act, Flags_t flags)
     rhs_rule.time = x->time + 1;
     oframe = state.frame;
     state.frame = &lhs_frame;
-    if ((r->property & (P_make | P_operator)) == (P_make | P_operator))
-    {
-        if (r->prereqs)
-        {
+    if ((r->property & (P_make | P_operator)) == (P_make | P_operator)) {
+        if (r->prereqs) {
             Time_t t;
             char *oaction;
 
@@ -235,9 +223,7 @@ apply(Rule_t *r, char *lhs, char *rhs, char *act, Flags_t flags)
         state.op = 1;
         errors = parse(NiL, act, r->name, NiL) == FAILED;
         state.op = oop;
-    }
-    else
-    {
+    } else {
         r->status = UPDATE;
         trigger(r, NiL, act, flags);
         errors = complete(r, NiL, NiL, 0);
@@ -256,8 +242,7 @@ fapply(Rule_t *r, char *lhs, char *rhs, char *act, Flags_t flags)
     Sfio_t *fp;
 
     fp = 0;
-    if (!apply(r, lhs, rhs, act, flags | CO_DATAFILE))
-    {
+    if (!apply(r, lhs, rhs, act, flags | CO_DATAFILE)) {
         if (fp = sfopen(NiL, state.tmpfile, "re"))
             remove(state.tmpfile);
         else
@@ -281,8 +266,7 @@ call(Rule_t *r, char *args)
 {
     Var_t *v;
 
-    if (r->property & P_functional)
-    {
+    if (r->property & P_functional) {
         maketop(r, 0, args);
         if ((v = getvar(r->name)) && *v->value)
             return v->value;
@@ -302,18 +286,14 @@ commit(Joblist_t *job, char *s)
     Rule_t *r;
     Stat_t st;
 
-    if (t = strrchr(s, '/'))
-    {
+    if (t = strrchr(s, '/')) {
         *t = 0;
-        if (r = bindfile(NiL, s, 0))
-        {
-            if (!r->view)
-            {
+        if (r = bindfile(NiL, s, 0)) {
+            if (!r->view) {
                 *t = '/';
                 return;
             }
-            if (*(v = r->name) != '/')
-            {
+            if (*(v = r->name) != '/') {
                 sfprintf(internal.nam, "%s/%s", state.view[r->view].root, v);
                 v = sfstruse(internal.nam);
             }
@@ -323,8 +303,7 @@ commit(Joblist_t *job, char *s)
         if (r
             || state.targetcontext && (!r || !r->time)
                && (st.st_mode = (S_IRWXU | S_IRWXG | S_IRWXO))
-               && tmxsetmtime(&st, state.start))
-        {
+               && tmxsetmtime(&st, state.start)) {
             /*
              * why not mkdir -p here?
              */
@@ -337,8 +316,7 @@ commit(Joblist_t *job, char *s)
                       "%s: cannot create target directory %s",
                       job->target->name,
                       s);
-            if (state.mam.out)
-            {
+            if (state.mam.out) {
                 Sfio_t *tmp = sfstropen();
 
                 sfprintf(tmp, "mkdir %s", s);
@@ -372,11 +350,9 @@ push(Joblist_t *job)
     Time_t tm;
 
     job->status |= PUSHED;
-    if (z = job->context)
-    {
+    if (z = job->context) {
         p = z->frame;
-        for (;;)
-        {
+        for (;;) {
             if (!(r = getrule(p->context.name)))
                 r = makerule(p->context.name);
             p->target = r;
@@ -411,16 +387,14 @@ pop(Joblist_t *job)
     int n;
     Time_t tm;
 
-    if (z = job->context)
-    {
+    if (z = job->context) {
         n = state.targetview;
         state.targetview = z->targetview;
         z->targetview = n;
         p = state.frame;
         state.frame = z->frame;
         z->frame = p;
-        for (;;)
-        {
+        for (;;) {
             if (!(r = getrule(p->context.name)))
                 r = makerule(p->context.name);
             r->active = p->context.frame;
@@ -447,18 +421,15 @@ discard(Joblist_t *job)
 
     if (job->flags & CO_SEMAPHORES)
         for (p = job->prereqs; p; p = p->next)
-            if (p->rule->semaphore)
-            {
+            if (p->rule->semaphore) {
                 p->rule->semaphore++;
                 p->rule->status = EXISTS;
             }
-    if (job->flags & CO_PRIMARY)
-    {
+    if (job->flags & CO_PRIMARY) {
         job->prereqs->next = 0;
         freelist(job->prereqs);
     }
-    if (z = job->context)
-    {
+    if (z = job->context) {
         z->last->parent = jobs.freeframe;
         jobs.freeframe = z->frame;
         z->next = jobs.freecontext;
@@ -489,8 +460,7 @@ save(Joblist_t *job)
     Frame_t *x;
     Context_t *z;
 
-    if (job->action && !job->context)
-    {
+    if (job->action && !job->context) {
         if (z = jobs.freecontext)
             jobs.freecontext = jobs.freecontext->next;
         else
@@ -498,8 +468,7 @@ save(Joblist_t *job)
         z->targetview = state.targetview;
         o = state.frame;
         p = 0;
-        for (;;)
-        {
+        for (;;) {
             if (x = jobs.freeframe)
                 jobs.freeframe = jobs.freeframe->parent;
             else
@@ -549,8 +518,7 @@ restore(Joblist_t *job, Sfio_t *buf, Sfio_t *att)
     localview = state.localview;
     state.localview = state.mam.statix && !state.expandview && state.user
                       && !(job->flags & CO_ALWAYS);
-    if ((job->flags & CO_LOCALSTACK) || (job->target->dynamic & D_hasscope))
-    {
+    if ((job->flags & CO_LOCALSTACK) || (job->target->dynamic & D_hasscope)) {
         Rule_t *r;
         List_t *p;
 
@@ -559,22 +527,19 @@ restore(Joblist_t *job, Sfio_t *buf, Sfio_t *att)
         opt = sfstropen();
         if (job->target->dynamic & D_hasscope)
             for (p = job->prereqs; p; p = p->next)
-                if ((r = p->rule)->dynamic & D_scope)
-                {
+                if ((r = p->rule)->dynamic & D_scope) {
                     if (*r->name == '-')
                         set(r->name, 1, opt);
                     else
                         parse(NiL, r->name, r->name, opt);
-                }
-                else if ((r->property & (P_make | P_local | P_use))
-                         == (P_make | P_local)
-                         && r->action)
+                } else if ((r->property & (P_make | P_local | P_use))
+                           == (P_make | P_local)
+                           && r->action)
                     parse(NiL, r->action, r->name, opt);
     }
     context = state.context;
     if (state.targetcontext && *(u = unbound(job->target)) != '/'
-        && (s = strrchr(u, '/')))
-    {
+        && (s = strrchr(u, '/'))) {
         size_t n;
         int c;
 
@@ -584,8 +549,7 @@ restore(Joblist_t *job, Sfio_t *buf, Sfio_t *att)
         sfprintf(tmp, "%s%c", u, 0);
         n = sfstrtell(tmp);
         c = '/';
-        do
-        {
+        do {
             if (u = strchr(u, '/'))
                 u++;
             else
@@ -597,29 +561,24 @@ restore(Joblist_t *job, Sfio_t *buf, Sfio_t *att)
         state.context = buf;
         buf = sfstropen();
         state.localview++;
-    }
-    else
+    } else
         state.context = 0;
     if (job->action)
         expand(buf, job->action);
-    if (state.context)
-    {
+    if (state.context) {
         s = sfstruse(buf);
         sep = strchr(s, '\n') ? "\n" : "; ";
         sfprintf(state.context, "{ cd %s%s", down, sep);
-        while (b = strchr(s, MARK_CONTEXT))
-        {
+        while (b = strchr(s, MARK_CONTEXT)) {
             sfwrite(state.context, s, b - s);
             if (!(s = strchr(++b, MARK_CONTEXT)))
                 error(PANIC, "unbalanced MARK_CONTEXT");
             *s++ = 0;
             if (*b == '/' || (u = getbound(b)) && *u == '/')
                 sfputr(state.context, b, -1);
-            else if (*b)
-            {
+            else if (*b) {
                 if (strneq(b, down, downlen))
-                    switch (*(b + downlen))
-                    {
+                    switch (*(b + downlen)) {
                     case 0:
                         sfputc(state.context, '.');
                         continue;
@@ -643,8 +602,7 @@ restore(Joblist_t *job, Sfio_t *buf, Sfio_t *att)
     sfprintf(att, "label=%s", job->target->name);
     if ((v = getvar(CO_ENV_ATTRIBUTES)) && !(v->property & V_import))
         sfprintf(att, ",%s", v->value);
-    if (job->flags & CO_LOCALSTACK)
-    {
+    if (job->flags & CO_LOCALSTACK) {
         poplocal(pos);
         if (*(s = sfstruse(opt)))
             set(s, 1, NiL);
@@ -693,17 +651,13 @@ execute(Joblist_t *job)
                  mamname(job->target),
                  timefmt(NiL, CURTIME));
     t = sfstruse(tmp);
-    if (!(job->flags & CO_ALWAYS))
-    {
-        if (state.touch)
-        {
-            if (state.virtualdot)
-            {
+    if (!(job->flags & CO_ALWAYS)) {
+        if (state.touch) {
+            if (state.virtualdot) {
                 state.virtualdot = 0;
                 lockstate(1);
             }
-            if (!(job->target->property & (P_attribute | P_virtual)))
-            {
+            if (!(job->target->property & (P_attribute | P_virtual))) {
                 acceptrule(job->target);
                 if ((job->target->property & (P_joint | P_target))
                     == (P_joint | P_target))
@@ -712,20 +666,15 @@ execute(Joblist_t *job)
                         if (p->rule != job->target)
                             acceptrule(p->rule);
             }
-        }
-        else if (*t && (!state.silent || state.mam.regress))
+        } else if (*t && (!state.silent || state.mam.regress))
             dumpaction(state.mam.out ? state.mam.out : sfstdout, NiL, t, NiL);
         done(job, 0, NiL);
-    }
-    else
-    {
-        if (state.virtualdot && !notfile(job->target))
-        {
+    } else {
+        if (state.virtualdot && !notfile(job->target)) {
             state.virtualdot = 0;
             lockstate(1);
         }
-        if (!state.coshell)
-        {
+        if (!state.coshell) {
             sp = sfstropen();
             sfprintf(sp, "label=%s", idname);
             expand(sp, " $(" CO_ENV_OPTIONS ")");
@@ -739,20 +688,15 @@ execute(Joblist_t *job)
                 error(ERROR_SYSTEM | 3, "coshell open error");
             sfstrclose(sp);
         }
-        if (p = internal.exports->prereqs)
-        {
+        if (p = internal.exports->prereqs) {
             Sfio_t *exp;
 
             exp = sfstropen();
-            do
-            {
-                if (v = getvar(p->rule->name))
-                {
+            do {
+                if (v = getvar(p->rule->name)) {
                     expand(exp, v->value);
                     coexport(state.coshell, p->rule->name, sfstruse(exp));
-                }
-                else if (s = strchr(p->rule->name, '='))
-                {
+                } else if (s = strchr(p->rule->name, '=')) {
                     *s = 0;
                     expand(exp, s + 1);
                     coexport(state.coshell, p->rule->name, sfstruse(exp));
@@ -765,19 +709,15 @@ execute(Joblist_t *job)
 #endif
             internal.exports->prereqs = 0;
         }
-        if (job->flags & CO_DATAFILE)
-        {
+        if (job->flags & CO_DATAFILE) {
             static char *dot;
             static char *tmp;
 
-            if (job->target->property & P_read)
-            {
+            if (job->target->property & P_read) {
                 if (!dot)
                     dot = pathtemp(NiL, 0, null, idname, NiL);
                 state.tmpfile = dot;
-            }
-            else
-            {
+            } else {
                 if (!tmp)
                     tmp = pathtemp(NiL, 0, NiL, idname, NiL);
                 state.tmpfile = tmp;
@@ -802,8 +742,7 @@ execute(Joblist_t *job)
          * grab semaphores
          */
 
-        if (job->target->dynamic & D_hassemaphore)
-        {
+        if (job->target->dynamic & D_hassemaphore) {
             job->flags |= CO_SEMAPHORES;
             for (p = job->prereqs; p; p = p->next)
                 if (p->rule->semaphore && --p->rule->semaphore == 1)
@@ -816,18 +755,14 @@ execute(Joblist_t *job)
 
         if (job->target->dynamic & D_hasafter)
             save(job);
-        if (job->flags & (CO_DATAFILE | CO_FOREGROUND))
-        {
+        if (job->flags & (CO_DATAFILE | CO_FOREGROUND)) {
             complete(job->target, NiL, NiL, 0);
-            if (job->target->property & (P_functional | P_read))
-            {
-                if (sp = sfopen(NiL, state.tmpfile, "r"))
-                {
+            if (job->target->property & (P_functional | P_read)) {
+                if (sp = sfopen(NiL, state.tmpfile, "r")) {
                     remove(state.tmpfile);
                     if (job->target->property & P_read)
                         parse(sp, NiL, job->target->name, NiL);
-                    else
-                    {
+                    else {
                         char *e;
 
                         sfmove(sp, tmp, SF_UNBOUND, -1);
@@ -839,8 +774,7 @@ execute(Joblist_t *job)
                         setvar(job->target->name, sfstruse(tmp), 0);
                     }
                     sfclose(sp);
-                }
-                else
+                } else
                     error(2,
                           "%s: cannot read temporary data output file %s",
                           job->target->name,
@@ -864,11 +798,9 @@ cancel(Rule_t *r, List_t *p)
     Rule_t *s;
     Rule_t *t;
 
-    if (r->must)
-    {
+    if (r->must) {
         s = staterule(RULE, r, NiL, 0);
-        for (; p; p = p->next)
-        {
+        for (; p; p = p->next) {
             if ((a = p->rule)->dynamic & D_alias)
                 a = makerule(a->name);
             if ((a->dynamic & D_same)
@@ -876,8 +808,7 @@ cancel(Rule_t *r, List_t *p)
                     || s->event >= t->event))
                 r->must--;
         }
-        if (!r->must)
-        {
+        if (!r->must) {
             if (error_info.trace || state.explain)
                 error(
                 state.explain ? 0 : -1, "cancelling %s action", r->name);
@@ -913,8 +844,7 @@ done(Joblist_t *job, int clear, Cojob_t *cojob)
     if (clear && jobs.triggered
         && (((a = jobs.triggered)->property & P_state)
             || (a = staterule(RULE, a, NiL, 0)))
-        && (a->property & P_force))
-    {
+        && (a->property & P_force)) {
         a->time = 0;
         state.savestate = 1;
     }
@@ -925,11 +855,9 @@ another:
     else if (!clear && job->status == RUNNING
              && (job->target->dynamic & D_hasafter)
              && hasafter(job->target,
-                         (job->flags & CO_ERRORS) ? P_failure : P_after))
-    {
+                         (job->flags & CO_ERRORS) ? P_failure : P_after)) {
         job->status = BEFORE;
-        for (p = job->target->prereqs; p; p = p->next)
-        {
+        for (p = job->target->prereqs; p; p = p->next) {
             if ((a = p->rule)->dynamic & D_alias)
                 a = makerule(a->name);
             if (a->status == MAKING && !a->semaphore
@@ -946,12 +874,10 @@ another:
 #    ifndef __GNUC_PATCHLEVEL__
 #        define __GNUC_PATCHLEVEL__ 1
 #    endif
-        if (!jobs.firstjob)
-        {
+        if (!jobs.firstjob) {
             static int warned = 0;
 
-            if (!warned)
-            {
+            if (!warned) {
                 warned = 1;
                 error(state.mam.regress || state.regress ? -1 : 1,
                       "command.c:%d: gcc %d.%d.%d code generation bug "
@@ -970,15 +896,12 @@ another:
         pop(job);
         if (n)
             job->flags |= CO_ERRORS;
-        else
-        {
+        else {
             job->flags &= ~CO_ERRORS;
-            for (p = job->prereqs; p; p = p->next)
-            {
+            for (p = job->prereqs; p; p = p->next) {
                 if ((a = p->rule)->dynamic & D_alias)
                     a = makerule(a->name);
-                if (!a->semaphore && a->status == MAKING)
-                {
+                if (!a->semaphore && a->status == MAKING) {
                     job->status = AFTER;
                     return !state.coshell
                            || cojobs(state.coshell) < state.jobs;
@@ -1017,8 +940,7 @@ another:
     if ((job->target->property & (P_joint | P_target))
         == (P_joint | P_target))
         for (p = job->target->prereqs->rule->prereqs; p; p = p->next)
-            if (p->rule != job->target)
-            {
+            if (p->rule != job->target) {
                 if (p->rule->status != TOUCH)
                     p->rule->status
                     = (job->flags & CO_ERRORS)
@@ -1046,10 +968,8 @@ another:
 again:
     jammed = 0;
     if (job = jobs.firstjob)
-        for (;;)
-        {
-            switch (job->status)
-            {
+        for (;;) {
+            switch (job->status) {
             case AFTER:
             case BEFORE:
             case BLOCKED:
@@ -1057,15 +977,13 @@ again:
                 n = READY;
                 semaphore = 1;
                 waiting = 0;
-                for (p = job->prereqs; p; p = p->next)
-                {
+                for (p = job->prereqs; p; p = p->next) {
                     if ((a = p->rule)->dynamic & D_alias)
                         a = makerule(a->name);
                     if ((a->property & P_after) && job->status != BEFORE
                         && job->status != AFTER)
                         continue;
-                    switch (a->status)
-                    {
+                    switch (a->status) {
                     case FAILED:
                         if (a->property & P_repeat)
                             continue;
@@ -1073,8 +991,7 @@ again:
                         goto another;
                     case MAKING:
                         if (!jammed && (a->mark & M_waiting)
-                            && !(a->property & P_archive))
-                        {
+                            && !(a->property & P_archive)) {
                             waiting = a;
                             continue;
                         }
@@ -1090,67 +1007,53 @@ again:
                 }
                 if (waiting)
                     jammed = waiting;
-                else if (!clear && job->status == AFTER)
-                {
+                else if (!clear && job->status == AFTER) {
                     if (n == READY || semaphore)
                         goto another;
-                }
-                else if (!clear && job->status == BEFORE)
-                {
+                } else if (!clear && job->status == BEFORE) {
                     if (n == READY || semaphore)
                         goto after;
-                }
-                else if ((job->status = n) == READY)
-                {
+                } else if ((job->status = n) == READY) {
                 unjam:
                     if (clear || cancel(job->target, job->prereqs))
                         goto another;
                     if ((job->target->dynamic & D_intermediate)
-                        && job->target->must == 1)
-                    {
+                        && job->target->must == 1) {
                         job->status = INTERMEDIATE;
                         jobs.intermediate++;
-                    }
-                    else if ((job->target->dynamic
-                              & (D_hasbefore | D_triggered))
-                             == (D_hasbefore | D_triggered))
-                    {
+                    } else if ((job->target->dynamic
+                                & (D_hasbefore | D_triggered))
+                               == (D_hasbefore | D_triggered)) {
                         push(job);
                         n = makebefore(job->target);
                         pop(job);
-                        if (n)
-                        {
+                        if (n) {
                             job->flags |= CO_ERRORS;
                             goto another;
                         }
-                    }
-                    else if (!state.coshell
-                             || cojobs(state.coshell) < state.jobs)
-                    {
+                    } else if (!state.coshell
+                               || cojobs(state.coshell) < state.jobs) {
                         execute(job);
                         goto again;
                     }
                 }
                 break;
             case RUNNING:
-                if (clear && job->cojob && (job->cojob->flags & CO_SERVICE))
-                {
+                if (clear && job->cojob && (job->cojob->flags & CO_SERVICE)) {
                     job->status = FAILED;
                     job->flags |= CO_ERRORS;
                     cokill(state.coshell, job->cojob, 0);
                 }
                 break;
             }
-            if (!(job = job->next))
-            {
+            if (!(job = job->next)) {
                 /*
                  * jammed is the first discovered member
                  * of a possible deadlock and we arbitrarily
                  * break it here
                  */
 
-                if (jammed)
-                {
+                if (jammed) {
                     if (error_info.trace || state.explain)
                         error(state.explain ? 0 : -1,
                               "breaking possible job deadlock at %s",
@@ -1166,12 +1069,10 @@ again:
 #        define __GNUC_PATCHLEVEL__ 1
 #    endif
 
-                        if (!job)
-                        {
+                        if (!job) {
                             static int warned = 0;
 
-                            if (!warned)
-                            {
+                            if (!warned) {
                                 warned = 1;
                                 error(state.mam.regress || state.regress ? -1
                                                                          : 1,
@@ -1184,15 +1085,12 @@ again:
                                       __GNUC_PATCHLEVEL__);
                             }
                             break;
-                        }
-                        else
+                        } else
 #endif
-                        if (job->target == jammed)
-                        {
+                        if (job->target == jammed) {
                             if (job->status == AFTER)
                                 goto another;
-                            if (job->status != RUNNING)
-                            {
+                            if (job->status != RUNNING) {
                                 jammed = 0;
                                 job->status = READY;
                                 state.jobs++;
@@ -1222,10 +1120,8 @@ block(int check)
     int clear = 0;
     int resume = 0;
 
-    if (!state.coshell || !copending(state.coshell))
-    {
-        if (jobs.intermediate)
-        {
+    if (!state.coshell || !copending(state.coshell)) {
+        if (jobs.intermediate) {
             /*
              * mark the jobs that must be generated
              */
@@ -1234,28 +1130,23 @@ block(int check)
             for (job = jobs.firstjob; job; job = job->next)
                 if (job->target->must
                     > (( unsigned int )(job->target->dynamic & D_intermediate)
-                       != 0))
-                {
+                       != 0)) {
                     n = 1;
                     break;
                 }
-            if (n)
-            {
+            if (n) {
                 /*
                  * some intermediates must be generated
                  */
 
 
                 error(2, "some intermediates must be generated");
-            }
-            else
-            {
+            } else {
                 /*
                  * accept missing intermediates
                  */
 
-                while (job = jobs.firstjob)
-                {
+                while (job = jobs.firstjob) {
                     if (error_info.trace || state.explain)
                         error(state.explain ? 0 : -1,
                               "cancelling %s action -- %s",
@@ -1272,8 +1163,7 @@ block(int check)
         }
         return 0;
     }
-    for (;;)
-    {
+    for (;;) {
         state.waiting = 1;
         if ((cojob
              = cowait(state.coshell,
@@ -1281,22 +1171,19 @@ block(int check)
                       -1))
             && (job = ( Joblist_t * )cojob->local))
             job->cojob = 0;
-        if (trap())
-        {
+        if (trap()) {
             if (state.interpreter)
                 clear = resume = 1;
             if (!cojob)
                 continue;
         }
         state.waiting = 0;
-        if (!cojob)
-        {
+        if (!cojob) {
             if (check)
                 return 0;
             break;
         }
-        if (r = getrule(external.jobdone))
-        {
+        if (r = getrule(external.jobdone)) {
             if (!jobs.tmp)
                 jobs.tmp = sfstropen();
             sfprintf(jobs.tmp,
@@ -1307,10 +1194,8 @@ block(int check)
                      fmtelapsed(cojob->sys, CO_QUANT));
             call(r, sfstruse(jobs.tmp));
         }
-        if (cojob->status)
-        {
-            if (n = !EXITED_TERM(cojob->status) || EXIT_CODE(cojob->status))
-            {
+        if (cojob->status) {
+            if (n = !EXITED_TERM(cojob->status) || EXIT_CODE(cojob->status)) {
                 if ((job->target->dynamic & D_hasafter)
                     && hasafter(job->target, P_failure))
                     n = 0;
@@ -1328,11 +1213,9 @@ block(int check)
                       ? ERROR_translate(NiL, NiL, NiL, " ignored")
                       : null);
             }
-            if (!(job->flags & CO_IGNORE))
-            {
+            if (!(job->flags & CO_IGNORE)) {
                 job->flags |= CO_ERRORS;
-                if (state.keepgoing || !n)
-                {
+                if (state.keepgoing || !n) {
                     if (n)
                         state.errors++;
                     job->flags |= CO_KEEPGOING;
@@ -1358,14 +1241,11 @@ block(int check)
     }
     if (resume)
         longjmp(state.resume.label, 1);
-    if (!state.finish)
-    {
-        if (!copending(state.coshell))
-        {
+    if (!state.finish) {
+        if (!copending(state.coshell)) {
             if (clear)
                 finish(1);
-        }
-        else if (!state.interrupt)
+        } else if (!state.interrupt)
             error(3, "lost contact with coshell");
     }
     return 0;
@@ -1387,43 +1267,33 @@ complete(Rule_t *r, List_t *p, Time_t *tm, Flags_t flags)
     List_t *q;
     Time_t tprereqs;
 
-    if (r)
-    {
+    if (r) {
         tmp.next = p;
         p = &tmp;
         p->rule = r;
-    }
-    else
-    {
-        if (p && p->rule == internal.serialize)
-        {
+    } else {
+        if (p && p->rule == internal.serialize) {
             p = p->next;
             check = 1;
         }
-        if (!p)
-        {
+        if (!p) {
             while (block(check))
                 ;
             return 0;
         }
     }
-    for (tprereqs = 0; p; p = p->next)
-    {
+    for (tprereqs = 0; p; p = p->next) {
         if ((r = p->rule)->dynamic & D_alias)
             r = makerule(r->name);
-        if (recent = r->status == MAKING)
-        {
+        if (recent = r->status == MAKING) {
             message((-1,
                      "waiting for %s%s",
                      r->semaphore ? "semaphore " : null,
                      r->name));
             r->mark |= M_waiting;
-            do
-            {
-                if (!block(check))
-                {
-                    if (recent = r->status == MAKING)
-                    {
+            do {
+                if (!block(check)) {
+                    if (recent = r->status == MAKING) {
                         r->status
                         = (r->property & P_dontcare) ? IGNORE : FAILED;
                         error(1, "%s did not complete", r->name);
@@ -1437,22 +1307,18 @@ complete(Rule_t *r, List_t *p, Time_t *tm, Flags_t flags)
             && !(flags & P_implicit))
             r->status = EXISTS;
         if (recent
-            && (r->property & (P_joint | P_target)) == (P_joint | P_target))
-        {
+            && (r->property & (P_joint | P_target)) == (P_joint | P_target)) {
             Rule_t *x;
             Rule_t *s;
 
             s = staterule(RULE, r, NiL, 1);
             for (q = r->prereqs->rule->prereqs; q; q = q->next)
-                if ((x = q->rule) != r)
-                {
-                    if (x->status != r->status)
-                    {
+                if ((x = q->rule) != r) {
+                    if (x->status != r->status) {
                         x->status = r->status;
                         x->time = r->time;
                     }
-                    if (s && (x = staterule(RULE, x, NiL, 1)))
-                    {
+                    if (s && (x = staterule(RULE, x, NiL, 1))) {
                         x->dynamic |= D_built;
                         x->action = s->action;
                         x->prereqs = s->prereqs;
@@ -1488,8 +1354,7 @@ terminate(void)
 void
 drop(void)
 {
-    if (state.coshell)
-    {
+    if (state.coshell) {
         while (block(0))
             ;
         message((-1,
@@ -1510,8 +1375,7 @@ static void
 serial(Rule_t *r, List_t *p)
 {
     while (p && p->rule != internal.serialize
-           && copending(state.coshell) > cojobs(state.coshell))
-    {
+           && copending(state.coshell) > cojobs(state.coshell)) {
         if (p->rule->prereqs)
             serial(NiL, p->rule->prereqs);
         complete(p->rule, NiL, NiL, 0);
@@ -1559,8 +1423,7 @@ trigger(Rule_t *r, Rule_t *a, char *action, Flags_t flags)
         flags |= CO_IGNORE;
     if (r->property & (P_functional | P_read))
         flags |= CO_DATAFILE;
-    if (action)
-    {
+    if (action) {
         message((-1,
                  "triggering %s action%s%s",
                  r->name,
@@ -1576,8 +1439,7 @@ trigger(Rule_t *r, Rule_t *a, char *action, Flags_t flags)
             action = 0;
     }
     if (state.coshell
-        && (action && !(r->property & P_make) || (flags & CO_FOREGROUND)))
-    {
+        && (action && !(r->property & P_make) || (flags & CO_FOREGROUND))) {
         /*
          * the make thread blocks when too many jobs are outstanding
          */
@@ -1592,15 +1454,12 @@ trigger(Rule_t *r, Rule_t *a, char *action, Flags_t flags)
             serial(r, r->active->parent->prereqs);
     }
     prereqs = r->prereqs;
-    if (r->active && r->active->primary)
-    {
+    if (r->active && r->active->primary) {
         prereqs = cons(getrule(r->active->primary), prereqs);
         flags |= CO_PRIMARY;
     }
-    if (r->property & P_make)
-    {
-        if (r->property & P_local)
-        {
+    if (r->property & P_make) {
+        if (r->property & P_local) {
             r->status = EXISTS;
             return;
         }
@@ -1611,21 +1470,18 @@ trigger(Rule_t *r, Rule_t *a, char *action, Flags_t flags)
 
         if (prereqs && complete(NiL, prereqs, NiL, 0))
             r->status = (r->property & P_dontcare) ? IGNORE : FAILED;
-        else
-        {
+        else {
             if (action && cancel(r, prereqs))
                 r->status = EXISTS;
             else if ((r->dynamic & (D_hasbefore | D_triggered))
                      == (D_hasbefore | D_triggered)
                      && (makebefore(r) || complete(NiL, prereqs, NiL, 0)))
                 r->status = (r->property & P_dontcare) ? IGNORE : FAILED;
-            else
-            {
+            else {
                 if (r->property & P_functional)
                     setvar(r->name, null, 0);
                 if (action)
-                    switch (parse(NiL, action, r->name, NiL))
-                    {
+                    switch (parse(NiL, action, r->name, NiL)) {
                     case EXISTS:
                         if (!(r->property & (P_state | P_virtual)))
                             statetime(r, 0);
@@ -1649,35 +1505,28 @@ trigger(Rule_t *r, Rule_t *a, char *action, Flags_t flags)
         }
         if ((r->property & (P_joint | P_target)) == (P_joint | P_target))
             for (p = r->prereqs->rule->prereqs; p; p = p->next)
-                if (p->rule != r)
-                {
+                if (p->rule != r) {
                     p->rule->status = r->status;
                     p->rule->time = r->time;
                 }
         if ((r->dynamic & (D_hasafter | D_triggered))
-            == (D_hasafter | D_triggered))
-        {
-            if (r->status == FAILED)
-            {
+            == (D_hasafter | D_triggered)) {
+            if (r->status == FAILED) {
                 if (hasafter(r, P_failure) && !makeafter(r, P_failure)
                     && !complete(NiL, prereqs, NiL, 0))
                     r->status = EXISTS;
-            }
-            else if (hasafter(r, P_after)
-                     && (makeafter(r, P_after)
-                         || complete(NiL, prereqs, NiL, 0)))
+            } else if (hasafter(r, P_after)
+                       && (makeafter(r, P_after)
+                           || complete(NiL, prereqs, NiL, 0)))
                 r->status = (r->property & P_dontcare) ? IGNORE : FAILED;
         }
-    }
-    else
-    {
+    } else {
         /*
          * only one repeat action at a time
          */
 
         if ((r->property & P_repeat) && (r->property & (P_before | P_after))
-            && !(r->dynamic & D_hassemaphore))
-        {
+            && !(r->dynamic & D_hassemaphore)) {
             a = catrule(internal.semaphore->name, ".", r->name, 1);
             a->semaphore = 2;
             r->prereqs = append(r->prereqs, cons(a, NiL));
@@ -1690,16 +1539,13 @@ trigger(Rule_t *r, Rule_t *a, char *action, Flags_t flags)
          */
 
         n = READY;
-        for (;;)
-        {
-            for (p = prereqs; p; p = p->next)
-            {
+        for (;;) {
+            for (p = prereqs; p; p = p->next) {
                 if ((a = p->rule)->dynamic & D_alias)
                     a = makerule(a->name);
                 if (a->property & P_after)
                     continue;
-                switch (a->status)
-                {
+                switch (a->status) {
                 case FAILED:
                     if (a->property & P_repeat)
                         continue;
@@ -1723,12 +1569,10 @@ trigger(Rule_t *r, Rule_t *a, char *action, Flags_t flags)
             }
             if (n != READY)
                 break;
-            if (action)
-            {
+            if (action) {
                 if (cancel(r, prereqs))
                     return;
-                if ((r->dynamic & D_intermediate) && r->must == 1)
-                {
+                if ((r->dynamic & D_intermediate) && r->must == 1) {
                     n = INTERMEDIATE;
                     jobs.intermediate++;
                     break;
@@ -1737,8 +1581,7 @@ trigger(Rule_t *r, Rule_t *a, char *action, Flags_t flags)
             if ((r->dynamic & (D_hasbefore | D_triggered))
                 != (D_hasbefore | D_triggered))
                 break;
-            if (makebefore(r))
-            {
+            if (makebefore(r)) {
                 r->status = (r->property & P_dontcare) ? IGNORE : FAILED;
                 if ((r->property & (P_joint | P_target))
                     == (P_joint | P_target))
@@ -1750,8 +1593,7 @@ trigger(Rule_t *r, Rule_t *a, char *action, Flags_t flags)
                 return;
             }
         }
-        if (action || n != READY)
-        {
+        if (action || n != READY) {
             /*
              * allocate a job cell and add to job list
              * the first READY job from the top is executed next
@@ -1761,17 +1603,14 @@ trigger(Rule_t *r, Rule_t *a, char *action, Flags_t flags)
                 jobs.freejob = jobs.freejob->next;
             else
                 job = newof(0, Joblist_t, 1, 0);
-            if (flags & CO_URGENT)
-            {
+            if (flags & CO_URGENT) {
                 job->prev = 0;
                 if (job->next = jobs.firstjob)
                     jobs.firstjob->prev = job;
                 else
                     jobs.lastjob = job;
                 jobs.firstjob = job;
-            }
-            else
-            {
+            } else {
                 job->next = 0;
                 if (job->prev = jobs.lastjob)
                     jobs.lastjob->next = job;
@@ -1794,18 +1633,14 @@ trigger(Rule_t *r, Rule_t *a, char *action, Flags_t flags)
                 for (p = r->prereqs->rule->prereqs; p; p = p->next)
                     if (p->rule != r)
                         p->rule->status = r->status;
-            if (n == READY)
-            {
+            if (n == READY) {
                 execute(job);
                 if (r->dynamic & D_hasafter)
                     save(job);
-            }
-            else
+            } else
                 save(job);
             jobstatus();
-        }
-        else
-        {
+        } else {
             if (r->status == UPDATE)
                 r->status = EXISTS;
             if ((r->property & (P_joint | P_target)) == (P_joint | P_target))
@@ -1813,20 +1648,16 @@ trigger(Rule_t *r, Rule_t *a, char *action, Flags_t flags)
                     if (p->rule->status == UPDATE)
                         p->rule->status = EXISTS;
             if ((r->dynamic & (D_hasafter | D_triggered))
-                == (D_hasafter | D_triggered))
-            {
-                if (r->status == FAILED)
-                {
+                == (D_hasafter | D_triggered)) {
+                if (r->status == FAILED) {
                     if (hasafter(r, P_failure) && !makeafter(r, P_failure)
                         && !complete(NiL, prereqs, NiL, 0))
                         r->status = EXISTS;
-                }
-                else if (hasafter(r, P_after)
-                         && (makeafter(r, P_after)
-                             || complete(NiL, prereqs, NiL, 0)))
+                } else if (hasafter(r, P_after)
+                           && (makeafter(r, P_after)
+                               || complete(NiL, prereqs, NiL, 0)))
                     r->status = (r->property & P_dontcare) ? IGNORE : FAILED;
-                if (r->status == EXISTS)
-                {
+                if (r->status == EXISTS) {
                     char *t;
                     Sfio_t *tmp;
 
@@ -1838,8 +1669,7 @@ trigger(Rule_t *r, Rule_t *a, char *action, Flags_t flags)
                 }
             }
         }
-        if (r->dynamic & D_triggered)
-        {
+        if (r->dynamic & D_triggered) {
             r->time = CURTIME;
             if ((r->property & (P_joint | P_target)) == (P_joint | P_target))
                 for (p = r->prereqs->rule->prereqs; p; p = p->next)
@@ -1872,24 +1702,20 @@ dumpjobs(int level, int op)
     int indent;
     int line;
 
-    if (state.coshell && error_info.trace <= level)
-    {
+    if (state.coshell && error_info.trace <= level) {
         indent = error_info.indent;
         error_info.indent = 0;
         line = error_info.line;
         error_info.line = 0;
-        switch (op)
-        {
+        switch (op) {
         case JOB_blocked:
             for (job = jobs.firstjob; job; job = job->next)
-                if (job->status == BLOCKED)
-                {
+                if (job->status == BLOCKED) {
                     sfprintf(sfstderr,
                              "%8s %s :",
                              statusname[job->status & STATUS],
                              job->target->name);
-                    for (p = job->prereqs; p; p = p->next)
-                    {
+                    for (p = job->prereqs; p; p = p->next) {
                         if ((a = p->rule)->dynamic & D_alias)
                             a = makerule(a->name);
                         if ((a->property & P_after) && job->status != BEFORE
@@ -1899,8 +1725,7 @@ dumpjobs(int level, int op)
                             sfprintf(sfstderr, " %s", a->name);
                     }
                     sfprintf(sfstderr, "\n");
-                }
-                else if (job->status == READY)
+                } else if (job->status == READY)
                     sfprintf(sfstderr,
                              "%8s %s\n",
                              statusname[job->status & STATUS],
@@ -1912,8 +1737,7 @@ dumpjobs(int level, int op)
                      state.coshell->total,
                      copending(state.coshell),
                      cozombie(state.coshell));
-            for (job = jobs.firstjob; job; job = job->next)
-            {
+            for (job = jobs.firstjob; job; job = job->next) {
                 if (job->cojob)
                     sfsprintf(tmpname,
                               MAXNAME,

@@ -38,8 +38,7 @@ dllversion(void *dll, const char *path)
 
     if (pvf = ( Dll_plugin_version_f )dlllook(dll, "plugin_version"))
         return (*pvf)();
-    if (path)
-    {
+    if (path) {
         state.error = 1;
         sfsprintf(
         state.errorbuf, sizeof(state.errorbuf), "plugin_version() not found");
@@ -61,8 +60,7 @@ dllcheck(void *dll, const char *path, unsigned long ver, unsigned long *cur)
     unsigned long v;
 
     state.error = 0;
-    if (ver || cur)
-    {
+    if (ver || cur) {
         v = dllversion(dll, path);
         if (cur)
             *cur = v;
@@ -71,10 +69,8 @@ dllcheck(void *dll, const char *path, unsigned long ver, unsigned long *cur)
         return 1;
     if (!v)
         return 0;
-    if (v < ver)
-    {
-        if (path)
-        {
+    if (v < ver) {
+        if (path) {
             state.error = 1;
             sfsprintf(state.errorbuf,
                       sizeof(state.errorbuf),

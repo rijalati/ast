@@ -60,8 +60,7 @@ makef(Dt_t *dt, Ptvprefix_t *a, Dtdisc_t *disc)
     Prefixdisc_t *p = ( Prefixdisc_t * )disc;
     Ptvprefix_t *b;
 
-    if (b = oldof(0, Ptvprefix_t, 1, 2 * p->size))
-    {
+    if (b = oldof(0, Ptvprefix_t, 1, 2 * p->size)) {
         fvcpy(p->size, b->min = ( unsigned char * )(b + 1), a->min);
         fvcpy(p->size, b->max = b->min + p->size, a->max);
     }
@@ -85,9 +84,8 @@ ptvopen(Ptvdisc_t *disc, int size)
     int i;
     Prefixdisc_t *p;
 
-    if (!(a
-          = newof(0, Ptv_t, 1, sizeof(Prefixdisc_t) + size * PTV_REGISTERS)))
-    {
+    if (!(a = newof(
+          0, Ptv_t, 1, sizeof(Prefixdisc_t) + size * PTV_REGISTERS))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return 0;
@@ -98,8 +96,7 @@ ptvopen(Ptvdisc_t *disc, int size)
     p->dtdisc.makef = ( Dtmake_f )makef;
     p->dtdisc.freef = ( Dtfree_f )freef;
     p->size = size;
-    if (!(a->dict = dtopen(&p->dtdisc, Dtoset)))
-    {
+    if (!(a->dict = dtopen(&p->dtdisc, Dtoset))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         free(a);
@@ -141,20 +138,17 @@ ptvinsert(Ptv_t *tab, Ptvaddr_t min, Ptvaddr_t max)
 
     tab->entries++;
     fvset(tab->size, tab->r[2], 1);
-    if (fvcmp(tab->size, min, tab->r[2]) >= 0)
-    {
+    if (fvcmp(tab->size, min, tab->r[2]) >= 0) {
         fvsub(tab->size, tab->r[3], min, tab->r[2]);
         key.min = key.max = tab->r[3];
-    }
-    else
+    } else
         key.min = key.max = min;
     if (!(xp = ( Ptvprefix_t * )dtsearch(tab->dict, &key)))
         xp = ( Ptvprefix_t * )dtnext(tab->dict, &key);
     key.min = min;
     key.max = max;
     pp = 0;
-    if (xp)
-    {
+    if (xp) {
         if (fvcmp(tab->size, key.min, xp->min) >= 0
             && fvcmp(tab->size, key.max, xp->max) <= 0)
             return xp;
@@ -162,12 +156,10 @@ ptvinsert(Ptv_t *tab, Ptvaddr_t min, Ptvaddr_t max)
             fvsub(tab->size, tab->r[3], xp->min, tab->r[2]);
         else
             fvset(tab->size, tab->r[3], 0);
-        if (fvcmp(tab->size, key.max, tab->r[3]) >= 0)
-        {
+        if (fvcmp(tab->size, key.max, tab->r[3]) >= 0) {
             if (fvcmp(tab->size, key.min, xp->min) > 0)
                 key.min = xp->min;
-            do
-            {
+            do {
                 max = xp->max;
                 pp = xp;
                 xp = ( Ptvprefix_t * )dtnext(tab->dict, xp);
@@ -198,23 +190,19 @@ ptvdelete(Ptv_t *tab, Ptvaddr_t min, Ptvaddr_t max)
     tab->entries++;
     key.min = min;
     key.max = max;
-    if (xp = ( Ptvprefix_t * )dtsearch(tab->dict, &key))
-    {
+    if (xp = ( Ptvprefix_t * )dtsearch(tab->dict, &key)) {
         fvset(tab->size, tab->r[1], 1);
-        do
-        {
+        do {
             cur.min = xp->min;
             cur.max = xp->max;
             dtdelete(tab->dict, xp);
-            if (fvcmp(tab->size, key.min, cur.min) > 0)
-            {
+            if (fvcmp(tab->size, key.min, cur.min) > 0) {
                 max = cur.max;
                 fvsub(tab->size, tab->r[0], key.min, tab->r[1]);
                 cur.max = tab->r[0];
                 if (!dtinsert(tab->dict, &cur))
                     goto bad;
-                if (fvcmp(tab->size, key.max, max) < 0)
-                {
+                if (fvcmp(tab->size, key.max, max) < 0) {
                     fvadd(tab->size, tab->r[2], key.max, tab->r[1]);
                     cur.min = tab->r[2];
                     cur.max = max;
@@ -222,9 +210,7 @@ ptvdelete(Ptv_t *tab, Ptvaddr_t min, Ptvaddr_t max)
                         goto bad;
                     break;
                 }
-            }
-            else if (fvcmp(tab->size, key.max, xp->max) < 0)
-            {
+            } else if (fvcmp(tab->size, key.max, xp->max) < 0) {
                 fvadd(tab->size, tab->r[3], key.max, tab->r[1]);
                 xp->min = tab->r[3];
                 if (!dtinsert(tab->dict, xp))

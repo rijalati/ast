@@ -262,8 +262,7 @@ int base;
 #if S2I_multiplier
     base = basep ? *(( unsigned char * )basep) : 0;
 #else
-    if (base > 36 && base <= SF_RADIX)
-    {
+    if (base > 36 && base <= SF_RADIX) {
         static int conformance = -1;
 
         if (conformance < 0)
@@ -273,8 +272,7 @@ int base;
             base = 1;
     }
 #endif
-    if (base && (base < 2 || base > SF_RADIX))
-    {
+    if (base && (base < 2 || base > SF_RADIX)) {
         errno = EINVAL;
         return 0;
     }
@@ -285,35 +283,25 @@ int base;
     else
         k = 0;
     p = s;
-    if (!base)
-    {
-        if (S2I_valid(p) && (c = *p++) >= '0' && c <= '9')
-        {
+    if (!base) {
+        if (S2I_valid(p) && (c = *p++) >= '0' && c <= '9') {
             n = c - '0';
-            if (S2I_valid(p) && (c = *p) >= '0' && c <= '9')
-            {
+            if (S2I_valid(p) && (c = *p) >= '0' && c <= '9') {
                 n = (n << 3) + (n << 1) + c - '0';
                 p++;
             }
-            if (S2I_valid(p) && *p == '#')
-            {
-                if (n >= 2 && n <= 64)
-                {
+            if (S2I_valid(p) && *p == '#') {
+                if (n >= 2 && n <= 64) {
                     k = s = p + 1;
                     base = n;
                 }
-            }
-            else if (base)
+            } else if (base)
                 base = 0;
-            else if (S2I_valid(s) && *s == '0' && S2I_valid(s + 1))
-            {
-                if ((c = *(s + 1)) == 'x' || c == 'X')
-                {
+            else if (S2I_valid(s) && *s == '0' && S2I_valid(s + 1)) {
+                if ((c = *(s + 1)) == 'x' || c == 'X') {
                     k = s += 2;
                     base = 16;
-                }
-                else if (c >= '0' && c <= '7')
-                {
+                } else if (c >= '0' && c <= '7') {
                     s++;
                     base = 8;
                 }
@@ -321,14 +309,12 @@ int base;
         }
         if (!base)
             base = 10;
-        else if (base < 2 || base > SF_RADIX)
-        {
+        else if (base < 2 || base > SF_RADIX) {
             errno = EINVAL;
             return 0;
         }
 #if S2I_multiplier
-        else
-        {
+        else {
             if (basep)
                 *basep = base;
             m = -1;
@@ -347,40 +333,31 @@ int base;
     SFSETLOCALE(&decimal, &thousand);
     x = mm[base];
     n = 0;
-    if (base == 10)
-    {
+    if (base == 10) {
         b = s;
         p = 0;
-        for (;;)
-        {
-            if (S2I_valid(s) && (c = *s++) >= '0' && c <= '9')
-            {
+        for (;;) {
+            if (S2I_valid(s) && (c = *s++) >= '0' && c <= '9') {
                 if (n > x)
                     overflow = 1;
-                else
-                {
+                else {
                     n = (n << 3) + (n << 1);
                     c -= '0';
                     if (ADDOVER(n, c, negative))
                         overflow = 1;
                     n += c;
                 }
-            }
-            else if (p && (s - p) != (3 + S2I_valid(s)))
-            {
+            } else if (p && (s - p) != (3 + S2I_valid(s))) {
                 s = p;
                 n = v;
                 c = 0;
                 break;
-            }
-            else if (!S2I_valid(s) || c != thousand)
+            } else if (!S2I_valid(s) || c != thousand)
                 break;
-            else if (!p && (s - b) > 4)
-            {
+            else if (!p && (s - b) > 4) {
                 if (e)
                     *e = ( char * )s - 1;
-                if (overflow)
-                {
+                if (overflow) {
                     errno = ERANGE;
 #if S2I_unsigned
                     n = S2I_max;
@@ -389,20 +366,15 @@ int base;
 #endif
                 }
                 return n;
-            }
-            else
-            {
+            } else {
                 p = s;
                 v = n;
             }
         }
-    }
-    else
-    {
+    } else {
         SFCVINIT();
         cv = base <= 36 ? _Sfcv36 : _Sfcv64;
-        if ((base & ~(base - 1)) == base)
-        {
+        if ((base & ~(base - 1)) == base) {
 #if !S2I_unsigned
             qualifier |= QU;
 #endif
@@ -412,26 +384,21 @@ int base;
                 shift = base < 16 ? 3 : 4;
             else
                 shift = base < 64 ? 5 : 6;
-            while (S2I_valid(s) && (c = cv[*s++]) < base)
-            {
+            while (S2I_valid(s) && (c = cv[*s++]) < base) {
                 if (n > x)
                     overflow = 1;
-                else
-                {
+                else {
                     n <<= shift;
                     if (ADDOVER(n, c, negative))
                         overflow = 1;
                     n += c;
                 }
             }
-        }
-        else
-            while (S2I_valid(s) && (c = cv[*s++]) < base)
-            {
+        } else
+            while (S2I_valid(s) && (c = cv[*s++]) < base) {
                 if (n > x)
                     overflow = 1;
-                else
-                {
+                else {
                     n *= base;
                     if (ADDOVER(n, c, negative))
                         overflow = 1;
@@ -447,26 +414,20 @@ int base;
      * optional qualifier suffix
      */
 
-    if (S2I_valid(s) && s > ( unsigned char * )(a + 1))
-    {
+    if (S2I_valid(s) && s > ( unsigned char * )(a + 1)) {
         base = 0;
-        for (;;)
-        {
-            if (!(base & QL) && (c == 'l' || c == 'L'))
-            {
+        for (;;) {
+            if (!(base & QL) && (c == 'l' || c == 'L')) {
                 base |= QL;
                 if (!S2I_valid(s))
                     break;
                 c = *s++;
-                if (c == 'l' || c == 'L')
-                {
+                if (c == 'l' || c == 'L') {
                     if (!S2I_valid(s))
                         break;
                     c = *s++;
                 }
-            }
-            else if (!(base & QU) && (c == 'u' || c == 'U'))
-            {
+            } else if (!(base & QU) && (c == 'u' || c == 'U')) {
                 base |= QU;
 #    if !S2I_unsigned
                 qualifier |= QU;
@@ -474,14 +435,12 @@ int base;
                 if (!S2I_valid(s))
                     break;
                 c = *s++;
-            }
-            else
+            } else
                 break;
         }
     }
 #endif
-    if (S2I_valid(s))
-    {
+    if (S2I_valid(s)) {
 #if S2I_multiplier
         /*
          * optional multiplier suffix
@@ -489,11 +448,9 @@ int base;
 
         if (m < 0 || s == ( unsigned char * )(a + 1))
             s--;
-        else
-        {
+        else {
             x = m != 1;
-            switch (c)
-            {
+            switch (c) {
             case 'b':
             case 'B':
                 shift = 9;
@@ -526,8 +483,7 @@ int base;
             default:
                 if (m <= 1)
                     v = 0;
-                else if (c == decimal && S2I_valid(s))
-                {
+                else if (c == decimal && S2I_valid(s)) {
                     if (MPYOVER(n, m))
                         overflow = 1;
                     n *= m;
@@ -538,18 +494,15 @@ int base;
                         overflow = 1;
                     n += v;
                     v = 0;
-                }
-                else
+                } else
                     v = m;
                 s--;
                 shift = 0;
                 break;
             }
-            if (shift)
-            {
+            if (shift) {
                 if (S2I_valid(s))
-                    switch (*s)
-                    {
+                    switch (*s) {
                     case 'i':
                     case 'I':
                         s++;
@@ -557,27 +510,22 @@ int base;
                         break;
                     }
                 if (S2I_valid(s))
-                    switch (*s)
-                    {
+                    switch (*s) {
                     case 'b':
                     case 'B':
                         s++;
                         break;
                     }
-                if (x)
-                {
+                if (x) {
                     v = 1;
-                    for (shift /= 10; shift; shift--)
-                    {
-                        if (v >= (S2I_max / 1000))
-                        {
+                    for (shift /= 10; shift; shift--) {
+                        if (v >= (S2I_max / 1000)) {
                             v = 0;
                             overflow = 1;
                         }
                         v *= 1000;
                     }
-                }
-                else
+                } else
 #    if S2I_unsigned
                 if (shift >= (sizeof(S2I_type) * CHAR_BIT))
 #    else
@@ -586,12 +534,10 @@ int base;
                 {
                     v = 0;
                     overflow = 1;
-                }
-                else
+                } else
                     v = (( S2I_unumber )1) << shift;
             }
-            if (v)
-            {
+            if (v) {
                 if (MPYOVER(n, v))
                     overflow = 1;
                 n *= v;
@@ -601,8 +547,7 @@ int base;
         s--;
 #endif
     }
-    if (s == k)
-    {
+    if (s == k) {
         s--;
 #if S2I_multiplier
         if (basep)
@@ -610,17 +555,12 @@ int base;
 #endif
     }
 #if !S2I_unsigned
-    else if (!(qualifier & QU))
-    {
-        if (negative)
-        {
-            if (!n)
-            {
+    else if (!(qualifier & QU)) {
+        if (negative) {
+            if (!n) {
                 b = k;
-                do
-                {
-                    if (b >= s)
-                    {
+                do {
+                    if (b >= s) {
                         negative = 0;
                         break;
                     }
@@ -628,18 +568,15 @@ int base;
             }
             if (negative && (n - 1) > S2I_max)
                 overflow = 1;
-        }
-        else if (n > S2I_max)
+        } else if (n > S2I_max)
             overflow = 1;
     }
 #endif
     if (e)
         *e = ( char * )s;
-    if (overflow)
-    {
+    if (overflow) {
 #if !S2I_unsigned
-        if (negative)
-        {
+        if (negative) {
             if (x << 1)
                 errno = ERANGE;
             return ( S2I_type )S2I_min;

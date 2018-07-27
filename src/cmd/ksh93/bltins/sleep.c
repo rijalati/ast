@@ -56,8 +56,7 @@ b_sleep(int argc, char *argv[], Shbltin_t *context)
     if (!(shp->sigflag[SIGALRM] & (SH_SIGFAULT | SH_SIGOFF)))
         sh_sigtrap(shp, SIGALRM);
     while ((argc = optget(argv, sh_optsleep)))
-        switch (argc)
-        {
+        switch (argc) {
         case 's':
             sflag = 1;
             break;
@@ -69,31 +68,25 @@ b_sleep(int argc, char *argv[], Shbltin_t *context)
             break;
         }
     argv += opt_info.index;
-    if (cp = *argv)
-    {
+    if (cp = *argv) {
         d = strtod(cp, &last);
-        if (*last)
-        {
+        if (*last) {
             Time_t now, ns;
             char *pp;
             now = TMX_NOW;
             if (*cp == 'P' || *cp == 'p')
                 ns = tmxdate(cp, &last, now);
-            else if (*last == '.' && shp->decomma && d == ( unsigned long )d)
-            {
+            else if (*last == '.' && shp->decomma
+                     && d == ( unsigned long )d) {
                 *(pp = last) = ',';
                 if (!strchr(cp, '.'))
                     d = strtod(cp, &last);
                 *pp = '.';
                 if (*last == 0)
                     goto skip;
-            }
-            else if (*last != '.' && *last != ',')
-            {
-                if (*last && last > cp && last[1] == 0)
-                {
-                    switch (*last)
-                    {
+            } else if (*last != '.' && *last != ',') {
+                if (*last && last > cp && last[1] == 0) {
+                    switch (*last) {
                     case 'd':
                         d *= 24;
                     case 'h':
@@ -103,9 +96,7 @@ b_sleep(int argc, char *argv[], Shbltin_t *context)
                     case 's':
                         goto skip;
                     }
-                }
-                else
-                {
+                } else {
                     if (pp = sfprints("exact %s", cp))
                         ns = tmxdate(pp, &last, now);
                     if (*last && (pp = sfprints("p%s", cp)))
@@ -120,19 +111,16 @@ b_sleep(int argc, char *argv[], Shbltin_t *context)
     skip:
         if (argv[1])
             errormsg(SH_DICT, ERROR_exit(1), e_oneoperand);
-    }
-    else if (!sflag)
+    } else if (!sflag)
         errormsg(SH_DICT, ERROR_exit(1), e_oneoperand);
-    if (d > .10)
-    {
+    if (d > .10) {
         time(&tloc);
         tloc += (time_t)(d + .5);
     }
     if (sflag && d == 0)
         pause();
     else
-        while (1)
-        {
+        while (1) {
             time_t now;
             errno = 0;
             shp->lastsig = 0;
@@ -168,8 +156,7 @@ sh_delay(double t)
     Tv_t ts, tx;
     ts.tv_sec = n;
     ts.tv_nsec = 1000000000 * (t - ( double )n);
-    while (tvsleep(&ts, &tx) < 0 && errno == EINTR)
-    {
+    while (tvsleep(&ts, &tx) < 0 && errno == EINTR) {
         if (shp->trapnote & (SH_SIGSET | SH_SIGTRAP))
             return;
         ts = tx;

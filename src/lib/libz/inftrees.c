@@ -133,8 +133,7 @@ unsigned short FAR *work;
             break;
     if (root > max)
         root = max;
-    if (max == 0)
-    {                                  /* no symbols to code at all */
+    if (max == 0) {                    /* no symbols to code at all */
         this.op = ( unsigned char )64; /* invalid code marker */
         this.bits = ( unsigned char )1;
         this.val = ( unsigned short )0;
@@ -151,8 +150,7 @@ unsigned short FAR *work;
 
     /* check for an over-subscribed or incomplete set of lengths */
     left = 1;
-    for (len = 1; len <= MAXBITS; len++)
-    {
+    for (len = 1; len <= MAXBITS; len++) {
         left <<= 1;
         left -= count[len];
         if (left < 0)
@@ -204,8 +202,7 @@ unsigned short FAR *work;
      */
 
     /* set up for code type */
-    switch (type)
-    {
+    switch (type) {
     case CODES:
         base = extra = work; /* dummy value--not used */
         end = 19;
@@ -239,22 +236,16 @@ unsigned short FAR *work;
         return 1;
 
     /* process all codes and make table entries */
-    for (;;)
-    {
+    for (;;) {
         /* create table entry */
         this.bits = ( unsigned char )(len - drop);
-        if (( int )(work[sym]) < end)
-        {
+        if (( int )(work[sym]) < end) {
             this.op = ( unsigned char )0;
             this.val = work[sym];
-        }
-        else if (( int )(work[sym]) > end)
-        {
+        } else if (( int )(work[sym]) > end) {
             this.op = ( unsigned char )(extra[work[sym]]);
             this.val = base[work[sym]];
-        }
-        else
-        {
+        } else {
             this.op = ( unsigned char )(32 + 64); /* end of block */
             this.val = 0;
         }
@@ -263,8 +254,7 @@ unsigned short FAR *work;
         incr = 1U << (len - drop);
         fill = 1U << curr;
         min = fill; /* save offset to next table */
-        do
-        {
+        do {
             fill -= incr;
             next[(huff >> drop) + fill] = this;
         } while (fill != 0);
@@ -273,26 +263,22 @@ unsigned short FAR *work;
         incr = 1U << (len - 1);
         while (huff & incr)
             incr >>= 1;
-        if (incr != 0)
-        {
+        if (incr != 0) {
             huff &= incr - 1;
             huff += incr;
-        }
-        else
+        } else
             huff = 0;
 
         /* go to next symbol, update count, len */
         sym++;
-        if (--(count[len]) == 0)
-        {
+        if (--(count[len]) == 0) {
             if (len == max)
                 break;
             len = lens[work[sym]];
         }
 
         /* create new sub-table if needed */
-        if (len > root && (huff & mask) != low)
-        {
+        if (len > root && (huff & mask) != low) {
             /* if first time, transition to sub-tables */
             if (drop == 0)
                 drop = root;
@@ -303,8 +289,7 @@ unsigned short FAR *work;
             /* determine length of next table */
             curr = len - drop;
             left = ( int )(1 << curr);
-            while (curr + drop < max)
-            {
+            while (curr + drop < max) {
                 left -= count[curr + drop];
                 if (left <= 0)
                     break;
@@ -336,11 +321,9 @@ unsigned short FAR *work;
     this.op = ( unsigned char )64; /* invalid code marker */
     this.bits = ( unsigned char )(len - drop);
     this.val = ( unsigned short )0;
-    while (huff != 0)
-    {
+    while (huff != 0) {
         /* when done with sub-table, drop back to root table */
-        if (drop != 0 && (huff & mask) != low)
-        {
+        if (drop != 0 && (huff & mask) != low) {
             drop = 0;
             len = root;
             next = *table;
@@ -354,12 +337,10 @@ unsigned short FAR *work;
         incr = 1U << (len - 1);
         while (huff & incr)
             incr >>= 1;
-        if (incr != 0)
-        {
+        if (incr != 0) {
             huff &= incr - 1;
             huff += incr;
-        }
-        else
+        } else
             huff = 0;
     }
 

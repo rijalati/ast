@@ -65,10 +65,8 @@ fmtfmt(const char *as)
 
     z = 1;
     i = m = 0;
-    for (;;)
-    {
-        switch (*s++)
-        {
+    for (;;) {
+        switch (*s++) {
         case 0:
             break;
         case '%':
@@ -79,10 +77,8 @@ fmtfmt(const char *as)
             q = 0;
             t = '?';
             x = 0;
-            for (;;)
-            {
-                switch (c = *s++)
-                {
+            for (;;) {
+                switch (c = *s++) {
                 case 0:
                     s--;
                     break;
@@ -130,18 +126,15 @@ fmtfmt(const char *as)
                 case 'c':
                 case 'p':
                 case 's':
-                    if (!q)
-                    {
+                    if (!q) {
                         t = c;
                         break;
                     }
                     continue;
                 case 'e':
                 case 'g':
-                    if (!q)
-                    {
-                        switch (t)
-                        {
+                    if (!q) {
+                        switch (t) {
                         case 'j':
                             t = 'D';
                             break;
@@ -153,10 +146,8 @@ fmtfmt(const char *as)
                     }
                     continue;
                 case 'f':
-                    if (!q)
-                    {
-                        switch (t)
-                        {
+                    if (!q) {
+                        switch (t) {
                         case 'j':
                             t = 'D';
                             break;
@@ -171,8 +162,7 @@ fmtfmt(const char *as)
                     }
                     continue;
                 default:
-                    if (!q && isalpha(c))
-                    {
+                    if (!q && isalpha(c)) {
                         if (t == '?')
                             t = 'i';
                         break;
@@ -186,8 +176,7 @@ fmtfmt(const char *as)
                 i = a;
             else
                 i++;
-            if (i < elementsof(formats))
-            {
+            if (i < elementsof(formats)) {
                 formats[i] = t;
                 if (extra[i] = x)
                     do
@@ -203,8 +192,7 @@ fmtfmt(const char *as)
         break;
     }
     s = buf = fmtbuf(m + z);
-    for (i = 1; i <= m; i++)
-    {
+    for (i = 1; i <= m; i++) {
         if (extra[i])
             s += sfsprintf(s, 10, "%d", extra[m]);
         *s++ = formats[i];

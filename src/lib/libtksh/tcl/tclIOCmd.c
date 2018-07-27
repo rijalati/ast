@@ -77,13 +77,11 @@ char **argv;           /* Argument strings. */
 
     i = 1;
     newline = 1;
-    if ((argc >= 2) && (strcmp(argv[1], "-nonewline") == 0))
-    {
+    if ((argc >= 2) && (strcmp(argv[1], "-nonewline") == 0)) {
         newline = 0;
         i++;
     }
-    if ((i < (argc - 3)) || (i >= argc))
-    {
+    if ((i < (argc - 3)) || (i >= argc)) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -97,10 +95,8 @@ char **argv;           /* Argument strings. */
      * form of the command that is no longer recommended or documented.
      */
 
-    if (i == (argc - 3))
-    {
-        if (strncmp(argv[i + 2], "nonewline", strlen(argv[i + 2])) != 0)
-        {
+    if (i == (argc - 3)) {
+        if (strncmp(argv[i + 2], "nonewline", strlen(argv[i + 2])) != 0) {
             Tcl_AppendResult(interp,
                              "bad argument \"",
                              argv[i + 2],
@@ -110,22 +106,17 @@ char **argv;           /* Argument strings. */
         }
         newline = 0;
     }
-    if (i == (argc - 1))
-    {
+    if (i == (argc - 1)) {
         channelId = "stdout";
-    }
-    else
-    {
+    } else {
         channelId = argv[i];
         i++;
     }
     chan = Tcl_GetChannel(interp, channelId, &mode);
-    if (chan == ( Tcl_Channel )NULL)
-    {
+    if (chan == ( Tcl_Channel )NULL) {
         return TCL_ERROR;
     }
-    if ((mode & TCL_WRITABLE) == 0)
-    {
+    if ((mode & TCL_WRITABLE) == 0) {
         Tcl_AppendResult(interp,
                          "channel \"",
                          channelId,
@@ -135,15 +126,12 @@ char **argv;           /* Argument strings. */
     }
 
     result = Tcl_Write(chan, argv[i], -1);
-    if (result < 0)
-    {
+    if (result < 0) {
         goto error;
     }
-    if (newline != 0)
-    {
+    if (newline != 0) {
         result = Tcl_Write(chan, "\n", 1);
-        if (result < 0)
-        {
+        if (result < 0) {
             goto error;
         }
     }
@@ -187,8 +175,7 @@ char **argv;           /* Argument strings. */
                        * level function. */
     int mode;         /* Mode in which channel is opened. */
 
-    if (argc != 2)
-    {
+    if (argc != 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -197,12 +184,10 @@ char **argv;           /* Argument strings. */
         return TCL_ERROR;
     }
     chan = Tcl_GetChannel(interp, argv[1], &mode);
-    if (chan == ( Tcl_Channel )NULL)
-    {
+    if (chan == ( Tcl_Channel )NULL) {
         return TCL_ERROR;
     }
-    if ((mode & TCL_WRITABLE) == 0)
-    {
+    if ((mode & TCL_WRITABLE) == 0) {
         Tcl_AppendResult(interp,
                          "channel \"",
                          argv[1],
@@ -212,8 +197,7 @@ char **argv;           /* Argument strings. */
     }
 
     result = Tcl_Flush(chan);
-    if (result != TCL_OK)
-    {
+    if (result != TCL_OK) {
         Tcl_AppendResult(interp,
                          "error flushing \"",
                          Tcl_GetChannelName(chan),
@@ -258,8 +242,7 @@ char **argv;           /* Argument strings. */
     int lineLen;      /* Length of line just read. */
     int mode;         /* Mode in which channel is opened. */
 
-    if ((argc != 2) && (argc != 3))
-    {
+    if ((argc != 2) && (argc != 3)) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -268,12 +251,10 @@ char **argv;           /* Argument strings. */
         return TCL_ERROR;
     }
     chan = Tcl_GetChannel(interp, argv[1], &mode);
-    if (chan == ( Tcl_Channel )NULL)
-    {
+    if (chan == ( Tcl_Channel )NULL) {
         return TCL_ERROR;
     }
-    if ((mode & TCL_READABLE) == 0)
-    {
+    if ((mode & TCL_READABLE) == 0) {
         Tcl_AppendResult(interp,
                          "channel \"",
                          argv[1],
@@ -282,20 +263,15 @@ char **argv;           /* Argument strings. */
         return TCL_ERROR;
     }
 
-    if (argc != 3)
-    {
+    if (argc != 3) {
         varName = ( char * )NULL;
-    }
-    else
-    {
+    } else {
         varName = argv[2];
     }
     Tcl_DStringInit(&ds);
     lineLen = Tcl_Gets(chan, &ds);
-    if (lineLen < 0)
-    {
-        if (!Tcl_Eof(chan) && !Tcl_InputBlocked(chan))
-        {
+    if (lineLen < 0) {
+        if (!Tcl_Eof(chan) && !Tcl_InputBlocked(chan)) {
             Tcl_DStringFree(&ds);
             Tcl_AppendResult(interp,
                              "error reading \"",
@@ -307,16 +283,12 @@ char **argv;           /* Argument strings. */
         }
         lineLen = -1;
     }
-    if (varName == ( char * )NULL)
-    {
+    if (varName == ( char * )NULL) {
         Tcl_DStringResult(interp, &ds);
-    }
-    else
-    {
+    } else {
         if (Tcl_SetVar(
             interp, varName, Tcl_DStringValue(&ds), TCL_LEAVE_ERR_MSG)
-            == NULL)
-        {
+            == NULL) {
             Tcl_DStringFree(&ds);
             return TCL_ERROR;
         }
@@ -368,8 +340,7 @@ char **argv;           /* Argument strings. */
                             * in what chunk sizes to read from
                             * the channel. */
 
-    if ((argc != 2) && (argc != 3))
-    {
+    if ((argc != 2) && (argc != 3)) {
     argerror:
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
@@ -382,24 +353,20 @@ char **argv;           /* Argument strings. */
     }
     i = 1;
     newline = 0;
-    if (strcmp(argv[i], "-nonewline") == 0)
-    {
+    if (strcmp(argv[i], "-nonewline") == 0) {
         newline = 1;
         i++;
     }
 
-    if (i == argc)
-    {
+    if (i == argc) {
         goto argerror;
     }
 
     chan = Tcl_GetChannel(interp, argv[i], &mode);
-    if (chan == ( Tcl_Channel )NULL)
-    {
+    if (chan == ( Tcl_Channel )NULL) {
         return TCL_ERROR;
     }
-    if ((mode & TCL_READABLE) == 0)
-    {
+    if ((mode & TCL_READABLE) == 0) {
         Tcl_AppendResult(interp,
                          "channel \"",
                          argv[i],
@@ -416,21 +383,14 @@ char **argv;           /* Argument strings. */
      */
 
     toRead = INT_MAX;
-    if (i < argc)
-    {
-        if (isdigit(( unsigned char )(argv[i][0])))
-        {
-            if (Tcl_GetInt(interp, argv[i], &toRead) != TCL_OK)
-            {
+    if (i < argc) {
+        if (isdigit(( unsigned char )(argv[i][0]))) {
+            if (Tcl_GetInt(interp, argv[i], &toRead) != TCL_OK) {
                 return TCL_ERROR;
             }
-        }
-        else if (strcmp(argv[i], "nonewline") == 0)
-        {
+        } else if (strcmp(argv[i], "nonewline") == 0) {
             newline = 1;
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp,
                              "bad argument \"",
                              argv[i],
@@ -442,18 +402,15 @@ char **argv;           /* Argument strings. */
 
     bufSize = Tcl_GetChannelBufferSize(chan);
     Tcl_DStringInit(&ds);
-    for (charactersRead = 0; charactersRead < toRead;)
-    {
+    for (charactersRead = 0; charactersRead < toRead;) {
         toReadNow = toRead - charactersRead;
-        if (toReadNow > bufSize)
-        {
+        if (toReadNow > bufSize) {
             toReadNow = bufSize;
         }
         Tcl_DStringSetLength(&ds, charactersRead + toReadNow);
         charactersReadNow
         = Tcl_Read(chan, Tcl_DStringValue(&ds) + charactersRead, toReadNow);
-        if (charactersReadNow < 0)
-        {
+        if (charactersReadNow < 0) {
             Tcl_DStringFree(&ds);
             Tcl_AppendResult(interp,
                              "error reading \"",
@@ -470,8 +427,7 @@ char **argv;           /* Argument strings. */
          */
 
         charactersRead += charactersReadNow;
-        if (charactersReadNow < toReadNow)
-        {
+        if (charactersReadNow < toReadNow) {
             break; /* Out of "for" loop. */
         }
     }
@@ -490,8 +446,7 @@ char **argv;           /* Argument strings. */
      */
 
     if ((charactersRead > 0) && (newline)
-        && (interp->result[charactersRead - 1] == '\n'))
-    {
+        && (interp->result[charactersRead - 1] == '\n')) {
         interp->result[charactersRead - 1] = '\0';
     }
     return TCL_OK;
@@ -532,8 +487,7 @@ char **argv;           /* The argument strings. */
 
     requested = INT_MAX;
 
-    if ((argc < 3) || (argc > 4))
-    {
+    if ((argc < 3) || (argc > 4)) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -542,12 +496,10 @@ char **argv;           /* The argument strings. */
         return TCL_ERROR;
     }
     inChan = Tcl_GetChannel(interp, argv[1], &mode);
-    if (inChan == ( Tcl_Channel )NULL)
-    {
+    if (inChan == ( Tcl_Channel )NULL) {
         return TCL_ERROR;
     }
-    if ((mode & TCL_READABLE) == 0)
-    {
+    if ((mode & TCL_READABLE) == 0) {
         Tcl_AppendResult(interp,
                          "channel \"",
                          argv[1],
@@ -556,12 +508,10 @@ char **argv;           /* The argument strings. */
         return TCL_ERROR;
     }
     outChan = Tcl_GetChannel(interp, argv[2], &mode);
-    if (outChan == ( Tcl_Channel )NULL)
-    {
+    if (outChan == ( Tcl_Channel )NULL) {
         return TCL_ERROR;
     }
-    if ((mode & TCL_WRITABLE) == 0)
-    {
+    if ((mode & TCL_WRITABLE) == 0) {
         Tcl_AppendResult(interp,
                          "channel \"",
                          argv[2],
@@ -570,30 +520,24 @@ char **argv;           /* The argument strings. */
         return TCL_ERROR;
     }
 
-    if (argc == 4)
-    {
-        if (Tcl_GetInt(interp, argv[3], &requested) != TCL_OK)
-        {
+    if (argc == 4) {
+        if (Tcl_GetInt(interp, argv[3], &requested) != TCL_OK) {
             return TCL_ERROR;
         }
-        if (requested < 0)
-        {
+        if (requested < 0) {
             requested = INT_MAX;
         }
     }
 
     bufPtr = ckalloc(( unsigned )TCL_READ_CHUNK_SIZE);
     for (totalRead = 0; requested > 0;
-         totalRead += actuallyRead, requested -= actuallyRead)
-    {
+         totalRead += actuallyRead, requested -= actuallyRead) {
         toReadNow = requested;
-        if (toReadNow > TCL_READ_CHUNK_SIZE)
-        {
+        if (toReadNow > TCL_READ_CHUNK_SIZE) {
             toReadNow = TCL_READ_CHUNK_SIZE;
         }
         actuallyRead = Tcl_Read(inChan, bufPtr, toReadNow);
-        if (actuallyRead < 0)
-        {
+        if (actuallyRead < 0) {
             ckfree(bufPtr);
             Tcl_AppendResult(interp,
                              argv[0],
@@ -603,15 +547,13 @@ char **argv;           /* The argument strings. */
                              ( char * )NULL);
             return TCL_ERROR;
         }
-        if (actuallyRead == 0)
-        {
+        if (actuallyRead == 0) {
             ckfree(bufPtr);
             sprintf(interp->result, "%d", totalRead);
             return TCL_OK;
         }
         actuallyWritten = Tcl_Write(outChan, bufPtr, actuallyRead);
-        if (actuallyWritten < 0)
-        {
+        if (actuallyWritten < 0) {
             ckfree(bufPtr);
             Tcl_AppendResult(interp,
                              argv[0],
@@ -657,8 +599,7 @@ char **argv;           /* Argument strings. */
     int offset, mode; /* Where to seek? */
     int result;       /* Of calling Tcl_Seek. */
 
-    if ((argc != 3) && (argc != 4))
-    {
+    if ((argc != 3) && (argc != 4)) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -667,36 +608,26 @@ char **argv;           /* Argument strings. */
         return TCL_ERROR;
     }
     chan = Tcl_GetChannel(interp, argv[1], NULL);
-    if (chan == ( Tcl_Channel )NULL)
-    {
+    if (chan == ( Tcl_Channel )NULL) {
         return TCL_ERROR;
     }
-    if (Tcl_GetInt(interp, argv[2], &offset) != TCL_OK)
-    {
+    if (Tcl_GetInt(interp, argv[2], &offset) != TCL_OK) {
         return TCL_ERROR;
     }
     mode = SEEK_SET;
-    if (argc == 4)
-    {
+    if (argc == 4) {
         size_t length;
         int c;
 
         length = strlen(argv[3]);
         c = argv[3][0];
-        if ((c == 's') && (strncmp(argv[3], "start", length) == 0))
-        {
+        if ((c == 's') && (strncmp(argv[3], "start", length) == 0)) {
             mode = SEEK_SET;
-        }
-        else if ((c == 'c') && (strncmp(argv[3], "current", length) == 0))
-        {
+        } else if ((c == 'c') && (strncmp(argv[3], "current", length) == 0)) {
             mode = SEEK_CUR;
-        }
-        else if ((c == 'e') && (strncmp(argv[3], "end", length) == 0))
-        {
+        } else if ((c == 'e') && (strncmp(argv[3], "end", length) == 0)) {
             mode = SEEK_END;
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp,
                              "bad origin \"",
                              argv[3],
@@ -707,8 +638,7 @@ char **argv;           /* Argument strings. */
     }
 
     result = Tcl_Seek(chan, offset, mode);
-    if (result == -1)
-    {
+    if (result == -1) {
         Tcl_AppendResult(interp,
                          "error during seek on \"",
                          Tcl_GetChannelName(chan),
@@ -746,8 +676,7 @@ char **argv;           /* Argument strings. */
 {
     Tcl_Channel chan; /* The channel to tell on. */
 
-    if (argc != 2)
-    {
+    if (argc != 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -761,8 +690,7 @@ char **argv;           /* Argument strings. */
      */
 
     chan = Tcl_GetChannel(interp, argv[1], NULL);
-    if (chan == ( Tcl_Channel )NULL)
-    {
+    if (chan == ( Tcl_Channel )NULL) {
         return TCL_ERROR;
     }
     sprintf(interp->result, "%d", Tcl_Tell(chan));
@@ -797,8 +725,7 @@ char **argv;           /* Argument strings. */
     Tcl_Channel chan; /* The channel to close. */
     int len;          /* Length of error output. */
 
-    if (argc != 2)
-    {
+    if (argc != 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -807,12 +734,10 @@ char **argv;           /* Argument strings. */
         return TCL_ERROR;
     }
     chan = Tcl_GetChannel(interp, argv[1], NULL);
-    if (chan == ( Tcl_Channel )NULL)
-    {
+    if (chan == ( Tcl_Channel )NULL) {
         return TCL_ERROR;
     }
-    if (Tcl_UnregisterChannel(interp, chan) != TCL_OK)
-    {
+    if (Tcl_UnregisterChannel(interp, chan) != TCL_OK) {
 
         /*
          * If there is an error message and it ends with a newline, remove
@@ -826,8 +751,7 @@ char **argv;           /* Argument strings. */
          */
 
         len = strlen(interp->result);
-        if ((len > 0) && (interp->result[len - 1] == '\n'))
-        {
+        if ((len > 0) && (interp->result[len - 1] == '\n')) {
             interp->result[len - 1] = '\0';
         }
 
@@ -866,8 +790,7 @@ char **argv;           /* Argument strings. */
     Tcl_DString ds;   /* DString to hold result of
                        * calling Tcl_GetChannelOption. */
 
-    if ((argc < 2) || (((argc % 2) == 1) && (argc != 3)))
-    {
+    if ((argc < 2) || (((argc % 2) == 1) && (argc != 3))) {
         Tcl_AppendResult(
         interp,
         "wrong # args: should be \"",
@@ -877,15 +800,12 @@ char **argv;           /* Argument strings. */
         return TCL_ERROR;
     }
     chan = Tcl_GetChannel(interp, argv[1], NULL);
-    if (chan == ( Tcl_Channel )NULL)
-    {
+    if (chan == ( Tcl_Channel )NULL) {
         return TCL_ERROR;
     }
-    if (argc == 2)
-    {
+    if (argc == 2) {
         Tcl_DStringInit(&ds);
-        if (Tcl_GetChannelOption(chan, ( char * )NULL, &ds) != TCL_OK)
-        {
+        if (Tcl_GetChannelOption(chan, ( char * )NULL, &ds) != TCL_OK) {
             Tcl_AppendResult(
             interp, "option retrieval failed", ( char * )NULL);
             return TCL_ERROR;
@@ -894,11 +814,9 @@ char **argv;           /* Argument strings. */
         Tcl_DStringFree(&ds);
         return TCL_OK;
     }
-    if (argc == 3)
-    {
+    if (argc == 3) {
         Tcl_DStringInit(&ds);
-        if (Tcl_GetChannelOption(chan, argv[2], &ds) != TCL_OK)
-        {
+        if (Tcl_GetChannelOption(chan, argv[2], &ds) != TCL_OK) {
             Tcl_DStringFree(&ds);
             Tcl_AppendResult(
             interp,
@@ -914,11 +832,9 @@ char **argv;           /* Argument strings. */
         Tcl_DStringFree(&ds);
         return TCL_OK;
     }
-    for (i = 3; i < argc; i += 2)
-    {
+    for (i = 3; i < argc; i += 2) {
         result = Tcl_SetChannelOption(interp, chan, argv[i - 1], argv[i]);
-        if (result != TCL_OK)
-        {
+        if (result != TCL_OK) {
             return result;
         }
     }
@@ -952,8 +868,7 @@ char **argv;        /* Argument strings. */
     Tcl_Channel chan; /* The channel to query for EOF. */
     int mode;         /* Mode in which channel is opened. */
 
-    if (argc != 2)
-    {
+    if (argc != 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -962,8 +877,7 @@ char **argv;        /* Argument strings. */
         return TCL_ERROR;
     }
     chan = Tcl_GetChannel(interp, argv[1], &mode);
-    if (chan == ( Tcl_Channel )NULL)
-    {
+    if (chan == ( Tcl_Channel )NULL) {
         return TCL_ERROR;
     }
     sprintf(interp->result, "%d", Tcl_Eof(chan) ? 1 : 0);
@@ -1142,8 +1056,7 @@ char **argv;        /* Argument strings. */
     Tcl_Channel chan; /* The channel to query for blocked. */
     int mode;         /* Mode in which channel was opened. */
 
-    if (argc != 2)
-    {
+    if (argc != 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -1152,12 +1065,10 @@ char **argv;        /* Argument strings. */
         return TCL_ERROR;
     }
     chan = Tcl_GetChannel(interp, argv[1], &mode);
-    if (chan == ( Tcl_Channel )NULL)
-    {
+    if (chan == ( Tcl_Channel )NULL) {
         return TCL_ERROR;
     }
-    if ((mode & TCL_READABLE) == 0)
-    {
+    if ((mode & TCL_READABLE) == 0) {
         Tcl_AppendResult(interp,
                          "channel \"",
                          argv[1],
@@ -1198,8 +1109,7 @@ char **argv;        /* Argument strings. */
     char *modeString;
     Tcl_Channel chan;
 
-    if ((argc < 2) || (argc > 4))
-    {
+    if ((argc < 2) || (argc > 4)) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -1208,25 +1118,19 @@ char **argv;        /* Argument strings. */
         return TCL_ERROR;
     }
     prot = 0666;
-    if (argc == 2)
-    {
+    if (argc == 2) {
         modeString = "r";
-    }
-    else
-    {
+    } else {
         modeString = argv[2];
-        if (argc == 4)
-        {
-            if (Tcl_GetInt(interp, argv[3], &prot) != TCL_OK)
-            {
+        if (argc == 4) {
+            if (Tcl_GetInt(interp, argv[3], &prot) != TCL_OK) {
                 return TCL_ERROR;
             }
         }
     }
 
     pipeline = 0;
-    if (argv[1][0] == '|')
-    {
+    if (argv[1][0] == '|') {
         pipeline = 1;
     }
 
@@ -1234,31 +1138,23 @@ char **argv;        /* Argument strings. */
      * Open the file or create a process pipeline.
      */
 
-    if (!pipeline)
-    {
+    if (!pipeline) {
         chan = Tcl_OpenFileChannel(interp, argv[1], modeString, prot);
-    }
-    else
-    {
+    } else {
         int mode, seekFlag, cmdArgc;
         char **cmdArgv;
 
         if (Tcl_TclSplitList(interp, argv[1] + 1, &cmdArgc, &cmdArgv)
-            != TCL_OK)
-        {
+            != TCL_OK) {
             return TCL_ERROR;
         }
 
         mode = TclGetOpenMode(interp, modeString, &seekFlag);
-        if (mode == -1)
-        {
+        if (mode == -1) {
             chan = NULL;
-        }
-        else
-        {
+        } else {
             int flags = TCL_STDERR | TCL_ENFORCE_MODE;
-            switch (mode & (O_RDONLY | O_WRONLY | O_RDWR))
-            {
+            switch (mode & (O_RDONLY | O_WRONLY | O_RDWR)) {
             case O_RDONLY:
                 flags |= TCL_STDOUT;
                 break;
@@ -1276,8 +1172,7 @@ char **argv;        /* Argument strings. */
         }
         ckfree(( char * )cmdArgv);
     }
-    if (chan == ( Tcl_Channel )NULL)
-    {
+    if (chan == ( Tcl_Channel )NULL) {
         return TCL_ERROR;
     }
     Tcl_RegisterChannel(interp, chan);

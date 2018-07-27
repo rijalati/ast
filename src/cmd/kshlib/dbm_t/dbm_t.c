@@ -92,15 +92,12 @@ array_disc(Namval_t *np)
 static size_t
 check_size(char **buff, size_t olds, size_t news)
 {
-    if (news >= olds)
-    {
-        if (olds)
-        {
+    if (news >= olds) {
+        if (olds) {
             while ((olds *= 2) <= news)
                 ;
             *buff = ( char * )realloc(*buff, olds);
-        }
-        else
+        } else
             *buff = ( char * )malloc(olds = news + 1);
     }
     return (olds);
@@ -109,14 +106,12 @@ check_size(char **buff, size_t olds, size_t news)
 static void
 dbm_setname(struct dbm_array *ap)
 {
-    if ((( char * )ap->key.dptr)[ap->key.dsize - ap->addzero])
-    {
+    if ((( char * )ap->key.dptr)[ap->key.dsize - ap->addzero]) {
         ap->namlen = check_size(&ap->name, ap->namlen, ap->key.dsize);
         memcpy(ap->name, ap->key.dptr, ap->key.dsize);
         ap->name[ap->key.dsize] = 0;
         ap->node.nvname = ap->name;
-    }
-    else
+    } else
         ap->node.nvname = ap->key.dptr;
 }
 
@@ -127,10 +122,8 @@ dbm_get(struct dbm_array *ap)
     datum data;
     dbm_clearerr(ap->dbm);
     data = dbm_fetch(ap->dbm, ap->key);
-    if (data.dsize && (val = ( char * )data.dptr))
-    {
-        if (!ap->header.hdr.type && data.dsize > 1 && *val == 0 && val[1])
-        {
+    if (data.dsize && (val = ( char * )data.dptr)) {
+        if (!ap->header.hdr.type && data.dsize > 1 && *val == 0 && val[1]) {
             *val = '(';
             if (!ap->strbuf)
                 ap->strbuf = sfstropen();
@@ -138,9 +131,7 @@ dbm_get(struct dbm_array *ap)
             sfprintf(ap->strbuf, "%s=%s\0", nv_name(&ap->node), val);
             val = sfstruse(ap->strbuf);
             sh_trap(ap->shp, val, 0);
-        }
-        else
-        {
+        } else {
             ap->vallen = check_size(&ap->node.nvalue, ap->vallen, data.dsize);
             memcpy(ap->node.nvalue, data.dptr, data.dsize);
             ap->node.nvalue[data.dsize] = 0;
@@ -148,13 +139,10 @@ dbm_get(struct dbm_array *ap)
         ap->cur = &ap->node;
         if (ap->header.hdr.type)
             nv_setsize(ap->cur, data.dsize);
-    }
-    else
-    {
+    } else {
         int err;
         ap->cur = 0;
-        if (err = dbm_error(ap->dbm))
-        {
+        if (err = dbm_error(ap->dbm)) {
             dbm_clearerr(ap->dbm);
             error(ERROR_system(err),
                   "Unable to get key %.*s",
@@ -168,13 +156,10 @@ static void
 dbm_put(struct dbm_array *ap)
 {
     datum data;
-    if (ap->node.nvsize)
-    {
+    if (ap->node.nvsize) {
         data.dsize = ap->node.nvsize;
         data.dptr = ap->node.nvalue;
-    }
-    else
-    {
+    } else {
         char *val = nv_getval(&ap->node);
         data.dsize = strlen(val) + ap->addzero;
         if (nv_isvtree(&ap->node) && *val == '(')
@@ -190,12 +175,9 @@ dbm_associative(Namval_t *np, const char *sp, int mode)
 {
     struct dbm_array *ap = ( struct dbm_array * )nv_arrayptr(np);
     int keylen;
-    switch (mode)
-    {
-    case NV_AINIT:
-    {
-        if (ap = ( struct dbm_array * )calloc(1, sizeof(struct dbm_array)))
-        {
+    switch (mode) {
+    case NV_AINIT: {
+        if (ap = ( struct dbm_array * )calloc(1, sizeof(struct dbm_array))) {
             Namfun_t *fp = nv_disc(np, NULL, NV_POP);
             ap->header.hdr.disc = array_disc(np);
             if (fp)
@@ -204,8 +186,7 @@ dbm_associative(Namval_t *np, const char *sp, int mode)
             ap->header.hdr.nofree = 0;
             ap->header.hdr.dsize = sizeof(struct dbm_array);
             ap->val = ( char * )malloc(ap->vallen = 40);
-            if (nv_isattr(np, NV_ZFILL))
-            {
+            if (nv_isattr(np, NV_ZFILL)) {
                 nv_offattr(np, NV_ZFILL);
                 ap->addzero = 1;
             }
@@ -225,8 +206,7 @@ dbm_associative(Namval_t *np, const char *sp, int mode)
         if (ap->modified)
             dbm_put(ap);
         ap->cur = ap->pos = 0;
-        if (ap->name)
-        {
+        if (ap->name) {
             free(( void * )ap->name);
             ap->namlen = 0;
         }
@@ -240,27 +220,22 @@ dbm_associative(Namval_t *np, const char *sp, int mode)
     case NV_ANEXT:
         if (ap->modified)
             dbm_put(ap);
-        if (!ap->pos)
-        {
+        if (!ap->pos) {
             ap->pos = &ap->node;
             ap->key = dbm_firstkey(ap->dbm);
-        }
-        else
+        } else
             ap->key = dbm_nextkey(ap->dbm);
-        if (ap->key.dptr)
-        {
+        if (ap->key.dptr) {
             ap->cur = ap->pos;
             dbm_setname(ap);
             return (( void * )ap->cur);
-        }
-        else
+        } else
             ap->pos = 0;
         return (( void * )0);
     case NV_ASETSUB:
         if (ap->modified)
             dbm_put(ap);
-        if (sp)
-        {
+        if (sp) {
             ap->key.dsize = strlen(sp) + ap->addzero;
             ap->namlen = check_size(&ap->name, ap->namlen, ap->key.dsize);
             ap->key.dptr = memcpy(ap->name, sp, ap->key.dsize + 1);
@@ -282,16 +257,13 @@ dbm_associative(Namval_t *np, const char *sp, int mode)
             return (( void * )ap->cur->nvname);
         return (( void * )0);
     default:
-        if (sp)
-        {
-            if (sp == ( char * )np)
-            {
+        if (sp) {
+            if (sp == ( char * )np) {
                 ap->cur = 0;
                 return (0);
             }
             keylen = strlen(sp) + ap->addzero;
-            if (!ap->init)
-            {
+            if (!ap->init) {
                 ap->init = 1;
                 ap->node.nvprivate = ( char * )np;
                 if (ap->node.nvsize == 0)
@@ -300,15 +272,13 @@ dbm_associative(Namval_t *np, const char *sp, int mode)
                 if (ap->key.dptr
                     && (( char * )ap->key.dptr)[ap->key.dsize - 1] == 0)
                     ap->addzero = 1;
-                while (ap->key.dptr)
-                {
+                while (ap->key.dptr) {
                     ap->header.nelem++;
                     ap->key = dbm_nextkey(ap->dbm);
                 }
             }
             if (keylen != ap->key.dsize || !ap->key.dptr
-                || strcmp(sp, ap->key.dptr))
-            {
+                || strcmp(sp, ap->key.dptr)) {
                 if (ap->modified)
                     dbm_put(ap);
                 ap->key.dsize = keylen;
@@ -318,8 +288,7 @@ dbm_associative(Namval_t *np, const char *sp, int mode)
             }
             if (ap->cur)
                 dbm_setname(ap);
-            if (mode & NV_AADD)
-            {
+            if (mode & NV_AADD) {
                 if (ap->shp->subshell)
                     sfprintf(sfstderr,
                              "subshell=%d subscript=%s will be modified, "
@@ -327,8 +296,7 @@ dbm_associative(Namval_t *np, const char *sp, int mode)
                              ap->shp->subshell,
                              sp);
                 ap->modified = 1;
-                if (!ap->cur)
-                {
+                if (!ap->cur) {
                     ap->header.nelem++;
                     ap->cur = &ap->node;
                     dbm_setname(ap);
@@ -337,12 +305,10 @@ dbm_associative(Namval_t *np, const char *sp, int mode)
             if (ap->pos != &ap->node && !(ap->header.nelem & ARRAY_SCAN))
                 ap->pos = 0;
         }
-        if (ap->cur)
-        {
+        if (ap->cur) {
             ap->cur = &ap->node;
             return (( void * )(&ap->cur->nvalue));
-        }
-        else
+        } else
             return (( void * )(&ap->cur));
     }
 }
@@ -359,10 +325,8 @@ dbm_create(int argc, char **argv, Shbltin_t *context)
 
     cmdinit(argc, argv, context, ERROR_CATALOG, ERROR_NOTIFY);
 #if _use_ndbm
-    for (;;)
-    {
-        switch (optget(argv, dbm_usage))
-        {
+    for (;;) {
+        switch (optget(argv, dbm_usage)) {
         case 'T':
             tname = opt_info.arg;
             continue;
@@ -390,8 +354,7 @@ dbm_create(int argc, char **argv, Shbltin_t *context)
         break;
     }
     argv += opt_info.index;
-    if (error_info.errors || !*argv || *(argv + 1))
-    {
+    if (error_info.errors || !*argv || *(argv + 1)) {
         error(ERROR_USAGE | 2, "%s", optusage(NiL));
         return 1;
     }
@@ -406,8 +369,7 @@ dbm_create(int argc, char **argv, Shbltin_t *context)
         && !(db = dbm_open(dbfile,
                            oflags,
                            S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH
-                           | S_IWOTH)))
-    {
+                           | S_IWOTH))) {
         error(ERROR_SYSTEM | 3, "%s: cannot open db", dbfile);
         return 1;
     }
@@ -421,8 +383,7 @@ dbm_create(int argc, char **argv, Shbltin_t *context)
     else
         error(ERROR_exit(1), "%s: unable to create array", nv_name(np));
     ap->shp = context->shp;
-    if (tname)
-    {
+    if (tname) {
         Namval_t *tp;
         char *tmp
         = ( char * )malloc(n = sizeof(NV_CLASS) + strlen(tname) + 2);

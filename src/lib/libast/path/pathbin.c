@@ -36,8 +36,7 @@ pathbin(void)
 
     static char *val;
 
-    if ((!(bin = getenv("PATH")) || !*bin) && !(bin = val))
-    {
+    if ((!(bin = getenv("PATH")) || !*bin) && !(bin = val)) {
         if (!*(bin = astconf("PATH", NiL, NiL)) || !(bin = strdup(bin)))
             bin = "/bin:/usr/bin:/usr/local/bin";
         val = bin;

@@ -129,23 +129,19 @@ setwakeup(void)
     sfsprintf(tmpname, MAXNAME, "%lu", t ? (now + t) : t);
     setvar(internal.alarm->name, fmtelapsed(t, 1), 0);
     if (error_info.trace
-        <= (level = (state.test & 0x00010000) ? 2 : CMDTRACE))
-    {
+        <= (level = (state.test & 0x00010000) ? 2 : CMDTRACE)) {
         Alarms_t *a;
 
-        if (a = trap.alarms)
-        {
+        if (a = trap.alarms) {
             error(level, "ALARM  TIME                 RULE");
-            do
-            {
+            do {
                 error(level,
                       "%6s %s %s",
                       fmtelapsed((a->time >= now) ? (a->time - now) : 0, 1),
                       timestr(tmxsns(a->time, 0)),
                       a->rule->name);
             } while (a = a->next);
-        }
-        else
+        } else
             error(level, "ALARM -- NONE");
     }
 }
@@ -166,21 +162,17 @@ wakeup(Seconds_t t, List_t *p)
 
     alarms = trap.alarms;
     now = CURSECS;
-    if (t)
-    {
+    if (t) {
         t += now;
         if (!p)
             p = cons(catrule(external.interrupt, ".", fmtsignal(-SIGALRM), 1),
                      NiL);
     }
-    if (p)
-    {
-        do
-        {
+    if (p) {
+        do {
             x = 0;
             for (z = 0, a = trap.alarms; a; z = a, a = a->next)
-                if (a->rule == p->rule)
-                {
+                if (a->rule == p->rule) {
                     x = a;
                     if (z)
                         z->next = a->next;
@@ -188,10 +180,8 @@ wakeup(Seconds_t t, List_t *p)
                         trap.alarms = a->next;
                     break;
                 }
-            if (t)
-            {
-                if (!x)
-                {
+            if (t) {
+                if (!x) {
                     if (x = trap.freealarms)
                         trap.freealarms = trap.freealarms->next;
                     else
@@ -201,8 +191,7 @@ wakeup(Seconds_t t, List_t *p)
                 x->time = t;
                 x->next = 0;
                 for (z = 0, a = trap.alarms; a; z = a, a = a->next)
-                    if (t <= a->time)
-                    {
+                    if (t <= a->time) {
                         x->next = a;
                         break;
                     }
@@ -212,9 +201,7 @@ wakeup(Seconds_t t, List_t *p)
                     trap.alarms = x;
             }
         } while (p = p->next);
-    }
-    else if (a = trap.alarms)
-    {
+    } else if (a = trap.alarms) {
         trap.alarms = 0;
         while (x = a->next)
             a = x;
@@ -260,12 +247,10 @@ handle(void)
 
     if (!state.caught)
         return 0;
-    while (state.caught)
-    {
+    while (state.caught) {
         state.caught = 0;
         for (sig = 1; sig <= sig_info.sigmax; sig++)
-            if (trap.caught[sig])
-            {
+            if (trap.caught[sig]) {
                 trap.caught[sig] = 0;
 
                 /*
@@ -279,8 +264,7 @@ handle(void)
                  * continue if already in finish
                  */
 
-                if (state.finish)
-                {
+                if (state.finish) {
                     if (!state.interrupt)
                         state.interrupt = sig;
                     for (sig = 1; sig <= sig_info.sigmax; sig++)
@@ -294,13 +278,11 @@ handle(void)
 
                 w = 0;
                 if (!state.compileonly)
-                    switch (sig)
-                    {
+                    switch (sig) {
                     case SIGALRM:
                         s = fmtsignal(-sig);
                         t = CURSECS;
-                        while ((a = trap.alarms) && a->time <= t)
-                        {
+                        while ((a = trap.alarms) && a->time <= t) {
                             trap.alarms = a->next;
                             r = a->rule;
                             a->next = trap.freealarms;
@@ -316,8 +298,7 @@ handle(void)
                     default:
                         s = fmtsignal(-sig);
                         if ((r = catrule(external.interrupt, ".", s, 0))
-                            || (r = getrule(external.interrupt)))
-                        {
+                            || (r = getrule(external.interrupt))) {
                             if (!(r->property & P_functional))
                                 v = setvar(external.interrupt, s, 0);
                             maketop(
@@ -329,8 +310,7 @@ handle(void)
                                 v = getvar(r->name);
                             w = v->value;
                             if (r->status == EXISTS
-                                && (streq(w, s) || streq(w, "continue")))
-                            {
+                                && (streq(w, s) || streq(w, "continue"))) {
                                 message((-1,
                                          "trap %s handler %s status CONTINUE "
                                          "return %s",
@@ -375,8 +355,7 @@ handle(void)
                  * the interpreter resumes without exit
                  */
 
-                if (state.interpreter)
-                {
+                if (state.interpreter) {
                     if (state.waiting)
                         return 1;
                     longjmp(state.resume.label, 1);

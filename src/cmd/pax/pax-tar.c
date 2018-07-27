@@ -63,8 +63,7 @@ putkey(Archive_t *ap,
 
     if (value)
         n = strlen(value);
-    else
-    {
+    else {
         n = sfprintf(ap->tmp.key, "%I*u", sizeof(number), number);
         sfstrseek(ap->tmp.key, 0, SEEK_SET);
     }
@@ -75,8 +74,7 @@ putkey(Archive_t *ap,
     n
     += strlen(op->name) + 3 + ((op->flags & OPT_VENDOR) ? sizeof(VENDOR) : 0);
     o = 0;
-    for (;;)
-    {
+    for (;;) {
         sfprintf(ap->tmp.key, "%I*u", sizeof(n), n);
         m = sfstrtell(ap->tmp.key);
         sfstrseek(ap->tmp.key, 0, SEEK_SET);
@@ -116,8 +114,7 @@ tar_checksum(Archive_t *ap, int check, unsigned long sum)
     p = ( unsigned char * )tar->header.chksum;
     e = p + TARSIZEOF(chksum);
     t = tmp;
-    while (p < e)
-    {
+    while (p < e) {
         *t++ = *p;
         *p++ = ' ';
     }
@@ -126,28 +123,23 @@ tar_checksum(Archive_t *ap, int check, unsigned long sum)
     p = ( unsigned char * )&tar->header;
     e = p + TAR_HEADER;
     if (!ap->convert[SECTION_CONTROL].on)
-        while (p < e)
-        {
+        while (p < e) {
             c = *p++;
             u += c;
-            if (check)
-            {
+            if (check) {
                 if (c & 0x80)
                     c |= (-1) << 8;
                 s += c;
             }
         }
-    else
-    {
+    else {
         map = ((ap->mio.mode & O_ACCMODE) == O_WRONLY)
               ? ap->convert[SECTION_CONTROL].f2t
               : ap->convert[SECTION_CONTROL].t2f;
-        while (p < e)
-        {
+        while (p < e) {
             c = map[*p++];
             u += c;
-            if (check)
-            {
+            if (check) {
                 if (c & 0x80)
                     c |= (-1) << 8;
                 s += c;
@@ -160,14 +152,11 @@ tar_checksum(Archive_t *ap, int check, unsigned long sum)
     while (p < e)
         *p++ = *t++;
     u &= TAR_SUMASK;
-    if (check)
-    {
+    if (check) {
         if ((sum &= TAR_SUMASK) == u)
             return 1;
-        if (sum == (s &= TAR_SUMASK))
-        {
-            if (!ap->old.warned)
-            {
+        if (sum == (s &= TAR_SUMASK)) {
+            if (!ap->old.warned) {
                 ap->old.warned = 1;
                 error(1,
                       "%s: %s format archive generated with signed checksums",
@@ -176,8 +165,7 @@ tar_checksum(Archive_t *ap, int check, unsigned long sum)
             }
             return 1;
         }
-        if (ap->entry > 1)
-        {
+        if (ap->entry > 1) {
             if (s != u)
                 error(state.keepgoing ? 1 : 3,
                       "%s: %s format checksum error (%ld != %ld or %ld)",
@@ -217,12 +205,10 @@ tar_longname(Archive_t *ap, File_t *f)
 
     if (!(n = f->namesize) || --n <= TARSIZEOF(name))
         return 0;
-    switch (ap->format->variant)
-    {
+    switch (ap->format->variant) {
     case PAX:
     case TAR:
-        if (n > (TARSIZEOF(prefix) + TARSIZEOF(name) + 1))
-        {
+        if (n > (TARSIZEOF(prefix) + TARSIZEOF(name) + 1)) {
             if (ap->format->variant != PAX && state.strict)
                 goto toolong;
             f->longname = 1;
@@ -231,21 +217,18 @@ tar_longname(Archive_t *ap, File_t *f)
         s = f->name + n;
         b = s - TARSIZEOF(name) - 1;
         while (--s >= b)
-            if (*s == '/' && (n = s - f->name) <= TARSIZEOF(prefix))
-            {
+            if (*s == '/' && (n = s - f->name) <= TARSIZEOF(prefix)) {
                 if (!n)
                     break;
                 return s - f->name;
             }
-        if (ap->format->variant != PAX && state.strict)
-        {
+        if (ap->format->variant != PAX && state.strict) {
             error(2,
                   "%s: file base name too long -- %d max",
                   f->name,
                   TARSIZEOF(name));
             f->skip = 1;
-        }
-        else
+        } else
             f->longname = 1;
         return -1;
     case OLD:
@@ -270,10 +253,8 @@ tar_longname(Archive_t *ap, File_t *f)
 static int
 tar_longlink(Archive_t *ap, File_t *f)
 {
-    if (f->linktype != NOLINK && strlen(f->linkpath) > TARSIZEOF(linkname))
-    {
-        switch (ap->format->variant)
-        {
+    if (f->linktype != NOLINK && strlen(f->linkpath) > TARSIZEOF(linkname)) {
+        switch (ap->format->variant) {
         case TAR:
             if (!state.strict)
                 break;
@@ -306,8 +287,7 @@ headname(Archive_t *ap, File_t *f, const char *fmt)
     if (!ap->tmp.hdr && !(ap->tmp.hdr = sfstropen()))
         nospace();
     listprintf(ap->tmp.hdr, ap, f, fmt);
-    if (sfstrtell(ap->tmp.hdr) > TARSIZEOF(name))
-    {
+    if (sfstrtell(ap->tmp.hdr) > TARSIZEOF(name)) {
         sfstrseek(ap->tmp.hdr, 0, SEEK_SET);
         s = f->name;
         if (t = strrchr(s, '/'))
@@ -380,8 +360,7 @@ extend(Archive_t *ap, File_t *f, int type)
     if (!f)
         initfile(
         ap, f = &h, &st, ".", X_IFREG | X_IRUSR | X_IWUSR | X_IRGRP | X_IROTH);
-    switch (type)
-    {
+    switch (type) {
     case EXTTYPE:
     case TARTYPE:
         sp = ap->tmp.extended;
@@ -398,15 +377,12 @@ extend(Archive_t *ap, File_t *f, int type)
     default:
         return 0;
     }
-    if (pos = hashscan(state.options, 0))
-    {
-        while (hashnext(pos))
-        {
+    if (pos = hashscan(state.options, 0)) {
+        while (hashnext(pos)) {
             op = ( Option_t * )pos->bucket->value;
             if ((op->flags & (OPT_HEADER | OPT_READONLY)) == OPT_HEADER
                 && op->name == pos->bucket->name
-                && (op->level == lev || op->level == alt))
-            {
+                && (op->level == lev || op->level == alt)) {
                 message((-5,
                          "extend %s level=%d:%d:%d entry=%d:%d "
                          "perm=(%s,%I*d) temp=(%s,%I*d)",
@@ -424,8 +400,7 @@ extend(Archive_t *ap, File_t *f, int type)
                          op->temp.number));
                 vp = &op->perm;
                 s = vp->string;
-                switch (op->index)
-                {
+                switch (op->index) {
                 case OPT_atime:
                 case OPT_ctime:
                 case OPT_mtime:
@@ -433,10 +408,8 @@ extend(Archive_t *ap, File_t *f, int type)
                         s = vp->string;
                     else if (type != EXTTYPE)
                         continue;
-                    else
-                    {
-                        switch (op->index)
-                        {
+                    else {
+                        switch (op->index) {
                         case OPT_atime:
                             tvgetatime(&tv, f->st);
                             break;
@@ -469,8 +442,7 @@ extend(Archive_t *ap, File_t *f, int type)
                 case OPT_gid:
                     if (op->flags & OPT_SET)
                         f->st->st_gid = vp->number;
-                    else
-                    {
+                    else {
                         if (type != EXTTYPE)
                             f->st->st_gid = state.gid;
                         if (( uint32_t )f->st->st_gid
@@ -511,8 +483,7 @@ extend(Archive_t *ap, File_t *f, int type)
                 case OPT_uid:
                     if (op->flags & OPT_SET)
                         f->st->st_uid = vp->number;
-                    else
-                    {
+                    else {
                         if (type != EXTTYPE)
                             f->st->st_uid = state.uid;
                         if (( unsigned long )f->st->st_uid
@@ -547,20 +518,16 @@ extend(Archive_t *ap, File_t *f, int type)
     }
     if (type == TARTYPE)
         split = 0;
-    else
-    {
-        if (type == EXTTYPE)
-        {
+    else {
+        if (type == EXTTYPE) {
             if ((split = tar_longname(ap, f)) < 0 || !portable(ap, f->name))
                 putkey(ap, sp, &options[OPT_path], f->name, 0);
             if (f->linkpath
                 && (tar_longlink(ap, f) < 0 || !portable(ap, f->linkpath)))
                 putkey(ap, sp, &options[OPT_linkpath], f->linkpath, 0);
-        }
-        else
+        } else
             split = 0;
-        if (type && (n = sfstrtell(sp)))
-        {
+        if (type && (n = sfstrtell(sp))) {
             if (!(s = sfstruse(sp)))
                 nospace();
             synthesize(ap, f, headname(ap, f, fmt), type, s, n);
@@ -580,20 +547,16 @@ tar_getoctal(const char *f, const char *p, size_t n, int z, void *r)
         s++;
     while (s < e && *s >= '0' && *s <= '7')
         v = (v << 3) + (*s++ - '0');
-    if (s < e)
-    {
-        if (*s == 0x80 || *s == 0xff)
-        {
+    if (s < e) {
+        if (*s == 0x80 || *s == 0xff) {
             v = *s++ == 0x80 ? 0 : 0xff;
             e = ( unsigned char * )p + 8;
             while (s < e)
                 v = (v << 8) + *s++;
-        }
-        else if (*s && *s != ' ')
+        } else if (*s && *s != ' ')
             return -1;
     }
-    switch (z)
-    {
+    switch (z) {
     case 1:
         *( unsigned char * )r = ( unsigned char )v;
         break;
@@ -629,8 +592,7 @@ again:
     if (paxread(pax, ap, &tar->header, ( off_t )0, ( off_t )TAR_HEADER, 0)
         <= 0)
         return 0;
-    if (!*tar->header.name)
-    {
+    if (!*tar->header.name) {
         if (ap->entry == 1)
             goto nope;
         return 0;
@@ -652,21 +614,17 @@ again:
         goto nope;
     if (tar_getoctal("chksum", tar->header.chksum, 7, sizeof(num), &num))
         goto nope;
-    if (!tar_checksum(ap, 1, num) && ap->entry == 1)
-    {
-        if (!ap->swapio)
-        {
+    if (!tar_checksum(ap, 1, num) && ap->entry == 1) {
+        if (!ap->swapio) {
             char tmp[TARSIZEOF(chksum) + 1];
 
             tmp[TARSIZEOF(chksum)] = 0;
-            for (i = 1; i < 4; i++)
-            {
+            for (i = 1; i < 4; i++) {
                 memcpy(tmp, tar->header.chksum, TARSIZEOF(chksum));
                 swapmem(i, tmp, tmp, TARSIZEOF(chksum));
                 if (!tar_getoctal(
                     "chksum", tar->header.chksum, 7, sizeof(num), &num)
-                    && tar_checksum(ap, 1, num))
-                {
+                    && tar_checksum(ap, 1, num)) {
                     ap->swapio = i;
                     paxunread(pax, ap, &tar->header, TAR_HEADER);
                     goto again;
@@ -678,18 +636,15 @@ again:
     if (tar_getoctal(
         "size", tar->header.size, 11, sizeof(f->st->st_size), &f->st->st_size))
         goto nope;
-    if (ap->format->variant != OLD)
-    {
-        if (!streq(tar->header.magic, TMAGIC))
-        {
+    if (ap->format->variant != OLD) {
+        if (!streq(tar->header.magic, TMAGIC)) {
             if (streq(tar->header.magic, TMAGIC "  "))
                 /* old gnu tar */;
             else if (ap->entry > 1)
                 goto nope;
             ap->format = &pax_tar_format;
-        }
-        else if (!strneq(tar->header.version, TVERSION, TARSIZEOF(version)))
-        {
+        } else if (!strneq(
+                   tar->header.version, TVERSION, TARSIZEOF(version))) {
             tp = &pax_tar_format;
             error(1,
                   "%s: %s format version %-.*s incompatible with "
@@ -705,8 +660,7 @@ again:
         }
     }
     *(( char * )tar->header.name + TARSIZEOF(name)) = 0;
-    if (ap->format->variant != OLD && *tar->header.prefix)
-    {
+    if (ap->format->variant != OLD && *tar->header.prefix) {
         f->name = paxstash(
         pax, &ap->stash.head, NiL, TARSIZEOF(prefix) + TARSIZEOF(name) + 2);
         sfsprintf(f->name,
@@ -716,15 +670,13 @@ again:
                   tar->header.prefix,
                   TARSIZEOF(name),
                   tar->header.name);
-    }
-    else
+    } else
         f->name = tar->header.name;
     *(( char * )tar->header.linkname + TARSIZEOF(name)) = 0;
     f->linktype = NOLINK;
     f->linkpath = 0;
     f->st->st_nlink = 1;
-    switch (tar->header.typeflag)
-    {
+    switch (tar->header.typeflag) {
     case LNKTYPE:
         f->linktype = HARDLINK;
         f->st->st_mode |= X_IFREG;
@@ -764,8 +716,7 @@ again:
     case EXTTYPE:
     case GLBTYPE:
         ap->format = &pax_pax_format;
-        if (f->st->st_size > 0)
-        {
+        if (f->st->st_size > 0) {
             ap->section = SECTION_DATA;
             if (!(s = paxget(pax, ap, f->st->st_size, NiL)))
                 error(3,
@@ -786,10 +737,8 @@ again:
 
     case LLNKTYPE:
     case LREGTYPE:
-        if ((n = f->st->st_size) > 0)
-        {
-            if (!(s = paxget(pax, ap, n, NiL)))
-            {
+        if ((n = f->st->st_size) > 0) {
+            if (!(s = paxget(pax, ap, n, NiL))) {
                 error(2,
                       "%s: invalid %s format long path header",
                       ap->name,
@@ -829,8 +778,7 @@ again:
     }
     f->uidname = 0;
     f->gidname = 0;
-    if (ap->format->variant != OLD)
-    {
+    if (ap->format->variant != OLD) {
         if (*tar->header.uname && (strtoll(tar->header.uname, &t, 0), *t))
             f->uidname = tar->header.uname;
         if (*tar->header.gname && (strtoll(tar->header.gname, &t, 0), *t))
@@ -860,8 +808,7 @@ tar_getprologue(Pax_t *pax,
     ap->format = fp;
     if ((n = tar_getheader(pax, ap, f)) > 0)
         ap->peek = 1;
-    else
-    {
+    else {
         free(ap->data);
         ap->data = 0;
         ap->format = 0;
@@ -872,8 +819,7 @@ tar_getprologue(Pax_t *pax,
 static int
 tar_done(Pax_t *pax, Archive_t *ap)
 {
-    if (ap->data)
-    {
+    if (ap->data) {
         free(ap->data);
         ap->data = 0;
     }
@@ -898,19 +844,15 @@ tar_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
 
     if (f->extended)
         i = 0;
-    else
-    {
-        switch (ap->format->variant)
-        {
+    else {
+        switch (ap->format->variant) {
         case PAX:
             i = extend(ap, f, EXTTYPE);
             break;
         case TAR:
             ( void )extend(ap, f, TARTYPE);
-            if ((i = tar_longname(ap, f)) < 0)
-            {
-                if (state.strict)
-                {
+            if ((i = tar_longname(ap, f)) < 0) {
+                if (state.strict) {
                     ap->entry--;
                     return 0;
                 }
@@ -921,10 +863,8 @@ tar_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
                            f->name,
                            f->namesize);
             }
-            if (tar_longlink(ap, f) < 0)
-            {
-                if (state.strict)
-                {
+            if (tar_longlink(ap, f) < 0) {
+                if (state.strict) {
                     ap->entry--;
                     return 0;
                 }
@@ -938,8 +878,7 @@ tar_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
             break;
         case OLD:
             ( void )extend(ap, f, TARTYPE);
-            if ((i = tar_longname(ap, f)) || tar_longlink(ap, f))
-            {
+            if ((i = tar_longname(ap, f)) || tar_longlink(ap, f)) {
                 ap->entry--;
                 return 0;
             }
@@ -951,10 +890,8 @@ tar_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
     memzero(&tar->header, TAR_HEADER);
     if (f->longname)
         s = headname(ap, f, "@PaxPathFile.%(sequence)s");
-    else
-    {
-        if (i)
-        {
+    else {
+        if (i) {
             memcpy(tar->header.prefix, f->name, i);
             i++;
         }
@@ -969,8 +906,7 @@ tar_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
     if (f->extended)
         tar->header.typeflag = f->extended;
     else
-        switch (f->linktype)
-        {
+        switch (f->linktype) {
         case HARDLINK:
             tar->header.typeflag = LNKTYPE;
         linked:
@@ -985,8 +921,7 @@ tar_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
             tar->header.typeflag = SYMTYPE;
             goto linked;
         default:
-            switch (ap->format->variant == OLD ? X_IFREG : f->type)
-            {
+            switch (ap->format->variant == OLD ? X_IFREG : f->type) {
             case X_IFCHR:
                 tar->header.typeflag = CHRTYPE;
                 i = 1;
@@ -1048,17 +983,14 @@ tar_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
               TARSIZEOF(gid) - 1,
               f->st->st_gid & ( unsigned long )07777777);
     if (ap->format->variant != PAX
-        && ( unsigned long )f->st->st_size > ( unsigned long )037777777777)
-    {
+        && ( unsigned long )f->st->st_size > ( unsigned long )037777777777) {
         tar->header.size[0] = TAR_LARGENUM;
         n = f->st->st_size;
-        for (i = 11; i > 0; i--)
-        {
+        for (i = 11; i > 0; i--) {
             tar->header.size[i] = n & 0377;
             n >>= 8;
         }
-    }
-    else
+    } else
         sfsprintf(tar->header.size,
                   TARSIZEOF(size),
                   "%0*lo ",
@@ -1069,8 +1001,7 @@ tar_putheader(Pax_t *pax, Archive_t *ap, File_t *f)
               "%0*lo ",
               TARSIZEOF(mtime) - 1,
               f->st->st_mtime & ( unsigned long )037777777777);
-    if (ap->format->variant != OLD)
-    {
+    if (ap->format->variant != OLD) {
         strncpy(tar->header.magic, TMAGIC, TARSIZEOF(magic));
         strncpy(tar->header.version, TVERSION, TARSIZEOF(version));
         getidnames(f);
@@ -1107,8 +1038,7 @@ tar_lookup(Pax_t *pax,
 {
     Tar_t *tar = ( Tar_t * )ap->data;
 
-    switch (index)
-    {
+    switch (index) {
     case OPT_chksum:
         *s = tar->header.chksum;
         break;
@@ -1137,8 +1067,7 @@ tar_event(Pax_t *pax,
     Tarheader_t *hdr;
     unsigned long sum;
 
-    switch (event)
-    {
+    switch (event) {
     case PAX_EVENT_DELTA_EXTEND:
         putkey(ap,
                ap->tmp.global,
@@ -1174,10 +1103,8 @@ pax_putprologue(Pax_t *pax, Archive_t *ap, int append)
         nospace();
     if (append)
         return 0;
-    if (hp = hashscan(state.options, 0))
-    {
-        while (hashnext(hp))
-        {
+    if (hp = hashscan(state.options, 0)) {
+        while (hashnext(hp)) {
             op = ( Option_t * )hp->bucket->value;
             if ((op->flags & OPT_GLOBAL) && op->name == hp->bucket->name
                 && (op->level == 3 || op->level == 0) && op->perm.string)
@@ -1185,8 +1112,7 @@ pax_putprologue(Pax_t *pax, Archive_t *ap, int append)
         }
         hashdone(hp);
     }
-    if (ap->delta && !(ap->delta->format->flags & PSEUDO))
-    {
+    if (ap->delta && !(ap->delta->format->flags & PSEUDO)) {
         fp = ap->delta->format;
         putkey(ap, ap->tmp.global, &options[OPT_delta_method], fp->name, 0);
         if ((dp = ( Delta_format_t * )fp->data) && dp->variant)
@@ -1194,8 +1120,7 @@ pax_putprologue(Pax_t *pax, Archive_t *ap, int append)
             ap, ap->tmp.global, &options[OPT_delta_version], dp->variant, 0);
         if (ap->delta->compress)
             putkey(ap, ap->tmp.global, &options[OPT_delta_compress], 0, 1);
-        if (ap->delta->base)
-        {
+        if (ap->delta->base) {
             putkey(ap,
                    ap->tmp.global,
                    &options[OPT_delta_base_size],

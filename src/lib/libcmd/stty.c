@@ -734,12 +734,10 @@ sane(struct termios *sp)
 
     for (tp = Ttable; tp < &Ttable[elementsof(Ttable)]; tp++)
         if (tp->flags & (SS | US))
-            switch (tp->type)
-            {
+            switch (tp->type) {
             case BIT:
             case BITS:
-                switch (tp->field)
-                {
+                switch (tp->field) {
                 case C_FLAG:
                     if (tp->flags & SS)
                         sp->c_cflag |= tp->mask;
@@ -790,8 +788,7 @@ gin(char *arg, struct termios *sp)
     sp->c_lflag = strtol(arg, &arg, 16);
     if (*arg++ != ':')
         return (0);
-    for (i = 0; i < NCCS; i++)
-    {
+    for (i = 0; i < NCCS; i++) {
         sp->c_cc[i] = strtol(arg, &arg, 16);
         if (*arg++ != ':')
             return (0);
@@ -845,29 +842,24 @@ output(struct termios *sp, int flags)
     char schar[2];
     unsigned int ispeed = cfgetispeed(sp);
     unsigned int ospeed = cfgetospeed(sp);
-    if (flags & G_FLAG)
-    {
+    if (flags & G_FLAG) {
         gout(sp);
         return;
     }
     tty = *sp;
     sane(&tty);
-    for (i = 0; i < elementsof(Ttable); i++)
-    {
+    for (i = 0; i < elementsof(Ttable); i++) {
         tp = &Ttable[i];
-        if (tp->flags & IG)
-        {
+        if (tp->flags & IG) {
             if (tp->flags & NL)
                 sfputc(sfstdout, '\n');
             continue;
         }
-        switch (tp->type)
-        {
+        switch (tp->type) {
         case BIT:
         case BITS:
             off = off2 = 1;
-            switch (tp->field)
-            {
+            switch (tp->field) {
             case C_FLAG:
                 if (sp->c_cflag & tp->mask)
                     off = 0;
@@ -940,14 +932,12 @@ output(struct termios *sp, int flags)
                 sfprintf(sfstdout, "%s ", tp->name);
             break;
         case SPEED:
-            if (tp->mask == ispeed)
-            {
+            if (tp->mask == ispeed) {
                 if (ispeed != ospeed)
                     schar[0] = 'i';
                 else
                     schar[0] = 0;
-            }
-            else if (tp->mask == ospeed)
+            } else if (tp->mask == ospeed)
                 schar[0] = 'o';
             else
                 continue;
@@ -977,8 +967,7 @@ static const Tty_t *
 lookup(const char *name)
 {
     int i;
-    for (i = 0; i < elementsof(Ttable); i++)
-    {
+    for (i = 0; i < elementsof(Ttable); i++) {
         if (strcmp(Ttable[i].name, name) == 0)
             return (&Ttable[i]);
     }
@@ -989,8 +978,7 @@ static const Tty_t *
 getspeed(unsigned long val)
 {
     int i;
-    for (i = 0; i < elementsof(Ttable); i++)
-    {
+    for (i = 0; i < elementsof(Ttable); i++) {
         if (Ttable[i].type == SPEED && Ttable[i].mask == val)
             return (&Ttable[i]);
     }
@@ -1004,10 +992,8 @@ gettchar(const char *cp)
         return (-1);
     if (cp[1] == 0)
         return (( unsigned )cp[0]);
-    if (*cp == '^' && cp[1] && cp[2] == 0)
-    {
-        switch (cp[1])
-        {
+    if (*cp == '^' && cp[1] && cp[2] == 0) {
+        switch (cp[1]) {
         case '-':
             return (-1);
         default:
@@ -1026,19 +1012,16 @@ set(char *argv[], struct termios *sp)
     int c, off;
     char *cp;
     char *ep;
-    while (cp = *argv++)
-    {
+    while (cp = *argv++) {
         off = 0;
-        if (*cp == '-')
-        {
+        if (*cp == '-') {
             cp++;
             off = 1;
         }
         if (!(tp = lookup(cp))
             || (off && (tp->type != BIT) && (tp->type != TABS)))
             error(ERROR_exit(1), "%s: unknown mode", cp);
-        switch (tp->type)
-        {
+        switch (tp->type) {
         case CHAR:
             if (off)
                 error(ERROR_exit(1), "%s: unknown mode", cp);
@@ -1052,8 +1035,7 @@ set(char *argv[], struct termios *sp)
             break;
         case BIT:
         case BITS:
-            switch (tp->field)
-            {
+            switch (tp->field) {
             case C_FLAG:
                 if (off)
                     sp->c_cflag &= ~tp->mask;
@@ -1084,14 +1066,12 @@ set(char *argv[], struct termios *sp)
                 sp->c_oflag |= tp->val;
             break;
 #ifdef TIOCSWINSZ
-        case WIND:
-        {
+        case WIND: {
             struct winsize win;
             int n;
             if (ioctl(0, TIOCGWINSZ, &win) < 0)
                 error(ERROR_system(1), "cannot set %s", tp->name);
-            if (!(cp = *argv))
-            {
+            if (!(cp = *argv)) {
                 sfprintf(
                 sfstdout, "%d\n", tp->mask ? win.ws_col : win.ws_row);
                 break;
@@ -1114,10 +1094,8 @@ set(char *argv[], struct termios *sp)
 #endif
         case NUM:
             cp = *argv;
-            if (!cp)
-            {
-                if (tp->field == C_SPEED)
-                {
+            if (!cp) {
+                if (tp->field == C_SPEED) {
                     if (tp = getspeed(*tp->name == 'i' ? cfgetispeed(sp)
                                                        : cfgetospeed(sp)))
                         sfprintf(sfstdout, "%s\n", tp->name);
@@ -1133,22 +1111,19 @@ set(char *argv[], struct termios *sp)
                       "%s: %s: numeric argument expected",
                       tp->name,
                       cp);
-            switch (tp->field)
-            {
+            switch (tp->field) {
 #if _mem_c_line_termios
             case C_LINE:
                 sp->c_line = c;
                 break;
 #endif
             case C_SPEED:
-                if (getspeed(c))
-                {
+                if (getspeed(c)) {
                     if (*tp->name != 'o')
                         cfsetispeed(sp, c);
                     if (*tp->name != 'i')
                         cfsetospeed(sp, c);
-                }
-                else
+                } else
                     error(
                     ERROR_exit(1), "%s: %s: invalid speed", tp->name, cp);
                 break;
@@ -1170,13 +1145,10 @@ set(char *argv[], struct termios *sp)
             break;
 #if defined(OLCUC) && defined(IUCLC)
         case CASE:
-            if (off)
-            {
+            if (off) {
                 sp->c_iflag |= IUCLC;
                 sp->c_oflag |= OLCUC;
-            }
-            else
-            {
+            } else {
                 sp->c_iflag &= ~IUCLC;
                 sp->c_oflag &= ~OLCUC;
             }
@@ -1192,8 +1164,7 @@ listchars(Sfio_t *sp, int type)
 {
     int i, c;
     c = (type == CHAR ? 'c' : 'n');
-    for (i = 0; i < elementsof(Ttable); i++)
-    {
+    for (i = 0; i < elementsof(Ttable); i++) {
         if (Ttable[i].type == type && *Ttable[i].description)
             sfprintf(
             sp, "[+%s \a%c\a?%s.]", Ttable[i].name, c, Ttable[i].description);
@@ -1205,8 +1176,7 @@ listgroup(Sfio_t *sp, int type, const char *description)
 {
     int i;
     sfprintf(sp, "[+");
-    for (i = 0; i < elementsof(Ttable); i++)
-    {
+    for (i = 0; i < elementsof(Ttable); i++) {
         if (Ttable[i].type == type)
             sfprintf(sp, "%s ", Ttable[i].name);
     }
@@ -1218,8 +1188,7 @@ listmask(Sfio_t *sp, unsigned int mask, const char *description)
 {
     int i;
     sfprintf(sp, "[+");
-    for (i = 0; i < elementsof(Ttable); i++)
-    {
+    for (i = 0; i < elementsof(Ttable); i++) {
         if (Ttable[i].mask == mask && Ttable[i].type == BITS)
             sfprintf(sp, "%s ", Ttable[i].name);
     }
@@ -1230,8 +1199,7 @@ static void
 listfields(Sfio_t *sp, int field)
 {
     int i;
-    for (i = 0; i < elementsof(Ttable); i++)
-    {
+    for (i = 0; i < elementsof(Ttable); i++) {
         if (Ttable[i].field == field && Ttable[i].type == BIT
             && *Ttable[i].description)
             sfprintf(sp,
@@ -1328,20 +1296,16 @@ b_stty(int argc, char **argv, Shbltin_t *context)
     disc.version = OPT_VERSION;
     disc.infof = infof;
     opt_info.disc = &disc;
-    for (;;)
-    {
-        switch (n = optget(argv, usage))
-        {
+    for (;;) {
+        switch (n = optget(argv, usage)) {
         case 'f':
             fd = ( int )opt_info.num;
             continue;
         case 'a':
         case 'g':
         case 't':
-            if (!opt_info.offset || !argv[opt_info.index][opt_info.offset])
-            {
-                switch (n)
-                {
+            if (!opt_info.offset || !argv[opt_info.index][opt_info.offset]) {
+                switch (n) {
                 case 'a':
                     flags |= A_FLAG;
                     break;
@@ -1376,16 +1340,14 @@ b_stty(int argc, char **argv, Shbltin_t *context)
         error(ERROR_system(1), "not a tty");
     if (flags & T_FLAG)
         sfprintf(sfstdout, "%d\n", tcgetpgrp(0));
-    else if (*argv)
-    {
+    else if (*argv) {
         if (!argv[1] && **argv == ':')
             gin(*argv, &tty);
         else
             set(argv, &tty);
         if (tcsetattr(0, TCSANOW, &tty) < 0)
             error(ERROR_system(1), "cannot set tty");
-    }
-    else
+    } else
         output(&tty, flags);
     return error_info.errors;
 }

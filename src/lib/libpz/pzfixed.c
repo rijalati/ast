@@ -84,14 +84,12 @@ pzfixed(Pz_t *pz, Sfio_t *io, void *buf, size_t z)
      */
 
     if ((t = ( unsigned char * )memchr(( void * )s, '\n', z / 2))
-        && (n = t - s + 1) > 1)
-    {
+        && (n = t - s + 1) > 1) {
         if (siz > 0 && siz % n)
             n = 0;
         else
             for (i = n - 1; i < z; i += n)
-                if (s[i] != '\n')
-                {
+                if (s[i] != '\n') {
                     n = 0;
                     break;
                 }
@@ -101,22 +99,18 @@ pzfixed(Pz_t *pz, Sfio_t *io, void *buf, size_t z)
                      -2,
                      "pzfixed: newline terminated %u byte records",
                      n);
-    }
-    else
+    } else
         n = 0;
-    if (!n && (xp = newof(0, Fixed_t, 1, 0)))
-    {
+    if (!n && (xp = newof(0, Fixed_t, 1, 0))) {
         if (trace)
             (*trace)(
             pz, pz->disc, -2, "pzfixed:   LEN      REP     BEST     FREQ");
         max = 0;
-        for (i = 0; i < z; i++)
-        {
+        for (i = 0; i < z; i++) {
             cp = xp->hit + s[i];
             m = i - *cp;
             *cp = i;
-            if (m < elementsof(xp->rep))
-            {
+            if (m < elementsof(xp->rep)) {
                 if (m > max)
                     max = m;
                 xp->rep[m]++;
@@ -125,10 +119,8 @@ pzfixed(Pz_t *pz, Sfio_t *io, void *buf, size_t z)
         n = 0;
         m = 0;
         f = ~0;
-        for (i = max; i > 1; i--)
-        {
-            if ((siz <= 0 || !(siz % i)) && xp->rep[i] > xp->rep[n])
-            {
+        for (i = max; i > 1; i--) {
+            if ((siz <= 0 || !(siz % i)) && xp->rep[i] > xp->rep[n]) {
                 m++;
                 g = 0;
                 for (j = i; j < z - i; j += i)
@@ -146,8 +138,7 @@ pzfixed(Pz_t *pz, Sfio_t *io, void *buf, size_t z)
                              f,
                              g,
                              (g <= f) ? " *" : "");
-                if (g <= f)
-                {
+                if (g <= f) {
                     f = g;
                     n = i;
                 }

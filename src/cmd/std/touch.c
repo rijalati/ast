@@ -127,10 +127,8 @@ main(int argc, char **argv)
     NoP(argc);
     error_info.id = "touch";
     up = 0;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             set |= ATIME;
             continue;
@@ -149,8 +147,7 @@ main(int argc, char **argv)
                      || streq(opt_info.arg, "mtime")
                      || streq(opt_info.arg, "modification"))
                 use = MTIME;
-            else
-            {
+            else {
                 reference = 0;
                 t = tmxdate(opt_info.arg, &e, TMX_NOW);
                 if (*e)
@@ -185,15 +182,12 @@ main(int argc, char **argv)
     argv += opt_info.index;
     if (error_info.errors || !*argv)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
-    if (reference)
-    {
+    if (reference) {
         if (stat(reference, &st))
             error(ERROR_SYSTEM | 3, "%s: not found", reference);
-        if (use)
-        {
+        if (use) {
             up = &uv;
-            switch (use)
-            {
+            switch (use) {
             case ATIME:
                 tvgetatime(up, &st);
                 break;
@@ -205,9 +199,7 @@ main(int argc, char **argv)
                 break;
             }
         }
-    }
-    else if (!use && !up)
-    {
+    } else if (!use && !up) {
         for (file = *argv; *file >= '0' && *file <= '9'; file++)
             ;
         if (((n = (file - *argv)) == 4 || n == 6 || n == 8 || n == 10
@@ -215,8 +207,7 @@ main(int argc, char **argv)
             && (!*file
                 || *file == '.' && *(file + 1) >= '0' && *(file + 1) <= '9'
                    && *(file + 2) >= '0' && *(file + 2) <= '9'
-                   && !*(file + 3)))
-        {
+                   && !*(file + 3))) {
             t = tmxdate(file = *argv++, &e, TMX_NOW);
             if (*e)
                 error(3, "%s: invalid date specification", file);
@@ -226,57 +217,44 @@ main(int argc, char **argv)
     }
     if (!set)
         set = MTIME;
-    if (set & ATIME)
-    {
+    if (set & ATIME) {
         if (use || !reference)
             ap = up;
-        else
-        {
+        else {
             ap = &av;
             tvgetatime(ap, &st);
         }
-    }
-    else
+    } else
         ap = TV_TOUCH_RETAIN;
-    if (set & CTIME)
-    {
+    if (set & CTIME) {
         if (use || !reference)
             cp = up;
-        else
-        {
+        else {
             cp = &cv;
             tvgetctime(cp, &st);
         }
-    }
-    else
+    } else
         cp = TV_TOUCH_RETAIN;
-    if (set & MTIME)
-    {
+    if (set & MTIME) {
         if (use || !reference)
             mp = up;
-        else
-        {
+        else {
             mp = &mv;
             tvgetmtime(mp, &st);
         }
-    }
-    else
+    } else
         mp = TV_TOUCH_RETAIN;
     if (reference)
         use = 0;
     else if (use)
         up = &uv;
-    while (file = *argv++)
-    {
-        if (use)
-        {
-            if (stat(file, &st))
-            {
+    while (file = *argv++) {
+        if (use) {
+            if (stat(file, &st)) {
                 error(2, "%s: not found", file);
                 continue;
             }
-            switch (use)
-            {
+            switch (use) {
             case ATIME:
                 tvgetatime(up, &st);
                 break;

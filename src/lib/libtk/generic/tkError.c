@@ -108,8 +108,7 @@ ClientData clientData;   /* Arbitrary value to pass to
      */
 
     dispPtr = TkGetDisplay(display);
-    if (dispPtr == NULL)
-    {
+    if (dispPtr == NULL) {
         panic("Unknown display passed to Tk_CreateErrorHandler");
     }
 
@@ -117,8 +116,7 @@ ClientData clientData;   /* Arbitrary value to pass to
      * Make sure that X calls us whenever errors occur.
      */
 
-    if (defaultHandler == NULL)
-    {
+    if (defaultHandler == NULL) {
         defaultHandler = XSetErrorHandler(ErrorProc);
     }
 
@@ -188,8 +186,7 @@ Tk_ErrorHandler handler; /* Token for handler to delete;
      */
 
     dispPtr->deleteCount += 1;
-    if (dispPtr->deleteCount >= 10)
-    {
+    if (dispPtr->deleteCount >= 10) {
         TkErrorHandler *prevPtr;
         TkErrorHandler *nextPtr;
         int lastSerial;
@@ -198,18 +195,13 @@ Tk_ErrorHandler handler; /* Token for handler to delete;
         lastSerial = LastKnownRequestProcessed(dispPtr->display);
         errorPtr = dispPtr->errorPtr;
         for (errorPtr = dispPtr->errorPtr, prevPtr = NULL; errorPtr != NULL;
-             errorPtr = nextPtr)
-        {
+             errorPtr = nextPtr) {
             nextPtr = errorPtr->nextPtr;
             if ((errorPtr->lastRequest != -1)
-                && (errorPtr->lastRequest <= lastSerial))
-            {
-                if (prevPtr == NULL)
-                {
+                && (errorPtr->lastRequest <= lastSerial)) {
+                if (prevPtr == NULL) {
                     dispPtr->errorPtr = nextPtr;
-                }
-                else
-                {
+                } else {
                     prevPtr->nextPtr = nextPtr;
                 }
                 ckfree(( char * )errorPtr);
@@ -256,8 +248,7 @@ XErrorEvent *errEventPtr; /* Information about error. */
      */
 
     dispPtr = TkGetDisplay(display);
-    if (dispPtr == NULL)
-    {
+    if (dispPtr == NULL) {
         goto couldntHandle;
     }
 
@@ -266,8 +257,7 @@ XErrorEvent *errEventPtr; /* Information about error. */
      */
 
     for (errorPtr = dispPtr->errorPtr; errorPtr != NULL;
-         errorPtr = errorPtr->nextPtr)
-    {
+         errorPtr = errorPtr->nextPtr) {
         if ((errorPtr->firstRequest > errEventPtr->serial)
             || ((errorPtr->error != -1)
                 && (errorPtr->error != errEventPtr->error_code))
@@ -276,19 +266,14 @@ XErrorEvent *errEventPtr; /* Information about error. */
             || ((errorPtr->minorCode != -1)
                 && (errorPtr->minorCode != errEventPtr->minor_code))
             || ((errorPtr->lastRequest != -1)
-                && (errorPtr->lastRequest < errEventPtr->serial)))
-        {
+                && (errorPtr->lastRequest < errEventPtr->serial))) {
             continue;
         }
-        if (errorPtr->errorProc == NULL)
-        {
+        if (errorPtr->errorProc == NULL) {
             return 0;
-        }
-        else
-        {
+        } else {
             if ((*errorPtr->errorProc)(errorPtr->clientData, errEventPtr)
-                == 0)
-            {
+                == 0) {
                 return 0;
             }
         }
@@ -304,8 +289,8 @@ XErrorEvent *errEventPtr; /* Information about error. */
      */
 
     if ((errEventPtr->error_code == BadWindow)
-        && (Tk_IdToWindow(display, ( Window )errEventPtr->resourceid) != NULL))
-    {
+        && (Tk_IdToWindow(display, ( Window )errEventPtr->resourceid)
+            != NULL)) {
         return 0;
     }
 

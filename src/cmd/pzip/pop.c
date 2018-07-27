@@ -147,13 +147,10 @@ gather(Pz_t *pz, Pzpart_t *pp, Sfio_t *sp, Info_t *ip, size_t *map, size_t m)
     for (i = 0; i < m; i++)
         ip[i].prev = -1;
     rows = 0;
-    for (;;)
-    {
+    for (;;) {
         buf = pz->buf;
-        if ((r = sfread(sp, buf, pz->win)) < ( ssize_t )pp->row)
-        {
-            if (r < 0)
-            {
+        if ((r = sfread(sp, buf, pz->win)) < ( ssize_t )pp->row) {
+            if (r < 0) {
                 error(ERROR_SYSTEM | 2, "read error");
                 return -1;
             }
@@ -163,8 +160,7 @@ gather(Pz_t *pz, Pzpart_t *pp, Sfio_t *sp, Info_t *ip, size_t *map, size_t m)
         }
         for (rows += (n = r / pp->row); n--; buf += pp->row)
             for (i = 0; i < m; i++)
-                if (ip[i].prev != buf[j = map[i]])
-                {
+                if (ip[i].prev != buf[j = map[i]]) {
                     ip[i].hit[ip[i].prev = buf[j]] = 1;
                     ip[i].changes++;
                 }
@@ -195,21 +191,17 @@ cut(Pz_t *pz, Pzpart_t *pp, int op, size_t *map, size_t m)
             error(0, "map %3d => %3d", map[n], n);
     if (!(pz->wrk = vmnewof(pz->vm, 0, unsigned char, pz->win, 0)))
         error(ERROR_SYSTEM | 3, "out of space");
-    for (;;)
-    {
+    for (;;) {
         ib = pz->buf;
         ob = pz->wrk;
-        if ((r = sfread(pz->io, ib, pz->win)) < ( ssize_t )pp->row)
-        {
+        if ((r = sfread(pz->io, ib, pz->win)) < ( ssize_t )pp->row) {
             if (r > 0)
                 error(1, "last record incomplete");
             break;
         }
         n = r / pp->row;
-        for (i = 0; i < n; i++)
-        {
-            if (op & OP_ID)
-            {
+        for (i = 0; i < n; i++) {
+            if (op & OP_ID) {
                 *ob++ = i >> 8;
                 *ob++ = i;
             }
@@ -252,22 +244,19 @@ label(Pz_t *pz, Pzpart_t *pp, int op, size_t *map, size_t m, char *format)
     error_info.file = format;
     lv->end = -1;
     lp = ++lv;
-    while (s = sfgetr(sp, '\n', 1))
-    {
+    while (s = sfgetr(sp, '\n', 1)) {
         error_info.line++;
         for (; isspace(*s); s++)
             ;
         if (!*s || *s == '#' || *s == '"')
             continue;
-        if (!isdigit(*s))
-        {
+        if (!isdigit(*s)) {
             if (tokscan(s, NiL, "%s, %d,", &lp->name, &lp->end) != 2)
                 continue;
             lp->beg = (lp - 1)->end + 1;
             lp->end += lp->beg - 1;
-        }
-        else if (tokscan(s, NiL, "%d-%d %s", &lp->beg, &lp->end, &lp->name)
-                 != 3)
+        } else if (tokscan(s, NiL, "%d-%d %s", &lp->beg, &lp->end, &lp->name)
+                   != 3)
             continue;
         if (streq(lp->name, "variable_ascii"))
             continue;
@@ -298,8 +287,7 @@ label(Pz_t *pz, Pzpart_t *pp, int op, size_t *map, size_t m, char *format)
     xv[lp->beg] = lp;
     error_info.file = 0;
     error_info.line = 0;
-    if (op & OP_INFO)
-    {
+    if (op & OP_INFO) {
         if (!(ip = vmnewof(pz->vm, 0, Info_t, m, 0)))
             error(ERROR_SYSTEM | 3, "out of space");
         if ((rows = gather(pz, pp, pz->io, ip, map, m)) < 0)
@@ -315,16 +303,12 @@ label(Pz_t *pz, Pzpart_t *pp, int op, size_t *map, size_t m, char *format)
             g = map[0];
         else
             g = 0;
-        for (i = g = 0; i < m; i++)
-        {
-            if (op & OP_LO)
-            {
+        for (i = g = 0; i < m; i++) {
+            if (op & OP_LO) {
                 if (g != map[i])
                     sfprintf(sfstdout, "\n");
                 g = map[i] + 1;
-            }
-            else if (g != pp->lab[i])
-            {
+            } else if (g != pp->lab[i]) {
                 g = pp->lab[i];
                 sfprintf(sfstdout, "\n");
             }
@@ -335,29 +319,22 @@ label(Pz_t *pz, Pzpart_t *pp, int op, size_t *map, size_t m, char *format)
                      ip[i].changes,
                      ip[i].values);
         }
-    }
-    else
-        for (i = 0; i < m;)
-        {
+    } else
+        for (i = 0; i < m;) {
             lp = xv[map[i]];
             if (op & OP_LO)
                 g = map[i] + 1;
             else
                 g = pp->lab[i];
             sfprintf(sfstdout, "%33s %3d", lp->name, map[i]);
-            while (++i < m)
-            {
-                if (op & OP_LO)
-                {
-                    if (g != map[i])
-                    {
+            while (++i < m) {
+                if (op & OP_LO) {
+                    if (g != map[i]) {
                         sfprintf(sfstdout, "\n");
                         break;
                     }
                     g = map[i] + 1;
-                }
-                else if (g != pp->lab[i])
-                {
+                } else if (g != pp->lab[i]) {
                     sfprintf(sfstdout, "\n");
                     break;
                 }
@@ -396,16 +373,12 @@ info(Pz_t *pz, Pzpart_t *pp, int op, size_t *map, size_t m)
         g = map[0];
     else
         g = 0;
-    for (i = g = 0; i < m; i++)
-    {
-        if (op & OP_LO)
-        {
+    for (i = g = 0; i < m; i++) {
+        if (op & OP_LO) {
             if (g != map[i])
                 sfprintf(sfstdout, "\n");
             g = map[i] + 1;
-        }
-        else if (g != pp->lab[i])
-        {
+        } else if (g != pp->lab[i]) {
             g = pp->lab[i];
             sfprintf(sfstdout, "\n");
         }
@@ -432,31 +405,24 @@ diff(int op, const char *path, size_t row)
 
     if (!(buf[0] = newof(0, unsigned char, row, 0))
         || !(buf[1] = newof(0, unsigned char, row, 0))
-        || !(dif = newof(0, unsigned char, row, 0)))
-    {
+        || !(dif = newof(0, unsigned char, row, 0))) {
         error(ERROR_SYSTEM | 2, "out of space");
         return 1;
     }
-    if (!(sp = sfopen(NiL, path, "r")))
-    {
+    if (!(sp = sfopen(NiL, path, "r"))) {
         error(ERROR_SYSTEM | 2, "%s: cannot read", path);
         return 1;
     }
-    if (op & OP_ENDIFF)
-    {
-        for (i = 0; (r = sfread(sp, buf[i], row)) == row; i = k)
-        {
+    if (op & OP_ENDIFF) {
+        for (i = 0; (r = sfread(sp, buf[i], row)) == row; i = k) {
             k = !i;
             for (j = 0; j < row; j++)
                 dif[j] = buf[i][j] - buf[k][j];
             if (sfwrite(sfstdout, dif, row) != row)
                 break;
         }
-    }
-    else
-    {
-        for (i = 0; (r = sfread(sp, dif, row)) == row; i = k)
-        {
+    } else {
+        for (i = 0; (r = sfread(sp, dif, row)) == row; i = k) {
             k = !i;
             for (j = 0; j < row; j++)
                 buf[i][j] = dif[j] + buf[k][j];
@@ -465,13 +431,11 @@ diff(int op, const char *path, size_t row)
         }
     }
     sfclose(sp);
-    if (sfsync(sfstdout))
-    {
+    if (sfsync(sfstdout)) {
         error(ERROR_SYSTEM | 2, "write error");
         return 1;
     }
-    if (r < 0)
-    {
+    if (r < 0) {
         error(ERROR_SYSTEM | 2, "%s: read error", path);
         return 1;
     }
@@ -502,10 +466,8 @@ main(int argc, char **argv)
     disc.errorf = errorf;
     if (!(dp = sfstropen()))
         error(ERROR_SYSTEM | 3, "out of space [options]");
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'c':
             op |= OP_CUT;
             continue;
@@ -576,14 +538,12 @@ main(int argc, char **argv)
     if (sfstrtell(dp) && !(disc.options = strdup(sfstruse(dp))))
         error(ERROR_SYSTEM | 3, "out of space [options]");
     sfstrclose(dp);
-    if (op & (OP_ENDIFF | OP_UNDIFF))
-    {
+    if (op & (OP_ENDIFF | OP_UNDIFF)) {
         if (!row)
             error(3, "-r row-size required for -e");
         return diff(op, *argv, row);
     }
-    if (row)
-    {
+    if (row) {
         if (disc.partition)
             error(3, "only one of -r and -p may be specified");
         if (!(disc.partition = strdup(sfprints("/%I*u/", sizeof(row), row))))
@@ -596,23 +556,19 @@ main(int argc, char **argv)
     if (!(pz = pzopen(&disc, *argv, flags)))
         return 1;
     pp = pz->part;
-    if (!disc.partition && (op & OP_INFO))
-    {
+    if (!disc.partition && (op & OP_INFO)) {
         sfprintf(sfstdout, "row size %d\n", pp->row);
         op |= OP_LO;
     }
     pz->win = (pz->win / pp->row) * pp->row;
-    if (op & OP_LO)
-    {
+    if (op & OP_LO) {
         if (!(map = vmnewof(pz->vm, 0, size_t, pp->row - pp->nmap, 0)))
             error(ERROR_SYSTEM | 3, "out of space");
         m = 0;
         for (i = 0; i < pp->row; i++)
             if (pp->low[i])
                 map[m++] = i;
-    }
-    else
-    {
+    } else {
         map = pp->map;
         m = pp->nmap;
     }
@@ -622,8 +578,7 @@ main(int argc, char **argv)
         i = label(pz, pp, op, map, m, format);
     else if (op & OP_INFO)
         i = info(pz, pp, op, map, m);
-    else if (op & OP_MAP)
-    {
+    else if (op & OP_MAP) {
         pp->row = pp->nmap;
         for (i = 0; i < pp->nmap; i++)
             pp->map[i] = i;

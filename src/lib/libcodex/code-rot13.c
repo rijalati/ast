@@ -42,8 +42,7 @@ rot13_open(Codex_t *p, char *const args[], Codexnum_t flags)
     State_t *state;
     int i;
 
-    if (!(state = newof(0, State_t, 1, 0)))
-    {
+    if (!(state = newof(0, State_t, 1, 0))) {
         if (p->disc->errorf)
             (*p->disc->errorf)(NiL, p->disc, 2, "out of space");
         return -1;
@@ -93,12 +92,10 @@ rot13_write(Sfio_t *sp, const void *buf, size_t n, Sfdisc_t *disc)
     unsigned char *e;
     unsigned char *b;
 
-    if (n > state->bufsiz)
-    {
+    if (n > state->bufsiz) {
         state->bufsiz = roundof(n, 1024);
         if (!(state->buf
-              = newof(state->buf, unsigned char, state->bufsiz, 0)))
-        {
+              = newof(state->buf, unsigned char, state->bufsiz, 0))) {
             if (CODEX(disc)->disc->errorf)
                 (*CODEX(disc)->disc->errorf)(
                 NiL, CODEX(disc)->disc, 2, "out of space");

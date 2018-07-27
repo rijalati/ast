@@ -58,10 +58,8 @@ devpath(char *path, int size, int blk, struct stat *st)
         return 0;
     path[4] = '/';
     base = path + 5;
-    for (n = 1;;)
-    {
-        while (entry = readdir(dirp))
-        {
+    for (n = 1;;) {
+        while (entry = readdir(dirp)) {
 #ifdef D_FILENO
             if (n && D_FILENO(entry) != st->st_ino)
                 continue;
@@ -72,16 +70,12 @@ devpath(char *path, int size, int blk, struct stat *st)
             strcpy(base, entry->d_name);
             if (stat(path, &tst))
                 continue;
-            if (!subp && S_ISDIR(tst.st_mode) && !streq(path, "/dev/fd"))
-            {
+            if (!subp && S_ISDIR(tst.st_mode) && !streq(path, "/dev/fd")) {
                 subp = dirp;
-                if (dirp = opendir(path))
-                {
+                if (dirp = opendir(path)) {
                     base = path + strlen(path);
                     *base++ = '/';
-                }
-                else
-                {
+                } else {
                     dirp = subp;
                     subp = 0;
                 }
@@ -95,22 +89,19 @@ devpath(char *path, int size, int blk, struct stat *st)
                 && ((t = S_ISBLK(tst.st_mode)) || S_ISCHR(tst.st_mode))
                 && t == blk
                 && (!n
-                    || tst.st_dev == st->st_dev && tst.st_ino == st->st_ino))
-            {
+                    || tst.st_dev == st->st_dev && tst.st_ino == st->st_ino)) {
                 closedir(dirp);
                 if (subp)
                     closedir(subp);
                 return path;
             }
         }
-        if (subp)
-        {
+        if (subp) {
             closedir(dirp);
             dirp = subp;
             subp = 0;
             base = path + 5;
-        }
-        else if (!n--)
+        } else if (!n--)
             break;
         else
             rewinddir(dirp);
@@ -156,8 +147,7 @@ cspath(Cs_t *state, int fd, int flags)
         sfsprintf(
         state->path, sizeof(state->path), "/dev/pipe/%u", st.st_ino);
 #if CS_LIB_V10
-    else if (!ioctl(fd, TCPGETADDR, &tcp))
-    {
+    else if (!ioctl(fd, TCPGETADDR, &tcp)) {
         if (tcp.raddr)
             sfsprintf(state->path,
                       sizeof(state->path),
@@ -166,8 +156,7 @@ cspath(Cs_t *state, int fd, int flags)
                                              : csntoa(state, tcp.raddr),
                       ntohs(tcp.rport),
                       ntohs(tcp.lport));
-        else
-        {
+        else {
             if (!tcp.laddr)
                 tcp.laddr = csaddr(state, NiL);
             sfsprintf(state->path,
@@ -181,13 +170,11 @@ cspath(Cs_t *state, int fd, int flags)
 #endif
 #if CS_LIB_SOCKET
     else if (!getsockname(fd, ( struct sockaddr * )&lcl, &namlen)
-             && namlen == sizeof(lcl) && lcl.sin_family == AF_INET)
-    {
+             && namlen == sizeof(lcl) && lcl.sin_family == AF_INET) {
         s = "tcp";
 #    ifdef SO_TYPE
         if (!getsockopt(fd, SOL_SOCKET, SO_TYPE, ( char * )&typ, &typlen))
-            switch (typ)
-            {
+            switch (typ) {
             case SOCK_DGRAM:
                 s = "udp";
                 break;
@@ -200,8 +187,7 @@ cspath(Cs_t *state, int fd, int flags)
 #    endif
         namlen = sizeof(rmt);
         if (!getpeername(fd, ( struct sockaddr * )&rmt, &namlen)
-            && namlen == sizeof(rmt) && rmt.sin_family == AF_INET)
-        {
+            && namlen == sizeof(rmt) && rmt.sin_family == AF_INET) {
             if (!rmt.sin_addr.s_addr)
                 rmt.sin_addr.s_addr = csaddr(state, NiL);
             sfsprintf(state->path,
@@ -213,9 +199,7 @@ cspath(Cs_t *state, int fd, int flags)
                       : csntoa(state, ( unsigned long )rmt.sin_addr.s_addr),
                       ntohs(( unsigned short )rmt.sin_port),
                       ntohs(( unsigned short )lcl.sin_port));
-        }
-        else
-        {
+        } else {
             if (!lcl.sin_addr.s_addr)
                 lcl.sin_addr.s_addr = csaddr(state, NiL);
             sfsprintf(state->path,
@@ -229,8 +213,7 @@ cspath(Cs_t *state, int fd, int flags)
         }
     }
 #endif
-    else if ((typ = S_ISBLK(st.st_mode)) || S_ISCHR(st.st_mode))
-    {
+    else if ((typ = S_ISBLK(st.st_mode)) || S_ISCHR(st.st_mode)) {
         if (s = devpath(state->path, sizeof(state->path), typ, &st))
             return s;
         sfsprintf(state->path,
@@ -239,8 +222,7 @@ cspath(Cs_t *state, int fd, int flags)
                   typ ? "blk" : "chr",
                   major(idevice(&st)),
                   minor(idevice(&st)));
-    }
-    else
+    } else
         sfsprintf(state->path,
                   sizeof(state->path),
                   "/dev/ino/%u/%u",

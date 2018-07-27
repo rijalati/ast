@@ -196,8 +196,7 @@ char **argv;           /* Argument strings. */
     TkDisplay *dispPtr;
     size_t length;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
     badArgs:
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
@@ -210,37 +209,27 @@ char **argv;           /* Argument strings. */
     }
     c = argv[1][0];
     length = strlen(argv[1]);
-    if (c == '.')
-    {
-        if (argc != 2)
-        {
+    if (c == '.') {
+        if (argc != 2) {
             goto badArgs;
         }
         tkwin = Tk_NameToWindow(interp, argv[1], ( Tk_Window )clientData);
-        if (tkwin == NULL)
-        {
+        if (tkwin == NULL) {
             return TCL_ERROR;
         }
         return Tk_Grab(interp, tkwin, 0);
-    }
-    else if ((c == '-') && (strncmp(argv[1], "-global", length) == 0)
-             && (length >= 2))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == '-') && (strncmp(argv[1], "-global", length) == 0)
+               && (length >= 2)) {
+        if (argc != 3) {
             goto badArgs;
         }
         tkwin = Tk_NameToWindow(interp, argv[2], ( Tk_Window )clientData);
-        if (tkwin == NULL)
-        {
+        if (tkwin == NULL) {
             return TCL_ERROR;
         }
         return Tk_Grab(interp, tkwin, 1);
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "current", length) == 0))
-    {
-        if (argc > 3)
-        {
+    } else if ((c == 'c') && (strncmp(argv[1], "current", length) == 0)) {
+        if (argc > 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -248,37 +237,27 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             return TCL_ERROR;
         }
-        if (argc == 3)
-        {
+        if (argc == 3) {
             tkwin = Tk_NameToWindow(interp, argv[2], ( Tk_Window )clientData);
-            if (tkwin == NULL)
-            {
+            if (tkwin == NULL) {
                 return TCL_ERROR;
             }
             dispPtr = (( TkWindow * )tkwin)->dispPtr;
-            if (dispPtr->eventualGrabWinPtr != NULL)
-            {
+            if (dispPtr->eventualGrabWinPtr != NULL) {
                 interp->result = dispPtr->eventualGrabWinPtr->pathName;
             }
-        }
-        else
-        {
+        } else {
             for (dispPtr = tkDisplayList; dispPtr != NULL;
-                 dispPtr = dispPtr->nextPtr)
-            {
-                if (dispPtr->eventualGrabWinPtr != NULL)
-                {
+                 dispPtr = dispPtr->nextPtr) {
+                if (dispPtr->eventualGrabWinPtr != NULL) {
                     Tcl_AppendElement(interp,
                                       dispPtr->eventualGrabWinPtr->pathName);
                 }
             }
         }
         return TCL_OK;
-    }
-    else if ((c == 'r') && (strncmp(argv[1], "release", length) == 0))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 'r') && (strncmp(argv[1], "release", length) == 0)) {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -287,20 +266,14 @@ char **argv;           /* Argument strings. */
             return TCL_ERROR;
         }
         tkwin = Tk_NameToWindow(interp, argv[2], ( Tk_Window )clientData);
-        if (tkwin == NULL)
-        {
+        if (tkwin == NULL) {
             Tcl_ResetResult(interp);
-        }
-        else
-        {
+        } else {
             Tk_Ungrab(tkwin);
         }
-    }
-    else if ((c == 's') && (strncmp(argv[1], "set", length) == 0)
-             && (length >= 2))
-    {
-        if ((argc != 3) && (argc != 4))
-        {
+    } else if ((c == 's') && (strncmp(argv[1], "set", length) == 0)
+               && (length >= 2)) {
+        if ((argc != 3) && (argc != 4)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -308,17 +281,13 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             return TCL_ERROR;
         }
-        if (argc == 3)
-        {
+        if (argc == 3) {
             globalGrab = 0;
             tkwin = Tk_NameToWindow(interp, argv[2], ( Tk_Window )clientData);
-        }
-        else
-        {
+        } else {
             globalGrab = 1;
             length = strlen(argv[2]);
-            if ((strncmp(argv[2], "-global", length) != 0) || (length < 2))
-            {
+            if ((strncmp(argv[2], "-global", length) != 0) || (length < 2)) {
                 Tcl_AppendResult(interp,
                                  "bad argument \"",
                                  argv[2],
@@ -330,19 +299,15 @@ char **argv;           /* Argument strings. */
             }
             tkwin = Tk_NameToWindow(interp, argv[3], ( Tk_Window )clientData);
         }
-        if (tkwin == NULL)
-        {
+        if (tkwin == NULL) {
             return TCL_ERROR;
         }
         return Tk_Grab(interp, tkwin, globalGrab);
-    }
-    else if ((c == 's') && (strncmp(argv[1], "status", length) == 0)
-             && (length >= 2))
-    {
+    } else if ((c == 's') && (strncmp(argv[1], "status", length) == 0)
+               && (length >= 2)) {
         TkWindow *winPtr;
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -352,26 +317,18 @@ char **argv;           /* Argument strings. */
         }
         winPtr = ( TkWindow * )Tk_NameToWindow(
         interp, argv[2], ( Tk_Window )clientData);
-        if (winPtr == NULL)
-        {
+        if (winPtr == NULL) {
             return TCL_ERROR;
         }
         dispPtr = winPtr->dispPtr;
-        if (dispPtr->eventualGrabWinPtr != winPtr)
-        {
+        if (dispPtr->eventualGrabWinPtr != winPtr) {
             interp->result = "none";
-        }
-        else if (dispPtr->grabFlags & GRAB_GLOBAL)
-        {
+        } else if (dispPtr->grabFlags & GRAB_GLOBAL) {
             interp->result = "global";
-        }
-        else
-        {
+        } else {
             interp->result = "local";
         }
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "unknown or ambiguous option \"",
                          argv[1],
@@ -422,15 +379,12 @@ int grabGlobal;  /* Non-zero means issue a grab to the
     unsigned int serial;
 
     ReleaseButtonGrab(dispPtr);
-    if (dispPtr->eventualGrabWinPtr != NULL)
-    {
+    if (dispPtr->eventualGrabWinPtr != NULL) {
         if ((dispPtr->eventualGrabWinPtr == winPtr)
-            && (grabGlobal == ((dispPtr->grabFlags & GRAB_GLOBAL) != 0)))
-        {
+            && (grabGlobal == ((dispPtr->grabFlags & GRAB_GLOBAL) != 0))) {
             return TCL_OK;
         }
-        if (dispPtr->eventualGrabWinPtr->mainPtr != winPtr->mainPtr)
-        {
+        if (dispPtr->eventualGrabWinPtr->mainPtr != winPtr->mainPtr) {
         alreadyGrabbed:
             interp->result = "grab failed: another application has grab";
             return TCL_ERROR;
@@ -439,8 +393,7 @@ int grabGlobal;  /* Non-zero means issue a grab to the
     }
 
     Tk_MakeWindowExist(tkwin);
-    if (!grabGlobal)
-    {
+    if (!grabGlobal) {
         Window dummy1, dummy2;
         int dummy3, dummy4, dummy5, dummy6;
         unsigned int state;
@@ -463,14 +416,11 @@ int grabGlobal;  /* Non-zero means issue a grab to the
                       &dummy5,
                       &dummy6,
                       &state);
-        if ((state & ALL_BUTTONS) != 0)
-        {
+        if ((state & ALL_BUTTONS) != 0) {
             dispPtr->grabFlags |= GRAB_TEMP_GLOBAL;
             goto setGlobalGrab;
         }
-    }
-    else
-    {
+    } else {
         dispPtr->grabFlags |= GRAB_GLOBAL;
     setGlobalGrab:
 
@@ -496,8 +446,7 @@ int grabGlobal;  /* Non-zero means issue a grab to the
 
         grabResult = 0; /* Needed only to prevent gcc
                          * compiler warnings. */
-        for (numTries = 0; numTries < 10; numTries++)
-        {
+        for (numTries = 0; numTries < 10; numTries++) {
             grabResult = XGrabPointer(dispPtr->display,
                                       winPtr->window,
                                       True,
@@ -508,33 +457,22 @@ int grabGlobal;  /* Non-zero means issue a grab to the
                                       None,
                                       None,
                                       CurrentTime);
-            if (grabResult != AlreadyGrabbed)
-            {
+            if (grabResult != AlreadyGrabbed) {
                 break;
             }
             Tcl_Sleep(100);
         }
-        if (grabResult != 0)
-        {
+        if (grabResult != 0) {
         grabError:
-            if (grabResult == GrabNotViewable)
-            {
+            if (grabResult == GrabNotViewable) {
                 interp->result = "grab failed: window not viewable";
-            }
-            else if (grabResult == AlreadyGrabbed)
-            {
+            } else if (grabResult == AlreadyGrabbed) {
                 goto alreadyGrabbed;
-            }
-            else if (grabResult == GrabFrozen)
-            {
+            } else if (grabResult == GrabFrozen) {
                 interp->result = "grab failed: keyboard or pointer frozen";
-            }
-            else if (grabResult == GrabInvalidTime)
-            {
+            } else if (grabResult == GrabInvalidTime) {
                 interp->result = "grab failed: invalid time";
-            }
-            else
-            {
+            } else {
                 char msg[100];
 
                 sprintf(
@@ -549,8 +487,7 @@ int grabGlobal;  /* Non-zero means issue a grab to the
                                    GrabModeAsync,
                                    GrabModeAsync,
                                    CurrentTime);
-        if (grabResult != 0)
-        {
+        if (grabResult != 0) {
             XUngrabPointer(dispPtr->display, CurrentTime);
             goto grabError;
         }
@@ -581,16 +518,12 @@ int grabGlobal;  /* Non-zero means issue a grab to the
      */
 
     if ((dispPtr->serverWinPtr != NULL)
-        && (dispPtr->serverWinPtr->mainPtr == winPtr->mainPtr))
-    {
-        for (winPtr2 = dispPtr->serverWinPtr;; winPtr2 = winPtr2->parentPtr)
-        {
-            if (winPtr2 == winPtr)
-            {
+        && (dispPtr->serverWinPtr->mainPtr == winPtr->mainPtr)) {
+        for (winPtr2 = dispPtr->serverWinPtr;; winPtr2 = winPtr2->parentPtr) {
+            if (winPtr2 == winPtr) {
                 break;
             }
-            if (winPtr2 == NULL)
-            {
+            if (winPtr2 == NULL) {
                 MovePointer2(dispPtr->serverWinPtr, winPtr, NotifyGrab, 1, 0);
                 break;
             }
@@ -627,14 +560,12 @@ void Tk_Ungrab(tkwin) Tk_Window tkwin; /* Window whose grab should be
 
     grabWinPtr = ( TkWindow * )tkwin;
     dispPtr = grabWinPtr->dispPtr;
-    if (grabWinPtr != dispPtr->eventualGrabWinPtr)
-    {
+    if (grabWinPtr != dispPtr->eventualGrabWinPtr) {
         return;
     }
     ReleaseButtonGrab(dispPtr);
     QueueGrabWindowChange(dispPtr, ( TkWindow * )NULL);
-    if (dispPtr->grabFlags & (GRAB_GLOBAL | GRAB_TEMP_GLOBAL))
-    {
+    if (dispPtr->grabFlags & (GRAB_GLOBAL | GRAB_TEMP_GLOBAL)) {
         dispPtr->grabFlags &= ~(GRAB_GLOBAL | GRAB_TEMP_GLOBAL);
         serial = NextRequest(dispPtr->display);
         XUngrabPointer(dispPtr->display, CurrentTime);
@@ -656,17 +587,13 @@ void Tk_Ungrab(tkwin) Tk_Window tkwin; /* Window whose grab should be
      *    had the pointer in the first place.
      */
 
-    for (winPtr = dispPtr->serverWinPtr;; winPtr = winPtr->parentPtr)
-    {
-        if (winPtr == grabWinPtr)
-        {
+    for (winPtr = dispPtr->serverWinPtr;; winPtr = winPtr->parentPtr) {
+        if (winPtr == grabWinPtr) {
             break;
         }
-        if (winPtr == NULL)
-        {
+        if (winPtr == NULL) {
             if ((dispPtr->serverWinPtr == NULL)
-                || (dispPtr->serverWinPtr->mainPtr == grabWinPtr->mainPtr))
-            {
+                || (dispPtr->serverWinPtr->mainPtr == grabWinPtr->mainPtr)) {
                 MovePointer2(
                 grabWinPtr, dispPtr->serverWinPtr, NotifyUngrab, 0, 1);
             }
@@ -702,17 +629,14 @@ ReleaseButtonGrab(dispPtr) TkDisplay *dispPtr; /* Display whose button grab is
 {
     unsigned int serial;
 
-    if (dispPtr->buttonWinPtr != NULL)
-    {
-        if (dispPtr->buttonWinPtr != dispPtr->serverWinPtr)
-        {
+    if (dispPtr->buttonWinPtr != NULL) {
+        if (dispPtr->buttonWinPtr != dispPtr->serverWinPtr) {
             MovePointer2(
             dispPtr->buttonWinPtr, dispPtr->serverWinPtr, NotifyUngrab, 1, 1);
         }
         dispPtr->buttonWinPtr = NULL;
     }
-    if (dispPtr->grabFlags & GRAB_TEMP_GLOBAL)
-    {
+    if (dispPtr->grabFlags & GRAB_TEMP_GLOBAL) {
         dispPtr->grabFlags &= ~GRAB_TEMP_GLOBAL;
         serial = NextRequest(dispPtr->display);
         XUngrabPointer(dispPtr->display, CurrentTime);
@@ -762,8 +686,7 @@ TkWindow *winPtr;                            /* Tk's information for window
      * Collect information about the grab (if any).
      */
 
-    switch (TkGrabState(winPtr))
-    {
+    switch (TkGrabState(winPtr)) {
     case TK_GRAB_IN_TREE:
         appGrabbed = 1;
         break;
@@ -778,8 +701,7 @@ TkWindow *winPtr;                            /* Tk's information for window
         break;
     }
 
-    if ((eventPtr->type == EnterNotify) || (eventPtr->type == LeaveNotify))
-    {
+    if ((eventPtr->type == EnterNotify) || (eventPtr->type == LeaveNotify)) {
         /*
          * Keep track of what window the mouse is *really* over.
          * Any events that we generate have a special send_event value,
@@ -787,15 +709,11 @@ TkWindow *winPtr;                            /* Tk's information for window
          * purposes of setting serverWinPtr.
          */
 
-        if (eventPtr->xcrossing.send_event != GENERATED_EVENT_MAGIC)
-        {
+        if (eventPtr->xcrossing.send_event != GENERATED_EVENT_MAGIC) {
             if ((eventPtr->type == LeaveNotify)
-                && (winPtr->flags & TK_TOP_LEVEL))
-            {
+                && (winPtr->flags & TK_TOP_LEVEL)) {
                 dispPtr->serverWinPtr = NULL;
-            }
-            else
-            {
+            } else {
                 dispPtr->serverWinPtr = winPtr;
             }
         }
@@ -810,16 +728,12 @@ TkWindow *winPtr;                            /* Tk's information for window
          *    end up with the pointer *in* one of those windows.
          */
 
-        if (dispPtr->grabWinPtr != NULL)
-        {
-            if (outsideGrabTree && appGrabbed)
-            {
-                if (!ancestorOfGrab)
-                {
+        if (dispPtr->grabWinPtr != NULL) {
+            if (outsideGrabTree && appGrabbed) {
+                if (!ancestorOfGrab) {
                     return 0;
                 }
-                switch (eventPtr->xcrossing.detail)
-                {
+                switch (eventPtr->xcrossing.detail) {
                 case NotifyInferior:
                     return 0;
                 case NotifyAncestor:
@@ -839,21 +753,18 @@ TkWindow *winPtr;                            /* Tk's information for window
              */
 
             if ((dispPtr->buttonWinPtr != NULL)
-                && (winPtr != dispPtr->buttonWinPtr))
-            {
+                && (winPtr != dispPtr->buttonWinPtr)) {
                 return 0;
             }
         }
         return 1;
     }
 
-    if (!appGrabbed)
-    {
+    if (!appGrabbed) {
         return 1;
     }
 
-    if (eventPtr->type == MotionNotify)
-    {
+    if (eventPtr->type == MotionNotify) {
         /*
          * When grabs are active, X reports motion events relative to the
          * window under the pointer.  Instead, it should report the events
@@ -865,16 +776,12 @@ TkWindow *winPtr;                            /* Tk's information for window
          */
 
         winPtr2 = winPtr;
-        if (dispPtr->buttonWinPtr != NULL)
-        {
+        if (dispPtr->buttonWinPtr != NULL) {
             winPtr2 = dispPtr->buttonWinPtr;
-        }
-        else if (outsideGrabTree || (dispPtr->serverWinPtr == NULL))
-        {
+        } else if (outsideGrabTree || (dispPtr->serverWinPtr == NULL)) {
             winPtr2 = dispPtr->grabWinPtr;
         }
-        if (winPtr2 != winPtr)
-        {
+        if (winPtr2 != winPtr) {
             TkChangeEventWindow(eventPtr, winPtr2);
             Tk_QueueWindowEvent(eventPtr, TCL_QUEUE_HEAD);
             return 0;
@@ -912,32 +819,24 @@ TkWindow *winPtr;                            /* Tk's information for window
      *    down and release it when the last button comes up.
      */
 
-    if ((eventPtr->type == ButtonPress) || (eventPtr->type == ButtonRelease))
-    {
+    if ((eventPtr->type == ButtonPress)
+        || (eventPtr->type == ButtonRelease)) {
         winPtr2 = dispPtr->buttonWinPtr;
-        if (winPtr2 == NULL)
-        {
-            if (outsideGrabTree)
-            {
+        if (winPtr2 == NULL) {
+            if (outsideGrabTree) {
                 winPtr2 = dispPtr->grabWinPtr; /* Note 5. */
-            }
-            else
-            {
+            } else {
                 winPtr2 = winPtr; /* Note 5. */
             }
         }
-        if (eventPtr->type == ButtonPress)
-        {
-            if ((eventPtr->xbutton.state & ALL_BUTTONS) == 0)
-            {
-                if (outsideGrabTree)
-                {
+        if (eventPtr->type == ButtonPress) {
+            if ((eventPtr->xbutton.state & ALL_BUTTONS) == 0) {
+                if (outsideGrabTree) {
                     TkChangeEventWindow(eventPtr, dispPtr->grabWinPtr);
                     Tk_QueueWindowEvent(eventPtr, TCL_QUEUE_HEAD);
                     return 0; /* Note 2. */
                 }
-                if (!(dispPtr->grabFlags & GRAB_GLOBAL))
-                { /* Note 6. */
+                if (!(dispPtr->grabFlags & GRAB_GLOBAL)) { /* Note 6. */
                     serial = NextRequest(dispPtr->display);
                     if (XGrabPointer(dispPtr->display,
                                      dispPtr->grabWinPtr->window,
@@ -949,8 +848,7 @@ TkWindow *winPtr;                            /* Tk's information for window
                                      None,
                                      None,
                                      CurrentTime)
-                        == 0)
-                    {
+                        == 0) {
                         EatGrabEvents(dispPtr, serial);
                         if (XGrabKeyboard(dispPtr->display,
                                           winPtr->window,
@@ -958,12 +856,9 @@ TkWindow *winPtr;                            /* Tk's information for window
                                           GrabModeAsync,
                                           GrabModeAsync,
                                           CurrentTime)
-                            == 0)
-                        {
+                            == 0) {
                             dispPtr->grabFlags |= GRAB_TEMP_GLOBAL;
-                        }
-                        else
-                        {
+                        } else {
                             XUngrabPointer(dispPtr->display, CurrentTime);
                         }
                     }
@@ -971,17 +866,13 @@ TkWindow *winPtr;                            /* Tk's information for window
                 dispPtr->buttonWinPtr = winPtr;
                 return 1;
             }
-        }
-        else
-        {
+        } else {
             if ((eventPtr->xbutton.state & ALL_BUTTONS)
-                == buttonStates[eventPtr->xbutton.button - Button1])
-            {
+                == buttonStates[eventPtr->xbutton.button - Button1]) {
                 ReleaseButtonGrab(dispPtr); /* Note 4. */
             }
         }
-        if (winPtr2 != winPtr)
-        {
+        if (winPtr2 != winPtr) {
             TkChangeEventWindow(eventPtr, winPtr2);
             Tk_QueueWindowEvent(eventPtr, TCL_QUEUE_HEAD);
             return 0; /* Note 3. */
@@ -1022,17 +913,14 @@ TkWindow *winPtr; /* New target window for event. */
 
     eventPtr->xmotion.window = Tk_WindowId(winPtr);
     if (eventPtr->xmotion.root
-        == RootWindow(winPtr->display, winPtr->screenNum))
-    {
+        == RootWindow(winPtr->display, winPtr->screenNum)) {
         Tk_GetRootCoords(( Tk_Window )winPtr, &x, &y);
         eventPtr->xmotion.x = eventPtr->xmotion.x_root - x;
         eventPtr->xmotion.y = eventPtr->xmotion.y_root - y;
         eventPtr->xmotion.subwindow = None;
         for (childPtr = winPtr->childList; childPtr != NULL;
-             childPtr = childPtr->nextPtr)
-        {
-            if (childPtr->flags & TK_TOP_LEVEL)
-            {
+             childPtr = childPtr->nextPtr) {
+            if (childPtr->flags & TK_TOP_LEVEL) {
                 continue;
             }
             x = eventPtr->xmotion.x - childPtr->changes.x;
@@ -1040,26 +928,20 @@ TkWindow *winPtr; /* New target window for event. */
             bd = childPtr->changes.border_width;
             if ((x >= -bd) && (y >= -bd)
                 && (x < (childPtr->changes.width + bd))
-                && (y < (childPtr->changes.height + bd)))
-            {
+                && (y < (childPtr->changes.height + bd))) {
                 eventPtr->xmotion.subwindow = childPtr->window;
             }
         }
         sameScreen = 1;
-    }
-    else
-    {
+    } else {
         eventPtr->xmotion.x = 0;
         eventPtr->xmotion.y = 0;
         eventPtr->xmotion.subwindow = None;
         sameScreen = 0;
     }
-    if (eventPtr->type == MotionNotify)
-    {
+    if (eventPtr->type == MotionNotify) {
         eventPtr->xmotion.same_screen = sameScreen;
-    }
-    else
-    {
+    } else {
         eventPtr->xbutton.same_screen = sameScreen;
     }
 }
@@ -1130,16 +1012,12 @@ Tcl_QueuePosition position; /* Position at which events are added to
      * how many levels up and down events have to be generated for.
      */
 
-    if (sourcePtr == destPtr)
-    {
+    if (sourcePtr == destPtr) {
         return;
     }
-    if ((leaveType == FocusOut) || (enterType == FocusIn))
-    {
+    if ((leaveType == FocusOut) || (enterType == FocusIn)) {
         focus = 1;
-    }
-    else
-    {
+    } else {
         focus = 0;
     }
     FindCommonAncestor(sourcePtr, destPtr, &upLevels, &downLevels);
@@ -1150,98 +1028,75 @@ Tcl_QueuePosition position; /* Position at which events are added to
 
 
 #define QUEUE(w, t, d)                                                       \
-    if (w->window != None)                                                   \
-    {                                                                        \
+    if (w->window != None) {                                                 \
         eventPtr->type = t;                                                  \
-        if (focus)                                                           \
-        {                                                                    \
+        if (focus) {                                                         \
             eventPtr->xfocus.window = w->window;                             \
             eventPtr->xfocus.detail = d;                                     \
-        }                                                                    \
-        else                                                                 \
-        {                                                                    \
+        } else {                                                             \
             eventPtr->xcrossing.detail = d;                                  \
             TkChangeEventWindow(eventPtr, w);                                \
         }                                                                    \
         Tk_QueueWindowEvent(eventPtr, position);                             \
     }
 
-    if (downLevels == 0)
-    {
+    if (downLevels == 0) {
 
         /*
          * SourcePtr is an inferior of destPtr.
          */
 
-        if (leaveType != 0)
-        {
+        if (leaveType != 0) {
             QUEUE(sourcePtr, leaveType, NotifyAncestor);
             for (winPtr = sourcePtr->parentPtr, i = upLevels - 1; i > 0;
-                 winPtr = winPtr->parentPtr, i--)
-            {
+                 winPtr = winPtr->parentPtr, i--) {
                 QUEUE(winPtr, leaveType, NotifyVirtual);
             }
         }
-        if ((enterType != 0) && (destPtr != NULL))
-        {
+        if ((enterType != 0) && (destPtr != NULL)) {
             QUEUE(destPtr, enterType, NotifyInferior);
         }
-    }
-    else if (upLevels == 0)
-    {
+    } else if (upLevels == 0) {
 
         /*
          * DestPtr is an inferior of sourcePtr.
          */
 
-        if ((leaveType != 0) && (sourcePtr != NULL))
-        {
+        if ((leaveType != 0) && (sourcePtr != NULL)) {
             QUEUE(sourcePtr, leaveType, NotifyInferior);
         }
-        if (enterType != 0)
-        {
-            for (i = downLevels - 1; i > 0; i--)
-            {
+        if (enterType != 0) {
+            for (i = downLevels - 1; i > 0; i--) {
                 for (winPtr = destPtr->parentPtr, j = 1; j < i;
-                     winPtr = winPtr->parentPtr, j++)
-                {
+                     winPtr = winPtr->parentPtr, j++) {
                 }
                 QUEUE(winPtr, enterType, NotifyVirtual);
             }
-            if (destPtr != NULL)
-            {
+            if (destPtr != NULL) {
                 QUEUE(destPtr, enterType, NotifyAncestor);
             }
         }
-    }
-    else
-    {
+    } else {
 
         /*
          * Non-linear:  neither window is an inferior of the other.
          */
 
-        if (leaveType != 0)
-        {
+        if (leaveType != 0) {
             QUEUE(sourcePtr, leaveType, NotifyNonlinear);
             for (winPtr = sourcePtr->parentPtr, i = upLevels - 1; i > 0;
-                 winPtr = winPtr->parentPtr, i--)
-            {
+                 winPtr = winPtr->parentPtr, i--) {
                 QUEUE(winPtr, leaveType, NotifyNonlinearVirtual);
             }
         }
-        if (enterType != 0)
-        {
-            for (i = downLevels - 1; i > 0; i--)
-            {
+        if (enterType != 0) {
+            for (i = downLevels - 1; i > 0; i--) {
                 for (winPtr = destPtr->parentPtr, j = 1; j < i;
-                     winPtr = winPtr->parentPtr, j++)
-                {
+                     winPtr = winPtr->parentPtr, j++) {
                 }
                 QUEUE(winPtr, enterType, NotifyNonlinearVirtual);
             }
-            if (destPtr != NULL)
-            {
+            if (destPtr != NULL) {
                 QUEUE(destPtr, enterType, NotifyNonlinear);
             }
         }
@@ -1290,11 +1145,9 @@ int enterEvents;     /* Non-zero means generate enter events for the
     TkWindow *winPtr;
 
     winPtr = sourcePtr;
-    if ((winPtr == NULL) || (winPtr->window == None))
-    {
+    if ((winPtr == NULL) || (winPtr->window == None)) {
         winPtr = destPtr;
-        if ((winPtr == NULL) || (winPtr->window == None))
-        {
+        if ((winPtr == NULL) || (winPtr->window == None)) {
             return;
         }
     }
@@ -1348,31 +1201,23 @@ void TkGrabDeadWindow(winPtr) TkWindow *winPtr; /* Window that is in the
 {
     TkDisplay *dispPtr = winPtr->dispPtr;
 
-    if (dispPtr->eventualGrabWinPtr == winPtr)
-    {
+    if (dispPtr->eventualGrabWinPtr == winPtr) {
         /*
          * Grab window was deleted.  Release the grab.
          */
 
         Tk_Ungrab(( Tk_Window )dispPtr->eventualGrabWinPtr);
-    }
-    else if (dispPtr->buttonWinPtr == winPtr)
-    {
+    } else if (dispPtr->buttonWinPtr == winPtr) {
         ReleaseButtonGrab(dispPtr);
     }
-    if (dispPtr->serverWinPtr == winPtr)
-    {
-        if (winPtr->flags & TK_TOP_LEVEL)
-        {
+    if (dispPtr->serverWinPtr == winPtr) {
+        if (winPtr->flags & TK_TOP_LEVEL) {
             dispPtr->serverWinPtr = NULL;
-        }
-        else
-        {
+        } else {
             dispPtr->serverWinPtr = winPtr->parentPtr;
         }
     }
-    if (dispPtr->grabWinPtr == winPtr)
-    {
+    if (dispPtr->grabWinPtr == winPtr) {
         dispPtr->grabWinPtr = NULL;
     }
 }
@@ -1413,8 +1258,7 @@ unsigned int serial; /* Only discard events that have a serial
     XSync(dispPtr->display, False);
     oldProc
     = Tk_RestrictEvents(GrabRestrictProc, ( ClientData )&info, &oldArg);
-    while (Tcl_DoOneEvent(TCL_DONT_WAIT | TCL_WINDOW_EVENTS))
-    {
+    while (Tcl_DoOneEvent(TCL_DONT_WAIT | TCL_WINDOW_EVENTS)) {
     }
     Tk_RestrictEvents(oldProc, oldArg, &dummy);
 }
@@ -1451,25 +1295,17 @@ XEvent *eventPtr;
      */
 
     diff = eventPtr->xany.serial - info->serial;
-    if ((eventPtr->type == EnterNotify) || (eventPtr->type == LeaveNotify))
-    {
+    if ((eventPtr->type == EnterNotify) || (eventPtr->type == LeaveNotify)) {
         mode = eventPtr->xcrossing.mode;
-    }
-    else if ((eventPtr->type == FocusIn) || (eventPtr->type == FocusOut))
-    {
+    } else if ((eventPtr->type == FocusIn) || (eventPtr->type == FocusOut)) {
         mode = eventPtr->xfocus.mode;
-    }
-    else
-    {
+    } else {
         mode = NotifyNormal;
     }
     if ((info->display != eventPtr->xany.display) || (mode == NotifyNormal)
-        || (diff < 0))
-    {
+        || (diff < 0)) {
         return TK_DEFER_EVENT;
-    }
-    else
-    {
+    } else {
         return TK_DISCARD_EVENT;
     }
 }
@@ -1508,12 +1344,9 @@ TkWindow *grabWinPtr; /* Window that is to become the new grab
     grabEvPtr = ( NewGrabWinEvent * )ckalloc(sizeof(NewGrabWinEvent));
     grabEvPtr->header.proc = GrabWinEventProc;
     grabEvPtr->dispPtr = dispPtr;
-    if (grabWinPtr == NULL)
-    {
+    if (grabWinPtr == NULL) {
         grabEvPtr->grabWindow = None;
-    }
-    else
-    {
+    } else {
         grabEvPtr->grabWindow = grabWinPtr->window;
     }
     Tcl_QueueEvent(&grabEvPtr->header, TCL_QUEUE_MARK);
@@ -1595,13 +1428,10 @@ int *countPtr2;    /* Store nesting level of winPtr2 within
      * Mark winPtr1 and all of its ancestors with a special flag bit.
      */
 
-    if (winPtr1 != NULL)
-    {
-        for (winPtr = winPtr1; winPtr != NULL; winPtr = winPtr->parentPtr)
-        {
+    if (winPtr1 != NULL) {
+        for (winPtr = winPtr1; winPtr != NULL; winPtr = winPtr->parentPtr) {
             winPtr->flags |= TK_GRAB_FLAG;
-            if (winPtr->flags & TK_TOP_LEVEL)
-            {
+            if (winPtr->flags & TK_TOP_LEVEL) {
                 break;
             }
         }
@@ -1615,17 +1445,13 @@ int *countPtr2;    /* Store nesting level of winPtr2 within
     winPtr = winPtr2;
     count2 = 0;
     ancestorPtr = NULL;
-    if (winPtr2 != NULL)
-    {
-        for (; winPtr != NULL; count2++, winPtr = winPtr->parentPtr)
-        {
-            if (winPtr->flags & TK_GRAB_FLAG)
-            {
+    if (winPtr2 != NULL) {
+        for (; winPtr != NULL; count2++, winPtr = winPtr->parentPtr) {
+            if (winPtr->flags & TK_GRAB_FLAG) {
                 ancestorPtr = winPtr;
                 break;
             }
-            if (winPtr->flags & TK_TOP_LEVEL)
-            {
+            if (winPtr->flags & TK_TOP_LEVEL) {
                 count2++;
                 break;
             }
@@ -1637,25 +1463,18 @@ int *countPtr2;    /* Store nesting level of winPtr2 within
      * remembering how many levels up we had to go.
      */
 
-    if (winPtr1 == NULL)
-    {
+    if (winPtr1 == NULL) {
         count1 = 0;
-    }
-    else
-    {
+    } else {
         count1 = -1;
         for (i = 0, winPtr = winPtr1; winPtr != NULL;
-             i++, winPtr = winPtr->parentPtr)
-        {
+             i++, winPtr = winPtr->parentPtr) {
             winPtr->flags &= ~TK_GRAB_FLAG;
-            if (winPtr == ancestorPtr)
-            {
+            if (winPtr == ancestorPtr) {
                 count1 = i;
             }
-            if (winPtr->flags & TK_TOP_LEVEL)
-            {
-                if (count1 == -1)
-                {
+            if (winPtr->flags & TK_TOP_LEVEL) {
+                if (count1 == -1) {
                     count1 = i + 1;
                 }
                 break;
@@ -1695,19 +1514,14 @@ TkWindow *treePtr; /* Root of tree to compare against. */
 {
     TkWindow *winPtr2;
 
-    for (winPtr2 = winPtr; winPtr2 != treePtr; winPtr2 = winPtr2->parentPtr)
-    {
-        if (winPtr2 == NULL)
-        {
+    for (winPtr2 = winPtr; winPtr2 != treePtr; winPtr2 = winPtr2->parentPtr) {
+        if (winPtr2 == NULL) {
             for (winPtr2 = treePtr; winPtr2 != NULL;
-                 winPtr2 = winPtr2->parentPtr)
-            {
-                if (winPtr2 == winPtr)
-                {
+                 winPtr2 = winPtr2->parentPtr) {
+                if (winPtr2 == winPtr) {
                     return TK_GRAB_ANCESTOR;
                 }
-                if (winPtr2->flags & TK_TOP_LEVEL)
-                {
+                if (winPtr2->flags & TK_TOP_LEVEL) {
                     break;
                 }
             }
@@ -1749,13 +1563,11 @@ int TkGrabState(winPtr) TkWindow *winPtr; /* Window for which grab information
 {
     TkWindow *grabWinPtr = winPtr->dispPtr->grabWinPtr;
 
-    if (grabWinPtr == NULL)
-    {
+    if (grabWinPtr == NULL) {
         return TK_GRAB_NONE;
     }
     if ((winPtr->mainPtr != grabWinPtr->mainPtr)
-        && !(winPtr->dispPtr->grabFlags & GRAB_GLOBAL))
-    {
+        && !(winPtr->dispPtr->grabFlags & GRAB_GLOBAL)) {
         return TK_GRAB_NONE;
     }
 

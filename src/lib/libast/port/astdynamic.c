@@ -94,8 +94,7 @@ _ast_exit(void)
 BOOL WINAPI
 DllMain(HINSTANCE hinst, DWORD reason, VOID *reserved)
 {
-    switch (reason)
-    {
+    switch (reason) {
     case DLL_PROCESS_ATTACH:
         break;
     case DLL_PROCESS_DETACH:

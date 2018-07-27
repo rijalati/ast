@@ -47,8 +47,7 @@ int sfclrlock(f) Sfio_t *f;
     f->flags &= ~(SF_ERROR | SF_EOF);
 
     /* clear peek locks */
-    if (f->mode & SF_PKRD)
-    {
+    if (f->mode & SF_PKRD) {
         f->here -= f->endb - f->next;
         f->endb = f->next;
     }

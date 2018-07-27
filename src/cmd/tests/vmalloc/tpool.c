@@ -36,8 +36,7 @@ size_t newsize;
 Vmdisc_t *disc;
 #endif
 {
-    if (caddr)
-    {
+    if (caddr) {
         if (newsize != 0)
             return NIL(Void_t *);
         Release += 1;
@@ -58,8 +57,7 @@ tmain()
     if (!(vm = vmopen(&Disc, Vmpool, 0)))
         terror("Can't open");
 
-    for (i = 0; i < 10; ++i)
-    {
+    for (i = 0; i < 10; ++i) {
         addr[i] = vmalloc(vm, 15);
         if (((( Vmulong_t )addr[i]) % ALIGN) != 0)
             terror("Unaligned addr");

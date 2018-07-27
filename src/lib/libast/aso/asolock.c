@@ -36,13 +36,11 @@ asolock(unsigned int volatile *lock, unsigned int key, int type)
         return -1;
     else if (type & ASO_TRYLOCK)
         return asocasint(lock, 0, key) == 0 ? 1 : -1;
-    else if (type & ASO_LOCK)
-    {
+    else if (type & ASO_LOCK) {
         for (;; asospinrest())
             if (asocasint(lock, 0, key) == 0)
                 return 1;
-    }
-    else /*if(type & ASO_UNLOCK)*/
+    } else /*if(type & ASO_UNLOCK)*/
         return asocasint(lock, key, 0) == key ? 1 : -1;
 }
 

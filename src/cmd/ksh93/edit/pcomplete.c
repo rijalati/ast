@@ -189,8 +189,7 @@ action(const char *list[], const char *str)
 {
     const char *cp;
     int n = 0;
-    for (cp = list[0]; cp; cp = list[++n])
-    {
+    for (cp = list[0]; cp; cp = list[++n]) {
         if (strcmp(cp + 1, str) == 0)
             return (*cp);
     }
@@ -219,8 +218,7 @@ static bool
 keywords(Sfio_t *out)
 {
     const Shtable_t *tp;
-    for (tp = shtab_reserved; *tp->sh_name; tp++)
-    {
+    for (tp = shtab_reserved; *tp->sh_name; tp++) {
         if (sfputr(out, tp->sh_name, '\n') < 0)
             return (false);
     }
@@ -242,15 +240,12 @@ static gen_wordlist(Sfio_t *iop, const char *word)
     char c, n = 0;
     while ((c = *word) && strchr(ifs, c))
         word++;
-    while (c = *word++)
-    {
-        if (strchr(ifs, c))
-        {
+    while (c = *word++) {
+        if (strchr(ifs, c)) {
             if (n++)
                 continue;
             c = '\n';
-        }
-        else
+        } else
             n = 0;
         sfputc(iop, c);
     }
@@ -271,15 +266,12 @@ ed_pcomplete(struct Complete *comp,
     char **av, *cp, *str, *lastword;
     const char *filter;
     Shell_t *shp = comp->sh;
-    while (Actions[c = i++])
-    {
+    while (Actions[c = i++]) {
         if ((1L << c) > comp->action)
             break;
-        if (comp->action & (1L << c))
-        {
+        if (comp->action & (1L << c)) {
             str = ( char * )Action_eval[c];
-            switch (*str++)
-            {
+            switch (*str++) {
             case 'k':
                 keywords(tmp);
                 break;
@@ -309,8 +301,7 @@ ed_pcomplete(struct Complete *comp,
             }
         }
     }
-    if (comp->wordlist || comp->globpat)
-    {
+    if (comp->wordlist || comp->globpat) {
         if (comp->globpat)
             gen_wordlist(tmp, comp->globpat);
         if (comp->wordlist)
@@ -320,28 +311,24 @@ ed_pcomplete(struct Complete *comp,
         && !(comp->fun = nv_search(comp->fname, sh_subfuntree(shp, 0), 0)))
         errormsg(
         SH_DICT, ERROR_exit(1), "%s: function not found", comp->fname);
-    if (comp->command || comp->fun)
-    {
+    if (comp->command || comp->fun) {
         char *cpsave;
         int csave;
         if (strcmp(comp->name, " E") == 0)
             complete = 1;
-        if (complete)
-        {
+        if (complete) {
             _nv_unset(COMPREPLY, 0);
             COMP_POINT->nvalue.s = index + 1;
             COMP_LINE->nvalue.cp = line;
             cp = ( char * )&line[index] - strlen(prefix);
             csave = *(cpsave = cp);
-            while (--cp >= line)
-            {
+            while (--cp >= line) {
                 if (isspace(*cp))
                     break;
             }
             lastword = ++cp;
         }
-        if (comp->fun)
-        {
+        if (comp->fun) {
             Namarr_t *ap;
             Namval_t *np = COMPREPLY;
             int n, spaces = 0;
@@ -354,14 +341,11 @@ ed_pcomplete(struct Complete *comp,
             if (strchr(" \t", *cp))
                 cp++;
             n = 1;
-            while (c = *cp++)
-            {
-                if (strchr(" \t", c))
-                {
+            while (c = *cp++) {
+                if (strchr(" \t", c)) {
                     if (spaces++ == 0)
                         n++;
-                }
-                else if (spaces)
+                } else if (spaces)
                     spaces = 0;
             }
             COMP_CWORD->nvalue.s = n - 1;
@@ -372,17 +356,13 @@ ed_pcomplete(struct Complete *comp,
             cp = ( char * )&av[n + 1];
             strcpy(cp, line);
             spaces = 0;
-            while (*cp)
-            {
-                while (*cp && strchr(" \t", *cp))
-                {
+            while (*cp) {
+                while (*cp && strchr(" \t", *cp)) {
                     *cp++ = 0;
                     spaces++;
                 }
-                if (*cp == 0)
-                {
-                    if (spaces)
-                    {
+                if (*cp == 0) {
+                    if (spaces) {
                         *--cp = ' ';
                         *av++ = cp;
                     }
@@ -409,20 +389,16 @@ ed_pcomplete(struct Complete *comp,
             str = stkptr(shp->stk, 0);
             sh_trap(shp, str, 0);
             stkseek(shp->stk, 0);
-            if ((ap = nv_arrayptr(np)) && ap->nelem > 0)
-            {
+            if ((ap = nv_arrayptr(np)) && ap->nelem > 0) {
                 nv_putsub(np, ( char * )0, 0, ARRAY_SCAN);
-                do
-                {
+                do {
                     cp = nv_getval(np);
                     sfputr(tmp, cp, '\n');
                 } while (nv_nextsub(np));
-            }
-            else if (cp = nv_getval(np))
+            } else if (cp = nv_getval(np))
                 sfputr(tmp, cp, '\n');
         }
-        if (comp->command)
-        {
+        if (comp->command) {
             if (!complete)
                 errormsg(SH_DICT,
                          ERROR_warn(0),
@@ -450,14 +426,11 @@ ed_pcomplete(struct Complete *comp,
     if (comp->suffix)
         slen = strlen(comp->prefix);
     filter = comp->filter;
-    if (comp->options & FILTER_AMP)
-    {
-        while (c = *filter++)
-        {
+    if (comp->options & FILTER_AMP) {
+        while (c = *filter++) {
             if (c == '\\' && *filter == '&')
                 c = *filter++;
-            else if (c == '&')
-            {
+            else if (c == '&') {
                 sfputr(shp->stk, prefix, -1);
                 continue;
             }
@@ -465,14 +438,12 @@ ed_pcomplete(struct Complete *comp,
         }
         filter = stkfreeze(shp->stk, 1);
     }
-    if (filter && *filter == '!')
-    {
+    if (filter && *filter == '!') {
         filter++;
         negate = true;
     }
     sfset(tmp, SF_WRITE, 0);
-    if (prefix)
-    {
+    if (prefix) {
         if (*prefix == '\'' && prefix[1] == '\'')
             prefix += 2;
         else if (*prefix == '"' && prefix[1] == '"')
@@ -482,13 +453,11 @@ ed_pcomplete(struct Complete *comp,
 again:
     c = 0;
     sfseek(tmp, ( Sfoff_t )0, SEEK_SET);
-    while (str = sfgetr(tmp, '\n', 0))
-    {
+    while (str = sfgetr(tmp, '\n', 0)) {
         wlen = sfvalue(tmp) - 1;
         if (prefix && memcmp(prefix, str, len))
             continue;
-        if (filter)
-        {
+        if (filter) {
             str[wlen] = 0;
             i = strmatch(str, filter);
             str[wlen] = '\n';
@@ -498,8 +467,7 @@ again:
         c++;
         if (complete == 1)
             tlen += wlen;
-        else if (complete == 2)
-        {
+        else if (complete == 2) {
             *av++ = cp;
             if (comp->prefix)
                 memcpy(cp, comp->prefix, plen);
@@ -509,9 +477,7 @@ again:
                 memcpy(cp, comp->suffix, slen);
             cp += slen;
             *cp++ = 0;
-        }
-        else
-        {
+        } else {
             if (comp->prefix)
                 sfwrite(sfstdout, comp->prefix, plen);
             sfwrite(sfstdout, str, wlen);
@@ -520,14 +486,12 @@ again:
             sfputc(sfstdout, '\n');
         }
     }
-    if (complete == 2)
-    {
+    if (complete == 2) {
         *av = 0;
         sfclose(tmp);
         return (( char ** )stkptr(shp->stk, 0));
     }
-    if (complete)
-    {
+    if (complete) {
         /* reserved space on stack and try again */
         len = 3;
         tlen = (c + 1) * sizeof(char *) + len * c + 1024;
@@ -546,18 +510,15 @@ delete_and_add(const char *name, struct Complete *comp)
 {
     struct Complete *old = 0;
     Dt_t *compdict = (( Edit_t * )(shgd->ed_context))->compdict;
-    if (compdict && (old = ( struct Complete * )dtmatch(compdict, name)))
-    {
+    if (compdict && (old = ( struct Complete * )dtmatch(compdict, name))) {
         dtdelete(compdict, old);
         free(( void * )old);
-    }
-    else if (comp && !compdict)
+    } else if (comp && !compdict)
         (( Edit_t * )(shgd->ed_context))->compdict = compdict
         = dtopen(&_Compdisc, Dtoset);
     if (!comp && old)
         return (false);
-    if (comp)
-    {
+    if (comp) {
         int size = comp->name ? strlen(comp->name) + 1 : 0;
         int n = size, p = 0, s = 0, f = 0, w = 0, g = 0, c = 0, fn = 0;
         char *cp;
@@ -618,8 +579,7 @@ lquote(struct Complete *cp, const char *str)
     sfputc(stakp, '$');
     if (sp - str)
         sfwrite(stakp, str, sp - str);
-    while (c = *sp++)
-    {
+    while (c = *sp++) {
         if (c == '\'')
             sfputc(stakp, '\\');
         sfputc(stakp, c);
@@ -634,22 +594,17 @@ print_out(struct Complete *cp, Sfio_t *out)
     int c, i = 0, a;
     char *sp;
     sfputr(out, "complete", ' ');
-    while (Options[c = i++])
-    {
+    while (Options[c = i++]) {
         if (cp->options & (1 << c))
             sfprintf(out, "-o %s ", Option_names[c] + 1);
     }
-    while (Actions[c = i++])
-    {
-        if (a = cp->action & (1L << c))
-        {
-            if (sp = strchr("abcdefgjksuv", Actions[c]))
-            {
+    while (Actions[c = i++]) {
+        if (a = cp->action & (1L << c)) {
+            if (sp = strchr("abcdefgjksuv", Actions[c])) {
                 sfputc(out, '-');
                 sfputc(out, *sp);
                 sfputc(out, ' ');
-            }
-            else
+            } else
                 sfprintf(out, "-A %s ", Action_names[c] + 1);
         }
         if ((1L << c) >= cp->action)
@@ -685,20 +640,16 @@ b_complete(int argc, char *argv[], Shbltin_t *context)
     Optdisc_t disc;
     struct Complete comp;
     disc.version = OPT_VERSION;
-    if (strcmp(argv[0], "compgen") == 0)
-    {
+    if (strcmp(argv[0], "compgen") == 0) {
         complete = false;
         optinit(&disc, compgen_info);
-    }
-    else
+    } else
         optinit(&disc, complete_info);
     memset(&comp, 0, sizeof(comp));
     comp.sh = context->shp;
 
-    while ((n = optget(argv, sh_optcomplete)))
-    {
-        switch (n)
-        {
+    while ((n = optget(argv, sh_optcomplete))) {
+        switch (n) {
         case 'A':
             if ((n = action(Action_names, opt_info.arg)) == 0)
                 errormsg(SH_DICT,
@@ -723,12 +674,10 @@ b_complete(int argc, char *argv[], Shbltin_t *context)
         case 'Z':
             n = (strchr(Actions, n) - Actions);
             comp.action |= 1L << n;
-            if (Actions[n] == 'c')
-            {
+            if (Actions[n] == 'c') {
                 /* c contains keywords, builtins and functs */
                 const char *cp;
-                for (cp = "kbF"; n = *cp; cp++)
-                {
+                for (cp = "kbF"; n = *cp; cp++) {
                     n = (strchr(Actions, n) - Actions);
                     comp.action |= 1L << n;
                 }
@@ -785,22 +734,18 @@ b_complete(int argc, char *argv[], Shbltin_t *context)
         }
     }
     argv += opt_info.index;
-    if (complete)
-    {
+    if (complete) {
         char *name;
         struct Complete *cp;
         Dt_t *compdict = (( Edit_t * )(shgd->ed_context))->compdict;
-        if (!empty && !argv[0])
-        {
+        if (!empty && !argv[0]) {
             if (!print && !delete)
                 errormsg(
                 SH_DICT, ERROR_usage(0), "complete requires command name");
-            if (compdict)
-            {
+            if (compdict) {
                 struct Complete *cpnext;
                 for (cp = ( struct Complete * )dtfirst(compdict); cp;
-                     cp = cpnext)
-                {
+                     cp = cpnext) {
                     cpnext = ( struct Complete * )dtnext(compdict, cp);
                     if (print)
                         print_out(cp, sfstdout);
@@ -811,26 +756,20 @@ b_complete(int argc, char *argv[], Shbltin_t *context)
         }
         if (empty)
             argv = av;
-        while (name = *argv++)
-        {
-            if (print)
-            {
+        while (name = *argv++) {
+            if (print) {
                 if (!compdict
                     || !(cp = ( struct Complete * )dtmatch(compdict, name)))
                     r = 1;
                 else
                     print_out(cp, sfstdout);
-            }
-            else
-            {
+            } else {
                 comp.name = name;
                 if (!delete_and_add(argv[0], delete ? 0 : &comp))
                     r = 1;
             }
         }
-    }
-    else
-    {
+    } else {
         comp.name = "";
         ed_pcomplete(&comp, "", argv[0], 0);
     }

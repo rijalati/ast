@@ -126,8 +126,7 @@ vcwfclose(Vcwfile_t *vcwf)
 void vcwfclose(vcwf) Vcwfile_t *vcwf;
 #endif
 {
-    if (vcwf)
-    {
+    if (vcwf) {
         if (vcwf->sig)
             free(vcwf->sig);
         if (vcwf->ssig)
@@ -165,8 +164,7 @@ static int vcwfsig(vcwf) Vcwfile_t *vcwf;
         return -1;
 
     ssig = vcwf->ssig;
-    for (esig = (sig = vcwf->sig) + nsig; sig < esig; ++sig, ++ssig)
-    {
+    for (esig = (sig = vcwf->sig) + nsig; sig < esig; ++sig, ++ssig) {
         if (!(data = sfreserve(vcwf->file, NG_SIZE, 0)))
             return -1;
         *sig = vcwngsig(data, NG_SIZE);
@@ -207,14 +205,11 @@ int maxi;      /* max index that can be matched	*/
     vote = *msig == vcwf->work[v] ? 2 : 1;
 
     /* count "contiguous block of neighbors" on left side */
-    for (i = v - 1; i > 0; --i)
-    {
+    for (i = v - 1; i > 0; --i) {
         if ((ws = vcwf->work[i]) == (ss = msig[i - v]))
             vote += 2;
-        else
-        {
-            if (ws < ss)
-            {
+        else {
+            if (ws < ss) {
                 t = ws;
                 ws = ss;
                 ss = t;
@@ -227,14 +222,11 @@ int maxi;      /* max index that can be matched	*/
     }
 
     /* count "contiguous block of neighbors" on right side */
-    for (i = v + 1; i < vcwf->nwork; ++i)
-    {
+    for (i = v + 1; i < vcwf->nwork; ++i) {
         if ((ws = vcwf->work[i]) == (ss = msig[i - v]))
             vote += 2;
-        else
-        {
-            if (ws < ss)
-            {
+        else {
+            if (ws < ss) {
                 t = ws;
                 ws = ss;
                 ss = t;
@@ -251,11 +243,9 @@ int maxi;      /* max index that can be matched	*/
     {
         cand[i].idx = idx;
         cand[i].vote = vote;
-    }
-    else if (cand[i].idx == idx) /* increase vote count */
+    } else if (cand[i].idx == idx) /* increase vote count */
         cand[i].vote += vote;
-    else if (cand[i].vote < vote)
-    {
+    else if (cand[i].vote < vote) {
         cand[i].idx = idx;
         cand[i].vote = vote;
     }
@@ -284,8 +274,7 @@ size_t size;    /* size of data		*/
     if (size >= vcwf->size || size <= NG_SIZE)
         return (vcwf->nidx = 0);
 
-    if ((nwork = size / NG_SIZE) > vcwf->nwork)
-    {
+    if ((nwork = size / NG_SIZE) > vcwf->nwork) {
         if (vcwf->work)
             free(vcwf->work);
         if (!(vcwf->work = ( Grint_t * )malloc(nwork * sizeof(Grint_t))))
@@ -304,11 +293,10 @@ size_t size;    /* size of data		*/
 
     maxi = vcwf->nsig - nwork; /* max location that can be matched	*/
 
-    for (n = 0; n < nwork; n += 1)
-    { /* find the closest one to the search value */
+    for (n = 0; n < nwork;
+         n += 1) { /* find the closest one to the search value */
         workn = work[n];
-        for (es = (ss = vcwf->ssig) + vcwf->nsig; (es - ss) > 1;)
-        {
+        for (es = (ss = vcwf->ssig) + vcwf->nsig; (es - ss) > 1;) {
             ms = ss + (es - ss) / 2;
             if (**ms == workn)
                 ss = es = ms;
@@ -326,28 +314,21 @@ size_t size;    /* size of data		*/
             ss = ms;
 
         v = NVOTE(nwork);
-        while (v > 0 && (ss >= vcwf->ssig || ms < es))
-        {
-            if (ss >= vcwf->ssig)
-            {
-                if (DIST(workn, **ss) < ACCEPT(**ss))
-                {
+        while (v > 0 && (ss >= vcwf->ssig || ms < es)) {
+            if (ss >= vcwf->ssig) {
+                if (DIST(workn, **ss) < ACCEPT(**ss)) {
                     vcwfvote(vcwf, cand, *ss, n, maxi);
                     v -= 1;
                     ss -= 1;
-                }
-                else
+                } else
                     ss = vcwf->ssig - 1;
             }
-            if (ms < es)
-            {
-                if (DIST(**ms, workn) < ACCEPT(workn))
-                {
+            if (ms < es) {
+                if (DIST(**ms, workn) < ACCEPT(workn)) {
                     vcwfvote(vcwf, cand, *ms, n, maxi);
                     v -= 1;
                     ms += 1;
-                }
-                else
+                } else
                     ms = es;
             }
         }
@@ -355,8 +336,7 @@ size_t size;    /* size of data		*/
 
 #define NIDX(vcwf) (sizeof(vcwf->idx) / sizeof(vcwf->idx[0]))
     vcqsort(cand, CSIZE, sizeof(Cand_t), votecmp, 0);
-    for (n = 0; n < NIDX(vcwf); ++n)
-    {
+    for (n = 0; n < NIDX(vcwf); ++n) {
         if (cand[n].vote <= 0)
             break;
         vcwf->idx[n] = cand[n].idx;

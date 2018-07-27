@@ -43,8 +43,7 @@ rmdir(const char *path)
 
     if (stat(path, &st) < 0)
         return (-1);
-    if (!S_ISDIR(st.st_mode))
-    {
+    if (!S_ISDIR(st.st_mode)) {
         errno = ENOTDIR;
         return (-1);
     }
@@ -55,8 +54,7 @@ rmdir(const char *path)
         if (procclose(procopen(cmd[n], av, NiL, NiL, 0)) != -1)
             break;
     n = errno;
-    if (access(path, F_OK) < 0)
-    {
+    if (access(path, F_OK) < 0) {
         errno = n;
         return (0);
     }

@@ -200,8 +200,7 @@ unsigned scend;
 #if KSHELL && (2 * CHARSIZE * MAXLINE) < IOBSIZE
     kstack = buff + MAXLINE * sizeof(genchar);
 #else
-    if (kstack == 0)
-    {
+    if (kstack == 0) {
         kstack = ( genchar * )malloc(sizeof(genchar) * (MAXLINE));
         kstack[0] = '\0';
     }
@@ -209,8 +208,7 @@ unsigned scend;
     Prompt = prompt;
     screen = Screen;
     drawbuff = out = ( genchar * )buff;
-    if (tty_raw(ERRIO) < 0)
-    {
+    if (tty_raw(ERRIO) < 0) {
         p_flush();
         return (read(fd, buff, scend));
     }
@@ -235,11 +233,9 @@ unsigned scend;
     in_mult = hloff; /* save pos in last command */
 #endif               /* ESH_NFIRST */
     i = SETJMP(env);
-    if (i)
-    {
+    if (i) {
         tty_cooked(ERRIO);
-        if (i == UEOF)
-        {
+        if (i == UEOF) {
             return (0); /* EOF */
         }
         return (-1); /* some other error */
@@ -251,14 +247,12 @@ unsigned scend;
     draw(FIRST);
     adjust = -1;
     backslash = 0;
-    if (CntrlO)
-    {
+    if (CntrlO) {
 #ifdef ESH_NFIRST
         ed_ungetchar(cntl('N'));
 #else
         location = hist_locate(location.his_command, location.his_line, 1);
-        if (location.his_command < histlines)
-        {
+        if (location.his_command < histlines) {
             hline = location.his_command;
             hloff = location.his_line;
             hist_copy(( char * )kstack, hline, hloff);
@@ -270,14 +264,11 @@ unsigned scend;
 #endif     /* ESH_NFIRST */
     }
     CntrlO = 0;
-    while ((c = ed_getchar()) != (-1))
-    {
-        if (backslash)
-        {
+    while ((c = ed_getchar()) != (-1)) {
+        if (backslash) {
             backslash = 0;
             if (c == usrerase || c == usrkill
-                || (!print(c) && (c != '\r' && c != '\n')))
-            {
+                || (!print(c) && (c != '\r' && c != '\n'))) {
                 /* accept a backslashed character */
                 cur--;
                 out[cur++] = c;
@@ -286,16 +277,11 @@ unsigned scend;
                 continue;
             }
         }
-        if (c == usrkill)
-        {
+        if (c == usrkill) {
             c = KILLCHAR;
-        }
-        else if (c == usrerase)
-        {
+        } else if (c == usrerase) {
             c = ERASECHAR;
-        }
-        else if ((c == usreof) && (eol == 0))
-        {
+        } else if ((c == usreof) && (eol == 0)) {
             c = EOFCHAR;
         }
 #ifdef ESH_KAPPEND
@@ -307,8 +293,7 @@ unsigned scend;
             count = 1;
         adjust = -1;
         i = cur;
-        switch (c)
-        {
+        switch (c) {
         case cntl('V'):
             show_info(&e_version[5]);
             continue;
@@ -335,19 +320,16 @@ unsigned scend;
                 ed_ungetchar(c); /* save character for next line */
                 goto process;
             }
-            for (i = eol; i >= cur; i--)
-            {
+            for (i = eol; i >= cur; i--) {
                 out[i] = out[i - 1];
             }
             backslash = (c == '\\');
             out[cur++] = c;
             draw(APPEND);
             continue;
-        case cntl('Y'):
-        {
+        case cntl('Y'): {
             c = genlen(kstack);
-            if ((c + eol) > scend)
-            {
+            if ((c + eol) > scend) {
                 beep();
                 continue;
             }
@@ -378,16 +360,14 @@ unsigned scend;
                 c = genlen(kstack) + CHARSIZE; /* include '\0' */
                 while (c--)                    /* copy stuff */
                     kptr[c] = kstack[c];
-            }
-            else
+            } else
                 *kptr = 0; /* this is end of data */
             killing = 2;   /* we are killing */
             i -= count;
             eol -= count;
             genncpy(kstack, out + i, cur - i);
 #else
-            while ((count--) && (i > 0))
-            {
+            while ((count--) && (i > 0)) {
                 i--;
                 eol--;
             }
@@ -405,8 +385,7 @@ unsigned scend;
                 mark = eol;
             if (mark == i)
                 continue;
-            if (mark > i)
-            {
+            if (mark > i) {
                 adjust = mark - i;
                 ed_ungetchar(cntl('D'));
                 continue;
@@ -425,12 +404,10 @@ unsigned scend;
 #else
             kptr = kstack;
 #endif /* ESH_KAPPEND */
-            while ((count--) && (eol > 0) && (i < eol))
-            {
+            while ((count--) && (eol > 0) && (i < eol)) {
                 *kptr++ = out[i];
                 eol--;
-                while (1)
-                {
+                while (1) {
                     if ((out[i] = out[(i + 1)]) == 0)
                         break;
                     i++;
@@ -440,13 +417,10 @@ unsigned scend;
             *kptr = '\0';
             goto update;
         case cntl('C'):
-        case cntl('F'):
-        {
+        case cntl('F'): {
             int cntlC = (c == cntl('C'));
-            while (count-- && eol > i)
-            {
-                if (cntlC)
-                {
+            while (count-- && eol > i) {
+                if (cntlC) {
                     c = out[i];
 #ifdef MULTIBYTE
                     if ((c & ~STRIP) == 0 && islower(c))
@@ -464,22 +438,19 @@ unsigned scend;
         }
         case cntl(']'):
             c = ed_getchar();
-            if ((count == 0) || (count > eol))
-            {
+            if ((count == 0) || (count > eol)) {
                 beep();
                 continue;
             }
             if (out[i])
                 i++;
-            while (i < eol)
-            {
+            while (i < eol) {
                 if (out[i] == c && --count == 0)
                     goto update;
                 i++;
             }
             i = 0;
-            while (i < cur)
-            {
+            while (i < cur) {
                 if (out[i] == c && --count == 0)
                     break;
                 i++;
@@ -496,31 +467,22 @@ unsigned scend;
             i -= count;
             goto update;
         case cntl('T'):
-            if ((is_option(GMACS)) || (eol == i))
-            {
-                if (i >= 2)
-                {
+            if ((is_option(GMACS)) || (eol == i)) {
+                if (i >= 2) {
                     c = out[i - 1];
                     out[i - 1] = out[i - 2];
                     out[i - 2] = c;
-                }
-                else
-                {
+                } else {
                     beep();
                     continue;
                 }
-            }
-            else
-            {
-                if (eol > (i + 1))
-                {
+            } else {
+                if (eol > (i + 1)) {
                     c = out[i];
                     out[i] = out[i + 1];
                     out[i + 1] = c;
                     i++;
-                }
-                else
-                {
+                } else {
                     beep();
                     continue;
                 }
@@ -539,8 +501,7 @@ unsigned scend;
             cur = 0;
             oadjust = -1;
         case cntl('K'):
-            if (oadjust >= 0)
-            {
+            if (oadjust >= 0) {
 #ifdef ESH_KAPPEND
                 killing = 2; /* set killing signal */
 #endif
@@ -562,23 +523,19 @@ unsigned scend;
 #endif /* ESH_KAPPEND */
             out[i] = 0;
             draw(UPDATE);
-            if (c == KILLCHAR)
-            {
-                if (terminal == PAPER)
-                {
+            if (c == KILLCHAR) {
+                if (terminal == PAPER) {
                     putchar('\n');
                     putstring(Prompt);
                 }
                 c = ed_getchar();
-                if (c != usrkill)
-                {
+                if (c != usrkill) {
                     ed_ungetchar(c);
                     continue;
                 }
                 if (terminal == PAPER)
                     terminal = CRT;
-                else
-                {
+                else {
                     terminal = PAPER;
                     putchar('\n');
                     putstring(Prompt);
@@ -598,8 +555,7 @@ unsigned scend;
         case cntl('P'):
             if (count <= hloff)
                 hloff -= count;
-            else
-            {
+            else {
                 hline -= count - hloff;
                 hloff = 0;
             }
@@ -629,8 +585,7 @@ unsigned scend;
             hloff = location.his_line;
 #endif /* ESH_NFIRST */
             location = hist_locate(hline, hloff, count);
-            if (location.his_command > histlines)
-            {
+            if (location.his_command > histlines) {
                 beep();
 #ifdef ESH_NFIRST
                 location.his_command = histlines;
@@ -660,21 +615,18 @@ unsigned scend;
 
 process:
 
-    if (c == (-1))
-    {
+    if (c == (-1)) {
         lookahead = 0;
         beep();
         *out = '\0';
     }
     draw(FINAL);
     tty_cooked(ERRIO);
-    if (c == '\n')
-    {
+    if (c == '\n') {
         out[eol++] = '\n';
         out[eol] = '\0';
         ed_crlf();
-    }
-    else
+    } else
         p_flush();
 #ifdef MULTIBYTE
     ed_external(out, buff);
@@ -725,14 +677,12 @@ int count;
     int digit, ch;
     digit = 0;
     value = 0;
-    while ((i = ed_getchar()), isdigit(i))
-    {
+    while ((i = ed_getchar()), isdigit(i)) {
         value *= 10;
         value += (i - '0');
         digit = 1;
     }
-    if (digit)
-    {
+    if (digit) {
         ed_ungetchar(i);
 #ifdef ESH_KAPPEND
         ++killing; /* don't modify killing signal */
@@ -742,8 +692,7 @@ int count;
     value = count;
     if (value < 0)
         value = 1;
-    switch (ch = i)
-    {
+    switch (ch = i) {
     case ' ':
         mark = cur;
         return (-1);
@@ -765,21 +714,17 @@ int count;
     case 'l': /* M-l == lower-case */
     case 'd':
     case 'c':
-    case 'f':
-    {
+    case 'f': {
         i = cur;
-        while (value-- && i < eol)
-        {
+        while (value-- && i < eol) {
             while ((out[i]) && (!isword(i)))
                 i++;
             while ((out[i]) && (isword(i)))
                 i++;
         }
-        if (ch == 'l')
-        {
+        if (ch == 'l') {
             value = i - cur;
-            while (value-- > 0)
-            {
+            while (value-- > 0) {
                 i = out[cur];
 #ifdef MULTIBYTE
                 if ((i & ~STRIP) == 0 && isupper(i))
@@ -798,15 +743,11 @@ int count;
 
         else if (ch == 'f')
             goto update;
-        else if (ch == 'c')
-        {
+        else if (ch == 'c') {
             ed_ungetchar(cntl('C'));
             return (i - cur);
-        }
-        else
-        {
-            if (i - cur)
-            {
+        } else {
+            if (i - cur) {
                 ed_ungetchar(cntl('D'));
 #ifdef ESH_KAPPEND
                 ++killing; /* keep killing signal */
@@ -822,11 +763,9 @@ int count;
     case 'b':
     case DELETE:
     case '\b':
-    case 'h':
-    {
+    case 'h': {
         i = cur;
-        while (value-- && i > 0)
-        {
+        while (value-- && i > 0) {
             i--;
             while ((i > 0) && (!isword(i)))
                 i--;
@@ -835,8 +774,7 @@ int count;
         }
         if (ch == 'b')
             goto update;
-        else
-        {
+        else {
             ed_ungetchar(ERASECHAR);
 #ifdef ESH_KAPPEND
             ++killing;
@@ -848,13 +786,10 @@ int count;
     case '>':
         ed_ungetchar(cntl('N'));
 #ifdef ESH_NFIRST
-        if (in_mult)
-        {
+        if (in_mult) {
             location.his_command = histlines;
             location.his_line = in_mult - 1;
-        }
-        else
-        {
+        } else {
             location.his_command = histlines - 1;
             location.his_line = 0;
         }
@@ -881,28 +816,24 @@ int count;
         ed_ungetchar(cntl('A'));
         return (-1);
     case '_':
-    case '.':
-    {
+    case '.': {
         genchar name[MAXLINE];
         char buf[MAXLINE];
         char *ptr;
         ptr = hist_word(buf, (count ? count : -1));
 #ifndef KSHELL
-        if (ptr == 0)
-        {
+        if (ptr == 0) {
             beep();
             break;
         }
 #endif /* KSHELL */
-        if ((eol - cur) >= sizeof(name))
-        {
+        if ((eol - cur) >= sizeof(name)) {
             beep();
             return (-1);
         }
         mark = cur;
         gencpy(name, &out[cur]);
-        while (*ptr)
-        {
+        while (*ptr) {
             out[cur++] = *ptr++;
             eol++;
         }
@@ -930,23 +861,20 @@ int count;
     case cntl(']'): /* feature not in book */
     {
         int c = ed_getchar();
-        if ((value == 0) || (value > eol))
-        {
+        if ((value == 0) || (value > eol)) {
             beep();
             return (-1);
         }
         i = cur;
         if (i > 0)
             i--;
-        while (i >= 0)
-        {
+        while (i >= 0) {
             if (out[i] == c && --value == 0)
                 goto update;
             i--;
         }
         i = eol;
-        while (i > cur)
-        {
+        while (i > cur) {
             if (out[i] == c && --value == 0)
                 break;
             i--;
@@ -992,8 +920,7 @@ static void xcommands(count) int count;
 {
     int i = ed_getchar();
     (&count, 1); /* make sure count gets referenced to avoid warning */
-    switch (i)
-    {
+    switch (i) {
     case cntl('X'): /* exchange dot and mark */
         if (mark > eol)
             mark = eol;
@@ -1020,18 +947,15 @@ static void xcommands(count) int count;
 
         strcpy(hbuf, "Current command ");
         strcat(hbuf, itos(hline));
-        if (hloff)
-        {
+        if (hloff) {
             strcat(hbuf, " (line ");
             strcat(hbuf, itos(hloff + 1));
             strcat(hbuf, ")");
         }
-        if ((hline != location.his_command) || (hloff != location.his_line))
-        {
+        if ((hline != location.his_command) || (hloff != location.his_line)) {
             strcat(hbuf, "; Previous command ");
             strcat(hbuf, itos(location.his_command));
-            if (location.his_line)
-            {
+            if (location.his_line) {
                 strcat(hbuf, " (line ");
                 strcat(hbuf, itos(location.his_line + 1));
                 strcat(hbuf, ")");
@@ -1090,27 +1014,21 @@ int direction;
     sl = 2;
     cur = sl;
     draw(UPDATE);
-    while ((i = ed_getchar()) && (i != '\r') && (i != '\n'))
-    {
-        if (i == usrerase)
-        {
-            if (sl > 2)
-            {
+    while ((i = ed_getchar()) && (i != '\r') && (i != '\n')) {
+        if (i == usrerase) {
+            if (sl > 2) {
                 string[--sl] = '\0';
                 cur = sl;
                 draw(UPDATE);
-            }
-            else
+            } else
                 beep();
             continue;
         }
-        if (i == usrkill)
-        {
+        if (i == usrkill) {
             beep();
             goto restore;
         }
-        if (i == '\\')
-        {
+        if (i == '\\') {
             string[sl++] = '\\';
             string[sl] = '\0';
             cur = sl;
@@ -1125,27 +1043,22 @@ int direction;
     }
     i = genlen(string);
 
-    if (direction < 1)
-    {
+    if (direction < 1) {
         prevdirection = -prevdirection;
         direction = 1;
-    }
-    else
+    } else
         direction = -1;
-    if (i != 2)
-    {
+    if (i != 2) {
 #ifdef MULTIBYTE
         ed_external(string, ( char * )string);
 #endif /* MULTIBYTE */
         strncpy(lstring, (( char * )string) + 2, SEARCHSIZE);
         prevdirection = direction;
-    }
-    else
+    } else
         direction = prevdirection;
     location = hist_find(( char * )lstring, hline, 1, direction);
     i = location.his_command;
-    if (i > 0)
-    {
+    if (i > 0) {
         hline = i;
 #ifdef ESH_NFIRST
         hloff = location.his_line
@@ -1159,8 +1072,7 @@ int direction;
 #endif /* MULTIBYTE */
         return;
     }
-    if (i < 0)
-    {
+    if (i < 0) {
         beep();
 #ifdef ESH_NFIRST
         location.his_command = hline;
@@ -1208,14 +1120,12 @@ static void draw(option) DRAWTYPE option;
     logcursor = sptr + cur;
     longline = NORMAL;
 
-    if (option == FIRST || option == REFRESH)
-    {
+    if (option == FIRST || option == REFRESH) {
         overflow = NORMAL;
         cursor = screen;
         offset = 0;
         cr_ok = crallowed;
-        if (option == FIRST)
-        {
+        if (option == FIRST) {
             scvalid = 1;
             return;
         }
@@ -1227,8 +1137,7 @@ static void draw(option) DRAWTYPE option;
      Do not update screen if pending characters
     **********************/
 
-    if ((lookahead) && (option != FINAL))
-    {
+    if ((lookahead) && (option != FINAL)) {
 
         scvalid = 0; /* Screen is out of date, APPEND will not work */
 
@@ -1246,8 +1155,7 @@ static void draw(option) DRAWTYPE option;
     i = *(logcursor - 1); /* last character inserted */
 
     if ((option == APPEND) && (scvalid) && (*logcursor == '\0') && print(i)
-        && ((cursor - screen) < (w_size - 1)))
-    {
+        && ((cursor - screen) < (w_size - 1))) {
         putchar(i);
         *cursor++ = i;
         *cursor = '\0';
@@ -1269,8 +1177,7 @@ static void draw(option) DRAWTYPE option;
 
     i = ncursor - nscreen;
 
-    if ((offset && i <= offset) || (i >= (offset + w_size)))
-    {
+    if ((offset && i <= offset) || (i >= (offset + w_size))) {
         /* Center the cursor on the screen */
         offset = i - (w_size >> 1);
         if (--offset < 0)
@@ -1288,21 +1195,17 @@ static void draw(option) DRAWTYPE option;
 
     i = w_size;
 
-    while (i-- > 0)
-    {
+    while (i-- > 0) {
 
-        if (*nptr == '\0')
-        {
+        if (*nptr == '\0') {
             *(nptr + 1) = '\0';
             *nptr = ' ';
         }
-        if (*sptr == '\0')
-        {
+        if (*sptr == '\0') {
             *(sptr + 1) = '\0';
             *sptr = ' ';
         }
-        if (*nptr == *sptr)
-        {
+        if (*nptr == *sptr) {
             nptr++;
             sptr++;
             continue;
@@ -1310,8 +1213,7 @@ static void draw(option) DRAWTYPE option;
         setcursor(sptr - screen, *nptr);
         *sptr++ = *nptr++;
 #ifdef MULTIBYTE
-        while (*nptr == MARKER)
-        {
+        while (*nptr == MARKER) {
             *sptr++ = *nptr++;
             i--;
             cursor++;
@@ -1325,23 +1227,19 @@ static void draw(option) DRAWTYPE option;
 
     ********************/
 
-    if (nscend >= &nscreen[offset + w_size])
-    {
+    if (nscend >= &nscreen[offset + w_size]) {
         if (offset > 0)
             longline = BOTH;
         else
             longline = UPPER;
-    }
-    else
-    {
+    } else {
         if (offset > 0)
             longline = LOWER;
     }
 
     /* Update screen overflow indicator if need be */
 
-    if (longline != overflow)
-    {
+    if (longline != overflow) {
         setcursor(w_size, longline);
         overflow = longline;
     }
@@ -1360,12 +1258,9 @@ static void draw(option) DRAWTYPE option;
 static void setcursor(new, c) int new, c;
 {
     int old = cursor - screen;
-    if (old > new)
-    {
-        if ((cr_ok == NO) || (2 * (new + plen) > (old + plen)))
-        {
-            while (old > new)
-            {
+    if (old > new) {
+        if ((cr_ok == NO) || (2 * (new + plen) > (old + plen))) {
+            while (old > new) {
                 putchar('\b');
                 old--;
             }
@@ -1377,8 +1272,7 @@ static void setcursor(new, c) int new, c;
     while (new > old)
         putchar(screen[old++]);
 skip:
-    if (c)
-    {
+    if (c) {
         putchar(c);
         new ++;
     }

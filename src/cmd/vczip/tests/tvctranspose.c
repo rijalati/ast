@@ -30,8 +30,7 @@ MAIN()
     Vcodex_t *vc;
 
     for (i = 0; i < NROWS; ++i)
-        for (j = 0; j < NCOLS; ++j)
-        {
+        for (j = 0; j < NCOLS; ++j) {
             matrix[i][j] = 'a' + (i + j) % 26;
             trans[j][i] = 'a' + (i + j) % 26;
         }

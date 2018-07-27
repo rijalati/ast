@@ -180,10 +180,8 @@ mbsrtowcs(wchar_t *w, const char **p, size_t n, mbstate_t *q)
     s = *p;
     b = w;
     e = w + n;
-    while (w < e && (m = mbrtowc(w, s, e - s, q)) != (size_t)(-2))
-    {
-        if (m == (size_t)(-1))
-        {
+    while (w < e && (m = mbrtowc(w, s, e - s, q)) != (size_t)(-2)) {
+        if (m == (size_t)(-1)) {
             *p = s;
             return m;
         }

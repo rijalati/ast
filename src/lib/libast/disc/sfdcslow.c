@@ -41,8 +41,7 @@ Sfdisc_t *disc;
     NOTUSED(v);
     NOTUSED(disc);
 
-    switch (type)
-    {
+    switch (type) {
     case SF_FINAL:
     case SF_DPOP:
         free(disc);
@@ -74,8 +73,7 @@ int sfdcslow(f) Sfio_t *f;
     disc->seekf = NIL(Sfseek_f);
     disc->exceptf = slowexcept;
 
-    if (sfdisc(f, disc) != disc)
-    {
+    if (sfdisc(f, disc) != disc) {
         free(disc);
         return (-1);
     }

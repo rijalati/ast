@@ -42,8 +42,7 @@ symlink(const char *a, char *b)
 {
     if (*a == '/' && (*(a + 1) == 'd' || *(a + 1) == 'p' || *(a + 1) == 'n')
         && (!strncmp(a, "/dev/tcp/", 9) || !strncmp(a, "/dev/udp/", 9)
-            || !strncmp(a, "/proc/", 6) || !strncmp(a, "/n/", 3)))
-    {
+            || !strncmp(a, "/proc/", 6) || !strncmp(a, "/n/", 3))) {
         int n;
         int fd;
 

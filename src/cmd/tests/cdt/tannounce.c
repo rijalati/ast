@@ -45,8 +45,7 @@ tmain()
     Meth[3] = Dtrhset;
     Meth[4] = 0;
 
-    for (k = 0; Meth[k]; ++k)
-    {
+    for (k = 0; Meth[k]; ++k) {
         if (!(dt = dtopen(&Disc, Meth[k])))
             terror("Opening %s", Meth[k]->name);
         dtcustomize(dt, DT_ANNOUNCE, 1);

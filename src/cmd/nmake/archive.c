@@ -42,8 +42,7 @@ arupdate(char *name)
     char *update;
 
     update = "$(RANLIB) $(<)";
-    if (!state.regress)
-    {
+    if (!state.regress) {
         if (!(ar = ardiropen(name, NiL, ARDIR_LOCAL)))
             return 0;
         if (streq(ar->meth->name, "local"))
@@ -67,15 +66,12 @@ walkar(Ardir_t *ar, Dir_t *d, char *name)
     Ardirent_t *ent;
     Rule_t *r;
 
-    if (d)
-    {
+    if (d) {
         putar(d->name, d);
         d->truncate = ar->truncate;
     }
-    while (ent = ardirnext(ar))
-    {
-        if (d)
-        {
+    while (ent = ardirnext(ar)) {
+        if (d) {
             if (( Seconds_t )ent->mtime > ( Seconds_t )ar->st.st_mtime)
                 message(
                 (-1, "member %s is newer than archive %s", ent->name, name));
@@ -85,9 +81,7 @@ walkar(Ardir_t *ar, Dir_t *d, char *name)
                      && ent->mtime == tmxsec(r->time))
                     ? r->time
                     : tmxsns(ent->mtime, 0));
-        }
-        else if ((r = getrule(ent->name)) && r->status == TOUCH)
-        {
+        } else if ((r = getrule(ent->name)) && r->status == TOUCH) {
             ent->mtime = CURSECS;
             ardirchange(ar, ent);
             r->status = EXISTS;
@@ -113,8 +107,7 @@ chktouch(const char *s, char *v, void *h)
 
     NoP(s);
     NoP(h);
-    if (r->status == TOUCH)
-    {
+    if (r->status == TOUCH) {
         r->status = FAILED;
         error(1, "archive member %s not touched", r->name);
     }
@@ -131,23 +124,18 @@ artouch(char *name, char *member)
     Rule_t *r;
     Ardir_t *ar;
 
-    if (member)
-    {
+    if (member) {
         if (!(r = getrule(member)))
             error(PANIC, "%s[%s] not scanned", name, member);
-        else
-        {
+        else {
             r->status = TOUCH;
             ntouched++;
         }
-    }
-    else if (ar = ardiropen(name, NiL, ARDIR_LOCAL | ARDIR_UPDATE))
-    {
+    } else if (ar = ardiropen(name, NiL, ARDIR_LOCAL | ARDIR_UPDATE)) {
         walkar(ar, NiL, name);
         if (ardirclose(ar))
             error(1, "error touching archive %s", name);
-        if (ntouched > 0)
-        {
+        if (ntouched > 0) {
             message(
             (-2, "checking %d untouched members in %s", ntouched, name));
             hashwalk(table.rule, 0, chktouch, NiL);
@@ -173,17 +161,14 @@ arscan(Rule_t *r)
         r->dynamic &= ~D_entries;
     else if (!(d = unique(r)))
         r->dynamic |= D_entries;
-    else if (r->scan >= SCAN_USER)
-    {
+    else if (r->scan >= SCAN_USER) {
         debug((-5, "scan aggregate %s", r->name));
         d->archive = 1;
         state.archive = d;
         scan(r, NiL);
         state.archive = 0;
         r->dynamic |= D_entries;
-    }
-    else if (ar = ardiropen(r->name, NiL, ARDIR_LOCAL))
-    {
+    } else if (ar = ardiropen(r->name, NiL, ARDIR_LOCAL)) {
         debug((-5, "scan archive %s", r->name));
         d->archive = 1;
         if (walkar(ar, d, r->name))
@@ -192,7 +177,6 @@ arscan(Rule_t *r)
             r->dynamic &= ~D_entries;
         if (ardirclose(ar))
             error(1, "%s: archive scan error", r->name);
-    }
-    else
+    } else
         debug((-5, "arscan(%s) failed", r->name));
 }

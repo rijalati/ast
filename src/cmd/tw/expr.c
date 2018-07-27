@@ -118,10 +118,8 @@ deref(Ftw_t *ftw, Exid_t *sym, Exref_t *ref)
     char *path;
 
     path = ftw->path;
-    while (ref)
-    {
-        if (!ftw || ref->symbol->index != F_parent)
-        {
+    while (ref) {
+        if (!ftw || ref->symbol->index != F_parent) {
             if (ftw && !ref->next && MEMINDEX(sym->index))
                 break;
             error(3,
@@ -187,13 +185,11 @@ fmturl(const char *path)
     p = ( unsigned char * )path;
     while (c = *p++)
         if (!(isalnum(c) || c == '_' || c == '-' || c == '+' || c == '='
-              || c == '/' || c == '.'))
-        {
+              || c == '/' || c == '.')) {
             *s++ = '%';
             *s++ = hex[(c >> 4) & 0xF];
             *s++ = hex[c & 0xF];
-        }
-        else
+        } else
             *s++ = c;
     *s = 0;
     return r;
@@ -226,18 +222,15 @@ getval(Expr_t *pgm,
     NoP(pgm);
     NoP(node);
     NoP(disc);
-    if (elt >= EX_SCALAR)
-    {
+    if (elt >= EX_SCALAR) {
         ftw = ( Ftw_t * )env;
-        if (ref && !(ftw = deref(ftw, sym, ref)))
-        {
+        if (ref && !(ftw = deref(ftw, sym, ref))) {
             v.integer = 0;
             return v;
         }
         st = &ftw->statb;
     }
-    switch (sym->index)
-    {
+    switch (sym->index) {
     case F_args:
         v.integer = state.args;
         break;
@@ -409,8 +402,7 @@ getval(Expr_t *pgm,
         v.string = sum(sp, PATH(ftw));
         break;
     default:
-        switch (MEMINDEX(sym->index))
-        {
+        switch (MEMINDEX(sym->index)) {
         case F_local:
             v = (lp = ( Local_t * )ftw->local.pointer)
                 ? lp->value[MEMOFFSET(sym->index)]
@@ -451,8 +443,7 @@ initvisit(Exid_t *sym)
 {
     Dtdisc_t *disc;
 
-    if (!state.vistab)
-    {
+    if (!state.vistab) {
         if (!(disc = newof(0, Dtdisc_t, 1, 0)))
             error(ERROR_SYSTEM | 3, "out of space [visit table]");
         disc->key = offsetof(Visit_t, id);
@@ -483,33 +474,27 @@ refval(Expr_t *pgm,
 
     if (elt >= 0)
         error(3, "%s: arrays not supported", sym->name);
-    if (str)
-    {
+    if (str) {
         if (STAT(str, &ftwbuf.statb))
             memzero(&ftwbuf.statb, sizeof(ftwbuf.statb));
         return getval(pgm, node, sym, ref, &ftwbuf, elt, disc);
     }
     v = exzero(sym->type);
-    switch (sym->index)
-    {
+    switch (sym->index) {
     case MEMBER:
-        while (ref)
-        {
-            switch (ref->symbol->index)
-            {
+        while (ref) {
+            switch (ref->symbol->index) {
             case F_parent:
                 break;
             case F_local:
-                if (!ref->next)
-                {
+                if (!ref->next) {
                     sym->index
                     = MEMMAKE(ref->symbol->index, state.localmem++);
                     break;
                 }
                 /*FALLTHROUGH*/
             case F_visit:
-                if (!ref->next)
-                {
+                if (!ref->next) {
                     if (!state.vistab)
                         initvisit(sym);
                     sym->index
@@ -579,8 +564,7 @@ refval(Expr_t *pgm,
         break;
     case F_magic:
     case F_mime:
-        if (!state.magic)
-        {
+        if (!state.magic) {
             state.magicdisc.version = MAGIC_VERSION;
             state.magicdisc.flags = 0;
             state.magicdisc.errorf = errorf;
@@ -662,8 +646,7 @@ setval(Expr_t *pgm,
         error(3, "%s: arrays not supported", sym->name);
     if (!(ftw = ( Ftw_t * )env) || ref && !(ftw = deref(ftw, sym, ref)))
         return -1;
-    switch (sym->index)
-    {
+    switch (sym->index) {
     case F_local:
         if (state.localmem)
             error(
@@ -680,8 +663,7 @@ setval(Expr_t *pgm,
             3, "%s: reference invalid when members declared", sym->name);
         id.di[0] = ftw->statb.st_dev;
         id.di[1] = ftw->statb.st_ino;
-        if (!(vp = ( Visit_t * )dtmatch(state.vistab, &id)))
-        {
+        if (!(vp = ( Visit_t * )dtmatch(state.vistab, &id))) {
             if (!(vp = newof(0, Visit_t, 1, 0)))
                 error(ERROR_SYSTEM | 3, "out of space [visit]");
             vp->id = id;
@@ -690,24 +672,20 @@ setval(Expr_t *pgm,
         vp->value[0] = val;
         break;
     default:
-        switch (MEMINDEX(sym->index))
-        {
+        switch (MEMINDEX(sym->index)) {
         case F_local:
-            if (!(lp = ( Local_t * )ftw->local.pointer))
-            {
-                if (state.local)
-                {
+            if (!(lp = ( Local_t * )ftw->local.pointer)) {
+                if (state.local) {
                     lp = state.local;
                     state.local = state.local->next;
                     memzero(lp,
                             sizeof(Local_t)
                             + sizeof(Extype_t) * (state.localmem - 1));
-                }
-                else if (!(lp
-                           = newof(0,
-                                   Local_t,
-                                   1,
-                                   sizeof(Extype_t) * (state.localmem - 1))))
+                } else if (!(lp = newof(0,
+                                        Local_t,
+                                        1,
+                                        sizeof(Extype_t)
+                                        * (state.localmem - 1))))
                     error(3, "out of space");
                 lp = ( Local_t * )ftw->local.pointer;
             }
@@ -716,8 +694,7 @@ setval(Expr_t *pgm,
         case F_visit:
             id.di[0] = ftw->statb.st_dev;
             id.di[1] = ftw->statb.st_ino;
-            if (!(vp = ( Visit_t * )dtmatch(state.vistab, &id)))
-            {
+            if (!(vp = ( Visit_t * )dtmatch(state.vistab, &id))) {
                 if (!(vp = newof(
                       0, Visit_t, 1, sizeof(Extype_t) * (state.visitmem - 1))))
                     error(3, "out of space [visit]");
@@ -775,15 +752,13 @@ convert(Expr_t *prog,
 
     NoP(prog);
     NoP(disc);
-    if (type < 0200)
-    {
+    if (type < 0200) {
         if (x->type == FLOATING)
             n = x->data.constant.value.floating;
         else if (x->type == INTEGER)
             n = x->data.constant.value.integer;
         else
-            switch (type)
-            {
+            switch (type) {
             case T_DATE:
                 n = tmdate(x->data.constant.value.string, &s, NiL);
                 if (*s)
@@ -810,18 +785,14 @@ convert(Expr_t *prog,
             }
         x->data.constant.value.integer = n;
         type = INTEGER;
-    }
-    else
-    {
+    } else {
         n = x->data.constant.value.integer;
-        switch (type)
-        {
+        switch (type) {
         case FLOATING:
             x->data.constant.value.floating = n;
             break;
         case STRING:
-            switch (x->type)
-            {
+            switch (x->type) {
             case T_DATE:
                 t = n;
                 tmfmt(s = buf, sizeof(buf), "%?%QL", &t);
@@ -867,8 +838,7 @@ ignored:
 static void
 init(void)
 {
-    if (!state.program)
-    {
+    if (!state.program) {
         state.expr.version = EX_VERSION;
         state.expr.flags = EX_CHARSTRING | EX_FATAL;
         state.expr.symbols = symbols;
@@ -895,16 +865,14 @@ compile(char *s, int file)
     if (!state.program)
         init();
     state.compiled = 0;
-    if (file)
-    {
+    if (file) {
         if (!(sp = sfopen(NiL, s, "r")))
             error(3 | ERROR_SYSTEM, "%s: cannot read", s);
         else if (excomp(state.program, s, 1, NiL, sp))
             error(3, "%s: expression compile error", s);
         else
             sfclose(sp);
-    }
-    else if (excomp(state.program, NiL, 0, s, NiL))
+    } else if (excomp(state.program, NiL, 0, s, NiL))
         error(3, "expression compile error");
     state.compiled = 1;
     if (error_info.trace)
@@ -950,8 +918,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
 
     if (!fp->t_str)
         return 0;
-    if (!(sym = ( Exid_t * )dtmatch(state.program->symbols, fp->t_str)))
-    {
+    if (!(sym = ( Exid_t * )dtmatch(state.program->symbols, fp->t_str))) {
         error(3, "%s: unknown format key", fp->t_str);
         return 0;
     }
@@ -966,8 +933,7 @@ key(void *handle, Sffmt_t *fp, const char *arg, char **ps, Sflong_t *pn)
 ssize_t
 print(Sfio_t *sp, Ftw_t *ftw, const char *format)
 {
-    if (!state.program)
-    {
+    if (!state.program) {
         init();
         state.compiled = 1;
     }

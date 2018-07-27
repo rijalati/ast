@@ -227,19 +227,16 @@ ssize_t cz;   /* buffer length	*/
     vmax = rf->vmax;
     zero = rt->zero;
     nine = zero + 9;
-    for (edt = dt + dz; dt < edt;)
-    {
+    for (edt = dt + dz; dt < edt;) {
         intv = *dt++ - zero;
         if (intv < 0 || intv > 9)
             return -1; /* must start with a digit */
         if (intv == 0 && dt < edt && *dt >= zero && *dt <= nine)
             return -1; /* no leading zero allowed */
 
-        for (; dt < edt; ++dt)
-        {
+        for (; dt < edt; ++dt) {
             v = *dt - zero;
-            if (v < 0 || v > 9)
-            {
+            if (v < 0 || v > 9) {
                 if (*dt != rt->dot && *dt != rt->dash)
                     return -1; /* unrecognized character */
                 if (ndash > 0 || (dt + 1) >= edt)
@@ -264,8 +261,7 @@ ssize_t cz;   /* buffer length	*/
             if (vciomore(&io) < vcsizem(vmax))
                 return -1;
             vcioputm(&io, intv, vmax);
-        }
-        else
+        } else
             vmax = vmax > intv ? vmax : intv;
     }
 
@@ -320,12 +316,10 @@ ssize_t cz;                                 /* buffer length	*/
 
     endb = buf + sizeof(buf);
     endc = (c = cv) + cz;
-    for (k = dz / vcsizem(vmax);;)
-    {
+    for (k = dz / vcsizem(vmax);;) {
         if ((intv = vciogetm(&io, vmax)) > vmax)
             return -1; /* bad encoded value */
-        for (b = endb;;)
-        {
+        for (b = endb;;) {
             *--b = zero + intv % 10;
             if ((intv /= 10) == 0)
                 break;
@@ -353,8 +347,7 @@ static void vlclose(val, vm) Rtval_t **val; /* list of values		*/
 ssize_t vm;                                 /* max index of values	*/
 #endif
 {
-    if (val)
-    {
+    if (val) {
         for (; vm >= 0; --vm)
             if (val[vm])
                 free(val[vm]);
@@ -372,12 +365,9 @@ static void rtctxtclear(rc) Rtctxt_t *rc;
 {
     ssize_t k;
 
-    if (rc->fldn > 0)
-    {
-        if (rc->fld)
-        {
-            for (k = 0; k < rc->fldn; ++k)
-            {
+    if (rc->fldn > 0) {
+        if (rc->fld) {
+            for (k = 0; k < rc->fldn; ++k) {
                 if (rc->fld[k].ddt)
                     dtclose(rc->fld[k].ddt);
                 if (rc->fld[k].odt)
@@ -430,22 +420,18 @@ Void_t **out;
 
     vc->undone = size; /* start with doing nothing */
 
-    if (rc->recz <= 0 && (rc->rsep <= 0 || rc->fsep <= 0))
-    {
+    if (rc->recz <= 0 && (rc->rsep <= 0 || rc->fsep <= 0)) {
         Vcrdformat_t *rdf;
         if (!(rdf
               = vcrdformat(( Vcchar_t * )data, size, rc->rsep, rc->algn, 1)))
             return 0;
 
-        if (rdf->fsep > 0 && rdf->rsep > 0)
-        {
+        if (rdf->fsep > 0 && rdf->rsep > 0) {
             rc->fsep = rdf->fsep;
             rc->rsep = rdf->rsep;
-        }
-        else if (rdf->fldn > 0 && rdf->fldz)
-        {
-            if ((rc->fldz = ( ssize_t * )malloc(rdf->fldn * sizeof(ssize_t))))
-            {
+        } else if (rdf->fldn > 0 && rdf->fldz) {
+            if ((rc->fldz
+                 = ( ssize_t * )malloc(rdf->fldn * sizeof(ssize_t)))) {
                 memcpy(rc->fldz, rdf->fldz, rdf->fldn * sizeof(ssize_t));
                 rc->fldn = rdf->fldn;
 
@@ -466,8 +452,7 @@ Void_t **out;
         fldn = fmin = rc->fldn;
         recn = size / rc->recz;
         size = recn * rc->recz; /* size of data to be processed */
-    }
-    else /* records and fields defined by separators */
+    } else                      /* records and fields defined by separators */
     {
         if (rc->rsep <= 0) /* not a table */
             return 0;
@@ -477,10 +462,8 @@ Void_t **out;
         recn = fldn = 0; /* count records and number of fields per record */
         fmin = -1;       /* fewest fields in a record */
         rowz = -1;       /* see if this is a fixed length record */
-        for (edt = (dt = ( Vcchar_t * )data) + size; dt < edt;)
-        {
-            for (f = 0, d = dt; d < edt; ++d)
-            {
+        for (edt = (dt = ( Vcchar_t * )data) + size; dt < edt;) {
+            for (f = 0, d = dt; d < edt; ++d) {
                 if (*d == rc->fsep || *d == rc->rsep)
                     f += 1;
                 if (*d == rc->rsep)
@@ -528,8 +511,7 @@ Void_t **out;
     {
         if (!(rc->fld = ( Rtfld_t * )calloc(fldn, sizeof(Rtfld_t))))
             GOTO(done);
-        for (f = 0; f < fldn; ++f)
-        {
+        for (f = 0; f < fldn; ++f) {
             if (!(rc->fld[f].odt = dtopen(&Rtordn, Dtoset)))
                 GOTO(done);
             if (!(rc->fld[f].ddt = dtopen(&Rtdata, Dtset)))
@@ -542,8 +524,7 @@ Void_t **out;
     /* check for fields that will be coded in-place in table */
     if (rc->recz > 0) /* fields are schematically defined */
     {
-        for (f = 0; f < fldn; ++f)
-        {
+        for (f = 0; f < fldn; ++f) {
             rc->fld[f].type = RT_FIXZ;
             if (rc->fldz[f] <= RT_SHORT || fldn == 1) /* code as-is */
             {
@@ -552,46 +533,37 @@ Void_t **out;
                 rc->fld[f].vmax = 0xff;        /* vcsizem(0xff) == 1, below */
             }
         }
-    }
-    else /* using field&record separators */
+    } else /* using field&record separators */
     {
-        for (f = 0; f < fldn; ++f)
-        {
+        for (f = 0; f < fldn; ++f) {
             if (rc->fld[f].pcnt > 0 || fmin != fldn) /* no codable fields */
                 rc->fld[f].type = 0;
-            else
-            {
+            else {
                 rc->fld[f].type = RT_ASIS | RT_ISEQ;
                 rc->fld[f].asis = -1;
             }
         }
 
         /* check for fields codable in some special way */
-        for (edt = (dt = ( Vcchar_t * )data) + size; dt < edt;)
-        {
-            for (u = 0, f = 0;;)
-            {
+        for (edt = (dt = ( Vcchar_t * )data) + size; dt < edt;) {
+            for (u = 0, f = 0;;) {
                 for (d = dt; *d != rc->fsep && *d != rc->rsep;)
                     d += 1;
                 z = d - dt; /* size of field minus separator */
 
                 /* see if codable as a fixed length integer sequence */
-                if (rc->fld[f].type & RT_ISEQ)
-                {
-                    if (rta2i(rt, rc->fld + f, dt, z, 0, 0) < 0)
-                    {
+                if (rc->fld[f].type & RT_ISEQ) {
+                    if (rta2i(rt, rc->fld + f, dt, z, 0, 0) < 0) {
                         rc->fld[f].type &= ~RT_ISEQ;
                         rc->fld[f].vcnt = rc->fld[f].vmax = 0;
                     }
                 }
 
                 /* see if remaining fixed length */
-                if (rc->fld[f].type & RT_ASIS)
-                {
+                if (rc->fld[f].type & RT_ASIS) {
                     if (rc->fld[f].asis == -1)
                         rc->fld[f].asis = z;
-                    else if (z != rc->fld[f].asis)
-                    {
+                    else if (z != rc->fld[f].asis) {
                         rc->fld[f].type &= ~RT_ASIS;
                         rc->fld[f].asis = -2;
                     }
@@ -611,14 +583,12 @@ Void_t **out;
         }
 
         /* pick between asis and iseq */
-        for (f = 0; f < fldn; ++f)
-        {
+        for (f = 0; f < fldn; ++f) {
             if ((rc->fld[f].type & RT_ISEQ) && (rc->fld[f].type & RT_ASIS)
                 && rc->fld[f].asis <= (rc->fld[f].vcnt * rc->fld[f].vmax))
                 rc->fld[f].type &= ~RT_ISEQ;
 
-            if (rc->fld[f].type & RT_ASIS)
-            { /**/
+            if (rc->fld[f].type & RT_ASIS) { /**/
                 DEBUG_ASSERT(!(rc->fld[f].type & RT_ISEQ));
                 rc->fld[f].vcnt = rc->fld[f].asis;
                 rc->fld[f].vmax = 0xff;
@@ -627,8 +597,7 @@ Void_t **out;
     }
 
     valz = 0; /* check for new field values and accumulate their total size */
-    for (edt = (dt = ( Vcchar_t * )data) + size; dt < edt;)
-    {
+    for (edt = (dt = ( Vcchar_t * )data) + size; dt < edt;) {
         for (f = 0;;) /* process a record */
         {
             if (rc->fld[f].type & RT_FIXZ) /* fixed length field */
@@ -637,12 +606,12 @@ Void_t **out;
                 for (d = dt; *d != rc->fsep && *d != rc->rsep;)
                     d += 1;
 
-            if (!(rc->fld[f].type & (RT_ASIS | RT_ISEQ)))
-            {
+            if (!(rc->fld[f].type & (RT_ASIS | RT_ISEQ))) {
                 val.data = dt;
                 val.dtsz = d - dt;
-                if (!(vl = dtsearch(rc->fld[f].ddt, &val)))
-                { /* insert a new value into dictionaries */
+                if (!(vl = dtsearch(rc->fld[f].ddt,
+                                    &val))) { /* insert a new value into
+                                                 dictionaries */
                     z = sizeof(Rtval_t) + val.dtsz;
                     if (!(vl = ( Rtval_t * )malloc(z)))
                         GOTO(done);
@@ -661,14 +630,11 @@ Void_t **out;
             }
 
             f += 1; /* advance field index */
-            if (rc->fld[f - 1].type & RT_FIXZ)
-            {
+            if (rc->fld[f - 1].type & RT_FIXZ) {
                 dt = d;
                 if (f >= fldn)
                     break;
-            }
-            else
-            {
+            } else {
                 dt = d + 1; /* skip field or record separator */
                 if (*d == rc->rsep)
                     break;
@@ -699,10 +665,8 @@ Void_t **out;
     vcioinit(&io, tbldt, tblz);
 
     /* build the representation table from indices or fixed-size data */
-    for (edt = (dt = ( Vcchar_t * )data) + size; dt < edt;)
-    {
-        for (f = 0;;)
-        {
+    for (edt = (dt = ( Vcchar_t * )data) + size; dt < edt;) {
+        for (f = 0;;) {
             if (rc->fld[f].type & RT_FIXZ) /* fixed length field */
                 d = dt + rc->fldz[f];
             else
@@ -714,9 +678,8 @@ Void_t **out;
                 DEBUG_ASSERT(rc->fld[f].asis == rc->fld[f].vcnt);
                 /**/ DEBUG_ASSERT(rc->fld[f].asis == (d - dt));
                 vcioputs(&io, dt, d - dt);
-            }
-            else if (rc->fld[f].type
-                     & RT_ISEQ) /* code as an integer sequence */
+            } else if (rc->fld[f].type
+                       & RT_ISEQ) /* code as an integer sequence */
             {
                 z = rta2i(
                 rt, rc->fld + f, dt, d - dt, vcionext(&io), vciomore(&io));
@@ -725,8 +688,7 @@ Void_t **out;
                 if (z <= 0)
                     GOTO(done);
                 vcioskip(&io, z);
-            }
-            else /* coding a field value by its ordinal number */
+            } else /* coding a field value by its ordinal number */
             {
                 val.data = dt;
                 val.dtsz = d - dt;
@@ -737,14 +699,11 @@ Void_t **out;
             }
 
             f += 1; /* advance field index */
-            if (rc->fld[f - 1].type & RT_FIXZ)
-            {
+            if (rc->fld[f - 1].type & RT_FIXZ) {
                 dt = d;
                 if (f >= fldn)
                     break;
-            }
-            else
-            {
+            } else {
                 dt = d + 1; /* skip separator to start of next field */
                 if (*d == rc->rsep)
                     break;
@@ -763,16 +722,14 @@ Void_t **out;
     if (!(valdt = vcbuffer(rt->bwt, NIL(Vcchar_t *), valz + 1, 0)))
         GOTO(done);
     vcioinit(&io, valdt, valz);
-    for (f = 0; f < fldn; ++f)
-    {
+    for (f = 0; f < fldn; ++f) {
         if (rc->fld[f].type
             & (RT_ISEQ | RT_ASIS)) /* data were coded in table */
             continue;
 
         val.ordn = rc->fld[f].pcnt + 1; /* new data should have ordn > pcnt */
         for (vl = dtsearch(rc->fld[f].odt, &val); vl;
-             vl = dtnext(rc->fld[f].odt, vl))
-        {
+             vl = dtnext(rc->fld[f].odt, vl)) {
             vcioputs(&io, vl->data, vl->dtsz);
             if (!(rc->fld[f].type & RT_FIXZ))
                 vcioputc(&io, rc->rsep); /* only rsep is used here */
@@ -786,8 +743,7 @@ Void_t **out;
     DEBUG_ASSERT(vciosize(&io) == valz);
 
     /**/ DEBUG_PRINT(2, "Raw valz=%d\n", valz);
-    if (valz > 0)
-    {
+    if (valz > 0) {
         rt->bwt->coder = vc->coder; /* transform field values with bwt */
         if ((valz = vcapply(rt->bwt, valdt, valz, &valdt)) < 0)
             GOTO(done);
@@ -833,8 +789,7 @@ Void_t **out;
     vcioputu(&io, fldn);
     vcioputu(&io, valz);
     vcioputs(&io, valdt, valz);
-    for (f = 0; f < fldn; ++f)
-    {
+    for (f = 0; f < fldn; ++f) {
         vcioputc(&io, rc->fld[f].type);
         vcioputu(&io, rc->fld[f].vmax);
         vcioputu(&io, rc->fld[f].vcnt);
@@ -926,16 +881,14 @@ Void_t **out;
     }
 
     enddt = valdt + valz; /* reconstruct field data */
-    for (f = 0; f < fldn; ++f)
-    {
+    for (f = 0; f < fldn; ++f) {
         if (vciomore(&io) <= 0 || (type = vciogetc(&io)) < 0)
             GOTO(done);
         if (vciomore(&io) <= 0 || (vmax = vciogetu(&io)) < 0)
             GOTO(done);
         if (vciomore(&io) <= 0 || (vcnt = vciogetu(&io)) < 0)
             GOTO(done);
-        if (type & RT_FIXZ)
-        {
+        if (type & RT_FIXZ) {
             if (vciomore(&io) <= 0 || (z = vciogetu(&io)) < 0)
                 GOTO(done);
             rc->fldz[f] = z;
@@ -972,16 +925,12 @@ Void_t **out;
         rc->fld[f].val = val;
 
         val[0] = NIL(Rtval_t *); /* values start from location 1 */
-        for (v = rc->fld[f].vcnt + 1; v <= vcnt; ++v)
-        {
-            if (type & RT_FIXZ)
-            {
+        for (v = rc->fld[f].vcnt + 1; v <= vcnt; ++v) {
+            if (type & RT_FIXZ) {
                 dt = valdt + rc->fldz[f];
                 if (dt > enddt)
                     GOTO(done);
-            }
-            else
-            {
+            } else {
                 for (dt = valdt; dt < enddt; ++dt)
                     if (*dt == rc->rsep)
                         break;
@@ -1018,14 +967,11 @@ Void_t **out;
     if (!(output = vcbuffer(vc, NIL(Vcchar_t *), dtsz, 0)))
         GOTO(done);
     vcioinit(&io, tbldt, tblz);
-    for (enddt = (dt = output) + dtsz; vciomore(&io) > 0;)
-    {
-        for (f = 0; f < fldn; ++f)
-        {
+    for (enddt = (dt = output) + dtsz; vciomore(&io) > 0;) {
+        for (f = 0; f < fldn; ++f) {
             if (rc->fld[f].type & RT_ASIS) /* field's own uncoded data */
             {
-                if (f > 0 && !(rc->fld[f - 1].type & RT_FIXZ))
-                {
+                if (f > 0 && !(rc->fld[f - 1].type & RT_FIXZ)) {
                     if (dt >= enddt)
                         GOTO(done);
                     *dt++ = rc->fsep;
@@ -1037,12 +983,10 @@ Void_t **out;
                     GOTO(done);
                 vciogets(&io, dt, z);
                 dt += z;
-            }
-            else if (rc->fld[f].type
-                     & RT_ISEQ) /* field coded as integer sequence */
+            } else if (rc->fld[f].type
+                       & RT_ISEQ) /* field coded as integer sequence */
             {
-                if (f > 0 && !(rc->fld[f - 1].type & RT_FIXZ))
-                {
+                if (f > 0 && !(rc->fld[f - 1].type & RT_FIXZ)) {
                     if (dt >= enddt)
                         GOTO(done);
                     *dt++ = rc->fsep;
@@ -1057,8 +1001,7 @@ Void_t **out;
                     < 0)
                     GOTO(done);
                 dt += z;
-            }
-            else /* string data coded by index in value set */
+            } else /* string data coded by index in value set */
             {
                 if (vciomore(&io) <= 0
                     || (v = vciogetm(&io, rc->fld[f].vmax)) < 0)
@@ -1072,8 +1015,7 @@ Void_t **out;
                     break;
                 }
 
-                if (f > 0 && !(rc->fld[f - 1].type & RT_FIXZ))
-                {
+                if (f > 0 && !(rc->fld[f - 1].type & RT_FIXZ)) {
                     if (dt >= enddt)
                         GOTO(done);
                     *dt++ = rc->fsep;
@@ -1086,8 +1028,7 @@ Void_t **out;
             }
         }
 
-        if (!(rc->fld[fldn - 1].type & RT_FIXZ))
-        {
+        if (!(rc->fld[fldn - 1].type & RT_FIXZ)) {
             if (dt >= enddt)
                 GOTO(done);
             *dt++ = rc->rsep;
@@ -1120,8 +1061,7 @@ Void_t *params;
     ssize_t k, fldn, recz, *fldz;
     int rv = -1;
 
-    if (type == VC_OPENING)
-    {
+    if (type == VC_OPENING) {
         if (!(rt = ( Rtable_t * )calloc(1, sizeof(Rtable_t))))
             return -1;
 
@@ -1145,28 +1085,23 @@ Void_t *params;
 
         vcsetmtdata(vc, rt);
         goto vc_setarg;
-    }
-    else if (type == VC_SETMTARG)
-    {
+    } else if (type == VC_SETMTARG) {
     vc_setarg:
         if (!(rc = vcgetcontext(vc, Rtctxt_t *)))
             return -1;
-        for (data = ( char * )params; data;)
-        {
+        for (data = ( char * )params; data;) {
             data = vcgetmtarg(data, val, sizeof(val), _Rtargs, &arg);
 
             type = TYPECAST(int, arg->data);
             if (type == RT_RSEP || type == RT_FSEP || type == RT_ALIGN
-                || type == RT_SCHEMA)
-            {
+                || type == RT_SCHEMA) {
                 rtctxtclear(rc);
 
                 if (type == RT_ALIGN || type == RT_SCHEMA)
                     rc->rsep = rc->fsep = 0;
             }
 
-            switch (TYPECAST(int, arg->data))
-            {
+            switch (TYPECAST(int, arg->data)) {
             case RT_RENEW:
                 rt = vcgetmtdata(vc, Rtable_t *);
                 rt->renew = val[0] == '0' ? 0 : 1;
@@ -1185,8 +1120,7 @@ Void_t *params;
                 if ((fldn = vcstr2list(val, ',', &fldz)) < 0
                     || (fldn > 0 && !fldz))
                     return -1;
-                for (recz = 0, k = 0; k < fldn; ++k)
-                {
+                for (recz = 0, k = 0; k < fldn; ++k) {
                     if (fldz[k] <= 0) /* bad schema definition */
                     {
                         free(fldz);
@@ -1201,9 +1135,8 @@ Void_t *params;
             }
         }
         return 0;
-    }
-    else if (type
-             == VC_INITCONTEXT) /* create a new context for transformation */
+    } else if (type == VC_INITCONTEXT) /* create a new context for
+                                          transformation */
     {
         if (!params)
             return 0;
@@ -1215,39 +1148,31 @@ Void_t *params;
 
         *(( Rtctxt_t ** )params) = rc;
         return 1;
-    }
-    else if (type == VC_FREECONTEXT) /* delete an existing context */
+    } else if (type == VC_FREECONTEXT) /* delete an existing context */
     {
         if ((rc = ( Rtctxt_t * )params))
             rtctxtclear(rc);
         free(rc);
         return 0;
-    }
-    else if (type == VC_FREEBUFFER)
-    {
-        if ((rt = vcgetmtdata(vc, Rtable_t *)))
-        {
+    } else if (type == VC_FREEBUFFER) {
+        if ((rt = vcgetmtdata(vc, Rtable_t *))) {
             if (rt->tbl)
                 vcbuffer(rt->tbl, NIL(Vcchar_t *), -1, -1);
             if (rt->bwt)
                 vcbuffer(rt->bwt, NIL(Vcchar_t *), -1, -1);
         }
         return 0;
-    }
-    else if (type == VC_CLOSING)
-    {
+    } else if (type == VC_CLOSING) {
         if (!(rt = vcgetmtdata(vc, Rtable_t *)))
             return -1;
         rv = 0;
 
     do_close: /* free any allocated resources */
-        if (rt->tbl)
-        {
+        if (rt->tbl) {
             rt->tbl->coder = NIL(Vcodex_t *);
             vcclose(rt->tbl);
         }
-        if (rt->bwt)
-        {
+        if (rt->bwt) {
             rt->bwt->coder = NIL(Vcodex_t *);
             vcclose(rt->bwt);
         }

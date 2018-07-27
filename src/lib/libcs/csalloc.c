@@ -32,8 +32,7 @@ csalloc(Csdisc_t *disc)
 {
     Cs_t *state;
 
-    if (state = newof(0, Cs_t, 1, 0))
-    {
+    if (state = newof(0, Cs_t, 1, 0)) {
         state->id = cs.id;
         state->disc = disc ? disc : cs.disc;
 #if _stream_peek

@@ -278,8 +278,7 @@ typedef struct TkshCommandData
                              : (((i) == INTERP_KSH) ? "ksh" : "either"))
 
 #    define Tksh_BeginBlock(interp, kind)                                    \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             int oldInterp = (( Interp * )interp)->interpType;                \
         (( Interp * )interp)->interpType = kind
 #    define Tksh_EndBlock(interp)                                            \

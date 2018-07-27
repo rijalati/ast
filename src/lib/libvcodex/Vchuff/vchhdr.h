@@ -30,8 +30,7 @@
 
 /* function to clear a table */
 #define CLRtable(tbl, ii, kk)                                                \
-    switch (kk)                                                              \
-    {                                                                        \
+    switch (kk) {                                                            \
     case 16:                                                                 \
         tbl[ii] = 0;                                                         \
         ii++;                                                                \
@@ -82,8 +81,7 @@
         ii++;                                                                \
     }
 #define CLRTABLE(tbl, n)                                                     \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         ssize_t ii = 0, nn = (ssize_t)(n);                                   \
         for (; nn > 0; nn -= VCH_SW)                                         \
             CLRtable(tbl, ii, nn >= VCH_SW ? VCH_SW : nn);                   \
@@ -91,8 +89,7 @@
 
 /* function to compute the dot product of two tables */
 #define DOTproduct(v, t1, t2, ii, kk)                                        \
-    switch (kk)                                                              \
-    {                                                                        \
+    switch (kk) {                                                            \
     case 16:                                                                 \
         v += t1[ii] * t2[ii];                                                \
         ii++;                                                                \
@@ -143,8 +140,7 @@
         ii++;                                                                \
     }
 #define DOTPRODUCT(v, t1, t2, n)                                             \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         ssize_t ii = 0, nn = (ssize_t)(n);                                   \
         v = 0;                                                               \
         for (; nn > 0; nn -= VCH_SW)                                         \
@@ -153,8 +149,7 @@
 
 /* function to accumulate frequencies of given data */
 #define ADDfreq(tbl, dd, kk)                                                 \
-    switch (kk)                                                              \
-    {                                                                        \
+    switch (kk) {                                                            \
     case 16:                                                                 \
         tbl[*dd]++;                                                          \
         dd++;                                                                \
@@ -205,20 +200,17 @@
         dd++;                                                                \
     }
 #define ADDFREQ(tbl, dt_type, dt, n)                                         \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         ssize_t nn = (ssize_t)(n);                                           \
         dt_type dd = (dt_type)(dt);                                          \
-        for (; nn > 0; nn -= VCH_SW)                                         \
-        {                                                                    \
+        for (; nn > 0; nn -= VCH_SW) {                                       \
             ADDfreq(tbl, dd, nn >= VCH_SW ? VCH_SW : nn);                    \
         }                                                                    \
     } while (0)
 
 /* sum frequencies for distinct objects */
 #define GRPfreq(fr, oo, ff, kk)                                              \
-    switch (kk)                                                              \
-    {                                                                        \
+    switch (kk) {                                                            \
     case 16:                                                                 \
         fr[*oo] += *ff;                                                      \
         oo++;                                                                \
@@ -285,8 +277,7 @@
         ff++;                                                                \
     }
 #define GRPFREQ(fr, o, f, n)                                                 \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         Vchobj_t *oo = ( Vchobj_t * )(o);                                    \
         Vcchar_t *ff = ( Vcchar_t * )(f);                                    \
         ssize_t nn = (ssize_t)(n);                                           \
@@ -296,8 +287,7 @@
 
 /* accumulate coding size of all objects */
 #define GRPsize(v, sz, oo, ff, kk)                                           \
-    switch (kk)                                                              \
-    {                                                                        \
+    switch (kk) {                                                            \
     case 16:                                                                 \
         v += sz[*oo] * *ff;                                                  \
         oo++;                                                                \
@@ -364,8 +354,7 @@
         ff++;                                                                \
     }
 #define GRPSIZE(v, sz, o, f, n)                                              \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         Vchobj_t *oo = ( Vchobj_t * )(o);                                    \
         Vcchar_t *ff = ( Vcchar_t * )(f);                                    \
         ssize_t nn = (ssize_t)(n);                                           \

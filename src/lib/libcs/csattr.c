@@ -54,23 +54,20 @@ load(Cs_t *state)
         return 0;
     if (tp = hashalloc(
         NiL, HASH_set, HASH_ALLOCATE, HASH_name, "state->info", 0))
-        while (s = sfgetr(sp, '\n', 1))
-        {
+        while (s = sfgetr(sp, '\n', 1)) {
             while (isspace(*s))
                 s++;
             h = s;
             while (!isspace(*s) && *s)
                 s++;
-            if (*s)
-            {
+            if (*s) {
                 c = *s;
                 *s++ = 0;
                 if (!(ip = ( Info_t * )hashlook(
                       tp,
                       h,
                       HASH_CREATE | HASH_SIZE(sizeof(Info_t) + strlen(s) + 1),
-                      NiL)))
-                {
+                      NiL))) {
                     hashfree(tp);
                     tp = 0;
                     break;
@@ -112,16 +109,14 @@ csattr(Cs_t *state, const char *name, const char *attr)
         attr = 0;
     b = buf;
     x = &buf[sizeof(buf) - 1];
-    if (!name || *name == '-' && !*(name + 1))
-    {
+    if (!name || *name == '-' && !*(name + 1)) {
         name = 0;
     scan:
         if (!pt && !(pt = hashscan(tp, 0)))
             return 0;
         n = attr && streq(attr, "name");
         do
-            if (!(ip = ( Info_t * )hashnext(pt)))
-            {
+            if (!(ip = ( Info_t * )hashnext(pt))) {
                 hashdone(pt);
                 pt = 0;
                 return 0;
@@ -132,42 +127,35 @@ csattr(Cs_t *state, const char *name, const char *attr)
         if (attr && streq(attr, "*"))
             return buf;
         b += sfsprintf(b, x - b, "%s", ip->name);
-    }
-    else
-    {
+    } else {
         if (streq(name, CS_HOST_LOCAL))
             name = ( const char * )csname(state, 0);
         if (!(ip = ( Info_t * )hashlook(tp, name, HASH_LOOKUP, NiL)))
             return 0;
-        if (attr)
-        {
+        if (attr) {
             if (streq(attr, "*"))
                 return buf;
             if (streq(attr, "name"))
                 return csaddr(state, ip->name) ? state->host : ip->name;
-            if (streq(attr, "addr") || streq(attr, "host"))
-            {
+            if (streq(attr, "addr") || streq(attr, "host")) {
                 if (addr = csaddr(state, ip->name))
                     return *attr == 'a' ? csntoa(state, addr) : state->host;
                 return CS_HOST_UNKNOWN;
             }
         }
     }
-    if (!attr)
-    {
+    if (!attr) {
         v = ip->data;
         if (b == buf)
             while (isspace(*v))
                 v++;
         b += sfsprintf(b, x - b, "%s", v);
-        if (addr = csaddr(state, ip->name))
-        {
+        if (addr = csaddr(state, ip->name)) {
             if (!streq(ip->name, state->host))
                 b += sfsprintf(b, x - b, " host=%s", state->host);
             b += sfsprintf(b, x - b, " addr=%s", csntoa(state, addr));
         }
-    }
-    else if (streq(attr, "addr") || streq(attr, "host"))
+    } else if (streq(attr, "addr") || streq(attr, "host"))
         b += sfsprintf(b,
                        x - b,
                        " %s",
@@ -175,14 +163,11 @@ csattr(Cs_t *state, const char *name, const char *attr)
                        ? (*attr == 'a' ? csntoa(state, addr) : state->host)
                        : CS_HOST_UNKNOWN);
     else
-        for (v = ip->data;;)
-        {
+        for (v = ip->data;;) {
             while (isspace(*v))
                 v++;
-            if (!*v)
-            {
-                if (!name)
-                {
+            if (!*v) {
+                if (!name) {
                     b = buf;
                     goto scan;
                 }
@@ -190,8 +175,7 @@ csattr(Cs_t *state, const char *name, const char *attr)
             }
             for (s = ( char * )attr; *s && *v == *s++; v++)
                 ;
-            if (!*s && (*v == '=' || !*v || isspace(*v)))
-            {
+            if (!*s && (*v == '=' || !*v || isspace(*v))) {
                 if (*v == '=')
                     v++;
                 else

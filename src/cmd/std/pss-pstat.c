@@ -56,8 +56,7 @@ pstat_init(Pss_t *pss)
 {
     State_t *state;
 
-    if (!(state = vmnewof(pss->vm, 0, State_t, 1, 0)))
-    {
+    if (!(state = vmnewof(pss->vm, 0, State_t, 1, 0))) {
         if (pss->disc->errorf)
             (*pss->disc->errorf)(
             pss, pss->disc, ERROR_SYSTEM | 2, "out of space");
@@ -73,17 +72,14 @@ pstat_read(Pss_t *pss, Pss_id_t pid)
     State_t *state = ( State_t * )pss->data;
     int count;
 
-    if (pid)
-    {
+    if (pid) {
         if ((count = pstat_getproc(state->pst, sizeof(state->pst[0]), 0, pid))
             != 1)
             return -1;
         state->pp = state->pst;
         state->pe = state->pp + count;
         state->last = 0;
-    }
-    else if (state->pp >= state->pe)
-    {
+    } else if (state->pp >= state->pe) {
         count = state->pe ? (state->pe - 1)->pst_idx + 1 : 0;
         if ((count = pstat_getproc(
              state->pst, sizeof(state->pst[0]), elementsof(state->pst), count))
@@ -113,8 +109,7 @@ pstat_part(Pss_t *pss, Pssent_t *pe)
               : makedev(pr->pst_term.psd_major, pr->pst_term.psd_minor);
     pe->uid = pr->pst_uid;
     pe->sid = pr->pst_sid;
-    switch (( int )pr->pst_stat)
-    {
+    switch (( int )pr->pst_stat) {
     case PS_IDLE:
         pe->state = 'I';
         break;
@@ -146,23 +141,18 @@ pstat_full(Pss_t *pss, Pssent_t *pe)
     char *s;
     int i;
 
-    if (pe->state != PSS_ZOMBIE)
-    {
-        if (fields & PSS_args)
-        {
+    if (pe->state != PSS_ZOMBIE) {
+        if (fields & PSS_args) {
             s = pr->pst_cmd;
-            if (s[0] == '(' && s[i = strlen(s) - 1] == ')')
-            {
+            if (s[0] == '(' && s[i = strlen(s) - 1] == ')') {
                 s[i] = 0;
                 s++;
             }
             pe->args = s;
         }
-        if (fields & PSS_command)
-        {
+        if (fields & PSS_command) {
             s = pr->pst_cmd;
-            if (s[0] == '(' && s[i = strlen(s) - 1] == ')')
-            {
+            if (s[0] == '(' && s[i = strlen(s) - 1] == ')') {
                 s[i] = 0;
                 s++;
             }

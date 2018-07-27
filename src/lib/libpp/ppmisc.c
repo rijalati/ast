@@ -38,14 +38,12 @@ pprefmac(char *name, int ref)
 
     if (!(sym = ppsymget(pp.symtab, name))
         && (ref <= REF_NORMAL && pp.macref || ref == REF_CREATE
-            || ref == REF_DELETE && (pp.mode & (INIT | READONLY))))
-    {
+            || ref == REF_DELETE && (pp.mode & (INIT | READONLY)))) {
         if ((pp.state & COMPILE) && pp.truncate && strlen(name) > pp.truncate)
             name[pp.truncate] = 0;
         sym = ppsymset(pp.symtab, NiL);
     }
-    if (sym && ref <= REF_NORMAL)
-    {
+    if (sym && ref <= REF_NORMAL) {
         if (pp.macref)
             (*pp.macref)(
             sym,
@@ -60,10 +58,8 @@ pprefmac(char *name, int ref)
     if (!(pp.state & COMPATIBILITY))
 #endif
         if (ref == REF_IF && sym && (sym->flags & SYM_PREDEFINED)
-            && *name != '_' && !(pp.mode & (HOSTED | INACTIVE)))
-        {
-            if (pp.state & STRICT)
-            {
+            && *name != '_' && !(pp.mode & (HOSTED | INACTIVE))) {
+            if (pp.state & STRICT) {
                 error(
                 1, "%s: obsolete predefined symbol reference disabled", name);
                 return (0);
@@ -87,22 +83,18 @@ ppassert(int op, char *pred, char *args)
     struct pplist *q;
 
     if (!args)
-        switch (op)
-        {
+        switch (op) {
         case DEFINE:
             goto mark;
         case UNDEF:
             a = 0;
             goto unmark;
         }
-    if (a = ( struct pplist * )hashget(pp.prdtab, pred))
-    {
+    if (a = ( struct pplist * )hashget(pp.prdtab, pred)) {
         p = 0;
         q = a;
-        while (q)
-        {
-            if (streq(q->value, args))
-            {
+        while (q) {
+            if (streq(q->value, args)) {
                 if (op == DEFINE)
                     return;
                 q = q->next;
@@ -110,15 +102,12 @@ ppassert(int op, char *pred, char *args)
                     p->next = q;
                 else
                     a = q;
-            }
-            else
-            {
+            } else {
                 p = q;
                 q = q->next;
             }
         }
-        if (op == UNDEF)
-        {
+        if (op == UNDEF) {
         unmark:
             hashput(pp.prdtab, pred, a);
             if (sym = ppsymref(pp.symtab, pred))
@@ -126,8 +115,7 @@ ppassert(int op, char *pred, char *args)
             return;
         }
     }
-    if (op == DEFINE)
-    {
+    if (op == DEFINE) {
         p = newof(0, struct pplist, 1, 0);
         p->next = a;
         p->value = strdup(args);
@@ -163,8 +151,7 @@ pppredargs(void)
 
     pptoken = pp.token;
     pp.token = pp.args;
-    switch (type = pplex())
-    {
+    switch (type = pplex()) {
     case '(':
         type = 0;
         n = 1;
@@ -172,10 +159,8 @@ pppredargs(void)
         pp.state &= ~STRIP;
         c = pplex();
         pp.state &= ~NOSPACE;
-        for (;;)
-        {
-            switch (c)
-            {
+        for (;;) {
+            switch (c) {
             case '(':
                 n++;
                 break;
@@ -193,8 +178,7 @@ pppredargs(void)
                 break;
             }
             pp.token = pp.toknxt;
-            if (c != ' ')
-            {
+            if (c != ' ') {
                 if (type)
                     type = T_STRING;
                 else
@@ -227,35 +211,27 @@ ppsync(void)
 {
     long m;
 
-    if ((pp.state & (ADD | HIDDEN)))
-    {
-        if (pp.state & ADD)
-        {
+    if ((pp.state & (ADD | HIDDEN))) {
+        if (pp.state & ADD) {
             pp.state &= ~ADD;
             m = pp.addp - pp.addbuf;
             pp.addp = pp.addbuf;
             ppprintf("%-.*s", m, pp.addbuf);
         }
-        if (pp.linesync)
-        {
-            if ((pp.state & SYNCLINE) || pp.hidden >= MAXHIDDEN)
-            {
+        if (pp.linesync) {
+            if ((pp.state & SYNCLINE) || pp.hidden >= MAXHIDDEN) {
                 pp.hidden = 0;
                 pp.state &= ~(HIDDEN | SYNCLINE);
                 if (error_info.line)
                     (*pp.linesync)(error_info.line, error_info.file);
-            }
-            else
-            {
+            } else {
                 m = pp.hidden;
                 pp.hidden = 0;
                 pp.state &= ~HIDDEN;
                 while (m-- > 0)
                     ppputchar('\n');
             }
-        }
-        else
-        {
+        } else {
             pp.hidden = 0;
             pp.state &= ~HIDDEN;
             ppputchar('\n');

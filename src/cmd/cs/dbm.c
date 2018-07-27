@@ -162,12 +162,10 @@ svc_read(void *handle, int fd)
     if ((n = csread(fd, nxt, sizeof(msg), CS_LINE)) <= 0)
         goto drop;
     nxt[n - 1] = 0;
-    while (tokscan(nxt, &nxt, " %s %s %s", &cmd, &key.dptr, &val.dptr) > 0)
-    {
+    while (tokscan(nxt, &nxt, " %s %s %s", &cmd, &key.dptr, &val.dptr) > 0) {
         key.dsize = strlen(key.dptr) + 1;
         val.dsize = strlen(val.dptr) + 1;
-        switch (*cmd)
-        {
+        switch (*cmd) {
         case 'c':
             if (!cp->db)
                 goto notopen;
@@ -182,71 +180,55 @@ svc_read(void *handle, int fd)
             val = dbm_fetch(cp->db->dbm, key);
             if (val.dptr)
                 n = sfsprintf(ret, sizeof(ret), "I %s\n", val.dptr);
-            else if (dbm_error(cp->db->dbm))
-            {
+            else if (dbm_error(cp->db->dbm)) {
                 dbm_clearerr(cp->db->dbm);
                 n = sfsprintf(ret, sizeof(ret), "E db io error\n");
-            }
-            else
+            } else
                 n = sfsprintf(ret, sizeof(ret), "W %s not in db\n", key.dptr);
             break;
         case 'n':
             if (!cp->db)
                 goto notopen;
             n = *(( char * )key.dptr);
-            if (!cp->scan)
-            {
+            if (!cp->scan) {
                 cp->scan = 1;
                 key = dbm_firstkey(cp->db->dbm);
-            }
-            else
-            {
+            } else {
                 cp->db->dbm->dbm_blkptr = cp->blkptr;
                 cp->db->dbm->dbm_keyptr = cp->keyptr;
                 key = dbm_nextkey(cp->db->dbm);
             }
             cp->blkptr = cp->db->dbm->dbm_blkptr;
             cp->keyptr = cp->db->dbm->dbm_keyptr;
-            if (key.dptr)
-            {
-                if (n)
-                {
+            if (key.dptr) {
+                if (n) {
                     val = dbm_fetch(cp->db->dbm, key);
                     if (val.dptr)
                         n = sfsprintf(
                         ret, sizeof(ret), "I %s %s\n", key.dptr, val.dptr);
-                    else
-                    {
-                        if (dbm_error(cp->db->dbm))
-                        {
+                    else {
+                        if (dbm_error(cp->db->dbm)) {
                             dbm_clearerr(cp->db->dbm);
                             n
                             = sfsprintf(ret, sizeof(ret), "E db io error\n");
-                        }
-                        else
+                        } else
                             n = sfsprintf(
                             ret, sizeof(ret), "E %s not in db\n", key.dptr);
                         cp->scan = 0;
                     }
-                }
-                else
+                } else
                     n = sfsprintf(ret, sizeof(ret), "I %s\n", key.dptr);
-            }
-            else
-            {
-                if (dbm_error(cp->db->dbm))
-                {
+            } else {
+                if (dbm_error(cp->db->dbm)) {
                     dbm_clearerr(cp->db->dbm);
                     n = sfsprintf(ret, sizeof(ret), "E db io error\n");
-                }
-                else
+                } else
                     n = sfsprintf(ret, sizeof(ret), "W end of scan\n");
                 cp->scan = 0;
             }
             break;
         case 'o':
-            if (cp->db)
-            {
+            if (cp->db) {
                 if (!--cp->db->ref)
                     dbm_close(cp->db->dbm);
                 cp->db = 0;
@@ -260,22 +242,18 @@ svc_read(void *handle, int fd)
             if (!stat(ret, &st))
                 for (dp = state->dbs; dp < state->dbs + state->conmax; dp++)
                     if (dp->ref > 0 && dp->ino == st.st_ino
-                        && dp->dev == st.st_dev)
-                    {
+                        && dp->dev == st.st_dev) {
                         dp->ref++;
                         cp->db = dp;
                     }
             if (!cp->db)
                 for (dp = state->dbs; dp < state->dbs + state->conmax; dp++)
-                    if (dp->ref <= 0)
-                    {
+                    if (dp->ref <= 0) {
                         if (dp->dbm
-                            = dbm_open(key.dptr, O_RDWR | O_CREAT, 0666))
-                        {
+                            = dbm_open(key.dptr, O_RDWR | O_CREAT, 0666)) {
                             cp->db = dp;
                             dp->ref = 1;
-                            if (stat(ret, &st))
-                            {
+                            if (stat(ret, &st)) {
                                 st.st_dev = 0;
                                 st.st_ino = 0;
                             }
@@ -293,32 +271,25 @@ svc_read(void *handle, int fd)
         case 'p':
             if (!cp->db)
                 goto notopen;
-            if (cp->readonly)
-            {
+            if (cp->readonly) {
                 n = sfsprintf(ret, sizeof(ret), "E db is readonly\n");
                 break;
             }
-            if (*(( char * )val.dptr))
-            {
+            if (*(( char * )val.dptr)) {
                 if (!dbm_store(cp->db->dbm, key, val, DBM_REPLACE))
                     n = sfsprintf(ret, sizeof(ret), "I entered\n");
-                else if (dbm_error(cp->db->dbm))
-                {
+                else if (dbm_error(cp->db->dbm)) {
                     dbm_clearerr(cp->db->dbm);
                     n = sfsprintf(ret, sizeof(ret), "E db io error\n");
-                }
-                else
+                } else
                     n = sfsprintf(
                     ret, sizeof(ret), "E %s not changed\n", key.dptr);
-            }
-            else if (!dbm_delete(cp->db->dbm, key))
+            } else if (!dbm_delete(cp->db->dbm, key))
                 n = sfsprintf(ret, sizeof(ret), "I deleted\n");
-            else if (dbm_error(cp->db->dbm))
-            {
+            else if (dbm_error(cp->db->dbm)) {
                 dbm_clearerr(cp->db->dbm);
                 n = sfsprintf(ret, sizeof(ret), "E db io error\n");
-            }
-            else
+            } else
                 n = sfsprintf(ret, sizeof(ret), "W %s not in db\n", key.dptr);
             break;
         case 'q':
@@ -344,8 +315,7 @@ svc_read(void *handle, int fd)
         }
         if (cswrite(fd, ret, n) != n || *cmd == 'q')
             goto drop;
-        if (*cmd == 'Q')
-        {
+        if (*cmd == 'Q') {
             if (state->active == 1)
                 exit(0);
             goto drop;
@@ -368,8 +338,7 @@ svc_timeout(void *handle)
 {
     State_t *state = ( State_t * )handle;
 
-    if (!state->active)
-    {
+    if (!state->active) {
         if (state->dormant)
             exit(0);
         state->dormant = 1;
@@ -389,8 +358,7 @@ svc_done(void *handle, int sig)
 
     NoP(sig);
     for (dp = state->dbs; dp < state->dbs + state->conmax; dp++)
-        if (dp->ref > 0)
-        {
+        if (dp->ref > 0) {
             dp->ref = 0;
             dbm_close(dp->dbm);
         }

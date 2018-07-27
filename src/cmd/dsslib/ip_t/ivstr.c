@@ -44,8 +44,7 @@ ivstr(Iv_t *iv,
         return strtoip6(s, e, addr, bits);
     r = -1;
     i = 0;
-    do
-    {
+    do {
         n = 0;
         while ((c = *s++) >= '0' && c <= '9')
             n = n * 10 + (c - '0');
@@ -53,18 +52,15 @@ ivstr(Iv_t *iv,
             goto done;
         addr[i++] = n;
     } while (c == '.' && i < iv->size);
-    if (bits)
-    {
-        if (c == '/')
-        {
+    if (bits) {
+        if (c == '/') {
             n = 0;
             while ((c = *s++) >= '0' && c <= '9')
                 n = n * 10 + (c - '0');
             c = (n + 7) / 8;
             if (i > c)
                 i = c;
-        }
-        else
+        } else
             n = i * 8;
         *bits = n;
     }

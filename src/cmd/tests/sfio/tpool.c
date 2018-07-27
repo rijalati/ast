@@ -67,8 +67,7 @@ tmain()
         if (sfputr(f1, os, -1) < 0)
             terror("Writing data");
     sfseek(f1, ( Sfoff_t )0, 0);
-    for (i = 0; i < 100; ++i)
-    {
+    for (i = 0; i < 100; ++i) {
         if (!(s = sfgetr(f1, '\n', 0)) || (n = sfvalue(f1)) != on)
             terror("Reading data");
         if (sfwrite(f2, s, n) != n)

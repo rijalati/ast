@@ -72,35 +72,25 @@ strpsearch(const void *tab,
     m = ccmap(CC_NATIVE, CC_ASCII);
 #endif
     c = MAP(m, *(( unsigned char * )name));
-    while (lo <= hi)
-    {
+    while (lo <= hi) {
         mid = lo + (sequential ? 0 : (((hi - lo) / siz) / 2) * siz);
         if (!(v = c - MAP(m, *(s = *(( unsigned char ** )mid))))
-            || *s == '[' && !(v = c - MAP(m, *++s)) && (v = 1))
-        {
+            || *s == '[' && !(v = c - MAP(m, *++s)) && (v = 1)) {
             t = ( unsigned char * )name;
-            for (;;)
-            {
-                if (!v && (*s == '[' || *s == '*'))
-                {
+            for (;;) {
+                if (!v && (*s == '[' || *s == '*')) {
                     v = 1;
                     s++;
-                }
-                else if (v && *s == ']')
-                {
+                } else if (v && *s == ']') {
                     v = 0;
                     s++;
-                }
-                else if (!isalpha(*t))
-                {
-                    if (v || !*s)
-                    {
+                } else if (!isalpha(*t)) {
+                    if (v || !*s) {
                         if (next)
                             *next = ( char * )t;
                         return ( void * )mid;
                     }
-                    if (!sequential)
-                    {
+                    if (!sequential) {
                         while ((mid -= siz) >= lo
                                && (s = *(( unsigned char ** )mid))
                                && ((c == MAP(m, *s))
@@ -110,20 +100,15 @@ strpsearch(const void *tab,
                     }
                     v = 1;
                     break;
-                }
-                else if (*t != *s)
-                {
+                } else if (*t != *s) {
                     v = MAP(m, *t) - MAP(m, *s);
                     break;
-                }
-                else
-                {
+                } else {
                     t++;
                     s++;
                 }
             }
-        }
-        else if (sequential)
+        } else if (sequential)
             break;
         if (v > 0)
             lo = mid + siz;

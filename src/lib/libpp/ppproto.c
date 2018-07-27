@@ -265,8 +265,7 @@ sstrncmp(const char *s, const char *t, int n)
 {
     const char *e = s + n;
 
-    while (s < e)
-    {
+    while (s < e) {
         if (*s != *t || !*s)
             return *s - *t;
         s++;
@@ -299,14 +298,11 @@ proto_error(char *iob, int level, char *msg, char *arg)
     char buf[1024];
 
     p = stpcpy(buf, "proto: ");
-    if (iob)
-    {
+    if (iob) {
         Proto_t *proto = ( Proto_t * )(iob - sizeof(Proto_t));
 
-        if (proto->line)
-        {
-            if (proto->file)
-            {
+        if (proto->line) {
+            if (proto->file) {
                 *p++ = '"';
                 p = stpcpy(p, proto->file);
                 *p++ = '"';
@@ -315,26 +311,21 @@ proto_error(char *iob, int level, char *msg, char *arg)
             }
             p = stpcpy(p, "line ");
             p = number(p, proto->line);
-        }
-        else if (proto->file)
+        } else if (proto->file)
             p = stpcpy(p, proto->file);
-    }
-    else
-    {
+    } else {
         p = stpcpy(p, msg);
         msg = arg;
         arg = 0;
     }
-    if (*(p - 1) != ' ')
-    {
+    if (*(p - 1) != ' ') {
         *p++ = ':';
         *p++ = ' ';
     }
     if (level == 1)
         p = stpcpy(p, "warning: ");
     p = stpcpy(p, msg);
-    if (arg)
-    {
+    if (arg) {
         *p++ = ' ';
         p = stpcpy(p, arg);
     }
@@ -401,8 +392,7 @@ init(Proto_t *proto, char *op, int flags)
 {
     char *s;
 
-    if (flags & INIT_DEFINE)
-    {
+    if (flags & INIT_DEFINE) {
         op = stpcpy(op,
                     "\
 \n\
@@ -464,8 +454,7 @@ init(Proto_t *proto, char *op, int flags)
 #define __LINKAGE__		/* 2004-08-11 transition */\n\
 #endif\n\
 ");
-    }
-    else
+    } else
         op = stpcpy(op,
                     "\
 \n\
@@ -476,8 +465,7 @@ init(Proto_t *proto, char *op, int flags)
 #define __LINKAGE__		/* 2004-08-11 transition */\n\
 #endif\n\
 ");
-    if (proto->package)
-    {
+    if (proto->package) {
         s = "\
 #ifndef	__MANGLE_%_DATA__\n\
 #  ifdef _BLD_%\n\
@@ -497,10 +485,8 @@ init(Proto_t *proto, char *op, int flags)
 #  endif\n\
 #endif\n\
 ";
-        for (;;)
-        {
-            switch (*op++ = *s++)
-            {
+        for (;;) {
+            switch (*op++ = *s++) {
             case 0:
                 op--;
                 break;
@@ -518,8 +504,7 @@ init(Proto_t *proto, char *op, int flags)
 
 #define BACKOUT() (op = ko)
 #define CACHE()                                                              \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         CACHEIN();                                                           \
         CACHEOUT();                                                          \
         call = proto->call;                                                  \
@@ -531,8 +516,7 @@ init(Proto_t *proto, char *op, int flags)
 #define LASTOUT() (*(op - 1))
 #define PUTCHR(c) (*op++ = (c))
 #define SYNC()                                                               \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         SYNCIN();                                                            \
         SYNCOUT();                                                           \
         proto->flags &= ~(EXTERN | INIT | OTHER | VARIADIC | VARIADIC2);     \
@@ -569,13 +553,11 @@ nns(char *s)
 static int
 directive(char *s, int dir)
 {
-    switch (*(s = nns(s)))
-    {
+    switch (*(s = nns(s))) {
     case 'e':
     case 'i':
         dir <<= 2;
-        switch (*++s)
-        {
+        switch (*++s) {
         case 'f':
             dir |= DIR_if;
             break;
@@ -646,29 +628,25 @@ fsm_start:
     proto->tp = ip;
     state = PROTO;
     bp = ip;
-    do
-    {
+    do {
         rp = fsm[state];
     fsm_get:
         while (!(state = rp[c = GETCHR()]))
             ;
     fsm_next:;
     } while (state > 0);
-    if ((n = ip - bp - 1) > 0)
-    {
+    if ((n = ip - bp - 1) > 0) {
         ip = bp;
         MEMCPY(op, ip, n);
         ip++;
     }
     state = ~state;
 fsm_terminal:
-    switch (TERM(state))
-    {
+    switch (TERM(state)) {
     case S_CHR:
         if (op > proto->ob && *(op - 1) == '='
             && (op == proto->ob + 1 || *(op - 2) != '='))
-            switch (c)
-            {
+            switch (c) {
             case '+':
             case '-':
             case '*':
@@ -685,8 +663,7 @@ fsm_terminal:
         break;
 
     case S_COMMENT:
-        switch (c)
-        {
+        switch (c) {
         case '\n':
             if (INCOMMENTXX(rp))
                 goto fsm_newline;
@@ -701,8 +678,7 @@ fsm_terminal:
             else
 #endif
                 PUTCHR(c);
-            if (INCOMMENTXX(rp))
-            {
+            if (INCOMMENTXX(rp)) {
                 rp = fsm[COM5];
                 break;
             }
@@ -723,8 +699,7 @@ fsm_terminal:
         goto fsm_get;
 
     case S_EOB:
-        if (c)
-        {
+        if (c) {
             if (state = fsm[TERMINAL][INDEX(rp) + 1])
                 goto fsm_terminal;
             SYNC();
@@ -733,8 +708,7 @@ fsm_terminal:
         UNGETCHR();
     fsm_eob:
         if ((flags & (DECLARE | GLOBAL | RECURSIVE)) == GLOBAL
-            && (proto->flags & MORE))
-        {
+            && (proto->flags & MORE)) {
 #if PROTOMAIN
             if (!(flags & EXTERN)) /* XXX */
 #endif
@@ -742,8 +716,7 @@ fsm_terminal:
             c = ip - proto->ib;
             if (!(flags & MATCH))
                 im = proto->tp;
-            if (ip > proto->ib)
-            {
+            if (ip > proto->ib) {
                 n = ip - im;
                 if (ip - n < proto->ib)
                     proto->flags |= ERROR;
@@ -751,8 +724,7 @@ fsm_terminal:
                 ip = proto->ib;
             }
             proto->tp -= c;
-            if (flags & MATCH)
-            {
+            if (flags & MATCH) {
                 im -= c;
                 ie -= c;
             }
@@ -760,10 +732,8 @@ fsm_terminal:
                 aim -= c;
             if (aie)
                 aie -= c;
-            if ((n = read(proto->fd, ip, proto->iz)) > 0)
-            {
-                if ((proto->options & REGULAR) && n < proto->iz)
-                {
+            if ((n = read(proto->fd, ip, proto->iz)) > 0) {
+                if ((proto->options & REGULAR) && n < proto->iz) {
                     proto->flags &= ~MORE;
                     close(proto->fd);
                 }
@@ -780,8 +750,7 @@ fsm_terminal:
         if (state & SPLICE)
             goto fsm_splice;
         /* NOTE: RECURSIVE lex() should really SLIDE too */
-        if (!(flags & RECURSIVE) && (state = rp[c = EOF]))
-        {
+        if (!(flags & RECURSIVE) && (state = rp[c = EOF])) {
             bp = ip;
             goto fsm_next;
         }
@@ -791,24 +760,20 @@ fsm_terminal:
     case S_LITBEG:
         quot = c;
 #if PROTOMAIN
-        if (c == '"' && qe)
-        {
+        if (c == '"' && qe) {
             for (n = 0, t = qe + 1;
                  t < op
                  && (*t == ' ' || *t == '\t' || *t == '\n' && ++n
                      || *t >= 'A' && *t <= 'Z' || *t == '_');
                  t++)
                 ;
-            if (t == op)
-            {
+            if (t == op) {
                 op = qe;
                 qe = 0;
                 qn = n;
-            }
-            else
+            } else
                 PUTCHR(c);
-        }
-        else
+        } else
 #endif
             PUTCHR(c);
         rp = fsm[LIT1];
@@ -816,32 +781,25 @@ fsm_terminal:
         goto fsm_get;
 
     case S_LITEND:
-        if (c == quot)
-        {
+        if (c == quot) {
 #if PROTOMAIN
             if (!(flags & DIRECTIVE))
                 qe = (c == '"') ? op : ( char * )0;
 #endif
             PUTCHR(c);
 #if PROTOMAIN
-            while (qn > 0)
-            {
+            while (qn > 0) {
                 qn--;
                 PUTCHR('\n');
             }
 #endif
-        }
-        else if (c != '\n' && c != EOF)
-        {
+        } else if (c != '\n' && c != EOF) {
             PUTCHR(c);
             bp = ip;
             goto fsm_get;
-        }
-        else
-        {
+        } else {
 #if PROTOMAIN
-            while (qn > 0)
-            {
+            while (qn > 0) {
                 qn--;
                 PUTCHR('\n');
             }
@@ -857,8 +815,7 @@ fsm_terminal:
             PUTCHR(c);
         else
 #endif
-            switch (c)
-            {
+            switch (c) {
             case 'a':
                 n = CC_bel;
                 goto fsm_oct;
@@ -872,8 +829,7 @@ fsm_terminal:
                 SYNC();
                 lex(proto, (flags & GLOBAL) | RECURSIVE);
                 for (n = x = 0; (c = GETCHR()), x < 3; x++)
-                    switch (c)
-                    {
+                    switch (c) {
                     case '0':
                     case '1':
                     case '2':
@@ -924,8 +880,7 @@ fsm_terminal:
         UNGETCHR();
 #if PROTOMAIN
         if ((flags & EXTERN) && *proto->tp == 's'
-            && !strncmp(proto->tp, "static", 6))
-        {
+            && !strncmp(proto->tp, "static", 6)) {
             c = T_EXTERN;
             break;
         }
@@ -941,23 +896,18 @@ fsm_terminal:
     fsm_newline:
         proto->line++;
 #if PROTOMAIN
-        if (flags & EXTERN)
-        {
+        if (flags & EXTERN) {
             if (op != proto->ob && LASTOUT() != ' ' && LASTOUT() != '\n')
                 PUTCHR(' ');
-        }
-        else
+        } else
 #endif
             PUTCHR(c);
-        if (flags & DIRECTIVE)
-        {
+        if (flags & DIRECTIVE) {
 #if PROTOMAIN
-            if (flags & CLASSIC)
-            {
+            if (flags & CLASSIC) {
                 if (flags & EXTERN)
                     BACKOUT();
-                if (flags & JUNK)
-                {
+                if (flags & JUNK) {
                     *(ip - 1) = 0;
                     op = stpcpy(om, "/* ");
                     op = stpcpy(op, im);
@@ -965,12 +915,10 @@ fsm_terminal:
                 }
                 flags &= ~(DEFINE | DIRECTIVE | IDID | INDIRECT | JUNK | MATCH
                            | SHARP | TYPEDEF);
-            }
-            else
+            } else
 #endif
             {
-                if ((flags & (DEFINE | SHARP)) == (DEFINE | SHARP))
-                {
+                if ((flags & (DEFINE | SHARP)) == (DEFINE | SHARP)) {
                     *(ip - 1) = 0;
                     op = stpcpy(
                     om, "#if defined(__STDC__) || defined(__STDPP__)\n");
@@ -980,19 +928,15 @@ fsm_terminal:
                     ip = im;
                     *op++ = *ip++;
                     while (*op = *ip++)
-                        if (*op++ == '#' && *ip != '(')
-                        {
+                        if (*op++ == '#' && *ip != '(') {
                             op--;
                             while (*--op == ' ' || *op == '\t')
                                 ;
-                            if (*ip == '#')
-                            {
+                            if (*ip == '#') {
                                 op = stpcpy(op + 1, "/**/");
                                 while (*++ip == ' ' || *ip == '\t')
                                     ;
-                            }
-                            else
-                            {
+                            } else {
                                 if (*op != '"')
                                     *++op = '"';
                                 op++;
@@ -1023,8 +967,7 @@ fsm_terminal:
             last = '\n';
         }
         if (paren == 0
-            && (flags & (MATCH | RECURSIVE | SKIP | SLIDE)) == SLIDE)
-        {
+            && (flags & (MATCH | RECURSIVE | SKIP | SLIDE)) == SLIDE) {
 #if PROTOMAIN
             if (flags & EXTERN)
                 BACKOUT();
@@ -1054,8 +997,7 @@ fsm_terminal:
         UNGETCHR();
         c = T_ID;
         if (!(flags & DECLARE))
-            switch (RESERVED(*proto->tp, *(ip - 1), ip - proto->tp))
-            {
+            switch (RESERVED(*proto->tp, *(ip - 1), ip - proto->tp)) {
             case RESERVED('N', 'N', 3):
                 if (proto->tp[1] == 'o')
                     c = T_DO;
@@ -1066,8 +1008,7 @@ fsm_terminal:
             case RESERVED('e', 'e', 4):
                 if (!(flags & RECURSIVE)
                     && (flags & (DIRECTIVE | TOKENS)) != DIRECTIVE
-                    && !strncmp(proto->tp, "else", 4))
-                {
+                    && !strncmp(proto->tp, "else", 4)) {
                     c = T_ELSE;
                     goto fsm_id;
                 }
@@ -1077,8 +1018,7 @@ fsm_terminal:
                     c = T_EXTERN;
                 break;
             case RESERVED('f', 'r', 3):
-                if (!(flags & RECURSIVE) && !strncmp(proto->tp, "for", 3))
-                {
+                if (!(flags & RECURSIVE) && !strncmp(proto->tp, "for", 3)) {
                     c = T_FOR;
                     goto fsm_id;
                 }
@@ -1091,8 +1031,7 @@ fsm_terminal:
                     && !(flags & (MATCH | SKIP | TOKENS | TYPEDEF))
                     && proto->brace == 0 && paren == 0 && group == 0
                     && (last == ';' || last == '}' || last == '\n'
-                        || last == 0))
-                {
+                        || last == 0)) {
                     flags |= SKIP;
                     SYNC();
                     line = proto->line;
@@ -1101,23 +1040,22 @@ fsm_terminal:
                 }
                 break;
             case RESERVED('r', 'n', 6):
-                if (!(flags & RECURSIVE) && !strncmp(proto->tp, "return", 6))
-                {
+                if (!(flags & RECURSIVE)
+                    && !strncmp(proto->tp, "return", 6)) {
                     c = T_RETURN;
                     goto fsm_id;
                 }
                 break;
             case RESERVED('s', 'c', 6):
                 if ((proto->options & EXTERNALIZE)
-                    && !strncmp(proto->tp, "static", 6))
-                {
+                    && !strncmp(proto->tp, "static", 6)) {
                     proto->ox = op - 6;
                     flags |= EXTERNALIZE;
                 }
                 break;
             case RESERVED('t', 'f', 7):
-                if (!(flags & RECURSIVE) && !strncmp(proto->tp, "typedef", 7))
-                {
+                if (!(flags & RECURSIVE)
+                    && !strncmp(proto->tp, "typedef", 7)) {
                     flags |= TYPEDEF;
                     c = T_EXTERN;
                 }
@@ -1127,21 +1065,17 @@ fsm_terminal:
                     c = T_VA_START;
                 break;
             case RESERVED('v', 'd', 4):
-                if (!strncmp(proto->tp, "void", 4))
-                {
+                if (!strncmp(proto->tp, "void", 4)) {
                     if (flags
                         & (CLASSIC | PLUSONLY | INIT_DEFINE | INIT_INCLUDE))
                         c = T_VOID;
-                    else
-                    {
+                    else {
                         SYNC();
                         line = proto->line;
-                        if (lex(proto, (flags & GLOBAL) | RECURSIVE) == '*')
-                        {
+                        if (lex(proto, (flags & GLOBAL) | RECURSIVE) == '*') {
                             memcopy(op - 4, "__V_", 4);
                             memcopy(ip - 4, "__V_", 4);
-                        }
-                        else
+                        } else
                             c = T_VOID;
                         proto->line = line;
                         SYNC();
@@ -1150,8 +1084,7 @@ fsm_terminal:
                 }
                 break;
             case RESERVED('w', 'e', 5):
-                if (!(flags & RECURSIVE) && !strncmp(proto->tp, "while", 5))
-                {
+                if (!(flags & RECURSIVE) && !strncmp(proto->tp, "while", 5)) {
                     c = T_WHILE;
                     goto fsm_id;
                 }
@@ -1169,8 +1102,7 @@ fsm_terminal:
     case S_WS:
         UNGETCHR();
 #if PROTOMAIN
-        if ((flags & (EXTERN | MATCH)) == EXTERN)
-        {
+        if ((flags & (EXTERN | MATCH)) == EXTERN) {
             while (op > proto->ob && (*(op - 1) == ' ' || *(op - 1) == '\t'))
                 op--;
             if (op > proto->ob && *(op - 1) != '\n')
@@ -1180,19 +1112,15 @@ fsm_terminal:
         goto fsm_start;
 
     default:
-        if (state & SPLICE)
-        {
-            if (c == '\\')
-            {
-                if (!(n = GETCHR()))
-                {
+        if (state & SPLICE) {
+            if (c == '\\') {
+                if (!(n = GETCHR())) {
                     goto fsm_eob;
                 fsm_splice:
                     c = '\\';
                     n = GETCHR();
                 }
-                if (n == '\n')
-                {
+                if (n == '\n') {
                     proto->line++;
                     PUTCHR('\\');
                     PUTCHR('\n');
@@ -1210,18 +1138,15 @@ fsm_terminal:
         bp = ip;
         goto fsm_get;
     }
-    if (!(flags & (INIT_DEFINE | INIT_INCLUDE | RECURSIVE)))
-    {
+    if (!(flags & (INIT_DEFINE | INIT_INCLUDE | RECURSIVE))) {
         if (!(flags & DIRECTIVE))
-            switch (c)
-            {
+            switch (c) {
             case '(':
 #if PROTOMAIN
                 if (!(flags & CLASSIC) || proto->brace == 0)
 #endif
                 {
-                    if (paren++ == 0)
-                    {
+                    if (paren++ == 0) {
 #if PROTOMAIN
                         if (!(flags & CLASSIC) || group <= 1)
 #endif
@@ -1238,39 +1163,28 @@ fsm_terminal:
                             om = op - 1;
                         }
                         sub = 0;
-                    }
-                    else if (paren == 2 && !aim)
-                    {
+                    } else if (paren == 2 && !aim) {
                         sub++;
-                        if (last == '(')
-                        {
+                        if (last == '(') {
                             flags &= ~MATCH;
                             om = 0;
-                        }
-                        else if (flags & INDIRECT)
-                        {
+                        } else if (flags & INDIRECT) {
                             aim = ip - 1;
                             aom = op - 1;
-                        }
-                        else if ((flags & (MATCH | TOKENS)) == MATCH)
-                        {
+                        } else if ((flags & (MATCH | TOKENS)) == MATCH) {
                             for (m = ip - 2;
                                  m > im && (*m == ' ' || *m == '\t');
                                  m--)
                                 ;
-                            if (m != im && sub == 1)
-                            {
+                            if (m != im && sub == 1) {
                                 m = im + (*nns(ip) == '*');
                             }
-                            if (m == im)
-                            {
+                            if (m == im) {
                                 flags &= ~MATCH;
                                 om = 0;
                             }
-                        }
-                        else if ((flags & MATCH) && sub == 1
-                                 && *nns(ip) != '*')
-                        {
+                        } else if ((flags & MATCH) && sub == 1
+                                   && *nns(ip) != '*') {
                             flags &= ~MATCH;
                             om = 0;
                         }
@@ -1282,13 +1196,10 @@ fsm_terminal:
 #if PROTOMAIN
                 if (!(flags & CLASSIC) || proto->brace == 0)
 #endif
-                    if (--paren == 0)
-                    {
+                    if (--paren == 0) {
 #if PROTOMAIN
-                        if (flags & CLASSIC)
-                        {
-                            if (group != 2)
-                            {
+                        if (flags & CLASSIC) {
+                            if (group != 2) {
                                 c = T_ID;
                                 break;
                             }
@@ -1296,16 +1207,13 @@ fsm_terminal:
                         }
 #endif
                         ie = ip;
-                    }
-                    else if (paren == 1 && (flags & INDIRECT) && !aie)
+                    } else if (paren == 1 && (flags & INDIRECT) && !aie)
                         aie = ip;
                 break;
             case '*':
-                if (last == '(' && group == 2)
-                {
+                if (last == '(' && group == 2) {
                     group--;
-                    if (paren == 1)
-                    {
+                    if (paren == 1) {
                         flags |= INDIRECT;
                         aim = aie = 0;
                     }
@@ -1320,19 +1228,15 @@ fsm_terminal:
                        == (MATCH | TOKENS)
                     && ((dir & DIR) != DIR_en || ((dir >> 2) & DIR) != DIR_if))
                     flags |= DIRECTIVE;
-                else if (!(flags & (DECLARE | DIRECTIVE)))
-                {
+                else if (!(flags & (DECLARE | DIRECTIVE))) {
                     flags |= DIRECTIVE;
-                    if (!(flags & PLUSONLY))
-                    {
+                    if (!(flags & PLUSONLY)) {
                         bp = ip;
                         while (*ip == ' ' || *ip == '\t')
                             ip++;
                         if (*ip == 'l' && *++ip == 'i' && *++ip == 'n'
-                            && *++ip == 'e')
-                        {
-                            if (*++ip == ' ' || *ip == '\t')
-                            {
+                            && *++ip == 'e') {
+                            if (*++ip == ' ' || *ip == '\t') {
                                 proto->line = 0;
                                 while (*++ip >= '0' && *ip <= '9')
                                     proto->line
@@ -1341,21 +1245,18 @@ fsm_terminal:
                             }
                         }
 #if PROTOMAIN
-                        else if ((flags & (CLASSIC | EXTERN)) == CLASSIC)
-                        {
+                        else if ((flags & (CLASSIC | EXTERN)) == CLASSIC) {
                             n = 0;
                             t = ip + 6;
                             while (ip < t && *ip >= 'a' && *ip <= 'z')
                                 n = HASHKEYPART(n, *ip++);
-                            switch (n)
-                            {
+                            switch (n) {
                             case HASHKEY4('e', 'l', 's', 'e'):
                             case HASHKEY5('e', 'n', 'd', 'i', 'f'):
                                 while (*ip == ' ' || *ip == '\t')
                                     ip++;
                                 if (*ip != '\n' && *ip != '/'
-                                    && *(ip + 1) != '*')
-                                {
+                                    && *(ip + 1) != '*') {
                                     flags |= JUNK | MATCH;
                                     im = ip;
                                     om = op + (ip - bp);
@@ -1383,22 +1284,19 @@ fsm_terminal:
                                 om = op - 1;
                                 break;
                             }
-                        }
-                        else
+                        } else
 #endif
                         {
                             if (*ip == 'i' && *++ip == 'n' && *++ip == 'c'
                                 && *++ip == 'l' && *++ip == 'u'
-                                && *++ip == 'd' && *++ip == 'e')
-                            {
+                                && *++ip == 'd' && *++ip == 'e') {
                                 while (*++ip == ' ' || *ip == '\t')
                                     ;
                                 if (*ip++ == '<' && *ip++ == 's'
                                     && *ip++ == 't' && *ip++ == 'd'
                                     && *ip++ == 'a' && *ip++ == 'r'
                                     && *ip++ == 'g' && *ip++ == '.'
-                                    && *ip++ == 'h' && *ip++ == '>')
-                                {
+                                    && *ip++ == 'h' && *ip++ == '>') {
                                     op = stpcpy(op,
                                                 "\
 if !defined(va_start)\n\
@@ -1412,19 +1310,16 @@ if !defined(va_start)\n\
                                     op = linesync(proto, op, proto->line);
                                     break;
                                 }
-                            }
-                            else if (*ip == 'd' && *++ip == 'e'
-                                     && *++ip == 'f' && *++ip == 'i'
-                                     && *++ip == 'n' && *++ip == 'e'
-                                     && (*++ip == ' ' || *ip == '\t'))
-                            {
+                            } else if (*ip == 'd' && *++ip == 'e'
+                                       && *++ip == 'f' && *++ip == 'i'
+                                       && *++ip == 'n' && *++ip == 'e'
+                                       && (*++ip == ' ' || *ip == '\t')) {
                                 while (*++ip == ' ' || *ip == '\t')
                                     ;
                                 if (*ip == 'e' && *++ip == 'x' && *++ip == 't'
                                     && *++ip == 'e' && *++ip == 'r'
                                     && *++ip == 'n'
-                                    && (*++ip == ' ' || *ip == '\t'))
-                                {
+                                    && (*++ip == ' ' || *ip == '\t')) {
                                     t = ip;
                                     while (*++t == ' ' || *t == '\t')
                                         ;
@@ -1437,8 +1332,7 @@ if !defined(va_start)\n\
                                     t = ip;
                                     while (*++t == ' ' || *t == '\t')
                                         ;
-                                    if (*t == '_' && *(t + 1) == '_')
-                                    {
+                                    if (*t == '_' && *(t + 1) == '_') {
                                         op = stpcpy(op, "undef __MANGLE__\n");
                                         op = linesync(proto, op, proto->line);
                                         op = stpcpy(
@@ -1449,20 +1343,17 @@ if !defined(va_start)\n\
                                 flags |= DEFINE | MATCH;
                                 im = bp - 1;
                                 om = op - 1;
-                            }
-                            else if (*ip == 'u' && *++ip == 'n'
-                                     && *++ip == 'd' && *++ip == 'e'
-                                     && *++ip == 'f'
-                                     && (*++ip == ' ' || *ip == '\t'))
-                            {
+                            } else if (*ip == 'u' && *++ip == 'n'
+                                       && *++ip == 'd' && *++ip == 'e'
+                                       && *++ip == 'f'
+                                       && (*++ip == ' ' || *ip == '\t')) {
                                 while (*++ip == ' ' || *ip == '\t')
                                     ;
                                 if (*ip == 'e' && *++ip == 'x' && *++ip == 't'
                                     && *++ip == 'e' && *++ip == 'r'
                                     && *++ip == 'n'
                                     && (*++ip == ' ' || *ip == '\t'
-                                        || *ip == '\n' || *ip == '\r'))
-                                {
+                                        || *ip == '\n' || *ip == '\r')) {
                                     op = stpcpy(op, "undef __MANGLE__\n");
                                     op = linesync(proto, op, proto->line);
                                     op = stpcpy(
@@ -1477,22 +1368,17 @@ if !defined(va_start)\n\
                         ip = bp;
                     }
                     break;
-                }
-                else
+                } else
                     break;
                 /*FALLTHROUGH*/
             case '{':
-                if (proto->brace++ == 0 && paren == 0)
-                {
+                if (proto->brace++ == 0 && paren == 0) {
                     if (last == '=')
                         flags |= INIT;
 #if PROTOMAIN
-                    else if (flags & CLASSIC)
-                    {
-                        if ((flags & (MATCH | OTHER | SKIP)) == MATCH)
-                        {
-                            if (args)
-                            {
+                    else if (flags & CLASSIC) {
+                        if ((flags & (MATCH | OTHER | SKIP)) == MATCH) {
+                            if (args) {
                                 v = number(op, args < 0 ? -args : args);
                                 v = stpcpy(
                                 v, " argument actual/formal mismatch");
@@ -1508,17 +1394,13 @@ if !defined(va_start)\n\
                             /*UNDENT...*/
                             v = ie;
                             while (ie < ip)
-                                if (*ie++ == '/' && *ie == '*')
-                                {
+                                if (*ie++ == '/' && *ie == '*') {
                                     e = ie - 1;
-                                    while (++ie < ip)
-                                    {
-                                        if (*ie == '*')
-                                        {
+                                    while (++ie < ip) {
+                                        if (*ie == '*') {
                                             while (ie < ip && *ie == '*')
                                                 ie++;
-                                            if (ie < ip && *ie == '/')
-                                            {
+                                            if (ie < ip && *ie == '/') {
                                                 while (++ie < ip
                                                        && (*ie == ' '
                                                            || *ie == '\t'))
@@ -1542,39 +1424,32 @@ if !defined(va_start)\n\
                             ie = v;
                             /*...INDENT*/
                             op = om++;
-                            if (flags & EXTERN)
-                            {
+                            if (flags & EXTERN) {
                                 v = op;
                                 while (v > ko && *--v != ' ')
                                     ;
-                                if (*v != ' ')
-                                {
+                                if (*v != ' ') {
                                     om = (v = (op += 4)) + 1;
-                                    while (v >= ko + 4)
-                                    {
+                                    while (v >= ko + 4) {
                                         *v = *(v - 4);
                                         v--;
                                     }
                                     memcopy(ko, "int ", 4);
                                 }
-                                if (*v == ' ')
-                                {
+                                if (*v == ' ') {
                                     while (*(v + 1) == '*')
                                         *v++ = '*';
                                     *v = '\t';
-                                    if ((v - ko) <= 8)
-                                    {
+                                    if ((v - ko) <= 8) {
                                         om = (e = ++op) + 1;
-                                        while (e > v)
-                                        {
+                                        while (e > v) {
                                             *e = *(e - 1);
                                             e--;
                                         }
                                     }
                                 }
                                 om = (v = (op += 7)) + 1;
-                                while (v >= ko + 7)
-                                {
+                                while (v >= ko + 7) {
                                     *v = *(v - 7);
                                     v--;
                                 }
@@ -1584,11 +1459,9 @@ if !defined(va_start)\n\
                             t = op;
                             e = 0;
                             /*UNDENT...*/
-                            while (ie < ip)
-                            {
+                            while (ie < ip) {
                                 if ((c = *ie) == ' ' || c == '\t'
-                                    || c == '\n')
-                                {
+                                    || c == '\n') {
                                     while ((c = *++ie) == ' ' || c == '\t'
                                            || c == '\n')
                                         ;
@@ -1597,10 +1470,8 @@ if !defined(va_start)\n\
                                     if (c != '*' && op > om)
                                         PUTCHR(' ');
                                 }
-                                if ((n = ((c = *ie) == ',')) || c == ';')
-                                {
-                                    if (flags & EXTERN)
-                                    {
+                                if ((n = ((c = *ie) == ',')) || c == ';') {
+                                    if (flags & EXTERN) {
                                         m = op;
                                         while (op > om
                                                && ((c = *(op - 1)) == '('
@@ -1614,8 +1485,7 @@ if !defined(va_start)\n\
                                             op--;
                                         while (*(op - 1) == ' ')
                                             op--;
-                                        if (!e)
-                                        {
+                                        if (!e) {
                                             e = op;
                                             while (e > om && *(e - 1) == '*')
                                                 e--;
@@ -1635,16 +1505,14 @@ if !defined(va_start)\n\
                                             PUTCHR(*v++);
                                     }
                                     PUTCHR(',');
-                                    if (n)
-                                    {
+                                    if (n) {
                                         if (x = !e)
                                             e = op - 1;
                                         PUTCHR(' ');
                                         m = t;
                                         while (m < e)
                                             PUTCHR(*m++);
-                                        if (x)
-                                        {
+                                        if (x) {
                                             m = e;
                                             while (*--e != ' ')
                                                 ;
@@ -1660,14 +1528,11 @@ if !defined(va_start)\n\
                                         UNPUTCHR();
                                     else
                                         PUTCHR(' ');
-                                    if (!n)
-                                    {
+                                    if (!n) {
                                         t = op;
                                         e = 0;
                                     }
-                                }
-                                else if (*ie == '*')
-                                {
+                                } else if (*ie == '*') {
                                     if (op > om && (c = *(op - 1)) == ' ')
                                         op--;
                                     while (*ie == '*')
@@ -1677,18 +1542,14 @@ if !defined(va_start)\n\
                                         ie++;
                                     if (c != '(')
                                         PUTCHR(' ');
-                                }
-                                else if (*ie == '(')
-                                {
+                                } else if (*ie == '(') {
                                     if (op > om && *(op - 1) == ' ')
                                         op--;
                                     PUTCHR(*ie++);
                                     while (*ie == ' ' || *ie == '\t'
                                            || *ie == '\n')
                                         ie++;
-                                }
-                                else if (*ie == ')')
-                                {
+                                } else if (*ie == ')') {
                                     if (op > om && *(op - 1) == '(')
                                         proto_error(
                                         ( char * )proto + sizeof(Proto_t),
@@ -1700,35 +1561,29 @@ if !defined(va_start)\n\
                                     while (*ie == ' ' || *ie == '\t'
                                            || *ie == '\n')
                                         ie++;
-                                }
-                                else if ((flags & EXTERN)
-                                         && (op == om || *(op - 1) == ' ')
-                                         && *ie == 'r'
-                                         && !strncmp(ie, "register", 8)
-                                         && (*(ie + 8) == ' '
-                                             || *(ie + 8) == '\t'
-                                             || *(ie + 8) == '\n'))
-                                {
+                                } else if ((flags & EXTERN)
+                                           && (op == om || *(op - 1) == ' ')
+                                           && *ie == 'r'
+                                           && !strncmp(ie, "register", 8)
+                                           && (*(ie + 8) == ' '
+                                               || *(ie + 8) == '\t'
+                                               || *(ie + 8) == '\n')) {
                                     ie += 8;
                                     if (op > om)
                                         UNPUTCHR();
-                                }
-                                else
+                                } else
                                     PUTCHR(*ie++);
                             }
                             /*...INDENT*/
                             if (op <= om)
                                 op = stpcpy(op, "void");
                             PUTCHR(')');
-                            if (flags & EXTERN)
-                            {
+                            if (flags & EXTERN) {
                                 PUTCHR(';');
                                 PUTCHR('\n');
                                 SYNCOUT();
                                 KEEPOUT();
-                            }
-                            else
-                            {
+                            } else {
                                 PUTCHR('\n');
                                 PUTCHR(*ip);
                             }
@@ -1738,8 +1593,7 @@ if !defined(va_start)\n\
                     }
 #endif
                     else if ((flags & (MATCH | PLUSONLY | SKIP | TOKENS))
-                             == (MATCH | TOKENS))
-                    {
+                             == (MATCH | TOKENS)) {
                         line = proto->line;
                         op = stpcpy(om, " __PARAM__(");
                         op = memcopy(op, im, ie - im);
@@ -1747,26 +1601,21 @@ if !defined(va_start)\n\
                         PUTCHR(' ');
                         PUTCHR('(');
                         flags &= ~(MATCH | SKIP);
-                        if (flags & VARIADIC)
-                        {
+                        if (flags & VARIADIC) {
                             if ((vc = ie - im + 1) > sizeof(proto->variadic))
                                 vc = sizeof(proto->variadic);
                             memcopy(proto->variadic, im, vc);
                             op
                             = stpcpy(op, "va_alist)) __OTORP__(va_dcl)\n{");
-                        }
-                        else
-                        {
+                        } else {
                             flags |= SKIP;
                             proto->ip = im;
                             proto->op = op;
                             group = 0;
                             brack = 0;
-                            for (;;)
-                            {
+                            for (;;) {
                                 switch (
-                                lex(proto, (flags & GLOBAL) | RECURSIVE))
-                                {
+                                lex(proto, (flags & GLOBAL) | RECURSIVE)) {
                                 case '[':
                                     brack++;
                                     continue;
@@ -1778,11 +1627,9 @@ if !defined(va_start)\n\
                                         group++;
                                     continue;
                                 case ')':
-                                    if (--paren == 0)
-                                    {
+                                    if (--paren == 0) {
                                         group = 0;
-                                        if (flags & MATCH)
-                                        {
+                                        if (flags & MATCH) {
                                             flags &= ~(MATCH | SKIP);
                                             op = memcopy(op, m, e - m);
                                         }
@@ -1790,11 +1637,9 @@ if !defined(va_start)\n\
                                     }
                                     continue;
                                 case ',':
-                                    if (paren == 1)
-                                    {
+                                    if (paren == 1) {
                                         group = 0;
-                                        if (flags & MATCH)
-                                        {
+                                        if (flags & MATCH) {
                                             flags &= ~(MATCH | SKIP);
                                             op = memcopy(op, m, e - m);
                                         }
@@ -1804,8 +1649,7 @@ if !defined(va_start)\n\
                                     }
                                     continue;
                                 case T_ID:
-                                    if (group <= 1 && !brack)
-                                    {
+                                    if (group <= 1 && !brack) {
                                         flags |= MATCH;
                                         m = proto->tp;
                                         e = proto->ip;
@@ -1819,8 +1663,7 @@ if !defined(va_start)\n\
                             PUTCHR(')');
                             PUTCHR(')');
                         }
-                        if (!(flags & SKIP))
-                        {
+                        if (!(flags & SKIP)) {
                             flags |= SKIP;
                             proto->op = stpcpy(op, " __OTORP__(");
                             proto->ip = im + 1;
@@ -1838,13 +1681,11 @@ if !defined(va_start)\n\
                         if (flags & EXTERNALIZE)
                             memcpy(proto->ox, "extern", 6);
                         op = linesync(proto, op, proto->line = line);
-                        if (flags & DIRECTIVE)
-                        {
+                        if (flags & DIRECTIVE) {
                             proto->brace = 0;
                             PUTCHR('\n');
                             PUTCHR('#');
-                        }
-                        else if (!(flags & VARIADIC))
+                        } else if (!(flags & VARIADIC))
                             PUTCHR('{');
                     }
                 }
@@ -1854,8 +1695,7 @@ if !defined(va_start)\n\
                 break;
             case '}':
                 flags &= ~(IDID | INDIRECT | MATCH | OTHER | SKIP | TOKENS);
-                if (--proto->brace == 0)
-                {
+                if (--proto->brace == 0) {
                     flags &= ~(INIT | VARIADIC | VARIADIC2);
 #if PROTOMAIN
                     if (flags & EXTERN)
@@ -1870,8 +1710,7 @@ if !defined(va_start)\n\
                 if (last == '?')
                     flags |= DIRECTIVE;
                 else if (paren == 0
-                         && (flags & (INIT | MATCH | SKIP)) == MATCH)
-                {
+                         && (flags & (INIT | MATCH | SKIP)) == MATCH) {
                     if (last == ')' && proto->brace
                         && (group != 2 || call != 2))
                         flags |= SKIP;
@@ -1881,12 +1720,10 @@ if !defined(va_start)\n\
                 goto fsm_other;
             case ',':
 #if PROTOMAIN
-                if (flags & CLASSIC)
-                {
+                if (flags & CLASSIC) {
                     if (paren == 1)
                         args++;
-                    else
-                    {
+                    else {
                         args--;
                         flags &= ~MATCH;
                     }
@@ -1901,27 +1738,21 @@ if !defined(va_start)\n\
                 if (flags & INIT) /* ignore */
                     ;
 #if PROTOMAIN
-                else if (flags & CLASSIC)
-                {
-                    if (paren == 0)
-                    {
+                else if (flags & CLASSIC) {
+                    if (paren == 0) {
                         if ((flags & MATCH) && last == ')')
                             flags &= ~MATCH;
-                        if (!(flags & MATCH))
-                        {
+                        if (!(flags & MATCH)) {
                             call = 0;
                             group = 0;
                             flags &= ~SKIP;
                             if (flags & EXTERN)
                                 BACKOUT();
-                            if (flags & SLIDE)
-                            {
+                            if (flags & SLIDE) {
                                 SYNC();
                                 return 0;
                             }
-                        }
-                        else
-                        {
+                        } else {
                             args--;
                             if ((flags & (EXTERN | SKIP)) == (EXTERN | SKIP))
                                 BACKOUT();
@@ -1929,12 +1760,10 @@ if !defined(va_start)\n\
                     }
                 }
 #endif
-                else if (paren == 0)
-                {
-                    if ((flags & (MATCH | OTHER | SKIP)) == MATCH && call > 1)
-                    {
-                        if ((flags & MANGLE) && func)
-                        {
+                else if (paren == 0) {
+                    if ((flags & (MATCH | OTHER | SKIP)) == MATCH
+                        && call > 1) {
+                        if ((flags & MANGLE) && func) {
                             func[0] = 'F';
                             func[1] = 'U';
                             func[2] = 'N';
@@ -1942,8 +1771,7 @@ if !defined(va_start)\n\
                             func = 0;
                         }
                         if ((flags & (DECLARE | INDIRECT)) == INDIRECT && aim
-                            && aie < im)
-                        {
+                            && aie < im) {
                             while (
                             aie < ip
                             && (*aie == ' ' || *aie == '\t' || *aie == '\n'))
@@ -1955,8 +1783,7 @@ if !defined(va_start)\n\
                             while (v < aie
                                    && (*v == ' ' || *v == '\t' || *v == '\n'))
                                 v++;
-                            if (v == aie || !(flags & PLUSPLUS))
-                            {
+                            if (v == aie || !(flags & PLUSPLUS)) {
                                 if (flags & PLUSPLUS)
                                     n = 3;
                                 else if (v == aie && *v == '(')
@@ -1966,8 +1793,7 @@ if !defined(va_start)\n\
                                 ko = op;
                                 om += n;
                                 v = op += n;
-                                while (v >= ko + n)
-                                {
+                                while (v >= ko + n) {
                                     *v = *(v - n);
                                     v--;
                                 }
@@ -1975,26 +1801,21 @@ if !defined(va_start)\n\
                                     memcopy(aom, "(...))", 6);
                                 else if (n == 10)
                                     memcopy(aom, "(__VARARG__))", 13);
-                                else
-                                {
+                                else {
                                     ko = stpcpy(aom, " __PROTO__(");
                                     ko = memcopy(ko, aim, aie - aim);
                                     *ko = ')';
-                                    if (++ko >= om)
-                                    {
+                                    if (++ko >= om) {
                                         *ko++ = ')';
                                         om = ko;
                                     }
                                 }
                             }
-                        }
-                        else if (flags & TYPEDEF)
-                        {
+                        } else if (flags & TYPEDEF) {
                             op = om;
                             while (*--op == ' ' || *op == '\t' || *op == '\n')
                                 ;
-                            if (*op != ')')
-                            {
+                            if (*op != ')') {
                                 op = om += 14;
                                 *--op = ')';
                                 while ((x = *(op - 14)) >= 'A' && x <= 'Z'
@@ -2006,23 +1827,19 @@ if !defined(va_start)\n\
                         }
                         if (flags & OTHER)
                             ;
-                        else if (flags & PLUSPLUS)
-                        {
+                        else if (flags & PLUSPLUS) {
                             op = om;
                             if (!(flags & TOKENS))
                                 op = stpcpy(op, "(...)");
                             else
                                 op = memcopy(op, im, ie - im);
                             PUTCHR(c);
-                        }
-                        else
-                        {
+                        } else {
                             if (flags & DECLARE)
                                 op = stpcpy(om, "()");
                             else if (!(flags & TOKENS))
                                 op = stpcpy(om, "(__VARARG__)");
-                            else
-                            {
+                            else {
                                 op = stpcpy(om, " __PROTO__(");
                                 op = memcopy(op, im, ie - im);
                                 PUTCHR(')');
@@ -2032,32 +1849,26 @@ if !defined(va_start)\n\
                             PUTCHR(c);
                         }
                         flags &= ~(MATCH | VARIADIC | VARIADIC2);
-                        if (c == ',' && !(flags & INDIRECT))
-                        {
+                        if (c == ',' && !(flags & INDIRECT)) {
                             call = 1;
                             group = 0;
                             break;
                         }
-                    }
-                    else if (flags & (OTHER | SKIP))
+                    } else if (flags & (OTHER | SKIP))
                         call = 0;
-                    if (c == ';')
-                    {
+                    if (c == ';') {
                         flags &= ~(EXTERNALIZE | MANGLE | TOKENS | TYPEDEF);
                         call = 0;
-                        if (flags & SLIDE)
-                        {
+                        if (flags & SLIDE) {
                             SYNC();
                             return 0;
                         }
-                    }
-                    else
+                    } else
                         call = call > 1 && c == ',';
                     group = 0;
                     flags &= ~(IDID | INDIRECT | MATCH | OTHER | SKIP);
-                }
-                else if (paren == 1 && group == 1
-                         && !(flags & (IDID | MANGLE)))
+                } else if (paren == 1 && group == 1
+                           && !(flags & (IDID | MANGLE)))
                     flags |= TOKENS | OTHER;
                 break;
             case T_DO:
@@ -2066,33 +1877,26 @@ if !defined(va_start)\n\
                 break;
             case T_EXTERN:
 #if PROTOMAIN
-                if (flags & CLASSIC)
-                {
+                if (flags & CLASSIC) {
                     if (proto->brace == 0)
                         flags |= SKIP;
-                }
-                else
+                } else
 #endif
-                if (paren == 0 && !(flags & TYPEDEF))
-                {
+                if (paren == 0 && !(flags & TYPEDEF)) {
                     flags |= MANGLE;
-                    if (!(flags & PLUSONLY) || proto->package)
-                    {
+                    if (!(flags & PLUSONLY) || proto->package) {
                         op = stpcpy(op, " __MANGLE__");
-                        if (proto->package)
-                        {
+                        if (proto->package) {
                             op = stpcpy(op - 1, proto->package);
                             func = op + 1;
                             op = stpcpy(op, "_DATA__");
                         }
-                    }
-                    else
+                    } else
                         func = 0;
                 }
                 break;
             case T_VARIADIC:
-                if (paren == 0 && (flags & (DECLARE | VARIADIC)) == DECLARE)
-                {
+                if (paren == 0 && (flags & (DECLARE | VARIADIC)) == DECLARE) {
                     op -= 3;
                     SYNC();
                     return c;
@@ -2104,22 +1908,18 @@ if !defined(va_start)\n\
             case T_VOID:
                 goto fsm_id;
             case T_VA_START:
-                if ((flags & (PLUSONLY | VARIADIC)) == VARIADIC)
-                {
+                if ((flags & (PLUSONLY | VARIADIC)) == VARIADIC) {
                     flags &= ~MATCH;
                     line = proto->line;
                     op = stpcpy(op - 8, "__VA_START__");
                     SYNC();
-                    for (;;)
-                    {
-                        switch (lex(proto, (flags & GLOBAL) | RECURSIVE))
-                        {
+                    for (;;) {
+                        switch (lex(proto, (flags & GLOBAL) | RECURSIVE)) {
                         case 0:
                         case ';':
                             break;
                         case T_ID:
-                            if (!(flags & MATCH))
-                            {
+                            if (!(flags & MATCH)) {
                                 flags |= MATCH;
                                 m = proto->tp;
                                 e = proto->ip;
@@ -2131,13 +1931,10 @@ if !defined(va_start)\n\
                         break;
                     }
                     CACHE();
-                    if (flags & MATCH)
-                    {
+                    if (flags & MATCH) {
                         v = m;
                         n = e - m;
-                    }
-                    else
-                    {
+                    } else {
                         v = "ap";
                         n = 2;
                     }
@@ -2150,22 +1947,17 @@ if !defined(va_start)\n\
                     if (*bp == 'r' && !strncmp(bp, "register", 8)
                         && (*(bp + 8) == ' ' || *(bp + 8) == '\t'))
                         bp += 9;
-                    for (;;)
-                    {
-                        switch (lex(proto, (flags & GLOBAL) | RECURSIVE))
-                        {
+                    for (;;) {
+                        switch (lex(proto, (flags & GLOBAL) | RECURSIVE)) {
                         case '(':
                             if (paren++)
                                 group++;
                             continue;
                         case ')':
-                            if (--paren == 0)
-                            {
-                                if (flags & MATCH)
-                                {
+                            if (--paren == 0) {
+                                if (flags & MATCH) {
                                     flags &= ~MATCH;
-                                    if (!(flags & VARIADIC2))
-                                    {
+                                    if (!(flags & VARIADIC2)) {
                                         op = memcopy(op, m, e - m);
                                         op = stpcpy(op, " = ");
                                     }
@@ -2190,13 +1982,10 @@ if !defined(va_start)\n\
                             }
                             continue;
                         case ',':
-                            if (paren == 1)
-                            {
-                                if (flags & MATCH)
-                                {
+                            if (paren == 1) {
+                                if (flags & MATCH) {
                                     flags &= ~MATCH;
-                                    if (!(flags & VARIADIC2))
-                                    {
+                                    if (!(flags & VARIADIC2)) {
                                         op = memcopy(op, m, e - m);
                                         op = stpcpy(op, " = ");
                                     }
@@ -2227,8 +2016,7 @@ if !defined(va_start)\n\
                             }
                             continue;
                         case T_ID:
-                            if (group <= 1)
-                            {
+                            if (group <= 1) {
                                 flags |= MATCH;
                                 m = proto->tp;
                                 e = proto->ip;
@@ -2249,22 +2037,18 @@ if !defined(va_start)\n\
             case T_ID:
             fsm_id:
 #if PROTOMAIN
-                if (flags & CLASSIC)
-                {
+                if (flags & CLASSIC) {
                     if (!args && paren == 1)
                         args++;
                     break;
                 }
 #endif
-                if (paren == 0)
-                {
-                    if (last == ')')
-                    {
+                if (paren == 0) {
+                    if (last == ')') {
                         if (proto->brace == 0 && !(flags & DECLARE))
                             flags |= SKIP;
                         call = !call;
-                    }
-                    else if ((flags & SKIP) || c == T_ID || c == T_VOID)
+                    } else if ((flags & SKIP) || c == T_ID || c == T_VOID)
                         call++;
                     else
                         flags |= SKIP;
@@ -2275,13 +2059,10 @@ if !defined(va_start)\n\
                 flags |= TOKENS;
                 break;
             case T_INVALID:
-                if (*proto->tp >= '0' && *proto->tp <= '9')
-                {
+                if (*proto->tp >= '0' && *proto->tp <= '9') {
                     n = 0;
-                    for (;; op--)
-                    {
-                        switch (*(op - 1))
-                        {
+                    for (;; op--) {
+                        switch (*(op - 1)) {
                         case 'f':
                         case 'F':
                             t = op;
@@ -2295,16 +2076,14 @@ if !defined(va_start)\n\
                             break;
                         case 'l':
                         case 'L':
-                            if (!(n & 01))
-                            {
+                            if (!(n & 01)) {
                                 n |= 01;
                                 t = op;
                                 while ((c = *--t) >= '0' && c <= '9'
                                        || c >= 'a' && c <= 'z'
                                        || c >= 'A' && c <= 'Z')
                                     ;
-                                if (*t == '.')
-                                {
+                                if (*t == '.') {
                                     n = 0;
                                     op--;
                                     break;
@@ -2320,8 +2099,7 @@ if !defined(va_start)\n\
                     }
                     if (n & 01)
                         *op++ = 'L';
-                    if (n & 02)
-                    {
+                    if (n & 02) {
                         m = op;
                         t = op = m + 10;
                         while ((c = *--m) >= '0' && c <= '9'
@@ -2364,22 +2142,18 @@ if !defined(va_start)\n\
 #endif
             SYNCOUT();
         goto fsm_start;
-    }
-    else if (flags & (INIT_DEFINE | INIT_INCLUDE))
-    {
+    } else if (flags & (INIT_DEFINE | INIT_INCLUDE)) {
 #if PROTOMAIN
         if ((flags & YACC) && c == '%' && *ip == '{')
             t = 0;
         else
 #endif
         {
-            if (c == '#')
-            {
+            if (c == '#') {
                 for (t = ip; *t == ' ' || *t == '\t'; t++)
                     ;
                 if (*t++ == 'i' && *t++ == 'f' && *t++ == 'n' && *t++ == 'd'
-                    && *t++ == 'e' && *t++ == 'f')
-                {
+                    && *t++ == 'e' && *t++ == 'f') {
 #if !PROTOMAIN
                     while (*t == ' ' || *t == '\t')
                         t++;
@@ -2387,12 +2161,10 @@ if !defined(va_start)\n\
 #endif
                         t = 0;
                 }
-            }
-            else
+            } else
                 t = "";
         }
-        if (t)
-        {
+        if (t) {
 #if PROTOMAIN
             n = ip - proto->tp;
             ip -= n;
@@ -2401,8 +2173,7 @@ if !defined(va_start)\n\
             ip = bp;
             op = proto->op;
 #endif
-        }
-        else
+        } else
             while (*ip != '\n')
                 *op++ = *ip++;
         op = init(proto, op, flags);
@@ -2484,8 +2255,7 @@ pppopen(char *file,
     if (file && (fd = open(file, O_RDONLY)) < 0)
         return 0;
 #if !PROTOMAIN
-    if ((n = lseek(fd, 0L, 2)) > 0)
-    {
+    if ((n = lseek(fd, 0L, 2)) > 0) {
         if (lseek(fd, 0L, 0))
             return 0;
         if (n < CHUNK)
@@ -2494,8 +2264,7 @@ pppopen(char *file,
             n = 0;
         m = 1;
     }
-    if (n > 0)
-    {
+    if (n > 0) {
         /*
          * file read in one chunk
          */
@@ -2505,8 +2274,7 @@ pppopen(char *file,
         proto->iz = n;
         proto->oz = 3 * n;
         n = 0;
-    }
-    else
+    } else
 #endif
     {
         /*
@@ -2531,12 +2299,10 @@ pppopen(char *file,
         comment = "/*";
     if (!(proto->cc[0] = comment[0]))
         notice = options = 0;
-    else if (comment[1])
-    {
+    else if (comment[1]) {
         proto->cc[1] = comment[1];
         proto->cc[2] = comment[2] ? comment[2] : comment[0];
-    }
-    else
+    } else
         proto->cc[1] = proto->cc[2] = comment[0];
 
     /*
@@ -2546,8 +2312,7 @@ pppopen(char *file,
     n = read(fd, proto->ip, proto->iz);
     if (!(proto->flags & MORE))
         close(fd);
-    if (n < 0)
-    {
+    if (n < 0) {
         pppclose(iob);
         return 0;
     }
@@ -2580,22 +2345,18 @@ pppopen(char *file,
     pragma = -1;
     s = proto->ip;
     m = MAGICTOP;
-    while (m-- > 0 && *s && hit != (HIT_prototyped | HIT_noticed))
-    {
+    while (m-- > 0 && *s && hit != (HIT_prototyped | HIT_noticed)) {
         while (*s == ' ' || *s == '\t')
             s++;
-        if (*s == '#')
-        {
+        if (*s == '#') {
             b = s++;
             while (*s == ' ' || *s == '\t')
                 s++;
             if (*s == *PRAGMADIR
                 && !strncmp(s, PRAGMADIR, sizeof(PRAGMADIR) - 1)
-                && (*(s += sizeof(PRAGMADIR) - 1) == ' ' || *s == '\t'))
-            {
+                && (*(s += sizeof(PRAGMADIR) - 1) == ' ' || *s == '\t')) {
                 clr = 0;
-                while (*s && *s != '\r' && *s != '\n')
-                {
+                while (*s && *s != '\r' && *s != '\n') {
                     for (; *s == ' ' || *s == '\t'; s++)
                         ;
                     for (t = s; *s && *s != ' ' && *s != '\t' && *s != '\r'
@@ -2605,12 +2366,10 @@ pppopen(char *file,
                     z = s - t;
                     for (i = 0; i < elementsof(pragmas); i++)
                         if (pragmas[i].size == z
-                            && !strncmp(t, pragmas[i].name, z))
-                        {
+                            && !strncmp(t, pragmas[i].name, z)) {
                             clr = 1;
                             hit |= pragmas[i].hit;
-                            switch (pragmas[i].hit)
-                            {
+                            switch (pragmas[i].hit) {
                             case HIT_noticed:
                                 notice = options = 0;
                                 break;
@@ -2620,8 +2379,7 @@ pppopen(char *file,
                             }
                         }
                 }
-                if (clr)
-                {
+                if (clr) {
 #if PROTOMAIN
                     if (!(flags & PROTO_DISABLE) || (flags & PROTO_NOPRAGMA))
 #endif
@@ -2629,46 +2387,37 @@ pppopen(char *file,
                             ;
                 }
             }
-        }
-        else if (*s == *GENERATED
-                 && !strncmp(s, GENERATED, sizeof(GENERATED) - 1))
-        {
+        } else if (*s == *GENERATED
+                   && !strncmp(s, GENERATED, sizeof(GENERATED) - 1)) {
             pragma = 0;
             break;
         }
 #if PROTOMAIN
         else if (*s == '%' && *(s + 1) == '{')
             proto->flags |= YACC;
-        else if (!(hit & HIT_noticed))
-        {
-            if (*s == *com && !strncmp(s, com, comlen))
-            {
+        else if (!(hit & HIT_noticed)) {
+            if (*s == *com && !strncmp(s, com, comlen)) {
                 hit |= HIT_noticed;
                 notice = options = 0;
-            }
-            else
+            } else
                 for (; *s && *s != '\n' && !(hit & HIT_noticed); s++)
                     for (i = 0; i < elementsof(notices); i++)
                         if (*s == notices[i].name[0]
-                            && !strncmp(s, notices[i].name, notices[i].size))
-                        {
+                            && !strncmp(s, notices[i].name, notices[i].size)) {
                             s += notices[i].size;
-                            if (notices[i].val)
-                            {
+                            if (notices[i].val) {
                                 while (*s == ' ' || *s == '\t')
                                     s++;
                                 if (*s == '('
                                     && (*(s + 1) == 'c' || *(s + 1) == 'C')
                                     && *(s + 2) == ')'
                                     || *s >= '0' && *s <= '9'
-                                       && *(s + 1) >= '0' && *(s + 1) <= '9')
-                                {
+                                       && *(s + 1) >= '0'
+                                       && *(s + 1) <= '9') {
                                     hit |= notices[i].hit;
                                     notice = options = 0;
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 hit |= notices[i].hit;
                                 notice = options = 0;
                             }
@@ -2696,30 +2445,22 @@ pppopen(char *file,
         && file[--m] == 'y' && file[--m] == '.')
         proto->flags |= YACC;
 #endif
-    if (pragma <= 0)
-    {
-        if (flags & PROTO_PLUSPLUS)
-        {
+    if (pragma <= 0) {
+        if (flags & PROTO_PLUSPLUS) {
             flags &= ~(PROTO_HEADER | PROTO_INCLUDE);
             proto->flags |= PLUSONLY;
-        }
-        else if (!(flags & (PROTO_FORCE | PROTO_PASS)))
-        {
+        } else if (!(flags & (PROTO_FORCE | PROTO_PASS))) {
             pppclose(iob);
             return 0;
-        }
-        else if ((flags & (PROTO_FORCE | PROTO_PASS)) == PROTO_PASS
-                 || !pragma)
-        {
+        } else if ((flags & (PROTO_FORCE | PROTO_PASS)) == PROTO_PASS
+                   || !pragma) {
             proto->flags |= PASS;
             if (proto->flags & MORE)
                 proto->oz += proto->iz;
             proto->iz = n;
-            if (notice || options)
-            {
+            if (notice || options) {
                 if (proto->cc[0] == '#' && proto->ip[0] == '#'
-                    && proto->ip[1] == '!')
-                {
+                    && proto->ip[1] == '!') {
                     s = proto->ip;
                     while (*s && *s++ != '\n')
                         ;
@@ -2729,8 +2470,7 @@ pppopen(char *file,
                     proto->iz = n -= m;
                 }
 #if PROTOMAIN
-                if (proto->cc[0])
-                {
+                if (proto->cc[0]) {
                     if ((comlen = astlicense(proto->op,
                                              proto->oz,
                                              notice,
@@ -2754,19 +2494,16 @@ pppopen(char *file,
         }
     }
 #if PROTOMAIN
-    if (!(retain & PROTO_INITIALIZED))
-    {
+    if (!(retain & PROTO_INITIALIZED)) {
         retain |= PROTO_INITIALIZED;
         ppfsm(FSM_INIT, NiL);
     }
 #endif
     proto->line = 1;
 #if CHUNK >= 512
-    if (notice || options || (flags & (PROTO_HEADER | PROTO_INCLUDE)))
-    {
+    if (notice || options || (flags & (PROTO_HEADER | PROTO_INCLUDE))) {
 #    if PROTOMAIN
-        if (notice || options)
-        {
+        if (notice || options) {
             if ((comlen = astlicense(proto->op,
                                      proto->oz,
                                      notice,
@@ -2781,40 +2518,31 @@ pppopen(char *file,
                 proto->op += comlen;
         }
 #    endif
-        if (flags & PROTO_INCLUDE)
-        {
+        if (flags & PROTO_INCLUDE) {
             proto->flags |= INIT_INCLUDE;
             if (flags & PROTO_RETAIN)
                 retain |= PROTO_INCLUDE;
-        }
-        else if (flags & PROTO_HEADER)
-        {
+        } else if (flags & PROTO_HEADER) {
             if (flags & PROTO_RETAIN)
                 retain |= PROTO_HEADER;
 #    if PROTOMAIN
-            if (flags & PROTO_CLASSIC)
-            {
+            if (flags & PROTO_CLASSIC) {
                 *proto->op++ = '#';
                 proto->op = stpcpy(proto->op, PRAGMADIR);
                 *proto->op++ = ' ';
                 proto->op = stpcpy(proto->op, pragmas[0].name);
                 *proto->op++ = '\n';
-            }
-            else
+            } else
 #    endif
                 proto->flags |= INIT_DEFINE;
         }
 #    if PROTOMAIN
-        if (!(flags & PROTO_CLASSIC))
-        {
-            if (proto->flags & YACC)
-            {
+        if (!(flags & PROTO_CLASSIC)) {
+            if (proto->flags & YACC) {
                 proto->op = stpcpy(proto->op, "\n%{\n" + !notice);
                 proto->op = stpcpy(proto->op, GENERATED);
                 proto->op = stpcpy(proto->op, "%}\n");
-            }
-            else
-            {
+            } else {
                 if (n || notice || options)
                     *proto->op++ = '\n';
                 proto->op = stpcpy(proto->op, GENERATED);
@@ -2829,8 +2557,7 @@ pppopen(char *file,
 #endif
 #if PROTOMAIN
     proto->file = file;
-    if (flags & PROTO_CLASSIC)
-    {
+    if (flags & PROTO_CLASSIC) {
         proto->flags |= CLASSIC;
         if (!(flags & PROTO_HEADER))
             proto->flags |= EXTERN;
@@ -2850,43 +2577,33 @@ pppread(char *iob)
     Proto_t *proto = ( Proto_t * )(iob - sizeof(Proto_t));
     int n;
 
-    if (proto->flags & PASS)
-    {
-        if (proto->iz)
-        {
+    if (proto->flags & PASS) {
+        if (proto->iz) {
             n = proto->iz;
             proto->iz = 0;
-        }
-        else if (!(proto->flags & MORE))
+        } else if (!(proto->flags & MORE))
             n = 0;
         else if ((n = read(proto->fd, proto->ob, proto->oz)) <= 0
-                 || (proto->options & REGULAR) && n < proto->oz)
-        {
+                 || (proto->options & REGULAR) && n < proto->oz) {
             proto->flags &= ~MORE;
             close(proto->fd);
         }
-    }
-    else
-    {
-        if (proto->op == proto->ob)
-        {
+    } else {
+        if (proto->op == proto->ob) {
             if (proto->flags & ERROR)
                 return -1;
 #if PROTOMAIN
-            if (proto->flags & YACC)
-            {
+            if (proto->flags & YACC) {
                 char *ip = proto->ip;
                 char *op = proto->ob;
                 char *ep = proto->ob + proto->oz - 2;
 
-                if (!*ip)
-                {
+                if (!*ip) {
                     ip = proto->ip = proto->ib;
                     if (!(proto->flags & MORE))
                         n = 0;
                     else if ((n = read(proto->fd, ip, proto->iz)) <= 0
-                             || (proto->options & REGULAR) && n < proto->iz)
-                    {
+                             || (proto->options & REGULAR) && n < proto->iz) {
                         if (n < 0)
                             n = 0;
                         proto->flags &= ~MORE;
@@ -2894,11 +2611,9 @@ pppread(char *iob)
                     }
                     ip[n] = 0;
                 }
-                if (proto->flags & YACCSPLIT)
-                {
+                if (proto->flags & YACCSPLIT) {
                     proto->flags &= ~YACCSPLIT;
-                    if (*ip == '%')
-                    {
+                    if (*ip == '%') {
                         *op++ = *ip++;
                         if (proto->flags & YACC2)
                             proto->flags &= ~YACC;
@@ -2907,14 +2622,12 @@ pppread(char *iob)
                     }
                 }
                 if (proto->flags & YACC)
-                    while (op < ep && (n = *op++ = *ip))
-                    {
+                    while (op < ep && (n = *op++ = *ip)) {
                         ip++;
-                        if (n == '%')
-                        {
+                        if (n == '%') {
                             if (*ip == '%'
-                                && (ip == proto->ip + 1 || *(ip - 2) == '\n'))
-                            {
+                                && (ip == proto->ip + 1
+                                    || *(ip - 2) == '\n')) {
                                 *op++ = *ip++;
                                 if (proto->flags & YACC2)
                                     proto->flags &= ~YACC;
@@ -2922,20 +2635,17 @@ pppread(char *iob)
                                     proto->flags |= YACC2;
                                 break;
                             }
-                            if (!*ip)
-                            {
+                            if (!*ip) {
                                 *op++ = '%';
                                 proto->flags |= YACCSPLIT;
                                 break;
                             }
-                        }
-                        else if (n == '\n')
+                        } else if (n == '\n')
                             proto->line++;
                     }
                 proto->op = memcopy(proto->ob, proto->ip, ip - proto->ip);
                 proto->ip = ip;
-            }
-            else
+            } else
 #endif
                 lex(proto, proto->flags);
             if ((proto->flags & (ERROR | MORE)) == ERROR)
@@ -2962,8 +2672,7 @@ pppdrop(char *iob)
 {
     Proto_t *proto = ( Proto_t * )(iob - sizeof(Proto_t));
 
-    if (proto->flags & MORE)
-    {
+    if (proto->flags & MORE) {
         proto->flags &= ~MORE;
         return proto->fd;
     }

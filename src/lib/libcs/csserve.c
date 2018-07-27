@@ -54,8 +54,7 @@ actionf(Css_t *css, Cssfd_t *fp, Cssdisc_t *disc)
 {
     Server_t *server = ( Server_t * )disc;
 
-    switch (fp->status)
-    {
+    switch (fp->status) {
     case CS_POLL_READ:
         if (server->rd)
             return (*server->rd)(server->handle, fp->fd) < 0 ? -1 : 1;
@@ -73,8 +72,7 @@ exceptf(Css_t *css, unsigned long op, unsigned long arg, Cssdisc_t *disc)
 {
     Server_t *server = ( Server_t * )disc;
 
-    switch (op)
-    {
+    switch (op) {
     case CSS_CLOSE:
         if (server->done)
             (*server->done)(server->handle, 0);

@@ -58,15 +58,13 @@ int flags;
                           NiL,
                           RTLD_LAZY,
                           path,
-                          sizeof(path))))
-    {
+                          sizeof(path)))) {
         if (!(flags & RS_IGNORE) && kp->keydisc->errorf)
             (*kp->keydisc->errorf)(
             kp, kp->keydisc, 2, "%s: library not found", path);
         return -1;
     }
-    if (!(fun = ( Rslib_f )dlllook(dll, symbol)))
-    {
+    if (!(fun = ( Rslib_f )dlllook(dll, symbol))) {
         if (!(flags & RS_IGNORE) && kp->keydisc->errorf)
             (*kp->keydisc->errorf)(
             kp,

@@ -76,8 +76,7 @@ static isfree(Vmdata_t *vmdt, Block_t *blk)
     Block_t *bp;
 
     /**/ DEBUG_ASSERT(isblock(vmdt, blk) && !(SIZE(blk) & BUSY));
-    for (bp = vmdt->free; bp; bp = LINK(bp))
-    { /**/
+    for (bp = vmdt->free; bp; bp = LINK(bp)) { /**/
         DEBUG_ASSERT(!(SIZE(bp) & BUSY));
         if (bp == blk)
             return 1;
@@ -101,17 +100,14 @@ _vmfreelist(Vmdata_t *vmdt, Void_t *arg, int type)
     Block_t *pb, *bp, *blk;
     /**/ DEBUG_ASSERT(vmdt->lock != 0);
 
-    if (type == INSERT_BLOCK)
-    {
+    if (type == INSERT_BLOCK) {
         blk = ( Block_t * )arg;
         do
             LINK(blk) = bp = vmdt->free;
         while (asocasptr(&vmdt->free, bp, blk) != bp);
-    }
-    else /* some sort of deletion */
+    } else /* some sort of deletion */
     {
-        do
-        {
+        do {
             for (pb = NIL(Block_t *), bp = vmdt->free; bp;
                  pb = bp, bp = LINK(bp))
                 if ((type == DELETE_BLOCK && bp == ( Block_t * )arg)
@@ -147,18 +143,14 @@ vmclrlock(int all)
         while (_Vmsbrklock != 0) /* or in all cases */
             asosubint(&_Vmsbrklock, _Vmsbrklock);
 
-    for (vh = _Vmhold;; vh = vh->next)
-    {
+    for (vh = _Vmhold;; vh = vh->next) {
         if ((vm = vh ? vh->vm : Vmheap) == NIL(Vmalloc_t *))
             continue;
 
-        if (threadid)
-        {
+        if (threadid) {
             asocasint(&vm->data->lock, threadid, 0); /* lock on segments */
             asocasint(&vm->data->ulck, threadid, 0); /* lock on user data */
-        }
-        else
-        {
+        } else {
             while (vm->data->lock)
                 asosubint(&vm->data->lock, vm->data->lock);
             while (vm->data->ulck)
@@ -179,8 +171,7 @@ vmsegwalk(Vmalloc_t *vm, Vmseg_f segf, Void_t *handle)
     Vmalloc_t *todo;
     int rv = 0;
 
-    for (vh = _Vmhold;; vh = vh->next)
-    {
+    for (vh = _Vmhold;; vh = vh->next) {
         if ((todo = vm ? vm : vh ? vh->vm : Vmheap) && todo->data)
             for (seg = todo->data->seg; seg; seg = seg->next)
                 if ((rv = (*segf)(
@@ -271,14 +262,12 @@ _vmsegmerge(Vmdata_t *vmdt, Block_t *blk)
     {
         next = NEXT(blk); /**/
         DEBUG_ASSERT(SEG(next) == SEG(blk));
-        if (!(SIZE(next) & BUSY))
-        {
+        if (!(SIZE(next) & BUSY)) {
             _vmfreelist(vmdt, ( Void_t * )next, DELETE_BLOCK);
             size = SIZE(blk) + BDSZ(next) + sizeof(Head_t);
             asocassize(&SIZE(blk), SIZE(blk), size); /**/
             DEBUG_ASSERT(SIZE(blk) == size);
-        }
-        else
+        } else
             break;
     }
 }
@@ -303,8 +292,7 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
 /* transition to a fixed place to unlock before returning */
 #    undef RETURN
 #    define RETURN(x)                                                        \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             (x);                                                             \
             goto re_turn;                                                    \
         } while (0)
@@ -313,8 +301,7 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
     size = size < Segunit ? Segunit : ROUND(size, Segunit);
 
     key = asothreadid();
-    if (vmdt->lock == key)
-    {
+    if (vmdt->lock == key) {
         heisus = 1; /* we have met the enemy and he is us */
         if (blk && (type & VM_SEGEXTEND)) /* no physical extension when he is
                                              us */
@@ -333,9 +320,7 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
                          __FILE__,
                          __LINE__,
                          "we have met the enemy and he is us");
-    }
-    else
-    {
+    } else {
         heisus = 0;
         asolock(&vmdt->lock, key, ASO_LOCK);
 
@@ -346,14 +331,11 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
                 RETURN(blk);
             if (NEXT(blk) != (( Seg_t * )SEG(blk))->endb)
                 RETURN(blk = NIL(Block_t *));
-        }
-        else /* see if anything available for requested size */
+        } else /* see if anything available for requested size */
         {
-            for (blk = vmdt->free; blk; blk = LINK(blk))
-            {
+            for (blk = vmdt->free; blk; blk = LINK(blk)) {
                 _vmsegmerge(vmdt, blk);
-                if (BDSZ(blk) >= size)
-                {
+                if (BDSZ(blk) >= size) {
                     _vmfreelist(vmdt, ( Void_t * )blk, DELETE_BLOCK);
                     RETURN(blk);
                 }
@@ -363,13 +345,10 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
         if (!(type & VM_SEGEXTEND)) /* no physical extension */
             RETURN(blk = NIL(Block_t *));
 
-        if (blk)
-        {
+        if (blk) {
             seg = SEG(blk);
             /**/ DEBUG_ASSERT((SIZE(blk) & BUSY) && NEXT(blk) == seg->endb);
-        }
-        else
-        {
+        } else {
             seg = vmdt->seg;
             blk = seg->iffy ? NIL(Block_t *)
                             : _vmfreelist(vmdt, ( Void_t * )seg, DELETE_ENDB);
@@ -377,8 +356,9 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
                             || (SEG(blk) == seg && NEXT(blk) == seg->endb));
         }
 
-        if (asocasint(&seg->iffy, 0, 1) == 0)
-        { /* a longjmp() below will make seg not further extendible */
+        if (asocasint(&seg->iffy, 0, 1)
+            == 0) { /* a longjmp() below will make seg not further extendible
+                     */
             if ((sz = blk ? BDSZ(blk) : 0) < size) /* try extending segment */
             {                                      /**/
                 DEBUG_ASSERT((blk && SEG(blk) == seg) || (!blk));
@@ -428,8 +408,7 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
                     {        /**/
                         DEBUG_ASSERT(NEXT(blk) == endb);
                         SIZE(blk) += sz;
-                    }
-                    else /* new allocatable end block */
+                    } else /* new allocatable end block */
                     {
                         blk = endb;
                         SIZE(blk) = sz - sizeof(Head_t);
@@ -443,8 +422,7 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
 
     if ((sz = blk ? BDSZ(blk) : 0) < size) /* must make a new segment */
     {
-        if (blk)
-        {
+        if (blk) {
             if (SIZE(blk) & BUSY) /* unextensible busy block */
                 RETURN(blk = NIL(Block_t *));
 
@@ -458,8 +436,7 @@ _vmsegalloc(Vmalloc_t *vm, Block_t *blk, ssize_t size, int type)
             RETURN(blk = NIL(Block_t *)); /* did wrap around */
 
         if (!(base = ( Vmuchar_t * )(*disc->memoryf)(
-              vm, NIL(Void_t *), 0, segsz, disc)))
-        {
+              vm, NIL(Void_t *), 0, segsz, disc))) {
             if (disc->exceptf) /* announce that no more memory is available */
                 ( void )(*disc->exceptf)(
                 vm, VM_NOMEM, ( Void_t * )segsz, disc);
@@ -479,8 +456,9 @@ re_turn:
     {
         sz = BDSZ(blk); /**/
         DEBUG_ASSERT(sz >= size);
-        if (!(type & VM_SEGALL) && (sz - size) > (Segunit + sizeof(Block_t)))
-        { /* make block of unused space */
+        if (!(type & VM_SEGALL)
+            && (sz - size) > (Segunit + sizeof(Block_t))) { /* make block of
+                                                               unused space */
             np = ( Block_t * )(( Vmuchar_t * )blk + size + sizeof(Head_t));
             SEG(np) = SEG(blk);
             SIZE(np) = sz - size - sizeof(Head_t); /**/
@@ -496,8 +474,7 @@ re_turn:
         DEBUG_ASSERT(BDSZ(blk) >= Segunit);
     }
 
-    if (heisus == 0)
-    { /**/
+    if (heisus == 0) { /**/
         DEBUG_ASSERT(vmdt->lock == key);
         asolock(&vmdt->lock, key, ASO_UNLOCK);
         /**/ DEBUG_ASSERT(vmdt->lock != key);
@@ -548,14 +525,12 @@ _vmitoa(Vmulong_t v, int type)
         while ((v >>= 4) > 0);
         *--s = 'x';
         *--s = '0';
-    }
-    else if (type > 0) /* unsigned base-10 */
+    } else if (type > 0) /* unsigned base-10 */
     {
         do
             *--s = ( char )('0' + (v % 10));
         while ((v /= 10) > 0);
-    }
-    else /* signed base-10 */
+    } else /* signed base-10 */
     {
         int negative = (( long )v < 0) ? 1 : 0;
         if (negative)
@@ -580,16 +555,13 @@ _vmgcd(ssize_t one, ssize_t two)
         return one ? one : two;
     else if (one == 1 || two == 1)
         return 1;
-    else if (one & 1)
-    {
+    else if (one & 1) {
         if (two & 1)
             return one > two ? _vmgcd((one - two) / 2, two)
                              : _vmgcd(one, (two - one) / 2);
         else
             return _vmgcd(one, two / 2);
-    }
-    else
-    {
+    } else {
         if (two & 1)
             return _vmgcd(one / 2, two);
         else

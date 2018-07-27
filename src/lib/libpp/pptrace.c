@@ -41,14 +41,12 @@ pptokstr(char *s, int c)
 
     static char buf[8];
 
-    if (t = s)
-    {
+    if (t = s) {
         while (*t == ' ' || *t == '\t')
             t++;
         c = *t ? *t : *s;
     }
-    switch (c)
-    {
+    switch (c) {
     case 0:
     case 0400:
         return ("`EOF'");
@@ -91,16 +89,13 @@ ppinstr(struct ppinstk *p)
     static char buf[128];
 
     for (i = 0; i < elementsof(ppinmap); i++)
-        if (p->type == ppinmap[i].val)
-        {
-            switch (p->type)
-            {
+        if (p->type == ppinmap[i].val) {
+            switch (p->type) {
             case IN_MACRO:
 #    if MACDEF
             case IN_MULTILINE:
 #    endif
-                if (p->symbol)
-                {
+                if (p->symbol) {
                     sfsprintf(buf,
                               sizeof(buf),
                               "%s=%s",
@@ -135,8 +130,7 @@ pplexstr(int lex)
                 && (lex > pplexmap[i].val || lex == pplexmap[i + 1].val);
          i++)
         ;
-    if (lex != pplexmap[i].val)
-    {
+    if (lex != pplexmap[i].val) {
         if (pplexmap[i].val < 0)
             sfsprintf(buf,
                       sizeof(buf),
@@ -153,8 +147,7 @@ pplexstr(int lex)
                       splice ? "|SPLICE" : "");
         return (buf);
     }
-    if (splice)
-    {
+    if (splice) {
         sfsprintf(buf, sizeof(buf), "%s|SPLICE", pplexmap[i].nam);
         return (buf);
     }
@@ -176,11 +169,9 @@ ppflagstr(struct map *p, int n, long flags)
 
     s = buf;
     for (i = 0; i < n; i++)
-        if (flags & p[i].val)
-        {
+        if (flags & p[i].val) {
             k = strlen(p[i].nam);
-            if ((elementsof(buf) - 2 - (s - buf)) > k)
-            {
+            if ((elementsof(buf) - 2 - (s - buf)) > k) {
                 if (s > buf)
                     *s++ = '|';
                 strcpy(s, p[i].nam);
@@ -236,8 +227,7 @@ pptrace(int sig)
     struct ppinstk *p;
     static int handling;
 
-    if (!sig)
-    {
+    if (!sig) {
 #    ifdef SIGBUS
         signal(SIGBUS, pptrace);
 #    endif
@@ -251,8 +241,7 @@ pptrace(int sig)
         return;
     }
     s = fmtsignal(sig);
-    if (handling)
-    {
+    if (handling) {
         sfprintf(sfstderr, "\n%s during io stack trace\n", s);
         signal(handling, SIG_DFL);
         sigunblock(handling);
@@ -262,16 +251,13 @@ pptrace(int sig)
     }
     handling = sig;
     sfprintf(sfstderr, "\n%s - io stack trace\n", s);
-    for (p = pp.in; p->prev; p = p->prev)
-    {
+    for (p = pp.in; p->prev; p = p->prev) {
         sfprintf(sfstderr, "\n[%s]\n", ppinstr(p));
-        if ((s = pp.in->nextchr) && *s)
-        {
+        if ((s = pp.in->nextchr) && *s) {
             if (*s != '\n')
                 sfputc(sfstderr, '\t');
             x = s + 256;
-            while (*s && s < x)
-            {
+            while (*s && s < x) {
                 sfputc(sfstderr, *s);
                 if (*s++ == '\n' && *s && *s != '\n')
                     sfputc(sfstderr, '\t');

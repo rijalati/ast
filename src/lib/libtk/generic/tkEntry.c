@@ -488,8 +488,7 @@ char **argv;           /* Argument strings. */
     Entry *entryPtr;
     Tk_Window new;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -499,8 +498,7 @@ char **argv;           /* Argument strings. */
     }
 
     new = Tk_CreateWindowFromPath(interp, tkwin, argv[1], ( char * )NULL);
-    if (new == NULL)
-    {
+    if (new == NULL) {
         return TCL_ERROR;
     }
 
@@ -576,8 +574,7 @@ char **argv;           /* Argument strings. */
                         EntryFetchSelection,
                         ( ClientData )entryPtr,
                         XA_STRING);
-    if (ConfigureEntry(interp, entryPtr, argc - 2, argv + 2, 0) != TCL_OK)
-    {
+    if (ConfigureEntry(interp, entryPtr, argc - 2, argv + 2, 0) != TCL_OK) {
         goto error;
     }
 
@@ -618,8 +615,7 @@ char **argv;           /* Argument strings. */
     size_t length;
     int c, height;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -630,12 +626,10 @@ char **argv;           /* Argument strings. */
     Tcl_Preserve(( ClientData )entryPtr);
     c = argv[1][0];
     length = strlen(argv[1]);
-    if ((c == 'b') && (strncmp(argv[1], "bbox", length) == 0))
-    {
+    if ((c == 'b') && (strncmp(argv[1], "bbox", length) == 0)) {
         int index, x1, x2;
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -643,12 +637,10 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (GetEntryIndex(interp, entryPtr, argv[2], &index) != TCL_OK)
-        {
+        if (GetEntryIndex(interp, entryPtr, argv[2], &index) != TCL_OK) {
             goto error;
         }
-        if ((index == entryPtr->numChars) && (index > 0))
-        {
+        if ((index == entryPtr->numChars) && (index > 0)) {
             index--;
         }
         TkMeasureChars(entryPtr->fontPtr,
@@ -661,8 +653,7 @@ char **argv;           /* Argument strings. */
                        entryPtr->tabOrigin,
                        TK_NEWLINES_NOT_SPECIAL,
                        &x1);
-        if (index < entryPtr->numChars)
-        {
+        if (index < entryPtr->numChars) {
             TkMeasureChars(entryPtr->fontPtr,
                            (entryPtr->displayString == NULL)
                            ? entryPtr->string
@@ -673,9 +664,7 @@ char **argv;           /* Argument strings. */
                            entryPtr->tabOrigin,
                            TK_NEWLINES_NOT_SPECIAL,
                            &x2);
-        }
-        else
-        {
+        } else {
             x2 = x1;
         }
         height = entryPtr->fontPtr->ascent + entryPtr->fontPtr->descent;
@@ -685,12 +674,9 @@ char **argv;           /* Argument strings. */
                 (Tk_Height(entryPtr->tkwin) - height) / 2,
                 x2 - x1,
                 height);
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "cget", length) == 0)
-             && (length >= 2))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 'c') && (strncmp(argv[1], "cget", length) == 0)
+               && (length >= 2)) {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -700,40 +686,30 @@ char **argv;           /* Argument strings. */
         }
         result = Tk_ConfigureValue(
         interp, entryPtr->tkwin, configSpecs, ( char * )entryPtr, argv[2], 0);
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
-             && (length >= 2))
-    {
-        if (argc == 2)
-        {
+    } else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
+               && (length >= 2)) {
+        if (argc == 2) {
             result = Tk_ConfigureInfo(interp,
                                       entryPtr->tkwin,
                                       configSpecs,
                                       ( char * )entryPtr,
                                       ( char * )NULL,
                                       0);
-        }
-        else if (argc == 3)
-        {
+        } else if (argc == 3) {
             result = Tk_ConfigureInfo(interp,
                                       entryPtr->tkwin,
                                       configSpecs,
                                       ( char * )entryPtr,
                                       argv[2],
                                       0);
-        }
-        else
-        {
+        } else {
             result = ConfigureEntry(
             interp, entryPtr, argc - 2, argv + 2, TK_CONFIG_ARGV_ONLY);
         }
-    }
-    else if ((c == 'd') && (strncmp(argv[1], "delete", length) == 0))
-    {
+    } else if ((c == 'd') && (strncmp(argv[1], "delete", length) == 0)) {
         int first, last;
 
-        if ((argc < 3) || (argc > 4))
-        {
+        if ((argc < 3) || (argc > 4)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -741,30 +717,21 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (GetEntryIndex(interp, entryPtr, argv[2], &first) != TCL_OK)
-        {
+        if (GetEntryIndex(interp, entryPtr, argv[2], &first) != TCL_OK) {
             goto error;
         }
-        if (argc == 3)
-        {
+        if (argc == 3) {
             last = first + 1;
-        }
-        else
-        {
-            if (GetEntryIndex(interp, entryPtr, argv[3], &last) != TCL_OK)
-            {
+        } else {
+            if (GetEntryIndex(interp, entryPtr, argv[3], &last) != TCL_OK) {
                 goto error;
             }
         }
-        if ((last >= first) && (entryPtr->state == tkNormalUid))
-        {
+        if ((last >= first) && (entryPtr->state == tkNormalUid)) {
             DeleteChars(entryPtr, first, last - first);
         }
-    }
-    else if ((c == 'g') && (strncmp(argv[1], "get", length) == 0))
-    {
-        if (argc != 2)
-        {
+    } else if ((c == 'g') && (strncmp(argv[1], "get", length) == 0)) {
+        if (argc != 2) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -773,12 +740,9 @@ char **argv;           /* Argument strings. */
             goto error;
         }
         interp->result = entryPtr->string;
-    }
-    else if ((c == 'i') && (strncmp(argv[1], "icursor", length) == 0)
-             && (length >= 2))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 'i') && (strncmp(argv[1], "icursor", length) == 0)
+               && (length >= 2)) {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -787,19 +751,15 @@ char **argv;           /* Argument strings. */
             goto error;
         }
         if (GetEntryIndex(interp, entryPtr, argv[2], &entryPtr->insertPos)
-            != TCL_OK)
-        {
+            != TCL_OK) {
             goto error;
         }
         EventuallyRedraw(entryPtr);
-    }
-    else if ((c == 'i') && (strncmp(argv[1], "index", length) == 0)
-             && (length >= 3))
-    {
+    } else if ((c == 'i') && (strncmp(argv[1], "index", length) == 0)
+               && (length >= 3)) {
         int index;
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -807,19 +767,15 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (GetEntryIndex(interp, entryPtr, argv[2], &index) != TCL_OK)
-        {
+        if (GetEntryIndex(interp, entryPtr, argv[2], &index) != TCL_OK) {
             goto error;
         }
         sprintf(interp->result, "%d", index);
-    }
-    else if ((c == 'i') && (strncmp(argv[1], "insert", length) == 0)
-             && (length >= 3))
-    {
+    } else if ((c == 'i') && (strncmp(argv[1], "insert", length) == 0)
+               && (length >= 3)) {
         int index;
 
-        if (argc != 4)
-        {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -827,22 +783,17 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (GetEntryIndex(interp, entryPtr, argv[2], &index) != TCL_OK)
-        {
+        if (GetEntryIndex(interp, entryPtr, argv[2], &index) != TCL_OK) {
             goto error;
         }
-        if (entryPtr->state == tkNormalUid)
-        {
+        if (entryPtr->state == tkNormalUid) {
             InsertChars(entryPtr, index, argv[3]);
         }
-    }
-    else if ((c == 's') && (length >= 2)
-             && (strncmp(argv[1], "scan", length) == 0))
-    {
+    } else if ((c == 's') && (length >= 2)
+               && (strncmp(argv[1], "scan", length) == 0)) {
         int x;
 
-        if (argc != 4)
-        {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -850,23 +801,17 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (Tcl_GetInt(interp, argv[3], &x) != TCL_OK)
-        {
+        if (Tcl_GetInt(interp, argv[3], &x) != TCL_OK) {
             goto error;
         }
         if ((argv[2][0] == 'm')
-            && (strncmp(argv[2], "mark", strlen(argv[2])) == 0))
-        {
+            && (strncmp(argv[2], "mark", strlen(argv[2])) == 0)) {
             entryPtr->scanMarkX = x;
             entryPtr->scanMarkIndex = entryPtr->leftIndex;
-        }
-        else if ((argv[2][0] == 'd')
-                 && (strncmp(argv[2], "dragto", strlen(argv[2])) == 0))
-        {
+        } else if ((argv[2][0] == 'd')
+                   && (strncmp(argv[2], "dragto", strlen(argv[2])) == 0)) {
             EntryScanTo(entryPtr, x);
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp,
                              "bad scan option \"",
                              argv[2],
@@ -874,14 +819,11 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-    }
-    else if ((c == 's') && (length >= 2)
-             && (strncmp(argv[1], "selection", length) == 0))
-    {
+    } else if ((c == 's') && (length >= 2)
+               && (strncmp(argv[1], "selection", length) == 0)) {
         int index, index2;
 
-        if (argc < 3)
-        {
+        if (argc < 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -891,10 +833,8 @@ char **argv;           /* Argument strings. */
         }
         length = strlen(argv[2]);
         c = argv[2][0];
-        if ((c == 'c') && (strncmp(argv[2], "clear", length) == 0))
-        {
-            if (argc != 3)
-            {
+        if ((c == 'c') && (strncmp(argv[2], "clear", length) == 0)) {
+            if (argc != 3) {
                 Tcl_AppendResult(interp,
                                  "wrong # args: should be \"",
                                  argv[0],
@@ -902,17 +842,13 @@ char **argv;           /* Argument strings. */
                                  ( char * )NULL);
                 goto error;
             }
-            if (entryPtr->selectFirst != -1)
-            {
+            if (entryPtr->selectFirst != -1) {
                 entryPtr->selectFirst = entryPtr->selectLast = -1;
                 EventuallyRedraw(entryPtr);
             }
             goto done;
-        }
-        else if ((c == 'p') && (strncmp(argv[2], "present", length) == 0))
-        {
-            if (argc != 3)
-            {
+        } else if ((c == 'p') && (strncmp(argv[2], "present", length) == 0)) {
+            if (argc != 3) {
                 Tcl_AppendResult(interp,
                                  "wrong # args: should be \"",
                                  argv[0],
@@ -920,27 +856,20 @@ char **argv;           /* Argument strings. */
                                  ( char * )NULL);
                 goto error;
             }
-            if (entryPtr->selectFirst == -1)
-            {
+            if (entryPtr->selectFirst == -1) {
                 interp->result = "0";
-            }
-            else
-            {
+            } else {
                 interp->result = "1";
             }
             goto done;
         }
-        if (argc >= 4)
-        {
-            if (GetEntryIndex(interp, entryPtr, argv[3], &index) != TCL_OK)
-            {
+        if (argc >= 4) {
+            if (GetEntryIndex(interp, entryPtr, argv[3], &index) != TCL_OK) {
                 goto error;
             }
         }
-        if ((c == 'a') && (strncmp(argv[2], "adjust", length) == 0))
-        {
-            if (argc != 4)
-            {
+        if ((c == 'a') && (strncmp(argv[2], "adjust", length) == 0)) {
+            if (argc != 4) {
                 Tcl_AppendResult(interp,
                                  "wrong # args: should be \"",
                                  argv[0],
@@ -948,23 +877,17 @@ char **argv;           /* Argument strings. */
                                  ( char * )NULL);
                 goto error;
             }
-            if (entryPtr->selectFirst >= 0)
-            {
+            if (entryPtr->selectFirst >= 0) {
                 int half1, half2;
 
                 half1 = (entryPtr->selectFirst + entryPtr->selectLast) / 2;
                 half2
                 = (entryPtr->selectFirst + entryPtr->selectLast + 1) / 2;
-                if (index < half1)
-                {
+                if (index < half1) {
                     entryPtr->selectAnchor = entryPtr->selectLast;
-                }
-                else if (index > half2)
-                {
+                } else if (index > half2) {
                     entryPtr->selectAnchor = entryPtr->selectFirst;
-                }
-                else
-                {
+                } else {
                     /*
                      * We're at about the halfway point in the selection;
                      * just keep the existing anchor.
@@ -972,11 +895,8 @@ char **argv;           /* Argument strings. */
                 }
             }
             EntrySelectTo(entryPtr, index);
-        }
-        else if ((c == 'f') && (strncmp(argv[2], "from", length) == 0))
-        {
-            if (argc != 4)
-            {
+        } else if ((c == 'f') && (strncmp(argv[2], "from", length) == 0)) {
+            if (argc != 4) {
                 Tcl_AppendResult(interp,
                                  "wrong # args: should be \"",
                                  argv[0],
@@ -985,11 +905,8 @@ char **argv;           /* Argument strings. */
                 goto error;
             }
             entryPtr->selectAnchor = index;
-        }
-        else if ((c == 'r') && (strncmp(argv[2], "range", length) == 0))
-        {
-            if (argc != 5)
-            {
+        } else if ((c == 'r') && (strncmp(argv[2], "range", length) == 0)) {
+            if (argc != 5) {
                 Tcl_AppendResult(interp,
                                  "wrong # args: should be \"",
                                  argv[0],
@@ -997,19 +914,14 @@ char **argv;           /* Argument strings. */
                                  ( char * )NULL);
                 goto error;
             }
-            if (GetEntryIndex(interp, entryPtr, argv[4], &index2) != TCL_OK)
-            {
+            if (GetEntryIndex(interp, entryPtr, argv[4], &index2) != TCL_OK) {
                 goto error;
             }
-            if (index >= index2)
-            {
+            if (index >= index2) {
                 entryPtr->selectFirst = entryPtr->selectLast = -1;
-            }
-            else
-            {
+            } else {
                 if ((entryPtr->selectFirst == -1)
-                    && (entryPtr->exportSelection))
-                {
+                    && (entryPtr->exportSelection)) {
                     Tk_OwnSelection(entryPtr->tkwin,
                                     XA_PRIMARY,
                                     EntryLostSelection,
@@ -1018,19 +930,16 @@ char **argv;           /* Argument strings. */
                 entryPtr->selectFirst = index;
                 entryPtr->selectLast = index2;
             }
-            if ((entryPtr->selectFirst == -1) && (entryPtr->exportSelection))
-            {
+            if ((entryPtr->selectFirst == -1)
+                && (entryPtr->exportSelection)) {
                 Tk_OwnSelection(entryPtr->tkwin,
                                 XA_PRIMARY,
                                 EntryLostSelection,
                                 ( ClientData )entryPtr);
             }
             EventuallyRedraw(entryPtr);
-        }
-        else if ((c == 't') && (strncmp(argv[2], "to", length) == 0))
-        {
-            if (argc != 4)
-            {
+        } else if ((c == 't') && (strncmp(argv[2], "to", length) == 0)) {
+            if (argc != 4) {
                 Tcl_AppendResult(interp,
                                  "wrong # args: should be \"",
                                  argv[0],
@@ -1039,9 +948,7 @@ char **argv;           /* Argument strings. */
                 goto error;
             }
             EntrySelectTo(entryPtr, index);
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(
             interp,
             "bad selection option \"",
@@ -1050,31 +957,22 @@ char **argv;           /* Argument strings. */
             ( char * )NULL);
             goto error;
         }
-    }
-    else if ((c == 'x') && (strncmp(argv[1], "xview", length) == 0))
-    {
+    } else if ((c == 'x') && (strncmp(argv[1], "xview", length) == 0)) {
         int index, type, count, charsPerPage;
         double fraction, first, last;
 
-        if (argc == 2)
-        {
+        if (argc == 2) {
             EntryVisibleRange(entryPtr, &first, &last);
             sprintf(interp->result, "%g %g", first, last);
             goto done;
-        }
-        else if (argc == 3)
-        {
-            if (GetEntryIndex(interp, entryPtr, argv[2], &index) != TCL_OK)
-            {
+        } else if (argc == 3) {
+            if (GetEntryIndex(interp, entryPtr, argv[2], &index) != TCL_OK) {
                 goto error;
             }
-        }
-        else
-        {
+        } else {
             type = Tk_GetScrollInfo(interp, argc, argv, &fraction, &count);
             index = entryPtr->leftIndex;
-            switch (type)
-            {
+            switch (type) {
             case TK_SCROLL_ERROR:
                 goto error;
             case TK_SCROLL_MOVETO:
@@ -1085,8 +983,7 @@ char **argv;           /* Argument strings. */
                 = ((Tk_Width(entryPtr->tkwin) - 2 * entryPtr->inset)
                    / entryPtr->avgWidth)
                   - 2;
-                if (charsPerPage < 1)
-                {
+                if (charsPerPage < 1) {
                     charsPerPage = 1;
                 }
                 index += charsPerPage * count;
@@ -1096,21 +993,17 @@ char **argv;           /* Argument strings. */
                 break;
             }
         }
-        if (index >= entryPtr->numChars)
-        {
+        if (index >= entryPtr->numChars) {
             index = entryPtr->numChars - 1;
         }
-        if (index < 0)
-        {
+        if (index < 0) {
             index = 0;
         }
         entryPtr->leftIndex = index;
         entryPtr->flags |= UPDATE_SCROLLBAR;
         EntryComputeGeometry(entryPtr);
         EventuallyRedraw(entryPtr);
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "bad option \"",
                          argv[1],
@@ -1157,25 +1050,21 @@ static void DestroyEntry(memPtr) char *memPtr; /* Info about entry widget. */
      */
 
     ckfree(entryPtr->string);
-    if (entryPtr->textVarName != NULL)
-    {
+    if (entryPtr->textVarName != NULL) {
         Tcl_UntraceVar(entryPtr->interp,
                        entryPtr->textVarName,
                        TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
                        EntryTextVarProc,
                        ( ClientData )entryPtr);
     }
-    if (entryPtr->textGC != None)
-    {
+    if (entryPtr->textGC != None) {
         Tk_FreeGC(entryPtr->display, entryPtr->textGC);
     }
-    if (entryPtr->selTextGC != None)
-    {
+    if (entryPtr->selTextGC != None) {
         Tk_FreeGC(entryPtr->display, entryPtr->selTextGC);
     }
     Tcl_DeleteTimerHandler(entryPtr->insertBlinkHandler);
-    if (entryPtr->displayString != NULL)
-    {
+    if (entryPtr->displayString != NULL) {
         ckfree(entryPtr->displayString);
     }
     Tk_FreeOptions(configSpecs, ( char * )entryPtr, entryPtr->display, 0);
@@ -1219,8 +1108,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * Eliminate any existing trace on a variable monitored by the entry.
      */
 
-    if (entryPtr->textVarName != NULL)
-    {
+    if (entryPtr->textVarName != NULL) {
         Tcl_UntraceVar(interp,
                        entryPtr->textVarName,
                        TCL_GLOBAL_ONLY | TCL_TRACE_WRITES | TCL_TRACE_UNSETS,
@@ -1236,8 +1124,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
                            argv,
                            ( char * )entryPtr,
                            flags)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -1247,17 +1134,13 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * exist, and set the entry's value from the variable's value.
      */
 
-    if (entryPtr->textVarName != NULL)
-    {
+    if (entryPtr->textVarName != NULL) {
         char *value;
 
         value = Tcl_GetVar(interp, entryPtr->textVarName, TCL_GLOBAL_ONLY);
-        if (value == NULL)
-        {
+        if (value == NULL) {
             EntryValueChanged(entryPtr);
-        }
-        else
-        {
+        } else {
             EntrySetValue(entryPtr, value);
         }
         Tcl_TraceVar(interp,
@@ -1273,8 +1156,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      */
 
     if ((entryPtr->state != tkNormalUid)
-        && (entryPtr->state != tkDisabledUid))
-    {
+        && (entryPtr->state != tkDisabledUid)) {
         Tcl_AppendResult(interp,
                          "bad state value \"",
                          entryPtr->state,
@@ -1291,8 +1173,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
     gcValues.graphics_exposures = False;
     new = Tk_GetGC(
     entryPtr->tkwin, GCForeground | GCFont | GCGraphicsExposures, &gcValues);
-    if (entryPtr->textGC != None)
-    {
+    if (entryPtr->textGC != None) {
         Tk_FreeGC(entryPtr->display, entryPtr->textGC);
     }
     entryPtr->textGC = new;
@@ -1300,18 +1181,15 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
     gcValues.foreground = entryPtr->selFgColorPtr->pixel;
     gcValues.font = entryPtr->fontPtr->fid;
     new = Tk_GetGC(entryPtr->tkwin, GCForeground | GCFont, &gcValues);
-    if (entryPtr->selTextGC != None)
-    {
+    if (entryPtr->selTextGC != None) {
         Tk_FreeGC(entryPtr->display, entryPtr->selTextGC);
     }
     entryPtr->selTextGC = new;
 
-    if (entryPtr->insertWidth <= 0)
-    {
+    if (entryPtr->insertWidth <= 0) {
         entryPtr->insertWidth = 2;
     }
-    if (entryPtr->insertBorderWidth > entryPtr->insertWidth / 2)
-    {
+    if (entryPtr->insertBorderWidth > entryPtr->insertWidth / 2) {
         entryPtr->insertBorderWidth = entryPtr->insertWidth / 2;
     }
 
@@ -1320,8 +1198,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * just changed.
      */
 
-    if (entryPtr->flags & GOT_FOCUS)
-    {
+    if (entryPtr->flags & GOT_FOCUS) {
         EntryFocusProc(entryPtr, 1);
     }
 
@@ -1330,8 +1207,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      */
 
     if (entryPtr->exportSelection && (!oldExport)
-        && (entryPtr->selectFirst != -1))
-    {
+        && (entryPtr->selectFirst != -1)) {
         Tk_OwnSelection(entryPtr->tkwin,
                         XA_PRIMARY,
                         EntryLostSelection,
@@ -1345,8 +1221,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 
     Tk_SetInternalBorder(entryPtr->tkwin,
                          entryPtr->borderWidth + entryPtr->highlightWidth);
-    if (entryPtr->highlightWidth <= 0)
-    {
+    if (entryPtr->highlightWidth <= 0) {
         entryPtr->highlightWidth = 0;
     }
     entryPtr->inset = entryPtr->highlightWidth + entryPtr->borderWidth + XPAD;
@@ -1384,8 +1259,7 @@ ClientData clientData; /* Information about window. */
     char *displayString;
 
     entryPtr->flags &= ~REDRAW_PENDING;
-    if ((entryPtr->tkwin == NULL) || !Tk_IsMapped(tkwin))
-    {
+    if ((entryPtr->tkwin == NULL) || !Tk_IsMapped(tkwin)) {
         return;
     }
 
@@ -1393,8 +1267,7 @@ ClientData clientData; /* Information about window. */
      * Update the scrollbar if that's needed.
      */
 
-    if (entryPtr->flags & UPDATE_SCROLLBAR)
-    {
+    if (entryPtr->flags & UPDATE_SCROLLBAR) {
         entryPtr->flags &= ~UPDATE_SCROLLBAR;
         EntryUpdateScrollbar(entryPtr);
     }
@@ -1437,23 +1310,16 @@ ClientData clientData; /* Information about window. */
                        Tk_Height(tkwin),
                        0,
                        TK_RELIEF_FLAT);
-    if (entryPtr->displayString == NULL)
-    {
+    if (entryPtr->displayString == NULL) {
         displayString = entryPtr->string;
-    }
-    else
-    {
+    } else {
         displayString = entryPtr->displayString;
     }
-    if (entryPtr->selectLast > entryPtr->leftIndex)
-    {
-        if (entryPtr->selectFirst <= entryPtr->leftIndex)
-        {
+    if (entryPtr->selectLast > entryPtr->leftIndex) {
+        if (entryPtr->selectFirst <= entryPtr->leftIndex) {
             selStartX = entryPtr->leftX;
             index = entryPtr->leftIndex;
-        }
-        else
-        {
+        } else {
             ( void )TkMeasureChars(entryPtr->fontPtr,
                                    displayString + entryPtr->leftIndex,
                                    entryPtr->selectFirst
@@ -1465,8 +1331,7 @@ ClientData clientData; /* Information about window. */
                                    &selStartX);
             index = entryPtr->selectFirst;
         }
-        if ((selStartX - entryPtr->selBorderWidth) < xBound)
-        {
+        if ((selStartX - entryPtr->selBorderWidth) < xBound) {
             ( void )TkMeasureChars(entryPtr->fontPtr,
                                    displayString + index,
                                    entryPtr->selectLast - index,
@@ -1486,9 +1351,7 @@ ClientData clientData; /* Information about window. */
             + 2 * entryPtr->selBorderWidth,
             entryPtr->selBorderWidth,
             TK_RELIEF_RAISED);
-        }
-        else
-        {
+        } else {
             selEndX = xBound;
         }
     }
@@ -1503,8 +1366,8 @@ ClientData clientData; /* Information about window. */
      */
 
     if ((entryPtr->insertPos >= entryPtr->leftIndex)
-        && (entryPtr->state == tkNormalUid) && (entryPtr->flags & GOT_FOCUS))
-    {
+        && (entryPtr->state == tkNormalUid)
+        && (entryPtr->flags & GOT_FOCUS)) {
         ( void )TkMeasureChars(entryPtr->fontPtr,
                                displayString + entryPtr->leftIndex,
                                entryPtr->insertPos - entryPtr->leftIndex,
@@ -1514,10 +1377,8 @@ ClientData clientData; /* Information about window. */
                                TK_PARTIAL_OK | TK_NEWLINES_NOT_SPECIAL,
                                &cursorX);
         cursorX -= (entryPtr->insertWidth) / 2;
-        if (cursorX < xBound)
-        {
-            if (entryPtr->flags & CURSOR_ON)
-            {
+        if (cursorX < xBound) {
+            if (entryPtr->flags & CURSOR_ON) {
                 Tk_Fill3DRectangle(tkwin,
                                    pixmap,
                                    entryPtr->insertBorder,
@@ -1528,9 +1389,7 @@ ClientData clientData; /* Information about window. */
                                    + entryPtr->fontPtr->descent,
                                    entryPtr->insertBorderWidth,
                                    TK_RELIEF_RAISED);
-            }
-            else if (entryPtr->insertBorder == entryPtr->selBorder)
-            {
+            } else if (entryPtr->insertBorder == entryPtr->selBorder) {
                 Tk_Fill3DRectangle(tkwin,
                                    pixmap,
                                    entryPtr->normalBorder,
@@ -1551,8 +1410,7 @@ ClientData clientData; /* Information about window. */
      * of the selection.
      */
 
-    if (entryPtr->selectLast <= entryPtr->leftIndex)
-    {
+    if (entryPtr->selectLast <= entryPtr->leftIndex) {
         TkDisplayChars(entryPtr->display,
                        pixmap,
                        entryPtr->textGC,
@@ -1563,12 +1421,9 @@ ClientData clientData; /* Information about window. */
                        baseY,
                        entryPtr->tabOrigin,
                        TK_NEWLINES_NOT_SPECIAL);
-    }
-    else
-    {
+    } else {
         count = entryPtr->selectFirst - entryPtr->leftIndex;
-        if (count > 0)
-        {
+        if (count > 0) {
             TkDisplayChars(entryPtr->display,
                            pixmap,
                            entryPtr->textGC,
@@ -1580,14 +1435,11 @@ ClientData clientData; /* Information about window. */
                            entryPtr->tabOrigin,
                            TK_NEWLINES_NOT_SPECIAL);
             index = entryPtr->selectFirst;
-        }
-        else
-        {
+        } else {
             index = entryPtr->leftIndex;
         }
         count = entryPtr->selectLast - index;
-        if ((selStartX < xBound) && (count > 0))
-        {
+        if ((selStartX < xBound) && (count > 0)) {
             TkDisplayChars(entryPtr->display,
                            pixmap,
                            entryPtr->selTextGC,
@@ -1600,8 +1452,7 @@ ClientData clientData; /* Information about window. */
                            TK_NEWLINES_NOT_SPECIAL);
         }
         count = entryPtr->numChars - entryPtr->selectLast;
-        if ((selEndX < xBound) && (count > 0))
-        {
+        if ((selEndX < xBound) && (count > 0)) {
             TkDisplayChars(entryPtr->display,
                            pixmap,
                            entryPtr->textGC,
@@ -1620,8 +1471,7 @@ ClientData clientData; /* Information about window. */
      * any text that extends past the viewable part of the window.
      */
 
-    if (entryPtr->relief != TK_RELIEF_FLAT)
-    {
+    if (entryPtr->relief != TK_RELIEF_FLAT) {
         Tk_Draw3DRectangle(tkwin,
                            pixmap,
                            entryPtr->normalBorder,
@@ -1632,16 +1482,12 @@ ClientData clientData; /* Information about window. */
                            entryPtr->borderWidth,
                            entryPtr->relief);
     }
-    if (entryPtr->highlightWidth != 0)
-    {
+    if (entryPtr->highlightWidth != 0) {
         GC gc;
 
-        if (entryPtr->flags & GOT_FOCUS)
-        {
+        if (entryPtr->flags & GOT_FOCUS) {
             gc = Tk_GCForColor(entryPtr->highlightColorPtr, pixmap);
-        }
-        else
-        {
+        } else {
             gc = Tk_GCForColor(entryPtr->highlightBgColorPtr, pixmap);
         }
         Tk_DrawFocusHighlight(tkwin, gc, entryPtr->highlightWidth, pixmap);
@@ -1698,25 +1544,20 @@ static void EntryComputeGeometry(entryPtr) Entry *entryPtr; /* Widget record
      * the entry, recompute the displayString.
      */
 
-    if (entryPtr->displayString != NULL)
-    {
+    if (entryPtr->displayString != NULL) {
         ckfree(entryPtr->displayString);
         entryPtr->displayString = NULL;
     }
-    if (entryPtr->showChar != NULL)
-    {
+    if (entryPtr->showChar != NULL) {
         entryPtr->displayString
         = ( char * )ckalloc(( unsigned )(entryPtr->numChars + 1));
         for (p = entryPtr->displayString, i = entryPtr->numChars; i > 0;
-             i--, p++)
-        {
+             i--, p++) {
             *p = entryPtr->showChar[0];
         }
         *p = 0;
         displayString = entryPtr->displayString;
-    }
-    else
-    {
+    } else {
         displayString = entryPtr->string;
     }
 
@@ -1737,26 +1578,18 @@ static void EntryComputeGeometry(entryPtr) Entry *entryPtr; /* Widget record
                    &totalLength);
     overflow
     = totalLength - (Tk_Width(entryPtr->tkwin) - 2 * entryPtr->inset);
-    if (overflow <= 0)
-    {
+    if (overflow <= 0) {
         entryPtr->leftIndex = 0;
-        if (entryPtr->justify == TK_JUSTIFY_LEFT)
-        {
+        if (entryPtr->justify == TK_JUSTIFY_LEFT) {
             entryPtr->leftX = entryPtr->inset;
-        }
-        else if (entryPtr->justify == TK_JUSTIFY_RIGHT)
-        {
+        } else if (entryPtr->justify == TK_JUSTIFY_RIGHT) {
             entryPtr->leftX
             = Tk_Width(entryPtr->tkwin) - entryPtr->inset - totalLength;
-        }
-        else
-        {
+        } else {
             entryPtr->leftX = (Tk_Width(entryPtr->tkwin) - totalLength) / 2;
         }
         entryPtr->tabOrigin = entryPtr->leftX;
-    }
-    else
-    {
+    } else {
         /*
          * The whole string can't fit in the window.  Compute the
          * maximum number of characters that may be off-screen to
@@ -1772,12 +1605,10 @@ static void EntryComputeGeometry(entryPtr) Entry *entryPtr; /* Widget record
                                       0,
                                       TK_NEWLINES_NOT_SPECIAL | TK_PARTIAL_OK,
                                       &rightX);
-        if (rightX < overflow)
-        {
+        if (rightX < overflow) {
             maxOffScreen += 1;
         }
-        if (entryPtr->leftIndex > maxOffScreen)
-        {
+        if (entryPtr->leftIndex > maxOffScreen) {
             entryPtr->leftIndex = maxOffScreen;
         }
         TkMeasureChars(entryPtr->fontPtr,
@@ -1794,19 +1625,13 @@ static void EntryComputeGeometry(entryPtr) Entry *entryPtr; /* Widget record
 
     fontHeight = entryPtr->fontPtr->ascent + entryPtr->fontPtr->descent;
     height = fontHeight + 2 * entryPtr->inset + 2 * (YPAD - XPAD);
-    if (entryPtr->prefWidth > 0)
-    {
+    if (entryPtr->prefWidth > 0) {
         width
         = entryPtr->prefWidth * entryPtr->avgWidth + 2 * entryPtr->inset;
-    }
-    else
-    {
-        if (totalLength == 0)
-        {
+    } else {
+        if (totalLength == 0) {
             width = entryPtr->avgWidth + 2 * entryPtr->inset;
-        }
-        else
-        {
+        } else {
             width = totalLength + 2 * entryPtr->inset;
         }
     }
@@ -1842,8 +1667,7 @@ char *string; /* New characters to add (NULL-terminated
     char *new;
 
     length = strlen(string);
-    if (length == 0)
-    {
+    if (length == 0) {
         return;
     }
     new = ( char * )ckalloc(( unsigned )(entryPtr->numChars + length + 1));
@@ -1862,24 +1686,20 @@ char *string; /* New characters to add (NULL-terminated
      * it was completely surrounded by the selection.
      */
 
-    if (entryPtr->selectFirst >= index)
-    {
+    if (entryPtr->selectFirst >= index) {
         entryPtr->selectFirst += length;
     }
-    if (entryPtr->selectLast > index)
-    {
+    if (entryPtr->selectLast > index) {
         entryPtr->selectLast += length;
     }
-    if ((entryPtr->selectAnchor > index) || (entryPtr->selectFirst >= index))
-    {
+    if ((entryPtr->selectAnchor > index)
+        || (entryPtr->selectFirst >= index)) {
         entryPtr->selectAnchor += length;
     }
-    if (entryPtr->leftIndex > index)
-    {
+    if (entryPtr->leftIndex > index) {
         entryPtr->leftIndex += length;
     }
-    if (entryPtr->insertPos >= index)
-    {
+    if (entryPtr->insertPos >= index) {
         entryPtr->insertPos += length;
     }
     EntryValueChanged(entryPtr);
@@ -1910,12 +1730,10 @@ int count; /* How many characters to delete. */
 {
     char *new;
 
-    if ((index + count) > entryPtr->numChars)
-    {
+    if ((index + count) > entryPtr->numChars) {
         count = entryPtr->numChars - index;
     }
-    if (count <= 0)
-    {
+    if (count <= 0) {
         return;
     }
 
@@ -1932,62 +1750,41 @@ int count; /* How many characters to delete. */
      * this change.
      */
 
-    if (entryPtr->selectFirst >= index)
-    {
-        if (entryPtr->selectFirst >= (index + count))
-        {
+    if (entryPtr->selectFirst >= index) {
+        if (entryPtr->selectFirst >= (index + count)) {
             entryPtr->selectFirst -= count;
-        }
-        else
-        {
+        } else {
             entryPtr->selectFirst = index;
         }
     }
-    if (entryPtr->selectLast >= index)
-    {
-        if (entryPtr->selectLast >= (index + count))
-        {
+    if (entryPtr->selectLast >= index) {
+        if (entryPtr->selectLast >= (index + count)) {
             entryPtr->selectLast -= count;
-        }
-        else
-        {
+        } else {
             entryPtr->selectLast = index;
         }
     }
-    if (entryPtr->selectLast <= entryPtr->selectFirst)
-    {
+    if (entryPtr->selectLast <= entryPtr->selectFirst) {
         entryPtr->selectFirst = entryPtr->selectLast = -1;
     }
-    if (entryPtr->selectAnchor >= index)
-    {
-        if (entryPtr->selectAnchor >= (index + count))
-        {
+    if (entryPtr->selectAnchor >= index) {
+        if (entryPtr->selectAnchor >= (index + count)) {
             entryPtr->selectAnchor -= count;
-        }
-        else
-        {
+        } else {
             entryPtr->selectAnchor = index;
         }
     }
-    if (entryPtr->leftIndex > index)
-    {
-        if (entryPtr->leftIndex >= (index + count))
-        {
+    if (entryPtr->leftIndex > index) {
+        if (entryPtr->leftIndex >= (index + count)) {
             entryPtr->leftIndex -= count;
-        }
-        else
-        {
+        } else {
             entryPtr->leftIndex = index;
         }
     }
-    if (entryPtr->insertPos >= index)
-    {
-        if (entryPtr->insertPos >= (index + count))
-        {
+    if (entryPtr->insertPos >= index) {
+        if (entryPtr->insertPos >= (index + count)) {
             entryPtr->insertPos -= count;
-        }
-        else
-        {
+        } else {
             entryPtr->insertPos = index;
         }
     }
@@ -2018,20 +1815,16 @@ static void EntryValueChanged(entryPtr) Entry *entryPtr; /* Entry whose value
 {
     char *newValue;
 
-    if (entryPtr->textVarName == NULL)
-    {
+    if (entryPtr->textVarName == NULL) {
         newValue = NULL;
-    }
-    else
-    {
+    } else {
         newValue = Tcl_SetVar(entryPtr->interp,
                               entryPtr->textVarName,
                               entryPtr->string,
                               TCL_GLOBAL_ONLY);
     }
 
-    if ((newValue != NULL) && (strcmp(newValue, entryPtr->string) != 0))
-    {
+    if ((newValue != NULL) && (strcmp(newValue, entryPtr->string) != 0)) {
         /*
          * The value of the variable is different than what we asked for.
          * This means that a trace on the variable modified it.  In this
@@ -2041,9 +1834,7 @@ static void EntryValueChanged(entryPtr) Entry *entryPtr; /* Entry whose value
          */
 
         EntrySetValue(entryPtr, newValue);
-    }
-    else
-    {
+    } else {
         /*
          * Arrange for redisplay.
          */
@@ -2086,23 +1877,17 @@ char *value; /* New text to display in entry. */
     entryPtr->string
     = ( char * )ckalloc(( unsigned )(entryPtr->numChars + 1));
     strcpy(entryPtr->string, value);
-    if (entryPtr->selectFirst != -1)
-    {
-        if (entryPtr->selectFirst >= entryPtr->numChars)
-        {
+    if (entryPtr->selectFirst != -1) {
+        if (entryPtr->selectFirst >= entryPtr->numChars) {
             entryPtr->selectFirst = entryPtr->selectLast = -1;
-        }
-        else if (entryPtr->selectLast > entryPtr->numChars)
-        {
+        } else if (entryPtr->selectLast > entryPtr->numChars) {
             entryPtr->selectLast = entryPtr->numChars;
         }
     }
-    if (entryPtr->leftIndex >= entryPtr->numChars)
-    {
+    if (entryPtr->leftIndex >= entryPtr->numChars) {
         entryPtr->leftIndex = entryPtr->numChars - 1;
     }
-    if (entryPtr->insertPos > entryPtr->numChars)
-    {
+    if (entryPtr->insertPos > entryPtr->numChars) {
         entryPtr->insertPos = entryPtr->numChars;
     }
 
@@ -2134,45 +1919,32 @@ ClientData clientData; /* Information about window. */
 XEvent *eventPtr;      /* Information about event. */
 {
     Entry *entryPtr = ( Entry * )clientData;
-    if (eventPtr->type == Expose)
-    {
+    if (eventPtr->type == Expose) {
         EventuallyRedraw(entryPtr);
         entryPtr->flags |= BORDER_NEEDED;
-    }
-    else if (eventPtr->type == DestroyNotify)
-    {
-        if (entryPtr->tkwin != NULL)
-        {
+    } else if (eventPtr->type == DestroyNotify) {
+        if (entryPtr->tkwin != NULL) {
             entryPtr->tkwin = NULL;
             Tcl_DeleteCommand(
             entryPtr->interp,
             Tcl_GetCommandName(entryPtr->interp, entryPtr->widgetCmd));
         }
-        if (entryPtr->flags & REDRAW_PENDING)
-        {
+        if (entryPtr->flags & REDRAW_PENDING) {
             Tcl_CancelIdleCall(DisplayEntry, ( ClientData )entryPtr);
         }
         Tcl_EventuallyFree(( ClientData )entryPtr, DestroyEntry);
-    }
-    else if (eventPtr->type == ConfigureNotify)
-    {
+    } else if (eventPtr->type == ConfigureNotify) {
         Tcl_Preserve(( ClientData )entryPtr);
         entryPtr->flags |= UPDATE_SCROLLBAR;
         EntryComputeGeometry(entryPtr);
         EventuallyRedraw(entryPtr);
         Tcl_Release(( ClientData )entryPtr);
-    }
-    else if (eventPtr->type == FocusIn)
-    {
-        if (eventPtr->xfocus.detail != NotifyInferior)
-        {
+    } else if (eventPtr->type == FocusIn) {
+        if (eventPtr->xfocus.detail != NotifyInferior) {
             EntryFocusProc(entryPtr, 1);
         }
-    }
-    else if (eventPtr->type == FocusOut)
-    {
-        if (eventPtr->xfocus.detail != NotifyInferior)
-        {
+    } else if (eventPtr->type == FocusOut) {
+        if (eventPtr->xfocus.detail != NotifyInferior) {
             EntryFocusProc(entryPtr, 0);
         }
     }
@@ -2209,8 +1981,7 @@ ClientData clientData; /* Pointer to widget record for widget. */
      * destroys the widget.
      */
 
-    if (tkwin != NULL)
-    {
+    if (tkwin != NULL) {
         entryPtr->tkwin = NULL;
         Tk_DestroyWindow(tkwin);
     }
@@ -2248,14 +2019,10 @@ int *indexPtr;      /* Where to store converted index. */
 
     length = strlen(string);
 
-    if (string[0] == 'a')
-    {
-        if (strncmp(string, "anchor", length) == 0)
-        {
+    if (string[0] == 'a') {
+        if (strncmp(string, "anchor", length) == 0) {
             *indexPtr = entryPtr->selectAnchor;
-        }
-        else
-        {
+        } else {
         badIndex:
 
             /*
@@ -2268,77 +2035,50 @@ int *indexPtr;      /* Where to store converted index. */
             interp, "bad entry index \"", string, "\"", ( char * )NULL);
             return TCL_ERROR;
         }
-    }
-    else if (string[0] == 'e')
-    {
-        if (strncmp(string, "end", length) == 0)
-        {
+    } else if (string[0] == 'e') {
+        if (strncmp(string, "end", length) == 0) {
             *indexPtr = entryPtr->numChars;
-        }
-        else
-        {
+        } else {
             goto badIndex;
         }
-    }
-    else if (string[0] == 'i')
-    {
-        if (strncmp(string, "insert", length) == 0)
-        {
+    } else if (string[0] == 'i') {
+        if (strncmp(string, "insert", length) == 0) {
             *indexPtr = entryPtr->insertPos;
-        }
-        else
-        {
+        } else {
             goto badIndex;
         }
-    }
-    else if (string[0] == 's')
-    {
-        if (entryPtr->selectFirst == -1)
-        {
+    } else if (string[0] == 's') {
+        if (entryPtr->selectFirst == -1) {
             interp->result = "selection isn't in entry";
             return TCL_ERROR;
         }
-        if (length < 5)
-        {
+        if (length < 5) {
             goto badIndex;
         }
-        if (strncmp(string, "sel.first", length) == 0)
-        {
+        if (strncmp(string, "sel.first", length) == 0) {
             *indexPtr = entryPtr->selectFirst;
-        }
-        else if (strncmp(string, "sel.last", length) == 0)
-        {
+        } else if (strncmp(string, "sel.last", length) == 0) {
             *indexPtr = entryPtr->selectLast;
-        }
-        else
-        {
+        } else {
             goto badIndex;
         }
-    }
-    else if (string[0] == '@')
-    {
+    } else if (string[0] == '@') {
         int x, dummy, roundUp;
 
-        if (Tcl_GetInt(interp, string + 1, &x) != TCL_OK)
-        {
+        if (Tcl_GetInt(interp, string + 1, &x) != TCL_OK) {
             goto badIndex;
         }
-        if (x < entryPtr->inset)
-        {
+        if (x < entryPtr->inset) {
             x = entryPtr->inset;
         }
         roundUp = 0;
-        if (x >= (Tk_Width(entryPtr->tkwin) - entryPtr->inset))
-        {
+        if (x >= (Tk_Width(entryPtr->tkwin) - entryPtr->inset)) {
             x = Tk_Width(entryPtr->tkwin) - entryPtr->inset - 1;
             roundUp = 1;
         }
-        if (entryPtr->numChars == 0)
-        {
+        if (entryPtr->numChars == 0) {
             *indexPtr = 0;
-        }
-        else
-        {
+        } else {
             *indexPtr = TkMeasureChars(entryPtr->fontPtr,
                                        (entryPtr->displayString == NULL)
                                        ? entryPtr->string
@@ -2358,23 +2098,16 @@ int *indexPtr;      /* Where to store converted index. */
          * last character to be selected, for example.
          */
 
-        if (roundUp && (*indexPtr < entryPtr->numChars))
-        {
+        if (roundUp && (*indexPtr < entryPtr->numChars)) {
             *indexPtr += 1;
         }
-    }
-    else
-    {
-        if (Tcl_GetInt(interp, string, indexPtr) != TCL_OK)
-        {
+    } else {
+        if (Tcl_GetInt(interp, string, indexPtr) != TCL_OK) {
             goto badIndex;
         }
-        if (*indexPtr < 0)
-        {
+        if (*indexPtr < 0) {
             *indexPtr = 0;
-        }
-        else if (*indexPtr > entryPtr->numChars)
-        {
+        } else if (*indexPtr > entryPtr->numChars) {
             *indexPtr = entryPtr->numChars;
         }
     }
@@ -2418,18 +2151,15 @@ int x;                                      /* X-coordinate to use for scan
 
     newLeftIndex = entryPtr->scanMarkIndex
                    - (10 * (x - entryPtr->scanMarkX)) / entryPtr->avgWidth;
-    if (newLeftIndex >= entryPtr->numChars)
-    {
+    if (newLeftIndex >= entryPtr->numChars) {
         newLeftIndex = entryPtr->scanMarkIndex = entryPtr->numChars - 1;
         entryPtr->scanMarkX = x;
     }
-    if (newLeftIndex < 0)
-    {
+    if (newLeftIndex < 0) {
         newLeftIndex = entryPtr->scanMarkIndex = 0;
         entryPtr->scanMarkX = x;
     }
-    if (newLeftIndex != entryPtr->leftIndex)
-    {
+    if (newLeftIndex != entryPtr->leftIndex) {
         entryPtr->leftIndex = newLeftIndex;
         entryPtr->flags |= UPDATE_SCROLLBAR;
         EntryComputeGeometry(entryPtr);
@@ -2467,8 +2197,7 @@ int index; /* Index of element that is to
      * Grab the selection if we don't own it already.
      */
 
-    if ((entryPtr->selectFirst == -1) && (entryPtr->exportSelection))
-    {
+    if ((entryPtr->selectFirst == -1) && (entryPtr->exportSelection)) {
         Tk_OwnSelection(entryPtr->tkwin,
                         XA_PRIMARY,
                         EntryLostSelection,
@@ -2479,27 +2208,21 @@ int index; /* Index of element that is to
      * Pick new starting and ending points for the selection.
      */
 
-    if (entryPtr->selectAnchor > entryPtr->numChars)
-    {
+    if (entryPtr->selectAnchor > entryPtr->numChars) {
         entryPtr->selectAnchor = entryPtr->numChars;
     }
-    if (entryPtr->selectAnchor <= index)
-    {
+    if (entryPtr->selectAnchor <= index) {
         newFirst = entryPtr->selectAnchor;
         newLast = index;
-    }
-    else
-    {
+    } else {
         newFirst = index;
         newLast = entryPtr->selectAnchor;
-        if (newLast < 0)
-        {
+        if (newLast < 0) {
             newFirst = newLast = -1;
         }
     }
     if ((entryPtr->selectFirst == newFirst)
-        && (entryPtr->selectLast == newLast))
-    {
+        && (entryPtr->selectLast == newLast)) {
         return;
     }
     entryPtr->selectFirst = newFirst;
@@ -2542,25 +2265,19 @@ int maxBytes;          /* Maximum number of bytes to place
     int count;
     char *displayString;
 
-    if ((entryPtr->selectFirst < 0) || !(entryPtr->exportSelection))
-    {
+    if ((entryPtr->selectFirst < 0) || !(entryPtr->exportSelection)) {
         return -1;
     }
     count = entryPtr->selectLast - entryPtr->selectFirst - offset;
-    if (count > maxBytes)
-    {
+    if (count > maxBytes) {
         count = maxBytes;
     }
-    if (count <= 0)
-    {
+    if (count <= 0) {
         return 0;
     }
-    if (entryPtr->displayString == NULL)
-    {
+    if (entryPtr->displayString == NULL) {
         displayString = entryPtr->string;
-    }
-    else
-    {
+    } else {
         displayString = entryPtr->displayString;
     }
     strncpy(
@@ -2592,8 +2309,7 @@ ClientData clientData; /* Information about entry widget. */
 {
     Entry *entryPtr = ( Entry * )clientData;
 
-    if ((entryPtr->selectFirst != -1) && entryPtr->exportSelection)
-    {
+    if ((entryPtr->selectFirst != -1) && entryPtr->exportSelection) {
         entryPtr->selectFirst = -1;
         entryPtr->selectLast = -1;
         EventuallyRedraw(entryPtr);
@@ -2622,8 +2338,7 @@ ClientData clientData; /* Information about entry widget. */
 static void EventuallyRedraw(entryPtr) Entry *entryPtr; /* Information about
                                                            widget. */
 {
-    if ((entryPtr->tkwin == NULL) || !Tk_IsMapped(entryPtr->tkwin))
-    {
+    if ((entryPtr->tkwin == NULL) || !Tk_IsMapped(entryPtr->tkwin)) {
         return;
     }
 
@@ -2633,8 +2348,7 @@ static void EventuallyRedraw(entryPtr) Entry *entryPtr; /* Information about
      * but if it does then this could be changed.
      */
 
-    if (!(entryPtr->flags & REDRAW_PENDING))
-    {
+    if (!(entryPtr->flags & REDRAW_PENDING)) {
         entryPtr->flags |= REDRAW_PENDING;
         Tcl_DoWhenIdle(DisplayEntry, ( ClientData )entryPtr);
     }
@@ -2671,21 +2385,15 @@ double *lastPtr;  /* Return position of char just after
     char *displayString;
     int charsInWindow, endX;
 
-    if (entryPtr->displayString == NULL)
-    {
+    if (entryPtr->displayString == NULL) {
         displayString = entryPtr->string;
-    }
-    else
-    {
+    } else {
         displayString = entryPtr->displayString;
     }
-    if (entryPtr->numChars == 0)
-    {
+    if (entryPtr->numChars == 0) {
         *firstPtr = 0.0;
         *lastPtr = 1.0;
-    }
-    else
-    {
+    } else {
         charsInWindow
         = TkMeasureChars(entryPtr->fontPtr,
                          displayString + entryPtr->leftIndex,
@@ -2729,8 +2437,7 @@ entryPtr) Entry *entryPtr; /* Information about widget. */
     double first, last;
     Tcl_Interp *interp;
 
-    if (entryPtr->scrollCmd == NULL)
-    {
+    if (entryPtr->scrollCmd == NULL) {
         return;
     }
 
@@ -2739,8 +2446,7 @@ entryPtr) Entry *entryPtr; /* Information about widget. */
     EntryVisibleRange(entryPtr, &first, &last);
     sprintf(args, " %g %g", first, last);
     code = Tcl_VarEval(interp, entryPtr->scrollCmd, args, ( char * )NULL);
-    if (code != TCL_OK)
-    {
+    if (code != TCL_OK) {
         Tcl_AddErrorInfo(
         interp, "\n    (horizontal scrolling command executed by entry)");
         Tcl_BackgroundError(interp);
@@ -2772,18 +2478,14 @@ ClientData clientData; /* Pointer to record describing entry. */
 {
     Entry *entryPtr = ( Entry * )clientData;
 
-    if (!(entryPtr->flags & GOT_FOCUS) || (entryPtr->insertOffTime == 0))
-    {
+    if (!(entryPtr->flags & GOT_FOCUS) || (entryPtr->insertOffTime == 0)) {
         return;
     }
-    if (entryPtr->flags & CURSOR_ON)
-    {
+    if (entryPtr->flags & CURSOR_ON) {
         entryPtr->flags &= ~CURSOR_ON;
         entryPtr->insertBlinkHandler = Tcl_CreateTimerHandler(
         entryPtr->insertOffTime, EntryBlinkProc, ( ClientData )entryPtr);
-    }
-    else
-    {
+    } else {
         entryPtr->flags |= CURSOR_ON;
         entryPtr->insertBlinkHandler = Tcl_CreateTimerHandler(
         entryPtr->insertOnTime, EntryBlinkProc, ( ClientData )entryPtr);
@@ -2816,17 +2518,13 @@ int gotFocus; /* 1 means window is getting focus, 0 means
                * it's losing it. */
 {
     Tcl_DeleteTimerHandler(entryPtr->insertBlinkHandler);
-    if (gotFocus)
-    {
+    if (gotFocus) {
         entryPtr->flags |= GOT_FOCUS | CURSOR_ON;
-        if (entryPtr->insertOffTime != 0)
-        {
+        if (entryPtr->insertOffTime != 0) {
             entryPtr->insertBlinkHandler = Tcl_CreateTimerHandler(
             entryPtr->insertOnTime, EntryBlinkProc, ( ClientData )entryPtr);
         }
-    }
-    else
-    {
+    } else {
         entryPtr->flags &= ~(GOT_FOCUS | CURSOR_ON);
         entryPtr->insertBlinkHandler = ( Tcl_TimerToken )NULL;
     }
@@ -2867,10 +2565,9 @@ int flags;             /* Information about what happened. */
      * the whole interpreter is going away.
      */
 
-    if (flags & TCL_TRACE_UNSETS)
-    {
-        if ((flags & TCL_TRACE_DESTROYED) && !(flags & TCL_INTERP_DESTROYED))
-        {
+    if (flags & TCL_TRACE_UNSETS) {
+        if ((flags & TCL_TRACE_DESTROYED)
+            && !(flags & TCL_INTERP_DESTROYED)) {
             Tcl_SetVar(
             interp, entryPtr->textVarName, entryPtr->string, TCL_GLOBAL_ONLY);
             Tcl_TraceVar(interp,
@@ -2891,12 +2588,10 @@ int flags;             /* Information about what happened. */
      */
 
     value = Tcl_GetVar(interp, entryPtr->textVarName, TCL_GLOBAL_ONLY);
-    if (value == NULL)
-    {
+    if (value == NULL) {
         value = "";
     }
-    if (strcmp(value, entryPtr->string) != 0)
-    {
+    if (strcmp(value, entryPtr->string) != 0) {
         EntrySetValue(entryPtr, value);
     }
     return ( char * )NULL;

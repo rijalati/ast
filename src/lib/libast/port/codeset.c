@@ -40,8 +40,7 @@ _ast_codeset(int op)
 {
     char *s;
 
-    switch (op)
-    {
+    switch (op) {
     case CODESET_ctype:
         if (ast.locale.set & AST_LC_utf8)
             return "UTF-8";

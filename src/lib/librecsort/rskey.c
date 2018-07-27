@@ -129,8 +129,7 @@ unsigned char *zp;
      */
 
     if (xp < ep)
-        switch (trans[*xp])
-        {
+        switch (trans[*xp]) {
         case '-':
             neg ^= 1;
             /*FALLTHROUGH*/
@@ -145,14 +144,12 @@ unsigned char *zp;
 
     while (xp < ep && trans[*xp] == '0')
         xp++;
-    if (xp < ep && trans[*xp] == '.')
-    {
+    if (xp < ep && trans[*xp] == '.') {
         decimal++;
         for (xp++; xp < ep && trans[*xp] == '0'; xp++)
             sigdig--;
     }
-    if (xp >= ep || trans[*xp] > '9' || trans[*xp] < '0')
-    {
+    if (xp >= ep || trans[*xp] > '9' || trans[*xp] < '0') {
         /*
          * no significant digit
          */
@@ -161,10 +158,8 @@ unsigned char *zp;
         neg = 0;
         goto retzero;
     }
-    for (; xp < ep; xp++)
-    {
-        switch (trans[*xp])
-        {
+    for (; xp < ep; xp++) {
+        switch (trans[*xp]) {
         case '.':
             if (decimal)
                 goto out;
@@ -213,8 +208,7 @@ unsigned char *zp;
                 sigdig += 15;
             goto out;
         case 'E':
-            if (f->flag == 'h')
-            {
+            if (f->flag == 'h') {
                 sigdig += 18;
                 goto out;
             }
@@ -224,8 +218,7 @@ unsigned char *zp;
                 goto out;
             inv = 1;
             if (xp < ep)
-                switch (trans[*++xp])
-                {
+                switch (trans[*++xp]) {
                 case '-':
                     inv = -1;
                     /*FALLTHROUGH*/
@@ -235,8 +228,7 @@ unsigned char *zp;
                 }
             if (xp >= ep || trans[*xp] > '9' || trans[*xp] < '0')
                 goto out;
-            for (n = 0; xp < ep; xp++)
-            {
+            for (n = 0; xp < ep; xp++) {
                 int c = trans[*xp];
 
                 if (c < '0' || c > '9')
@@ -253,8 +245,7 @@ unsigned char *zp;
         }
     }
 out:
-    if (sigdig < 0 || sigdig >= 2047)
-    {
+    if (sigdig < 0 || sigdig >= 2047) {
         sigdig = sigdig < 0 ? 0 : 2047;
         if (kp->keydisc->errorf)
             (*kp->keydisc->errorf)(
@@ -313,8 +304,7 @@ unsigned char *zp;
 
     if ((trans[*(ep - 1)] & 0xF) == 0xD)
         neg ^= 1;
-    while (xp < ep)
-    {
+    while (xp < ep) {
         c = trans[*xp++];
         n = (c >> 4) & 0xF;
         putdig(n);
@@ -325,8 +315,7 @@ unsigned char *zp;
         putdig(n);
         sigdig++;
     }
-    if (sigdig >= 2047)
-    {
+    if (sigdig >= 2047) {
         sigdig = 2047;
         if (kp->keydisc->errorf)
             (*kp->keydisc->errorf)(
@@ -382,23 +371,20 @@ unsigned char *zp;
      * sign
      */
 
-    switch (trans[*(ep - 1)] & 0xF0)
-    {
+    switch (trans[*(ep - 1)] & 0xF0) {
     case 0x70: /* ascii */
     case 0xB0: /* ebcdic alternate */
     case 0xD0: /* ebcdic preferred */
         neg ^= 1;
         break;
     }
-    while (xp < ep)
-    {
+    while (xp < ep) {
         c = trans[*xp++];
         n = c & 0xF;
         putdig(n);
         sigdig++;
     }
-    if (sigdig >= 2047)
-    {
+    if (sigdig >= 2047) {
         sigdig = 2047;
         if (kp->keydisc->errorf)
             (*kp->keydisc->errorf)(
@@ -441,8 +427,7 @@ unsigned char *zp;
     unsigned char *xp = cp;
     int c;
 
-    while (len--)
-    {
+    while (len--) {
         c = *dp++;
         HASHPART(kp->shuffle, c);
         *xp++ = (kp->shuffle >> 4) & 0xff;
@@ -485,17 +470,13 @@ unsigned char *zp;
     unsigned char *bp;
     int reverse = f->rflag ? ~0 : 0;
 
-    if (kp->xfrmbuf && len)
-    {
+    if (kp->xfrmbuf && len) {
         n = ((len + 1) * 4);
-        for (;;)
-        {
-            if (kp->xfrmsiz < n)
-            {
+        for (;;) {
+            if (kp->xfrmsiz < n) {
                 kp->xfrmsiz = n = roundof(n, 256);
                 if (!(kp->xfrmbuf
-                      = vmnewof(Vmheap, kp->xfrmbuf, unsigned char, n, 0)))
-                {
+                      = vmnewof(Vmheap, kp->xfrmbuf, unsigned char, n, 0))) {
                     if (kp->keydisc->errorf)
                         (*kp->keydisc->errorf)(
                         kp,
@@ -513,8 +494,7 @@ unsigned char *zp;
                     *bp++ = trans[c];
             *bp++ = 0;
             m = kp->xfrmsiz - (bp - kp->xfrmbuf);
-            if ((n = mbxfrm(bp, kp->xfrmbuf, m)) < m)
-            {
+            if ((n = mbxfrm(bp, kp->xfrmbuf, m)) < m) {
                 dp = bp;
                 break;
             }
@@ -522,11 +502,9 @@ unsigned char *zp;
         }
         bp = dp;
         m = 0;
-        while (--n >= 0)
-        {
+        while (--n >= 0) {
             c = *dp++;
-            if (c <= 1)
-            {
+            if (c <= 1) {
                 /*
                  * anti-ambiguity
                  */
@@ -536,9 +514,7 @@ unsigned char *zp;
                 else
                     m++;
                 c++;
-            }
-            else if (c >= 254)
-            {
+            } else if (c >= 254) {
                 if (xp < zp)
                     *xp++ = 255 ^ reverse;
                 else
@@ -550,8 +526,7 @@ unsigned char *zp;
             else
                 m++;
         }
-        if (m)
-        {
+        if (m) {
             if (kp->keydisc->errorf)
                 (*kp->keydisc->errorf)(
                 kp,
@@ -565,27 +540,20 @@ unsigned char *zp;
             dp = bp;
             goto native;
         }
-    }
-    else
-    {
+    } else {
     native:
-        while (len-- > 0)
-        {
+        while (len-- > 0) {
             c = *dp++;
-            if (keep[c])
-            {
+            if (keep[c]) {
                 c = trans[c];
-                if (c <= 1)
-                {
+                if (c <= 1) {
                     /*
                      * anti-ambiguity
                      */
 
                     *xp++ = 1 ^ reverse;
                     c++;
-                }
-                else if (c >= 254)
-                {
+                } else if (c >= 254) {
                     *xp++ = 255 ^ reverse;
                     c--;
                 }
@@ -624,14 +592,11 @@ unsigned char *zp;
     for (; len > 0 && blank(trans[*dp]); dp++, len--)
         ;
     if (len > 0)
-        while (++j < 12)
-        {
+        while (++j < 12) {
             mp = ( unsigned char * )month[j];
-            for (i = 0; mp[i] && i < len; i++)
-            {
+            for (i = 0; mp[i] && i < len; i++) {
                 c = trans[dp[i]];
-                if (c != mp[i])
-                {
+                if (c != mp[i]) {
                     if (isupper(c))
                         c = tolower(c);
                     else if (islower(c))
@@ -690,11 +655,9 @@ Rsdisc_t *disc;
 
     pp[0] = dat;
     np = 1;
-    switch (t = kp->tab[0])
-    {
+    switch (t = kp->tab[0]) {
     case 0:
-        for (cp = dat; cp < xp && np < m;)
-        {
+        for (cp = dat; cp < xp && np < m;) {
             while (cp < xp && blank(*cp))
                 cp++;
             while (cp < xp && !blank(*cp))
@@ -707,27 +670,22 @@ Rsdisc_t *disc;
     default:
         tp = kp->tab[1] ? (kp->tab + 1) : 0;
         for (cp = dat; cp < xp && np < m;)
-            if (*cp++ == t)
-            {
+            if (*cp++ == t) {
                 if (!tp)
                     pp[np++] = cp;
                 else
                     for (n = 0; (cp + n) < xp; n++)
-                        if (!tp[n])
-                        {
+                        if (!tp[n]) {
                             pp[np++] = cp + n;
                             break;
-                        }
-                        else if (tp[n] != cp[n])
+                        } else if (tp[n] != cp[n])
                             break;
             }
         break;
     }
-    for (fp = kp->head; fp; fp = fp->next)
-    {
+    for (fp = kp->head; fp; fp = fp->next) {
         n = fp->begin.field;
-        if (n < np)
-        {
+        if (n < np) {
             cp = pp[n];
             if (fp->bflag && kp->field.global.next)
                 while (cp < xp && blank(*cp))
@@ -735,25 +693,19 @@ Rsdisc_t *disc;
             cp += fp->begin.index;
             if (cp > xp)
                 cp = xp;
-        }
-        else
+        } else
             cp = xp;
         n = fp->end.field;
-        if (n < np)
-        {
-            if (fp->end.index < 0)
-            {
+        if (n < np) {
+            if (fp->end.index < 0) {
                 if (n >= np - 1)
                     ep = xp;
-                else
-                {
+                else {
                     ep = pp[n + 1];
                     if (t)
                         ep--;
                 }
-            }
-            else
-            {
+            } else {
                 ep = pp[n];
                 if (fp->eflag)
                     while (ep < xp && blank(*ep))
@@ -764,8 +716,7 @@ Rsdisc_t *disc;
                 ep = xp;
             else if (ep < cp)
                 ep = cp;
-        }
-        else
+        } else
             ep = xp;
         op += (*fp->coder)(kp, fp, cp, ep - cp, op, zp);
     }
@@ -803,10 +754,8 @@ int c;
 #endif
 {
     if (c || fp->begin.field < 0 || fp->end.field < 0 || fp->begin.index < 0
-        || fp->end.index < -1)
-    {
-        if (kp->keydisc->errorf)
-        {
+        || fp->end.index < -1) {
+        if (kp->keydisc->errorf) {
             if (key)
                 (*kp->keydisc->errorf)(kp,
                                        kp->keydisc,
@@ -892,16 +841,13 @@ int end;
     int c;
     int x;
 
-    switch (c = *s++)
-    {
+    switch (c = *s++) {
     case 0:
         return 0;
     case 'a':
-        if (!fp->aflag)
-        {
+        if (!fp->aflag) {
             fp->aflag = 1;
-            if (!kp->field.prev)
-            {
+            if (!kp->field.prev) {
                 if (kp->keydisc->errorf)
                     (*kp->keydisc->errorf)(
                     kp,
@@ -930,8 +876,7 @@ int end;
         addtable(kp, c, &fp->keep, kp->state->dict);
         break;
     case 'E':
-        switch (*s++)
-        {
+        switch (*s++) {
         case 'a':
             x = CC_ASCII;
             break;
@@ -960,8 +905,7 @@ int end;
         }
         if (*s == ':')
             s++;
-        switch (*s++)
-        {
+        switch (*s++) {
         case 'a':
             x = CCOP(x, CC_ASCII);
             break;
@@ -981,8 +925,7 @@ int end;
             s--;
             break;
         }
-        if (x != CC_NATIVE && CCIN(x) != CCOUT(x))
-        {
+        if (x != CC_NATIVE && CCIN(x) != CCOUT(x)) {
             fp->code = x;
             if (fp == kp->head)
                 kp->code = fp->code;
@@ -1056,8 +999,7 @@ int all;
     s = ( char * )key;
     while (i = addopt(kp, fp, s, 0))
         s += i;
-    if (fp->standard && (*s == ',' || *s == ' '))
-    {
+    if (fp->standard && (*s == ',' || *s == ' ')) {
         s++;
         if ((fp->end.field = ( int )strtol(s, ( char ** )&s, 10) - 1)
             > kp->field.maxfield)
@@ -1093,13 +1035,10 @@ int obsolete;
 
     kp->keydisc->flags |= RSKEY_KEYS;
     s = ( char * )key;
-    if (*s == '.')
-    {
+    if (*s == '.') {
         n = ( int )strtol(s + 1, &t, 10);
-        if (!*t)
-        {
-            if (n != kp->fixed && kp->fixed)
-            {
+        if (!*t) {
+            if (n != kp->fixed && kp->fixed) {
                 if (kp->keydisc->errorf)
                     (*kp->keydisc->errorf)(
                     kp,
@@ -1121,12 +1060,9 @@ int obsolete;
         n = *s != ':';
     else
         s = t;
-    if ((standard = !obsolete) && *s == ':')
-    {
-        if (n)
-        {
-            if (n != kp->fixed && kp->fixed)
-            {
+    if ((standard = !obsolete) && *s == ':') {
+        if (n) {
+            if (n != kp->fixed && kp->fixed) {
                 if (kp->keydisc->errorf)
                     (*kp->keydisc->errorf)(
                     kp,
@@ -1145,8 +1081,7 @@ int obsolete;
             return 0;
         n = ( int )strtol(s, &s, 10);
         o = *s == ':' ? ( int )(strtol(s + 1, &s, 10) + 1) : 1;
-        if (kp->fixed && (o + n) > kp->fixed)
-        {
+        if (kp->fixed && (o + n) > kp->fixed) {
             if (kp->keydisc->errorf)
                 (*kp->keydisc->errorf)(
                 kp,
@@ -1162,8 +1097,7 @@ int obsolete;
         sfsprintf(s, sizeof(buf), ".%d,1.%d", o, o + n - 1);
         n = 1;
     }
-    if (obsolete == '-')
-    {
+    if (obsolete == '-') {
         if (!kp->field.global.next && rskey(kp, "0", 1))
             return -1;
         s = ( char * )key;
@@ -1177,17 +1111,13 @@ int obsolete;
             kp->tail->end.field--;
         if (!kp->tail->end.index)
             kp->tail->end.index = -1;
-    }
-    else if (!(fp = vmnewof(Vmheap, 0, Rskeyfield_t, 1, 0)))
-    {
+    } else if (!(fp = vmnewof(Vmheap, 0, Rskeyfield_t, 1, 0))) {
         if (kp->keydisc->errorf)
             (*kp->keydisc->errorf)(
             kp, kp->keydisc, 2, "out of space [field]");
         kp->keydisc->flags |= RSKEY_ERROR;
         return -1;
-    }
-    else
-    {
+    } else {
         fp->index = ++kp->field.index;
         kp->field.prev = kp->tail;
         kp->tail = kp->tail->next = fp;
@@ -1197,11 +1127,9 @@ int obsolete;
             kp->field.maxfield = fp->begin.field;
         fp->end.field = MAXFIELD;
         fp->code = kp->head->code;
-        if (*s == '.')
-        {
+        if (*s == '.') {
             fp->begin.index = ( int )strtol(s + 1, &s, 10) - fp->standard;
-            if (*s == '.')
-            {
+            if (*s == '.') {
                 fp->end.field = fp->begin.field;
                 fp->end.index
                 = fp->begin.index + ( int )strtol(s + 1, &s, 10);
@@ -1228,27 +1156,20 @@ Rskeyfield_t *fp;
     unsigned char *x;
     int c;
 
-    if (fp->code)
-    {
-        if (fp->binary)
-        {
+    if (fp->code) {
+        if (fp->binary) {
             if (CCCONVERT(fp->code))
                 fp->trans = ccmap(fp->code, 0);
-        }
-        else if (m = ccmap(fp->code, CC_NATIVE))
-        {
+        } else if (m = ccmap(fp->code, CC_NATIVE)) {
             if (!fp->trans)
                 fp->trans = m;
-            else if (!(x = vmnewof(Vmheap, 0, unsigned char, UCHAR_MAX, 1)))
-            {
+            else if (!(x = vmnewof(Vmheap, 0, unsigned char, UCHAR_MAX, 1))) {
                 if (kp->keydisc->errorf)
                     (*kp->keydisc->errorf)(
                     kp, kp->keydisc, 2, "out of space");
                 kp->keydisc->flags |= RSKEY_ERROR;
                 return -1;
-            }
-            else
-            {
+            } else {
                 t = fp->trans;
                 for (c = 0; c <= UCHAR_MAX; c++)
                     x[c] = t[m[c]];
@@ -1287,8 +1208,7 @@ rskeyinit(kp) Rskey_t *kp;
     if (checkfield(kp, kp->tail, NiL, 0))
         return -1;
     fp = kp->head;
-    if (!fp->coder)
-    {
+    if (!fp->coder) {
         fp->coder = key_t_code;
         fp->flag = 't';
     }
@@ -1296,28 +1216,23 @@ rskeyinit(kp) Rskey_t *kp;
         return -1;
     if (!fp->keep)
         fp->keep = kp->state->all;
-    if (fp->rflag)
-    {
+    if (fp->rflag) {
         fp->rflag = 0;
         kp->type |= RS_REVERSE;
     }
     kp->code = fp->code;
-    while (fp = fp->next)
-    {
+    while (fp = fp->next) {
         n = 0;
-        if (!fp->coder)
-        {
+        if (!fp->coder) {
             fp->coder = key_t_code;
             fp->flag = 't';
-        }
-        else
+        } else
             n = 1;
         if (!fp->keep)
             fp->keep = kp->state->all;
         else
             n = 1;
-        if (!n && !fp->trans && !fp->bflag && !fp->eflag && !fp->rflag)
-        {
+        if (!n && !fp->trans && !fp->bflag && !fp->eflag && !fp->rflag) {
             fp->coder = kp->field.global.coder;
             fp->code = kp->field.global.code;
             fp->flag = kp->field.global.flag;
@@ -1327,23 +1242,17 @@ rskeyinit(kp) Rskey_t *kp;
             fp->bflag = kp->field.global.bflag;
             if (fp->standard)
                 fp->eflag = kp->field.global.bflag;
-        }
-        else
-        {
+        } else {
             if (transform(kp, fp))
                 return -1;
             if (kp->type & RS_REVERSE)
                 fp->rflag = !fp->rflag;
         }
-        if (fp->standard)
-        {
+        if (fp->standard) {
             if (!fp->end.index)
                 fp->end.index--;
-        }
-        else if (!fp->end.index && fp->end.field)
-        {
-            if (kp->tab[0] && fp->eflag)
-            {
+        } else if (!fp->end.index && fp->end.field) {
+            if (kp->tab[0] && fp->eflag) {
                 if (kp->keydisc->errorf)
                     (*kp->keydisc->errorf)(
                     kp,
@@ -1355,10 +1264,8 @@ rskeyinit(kp) Rskey_t *kp;
             }
             fp->end.index--;
         }
-        if (kp->fixed)
-        {
-            if (fp->begin.index > kp->fixed)
-            {
+        if (kp->fixed) {
+            if (fp->begin.index > kp->fixed) {
                 if (kp->keydisc->errorf)
                     (*kp->keydisc->errorf)(kp,
                                            kp->keydisc,
@@ -1370,8 +1277,7 @@ rskeyinit(kp) Rskey_t *kp;
                 kp->keydisc->flags |= RSKEY_ERROR;
                 return -1;
             }
-            if (fp->end.index > kp->fixed)
-            {
+            if (fp->end.index > kp->fixed) {
                 if (kp->keydisc->errorf)
                     (*kp->keydisc->errorf)(kp,
                                            kp->keydisc,
@@ -1386,31 +1292,25 @@ rskeyinit(kp) Rskey_t *kp;
         }
     }
     fp = kp->head;
-    if (fp = fp->next)
-    {
+    if (fp = fp->next) {
         kp->head = fp;
         if (!fp->next && !kp->tab[0] && !fp->begin.field && !fp->end.field
             && fp->end.index > 0 && fp->flag == 't'
             && fp->trans == kp->state->ident && fp->keep == kp->state->all
-            && !fp->bflag && !fp->eflag && !fp->rflag)
-        {
+            && !fp->bflag && !fp->eflag && !fp->rflag) {
             kp->disc->type |= RS_KSAMELEN;
             kp->disc->key = fp->begin.index;
             kp->disc->keylen = fp->end.index - fp->begin.index;
-        }
-        else
+        } else
             kp->coded = 1;
-    }
-    else if (kp->head->flag == 't' && kp->xfrmbuf)
+    } else if (kp->head->flag == 't' && kp->xfrmbuf)
         kp->coded = 1;
-    if (kp->coded)
-    {
+    if (kp->coded) {
         kp->field.maxfield += 2;
         kp->disc->defkeyf = code;
         kp->disc->key = (mbcoll() ? 32 : 2) * kp->field.maxfield;
         if (!(kp->field.positions
-              = vmnewof(Vmheap, 0, unsigned char *, kp->field.maxfield, 0)))
-        {
+              = vmnewof(Vmheap, 0, unsigned char *, kp->field.maxfield, 0))) {
             if (kp->keydisc->errorf)
                 (*kp->keydisc->errorf)(
                 kp, kp->keydisc, 2, "out of space [positions]");
@@ -1418,8 +1318,7 @@ rskeyinit(kp) Rskey_t *kp;
             return -1;
         }
     }
-    if (kp->fixed)
-    {
+    if (kp->fixed) {
         kp->disc->type |= RS_DSAMELEN;
         kp->disc->data = kp->fixed;
         if (kp->disc->keylen < 0)
@@ -1444,11 +1343,9 @@ rskeyinit(kp) Rskey_t *kp;
 
     if (!(n = kp->alignsize))
         n = SF_BUFSIZE;
-    if (n & (n - 1))
-    {
+    if (n & (n - 1)) {
         for (m = 1; m < n; m <<= 1)
-            if (m >= (LONG_MAX >> CHAR_BIT))
-            {
+            if (m >= (LONG_MAX >> CHAR_BIT)) {
                 if (kp->keydisc->errorf)
                     (*kp->keydisc->errorf)(
                     kp, kp->keydisc, 2, "%ld: invalid alignment size", n);

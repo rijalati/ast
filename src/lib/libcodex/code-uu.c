@@ -98,8 +98,7 @@ fill(State_t *state)
                   state->bp,
                   sizeof(state->buf),
                   &state->codex->sfdisc))
-        <= 0)
-    {
+        <= 0) {
         state->be = state->bp;
         return EOF;
     }
@@ -115,12 +114,10 @@ flush(State_t *state)
     int x;
 
     x = 1;
-    if (state->c1 >= 0)
-    {
+    if (state->c1 >= 0) {
         c3 = state->data->fill;
         x++;
-        if (state->c2 < 0)
-        {
+        if (state->c2 < 0) {
             state->c2 = c3;
             x++;
         }
@@ -135,19 +132,15 @@ flush(State_t *state)
         state->c1 = state->c2 = -1;
     }
     if ((state->bl - state->bp) < UUOUT * UUCHUNK
-        || state->bp > state->buf + !!state->bb)
-    {
+        || state->bp > state->buf + !!state->bb) {
         if (state->bb)
             *state->bb
             = state->data
               ->map[((state->bp - state->bb - x) / UUOUT) * UUIN + 1];
-        if (state->string)
-        {
+        if (state->string) {
             if (*(state->bp - 1) == '\n')
                 state->bp--;
-        }
-        else
-        {
+        } else {
             if (*(state->bp - 1) != '\n')
                 *state->bp++ = '\n';
         }
@@ -184,10 +177,8 @@ uu_open(Codex_t *p, char *const args[], Codexnum_t flags)
             data = &uu_bsd;
         else if (streq(s, "posix"))
             data = &uu_posix;
-        else if (streq(s, "string"))
-        {
-            if (data != &uu_base64)
-            {
+        else if (streq(s, "string")) {
+            if (data != &uu_base64) {
                 if (p->disc->errorf)
                     (*p->disc->errorf)(
                     NiL,
@@ -199,18 +190,15 @@ uu_open(Codex_t *p, char *const args[], Codexnum_t flags)
                 return -1;
             }
             string = 1;
-        }
-        else if (streq(s, "text"))
+        } else if (streq(s, "text"))
             text = 1;
-        else
-        {
+        else {
             if (p->disc->errorf)
                 (*p->disc->errorf)(
                 NiL, p->disc, 2, "%s: %s: unknown option", p->meth->name, s);
             return -1;
         }
-    if (!(state = newof(0, State_t, 1, 0)))
-    {
+    if (!(state = newof(0, State_t, 1, 0))) {
         if (p->disc->errorf)
             (*p->disc->errorf)(NiL, p->disc, 2, "out of space");
         return -1;
@@ -218,8 +206,7 @@ uu_open(Codex_t *p, char *const args[], Codexnum_t flags)
     state->data = data;
     state->string = string;
     state->text = text;
-    if (p->flags & CODEX_DECODE)
-    {
+    if (p->flags & CODEX_DECODE) {
         n = data->length ? 0 : UU_IGN;
         q = state->mapbuf;
         memset(q, n, sizeof(state->mapbuf));
@@ -242,20 +229,16 @@ uu_init(Codex_t *p)
     int n;
 
     state->bp = state->buf;
-    if (p->flags & CODEX_ENCODE)
-    {
+    if (p->flags & CODEX_ENCODE) {
         n = UUOUT * UUCHUNK + state->data->length + 1;
         state->be = state->bp + (sizeof(state->buf) / n) * n;
-        if (state->data->length)
-        {
+        if (state->data->length) {
             state->bb = state->bp;
             *state->bp++ = state->data->map[UUIN * UUCHUNK];
         }
         state->bl = state->bp + UUOUT * UUCHUNK;
         state->c1 = state->c2 = -1;
-    }
-    else
-    {
+    } else {
         state->be = state->bp;
         state->pb = state->pp = state->peek;
         if (state->data->length)
@@ -275,18 +258,15 @@ uu_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
     int c;
     int x;
 
-    if (state->pb < state->pp)
-    {
+    if (state->pb < state->pp) {
         while (s < e && state->pb < state->pp)
             *s++ = *state->pb++;
         if (state->pb == state->pp)
             state->pb = state->pp = state->peek;
     }
     if (state->data->length)
-        while (s < e)
-        {
-            switch (c = GETCHAR(state))
-            {
+        while (s < e) {
+            switch (c = GETCHAR(state)) {
             case EOF:
                 goto done;
             case '\n':
@@ -295,8 +275,7 @@ uu_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
             }
             if (state->nl < 0)
                 state->nl = state->map[c];
-            else if (state->nl > 0)
-            {
+            else if (state->nl > 0) {
                 b = state->map[c];
                 if ((c = GETCHAR(state)) == EOF)
                     c = 0;
@@ -313,17 +292,14 @@ uu_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
                 else
                     c = state->map[c];
                 b = (b << 6) | c;
-                if (state->text)
-                {
+                if (state->text) {
                     if ((c = (b >> 16) & 0xFF) != '\r')
                         PUTCHAR(state, s, e, c);
                     if ((c = (b >> 8) & 0xFF) != '\r')
                         PUTCHAR(state, s, e, c);
                     if ((c = b & 0xFF) != '\r')
                         PUTCHAR(state, s, e, c);
-                }
-                else
-                {
+                } else {
                     PUTCHAR(state, s, e, (b >> 16));
                     PUTCHAR(state, s, e, (b >> 8));
                     PUTCHAR(state, s, e, b);
@@ -334,15 +310,13 @@ uu_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
             }
         }
     else
-        while (s < e)
-        {
+        while (s < e) {
             while ((c = state->map[GETCHAR(state)]) >= 64)
                 if (c != UU_IGN)
                     goto done;
             b = c;
             while ((c = state->map[GETCHAR(state)]) >= 64)
-                if (c != UU_IGN)
-                {
+                if (c != UU_IGN) {
                     if (state->codex->disc->errorf)
                         (*state->codex->disc->errorf)(
                         NiL,
@@ -354,47 +328,37 @@ uu_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
                 }
             b = (b << 6) | c;
             while ((c = state->map[GETCHAR(state)]) >= 64)
-                if (c != UU_IGN)
-                {
-                    if (state->text)
-                    {
+                if (c != UU_IGN) {
+                    if (state->text) {
                         if ((x = (b >> 4) & 0xFF) != '\r')
                             PUTCHAR(state, s, e, x);
-                    }
-                    else
+                    } else
                         PUTCHAR(state, s, e, (b >> 4));
                     goto done;
                 }
             b = (b << 6) | c;
             while ((c = state->map[GETCHAR(state)]) >= 64)
-                if (c != UU_IGN)
-                {
-                    if (state->text)
-                    {
+                if (c != UU_IGN) {
+                    if (state->text) {
                         if ((x = (b >> 10) & 0xFF) != '\r')
                             PUTCHAR(state, s, e, x);
                         if ((x = (b >> 2) & 0xFF) != '\r')
                             PUTCHAR(state, s, e, x);
-                    }
-                    else
-                    {
+                    } else {
                         PUTCHAR(state, s, e, (b >> 10));
                         PUTCHAR(state, s, e, (b >> 2));
                     }
                     goto done;
                 }
             b = (b << 6) | c;
-            if (state->text)
-            {
+            if (state->text) {
                 if ((x = (b >> 16) & 0xFF) != '\r')
                     PUTCHAR(state, s, e, x);
                 if ((x = (b >> 8) & 0xFF) != '\r')
                     PUTCHAR(state, s, e, x);
                 if ((x = b & 0xFF) != '\r')
                     PUTCHAR(state, s, e, x);
-            }
-            else
-            {
+            } else {
                 PUTCHAR(state, s, e, (b >> 16));
                 PUTCHAR(state, s, e, (b >> 8));
                 PUTCHAR(state, s, e, b);
@@ -417,22 +381,17 @@ uu_write(Sfio_t *sp, const void *buf, size_t n, Sfdisc_t *disc)
 
     s = ( unsigned char * )buf;
     e = s + n;
-    if ((c1 = state->c1) >= 0)
-    {
+    if ((c1 = state->c1) >= 0) {
         state->c1 = -1;
-        if ((c2 = state->c2) >= 0)
-        {
+        if ((c2 = state->c2) >= 0) {
             state->c2 = -1;
             goto get_3;
         }
         goto get_2;
     }
-    while (s < e)
-    {
-        do
-        {
-            if (state->nl)
-            {
+    while (s < e) {
+        do {
+            if (state->nl) {
                 state->nl = 0;
                 c1 = '\n';
                 goto get_2;
@@ -440,35 +399,30 @@ uu_write(Sfio_t *sp, const void *buf, size_t n, Sfdisc_t *disc)
             if (s >= e)
                 break;
             c1 = *s++;
-            if (state->text && c1 == '\n')
-            {
+            if (state->text && c1 == '\n') {
                 c1 = '\r';
                 c2 = '\n';
                 goto get_3;
             }
         get_2:
-            if (s >= e)
-            {
+            if (s >= e) {
                 state->c1 = c1;
                 return n;
             }
             c2 = *s++;
-            if (state->text && c2 == '\n')
-            {
+            if (state->text && c2 == '\n') {
                 c2 = '\r';
                 c3 = '\n';
                 goto put_123;
             }
         get_3:
-            if (s >= e)
-            {
+            if (s >= e) {
                 state->c1 = c1;
                 state->c2 = c2;
                 return n;
             }
             c3 = *s++;
-            if (state->text && c3 == '\n')
-            {
+            if (state->text && c3 == '\n') {
                 state->nl = 1;
                 c3 = '\r';
             }
@@ -481,15 +435,13 @@ uu_write(Sfio_t *sp, const void *buf, size_t n, Sfdisc_t *disc)
         } while (state->bp < state->bl);
         if (!state->string)
             *state->bp++ = '\n';
-        if (state->bp >= state->be)
-        {
+        if (state->bp >= state->be) {
             if (sfwr(sp, state->buf, state->bp - state->buf, disc)
                 != (state->bp - state->buf))
                 return -1;
             state->bp = state->buf;
         }
-        if (state->bb)
-        {
+        if (state->bb) {
             state->bb = state->bp;
             *state->bp++ = state->data->map[UUIN * UUCHUNK];
         }

@@ -205,18 +205,15 @@ b_shopt(int argc, char *argv[], Shbltin_t *extra)
 #if SHOPT_RAWONLY
     on_option(&newflags, SH_VIRAW);
 #endif
-    while ((n = optget(argv, sh_optshopt)))
-    {
-        switch (n)
-        {
+    while ((n = optget(argv, sh_optshopt))) {
+        switch (n) {
         case 'p':
             verbose &= ~PRINT_VERBOSE;
             break;
         case 's':
         case 'u':
             setflag |= n == 's' ? SET_SET : SET_UNSET;
-            if (setflag == (SET_SET | SET_UNSET))
-            {
+            if (setflag == (SET_SET | SET_UNSET)) {
                 errormsg(SH_DICT,
                          ERROR_ERROR,
                          "cannot set and unset options simultaneously");
@@ -241,8 +238,7 @@ b_shopt(int argc, char *argv[], Shbltin_t *extra)
     if (error_info.errors)
         errormsg(SH_DICT, ERROR_usage(2), "%s", optusage(NIL(char *)));
     argc -= opt_info.index;
-    if (argc == 0)
-    {
+    if (argc == 0) {
         /* no args, -s => mask=current options, -u mask=~(current options)
            else mask=all bits */
         if (setflag & SET_SET)
@@ -254,8 +250,7 @@ b_shopt(int argc, char *argv[], Shbltin_t *extra)
             memset(&opt, 0xff, sizeof(opt));
         setflag = SET_NOARGS;
     }
-    while (argc > 0)
-    {
+    while (argc > 0) {
         f = 1;
         n = sh_lookopt(argv[opt_info.index], &f);
         if (n <= 0
@@ -265,45 +260,38 @@ b_shopt(int argc, char *argv[], Shbltin_t *extra)
                     || is_option(&opt, SH_RESTRICTED2)
                     || is_option(&opt, SH_BASH)
                     || is_option(&opt, SH_LOGIN_SHELL)))
-            || (oflag && (n & SH_BASHOPT)))
-        {
+            || (oflag && (n & SH_BASHOPT))) {
             errormsg(SH_DICT, ERROR_ERROR, e_option, argv[opt_info.index]);
             error_info.errors++;
             ret = 1;
-        }
-        else if (f)
+        } else if (f)
             on_option(&opt, n & 0xff);
         else
             off_option(&opt, n & 0xff);
         opt_info.index++;
         argc--;
     }
-    if (setflag & (SET_SET | SET_UNSET))
-    {
-        if (setflag & SET_SET)
-        {
+    if (setflag & (SET_SET | SET_UNSET)) {
+        if (setflag & SET_SET) {
             if (sh_isoption(shp, SH_INTERACTIVE))
                 off_option(&opt, SH_NOEXEC);
             if (is_option(&opt, SH_VI) || is_option(&opt, SH_EMACS)
-                || is_option(&opt, SH_GMACS))
-            {
+                || is_option(&opt, SH_GMACS)) {
                 off_option(&newflags, SH_VI);
                 off_option(&newflags, SH_EMACS);
                 off_option(&newflags, SH_GMACS);
             }
             for (n = 0; n < 4; n++)
                 newflags.v[n] |= opt.v[n];
-        }
-        else if (setflag & SET_UNSET)
+        } else if (setflag & SET_UNSET)
             for (n = 0; n < 4; n++)
                 newflags.v[n] &= ~opt.v[n];
         sh_applyopts(shp, newflags);
         shp->options = newflags;
         if (is_option(&newflags, SH_XTRACE))
             sh_trace(shp, argv, 1);
-    }
-    else if (!(setflag & SET_NOARGS)) /* no -s,-u but args, ret=0 if
-                                         opt&mask==mask */
+    } else if (!(setflag & SET_NOARGS)) /* no -s,-u but args, ret=0 if
+                                           opt&mask==mask */
     {
         for (n = 0; n < 4; n++)
             ret += ((newflags.v[n] & opt.v[n]) != opt.v[n]);
@@ -327,16 +315,14 @@ bash_init(Shell_t *shp, int mode)
     int n = 0, xtrace, verbose;
     if (mode > 0)
         goto reinit;
-    if (mode < 0)
-    {
+    if (mode < 0) {
         /* termination code */
         if (sh_isoption(shp, SH_LOGIN_SHELL) && !sh_isoption(shp, SH_POSIX))
             sh_source(shp, NiL, sh_mactry(shp, ( char * )e_bash_logout));
         return;
     }
 
-    if (sh_isstate(shp, SH_PREINIT))
-    { /* pre-init stage */
+    if (sh_isstate(shp, SH_PREINIT)) { /* pre-init stage */
         if (sh_isoption(shp, SH_RESTRICTED))
             sh_onoption(shp, SH_RESTRICTED2);
         sh_onoption(shp, SH_HISTORY2);
@@ -377,8 +363,7 @@ bash_init(Shell_t *shp, int mode)
             nv_putval(np, BASH_MACHTYPE, NV_NOFREE);
         if (np = nv_open("BASH_VERSION", shp->var_tree, 0))
             nv_putval(np, BASH_VERSION, NV_NOFREE);
-        if (np = nv_open("BASH_VERSINFO", shp->var_tree, 0))
-        {
+        if (np = nv_open("BASH_VERSINFO", shp->var_tree, 0)) {
             char *argv[7];
             argv[0] = BASH_MAJOR;
             argv[1] = BASH_MINOR;
@@ -396,8 +381,7 @@ bash_init(Shell_t *shp, int mode)
     /* rest of init stage */
 
     /* restrict BASH_ENV */
-    if (np = nv_open("BASH_ENV", shp->var_tree, 0))
-    {
+    if (np = nv_open("BASH_ENV", shp->var_tree, 0)) {
         const Namdisc_t *dp = nv_discfun(NV_DCRESTRICT);
         Namfun_t *fp = calloc(dp->dsize, 1);
         fp->disc = dp;
@@ -405,26 +389,22 @@ bash_init(Shell_t *shp, int mode)
     }
 
     /* open GLOBIGNORE node */
-    if (np = nv_open("GLOBIGNORE", shp->var_tree, 0))
-    {
+    if (np = nv_open("GLOBIGNORE", shp->var_tree, 0)) {
         const Namdisc_t *dp = &SH_GLOBIGNORE_disc;
         Namfun_t *fp = calloc(dp->dsize, 1);
         fp->disc = dp;
         nv_disc(np, fp, 0);
     }
 
-    if (np = nv_open("BASH_EXECUTION_STRING", shp->var_tree, 0))
-    {
+    if (np = nv_open("BASH_EXECUTION_STRING", shp->var_tree, 0)) {
         np->nvalue.cp = shp->comdiv;
         nv_onattr(np, NV_NOFREE);
     }
 
     /* set startup files */
     n = 0;
-    if (sh_isoption(shp, SH_LOGIN_SHELL))
-    {
-        if (!sh_isoption(shp, SH_POSIX))
-        {
+    if (sh_isoption(shp, SH_LOGIN_SHELL)) {
+        if (!sh_isoption(shp, SH_POSIX)) {
             shp->gd->login_files[n++] = ( char * )e_bash_profile;
             shp->gd->login_files[n++] = ( char * )e_bash_login;
         }

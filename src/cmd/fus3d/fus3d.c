@@ -102,10 +102,8 @@ main(int argc, char **argv)
 
     daemonmode = 1;
     multithreadmode = 1;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'f':
             daemonmode = 0;
             continue;
@@ -126,8 +124,7 @@ main(int argc, char **argv)
     }
     argc -= opt_info.index;
     argv += opt_info.index;
-    if (argc == 1)
-    {
+    if (argc == 1) {
         fuseargc = 0;
         fuseargv[fuseargc++] = "fusermount";
         fuseargv[fuseargc++] = "-u";
@@ -136,8 +133,7 @@ main(int argc, char **argv)
         execvp(fuseargv[0], fuseargv);
         err("%s: cannot execute", fuseargv[0]);
     }
-    if (argc != 2)
-    {
+    if (argc != 2) {
         err("%s", optusage(NiL));
         return 1;
     }
@@ -207,8 +203,7 @@ main(int argc, char **argv)
     if ((ndfs.dfd = open(ndfs.top.str, O_RDONLY)) == -1)
         err("cannot open top directory %s", ndfs.top.str);
 
-    if ((ret = fuse_main(fuseargc, fuseargv, &ndfsops, NULL)) != 0)
-    {
+    if ((ret = fuse_main(fuseargc, fuseargv, &ndfsops, NULL)) != 0) {
         log(LOG(0, "main"), "retry mount with noallow_other option");
         fuseargc = fuseargc1;
         fuseargv[fuseargc++] = ndfs.top.str;
@@ -230,8 +225,7 @@ clockserve(void *data)
     Tv_t rv;
     time_t t;
 
-    for (;;)
-    {
+    for (;;) {
         asocas32(&ndfs.now, ndfs.now, time(NiL));
         tv.tv_sec = 1;
         tv.tv_nsec = 0;

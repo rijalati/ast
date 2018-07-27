@@ -62,10 +62,8 @@ _stdfun(Sfio_t *f, Funvec_t *vp)
         return 0;
     if (f && (( char * )f < iob || ( char * )f > iob + IOBMAX))
         return 0;
-    if (!vp->vec[1])
-    {
-        if (!init)
-        {
+    if (!vp->vec[1]) {
+        if (!init) {
             init = 1;
             bp = dlopen("/usr/bin/stdio.dll", 0);
         }

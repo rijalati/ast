@@ -115,17 +115,14 @@ Tcl_AppInitProc *appInitProc; /* Application-specific initialization
      */
 
     fileName = NULL;
-    if (argc > 1)
-    {
+    if (argc > 1) {
         length = strlen(argv[1]);
-        if ((length >= 2) && (strncmp(argv[1], "-file", length) == 0))
-        {
+        if ((length >= 2) && (strncmp(argv[1], "-file", length) == 0)) {
             argc--;
             argv++;
         }
     }
-    if ((argc > 1) && (argv[1][0] != '-'))
-    {
+    if ((argc > 1) && (argv[1][0] != '-')) {
         fileName = argv[1];
         argc--;
         argv++;
@@ -171,11 +168,9 @@ Tcl_AppInitProc *appInitProc; /* Application-specific initialization
      * Invoke application-specific initialization.
      */
 
-    if ((*appInitProc)(interp) != TCL_OK)
-    {
+    if ((*appInitProc)(interp) != TCL_OK) {
         errChannel = Tcl_GetStdChannel(TCL_STDERR);
-        if (errChannel)
-        {
+        if (errChannel) {
             Tcl_Write(
             errChannel, "application-specific initialization failed: ", -1);
             Tcl_Write(errChannel, interp->result, -1);
@@ -189,17 +184,13 @@ Tcl_AppInitProc *appInitProc; /* Application-specific initialization
      * Invoke the script specified on the command line, if any.
      */
 
-    if (fileName != NULL)
-    {
+    if (fileName != NULL) {
         code = Tcl_EvalFile(interp, fileName);
-        if (code != TCL_OK)
-        {
+        if (code != TCL_OK) {
             goto error;
         }
         tty = 0;
-    }
-    else
-    {
+    } else {
 
         /*
          * Commands will come from standard input, so set up an event
@@ -210,37 +201,29 @@ Tcl_AppInitProc *appInitProc; /* Application-specific initialization
 
         fileName = Tcl_GetVar(interp, "tcl_rcFileName", TCL_GLOBAL_ONLY);
 
-        if (fileName != NULL)
-        {
+        if (fileName != NULL) {
             Tcl_DString buffer;
             char *fullName;
 
             fullName = Tcl_TranslateFileName(interp, fileName, &buffer);
-            if (fullName == NULL)
-            {
+            if (fullName == NULL) {
                 errChannel = Tcl_GetStdChannel(TCL_STDERR);
-                if (errChannel)
-                {
+                if (errChannel) {
                     Tcl_Write(errChannel, interp->result, -1);
                     Tcl_Write(errChannel, "\n", 1);
                 }
-            }
-            else
-            {
+            } else {
 
                 /*
                  * NOTE: The following relies on O_RDONLY==0.
                  */
 
                 chan = Tcl_OpenFileChannel(interp, fullName, "r", 0);
-                if (chan != ( Tcl_Channel )NULL)
-                {
+                if (chan != ( Tcl_Channel )NULL) {
                     Tcl_Close(NULL, chan);
-                    if (Tcl_EvalFile(interp, fullName) != TCL_OK)
-                    {
+                    if (Tcl_EvalFile(interp, fullName) != TCL_OK) {
                         errChannel = Tcl_GetStdChannel(TCL_STDERR);
-                        if (errChannel)
-                        {
+                        if (errChannel) {
                             Tcl_Write(errChannel, interp->result, -1);
                             Tcl_Write(errChannel, "\n", 1);
                         }
@@ -298,8 +281,7 @@ error:
 
     Tcl_AddErrorInfo(interp, "");
     errChannel = Tcl_GetStdChannel(TCL_STDERR);
-    if (errChannel)
-    {
+    if (errChannel) {
         Tcl_Write(
         errChannel, Tcl_GetVar(interp, "errorInfo", TCL_GLOBAL_ONLY), -1);
         Tcl_Write(errChannel, "\n", 1);
@@ -489,15 +471,13 @@ char **argv;           /* Argument strings. */
     char *bindscript, *script = NULL, *oldarg;
     int result;
 
-    if ((argc == 4) && (argv[3][0] != '+'))
-    {
+    if ((argc == 4) && (argv[3][0] != '+')) {
         static char *bindprefixksh = "#!ksh\n";
         static char *bindprefixtcl = "#!tcl\n";
 #define BINDPRELEN 6
 
         bindscript = argv[3];
-        if ((bindscript[0] == '#') && (bindscript[1] == '!'))
-        {
+        if ((bindscript[0] == '#') && (bindscript[1] == '!')) {
             if ((strcmp(bindscript, bindprefixksh) == 0)
                 || (strcmp(bindscript, bindprefixtcl) == 0))
                 return Tk_BindCmd(clientData, interp, argc, argv);
@@ -521,8 +501,7 @@ static void
 bindsetup(Tcl_Interp *interp)
 {
     Tcl_CmdInfo bindInfo;
-    if (Tcl_GetCommandInfo(interp, "bind", &bindInfo))
-    {
+    if (Tcl_GetCommandInfo(interp, "bind", &bindInfo)) {
         bindInfo.proc = Tksh_BindCmd;
         /* Tcl_SetCommandInfo(interp, "bind", &bindInfo); */
         Tcl_CreateCommand(interp,
@@ -563,26 +542,22 @@ int Tksh_Init(interp) Tcl_Interp *interp; /* Interpreter to initialize. */
 static int Tksh_AppInit(interp) Tcl_Interp *interp; /* Interpreter for
                                                        application. */
 {
-    if (Tcl_Init(interp) == TCL_ERROR)
-    {
+    if (Tcl_Init(interp) == TCL_ERROR) {
         return TCL_ERROR;
     }
     Tksh_BeginBlock(interp, INTERP_TCL);
     /* Should be current, but Tk_Init evals a script. */
-    if (Tk_Init(interp) == TCL_ERROR)
-    {
+    if (Tk_Init(interp) == TCL_ERROR) {
         return TCL_ERROR;
     }
-    if (Tksh_Init(interp) == TCL_ERROR)
-    {
+    if (Tksh_Init(interp) == TCL_ERROR) {
         return TCL_ERROR;
     }
     Tksh_SetCommandType(interp, "button", INTERP_CURRENT); /* Why do this? */
     Tksh_EndBlock(interp);
     Tcl_StaticPackage(interp, "Tk", Tk_Init, ( Tcl_PackageInitProc * )NULL);
 #ifdef TK_TEST
-    if (Tktest_Init(interp) == TCL_ERROR)
-    {
+    if (Tktest_Init(interp) == TCL_ERROR) {
         return TCL_ERROR;
     }
     Tcl_StaticPackage(
@@ -632,8 +607,7 @@ static void
 SigEventCheck(ClientData clientData, int flags)
 {
     Tcl_Event *evPtr;
-    if (Tcl_NumEventsFound() < 0)
-    {
+    if (Tcl_NumEventsFound() < 0) {
         evPtr = ( Tcl_Event * )malloc(sizeof(Tcl_Event));
         evPtr->proc = SigEventProcess;
         gotIntr = 1;
@@ -663,8 +637,7 @@ tksh_waitevent(int fd, long tmout, int rw)
     Tcl_File file = NULL;
     gotIntr = 0;
 
-    if (fd >= 0)
-    {
+    if (fd >= 0) {
         file = Tcl_GetFile(( ClientData )fd, TCL_UNIX_FD);
         Tcl_CreateFileHandler(file, TCL_READABLE, fileReady, &file);
     }
@@ -678,13 +651,10 @@ tksh_waitevent(int fd, long tmout, int rw)
         result = Tcl_DoOneEvent(0);
     Tksh_EndBlock(interp);
 
-    if (gotIntr)
-    {
+    if (gotIntr) {
         result = -1;
         errno = EINTR;
-    }
-    else
-    {
+    } else {
         result = 1;
     }
 
@@ -706,8 +676,7 @@ b_tkinit(int argc, char *argv[], Shbltin_t *context)
 {
     static char *av[] = { "tkinit", 0 };
 
-    if (argc == 0)
-    {
+    if (argc == 0) {
         argc = 1;
         argv = av;
     }

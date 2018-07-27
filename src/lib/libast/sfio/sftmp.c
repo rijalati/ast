@@ -70,14 +70,12 @@ Sfdisc_t *disc;
     if (type == SF_DPOP) /* don't allow this to pop */
         return -1;
 
-    if (type == SF_CLOSING)
-    {
+    if (type == SF_CLOSING) {
         ( void )vtmtxlock(_Sfmutex);
         for (last = NIL(File_t *), ff = File; ff; last = ff, ff = ff->next)
             if (ff->f == f)
                 break;
-        if (ff)
-        {
+        if (ff) {
             if (!last)
                 File = ff->next;
             else
@@ -109,8 +107,7 @@ _rmfiles()
     reg File_t *ff, *next;
 
     ( void )vtmtxlock(_Sfmutex);
-    for (ff = File; ff; ff = next)
-    {
+    for (ff = File; ff; ff = next) {
         next = ff->next;
         _tmprmfile(ff->f, SF_CLOSING, NIL(Void_t *), ff->f->disc);
     }
@@ -185,14 +182,12 @@ char **_sfgetpath(path) char *path;
     }
     if (n == 0 || !(dirs = ( char ** )malloc((n + 1) * sizeof(char *))))
         return NIL(char **);
-    if (!(p = ( char * )malloc(strlen(path) + 1)))
-    {
+    if (!(p = ( char * )malloc(strlen(path) + 1))) {
         free(dirs);
         return NIL(char **);
     }
     strcpy(p, path);
-    for (n = 0;; ++n)
-    {
+    for (n = 0;; ++n) {
         while (*p == ':')
             ++p;
         if (*p == 0)
@@ -229,14 +224,12 @@ static int _tmpfd(f) Sfio_t *f;
     int t;
 
     /* set up path of dirs to create temp files */
-    if (!Tmppath && !(Tmppath = _sfgetpath("TMPPATH")))
-    {
+    if (!Tmppath && !(Tmppath = _sfgetpath("TMPPATH"))) {
         if (!(Tmppath = ( char ** )malloc(2 * sizeof(char *))))
             return -1;
         if (!(file = getenv("TMPDIR")))
             file = TMPDFLT;
-        if (!(Tmppath[0] = ( char * )malloc(strlen(file) + 1)))
-        {
+        if (!(Tmppath[0] = ( char * )malloc(strlen(file) + 1))) {
             free(Tmppath);
             Tmppath = NIL(char **);
             return -1;
@@ -252,8 +245,7 @@ static int _tmpfd(f) Sfio_t *f;
         Tmpcur = Tmppath;
 
     fd = -1;
-    for (t = 0; t < 10; ++t)
-    { /* compute a random name */
+    for (t = 0; t < 10; ++t) { /* compute a random name */
         static ulong Key, A;
         if (A == 0 || t > 0) /* get a quasi-random coefficient */
         {
@@ -279,13 +271,11 @@ static int _tmpfd(f) Sfio_t *f;
             >= 0)
             break;
 #    else
-        if ((fd = sysopenf(file, O_RDONLY)) >= 0)
-        { /* file already exists */
+        if ((fd = sysopenf(file, O_RDONLY)) >= 0) { /* file already exists */
             CLOSE(fd);
             fd = -1;
-        }
-        else if ((fd = syscreatf(file, SF_CREATMODE)) >= 0)
-        { /* reopen for read and write */
+        } else if ((fd = syscreatf(file, SF_CREATMODE))
+                   >= 0) { /* reopen for read and write */
             CLOSE(fd);
             if ((fd = sysopenf(file, O_RDWR)) >= 0)
                 break;
@@ -367,8 +357,7 @@ Sfdisc_t *disc;
     if (!(savf.flags & SF_STATIC))
         f->flags &= ~SF_STATIC;
 
-    if (savf.data)
-    {
+    if (savf.data) {
         SFSTRSIZE(&savf);
         if (!(savf.flags & SF_MALLOC))
             ( void )sfsetbuf(f, ( Void_t * )savf.data, savf.size);
@@ -433,8 +422,7 @@ Sfio_t *sftmp(s) size_t s;
         _Sfnotify = 0; /* local computation so no notification */
         rv = _tmpexcept(f, SF_DPOP, NIL(Void_t *), f->disc);
         _Sfnotify = notify;
-        if (rv < 0)
-        {
+        if (rv < 0) {
             sfclose(f);
             return NIL(Sfio_t *);
         }

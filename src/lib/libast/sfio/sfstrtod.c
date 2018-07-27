@@ -41,8 +41,7 @@ static Sfdouble_t sfpow10(n) reg int n;
 {
     Sfdouble_t dval;
 
-    switch (n)
-    {
+    switch (n) {
     case -3:
         return .001;
     case -2:
@@ -59,14 +58,11 @@ static Sfdouble_t sfpow10(n) reg int n;
         return 1000.;
     }
 
-    if (n < 0)
-    {
+    if (n < 0) {
         dval = .0001;
         for (n += 4; n < 0; n += 1)
             dval /= 10.;
-    }
-    else
-    {
+    } else {
         dval = 10000.;
         for (n -= 4; n > 0; n -= 1)
             dval *= 10.;
@@ -105,10 +101,8 @@ char **retp;                               /* to return the remainder of string 
     mode = IPART;
     fexp = expsign = 0;
     dval = 0.;
-    while (*s)
-    { /* accumulate a handful of the digits */
-        for (m = BATCH, n = 0; m > 0; --m, ++s)
-        { /* get and process a char */
+    while (*s) { /* accumulate a handful of the digits */
+        for (m = BATCH, n = 0; m > 0; --m, ++s) { /* get and process a char */
             c = *s;
             if (isdigit(c))
                 n = 10 * n + (c - '0');
@@ -119,21 +113,16 @@ char **retp;                               /* to return the remainder of string 
         /* number of digits accumulated */
         m = BATCH - m;
 
-        if (mode == IPART)
-        { /* doing the integer part */
+        if (mode == IPART) { /* doing the integer part */
             if (dval == 0.)
                 dval = ( Sfdouble_t )n;
             else
                 dval = dval * sfpow10(m) + ( Sfdouble_t )n;
-        }
-        else if (mode == FPART)
-        { /* doing the fractional part */
+        } else if (mode == FPART) { /* doing the fractional part */
             fexp -= m;
             if (n > 0)
                 dval += n * sfpow10(fexp);
-        }
-        else if (n)
-        { /* doing the exponent part */
+        } else if (n) { /* doing the exponent part */
             if (expsign)
                 n = -n;
             dval *= sfpow10(n);
@@ -142,25 +131,20 @@ char **retp;                               /* to return the remainder of string 
         if (!c)
             break;
 
-        if (m < BATCH)
-        { /* detected a non-digit */
-            if (c == decpoint)
-            { /* start the fractional part or no match */
+        if (m < BATCH) {         /* detected a non-digit */
+            if (c == decpoint) { /* start the fractional part or no match */
                 if (mode != IPART)
                     break;
                 mode = FPART;
                 s += 1;
-            }
-            else if (c == 'e' || c == 'E')
-            {
+            } else if (c == 'e' || c == 'E') {
                 if (mode == EPART)
                     break;
                 mode = EPART;
                 c = *++s;
                 if ((expsign = (c == '-')) || c == '+')
                     s += 1;
-            }
-            else
+            } else
                 break;
         }
     }

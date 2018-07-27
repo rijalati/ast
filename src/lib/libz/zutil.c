@@ -39,8 +39,7 @@ zlibCompileFlags()
     uLong flags;
 
     flags = 0;
-    switch (sizeof(uInt))
-    {
+    switch (sizeof(uInt)) {
     case 2:
         break;
     case 4:
@@ -52,8 +51,7 @@ zlibCompileFlags()
     default:
         flags += 3;
     }
-    switch (sizeof(uLong))
-    {
+    switch (sizeof(uLong)) {
     case 2:
         break;
     case 4:
@@ -65,8 +63,7 @@ zlibCompileFlags()
     default:
         flags += 3 << 2;
     }
-    switch (sizeof(voidpf))
-    {
+    switch (sizeof(voidpf)) {
     case 2:
         break;
     case 4:
@@ -78,8 +75,7 @@ zlibCompileFlags()
     default:
         flags += 3 << 4;
     }
-    switch (sizeof(z_off_t))
-    {
+    switch (sizeof(z_off_t)) {
     case 2:
         break;
     case 4:
@@ -183,8 +179,7 @@ uInt len;
 {
     if (len == 0)
         return;
-    do
-    {
+    do {
         *dest++ = *source++; /* ??? to be unrolled */
     } while (--len != 0);
 }
@@ -195,8 +190,7 @@ uInt len;
 {
     uInt j;
 
-    for (j = 0; j < len; j++)
-    {
+    for (j = 0; j < len; j++) {
         if (s1[j] != s2[j])
             return 2 * (s1[j] > s2[j]) - 1;
     }
@@ -208,8 +202,7 @@ uInt len;
 {
     if (len == 0)
         return;
-    do
-    {
+    do {
         *dest++ = 0; /* ??? to be unrolled */
     } while (--len != 0);
 }
@@ -257,14 +250,11 @@ zcalloc(voidpf opaque, unsigned items, unsigned size)
     /* If we allocate less than 65520 bytes, we assume that farmalloc
      * will return a usable pointer which doesn't have to be normalized.
      */
-    if (bsize < 65520L)
-    {
+    if (bsize < 65520L) {
         buf = farmalloc(bsize);
         if (*( ush * )&buf != 0)
             return buf;
-    }
-    else
-    {
+    } else {
         buf = farmalloc(bsize + 16L);
     }
     if (buf == NULL || next_ptr >= MAX_PTR)
@@ -282,20 +272,17 @@ void
 zcfree(voidpf opaque, voidpf ptr)
 {
     int n;
-    if (*( ush * )&ptr != 0)
-    { /* object < 64K */
+    if (*( ush * )&ptr != 0) { /* object < 64K */
         farfree(ptr);
         return;
     }
     /* Find the original pointer */
-    for (n = 0; n < next_ptr; n++)
-    {
+    for (n = 0; n < next_ptr; n++) {
         if (ptr != table[n].new_ptr)
             continue;
 
         farfree(table[n].org_ptr);
-        while (++n < next_ptr)
-        {
+        while (++n < next_ptr) {
             table[n - 1] = table[n];
         }
         next_ptr--;

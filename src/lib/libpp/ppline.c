@@ -33,19 +33,14 @@ ppline(int line, char *file)
     char *s;
     static char type[5];
 
-    if (pp.flags & PP_lineignore)
-    {
+    if (pp.flags & PP_lineignore) {
         pp.flags &= ~PP_lineignore;
-        if (!(pp.flags & PP_linetype) || *pp.lineid)
-        {
+        if (!(pp.flags & PP_linetype) || *pp.lineid) {
             ppline(1, file);
             file = error_info.file;
-        }
-        else
+        } else
             type[1] = PP_sync_ignore;
-    }
-    else if (file != pp.lastfile)
-    {
+    } else if (file != pp.lastfile) {
         if (!pp.firstfile)
             pp.firstfile = file;
         type[1]
@@ -54,9 +49,7 @@ ppline(int line, char *file)
                        : PP_sync_pop)
           : PP_sync;
         pp.lastfile = file;
-    }
-    else
-    {
+    } else {
         if (!(pp.flags & PP_linefile))
             file = 0;
         type[1] = ((pp.flags & (PP_hosted | PP_linehosted))
@@ -66,17 +59,14 @@ ppline(int line, char *file)
     }
     if (!(pp.flags & PP_linetype) || *pp.lineid || type[1] == PP_sync)
         type[0] = 0;
-    else
-    {
+    else {
         type[0] = ' ';
         if ((pp.flags & (PP_hosted | PP_linehosted))
             == (PP_hosted | PP_linehosted)
-            && type[1] != PP_sync_hosted)
-        {
+            && type[1] != PP_sync_hosted) {
             type[2] = ' ';
             type[3] = PP_sync_hosted;
-        }
-        else
+        } else
             type[2] = 0;
     }
 

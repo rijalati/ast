@@ -41,8 +41,7 @@ tmxleap(Time_t t)
     uint32_t sec;
 
     tmset(tm_info.zone);
-    if (tm_info.flags & TM_ADJUST)
-    {
+    if (tm_info.flags & TM_ADJUST) {
         sec = tmxsec(t);
         for (lp = &tm_data.leap[0]; sec < (lp->time - lp->total); lp++)
             ;

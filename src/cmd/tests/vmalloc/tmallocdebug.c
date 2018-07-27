@@ -25,8 +25,7 @@
     if (lseek(fd, 0, SEEK_CUR) <= pos || lseek(fd, pos, SEEK_SET) != pos     \
         || (n = read(fd, buf, sizeof(buf) - 1)) <= 0)                        \
         terror("No debug messages written");                                 \
-    else                                                                     \
-    {                                                                        \
+    else {                                                                   \
         pos += n;                                                            \
         buf[n] = 0;                                                          \
         tinfo("debug: %s", buf);                                             \
@@ -43,8 +42,7 @@ tmain()
     int n, k, fd;
     off_t pos = 0, cur;
 
-    if (!tchild())
-    {
+    if (!tchild()) {
         setenv("VMALLOC_OPTIONS", "method=debug,period=1,start=1", 1);
         execl(argv[0], argv[0], "--child", ( char * )0);
     }
@@ -54,8 +52,7 @@ tmain()
         terror("Can't create %s", err);
     vmdebug(fd);
 
-    for (k = 0; k < 10; ++k)
-    {
+    for (k = 0; k < 10; ++k) {
         if (!(addr[k] = malloc(ALLOCSZ)))
             terror("Allocation of block[%d] failed", k);
         if (((( Vmulong_t )addr[k]) % ALIGN) != 0)

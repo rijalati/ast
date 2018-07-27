@@ -44,8 +44,7 @@ size_t size;                                  /* size of data in bytes	*/
         return 0;
 
     size -= NG_BYTE;
-    for (n = 0, NGINIT(data, gram);; ++n, ++data, NGNEXT(data, gram))
-    {
+    for (n = 0, NGINIT(data, gram);; ++n, ++data, NGNEXT(data, gram)) {
         freq[NGINDEX(gram)] += 1;
         if (n >= size)
             return 0;
@@ -96,15 +95,11 @@ double stop;    /* stop search criterion	*/
 
     /* initial frequency vector */
     rdif = rmax = 0;
-    for (r = 0; r < NG_FREQ; ++r)
-    {
-        if (dfreq[r] < rfreq[r])
-        {
+    for (r = 0; r < NG_FREQ; ++r) {
+        if (dfreq[r] < rfreq[r]) {
             rdif += rfreq[r] - dfreq[r];
             rmax += rfreq[r];
-        }
-        else
-        {
+        } else {
             rdif += dfreq[r] - rfreq[r];
             rmax += dfreq[r];
         }
@@ -120,8 +115,7 @@ double stop;    /* stop search criterion	*/
     lldt = rldt = data + pos;
     lrdt = rrdt = data + pos + size - NG_BYTE;
 
-    if (lldt > data)
-    {
+    if (lldt > data) {
         for (l = 0; l < NG_FREQ; ++l)
             lfreq[l] = rfreq[l];
         ldif = rdif;
@@ -131,42 +125,34 @@ double stop;    /* stop search criterion	*/
         NGINIT(lrdt, lrgr);
     }
 
-    if (rldt < edata)
-    {
+    if (rldt < edata) {
         NGINIT(rldt, rlgr);
         NGINIT(rrdt, rrgr);
     }
 
-    while (lldt > data || rldt < edata)
-    {
-        if (lldt > data)
-        {
+    while (lldt > data || rldt < edata) {
+        if (lldt > data) {
             lldt -= 1;
             NGINIT(lldt, llgr);
             l = NGINDEX(llgr); /* l coming  */
             r = NGINDEX(lrgr);
             lrdt -= 1;
             NGINIT(lrdt, lrgr); /* r leaving */
-            if (l != r)
-            {
+            if (l != r) {
                 if ((lfreq[r] -= 1) < dfreq[r])
                     ldif += 1;
-                else
-                {
+                else {
                     ldif -= 1;
                     lmax -= 1;
                 }
 
-                if ((lfreq[l] += 1) > dfreq[l])
-                {
+                if ((lfreq[l] += 1) > dfreq[l]) {
                     ldif += 1;
                     lmax += 1;
-                }
-                else
+                } else
                     ldif -= 1;
 
-                if ((ldif / ( double )lmax) < bestd)
-                {
+                if ((ldif / ( double )lmax) < bestd) {
                     bestd = ldif / ( double )lmax;
                     bestp = lldt - data;
                     if (bestd < stop)
@@ -175,34 +161,28 @@ double stop;    /* stop search criterion	*/
             }
         }
 
-        if (rldt < edata)
-        {
+        if (rldt < edata) {
             l = NGINDEX(rlgr);
             rldt += 1;
             NGNEXT(rldt, rlgr); /* l leaving */
             rrdt += 1;
             NGNEXT(rrdt, rrgr);
             r = NGINDEX(rrgr); /* r coming  */
-            if (l != r)
-            {
+            if (l != r) {
                 if ((rfreq[l] -= 1) < dfreq[l])
                     rdif += 1;
-                else
-                {
+                else {
                     rdif -= 1;
                     rmax -= 1;
                 }
 
-                if ((rfreq[r] += 1) > dfreq[r])
-                {
+                if ((rfreq[r] += 1) > dfreq[r]) {
                     rdif += 1;
                     rmax += 1;
-                }
-                else
+                } else
                     rdif -= 1;
 
-                if ((rdif / ( double )rmax) < bestd)
-                {
+                if ((rdif / ( double )rmax) < bestd) {
                     bestd = rdif / ( double )rmax;
                     bestp = rldt - data;
                     if (bestd < stop)
@@ -232,8 +212,7 @@ size_t n;
     Vcchar_t *endd;
 
     endd = data + n - (NG_BYTE - 1);
-    for (sig = 0, NGINIT(data, key), data += 1; data < endd; ++data)
-    {
+    for (sig = 0, NGINIT(data, key), data += 1; data < endd; ++data) {
         sig += NGVALUE(key);
         NGNEXT(data, key);
     }

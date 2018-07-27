@@ -49,8 +49,7 @@ tmain()
         terror("Can't open temp file");
 
     sfset(fp, SF_LINE, 1);
-    for (i = 0; i < 1000; ++i)
-    {
+    for (i = 0; i < 1000; ++i) {
         sfsprintf(buf, sizeof(buf), "Number: %d", i);
         if (sfputr(fp, buf, '\n') <= 0)
             terror("Writing %s", buf);
@@ -58,8 +57,7 @@ tmain()
 
     sfseek(fp, ( Sfoff_t )0, 0);
 
-    for (i = 0; i < 1000; ++i)
-    {
+    for (i = 0; i < 1000; ++i) {
         sfsprintf(buf, sizeof(buf), "Number: %d", i);
         if (!(s = sfgetr(fp, '\n', 1)))
             terror("Reading %s", buf);

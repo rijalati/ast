@@ -259,8 +259,7 @@ replace(const char *newfile, const char *oldfile, int preserve)
     struct stat st;
     time_t ut[2];
 
-    if (stat(oldfile, &st))
-    {
+    if (stat(oldfile, &st)) {
         if (preserve)
             return -1;
         st.st_mode = 0;
@@ -270,8 +269,7 @@ replace(const char *newfile, const char *oldfile, int preserve)
     if (st.st_mode &= (S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IWGRP
                        | S_IXGRP | S_IROTH | S_IWOTH | S_IXOTH))
         chmod(oldfile, st.st_mode);
-    if (preserve)
-    {
+    if (preserve) {
         ut[0] = st.st_atime;
         ut[1] = st.st_mtime;
         preserve = utime(oldfile, ut);
@@ -310,27 +308,23 @@ proto(char *file,
 
     if (file && access(file, 4))
         proto_error(NiL, 2, file, "not found");
-    else if (b = pppopen(file, 0, license, options, package, comment, flags))
-    {
+    else if (b
+             = pppopen(file, 0, license, options, package, comment, flags)) {
         if (!file)
             fd = 1;
-        else if (flags & PROTO_REPLACE)
-        {
+        else if (flags & PROTO_REPLACE) {
             e = file + strlen(file) - 1;
             x = *e;
             *e = '_';
-            if ((fd = creat(file, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) < 0)
-            {
+            if ((fd = creat(file, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH))
+                < 0) {
                 proto_error(b, 2, file, "cannot create temporary file");
                 pppclose(b);
                 return flags | PROTO_ERROR;
             }
             *e = x;
-        }
-        else if (copy)
-        {
-            if (((n = strlen(copy)) + strlen(file) + 2) > sizeof(buf))
-            {
+        } else if (copy) {
+            if (((n = strlen(copy)) + strlen(file) + 2) > sizeof(buf)) {
                 proto_error(b, 2, copy, "copy path too long");
                 pppclose(b);
                 return flags | PROTO_ERROR;
@@ -340,20 +334,17 @@ proto(char *file,
             if (*file != '/')
                 *e++ = '/';
             strcpy(e, file);
-            if ((fd = creat(buf, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) < 0)
-            {
+            if ((fd = creat(buf, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH))
+                < 0) {
                 for (e = buf; *e == '/'; e++)
                     ;
-                do
-                {
-                    if (*e == '/')
-                    {
+                do {
+                    if (*e == '/') {
                         *e = 0;
                         if (access(buf, 0)
                             && mkdir(buf,
                                      S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP
-                                     | S_IXGRP | S_IROTH | S_IXOTH))
-                        {
+                                     | S_IXGRP | S_IROTH | S_IXOTH)) {
                             proto_error(
                             b, 2, buf, "cannot create copy directory");
                             pppclose(b);
@@ -363,26 +354,21 @@ proto(char *file,
                     }
                 } while (*e++);
                 if ((fd = creat(buf, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH))
-                    < 0)
-                {
+                    < 0) {
                     proto_error(b, 2, buf, "cannot create copy file");
                     pppclose(b);
                     return flags | PROTO_ERROR;
                 }
             }
             file = buf;
-        }
-        else
+        } else
             fd = 1;
         if (file && (flags & PROTO_VERBOSE))
             proto_error(b, 0, "convert to", file);
-        while ((n = pppread(b)) > 0)
-        {
+        while ((n = pppread(b)) > 0) {
             p = b;
-            for (;;)
-            {
-                if ((m = write(fd, p, n)) <= 0)
-                {
+            for (;;) {
+                if ((m = write(fd, p, n)) <= 0) {
                     proto_error(b, 2, "write error", NiL);
                     flags |= PROTO_ERROR;
                     break;
@@ -396,8 +382,7 @@ proto(char *file,
         }
         if (fd > 1)
             close(fd);
-        if (file && (flags & PROTO_REPLACE))
-        {
+        if (file && (flags & PROTO_REPLACE)) {
             *e = '_';
             strcpy(b, file);
             *e = x;
@@ -439,8 +424,7 @@ type(char *file, char *comment)
     char *suffix;
     int i;
 
-    if (file && (!comment || !*comment))
-    {
+    if (file && (!comment || !*comment)) {
         suffix = 0;
         while (*file)
             if (*file++ == '.')
@@ -474,12 +458,9 @@ main(int argc, char **argv)
 
     NoP(argc);
 #if PROTO_STANDALONE
-    while ((file = *++argv) && *file == '-' && *(file + 1))
-    {
-        for (;;)
-        {
-            switch (*++file)
-            {
+    while ((file = *++argv) && *file == '-' && *(file + 1)) {
+        for (;;) {
+            switch (*++file) {
             case 0:
                 break;
             case 'c':
@@ -490,8 +471,7 @@ main(int argc, char **argv)
                 flags |= PROTO_DISABLE;
                 continue;
             case 'e':
-                if (!*(package = ++file) && !(package = *++argv))
-                {
+                if (!*(package = ++file) && !(package = *++argv)) {
                     file = "??";
                     continue;
                 }
@@ -506,8 +486,7 @@ main(int argc, char **argv)
                 flags |= PROTO_CLASSIC;
                 continue;
             case 'l':
-                if (!*(license = ++file) && !(license = *++argv))
-                {
+                if (!*(license = ++file) && !(license = *++argv)) {
                     file = "??";
                     continue;
                 }
@@ -516,21 +495,18 @@ main(int argc, char **argv)
                 flags |= PROTO_LINESYNC;
                 continue;
             case 'o':
-                if (!*(b = ++file) && !(b = *++argv))
-                {
+                if (!*(b = ++file) && !(b = *++argv)) {
                     file = "??";
                     continue;
                 }
-                if (!options)
-                {
+                if (!options) {
                     options = op = opt;
                     oe = op + sizeof(opt) - 1;
                 }
                 n = strlen(b);
                 if ((n + 1) >= (oe - op))
                     proto_error(NiL, 3, b, "too many options");
-                else
-                {
+                else {
                     *op++ = '\n';
                     memcpy(op, b, n + 1);
                     op += n;
@@ -558,15 +534,13 @@ main(int argc, char **argv)
                 flags |= PROTO_DISABLE | PROTO_NOPRAGMA;
                 continue;
             case 'C':
-                if (!*(copy = ++file) && !(copy = *++argv))
-                {
+                if (!*(copy = ++file) && !(copy = *++argv)) {
                     file = "??";
                     continue;
                 }
                 break;
             case 'L':
-                if (!*(list = ++file) && !(list = *++argv))
-                {
+                if (!*(list = ++file) && !(list = *++argv)) {
                     file = "??";
                     continue;
                 }
@@ -591,10 +565,8 @@ main(int argc, char **argv)
     }
 #else
     error_info.id = "proto";
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'c':
             comment = opt_info.arg;
             continue;
@@ -620,16 +592,14 @@ main(int argc, char **argv)
             flags |= PROTO_LINESYNC;
             continue;
         case 'o':
-            if (!options)
-            {
+            if (!options) {
                 options = op = opt;
                 oe = op + sizeof(opt) - 1;
             }
             n = strlen(opt_info.arg);
             if ((n + 1) >= (oe - op))
                 error(3, "%s: too many options", opt_info.arg);
-            else
-            {
+            else {
                 *op++ = '\n';
                 memcpy(op, opt_info.arg, n + 1);
                 op += n;
@@ -682,20 +652,17 @@ main(int argc, char **argv)
     argv += opt_info.index;
     file = *argv;
 #endif
-    if (list)
-    {
+    if (list) {
         if (*list == '-' && !*(list + 1))
             fd = 0;
         else if ((fd = open(list, O_RDONLY)) < 0)
             proto_error(NiL, 3, list, "not found");
-        do
-        {
+        do {
             for (b = buf; (n = read(fd, b, 1)) > 0 && *b != '\n'
                           && b < &buf[sizeof(buf) - 1];
                  b++)
                 ;
-            if (b > buf)
-            {
+            if (b > buf) {
                 *b = 0;
                 flags = proto(buf,
                               license,

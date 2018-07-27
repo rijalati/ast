@@ -54,8 +54,7 @@ touch(const char *path, time_t at, time_t mt, int flags)
         ap = TV_TOUCH_RETAIN;
     else if (!at && !(flags & PATH_TOUCH_VERBATIM))
         ap = 0;
-    else
-    {
+    else {
         av.tv_sec = at;
         av.tv_nsec = 0;
         ap = &av;
@@ -64,8 +63,7 @@ touch(const char *path, time_t at, time_t mt, int flags)
         mp = TV_TOUCH_RETAIN;
     else if (!mt && !(flags & PATH_TOUCH_VERBATIM))
         mp = 0;
-    else
-    {
+    else {
         mv.tv_sec = mt;
         mv.tv_nsec = 0;
         mp = &mv;

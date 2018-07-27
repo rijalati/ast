@@ -118,8 +118,7 @@ push(Sfio_t *sp, Encoding_t *code, const char *trans, int type)
         vcsf->type |= VCSF_TRANS;
     if (type)
         vcsf->errorf = vcsferror;
-    if (!vcsfio(sp, vcsf, type))
-    {
+    if (!vcsfio(sp, vcsf, type)) {
         type = ((type & VC_OPTIONAL) && !vcsf->type) ? 0 : -1;
         free(vcsf);
         return type;
@@ -135,12 +134,10 @@ encode(State_t *state, Sfio_t *sp, const char *path)
     char *p;
     struct stat st;
 
-    if (!push(sp, NiL, NiL, 0))
-    {
+    if (!push(sp, NiL, NiL, 0)) {
         if (!state->output.use)
             state->output = state->input;
-        if (push(sp, NiL, state->output.trans, VC_ENCODE) < 0)
-        {
+        if (push(sp, NiL, state->output.trans, VC_ENCODE) < 0) {
             error(2,
                   "%s: cannot push vcodex encode discipline (%s)",
                   path,
@@ -148,8 +145,7 @@ encode(State_t *state, Sfio_t *sp, const char *path)
             return -1;
         }
         if (!ZIPSUFFIX(path, p) && *state->input.suffix && !stat(path, &st)
-            && S_ISREG(st.st_mode))
-        {
+            && S_ISREG(st.st_mode)) {
             p = sfprints("%s%s", path, state->input.suffix);
             if (rename(path, p))
                 error(ERROR_SYSTEM | 1, "%s: cannot rename to %s", path, p);
@@ -182,8 +178,7 @@ vcodex(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
                   : op == RS_TEMP_READ ? "RS_TEMP_READ" : "UNKNOWN",
               data,
               arg);
-    switch (op)
-    {
+    switch (op) {
     case RS_FILE_WRITE:
         if ((!state->outputs++ || ( Sfio_t * )data == sfstdout || zipit(arg))
             && (state->output.use > 0
@@ -191,8 +186,7 @@ vcodex(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
             return encode(state, ( Sfio_t * )data, ( char * )arg);
         if (!state->output.use && zipit(arg)
             && (arg || (arg = ( Void_t * )"(output-stream)"))
-            && (delay = newof(0, Delay_t, 1, strlen(arg))))
-        {
+            && (delay = newof(0, Delay_t, 1, strlen(arg)))) {
             delay->sp = ( Sfio_t * )data;
             strcpy(delay->name, arg);
             delay->next = state->delay;
@@ -200,30 +194,24 @@ vcodex(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
         }
         break;
     case RS_FILE_READ:
-        if (state->input.use >= 0)
-        {
+        if (state->input.use >= 0) {
             if ((i = push(( Sfio_t * )data,
                           &state->input,
                           NiL,
                           VC_DECODE | VC_OPTIONAL))
-                < 0)
-            {
+                < 0) {
                 error(2,
                       "%s: cannot push vcodex decode discipline (%s)",
                       arg,
                       state->input.trans);
                 return -1;
-            }
-            else if (i > 0)
-            {
+            } else if (i > 0) {
                 if (state->verbose)
                     error(
                     0, "sort vcodex decode %s (%s)", arg, state->input.trans);
-                if (state->delay)
-                {
+                if (state->delay) {
                     i = 0;
-                    while (delay = state->delay)
-                    {
+                    while (delay = state->delay) {
                         if (!i && state->input.use > 0
                             && !sfseek(delay->sp, ( Sfoff_t )0, SEEK_CUR))
                             i = encode(state, delay->sp, delay->name);
@@ -240,13 +228,11 @@ vcodex(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
         break;
     case RS_TEMP_WRITE:
         if (state->temporary.use > 0
-            || !state->temporary.use && state->input.use > 0)
-        {
+            || !state->temporary.use && state->input.use > 0) {
             if (!state->temporary.use)
                 state->temporary = state->input;
             if (push(( Sfio_t * )data, NiL, state->temporary.trans, VC_ENCODE)
-                < 0)
-            {
+                < 0) {
                 error(
                 2,
                 "temporary-%d: cannot push vcodex encode discipline (%s)",
@@ -264,26 +250,22 @@ vcodex(Rs_t *rs, int op, Void_t *data, Void_t *arg, Rsdisc_t *disc)
         break;
     case RS_TEMP_READ:
         if (state->temporary.use > 0
-            || !state->temporary.use && state->input.use > 0)
-        {
+            || !state->temporary.use && state->input.use > 0) {
             if (!state->temporary.use)
                 state->temporary = state->input;
             if (!sfdisc(( Sfio_t * )data, SF_POPDISC)
-                || sfseek(( Sfio_t * )data, ( Sfoff_t )0, SEEK_SET))
-            {
+                || sfseek(( Sfio_t * )data, ( Sfoff_t )0, SEEK_SET)) {
                 error(2,
                       "temporary-%d: cannot rewind temporary data",
                       tempid(state, data));
                 return -1;
             }
-            if ((i = push(( Sfio_t * )data, NiL, NiL, VC_DECODE)) < 0)
-            {
+            if ((i = push(( Sfio_t * )data, NiL, NiL, VC_DECODE)) < 0) {
                 error(2,
                       "temporary-%d: cannot push vcodex decode discipline",
                       tempid(state, data));
                 return -1;
-            }
-            else if (i > 0 && state->verbose)
+            } else if (i > 0 && state->verbose)
                 error(
                 0, "sort vcodex decode temporary-%d", tempid(state, data));
             return 1;
@@ -302,12 +284,9 @@ rs_disc(Rskey_t *key, const char *options)
 
     if (!(state = newof(0, State_t, 1, 0)))
         error(ERROR_SYSTEM | 3, "out of space");
-    if (options)
-    {
-        for (;;)
-        {
-            switch (optstr(options, usage))
-            {
+    if (options) {
+        for (;;) {
+            switch (optstr(options, usage)) {
             case 0:
                 break;
             case 'i':
@@ -315,8 +294,7 @@ rs_disc(Rskey_t *key, const char *options)
                     state->input.use = -1;
                 else if (streq(opt_info.arg, "-"))
                     state->input.use = 0;
-                else
-                {
+                else {
                     state->input.trans = opt_info.arg;
                     state->input.use = 1;
                 }
@@ -326,8 +304,7 @@ rs_disc(Rskey_t *key, const char *options)
                     state->output.use = -1;
                 else if (streq(opt_info.arg, "-"))
                     state->output.use = 0;
-                else
-                {
+                else {
                     state->output.trans = opt_info.arg;
                     state->output.use = 1;
                 }
@@ -340,8 +317,7 @@ rs_disc(Rskey_t *key, const char *options)
                     state->temporary.use = -1;
                 else if (streq(opt_info.arg, "-"))
                     state->temporary.use = 0;
-                else
-                {
+                else {
                     state->temporary.trans = opt_info.arg;
                     state->temporary.use = 1;
                 }

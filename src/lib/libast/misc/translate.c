@@ -110,8 +110,7 @@ entry(Dt_t *dict, int set, int seq, const char *msg)
     strcpy(mp->text, msg);
     mp->set = set;
     mp->seq = seq;
-    if (!dtinsert(dict, mp))
-    {
+    if (!dtinsert(dict, mp)) {
         free(mp);
         return 0;
     }
@@ -139,18 +138,15 @@ find(const char *locale, const char *catalog)
     char path[PATH_MAX];
 
     if (!mcfind(locale, catalog, LC_MESSAGES, 0, path, sizeof(path))
-        || (d = catopen(path, NL_CAT_LOCALE)) == NOCAT)
-    {
+        || (d = catopen(path, NL_CAT_LOCALE)) == NOCAT) {
         if (locale == ( const char * )lc_categories[AST_LC_MESSAGES].prev)
             o = 0;
-        else if (o = setlocale(LC_MESSAGES, NiL))
-        {
+        else if (o = setlocale(LC_MESSAGES, NiL)) {
             ast.locale.set |= AST_LC_internal;
             setlocale(LC_MESSAGES, locale);
         }
         d = catopen(catalog, NL_CAT_LOCALE);
-        if (o)
-        {
+        if (o) {
             setlocale(LC_MESSAGES, o);
             ast.locale.set &= ~AST_LC_internal;
         }
@@ -178,8 +174,7 @@ init(char *s)
     if (!(cp = newof(0, Catalog_t, 1, strlen(s))))
         return 0;
     strcpy(cp->name, s);
-    if (!dtinsert(state.catalogs, cp))
-    {
+    if (!dtinsert(state.catalogs, cp)) {
         free(cp);
         return 0;
     }
@@ -189,8 +184,7 @@ init(char *s)
      * locate the default locale catalog
      */
 
-    if ((d = find("C", s)) != NOCAT)
-    {
+    if ((d = find("C", s)) != NOCAT) {
         /*
          * load the default locale messages
          * this assumes one mesage set for ast (AST_MESSAGE_SET or fallback to
@@ -203,11 +197,9 @@ init(char *s)
          * missing messages
          */
 
-        if (cp->messages = dtopen(&state.message_disc, Dtset))
-        {
+        if (cp->messages = dtopen(&state.message_disc, Dtset)) {
             n = m = 0;
-            for (;;)
-            {
+            for (;;) {
                 n++;
                 if (((s = catgets(d, set = AST_MESSAGE_SET, n, state.null))
                      && *s
@@ -217,8 +209,7 @@ init(char *s)
                 else if ((n - m) > GAP)
                     break;
             }
-            if (!m)
-            {
+            if (!m) {
                 dtclose(cp->messages);
                 cp->messages = 0;
             }
@@ -245,12 +236,9 @@ match(const char *cat, const char *msg)
     char buf[1024];
 
     s = ( char * )cat;
-    for (;;)
-    {
-        if (t = strchr(s, ':'))
-        {
-            if (s == ( char * )cat)
-            {
+    for (;;) {
+        if (t = strchr(s, ':')) {
+            if (s == ( char * )cat) {
                 if ((n = strlen(s)) >= sizeof(buf))
                     n = sizeof(buf) - 1;
                 s = ( char * )memcpy(buf, s, n);
@@ -263,8 +251,7 @@ match(const char *cat, const char *msg)
             && ((cp = ( Catalog_t * )dtmatch(state.catalogs, s))
                 || (cp = init(s)))
             && cp->messages
-            && (mp = ( Message_t * )dtmatch(cp->messages, msg)))
-        {
+            && (mp = ( Message_t * )dtmatch(cp->messages, msg))) {
             mp->cat = cp;
             return mp;
         }
@@ -332,17 +319,14 @@ translate(const char *loc, const char *cmd, const char *cat, const char *msg)
      * initialize the catalogs dictionary
      */
 
-    if (!state.catalogs)
-    {
+    if (!state.catalogs) {
         if (state.error)
             goto done;
-        if (!(state.tmp = sfstropen()))
-        {
+        if (!(state.tmp = sfstropen())) {
             state.error = 1;
             goto done;
         }
-        if (!(state.catalogs = dtopen(&state.catalog_disc, Dtset)))
-        {
+        if (!(state.catalogs = dtopen(&state.catalog_disc, Dtset))) {
             sfclose(state.tmp);
             state.error = 1;
             goto done;
@@ -357,8 +341,7 @@ translate(const char *loc, const char *cmd, const char *cat, const char *msg)
     if ((!cmd || !(mp = match(cmd, msg))) && (!cat || !(mp = match(cat, msg)))
         && (!error_info.catalog || !(mp = match(error_info.catalog, msg)))
         && (!ast.id || !(mp = match(ast.id, msg)))
-        || !(cp = mp->cat))
-    {
+        || !(cp = mp->cat)) {
 #if DEBUG_trace > 1
         sfprintf(sfstderr,
                  "AHA#%d:%s cmd %s cat %s:%s id %s msg `%s'\n",
@@ -388,13 +371,11 @@ translate(const char *loc, const char *cmd, const char *cat, const char *msg)
              loc,
              loc);
 #endif
-    if (serial != ast.env_serial)
-    {
+    if (serial != ast.env_serial) {
         serial = ast.env_serial;
         nlspath = getenv("NLSPATH");
     }
-    if (cp->locale != loc || cp->nlspath != nlspath)
-    {
+    if (cp->locale != loc || cp->nlspath != nlspath) {
         cp->locale = loc;
         cp->nlspath = nlspath;
         if (cp->cat != NOCAT)
@@ -413,35 +394,27 @@ translate(const char *loc, const char *cmd, const char *cat, const char *msg)
                  NOCAT);
 #endif
     }
-    if (cp->cat == NOCAT)
-    {
-        if (cp->debug)
-        {
+    if (cp->cat == NOCAT) {
+        if (cp->debug) {
             p = tempget(state.tmp);
             sfprintf(state.tmp, "(%s,%d,%d)", cp->name, mp->set, mp->seq);
             r = tempuse(state.tmp, p);
-        }
-        else if (ast.locale.set & AST_LC_debug)
-        {
+        } else if (ast.locale.set & AST_LC_debug) {
             p = tempget(state.tmp);
             sfprintf(
             state.tmp, "(%s,%d,%d)%s", cp->name, mp->set, mp->seq, r);
             r = tempuse(state.tmp, p);
         }
-    }
-    else
-    {
+    } else {
         /*
          * get the translated message
          */
 
         r = catgets(cp->cat, mp->set, mp->seq, msg);
-        if (r != ( char * )msg)
-        {
+        if (r != ( char * )msg) {
             if (streq(r, ( char * )msg))
                 r = ( char * )msg;
-            else if (strcmp(fmtfmt(r), fmtfmt(msg)))
-            {
+            else if (strcmp(fmtfmt(r), fmtfmt(msg))) {
                 sfprintf(sfstderr,
                          "locale %s catalog %s message %d.%d \"%s\" does not "
                          "match \"%s\"\n",
@@ -454,8 +427,7 @@ translate(const char *loc, const char *cmd, const char *cat, const char *msg)
                 r = ( char * )msg;
             }
         }
-        if (ast.locale.set & AST_LC_debug)
-        {
+        if (ast.locale.set & AST_LC_debug) {
             p = tempget(state.tmp);
             sfprintf(
             state.tmp, "(%s,%d,%d)%s", cp->name, mp->set, mp->seq, r);
@@ -473,8 +445,8 @@ translate(const char *loc, const char *cmd, const char *cat, const char *msg)
         msg,
         r == ( char * )msg ? "NOPE" : r);
 done:
-    if (r == ( char * )msg && (!cp && streq(loc, "debug") || cp && cp->debug))
-    {
+    if (r == ( char * )msg
+        && (!cp && streq(loc, "debug") || cp && cp->debug)) {
         p = tempget(state.tmp);
         sfprintf(state.tmp, "(%s,%s,%s,%s)", loc, cmd, cat, r);
         r = tempuse(state.tmp, p);

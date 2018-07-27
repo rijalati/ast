@@ -49,10 +49,8 @@ struct _rle_s
 };
 
 #define RLERUN(_r, _c, _n)                                                   \
-    do                                                                       \
-    {                                                                        \
-        switch (_n)                                                          \
-        {                                                                    \
+    do {                                                                     \
+        switch (_n) {                                                        \
         default:                                                             \
             memset(_r, _c, _n);                                              \
             _r += _n;                                                        \
@@ -102,14 +100,11 @@ int encoding;
     o = rle->obuf;
     rle->osiz = 0;
 
-    if (encoding)
-    {
-        for (z = -1; dt < enddt; ++dt)
-        {
+    if (encoding) {
+        for (z = -1; dt < enddt; ++dt) {
             if ((c = *dt) == 0)
                 z += 1;
-            else
-            {
+            else {
                 if (z >= 0) /* encode the 0-run */
                 {           /**/
                     DEBUG_PRINT(9, "%d\n", z);
@@ -130,22 +125,16 @@ int encoding;
             vcioput2(&io, z, 0, RL_ZERO);
             o = vcionext(&io);
         }
-    }
-    else
-    {
-        for (endo = rle->endo; dt < enddt;)
-        {
-            if ((c = *dt++) == RL_ESC)
-            {
+    } else {
+        for (endo = rle->endo; dt < enddt;) {
+            if ((c = *dt++) == RL_ESC) {
                 if (dt >= enddt) /* premature EOF */
                     return -1;
                 c = *dt++;
                 if (o >= endo || c < RL_ZERO) /* corrupted data */
                     return -1;
                 *o++ = c;
-            }
-            else if (c == 0 || c == RL_ZERO)
-            {
+            } else if (c == 0 || c == RL_ZERO) {
                 vcioinit(&io, dt - 1, (enddt - dt) + 1);
                 z = vcioget2(&io, 0, RL_ZERO) + 1; /**/
                 DEBUG_PRINT(9, "%d\n", z);
@@ -153,9 +142,7 @@ int encoding;
                 if (o + z > endo)
                     return -1;
                 RLERUN(o, 0, z);
-            }
-            else
-            {
+            } else {
                 if (o >= endo)
                     return -1;
                 *o++ = c;
@@ -183,18 +170,13 @@ int encoding;
     o = rle->obuf;
     rle->osiz = 0;
 
-    if (encoding)
-    {
-        for (rc = rz = -1; dt < enddt; ++dt)
-        {
-            if ((c = *dt) == 0 || c == 1)
-            {
+    if (encoding) {
+        for (rc = rz = -1; dt < enddt; ++dt) {
+            if ((c = *dt) == 0 || c == 1) {
                 if (c == rc)
                     rz += 1;
-                else
-                {
-                    if (rz >= 0)
-                    {
+                else {
+                    if (rz >= 0) {
                         vcioinit(&io, o, 8 * sizeof(ssize_t));
                         if (rc == 0)
                             vcioput2(&io, rz, 0, RL_ZERO);
@@ -206,9 +188,7 @@ int encoding;
                     rc = c;
                     rz = 0;
                 }
-            }
-            else
-            {
+            } else {
                 if (rz >= 0) /* encode the 0/1-run */
                 {
                     vcioinit(&io, o, 8 * sizeof(ssize_t));
@@ -235,22 +215,16 @@ int encoding;
                 vcioput2(&io, rz, 1, RL_ONE);
             o = vcionext(&io);
         }
-    }
-    else
-    {
-        for (endo = rle->endo; dt < enddt;)
-        {
-            if ((c = *dt++) == RL_ESC)
-            {
+    } else {
+        for (endo = rle->endo; dt < enddt;) {
+            if ((c = *dt++) == RL_ESC) {
                 if (dt >= enddt) /* premature EOF */
                     return -1;
                 c = *dt++;
                 if (o >= endo || c < RL_ONE) /* corrupted data */
                     return -1;
                 *o++ = c;
-            }
-            else if (c == 0 || c == RL_ZERO || c == 1 || c == RL_ONE)
-            {
+            } else if (c == 0 || c == RL_ZERO || c == 1 || c == RL_ONE) {
                 vcioinit(&io, dt - 1, (enddt - dt) + 1);
                 if (c == 0 || c == RL_ZERO)
                     rz = vcioget2(&io, 0, RL_ZERO);
@@ -260,17 +234,12 @@ int encoding;
                 rz += 1;
                 if (o + rz > endo)
                     return -1;
-                if (c == 0 || c == RL_ZERO)
-                {
+                if (c == 0 || c == RL_ZERO) {
                     RLERUN(o, 0, rz);
-                }
-                else
-                {
+                } else {
                     RLERUN(o, 1, rz);
                 }
-            }
-            else
-            {
+            } else {
                 if (o >= endo)
                     return -1;
                 *o++ = c;
@@ -294,8 +263,7 @@ int encoding;
     ssize_t sz, n, k, c, c1, c2;
     Vcio_t io;
 
-    if (encoding)
-    {
+    if (encoding) {
         dt = rle->ibuf;
         sz = rle->isiz; /**/
         DEBUG_ASSERT(sz >= 1);
@@ -306,11 +274,9 @@ int encoding;
                 break;
         if (n == sz)
             c2 = c1; /* just a single run */
-        else
-        {
+        else {
             c2 = dt[n];
-            for (c = c1, k = n; k < sz; ++k)
-            {
+            for (c = c1, k = n; k < sz; ++k) {
                 if (dt[k] == c) /* current run continues */
                     n += 1;
                 else /* end of current run */
@@ -327,16 +293,13 @@ int encoding;
         rle->run1 = c1;
         rle->run2 = c2;
         return rle->osiz = vciosize(&io);
-    }
-    else
-    {
+    } else {
         dt = rle->obuf;
         enddt = rle->endo;
         c1 = rle->run1;
         c2 = rle->run2;
         vcioinit(&io, rle->ibuf, rle->isiz);
-        for (c = c1; vciomore(&io) > 0;)
-        {
+        for (c = c1; vciomore(&io) > 0;) {
             for (n = vciogetu(&io); n >= 0 && dt < enddt; --n, ++dt)
                 *dt = c;
             c = c == c1 ? c2 : c1; /* alternate run letters */
@@ -361,32 +324,27 @@ int encoding;
     ssize_t r;
     Vcio_t io;
 
-    if (encoding)
-    {
+    if (encoding) {
         endb = (dt = rle->ibuf) + rle->isiz;
 
         /* set buffers for runs and data */
         chr = rle->obuf;
         run = rle->abuf;
-        while (dt < endb)
-        {
+        while (dt < endb) {
             for (c = *dt, enddt = dt + 1; enddt < endb; ++enddt)
                 if (*enddt != c)
                     break;
             r = enddt - dt;
             dt = enddt;
 
-            if (r >= 3 || c == RL_ESC)
-            { /* in-line small cases here for speed */
+            if (r >= 3
+                || c == RL_ESC) { /* in-line small cases here for speed */
                 if (r < (1 << 7))
                     *run++ = r;
-                else if (r < (1 << 14))
-                {
+                else if (r < (1 << 14)) {
                     *run++ = (r >> 7) | 128;
                     *run++ = r & 127;
-                }
-                else
-                {
+                } else {
                     vcioinit(&io, run, 2 * sizeof(ssize_t));
                     vcioputu(&io, r);
                     run = vcionext(&io);
@@ -395,9 +353,7 @@ int encoding;
                 *chr++ = RL_ESC;
                 if (c != RL_ESC || r > 1)
                     *chr++ = c;
-            }
-            else
-            {
+            } else {
                 *chr++ = c;
                 if (r == 2)
                     *chr++ = c;
@@ -405,23 +361,18 @@ int encoding;
         }
 
         return (rle->osiz = chr - rle->obuf) + (rle->asiz = run - rle->abuf);
-    }
-    else
-    {
+    } else {
         dt = rle->obuf;
         enddt = rle->endo; /* output data */
         run = rle->abuf;   /* buffer of encoded run lengths */
 
-        for (endb = (chr = rle->ibuf) + rle->isiz; chr < endb;)
-        {
+        for (endb = (chr = rle->ibuf) + rle->isiz; chr < endb;) {
             if ((c = *chr++) != RL_ESC) /* char coded in place */
             {
                 if (dt >= enddt)
                     return -1;
                 *dt++ = c;
-            }
-            else
-            { /* this is vciogetu() unrolled */
+            } else { /* this is vciogetu() unrolled */
                 r = (c = *run++) & 127;
                 while (c & 128)
                     r = (r << 7) | ((c = *run++) & 127);
@@ -483,8 +434,7 @@ Void_t **out;
     if (!(output = space = vcbuffer(vc, NIL(Vcchar_t *), outsz + 128, hd)))
         RETURN(-1);
 
-    if (rle->rlef == rleg)
-    {
+    if (rle->rlef == rleg) {
         rle->obuf = output + vcsizeu(size);
         rle->endo = rle->obuf + (rle->osiz = size);
         rle->abuf = rle->endo + vcsizeu(size);
@@ -520,9 +470,7 @@ Void_t **out;
             vcioskip(&io, rle->asiz);
 
         sz = vciosize(&io);
-    }
-    else
-    {
+    } else {
         rle->obuf = output;
         rle->endo = rle->obuf + outsz;
 
@@ -541,8 +489,7 @@ Void_t **out;
     vcioinit(&io, output, hd);
     vcioputu(&io, size);
 
-    if (rle->rlef == rle2)
-    {
+    if (rle->rlef == rle2) {
         vcioputc(&io, rle->run1);
         vcioputc(&io, rle->run2);
     }
@@ -593,8 +540,7 @@ Void_t **out;
     rle->obuf = output;
     rle->endo = rle->obuf + sz;
 
-    if (rle->rlef == rleg)
-    {
+    if (rle->rlef == rleg) {
         if (vciomore(&io) <= 0 || (rle->isiz = vciogetu(&io)) < 0)
             RETURN(-1);
         if (vciomore(&io) < rle->isiz)
@@ -613,9 +559,7 @@ Void_t **out;
             RETURN(-1);
         if (vcrecode(vc, &rle->abuf, &rle->asiz, 0, 0) < 0)
             RETURN(-1);
-    }
-    else
-    {
+    } else {
         if (vciomore(&io) <= 0 || (rle->isiz = vciomore(&io)) < 0)
             RETURN(-1);
         rle->ibuf = vcionext(&io);
@@ -681,8 +625,7 @@ static int rlerestore(mtcd) Vcmtcode_t *mtcd;
     Vcmtarg_t *arg;
     char *ident, buf[1024];
 
-    for (arg = _Rleargs; arg->name; ++arg)
-    {
+    for (arg = _Rleargs; arg->name; ++arg) {
         if (!(ident = vcstrcode(arg->name, buf, sizeof(buf))))
             return -1;
         if (mtcd->size == strlen(ident)
@@ -708,10 +651,9 @@ Void_t *params;
     Vcmtcode_t *mtcd;
     char *data;
 
-    if (type == VC_OPENING)
-    {
-        for (arg = NIL(Vcmtarg_t *), data = ( char * )params; data && *data;)
-        {
+    if (type == VC_OPENING) {
+        for (arg = NIL(Vcmtarg_t *), data = ( char * )params;
+             data && *data;) {
             data = vcgetmtarg(data, 0, 0, _Rleargs, &arg);
             if (arg && arg->name)
                 break;
@@ -727,23 +669,17 @@ Void_t *params;
 
         vcsetmtdata(vc, rle);
         return 0;
-    }
-    else if (type == VC_CLOSING)
-    {
+    } else if (type == VC_CLOSING) {
         if ((rle = vcgetmtdata(vc, Rle_t *)))
             free(rle);
         return 0;
-    }
-    else if (type == VC_EXTRACT)
-    {
+    } else if (type == VC_EXTRACT) {
         if (!(mtcd = ( Vcmtcode_t * )params))
             RETURN(-1);
         if ((mtcd->size = rleextract(vc, &mtcd->data)) < 0)
             RETURN(-1);
         return 1;
-    }
-    else if (type == VC_RESTORE)
-    {
+    } else if (type == VC_RESTORE) {
         if (!(mtcd = ( Vcmtcode_t * )params))
             RETURN(-1);
         return rlerestore(mtcd) < 0 ? -1 : 1;

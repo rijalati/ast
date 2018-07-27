@@ -152,15 +152,12 @@ int type;
     mmin = vcpa->mmin <= 1 ? 1 : vcpa->mmin;
     umax = mmin * (2 * vclogi(mmin) + 1);
 
-    if ((m = mt->mpos - vcpa->nsrc) >= 0)
-    {
+    if ((m = mt->mpos - vcpa->nsrc) >= 0) {
         mstr = vcpa->tar;   /* matching in target data */
         mbeg = vcpa->nsrc;  /* origin of data */
         ms = mstr + m;      /* start of match */
         n = vcpa->ntar - m; /* amount of matchable */
-    }
-    else
-    {
+    } else {
         mstr = vcpa->src; /* matching in source data */
         mbeg = 0;
         ms = mstr + mt->mpos;
@@ -174,10 +171,8 @@ int type;
     type &= VCLZ_REVERSE;
     ts += mt->size;
     ms += (type ? -mt->size : mt->size);
-    for (; ts < et; ts += n, ms += (type ? -n : n))
-    {
-        for (u = mmin, n = 0, en = et - ts; n < en;)
-        { /* count unmatches */
+    for (; ts < et; ts += n, ms += (type ? -n : n)) {
+        for (u = mmin, n = 0, en = et - ts; n < en;) { /* count unmatches */
             em = (em = n + u) > en ? en : em;
             for (m = n; m < em; ++m)
                 if (ms[type ? -m : m] == (cmap ? cmap[ts[m]] : ts[m]))
@@ -194,11 +189,9 @@ int type;
                 if ((u += m - n) >= umax)
                     goto done;
                 n = m;
-            }
-            else if (!(mt = NEXTPAIR(pr)))
+            } else if (!(mt = NEXTPAIR(pr)))
                 goto done;
-            else
-            {
+            else {
                 mt->tpos = (ts - vcpa->tar) + vcpa->nsrc + n;
                 mt->mpos = (ms - mstr) + mbeg + (type ? -n : n);
                 mt->size = m - n;
@@ -247,10 +240,8 @@ ssize_t prune; /* prune target by this amount	*/
         fk = fkhash(hs, vcpa->src, NIL(Vcchar_t *));
         ky = fk + 1;
         ns = (ks = vcpa->src) + mmin;
-        for (endo = (m = hs->src) + vcpa->nsrc - (mmin - 1);; ++ks, ++ns)
-        {
-            if (fk != ky)
-            {
+        for (endo = (m = hs->src) + vcpa->nsrc - (mmin - 1);; ++ks, ++ns) {
+            if (fk != ky) {
                 ht = ENTRY(hs, fk);
                 INSERT(ht, m);
             }
@@ -265,8 +256,7 @@ ssize_t prune; /* prune target by this amount	*/
     et = ks + vcpa->ntar; /* bounds of target data */
     fk = fkhash(hs, ks, NIL(Vcchar_t *));
     fm = cmap ? fkhash(hs, ks, cmap) : 0;
-    for (add = obj = hs->tar, endo = obj + vcpa->ntar - (mmin - 1);;)
-    { /**/
+    for (add = obj = hs->tar, endo = obj + vcpa->ntar - (mmin - 1);;) { /**/
         DEBUG_ASSERT(fkhash(hs, ks, 0) == fk);
         /**/ DEBUG_ASSERT(!cmap || fkhash(hs, ks, cmap) == fm);
 
@@ -275,8 +265,7 @@ ssize_t prune; /* prune target by this amount	*/
         ftyp = rtyp = 0;              /* match type */
 
         /* forward: matching twice for plain and mapped data */
-        for (tp = 0; tp <= VCLZ_MAP; tp += VCLZ_MAP)
-        {
+        for (tp = 0; tp <= VCLZ_MAP; tp += VCLZ_MAP) {
             if (tp == 0) /* plain matching */
                 ky = fk;
             else if (!cmap)
@@ -287,31 +276,25 @@ ssize_t prune; /* prune target by this amount	*/
             ht = ENTRY(hs, ky);
             if (prune > 0) /* prune target data outside of search window */
             {
-                for (p = NIL(Obj_t *), m = *ht; m && m >= hs->tar;)
-                {
-                    if ((obj - m) > prune)
-                    {
+                for (p = NIL(Obj_t *), m = *ht; m && m >= hs->tar;) {
+                    if ((obj - m) > prune) {
                         DELETE(ht, p, m);
                         m = p ? p->next : *ht;
-                    }
-                    else
-                    {
+                    } else {
                         p = m;
                         m = m->next;
                     }
                 }
             }
 
-            for (m = *ht; m; m = m->next)
-            {
+            for (m = *ht; m; m = m->next) {
                 ts = ks; /* starting point of string */
 
                 if (m >= hs->tar) /* possible target match */
                 {
                     sm = vcpa->tar + (m - hs->tar);
                     em = vcpa->tar + vcpa->ntar;
-                }
-                else /* possible source match */
+                } else /* possible source match */
                 {
                     sm = vcpa->src + (m - hs->src);
                     em = vcpa->src + vcpa->nsrc;
@@ -329,8 +312,7 @@ ssize_t prune; /* prune target by this amount	*/
                     for (; sm < em; ++sm, ++ts)
                         if (*sm != *ts)
                             break;
-                }
-                else /* match with mapping */
+                } else /* match with mapping */
                 {
                     if (sm[flen] != cmap[ts[flen]]
                         || sm[flen >> 1] != cmap[ts[flen >> 1]])
@@ -340,19 +322,16 @@ ssize_t prune; /* prune target by this amount	*/
                             break;
                 }
 
-                if ((n = ts - ks) > flen)
-                {
+                if ((n = ts - ks) > flen) {
                     fpos = m;
                     flen = n;
                     ftyp = tp;
                 }
             }
         }
-        if (flen >= vcpa->mmin)
-        {
+        if (flen >= vcpa->mmin) {
             n = 0;
-            if (add < obj)
-            {
+            if (add < obj) {
                 fpair.mtch[n].tpos = add - hs->src;
                 fpair.mtch[n].mpos = -1;
                 fpair.mtch[n].size = obj - add;
@@ -366,8 +345,7 @@ ssize_t prune; /* prune target by this amount	*/
         }
 
         /* reverse matching */
-        for (tp = 0; reverse && tp <= VCLZ_MAP; tp += VCLZ_MAP)
-        {
+        for (tp = 0; reverse && tp <= VCLZ_MAP; tp += VCLZ_MAP) {
             if (tp == 0)
                 ky = rkhash(hs, ks, 0);
             else if (!cmap)
@@ -378,23 +356,18 @@ ssize_t prune; /* prune target by this amount	*/
             ht = ENTRY(hs, ky);
             if (prune > 0) /* prune target data outside of search window */
             {
-                for (p = NIL(Obj_t *), m = *ht; m && m >= hs->tar;)
-                {
-                    if ((obj - m) > prune)
-                    {
+                for (p = NIL(Obj_t *), m = *ht; m && m >= hs->tar;) {
+                    if ((obj - m) > prune) {
                         DELETE(ht, p, m);
                         m = p ? p->next : *ht;
-                    }
-                    else
-                    {
+                    } else {
                         p = m;
                         m = m->next;
                     }
                 }
             }
 
-            for (m = *ht; m; m = m->next)
-            {
+            for (m = *ht; m; m = m->next) {
                 ts = ks; /* starting point of string */
 
                 if (m >= hs->tar) /* possible target match */
@@ -403,8 +376,7 @@ ssize_t prune; /* prune target by this amount	*/
                     em = vcpa->tar;
                     if (sm >= ts)
                         continue;
-                }
-                else /* possible source match */
+                } else /* possible source match */
                 {
                     sm = vcpa->src + ((m + mmin - 1) - hs->src);
                     em = vcpa->src;
@@ -422,8 +394,7 @@ ssize_t prune; /* prune target by this amount	*/
                     for (; sm >= em; --sm, ++ts)
                         if (*sm != *ts)
                             break;
-                }
-                else /* match with cmapping */
+                } else /* match with cmapping */
                 {
                     if (sm[-rlen] != cmap[ts[rlen]]
                         || sm[-(rlen >> 1)] != cmap[ts[rlen >> 1]])
@@ -433,19 +404,16 @@ ssize_t prune; /* prune target by this amount	*/
                             break;
                 }
 
-                if ((n = ts - ks) > rlen)
-                {
+                if ((n = ts - ks) > rlen) {
                     rpos = m + (mmin - 1);
                     rlen = n;
                     rtyp = tp;
                 }
             }
         }
-        if (rlen >= vcpa->mmin)
-        {
+        if (rlen >= vcpa->mmin) {
             n = 0;
-            if (add < obj)
-            {
+            if (add < obj) {
                 rpair.mtch[n].tpos = add - hs->src;
                 rpair.mtch[n].mpos = -1;
                 rpair.mtch[n].size = obj - add;
@@ -458,14 +426,11 @@ ssize_t prune; /* prune target by this amount	*/
             rlen = extend(vcpa, &rpair, rtyp | VCLZ_REVERSE);
         }
 
-        if (flen >= rlen)
-        {
+        if (flen >= rlen) {
             n = flen;
             pair = &fpair;
             tp = ftyp;
-        }
-        else
-        {
+        } else {
             n = rlen;
             pair = &rpair;
             tp = rtyp | VCLZ_REVERSE;
@@ -482,8 +447,7 @@ ssize_t prune; /* prune target by this amount	*/
 
             for (ky = fk + 1;;) /* add parsed data to htab */
             {
-                if (fk != ky)
-                {
+                if (fk != ky) {
                     ht = ENTRY(hs, fk);
                     INSERT(ht, obj);
                 }
@@ -495,9 +459,7 @@ ssize_t prune; /* prune target by this amount	*/
                 if ((obj += 1) >= add)
                     break;
             }
-        }
-        else
-        {
+        } else {
         nope:
             ht = ENTRY(hs, fk);
             INSERT(ht, obj);
@@ -510,8 +472,7 @@ ssize_t prune; /* prune target by this amount	*/
         }
     }
 
-    if ((n = (hs->tar + vcpa->ntar) - add) > 0)
-    {
+    if ((n = (hs->tar + vcpa->ntar) - add) > 0) {
         fpair.mtch[0].tpos = add - hs->src;
         fpair.mtch[0].mpos = -1;
         fpair.mtch[0].size = n;
@@ -541,18 +502,13 @@ static int sfxparse(vcpa) Vclzparse_t *vcpa;
     int rv = -1;
 
     /* catenate source and target strings into a superstring */
-    if ((nsrc = vcpa->nsrc) == 0)
-    {
+    if ((nsrc = vcpa->nsrc) == 0) {
         nstr = vcpa->ntar;
         str = vcpa->tar;
-    }
-    else if (vcpa->tar == (vcpa->src + nsrc))
-    {
+    } else if (vcpa->tar == (vcpa->src + nsrc)) {
         nstr = nsrc + vcpa->ntar;
         str = vcpa->src;
-    }
-    else
-    {
+    } else {
         nstr = nsrc + vcpa->ntar;
         if (!(str = ( Vcchar_t * )malloc(nstr)))
             return -1;
@@ -566,10 +522,8 @@ static int sfxparse(vcpa) Vclzparse_t *vcpa;
     idx = sfx->idx;
     inv = sfx->inv;
 
-    for (savlz = savlp = savp = 0, ad = p = nsrc; p < nstr;)
-    {
-        for (lz = lp = 0, r = inv[p] - 1; r >= 0; --r)
-        {
+    for (savlz = savlp = savp = 0, ad = p = nsrc; p < nstr;) {
+        for (lz = lp = 0, r = inv[p] - 1; r >= 0; --r) {
             if ((lp = idx[r]) < p) /* best left match */
             {
                 s1 = str + p;
@@ -583,8 +537,7 @@ static int sfxparse(vcpa) Vclzparse_t *vcpa;
             }
         }
 
-        for (rz = rp = 0, r = inv[p] + 1; r < nstr; ++r)
-        {
+        for (rz = rp = 0, r = inv[p] + 1; r < nstr; ++r) {
             if ((rp = idx[r]) < p) /* best right match */
             {
                 s1 = str + p;
@@ -598,25 +551,21 @@ static int sfxparse(vcpa) Vclzparse_t *vcpa;
             }
         }
 
-        if (rz > lz || (rz == lz && rp > lp))
-        {
+        if (rz > lz || (rz == lz && rp > lp)) {
             lp = rp;
             lz = rz;
         } /* best match over all */
 
 #define SEARCH 4 /* neighborhood to search for an improved match */
-        if (savlz == 0 || (p - savp) < SEARCH)
-        {
-            if (lz > savlz)
-            {
+        if (savlz == 0 || (p - savp) < SEARCH) {
+            if (lz > savlz) {
                 savlp = lp;
                 savlz = lz;
                 savp = p;
                 p += 1; /* improve! go again */
                 continue;
             }
-            if (savlz > 0 && lz >= (savlz - 2))
-            {
+            if (savlz > 0 && lz >= (savlz - 2)) {
                 p += 1; /* not a bad short, go again */
                 continue;
             }
@@ -629,11 +578,9 @@ static int sfxparse(vcpa) Vclzparse_t *vcpa;
             savlz = savlp = savp = 0;
         }
 
-        if (lz >= mmin)
-        {
+        if (lz >= mmin) {
             r = 0;
-            if (ad < p)
-            {
+            if (ad < p) {
                 pair.mtch[r].tpos = ad;
                 pair.mtch[r].mpos = -1;
                 pair.mtch[r].size = p - ad;
@@ -650,17 +597,14 @@ static int sfxparse(vcpa) Vclzparse_t *vcpa;
                 goto nope;
             else
                 ad += r; /* advance by amount processed */
-        }
-        else
-        {
+        } else {
         nope:
             p += 1; /* skip over an unmatched position */
         }
     } /**/
     DEBUG_ASSERT(p == nstr);
 
-    if (ad < p)
-    {
+    if (ad < p) {
         pair.mtch[0].tpos = ad;
         pair.mtch[0].mpos = -1;
         pair.mtch[0].size = p - ad;

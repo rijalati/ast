@@ -45,19 +45,16 @@ scan(void)
     for (fp = formats; fp->next; fp = fp->next)
         ;
     rp = fp;
-    if (dls = dllsopen(state.id, NiL, NiL))
-    {
+    if (dls = dllsopen(state.id, NiL, NiL)) {
         while (dle = dllsread(dls))
-            if (dll = dlopen(dle->path, RTLD_LAZY))
-            {
+            if (dll = dlopen(dle->path, RTLD_LAZY)) {
                 if (dllcheck(dll, dle->path, PAX_PLUGIN_VERSION, NiL)
                     && (init = ( Paxlib_f )dlllook(dll, "pax_lib"))
                     && (lp = (*init)(&state)))
                     fp = fp->next = lp;
                 else
                     dlclose(dll);
-            }
-            else
+            } else
                 message((-1, "%s: %s", dle->path, dlerror()));
         dllsclose(dls);
     }
@@ -75,8 +72,7 @@ nextformat(Format_t *fp)
 {
     if (!fp)
         return formats;
-    if (!(fp = fp->next) && !state.scanned)
-    {
+    if (!(fp = fp->next) && !state.scanned) {
         state.scanned = 1;
         fp = scan();
     }
@@ -116,13 +112,11 @@ pathcmp(const char *s, const char *t)
     int sc;
     int tc;
 
-    for (;;)
-    {
+    for (;;) {
         tc = *t++;
         if (!(sc = *s++))
             return tc ? -1 : 0;
-        if (sc != tc)
-        {
+        if (sc != tc) {
             if (tc == 0 || tc == '/')
                 return 1;
             if (sc == '/')
@@ -160,21 +154,18 @@ selectfile(Archive_t *ap, File_t *f)
     ap->info = 0;
     if (f->skip || f->namesize <= 1 || f->linkpath && !*f->linkpath)
         return 0;
-    if (state.ordered)
-    {
+    if (state.ordered) {
         ordered(ap, ap->path.prev.string, f->name);
         stash(&ap->path.prev, f->name, 0); /*HERE*/
     }
-    if (f->record.format && state.record.pattern)
-    {
+    if (f->record.format && state.record.pattern) {
         static char fmt[2];
 
         fmt[0] = f->record.format;
         if (!strmatch(fmt, state.record.pattern))
             return 0;
     }
-    if (ap->parent)
-    {
+    if (ap->parent) {
         linked = 1;
         addlink(ap, f);
         if (!ap->parent)
@@ -209,8 +200,7 @@ selectfile(Archive_t *ap, File_t *f)
     if (!match(f->path))
         return 0;
     if (f->type != X_IFDIR && ap->update
-        && (d = ( Member_t * )hashget(ap->update, f->name)))
-    {
+        && (d = ( Member_t * )hashget(ap->update, f->name))) {
         if (f->type != X_IFREG && d->dev != f->st->st_dev)
             /* keep */;
         else if (!(c = tvcmp(&d->mtime, tvmtime(&t, f->st))))
@@ -223,12 +213,10 @@ selectfile(Archive_t *ap, File_t *f)
     if (state.verify && !verify(ap, f, NiL))
         return 0;
     ap->selected++;
-    if (!linked)
-    {
+    if (!linked) {
         if (state.list)
             addlink(ap, f);
-        if (ap->tab)
-        {
+        if (ap->tab) {
             if (!(d = newof(0, Member_t, 1, 0)))
                 nospace();
             d->dev = f->st->st_dev;
@@ -243,17 +231,14 @@ selectfile(Archive_t *ap, File_t *f)
         }
     }
     if (state.ordered && ap->delta && !(ap->delta->format->flags & COMPRESS)
-        && (bp = ap->delta->base))
-    {
+        && (bp = ap->delta->base)) {
         int n;
         int m;
 
-        for (;;)
-        {
+        for (;;) {
             if (bp->peek)
                 bp->peek = 0;
-            else
-            {
+            else {
                 if (bp->skip && bp->skip == bp->io->offset + bp->io->count)
                     fileskip(bp, &bp->file);
                 if (!getheader(bp, &bp->file))
@@ -261,18 +246,15 @@ selectfile(Archive_t *ap, File_t *f)
                 bp->skip = bp->io->offset + bp->io->count;
             }
             ordered(bp, bp->path.prev.string, bp->file.name);
-            if ((m = pathcmp(bp->file.name, f->name)) > 0)
-            {
+            if ((m = pathcmp(bp->file.name, f->name)) > 0) {
                 bp->peek = 1;
                 break;
             }
             n = selectfile(bp, &bp->file);
             if (!m)
                 break;
-            if (n && !state.list)
-            {
-                if (ap->io->mode != O_RDONLY)
-                {
+            if (n && !state.list) {
+                if (ap->io->mode != O_RDONLY) {
                     File_t tmp;
                     struct stat st;
 
@@ -280,17 +262,13 @@ selectfile(Archive_t *ap, File_t *f)
                     tmp.delta.op = DELTA_delete;
                     putheader(ap, &tmp);
                     puttrailer(ap, &tmp);
-                }
-                else
-                {
+                } else {
                     struct stat st;
 
-                    if (!(*state.statf)(f->name, &st))
-                    {
-                        if (S_ISDIR(st.st_mode))
-                        {
-                            if (!streq(f->name, ".") && !streq(f->name, ".."))
-                            {
+                    if (!(*state.statf)(f->name, &st)) {
+                        if (S_ISDIR(st.st_mode)) {
+                            if (!streq(f->name, ".")
+                                && !streq(f->name, "..")) {
                                 if (rmdir(f->name))
                                     error(ERROR_SYSTEM | 2,
                                           "%s: cannot remove directory",
@@ -298,8 +276,7 @@ selectfile(Archive_t *ap, File_t *f)
                                 else
                                     listentry(f);
                             }
-                        }
-                        else if (remove(f->name))
+                        } else if (remove(f->name))
                             error(ERROR_SYSTEM | 2,
                                   "%s: cannot remove file",
                                   f->name);
@@ -328,13 +305,11 @@ verify(Archive_t *ap, File_t *f, char *prompt)
     char *name;
 
     NoP(ap);
-    if (!prompt)
-    {
+    if (!prompt) {
         if (state.yesno < 0)
             return 0;
         else if (state.yesno)
-            switch (state.operation)
-            {
+            switch (state.operation) {
             case IN:
                 prompt = "Read";
                 break;
@@ -349,22 +324,18 @@ verify(Archive_t *ap, File_t *f, char *prompt)
             prompt = "Rename";
     }
     sfprintf(state.wtty, "%s %s: ", prompt, f->name);
-    if (!(name = sfgetr(state.rtty, '\n', 1)))
-    {
+    if (!(name = sfgetr(state.rtty, '\n', 1))) {
         sfputc(state.wtty, '\n');
         finish(2);
     }
-    if (state.yesno)
-    {
-        if (*name == 'q' || *name == 'Q' || *name == '-')
-        {
+    if (state.yesno) {
+        if (*name == 'q' || *name == 'Q' || *name == '-') {
             state.yesno = -1;
             return 0;
         }
         return *name == 'y' || *name == 'Y' || *name == '1';
     }
-    switch (*name)
-    {
+    switch (*name) {
     case 0:
         return 0;
     case '.':
@@ -387,11 +358,9 @@ undos(File_t *f)
 {
     char *s;
 
-    if (strchr(f->name, '\\'))
-    {
+    if (strchr(f->name, '\\')) {
         s = f->name;
-        if (s[1] == ':' && isalpha(s[0]))
-        {
+        if (s[1] == ':' && isalpha(s[0])) {
             if (*(s += 2) == '\\' || *s == '/')
                 s++;
             f->name = s;
@@ -418,15 +387,13 @@ map(Archive_t *ap, char *name)
     int n;
     regmatch_t match[10];
 
-    if (state.filter.line > 1)
-    {
+    if (state.filter.line > 1) {
         state.filter.line = 1;
         name = state.filter.name;
     }
     from = to = name;
     for (mp = state.maps; mp; mp = mp->next)
-        if (!(n = regexec(&mp->re, from, elementsof(match), match, 0)))
-        {
+        if (!(n = regexec(&mp->re, from, elementsof(match), match, 0))) {
             if (n = regsubexec(&mp->re, from, elementsof(match), match))
                 regfatal(&mp->re, 3, n);
             n = strlen(mp->re.re_sub->re_buf) + 1;
@@ -440,16 +407,13 @@ map(Archive_t *ap, char *name)
             if (mp->re.re_sub->re_flags & REG_SUB_STOP)
                 break;
             from = to;
-        }
-        else if (n != REG_NOMATCH)
+        } else if (n != REG_NOMATCH)
             regfatal(&mp->re, 3, n);
     if (state.local
         && (*to == '/'
             || *to == '.' && *(to + 1) == '.'
-               && (!*(to + 2) || *(to + 2) == '/')))
-    {
-        if (state.verify)
-        {
+               && (!*(to + 2) || *(to + 2) == '/'))) {
+        if (state.verify) {
             f.name = to;
             if (verify(NiL, &f, "Retain non-local file"))
                 return f.name;
@@ -494,10 +458,8 @@ listlookup(void *handle,
     static const char fmt_time[] = "time=%?%l";
     static const char fmt_mode[] = "mode";
 
-    if (fmt->t_str)
-    {
-        if (!(op = ( Option_t * )hashget(state.options, fmt->t_str)))
-        {
+    if (fmt->t_str) {
+        if (!(op = ( Option_t * )hashget(state.options, fmt->t_str))) {
             if (*fmt->t_str != '$')
                 return 0;
             if (!(op = newof(0, Option_t, 1, 0)))
@@ -507,8 +469,7 @@ listlookup(void *handle,
             op->index = OPT_environ;
             op->flags |= OPT_DISABLE;
         }
-        if (op->macro && !(op->flags & OPT_DISABLE))
-        {
+        if (op->macro && !(op->flags & OPT_DISABLE)) {
             op->flags |= OPT_DISABLE;
             if (!(state.tmp.mac && !(state.tmp.mac = sfstropen())))
                 nospace();
@@ -516,10 +477,8 @@ listlookup(void *handle,
             if (!(s = sfstruse(state.tmp.mac)))
                 nospace();
             op->flags &= ~OPT_DISABLE;
-        }
-        else
-            switch (op->index)
-            {
+        } else
+            switch (op->index) {
             case OPT_atime:
                 n = st->st_atime;
                 t = tmxgetatime(st);
@@ -544,8 +503,7 @@ listlookup(void *handle,
                               ( int )((st->st_size * 1000) / f->uncompressed)
                               % 10);
                 else
-                    switch (f->delta.op)
-                    {
+                    switch (f->delta.op) {
                     case 0:
                     case DELTA_pass:
                         return 0;
@@ -579,13 +537,11 @@ listlookup(void *handle,
                 n = minor(st->st_dev);
                 break;
             case OPT_dir:
-                if (s = strrchr(f->name, '/'))
-                {
+                if (s = strrchr(f->name, '/')) {
                     sfwrite(state.tmp.fmt, f->name, s - f->name);
                     if (!(s = sfstruse(state.tmp.fmt)))
                         nospace();
-                }
-                else
+                } else
                     s = ".";
                 break;
             case OPT_entry:
@@ -596,8 +552,7 @@ listlookup(void *handle,
                     return 0;
                 break;
             case OPT_gname:
-                if (f->gidname)
-                {
+                if (f->gidname) {
                     if (fmt->fmt == 's')
                         s = f->gidname;
                     else
@@ -615,8 +570,7 @@ listlookup(void *handle,
                 n = st->st_ino;
                 break;
             case OPT_linkop:
-                switch (f->linktype)
-                {
+                switch (f->linktype) {
                 case HARDLINK:
                     s = "==";
                     break;
@@ -696,19 +650,16 @@ listlookup(void *handle,
                     n = ( Sfulong_t )st->st_size;
                 break;
             case OPT_tmp:
-                if (s = strrchr(state.tmp.file, '/'))
-                {
+                if (s = strrchr(state.tmp.file, '/')) {
                     sfwrite(
                     state.tmp.fmt, state.tmp.file, s - state.tmp.file);
                     if (!(s = sfstruse(state.tmp.fmt)))
                         nospace();
-                }
-                else
+                } else
                     s = ".";
                 break;
             case OPT_uname:
-                if (f->uidname)
-                {
+                if (f->uidname) {
                     if (fmt->fmt == 's')
                         s = f->uidname;
                     else
@@ -723,8 +674,7 @@ listlookup(void *handle,
                     n = st->st_uid;
                 break;
             default:
-                if (gp->archive && gp->archive->format->lookup)
-                {
+                if (gp->archive && gp->archive->format->lookup) {
                     if ((k = (*gp->archive->format->lookup)(
                          &state, gp->archive, f, op->index, &s, &n))
                         < 0)
@@ -736,22 +686,17 @@ listlookup(void *handle,
                     return 0;
                 break;
             }
-    }
-    else
-    {
+    } else {
         op = 0;
-        switch (fmt->fmt)
-        {
+        switch (fmt->fmt) {
         case 'd':
             if (!op)
                 s = f->name;
-            if (e = strrchr(s, '/'))
-            {
+            if (e = strrchr(s, '/')) {
                 sfwrite(state.tmp.fmt, s, e - s);
                 if (!(s = sfstruse(state.tmp.fmt)))
                     nospace();
-            }
-            else
+            } else
                 s = ".";
             *ps = s;
             fmt->fmt = 's';
@@ -769,23 +714,20 @@ listlookup(void *handle,
             return 1;
         }
     }
-    switch (fmt->fmt)
-    {
+    switch (fmt->fmt) {
     case 'D':
         if (f->type == X_IFBLK || f->type == X_IFCHR)
             s = fmtdev(st);
         else if (!op)
             s = " ";
-        else
-        {
+        else {
             *pn = n;
             fmt->fmt = 'u';
             return 1;
         }
         break;
     case 'L':
-        if (f->linktype != NOLINK)
-        {
+        if (f->linktype != NOLINK) {
             if (!op)
                 s = f->name;
             sfprintf(state.tmp.fmt,
@@ -812,13 +754,11 @@ listlookup(void *handle,
     case 'T':
         if (!arg)
             arg = "%b %e %H:%M %Y";
-        if (!op)
-        {
+        if (!op) {
             n = st->st_mtime;
             t = tmxgetmtime(st);
         }
-        if (( unsigned long )n >= state.testdate)
-        {
+        if (( unsigned long )n >= state.testdate) {
             n = state.testdate;
             t = TMX_NOTIME;
         }
@@ -827,28 +767,24 @@ listlookup(void *handle,
     default:
         if (s)
             *ps = s;
-        else if (fmt->fmt == 's' && (arg || type))
-        {
+        else if (fmt->fmt == 's' && (arg || type)) {
             if (type == TYPE_mode
                 || arg && *pn == ':' && strneq(arg, fmt_mode, 4))
                 *ps = fmtmode(n, 1);
             else if ((k = arg && *pn == ':' && strneq(arg, fmt_time, 4))
-                     || type == TYPE_time)
-            {
+                     || type == TYPE_time) {
                 if (k && *(arg + 4) == '=')
                     arg += 5;
                 if (!arg || !*arg)
                     arg = fmt_time + 5;
-                if (( unsigned long )n >= state.testdate)
-                {
+                if (( unsigned long )n >= state.testdate) {
                     n = state.testdate;
                     t = TMX_NOTIME;
                 }
                 *ps = t == TMX_NOTIME ? fmttime(arg, ( time_t )n)
                                       : fmttmx(arg, t);
             }
-        }
-        else
+        } else
             *pn = n;
         return 1;
     }
@@ -888,17 +824,13 @@ listentry(File_t *f)
     char bar[METER_parts + 1];
 
     if (!f->extended && !f->skip
-        && (state.drop || state.list || state.meter.on || state.verbose))
-    {
-        if (state.meter.on)
-        {
+        && (state.drop || state.list || state.meter.on || state.verbose)) {
+        if (state.meter.on) {
             for (s = f->name; *s; s++)
                 if (s[0] == ' ' && s[1] == '-' && s[2] == '-' && s[3] == ' ')
                     break;
-            if (*s)
-            {
-                if (state.meter.last)
-                {
+            if (*s) {
+                if (state.meter.last) {
                     sfprintf(sfstderr, "%*s", state.meter.last, "\r");
                     state.meter.last = 0;
                 }
@@ -915,15 +847,12 @@ listentry(File_t *f)
             n = listprintf(state.meter.tmp, state.in, f, state.listformat);
             if (!(s = sfstruse(state.meter.tmp)))
                 nospace();
-            if (state.meter.fancy)
-            {
-                if (n > (state.meter.width - METER_width))
-                {
+            if (state.meter.fancy) {
+                if (n > (state.meter.width - METER_width)) {
                     e = "*";
                     s += n - (state.meter.width - METER_width) + 1;
                     n = state.meter.width - METER_width;
-                }
-                else
+                } else
                     e = "";
                 j = n + METER_width;
                 if (!state.meter.last)
@@ -942,27 +871,20 @@ listentry(File_t *f)
                 = sfprintf(
                   sfstderr, "%02d%% |%s| %s%s%*s\r", p, bar, e, s, k, "")
                   - k - 1;
-            }
-            else
+            } else
                 sfprintf(sfstderr, "%02d%% %s\n", p, s);
             sfsync(sfstderr);
             if (state.test & 0000200)
                 sleep(1);
-        }
-        else if (state.drop)
-        {
-            if (++state.dropcount >= 50)
-            {
+        } else if (state.drop) {
+            if (++state.dropcount >= 50) {
                 state.dropcount = 0;
                 sfprintf(sfstderr, ".\n");
-            }
-            else
-            {
+            } else {
                 sfprintf(sfstderr, ".");
                 sfsync(sfstderr);
             }
-        }
-        else
+        } else
             listprintf(
             state.list ? sfstdout : sfstderr, state.in, f, state.listformat);
     }
@@ -990,8 +912,7 @@ initmatch(char **v)
         nospace();
     state.pattern = state.patterns = p;
     s = ( char * )(p + n);
-    for (a = v; *a; a++, p++)
-    {
+    for (a = v; *a; a++, p++) {
         s = stpcpy(p->pattern = s, *a) + 1;
         pathcanon(p->pattern, s - p->pattern, 0);
     }
@@ -1009,32 +930,25 @@ match(char *s)
 
     if (!(p = state.pattern))
         return state.matchsense;
-    if (state.exact)
-    {
+    if (state.exact) {
         for (n = 0; p->pattern; p++)
-            if (!p->matched || p->directory)
-            {
-                if (state.descend && dirprefix(p->pattern, s, p->directory))
-                {
+            if (!p->matched || p->directory) {
+                if (state.descend && dirprefix(p->pattern, s, p->directory)) {
                     state.pattern = p;
                     p->directory = p->matched = 1;
                     return 1;
-                }
-                else if (p->directory)
+                } else if (p->directory)
                     p->directory = 0;
-                else if (strmatch(s, p->pattern))
-                {
+                else if (strmatch(s, p->pattern)) {
                     state.pattern = p;
                     p->matched = 1;
                     return 1;
-                }
-                else
+                } else
                     n = 1;
             }
         if (!n)
             finish(0);
-    }
-    else
+    } else
         for (; p->pattern; p++)
             if (state.descend && dirprefix(p->pattern, s, 0)
                 || strmatch(s, p->pattern))
@@ -1069,21 +983,18 @@ dirprefix(char *p, char *s, int proper)
 char *
 stash(Value_t *v, const char *s, size_t z)
 {
-    if (!z)
-    {
+    if (!z) {
         if (!s)
             return 0;
         z = strlen(s);
     }
     z++;
-    if (z > v->size)
-    {
+    if (z > v->size) {
         v->size = roundof(z, 256);
         if (!(v->string = newof(v->string, char, v->size, 0)))
             nospace();
     }
-    if (s)
-    {
+    if (s) {
         memcpy(v->string, s, z - 1);
         v->string[z - 1] = 0;
     }
@@ -1111,12 +1022,10 @@ complete(Archive_t *ap, File_t *f, size_t header)
     off_t n;
 
     n = header + f->st->st_size;
-    if (ap->io->count + n > state.maxout)
-    {
+    if (ap->io->count + n > state.maxout) {
         if (n > state.maxout)
             error(1, "%s: too large to fit in one volume", f->name);
-        else
-        {
+        else {
             state.complete = 0;
             putepilogue(ap);
             newio(ap, 0, 0);
@@ -1137,8 +1046,7 @@ undoable(Archive_t *ap, Format_t *fp)
     Compress_format_t *cp = ( Compress_format_t * )fp->data;
     char buf[PATH_MAX];
 
-    if (!pathpath(cp->undo[0], NiL, PATH_EXECUTE, buf, sizeof(buf)))
-    {
+    if (!pathpath(cp->undo[0], NiL, PATH_EXECUTE, buf, sizeof(buf))) {
         if (!cp->undotoo[0]
             || !pathpath(cp->undotoo[0], NiL, PATH_EXECUTE, buf, sizeof(buf)))
             error(3,

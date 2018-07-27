@@ -80,8 +80,7 @@ _ast_atexit(void)
 {
     struct list *p;
 
-    while (p = funclist)
-    {
+    while (p = funclist) {
         funclist = p->next;
         (*p->func)();
     }

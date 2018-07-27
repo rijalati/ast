@@ -96,30 +96,25 @@ fold(Sfio_t *in,
     int n, col = 0, x = 0;
     char *last_space = 0;
     cols[0] = 0;
-    for (;;)
-    {
-        if (!(cp = sfgetr(in, '\n', 0)))
-        {
+    for (;;) {
+        if (!(cp = sfgetr(in, '\n', 0))) {
             if (!(cp = sfgetr(in, '\n', -1)) || (n = sfvalue(in)) <= 0)
                 break;
             x = cp[--n];
             cp[n] = '\n';
         }
         /* special case -b since no column adjustment is needed */
-        if (cols['\b'] == 0 && (n = sfvalue(in)) <= width)
-        {
+        if (cols['\b'] == 0 && (n = sfvalue(in)) <= width) {
             sfwrite(out, cp, n);
             continue;
         }
         first = cp;
         col = 0;
         last_space = 0;
-        for (;;)
-        {
+        for (;;) {
             while ((n = cols[*( unsigned char * )cp++]) == 0)
                 ;
-            while ((cp - first) > (width - col))
-            {
+            while ((cp - first) > (width - col)) {
                 if (last_space)
                     col = last_space - first;
                 else
@@ -131,8 +126,7 @@ fold(Sfio_t *in,
                 if (cp > first + 1 || (n != T_NL && n != T_BS))
                     sfwrite(out, cont, contsize);
             }
-            switch (n)
-            {
+            switch (n) {
             case T_NL:
                 if (x)
                     *(cp - 1) = x;
@@ -147,8 +141,7 @@ fold(Sfio_t *in,
             case T_TAB:
                 n = (TABSIZE - 1) - (cp + col - 1 - first) & (TABSIZE - 1);
                 col += n;
-                if ((cp - first) > (width - col))
-                {
+                if ((cp - first) > (width - col)) {
                     sfwrite(out, first, (--cp) - first);
                     sfwrite(out, cont, contsize);
                     first = cp;
@@ -187,10 +180,8 @@ b_fold(int argc, char **argv, Shbltin_t *context)
     cols['\b'] = T_BS;
     cols['\n'] = T_NL;
     cols['\r'] = T_RET;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'b':
             cols['\r'] = cols['\b'] = 0;
             cols['\t'] = cols[' '];
@@ -226,12 +217,10 @@ b_fold(int argc, char **argv, Shbltin_t *context)
         error(ERROR_usage(2), "%s", optusage(NiL));
     if (cp = *argv)
         argv++;
-    do
-    {
+    do {
         if (!cp || streq(cp, "-"))
             fp = sfstdin;
-        else if (!(fp = sfopen(NiL, cp, "r")))
-        {
+        else if (!(fp = sfopen(NiL, cp, "r"))) {
             error(ERROR_system(0), "%s: cannot open", cp);
             error_info.errors = 1;
             continue;

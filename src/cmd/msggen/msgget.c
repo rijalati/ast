@@ -60,10 +60,8 @@ main(int argc, char **argv)
 
     NoP(argc);
     error_info.id = "msgget";
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case '?':
             error(ERROR_USAGE | 4, "%s", opt_info.arg);
             continue;
@@ -90,8 +88,7 @@ main(int argc, char **argv)
     if (cat = strchr(cmd, ':'))
         *cat++ = 0;
     if (!mcfind(loc, cmd, LC_MESSAGES, 0, path, sizeof(path))
-        && (!cat || !mcfind(loc, cat, LC_MESSAGES, 0, path, sizeof(path))))
-    {
+        && (!cat || !mcfind(loc, cat, LC_MESSAGES, 0, path, sizeof(path)))) {
         if (cat)
             *--cat = ':';
         error(3, "%s: cannot locate message catalog", cmd);

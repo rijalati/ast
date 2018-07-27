@@ -59,15 +59,13 @@ sfdczip(Sfio_t *sp, const char *path, const char *meth, Error_f errorf)
     unsigned long flags;
     Pzdisc_t disc;
 
-    if (meth)
-    {
+    if (meth) {
         if (part = ( const char * )strchr(meth, ' '))
             len = part - meth;
         else
             len = strlen(meth);
         zip = 0;
-        switch ((len << 8) | meth[0])
-        {
+        switch ((len << 8) | meth[0]) {
         case (4 << 8) | 'b':
             if (strneq(meth, "bzip", len))
                 zip = METH_bzip;
@@ -91,9 +89,7 @@ sfdczip(Sfio_t *sp, const char *path, const char *meth, Error_f errorf)
 			break;
 #endif
         }
-    }
-    else
-    {
+    } else {
         /*
          * defer to sfdcpzip() for SF_READ recognition
          */
@@ -101,55 +97,44 @@ sfdczip(Sfio_t *sp, const char *path, const char *meth, Error_f errorf)
         zip = METH_pzip;
         part = 0;
     }
-    if (!zip)
-    {
+    if (!zip) {
         mesg = ERROR_dictionary("unknown compress discipline method");
         r = -1;
-    }
-    else
-    {
+    } else {
         mesg = ERROR_dictionary("compress discipline error");
         flags = 0;
         if (part)
-            for (;;)
-            {
+            for (;;) {
                 while (part[0] == ' ')
                     part++;
-                if (part[0] != '-' || part[1] != '-')
-                {
+                if (part[0] != '-' || part[1] != '-') {
                     if (!part[0])
                         part = 0;
                     break;
                 }
                 part += 2;
-                if (part[0] == ' ')
-                {
+                if (part[0] == ' ') {
                     while (part[0] == ' ')
                         part++;
                     if (!part[0])
                         part = 0;
                     break;
                 }
-                if (!part[0])
-                {
+                if (!part[0]) {
                     part = 0;
                     break;
                 }
-                if (part[0] == 'n' && part[1] == 'o')
-                {
+                if (part[0] == 'n' && part[1] == 'o') {
                     part += 2;
                     r = 0;
-                }
-                else
+                } else
                     r = 1;
                 if (!(meth = ( const char * )strchr(part, ' ')))
                     meth = part + strlen(part);
-                switch (meth - part)
-                {
+                switch (meth - part) {
                 case 3:
                     if (strneq(part, "crc", 3))
-                        switch (zip)
-                        {
+                        switch (zip) {
                         case METH_gzip:
                             if (!r)
                                 flags |= SFGZ_NOCRC;
@@ -163,8 +148,7 @@ sfdczip(Sfio_t *sp, const char *path, const char *meth, Error_f errorf)
                 }
                 part = meth;
             }
-        if (!path)
-        {
+        if (!path) {
             if (sp == sfstdin)
                 path = "/dev/stdin";
             else if (sp == sfstdout)
@@ -174,8 +158,7 @@ sfdczip(Sfio_t *sp, const char *path, const char *meth, Error_f errorf)
             else
                 path = "output";
         }
-        switch (zip)
-        {
+        switch (zip) {
         case METH_bzip:
             r = sfdcbzip(sp, flags);
             break;
@@ -187,13 +170,10 @@ sfdczip(Sfio_t *sp, const char *path, const char *meth, Error_f errorf)
             break;
         case METH_pzip:
             memset(&disc, 0, sizeof(disc));
-            if ((sfset(sp, 0, 0) & SF_WRITE) && !(disc.partition = part))
-            {
+            if ((sfset(sp, 0, 0) & SF_WRITE) && !(disc.partition = part)) {
                 mesg = ERROR_dictionary("partition file operand required");
                 r = -1;
-            }
-            else
-            {
+            } else {
                 disc.version = PZ_VERSION;
                 disc.errorf = errorf;
                 r = sfdcpzip(sp, path, flags, &disc);

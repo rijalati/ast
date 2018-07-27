@@ -96,8 +96,7 @@ lock(ssize_t k)
 {
     static int locked;
 
-    if (k >= 0)
-    {
+    if (k >= 0) {
         locked--;
         return 0;
     }
@@ -156,8 +155,7 @@ _aso_InterlockedCompareExchange64_32(LONGLONG volatile *p,
     LONGLONG r;
 
     r = *p;
-    if (asocas32(&lp->a, op->a, np->a) == op->a)
-    {
+    if (asocas32(&lp->a, op->a, np->a) == op->a) {
         if (asocas32(&lp->b, op->b, np->b) == op->b)
             return o;
         asocas32(&lp->a, np->a, op->a);
@@ -189,8 +187,7 @@ _aso_InterlockedExchangeAdd64_32(LONGLONG volatile *p, LONGLONG n)
 {
     LONGLONG o;
 
-    do
-    {
+    do {
         o = *p;
     } while (_aso_InterlockedCompareExchange64_32(p, o, o + n) != o);
     return o;
@@ -329,8 +326,7 @@ asoget8(uint8_t volatile *p)
 {
     int o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas8(p, o, o) != o);
     return o;
@@ -343,8 +339,7 @@ asoget16(uint16_t volatile *p)
 {
     int o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas16(p, o, o) != o);
     return o;
@@ -357,8 +352,7 @@ asoget32(uint32_t volatile *p)
 {
     uint32_t o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas32(p, o, o) != o);
     return o;
@@ -373,8 +367,7 @@ asoget64(uint64_t volatile *p)
 {
     uint64_t o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas64(p, o, o) != o);
     return o;
@@ -389,8 +382,7 @@ asogetptr(void volatile *p)
 {
     void *o;
 
-    do
-    {
+    do {
         o = *( void *volatile * )p;
     } while (asocasptr(( void ** )p, o, o) != o);
     return o;
@@ -407,8 +399,7 @@ asoadd8(uint8_t volatile *p, int n)
 {
     int o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas8(p, o, o + n) != o);
     return o;
@@ -421,8 +412,7 @@ asoadd16(uint16_t volatile *p, int n)
 {
     int o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas16(p, o, o + n) != o);
     return o;
@@ -435,8 +425,7 @@ asoadd32(uint32_t volatile *p, uint32_t n)
 {
     uint32_t o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas32(p, o, o + n) != o);
     return o;
@@ -451,8 +440,7 @@ asoadd64(uint64_t volatile *p, uint64_t n)
 {
     uint64_t o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas64(p, o, o + n) != o);
     return o;
@@ -471,8 +459,7 @@ asosub8(uint8_t volatile *p, int n)
 {
     int o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas8(p, o, o - n) != o);
     return o;
@@ -485,8 +472,7 @@ asosub16(uint16_t volatile *p, int n)
 {
     int o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas16(p, o, o - n) != o);
     return o;
@@ -499,8 +485,7 @@ asosub32(uint32_t volatile *p, uint32_t n)
 {
     uint32_t o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas32(p, o, o - n) != o);
     return o;
@@ -515,8 +500,7 @@ asosub64(uint64_t volatile *p, uint64_t n)
 {
     uint64_t o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas64(p, o, o - n) != o);
     return o;
@@ -535,8 +519,7 @@ asoinc8(uint8_t volatile *p)
 {
     int o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas8(p, o, o + 1) != o);
     return o;
@@ -549,8 +532,7 @@ asoinc16(uint16_t volatile *p)
 {
     int o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas16(p, o, o + 1) != o);
     return o;
@@ -563,8 +545,7 @@ asoinc32(uint32_t volatile *p)
 {
     uint32_t o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas32(p, o, o + 1) != o);
     return o;
@@ -579,8 +560,7 @@ asoinc64(uint64_t volatile *p)
 {
     uint64_t o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas64(p, o, o + 1) != o);
     return o;
@@ -599,8 +579,7 @@ asodec8(uint8_t volatile *p)
 {
     int o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas8(p, o, o - 1) != o);
     return o;
@@ -613,8 +592,7 @@ asodec16(uint16_t volatile *p)
 {
     int o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas16(p, o, o - 1) != o);
     return o;
@@ -627,8 +605,7 @@ asodec32(uint32_t volatile *p)
 {
     uint32_t o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas32(p, o, o - 1) != o);
     return o;
@@ -643,8 +620,7 @@ asodec64(uint64_t volatile *p)
 {
     uint64_t o;
 
-    do
-    {
+    do {
         o = *p;
     } while (asocas64(p, o, o - 1) != o);
     return o;
@@ -664,8 +640,7 @@ asomin8(uint8_t volatile *p, int n)
 {
     int o;
 
-    for (;; asospinrest())
-    {
+    for (;; asospinrest()) {
         if ((o = *p) <= n)
             return o;
         if (asocas8(p, o, n) == o)
@@ -681,8 +656,7 @@ asomin16(uint16_t volatile *p, int n)
 {
     int o;
 
-    for (;; asospinrest())
-    {
+    for (;; asospinrest()) {
         if ((o = *p) <= n)
             return o;
         if (asocas16(p, o, n) == o)
@@ -698,8 +672,7 @@ asomin32(uint32_t volatile *p, uint32_t n)
 {
     uint32_t o;
 
-    for (;; asospinrest())
-    {
+    for (;; asospinrest()) {
         if ((o = *p) <= n)
             return o;
         if (asocas32(p, o, n) == o)
@@ -717,8 +690,7 @@ asomin64(uint64_t volatile *p, uint64_t n)
 {
     uint64_t o;
 
-    for (;; asospinrest())
-    {
+    for (;; asospinrest()) {
         if ((o = *p) <= n)
             return o;
         if (asocas64(p, o, n) == o)
@@ -741,8 +713,7 @@ asomax8(uint8_t volatile *p, int n)
 {
     int o;
 
-    for (;; asospinrest())
-    {
+    for (;; asospinrest()) {
         if ((o = *p) >= n)
             return o;
         if (asocas8(p, o, n) == o)
@@ -758,8 +729,7 @@ asomax16(uint16_t volatile *p, int n)
 {
     int o;
 
-    for (;; asospinrest())
-    {
+    for (;; asospinrest()) {
         if ((o = *p) >= n)
             return o;
         if (asocas16(p, o, n) == o)
@@ -775,8 +745,7 @@ asomax32(uint32_t volatile *p, uint32_t n)
 {
     uint32_t o;
 
-    for (;; asospinrest())
-    {
+    for (;; asospinrest()) {
         if ((o = *p) >= n)
             return o;
         if (asocas32(p, o, n) == o)
@@ -794,8 +763,7 @@ asomax64(uint64_t volatile *p, uint64_t n)
 {
     uint64_t o;
 
-    for (;; asospinrest())
-    {
+    for (;; asospinrest()) {
         if ((o = *p) >= n)
             return o;
         if (asocas64(p, o, n) == o)
@@ -825,8 +793,7 @@ asocas8(uint8_t volatile *p, int o, int n)
 
     s = ( int )(integralof(p) & (sizeof(u.i) - 1));
     a = ( U16_8_t * )(( char * )0 + (integralof(p) & ~(sizeof(u.i) - 1)));
-    for (;;)
-    {
+    for (;;) {
         u.i = a->i;
         u.c[s] = o;
         v.i = u.i;
@@ -849,8 +816,7 @@ asocas8(uint8_t volatile *p, int o, int n)
 
     s = ( int )(integralof(p) & (sizeof(u.i) - 1));
     a = ( U32_8_t * )(( char * )0 + (integralof(p) & ~(sizeof(u.i) - 1)));
-    for (;;)
-    {
+    for (;;) {
         u.i = a->i;
         u.c[s] = o;
         v.i = u.i;
@@ -873,8 +839,7 @@ asocas8(uint8_t volatile *p, int o, int n)
 
     s = ( int )(integralof(p) & (sizeof(u.i) - 1));
     a = ( U64_8_t * )(( char * )0 + (integralof(p) & ~(sizeof(u.i) - 1)));
-    for (;;)
-    {
+    for (;;) {
         u.i = a->i;
         u.c[s] = o;
         v.i = u.i;
@@ -915,8 +880,7 @@ asocas16(uint16_t volatile *p, int o, int n)
 
     s = ( int )(integralof(p) & (sizeof(u.i) - 1));
     a = ( U32_8_t * )(( char * )0 + (integralof(p) & ~(sizeof(u.i) - 1)));
-    for (;;)
-    {
+    for (;;) {
         u.i = a->i;
         u.c[s] = o;
         v.i = u.i;
@@ -939,8 +903,7 @@ asocas16(uint16_t volatile *p, int o, int n)
 
     s = ( int )(integralof(p) & (sizeof(u.i) - 1));
     a = ( U64_8_t * )(( char * )0 + (integralof(p) & ~(sizeof(u.i) - 1)));
-    for (;;)
-    {
+    for (;;) {
         u.i = a->i;
         u.c[s] = o;
         v.i = u.i;
@@ -981,8 +944,7 @@ asocas32(uint32_t volatile *p, uint32_t o, uint32_t n)
 
     s = ( int )(integralof(p) & (sizeof(u.i) - 1));
     a = ( U64_8_t * )(( char * )0 + (integralof(p) & ~(sizeof(u.i) - 1)));
-    for (;;)
-    {
+    for (;;) {
         u.i = a->i;
         u.c[s] = o;
         v.i = u.i;

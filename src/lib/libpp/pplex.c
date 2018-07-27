@@ -49,8 +49,7 @@ static int hit[LAST - TERMINAL + 2];
 #    define BACKIN() (ip--)
 #    define BACKOUT() (op = tp)
 #    define CACHE()                                                          \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             CACHEINX();                                                      \
             CACHEOUTX();                                                     \
             st = pp.state;                                                   \
@@ -58,29 +57,25 @@ static int hit[LAST - TERMINAL + 2];
                 spliced = 0;                                                 \
         } while (0)
 #    define CACHEIN()                                                        \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             CACHEINX();                                                      \
             st = pp.state;                                                   \
             if (!pp.hidden)                                                  \
                 spliced = 0;                                                 \
         } while (0)
 #    define CACHEINX()                                                       \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             ip = pp.in->nextchr;                                             \
         } while (0)
 #    define CACHEOUT()                                                       \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             CACHEOUTX();                                                     \
             st = pp.state;                                                   \
             if (!pp.hidden)                                                  \
                 spliced = 0;                                                 \
         } while (0)
 #    define CACHEOUTX()                                                      \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             tp = op = pp.outp;                                               \
             xp = pp.oute;                                                    \
             if (sp)                                                          \
@@ -93,32 +88,27 @@ static int hit[LAST - TERMINAL + 2];
 #    define PUTCHR(c) (*op++ = (c))
 #    define SETCHR(c) (*op = (c))
 #    define SYNC()                                                           \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             SYNCINX();                                                       \
             SYNCOUTX();                                                      \
             pp.state = st;                                                   \
         } while (0)
 #    define SYNCIN()                                                         \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             SYNCINX();                                                       \
             pp.state = st;                                                   \
         } while (0)
 #    define SYNCINX()                                                        \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             pp.in->nextchr = ip;                                             \
         } while (0)
 #    define SYNCOUT()                                                        \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             SYNCOUTX();                                                      \
             pp.state = st;                                                   \
         } while (0)
 #    define SYNCOUTX()                                                       \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             if (sp)                                                          \
                 op = tp = sp;                                                \
             pp.outp = op;                                                    \
@@ -126,19 +116,14 @@ static int hit[LAST - TERMINAL + 2];
 #    define UNGETCHR(c) (*--ip = (c))
 
 #    define PPCHECKOUT()                                                     \
-        do                                                                   \
-        {                                                                    \
-            if (op > xp)                                                     \
-            {                                                                \
+        do {                                                                 \
+            if (op > xp) {                                                   \
                 {                                                            \
                     PPWRITE(PPBUFSIZ);                                       \
-                    if (pp.outbuf == pp.outb)                                \
-                    {                                                        \
+                    if (pp.outbuf == pp.outb) {                              \
                         pp.outbuf += PPBUFSIZ;                               \
                         xp = pp.oute += PPBUFSIZ;                            \
-                    }                                                        \
-                    else                                                     \
-                    {                                                        \
+                    } else {                                                 \
                         pp.outbuf -= PPBUFSIZ;                               \
                         memcpy(pp.outbuf, xp, op - xp);                      \
                         xp = pp.oute -= PPBUFSIZ;                            \
@@ -148,22 +133,16 @@ static int hit[LAST - TERMINAL + 2];
             }                                                                \
         } while (0)
 #    define PPCHECKOUTSP()                                                   \
-        do                                                                   \
-        {                                                                    \
-            if (op > xp)                                                     \
-            {                                                                \
+        do {                                                                 \
+            if (op > xp) {                                                   \
                 if (sp)                                                      \
                     op = sp;                                                 \
-                else                                                         \
-                {                                                            \
+                else {                                                       \
                     PPWRITE(PPBUFSIZ);                                       \
-                    if (pp.outbuf == pp.outb)                                \
-                    {                                                        \
+                    if (pp.outbuf == pp.outb) {                              \
                         pp.outbuf += PPBUFSIZ;                               \
                         xp = pp.oute += PPBUFSIZ;                            \
-                    }                                                        \
-                    else                                                     \
-                    {                                                        \
+                    } else {                                                 \
                         pp.outbuf -= PPBUFSIZ;                               \
                         memcpy(pp.outbuf, xp, op - xp);                      \
                         xp = pp.oute -= PPBUFSIZ;                            \
@@ -173,19 +152,14 @@ static int hit[LAST - TERMINAL + 2];
             }                                                                \
         } while (0)
 #    define PPCHECKOUTTP()                                                   \
-        do                                                                   \
-        {                                                                    \
-            if (op > xp)                                                     \
-            {                                                                \
+        do {                                                                 \
+            if (op > xp) {                                                   \
                 {                                                            \
                     PPWRITE(PPBUFSIZ);                                       \
-                    if (pp.outbuf == pp.outb)                                \
-                    {                                                        \
+                    if (pp.outbuf == pp.outb) {                              \
                         pp.outbuf += PPBUFSIZ;                               \
                         xp = pp.oute += PPBUFSIZ;                            \
-                    }                                                        \
-                    else                                                     \
-                    {                                                        \
+                    } else {                                                 \
                         pp.outbuf -= PPBUFSIZ;                               \
                         memcpy(pp.outbuf, xp, op - xp);                      \
                         xp = pp.oute -= PPBUFSIZ;                            \
@@ -197,19 +171,13 @@ static int hit[LAST - TERMINAL + 2];
         } while (0)
 
 #    define PPSYNCLINE()                                                     \
-        do                                                                   \
-        {                                                                    \
-            if ((st & (ADD | HIDDEN)) && !(*pp.control & SKIP))              \
-            {                                                                \
-                if (spliced)                                                 \
-                {                                                            \
+        do {                                                                 \
+            if ((st & (ADD | HIDDEN)) && !(*pp.control & SKIP)) {            \
+                if (spliced) {                                               \
                     error_info.line += spliced;                              \
                     spliced = 0;                                             \
-                }                                                            \
-                else                                                         \
-                {                                                            \
-                    if (st & ADD)                                            \
-                    {                                                        \
+                } else {                                                     \
+                    if (st & ADD) {                                          \
                         st &= ~ADD;                                          \
                         m = pp.addp - pp.addbuf;                             \
                         pp.addp = pp.addbuf;                                 \
@@ -217,14 +185,11 @@ static int hit[LAST - TERMINAL + 2];
                         op += m;                                             \
                         PPCHECKOUT();                                        \
                     }                                                        \
-                    if (pp.linesync)                                         \
-                    {                                                        \
-                        if ((st & SYNCLINE) || pp.hidden >= MAXHIDDEN)       \
-                        {                                                    \
+                    if (pp.linesync) {                                       \
+                        if ((st & SYNCLINE) || pp.hidden >= MAXHIDDEN) {     \
                             pp.hidden = 0;                                   \
                             st &= ~(HIDDEN | SYNCLINE);                      \
-                            if (error_info.line)                             \
-                            {                                                \
+                            if (error_info.line) {                           \
                                 if (LASTOUT() != '\n')                       \
                                     PUTCHR('\n');                            \
                                 SYNCOUT();                                   \
@@ -232,18 +197,14 @@ static int hit[LAST - TERMINAL + 2];
                                                error_info.file);             \
                                 CACHEOUT();                                  \
                             }                                                \
-                        }                                                    \
-                        else                                                 \
-                        {                                                    \
+                        } else {                                             \
                             m = pp.hidden;                                   \
                             pp.hidden = 0;                                   \
                             st &= ~HIDDEN;                                   \
                             while (m-- > 0)                                  \
                                 PUTCHR('\n');                                \
                         }                                                    \
-                    }                                                        \
-                    else                                                     \
-                    {                                                        \
+                    } else {                                                 \
                         pp.hidden = 0;                                       \
                         st &= ~HIDDEN;                                       \
                         PUTCHR('\n');                                        \
@@ -291,8 +252,7 @@ pool(void);
 #    define BACKIN() (ip--)
 #    define BACKOUT() (op = pp.token)
 #    define CACHE()                                                          \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             CACHEIN();                                                       \
             CACHEOUT();                                                      \
         } while (0)
@@ -304,8 +264,7 @@ pool(void);
 #    define SETCHR(c) (*op = (c))
 #    define SKIPIN() (ip++)
 #    define SYNC()                                                           \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             SYNCIN();                                                        \
             SYNCOUT();                                                       \
         } while (0)
@@ -366,8 +325,7 @@ fsm_start:
     state = START;
 fsm_begin:
     bp = ip;
-    do
-    {
+    do {
         rp = fsm[state];
     fsm_get:
         while (!(state = rp[c = GETCHR()]))
@@ -376,14 +334,12 @@ fsm_begin:
     } while (state > 0);
     if (((state = ~state) != S_COMMENT || pp.comment
          || c == '/' && !INCOMMENT(rp))
-        && (n = ip - bp - 1) > 0)
-    {
+        && (n = ip - bp - 1) > 0) {
         ip = bp;
 #if CPP
         if (op == tp && (st & (ADD | HIDDEN)) && !(st & PASSTHROUGH)
             && !(pp.option & PRESERVE))
-            switch (TERM(state))
-            {
+            switch (TERM(state)) {
             case S_SHARP:
                 break;
             case S_CHRB:
@@ -417,8 +373,7 @@ fsm_terminal:
            op - tp,
            tp,
            pptokchr(c)));
-    switch (TERM(state))
-    {
+    switch (TERM(state)) {
 
 #if !CPP
     case S_CHR:
@@ -439,11 +394,9 @@ fsm_terminal:
 #endif
 
     case S_COMMENT:
-        switch (c)
-        {
+        switch (c) {
         case '\n':
-            if (!INCOMMENTXX(rp))
-            {
+            if (!INCOMMENTXX(rp)) {
                 qual = 0;
                 if (!comstart)
                     comstart = comdelim = error_info.line;
@@ -460,26 +413,21 @@ fsm_terminal:
                 state = COM2;
                 goto fsm_begin;
 #endif
-            }
-            else if (comwarn < 0 && !(pp.mode & HOSTED))
+            } else if (comwarn < 0 && !(pp.mode & HOSTED))
                 error(1, "/* appears in // comment");
             break;
         case '*':
-            if (!comwarn && !(pp.mode & HOSTED))
-            {
+            if (!comwarn && !(pp.mode & HOSTED)) {
                 if (INCOMMENTXX(rp))
                     comwarn = -1;
-                else if (comstart && comstart != error_info.line)
-                {
-                    if (qual || comdelim < error_info.line - 1)
-                    {
+                else if (comstart && comstart != error_info.line) {
+                    if (qual || comdelim < error_info.line - 1) {
                         error(
                         1,
                         "/* appears in /* ... */ comment starting at line %d",
                         comstart);
                         comwarn = 1;
-                    }
-                    else
+                    } else
                         comdelim = error_info.line;
                 }
             }
@@ -494,8 +442,7 @@ fsm_terminal:
             goto fsm_begin;
 #endif
         case '/':
-            if (!INCOMMENT(rp))
-            {
+            if (!INCOMMENT(rp)) {
                 if (!(pp.mode & HOSTED))
                     error(1, "*/ appears outside of comment");
                 BACKIN();
@@ -510,15 +457,11 @@ fsm_terminal:
                     PUTCHR(c);
                 goto fsm_token;
 #endif
-            }
-            else if (INCOMMENTXX(rp))
-            {
-                if (!(pp.mode & HOSTED))
-                {
+            } else if (INCOMMENTXX(rp)) {
+                if (!(pp.mode & HOSTED)) {
                     if (comwarn < 0)
                         comwarn = 0;
-                    else if (!comwarn)
-                    {
+                    else if (!comwarn) {
                         comwarn = 1;
                         error(1, "*/ appears in // comment");
                     }
@@ -528,8 +471,7 @@ fsm_terminal:
             break;
         case EOF:
             BACKIN();
-            if (!(pp.mode & HOSTED))
-            {
+            if (!(pp.mode & HOSTED)) {
                 if (comstart)
                     error(
                     2,
@@ -543,8 +485,7 @@ fsm_terminal:
             break;
         }
 #if CPP
-        if (!pp.comment || sp)
-        {
+        if (!pp.comment || sp) {
 #    if COMPATIBLE
             if (!(pp.state & COMPATIBILITY) || *bp == ' ' || *bp == '\t')
 #    endif
@@ -553,8 +494,7 @@ fsm_terminal:
                 PUTCHR(' ');
                 tp = op;
             }
-        }
-        else if (pp.in->type & IN_TOP)
+        } else if (pp.in->type & IN_TOP)
 #else
         if (pp.comment && !(st & (COLLECTING | DIRECTIVE | JOINING))
             && !(*pp.control & SKIP) && (pp.in->type & IN_TOP))
@@ -577,8 +517,7 @@ fsm_terminal:
             CACHE();
             comstart = m;
         }
-        if (comstart)
-        {
+        if (comstart) {
             st |= HIDDEN;
             pp.hidden += error_info.line - comstart;
             comstart = 0;
@@ -587,8 +526,8 @@ fsm_terminal:
         BACKOUT();
         if (c == '\n')
             goto fsm_newline;
-        if ((st & PASSTHROUGH) && ((st & (HIDDEN | NEWLINE)) || *ip == '\n'))
-        {
+        if ((st & PASSTHROUGH)
+            && ((st & (HIDDEN | NEWLINE)) || *ip == '\n')) {
             if (*ip == '\n')
                 ip++;
             goto fsm_newline;
@@ -598,8 +537,7 @@ fsm_terminal:
             st &= ~NEWLINE;
 #endif
 #if !CPP
-        if (pp.level > 1 && !(st & (NOSPACE | SKIPCONTROL)))
-        {
+        if (pp.level > 1 && !(st & (NOSPACE | SKIPCONTROL))) {
 #    if COMPATIBLE
             c = ((st & (COMPATIBILITY | DEFINITION))
                  == ((COMPATIBILITY | DEFINITION)))
@@ -614,14 +552,12 @@ fsm_terminal:
         goto fsm_start;
 
     case S_EOB:
-        if (c)
-        {
+        if (c) {
             if (state = fsm[TERMINAL][INDEX(rp) + 1])
                 goto fsm_terminal;
 #if CPP
 #    if POOL
-            if (pp.pool.input)
-            {
+            if (pp.pool.input) {
                 BACKIN();
                 SYNC();
                 pool();
@@ -645,8 +581,7 @@ fsm_terminal:
             if (sp)
                 op = sp;
 #endif
-            switch (cur->type)
-            {
+            switch (cur->type) {
             case IN_BUFFER:
             case IN_INIT:
             case IN_RESCAN:
@@ -656,8 +591,7 @@ fsm_terminal:
                 if (!(st & PASSEOF) && prv)
 #endif
                 {
-                    if (cur->type == IN_RESCAN || cur->type == IN_BUFFER)
-                    {
+                    if (cur->type == IN_RESCAN || cur->type == IN_BUFFER) {
                     fsm_pop:
 #if PROTOTYPE
                         if (cur->flags & IN_prototype)
@@ -680,13 +614,10 @@ fsm_terminal:
 #if CPP
                     spliced = 0;
 #endif
-                    if (cur->flags & IN_hosted)
-                    {
+                    if (cur->flags & IN_hosted) {
                         pp.mode |= HOSTED;
                         pp.flags |= PP_hosted;
-                    }
-                    else
-                    {
+                    } else {
                         pp.mode &= ~HOSTED;
                         pp.flags &= ~PP_hosted;
                     }
@@ -697,8 +628,7 @@ fsm_terminal:
 #endif
                     {
                         st &= ~(HIDDEN | SYNCLINE);
-                        switch (cur->type)
-                        {
+                        switch (cur->type) {
                         case IN_BUFFER:
                         case IN_INIT:
                             if (!prv->prev)
@@ -709,12 +639,10 @@ fsm_terminal:
                             if (prv->type == IN_FILE
                                 || cur->type == IN_FILE
                                    && (prv->type == IN_RESCAN
-                                       || prv->type == IN_MULTILINE))
-                            {
+                                       || prv->type == IN_MULTILINE)) {
                                 if (pp.linesync
                                     && (cur->type != IN_RESCAN
-                                        || (cur->flags & IN_sync)))
-                                {
+                                        || (cur->flags & IN_sync))) {
                                     POP();
                                     SYNCOUT();
                                     (*pp.linesync)(error_info.line,
@@ -724,13 +652,11 @@ fsm_terminal:
                                 }
                             }
 #if DEBUG
-                            else if (!prv->prev)
-                            {
+                            else if (!prv->prev) {
                                 /*UNDENT*/
                                 c = 0;
 #    if DEBUG & TRACE_count
-                                if (pp.test & TEST_count)
-                                {
+                                if (pp.test & TEST_count) {
                                     c = 1;
                                     sfprintf(sfstderr, "\n");
                                     sfprintf(sfstderr,
@@ -757,8 +683,7 @@ fsm_terminal:
                                 }
 #    endif
 #    if CPP && (DEBUG & TRACE_debug)
-                                if (pp.test & TEST_hit)
-                                {
+                                if (pp.test & TEST_hit) {
                                     c = 1;
                                     sfprintf(sfstderr, "\n");
                                     if (hit[elementsof(hit) - 1])
@@ -774,8 +699,7 @@ fsm_terminal:
                                 }
 #    endif
                                 if (pp.test
-                                    & (TEST_hashcount | TEST_hashdump))
-                                {
+                                    & (TEST_hashcount | TEST_hashdump)) {
                                     c = 1;
                                     sfprintf(sfstderr, "\n");
                                     hashdump(NiL,
@@ -792,8 +716,7 @@ fsm_terminal:
                         }
                     }
 #if CHECKPOINT
-                    if (cur->index)
-                    {
+                    if (cur->index) {
                         SYNCOUT();
                         cur->index->end = ppoffset();
                         cur->index = 0;
@@ -808,8 +731,7 @@ fsm_terminal:
                 c = EOF;
                 break;
             case IN_COPY:
-                if (prv)
-                {
+                if (prv) {
                     error_info.line = cur->line;
                     if (!(prv->symbol->flags & SYM_MULTILINE))
                         prv->symbol->flags |= SYM_DISABLED;
@@ -820,8 +742,7 @@ fsm_terminal:
                 c = EOF;
                 break;
             case IN_EXPAND:
-                if (prv)
-                {
+                if (prv) {
                     error_info.line = cur->line;
                     free(cur->buffer);
                     POP();
@@ -832,24 +753,20 @@ fsm_terminal:
                 break;
             case IN_FILE:
                 FGET(c, c, tp, xp);
-                if (c == EOB)
-                {
+                if (c == EOB) {
 #if CPP
                     if ((st & (NOTEXT | HIDDEN)) == HIDDEN
                         && LASTOUT() != '\n')
                         PUTCHR('\n');
                     if (prv)
 #else
-                    if (st & EOF2NL)
-                    {
+                    if (st & EOF2NL) {
                         st &= ~EOF2NL;
                         *(ip - 1) = c = '\n';
-                    }
-                    else if (!(st & (FILEPOP | PASSEOF)) && prv)
+                    } else if (!(st & (FILEPOP | PASSEOF)) && prv)
 #endif
                     {
-                        if (!(cur->flags & IN_newline))
-                        {
+                        if (!(cur->flags & IN_newline)) {
                             cur->flags |= IN_newline;
                             if ((pp.mode & (HOSTED | PEDANTIC)) == PEDANTIC
                                 && LASTCHR() != '\f' && LASTCHR() != CC_sub)
@@ -857,17 +774,14 @@ fsm_terminal:
                                       "file does not end with %s",
                                       pptokchr('\n'));
                             *(ip - 1) = c = '\n';
-                        }
-                        else
-                        {
+                        } else {
                             if (!(cur->flags & (IN_noguard | IN_tokens))
                                 && cur->symbol)
                                 ppmultiple(ppsetfile(error_info.file),
                                            cur->symbol);
                             if (cur->fd >= 0)
                                 close(cur->fd);
-                            if (pp.incref && !(pp.mode & INIT))
-                            {
+                            if (pp.incref && !(pp.mode & INIT)) {
                                 SYNCOUT();
                                 (*pp.incref)(error_info.file,
                                              cur->file,
@@ -877,8 +791,7 @@ fsm_terminal:
                             }
                             goto fsm_pop;
                         }
-                    }
-                    else
+                    } else
                         c = EOF;
                 }
                 break;
@@ -897,8 +810,7 @@ fsm_terminal:
                 if (prv && !INMACRO(rp))
 #endif
                     {
-                        if (cur->type == IN_MULTILINE)
-                        {
+                        if (cur->type == IN_MULTILINE) {
                             while (pp.control-- != cur->control)
                                 error(2,
                                       "#%s on line %d has no #%s",
@@ -908,8 +820,7 @@ fsm_terminal:
                             free(cur->buffer);
                             error_info.file = cur->file;
                             error_info.line = cur->line;
-                            if (pp.linesync)
-                            {
+                            if (pp.linesync) {
                                 SYNCOUT();
                                 (*pp.linesync)(error_info.line,
                                                error_info.file);
@@ -931,25 +842,21 @@ fsm_terminal:
                 c = EOF;
                 break;
             case IN_QUOTE:
-                if (prv)
-                {
+                if (prv) {
                     error_info.line = cur->line;
                     st &= ~(ESCAPE | QUOTE);
                     POP();
                     c = '"';
-                }
-                else
+                } else
                     c = EOF;
                 break;
             case IN_SQUOTE:
-                if (prv)
-                {
+                if (prv) {
                     error_info.line = cur->line;
                     st &= ~(ESCAPE | SQUOTE);
                     POP();
                     c = '\'';
-                }
-                else
+                } else
                     c = EOF;
                 break;
             case IN_STRING:
@@ -981,15 +888,12 @@ fsm_terminal:
 
 #if !CPP
     case S_HUH:
-        if (INOPSPACE(rp))
-        {
-            if (c == '=')
-            {
+        if (INOPSPACE(rp)) {
+            if (c == '=') {
 #    if PROTOTYPE
                 if (pp.in->flags & IN_prototype)
                     PUTCHR(c);
-                else
-                {
+                else {
 #    endif
                     while (*(op - 1) == ' ' || *(op - 1) == '\t')
                         op--;
@@ -1003,8 +907,7 @@ fsm_terminal:
 #    if PROTOTYPE
                 }
 #    endif
-                switch (*tp)
-                {
+                switch (*tp) {
                 case '/':
                     c = T_DIVEQ;
                     break;
@@ -1036,12 +939,9 @@ fsm_terminal:
                     c = T_RSHIFTEQ;
                     break;
                 }
-            }
-            else
-            {
+            } else {
                 BACKIN();
-                switch (c = *tp)
-                {
+                switch (c = *tp) {
                 case '<':
                     c = T_LSHIFT;
                     break;
@@ -1050,29 +950,22 @@ fsm_terminal:
                     break;
                 }
             }
-        }
-        else if (pp.level > 1 || (pp.option & PRESERVE))
+        } else if (pp.level > 1 || (pp.option & PRESERVE))
             PUTCHR(c);
-        else if (tp == op)
-        {
-            if (pp.in->type != IN_BUFFER)
-            {
+        else if (tp == op) {
+            if (pp.in->type != IN_BUFFER) {
                 if (!(pp.option & ALLPOSSIBLE))
                     error(1, "%s: invalid character ignored", pptokchr(c));
                 goto fsm_top;
             }
             PUTCHR(c);
-        }
-        else if (*tp == ':')
-        {
+        } else if (*tp == ':') {
             PUTCHR(c);
             if (c == '=')
                 error(2, "real programmers use =");
             else
                 c = '+';
-        }
-        else
-        {
+        } else {
             BACKIN();
             c = *tp;
         }
@@ -1080,8 +973,7 @@ fsm_terminal:
 #endif
 
     case S_QUAL:
-        if ((state = NEXT(state)) != LIT1)
-        {
+        if ((state = NEXT(state)) != LIT1) {
             rp = fsm[state];
             bp = ip;
 #if CPP
@@ -1091,8 +983,7 @@ fsm_terminal:
 #    endif
                 PUTCHR(c);
 #else
-            switch (c)
-            {
+            switch (c) {
             case 'f':
             case 'F':
                 qual |= N_FLOAT;
@@ -1132,19 +1023,16 @@ fsm_terminal:
 #if CPP
         quot = c;
         rp = fsm[LIT1];
-        if (op == tp)
-        {
+        if (op == tp) {
             PPSYNCLINE();
             tp = op;
         }
 #else
-        if ((quot = c) == '<')
-        {
+        if ((quot = c) == '<') {
             if (!(st & HEADER)
                 || (pp.option & (HEADEREXPAND | HEADEREXPANDALL))
                    && pp.in->type != IN_FILE && pp.in->type != IN_BUFFER
-                   && pp.in->type != IN_INIT && pp.in->type != IN_RESCAN)
-            {
+                   && pp.in->type != IN_INIT && pp.in->type != IN_RESCAN) {
                 PUTCHR(c);
                 bp = ip;
                 rp = fsm[LT1];
@@ -1152,8 +1040,7 @@ fsm_terminal:
             }
             quot = '>';
             rp = fsm[HDR1];
-        }
-        else
+        } else
             rp = fsm[LIT1];
         if (!DOSTRIP())
 #endif
@@ -1163,18 +1050,13 @@ fsm_terminal:
 
     case S_LITEND:
         n = 1;
-        if (c != quot)
-        {
-            if (c != '\n' && c != EOF)
-            {
-                if (st & (QUOTE | SQUOTE))
-                {
-                    if (!(st & ESCAPE))
-                    {
+        if (c != quot) {
+            if (c != '\n' && c != EOF) {
+                if (st & (QUOTE | SQUOTE)) {
+                    if (!(st & ESCAPE)) {
                         st |= ESCAPE;
                         quotquot = c;
-                    }
-                    else if (c == quotquot)
+                    } else if (c == quotquot)
                         st &= ~ESCAPE;
                 }
                 PUTCHR(c);
@@ -1182,8 +1064,7 @@ fsm_terminal:
                 goto fsm_get;
             }
 #if CPP
-            if ((st & PASSTHROUGH) || (pp.option & PRESERVE))
-            {
+            if ((st & PASSTHROUGH) || (pp.option & PRESERVE)) {
                 if (c == '\n')
                     goto fsm_newline;
                 bp = ip;
@@ -1199,22 +1080,17 @@ fsm_terminal:
                 != (COMPATIBILITY | DEFINITION))
 #endif
             {
-                switch (quot)
-                {
+                switch (quot) {
                 case '"':
-                    if (c == '\n')
-                    {
+                    if (c == '\n') {
                         if (!(pp.option & STRINGSPAN)
                             || (st & (COMPATIBILITY | STRICT)) == STRICT)
                             error(m, "%s in string", pptokchr(c));
                         error_info.line++;
-                        if (!(pp.option & STRINGSPAN))
-                        {
+                        if (!(pp.option & STRINGSPAN)) {
                             PUTCHR('\\');
                             c = 'n';
-                        }
-                        else if (pp.option & STRINGSPLIT)
-                        {
+                        } else if (pp.option & STRINGSPLIT) {
                             PUTCHR('\\');
                             PUTCHR('n');
                             PUTCHR('"');
@@ -1244,20 +1120,15 @@ fsm_terminal:
 #endif
                     PUTCHR(quot);
             }
-            if (c == '\n')
-            {
+            if (c == '\n') {
                 UNGETCHR(c);
                 c = quot;
             }
-        }
-        else if (st & (SQUOTE | QUOTE))
-        {
-            if (!(st & ESCAPE))
-            {
+        } else if (st & (SQUOTE | QUOTE)) {
+            if (!(st & ESCAPE)) {
                 st |= ESCAPE;
                 quotquot = c;
-            }
-            else if (c == quotquot)
+            } else if (c == quotquot)
                 st &= ~ESCAPE;
             PUTCHR('\\');
             PUTCHR(c);
@@ -1303,10 +1174,8 @@ fsm_terminal:
             pp.level = 0;
             SYNCIN();
             m = n = 0;
-            for (;;)
-            {
-                switch (c = pplex())
-                {
+            for (;;) {
+                switch (c = pplex()) {
                 case '\n':
                     m++;
                     continue;
@@ -1321,8 +1190,7 @@ fsm_terminal:
                         ppstate &= ~ADD;
                     else if (m == n || !(st & SPACEOUT))
                         op--;
-                    else
-                    {
+                    else {
                         n = m;
                         *(op - 1) = '\\';
                         *op++ = '\n';
@@ -1334,8 +1202,7 @@ fsm_terminal:
                         ppstate &= ~ADD;
                     else if (m == n || !(st & SPACEOUT))
                         op--;
-                    else
-                    {
+                    else {
                         n = m;
                         *(op - 1) = '\\';
                         *op++ = '\n';
@@ -1347,17 +1214,14 @@ fsm_terminal:
                     *pp.token = 0;
                     /*FALLTHROUGH*/
                 default:
-                    if (m)
-                    {
-                        if (--m)
-                        {
+                    if (m) {
+                        if (--m) {
                             pp.state |= HIDDEN | SYNCLINE;
                             pp.hidden += m;
                         }
 #    if COMPATIBLE
                         if ((st & COMPATIBILITY) && c == '#'
-                            && *(pp.token - 1))
-                        {
+                            && *(pp.token - 1)) {
                             *(pp.token + 3) = *(pp.token + 2);
                             *(pp.token + 2) = *(pp.token + 1);
                             *(pp.token + 1) = *pp.token;
@@ -1366,14 +1230,12 @@ fsm_terminal:
                         error_info.line--;
                         *--pp.token = '\n';
 #    endif
-                    }
-                    else if (*(pp.token - 1))
+                    } else if (*(pp.token - 1))
                         pp.token--;
                     if (ppisidig(*pp.token))
                         *op++ = ' ';
                     if (pp.in->type == IN_MACRO
-                        && (s = strchr(pp.token, MARK)) && !*(s + 1))
-                    {
+                        && (s = strchr(pp.token, MARK)) && !*(s + 1)) {
                         *(s + 1) = MARK;
                         *(s + 2) = 0;
                     }
@@ -1408,8 +1270,7 @@ fsm_terminal:
         goto fsm_start;
 #else
         st &= ~ESCAPE;
-        switch (quot)
-        {
+        switch (quot) {
         case '\'':
             if (n && !(st & NOTEXT) && (op - tp) <= (DOSTRIP() ? 0 : 2)
                 && !(pp.mode & (HOSTED | RELAX)))
@@ -1428,10 +1289,8 @@ fsm_terminal:
 #endif
 
     case S_LITESC:
-        if (st & (COLLECTING | DIRECTIVE | QUOTE | SQUOTE))
-        {
-            if (st & ESCAPE)
-            {
+        if (st & (COLLECTING | DIRECTIVE | QUOTE | SQUOTE)) {
+            if (st & ESCAPE) {
                 PUTCHR('\\');
                 if (c == quot)
                     PUTCHR('\\');
@@ -1445,8 +1304,7 @@ fsm_terminal:
         else if (pp.option & PRESERVE)
             PUTCHR(c);
         else
-            switch (c)
-            {
+            switch (c) {
             case 'b':
             case 'f':
             case 'n':
@@ -1477,16 +1335,13 @@ fsm_terminal:
             case '6':
             case '7':
                 n = c - '0';
-                for (m = 0; m < 2; m++)
-                {
+                for (m = 0; m < 2; m++) {
                     GET(c, c, tp, xp);
-                    switch (c)
-                    {
+                    switch (c) {
 #if COMPATIBLE
                     case '8':
                     case '9':
-                        if (!(st & COMPATIBILITY))
-                        {
+                        if (!(st & COMPATIBILITY)) {
                             UNGETCHR(c);
                             break;
                         }
@@ -1517,8 +1372,7 @@ fsm_terminal:
                     error(1, "octal character constant too large");
                 goto octal;
             case 'a':
-                if (pp.option & MODERN)
-                {
+                if (pp.option & MODERN) {
                     PUTCHR(c);
                     break;
                 }
@@ -1529,8 +1383,7 @@ fsm_terminal:
                 n = CC_bel;
                 goto octal;
             case 'v':
-                if (pp.option & MODERN)
-                {
+                if (pp.option & MODERN) {
                     PUTCHR(c);
                     break;
                 }
@@ -1547,11 +1400,9 @@ fsm_terminal:
                     goto unknown;
 #endif
                 n = 0;
-                for (m = 0; m < 3; m++)
-                {
+                for (m = 0; m < 3; m++) {
                     GET(c, c, tp, xp);
-                    switch (c)
-                    {
+                    switch (c) {
                     case '0':
                     case '1':
                     case '2':
@@ -1611,8 +1462,7 @@ fsm_terminal:
     case S_MACRO:
         BACKIN();
 #if CPP
-        if (st & (DISABLE | SKIPCONTROL | SKIPMACRO))
-        {
+        if (st & (DISABLE | SKIPCONTROL | SKIPMACRO)) {
             if (st & SKIPMACRO)
                 pp.mode |= MARKMACRO;
             st &= ~(NEWLINE | SKIPMACRO);
@@ -1622,8 +1472,7 @@ fsm_terminal:
         }
         count(candidate);
         SETCHR(0);
-        switch (state = INDEX(rp))
-        {
+        switch (state = INDEX(rp)) {
         case HIT0:
             tp = op - 1;
             break;
@@ -1642,25 +1491,20 @@ fsm_terminal:
                 tp--;
             break;
         }
-        if (sym = ppsymref(pp.symtab, tp))
-        {
+        if (sym = ppsymref(pp.symtab, tp)) {
             SYNCIN();
             n = ppcall(sym, 0);
             CACHEIN();
-            if (n >= 0)
-            {
+            if (n >= 0) {
                 BACKOUT();
-                if (!n)
-                {
+                if (!n) {
                     if (sp)
                         op = sp;
-                    else
-                    {
+                    else {
                         s = ip;
                         ip = sym->macro->value;
                         c = sym->macro->size;
-                        while (c > 0)
-                        {
+                        while (c > 0) {
                             if (op + c < xp + PPBUFSIZ)
                                 n = c;
                             else
@@ -1671,9 +1515,7 @@ fsm_terminal:
                         }
                         ip = s;
                     }
-                }
-                else if ((sym->flags & SYM_MULTILINE) && pp.linesync)
-                {
+                } else if ((sym->flags & SYM_MULTILINE) && pp.linesync) {
                     SYNCOUT();
                     if (!(state & NEWLINE))
                         ppputchar('\n');
@@ -1686,30 +1528,25 @@ fsm_terminal:
         goto fsm_start;
 #else
         if (st
-            & (COLLECTING | DEFINITION | DISABLE | SKIPCONTROL | SKIPMACRO))
-        {
+            & (COLLECTING | DEFINITION | DISABLE | SKIPCONTROL | SKIPMACRO)) {
             if (st & SKIPMACRO)
                 pp.mode |= MARKMACRO;
             st &= ~(NEWLINE | NOEXPAND | SKIPMACRO);
             c = T_ID;
-            if (pp.level == 1)
-            {
+            if (pp.level == 1) {
                 pp.in->flags |= IN_tokens;
-                if (st & NOTEXT)
-                {
+                if (st & NOTEXT) {
                     BACKOUT();
                     goto fsm_top;
                 }
-                if (st & COMPILE)
-                {
+                if (st & COMPILE) {
                     SETCHR(0);
                     if (pp.truncate && (op - tp) > pp.truncate)
                         tp[pp.truncate] = 0;
                     sym = (pp.option & NOHASH) ? ppsymref(pp.symtab, tp)
                                                : ppsymset(pp.symtab, tp);
                 fsm_noise:
-                    if (pp.symbol = sym)
-                    {
+                    if (pp.symbol = sym) {
                         if ((sym->flags & SYM_KEYWORD)
                             && (!pp.truncate || (op - tp) <= pp.truncate
                                 || (tp[pp.truncate] = '_',
@@ -1718,14 +1555,12 @@ fsm_terminal:
                                     = (pp.option & NOHASH)
                                       ? ppsymref(pp.symtab, tp)
                                       : ppsymset(pp.symtab, tp),
-                                    0)))
-                        {
+                                    0))) {
                             c = (( struct ppsymkey * )sym)->lex;
                             /*UNDENT*/
 
 #    define ADVANCE()                                                        \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             if (pp.toknxt < op)                                              \
                 pp.token = pp.toknxt;                                        \
         } while (0)
@@ -1734,10 +1569,8 @@ fsm_terminal:
 #    define NOISE_NOSPACEOUT 02
 #    define NOISE_PAREN 04
 
-                            if ((pp.option & NOISE) && ppisnoise(c))
-                            {
-                                if (c != T_NOISE)
-                                {
+                            if ((pp.option & NOISE) && ppisnoise(c)) {
+                                if (c != T_NOISE) {
                                     int p;
                                     int f;
                                     char *pptoken;
@@ -1746,56 +1579,45 @@ fsm_terminal:
                                     SYNCIN();
                                     pp.toknxt = op;
                                     f = 0;
-                                    if (!(pp.state & SPACEOUT))
-                                    {
+                                    if (!(pp.state & SPACEOUT)) {
                                         pp.state |= SPACEOUT;
                                         f |= NOISE_NOSPACEOUT;
                                     }
                                     ppcomment = pp.comment;
                                     pp.comment = 0;
                                     op = (pptoken = tp) + MAXTOKEN;
-                                    switch (c)
-                                    {
+                                    switch (c) {
                                     case T_X_GROUP:
                                         m = p = 0;
                                         quot = 1;
-                                        for (;;)
-                                        {
+                                        for (;;) {
                                             ADVANCE();
-                                            switch (c = pplex())
-                                            {
+                                            switch (c = pplex()) {
                                             case '(':
                                             case '{':
-                                                if (!p)
-                                                {
-                                                    if (c == '(')
-                                                    {
-                                                        if (f & NOISE_PAREN)
-                                                        {
+                                                if (!p) {
+                                                    if (c == '(') {
+                                                        if (f & NOISE_PAREN) {
                                                             ungetchr(c);
                                                             *--pp.toknxt = 0;
                                                             break;
                                                         }
                                                         f |= NOISE_PAREN;
                                                         p = ')';
-                                                    }
-                                                    else
-                                                    {
+                                                    } else {
                                                         f |= NOISE_BRACE
                                                              | NOISE_PAREN;
                                                         p = '}';
                                                     }
                                                     n = 1;
                                                     m = c;
-                                                }
-                                                else if (c == m)
+                                                } else if (c == m)
                                                     n++;
                                                 quot = 0;
                                                 continue;
                                             case ')':
                                             case '}':
-                                                if (c == p && --n <= 0)
-                                                {
+                                                if (c == p && --n <= 0) {
                                                     if (c == '}')
                                                         break;
                                                     m = '\n';
@@ -1817,8 +1639,7 @@ fsm_terminal:
                                                     continue;
                                                 /*FALLTHROUGH*/
                                             default:
-                                                if (m == '\n')
-                                                {
+                                                if (m == '\n') {
                                                     /*
                                                      * NOTE: token expanded
                                                      * again
@@ -1836,11 +1657,9 @@ fsm_terminal:
                                         }
                                         break;
                                     case T_X_LINE:
-                                        for (;;)
-                                        {
+                                        for (;;) {
                                             ADVANCE();
-                                            switch (pplex())
-                                            {
+                                            switch (pplex()) {
                                             case 0:
                                                 break;
                                             case '\n':
@@ -1853,11 +1672,9 @@ fsm_terminal:
                                         }
                                         break;
                                     case T_X_STATEMENT:
-                                        for (;;)
-                                        {
+                                        for (;;) {
                                             ADVANCE();
-                                            switch (pplex())
-                                            {
+                                            switch (pplex()) {
                                             case 0:
                                                 break;
                                             case ';':
@@ -1879,18 +1696,15 @@ fsm_terminal:
                                     op = pp.toknxt;
                                     c = T_NOISES;
                                 }
-                                if (pp.option & NOISEFILTER)
-                                {
+                                if (pp.option & NOISEFILTER) {
                                     BACKOUT();
                                     goto fsm_top;
                                 }
                             }
 
                             /*INDENT*/
-                        }
-                        else if ((pp.option & NOISE) && c == T_ID
-                                 && strneq(tp, "__builtin_", 10))
-                        {
+                        } else if ((pp.option & NOISE) && c == T_ID
+                                   && strneq(tp, "__builtin_", 10)) {
                             hashlook(pp.symtab, tp, HASH_DELETE, NiL);
                             pp.symbol = sym
                             = ( struct ppsymbol * )ppkeyset(pp.symtab, tp);
@@ -1903,25 +1717,20 @@ fsm_terminal:
             }
             goto fsm_check;
         }
-        if (pp.level == 1)
-        {
+        if (pp.level == 1) {
             st &= ~(NEWLINE | PASSEOF);
             pp.in->flags |= IN_tokens;
-        }
-        else
+        } else
             st &= ~PASSEOF;
         count(candidate);
         SETCHR(0);
-        if (sym = ppsymref(pp.symtab, tp))
-        {
+        if (sym = ppsymref(pp.symtab, tp)) {
             SYNCIN();
             c = ppcall(sym, 1);
             CACHEIN();
-            if (c >= 0)
-            {
+            if (c >= 0) {
                 BACKOUT();
-                if ((sym->flags & SYM_MULTILINE) && pp.linesync)
-                {
+                if ((sym->flags & SYM_MULTILINE) && pp.linesync) {
                     SYNCOUT();
                     (*pp.linesync)(error_info.line, error_info.file);
                     CACHEOUT();
@@ -1930,22 +1739,17 @@ fsm_terminal:
             }
         }
         c = T_ID;
-        if (pp.level == 1)
-        {
-            if (st & NOTEXT)
-            {
+        if (pp.level == 1) {
+            if (st & NOTEXT) {
                 BACKOUT();
                 goto fsm_top;
             }
-            if (st & COMPILE)
-            {
-                if (pp.truncate && (op - tp) > pp.truncate)
-                {
+            if (st & COMPILE) {
+                if (pp.truncate && (op - tp) > pp.truncate) {
                     tp[pp.truncate] = 0;
                     sym = 0;
                 }
-                if (!sym)
-                {
+                if (!sym) {
                     if (!(pp.option & NOHASH))
                         sym = ppsymset(pp.symtab, tp);
                     else if (!(sym = ppsymref(pp.symtab, tp)))
@@ -1959,16 +1763,13 @@ fsm_terminal:
 #endif
 
     case S_SHARP:
-        if (c == '(')
-        {
+        if (c == '(') {
             pp.in->flags |= IN_tokens;
             if ((st & STRICT) && pp.in->type != IN_MACRO
-                && pp.in->type != IN_MULTILINE)
-            {
+                && pp.in->type != IN_MULTILINE) {
                 if (!(pp.mode & HOSTED))
                     error(1, "non-standard reference to #(...)");
-                if (st & STRICT)
-                {
+                if (st & STRICT) {
                     PUTCHR(c);
 #if CPP
                     st &= ~NEWLINE;
@@ -1979,8 +1780,7 @@ fsm_terminal:
 #endif
                 }
             }
-            if (st & (COLLECTING | DEFINITION | DISABLE | SKIPCONTROL))
-            {
+            if (st & (COLLECTING | DEFINITION | DISABLE | SKIPCONTROL)) {
                 PUTCHR(c);
 #if CPP
                 st &= ~NEWLINE;
@@ -2004,16 +1804,14 @@ fsm_terminal:
         }
         BACKIN();
 #if CPP
-        if (!(st & NEWLINE) || !(pp.in->type & IN_TOP))
-        {
+        if (!(st & NEWLINE) || !(pp.in->type & IN_TOP)) {
         fsm_nondirective:
             st &= ~NEWLINE;
             pp.in->flags |= IN_tokens;
             count(token);
             goto fsm_start;
         }
-        if (*(s = tp) != '#')
-        {
+        if (*(s = tp) != '#') {
 #    if COMPATIBLE
             if ((st & (COMPATIBILITY | TRANSITION)) == COMPATIBILITY)
                 goto fsm_nondirective;
@@ -2025,18 +1823,14 @@ fsm_terminal:
         }
         BACKOUT();
 #else
-        if (!(st & NEWLINE) || (st & DEFINITION) || !(pp.in->type & IN_TOP))
-        {
-            if (c == '#')
-            {
+        if (!(st & NEWLINE) || (st & DEFINITION) || !(pp.in->type & IN_TOP)) {
+            if (c == '#') {
                 SKIPIN();
                 if (!(st & DEFINITION))
                     PUTCHR(c);
                 c = T_TOKCAT;
-            }
-            else if (pp.level == 1 && !(st & (JOINING | SPACEOUT))
-                     && !(pp.option & PRESERVE))
-            {
+            } else if (pp.level == 1 && !(st & (JOINING | SPACEOUT))
+                       && !(pp.option & PRESERVE)) {
                 char *pptoken;
                 char *oop;
                 PPCOMMENT ppcomment;
@@ -2047,11 +1841,9 @@ fsm_terminal:
                 ppcomment = pp.comment;
                 pp.comment = 0;
                 op = (pptoken = tp) + MAXTOKEN;
-                for (;;)
-                {
+                for (;;) {
                     ADVANCE();
-                    switch (pplex())
-                    {
+                    switch (pplex()) {
                     case 0:
                         break;
                     case '\n':
@@ -2068,8 +1860,7 @@ fsm_terminal:
                 tp = pptoken;
                 *--op = 0;
                 op = oop;
-                if (pp.pragma && !(st & NOTEXT))
-                {
+                if (pp.pragma && !(st & NOTEXT)) {
                     *s = 0;
                     SYNC();
                     (*pp.pragma)(NiL, NiL, NiL, tp, 1);
@@ -2078,16 +1869,14 @@ fsm_terminal:
                 if (!c)
                     BACKIN();
                 goto fsm_top;
-            }
-            else
+            } else
                 c = '#';
             break;
         }
         if ((st & (COLLECTING | STRICT)) == (COLLECTING | STRICT))
             error(1, "directives in macro call arguments are not portable");
 #endif
-        if (c == '#' && pp.in->type == IN_RESCAN)
-        {
+        if (c == '#' && pp.in->type == IN_RESCAN) {
             /*
              * pass line to pp.pragma VERBATIM
              */
@@ -2097,8 +1886,7 @@ fsm_terminal:
             while ((c = GETCHR()) && c != '\n')
                 if ((*s++ = c) == MARK)
                     SKIPIN();
-            if (pp.pragma && !(st & NOTEXT))
-            {
+            if (pp.pragma && !(st & NOTEXT)) {
                 *s = 0;
                 SYNC();
                 (*pp.pragma)(NiL, NiL, NiL, pp.valbuf, 1);
@@ -2116,16 +1904,12 @@ fsm_terminal:
         ppcontrol();
         CACHE();
 #if CPP
-        if (st & (NOTEXT | SKIPCONTROL))
-        {
-            if (!sp)
-            {
+        if (st & (NOTEXT | SKIPCONTROL)) {
+            if (!sp) {
                 PPCHECKOUTTP();
                 sp = tp;
             }
-        }
-        else if (sp)
-        {
+        } else if (sp) {
             tp = op = sp;
             sp = 0;
         }
@@ -2137,8 +1921,7 @@ fsm_terminal:
     case S_NL:
 #if CPP
         if (op == tp && !(st & JOINING) && pp.in->type == IN_FILE
-            && !(pp.option & PRESERVE))
-        {
+            && !(pp.option & PRESERVE)) {
             st |= NEWLINE | HIDDEN;
             pp.hidden++;
             error_info.line++;
@@ -2149,11 +1932,9 @@ fsm_terminal:
 #if CPP
         if (sp)
             op = sp;
-        else if (!(pp.in->flags & IN_noguard))
-        {
+        else if (!(pp.in->flags & IN_noguard)) {
             while (tp < op)
-                if ((c = *tp++) != ' ' && c != '\t')
-                {
+                if ((c = *tp++) != ' ' && c != '\t') {
                     pp.in->flags |= IN_tokens;
                     break;
                 }
@@ -2162,8 +1943,7 @@ fsm_terminal:
         st |= NEWLINE;
         error_info.line++;
         if (*ip == '\n' && *(ip + 1) != '\n' && !pp.macref
-            && !(st & (ADD | HIDDEN)))
-        {
+            && !(st & (ADD | HIDDEN))) {
             ip++;
             PUTCHR('\n');
             error_info.line++;
@@ -2172,8 +1952,7 @@ fsm_terminal:
             && ((pp.mode & FILEDEPS)
                 || (pp.option & (DEFINITIONS | PREDEFINITIONS))))
             BACKOUT();
-        else
-        {
+        else {
             debug((-5,
                    "token[%d] %03o = %s [line=%d]",
                    pp.level,
@@ -2182,8 +1961,7 @@ fsm_terminal:
                    error_info.line));
             PUTCHR('\n');
             PPSYNCLINE();
-            if (sp)
-            {
+            if (sp) {
                 PPCHECKOUT();
                 sp = op;
             }
@@ -2191,11 +1969,9 @@ fsm_terminal:
         goto fsm_start;
 #else
         st |= NEWLINE;
-        if (pp.level == 1)
-        {
+        if (pp.level == 1) {
             error_info.line++;
-            if (!(st & (JOINING | SPACEOUT)))
-            {
+            if (!(st & (JOINING | SPACEOUT))) {
                 debug((-5,
                        "token[%d] %03o = %s [line=%d]",
                        pp.level,
@@ -2207,8 +1983,7 @@ fsm_terminal:
             }
         }
         BACKOUT();
-        if (st & SKIPCONTROL)
-        {
+        if (st & SKIPCONTROL) {
             error_info.line++;
             st |= HIDDEN;
             pp.hidden++;
@@ -2233,8 +2008,7 @@ fsm_terminal:
     case S_VS:
         PUTCHR(c);
 #if !CPP
-        if (st & NOVERTICAL)
-        {
+        if (st & NOVERTICAL) {
             error(1, "%s invalid in directives", pptokchr(c));
             st &= ~NOVERTICAL;
         }
@@ -2246,8 +2020,7 @@ fsm_terminal:
 #if CPP
         if (!(pp.in->flags & IN_noguard))
             while (tp < op)
-                if ((c = *tp++) != ' ' && c != '\t')
-                {
+                if ((c = *tp++) != ' ' && c != '\t') {
                     pp.in->flags |= IN_tokens;
                     break;
                 }
@@ -2264,12 +2037,9 @@ fsm_terminal:
         if ((st & (COMPATIBILITY | TRANSITION)) == COMPATIBILITY)
             st &= ~NEWLINE;
 #    endif
-        if (pp.level == 1)
-        {
-            if ((st & (COMPATIBILITY | SPACEOUT)) && !(st & TRANSITION))
-            {
-                if (st & (COMPILE | NOTEXT))
-                {
+        if (pp.level == 1) {
+            if ((st & (COMPATIBILITY | SPACEOUT)) && !(st & TRANSITION)) {
+                if (st & (COMPILE | NOTEXT)) {
 #    if CATSTRINGS
                     if ((st & (JOINING | NOTEXT | SPACEOUT)) != SPACEOUT)
 #    else
@@ -2283,8 +2053,7 @@ fsm_terminal:
                             goto fsm_next;
                         goto fsm_get;
                     }
-                }
-                else
+                } else
 #    if CATSTRINGS
                 if (!(st & JOINING))
 #    endif
@@ -2307,8 +2076,7 @@ fsm_terminal:
                 goto fsm_next;
             goto fsm_get;
         }
-        if (st & (NOSPACE | SKIPCONTROL))
-        {
+        if (st & (NOSPACE | SKIPCONTROL)) {
             BACKOUT();
             bp = ip - 1;
             rp = fsm[START];
@@ -2316,13 +2084,11 @@ fsm_terminal:
                 goto fsm_next;
             goto fsm_get;
         }
-        if (c != '\n')
-        {
+        if (c != '\n') {
             BACKIN();
             c = ' ';
         }
-        if (!(pp.option & PRESERVE))
-        {
+        if (!(pp.option & PRESERVE)) {
             BACKOUT();
             PUTCHR(c);
         }
@@ -2330,17 +2096,14 @@ fsm_terminal:
 #endif
 
     default:
-        if (state & SPLICE)
-        {
-            switch (c)
-            {
+        if (state & SPLICE) {
+            switch (c) {
             case MARK:
                 /*
                  * internal mark
                  */
 
-                switch (pp.in->type)
-                {
+                switch (pp.in->type) {
                 case IN_BUFFER:
                 case IN_FILE:
 #if !CPP
@@ -2355,11 +2118,9 @@ fsm_terminal:
 #endif
                     break;
                 default:
-                    switch (GETCHR())
-                    {
+                    switch (GETCHR()) {
                     case 'A':
-                        if (!(st & (DEFINITION | DISABLE)))
-                        {
+                        if (!(st & (DEFINITION | DISABLE))) {
                             c = GETCHR();
                             SYNCIN();
                             if (pp.macp->arg[c - ARGOFFSET][-1])
@@ -2377,14 +2138,11 @@ fsm_terminal:
                         c = GETCHR() - ARGOFFSET;
                         if (!*(s = pp.macp->arg[c])
                             && (pp.in->symbol->flags & SYM_VARIADIC)
-                            && pp.in->symbol->macro->arity == (c + 1))
-                        {
+                            && pp.in->symbol->macro->arity == (c + 1)) {
                             s = ip - 3;
                             while (--op > tp && --s > bp && ppisidig(*s))
                                 ;
-                        }
-                        else
-                        {
+                        } else {
                             SYNCIN();
                             PUSH_COPY(s, pp.macp->line);
                             CACHEIN();
@@ -2430,13 +2188,11 @@ fsm_terminal:
                     case 'X':
                         if (pp.in->type != IN_COPY)
                             st |= SKIPMACRO;
-                        if (pp.level <= 1)
-                        {
+                        if (pp.level <= 1) {
                             bp = ip;
                             goto fsm_get;
                         }
-                        if (pp.in->type == IN_EXPAND)
-                        {
+                        if (pp.in->type == IN_EXPAND) {
                             st &= ~SKIPMACRO;
                             PUTCHR(c);
                             PUTCHR('X');
@@ -2454,12 +2210,10 @@ fsm_terminal:
                     case MARK:
 #endif
 #if CATSTRINGS
-                        if ((st & (JOINING | QUOTE)) == JOINING)
-                        {
+                        if ((st & (JOINING | QUOTE)) == JOINING) {
                             if (!INQUOTE(rp))
                                 PUTCHR(c);
-                        }
-                        else
+                        } else
 #endif
 #if CPP
                         if (rp != fsm[START] && !INQUOTE(rp))
@@ -2480,14 +2234,11 @@ fsm_terminal:
                  * trigraph
                  */
 
-                if (pp.in->type == IN_FILE)
-                {
+                if (pp.in->type == IN_FILE) {
                     GET(c, n, tp, xp);
-                    if (n == '?')
-                    {
+                    if (n == '?') {
                         GET(c, n, tp, xp);
-                        if (c = trigraph[n])
-                        {
+                        if (c = trigraph[n]) {
                             if ((st & WARN)
                                 && (st & (COMPATIBILITY | TRANSITION))
                                 && !(pp.mode & HOSTED) && !INCOMMENT(rp))
@@ -2500,8 +2251,7 @@ fsm_terminal:
                                       (st & TRANSITION) ? "" : " inhibited");
 #if COMPATIBLE
                             if ((st & (COMPATIBILITY | TRANSITION))
-                                != COMPATIBILITY)
-                            {
+                                != COMPATIBILITY) {
 #endif
                                 *(bp = ip - 1) = c;
                                 if (state = rp[c])
@@ -2514,8 +2264,7 @@ fsm_terminal:
                         if (n != EOB)
                             BACKIN();
                         UNGETCHR(c = '?');
-                    }
-                    else if (n != EOB)
+                    } else if (n != EOB)
                         BACKIN();
                 }
                 break;
@@ -2526,12 +2275,10 @@ fsm_terminal:
                  * digraph = --trigraph
                  */
 
-                if (pp.in->type == IN_FILE && (pp.option & PLUSPLUS))
-                {
+                if (pp.in->type == IN_FILE && (pp.option & PLUSPLUS)) {
                     m = 0;
                     GET(c, n, tp, xp);
-                    switch (n)
-                    {
+                    switch (n) {
                     case '%':
                         if (c == '<')
                             m = '{';
@@ -2549,8 +2296,7 @@ fsm_terminal:
                             m = '[';
                         break;
                     }
-                    if (m)
-                    {
+                    if (m) {
                         if ((st & WARN) && (st & (COMPATIBILITY | TRANSITION))
                             && !(pp.mode & HOSTED) && !INCOMMENT(rp))
                             error(1,
@@ -2561,8 +2307,7 @@ fsm_terminal:
                                   (st & TRANSITION) ? "" : " inhibited");
 #if COMPATIBLE
                         if ((st & (COMPATIBILITY | TRANSITION))
-                            != COMPATIBILITY)
-                        {
+                            != COMPATIBILITY) {
 #endif
                             *(bp = ip - 1) = c = m;
                             if (state = rp[c])
@@ -2582,53 +2327,40 @@ fsm_terminal:
                  */
 
                 if (pp.in->type == IN_FILE
-                    && (!(pp.option & PLUSSPLICE) || !INCOMMENTXX(rp)))
-                {
+                    && (!(pp.option & PLUSSPLICE) || !INCOMMENTXX(rp))) {
                     m = 0;
                     GET(c, n, tp, xp);
                     if ((pp.option & SPLICESPACE) && !INQUOTE(rp))
-                        while (n == ' ')
-                        {
+                        while (n == ' ') {
                             GET(c, n, tp, xp);
                             m = 1;
                         }
-                    if (n == '\r')
-                    {
+                    if (n == '\r') {
                         GET(c, n, tp, xp);
                         if (n != '\n' && n != EOB)
                             BACKIN();
                     }
-                    if (n == '\n')
-                    {
+                    if (n == '\n') {
 #if CPP
-                        if (INQUOTE(rp))
-                        {
-                            if ((pp.option & STRINGSPLIT) && quot == '"')
-                            {
+                        if (INQUOTE(rp)) {
+                            if ((pp.option & STRINGSPLIT) && quot == '"') {
                                 PUTCHR(quot);
                                 PUTCHR(n);
                                 PUTCHR(quot);
-                            }
-                            else if (*pp.lineid)
-                            {
+                            } else if (*pp.lineid) {
                                 PUTCHR(c);
                                 PUTCHR(n);
-                            }
-                            else
-                            {
+                            } else {
                                 st |= HIDDEN;
                                 pp.hidden++;
                             }
-                        }
-                        else
+                        } else
 #else
 #    if COMPATIBLE
                         if (!INQUOTE(rp)
                             && (st & (COMPATIBILITY | DEFINITION | TRANSITION))
-                               == (COMPATIBILITY | DEFINITION))
-                        {
-                            if (op == tp)
-                            {
+                               == (COMPATIBILITY | DEFINITION)) {
+                            if (op == tp) {
                                 st |= HIDDEN;
                                 pp.hidden++;
                                 error_info.line++;
@@ -2655,9 +2387,7 @@ fsm_terminal:
 #endif
                         bp = ip;
                         goto fsm_get;
-                    }
-                    else if ((n == 'u' || n == 'U') && !INQUOTE(rp))
-                    {
+                    } else if ((n == 'u' || n == 'U') && !INQUOTE(rp)) {
                         PUTCHR(c);
                         PUTCHR(n);
                         bp = ip;
@@ -2666,8 +2396,7 @@ fsm_terminal:
 #if COMPATIBLE
                     else if ((st & (COMPATIBILITY | TRANSITION))
                              == COMPATIBILITY
-                             && (n == '"' || n == '\'') && !INQUOTE(rp))
-                    {
+                             && (n == '"' || n == '\'') && !INQUOTE(rp)) {
                         PUTCHR(c);
                         PUTCHR(n);
                         bp = ip;
@@ -2681,11 +2410,9 @@ fsm_terminal:
                 }
 #if COMPATIBLE
                 else if ((st & (COMPATIBILITY | TRANSITION)) == COMPATIBILITY
-                         && !INQUOTE(rp))
-                {
+                         && !INQUOTE(rp)) {
                     GET(c, n, tp, xp);
-                    if (n == '"' || n == '\'')
-                    {
+                    if (n == '"' || n == '\'') {
                         PUTCHR(c);
                         PUTCHR(n);
                         bp = ip;
@@ -2701,11 +2428,9 @@ fsm_terminal:
                  * barf
                  */
 
-                if (pp.in->type == IN_FILE)
-                {
+                if (pp.in->type == IN_FILE) {
                     GET(c, n, tp, xp);
-                    if (n == '\n')
-                    {
+                    if (n == '\n') {
                         *(bp = ip - 1) = c = n;
                         if (state = rp[c])
                             goto fsm_next;
@@ -2720,8 +2445,7 @@ fsm_terminal:
                  * barf & puke
                  */
 
-                if ((pp.option & ZEOF) && pp.in->type == IN_FILE)
-                {
+                if ((pp.option & ZEOF) && pp.in->type == IN_FILE) {
                     pp.in->flags |= IN_eof;
                     c = 0;
                     state = S_EOB;
@@ -2735,8 +2459,7 @@ fsm_terminal:
             goto fsm_begin;
         }
 #if CPP
-        if (INOPSPACE(rp))
-        {
+        if (INOPSPACE(rp)) {
             BACKIN();
             goto fsm_start;
         }
@@ -2748,11 +2471,9 @@ fsm_terminal:
 #if !CPP
 fsm_token:
     st &= ~NEWLINE;
-    if (pp.level == 1)
-    {
+    if (pp.level == 1) {
         pp.in->flags |= IN_tokens;
-        if (st & NOTEXT)
-        {
+        if (st & NOTEXT) {
             BACKOUT();
             goto fsm_top;
         }
@@ -2760,8 +2481,7 @@ fsm_token:
         count(token);
     }
 fsm_check:
-    if (st & SKIPCONTROL)
-    {
+    if (st & SKIPCONTROL) {
         BACKOUT();
         goto fsm_start;
     }
@@ -2818,14 +2538,12 @@ pool(void)
      */
 
     pp.pool.input = 0;
-    while (ifile = sfgetr(sfstdin, '\n', 1))
-    {
+    while (ifile = sfgetr(sfstdin, '\n', 1)) {
         if (!(ofile = strchr(ifile, ' ')))
             error(3, "%s: pool output file expected", ifile);
         *ofile++ = 0;
         waitpid(0, NiL, WNOHANG);
-        switch (fork())
-        {
+        switch (fork()) {
         case -1:
             error(ERROR_SYSTEM | 3, "cannot fork pool");
         case 0:
@@ -2845,8 +2563,7 @@ pool(void)
             pathcanon(ifile, 0, 0);
             ifile = ppsetfile(ifile)->name;
 #    if CHECKPOINT
-            if (pp.mode & DUMP)
-            {
+            if (pp.mode & DUMP) {
                 if (!pp.pragma)
                     error(3,
                           "#%s must be enabled for checkpoints",

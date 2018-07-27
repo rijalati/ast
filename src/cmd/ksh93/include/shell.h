@@ -66,8 +66,7 @@ typedef struct Shell_s Shell_t;
 /// to the Python idiom of doing `_ = param` at the top of a function in the
 /// same situation.
 #    define UNUSED(expr)                                                     \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             ( void )(expr);                                                  \
         } while (0)
 

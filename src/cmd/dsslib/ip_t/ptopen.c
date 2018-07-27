@@ -51,8 +51,7 @@ makef(Dt_t *dt, Ptprefix_t *a, Dtdisc_t *disc)
 {
     Ptprefix_t *b;
 
-    if (b = oldof(0, Ptprefix_t, 1, 0))
-    {
+    if (b = oldof(0, Ptprefix_t, 1, 0)) {
         b->min = a->min;
         b->max = a->max;
         b->data.pointer = 0;
@@ -82,8 +81,7 @@ ptopen(Ptdisc_t *disc)
     prefixdisc.makef = ( Dtmake_f )makef;
     prefixdisc.freef = ( Dtfree_f )freef;
     if (!(a = newof(0, Pt_t, 1, 0))
-        || !(a->dict = dtopen(&prefixdisc, Dtoset)))
-    {
+        || !(a->dict = dtopen(&prefixdisc, Dtoset))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         if (a)
@@ -127,16 +125,13 @@ ptinsert(Pt_t *tab, Ptaddr_t min, Ptaddr_t max)
     key.min = min;
     key.max = max;
     pp = 0;
-    if (xp)
-    {
+    if (xp) {
         if (key.min >= xp->min && key.max <= xp->max)
             return xp;
-        if (key.max >= (xp->min ? (xp->min - 1) : 0))
-        {
+        if (key.max >= (xp->min ? (xp->min - 1) : 0)) {
             if (key.min > xp->min)
                 key.min = xp->min;
-            do
-            {
+            do {
                 max = xp->max;
                 pp = xp;
                 xp = ( Ptprefix_t * )dtnext(tab->dict, xp);
@@ -164,30 +159,24 @@ ptdelete(Pt_t *tab, Ptaddr_t min, Ptaddr_t max)
     tab->entries++;
     key.min = min;
     key.max = max;
-    if (xp = ( Ptprefix_t * )dtsearch(tab->dict, &key))
-    {
-        do
-        {
+    if (xp = ( Ptprefix_t * )dtsearch(tab->dict, &key)) {
+        do {
             cur.min = xp->min;
             cur.max = xp->max;
             dtdelete(tab->dict, xp);
-            if (key.min > cur.min)
-            {
+            if (key.min > cur.min) {
                 max = cur.max;
                 cur.max = key.min - 1;
                 if (!dtinsert(tab->dict, &cur))
                     goto bad;
-                if (key.max < max)
-                {
+                if (key.max < max) {
                     cur.min = key.max + 1;
                     cur.max = max;
                     if (!dtinsert(tab->dict, &cur))
                         goto bad;
                     break;
                 }
-            }
-            else if (key.max < xp->max)
-            {
+            } else if (key.max < xp->max) {
                 xp->min = key.max + 1;
                 if (!dtinsert(tab->dict, xp))
                     goto bad;

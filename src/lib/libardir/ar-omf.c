@@ -95,8 +95,7 @@ static Dtdisc_t offdisc = { offsetof(Arfile_t, st.offset),
 static unsigned char *
 readint(unsigned char *cp, int *i, int big)
 {
-    if (big)
-    {
+    if (big) {
         *i = (*cp) | (cp[1] << 8) | (cp[2] << 16) | (cp[3] << 24);
         return (cp + 4);
     }
@@ -107,8 +106,7 @@ readint(unsigned char *cp, int *i, int big)
 static unsigned char *
 readindex(unsigned char *cp, int *size)
 {
-    if (*cp & 0x80)
-    {
+    if (*cp & 0x80) {
         *size = (*cp & 0xf7) << 8 | cp[1];
         return (cp + 2);
     }
@@ -140,15 +138,13 @@ ar_getnode(Ardir_t *ar, const char *name)
     if (cp = strrchr(name, '/'))
         name = cp + 1;
     fp = ( Arfile_t * )dtmatch(dp, ( void * )name);
-    if (!fp)
-    {
+    if (!fp) {
         size_t len = strlen(name) + 5;
         if (!(fp = newof(0, Arfile_t, 1, len)))
             return (0);
         fp->st.name = ( char * )(fp + 1);
         memcpy(( char * )fp->st.name, name, len);
-        if (!strrchr(fp->st.name, '.'))
-        {
+        if (!strrchr(fp->st.name, '.')) {
             fp->st.name[len - 5] = '.';
             fp->st.name[len - 4] = 0;
         }
@@ -172,16 +168,13 @@ omfclose(Ardir_t *ar)
 {
     State_t *sp = ( State_t * )ar->data;
     Dt_t *dp = sp ? sp->dict : 0;
-    if (sp && dp && sp->state)
-    {
+    if (sp && dp && sp->state) {
         /* update modification times */
         Arfile_t *fp;
         for (fp = ( Arfile_t * )dtfirst(dp); fp;
-             fp = ( Arfile_t * )dtnext(dp, fp))
-        {
+             fp = ( Arfile_t * )dtnext(dp, fp)) {
             if (fp->flags && fp->toffset > 0
-                && lseek(ar->fd, ( off_t )fp->toffset, SEEK_SET) > 0)
-            {
+                && lseek(ar->fd, ( off_t )fp->toffset, SEEK_SET) > 0) {
                 write(ar->fd, ( void * )&fp->st.mtime, sizeof(time_t));
             }
         }
@@ -199,8 +192,7 @@ static size_t
 displacement(struct Table *tp, size_t addr)
 {
     size_t disp = 0;
-    while (tp)
-    {
+    while (tp) {
         disp = tp->disp;
         if (addr > tp->offset)
             break;
@@ -222,21 +214,17 @@ omfload(Ardir_t *ar,
     Arfile_t *fp;
     int len;
     struct Table *tpnext;
-    if (dmars)
-    {
+    if (dmars) {
         /* string table at the top */
         while (*cp)
             cp += strlen(( char * )cp) + 1;
         while (cp[4] == 0)
             cp++;
-    }
-    else
-    {
+    } else {
         readint(cp, &len, 1);
         end = base + len;
     }
-    for (ip = ( int * )cp; ( unsigned char * )(ip + 6) < end; ip += 7)
-    {
+    for (ip = ( int * )cp; ( unsigned char * )(ip + 6) < end; ip += 7) {
         if (dmars)
             len = *ip;
         else
@@ -255,8 +243,7 @@ omfload(Ardir_t *ar,
         if (ip[6])
             fp->alias = ( char * )base + ip[6];
     }
-    while (tp)
-    {
+    while (tp) {
         tpnext = tp->next;
         free(( void * )tp);
         tp = tpnext;
@@ -298,23 +285,18 @@ omfopen(Ardir_t *ar, char *buf, size_t size)
     addrmax = addr + size;
     addr = readint(addr + 1, &n, 0);
     pagesize = n + 3;
-    while ((addr += n) < addrmax)
-    {
+    while ((addr += n) < addrmax) {
         if (*addr == OMF_LIBDHD)
             return (0);
         cp = addr;
         type = *addr;
         addr = readint(addr + 1, &n, 0);
-        if ((type & ~1) == OMF_MODEND)
-        {
-            if (special)
-            {
+        if ((type & ~1) == OMF_MODEND) {
+            if (special) {
                 if (base)
                     omfload(ar, base, last, tp, dmars);
                 special = 0;
-            }
-            else
-            {
+            } else {
                 if (!(fp = ar_getnode(ar, name)))
                     return (0);
                 fp->st.offset = begin - addrstart;
@@ -323,27 +305,20 @@ omfopen(Ardir_t *ar, char *buf, size_t size)
             addr += n;
             addr = addrstart + round(addr - addrstart, pagesize);
             n = 0;
-        }
-        else if (type == OMF_THEADR)
-        {
-            if (memcmp(addr + 1, FILENAME, sizeof(FILENAME) - 2))
-            {
+        } else if (type == OMF_THEADR) {
+            if (memcmp(addr + 1, FILENAME, sizeof(FILENAME) - 2)) {
                 begin = addr + 1;
                 len = *addr;
-                if (addr[1] == '.' && addr[2] == '\\')
-                {
+                if (addr[1] == '.' && addr[2] == '\\') {
                     len -= 2;
                     begin += 2;
                 }
                 memcpy(name, begin, len);
                 name[len] = 0;
                 begin = cp;
-            }
-            else
+            } else
                 special = 1;
-        }
-        else if ((type & ~1) == OMF_LEDATA && special)
-        {
+        } else if ((type & ~1) == OMF_LEDATA && special) {
             int offset;
             cp = readindex(addr, &len);
             cp = readint(cp, &offset, type & 1);
@@ -355,8 +330,7 @@ omfopen(Ardir_t *ar, char *buf, size_t size)
             tp = tpnew;
             if (!base)
                 base = last = cp;
-            else
-            {
+            else {
                 tp->disp = cp - (base + offset);
                 memcpy(base + offset, cp, len);
             }
@@ -380,15 +354,13 @@ omfnext(Ardir_t *ar)
     Arfile_t *fp;
     if (ap->next)
         ap->next = ( Arfile_t * )dtnext(ap->dict, ap->next);
-    else
-    {
+    else {
         dtdisc(ap->dict, &offdisc, 0);
         ap->next = ( Arfile_t * )dtfirst(ap->dict);
     }
     if (!(fp = ap->next))
         return (0);
-    if (*fp->suffix)
-    {
+    if (*fp->suffix) {
         char *last = strrchr(fp->st.name, '.');
         if (last)
             last++;
@@ -422,10 +394,8 @@ omfinsert(Ardir_t *ar, const char *name, int op)
         n = ( const char * )++suffix - name;
     else
         n = strlen(name);
-    if ((fd = open(name, O_RDONLY | O_cloexec)) >= 0)
-    {
-        if (fstat(fd, &statb) >= 0 && (m = is_omf(fd)))
-        {
+    if ((fd = open(name, O_RDONLY | O_cloexec)) >= 0) {
+        if (fstat(fd, &statb) >= 0 && (m = is_omf(fd))) {
             read(fd, ( void * )fname, m);
             fname[m] = 0;
             m = memcmp(( void * )fname, ( void * )name, n);
@@ -436,19 +406,15 @@ omfinsert(Ardir_t *ar, const char *name, int op)
     fp = ( Arfile_t * )dtmatch(dp, ( void * )fname);
     if (ret < 0 && !((op & ARDIR_DELETE) && fp))
         return -1;
-    if (fp)
-    {
-        if (op & ARDIR_DELETE)
-        {
+    if (fp) {
+        if (op & ARDIR_DELETE) {
             dtdelete(dp, ( Void_t * )fp);
             return ARDIR_DELETE;
         }
         if (fp->st.mtime >= statb.st_mtime && (op & ARDIR_NEWER))
             return 0;
         ret = ARDIR_REPLACE;
-    }
-    else
-    {
+    } else {
         if (op & ARDIR_DELETE)
             return -1;
         if (!(fp = ( Arfile_t * )ar_getnode(ar, fname)))

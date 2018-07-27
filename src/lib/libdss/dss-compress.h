@@ -53,10 +53,8 @@ compress_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     int errors = error_info.errors;
     char *meth;
 
-    for (;;)
-    {
-        switch (optget(argv, compress_usage))
-        {
+    for (;;) {
+        switch (optget(argv, compress_usage)) {
         case '?':
             if (disc->errorf)
                 (*disc->errorf)(
@@ -72,26 +70,22 @@ compress_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     if (error_info.errors > errors)
         return -1;
     argv += opt_info.index;
-    if (expr->pass || expr->fail || expr->parent->pass != expr)
-    {
+    if (expr->pass || expr->fail || expr->parent->pass != expr) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, 2, "can only compress parent output stream");
         return -1;
     }
     expr->parent->pass = 0;
-    if (expr->parent->op != expr->op)
-    {
+    if (expr->parent->op != expr->op) {
         if (expr->parent->op != sfstdout)
             sfclose(expr->parent->op);
         expr->parent->op = expr->op;
     }
     if (!(meth = *argv))
         sfdisc(expr->op, &dssstate(disc)->compress_preferred);
-    else
-    {
-        if (*++argv)
-        {
+    else {
+        if (*++argv) {
             sfprintf(cx->buf, "%s", meth);
             while (meth = *argv++)
                 sfprintf(cx->buf, " %s", meth);

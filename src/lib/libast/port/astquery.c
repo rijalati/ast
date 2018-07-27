@@ -57,8 +57,7 @@ astquery(int quit, const char *format, ...)
     if (!format)
         goto done;
     r = -1;
-    if (!rfp)
-    {
+    if (!rfp) {
         c = errno;
         if (isatty(sffileno(sfstdin)))
             rfp = sfstdin;
@@ -70,14 +69,11 @@ astquery(int quit, const char *format, ...)
             goto done;
         errno = c;
     }
-    if (quit & ERROR_PROMPT)
-    {
+    if (quit & ERROR_PROMPT) {
         quit &= ~ERROR_PROMPT;
         ip = rfp;
         op = wfp;
-    }
-    else
-    {
+    } else {
         ip = sfstdin;
         op = sfstderr;
     }
@@ -85,14 +81,12 @@ astquery(int quit, const char *format, ...)
     sfvprintf(op, format, ap);
     sfsync(op);
     for (n = c = sfgetc(ip);; c = sfgetc(ip))
-        switch (c)
-        {
+        switch (c) {
         case EOF:
             n = c;
             /*FALLTHROUGH*/
         case '\n':
-            switch (n)
-            {
+            switch (n) {
             case EOF:
             case 'q':
             case 'Q':

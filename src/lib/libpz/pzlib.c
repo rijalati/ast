@@ -47,8 +47,7 @@ pzlib(Pz_t *pz, const char *name, int ignore)
 
     for (dll = state.dll; dll && !streq(dll->name, name); dll = dll->next)
         ;
-    if (!dll)
-    {
+    if (!dll) {
         /*
          * add to the list and open
          */
@@ -67,8 +66,7 @@ pzlib(Pz_t *pz, const char *name, int ignore)
                                    NiL,
                                    RTLD_LAZY,
                                    path,
-                                   sizeof(path))))
-        {
+                                   sizeof(path)))) {
             if (pz->disc && pz->disc->errorf)
                 (*pz->disc->errorf)(pz,
                                     pz->disc,
@@ -84,8 +82,7 @@ pzlib(Pz_t *pz, const char *name, int ignore)
          */
 
         sfsprintf(buf, sizeof(buf), "%s_init", id);
-        if (!(dll->initf = ( Pzinit_f )dlllook(dll->dll, buf)))
-        {
+        if (!(dll->initf = ( Pzinit_f )dlllook(dll->dll, buf))) {
             if (pz->disc && pz->disc->errorf)
                 (*pz->disc->errorf)(
                 pz,
@@ -102,12 +99,10 @@ pzlib(Pz_t *pz, const char *name, int ignore)
      * see if pz already initialized
      */
 
-    if (dll->initf)
-    {
+    if (dll->initf) {
         for (pzs = dll->pzs; pzs && pzs->pz != pz; pzs = pzs->next)
             ;
-        if (!pzs)
-        {
+        if (!pzs) {
             if (!(pzs = newof(0, Pzdllpz_t, 1, 0)))
                 return -1;
             pzs->pz = pz;

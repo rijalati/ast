@@ -81,27 +81,22 @@ strgid(const char *name)
     static Dt_t *dict;
     static Dtdisc_t disc;
 
-    if (!dict)
-    {
+    if (!dict) {
         disc.key = offsetof(Id_t, name);
         dict = dtopen(&disc, Dtset);
-    }
-    else if (ip = ( Id_t * )dtmatch(dict, name))
+    } else if (ip = ( Id_t * )dtmatch(dict, name))
         return ip->id;
     if (gr = getgrnam(name))
         id = gr->gr_gid;
     else if (pw = getpwnam(name))
         id = pw->pw_gid;
-    else
-    {
+    else {
         id = strtol(name, &e, 0);
 #if _WINIX
-        if (!*e)
-        {
+        if (!*e) {
             if (!getgrgid(id))
                 id = -1;
-        }
-        else if (!streq(name, "sys"))
+        } else if (!streq(name, "sys"))
             id = -1;
         else if (gr = getgrnam("Administrators"))
             id = gr->gr_gid;
@@ -114,8 +109,7 @@ strgid(const char *name)
             id = -1;
 #endif
     }
-    if (dict && (ip = newof(0, Id_t, 1, strlen(name))))
-    {
+    if (dict && (ip = newof(0, Id_t, 1, strlen(name)))) {
         strcpy(ip->name, name);
         ip->id = id >= 0 ? id : -2;
         dtinsert(dict, ip);

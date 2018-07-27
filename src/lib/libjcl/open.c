@@ -45,15 +45,13 @@ jclopen(Jcl_t *scope, const char *file, unsigned long flags, Jcldisc_t *disc)
     int i;
 
     if (!(vm = vmopen(Vmdcheap, Vmbest, 0))
-        || !(vs = vmopen(Vmdcheap, Vmbest, 0)))
-    {
+        || !(vs = vmopen(Vmdcheap, Vmbest, 0))) {
         nospace(NiL, disc);
         if (vm)
             vmclose(vm);
         return 0;
     }
-    if (!(jcl = vmnewof(vm, 0, Jcl_t, 1, 0)))
-    {
+    if (!(jcl = vmnewof(vm, 0, Jcl_t, 1, 0))) {
         nospace(NiL, disc);
         vmclose(vm);
         vmclose(vs);
@@ -98,14 +96,11 @@ jclopen(Jcl_t *scope, const char *file, unsigned long flags, Jcldisc_t *disc)
         goto mem;
     jcl->step->dd = jcl->ds;
     jcl->step->syms = jcl->ss;
-    if (!(flags & JCL_SCOPE))
-    {
-        if (!file || streq(file, "-") || streq(file, "/dev/stdin"))
-        {
+    if (!(flags & JCL_SCOPE)) {
+        if (!file || streq(file, "-") || streq(file, "/dev/stdin")) {
             file = 0;
             sp = sfstdin;
-        }
-        else if (!(file = jclfind(jcl, file, flags, 2, &sp)))
+        } else if (!(file = jclfind(jcl, file, flags, 2, &sp)))
             goto bad;
         if (jclpush(jcl, sp, file, 0))
             goto bad;
@@ -177,8 +172,7 @@ jclpush(Jcl_t *jcl, Sfio_t *sp, const char *file, long line)
 {
     Include_t *ip;
 
-    if (!(ip = vmnewof(jcl->vm, 0, Include_t, 1, file ? strlen(file) : 0)))
-    {
+    if (!(ip = vmnewof(jcl->vm, 0, Include_t, 1, file ? strlen(file) : 0))) {
         nospace(jcl, NiL);
         return -1;
     }

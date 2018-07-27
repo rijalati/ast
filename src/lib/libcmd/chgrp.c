@@ -165,20 +165,16 @@ getids(char *s, char **e, Key_t *key, int options)
         s++;
     for (t = s; (n = *t) && n != ':' && n != '.' && !isspace(n); t++)
         ;
-    if (n)
-    {
+    if (n) {
         options |= OPT_CHOWN;
         if ((n = t++ - s) >= sizeof(buf))
             n = sizeof(buf) - 1;
         *((s = ( char * )memcpy(buf, s, n)) + n) = 0;
     }
-    if (options & OPT_CHOWN)
-    {
-        if (*s)
-        {
+    if (options & OPT_CHOWN) {
+        if (*s) {
             n = ( int )strtol(s, &z, 0);
-            if (*z || !(options & OPT_NUMERIC))
-            {
+            if (*z || !(options & OPT_NUMERIC)) {
                 if ((m = struid(s)) != NOID)
                     n = m;
                 else if (*z)
@@ -188,18 +184,15 @@ getids(char *s, char **e, Key_t *key, int options)
         }
         for (s = t; (n = *t) && !isspace(n); t++)
             ;
-        if (n)
-        {
+        if (n) {
             if ((n = t++ - s) >= sizeof(buf))
                 n = sizeof(buf) - 1;
             *((s = ( char * )memcpy(buf, s, n)) + n) = 0;
         }
     }
-    if (*s)
-    {
+    if (*s) {
         n = ( int )strtol(s, &z, 0);
-        if (*z || !(options & OPT_NUMERIC))
-        {
+        if (*z || !(options & OPT_NUMERIC)) {
             if ((m = strgid(s)) != NOID)
                 n = m;
             else if (*z)
@@ -250,8 +243,7 @@ b_chgrp(int argc, char **argv, Shbltin_t *context)
     sfputr(sp, usage_1, -1);
     if (error_info.id[2] == 'g')
         sfputr(sp, usage_grp_1, -1);
-    else
-    {
+    else {
         sfputr(sp, usage_own_1, -1);
         options |= OPT_CHOWN;
     }
@@ -263,10 +255,8 @@ b_chgrp(int argc, char **argv, Shbltin_t *context)
     sfputr(sp, usage_3, -1);
     if (!(usage = sfstruse(sp)))
         error(ERROR_SYSTEM | 3, "out of space");
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'b':
             if (stat(opt_info.arg, &st))
                 error(ERROR_exit(1), "%s: cannot stat", opt_info.arg);
@@ -339,25 +329,21 @@ b_chgrp(int argc, char **argv, Shbltin_t *context)
     if (error_info.errors || argc < 2)
         error(ERROR_usage(2), "%s", optusage(NiL));
     s = *argv;
-    if (options & OPT_LCHOWN)
-    {
+    if (options & OPT_LCHOWN) {
         flags &= ~FTS_META;
         flags |= FTS_PHYSICAL;
         logical = 0;
     }
     if (logical)
         flags &= ~(FTS_META | FTS_PHYSICAL);
-    if (map)
-    {
+    if (map) {
         if (streq(s, "-"))
             sp = sfstdin;
         else if (!(sp = sfopen(NiL, s, "r")))
             error(ERROR_exit(1), "%s: cannot read", s);
-        while (s = sfgetr(sp, '\n', 1))
-        {
+        while (s = sfgetr(sp, '\n', 1)) {
             getids(s, &t, &key, options);
-            if (!(m = ( Map_t * )dtmatch(map, &key)))
-            {
+            if (!(m = ( Map_t * )dtmatch(map, &key))) {
                 if (!(m = ( Map_t * )stakalloc(sizeof(Map_t))))
                     error(ERROR_exit(1), "out of space [id dictionary]");
                 m->key = key;
@@ -369,17 +355,14 @@ b_chgrp(int argc, char **argv, Shbltin_t *context)
         if (sp != sfstdin)
             sfclose(sp);
         keys[1].gid = keys[2].uid = NOID;
-    }
-    else if (!(options & (OPT_UID | OPT_GID)))
-    {
+    } else if (!(options & (OPT_UID | OPT_GID))) {
         getids(s, NiL, &key, options);
         if ((uid = key.uid) != NOID)
             options |= OPT_UID;
         if ((gid = key.gid) != NOID)
             options |= OPT_GID;
     }
-    switch (options & (OPT_UID | OPT_GID))
-    {
+    switch (options & (OPT_UID | OPT_GID)) {
     case OPT_UID:
         s = ERROR_translate(0, 0, 0, " owner");
         break;
@@ -396,19 +379,16 @@ b_chgrp(int argc, char **argv, Shbltin_t *context)
     if (!(fts = fts_open(argv + 1, flags, NiL)))
         error(ERROR_system(1), "%s: not found", argv[1]);
     while (!sh_checksig(context) && (ent = fts_read(fts)))
-        switch (ent->fts_info)
-        {
+        switch (ent->fts_info) {
         case FTS_SL:
         case FTS_SLNONE:
-            if (options & OPT_LCHOWN)
-            {
+            if (options & OPT_LCHOWN) {
 #if _lib_lchown
                 chownf = lchown;
                 op = "lchown";
                 goto commit;
 #else
-                if (!(options & OPT_FORCE))
-                {
+                if (!(options & OPT_FORCE)) {
                     errno = ENOSYS;
                     error(ERROR_system(0),
                           "%s: cannot change symlink owner/group",
@@ -425,40 +405,32 @@ b_chgrp(int argc, char **argv, Shbltin_t *context)
         commit:
             if (( unsigned long )ent->fts_statp->st_ctime >= before)
                 break;
-            if (map)
-            {
+            if (map) {
                 options &= ~(OPT_UID | OPT_GID);
                 uid = gid = NOID;
                 keys[0].uid = keys[1].uid = ent->fts_statp->st_uid;
                 keys[0].gid = keys[2].gid = ent->fts_statp->st_gid;
                 i = 0;
-                do
-                {
-                    if (m = ( Map_t * )dtmatch(map, &keys[i]))
-                    {
-                        if (uid == NOID && m->to.uid != NOID)
-                        {
+                do {
+                    if (m = ( Map_t * )dtmatch(map, &keys[i])) {
+                        if (uid == NOID && m->to.uid != NOID) {
                             uid = m->to.uid;
                             options |= OPT_UID;
                         }
-                        if (gid == NOID && m->to.gid != NOID)
-                        {
+                        if (gid == NOID && m->to.gid != NOID) {
                             gid = m->to.gid;
                             options |= OPT_GID;
                         }
                     }
                 } while (++i < elementsof(keys)
                          && (uid == NOID || gid == NOID));
-            }
-            else
-            {
+            } else {
                 if (!(options & OPT_UID))
                     uid = ent->fts_statp->st_uid;
                 if (!(options & OPT_GID))
                     gid = ent->fts_statp->st_gid;
             }
-            if ((options & OPT_UNMAPPED) && (uid == NOID || gid == NOID))
-            {
+            if ((options & OPT_UNMAPPED) && (uid == NOID || gid == NOID)) {
                 if (uid == NOID && gid == NOID)
                     error(ERROR_warn(0),
                           "%s: uid and gid not mapped",
@@ -469,12 +441,9 @@ b_chgrp(int argc, char **argv, Shbltin_t *context)
                     error(ERROR_warn(0), "%s: gid not mapped", ent->fts_path);
             }
             if (uid != ent->fts_statp->st_uid && uid != NOID
-                || gid != ent->fts_statp->st_gid && gid != NOID)
-            {
-                if (options & (OPT_SHOW | OPT_VERBOSE))
-                {
-                    if (options & OPT_TEST)
-                    {
+                || gid != ent->fts_statp->st_gid && gid != NOID) {
+                if (options & (OPT_SHOW | OPT_VERBOSE)) {
+                    if (options & OPT_TEST) {
                         ent->fts_statp->st_uid = 0;
                         ent->fts_statp->st_gid = 0;
                     }

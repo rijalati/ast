@@ -32,8 +32,7 @@ ptcopy(Pt_t *a)
     Pt_t *b;
     Ptprefix_t *ap;
 
-    if (b = ptopen(a->disc))
-    {
+    if (b = ptopen(a->disc)) {
         b->entries = a->entries;
         for (ap = ( Ptprefix_t * )dtfirst(a->dict); ap;
              ap = ( Ptprefix_t * )dtnext(a->dict, ap))

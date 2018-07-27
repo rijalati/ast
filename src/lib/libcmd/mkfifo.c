@@ -56,10 +56,8 @@ b_mkfifo(int argc, char **argv, Shbltin_t *context)
     int mflag = 0;
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'm':
             mflag = 1;
             mode = strperm(arg = opt_info.arg, &opt_info.arg, mode);
@@ -79,8 +77,7 @@ b_mkfifo(int argc, char **argv, Shbltin_t *context)
     if (error_info.errors || !*argv)
         error(ERROR_usage(2), "%s", optusage(NiL));
     mask = umask(0);
-    if (!mflag)
-    {
+    if (!mflag) {
         mode &= ~mask;
         umask(mask);
         mask = 0;

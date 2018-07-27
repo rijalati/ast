@@ -72,8 +72,7 @@ int add;       /* 1/0 for adding/subtracting	*/
 {
     int b;
 
-    for (b = 0; b < VCH_SIZE; ++b)
-    {
+    for (b = 0; b < VCH_SIZE; ++b) {
         if (fr[b] == 0)
             continue;
         e -= freq[b] * vclog(freq[b]);
@@ -139,8 +138,7 @@ double re;      /* entropy of this dataset	*/
     re = eupdate(re, rfreq, lfreq, 0);
 
     /* loop adding 1 to left part and subtracting 1 from right part */
-    for (p = minsz, endp = size - minsz; p < endp;)
-    {
+    for (p = minsz, endp = size - minsz; p < endp;) {
         b = data[p++];
 
         /* update the costs of left&right parts */
@@ -153,8 +151,8 @@ double re;      /* entropy of this dataset	*/
 
         lc = pt->ctab + p * vclog(p) - le;
         rc = pt->ctab + (size - p) * vclog(size - p) - re;
-        if ((lc + rc) < cost)
-        { /* good partition, recurse to do the two parts */
+        if ((lc + rc)
+            < cost) { /* good partition, recurse to do the two parts */
             if (part(pt, data, p, lfreq, le) < 0)
                 return -1;
             if (part(pt, data + p, size - p, rfreq, re) < 0)
@@ -260,8 +258,8 @@ Void_t **out; /* to return output buffer 	*/
         return -1;
     vcioinit(&wr, output, sz);
 
-    for (os = 0; os < sz;)
-    { /* get the size and compressed data of this segment */
+    for (os = 0;
+         os < sz;) { /* get the size and compressed data of this segment */
         if ((n = vciogetu(&rd)) <= 0)
             return -1;
         dt = vcionext(&rd);
@@ -301,14 +299,13 @@ Void_t *params;
 {
     Part_t *pt;
 
-    if (type == VC_OPENING)
-    {
+    if (type == VC_OPENING) {
         if (!(pt = ( Part_t * )malloc(sizeof(Part_t))))
             return -1;
 
         /* open the entropy coder handle */
-        if (!(pt->vch = vcopen(NIL(Vcdisc_t *), Vchuffman, 0, 0, vc->flags)))
-        {
+        if (!(pt->vch
+              = vcopen(NIL(Vcdisc_t *), Vchuffman, 0, 0, vc->flags))) {
             free(pt);
             return -1;
         }
@@ -318,25 +315,19 @@ Void_t *params;
 
         vcsetmtdata(vc, pt);
         return 0;
-    }
-    else if (type == VC_CLOSING)
-    {
-        if ((pt = vcgetmtdata(vc, Part_t *)))
-        {
+    } else if (type == VC_CLOSING) {
+        if ((pt = vcgetmtdata(vc, Part_t *))) {
             if (pt->vch)
                 vcclose(pt->vch);
             free(pt);
         }
         vcsetmtdata(vc, NIL(Part_t *));
         return 0;
-    }
-    else if (type == VC_FREEBUFFER)
-    {
+    } else if (type == VC_FREEBUFFER) {
         if ((pt = vcgetmtdata(vc, Part_t *)) && pt->vch)
             vcbuffer(pt->vch, NIL(Vcchar_t *), -1, -1);
         return 0;
-    }
-    else
+    } else
         return 0;
 }
 

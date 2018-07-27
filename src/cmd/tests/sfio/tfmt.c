@@ -29,8 +29,7 @@ Void_t *v;
 Sffmt_t *fe;
 #endif
 {
-    switch (fe->fmt)
-    {
+    switch (fe->fmt) {
     case 's':
         *(( char ** )v) = Mystr;
         fe->flags |= SFFMT_VALUE;

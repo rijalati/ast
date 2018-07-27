@@ -105,8 +105,7 @@ part(struct parse *pp,
     int line;
 
     ip = pp->fp;
-    if (*ap->code && !isdigit(*ap->code))
-    {
+    if (*ap->code && !isdigit(*ap->code)) {
         if (!(tp = fileopen(state.tmp.more, "Ew")))
             return -1;
         filecopy(NiL, ip, NiL, tp, NiL, size, NiL, NiL, 0);
@@ -121,12 +120,10 @@ part(struct parse *pp,
             sfprintf(state.path.temp, " | %s", s);
         if (!(ip = pipeopen(struse(state.path.temp), "r")))
             goto bad;
-    }
-    else if (!(ap->flags & PART_text) && !mimecmp("text", ap->type, NiL)
-             && mime(1)
-             && (s = mimeview(
-                 state.part.mime, NiL, state.tmp.more, ap->type, NiL)))
-    {
+    } else if (!(ap->flags & PART_text) && !mimecmp("text", ap->type, NiL)
+               && mime(1)
+               && (s = mimeview(
+                   state.part.mime, NiL, state.tmp.more, ap->type, NiL))) {
         if (!(tp = fileopen(state.tmp.more, "Ew")))
             return -1;
         filecopy(NiL, ip, NiL, tp, NiL, size, NiL, NiL, 0);
@@ -134,33 +131,27 @@ part(struct parse *pp,
         if (!(ip = pipeopen(s, "r")))
             goto bad;
     }
-    if (prefix)
-    {
+    if (prefix) {
         skip = 1;
         line = 0;
-        while (size > 0)
-        {
-            if (!fgets(pp->buf, sizeof(pp->buf), ip))
-            {
+        while (size > 0) {
+            if (!fgets(pp->buf, sizeof(pp->buf), ip)) {
                 n = 0;
                 break;
             }
             size -= n = strlen(pp->buf);
             if (pp->buf[0] == '\n'
-                || pp->buf[0] == '\r' && pp->buf[1] == '\n')
-            {
+                || pp->buf[0] == '\r' && pp->buf[1] == '\n') {
                 if (!skip)
                     line++;
                 continue;
-            }
-            else
+            } else
                 skip = 0;
 #if 0
 			if ((flags & GREFERENCES) && pp->buf[0] == '-' && pp->buf[1] == '-' && isspace(pp->buf[2]))
 				break;
 #endif
-            if (line)
-            {
+            if (line) {
                 line = 0;
                 fputc('\n', op);
             }
@@ -169,11 +160,8 @@ part(struct parse *pp,
                 || fwrite(pp->buf, 1, n, op) != n)
                 goto bad;
         }
-    }
-    else
-    {
-        while (size > 0)
-        {
+    } else {
+        while (size > 0) {
             n = size < sizeof(pp->buf) ? size : sizeof(pp->buf);
             if ((n = fread(pp->buf, 1, n, ip)) <= 0)
                 break;
@@ -187,8 +175,7 @@ part(struct parse *pp,
             goto bad;
     r = 0;
 bad:
-    if (ip != pp->fp)
-    {
+    if (ip != pp->fp) {
         if (ip)
             fileclose(ip);
         remove(state.tmp.more);
@@ -228,8 +215,7 @@ copy(struct msg *mp,
      * Compute the prefix string, without trailing whitespace
      */
 
-    if (prefix)
-    {
+    if (prefix) {
         prefixlen = strlen(prefix);
         s = prefix + prefixlen;
         while (--s >= prefix && isspace(*s))
@@ -237,24 +223,19 @@ copy(struct msg *mp,
         emptylen = (s + 1) - prefix;
     }
     flags |= GDISPLAY | GNL;
-    if (flags & GREFERENCES)
-    {
-        if (headset(&pp, mp, NiL, NiL, NiL, 0))
-        {
+    if (flags & GREFERENCES) {
+        if (headset(&pp, mp, NiL, NiL, NiL, 0)) {
             date = 0;
             from = 0;
             head = savestr(pp.data);
-            while (headget(&pp))
-            {
+            while (headget(&pp)) {
                 if (!strcasecmp(pp.name, "date"))
                     date = savestr(pp.data);
                 else if (!strcasecmp(pp.name, "from"))
                     from = savestr(pp.data);
             }
-            if (from)
-            {
-                if (s = strchr(from, '<'))
-                {
+            if (from) {
+                if (s = strchr(from, '<')) {
                     while (s > from && isspace(*(s - 1)))
                         s--;
                     *s = 0;
@@ -262,12 +243,9 @@ copy(struct msg *mp,
                 if (*from == '"' && *++from
                     && *(s = from + strlen(from) - 1) == '"')
                     *s = 0;
-            }
-            else
-            {
+            } else {
                 from = head;
-                if (s = strchr(head, ' '))
-                {
+                if (s = strchr(head, ' ')) {
                     *s++ = 0;
                     if (!date)
                         date = s;
@@ -277,16 +255,12 @@ copy(struct msg *mp,
                 fprintf(op, "On %s ", date);
             fprintf(op, "%s wrote:\n", from);
         }
-    }
-    else
-    {
+    } else {
         if (!ignore || !ignored(ignore, "status"))
             flags |= GSTATUS;
-        if (headset(&pp, mp, NiL, NiL, ignore, flags))
-        {
+        if (headset(&pp, mp, NiL, NiL, ignore, flags)) {
             i = pp.length > 1 ? prefixlen : emptylen;
-            do
-            {
+            do {
                 if (prefix && fwrite(prefix, 1, i, op) != i
                     || fwrite(pp.buf, 1, pp.length, op) != pp.length)
                     return -1;
@@ -299,13 +273,10 @@ copy(struct msg *mp,
      * Copy out the message body
      */
 
-    if (ap = state.part.in.head)
-    {
+    if (ap = state.part.in.head) {
         n = 0;
-        do
-        {
-            if (flags & GINTERPOLATE)
-            {
+        do {
+            if (flags & GINTERPOLATE) {
                 boundary();
                 note(DEBUG,
                      "interpolate boundary=%s offset=%ld size=%ld",
@@ -324,13 +295,11 @@ copy(struct msg *mp,
                          flags))
                     return -1;
                 n += ap->raw.size;
-            }
-            else if ((ap->flags & PART_body)
-                     || (flags & GMIME) && ap->count == 1 && !n && ap->next
-                        && !ap->next->lines && mime(1)
-                        && (s = mimeview(
-                            state.part.mime, NiL, NiL, ap->type, ap->opts)))
-            {
+            } else if ((ap->flags & PART_body)
+                       || (flags & GMIME) && ap->count == 1 && !n && ap->next
+                          && !ap->next->lines && mime(1)
+                          && (s = mimeview(
+                              state.part.mime, NiL, NiL, ap->type, ap->opts))) {
                 note(DEBUG,
                      "copy part text offset=%ld size=%ld lines=%ld",
                      ( long )ap->offset,
@@ -341,8 +310,7 @@ copy(struct msg *mp,
                     &pp, op, ap, ap->size, prefix, prefixlen, emptylen, flags))
                     return -1;
                 n += ap->lines;
-            }
-            else
+            } else
                 fprintf(op,
                         "(attachment %2d %s %20s \"%s\")\n\n",
                         ap->count,
@@ -350,15 +318,14 @@ copy(struct msg *mp,
                         ap->type,
                         ap->name);
         } while (ap = ap->next);
-    }
-    else if (part(&pp,
-                  op,
-                  &state.part.global,
-                  pp.count,
-                  prefix,
-                  prefixlen,
-                  emptylen,
-                  flags))
+    } else if (part(&pp,
+                    op,
+                    &state.part.global,
+                    pp.count,
+                    prefix,
+                    prefixlen,
+                    emptylen,
+                    flags))
         return -1;
     return 0;
 }
@@ -376,8 +343,7 @@ prepend(struct letter *lp)
     lp->head = lp->body = 0;
     if (!(nfo = fileopen(state.tmp.mail, "Ew")))
         return -1;
-    if (!(nfi = fileopen(state.tmp.mail, "Er")))
-    {
+    if (!(nfi = fileopen(state.tmp.mail, "Er"))) {
         fileclose(nfo);
         return -1;
     }
@@ -395,8 +361,7 @@ prepend(struct letter *lp)
                  ( off_t )0,
                  NiL,
                  NiL,
-                 0))
-    {
+                 0)) {
         fileclose(nfo);
         fileclose(nfi);
         lp->head = lp->body = 0;
@@ -418,8 +383,7 @@ savemail(struct letter *lp, char *name)
 {
     FILE *fp;
 
-    if (fp = fileopen(name, "Ea"))
-    {
+    if (fp = fileopen(name, "Ea")) {
         filecopy(NiL, lp->fp, name, fp, NiL, ( off_t )0, NiL, NiL, GNL);
         fileclose(fp);
         rewind(lp->fp);
@@ -453,8 +417,7 @@ isfileaddr(char *name)
     if (*name == '+' || *name == '~')
         return 1;
     sp = 0;
-    for (cp = name; *cp; cp++)
-    {
+    for (cp = name; *cp; cp++) {
         if (*cp == '!' || *cp == '%' || *cp == '@')
             break;
         if (*cp == '/')
@@ -486,11 +449,9 @@ special(Dt_t *dt, void *object, void *context)
     char *cmd;
     int n;
 
-    if ((cmd = iscmd(np->name)) || isfileaddr(np->name))
-    {
+    if ((cmd = iscmd(np->name)) || isfileaddr(np->name)) {
         name = cmd ? cmd : expand(np->name, 1);
-        if (state.var.debug)
-        {
+        if (state.var.debug) {
             note(DEBUG, "mail to %s: \"%s\"", cmd ? "pipe" : "file", name);
             goto cant;
         }
@@ -501,10 +462,8 @@ special(Dt_t *dt, void *object, void *context)
          * program as appropriate.
          */
 
-        if (cmd)
-        {
-            if (!(fp = fileopen(state.tmp.edit, "Ew+")))
-            {
+        if (cmd) {
+            if (!(fp = fileopen(state.tmp.edit, "Ew+"))) {
                 state.senderr++;
                 goto cant;
             }
@@ -515,17 +474,13 @@ special(Dt_t *dt, void *object, void *context)
             n = start_command(
             state.var.shell, SIG_REG_EXEC, fileno(fp), -1, "-c", name, NiL);
             fileclose(fp);
-            if (n < 0)
-            {
+            if (n < 0) {
                 state.senderr++;
                 goto cant;
             }
             free_command(n);
-        }
-        else
-        {
-            if (!(fp = fileopen(name, "Ea")))
-            {
+        } else {
+            if (!(fp = fileopen(name, "Ea"))) {
                 state.senderr++;
                 goto cant;
             }
@@ -560,8 +515,7 @@ sendmail(struct header *hp, unsigned long flags)
     if (!(letter.fp = collect(hp, flags)))
         return;
     letter.hp = hp;
-    if (state.var.interactive)
-    {
+    if (state.var.interactive) {
         if (type = (state.askheaders & (GBCC | GCC)))
             grabedit(letter.hp, type);
         else
@@ -576,16 +530,14 @@ sendmail(struct header *hp, unsigned long flags)
      * Now, take the user names from the combined
      * to and cc lists and do all the alias processing.
      */
-    if (!usermap(letter.hp, 0))
-    {
+    if (!usermap(letter.hp, 0)) {
         note(0, "No recipients specified");
         state.senderr++;
     }
     if (prepend(&letter))
         state.senderr++;
     dictwalk(&letter.hp->h_names, special, &letter);
-    if (state.senderr)
-    {
+    if (state.senderr) {
         fseek(letter.fp, letter.body, SEEK_SET);
         savedeadletter(letter.fp);
     }
@@ -597,11 +549,9 @@ sendmail(struct header *hp, unsigned long flags)
     p = args.argp;
     dictwalk(&letter.hp->h_names, packargs, &args);
     endargs(&args);
-    if (args.argp != p)
-    {
+    if (args.argp != p) {
         s = record(letter.hp->h_first, flags);
-        if (state.var.debug)
-        {
+        if (state.var.debug) {
             note(DEBUG | PROMPT, "sendmail command:");
             for (p = args.argv; *p; p++)
                 printf(" \"%s\"", *p);
@@ -611,9 +561,7 @@ sendmail(struct header *hp, unsigned long flags)
             note(DEBUG, "message contents:");
             filecopy(
             NiL, letter.fp, NiL, stdout, NiL, ( off_t )0, NiL, NiL, 0);
-        }
-        else
-        {
+        } else {
             if (s)
                 savemail(&letter, s);
             /*
@@ -624,29 +572,24 @@ sendmail(struct header *hp, unsigned long flags)
             fseek(letter.fp, letter.head, SEEK_SET);
             fflush(letter.fp);
             s = args.argv[0];
-            if (strneq(s, "smtp://", 7))
-            {
+            if (strneq(s, "smtp://", 7)) {
                 if (!*(s += 7))
                     s = state.var.smtp;
-                if (sendsmtp(letter.fp, s, args.argv + 1, ( off_t )0))
-                {
+                if (sendsmtp(letter.fp, s, args.argv + 1, ( off_t )0)) {
                     fseek(letter.fp, letter.body, SEEK_SET);
                     savedeadletter(letter.fp);
                 }
-            }
-            else if ((pid = start_command(s,
-                                          SIG_REG_EXEC | SIG_REG_TERM,
-                                          fileno(letter.fp),
-                                          -1,
-                                          NiL,
-                                          ( char * )args.argv,
-                                          NiL))
-                     < 0)
-            {
+            } else if ((pid = start_command(s,
+                                            SIG_REG_EXEC | SIG_REG_TERM,
+                                            fileno(letter.fp),
+                                            -1,
+                                            NiL,
+                                            ( char * )args.argv,
+                                            NiL))
+                       < 0) {
                 fseek(letter.fp, letter.body, SEEK_SET);
                 savedeadletter(letter.fp);
-            }
-            else if (state.var.sendwait)
+            } else if (state.var.sendwait)
                 wait_command(pid);
             else
                 free_command(pid);
@@ -675,26 +618,19 @@ format(Dt_t *dt, void *object, void *context)
     Format_t *fs = ( Format_t * )context;
     int n;
 
-    if (fs->flags & np->flags)
-    {
+    if (fs->flags & np->flags) {
         n = strlen(np->name);
-        if (fs->label)
-        {
+        if (fs->label) {
             if (fs->col = strlen(fs->label))
                 fputs(fs->label, fs->fp);
             fs->label = 0;
-        }
-        else if ((fs->col + fs->comma + n + 1) > MARGIN)
-        {
+        } else if ((fs->col + fs->comma + n + 1) > MARGIN) {
             if (fs->comma)
                 putc(',', fs->fp);
             fputs("\n    ", fs->fp);
             fs->col = 4;
-        }
-        else
-        {
-            if (fs->comma)
-            {
+        } else {
+            if (fs->comma) {
                 putc(',', fs->fp);
                 fs->col++;
             }
@@ -745,14 +681,12 @@ headout(FILE *fp, struct header *hp, unsigned long flags)
     gotcha = 0;
     flags &= hp->h_flags | GSEND | GCOMMA | GRULE | GNL;
     force = (flags & GRULE) ? state.editheaders : 0;
-    if (flags & GMISC)
-    {
+    if (flags & GMISC) {
         gotcha = 1;
         for (x = hp->h_misc.head; x; x = x->next)
             fprintf(fp, "%s\n", x->name);
     }
-    if (flags & GSEND)
-    {
+    if (flags & GSEND) {
         gotcha = 1;
         if (state.var.fixedheaders)
             fprintf(fp, "%s\n", state.var.fixedheaders);
@@ -762,24 +696,20 @@ headout(FILE *fp, struct header *hp, unsigned long flags)
             fprintf(fp,
                     "Content-Type: multipart/mixed; boundary=\"%s\"\n",
                     state.part.out.boundary);
-        else
-        {
+        else {
             fprintf(fp, "Content-Type: text/plain; charset=us-ascii\n");
             fprintf(fp, "Content-Transfer-Encoding: 7bit\n");
         }
-        if (hp->h_flags & GMESSAGEID)
-        {
+        if (hp->h_flags & GMESSAGEID) {
             fprintf(fp, "References: ");
-            if (hp->h_flags & GREFERENCES)
-            {
+            if (hp->h_flags & GREFERENCES) {
                 char *s;
                 int m;
                 int n;
 
                 m = REFLEN - strlen(hp->h_messageid) - 12;
                 s = hp->h_references;
-                if ((n = strlen(s)) > m)
-                {
+                if ((n = strlen(s)) > m) {
                     for (s += n - m; *s && !isspace(*s); s++)
                         ;
                     for (; isspace(*s); s++)
@@ -792,18 +722,15 @@ headout(FILE *fp, struct header *hp, unsigned long flags)
         }
     }
     for (lp = state.hdrtab; lp->name; lp++)
-        if (flags & lp->type)
-        {
+        if (flags & lp->type) {
             gotcha = 1;
             if (lp->type & GSUB)
                 fprintf(fp, "%s%s\n", lp->name, hp->h_subject);
             else
                 fmt(fp, hp, lp->name, lp->type, comma);
-        }
-        else if (force & lp->type)
+        } else if (force & lp->type)
             fprintf(fp, "%s\n", lp->name);
-    if (gotcha && (flags & GNL))
-    {
+    if (gotcha && (flags & GNL)) {
         if ((flags & GRULE) && state.var.rule && *state.var.rule)
             fprintf(fp, "%s\n\n", state.var.rule);
         else

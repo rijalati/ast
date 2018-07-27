@@ -32,8 +32,7 @@ Void_t *data;
 Sfdisc_t *disc;
 #endif
 {
-    switch (type)
-    {
+    switch (type) {
     case SF_WRITE:
         Sfn += 1;
         return 0;
@@ -72,8 +71,7 @@ Void_t *data;
 Sfdisc_t *disc;
 #endif
 {
-    if (type == SF_LOCKED)
-    {
+    if (type == SF_LOCKED) {
         Type = type;
         return -1;
     }

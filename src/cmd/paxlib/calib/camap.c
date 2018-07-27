@@ -66,8 +66,7 @@ tr(int in, int out, const char *header, const unsigned char *table)
     z = strlen(header);
     if (write(out, header, z) != z)
         return -1;
-    do
-    {
+    do {
         n[odd] = read(in, buff[odd], sizeof(buff0));
         odd = 1 - odd;
         cp = buff[odd];
@@ -87,15 +86,12 @@ camap_done(void *ptr, const char *file, int out)
     char header[80];
     char *hit = ( char * )ptr;
     int i, j, k, m, n, in = -1, r = 0, sep = '(';
-    for (i = 0; i < sizeof(special) / sizeof(*special); i++)
-    {
+    for (i = 0; i < sizeof(special) / sizeof(*special); i++) {
         m = special[i];
         if (hit[m] == 0)
             continue;
-        if (in < 0)
-        {
-            if ((in = open(file, O_RDONLY)) < 0)
-            {
+        if (in < 0) {
+            if ((in = open(file, O_RDONLY)) < 0) {
                 free(ptr);
                 return -1;
             }
@@ -105,13 +101,11 @@ camap_done(void *ptr, const char *file, int out)
             k = sizeof(MAPCHARS) - 1;
             n = 1;
         }
-        for (; n < 256; n++)
-        {
+        for (; n < 256; n++) {
             for (j = 1; j < sizeof(special) / sizeof(*special); j++)
                 if (n == j)
                     continue;
-            if (hit[n] == 0)
-            {
+            if (hit[n] == 0) {
                 k += sfsprintf(
                 &header[k], sizeof(header) - k, "%c%d,%d", sep, m, n);
                 sep = ',';
@@ -121,8 +115,7 @@ camap_done(void *ptr, const char *file, int out)
             }
         }
     }
-    if (in >= 0)
-    {
+    if (in >= 0) {
         strcpy(&header[k], ")\n");
         if (lseek(out, ( off_t )0, SEEK_SET) == 0)
             r = tr(in, out, header, table);

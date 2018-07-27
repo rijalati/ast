@@ -74,8 +74,7 @@ int local;
     if (size <= 0)
         return NIL(Void_t *);
 
-    if (size != pool->size)
-    {
+    if (size != pool->size) {
         if (pool->size <= 0) /* first time */
             pool->size = size;
         else
@@ -104,8 +103,7 @@ int local;
         enddt = dt + BDSZ(blk);
         list = NIL(Pool_t *);
         last = ( Pool_t * )dt;
-        for (; dt + size <= enddt; dt += size)
-        {
+        for (; dt + size <= enddt; dt += size) {
             pl = ( Pool_t * )dt;
             pl->foo = FOOBAR;
             pl->next = list;
@@ -115,16 +113,13 @@ int local;
     }
 
     pl = list; /* grab 1 then reinsert the rest */
-    if ((list = list->next))
-    {
-        if (asocasptr(&pool->free, NIL(Block_t *), list) != NIL(Block_t *))
-        {
+    if ((list = list->next)) {
+        if (asocasptr(&pool->free, NIL(Block_t *), list) != NIL(Block_t *)) {
             if (!last)
                 for (last = list;; last = last->next)
                     if (!last->next)
                         break;
-            for (;;)
-            {
+            for (;;) {
                 last->next = free = pool->free;
                 if (asocasptr(&pool->free, free, list) == free)
                     break;
@@ -157,8 +152,7 @@ int local;
 
     pl = ( Pool_t * )data;
     pl->foo = FOOBAR;
-    for (;;)
-    {
+    for (;;) {
         pl->next = free = pool->free;
         if (asocasptr(&pool->free, free, pl) == free)
             break;
@@ -183,19 +177,15 @@ int local;
 {
     NOTUSED(type);
 
-    if (!data)
-    {
+    if (!data) {
         data = poolalloc(vm, size, local);
         if (data && (type & VM_RSZERO))
             memset(data, 0, size);
         return data;
-    }
-    else if (size == 0)
-    {
+    } else if (size == 0) {
         ( void )poolfree(vm, data, local);
         return NIL(Void_t *);
-    }
-    else
+    } else
         return NIL(Void_t *);
 }
 
@@ -251,8 +241,7 @@ poolevent(Vmalloc_t *vm, int event, Void_t *arg)
         if (!arg)
             return -1;
         *(( ssize_t * )arg) = sizeof(Vmpool_t);
-    }
-    else if (event == VM_ENDOPEN) /* start as if region was cleared */
+    } else if (event == VM_ENDOPEN) /* start as if region was cleared */
     {
         if (!(pool = ( Vmpool_t * )vm->data))
             return -1;

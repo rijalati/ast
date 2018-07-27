@@ -57,8 +57,7 @@ tmain()
                         fd[1],
                         SF_WRITE)))
         terror("Can't open stream");
-    if (to)
-    {
+    if (to) {
         signal(SIGALRM, alrmf);
         alarm(4);
     }
@@ -158,10 +157,8 @@ tmain()
     for (i = 0; i < sizeof(buf); ++i)
         buf[i] = 'a';
     buf[sizeof(buf) - 1] = 0;
-    for (i = 0; i < 3; ++i)
-    {
-        if (to)
-        {
+    for (i = 0; i < 3; ++i) {
+        if (to) {
             signal(SIGALRM, alrmf); /* do this to avoid infinite loop */
             alarm(4);
         }

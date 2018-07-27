@@ -41,8 +41,7 @@ char *tmpfile;
 
     if ((port = mitem->port) <= 0)
         port = 70;
-    if ((nFile = NetConnect(srv, mitem->host, port)) == NULL)
-    {
+    if ((nFile = NetConnect(srv, mitem->host, port)) == NULL) {
         logit("<gopher>: connect failed!\n");
         cserrno = E_CONNECT;
         return -1;
@@ -51,8 +50,7 @@ char *tmpfile;
     logit(rpath);
 
     if (NetGets(nFile, buf, sizeof(buf)) == NULL
-        || strmatch(buf, "*\terror.host\t*"))
-    {
+        || strmatch(buf, "*\terror.host\t*")) {
         /* file/directory not found  */
         logit(buf);
         cserrno = E_CONNECT;
@@ -61,15 +59,13 @@ char *tmpfile;
     }
     logit(buf);
 
-    if ((fout = fopen(tmpfile, "w")) == NULL)
-    {
+    if ((fout = fopen(tmpfile, "w")) == NULL) {
         cserrno = E_OPENDEST;
         NetClose(nFile);
         return -1;
     }
     fprintf(fout, "%s", buf);
-    while ((len = NetRead(nFile, buf, sizeof(buf))) > 0)
-    {
+    while ((len = NetRead(nFile, buf, sizeof(buf))) > 0) {
         fwrite(buf, 1, len, fout);
     }
     fclose(fout);
@@ -114,18 +110,12 @@ int GopherGetFile(srv) struct server_info *srv;
     int ans;
 
     MakeTmpFile(lpath, tmpfile, sizeof(tmpfile));
-    if (*rpath == '\0' || DashD(lpath))
-    {
+    if (*rpath == '\0' || DashD(lpath)) {
         ans = GopherXferDir(srv, tmpfile);
-    }
-    else if (DashF(lpath))
-    {
+    } else if (DashF(lpath)) {
         ans = GopherXferFile(srv, tmpfile);
-    }
-    else
-    {
-        if ((ans = GopherXferDir(srv, tmpfile)) == -1)
-        {
+    } else {
+        if ((ans = GopherXferDir(srv, tmpfile)) == -1) {
             ans = GopherXferFile(srv, tmpfile);
         }
     }

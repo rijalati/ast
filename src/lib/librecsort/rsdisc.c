@@ -39,12 +39,10 @@ int op;
     reg Rsdisc_t *prv;
     reg Rsdisc_t *top;
 
-    switch (op)
-    {
+    switch (op) {
     case RS_DISC:
         old = rs->disc;
-        if (disc)
-        {
+        if (disc) {
             if (old && (old->events & RS_DISC)
                 && (*old->eventf)(
                    rs, RS_DISC, ( Void_t * )disc, ( Void_t * )0, old)
@@ -66,8 +64,7 @@ int op;
     case RS_NEXT:
         cur = rs->disc;
         if (disc)
-            while (top = cur)
-            {
+            while (top = cur) {
                 cur = cur->disc;
                 if (disc == top)
                     break;
@@ -79,8 +76,7 @@ int op;
         if (disc)
             while (cur && cur != disc)
                 cur = (prv = cur)->disc;
-        if (cur)
-        {
+        if (cur) {
             disc = cur;
             if (prv)
                 prv->disc = cur->disc;
@@ -91,24 +87,20 @@ int op;
                    rs, RS_POP, ( Void_t * )0, ( Void_t * )0, disc)
                    < 0)
                 return 0;
-            if (rs->disc)
-            {
+            if (rs->disc) {
                 rs->events = rs->disc->events;
                 for (cur = rs->disc; cur; cur = cur->disc)
                     rs->events |= cur->events;
             }
-        }
-        else
+        } else
             disc = 0;
         return disc;
     case RS_PUSH:
         if (!disc)
             return 0;
         for (prv = 0, cur = rs->disc; cur; cur = (prv = cur)->disc)
-            if (cur == disc)
-            {
-                if (prv)
-                {
+            if (cur == disc) {
+                if (prv) {
                     /*
                      * move to front
                      */

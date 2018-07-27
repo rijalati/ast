@@ -25,13 +25,11 @@
 */
 
 #define SWAP(le, re, ne)                                                     \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         Vcchar_t *ll = ( Vcchar_t * )(le);                                   \
         Vcchar_t *rr = ( Vcchar_t * )(re);                                   \
         ssize_t nn = (ne);                                                   \
-        for (; nn > 0; --nn, ++ll, ++rr)                                     \
-        {                                                                    \
+        for (; nn > 0; --nn, ++ll, ++rr) {                                   \
             int ss = *ll;                                                    \
             *ll = *rr;                                                       \
             *rr = ss;                                                        \
@@ -60,8 +58,7 @@ Void_t *disc;        /* adjunct struct for sortf()	*/
     if (n <= 1)
         return;
 
-    if (n == 2)
-    {
+    if (n == 2) {
         if ((*comparf)(base, base + size, disc) > 0)
             SWAP(base, base + size, size);
         return;

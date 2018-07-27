@@ -53,8 +53,7 @@ dssmagic(Dss_t *dss,
         size += magic.size;
     for (n = size; size > sizeof(magic); size--)
         sfputc(sp, 0);
-    if (sferror(sp))
-    {
+    if (sferror(sp)) {
         if (dss->disc->errorf)
             (*dss->disc->errorf)(
             dss, dss->disc, ERROR_SYSTEM | 2, "magic header write error");

@@ -41,18 +41,15 @@ _sfall()
     reg int nsync, count, loop;
 #define MAXLOOP 3
 
-    for (loop = 0; loop < MAXLOOP; ++loop)
-    {
+    for (loop = 0; loop < MAXLOOP; ++loop) {
         rv = nsync = count = 0;
-        for (p = &_Sfpool; p; p = next)
-        { /* find the next legitimate pool */
+        for (p = &_Sfpool; p; p = next) { /* find the next legitimate pool */
             for (next = p->next; next; next = next->next)
                 if (next->n_sf > 0)
                     break;
 
             /* walk the streams for _Sfpool only */
-            for (n = 0; n < ((p == &_Sfpool) ? p->n_sf : 1); ++n)
-            {
+            for (n = 0; n < ((p == &_Sfpool) ? p->n_sf : 1); ++n) {
                 count += 1;
                 f = p->sf[n];
 
@@ -111,14 +108,12 @@ int sfsync(f) reg Sfio_t *f; /* stream to be synchronized */
         goto done;
 
     if ((origf->mode & SF_RDWR) != SFMODE(origf, local)
-        && _sfmode(origf, 0, local) < 0)
-    {
+        && _sfmode(origf, 0, local) < 0) {
         rv = -1;
         goto done;
     }
 
-    for (; f; f = f->push)
-    {
+    for (; f; f = f->push) {
         if ((f->flags & SF_IOCHECK) && f->disc && f->disc->exceptf)
             ( void )(*f->disc->exceptf)(
             f, SF_SYNC, ( Void_t * )(( int )1), f->disc);
@@ -134,14 +129,16 @@ int sfsync(f) reg Sfio_t *f; /* stream to be synchronized */
             goto next;
 
         if ((f->mode & SF_WRITE)
-            && (f->next > f->data || (f->bits & SF_HOLE)))
-        { /* sync the buffer, make sure pool don't move */
+            && (f->next > f->data
+                || (f->bits & SF_HOLE))) { /* sync the buffer, make sure pool
+                                              don't move */
             reg int pool = f->mode & SF_POOL;
             f->mode &= ~SF_POOL;
             if (f->next > f->data && (SFWRALL(f), SFFLSBUF(f, -1)) < 0)
                 rv = -1;
-            if (!SFISNULL(f) && (f->bits & SF_HOLE))
-            { /* realize a previously created hole of 0's */
+            if (!SFISNULL(f)
+                && (f->bits & SF_HOLE)) { /* realize a previously created hole
+                                             of 0's */
                 if (SFSK(f, (Sfoff_t)(-1), SEEK_CUR, f->disc) >= 0)
                     ( void )SFWR(f, "", 1, f->disc);
                 f->bits &= ~SF_HOLE;
@@ -150,16 +147,16 @@ int sfsync(f) reg Sfio_t *f; /* stream to be synchronized */
         }
 
         if ((f->mode & SF_READ) && f->extent >= 0
-            && ((f->bits & SF_MMAP) || f->next < f->endb))
-        { /* make sure the file pointer is at the right place */
+            && ((f->bits & SF_MMAP)
+                || f->next < f->endb)) { /* make sure the file pointer is at
+                                            the right place */
             f->here -= (f->endb - f->next);
             f->endr = f->endw = f->data;
             f->mode = SF_READ | SF_SYNCED | lock;
             ( void )SFSK(f, f->here, SEEK_SET, f->disc);
 
             if ((f->flags & SF_SHARE) && !(f->flags & SF_PUBLIC)
-                && !(f->bits & SF_MMAP))
-            {
+                && !(f->bits & SF_MMAP)) {
                 f->endb = f->next = f->data;
                 f->mode &= ~SF_SYNCED;
             }

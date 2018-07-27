@@ -37,8 +37,7 @@ exerror(const char *format, ...)
     Sfio_t *sp;
 
     if (expr.program->disc->errorf && !expr.program->errors
-        && (sp = sfstropen()))
-    {
+        && (sp = sfstropen())) {
         va_list ap;
         char *s;
         char buf[64];
@@ -58,7 +57,6 @@ exerror(const char *format, ...)
         "%s",
         s);
         sfclose(sp);
-    }
-    else if (expr.program->disc->flags & EX_FATAL)
+    } else if (expr.program->disc->flags & EX_FATAL)
         exit(1);
 }

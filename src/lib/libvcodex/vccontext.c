@@ -36,8 +36,7 @@ Vccontext_t *ctxt; /* if NULL, make a new one */
 {
     Vccontext_t *c, *p;
 
-    if (ctxt)
-    {
+    if (ctxt) {
         for (p = NIL(Vccontext_t *), c = vc->ctxt; c; p = c, c = c->next)
             if (c == ctxt)
                 break;
@@ -47,9 +46,7 @@ Vccontext_t *ctxt; /* if NULL, make a new one */
             return ctxt;
         else
             p->next = ctxt->next;
-    }
-    else
-    {
+    } else {
         if (!vc->meth->eventf
             || (*vc->meth->eventf)(vc, VC_INITCONTEXT, ( Void_t * )(&ctxt))
                < 0
@@ -72,21 +69,17 @@ Vccontext_t *ctxt; /* if NULL, free all */
 {
     Vccontext_t *next;
 
-    if (ctxt)
-    {
+    if (ctxt) {
         if (vcinitcontext(vc, ctxt) != ctxt)
             return -1;
         vc->ctxt = ctxt->next;
         ctxt->next = NIL(Vccontext_t *);
-    }
-    else
-    {
+    } else {
         ctxt = vc->ctxt;
         vc->ctxt = NIL(Vccontext_t *);
     }
 
-    for (; ctxt; ctxt = next)
-    {
+    for (; ctxt; ctxt = next) {
         next = ctxt->next;
         if (vc->meth->eventf
             && (*vc->meth->eventf)(vc, VC_FREECONTEXT, ( Void_t * )ctxt) < 0)

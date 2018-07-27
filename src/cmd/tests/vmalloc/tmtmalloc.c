@@ -61,8 +61,7 @@ run_test(void)
     */
     gettimeofday(&start, NULL);
 
-    for (i = 0; i < total_iterations; i++)
-    {
+    for (i = 0; i < total_iterations; i++) {
         void *buf;
         buf = dummy(i);
         buf = dummy(i);
@@ -72,8 +71,7 @@ run_test(void)
 
     null.tv_sec = end.tv_sec - start.tv_sec;
     null.tv_usec = end.tv_usec - start.tv_usec;
-    if (null.tv_usec < 0)
-    {
+    if (null.tv_usec < 0) {
         null.tv_sec--;
         null.tv_usec += USECSPERSEC;
     }
@@ -83,8 +81,7 @@ run_test(void)
     */
     gettimeofday(&start, NULL);
 
-    for (i = 0; i < total_iterations; i++)
-    {
+    for (i = 0; i < total_iterations; i++) {
         void *buf;
         buf = malloc(request_size);
         free(buf);
@@ -94,8 +91,7 @@ run_test(void)
 
     elapsed.tv_sec = end.tv_sec - start.tv_sec;
     elapsed.tv_usec = end.tv_usec - start.tv_usec;
-    if (elapsed.tv_usec < 0)
-    {
+    if (elapsed.tv_usec < 0) {
         elapsed.tv_sec--;
         elapsed.tv_usec += USECSPERSEC;
     }
@@ -105,8 +101,7 @@ run_test(void)
     */
     adjusted.tv_sec = elapsed.tv_sec - null.tv_sec;
     adjusted.tv_usec = elapsed.tv_usec - null.tv_usec;
-    if (adjusted.tv_usec < 0)
-    {
+    if (adjusted.tv_usec < 0) {
         adjusted.tv_sec--;
         adjusted.tv_usec += USECSPERSEC;
     }
@@ -130,8 +125,7 @@ tmain()
     /*
     ** Parse our arguments
     */
-    switch (argc)
-    {
+    switch (argc) {
     case 4:
         /* size, iteration count, and thread count were specified */
         thread_count = atoi(argv[3]);

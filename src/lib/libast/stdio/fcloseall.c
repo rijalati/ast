@@ -37,16 +37,13 @@ fcloseall(void)
 
     STDIO_INT(0, "fcloseall", int, ( void ), ())
 
-    for (loop = 0; loop < MAXLOOP; ++loop)
-    {
+    for (loop = 0; loop < MAXLOOP; ++loop) {
         nclose = count = 0;
-        for (p = &_Sfpool; p; p = next)
-        { /* find the next legitimate pool */
+        for (p = &_Sfpool; p; p = next) { /* find the next legitimate pool */
             for (next = p->next; next; next = next->next)
                 if (next->n_sf > 0)
                     break;
-            for (n = 0; n < ((p == &_Sfpool) ? p->n_sf : 1); ++n)
-            {
+            for (n = 0; n < ((p == &_Sfpool) ? p->n_sf : 1); ++n) {
                 count += 1;
                 if (sfclose(p->sf[n]) >= 0)
                     nclose += 1;

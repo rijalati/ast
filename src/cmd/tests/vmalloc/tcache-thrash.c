@@ -46,18 +46,15 @@ worker(void *arg)
     int i, j, k;
     Worker_t *w = ( Worker_t * )arg;
 
-    for (i = 0; i < w->iteration; ++i)
-    {
+    for (i = 0; i < w->iteration; ++i) {
         char *obj;
 
         if (!(obj = ( char * )malloc(w->objsize)))
             terror("malloc failed");
 
         /* write into obj a bunch of times */
-        for (j = 0; j < w->repetition; ++j)
-        {
-            for (k = 0; k < w->objsize; ++k)
-            {
+        for (j = 0; j < w->repetition; ++j) {
+            for (k = 0; k < w->objsize; ++k) {
                 volatile char ch;
                 obj[k] = 'a';
                 ch = obj[k];
@@ -83,8 +80,7 @@ tmain()
     int objsize = OBJSIZE;
     int repetition = REPETITION;
 
-    for (; argc > 1; --argc, ++argv)
-    {
+    for (; argc > 1; --argc, ++argv) {
         if (argv[1][0] != '-')
             continue;
         else if (argv[1][1] == 't')
@@ -110,8 +106,7 @@ tmain()
 
     tresource(-1, 0);
 
-    for (i = 0; i < nthreads; ++i)
-    {
+    for (i = 0; i < nthreads; ++i) {
         Worker_t *w = ( Worker_t * )malloc(sizeof(Worker_t));
         w->objsize = objsize;
         w->iteration = iteration;

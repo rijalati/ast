@@ -92,12 +92,9 @@ reg int type;
     if (!obj && !(type & (DT_FIRST | DT_LAST)))
         return NIL(Void_t *);
 
-    if (type & (DT_MATCH | DT_SEARCH | DT_FIRST | DT_LAST))
-    {
-        for (d = dt; d; d = d->view)
-        {
-            if ((o = (*(d->meth->searchf))(d, obj, type)))
-            {
+    if (type & (DT_MATCH | DT_SEARCH | DT_FIRST | DT_LAST)) {
+        for (d = dt; d; d = d->view) {
+            if ((o = (*(d->meth->searchf))(d, obj, type))) {
                 dt->walk = d;
                 return o;
             }
@@ -111,12 +108,9 @@ reg int type;
     if (!dt->walk)
         dt->walk = dt;
 
-    for (d = dt->walk, o = (*(d->meth->searchf))(d, obj, type);;)
-    {
-        while (o)
-        {
-            for (p = dt;; p = p->view)
-            {
+    for (d = dt->walk, o = (*(d->meth->searchf))(d, obj, type);;) {
+        while (o) {
+            for (p = dt;; p = p->view) {
                 if (p == d) /* this object is uncovered */
                     return o;
 
@@ -160,8 +154,7 @@ reg Dt_t *view;
         d->nview -= 1;
     dt->view = dt->walk = NIL(Dt_t *);
 
-    if (!view)
-    {
+    if (!view) {
         dt->searchf = dt->meth->searchf;
         return d;
     }

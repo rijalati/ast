@@ -407,8 +407,7 @@ char **argv;           /* Argument strings. */
     TkText *textPtr;
     TkTextIndex startIndex;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -421,8 +420,7 @@ char **argv;           /* Argument strings. */
      * Perform once-only initialization:
      */
 
-    if (tkTextNormalUid == NULL)
-    {
+    if (tkTextNormalUid == NULL) {
         tkTextCharUid = Tk_GetUid("char");
         tkTextDisabledUid = Tk_GetUid("disabled");
         tkTextNoneUid = Tk_GetUid("none");
@@ -435,8 +433,7 @@ char **argv;           /* Argument strings. */
      */
 
     new = Tk_CreateWindowFromPath(interp, tkwin, argv[1], ( char * )NULL);
-    if (new == NULL)
-    {
+    if (new == NULL) {
         return TCL_ERROR;
     }
 
@@ -535,8 +532,7 @@ char **argv;           /* Argument strings. */
                         TextFetchSelection,
                         ( ClientData )textPtr,
                         XA_STRING);
-    if (ConfigureText(interp, textPtr, argc - 2, argv + 2, 0) != TCL_OK)
-    {
+    if (ConfigureText(interp, textPtr, argc - 2, argv + 2, 0) != TCL_OK) {
         Tk_DestroyWindow(textPtr->tkwin);
         return TCL_ERROR;
     }
@@ -575,8 +571,7 @@ char **argv;           /* Argument strings. */
     int c;
     TkTextIndex index1, index2;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -587,12 +582,10 @@ char **argv;           /* Argument strings. */
     Tcl_Preserve(( ClientData )textPtr);
     c = argv[1][0];
     length = strlen(argv[1]);
-    if ((c == 'b') && (strncmp(argv[1], "bbox", length) == 0))
-    {
+    if ((c == 'b') && (strncmp(argv[1], "bbox", length) == 0)) {
         int x, y, width, height;
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -601,21 +594,16 @@ char **argv;           /* Argument strings. */
             result = TCL_ERROR;
             goto done;
         }
-        if (TkTextGetIndex(interp, textPtr, argv[2], &index1) != TCL_OK)
-        {
+        if (TkTextGetIndex(interp, textPtr, argv[2], &index1) != TCL_OK) {
             result = TCL_ERROR;
             goto done;
         }
-        if (TkTextCharBbox(textPtr, &index1, &x, &y, &width, &height) == 0)
-        {
+        if (TkTextCharBbox(textPtr, &index1, &x, &y, &width, &height) == 0) {
             sprintf(interp->result, "%d %d %d %d", x, y, width, height);
         }
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "cget", length) == 0)
-             && (length >= 2))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 'c') && (strncmp(argv[1], "cget", length) == 0)
+               && (length >= 2)) {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -626,15 +614,12 @@ char **argv;           /* Argument strings. */
         }
         result = Tk_ConfigureValue(
         interp, textPtr->tkwin, configSpecs, ( char * )textPtr, argv[2], 0);
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "compare", length) == 0)
-             && (length >= 3))
-    {
+    } else if ((c == 'c') && (strncmp(argv[1], "compare", length) == 0)
+               && (length >= 3)) {
         int relation, value;
         char *p;
 
-        if (argc != 5)
-        {
+        if (argc != 5) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -644,22 +629,17 @@ char **argv;           /* Argument strings. */
             goto done;
         }
         if ((TkTextGetIndex(interp, textPtr, argv[2], &index1) != TCL_OK)
-            || (TkTextGetIndex(interp, textPtr, argv[4], &index2) != TCL_OK))
-        {
+            || (TkTextGetIndex(interp, textPtr, argv[4], &index2) != TCL_OK)) {
             result = TCL_ERROR;
             goto done;
         }
         relation = TkTextIndexCmp(&index1, &index2);
         p = argv[3];
-        if (p[0] == '<')
-        {
+        if (p[0] == '<') {
             value = (relation < 0);
-            if ((p[1] == '=') && (p[2] == 0))
-            {
+            if ((p[1] == '=') && (p[2] == 0)) {
                 value = (relation <= 0);
-            }
-            else if (p[1] != 0)
-            {
+            } else if (p[1] != 0) {
             compareError:
                 Tcl_AppendResult(interp,
                                  "bad comparison operator \"",
@@ -669,65 +649,44 @@ char **argv;           /* Argument strings. */
                 result = TCL_ERROR;
                 goto done;
             }
-        }
-        else if (p[0] == '>')
-        {
+        } else if (p[0] == '>') {
             value = (relation > 0);
-            if ((p[1] == '=') && (p[2] == 0))
-            {
+            if ((p[1] == '=') && (p[2] == 0)) {
                 value = (relation >= 0);
-            }
-            else if (p[1] != 0)
-            {
+            } else if (p[1] != 0) {
                 goto compareError;
             }
-        }
-        else if ((p[0] == '=') && (p[1] == '=') && (p[2] == 0))
-        {
+        } else if ((p[0] == '=') && (p[1] == '=') && (p[2] == 0)) {
             value = (relation == 0);
-        }
-        else if ((p[0] == '!') && (p[1] == '=') && (p[2] == 0))
-        {
+        } else if ((p[0] == '!') && (p[1] == '=') && (p[2] == 0)) {
             value = (relation != 0);
-        }
-        else
-        {
+        } else {
             goto compareError;
         }
         interp->result = (value) ? "1" : "0";
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
-             && (length >= 3))
-    {
-        if (argc == 2)
-        {
+    } else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
+               && (length >= 3)) {
+        if (argc == 2) {
             result = Tk_ConfigureInfo(interp,
                                       textPtr->tkwin,
                                       configSpecs,
                                       ( char * )textPtr,
                                       ( char * )NULL,
                                       0);
-        }
-        else if (argc == 3)
-        {
+        } else if (argc == 3) {
             result = Tk_ConfigureInfo(interp,
                                       textPtr->tkwin,
                                       configSpecs,
                                       ( char * )textPtr,
                                       argv[2],
                                       0);
-        }
-        else
-        {
+        } else {
             result = ConfigureText(
             interp, textPtr, argc - 2, argv + 2, TK_CONFIG_ARGV_ONLY);
         }
-    }
-    else if ((c == 'd') && (strncmp(argv[1], "debug", length) == 0)
-             && (length >= 3))
-    {
-        if (argc > 3)
-        {
+    } else if ((c == 'd') && (strncmp(argv[1], "debug", length) == 0)
+               && (length >= 3)) {
+        if (argc > 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -736,25 +695,18 @@ char **argv;           /* Argument strings. */
             result = TCL_ERROR;
             goto done;
         }
-        if (argc == 2)
-        {
+        if (argc == 2) {
             interp->result = (tkBTreeDebug) ? "1" : "0";
-        }
-        else
-        {
-            if (Tcl_GetBoolean(interp, argv[2], &tkBTreeDebug) != TCL_OK)
-            {
+        } else {
+            if (Tcl_GetBoolean(interp, argv[2], &tkBTreeDebug) != TCL_OK) {
                 result = TCL_ERROR;
                 goto done;
             }
             tkTextDebug = tkBTreeDebug;
         }
-    }
-    else if ((c == 'd') && (strncmp(argv[1], "delete", length) == 0)
-             && (length >= 3))
-    {
-        if ((argc != 3) && (argc != 4))
-        {
+    } else if ((c == 'd') && (strncmp(argv[1], "delete", length) == 0)
+               && (length >= 3)) {
+        if ((argc != 3) && (argc != 4)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -763,19 +715,15 @@ char **argv;           /* Argument strings. */
             result = TCL_ERROR;
             goto done;
         }
-        if (textPtr->state == tkTextNormalUid)
-        {
+        if (textPtr->state == tkTextNormalUid) {
             result = DeleteChars(
             textPtr, argv[2], (argc == 4) ? argv[3] : ( char * )NULL);
         }
-    }
-    else if ((c == 'd') && (strncmp(argv[1], "dlineinfo", length) == 0)
-             && (length >= 2))
-    {
+    } else if ((c == 'd') && (strncmp(argv[1], "dlineinfo", length) == 0)
+               && (length >= 2)) {
         int x, y, width, height, base;
 
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -784,22 +732,17 @@ char **argv;           /* Argument strings. */
             result = TCL_ERROR;
             goto done;
         }
-        if (TkTextGetIndex(interp, textPtr, argv[2], &index1) != TCL_OK)
-        {
+        if (TkTextGetIndex(interp, textPtr, argv[2], &index1) != TCL_OK) {
             result = TCL_ERROR;
             goto done;
         }
         if (TkTextDLineInfo(textPtr, &index1, &x, &y, &width, &height, &base)
-            == 0)
-        {
+            == 0) {
             sprintf(
             interp->result, "%d %d %d %d %d", x, y, width, height, base);
         }
-    }
-    else if ((c == 'g') && (strncmp(argv[1], "get", length) == 0))
-    {
-        if ((argc != 3) && (argc != 4))
-        {
+    } else if ((c == 'g') && (strncmp(argv[1], "get", length) == 0)) {
+        if ((argc != 3) && (argc != 4)) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -808,48 +751,39 @@ char **argv;           /* Argument strings. */
             result = TCL_ERROR;
             goto done;
         }
-        if (TkTextGetIndex(interp, textPtr, argv[2], &index1) != TCL_OK)
-        {
+        if (TkTextGetIndex(interp, textPtr, argv[2], &index1) != TCL_OK) {
             result = TCL_ERROR;
             goto done;
         }
-        if (argc == 3)
-        {
+        if (argc == 3) {
             index2 = index1;
             TkTextIndexForwChars(&index2, 1, &index2);
-        }
-        else if (TkTextGetIndex(interp, textPtr, argv[3], &index2) != TCL_OK)
-        {
+        } else if (TkTextGetIndex(interp, textPtr, argv[3], &index2)
+                   != TCL_OK) {
             result = TCL_ERROR;
             goto done;
         }
-        if (TkTextIndexCmp(&index1, &index2) >= 0)
-        {
+        if (TkTextIndexCmp(&index1, &index2) >= 0) {
             goto done;
         }
-        while (1)
-        {
+        while (1) {
             int offset, last, savedChar;
             TkTextSegment *segPtr;
 
             segPtr = TkTextIndexToSeg(&index1, &offset);
             last = segPtr->size;
-            if (index1.linePtr == index2.linePtr)
-            {
+            if (index1.linePtr == index2.linePtr) {
                 int last2;
 
-                if (index2.charIndex == index1.charIndex)
-                {
+                if (index2.charIndex == index1.charIndex) {
                     break;
                 }
                 last2 = index2.charIndex - index1.charIndex + offset;
-                if (last2 < last)
-                {
+                if (last2 < last) {
                     last = last2;
                 }
             }
-            if (segPtr->typePtr == &tkTextCharType)
-            {
+            if (segPtr->typePtr == &tkTextCharType) {
                 savedChar = segPtr->body.chars[last];
                 segPtr->body.chars[last] = 0;
                 Tcl_AppendResult(
@@ -858,12 +792,9 @@ char **argv;           /* Argument strings. */
             }
             TkTextIndexForwChars(&index1, last - offset, &index1);
         }
-    }
-    else if ((c == 'i') && (strncmp(argv[1], "index", length) == 0)
-             && (length >= 3))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 'i') && (strncmp(argv[1], "index", length) == 0)
+               && (length >= 3)) {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -872,22 +803,18 @@ char **argv;           /* Argument strings. */
             result = TCL_ERROR;
             goto done;
         }
-        if (TkTextGetIndex(interp, textPtr, argv[2], &index1) != TCL_OK)
-        {
+        if (TkTextGetIndex(interp, textPtr, argv[2], &index1) != TCL_OK) {
             result = TCL_ERROR;
             goto done;
         }
         TkTextPrintIndex(&index1, interp->result);
-    }
-    else if ((c == 'i') && (strncmp(argv[1], "insert", length) == 0)
-             && (length >= 3))
-    {
+    } else if ((c == 'i') && (strncmp(argv[1], "insert", length) == 0)
+               && (length >= 3)) {
         int i, j, numTags;
         char **tagNames;
         TkTextTag **oldTagArrayPtr;
 
-        if (argc < 4)
-        {
+        if (argc < 4) {
             Tcl_AppendResult(
             interp,
             "wrong # args: should be \"",
@@ -897,38 +824,30 @@ char **argv;           /* Argument strings. */
             result = TCL_ERROR;
             goto done;
         }
-        if (TkTextGetIndex(interp, textPtr, argv[2], &index1) != TCL_OK)
-        {
+        if (TkTextGetIndex(interp, textPtr, argv[2], &index1) != TCL_OK) {
             result = TCL_ERROR;
             goto done;
         }
-        if (textPtr->state == tkTextNormalUid)
-        {
-            for (j = 3; j < argc; j += 2)
-            {
+        if (textPtr->state == tkTextNormalUid) {
+            for (j = 3; j < argc; j += 2) {
                 InsertChars(textPtr, &index1, argv[j]);
-                if (argc > (j + 1))
-                {
+                if (argc > (j + 1)) {
                     TkTextIndexForwChars(
                     &index1, ( int )strlen(argv[j]), &index2);
                     oldTagArrayPtr = TkBTreeGetTags(&index1, &numTags);
-                    if (oldTagArrayPtr != NULL)
-                    {
-                        for (i = 0; i < numTags; i++)
-                        {
+                    if (oldTagArrayPtr != NULL) {
+                        for (i = 0; i < numTags; i++) {
                             TkBTreeTag(
                             &index1, &index2, oldTagArrayPtr[i], 0);
                         }
                         ckfree(( char * )oldTagArrayPtr);
                     }
                     if (Tcl_SplitList(interp, argv[j + 1], &numTags, &tagNames)
-                        != TCL_OK)
-                    {
+                        != TCL_OK) {
                         result = TCL_ERROR;
                         goto done;
                     }
-                    for (i = 0; i < numTags; i++)
-                    {
+                    for (i = 0; i < numTags; i++) {
                         TkBTreeTag(&index1,
                                    &index2,
                                    TkTextCreateTag(textPtr, tagNames[i]),
@@ -939,46 +858,28 @@ char **argv;           /* Argument strings. */
                 }
             }
         }
-    }
-    else if ((c == 'd') && (strncmp(argv[1], "dump", length) == 0))
-    {
+    } else if ((c == 'd') && (strncmp(argv[1], "dump", length) == 0)) {
         result = TextDumpCmd(textPtr, interp, argc, argv);
-    }
-    else if ((c == 'm') && (strncmp(argv[1], "mark", length) == 0))
-    {
+    } else if ((c == 'm') && (strncmp(argv[1], "mark", length) == 0)) {
         result = TkTextMarkCmd(textPtr, interp, argc, argv);
-    }
-    else if ((c == 's') && (strcmp(argv[1], "scan") == 0) && (length >= 2))
-    {
+    } else if ((c == 's') && (strcmp(argv[1], "scan") == 0)
+               && (length >= 2)) {
         result = TkTextScanCmd(textPtr, interp, argc, argv);
-    }
-    else if ((c == 's') && (strcmp(argv[1], "search") == 0) && (length >= 3))
-    {
+    } else if ((c == 's') && (strcmp(argv[1], "search") == 0)
+               && (length >= 3)) {
         result = TextSearchCmd(textPtr, interp, argc, argv);
-    }
-    else if ((c == 's') && (strcmp(argv[1], "see") == 0) && (length >= 3))
-    {
+    } else if ((c == 's') && (strcmp(argv[1], "see") == 0) && (length >= 3)) {
         result = TkTextSeeCmd(textPtr, interp, argc, argv);
-    }
-    else if ((c == 't') && (strcmp(argv[1], "tag") == 0))
-    {
+    } else if ((c == 't') && (strcmp(argv[1], "tag") == 0)) {
         result = TkTextTagCmd(textPtr, interp, argc, argv);
-    }
-    else if ((c == 'w') && (strncmp(argv[1], "window", length) == 0))
-    {
+    } else if ((c == 'w') && (strncmp(argv[1], "window", length) == 0)) {
         result = TkTextWindowCmd(textPtr, interp, argc, argv);
-    }
-    else if ((c == 'x') && (strncmp(argv[1], "xview", length) == 0))
-    {
+    } else if ((c == 'x') && (strncmp(argv[1], "xview", length) == 0)) {
         result = TkTextXviewCmd(textPtr, interp, argc, argv);
-    }
-    else if ((c == 'y') && (strncmp(argv[1], "yview", length) == 0)
-             && (length >= 2))
-    {
+    } else if ((c == 'y') && (strncmp(argv[1], "yview", length) == 0)
+               && (length >= 2)) {
         result = TkTextYviewCmd(textPtr, interp, argc, argv);
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(
         interp,
         "bad option \"",
@@ -1031,29 +932,24 @@ static void DestroyText(memPtr) char *memPtr; /* Info about text widget. */
     TkTextFreeDInfo(textPtr);
     TkBTreeDestroy(textPtr->tree);
     for (hPtr = Tcl_FirstHashEntry(&textPtr->tagTable, &search); hPtr != NULL;
-         hPtr = Tcl_NextHashEntry(&search))
-    {
+         hPtr = Tcl_NextHashEntry(&search)) {
         tagPtr = ( TkTextTag * )Tcl_GetHashValue(hPtr);
         TkTextFreeTag(textPtr, tagPtr);
     }
     Tcl_DeleteHashTable(&textPtr->tagTable);
     for (hPtr = Tcl_FirstHashEntry(&textPtr->markTable, &search);
          hPtr != NULL;
-         hPtr = Tcl_NextHashEntry(&search))
-    {
+         hPtr = Tcl_NextHashEntry(&search)) {
         ckfree(( char * )Tcl_GetHashValue(hPtr));
     }
     Tcl_DeleteHashTable(&textPtr->markTable);
-    if (textPtr->tabArrayPtr != NULL)
-    {
+    if (textPtr->tabArrayPtr != NULL) {
         ckfree(( char * )textPtr->tabArrayPtr);
     }
-    if (textPtr->insertBlinkHandler != NULL)
-    {
+    if (textPtr->insertBlinkHandler != NULL) {
         Tcl_DeleteTimerHandler(textPtr->insertBlinkHandler);
     }
-    if (textPtr->bindingTable != NULL)
-    {
+    if (textPtr->bindingTable != NULL) {
         Tk_DeleteBindingTable(textPtr->bindingTable);
     }
 
@@ -1109,8 +1005,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
                            argv,
                            ( char * )textPtr,
                            flags)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -1120,8 +1015,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      */
 
     if ((textPtr->state != tkTextNormalUid)
-        && (textPtr->state != tkTextDisabledUid))
-    {
+        && (textPtr->state != tkTextDisabledUid)) {
         Tcl_AppendResult(interp,
                          "bad state value \"",
                          textPtr->state,
@@ -1133,8 +1027,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
 
     if ((textPtr->wrapMode != tkTextCharUid)
         && (textPtr->wrapMode != tkTextNoneUid)
-        && (textPtr->wrapMode != tkTextWordUid))
-    {
+        && (textPtr->wrapMode != tkTextWordUid)) {
         Tcl_AppendResult(interp,
                          "bad wrap mode \"",
                          textPtr->wrapMode,
@@ -1150,16 +1043,13 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * Don't allow negative spacings.
      */
 
-    if (textPtr->spacing1 < 0)
-    {
+    if (textPtr->spacing1 < 0) {
         textPtr->spacing1 = 0;
     }
-    if (textPtr->spacing2 < 0)
-    {
+    if (textPtr->spacing2 < 0) {
         textPtr->spacing2 = 0;
     }
-    if (textPtr->spacing3 < 0)
-    {
+    if (textPtr->spacing3 < 0) {
         textPtr->spacing3 = 0;
     }
 
@@ -1167,17 +1057,14 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * Parse tab stops.
      */
 
-    if (textPtr->tabArrayPtr != NULL)
-    {
+    if (textPtr->tabArrayPtr != NULL) {
         ckfree(( char * )textPtr->tabArrayPtr);
         textPtr->tabArrayPtr = NULL;
     }
-    if (textPtr->tabOptionString != NULL)
-    {
+    if (textPtr->tabOptionString != NULL) {
         textPtr->tabArrayPtr
         = TkTextGetTabs(interp, textPtr->tkwin, textPtr->tabOptionString);
-        if (textPtr->tabArrayPtr == NULL)
-        {
+        if (textPtr->tabArrayPtr == NULL) {
             Tcl_AddErrorInfo(interp, "\n    (while processing -tabs option)");
             return TCL_ERROR;
         }
@@ -1192,21 +1079,17 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      */
 
     textPtr->selTagPtr->border = textPtr->selBorder;
-    if (textPtr->selTagPtr->bdString != textPtr->selBdString)
-    {
+    if (textPtr->selTagPtr->bdString != textPtr->selBdString) {
         textPtr->selTagPtr->bdString = textPtr->selBdString;
-        if (textPtr->selBdString != NULL)
-        {
+        if (textPtr->selBdString != NULL) {
             if (Tk_GetPixels(interp,
                              textPtr->tkwin,
                              textPtr->selBdString,
                              &textPtr->selTagPtr->borderWidth)
-                != TCL_OK)
-            {
+                != TCL_OK) {
                 return TCL_ERROR;
             }
-            if (textPtr->selTagPtr->borderWidth < 0)
-            {
+            if (textPtr->selTagPtr->borderWidth < 0) {
                 textPtr->selTagPtr->borderWidth = 0;
             }
         }
@@ -1231,8 +1114,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
         || (textPtr->selTagPtr->spacing3String != NULL)
         || (textPtr->selTagPtr->tabString != NULL)
         || (textPtr->selTagPtr->underlineString != NULL)
-        || (textPtr->selTagPtr->wrapMode != NULL))
-    {
+        || (textPtr->selTagPtr->wrapMode != NULL)) {
         textPtr->selTagPtr->affectsDisplay = 1;
     }
     TkTextRedrawTag(textPtr,
@@ -1246,8 +1128,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * are tagged characters.
      */
 
-    if (textPtr->exportSelection && (!oldExport))
-    {
+    if (textPtr->exportSelection && (!oldExport)) {
         TkTextSearch search;
         TkTextIndex first, last;
 
@@ -1256,8 +1137,7 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
         textPtr->tree, TkBTreeNumLines(textPtr->tree), 0, &last);
         TkBTreeStartSearch(&first, &last, textPtr->selTagPtr, &search);
         if (TkBTreeCharTagged(&first, textPtr->selTagPtr)
-            || TkBTreeNextTag(&search))
-        {
+            || TkBTreeNextTag(&search)) {
             Tk_OwnSelection(textPtr->tkwin,
                             XA_PRIMARY,
                             TkTextLostSelection,
@@ -1271,17 +1151,14 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
      * the window to be redisplayed.
      */
 
-    if (textPtr->width <= 0)
-    {
+    if (textPtr->width <= 0) {
         textPtr->width = 1;
     }
-    if (textPtr->height <= 0)
-    {
+    if (textPtr->height <= 0) {
         textPtr->height = 1;
     }
     textPtr->charWidth = XTextWidth(textPtr->fontPtr, "0", 1);
-    if (textPtr->charWidth <= 0)
-    {
+    if (textPtr->charWidth <= 0) {
         textPtr->charWidth = 1;
     }
     charHeight = (textPtr->fontPtr->ascent + textPtr->fontPtr->descent);
@@ -1293,16 +1170,13 @@ int flags;          /* Flags to pass to Tk_ConfigureWidget. */
                        + 2 * textPtr->padY + 2 * textPtr->highlightWidth);
     Tk_SetInternalBorder(textPtr->tkwin,
                          textPtr->borderWidth + textPtr->highlightWidth);
-    if (textPtr->setGrid)
-    {
+    if (textPtr->setGrid) {
         Tk_SetGrid(textPtr->tkwin,
                    textPtr->width,
                    textPtr->height,
                    textPtr->charWidth,
                    charHeight);
-    }
-    else
-    {
+    } else {
         Tk_UnsetGrid(textPtr->tkwin);
     }
 
@@ -1337,30 +1211,22 @@ XEvent *eventPtr; /* Information about event. */
     TkText *textPtr = ( TkText * )clientData;
     TkTextIndex index, index2;
 
-    if (eventPtr->type == Expose)
-    {
+    if (eventPtr->type == Expose) {
         TkTextRedrawRegion(textPtr,
                            eventPtr->xexpose.x,
                            eventPtr->xexpose.y,
                            eventPtr->xexpose.width,
                            eventPtr->xexpose.height);
-    }
-    else if (eventPtr->type == ConfigureNotify)
-    {
+    } else if (eventPtr->type == ConfigureNotify) {
         if ((textPtr->prevWidth != Tk_Width(textPtr->tkwin))
-            || (textPtr->prevHeight != Tk_Height(textPtr->tkwin)))
-        {
+            || (textPtr->prevHeight != Tk_Height(textPtr->tkwin))) {
             TkTextRelayoutWindow(textPtr);
             textPtr->prevWidth = Tk_Width(textPtr->tkwin);
             textPtr->prevHeight = Tk_Height(textPtr->tkwin);
         }
-    }
-    else if (eventPtr->type == DestroyNotify)
-    {
-        if (textPtr->tkwin != NULL)
-        {
-            if (textPtr->setGrid)
-            {
+    } else if (eventPtr->type == DestroyNotify) {
+        if (textPtr->tkwin != NULL) {
+            if (textPtr->setGrid) {
                 Tk_UnsetGrid(textPtr->tkwin);
             }
             textPtr->tkwin = NULL;
@@ -1369,33 +1235,25 @@ XEvent *eventPtr; /* Information about event. */
             Tcl_GetCommandName(textPtr->interp, textPtr->widgetCmd));
         }
         Tcl_EventuallyFree(( ClientData )textPtr, DestroyText);
-    }
-    else if ((eventPtr->type == FocusIn) || (eventPtr->type == FocusOut))
-    {
-        if (eventPtr->xfocus.detail != NotifyInferior)
-        {
+    } else if ((eventPtr->type == FocusIn) || (eventPtr->type == FocusOut)) {
+        if (eventPtr->xfocus.detail != NotifyInferior) {
             Tcl_DeleteTimerHandler(textPtr->insertBlinkHandler);
-            if (eventPtr->type == FocusIn)
-            {
+            if (eventPtr->type == FocusIn) {
                 textPtr->flags |= GOT_FOCUS | INSERT_ON;
-                if (textPtr->insertOffTime != 0)
-                {
+                if (textPtr->insertOffTime != 0) {
                     textPtr->insertBlinkHandler
                     = Tcl_CreateTimerHandler(textPtr->insertOnTime,
                                              TextBlinkProc,
                                              ( ClientData )textPtr);
                 }
-            }
-            else
-            {
+            } else {
                 textPtr->flags &= ~(GOT_FOCUS | INSERT_ON);
                 textPtr->insertBlinkHandler = ( Tcl_TimerToken )NULL;
             }
             TkTextMarkSegToIndex(textPtr, textPtr->insertMarkPtr, &index);
             TkTextIndexForwChars(&index, 1, &index2);
             TkTextChanged(textPtr, &index, &index2);
-            if (textPtr->highlightWidth > 0)
-            {
+            if (textPtr->highlightWidth > 0) {
                 TkTextRedrawRegion(textPtr,
                                    0,
                                    0,
@@ -1437,10 +1295,8 @@ ClientData clientData; /* Pointer to widget record for widget. */
      * destroys the widget.
      */
 
-    if (tkwin != NULL)
-    {
-        if (textPtr->setGrid)
-        {
+    if (tkwin != NULL) {
+        if (textPtr->setGrid) {
             Tk_UnsetGrid(textPtr->tkwin);
         }
         textPtr->tkwin = NULL;
@@ -1483,8 +1339,7 @@ char *string;          /* Null-terminated string containing new
      */
 
     lineIndex = TkBTreeLineIndex(indexPtr->linePtr);
-    if (lineIndex == TkBTreeNumLines(textPtr->tree))
-    {
+    if (lineIndex == TkBTreeNumLines(textPtr->tree)) {
         lineIndex--;
         TkTextMakeIndex(textPtr->tree, lineIndex, 1000000, indexPtr);
     }
@@ -1497,19 +1352,16 @@ char *string;          /* Null-terminated string containing new
      */
 
     resetView = offset = 0;
-    if (indexPtr->linePtr == textPtr->topIndex.linePtr)
-    {
+    if (indexPtr->linePtr == textPtr->topIndex.linePtr) {
         resetView = 1;
         offset = textPtr->topIndex.charIndex;
-        if (offset > indexPtr->charIndex)
-        {
+        if (offset > indexPtr->charIndex) {
             offset += strlen(string);
         }
     }
     TkTextChanged(textPtr, indexPtr, indexPtr);
     TkBTreeInsertChars(indexPtr, string);
-    if (resetView)
-    {
+    if (resetView) {
         TkTextMakeIndex(textPtr->tree, lineIndex, 0, &newTop);
         TkTextIndexForwChars(&newTop, offset, &newTop);
         TkTextSetYView(textPtr, &newTop, 0);
@@ -1559,20 +1411,15 @@ char *index2String; /* String describing location of last
      */
 
     if (TkTextGetIndex(textPtr->interp, textPtr, index1String, &index1)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
-    if (index2String != NULL)
-    {
+    if (index2String != NULL) {
         if (TkTextGetIndex(textPtr->interp, textPtr, index2String, &index2)
-            != TCL_OK)
-        {
+            != TCL_OK) {
             return TCL_ERROR;
         }
-    }
-    else
-    {
+    } else {
         index2 = index1;
         TkTextIndexForwChars(&index2, 1, &index2);
     }
@@ -1581,8 +1428,7 @@ char *index2String; /* String describing location of last
      * Make sure there's really something to delete.
      */
 
-    if (TkTextIndexCmp(&index1, &index2) >= 0)
-    {
+    if (TkTextIndexCmp(&index1, &index2) >= 0) {
         return TCL_OK;
     }
 
@@ -1600,8 +1446,7 @@ char *index2String; /* String describing location of last
 
     line1 = TkBTreeLineIndex(index1.linePtr);
     line2 = TkBTreeLineIndex(index2.linePtr);
-    if (line2 == TkBTreeNumLines(textPtr->tree))
-    {
+    if (line2 == TkBTreeNumLines(textPtr->tree)) {
         TkTextTag **arrayPtr;
         int arraySize, i;
         TkTextIndex oldIndex2;
@@ -1609,16 +1454,13 @@ char *index2String; /* String describing location of last
         oldIndex2 = index2;
         TkTextIndexBackChars(&oldIndex2, 1, &index2);
         line2--;
-        if ((index1.charIndex == 0) && (line1 != 0))
-        {
+        if ((index1.charIndex == 0) && (line1 != 0)) {
             TkTextIndexBackChars(&index1, 1, &index1);
             line1--;
         }
         arrayPtr = TkBTreeGetTags(&index2, &arraySize);
-        if (arrayPtr != NULL)
-        {
-            for (i = 0; i < arraySize; i++)
-            {
+        if (arrayPtr != NULL) {
+            for (i = 0; i < arraySize; i++) {
                 TkBTreeTag(&index2, &oldIndex2, arrayPtr[i], 0);
             }
             ckfree(( char * )arrayPtr);
@@ -1636,10 +1478,8 @@ char *index2String; /* String describing location of last
 
     TkTextChanged(textPtr, &index1, &index2);
     resetView = line = charIndex = 0;
-    if (TkTextIndexCmp(&index2, &textPtr->topIndex) >= 0)
-    {
-        if (TkTextIndexCmp(&index1, &textPtr->topIndex) <= 0)
-        {
+    if (TkTextIndexCmp(&index2, &textPtr->topIndex) >= 0) {
+        if (TkTextIndexCmp(&index1, &textPtr->topIndex) <= 0) {
             /*
              * Deletion range straddles topIndex: use the beginning
              * of the range as the new topIndex.
@@ -1648,9 +1488,7 @@ char *index2String; /* String describing location of last
             resetView = 1;
             line = line1;
             charIndex = index1.charIndex;
-        }
-        else if (index1.linePtr == textPtr->topIndex.linePtr)
-        {
+        } else if (index1.linePtr == textPtr->topIndex.linePtr) {
             /*
              * Deletion range starts on top line but after topIndex.
              * Use the current topIndex as the new one.
@@ -1660,9 +1498,7 @@ char *index2String; /* String describing location of last
             line = line1;
             charIndex = textPtr->topIndex.charIndex;
         }
-    }
-    else if (index2.linePtr == textPtr->topIndex.linePtr)
-    {
+    } else if (index2.linePtr == textPtr->topIndex.linePtr) {
         /*
          * Deletion range ends on top line but before topIndex.
          * Figure out what will be the new character index for
@@ -1672,18 +1508,14 @@ char *index2String; /* String describing location of last
         resetView = 1;
         line = line2;
         charIndex = textPtr->topIndex.charIndex;
-        if (index1.linePtr != index2.linePtr)
-        {
+        if (index1.linePtr != index2.linePtr) {
             charIndex -= index2.charIndex;
-        }
-        else
-        {
+        } else {
             charIndex -= (index2.charIndex - index1.charIndex);
         }
     }
     TkBTreeDeleteChars(&index1, &index2);
-    if (resetView)
-    {
+    if (resetView) {
         TkTextMakeIndex(textPtr->tree, line, charIndex, &index1);
         TkTextSetYView(textPtr, &index1, 0);
     }
@@ -1734,8 +1566,7 @@ int maxBytes;          /* Maximum number of bytes to place
     TkTextSearch search;
     TkTextSegment *segPtr;
 
-    if (!textPtr->exportSelection)
-    {
+    if (!textPtr->exportSelection) {
         return -1;
     }
 
@@ -1747,27 +1578,19 @@ int maxBytes;          /* Maximum number of bytes to place
      * again).
      */
 
-    if (offset == 0)
-    {
+    if (offset == 0) {
         TkTextMakeIndex(textPtr->tree, 0, 0, &textPtr->selIndex);
         textPtr->abortSelections = 0;
-    }
-    else if (textPtr->abortSelections)
-    {
+    } else if (textPtr->abortSelections) {
         return 0;
     }
     TkTextMakeIndex(textPtr->tree, TkBTreeNumLines(textPtr->tree), 0, &eof);
     TkBTreeStartSearch(&textPtr->selIndex, &eof, textPtr->selTagPtr, &search);
-    if (!TkBTreeCharTagged(&textPtr->selIndex, textPtr->selTagPtr))
-    {
-        if (!TkBTreeNextTag(&search))
-        {
-            if (offset == 0)
-            {
+    if (!TkBTreeCharTagged(&textPtr->selIndex, textPtr->selTagPtr)) {
+        if (!TkBTreeNextTag(&search)) {
+            if (offset == 0) {
                 return -1;
-            }
-            else
-            {
+            } else {
                 return 0;
             }
         }
@@ -1781,14 +1604,12 @@ int maxBytes;          /* Maximum number of bytes to place
      */
 
     count = 0;
-    while (1)
-    {
+    while (1) {
         /*
          * Find the end of the current range of selected text.
          */
 
-        if (!TkBTreeNextTag(&search))
-        {
+        if (!TkBTreeNextTag(&search)) {
             panic("TextFetchSelection couldn't find end of range");
         }
 
@@ -1798,35 +1619,28 @@ int maxBytes;          /* Maximum number of bytes to place
          * to the end of this range of text.
          */
 
-        while (1)
-        {
-            if (maxBytes == 0)
-            {
+        while (1) {
+            if (maxBytes == 0) {
                 goto done;
             }
             segPtr = TkTextIndexToSeg(&textPtr->selIndex, &offsetInSeg);
             chunkSize = segPtr->size - offsetInSeg;
-            if (chunkSize > maxBytes)
-            {
+            if (chunkSize > maxBytes) {
                 chunkSize = maxBytes;
             }
-            if (textPtr->selIndex.linePtr == search.curIndex.linePtr)
-            {
+            if (textPtr->selIndex.linePtr == search.curIndex.linePtr) {
                 int leftInRange;
 
                 leftInRange
                 = search.curIndex.charIndex - textPtr->selIndex.charIndex;
-                if (leftInRange < chunkSize)
-                {
+                if (leftInRange < chunkSize) {
                     chunkSize = leftInRange;
-                    if (chunkSize <= 0)
-                    {
+                    if (chunkSize <= 0) {
                         break;
                     }
                 }
             }
-            if (segPtr->typePtr == &tkTextCharType)
-            {
+            if (segPtr->typePtr == &tkTextCharType) {
                 memcpy(( VOID * )buffer,
                        ( VOID * )(segPtr->body.chars + offsetInSeg),
                        ( size_t )chunkSize);
@@ -1842,8 +1656,7 @@ int maxBytes;          /* Maximum number of bytes to place
          * Find the beginning of the next range of selected text.
          */
 
-        if (!TkBTreeNextTag(&search))
-        {
+        if (!TkBTreeNextTag(&search)) {
             break;
         }
         textPtr->selIndex = search.curIndex;
@@ -1877,8 +1690,7 @@ ClientData clientData; /* Information about text widget. */
     TkText *textPtr = ( TkText * )clientData;
     TkTextIndex start, end;
 
-    if (!textPtr->exportSelection)
-    {
+    if (!textPtr->exportSelection) {
         return;
     }
 
@@ -1917,18 +1729,14 @@ ClientData clientData; /* Pointer to record describing text. */
     TkText *textPtr = ( TkText * )clientData;
     TkTextIndex index, index2;
 
-    if (!(textPtr->flags & GOT_FOCUS) || (textPtr->insertOffTime == 0))
-    {
+    if (!(textPtr->flags & GOT_FOCUS) || (textPtr->insertOffTime == 0)) {
         return;
     }
-    if (textPtr->flags & INSERT_ON)
-    {
+    if (textPtr->flags & INSERT_ON) {
         textPtr->flags &= ~INSERT_ON;
         textPtr->insertBlinkHandler = Tcl_CreateTimerHandler(
         textPtr->insertOffTime, TextBlinkProc, ( ClientData )textPtr);
-    }
-    else
-    {
+    } else {
         textPtr->flags |= INSERT_ON;
         textPtr->insertBlinkHandler = Tcl_CreateTimerHandler(
         textPtr->insertOnTime, TextBlinkProc, ( ClientData )textPtr);
@@ -1984,16 +1792,13 @@ char **argv;        /* Argument strings. */
     backwards = 0;
     noCase = 0;
     varName = NULL;
-    for (i = 2; i < argc; i++)
-    {
+    for (i = 2; i < argc; i++) {
         arg = argv[i];
-        if (arg[0] != '-')
-        {
+        if (arg[0] != '-') {
             break;
         }
         length = strlen(arg);
-        if (length < 2)
-        {
+        if (length < 2) {
         badSwitch:
             Tcl_AppendResult(
             interp,
@@ -2005,49 +1810,33 @@ char **argv;        /* Argument strings. */
             return TCL_ERROR;
         }
         c = arg[1];
-        if ((c == 'b') && (strncmp(argv[i], "-backwards", length) == 0))
-        {
+        if ((c == 'b') && (strncmp(argv[i], "-backwards", length) == 0)) {
             backwards = 1;
-        }
-        else if ((c == 'c') && (strncmp(argv[i], "-count", length) == 0))
-        {
-            if (i >= (argc - 1))
-            {
+        } else if ((c == 'c') && (strncmp(argv[i], "-count", length) == 0)) {
+            if (i >= (argc - 1)) {
                 interp->result = "no value given for \"-count\" option";
                 return TCL_ERROR;
             }
             i++;
             varName = argv[i];
-        }
-        else if ((c == 'e') && (strncmp(argv[i], "-exact", length) == 0))
-        {
+        } else if ((c == 'e') && (strncmp(argv[i], "-exact", length) == 0)) {
             exact = 1;
-        }
-        else if ((c == 'f') && (strncmp(argv[i], "-forwards", length) == 0))
-        {
+        } else if ((c == 'f')
+                   && (strncmp(argv[i], "-forwards", length) == 0)) {
             backwards = 0;
-        }
-        else if ((c == 'n') && (strncmp(argv[i], "-nocase", length) == 0))
-        {
+        } else if ((c == 'n') && (strncmp(argv[i], "-nocase", length) == 0)) {
             noCase = 1;
-        }
-        else if ((c == 'r') && (strncmp(argv[i], "-regexp", length) == 0))
-        {
+        } else if ((c == 'r') && (strncmp(argv[i], "-regexp", length) == 0)) {
             exact = 0;
-        }
-        else if ((c == '-') && (strncmp(argv[i], "--", length) == 0))
-        {
+        } else if ((c == '-') && (strncmp(argv[i], "--", length) == 0)) {
             i++;
             break;
-        }
-        else
-        {
+        } else {
             goto badSwitch;
         }
     }
     argsLeft = argc - (i + 2);
-    if ((argsLeft != 0) && (argsLeft != 1))
-    {
+    if ((argsLeft != 0) && (argsLeft != 1)) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -2061,57 +1850,44 @@ char **argv;        /* Argument strings. */
      * Convert the pattern to lower-case if we're supposed to ignore case.
      */
 
-    if (noCase)
-    {
+    if (noCase) {
         Tcl_DStringInit(&patDString);
         Tcl_DStringAppend(&patDString, pattern, -1);
         pattern = Tcl_DStringValue(&patDString);
-        for (p = pattern; *p != 0; p++)
-        {
-            if (isupper(UCHAR(*p)))
-            {
+        for (p = pattern; *p != 0; p++) {
+            if (isupper(UCHAR(*p))) {
                 *p = tolower(UCHAR(*p));
             }
         }
     }
 
-    if (TkTextGetIndex(interp, textPtr, argv[i + 1], &index) != TCL_OK)
-    {
+    if (TkTextGetIndex(interp, textPtr, argv[i + 1], &index) != TCL_OK) {
         return TCL_ERROR;
     }
     numLines = TkBTreeNumLines(textPtr->tree);
     startingLine = TkBTreeLineIndex(index.linePtr);
     startingChar = index.charIndex;
-    if (startingLine >= numLines)
-    {
-        if (backwards)
-        {
+    if (startingLine >= numLines) {
+        if (backwards) {
             startingLine = TkBTreeNumLines(textPtr->tree) - 1;
             startingChar = TkBTreeCharsInLine(
             TkBTreeFindLine(textPtr->tree, startingLine));
-        }
-        else
-        {
+        } else {
             startingLine = 0;
             startingChar = 0;
         }
     }
-    if (argsLeft == 1)
-    {
+    if (argsLeft == 1) {
         if (TkTextGetIndex(interp, textPtr, argv[i + 2], &stopIndex)
-            != TCL_OK)
-        {
+            != TCL_OK) {
             return TCL_ERROR;
         }
         stopLine = TkBTreeLineIndex(stopIndex.linePtr);
-        if (!backwards && (stopLine == numLines))
-        {
+        if (!backwards && (stopLine == numLines)) {
             stopLine = numLines - 1;
         }
         searchWholeText = 0;
-    }
-    else
-    {
+    } else {
         stopLine = 0;
         searchWholeText = 1;
     }
@@ -2123,25 +1899,19 @@ char **argv;        /* Argument strings. */
 
     matchLength = patLength = 0; /* Only needed to prevent compiler
                                   * warnings. */
-    if (exact)
-    {
+    if (exact) {
         patLength = strlen(pattern);
-    }
-    else
-    {
+    } else {
         regexp = Tcl_RegExpCompile(interp, pattern);
-        if (regexp == NULL)
-        {
+        if (regexp == NULL) {
             return TCL_ERROR;
         }
     }
     lineNum = startingLine;
     code = TCL_OK;
     Tcl_DStringInit(&line);
-    for (passes = 0; passes < 2;)
-    {
-        if (lineNum >= numLines)
-        {
+    for (passes = 0; passes < 2;) {
+        if (lineNum >= numLines) {
             /*
              * Don't search the dummy last line of the text.
              */
@@ -2157,16 +1927,13 @@ char **argv;        /* Argument strings. */
 
         linePtr = TkBTreeFindLine(textPtr->tree, lineNum);
         for (segPtr = linePtr->segPtr; segPtr != NULL;
-             segPtr = segPtr->nextPtr)
-        {
-            if (segPtr->typePtr != &tkTextCharType)
-            {
+             segPtr = segPtr->nextPtr) {
+            if (segPtr->typePtr != &tkTextCharType) {
                 continue;
             }
             Tcl_DStringAppend(&line, segPtr->body.chars, segPtr->size);
         }
-        if (!exact)
-        {
+        if (!exact) {
             Tcl_DStringSetLength(&line, Tcl_DStringLength(&line) - 1);
         }
         startOfLine = Tcl_DStringValue(&line);
@@ -2175,12 +1942,9 @@ char **argv;        /* Argument strings. */
          * If we're ignoring case, convert the line to lower case.
          */
 
-        if (noCase)
-        {
-            for (p = Tcl_DStringValue(&line); *p != 0; p++)
-            {
-                if (isupper(UCHAR(*p)))
-                {
+        if (noCase) {
+            for (p = Tcl_DStringValue(&line); *p != 0; p++) {
+                if (isupper(UCHAR(*p))) {
                     *p = tolower(UCHAR(*p));
                 }
             }
@@ -2195,8 +1959,7 @@ char **argv;        /* Argument strings. */
         matchChar = -1;
         firstChar = 0;
         lastChar = INT_MAX;
-        if (lineNum == startingLine)
-        {
+        if (lineNum == startingLine) {
             int indexInDString;
 
             /*
@@ -2212,30 +1975,24 @@ char **argv;        /* Argument strings. */
             indexInDString = startingChar;
             for (segPtr = linePtr->segPtr, leftToScan = startingChar;
                  leftToScan > 0;
-                 segPtr = segPtr->nextPtr)
-            {
-                if (segPtr->typePtr != &tkTextCharType)
-                {
+                 segPtr = segPtr->nextPtr) {
+                if (segPtr->typePtr != &tkTextCharType) {
                     indexInDString -= segPtr->size;
                 }
                 leftToScan -= segPtr->size;
             }
 
             passes++;
-            if ((passes == 1) ^ backwards)
-            {
+            if ((passes == 1) ^ backwards) {
                 /*
                  * Only use the last part of the line.
                  */
 
                 firstChar = indexInDString;
-                if (firstChar >= Tcl_DStringLength(&line))
-                {
+                if (firstChar >= Tcl_DStringLength(&line)) {
                     goto nextLine;
                 }
-            }
-            else
-            {
+            } else {
                 /*
                  * Use only the first part of the line.
                  */
@@ -2243,41 +2000,33 @@ char **argv;        /* Argument strings. */
                 lastChar = indexInDString;
             }
         }
-        do
-        {
+        do {
             int thisLength;
-            if (exact)
-            {
+            if (exact) {
                 p = strstr(startOfLine + firstChar, pattern);
-                if (p == NULL)
-                {
+                if (p == NULL) {
                     break;
                 }
                 i = p - startOfLine;
                 thisLength = patLength;
-            }
-            else
-            {
+            } else {
                 char *start, *end;
                 int match;
 
                 match = Tcl_RegExpExec(
                 interp, regexp, startOfLine + firstChar, startOfLine);
-                if (match < 0)
-                {
+                if (match < 0) {
                     code = TCL_ERROR;
                     goto done;
                 }
-                if (!match)
-                {
+                if (!match) {
                     break;
                 }
                 Tcl_RegExpRange(regexp, 0, &start, &end);
                 i = start - startOfLine;
                 thisLength = end - start;
             }
-            if (i >= lastChar)
-            {
+            if (i >= lastChar) {
                 break;
             }
             matchChar = i;
@@ -2291,8 +2040,7 @@ char **argv;        /* Argument strings. */
          * specified.
          */
 
-        if (matchChar >= 0)
-        {
+        if (matchChar >= 0) {
             /*
              * The index information returned by the regular expression
              * parser only considers textual information:  it doesn't
@@ -2303,43 +2051,34 @@ char **argv;        /* Argument strings. */
 
             for (segPtr = linePtr->segPtr, leftToScan = matchChar;
                  leftToScan >= 0;
-                 segPtr = segPtr->nextPtr)
-            {
-                if (segPtr->typePtr != &tkTextCharType)
-                {
+                 segPtr = segPtr->nextPtr) {
+                if (segPtr->typePtr != &tkTextCharType) {
                     matchChar += segPtr->size;
                     continue;
                 }
                 leftToScan -= segPtr->size;
             }
             for (leftToScan += matchLength; leftToScan > 0;
-                 segPtr = segPtr->nextPtr)
-            {
-                if (segPtr->typePtr != &tkTextCharType)
-                {
+                 segPtr = segPtr->nextPtr) {
+                if (segPtr->typePtr != &tkTextCharType) {
                     matchLength += segPtr->size;
                     continue;
                 }
                 leftToScan -= segPtr->size;
             }
             TkTextMakeIndex(textPtr->tree, lineNum, matchChar, &index);
-            if (!searchWholeText)
-            {
-                if (!backwards && (TkTextIndexCmp(&index, &stopIndex) >= 0))
-                {
+            if (!searchWholeText) {
+                if (!backwards && (TkTextIndexCmp(&index, &stopIndex) >= 0)) {
                     goto done;
                 }
-                if (backwards && (TkTextIndexCmp(&index, &stopIndex) < 0))
-                {
+                if (backwards && (TkTextIndexCmp(&index, &stopIndex) < 0)) {
                     goto done;
                 }
             }
-            if (varName != NULL)
-            {
+            if (varName != NULL) {
                 sprintf(buffer, "%d", matchLength);
                 if (Tcl_SetVar(interp, varName, buffer, TCL_LEAVE_ERR_MSG)
-                    == NULL)
-                {
+                    == NULL) {
                     code = TCL_ERROR;
                     goto done;
                 }
@@ -2353,33 +2092,22 @@ char **argv;        /* Argument strings. */
          */
 
     nextLine:
-        if (backwards)
-        {
+        if (backwards) {
             lineNum--;
-            if (!searchWholeText)
-            {
-                if (lineNum < stopLine)
-                {
+            if (!searchWholeText) {
+                if (lineNum < stopLine) {
                     break;
                 }
-            }
-            else if (lineNum < 0)
-            {
+            } else if (lineNum < 0) {
                 lineNum = numLines - 1;
             }
-        }
-        else
-        {
+        } else {
             lineNum++;
-            if (!searchWholeText)
-            {
-                if (lineNum > stopLine)
-                {
+            if (!searchWholeText) {
+                if (lineNum > stopLine) {
                     break;
                 }
-            }
-            else if (lineNum >= numLines)
-            {
+            } else if (lineNum >= numLines) {
                 lineNum = 0;
             }
         }
@@ -2387,8 +2115,7 @@ char **argv;        /* Argument strings. */
     }
 done:
     Tcl_DStringFree(&line);
-    if (noCase)
-    {
+    if (noCase) {
         Tcl_DStringFree(&patDString);
     }
     return code;
@@ -2427,8 +2154,7 @@ char *string;       /* Description of the tab stops.  See
     TkTextTabArray *tabArrayPtr;
     TkTextTab *tabPtr;
 
-    if (Tcl_SplitList(interp, string, &argc, &argv) != TCL_OK)
-    {
+    if (Tcl_SplitList(interp, string, &argc, &argv) != TCL_OK) {
         return NULL;
     }
 
@@ -2438,11 +2164,9 @@ char *string;       /* Description of the tab stops.  See
      */
 
     count = 0;
-    for (i = 0; i < argc; i++)
-    {
+    for (i = 0; i < argc; i++) {
         c = argv[i][0];
-        if ((c != 'l') && (c != 'r') && (c != 'c') && (c != 'n'))
-        {
+        if ((c != 'l') && (c != 'r') && (c != 'c') && (c != 'n')) {
             count++;
         }
     }
@@ -2455,10 +2179,9 @@ char *string;       /* Description of the tab stops.  See
     tabArrayPtr = ( TkTextTabArray * )ckalloc(
     ( unsigned )(sizeof(TkTextTabArray) + (count - 1) * sizeof(TkTextTab)));
     tabArrayPtr->numTabs = 0;
-    for (i = 0, tabPtr = &tabArrayPtr->tabs[0]; i < argc; i++, tabPtr++)
-    {
-        if (Tk_GetPixels(interp, tkwin, argv[i], &tabPtr->location) != TCL_OK)
-        {
+    for (i = 0, tabPtr = &tabArrayPtr->tabs[0]; i < argc; i++, tabPtr++) {
+        if (Tk_GetPixels(interp, tkwin, argv[i], &tabPtr->location)
+            != TCL_OK) {
             goto error;
         }
         tabArrayPtr->numTabs++;
@@ -2469,37 +2192,26 @@ char *string;       /* Description of the tab stops.  See
          */
 
         tabPtr->alignment = LEFT;
-        if ((i + 1) == argc)
-        {
+        if ((i + 1) == argc) {
             continue;
         }
         c = UCHAR(argv[i + 1][0]);
-        if (!isalpha(c))
-        {
+        if (!isalpha(c)) {
             continue;
         }
         i += 1;
-        if ((c == 'l') && (strncmp(argv[i], "left", strlen(argv[i])) == 0))
-        {
+        if ((c == 'l') && (strncmp(argv[i], "left", strlen(argv[i])) == 0)) {
             tabPtr->alignment = LEFT;
-        }
-        else if ((c == 'r')
-                 && (strncmp(argv[i], "right", strlen(argv[i])) == 0))
-        {
+        } else if ((c == 'r')
+                   && (strncmp(argv[i], "right", strlen(argv[i])) == 0)) {
             tabPtr->alignment = RIGHT;
-        }
-        else if ((c == 'c')
-                 && (strncmp(argv[i], "center", strlen(argv[i])) == 0))
-        {
+        } else if ((c == 'c')
+                   && (strncmp(argv[i], "center", strlen(argv[i])) == 0)) {
             tabPtr->alignment = CENTER;
-        }
-        else if ((c == 'n')
-                 && (strncmp(argv[i], "numeric", strlen(argv[i])) == 0))
-        {
+        } else if ((c == 'n')
+                   && (strncmp(argv[i], "numeric", strlen(argv[i])) == 0)) {
             tabPtr->alignment = NUMERIC;
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp,
                              "bad tab alignment \"",
                              argv[i],
@@ -2558,39 +2270,25 @@ char **argv;        /* Argument strings.  Someone else has already
 #define TK_DUMP_WIN 0x8
 #define TK_DUMP_ALL (TK_DUMP_TEXT | TK_DUMP_MARK | TK_DUMP_TAG | TK_DUMP_WIN)
 
-    for (arg = 2; argv[arg] != ( char * )NULL; arg++)
-    {
+    for (arg = 2; argv[arg] != ( char * )NULL; arg++) {
         size_t len;
-        if (argv[arg][0] != '-')
-        {
+        if (argv[arg][0] != '-') {
             break;
         }
         len = strlen(argv[arg]);
-        if (strncmp("-all", argv[arg], len) == 0)
-        {
+        if (strncmp("-all", argv[arg], len) == 0) {
             what = TK_DUMP_ALL;
-        }
-        else if (strncmp("-text", argv[arg], len) == 0)
-        {
+        } else if (strncmp("-text", argv[arg], len) == 0) {
             what |= TK_DUMP_TEXT;
-        }
-        else if (strncmp("-tag", argv[arg], len) == 0)
-        {
+        } else if (strncmp("-tag", argv[arg], len) == 0) {
             what |= TK_DUMP_TAG;
-        }
-        else if (strncmp("-mark", argv[arg], len) == 0)
-        {
+        } else if (strncmp("-mark", argv[arg], len) == 0) {
             what |= TK_DUMP_MARK;
-        }
-        else if (strncmp("-window", argv[arg], len) == 0)
-        {
+        } else if (strncmp("-window", argv[arg], len) == 0) {
             what |= TK_DUMP_WIN;
-        }
-        else if (strncmp("-command", argv[arg], len) == 0)
-        {
+        } else if (strncmp("-command", argv[arg], len) == 0) {
             arg++;
-            if (arg >= argc)
-            {
+            if (arg >= argc) {
                 Tcl_AppendResult(interp,
                                  "Usage: ",
                                  argv[0],
@@ -2600,9 +2298,7 @@ char **argv;        /* Argument strings.  Someone else has already
                 return TCL_ERROR;
             }
             command = argv[arg];
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp,
                              "Usage: ",
                              argv[0],
@@ -2612,8 +2308,7 @@ char **argv;        /* Argument strings.  Someone else has already
             return TCL_ERROR;
         }
     }
-    if (arg >= argc)
-    {
+    if (arg >= argc) {
         Tcl_AppendResult(interp,
                          "Usage: ",
                          argv[0],
@@ -2622,38 +2317,29 @@ char **argv;        /* Argument strings.  Someone else has already
                          NULL);
         return TCL_ERROR;
     }
-    if (what == 0)
-    {
+    if (what == 0) {
         what = TK_DUMP_ALL;
     }
-    if (TkTextGetIndex(interp, textPtr, argv[arg], &index1) != TCL_OK)
-    {
+    if (TkTextGetIndex(interp, textPtr, argv[arg], &index1) != TCL_OK) {
         return TCL_ERROR;
     }
     lineno = TkBTreeLineIndex(index1.linePtr) + 1;
     arg++;
     atEnd = 0;
-    if (argc == arg)
-    {
+    if (argc == arg) {
         TkTextIndexForwChars(&index1, 1, &index2);
-    }
-    else
-    {
-        if (TkTextGetIndex(interp, textPtr, argv[arg], &index2) != TCL_OK)
-        {
+    } else {
+        if (TkTextGetIndex(interp, textPtr, argv[arg], &index2) != TCL_OK) {
             return TCL_ERROR;
         }
-        if (strncmp(argv[arg], "end", strlen(argv[arg])) == 0)
-        {
+        if (strncmp(argv[arg], "end", strlen(argv[arg])) == 0) {
             atEnd = 1;
         }
     }
-    if (TkTextIndexCmp(&index1, &index2) >= 0)
-    {
+    if (TkTextIndexCmp(&index1, &index2) >= 0) {
         return TCL_OK;
     }
-    if (index1.linePtr == index2.linePtr)
-    {
+    if (index1.linePtr == index2.linePtr) {
         DumpLine(interp,
                  textPtr,
                  what,
@@ -2662,9 +2348,7 @@ char **argv;        /* Argument strings.  Someone else has already
                  index2.charIndex,
                  lineno,
                  command);
-    }
-    else
-    {
+    } else {
         DumpLine(interp,
                  textPtr,
                  what,
@@ -2674,11 +2358,9 @@ char **argv;        /* Argument strings.  Someone else has already
                  lineno,
                  command);
         linePtr = index1.linePtr;
-        while ((linePtr = TkBTreeNextLine(linePtr)) != ( TkTextLine * )NULL)
-        {
+        while ((linePtr = TkBTreeNextLine(linePtr)) != ( TkTextLine * )NULL) {
             lineno++;
-            if (linePtr == index2.linePtr)
-            {
+            if (linePtr == index2.linePtr) {
                 break;
             }
             DumpLine(
@@ -2696,8 +2378,7 @@ char **argv;        /* Argument strings.  Someone else has already
     /*
      * Special case to get the leftovers hiding at the end mark.
      */
-    if (atEnd)
-    {
+    if (atEnd) {
         DumpLine(interp,
                  textPtr,
                  what & ~TK_DUMP_TEXT,
@@ -2742,20 +2423,16 @@ char *command;       /* Script to apply to the segment */
      */
     for (offset = 0, segPtr = linePtr->segPtr;
          (offset < end) && (segPtr != ( TkTextSegment * )NULL);
-         offset += segPtr->size, segPtr = segPtr->nextPtr)
-    {
+         offset += segPtr->size, segPtr = segPtr->nextPtr) {
         if ((what & TK_DUMP_TEXT) && (segPtr->typePtr == &tkTextCharType)
-            && (offset + segPtr->size > start))
-        {
+            && (offset + segPtr->size > start)) {
             char savedChar;          /* Last char used in the seg */
             int last = segPtr->size; /* Index of savedChar */
             int first = 0;           /* Index of first char in seg */
-            if (offset + segPtr->size > end)
-            {
+            if (offset + segPtr->size > end) {
                 last = end - offset;
             }
-            if (start > offset)
-            {
+            if (start > offset) {
                 first = start - offset;
             }
             savedChar = segPtr->body.chars[last];
@@ -2768,20 +2445,15 @@ char *command;       /* Script to apply to the segment */
                         offset + first,
                         what);
             segPtr->body.chars[last] = savedChar;
-        }
-        else if ((offset >= start))
-        {
-            if ((what & TK_DUMP_MARK) && (segPtr->typePtr->name[0] == 'm'))
-            {
+        } else if ((offset >= start)) {
+            if ((what & TK_DUMP_MARK) && (segPtr->typePtr->name[0] == 'm')) {
                 TkTextMark *markPtr = ( TkTextMark * )&segPtr->body;
                 char *name
                 = Tcl_GetHashKey(&textPtr->markTable, markPtr->hPtr);
                 DumpSegment(
                 interp, "mark", name, command, lineno, offset, what);
-            }
-            else if ((what & TK_DUMP_TAG)
-                     && (segPtr->typePtr == &tkTextToggleOnType))
-            {
+            } else if ((what & TK_DUMP_TAG)
+                       && (segPtr->typePtr == &tkTextToggleOnType)) {
                 DumpSegment(interp,
                             "tagon",
                             segPtr->body.toggle.tagPtr->name,
@@ -2789,10 +2461,8 @@ char *command;       /* Script to apply to the segment */
                             lineno,
                             offset,
                             what);
-            }
-            else if ((what & TK_DUMP_TAG)
-                     && (segPtr->typePtr == &tkTextToggleOffType))
-            {
+            } else if ((what & TK_DUMP_TAG)
+                       && (segPtr->typePtr == &tkTextToggleOffType)) {
                 DumpSegment(interp,
                             "tagoff",
                             segPtr->body.toggle.tagPtr->name,
@@ -2800,18 +2470,13 @@ char *command;       /* Script to apply to the segment */
                             lineno,
                             offset,
                             what);
-            }
-            else if ((what & TK_DUMP_WIN)
-                     && (segPtr->typePtr->name[0] == 'w'))
-            {
+            } else if ((what & TK_DUMP_WIN)
+                       && (segPtr->typePtr->name[0] == 'w')) {
                 TkTextEmbWindow *ewPtr = ( TkTextEmbWindow * )&segPtr->body;
                 char *pathname;
-                if (ewPtr->tkwin == ( Tk_Window )NULL)
-                {
+                if (ewPtr->tkwin == ( Tk_Window )NULL) {
                     pathname = "";
-                }
-                else
-                {
+                } else {
                     pathname = Tk_PathName(ewPtr->tkwin);
                 }
                 DumpSegment(
@@ -2843,15 +2508,12 @@ int what;      /* Look for TK_DUMP_INDEX bit */
 {
     char buffer[30];
     sprintf(buffer, "%d.%d", lineno, offset);
-    if (command == ( char * )NULL)
-    {
+    if (command == ( char * )NULL) {
         Tcl_AppendElement(interp, key);
         Tcl_AppendElement(interp, value);
         Tcl_AppendElement(interp, buffer);
         return TCL_OK;
-    }
-    else
-    {
+    } else {
         char *argv[4];
         char *list;
         int result;

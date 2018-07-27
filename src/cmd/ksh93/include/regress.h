@@ -41,8 +41,7 @@ typedef struct Regress_s
 #        define sh_offregress(r) off_option(&sh.regress->options, r)
 
 #        define REGRESS(r, i, f)                                             \
-            do                                                               \
-            {                                                                \
+            do {                                                             \
                 if (sh_isregress(REGRESS_##r))                               \
                     sh_regress(                                              \
                     REGRESS_##r, i, sfprints f, __LINE__, __FILE__);         \

@@ -418,11 +418,9 @@ op_get(Cx_t *cx,
     Cxvariable_t *vp = pc->data.variable;
     Netflow_field_t *fp;
 
-    if (pp->template && vp->index > 0 && vp->index <= NETFLOW_TEMPLATE)
-    {
+    if (pp->template && vp->index > 0 && vp->index <= NETFLOW_TEMPLATE) {
         fp = &pp->template->field[vp->index - 1];
-        switch (fp->type)
-        {
+        switch (fp->type) {
         case NETFLOW_BUFFER:
             r->value.buffer.data = pp->data + fp->offset;
             r->value.buffer.size = fp->size;
@@ -436,8 +434,7 @@ op_get(Cx_t *cx,
         }
         return 0;
     }
-    switch (vp->index)
-    {
+    switch (vp->index) {
     case NETFLOW_bytes:
         r->value.number = rp->bytes ? rp->bytes : rp->in_bytes;
         break;
@@ -448,14 +445,11 @@ op_get(Cx_t *cx,
         r->value.number = rp->direction;
         break;
     case NETFLOW_dst_addr:
-        if (rp->set & NETFLOW_SET_dst_addrv6)
-        {
+        if (rp->set & NETFLOW_SET_dst_addrv6) {
             r->value.buffer.data = rp->dst_addrv6;
             r->value.buffer.size = sizeof(rp->dst_addrv6) - 1;
             r->type = gp->type_ipv6addr;
-        }
-        else
-        {
+        } else {
             r->value.number = rp->dst_addrv4;
             r->type = gp->type_ipv4addr;
         }
@@ -491,14 +485,11 @@ op_get(Cx_t *cx,
         r->value.number = rp->dst_port;
         break;
     case NETFLOW_dst_prefix:
-        if (rp->set & NETFLOW_SET_dst_addrv6)
-        {
+        if (rp->set & NETFLOW_SET_dst_addrv6) {
             r->value.buffer.data = rp->dst_addrv6;
             r->value.buffer.size = sizeof(rp->dst_addrv6);
             r->type = gp->type_ipv6prefix;
-        }
-        else
-        {
+        } else {
             r->value.number
             = ( Cxnumber_t )rp->dst_addrv4 * 64 + rp->dst_maskv4;
             r->type = gp->type_ipv4prefix;
@@ -564,14 +555,11 @@ op_get(Cx_t *cx,
         r->value.number = rp->fragment_offset;
         break;
     case NETFLOW_hop:
-        if (rp->set & NETFLOW_SET_hopv6)
-        {
+        if (rp->set & NETFLOW_SET_hopv6) {
             r->value.buffer.data = rp->hopv6;
             r->value.buffer.size = sizeof(rp->hopv6);
             r->type = gp->type_ipv6addr;
-        }
-        else
-        {
+        } else {
             r->value.number = rp->hopv4;
             r->type = gp->type_ipv4addr;
         }
@@ -711,14 +699,11 @@ op_get(Cx_t *cx,
         r->value.number = rp->protocol;
         break;
     case NETFLOW_router_sc:
-        if (rp->set & NETFLOW_SET_router_scv6)
-        {
+        if (rp->set & NETFLOW_SET_router_scv6) {
             r->value.buffer.data = rp->router_scv6;
             r->value.buffer.size = sizeof(rp->router_scv6);
             r->type = gp->type_ipv6addr;
-        }
-        else
-        {
+        } else {
             r->value.number = rp->router_scv4;
             r->type = gp->type_ipv4addr;
         }
@@ -744,14 +729,11 @@ op_get(Cx_t *cx,
         = strlen(r->value.string.data = ( char * )rp->sampler_name);
         break;
     case NETFLOW_src_addr:
-        if (rp->set & NETFLOW_SET_src_addrv6)
-        {
+        if (rp->set & NETFLOW_SET_src_addrv6) {
             r->value.buffer.data = rp->src_addrv6;
             r->value.buffer.size = sizeof(rp->src_addrv6) - 1;
             r->type = gp->type_ipv6addr;
-        }
-        else
-        {
+        } else {
             r->value.number = rp->src_addrv4;
             r->type = gp->type_ipv4addr;
         }
@@ -787,14 +769,11 @@ op_get(Cx_t *cx,
         r->value.number = rp->src_port;
         break;
     case NETFLOW_src_prefix:
-        if (rp->set & NETFLOW_SET_src_addrv6)
-        {
+        if (rp->set & NETFLOW_SET_src_addrv6) {
             r->value.buffer.data = rp->src_addrv6;
             r->value.buffer.size = sizeof(rp->src_addrv6);
             r->type = gp->type_ipv6prefix;
-        }
-        else
-        {
+        } else {
             r->value.number
             = ( Cxnumber_t )rp->src_addrv4 * 64 + rp->src_maskv4;
             r->type = gp->type_ipv4prefix;
@@ -918,15 +897,12 @@ netflowmeth(const char *name,
     for (i = 0; fields[i].name; i++)
         if (cxaddvariable(meth->cx, &fields[i], disc))
             return 0;
-    if (options)
-    {
+    if (options) {
         if (dssoptlib(meth->cx->buf, &dss_lib_netflow, NiL, disc))
             return 0;
         s = sfstruse(meth->cx->buf);
-        for (;;)
-        {
-            switch (optstr(options, s))
-            {
+        for (;;) {
+            switch (optstr(options, s)) {
             case '?':
                 if (disc->errorf)
                     (*disc->errorf)(
@@ -1071,8 +1047,7 @@ netflowopen(Dss_t *dss, Dssdisc_t *disc)
         || !(flow->type_ipv4prefix = cxtype(dss->cx, "ipv4prefix_t", disc))
         || !(flow->type_ipv6addr = cxtype(dss->cx, "ipv6addr_t", disc))
         || !(flow->type_ipv6prefix = cxtype(dss->cx, "ipv6prefix_t", disc))
-        || !(flow->tmp = sfstropen()))
-    {
+        || !(flow->tmp = sfstropen())) {
         if (flow)
             vmfree(dss->vm, flow);
         if (disc->errorf)

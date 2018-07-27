@@ -93,8 +93,7 @@ reg Rsobj_t *obj;
             cmp = -cmp;
 
         /* out of order */
-        if ((cmp == 0 && (rs->type & RS_UNIQ)) || cmp < 0)
-        {
+        if ((cmp == 0 && (rs->type & RS_UNIQ)) || cmp < 0) {
             if (!(rs->disc->events & RS_VERIFY))
                 return -1;
 
@@ -164,8 +163,7 @@ static Rsobj_t *verifylist(rs) Rs_t *rs;
     reg Rsobj_t *p = &verify->obj;
     reg uchar *k;
 
-    if (verify->n > 0 && p->data)
-    { /* save data space for last object */
+    if (verify->n > 0 && p->data) { /* save data space for last object */
         if (!(k = ( uchar * )vmalloc(rs->vm, p->datalen)))
             return NIL(Rsobj_t *);
         memcpy(k, p->data, p->datalen);

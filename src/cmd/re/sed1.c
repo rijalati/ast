@@ -92,12 +92,10 @@ unsigned char *synl; /* current line pointer for syntax errors */
 int
 blank(Text *t)
 {
-    if (*t->w == ' ' || *t->w == '\t' || *t->w == '\r')
-    {
+    if (*t->w == ' ' || *t->w == '\t' || *t->w == '\r') {
         t->w++;
         return 1;
-    }
-    else
+    } else
         return 0;
 }
 
@@ -141,8 +139,7 @@ int
 number(Text *t)
 {
     unsigned n = 0;
-    while (isdigit(*t->w))
-    {
+    while (isdigit(*t->w)) {
         if (n > (INT_MAX - 9) / 10)
             syntax("number too big");
         n = n * 10 + *t->w++ - '0';
@@ -157,8 +154,7 @@ addr(Text *script, Text *t)
     if (reflags & REG_LENIENT)
         while (*t->w == ' ' || *t->w == '\t' || *t->w == '\r')
             t->w++;
-    switch (*t->w)
-    {
+    switch (*t->w) {
     default:
         return 0;
     case '$':
@@ -218,8 +214,7 @@ lablook(unsigned char *l, Text *labels)
     unsigned char *p, *q;
     word n, m;
     assure(labels, 1);
-    for (p = labels->s; p < labels->w;)
-    {
+    for (p = labels->s; p < labels->w;) {
         q = p + sizeof(word);
         if (ustrcmp(q, l) == 0)
             return ( word * )p;
@@ -282,11 +277,9 @@ fixlabels(Text *script)
 {
     unsigned char *p;
     word *q;
-    for (p = script->s; p < script->w; p = succi(p))
-    {
+    for (p = script->s; p < script->w; p = succi(p)) {
         q = instr(p);
-        switch (code(*q))
-        {
+        switch (code(*q)) {
         case 't':
         case 'b':
             if (q[1] == -1)
@@ -378,8 +371,7 @@ fixbrack(Text *script)
         return;
     if (brack.w > brack.s)
         syntax("unmatched {");
-    for (p = script->s; p < script->w; p = succi(p))
-    {
+    for (p = script->s; p < script->w; p = succi(p)) {
         q = instr(p);
         if (code(*q) == '{')
             *q += ( unsigned char * )q - p;
@@ -428,13 +420,11 @@ ac(Text *script, Text *t)
 {
     if (*t->w++ != '\\' || *t->w++ != '\n')
         syntax("\\<newline> missing after command");
-    for (;;)
-    {
+    for (;;) {
         while (bflag && blank(t))
             ;
         assure(script, 2 + sizeof(word));
-        switch (*t->w)
-        {
+        switch (*t->w) {
         case 0:
             error(ERROR_PANIC | 4, "bug: missed end of <text>");
         case '\n':
@@ -486,8 +476,7 @@ yc(Text *script, Text *t)
     wchar_t wc;
     Mbstate_t oq, pq, qq;
     m = 0;
-    if (mbwide())
-    {
+    if (mbwide()) {
         mbinit(&pq);
         pb = t->w;
         if ((delim = mbchar(&wc, pb, t->e - pb, &pq)) == '\n'
@@ -495,12 +484,10 @@ yc(Text *script, Text *t)
             syntax("missing delimiter");
         mbinit(&pq);
         p = pb;
-        while ((o = p), (pc = mbchar(&wc, p, t->e - p, &pq)) != delim)
-        {
+        while ((o = p), (pc = mbchar(&wc, p, t->e - p, &pq)) != delim) {
             if (pc == '\n')
                 syntax("missing delimiter");
-            if (pc == '\\')
-            {
+            if (pc == '\\') {
                 o = p;
                 pc = mbchar(&wc, p, t->e - p, &pq);
             }
@@ -508,14 +495,11 @@ yc(Text *script, Text *t)
                 m = pc;
         }
     }
-    if (m)
-    {
+    if (m) {
         x = 0;
         qb = p;
-        while ((o = p), (pc = mbchar(&wc, p, t->e - p, &pq)) != delim)
-        {
-            if (pc == '\\')
-            {
+        while ((o = p), (pc = mbchar(&wc, p, t->e - p, &pq)) != delim) {
+            if (pc == '\\') {
                 o = p;
                 pc = mbchar(&wc, p, t->e - p, &pq);
             }
@@ -536,16 +520,13 @@ yc(Text *script, Text *t)
         mbinit(&qq);
         q = qb;
         while (
-        (pb = p), (oq = pq), (pc = mbchar(&wc, p, t->e - p, &pq)) != delim)
-        {
-            if (pc == '\\')
-            {
+        (pb = p), (oq = pq), (pc = mbchar(&wc, p, t->e - p, &pq)) != delim) {
+            if (pc == '\\') {
                 if ((qc = mbchar(&wc, p, t->e - p, &pq)) == 'n')
                     pc = '\n';
                 else if (qc == delim || qc == '\\')
                     pc = qc;
-                else
-                {
+                else {
                     p = pb;
                     pq = oq;
                 }
@@ -556,26 +537,21 @@ yc(Text *script, Text *t)
                 syntax("missing delimiter");
             if (qc == delim)
                 syntax("string lengths differ");
-            if (qc == '\\')
-            {
+            if (qc == '\\') {
                 qq = oq;
                 if ((qc = mbchar(&wc, q, t->e - q, &qq)) == 'n')
                     *qb = '\n';
-                else if (qc != delim && qc != '\\')
-                {
+                else if (qc != delim && qc != '\\') {
                     q = qb;
                     qq = oq;
                 }
             }
             i = (q - qb);
-            if (w[pc])
-            {
+            if (w[pc]) {
                 if (w[pc][0] != i || memcmp(&w[pc][1], qb, i))
                     syntax("ambiguous map");
                 synwarn("redundant map");
-            }
-            else
-            {
+            } else {
                 w[pc] = v;
                 *v++ = ( unsigned char )i;
                 memcpy(v, qb, i);
@@ -584,9 +560,7 @@ yc(Text *script, Text *t)
         }
         if (mbchar(&wc, q, t->e - q, &qq) != delim)
             syntax("string lengths differ");
-    }
-    else
-    {
+    } else {
         if ((delim = *t->w++) == '\n' || delim == '\\')
             syntax("missing delimiter");
         assure(script, sizeof(unsigned char *) + UCHAR_MAX + 1);
@@ -596,21 +570,17 @@ yc(Text *script, Text *t)
         script->w += sizeof(unsigned char *) + UCHAR_MAX + 1;
         for (i = 0; i < UCHAR_MAX + 1; i++)
             s[i] = 0;
-        for (q = t->w; (qc = *q++) != delim;)
-        {
+        for (q = t->w; (qc = *q++) != delim;) {
             if (qc == '\n')
                 syntax("missing delimiter");
             if (qc == '\\' && *q == delim)
                 q++;
         }
-        for (p = t->w; (pc = *p++) != delim;)
-        {
-            if (pc == '\\')
-            {
+        for (p = t->w; (pc = *p++) != delim;) {
+            if (pc == '\\') {
                 if (*p == delim || *p == '\\')
                     pc = *p++;
-                else if (*p == 'n')
-                {
+                else if (*p == 'n') {
                     p++;
                     pc = '\n';
                 }
@@ -619,18 +589,15 @@ yc(Text *script, Text *t)
                 syntax("missing delimiter");
             if (qc == delim)
                 syntax("string lengths differ");
-            if (qc == '\\')
-            {
+            if (qc == '\\') {
                 if (*q == delim || *q == '\\')
                     qc = *q++;
-                else if (*q == 'n')
-                {
+                else if (*q == 'n') {
                     q++;
                     qc = '\n';
                 }
             }
-            if (s[pc])
-            {
+            if (s[pc]) {
                 if (s[pc] != qc)
                     syntax("ambiguous map");
                 synwarn("redundant map");
@@ -664,13 +631,11 @@ void
 badre(regex_t *re, int code)
 {
     unsigned char *t = ustrchr(synl, '\n');
-    if (code && code != REG_NOMATCH)
-    {
+    if (code && code != REG_NOMATCH) {
         char buf[UCHAR_MAX + 1];
         regerror(code, re, buf, sizeof(buf));
         error(3, "%s: %.*s", buf, t - synl, synl);
-    }
-    else
+    } else
         error(3, "invalid regular expression: %.*s", t - synl, synl);
 }
 
@@ -681,19 +646,16 @@ printscript(Text *script)
 {
     unsigned char *s;
     word *q;
-    for (s = script->s; s < script->w; s = succi(s))
-    {
+    for (s = script->s; s < script->w; s = succi(s)) {
         q = ( word * )s;
-        if ((*q & IMASK) != IMASK)
-        {
+        if ((*q & IMASK) != IMASK) {
             if ((*q & REGADR) == 0)
                 printf("%d", *q);
             else
                 regdump(( regex_t * )(*q & AMASK));
             q++;
         }
-        if ((*q & IMASK) != IMASK)
-        {
+        if ((*q & IMASK) != IMASK) {
             if ((*q & REGADR) == 0)
                 printf(",%d", *q);
             else
@@ -746,8 +708,7 @@ compile(Text *script, Text *t)
     int naddr;
     word *q;     /* address of instruction word */
     t->w = t->s; /* here w is a read pointer */
-    while (*t->w)
-    {
+    while (*t->w) {
         assure(script, 4 * sizeof(word));
         loc = script->w - script->s;
         synl = t->w;
@@ -755,8 +716,7 @@ compile(Text *script, Text *t)
         while (blank(t))
             ;
         naddr += addr(script, t);
-        if (naddr && *t->w == ',')
-        {
+        if (naddr && *t->w == ',') {
             t->w++;
             naddr += addr(script, t);
             if (naddr < 2)
@@ -767,8 +727,7 @@ compile(Text *script, Text *t)
             *q++ = INACT;
         script->w = ( unsigned char * )(q + 1);
         neg = 0;
-        for (;;)
-        {
+        for (;;) {
             while (blank(t))
                 ;
             cmd = *t->w++;
@@ -778,10 +737,8 @@ compile(Text *script, Text *t)
                 break;
             neg = NEG;
         }
-        if (!neg)
-        {
-            switch (adrs[ccmapchr(map, cmd)])
-            {
+        if (!neg) {
+            switch (adrs[ccmapchr(map, cmd)]) {
             case 1:
                 if (naddr <= 1)
                     break;
@@ -794,8 +751,7 @@ compile(Text *script, Text *t)
         (*docom[ccmapchr(map, cmd) & 0x7f])(script, t);
         while (*t->w == ' ' || *t->w == '\t' || *t->w == '\r')
             t->w++;
-        switch (*t->w)
-        {
+        switch (*t->w) {
         case 0:
             script->w = script->s + loc;
             break;

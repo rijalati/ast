@@ -123,48 +123,34 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
     Tv_t tv;
     char keybuf[16];
 
-    if (pfx && pfx[0] == '/' && pfx[1])
-    {
+    if (pfx && pfx[0] == '/' && pfx[1]) {
         pfx++;
         if (dir && !*dir)
             dir = 0;
-        if (streq(pfx, "check"))
-        {
+        if (streq(pfx, "check")) {
             tmp.nocheck = !dir;
             return ( char * )pfx;
-        }
-        else if (streq(pfx, "cycle"))
-        {
-            if (!dir)
-            {
+        } else if (streq(pfx, "cycle")) {
+            if (!dir) {
                 tmp.manual = 1;
                 if (tmp.dir && !*tmp.dir++)
                     tmp.dir = tmp.vec;
-            }
-            else
+            } else
                 tmp.manual = streq(dir, "manual");
             return ( char * )pfx;
-        }
-        else if (streq(pfx, "prefix"))
-        {
+        } else if (streq(pfx, "prefix")) {
             if (tmp.pfx)
                 free(tmp.pfx);
             tmp.pfx = dir ? strdup(dir) : ( char * )0;
             return ( char * )pfx;
-        }
-        else if (streq(pfx, "private"))
-        {
+        } else if (streq(pfx, "private")) {
             tmp.mode = S_IRUSR | S_IWUSR;
             return ( char * )pfx;
-        }
-        else if (streq(pfx, "public"))
-        {
+        } else if (streq(pfx, "public")) {
             tmp.mode
             = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
             return ( char * )pfx;
-        }
-        else if (streq(pfx, "seed"))
-        {
+        } else if (streq(pfx, "seed")) {
             tmp.key
             = (tmp.seed = (tmp.rng = dir ? ( uintmax_t )strtoul(dir, NiL, 0)
                                          : ( uintmax_t )1)
@@ -172,11 +158,8 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
               ? ( uintmax_t )0x63c63cd9L
               : 0;
             return ( char * )pfx;
-        }
-        else if (streq(pfx, TMP_ENV))
-        {
-            if (tmp.vec)
-            {
+        } else if (streq(pfx, TMP_ENV)) {
+            if (tmp.vec) {
                 free(tmp.vec);
                 tmp.vec = 0;
             }
@@ -184,11 +167,8 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
                 free(tmp.tmpdir);
             tmp.tmpdir = dir ? strdup(dir) : ( char * )0;
             return ( char * )pfx;
-        }
-        else if (streq(pfx, TMP_PATH_ENV))
-        {
-            if (tmp.vec)
-            {
+        } else if (streq(pfx, TMP_PATH_ENV)) {
+            if (tmp.vec) {
                 free(tmp.vec);
                 tmp.vec = 0;
             }
@@ -203,16 +183,12 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
         tv.tv_nsec = 0;
     else
         tvgettime(&tv);
-    if (!(d = ( char * )dir) || *d && eaccess(d, W_OK | X_OK))
-    {
-        if (!tmp.vec)
-        {
-            if ((x = tmp.tmppath) || (x = getenv(TMP_PATH_ENV)))
-            {
+    if (!(d = ( char * )dir) || *d && eaccess(d, W_OK | X_OK)) {
+        if (!tmp.vec) {
+            if ((x = tmp.tmppath) || (x = getenv(TMP_PATH_ENV))) {
                 n = 2;
                 s = x;
-                while (s = strchr(s, ':'))
-                {
+                while (s = strchr(s, ':')) {
                     s++;
                     n++;
                 }
@@ -221,8 +197,7 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
                 tmp.dir = tmp.vec;
                 x = strcpy(( char * )(tmp.dir + n), x);
                 *tmp.dir++ = x;
-                while (x = strchr(x, ':'))
-                {
+                while (x = strchr(x, ':')) {
                     *x++ = 0;
                     if (!VALID(*(tmp.dir - 1)))
                         tmp.dir--;
@@ -231,9 +206,7 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
                 if (!VALID(*(tmp.dir - 1)))
                     tmp.dir--;
                 *tmp.dir = 0;
-            }
-            else
-            {
+            } else {
                 if (((d = tmp.tmpdir) || (d = getenv(TMP_ENV))) && !VALID(d))
                     d = 0;
                 if (!(tmp.vec = newof(0, char *, 2, d ? (strlen(d) + 1) : 0)))
@@ -243,8 +216,7 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
             }
             tmp.dir = tmp.vec;
         }
-        if (!(d = *tmp.dir++))
-        {
+        if (!(d = *tmp.dir++)) {
             tmp.dir = tmp.vec;
             d = *tmp.dir++;
         }
@@ -268,31 +240,24 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
     if (buf && dir
         && (buf == ( char * )dir && (buf + strlen(buf) + 1) == ( char * )pfx
             || buf == ( char * )pfx && !*dir)
-        && !strcmp(( char * )pfx + m + 1, "XXXXX"))
-    {
+        && !strcmp(( char * )pfx + m + 1, "XXXXX")) {
         d = ( char * )dir;
         len = m += strlen(d) + 8;
         l = 3;
         r = 3;
-    }
-    else if (*pfx && pfx[m - 1] == 'X')
-    {
+    } else if (*pfx && pfx[m - 1] == 'X') {
         for (l = m; l && pfx[l - 1] == 'X'; l--)
             ;
         r = m - l;
         m = l;
         l = r / 2;
         r -= l;
-    }
-    else if ((x = strchr(pfx, '.')) && (x - pfx) < 5)
-    {
+    } else if ((x = strchr(pfx, '.')) && (x - pfx) < 5) {
         if (m > 5)
             m = 5;
         l = BASE - SUFF - m;
         r = SUFF;
-    }
-    else
-    {
+    } else {
         if (m > 5)
             m = 5;
         l = BASE - SUFF - m - 1;
@@ -301,8 +266,7 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
     }
     x = b + len;
     s = b;
-    if (d)
-    {
+    if (d) {
         while (s < x && (n = *d++))
             *s++ = n;
         if (s < x && s > b && *(s - 1) != '/')
@@ -310,18 +274,15 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
     }
     if ((x - s) > m)
         x = s + m;
-    while (s < x && (n = *pfx++))
-    {
+    while (s < x && (n = *pfx++)) {
         if (n == '/' || n == '\\' || n == z)
             n = '_';
         *s++ = n;
     }
     *s = 0;
     len -= (s - b);
-    for (attempt = 0; attempt < ATTEMPT; attempt++)
-    {
-        if (!tmp.rng || !tmp.seed && (attempt || tmp.pid != getpid()))
-        {
+    for (attempt = 0; attempt < ATTEMPT; attempt++) {
+        if (!tmp.rng || !tmp.seed && (attempt || tmp.pid != getpid())) {
             int r;
 
             /*
@@ -369,29 +330,22 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
                   z ? "." : "",
                   r,
                   keybuf + sizeof(keybuf) / 2);
-        if (fdp)
-        {
-            if (directory)
-            {
-                if (!mkdir(b, tmp.mode | S_IXUSR))
-                {
-                    if ((n = open(b, O_SEARCH)) >= 0)
-                    {
+        if (fdp) {
+            if (directory) {
+                if (!mkdir(b, tmp.mode | S_IXUSR)) {
+                    if ((n = open(b, O_SEARCH)) >= 0) {
                         *fdp = n;
                         return b;
                     }
                     rmdir(b);
                 }
-            }
-            else if ((n = open(
-                      b, O_CREAT | O_RDWR | O_EXCL | O_TEMPORARY, tmp.mode))
-                     >= 0)
-            {
+            } else if ((n = open(
+                        b, O_CREAT | O_RDWR | O_EXCL | O_TEMPORARY, tmp.mode))
+                       >= 0) {
                 *fdp = n;
                 return b;
             }
-            switch (errno)
-            {
+            switch (errno) {
             case EACCES:
                 if (access(b, F_OK))
                     goto nope;
@@ -400,12 +354,10 @@ pathtemp(char *buf, size_t len, const char *dir, const char *pfx, int *fdp)
             case EROFS:
                 goto nope;
             }
-        }
-        else if (tmp.nocheck)
+        } else if (tmp.nocheck)
             return b;
         else if (access(b, F_OK))
-            switch (errno)
-            {
+            switch (errno) {
             case ENOENT:
                 return b;
             }

@@ -40,8 +40,7 @@ struniq(char **argv, int n)
 
     ao = an = argv;
     ae = ao + n;
-    while (++an < ae)
-    {
+    while (++an < ae) {
         while (streq(*ao, *an))
             if (++an >= ae)
                 return ao - argv + 1;

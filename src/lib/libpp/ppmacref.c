@@ -48,19 +48,15 @@ ppmacref(struct ppsymbol *sym,
                    keyname(X_MACREF),
                    sym->name,
                    type);
-    if (type > 0)
-    {
+    if (type > 0) {
         if (sym->macro && sym->macro->value)
             sum = strsum(sym->macro->value, ( long )sym->macro->arity);
         p += sfsprintf(p, MAXTOKEN, " %lu", sum);
     }
-    if ((pp.state & (DIRECTIVE | JOINING)) == DIRECTIVE)
-    {
+    if ((pp.state & (DIRECTIVE | JOINING)) == DIRECTIVE) {
         pp.outp = p;
         ppcheckout();
-    }
-    else
-    {
+    } else {
         *p++ = '\n';
         pp.addp = p;
         pp.state |= ADD;

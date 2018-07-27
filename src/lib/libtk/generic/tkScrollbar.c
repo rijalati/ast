@@ -394,8 +394,7 @@ char **argv;           /* Argument strings. */
     Scrollbar *scrollPtr;
     Tk_Window new;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -405,8 +404,7 @@ char **argv;           /* Argument strings. */
     }
 
     new = Tk_CreateWindowFromPath(interp, tkwin, argv[1], ( char * )NULL);
-    if (new == NULL)
-    {
+    if (new == NULL) {
         return TCL_ERROR;
     }
 
@@ -466,8 +464,7 @@ char **argv;           /* Argument strings. */
                           ScrollbarEventProc,
                           ( ClientData )scrollPtr);
     if (ConfigureScrollbar(interp, scrollPtr, argc - 2, argv + 2, 0)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         goto error;
     }
 
@@ -509,8 +506,7 @@ char **argv;           /* Argument strings. */
     size_t length;
     int c;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -521,12 +517,9 @@ char **argv;           /* Argument strings. */
     Tcl_Preserve(( ClientData )scrollPtr);
     c = argv[1][0];
     length = strlen(argv[1]);
-    if ((c == 'a') && (strncmp(argv[1], "activate", length) == 0))
-    {
-        if (argc == 2)
-        {
-            switch (scrollPtr->activeField)
-            {
+    if ((c == 'a') && (strncmp(argv[1], "activate", length) == 0)) {
+        if (argc == 2) {
+            switch (scrollPtr->activeField) {
             case TOP_ARROW:
                 interp->result = "arrow1";
                 break;
@@ -539,8 +532,7 @@ char **argv;           /* Argument strings. */
             }
             goto done;
         }
-        if (argc != 3)
-        {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -550,29 +542,19 @@ char **argv;           /* Argument strings. */
         }
         c = argv[2][0];
         length = strlen(argv[2]);
-        if ((c == 'a') && (strcmp(argv[2], "arrow1") == 0))
-        {
+        if ((c == 'a') && (strcmp(argv[2], "arrow1") == 0)) {
             scrollPtr->activeField = TOP_ARROW;
-        }
-        else if ((c == 'a') && (strcmp(argv[2], "arrow2") == 0))
-        {
+        } else if ((c == 'a') && (strcmp(argv[2], "arrow2") == 0)) {
             scrollPtr->activeField = BOTTOM_ARROW;
-        }
-        else if ((c == 's') && (strncmp(argv[2], "slider", length) == 0))
-        {
+        } else if ((c == 's') && (strncmp(argv[2], "slider", length) == 0)) {
             scrollPtr->activeField = SLIDER;
-        }
-        else
-        {
+        } else {
             scrollPtr->activeField = OUTSIDE;
         }
         EventuallyRedraw(scrollPtr);
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "cget", length) == 0)
-             && (length >= 2))
-    {
-        if (argc != 3)
-        {
+    } else if ((c == 'c') && (strncmp(argv[1], "cget", length) == 0)
+               && (length >= 2)) {
+        if (argc != 3) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -586,41 +568,31 @@ char **argv;           /* Argument strings. */
                                    ( char * )scrollPtr,
                                    argv[2],
                                    0);
-    }
-    else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
-             && (length >= 2))
-    {
-        if (argc == 2)
-        {
+    } else if ((c == 'c') && (strncmp(argv[1], "configure", length) == 0)
+               && (length >= 2)) {
+        if (argc == 2) {
             result = Tk_ConfigureInfo(interp,
                                       scrollPtr->tkwin,
                                       configSpecs,
                                       ( char * )scrollPtr,
                                       ( char * )NULL,
                                       0);
-        }
-        else if (argc == 3)
-        {
+        } else if (argc == 3) {
             result = Tk_ConfigureInfo(interp,
                                       scrollPtr->tkwin,
                                       configSpecs,
                                       ( char * )scrollPtr,
                                       argv[2],
                                       0);
-        }
-        else
-        {
+        } else {
             result = ConfigureScrollbar(
             interp, scrollPtr, argc - 2, argv + 2, TK_CONFIG_ARGV_ONLY);
         }
-    }
-    else if ((c == 'd') && (strncmp(argv[1], "delta", length) == 0))
-    {
+    } else if ((c == 'd') && (strncmp(argv[1], "delta", length) == 0)) {
         int xDelta, yDelta, pixels, length;
         double fraction;
 
-        if (argc != 4)
-        {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -629,39 +601,29 @@ char **argv;           /* Argument strings. */
             goto error;
         }
         if ((Tcl_GetInt(interp, argv[2], &xDelta) != TCL_OK)
-            || (Tcl_GetInt(interp, argv[3], &yDelta) != TCL_OK))
-        {
+            || (Tcl_GetInt(interp, argv[3], &yDelta) != TCL_OK)) {
             goto error;
         }
-        if (scrollPtr->vertical)
-        {
+        if (scrollPtr->vertical) {
             pixels = yDelta;
             length = Tk_Height(scrollPtr->tkwin) - 1
                      - 2 * (scrollPtr->arrowLength + scrollPtr->inset);
-        }
-        else
-        {
+        } else {
             pixels = xDelta;
             length = Tk_Width(scrollPtr->tkwin) - 1
                      - 2 * (scrollPtr->arrowLength + scrollPtr->inset);
         }
-        if (length == 0)
-        {
+        if (length == 0) {
             fraction = 0.0;
-        }
-        else
-        {
+        } else {
             fraction = (( double )pixels / ( double )length);
         }
         sprintf(interp->result, "%g", fraction);
-    }
-    else if ((c == 'f') && (strncmp(argv[1], "fraction", length) == 0))
-    {
+    } else if ((c == 'f') && (strncmp(argv[1], "fraction", length) == 0)) {
         int x, y, pos, length;
         double fraction;
 
-        if (argc != 4)
-        {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -670,44 +632,31 @@ char **argv;           /* Argument strings. */
             goto error;
         }
         if ((Tcl_GetInt(interp, argv[2], &x) != TCL_OK)
-            || (Tcl_GetInt(interp, argv[3], &y) != TCL_OK))
-        {
+            || (Tcl_GetInt(interp, argv[3], &y) != TCL_OK)) {
             goto error;
         }
-        if (scrollPtr->vertical)
-        {
+        if (scrollPtr->vertical) {
             pos = y - (scrollPtr->arrowLength + scrollPtr->inset);
             length = Tk_Height(scrollPtr->tkwin) - 1
                      - 2 * (scrollPtr->arrowLength + scrollPtr->inset);
-        }
-        else
-        {
+        } else {
             pos = x - (scrollPtr->arrowLength + scrollPtr->inset);
             length = Tk_Width(scrollPtr->tkwin) - 1
                      - 2 * (scrollPtr->arrowLength + scrollPtr->inset);
         }
-        if (length == 0)
-        {
+        if (length == 0) {
             fraction = 0.0;
-        }
-        else
-        {
+        } else {
             fraction = (( double )pos / ( double )length);
         }
-        if (fraction < 0)
-        {
+        if (fraction < 0) {
             fraction = 0;
-        }
-        else if (fraction > 1.0)
-        {
+        } else if (fraction > 1.0) {
             fraction = 1.0;
         }
         sprintf(interp->result, "%g", fraction);
-    }
-    else if ((c == 'g') && (strncmp(argv[1], "get", length) == 0))
-    {
-        if (argc != 2)
-        {
+    } else if ((c == 'g') && (strncmp(argv[1], "get", length) == 0)) {
+        if (argc != 2) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -715,16 +664,13 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             goto error;
         }
-        if (scrollPtr->flags & NEW_STYLE_COMMANDS)
-        {
+        if (scrollPtr->flags & NEW_STYLE_COMMANDS) {
             char first[TCL_DOUBLE_SPACE], last[TCL_DOUBLE_SPACE];
 
             Tcl_PrintDouble(interp, scrollPtr->firstFraction, first);
             Tcl_PrintDouble(interp, scrollPtr->lastFraction, last);
             Tcl_AppendResult(interp, first, " ", last, ( char * )NULL);
-        }
-        else
-        {
+        } else {
             sprintf(interp->result,
                     "%d %d %d %d",
                     scrollPtr->totalUnits,
@@ -732,13 +678,10 @@ char **argv;           /* Argument strings. */
                     scrollPtr->firstUnit,
                     scrollPtr->lastUnit);
         }
-    }
-    else if ((c == 'i') && (strncmp(argv[1], "identify", length) == 0))
-    {
+    } else if ((c == 'i') && (strncmp(argv[1], "identify", length) == 0)) {
         int x, y, thing;
 
-        if (argc != 4)
-        {
+        if (argc != 4) {
             Tcl_AppendResult(interp,
                              "wrong # args: should be \"",
                              argv[0],
@@ -747,13 +690,11 @@ char **argv;           /* Argument strings. */
             goto error;
         }
         if ((Tcl_GetInt(interp, argv[2], &x) != TCL_OK)
-            || (Tcl_GetInt(interp, argv[3], &y) != TCL_OK))
-        {
+            || (Tcl_GetInt(interp, argv[3], &y) != TCL_OK)) {
             goto error;
         }
         thing = ScrollbarPosition(scrollPtr, x, y);
-        switch (thing)
-        {
+        switch (thing) {
         case TOP_ARROW:
             interp->result = "arrow1";
             break;
@@ -770,105 +711,73 @@ char **argv;           /* Argument strings. */
             interp->result = "arrow2";
             break;
         }
-    }
-    else if ((c == 's') && (strncmp(argv[1], "set", length) == 0))
-    {
+    } else if ((c == 's') && (strncmp(argv[1], "set", length) == 0)) {
         int totalUnits, windowUnits, firstUnit, lastUnit;
 
-        if (argc == 4)
-        {
+        if (argc == 4) {
             double first, last;
 
-            if (Tcl_GetDouble(interp, argv[2], &first) != TCL_OK)
-            {
+            if (Tcl_GetDouble(interp, argv[2], &first) != TCL_OK) {
                 goto error;
             }
-            if (Tcl_GetDouble(interp, argv[3], &last) != TCL_OK)
-            {
+            if (Tcl_GetDouble(interp, argv[3], &last) != TCL_OK) {
                 goto error;
             }
-            if (first < 0)
-            {
+            if (first < 0) {
                 scrollPtr->firstFraction = 0;
-            }
-            else if (first > 1.0)
-            {
+            } else if (first > 1.0) {
                 scrollPtr->firstFraction = 1.0;
-            }
-            else
-            {
+            } else {
                 scrollPtr->firstFraction = first;
             }
-            if (last < scrollPtr->firstFraction)
-            {
+            if (last < scrollPtr->firstFraction) {
                 scrollPtr->lastFraction = scrollPtr->firstFraction;
-            }
-            else if (last > 1.0)
-            {
+            } else if (last > 1.0) {
                 scrollPtr->lastFraction = 1.0;
-            }
-            else
-            {
+            } else {
                 scrollPtr->lastFraction = last;
             }
             scrollPtr->flags |= NEW_STYLE_COMMANDS;
-        }
-        else if (argc == 6)
-        {
-            if (Tcl_GetInt(interp, argv[2], &totalUnits) != TCL_OK)
-            {
+        } else if (argc == 6) {
+            if (Tcl_GetInt(interp, argv[2], &totalUnits) != TCL_OK) {
                 goto error;
             }
-            if (totalUnits < 0)
-            {
+            if (totalUnits < 0) {
                 totalUnits = 0;
             }
-            if (Tcl_GetInt(interp, argv[3], &windowUnits) != TCL_OK)
-            {
+            if (Tcl_GetInt(interp, argv[3], &windowUnits) != TCL_OK) {
                 goto error;
             }
-            if (windowUnits < 0)
-            {
+            if (windowUnits < 0) {
                 windowUnits = 0;
             }
-            if (Tcl_GetInt(interp, argv[4], &firstUnit) != TCL_OK)
-            {
+            if (Tcl_GetInt(interp, argv[4], &firstUnit) != TCL_OK) {
                 goto error;
             }
-            if (Tcl_GetInt(interp, argv[5], &lastUnit) != TCL_OK)
-            {
+            if (Tcl_GetInt(interp, argv[5], &lastUnit) != TCL_OK) {
                 goto error;
             }
-            if (totalUnits > 0)
-            {
-                if (lastUnit < firstUnit)
-                {
+            if (totalUnits > 0) {
+                if (lastUnit < firstUnit) {
                     lastUnit = firstUnit;
                 }
-            }
-            else
-            {
+            } else {
                 firstUnit = lastUnit = 0;
             }
             scrollPtr->totalUnits = totalUnits;
             scrollPtr->windowUnits = windowUnits;
             scrollPtr->firstUnit = firstUnit;
             scrollPtr->lastUnit = lastUnit;
-            if (scrollPtr->totalUnits == 0)
-            {
+            if (scrollPtr->totalUnits == 0) {
                 scrollPtr->firstFraction = 0.0;
                 scrollPtr->lastFraction = 1.0;
-            }
-            else
-            {
+            } else {
                 scrollPtr->firstFraction = (( double )firstUnit) / totalUnits;
                 scrollPtr->lastFraction
                 = (( double )(lastUnit + 1)) / totalUnits;
             }
             scrollPtr->flags &= ~NEW_STYLE_COMMANDS;
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(
             interp,
             "wrong # args: should be \"",
@@ -881,9 +790,7 @@ char **argv;           /* Argument strings. */
         }
         ComputeScrollbarGeometry(scrollPtr);
         EventuallyRedraw(scrollPtr);
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(
         interp,
         "bad option \"",
@@ -931,12 +838,10 @@ static void DestroyScrollbar(memPtr) char *memPtr; /* Info about scrollbar
      * stuff.
      */
 
-    if (scrollPtr->troughGC != None)
-    {
+    if (scrollPtr->troughGC != None) {
         Tk_FreeGC(scrollPtr->display, scrollPtr->troughGC);
     }
-    if (scrollPtr->copyGC != None)
-    {
+    if (scrollPtr->copyGC != None) {
         Tk_FreeGC(scrollPtr->display, scrollPtr->copyGC);
     }
     Tk_FreeOptions(configSpecs, ( char * )scrollPtr, scrollPtr->display, 0);
@@ -985,8 +890,7 @@ int flags;            /* Flags to pass to
                            argv,
                            ( char * )scrollPtr,
                            flags)
-        != TCL_OK)
-    {
+        != TCL_OK) {
         return TCL_ERROR;
     }
 
@@ -996,16 +900,11 @@ int flags;            /* Flags to pass to
      */
 
     length = strlen(scrollPtr->orientUid);
-    if (strncmp(scrollPtr->orientUid, "vertical", length) == 0)
-    {
+    if (strncmp(scrollPtr->orientUid, "vertical", length) == 0) {
         scrollPtr->vertical = 1;
-    }
-    else if (strncmp(scrollPtr->orientUid, "horizontal", length) == 0)
-    {
+    } else if (strncmp(scrollPtr->orientUid, "horizontal", length) == 0) {
         scrollPtr->vertical = 0;
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "bad orientation \"",
                          scrollPtr->orientUid,
@@ -1014,12 +913,9 @@ int flags;            /* Flags to pass to
         return TCL_ERROR;
     }
 
-    if (scrollPtr->command != NULL)
-    {
+    if (scrollPtr->command != NULL) {
         scrollPtr->commandSize = strlen(scrollPtr->command);
-    }
-    else
-    {
+    } else {
         scrollPtr->commandSize = 0;
     }
 
@@ -1027,13 +923,11 @@ int flags;            /* Flags to pass to
 
     gcValues.foreground = scrollPtr->troughColorPtr->pixel;
     new = Tk_GetGC(scrollPtr->tkwin, GCForeground, &gcValues);
-    if (scrollPtr->troughGC != None)
-    {
+    if (scrollPtr->troughGC != None) {
         Tk_FreeGC(scrollPtr->display, scrollPtr->troughGC);
     }
     scrollPtr->troughGC = new;
-    if (scrollPtr->copyGC == None)
-    {
+    if (scrollPtr->copyGC == None) {
         gcValues.graphics_exposures = False;
         scrollPtr->copyGC
         = Tk_GetGC(scrollPtr->tkwin, GCGraphicsExposures, &gcValues);
@@ -1079,22 +973,17 @@ ClientData clientData; /* Information about window. */
     int relief, width, elementBorderWidth;
     Pixmap pixmap;
 
-    if ((scrollPtr->tkwin == NULL) || !Tk_IsMapped(tkwin))
-    {
+    if ((scrollPtr->tkwin == NULL) || !Tk_IsMapped(tkwin)) {
         goto done;
     }
 
-    if (scrollPtr->vertical)
-    {
+    if (scrollPtr->vertical) {
         width = Tk_Width(tkwin) - 2 * scrollPtr->inset;
-    }
-    else
-    {
+    } else {
         width = Tk_Height(tkwin) - 2 * scrollPtr->inset;
     }
     elementBorderWidth = scrollPtr->elementBorderWidth;
-    if (elementBorderWidth < 0)
-    {
+    if (elementBorderWidth < 0) {
         elementBorderWidth = scrollPtr->borderWidth;
     }
 
@@ -1111,16 +1000,12 @@ ClientData clientData; /* Information about window. */
                           Tk_Height(tkwin),
                           Tk_Depth(tkwin));
 
-    if (scrollPtr->highlightWidth != 0)
-    {
+    if (scrollPtr->highlightWidth != 0) {
         GC gc;
 
-        if (scrollPtr->flags & GOT_FOCUS)
-        {
+        if (scrollPtr->flags & GOT_FOCUS) {
             gc = Tk_GCForColor(scrollPtr->highlightColorPtr, pixmap);
-        }
-        else
-        {
+        } else {
             gc = Tk_GCForColor(scrollPtr->highlightBgColorPtr, pixmap);
         }
         Tk_DrawFocusHighlight(tkwin, gc, scrollPtr->highlightWidth, pixmap);
@@ -1150,19 +1035,15 @@ ClientData clientData; /* Information about window. */
      * scrollbar and be properly centered.
      */
 
-    if (scrollPtr->activeField == TOP_ARROW)
-    {
+    if (scrollPtr->activeField == TOP_ARROW) {
         border = scrollPtr->activeBorder;
         relief = scrollPtr->activeField == TOP_ARROW ? scrollPtr->activeRelief
                                                      : TK_RELIEF_RAISED;
-    }
-    else
-    {
+    } else {
         border = scrollPtr->bgBorder;
         relief = TK_RELIEF_RAISED;
     }
-    if (scrollPtr->vertical)
-    {
+    if (scrollPtr->vertical) {
         points[0].x = scrollPtr->inset - 1;
         points[0].y = scrollPtr->arrowLength + scrollPtr->inset - 1;
         points[1].x = width + scrollPtr->inset;
@@ -1171,9 +1052,7 @@ ClientData clientData; /* Information about window. */
         points[2].y = scrollPtr->inset - 1;
         Tk_Fill3DPolygon(
         tkwin, pixmap, border, points, 3, elementBorderWidth, relief);
-    }
-    else
-    {
+    } else {
         points[0].x = scrollPtr->arrowLength + scrollPtr->inset - 1;
         points[0].y = scrollPtr->inset - 1;
         points[1].x = scrollPtr->inset;
@@ -1188,20 +1067,16 @@ ClientData clientData; /* Information about window. */
      * Display the bottom or right arrow.
      */
 
-    if (scrollPtr->activeField == BOTTOM_ARROW)
-    {
+    if (scrollPtr->activeField == BOTTOM_ARROW) {
         border = scrollPtr->activeBorder;
         relief = scrollPtr->activeField == BOTTOM_ARROW
                  ? scrollPtr->activeRelief
                  : TK_RELIEF_RAISED;
-    }
-    else
-    {
+    } else {
         border = scrollPtr->bgBorder;
         relief = TK_RELIEF_RAISED;
     }
-    if (scrollPtr->vertical)
-    {
+    if (scrollPtr->vertical) {
         points[0].x = scrollPtr->inset;
         points[0].y
         = Tk_Height(tkwin) - scrollPtr->arrowLength - scrollPtr->inset + 1;
@@ -1211,9 +1086,7 @@ ClientData clientData; /* Information about window. */
         points[2].y = points[0].y;
         Tk_Fill3DPolygon(
         tkwin, pixmap, border, points, 3, elementBorderWidth, relief);
-    }
-    else
-    {
+    } else {
         points[0].x
         = Tk_Width(tkwin) - scrollPtr->arrowLength - scrollPtr->inset + 1;
         points[0].y = scrollPtr->inset - 1;
@@ -1229,19 +1102,15 @@ ClientData clientData; /* Information about window. */
      * Display the slider.
      */
 
-    if (scrollPtr->activeField == SLIDER)
-    {
+    if (scrollPtr->activeField == SLIDER) {
         border = scrollPtr->activeBorder;
         relief = scrollPtr->activeField == SLIDER ? scrollPtr->activeRelief
                                                   : TK_RELIEF_RAISED;
-    }
-    else
-    {
+    } else {
         border = scrollPtr->bgBorder;
         relief = TK_RELIEF_RAISED;
     }
-    if (scrollPtr->vertical)
-    {
+    if (scrollPtr->vertical) {
         Tk_Fill3DRectangle(tkwin,
                            pixmap,
                            border,
@@ -1251,9 +1120,7 @@ ClientData clientData; /* Information about window. */
                            scrollPtr->sliderLast - scrollPtr->sliderFirst,
                            elementBorderWidth,
                            relief);
-    }
-    else
-    {
+    } else {
         Tk_Fill3DRectangle(tkwin,
                            pixmap,
                            border,
@@ -1310,48 +1177,33 @@ XEvent *eventPtr;      /* Information about event. */
 {
     Scrollbar *scrollPtr = ( Scrollbar * )clientData;
 
-    if ((eventPtr->type == Expose) && (eventPtr->xexpose.count == 0))
-    {
+    if ((eventPtr->type == Expose) && (eventPtr->xexpose.count == 0)) {
         EventuallyRedraw(scrollPtr);
-    }
-    else if (eventPtr->type == DestroyNotify)
-    {
-        if (scrollPtr->tkwin != NULL)
-        {
+    } else if (eventPtr->type == DestroyNotify) {
+        if (scrollPtr->tkwin != NULL) {
             scrollPtr->tkwin = NULL;
             Tcl_DeleteCommand(
             scrollPtr->interp,
             Tcl_GetCommandName(scrollPtr->interp, scrollPtr->widgetCmd));
         }
-        if (scrollPtr->flags & REDRAW_PENDING)
-        {
+        if (scrollPtr->flags & REDRAW_PENDING) {
             Tcl_CancelIdleCall(DisplayScrollbar, ( ClientData )scrollPtr);
         }
         Tcl_EventuallyFree(( ClientData )scrollPtr, DestroyScrollbar);
-    }
-    else if (eventPtr->type == ConfigureNotify)
-    {
+    } else if (eventPtr->type == ConfigureNotify) {
         ComputeScrollbarGeometry(scrollPtr);
         EventuallyRedraw(scrollPtr);
-    }
-    else if (eventPtr->type == FocusIn)
-    {
-        if (eventPtr->xfocus.detail != NotifyInferior)
-        {
+    } else if (eventPtr->type == FocusIn) {
+        if (eventPtr->xfocus.detail != NotifyInferior) {
             scrollPtr->flags |= GOT_FOCUS;
-            if (scrollPtr->highlightWidth > 0)
-            {
+            if (scrollPtr->highlightWidth > 0) {
                 EventuallyRedraw(scrollPtr);
             }
         }
-    }
-    else if (eventPtr->type == FocusOut)
-    {
-        if (eventPtr->xfocus.detail != NotifyInferior)
-        {
+    } else if (eventPtr->type == FocusOut) {
+        if (eventPtr->xfocus.detail != NotifyInferior) {
             scrollPtr->flags &= ~GOT_FOCUS;
-            if (scrollPtr->highlightWidth > 0)
-            {
+            if (scrollPtr->highlightWidth > 0) {
                 EventuallyRedraw(scrollPtr);
             }
         }
@@ -1389,8 +1241,7 @@ ClientData clientData; /* Pointer to widget record for widget. */
      * destroys the widget.
      */
 
-    if (tkwin != NULL)
-    {
+    if (tkwin != NULL) {
         scrollPtr->tkwin = NULL;
         Tk_DestroyWindow(tkwin);
     }
@@ -1420,8 +1271,7 @@ scrollPtr) Scrollbar *scrollPtr; /* Scrollbar whose geometry may
 {
     int width, fieldLength;
 
-    if (scrollPtr->highlightWidth < 0)
-    {
+    if (scrollPtr->highlightWidth < 0) {
         scrollPtr->highlightWidth = 0;
     }
     scrollPtr->inset = scrollPtr->highlightWidth + scrollPtr->borderWidth;
@@ -1431,8 +1281,7 @@ scrollPtr) Scrollbar *scrollPtr; /* Scrollbar whose geometry may
     fieldLength = (scrollPtr->vertical ? Tk_Height(scrollPtr->tkwin)
                                        : Tk_Width(scrollPtr->tkwin))
                   - 2 * (scrollPtr->arrowLength + scrollPtr->inset);
-    if (fieldLength < 0)
-    {
+    if (fieldLength < 0) {
         fieldLength = 0;
     }
     scrollPtr->sliderFirst = fieldLength * scrollPtr->firstFraction;
@@ -1444,20 +1293,17 @@ scrollPtr) Scrollbar *scrollPtr; /* Scrollbar whose geometry may
      * a minimal width (so it can be grabbed with the mouse).
      */
 
-    if (scrollPtr->sliderFirst > (fieldLength - 2 * scrollPtr->borderWidth))
-    {
+    if (scrollPtr->sliderFirst > (fieldLength - 2 * scrollPtr->borderWidth)) {
         scrollPtr->sliderFirst = fieldLength - 2 * scrollPtr->borderWidth;
     }
-    if (scrollPtr->sliderFirst < 0)
-    {
+    if (scrollPtr->sliderFirst < 0) {
         scrollPtr->sliderFirst = 0;
     }
-    if (scrollPtr->sliderLast < (scrollPtr->sliderFirst + MIN_SLIDER_LENGTH))
-    {
+    if (scrollPtr->sliderLast
+        < (scrollPtr->sliderFirst + MIN_SLIDER_LENGTH)) {
         scrollPtr->sliderLast = scrollPtr->sliderFirst + MIN_SLIDER_LENGTH;
     }
-    if (scrollPtr->sliderLast > fieldLength)
-    {
+    if (scrollPtr->sliderLast > fieldLength) {
         scrollPtr->sliderLast = fieldLength;
     }
     scrollPtr->sliderFirst += scrollPtr->arrowLength + scrollPtr->inset;
@@ -1470,16 +1316,13 @@ scrollPtr) Scrollbar *scrollPtr; /* Scrollbar whose geometry may
      * redisplayed.
      */
 
-    if (scrollPtr->vertical)
-    {
+    if (scrollPtr->vertical) {
         Tk_GeometryRequest(scrollPtr->tkwin,
                            scrollPtr->width + 2 * scrollPtr->inset,
                            2
                            * (scrollPtr->arrowLength + scrollPtr->borderWidth
                               + scrollPtr->inset));
-    }
-    else
-    {
+    } else {
         Tk_GeometryRequest(scrollPtr->tkwin,
                            2
                            * (scrollPtr->arrowLength + scrollPtr->borderWidth
@@ -1517,13 +1360,10 @@ int x, y; /* Coordinates within scrollPtr's
 {
     int length, width, tmp;
 
-    if (scrollPtr->vertical)
-    {
+    if (scrollPtr->vertical) {
         length = Tk_Height(scrollPtr->tkwin);
         width = Tk_Width(scrollPtr->tkwin);
-    }
-    else
-    {
+    } else {
         tmp = x;
         x = y;
         y = tmp;
@@ -1532,8 +1372,7 @@ int x, y; /* Coordinates within scrollPtr's
     }
 
     if ((x < scrollPtr->inset) || (x >= (width - scrollPtr->inset))
-        || (y < scrollPtr->inset) || (y >= (length - scrollPtr->inset)))
-    {
+        || (y < scrollPtr->inset) || (y >= (length - scrollPtr->inset))) {
         return OUTSIDE;
     }
 
@@ -1542,20 +1381,16 @@ int x, y; /* Coordinates within scrollPtr's
      * DisplayScrollbar.  Be sure to keep the two consistent.
      */
 
-    if (y < (scrollPtr->inset + scrollPtr->arrowLength))
-    {
+    if (y < (scrollPtr->inset + scrollPtr->arrowLength)) {
         return TOP_ARROW;
     }
-    if (y < scrollPtr->sliderFirst)
-    {
+    if (y < scrollPtr->sliderFirst) {
         return TOP_GAP;
     }
-    if (y < scrollPtr->sliderLast)
-    {
+    if (y < scrollPtr->sliderLast) {
         return SLIDER;
     }
-    if (y >= (length - (scrollPtr->arrowLength + scrollPtr->inset)))
-    {
+    if (y >= (length - (scrollPtr->arrowLength + scrollPtr->inset))) {
         return BOTTOM_ARROW;
     }
     return BOTTOM_GAP;
@@ -1581,12 +1416,10 @@ int x, y; /* Coordinates within scrollPtr's
 static void EventuallyRedraw(
 scrollPtr) Scrollbar *scrollPtr; /* Information about widget. */
 {
-    if ((scrollPtr->tkwin == NULL) || (!Tk_IsMapped(scrollPtr->tkwin)))
-    {
+    if ((scrollPtr->tkwin == NULL) || (!Tk_IsMapped(scrollPtr->tkwin))) {
         return;
     }
-    if ((scrollPtr->flags & REDRAW_PENDING) == 0)
-    {
+    if ((scrollPtr->flags & REDRAW_PENDING) == 0) {
         Tcl_DoWhenIdle(DisplayScrollbar, ( ClientData )scrollPtr);
         scrollPtr->flags |= REDRAW_PENDING;
     }

@@ -61,8 +61,7 @@ tvsleep(const Tv_t *tv, Tv_t *rv)
 
     stv.tv_sec = tv->tv_sec;
     stv.tv_nsec = tv->tv_nsec;
-    if ((r = nanosleep(&stv, &srv)) && errno == EINTR && rv)
-    {
+    if ((r = nanosleep(&stv, &srv)) && errno == EINTR && rv) {
         rv->tv_sec = srv.tv_sec;
         rv->tv_nsec = srv.tv_nsec;
     }
@@ -93,42 +92,31 @@ tvsleep(const Tv_t *tv, Tv_t *rv)
 
 #        if _lib_usleep
 
-        if (s < (0x7fffffff / 1000000))
-        {
+        if (s < (0x7fffffff / 1000000)) {
             int oerrno;
 
             oerrno = errno;
             errno = 0;
             usleep(s * 1000000 + n / 1000);
-            if (!errno)
-            {
+            if (!errno) {
                 errno = oerrno;
                 return 0;
             }
-        }
-        else
-        {
+        } else {
 
 #        endif
 
-            if (s += (n + 999999999L) / 1000000000L)
-            {
-                while (s)
-                {
-                    if (s > UINT_MAX)
-                    {
+            if (s += (n + 999999999L) / 1000000000L) {
+                while (s) {
+                    if (s > UINT_MAX) {
                         t = UINT_MAX;
                         s -= UINT_MAX;
-                    }
-                    else
-                    {
+                    } else {
                         t = s;
                         s = 0;
                     }
-                    if (t = sleep(t))
-                    {
-                        if (rv)
-                        {
+                    if (t = sleep(t)) {
+                        if (rv) {
                             rv->tv_sec = s + t;
                             rv->tv_nsec = 0;
                         }
@@ -140,15 +128,13 @@ tvsleep(const Tv_t *tv, Tv_t *rv)
 
 #        if _lib_usleep
 
-            if (t = (n + 999L) / 1000L)
-            {
+            if (t = (n + 999L) / 1000L) {
                 int oerrno;
 
                 oerrno = errno;
                 errno = 0;
                 usleep(t);
-                if (!errno)
-                {
+                if (!errno) {
                     errno = oerrno;
                     return 0;
                 }
@@ -170,38 +156,28 @@ tvsleep(const Tv_t *tv, Tv_t *rv)
 #    endif
     }
 bad:
-    if (errno == EINTR && rv)
-    {
+    if (errno == EINTR && rv) {
         tvgettime(rv);
-        if (rv->tv_nsec < bv.tv_nsec)
-        {
+        if (rv->tv_nsec < bv.tv_nsec) {
             rv->tv_nsec += 1000000000L;
             rv->tv_sec--;
         }
         rv->tv_nsec -= bv.tv_nsec;
         rv->tv_sec -= bv.tv_sec;
-        if (rv->tv_sec > tv->tv_sec)
-        {
+        if (rv->tv_sec > tv->tv_sec) {
             rv->tv_sec = 0;
             rv->tv_nsec = 0;
-        }
-        else
-        {
+        } else {
             rv->tv_sec = tv->tv_sec - rv->tv_sec;
-            if (rv->tv_nsec > tv->tv_nsec)
-            {
-                if (!rv->tv_sec)
-                {
+            if (rv->tv_nsec > tv->tv_nsec) {
+                if (!rv->tv_sec) {
                     rv->tv_sec = 0;
                     rv->tv_nsec = 0;
-                }
-                else
-                {
+                } else {
                     rv->tv_sec--;
                     rv->tv_nsec = 1000000000L - rv->tv_nsec + tv->tv_nsec;
                 }
-            }
-            else
+            } else
                 rv->tv_nsec = tv->tv_nsec - rv->tv_nsec;
         }
     }

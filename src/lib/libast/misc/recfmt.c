@@ -63,8 +63,7 @@ recfmt(const void *buf, size_t size, off_t total)
 
     s = ( unsigned char * )buf;
     t = s + size;
-    while ((k = (t - s)) >= 4 && !s[2] && !s[3])
-    {
+    while ((k = (t - s)) >= 4 && !s[2] && !s[3]) {
         if ((i = (s[0] << 8) | s[1]) > k)
             break;
         s += i;
@@ -80,11 +79,9 @@ recfmt(const void *buf, size_t size, off_t total)
     for (i = 0; i < elementsof(terminators); i++)
         if ((t = ( unsigned char * )memchr(
              ( void * )s, k = terminators[i], size / 2))
-            && (n = t - s + 1) > 1 && (total <= 0 || !(total % n)))
-        {
+            && (n = t - s + 1) > 1 && (total <= 0 || !(total % n))) {
             for (j = n - 1; j < size; j += n)
-                if (s[j] != k)
-                {
+                if (s[j] != k) {
                     n = 0;
                     break;
                 }
@@ -99,13 +96,11 @@ recfmt(const void *buf, size_t size, off_t total)
     if (!(q = newof(0, Sample_t, 1, 0)))
         return REC_N_TYPE();
     x = 0;
-    for (i = 0; i < size; i++)
-    {
+    for (i = 0; i < size; i++) {
         h = q->hit + s[i];
         m = i - *h;
         *h = i;
-        if (m < elementsof(q->rep))
-        {
+        if (m < elementsof(q->rep)) {
             if (m > x)
                 x = m;
             q->rep[m]++;
@@ -114,10 +109,8 @@ recfmt(const void *buf, size_t size, off_t total)
     n = 0;
     m = 0;
     f = ~0;
-    for (i = x; i > 1; i--)
-    {
-        if ((total <= 0 || !(total % i)) && q->rep[i] > q->rep[n])
-        {
+    for (i = x; i > 1; i--) {
+        if ((total <= 0 || !(total % i)) && q->rep[i] > q->rep[n]) {
             m++;
             g = 0;
             for (j = i; j < size - i; j += i)
@@ -125,15 +118,13 @@ recfmt(const void *buf, size_t size, off_t total)
                     if (s[j + k] != s[j + k - i])
                         g++;
             g = (((g * 100) / i) * 100) / q->rep[i];
-            if (g <= f)
-            {
+            if (g <= f) {
                 f = g;
                 n = i;
             }
         }
     }
-    if (m <= 1 && n <= 2 && total > 1 && total < 256)
-    {
+    if (m <= 1 && n <= 2 && total > 1 && total < 256) {
         n = 0;
         for (i = 0; i < size; i++)
             for (j = 0; j < elementsof(terminators); j++)
@@ -153,8 +144,7 @@ main()
     size_t size;
     off_t total;
 
-    if (!(s = sfreserve(sfstdin, SF_UNBOUND, 0)))
-    {
+    if (!(s = sfreserve(sfstdin, SF_UNBOUND, 0))) {
         sfprintf(sfstderr, "read error\n");
         return 1;
     }

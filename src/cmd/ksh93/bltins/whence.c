@@ -58,8 +58,7 @@ b_command(int argc, char *argv[], Shbltin_t *context)
     Shell_t *shp = context->shp;
     opt_info.index = opt_info.offset = 0;
     while ((n = optget(argv, sh_optcommand)))
-        switch (n)
-        {
+        switch (n) {
         case 'p':
             if (sh_isoption(shp, SH_RESTRICTED))
                 errormsg(SH_DICT, ERROR_exit(1), e_restricted, "-p");
@@ -105,8 +104,7 @@ b_whence(int argc, char *argv[], Shbltin_t *context)
     if (*argv[0] == 't')
         flags = V_FLAG;
     while ((n = optget(argv, sh_optwhence)))
-        switch (n)
-        {
+        switch (n) {
         case 't':
             flags |= T_FLAG;
             break;
@@ -158,8 +156,7 @@ whence(Shell_t *shp, char **argv, int flags)
     int notrack = 1;
     if (flags & Q_FLAG)
         flags &= ~A_FLAG;
-    while (name = *argv++)
-    {
+    while (name = *argv++) {
         tofree = 0;
         aflag = ((flags & A_FLAG) != 0);
         cp = 0;
@@ -169,8 +166,7 @@ whence(Shell_t *shp, char **argv, int flags)
         if (flags & Q_FLAG)
             goto bltins;
         /* reserved words first */
-        if (sh_lookup(name, shtab_reserved))
-        {
+        if (sh_lookup(name, shtab_reserved)) {
             if (flags & T_FLAG)
                 sfprintf(sfstdout, "%s\n", "keyword");
             else
@@ -184,10 +180,9 @@ whence(Shell_t *shp, char **argv, int flags)
         }
         /* non-tracked aliases */
         if ((np = nv_search(name, shp->alias_tree, 0)) && !nv_isnull(np)
-            && !(notrack = nv_isattr(np, NV_TAGGED)) && (cp = nv_getval(np)))
-        {
-            if (flags & V_FLAG)
-            {
+            && !(notrack = nv_isattr(np, NV_TAGGED))
+            && (cp = nv_getval(np))) {
+            if (flags & V_FLAG) {
                 if (nv_isattr(np, NV_EXPORT))
                     msg = sh_translate(is_xalias);
                 else
@@ -206,29 +201,24 @@ whence(Shell_t *shp, char **argv, int flags)
         /* built-ins and functions next */
     bltins:
         root = (flags & F_FLAG) ? shp->bltin_tree : shp->fun_tree;
-        if (np = nv_bfsearch(name, root, &nq, &notused))
-        {
+        if (np = nv_bfsearch(name, root, &nq, &notused)) {
             if (is_abuiltin(np) && nv_isnull(np))
                 goto search;
             cp = "";
-            if (flags & (V_FLAG | T_FLAG))
-            {
+            if (flags & (V_FLAG | T_FLAG)) {
                 if (nv_isnull(np))
                     cp = is_ufunction;
-                else if (is_abuiltin(np))
-                {
+                else if (is_abuiltin(np)) {
                     if (nv_isattr(np, BLT_SPC))
                         cp = is_spcbuiltin;
                     else
                         cp = is_builtin;
-                }
-                else
+                } else
                     cp = is_function;
             }
             if (flags & Q_FLAG)
                 continue;
-            if (flags & T_FLAG)
-            {
+            if (flags & T_FLAG) {
                 if (cp == is_function || cp == is_ufunction)
                     cp = "function";
                 else if (*name == '/')
@@ -236,8 +226,7 @@ whence(Shell_t *shp, char **argv, int flags)
                 else
                     cp = "builtin";
                 sfputr(sfstdout, cp, '\n');
-            }
-            else
+            } else
                 sfprintf(sfstdout, "%s%s\n", name, sh_translate(cp));
             if (!aflag)
                 continue;
@@ -245,41 +234,30 @@ whence(Shell_t *shp, char **argv, int flags)
             aflag++;
         }
     search:
-        if (sh_isstate(shp, SH_DEFPATH))
-        {
+        if (sh_isstate(shp, SH_DEFPATH)) {
             cp = 0;
             notrack = 1;
         }
-        do
-        {
-            if (path_search(shp, name, &pp, 2 + (aflag > 1)))
-            {
+        do {
+            if (path_search(shp, name, &pp, 2 + (aflag > 1))) {
                 cp = name;
                 if ((flags & P_FLAG) && *cp != '/')
                     cp = 0;
-            }
-            else
-            {
+            } else {
                 cp = stakptr(PATH_OFFSET);
                 if (*cp == 0)
                     cp = 0;
-                else if (*cp != '/')
-                {
+                else if (*cp != '/') {
                     cp = path_fullname(shp, cp);
                     tofree = 1;
                 }
             }
-            if (flags & Q_FLAG)
-            {
+            if (flags & Q_FLAG) {
                 pp = 0;
                 r |= !cp;
-            }
-            else if (cp)
-            {
-                if (flags & V_FLAG)
-                {
-                    if (*cp != '/')
-                    {
+            } else if (cp) {
+                if (flags & V_FLAG) {
+                    if (*cp != '/') {
                         if (!np && (np = nv_search(name, shp->track_tree, 0)))
                             sfprintf(sfstdout,
                                      "%s %s %s/%s\n",
@@ -310,23 +288,18 @@ whence(Shell_t *shp, char **argv, int flags)
                     sfputr(sfstdout, "file", '\n');
                 else
                     sfputr(sfstdout, sh_fmtq(cp), '\n');
-                if (aflag)
-                {
+                if (aflag) {
                     if (aflag <= 1)
                         aflag++;
                     if (pp)
                         pp = pp->next;
-                }
-                else
+                } else
                     pp = 0;
-                if (tofree)
-                {
+                if (tofree) {
                     free(( char * )cp);
                     tofree = 0;
                 }
-            }
-            else if (aflag <= 1)
-            {
+            } else if (aflag <= 1) {
                 r |= 1;
                 if (flags & V_FLAG)
                     errormsg(SH_DICT, ERROR_exit(0), e_found, sh_fmtq(name));

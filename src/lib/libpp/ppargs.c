@@ -172,8 +172,7 @@ pplint(char *head, char *comment, char *tail, int line)
     if (strmatch(comment,
                  "(ARGSUSED|PRINTFLIKE|PROTOLIB|SCANFLIKE|VARARGS)*([0-9])|"
                  "CONSTCOND|CONSTANTCOND|CONSTANTCONDITION|EMPTY|FALLTHRU|"
-                 "FALLTHROUGH|LINTLIBRARY|LINTED*|NOTREACHED"))
-    {
+                 "FALLTHROUGH|LINTLIBRARY|LINTED*|NOTREACHED")) {
         strncopy(pp.token, comment, MAXTOKEN);
         ppprintf("\n#%s %s:%s\n", dirname(PRAGMA), pp.pass, pp.token);
         ppline(error_info.line, NiL);
@@ -204,11 +203,9 @@ ppargs(char **argv, int last)
 
     if (!error_info.id)
         error_info.id = "cpp";
-    for (;;)
-    {
+    for (;;) {
         for (; c = optget(argv, usage); last = 0)
-            switch (c)
-            {
+            switch (c) {
             case 'C':
                 ppop(PP_COMMENT, ppcomment);
                 break;
@@ -219,20 +216,17 @@ ppargs(char **argv, int last)
                  * (not all cc wrappers have -W...)
                  */
 
-                switch (*(s = opt_info.arg))
-                {
+                switch (*(s = opt_info.arg)) {
                 case '-':
                 case '+':
                     n = (*s++ == '-');
                     while (c = *s++)
-                        switch (c)
-                        {
+                        switch (c) {
                         case 'C':
                             ppop(PP_COMPATIBILITY, n);
                             break;
                         case 'D':
-                            if (n && ((c = strtol(s, &p, 0)) || p != s))
-                            {
+                            if (n && ((c = strtol(s, &p, 0)) || p != s)) {
                                 s = p;
                                 n = c;
                             }
@@ -299,8 +293,7 @@ ppargs(char **argv, int last)
                             ppop(PP_PLUSPLUS, n);
                             break;
                         default:
-                            if (pp.optarg)
-                            {
+                            if (pp.optarg) {
                                 if ((c = (*pp.optarg)(n, c, s)) > 0)
                                     goto hasarg;
                                 else if (!c)
@@ -339,8 +332,7 @@ ppargs(char **argv, int last)
                 /* historically ignored */
                 break;
             case 'I':
-                if (!(s = opt_info.arg))
-                {
+                if (!(s = opt_info.arg)) {
                     /*
                      * some compilers interpret `-I ...' as
                      * `-I-S' and arg ... while others interpret
@@ -349,8 +341,7 @@ ppargs(char **argv, int last)
 
                     p = "-S";
                     if ((s = argv[opt_info.index])
-                        && ((n = *s++) == '-' || n == '+') && *s++ == 'D')
-                    {
+                        && ((n = *s++) == '-' || n == '+') && *s++ == 'D') {
                         if (isalpha(*s) || *s == '_')
                             while (isalnum(*++s) || *s == '_')
                                 ;
@@ -359,16 +350,14 @@ ppargs(char **argv, int last)
                     }
                     s = p;
                 }
-                switch (*s)
-                {
+                switch (*s) {
                 case '-':
                 case '+':
                     n = *(p = s++) == '-';
                     c = *s++;
                     if (!n && !*s)
                         s = 0;
-                    switch (c)
-                    {
+                    switch (c) {
                     case 0:
                         ppop(PP_LOCAL);
                         break;
@@ -410,10 +399,8 @@ ppargs(char **argv, int last)
                 }
                 break;
             case 'M':
-                for (n = PP_deps; argv[opt_info.index]; opt_info.offset++)
-                {
-                    switch (argv[opt_info.index][opt_info.offset])
-                    {
+                for (n = PP_deps; argv[opt_info.index]; opt_info.offset++) {
+                    switch (argv[opt_info.index][opt_info.offset]) {
                     case 'D':
                         n |= PP_deps_file;
                         continue;
@@ -463,8 +450,7 @@ ppargs(char **argv, int last)
                               : *opt_info.arg;
                 break;
             case 'Y':
-                if (*(s = opt_info.arg) && *(s + 1) == ',')
-                {
+                if (*(s = opt_info.arg) && *(s + 1) == ',') {
                     if (*s != 'I')
                         break;
                     s += 2;
@@ -480,8 +466,7 @@ ppargs(char **argv, int last)
                 error(ERROR_USAGE | 4, "%s", opt_info.arg);
                 break;
             case ':':
-                if (!last)
-                {
+                if (!last) {
                     opt_info.again = 1;
                     return (1);
                 }
@@ -492,50 +477,36 @@ ppargs(char **argv, int last)
 
                 if (!(s = argv[opt_info.index]))
                     error(3, "%s", opt_info.arg);
-                if (opt_info.offset == 2 && (pp.arg_style & STYLE_gnu))
-                {
+                if (opt_info.offset == 2 && (pp.arg_style & STYLE_gnu)) {
                     p = argv[opt_info.index + 1];
-                    if (streq(s, "-$"))
-                    {
+                    if (streq(s, "-$")) {
                         ppop(PP_OPTION, "noid \"$\"");
                         goto ignore;
-                    }
-                    else if (streq(s, "-dD"))
-                    {
+                    } else if (streq(s, "-dD")) {
                         pp.option |= DEFINITIONS;
                         goto ignore;
-                    }
-                    else if (streq(s, "-dM"))
-                    {
+                    } else if (streq(s, "-dM")) {
                         pp.state |= NOTEXT;
                         pp.option
                         |= KEEPNOTEXT | DEFINITIONS | PREDEFINITIONS;
                         pp.linesync = 0;
                         goto ignore;
-                    }
-                    else if (streq(s, "-imacros"))
-                    {
-                        if (p)
-                        {
+                    } else if (streq(s, "-imacros")) {
+                        if (p) {
                             ppop(PP_READ, p);
                             opt_info.index++;
                             opt_info.offset = 0;
                         }
                         goto ignore;
-                    }
-                    else if (streq(s, "-include"))
-                    {
-                        if (p)
-                        {
+                    } else if (streq(s, "-include")) {
+                        if (p) {
                             ppop(PP_TEXT, p);
                             opt_info.index++;
                             opt_info.offset = 0;
                         }
                         opt_info.offset = 0;
                         goto ignore;
-                    }
-                    else if (strneq(s, "-lang-", 6))
-                    {
+                    } else if (strneq(s, "-lang-", 6)) {
                         s += 6;
                         if (streq(s, "c"))
                             c = 0;
@@ -556,9 +527,7 @@ ppargs(char **argv, int last)
 #pragma pp:allmultiple\n\
 #endmac");
                         goto ignore;
-                    }
-                    else if (streq(s, "-lint"))
-                    {
+                    } else if (streq(s, "-lint")) {
                         ppop(PP_COMMENT, pplint);
                         goto ignore;
                     }
@@ -570,33 +539,26 @@ ppargs(char **argv, int last)
                          s + 1);
                 else if (strmatch(s, "*@(nostandard|nostdinc)*"))
                     ppop(PP_STANDARD, "");
-                else if (strmatch(s, "*@(exten|xansi)*|std"))
-                {
+                else if (strmatch(s, "*@(exten|xansi)*|std")) {
                     ppop(PP_COMPATIBILITY, 0);
                     ppop(PP_TRANSITION, 1);
-                }
-                else if (strmatch(s,
-                                  "*@(ansi|conform|pedantic|stand|std1|"
-                                  "strict[!-])*"))
-                {
+                } else if (strmatch(s,
+                                    "*@(ansi|conform|pedantic|stand|std1|"
+                                    "strict[!-])*")) {
                     ppop(PP_COMPATIBILITY, 0);
                     ppop(PP_STRICT, 1);
                     if (strmatch(s, "*pedantic*"))
                         ppop(PP_PEDANTIC, 1);
-                }
-                else if (strmatch(s, "*@(trans)*"))
-                {
+                } else if (strmatch(s, "*@(trans)*")) {
                     ppop(PP_COMPATIBILITY, 1);
                     ppop(PP_TRANSITION, 1);
-                }
-                else if (strmatch(s,
-                                  "*@(classic|compat|std0|tradition|[kK][n&+]"
-                                  "[rR])*"))
-                {
+                } else if (strmatch(s,
+                                    "*@(classic|compat|std0|tradition|[kK][n&"
+                                    "+]"
+                                    "[rR])*")) {
                     ppop(PP_COMPATIBILITY, 1);
                     ppop(PP_TRANSITION, 0);
-                }
-                else if (strmatch(s, "*@(plusplus|++)*"))
+                } else if (strmatch(s, "*@(plusplus|++)*"))
                     ppop(PP_PLUSPLUS, 1);
                 else if (strmatch(s, "*@(warn)*"))
                     ppop(PP_WARN, 1);
@@ -611,8 +573,7 @@ ppargs(char **argv, int last)
                 if (argv[opt_info.index + 1]
                     && argv[opt_info.index + 1][0] != '-'
                     && argv[opt_info.index + 2]
-                    && argv[opt_info.index + 2][0] == '-')
-                {
+                    && argv[opt_info.index + 2][0] == '-') {
                     opt_info.index++;
                     opt_info.offset = 0;
                 }
@@ -623,8 +584,7 @@ ppargs(char **argv, int last)
             }
         if (!(s = argv[opt_info.index]))
             return (0);
-        switch (pp.arg_file)
-        {
+        switch (pp.arg_file) {
         case 0:
             if (*s != '-' || *(s + 1))
                 ppop(PP_INPUT, s);

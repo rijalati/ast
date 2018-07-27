@@ -52,10 +52,8 @@ catrule(char *s1, char *s2, char *s3, int force)
     if (s3 && *s3)
         sfputr(internal.nam, s3, -1);
     s1 = sfstruse(internal.nam);
-    if (!(r = getrule(s1)) && force)
-    {
-        if (force < 0)
-        {
+    if (!(r = getrule(s1)) && force) {
+        if (force < 0) {
             pathcanon(s1, 0, 0);
             if (r = getrule(s1))
                 return r;
@@ -77,8 +75,7 @@ statefile(void)
     Sfio_t *sp;
     Stat_t st;
 
-    if (!state.statefile && state.makefile)
-    {
+    if (!state.statefile && state.makefile) {
         sp = sfstropen();
         dir = DELETE;
         if (!state.writestate || streq(state.writestate, "-")
@@ -114,8 +111,7 @@ stateview(int op,
 
     if (pv)
         *pv = 0;
-    if (state.compile < COMPILED)
-    {
+    if (state.compile < COMPILED) {
 #if DEBUG
         if (state.test & 0x00000200)
             error(2,
@@ -126,27 +122,22 @@ stateview(int op,
 #endif
         return 0;
     }
-    if (!(state.view[view].flags & BIND_LOADED))
-    {
-        if (view < state.readstate)
-        {
+    if (!(state.view[view].flags & BIND_LOADED)) {
+        if (view < state.readstate) {
             char *file;
             Sfio_t *tmp;
             long n;
 
             tmp = sfstropen();
-            if (name && !s)
-            {
+            if (name && !s) {
                 sfputr(tmp, name, 0);
                 n = sfstrtell(tmp);
-            }
-            else
+            } else
                 n = 0;
             edit(tmp, statefile(), state.view[view].path, KEEP, KEEP);
             sfputc(tmp, 0);
             file = sfstrseek(tmp, n, SEEK_SET);
-            if (fp = sfopen(NiL, file, "br"))
-            {
+            if (fp = sfopen(NiL, file, "br")) {
                 /*
                  * NOTE: this load should not be a problem for
                  *	 internal rule pointers since all
@@ -170,8 +161,7 @@ stateview(int op,
         }
         state.view[view].flags |= BIND_LOADED;
     }
-    if (name)
-    {
+    if (name) {
         viewname(name, view);
         v = getrule(name);
         unviewname(name);
@@ -186,8 +176,7 @@ stateview(int op,
                   v ? v->name : null,
                   v ? timestr(v->time) : "no rule");
 #endif
-        if (v)
-        {
+        if (v) {
             if (pv)
                 *pv = v;
             if (s
@@ -198,12 +187,9 @@ stateview(int op,
                 return s;
             if (v->time == r->time || accept || r->view == view
                 || (r->property & (P_state | P_use | P_virtual))
-                || state.believe && view >= (state.believe - 1))
-            {
-                if (r->property & P_state)
-                {
-                    if (r->property & P_statevar)
-                    {
+                || state.believe && view >= (state.believe - 1)) {
+                if (r->property & P_state) {
+                    if (r->property & P_statevar) {
                         if (r->statedata
                             && (!v->statedata && *r->statedata
                                 || v->statedata
@@ -215,11 +201,8 @@ stateview(int op,
                         if (v->property & P_parameter)
                             s->property |= P_parameter;
                     }
-                }
-                else
-                {
-                    if (r->property & P_use)
-                    {
+                } else {
+                    if (r->property & P_use) {
                         if (r->action
                             && (!v->action || !streq(r->action, v->action))
                             || !r->action && v->action)
@@ -247,19 +230,16 @@ stateview(int op,
                     s->dynamic &= ~D_lowres;
                 s->prereqs = listcopy(v->prereqs);
                 s->scan = v->scan;
-                for (p = s->prereqs; p; p = p->next)
-                {
+                for (p = s->prereqs; p; p = p->next) {
                     v = p->rule;
-                    if (v->dynamic & D_lower)
-                    {
+                    if (v->dynamic & D_lower) {
                         unviewname(v->name);
                         p->rule = makerule(v->name);
                         viewname(v->name, v->view);
                     }
                 }
 #if DEBUG
-                if (state.test & 0x00000200)
-                {
+                if (state.test & 0x00000200) {
                     error(2, "STATEVIEW %s accept %d", s->name, view);
                     if (state.test & 0x00000400)
                         dumprule(sfstderr, s);
@@ -291,15 +271,12 @@ staterule(int op, Rule_t *r, char *var, int force)
     int nobind = force < 0;
     Flags_t *b;
 
-    switch (op)
-    {
+    switch (op) {
     case PREREQS:
         rul = var;
         var = "+";
-        if (!r)
-        {
-            if (nobind)
-            {
+        if (!r) {
+            if (nobind) {
                 sfprintf(internal.nam, "(%s)%s", var, rul);
                 r = getrule(sfstruse(internal.nam));
             }
@@ -309,10 +286,8 @@ staterule(int op, Rule_t *r, char *var, int force)
     case RULE:
         rul = var;
         var = null;
-        if (!r)
-        {
-            if (nobind)
-            {
+        if (!r) {
+            if (nobind) {
                 sfprintf(internal.nam, "(%s)%s", var, rul);
                 return getrule(sfstruse(internal.nam));
             }
@@ -321,11 +296,9 @@ staterule(int op, Rule_t *r, char *var, int force)
         }
         break;
     case VAR:
-        if (!r)
-        {
+        if (!r) {
             sfprintf(internal.nam, "(%s)", var);
-            if (!(r = getrule(sfstruse(internal.nam))))
-            {
+            if (!(r = getrule(sfstruse(internal.nam)))) {
                 if (!force)
                     return 0;
                 r = makerule(sfstrbase(internal.nam));
@@ -341,18 +314,15 @@ staterule(int op, Rule_t *r, char *var, int force)
 #endif
     }
 again:
-    if (r->property & P_statevar)
-    {
+    if (r->property & P_statevar) {
         if (op == PREREQS)
             return 0;
         op = RULE;
         nam = r->name;
         s = r;
-    }
-    else if (r->property & P_state)
+    } else if (r->property & P_state)
         return 0;
-    else
-    {
+    else {
         if ((r->dynamic & (D_member | D_membertoo))
             && (rul = strrchr(r->name, '/')))
             rul++;
@@ -363,8 +333,7 @@ again:
         if (s = getrule(nam))
             nam = s->name;
     }
-    if (state.maxview && state.readstate && state.makefile && !nobind)
-    {
+    if (state.maxview && state.readstate && state.makefile && !nobind) {
         b = &r->checked[op];
         k = 0;
         if (!tstbit(*b,
@@ -373,12 +342,10 @@ again:
                         ? state.targetview
                         : r->view)
             && (!s || !s->time || (r->property & P_statevar)
-                || !(k = statetimeq(r, s))))
-        {
+                || !(k = statetimeq(r, s)))) {
             if (!(r->property & (P_statevar | P_use | P_virtual))
                 && !(r->dynamic & D_bound) && !(r->mark & M_bind)
-                && (s && s->time || !s && state.compile >= COMPILED))
-            {
+                && (s && s->time || !s && state.compile >= COMPILED)) {
                 /*
                  * M_bind guards staterule() recursion
                  */
@@ -389,27 +356,20 @@ again:
                 s->mark &= ~M_bind;
                 goto again;
             }
-            if ((r->property & P_statevar) && r->time == OLDTIME)
-            {
-                for (i = 0; i <= state.maxview; i++)
-                {
+            if ((r->property & P_statevar) && r->time == OLDTIME) {
+                for (i = 0; i <= state.maxview; i++) {
                     setbit(*b, i);
                     setbit(r->checked[CONSISTENT], i);
                 }
-            }
-            else
-            {
+            } else {
                 if (!(r->property & (P_statevar | P_use | P_virtual))
-                    || state.targetview < 0)
-                {
+                    || state.targetview < 0) {
                     m = 1;
                     j = 0;
                     if (!(k = r->view)
                         && !(state.view[0].flags & BIND_EXISTS))
                         k = state.maxview;
-                }
-                else
-                {
+                } else {
                     m = 0;
                     j = k = state.targetview;
                 }
@@ -422,16 +382,12 @@ again:
                           k,
                           state.targetview);
 #endif
-                for (i = j; i <= k; i++)
-                {
+                for (i = j; i <= k; i++) {
                     setbit(*b, i);
-                    if (i || !(r->property & P_statevar))
-                    {
+                    if (i || !(r->property & P_statevar)) {
                         s = stateview(op, nam, s, r, i, i == k, &v);
-                        if (v)
-                        {
-                            if (m)
-                            {
+                        if (v) {
+                            if (m) {
                                 m = i;
                                 while (++m <= k)
                                     setbit(*b, m);
@@ -445,22 +401,19 @@ again:
                     }
                     if (state.accept)
                         setbit(r->checked[CONSISTENT], i);
-                    if (!i)
-                    {
+                    if (!i) {
                         if (op != PREREQS)
                             setbit(r->checked[CONSISTENT], i);
                         k = state.maxview;
                     }
                 }
             }
-        }
-        else if (k)
+        } else if (k)
             setbit(*b, i);
     }
     if (!s && force > 0)
         s = makerule(nam);
-    if (s && op == RULE)
-    {
+    if (s && op == RULE) {
         r->attribute |= s->attribute & internal.retain->attribute;
         r->property |= s->property & (P_dontcare | P_terminal);
     }
@@ -477,8 +430,7 @@ rulestate(Rule_t *r, int force)
 {
     char *s;
 
-    if (r->property & P_staterule)
-    {
+    if (r->property & P_staterule) {
         s = r->name;
         while (*s && *s++ != ')')
             ;
@@ -501,17 +453,13 @@ varstate(Rule_t *r, int force)
     Var_t *v;
 
     s = r->name;
-    if (r->property & P_state)
-    {
-        if (r->property & P_statevar)
-        {
+    if (r->property & P_state) {
+        if (r->property & P_statevar) {
             s++;
             *(t = s + strlen(s) - 1) = 0;
-        }
-        else
+        } else
             return 0;
-    }
-    else
+    } else
         t = 0;
     if (!(v = getvar(s)) && force)
         v = setvar(s, null, force < 0 ? V_retain : 0);
@@ -616,18 +564,15 @@ lockstate(int set)
     static Time_t locktime;
     static int lockmtime;
 
-    if (set)
-    {
+    if (set) {
         if (!state.exec || state.virtualdot || !state.writestate)
             return;
         edit(internal.nam, statefile(), KEEP, KEEP, external.lock);
         file = strdup(sfstruse(internal.nam));
-        if (!state.ignorelock)
-        {
+        if (!state.ignorelock) {
             int uid = geteuid();
 
-            for (fd = 1; fd <= state.maxview; fd++)
-            {
+            for (fd = 1; fd <= state.maxview; fd++) {
                 edit(internal.nam, file, state.view[fd].path, KEEP, KEEP);
                 if (!stat(sfstruse(internal.nam), &st) && st.st_uid != uid)
                     badlock(
@@ -635,8 +580,7 @@ lockstate(int set)
             }
         }
         locktime = 0;
-        for (;;)
-        {
+        for (;;) {
             lockfile = file;
             if ((fd = open(file,
                            O_WRONLY | O_CREAT | O_TRUNC | O_EXCL | O_BINARY
@@ -665,24 +609,18 @@ lockstate(int set)
         lockmtime = tmxgetatime(&st) < tmxgetmtime(&st)
                     || tmxgetctime(&st) < tmxgetmtime(&st);
         locktime = LOCKTIME(&st, lockmtime);
-    }
-    else if (lockfile)
-    {
-        if (locktime)
-        {
+    } else if (lockfile) {
+        if (locktime) {
             if (stat(lockfile, &st) < 0
                 || (t = LOCKTIME(&st, lockmtime)) != locktime
-                   && t != tmxsns(tmxsec(locktime), 0))
-            {
+                   && t != tmxsns(tmxsec(locktime), 0)) {
                 if (state.writestate)
                     error(1,
                           "the state file lock on %s has been overridden",
                           state.makefile);
-            }
-            else if (remove(lockfile) < 0)
+            } else if (remove(lockfile) < 0)
                 error(1, "cannot remove lock file %s", lockfile);
-        }
-        else
+        } else
             remove(lockfile);
         free(lockfile);
         lockfile = 0;
@@ -699,11 +637,9 @@ readstate(void)
     Sfio_t *fp;
     char *file;
 
-    if (state.makefile)
-    {
+    if (state.makefile) {
         lockstate(1);
-        if (state.readstate && (fp = sfopen(NiL, file = statefile(), "br")))
-        {
+        if (state.readstate && (fp = sfopen(NiL, file = statefile(), "br"))) {
             state.stateview = 0;
             message((-2, "loading state file %s", file));
             makerule(file)->dynamic |= D_built;
@@ -733,23 +669,17 @@ code(const char *s)
 {
     debug((-6, "enter candidate state variable %s", s));
     settype(*s++, C_VARPOS1);
-    if (*s)
-    {
+    if (*s) {
         settype(*s++, C_VARPOS2);
-        if (*s)
-        {
+        if (*s) {
             settype(*s++, C_VARPOS3);
-            if (*s)
-            {
+            if (*s) {
                 settype(*s++, C_VARPOS4);
-                if (*s)
-                {
+                if (*s) {
                     settype(*s++, C_VARPOS5);
-                    if (*s)
-                    {
+                    if (*s) {
                         settype(*s++, C_VARPOS6);
-                        if (*s)
-                        {
+                        if (*s) {
                             settype(*s++, C_VARPOS7);
                             if (*s)
                                 settype(*s, C_VARPOS8);
@@ -777,17 +707,15 @@ checkparam(const char *s, char *v, void *h)
 
     NoP(s);
     NoP(h);
-    if ((r->property & (P_attribute | P_parameter | P_state)) == P_parameter)
-    {
+    if ((r->property & (P_attribute | P_parameter | P_state))
+        == P_parameter) {
         r->property |= P_ignore;
         maketop(r, 0L, NiL);
         for (p = scan(r, &tm); p; p = p->next)
             if (((r = p->rule)->property & (P_parameter | P_statevar))
-                == (P_parameter | P_statevar))
-            {
+                == (P_parameter | P_statevar)) {
                 r->dynamic |= D_scanned;
-                if (t = strchr(r->name, ')'))
-                {
+                if (t = strchr(r->name, ')')) {
                     *t = 0;
                     code(r->name + 1);
                     *t = ')';
@@ -808,12 +736,10 @@ checkvar1(const char *s, char *u, void *h)
     Rule_t *r;
 
     NoP(h);
-    if (v->property & V_scan)
-    {
+    if (v->property & V_scan) {
         state.fullscan = 1;
         r = staterule(VAR, NiL, ( char * )s, 1);
-        if (!r->scan)
-        {
+        if (!r->scan) {
             debug((-5, "%s and %s force re-scan", v->name, r->name));
             r->scan = SCAN_STATE;
             state.forcescan = 1;
@@ -837,8 +763,7 @@ checkvar2(const char *s, char *u, void *h)
     NoP(h);
     if ((r->property & P_statevar) && r->scan && !r->view
         && (!(v = varstate(r, 0)) || !(v->property & V_scan))
-        && (!(r->property & P_parameter) || !(r->dynamic & D_scanned)))
-    {
+        && (!(r->property & P_parameter) || !(r->dynamic & D_scanned))) {
         debug((-5, "%s forces re-scan", r->name));
         r->scan = 0;
         state.forcescan = 1;
@@ -855,14 +780,12 @@ candidates(void)
 {
     int view;
 
-    if (state.scan)
-    {
+    if (state.scan) {
         message((-2, "freeze candidate state variables and parameter files"));
         hashwalk(table.rule, 0, checkparam, NiL);
         hashwalk(table.var, 0, checkvar1, NiL);
         hashwalk(table.rule, 0, checkvar2, NiL);
-        if (state.forcescan)
-        {
+        if (state.forcescan) {
             for (view = 1; view <= state.maxview; view++)
                 stateview(0, NiL, NiL, NiL, view, 0, NiL);
             hashwalk(table.rule, 0, forcescan, NiL);
@@ -879,14 +802,11 @@ savestate(void)
 {
     char *file;
 
-    if (state.makefile && state.user && state.compile == COMPILED)
-    {
-        if (state.writestate)
-        {
+    if (state.makefile && state.user && state.compile == COMPILED) {
+        if (state.writestate) {
             if (state.finish)
                 state.compile = SAVED;
-            if (state.exec && state.savestate)
-            {
+            if (state.exec && state.savestate) {
                 file = statefile();
                 message((-2, "saving state in %s", file));
                 state.stateview = 0;
@@ -919,8 +839,7 @@ bindstate(Rule_t *r, char *val)
         r = s;
     if ((r->dynamic & D_bound) && !val)
         return r;
-    if (r->property & P_statevar)
-    {
+    if (r->property & P_statevar) {
         Var_t *v;
         char *e;
         Sfio_t *tmp = 0;
@@ -933,26 +852,22 @@ bindstate(Rule_t *r, char *val)
             r->property |= P_virtual;
         else if (r->property & P_virtual)
             val = null;
-        else if (v = varstate(r, 0))
-        {
+        else if (v = varstate(r, 0)) {
             tmp = sfstropen();
             r->dynamic |= D_bound;
             expand(tmp, getval(v->name, VAL_PRIMARY));
             r->dynamic &= ~D_bound;
             val = sfstruse(tmp);
-        }
-        else if ((r->property & P_parameter) && r->statedata)
+        } else if ((r->property & P_parameter) && r->statedata)
             val = r->statedata;
-        else if (*(r->name + 1) == '-')
-        {
+        else if (*(r->name + 1) == '-') {
             *(e = r->name + strlen(r->name) - 1) = 0;
             val = getval(r->name + 1, 0);
             *e = ')';
-        }
-        else
+        } else
             val = null;
-        if (!r->time && state.maxview && (state.view[0].flags & BIND_LOADED))
-        {
+        if (!r->time && state.maxview
+            && (state.view[0].flags & BIND_LOADED)) {
             /*
              * see if some other view has an initial value
              */
@@ -972,14 +887,12 @@ bindstate(Rule_t *r, char *val)
                  r->name,
                  r->statedata ? r->statedata : null));
         if (!r->time || r->statedata && !streq(r->statedata, val)
-            || !r->statedata && *val)
-        {
+            || !r->statedata && *val) {
             /*
              * state variable changed
              */
 
-            if (!r->view && !(r->property & P_accept))
-            {
+            if (!r->view && !(r->property & P_accept)) {
                 if (r->time)
                     reason((1,
                             "state variable %s changed to `%s' from `%s'",
@@ -1023,8 +936,7 @@ checkcurrent(Rule_t *r, Stat_t *st)
     if (r->uname && !(n = rstat(r->uname, st, 1)))
         oldname(r);
     else if ((n = rstat(r->name, st, 1))
-             && (state.exec || state.mam.out && !state.mam.port))
-    {
+             && (state.exec || state.mam.out && !state.mam.port)) {
         rebind(r, -1);
         n = rstat(r->name, st, 1);
     }
@@ -1039,8 +951,7 @@ checkcurrent(Rule_t *r, Stat_t *st)
     sfputr(internal.nam, r->name, 0);
     s = sfstrseek(internal.nam, pos + 1, SEEK_SET);
     pathcanon(s, 0, 0);
-    if (!streq(r->name, s))
-    {
+    if (!streq(r->name, s)) {
         if (!r->uname)
             r->uname = r->name;
         r->name = strdup(s);
@@ -1079,8 +990,7 @@ statetime(Rule_t *r, int sync)
     Stat_t st;
     Stat_t ln;
 
-    if (r->property & P_state)
-    {
+    if (r->property & P_state) {
         if ((r->dynamic & D_triggered) && state.exec)
             r->time = ((r->property & P_statevar) && r->status == FAILED)
                       ? ( Time_t )0
@@ -1090,41 +1000,32 @@ statetime(Rule_t *r, int sync)
     s = 0;
     if (state.interrupt && r->status != EXISTS)
         zerostate = 1;
-    else if (r->status == FAILED)
-    {
+    else if (r->status == FAILED) {
         r->time = 0;
         tmxsetmtime(&st, r->time);
-        if ((state.test & 0x00040000) && (s = staterule(RULE, r, NiL, 0)))
-        {
+        if ((state.test & 0x00040000) && (s = staterule(RULE, r, NiL, 0))) {
             r->time = s->time;
             if (r->property & (P_metarule | P_state))
                 r->event = s->event;
             state.savestate = 1;
             skip = 1;
         }
-    }
-    else if (r->property & P_virtual)
-    {
+    } else if (r->property & P_virtual) {
         r->time = CURTIME;
         tmxsetmtime(&st, r->time);
-    }
-    else if (checkcurrent(r, &st))
-    {
+    } else if (checkcurrent(r, &st)) {
         if (r->property & P_dontcare)
             t = 0;
-        else
-        {
+        else {
             t = CURTIME;
             zerostate = 1;
         }
         tmxsetmtime(&st, t);
-    }
-    else if (sync < 0)
+    } else if (sync < 0)
         return r->time;
-    else if ((s = staterule(RULE, r, NiL, 1)) && s->time == tmxgetmtime(&st))
-    {
-        if (state.exec && !state.touch)
-        {
+    else if ((s = staterule(RULE, r, NiL, 1))
+             && s->time == tmxgetmtime(&st)) {
+        if (state.exec && !state.touch) {
             /*
              * this alternate event time prevents the action from
              * triggering next time if nothing else changes
@@ -1138,9 +1039,7 @@ statetime(Rule_t *r, int sync)
                 r->dynamic |= D_same;
         }
         state.savestate = 1;
-    }
-    else if ((r->dynamic & D_triggered) && state.exec)
-    {
+    } else if ((r->dynamic & D_triggered) && state.exec) {
         static int localsync;
         static int localtest;
         static Time_t localskew;
@@ -1159,8 +1058,7 @@ statetime(Rule_t *r, int sync)
          */
 
         if (st.st_nlink <= 1 && !S_ISDIR(st.st_mode)
-            && !(r->property & P_archive))
-        {
+            && !(r->property & P_archive)) {
 
 #if DEBUG
             if (state.test & 0x00000100)
@@ -1173,14 +1071,12 @@ statetime(Rule_t *r, int sync)
 #endif
             if (!localsync && !state.override && r->time && r->time != OLDTIME
                 && !(r->property & P_force)
-                && tmxgetmtime(&st) == tmxgetctime(&st))
-            {
+                && tmxgetmtime(&st) == tmxgetctime(&st)) {
                 if (((n = (tmxsec(r->time) - ( unsigned long )st.st_mtime - 1))
                      >= 0
                      || (n = (CURSECS - ( unsigned long )st.st_mtime + 2))
                         <= 0)
-                    && (lstat(r->name, &ln) || !S_ISLNK(ln.st_mode)))
-                {
+                    && (lstat(r->name, &ln) || !S_ISLNK(ln.st_mode))) {
                     /*
                      * warn if difference not tolerable
                      */
@@ -1196,8 +1092,7 @@ statetime(Rule_t *r, int sync)
                     localsync = a > state.tolerance ? 1 : -1;
                 }
             }
-            if (localsync > 0)
-            {
+            if (localsync > 0) {
                 /*
                  * NOTE: time stamp syncs work on the assumption that
                  *	 all source files have an mtime that is older
@@ -1206,18 +1101,15 @@ statetime(Rule_t *r, int sync)
                  *	 nsec is set to 0 to avoid resolution mismatches
                  */
 
-                for (;;)
-                {
+                for (;;) {
                     t = tmxsns(CURSECS + tmxsec(localskew), 0);
-                    if (tmxtouch(r->name, TMX_NOTIME, t, TMX_NOTIME, 0))
-                    {
+                    if (tmxtouch(r->name, TMX_NOTIME, t, TMX_NOTIME, 0)) {
                         error(ERROR_SYSTEM | 1,
                               "%s not sync'd to local time",
                               r->name);
                         break;
                     }
-                    if (localtest)
-                    {
+                    if (localtest) {
                         tmxsetmtime(&st, t);
                         break;
                     }
@@ -1231,8 +1123,7 @@ statetime(Rule_t *r, int sync)
                      *	netbsd.i386
                      */
 
-                    if (stat(r->name, &st))
-                    {
+                    if (stat(r->name, &st)) {
                         error(ERROR_SYSTEM | 1, "%s not found", r->name);
                         break;
                     }
@@ -1254,8 +1145,7 @@ statetime(Rule_t *r, int sync)
                      * localskew=1s handles this
                      */
 
-                    if (localskew > tmxsns(1, 0))
-                    {
+                    if (localskew > tmxsns(1, 0)) {
                         t = CURTIME + tmxsns(1, 0);
                         t = tmxsns(tmxsec(t), 0);
                         if (!tmxtouch(r->name, TMX_NOTIME, t, TMX_NOTIME, 0)
@@ -1268,13 +1158,11 @@ statetime(Rule_t *r, int sync)
     }
     if (!s)
         s = staterule(RULE, r, NiL, 1);
-    if (sync)
-    {
+    if (sync) {
         s->dynamic |= D_built;
         s->attribute = r->attribute;
         s->action = r->action;
-        if (s->prereqs != r->prereqs)
-        {
+        if (s->prereqs != r->prereqs) {
             if ((r->property & (P_joint | P_target)) != (P_joint | P_target))
                 freelist(s->prereqs);
             s->prereqs = r->prereqs;
@@ -1283,8 +1171,7 @@ statetime(Rule_t *r, int sync)
     }
     if (!skip
         && (s->time != ((r->property & P_virtual) ? r->time : tmxgetmtime(&st))
-            || zerostate && s->time))
-    {
+            || zerostate && s->time)) {
         s->dynamic &= ~D_lowres;
         s->time = zerostate
                   ? 0
@@ -1309,11 +1196,9 @@ statetimeq(Rule_t *r, Rule_t *s)
 
     if (r->time == s->time)
         return 1;
-    if (state.tolerance || (s->dynamic & D_lowres))
-    {
+    if (state.tolerance || (s->dynamic & D_lowres)) {
         if (!(d = tmxsec(r->time) - tmxsec(s->time))
-            && (s->dynamic & D_lowres))
-        {
+            && (s->dynamic & D_lowres)) {
             s->dynamic &= ~D_lowres;
             s->time = r->time;
             state.savestate = 1;
@@ -1321,12 +1206,9 @@ statetimeq(Rule_t *r, Rule_t *s)
         }
         if (d >= -state.tolerance && d <= state.tolerance)
             return 1;
-    }
-    else if (r->time < s->time && !(r->property & P_state)
-             && tmxsec(r->time) == tmxsec(s->time) && !tmxnsec(r->time))
-    {
-        if (!warned)
-        {
+    } else if (r->time < s->time && !(r->property & P_state)
+               && tmxsec(r->time) == tmxsec(s->time) && !tmxnsec(r->time)) {
+        if (!warned) {
             warned = 1;
             if (state.warn)
                 error(1, "file timestamp subsecond truncation");

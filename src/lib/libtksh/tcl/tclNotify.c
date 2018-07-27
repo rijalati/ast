@@ -152,20 +152,15 @@ ClientData clientData;         /* One-word argument to pass to
 
     for (sourcePtr = tclFirstEventSourcePtr, prevPtr = NULL;
          sourcePtr != NULL;
-         prevPtr = sourcePtr, sourcePtr = sourcePtr->nextPtr)
-    {
+         prevPtr = sourcePtr, sourcePtr = sourcePtr->nextPtr) {
         if ((sourcePtr->setupProc != setupProc)
             || (sourcePtr->checkProc != checkProc)
-            || (sourcePtr->clientData != clientData))
-        {
+            || (sourcePtr->clientData != clientData)) {
             continue;
         }
-        if (prevPtr == NULL)
-        {
+        if (prevPtr == NULL) {
             tclFirstEventSourcePtr = sourcePtr->nextPtr;
-        }
-        else
-        {
+        } else {
             prevPtr->nextPtr = sourcePtr->nextPtr;
         }
         ckfree(( char * )sourcePtr);
@@ -204,56 +199,43 @@ Tcl_Event *evPtr;           /* Event to add to queue.  The storage
 Tcl_QueuePosition position; /* One of TCL_QUEUE_TAIL, TCL_QUEUE_HEAD,
                              * TCL_QUEUE_MARK. */
 {
-    if (position == TCL_QUEUE_TAIL)
-    {
+    if (position == TCL_QUEUE_TAIL) {
         /*
          * Append the event on the end of the queue.
          */
 
         evPtr->nextPtr = NULL;
-        if (firstEventPtr == NULL)
-        {
+        if (firstEventPtr == NULL) {
             firstEventPtr = evPtr;
-        }
-        else
-        {
+        } else {
             lastEventPtr->nextPtr = evPtr;
         }
         lastEventPtr = evPtr;
-    }
-    else if (position == TCL_QUEUE_HEAD)
-    {
+    } else if (position == TCL_QUEUE_HEAD) {
         /*
          * Push the event on the head of the queue.
          */
 
         evPtr->nextPtr = firstEventPtr;
-        if (firstEventPtr == NULL)
-        {
+        if (firstEventPtr == NULL) {
             lastEventPtr = evPtr;
         }
         firstEventPtr = evPtr;
-    }
-    else if (position == TCL_QUEUE_MARK)
-    {
+    } else if (position == TCL_QUEUE_MARK) {
         /*
          * Insert the event after the current marker event and advance
          * the marker to the new event.
          */
 
-        if (markerEventPtr == NULL)
-        {
+        if (markerEventPtr == NULL) {
             evPtr->nextPtr = firstEventPtr;
             firstEventPtr = evPtr;
-        }
-        else
-        {
+        } else {
             evPtr->nextPtr = markerEventPtr->nextPtr;
             markerEventPtr->nextPtr = evPtr;
         }
         markerEventPtr = evPtr;
-        if (evPtr->nextPtr == NULL)
-        {
+        if (evPtr->nextPtr == NULL) {
             lastEventPtr = evPtr;
         }
     }
@@ -285,28 +267,20 @@ ClientData clientData; /* type-specific data. */
     Tcl_Event *evPtr, *prevPtr, *hold;
 
     for (prevPtr = ( Tcl_Event * )NULL, evPtr = firstEventPtr;
-         evPtr != ( Tcl_Event * )NULL;)
-    {
-        if ((*proc)(evPtr, clientData) == 1)
-        {
-            if (firstEventPtr == evPtr)
-            {
+         evPtr != ( Tcl_Event * )NULL;) {
+        if ((*proc)(evPtr, clientData) == 1) {
+            if (firstEventPtr == evPtr) {
                 firstEventPtr = evPtr->nextPtr;
-                if (evPtr->nextPtr == ( Tcl_Event * )NULL)
-                {
+                if (evPtr->nextPtr == ( Tcl_Event * )NULL) {
                     lastEventPtr = ( Tcl_Event * )NULL;
                 }
-            }
-            else
-            {
+            } else {
                 prevPtr->nextPtr = evPtr->nextPtr;
             }
             hold = evPtr;
             evPtr = evPtr->nextPtr;
             ckfree(( char * )hold);
-        }
-        else
-        {
+        } else {
             prevPtr = evPtr;
             evPtr = evPtr->nextPtr;
         }
@@ -348,8 +322,7 @@ ServiceEvent(flags) int flags; /* Indicates what events should be processed.
      * No event flags is equivalent to TCL_ALL_EVENTS.
      */
 
-    if ((flags & TCL_ALL_EVENTS) == 0)
-    {
+    if ((flags & TCL_ALL_EVENTS) == 0) {
         flags |= TCL_ALL_EVENTS;
     }
 
@@ -358,8 +331,7 @@ ServiceEvent(flags) int flags; /* Indicates what events should be processed.
      * that can actually be handled.
      */
 
-    for (evPtr = firstEventPtr; evPtr != NULL; evPtr = evPtr->nextPtr)
-    {
+    for (evPtr = firstEventPtr; evPtr != NULL; evPtr = evPtr->nextPtr) {
         /*
          * Call the handler for the event.  If it actually handles the
          * event then free the storage for the event.  There are two
@@ -378,42 +350,31 @@ ServiceEvent(flags) int flags; /* Indicates what events should be processed.
 
         proc = evPtr->proc;
         evPtr->proc = NULL;
-        if ((proc != NULL) && (*proc)(evPtr, flags))
-        {
-            if (firstEventPtr == evPtr)
-            {
+        if ((proc != NULL) && (*proc)(evPtr, flags)) {
+            if (firstEventPtr == evPtr) {
                 firstEventPtr = evPtr->nextPtr;
-                if (evPtr->nextPtr == NULL)
-                {
+                if (evPtr->nextPtr == NULL) {
                     lastEventPtr = NULL;
                 }
-                if (markerEventPtr == evPtr)
-                {
+                if (markerEventPtr == evPtr) {
                     markerEventPtr = NULL;
                 }
-            }
-            else
-            {
+            } else {
                 for (prevPtr = firstEventPtr; prevPtr->nextPtr != evPtr;
-                     prevPtr = prevPtr->nextPtr)
-                {
+                     prevPtr = prevPtr->nextPtr) {
                     /* Empty loop body. */
                 }
                 prevPtr->nextPtr = evPtr->nextPtr;
-                if (evPtr->nextPtr == NULL)
-                {
+                if (evPtr->nextPtr == NULL) {
                     lastEventPtr = prevPtr;
                 }
-                if (markerEventPtr == evPtr)
-                {
+                if (markerEventPtr == evPtr) {
                     markerEventPtr = prevPtr;
                 }
             }
             ckfree(( char * )evPtr);
             return 1;
-        }
-        else
-        {
+        } else {
             /*
              * The event wasn't actually handled, so we have to restore
              * the proc field to allow the event to be attempted again.
@@ -458,8 +419,7 @@ timePtr) Tcl_Time *timePtr; /* Specifies a maximum elapsed time for
 {
     if (!blockTimeSet || (timePtr->sec < blockTime.sec)
         || ((timePtr->sec == blockTime.sec)
-            && (timePtr->usec < blockTime.usec)))
-    {
+            && (timePtr->usec < blockTime.usec))) {
         blockTime = *timePtr;
         blockTimeSet = 1;
     }
@@ -501,8 +461,7 @@ int Tcl_DoOneEvent(flags) int flags; /* Miscellaneous flag values:  may be any
      * No event flags is equivalent to TCL_ALL_EVENTS.
      */
 
-    if ((flags & TCL_ALL_EVENTS) == 0)
-    {
+    if ((flags & TCL_ALL_EVENTS) == 0) {
         flags |= TCL_ALL_EVENTS;
     }
 
@@ -517,8 +476,7 @@ int Tcl_DoOneEvent(flags) int flags; /* Miscellaneous flag values:  may be any
      * just to loop back and try again.
      */
 
-    while (1)
-    {
+    while (1) {
 
         sh_sigcheck(0); /* XXX: tksh specific */
 
@@ -527,8 +485,7 @@ int Tcl_DoOneEvent(flags) int flags; /* Miscellaneous flag values:  may be any
          * handlers.
          */
 
-        if (Tcl_AsyncReady())
-        {
+        if (Tcl_AsyncReady()) {
             ( void )Tcl_AsyncInvoke(( Tcl_Interp * )NULL, 0);
             return 1;
         }
@@ -539,8 +496,7 @@ int Tcl_DoOneEvent(flags) int flags; /* Miscellaneous flag values:  may be any
          * events (i.e. don't wait even if TCL_DONT_WAIT isn't set.
          */
 
-        if (flags == TCL_IDLE_EVENTS)
-        {
+        if (flags == TCL_IDLE_EVENTS) {
             flags = TCL_IDLE_EVENTS | TCL_DONT_WAIT;
             goto idleEvents;
         }
@@ -549,8 +505,7 @@ int Tcl_DoOneEvent(flags) int flags; /* Miscellaneous flag values:  may be any
          * Ask Tk to service a queued event, if there are any.
          */
 
-        if (ServiceEvent(flags))
-        {
+        if (ServiceEvent(flags)) {
             return 1;
         }
 
@@ -561,13 +516,11 @@ int Tcl_DoOneEvent(flags) int flags; /* Miscellaneous flag values:  may be any
 
         blockTimeSet = 0;
         for (sourcePtr = tclFirstEventSourcePtr; sourcePtr != NULL;
-             sourcePtr = sourcePtr->nextPtr)
-        {
+             sourcePtr = sourcePtr->nextPtr) {
             (*sourcePtr->setupProc)(sourcePtr->clientData, flags);
         }
         if ((flags & TCL_DONT_WAIT)
-            || ((flags & TCL_IDLE_EVENTS) && TclIdlePending()))
-        {
+            || ((flags & TCL_IDLE_EVENTS) && TclIdlePending())) {
             /*
              * Don't block:  there are idle events waiting, or we don't
              * care about idle events anyway, or the caller asked us not
@@ -577,13 +530,9 @@ int Tcl_DoOneEvent(flags) int flags; /* Miscellaneous flag values:  may be any
             blockTime.sec = 0;
             blockTime.usec = 0;
             timePtr = &blockTime;
-        }
-        else if (blockTimeSet)
-        {
+        } else if (blockTimeSet) {
             timePtr = &blockTime;
-        }
-        else
-        {
+        } else {
             timePtr = NULL;
         }
 
@@ -591,8 +540,7 @@ int Tcl_DoOneEvent(flags) int flags; /* Miscellaneous flag values:  may be any
          * Wait until an event occurs or the timer expires.
          */
 
-        if (Tcl_WaitForEvent(timePtr) == TCL_ERROR)
-        {
+        if (Tcl_WaitForEvent(timePtr) == TCL_ERROR) {
             return 0;
         }
 
@@ -603,12 +551,10 @@ int Tcl_DoOneEvent(flags) int flags; /* Miscellaneous flag values:  may be any
          */
 
         for (sourcePtr = tclFirstEventSourcePtr; sourcePtr != NULL;
-             sourcePtr = sourcePtr->nextPtr)
-        {
+             sourcePtr = sourcePtr->nextPtr) {
             (*sourcePtr->checkProc)(sourcePtr->clientData, flags);
         }
-        if (ServiceEvent(flags))
-        {
+        if (ServiceEvent(flags)) {
             return 1;
         }
 
@@ -619,12 +565,10 @@ int Tcl_DoOneEvent(flags) int flags; /* Miscellaneous flag values:  may be any
          */
 
     idleEvents:
-        if ((flags & TCL_IDLE_EVENTS) && TclServiceIdle())
-        {
+        if ((flags & TCL_IDLE_EVENTS) && TclServiceIdle()) {
             return 1;
         }
-        if (flags & TCL_DONT_WAIT)
-        {
+        if (flags & TCL_DONT_WAIT) {
             return 0;
         }
     }

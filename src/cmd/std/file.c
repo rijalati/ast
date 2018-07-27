@@ -163,15 +163,12 @@ type(Magic_t *mp, char *file, const char *pattern, Magicdisc_t *disc)
     if (fp)
         sfclose(fp);
     e = pathcanon(file, 0, 0);
-    if (!pattern)
-    {
+    if (!pattern) {
         if (!(disc->flags & MAGIC_BRIEF))
             sfprintf(sfstdout, "%s:\t%s", file, e - file > 6 ? "" : "\t");
         sfprintf(sfstdout, "%s\n", s);
         return 1;
-    }
-    else if (strmatch(s, pattern))
-    {
+    } else if (strmatch(s, pattern)) {
         if (!(disc->flags & MAGIC_SILENT))
             sfprintf(sfstdout, "%s\n", file);
         return 1;
@@ -196,10 +193,8 @@ main(int argc, char **argv)
     disc.errorf = errorf;
     if (!(mp = magicopen(&disc)))
         error(3, "out of space");
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             disc.flags |= MAGIC_ALL;
             continue;
@@ -269,13 +264,10 @@ main(int argc, char **argv)
               "$%s,%s: cannot load default magic file",
               MAGIC_FILE_ENV,
               MAGIC_FILE);
-    if (disc.flags & MAGIC_LIST)
-    {
+    if (disc.flags & MAGIC_LIST) {
         magiclist(mp, sfstdout);
         hit = 1;
-    }
-    else
-    {
+    } else {
         hit = 0;
         if (!list && !*argv)
             list = sfstdin;

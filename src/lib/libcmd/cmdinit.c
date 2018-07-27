@@ -37,15 +37,11 @@ _cmd_init(int argc,
 
     if (argc <= 0)
         return -1;
-    if (context)
-    {
-        if (flags & ERROR_CALLBACK)
-        {
+    if (context) {
+        if (flags & ERROR_CALLBACK) {
             flags &= ~ERROR_CALLBACK;
             flags |= ERROR_NOTIFY;
-        }
-        else if (flags & ERROR_NOTIFY)
-        {
+        } else if (flags & ERROR_NOTIFY) {
             context->notify = 1;
             flags &= ~ERROR_NOTIFY;
         }

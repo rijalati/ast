@@ -33,10 +33,8 @@ pzinit(Pz_t *pz, const char *name, Pzinit_f initf)
     char *id;
 
     options = pz->disc->options;
-    if (!(usage = (*initf)(pz, pz->disc)))
-    {
-        if (pz->disc && pz->disc->errorf)
-        {
+    if (!(usage = (*initf)(pz, pz->disc))) {
+        if (pz->disc && pz->disc->errorf) {
             if (id = strchr(( char * )state.id, ':'))
                 id++;
             else
@@ -51,12 +49,10 @@ pzinit(Pz_t *pz, const char *name, Pzinit_f initf)
         return 0;
     }
     optget(NiL, usage);
-    if (pz->disc->options != options)
-    {
+    if (pz->disc->options != options) {
         if (!pz->disc->options)
             pz->options = 0;
-        else if (!(pz->options = vmstrdup(pz->vm, pz->disc->options)))
-        {
+        else if (!(pz->options = vmstrdup(pz->vm, pz->disc->options))) {
             pznospace(pz);
             return 0;
         }

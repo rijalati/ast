@@ -24,13 +24,11 @@ int vcs_write(buf) char *buf;
     int ret;
 
     if ((istate.fd == -1)
-        && ((istate.fd = csopen(istate.cs_svc, CS_OPEN_READ)) < 0))
-    {
+        && ((istate.fd = csopen(istate.cs_svc, CS_OPEN_READ)) < 0)) {
         printf("cannot connect cs server %s\n", istate.cs_svc);
         return (-1);
     }
-    if ((ret = write(istate.fd, buf, strlen(buf))) < 0)
-    {
+    if ((ret = write(istate.fd, buf, strlen(buf))) < 0) {
         printf("cannot write to cs server %s\n", istate.cs_svc);
         istate.fd = -1;
         return (-1);
@@ -44,28 +42,24 @@ int bufsize;
     int ret;
     Cs_poll_t ack;
     if ((istate.fd == -1)
-        && ((istate.fd = csopen(istate.cs_svc, CS_OPEN_READ)) < 0))
-    {
+        && ((istate.fd = csopen(istate.cs_svc, CS_OPEN_READ)) < 0)) {
         printf("cannot connect cs server %s\n", istate.cs_svc);
         return (-1);
     }
     ack.fd = istate.fd;
     ack.events = CS_POLL_READ;
-    if (cspoll(&ack, 1, -1) != 1)
-    {
+    if (cspoll(&ack, 1, -1) != 1) {
         printf("no msg from server\n");
         close(istate.fd);
         istate.fd = -1;
         return (-1);
     }
     ret = read(istate.fd, buf, bufsize);
-    if (ret <= 0)
-    {
+    if (ret <= 0) {
         printf("read error\n");
         close(istate.fd);
         istate.fd = -1;
-    }
-    else
+    } else
         buf[ret] = '\0';
     return (ret);
 }
@@ -103,22 +97,17 @@ char **argv;
     argc -= opt_info.index;
     argv += opt_info.index;
 
-    if (strcmp(cmd, "kill") == 0)
-    {
+    if (strcmp(cmd, "kill") == 0) {
         sfsprintf(buf, 2048, "%s\n", cmd);
         ( void )vcs_write(buf);
         close(istate.fd);
         istate.fd = -1;
         return (0);
-    }
-    else if ((strcmp(cmd, "connect") == 0)
-             || (strncmp(cmd, "version", 4) == 0))
-    {
-        if (argc > 0)
-        {
+    } else if ((strcmp(cmd, "connect") == 0)
+               || (strncmp(cmd, "version", 4) == 0)) {
+        if (argc > 0) {
             s = *argv;
-            if ((fd = csopen(s, CS_OPEN_READ)) < 0)
-            {
+            if ((fd = csopen(s, CS_OPEN_READ)) < 0) {
                 printf("cannot connect cs server %s\n", s);
                 return (-1);
             }
@@ -128,32 +117,24 @@ char **argv;
             argv++;
         }
         cmd = "version";
-    }
-    else if (strcmp(cmd, "log") == 0)
-    {
+    } else if (strcmp(cmd, "log") == 0) {
         cmd = "r";
-    }
-    else if (strcmp(cmd, "cs") == 0)
-    {
+    } else if (strcmp(cmd, "cs") == 0) {
         cmd = NULL;
     }
 
-    if (cmd != NULL)
-    {
+    if (cmd != NULL) {
         len = sfsprintf(buf, 2048, "%s ", cmd);
         s = buf + len;
-    }
-    else
+    } else
         s = buf;
 
-    if (argc > 0)
-    {
+    if (argc > 0) {
         argv[argc] = NULL;
         arr2str(s, argv, ' ');
     }
     strcat(buf, "\n");
-    if (vcs_write(buf) <= 0 || vcs_read(reply, 1024) <= 0)
-    {
+    if (vcs_write(buf) <= 0 || vcs_read(reply, 1024) <= 0) {
         printf("cannot connect cs server\n");
         return (-1);
     }
@@ -172,12 +153,9 @@ void printmtmsg(buf) char *buf;
     char *mnt;
 
     if (!strncmp(buf, "I 0 ok 0 ", 9) && (url = strtok(buf + 9, " \t\r\n"))
-        && (mnt = strtok(NULL, " \t\r\n")))
-    {
+        && (mnt = strtok(NULL, " \t\r\n"))) {
         printf("%s -> %s\n", mnt, url);
-    }
-    else
-    {
+    } else {
         printf("%s", buf);
     }
 }

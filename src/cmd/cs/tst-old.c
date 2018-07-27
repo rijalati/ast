@@ -78,10 +78,8 @@ svc_connect(void *handle, int fd, Cs_id_t *id, int clone, char **argv)
     state->id[fd].id = *id;
     state->id[fd].clone = clone;
     state->id[fd].args = 0;
-    if ((ap = argv) && (sp = sfstropen()))
-    {
-        while (s = *ap++)
-        {
+    if ((ap = argv) && (sp = sfstropen())) {
+        while (s = *ap++) {
             if (ap > argv + 1)
                 sfputc(sp, ' ');
             sfputr(sp, s, -1);
@@ -102,8 +100,7 @@ svc_read(void *handle, int fd)
         goto drop;
     dat[--n] = 0;
     if (isalpha(dat[0]) && (dat[1] == 0 || isdigit(dat[1])))
-        switch (dat[0])
-        {
+        switch (dat[0]) {
         case 'd':
             error_info.trace = -( int )strtol(dat + 1, NiL, 0);
             n = sfsprintf(
@@ -151,8 +148,7 @@ svc_timeout(void *handle)
     State_t *state = ( State_t * )handle;
 
     error(1, "timeout active=%d dormant=%d", state->active, state->dormant);
-    if (state->active <= 0)
-    {
+    if (state->active <= 0) {
         if (state->dormant)
             exit(0);
         state->dormant = 1;

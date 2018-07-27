@@ -43,10 +43,8 @@ return_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     char **argv = ( char ** )data;
     int errors = error_info.errors;
 
-    for (;;)
-    {
-        switch (optget(argv, return_usage))
-        {
+    for (;;) {
+        switch (optget(argv, return_usage)) {
         case '?':
             if (disc->errorf)
                 (*disc->errorf)(
@@ -62,8 +60,7 @@ return_beg(Cx_t *cx, Cxexpr_t *expr, void *data, Cxdisc_t *disc)
     if (error_info.errors > errors)
         return -1;
     argv += opt_info.index;
-    if (*argv && *(argv + 1))
-    {
+    if (*argv && *(argv + 1)) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_USAGE | 4, "%s", optusage(NiL));
         return -1;

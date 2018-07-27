@@ -210,8 +210,7 @@ extern void
 srandom(unsigned int x)
 {
     state[0] = x;
-    if (rand_type != TYPE_0)
-    {
+    if (rand_type != TYPE_0) {
         long int i;
         for (i = 1; i < rand_deg; ++i)
             state[i] = (1103515145 * state[i - 1]) + 12345;
@@ -242,37 +241,27 @@ initstate(unsigned int seed, char *arg_state, size_t n)
         state[-1] = rand_type;
     else
         state[-1] = (MAX_TYPES * (rptr - state)) + rand_type;
-    if (n < BREAK_1)
-    {
-        if (n < BREAK_0)
-        {
+    if (n < BREAK_1) {
+        if (n < BREAK_0) {
             errno = EINVAL;
             return NULL;
         }
         rand_type = TYPE_0;
         rand_deg = DEG_0;
         rand_sep = SEP_0;
-    }
-    else if (n < BREAK_2)
-    {
+    } else if (n < BREAK_2) {
         rand_type = TYPE_1;
         rand_deg = DEG_1;
         rand_sep = SEP_1;
-    }
-    else if (n < BREAK_3)
-    {
+    } else if (n < BREAK_3) {
         rand_type = TYPE_2;
         rand_deg = DEG_2;
         rand_sep = SEP_2;
-    }
-    else if (n < BREAK_4)
-    {
+    } else if (n < BREAK_4) {
         rand_type = TYPE_3;
         rand_deg = DEG_3;
         rand_sep = SEP_3;
-    }
-    else
-    {
+    } else {
         rand_type = TYPE_4;
         rand_deg = DEG_4;
         rand_sep = SEP_4;
@@ -311,8 +300,7 @@ setstate(const char *arg_state)
     else
         state[-1] = (MAX_TYPES * (rptr - state)) + rand_type;
 
-    switch (type)
-    {
+    switch (type) {
     case TYPE_0:
     case TYPE_1:
     case TYPE_2:
@@ -329,8 +317,7 @@ setstate(const char *arg_state)
     }
 
     state = &new_state[1];
-    if (rand_type != TYPE_0)
-    {
+    if (rand_type != TYPE_0) {
         rptr = &state[rear];
         fptr = &state[(rear + rand_sep) % rand_deg];
     }
@@ -354,25 +341,19 @@ setstate(const char *arg_state)
 extern long int
 random()
 {
-    if (rand_type == TYPE_0)
-    {
+    if (rand_type == TYPE_0) {
         state[0] = ((state[0] * 1103515245) + 12345) & LONG_MAX;
         return state[0];
-    }
-    else
-    {
+    } else {
         long int i;
         *fptr += *rptr;
         /* Chucking least random bit.  */
         i = (*fptr >> 1) & LONG_MAX;
         ++fptr;
-        if (fptr >= end_ptr)
-        {
+        if (fptr >= end_ptr) {
             fptr = state;
             ++rptr;
-        }
-        else
-        {
+        } else {
             ++rptr;
             if (rptr >= end_ptr)
                 rptr = state;

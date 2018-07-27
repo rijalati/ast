@@ -41,8 +41,7 @@ int size;
     char psbuf[1024];
     char *pass;
 
-    if (!(s = strchr(data, '-')) || s[1] != '@')
-    {
+    if (!(s = strchr(data, '-')) || s[1] != '@') {
         strcpy(buf, data);
         return (buf);
     }
@@ -88,12 +87,10 @@ char **argv;
     while (n = optget(argv,
                       "s:[server]f:[mount-file] [mount-point "
                       "prot,host,user,pass,time:remote-path]"))
-        switch (n)
-        {
+        switch (n) {
         case 's':
             s = opt_info.arg;
-            if ((fd = csopen(s, CS_OPEN_READ)) < 0)
-            {
+            if ((fd = csopen(s, CS_OPEN_READ)) < 0) {
                 printf("cannot connect cs server %s\n", s);
                 return (-1);
             }
@@ -101,8 +98,7 @@ char **argv;
             istate.fd = fd;
             break;
         case 'f':
-            if ((mfd = fopen(opt_info.arg, "r")) == NULL)
-            {
+            if ((mfd = fopen(opt_info.arg, "r")) == NULL) {
                 printf("cannot connect file %s\n", opt_info.arg);
                 return (1);
             }
@@ -117,26 +113,20 @@ char **argv;
     argv += opt_info.index;
     argc -= opt_info.index;
 
-    if (mfd == NULL)
-    {
-        if (argc < 2)
-        {
+    if (mfd == NULL) {
+        if (argc < 2) {
             printf("%s\n", USAGE);
             return (1);
         }
         mpoint = argv[0];
-        if ((mfs = checkfs(argv[1], buf, sizeof(buf))) == NULL)
-        {
+        if ((mfs = checkfs(argv[1], buf, sizeof(buf))) == NULL) {
             printf("ERROR: %s\n", USAGE);
             return (1);
         }
-        if (callmount(fd, mpoint, mfs, reply) == 0)
-        {
+        if (callmount(fd, mpoint, mfs, reply) == 0) {
             printmtmsg(reply);
             return (0);
-        }
-        else
-        {
+        } else {
             printf("ERROR: %s", reply);
             return (1);
         }
@@ -144,8 +134,7 @@ char **argv;
 
     /* mfd != NULL */
 
-    while ((fgets(buf, 2048, mfd)))
-    {
+    while ((fgets(buf, 2048, mfd))) {
         if ((s = strchr(buf, '#')) != NULL)
             *s = '\0';
         for (s = buf; *s && isspace(*s); s++)
@@ -166,13 +155,11 @@ char **argv;
         for (s; *s && !isspace(*s); s++)
             ;
         *s = '\0';
-        if ((mfs = checkfs(mfs, mfsbuf, sizeof(mfsbuf))) == NULL)
-        {
+        if ((mfs = checkfs(mfs, mfsbuf, sizeof(mfsbuf))) == NULL) {
             printf("ERROR: %s\n", USAGE);
             continue;
         }
-        if (callmount(fd, mpoint, mfs, reply) == 0)
-        {
+        if (callmount(fd, mpoint, mfs, reply) == 0) {
             printmtmsg(reply);
             continue;
         }

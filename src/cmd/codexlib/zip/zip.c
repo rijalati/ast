@@ -16,15 +16,13 @@ zip_open(Codex_t *p, char *const args[], Codexnum_t flags)
     const char *method;
 
     name = args[0];
-    if (!(method = args[2]))
-    {
+    if (!(method = args[2])) {
         if (p->disc->errorf)
             (*p->disc->errorf)(
             NiL, p->disc, 2, "%s: method parameter expected", name);
         return -1;
     }
-    switch (ID(method[0], method[1]))
-    {
+    switch (ID(method[0], method[1])) {
     case ID('0', 0):
     case ID('c', 'o'):
         p->meth = 0;

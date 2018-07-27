@@ -47,14 +47,11 @@ tmpoff(char *s, size_t z, const char *p, int n, int d)
 
     while (s < e && (*s = *p++))
         s++;
-    if (n != d && s < e)
-    {
-        if (n < 0)
-        {
+    if (n != d && s < e) {
+        if (n < 0) {
             n = -n;
             *s++ = '+';
-        }
-        else
+        } else
             *s++ = '-';
         s += sfsprintf(
         s, e - s, "%02d%s%02d", n / 60, d == -24 * 60 ? ":" : "", n % 60);

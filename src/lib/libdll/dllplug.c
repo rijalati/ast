@@ -50,21 +50,16 @@ dllplugin(const char *lib,
     Dllent_t *dle;
 
     err = hit = 0;
-    for (;;)
-    {
-        if (dls = dllsopen(lib, name, ver))
-        {
-            while (dle = dllsread(dls))
-            {
+    for (;;) {
+        if (dls = dllsopen(lib, name, ver)) {
+            while (dle = dllsread(dls)) {
                 hit = 1;
 #if 0
 			again:
 #endif
                 if (dll
-                    = dllopen(dle->path, flags | RTLD_GLOBAL | RTLD_PARENT))
-                {
-                    if (!dllcheck(dll, dle->path, rel, cur))
-                    {
+                    = dllopen(dle->path, flags | RTLD_GLOBAL | RTLD_PARENT)) {
+                    if (!dllcheck(dll, dle->path, rel, cur)) {
                         err = state.error;
                         dlclose(dll);
                         dll = 0;
@@ -73,9 +68,7 @@ dllplugin(const char *lib,
                     if (path && size)
                         strlcpy(path, dle->path, size);
                     break;
-                }
-                else
-                {
+                } else {
 #if 0
 					/*
 					 * dlopen() should load implicit libraries
@@ -110,8 +103,7 @@ dllplugin(const char *lib,
             }
             dllsclose(dls);
         }
-        if (hit)
-        {
+        if (hit) {
             if (!dll)
                 state.error = err;
             return dll;
@@ -120,14 +112,11 @@ dllplugin(const char *lib,
             break;
         lib = 0;
     }
-    if (dll = dllopen(name, flags))
-    {
-        if (!dllcheck(dll, name, rel, cur))
-        {
+    if (dll = dllopen(name, flags)) {
+        if (!dllcheck(dll, name, rel, cur)) {
             dlclose(dll);
             dll = 0;
-        }
-        else if (path && size)
+        } else if (path && size)
             strlcpy(path, name, size);
     }
     return dll;

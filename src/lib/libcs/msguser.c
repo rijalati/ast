@@ -79,8 +79,7 @@ msgvcall(int fd,
     va_copy(oap, ap);
     if (MSG_CALL(call) == MSG_write && !msg_write
         && (MSG_PURE(call) == MSG_PURE(MSG_write)
-            || MSG_PURE(call) == (MSG_write | MSG_EXT(MSG_ARG_number, 4))))
-    {
+            || MSG_PURE(call) == (MSG_write | MSG_EXT(MSG_ARG_number, 4)))) {
         size_t c;
         ssize_t z;
         ssize_t t;
@@ -97,11 +96,9 @@ msgvcall(int fd,
         o
         = MSG_ARG(call, 4) == MSG_ARG_number ? va_arg(ap, off_t) : ( off_t )0;
         r = 0;
-        while (c > 0)
-        {
+        while (c > 0) {
             z = c > MSG_SIZE_IO ? MSG_SIZE_IO : c;
-            if ((t = msgcall(fd, channel, call, ret, ip, b, z, o)) == -1)
-            {
+            if ((t = msgcall(fd, channel, call, ret, ip, b, z, o)) == -1) {
                 r = -1;
                 break;
             }
@@ -121,12 +118,10 @@ msgvcall(int fd,
     msgputu(&b, e, channel);
     msgputu(&b, e, call);
     msgputu(&b, e, msg_info.timestamp ? (msg_stamp = CSTIME()) : ++msg_stamp);
-    if (call & MSG_ACK)
-    {
+    if (call & MSG_ACK) {
         if (msg_ack.fd < 0)
             return -1;
-        if (!msg_ack.fd)
-        {
+        if (!msg_ack.fd) {
             if ((msg_ack.fd = csbind(&cs, "udp", 0, CS_PORT_NORMAL, 0L)) < 0)
                 return -1;
             fcntl(msg_ack.fd, F_SETFD, FD_CLOEXEC);
@@ -140,18 +135,15 @@ msgvcall(int fd,
     nv = 0;
     at = call >> MSG_ARG_CALL;
     if (call & MSG_VALUE)
-        switch (at & ((1 << MSG_ARG_TYPE) - 1))
-        {
+        switch (at & ((1 << MSG_ARG_TYPE) - 1)) {
         case 0:
             break;
         case MSG_ARG_file:
-            if (ret)
-            {
+            if (ret) {
                 ip = &ret->file;
                 for (n = 0; n < sizeof(*ip) / sizeof(ip->fid[0]); n++)
                     msgputu(&b, e, ip->fid[n]);
-            }
-            else
+            } else
                 for (n = 0; n < sizeof(*ip) / sizeof(ip->fid[0]); n++)
                     msgputu(&b, e, 0);
             break;
@@ -159,10 +151,8 @@ msgvcall(int fd,
             msgputu(&b, e, ret ? ret->number : 0);
             break;
         }
-    for (;;)
-    {
-        switch ((at >>= MSG_ARG_TYPE) & ((1 << MSG_ARG_TYPE) - 1))
-        {
+    for (;;) {
+        switch ((at >>= MSG_ARG_TYPE) & ((1 << MSG_ARG_TYPE) - 1)) {
         case MSG_ARG_array:
             n = va_arg(ap, int);
             msgputu(&b, e, n);
@@ -188,8 +178,7 @@ msgvcall(int fd,
             continue;
         case MSG_ARG_output:
             if (call & MSG_VALUE)
-                switch (MSG_CALL(call))
-                {
+                switch (MSG_CALL(call)) {
                 case MSG_CALL(MSG_getdents):
                     dp = va_arg(ap, struct dirent *);
                     n = va_arg(ap, size_t);
@@ -197,8 +186,7 @@ msgvcall(int fd,
                         n = ret->number;
                     at >>= MSG_ARG_TYPE;
                     de = ( struct dirent * )(( char * )dp + n);
-                    while (dp < de)
-                    {
+                    while (dp < de) {
                         i = D_NAMLEN(dp);
                         msgputz(&b, e, dp->d_name, i + 1);
                         msgputu(&b, e, D_FILENO(dp));
@@ -215,8 +203,7 @@ msgvcall(int fd,
                 case MSG_CALL(MSG_pipe):
                     ip = (xp && *xp) ? ( Msg_file_t * )(*xp++)
                                      : va_arg(ap, Msg_file_t *);
-                    for (i = 0; i < 2; i++)
-                    {
+                    for (i = 0; i < 2; i++) {
                         for (n = 0; n < sizeof(*ip) / sizeof(ip->fid[0]); n++)
                             msgputu(&b, e, ip->fid[n]);
                         ip++;
@@ -294,8 +281,7 @@ msgvcall(int fd,
                 msgputu(&b, e, 0);
             continue;
         case MSG_ARG_vector:
-            if (vp = va_arg(ap, char **))
-            {
+            if (vp = va_arg(ap, char **)) {
                 int m;
                 static char *coexport;
 
@@ -303,23 +289,19 @@ msgvcall(int fd,
                     coexport = "";
                 n = 0;
                 while ((p = *vp++)
-                       && (n += (m = strlen(p)) + 4) < MSG_SIZE_IO / 2)
-                {
-                    if (nv > 1)
-                    {
+                       && (n += (m = strlen(p)) + 4) < MSG_SIZE_IO / 2) {
+                    if (nv > 1) {
                         char *tx;
                         char *tp;
 
                         tx = coexport;
                     again:
                         tp = p;
-                        while (*tp == *tx && *tx)
-                        {
+                        while (*tp == *tx && *tx) {
                             tp++;
                             tx++;
                         }
-                        if (*tp != '=' || *tx != ':' && *tx)
-                        {
+                        if (*tp != '=' || *tx != ':' && *tx) {
                             while (*tx)
                                 if (*tx++ == ':')
                                     goto again;
@@ -336,29 +318,23 @@ msgvcall(int fd,
     }
     n = b - msg_buf;
     msgsetsize(msg_buf, n);
-    if (cswrite(&cs, fd, msg_buf, n) != n)
-    {
+    if (cswrite(&cs, fd, msg_buf, n) != n) {
         errno = EMSGIO;
         return -1;
     }
     r = n;
-    if (call & MSG_FLUSH)
-    {
+    if (call & MSG_FLUSH) {
         msgsetsize(msg_buf, 0);
-        if (cswrite(&cs, fd, msg_buf, MSG_SIZE_SIZE) != MSG_SIZE_SIZE)
-        {
+        if (cswrite(&cs, fd, msg_buf, MSG_SIZE_SIZE) != MSG_SIZE_SIZE) {
             errno = EMSGIO;
             return -1;
         }
     }
-    if (call & MSG_ACK)
-    {
+    if (call & MSG_ACK) {
         ack.fd = msg_ack.fd;
         ack.events = CS_POLL_READ;
-        for (;;)
-        {
-            switch (cspoll(&cs, &ack, 1, msg_info.timeout))
-            {
+        for (;;) {
+            switch (cspoll(&cs, &ack, 1, msg_info.timeout)) {
             case -1:
                 if (errno == EINTR)
                     continue;
@@ -369,16 +345,14 @@ msgvcall(int fd,
                 break;
             default:
 
-                if ((rtime = msgvreturn(ack.fd, call, oxp, oap)) == -1)
-                {
+                if ((rtime = msgvreturn(ack.fd, call, oxp, oap)) == -1) {
                     r = -1;
                     errno = ENXIO;
                     break;
                 }
                 if (rtime == msg_stamp)
                     break;
-                if (rtime == ~msg_stamp)
-                {
+                if (rtime == ~msg_stamp) {
                     r = -1;
                     errno = EIO;
                 }
@@ -386,8 +360,7 @@ msgvcall(int fd,
             }
             break;
         }
-    }
-    else if (call & MSG_RETURN)
+    } else if (call & MSG_RETURN)
         r = msgvreturn(fd, call, oxp, oap);
     return r;
 }
@@ -433,30 +406,25 @@ msgvreturn(int fd, unsigned long call, void **xp, va_list ap)
     struct dirent *dp;
     struct statvfs *vp;
 
-    if ((n = msgread(fd, msg_buf, sizeof(msg_buf))) < 0)
-    {
+    if ((n = msgread(fd, msg_buf, sizeof(msg_buf))) < 0) {
         errno = EMSGIO;
         return -1;
     }
     b = msg_buf + MSG_SIZE_SIZE;
     e = msg_buf + n;
-    if (msggetu(&b, e) != call)
-    {
+    if (msggetu(&b, e) != call) {
         errno = EMSGIO;
         return -1;
     }
-    if ((r = msggetu(&b, e)) == -1)
-    {
+    if ((r = msggetu(&b, e)) == -1) {
         errno = msggetu(&b, e);
         return -1;
     }
     if (call & MSG_ACK)
         return r;
     at = call >> (MSG_ARG_CALL - MSG_ARG_TYPE);
-    for (;;)
-    {
-        switch ((at >>= MSG_ARG_TYPE) & ((1 << MSG_ARG_TYPE) - 1))
-        {
+    for (;;) {
+        switch ((at >>= MSG_ARG_TYPE) & ((1 << MSG_ARG_TYPE) - 1)) {
         case MSG_ARG_array:
             va_arg(ap, int);
             va_arg(ap, long *);
@@ -474,12 +442,10 @@ msgvreturn(int fd, unsigned long call, void **xp, va_list ap)
             va_arg(ap, long);
             continue;
         case MSG_ARG_output:
-            switch (MSG_CALL(call))
-            {
+            switch (MSG_CALL(call)) {
             case MSG_CALL(MSG_getdents):
                 dp = va_arg(ap, struct dirent *);
-                while (n = msggetz(&b, e, dp->d_name, sizeof(dp->d_name)))
-                {
+                while (n = msggetz(&b, e, dp->d_name, sizeof(dp->d_name))) {
                     n--;
 #if _mem_d_namlen_dirent
                     dp->d_namlen = n;
@@ -500,8 +466,7 @@ msgvreturn(int fd, unsigned long call, void **xp, va_list ap)
                 break;
             case MSG_CALL(MSG_pipe):
                 ip = va_arg(ap, Msg_file_t *);
-                for (i = 0; i < 2; i++)
-                {
+                for (i = 0; i < 2; i++) {
                     for (n = 0; n < sizeof(*ip) / sizeof(ip->fid[0]); n++)
                         ip->fid[n] = msggetu(&b, e);
                     ip++;
@@ -557,8 +522,7 @@ msgvreturn(int fd, unsigned long call, void **xp, va_list ap)
                 break;
             default:
                 p = va_arg(ap, char *);
-                if (e - b >= r)
-                {
+                if (e - b >= r) {
                     memcpy(p, b, r);
                     b += r;
                 }

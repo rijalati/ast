@@ -99,10 +99,8 @@ read_real_link_path_canon(int argc,
     static const char fail[] = "";
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'd':
             dirfd = ( int )opt_info.num;
             continue;
@@ -163,33 +161,25 @@ read_real_link_path_canon(int argc,
         argv++;
     else
         file = ".";
-    do
-    {
-        if (readlink_mode)
-        {
+    do {
+        if (readlink_mode) {
             if ((n = readlinkat(dirfd, file, linkbuf, sizeof(linkbuf))) >= 0
-                && n < (sizeof(linkbuf) - 1))
-            {
+                && n < (sizeof(linkbuf) - 1)) {
                 linkbuf[n] = 0;
                 path = linkbuf;
-            }
-            else
-            {
+            } else {
                 if (verbose)
                     error(
                     ERROR_SYSTEM | 2, "%s: cannot read link text", file);
                 r = 1;
                 path = ( char * )fail;
             }
-        }
-        else
+        } else
             path = file;
-        if ((flags & PATH_CANON) && path != fail)
-        {
+        if ((flags & PATH_CANON) && path != fail) {
             if (pathdev(dirfd, path, canonbuf, sizeof(canonbuf), flags, NiL))
                 path = canonbuf;
-            else
-            {
+            else {
                 if (verbose)
                     error(ERROR_SYSTEM | 2,
                           "%s: canonicalization error%s%s",
@@ -203,8 +193,7 @@ read_real_link_path_canon(int argc,
         if (argc > 1 || path != ( char * )fail)
             sfputr(sfstdout, path, separator);
     } while (file = *argv++);
-    if (sfsync(sfstdout))
-    {
+    if (sfsync(sfstdout)) {
         if (verbose)
             error(ERROR_SYSTEM | 2, "write error");
         r = 2;

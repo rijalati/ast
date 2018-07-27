@@ -103,10 +103,8 @@ translate(const char *locale,
     s = ( char * )msg;
     t = buf;
     e = buf + sizeof(buf) - 1;
-    while ((c = *s++) && t < e)
-    {
-        switch (c)
-        {
+    while ((c = *s++) && t < e) {
+        switch (c) {
         case '\\':
             if (t < e)
                 *t++ = c;
@@ -114,13 +112,11 @@ translate(const char *locale,
                 s--;
             break;
         case '%':
-            do
-            {
+            do {
                 if (t >= e)
                     break;
                 *t++ = c;
-                if (!(c = *s++))
-                {
+                if (!(c = *s++)) {
                     s--;
                     break;
                 }
@@ -129,21 +125,18 @@ translate(const char *locale,
                         && isalpha(*s));
             break;
         case '\b':
-            do
-            {
+            do {
                 if (t >= e)
                     break;
                 *t++ = c;
-                if (!(c = *s++))
-                {
+                if (!(c = *s++)) {
                     s--;
                     break;
                 }
             } while (c != '\b');
             break;
         default:
-            if (r = strchr(rot, c))
-            {
+            if (r = strchr(rot, c)) {
                 c = *(r + 13);
                 if (i)
                     c = isupper(c) ? tolower(c) : toupper(c);
@@ -181,42 +174,32 @@ main(int argc, char **argv)
     extra = 0;
     ext = 0;
     str = 0;
-    while (command = *(argv + 1))
-    {
-        if (*command == '=' && (s = strchr(command + 1, '=')))
-        {
+    while (command = *(argv + 1)) {
+        if (*command == '=' && (s = strchr(command + 1, '='))) {
             argv++;
             *s++ = 0;
             command++;
-            if (ip = newof(0, Info_t, 1, 0))
-            {
+            if (ip = newof(0, Info_t, 1, 0)) {
                 ip->name = command;
                 ip->value = s;
                 ip->next = info;
                 info = ip;
             }
-        }
-        else if (streq(command, "-"))
-        {
+        } else if (streq(command, "-")) {
             argv++;
             str = NEW;
-        }
-        else if (streq(command, "-+"))
-        {
+        } else if (streq(command, "-+")) {
             argv++;
 #if NEW
             ast.locale.set |= (1 << AST_LC_MESSAGES);
             error_info.translate = translate;
 #endif
-        }
-        else if (streq(command, "+") && *(argv + 2))
-        {
+        } else if (streq(command, "+") && *(argv + 2)) {
             ext += 2;
             argv += 2;
             if (!extra)
                 extra = argv;
-        }
-        else
+        } else
             break;
     }
     if (!(command = *++argv) || !(usage = *++argv))
@@ -235,25 +218,19 @@ main(int argc, char **argv)
     loop = strncmp(usage, "[-1c", 4) ? 0 : 3;
     oargv = argv;
     ostr = str;
-    for (;;)
-    {
-        for (;;)
-        {
-            if (!str)
-            {
+    for (;;) {
+        for (;;) {
+            if (!str) {
                 if (!(n = optget(argv, usage)))
                     break;
-            }
-            else if (!(n = optstr(*argv, usage)))
-            {
+            } else if (!(n = optstr(*argv, usage))) {
                 if (!*++argv)
                     break;
                 continue;
             }
             if (loop)
                 sfprintf(sfstdout, "[%d] ", loop);
-            if (n == '?')
-            {
+            if (n == '?') {
                 sfprintf(sfstdout,
                          "return=%c option=%s name=%s num=%I*d\n",
                          n,
@@ -262,9 +239,7 @@ main(int argc, char **argv)
                          sizeof(opt_info.number),
                          opt_info.number);
                 error(ERROR_USAGE | 4, "%s", opt_info.arg);
-            }
-            else if (n == ':')
-            {
+            } else if (n == ':') {
                 sfprintf(sfstdout,
                          "return=%c option=%s name=%s num=%I*d",
                          n,
@@ -276,8 +251,7 @@ main(int argc, char **argv)
                     sfprintf(sfstdout, " str=%s", argv[opt_info.index - 1]);
                 sfputc(sfstdout, '\n');
                 error(2, "%s", opt_info.arg);
-            }
-            else if (n > 0)
+            } else if (n > 0)
                 sfprintf(sfstdout,
                          "return=%c option=%s name=%s arg%-.1s=%s num=%I*d\n",
                          n,
@@ -297,16 +271,14 @@ main(int argc, char **argv)
                          opt_info.arg,
                          sizeof(opt_info.number),
                          opt_info.number);
-            if (extra)
-            {
+            if (extra) {
                 for (n = 0; n < ext; n += 2)
                     optget(NiL, extra[n]);
                 extra = 0;
             }
         }
         if (!str && *(argv += opt_info.index))
-            while (command = *argv++)
-            {
+            while (command = *argv++) {
                 if (loop)
                     sfprintf(sfstdout, "[%d] ", loop);
                 sfprintf(

@@ -30,10 +30,8 @@ tmain()
 #endif
 
     alarm(10);
-    if (argc > 1)
-    { /* coprocess only */
-        while ((s = sfreserve(sfstdin, SF_UNBOUND, 0)))
-        {
+    if (argc > 1) { /* coprocess only */
+        while ((s = sfreserve(sfstdin, SF_UNBOUND, 0))) {
 #ifdef DEBUG
             sfwrite(logf, s, sfvalue(sfstdin));
 #endif
@@ -45,8 +43,7 @@ tmain()
     /* make coprocess */
     if (!(f = sfpopen(NIL(Sfio_t *), sfprints("%s -p", argv[0]), "r+")))
         terror("Opening for read/write");
-    for (n = 0; n < 10; ++n)
-    {
+    for (n = 0; n < 10; ++n) {
         sfsprintf(buf, sizeof(buf), "Line %d", n);
         sfputr(f, buf, '\n');
         if (!(s = sfgetr(f, '\n', 1)))

@@ -47,34 +47,28 @@ ardiropen(const char *file, Ardirmeth_t *meth, int flags)
                           : (O_RDONLY | O_BINARY | O_cloexec)))
          < 0
          || fstat(ar->fd, &ar->st) || !S_ISREG(ar->st.st_mode))
-        && (!meth || !(flags & ARDIR_FORCE)))
-    {
+        && (!meth || !(flags & ARDIR_FORCE))) {
         ardirclose(ar);
         return 0;
     }
     if (ar->fd >= 0
         && ((pos = lseek(ar->fd, ( off_t )0, SEEK_CUR)) < 0
             || (n = read(ar->fd, buf, sizeof(buf))) < 0
-            || lseek(ar->fd, pos, SEEK_SET) != pos))
-    {
+            || lseek(ar->fd, pos, SEEK_SET) != pos)) {
         ardirclose(ar);
         return 0;
     }
-    if (!(ar->meth = meth))
-    {
+    if (!(ar->meth = meth)) {
         skip = getenv("_AST_DEBUG_ARDIR_SKIP");
         for (meth = ar_first_method; ar->meth = meth; meth = meth->next)
             if ((!skip || !strmatch(meth->name, skip))
                 && !(*meth->openf)(ar, buf, n))
                 break;
-        if (!(ar->meth = meth))
-        {
+        if (!(ar->meth = meth)) {
             ardirclose(ar);
             return 0;
         }
-    }
-    else if ((*meth->openf)(ar, buf, n))
-    {
+    } else if ((*meth->openf)(ar, buf, n)) {
         ardirclose(ar);
         return 0;
     }
@@ -97,8 +91,7 @@ ardircopy(Ardir_t *ar, Ardirent_t *ent, int fd)
     off_t pos;
     char buf[1024 * 16];
 
-    if (ent->offset < 0)
-    {
+    if (ent->offset < 0) {
         ar->error = ENOSYS;
         return -1;
     }
@@ -106,30 +99,25 @@ ardircopy(Ardir_t *ar, Ardirent_t *ent, int fd)
     if (lseek(ar->fd, ent->offset, SEEK_SET) != ent->offset)
         return -1;
     z = ent->size;
-    while (z > 0)
-    {
+    while (z > 0) {
         m = z > sizeof(buf) ? sizeof(buf) : z;
-        if ((n = read(ar->fd, buf, m)) < 0)
-        {
+        if ((n = read(ar->fd, buf, m)) < 0) {
             ar->error = errno;
             break;
         }
         if (n == 0)
             break;
-        if (write(fd, buf, n) != n)
-        {
+        if (write(fd, buf, n) != n) {
             ar->error = errno;
             break;
         }
         z -= n;
     }
     lseek(ar->fd, pos, SEEK_SET);
-    if (z)
-    {
+    if (z) {
         errno = EIO;
         z = -z;
-    }
-    else
+    } else
         z = ent->size;
     return z;
 }
@@ -137,8 +125,7 @@ ardircopy(Ardir_t *ar, Ardirent_t *ent, int fd)
 int
 ardirchange(Ardir_t *ar, Ardirent_t *ent)
 {
-    if (!ar->meth || !ar->meth->changef)
-    {
+    if (!ar->meth || !ar->meth->changef) {
         ar->error = EINVAL;
         return -1;
     }
@@ -148,8 +135,7 @@ ardirchange(Ardir_t *ar, Ardirent_t *ent)
 int
 ardirinsert(Ardir_t *ar, const char *name, int flags)
 {
-    if (!ar->meth || !ar->meth->insertf)
-    {
+    if (!ar->meth || !ar->meth->insertf) {
         ar->error = EINVAL;
         return -1;
     }
@@ -159,8 +145,7 @@ ardirinsert(Ardir_t *ar, const char *name, int flags)
 const char *
 ardirspecial(Ardir_t *ar)
 {
-    if (!ar->meth || !ar->meth->specialf)
-    {
+    if (!ar->meth || !ar->meth->specialf) {
         ar->error = EINVAL;
         return 0;
     }

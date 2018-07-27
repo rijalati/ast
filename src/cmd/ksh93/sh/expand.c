@@ -120,8 +120,7 @@ path_expand(Shell_t *shp, const char *pattern, struct argnod **arghead)
     if (sh_isoption(shp, SH_NOCASEGLOB))
         flags |= GLOB_ICASE;
 #endif
-    if (sh_isstate(shp, SH_COMPLETE))
-    {
+    if (sh_isstate(shp, SH_COMPLETE)) {
 #if KSHELL
         extra += scantree(shp, shp->alias_tree, pattern, arghead);
         extra += scantree(shp, shp->fun_tree, pattern, arghead);
@@ -135,8 +134,7 @@ path_expand(Shell_t *shp, const char *pattern, struct argnod **arghead)
 #if SHOPT_BASH
     if (off = stktell(shp->stk))
         sp = stkfreeze(shp->stk, 0);
-    if (sh_isoption(shp, SH_BASH))
-    {
+    if (sh_isoption(shp, SH_BASH)) {
         /*
          * For bash, FIGNORE is a colon separated list of suffixes to
          * ignore when doing filename/command completion.
@@ -146,35 +144,28 @@ path_expand(Shell_t *shp, const char *pattern, struct argnod **arghead)
          */
         if (sh_isstate(shp, SH_FCOMPLETE))
             cp = nv_getval(sh_scoped(shp, FIGNORENOD));
-        else
-        {
+        else {
             static Namval_t *GLOBIGNORENOD;
             if (!GLOBIGNORENOD)
                 GLOBIGNORENOD = nv_open("GLOBIGNORE", shp->var_tree, 0);
             cp = nv_getval(sh_scoped(shp, GLOBIGNORENOD));
         }
-        if (cp)
-        {
+        if (cp) {
             flags |= GLOB_AUGMENTED;
             sfputr(shp->stk, "@(", -1);
-            if (!sh_isstate(shp, SH_FCOMPLETE))
-            {
+            if (!sh_isstate(shp, SH_FCOMPLETE)) {
                 sfputr(shp->stk, cp, -1);
                 for (cp = stkptr(shp->stk, off); *cp; cp++)
                     if (*cp == ':')
                         *cp = '|';
-            }
-            else
-            {
+            } else {
                 cp2 = strtok(cp, ":");
                 if (!cp2)
                     cp2 = cp;
-                do
-                {
+                do {
                     sfputc(shp->stk, '*');
                     sfputr(shp->stk, cp2, -1);
-                    if (cp2 = strtok(NULL, ":"))
-                    {
+                    if (cp2 = strtok(NULL, ":")) {
                         *(cp2 - 1) = ':';
                         sfputc(shp->stk, '|');
                     }
@@ -182,12 +173,10 @@ path_expand(Shell_t *shp, const char *pattern, struct argnod **arghead)
             }
             sfputc(shp->stk, ')');
             gp->gl_fignore = stkfreeze(shp->stk, 1);
-        }
-        else if (!sh_isstate(shp, SH_FCOMPLETE)
-                 && sh_isoption(shp, SH_DOTGLOB))
+        } else if (!sh_isstate(shp, SH_FCOMPLETE)
+                   && sh_isoption(shp, SH_DOTGLOB))
             gp->gl_fignore = "";
-    }
-    else
+    } else
 #endif
         gp->gl_fignore = nv_getval(sh_scoped(shp, FIGNORENOD));
     if (suflen)
@@ -204,8 +193,7 @@ path_expand(Shell_t *shp, const char *pattern, struct argnod **arghead)
         stkseek(shp->stk, 0);
 #endif
     sh_sigcheck(shp);
-    for (ap = ( struct argnod * )gp->gl_list; ap; ap = ap->argnxt.ap)
-    {
+    for (ap = ( struct argnod * )gp->gl_list; ap; ap = ap->argnxt.ap) {
         ap->argchn.ap = ap->argnxt.ap;
         if (!ap->argnxt.ap)
             ap->argchn.ap = *arghead;
@@ -231,10 +219,8 @@ scantree(Shell_t *shp,
     int nmatch = 0;
     char *cp;
     np = ( Namval_t * )dtfirst(tree);
-    for (; np && !nv_isnull(np); (np = ( Namval_t * )dtnext(tree, np)))
-    {
-        if (strmatch(cp = nv_name(np), pattern))
-        {
+    for (; np && !nv_isnull(np); (np = ( Namval_t * )dtnext(tree, np))) {
+        if (strmatch(cp = nv_name(np), pattern)) {
             ap = ( struct argnod * )stkseek(shp->stk, ARGVAL);
             sfputr(shp->stk, cp, -1);
             ap = ( struct argnod * )stkfreeze(shp->stk, 1);
@@ -302,8 +288,7 @@ again:
     range = comma = brace = 0;
     /* first search for {...,...} */
     while (1)
-        switch (*cp++)
-        {
+        switch (*cp++) {
         case '{':
             if (brace++ == 0)
                 pat = cp;
@@ -316,24 +301,19 @@ again:
             comma = brace = 0;
             break;
         case '.':
-            if (brace == 1 && *cp == '.')
-            {
+            if (brace == 1 && *cp == '.') {
                 char *endc;
                 incr = 1;
-                if (isdigit(*pat) || *pat == '+' || *pat == '-')
-                {
+                if (isdigit(*pat) || *pat == '+' || *pat == '-') {
                     first = strtol(pat, &endc, 0);
-                    if (endc == (cp - 1))
-                    {
+                    if (endc == (cp - 1)) {
                         last = strtol(cp + 1, &endc, 0);
                         if (*endc == '.' && endc[1] == '.')
                             incr = strtol(endc + 2, &endc, 0);
                         else if (last < first)
                             incr = -1;
-                        if (incr)
-                        {
-                            if (*endc == '%')
-                            {
+                        if (incr) {
+                            if (*endc == '%') {
                                 Sffmt_t fmt;
                                 memset(&fmt, 0, sizeof(fmt));
                                 fmt.version = SFIO_VERSION;
@@ -342,8 +322,7 @@ again:
                                 sfprintf(sfstdout, "%!", &fmt);
                                 if (!(fmt.flags
                                       & (SFFMT_LLONG | SFFMT_LDOUBLE)))
-                                    switch (fmt.fmt)
-                                    {
+                                    switch (fmt.fmt) {
                                     case 'c':
                                     case 'd':
                                     case 'i':
@@ -355,36 +334,29 @@ again:
                                         endc = fmt.form;
                                         break;
                                     }
-                            }
-                            else
+                            } else
                                 format = "%d";
-                            if (*endc == '}')
-                            {
+                            if (*endc == '}') {
                                 cp = endc + 1;
                                 range = 2;
                                 goto endloop1;
                             }
                         }
                     }
-                }
-                else if ((cp[2] == '}' || cp[2] == '.' && cp[3] == '.')
-                         && ((*pat >= 'a' && *pat <= 'z' && cp[1] >= 'a'
-                              && cp[1] <= 'z')
-                             || (*pat >= 'A' && *pat <= 'Z' && cp[1] >= 'A'
-                                 && cp[1] <= 'Z')))
-                {
+                } else if ((cp[2] == '}' || cp[2] == '.' && cp[3] == '.')
+                           && ((*pat >= 'a' && *pat <= 'z' && cp[1] >= 'a'
+                                && cp[1] <= 'z')
+                               || (*pat >= 'A' && *pat <= 'Z' && cp[1] >= 'A'
+                                   && cp[1] <= 'Z'))) {
                     first = *pat;
                     last = cp[1];
                     cp += 2;
-                    if (*cp == '.')
-                    {
+                    if (*cp == '.') {
                         incr = strtol(cp + 2, &endc, 0);
                         cp = endc;
-                    }
-                    else if (first > last)
+                    } else if (first > last)
                         incr = -1;
-                    if (incr && *cp == '}')
-                    {
+                    if (incr && *cp == '}') {
                         cp++;
                         range = 1;
                         goto endloop1;
@@ -406,19 +378,16 @@ again:
             top = ap;
             if (todo)
                 goto again;
-            for (; ap; ap = apin)
-            {
+            for (; ap; ap = apin) {
                 apin = ap->argchn.ap;
                 if (!sh_isoption(shp, SH_NOGLOB))
                     brace = path_expand(shp, ap->argval, arghead);
-                else
-                {
+                else {
                     ap->argchn.ap = *arghead;
                     *arghead = ap;
                     brace = 1;
                 }
-                if (brace)
-                {
+                if (brace) {
                     count += brace;
                     (*arghead)->argflag |= ARG_MAKE;
                 }
@@ -429,18 +398,13 @@ endloop1:
     rescan = cp;
     cp = pat - 1;
     *cp = 0;
-    while (1)
-    {
+    while (1) {
         brace = 0;
-        if (range)
-        {
-            if (range == 1)
-            {
+        if (range) {
+            if (range == 1) {
                 pat[0] = first;
                 cp = &pat[1];
-            }
-            else
-            {
+            } else {
                 *(rescan - 1) = 0;
                 sfsprintf(pat = tmp, sizeof(tmp), format, first);
                 *(rescan - 1) = '}';
@@ -454,8 +418,7 @@ endloop1:
         /* generate each pattern and put on the todo list */
         else
             while (1)
-                switch (*++cp)
-                {
+                switch (*++cp) {
                 case '\\':
                     cp++;
                     break;

@@ -55,26 +55,22 @@ cmdsend(int fd, int c, char *s, int n, int *code)
         return (0);
     s = cmd;
     if (((n = read(fd, s, sizeof(cmd) - 1)) == 4 || n > 6) && s[0] == 'a'
-        && isdigit(s[2]))
-    {
+        && isdigit(s[2])) {
         if (n == 4)
             n = read(fd, s, sizeof(cmd) - 1);
-        else
-        {
+        else {
             n -= 4;
             s += 4;
         }
     }
-    if (n < 6 || !isdigit(*(s += 4)))
-    {
+    if (n < 6 || !isdigit(*(s += 4))) {
         if (code)
             *code = EXIT_NOEXEC;
         return (0);
     }
     if (code && (n = ( int )strtol(s, NiL, 10)))
         *code = n;
-    if (state.indirect.con)
-    {
+    if (state.indirect.con) {
         n = 0;
         fds[n].fd = state.indirect.con;
         fds[n++].events = CS_POLL_READ | CS_POLL_CONNECT;
@@ -85,34 +81,26 @@ cmdsend(int fd, int c, char *s, int n, int *code)
         i = n;
         while (cspoll(fds, n, 0) > 0)
             for (m = 0; m < n; m++)
-                if (fds[m].status & CS_POLL_CONNECT)
-                {
+                if (fds[m].status & CS_POLL_CONNECT) {
                     if (n < elementsof(fds)
-                        && csrecv(fds[m].fd, NiL, &x, 1) == 1)
-                    {
+                        && csrecv(fds[m].fd, NiL, &x, 1) == 1) {
                         svc.pass[x] = 0;
                         fds[n].fd = x;
                         fds[n].status = 0;
                         fds[n++].events = CS_POLL_READ;
                     }
-                }
-                else if (fds[m].status & CS_POLL_READ)
-                {
-                    if (x = svc.pass[fds[m].fd])
-                    {
+                } else if (fds[m].status & CS_POLL_READ) {
+                    if (x = svc.pass[fds[m].fd]) {
                         if ((c = read(fds[m].fd, cmd, sizeof(cmd))) > 0)
                             cswrite(x, cmd, c);
-                        else
-                        {
+                        else {
                             close(fds[m].fd);
                             fds[m].events = 0;
                         }
-                    }
-                    else if (csread(fds[m].fd, cmd, 7, CS_EXACT) == 7
-                             && cmd[0] == '#')
+                    } else if (csread(fds[m].fd, cmd, 7, CS_EXACT) == 7
+                               && cmd[0] == '#')
                         svc.pass[fds[m].fd] = ( int )strtol(cmd + 1, NiL, 10);
-                    else
-                    {
+                    else {
                         close(fds[m].fd);
                         fds[m].events = 0;
                     }
@@ -190,8 +178,7 @@ command(int fd, char **ap)
     signal(SIGTTOU, cmdstop);
 #    endif
 #endif
-    if (state.indirect.con)
-    {
+    if (state.indirect.con) {
         if (!(
             svc.pass = newof(
             0, int, ( int )strtol(astconf("OPEN_MAX", NiL, NiL), NiL, 0), 0)))
@@ -200,10 +187,8 @@ command(int fd, char **ap)
         svc.pass[state.indirect.out] = 1;
     }
     prompt = !ap && isatty(0);
-    for (;;)
-    {
-        if (!ap)
-        {
+    for (;;) {
+        if (!ap) {
             if (prompt)
                 error(ERROR_PROMPT, "%s> ", CO_ID);
             if (!(s = sfgetr(sfstdin, '\n', 1)))
@@ -212,11 +197,9 @@ command(int fd, char **ap)
                 s++;
             if (c = *s)
                 s++;
-        }
-        else if (!(s = *ap++))
+        } else if (!(s = *ap++))
             break;
-        else if (*s == '-' && s[1])
-        {
+        else if (*s == '-' && s[1]) {
             c = *++s;
             s++;
         }
@@ -224,8 +207,7 @@ command(int fd, char **ap)
             break;
         while (isspace(*s))
             s++;
-        switch (c)
-        {
+        switch (c) {
         case 0:
         case '#':
             continue;
@@ -258,12 +240,10 @@ command(int fd, char **ap)
             m = isalpha(*s) ? *s++ : '-';
             while (isspace(*s))
                 s++;
-            if (isdigit(*s))
-            {
+            if (isdigit(*s)) {
                 n = strtol(s, &t, 0);
                 s = t;
-            }
-            else
+            } else
                 n = *s ? *s : NOARG;
             sfprintf(state.string, "#%05d\nS %c %c %d ", 0, c, m, n);
             if (!s || !*s)
@@ -277,31 +257,24 @@ command(int fd, char **ap)
                 s = *ap++;
             m = 0;
             att = s;
-            for (;;)
-            {
-                if (!(n = *s++))
-                {
+            for (;;) {
+                if (!(n = *s++)) {
                     s--;
                     break;
                 }
-                if (n == '\\')
-                {
+                if (n == '\\') {
                     if (*s)
                         s++;
-                }
-                else if (!m)
-                {
+                } else if (!m) {
                     if (n == '\'' || n == '"')
                         m = n;
-                    else if (isspace(*s))
-                    {
+                    else if (isspace(*s)) {
                         *s++ = 0;
                         while (isspace(*s))
                             s++;
                         break;
                     }
-                }
-                else if (n == m)
+                } else if (n == m)
                     m = 0;
             }
             sfprintf(state.string,
@@ -322,8 +295,7 @@ command(int fd, char **ap)
             if (!*(arg = s) && (!ap || !*ap))
                 arg = "hostname 2>/dev/null || uname -n";
             t += sfsprintf(t, state.buf + state.buflen - t, "%s", arg);
-            if (ap)
-            {
+            if (ap) {
                 while (s = *ap++)
                     t += sfsprintf(t, state.buf + state.buflen - t, " %s", s);
                 ap--;
@@ -418,13 +390,11 @@ server(int fd, int op, int sub, int arg, char *dat)
 
     con = state.con;
     hdr = 0;
-    switch (op)
-    {
+    switch (op) {
     case 0:
         break;
     case 'a':
-        if (dat)
-        {
+        if (dat) {
             t = tokopen(dat, 1);
             while (s = tokread(t))
                 if (!search(SET, s, NiL, NiL))
@@ -436,11 +406,9 @@ server(int fd, int op, int sub, int arg, char *dat)
         }
         break;
     case 'c':
-        if (dat)
-        {
+        if (dat) {
             t = tokopen(dat, 1);
-            while (s = tokread(t))
-            {
+            while (s = tokread(t)) {
                 if (!(sp = search(GET, s, NiL, NiL)))
                     error(ERROR_OUTPUT | 2,
                           con[fd].info.user.fds[2],
@@ -458,13 +426,10 @@ server(int fd, int op, int sub, int arg, char *dat)
         }
         break;
     case 'd':
-        if (arg == 't')
-        {
+        if (arg == 't') {
             cs.flags |= CS_TEST;
             break;
-        }
-        else if (arg == 'T')
-        {
+        } else if (arg == 'T') {
             cs.flags &= ~CS_TEST;
             break;
         }
@@ -476,32 +441,26 @@ server(int fd, int op, int sub, int arg, char *dat)
          dat ? dat
              : cspath(state.indirect.con ? 2 : con[fd].info.user.fds[2], 0)));
         error_info.trace = arg;
-        if (dat)
-        {
+        if (dat) {
             if ((n = open(dat,
                           O_WRONLY | O_CREAT | O_TRUNC,
                           S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH
                           | S_IWOTH))
-                >= 0)
-            {
+                >= 0) {
                 close(2);
                 dup(n);
                 close(n);
             }
-        }
-        else if (!state.indirect.con)
-        {
+        } else if (!state.indirect.con) {
             close(2);
             dup(con[fd].info.user.fds[2]);
         }
         break;
     case 'f':
-        if (arg == NOARG)
-        {
+        if (arg == NOARG) {
             sfprintf(state.string, "CON  TYPE  INFO\n");
             for (n = 0; n <= state.fdtotal; n++)
-                switch (con[n].type)
-                {
+                switch (con[n].type) {
                 case ANON:
                     sfprintf(state.string, "%3d  anon\n", n);
                     break;
@@ -596,8 +555,7 @@ server(int fd, int op, int sub, int arg, char *dat)
                         sfprintf(state.string, "%3d  %s  error\n", n, t);
                     break;
                 }
-        }
-        else if (arg >= state.fdtotal || !con[arg].type)
+        } else if (arg >= state.fdtotal || !con[arg].type)
             error(ERROR_OUTPUT | 2,
                   con[fd].info.user.fds[2],
                   "cannot drop CON %d",
@@ -698,10 +656,8 @@ server(int fd, int op, int sub, int arg, char *dat)
         break;
     case 'j':
         for (jp = state.job; jp <= state.jobmax; jp++)
-            if (jp->pid)
-            {
-                switch (jp->pid)
-                {
+            if (jp->pid) {
+                switch (jp->pid) {
                 case QUEUE:
                     t = "QUEUE";
                     break;
@@ -715,8 +671,7 @@ server(int fd, int op, int sub, int arg, char *dat)
                     sfsprintf(t = num[0], sizeof(num[0]), "%d", jp->pid);
                     break;
                 }
-                if (!hdr)
-                {
+                if (!hdr) {
                     hdr = 1;
                     sfprintf(
                     state.string,
@@ -752,8 +707,7 @@ server(int fd, int op, int sub, int arg, char *dat)
                   "%d: invalid job id",
                   arg);
         else
-            switch (sub)
-            {
+            switch (sub) {
 #ifdef SIGCONT
             case 'c':
                 jobkill(jp, SIGCONT);
@@ -786,13 +740,11 @@ server(int fd, int op, int sub, int arg, char *dat)
             attributes(dat, &attr, NiL);
         else
             attr = con[fd].info.user.attr;
-        do
-        {
+        do {
             if (match(sp, &attr, 0))
                 *sv++ = sp;
         } while ((sp = sp->next) != state.shell);
-        if (n = sv - state.shellv)
-        {
+        if (n = sv - state.shellv) {
             *sv = 0;
             strsort(( char ** )(sv = state.shellv), n, byrank);
             if (dat && (attr.global.set & SETPOOL) && attr.global.pool > 0
@@ -803,11 +755,9 @@ server(int fd, int op, int sub, int arg, char *dat)
         }
         break;
     case 'o':
-        if (dat)
-        {
+        if (dat) {
             t = tokopen(dat, 1);
-            while (s = tokread(t))
-            {
+            while (s = tokread(t)) {
                 if (!(sp = search(NEW, s, NiL, NiL)))
                     error(ERROR_OUTPUT | 2,
                           con[fd].info.user.fds[2],
@@ -827,23 +777,20 @@ server(int fd, int op, int sub, int arg, char *dat)
     case 's':
         sv = state.shellv;
         sp = state.shell;
-        do
-        {
+        do {
             if (sub == 'a' || sub == 'e' || sp->fd
                 || (sub == 'l' || sub == 's') && sp->temp
                    && !(sp->flags & IGN))
                 *sv++ = sp;
         } while ((sp = sp->next) != state.shell);
-        if (n = sv - state.shellv)
-        {
+        if (n = sv - state.shellv) {
             *sv = 0;
             strsort(( char ** )(sv = state.shellv),
                     n,
                     sub == 'a' || sub == 'e' || sub == 'p'
                     ? byname
                     : sub == 't' ? bytemp : byrank);
-            switch (sub)
-            {
+            switch (sub) {
             case 'a':
                 sfprintf(
                 state.string,
@@ -875,10 +822,8 @@ server(int fd, int op, int sub, int arg, char *dat)
                          "RATING  BIAS TYPE     HOST\n");
                 break;
             }
-            while (sp = *sv++)
-            {
-                switch (sub)
-                {
+            while (sp = *sv++) {
+                switch (sub) {
                 case 'a':
                     sfprintf(state.string,
                              "%-12.12s rating=%s",
@@ -977,26 +922,22 @@ server(int fd, int op, int sub, int arg, char *dat)
                  " CPU  LOAD RATING\n");
         tot.running = state.running;
         sp = state.shell;
-        do
-        {
-            if (sp->fd)
-            {
+        do {
+            if (sp->fd) {
                 tot.fd++;
                 tot.cpu += sp->cpu;
                 tot.stat.load += sp->cpu * sp->stat.load / sp->scale;
                 tot.rating += sp->cpu * sp->rating;
             }
         } while ((sp = sp->next) != state.shell);
-        if (tot.cpu)
-        {
+        if (tot.cpu) {
             tot.stat.load /= tot.cpu;
             tot.rating /= tot.cpu;
         }
         for (n = u = 0; n <= state.fdtotal; n++)
             if (con[n].type == USER)
                 u++;
-        if (state.running)
-        {
+        if (state.running) {
             state.real += cs.time - state.clock;
             state.clock = cs.time;
         }
@@ -1025,10 +966,8 @@ server(int fd, int op, int sub, int arg, char *dat)
         break;
     case 'u':
         for (n = 0; n <= state.fdtotal; n++)
-            if (con[n].type == USER)
-            {
-                if (!hdr)
-                {
+            if (con[n].type == USER) {
+                if (!hdr) {
                     hdr = 1;
                     sfprintf(state.string,
                              "CON   PID JOBS TOTAL TTY                       "

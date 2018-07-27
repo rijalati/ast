@@ -35,8 +35,7 @@ initiate(Cs_t *state, const char *name, char *buf)
     char *av[3];
 
     if (!pathpath(
-        CS_STAT_DAEMON, "", PATH_REGULAR | PATH_EXECUTE, buf, PATH_MAX))
-    {
+        CS_STAT_DAEMON, "", PATH_REGULAR | PATH_EXECUTE, buf, PATH_MAX)) {
         messagef((state->id,
                   NiL,
                   -1,
@@ -70,10 +69,8 @@ csstat(Cs_t *state, const char *name, Csstat_t *sp)
     CSTIME();
     if (!name || streq(name, CS_HOST_LOCAL))
         name = ( const char * )csname(state, 0);
-    if (!strchr(name, '/'))
-    {
-        if (!init)
-        {
+    if (!strchr(name, '/')) {
+        if (!init) {
             init = 1;
             if (pathpath(CS_STAT_DIR, "", PATH_EXECUTE, buf, sizeof(buf)))
                 dir = strdup(buf);
@@ -82,37 +79,29 @@ csstat(Cs_t *state, const char *name, Csstat_t *sp)
             return -1;
         sfsprintf(buf, sizeof(buf), "%s/%s", dir, name);
         if ((n = stat(buf, &st))
-            || (state->time - CS_STAT_DOWN) > ( unsigned long )st.st_ctime)
-        {
+            || (state->time - CS_STAT_DOWN) > ( unsigned long )st.st_ctime) {
             if (initiate(state, name, buf))
                 return -1;
-            for (i = 1; i < CS_STAT_DOWN / 20; i <<= 1)
-            {
+            for (i = 1; i < CS_STAT_DOWN / 20; i <<= 1) {
                 sleep(i);
                 if (!(n = stat(buf, &st)))
                     break;
             }
-            if (n)
-            {
+            if (n) {
                 messagef(
                 (state->id, NiL, -1, "stat: %s: %s: stat error", name, buf));
                 return -1;
             }
         }
-    }
-    else
+    } else
         n = stat(name, &st);
-    if (n)
-    {
+    if (n) {
         memzero(sp, sizeof(*sp));
         sp->up = -CS_STAT_DOWN;
-    }
-    else
-    {
+    } else {
         a = st.st_atime;
         m = st.st_mtime;
-        if (!(sp->up = (((a >> 16) & 0x7ff) << ((a >> 27) & 0x1f))))
-        {
+        if (!(sp->up = (((a >> 16) & 0x7ff) << ((a >> 27) & 0x1f)))) {
             memzero(sp, sizeof(*sp));
             sp->up
             = -(((a & 0x7ff) << ((a >> 11) & 0x1f))
@@ -120,9 +109,7 @@ csstat(Cs_t *state, const char *name, Csstat_t *sp)
             s = csname(state, 0);
             if (streq(name, s))
                 initiate(state, name, buf);
-        }
-        else
-        {
+        } else {
             sp->load = ((m >> 24) & 0xff) << 3;
             sp->pctsys = (m >> 16) & 0xff;
             sp->pctusr = (m >> 8) & 0xff;

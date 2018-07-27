@@ -218,8 +218,7 @@ static const char usage[]
 #define ISFILE() ((state.in_top - 1)->ip)
 #define GETC() (*state.in++)
 #define GROFFINIT()                                                          \
-    do                                                                       \
-    {                                                                        \
+    do {                                                                     \
         if (!state.groff_init)                                               \
             state.groff |= state.groff_init = 1;                             \
     } while (0)
@@ -257,22 +256,18 @@ pushin(char *name, int line, Sfio_t *ip, char *data, Arg_t *arg)
         error(3, "input stack overflow");
     pp = state.in_top++;
     pp->in = state.in;
-    if (!(pp->ip = ip))
-    {
-        if (!(state.in = ( unsigned char * )data) || !*state.in)
-        {
+    if (!(pp->ip = ip)) {
+        if (!(state.in = ( unsigned char * )data) || !*state.in) {
             state.in = pp->in;
             --state.in_top;
             return;
         }
-    }
-    else if (!(pp->buf = oldof(0, unsigned char, SF_BUFSIZE, UNGET_MAX + 1)))
+    } else if (!(pp->buf
+                 = oldof(0, unsigned char, SF_BUFSIZE, UNGET_MAX + 1)))
         error(ERROR_SYSTEM | 3, "out of space [file pushin]");
-    else
-    {
+    else {
         pp->buf += UNGET_MAX;
-        if ((n = sfread(ip, pp->buf, SF_BUFSIZE)) <= 0)
-        {
+        if ((n = sfread(ip, pp->buf, SF_BUFSIZE)) <= 0) {
             if (ip && ip != sfstdin)
                 sfclose(ip);
             state.in_top--;
@@ -283,10 +278,8 @@ pushin(char *name, int line, Sfio_t *ip, char *data, Arg_t *arg)
         state.in = pp->buf;
     }
     pp->file = error_info.file;
-    if (name)
-    {
-        if (!state.original.file)
-        {
+    if (name) {
+        if (!state.original.file) {
             state.original.file = error_info.file;
             state.original.line = error_info.line;
         }
@@ -295,15 +288,13 @@ pushin(char *name, int line, Sfio_t *ip, char *data, Arg_t *arg)
     pp->line = error_info.line;
     if (line < 0)
         state.noline++;
-    else
-    {
+    else {
         if (line > 0)
             error_info.line = line;
         if (state.noline > 0)
             state.noline++;
     }
-    if (arg)
-    {
+    if (arg) {
         pp->mac = state.mac;
         state.mac = arg;
         if (pp->top.sp)
@@ -312,8 +303,7 @@ pushin(char *name, int line, Sfio_t *ip, char *data, Arg_t *arg)
             error(ERROR_SYSTEM | 3, "out of space [macro call]");
         pp->tag = state.tag;
         state.tag = &pp->top;
-    }
-    else
+    } else
         pp->tag = 0;
 }
 
@@ -344,8 +334,7 @@ operand(char *s, char **e, int scale)
     else if (*s == '+')
         s++;
     d = 1;
-    if (*s == '(')
-    {
+    if (*s == '(') {
         n = (state.groff && isalpha(*(s + 1)) && *(s + 2) == ';')
             ? expression(s + 3, &x, *(s + 1))
             : expression(s + 1, &x, scale);
@@ -353,17 +342,13 @@ operand(char *s, char **e, int scale)
         if (*s == ')')
             s++;
         c = *s++;
-    }
-    else
-    {
+    } else {
         n = 0;
         while ((c = *s++) >= '0' && c <= '9')
             n = n * 10 + c - '0';
-        if (c == '.')
-        {
+        if (c == '.') {
             f = 0;
-            while ((c = *s++) >= '0' && c <= '9')
-            {
+            while ((c = *s++) >= '0' && c <= '9') {
                 d *= 10;
                 n *= 10;
                 f = f * 10 + c - '0';
@@ -371,10 +356,8 @@ operand(char *s, char **e, int scale)
             n += f;
         }
     }
-    for (;;)
-    {
-        switch (c)
-        {
+    for (;;) {
+        switch (c) {
         case 'P':
             n *= 72;
             break;
@@ -403,8 +386,7 @@ operand(char *s, char **e, int scale)
             break;
         default:
             s--;
-            if (c = scale)
-            {
+            if (c = scale) {
                 scale = 0;
                 continue;
             }
@@ -413,8 +395,7 @@ operand(char *s, char **e, int scale)
         break;
     }
     n /= d;
-    if (e)
-    {
+    if (e) {
         while (isspace(*s))
             s++;
         *e = s;
@@ -436,8 +417,7 @@ convert(long n, int up, int scale)
     long m;
 
     m = n;
-    switch (scale)
-    {
+    switch (scale) {
     case 'M':
         if (up)
             n *= state.env->ps.current / 12;
@@ -506,10 +486,8 @@ expression(char *s, char **e, int scale)
     long m;
 
     n = operand(s, &s, scale);
-    for (;;)
-    {
-        switch (*s++)
-        {
+    for (;;) {
+        switch (*s++) {
         case CODE_2:
             s++;
             /*FALLTHROUGH*/
@@ -540,25 +518,21 @@ expression(char *s, char **e, int scale)
                 n = 0;
             continue;
         case '<':
-            if (state.groff && *s == '?')
-            {
+            if (state.groff && *s == '?') {
                 m = operand(s + 1, &s, scale);
                 if (m < n)
                     n = m;
-            }
-            else if (*s == '=')
+            } else if (*s == '=')
                 n = n <= operand(s + 1, &s, scale);
             else
                 n = n < operand(s, &s, scale);
             continue;
         case '>':
-            if (state.groff && *s == '?')
-            {
+            if (state.groff && *s == '?') {
                 m = operand(s + 1, &s, scale);
                 if (m > n)
                     n = m;
-            }
-            else if (*s == '=')
+            } else if (*s == '=')
                 n = n >= operand(s + 1, &s, scale);
             else
                 n = n > operand(s, &s, scale);
@@ -584,8 +558,7 @@ expression(char *s, char **e, int scale)
         }
         break;
     }
-    if (e)
-    {
+    if (e) {
         while (isspace(*s))
             s++;
         *e = s;
@@ -615,8 +588,7 @@ cond(char *s, char **e)
         s++;
     while (isspace(*s))
         s++;
-    switch (c = *s)
-    {
+    switch (c = *s) {
     case '0':
     case '1':
     case '2':
@@ -662,25 +634,20 @@ cond(char *s, char **e)
         s++;
         break;
     default:
-        if (isalpha(c))
-        {
+        if (isalpha(c)) {
             v = 0;
             s++;
-        }
-        else
-        {
+        } else {
             for (u = ++s; *s && *s != c; s++)
                 ;
-            if (*s)
-            {
+            if (*s) {
                 *s++ = 0;
                 for (t = s; *s && *s != c; s++)
                     ;
                 if (*s)
                     *s++ = 0;
                 v = !strcmp(u, t);
-            }
-            else
+            } else
                 v = 0;
         }
         break;
@@ -708,19 +675,16 @@ popin(void)
     Pushin_t *pp;
     int n;
 
-    if (state.in_top <= state.in_stack)
-    {
+    if (state.in_top <= state.in_stack) {
         state.in--;
         return 1;
     }
     pp = state.in_top;
-    if (pp->loop)
-    {
+    if (pp->loop) {
         state.in = ( unsigned char * )sfstrbase(pp->loop);
         return 0;
     }
-    if (--pp == state.in_stack)
-    {
+    if (--pp == state.in_stack) {
         if (state.cond.level > 1 && state.verbose)
             error(1,
                   "%d missing .el request%s",
@@ -728,12 +692,10 @@ popin(void)
                   state.cond.level == 2 ? "" : "s");
         state.cond.level = 0;
     }
-    if (pp->ip)
-    {
+    if (pp->ip) {
         if (state.in < pp->end)
             return 0;
-        if ((n = sfread(pp->ip, pp->buf, SF_BUFSIZE)) > 0)
-        {
+        if ((n = sfread(pp->ip, pp->buf, SF_BUFSIZE)) > 0) {
             pp->end = pp->buf + n;
             *pp->end++ = EOF;
             state.in = pp->buf;
@@ -746,14 +708,12 @@ popin(void)
     state.in_top = pp;
     if (state.noline > 0)
         state.noline--;
-    if ((error_info.file = pp->file) == state.original.file)
-    {
+    if ((error_info.file = pp->file) == state.original.file) {
         state.original.file = 0;
         state.original.line = 0;
     }
     error_info.line = pp->line;
-    if (pp->tag)
-    {
+    if (pp->tag) {
         state.tag = pp->tag;
         state.mac = pp->mac;
     }
@@ -772,8 +732,7 @@ nam(int type, char *name, char *buf, size_t n)
     char *e = t + n - 1;
 
     *t++ = type;
-    if ((*t++ = *name++) && (*t++ = *name))
-    {
+    if ((*t++ = *name++) && (*t++ = *name)) {
         if (state.groff)
             while (t < e && (*t++ = *++name))
                 ;
@@ -794,9 +753,8 @@ num(char *s)
     Num_t *np;
     char buf[MAXNAME];
 
-    if (!(np
-          = ( Num_t * )hashget(state.symbols, nam('n', s, buf, sizeof(buf)))))
-    {
+    if (!(np = ( Num_t * )hashget(state.symbols,
+                                  nam('n', s, buf, sizeof(buf))))) {
         if (!(np = newof(0, Num_t, 1, 0)))
             error(ERROR_SYSTEM | 3, "out of space [number]");
         np->name = hashput(state.symbols, NiL, np);
@@ -817,8 +775,7 @@ iop(char *s, int force)
     char buf[MAXNAME];
 
     if (!(sp = ( Stream_t * )hashget(state.symbols,
-                                     nam('s', s, buf, sizeof(buf)))))
-    {
+                                     nam('s', s, buf, sizeof(buf))))) {
         if (!force)
             error(1, "iop %s lookup failed", buf);
         if (!force)
@@ -876,19 +833,15 @@ nextchar(void)
     int c;
     int n;
 
-    for (;;)
-    {
-        if ((c = GETC()) == EOF)
-        {
+    for (;;) {
+        if ((c = GETC()) == EOF) {
             if (popin())
                 break;
             continue;
         }
-        if (c == state.ec)
-        {
+        if (c == state.ec) {
         escape:
-            switch (n = GETC())
-            {
+            switch (n = GETC()) {
             case EOF:
                 if (popin())
                     break;
@@ -900,10 +853,8 @@ nextchar(void)
                 c = '\t';
                 break;
             case '"':
-                for (;;)
-                {
-                    switch (c = GETC())
-                    {
+                for (;;) {
+                    switch (c = GETC()) {
                     case EOF:
                         if (popin())
                             break;
@@ -911,11 +862,9 @@ nextchar(void)
                     case '\n':
                         break;
                     default:
-                        if (c == state.ec)
-                        {
+                        if (c == state.ec) {
                         escape_2:
-                            switch (n = GETC())
-                            {
+                            switch (n = GETC()) {
                             case EOF:
                                 if (popin())
                                     break;
@@ -964,15 +913,13 @@ set(Tag_t *mp, char *value, int append)
 {
     int n;
 
-    if (append && mp->body)
-    {
+    if (append && mp->body) {
         sfputr(state.tmp, mp->body, -1);
         sfputr(state.tmp, value, -1);
         value = use(state.tmp);
     }
     n = strlen(value) + 1;
-    if (mp->size < n)
-    {
+    if (mp->size < n) {
         if (mp->size)
             free(mp->body);
         mp->size = n = roundof(n, 64);
@@ -982,8 +929,7 @@ set(Tag_t *mp, char *value, int append)
     strcpy(mp->body, value);
     mp->call = macro;
     mp->flags |= TAG_PASS;
-    if (!mp->line)
-    {
+    if (!mp->line) {
         mp->line = error_info.line;
         mp->file = error_info.file;
     }
@@ -1003,8 +949,7 @@ mac(char *name)
     char buf[MAXNAME];
 
     if (!(mp = ( Tag_t * )hashget(state.symbols,
-                                  nam('.', name, buf, sizeof(buf)))))
-    {
+                                  nam('.', name, buf, sizeof(buf))))) {
         if (!(mp = newof(0, Tag_t, 1, 0)))
             error(ERROR_SYSTEM | 3, "out of space [mac]");
         mp->name = hashput(state.symbols, NiL, mp);
@@ -1025,14 +970,12 @@ env(char *s)
         sfsprintf(buf, sizeof(buf), "E%s", s);
     else
         sfsprintf(buf, sizeof(buf), "E%d", n);
-    if (!(v = ( Env_t * )hashget(state.symbols, buf)))
-    {
+    if (!(v = ( Env_t * )hashget(state.symbols, buf))) {
         if (!(v = newof(0, Env_t, 1, 0)))
             error(ERROR_SYSTEM | 3, "out of space [environment]");
         v->name = hashput(state.symbols, NiL, v);
     }
-    if (v->generation < state.generation)
-    {
+    if (v->generation < state.generation) {
         v->generation = state.generation;
         v->c2 = DEFAULT_c2;
         v->cc = DEFAULT_cc;
@@ -1074,25 +1017,20 @@ find(char *name, char **found, int verbose)
         "groff/share/groff/tmac/%s",
     };
 
-    if (verbose >= 0 && (sp = sfopen(NiL, name, "r")))
-    {
+    if (verbose >= 0 && (sp = sfopen(NiL, name, "r"))) {
         sfprintf(state.tmp, "/%s", name);
         path = use(state.tmp);
         goto hit;
     }
-    if (*name != '/')
-    {
-        if (*name == '.' && (x = getenv("HOME")))
-        {
+    if (*name != '/') {
+        if (*name == '.' && (x = getenv("HOME"))) {
             sfprintf(state.tmp, "/%s/%s", x, name);
             path = use(state.tmp);
             if (sp = sfopen(NiL, path + 1, "r"))
                 goto hit;
         }
-        for (dp = state.dirs; dp; dp = dp->next)
-        {
-            if (verbose >= 0)
-            {
+        for (dp = state.dirs; dp; dp = dp->next) {
+            if (verbose >= 0) {
                 sfprintf(state.tmp, "/%s/%s", dp->name, name);
                 path = use(state.tmp);
                 if (sp = sfopen(NiL, path + 1, "r"))
@@ -1103,21 +1041,18 @@ find(char *name, char **found, int verbose)
             if (sp = sfopen(NiL, path + 1, "r"))
                 goto hit;
         }
-        for (i = 0; i < elementsof(pathdirs); i++)
-        {
+        for (i = 0; i < elementsof(pathdirs); i++) {
             sfprintf(state.tmp, pathdirs[i], name);
             path = use(state.tmp);
             if (pathpath(
                 path, "", PATH_REGULAR | PATH_READ, buf + 1, sizeof(buf) - 1)
-                && (sp = sfopen(NiL, buf + 1, "r")))
-            {
+                && (sp = sfopen(NiL, buf + 1, "r"))) {
                 *(path = buf) = '/';
                 goto hit;
             }
         }
     }
-    if (verbose > 0)
-    {
+    if (verbose > 0) {
         /*
          * some systems provide
          *	/usr/lib/tmac.mXXX
@@ -1128,12 +1063,10 @@ find(char *name, char **found, int verbose)
 
         if (*(s = name) == '/')
             while (s = strchr(s, '/'))
-                if (!strncmp(++s, "macros/", 7) && *(s += 7))
-                {
+                if (!strncmp(++s, "macros/", 7) && *(s += 7)) {
                     t = s + strlen(s) - 1;
                     x = strchr(s, '.') ? "" : ".tr";
-                    while (*s)
-                    {
+                    while (*s) {
                         sfprintf(state.tmp, "lib/html/%s%s", s, x);
                         path = use(state.tmp);
                         if (pathpath(path,
@@ -1141,8 +1074,7 @@ find(char *name, char **found, int verbose)
                                      PATH_REGULAR | PATH_READ,
                                      buf + 1,
                                      sizeof(buf) - 1)
-                            && (sp = sfopen(NiL, buf + 1, "r")))
-                        {
+                            && (sp = sfopen(NiL, buf + 1, "r"))) {
                             *(path = buf) = '/';
                             goto hit;
                         }
@@ -1152,8 +1084,7 @@ find(char *name, char **found, int verbose)
                     }
                 }
         error(ERROR_SYSTEM | 2, "%s: cannot read", name);
-    }
-    else if (verbose < 0)
+    } else if (verbose < 0)
         error(ERROR_SYSTEM | 3, "-m%s: cannot find macro package", name);
     return 0;
 hit:
@@ -1162,10 +1093,8 @@ hit:
         *found = hashput(state.symbols, path, path + 1) + 1;
     s = path + strlen(path);
     while (s > path + 2)
-        if (*--s == '/')
-        {
-            if (!strcmp(s, "/lib"))
-            {
+        if (*--s == '/') {
+            if (!strcmp(s, "/lib")) {
                 *s = 0;
                 set(mac(".P"), path + 1, 0);
                 break;
@@ -1255,10 +1184,8 @@ notify(char *s)
     Sfoff_t p;
 
     p = sftell(sfstderr);
-    for (;;)
-    {
-        switch (c = *s++)
-        {
+    for (;;) {
+        switch (c = *s++) {
         case 0:
             break;
         case CODE_0:
@@ -1314,11 +1241,9 @@ trigger(Trap_t **xp)
     Trap_t *ip;
     Trap_t *pp;
 
-    if (!DIVERTED() && (ip = *xp))
-    {
+    if (!DIVERTED() && (ip = *xp)) {
         state.t = 1;
-        do
-        {
+        do {
             sfputr(state.req, ip->name, '\n');
             pp = ip;
             ip = ip->next;
@@ -1350,16 +1275,14 @@ value(char *name, int type, int i)
     char buf[8];
 
     b = hashget(state.symbols, name);
-    switch (type)
-    {
+    switch (type) {
     case 'g':
         if (!(np = ( Num_t * )b))
             return "";
         b = np->value;
         if (isalnum(np->format))
             *b++ = np->format;
-        else
-        {
+        else {
             for (n = 0; n < np->format; n++)
                 *b++ = '0';
             *b++ = '1';
@@ -1379,8 +1302,7 @@ value(char *name, int type, int i)
     default:
         return b;
     }
-    if (!b)
-    {
+    if (!b) {
         name = strcpy(buf, "n");
         if (!(b = ( char * )hashget(state.symbols, name)))
             return "0";
@@ -1388,10 +1310,8 @@ value(char *name, int type, int i)
     np = ( Num_t * )b;
     if (np->flags & TAG_TRACE_GET)
         error(2, "get %s %d %d", np->name + 1, np->number, np->increment);
-    if (np->internal)
-    {
-        switch (INDEX(name[1], name[2]))
-        {
+    if (np->internal) {
+        switch (INDEX(name[1], name[2])) {
         case INDEX('%', 0):
             n = np->number;
             break;
@@ -1421,8 +1341,7 @@ value(char *name, int type, int i)
             n = 6000;
             break;
         case INDEX('.', 'c'):
-            if (name[3] == 'e')
-            {
+            if (name[3] == 'e') {
                 n = state.it.center;
                 break;
             }
@@ -1526,10 +1445,8 @@ value(char *name, int type, int i)
         }
         np->number = n;
     }
-    if (i)
-    {
-        switch (i)
-        {
+    if (i) {
+        switch (i) {
         case '+':
             np->number += np->increment;
             break;
@@ -1542,8 +1459,7 @@ value(char *name, int type, int i)
     }
     n = np->number;
     b = np->value;
-    switch (np->format)
-    {
+    switch (np->format) {
     case '1':
         sfsprintf(b, sizeof(np->value), "%ld", np->number);
         break;
@@ -1551,8 +1467,7 @@ value(char *name, int type, int i)
     case 'a':
         x = islower(np->format) ? "abcdefghijklmnopqrstuvwxyz"
                                 : "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        if (n < 0)
-        {
+        if (n < 0) {
             n = -n;
             *b++ = '-';
         }
@@ -1560,10 +1475,8 @@ value(char *name, int type, int i)
             ;
         if (m <= 0)
             sfsprintf(b, sizeof(buf) - 1, "<%ld>", n);
-        else
-        {
-            for (; m > 0; m /= 26)
-            {
+        else {
+            for (; m > 0; m /= 26) {
                 i = n / m;
                 n -= m * i;
                 *b++ = x[i];
@@ -1578,24 +1491,19 @@ value(char *name, int type, int i)
             sfsprintf(b, sizeof(buf), "<%ld>", n);
         else if (!n)
             sfsprintf(b, sizeof(buf), "0");
-        else
-        {
-            if (n < 0)
-            {
+        else {
+            if (n < 0) {
                 n = -n;
                 *b++ = '-';
             }
-            while (n >= 10000)
-            {
+            while (n >= 10000) {
                 n -= 10000;
                 *b++ = x[0];
             }
-            for (i = 1000; i > 0; i /= 10, x += 2)
-            {
+            for (i = 1000; i > 0; i /= 10, x += 2) {
                 m = n / i;
                 n -= m * i;
-                switch (m)
-                {
+                switch (m) {
                 case 9:
                     *b++ = x[2];
                     *b++ = x[0];
@@ -1662,10 +1570,8 @@ interpolate(int type)
     b = buf;
     *b++ = (type == 'g' || type == 'j') ? 'f' : type;
     x = buf + 2;
-    do
-    {
-        switch (c = GETC())
-        {
+    do {
+        switch (c = GETC()) {
         case EOF:
             if (popin())
                 return 0;
@@ -1674,15 +1580,13 @@ interpolate(int type)
             error_info.line++;
             break;
         case '(':
-            if (x == buf + 2)
-            {
+            if (x == buf + 2) {
                 x++;
                 continue;
             }
             break;
         case '[':
-            if (state.groff && x == buf + 2)
-            {
+            if (state.groff && x == buf + 2) {
                 x = buf + sizeof(buf) - 2;
                 k = 1;
                 continue;
@@ -1694,18 +1598,15 @@ interpolate(int type)
             break;
         case '-':
         case '+':
-            if (type == 'n' && b == buf + 1)
-            {
+            if (type == 'n' && b == buf + 1) {
                 i = c;
                 continue;
             }
             break;
         default:
-            if (c == state.ec)
-            {
+            if (c == state.ec) {
             escape:
-                switch (c = GETC())
-                {
+                switch (c = GETC()) {
                 case EOF:
                     if (popin())
                         return 0;
@@ -1774,16 +1675,13 @@ li(int force)
     List_t *list = state.list;
 
     state.it.dc = 0;
-    if (state.divert || state.env->nf)
-    {
+    if (state.divert || state.env->nf) {
         if (state.env->nf)
             state.it.dl = 0;
         return;
     }
-    if (force)
-    {
-        while (state.env->in.current < state.list->in)
-        {
+    if (force) {
+        while (state.env->in.current < state.list->in) {
             message((-2,
                      "DROP %d %d %d:%d %d:%d",
                      state.list - state.list_stack,
@@ -1796,8 +1694,7 @@ li(int force)
                 code_1(END(OP_dl));
             state.list--;
         }
-    }
-    else
+    } else
         message((-2,
                  "TEST %d %d %d:%d %d:%d ops=%d df=%d dc=%d dl=%d",
                  state.list - state.list_stack,
@@ -1811,8 +1708,7 @@ li(int force)
                  state.it.dc,
                  state.it.dl));
     if (state.env->in.current > state.list->in
-        || force > 0 && state.env->ti.current > state.list->in)
-    {
+        || force > 0 && state.env->ti.current > state.list->in) {
         if (state.list >= &state.list_stack[elementsof(state.list_stack) - 1])
             error(2, "list stack overflow");
         else
@@ -1823,8 +1719,7 @@ li(int force)
                          ? state.env->in.current
                          : state.env->ti.current;
         state.it.dl++;
-    }
-    else if (!force && state.env->in.current < state.list->in)
+    } else if (!force && state.env->in.current < state.list->in)
         state.it.dc = 1;
     message((-2,
              "LIST %d %d %d:%d %d:%d ops=%d df=%d dc=%d dl=%d",
@@ -1849,36 +1744,28 @@ it(void)
 {
     List_t *p;
 
-    if (state.env->nf)
-    {
+    if (state.env->nf) {
         if (state.env->in.current > 0)
             sfputc(state.out, '\t');
-    }
-    else if (!DIVERTED())
-    {
+    } else if (!DIVERTED()) {
         if (state.it.dc && ISFILE())
             li(-1);
         p = state.list;
-        while (state.it.dl > 0)
-        {
+        while (state.it.dl > 0) {
             state.it.dl--;
             for (; p >= state.list_stack; p--)
-                if (!p->dl)
-                {
+                if (!p->dl) {
                     p->dl = 1;
                     code_1(OP_dl);
                     break;
                 }
         }
-        if (state.it.dt)
-        {
+        if (state.it.dt) {
             state.it.dt = 0;
             code_1((state.list - state.list_stack) <= 1 ? LABEL(OP_dt)
                                                         : OP_dt);
             state.it.dd = 1;
-        }
-        else if (state.it.dd)
-        {
+        } else if (state.it.dd) {
             state.it.dd = 0;
             code_1(OP_dd);
         }
@@ -1936,10 +1823,8 @@ expand(Sfio_t *op, char *s)
     char *b;
     char buf[MAXNAME];
 
-    for (;;)
-    {
-        switch (c = *s++)
-        {
+    for (;;) {
+        switch (c = *s++) {
         case 0:
             break;
         case CODE_2:
@@ -1955,8 +1840,7 @@ expand(Sfio_t *op, char *s)
             continue;
         default:
             if (c == state.ec)
-                switch (w = c = *s++)
-                {
+                switch (w = c = *s++) {
                 case 0:
                     s--;
                     break;
@@ -1979,17 +1863,14 @@ expand(Sfio_t *op, char *s)
                     c = *s++;
                     if (c == '(')
                         z = 2;
-                    else
-                    {
+                    else {
                         z = -1;
                         if (state.groff && c == '[')
                             c = ']';
                     }
                     b = s;
-                    for (;;)
-                    {
-                        switch (d = *s++)
-                        {
+                    for (;;) {
+                        switch (d = *s++) {
                         case 0:
                             s--;
                             break;
@@ -2003,10 +1884,8 @@ expand(Sfio_t *op, char *s)
                         case CODE_0:
                             continue;
                         default:
-                            if (d == state.ec)
-                            {
-                                switch (d = *s++)
-                                {
+                            if (d == state.ec) {
+                                switch (d = *s++) {
                                 case 0:
                                     s--;
                                     break;
@@ -2026,10 +1905,8 @@ expand(Sfio_t *op, char *s)
                                 case 'w':
                                 case 'x':
                                     q = *s++;
-                                    for (;;)
-                                    {
-                                        switch (d = *s++)
-                                        {
+                                    for (;;) {
+                                        switch (d = *s++) {
                                         case 0:
                                             s--;
                                             break;
@@ -2059,8 +1936,7 @@ expand(Sfio_t *op, char *s)
                                 case 'j':
                                     t = buf;
                                     *t++ = 'n';
-                                    if ((*t++ = *s++) == '(')
-                                    {
+                                    if ((*t++ = *s++) == '(') {
                                         *(t - 1) = *s++;
                                         *t++ = *s++;
                                     }
@@ -2069,8 +1945,7 @@ expand(Sfio_t *op, char *s)
                                         v += strlen(t);
                                     break;
                                 }
-                            }
-                            else if (z > 0)
+                            } else if (z > 0)
                                 z--;
                             else if (d == c || z == 0)
                                 break;
@@ -2079,8 +1954,7 @@ expand(Sfio_t *op, char *s)
                         }
                         break;
                     }
-                    switch (w)
-                    {
+                    switch (w) {
                     case 'A':
                         sfprintf(op, "1");
                         break;
@@ -2089,8 +1963,7 @@ expand(Sfio_t *op, char *s)
                     case 'V':
                         c = *(s - 1);
                         *(s - 1) = 0;
-                        switch (w)
-                        {
+                        switch (w) {
                         case 'R':
                             /*HERE*/
                             break;
@@ -2113,8 +1986,7 @@ expand(Sfio_t *op, char *s)
                 case 'j':
                     t = buf;
                     *t++ = 'n';
-                    if ((*t++ = *s++) == '(')
-                    {
+                    if ((*t++ = *s++) == '(') {
                         *(t - 1) = *s++;
                         *t++ = *s++;
                     }
@@ -2145,8 +2017,8 @@ rm(char *s)
     Tag_t *mp;
     char buf[MAXNAME];
 
-    if (mp = ( Tag_t * )hashget(state.symbols, nam('.', s, buf, sizeof(buf))))
-    {
+    if (mp
+        = ( Tag_t * )hashget(state.symbols, nam('.', s, buf, sizeof(buf)))) {
         if (mp->flags & TAG_TRACE_SET)
             error(2, "remove macro %s", mp->name + 1);
         if (mp->size)
@@ -2155,8 +2027,8 @@ rm(char *s)
             free(mp);
         hashput(state.symbols, NiL, NiL);
     }
-    if (mp = ( Tag_t * )hashget(state.symbols, nam('n', s, buf, sizeof(buf))))
-    {
+    if (mp
+        = ( Tag_t * )hashget(state.symbols, nam('n', s, buf, sizeof(buf)))) {
         if (mp->flags & TAG_TRACE_SET)
             error(2, "remove %s", mp->name + 1);
         if (mp->size)
@@ -2183,10 +2055,8 @@ skip(char *s, int f, Sfio_t *op)
         pushin(NiL, 0, NiL, s, NiL);
     else if (!n)
         return;
-    for (;;)
-    {
-        switch (c = GETC())
-        {
+    for (;;) {
+        switch (c = GETC()) {
         case EOF:
             if (s && n <= 0)
                 break;
@@ -2217,11 +2087,9 @@ skip(char *s, int f, Sfio_t *op)
         default:
             if (op)
                 sfputc(op, c);
-            if (c == state.ec)
-            {
+            if (c == state.ec) {
             escape:
-                switch (c = GETC())
-                {
+                switch (c = GETC()) {
                 case EOF:
                     if (popin())
                         break;
@@ -2239,10 +2107,8 @@ skip(char *s, int f, Sfio_t *op)
                 case '}':
                     if (op)
                         sfputc(op, c);
-                    if (--n <= 0)
-                    {
-                        switch (c = nextchar())
-                        {
+                    if (--n <= 0) {
+                        switch (c = nextchar()) {
                         case '\n':
                             if (op)
                                 sfputc(op, c);
@@ -2319,8 +2185,7 @@ groff_break(Tag_t *tp, Arg_t *ap)
     Pushin_t *pp;
 
     for (pp = state.in_top; pp >= state.in_stack; pp--)
-        if (pp->loop)
-        {
+        if (pp->loop) {
             sfclose(pp->loop);
             pp->loop = 0;
             return;
@@ -2334,8 +2199,7 @@ groff_chop(Tag_t *tp, Arg_t *ap)
     char *s;
     Tag_t *mp;
 
-    if (ap->argc >= 1)
-    {
+    if (ap->argc >= 1) {
         mp = mac(ap->argv[1]);
         if ((s = mp->body) && *s)
             *(s + strlen(s) - 1) = 0;
@@ -2347,13 +2211,11 @@ groff_close(Tag_t *tp, Arg_t *ap)
 {
     Stream_t *sp;
 
-    if (ap->argc < 1)
-    {
+    if (ap->argc < 1) {
         error(1, "%s: one argument expected", ap->argv[0]);
         return;
     }
-    if (!(sp = iop(ap->argv[1], 0)))
-    {
+    if (!(sp = iop(ap->argv[1], 0))) {
         error(1, "%s: %s: stream not open", ap->argv[0], ap->argv[1]);
         return;
     }
@@ -2367,8 +2229,7 @@ groff_continue(Tag_t *tp, Arg_t *ap)
     Pushin_t *pp;
 
     for (pp = state.in_top; pp >= state.in_stack; pp--)
-        if (pp->loop)
-        {
+        if (pp->loop) {
             pp->in = ( unsigned char * )sfstrbase(pp->loop);
             return;
         }
@@ -2392,18 +2253,15 @@ groff_open(Tag_t *tp, Arg_t *ap)
     char *mode;
     Stream_t *sp;
 
-    if (ap->argc < 2)
-    {
+    if (ap->argc < 2) {
         error(1, "%s: two arguments expected", ap->argv[0]);
         return;
     }
     mode = strlen(ap->argv[0]) > 5 ? (ap->argv[0] + 5) : "w";
     path = ap->argv[2];
     sp = iop(ap->argv[1], 1);
-    if (*mode == 'w' || !streq(sp->path, path))
-    {
-        if (sp->sp)
-        {
+    if (*mode == 'w' || !streq(sp->path, path)) {
+        if (sp->sp) {
             sfclose(sp->sp);
             sp->sp = 0;
         }
@@ -2426,8 +2284,7 @@ groff_pso(Tag_t *tp, Arg_t *ap)
     char *s;
     Sfio_t *sp;
 
-    if (s = join(ap, 1))
-    {
+    if (s = join(ap, 1)) {
         if (!(sp = sfpopen(NiL, s, "r")))
             error(ERROR_SYSTEM | 2, "%s: %s: command error", ap->argv[0], s);
         else
@@ -2442,8 +2299,7 @@ groff_rnn(Tag_t *tp, Arg_t *ap)
     char *s;
 
     NoP(tp);
-    if (ap->argc >= 2)
-    {
+    if (ap->argc >= 2) {
         s = ap->argv[2];
         rm(s);
         *--s = 'n';
@@ -2460,8 +2316,7 @@ groff_shift(Tag_t *tp, Arg_t *ap)
     int i;
     Arg_t *pp;
 
-    if (pp = state.mac)
-    {
+    if (pp = state.mac) {
         n = (ap->argc >= 1) ? expression(ap->argv[1], NiL, 0) : 1;
         i = 0;
         while (n < pp->argc)
@@ -2485,8 +2340,7 @@ groff_while(Tag_t *tp, Arg_t *ap)
     char *t;
     Sfio_t *op;
 
-    if (s = join(ap, 1))
-    {
+    if (s = join(ap, 1)) {
         if (!(op = sfstropen()))
             error(ERROR_SYSTEM | 3, "out of space [%s]", tp->name);
         sfputr(op, ".ie", ' ');
@@ -2508,13 +2362,11 @@ groff_write(Tag_t *tp, Arg_t *ap)
     char *s;
     Stream_t *sp;
 
-    if (ap->argc < 1)
-    {
+    if (ap->argc < 1) {
         error(1, "%s: at least one argument expected", ap->argv[0]);
         return;
     }
-    if (!(sp = iop(ap->argv[1], 0)))
-    {
+    if (!(sp = iop(ap->argv[1], 0))) {
         error(1, "%s: %s: stream not open", ap->argv[0], ap->argv[1]);
         return;
     }
@@ -2548,8 +2400,7 @@ troff_ad(Tag_t *tp, Arg_t *ap)
 {
     NoP(tp);
     if (ap->argc >= 1)
-        switch (ap->argv[1][0])
-        {
+        switch (ap->argv[1][0]) {
         case 'b':
         case 'B':
         case 'n':
@@ -2574,11 +2425,9 @@ troff_af(Tag_t *tp, Arg_t *ap)
     char *s;
 
     NoP(tp);
-    if (ap->argc >= 2)
-    {
+    if (ap->argc >= 2) {
         np = num(ap->argv[1]);
-        switch (*(s = ap->argv[2]))
-        {
+        switch (*(s = ap->argv[2])) {
         case '0':
             for (np->format = 0; *s++ == '0'; np->format++)
                 ;
@@ -2602,8 +2451,7 @@ troff_br(Tag_t *tp, Arg_t *ap)
 {
     NoP(tp);
     NoP(ap);
-    if (state.it.dd)
-    {
+    if (state.it.dd) {
         state.it.dd = 0;
         code_1(OP_dd);
     }
@@ -2633,23 +2481,18 @@ troff_ce(Tag_t *tp, Arg_t *ap)
     NoP(tp);
     n = (ap->argc >= 1) ? expression(ap->argv[1], NiL, 0) : 1;
     r = *(ap->argv[0] + 1) == 'r';
-    if (n >= 1)
-    {
-        if (state.it.center && state.it.right != r)
-        {
+    if (n >= 1) {
+        if (state.it.center && state.it.right != r) {
             state.it.center = 0;
             code_1(state.it.right ? END(OP_p) : END(OP_center));
         }
-        if (!state.it.center)
-        {
+        if (!state.it.center) {
             if (r)
                 code_2(OP_p, ARG_right);
             else
                 code_1(OP_center);
         }
-    }
-    else
-    {
+    } else {
         if (state.it.right)
             code_1(END(OP_p));
         else if (state.it.center)
@@ -2666,8 +2509,7 @@ troff_cf(Tag_t *tp, Arg_t *ap)
 {
     Sfio_t *sp;
 
-    if (ap->argc >= 1 && (sp = find(ap->argv[1], NiL, 1)))
-    {
+    if (ap->argc >= 1 && (sp = find(ap->argv[1], NiL, 1))) {
         sfmove(sp, state.out, SF_UNBOUND, -1);
         sfclose(sp);
     }
@@ -2684,14 +2526,11 @@ troff_ch(Tag_t *tp, Arg_t *ap)
 
     NoP(tp);
     NoP(ap);
-    if (ap->argc == 1)
-    {
+    if (ap->argc == 1) {
         for (xp = state.trap; xp; xp = xp->next)
             if (streq(xp->name + 1, ap->argv[1]))
                 xp->name[0] = 0;
-    }
-    else if (ap->argc >= 2)
-    {
+    } else if (ap->argc >= 2) {
         s = ap->argv[1];
         ap->argv[1] = (state.test & 1) ? "1" : ap->argv[2];
         ap->argv[2] = s;
@@ -2704,8 +2543,7 @@ troff_de(Tag_t *tp, Arg_t *ap)
 {
     Tag_t *mp;
 
-    if (ap->argc >= 1)
-    {
+    if (ap->argc >= 1) {
         mp = mac(ap->argv[1]);
         if (mp->body && tp->name[1] == 'a')
             sfputr(state.tmp, mp->body, -1);
@@ -2726,10 +2564,8 @@ troff_di(Tag_t *tp, Arg_t *ap)
     Divert_t *dp;
     int n;
 
-    if (!ap->argc)
-    {
-        if (dp = state.divert)
-        {
+    if (!ap->argc) {
+        if (dp = state.divert) {
             state.dl = state.env->dl;
             state.dn = state.env->dn;
             if (dp->env->ft.current != state.env->ft.current)
@@ -2748,11 +2584,9 @@ troff_di(Tag_t *tp, Arg_t *ap)
             sfstrclose(dp->sp);
             free(dp);
         }
-    }
-    else if (!(dp = newof(0, Divert_t, 1, 0)) || !(dp->sp = sfstropen()))
+    } else if (!(dp = newof(0, Divert_t, 1, 0)) || !(dp->sp = sfstropen()))
         error(ERROR_SYSTEM | 3, "out of space [divert]");
-    else
-    {
+    else {
         dp->tag = mac(ap->argv[1]);
         if (dp->tag->body && tp->name[2] == 'a')
             sfputr(dp->sp, dp->tag->body, -1);
@@ -2788,8 +2622,7 @@ static void
 troff_eo(Tag_t *tp, Arg_t *ap)
 {
     NoP(tp);
-    if (state.ec)
-    {
+    if (state.ec) {
         state.eo = state.ec;
         state.ec = 0;
     }
@@ -2801,21 +2634,18 @@ troff_ev(Tag_t *tp, Arg_t *ap)
     Env_t *oe;
     Env_t *ne;
 
-    if (ap->argc < 1)
-    {
+    if (ap->argc < 1) {
         if (state.env_sp <= state.env_stack)
             error(2, "%s: stack underflow", tp->name);
         else
             state.env_sp--;
-    }
-    else if (state.env_sp >= &state.env_stack[elementsof(state.env_stack)])
+    } else if (state.env_sp >= &state.env_stack[elementsof(state.env_stack)])
         error(2, "%s: stack overflow", tp->name);
     else
         *++state.env_sp = env(ap->argv[1]);
     oe = state.env;
     ne = state.env = *state.env_sp;
-    if (oe != ne)
-    {
+    if (oe != ne) {
         if (oe->ft.current != ne->ft.current)
             code_1(OP_ft + ne->ft.current);
         if (oe->nf != ne->nf)
@@ -2840,8 +2670,7 @@ troff_fi(Tag_t *tp, Arg_t *ap)
 {
     NoP(tp);
     NoP(ap);
-    if (state.env->nf)
-    {
+    if (state.env->nf) {
         state.env->nf = 0;
         code_1(END(OP_pre));
     }
@@ -2854,8 +2683,7 @@ troff_fp(Tag_t *tp, Arg_t *ap)
     char *t;
 
     NoP(tp);
-    if (ap->argc >= 2)
-    {
+    if (ap->argc >= 2) {
         s = ap->argv[1];
         *--s = 'f';
         t = ap->argv[1];
@@ -2870,13 +2698,11 @@ troff_ft(Tag_t *tp, Arg_t *ap)
     char *s;
 
     NoP(tp);
-    if (ap->argc >= 1)
-    {
+    if (ap->argc >= 1) {
         s = ap->argv[1];
         *--s = 'f';
         s = ( char * )hashget(state.symbols, s);
-    }
-    else
+    } else
         s = 0;
     ft(s);
 }
@@ -2891,11 +2717,9 @@ troff_ie(Tag_t *tp, Arg_t *ap)
     char *t;
     char *e;
 
-    if (tp->name[1] == 'e')
-    {
+    if (tp->name[1] == 'e') {
         if (!state.cond.level
-            || !(state.cond.flags[state.cond.level] & COND_IE))
-        {
+            || !(state.cond.flags[state.cond.level] & COND_IE)) {
             if (state.verbose)
                 error(2, "%s: no matching .ie", tp->name);
             if (!state.cond.level)
@@ -2903,15 +2727,12 @@ troff_ie(Tag_t *tp, Arg_t *ap)
             state.cond.flags[state.cond.level] = COND_IE | COND_KEPT;
         }
         f = COND_EL;
-    }
-    else
-    {
+    } else {
         if (state.cond.level >= elementsof(state.cond.flags) - 1)
             error(3, "%s: conditional stack too deep", tp->name);
         f = tp->name[2] == 'f' ? COND_IF : COND_IE;
     }
-    if (error_info.trace <= -5)
-    {
+    if (error_info.trace <= -5) {
         int g = state.cond.flags[state.cond.level];
 
         error(-5,
@@ -2924,16 +2745,13 @@ troff_ie(Tag_t *tp, Arg_t *ap)
               (g & COND_SKIP) ? "SKIP|" : "",
               (g & COND_KEPT) ? "KEPT|" : "");
     }
-    if (s = join(ap, 1))
-    {
-        if (state.ec)
-        {
+    if (s = join(ap, 1)) {
+        if (state.ec) {
             t = s;
             while (t = strchr(t, state.ec))
                 if (*++t != '{' && *t != '}')
                     break;
-            if (t)
-            {
+            if (t) {
                 if (state.test & 0x100)
                     error(2, "EXPAND +++ `%s'", s);
                 expand(state.arg, s);
@@ -2943,12 +2761,10 @@ troff_ie(Tag_t *tp, Arg_t *ap)
                     error(2, "EXPAND --- `%s'", s);
             }
         }
-        for (;;)
-        {
+        for (;;) {
             if (f & COND_EL)
                 v = !(state.cond.flags[state.cond.level] & COND_KEPT);
-            else
-            {
+            else {
                 v = cond(s, &e);
                 s = e;
             }
@@ -2965,8 +2781,7 @@ troff_ie(Tag_t *tp, Arg_t *ap)
             if (q & COND_EL)
                 state.cond.level--;
         }
-        if (*s == state.ec && state.ec && *(s + 1) == '{')
-        {
+        if (*s == state.ec && state.ec && *(s + 1) == '{') {
             s += 2;
             f |= COND_BLOCK;
         }
@@ -2977,33 +2792,26 @@ troff_ie(Tag_t *tp, Arg_t *ap)
         else
             *(s + strlen(s)) = '\n';
     }
-    if (!v)
-    {
+    if (!v) {
         f |= COND_SKIP;
         skip(s, f, NiL);
-    }
-    else
-    {
-        if (s)
-        {
+    } else {
+        if (s) {
             pushin(NiL, 0, NiL, s, ap);
             error_info.line--;
         }
         if (f & (COND_EL | COND_IE))
             f |= COND_KEPT;
     }
-    if (f & COND_EL)
-    {
+    if (f & COND_EL) {
         if ((f & (COND_SKIP | COND_BLOCK)) == COND_BLOCK)
             state.cond.flags[state.cond.level]
             = COND_IE | COND_EL | COND_KEPT | COND_BLOCK;
         else
             state.cond.level--;
-    }
-    else if ((f & COND_IE) || (f & (COND_BLOCK | COND_SKIP)) == COND_BLOCK)
+    } else if ((f & COND_IE) || (f & (COND_BLOCK | COND_SKIP)) == COND_BLOCK)
         state.cond.flags[++state.cond.level] = f;
-    if (error_info.trace <= -5)
-    {
+    if (error_info.trace <= -5) {
         int g = state.cond.flags[state.cond.level];
 
         error(-5,
@@ -3023,15 +2831,13 @@ troff_ignore(Tag_t *tp, Arg_t *ap)
 {
     char *s;
 
-    if (!state.end)
-    {
+    if (!state.end) {
         *tp->name = 'e';
         state.end = (s = ( char * )hashget(state.symbols, tp->name))
                     ? ( Tag_t * )hashget(state.symbols, s)
                     : ( Tag_t * )0;
         *tp->name = '.';
-        if (state.end)
-        {
+        if (state.end) {
             sfprintf(state.out,
                      "<BR>%s ... %s OMITTED<BR>\n",
                      tp->name,
@@ -3050,11 +2856,9 @@ troff_in(Tag_t *tp, Arg_t *ap)
     NoP(tp);
     if (ap->argc < 1)
         n = state.env->in.previous;
-    else
-    {
+    else {
         n = expression(ap->argv[1], NiL, 'u');
-        switch (ap->argv[1][0])
-        {
+        switch (ap->argv[1][0]) {
         case '-':
         case '+':
             n += state.env->in.current;
@@ -3076,13 +2880,11 @@ troff_it(Tag_t *tp, Arg_t *ap)
     state.it.count = 0;
     if (ap->argc >= 2
         && (state.it.count = expression(ap->argv[1], NiL, 0)) > 0
-        && *(s = ap->argv[2]))
-    {
+        && *(s = ap->argv[2])) {
         t = state.it.trap;
         *t++ = '.';
         *t++ = *s++;
-        if (*s)
-        {
+        if (*s) {
             *t++ = *s;
             if (state.groff)
                 while (t < &state.it.trap[sizeof(state.it.trap) - 2]
@@ -3102,11 +2904,9 @@ troff_ll(Tag_t *tp, Arg_t *ap)
     NoP(tp);
     if (ap->argc < 1)
         n = state.env->ll.previous;
-    else
-    {
+    else {
         n = expression(ap->argv[1], NiL, 'u');
-        switch (ap->argv[1][0])
-        {
+        switch (ap->argv[1][0]) {
         case '-':
         case '+':
             n += state.env->ll.current;
@@ -3130,8 +2930,7 @@ troff_nf(Tag_t *tp, Arg_t *ap)
 {
     NoP(tp);
     NoP(ap);
-    if (!state.env->nf)
-    {
+    if (!state.env->nf) {
         if (!state.it.interrupt)
             it();
         li(-1);
@@ -3149,14 +2948,12 @@ troff_nr(Tag_t *tp, Arg_t *ap)
     Num_t *np;
 
     NoP(tp);
-    if (ap->argc >= 2)
-    {
+    if (ap->argc >= 2) {
         np = num(ap->argv[1]);
         if ((i = *(s = ap->argv[2])) == '+' || i == '-')
             s++;
         n = expression(s, NiL, 0);
-        switch (i)
-        {
+        switch (i) {
         case '-':
             n = np->number - n;
             break;
@@ -3166,8 +2963,7 @@ troff_nr(Tag_t *tp, Arg_t *ap)
         }
         np->number = n;
         if (np->internal)
-            switch (INDEX(np->name[1], np->name[2]))
-            {
+            switch (INDEX(np->name[1], np->name[2])) {
             case INDEX('c', '.'):
                 if (state.original.line)
                     state.original.line = n;
@@ -3209,11 +3005,9 @@ troff_ps(Tag_t *tp, Arg_t *ap)
     NoP(tp);
     if (ap->argc < 1)
         n = state.env->ps.previous;
-    else
-    {
+    else {
         n = expression(ap->argv[1], NiL, 'p');
-        switch (ap->argv[1][0])
-        {
+        switch (ap->argv[1][0]) {
         case '-':
         case '+':
             n += state.env->ps.current;
@@ -3245,8 +3039,7 @@ troff_rn(Tag_t *tp, Arg_t *ap)
     char *s;
 
     NoP(tp);
-    if (ap->argc >= 2)
-    {
+    if (ap->argc >= 2) {
         s = ap->argv[2];
         rm(s);
         *--s = '.';
@@ -3262,9 +3055,8 @@ rr(char *name)
     Num_t *np;
     char buf[MAXNAME];
 
-    if (np
-        = ( Num_t * )hashget(state.symbols, nam('.', name, buf, sizeof(buf))))
-    {
+    if (np = ( Num_t * )hashget(state.symbols,
+                                nam('.', name, buf, sizeof(buf)))) {
         if (np->internal)
             return;
         if (np->flags & TAG_TRACE_SET)
@@ -3299,8 +3091,7 @@ static void
 troff_sp(Tag_t *tp, Arg_t *ap)
 {
     NoP(tp);
-    if (state.it.dd)
-    {
+    if (state.it.dd) {
         state.it.dd = 0;
         code_1(OP_dd);
     }
@@ -3315,13 +3106,10 @@ troff_ta(Tag_t *tp, Arg_t *ap)
     unsigned char ta[elementsof(state.ta)];
 
     NoP(tp);
-    if (ap->argc < 1)
-    {
+    if (ap->argc < 1) {
         state.ta[0] = 8;
         i = 1;
-    }
-    else
-    {
+    } else {
         if (ap->argc >= elementsof(ta))
             ap->argc = elementsof(ta) - 1;
         for (i = 0; i < ap->argc; i++)
@@ -3339,11 +3127,9 @@ troff_ti(Tag_t *tp, Arg_t *ap)
     NoP(tp);
     if (ap->argc < 1)
         n = state.env->ti.previous;
-    else
-    {
+    else {
         n = expression(ap->argv[1], NiL, 'u');
-        switch (ap->argv[1][0])
-        {
+        switch (ap->argv[1][0]) {
         case '-':
         case '+':
             n += state.env->ti.current;
@@ -3368,12 +3154,10 @@ troff_tl(Tag_t *tp, Arg_t *ap)
     int n;
 
     NoP(tp);
-    if (s = join(ap, 1))
-    {
+    if (s = join(ap, 1)) {
         if (state.head)
             state.footer = 1;
-        else
-        {
+        else {
             state.head = 1;
             code_1(END(OP_head));
             code_1(OP_body);
@@ -3382,15 +3166,12 @@ troff_tl(Tag_t *tp, Arg_t *ap)
         code_2(OP_tab, ARG_wide);
         code_1(OP_tab_row);
         if (q = *s++)
-            for (n = 1; n <= 3; n++)
-            {
+            for (n = 1; n <= 3; n++) {
                 code_2(OP_tab_head, n);
                 if (n == 1)
                     code_2(OP_cc, ' ');
-                while ((c = *s++) != q)
-                {
-                    if (!c)
-                    {
+                while ((c = *s++) != q) {
+                    if (!c) {
                         s--;
                         break;
                     }
@@ -3426,11 +3207,9 @@ troff_vs(Tag_t *tp, Arg_t *ap)
     NoP(tp);
     if (ap->argc < 1)
         n = state.env->vs.previous;
-    else
-    {
+    else {
         n = expression(ap->argv[1], NiL, 'p');
-        switch (ap->argv[1][0])
-        {
+        switch (ap->argv[1][0]) {
         case '-':
         case '+':
             n += state.env->vs.current;
@@ -3441,8 +3220,7 @@ troff_vs(Tag_t *tp, Arg_t *ap)
             break;
         }
     }
-    if (n > 0)
-    {
+    if (n > 0) {
         state.env->vs.previous = state.env->vs.current;
         state.env->vs.current = n;
     }
@@ -3462,10 +3240,8 @@ text(void)
         return 1;
     s = sfstrbase(state.out);
     e = sfstrseek(state.out, 0, SEEK_CUR);
-    while (s < e)
-    {
-        switch (*s++)
-        {
+    while (s < e) {
+        switch (*s++) {
         case CODE_2:
             s++;
             /*FALLTHROUGH*/
@@ -3491,10 +3267,8 @@ troff_wh(Tag_t *tp, Arg_t *ap)
     int i;
     Trap_t **xp;
 
-    if (ap->argc > 1)
-    {
-        if (!(i = expression(ap->argv[1], NiL, 'u')))
-        {
+    if (ap->argc > 1) {
+        if (!(i = expression(ap->argv[1], NiL, 'u'))) {
             if (!state.it.text && text())
                 state.it.text = 1;
             if (state.it.text)
@@ -3513,10 +3287,8 @@ hot(char *s, int add)
     Dir_t *p;
 
     for (p = 0, x = state.hot; x; p = x, x = x->next)
-        if (streq(s, x->name))
-        {
-            if (!add)
-            {
+        if (streq(s, x->name)) {
+            if (!add) {
                 if (p)
                     p->next = x->next;
                 else
@@ -3525,8 +3297,7 @@ hot(char *s, int add)
             }
             return;
         }
-    if (add)
-    {
+    if (add) {
         if (!(x = newof(0, Dir_t, 1, strlen(s) + 1)))
             error(ERROR_SYSTEM | 3, "out of space [hot]");
         strcpy(x->name = ( char * )x + sizeof(*x), s);
@@ -3638,8 +3409,7 @@ setopt(void *a, const void *x, int n, const char *v)
     int f;
 
     if (p)
-        switch (p->index)
-        {
+        switch (p->index) {
         case OPT_begin:
             sfprintf(state.tmp, "<!-- %s -->", v + n);
             code_n(OP_RAW, use(state.tmp));
@@ -3654,8 +3424,7 @@ setopt(void *a, const void *x, int n, const char *v)
         case OPT_footnote:
             if (!state.out)
                 error(1, "%s: option valid from document body only", p->name);
-            else
-            {
+            else {
                 /*
                  * NOTE: mm .FS/.FE is so convoluted that I
                  *       punted to this; trying to decipher
@@ -3664,8 +3433,7 @@ setopt(void *a, const void *x, int n, const char *v)
                  *	 real solution on a meetingless day.
                  */
 
-                if (n)
-                {
+                if (n) {
                     char *b;
                     long m;
 
@@ -3673,15 +3441,13 @@ setopt(void *a, const void *x, int n, const char *v)
                     b = sfstrbase(state.out);
                     s = b + m;
                     while (s > b)
-                        if (!isspace(*--s))
-                        {
+                        if (!isspace(*--s)) {
                             s++;
                             break;
                         }
                     t = s;
                     while (s > b)
-                        if (isspace(*--s))
-                        {
+                        if (isspace(*--s)) {
                             s++;
                             break;
                         }
@@ -3690,16 +3456,14 @@ setopt(void *a, const void *x, int n, const char *v)
                     code_n(OP_link, use(state.tmp));
                     sfprintf(state.tmp, "FN%ld", m);
                     code_n(OP_fn, use(state.tmp));
-                }
-                else
+                } else
                     code_1(END(OP_fn));
             }
             break;
         case OPT_get:
         case OPT_hot:
         case OPT_set:
-            switch (p->index)
-            {
+            switch (p->index) {
             case OPT_get:
                 f = TAG_TRACE_GET;
                 break;
@@ -3711,18 +3475,14 @@ setopt(void *a, const void *x, int n, const char *v)
                 break;
             }
             s = ( char * )v;
-            do
-            {
+            do {
                 while (isspace(*s))
                     s++;
                 for (t = s;; t++)
-                    if (!*t)
-                    {
+                    if (!*t) {
                         t = 0;
                         break;
-                    }
-                    else if (isspace(*t))
-                    {
+                    } else if (isspace(*t)) {
                         *t++ = 0;
                         break;
                     }
@@ -3734,13 +3494,10 @@ setopt(void *a, const void *x, int n, const char *v)
                     n = 0;
                 else if (!f)
                     hot(s, n);
-                else if (n)
-                {
+                else if (n) {
                     num(s)->flags |= f;
                     mac(s)->flags |= f;
-                }
-                else
-                {
+                } else {
                     num(s)->flags &= ~f;
                     mac(s)->flags &= ~f;
                 }
@@ -3749,8 +3506,7 @@ setopt(void *a, const void *x, int n, const char *v)
         case OPT_label:
             if (!state.out)
                 error(1, "%s: option valid from document body only", p->name);
-            else if (n)
-            {
+            else if (n) {
                 sfprintf(state.tmp, "%s\t", v);
                 code_n(LABEL(OP_link), use(state.tmp));
             }
@@ -3776,15 +3532,12 @@ setopt(void *a, const void *x, int n, const char *v)
             *p->value = n && v ? strdup(v) : ( char * )0;
             break;
         }
-    else if (a)
-    {
-        if (strneq(v, "meta.", 5))
-        {
+    else if (a) {
+        if (strneq(v, "meta.", 5)) {
             sfprintf(
             state.tmp, "<META name=\"%s\" content=\"%s\">", v + 5, v + n);
             code_n(OP_RAW, use(state.tmp));
-        }
-        else
+        } else
             error(1, "%s: unknown option", v);
     }
     return 0;
@@ -3804,10 +3557,8 @@ troff_xx(Tag_t *tp, Arg_t *ap)
 #define STRING 020
 
 #define ONE()                                                                \
-    do                                                                       \
-    {                                                                        \
-        if (cc <= 0)                                                         \
-        {                                                                    \
+    do {                                                                     \
+        if (cc <= 0) {                                                       \
             if (cc < 0)                                                      \
                 cc++;                                                        \
             if (!argc && !state.it.interrupt)                                \
@@ -3852,47 +3603,37 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
     lastc = 0;
     quote = 0;
     map = ccmap(CC_NATIVE, CC_ASCII);
-    for (;;)
-    {
-        switch (c = GETC())
-        {
+    for (;;) {
+        switch (c = GETC()) {
         case EOF:
             if (popin())
                 goto done;
             continue;
         case CODE_n:
-            if (ISFILE())
-            {
+            if (ISFILE()) {
                 cc++;
                 code_2(OP_cc, c);
-            }
-            else
-            {
+            } else {
                 sfputc(state.out, c);
                 n = GETC();
                 sfputc(state.out, n);
-                if (n & 0200)
-                {
+                if (n & 0200) {
                     n = (n & 0177) << 8;
                     c = GETC();
                     sfputc(state.out, c);
                     n |= c;
                 }
-                do
-                {
+                do {
                     c = GETC();
                     sfputc(state.out, c);
                 } while (n-- > 0);
             }
             continue;
         case CODE_2:
-            if (ISFILE())
-            {
+            if (ISFILE()) {
                 cc++;
                 code_2(OP_cc, c);
-            }
-            else
-            {
+            } else {
                 m = GETC();
                 n = GETC();
                 if (cc <= 0
@@ -3905,16 +3646,12 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
             }
             continue;
         case CODE_1:
-            if (ISFILE())
-            {
+            if (ISFILE()) {
                 cc++;
                 code_2(OP_cc, c);
-            }
-            else
-            {
+            } else {
                 sfputc(state.out, c);
-                switch (c = GETC())
-                {
+                switch (c = GETC()) {
                 case OP_br:
                 case OP_p:
                     cc = 0;
@@ -3924,23 +3661,18 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
             }
             continue;
         case CODE_0:
-            if (ISFILE())
-            {
+            if (ISFILE()) {
                 cc++;
                 code_2(OP_cc, c);
-            }
-            else
-            {
+            } else {
                 ONE();
                 sfputc(state.out, c);
             }
             continue;
         case '"':
-            if (argc && !(quote & RAW))
-            {
+            if (argc && !(quote & RAW)) {
                 lastc = c;
-                switch ((quote & STRING) ? (c = nextchar()) : EOF)
-                {
+                switch ((quote & STRING) ? (c = nextchar()) : EOF) {
                 case '"':
                     break;
                 default:
@@ -3953,32 +3685,27 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
             }
             break;
         case '\n':
-            if (state.noline)
-            {
+            if (state.noline) {
                 if (isspace(lastc))
                     continue;
                 c = ' ';
                 break;
             }
-            if (quote & COMMENT)
-            {
+            if (quote & COMMENT) {
                 quote &= ~COMMENT;
-                if (quote & EAT)
-                {
+                if (quote & EAT) {
                     quote &= ~EAT;
                     c = ' ';
                 }
                 popout();
             }
-            if (argc)
-            {
+            if (argc) {
                 cc = 0;
                 lastc = c;
                 quote = 0;
                 state.groff &= 1;
                 state.pass = 0;
-                if (!(s = popout()))
-                {
+                if (!(s = popout())) {
                     argc = 0;
                     continue;
                 }
@@ -3987,8 +3714,7 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                 for (state.tag->argc = argc; argc >= 0; argc--)
                     state.tag->argv[argc] = s + argv[argc];
                 argc = 0;
-                if (error_info.trace <= -4)
-                {
+                if (error_info.trace <= -4) {
                     if (state.end)
                         sfprintf(state.tmp, "    ");
                     sfprintf(state.tmp, "%s", state.tag->argv[0]);
@@ -4002,21 +3728,16 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                           error_info.line,
                           use(state.tmp));
                 }
-                if (tp)
-                {
+                if (tp) {
                     error_info.line++;
                     if (tp->call)
                         (*tp->call)(tp, state.tag);
-                    if (tp->flags & TAG_TRIGGER)
-                    {
+                    if (tp->flags & TAG_TRIGGER) {
                         tp->flags &= ~TAG_TRIGGER;
                         trigger(&state.trap);
                     }
-                }
-                else if (state.verbose)
-                {
-                    switch (state.tag->argv[0][1])
-                    {
+                } else if (state.verbose) {
+                    switch (state.tag->argv[0][1]) {
                     case 0:
                         break;
                     case '#':
@@ -4043,27 +3764,23 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
             n = 6 * state.env->ps.current;
             if (n > state.env->dl)
                 state.env->dl = n;
-            if (!DIVERTED())
-            {
+            if (!DIVERTED()) {
                 state.ln++;
                 if (state.it.text || cc > 1)
                     state.it.text++;
-                else
-                {
+                else {
                     cc = 0;
                     continue;
                 }
             }
             state.it.interrupt = 0;
-            if (state.it.center > 0)
-            {
+            if (state.it.center > 0) {
                 if (!--state.it.center)
                     code_1(state.it.right ? END(OP_p) : END(OP_center));
                 else
                     code_1(OP_br);
             }
-            if (state.it.count > 0 && !--state.it.count)
-            {
+            if (state.it.count > 0 && !--state.it.count) {
                 sfputc(state.out, '\n');
                 pushin(NiL, 0, NiL, state.it.trap, NiL);
                 cc = 0;
@@ -4073,13 +3790,10 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
             break;
         case ' ':
         case '\t':
-            if (argc)
-            {
+            if (argc) {
                 if (!quote
-                    || (quote == RAW || quote == (COPY | RAW)) && argc == 1)
-                {
-                    if (lastc != ' ' && argc < elementsof(argv))
-                    {
+                    || (quote == RAW || quote == (COPY | RAW)) && argc == 1) {
+                    if (lastc != ' ' && argc < elementsof(argv)) {
                         sfputc(state.out, 0);
                         argv[argc++] = sftell(state.out);
                         lastc = ' ';
@@ -4089,14 +3803,11 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
             }
             break;
         default:
-            if (c == state.ec)
-            {
+            if (c == state.ec) {
             escape:
-                switch (c = GETC())
-                {
+                switch (c = GETC()) {
                 case EOF:
-                    if (popin())
-                    {
+                    if (popin()) {
                         c = '\n';
                         break;
                     }
@@ -4115,8 +3826,7 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                 case 'c':
                     if (state.pass || (quote & RAW))
                         goto passthrough;
-                    if ((c = nextchar()) == '\n')
-                    {
+                    if ((c = nextchar()) == '\n') {
                         message(
                         (-9,
                          "INTERRUPT %s:%d: it.center=%d it.count=%d it.dt",
@@ -4132,13 +3842,10 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                     UNGETC(c);
                     continue;
                 case 'd':
-                    if (state.env->ss <= 0)
-                    {
+                    if (state.env->ss <= 0) {
                         state.env->ss--;
                         code_1(OP_sub);
-                    }
-                    else
-                    {
+                    } else {
                         state.env->ss++;
                         code_1(END(OP_sup));
                     }
@@ -4190,8 +3897,7 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                 case 's':
                     if (state.pass || (quote & RAW))
                         goto passthrough;
-                    switch (c = nextchar())
-                    {
+                    switch (c = nextchar()) {
                     case '-':
                     case '+':
                         m = c;
@@ -4201,8 +3907,7 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                         m = 0;
                         break;
                     }
-                    switch (c)
-                    {
+                    switch (c) {
                     case '(':
                         n = 1;
                         sfputc(state.tmp, c);
@@ -4215,16 +3920,14 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                     size_long:
                         c = nextchar();
                         if (!m)
-                            switch (c)
-                            {
+                            switch (c) {
                             case '-':
                             case '+':
                                 m = c;
                                 c = nextchar();
                                 break;
                             }
-                        while (c != EOF && c != n)
-                        {
+                        while (c != EOF && c != n) {
                             sfputc(state.tmp, c);
                             c = nextchar();
                         }
@@ -4233,10 +3936,8 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                         n = 0;
                         break;
                     }
-                    if (c == '0' && m)
-                    {
-                        if ((n = nextchar()) == '\'')
-                        {
+                    if (c == '0' && m) {
+                        if ((n = nextchar()) == '\'') {
                             while ((c = nextchar()) != EOF && c != '\'')
                                 sfputc(state.tmp, c);
                             code_n(m == '+' ? OP_link : LABEL(OP_link),
@@ -4246,14 +3947,10 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                         UNGETC(n);
                         n = 0;
                     }
-                    if (c != EOF)
-                    {
-                        if (n)
-                        {
-                            for (;; c = nextchar())
-                            {
-                                switch (c)
-                                {
+                    if (c != EOF) {
+                        if (n) {
+                            for (;; c = nextchar()) {
+                                switch (c) {
                                 case EOF:
                                     break;
                                 case '(':
@@ -4273,14 +3970,12 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                             }
                         size_eval:
                             n = expression(use(state.tmp), NiL, 'p');
-                        }
-                        else
+                        } else
                             n = isdigit(c) ? (c - '0') : 0;
                         if (!n)
                             n = state.env->ps.previous;
                         else
-                            switch (m)
-                            {
+                            switch (m) {
                             case '-':
                                 n = state.env->ps.current - n;
                                 break;
@@ -4298,13 +3993,10 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                     c = '\t';
                     break;
                 case 'u':
-                    if (state.env->ss >= 0)
-                    {
+                    if (state.env->ss >= 0) {
                         state.env->ss++;
                         code_1(OP_sup);
-                    }
-                    else
-                    {
+                    } else {
                         state.env->ss--;
                         code_1(END(OP_sub));
                     }
@@ -4320,33 +4012,26 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                 case 'L':
                 case 'o':
                 case 'x':
-                    if ((n = nextchar()) != EOF)
-                    {
+                    if ((n = nextchar()) != EOF) {
                         while ((m = nextchar()) != n)
                             sfputc(state.arg, m);
                         s = use(state.arg);
-                        switch (c)
-                        {
+                        switch (c) {
                         case 'h':
-                            if (*s++ == '0')
-                            {
+                            if (*s++ == '0') {
                                 /*UNDENT...*/
-                                if ((c = *s++) == '*' || c == '/')
-                                {
+                                if ((c = *s++) == '*' || c == '/') {
                                     state.link
                                     = c == '*' ? OP_link : LABEL(OP_link);
                                     if (*s++ == '\\' && *s++ == 'w'
-                                        && *s++ == '"')
-                                    {
+                                        && *s++ == '"') {
                                         if ((c = strlen(s)) > 0
                                             && s[--c] == '"')
                                             s[c] = 0;
                                         sfputr(state.ref, s, '\t');
                                     }
                                     pushout(state.ref);
-                                }
-                                else if (!c && state.link)
-                                {
+                                } else if (!c && state.link) {
                                     code_n(state.link, popout());
                                     state.link = 0;
                                 }
@@ -4354,8 +4039,7 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                             }
                             /* yep, this is a grade A hack, even for this file
                              */
-                            if ((c = nextchar()) == state.ec)
-                            {
+                            if ((c = nextchar()) == state.ec) {
                                 if ((n = nextchar()) == 'c')
                                     break;
                                 UNGETC(n);
@@ -4376,21 +4060,16 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                     }
                     continue;
                 case '$':
-                    if (state.mac)
-                    {
+                    if (state.mac) {
                         c = nextchar();
-                        if (c == '(')
-                        {
-                            if ((c = nextchar()) != EOF)
-                            {
+                        if (c == '(') {
+                            if ((c = nextchar()) != EOF) {
                                 sfputc(state.tmp, c);
                                 if ((c = nextchar()) != EOF)
                                     sfputc(state.tmp, c);
                             }
                             goto arg_eval;
-                        }
-                        else if (c == '[')
-                        {
+                        } else if (c == '[') {
                             while ((c = nextchar()) != EOF && c != ']')
                                 sfputc(state.tmp, c);
                         arg_eval:
@@ -4398,9 +4077,7 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                             if (c >= 0 && c <= state.mac->argc)
                                 pushin(
                                 NiL, -argc, NiL, state.mac->argv[c], NiL);
-                        }
-                        else if (c == '@')
-                        {
+                        } else if (c == '@') {
                             for (c = 1; c < state.mac->argc; c++)
                                 sfprintf(
                                 state.tmp, "\"%s\" ", state.mac->argv[c]);
@@ -4408,33 +4085,26 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                                 sfprintf(
                                 state.tmp, "\"%s\"", state.mac->argv[c]);
                             pushin(NiL, -argc, NiL, use(state.tmp), NiL);
-                        }
-                        else if (c < '0' || c > '9')
-                        {
+                        } else if (c < '0' || c > '9') {
                             for (c = 1; c < state.mac->argc; c++)
                                 sfputr(state.tmp, state.mac->argv[c], ' ');
                             if (c == state.mac->argc)
                                 sfputr(state.tmp, state.mac->argv[c], -1);
                             pushin(NiL, -argc, NiL, use(state.tmp), NiL);
-                        }
-                        else if ((c -= '0') <= state.mac->argc)
+                        } else if ((c -= '0') <= state.mac->argc)
                             pushin(NiL, -argc, NiL, state.mac->argv[c], NiL);
                     }
                     continue;
                 case '{':
-                    for (;;)
-                    {
-                        if ((n = GETC()) == EOF)
-                        {
+                    for (;;) {
+                        if ((n = GETC()) == EOF) {
                             if (popin())
                                 break;
                             continue;
                         }
-                        if (n == state.ec)
-                        {
+                        if (n == state.ec) {
                         escape_splice:
-                            switch (m = GETC())
-                            {
+                            switch (m = GETC()) {
                             case EOF:
                                 if (popin())
                                     break;
@@ -4448,8 +4118,7 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                                 break;
                             }
                             break;
-                        }
-                        else
+                        } else
                             UNGETC(n);
                         break;
                     }
@@ -4493,24 +4162,21 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                     code_2(OP_cc, 45);
                     continue;
                 case '"':
-                    if (!quote)
-                    {
+                    if (!quote) {
                         quote |= COMMENT;
                         pushout(state.nul);
                     }
                     cc++;
                     continue;
                 case '#':
-                    if (!quote)
-                    {
+                    if (!quote) {
                         quote |= COMMENT | EAT;
                         pushout(state.nul);
                     }
                     cc++;
                     continue;
                 case '!':
-                    if (!cc)
-                    {
+                    if (!cc) {
                         cc++;
                         continue;
                     }
@@ -4529,35 +4195,27 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                 ONE();
                 sfputc(state.out, state.ec);
                 break;
-            }
-            else if ((c == state.env->cc || c == state.env->c2) && !cc)
-            {
+            } else if ((c == state.env->cc || c == state.env->c2) && !cc) {
             request:
                 n = c;
                 s = buf;
                 *s++ = '.';
-                if ((c = nextchar()) != EOF)
-                {
+                if ((c = nextchar()) != EOF) {
                     while (c == ' ' || c == '\t')
                         c = nextchar();
                     if (c == state.ec || c == '\n')
                         UNGETC(c);
-                    else if (c != EOF)
-                    {
+                    else if (c != EOF) {
                         *s++ = c;
                         while (s < &buf[sizeof(buf) - 1]
-                               && (c = nextchar()) != EOF)
-                        {
-                            if (c == state.ec || isspace(c))
-                            {
+                               && (c = nextchar()) != EOF) {
+                            if (c == state.ec || isspace(c)) {
                                 UNGETC(c);
                                 break;
                             }
                             *s++ = c;
-                            if (!state.groff)
-                            {
-                                if ((c = nextchar()) != EOF)
-                                {
+                            if (!state.groff) {
+                                if ((c = nextchar()) != EOF) {
                                     UNGETC(c);
                                     if (!isspace(c))
                                         pushin(NiL, 0, NiL, " ", NiL);
@@ -4569,42 +4227,33 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                 }
                 *s = 0;
                 tp = ( Tag_t * )hashget(state.symbols, buf);
-                if (tp && (tp->flags & TAG_DO))
-                {
+                if (tp && (tp->flags & TAG_DO)) {
                     state.groff |= 2;
                     c = n;
                     goto request;
                 }
-                if (state.end)
-                {
-                    if (tp == state.end)
-                    {
+                if (state.end) {
+                    if (tp == state.end) {
                         state.end = 0;
                         state.pass = 0;
                         s = popout();
-                        if (tp = state.define)
-                        {
+                        if (tp = state.define) {
                             state.define = 0;
                             set(tp, s, 0);
                         }
                         quote |= COMMENT;
                         pushout(state.nul);
-                    }
-                    else
-                    {
+                    } else {
                         pushin(NiL, 0, NiL, buf + 1, NiL);
                         c = n;
                     }
                     break;
                 }
-                if (tp)
-                {
-                    if ((tp->flags & TAG_BREAK) && n == state.env->cc)
-                    {
+                if (tp) {
+                    if ((tp->flags & TAG_BREAK) && n == state.env->cc) {
                         if (!DIVERTED() && (state.it.text || text()))
                             state.it.text++;
-                        if (state.it.interrupt)
-                        {
+                        if (state.it.interrupt) {
                             message((-9,
                                      "BREAK %s:%d: it.center=%d it.count=%d",
                                      error_info.file,
@@ -4623,17 +4272,14 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
                         quote |= RAW;
                     if (tp->flags & TAG_PASS)
                         state.pass = 1;
-                }
-                else
+                } else
                     state.pass = 1;
                 argc = 1;
                 pushout(state.tag->sp);
                 sfputr(state.out, buf, -1);
                 cc = s - buf;
                 continue;
-            }
-            else if ((n = ccmapchr(map, c)) > 0177)
-            {
+            } else if ((n = ccmapchr(map, c)) > 0177) {
                 ONE();
                 code_2(OP_cc, n & 0377);
                 continue;
@@ -4645,17 +4291,14 @@ process(char *file, Sfio_t *ip, Sfio_t *op)
         lastc = c;
     }
 done:
-    if (state.end)
-    {
-        if (state.define)
-        {
+    if (state.end) {
+        if (state.define) {
             error(2,
                   "%s macro definition end tag %s not found",
                   state.define->name,
                   state.end->name);
             state.define = 0;
-        }
-        else
+        } else
             error(2, "group end tag %s not found", state.end->name);
         state.end = 0;
     }
@@ -5653,8 +5296,7 @@ init(void)
     for (i = 0; i < elementsof(vars); i++)
         if (!hashput(state.symbols, vars[i].name, vars[i].value))
             error(ERROR_SYSTEM | 3, "out of space [var hash put]");
-    for (i = 0; i < elementsof(tags); i++)
-    {
+    for (i = 0; i < elementsof(tags); i++) {
         tags[i].flags |= TAG_STATIC;
         if (!hashput(state.symbols, tags[i].name, &tags[i]))
             error(ERROR_SYSTEM | 3, "out of space [tag hash put]");
@@ -5785,15 +5427,12 @@ tag(Sfio_t *op, int index, int flags, int att, char *att_str, int att_num)
     int m;
     unsigned char *sp;
 
-    if (index & OP_END)
-    {
+    if (index & OP_END) {
         index |= OP_LABEL;
         sp = state.tag_top;
         m = 1;
-        for (;;)
-        {
-            if (sp <= state.tag_stack)
-            {
+        for (;;) {
+            if (sp <= state.tag_stack) {
                 error(2,
                       "tag stack underflow trying to match <%s>",
                       tag_name[OP(index)]);
@@ -5808,71 +5447,55 @@ tag(Sfio_t *op, int index, int flags, int att, char *att_str, int att_num)
                 return;
             }
             n = *--sp;
-            if (!(n & OP_END))
-            {
-                if (n == OP_pre && OP(index) != OP_pre)
-                {
+            if (!(n & OP_END)) {
+                if (n == OP_pre && OP(index) != OP_pre) {
                     m = 0;
                     break;
                 }
                 n |= OP_END | OP_LABEL;
-                if (tag_name[OP(n)])
-                {
+                if (tag_name[OP(n)]) {
                     flags |= LIST;
                     sfprintf(op, "</%s>", tag_name[OP(n)]);
                 }
                 *sp = n;
             }
-            if (n == index)
-            {
+            if (n == index) {
                 *sp &= ~OP_LABEL;
                 break;
             }
             m = 0;
         }
-        if (m)
-        {
+        if (m) {
             if ((flags & (LINE | LIST)) == (LINE | LIST))
                 sfputc(op, '\n');
             state.tag_top = sp;
         }
-    }
-    else
-    {
-        if (flags & STACK)
-        {
+    } else {
+        if (flags & STACK) {
             if (state.tag_top
                 >= &state.tag_stack[elementsof(state.tag_stack)])
                 error(3, "tag stack overflow");
             *state.tag_top++ = tag_name[index] ? index : END(index);
         }
-        if (tag_name[index])
-        {
+        if (tag_name[index]) {
             sfprintf(op, "<%s", tag_name[index]);
-            if (att && ((att & ATT_NUMBER) || att_str))
-            {
+            if (att && ((att & ATT_NUMBER) || att_str)) {
                 sfprintf(op, " %s=", opt_attribute[ATT_INDEX(att)]);
-                if (att & ATT_NUMBER)
-                {
-                    if (att == ATT_size)
-                    {
-                        if (att_num < 0)
-                        {
+                if (att & ATT_NUMBER) {
+                    if (att == ATT_size) {
+                        if (att_num < 0) {
                             att_num = -att_num;
                             sfputc(op, '-');
-                        }
-                        else
+                        } else
                             sfputc(op, '+');
                         att_num = (att_num + 5) / 6;
                     }
                     sfprintf(op, "%d", att_num);
-                }
-                else
+                } else
                     sfprintf(
                     op, "\"%s%s\"", att == ATT_lref ? "#" : "", att_str);
             }
-            if (ARG_ATTR(flags))
-            {
+            if (ARG_ATTR(flags)) {
                 if ((n = ARG_ALIGN(flags)) >= 0)
                     sfprintf(op, " align=%s", opt_align[n]);
                 if (flags & ARG_compact)
@@ -5880,8 +5503,7 @@ tag(Sfio_t *op, int index, int flags, int att, char *att_str, int att_num)
                 if (flags & ARG_wide)
                     sfputr(op, " width=100%", -1);
             }
-            if (index == OP_body)
-            {
+            if (index == OP_body) {
                 if (state.background)
                     sfprintf(op, " background=\"%s\"", state.background);
                 if (state.logo)
@@ -5902,10 +5524,8 @@ tag(Sfio_t *op, int index, int flags, int att, char *att_str, int att_num)
 static void
 peeklist(Sfio_t *op, char *s)
 {
-    for (;;)
-    {
-        switch (*s++)
-        {
+    for (;;) {
+        switch (*s++) {
         case 0:
             break;
         case CODE_0:
@@ -5914,8 +5534,7 @@ peeklist(Sfio_t *op, char *s)
             s++;
             /*FALLTHROUGH*/
         case CODE_1:
-            switch (*s++)
-            {
+            switch (*s++) {
             case OP_ft1:
             case OP_ft2:
             case OP_ft3:
@@ -5944,21 +5563,15 @@ peeklist(Sfio_t *op, char *s)
 #define P() col = br = p = 0
 
 #define DATA()                                                               \
-    do                                                                       \
-    {                                                                        \
-        if (li)                                                              \
-        {                                                                    \
+    do {                                                                     \
+        if (li) {                                                            \
             if (li == 1)                                                     \
                 li = 0;                                                      \
             P();                                                             \
-        }                                                                    \
-        else if (p)                                                          \
-        {                                                                    \
+        } else if (p) {                                                      \
             P();                                                             \
             sfputr(op, "<P>", '\n');                                         \
-        }                                                                    \
-        else if (br)                                                         \
-        {                                                                    \
+        } else if (br) {                                                     \
             P();                                                             \
             sfputr(op, "<BR>", '\n');                                        \
         }                                                                    \
@@ -6007,10 +5620,8 @@ html(unsigned char *s, Sfio_t *op)
         sfputr(subject, state.package, ' ');
     if (state.title)
         sfputr(subject, state.title, -1);
-    else
-    {
-        if (state.input)
-        {
+    else {
+        if (state.input) {
             if (t = ( unsigned char * )strrchr(state.input, '/'))
                 t++;
             else
@@ -6024,15 +5635,12 @@ html(unsigned char *s, Sfio_t *op)
     tag(op, END(OP_title), STACK | LINE, 0, NiL, 0);
     if (state.author)
         sfprintf(op, "<AUTHOR>%s</AUTHOR>\n", state.author);
-    if (!state.head)
-    {
+    if (!state.head) {
         tag(op, END(OP_head), STACK | LINE, 0, NiL, 0);
         tag(op, OP_body, STACK | LINE, 0, NiL, 0);
     }
-    for (;;)
-    {
-        switch (*s++)
-        {
+    for (;;) {
+        switch (*s++) {
         case 0:
             break;
         case '&':
@@ -6056,13 +5664,10 @@ html(unsigned char *s, Sfio_t *op)
             c = *s++;
             /*FALLTHROUGH*/
         case CODE_1:
-            if (!nf)
-            {
+            if (!nf) {
                 n = *s ^ OP_END;
-                for (v = s + 1;;)
-                {
-                    switch (*v++)
-                    {
+                for (v = s + 1;;) {
+                    switch (*v++) {
                     case '\n':
                     case ' ':
                     case '\t':
@@ -6070,13 +5675,11 @@ html(unsigned char *s, Sfio_t *op)
                     case CODE_0:
                         continue;
                     case CODE_1:
-                        if ((m = *v++) == n)
-                        {
+                        if ((m = *v++) == n) {
                             n = 0;
                             s = v;
                             break;
-                        }
-                        else if (m != OP_br && m != OP_p)
+                        } else if (m != OP_br && m != OP_p)
                             break;
                         continue;
                     case CODE_2:
@@ -6091,8 +5694,7 @@ html(unsigned char *s, Sfio_t *op)
                 if (!n)
                     continue;
             }
-            switch (m = *s++)
-            {
+            switch (m = *s++) {
             case END(OP_a):
                 tag(op, m, STACK, 0, NiL, 0);
                 *--s = a[1];
@@ -6106,8 +5708,7 @@ html(unsigned char *s, Sfio_t *op)
             case OP_br:
                 while (*s == ' ')
                     s++;
-                if (!li)
-                {
+                if (!li) {
                     if (nf)
                         goto compact;
                     else
@@ -6117,8 +5718,7 @@ html(unsigned char *s, Sfio_t *op)
             case OP_cc:
                 DATA();
                 sfputc(op, '&');
-                switch (c)
-                {
+                switch (c) {
                 case '&':
                     sfputr(op, "amp", -1);
                     break;
@@ -6139,19 +5739,15 @@ html(unsigned char *s, Sfio_t *op)
                 col++;
                 break;
             case OP_center:
-                if (col)
-                {
+                if (col) {
                     col = 0;
                     sfputc(op, '\n');
                 }
                 tag(op, m, STACK | c, 0, NiL, 0);
-                if (!state.head)
-                {
+                if (!state.head) {
                     tag(op, OP_h2, STACK, 0, NiL, 0);
-                    for (;;)
-                    {
-                        switch (n = *s++)
-                        {
+                    for (;;) {
+                        switch (n = *s++) {
                         case 0:
                         case '\n':
                         case CODE_1:
@@ -6171,8 +5767,7 @@ html(unsigned char *s, Sfio_t *op)
                 break;
             case END(OP_center):
                 col = 0;
-                if (!state.head)
-                {
+                if (!state.head) {
                     state.head = 1;
                     tag(op, END(OP_h4), STACK, 0, NiL, 0);
                 }
@@ -6184,16 +5779,14 @@ html(unsigned char *s, Sfio_t *op)
                 /*FALLTHROUGH*/
             case OP_dd:
                 li = 1;
-                if (col)
-                {
+                if (col) {
                     col = 0;
                     sfputc(op, '\n');
                 }
                 tag(op, OP_dd, 0, 0, NiL, 0);
                 break;
             case OP_div:
-                if (col)
-                {
+                if (col) {
                     col = 0;
                     sfputc(op, '\n');
                 }
@@ -6205,8 +5798,7 @@ html(unsigned char *s, Sfio_t *op)
                 break;
             case OP_dl:
                 li = 0;
-                if (col)
-                {
+                if (col) {
                     col = 0;
                     sfputc(op, '\n');
                 }
@@ -6214,15 +5806,12 @@ html(unsigned char *s, Sfio_t *op)
                 break;
             case END(OP_dl):
                 v = s;
-                for (;;)
-                {
-                    switch (*v++)
-                    {
+                for (;;) {
+                    switch (*v++) {
                     case CODE_0:
                         continue;
                     case CODE_1:
-                        switch (*v++)
-                        {
+                        switch (*v++) {
                         case OP_dl:
                             *(v - 2) = *(v - 1) = CODE_0;
                             v = 0;
@@ -6239,8 +5828,7 @@ html(unsigned char *s, Sfio_t *op)
                     }
                     break;
                 }
-                if (v)
-                {
+                if (v) {
                     li = 0;
                     col = 0;
                     tag(op, m, STACK | LINE, 0, NiL, 0);
@@ -6251,29 +5839,24 @@ html(unsigned char *s, Sfio_t *op)
                 n = 1;
                 /*FALLTHROUGH*/
             case OP_dt:
-                if (col)
-                {
+                if (col) {
                     col = 0;
                     sfputc(op, '\n');
                 }
-                if (p)
-                {
+                if (p) {
                     P();
                     tag(op, OP_p, LINE, 0, NiL, 0);
                 }
                 v = s;
-                for (;;)
-                {
-                    switch (*v++)
-                    {
+                for (;;) {
+                    switch (*v++) {
                     case CODE_0:
                         continue;
                     case CODE_2:
                         v++;
                         /*FALLTHROUGH*/
                     case CODE_1:
-                        switch (*v++)
-                        {
+                        switch (*v++) {
                         case OP_dl:
                             *(v - 2) = *(v - 1) = CODE_0;
                             tag(
@@ -6294,8 +5877,7 @@ html(unsigned char *s, Sfio_t *op)
                     case '\n':
                         if (!label)
                             break;
-                        if (!n)
-                        {
+                        if (!n) {
                             n = 1;
                             sfputc(state.tmp, ' ');
                         }
@@ -6315,8 +5897,7 @@ html(unsigned char *s, Sfio_t *op)
                 }
                 li = 2;
                 tag(op, OP_dt, LINE, 0, NiL, 0);
-                if (label)
-                {
+                if (label) {
                     label = 0;
                     n = sfstrtell(state.tmp);
                     v = ( unsigned char * )use(state.tmp);
@@ -6337,8 +5918,7 @@ html(unsigned char *s, Sfio_t *op)
             case OP_ft3:
             case OP_ft4:
             case OP_ft5:
-                if (hot)
-                {
+                if (hot) {
                     int ob = 0;
                     int cb = 0;
                     int p = 0;
@@ -6346,10 +5926,8 @@ html(unsigned char *s, Sfio_t *op)
                     int z = 0;
 
                     v = s;
-                    for (;;)
-                    {
-                        switch (n = *v++)
-                        {
+                    for (;;) {
+                        switch (n = *v++) {
                         case 0:
                             hot = 0;
                             break;
@@ -6369,12 +5947,10 @@ html(unsigned char *s, Sfio_t *op)
                         case '<':
                             if (n == ob)
                                 p++;
-                            else if (p <= 0)
-                            {
+                            else if (p <= 0) {
                                 r = ATT_href;
                                 p = 1;
-                                switch (ob = n)
-                                {
+                                switch (ob = n) {
                                 case '(':
                                     cb = ')';
                                     break;
@@ -6396,8 +5972,7 @@ html(unsigned char *s, Sfio_t *op)
                         case ']':
                         case '}':
                         case '>':
-                            if (p <= 0)
-                            {
+                            if (p <= 0) {
                                 v--;
                                 break;
                             }
@@ -6409,8 +5984,7 @@ html(unsigned char *s, Sfio_t *op)
                         case ' ':
                         case '\t':
                         case '\n':
-                            if (!z)
-                            {
+                            if (!z) {
                                 z = 1;
                                 sfputc(state.tmp, ' ');
                             }
@@ -6418,8 +5992,7 @@ html(unsigned char *s, Sfio_t *op)
                         case '"':
                             continue;
                         default:
-                            if (p < 0)
-                            {
+                            if (p < 0) {
                                 v--;
                                 break;
                             }
@@ -6432,8 +6005,7 @@ html(unsigned char *s, Sfio_t *op)
                     n = sfstrtell(state.tmp);
                     if (!*(t = ( unsigned char * )use(state.tmp)))
                         hot = 0;
-                    if (hot)
-                    {
+                    if (hot) {
                         hot = 0;
                         while (--n > 0 && (isspace(t[n]) || t[n] == '.'))
                             ;
@@ -6446,8 +6018,7 @@ html(unsigned char *s, Sfio_t *op)
                     }
                 }
                 c = m - OP_ft;
-                if (c != ft)
-                {
+                if (c != ft) {
                     peeklist(op, ( char * )s);
                     if (ft != 1)
                         tag(op, END(OP_ft + ft), STACK, 0, NiL, 0);
@@ -6476,18 +6047,14 @@ html(unsigned char *s, Sfio_t *op)
             case OP_p:
                 while (*s == ' ')
                     s++;
-                if (c)
-                {
-                    if (col)
-                    {
+                if (c) {
+                    if (col) {
                         col = 0;
                         sfputc(op, '\n');
                     }
                     P();
                     tag(op, m, STACK | c, 0, NiL, 0);
-                }
-                else if (!li)
-                {
+                } else if (!li) {
                     if (nf)
                         goto compact;
                     else
@@ -6499,31 +6066,26 @@ html(unsigned char *s, Sfio_t *op)
                 tag(op, m, STACK, 0, NiL, 0);
                 break;
             case OP_pre:
-                if (!nf)
-                {
+                if (!nf) {
                     nf = 03;
                     tag(op, m, STACK, 0, NiL, 0);
                 }
                 goto compact;
             case END(OP_pre):
-                if (nf)
-                {
+                if (nf) {
                     nf = 02;
                     tag(op, m, STACK, 0, NiL, 0);
                 }
                 goto compact;
             case OP_ps:
-                if (c != ps)
-                {
+                if (c != ps) {
                     peeklist(op, ( char * )s);
-                    if (ps_set)
-                    {
+                    if (ps_set) {
                         ps = ps_set;
                         ps_set = 0;
                         tag(op, END(OP_ps), STACK, 0, NiL, 0);
                     }
-                    if (n = c - ps)
-                    {
+                    if (n = c - ps) {
                         ps_set = ps;
                         ps = c;
                         tag(op, OP_ps, STACK, ATT_size, NiL, n);
@@ -6537,8 +6099,7 @@ html(unsigned char *s, Sfio_t *op)
                 tag(op, m, STACK, 0, NiL, 0);
                 break;
             case OP_tab:
-                if (col)
-                {
+                if (col) {
                     col = 0;
                     sfputc(op, '\n');
                 }
@@ -6553,8 +6114,7 @@ html(unsigned char *s, Sfio_t *op)
                 tag(op, m, c, 0, NiL, 0);
                 break;
             default:
-                if (!(v = ( unsigned char * )tag_name[OP(m)]))
-                {
+                if (!(v = ( unsigned char * )tag_name[OP(m)])) {
                     sfprintf(state.tmp, "(%d)", OP(m));
                     v = ( unsigned char * )use(state.tmp);
                 }
@@ -6570,10 +6130,8 @@ html(unsigned char *s, Sfio_t *op)
                     sfputc(op, '\n');
                 P();
                 v = s;
-                for (;;)
-                {
-                    switch (*s++)
-                    {
+                for (;;) {
+                    switch (*s++) {
                     case 0:
                         break;
                     case '\n':
@@ -6590,8 +6148,7 @@ html(unsigned char *s, Sfio_t *op)
                     case CODE_0:
                         continue;
                     case CODE_1:
-                        switch (*s)
-                        {
+                        switch (*s) {
                         case OP_pre:
                             if (!nf)
                                 break;
@@ -6610,12 +6167,10 @@ html(unsigned char *s, Sfio_t *op)
                         }
                         break;
                     }
-                    if (col)
-                    {
+                    if (col) {
                         col = 0;
                         s = v;
-                    }
-                    else
+                    } else
                         s--;
                     break;
                 }
@@ -6630,19 +6185,16 @@ html(unsigned char *s, Sfio_t *op)
             continue;
         case CODE_n:
             n = *s++;
-            if (n & 0200)
-            {
+            if (n & 0200) {
                 n = (n & 0177) << 8;
                 n |= *s++;
             }
             c = *s++;
             v = s;
             s += n;
-            switch (c)
-            {
+            switch (c) {
             case OP_comment:
-                if (col)
-                {
+                if (col) {
                     col = 0;
                     sfputc(op, '\n');
                 }
@@ -6662,14 +6214,11 @@ html(unsigned char *s, Sfio_t *op)
                     v++;
                 while (isalpha(*v))
                     v++;
-                if (*v == ':' || *v == '/' || *v == '.' || *(v + 1) == '/')
-                {
+                if (*v == ':' || *v == '/' || *v == '.' || *(v + 1) == '/') {
                     if (!u)
                         u = v + 1;
                     v = ( unsigned char * )"";
-                }
-                else
-                {
+                } else {
                     if (!u)
                         u = t;
                     v = ( unsigned char * )"#";
@@ -6689,8 +6238,7 @@ html(unsigned char *s, Sfio_t *op)
                 break;
             case OP_RAW:
                 DATA();
-                if (col)
-                {
+                if (col) {
                     col = 0;
                     sfputc(op, '\n');
                 }
@@ -6699,57 +6247,43 @@ html(unsigned char *s, Sfio_t *op)
             }
             continue;
         case ' ':
-            if (nf)
-            {
+            if (nf) {
                 col++;
                 sfputc(op, *(s - 1));
-            }
-            else
-            {
+            } else {
                 while (isspace(*s))
                     s++;
-                if (col >= 70)
-                {
+                if (col >= 70) {
                     col = 0;
                     sfputc(op, '\n');
-                }
-                else if (col > 0)
-                {
+                } else if (col > 0) {
                     col++;
                     sfputc(op, ' ');
                 }
             }
             continue;
         case '\t':
-            if (nf)
-            {
+            if (nf) {
                 ta = state.ta[ts = 0];
-                while (col >= ta)
-                {
+                while (col >= ta) {
                     if (state.ta[ts + 1])
                         ts++;
                     ta += state.ta[ts];
                 }
-                do
-                {
+                do {
                     sfputc(op, ' ');
                 } while (++col < ta);
-            }
-            else
-            {
+            } else {
                 col++;
                 sfputc(op, '\t');
             }
             continue;
         case '\n':
-            if (nf)
-            {
+            if (nf) {
                 v = s;
                 col = 0;
-                for (;;)
-                {
-                    switch (*v++)
-                    {
+                for (;;) {
+                    switch (*v++) {
                     case 0:
                         break;
                     case '\n':
@@ -6760,8 +6294,7 @@ html(unsigned char *s, Sfio_t *op)
                     case CODE_0:
                         continue;
                     case CODE_1:
-                        switch (*v++)
-                        {
+                        switch (*v++) {
                         case OP_br:
                         case OP_p:
                         case OP_pre:
@@ -6775,24 +6308,18 @@ html(unsigned char *s, Sfio_t *op)
                     }
                     break;
                 }
-                if (col)
-                {
+                if (col) {
                     col = 0;
                     continue;
                 }
                 sfputc(op, '\n');
-            }
-            else
-            {
+            } else {
                 while (isspace(*s))
                     s++;
-                if (col >= 70)
-                {
+                if (col >= 70) {
                     col = 0;
                     sfputc(op, '\n');
-                }
-                else if (col > 0)
-                {
+                } else if (col > 0) {
                     col++;
                     sfputc(op, ' ');
                 }
@@ -6802,16 +6329,12 @@ html(unsigned char *s, Sfio_t *op)
             if (hot)
                 hot = 0;
             else
-                for (x = state.hot; x; x = x->next)
-                {
+                for (x = state.hot; x; x = x->next) {
                     v = s;
                     u = ( unsigned char * )x->name;
-                    do
-                    {
-                        if (!*u)
-                        {
-                            if (isspace(*v))
-                            {
+                    do {
+                        if (!*u) {
+                            if (isspace(*v)) {
                                 hot = 1;
                                 goto data;
                             }
@@ -6824,8 +6347,7 @@ html(unsigned char *s, Sfio_t *op)
             hot = 0;
             goto data;
         case '.':
-            if (!nf && isspace(*s))
-            {
+            if (!nf && isspace(*s)) {
                 while (isspace(*s))
                     s++;
                 col = 0;
@@ -6852,22 +6374,19 @@ html(unsigned char *s, Sfio_t *op)
                  state.mailto,
                  state.mailto,
                  sfstrbase(subject));
-    if (state.author || state.corporation || state.company || state.location)
-    {
+    if (state.author || state.corporation || state.company
+        || state.location) {
         t = ( unsigned char * )"<P>";
         u = ( unsigned char * )"<BR>";
-        if (state.author)
-        {
+        if (state.author) {
             sfprintf(op, "%s%s\n", t, state.author);
             t = u;
         }
-        if (state.organization)
-        {
+        if (state.organization) {
             sfprintf(op, "%s%s\n", t, state.organization);
             t = u;
         }
-        if (state.corporation || state.company)
-        {
+        if (state.corporation || state.company) {
             sfputr(op, ( char * )t, -1);
             t = u;
             if (state.corporation)
@@ -6875,18 +6394,15 @@ html(unsigned char *s, Sfio_t *op)
             if (state.company)
                 sfputr(op, state.company, '\n');
         }
-        if (state.address)
-        {
+        if (state.address) {
             sfprintf(op, "%s%s\n", t, state.address);
             t = u;
         }
-        if (state.location)
-        {
+        if (state.location) {
             sfprintf(op, "%s%s\n", t, state.location);
             t = u;
         }
-        if (state.phone)
-        {
+        if (state.phone) {
             sfprintf(op, "%s%s\n", t, state.phone);
             t = u;
         }
@@ -6894,8 +6410,7 @@ html(unsigned char *s, Sfio_t *op)
     sfstrclose(subject);
     if (!state.footer)
         sfprintf(op, "<P>%s\n", fmttime("%B %d, %Y", state.date));
-    if (state.toolbar && (subject = find(state.toolbar, NiL, 1)))
-    {
+    if (state.toolbar && (subject = find(state.toolbar, NiL, 1))) {
         sfmove(subject, sfstdout, SF_UNBOUND, -1);
         sfclose(subject);
     }
@@ -6922,22 +6437,18 @@ main(int argc, char **argv)
     state.dirs = lastdir = &dot;
     init();
     script = 0;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 0:
             break;
         case 'i':
             if (!(op = sfopen(NiL, opt_info.arg, "r")))
                 error(ERROR_SYSTEM | 2, "%s: cannot read", opt_info.arg);
-            else
-            {
+            else {
                 if (!(s = sfreserve(op, SF_UNBOUND, 0))
                     || (n = sfvalue(op)) <= 0 || s[n - 1] != '\n')
                     error(1, "%s: invalid info file", opt_info.arg);
-                else
-                {
+                else {
                     s[n] = 0;
                     stropt(s, options, sizeof(*options), setopt, NiL);
                 }
@@ -6954,8 +6465,7 @@ main(int argc, char **argv)
                 state.macros = lastmac = x;
             continue;
         case 'r':
-            if (*(s = opt_info.arg))
-            {
+            if (*(s = opt_info.arg)) {
                 opt_info.num = expression(s + 1, NiL, 0);
                 s[1] = 0;
                 nr(s, opt_info.num, 0, 0);
@@ -6974,8 +6484,7 @@ main(int argc, char **argv)
                 dot.name[0] = 0;
             else if (!(x = newof(0, Dir_t, 1, 0)))
                 error(ERROR_SYSTEM | 3, "out of space [dir]");
-            else
-            {
+            else {
                 x->name = opt_info.arg;
                 lastdir = lastdir->next = x;
             }
@@ -6984,8 +6493,7 @@ main(int argc, char **argv)
             error(ERROR_USAGE | 4, "%s", opt_info.arg);
             continue;
         case ':':
-            if (opt_info.name[1] != '-')
-            {
+            if (opt_info.name[1] != '-') {
                 error(2, "%s", opt_info.arg);
                 continue;
             }
@@ -7009,8 +6517,7 @@ main(int argc, char **argv)
         error(ERROR_USAGE | 4, "%s", optusage(NiL));
     if (!(op = sfstropen()))
         error(ERROR_SYSTEM | 3, "out of space [output]");
-    if (script)
-    {
+    if (script) {
         pushin("script", 1, NiL, use(script), NiL);
         process(NiL, NiL, op);
         sfstrclose(script);
@@ -7024,15 +6531,12 @@ main(int argc, char **argv)
         while (s = *argv++)
             if (ip = find(s, &v, 1))
                 process(v, ip, op);
-    if (state.out)
-    {
-        if (state.it.center)
-        {
+    if (state.out) {
+        if (state.it.center) {
             state.it.center = 0;
             code_1(END(OP_center));
         }
-        while (state.list > state.list_stack)
-        {
+        while (state.list > state.list_stack) {
             if (state.list->dl)
                 code_1(END(OP_dl));
             state.list--;

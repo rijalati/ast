@@ -257,8 +257,7 @@ int Tktest_Init(interp) Tcl_Interp *interp; /* Interpreter for application. */
      * Create additional commands for testing Tk.
      */
 
-    if (Tcl_PkgProvide(interp, "Tktest", TK_VERSION) == TCL_ERROR)
-    {
+    if (Tcl_PkgProvide(interp, "Tktest", TK_VERSION) == TCL_ERROR) {
         return TCL_ERROR;
     }
 
@@ -299,8 +298,7 @@ int Tktest_Init(interp) Tcl_Interp *interp; /* Interpreter for application. */
      * Create test image type.
      */
 
-    if (!initialized)
-    {
+    if (!initialized) {
         initialized = 1;
         Tk_CreateImageType(&imageType);
     }
@@ -335,11 +333,9 @@ char **argv;           /* Argument strings. */
     HGLOBAL handle;
     char *data;
 
-    if (OpenClipboard(NULL))
-    {
+    if (OpenClipboard(NULL)) {
         handle = GetClipboardData(CF_TEXT);
-        if (handle != NULL)
-        {
+        if (handle != NULL) {
             data = GlobalLock(handle);
             Tcl_AppendResult(interp, data, ( char * )NULL);
             GlobalUnlock(handle);
@@ -377,8 +373,7 @@ char **argv;           /* Argument strings. */
 {
     NewApp *nextPtr;
 
-    while (newAppPtr != NULL)
-    {
+    while (newAppPtr != NULL) {
         nextPtr = newAppPtr->nextPtr;
         Tcl_DeleteInterp(newAppPtr->interp);
         ckfree(( char * )newAppPtr);
@@ -419,8 +414,7 @@ char **argv;           /* Argument strings. */
     int i, number, flags;
     KeySym keysym;
 
-    if ((argc < 3) || !(argc & 1))
-    {
+    if ((argc < 3) || !(argc & 1)) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -429,8 +423,7 @@ char **argv;           /* Argument strings. */
         return TCL_ERROR;
     }
     tkwin = Tk_NameToWindow(interp, argv[1], main);
-    if (tkwin == NULL)
-    {
+    if (tkwin == NULL) {
         return TCL_ERROR;
     }
 
@@ -439,16 +432,13 @@ char **argv;           /* Argument strings. */
      */
 
     memset(( VOID * )&event, 0, sizeof(event));
-    for (eiPtr = eventArray;; eiPtr++)
-    {
-        if (eiPtr->name == NULL)
-        {
+    for (eiPtr = eventArray;; eiPtr++) {
+        if (eiPtr->name == NULL) {
             Tcl_AppendResult(
             interp, "bad event type \"", argv[2], "\"", ( char * )NULL);
             return TCL_ERROR;
         }
-        if (strcmp(eiPtr->name, argv[2]) == 0)
-        {
+        if (strcmp(eiPtr->name, argv[2]) == 0) {
             event.xany.type = eiPtr->type;
             break;
         }
@@ -469,179 +459,110 @@ char **argv;           /* Argument strings. */
      */
 
     flags = flagArray[event.xany.type];
-    for (i = 3; i < argc; i += 2)
-    {
+    for (i = 3; i < argc; i += 2) {
         field = argv[i];
         value = argv[i + 1];
-        if (strcmp(field, "-above") == 0)
-        {
+        if (strcmp(field, "-above") == 0) {
             tkwin2 = Tk_NameToWindow(interp, value, main);
-            if (tkwin2 == NULL)
-            {
+            if (tkwin2 == NULL) {
                 return TCL_ERROR;
             }
             event.xconfigure.above = Tk_WindowId(tkwin2);
-        }
-        else if (strcmp(field, "-borderwidth") == 0)
-        {
-            if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-            {
+        } else if (strcmp(field, "-borderwidth") == 0) {
+            if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                 return TCL_ERROR;
             }
             event.xcreatewindow.border_width = number;
-        }
-        else if (strcmp(field, "-button") == 0)
-        {
-            if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-            {
+        } else if (strcmp(field, "-button") == 0) {
+            if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                 return TCL_ERROR;
             }
             event.xbutton.button = number;
-        }
-        else if (strcmp(field, "-count") == 0)
-        {
-            if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-            {
+        } else if (strcmp(field, "-count") == 0) {
+            if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                 return TCL_ERROR;
             }
-            if (flags & EXPOSE)
-            {
+            if (flags & EXPOSE) {
                 event.xexpose.count = number;
-            }
-            else if (flags & MAPPING)
-            {
+            } else if (flags & MAPPING) {
                 event.xmapping.count = number;
             }
-        }
-        else if (strcmp(field, "-detail") == 0)
-        {
-            if (flags & (CROSSING | FOCUS))
-            {
-                if (strcmp(value, "NotifyAncestor") == 0)
-                {
+        } else if (strcmp(field, "-detail") == 0) {
+            if (flags & (CROSSING | FOCUS)) {
+                if (strcmp(value, "NotifyAncestor") == 0) {
                     number = NotifyAncestor;
-                }
-                else if (strcmp(value, "NotifyVirtual") == 0)
-                {
+                } else if (strcmp(value, "NotifyVirtual") == 0) {
                     number = NotifyVirtual;
-                }
-                else if (strcmp(value, "NotifyInferior") == 0)
-                {
+                } else if (strcmp(value, "NotifyInferior") == 0) {
                     number = NotifyInferior;
-                }
-                else if (strcmp(value, "NotifyNonlinear") == 0)
-                {
+                } else if (strcmp(value, "NotifyNonlinear") == 0) {
                     number = NotifyNonlinear;
-                }
-                else if (strcmp(value, "NotifyNonlinearVirtual") == 0)
-                {
+                } else if (strcmp(value, "NotifyNonlinearVirtual") == 0) {
                     number = NotifyNonlinearVirtual;
-                }
-                else if (strcmp(value, "NotifyPointer") == 0)
-                {
+                } else if (strcmp(value, "NotifyPointer") == 0) {
                     number = NotifyPointer;
-                }
-                else if (strcmp(value, "NotifyPointerRoot") == 0)
-                {
+                } else if (strcmp(value, "NotifyPointerRoot") == 0) {
                     number = NotifyPointerRoot;
-                }
-                else if (strcmp(value, "NotifyDetailNone") == 0)
-                {
+                } else if (strcmp(value, "NotifyDetailNone") == 0) {
                     number = NotifyDetailNone;
-                }
-                else
-                {
+                } else {
                     Tcl_AppendResult(
                     interp, "bad detail \"", value, "\"", ( char * )NULL);
                     return TCL_ERROR;
                 }
-                if (flags & FOCUS)
-                {
+                if (flags & FOCUS) {
                     event.xfocus.detail = number;
-                }
-                else
-                {
+                } else {
                     event.xcrossing.detail = number;
                 }
-            }
-            else if (flags & CONFIG_REQ)
-            {
-                if (strcmp(value, "Above") == 0)
-                {
+            } else if (flags & CONFIG_REQ) {
+                if (strcmp(value, "Above") == 0) {
                     number = Above;
-                }
-                else if (strcmp(value, "Below") == 0)
-                {
+                } else if (strcmp(value, "Below") == 0) {
                     number = Below;
-                }
-                else if (strcmp(value, "TopIf") == 0)
-                {
+                } else if (strcmp(value, "TopIf") == 0) {
                     number = TopIf;
-                }
-                else if (strcmp(value, "BottomIf") == 0)
-                {
+                } else if (strcmp(value, "BottomIf") == 0) {
                     number = BottomIf;
-                }
-                else if (strcmp(value, "Opposite") == 0)
-                {
+                } else if (strcmp(value, "Opposite") == 0) {
                     number = Opposite;
-                }
-                else
-                {
+                } else {
                     Tcl_AppendResult(
                     interp, "bad detail \"", value, "\"", ( char * )NULL);
                     return TCL_ERROR;
                 }
                 event.xconfigurerequest.detail = number;
             }
-        }
-        else if (strcmp(field, "-focus") == 0)
-        {
-            if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-            {
+        } else if (strcmp(field, "-focus") == 0) {
+            if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                 return TCL_ERROR;
             }
             event.xcrossing.focus = number;
-        }
-        else if (strcmp(field, "-height") == 0)
-        {
-            if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-            {
+        } else if (strcmp(field, "-height") == 0) {
+            if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                 return TCL_ERROR;
             }
-            if (flags & EXPOSE)
-            {
+            if (flags & EXPOSE) {
                 event.xexpose.height = number;
-            }
-            else if (flags & (CONFIG | CONFIG_REQ))
-            {
+            } else if (flags & (CONFIG | CONFIG_REQ)) {
                 event.xconfigure.height = number;
-            }
-            else if (flags & RESIZE_REQ)
-            {
+            } else if (flags & RESIZE_REQ) {
                 event.xresizerequest.height = number;
             }
-        }
-        else if (strcmp(field, "-keycode") == 0)
-        {
-            if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-            {
+        } else if (strcmp(field, "-keycode") == 0) {
+            if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                 return TCL_ERROR;
             }
             event.xkey.keycode = number;
-        }
-        else if (strcmp(field, "-keysym") == 0)
-        {
+        } else if (strcmp(field, "-keysym") == 0) {
             keysym = TkStringToKeysym(value);
-            if (keysym == NoSymbol)
-            {
+            if (keysym == NoSymbol) {
                 Tcl_AppendResult(
                 interp, "unknown keysym \"", value, "\"", ( char * )NULL);
                 return TCL_ERROR;
             }
             number = XKeysymToKeycode(event.xany.display, keysym);
-            if (number == 0)
-            {
+            if (number == 0) {
                 Tcl_AppendResult(interp,
                                  "no keycode for keysym \"",
                                  value,
@@ -650,295 +571,181 @@ char **argv;           /* Argument strings. */
                 return TCL_ERROR;
             }
             event.xkey.keycode = number;
-        }
-        else if (strcmp(field, "-mode") == 0)
-        {
-            if (strcmp(value, "NotifyNormal") == 0)
-            {
+        } else if (strcmp(field, "-mode") == 0) {
+            if (strcmp(value, "NotifyNormal") == 0) {
                 number = NotifyNormal;
-            }
-            else if (strcmp(value, "NotifyGrab") == 0)
-            {
+            } else if (strcmp(value, "NotifyGrab") == 0) {
                 number = NotifyGrab;
-            }
-            else if (strcmp(value, "NotifyUngrab") == 0)
-            {
+            } else if (strcmp(value, "NotifyUngrab") == 0) {
                 number = NotifyUngrab;
-            }
-            else if (strcmp(value, "NotifyWhileGrabbed") == 0)
-            {
+            } else if (strcmp(value, "NotifyWhileGrabbed") == 0) {
                 number = NotifyWhileGrabbed;
-            }
-            else
-            {
+            } else {
                 Tcl_AppendResult(
                 interp, "bad mode \"", value, "\"", ( char * )NULL);
                 return TCL_ERROR;
             }
-            if (flags & CROSSING)
-            {
+            if (flags & CROSSING) {
                 event.xcrossing.mode = number;
-            }
-            else if (flags & FOCUS)
-            {
+            } else if (flags & FOCUS) {
                 event.xfocus.mode = number;
             }
-        }
-        else if (strcmp(field, "-override") == 0)
-        {
-            if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-            {
+        } else if (strcmp(field, "-override") == 0) {
+            if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                 return TCL_ERROR;
             }
-            if (flags & CREATE)
-            {
+            if (flags & CREATE) {
                 event.xcreatewindow.override_redirect = number;
-            }
-            else if (flags & MAP)
-            {
+            } else if (flags & MAP) {
                 event.xmap.override_redirect = number;
-            }
-            else if (flags & REPARENT)
-            {
+            } else if (flags & REPARENT) {
                 event.xreparent.override_redirect = number;
-            }
-            else if (flags & CONFIG)
-            {
+            } else if (flags & CONFIG) {
                 event.xconfigure.override_redirect = number;
             }
-        }
-        else if (strcmp(field, "-place") == 0)
-        {
-            if (strcmp(value, "PlaceOnTop") == 0)
-            {
+        } else if (strcmp(field, "-place") == 0) {
+            if (strcmp(value, "PlaceOnTop") == 0) {
                 event.xcirculate.place = PlaceOnTop;
-            }
-            else if (strcmp(value, "PlaceOnBottom") == 0)
-            {
+            } else if (strcmp(value, "PlaceOnBottom") == 0) {
                 event.xcirculate.place = PlaceOnBottom;
-            }
-            else if (strcmp(value, "bogus") == 0)
-            {
+            } else if (strcmp(value, "bogus") == 0) {
                 event.xcirculate.place = 147;
-            }
-            else
-            {
+            } else {
                 Tcl_AppendResult(
                 interp, "bad place \"", value, "\"", ( char * )NULL);
                 return TCL_ERROR;
             }
-        }
-        else if (strcmp(field, "-root") == 0)
-        {
-            if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-            {
+        } else if (strcmp(field, "-root") == 0) {
+            if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                 return TCL_ERROR;
             }
             event.xkey.root = number;
-        }
-        else if (strcmp(field, "-rootx") == 0)
-        {
-            if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-            {
+        } else if (strcmp(field, "-rootx") == 0) {
+            if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                 return TCL_ERROR;
             }
             event.xkey.x_root = number;
-        }
-        else if (strcmp(field, "-rooty") == 0)
-        {
-            if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-            {
+        } else if (strcmp(field, "-rooty") == 0) {
+            if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                 return TCL_ERROR;
             }
             event.xkey.y_root = number;
-        }
-        else if (strcmp(field, "-sendevent") == 0)
-        {
-            if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-            {
+        } else if (strcmp(field, "-sendevent") == 0) {
+            if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                 return TCL_ERROR;
             }
             event.xany.send_event = number;
-        }
-        else if (strcmp(field, "-serial") == 0)
-        {
-            if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-            {
+        } else if (strcmp(field, "-serial") == 0) {
+            if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                 return TCL_ERROR;
             }
             event.xany.serial = number;
-        }
-        else if (strcmp(field, "-state") == 0)
-        {
-            if (flags & KEY_BUTTON_MOTION)
-            {
-                if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-                {
+        } else if (strcmp(field, "-state") == 0) {
+            if (flags & KEY_BUTTON_MOTION) {
+                if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                     return TCL_ERROR;
                 }
                 event.xkey.state = number;
-            }
-            else if (flags & CROSSING)
-            {
-                if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-                {
+            } else if (flags & CROSSING) {
+                if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                     return TCL_ERROR;
                 }
                 event.xcrossing.state = number;
-            }
-            else if (flags & VISIBILITY)
-            {
-                if (strcmp(value, "VisibilityUnobscured") == 0)
-                {
+            } else if (flags & VISIBILITY) {
+                if (strcmp(value, "VisibilityUnobscured") == 0) {
                     number = VisibilityUnobscured;
-                }
-                else if (strcmp(value, "VisibilityPartiallyObscured") == 0)
-                {
+                } else if (strcmp(value, "VisibilityPartiallyObscured")
+                           == 0) {
                     number = VisibilityPartiallyObscured;
-                }
-                else if (strcmp(value, "VisibilityFullyObscured") == 0)
-                {
+                } else if (strcmp(value, "VisibilityFullyObscured") == 0) {
                     number = VisibilityFullyObscured;
-                }
-                else
-                {
+                } else {
                     Tcl_AppendResult(
                     interp, "bad state \"", value, "\"", ( char * )NULL);
                     return TCL_ERROR;
                 }
                 event.xvisibility.state = number;
             }
-        }
-        else if (strcmp(field, "-subwindow") == 0)
-        {
+        } else if (strcmp(field, "-subwindow") == 0) {
             tkwin2 = Tk_NameToWindow(interp, value, main);
-            if (tkwin2 == NULL)
-            {
+            if (tkwin2 == NULL) {
                 return TCL_ERROR;
             }
             event.xkey.subwindow = Tk_WindowId(tkwin2);
-        }
-        else if (strcmp(field, "-time") == 0)
-        {
-            if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-            {
+        } else if (strcmp(field, "-time") == 0) {
+            if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                 return TCL_ERROR;
             }
-            if (flags & (KEY_BUTTON_MOTION | PROP | SEL_CLEAR))
-            {
+            if (flags & (KEY_BUTTON_MOTION | PROP | SEL_CLEAR)) {
                 event.xkey.time = ( Time )number;
-            }
-            else if (flags & SEL_REQ)
-            {
+            } else if (flags & SEL_REQ) {
                 event.xselectionrequest.time = ( Time )number;
-            }
-            else if (flags & SEL_NOTIFY)
-            {
+            } else if (flags & SEL_NOTIFY) {
                 event.xselection.time = ( Time )number;
             }
-        }
-        else if (strcmp(field, "-valueMask") == 0)
-        {
-            if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-            {
+        } else if (strcmp(field, "-valueMask") == 0) {
+            if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                 return TCL_ERROR;
             }
             event.xconfigurerequest.value_mask = number;
-        }
-        else if (strcmp(field, "-width") == 0)
-        {
-            if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-            {
+        } else if (strcmp(field, "-width") == 0) {
+            if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                 return TCL_ERROR;
             }
-            if (flags & EXPOSE)
-            {
+            if (flags & EXPOSE) {
                 event.xexpose.width = number;
-            }
-            else if (flags & (CONFIG | CONFIG_REQ))
-            {
+            } else if (flags & (CONFIG | CONFIG_REQ)) {
                 event.xconfigure.width = number;
-            }
-            else if (flags & RESIZE_REQ)
-            {
+            } else if (flags & RESIZE_REQ) {
                 event.xresizerequest.width = number;
             }
-        }
-        else if (strcmp(field, "-window") == 0)
-        {
+        } else if (strcmp(field, "-window") == 0) {
             tkwin2 = Tk_NameToWindow(interp, value, main);
-            if (tkwin2 == NULL)
-            {
+            if (tkwin2 == NULL) {
                 return TCL_ERROR;
             }
             event.xmap.window = Tk_WindowId(tkwin2);
-        }
-        else if (strcmp(field, "-x") == 0)
-        {
+        } else if (strcmp(field, "-x") == 0) {
             int rootX, rootY;
-            if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-            {
+            if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                 return TCL_ERROR;
             }
             Tk_GetRootCoords(tkwin, &rootX, &rootY);
             rootX += number;
-            if (flags & KEY_BUTTON_MOTION)
-            {
+            if (flags & KEY_BUTTON_MOTION) {
                 event.xkey.x = number;
                 event.xkey.x_root = rootX;
-            }
-            else if (flags & EXPOSE)
-            {
+            } else if (flags & EXPOSE) {
                 event.xexpose.x = number;
-            }
-            else if (flags & (CREATE | CONFIG | GRAVITY | CONFIG_REQ))
-            {
+            } else if (flags & (CREATE | CONFIG | GRAVITY | CONFIG_REQ)) {
                 event.xcreatewindow.x = number;
-            }
-            else if (flags & REPARENT)
-            {
+            } else if (flags & REPARENT) {
                 event.xreparent.x = number;
-            }
-            else if (flags & CROSSING)
-            {
+            } else if (flags & CROSSING) {
                 event.xcrossing.x = number;
                 event.xcrossing.x_root = rootY;
             }
-        }
-        else if (strcmp(field, "-y") == 0)
-        {
+        } else if (strcmp(field, "-y") == 0) {
             int rootX, rootY;
-            if (Tcl_GetInt(interp, value, &number) != TCL_OK)
-            {
+            if (Tcl_GetInt(interp, value, &number) != TCL_OK) {
                 return TCL_ERROR;
             }
             Tk_GetRootCoords(tkwin, &rootX, &rootY);
             rootY += number;
-            if (flags & KEY_BUTTON_MOTION)
-            {
+            if (flags & KEY_BUTTON_MOTION) {
                 event.xkey.y = number;
                 event.xkey.y_root = rootY;
-            }
-            else if (flags & EXPOSE)
-            {
+            } else if (flags & EXPOSE) {
                 event.xexpose.y = number;
-            }
-            else if (flags & (CREATE | CONFIG | GRAVITY | CONFIG_REQ))
-            {
+            } else if (flags & (CREATE | CONFIG | GRAVITY | CONFIG_REQ)) {
                 event.xcreatewindow.y = number;
-            }
-            else if (flags & REPARENT)
-            {
+            } else if (flags & REPARENT) {
                 event.xreparent.y = number;
-            }
-            else if (flags & CROSSING)
-            {
+            } else if (flags & CROSSING) {
                 event.xcrossing.y = number;
                 event.xcrossing.y_root = rootY;
             }
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(
             interp, "bad option \"", field, "\"", ( char * )NULL);
             return TCL_ERROR;
@@ -977,11 +784,9 @@ char **argv;           /* Argument strings. */
     int i;
     Tk_Window tkwin;
 
-    for (i = 1; i < argc; i++)
-    {
+    for (i = 1; i < argc; i++) {
         tkwin = Tk_NameToWindow(interp, argv[i], main);
-        if (tkwin == NULL)
-        {
+        if (tkwin == NULL) {
             return TCL_ERROR;
         }
         Tk_MakeWindowExist(tkwin);
@@ -1027,16 +832,13 @@ ClientData *clientDataPtr; /* Store manager's token for image here;
     int i;
 
     varName = "log";
-    for (i = 0; i < argc; i += 2)
-    {
-        if (strcmp(argv[i], "-variable") != 0)
-        {
+    for (i = 0; i < argc; i += 2) {
+        if (strcmp(argv[i], "-variable") != 0) {
             Tcl_AppendResult(
             interp, "bad option name \"", argv[i], "\"", ( char * )NULL);
             return TCL_ERROR;
         }
-        if ((i + 1) == argc)
-        {
+        if ((i + 1) == argc) {
             Tcl_AppendResult(interp,
                              "no value given for \"",
                              argv[i],
@@ -1089,8 +891,7 @@ char **argv;           /* Argument strings. */
     TImageMaster *timPtr = ( TImageMaster * )clientData;
     int x, y, width, height;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -1098,10 +899,8 @@ char **argv;           /* Argument strings. */
                          ( char * )NULL);
         return TCL_ERROR;
     }
-    if (strcmp(argv[1], "changed") == 0)
-    {
-        if (argc != 8)
-        {
+    if (strcmp(argv[1], "changed") == 0) {
+        if (argc != 8) {
             Tcl_AppendResult(
             interp,
             "wrong # args: should be \"",
@@ -1115,15 +914,12 @@ char **argv;           /* Argument strings. */
             || (Tcl_GetInt(interp, argv[4], &width) != TCL_OK)
             || (Tcl_GetInt(interp, argv[5], &height) != TCL_OK)
             || (Tcl_GetInt(interp, argv[6], &timPtr->width) != TCL_OK)
-            || (Tcl_GetInt(interp, argv[7], &timPtr->height) != TCL_OK))
-        {
+            || (Tcl_GetInt(interp, argv[7], &timPtr->height) != TCL_OK)) {
             return TCL_ERROR;
         }
         Tk_ImageChanged(
         timPtr->master, x, y, width, height, timPtr->width, timPtr->height);
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "bad option \"",
                          argv[1],
@@ -1228,12 +1024,10 @@ int drawableX, drawableY; /* Coordinates in drawable corresponding to
                instPtr->masterPtr->varName,
                buffer,
                TCL_GLOBAL_ONLY | TCL_APPEND_VALUE | TCL_LIST_ELEMENT);
-    if (width > (instPtr->masterPtr->width - imageX))
-    {
+    if (width > (instPtr->masterPtr->width - imageX)) {
         width = instPtr->masterPtr->width - imageX;
     }
-    if (height > (instPtr->masterPtr->height - imageY))
-    {
+    if (height > (instPtr->masterPtr->height - imageY)) {
         height = instPtr->masterPtr->height - imageY;
     }
     XDrawRectangle(display,
@@ -1357,8 +1151,7 @@ char **argv;           /* Argument strings. */
 {
     TkWindow *winPtr = ( TkWindow * )clientData;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         Tcl_AppendResult(interp,
                          "wrong # args;  must be \"",
                          argv[0],
@@ -1368,8 +1161,7 @@ char **argv;           /* Argument strings. */
     }
 
 #ifndef WIN_TCL
-    if (strcmp(argv[1], "bogus") == 0)
-    {
+    if (strcmp(argv[1], "bogus") == 0) {
         XChangeProperty(winPtr->dispPtr->display,
                         RootWindow(winPtr->dispPtr->display, 0),
                         winPtr->dispPtr->registryProperty,
@@ -1378,17 +1170,14 @@ char **argv;           /* Argument strings. */
                         PropModeReplace,
                         ( unsigned char * )"This is bogus information",
                         6);
-    }
-    else if (strcmp(argv[1], "prop") == 0)
-    {
+    } else if (strcmp(argv[1], "prop") == 0) {
         int result, actualFormat, length;
         unsigned long bytesAfter;
         Atom actualType, propName;
         char *property, *p, *end;
         Window w;
 
-        if ((argc != 4) && (argc != 5))
-        {
+        if ((argc != 4) && (argc != 5)) {
             Tcl_AppendResult(interp,
                              "wrong # args;  must be \"",
                              argv[0],
@@ -1396,21 +1185,15 @@ char **argv;           /* Argument strings. */
                              ( char * )NULL);
             return TCL_ERROR;
         }
-        if (strcmp(argv[2], "root") == 0)
-        {
+        if (strcmp(argv[2], "root") == 0) {
             w = RootWindow(winPtr->dispPtr->display, 0);
-        }
-        else if (strcmp(argv[2], "comm") == 0)
-        {
+        } else if (strcmp(argv[2], "comm") == 0) {
             w = Tk_WindowId(winPtr->dispPtr->commTkwin);
-        }
-        else
-        {
+        } else {
             w = strtoul(argv[2], &end, 0);
         }
         propName = Tk_InternAtom(( Tk_Window )winPtr, argv[3]);
-        if (argc == 4)
-        {
+        if (argc == 4) {
             property = NULL;
             result = XGetWindowProperty(winPtr->dispPtr->display,
                                         w,
@@ -1425,34 +1208,23 @@ char **argv;           /* Argument strings. */
                                         &bytesAfter,
                                         ( unsigned char ** )&property);
             if ((result == Success) && (actualType != None)
-                && (actualFormat == 8) && (actualType == XA_STRING))
-            {
-                for (p = property; (p - property) < length; p++)
-                {
-                    if (*p == 0)
-                    {
+                && (actualFormat == 8) && (actualType == XA_STRING)) {
+                for (p = property; (p - property) < length; p++) {
+                    if (*p == 0) {
                         *p = '\n';
                     }
                 }
                 Tcl_SetResult(interp, property, TCL_VOLATILE);
             }
-            if (property != NULL)
-            {
+            if (property != NULL) {
                 XFree(property);
             }
-        }
-        else
-        {
-            if (argv[4][0] == 0)
-            {
+        } else {
+            if (argv[4][0] == 0) {
                 XDeleteProperty(winPtr->dispPtr->display, w, propName);
-            }
-            else
-            {
-                for (p = argv[4]; *p != 0; p++)
-                {
-                    if (*p == '\n')
-                    {
+            } else {
+                for (p = argv[4]; *p != 0; p++) {
+                    if (*p == '\n') {
                         *p = 0;
                     }
                 }
@@ -1466,13 +1238,9 @@ char **argv;           /* Argument strings. */
                                 p - argv[4]);
             }
         }
-    }
-    else if (strcmp(argv[1], "serial") == 0)
-    {
+    } else if (strcmp(argv[1], "serial") == 0) {
         sprintf(interp->result, "%d", tkSendSerial + 1);
-    }
-    else
-    {
+    } else {
         Tcl_AppendResult(interp,
                          "bad option \"",
                          argv[1],

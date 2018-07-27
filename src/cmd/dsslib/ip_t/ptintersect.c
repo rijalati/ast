@@ -37,14 +37,12 @@ ptintersect(Pt_t *a, Pt_t *b)
         return 0;
     ap = ( Ptprefix_t * )dtfirst(a->dict);
     bp = ( Ptprefix_t * )dtfirst(b->dict);
-    while (ap && bp)
-    {
+    while (ap && bp) {
         if (ap->max < bp->min)
             ap = ( Ptprefix_t * )dtnext(a->dict, ap);
         else if (ap->min > bp->max)
             bp = ( Ptprefix_t * )dtnext(b->dict, bp);
-        else
-        {
+        else {
             if (!ptinsert(t,
                           (ap->min > bp->min) ? ap->min : bp->min,
                           (ap->max < bp->max) ? ap->max : bp->max))
@@ -53,8 +51,7 @@ ptintersect(Pt_t *a, Pt_t *b)
                 ap = ( Ptprefix_t * )dtnext(a->dict, ap);
             else if (ap->max > bp->max)
                 bp = ( Ptprefix_t * )dtnext(b->dict, bp);
-            else
-            {
+            else {
                 ap = ( Ptprefix_t * )dtnext(a->dict, ap);
                 bp = ( Ptprefix_t * )dtnext(b->dict, bp);
             }

@@ -52,14 +52,12 @@ getopt(int argc, char *const *argv, const char *optstring)
     opt_info.index = (optind > 1 || optind == lastoptind) ? optind : 0;
     if (opt_info.index >= argc)
         return -1;
-    switch (n = optget(( char ** )argv, optstring))
-    {
+    switch (n = optget(( char ** )argv, optstring)) {
     case ':':
         n = '?';
         /*FALLTHROUGH*/
     case '?':
-        if (opterr && (!optstring || *optstring != ':'))
-        {
+        if (opterr && (!optstring || *optstring != ':')) {
             if (!error_info.id)
                 error_info.id = argv[0];
             errormsg(NiL, 2, opt_info.arg);

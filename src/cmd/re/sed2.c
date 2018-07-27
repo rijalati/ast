@@ -85,8 +85,7 @@ selected(unsigned char *pc, Text *data)
     word *ipc = ( word * )pc; /* points to address words */
     word *q = instr(pc);      /* points to instruction word */
     int neg = !!(*q & NEG);
-    switch (q - ipc)
-    {
+    switch (q - ipc) {
     case 0: /* 0 address */
         return !neg;
     case 1: /* 1 address */
@@ -96,10 +95,8 @@ selected(unsigned char *pc, Text *data)
     case 3:  /* 2 address */
         q--; /* points to activity indicator */
         active = !(*q & INACT);
-        if ((*q & AMASK) < recno)
-        {
-            switch (sel1(ipc[active], data))
-            {
+        if ((*q & AMASK) < recno) {
+            switch (sel1(ipc[active], data)) {
             case 0:
                 if ((active & ateof()) == 0)
                     break;
@@ -109,8 +106,7 @@ selected(unsigned char *pc, Text *data)
                     *q |= INACT;
                 return (neg ^ 1) << (!active & !ateof());
             case -1:
-                if (active)
-                {
+                if (active) {
                     *q = recno | INACT;
                     return neg;
                 }
@@ -378,23 +374,19 @@ ye(Text *script, unsigned char *pc, Text *data)
     Mbstate_t sq;
     int i, n;
     Sfio_t *f;
-    if (x = ( unsigned int )(*m++ - ( unsigned char * )0))
-    {
+    if (x = ( unsigned int )(*m++ - ( unsigned char * )0)) {
         if (!(f = sfstropen()))
             error(ERROR_SYSTEM | 3, "out of space");
         mbtinit(&sq);
-        while (s < w)
-        {
+        while (s < w) {
             b = s;
             c = mbtchar(&wc, s, w - s, &sq);
-            if (c < x && m[c])
-            {
+            if (c < x && m[c]) {
                 n = m[c][0];
                 i = 0;
                 while (++i <= n)
                     sfputc(f, m[c][i]);
-            }
-            else
+            } else
                 while (b < s)
                     sfputc(f, *b++);
         }
@@ -402,8 +394,7 @@ ye(Text *script, unsigned char *pc, Text *data)
         assure(data, x);
         memcpy(data->s, sfstrbase(f), x);
         data->w = data->s + x;
-    }
-    else
+    } else
         for (b = ( unsigned char * )m; s < w; s++)
             *s = b[*s];
     script = script;
@@ -451,12 +442,10 @@ le(Text *script, unsigned char *pc, Text *data)
     unsigned char buf[LEMAX + CHMAX + 1];
     script = script;
     b = buf;
-    for (s = data->s; s < data->w; s++)
-    {
+    for (s = data->s; s < data->w; s++) {
         o = b;
         for (j = 0; j < sizeof(digram) / sizeof(*digram); j++)
-            if (*s == digram[j].p)
-            {
+            if (*s == digram[j].p) {
                 *b++ = '\\';
                 *b++ = digram[j].q;
                 goto hit;
@@ -466,8 +455,7 @@ le(Text *script, unsigned char *pc, Text *data)
         else
             *b++ = *s;
     hit:
-        if ((b - buf) >= LEMAX)
-        {
+        if ((b - buf) >= LEMAX) {
             n = o - buf;
             if (sfwrite(sfstdout, buf, n) != n)
                 error(ERROR_SYSTEM | 3, stdouterr);
@@ -518,11 +506,9 @@ coda(void)
     Sfio_t *f;
     if (todo.s == 0)
         return;
-    for (p = todo.s; p < todo.w; p += sizeof(word))
-    {
+    for (p = todo.s; p < todo.w; p += sizeof(word)) {
         q = instr(*( unsigned char ** )p);
-        switch (code(*q))
-        {
+        switch (code(*q)) {
         case 'a':
             if (sfprintf(sfstdout, "%s", ( char * )(q + 1)) <= 0)
                 error(ERROR_SYSTEM | 3, stdouterr);
@@ -563,19 +549,16 @@ execute(Text *script, Text *data)
 {
     unsigned char *pc;
     int sel;
-    for (pc = script->s; pc < script->w;)
-    {
+    for (pc = script->s; pc < script->w;) {
         sel = selected(pc, data);
-        if (sel)
-        {
+        if (sel) {
             int cmd = code(*instr(pc));
             if (sel == 2 && cmd == 'c')
                 cmd = 'd';
             pc = (*excom[ccmapchr(map, cmd)])(script, pc, data);
             if (pc == 0)
                 return;
-        }
-        else
+        } else
             pc = nexti(pc);
     }
     if (!nflag)

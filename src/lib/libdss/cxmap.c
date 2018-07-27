@@ -64,8 +64,7 @@ initmap(Frame_t *frame, Cxmap_t *map, Cxdisc_t *disc)
     if (map->header.flags & CX_INITIALIZED)
         return -1;
     map->header.flags |= CX_INITIALIZED;
-    for (;;)
-    {
+    for (;;) {
         if (!map->mask)
             map->mask = ~map->mask;
         if (!map->map)
@@ -74,27 +73,21 @@ initmap(Frame_t *frame, Cxmap_t *map, Cxdisc_t *disc)
     }
     if (!map->part)
         return 0;
-    if (map->str2num)
-    {
+    if (map->str2num) {
         if (!frame)
             return 0;
         easy = 0;
-    }
-    else
-    {
+    } else {
         str2numdisc.link = offsetof(Cxitem_t, str2num);
         str2numdisc.key = offsetof(Cxitem_t, name);
         str2numdisc.size = -1;
-        if (map->header.flags & CX_IGNORECASE)
-        {
+        if (map->header.flags & CX_IGNORECASE) {
             stricase2numdisc = str2numdisc;
             stricase2numdisc.comparf = ignorecase;
             map->str2num = dtopen(&stricase2numdisc, Dtoset);
-        }
-        else
+        } else
             map->str2num = dtopen(&str2numdisc, Dtoset);
-        if (!map->str2num)
-        {
+        if (!map->str2num) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
@@ -104,15 +97,13 @@ initmap(Frame_t *frame, Cxmap_t *map, Cxdisc_t *disc)
         frame = &top;
         easy = 1;
     }
-    for (part = map->part; part; part = part->next)
-    {
+    for (part = map->part; part; part = part->next) {
         if (part->mask)
             easy = 0;
         else
             part->mask = ~part->mask;
         masks = part->item ? part->item->mask : 0;
-        for (item = part->item; item; item = item->next)
-        {
+        for (item = part->item; item; item = item->next) {
             for (fp = frame; fp; fp = fp->prev)
                 dtinsert(fp->str2num, item);
             if (item->mask != masks)
@@ -121,21 +112,18 @@ initmap(Frame_t *frame, Cxmap_t *map, Cxdisc_t *disc)
                 easy = 0;
             else
                 item->mask = ~item->mask;
-            if (item->map)
-            {
+            if (item->map) {
                 if (initmap(frame, item->map, disc))
                     return -1;
                 easy = 0;
             }
         }
     }
-    if (easy)
-    {
+    if (easy) {
         num2strdisc.link = offsetof(Cxitem_t, num2str);
         num2strdisc.key = offsetof(Cxitem_t, value);
         num2strdisc.size = sizeof(Cxunsigned_t);
-        if (!(map->num2str = dtopen(&num2strdisc, Dtoset)))
-        {
+        if (!(map->num2str = dtopen(&num2strdisc, Dtoset))) {
             if (disc->errorf)
                 (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
             return -1;
@@ -177,32 +165,27 @@ num2str(Cx_t *cx, Cxmap_t *map, Sfio_t *sp, Cxunsigned_t num, int del)
     regmatch_t match[10];
     char buf[64];
 
-    for (;;)
-    {
+    for (;;) {
         num >>= map->shift;
         num &= map->mask;
         if (!map->map)
             break;
         map = map->map;
     }
-    if (map->num2str && (item = ( Cxitem_t * )dtmatch(map->num2str, &num)))
-    {
+    if (map->num2str && (item = ( Cxitem_t * )dtmatch(map->num2str, &num))) {
         sfprintf(sp, "%c%s", del, item->name);
         return 1;
     }
     r = 0;
-    for (part = map->part; part; part = part->next)
-    {
+    for (part = map->part; part; part = part->next) {
         n = num;
         n >>= part->shift;
         n &= part->mask;
         v = !(part->flags & CX_ALL);
         p = r;
         for (item = part->item; item; item = item->next)
-            if ((n & item->mask) == item->value)
-            {
-                if (item->name)
-                {
+            if ((n & item->mask) == item->value) {
+                if (item->name) {
                     sfprintf(sp, "%c%s", del, item->name);
                     r++;
                 }
@@ -211,25 +194,20 @@ num2str(Cx_t *cx, Cxmap_t *map, Sfio_t *sp, Cxunsigned_t num, int del)
                 if (v)
                     break;
             }
-        if (r == p && part->num2str)
-        {
+        if (r == p && part->num2str) {
             buf[0] = 0;
             for (edit = part->num2str; edit; edit = edit->next)
-                if (!edit->num2strf)
-                {
+                if (!edit->num2strf) {
                     if (!buf[0])
                         sfsprintf(buf, sizeof(buf), "%lld", n);
                     if (!regexec(&edit->re, buf, elementsof(match), match, 0)
                         && !regsubexec(
-                           &edit->re, buf, elementsof(match), match))
-                    {
+                           &edit->re, buf, elementsof(match), match)) {
                         sfprintf(sp, "%c%s", del, edit->re.re_sub->re_buf);
                         r++;
                         break;
                     }
-                }
-                else if (s = (*edit->num2strf)(cx, n, cx->disc))
-                {
+                } else if (s = (*edit->num2strf)(cx, n, cx->disc)) {
                     sfprintf(sp, "%c%s", del, s);
                     r++;
                     break;
@@ -249,14 +227,12 @@ cxnum2str(Cx_t *cx, Cxformat_t *format, Cxunsigned_t num, char **p)
     char *s;
     int del;
 
-    if (format->map)
-    {
+    if (format->map) {
         if ((del = format->delimiter) == -1)
             del = '|';
         if (!num2str(cx, format->map, cx->tp, num, del))
             return -1;
-    }
-    else
+    } else
         sfprintf(cx->tp, "|%I*u", sizeof(num), num);
     if (!(s = sfstruse(cx->tp)))
         return -1;
@@ -278,14 +254,12 @@ str2num(Cx_t *cx, Cxmap_t *map, const char *str, Cxunsigned_t *num)
 
     for (part = map->part; part; part = part->next)
         for (edit = part->str2num; edit; edit = edit->next)
-            if (edit->str2numf)
-            {
+            if (edit->str2numf) {
                 if (!(*edit->str2numf)(cx, str, strlen(str), num, cx->disc))
                     return 1;
-            }
-            else if (!regexec(&edit->re, str, elementsof(match), match, 0)
-                     && !regsubexec(&edit->re, str, elementsof(match), match))
-            {
+            } else if (!regexec(&edit->re, str, elementsof(match), match, 0)
+                       && !regsubexec(
+                          &edit->re, str, elementsof(match), match)) {
                 *num = strtoull(edit->re.re_sub->re_buf, NiL, 0);
                 return 1;
             }
@@ -319,8 +293,7 @@ cxstr2num(Cx_t *cx,
     sfwrite(cx->tp, str, siz);
     if (!(s = sfstruse(cx->tp)))
         return -1;
-    while (*s)
-    {
+    while (*s) {
         for (b = s; *s && *s != del && *s != '|' && *s != '+'; s++)
             ;
         if (*s)
@@ -347,13 +320,11 @@ cxsub(Cx_t *cx, Cxedit_t *edit, Cxoperand_t *r)
     Cxtype_t *type;
     regmatch_t match[10];
 
-    if (!cxisstring(r->type))
-    {
+    if (!cxisstring(r->type)) {
         type = r->type;
         if (cxcast(cx, r, NiL, cx->state->type_string, NiL, NiL))
             return -1;
-    }
-    else
+    } else
         type = 0;
     if (!regnexec(&edit->re,
                   r->value.string.data,
@@ -377,8 +348,7 @@ cxsub(Cx_t *cx, Cxedit_t *edit, Cxoperand_t *r)
 int
 cxsuball(Cx_t *cx, Cxpart_t *part, Cxoperand_t *r)
 {
-    while (part)
-    {
+    while (part) {
         if (part->edit && cxsub(cx, part->edit, r))
             return -1;
         part = part->next;

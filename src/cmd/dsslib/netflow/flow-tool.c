@@ -217,8 +217,7 @@ ftident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
         return 0;
     if (h->magic1 != FT_MAGIC_1 || h->magic2 != FT_MAGIC_2)
         return 0;
-    switch (h->byte_order)
-    {
+    switch (h->byte_order) {
     case FT_BE:
         swap = 0;
         break;
@@ -228,8 +227,7 @@ ftident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
     default:
         return 0;
     }
-    switch (h->s_version)
-    {
+    switch (h->s_version) {
     case 1:
         file->ident = sizeof(Hdr_t);
         if (n < file->ident)
@@ -245,16 +243,14 @@ ftident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
         version = 0;
         dp = ( char * )buf + 8;
         ep = ( char * )buf + file->ident;
-        while ((ep - dp) >= 4)
-        {
+        while ((ep - dp) >= 4) {
             type = swapget(swap, dp, 2);
             dp += 2;
             size = swapget(swap, dp, 2);
             dp += 2;
             if (size > (ep - dp))
                 break;
-            if (type == 2)
-            {
+            if (type == 2) {
                 version = swapget(swap, dp, size);
                 break;
             }
@@ -264,8 +260,7 @@ ftident(Dssfile_t *file, void *buf, size_t n, Dssdisc_t *disc)
     default:
         return 0;
     }
-    switch (version)
-    {
+    switch (version) {
     case 1:
     case 5:
     case 6:
@@ -287,8 +282,7 @@ ftfopen(Dssfile_t *file, Dssdisc_t *disc)
 {
     State_t *state;
 
-    if (!sfreserve(file->io, file->ident & ((1 << 20) - 1), 0))
-    {
+    if (!sfreserve(file->io, file->ident & ((1 << 20) - 1), 0)) {
         if (disc->errorf)
             (*disc->errorf)(
             NiL, disc, ERROR_SYSTEM | 2, "heaxder read error");
@@ -299,8 +293,7 @@ ftfopen(Dssfile_t *file, Dssdisc_t *disc)
                     0,
                     State_t,
                     1,
-                    (file->flags & DSS_FILE_WRITE) ? NETFLOW_PACKET : 0)))
-    {
+                    (file->flags & DSS_FILE_WRITE) ? NETFLOW_PACKET : 0))) {
         if (disc->errorf)
             (*disc->errorf)(NiL, disc, ERROR_SYSTEM | 2, "out of space");
         return -1;
@@ -308,8 +301,7 @@ ftfopen(Dssfile_t *file, Dssdisc_t *disc)
     file->data = state;
     state->swap = (file->ident >> 28) & ((1 << 4) - 1);
     state->version = (file->ident >> 20) & ((1 << 8) - 1);
-    switch (state->version)
-    {
+    switch (state->version) {
     case 1:
         state->size = sizeof(Rec_1_t);
         break;
@@ -343,18 +335,15 @@ ftfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     size_t n;
     Nftime_t boot;
 
-    while (!state->count--)
-    {
+    while (!state->count--) {
         if (state->data
-            = ( char * )sfreserve(file->io, state->chunk * state->size, 0))
-        {
+            = ( char * )sfreserve(file->io, state->chunk * state->size, 0)) {
             state->count = state->chunk;
             break;
         }
         if (!(n = sfvalue(file->io)))
             return 0;
-        if (!(state->chunk = n / state->size))
-        {
+        if (!(state->chunk = n / state->size)) {
             if (disc->errorf)
                 (*disc->errorf)(NiL,
                                 disc,
@@ -370,11 +359,9 @@ ftfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
     = NETFLOW_SET_src_addrv4 | NETFLOW_SET_dst_addrv4 | NETFLOW_SET_hopv4;
     fp = state->data;
     state->data += state->size;
-    switch (state->version)
-    {
+    switch (state->version) {
     case 1:
-        if (n = state->swap & 3)
-        {
+        if (n = state->swap & 3) {
             swapmem(n,
                     &R1(fp)->unix_secs,
                     &R1(fp)->unix_secs,
@@ -383,8 +370,7 @@ ftfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                     &R1(fp)->dPkts,
                     &R1(fp)->dPkts,
                     ( char * )&R1(fp)->srcport - ( char * )&R1(fp)->dPkts);
-            if (n &= 1)
-            {
+            if (n &= 1) {
                 swapmem(n,
                         &R1(fp)->input,
                         &R1(fp)->input,
@@ -415,8 +401,7 @@ ftfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         rp->uptime = R1(fp)->sysUpTime;
         break;
     case 5:
-        if (n = state->swap & 3)
-        {
+        if (n = state->swap & 3) {
             swapmem(n,
                     &R5(fp)->unix_secs,
                     &R5(fp)->unix_secs,
@@ -425,8 +410,7 @@ ftfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                     &R5(fp)->dPkts,
                     &R5(fp)->dPkts,
                     ( char * )&R5(fp)->srcport - ( char * )&R5(fp)->dPkts);
-            if (n &= 1)
-            {
+            if (n &= 1) {
                 swapmem(n,
                         &R5(fp)->input,
                         &R5(fp)->input,
@@ -467,8 +451,7 @@ ftfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         rp->uptime = R5(fp)->sysUpTime;
         break;
     case 6:
-        if (n = state->swap & 3)
-        {
+        if (n = state->swap & 3) {
             swapmem(n,
                     &R6(fp)->unix_secs,
                     &R6(fp)->unix_secs,
@@ -477,8 +460,7 @@ ftfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                     &R6(fp)->dPkts,
                     &R6(fp)->dPkts,
                     ( char * )&R6(fp)->srcport - ( char * )&R6(fp)->dPkts);
-            if (n &= 1)
-            {
+            if (n &= 1) {
                 swapmem(n,
                         &R6(fp)->input,
                         &R6(fp)->input,
@@ -519,8 +501,7 @@ ftfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
         rp->uptime = R6(fp)->sysUpTime;
         break;
     case 7:
-        if (n = state->swap & 3)
-        {
+        if (n = state->swap & 3) {
             swapmem(n,
                     &R7(fp)->unix_secs,
                     &R7(fp)->unix_secs,
@@ -529,8 +510,7 @@ ftfread(Dssfile_t *file, Dssrecord_t *record, Dssdisc_t *disc)
                     &R7(fp)->dPkts,
                     &R7(fp)->dPkts,
                     ( char * )&R7(fp)->srcport - ( char * )&R7(fp)->dPkts);
-            if (n &= 1)
-            {
+            if (n &= 1) {
                 swapmem(n,
                         &R7(fp)->input,
                         &R7(fp)->input,

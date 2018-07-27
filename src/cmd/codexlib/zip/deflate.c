@@ -125,8 +125,7 @@
 #define NEXTBYTE(p) (((p)->ip < (p)->ie) ? ( int )*(p)->ip++ : fill(p))
 #define NEEDBITS(p, n)                                                       \
     {                                                                        \
-        while (bit_len < (n))                                                \
-        {                                                                    \
+        while (bit_len < (n)) {                                              \
             bit_buf |= (( ulg )NEXTBYTE(p)) << bit_len;                      \
             bit_len += 8;                                                    \
         }                                                                    \
@@ -184,8 +183,7 @@ fill(State_t *state)
                   state->buf,
                   sizeof(state->buf),
                   &state->codex->sfdisc))
-        <= 0)
-    {
+        <= 0) {
         state->eof = 1;
         return 0;
     }
@@ -256,13 +254,11 @@ inflate_codes(State_t *state, uch *p, uch *e)
 
     /* inflate the coded data until end of block */
 
-    for (;;)
-    {
+    for (;;) {
         NEEDBITS(state, ( ulg )bl);
         t = tl + GETBITS(bl);
         x = t->e;
-        while (x > 16)
-        {
+        while (x > 16) {
             if (x == 99)
                 return 0;
             DUMPBITS(t->b);
@@ -272,22 +268,18 @@ inflate_codes(State_t *state, uch *p, uch *e)
             x = t->e;
         }
         DUMPBITS(t->b);
-        if (x == 16)
-        {
+        if (x == 16) {
             /* literal */
             w &= WINDOW - 1;
             *p++ = slide[w++] = ( uch )t->v.n;
-            if (p >= e)
-            {
+            if (p >= e) {
                 state->wp = w;
                 BITS_GLOBAL;
                 return p;
             }
-        }
-        else if (x == 15)
+        } else if (x == 15)
             break;
-        else
-        {
+        else {
             /* get length of block to copy */
 
             NEEDBITS(state, x);
@@ -299,8 +291,7 @@ inflate_codes(State_t *state, uch *p, uch *e)
             NEEDBITS(state, ( ulg )bd);
             t = td + GETBITS(bd);
             x = t->e;
-            while (x > 16)
-            {
+            while (x > 16) {
                 if (x == 99)
                     return 0;
                 DUMPBITS(t->b);
@@ -316,13 +307,11 @@ inflate_codes(State_t *state, uch *p, uch *e)
 
             /* do the copy */
 
-            while (l--)
-            {
+            while (l--) {
                 d &= WINDOW - 1;
                 w &= WINDOW - 1;
                 *p++ = slide[w++] = slide[d++];
-                if (p >= e)
-                {
+                if (p >= e) {
                     state->copy_len = l;
                     state->wp = w;
                     state->copy_pos = d;
@@ -358,8 +347,7 @@ inflate_stored(State_t *state, uch *p, uch *e)
     l = GETBITS(16);
     DUMPBITS(16);
     NEEDBITS(state, 16);
-    if (l != (ulg)((~bit_buf) & 0xffff))
-    {
+    if (l != (ulg)((~bit_buf) & 0xffff)) {
         BITS_GLOBAL;
         return 0;
     }
@@ -368,10 +356,8 @@ inflate_stored(State_t *state, uch *p, uch *e)
     /* read and output the compressed data */
 
     w = state->wp;
-    for (;;)
-    {
-        if (!l--)
-        {
+    for (;;) {
+        if (!l--) {
             state->method = -1;
             break;
         }
@@ -379,8 +365,7 @@ inflate_stored(State_t *state, uch *p, uch *e)
         NEEDBITS(state, 8);
         *p++ = state->slide[w++] = ( uch )GETBITS(8);
         DUMPBITS(8);
-        if (p >= e)
-        {
+        if (p >= e) {
             state->copy_len = l;
             break;
         }
@@ -399,8 +384,7 @@ inflate_fixed(State_t *state)
 {
     /* if first time, set up tables for fixed blocks */
 
-    if (!state->fixed_tl)
-    {
+    if (!state->fixed_tl) {
         Huff_t *tl; /* literal/length code table */
         int i;      /* temporary variable */
         ulg l[288]; /* length list for huff() */
@@ -504,8 +488,7 @@ inflate_dynamic(State_t *state)
 
     /* read in bit-length-code lengths */
 
-    for (j = 0; j < nb; j++)
-    {
+    for (j = 0; j < nb; j++) {
         NEEDBITS(state, 3);
         ll[border[j]] = GETBITS(3);
         DUMPBITS(3);
@@ -516,8 +499,7 @@ inflate_dynamic(State_t *state)
     /* build decoding table for trees--single level, 7 bit lookup */
 
     bl = 7;
-    if (i = huff(ll, 19, 19, NULL, NULL, &tl, &bl, state->vm))
-    {
+    if (i = huff(ll, 19, 19, NULL, NULL, &tl, &bl, state->vm)) {
         /* incomplete code set */
 
         BITS_GLOBAL;
@@ -528,8 +510,7 @@ inflate_dynamic(State_t *state)
 
     n = nl + nd;
     i = l = 0;
-    while (( ulg )i < n)
-    {
+    while (( ulg )i < n) {
         NEEDBITS(state, ( ulg )bl);
         j = (td = tl + (GETBITS(bl)))->b;
         DUMPBITS(j);
@@ -541,35 +522,30 @@ inflate_dynamic(State_t *state)
             NEEDBITS(state, 2);
             j = 3 + GETBITS(2);
             DUMPBITS(2);
-            if (( ulg )i + j > n)
-            {
+            if (( ulg )i + j > n) {
                 BITS_GLOBAL;
                 return -1;
             }
             while (j--)
                 ll[i++] = l;
-        }
-        else if (j == 17) /* 3 to 10 zero length codes */
+        } else if (j == 17) /* 3 to 10 zero length codes */
         {
             NEEDBITS(state, 3);
             j = 3 + GETBITS(3);
             DUMPBITS(3);
-            if (( ulg )i + j > n)
-            {
+            if (( ulg )i + j > n) {
                 BITS_GLOBAL;
                 return -1;
             }
             while (j--)
                 ll[i++] = 0;
             l = 0;
-        }
-        else /* j == 18: 11 to 138 0 length codes */
+        } else /* j == 18: 11 to 138 0 length codes */
         {
             NEEDBITS(state, 7);
             j = 11 + GETBITS(7);
             DUMPBITS(7);
-            if (( ulg )i + j > n)
-            {
+            if (( ulg )i + j > n) {
                 BITS_GLOBAL;
                 return -1;
             }
@@ -590,8 +566,7 @@ inflate_dynamic(State_t *state)
     i = huff(ll, nl, 257, cplens, cplext, &tl, &bl, state->vm);
     if (bl == 0) /* no literals or lengths */
         i = 1;
-    if (i)
-    {
+    if (i) {
         /* incomplete code set */
 
         if (i == 1 && state->codex->disc->errorf)
@@ -604,8 +579,7 @@ inflate_dynamic(State_t *state)
     }
     bd = dbits;
     i = huff(ll + nl, nd, 0, cpdist, cpdext, &td, &bd, state->vm);
-    if (bd == 0 && nl > 257)
-    {
+    if (bd == 0 && nl > 257) {
         /* lengths but no distances */
 
         if (state->codex->disc->errorf)
@@ -616,8 +590,7 @@ inflate_dynamic(State_t *state)
                                           state->codex->meth->name);
         return -1;
     }
-    if (i == 1)
-    {
+    if (i == 1) {
 #ifdef PKZIP_BUG_WORKAROUND
         i = 0;
 #else
@@ -646,8 +619,7 @@ deflate_open(Codex_t *p, char *const args[], Codexnum_t flags)
 
     if (!(vm = vmopen(Vmdcheap, Vmbest, 0)))
         return -1;
-    if (!(state = newof(0, State_t, 1, 0)))
-    {
+    if (!(state = newof(0, State_t, 1, 0))) {
         vmclose(vm);
         return -1;
     }
@@ -696,27 +668,21 @@ deflate_read(Sfio_t *sp, void *buf, size_t size, Sfdisc_t *disc)
     ulg d;
 
 
-    if (state->copy_len > 0)
-    {
+    if (state->copy_len > 0) {
         l = state->copy_len;
         w = state->wp;
-        if (state->method != STORED_BLOCK)
-        {
+        if (state->method != STORED_BLOCK) {
             d = state->copy_pos;
-            while (l && p < e)
-            {
+            while (l && p < e) {
                 l--;
                 d &= WINDOW - 1;
                 w &= WINDOW - 1;
                 *p++ = state->slide[w++] = state->slide[d++];
             }
             state->copy_pos = d;
-        }
-        else
-        {
+        } else {
             BITS_LOCAL;
-            while (l && p < e)
-            {
+            while (l && p < e) {
                 l--;
                 w &= WINDOW - 1;
                 NEEDBITS(state, 8);
@@ -730,18 +696,14 @@ deflate_read(Sfio_t *sp, void *buf, size_t size, Sfdisc_t *disc)
         state->copy_len = l;
         state->wp = w;
     }
-    while (p < e)
-    {
-        if (state->method == -1)
-        {
+    while (p < e) {
+        if (state->method == -1) {
             BITS_LOCAL;
-            if (state->eof)
-            {
+            if (state->eof) {
                 BITS_GLOBAL;
                 break;
             }
-            if (state->last)
-            {
+            if (state->last) {
                 state->last = state->wp = 0;
                 l = bit_len & 7;
                 DUMPBITS(l);
@@ -763,8 +725,7 @@ deflate_read(Sfio_t *sp, void *buf, size_t size, Sfdisc_t *disc)
             state->copy_len = 0;
             BITS_GLOBAL;
         }
-        switch (state->method)
-        {
+        switch (state->method) {
         case STORED_BLOCK:
             q = inflate_stored(state, p, e);
             break;
@@ -782,8 +743,7 @@ deflate_read(Sfio_t *sp, void *buf, size_t size, Sfdisc_t *disc)
             q = 0;
             break;
         }
-        if (!q)
-        {
+        if (!q) {
             if (p < e || state->eof)
                 break;
             return -1;

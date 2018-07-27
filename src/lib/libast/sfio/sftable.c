@@ -69,25 +69,21 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
     dollar = decimal = thousand = 0;
     argn = maxp = -1;
     SFMBCLR(&fmbs);
-    while ((n = *form))
-    {
+    while ((n = *form)) {
         if (n != '%') /* collect the non-pattern chars */
         {
             sp = ( char * )form;
-            for (;;)
-            {
+            for (;;) {
                 form += SFMBLEN(form, &fmbs);
                 if (*form == 0 || *form == '%')
                     break;
             }
             continue;
-        }
-        else
+        } else
             form += 1;
         if (*form == 0)
             break;
-        else if (*form == '%')
-        {
+        else if (*form == '%') {
             form += 1;
             continue;
         }
@@ -97,17 +93,14 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
             skip = 1;
             form += 1;
             argp = -1;
-        }
-        else /* get the position of this argument */
+        } else /* get the position of this argument */
         {
             skip = 0;
             sp = sffmtint(form, &argp);
-            if (*sp == '$')
-            {
+            if (*sp == '$') {
                 dollar = 1;
                 form = sp + 1;
-            }
-            else
+            } else
                 argp = -1;
         }
 
@@ -119,14 +112,11 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
             need[n] = -1;
 
     loop_flags: /* LOOP FOR \0, %, FLAGS, WIDTH, PRECISION, BASE, TYPE */
-        switch ((fmt = *form++))
-        {
+        switch ((fmt = *form++)) {
         case LEFTP: /* get the type enclosed in balanced parens */
             t_str = ( char * )form;
-            for (v = 1;;)
-            {
-                switch (*form++)
-                {
+            for (v = 1;;) {
+                switch (*form++) {
                 case 0: /* not balancable, retract */
                     form = t_str;
                     t_str = NIL(char *);
@@ -139,8 +129,7 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
                     if ((v -= 1) != 0)
                         continue;
                     n_str = form - t_str;
-                    if (*t_str == '*')
-                    {
+                    if (*t_str == '*') {
                         t_str = sffmtint(t_str + 1, &n);
                         if (*t_str == '$')
                             dollar = 1;
@@ -148,8 +137,7 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
                             n = -1;
                         if ((n = FP_SET(n, argn)) > maxp)
                             maxp = n;
-                        if (fp && fp[n].ft.fmt == 0)
-                        {
+                        if (fp && fp[n].ft.fmt == 0) {
                             fp[n].ft.fmt = LEFTP;
                             fp[n].ft.form = ( char * )form;
                         }
@@ -187,29 +175,24 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
         case '.':
             if ((dot += 1) == 2)
                 base = 0; /* for %s,%c */
-            if (isdigit(*form))
-            {
+            if (isdigit(*form)) {
                 fmt = *form++;
                 goto dot_size;
-            }
-            else if (*form != '*')
+            } else if (*form != '*')
                 goto loop_flags;
             else
                 form += 1; /* drop thru below */
 
         case '*':
             form = sffmtint(form, &n);
-            if (*form == '$')
-            {
+            if (*form == '$') {
                 dollar = 1;
                 form += 1;
-            }
-            else
+            } else
                 n = -1;
             if ((n = FP_SET(n, argn)) > maxp)
                 maxp = n;
-            if (fp && fp[n].ft.fmt == 0)
-            {
+            if (fp && fp[n].ft.fmt == 0) {
                 fp[n].ft.fmt = '.';
                 fp[n].ft.size = dot;
                 fp[n].ft.form = ( char * )form;
@@ -241,25 +224,19 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
         case 'I': /* object length */
             size = -1;
             flags = (flags & ~SFFMT_TYPES) | SFFMT_IFLAG;
-            if (isdigit(*form))
-            {
+            if (isdigit(*form)) {
                 for (size = 0, n = *form; isdigit(n); n = *++form)
                     size = size * 10 + (n - '0');
-            }
-            else if (*form == '*')
-            {
+            } else if (*form == '*') {
                 form = sffmtint(form + 1, &n);
-                if (*form == '$')
-                {
+                if (*form == '$') {
                     dollar = 1;
                     form += 1;
-                }
-                else
+                } else
                     n = -1;
                 if ((n = FP_SET(n, argn)) > maxp)
                     maxp = n;
-                if (fp && fp[n].ft.fmt == 0)
-                {
+                if (fp && fp[n].ft.fmt == 0) {
                     fp[n].ft.fmt = 'I';
                     fp[n].ft.size = sizeof(int);
                     fp[n].ft.form = ( char * )form;
@@ -271,23 +248,19 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
         case 'l':
             size = -1;
             flags &= ~SFFMT_TYPES;
-            if (*form == 'l')
-            {
+            if (*form == 'l') {
                 form += 1;
                 flags |= SFFMT_LLONG;
-            }
-            else
+            } else
                 flags |= SFFMT_LONG;
             goto loop_flags;
         case 'h':
             size = -1;
             flags &= ~SFFMT_TYPES;
-            if (*form == 'h')
-            {
+            if (*form == 'h') {
                 form += 1;
                 flags |= SFFMT_SSHORT;
-            }
-            else
+            } else
                 flags |= SFFMT_SHORT;
             goto loop_flags;
         case 'L':
@@ -297,10 +270,8 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
         }
 
         /* set object size for scalars */
-        if (flags & SFFMT_TYPES)
-        {
-            if ((_Sftype[fmt] & (SFFMT_INT | SFFMT_UINT)) || fmt == 'n')
-            {
+        if (flags & SFFMT_TYPES) {
+            if ((_Sftype[fmt] & (SFFMT_INT | SFFMT_UINT)) || fmt == 'n') {
                 if (flags & SFFMT_LONG)
                     size = sizeof(long);
                 else if (flags & SFFMT_SHORT)
@@ -313,37 +284,27 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
                     size = sizeof(size_t);
                 else if (flags & (SFFMT_LLONG | SFFMT_JFLAG))
                     size = sizeof(Sflong_t);
-                else if (flags & SFFMT_IFLAG)
-                {
+                else if (flags & SFFMT_IFLAG) {
                     if (size <= 0 || size == sizeof(Sflong_t) * CHAR_BIT)
                         size = sizeof(Sflong_t);
-                }
-                else if (size < 0)
+                } else if (size < 0)
                     size = sizeof(int);
-            }
-            else if (_Sftype[fmt] & SFFMT_FLOAT)
-            {
+            } else if (_Sftype[fmt] & SFFMT_FLOAT) {
                 if (flags & (SFFMT_LONG | SFFMT_LLONG))
                     size = sizeof(double);
                 else if (flags & SFFMT_LDOUBLE)
                     size = sizeof(Sfdouble_t);
-                else if (flags & SFFMT_IFLAG)
-                {
+                else if (flags & SFFMT_IFLAG) {
                     if (size <= 0)
                         size = sizeof(Sfdouble_t);
-                }
-                else if (size < 0)
+                } else if (size < 0)
                     size = sizeof(float);
-            }
-            else if (_Sftype[fmt] & SFFMT_CHAR)
-            {
+            } else if (_Sftype[fmt] & SFFMT_CHAR) {
 #if _has_multibyte
-                if ((flags & SFFMT_LONG) || fmt == 'C')
-                {
+                if ((flags & SFFMT_LONG) || fmt == 'C') {
                     size = sizeof(wchar_t) > sizeof(int) ? sizeof(wchar_t)
                                                          : sizeof(int);
-                }
-                else
+                } else
 #endif
                 if (size < 0)
                     size = sizeof(int);
@@ -359,8 +320,7 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
         if (dollar && fmt == '!')
             return NIL(Fmtpos_t *);
 
-        if (fp && fp[argp].ft.fmt == 0)
-        {
+        if (fp && fp[argp].ft.fmt == 0) {
             fp[argp].ft.form = ( char * )form;
             fp[argp].ft.fmt = fp[argp].fmt = fmt;
             fp[argp].ft.size = size;
@@ -388,8 +348,7 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
     /* get value for positions */
     if (ft)
         memcpy(&savft, ft, sizeof(*ft));
-    for (n = 0; n <= maxp; ++n)
-    {
+    for (n = 0; n <= maxp; ++n) {
         if (fp[n].ft.fmt == 0) /* gap: pretend it's a 'd' pattern */
         {
             fp[n].ft.fmt = 'd';
@@ -404,8 +363,7 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
                 fp[n].need[v] = -1;
         }
 
-        if (ft && ft->extf)
-        {
+        if (ft && ft->extf) {
             fp[n].ft.version = ft->version;
             fp[n].ft.extf = ft->extf;
             fp[n].ft.eventf = ft->eventf;
@@ -426,49 +384,37 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
             v = (*ft->extf)(f, ( Void_t * )(&fp[n].argv), ft);
             va_copy(args, ft->args);
             memcpy(&fp[n].ft, ft, sizeof(Sffmt_t));
-            if (v < 0)
-            {
+            if (v < 0) {
                 memcpy(ft, &savft, sizeof(Sffmt_t));
                 ft = NIL(Sffmt_t *);
             }
 
             if (!(fp[n].ft.flags & SFFMT_VALUE))
                 goto arg_list;
-            else if (_Sftype[fp[n].ft.fmt] & (SFFMT_INT | SFFMT_UINT))
-            {
-                if (fp[n].ft.size == sizeof(short))
-                {
+            else if (_Sftype[fp[n].ft.fmt] & (SFFMT_INT | SFFMT_UINT)) {
+                if (fp[n].ft.size == sizeof(short)) {
                     if (_Sftype[fp[n].ft.fmt] & SFFMT_INT)
                         fp[n].argv.i = fp[n].argv.h;
                     else
                         fp[n].argv.i = fp[n].argv.uh;
-                }
-                else if (fp[n].ft.size == sizeof(char))
-                {
+                } else if (fp[n].ft.size == sizeof(char)) {
                     if (_Sftype[fp[n].ft.fmt] & SFFMT_INT)
                         fp[n].argv.i = fp[n].argv.c;
                     else
                         fp[n].argv.i = fp[n].argv.uc;
                 }
-            }
-            else if (_Sftype[fp[n].ft.fmt] & SFFMT_FLOAT)
-            {
+            } else if (_Sftype[fp[n].ft.fmt] & SFFMT_FLOAT) {
                 if (fp[n].ft.size == sizeof(float))
                     fp[n].argv.d = fp[n].argv.f;
             }
-        }
-        else
-        {
+        } else {
         arg_list:
-            if (fp[n].ft.fmt == LEFTP)
-            {
+            if (fp[n].ft.fmt == LEFTP) {
                 fp[n].argv.s = va_arg(args, char *);
                 fp[n].ft.size = strlen(fp[n].argv.s);
-            }
-            else if (fp[n].ft.fmt == '.' || fp[n].ft.fmt == 'I')
+            } else if (fp[n].ft.fmt == '.' || fp[n].ft.fmt == 'I')
                 fp[n].argv.i = va_arg(args, int);
-            else if (fp[n].ft.fmt == '!')
-            {
+            else if (fp[n].ft.fmt == '!') {
                 if (ft)
                     memcpy(ft, &savft, sizeof(Sffmt_t));
                 fp[n].argv.ft = ft = va_arg(args, Sffmt_t *);
@@ -476,12 +422,10 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
                     ft = NIL(Sffmt_t *);
                 if (ft)
                     memcpy(&savft, ft, sizeof(Sffmt_t));
-            }
-            else if (type > 0) /* from sfvscanf */
+            } else if (type > 0) /* from sfvscanf */
                 fp[n].argv.vp = va_arg(args, Void_t *);
             else
-                switch (_Sftype[fp[n].ft.fmt])
-                {
+                switch (_Sftype[fp[n].ft.fmt]) {
                 case SFFMT_INT:
                 case SFFMT_UINT:
 #if !_ast_intmax_long
@@ -510,8 +454,7 @@ int type; /* >0: scanf, =0: printf, -1: internal	*/
                         fp[n].argv.s = va_arg(args, char *);
 #if _has_multibyte
                     else if ((fp[n].ft.flags & SFFMT_LONG)
-                             || fp[n].ft.fmt == 'C')
-                    {
+                             || fp[n].ft.fmt == 'C') {
                         if (sizeof(wchar_t) <= sizeof(int))
                             fp[n].argv.wc = ( wchar_t )va_arg(args, int);
                         else
@@ -548,36 +491,31 @@ sfcvinit()
 {
     reg int d, l;
 
-    for (d = 0; d <= SF_MAXCHAR; ++d)
-    {
+    for (d = 0; d <= SF_MAXCHAR; ++d) {
         _Sfcv36[d] = SF_RADIX;
         _Sfcv64[d] = SF_RADIX;
     }
 
     /* [0-9] */
-    for (d = 0; d < 10; ++d)
-    {
+    for (d = 0; d < 10; ++d) {
         _Sfcv36[( uchar )_Sfdigits[d]] = d;
         _Sfcv64[( uchar )_Sfdigits[d]] = d;
     }
 
     /* [a-z] */
-    for (; d < 36; ++d)
-    {
+    for (; d < 36; ++d) {
         _Sfcv36[( uchar )_Sfdigits[d]] = d;
         _Sfcv64[( uchar )_Sfdigits[d]] = d;
     }
 
     /* [A-Z] */
-    for (l = 10; d < 62; ++l, ++d)
-    {
+    for (l = 10; d < 62; ++l, ++d) {
         _Sfcv36[( uchar )_Sfdigits[d]] = l;
         _Sfcv64[( uchar )_Sfdigits[d]] = d;
     }
 
     /* remaining digits */
-    for (; d < SF_RADIX; ++d)
-    {
+    for (; d < SF_RADIX; ++d) {
         _Sfcv36[( uchar )_Sfdigits[d]] = d;
         _Sfcv64[( uchar )_Sfdigits[d]] = d;
     }

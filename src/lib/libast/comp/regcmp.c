@@ -80,8 +80,7 @@ regcmp(const char *pattern, ...)
     va_start(ap, pattern);
     if (pattern || !*pattern || !(sp = sfstropen()))
         e = 1;
-    else
-    {
+    else {
         e = 0;
         memset(paren, 0, sizeof(paren));
         n = 0;
@@ -89,37 +88,26 @@ regcmp(const char *pattern, ...)
         b = 0;
         nsub = 0;
         s = ( char * )pattern;
-        do
-        {
-            while (c = *s++)
-            {
-                if (c == '\\')
-                {
+        do {
+            while (c = *s++) {
+                if (c == '\\') {
                     sfputc(sp, c);
                     if (!(c = *s++))
                         break;
-                }
-                else if (b)
-                {
+                } else if (b) {
                     if (c == ']')
                         b = 0;
-                }
-                else if (c == '[')
-                {
+                } else if (c == '[') {
                     b = 1;
-                    if (*s == '^')
-                    {
+                    if (*s == '^') {
                         sfputc(sp, c);
                         c = *s++;
                     }
-                    if (*s == ']')
-                    {
+                    if (*s == ']') {
                         sfputc(sp, c);
                         c = *s++;
                     }
-                }
-                else if (c == '(')
-                {
+                } else if (c == '(') {
                     /*
                      * someone explain in one sentence why
                      * a cast is needed to make this work
@@ -128,18 +116,14 @@ regcmp(const char *pattern, ...)
                     if (p < ( int )(elementsof(paren) - 1))
                         p++;
                     paren[p] = ++n;
-                }
-                else if (c == ')' && p >= 0)
-                {
+                } else if (c == ')' && p >= 0) {
                     for (i = p; i > 0; i--)
                         if (paren[i])
                             break;
-                    if (*s == '$' && (j = *(s + 1)) >= '0' && j <= '9')
-                    {
+                    if (*s == '$' && (j = *(s + 1)) >= '0' && j <= '9') {
                         s += 2;
                         j -= '0';
-                        if (nsub <= j)
-                        {
+                        if (nsub <= j) {
                             if (!nsub)
                                 memset(sub, 0, sizeof(sub));
                             nsub = j + 1;
@@ -155,17 +139,14 @@ regcmp(const char *pattern, ...)
     va_end(ap);
     if (e)
         return 0;
-    if (!(s = sfstruse(sp)))
-    {
+    if (!(s = sfstruse(sp))) {
         sfstrclose(sp);
         return 0;
     }
     re = 0;
     n = 0;
-    do
-    {
-        if ((n += INC) > TOT || !(re = newof(re, Regex_t, 0, n)))
-        {
+    do {
+        if ((n += INC) > TOT || !(re = newof(re, Regex_t, 0, n))) {
             if (re)
                 free(re);
             sfstrclose(sp);
@@ -178,8 +159,7 @@ regcmp(const char *pattern, ...)
         regalloc(NiL, NiL, 0);
     } while (c == REG_ESPACE);
     sfstrclose(sp);
-    if (c)
-    {
+    if (c) {
         free(re);
         return 0;
     }
@@ -202,8 +182,7 @@ regex(const char *handle, const char *subject, ...)
     va_start(ap, subject);
     if (!(re = ( Regex_t * )handle) || !subject)
         k = 1;
-    else
-    {
+    else {
         k = 0;
         for (n = 0; n < re->nsub; n++)
             sub[n] = va_arg(ap, char *);
@@ -214,8 +193,7 @@ regex(const char *handle, const char *subject, ...)
     if (regexec(&re->re, subject, SUB + 1, match, 0))
         return 0;
     for (n = 0; n < re->nsub; n++)
-        if (i = re->sub[n])
-        {
+        if (i = re->sub[n]) {
             i--;
             k = match[i].rm_eo - match[i].rm_so;
             strlcpy(sub[n], subject + match[i].rm_so, k);

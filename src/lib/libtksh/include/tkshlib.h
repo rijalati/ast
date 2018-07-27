@@ -8,8 +8,7 @@
 #    include <tksh.h>
 #    undef NTcl_FreeResult
 #    define NTcl_FreeResult(interp)                                          \
-        do                                                                   \
-        {                                                                    \
+        do {                                                                 \
             sfprintf(sfstderr,                                               \
                      "Free of %s at %s %d (%x)\n",                           \
                      (interp)->result,                                       \

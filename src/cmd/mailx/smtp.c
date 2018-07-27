@@ -113,14 +113,12 @@ sendsmtp(Sfio_t *fp, char *host, char **argv, off_t original)
      */
 
     sfsprintf(svc, sizeof(svc), "/dev/tcp/%s/inet.smtp", host);
-    if ((fd = csopen(&cs, svc, 0)) < 0)
-    {
+    if ((fd = csopen(&cs, svc, 0)) < 0) {
         note(SYSTEM, "smtp: %s: cannot connect to service", svc);
         return -1;
     }
     if (!(sp = sfnew(NiL, NiL, SF_UNBOUND, fd, SF_WRITE))
-        || !(rp = sfnew(NiL, NiL, SF_UNBOUND, fd, SF_READ)))
-    {
+        || !(rp = sfnew(NiL, NiL, SF_UNBOUND, fd, SF_READ))) {
         if (sp)
             sfclose(sp);
         else
@@ -133,8 +131,7 @@ sendsmtp(Sfio_t *fp, char *host, char **argv, off_t original)
      * verify
      */
 
-    do
-    {
+    do {
         if (!(s = sfgetr(rp, '\n', 1)))
             goto bad_recv;
         if (strtol(s, &e, 10) != SMTP_READY)
@@ -149,8 +146,7 @@ sendsmtp(Sfio_t *fp, char *host, char **argv, off_t original)
         s = state.var.hostname;
     if (sfprintf(sp, "HELO %s\r\n", s) < 0)
         goto bad_send;
-    do
-    {
+    do {
         if (!(s = sfgetr(rp, '\n', 1)))
             goto bad_recv;
         if (strtol(s, &e, 10) != SMTP_OK)
@@ -161,8 +157,7 @@ sendsmtp(Sfio_t *fp, char *host, char **argv, off_t original)
      * from
      */
 
-    if (original)
-    {
+    if (original) {
         if (!(s = sfgetr(fp, '\n', 1)) || !strneq(s, "From ", 5))
             goto bad_mesg;
         for (s += 5; isspace(*s); s++)
@@ -174,9 +169,7 @@ sendsmtp(Sfio_t *fp, char *host, char **argv, off_t original)
         z = sfvalue(fp);
         if (sfprintf(sp, "MAIL FROM:<%*.*s>\r\n", n, n, s) < 0)
             goto bad_send;
-    }
-    else
-    {
+    } else {
         z = 0;
         if ((state.var.domain
              ? sfprintf(
@@ -185,8 +178,7 @@ sendsmtp(Sfio_t *fp, char *host, char **argv, off_t original)
             < 0)
             goto bad_send;
     }
-    do
-    {
+    do {
         if (!(s = sfgetr(rp, '\n', 1)))
             goto bad_recv;
         if (strtol(s, &e, 10) != SMTP_OK)
@@ -197,15 +189,13 @@ sendsmtp(Sfio_t *fp, char *host, char **argv, off_t original)
      * to
      */
 
-    while (s = *argv++)
-    {
+    while (s = *argv++) {
         if ((state.var.domain && !strchr(s, '@')
              ? sfprintf(sp, "RCPT TO:<%s@%s>\r\n", s, state.var.domain)
              : sfprintf(sp, "RCPT TO:<%s>\r\n", s))
             < 0)
             goto bad_send;
-        do
-        {
+        do {
             if (!(s = sfgetr(rp, '\n', 1)))
                 goto bad_recv;
             if (strtol(s, &e, 10) != SMTP_OK)
@@ -219,8 +209,7 @@ sendsmtp(Sfio_t *fp, char *host, char **argv, off_t original)
 
     if (sfprintf(sp, "DATA\r\n") < 0)
         goto bad_send;
-    do
-    {
+    do {
         if (!(s = sfgetr(rp, '\n', 1)))
             goto bad_recv;
         if (strtol(s, &e, 10) != SMTP_START)
@@ -231,8 +220,7 @@ sendsmtp(Sfio_t *fp, char *host, char **argv, off_t original)
         goto bad_send;
     if (sfprintf(sp, "From: <%s@%s>\n", state.var.user, host) < 0)
         goto bad_send;
-    while (s = sfgetr(fp, '\n', 1))
-    {
+    while (s = sfgetr(fp, '\n', 1)) {
         if (sfprintf(sp, "%s%s\r\n", *s == '.' ? "." : "", s) < 0)
             goto bad_send;
         if (original && (z += sfvalue(fp)) >= original)
@@ -240,8 +228,7 @@ sendsmtp(Sfio_t *fp, char *host, char **argv, off_t original)
     }
     if (sfprintf(sp, ".\r\n") < 0)
         goto bad_send;
-    do
-    {
+    do {
         if (!(s = sfgetr(rp, '\n', 1)))
             goto bad_recv;
         if (strtol(s, &e, 10) != SMTP_OK)
@@ -254,8 +241,7 @@ sendsmtp(Sfio_t *fp, char *host, char **argv, off_t original)
 
     if (sfprintf(sp, "QUIT\r\n") < 0)
         goto bad_send;
-    do
-    {
+    do {
         if (!(s = sfgetr(rp, '\n', 1)))
             goto bad_recv;
         if (strtol(s, &e, 10) != SMTP_CLOSE)

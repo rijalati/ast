@@ -94,27 +94,21 @@ paste(int nstream,
     const char *cp;
     int d, n, i, z, more = 1;
     Sfio_t *fp;
-    do
-    {
+    do {
         d = (dlen > 0 ? 0 : -1);
-        for (n = more - 1, more = 0; n < nstream;)
-        {
-            if (fp = streams[n])
-            {
-                if (cp = sfgetr(fp, '\n', 0))
-                {
+        for (n = more - 1, more = 0; n < nstream;) {
+            if (fp = streams[n]) {
+                if (cp = sfgetr(fp, '\n', 0)) {
                     if (n == 0)
                         more = 1;
                     else if (!more) /* first stream with output */
                     {
                         if (dsiz == 1)
                             sfnputc(out, *delim, n);
-                        else if (dlen > 0)
-                        {
+                        else if (dlen > 0) {
                             for (d = n; d > dlen; d -= dlen)
                                 sfwrite(out, delim, dsiz);
-                            if (d)
-                            {
+                            if (d) {
                                 if (mp)
                                     for (i = z = 0; i < d; i++)
                                         z += mp[i].len;
@@ -128,12 +122,10 @@ paste(int nstream,
                     if (sfwrite(out, cp, sfvalue(fp) - ((n + 1) < nstream))
                         < 0)
                         return (-1);
-                }
-                else
+                } else
                     streams[n] = 0;
             }
-            if (++n < nstream && more && d >= 0)
-            {
+            if (++n < nstream && more && d >= 0) {
                 int c;
                 if (d >= dlen)
                     d = 0;
@@ -142,8 +134,7 @@ paste(int nstream,
                 else if (c = delim[d])
                     sfputc(out, c);
                 d++;
-            }
-            else if (n == nstream && !streams[n - 1] && more)
+            } else if (n == nstream && !streams[n - 1] && more)
                 sfputc(out, '\n');
         }
     } while (more);
@@ -165,10 +156,8 @@ spaste(Sfio_t *in,
     int d = 0;
     if ((cp = sfgetr(in, '\n', 0)) && sfwrite(out, cp, sfvalue(in) - 1) < 0)
         return (-1);
-    while (cp = sfgetr(in, '\n', 0))
-    {
-        if (dlen)
-        {
+    while (cp = sfgetr(in, '\n', 0)) {
+        if (dlen) {
             int c;
             if (d >= dlen)
                 d = 0;
@@ -200,10 +189,8 @@ b_paste(int argc, char **argv, Shbltin_t *context)
 
     cmdinit(argc, argv, context, ERROR_CATALOG, 0);
     delim = 0;
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'd':
             delim = opt_info.arg;
             continue;
@@ -222,8 +209,7 @@ b_paste(int argc, char **argv, Shbltin_t *context)
     argv += opt_info.index;
     if (error_info.errors)
         error(ERROR_usage(2), "%s", optusage(NiL));
-    if (!delim || !*delim)
-    {
+    if (!delim || !*delim) {
         delim = defdelim;
         delim[0] = '\t';
         delim[1] = 0;
@@ -232,28 +218,23 @@ b_paste(int argc, char **argv, Shbltin_t *context)
         error(ERROR_system(1), "out of space");
     dlen = dsiz = stresc(delim);
     mp = 0;
-    if (mbwide())
-    {
+    if (mbwide()) {
         cp = delim;
         ep = delim + dlen;
         dlen = 0;
         mbinit(&q);
-        while (cp < ep)
-        {
+        while (cp < ep) {
             mbchar(&w, cp, MB_LEN_MAX, &q);
             dlen++;
         }
-        if (dlen < dsiz)
-        {
-            if (!(mp = newof(0, Delim_t, dlen, 0)))
-            {
+        if (dlen < dsiz) {
+            if (!(mp = newof(0, Delim_t, dlen, 0))) {
                 free(delim);
                 error(ERROR_system(1), "out of space");
             }
             cp = delim;
             dlen = 0;
-            while (cp < ep)
-            {
+            while (cp < ep) {
                 mp[dlen].chr = cp;
                 mbchar(&w, cp, MB_LEN_MAX, &q);
                 mp[dlen].len = cp - mp[dlen].chr;
@@ -261,37 +242,30 @@ b_paste(int argc, char **argv, Shbltin_t *context)
             }
         }
     }
-    if (cp = *argv)
-    {
+    if (cp = *argv) {
         n = argc - opt_info.index;
         argv++;
-    }
-    else
+    } else
         n = 1;
-    if (!sflag)
-    {
+    if (!sflag) {
         if (!(streams = ( Sfio_t ** )stakalloc(n * sizeof(Sfio_t *))))
             error(ERROR_exit(1), "out of space");
         n = 0;
     }
-    do
-    {
+    do {
         if (!cp || streq(cp, "-"))
             fp = sfstdin;
         else if (!(fp = sfopen(NiL, cp, "r")))
             error(ERROR_system(0), "%s: cannot open", cp);
-        if (fp && sflag)
-        {
+        if (fp && sflag) {
             if (spaste(fp, sfstdout, delim, dsiz, dlen, mp) < 0)
                 error(ERROR_system(0), "write failed");
             if (fp != sfstdin)
                 sfclose(fp);
-        }
-        else if (!sflag)
+        } else if (!sflag)
             streams[n++] = fp;
     } while (cp = *argv++);
-    if (!sflag)
-    {
+    if (!sflag) {
         if (error_info.errors == 0
             && paste(n, streams, sfstdout, delim, dsiz, dlen, mp) < 0)
             error(ERROR_system(0), "write failed");

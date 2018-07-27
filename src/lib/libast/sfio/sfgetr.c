@@ -59,38 +59,30 @@ int type;
 
     if (type & SF_LASTR) /* return the broken record */
     {
-        if ((f->flags & SF_STRING) && (un = f->endb - f->next))
-        {
+        if ((f->flags & SF_STRING) && (un = f->endb - f->next)) {
             us = f->next;
             f->next = f->endb;
             found = 1;
-        }
-        else if ((rsrv = f->rsrv) && (un = -rsrv->slen) > 0)
-        {
+        } else if ((rsrv = f->rsrv) && (un = -rsrv->slen) > 0) {
             us = rsrv->data;
             found = 1;
         }
         goto done;
     }
 
-    while (!found)
-    { /* fill buffer if necessary */
-        if ((n = (ends = f->endb) - (s = f->next)) <= 0)
-        { /* for unseekable devices, peek-read 1 record */
+    while (!found) { /* fill buffer if necessary */
+        if ((n = (ends = f->endb) - (s = f->next))
+            <= 0) { /* for unseekable devices, peek-read 1 record */
             f->getr = rc;
             f->mode |= SF_RC;
 
             /* fill buffer the conventional way */
-            if (SFRPEEK(f, s, n) <= 0)
-            {
+            if (SFRPEEK(f, s, n) <= 0) {
                 us = NIL(uchar *);
                 goto done;
-            }
-            else
-            {
+            } else {
                 ends = s + n;
-                if (f->mode & SF_RC)
-                {
+                if (f->mode & SF_RC) {
                     s = ends[-1] == rc ? ends - 1 : ends;
                     goto do_copy;
                 }
@@ -113,8 +105,9 @@ int type;
 
             if (!us
                 && (!(type & SF_STRING) || !(f->flags & SF_STRING)
-                    || ((f->flags & SF_STRING) && (f->bits & SF_BOTH))))
-            { /* returning data in buffer */
+                    || ((f->flags & SF_STRING)
+                        && (f->bits & SF_BOTH)))) { /* returning data in
+                                                       buffer */
                 us = f->next;
                 un = s - f->next;
                 f->next = s;
@@ -134,14 +127,12 @@ int type;
         }
 
         /* get internal buffer */
-        if (!rsrv || rsrv->size < un + n + 1)
-        {
+        if (!rsrv || rsrv->size < un + n + 1) {
             if (rsrv)
                 rsrv->slen = un;
             if ((rsrv = _sfrsrv(f, un + n + 1)) != NIL(Sfrsrv_t *))
                 us = rsrv->data;
-            else
-            {
+            else {
                 us = NIL(uchar *);
                 goto done;
             }
@@ -158,11 +149,9 @@ int type;
 done:
     _Sfi = f->val = un;
     f->getr = 0;
-    if (found && rc != 0 && (type & SF_STRING))
-    {
+    if (found && rc != 0 && (type & SF_STRING)) {
         us[un - 1] = '\0';
-        if (us >= f->data && us < f->endb)
-        {
+        if (us >= f->data && us < f->endb) {
             f->getr = rc;
             f->mode |= SF_GETR;
         }
@@ -174,8 +163,7 @@ done:
 
     SFOPEN(f, 0);
 
-    if (us && (type & SF_LOCKR))
-    {
+    if (us && (type & SF_LOCKR)) {
         f->mode |= SF_PEEK | SF_GETR;
         f->endr = f->data;
     }

@@ -119,16 +119,14 @@ ssize_t mt; /* matched position	*/
     else
         ad = md = -1;
 
-    if (sav->dtsz > 0)
-    {
+    if (sav->dtsz > 0) {
         if (sav->mode >= 0) /* saved COPY, no merged COPY+COPY */
             vcdflscopy(vcd, sav->addr, sav->dtsz, sav->mode);
         else /* saved ADD */
         {
             if (cz <= 0 || sav->dtsz > siz->add1[md] || cz > siz->copy2[md])
                 vcdflsadd(vcd, sav->addr, sav->dtsz);
-            else
-            {
+            else {
                 cd = idx->addcopy[sav->dtsz][md][cz];
                 vcioputc(vcd->inst, cd);
 
@@ -172,8 +170,8 @@ ssize_t az;
         if (sav->mode < 0) /* parsing error? no two ADDs in a row possible */
             return -1;
 
-        if (sav->dtsz <= siz->copy1[sav->mode] && az <= siz->add2[sav->mode])
-        {
+        if (sav->dtsz <= siz->copy1[sav->mode]
+            && az <= siz->add2[sav->mode]) {
             cd = idx->copyadd[sav->mode][sav->dtsz][az];
             vcioputc(vcd->inst, cd);
 
@@ -185,8 +183,7 @@ ssize_t az;
                 data = vcd->vcpa.tar + (dt - vcd->vcpa.nsrc);
             vcioputs(vcd->data, data, az);
             az = 0;
-        }
-        else
+        } else
             vcdflscopy(vcd, sav->addr, sav->dtsz, sav->mode);
     }
 
@@ -228,10 +225,8 @@ ssize_t n;         /* number of fragments		*/
 	}
 }
 #endif
-    for (len = 0, here = mtch->tpos; n > 0; ++mtch, --n)
-    {
-        if ((l = mtch->tpos - here) > 0)
-        {
+    for (len = 0, here = mtch->tpos; n > 0; ++mtch, --n) {
+        if ((l = mtch->tpos - here) > 0) {
             if (vcdputadd(vcd, here, l) != l)
                 return -1;
             len += l;
@@ -240,15 +235,12 @@ ssize_t n;         /* number of fragments		*/
 
         if (mtch->size <= 0)
             continue;
-        else if (mtch->mpos < 0)
-        {
+        else if (mtch->mpos < 0) {
             if ((l = vcdputadd(vcd, mtch->tpos, mtch->size)) != mtch->size)
                 return -1;
             len += l;
             here += l;
-        }
-        else
-        {
+        } else {
             if ((l = vcdputcopy(vcd, mtch->tpos, mtch->size, mtch->mpos))
                 != mtch->size)
                 return -1;
@@ -316,20 +308,17 @@ Void_t **del;
     ra = vciodata(vcd->addr);
     if (vc->coder) /* continuation coding */
     {
-        if ((n = vcapply(vc->coder, rd, d, &p)) >= 0 && n < d)
-        {
+        if ((n = vcapply(vc->coder, rd, d, &p)) >= 0 && n < d) {
             d = n;
             rd = p;
             ctrl |= VCD_DATACOMPRESS;
         }
-        if ((n = vcapply(vc->coder, ri, i, &p)) >= 0 && n < i)
-        {
+        if ((n = vcapply(vc->coder, ri, i, &p)) >= 0 && n < i) {
             i = n;
             ri = p;
             ctrl |= VCD_INSTCOMPRESS;
         }
-        if ((n = vcapply(vc->coder, ra, a, &p)) >= 0 && n < a)
-        {
+        if ((n = vcapply(vc->coder, ra, a, &p)) >= 0 && n < a) {
             a = n;
             ra = p;
             ctrl |= VCD_ADDRCOMPRESS;
@@ -394,20 +383,16 @@ Void_t **out;
     ra = ri + i;
 
     /* recompute the data, instruction and address streams if encoded */
-    if (vc->coder)
-    {
-        if (ctrl & VCD_DATACOMPRESS)
-        {
+    if (vc->coder) {
+        if (ctrl & VCD_DATACOMPRESS) {
             if ((d = vcapply(vc->coder, rd, d, &rd)) < 0)
                 RETURN(-1);
         }
-        if (ctrl & VCD_INSTCOMPRESS)
-        {
+        if (ctrl & VCD_INSTCOMPRESS) {
             if ((i = vcapply(vc->coder, ri, i, &ri)) < 0)
                 RETURN(-1);
         }
-        if (ctrl & VCD_ADDRCOMPRESS)
-        {
+        if (ctrl & VCD_ADDRCOMPRESS) {
             if ((a = vcapply(vc->coder, ra, a, &ra)) < 0)
                 RETURN(-1);
         }
@@ -428,8 +413,7 @@ Void_t **out;
     nsrc = disc ? disc->size : 0;
     src = disc ? ( Vcchar_t * )disc->data : NIL(Vcchar_t *);
 
-    for (t = tar; t < etar;)
-    {
+    for (t = tar; t < etar;) {
         Vcdcode_t *cd;
         Vcdinst_t *in;
         ssize_t sz;
@@ -439,14 +423,12 @@ Void_t **out;
             RETURN(-1);
         cd = code + vciogetc(&inst);
 
-        for (i = 0; i < 2; ++i)
-        {
+        for (i = 0; i < 2; ++i) {
             in = i == 0 ? &cd->inst1 : &cd->inst2;
             if (in->type == VCD_NOOP)
                 continue;
 
-            if ((sz = in->size) == 0)
-            {
+            if ((sz = in->size) == 0) {
                 if (vciomore(&inst) <= 0)
                     RETURN(-1);
                 sz = vciogetu(&inst);
@@ -455,48 +437,37 @@ Void_t **out;
             if (t + sz > etar)
                 RETURN(-1);
 
-            if (in->type == VCD_BYTE)
-            {
+            if (in->type == VCD_BYTE) {
                 d = in->mode;
                 for (; sz > 0; --sz)
                     *t++ = ( Vcchar_t )d;
-            }
-            else if (in->type == VCD_COPY)
-            {
+            } else if (in->type == VCD_COPY) {
                 if (vciomore(&addr) <= 0)
                     RETURN(-1);
                 d = vcdkagetaddr(ka, &addr, (t - tar) + nsrc, in->mode);
-                if (d < nsrc)
-                {
+                if (d < nsrc) {
                     if (d + sz > nsrc)
                         RETURN(-1);
                     s = src + d;
-                }
-                else
-                {
+                } else {
                     if ((d -= nsrc) >= (t - tar) || (d + sz) > ntar)
                         RETURN(-1);
                     s = tar + d;
                 }
                 for (; sz > 0; --sz)
                     *t++ = *s++;
-            }
-            else if (in->type == VCD_ADD)
-            {
+            } else if (in->type == VCD_ADD) {
                 if (vciomore(&data) < sz)
                     RETURN(-1);
                 vciogets(&data, t, sz);
                 t += sz;
-            }
-            else if (in->type == VCD_RUN)
-            {
+            } else if (in->type == VCD_RUN) {
                 if (vciomore(&data) <= 0)
                     RETURN(-1);
                 d = vciogetc(&data);
                 for (; sz > 0; --sz)
                     *t++ = ( Vcchar_t )d;
-            }
-            else
+            } else
                 RETURN(-1);
         }
     }
@@ -524,8 +495,7 @@ Void_t *init;
 
     _vcdtblinit(); /* initialize default code tables */
 
-    if (type == VC_OPENING)
-    {
+    if (type == VC_OPENING) {
         if (!(vcd = ( Vcdiff_t * )calloc(1, sizeof(Vcdiff_t))))
             return -1;
         VCDINIT(vcd);
@@ -538,19 +508,16 @@ Void_t *init;
         vcd->index = &_Vcdindex;
         vcd->size = &_Vcdsize;
         vcd->vcpa.parsef = vcdputinst;
-        if (!(vcd->cache = vcdkaopen(vcd->table->s_near, vcd->table->s_same)))
-        {
+        if (!(vcd->cache
+              = vcdkaopen(vcd->table->s_near, vcd->table->s_same))) {
             free(vcd);
             return -1;
         }
 
         vcsetmtdata(vc, vcd);
         return 0;
-    }
-    else if (type == VC_CLOSING)
-    {
-        if ((vcd = vcgetmtdata(vc, Vcdiff_t *)))
-        {
+    } else if (type == VC_CLOSING) {
+        if ((vcd = vcgetmtdata(vc, Vcdiff_t *))) {
             if (vcd->cache)
                 vcdkaclose(vcd->cache);
             if (vcd->table && (vcd->flags & FREETABLE))
@@ -560,8 +527,7 @@ Void_t *init;
 
         vcsetmtdata(vc, NIL(Vcdiff_t *));
         return 0;
-    }
-    else
+    } else
         return 0;
 }
 

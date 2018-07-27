@@ -363,23 +363,19 @@ urlcmp(const char *p, const char *s, int d)
     int pc;
     int sc;
 
-    for (;;)
-    {
-        if ((pc = *p++) == d)
-        {
+    for (;;) {
+        if ((pc = *p++) == d) {
             if (*s != d)
                 return -1;
             break;
         }
         if ((sc = *s++) == d)
             return 1;
-        if (pc == '%')
-        {
+        if (pc == '%') {
             pc = ( int )strntol(p, 2, NiL, 16);
             p += 2;
         }
-        if (sc == '%')
-        {
+        if (sc == '%') {
             sc = ( int )strntol(s, 2, NiL, 16);
             s += 2;
         }
@@ -410,8 +406,7 @@ act(Ftw_t *ftw, int op)
     int n;
     int r;
 
-    switch (op)
-    {
+    switch (op) {
     case ACT_CMDARG:
         if ((i = cmdarg(state.cmd, ftw->path, ftw->pathlen)) >= state.errexit)
             exit(i);
@@ -452,37 +447,29 @@ act(Ftw_t *ftw, int op)
         r = SNAPSHOT_new;
         if (!state.snapshot.prev)
             k = 1;
-        else
-        {
-            do
-            {
+        else {
+            do {
                 if (!(k = urlcmp(
-                      state.snapshot.prev, s, state.snapshot.format.delim)))
-                {
+                      state.snapshot.prev, s, state.snapshot.format.delim))) {
                     r = SNAPSHOT_changed;
                     if (!(k = memcmp(state.snapshot.prev + i, s + i, j - i)
                               || state.snapshot.prev[j]
-                                 != state.snapshot.format.delim))
-                    {
+                                 != state.snapshot.format.delim)) {
                         if ((n = ( int )sfvalue(sfstdin)) > 4
                             && state.snapshot.prev[n - 2]
-                               == state.snapshot.format.delim)
-                        {
+                               == state.snapshot.format.delim) {
                             sfwrite(sfstdout, state.snapshot.prev, n - 4);
                             sfputc(sfstdout, '\n');
-                        }
-                        else
+                        } else
                             sfwrite(sfstdout, state.snapshot.prev, n);
                     }
-                }
-                else if (k > 0)
+                } else if (k > 0)
                     break;
                 else if (k < 0 && (n = ( int )sfvalue(sfstdin)) > 4
                          && (state.snapshot.prev[n - 2]
                              != state.snapshot.format.delim
                              || state.snapshot.prev[n - 3]
-                                != SNAPSHOT_deleted))
-                {
+                                != SNAPSHOT_deleted)) {
                     sfwrite(sfstdout,
                             state.snapshot.prev,
                             n
@@ -501,10 +488,8 @@ act(Ftw_t *ftw, int op)
                     break;
             } while (k < 0);
         }
-        if (k)
-        {
-            if (state.snapshot.format.hard && (ftw->info & FTW_F))
-            {
+        if (k) {
+            if (state.snapshot.format.hard && (ftw->info & FTW_F)) {
                 sfputc(state.snapshot.tmp, state.snapshot.format.delim);
                 print(state.snapshot.tmp, ftw, state.snapshot.format.hard);
             }
@@ -515,8 +500,7 @@ act(Ftw_t *ftw, int op)
             if (state.cmdflags & CMD_TRACE)
                 error(
                 1, "%s %s", ftw->path, r == SNAPSHOT_new ? "new" : "changed");
-        }
-        else
+        } else
             sfstrseek(state.snapshot.tmp, SEEK_SET, 0);
         break;
     }
@@ -533,8 +517,7 @@ intermediate(Ftw_t *ftw, char *path)
     char *t;
     int c;
 
-    if (!(ftw->info & FTW_D) || ftw->statb.st_nlink)
-    {
+    if (!(ftw->info & FTW_D) || ftw->statb.st_nlink) {
         ftw->statb.st_nlink = 0;
         if (ftw->level > 1)
             intermediate(ftw->parent, path);
@@ -558,34 +541,29 @@ tw(Ftw_t *ftw)
 {
     Local_t *lp;
 
-    switch (ftw->info)
-    {
+    switch (ftw->info) {
     case FTW_NS:
-        if (!state.info)
-        {
+        if (!state.info) {
             if (!state.pattern && !state.ignore)
                 error(2, "%s: not found", ftw->path);
             return 0;
         }
         break;
     case FTW_DC:
-        if (!state.info)
-        {
+        if (!state.info) {
             if (!state.ignore)
                 error(2, "%s: directory causes cycle", ftw->path);
             return 0;
         }
         break;
     case FTW_DNR:
-        if (!state.info)
-        {
+        if (!state.info) {
             if (!state.ignore)
                 error(2, "%s: cannot read directory", ftw->path);
         }
         break;
     case FTW_DNX:
-        if (!state.info)
-        {
+        if (!state.info) {
             if (!state.ignore)
                 error(2, "%s: cannot search directory", ftw->path);
             ftw->status = FTW_SKIP;
@@ -616,14 +594,12 @@ tw(Ftw_t *ftw)
     }
     if (state.localfs && (ftw->info & FTW_D) && !ftwlocal(ftw))
         ftw->status = FTW_SKIP;
-    else
-    {
+    else {
         if (state.select == ALL
             || eval(state.select, ftw) && ftw->status != FTW_SKIP)
             act(ftw, state.act);
     pop:
-        if (state.localmem && (lp = ( Local_t * )ftw->local.pointer))
-        {
+        if (state.localmem && (lp = ( Local_t * )ftw->local.pointer)) {
             lp->next = state.local;
             state.local = lp;
         }
@@ -653,10 +629,8 @@ order(Ftw_t *f1, Ftw_t *f2)
     reverse = state.reverse;
     x = state.sortkey;
     y = 0;
-    for (;;)
-    {
-        switch (x->op)
-        {
+    for (;;) {
+        switch (x->op) {
         case '~':
             icase = !icase;
             x = x->data.operand.left;
@@ -679,8 +653,7 @@ order(Ftw_t *f1, Ftw_t *f2)
                 || x->data.variable.symbol->index == F_path)
                 v = icase ? strcasecmp(f1->name, f2->name)
                           : strcoll(f1->name, f2->name);
-            else
-            {
+            else {
                 n1 = getnum(x->data.variable.symbol, f1);
                 n2 = getnum(x->data.variable.symbol, f2);
                 if (n1 < n2)
@@ -690,8 +663,7 @@ order(Ftw_t *f1, Ftw_t *f2)
                 else
                     v = 0;
             }
-            if (v)
-            {
+            if (v) {
                 if (reverse)
                     v = -v;
                 break;
@@ -748,10 +720,8 @@ main(int argc, char **argv)
     state.select = ALL;
     state.separator = '\n';
     memset(&disc, 0, sizeof(disc));
-    for (;;)
-    {
-        switch (optget(argv, usage))
-        {
+    for (;;) {
+        switch (optget(argv, usage)) {
         case 'a':
             args = opt_info.arg;
             state.cmdflags |= CMD_POST;
@@ -802,14 +772,12 @@ main(int argc, char **argv)
             state.errexit = opt_info.arg ? opt_info.num : EXIT_QUIT;
             continue;
         case 'z':
-            if (s = sfgetr(sfstdin, '\n', 1))
-            {
+            if (s = sfgetr(sfstdin, '\n', 1)) {
                 if (!(s = strdup(s)))
                     error(ERROR_SYSTEM | 3, "out of space");
                 n = state.snapshot.format.delim = *s++;
                 state.snapshot.format.path = s;
-                if (!(s = strchr(s, n)))
-                {
+                if (!(s = strchr(s, n))) {
                 osnap:
                     error(3, "invalid snapshot on standard input");
                 }
@@ -824,19 +792,15 @@ main(int argc, char **argv)
                 if (!(s = strchr(s, n)))
                     goto osnap;
                 *s++ = 0;
-                if (*(state.snapshot.format.hard = s))
-                {
+                if (*(state.snapshot.format.hard = s)) {
                     if (!(s = strchr(s, n)))
                         goto osnap;
                     *s = 0;
-                }
-                else
+                } else
                     state.snapshot.format.hard = 0;
                 state.snapshot.sp = sfstdin;
                 state.snapshot.prev = sfgetr(sfstdin, '\n', 0);
-            }
-            else
-            {
+            } else {
                 state.snapshot.format.path = SNAPSHOT_PATH;
                 state.snapshot.format.easy = SNAPSHOT_EASY;
                 state.snapshot.format.hard = SNAPSHOT_HARD;
@@ -867,14 +831,12 @@ main(int argc, char **argv)
                 disc.flags |= FIND_GNU;
             else if (streq(opt_info.arg, "type"))
                 disc.flags |= FIND_TYPE;
-            else if (streq(opt_info.arg, "?"))
-            {
+            else if (streq(opt_info.arg, "?")) {
                 error(2, "formats are { default|dir type old gnu|locate }");
                 return 0;
-            }
-            else if (!streq(opt_info.arg, "-")
-                     && !streq(opt_info.arg, "default")
-                     && !streq(opt_info.arg, "dir"))
+            } else if (!streq(opt_info.arg, "-")
+                       && !streq(opt_info.arg, "default")
+                       && !streq(opt_info.arg, "dir"))
                 error(3,
                       "%s: invalid find codes format -- { default|dir type "
                       "old gnu|locate } expected",
@@ -938,18 +900,14 @@ main(int argc, char **argv)
         state.ftwflags &= ~FTW_DELAY;
     memset(&ftw, 0, sizeof(ftw));
     ftw.path = ftw.name = "";
-    if (traverse)
-    {
+    if (traverse) {
         if (x = exexpr(state.program, "action", NiL, 0))
             state.action = x;
-        if (x = exexpr(state.program, "sort", NiL, 0))
-        {
+        if (x = exexpr(state.program, "sort", NiL, 0)) {
             state.sortkey = x;
             y = 0;
-            for (;;)
-            {
-                switch (x->op)
-                {
+            for (;;) {
+                switch (x->op) {
                 case ',':
                     y = x->data.operand.right;
                     /*FALLTHROUGH*/
@@ -972,24 +930,20 @@ main(int argc, char **argv)
             }
             state.sort = order;
         }
-        if (*argv && (*argv)[0] == '-' && (*argv)[1] == 0)
-        {
+        if (*argv && (*argv)[0] == '-' && (*argv)[1] == 0) {
             state.ftwflags |= FTW_LIST;
             argv++;
             argc--;
         }
-        if (*argv || args || count || !(state.cmdflags & CMD_IMPLICIT))
-        {
+        if (*argv || args || count || !(state.cmdflags & CMD_IMPLICIT)) {
             Cmddisc_t disc;
 
             CMDDISC(&disc, state.cmdflags, errorf);
             state.cmd = cmdopen(argv, count, size, args, &disc);
             state.ftwflags |= FTW_DOT;
-        }
-        else
+        } else
             state.cmdflags &= ~CMD_IMPLICIT;
-        if (codes && (disc.flags & FIND_GENERATE))
-        {
+        if (codes && (disc.flags & FIND_GENERATE)) {
             char *p;
             Dir_t *dp;
             char pwd[PATH_MAX];
@@ -1003,13 +957,11 @@ main(int argc, char **argv)
             disc.errorf = errorf;
             if (!(state.find = findopen(codes, NiL, NiL, &disc)))
                 exit(2);
-            if (disc.flags & FIND_TYPE)
-            {
+            if (disc.flags & FIND_TYPE) {
                 state.act = ACT_CODETYPE;
                 compile("_tw_init:mime;", 0);
                 state.magicdisc.flags |= MAGIC_MIME;
-            }
-            else
+            } else
                 state.act = ACT_CODE;
             state.icase = 1;
             state.pattern = 0;
@@ -1023,8 +975,7 @@ main(int argc, char **argv)
             state.sortkey->op = ID;
             s = p = 0;
             for (dp = (firstdir == lastdir) ? firstdir : firstdir->next; dp;
-                 dp = dp->next)
-            {
+                 dp = dp->next) {
                 if (*(s = dp->name) == '/')
                     sfsprintf(tmp, sizeof(tmp), "%s", s);
                 else if (!p && !(p = getcwd(pwd, sizeof(pwd))))
@@ -1035,8 +986,7 @@ main(int argc, char **argv)
                 if (!(dp->name = strdup(tmp)))
                     error(ERROR_SYSTEM | 3, "out of space [PATH_PHYSICAL]");
             }
-        }
-        else if (state.snapshot.tmp)
+        } else if (state.snapshot.tmp)
             state.act = ACT_SNAPSHOT;
         else if (state.cmdflags & CMD_IMPLICIT)
             state.act = ACT_CMDARG;
@@ -1044,13 +994,11 @@ main(int argc, char **argv)
             state.act = ACT_LIST;
         else if (state.action)
             state.act = ACT_EVAL;
-        if (state.intermediate)
-        {
+        if (state.intermediate) {
             state.actII = state.act;
             state.act = ACT_INTERMEDIATE;
         }
-        if (state.pattern)
-        {
+        if (state.pattern) {
             disc.version = FIND_VERSION;
             if (state.icase)
                 disc.flags |= FIND_ICASE;
@@ -1058,8 +1006,7 @@ main(int argc, char **argv)
             disc.dirs = ap = av;
             if (firstdir != lastdir)
                 firstdir = firstdir->next;
-            do
-            {
+            do {
                 *ap++ = firstdir->name;
             } while (firstdir = firstdir->next);
             *ap = 0;
@@ -1067,10 +1014,8 @@ main(int argc, char **argv)
                 exit(1);
             state.ftwflags |= FTW_TOP;
             n = state.select == ALL ? state.act : ACT_EVAL;
-            while (s = findread(state.find))
-            {
-                switch (n)
-                {
+            while (s = findread(state.find)) {
+                switch (n) {
                 case ACT_CMDARG:
                     if ((i = cmdarg(state.cmd, s, strlen(s)))
                         >= state.errexit)
@@ -1084,21 +1029,16 @@ main(int argc, char **argv)
                     break;
                 }
             }
-        }
-        else if (state.ftwflags & FTW_LIST)
-        {
+        } else if (state.ftwflags & FTW_LIST) {
             sfopen(sfstdin, NiL, "rt");
             n = state.select == ALL && state.act == ACT_CMDARG;
-            for (;;)
-            {
+            for (;;) {
                 if (s = sfgetr(sfstdin, state.separator, 1))
                     len = sfvalue(sfstdin) - 1;
-                else if (state.separator != '\n')
-                {
+                else if (state.separator != '\n') {
                     state.separator = '\n';
                     continue;
-                }
-                else if (s = sfgetr(sfstdin, state.separator, -1))
+                } else if (s = sfgetr(sfstdin, state.separator, -1))
                     len = sfvalue(sfstdin);
                 else
                     break;
@@ -1109,11 +1049,9 @@ main(int argc, char **argv)
             }
             if (sferror(sfstdin))
                 error(ERROR_SYSTEM | 2, "input read error");
-        }
-        else if (firstdir == lastdir)
+        } else if (firstdir == lastdir)
             ftwalk(firstdir->name, tw, state.ftwflags, state.sort);
-        else
-        {
+        else {
             ap = av;
             while (firstdir = firstdir->next)
                 *ap++ = firstdir->name;
@@ -1125,8 +1063,7 @@ main(int argc, char **argv)
             exit(i);
         if (state.find && (findclose(state.find) || state.finderror))
             exit(2);
-    }
-    else if (state.select)
+    } else if (state.select)
         error_info.errors = eval(state.select, &ftw) == 0;
     if (x = exexpr(state.program, "end", NiL, 0))
         eval(x, &ftw);

@@ -89,8 +89,7 @@ svc_read(void *handle, int fd)
     msg = buf;
     if (tokscan(msg, &msg, " %s %s %s ", &op, &logical, &path) < 1)
         goto nope;
-    switch (strkey(op))
-    {
+    switch (strkey(op)) {
     case HASHKEY5('d', 'e', 'b', 'u', 'g'):
         error_info.trace = -strtol(logical, NiL, 10);
         goto nope;
@@ -119,8 +118,7 @@ svc_read(void *handle, int fd)
         goto nope;
     }
     while (tokscan(msg, &msg, " %s=%s ", &name, &value) == 2)
-        switch (strkey(name))
-        {
+        switch (strkey(name)) {
         case HASHKEY3('p', 'w', 'd'):
             chdir(value);
             break;
@@ -128,16 +126,13 @@ svc_read(void *handle, int fd)
     if (!getfd)
         goto nope;
     if (*path)
-        do
-        {
+        do {
             n = *--path;
             *path = '/';
         } while (n);
-    if ((ud = csopen(logical, CS_OPEN_READ)) >= 0)
-    {
+    if ((ud = csopen(logical, CS_OPEN_READ)) >= 0) {
         if (cswrite(fd, DEVFD, sizeof(DEVFD) - 1) != sizeof(DEVFD) - 1
-            || cssend(fd, &ud, 1))
-        {
+            || cssend(fd, &ud, 1)) {
             close(ud);
             goto drop;
         }
@@ -161,8 +156,7 @@ svc_timeout(void *handle)
 {
     State_t *state = ( State_t * )handle;
 
-    if (!state->active)
-    {
+    if (!state->active) {
         if (state->dormant)
             exit(0);
         state->dormant = 1;

@@ -42,16 +42,14 @@ cc_options(Codexmeth_t *meth, Sfio_t *sp)
     const char *p;
     int c;
 
-    for (ic = iconv_list(NiL); ic; ic = iconv_list(ic))
-    {
+    for (ic = iconv_list(NiL); ic; ic = iconv_list(ic)) {
         sfputc(sp, '[');
         sfputc(sp, '+');
         sfputc(sp, '\b');
         p = ic->match;
         if (*p == '(')
             p++;
-        while (c = *p++)
-        {
+        while (c = *p++) {
             if (c == ')' && !*p)
                 break;
             if (c == '?' || c == ']')
@@ -60,8 +58,7 @@ cc_options(Codexmeth_t *meth, Sfio_t *sp)
         }
         sfputc(sp, '?');
         p = ic->desc;
-        while (c = *p++)
-        {
+        while (c = *p++) {
             if (c == ']')
                 sfputc(sp, c);
             sfputc(sp, c);
@@ -80,10 +77,8 @@ cc_open(Codex_t *p, char *const args[], Codexnum_t flags)
     iconv_t cvt;
 
     dst = (src = args[2]) ? args[3] : 0;
-    if (flags & CODEX_DECODE)
-    {
-        if (!src)
-        {
+    if (flags & CODEX_DECODE) {
+        if (!src) {
             if (p->disc->errorf)
                 (*p->disc->errorf)(
                 NiL,
@@ -93,11 +88,8 @@ cc_open(Codex_t *p, char *const args[], Codexnum_t flags)
                 p->meth->name);
             return -1;
         }
-    }
-    else
-    {
-        if (!src)
-        {
+    } else {
+        if (!src) {
             if (p->disc->errorf)
                 (*p->disc->errorf)(
                 NiL,
@@ -107,18 +99,14 @@ cc_open(Codex_t *p, char *const args[], Codexnum_t flags)
                 p->meth->name);
             return -1;
         }
-        if (!dst)
-        {
+        if (!dst) {
             dst = src;
             src = 0;
         }
     }
-    if ((cvt = iconv_open(dst, src)) == (iconv_t)(-1))
-    {
-        if (p->disc->errorf)
-        {
-            if ((cvt = iconv_open("utf-8", src)) == (iconv_t)(-1))
-            {
+    if ((cvt = iconv_open(dst, src)) == (iconv_t)(-1)) {
+        if (p->disc->errorf) {
+            if ((cvt = iconv_open("utf-8", src)) == (iconv_t)(-1)) {
                 (*p->disc->errorf)(NiL,
                                    p->disc,
                                    2,
@@ -128,8 +116,7 @@ cc_open(Codex_t *p, char *const args[], Codexnum_t flags)
                 return -1;
             }
             iconv_close(cvt);
-            if ((cvt = iconv_open(dst, "utf-8")) == (iconv_t)(-1))
-            {
+            if ((cvt = iconv_open(dst, "utf-8")) == (iconv_t)(-1)) {
                 (*p->disc->errorf)(NiL,
                                    p->disc,
                                    2,
@@ -149,8 +136,7 @@ cc_open(Codex_t *p, char *const args[], Codexnum_t flags)
         }
         return -1;
     }
-    if (!(state = newof(0, State_t, 1, 0)))
-    {
+    if (!(state = newof(0, State_t, 1, 0))) {
         if (p->disc->errorf)
             (*p->disc->errorf)(NiL, p->disc, 2, "out of space");
         iconv_close(cvt);
@@ -170,8 +156,7 @@ cc_close(Codex_t *p)
 
     if (!state)
         r = -1;
-    else
-    {
+    else {
         r = iconv_close(state->cvt);
         free(state);
     }
@@ -198,18 +183,15 @@ cc_read(Sfio_t *sp, void *buf, size_t n, Sfdisc_t *disc)
     tb = buf;
     tn = n;
     n = 0;
-    while (fn > 0 && tn > 0)
-    {
-        if ((r = iconv(state->cvt, &fb, &fn, &tb, &tn)) == -1)
-        {
+    while (fn > 0 && tn > 0) {
+        if ((r = iconv(state->cvt, &fb, &fn, &tb, &tn)) == -1) {
             if (!n)
                 n = -1;
             break;
         }
         n += r;
     }
-    if (fn && fb > state->buf)
-    {
+    if (fn && fb > state->buf) {
         tb = state->buf;
         while (fn--)
             *tb++ = *fb++;
@@ -231,8 +213,7 @@ cc_write(Sfio_t *sp, const void *buf, size_t n, Sfdisc_t *disc)
     fb = ( char * )buf;
     fn = n;
     n = 0;
-    while (fn > 0)
-    {
+    while (fn > 0) {
         tb = ( char * )state->buf;
         tn = sizeof(buf);
         if ((r = iconv(state->cvt, &fb, &fn, &tb, &tn)) == (size_t)(-1))

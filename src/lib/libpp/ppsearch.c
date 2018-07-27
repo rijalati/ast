@@ -82,17 +82,13 @@ ppmultiple(struct ppfile *fp, struct ppsymbol *test)
              (pp.mode & HOSTED) ? "[HOSTED]" : "",
              test == INC_CLEAR ? "[CLEAR]"
                                : test == INC_TEST ? "[TEST]" : test->name));
-    if (status == INC_IGNORE)
-    {
+    if (status == INC_IGNORE) {
         message((-2, "%s: ignored [%s]", fp->name, pp.ignore));
         return 0;
     }
-    if (test == INC_TEST)
-    {
-        if (status != INC_CLEAR)
-        {
-            if (status == INC_TEST || status->macro)
-            {
+    if (test == INC_TEST) {
+        if (status != INC_CLEAR) {
+            if (status == INC_TEST || status->macro) {
                 if ((pp.mode & (ALLMULTIPLE | LOADING)) == LOADING)
                     fp->guard = INC_IGNORE;
                 if ((pp.state & WARN)
@@ -134,8 +130,7 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
 
     if (!(pp.option & PREFIX))
         prefix = 0;
-    else if ((prefix = strrchr(fp->name, '/')) && prefix > fp->name)
-    {
+    else if ((prefix = strrchr(fp->name, '/')) && prefix > fp->name) {
         *prefix = 0;
         t = ppsetfile(fp->name)->name;
         *prefix = '/';
@@ -186,8 +181,7 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
     else
         need = TYPE_INCLUDE;
     for (index = -1; dp; dp = dp->next)
-        if (dp->type & need)
-        {
+        if (dp->type & need) {
             message(
             (-3,
              "search: fp=%s need=%02x index=%d dp=%s type=%02x index=%d",
@@ -198,18 +192,15 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
              dp->type,
              dp->index));
 #if ARCHIVE
-            if (!(dp->type & (TYPE_ARCHIVE | TYPE_DIRECTORY)))
-            {
+            if (!(dp->type & (TYPE_ARCHIVE | TYPE_DIRECTORY))) {
                 struct stat st;
 
-                if (stat(dp->name, &st))
-                {
+                if (stat(dp->name, &st)) {
                     message((-3, "search: omit %s", dp->name));
                     dp->type = 0;
                     continue;
                 }
-                if (S_ISREG(st.st_mode))
-                {
+                if (S_ISREG(st.st_mode)) {
                     char *s;
                     char *e;
                     int delimiter;
@@ -223,8 +214,7 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                      * check for vdb header archive
                      */
 
-                    if (!(sp = sfopen(NiL, dp->name, "r")))
-                    {
+                    if (!(sp = sfopen(NiL, dp->name, "r"))) {
                         error(ERROR_SYSTEM | 1,
                               "%s: ignored -- cannot open",
                               dp->name);
@@ -239,8 +229,7 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                                         VDB_DELIMITER,
                                         pp.pass);
                     if (!(s = sfgetr(sp, '\n', 1))
-                        || !strneq(s, pp.tmpbuf, variant))
-                    {
+                        || !strneq(s, pp.tmpbuf, variant)) {
                         sfclose(sp);
                         error(1,
                               "%s: ignored -- not a directory or archive",
@@ -254,14 +243,12 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                      */
 
                     dp->type |= TYPE_ARCHIVE;
-                    for (s += variant;;)
-                    {
+                    for (s += variant;;) {
                         while (*s == ' ')
                             s++;
                         e = s;
                         for (t = 0; *s && *s != ' '; s++)
-                            if (*s == '=')
-                            {
+                            if (*s == '=') {
                                 *s = 0;
                                 t = s + 1;
                             }
@@ -269,8 +256,7 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                             *s++ = 0;
                         if (!*e)
                             break;
-                        switch (( int )hashref(pp.strtab, e))
-                        {
+                        switch (( int )hashref(pp.strtab, e)) {
                         case X_CHECKPOINT:
 #    if CHECKPOINT
                             dp->type |= TYPE_CHECKPOINT;
@@ -304,8 +290,7 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                         }
                     }
                     if (sfseek(sp, -(VDB_LENGTH + 1), SEEK_END) <= 0
-                        || !(s = sfgetr(sp, '\n', 1)))
-                    {
+                        || !(s = sfgetr(sp, '\n', 1))) {
                     notvdb:
                         sfclose(sp);
                         error(
@@ -335,14 +320,12 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                     if (!(s = strchr(s, '\n')))
                         goto notvdb;
                     s++;
-                    while (e = strchr(s, '\n'))
-                    {
+                    while (e = strchr(s, '\n')) {
                         delimiter = variant ? *s++ : delimiter;
                         if (!(t = strchr(s, delimiter)))
                             break;
                         *t = 0;
-                        if (!streq(s, VDB_DIRECTORY))
-                        {
+                        if (!streq(s, VDB_DIRECTORY)) {
                             pathcanon(s, 0, 0);
                             ap = newof(0, struct ppmember, 1, 0);
                             ap->archive = dp;
@@ -373,16 +356,14 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
 #    endif
                         && (dp->info.buffer = sfreserve(sp, off, 0)))
                         dp->type |= TYPE_BUFFER;
-                    else
-                    {
+                    else {
                         dp->info.sp = sp;
 #    if POOL
                         if (pp.pool.input)
                             sfset(sp, SF_SHARE, 1);
 #    endif
                     }
-                }
-                else
+                } else
                     dp->type |= TYPE_DIRECTORY;
             }
 #endif
@@ -396,8 +377,7 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                     for (up = dp->info.subdir; up; up = up->next)
                         if (up->name == prefix)
                             break;
-                    if (!up)
-                    {
+                    if (!up) {
                         up = newof(0, struct ppdirs, 1, 0);
                         up->name = prefix;
                         up->type = dp->type;
@@ -411,29 +391,24 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                                       "%s/%s",
                                       dp->name,
                                       prefix);
-                        if (eaccess(t, X_OK))
-                        {
+                        if (eaccess(t, X_OK)) {
                             message((-3, "search: omit %s", t));
                             continue;
                         }
                         up->type |= TYPE_HOSTED;
-                    }
-                    else if (!(up->type & TYPE_HOSTED))
+                    } else if (!(up->type & TYPE_HOSTED))
                         continue;
                 }
             mp = xp = 0;
             if (!(flags & SEARCH_NEXT) && index != dp->index
                 && (!(need & TYPE_HOSTED) || dp->index == INC_STANDARD)
-                && (!(need & TYPE_VENDOR) || dp->index == INC_VENDOR))
-            {
+                && (!(need & TYPE_VENDOR) || dp->index == INC_VENDOR)) {
                 if (index >= 0 && !(fp->flags & INC_MEMBER(index)))
                     fp->flags |= INC_BOUND(index);
                 index = dp->index;
-                if (fp->flags & INC_BOUND(index))
-                {
+                if (fp->flags & INC_BOUND(index)) {
                     xp = fp->bound[index];
-                    if (index == INC_PREFIX)
-                    {
+                    if (index == INC_PREFIX) {
                         if (*fp->name == '/' || !*dp->name)
                             strcpy(pp.path, fp->name);
                         else
@@ -443,18 +418,15 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                                       dp->name,
                                       fp->name);
                         pathcanon(pp.path, PATH_MAX, 0);
-                        if (!xp || !streq(xp->name, pp.path))
-                        {
+                        if (!xp || !streq(xp->name, pp.path)) {
                             fp->bound[index] = xp = ppsetfile(pp.path);
                             if (dp->type & TYPE_HOSTED)
                                 xp->flags |= INC_HOSTED;
                             if ((flags & SEARCH_INCLUDE)
-                                || (xp->flags & INC_EXISTS))
-                            {
+                                || (xp->flags & INC_EXISTS)) {
                                 if (!(flags & SEARCH_INCLUDE))
                                     return 0;
-                                if (!ppmultiple(xp, INC_TEST))
-                                {
+                                if (!ppmultiple(xp, INC_TEST)) {
                                     if (flags & SEARCH_TEST)
                                         pp.include = xp->name;
                                     return 0;
@@ -462,22 +434,17 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                                 mp = xp;
                             }
                         }
-                    }
-                    else if (!xp)
-                    {
+                    } else if (!xp) {
                         while (dp->next && dp->next->index == index)
                             dp = dp->next;
                         message(
                         (-3, "search: omit %s/%s", dp->name, fp->name));
                         continue;
-                    }
-                    else
-                    {
+                    } else {
                         strcpy(pp.path, xp->name);
                         if (!(flags & SEARCH_INCLUDE))
                             return 0;
-                        if (!ppmultiple(xp, INC_TEST))
-                        {
+                        if (!ppmultiple(xp, INC_TEST)) {
                             if (flags & SEARCH_TEST)
                                 pp.include = xp->name;
                             return 0;
@@ -486,34 +453,29 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                     }
                 }
             }
-            if (!(fp->flags & INC_BOUND(index)) || (flags & SEARCH_NEXT))
-            {
+            if (!(fp->flags & INC_BOUND(index)) || (flags & SEARCH_NEXT)) {
                 if (*fp->name == '/' || !*dp->name)
                     strcpy(pp.path, fp->name);
                 else
                     sfsprintf(
                     pp.path, PATH_MAX - 1, "%s/%s", dp->name, fp->name);
                 pathcanon(pp.path, PATH_MAX, 0);
-                if (!(flags & SEARCH_SKIP))
-                {
+                if (!(flags & SEARCH_SKIP)) {
                     int found;
                     struct ppinstk *in;
 
                     if (streq(error_info.file, pp.path))
                         found = 1;
-                    else
-                    {
+                    else {
                         found = 0;
                         for (in = pp.in; in; in = in->prev)
                             if (in->type == IN_FILE && in->file
-                                && streq(in->file, pp.path))
-                            {
+                                && streq(in->file, pp.path)) {
                                 found = 1;
                                 break;
                             }
                     }
-                    if (found)
-                    {
+                    if (found) {
                         flags |= SEARCH_FOUND;
                         continue;
                     }
@@ -521,21 +483,17 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                         continue;
                 }
             }
-            if ((xp || (xp = ppgetfile(pp.path))) && (xp->flags & INC_SELF))
-            {
-                if (xp->flags & INC_EXISTS)
-                {
+            if ((xp || (xp = ppgetfile(pp.path))) && (xp->flags & INC_SELF)) {
+                if (xp->flags & INC_EXISTS) {
                     if (!(flags & SEARCH_INCLUDE))
                         return 0;
                     if (!(flags & SEARCH_NEXT) && mp != xp && (mp = xp)
-                        && !ppmultiple(xp, INC_TEST))
-                    {
+                        && !ppmultiple(xp, INC_TEST)) {
                         if (flags & SEARCH_TEST)
                             pp.include = xp->name;
                         return 0;
                     }
-                }
-                else if (*fp->name == '/')
+                } else if (*fp->name == '/')
                     break;
                 else
                     continue;
@@ -556,8 +514,7 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                       pp.path,
                       index);
             if ((fp->flags & INC_MEMBER(index))
-                && (( struct ppmember * )fp->bound[index])->archive == dp)
-            {
+                && (( struct ppmember * )fp->bound[index])->archive == dp) {
                 fd = 0;
                 pp.member = ( struct ppmember * )fp->bound[index];
                 if (pp.test & 0x0010)
@@ -569,8 +526,7 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                           index,
                           pp.member->offset,
                           pp.member->size);
-            }
-            else if (!(dp->type & TYPE_DIRECTORY))
+            } else if (!(dp->type & TYPE_DIRECTORY))
                 continue;
             else
 #endif
@@ -579,12 +535,10 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                 fd = (flags & SEARCH_INCLUDE) ? open(pp.path, O_RDONLY)
                                               : eaccess(pp.path, R_OK);
             }
-            if (fd >= 0)
-            {
+            if (fd >= 0) {
                 pp.found = dp;
                 if ((pp.option & (PLUSPLUS | NOPROTO)) == PLUSPLUS
-                    && !(pp.test & TEST_noproto))
-                {
+                    && !(pp.test & TEST_noproto)) {
                     if (dp->c)
                         pp.mode |= MARKC;
                     else
@@ -595,8 +549,7 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                 else if (!(markhosted = (dp->type & TYPE_HOSTED))
                          && dp->index == INC_PREFIX
                          && (pp.mode & (FILEDEPS | HEADERDEPS | INIT))
-                            == FILEDEPS)
-                {
+                            == FILEDEPS) {
                     up = dp;
                     while ((up = up->next) && !streq(up->name, dp->name))
                         ;
@@ -617,15 +570,13 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                          (pp.mode & MARKC) ? " [C]" : "",
                          (pp.mode & MARKHOSTED) ? " [hosted]" : ""));
 #if ARCHIVE
-                if (!pp.member)
-                {
+                if (!pp.member) {
 #endif
                     fp->flags |= INC_BOUND(index);
                     fp->bound[index] = xp;
                     if ((index == INC_STANDARD || index == INC_VENDOR)
                         && type != T_HEADER
-                        && !(fp->flags & INC_BOUND(INC_LOCAL)))
-                    {
+                        && !(fp->flags & INC_BOUND(INC_LOCAL))) {
                         fp->flags |= INC_BOUND(INC_LOCAL);
                         fp->bound[INC_LOCAL] = xp;
                     }
@@ -633,17 +584,14 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                 }
 #endif
                 xp->flags |= INC_SELF | INC_EXISTS;
-                if (flags & SEARCH_INCLUDE)
-                {
+                if (flags & SEARCH_INCLUDE) {
                     if ((pp.prefix = prefix) || (pp.prefix = pp.in->prefix))
                         message(
                         (-2, "search: %s: prefix=%s", xp->name, pp.prefix));
-                    if (!(pp.mode & ALLMULTIPLE))
-                    {
+                    if (!(pp.mode & ALLMULTIPLE)) {
                         if (xp->guard == INC_CLEAR || xp == mp)
                             xp->guard = INC_TEST;
-                        else
-                        {
+                        else {
                             if ((pp.state & WARN)
                                 && (pp.mode
                                     & (HOSTED | MARKHOSTED | RELAX | PEDANTIC))
@@ -669,16 +617,13 @@ search(struct ppfile *fp, struct ppdirs *dp, int type, int flags)
                     pp.include = xp->name;
                     if ((pp.mode & (FILEDEPS | INIT)) == FILEDEPS
                         && ((pp.mode & HEADERDEPS) || !(pp.mode & MARKHOSTED))
-                        && !(xp->flags & INC_LISTED))
-                    {
+                        && !(xp->flags & INC_LISTED)) {
                         xp->flags |= INC_LISTED;
-                        if ((pp.column + strlen(xp->name)) >= COLUMN_MAX)
-                        {
+                        if ((pp.column + strlen(xp->name)) >= COLUMN_MAX) {
                             sfprintf(pp.filedeps.sp, " \\\n");
                             pp.column = COLUMN_TAB;
                             index = '\t';
-                        }
-                        else
+                        } else
                             index = ' ';
                         pp.column
                         += sfprintf(pp.filedeps.sp, "%c%s", index, xp->name);
@@ -738,23 +683,19 @@ ppsearch(char *file, int type, int flags)
     fd = -1;
     chop = 0;
     prefix = pp.chop ? -1 : 0;
-    if (s = strchr(file, '\\'))
-    {
+    if (s = strchr(file, '\\')) {
         do
             *s++ = '/';
         while (s = strchr(s, '\\'));
         dospath = 1;
-    }
-    else
+    } else
         dospath = 0;
 again:
     pathcanon(file, 0, 0);
     if (chop)
         for (cp = pp.chop; cp; cp = cp->next)
-            if (strneq(file, cp->value, cp->op))
-            {
-                if (cp->value[cp->op + 1])
-                {
+            if (strneq(file, cp->value, cp->op)) {
+                if (cp->value[cp->op + 1]) {
                     sfsprintf(name,
                               sizeof(name) - 1,
                               "%s%s",
@@ -762,9 +703,7 @@ again:
                               file + cp->op);
                     message((-2, "search: %s -> %s", file, name));
                     file = name;
-                }
-                else if (strchr(file + cp->op, '/'))
-                {
+                } else if (strchr(file + cp->op, '/')) {
                     message((-2, "search: %s -> %s", file, file + cp->op));
                     file += cp->op;
                 }
@@ -773,8 +712,7 @@ again:
     fp = ppsetfile(file);
     while ((fp->flags & INC_MAPALL)
            || (fp->flags & INC_MAPHOSTED) && (pp.mode & HOSTED)
-           || (fp->flags & INC_MAPNOHOSTED) && !(pp.mode & HOSTED))
-    {
+           || (fp->flags & INC_MAPNOHOSTED) && !(pp.mode & HOSTED)) {
         if (!(xp = fp->bound[type == T_HEADER ? INC_STANDARD : INC_LOCAL])
             || xp == fp)
             break;
@@ -787,17 +725,14 @@ again:
         flags |= SEARCH_VENDOR;
     pp.original = fp;
     if (type == T_HEADER && strneq(fp->name, "...", 3)
-        && (!fp->name[3] || fp->name[3] == '/'))
-    {
-        if (fp->name[3] == '/')
-        {
+        && (!fp->name[3] || fp->name[3] == '/')) {
+        if (fp->name[3] == '/') {
             int n;
             int m;
 
             n = strlen(error_info.file);
             m = strlen(fp->name + 4);
-            if (n < m || !streq(fp->name + 4, error_info.file + n - m))
-            {
+            if (n < m || !streq(fp->name + 4, error_info.file + n - m)) {
                 if ((fd = ppsearch(fp->name + 4, type, flags | SEARCH_TEST))
                     < 0)
                     return -1;
@@ -810,15 +745,13 @@ again:
                 return fd;
             }
             file = error_info.file + n - m;
-        }
-        else if (file = strrchr(error_info.file, '/'))
+        } else if (file = strrchr(error_info.file, '/'))
             file++;
         else
             file = error_info.file;
         flags |= SEARCH_NEXT;
 #if _HUH_2002_05_28
-        if (pp.in->prefix)
-        {
+        if (pp.in->prefix) {
             sfsprintf(name, sizeof(name) - 1, "%s/%s", pp.in->prefix, file);
             fp = ppsetfile(name);
             if ((fd = ppsearch(fp->name, type, flags)) >= 0)
@@ -827,58 +760,45 @@ again:
 #endif
         fp = ppsetfile(file);
         return ppsearch(fp->name, type, flags);
-    }
-    else if ((flags & SEARCH_INCLUDE) && fp->guard == INC_IGNORE)
-    {
+    } else if ((flags & SEARCH_INCLUDE) && fp->guard == INC_IGNORE) {
         strcpy(pp.path, fp->name);
         message((-2, "%s: ignored", fp->name));
         return 0;
-    }
-    else if (!(flags & SEARCH_NEXT))
+    } else if (!(flags & SEARCH_NEXT))
         flags |= SEARCH_SKIP;
     pp.prefix = 0;
     if (type == T_HEADER)
         dp = pp.stddirs->next;
-    else
-    {
+    else {
         dp = pp.lcldirs;
-        if (dp == pp.firstdir)
-        {
+        if (dp == pp.firstdir) {
             /*
              * look in directory of including file first
              */
 
-            if (error_info.file && (s = strrchr(error_info.file, '/')))
-            {
+            if (error_info.file && (s = strrchr(error_info.file, '/'))) {
                 *s = 0;
                 dp->name = ppsetfile(error_info.file)->name;
                 *s = '/';
-            }
-            else
+            } else
                 dp->name = "";
-        }
-        else if (pp.in->prefix && pp.lcldirs != pp.firstdir)
-        {
+        } else if (pp.in->prefix && pp.lcldirs != pp.firstdir) {
             /*
              * look in prefix directory of including file first
              */
 
-            if (*fp->name != '/')
-            {
+            if (*fp->name != '/') {
                 if ((s = strchr(fp->name, '/'))
                     && (fp->name[0] != '.' || fp->name[1] != '.'
-                        || fp->name[2] != '/'))
-                {
+                        || fp->name[2] != '/')) {
                     *s = 0;
                     if (!streq(fp->name, pp.in->prefix))
                         fd = 0;
                     *s = '/';
-                }
-                else
+                } else
                     fd = 0;
             }
-            if (fd >= 0)
-            {
+            if (fd >= 0) {
                 sfsprintf(
                 name, sizeof(name) - 1, "%s/%s", pp.in->prefix, fp->name);
                 pathcanon(name, sizeof(name), 0);
@@ -886,19 +806,15 @@ again:
                 if ((fd = search(xp, dp, type, flags)) >= 0)
                     return fd;
             }
-        }
-        else if (!prefix)
+        } else if (!prefix)
             prefix = 1;
     }
-    if ((fd = search(fp, dp, type, flags)) < 0)
-    {
-        if ((pp.option & PLUSPLUS) && file != pp.tmpbuf)
-        {
+    if ((fd = search(fp, dp, type, flags)) < 0) {
+        if ((pp.option & PLUSPLUS) && file != pp.tmpbuf) {
             s = file + strlen(file);
             while (s > file && *--s != '/' && *s != '\\' && *s != '.')
                 ;
-            if (*s != '.')
-            {
+            if (*s != '.') {
                 sfsprintf(pp.tmpbuf, MAXTOKEN, "%s.h", file);
                 file = pp.tmpbuf;
                 goto again;
@@ -909,11 +825,9 @@ again:
          * hackery for msdos files viewed through unix
          */
 
-        switch (dospath)
-        {
+        switch (dospath) {
         case 1:
-            if (ppisid(file[0]) && file[1] == ':' && file[2] == '/')
-            {
+            if (ppisid(file[0]) && file[1] == ':' && file[2] == '/') {
                 file[1] = file[0];
                 file[0] = '/';
                 pathcanon(file, 0, 0);
@@ -925,23 +839,18 @@ again:
             file += 2;
             goto again;
         }
-        if ((flags & (SEARCH_INCLUDE | SEARCH_NEXT)) == SEARCH_INCLUDE)
-        {
-            if (!chop && pp.chop)
-            {
+        if ((flags & (SEARCH_INCLUDE | SEARCH_NEXT)) == SEARCH_INCLUDE) {
+            if (!chop && pp.chop) {
                 chop = 1;
                 type = T_STRING;
                 goto again;
             }
-            if (prefix > 0)
-            {
+            if (prefix > 0) {
                 prefix = -1;
                 if (error_info.file && *error_info.file
-                    && (s = strrchr(error_info.file + 1, '/')))
-                {
+                    && (s = strrchr(error_info.file + 1, '/'))) {
                     *s = 0;
-                    if (t = strrchr(error_info.file + 1, '/'))
-                    {
+                    if (t = strrchr(error_info.file + 1, '/')) {
                         sfsprintf(name, sizeof(name), "%s/%s", t + 1, file);
                         file = ppsetfile(name)->name;
                     }
@@ -950,24 +859,18 @@ again:
                         goto again;
                 }
             }
-            if (!(pp.mode & GENDEPS))
-            {
+            if (!(pp.mode & GENDEPS)) {
                 if (!(pp.option & ALLPOSSIBLE) || pp.in->prev->prev)
                     error(2, "%s: cannot find include file", file);
-            }
-            else if (!(pp.mode & INIT))
-            {
+            } else if (!(pp.mode & INIT)) {
                 xp = ppsetfile(file);
-                if (!(xp->flags & INC_LISTED))
-                {
+                if (!(xp->flags & INC_LISTED)) {
                     xp->flags |= INC_LISTED;
-                    if ((pp.column + strlen(file)) >= COLUMN_MAX)
-                    {
+                    if ((pp.column + strlen(file)) >= COLUMN_MAX) {
                         sfprintf(pp.filedeps.sp, " \\\n");
                         pp.column = COLUMN_TAB;
                         index = '\t';
-                    }
-                    else
+                    } else
                         index = ' ';
                     pp.column
                     += sfprintf(pp.filedeps.sp, "%c%s", index, file);

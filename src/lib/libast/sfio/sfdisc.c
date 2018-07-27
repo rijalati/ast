@@ -126,13 +126,12 @@ Sfdisc_t *disc;
     if (( Sfio_t * )disc == f) /* special case to get the top discipline */
         SFMTXRETURN(f, f->disc);
 
-    if ((f->flags & SF_READ) && f->proc && (f->mode & SF_WRITE))
-    { /* make sure in read mode to check for read-ahead data */
+    if ((f->flags & SF_READ) && f->proc
+        && (f->mode & SF_WRITE)) { /* make sure in read mode to check for
+                                      read-ahead data */
         if (_sfmode(f, SF_READ, 0) < 0)
             SFMTXRETURN(f, NIL(Sfdisc_t *));
-    }
-    else
-    {
+    } else {
         if ((f->mode & SF_RDWR) != f->mode && _sfmode(f, 0, 0) < 0)
             SFMTXRETURN(f, NIL(Sfdisc_t *));
     }
@@ -146,19 +145,16 @@ Sfdisc_t *disc;
         goto done;
 
     /* synchronize before switching to a new discipline */
-    if (!(f->flags & SF_STRING))
-    {
+    if (!(f->flags & SF_STRING)) {
         ( void )SFSYNC(f); /* do a silent buffer synch */
-        if ((f->mode & SF_READ) && (f->mode & SF_SYNCED))
-        {
+        if ((f->mode & SF_READ) && (f->mode & SF_SYNCED)) {
             f->mode &= ~SF_SYNCED;
             f->endb = f->next = f->endr = f->endw = f->data;
         }
 
         /* if there is buffered data, ask app before proceeding */
         if (((f->mode & SF_WRITE) && (n = f->next - f->data) > 0)
-            || ((f->mode & SF_READ) && (n = f->endb - f->next) > 0))
-        {
+            || ((f->mode & SF_READ) && (n = f->endb - f->next) > 0)) {
             int rv = 0;
             if (rv == 0 && f->disc
                 && f->disc->exceptf) /* ask current discipline */
@@ -179,8 +175,7 @@ Sfdisc_t *disc;
         }
 
         /* trick the new discipline into processing already buffered data */
-        if ((f->mode & SF_READ) && n > 0 && disc && disc->readf)
-        {
+        if ((f->mode & SF_READ) && n > 0 && disc && disc->readf) {
             if (!(dcca = ( Dccache_t * )malloc(sizeof(Dccache_t) + n)))
                 goto done;
             memclear(dcca, sizeof(Dccache_t));
@@ -207,13 +202,11 @@ Sfdisc_t *disc;
     GETDISCF(owritef, writef, Sfwrite_f);
     GETDISCF(oseekf, seekf, Sfseek_f);
 
-    if (disc == SF_POPDISC)
-    { /* popping, warn the being popped discipline */
+    if (disc == SF_POPDISC) { /* popping, warn the being popped discipline */
         if (!(d = f->disc))
             goto done;
         disc = d->disc;
-        if (d->exceptf)
-        {
+        if (d->exceptf) {
             SFOPEN(f, 0);
             if ((*(d->exceptf))(f, SF_DPOP, ( Void_t * )disc, d) < 0)
                 goto done;
@@ -221,14 +214,10 @@ Sfdisc_t *disc;
         }
         f->disc = disc;
         rdisc = d;
-    }
-    else
-    { /* pushing, warn being pushed discipline */
-        do
-        { /* loop to handle the case where d may pop itself */
+    } else { /* pushing, warn being pushed discipline */
+        do { /* loop to handle the case where d may pop itself */
             d = f->disc;
-            if (d && d->exceptf)
-            {
+            if (d && d->exceptf) {
                 SFOPEN(f, 0);
                 if ((*(d->exceptf))(f, SF_DPUSH, ( Void_t * )disc, d) < 0)
                     goto done;
@@ -246,20 +235,18 @@ Sfdisc_t *disc;
         {
             dcca->disc.disc = f->disc;
             disc->disc = &dcca->disc;
-        }
-        else
+        } else
             disc->disc = f->disc;
         f->disc = disc;
         rdisc = disc;
     }
 
-    if (!(f->flags & SF_STRING))
-    { /* this stream may have to be reinitialized */
+    if (!(f->flags & SF_STRING)) { /* this stream may have to be reinitialized
+                                    */
         reg int reinit = 0;
 #define DISCF(dst, iof, type) (dst ? dst->iof : NIL(type))
 #define REINIT(oiof, iof, type)                                              \
-    if (!reinit)                                                             \
-    {                                                                        \
+    if (!reinit) {                                                           \
         for (d = f->disc; d && !d->iof; d = d->disc)                         \
             ;                                                                \
         if (DISCF(d, iof, type) != oiof)                                     \
@@ -270,16 +257,14 @@ Sfdisc_t *disc;
         REINIT(owritef, writef, Sfwrite_f);
         REINIT(oseekf, seekf, Sfseek_f);
 
-        if (reinit)
-        {
+        if (reinit) {
             SETLOCAL(f);
             f->bits &= ~SF_NULL; /* turn off /dev/null handling */
             if ((f->bits & SF_MMAP) || (f->mode & SF_INIT))
                 sfsetbuf(f, NIL(Void_t *), ( size_t )SF_UNBOUND);
             else if (f->data == f->tiny)
                 sfsetbuf(f, NIL(Void_t *), 0);
-            else
-            {
+            else {
                 int flags = f->flags;
                 sfsetbuf(f, ( Void_t * )f->data, f->size);
                 f->flags |= (flags & SF_MALLOC);

@@ -150,8 +150,7 @@ __STDPP__directive pragma pp : hide getpagesize getdtablesize
     printf("#define SCHAR_MAX	%lu\n", val);
 #endif
 
-    if (c < 0)
-    {
+    if (c < 0) {
 #ifndef CHAR_MIN
         printf("#define CHAR_MIN	SCHAR_MIN\n");
 #endif
@@ -159,9 +158,7 @@ __STDPP__directive pragma pp : hide getpagesize getdtablesize
 #ifndef CHAR_MAX
         printf("#define CHAR_MAX	SCHAR_MAX\n");
 #endif
-    }
-    else
-    {
+    } else {
 #ifndef CHAR_MIN
         printf("#define CHAR_MIN	0\n");
 #endif
@@ -190,8 +187,7 @@ __STDPP__directive pragma pp : hide getpagesize getdtablesize
     printf("#define SHRT_MAX	%lu\n", val);
 #endif
 
-    if (ui == us)
-    {
+    if (ui == us) {
 #ifndef UINT_MAX
         printf("#define UINT_MAX	USHRT_MAX\n");
 #endif
@@ -203,9 +199,7 @@ __STDPP__directive pragma pp : hide getpagesize getdtablesize
 #ifndef INT_MAX
         printf("#define INT_MAX		SHRT_MAX\n");
 #endif
-    }
-    else
-    {
+    } else {
 #ifndef UINT_MAX
         val = ui;
         printf("#if defined(__STDC__)\n");
@@ -229,8 +223,7 @@ __STDPP__directive pragma pp : hide getpagesize getdtablesize
 #endif
     }
 
-    if (ul == ui)
-    {
+    if (ul == ui) {
 #ifndef ULONG_MAX
         printf("#define ULONG_MAX	UINT_MAX\n");
 #endif
@@ -242,9 +235,7 @@ __STDPP__directive pragma pp : hide getpagesize getdtablesize
 #ifndef LONG_MAX
         printf("#define LONG_MAX	INT_MAX\n");
 #endif
-    }
-    else
-    {
+    } else {
 #ifndef ULONG_MAX
         val = ul;
         printf("#if defined(__STDC__)\n");
@@ -266,8 +257,7 @@ __STDPP__directive pragma pp : hide getpagesize getdtablesize
     }
 
 #if _typ_uint64_t && !_ast_intmax_long
-    if (ull == ul)
-    {
+    if (ull == ul) {
 #    ifndef ULLONG_MAX
         printf("#define ULLONG_MAX	ULONG_MAX\n");
 #    endif
@@ -279,9 +269,7 @@ __STDPP__directive pragma pp : hide getpagesize getdtablesize
 #    ifndef LLONG_MAX
         printf("#define LLONG_MAX	LONG_MAX\n");
 #    endif
-    }
-    else
-    {
+    } else {
 #    ifndef ULLONG_MAX
         vll = ull;
         printf("#ifndef ULLONG_MAX\n");

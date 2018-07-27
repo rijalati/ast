@@ -40,8 +40,7 @@ Void_t *data;
     Dt_t *walk;
     int rv;
 
-    for (obj = dtfirst(dt); obj;)
-    {
+    for (obj = dtfirst(dt); obj;) {
         if (!(walk = dt->walk))
             walk = dt;
         next = dtnext(dt, obj);

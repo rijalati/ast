@@ -108,8 +108,7 @@ char **argv;        /* Argument strings. */
     int code, c, gotPkgName, namesMatch, filesMatch;
     char *p, *fullFileName, *p1, *p2;
 
-    if ((argc < 2) || (argc > 4))
-    {
+    if ((argc < 2) || (argc > 4)) {
         Tcl_AppendResult(interp,
                          "wrong # args: should be \"",
                          argv[0],
@@ -118,23 +117,18 @@ char **argv;        /* Argument strings. */
         return TCL_ERROR;
     }
     fullFileName = Tcl_TranslateFileName(interp, argv[1], &fileName);
-    if (fullFileName == NULL)
-    {
+    if (fullFileName == NULL) {
         return TCL_ERROR;
     }
     Tcl_DStringInit(&pkgName);
     Tcl_DStringInit(&initName);
     Tcl_DStringInit(&safeInitName);
-    if ((argc >= 3) && (argv[2][0] != 0))
-    {
+    if ((argc >= 3) && (argv[2][0] != 0)) {
         gotPkgName = 1;
-    }
-    else
-    {
+    } else {
         gotPkgName = 0;
     }
-    if ((fullFileName[0] == 0) && !gotPkgName)
-    {
+    if ((fullFileName[0] == 0) && !gotPkgName) {
         interp->result = "must specify either file name or package name";
         code = TCL_ERROR;
         goto done;
@@ -145,11 +139,9 @@ char **argv;        /* Argument strings. */
      */
 
     target = interp;
-    if (argc == 4)
-    {
+    if (argc == 4) {
         target = Tcl_GetSlave(interp, argv[3]);
-        if (target == NULL)
-        {
+        if (target == NULL) {
             Tcl_AppendResult(interp,
                              "couldn't find slave interpreter named \"",
                              argv[3],
@@ -170,40 +162,30 @@ char **argv;        /* Argument strings. */
      */
 
     defaultPtr = NULL;
-    for (pkgPtr = firstPackagePtr; pkgPtr != NULL; pkgPtr = pkgPtr->nextPtr)
-    {
-        if (!gotPkgName)
-        {
+    for (pkgPtr = firstPackagePtr; pkgPtr != NULL; pkgPtr = pkgPtr->nextPtr) {
+        if (!gotPkgName) {
             namesMatch = 0;
-        }
-        else
-        {
+        } else {
             namesMatch = 1;
-            for (p1 = argv[2], p2 = pkgPtr->packageName;; p1++, p2++)
-            {
+            for (p1 = argv[2], p2 = pkgPtr->packageName;; p1++, p2++) {
                 if ((isupper(UCHAR(*p1)) ? tolower(UCHAR(*p1)) : *p1)
-                    != (isupper(UCHAR(*p2)) ? tolower(UCHAR(*p2)) : *p2))
-                {
+                    != (isupper(UCHAR(*p2)) ? tolower(UCHAR(*p2)) : *p2)) {
                     namesMatch = 0;
                     break;
                 }
-                if (*p1 == 0)
-                {
+                if (*p1 == 0) {
                     break;
                 }
             }
         }
         filesMatch = (strcmp(pkgPtr->fileName, fullFileName) == 0);
-        if (filesMatch && (namesMatch || !gotPkgName))
-        {
+        if (filesMatch && (namesMatch || !gotPkgName)) {
             break;
         }
-        if (namesMatch && (fullFileName[0] == 0))
-        {
+        if (namesMatch && (fullFileName[0] == 0)) {
             defaultPtr = pkgPtr;
         }
-        if (filesMatch && !namesMatch && (fullFileName[0] != 0))
-        {
+        if (filesMatch && !namesMatch && (fullFileName[0] != 0)) {
             /*
              * Can't have two different packages loaded from the same
              * file.
@@ -220,8 +202,7 @@ char **argv;        /* Argument strings. */
             goto done;
         }
     }
-    if (pkgPtr == NULL)
-    {
+    if (pkgPtr == NULL) {
         pkgPtr = defaultPtr;
     }
 
@@ -231,29 +212,24 @@ char **argv;        /* Argument strings. */
      * then there's nothing for us to to.
      */
 
-    if (pkgPtr != NULL)
-    {
+    if (pkgPtr != NULL) {
         ipFirstPtr = ( InterpPackage * )Tcl_GetAssocData(
         target, "tclLoad", ( Tcl_InterpDeleteProc ** )NULL);
-        for (ipPtr = ipFirstPtr; ipPtr != NULL; ipPtr = ipPtr->nextPtr)
-        {
-            if (ipPtr->pkgPtr == pkgPtr)
-            {
+        for (ipPtr = ipFirstPtr; ipPtr != NULL; ipPtr = ipPtr->nextPtr) {
+            if (ipPtr->pkgPtr == pkgPtr) {
                 code = TCL_OK;
                 goto done;
             }
         }
     }
 
-    if (pkgPtr == NULL)
-    {
+    if (pkgPtr == NULL) {
         /*
          * The desired file isn't currently loaded, so load it.  It's an
          * error if the desired package is a static one.
          */
 
-        if (fullFileName[0] == 0)
-        {
+        if (fullFileName[0] == 0) {
             Tcl_AppendResult(interp,
                              "package \"",
                              argv[2],
@@ -267,14 +243,10 @@ char **argv;        /* Argument strings. */
          * Figure out the module name if it wasn't provided explicitly.
          */
 
-        if (gotPkgName)
-        {
+        if (gotPkgName) {
             Tcl_DStringAppend(&pkgName, argv[2], -1);
-        }
-        else
-        {
-            if (!TclGuessPackageName(fullFileName, &pkgName))
-            {
+        } else {
+            if (!TclGuessPackageName(fullFileName, &pkgName)) {
                 int pargc;
                 char **pargv, *pkgGuess;
 
@@ -289,16 +261,13 @@ char **argv;        /* Argument strings. */
                 Tcl_SplitPath(fullFileName, &pargc, &pargv);
                 pkgGuess = pargv[pargc - 1];
                 if ((pkgGuess[0] == 'l') && (pkgGuess[1] == 'i')
-                    && (pkgGuess[2] == 'b'))
-                {
+                    && (pkgGuess[2] == 'b')) {
                     pkgGuess += 3;
                 }
-                for (p = pkgGuess; isalpha(UCHAR(*p)) || (*p == '_'); p++)
-                {
+                for (p = pkgGuess; isalpha(UCHAR(*p)) || (*p == '_'); p++) {
                     /* Empty loop body. */
                 }
-                if (p == pkgGuess)
-                {
+                if (p == pkgGuess) {
                     ckfree(( char * )pargv);
                     Tcl_AppendResult(interp,
                                      "couldn't figure out package name for ",
@@ -319,22 +288,17 @@ char **argv;        /* Argument strings. */
 
         p = Tcl_DStringValue(&pkgName);
         c = UCHAR(*p);
-        if (c != 0)
-        {
-            if (islower(c))
-            {
+        if (c != 0) {
+            if (islower(c)) {
                 *p = ( char )toupper(c);
             }
             p++;
-            while (1)
-            {
+            while (1) {
                 c = UCHAR(*p);
-                if (c == 0)
-                {
+                if (c == 0) {
                     break;
                 }
-                if (isupper(c))
-                {
+                if (isupper(c)) {
                     *p = ( char )tolower(c);
                 }
                 p++;
@@ -362,12 +326,10 @@ char **argv;        /* Argument strings. */
                            Tcl_DStringValue(&safeInitName),
                            &initProc,
                            &safeInitProc);
-        if (code != TCL_OK)
-        {
+        if (code != TCL_OK) {
             goto done;
         }
-        if (initProc == NULL)
-        {
+        if (initProc == NULL) {
             Tcl_AppendResult(interp,
                              "couldn't find procedure ",
                              Tcl_DStringValue(&initName),
@@ -380,8 +342,7 @@ char **argv;        /* Argument strings. */
          * Create a new record to describe this package.
          */
 
-        if (firstPackagePtr == NULL)
-        {
+        if (firstPackagePtr == NULL) {
             Tcl_CreateExitHandler(LoadExitProc, ( ClientData )NULL);
         }
         pkgPtr = ( LoadedPackage * )ckalloc(sizeof(LoadedPackage));
@@ -403,14 +364,10 @@ char **argv;        /* Argument strings. */
      * interpreter is safe).
      */
 
-    if (Tcl_IsSafe(target))
-    {
-        if (pkgPtr->safeInitProc != NULL)
-        {
+    if (Tcl_IsSafe(target)) {
+        if (pkgPtr->safeInitProc != NULL) {
             code = (*pkgPtr->safeInitProc)(target);
-        }
-        else
-        {
+        } else {
             Tcl_AppendResult(interp,
                              "can't use package in a safe interpreter: ",
                              "no ",
@@ -420,13 +377,10 @@ char **argv;        /* Argument strings. */
             code = TCL_ERROR;
             goto done;
         }
-    }
-    else
-    {
+    } else {
         code = (*pkgPtr->initProc)(target);
     }
-    if ((code == TCL_ERROR) && (target != interp))
-    {
+    if ((code == TCL_ERROR) && (target != interp)) {
         /*
          * An error occurred, so transfer error information from the
          * destination interpreter back to our interpreter.  Must clear
@@ -454,8 +408,7 @@ char **argv;        /* Argument strings. */
      * target interpreter.
      */
 
-    if (code == TCL_OK)
-    {
+    if (code == TCL_OK) {
         /*
          * Refetch ipFirstPtr: loading the package may have introduced
          * additional static packages at the head of the linked list!
@@ -522,18 +475,15 @@ Tcl_PackageInitProc *safeInitProc; /* Procedure to call to incorporate
      * statically loaded.  If this call is redundant then just return.
      */
 
-    for (pkgPtr = firstPackagePtr; pkgPtr != NULL; pkgPtr = pkgPtr->nextPtr)
-    {
+    for (pkgPtr = firstPackagePtr; pkgPtr != NULL; pkgPtr = pkgPtr->nextPtr) {
         if ((pkgPtr->initProc == initProc)
             && (pkgPtr->safeInitProc == safeInitProc)
-            && (strcmp(pkgPtr->packageName, pkgName) == 0))
-        {
+            && (strcmp(pkgPtr->packageName, pkgName) == 0)) {
             return;
         }
     }
 
-    if (firstPackagePtr == NULL)
-    {
+    if (firstPackagePtr == NULL) {
         Tcl_CreateExitHandler(LoadExitProc, ( ClientData )NULL);
     }
     pkgPtr = ( LoadedPackage * )ckalloc(sizeof(LoadedPackage));
@@ -547,8 +497,7 @@ Tcl_PackageInitProc *safeInitProc; /* Procedure to call to incorporate
     pkgPtr->nextPtr = firstPackagePtr;
     firstPackagePtr = pkgPtr;
 
-    if (interp != NULL)
-    {
+    if (interp != NULL) {
         ipFirstPtr = ( InterpPackage * )Tcl_GetAssocData(
         interp, "tclLoad", ( Tcl_InterpDeleteProc ** )NULL);
         ipPtr = ( InterpPackage * )ckalloc(sizeof(InterpPackage));
@@ -595,16 +544,14 @@ char *targetName;   /* Name of target interpreter or NULL.
     InterpPackage *ipPtr;
     char *prefix;
 
-    if (targetName == NULL)
-    {
+    if (targetName == NULL) {
         /*
          * Return information about all of the available packages.
          */
 
         prefix = "{";
         for (pkgPtr = firstPackagePtr; pkgPtr != NULL;
-             pkgPtr = pkgPtr->nextPtr)
-        {
+             pkgPtr = pkgPtr->nextPtr) {
             Tcl_AppendResult(interp, prefix, ( char * )NULL);
             Tcl_AppendElement(interp, pkgPtr->fileName);
             Tcl_AppendElement(interp, pkgPtr->packageName);
@@ -620,8 +567,7 @@ char *targetName;   /* Name of target interpreter or NULL.
      */
 
     target = Tcl_GetSlave(interp, targetName);
-    if (target == NULL)
-    {
+    if (target == NULL) {
         Tcl_AppendResult(interp,
                          "couldn't find slave interpreter named \"",
                          targetName,
@@ -632,8 +578,7 @@ char *targetName;   /* Name of target interpreter or NULL.
     ipPtr = ( InterpPackage * )Tcl_GetAssocData(
     target, "tclLoad", ( Tcl_InterpDeleteProc ** )NULL);
     prefix = "{";
-    for (; ipPtr != NULL; ipPtr = ipPtr->nextPtr)
-    {
+    for (; ipPtr != NULL; ipPtr = ipPtr->nextPtr) {
         pkgPtr = ipPtr->pkgPtr;
         Tcl_AppendResult(interp, prefix, ( char * )NULL);
         Tcl_AppendElement(interp, pkgPtr->fileName);
@@ -671,8 +616,7 @@ Tcl_Interp *interp;    /* Interpreter that is being deleted. */
     InterpPackage *ipPtr, *nextPtr;
 
     ipPtr = ( InterpPackage * )clientData;
-    while (ipPtr != NULL)
-    {
+    while (ipPtr != NULL) {
         nextPtr = ipPtr->nextPtr;
         ckfree(( char * )ipPtr);
         ipPtr = nextPtr;
@@ -700,8 +644,7 @@ static void LoadExitProc(clientData) ClientData clientData; /* Not used. */
 {
     LoadedPackage *pkgPtr;
 
-    while (firstPackagePtr != NULL)
-    {
+    while (firstPackagePtr != NULL) {
         pkgPtr = firstPackagePtr;
         firstPackagePtr = pkgPtr->nextPtr;
         ckfree(pkgPtr->fileName);

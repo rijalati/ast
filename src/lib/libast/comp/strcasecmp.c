@@ -40,8 +40,7 @@ strcasecmp(const char *a, const char *b)
     int bc;
     int d;
 
-    for (;;)
-    {
+    for (;;) {
         ac = *a++;
         if (isupper(ac))
             ac = tolower(ac);

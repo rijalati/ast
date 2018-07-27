@@ -46,27 +46,21 @@ hashsize(Hash_table_t *tab, int size)
     Hash_region_f region;
     void *handle;
 
-    if (size > 0 && size != tab->size && !(size & (size - 1)))
-    {
-        if (region = tab->root->local->region)
-        {
+    if (size > 0 && size != tab->size && !(size & (size - 1))) {
+        if (region = tab->root->local->region) {
             handle = tab->root->local->handle;
             new_s = ( Hash_bucket_t ** )(*region)(
             handle, NiL, sizeof(Hash_bucket_t *) * size, 0);
-        }
-        else
+        } else
             new_s = newof(0, Hash_bucket_t *, size, 0);
         if (!new_s)
             tab->flags |= HASH_FIXED;
-        else
-        {
+        else {
             old_sx = (old_s = tab->table) + tab->size;
             tab->size = size;
-            while (old_s < old_sx)
-            {
+            while (old_s < old_sx) {
                 old_b = *old_s++;
-                while (old_b)
-                {
+                while (old_b) {
                     new_b = old_b;
                     old_b = old_b->next;
                     index = new_b->hash;
@@ -75,8 +69,7 @@ hashsize(Hash_table_t *tab, int size)
                     new_s[index] = new_b;
                 }
             }
-            if ((tab->flags & (HASH_RESIZE | HASH_STATIC)) != HASH_STATIC)
-            {
+            if ((tab->flags & (HASH_RESIZE | HASH_STATIC)) != HASH_STATIC) {
                 if (region)
                     (*region)(handle, tab->table, 0, 0);
                 else
