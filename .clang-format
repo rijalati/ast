@@ -26,12 +26,12 @@ BraceWrapping: {
     AfterFunction : 'true'
     AfterNamespace : 'true'
     AfterStruct : 'true'
-    AfterExternBlock: true
+    AfterExternBlock : 'true'
     AfterUnion : 'true'
     BeforeCatch : 'false'
     BeforeElse : 'false'
     IndentBraces : 'false'
-    SplitEmptyFunction: false
+    SplitEmptyFunction : 'false'
 }
 BreakBeforeBinaryOperators: 'NonAssignment'
 BreakBeforeTernaryOperators: true
