@@ -1,42 +1,51 @@
 ---
-
+BasedOnStyle: LLVM
 AccessModifierOffset: '-2'
-AlignEscapedNewlinesLeft: true
+AlignAfterOpenBracket: Align
+AlignEscapedNewlines: Right
+AlignConsecutiveDeclarations: true
+AlignConsecutiveAssignments: true
 AlignOperands: 'true'
-AlignTrailingComments: true
-AllowAllParametersOfDeclarationOnNextLine: true
-AllowShortFunctionsOnASingleLine: false
+AlignTrailingComments: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
-AlwaysBreakBeforeMultilineStrings: true
+AlwaysBreakAfterReturnType: All
+AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: false
 BinPackParameters: false
 BinPackArguments: false
-BreakBeforeBinaryOperators: true
-BreakBeforeBraces: Linux
+BreakBeforeBraces: Custom
 BraceWrapping: {
-    AfterClass: 'true'
-    AfterControlStatement: 'true'
+    AfterClass: 'false'
+    AfterControlStatement: 'false'
     AfterEnum : 'true'
     AfterFunction : 'true'
     AfterNamespace : 'true'
     AfterStruct : 'true'
+    AfterExternBlock: true
     AfterUnion : 'true'
     BeforeCatch : 'false'
-    BeforeElse : 'true'
+    BeforeElse : 'false'
     IndentBraces : 'false'
+    SplitEmptyFunction: false
 }
+BreakBeforeBinaryOperators: 'NonAssignment'
 BreakBeforeTernaryOperators: true
-BreakConstructorInitializersBeforeComma: false
+BreakConstructorInitializers: AfterColon
 ColumnLimit: 78
 CommentPragmas: ''
-ConstructorInitializerAllOnOneLineOrOnePerLine: false
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
 ConstructorInitializerIndentWidth: 0
 ContinuationIndentWidth: 0
 Cpp11BracedListStyle: false
 DerivePointerBinding: false
 IndentCaseLabels: false
 IndentFunctionDeclarationAfterType: false
+IndentWrappedFunctionNames: true
 IndentWidth: 4
 Language: Cpp
 MaxEmptyLinesToKeep: 2
@@ -49,8 +58,8 @@ PenaltyReturnTypeOnItsOwnLine: '60'
 PointerAlignment: Right
 ReflowComments: 'true'
 SortIncludes: 'true'
-SpaceAfterCStyleCast: 'true'
-SpaceBeforeAssignmentOperators: false
+SpaceAfterCStyleCast: false
+SpaceBeforeAssignmentOperators: true
 SpaceBeforeParens: ControlStatements
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 2
@@ -59,4 +68,4 @@ SpacesInCStyleCastParentheses: true
 SpacesInParentheses: false
 Standard: Auto
 TabWidth: 4
-UseTab: ForIndentation
+UseTab: Never
