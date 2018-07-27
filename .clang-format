@@ -21,7 +21,7 @@ BinPackArguments: false
 BreakBeforeBraces: Custom
 BraceWrapping: {
     AfterClass: 'false'
-    AfterControlStatement: 'false'
+    AfterControlStatement: 'true'
     AfterEnum : 'true'
     AfterFunction : 'true'
     AfterNamespace : 'true'
@@ -30,7 +30,7 @@ BraceWrapping: {
     AfterUnion : 'true'
     BeforeCatch : 'false'
     BeforeElse : 'false'
-    IndentBraces : 'false'
+    IndentBraces : 'true'
     SplitEmptyFunction : 'false'
 }
 BreakBeforeBinaryOperators: 'NonAssignment'
@@ -43,9 +43,11 @@ ConstructorInitializerIndentWidth: 0
 ContinuationIndentWidth: 0
 Cpp11BracedListStyle: false
 DerivePointerBinding: false
+FixNamespaceComments: true
 IndentCaseLabels: false
 IndentFunctionDeclarationAfterType: false
 IndentWrappedFunctionNames: true
+IndentPPDirectives: AfterHash
 IndentWidth: 4
 Language: Cpp
 MaxEmptyLinesToKeep: 2
