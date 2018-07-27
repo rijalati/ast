@@ -1,6 +1,6 @@
 ---
 BasedOnStyle: LLVM
-AccessModifierOffset: '-2'
+AccessModifierOffset: 0
 AlignAfterOpenBracket: Align
 AlignEscapedNewlines: Right
 AlignConsecutiveDeclarations: true
@@ -21,7 +21,7 @@ BinPackArguments: false
 BreakBeforeBraces: Custom
 BraceWrapping: {
     AfterClass: 'false'
-    AfterControlStatement: 'true'
+    AfterControlStatement: 'false'
     AfterEnum : 'true'
     AfterFunction : 'true'
     AfterNamespace : 'true'
