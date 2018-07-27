@@ -32,7 +32,7 @@ BraceWrapping: {
     IndentBraces : 'false'
     SplitEmptyFunction : 'false'
 }
-BreakBeforeBinaryOperators: 'NonAssignment'
+BreakBeforeBinaryOperators: 'All'
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializers: AfterColon
 ColumnLimit: 78
